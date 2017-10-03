@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright 2017 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -109,7 +110,7 @@ int32_t gserialized_get_srid(const GSERIALIZED *s)
 	if ( srid == 0 )
 		return SRID_UNKNOWN;
 	else
-		return clamp_srid(srid);
+		return srid;
 }
 
 void gserialized_set_srid(GSERIALIZED *s, int32_t srid)
@@ -126,6 +127,15 @@ void gserialized_set_srid(GSERIALIZED *s, int32_t srid)
 	s->srid[0] = (srid & 0x001F0000) >> 16;
 	s->srid[1] = (srid & 0x0000FF00) >> 8;
 	s->srid[2] = (srid & 0x000000FF);
+}
+
+inline static int gserialized_cmp_srid(const GSERIALIZED *s1, const GSERIALIZED *s2)
+{
+	return (
+		s1->srid[0] == s2->srid[0] &&
+		s1->srid[1] == s2->srid[1] &&
+		s1->srid[2] == s2->srid[2]
+	) ? 0 : 1;
 }
 
 GSERIALIZED* gserialized_copy(const GSERIALIZED *g)
@@ -240,14 +250,14 @@ static uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2)
 }
 #endif
 
+union floatuint {
+	uint32_t u;
+	float f;
+};
 
 uint64_t gbox_get_sortable_hash(const GBOX *g)
 {
-
-	union floatuint {
-		uint32_t u;
-		float f;
-	} x, y;
+	union floatuint x, y;
 
 	/*
 	* Since in theory the bitwise representation of an IEEE
@@ -284,8 +294,43 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 {
 	int g1_is_empty, g2_is_empty, cmp;
 	GBOX box1, box2;
+	uint64_t hash1, hash2;
 	size_t sz1 = SIZE_GET(g1->size);
 	size_t sz2 = SIZE_GET(g2->size);
+	union floatuint x, y;
+
+	/*
+	* For two non-same planar points, we can skip a lot of machinery.
+	*/
+	if (
+		sz1 > 16 && // 16 is size of EMPTY, if it's larger - it has coordinates
+		sz2 > 16 &&
+		*(uint32_t*)(g1->data) == POINTTYPE &&
+		*(uint32_t*)(g2->data) == POINTTYPE &&
+		!FLAGS_GET_BBOX(g1->flags) &&
+		!FLAGS_GET_GEODETIC(g1->flags) &&
+		!FLAGS_GET_BBOX(g2->flags) &&
+		!FLAGS_GET_GEODETIC(g2->flags)
+	)
+	{
+		double *dptr = (double*)(g1->data);
+		x.f = 2.0 * dptr[1];
+		y.f = 2.0 * dptr[2];
+		hash1 = uint32_interleave_2(x.u, y.u);
+
+		dptr = (double*)(g2->data);
+		x.f = 2.0 * dptr[1];
+		y.f = 2.0 * dptr[2];
+		hash2 = uint32_interleave_2(x.u, y.u);
+
+		if ( hash1 > hash2 )
+			return 1;
+		if ( hash1 < hash2 )
+			return -1;
+
+		// if hashes happen to be the same, go to full compare.
+	}
+
 	size_t hsz1 = gserialized_header_size(g1);
 	size_t hsz2 = gserialized_header_size(g2);
 
@@ -295,9 +340,7 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 	size_t bsz2 = sz2 - hsz2;
 	size_t bsz = bsz1 < bsz2 ? bsz1 : bsz2;
 
-	uint64_t hash1, hash2;
-	int32_t srid1 = gserialized_get_srid(g1);
-	int32_t srid2 = gserialized_get_srid(g2);
+	int cmp_srid = gserialized_cmp_srid(g1, g2);
 
 	g1_is_empty = (gserialized_get_gbox_p(g1, &box1) == LW_FAILURE);
 	g2_is_empty = (gserialized_get_gbox_p(g2, &box2) == LW_FAILURE);
@@ -322,7 +365,7 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 
 	/* Return equality for perfect equality only */
 	cmp = memcmp(b1, b2, bsz);
-	if ( bsz1 == bsz2 && srid1 == srid2 && cmp == 0 )
+	if ( bsz1 == bsz2 && cmp_srid == 0 && cmp == 0 )
 		return 0;
 
 	/* Using the centroids, calculate somewhat sortable */

@@ -41,19 +41,6 @@ Datum geography_ge(PG_FUNCTION_ARGS);
 Datum geography_gt(PG_FUNCTION_ARGS);
 Datum geography_cmp(PG_FUNCTION_ARGS);
 
-
-/*
-** Utility function to return the center point of a
-** geocentric bounding box. We don't divide by two
-** because we're only using the values for comparison.
-*/
-static void geography_gidx_center(const GIDX *gidx, POINT3D *p)
-{
-	p->x = GIDX_GET_MIN(gidx, 0) + GIDX_GET_MAX(gidx, 0);
-	p->y = GIDX_GET_MIN(gidx, 1) + GIDX_GET_MAX(gidx, 1);
-	p->z = GIDX_GET_MIN(gidx, 2) + GIDX_GET_MAX(gidx, 2);
-}
-
 /*
 ** BTree support function. Based on two geographies return true if
 ** they are "less than" and false otherwise.
