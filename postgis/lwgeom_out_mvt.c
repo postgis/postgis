@@ -52,7 +52,7 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 	bool clip_geom;
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
-	geom_in = PG_GETARG_GSERIALIZED_P(0);
+	geom_in = PG_GETARG_GSERIALIZED_P_COPY(0);
 	lwgeom_in = lwgeom_from_gserialized(geom_in);
 	if (PG_ARGISNULL(1))
 		elog(ERROR, "ST_AsMVTGeom: parameter bounds cannot be null");

@@ -658,12 +658,11 @@ static int max_type(LWCOLLECTION *lwcoll)
  * Makes best effort to keep validity. Might collapse geometry into lower
  * dimension.
  */
-LWGEOM *mvt_geom(const LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buffer,
+LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buffer,
 	bool clip_geom)
 {
 	AFFINE affine;
 	gridspec grid;
-	LWGEOM *lwgeom_out = NULL;
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;
 	double resx = width / extent;
@@ -672,14 +671,14 @@ LWGEOM *mvt_geom(const LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32
 	double fy = -(extent / height);
 	double buffer_map_xunits = resx * buffer;
 	double buffer_map_yunits = resy * buffer;
-	const GBOX *ggbox;
+	const GBOX *lwgeom_gbox;
 	POSTGIS_DEBUG(2, "mvt_geom called");
 
 	/* Short circuit out on EMPTY */
 	if (lwgeom_is_empty(lwgeom))
 		return NULL;
 
-	ggbox = lwgeom_get_bbox(lwgeom);
+	lwgeom_gbox = lwgeom_get_bbox(lwgeom);
 	if (width == 0 || height == 0)
 		elog(ERROR, "mvt_geom: bounds width or height cannot be 0");
 
@@ -689,31 +688,27 @@ LWGEOM *mvt_geom(const LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32
 	if (clip_geom) {
 		GBOX *bgbox = gbox_copy(gbox);
 		gbox_expand(bgbox, buffer_map_xunits);
-		if (!gbox_overlaps_2d(ggbox, bgbox)) {
+		if (!gbox_overlaps_2d(lwgeom_gbox, bgbox)) {
 			POSTGIS_DEBUG(3, "mvt_geom: geometry outside clip box");
 			return NULL;
 		}
-		if (!gbox_contains_2d(bgbox, ggbox)) {
+		if (!gbox_contains_2d(bgbox, lwgeom_gbox)) {
 			double x0 = bgbox->xmin;
 			double y0 = bgbox->ymin;
 			double x1 = bgbox->xmax;
 			double y1 = bgbox->ymax;
 #if POSTGIS_GEOS_VERSION < 35
 			LWPOLY *lwenv = lwpoly_construct_envelope(0, x0, y0, x1, y1);
-			lwgeom_out = lwgeom_intersection(lwgeom, lwpoly_as_lwgeom(lwenv));
+			lwgeom = lwgeom_intersection(lwgeom, lwpoly_as_lwgeom(lwenv));
 			lwpoly_free(lwenv);
 #else
-			lwgeom_out = lwgeom_clip_by_rect(lwgeom, x0, y0, x1, y1);
+			lwgeom = lwgeom_clip_by_rect(lwgeom, x0, y0, x1, y1);
 #endif
 			POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
-			if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
+			if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 				return NULL;
 		}
 	}
-
-	/* if no clip output deep clone original to avoid mutation */
-	if (lwgeom_out == NULL)
-		lwgeom_out = lwgeom_clone_deep(lwgeom);
 
 	/* transform to tile coordinate space */
 	memset(&affine, 0, sizeof(affine));
@@ -722,7 +717,7 @@ LWGEOM *mvt_geom(const LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32
 	affine.ifac = 1;
 	affine.xoff = -gbox->xmin * fx;
 	affine.yoff = -gbox->ymax * fy;
-	lwgeom_affine(lwgeom_out, &affine);
+	lwgeom_affine(lwgeom, &affine);
 
 	/* snap to integer precision, removing duplicate points */
 	memset(&grid, 0, sizeof(gridspec));
@@ -730,36 +725,34 @@ LWGEOM *mvt_geom(const LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32
 	grid.ipy = 0;
 	grid.xsize = 1;
 	grid.ysize = 1;
-	lwgeom_out = lwgeom_grid(lwgeom_out, &grid);
+	lwgeom = lwgeom_grid(lwgeom, &grid);
 
-	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
+	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;
 
 	/* if polygon(s) make valid and force clockwise as per MVT spec */
-	if (lwgeom_out->type == POLYGONTYPE ||
-		lwgeom_out->type == MULTIPOLYGONTYPE) {
-		lwgeom_out = lwgeom_make_valid(lwgeom_out);
-		lwgeom_force_clockwise(lwgeom_out);
+	if (lwgeom->type == POLYGONTYPE || lwgeom->type == MULTIPOLYGONTYPE) {
+		lwgeom = lwgeom_make_valid(lwgeom);
+		lwgeom_force_clockwise(lwgeom);
 	}
 
 	/* if geometry collection extract highest dimensional geometry type */
-	if (lwgeom_out->type == COLLECTIONTYPE) {
-		LWCOLLECTION *lwcoll = lwgeom_as_lwcollection(lwgeom_out);
-		lwgeom_out = lwcollection_as_lwgeom(
+	if (lwgeom->type == COLLECTIONTYPE) {
+		LWCOLLECTION *lwcoll = lwgeom_as_lwcollection(lwgeom);
+		lwgeom = lwcollection_as_lwgeom(
 			lwcollection_extract(lwcoll, max_type(lwcoll)));
-		lwgeom_out = lwgeom_homogenize(lwgeom_out);
+		lwgeom = lwgeom_homogenize(lwgeom);
 		/* if polygon(s) make valid and force clockwise as per MVT spec */
-		if (lwgeom_out->type == POLYGONTYPE ||
-			lwgeom_out->type == MULTIPOLYGONTYPE) {
-			lwgeom_out = lwgeom_make_valid(lwgeom_out);
-			lwgeom_force_clockwise(lwgeom_out);
+		if (lwgeom->type == POLYGONTYPE || lwgeom->type == MULTIPOLYGONTYPE) {
+			lwgeom = lwgeom_make_valid(lwgeom);
+			lwgeom_force_clockwise(lwgeom);
 		}
 	}
 
-	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
+	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;
 
-	return lwgeom_out;
+	return lwgeom;
 }
 
 /**
