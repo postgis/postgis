@@ -1473,6 +1473,12 @@ lw_dist2d_pt_arc(const POINT2D* P, const POINT2D* A1, const POINT2D* A2, const P
 	return LW_TRUE;
 }
 
+/* Auxiliary function to calculate the distance between 2 concentric arcs*/
+int lw_dist2d_arc_arc_concentric(	const POINT2D *A1, const POINT2D *A2,
+					const POINT2D *A3, double radius_A,
+					const POINT2D *B1, const POINT2D *B2,
+					const POINT2D *B3, double radius_B,
+					const POINT2D *CENTER, DISTPTS *dl);
 
 int
 lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
@@ -1514,6 +1520,15 @@ lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
 	if ( radius_B < 0 )
 		return lw_dist2d_seg_arc(B1, B3, A1, A2, A3, dl);
 
+	/* Center-center distance */
+	d = distance2d_pt_pt(&CA, &CB);
+
+	/* Concentric arcs */
+	if ( FP_EQUALS(d, 0.0) )
+		return lw_dist2d_arc_arc_concentric(A1, A2, A3, radius_A,
+						    B1, B2, B3, radius_B,
+						    &CA, dl);
+
 	/* Make sure that arc "A" has the bigger radius */
 	if ( radius_B > radius_A )
 	{
@@ -1523,15 +1538,6 @@ lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
 		tmp = B3; B3 = A3; A3 = tmp;
 		P = CB; CB = CA; CA = P;
 		d = radius_B; radius_B = radius_A; radius_A = d;
-	}
-
-	/* Center-center distance */
-	d = distance2d_pt_pt(&CA, &CB);
-
-	/* Equal circles. Arcs may intersect at multiple points, or at none! */
-	if ( FP_EQUALS(d, 0.0) && FP_EQUALS(radius_A, radius_B) )
-	{
-		lwerror("lw_dist2d_arc_arc can't handle cojoint circles, uh oh");
 	}
 
 	/* Circles touch at a point. Is that point within the arcs? */
@@ -1652,6 +1658,128 @@ lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
 		return LW_TRUE;
 	}
 
+	return LW_TRUE;
+}
+
+int
+lw_dist2d_arc_arc_concentric(	const POINT2D *A1, const POINT2D *A2,
+				const POINT2D *A3, double radius_A,
+				const POINT2D *B1, const POINT2D *B2,
+				const POINT2D *B3, double radius_B,
+				const POINT2D *CENTER, DISTPTS *dl)
+{
+	double dist;
+	if (radius_A == radius_B)
+	{
+		/* Check if any of then ends also is in the other arc */
+		/* TODO: Optimize this */
+		if (lw_pt_in_arc(B1, A1, A2, A3))
+		{
+			dl->p1 = *B1;
+			dl->p2 = *B1;
+			dl->distance = 0;
+			return LW_TRUE;
+		}
+		if (lw_pt_in_arc(B3, A1, A2, A3))
+		{
+			dl->p1 = *B3;
+			dl->p2 = *B3;
+			dl->distance = 0;
+			return LW_TRUE;
+		}
+		if (lw_pt_in_arc(A1, B1, B2, B3))
+		{
+			dl->p1 = *A1;
+			dl->p2 = *A1;
+			dl->distance = 0;
+			return LW_TRUE;
+		}
+		if (lw_pt_in_arc(A3, B1, B2, B3))
+		{
+			dl->p1 = *A3;
+			dl->p2 = *A3;
+			dl->distance = 0;
+			return LW_TRUE;
+		}
+	}
+	else
+	{
+		/* Check if any projection of B ends are in A*/
+		/* TODO: Move this into functions */
+		POINT2D B1_proj;
+		B1_proj.x = CENTER->x + (B1->x - CENTER->x) * radius_A / radius_B;
+		B1_proj.y = CENTER->y + (B1->y - CENTER->y) * radius_A / radius_B;
+		if (lw_pt_in_arc(&B1_proj, A1, A2, A3))
+		{
+			dl->p1 = B1_proj;
+			dl->p2 = *B1;
+			dl->distance = fabs(radius_A - radius_B);
+			return LW_TRUE;
+		}
+
+		POINT2D B3_proj;
+		B3_proj.x = CENTER->x + (B3->x - CENTER->x) * radius_A / radius_B;
+		B3_proj.y = CENTER->y + (B3->y - CENTER->y) * radius_A / radius_B;
+		if (lw_pt_in_arc(&B3_proj, A1, A2, A3))
+		{
+			dl->p1 = B3_proj;
+			dl->p2 = *B3;
+			dl->distance = fabs(radius_A - radius_B);
+			return LW_TRUE;
+		}
+
+		/* And vice versa */
+		POINT2D A1_proj;
+		A1_proj.x = CENTER->x + (A1->x - CENTER->x) * radius_B / radius_A;
+		A1_proj.y = CENTER->y + (A1->y - CENTER->y) * radius_B / radius_A;
+		if (lw_pt_in_arc(&A1_proj, B1, B2, B3))
+		{
+			dl->p1 = A1_proj;
+			dl->p2 = *A1;
+			dl->distance = fabs(radius_A - radius_B);
+			return LW_TRUE;
+		}
+
+		POINT2D A3_proj;
+		A3_proj.x = CENTER->x + (A3->x - CENTER->x) * radius_B / radius_A;
+		A3_proj.y = CENTER->y + (A3->y - CENTER->y) * radius_B / radius_A;
+		if (lw_pt_in_arc(&A3_proj, B1, B2, B3))
+		{
+			dl->p1 = A3_proj;
+			dl->p2 = *A3;
+			dl->distance = fabs(radius_A - radius_B);
+			return LW_TRUE;
+		}
+	}
+
+	/* Check the shortest between the distances of the 4 ends */
+	dl->distance = distance2d_pt_pt(A1, B1);
+	dl->p1 = *A1;
+	dl->p2 = *B1;
+
+	dist = distance2d_pt_pt(A1, B3);
+	if (dist < dl->distance)
+	{
+		dl->distance = dist;
+		dl->p1 = *A1;
+		dl->p2 = *B3;
+	}
+
+	dist = distance2d_pt_pt(A3, B1);
+	if (dist < dl->distance)
+	{
+		dl->distance = dist;
+		dl->p1 = *A3;
+		dl->p2 = *B1;
+	}
+
+	dist = distance2d_pt_pt(A3, B3);
+	if (dist < dl->distance)
+	{
+		dl->distance = dist;
+		dl->p1 = *A3;
+		dl->p2 = *B3;
+	}
 	return LW_TRUE;
 }
 
