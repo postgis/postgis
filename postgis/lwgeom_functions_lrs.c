@@ -527,7 +527,7 @@ lwpoint_locate_between_m(LWPOINT *lwpoint, double m0, double m1)
 	{
 		POSTGIS_DEBUG(3, " lwpoint... returning a clone of input");
 
-		return (LWGEOM *)lwpoint_clone(lwpoint);
+		return lwgeom_clone((LWGEOM *)lwpoint);
 	}
 	else
 	{

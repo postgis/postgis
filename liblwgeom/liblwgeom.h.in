@@ -962,9 +962,6 @@ extern int ptarray_is_closed(const POINTARRAY *pa);
 extern int ptarray_is_closed_2d(const POINTARRAY *pa);
 extern int ptarray_is_closed_3d(const POINTARRAY *pa);
 extern int ptarray_is_closed_z(const POINTARRAY *pa);
-extern void ptarray_longitude_shift(POINTARRAY *pa);
-extern int ptarray_isccw(const POINTARRAY *pa);
-extern void ptarray_reverse(POINTARRAY *pa);
 extern POINTARRAY* ptarray_flip_coordinates(POINTARRAY *pa);
 
 /**
@@ -1210,19 +1207,12 @@ extern LWPOINT* lwcompound_get_startpoint(const LWCOMPOUND *lwcmp);
 extern LWPOINT* lwcompound_get_endpoint(const LWCOMPOUND *lwcmp);
 extern LWPOINT* lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, int where);
 
-
 extern double ptarray_length_2d(const POINTARRAY *pts);
-extern double ptarray_length(const POINTARRAY *pts);
-extern double ptarray_arc_length_2d(const POINTARRAY *pts);
-
-
 extern int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
 extern int azimuth_pt_pt(const POINT2D *p1, const POINT2D *p2, double *ret);
 extern int lwpoint_inside_circle(const LWPOINT *p, double cx, double cy, double rad);
+
 extern void lwgeom_reverse(LWGEOM *lwgeom);
-extern void lwline_reverse(LWLINE *line);
-extern void lwpoly_reverse(LWPOLY *poly);
-extern void lwtriangle_reverse(LWTRIANGLE *triangle);
 extern char* lwgeom_summary(const LWGEOM *lwgeom, int offset);
 extern char* lwpoint_to_latlon(const LWPOINT *p, const char *format);
 extern int lwgeom_startpoint(const LWGEOM* lwgeom, POINT4D* pt);
@@ -1232,16 +1222,11 @@ extern int lwgeom_startpoint(const LWGEOM* lwgeom, POINT4D* pt);
 * are counter-clockwise.
 */
 extern void lwgeom_force_clockwise(LWGEOM *lwgeom);
-extern void lwpoly_force_clockwise(LWPOLY *poly);
-extern void lwtriangle_force_clockwise(LWTRIANGLE *triangle);
-
 extern int lwgeom_is_clockwise(LWGEOM *lwgeom);
-extern int lwpoly_is_clockwise(LWPOLY *poly);
-extern int lwtriangle_is_clockwise(LWTRIANGLE *triangle);
 
 extern void interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F);
 
-void lwgeom_longitude_shift(LWGEOM *lwgeom);
+extern void lwgeom_longitude_shift(LWGEOM *lwgeom);
 
 /**
  * @brief wrap geometry on given cut x value
@@ -1304,14 +1289,7 @@ extern int lwgeom_is_closed(const LWGEOM *geom);
 extern int lwgeom_dimensionality(LWGEOM *geom);
 
 /* Is lwgeom1 geometrically equal to lwgeom2 ? */
-char lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2);
-char ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2);
-char lwpoint_same(const LWPOINT *p1, const LWPOINT *p2);
-char lwline_same(const LWLINE *p1, const LWLINE *p2);
-char lwpoly_same(const LWPOLY *p1, const LWPOLY *p2);
-char lwtriangle_same(const LWTRIANGLE *p1, const LWTRIANGLE *p2);
-char lwcollection_same(const LWCOLLECTION *p1, const LWCOLLECTION *p2);
-char lwcircstring_same(const LWCIRCSTRING *p1, const LWCIRCSTRING *p2);
+extern char lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2);
 
 
 /**
@@ -1327,10 +1305,7 @@ extern LWGEOM *lwgeom_clone(const LWGEOM *lwgeom);
 * Deep clone an LWGEOM, everything is copied
 */
 extern LWGEOM *lwgeom_clone_deep(const LWGEOM *lwgeom);
-
-/* TODO Move to Internal */
-LWPOINT *lwpoint_clone(const LWPOINT *lwgeom);
-POINTARRAY *ptarray_clone_deep(const POINTARRAY *ptarray);
+extern POINTARRAY *ptarray_clone_deep(const POINTARRAY *ptarray);
 
 
 /*

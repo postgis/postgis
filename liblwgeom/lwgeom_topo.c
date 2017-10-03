@@ -6608,7 +6608,6 @@ _lwt_RegisterFaceOnEdgeSide(LWT_TOPOLOGY *topo, LWT_ISO_EDGE *edge,
                             LWT_ELEMID *registered)
 {
   const LWT_BE_IFACE *iface = topo->be_iface;
-  int sedge = edge->edge_id * side;
   /* this is arbitrary, could be taken as parameter */
   static const int placeholder_faceid = LWT_HOLES_FACE_PLACEHOLDER;
   LWT_EDGERING *ring;
@@ -6626,7 +6625,7 @@ _lwt_RegisterFaceOnEdgeSide(LWT_TOPOLOGY *topo, LWT_ISO_EDGE *edge,
     /* Create new face */
     LWT_ISO_FACE newface;
 
-    LWDEBUGF(1, "Ring of edge %d is a shell (shell %d)", sedge, shells->size);
+    LWDEBUGF(1, "Ring of edge %d is a shell (shell %d)", edge->edge_id * side, shells->size);
 
     newface.mbr = _lwt_EdgeRingGetBbox(ring);
 
@@ -6660,7 +6659,7 @@ _lwt_RegisterFaceOnEdgeSide(LWT_TOPOLOGY *topo, LWT_ISO_EDGE *edge,
   }
   else /* cw, so is an hole */
   {
-    LWDEBUGF(1, "Ring of edge %d is a hole (hole %d)", sedge, holes->size);
+    LWDEBUGF(1, "Ring of edge %d is a hole (hole %d)", edge->edge_id * side, holes->size);
     *registered = placeholder_faceid;
     LWT_EDGERING_ARRAY_PUSH(holes, ring);
   }

@@ -2046,7 +2046,7 @@ Datum LWGEOM_same(PG_FUNCTION_ARGS)
 	/* invoke appropriate function */
 	result = lwgeom_same(lwg1, lwg2);
 
-	/* Relase memory */
+	/* Release memory */
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 	PG_FREE_IF_COPY(g1, 0);

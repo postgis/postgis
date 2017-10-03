@@ -278,7 +278,7 @@ double lwtriangle_area(const LWTRIANGLE *triangle);
 * Pull a #GBOX from the header of a #GSERIALIZED, if one is available. If
 * it is not, return LW_FAILURE.
 */
-extern int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox);
+int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox);
 
 /*
 * Length calculations
@@ -320,8 +320,15 @@ int ptarray_has_m(const POINTARRAY *pa);
 double ptarray_signed_area(const POINTARRAY *pa);
 
 /*
+* Length
+*/
+double ptarray_length(const POINTARRAY *pts);
+double ptarray_arc_length_2d(const POINTARRAY *pts);
+
+/*
 * Clone support
 */
+LWPOINT *lwpoint_clone(const LWPOINT *lwgeom);
 LWLINE *lwline_clone(const LWLINE *lwgeom);
 LWPOLY *lwpoly_clone(const LWPOLY *lwgeom);
 LWTRIANGLE *lwtriangle_clone(const LWTRIANGLE *lwgeom);
@@ -335,9 +342,38 @@ LWCOLLECTION *lwcollection_clone_deep(const LWCOLLECTION *lwgeom);
 GBOX *gbox_clone(const GBOX *gbox);
 
 /*
- * Reverse
- */
-extern void lwcircstring_reverse(LWCIRCSTRING *curve);
+* Clockwise
+*/
+void lwpoly_force_clockwise(LWPOLY *poly);
+void lwtriangle_force_clockwise(LWTRIANGLE *triangle);
+int lwpoly_is_clockwise(LWPOLY *poly);
+int lwtriangle_is_clockwise(LWTRIANGLE *triangle);
+int ptarray_isccw(const POINTARRAY *pa);
+
+/*
+* Same
+*/
+char ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2);
+char lwpoint_same(const LWPOINT *p1, const LWPOINT *p2);
+char lwline_same(const LWLINE *p1, const LWLINE *p2);
+char lwpoly_same(const LWPOLY *p1, const LWPOLY *p2);
+char lwtriangle_same(const LWTRIANGLE *p1, const LWTRIANGLE *p2);
+char lwcollection_same(const LWCOLLECTION *p1, const LWCOLLECTION *p2);
+char lwcircstring_same(const LWCIRCSTRING *p1, const LWCIRCSTRING *p2);
+
+/*
+* Shift
+*/
+void ptarray_longitude_shift(POINTARRAY *pa);
+
+/*
+* Reverse
+*/
+void lwcircstring_reverse(LWCIRCSTRING *curve);
+void ptarray_reverse(POINTARRAY *pa);
+void lwline_reverse(LWLINE *line);
+void lwpoly_reverse(LWPOLY *poly);
+void lwtriangle_reverse(LWTRIANGLE *triangle);
 
 /*
 * Startpoint
@@ -437,7 +473,7 @@ int lwline_split_by_point_to(const LWLINE* ln, const LWPOINT* pt, LWMLINE* to);
 void lwcollection_reserve(LWCOLLECTION *col, int ngeoms);
 
 /** Check if subtype is allowed in collectiontype */
-extern int lwcollection_allows_subtype(int collectiontype, int subtype);
+int lwcollection_allows_subtype(int collectiontype, int subtype);
 
 /** GBOX utility functions to figure out coverage/location on the globe */
 double gbox_angular_height(const GBOX* gbox);
@@ -445,7 +481,7 @@ double gbox_angular_width(const GBOX* gbox);
 int gbox_centroid(const GBOX* gbox, POINT2D* out);
 
 /* Utilities */
-extern void trim_trailing_zeros(char *num);
+void trim_trailing_zeros(char *num);
 
 extern uint8_t MULTITYPE[NUMTYPES];
 
