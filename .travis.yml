@@ -23,6 +23,8 @@ compiler: gcc
 
 dist: trusty
 
+cache: ccache
+
 script:
   - ./configure
   - make
