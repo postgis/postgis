@@ -88,40 +88,71 @@ lwgeom_is_clockwise(LWGEOM *lwgeom)
 	}
 }
 
+LWGEOM *
+lwgeom_reverse(const LWGEOM *geom)
+{
+	LWGEOM *geomout = lwgeom_clone_deep(geom);
+	lwgeom_reverse_in_place(geomout);
+	return geomout;
+}
+
 /** Reverse vertex order of LWGEOM **/
 void
-lwgeom_reverse(LWGEOM *lwgeom)
+lwgeom_reverse_in_place(LWGEOM *geom)
 {
 	int i;
 	LWCOLLECTION *col;
+	if (!geom)
+		return;
 
-	switch (lwgeom->type)
+	switch (geom->type)
 	{
-	case LINETYPE:
-		lwline_reverse((LWLINE *)lwgeom);
-		return;
-	case POLYGONTYPE:
-		lwpoly_reverse((LWPOLY *)lwgeom);
-		return;
-	case TRIANGLETYPE:
-		lwtriangle_reverse((LWTRIANGLE *)lwgeom);
-		return;
-	case CIRCSTRINGTYPE:
-		lwcircstring_reverse((LWCIRCSTRING *)lwgeom);
-		return;
-	case MULTICURVETYPE:
-	case MULTILINETYPE:
-	case MULTIPOLYGONTYPE:
-	case MULTISURFACETYPE:
-	case POLYHEDRALSURFACETYPE:
-	case TINTYPE:
-	case COLLECTIONTYPE:
-	case COMPOUNDTYPE:
-	case CURVEPOLYTYPE:
-		col = (LWCOLLECTION *)lwgeom;
-		for (i=0; i<col->ngeoms; i++)
-			lwgeom_reverse(col->geoms[i]);
-		return;
+		case MULTIPOINTTYPE:
+		case POINTTYPE:
+		{
+			return;
+		}
+		case TRIANGLETYPE:
+		case CIRCSTRINGTYPE:
+		case LINETYPE:
+		{
+			LWLINE *line = (LWLINE *)(geom);
+			ptarray_reverse_in_place(line->points);
+			return;
+		}
+		case POLYGONTYPE:
+		{
+			LWPOLY *poly = (LWPOLY *)(geom);
+			if (!poly->rings)
+				return;
+			int r;
+			for (r = 0; r < poly->nrings; r++)
+				ptarray_reverse_in_place(poly->rings[r]);
+			return;
+		}
+		case MULTICURVETYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case MULTISURFACETYPE:
+		case POLYHEDRALSURFACETYPE:
+		case TINTYPE:
+		case COLLECTIONTYPE:
+		case COMPOUNDTYPE:
+		case CURVEPOLYTYPE:
+		{
+			col = (LWCOLLECTION *)(geom);
+			if (!col->geoms)
+				return;
+			for (i=0; i<col->ngeoms; i++)
+				lwgeom_reverse_in_place(col->geoms[i]);
+			return;
+		}
+		default:
+		{
+			lwerror("%s: Unknown geometry type: %s", __func__, lwtype_name(geom->type));
+			return;
+		}
+
 	}
 }
 
@@ -1878,7 +1909,7 @@ lwgeom_construct_empty(uint8_t type, int srid, char hasz, char hasm)
 }
 
 int
-lwgeom_startpoint(const LWGEOM* lwgeom, POINT4D* pt)
+lwgeom_startpoint(const LWGEOM *lwgeom, POINT4D *pt)
 {
 	if ( ! lwgeom )
 		return LW_FAILURE;
@@ -1907,31 +1938,88 @@ lwgeom_startpoint(const LWGEOM* lwgeom, POINT4D* pt)
 	}
 }
 
-
-LWGEOM *
-lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid)
+void
+lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
 {
-	switch ( lwgeom->type )
+	if (!geom) return;
+	switch ( geom->type )
 	{
 		case POINTTYPE:
-			return (LWGEOM *)lwpoint_grid((LWPOINT *)lwgeom, grid);
+		{
+			LWPOINT *pt = (LWPOINT*)(geom);
+			ptarray_grid_in_place(pt->point, grid);
+			return;
+		}
+		case CIRCSTRINGTYPE:
 		case LINETYPE:
-			return (LWGEOM *)lwline_grid((LWLINE *)lwgeom, grid);
+		{
+			LWLINE *ln = (LWLINE*)(geom);
+			ptarray_grid_in_place(ln->points, grid);
+			/* For invalid line, return an EMPTY */
+			if (ln->points->npoints < 2)
+				ln->points->npoints = 0;
+			return;
+		}
 		case POLYGONTYPE:
-			return (LWGEOM *)lwpoly_grid((LWPOLY *)lwgeom, grid);
+		{
+			LWPOLY *ply = (LWPOLY*)(geom);
+			int i, j = 0;
+			if (!ply->rings) return;
+			for (i = 0; i < ply->nrings; i++)
+			{
+				POINTARRAY *pa = ply->rings[i];
+				ptarray_grid_in_place(pa, grid);
+				/* Skip bad rings */
+				if (pa->npoints < 4)
+				{
+					/* If bad ring is external ring, stop everything */
+					if (i) continue;
+					else break;
+				}
+				/* Fill in just the rings we are keeping */
+				ply->rings[j++] = pa;
+			}
+			/* Adjust ring count appropriately */
+			ply->nrings = j;
+			return;
+		}
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
 		case COLLECTIONTYPE:
 		case COMPOUNDTYPE:
-			return (LWGEOM *)lwcollection_grid((LWCOLLECTION *)lwgeom, grid);
-		case CIRCSTRINGTYPE:
-			return (LWGEOM *)lwcircstring_grid((LWCIRCSTRING *)lwgeom, grid);
+		{
+			LWCOLLECTION *col = (LWCOLLECTION*)(geom);
+			int i, j = 0;
+			if (!col->geoms) return;
+			for (i = 0; i < col->ngeoms; i++)
+			{
+				LWGEOM *g = col->geoms[i];
+				lwgeom_grid_in_place(g, grid);
+				/* Skip empty geoms */
+				if (lwgeom_is_empty(g))
+					continue;
+				col->geoms[j++] = g;
+			}
+			col->ngeoms = j;
+			return;
+		}
 		default:
-			lwerror("lwgeom_grid: Unsupported geometry type: %s",
-			        lwtype_name(lwgeom->type));
-			return NULL;
+		{
+			lwerror("%s: Unsupported geometry type: %s", __func__,
+			        lwtype_name(geom->type));
+			return;
+		}
 	}
+}
+
+
+LWGEOM *
+lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid)
+{
+	LWGEOM *lwgeom_out = lwgeom_clone_deep(lwgeom);
+	lwgeom_grid_in_place(lwgeom_out, grid);
+	return lwgeom_out;
 }
 
 

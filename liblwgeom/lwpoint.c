@@ -296,10 +296,4 @@ int lwpoint_is_empty(const LWPOINT *point)
 }
 
 
-LWPOINT *
-lwpoint_grid(const LWPOINT *point, const gridspec *grid)
-{
-	POINTARRAY *opa = ptarray_grid(point->point, grid);
-	return lwpoint_construct(point->srid, NULL, opa);
-}
 

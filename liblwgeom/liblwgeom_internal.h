@@ -362,6 +362,11 @@ char lwcollection_same(const LWCOLLECTION *p1, const LWCOLLECTION *p2);
 char lwcircstring_same(const LWCIRCSTRING *p1, const LWCIRCSTRING *p2);
 
 /*
+* Transform
+*/
+int point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj);
+
+/*
 * Shift
 */
 void ptarray_longitude_shift(POINTARRAY *pa);
@@ -369,11 +374,7 @@ void ptarray_longitude_shift(POINTARRAY *pa);
 /*
 * Reverse
 */
-void lwcircstring_reverse(LWCIRCSTRING *curve);
-void ptarray_reverse(POINTARRAY *pa);
-void lwline_reverse(LWLINE *line);
-void lwpoly_reverse(LWPOLY *poly);
-void lwtriangle_reverse(LWTRIANGLE *triangle);
+void ptarray_reverse_in_place(POINTARRAY *pa);
 
 /*
 * Startpoint
@@ -429,12 +430,14 @@ typedef struct gridspec_t
 gridspec;
 
 LWGEOM* lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid);
-LWCOLLECTION* lwcollection_grid(const LWCOLLECTION *coll, const gridspec *grid);
-LWPOINT* lwpoint_grid(const LWPOINT *point, const gridspec *grid);
-LWPOLY* lwpoly_grid(const LWPOLY *poly, const gridspec *grid);
-LWLINE* lwline_grid(const LWLINE *line, const gridspec *grid);
-LWCIRCSTRING* lwcircstring_grid(const LWCIRCSTRING *line, const gridspec *grid);
-POINTARRAY* ptarray_grid(const POINTARRAY *pa, const gridspec *grid);
+
+void lwgeom_grid_in_place(LWGEOM *lwgeom, const gridspec *grid);
+void lwcollection_grid_in_place(LWCOLLECTION *coll, const gridspec *grid);
+void lwpoint_grid_in_place(LWPOINT *point, const gridspec *grid);
+void lwpoly_grid_in_place(LWPOLY *poly, const gridspec *grid);
+void lwline_grid_in_place(LWLINE *line, const gridspec *grid);
+void lwcircstring_grid_in_place(LWCIRCSTRING *line, const gridspec *grid);
+void ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid);
 
 /*
 * What side of the line formed by p1 and p2 does q fall?

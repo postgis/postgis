@@ -340,7 +340,7 @@ void ptarray_free(POINTARRAY *pa)
 
 
 void
-ptarray_reverse(POINTARRAY *pa)
+ptarray_reverse_in_place(POINTARRAY *pa)
 {
 	int i;
 	int last = pa->npoints-1;
@@ -359,6 +359,7 @@ ptarray_reverse(POINTARRAY *pa)
 			d[(last-i)*ndims+j] = buf;
 		}
 	}
+	return;
 }
 
 
@@ -1840,8 +1841,6 @@ ptarray_startpoint(const POINTARRAY *pa, POINT4D *pt)
 }
 
 
-
-
 /*
  * Stick an array of points to the given gridspec.
  * Return "gridded" points in *outpts and their number in *outptsn.
@@ -1850,44 +1849,69 @@ ptarray_startpoint(const POINTARRAY *pa, POINT4D *pt)
  * into one single point.
  *
  */
-POINTARRAY *
-ptarray_grid(const POINTARRAY *pa, const gridspec *grid)
+void
+ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
 {
-	POINT4D pt;
-	int ipn; /* input point numbers */
-	POINTARRAY *dpa;
+	int i, j = 0;
+	POINT4D *p, *p_out = NULL;
+	int ndims = FLAGS_NDIMS(pa->flags);
+	int has_z = FLAGS_GET_Z(pa->flags);
+	int has_m = FLAGS_GET_M(pa->flags);
 
-	LWDEBUGF(2, "ptarray_grid called on %p", pa);
+	LWDEBUGF(2, "%s called on %p", __func__, pa);
 
-	dpa = ptarray_construct_empty(FLAGS_GET_Z(pa->flags),FLAGS_GET_M(pa->flags), pa->npoints);
-
-	for (ipn=0; ipn<pa->npoints; ++ipn)
+	for (i = 0; i < pa->npoints; i++)
 	{
+		/* Look straight into the abyss */
+		p = (POINT4D*)(getPoint_internal(pa, i));
 
-		getPoint4d_p(pa, ipn, &pt);
+    	if (grid->xsize > 0)
+    		p->x = rint((p->x - grid->ipx)/grid->xsize) * grid->xsize + grid->ipx;
 
-		if ( grid->xsize )
-			pt.x = rint((pt.x - grid->ipx)/grid->xsize) *
-			         grid->xsize + grid->ipx;
+    	if (grid->ysize > 0)
+    		p->y = rint((p->y - grid->ipy)/grid->ysize) * grid->ysize + grid->ipy;
 
-		if ( grid->ysize )
-			pt.y = rint((pt.y - grid->ipy)/grid->ysize) *
-			         grid->ysize + grid->ipy;
+		/* Read and round this point */
+		/* Z is always in third position */
+		if (has_z)
+		{
+			if (grid->zsize > 0)
+				p->z = rint((p->z - grid->ipz)/grid->zsize) * grid->zsize + grid->ipz;
+		}
+		/* M might be in 3rd or 4th position */
+		if (has_m)
+		{
+			/* In POINT M, M is in 3rd position */
+			if (grid->msize > 0 && !has_z)
+				p->z = rint((p->z - grid->ipm)/grid->msize) * grid->msize + grid->ipm;
+			/* In POINT ZM, M is in 4th position */
+			if (grid->msize > 0 && has_z)
+				p->m = rint((p->m - grid->ipm)/grid->msize) * grid->msize + grid->ipm;
+		}
 
-		if ( FLAGS_GET_Z(pa->flags) && grid->zsize )
-			pt.z = rint((pt.z - grid->ipz)/grid->zsize) *
-			         grid->zsize + grid->ipz;
+		/* Skip duplicates */
+		if ( p_out && p_out->x == p->x && p_out->y == p->y
+		   && (ndims > 2 ? p_out->z == p->z : 1)
+		   && (ndims > 3 ? p_out->m == p->m : 1) )
+		{
+			continue;
+		}
 
-		if ( FLAGS_GET_M(pa->flags) && grid->msize )
-			pt.m = rint((pt.m - grid->ipm)/grid->msize) *
-			         grid->msize + grid->ipm;
-
-		ptarray_append_point(dpa, &pt, LW_FALSE);
-
+		/* Write rounded values into the next available point */
+		p_out = (POINT4D*)(getPoint_internal(pa, j++));
+		p_out->x = p->x;
+		p_out->y = p->y;
+		if (ndims > 2)
+			p_out->z = p->z;
+		if (ndims > 3)
+			p_out->m = p->m;
 	}
 
-	return dpa;
+	/* Update output ptarray length */
+	pa->npoints = j;
+	return;
 }
+
 
 int
 ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox)

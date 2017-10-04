@@ -275,12 +275,12 @@ lwpoly_force_clockwise(LWPOLY *poly)
 
 	/* External ring */
 	if ( ptarray_isccw(poly->rings[0]) )
-		ptarray_reverse(poly->rings[0]);
+		ptarray_reverse_in_place(poly->rings[0]);
 
 	/* Internal rings */
 	for (i=1; i<poly->nrings; i++)
 		if ( ! ptarray_isccw(poly->rings[i]) )
-			ptarray_reverse(poly->rings[i]);
+			ptarray_reverse_in_place(poly->rings[i]);
 
 }
 
@@ -306,15 +306,6 @@ void
 lwpoly_release(LWPOLY *lwpoly)
 {
 	lwgeom_release(lwpoly_as_lwgeom(lwpoly));
-}
-
-void
-lwpoly_reverse(LWPOLY *poly)
-{
-	int i;
-	if ( lwpoly_is_empty(poly) ) return;
-	for (i=0; i<poly->nrings; i++)
-		ptarray_reverse(poly->rings[i]);
 }
 
 LWPOLY *
@@ -636,58 +627,3 @@ lwpoly_contains_point(const LWPOLY *poly, const POINT2D *pt)
 }
 
 
-
-LWPOLY* lwpoly_grid(const LWPOLY *poly, const gridspec *grid)
-{
-	LWPOLY *opoly;
-	int ri;
-
-#if 0
-	/*
-	 * TODO: control this assertion
-	 * it is assumed that, since the grid size will be a pixel,
-	 * a visible ring should show at least a white pixel inside,
-	 * thus, for a square, that would be grid_xsize*grid_ysize
-	 */
-	double minvisiblearea = grid->xsize * grid->ysize;
-#endif
-
-	LWDEBUGF(3, "lwpoly_grid: applying grid to polygon with %d rings", poly->nrings);
-
-	opoly = lwpoly_construct_empty(poly->srid, lwgeom_has_z((LWGEOM*)poly), lwgeom_has_m((LWGEOM*)poly));
-
-	for (ri=0; ri<poly->nrings; ri++)
-	{
-		POINTARRAY *ring = poly->rings[ri];
-		POINTARRAY *newring;
-
-		newring = ptarray_grid(ring, grid);
-
-		/* Skip ring if not composed by at least 4 pts (3 segments) */
-		if ( newring->npoints < 4 )
-		{
-			ptarray_free(newring);
-
-			LWDEBUGF(3, "grid_polygon3d: ring%d skipped ( <4 pts )", ri);
-
-			if ( ri ) continue;
-			else break; /* this is the external ring, no need to work on holes */
-		}
-
-		if ( ! lwpoly_add_ring(opoly, newring) )
-		{
-			lwerror("lwpoly_grid, memory error");
-			return NULL;
-		}
-	}
-
-	LWDEBUGF(3, "lwpoly_grid: simplified polygon with %d rings", opoly->nrings);
-
-	if ( ! opoly->nrings )
-	{
-		lwpoly_free(opoly);
-		return NULL;
-	}
-
-	return opoly;
-}

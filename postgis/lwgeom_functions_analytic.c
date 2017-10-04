@@ -1326,10 +1326,8 @@ Datum ST_IsPolygonCCW(PG_FUNCTION_ARGS)
 
 	geom = PG_GETARG_GSERIALIZED_P_COPY(0);
 	input = lwgeom_from_gserialized(geom);
-
-    lwgeom_reverse(input);
+	lwgeom_reverse_in_place(input);
 	is_ccw = lwgeom_is_clockwise(input);
-
 	lwgeom_free(input);
 	PG_FREE_IF_COPY(geom, 0);
 

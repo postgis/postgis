@@ -106,20 +106,13 @@ void
 lwtriangle_force_clockwise(LWTRIANGLE *triangle)
 {
 	if ( ptarray_isccw(triangle->points) )
-		ptarray_reverse(triangle->points);
+		ptarray_reverse_in_place(triangle->points);
 }
 
 int
 lwtriangle_is_clockwise(LWTRIANGLE *triangle)
 {
 	return !ptarray_isccw(triangle->points);
-}
-
-void
-lwtriangle_reverse(LWTRIANGLE *triangle)
-{
-	if( lwtriangle_is_empty(triangle) ) return;
-	ptarray_reverse(triangle->points);
 }
 
 void

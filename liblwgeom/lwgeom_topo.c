@@ -1836,14 +1836,14 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, int num_sign
     if ( pa == NULL )
     {
       pa = ptarray_clone_deep(edge->geom->points);
-      if ( eid < 0 ) ptarray_reverse(pa);
+      if ( eid < 0 ) ptarray_reverse_in_place(pa);
     }
     else
     {
       if ( eid < 0 )
       {
         epa = ptarray_clone_deep(edge->geom->points);
-        ptarray_reverse(epa);
+        ptarray_reverse_in_place(epa);
         ptarray_append_ptarray(pa, epa, 0);
         ptarray_free(epa);
       }
@@ -3149,7 +3149,7 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
   /* force_lhr, if the face is not the universe */
   /* _lwt_FaceByEdges seems to guaranteed RHR */
   /* lwgeom_force_clockwise(face); */
-  if ( face_id ) lwgeom_reverse(face);
+  if ( face_id ) lwgeom_reverse_in_place(face);
 
 #if 0
   {
@@ -4596,7 +4596,7 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
     {
       POINTARRAY *pa2;
       pa2 = ptarray_clone_deep(e2->geom->points);
-      ptarray_reverse(pa2);
+      ptarray_reverse_in_place(pa2);
       pa = ptarray_clone_deep(e1->geom->points);
       //pa = ptarray_merge(e1->geom->points, pa);
       ptarray_append_ptarray(pa, pa2, 0);
@@ -4612,7 +4612,7 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
     }
     case 3: /* e1.start = e2.start */
       pa = ptarray_clone_deep(e2->geom->points);
-      ptarray_reverse(pa);
+      ptarray_reverse_in_place(pa);
       //pa = ptarray_merge(pa, e1->geom->points);
       ptarray_append_ptarray(pa, e1->geom->points, 0);
       newedge.end_node = e1->end_node;

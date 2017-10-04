@@ -981,7 +981,6 @@ extern LWGEOM* lwgeom_force_3dz(const LWGEOM *geom);
 extern LWGEOM* lwgeom_force_3dm(const LWGEOM *geom);
 extern LWGEOM* lwgeom_force_4d(const LWGEOM *geom);
 
-extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist, int preserve_collapsed);
 extern LWGEOM* lwgeom_set_effective_area(const LWGEOM *igeom, int set_area, double area);
 
 /*
@@ -1196,8 +1195,6 @@ extern double lwgeom_length(const LWGEOM *geom);
 extern double lwgeom_length_2d(const LWGEOM *geom);
 extern double lwgeom_perimeter(const LWGEOM *geom);
 extern double lwgeom_perimeter_2d(const LWGEOM *geom);
-extern void lwgeom_affine(LWGEOM *geom, const AFFINE *affine);
-extern void lwgeom_scale(LWGEOM *geom, const POINT4D *factors);
 extern int lwgeom_dimension(const LWGEOM *geom);
 
 extern LWPOINT* lwline_get_lwpoint(const LWLINE *line, int where);
@@ -1212,21 +1209,43 @@ extern int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
 extern int azimuth_pt_pt(const POINT2D *p1, const POINT2D *p2, double *ret);
 extern int lwpoint_inside_circle(const LWPOINT *p, double cx, double cy, double rad);
 
-extern void lwgeom_reverse(LWGEOM *lwgeom);
+extern LWGEOM* lwgeom_reverse(const LWGEOM *lwgeom);
 extern char* lwgeom_summary(const LWGEOM *lwgeom, int offset);
 extern char* lwpoint_to_latlon(const LWPOINT *p, const char *format);
 extern int lwgeom_startpoint(const LWGEOM* lwgeom, POINT4D* pt);
+
+extern void interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F);
 
 /**
 * Ensure the outer ring is clockwise oriented and all inner rings
 * are counter-clockwise.
 */
-extern void lwgeom_force_clockwise(LWGEOM *lwgeom);
 extern int lwgeom_is_clockwise(LWGEOM *lwgeom);
 
-extern void interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F);
 
+
+/****************************************************************
+* READ/WRITE FUNCTIONS
+*
+* Coordinate writing functions, which will alter the coordinates
+* and potentially the structure of the input geometry. When
+* called from within PostGIS, the LWGEOM argument should be built
+* on top of a gserialized copy, created using
+* PG_GETARG_GSERIALIZED_P_COPY()
+****************************************************************/
+
+extern void lwgeom_reverse_in_place(LWGEOM *lwgeom);
+extern void lwgeom_force_clockwise(LWGEOM *lwgeom);
 extern void lwgeom_longitude_shift(LWGEOM *lwgeom);
+extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist, int preserve_collapsed);
+extern void lwgeom_affine(LWGEOM *geom, const AFFINE *affine);
+extern void lwgeom_scale(LWGEOM *geom, const POINT4D *factors);
+
+
+
+
+/****************************************************************/
+
 
 /**
  * @brief wrap geometry on given cut x value
@@ -2313,9 +2332,8 @@ projPJ lwproj_from_string(const char* txt);
  * @param inpj the input (or current, or source) projection
  * @param outpj the output (or destination) projection
  */
-int lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj) ;
-int ptarray_transform(POINTARRAY *geom, projPJ inpj, projPJ outpj) ;
-int point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj) ;
+int lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj);
+int ptarray_transform(POINTARRAY *pa, projPJ inpj, projPJ outpj);
 
 
 /*******************************************************************************

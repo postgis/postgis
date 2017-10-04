@@ -1882,7 +1882,7 @@ Datum LWGEOM_reverse(PG_FUNCTION_ARGS)
 	geom = PG_GETARG_GSERIALIZED_P_COPY(0);
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	lwgeom_reverse(lwgeom);
+	lwgeom_reverse_in_place(lwgeom);
 
 	geom = geometry_serialize(lwgeom);
 

@@ -24,7 +24,7 @@
 
 
 #include "../postgis_config.h"
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include <string.h>
 
@@ -52,15 +52,15 @@ to_dec(POINT4D *pt)
 int
 ptarray_transform(POINTARRAY *pa, projPJ inpj, projPJ outpj)
 {
-  int i;
+	int i;
 	POINT4D p;
 
-  for ( i = 0; i < pa->npoints; i++ )
-  {
-    getPoint4d_p(pa, i, &p);
-    if ( ! point4d_transform(&p, inpj, outpj) ) return LW_FAILURE;
-    ptarray_set_point4d(pa, i, &p);
-  }
+	for ( i = 0; i < pa->npoints; i++ )
+	{
+		getPoint4d_p(pa, i, &p);
+		if ( ! point4d_transform(&p, inpj, outpj) ) return LW_FAILURE;
+		ptarray_set_point4d(pa, i, &p);
+	}
 
 	return LW_SUCCESS;
 }
@@ -87,7 +87,7 @@ lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 		case TRIANGLETYPE:
 		{
 			LWLINE *g = (LWLINE*)geom;
-      if ( ! ptarray_transform(g->points, inpj, outpj) ) return LW_FAILURE;
+			if ( ! ptarray_transform(g->points, inpj, outpj) ) return LW_FAILURE;
 			break;
 		}
 		case POLYGONTYPE:
@@ -95,7 +95,7 @@ lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 			LWPOLY *g = (LWPOLY*)geom;
 			for ( i = 0; i < g->nrings; i++ )
 			{
-        if ( ! ptarray_transform(g->rings[i], inpj, outpj) ) return LW_FAILURE;
+				if ( ! ptarray_transform(g->rings[i], inpj, outpj) ) return LW_FAILURE;
 			}
 			break;
 		}

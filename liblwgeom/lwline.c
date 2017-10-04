@@ -136,12 +136,6 @@ lwline_release(LWLINE *lwline)
 	lwgeom_release(lwline_as_lwgeom(lwline));
 }
 
-void
-lwline_reverse(LWLINE *line)
-{
-	if ( lwline_is_empty(line) ) return;
-	ptarray_reverse(line->points);
-}
 
 LWLINE *
 lwline_segmentize2d(LWLINE *line, double dist)
@@ -590,21 +584,4 @@ double lwline_length_2d(const LWLINE *line)
 	return ptarray_length_2d(line->points);
 }
 
-
-
-LWLINE* lwline_grid(const LWLINE *line, const gridspec *grid)
-{
-	LWLINE *oline;
-	POINTARRAY *opa;
-
-	opa = ptarray_grid(line->points, grid);
-
-	/* Skip line3d with less then 2 points */
-	if ( opa->npoints < 2 ) return NULL;
-
-	/* TODO: grid bounding box... */
-	oline = lwline_construct(line->srid, NULL, opa);
-
-	return oline;
-}
 

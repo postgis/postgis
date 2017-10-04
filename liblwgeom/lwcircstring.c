@@ -32,7 +32,6 @@
 #include "lwgeom_log.h"
 
 void printLWCIRCSTRING(LWCIRCSTRING *curve);
-void lwcircstring_reverse(LWCIRCSTRING *curve);
 void lwcircstring_release(LWCIRCSTRING *lwcirc);
 char lwcircstring_same(const LWCIRCSTRING *me, const LWCIRCSTRING *you);
 LWCIRCSTRING *lwcircstring_from_lwpointarray(int srid, uint32_t npoints, LWPOINT **points);
@@ -125,12 +124,6 @@ LWCIRCSTRING *
 lwcircstring_clone(const LWCIRCSTRING *g)
 {
 	return (LWCIRCSTRING *)lwline_clone((LWLINE *)g);
-}
-
-
-void lwcircstring_reverse(LWCIRCSTRING *curve)
-{
-	ptarray_reverse(curve->points);
 }
 
 /* check coordinate equality */
@@ -312,22 +305,4 @@ LWPOINT* lwcircstring_get_lwpoint(const LWCIRCSTRING *circ, int where) {
 	return lwpoint;
 }
 
-/*
-* Snap to grid
-*/
-LWCIRCSTRING* lwcircstring_grid(const LWCIRCSTRING *line, const gridspec *grid)
-{
-	LWCIRCSTRING *oline;
-	POINTARRAY *opa;
-
-	opa = ptarray_grid(line->points, grid);
-
-	/* Skip line3d with less then 2 points */
-	if ( opa->npoints < 2 ) return NULL;
-
-	/* TODO: grid bounding box... */
-	oline = lwcircstring_construct(line->srid, NULL, opa);
-
-	return oline;
-}
 
