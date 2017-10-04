@@ -36,18 +36,10 @@
 
 #include "access/htup_details.h"
 
-/***********************************************************************
- * Simple Douglas-Peucker line simplification.
- * No checks are done to avoid introduction of self-intersections.
- * No topology relations are considered.
- *
- * --strk@kbt.io;
- ***********************************************************************/
-
-
 /* Prototypes */
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS);
+Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS);
 Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS);
 Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS);
 Datum ST_MinimumBoundingCircle(PG_FUNCTION_ARGS);
@@ -61,6 +53,13 @@ static int isOnSegment(const POINT2D *seg1, const POINT2D *seg2, const POINT2D *
 static int point_in_ring(POINTARRAY *pts, const POINT2D *point);
 static int point_in_ring_rtree(RTREE_NODE *root, const POINT2D *point);
 
+/***********************************************************************
+ * Simple Douglas-Peucker line simplification.
+ * No checks are done to avoid introduction of self-intersections.
+ * No topology relations are considered.
+ *
+ * --strk@kbt.io;
+ ***********************************************************************/
 
 PG_FUNCTION_INFO_V1(LWGEOM_simplify2d);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
@@ -137,111 +136,50 @@ Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS)
  * Interpolate a point along a line, useful for Geocoding applications
  * SELECT line_interpolate_point( 'LINESTRING( 0 0, 2 2'::geometry, .5 )
  * returns POINT( 1 1 ).
- * Works in 2d space only.
- *
- * Initially written by: jsunday@rochgrp.com
- * Ported to LWGEOM by: strk@refractions.net
  ***********************************************************************/
-
-Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS);
-
 PG_FUNCTION_INFO_V1(LWGEOM_line_interpolate_point);
 Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *gser = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *result;
-	double distance = PG_GETARG_FLOAT8(1);
-	LWLINE *line;
-	LWGEOM *geom;
-	LWPOINT *point;
-	POINTARRAY *ipa, *opa;
-	POINT4D pt;
-	int nsegs, i;
-	double length, slength, tlength;
+	double distance_fraction = PG_GETARG_FLOAT8(1);
+	int repeat = PG_NARGS() > 2 && PG_GETARG_BOOL(2);
+	int srid = gserialized_get_srid(gser);
+	LWLINE* lwline;
+	LWGEOM* lwresult;
+	POINTARRAY* opa;
 
-	if ( distance < 0 || distance > 1 )
+	if ( distance_fraction < 0 || distance_fraction > 1 )
 	{
 		elog(ERROR,"line_interpolate_point: 2nd arg isn't within [0,1]");
+		PG_FREE_IF_COPY(gser, 0);
 		PG_RETURN_NULL();
 	}
 
 	if ( gserialized_get_type(gser) != LINETYPE )
 	{
 		elog(ERROR,"line_interpolate_point: 1st arg isn't a line");
+		PG_FREE_IF_COPY(gser, 0);
 		PG_RETURN_NULL();
 	}
 
-	/* Empty.InterpolatePoint == Point Empty */
-	if ( gserialized_is_empty(gser) )
-	{
-		point = lwpoint_construct_empty(gserialized_get_srid(gser), gserialized_has_z(gser), gserialized_has_m(gser));
-		result = geometry_serialize(lwpoint_as_lwgeom(point));
-		lwpoint_free(point);
-		PG_RETURN_POINTER(result);
-	}
+	lwline = lwgeom_as_lwline(lwgeom_from_gserialized(gser));
+	opa = lwline_interpolate_points(lwline, distance_fraction, repeat);
 
-	geom = lwgeom_from_gserialized(gser);
-	line = lwgeom_as_lwline(geom);
-	ipa = line->points;
-
-	/* If distance is one of the two extremes, return the point on that
-	 * end rather than doing any expensive computations
-	 */
-	if ( distance == 0.0 || distance == 1.0 )
-	{
-		if ( distance == 0.0 )
-			getPoint4d_p(ipa, 0, &pt);
-		else
-			getPoint4d_p(ipa, ipa->npoints-1, &pt);
-
-		opa = ptarray_construct(lwgeom_has_z(geom), lwgeom_has_m(geom), 1);
-		ptarray_set_point4d(opa, 0, &pt);
-
-		point = lwpoint_construct(line->srid, NULL, opa);
-		PG_RETURN_POINTER(geometry_serialize(lwpoint_as_lwgeom(point)));
-	}
-
-	/* Interpolate a point on the line */
-	nsegs = ipa->npoints - 1;
-	length = ptarray_length_2d(ipa);
-	tlength = 0;
-	for ( i = 0; i < nsegs; i++ )
-	{
-		POINT4D p1, p2;
-		POINT4D *p1ptr=&p1, *p2ptr=&p2; /* don't break
-						                                 * strict-aliasing rules
-						                                 */
-
-		getPoint4d_p(ipa, i, &p1);
-		getPoint4d_p(ipa, i+1, &p2);
-
-		/* Find the relative length of this segment */
-		slength = distance2d_pt_pt((POINT2D*)p1ptr, (POINT2D*)p2ptr)/length;
-
-		/* If our target distance is before the total length we've seen
-		 * so far. create a new point some distance down the current
-		 * segment.
-		 */
-		if ( distance < tlength + slength )
-		{
-			double dseg = (distance - tlength) / slength;
-			interpolate_point4d(&p1, &p2, &pt, dseg);
-			opa = ptarray_construct(lwgeom_has_z(geom), lwgeom_has_m(geom), 1);
-			ptarray_set_point4d(opa, 0, &pt);
-			point = lwpoint_construct(line->srid, NULL, opa);
-			PG_RETURN_POINTER(geometry_serialize(lwpoint_as_lwgeom(point)));
-		}
-		tlength += slength;
-	}
-
-	/* Return the last point on the line. This shouldn't happen, but
-	 * could if there's some floating point rounding errors. */
-	getPoint4d_p(ipa, ipa->npoints-1, &pt);
-	opa = ptarray_construct(lwgeom_has_z(geom), lwgeom_has_m(geom), 1);
-	ptarray_set_point4d(opa, 0, &pt);
-	point = lwpoint_construct(line->srid, NULL, opa);
+	lwgeom_free(lwline_as_lwgeom(lwline));
 	PG_FREE_IF_COPY(gser, 0);
-	PG_RETURN_POINTER(geometry_serialize(lwpoint_as_lwgeom(point)));
+
+	if (opa->npoints <= 1)
+	{
+		lwresult = lwpoint_as_lwgeom(lwpoint_construct(srid, NULL, opa));
+	} else {
+		lwresult = lwmpoint_as_lwgeom(lwmpoint_construct(srid, opa));
+	}
+
+	result = geometry_serialize(lwresult);
+	lwgeom_free(lwresult);
+
+	PG_RETURN_POINTER(result);
 }
 /***********************************************************************
  * --jsunday@rochgrp.com;

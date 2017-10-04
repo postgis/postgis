@@ -1014,6 +1014,11 @@ extern int lwpoint_getPoint4d_p(const LWPOINT *point, POINT4D *out);
  */
 extern int lwline_add_lwpoint(LWLINE *line, LWPOINT *point, int where);
 
+/**
+ * Interpolate one or more points along a line
+ */
+extern POINTARRAY* lwline_interpolate_points(const LWLINE *line, double length_fraction, char repeat);
+
 /******************************************************************
  * LWPOLY functions
  ******************************************************************/
@@ -1224,7 +1229,7 @@ extern int lwgeom_startpoint(const LWGEOM* lwgeom, POINT4D* pt);
 extern void lwgeom_force_clockwise(LWGEOM *lwgeom);
 extern int lwgeom_is_clockwise(LWGEOM *lwgeom);
 
-extern void interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F);
+extern void interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, double F);
 
 extern void lwgeom_longitude_shift(LWGEOM *lwgeom);
 
