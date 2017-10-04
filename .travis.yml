@@ -16,6 +16,8 @@ before_install:
   - make
   - sudo make install
   - cd ..
+  - rm -rf proj-4.9.2
+  - rm proj-4.9.2.tar.gz
   - sudo apt-get install -y --no-install-recommends
       postgresql-9.6 postgresql-server-dev-9.6 libxml2-utils
       libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex
