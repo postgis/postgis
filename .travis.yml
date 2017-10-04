@@ -24,7 +24,7 @@ before_install:
   - cd ..
   - rm -rf proj-4.9.2
   - rm proj-4.9.2.tar.gz
-  - ldconfig
+  - sudo ldconfig
   - ./autogen.sh
 
 language: c
