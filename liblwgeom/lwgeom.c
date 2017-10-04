@@ -1972,8 +1972,12 @@ lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
 				/* Skip bad rings */
 				if (pa->npoints < 4)
 				{
-					/* If bad ring is external ring, stop everything */
+					ptarray_free(pa);
+					/* When internal rings collapse, we free */
+					/* then and move on */
 					if (i) continue;
+					/* If external ring collapses, we free */
+					/* it and stop processing */
 					else break;
 				}
 				/* Fill in just the rings we are keeping */
@@ -1996,9 +2000,13 @@ lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
 			{
 				LWGEOM *g = col->geoms[i];
 				lwgeom_grid_in_place(g, grid);
-				/* Skip empty geoms */
+				/* Empty geoms need to be freed */
+				/* before we move on */
 				if (lwgeom_is_empty(g))
+				{
+					lwgeom_free(g);
 					continue;
+				}
 				col->geoms[j++] = g;
 			}
 			col->ngeoms = j;
