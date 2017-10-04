@@ -102,7 +102,7 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS);
 Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_azimuth(PG_FUNCTION_ARGS);
-Datum LWGEOM_angle(PG_FUNCTION_ARGS); 
+Datum LWGEOM_angle(PG_FUNCTION_ARGS);
 Datum LWGEOM_affine(PG_FUNCTION_ARGS);
 Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS);
 Datum optimistic_overlap(PG_FUNCTION_ARGS);
@@ -2434,19 +2434,19 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 	GSERIALIZED * seri_geoms[4];
 	LWGEOM *geom_unser;
 	LWPOINT *lwpoint;
-	POINT2D points[4]; 
+	POINT2D points[4];
 	double az1,az2 ;
 	double result;
 	int srids[4];
-	int i = 0 ; 
+	int i = 0 ;
 	int j = 0;
-	int err_code = 0; 
-	int n_args = PG_NARGS(); 
+	int err_code = 0;
+	int n_args = PG_NARGS();
 
 	/* no deserialize, checking for common error first*/
 	for(i=0; i<n_args; i++)
 	{
-		seri_geoms[i] = PG_GETARG_GSERIALIZED_P(i); 
+		seri_geoms[i] = PG_GETARG_GSERIALIZED_P(i);
 		if (gserialized_is_empty(seri_geoms[i]) )
 		{/* empty geom */
 			if (i==3)
@@ -2467,7 +2467,7 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 			}
 			else
 			{
-				srids[i] = gserialized_get_srid(seri_geoms[i]) ; 
+				srids[i] = gserialized_get_srid(seri_geoms[i]) ;
 				if(srids[0] != srids[i])
 				{/* error on srid*/
 					err_code = 3 ;
@@ -2481,17 +2481,17 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 			default: /*always executed*/
 			for (j=0;j<=i;j++)
 				PG_FREE_IF_COPY(seri_geoms[j], j);
-			
+
 			case 1:
-			lwpgerror("Empty geometry"); 
+			lwpgerror("Empty geometry");
 			PG_RETURN_NULL() ;
 			break;
-			
+
 			case 2:
 			lwpgerror("Argument must be POINT geometries");
 			PG_RETURN_NULL();
 			break;
-			
+
 			case 3:
 			lwpgerror("Operation on mixed SRID geometries");
 			PG_RETURN_NULL();
@@ -2499,19 +2499,19 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 		}
 	/* extract points */
 	for(i=0; i<n_args; i++)
-	{ 
-		geom_unser = lwgeom_from_gserialized(seri_geoms[i]) ; 
-		lwpoint = lwgeom_as_lwpoint(geom_unser); 
+	{
+		geom_unser = lwgeom_from_gserialized(seri_geoms[i]) ;
+		lwpoint = lwgeom_as_lwpoint(geom_unser);
 		if (!lwpoint)
-		{ 
+		{
 			for (j=0;j<n_args;j++)
 				PG_FREE_IF_COPY(seri_geoms[j], j);
-			lwpgerror("Error unserializing geometry"); 
+			lwpgerror("Error unserializing geometry");
 			PG_RETURN_NULL() ;
-		} 
-		
+		}
+
 		if ( ! getPoint2d_p(lwpoint->point, 0, &points[i]) )
-		{ 
+		{
 			/* // can't free serialized geom, it might be needed by lw
 			for (j=0;j<n_args;j++)
 				PG_FREE_IF_COPY(seri_geoms[j], j); */
@@ -2519,26 +2519,26 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 		/* lwfree(geom_unser);don't do, lw may rely on this memory
-		lwpoint_free(lwpoint); dont do , this memory is needed ! */ 
+		lwpoint_free(lwpoint); dont do , this memory is needed ! */
 	}
 	/* // can't free serialized geom, it might be needed by lw
 	for (j=0;j<n_args;j++)
 		PG_FREE_IF_COPY(seri_geoms[j], j); */
-	
+
 	/* compute azimuth for the 2 pairs of points
-	 * note that angle is not defined identically for 3 points or 4 points*/ 
+	 * note that angle is not defined identically for 3 points or 4 points*/
 	if (n_args == 3)
 	{/* we rely on azimuth to complain if points are identical */
 		if ( ! azimuth_pt_pt(&points[0], &points[1], &az1) )
-			PG_RETURN_NULL(); 
+			PG_RETURN_NULL();
 		if ( ! azimuth_pt_pt(&points[2], &points[1], &az2) )
-			PG_RETURN_NULL(); 
+			PG_RETURN_NULL();
 	} else
 	{
 		if ( ! azimuth_pt_pt(&points[0], &points[1], &az1) )
 			PG_RETURN_NULL();
 		if ( ! azimuth_pt_pt(&points[2], &points[3], &az2) )
-			PG_RETURN_NULL(); 
+			PG_RETURN_NULL();
 	}
 	result = az2-az1 ;
 	result += (result<0) * 2 * M_PI ; /* we dont want negative angle*/
