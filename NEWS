@@ -1,33 +1,10 @@
-PostGIS 2.4.0rc2
-2017/09/24
-* Fixes and Enhancements since PostGIS 2.4.0rc1 *
-  - Numerous fixes to ST_AsMVT, ST_AsGeoBuf
-  - ST_AsTWKB speed and memory performance enhancments
-  - ST_RepeatedPoints speed improvements
-  - ST_ConcaveHull bug fix
+PostGIS 2.5.0
+2018/xx/xx
+* New Features *
 
-See PostGIS 2.4.0 section for details of
-new features and enhancements in this release.
-
-PostGIS 2.4.0rc1
-2017/09/13
-Note possible breaking changes since 2.4.0 beta1 release are:
-* Breaking Changes *
-  - B-Tree index operators < = > changed to provide better spatial locality on sorting
-    and have expected behavior on GROUP BY.
-    If you have btree index for geometry or geography, you need to REINDEX it, or review
-    if it was created by accident and needs to be replaced with GiST index.
-    If your code relies on old left-to-right box compare ordering,
-    update it to use << >> operators.
-  - ST_AsMVT aggregate now overloaded and arg order changed.
-    Check your code if you are already using this function.
-  - _ST_DumpPoints removed, was no longer needed after PostGIS 2.1.0
-    when ST_DumpPoints got reimplemented in C
-
-See PostGIS 2.4.0 section for details of new features and fixes in this release
 
 PostGIS 2.4.0
-2017/09/xx
+2017/09/30
 
  * New Features *
   - #3822, Have postgis_full_version() also show and check version of
@@ -75,23 +52,33 @@ PostGIS 2.4.0
   - #3844, Make = operator a strict equality test, and < > to rough "spatial sorting"
   - #3855, ST_AsTWKB memory and speed improvements
 
+PostGIS 2.4.0rc2
+2017/09/24
+* Fixes and Enhancements since PostGIS 2.4.0rc1 *
+  - Numerous fixes to ST_AsMVT, ST_AsGeoBuf
+  - ST_AsTWKB speed and memory performance enhancments
+  - ST_RepeatedPoints speed improvements
+  - ST_ConcaveHull bug fix
 
+See PostGIS 2.4.0 section for details of
+new features and enhancements in this release.
+
+PostGIS 2.4.0rc1
+2017/09/13
+Note possible breaking changes since 2.4.0 beta1 release are:
 * Breaking Changes *
-  - Dropped support for PostgreSQL 9.2.
-  - #3810, GEOS 3.4.0 or above minimum required to compile
-  - Most aggregates now marked as parallel safe,
-    which means most aggs have to be dropped / recreated.
-    If you have views that utilize PostGIS aggs,
-    you'll need to drop before upgrade and recreate after upgrade
-  - #3578, ST_NumInteriorRings(POLYGON EMPTY) now returns 0 instead of NULL
-  - _ST_DumpPoints removed, was no longer needed after PostGIS 2.1.0
-    when ST_DumpPoints got reimplemented in C
   - B-Tree index operators < = > changed to provide better spatial locality on sorting
     and have expected behavior on GROUP BY.
     If you have btree index for geometry or geography, you need to REINDEX it, or review
     if it was created by accident and needs to be replaced with GiST index.
     If your code relies on old left-to-right box compare ordering,
-    update it to use << >> operators
+    update it to use << >> operators.
+  - ST_AsMVT aggregate now overloaded and arg order changed.
+    Check your code if you are already using this function.
+  - _ST_DumpPoints removed, was no longer needed after PostGIS 2.1.0
+    when ST_DumpPoints got reimplemented in C
+
+See PostGIS 2.4.0 section for details of new features and fixes in this release
 
 PostGIS 2.4.0beta1
 2017/09/02

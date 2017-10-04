@@ -3,9 +3,10 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
 
+
     <sect1>
         <title>Release 2.4.0</title>
-        <para>Release date: 2017/09/xx</para>
+        <para>Release date: 2017/09/30</para>
         <simplesect><title>New Features</title>
 <para>#3822, Have postgis_full_version() also show and check version of
            PostgreSQL the scripts were built against (Sandro Santilli)</para>
@@ -72,6 +73,7 @@
     update it to use &lt;&lt; &gt;&gt; operators.</para>
         </simplesect>
     </sect1>
+
     <sect1>
       <title>Release 2.3.3</title>
       <para>Release date: 2017/07/01</para>
