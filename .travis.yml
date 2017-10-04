@@ -15,6 +15,7 @@ before_install:
   - ./configure --prefix=/usr
   - make
   - sudo make install
+  - cd ..
   - sudo apt-get install -y --no-install-recommends
       postgresql-9.6 postgresql-server-dev-9.6 libxml2-utils
       libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex
