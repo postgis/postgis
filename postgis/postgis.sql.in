@@ -1290,7 +1290,15 @@ CREATE OR REPLACE FUNCTION ST_azimuth(geom1 geometry, geom2 geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_azimuth'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+	
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_Angle(pt1 geometry, pt2 geometry, pt3 geometry, pt4 geometry default 'POINT EMPTY'::geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_angle'
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
+	 
+	 
 ------------------------------------------------------------------------
 -- MISC
 ------------------------------------------------------------------------
@@ -5973,6 +5981,17 @@ CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFA
 	RETURNS TEXT
 	AS $$SELECT @extschema@._ST_AsX3D(3,$1,$2,$3,'');$$
 	LANGUAGE 'sql' IMMUTABLE  _PARALLEL;
+
+
+-----------------------------------------------------------------------
+-- ST_Angle
+-----------------------------------------------------------------------
+-- Availability: 2.3.0
+-- has to be here because need ST_StartPoint
+CREATE OR REPLACE FUNCTION ST_Angle(line1 geometry, line2 geometry)
+	RETURNS float8 AS 'SELECT ST_Angle(St_StartPoint($1), ST_EndPoint($1), St_StartPoint($2), ST_EndPoint($2))'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
 
 -- make views and spatial_ref_sys public viewable --
 GRANT SELECT ON TABLE geography_columns TO public;

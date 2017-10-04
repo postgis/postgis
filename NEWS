@@ -1,7 +1,7 @@
 PostGIS 2.5.0
 2018/xx/xx
 * New Features *
-
+  - #3876, ST_Angle function (Rémi Cura)
 
 PostGIS 2.4.0
 2017/09/30
