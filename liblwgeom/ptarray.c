@@ -1890,9 +1890,9 @@ ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
 		}
 
 		/* Skip duplicates */
-		if ( p_out && p_out->x == p->x && p_out->y == p->y
-		   && (ndims > 2 ? p_out->z == p->z : 1)
-		   && (ndims > 3 ? p_out->m == p->m : 1) )
+		if ( p_out && FP_EQUALS(p_out->x, p->x) && FP_EQUALS(p_out->y, p->y)
+		   && (ndims > 2 ? FP_EQUALS(p_out->z, p->z) : 1)
+		   && (ndims > 3 ? FP_EQUALS(p_out->m, p->m) : 1) )
 		{
 			continue;
 		}
