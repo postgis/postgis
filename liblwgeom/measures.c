@@ -1668,33 +1668,40 @@ lw_dist2d_arc_arc_concentric(	const POINT2D *A1, const POINT2D *A2,
 				const POINT2D *B3, double radius_B,
 				const POINT2D *CENTER, DISTPTS *dl)
 {
-	double dist;
+	int seg_size;
+	double dist_sqr, shortest_sqr;
+	const POINT2D *P1;
+	const POINT2D *P2;
+	POINT2D proj;
+
 	if (radius_A == radius_B)
 	{
-		/* Check if any of then ends also is in the other arc */
-		/* TODO: Optimize this */
-		if (lw_pt_in_arc(B1, A1, A2, A3))
+		/* Check if B1 or B3 are in the same side as A2 in the A1-A3 arc */
+		seg_size = lw_segment_side(A1, A3, A2);
+		if (seg_size == lw_segment_side(A1, A3, B1))
 		{
 			dl->p1 = *B1;
 			dl->p2 = *B1;
 			dl->distance = 0;
 			return LW_TRUE;
 		}
-		if (lw_pt_in_arc(B3, A1, A2, A3))
+		if (seg_size == lw_segment_side(A1, A3, B3))
 		{
 			dl->p1 = *B3;
 			dl->p2 = *B3;
 			dl->distance = 0;
 			return LW_TRUE;
 		}
-		if (lw_pt_in_arc(A1, B1, B2, B3))
+		/* Check if A1 or A3 are in the same side as B2 in the B1-B3 arc */
+		seg_size = lw_segment_side(B1, B3, B2);
+		if (seg_size == lw_segment_side(B1, B3, A1))
 		{
 			dl->p1 = *A1;
 			dl->p2 = *A1;
 			dl->distance = 0;
 			return LW_TRUE;
 		}
-		if (lw_pt_in_arc(A3, B1, B2, B3))
+		if (seg_size == lw_segment_side(B1, B3, A3))
 		{
 			dl->p1 = *A3;
 			dl->p2 = *A3;
@@ -1705,47 +1712,50 @@ lw_dist2d_arc_arc_concentric(	const POINT2D *A1, const POINT2D *A2,
 	else
 	{
 		/* Check if any projection of B ends are in A*/
-		/* TODO: Move this into functions */
-		POINT2D B1_proj;
-		B1_proj.x = CENTER->x + (B1->x - CENTER->x) * radius_A / radius_B;
-		B1_proj.y = CENTER->y + (B1->y - CENTER->y) * radius_A / radius_B;
-		if (lw_pt_in_arc(&B1_proj, A1, A2, A3))
+		seg_size = lw_segment_side(A1, A3, A2);
+
+		/* B1 */
+		proj.x = CENTER->x + (B1->x - CENTER->x) * radius_A / radius_B;
+		proj.y = CENTER->y + (B1->y - CENTER->y) * radius_A / radius_B;
+
+		if (seg_size == lw_segment_side(A1, A3, &proj))
 		{
-			dl->p1 = B1_proj;
+			dl->p1 = proj;
 			dl->p2 = *B1;
 			dl->distance = fabs(radius_A - radius_B);
 			return LW_TRUE;
 		}
-
-		POINT2D B3_proj;
-		B3_proj.x = CENTER->x + (B3->x - CENTER->x) * radius_A / radius_B;
-		B3_proj.y = CENTER->y + (B3->y - CENTER->y) * radius_A / radius_B;
-		if (lw_pt_in_arc(&B3_proj, A1, A2, A3))
+		/* B3 */
+		proj.x = CENTER->x + (B3->x - CENTER->x) * radius_A / radius_B;
+		proj.y = CENTER->y + (B3->y - CENTER->y) * radius_A / radius_B;
+		if (seg_size == lw_segment_side(A1, A3, &proj))
 		{
-			dl->p1 = B3_proj;
+			dl->p1 = proj;
 			dl->p2 = *B3;
 			dl->distance = fabs(radius_A - radius_B);
 			return LW_TRUE;
 		}
 
-		/* And vice versa */
-		POINT2D A1_proj;
-		A1_proj.x = CENTER->x + (A1->x - CENTER->x) * radius_B / radius_A;
-		A1_proj.y = CENTER->y + (A1->y - CENTER->y) * radius_B / radius_A;
-		if (lw_pt_in_arc(&A1_proj, B1, B2, B3))
+		/* Now check projections of A in B */
+		seg_size = lw_segment_side(B1, B3, B2);
+
+		/* A1 */
+		proj.x = CENTER->x + (A1->x - CENTER->x) * radius_B / radius_A;
+		proj.y = CENTER->y + (A1->y - CENTER->y) * radius_B / radius_A;
+		if (seg_size == lw_segment_side(B1, B3, &proj))
 		{
-			dl->p1 = A1_proj;
+			dl->p1 = proj;
 			dl->p2 = *A1;
 			dl->distance = fabs(radius_A - radius_B);
 			return LW_TRUE;
 		}
 
-		POINT2D A3_proj;
-		A3_proj.x = CENTER->x + (A3->x - CENTER->x) * radius_B / radius_A;
-		A3_proj.y = CENTER->y + (A3->y - CENTER->y) * radius_B / radius_A;
-		if (lw_pt_in_arc(&A3_proj, B1, B2, B3))
+		/* A3 */
+		proj.x = CENTER->x + (A3->x - CENTER->x) * radius_B / radius_A;
+		proj.y = CENTER->y + (A3->y - CENTER->y) * radius_B / radius_A;
+		if (seg_size == lw_segment_side(B1, B3, &proj))
 		{
-			dl->p1 = A3_proj;
+			dl->p1 = proj;
 			dl->p2 = *A3;
 			dl->distance = fabs(radius_A - radius_B);
 			return LW_TRUE;
@@ -1753,33 +1763,38 @@ lw_dist2d_arc_arc_concentric(	const POINT2D *A1, const POINT2D *A2,
 	}
 
 	/* Check the shortest between the distances of the 4 ends */
-	dl->distance = distance2d_pt_pt(A1, B1);
-	dl->p1 = *A1;
-	dl->p2 = *B1;
+	shortest_sqr = dist_sqr = distance2d_sqr_pt_pt(A1, B1);
+	P1 = A1;
+	P2 = B1;
 
-	dist = distance2d_pt_pt(A1, B3);
-	if (dist < dl->distance)
+	dist_sqr = distance2d_sqr_pt_pt(A1, B3);
+	if (dist_sqr < shortest_sqr)
 	{
-		dl->distance = dist;
-		dl->p1 = *A1;
-		dl->p2 = *B3;
+		shortest_sqr = dist_sqr;
+		P1 = A1;
+		P2 = B3;
 	}
 
-	dist = distance2d_pt_pt(A3, B1);
-	if (dist < dl->distance)
+	dist_sqr = distance2d_sqr_pt_pt(A3, B1);
+	if (dist_sqr < shortest_sqr)
 	{
-		dl->distance = dist;
-		dl->p1 = *A3;
-		dl->p2 = *B1;
+		shortest_sqr = dist_sqr;
+		P1 = A3;
+		P2 = B1;
 	}
 
-	dist = distance2d_pt_pt(A3, B3);
-	if (dist < dl->distance)
+	dist_sqr = distance2d_sqr_pt_pt(A3, B3);
+	if (dist_sqr < shortest_sqr)
 	{
-		dl->distance = dist;
-		dl->p1 = *A3;
-		dl->p2 = *B3;
+		shortest_sqr = dist_sqr;
+		P1 = A3;
+		P2 = B3;
 	}
+
+	dl->p1 = *P1;
+	dl->p2 = *P2;
+	dl->distance = sqrt(shortest_sqr);
+
 	return LW_TRUE;
 }
 
