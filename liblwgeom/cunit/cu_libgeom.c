@@ -502,7 +502,7 @@ static void test_lwgeom_free(void)
 
 }
 
-static void do_lwgeom_flip_coordinates(char *in, char *out)
+static void do_lwgeom_swap_ordinates(char *in, char *out)
 {
 	LWGEOM *g;
 	char * t;
@@ -519,7 +519,7 @@ static void do_lwgeom_flip_coordinates(char *in, char *out)
 		ymax = g->bbox->ymax;
 	}
 
-	g = lwgeom_flip_coordinates(g);
+    lwgeom_swap_ordinates(g,LWORD_X,LWORD_Y);
 
 	if ( testbox )
 	{
@@ -538,82 +538,82 @@ static void do_lwgeom_flip_coordinates(char *in, char *out)
 	lwfree(t);
 }
 
-static void test_lwgeom_flip_coordinates(void)
+static void test_lwgeom_swap_ordinates(void)
 {
 	/*
 	     * 2D geometries types
 	     */
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "POINT(1 2)",
 	    "POINT(2 1)"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "LINESTRING(1 2,3 4)",
 	    "LINESTRING(2 1,4 3)"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "POLYGON((1 2,3 4,5 6,1 2))",
 	    "POLYGON((2 1,4 3,6 5,2 1))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))",
 	    "POLYGON((2 1,4 3,6 5,2 1),(8 7,10 9,12 11,8 7))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "MULTIPOINT(1 2,3 4)",
 	    "MULTIPOINT(2 1,4 3)"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "MULTILINESTRING((1 2,3 4),(5 6,7 8))",
 	    "MULTILINESTRING((2 1,4 3),(6 5,8 7))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "MULTIPOLYGON(((1 2,3 4,5 6,7 8)),((9 10,11 12,13 14,10 9)))",
 	    "MULTIPOLYGON(((2 1,4 3,6 5,8 7)),((10 9,12 11,14 13,9 10)))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "GEOMETRYCOLLECTION EMPTY",
 	    "GEOMETRYCOLLECTION EMPTY"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "GEOMETRYCOLLECTION(POINT(1 2),LINESTRING(3 4,5 6))",
 	    "GEOMETRYCOLLECTION(POINT(2 1),LINESTRING(4 3,6 5))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "GEOMETRYCOLLECTION(POINT(1 2),GEOMETRYCOLLECTION(LINESTRING(3 4,5 6)))",
 	    "GEOMETRYCOLLECTION(POINT(2 1),GEOMETRYCOLLECTION(LINESTRING(4 3,6 5)))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)",
 	    "CIRCULARSTRING(0 -2,2 0,0 2,2 0,4 2)"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "COMPOUNDCURVE(CIRCULARSTRING(0 1,1 1,1 0),(1 0,0 1))",
 	    "COMPOUNDCURVE(CIRCULARSTRING(1 0,1 1,0 1),(0 1,1 0))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))",
 	    "CURVEPOLYGON(CIRCULARSTRING(0 -2,-1 -1,0 0,-1 1,0 2,2 0,0 -2),(0 -1,0.5 0,0 1,1 0,0 -1))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 3))",
 	    "MULTICURVE((5 5,5 3,3 3,3 0),CIRCULARSTRING(0 0,1 2,3 2))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
 	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(0 -2,-1 -1,0 0,-1 1,0 2,2 0,0 -2),(0 -1,0.5 0,0 1,1 0,0 -1)),((8 7,10 10,14 6,11 4,8 7)))"
 	);
@@ -623,17 +623,17 @@ static void test_lwgeom_flip_coordinates(void)
 	     * Ndims
 	     */
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "POINT(1 2 3)",
 	    "POINT(2 1 3)"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "POINTM(1 2 3)",
 	    "POINTM(2 1 3)"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "POINT(1 2 3 4)",
 	    "POINT(2 1 3 4)"
 	);
@@ -643,12 +643,12 @@ static void test_lwgeom_flip_coordinates(void)
 	* Srid
 	*/
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "SRID=4326;POINT(1 2)",
 	    "SRID=4326;POINT(2 1)"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "SRID=0;POINT(1 2)",
 	    "POINT(2 1)"
 	);
@@ -1220,7 +1220,7 @@ void libgeom_suite_setup(void)
 	PG_ADD_TEST(suite, test_geometry_type_from_string);
 	PG_ADD_TEST(suite, test_lwcollection_extract);
 	PG_ADD_TEST(suite, test_lwgeom_free);
-	PG_ADD_TEST(suite, test_lwgeom_flip_coordinates);
+	PG_ADD_TEST(suite, test_lwgeom_swap_ordinates);
 	PG_ADD_TEST(suite, test_f2d);
 	PG_ADD_TEST(suite, test_lwgeom_clone);
 	PG_ADD_TEST(suite, test_lwgeom_force_clockwise);

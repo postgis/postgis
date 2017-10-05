@@ -1223,8 +1223,8 @@ extern void interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F);
 extern int lwgeom_is_clockwise(LWGEOM *lwgeom);
 
 
-
 extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist, int preserve_collapsed);
+extern LWGEOM* lwgeom_remove_repeated_points(const LWGEOM *in, double tolerance);
 
 /****************************************************************
 * READ/WRITE FUNCTIONS
@@ -1242,9 +1242,7 @@ extern void lwgeom_longitude_shift(LWGEOM *lwgeom);
 extern void lwgeom_simplify_in_place(LWGEOM *igeom, double dist, int preserve_collapsed);
 extern void lwgeom_affine(LWGEOM *geom, const AFFINE *affine);
 extern void lwgeom_scale(LWGEOM *geom, const POINT4D *factors);
-extern LWGEOM* lwgeom_remove_repeated_points(const LWGEOM *in, double tolerance);
-
-
+extern void lwgeom_remove_repeated_points_in_place(LWGEOM *in, double tolerance);
 
 
 /**
@@ -1654,10 +1652,6 @@ extern void lwboundingcircle_destroy(LWBOUNDINGCIRCLE* c);
 extern LWBOUNDINGCIRCLE* lwgeom_calculate_mbc(const LWGEOM* g);
 
 /**
-* Remove repeated points!
-*/
-
-/**
  * Swap ordinate values in every vertex of the geometry.
  *
  * Ordinates to swap are specified using an index with meaning:
@@ -1671,14 +1665,6 @@ extern LWBOUNDINGCIRCLE* lwgeom_calculate_mbc(const LWGEOM* g);
  */
 extern void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2);
 
-/**
-* Reverse the X and Y coordinate order. Useful for geometries in lat/lon order
-* than need to be converted to lon/lat order.
-*
-* NOTE: uses lwgeom_swap_ordinates internally,
-*       kept for backward compatibility
-*/
-extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in);
 
 struct LWPOINTITERATOR;
 typedef struct LWPOINTITERATOR LWPOINTITERATOR;

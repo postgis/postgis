@@ -1535,12 +1535,6 @@ extern LWGEOM* lwgeom_remove_repeated_points(const LWGEOM *in, double tolerance)
 	return 0;
 }
 
-LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
-{
-  lwgeom_swap_ordinates(in,LWORD_X,LWORD_Y);
-  return in;
-}
-
 void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2)
 {
 	LWCOLLECTION *col;
