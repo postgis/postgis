@@ -27,17 +27,6 @@
 #include "lwgeom_log.h"
 #include <ctype.h> /* for tolower */
 
-
-/**
-* Returns -1 if n < 0.0 and 1 if n > 0.0
-*/
-int signum(double n)
-{
-	if( n < 0 ) return -1;
-	if( n > 0 ) return 1;
-	return 0;
-}
-
 int
 p4d_same(const POINT4D *p1, const POINT4D *p2)
 {
@@ -75,10 +64,7 @@ p2d_same(const POINT2D *p1, const POINT2D *p2)
 int lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q)
 {
 	double side = ( (q->x - p1->x) * (p2->y - p1->y) - (p2->x - p1->x) * (q->y - p1->y) );
-	if ( side == 0.0 )
-		return 0;
-	else
-		return signum(side);
+	return SIGNUM(side);
 }
 
 /**

@@ -26,6 +26,7 @@ PostGIS 2.3.4
   - #3869, Fix build with "gold" linker
   - #3845, Gracefully handle short-measure issue
   - #3879, Division by zero in some arc cases
+  - #3878, Single defn of signum in header
 
 
 PostGIS 2.3.3

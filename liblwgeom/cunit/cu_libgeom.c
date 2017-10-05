@@ -1188,6 +1188,16 @@ void test_gserialized_peek_gbox_p_fails_for_unsupported_cases(void)
 	}
 }
 
+void test_signum_macro(void);
+void test_signum_macro(void)
+{
+	CU_ASSERT_EQUAL(SIGNUM(-5.0),-1);
+	CU_ASSERT_EQUAL(SIGNUM( 5.0), 1);
+	CU_ASSERT_EQUAL(SIGNUM( 0.0), 0);
+	CU_ASSERT_EQUAL(SIGNUM(10) * 5, 5);
+	CU_ASSERT_EQUAL(SIGNUM(-10) * 5, -5);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -1221,4 +1231,5 @@ void libgeom_suite_setup(void)
 	PG_ADD_TEST(suite, test_gserialized_peek_gbox_p_gets_correct_box);
 	PG_ADD_TEST(suite, test_gserialized_peek_gbox_p_fails_for_unsupported_cases);
 	PG_ADD_TEST(suite, test_gbox_same_2d);
+	PG_ADD_TEST(suite, test_signum_macro);
 }
