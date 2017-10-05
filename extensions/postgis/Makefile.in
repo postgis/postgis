@@ -22,6 +22,11 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
                         $(GREP) "[a-zA-Z]" | \
                         $(PERL) -pe 's/(\d+[a-zA-Z]+)\d*/\1/'
 
+DATA_built = \
+	sql/$(EXTENSION)--$(EXTVERSION).sql \
+	sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql \
+	$(NULL)
+
 UPGRADE_SCRIPTS = $(wildcard sql/*--*.sql)
 
 #DOCS         = $(wildcard ../../doc/html/*.html)
