@@ -74,11 +74,6 @@ typedef struct
 #define deg2rad(d) (M_PI * (d) / 180.0)
 #define rad2deg(r) (180.0 * (r) / M_PI)
 
-/**
-* Ape a java function
-*/
-#define signum(a) ((a) < 0 ? -1 : ((a) > 0 ? 1 : (a)))
-
 
 /**
 * Bitmask elements for edge_intersects() return value.

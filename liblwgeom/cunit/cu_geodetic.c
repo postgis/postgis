@@ -66,13 +66,6 @@ static void point_rad2deg(GEOGRAPHIC_POINT *p)
 	p->lon = rad2deg(p->lon);
 }
 
-static void test_signum(void)
-{
-	CU_ASSERT_EQUAL(signum(-5.0),-1);
-	CU_ASSERT_EQUAL(signum(5.0),1);
-}
-
-
 static void test_sphere_direction(void)
 {
 	GEOGRAPHIC_POINT s, e;
@@ -1586,7 +1579,6 @@ void geodetic_suite_setup(void)
 	PG_ADD_TEST(suite, test_sphere_direction);
 	PG_ADD_TEST(suite, test_sphere_project);
 	PG_ADD_TEST(suite, test_lwgeom_area_sphere);
-	PG_ADD_TEST(suite, test_signum);
 	PG_ADD_TEST(suite, test_gbox_from_spherical_coordinates);
 	PG_ADD_TEST(suite, test_gserialized_get_gbox_geocentric);
 	PG_ADD_TEST(suite, test_clairaut);
