@@ -130,6 +130,19 @@ lwtriangle_same(const LWTRIANGLE *t1, const LWTRIANGLE *t2)
 	return r;
 }
 
+static char
+lwtriangle_is_repeated_points(LWTRIANGLE *triangle)
+{
+	char ret;
+	POINTARRAY *pa;
+
+	pa = ptarray_remove_repeated_points(triangle->points, 0.0);
+	ret = ptarray_same(pa, triangle->points);
+	ptarray_free(pa);
+
+	return ret;
+}
+
 /*
  * Construct a triangle from a LWLINE being
  * the shell
@@ -154,19 +167,6 @@ lwtriangle_from_lwline(const LWLINE *shell)
 
 	if (lwtriangle_is_repeated_points(ret))
 		lwerror("lwtriangle_from_lwline: some points are repeated in triangle");
-
-	return ret;
-}
-
-char
-lwtriangle_is_repeated_points(LWTRIANGLE *triangle)
-{
-	char ret;
-	POINTARRAY *pa;
-
-	pa = ptarray_remove_repeated_points(triangle->points, 0.0);
-	ret = ptarray_same(pa, triangle->points);
-	ptarray_free(pa);
 
 	return ret;
 }

@@ -1658,8 +1658,6 @@ extern LWBOUNDINGCIRCLE* lwgeom_calculate_mbc(const LWGEOM* g);
 */
 extern LWGEOM* lwgeom_remove_repeated_points(const LWGEOM *in, double tolerance);
 
-extern char lwtriangle_is_repeated_points(LWTRIANGLE *triangle);
-
 /**
  * Swap ordinate values in every vertex of the geometry.
  *
