@@ -725,7 +725,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	grid.ipy = 0;
 	grid.xsize = 1;
 	grid.ysize = 1;
-	lwgeom = lwgeom_grid(lwgeom, &grid);
+	lwgeom_grid_in_place(lwgeom, &grid);
 
 	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;

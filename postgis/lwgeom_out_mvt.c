@@ -65,7 +65,6 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 	if (lwgeom_out == NULL)
 		PG_RETURN_NULL();
 	geom_out = geometry_serialize(lwgeom_out);
-	lwgeom_free(lwgeom_out);
 	PG_FREE_IF_COPY(geom_in, 0);
 	PG_RETURN_POINTER(geom_out);
 #endif
