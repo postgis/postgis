@@ -450,62 +450,6 @@ int lwpoly_count_vertices(LWPOLY *poly)
 	return v;
 }
 
-LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist, int preserve_collapsed)
-{
-	int i;
-	LWPOLY *opoly = lwpoly_construct_empty(ipoly->srid, FLAGS_GET_Z(ipoly->flags), FLAGS_GET_M(ipoly->flags));
-
-	LWDEBUGF(2, "%s: simplifying polygon with %d rings", __func__, ipoly->nrings);
-
-	if ( lwpoly_is_empty(ipoly) )
-	{
-		lwpoly_free(opoly);
-		return NULL;
-	}
-
-	for ( i = 0; i < ipoly->nrings; i++ )
-	{
-		POINTARRAY *opts;
-		int minvertices = 0;
-
-		/* We'll still let holes collapse, but if we're preserving */
-		/* and this is a shell, we ensure it is kept */
-		if ( preserve_collapsed && i == 0 )
-			minvertices = 4;
-
-		opts = ptarray_simplify(ipoly->rings[i], dist, minvertices);
-
-		LWDEBUGF(3, "ring%d simplified from %d to %d points", i, ipoly->rings[i]->npoints, opts->npoints);
-
-		/* Less points than are needed to form a closed ring, we can't use this */
-		if ( opts->npoints < 4 )
-		{
-			LWDEBUGF(3, "ring%d skipped (% pts)", i, opts->npoints);
-			ptarray_free(opts);
-			if ( i ) continue;
-			else break; /* Don't scan holes if shell is collapsed */
-		}
-
-		/* Add ring to simplified polygon */
-		if( lwpoly_add_ring(opoly, opts) == LW_FAILURE )
-		{
-			lwpoly_free(opoly);
-			return NULL;
-		}
-	}
-
-	LWDEBUGF(3, "simplified polygon with %d rings", ipoly->nrings);
-	opoly->type = ipoly->type;
-
-	if( lwpoly_is_empty(opoly) )
-	{
-		lwpoly_free(opoly);
-		return NULL;
-	}
-
-	return opoly;
-}
-
 /**
 * Find the area of the outer ring - sum (area of inner rings).
 */

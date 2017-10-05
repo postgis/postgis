@@ -201,10 +201,7 @@ int lwcollection_count_vertices(LWCOLLECTION *col);
 /**
  * @param minpts minimun number of points to retain, if possible.
  */
-POINTARRAY* ptarray_simplify(POINTARRAY *inpts, double epsilon, unsigned int minpts);
-LWLINE* lwline_simplify(const LWLINE *iline, double dist, int preserve_collapsed);
-LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist, int preserve_collapsed);
-LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist, int preserve_collapsed);
+void ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, unsigned int minpts);
 
 /*
 * The possible ways a pair of segments can interact. Returned by lw_segment_intersects
@@ -373,6 +370,12 @@ int point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj);
 * Shift
 */
 void ptarray_longitude_shift(POINTARRAY *pa);
+
+/*
+* Support for in place modification of point arrays, fast
+* function to move coordinate values around
+*/
+void ptarray_copy_point(POINTARRAY *pa, int from, int to);
 
 /*
 * Reverse

@@ -1224,6 +1224,8 @@ extern int lwgeom_is_clockwise(LWGEOM *lwgeom);
 
 
 
+extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist, int preserve_collapsed);
+
 /****************************************************************
 * READ/WRITE FUNCTIONS
 *
@@ -1237,14 +1239,12 @@ extern int lwgeom_is_clockwise(LWGEOM *lwgeom);
 extern void lwgeom_reverse_in_place(LWGEOM *lwgeom);
 extern void lwgeom_force_clockwise(LWGEOM *lwgeom);
 extern void lwgeom_longitude_shift(LWGEOM *lwgeom);
-extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist, int preserve_collapsed);
+extern void lwgeom_simplify_in_place(LWGEOM *igeom, double dist, int preserve_collapsed);
 extern void lwgeom_affine(LWGEOM *geom, const AFFINE *affine);
 extern void lwgeom_scale(LWGEOM *geom, const POINT4D *factors);
+extern LWGEOM* lwgeom_remove_repeated_points(const LWGEOM *in, double tolerance);
 
 
-
-
-/****************************************************************/
 
 
 /**
@@ -1656,7 +1656,6 @@ extern LWBOUNDINGCIRCLE* lwgeom_calculate_mbc(const LWGEOM* g);
 /**
 * Remove repeated points!
 */
-extern LWGEOM* lwgeom_remove_repeated_points(const LWGEOM *in, double tolerance);
 
 /**
  * Swap ordinate values in every vertex of the geometry.

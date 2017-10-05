@@ -1630,26 +1630,115 @@ void lwgeom_set_srid(LWGEOM *geom, int32_t srid)
 	}
 }
 
+/**************************************************************/
+
+
+void
+lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
+{
+	switch (geom->type)
+	{
+		/* No-op! Cannot simplify points */
+		case POINTTYPE:
+			return;
+		case LINETYPE:
+		{
+			LWLINE *g = (LWLINE*)(geom);
+			POINTARRAY *pa = g->points;
+			ptarray_simplify_in_place(pa, epsilon, 2);
+			/* Invalid output */
+			if (pa->npoints == 1 && pa->maxpoints > 1)
+			{
+				/* Use first point as last point */
+				if (preserve_collapsed)
+				{
+					pa->npoints = 2;
+					ptarray_copy_point(pa, 0, 1);
+				}
+				/* Finish the collapse process */
+				else
+				{
+					pa->npoints = 0;
+				}
+			}
+			/* Duped output, force collapse */
+			if (pa->npoints == 2 && !preserve_collapsed)
+			{
+				if (p2d_same(getPoint2d_cp(pa, 0), getPoint2d_cp(pa, 1)))
+					pa->npoints = 0;
+			}
+			break;
+		}
+		case POLYGONTYPE:
+		{
+			int i, j = 0;
+			LWPOLY *g = (LWPOLY*)(geom);
+			for (i = 0; i < g->nrings; i++)
+			{
+				POINTARRAY *pa = g->rings[i];
+				/* Only stop collapse on first ring */
+				int minpoints = (preserve_collapsed && i == 0) ? 4 : 0;
+				/* Skip zero'ed out rings */
+				if(!pa)
+					continue;
+				ptarray_simplify_in_place(pa, epsilon, minpoints);
+				/* Drop collapsed rings */
+				if(pa->npoints < 4)
+				{
+					ptarray_free(pa);
+					continue;
+				}
+				g->rings[j++] = pa;
+			}
+			/* Update ring count */
+			g->nrings = j;
+			break;
+		}
+		/* Can process all multi* types as generic collection */
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+		{
+			int i, j = 0;
+			LWCOLLECTION *col = (LWCOLLECTION*)geom;
+			for (i = 0; i < col->ngeoms; i++)
+			{
+				LWGEOM *g = col->geoms[i];
+				if (!g) continue;
+				lwgeom_simplify_in_place(g, epsilon, preserve_collapsed);
+				/* Drop zero'ed out geometries */
+				if(lwgeom_is_empty(g))
+				{
+					lwgeom_free(g);
+					continue;
+				}
+				col->geoms[j++] = g;
+			}
+			/* Update geometry count */
+			col->ngeoms = j;
+			break;
+		}
+		default:
+		{
+			lwerror("%s: unsupported geometry type: %s", __func__, lwtype_name(geom->type));
+			break;
+		}
+	}
+	return;
+}
+
+
+/**************************************************************/
+
 LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist, int preserve_collapsed)
 {
-	switch (igeom->type)
-	{
-	case POINTTYPE:
-	case MULTIPOINTTYPE:
-		return lwgeom_clone(igeom);
-	case LINETYPE:
-		return (LWGEOM*)lwline_simplify((LWLINE*)igeom, dist, preserve_collapsed);
-	case POLYGONTYPE:
-		return (LWGEOM*)lwpoly_simplify((LWPOLY*)igeom, dist, preserve_collapsed);
-	case MULTILINETYPE:
-	case MULTIPOLYGONTYPE:
-	case COLLECTIONTYPE:
-		return (LWGEOM*)lwcollection_simplify((LWCOLLECTION *)igeom, dist, preserve_collapsed);
-	default:
-		lwerror("%s: unsupported geometry type: %s", __func__, lwtype_name(igeom->type));
-	}
-	return NULL;
+	LWGEOM *lwgeom_out = lwgeom_clone_deep(igeom);
+	lwgeom_simplify_in_place(lwgeom_out, dist, preserve_collapsed);
+	if (lwgeom_is_empty(lwgeom_out)) return NULL;
+	return lwgeom_out;
 }
+
 
 double lwgeom_area(const LWGEOM *geom)
 {
