@@ -27,13 +27,10 @@ DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
 #DOCS         = $(wildcard ../../doc/html/*.html)
 PG_CONFIG    = @PG_CONFIG@
 
-PG91         = $(shell $(PG_CONFIG) --version | $(GREP) -qE " 8\.| 9\.0" && echo no || echo yes)
 SQL_BITS     = $(wildcard sql_bits/*.sql)
 EXTRA_CLEAN += ${SQL_BITS} sql/*.sql
 
 CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
-
-ifeq ($(PG91),yes)
 
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql sql_minor_upgrade
 
@@ -105,7 +102,6 @@ sql_minor_upgrade: sql_bits/postgis_extension_upgrade_minor.sql
 
 DATA = $(wildcard sql/*--*.sql)
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/postgis--unpackaged--$(EXTVERSION).sql
-endif
 
 distclean: clean
 	rm -f Makefile
