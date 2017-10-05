@@ -1072,6 +1072,16 @@ void test_gbox_same_2d(void)
     lwfree(s3);
 }
 
+void test_signum_macro(void);
+void test_signum_macro(void)
+{
+	CU_ASSERT_EQUAL(SIGNUM(-5.0),-1);
+	CU_ASSERT_EQUAL(SIGNUM( 5.0), 1);
+	CU_ASSERT_EQUAL(SIGNUM( 0.0), 0);
+	CU_ASSERT_EQUAL(SIGNUM(10) * 5, 5);
+	CU_ASSERT_EQUAL(SIGNUM(-10) * 5, -5);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -1102,4 +1112,5 @@ void libgeom_suite_setup(void)
 	PG_ADD_TEST(suite, test_lwgeom_scale);
 	PG_ADD_TEST(suite, test_gserialized_is_empty);
     PG_ADD_TEST(suite, test_gbox_same_2d);
+	PG_ADD_TEST(suite, test_signum_macro);
 }

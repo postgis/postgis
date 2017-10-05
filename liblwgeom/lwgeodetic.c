@@ -615,8 +615,8 @@ void y_to_z(POINT3D *p)
 
 int crosses_dateline(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e)
 {
-	double sign_s = signum(s->lon);
-	double sign_e = signum(e->lon);
+	double sign_s = SIGNUM(s->lon);
+	double sign_e = SIGNUM(e->lon);
 	double ss = fabs(s->lon);
 	double ee = fabs(e->lon);
 	if ( sign_s == sign_e )
@@ -818,7 +818,7 @@ int edge_contains_coplanar_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POIN
 	}
 
 	/* Over the pole, we need normalize latitude and do this calculation in latitude */
-	if ( FP_EQUALS( slon, M_PI ) && ( signum(g.start.lon) != signum(g.end.lon) || FP_EQUALS(dlon, M_PI) ) )
+	if ( FP_EQUALS( slon, M_PI ) && ( SIGNUM(g.start.lon) != SIGNUM(g.end.lon) || FP_EQUALS(dlon, M_PI) ) )
 	{
 		LWDEBUG(4, "over the pole...");
 		/* Antipodal, everything (or nothing?) is inside */
@@ -862,7 +862,7 @@ int edge_contains_coplanar_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POIN
 	}
 
 	/* Dateline crossing, flip everything to the opposite hemisphere */
-	else if ( slon > M_PI && ( signum(g.start.lon) != signum(g.end.lon) ) )
+	else if ( slon > M_PI && ( SIGNUM(g.start.lon) != SIGNUM(g.end.lon) ) )
 	{
 		LWDEBUG(4, "crosses dateline, flip longitudes...");
 		if ( g.start.lon > 0.0 )
@@ -967,7 +967,7 @@ static double sphere_excess(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b
 	double c_dist = sphere_distance(a, b);
 	double hca = sphere_direction(c, a, b_dist);
 	double hcb = sphere_direction(c, b, a_dist);
-	double sign = signum(hcb-hca);
+	double sign = SIGNUM(hcb-hca);
 	double ss = (a_dist + b_dist + c_dist) / 2.0;
 	double E = tan(ss/2.0)*tan((ss-a_dist)/2.0)*tan((ss-b_dist)/2.0)*tan((ss-c_dist)/2.0);
 	return 4.0 * atan(sqrt(fabs(E))) * sign;
@@ -996,7 +996,7 @@ int edge_contains_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p)
 */
 double z_to_latitude(double z, int top)
 {
-	double sign = signum(z);
+	double sign = SIGNUM(z);
 	double tlat = acos(z);
 	LWDEBUGF(4, "inputs: z(%.8g) sign(%.8g) tlat(%.8g)", z, sign, tlat);
 	if (FP_IS_ZERO(z))

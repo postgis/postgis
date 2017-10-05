@@ -109,6 +109,14 @@
 #define SIZE_SET(varsize, size) (((varsize) & 0x00000003)|(((size) & 0x3FFFFFFF) << 2 ))
 
 /**
+* Macro that returns:
+* -1 if n < 0,
+*  1 if n > 0,
+*  0 if n == 0
+*/
+#define SIGNUM(n) (((n) > 0) - ((n) < 0))
+
+/**
 * Tolerance used to determine equality.
 */
 #define EPSILON_SQLMM 1e-8
@@ -190,11 +198,6 @@ POINTARRAY* ptarray_simplify(POINTARRAY *inpts, double epsilon, unsigned int min
 LWLINE* lwline_simplify(const LWLINE *iline, double dist, int preserve_collapsed);
 LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist, int preserve_collapsed);
 LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist, int preserve_collapsed);
-
-/*
-* Computational geometry
-*/
-int signum(double n);
 
 /*
 * The possible ways a pair of segments can interact. Returned by lw_segment_intersects 
