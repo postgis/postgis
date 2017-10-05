@@ -1305,7 +1305,7 @@ extern int lwgeom_is_closed(const LWGEOM *geom);
 /**
 * Return the dimensionality (relating to point/line/poly) of an lwgeom
 */
-extern int lwgeom_dimensionality(LWGEOM *geom);
+extern int lwgeom_dimensionality(const LWGEOM *geom);
 
 /* Is lwgeom1 geometrically equal to lwgeom2 ? */
 extern char lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2);

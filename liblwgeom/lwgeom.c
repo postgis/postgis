@@ -1426,7 +1426,7 @@ int lwgeom_has_srid(const LWGEOM *geom)
 }
 
 
-static int lwcollection_dimensionality(LWCOLLECTION *col)
+static int lwcollection_dimensionality(const LWCOLLECTION *col)
 {
 	int i;
 	int dimensionality = 0;
@@ -1439,7 +1439,7 @@ static int lwcollection_dimensionality(LWCOLLECTION *col)
 	return dimensionality;
 }
 
-extern int lwgeom_dimensionality(LWGEOM *geom)
+extern int lwgeom_dimensionality(const LWGEOM *geom)
 {
 	int dim;
 
@@ -1474,7 +1474,7 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 		break;
 
 	case COLLECTIONTYPE:
-		return lwcollection_dimensionality((LWCOLLECTION *)geom);
+		return lwcollection_dimensionality((const LWCOLLECTION *)geom);
 		break;
 	default:
 		lwerror("lwgeom_dimensionality: unsupported input geometry type: %s",
