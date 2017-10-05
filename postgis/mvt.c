@@ -657,6 +657,8 @@ static int max_type(LWCOLLECTION *lwcoll)
  *
  * Makes best effort to keep validity. Might collapse geometry into lower
  * dimension.
+ *
+ * NOTE: modifies in place if possible (not currently possible for polygons)
  */
 LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buffer,
 	bool clip_geom)
