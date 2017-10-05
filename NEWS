@@ -7,6 +7,7 @@ YYYY/MM/DD
   - #3845, Gracefully handle short-measure issue
   - #3871, Performance tweak for geometry cmp function
   - #3879, Division by zero in some arc cases
+  - #3878, Single defn of signum in header
 
 PostGIS 2.4.0
 2017/09/30
