@@ -22,7 +22,7 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
                         $(GREP) "[a-zA-Z]" | \
                         $(PERL) -pe 's/(\d+[a-zA-Z]+)\d*/\1/'
 
-DATA = $(wildcard sql/*--*.sql)
+UPGRADE_SCRIPTS = $(wildcard sql/*--*.sql)
 
 #DOCS         = $(wildcard ../../doc/html/*.html)
 PG_CONFIG    = @PG_CONFIG@
@@ -32,7 +32,7 @@ EXTRA_CLEAN += ${SQL_BITS} sql/*.sql
 
 CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
 
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql sql_minor_upgrade
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 
 sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/spatial_ref_sys_config_dump.sql sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
 	mkdir -p sql
@@ -46,12 +46,6 @@ sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/postgis.sql sql_bits/rtpostgis.sql ../../utils/create_unpackaged.pl
 	mkdir -p sql
 	cat ../../postgis/postgis.sql ../../raster/rt_pg/rtpostgis.sql | $(PERL) ../../utils/create_unpackaged.pl postgis > $@
-
-#this is a cludge to allow upgrading from same SVN to same SVN
-sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql_bits/postgis_extension_upgrade_minor.sql
-	cp $< $@
-sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql_bits/postgis_extension_upgrade_minor.sql
-	cp $< $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
 sql_bits/spatial_ref_sys.sql: ../../spatial_ref_sys.sql
@@ -94,10 +88,18 @@ sql_bits/postgis_extension_upgrade_minor.sql: ../postgis_extension_helper.sql sq
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ >> $@
 
-sql_minor_upgrade: sql_bits/postgis_extension_upgrade_minor.sql
-	cp $< sql/$(EXTENSION)--ANY-$(EXTVERSION).sql
+install: install-upgrade-paths
+
+# The "next" lines are a cludge to allow upgrading between different
+# revisions of the same version
+install-upgrade-paths: sql_bits/postgis_extension_upgrade_minor.sql
+	todir='$(DESTDIR)$(datadir)/$(datamoduledir)'; \
+	tpl='$(EXTENSION)--ANY-$(EXTVERSION).sql'; \
+	ln -fs "$${tpl}" $${todir}/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql; \
+	ln -fs "$${tpl}" $${todir}/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql; \
+	$(INSTALL_DATA) $^ "$${todir}/$${tpl}"; \
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
-		ln -fs $(EXTENSION)--ANY-$(EXTVERSION).sql sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
+		ln -fs "$${tpl}" $${todir}/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
 
 distclean: clean
