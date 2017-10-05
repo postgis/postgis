@@ -438,11 +438,6 @@ gridspec;
 LWGEOM* lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid);
 
 void lwgeom_grid_in_place(LWGEOM *lwgeom, const gridspec *grid);
-void lwcollection_grid_in_place(LWCOLLECTION *coll, const gridspec *grid);
-void lwpoint_grid_in_place(LWPOINT *point, const gridspec *grid);
-void lwpoly_grid_in_place(LWPOLY *poly, const gridspec *grid);
-void lwline_grid_in_place(LWLINE *line, const gridspec *grid);
-void lwcircstring_grid_in_place(LWCIRCSTRING *line, const gridspec *grid);
 void ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid);
 
 /*
