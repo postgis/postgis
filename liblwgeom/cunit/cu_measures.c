@@ -676,25 +676,130 @@ test_lw_dist2d_arc_arc(void)
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
 
-	/* inscribed and closest on arcs */
+	/* Concentric: and fully parallel */
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
-	A1.x = -0.5; A1.y = 0.0;
-	A2.x =  0.0; A2.y = 0.5;
-	A3.x =  0.5; A3.y = 0.0;
+	A1.x = -2.0; A1.y = 0.0;
+	A2.x =  0.0; A2.y = 2.0;
+	A3.x =  2.0; A3.y = 0.0;
 	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
-	//printf("distance %g\n", dl.distance);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1.0, 0.000001);
+
+	/* Concentric: with A fully included in B's range */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -0.5 / sqrt(2.0); A1.y =  0.5 / sqrt(2.0);
+	A2.x =  0.0;             A2.y =  0.5;
+	A3.x =  0.5 / sqrt(2.0); A3.y =  0.5 / sqrt(2.0);
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
 
-	/* inscribed and closest not on arcs */
+	/* Concentric: with A partially included in B's range */
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
-	A1.x = -0.5; A1.y =  0.0;
-	A2.x =  0.0; A2.y = -0.5;
-	A3.x =  0.5; A3.y =  0.0;
+	A1.x = -0.5 / sqrt(2.0); A1.y = -0.5 / sqrt(2.0);
+	A2.x = -0.5;             A2.y =  0.0;
+	A3.x = -0.5 / sqrt(2.0); A3.y = 0.5 / sqrt(2.0);
 	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
-	//printf("distance %g\n", dl.distance);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
+
+	/* Concentric: with A and B without parallel segments */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -0.5 / sqrt(2.0); A1.y = -0.5 / sqrt(2.0);
+	A2.x =  0.0;             A2.y = -0.5;
+	A3.x =  0.5 / sqrt(2.0); A3.y = -0.5 / sqrt(2.0);
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.736813, 0.000001);
+
+	/* Concentric: Arcs are the same */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -1.0; A1.y =  0.0;
+	A2.x =  0.0; A2.y =  1.0;
+	A3.x =  1.0; A3.y =  0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.0, 0.000001);
+
+	/* Check different orientations */
+	B1.x = -10.0;  B1.y =  0.0;
+	B2.x =   0.0 ; B2.y = 10.0;
+	B3.x =  10.0 ; B3.y =  0.0;
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -22.0; A1.y =   0.0;
+	A2.x = -17.0; A2.y =  -5.0;
+	A3.x = -12.0; A3.y =   0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 2.0, 0.000001);
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -19.0; A1.y =   0.0;
+	A2.x = -14.0; A2.y =  -5.0;
+	A3.x = - 9.0; A3.y =   0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1.0, 0.000001);
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -9.0;  A1.y =   0.0;
+	A2.x = -4.0;  A2.y =  -5.0;
+	A3.x =  1.0;  A3.y =   0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1.0, 0.000001);
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -1.0;  A1.y =   0.0;
+	A2.x =  4.0;  A2.y =  -5.0;
+	A3.x =  9.0;  A3.y =   0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1.0, 0.000001);
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x =  1.0;  A1.y =   0.0;
+	A2.x =  6.0;  A2.y =  -5.0;
+	A3.x = 11.0;  A3.y =   0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1.0, 0.000001);
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = 11.0;  A1.y =   0.0;
+	A2.x = 16.0;  A2.y =  -5.0;
+	A3.x = 21.0;  A3.y =   0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1.0, 0.000001);
+
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -15.0; A1.y =  -6.0;
+	A2.x = -10.0; A2.y =  -1.0;
+	A3.x = - 5.0; A3.y =  -6.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1.0, 0.000001);
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -5.0; A1.y =  0.0;
+	A2.x =  0.0; A2.y =  5.0;
+	A3.x =  5.0; A3.y =  0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 5.0, 0.000001);
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -5.0; A1.y =  0.0;
+	A2.x =  0.0; A2.y = -5.0;
+	A3.x =  5.0; A3.y =  0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 5.0, 0.000001);
+
+
 }
 
 static void
