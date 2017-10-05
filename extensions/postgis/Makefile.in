@@ -22,7 +22,7 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
                         $(GREP) "[a-zA-Z]" | \
                         $(PERL) -pe 's/(\d+[a-zA-Z]+)\d*/\1/'
 
-DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
+DATA = $(wildcard sql/*--*.sql)
 
 #DOCS         = $(wildcard ../../doc/html/*.html)
 PG_CONFIG    = @PG_CONFIG@
@@ -99,9 +99,6 @@ sql_minor_upgrade: sql_bits/postgis_extension_upgrade_minor.sql
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
 		ln -fs $(EXTENSION)--ANY-$(EXTVERSION).sql sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
-
-DATA = $(wildcard sql/*--*.sql)
-EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/postgis--unpackaged--$(EXTVERSION).sql
 
 distclean: clean
 	rm -f Makefile
