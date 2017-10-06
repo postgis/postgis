@@ -1429,85 +1429,11 @@ ptarray_longitude_shift(POINTARRAY *pa)
  *
  * Always returns a newly allocated object.
  */
-POINTARRAY *
+static POINTARRAY *
 ptarray_remove_repeated_points_minpoints(const POINTARRAY *in, double tolerance, int minpoints)
 {
-	POINTARRAY *out;
-	size_t ptsize = ptarray_point_size(in);
-	int has_z = FLAGS_GET_Z(in->flags);
-	int has_m = FLAGS_GET_M(in->flags);
-	int ipn = 1, opn = 1;
-	const POINT2D *prev_point, *this_point;
-	uint8_t *p1, *p2;
-	double tolsq = tolerance * tolerance;
-
-	LWDEBUGF(3, "%s called", __func__);
-
-	/* Single or zero point arrays can't have duplicates */
-	if ( in->npoints < 3 ) return ptarray_clone_deep(in);
-
-	/* Condition minpoints */
-	if ( minpoints < 1 ) minpoints = 1;
-
-	/* Allocate enough output space for all points */
-	out = ptarray_construct(has_z, has_m, in->npoints);
-
-	/* Keep the first point */
-	p1 = getPoint_internal(out, 0);
-	p2 = getPoint_internal(in, 0);
-	memcpy(p1, p2, ptsize);
-
-	/* Now fill up the actual points */
-	prev_point = getPoint2d_cp(in, 0);
-	LWDEBUGF(3, " first point copied, out points: %d", opn);
-	for ( ipn = 1; ipn < in->npoints; ipn++ )
-	{
-		this_point = getPoint2d_cp(in, ipn);
-
-		/*
-		* If number of points left > number of points we need
-		* then it's still OK to drop dupes
-		*/
-		if ( in->npoints - ipn > minpoints - opn )
-		{
-			if (tolerance > 0.0)
-			{
-				/* within the removal tolerance? */
-				double dsq = distance2d_sqr_pt_pt(prev_point, this_point);
-				if (dsq <= tolsq)
-					/* then skip it */
-					continue;
-			}
-			else
-			{
-				/* exact duplicate? */
-				p1 = getPoint_internal(in, ipn-1);
-				p2 = getPoint_internal(in, ipn);
-				if (memcmp(p1, p2, ptsize) == 0)
-					/* then skip it */
-					continue;
-			}
-		}
-		/*
-		* The point is different (see above) from
-		* the previous point, so add it to output
-		*/
-		p1 = getPoint_internal(out, opn++);
-		p2 = getPoint_internal(in, ipn);
-		memcpy(p1, p2, ptsize);
-
-		prev_point = this_point;
-	}
-
-	/* Keep the last point */
-	p1 = getPoint_internal(out, opn-1); /* Last output point */
-	p2 = getPoint_internal(in, ipn-1); /* Last input point */
-	if ( memcmp(p1, p2, ptsize) != 0 )
-		memcpy(p1, p2, ptsize);
-
-	LWDEBUGF(3, " in:%d out:%d", out->npoints, opn);
-	out->npoints = opn;
-
+	POINTARRAY *out = ptarray_clone_deep(in);
+	ptarray_remove_repeated_points_in_place(out, tolerance, minpoints);
 	return out;
 }
 
@@ -1516,6 +1442,73 @@ ptarray_remove_repeated_points(const POINTARRAY *in, double tolerance)
 {
 	return ptarray_remove_repeated_points_minpoints(in, tolerance, 2);
 }
+
+
+void
+ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, int min_points)
+{
+	int i;
+	double tolsq = tolerance * tolerance;
+	const POINT2D *last = NULL;
+	const POINT2D *pt;
+	int n_points = pa->npoints;
+	int n_points_out = 0;
+	int pt_size = ptarray_point_size(pa);
+	double dsq;
+
+	/* No-op on short inputs */
+	if ( n_points <= 2 ) return;
+
+	for (i = 0; i < n_points; i++)
+	{
+		int last_point = (i == n_points-1);
+
+		/* Look straight into the abyss */
+		pt = getPoint2d_cp(pa, i);
+
+		/* Preserve first point always */
+		if (last)
+		{
+			/* Don't drop points if we are running short of points */
+	        if (n_points - i > min_points - n_points_out)
+			{
+				if (tolerance > 0.0)
+				{
+					/* Only drop points that are within our tolerance */
+					dsq = distance2d_sqr_pt_pt(last, pt);
+					/* Allow any point but the last one to be dropped */
+					if (!last_point && dsq <= tolsq)
+					{
+						continue;
+					}
+				}
+				else
+				{
+					/* At tolerance zero, only skip exact dupes */
+					if (memcmp((char*)pt, (char*)last, pt_size) == 0)
+						continue;
+				}
+			}
+		}
+
+		/* Got to last point, and it's not very different from */
+		/* the point that preceded it. We want to keep the last */
+		/* point, not the second-to-last one, so we pull our write */
+		/* index back one value */
+		if (last_point && tolerance > 0.0 && dsq <= tolsq)
+		{
+			n_points_out--;
+		}
+
+		/* Compact all remaining values to front of array */
+		ptarray_copy_point(pa, i, n_points_out++);
+		last = pt;
+	}
+	/* Adjust array length */
+	pa->npoints = n_points_out;
+	return;
+}
+
 
 /************************************************************************/
 
