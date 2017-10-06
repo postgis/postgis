@@ -464,6 +464,84 @@ static void test_point_interpolate(void)
 
 }
 
+static void test_lwline_interpolate_points(void)
+{
+	LWLINE* line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING ZM (0 0 3 1, 1 1 2 2, 10 10 4 3)", LW_PARSER_CHECK_NONE));
+	LWLINE* line2d = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING (1 1, 3 7, 9 12)", LW_PARSER_CHECK_NONE));
+	LWLINE* empty_line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING EMPTY", LW_PARSER_CHECK_NONE));
+
+	POINTARRAY* rpa;
+	POINT4D pta;
+	POINT4D ptb;
+	double eps = 1e-10;
+
+	/* Empty line gives empty point */
+	rpa = lwline_interpolate_points(empty_line, 0.5, LW_TRUE);
+	ASSERT_INT_EQUAL(rpa->npoints, 0);
+	ptarray_free(rpa);
+
+	/* Get first endpoint when fraction = 0 */
+	rpa = lwline_interpolate_points(line, 0, LW_TRUE);
+	ASSERT_INT_EQUAL(rpa->npoints, 1);
+	pta = getPoint4d(line->points, 0);
+	ptb = getPoint4d(rpa, 0);
+	ASSERT_POINT4D_EQUAL(pta, ptb, eps);
+	ptarray_free(rpa);
+
+	/* Get last endpoint when fraction = 0 */
+	rpa = lwline_interpolate_points(line, 1, LW_TRUE);
+	ASSERT_INT_EQUAL(rpa->npoints, 1);
+	pta = getPoint4d(line->points, line->points->npoints - 1);
+	ptb = getPoint4d(rpa, 0);
+	ASSERT_POINT4D_EQUAL(pta, ptb, eps);
+	ptarray_free(rpa);
+
+    /* Interpolate a single point */
+    /* First vertex is at 10% */
+	rpa = lwline_interpolate_points(line, 0.1, LW_FALSE);
+	ASSERT_INT_EQUAL(rpa->npoints, 1);
+	pta = getPoint4d(line->points, 1);
+	ptb = getPoint4d(rpa, 0);
+	ASSERT_POINT4D_EQUAL(pta, ptb, eps);
+	ptarray_free(rpa);
+
+	/* 5% is halfway to first vertex */
+	rpa = lwline_interpolate_points(line, 0.05, LW_FALSE);
+	ASSERT_INT_EQUAL(rpa->npoints, 1);
+	pta.x = 0.5;
+	pta.y = 0.5;
+	pta.m = 1.5;
+	pta.z = 2.5;
+	ptb = getPoint4d(rpa, 0);
+	ASSERT_POINT4D_EQUAL(pta, ptb, eps);
+	ptarray_free(rpa);
+
+    /* Now repeat points */
+	rpa = lwline_interpolate_points(line, 0.4, LW_TRUE);
+	ASSERT_INT_EQUAL(rpa->npoints, 2);
+	pta.x = 4;
+	pta.y = 4;
+	ptb = getPoint4d(rpa, 0);
+	ASSERT_POINT2D_EQUAL(pta, ptb, eps);
+
+	pta.x = 8;
+	pta.y = 8;
+	ptb = getPoint4d(rpa, 1);
+	ASSERT_POINT2D_EQUAL(pta, ptb, eps);
+	ptarray_free(rpa);
+
+	/* Make sure it works on 2D lines */
+	rpa = lwline_interpolate_points(line2d, 0.4, LW_TRUE);
+	ASSERT_INT_EQUAL(rpa->npoints, 2);
+	CU_ASSERT_FALSE(ptarray_has_z(rpa));
+	CU_ASSERT_FALSE(ptarray_has_m(rpa));
+	ptarray_free(rpa);
+
+	lwgeom_free(lwline_as_lwgeom(line));
+	lwgeom_free(lwline_as_lwgeom(line2d));
+	lwgeom_free(lwline_as_lwgeom(empty_line));
+}
+
 static void test_lwline_clip(void)
 {
 	LWCOLLECTION *c;
@@ -1198,6 +1276,7 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_lwpoint_set_ordinate);
 	PG_ADD_TEST(suite,test_lwpoint_get_ordinate);
 	PG_ADD_TEST(suite,test_point_interpolate);
+	PG_ADD_TEST(suite,test_lwline_interpolate_points);
 	PG_ADD_TEST(suite,test_lwline_clip);
 	PG_ADD_TEST(suite,test_lwline_clip_big);
 	PG_ADD_TEST(suite,test_lwmline_clip);

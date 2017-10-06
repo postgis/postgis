@@ -547,3 +547,79 @@ double lwline_length_2d(const LWLINE *line)
 }
 
 
+POINTARRAY* lwline_interpolate_points(const LWLINE *line, double length_fraction, char repeat) {
+	POINT4D pt;
+	uint32_t i;
+	uint32_t points_to_interpolate;
+	uint32_t points_found = 0;
+	double length;
+	double length_fraction_increment = length_fraction;
+	double length_fraction_consumed = 0;
+	char has_z = (char) lwgeom_has_z(lwline_as_lwgeom(line));
+	char has_m = (char) lwgeom_has_m(lwline_as_lwgeom(line));
+	const POINTARRAY* ipa = line->points;
+	POINTARRAY* opa;
+
+	/* Empty.InterpolatePoint == Point Empty */
+	if ( lwline_is_empty(line) )
+	{
+		return ptarray_construct_empty(has_z, has_m, 0);
+	}
+
+	/* If distance is one of the two extremes, return the point on that
+	 * end rather than doing any computations
+	 */
+	if ( length_fraction == 0.0 || length_fraction == 1.0 )
+	{
+		if ( length_fraction == 0.0 )
+			getPoint4d_p(ipa, 0, &pt);
+		else
+			getPoint4d_p(ipa, ipa->npoints-1, &pt);
+
+		opa = ptarray_construct(has_z, has_m, 1);
+		ptarray_set_point4d(opa, 0, &pt);
+
+		return opa;
+	}
+
+	/* Interpolate points along the line */
+	length = ptarray_length_2d(ipa);
+	points_to_interpolate = repeat ? (uint32_t) floor(1 / length_fraction) : 1;
+	opa = ptarray_construct(has_z, has_m, points_to_interpolate);
+
+	const POINT2D* p1 = getPoint2d_cp(ipa, 0);
+	for ( i = 0; i < ipa->npoints - 1 && points_found < points_to_interpolate; i++ )
+	{
+		const POINT2D* p2 = getPoint2d_cp(ipa, i+1);
+		double segment_length_frac = distance2d_pt_pt(p1, p2) / length;
+
+		/* If our target distance is before the total length we've seen
+		 * so far. create a new point some distance down the current
+		 * segment.
+		 */
+		while ( length_fraction < length_fraction_consumed + segment_length_frac && points_found < points_to_interpolate )
+		{
+			POINT4D p1_4d = getPoint4d(ipa, i);
+			POINT4D p2_4d = getPoint4d(ipa, i+1);
+
+			double segment_fraction = (length_fraction - length_fraction_consumed) / segment_length_frac;
+			interpolate_point4d(&p1_4d, &p2_4d, &pt, segment_fraction);
+			ptarray_set_point4d(opa, points_found++, &pt);
+			length_fraction += length_fraction_increment;
+		}
+
+		length_fraction_consumed += segment_length_frac;
+
+		p1 = p2;
+	}
+
+	/* Return the last point on the line. This shouldn't happen, but
+	 * could if there's some floating point rounding errors. */
+	if (points_found < points_to_interpolate) {
+		getPoint4d_p(ipa, ipa->npoints - 1, &pt);
+		ptarray_set_point4d(opa, points_found, &pt);
+	}
+
+    return opa;
+}
+

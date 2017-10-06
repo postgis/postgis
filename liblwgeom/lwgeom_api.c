@@ -703,7 +703,7 @@ deparse_hex(uint8_t str, char *result)
  *   F=.2   :    A-I-------B
  */
 void
-interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F)
+interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, double F)
 {
 #if PARANOIA_LEVEL > 0
 	double absF=fabs(F);

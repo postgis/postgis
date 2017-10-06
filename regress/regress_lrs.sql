@@ -69,6 +69,12 @@ select 'line_substring_12', ST_AsText(ST_LineSubstring('LINESTRING(0 0 10, 1 1 5
 select 'line_interpolate_point', ST_AsText(ST_LineInterpolatePoint('LINESTRING(0 0, 1 1)', 0));
 select 'line_interpolate_point', ST_AsText(ST_LineInterpolatePoint('LINESTRING(0 0 10, 1 1 5)', 0.5));
 
+--
+--- ST_LineInterpolatePoints
+--
+
+select 'line_interpolate_points', ST_AsText(ST_LineInterpolatePoints('LINESTRING(0 0, 1 1)', 0.7));
+select 'line_interpolate_points', ST_AsText(ST_LineInterpolatePoints('LINESTRING(0 0, 1 1)', 0.3));
 
 --
 -- ST_AddMeasure

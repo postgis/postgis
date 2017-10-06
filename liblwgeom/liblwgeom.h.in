@@ -1013,6 +1013,11 @@ extern int lwpoint_getPoint4d_p(const LWPOINT *point, POINT4D *out);
  */
 extern int lwline_add_lwpoint(LWLINE *line, LWPOINT *point, int where);
 
+/**
+ * Interpolate one or more points along a line
+ */
+extern POINTARRAY* lwline_interpolate_points(const LWLINE *line, double length_fraction, char repeat);
+
 /******************************************************************
  * LWPOLY functions
  ******************************************************************/
@@ -1214,7 +1219,7 @@ extern char* lwgeom_summary(const LWGEOM *lwgeom, int offset);
 extern char* lwpoint_to_latlon(const LWPOINT *p, const char *format);
 extern int lwgeom_startpoint(const LWGEOM* lwgeom, POINT4D* pt);
 
-extern void interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F);
+extern void interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, double F);
 
 /**
 * Ensure the outer ring is clockwise oriented and all inner rings
