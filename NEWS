@@ -12,6 +12,7 @@ PostGIS 2.2.6
   - #3879, Division by zero in some arc cases
   - #3878, Single defn of signum in header
   - #3880, Undefined behaviour in TYPMOD_GET_SRID
+  - #3875, Fix undefined behaviour in shift operation
 
 
 PostGIS 2.2.5
