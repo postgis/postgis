@@ -42,6 +42,8 @@ uint64_t varint_u64_decode(const uint8_t *the_start, const uint8_t *the_end, siz
 
 size_t varint_size(const uint8_t *the_start, const uint8_t *the_end);
 
+/* Support from -INT{8,32,64}_MAX to INT{8,32,64}_MAX),
+ * e.g INT8_MIN is not supported in zigzag8 */
 uint64_t zigzag64(int64_t val);
 uint32_t zigzag32(int32_t val);
 uint8_t zigzag8(int8_t val);
