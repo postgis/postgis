@@ -2151,7 +2151,7 @@ extern char *lwmessage_truncate(char *str, int startpos, int endpos, int maxleng
  * @param check parser check flags, see LW_PARSER_CHECK_* macros
  * @param size parser check flags, see LW_PARSER_CHECK_* macros
  */
-extern LWGEOM* lwgeom_from_twkb(uint8_t *twkb, size_t twkb_size, char check);
+extern LWGEOM* lwgeom_from_twkb(const uint8_t *twkb, size_t twkb_size, char check);
 
 /**
  * @param geom input geometry
