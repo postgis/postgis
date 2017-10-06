@@ -666,7 +666,7 @@ unsigned int geohash_point_as_int(POINT2D *pt)
 			mid = (lon[0] + lon[1]) / 2;
 			if (longitude > mid)
 			{
-				ch |= 0x0001 << bit;
+				ch |= 0x0001u << bit;
 				lon[0] = mid;
 			}
 			else
