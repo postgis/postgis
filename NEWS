@@ -11,6 +11,7 @@ PostGIS 2.2.6
   - #3869, Fix build with "gold" linker
   - #3879, Division by zero in some arc cases
   - #3878, Single defn of signum in header
+  - #3880, Undefined behaviour in TYPMOD_GET_SRID
 
 
 PostGIS 2.2.5

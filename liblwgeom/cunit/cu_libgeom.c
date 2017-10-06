@@ -34,6 +34,16 @@ static void test_typmod_macros(void)
 	rv = TYPMOD_GET_SRID(typmod);
 	CU_ASSERT_EQUAL(rv, srid);
 
+        srid = 999999;
+        TYPMOD_SET_SRID(typmod,srid);
+        rv = TYPMOD_GET_SRID(typmod);
+        CU_ASSERT_EQUAL(rv, srid);
+
+        srid = -999999;
+        TYPMOD_SET_SRID(typmod,srid);
+        rv = TYPMOD_GET_SRID(typmod);
+        CU_ASSERT_EQUAL(rv, srid);
+
 	srid = SRID_UNKNOWN;
 	TYPMOD_SET_SRID(typmod,srid);
 	rv = TYPMOD_GET_SRID(typmod);
