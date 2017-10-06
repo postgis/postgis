@@ -27,6 +27,7 @@ PostGIS 2.3.4
   - #3845, Gracefully handle short-measure issue
   - #3879, Division by zero in some arc cases
   - #3878, Single defn of signum in header
+  - #3880, Undefined behaviour in TYPMOD_GET_SRID
 
 
 PostGIS 2.3.3
