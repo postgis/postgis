@@ -234,7 +234,7 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 
 
 LWCOLLECTION *
-lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
+lwcollection_segmentize2d(const LWCOLLECTION *col, double dist)
 {
 	uint32_t i;
 	LWGEOM **newgeoms;

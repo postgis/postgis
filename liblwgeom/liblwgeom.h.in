@@ -1474,11 +1474,11 @@ extern int lwline_is_trajectory(const LWLINE *geom);
  * Ensure every segment is at most 'dist' long.
  * Returned LWGEOM might is unchanged if a POINT.
  */
-extern LWGEOM *lwgeom_segmentize2d(LWGEOM *line, double dist);
+extern LWGEOM *lwgeom_segmentize2d(const LWGEOM *line, double dist);
 extern POINTARRAY *ptarray_segmentize2d(const POINTARRAY *ipa, double dist);
-extern LWLINE *lwline_segmentize2d(LWLINE *line, double dist);
-extern LWPOLY *lwpoly_segmentize2d(LWPOLY *line, double dist);
-extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
+extern LWLINE *lwline_segmentize2d(const LWLINE *line, double dist);
+extern LWPOLY *lwpoly_segmentize2d(const LWPOLY *line, double dist);
+extern LWCOLLECTION *lwcollection_segmentize2d(const LWCOLLECTION *coll, double dist);
 
 /*
  * Point density functions

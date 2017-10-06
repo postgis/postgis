@@ -138,7 +138,7 @@ lwline_release(LWLINE *lwline)
 
 
 LWLINE *
-lwline_segmentize2d(LWLINE *line, double dist)
+lwline_segmentize2d(const LWLINE *line, double dist)
 {
 	POINTARRAY *segmentized = ptarray_segmentize2d(line->points, dist);
 	if ( ! segmentized ) return NULL;

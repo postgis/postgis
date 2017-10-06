@@ -745,7 +745,7 @@ lwgeom_drop_srid(LWGEOM *lwgeom)
 }
 
 LWGEOM *
-lwgeom_segmentize2d(LWGEOM *lwgeom, double dist)
+lwgeom_segmentize2d(const LWGEOM *lwgeom, double dist)
 {
 	switch (lwgeom->type)
 	{

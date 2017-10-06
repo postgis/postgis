@@ -309,7 +309,7 @@ lwpoly_release(LWPOLY *lwpoly)
 }
 
 LWPOLY *
-lwpoly_segmentize2d(LWPOLY *poly, double dist)
+lwpoly_segmentize2d(const LWPOLY *poly, double dist)
 {
 	POINTARRAY **newrings;
 	uint32_t i;
