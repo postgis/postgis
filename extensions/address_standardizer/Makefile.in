@@ -32,7 +32,7 @@ GREP=@GREP@
 PERL=@PERL@
 EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
-MODULE_big = address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+MODULE_big = address_standardizer
 EXTENSION = address_standardizer
 DATA = address_standardizer_data_us.control sql/$(EXTENSION).sql sql/$(EXTENSION)_data_us.sql
 
@@ -66,7 +66,7 @@ PERL=@PERL@
 sql/%.sql: %.sql.in
 	mkdir -p sql
 	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/${EXTENSION}-${MINORVERSION}'g" > $@
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/${EXTENSION}'g" > $@
 
 sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql: sql/address_standardizer_types.sql \
     sql/address_standardizer_functions.sql
