@@ -17,7 +17,10 @@ sed 's/^postgis--\(.*\)\.sql/\1/' | while read fname; do
   if test -e postgis--${UPGRADE_PATH}.sql; then
     echo "Testing upgrade $UPGRADE_PATH"
     export RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH}"
-    make -C ${BUILDDIR}/regress check || exit 1
+    make -C ${BUILDDIR}/regress check || {
+      echo "Upgrade $UPGRADE_PATH failed" >&2
+      exit 1
+    }
   else
     echo "Missing script for $UPGRADE_PATH upgrade" >&2
   fi
