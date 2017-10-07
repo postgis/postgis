@@ -1563,10 +1563,10 @@ static int
 int_cmp(const void *a, const void *b)
 {
 	/* casting pointer types */
-    const int *ia = (const int *)a;
-    const int *ib = (const int *)b;
+	const int *ia = (const int *)a;
+	const int *ib = (const int *)b;
 	/* returns negative if b > a and positive if a > b */
-    return *ia - *ib;
+	return *ia - *ib;
 }
 
 void
@@ -1665,13 +1665,13 @@ ptarray_arc_length_2d(const POINTARRAY *pts)
 	const POINT2D *a3;
 
 	if ( pts->npoints % 2 != 1 )
-        lwerror("arc point array with even number of points");
+		lwerror("arc point array with even number of points");
 
 	a1 = getPoint2d_cp(pts, 0);
 
 	for ( i=2; i < pts->npoints; i += 2 )
 	{
-    	a2 = getPoint2d_cp(pts, i-1);
+		a2 = getPoint2d_cp(pts, i-1);
 		a3 = getPoint2d_cp(pts, i);
 		dist += lw_arc_length(a1, a2, a3);
 		a1 = a3;
@@ -1890,11 +1890,11 @@ ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
 		/* Look straight into the abyss */
 		p = (POINT4D*)(getPoint_internal(pa, i));
 
-    	if (grid->xsize > 0)
-    		p->x = rint((p->x - grid->ipx)/grid->xsize) * grid->xsize + grid->ipx;
+		if (grid->xsize > 0)
+			p->x = rint((p->x - grid->ipx)/grid->xsize) * grid->xsize + grid->ipx;
 
-    	if (grid->ysize > 0)
-    		p->y = rint((p->y - grid->ipy)/grid->ysize) * grid->ysize + grid->ipy;
+		if (grid->ysize > 0)
+			p->y = rint((p->y - grid->ipy)/grid->ysize) * grid->ysize + grid->ipy;
 
 		/* Read and round this point */
 		/* Z is always in third position */
