@@ -1891,10 +1891,14 @@ ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
 		p = (POINT4D*)(getPoint_internal(pa, i));
 
 		if (grid->xsize > 0)
+		{
 			p->x = rint((p->x - grid->ipx)/grid->xsize) * grid->xsize + grid->ipx;
+		}
 
 		if (grid->ysize > 0)
+		{
 			p->y = rint((p->y - grid->ipy)/grid->ysize) * grid->ysize + grid->ipy;
+		}
 
 		/* Read and round this point */
 		/* Z is always in third position */
