@@ -56,6 +56,25 @@ BEGIN
 END
 $$ LANGUAGE 'plpgsql';
 
+-- Check that postgis raster is being installed in the same
+-- schema as PostGIS
+DO $$
+DECLARE
+  nsp TEXT;
+BEGIN
+  SELECT n.nspname
+	INTO nsp FROM pg_proc p, pg_namespace n
+  WHERE p.proname = 'postgis_lib_version'
+  AND p.pronamespace = n.oid;
+
+	IF nsp != current_schema() THEN
+    RAISE EXCEPTION
+			'PostGIS Raster must be in the same schema as PostGIS (%)',
+			nsp;
+	END IF;
+END
+$$ LANGUAGE 'plpgsql';
+
 
 ------------------------------------------------------------------------------
 -- RASTER Type

@@ -6,6 +6,8 @@ PostGIS 2.5.0
 
 * Breaking Changes *
   - #3885, version number removed from address_standardize lib file
+  - #3893, raster support functions can only be loaded in the same schema
+           with core PostGIS functions.
 
 PostGIS 2.4.0
 2017/09/30
