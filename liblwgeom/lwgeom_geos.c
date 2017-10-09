@@ -284,7 +284,7 @@ ptarray_to_GEOSLinearRing(const POINTARRAY *pa, int autofix)
 	}
 
 	sq = ptarray_to_GEOSCoordSeq(pa);
-	ptarray_free(npa);
+	if ( npa ) ptarray_free(npa);
 	g = GEOSGeom_createLinearRing(sq);
 	return g;
 }
