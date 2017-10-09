@@ -280,10 +280,10 @@ DROP TABLE tiger_data.pa_zip_state_loc;
         <programlisting>SELECT g.rating, ST_X(g.geomout) As lon, ST_Y(g.geomout) As lat,
     (addy).address As stno, (addy).streetname As street,
     (addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip
-    FROM geocode('75 State Street, Boston MA 02109') As g;
- rating |        lon        |       lat        | stno | street | styp |  city  | st |  zip
---------+-------------------+------------------+------+--------+------+--------+----+-------
-      0 | -71.0556722990239 | 42.3589914927049 |   75 | State  | St   | Boston | MA | 02109
+    FROM geocode('75 State Street, Boston MA 02109', 1) As g;
+ rating |        lon        |      lat       | stno | street | styp |  city  | st |  zip
+--------+-------------------+----------------+------+--------+------+--------+----+-------
+      0 | -71.0557505845646 | 42.35897920691 |   75 | State  | St   | Boston | MA | 02109
 </programlisting>
         <para>Even if zip is not passed in the geocoder can guess (took about 122-150 ms)</para>
         <programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat,
@@ -298,10 +298,10 @@ DROP TABLE tiger_data.pa_zip_state_loc;
 <programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat,
     (addy).address As stno, (addy).streetname As street,
     (addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip
-    FROM geocode('31 - 37 Stewart Street, Boston, MA 02116') As g;
+    FROM geocode('31 - 37 Stewart Street, Boston, MA 02116',1) As g;
  rating |         wktlonlat         | stno | street | styp |  city  | st |  zip
 --------+---------------------------+------+--------+------+--------+----+-------
-     70 | POINT(-71.06459 42.35113) |   31 | Stuart | St   | Boston | MA | 02116
+     70 | POINT(-71.06466 42.35114) |   31 | Stuart | St   | Boston | MA | 02116
     </programlisting>
 
 <para>Using to do a batch geocode of addresses. Easiest is to set <varname>max_results=1</varname>. Only process those not yet geocoded (have no rating).</para>
@@ -324,14 +324,12 @@ VALUES ('529 Main Street, Boston MA, 02129'),
 -- to ensure we don't regeocode a bad address
 UPDATE addresses_to_geocode
   SET  (rating, new_address, lon, lat)
-    = ( COALESCE((g.geo).rating,-1), pprint_addy((g.geo).addy),
-       ST_X((g.geo).geomout)::numeric(8,5), ST_Y((g.geo).geomout)::numeric(8,5) )
-FROM (SELECT addid
+    = ( COALESCE(g.rating,-1), pprint_addy(g.addy),
+       ST_X(g.geomout)::numeric(8,5), ST_Y(g.geomout)::numeric(8,5) )
+FROM (SELECT addid, address
     FROM addresses_to_geocode
     WHERE rating IS NULL ORDER BY addid LIMIT 3) As a
-    LEFT JOIN (SELECT addid, (geocode(address,1)) As geo
-    FROM addresses_to_geocode As ag
-    WHERE ag.rating IS NULL ORDER BY addid LIMIT 3) As g ON a.addid = g.addid
+    LEFT JOIN LATERAL geocode(a.address,1) As g ON true
 WHERE a.addid = addresses_to_geocode.addid;
 
 result
@@ -342,10 +340,10 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
 
  addid |                   address                    |    lon    |   lat    |                new_address                | rating
 -------+----------------------------------------------+-----------+----------+-------------------------------------------+--------
-     1 | 529 Main Street, Boston MA, 02129            | -71.07181 | 42.38359 | 529 Main St, Boston, MA 02129             |      0
-     2 | 77 Massachusetts Avenue, Cambridge, MA 02139 | -71.09428 | 42.35988 | 77 Massachusetts Ave, Cambridge, MA 02139 |      0
-     3 | 25 Wizard of Oz, Walaford, KS 99912323       |           |          |                                           |     -1
-</programlisting>
+     1 | 529 Main Street, Boston MA, 02129            | -71.07177 | 42.38357 | 529 Main St, Boston, MA 02129             |      0
+     2 | 77 Massachusetts Avenue, Cambridge, MA 02139 | -71.09396 | 42.35961 | 77 Massachusetts Ave, Cambridge, MA 02139 |      0
+     3 | 25 Wizard of Oz, Walaford, KS 99912323       | -97.92913 | 38.12717 | Willowbrook, KS 67502                     |    108
+(3 rows)</programlisting>
       </refsection>
       <refsection>
           <title>Examples: Using Geometry filter</title>
@@ -360,10 +358,13 @@ SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat,
             FROM place WHERE statefp = '25' AND name = 'Lynn')::geometry
         ) As g;
 
- rating |        wktlonlat         | stno | street  | styp | city | st |  zip
---------+--------------------------+------+---------+------+------+----+-------
-      8 | POINT(-70.96796 42.4659) |  100 | Federal | St   | Lynn | MA | 01905
-Total query runtime: 245 ms.
+ rating |         wktlonlat         | stno | street  | styp | city | st |  zip
+--------+---------------------------+------+---------+------+------+----+-------
+      7 | POINT(-70.96796 42.4659)  |  100 | Federal | St   | Lynn | MA | 01905
+     16 | POINT(-70.96786 42.46853) | NULL | Federal | St   | Lynn | MA | 01905
+(2 rows)
+
+Time: 622.939 ms
           </programlisting>
       </refsection>
 
@@ -373,6 +374,7 @@ Total query runtime: 245 ms.
         <para><xref linkend="Normalize_Address" />, <xref linkend="Pprint_Addy" />, <xref linkend="ST_AsText"/>, <xref linkend="ST_SnapToGrid"/>, <xref linkend="ST_X"/>, <xref linkend="ST_Y"/></para>
       </refsection>
     </refentry>
+
 
     <refentry id="Geocode_Intersection">
       <refnamediv>
