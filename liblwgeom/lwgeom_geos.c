@@ -262,30 +262,29 @@ ptarray_to_GEOSLinearRing(const POINTARRAY *pa, int autofix)
 
 	if ( autofix )
 	{
-		/* A  -> AAAA */
-		/* AB -> ABAA */
-		/* ABA -> ABAA */
-		/* ABC -> ABCA */
-		/* check ring for having at least 4 vertices */
+		if (pa->npoints < 1)
+		{
+			lwerror("ptarray_to_GEOSLinearRing called with autofix and 0 vertices in ring, cannot fix");
+		}
+		
+		/* 
+		* Check ring for being closed and fix if not.
+		* Also create a copy of geometry to operate on.
+		*/
+		if ( ! ptarray_is_closed_2d(pa) || pa->npoints < 4 )
+		{
+			pa = ptarray_addPoint(pa, getPoint_internal(pa, 0), FLAGS_NDIMS(pa->flags), pa->npoints);
+			npa = pa;
+		}
+		/* Check ring for having at least 4 vertices */
 		while ( pa->npoints < 4 )
 		{
-			if ( npa ) ptarray_free(npa);
-			npa = ptarray_addPoint(npa, getPoint_internal(pa, 0), FLAGS_NDIMS(pa->flags), pa->npoints);
-			pa = npa;			
-		}
-
-		/* ABCD -> ABCDA */
-		/* check ring for being closed and fix if not */
-		if ( ! ptarray_is_closed_2d(pa) )
-		{
-			if ( npa ) ptarray_free(npa);
-			npa = ptarray_addPoint(pa, getPoint_internal(pa, 0), FLAGS_NDIMS(pa->flags), pa->npoints);
-			pa = npa;
+			ptarray_append_point(pa, getPoint_internal(pa, 0), LW_TRUE);
 		}
 	}
 
 	sq = ptarray_to_GEOSCoordSeq(pa);
-	if ( npa ) ptarray_free(npa);
+	ptarray_free(npa);
 	g = GEOSGeom_createLinearRing(sq);
 	return g;
 }
