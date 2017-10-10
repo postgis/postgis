@@ -401,7 +401,6 @@ void closest_point_on_segment(const POINT4D *R, const POINT4D *A, const POINT4D 
 POINTARRAY *ptarray_remove_repeated_points(const POINTARRAY *in, double tolerance);
 LWGEOM* lwline_remove_repeated_points(const LWLINE *in, double tolerance);
 void ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, int min_points);
-void lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance);
 
 /*
 * Closure test
@@ -434,7 +433,6 @@ typedef struct gridspec_t
 gridspec;
 
 LWGEOM* lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid);
-
 void lwgeom_grid_in_place(LWGEOM *lwgeom, const gridspec *grid);
 void ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid);
 
