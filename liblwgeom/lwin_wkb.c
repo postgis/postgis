@@ -125,7 +125,10 @@ uint8_t* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 static inline void wkb_parse_state_check(wkb_parse_state *s, size_t next)
 {
 	if( (s->pos + next) > (s->wkb + s->wkb_size) )
+	{
 		lwerror("WKB structure does not match expected size!");
+		return;
+	}
 }
 
 /**
@@ -338,7 +341,8 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 	npoints = integer_from_wkb_state(s);
 	if (npoints > maxpoints)
 	{
-		lwerror("point array length (%d) is too large");
+		lwerror("Pointarray length (%d) is too large");
+		return;
 	}
 
 	LWDEBUGF(4,"Pointarray has %d points", npoints);
