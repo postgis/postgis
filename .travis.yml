@@ -7,9 +7,6 @@ env:
 addons:
   postgresql: "9.6"
   apt:
-    sources:    
-      - ubuntu-toolchain-r-test
-      - llvm-toolchain-trusty-5.0
     packages:
       - postgresql-server-dev-9.6 
       - libxml2-utils
@@ -22,14 +19,13 @@ addons:
       - libgeos-dev 
       - libjson0-dev
       - libprotobuf-c0-dev 
-      - libgdal-dev
-      - clang-5.0
-      - clang-tidy-5.0
+      - eatmydata
 
 before_install:
-  - sudo add-apt-repository --yes "deb http://us-central1.gce.archive.ubuntu.com/ubuntu artful main restricted universe multiverse"
-  - sudo apt-get update -qq
-  - sudo apt-get install -y --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev libproj-dev
+  - sudo eatmydata add-apt-repository --yes "deb http://us-central1.gce.archive.ubuntu.com/ubuntu artful main restricted universe multiverse"
+  - sudo eatmydata apt-get update -qq
+  - sudo eatmydata apt-get install -y --no-install-recommends --no-install-suggests dpkg
+  - sudo eatmydata apt-get install -y --no-install-recommends --no-install-suggests libsfcgal-dev libproj-dev libc-bin clang-5.0 clang-tidy-5.0
 
 language: c
 
