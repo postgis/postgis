@@ -1,25 +1,36 @@
 env:
   global:
-    - RUNTESTFLAGS=-v
+    - RUNTESTFLAGS=-v CXXFLAGS="-fsanitize=address,integer -fno-sanitize-recover=all -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address,integer"
 
 addons:
   postgresql: "9.6"
+  apt:
+    sources:
+      - ppa:ubuntugis/ppa
+      - ppa:ubuntugis/ubuntugis-unstable
+    packages:
+      - postgresql-9.6 
+      - postgresql-server-dev-9.6 
+      - libxml2-utils
+      - libcunit1-dev
+      - xsltproc 
+      - docbook-xsl 
+      - docbook-mathml 
+      - dblatex
+      - libgdal-dev 
+      - libgeos-dev 
+      - libjson0-dev
+      - libsfcgal1 
+      - libsfcgal-dev
+      - libprotobuf-c0-dev 
+      - libgdal-dev
 
 before_install:
-  - sudo add-apt-repository --yes ppa:ubuntugis/ppa
-  - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
-  - sudo apt-get update -qq
-  - sudo apt-get install -y --no-install-recommends
-      postgresql-9.6 postgresql-server-dev-9.6 libxml2-utils
-      libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex
-      libgdal-dev libgeos-dev libjson0-dev
-      libsfcgal1 libsfcgal-dev libprotobuf-c0-dev libgdal-dev
-  - dpkg -l | grep postgresql
   - wget http://download.osgeo.org/proj/proj-4.9.2.tar.gz
   - tar zxvf proj-4.9.2.tar.gz
   - cd proj-4.9.2
   - ./configure --prefix=/usr
-  - make
+  - make -j
   - sudo make install
   - cd ..
   - rm -rf proj-4.9.2
@@ -37,7 +48,7 @@ cache: ccache
 
 script:
   - ./configure
-  - make
+  - make -j
   - chmod 755 /home/travis
   - make check
   - make check RUNTESTFLAGS='--dumprestore'
