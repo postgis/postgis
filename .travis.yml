@@ -1,7 +1,7 @@
 env:
   global:
     - RUNTESTFLAGS=-v
-    - CFLAGS="-O3 -march=native -fsanitize=address,integer -fno-sanitize-recover=all -fno-omit-frame-pointer -Werror"
+    - CFLAGS="-O3 -march=native -fsanitize=address,integer -fno-sanitize-recover=all -fno-omit-frame-pointer -Werror -Wno-error=ignored-attributes"
     - LDFLAGS="-fsanitize=address,integer"
 
 addons:
@@ -31,15 +31,15 @@ before_install:
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update -qq
   - sudo apt-get install -y --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev
-  - wget http://download.osgeo.org/proj/proj-4.9.2.tar.gz
-  - tar zxvf proj-4.9.2.tar.gz
-  - cd proj-4.9.2
+  - wget http://download.osgeo.org/proj/proj-4.9.3.tar.gz
+  - tar zxvf proj-4.9.3.tar.gz
+  - cd proj-4.9.3
   - ./configure --prefix=/usr
   - make -j
   - sudo make install
   - cd ..
-  - rm -rf proj-4.9.2
-  - rm proj-4.9.2.tar.gz
+  - rm -rf proj-4.9.3
+  - rm proj-4.9.3.tar.gz
   - sudo ldconfig
   - ./autogen.sh
 
