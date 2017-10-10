@@ -61,7 +61,7 @@ char * pointarray_to_encoded_polyline(const POINTARRAY *pa, int precision)
 	stringbuffer_t *sb;
 	double scale = pow(10,precision);
 
-	/* Take the double value and multiply it by 1x10^percision, rounding the result */
+	/* Take the double value and multiply it by 1x10^precision, rounding the result */
 	prevPoint = getPoint2d_cp(pa, 0);
 	delta[0] = round(prevPoint->y*scale);
 	delta[1] = round(prevPoint->x*scale);
@@ -78,8 +78,8 @@ char * pointarray_to_encoded_polyline(const POINTARRAY *pa, int precision)
 	/* value to binary: a negative value must be calculated using its two's complement */
 	for (i=0; i<pa->npoints*2; i++)
 	{
-		/* Left-shift the binary value one bit */
-		delta[i] <<= 1;
+		/* Multiply by 2 for a signed left shift */
+		delta[i] *= 2;
 		/* if value is negative, invert this encoding */
 		if (delta[i] < 0) {
 			delta[i] = ~(delta[i]);
