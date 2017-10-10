@@ -1003,28 +1003,6 @@ static void test_geohash_point_as_int(void)
 	CU_ASSERT_EQUAL(gh, rs);
 }
 
-static void test_lwgeom_remote_repeated_points(void)
-{
-	LWGEOM *g;
-	char *ewkt;
-
-	// g = lwgeom_from_wkt("MULTIPOINT(0 0, 10 0, 10 10, 10 10, 0 10, 0 10, 0 10, 0 0, 0 0, 0 0, 5 5, 0 0, 5 5)", LW_PARSER_CHECK_NONE);
-	// lwgeom_remove_repeated_points_in_place(g, 1);
-	// ewkt = lwgeom_to_ewkt(g);
-	// CU_ASSERT_STRING_EQUAL(ewkt, "MULTIPOINT(0 0,10 0,10 10,0 10,5 5)");
-	// printf("%s\n", ewkt);
-	// lwgeom_free(g);
-	// lwfree(ewkt);
-
-	g = lwgeom_from_wkt("MULTIPOINT(0 0,10 0,10 10,10 10,0 10,0 10,0 10,0 0,0 0,0 0,5 5,5 5,5 8,8 8,8 8,8 8,8 5,8 5,5 5,5 5,5 5,5 5,5 5,50 50,50 50,50 50,50 60,50 60,50 60,60 60,60 50,60 50,50 50,55 55,55 58,58 58,58 55,58 55,55 55)", LW_PARSER_CHECK_NONE);
-	lwgeom_remove_repeated_points_in_place(g, 1);
-	ewkt = lwgeom_to_ewkt(g);
-	CU_ASSERT_STRING_EQUAL(ewkt, "MULTIPOINT(0 0,10 0,10 10,0 10,5 5,5 8,8 8,8 5,50 50,50 60,60 60,60 50,55 55,55 58,58 58,58 55)");
-	printf("%s\n", ewkt);
-	lwgeom_free(g);
-	lwfree(ewkt);
-}
-
 static void test_lwgeom_simplify(void)
 {
 	LWGEOM *l;
@@ -1314,5 +1292,4 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_median_handles_3d_correctly);
 	PG_ADD_TEST(suite,test_median_robustness);
 	PG_ADD_TEST(suite,test_lwpoly_construct_circle);
-	PG_ADD_TEST(suite,test_lwgeom_remote_repeated_points);
 }

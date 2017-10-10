@@ -398,10 +398,12 @@ void closest_point_on_segment(const POINT4D *R, const POINT4D *A, const POINT4D 
 /*
 * Repeated points
 */
+POINTARRAY *ptarray_remove_repeated_points_minpoints(const POINTARRAY *in, double tolerance, int minpoints);
 POINTARRAY *ptarray_remove_repeated_points(const POINTARRAY *in, double tolerance);
+LWGEOM* lwmpoint_remove_repeated_points(const LWMPOINT *in, double tolerance);
 LWGEOM* lwline_remove_repeated_points(const LWLINE *in, double tolerance);
-void ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, int min_points);
-void lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance);
+LWGEOM* lwcollection_remove_repeated_points(const LWCOLLECTION *in, double tolerance);
+LWGEOM* lwpoly_remove_repeated_points(const LWPOLY *in, double tolerance);
 
 /*
 * Closure test
