@@ -14,6 +14,7 @@ PostGIS 2.2.6
   - #3880, Undefined behaviour in TYPMOD_GET_SRID
   - #3875, Fix undefined behaviour in shift operation
   - #3874, lw_dist2d_pt_arc division by zero
+  - #3882, undefined behaviour in zigzag with negative inputs
 
 
 PostGIS 2.2.5

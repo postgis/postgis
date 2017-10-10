@@ -25,7 +25,7 @@
 static size_t 
 _varint_u64_encode_buf(uint64_t val, uint8_t *buf)
 {
-	uint8_t grp;	
+	uint8_t grp;
 	uint64_t q = val;
 	uint8_t *ptr = buf;
 	while (1) 
@@ -35,7 +35,7 @@ _varint_u64_encode_buf(uint64_t val, uint8_t *buf)
 		/* We rightshift our input value 7 bits */
 		/* which means that the 7 next least significant bits */
 		/* becomes the 7 least significant */
-		q = q >> 7;	
+		q = q >> 7;
 		/* Check if, after our rightshifting, we still have */
 		/* anything to read in our input value. */
 		if ( q > 0 )
@@ -92,7 +92,7 @@ varint_s32_encode_buf(int32_t val, uint8_t *buf)
 /* Read from signed 64bit varint */
 int64_t 
 varint_s64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size)
-{	
+{
 	return unzigzag64(varint_u64_decode(the_start, the_end, size));
 }
 
@@ -159,41 +159,42 @@ varint_size(const uint8_t *the_start, const uint8_t *the_end)
 
 uint64_t zigzag64(int64_t val)
 {
-	return (val << 1) ^ (val >> 63);
+	return val >= 0 ?
+		((uint64_t)val) << 1 :
+		((((uint64_t)(-1 - val)) << 1) | 0x01);
 }
 
 uint32_t zigzag32(int32_t val)
 {
-	return (val << 1) ^ (val >> 31);
+	return val >= 0 ?
+		((uint32_t)val) << 1 :
+		((((uint32_t)(-1 - val)) << 1) | 0x01);
 }
-	
+
 uint8_t zigzag8(int8_t val)
 {
-	return (val << 1) ^ (val >> 7);
+	return val >= 0 ?
+		((uint8_t)val) << 1 :
+		((((uint8_t)(-1 - val)) << 1) | 0x01);
 }
-	
+
 int64_t unzigzag64(uint64_t val)
 {
-        if ( val & 0x01 ) 
-            return -1 * (int64_t)((val+1) >> 1);
-        else
-            return (int64_t)(val >> 1);
+	return !(val & 0x01) ?
+		((int64_t)(val >> 1)) :
+		(-1 * (int64_t)((val+1) >> 1));
 }
-	
+
 int32_t unzigzag32(uint32_t val)
 {
-        if ( val & 0x01 ) 
-            return -1 * (int32_t)((val+1) >> 1);
-        else
-            return (int32_t)(val >> 1);
+	return !(val & 0x01) ?
+		((int32_t)(val >> 1)) :
+		(-1 * (int32_t)((val+1) >> 1));
 }
-	
+
 int8_t unzigzag8(uint8_t val)
 {
-        if ( val & 0x01 ) 
-            return -1 * (int8_t)((val+1) >> 1);
-        else
-            return (int8_t)(val >> 1);
+	return !(val & 0x01) ?
+		((int8_t)(val >> 1)) :
+		(-1 * (int8_t)((val+1) >> 1));
 }
-	
-
