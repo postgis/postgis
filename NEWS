@@ -13,6 +13,7 @@ YYYY/MM/DD
   - #3864, Performance improvements for b-tree geometry sorts
   - #3874, lw_dist2d_pt_arc division by zero
   - #3882, undefined behaviour in zigzag with negative inputs
+  - #3891, undefined behaviour in pointarray_to_encoded_polyline
 
 
 PostGIS 2.4.0
