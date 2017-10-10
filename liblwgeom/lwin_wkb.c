@@ -318,9 +318,14 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 	size_t pa_size;
 	uint32_t ndims = 2;
 	uint32_t npoints = 0;
+	static uint32_t maxpoints = 4294967295 / WKB_DOUBLE_SIZE / 4;
 
 	/* Calculate the size of this point array. */
 	npoints = integer_from_wkb_state(s);
+	if (npoints > maxpoints)
+	{
+		lwerror("point array length (%d) is too large");
+	}
 
 	LWDEBUGF(4,"Pointarray has %d points", npoints);
 
