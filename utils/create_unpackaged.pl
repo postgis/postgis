@@ -28,9 +28,9 @@ my $extname = shift(@ARGV);
 # drops are in the following order:
 #	1. Indexing system stuff
 #	2. Meta datatables <not done>
-#	3. Aggregates 
+#	3. Aggregates
 #	3. Casts
-#	4. Operators 
+#	4. Operators
 #	5. Functions
 #	6. Types
 #	7. Tables
@@ -180,7 +180,7 @@ foreach my $agg (@aggs)
 	{
 		print "$addprefix AGGREGATE $1 ($2);\n";
 	}
-	else 
+	else
 	{
 		die "Couldn't parse AGGREGATE line: $agg\n";
 	}
@@ -206,7 +206,7 @@ foreach my $op (@ops)
 	}
 }
 
-	
+
 print "-- Register all casts.\n";
 foreach my $cast (@casts)
 {
@@ -233,7 +233,7 @@ foreach my $fn (@funcs)
 		if ( ! exists($type_funcs{$fn_nm}) )
 		{
 			print "$addprefix FUNCTION $fn_nm ($fn_arg);\n";
-		} 
+		}
 		else
 		{
 			push(@type_funcs, $fn);
