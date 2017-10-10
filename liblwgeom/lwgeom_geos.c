@@ -266,8 +266,8 @@ ptarray_to_GEOSLinearRing(const POINTARRAY *pa, int autofix)
 		{
 			lwerror("ptarray_to_GEOSLinearRing called with autofix and 0 vertices in ring, cannot fix");
 		}
-		
-		/* 
+
+		/*
 		* Check ring for being closed and fix if not.
 		* Also create a copy of geometry to operate on.
 		*/
