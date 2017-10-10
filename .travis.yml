@@ -7,8 +7,10 @@ env:
 addons:
   postgresql: "9.6"
   apt:
+    sources:    
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-trusty-5.0
     packages:
-      - postgresql-9.6 
       - postgresql-server-dev-9.6 
       - libxml2-utils
       - libcunit1-dev
@@ -21,12 +23,14 @@ addons:
       - libjson0-dev
       - libprotobuf-c0-dev 
       - libgdal-dev
+      - clang-5.0
+      - clang-tidy-5.0
 
 before_install:
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update -qq
-  - sudo apt-get install -y --no-install-recommends libsfcgal1 libsfcgal-dev
+  - sudo apt-get install -y --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev
   - wget http://download.osgeo.org/proj/proj-4.9.2.tar.gz
   - tar zxvf proj-4.9.2.tar.gz
   - cd proj-4.9.2
@@ -41,7 +45,7 @@ before_install:
 
 language: c
 
-compiler: gcc
+compiler: "clang-5.0"
 
 dist: trusty
 
