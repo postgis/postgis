@@ -11,6 +11,7 @@ YYYY/MM/DD
   - #3880, Undefined behaviour in TYPMOD_GET_SRID
   - #3875, Fix undefined behaviour in shift operation
   - #3864, Performance improvements for b-tree geometry sorts
+  - #3874, lw_dist2d_pt_arc division by zero
 
 
 PostGIS 2.4.0
