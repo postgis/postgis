@@ -1,6 +1,8 @@
 env:
   global:
-    - RUNTESTFLAGS=-v CXXFLAGS="-fsanitize=address,integer -fno-sanitize-recover=all -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address,integer"
+    - RUNTESTFLAGS=-v
+    - CFLAGS="-O3 -march=native -fsanitize=address,integer -fno-sanitize-recover=all -fno-omit-frame-pointer"
+    - LDFLAGS="-fsanitize=address,integer"
 
 addons:
   postgresql: "9.6"
