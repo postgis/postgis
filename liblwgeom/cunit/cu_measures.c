@@ -534,6 +534,13 @@ test_lw_dist2d_pt_arc(void)
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
 
+	/* Point on semicircle center */
+	P.x  = 0 ; P.y  = 0;
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
+
 	/* Point inside closed circle */
 	P.x  = 0 ; P.y  = 0.5;
 	A2.x = 1; A2.y = 0;

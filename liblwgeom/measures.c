@@ -1440,7 +1440,16 @@ lw_dist2d_pt_arc(const POINT2D* P, const POINT2D* A1, const POINT2D* A2, const P
 	
 	/* Distance from point to center */	
 	d = distance2d_pt_pt(&C, P);
-	
+
+	/* P is the center of the circle */
+	if ( FP_EQUALS(d, 0.0) )
+	{
+		dl->distance = radius_A;
+		dl->p1 = *A1;
+		dl->p2 = *P;
+		return LW_TRUE;
+	}
+
 	/* X is the point on the circle where the line from P to C crosses */
 	X.x = C.x + (P->x - C.x) * radius_A / d;
 	X.y = C.y + (P->y - C.y) * radius_A / d;
