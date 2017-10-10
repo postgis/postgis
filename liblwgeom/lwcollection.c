@@ -456,23 +456,6 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 	return outcol;
 }
 
-LWGEOM*
-lwcollection_remove_repeated_points(const LWCOLLECTION *coll, double tolerance)
-{
-	uint32_t i;
-	LWGEOM **newgeoms;
-
-	newgeoms = lwalloc(sizeof(LWGEOM *)*coll->ngeoms);
-	for (i=0; i<coll->ngeoms; i++)
-	{
-		newgeoms[i] = lwgeom_remove_repeated_points(coll->geoms[i], tolerance);
-	}
-
-	return (LWGEOM*)lwcollection_construct(coll->type,
-	                                       coll->srid, coll->bbox ? gbox_copy(coll->bbox) : NULL,
-	                                       coll->ngeoms, newgeoms);
-}
-
 
 LWCOLLECTION*
 lwcollection_force_dims(const LWCOLLECTION *col, int hasz, int hasm)

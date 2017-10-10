@@ -449,13 +449,7 @@ lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
 LWGEOM*
 lwline_remove_repeated_points(const LWLINE *lwline, double tolerance)
 {
-	POINTARRAY* npts = ptarray_remove_repeated_points_minpoints(lwline->points, tolerance, 2);
-
-	LWDEBUGF(3, "%s: npts %p", __func__, npts);
-
-	return (LWGEOM*)lwline_construct(lwline->srid,
-	                                 lwline->bbox ? gbox_copy(lwline->bbox) : 0,
-	                                 npts);
+	return lwgeom_remove_repeated_points((LWGEOM*)lwline, tolerance);
 }
 
 int
