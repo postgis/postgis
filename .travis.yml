@@ -27,21 +27,9 @@ addons:
       - clang-tidy-5.0
 
 before_install:
-  - sudo add-apt-repository --yes ppa:ubuntugis/ppa
-  - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
+  - sudo add-apt-repository --yes "deb http://us-central1.gce.archive.ubuntu.com/ubuntu artful main restricted universe multiverse"
   - sudo apt-get update -qq
-  - sudo apt-get install -y --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev
-  - wget http://download.osgeo.org/proj/proj-4.9.3.tar.gz
-  - tar zxvf proj-4.9.3.tar.gz
-  - cd proj-4.9.3
-  - ./configure --prefix=/usr
-  - make -j
-  - sudo make install
-  - cd ..
-  - rm -rf proj-4.9.3
-  - rm proj-4.9.3.tar.gz
-  - sudo ldconfig
-  - ./autogen.sh
+  - sudo apt-get install -y --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev libproj-dev
 
 language: c
 
