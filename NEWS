@@ -12,6 +12,7 @@ YYYY/MM/DD
   - #3875, Fix undefined behaviour in shift operation
   - #3864, Performance improvements for b-tree geometry sorts
   - #3874, lw_dist2d_pt_arc division by zero
+  - #3882, undefined behaviour in zigzag with negative inputs
 
 
 PostGIS 2.4.0

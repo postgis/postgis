@@ -167,41 +167,44 @@ varint_size(const uint8_t *the_start, const uint8_t *the_end)
 
 uint64_t zigzag64(int64_t val)
 {
-	return (val << 1) ^ (val >> 63);
+	return val >= 0 ?
+		((uint64_t)val) << 1 :
+		((((uint64_t)(-1 - val)) << 1) | 0x01);
 }
 
 uint32_t zigzag32(int32_t val)
 {
-	return (val << 1) ^ (val >> 31);
+	return val >= 0 ?
+		((uint32_t)val) << 1 :
+		((((uint32_t)(-1 - val)) << 1) | 0x01);
 }
 
 uint8_t zigzag8(int8_t val)
 {
-	return (val << 1) ^ (val >> 7);
+	return val >= 0 ?
+		((uint8_t)val) << 1 :
+		((((uint8_t)(-1 - val)) << 1) | 0x01);
 }
 
 int64_t unzigzag64(uint64_t val)
 {
-        if ( val & 0x01 )
-            return -1 * (int64_t)((val+1) >> 1);
-        else
-            return (int64_t)(val >> 1);
+	return !(val & 0x01) ?
+		((int64_t)(val >> 1)) :
+		(-1 * (int64_t)((val+1) >> 1));
 }
 
 int32_t unzigzag32(uint32_t val)
 {
-        if ( val & 0x01 )
-            return -1 * (int32_t)((val+1) >> 1);
-        else
-            return (int32_t)(val >> 1);
+	return !(val & 0x01) ?
+		((int32_t)(val >> 1)) :
+		(-1 * (int32_t)((val+1) >> 1));
 }
 
 int8_t unzigzag8(uint8_t val)
 {
-        if ( val & 0x01 )
-            return -1 * (int8_t)((val+1) >> 1);
-        else
-            return (int8_t)(val >> 1);
+	return !(val & 0x01) ?
+		((int8_t)(val >> 1)) :
+		(-1 * (int8_t)((val+1) >> 1));
 }
 
 

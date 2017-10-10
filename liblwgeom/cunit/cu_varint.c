@@ -220,13 +220,27 @@ static void test_zigzag(void)
 	{
 		a = b = i;
 		CU_ASSERT_EQUAL(a, unzigzag64(zigzag64(a)));
-		CU_ASSERT_EQUAL(b, unzigzag32(zigzag64(b)));
+		CU_ASSERT_EQUAL(b, unzigzag32(zigzag32(b)));
 
 		a = b = -1 * i;
 		CU_ASSERT_EQUAL(a, unzigzag64(zigzag64(a)));
-		CU_ASSERT_EQUAL(b, unzigzag32(zigzag64(b)));
+		CU_ASSERT_EQUAL(b, unzigzag32(zigzag32(b)));
 	}
 
+	//8
+	CU_ASSERT_EQUAL(-INT8_MAX, unzigzag8(zigzag8(-INT8_MAX)));
+	CU_ASSERT_EQUAL(INT8_MAX, unzigzag8(zigzag8(INT8_MAX)));
+	CU_ASSERT_EQUAL(0, unzigzag8(zigzag8(0)));
+
+	//32
+	CU_ASSERT_EQUAL(-INT32_MAX, unzigzag32(zigzag32(-INT32_MAX)));
+	CU_ASSERT_EQUAL(INT32_MAX, unzigzag32(zigzag32(INT32_MAX)));
+	CU_ASSERT_EQUAL(0, unzigzag32(zigzag32(0)));
+
+	//64
+	CU_ASSERT_EQUAL(-INT64_MAX, unzigzag64(zigzag64(-INT64_MAX)));
+	CU_ASSERT_EQUAL(INT64_MAX, unzigzag64(zigzag64(INT64_MAX)));
+	CU_ASSERT_EQUAL(0, unzigzag64(zigzag64(0)));
 }
 
 
