@@ -343,9 +343,6 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 	g1_is_empty = (gserialized_get_gbox_p(g1, &box1) == LW_FAILURE);
 	g2_is_empty = (gserialized_get_gbox_p(g2, &box2) == LW_FAILURE);
 
-	uint32_t t1 = gserialized_get_type(g1);
-	uint32_t t2 = gserialized_get_type(g2);
-
 	/* Empty < Non-empty */
 	if (g1_is_empty && !g2_is_empty)
 		return -1;
