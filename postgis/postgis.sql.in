@@ -2790,6 +2790,27 @@ AS $$
 	FROM substring(version(), 'PostgreSQL ([0-9\.]+)') AS s;
 $$ LANGUAGE 'sql' STABLE;
 
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION postgis_extensions_upgrade() RETURNS text
+AS $$
+DECLARE rec record;
+BEGIN
+ FOR rec in SELECT 'ALTER EXTENSION ' || name || ' UPDATE TO ' || quote_ident(default_version)   || ';' AS sql
+	FROM pg_available_extensions
+	WHERE installed_version > '' AND name IN('postgis', 'postgis_sfcgal', 'postgis_tiger_geocoder', 'postgis_topology')
+	AND ( default_version <> installed_version ) LOOP
+
+    EXECUTE rec.sql;
+    RAISE NOTICE '%', rec.sql;
+END LOOP;
+
+RETURN @extschema@.postgis_full_version();
+
+END
+$$ language plpgsql;
+
+
+-- Changed: 2.4.0
 CREATE OR REPLACE FUNCTION postgis_full_version() RETURNS text
 AS $$
 DECLARE
