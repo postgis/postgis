@@ -1,25 +1,35 @@
 env:
   global:
     - RUNTESTFLAGS=-v
+    - CFLAGS="-Ofast -fno-omit-frame-pointer -Werror"
 
 addons:
   postgresql: "9.6"
+  apt:
+    packages:
+      - postgresql-server-dev-9.6
+      - libxml2-utils
+      - libcunit1-dev
+      - xsltproc
+      - docbook-xsl
+      - docbook-mathml
+      - dblatex
+      - libgeos-dev
+      - libjson0-dev
+      - libprotobuf-c0-dev
+      - libgdal-dev
+      - eatmydata
 
 before_install:
-  - sudo add-apt-repository --yes ppa:ubuntugis/ppa
-  - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
-  - sudo apt-get update -qq
-  - sudo apt-get install -y --no-install-recommends
-      postgresql-9.6 postgresql-server-dev-9.6 libxml2-utils
-      libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex
-      libgdal-dev libgeos-dev libjson0-dev
-      libsfcgal1 libsfcgal-dev libprotobuf-c0-dev libgdal-dev
-  - dpkg -l | grep postgresql
+  - sudo eatmydata add-apt-repository --yes ppa:ubuntugis/ppa
+  - sudo eatmydata add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
+  - sudo eatmydata apt-get update -qq
+  - sudo eatmydata apt-get install -y --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev
   - wget http://download.osgeo.org/proj/proj-4.9.2.tar.gz
   - tar zxvf proj-4.9.2.tar.gz
   - cd proj-4.9.2
-  - ./configure --prefix=/usr
-  - make
+  - CFLAGS="-Ofast" ./configure --prefix=/usr
+  - CFLAGS="-Ofast" eatmydata make -j
   - sudo make install
   - cd ..
   - rm -rf proj-4.9.2
@@ -37,13 +47,13 @@ cache: ccache
 
 script:
   - ./configure
-  - make
+  - eatmydata make -j
   - chmod 755 /home/travis
-  - make check
-  - make check RUNTESTFLAGS='--dumprestore'
+  - eatmydata make check
+  - eatmydata make check RUNTESTFLAGS='--dumprestore'
   - sudo make install
-  - make installcheck
-  - make installcheck RUNTESTFLAGS='--dumprestore'
+  - eatmydata make installcheck
+  - eatmydata make installcheck RUNTESTFLAGS='--dumprestore'
 
 notifications:
   email: false
@@ -53,3 +63,4 @@ notifications:
     on_success: change
     on_failure: always
     use_notice: false
+    
