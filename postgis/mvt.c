@@ -478,7 +478,6 @@ static void add_value_as_string(struct mvt_agg_context *ctx,
 static void parse_datum_as_string(struct mvt_agg_context *ctx, Oid typoid,
 	Datum datum, uint32_t *tags, uint32_t k)
 {
-	struct mvt_kv_string_value *kv;
 	Oid foutoid;
 	bool typisvarlena;
 	char *value;
@@ -668,11 +667,9 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;
 	double resx = width / extent;
-	double resy = height / extent;
 	double fx = extent / width;
 	double fy = -(extent / height);
 	double buffer_map_xunits = resx * buffer;
-	double buffer_map_yunits = resy * buffer;
 	const GBOX *lwgeom_gbox;
 	POSTGIS_DEBUG(2, "mvt_geom called");
 
@@ -807,7 +804,7 @@ void mvt_agg_transfn(struct mvt_agg_context *ctx)
 	LWGEOM *lwgeom;
 	VectorTile__Tile__Feature *feature;
 	VectorTile__Tile__Layer *layer = ctx->layer;
-	VectorTile__Tile__Feature **features = layer->features;
+/*	VectorTile__Tile__Feature **features = layer->features; */
 	POSTGIS_DEBUG(2, "mvt_agg_transfn called");
 
 	if (layer->n_features >= ctx->features_capacity) {

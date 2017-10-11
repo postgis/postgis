@@ -564,7 +564,7 @@ void geobuf_agg_transfn(struct geobuf_agg_context *ctx)
 	bool isnull = false;
 	Datum datum;
 	Data__FeatureCollection *fc = ctx->data->feature_collection;
-	Data__Feature **features = fc->features;
+/*	Data__Feature **features = fc->features; */
 	Data__Feature *feature;
 	GSERIALIZED *gs;
 	if (fc->n_features >= ctx->features_capacity) {
