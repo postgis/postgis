@@ -13,6 +13,7 @@ addons:
 before_install:
   - sudo eatmydata add-apt-repository --yes "deb http://us-central1.gce.archive.ubuntu.com/ubuntu artful main restricted universe multiverse"
   - sudo eatmydata apt-get update -qq
+  - sudo eatmydata apt-get dist-upgrade -o APT::Force-LoopBreak=1
   - sudo eatmydata apt-get install -y --no-install-recommends --no-install-suggests -o APT::Force-LoopBreak=1 dpkg
   - sudo eatmydata apt-get install -y --no-install-recommends --no-install-suggests 
       clang-5.0 clang-tidy-5.0
