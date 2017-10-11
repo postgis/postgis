@@ -1,15 +1,12 @@
 env:
   global:
     - RUNTESTFLAGS=-v
-    - CFLAGS="-O3 -fsanitize=address -fno-omit-frame-pointer -Werror -Wno-error=ignored-attributes"
-    - LDFLAGS="-fsanitize=address,integer"
+    - CFLAGS="-O3 -fsanitize=address -fno-omit-frame-pointer -Werror"
+    - LDFLAGS="-fsanitize=address"
 
 addons:
   postgresql: "9.6"
   apt:
-    sources:    
-      - ubuntu-toolchain-r-test
-      - llvm-toolchain-trusty-5.0
     packages:
       - postgresql-server-dev-9.6
       - libxml2-utils
@@ -22,8 +19,6 @@ addons:
       - libjson0-dev
       - libprotobuf-c0-dev
       - libgdal-dev
-      - clang-5.0
-      - clang-tidy-5.0
       - eatmydata
 
 before_install:
@@ -45,7 +40,7 @@ before_install:
 
 language: c
 
-compiler: "clang-5.0"
+compiler: gcc
 
 dist: trusty
 
