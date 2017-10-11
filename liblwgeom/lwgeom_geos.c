@@ -262,19 +262,25 @@ ptarray_to_GEOSLinearRing(const POINTARRAY *pa, int autofix)
 
 	if ( autofix )
 	{
-		/* check ring for being closed and fix if not */
-		if ( ! ptarray_is_closed_2d(pa) )
+		if (pa->npoints < 1)
 		{
-			npa = ptarray_addPoint(pa, getPoint_internal(pa, 0), FLAGS_NDIMS(pa->flags), pa->npoints);
-			pa = npa;
+			lwerror("ptarray_to_GEOSLinearRing called with autofix and 0 vertices in ring, cannot fix");
 		}
-		/* TODO: check ring for having at least 4 vertices */
-#if 0
+
+		/*
+		* Check ring for being closed and fix if not.
+		* Also create a copy of geometry to operate on.
+		*/
+		if ( ! ptarray_is_closed_2d(pa) || pa->npoints < 4 )
+		{
+			pa = ptarray_addPoint(pa, getPoint_internal(pa, 0), FLAGS_NDIMS(pa->flags), pa->npoints);
+			npa = pa;
+		}
+		/* Check ring for having at least 4 vertices */
 		while ( pa->npoints < 4 )
 		{
-			npa = ptarray_addPoint(npa, getPoint_internal(pa, 0), FLAGS_NDIMS(pa->flags), pa->npoints);
+			ptarray_append_point(pa, getPoint_internal(pa, 0), LW_TRUE);
 		}
-#endif
 	}
 
 	sq = ptarray_to_GEOSCoordSeq(pa);

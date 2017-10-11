@@ -28,6 +28,7 @@
 #include "liblwgeom_internal.h" /* NOTE: includes lwgeom_log.h */
 #include "lwgeom_log.h"
 #include <math.h>
+#include <limits.h>
 
 /**
 * Used for passing the parse state between the parsing functions.
@@ -125,7 +126,10 @@ uint8_t* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 static inline void wkb_parse_state_check(wkb_parse_state *s, size_t next)
 {
 	if( (s->pos + next) > (s->wkb + s->wkb_size) )
+	{
 		lwerror("WKB structure does not match expected size!");
+		return;
+	}
 }
 
 /**
@@ -332,9 +336,15 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 	size_t pa_size;
 	uint32_t ndims = 2;
 	uint32_t npoints = 0;
+	static uint32_t maxpoints = UINT_MAX / WKB_DOUBLE_SIZE / 4;
 
 	/* Calculate the size of this point array. */
 	npoints = integer_from_wkb_state(s);
+	if (npoints > maxpoints)
+	{
+		lwerror("Pointarray length (%d) is too large");
+		return NULL;
+	}
 
 	LWDEBUGF(4,"Pointarray has %d points", npoints);
 
