@@ -1,7 +1,7 @@
 env:
   global:
     - RUNTESTFLAGS=-v
-    - CFLAGS="-O3 -march=native -fsanitize=address,integer -fno-sanitize-recover=all -fno-omit-frame-pointer -Werror -Wno-error=ignored-attributes"
+    - CFLAGS="-O3 -fsanitize=address -fno-omit-frame-pointer -Werror -Wno-error=ignored-attributes"
     - LDFLAGS="-fsanitize=address,integer"
 
 addons:
