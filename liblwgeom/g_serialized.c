@@ -358,7 +358,6 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 
 	if (!g1_is_empty && !g2_is_empty)
 	{
-
 		/* Using the centroids, calculate somewhat sortable */
 		/* hash key. The key doesn't provide good locality over */
 		/* the +/- boundary, but otherwise is pretty OK */
@@ -393,7 +392,7 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 		else if (box1.ymax > box2.ymax)
 			return 1;
 	}
-		
+
 	/* OK fine, we'll sort on the memcmp just to be done with this */
 	return cmp == 0 ? 0 : (cmp > 0 ? 1 : -1);
 }
