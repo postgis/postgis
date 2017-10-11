@@ -7,20 +7,41 @@ env:
 addons:
   postgresql: "9.6"
   apt:
+    sources:    
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-trusty-5.0
     packages:
+      - postgresql-server-dev-9.6
+      - libxml2-utils
+      - libcunit1-dev
+      - xsltproc
+      - docbook-xsl
+      - docbook-mathml
+      - dblatex
+      - libgeos-dev
+      - libjson0-dev
+      - libprotobuf-c0-dev
+      - libgdal-dev
+      - clang-5.0
+      - clang-tidy-5.0
       - eatmydata
 
 before_install:
-  - sudo eatmydata add-apt-repository --yes "deb http://us-central1.gce.archive.ubuntu.com/ubuntu artful main restricted universe multiverse"
+  - sudo eatmydata add-apt-repository --yes ppa:ubuntugis/ppa
+  - sudo eatmydata add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
   - sudo eatmydata apt-get update -qq
-  - sudo eatmydata apt-get dist-upgrade -o APT::Force-LoopBreak=1
-  - sudo eatmydata apt-get install -y --no-install-recommends --no-install-suggests -o APT::Force-LoopBreak=1 dpkg
-  - sudo eatmydata apt-get install -y --no-install-recommends --no-install-suggests 
-      clang-5.0 clang-tidy-5.0
-      libcunit1-dev libjson0-dev libprotobuf-c0-dev 
-      libsfcgal-dev libproj-dev libgdal-dev libgeos-dev 
-      libxml2-utils xsltproc docbook-xsl docbook-mathml dblatex
-      postgresql-server-dev-9.6       
+  - sudo eatmydata apt-get install -y --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev
+  - wget http://download.osgeo.org/proj/proj-4.9.2.tar.gz
+  - tar zxvf proj-4.9.2.tar.gz
+  - cd proj-4.9.2
+  - ./configure --prefix=/usr
+  - eatmydata make -j
+  - sudo make install
+  - cd ..
+  - rm -rf proj-4.9.2
+  - rm proj-4.9.2.tar.gz
+  - sudo ldconfig
+  - ./autogen.sh
 
 language: c
 
@@ -32,13 +53,13 @@ cache: ccache
 
 script:
   - ./configure
-  - make -j
+  - eatmydata make -j
   - chmod 755 /home/travis
-  - make check
-  - make check RUNTESTFLAGS='--dumprestore'
+  - eatmydata make check
+  - eatmydata make check RUNTESTFLAGS='--dumprestore'
   - sudo make install
-  - make installcheck
-  - make installcheck RUNTESTFLAGS='--dumprestore'
+  - eatmydata make installcheck
+  - eatmydata make installcheck RUNTESTFLAGS='--dumprestore'
 
 notifications:
   email: false
