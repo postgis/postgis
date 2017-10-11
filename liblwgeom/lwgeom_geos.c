@@ -283,12 +283,12 @@ ptarray_to_GEOSLinearRing(const POINTARRAY *pa, int autofix)
 		}
 	}
 
-	if ( npa ) 
+	if ( npa )
 	{
 		sq = ptarray_to_GEOSCoordSeq(npa);
 		ptarray_free(npa);
 	}
-	else 
+	else
 	{
 		sq = ptarray_to_GEOSCoordSeq(pa);
 	}
