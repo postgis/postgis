@@ -30,6 +30,11 @@
 #include "utils/jsonb.h"
 #endif
 
+#if POSTGIS_PGSQL_VERSION < 110
+/* See trac ticket #3867 */
+# define DatumGetJsonbP DatumGetJsonb
+#endif
+
 #include "uthash.h"
 
 #define FEATURES_CAPACITY_INITIAL 50
@@ -587,7 +592,7 @@ static void parse_values(struct mvt_agg_context *ctx)
 		if (k == -1 && typoid != JSONBOID)
 			elog(ERROR, "parse_values: unexpectedly could not find parsed key name '%s'", key);
 		if (typoid == JSONBOID) {
-			tags = parse_jsonb(ctx, DatumGetJsonb(datum), tags);
+			tags = parse_jsonb(ctx, DatumGetJsonbP(datum), tags);
 			continue;
 		}
 #else
