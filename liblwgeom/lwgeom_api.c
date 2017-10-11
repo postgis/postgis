@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright 2001-2006 Refractions Research Inc.
+ * Copyright 2017 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -366,7 +367,7 @@ getPoint2d_cp(const POINTARRAY *pa, int n)
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
-		lwerror("getPoint2D_const_p: point offset out of range");
+		lwerror("getPoint2d_cp: point offset out of range");
 		return 0; /*error */
 	}
 
@@ -401,13 +402,13 @@ getPoint4d_cp(const POINTARRAY *pa, int n)
 
 	if ( ! (FLAGS_GET_Z(pa->flags) && FLAGS_GET_Z(pa->flags)) )
 	{
-		lwerror("getPoint3dz_cp: no Z and M coordinates in point array");
+		lwerror("getPoint4d_cp: no Z and M coordinates in point array");
 		return 0; /*error */
 	}
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
-		lwerror("getPoint3dz_cp: point offset out of range");
+		lwerror("getPoint4d_cp: point offset out of range");
 		return 0; /*error */
 	}
 
