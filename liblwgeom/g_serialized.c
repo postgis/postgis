@@ -305,13 +305,13 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 	if (
 		sz1 > 16 && // 16 is size of EMPTY, if it's larger - it has coordinates
 		sz2 > 16 &&
-		*(uint32_t*)(g1->data) == POINTTYPE &&
-		*(uint32_t*)(g2->data) == POINTTYPE &&
+		*(uint32_t*)(g1 + 2 * sizeof(uint32_t)) == POINTTYPE &&
+		*(uint32_t*)(g2 + 2 * sizeof(uint32_t)) == POINTTYPE &&
 		!FLAGS_GET_BBOX(g1->flags) &&
 		!FLAGS_GET_BBOX(g2->flags)
 	)
 	{
-		dptr = (double*)(g1->data + sizeof(double));
+		double* dptr = (double*)(g1->data + sizeof(double));
 		x.f = 2.0 * dptr[0];
 		y.f = 2.0 * dptr[1];
 		hash1 = uint32_interleave_2(x.u, y.u);
