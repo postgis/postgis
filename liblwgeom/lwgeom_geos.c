@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright 2011-2014 Sandro Santilli <strk@kbt.io>
+ * Copyright 2017 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -273,18 +274,24 @@ ptarray_to_GEOSLinearRing(const POINTARRAY *pa, int autofix)
 		*/
 		if ( ! ptarray_is_closed_2d(pa) || pa->npoints < 4 )
 		{
-			pa = ptarray_addPoint(pa, getPoint_internal(pa, 0), FLAGS_NDIMS(pa->flags), pa->npoints);
-			npa = pa;
+			npa = ptarray_addPoint(pa, getPoint_internal(pa, 0), FLAGS_NDIMS(pa->flags), pa->npoints);
 		}
 		/* Check ring for having at least 4 vertices */
-		while ( pa->npoints < 4 )
+		while ( npa->npoints < 4 )
 		{
-			ptarray_append_point(pa, getPoint_internal(pa, 0), LW_TRUE);
+			ptarray_append_point(npa, (POINT4D*)getPoint_internal(npa, 0), LW_TRUE);
 		}
 	}
 
-	sq = ptarray_to_GEOSCoordSeq(pa);
-	if ( npa ) ptarray_free(npa);
+	if ( npa )
+	{
+		sq = ptarray_to_GEOSCoordSeq(npa);
+		ptarray_free(npa);
+	}
+	else
+	{
+		sq = ptarray_to_GEOSCoordSeq(pa);
+	}
 	g = GEOSGeom_createLinearRing(sq);
 	return g;
 }
@@ -2140,4 +2147,3 @@ LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double toleranc
 	return lwgeom_result;
 #endif /* POSTGIS_GEOS_VERSION < 35 */
 }
-
