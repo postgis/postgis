@@ -30,7 +30,7 @@ before_install:
   - tar zxvf proj-4.9.2.tar.gz
   - cd proj-4.9.2
   - ./configure --prefix=/usr
-  - eatmydata make -j
+  - eatmydata CFLAGS="-Ofast" make -j
   - sudo make install
   - cd ..
   - rm -rf proj-4.9.2
