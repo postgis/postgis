@@ -15,6 +15,7 @@ YYYY/MM/DD
   - #3882, undefined behaviour in zigzag with negative inputs
   - #3891, undefined behaviour in pointarray_to_encoded_polyline
   - #3895, throw error on malformed WKB input
+  - #3886, fix rare missing boxes in geometry subdivision
 
 
 PostGIS 2.4.0
