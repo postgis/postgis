@@ -300,27 +300,25 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 	union floatuint x, y;
 
 	/*
-	* For two non-same planar points, we can skip a lot of machinery.
+	* For two non-same points, we can skip a lot of machinery.
 	*/
 	if (
 		sz1 > 16 && // 16 is size of EMPTY, if it's larger - it has coordinates
 		sz2 > 16 &&
-		*(uint32_t*)(g1->data) == POINTTYPE &&
-		*(uint32_t*)(g2->data) == POINTTYPE &&
+		*(uint32_t*)(g1 + 2 * sizeof(uint32_t)) == POINTTYPE &&
+		*(uint32_t*)(g2 + 2 * sizeof(uint32_t)) == POINTTYPE &&
 		!FLAGS_GET_BBOX(g1->flags) &&
-		!FLAGS_GET_GEODETIC(g1->flags) &&
-		!FLAGS_GET_BBOX(g2->flags) &&
-		!FLAGS_GET_GEODETIC(g2->flags)
+		!FLAGS_GET_BBOX(g2->flags)
 	)
 	{
-		double *dptr = (double*)(g1->data);
-		x.f = 2.0 * dptr[1];
-		y.f = 2.0 * dptr[2];
+		double *dptr = (double*)(g1->data + sizeof(double));
+		x.f = 2.0 * dptr[0];
+		y.f = 2.0 * dptr[1];
 		hash1 = uint32_interleave_2(x.u, y.u);
 
-		dptr = (double*)(g2->data);
-		x.f = 2.0 * dptr[1];
-		y.f = 2.0 * dptr[2];
+		dptr = (double*)(g2->data + sizeof(double));
+		x.f = 2.0 * dptr[0];
+		y.f = 2.0 * dptr[1];
 		hash2 = uint32_interleave_2(x.u, y.u);
 
 		if ( hash1 > hash2 )
@@ -345,22 +343,12 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 	g1_is_empty = (gserialized_get_gbox_p(g1, &box1) == LW_FAILURE);
 	g2_is_empty = (gserialized_get_gbox_p(g2, &box2) == LW_FAILURE);
 
-	/* Empty == Empty */
-	if (g1_is_empty && g2_is_empty)
-	{
-		/* POINT EMPTY == POINT EMPTY */
-		/* POINT EMPTY < LINESTRING EMPTY */
-		uint32_t t1 = gserialized_get_type(g1);
-		uint32_t t2 = gserialized_get_type(g2);
-		return t1 == t2 ? 0 : (t1 < t2 ? -1 : 1);
-	}
-
 	/* Empty < Non-empty */
-	if (g1_is_empty)
+	if (g1_is_empty && !g2_is_empty)
 		return -1;
 
 	/* Non-empty > Empty */
-	if (g2_is_empty)
+	if (!g2_is_empty && g2_is_empty)
 		return 1;
 
 	/* Return equality for perfect equality only */
@@ -368,45 +356,42 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 	if ( bsz1 == bsz2 && cmp_srid == 0 && cmp == 0 )
 		return 0;
 
-	/* Using the centroids, calculate somewhat sortable */
-	/* hash key. The key doesn't provide good locality over */
-	/* the +/- boundary, but otherwise is pretty OK */
-	hash1 = gbox_get_sortable_hash(&box1);
-	hash2 = gbox_get_sortable_hash(&box2);
+	if (!g1_is_empty && !g2_is_empty)
+	{
+		/* Using the centroids, calculate somewhat sortable */
+		/* hash key. The key doesn't provide good locality over */
+		/* the +/- boundary, but otherwise is pretty OK */
+		hash1 = gbox_get_sortable_hash(&box1);
+		hash2 = gbox_get_sortable_hash(&box2);
 
-	if ( hash1 > hash2 )
-		return 1;
-	else if ( hash1 < hash2 )
-		return -1;
+		if ( hash1 > hash2 )
+			return 1;
+		else if ( hash1 < hash2 )
+			return -1;
 
-	/* What, the hashes are equal? OK... sort on the */
-	/* box minima */
-	if (box1.xmin < box2.xmin)
-		return -1;
-	else if (box1.xmin > box2.xmin)
-		return 1;
+		/* What, the hashes are equal? OK... sort on the */
+		/* box minima */
+		if (box1.xmin < box2.xmin)
+			return -1;
+		else if (box1.xmin > box2.xmin)
+			return 1;
 
-	if (box1.ymin < box2.ymin)
-		return -1;
-	else if (box1.ymin > box2.ymin)
-		return 1;
+		if (box1.ymin < box2.ymin)
+			return -1;
+		else if (box1.ymin > box2.ymin)
+			return 1;
 
-	/* Still equal? OK... sort on the box maxima */
-	if (box1.xmax < box2.xmax)
-		return -1;
-	else if (box1.xmax > box2.xmax)
-		return 1;
+		/* Still equal? OK... sort on the box maxima */
+		if (box1.xmax < box2.xmax)
+			return -1;
+		else if (box1.xmax > box2.xmax)
+			return 1;
 
-	if (box1.ymax < box2.ymax)
-		return -1;
-	else if (box1.ymax > box2.ymax)
-		return 1;
-
-	/* Geeze! How about object size? Sort on that... */
-	if (hsz1 < hsz2)
-		return -1;
-	else if (hsz1 > hsz2)
-		return 1;
+		if (box1.ymax < box2.ymax)
+			return -1;
+		else if (box1.ymax > box2.ymax)
+			return 1;
+	}
 
 	/* OK fine, we'll sort on the memcmp just to be done with this */
 	return cmp == 0 ? 0 : (cmp > 0 ? 1 : -1);
@@ -1563,4 +1548,3 @@ LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g)
 
 	return lwgeom;
 }
-
