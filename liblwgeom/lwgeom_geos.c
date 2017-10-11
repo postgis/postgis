@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright 2011-2014 Sandro Santilli <strk@kbt.io>
+ * Copyright 2017 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -278,7 +279,7 @@ ptarray_to_GEOSLinearRing(const POINTARRAY *pa, int autofix)
 		/* Check ring for having at least 4 vertices */
 		while ( npa->npoints < 4 )
 		{
-			ptarray_append_point(npa, getPoint_internal(npa, 0), LW_TRUE);
+			ptarray_append_point(npa, (POINT4D*)getPoint_internal(npa, 0), LW_TRUE);
 		}
 	}
 
