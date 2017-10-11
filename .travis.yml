@@ -29,8 +29,8 @@ before_install:
   - wget http://download.osgeo.org/proj/proj-4.9.2.tar.gz
   - tar zxvf proj-4.9.2.tar.gz
   - cd proj-4.9.2
-  - ./configure --prefix=/usr
-  - eatmydata CFLAGS="-Ofast" make -j
+  - CFLAGS="-Ofast" ./configure --prefix=/usr
+  - CFLAGS="-Ofast" eatmydata make -j
   - sudo make install
   - cd ..
   - rm -rf proj-4.9.2
