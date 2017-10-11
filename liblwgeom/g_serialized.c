@@ -311,7 +311,7 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 		!FLAGS_GET_BBOX(g2->flags)
 	)
 	{
-		double* dptr = (double*)(g1->data + sizeof(double));
+		double *dptr = (double*)(g1->data + sizeof(double));
 		x.f = 2.0 * dptr[0];
 		y.f = 2.0 * dptr[1];
 		hash1 = uint32_interleave_2(x.u, y.u);
