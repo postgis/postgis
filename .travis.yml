@@ -8,24 +8,18 @@ addons:
   postgresql: "9.6"
   apt:
     packages:
-      - postgresql-server-dev-9.6 
-      - libxml2-utils
-      - libcunit1-dev
-      - xsltproc 
-      - docbook-xsl 
-      - docbook-mathml 
-      - dblatex
-      - libgdal-dev 
-      - libgeos-dev 
-      - libjson0-dev
-      - libprotobuf-c0-dev 
       - eatmydata
 
 before_install:
   - sudo eatmydata add-apt-repository --yes "deb http://us-central1.gce.archive.ubuntu.com/ubuntu artful main restricted universe multiverse"
   - sudo eatmydata apt-get update -qq
   - sudo eatmydata apt-get install -y --no-install-recommends --no-install-suggests -o APT::Force-LoopBreak=1 dpkg
-  - sudo eatmydata apt-get install -y --no-install-recommends --no-install-suggests libsfcgal-dev libproj-dev libc-bin clang-5.0 clang-tidy-5.0
+  - sudo eatmydata apt-get install -y --no-install-recommends --no-install-suggests 
+      clang-5.0 clang-tidy-5.0
+      libcunit1-dev libjson0-dev libprotobuf-c0-dev 
+      libsfcgal-dev libproj-dev libgdal-dev libgeos-dev 
+      libxml2-utils xsltproc docbook-xsl docbook-mathml dblatex
+      postgresql-server-dev-9.6       
 
 language: c
 
