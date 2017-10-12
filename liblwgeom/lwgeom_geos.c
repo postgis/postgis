@@ -214,7 +214,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa, int fix_ring)
 {
 	uint32_t dims = 2;
 	uint32_t i;
-	int append_points = 0;	
+	int append_points = 0;
 	const POINT3DZ *p3d;
 	const POINT2D *p2d;
 	GEOSCoordSeq sq;
