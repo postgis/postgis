@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright 2011-2014 Sandro Santilli <strk@kbt.io>
+ * Copyright 2017 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -202,21 +203,18 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 	default:
 		lwerror("GEOS2LWGEOM: unknown geometry type: %d", type);
 		return NULL;
-
 	}
-
 }
 
 
-
-GEOSCoordSeq ptarray_to_GEOSCoordSeq(const POINTARRAY *);
-
+GEOSCoordSeq ptarray_to_GEOSCoordSeq(const POINTARRAY *, int fix_ring);
 
 GEOSCoordSeq
-ptarray_to_GEOSCoordSeq(const POINTARRAY *pa)
+ptarray_to_GEOSCoordSeq(const POINTARRAY *pa, int fix_ring)
 {
 	uint32_t dims = 2;
 	uint32_t i;
+	int append_points = 0;
 	const POINT3DZ *p3d;
 	const POINT2D *p2d;
 	GEOSCoordSeq sq;
@@ -224,7 +222,27 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa)
 	if ( FLAGS_GET_Z(pa->flags) )
 		dims = 3;
 
-	if ( ! (sq = GEOSCoordSeq_create(pa->npoints, dims)) )
+	if ( fix_ring )
+	{
+		if (pa->npoints < 1)
+		{
+			lwerror("ptarray_to_GEOSCoordSeq called with fix_ring and 0 vertices in ring, cannot fix");
+			return NULL;
+		}
+		else
+		{
+			if ( pa->npoints < 4 )
+			{
+				append_points = 4 - pa->npoints;
+			}
+			if ( ! ptarray_is_closed_2d(pa) && append_points == 0 )
+			{
+				append_points = 1;
+			}
+		}
+	}
+
+	if ( ! (sq = GEOSCoordSeq_create(pa->npoints + append_points, dims)) )
 	{
 		lwerror("Error creating GEOS Coordinate Sequence");
 		return NULL;
@@ -248,43 +266,43 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa)
 		GEOSCoordSeq_setY(sq, i, p2d->y);
 
 		if ( dims == 3 )
+		{
 			GEOSCoordSeq_setZ(sq, i, p3d->z);
+		}
 	}
+
+	if ( append_points )
+	{
+		if ( dims == 3 )
+		{
+			p3d = getPoint3dz_cp(pa, 0);
+			p2d = (const POINT2D *)p3d;
+		}
+		else
+		{
+			p2d = getPoint2d_cp(pa, 0);
+		}
+		for ( i = pa->npoints; i < pa->npoints + append_points; i++ )
+		{
+			GEOSCoordSeq_setX(sq, i, p2d->x);
+			GEOSCoordSeq_setY(sq, i, p2d->y);
+
+			if ( dims == 3 )
+			{
+				GEOSCoordSeq_setZ(sq, i, p3d->z);
+			}
+		}
+	}
+
 	return sq;
 }
 
-static GEOSGeometry *
+static inline GEOSGeometry *
 ptarray_to_GEOSLinearRing(const POINTARRAY *pa, int autofix)
 {
 	GEOSCoordSeq sq;
 	GEOSGeom g;
-	POINTARRAY *npa = 0;
-
-	if ( autofix )
-	{
-		if (pa->npoints < 1)
-		{
-			lwerror("ptarray_to_GEOSLinearRing called with autofix and 0 vertices in ring, cannot fix");
-		}
-
-		/*
-		* Check ring for being closed and fix if not.
-		* Also create a copy of geometry to operate on.
-		*/
-		if ( ! ptarray_is_closed_2d(pa) || pa->npoints < 4 )
-		{
-			pa = ptarray_addPoint(pa, getPoint_internal(pa, 0), FLAGS_NDIMS(pa->flags), pa->npoints);
-			npa = pa;
-		}
-		/* Check ring for having at least 4 vertices */
-		while ( pa->npoints < 4 )
-		{
-			ptarray_append_point(pa, getPoint_internal(pa, 0), LW_TRUE);
-		}
-	}
-
-	sq = ptarray_to_GEOSCoordSeq(pa);
-	if ( npa ) ptarray_free(npa);
+	sq = ptarray_to_GEOSCoordSeq(pa, autofix);
 	g = GEOSGeom_createLinearRing(sq);
 	return g;
 }
@@ -373,7 +391,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 		}
 		else
 		{
-			sq = ptarray_to_GEOSCoordSeq(lwp->point);
+			sq = ptarray_to_GEOSCoordSeq(lwp->point, 0);
 			g = GEOSGeom_createPoint(sq);
 		}
 		if ( ! g )
@@ -392,7 +410,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 		                           FLAGS_NDIMS(lwl->points->flags),
 		                           lwl->points->npoints);
 		}
-		sq = ptarray_to_GEOSCoordSeq(lwl->points);
+		sq = ptarray_to_GEOSCoordSeq(lwl->points, 0);
 		g = GEOSGeom_createLineString(sq);
 		if ( ! g )
 		{
@@ -2140,4 +2158,3 @@ LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double toleranc
 	return lwgeom_result;
 #endif /* POSTGIS_GEOS_VERSION < 35 */
 }
-

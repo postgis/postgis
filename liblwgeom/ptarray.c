@@ -1454,7 +1454,7 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, int mi
 	int n_points = pa->npoints;
 	int n_points_out = 0;
 	int pt_size = ptarray_point_size(pa);
-	double dsq;
+	double dsq = FLT_MAX;
 
 	/* No-op on short inputs */
 	if ( n_points <= 2 ) return;
@@ -1470,7 +1470,7 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, int mi
 		if (last)
 		{
 			/* Don't drop points if we are running short of points */
-	        if (n_points - i > min_points - n_points_out)
+		        if (n_points - i > min_points - n_points_out)
 			{
 				if (tolerance > 0.0)
 				{
