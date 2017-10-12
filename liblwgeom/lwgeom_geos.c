@@ -242,7 +242,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa, int fix_ring)
 		}
 	}
 
-	if ( ! (sq = GEOSCoordSeq_create(pa->npoints, dims)) )
+	if ( ! (sq = GEOSCoordSeq_create(pa->npoints + append_points, dims)) )
 	{
 		lwerror("Error creating GEOS Coordinate Sequence");
 		return NULL;
