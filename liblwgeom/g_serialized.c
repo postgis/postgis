@@ -401,7 +401,7 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 		else if (bsz1 > bsz2)
  			return 1;
 	}
-	return cmp == 0 ? 0 : (cmp > 0 ? 1 : -1);	
+	return cmp == 0 ? 0 : (cmp > 0 ? 1 : -1);
 }
 
 int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
