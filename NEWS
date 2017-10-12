@@ -10,6 +10,13 @@ PostGIS 2.5.0
   - #3893, raster support functions can only be loaded in the same schema
            with core PostGIS functions.
 
+* Enhancements and Fixes*
+  - #3899, BTree sort order is now defined on collections of EMPTY and
+           same-prefix geometries (Darafei Praliaskouski)
+  - #3864, Performance improvement for sorting POINT geometries 
+           (Darafei Praliaskouski)
+  - #3900, GCC warnings fixed, make -j is now working (Darafei Praliaskouski)
+
 PostGIS 2.4.0
 2017/09/30
 
