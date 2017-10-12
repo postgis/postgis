@@ -2812,7 +2812,7 @@ BEGIN
 			RAISE NOTICE '%', sql;
 		END IF;
 
-		sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' || quote_ident(rec.default_version || 'next')   || ';';
+		sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' || quote_ident(rec.default_version)   || ';';
 		EXECUTE sql;
 		RAISE NOTICE '%', sql;
 	END LOOP;
