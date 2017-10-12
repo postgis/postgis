@@ -2813,6 +2813,7 @@ BEGIN
 		END IF;
 
 		sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' || quote_ident(rec.default_version || 'next')   || ';';
+		EXECUTE sql;
 		RAISE NOTICE '%', sql;
 	END LOOP;
 
