@@ -393,7 +393,14 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 			return 1;
 	}
 
-	/* OK fine, we'll sort on the memcmp just to be done with this */
+	/* Prefix comes before longer one. */
+	if (bsz1 != bsz2 && cmp == 0)
+	{
+		if (bsz1 < bsz2)
+ 			return -1;
+		else if (bsz1 > bsz2)
+ 			return 1;
+	}
 	return cmp == 0 ? 0 : (cmp > 0 ? 1 : -1);
 }
 
@@ -1548,4 +1555,3 @@ LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g)
 
 	return lwgeom;
 }
-

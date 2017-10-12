@@ -316,8 +316,6 @@ LWPOINT* geography_centroid_from_mpoly(const LWMPOLY* mpoly, bool use_spheroid, 
     POINT3DM points[size];
     uint32_t j = 0;
 
-    GBOX gbox;
-
     /* use first point as reference to create triangles */
     const POINT4D* reference_point = (const POINT4D*) getPoint2d_cp(mpoly->geoms[0]->rings[0], 0);
 
