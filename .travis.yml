@@ -1,7 +1,7 @@
 env:
   global:
     - RUNTESTFLAGS=-v
-    - CFLAGS="-Ofast -fno-omit-frame-pointer -Werror"
+    - CFLAGS="-O3 -fno-omit-frame-pointer -Werror"
 
 addons:
   postgresql: "9.6"
@@ -28,8 +28,8 @@ before_install:
   - wget http://download.osgeo.org/proj/proj-4.9.2.tar.gz
   - tar zxvf proj-4.9.2.tar.gz
   - cd proj-4.9.2
-  - CFLAGS="-Ofast" ./configure --prefix=/usr
-  - CFLAGS="-Ofast" eatmydata make -j
+  - CFLAGS="-O3" ./configure --prefix=/usr
+  - CFLAGS="-O3" eatmydata make -j
   - sudo make install
   - cd ..
   - rm -rf proj-4.9.2
@@ -63,4 +63,3 @@ notifications:
     on_success: change
     on_failure: always
     use_notice: false
-    
