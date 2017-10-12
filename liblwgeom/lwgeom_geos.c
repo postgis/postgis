@@ -203,11 +203,8 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 	default:
 		lwerror("GEOS2LWGEOM: unknown geometry type: %d", type);
 		return NULL;
-
 	}
-
 }
-
 
 
 GEOSCoordSeq ptarray_to_GEOSCoordSeq(const POINTARRAY *, int fix_ring);
@@ -225,7 +222,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa, int fix_ring)
 	if ( FLAGS_GET_Z(pa->flags) )
 		dims = 3;
 
-	if ( fix_ring ) 
+	if ( fix_ring )
 	{
 		if (pa->npoints < 1)
 		{
@@ -273,7 +270,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa, int fix_ring)
 			GEOSCoordSeq_setZ(sq, i, p3d->z);
 		}
 	}
-	
+
 	if ( append_points )
 	{
 		if ( dims == 3 )
