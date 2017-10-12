@@ -20,6 +20,7 @@ addons:
       - libprotobuf-c0-dev
       - libgdal-dev
       - eatmydata
+      - llvm
 
 before_install:
   - sudo eatmydata add-apt-repository --yes ppa:ubuntugis/ppa
