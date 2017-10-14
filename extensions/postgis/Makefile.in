@@ -134,9 +134,9 @@ install: install-upgrade-paths
 # revisions of the same version
 install-upgrade-paths: sql_bits/postgis_extension_upgrade_minor.sql
 	tpl='$(EXTENSION)--ANY--$(EXTVERSION).sql'; \
+	$(INSTALL_DATA) $^ "$(EXTDIR)/$${tpl}"; \
 	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql; \
 	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql; \
-	$(INSTALL_DATA) $^ "$(EXTDIR)/$${tpl}"; \
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
 		ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
