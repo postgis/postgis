@@ -161,8 +161,8 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  cp topology/*.dll ${PGPATHEDB}/lib
  cp postgis/postgis*.dll ${PGPATHEDB}/lib
  cp raster/rt_pg/rtpostgis-*.dll ${PGPATHEDB}/lib
- cp -r ${PGPATH}/share/extension/*postgis*${POSTGIS_MICRO_VER}*.sql ${PGPATHEDB}/share/extension
- cp -r ${PGPATH}/share/extension/*address_standardizer*${POSTGIS_MICRO_VER}*.sql ${PGPATHEDB}/share/extension
+ cp -r ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}.sql ${PGPATHEDB}/share/extension
+ cp -r ${PGPATH}/share/extension/address_standardizer*${POSTGIS_MICRO_VER}.sql ${PGPATHEDB}/share/extension
  cp -r extensions/*/*.control ${PGPATHEDB}/share/extension
  cp -r extensions/*/*.dll ${PGPATHEDB}/lib
 
