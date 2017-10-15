@@ -1547,9 +1547,9 @@ but you can download the latest at: <ulink url="http://www.pcre.org">http://www.
 			<listitem><para>Connect to your database via psql or pgAdmin or some other tool and run the following SQL commands.  Note that if you are installing in a database that already has postgis, you don't need to do the first step.  If you have <varname>fuzzystrmatch</varname> extension already installed, you don't need to do the second step either.</para>
 			<para><programlisting>CREATE EXTENSION postgis;
 CREATE EXTENSION fuzzystrmatch;
+CREATE EXTENSION postgis_tiger_geocoder;
 --this one is optional if you want to use the rules based standardizer (pagc_normalize_address)
-CREATE EXTENSION address_standardizer;
-CREATE EXTENSION postgis_tiger_geocoder;</programlisting></para>
+CREATE EXTENSION address_standardizer;</programlisting></para>
 
 <para>If you already have postgis_tiger_geocoder extension installed, and just want to update to the latest run:</para>
 <programlisting>ALTER EXTENSION postgis UPDATE;
@@ -1576,6 +1576,13 @@ SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 
 				<para>If you don't edit this  <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the script is generated.</para>
 			</listitem>
+			<listitem><para>As of PostGIS 2.4.1 the Zip code-5 digit tabulation area <varname>zcta5</varname> load step was revised to load current zcta5 data and is part of the  <xref linkend="Loader_Generate_Nation_Script" /> when enabled.
+It is turned off by default because it takes quite a bit of time to load (20 to 60 minutes), takes up quite a bit of disk space, and is not used that often.</para>
+<para>To enable it, do the following:</para>
+<programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = 'zcta510';</programlisting>
+<para>
+If present the <xref linkend="Geocode" /> function can use it if a boundary filter is added to limit to just zips in that boundary.
+The <xref linkend="Reverse_Geocode" /> function uses it if the returned address is missing a zip, which often happens with highway reverse geocoding.</para></listitem>
 			<listitem><para>Create a folder called <filename>gisdata</filename> on root of server or your local pc if you have a fast network connection to the server. This folder is
 where the tiger files will be downloaded to and processed.  If you are not happy with having the folder on the root of the server, or simply want to change to a different folder for staging, then edit the field <varname>staging_fold</varname> in the <varname>tiger.loader_variables</varname> table.</para></listitem>
             <listitem><para>Create a folder called temp in the <filename>gisdata</filename> folder or whereever you designated the <varname>staging_fold</varname> to be.  This will be
