@@ -1,5 +1,5 @@
 PostGIS 2.4.1dev
-YYYY/MM/DD
+2017/10/DD
 
  * Bug fixes *
   - #3864, Fix memory leaks in BTREE operators
@@ -16,6 +16,9 @@ YYYY/MM/DD
   - #3891, undefined behaviour in pointarray_to_encoded_polyline
   - #3895, throw error on malformed WKB input
   - #3886, fix rare missing boxes in geometry subdivision
+
+  * Enhancements *
+  - #3815, Tiger 2017 data support and option to load zcta5
 
 
 PostGIS 2.4.0

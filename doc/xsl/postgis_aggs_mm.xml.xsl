@@ -522,6 +522,7 @@
 				<xsl:if test="//para[contains(text(),'Enhanced: 2.4')]">
 				<para>Functions enhanced in PostGIS 2.4</para>
 				<para>All aggregates now marked as parallel safe which should allow them to be used in plans that can employ parallelism.</para>
+				<para>PostGIS 2.4.1 postgis_tiger_geocoder set to load Tiger 2017 data. Can optionally load zip code 5-digit tabulation (zcta) as part of the <xref linkend="Loader_Generate_Nation_Script" />.</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 					<xsl:for-each select='//refentry'>
