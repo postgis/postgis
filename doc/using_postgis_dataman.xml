@@ -346,8 +346,7 @@ CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog geography(POLYGON,4267) );<
 		<para>Note that the location column has type GEOGRAPHY and that geography type supports two optional modifier: a type modifier that restricts the kind of shapes and dimensions allowed in the column; an SRID modifier that restricts the coordinate reference identifier to a particular number.</para>
 		<para>Allowable values for the type modifier are: POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON. The modifier also supports dimensionality restrictions through suffixes: Z, M and ZM. So, for example a modifier of 'LINESTRINGM' would only allow line strings with three dimensions in, and would treat the third dimension as a measure.
 		Similarly, 'POINTZM' would expect four dimensional data.</para>
-		<para>The SRID modifier is currently of limited use: only 4326 (WGS84) is allowed as a value. If you do not specify an SRID, the a value 0 (undefined spheroid) will be used, and all calculations will proceed using WGS84 anyways.</para>
-		<para>In the future, alternate SRIDs will allow calculations on spheroids other than WGS84.</para>
+		<para>If you do not specify an SRID, the SRID will default to 4326 WGS 84 long/lat will be used, and all calculations will proceed using WGS84.</para>
 		<para>Once you have created your table, you can see it in the GEOGRAPHY_COLUMNS table:</para>
 		<para><programlisting>
 -- See the contents of the metadata view
@@ -381,6 +380,30 @@ INSERT INTO global_points (name, location) VALUES ('London', ST_GeogFromText('SR
 
 <para><programlisting>-- Distance calculation using GEOMETRY (13.3 "degrees")
   SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.96 64.15)':: geometry);</programlisting>
+</para>
+
+<para>-- Testing different lon/lat projects, requires PostGIS 2.2+.
+-- Any long lat spatial reference system in spatial_ref_sys table is allowed.
+	<programlisting>-- NAD 83 lon/lat
+SELECT 'SRID=4269;POINT(-123 34)'::geography;</programlisting>
+<screen>                     geography
+----------------------------------------------------
+ 0101000020AD1000000000000000C05EC00000000000004140
+(1 row)</screen>
+
+<programlisting>-- NAD27 lon/lat
+SELECT 'SRID=4267;POINT(-123 34)'::geography;</programlisting>
+
+<screen>                     geography
+----------------------------------------------------
+ 0101000020AB1000000000000000C05EC00000000000004140
+(1 row)</screen>
+
+<programlisting>-- NAD83 UTM zone meters, yields error since its a meter based projection
+SELECT 'SRID=26910;POINT(-123 34)'::geography;</programlisting>
+
+<screen>ERROR:  Only lon/lat coordinate systems are supported in geography.
+LINE 1: SELECT 'SRID=26910;POINT(-123 34)'::geography;</screen>
 </para>
 
 <para>The GEOGRAPHY type calculates the true shortest distance over the sphere between Reykjavik and the great circle flight path between Seattle and London.</para>
