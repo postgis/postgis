@@ -275,32 +275,42 @@ geometry
 	  <para>The basis for the PostGIS geographic type is a sphere. The shortest path between two points on the sphere is a great circle arc. That means that calculations on geographies (areas, distances, lengths, intersections, etc) must be calculated on the sphere, using more complicated mathematics. For more accurate measurements, the calculations must take the actual spheroidal shape of the world into account, and the mathematics becomes very complicated indeed.</para>
 
 	  <para>Because the underlying mathematics is much more complicated, there are fewer functions defined for the geography type than for the geometry type. Over time, as new algorithms are added, the capabilities of the geography type will expand.</para>
-	 <!-- TODO: Fill in more information -->
 
-	  <para>One restriction is that it only supports WGS 84 long lat (SRID:4326).  It uses a new data type called
-	  geography.  None of the GEOS functions support this new
+		<para>It uses a data type called <varname>geography</varname>.  None of the GEOS functions support the <varname>geography</varname>
 	  type. As a workaround one can convert back and forth between geometry and geography types.</para>
 
-	  <para>The new geography type uses the PostgreSQL 8.3+ typmod definition format so that a table with a geography field
+	  <para>Prior to PostGIS 2.2, the geography type only supported WGS 84 long lat (SRID:4326).
+		For PostGIS 2.2 and above, any long/lat based spatial reference system defined in the <varname>spatial_ref_sys</varname> table can be used.
+		You can even add your own custom spheroidal spatial refence system as described in <ulink url="http://www.bostongis.com/blog/index.php?/archives/266-geography-type-is-not-limited-to-earth.html">geography type is not limited to earth</ulink>.</para>
+
+		<para>Regardless which spatial reference system you use, the units returned by the measurement (<xref linkend="ST_Distance" />, <xref linkend="ST_Length" />, <xref linkend="ST_Perimeter" />, <xref linkend="ST_Area" />) and for input of <xref linkend="ST_DWithin" /> are in meters.</para>
+
+
+	  <para>The geography type uses the PostgreSQL 8.3+ typmod definition format so that a table with a geography field
 			can be added in a single step.  All the standard OGC formats except for curves are supported.</para>
 
 	<sect2 id="Geography_Basics">
 		<title>Geography Basics</title>
-		<para>The geography type only supports the simplest of simple features. Standard geometry type data will autocast to geography if it is of SRID 4326.  You can also use the EWKT and EWKB
+		<para>The geography type does not support curves, TINS, or POLYHEDRALSURFACEs, but other geometry types are supported. Standard geometry type data will autocast to geography if it is of SRID 4326.  You can also use the EWKT and EWKB
 			conventions to insert data.</para>
 
 		<itemizedlist>
 		<listitem>
-		  <para>POINT: Creating a table with 2d point geometry:</para>
-		  <para><programlisting>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINT,4326) );</programlisting></para>
-		  <para>Creating a table with z coordinate point</para>
-		  <para><programlisting>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINTZ,4326) );</programlisting></para>
+		  <para>POINT: Creating a table with 2d point geography when srid is not specified defaults to 4326 WGS 84 long lat:</para>
+		  <para><programlisting>CREATE TABLE ptgeogwgs(gid serial PRIMARY KEY, geog geography(POINT) );</programlisting></para>
+		  <para>POINT: Creating a table with 2d point geography in NAD83 longlat:</para>
+		  <para><programlisting>CREATE TABLE ptgeognad83(gid serial PRIMARY KEY, geog geography(POINT,4269) );</programlisting></para>
+		  <para>Creating a table with z coordinate point and explicitly specifying srid</para>
+		  <para><programlisting>CREATE TABLE ptzgeogwgs84(gid serial PRIMARY KEY, geog geography(POINTZ,4326) );</programlisting></para>
 		</listitem>
 		<listitem>
 			<para>LINESTRING</para>
+			<para><programlisting>CREATE TABLE lgeog(gid serial PRIMARY KEY, geog geography(LINESTRING) );</programlisting></para>
 		</listitem>
 		<listitem>
 			<para>POLYGON</para>
+			<para><programlisting>--polygon NAD 1927 long lat
+CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog geography(POLYGON,4267) );</programlisting></para>
 		</listitem>
 		<listitem>
 			<para>MULTIPOINT</para>
@@ -316,14 +326,13 @@ geometry
 		</listitem>
 		<!-- TODO: Add other examples -->
 		</itemizedlist>
-		<para>The new geography fields don't get registered in the <varname>geometry_columns</varname>.  They get registered in a new view called
-				geography_columns which is a view against the system catalogs so is always automatically kept up to date without need
+		<para>The geography fields don't get registered in the <varname>geometry_columns</varname>.  They get registered in a view called
+				<varname>geography_columns</varname> which is a view against the system catalogs so is always automatically kept up to date without need
 					for an AddGeom... like function.</para>
 
 		<para>Now, check the "geography_columns" view and see that your table is listed.</para>
 
-		<para>You can create a new table with a GEOGRAPHY column using the CREATE TABLE syntax.
-			Unlike GEOMETRY, there is no need to run a separate AddGeometryColumns() process to register the column in metadata.</para>
+		<para>You can create a new table with a GEOGRAPHY column using the CREATE TABLE syntax.</para>
 
 		<para>
 <programlisting>CREATE TABLE global_points (
@@ -336,8 +345,7 @@ geometry
 		<para>Note that the location column has type GEOGRAPHY and that geography type supports two optional modifier: a type modifier that restricts the kind of shapes and dimensions allowed in the column; an SRID modifier that restricts the coordinate reference identifier to a particular number.</para>
 		<para>Allowable values for the type modifier are: POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON. The modifier also supports dimensionality restrictions through suffixes: Z, M and ZM. So, for example a modifier of 'LINESTRINGM' would only allow line strings with three dimensions in, and would treat the third dimension as a measure.
 		Similarly, 'POINTZM' would expect four dimensional data.</para>
-		<para>The SRID modifier is currently of limited use: only 4326 (WGS84) is allowed as a value. If you do not specify an SRID, the a value 0 (undefined spheroid) will be used, and all calculations will proceed using WGS84 anyways.</para>
-		<para>In the future, alternate SRIDs will allow calculations on spheroids other than WGS84.</para>
+		<para>If you do not specify an SRID, the SRID will default to 4326 WGS 84 long/lat will be used, and all calculations will proceed using WGS84.</para>
 		<para>Once you have created your table, you can see it in the GEOGRAPHY_COLUMNS table:</para>
 		<para><programlisting>
 -- See the contents of the metadata view
@@ -346,9 +354,9 @@ SELECT * FROM geography_columns;</programlisting></para>
 <para>You can insert data into the table the same as you would if it was using a GEOMETRY column:</para>
 
 <para><programlisting>-- Add some data into the test table
-INSERT INTO global_points (name, location) VALUES ('Town', ST_GeographyFromText('SRID=4326;POINT(-110 30)') );
-INSERT INTO global_points (name, location) VALUES ('Forest', ST_GeographyFromText('SRID=4326;POINT(-109 29)') );
-INSERT INTO global_points (name, location) VALUES ('London', ST_GeographyFromText('SRID=4326;POINT(0 49)') );</programlisting></para>
+INSERT INTO global_points (name, location) VALUES ('Town', ST_GeogFromText('SRID=4326;POINT(-110 30)') );
+INSERT INTO global_points (name, location) VALUES ('Forest', ST_GeogFromText('SRID=4326;POINT(-109 29)') );
+INSERT INTO global_points (name, location) VALUES ('London', ST_GeogFromText('SRID=4326;POINT(0 49)') );</programlisting></para>
 
 <para>Creating an index works the same as GEOMETRY.
 	PostGIS will note that the column type is GEOGRAPHY and create an appropriate sphere-based index instead of the usual planar index used for GEOMETRY.</para>
@@ -360,10 +368,10 @@ INSERT INTO global_points (name, location) VALUES ('London', ST_GeographyFromTex
 <para>Query and measurement functions use units of meters. So distance parameters should be expressed in meters, and return values should be expected in meters (or square meters for areas).</para>
 
 <para><programlisting>-- Show a distance query and note, London is outside the 1000km tolerance
-  SELECT name FROM global_points WHERE ST_DWithin(location, ST_GeographyFromText('SRID=4326;POINT(-110 29)'), 1000000);</programlisting>
+  SELECT name FROM global_points WHERE ST_DWithin(location, ST_GeogFromText('SRID=4326;POINT(-110 29)'), 1000000);</programlisting>
 </para>
 
-<para>You can see the power of GEOGRAPHY in action by calculating the how close a plane flying from Seattle to London (LINESTRING(-122.33 47.606, 0.0 51.5)) comes to Reykjavik (POINT(-21.96 64.15)).</para>
+<para>You can see the power of GEOGRAPHY in action by calculating how close a plane flying from Seattle to London (LINESTRING(-122.33 47.606, 0.0 51.5)) comes to Reykjavik (POINT(-21.96 64.15)).</para>
 
 <para><programlisting>-- Distance calculation using GEOGRAPHY (122.2km)
   SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geography, 'POINT(-21.96 64.15)':: geography);</programlisting>
@@ -373,6 +381,30 @@ INSERT INTO global_points (name, location) VALUES ('London', ST_GeographyFromTex
   SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.96 64.15)':: geometry);</programlisting>
 </para>
 
+<para>Testing different lon/lat projects, requires PostGIS 2.2+.
+Any long lat spatial reference system listed in <varname>spatial_ref_sys</varname> table is allowed.</para>
+	<programlisting>-- NAD 83 lon/lat
+SELECT 'SRID=4269;POINT(-123 34)'::geography;
+                    geography
+----------------------------------------------------
+ 0101000020AD1000000000000000C05EC00000000000004140
+(1 row)</programlisting>
+
+<programlisting>-- NAD27 lon/lat
+SELECT 'SRID=4267;POINT(-123 34)'::geography;
+
+                    geography
+----------------------------------------------------
+ 0101000020AB1000000000000000C05EC00000000000004140
+(1 row)</programlisting>
+
+<programlisting>-- NAD83 UTM zone meters, yields error since its a meter based projection
+SELECT 'SRID=26910;POINT(-123 34)'::geography;
+
+ERROR:  Only lon/lat coordinate systems are supported in geography.
+LINE 1: SELECT 'SRID=26910;POINT(-123 34)'::geography;</programlisting>
+</para>
+
 <para>The GEOGRAPHY type calculates the true shortest distance over the sphere between Reykjavik and the great circle flight path between Seattle and London.</para>
 
 <para> <ulink url="http://gc.kls2.com/cgi-bin/gc?PATH=SEA-LHR">Great Circle mapper</ulink>
@@ -380,7 +412,7 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	</sect2>
 	<sect2 id="PostGIS_GeographyVSGeometry">
 	  <title>When to use Geography Data type over Geometry data type</title>
-	  <para>The new GEOGRAPHY type allows you to store data in longitude/latitude coordinates, but at a cost: there are fewer functions defined on GEOGRAPHY than there are on GEOMETRY; those functions that are defined take more CPU time to execute.</para>
+	  <para>The geography type allows you to store data in longitude/latitude coordinates, but at a cost: there are fewer functions defined on GEOGRAPHY than there are on GEOMETRY; those functions that are defined take more CPU time to execute.</para>
 	  <para>The type you choose should be conditioned on the expected working area of the application you are building. Will your data span the globe or a large continental area, or is it local to a state, county or municipality? </para>
 	  <itemizedlist>
 		<listitem><para>If your data is contained in a small area, you might find that choosing an appropriate projection and using GEOMETRY is the best solution, in terms of performance and functionality available.</para></listitem>
