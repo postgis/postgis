@@ -55,7 +55,7 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 	geom_in = PG_GETARG_GSERIALIZED_P(0);
 	lwgeom_in = lwgeom_from_gserialized(geom_in);
 	if (PG_ARGISNULL(1))
-		elog(ERROR, "ST_AsMVTGeom: parameter bounds cannot be null");
+		elog(ERROR, "%s: parameter bounds cannot be null", __func__);
 	bounds = (GBOX *) PG_GETARG_POINTER(1);
 	extent = PG_ARGISNULL(2) ? 4096 : PG_GETARG_INT32(2);
 	buffer = PG_ARGISNULL(3) ? 256 : PG_GETARG_INT32(3);
@@ -70,6 +70,41 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(geom_out);
 #endif
 }
+
+PG_FUNCTION_INFO_V1(ST_AsMVTGeomFast);
+Datum ST_AsMVTGeomFast(PG_FUNCTION_ARGS)
+{
+#ifndef HAVE_LIBPROTOBUF
+	elog(ERROR, "Missing libprotobuf-c");
+	PG_RETURN_NULL();
+#else
+	LWGEOM *lwgeom_in, *lwgeom_out;
+	GSERIALIZED *geom_in, *geom_out;
+	GBOX *bounds;
+	int extent, buffer;
+	bool clip_geom;
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+	geom_in = PG_GETARG_GSERIALIZED_P(0);
+	lwgeom_in = lwgeom_from_gserialized(geom_in);
+	if (PG_ARGISNULL(1))
+		elog(ERROR, "%s: parameter bounds cannot be null", __func__);
+	bounds = (GBOX *) PG_GETARG_POINTER(1);
+	extent = PG_ARGISNULL(2) ? 4096 : PG_GETARG_INT32(2);
+	buffer = PG_ARGISNULL(3) ? 256 : PG_GETARG_INT32(3);
+	clip_geom = PG_ARGISNULL(4) ? true : PG_GETARG_BOOL(4);
+	lwgeom_out = mvt_geom(lwgeom_in, bounds, extent, buffer, clip_geom);
+	lwgeom_free(lwgeom_in);
+	if (lwgeom_out == NULL)
+		PG_RETURN_NULL();
+	geom_out = geometry_serialize(lwgeom_out);
+	lwgeom_free(lwgeom_out);
+	PG_FREE_IF_COPY(geom_in, 0);
+	PG_RETURN_POINTER(geom_out);
+#endif
+}
+
+
 
 /**
  * Process input parameters and row data into state

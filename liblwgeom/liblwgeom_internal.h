@@ -379,21 +379,6 @@ int lwtin_is_closed(const LWTIN *tin);
 * Snap to grid
 */
 
-/**
-* Snap-to-grid Support
-*/
-typedef struct gridspec_t
-{
-	double ipx;
-	double ipy;
-	double ipz;
-	double ipm;
-	double xsize;
-	double ysize;
-	double zsize;
-	double msize;
-}
-gridspec;
 
 LWGEOM* lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid);
 LWCOLLECTION* lwcollection_grid(const LWCOLLECTION *coll, const gridspec *grid);
@@ -404,7 +389,6 @@ LWCIRCSTRING* lwcircstring_grid(const LWCIRCSTRING *line, const gridspec *grid);
 POINTARRAY* ptarray_grid(const POINTARRAY *pa, const gridspec *grid);
 
 /* IN PLACE FUNCTIONS */
-void lwgeom_grid_in_place(LWGEOM *lwgeom, const gridspec *grid);
 void ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid);
 void ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, unsigned int minpts);
 void ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, int min_points);

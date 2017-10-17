@@ -67,8 +67,8 @@ struct mvt_agg_context {
 	uint32_t c;
 };
 
-LWGEOM *mvt_geom(const LWGEOM *geom, const GBOX *bounds, uint32_t extent, uint32_t buffer,
-	bool clip_geom);
+LWGEOM *mvt_geom(const LWGEOM *geom, const GBOX *bounds, uint32_t extent, uint32_t buffer, bool clip_geom);
+LWGEOM *mvt_geom_fast(LWGEOM *geom, const GBOX *bounds, uint32_t extent, uint32_t buffer, bool clip_geom);
 void mvt_agg_init_context(struct mvt_agg_context *ctx);
 void mvt_agg_transfn(struct mvt_agg_context *ctx);
 uint8_t *mvt_agg_finalfn(struct mvt_agg_context *ctx);
