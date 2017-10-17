@@ -16,8 +16,9 @@ PostGIS 2.4.1dev
   - #3891, undefined behaviour in pointarray_to_encoded_polyline
   - #3895, throw error on malformed WKB input
   - #3886, fix rare missing boxes in geometry subdivision
+  - #3907, Allocate enough space for all possible GBOX string outputs (Raúl Marín Rodríguez)
 
-  * Enhancements *
+ * Enhancements *
   - #3815, Tiger 2017 data support and option to load zcta5
 
 
