@@ -102,15 +102,15 @@
 			  <para>Input output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
 			</listitem>
 		</varlistentry>
-        
-        <varlistentry>
+
+    <varlistentry>
 			<term>Björn Harrtell</term>
 
 			<listitem>
 			  <para>MapBox Vector Tile and GeoBuf functions. Gogs testing.</para>
 			</listitem>
 		</varlistentry>
-        
+
 
 		<varlistentry>
 			<term>Mateusz Loskot</term>
@@ -118,6 +118,15 @@
 			  <para>CMake support for PostGIS, built original raster loader in python and low level raster api functions</para>
 			</listitem>
 		</varlistentry>
+
+		<varlistentry>
+			<term>Darafei Praliaskouski</term>
+
+			<listitem>
+			  <para>Index improvements, bug fixing and geometry/geography function improvements, GitHub curator, and Travis bot maintenance.</para>
+			</listitem>
+		</varlistentry>
+
 
 		<varlistentry>
 			<term>Pierre Racine</term>
@@ -170,7 +179,7 @@
 		  <para>Ongoing maintenance and development of core functions.  Enhanced curve support. Shapefile GUI loader.</para>
 		</listitem>
 		</varlistentry>
-        
+
         <varlistentry>
 			<term>David Zwarg</term>
 			<listitem>
