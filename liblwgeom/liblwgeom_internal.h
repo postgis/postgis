@@ -403,6 +403,13 @@ LWLINE* lwline_grid(const LWLINE *line, const gridspec *grid);
 LWCIRCSTRING* lwcircstring_grid(const LWCIRCSTRING *line, const gridspec *grid);
 POINTARRAY* ptarray_grid(const POINTARRAY *pa, const gridspec *grid);
 
+/* IN PLACE FUNCTIONS */
+void lwgeom_grid_in_place(LWGEOM *lwgeom, const gridspec *grid);
+void ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid);
+void ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, unsigned int minpts);
+void ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, int min_points);
+void ptarray_copy_point(POINTARRAY *pa, int from, int to);
+
 /*
 * What side of the line formed by p1 and p2 does q fall?
 * Returns -1 for left and 1 for right and 0 for co-linearity
