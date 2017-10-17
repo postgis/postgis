@@ -2060,8 +2060,6 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 {
 	LWPOLY *poly;
 	GSERIALIZED *result;
-	POINTARRAY **pa;
-	POINT4D p;
 	double x1, y1, x2, y2;
 	int srid = SRID_UNKNOWN;
 

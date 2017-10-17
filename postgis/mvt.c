@@ -478,7 +478,6 @@ static void add_value_as_string(struct mvt_agg_context *ctx,
 static void parse_datum_as_string(struct mvt_agg_context *ctx, Oid typoid,
 	Datum datum, uint32_t *tags, uint32_t k)
 {
-	struct mvt_kv_string_value *kv;
 	Oid foutoid;
 	bool typisvarlena;
 	char *value;
@@ -667,11 +666,9 @@ LWGEOM *mvt_geom(const LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;
 	double resx = width / extent;
-	double resy = height / extent;
 	double fx = extent / width;
 	double fy = -(extent / height);
 	double buffer_map_xunits = resx * buffer;
-	double buffer_map_yunits = resy * buffer;
 	const GBOX *ggbox;
 	POSTGIS_DEBUG(2, "mvt_geom called");
 
@@ -773,7 +770,7 @@ lwgeom_to_basic_type(LWGEOM *geom)
 		/* by finding the largest basic type available and */
 		/* using that as the basis of a typed collection. */
 		LWCOLLECTION *g = (LWCOLLECTION*)geom;
-		int i, maxtype = 0, maxgeomn = 0, n;
+		int i, maxtype = 0;
 		for (i = 0; i < g->ngeoms; i++)
 		{
 			LWGEOM *sg = g->geoms[i];
@@ -807,7 +804,6 @@ LWGEOM *mvt_geom_fast(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_
 	double fx = extent / width;
 	double fy = -(extent / height);
 	double buffer_map_xunits = resx * buffer;
-	double buffer_map_yunits = resy * buffer;
 	static int preserve_collapsed = true;
 	POSTGIS_DEBUGF(2, "%s called", __func__);
 
@@ -894,20 +890,6 @@ LWGEOM *mvt_geom_fast(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_
 		lwgeom_force_clockwise(lwgeom_out);
 	}
 
-	/* if geometry collection extract highest dimensional geometry type */
-	if (lwgeom_out->type == COLLECTIONTYPE) {
-		LWCOLLECTION *lwcoll = lwgeom_as_lwcollection(lwgeom_out);
-		lwgeom_out = lwcollection_as_lwgeom(
-			lwcollection_extract(lwcoll, max_type(lwcoll)));
-		lwgeom_out = lwgeom_homogenize(lwgeom_out);
-		/* if polygon(s) make valid and force clockwise as per MVT spec */
-		if (lwgeom_out->type == POLYGONTYPE ||
-			lwgeom_out->type == MULTIPOLYGONTYPE) {
-			lwgeom_out = lwgeom_make_valid(lwgeom_out);
-			lwgeom_force_clockwise(lwgeom_out);
-		}
-	}
-
 	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
 		return NULL;
 
@@ -965,7 +947,6 @@ void mvt_agg_transfn(struct mvt_agg_context *ctx)
 	LWGEOM *lwgeom;
 	VectorTile__Tile__Feature *feature;
 	VectorTile__Tile__Layer *layer = ctx->layer;
-	VectorTile__Tile__Feature **features = layer->features;
 	POSTGIS_DEBUG(2, "mvt_agg_transfn called");
 
 	if (layer->n_features >= ctx->features_capacity) {

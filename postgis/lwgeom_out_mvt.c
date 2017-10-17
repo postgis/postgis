@@ -94,10 +94,10 @@ Datum ST_AsMVTGeomFast(PG_FUNCTION_ARGS)
 	buffer = PG_ARGISNULL(3) ? 256 : PG_GETARG_INT32(3);
 	clip_geom = PG_ARGISNULL(4) ? true : PG_GETARG_BOOL(4);
 	lwgeom_out = mvt_geom_fast(lwgeom_in, bounds, extent, buffer, clip_geom);
-	lwgeom_free(lwgeom_in);
 	if (lwgeom_out == NULL)
 		PG_RETURN_NULL();
 	geom_out = geometry_serialize(lwgeom_out);
+	lwgeom_free(lwgeom_in);
 	PG_FREE_IF_COPY(geom_in, 0);
 	PG_RETURN_POINTER(geom_out);
 #endif
