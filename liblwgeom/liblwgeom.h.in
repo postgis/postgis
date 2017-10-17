@@ -987,6 +987,12 @@ extern LWGEOM* lwgeom_force_4d(const LWGEOM *geom);
 extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist, int preserve_collapsed);
 extern LWGEOM* lwgeom_set_effective_area(const LWGEOM *igeom, int set_area, double area);
 
+
+/* IN PLACE FUNCTIONS */
+extern void lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed);
+extern void lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance);
+
+
 /*
  * Force to use SFS 1.1 geometry type
  * (rather than SFS 1.2 and/or SQL/MM)

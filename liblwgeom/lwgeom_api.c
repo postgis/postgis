@@ -448,6 +448,41 @@ ptarray_set_point4d(POINTARRAY *pa, int n, const POINT4D *p4d)
 	}
 }
 
+void
+ptarray_copy_point(POINTARRAY *pa, int from, int to)
+{
+	int ndims = FLAGS_NDIMS(pa->flags);
+	switch (ndims)
+	{
+		case 2:
+		{
+			POINT2D *p_from = (POINT2D*)(getPoint_internal(pa, from));
+			POINT2D *p_to = (POINT2D*)(getPoint_internal(pa, to));
+			*p_to = *p_from;
+			return;
+		}
+		case 3:
+		{
+			POINT3D *p_from = (POINT3D*)(getPoint_internal(pa, from));
+			POINT3D *p_to = (POINT3D*)(getPoint_internal(pa, to));
+			*p_to = *p_from;
+			return;
+		}
+		case 4:
+		{
+			POINT4D *p_from = (POINT4D*)(getPoint_internal(pa, from));
+			POINT4D *p_to = (POINT4D*)(getPoint_internal(pa, to));
+			*p_to = *p_from;
+			return;
+		}
+		default:
+		{
+			lwerror("%s: unsupported number of dimensions - %d", __func__, ndims);
+			return;
+		}
+	}
+	return;
+}
 
 /************************************************
  * debugging routines

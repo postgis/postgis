@@ -1497,6 +1497,212 @@ ptarray_remove_repeated_points(const POINTARRAY *in, double tolerance)
 	return ptarray_remove_repeated_points_minpoints(in, tolerance, 2);
 }
 
+
+void
+ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, int min_points)
+{
+	int i;
+	double tolsq = tolerance * tolerance;
+	const POINT2D *last = NULL;
+	const POINT2D *pt;
+	int n_points = pa->npoints;
+	int n_points_out = 0;
+	int pt_size = ptarray_point_size(pa);
+	double dsq = FLT_MAX;
+
+	/* No-op on short inputs */
+	if ( n_points <= 2 ) return;
+
+	for (i = 0; i < n_points; i++)
+	{
+		int last_point = (i == n_points-1);
+
+		/* Look straight into the abyss */
+		pt = getPoint2d_cp(pa, i);
+
+		/* Preserve first point always */
+		if (last)
+		{
+			/* Don't drop points if we are running short of points */
+		        if (n_points - i > min_points - n_points_out)
+			{
+				if (tolerance > 0.0)
+				{
+					/* Only drop points that are within our tolerance */
+					dsq = distance2d_sqr_pt_pt(last, pt);
+					/* Allow any point but the last one to be dropped */
+					if (!last_point && dsq <= tolsq)
+					{
+						continue;
+					}
+				}
+				else
+				{
+					/* At tolerance zero, only skip exact dupes */
+					if (memcmp((char*)pt, (char*)last, pt_size) == 0)
+						continue;
+				}
+			}
+		}
+
+		/* Got to last point, and it's not very different from */
+		/* the point that preceded it. We want to keep the last */
+		/* point, not the second-to-last one, so we pull our write */
+		/* index back one value */
+		if (last_point && n_points_out > 1 && tolerance > 0.0 && dsq <= tolsq)
+		{
+			n_points_out--;
+		}
+
+		/* Compact all remaining values to front of array */
+		ptarray_copy_point(pa, i, n_points_out++);
+		last = pt;
+	}
+	/* Adjust array length */
+	pa->npoints = n_points_out;
+	return;
+}
+
+
+/************************************************************************/
+
+static void
+ptarray_dp_findsplit_in_place(const POINTARRAY *pts, int p1, int p2, int *split, double *dist)
+{
+	int k;
+	const POINT2D *pk, *pa, *pb;
+	double tmp, d;
+
+	LWDEBUG(4, "function called");
+
+	*split = p1;
+	d = -1;
+
+	if (p1 + 1 < p2)
+	{
+
+		pa = getPoint2d_cp(pts, p1);
+		pb = getPoint2d_cp(pts, p2);
+
+		LWDEBUGF(4, "P%d(%f,%f) to P%d(%f,%f)",
+		         p1, pa->x, pa->y, p2, pb->x, pb->y);
+
+		for (k=p1+1; k<p2; k++)
+		{
+			pk = getPoint2d_cp(pts, k);
+
+			LWDEBUGF(4, "P%d(%f,%f)", k, pk->x, pk->y);
+
+			/* distance computation */
+			tmp = distance2d_sqr_pt_seg(pk, pa, pb);
+
+			if (tmp > d)
+			{
+				d = tmp;	/* record the maximum */
+				*split = k;
+
+				LWDEBUGF(4, "P%d is farthest (%g)", k, d);
+			}
+		}
+		*dist = d;
+	}
+	else
+	{
+		LWDEBUG(3, "segment too short, no split/no dist");
+		*dist = -1;
+	}
+}
+
+static int
+int_cmp(const void *a, const void *b)
+{
+	/* casting pointer types */
+	const int *ia = (const int *)a;
+	const int *ib = (const int *)b;
+	/* returns negative if b > a and positive if a > b */
+	return *ia - *ib;
+}
+
+void
+ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, unsigned int minpts)
+{
+	static size_t stack_size = 256;
+	int *stack, *outlist; /* recursion stack */
+	int stack_static[stack_size];
+	int outlist_static[stack_size];
+	int sp = -1; /* recursion stack pointer */
+	int p1, split;
+	int outn = 0;
+	int pai = 0;
+	int i;
+	double dist;
+	double eps_sqr = epsilon * epsilon;
+
+	/* Do not try to simplify really short things */
+	if (pa->npoints < 3) return;
+
+	/* Only heap allocate book-keeping arrays if necessary */
+	if (pa->npoints > stack_size)
+	{
+		stack = lwalloc(sizeof(int) * pa->npoints);
+		outlist = lwalloc(sizeof(int) * pa->npoints);
+	}
+	else
+	{
+		stack = stack_static;
+		outlist = outlist_static;
+	}
+
+	p1 = 0;
+	stack[++sp] = pa->npoints-1;
+
+	/* Add first point to output list */
+	outlist[outn++] = 0;
+	do
+	{
+		ptarray_dp_findsplit_in_place(pa, p1, stack[sp], &split, &dist);
+
+		if ((dist > eps_sqr) || ((outn + sp+1 < minpts) && (dist >= 0)))
+		{
+			stack[++sp] = split;
+		}
+		else
+		{
+			outlist[outn++] = stack[sp];
+			p1 = stack[sp--];
+		}
+	}
+	while (!(sp<0));
+
+	/* Put list of retained points into order */
+	qsort(outlist, outn, sizeof(int), int_cmp);
+	/* Copy retained points to front of array */
+	for (i = 0; i < outn; i++)
+	{
+		int j = outlist[i];
+		/* Indexes the same, means no copy required */
+		if (j == pai)
+		{
+			pai++;
+			continue;
+		}
+		/* Indexes different, copy value down */
+		ptarray_copy_point(pa, j, pai++);
+	}
+
+	/* Adjust point count on array */
+	pa->npoints = outn;
+
+	/* Only free if arrays are on heap */
+	if (stack != stack_static)
+		lwfree(stack);
+	if (outlist != outlist_static)
+		lwfree(outlist);
+
+	return;
+}
+
+
 static void
 ptarray_dp_findsplit(POINTARRAY *pts, int p1, int p2, int *split, double *dist)
 {
@@ -1873,6 +2079,75 @@ ptarray_grid(const POINTARRAY *pa, const gridspec *grid)
 
 	return dpa;
 }
+
+
+void
+ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
+{
+	int i, j = 0;
+	POINT4D *p, *p_out = NULL;
+	int ndims = FLAGS_NDIMS(pa->flags);
+	int has_z = FLAGS_GET_Z(pa->flags);
+	int has_m = FLAGS_GET_M(pa->flags);
+
+	LWDEBUGF(2, "%s called on %p", __func__, pa);
+
+	for (i = 0; i < pa->npoints; i++)
+	{
+		/* Look straight into the abyss */
+		p = (POINT4D*)(getPoint_internal(pa, i));
+
+		if (grid->xsize > 0)
+		{
+			p->x = rint((p->x - grid->ipx)/grid->xsize) * grid->xsize + grid->ipx;
+		}
+
+		if (grid->ysize > 0)
+		{
+			p->y = rint((p->y - grid->ipy)/grid->ysize) * grid->ysize + grid->ipy;
+		}
+
+		/* Read and round this point */
+		/* Z is always in third position */
+		if (has_z)
+		{
+			if (grid->zsize > 0)
+				p->z = rint((p->z - grid->ipz)/grid->zsize) * grid->zsize + grid->ipz;
+		}
+		/* M might be in 3rd or 4th position */
+		if (has_m)
+		{
+			/* In POINT M, M is in 3rd position */
+			if (grid->msize > 0 && !has_z)
+				p->z = rint((p->z - grid->ipm)/grid->msize) * grid->msize + grid->ipm;
+			/* In POINT ZM, M is in 4th position */
+			if (grid->msize > 0 && has_z)
+				p->m = rint((p->m - grid->ipm)/grid->msize) * grid->msize + grid->ipm;
+		}
+
+		/* Skip duplicates */
+		if ( p_out && FP_EQUALS(p_out->x, p->x) && FP_EQUALS(p_out->y, p->y)
+		   && (ndims > 2 ? FP_EQUALS(p_out->z, p->z) : 1)
+		   && (ndims > 3 ? FP_EQUALS(p_out->m, p->m) : 1) )
+		{
+			continue;
+		}
+
+		/* Write rounded values into the next available point */
+		p_out = (POINT4D*)(getPoint_internal(pa, j++));
+		p_out->x = p->x;
+		p_out->y = p->y;
+		if (ndims > 2)
+			p_out->z = p->z;
+		if (ndims > 3)
+			p_out->m = p->m;
+	}
+
+	/* Update output ptarray length */
+	pa->npoints = j;
+	return;
+}
+
 
 int
 ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox)
