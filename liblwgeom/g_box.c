@@ -403,7 +403,7 @@ GBOX* gbox_from_string(const char *str)
 
 char* gbox_to_string(const GBOX *gbox)
 {
-	static int sz = 128;
+	static int sz = 138;
 	char *str = NULL;
 
 	if ( ! gbox )

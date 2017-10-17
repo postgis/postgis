@@ -33,6 +33,7 @@ PostGIS 2.3.4
   - #3882, undefined behaviour in zigzag with negative inputs
   - #3891, undefined behaviour in pointarray_to_encoded_polyline
   - #3895, throw error on malformed WKB input
+  - #3907, Allocate enough space for all possible GBOX string outputs (Raúl Marín Rodríguez)
 
 
 PostGIS 2.3.3
