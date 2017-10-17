@@ -989,8 +989,20 @@ extern LWGEOM* lwgeom_set_effective_area(const LWGEOM *igeom, int set_area, doub
 
 
 /* IN PLACE FUNCTIONS */
+typedef struct gridspec_t
+{
+	double ipx;
+	double ipy;
+	double ipz;
+	double ipm;
+	double xsize;
+	double ysize;
+	double zsize;
+	double msize;
+} gridspec;
 extern void lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed);
 extern void lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance);
+extern void lwgeom_grid_in_place(LWGEOM *lwgeom, const gridspec *grid);
 
 
 /*
