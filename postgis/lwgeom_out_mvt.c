@@ -38,8 +38,8 @@
 /**
  * Process input parameters to mvt_geom and returned serialized geometry
  */
-PG_FUNCTION_INFO_V1(ST_AsMVTGeom);
-Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_AsMVTGeomSlow);
+Datum ST_AsMVTGeomSlow(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
 	elog(ERROR, "Missing libprotobuf-c");
@@ -71,8 +71,8 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 #endif
 }
 
-PG_FUNCTION_INFO_V1(ST_AsMVTGeomFast);
-Datum ST_AsMVTGeomFast(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_AsMVTGeom);
+Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
 	elog(ERROR, "Missing libprotobuf-c");
