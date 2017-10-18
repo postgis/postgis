@@ -1,3 +1,183 @@
+2017-10-17 18:23  Regina Obe <lr@pcorp.us>
+
+	* [r16001] doc/introduction.xml:
+
+2017-10-17 16:53  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15997] NEWS, liblwgeom/cunit/cu_geodetic.c, liblwgeom/g_box.c:
+	  Allocate enough space for all possible GBOX string outputs (Raúl
+	  Marín Rodríguez)
+	  References #3907
+
+2017-10-17 14:36  Regina Obe <lr@pcorp.us>
+
+	* [r15995] authors.git, authors.svn, doc/introduction.xml: Add
+	  Darafei Praliaskouski to authors lists and core developers list
+	  and make up responsibilities for him.
+
+2017-10-16 14:59  Regina Obe <lr@pcorp.us>
+
+	* [r15992] doc/using_postgis_dataman.xml: Fix xml parse error in
+	  docs
+	  References #3902 for PostGIS 2.4.1
+
+2017-10-16 09:35  Regina Obe <lr@pcorp.us>
+
+	* [r15991] doc/extras_tigergeocoder.xml,
+	  doc/using_postgis_dataman.xml: Backport geography changes to
+	  PostGIS 2.4.1
+	  Closes #3902
+	  Changed Changed to Enhanced for tiger zcta
+	  References #3815 for PostGIS 2.4.1
+
+2017-10-15 17:53  Regina Obe <lr@pcorp.us>
+
+	* [r15987] NEWS, doc/extras_tigergeocoder.xml,
+	  doc/installation.xml, doc/xsl/postgis_aggs_mm.xml.xsl,
+	  extensions/postgis_tiger_geocoder/Makefile.in,
+	  extras/tiger_geocoder/tiger_loader_2017.sql: Tiger 2017 and zcta
+	  load support for PostGIS 2.4.1
+	  Closes #3815
+
+2017-10-11 14:05  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15965] NEWS, liblwgeom/lwgeom_geos.c: Fix rare missing boxes in
+	  geometry subdivision
+	  References #3886
+
+2017-10-11 13:51  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15964] postgis/mvt.c: PgSQL 11 support for 2.4 branch
+	  (DatumGetJsonbP macro)
+	  Closes #3867
+
+2017-10-10 22:45  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15960] NEWS, liblwgeom/lwin_wkb.c: Throw error on malformed WKB
+	  input (2.4 branch)
+	  Credit to OSS-Fuzz:
+	  https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=2589
+	  Credit to OSS-Fuzz:
+	  https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=2590
+	  Credit to OSS-Fuzz:
+	  https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=2591
+	  Credit to OSS-Fuzz:
+	  https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=2592
+	  (References #3895)
+
+2017-10-10 18:04  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15955] NEWS, liblwgeom/lwout_encoded_polyline.c: Undefined
+	  behaviour in pointarray_to_encoded_polyline (2.4 branch)
+	  (References #3891)
+
+2017-10-10 16:58  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15948] NEWS, liblwgeom/cunit/cu_varint.c, liblwgeom/varint.c,
+	  liblwgeom/varint.h: Fix undefined behaviour in zigzag with
+	  negative inputs (2.4 branch)
+	  (References #3882)
+
+2017-10-10 16:36  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15945] NEWS, liblwgeom/cunit/cu_measures.c,
+	  liblwgeom/measures.c: lw_dist2d_pt_arc division by zero
+	  (References #3874)
+
+2017-10-09 18:54  Regina Obe <lr@pcorp.us>
+
+	* [r15939] doc/extras_tigergeocoder.xml: Update geocode batch
+	  update example to use LATERAL now that PostgreSQL 9.3 is minimum
+	  supported.
+
+2017-10-06 13:31  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15923] NEWS, liblwgeom/g_serialized.c,
+	  postgis/geography_btree.c: Performance improvements for b-tree
+	  geometry sorts
+	  References #3864
+
+2017-10-06 13:21  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15919] NEWS, liblwgeom/lwalgorithm.c: geohash_point_as_int: Fix
+	  undefined behaviour in shift operation
+	  References #3875
+
+2017-10-06 13:17  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15915] NEWS, liblwgeom/cunit/cu_libgeom.c,
+	  liblwgeom/liblwgeom.h.in: Undefined behaviour in TYPMOD_GET_SRID
+	  References #3880
+
+2017-10-05 13:21  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15902] NEWS, liblwgeom/cunit/cu_geodetic.c,
+	  liblwgeom/cunit/cu_libgeom.c, liblwgeom/liblwgeom_internal.h,
+	  liblwgeom/lwalgorithm.c, liblwgeom/lwgeodetic.c,
+	  liblwgeom/lwgeodetic.h, liblwgeom/lwspheroid.c: Combine multiple
+	  signum definitions (2.4)
+	  (References #3878)
+
+2017-10-05 13:00  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15897] NEWS, liblwgeom/cunit/cu_measures.c,
+	  liblwgeom/measures.c: division by zero in lw_dist2d_arc_arc
+	  References #3879
+
+2017-10-02 22:29  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15877] liblwgeom/g_serialized.c: Fix union issue (References
+	  #3871)
+
+2017-10-02 22:00  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15874] NEWS, liblwgeom/g_serialized.c: Use type-pun to avoid
+	  memcpy in building morton key (References #3871)
+
+2017-10-02 12:51  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15872] NEWS, liblwgeom/lwlinearreferencing.c: Gracefully handle
+	  short-measure issue (Closes #3845)
+
+2017-10-02 06:17  Sandro Santilli <strk@kbt.io>
+
+	* [r15866] NEWS, liblwgeom/Makefile.in: Add -lm to liblwgeom link
+	  line
+	  
+	  References #3869 for 2.4 branch
+
+2017-10-01 18:31  Sandro Santilli <strk@kbt.io>
+
+	* [r15865] NEWS, postgis/lwgeom_btree.c: Fix memory leaks in BTREE
+	  operators
+	  
+	  References #3864 for 2.4 branch
+
+2017-09-30 17:45  Sandro Santilli <strk@kbt.io>
+
+	* [r15860] .drone.yml: Fix yaml syntax in drone config
+
+2017-09-30 06:38  Regina Obe <lr@pcorp.us>
+
+	* [r15856] README.postgis, Version.config,
+	  extensions/upgradeable_versions.mk: Bump version to 2.4.1dev, get
+	  rid of alpha, beta too
+
+2017-09-29 14:11  Regina Obe <lr@pcorp.us>
+
+	* [r15852] README.postgis: update README to reflect that 3.4 or
+	  higher is required and 3.6+ is recommended.
+	  Closes #3868 for PostGIS 2.4
+
+2017-09-28 06:50  Regina Obe <lr@pcorp.us>
+
+	* [r15849] NEWS, Version.config, doc/release_notes.xml,
+	  extensions/upgradeable_versions.mk: Soft launch PostGIS 2.4.0
+
+2017-09-27 06:13  Regina Obe <lr@pcorp.us>
+
+	* [r15846] ChangeLog: Update change log with latest changes
+
 2017-09-27 04:13  Regina Obe <lr@pcorp.us>
 
 	* [r15843] NEWS: it's already 9/27 update date.

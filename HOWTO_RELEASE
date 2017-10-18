@@ -82,9 +82,9 @@ Release procedure
 	   Go to: ​https://trac.osgeo.org/postgis/ edit the matrix to reflect new branch
 
 - Tag branch:  (replace x.x and x.x.x with minor and micro version e.g 2.3, 2.3.1
-   $ base=http://svn.osgeo.org/postgis/
-   $ brev=x.x
-   $ rev=x.x.x
+   $ base=https://svn.osgeo.org/postgis
+   $ brev=2.4
+   $ rev=2.4.x
    $ svn copy -m "Tagged release $rev" $base/branches/$brev $base/tags/$rev
 - Run: sh make_dist.sh $rev (or use debbie for this)
 - Build and test generated tarball (including extension upgrade)

@@ -4,74 +4,79 @@
     <subtitle>Release Notes</subtitle>
 
     <sect1>
+      <title>Release 2.4.1</title>
+      <para>Release date: 2017/10/18</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+        <para>#3864, Fix memory leaks in BTREE operators</para>
+        <para>#3869, Fix build with "gold" linker</para>
+        <para>#3845, Gracefully handle short-measure issue</para>
+        <para>#3871, Performance tweak for geometry cmp function</para>
+        <para>#3879, Division by zero in some arc cases</para>
+        <para>#3878, Single defn of signum in header</para>
+        <para>#3880, Undefined behaviour in TYPMOD_GET_SRID</para>
+        <para>#3875, Fix undefined behaviour in shift operation</para>
+        <para>#3864, Performance improvements for b-tree geometry sorts</para>
+        <para>#3874, lw_dist2d_pt_arc division by zero</para>
+        <para>#3882, undefined behaviour in zigzag with negative inputs</para>
+        <para>#3891, undefined behaviour in pointarray_to_encoded_polyline</para>
+        <para>#3895, throw error on malformed WKB input</para>
+        <para>#3886, fix rare missing boxes in geometry subdivision</para>
+        <para>#3907, Allocate enough space for all possible GBOX string outputs (Raúl Marín Rodríguez)</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
         <title>Release 2.4.0</title>
         <para>Release date: 2017/09/30</para>
-        <simplesect><title>New Features</title>
-<para>#3822, Have postgis_full_version() also show and check version of
-           PostgreSQL the scripts were built against (Sandro Santilli)</para>
-<para>#2411, curves support in ST_Reverse (Sandro Santilli)</para>
-<para>#2951, ST_Centroid for geography (Danny Götte)</para>
-<para>#3788, Allow postgis_restore.pl to work on directory-style (-Fd) dumps
-           (Roger Crew)</para>
-<para>#3772, Direction agnostic ST_CurveToLine output (Sandro Santilli / KKGeo)</para>
-<para>#2464, ST_CurveToLine with MaxError tolerance (Sandro Santilli / KKGeo)</para>
-<para>#3599, Geobuf output support via ST_AsGeobuf (Björn Harrtell)</para>
-<para>#3661, Mapbox vector tile output support via ST_AsMVT (Björn Harrtell / CartoDB)</para>
-<para>#3689, Add orientation checking and forcing functions (Dan Baston)</para>
-<para>#3753, Gist penalty speed improvements for 2D and ND points
-           (Darafei Praliaskouski, Andrey Borodin)</para>
-<para>#3677, ST_FrechetDistance (Shinichi Sugiyama)</para>
-<para>Most aggregates (raster and geometry),
-    and all stable / immutable (raster and geometry) marked as parallel safe</para>
-<para>#2249, ST_MakeEmptyCoverage for raster (David Zwarg, ainomieli)</para>
-<para>#3709, Allow signed distance for ST_Project (Darafei Praliaskouski)</para>
-<para>#524, Covers support for polygon on polygon, line on line,
-          point on line for geography (Danny Götte)</para>
+        <simplesect>
+            <title>New Features</title>
+            <para>#3822, Have postgis_full_version() also show and check version of PostgreSQL the scripts were built against (Sandro Santilli)</para>
+            <para>#2411, curves support in ST_Reverse (Sandro Santilli)</para>
+            <para>#2951, ST_Centroid for geography (Danny Götte)</para>
+            <para>#3788, Allow postgis_restore.pl to work on directory-style (-Fd) dumps (Roger Crew)</para>
+            <para>#3772, Direction agnostic ST_CurveToLine output (Sandro Santilli / KKGeo)</para>
+            <para>#2464, ST_CurveToLine with MaxError tolerance (Sandro Santilli / KKGeo)</para>
+            <para>#3599, Geobuf output support via ST_AsGeobuf (Björn Harrtell)</para>
+            <para>#3661, Mapbox vector tile output support via ST_AsMVT (Björn Harrtell / CartoDB)</para>
+            <para>#3689, Add orientation checking and forcing functions (Dan Baston)</para>
+            <para>#3753, Gist penalty speed improvements for 2D and ND points (Darafei Praliaskouski, Andrey Borodin)</para>
+            <para>#3677, ST_FrechetDistance (Shinichi Sugiyama)</para>
+            <para>Most aggregates (raster and geometry), and all stable / immutable (raster and geometry) marked as parallel safe</para>
+            <para>#2249, ST_MakeEmptyCoverage for raster (David Zwarg, ainomieli)</para>
+            <para>#3709, Allow signed distance for ST_Project (Darafei Praliaskouski)</para>
+            <para>#524, Covers support for polygon on polygon, line on line, point on line for geography (Danny Götte)</para>
         </simplesect>
-
-        <simplesect><title>Enhancements and Fixes</title>
-<para>Many corrections to docs and several translations almost complete.
-    Andreas Schild who provided many corrections to core docs.
-    PostGIS Japanese translation team first to reach completion of translation.</para>
-
-<para>Support for PostgreSQL 10</para>
-<para>Preliminary support for PostgreSQL 11</para>
-<para>#3645, Avoid loading logically deleted records from shapefiles</para>
-<para>#3747, Add zip4 and address_alphanumeric as attributes
-           to norm_addy tiger_geocoder type.</para>
-<para>#3748, address_standardizer lookup tables update
-           so pagc_normalize_address better standardizes abbreviations</para>
-<para>#3647, better handling of noding in ST_Node using GEOSNode
-          (Wouter Geraedts)</para>
-<para>#3684, Update to EPSG register v9
-          (Even Rouault)</para>
-<para>#3830, Fix initialization of incompatible type (>=9.6) address_standardizer</para>
-<para>#3662, Make shp2pgsql work in debug mode by sending debug to stderr</para>
-<para>#3405, Fixed memory leak in lwgeom_to_points</para>
-<para>#3832, Support wide integer fields as int8 in shp2pgsql</para>
-<para>#3841, Deterministic sorting support for empty geometries in btree geography</para>
-<para>#3844, Make = operator a strict equality test, and &lt; &gt; to rough "spatial sorting"</para>
-<para>#3855, ST_AsTWKB memory and speed improvements</para>
+        <simplesect>
+            <title>Enhancements and Fixes</title>
+            <para>Many corrections to docs and several translations almost complete. Andreas Schild who provided many corrections to core docs. PostGIS Japanese translation team first to reach completion of translation.</para>
+            <para>Support for PostgreSQL 10</para>
+            <para>Preliminary support for PostgreSQL 11</para>
+            <para>#3645, Avoid loading logically deleted records from shapefiles</para>
+            <para>#3747, Add zip4 and address_alphanumeric as attributes to norm_addy tiger_geocoder type.</para>
+            <para>#3748, address_standardizer lookup tables update so pagc_normalize_address better standardizes abbreviations</para>
+            <para>#3647, better handling of noding in ST_Node using GEOSNode (Wouter Geraedts)</para>
+            <para>#3684, Update to EPSG register v9 (Even Rouault)</para>
+            <para>#3830, Fix initialization of incompatible type (>=9.6) address_standardizer</para>
+            <para>#3662, Make shp2pgsql work in debug mode by sending debug to stderr</para>
+            <para>#3405, Fixed memory leak in lwgeom_to_points</para>
+            <para>#3832, Support wide integer fields as int8 in shp2pgsql</para>
+            <para>#3841, Deterministic sorting support for empty geometries in btree geography</para>
+            <para>#3844, Make = operator a strict equality test, and &lt; &gt; to rough "spatial sorting"</para>
+            <para>#3855, ST_AsTWKB memory and speed improvements</para>
         </simplesect>
-
-        <simplesect><title>Breaking Changes</title>
-<para>Dropped support for PostgreSQL 9.2.</para>
-<para>#3810, GEOS 3.4.0 or above minimum required to compile</para>
-<para>Most aggregates now marked as parallel safe,
-    which means most aggs have to be dropped / recreated.
-    If you have views that utilize PostGIS aggs,
-    you'll need to drop before upgrade and recreate after upgrade</para>
-<para>#3578, ST_NumInteriorRings(POLYGON EMPTY) now returns 0 instead of NULL</para>
-<para>_ST_DumpPoints removed, was no longer needed after PostGIS 2.1.0
-    when ST_DumpPoints got reimplemented in C</para>
-<para>B-Tree index operators &lt; = &gt; changed to provide better spatial locality on sorting
-    and have expected behavior on GROUP BY.
-    If you have btree index for geometry or geography, you need to REINDEX it, or review
-    if it was created by accident and needs to be replaced with GiST index.
-    If your code relies on old left-to-right box compare ordering,
-    update it to use &lt;&lt; &gt;&gt; operators.</para>
+        <simplesect>
+            <title>Breaking Changes</title>
+            <para>Dropped support for PostgreSQL 9.2.</para>
+            <para>#3810, GEOS 3.4.0 or above minimum required to compile</para>
+            <para>Most aggregates now marked as parallel safe, which means most aggs have to be dropped / recreated. If you have views that utilize PostGIS aggs, you'll need to drop before upgrade and recreate after upgrade</para>
+            <para>#3578, ST_NumInteriorRings(POLYGON EMPTY) now returns 0 instead of NULL</para>
+            <para>_ST_DumpPoints removed, was no longer needed after PostGIS 2.1.0 when ST_DumpPoints got reimplemented in C</para>
+            <para>B-Tree index operators &lt; = &gt; changed to provide better spatial locality on sorting and have expected behavior on GROUP BY. If you have btree index for geometry or geography, you need to REINDEX it, or review if it was created by accident and needs to be replaced with GiST index. If your code relies on old left-to-right box compare ordering, update it to use &lt;&lt; &gt;&gt; operators.</para>
         </simplesect>
     </sect1>
+
     <sect1>
       <title>Release 2.3.3</title>
       <para>Release date: 2017/07/01</para>
@@ -138,7 +143,6 @@
       <title>Release 2.3.0</title>
           <para>Release date: 2016/09/26</para>
           <para>This is a new feature release, with new functions, improved performance, all relevant bug fixes from PostGIS 2.2.3,and other goodies.</para>
-
         <simplesect>
           <title>Important / Breaking Changes</title>
             <para>#3466, Casting from box3d to geometry now returns a 3D
@@ -146,8 +150,6 @@
             <para>#3396, ST_EstimatedExtent, throw WARNING instead of ERROR
                      (Regina Obe)</para>
         </simplesect>
-
-
         <simplesect>
             <title>New Features</title>
               <para>Add support for custom TOC in postgis_restore.pl
@@ -188,7 +190,6 @@
               <para>#3613, Segmentize geography using equal length segments
                        (Hugo Mercier of Oslandia)</para>
         </simplesect>
-
         <simplesect>
             <title>Bug Fixes</title>
                <para>All relevant bug fixes from PostGIS 2.2.3</para>
@@ -196,7 +197,6 @@
                <para>#3604, pgcommon/Makefile.in orders CFLAGS incorrectly leading to
                        wrong liblwgeom.h (Greg Troxel)</para>
         </simplesect>
-
         <simplesect>
             <title>Performance Enhancements</title>
               <para>#75, Enhancement to PIP short circuit (Dan Baston)</para>
@@ -206,7 +206,6 @@
               <para>Make adding a line to topology interruptible (Sandro Santilli)</para>
               <para>Documentation updates from Mike Toews</para>
       </simplesect>
-
    </sect1>
 
    <sect1>

@@ -207,10 +207,7 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 
 }
 
-
-
 GEOSCoordSeq ptarray_to_GEOSCoordSeq(const POINTARRAY *, int fix_ring);
-
 
 GEOSCoordSeq
 ptarray_to_GEOSCoordSeq(const POINTARRAY *pa, int fix_ring)
@@ -411,9 +408,9 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 		if ( lwl->points->npoints == 1 ) {
 			/* Duplicate point, to make geos-friendly */
 			lwl->points = ptarray_addPoint(lwl->points,
-		                           getPoint_internal(lwl->points, 0),
-		                           FLAGS_NDIMS(lwl->points->flags),
-		                           lwl->points->npoints);
+			                       getPoint_internal(lwl->points, 0),
+			                       FLAGS_NDIMS(lwl->points->flags),
+			                       lwl->points->npoints);
 		}
 		sq = ptarray_to_GEOSCoordSeq(lwl->points, 0);
 		g = GEOSGeom_createLineString(sq);
@@ -591,8 +588,7 @@ lwgeom_normalize(const LWGEOM *geom1)
 
 	if (result == NULL)
 	{
-	  lwerror("Error performing intersection: GEOS2LWGEOM: %s",
-	                lwgeom_geos_errmsg);
+		lwerror("Error performing intersection: GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
 		return NULL ; /* never get here */
 	}
 
