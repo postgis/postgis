@@ -67,7 +67,7 @@ Release procedure
   in extensions/upgradeable_versions.mk
 - Commit all changes
 - Tag branch:  
-   $ base=http://svn.osgeo.org/postgis/
+   $ base=https://svn.osgeo.org/postgis/
    $ rev=2.2.x
    $ svn copy -m "Tagged release $rev" $base/branches/2.2 $base/tags/$rev
 - Run: sh make_dist.sh $rev (or use debbie for this)
