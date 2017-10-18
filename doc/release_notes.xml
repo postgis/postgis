@@ -3,6 +3,29 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>Release 2.2.6</title>
+        <para>Release date: 2017/10/18</para>
+        <para>This is a bug fix and performance improvement release.</para>
+        <simplesect>
+            <title>Bug Fixes and Enhancements</title>
+            <para>#3786, ptarray null and heap issues on is_closed</para>
+            <para>#3774, Trigonometric length for CompoundCurves</para>
+            <para>#3731, Crash on very small table of homogenous data</para>
+            <para>#2836, Receiving ERROR: ExteriorRing: geom is not a polygon with ST_ConcaveHull</para>
+            <para>#3866, Rare crash generating TWKB with large coordinate values</para>
+            <para>#3869, Fix build with "gold" linker</para>
+            <para>#3879, Division by zero in some arc cases</para>
+            <para>#3878, Single defn of signum in header</para>
+            <para>#3880, Undefined behaviour in TYPMOD_GET_SRID</para>
+            <para>#3875, Fix undefined behaviour in shift operation</para>
+            <para>#3874, lw_dist2d_pt_arc division by zero</para>
+            <para>#3882, undefined behaviour in zigzag with negative inputs</para>
+            <para>#3891, undefined behaviour in pointarray_to_encoded_polyline</para>
+            <para>#3895, throw error on malformed WKB input</para>
+            <para>#3907, Allocate enough space for all possible GBOX string outputs (Raúl Marín Rodríguez)</para>            
+        </simplesect>
+    </sect1>
+    <sect1>
       <title>Release 2.2.5</title>
         <para>Release date: 2017/01/30</para>
         <para>This is a bug fix and performance improvement release.</para>

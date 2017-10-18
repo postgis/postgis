@@ -1,3 +1,213 @@
+2017-10-17 16:55  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15999] NEWS, liblwgeom/cunit/cu_geodetic.c, liblwgeom/g_box.c:
+	  Allocate enough space for all possible GBOX string outputs (Raúl
+	  Marín Rodríguez)
+	  References #3907
+
+2017-10-10 22:44  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15958] NEWS, liblwgeom/lwin_wkb.c: Throw error on malformed WKB
+	  input (2.2 branch)
+	  Credit to OSS-Fuzz:
+	  ​https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=2589
+	  Credit to OSS-Fuzz:
+	  ​https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=2590
+	  Credit to OSS-Fuzz:
+	  ​https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=2591
+	  Credit to OSS-Fuzz:
+	  ​https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=2592
+	  (References #3895)
+
+2017-10-10 18:04  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15953] NEWS, liblwgeom/lwout_encoded_polyline.c: Undefined
+	  behaviour in pointarray_to_encoded_polyline (2.2 branch)
+	  (References #3891)
+
+2017-10-10 16:59  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15950] NEWS, liblwgeom/cunit/cu_varint.c, liblwgeom/varint.c,
+	  liblwgeom/varint.h: Fix undefined behaviour in zigzag with
+	  negative inputs (2.4 branch)
+	  (References #3882)
+
+2017-10-10 16:37  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15947] NEWS, liblwgeom/cunit/cu_measures.c,
+	  liblwgeom/measures.c: lw_dist2d_pt_arc division by zero
+	  (References #3874)
+
+2017-10-06 13:21  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15921] NEWS, liblwgeom/lwalgorithm.c: geohash_point_as_int: Fix
+	  undefined behaviour in shift operation
+	  Closes #3875
+
+2017-10-06 13:18  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15917] NEWS, liblwgeom/cunit/cu_libgeom.c,
+	  liblwgeom/liblwgeom.h.in: Undefined behaviour in TYPMOD_GET_SRID
+	  Closes #3880
+
+2017-10-05 13:21  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15900] NEWS, liblwgeom/cunit/cu_geodetic.c,
+	  liblwgeom/cunit/cu_libgeom.c, liblwgeom/liblwgeom_internal.h,
+	  liblwgeom/lwalgorithm.c, liblwgeom/lwgeodetic.c,
+	  liblwgeom/lwgeodetic.h, liblwgeom/lwspheroid.c: Combine multiple
+	  signum definitions (2.2)
+	  (References #3878)
+
+2017-10-05 13:04  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15899] NEWS, liblwgeom/cunit/cu_measures.c,
+	  liblwgeom/measures.c: division by zero in lw_dist2d_arc_arc
+	  Closes #3879
+
+2017-10-02 06:21  Sandro Santilli <strk@keybit.net>
+
+	* [r15868] NEWS, liblwgeom/Makefile.in: Add -lm to liblwgeom link
+	  line
+	  
+	  Closes #3869 in 2.2 branch
+
+2017-09-30 17:47  Sandro Santilli <strk@keybit.net>
+
+	* [r15862] .drone.yml: Fix yaml syntax in drone config
+
+2017-09-26 19:49  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15839] NEWS: TWKB news item (Closes #3866)
+
+2017-09-26 19:10  Nicklas Avén <nicklas.aven@jordogskog.no>
+
+	* [r15836] liblwgeom/bytebuffer.c: increase possible size of varint
+
+2017-09-20 21:27  Regina Obe <lr@pcorp.us>
+
+	* [r15781] .travis.yml: try to get travis to regress by fixing
+	  permission issues.
+	  References #3856 for PostGIS 2.2
+
+2017-09-20 03:52  Regina Obe <lr@pcorp.us>
+
+	* [r15777] NEWS, postgis/postgis.sql.in: ST_ConcaveHull fix for
+	  ExteriorRing is not a polygon
+	  Closes #2836 for PostGIS 2.2.6
+
+2017-09-18 21:59  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15763] NEWS: News item (references #3731)
+
+2017-09-18 14:46  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15760] NEWS: Added NEWS entry (references #3774)
+
+2017-09-18 13:28  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15757] liblwgeom/lwcompound.c: Trig length calculation for
+	  compound curve in 2.2 (references #3774)
+
+2017-09-14 22:58  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15741] postgis/gserialized_estimate.c: #3731, backend crash on
+	  zero size stats histogram
+
+2017-09-14 14:04  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15725] extensions/address_standardizer/gamma.c,
+	  loader/dbfopen.c, loader/pgsql2shp-core.c,
+	  loader/shp2pgsql-core.c, raster/loader/raster2pgsql.c: #3847,
+	  coverity fixes for 2.2
+
+2017-09-13 20:30  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15719] doc/extras_topology.xml: Fix misplaced section end
+
+2017-09-13 20:21  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15715] doc/extras_topology.xml: #3249, #2352, document
+	  ST_RemoveIsoEdge
+
+2017-09-11 16:39  Sandro Santilli <strk@keybit.net>
+
+	* [r15687] .drone.yml: [drone] extract target upgrade version
+	  dynamically
+	  
+	  also disable interrupt tests
+
+2017-09-05 16:58  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15626] liblwgeom/cunit/cu_geos.c, liblwgeom/lwgeom_geos.c:
+	  #3829 Segfault in LWGEOM2GEOS
+
+2017-09-04 00:14  Daniel Baston <dbaston@gmail.com>
+
+	* [r15619] doc/reference_measure.xml: #3499, Clarify distance units
+	  in docs for ST_ClusterWithin
+
+2017-07-21 05:16  Regina Obe <lr@pcorp.us>
+
+	* [r15492] liblwgeom/ptarray.c: missed a spot. revert another const
+	  add fix compile error
+
+2017-07-21 04:54  Regina Obe <lr@pcorp.us>
+
+	* [r15491] liblwgeom/ptarray.c: Get rid of const define for
+	  ptarray_remove_repeated_points_minpoints, caused compile error
+
+2017-07-20 22:48  Regina Obe <lr@pcorp.us>
+
+	* [r15490] NEWS, liblwgeom/ptarray.c: Back port all changes since
+	  Jan 2016.
+	  References #3768 OSS Fuzz fixes
+	  Correction of strk's email
+	  formatting cleanup by strk
+	  and adjustments to logic for readability by strk
+
+2017-06-24 06:17  Regina Obe <lr@pcorp.us>
+
+	* [r15462] .travis.yml: try to fix travis gdal related build error
+
+2017-06-24 05:40  Regina Obe <lr@pcorp.us>
+
+	* [r15461] doc/installation.xml: Specify highest version of
+	  PostgreSQL supported.
+	  Closes #3762 for PostGIS 2.2.6
+
+2017-06-06 12:28  Sandro Santilli <strk@keybit.net>
+
+	* [r15422] NEWS, doc/release_notes.xml: Speep up -> Speed up
+	  
+	  Thanks Andreas Schild via
+	  https://www.transifex.com/postgis/postgis/translate/#de/release_notesxmlpot/74993598/
+
+2017-06-06 12:22  Sandro Santilli <strk@keybit.net>
+
+	* [r15419] NEWS, doc/release_notes.xml: shp2pgsql locale fixes are
+	  #3084, not #3048
+	  
+	  Thanks Andreas Schild via
+	  https://www.transifex.com/postgis/postgis/translate/#de/release_notesxmlpot/74993584/
+
+2017-04-12 13:36  Sandro Santilli <strk@keybit.net>
+
+	* [r15353] README.md: Fix drone build badge url
+	  
+	  [ci skip]
+
+2017-01-29 20:58  Regina Obe <lr@pcorp.us>
+
+	* [r15299] Version.config, extensions/upgradeable_versions.mk: flip
+	  version to 2.2.6dev
+
+2017-01-29 19:59  Regina Obe <lr@pcorp.us>
+
+	* [r15297] ChangeLog, HOWTO_RELEASE, NEWS, README.postgis,
+	  Version.config, doc/release_notes.xml: Prepare for PostGIS 2.2.5
+	  release
+
 2017-01-07 08:59  Regina Obe <lr@pcorp.us>
 
 	* [r15286] NEWS, postgis/gserialized_gist_2d.c,
