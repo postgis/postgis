@@ -589,7 +589,6 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	GSERIALIZED *gpart;
 	uint8_t flags;
 	int result = LW_SUCCESS;
-	int gpart_is_slice = FALSE;
 
 	POSTGIS_DEBUG(4, "entered function");
 
