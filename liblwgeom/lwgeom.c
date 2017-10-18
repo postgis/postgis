@@ -1824,7 +1824,11 @@ LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist, int preserve_collapsed
 {
 	LWGEOM *lwgeom_out = lwgeom_clone_deep(igeom);
 	lwgeom_simplify_in_place(lwgeom_out, dist, preserve_collapsed);
-	if (lwgeom_is_empty(lwgeom_out)) return NULL;
+	if (lwgeom_is_empty(lwgeom_out))
+	{
+		lwgeom_free(lwgeom_out);
+		return NULL;
+	}
 	return lwgeom_out;
 }
 
