@@ -1667,7 +1667,11 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 						break;
 					}
 				}
-				if (seen) continue;
+				if (seen)
+				{
+					lwpoint_free(p1);
+					continue;
+				}
 				out[n++] = p1;
 			}
 
