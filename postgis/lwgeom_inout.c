@@ -790,6 +790,9 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 
 /*
 CREATE OR REPLACE FUNCTION CDB_AsSimplifiedTWKB(geom geometry, resolution float8)
+	RETURNS bytea
+	AS '$libdir/postgis-2.4','CDB_AsSimplifiedTWKB'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 */
 PG_FUNCTION_INFO_V1(CDB_AsSimplifiedTWKB);
 Datum CDB_AsSimplifiedTWKB(PG_FUNCTION_ARGS)
@@ -801,7 +804,6 @@ Datum CDB_AsSimplifiedTWKB(PG_FUNCTION_ARGS)
 	size_t twkb_size;
 	uint8_t variant = 0;
  	bytea *result;
-	srs_precision sp;
 	int twkb_rounding;
 	static double twkb_rounding_adjustment = 0.0;
 
