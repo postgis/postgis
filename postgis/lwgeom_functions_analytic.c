@@ -65,11 +65,11 @@ static int point_in_ring_rtree(RTREE_NODE *root, const POINT2D *point);
 PG_FUNCTION_INFO_V1(LWGEOM_simplify2d);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P_COPY(0);
 	double dist = PG_GETARG_FLOAT8(1);
 	GSERIALIZED *result;
 	int type = gserialized_get_type(geom);
-	LWGEOM *in, *out;
+	LWGEOM *in;
 	bool preserve_collapsed = false;
 
 	/* Handle optional argument to preserve collapsed features */
@@ -82,14 +82,18 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 
 	in = lwgeom_from_gserialized(geom);
 
-	out = lwgeom_simplify(in, dist, preserve_collapsed);
-	if ( ! out ) PG_RETURN_NULL();
+	lwgeom_simplify_in_place(in, dist, preserve_collapsed);
+	if ( lwgeom_is_empty(in) ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */
-	if ( in->bbox ) lwgeom_add_bbox(out);
+	if (in->bbox)
+	{
+		lwgeom_drop_bbox(in);
+		lwgeom_add_bbox(in);
+	}
 
-	result = geometry_serialize(out);
-	lwgeom_free(out);
+	result = geometry_serialize(in);
+	lwgeom_free(in);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
 }
@@ -316,7 +320,6 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 {
 	LWGEOM *in_lwgeom;
 	GSERIALIZED *out_geom = NULL;
-	LWGEOM *out_lwgeom;
 	gridspec grid;
 
 	GSERIALIZED *in_geom = PG_GETARG_GSERIALIZED_P(0);
@@ -345,18 +348,19 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "SnapToGrid got a %s", lwtype_name(in_lwgeom->type));
 
-	out_lwgeom = lwgeom_grid(in_lwgeom, &grid);
-	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
+	lwgeom_grid_in_place(in_lwgeom, &grid);
 
 	/* COMPUTE_BBOX TAINTING */
-	if ( in_lwgeom->bbox )
-		lwgeom_add_bbox(out_lwgeom);
+	if (in_lwgeom->bbox)
+	{
+		lwgeom_drop_bbox(in_lwgeom);
+		lwgeom_add_bbox(in_lwgeom);
+	}
 
+	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(in_lwgeom->type));
 
-	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(out_lwgeom->type));
-
-	out_geom = geometry_serialize(out_lwgeom);
-
+	out_geom = geometry_serialize(in_lwgeom);
+	lwfree(in_lwgeom);
 	PG_RETURN_POINTER(out_geom);
 }
 
