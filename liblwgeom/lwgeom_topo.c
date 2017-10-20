@@ -3702,7 +3702,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
     if ( nface1 ) lwgeom_free(nface1);
     if ( nface2 ) lwgeom_free(nface2);
   }} else {{
-    lwnotice("BBOX of edge changed edge did not change");
+    lwnotice("BBOX of changed edge did not change");
   }}
 
   LWDEBUG(1, "all done, cleaning up edges");
