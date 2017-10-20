@@ -2151,25 +2151,39 @@ lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
 		case POLYGONTYPE:
 		{
 			LWPOLY *ply = (LWPOLY*)(geom);
-			int i, j = 0;
 			if (!ply->rings) return;
-			for (i = 0; i < ply->nrings; i++)
+
+			/* Check first the external ring */
+			int i = 0;
+			POINTARRAY *pa = ply->rings[0];
+			ptarray_grid_in_place(pa, grid);
+			if (pa->npoints < 4)
+			{
+				/* External ring collapsed: free everything */
+				for (i = 0; i < ply->nrings; i++)
+				{
+					ptarray_free(ply->rings[i]);
+				}
+				ply->nrings = 0;
+				return;
+			}
+
+			/* Check the other rings */
+			int j = 1;
+			for (i = 1; i < ply->nrings; i++)
 			{
 				POINTARRAY *pa = ply->rings[i];
 				ptarray_grid_in_place(pa, grid);
+
 				/* Skip bad rings */
-				if (pa->npoints < 4)
+				if (pa->npoints >= 4)
+				{
+					j++;
+				}
+				else
 				{
 					ptarray_free(pa);
-					/* When internal rings collapse, we free */
-					/* then and move on */
-					if (i) continue;
-					/* If external ring collapses, we free */
-					/* it and stop processing */
-					else break;
 				}
-				/* Fill in just the rings we are keeping */
-				ply->rings[j++] = pa;
 			}
 			/* Adjust ring count appropriately */
 			ply->nrings = j;
