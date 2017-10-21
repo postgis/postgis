@@ -3,14 +3,11 @@
 .libs
 *.lo
 gmon.out
-install-sh
 postgis_svn_revision.h
 aclocal.m4
 autom4te.cache/
-config.guess
 config.log
 config.status
-config.sub
 configure
 de9i*.png
 doc/html/image_src/generator
@@ -79,6 +76,7 @@ loader/pgsql2shp
 loader/shp2pgsql
 loader/shp2pgsql-gui
 ltmain.sh
+build-aux/
 macros/libtool.m4
 macros/lt~obsolete.m4
 macros/ltoptions.m4

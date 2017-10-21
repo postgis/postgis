@@ -50,6 +50,8 @@ distclean-local: clean-local
 	rm -f java/jdbc/Makefile
 
 maintainer-clean-local: distclean-local
+	rm -f configure
+	rm -Rf build-aux
 
 maintainer-clean: 
 	@echo '------------------------------------------------------'
@@ -61,7 +63,6 @@ maintainer-clean:
 	$(MAKE) -C liblwgeom maintainer-clean
 	$(MAKE) -C java/jdbc maintainer-clean
 	$(MAKE) maintainer-clean-local
-	rm -f configure
 
 garden:
 	@echo '------------------------------------------------------'
