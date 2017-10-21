@@ -433,15 +433,6 @@ _lwt_toposnap(LWGEOM *src, LWGEOM *tgt, double tol)
     tmp2 = lwgeom_snap(tmp, tgt, tol);
     ++iterations;
     changed = ( lwgeom_count_vertices(tmp2) != lwgeom_count_vertices(tmp) );
-#if GEOS_NUMERIC_VERSION < 30309
-    /* Up to GEOS-3.3.8, snapping could duplicate points */
-    if ( changed ) {
-      tmp3 = lwgeom_remove_repeated_points( tmp2, 0 );
-      lwgeom_free(tmp2);
-      tmp2 = tmp3;
-      changed = ( lwgeom_count_vertices(tmp2) != lwgeom_count_vertices(tmp) );
-    }
-#endif /* GEOS_NUMERIC_VERSION < 30309 */
     LWDEBUGF(2, "After iteration %d, geometry changed ? %d (%d vs %d vertices)", iterations, changed, lwgeom_count_vertices(tmp2), lwgeom_count_vertices(tmp));
     if ( tmp != src ) lwgeom_free(tmp);
     tmp = tmp2;
