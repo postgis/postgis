@@ -50,8 +50,7 @@ distclean-local: clean-local
 
 maintainer-clean-local: distclean-local
 	rm -f configure
-	rm -f config.guess config.rpath config.sub
-	rm -f libtool install-sh ltmain.sh
+	rm -Rf build-aux
 
 maintainer-clean: 
 	@echo '------------------------------------------------------'
