@@ -839,18 +839,9 @@ POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
 		  <funcprototype>
 			<funcdef>geometry <function>ST_CurveToLine</function></funcdef>
 			<paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef>
-		  </funcprototype>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_CurveToLine</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef>
-			<paramdef><type>integer</type> <parameter>segments_per_qtr_circle</parameter></paramdef>
-		  </funcprototype>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_CurveToLine</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef>
 			<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
-			<paramdef><type>integer</type> <parameter>tolerance_type</parameter></paramdef>
-			<paramdef><type>integer</type> <parameter>flags</parameter></paramdef>
+			<paramdef choice="opt"><type>integer</type> <parameter>tolerance_type</parameter></paramdef>
+			<paramdef choice="opt"><type>integer</type> <parameter>flags</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
