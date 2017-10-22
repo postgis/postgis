@@ -350,3 +350,18 @@ SELECT 't3838.L2', topology.TopoGeo_addLinestring('bug3838',
 'LINESTRING(622608 6554988, 622596 6554984)'
 ::geometry , 10);
 SELECT 't3838.end', topology.DropTopology('bug3838');
+
+-- See https://trac.osgeo.org/postgis/ticket/1855
+-- Simplified case 1
+SELECT 't1855_1.start', topology.CreateTopology('bug1855') > 0;
+SELECT 't1855_1.0', topology.TopoGeo_addLinestring('bug1855',
+  'LINESTRING(0 0, 10 0, 0 1)', 2);
+SELECT 't1855_1.end', topology.DropTopology('bug1855');
+-- Simplified case 2
+SELECT 't1855_2.start', topology.CreateTopology('bug1855') > 0;
+SELECT 't1855_2.0', topology.topogeo_AddLinestring('bug1855',
+  'LINESTRING(0 0, 0 100)');
+SELECT 't1855_2.1', topology.topogeo_AddLinestring('bug1855',
+  'LINESTRING(10 51, -100 50, 10 49)', 2);
+SELECT 't1855_2.end', topology.DropTopology('bug1855');
+

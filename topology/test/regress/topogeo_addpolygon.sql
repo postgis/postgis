@@ -111,3 +111,18 @@ SELECT check_changes();
 DROP FUNCTION check_changes();
 SELECT DropTopology('city_data');
 
+-- See https://trac.osgeo.org/postgis/ticket/1855
+-- Original submission (more simplifications are
+-- in topogeo_addlinestring.sql)
+-- Original submission
+SELECT 't1855_0.start', topology.CreateTopology('bug1855', 0, 0.00001) > 0;
+SELECT 't1855_0.0', topology.TopoGeo_addPolygon('bug1855',
+        'POLYGON((76.26727 9.85751,76.29001 9.90026,
+                  76.29942 9.86257,76.26727 9.85751))'
+::geometry);
+SELECT 't1855_0.1', topology.TopoGeo_addPolygon('bug1855',
+'POLYGON((76.31988 9.89696,76.30482 9.88391,
+          76.2941 9.88391,76.29409 9.88391,76.29409 9.88392,
+          76.29001 9.90026,76.31988 9.89696))'
+::geometry);
+SELECT 't1855_0.end', topology.DropTopology('bug1855');

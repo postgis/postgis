@@ -53,3 +53,7 @@ ex_hole_snap|13
 ex_hole_snap|14
 ex_hole_snap|15
 Topology 'city_data' dropped
+t1855_0.start|t
+t1855_0.0|1
+t1855_0.1|2
+t1855_0.end|Topology 'bug1855' dropped
