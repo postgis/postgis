@@ -429,7 +429,6 @@ _lwt_toposnap(LWGEOM *src, LWGEOM *tgt, double tol)
   /* GEOS snapping can be unstable */
   /* See https://trac.osgeo.org/geos/ticket/760 */
   do {
-    LWGEOM *tmp3;
     tmp2 = lwgeom_snap(tmp, tgt, tol);
     ++iterations;
     changed = ( lwgeom_count_vertices(tmp2) != lwgeom_count_vertices(tmp) );
