@@ -3159,11 +3159,13 @@ Datum ST_AddIsoNode(PG_FUNCTION_ARGS)
   if ( ! pt ) {
     lwgeom_free(lwgeom);
 	  PG_FREE_IF_COPY(geom, 2);
-#if 0
-    lwpgerror("ST_AddIsoNode third argument must be a point geometry");
-#else
     lwpgerror("SQL/MM Spatial exception - invalid point");
-#endif
+    PG_RETURN_NULL();
+  }
+  if ( lwpoint_is_empty(pt) ) {
+    lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 2);
+    lwpgerror("SQL/MM Spatial exception - empty point");
     PG_RETURN_NULL();
   }
 

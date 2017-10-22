@@ -18,6 +18,7 @@ PostGIS 2.5.0
   - #3900, GCC warnings fixed, make -j is now working (Darafei Praliaskouski)
   - Topology population robustness improvements (Sandro Santilli)
     #1855, #1946, #3718 #3838
+  - #3232, Do not accept EMPTY points as topology nodes (Sandro Santilli)
 
 PostGIS 2.4.0
 2017/09/30

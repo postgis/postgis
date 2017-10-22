@@ -525,6 +525,13 @@ _lwt_AddIsoNode( LWT_TOPOLOGY* topo, LWT_ELEMID face,
 {
   LWT_ELEMID foundInFace = -1;
 
+  if ( lwpoint_is_empty(pt) )
+  {
+    lwerror("Cannot add empty point as isolated node");
+    return -1;
+  }
+
+
   if ( ! skipISOChecks )
   {
     if ( lwt_be_ExistsCoincidentNode(topo, pt) ) /*x*/
