@@ -16,8 +16,8 @@ PostGIS 2.5.0
   - #3864, Performance improvement for sorting POINT geometries
            (Darafei Praliaskouski)
   - #3900, GCC warnings fixed, make -j is now working (Darafei Praliaskouski)
-  - Topology population robustness improvements (Sandro Santilli)
-    #1855, #1946, #3718 #3838
+  - TopoGeo_addLinestring robustness improvements (Sandro Santilli)
+    #1855, #1946, #3718, #3838
   - #3234, Do not accept EMPTY points as topology nodes (Sandro Santilli)
   - #3892, Prevent version mixup when creating extension from unpackaged
            (Sandro Santilli)
