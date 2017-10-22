@@ -334,3 +334,19 @@ SELECT 't3371.L2', topology.TopoGeo_AddLineString( 'bug3711',
 'LINESTRING (618370 4833780 1.92, 618370 4833784 1.90, 618371 4833780 1.93)'
 ::geometry, 0);
 SELECT 't3371.end', topology.DropTopology('bug3711');
+
+-- See http://trac.osgeo.org/postgis/ticket/3838
+SELECT 't3838.start', topology.CreateTopology('bug3838') > 1;
+SELECT 't3838.L1', topology.TopoGeo_addLinestring('bug3838',
+'LINESTRING(
+622617.12 6554996.14,
+622612.06 6554996.7,
+622609.17 6554995.51,
+622606.83 6554996.14,
+622598.73 6554996.23,
+622591.53 6554995.96)'
+::geometry , 1);
+SELECT 't3838.L2', topology.TopoGeo_addLinestring('bug3838',
+'LINESTRING(622608 6554988, 622596 6554984)'
+::geometry , 10);
+SELECT 't3838.end', topology.DropTopology('bug3838');

@@ -210,3 +210,15 @@ t3371.L1|1
 t3371.L2|3
 t3371.L2|2
 t3371.end|Topology 'bug3711' dropped
+t3838.start|t
+t3838.L1|1
+t3838.L2|1
+t3838.L2|3
+t3838.L2|4
+t3838.L2|5
+t3838.L2|6
+t3838.L2|7
+t3838.L2|8
+t3838.L2|9
+t3838.L2|2
+t3838.end|Topology 'bug3838' dropped
