@@ -5000,6 +5000,25 @@ lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
 }
 
 /* Return the smallest delta that can perturbate
+ * the given value */
+static inline double
+_lwt_minToleranceDouble( double d )
+{
+  double ret = 3.6 * pow(10,  - ( 15 - log10(d?d:1.0) ) );
+  return ret;
+}
+
+/* Return the smallest delta that can perturbate
+ * the given point */
+static inline double
+_lwt_minTolerancePoint2d( const POINT2D* p )
+{
+  double max = FP_ABS(p->x);
+  if ( max < FP_ABS(p->y) ) max = FP_ABS(p->y);
+  return _lwt_minToleranceDouble(max);
+}
+
+/* Return the smallest delta that can perturbate
  * the maximum absolute value of a geometry ordinate
  */
 static double
@@ -5016,7 +5035,7 @@ _lwt_minTolerance( LWGEOM *g )
   if ( max < FP_ABS(gbox->ymin) ) max = FP_ABS(gbox->ymin);
   if ( max < FP_ABS(gbox->ymax) ) max = FP_ABS(gbox->ymax);
 
-  ret = 3.6 * pow(10,  - ( 15 - log10(max?max:1.0) ) );
+  ret = _lwt_minToleranceDouble(max);
 
   return ret;
 }
@@ -5486,7 +5505,9 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
     lwnotice("Empty component of noded line");
     return 0; /* must be empty */
   }
-  nid[0] = _lwt_AddPoint( topo, start_point, tol, handleFaceSplit );
+  nid[0] = _lwt_AddPoint( topo, start_point,
+                          _lwt_minTolerance(lwpoint_as_lwgeom(start_point)),
+                          handleFaceSplit );
   lwpoint_free(start_point); /* too late if lwt_AddPoint calls lwerror */
   if ( nid[0] == -1 ) return -1; /* lwerror should have been called */
 
@@ -5497,7 +5518,9 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
             "after successfully getting first point !?");
     return -1;
   }
-  nid[1] = _lwt_AddPoint( topo, end_point, tol, handleFaceSplit );
+  nid[1] = _lwt_AddPoint( topo, end_point,
+                          _lwt_minTolerance(lwpoint_as_lwgeom(end_point)),
+                          handleFaceSplit );
   lwpoint_free(end_point); /* too late if lwt_AddPoint calls lwerror */
   if ( nid[1] == -1 ) return -1; /* lwerror should have been called */
 
