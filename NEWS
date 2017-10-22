@@ -19,6 +19,8 @@ PostGIS 2.5.0
   - Topology population robustness improvements (Sandro Santilli)
     #1855, #1946, #3718 #3838
   - #3234, Do not accept EMPTY points as topology nodes (Sandro Santilli)
+  - #3892, Prevent version mixup when creating extension from unpackaged
+           (Sandro Santilli)
 
 PostGIS 2.4.0
 2017/09/30
