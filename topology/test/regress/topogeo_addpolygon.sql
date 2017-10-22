@@ -126,3 +126,21 @@ SELECT 't1855_0.1', topology.TopoGeo_addPolygon('bug1855',
           76.29001 9.90026,76.31988 9.89696))'
 ::geometry);
 SELECT 't1855_0.end', topology.DropTopology('bug1855');
+
+-- See https://trac.osgeo.org/postgis/ticket/1946
+SELECT 't1946.start', topology.CreateTopology('bug1946', 0, 0.00001) > 0;
+SELECT 't1946.0', topology.topogeo_AddPolygon('bug1946',
+'POLYGON((76.68554 30.74,76.68726 30.74248,
+          76.69223 30.74157,76.68554 30.74))'
+::geometry);
+SELECT 't1946.1', topology.topogeo_AddPolygon('bug1946',
+'POLYGON((76.68554 30.74,76.67933 30.75,
+          76.68727 30.74249,76.68727 30.74248,
+          76.68726 30.74248,76.68554 30.74))'
+::geometry);
+SELECT 't1946.2', topology.topogeo_AddPolygon('bug1946',
+'POLYGON((76.68728 30.74248,76.68727 30.74248,
+          76.68727 30.74249,76.67933 30.75,
+          76.69223 30.74157,76.68728 30.74248))'
+::geometry);
+SELECT 't1946.end', topology.DropTopology('bug1946');
