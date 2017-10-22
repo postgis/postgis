@@ -21,13 +21,24 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
 
 DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
 
+# Scripts making up the extension minor upgrade file
+# NOTE: order matters
+EXTENSION_UPGRADE_SCRIPTS = \
+	extlock.sql \
+	../postgis_extension_helper.sql \
+	sql_bits/remove_from_extension.sql.in \
+	sql/topology_upgrade.sql \
+	sql_bits/mark_editable_objects.sql.in \
+	sql_bits/topology_comments.sql \
+	../postgis_extension_helper_uninstall.sql
+
 PG_CONFIG    = @PG_CONFIG@
 
 SQL_BITS     = $(wildcard sql_bits/*.sql)
 EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
 
 
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql sql_minor_upgrade
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql_minor_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	mkdir -p sql
@@ -35,12 +46,6 @@ sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 
 sql/$(EXTENSION).sql: extlock.sql sql_bits/topology.sql  sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql
 	mkdir -p sql
-	cat $^ > $@
-
-#this is a cludge to allow upgrading from same SVN to same SVN
-sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: extlock.sql ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade.sql sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql ../postgis_extension_helper_uninstall.sql
-	cat $^ > $@
-sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql
 	cat $^ > $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
@@ -78,9 +83,24 @@ sql/topology_upgrade.sql:  ../../topology/topology_upgrade.sql
 	mkdir -p sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
 
-sql_minor_upgrade: extlock.sql ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade.sql sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql ../postgis_extension_helper_uninstall.sql
+sql_minor_upgrade: sql/$(EXTENSION)--ANY--$(EXTVERSION).sql
+
+sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS)
+	cat $(EXTENSION_UPGRADE_SCRIPTS) > $@
+
+EXTDIR=$(DESTDIR)$(datadir)/$(datamoduledir)
+
+install: install-upgrade-paths
+
+# The "next" lines are a cludge to allow upgrading between different
+# revisions of the same version
+install-upgrade-paths: sql/$(EXTENSION)--ANY--$(EXTVERSION).sql
+	tpl='$(EXTENSION)--ANY--$(EXTVERSION).sql'; \
+	$(INSTALL_DATA) $^ "$(EXTDIR)/$${tpl}"; \
+	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql; \
+	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql; \
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
-  	  cat $^ > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
+		ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
 
 DATA = $(wildcard sql/*--*.sql)
