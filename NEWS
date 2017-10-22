@@ -16,6 +16,8 @@ PostGIS 2.5.0
   - #3864, Performance improvement for sorting POINT geometries
            (Darafei Praliaskouski)
   - #3900, GCC warnings fixed, make -j is now working (Darafei Praliaskouski)
+  - Topology population robustness improvements (Sandro Santilli)
+    #1855, #1946, #3718 #3838
 
 PostGIS 2.4.0
 2017/09/30
