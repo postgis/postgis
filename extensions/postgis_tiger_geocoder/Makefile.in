@@ -226,6 +226,16 @@ install-upgrade-paths:
 		ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
 
+uninstall: uninstall-upgrade-paths
+
+INSTALLED_UPGRADE_SCRIPTS = \
+	$(wildcard $(EXTDIR)/*$(EXTVERSION).sql) \
+	$(wildcard $(EXTDIR)/*$(EXTVERSION)next.sql) \
+	$(NULL)
+
+uninstall-upgrade-paths:
+	rm -f $(INSTALLED_UPGRADE_SCRIPTS)
+
 #only extension files
 DATA = ${EXTENSION}.control sql/$(EXTENSION).sql $(wildcard sql/*--*.sql)
 EXTRA_CLEAN += $(wildcard expected/*--*.out)

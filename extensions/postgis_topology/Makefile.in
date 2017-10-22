@@ -101,6 +101,16 @@ install-upgrade-paths:
 		ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
 
+uninstall: uninstall-upgrade-paths
+
+INSTALLED_UPGRADE_SCRIPTS = \
+	$(wildcard $(EXTDIR)/*$(EXTVERSION).sql) \
+	$(wildcard $(EXTDIR)/*$(EXTVERSION)next.sql) \
+	$(NULL)
+
+uninstall-upgrade-paths:
+	rm -f $(INSTALLED_UPGRADE_SCRIPTS)
+
 DATA = $(wildcard sql/*--*.sql)
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 
