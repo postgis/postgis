@@ -48,6 +48,7 @@ extensions/address_standardizer/results/
 extensions/address_standardizer/us-*.sql
 extensions/postgis/Makefile
 extensions/postgis/postgis.control
+extensions/postgis/unpackaged_check.sql
 extensions/postgis/sql/
 extensions/postgis/sql_bits/*.sql
 extensions/postgis_sfcgal/Makefile
@@ -64,6 +65,7 @@ extensions/postgis_tiger_geocoder/sql_bits/tiger_geocoder.sql.in
 extensions/postgis_tiger_geocoder/sql_bits/tiger_geocoder_minor.sql.in
 extensions/postgis_topology/Makefile
 extensions/postgis_topology/postgis_topology.control
+extensions/postgis_topology/unpackaged_check.sql
 extensions/postgis_topology/sql/
 extensions/postgis_topology/sql_bits/*.sql
 GNUmakefile
