@@ -5064,9 +5064,12 @@ compare_scored_pointer(const void *si1, const void *si2)
  * @param findFace if non-zero the code will determine which face
  *        contains the given point (unless it is known to be NOT
  *        isolated)
+ * @param moved if not-null will be set to 0 if the point was added
+ *              w/out any snapping or 1 otherwise.
  */
 static LWT_ELEMID
-_lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int findFace)
+_lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
+              findFace, int *moved)
 {
   int num, i;
   double mindist = FLT_MAX;
@@ -5137,6 +5140,7 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int findFace)
     {
       /* found an existing node */
       if ( nodes ) _lwt_release_nodes(nodes, num);
+      if ( moved ) *moved = mindist == 0 ? 0 : 1;
       return id;
     }
   }
@@ -5204,6 +5208,7 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int findFace)
 
     /* project point to line, split edge by point */
     prj = lwgeom_closest_point(g, pt);
+    if ( moved ) *moved = lwgeom_same(prj,pt) ? 0 : 1;
     if ( lwgeom_has_z(pt) )
     {{
       /*
@@ -5388,6 +5393,7 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int findFace)
     /* The point is isolated, add it as such */
     /* TODO: pass 1 as last argument (skipChecks) ? */
     id = _lwt_AddIsoNode(topo, -1, point, 0, findFace);
+    if ( moved ) *moved = 0;
     if ( -1 == id )
     {
       /* should have invoked lwerror already, leaking memory */
@@ -5402,7 +5408,7 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int findFace)
 LWT_ELEMID
 lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
 {
-  return _lwt_AddPoint(topo, point, tol, 1);
+  return _lwt_AddPoint(topo, point, tol, 1, NULL);
 }
 
 /* Return identifier of an equal edge, 0 if none or -1 on error
@@ -5488,12 +5494,13 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
 {
   LWCOLLECTION *col;
   LWPOINT *start_point, *end_point;
-  LWGEOM *tmp, *tmp2;
+  LWGEOM *tmp = 0, *tmp2;
   LWT_ISO_NODE *node;
   LWT_ELEMID nid[2]; /* start_node, end_node */
   LWT_ELEMID id; /* edge id */
   POINT4D p4d;
   int nn, i;
+  int moved=0, mm;
 
   LWDEBUGG(1, lwline_as_lwgeom(edge), "_lwtAddLineEdge");
   LWDEBUGF(1, "_lwtAddLineEdge with tolerance %g", tol);
@@ -5506,9 +5513,11 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   }
   nid[0] = _lwt_AddPoint( topo, start_point,
                           _lwt_minTolerance(lwpoint_as_lwgeom(start_point)),
-                          handleFaceSplit );
+                          handleFaceSplit, &mm );
   lwpoint_free(start_point); /* too late if lwt_AddPoint calls lwerror */
   if ( nid[0] == -1 ) return -1; /* lwerror should have been called */
+  moved += mm;
+
 
   end_point = lwline_get_lwpoint(edge, edge->points->npoints-1);
   if ( ! end_point )
@@ -5519,7 +5528,8 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   }
   nid[1] = _lwt_AddPoint( topo, end_point,
                           _lwt_minTolerance(lwpoint_as_lwgeom(end_point)),
-                          handleFaceSplit );
+                          handleFaceSplit, &mm );
+  moved += mm;
   lwpoint_free(end_point); /* too late if lwt_AddPoint calls lwerror */
   if ( nid[1] == -1 ) return -1; /* lwerror should have been called */
 
@@ -5527,78 +5537,81 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
     -- Added endpoints may have drifted due to tolerance, so
     -- we need to re-snap the edge to the new nodes before adding it
   */
-
-  nn = nid[0] == nid[1] ? 1 : 2;
-  node = lwt_be_getNodeById( topo, nid, &nn,
-                             LWT_COL_NODE_NODE_ID|LWT_COL_NODE_GEOM );
-  if ( nn == -1 )
+  if ( moved )
   {
-    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
-    return -1;
-  }
-  start_point = NULL; end_point = NULL;
-  for (i=0; i<nn; ++i)
-  {
-    if ( node[i].node_id == nid[0] ) start_point = node[i].geom;
-    if ( node[i].node_id == nid[1] ) end_point = node[i].geom;
-  }
-  if ( ! start_point  || ! end_point )
-  {
-    if ( nn ) _lwt_release_nodes(node, nn);
-    lwerror("Could not find just-added nodes % " LWTFMT_ELEMID
-            " and %" LWTFMT_ELEMID, nid[0], nid[1]);
-    return -1;
-  }
 
-  /* snap */
-
-  getPoint4d_p( start_point->point, 0, &p4d );
-  lwline_setPoint4d(edge, 0, &p4d);
-
-  getPoint4d_p( end_point->point, 0, &p4d );
-  lwline_setPoint4d(edge, edge->points->npoints-1, &p4d);
-
-  if ( nn ) _lwt_release_nodes(node, nn);
-
-  /* make valid, after snap (to handle collapses) */
-  tmp = lwgeom_make_valid(lwline_as_lwgeom(edge));
-
-  col = lwgeom_as_lwcollection(tmp);
-  if ( col )
-  {{
-
-    col = lwcollection_extract(col, LINETYPE);
-
-    /* Check if the so-snapped edge collapsed (see #1650) */
-    if ( col->ngeoms == 0 )
+    nn = nid[0] == nid[1] ? 1 : 2;
+    node = lwt_be_getNodeById( topo, nid, &nn,
+                               LWT_COL_NODE_NODE_ID|LWT_COL_NODE_GEOM );
+    if ( nn == -1 )
     {
-      lwcollection_free(col);
-      lwgeom_free(tmp);
-      LWDEBUG(1, "Made-valid snapped edge collapsed");
-      return 0;
-    }
-
-    tmp2 = lwgeom_clone_deep( col->geoms[0] );
-    lwgeom_free(tmp);
-    tmp = tmp2;
-    edge = lwgeom_as_lwline(tmp);
-    lwcollection_free(col);
-    if ( ! edge )
-    {
-      /* should never happen */
-      lwerror("lwcollection_extract(LINETYPE) returned a non-line?");
+      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
       return -1;
     }
-  }}
-  else
-  {
-    edge = lwgeom_as_lwline(tmp);
-    if ( ! edge )
+    start_point = NULL; end_point = NULL;
+    for (i=0; i<nn; ++i)
     {
-      LWDEBUGF(1, "Made-valid snapped edge collapsed to %s",
-                  lwtype_name(lwgeom_get_type(tmp)));
+      if ( node[i].node_id == nid[0] ) start_point = node[i].geom;
+      if ( node[i].node_id == nid[1] ) end_point = node[i].geom;
+    }
+    if ( ! start_point  || ! end_point )
+    {
+      if ( nn ) _lwt_release_nodes(node, nn);
+      lwerror("Could not find just-added nodes % " LWTFMT_ELEMID
+              " and %" LWTFMT_ELEMID, nid[0], nid[1]);
+      return -1;
+    }
+
+    /* snap */
+
+    getPoint4d_p( start_point->point, 0, &p4d );
+    lwline_setPoint4d(edge, 0, &p4d);
+
+    getPoint4d_p( end_point->point, 0, &p4d );
+    lwline_setPoint4d(edge, edge->points->npoints-1, &p4d);
+
+    if ( nn ) _lwt_release_nodes(node, nn);
+
+    /* make valid, after snap (to handle collapses) */
+    tmp = lwgeom_make_valid(lwline_as_lwgeom(edge));
+
+    col = lwgeom_as_lwcollection(tmp);
+    if ( col )
+    {{
+
+      col = lwcollection_extract(col, LINETYPE);
+
+      /* Check if the so-snapped edge collapsed (see #1650) */
+      if ( col->ngeoms == 0 )
+      {
+        lwcollection_free(col);
+        lwgeom_free(tmp);
+        LWDEBUG(1, "Made-valid snapped edge collapsed");
+        return 0;
+      }
+
+      tmp2 = lwgeom_clone_deep( col->geoms[0] );
       lwgeom_free(tmp);
-      return 0;
+      tmp = tmp2;
+      edge = lwgeom_as_lwline(tmp);
+      lwcollection_free(col);
+      if ( ! edge )
+      {
+        /* should never happen */
+        lwerror("lwcollection_extract(LINETYPE) returned a non-line?");
+        return -1;
+      }
+    }}
+    else
+    {
+      edge = lwgeom_as_lwline(tmp);
+      if ( ! edge )
+      {
+        LWDEBUGF(1, "Made-valid snapped edge collapsed to %s",
+                    lwtype_name(lwgeom_get_type(tmp)));
+        lwgeom_free(tmp);
+        return 0;
+      }
     }
   }
 
@@ -5607,12 +5620,12 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   LWDEBUGF(1, "_lwt_GetEqualEdge returned %" LWTFMT_ELEMID, id);
   if ( id == -1 )
   {
-    lwgeom_free(tmp); /* probably too late, due to internal lwerror */
+    if ( tmp ) lwgeom_free(tmp); /* probably too late, due to internal lwerror */
     return -1;
   }
   if ( id )
   {
-    lwgeom_free(tmp); /* possibly takes "edge" down with it */
+    if ( tmp ) lwgeom_free(tmp); /* possibly takes "edge" down with it */
     return id;
   }
 
@@ -5625,7 +5638,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
     tmp2 = lwline_remove_repeated_points(edge, tol);
     LWDEBUGG(1, tmp2, "Repeated-point removed");
     edge = lwgeom_as_lwline(tmp2);
-    lwgeom_free(tmp);
+    if ( tmp ) lwgeom_free(tmp);
     tmp = tmp2;
 
     /* check if the so-decimated edge _now_ exists */
