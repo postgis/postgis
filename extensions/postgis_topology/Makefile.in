@@ -55,9 +55,16 @@ sql_bits/topology.sql: ../../topology/topology.sql
 sql_bits/topology_comments.sql: ../../doc/topology_comments.sql
 	cp $< $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../../utils/create_unpackaged.pl
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../../utils/create_unpackaged.pl unpackaged_check.sql Makefile
 	mkdir -p sql
-	cat $< | $(PERL) ../../utils/create_unpackaged.pl postgis_topology > $@
+	# Ensure version is correct
+	cat unpackaged_check.sql > $@
+	cat $< | $(PERL) ../../utils/create_unpackaged.pl postgis_topology >> $@
+
+unpackaged_check.sql: unpackaged_check.sql.in Makefile
+	cat $< \
+		| sed -e 's|@EXTVERSION@|$(EXTVERSION)|g' \
+		> $@
 
 #upgrade script should have everything but table, schema, type creation/alter
 #NOTE: we assume all object definitions end in ;
