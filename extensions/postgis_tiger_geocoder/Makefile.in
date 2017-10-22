@@ -37,7 +37,7 @@ ifeq (@ADDRESS_STANDARDIZER@,address_standardizer)
 	REGRESS_OPTS += --load-extension=address_standardizer
 endif
 
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql  sql_minor_upgrade sql/test-normalize_address.sql  sql/test-pagc_normalize_address.sql expected/test-normalize_address.out expected/test-pagc_normalize_address.out sql/test-upgrade.sql expected/test-upgrade.out sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql  sql_minor_upgrade
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql sql/test-normalize_address.sql sql/test-pagc_normalize_address.sql expected/test-normalize_address.out expected/test-pagc_normalize_address.out sql/test-upgrade.sql expected/test-upgrade.out
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	mkdir -p sql
@@ -72,8 +72,7 @@ sql/$(EXTENSION).sql: sql_bits/tiger_geocoder.sql  sql_bits/mark_editable_object
 	mkdir -p sql
 	cat $^ > $@
 
-#this is a cludge to allow upgrading from same SVN to same SVN
-sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql
+sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql
 	mkdir -p sql
 	cat $^ > $@
 	echo "SELECT postgis_extension_drop_if_exists('${EXTENSION}', 'DROP SCHEMA tiger_data');" >> $@
@@ -212,9 +211,19 @@ sql/tiger_geocoder_upgrade_minor.sql:  sql_bits/tiger_geocoder_minor.sql.in
 	 	 -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
 	 	 $< > $@
 
-sql_minor_upgrade: sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql
+EXTDIR=$(DESTDIR)$(datadir)/$(datamoduledir)
+
+install: install-upgrade-paths
+
+# The "next" lines are a cludge to allow upgrading between different
+# revisions of the same version
+install-upgrade-paths: sql/$(EXTENSION)--ANY--$(EXTVERSION).sql
+	tpl='$(EXTENSION)--ANY--$(EXTVERSION).sql'; \
+	$(INSTALL_DATA) $^ "$(EXTDIR)/$${tpl}"; \
+	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql; \
+	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql; \
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
-  	  cat $^ > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
+		ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
 
 #only extension files
