@@ -5,8 +5,9 @@ BEGIN
 	ver := split_part(postgis_scripts_installed(), ' ', 1);
 	IF ver != '@EXTVERSION@' THEN
 		RAISE EXCEPTION 'Installed PostGIS version is %', ver
-		USING HINT = 'Try `CREATE EXTENSION postgis VERSION ''@EXTVERSION@'' from unpackaged`,'
-		            'or source postgis_upgrade.sql`';
+		USING HINT = 'Try `CREATE EXTENSION postgis VERSION '''
+			|| ver || ''' from unpackaged`,'
+			' or source postgis_upgrade.sql`';
 	END IF;
 END;
 $$ LANGUAGE 'plpgsql';
