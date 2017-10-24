@@ -75,6 +75,7 @@ liblwgeom/cunit/cu_tester
 liblwgeom/cunit/Makefile
 liblwgeom/liblwgeom.a
 liblwgeom/liblwgeom.h
+liblwgeom/geobuf.pb-c.*
 liblwgeom/Makefile
 libtool
 loader/cunit/cu_tester
