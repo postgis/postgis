@@ -5015,7 +5015,7 @@ _lwt_minToleranceDouble( double d )
 }
 
 /* Return the smallest delta that can perturbate
- * the given point */
+ * the given point
 static inline double
 _lwt_minTolerancePoint2d( const POINT2D* p )
 {
@@ -5023,6 +5023,7 @@ _lwt_minTolerancePoint2d( const POINT2D* p )
   if ( max < FP_ABS(p->y) ) max = FP_ABS(p->y);
   return _lwt_minToleranceDouble(max);
 }
+*/
 
 /* Return the smallest delta that can perturbate
  * the maximum absolute value of a geometry ordinate
