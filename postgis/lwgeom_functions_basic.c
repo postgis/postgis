@@ -2630,11 +2630,10 @@ Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_RemoveRepeatedPoints);
 Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g_in = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g_in = PG_GETARG_GSERIALIZED_P_COPY(0);
 	int type = gserialized_get_type(g_in);
 	GSERIALIZED *g_out;
 	LWGEOM *lwgeom_in = NULL;
-	LWGEOM *lwgeom_out = NULL;
 	double tolerance = 0.0;
 
 	/* Don't even start to think about points */
@@ -2645,16 +2644,10 @@ Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)
 		tolerance = PG_GETARG_FLOAT8(1);
 
 	lwgeom_in = lwgeom_from_gserialized(g_in);
-	lwgeom_out = lwgeom_remove_repeated_points(lwgeom_in, tolerance);
-	g_out = geometry_serialize(lwgeom_out);
-
-	if ( lwgeom_out != lwgeom_in )
-	{
-		lwgeom_free(lwgeom_out);
-	}
+	lwgeom_remove_repeated_points_in_place(lwgeom_in, tolerance);
+	g_out = geometry_serialize(lwgeom_in);
 
 	lwgeom_free(lwgeom_in);
-
 	PG_FREE_IF_COPY(g_in, 0);
 	PG_RETURN_POINTER(g_out);
 }
