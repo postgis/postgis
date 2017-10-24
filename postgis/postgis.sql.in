@@ -408,6 +408,23 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	FUNCTION	1	geometry_cmp (geom1 geometry, geom2 geometry);
 
 
+--
+-- Sorting operators for Btree
+--
+
+-- Availability: 2.5.0
+CREATE FUNCTION geometry_hash(geometry)
+	RETURNS integer
+	AS 'MODULE_PATHNAME','lwgeom_hash'
+	LANGUAGE 'c' STRICT IMMUTABLE _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OPERATOR CLASS hash_geometry_ops
+	DEFAULT FOR TYPE geometry USING hash AS
+    OPERATOR    1   = ,
+    FUNCTION    1   geometry_hash(geometry);
+
+
 -----------------------------------------------------------------------------
 -- GiST 2D GEOMETRY-over-GSERIALIZED INDEX
 -----------------------------------------------------------------------------

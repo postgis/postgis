@@ -1025,5 +1025,31 @@ select '#3709', ST_SnapToGrid(ST_Project('SRID=4326;POINT(1 1)'::geography, 1000
 -- #3774
 select '#3774', abs(pi() + 2 - st_length('COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 1, 2 0), (2 0, 4 0))'::geometry)) < 0.000000001;
 
+-- #1014
+SELECT '#1014a', ST_AsText(g) FROM (
+	SELECT 'POINT(-0 0)'::geometry AS g
+	UNION
+	SELECT 'POINT(0 0)'::geometry AS g
+) a;
+SELECT '#1014b', ST_AsText(g) FROM (
+	SELECT 'POINT(0 1)'::geometry AS g
+	UNION
+	SELECT 'POINT(0 1)'::geometry AS g
+) a;
+CREATE TABLE rec (id integer, g geometry);
+INSERT INTO rec VALUES (1, 'POINT(0 1)');
+INSERT INTO rec VALUES (2, 'POINT(1 2)');
+INSERT INTO rec VALUES (3, 'POINT(2 3)');
+WITH RECURSIVE path (id, g) AS (
+    SELECT id, g FROM rec WHERE id = 1
+    UNION
+    SELECT rec.id, rec.g
+    FROM path, rec
+    WHERE ST_Y(path.g) = ST_X(rec.g)
+)
+SELECT '#1014c', id, st_astext(g) FROM path;
+DROP TABLE IF EXISTS rec;
+
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

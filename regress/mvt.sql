@@ -87,7 +87,7 @@ SELECT 'TA4', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom
     UNION
     SELECT 2 AS c1, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom ORDER BY c1) AS q;
 SELECT 'TA5', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT
     ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom, 1 AS c1, 'abcd'::text AS c2) AS q;
@@ -95,23 +95,23 @@ SELECT 'TA6', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1
     ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
 SELECT 'TA7', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (
-    SELECT 'test' AS c1, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+    SELECT 'test' AS c1, 1 AS c2, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom
     UNION
-    SELECT 'test' AS c1, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
+    SELECT 'test' AS c1, 2 AS c2, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom
     UNION
-    SELECT 'othertest' AS c1, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+    SELECT 'othertest' AS c1, 3 AS c2, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
+    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom ORDER BY c2) AS q;
 SELECT 'TA8', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (
-    SELECT 1::int AS c1, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+    SELECT 1::int AS c1, 1 AS c2, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom
     UNION
-    SELECT 1::int AS c1, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
+    SELECT 1::int AS c1, 2 AS c2, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom
     UNION
-    SELECT 2::int AS c1, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+    SELECT 2::int AS c1, 3 AS c2, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
+    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom ORDER BY c2) AS q;
 SELECT 'TA9', length(ST_AsMVT(q))
 FROM (
 	SELECT 1 AS c1, -1 AS c2,

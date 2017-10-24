@@ -27,6 +27,7 @@
 
 #include "postgres.h"
 #include "fmgr.h"
+#include "access/hash.h"
 #include "utils/geo_decls.h"
 
 #include "../postgis_config.h"
@@ -126,4 +127,19 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(g2, 1);
 	PG_RETURN_INT32(ret);
 }
+
+PG_FUNCTION_INFO_V1(lwgeom_hash);
+Datum lwgeom_hash(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	size_t sz1 = VARSIZE(g1);
+	size_t hsz1 = gserialized_header_size(g1);
+	uint8_t *b1 = (uint8_t*)g1 + hsz1;
+	size_t bsz1 = sz1 - hsz1;
+	Datum hval = hash_any(b1, bsz1);
+	PG_FREE_IF_COPY(g1, 0);
+	PG_RETURN_DATUM(hval);
+}
+
+
 
