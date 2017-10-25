@@ -305,10 +305,10 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 	if (
 		sz1 > 16 && // 16 is size of EMPTY, if it's larger - it has coordinates
 		sz2 > 16 &&
-		*(uint32_t*)(g1 + 2 * sizeof(uint32_t)) == POINTTYPE &&
-		*(uint32_t*)(g2 + 2 * sizeof(uint32_t)) == POINTTYPE &&
 		!FLAGS_GET_BBOX(g1->flags) &&
-		!FLAGS_GET_BBOX(g2->flags)
+		!FLAGS_GET_BBOX(g2->flags) &&
+		*(uint32_t*)(g1->data) == POINTTYPE &&
+		*(uint32_t*)(g2->data) == POINTTYPE
 	)
 	{
 		double *dptr = (double*)(g1->data + sizeof(double));
@@ -321,12 +321,18 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 		y.f = 2.0 * dptr[1];
 		hash2 = uint32_interleave_2(x.u, y.u);
 
-		if ( hash1 > hash2 )
-			return 1;
-		if ( hash1 < hash2 )
-			return -1;
+		/* If the SRIDs are the same, we can use hash inequality */
+		/* to jump us out of this function early. Otherwise we still */
+		/* have to do the full calculation */
+		if ( gserialized_cmp_srid(g1, g2) == 0 )
+		{
+			if ( hash1 > hash2 )
+				return 1;
+			if ( hash1 < hash2 )
+				return -1;
+		}
 
-		// if hashes happen to be the same, go to full compare.
+		/* if hashes happen to be the same, go to full compare. */
 	}
 
 	size_t hsz1 = gserialized_header_size(g1);
@@ -401,7 +407,7 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 		else if (bsz1 > bsz2)
  			return 1;
 	}
-	return cmp == 0 ? 0 : (cmp > 0 ? 1 : -1);
+	return cmp > 0 ? 1 : -1;
 }
 
 int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
