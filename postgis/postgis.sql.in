@@ -413,7 +413,7 @@ CREATE OPERATOR CLASS btree_geometry_ops
 --
 
 -- Availability: 2.5.0
-CREATE FUNCTION geometry_hash(geometry)
+CREATE OR REPLACE FUNCTION geometry_hash(geometry)
 	RETURNS integer
 	AS 'MODULE_PATHNAME','lwgeom_hash'
 	LANGUAGE 'c' STRICT IMMUTABLE _PARALLEL;
