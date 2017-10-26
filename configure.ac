@@ -18,6 +18,8 @@ AC_CONFIG_AUX_DIR([build-aux])
 dnl Invoke libtool: we do this as it is the easiest way to find the PIC
 dnl flags required to build liblwgeom
 AC_PROG_LIBTOOL
+
+dnl help resolve @INSTALL@ to proper install program
 AC_PROG_INSTALL
 
 dnl
