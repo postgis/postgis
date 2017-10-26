@@ -422,7 +422,6 @@ CREATE FUNCTION geometry_hash(geometry)
 CREATE OPERATOR CLASS hash_geometry_ops
 	DEFAULT FOR TYPE geometry USING hash AS
     OPERATOR    1   = ,
-    -- Availability: 2.5.0
     FUNCTION    1   geometry_hash(geometry);
 
 
