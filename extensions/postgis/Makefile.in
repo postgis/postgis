@@ -79,9 +79,9 @@ $(EXTENSION).control: $(EXTENSION).control.in Makefile
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
 	cp $< $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) ../../utils/create_unpackaged.pl unpackaged_check.sql Makefile | sql
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile | sql
 	# Ensure version is correct
-	cat unpackaged_check.sql > $@
+	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql > $@
 	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) \
 		| $(PERL) ../../utils/create_unpackaged.pl postgis \
 		>> $@
