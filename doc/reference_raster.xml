@@ -438,7 +438,7 @@ VALUES (1,
 	  <refnamediv>
 		<refname>AddRasterConstraints</refname>
 
-		<refpurpose>Adds raster constraints to a loaded raster table for a specific column that constrains spatial ref, scaling, blocksize, alignment, bands, band type and a flag to denote if raster column is regularly blocked. The table must be loaded with data for the constraints to be inferred. Returns true of the constraint setting was accomplished and if issues a notice.</refpurpose>
+		<refpurpose>Adds raster constraints to a loaded raster table for a specific column that constrains spatial ref, scaling, blocksize, alignment, bands, band type and a flag to denote if raster column is regularly blocked. The table must be loaded with data for the constraints to be inferred. Returns true if the constraint setting was accomplished and issues a notice otherwise.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
