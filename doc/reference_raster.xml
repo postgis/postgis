@@ -200,7 +200,7 @@ VALUES (1,
 
             <refsection>
             <title>Description</title>
-            <para>raster is a spatial data type used to represent raster data such as those imported from jpegs, tiffs, pngs, digital elevation models.
+            <para>raster is a spatial data type used to represent raster data such as those imported from JPEGs, TIFFs, PNGs, digital elevation models.
                 Each raster has 1 or more bands each having a set of pixel values. Rasters can be georeferenced.</para>
             <note>
               <para>Requires PostGIS be compiled with GDAL support. Currently rasters can be implicitly converted to geometry type, but the conversion returns the
