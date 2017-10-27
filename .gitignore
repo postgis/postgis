@@ -14,7 +14,10 @@ gmon.out
 postgis_svn_revision.h
 aclocal.m4
 autom4te.cache/
+build-aux/
 config.log
+config.guess
+config.sub
 config.status
 configure
 de9i*.png
@@ -67,12 +70,15 @@ extensions/postgis_topology/postgis_topology.control
 extensions/postgis_topology/sql/
 extensions/postgis_topology/sql_bits/*.sql
 GNUmakefile
+install-sh
 java/jdbc/Makefile
 java/jdbc/lib/
 java/jdbc/pom.xml
 java/jdbc/target/
 liblwgeom/cunit/cu_tester
 liblwgeom/cunit/Makefile
+liblwgeom/geobuf.pb-c.c
+liblwgeom/geobuf.pb-c.h
 liblwgeom/liblwgeom.a
 liblwgeom/liblwgeom.h
 liblwgeom/Makefile
@@ -84,7 +90,6 @@ loader/pgsql2shp
 loader/shp2pgsql
 loader/shp2pgsql-gui
 ltmain.sh
-build-aux/
 macros/libtool.m4
 macros/lt~obsolete.m4
 macros/ltoptions.m4
