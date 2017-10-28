@@ -197,11 +197,8 @@ cp topology/topology_upgrade_*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-
 #cp utils/* ${RELDIR}/${RELVERDIR}/utils
 #cp extras/* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}/extras
 cp ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
-cp ${PGPATH}/share/extension/postgis.sql ${RELDIR}/${RELVERDIR}/share/extension
-cp ${PGPATH}/share/extension/postgis_topology.sql ${RELDIR}/${RELVERDIR}/share/extension
-cp ${PGPATH}/share/extension/postgis_tiger_geocoder.sql ${RELDIR}/${RELVERDIR}/share/extension
+cp ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}next.sql ${RELDIR}/${RELVERDIR}/share/extension
 cp ${PGPATH}/share/extension/address_standardizer*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
-cp ${PGPATH}/share/extension/address_standardizer.sql ${RELDIR}/${RELVERDIR}/share/extension
 cp -r extensions/*/*.control ${RELDIR}/${RELVERDIR}/share/extension
 cp -r extensions/*/*.dll ${RELDIR}/${RELVERDIR}/lib #only address_standardizer in theory has this
 #cp extensions/postgis_topology/sql/* ${RELDIR}/${RELVERDIR}/share/extension
