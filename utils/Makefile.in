@@ -26,7 +26,7 @@ PGXS := @PGXS@
 include $(PGXS)
 
 SHELL = @SHELL@
-INSTALL = @INSTALL@
+INSTALL = $(SHELL) ../build-aux/install-sh
 
 SCRIPTS_built = postgis_restore.pl
 

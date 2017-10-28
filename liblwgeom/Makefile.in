@@ -33,7 +33,7 @@ exec_prefix = @exec_prefix@
 libdir = @libdir@
 includedir = @includedir@
 SHELL = @SHELL@
-INSTALL = @INSTALL@
+INSTALL = $(SHELL) ../build-aux/install-sh
 LIBTOOL = @LIBTOOL@
 
 SOVER = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@

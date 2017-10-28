@@ -25,7 +25,7 @@ CC=@CC@
 CFLAGS=-I ../liblwgeom @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@
 top_builddir = @top_builddir@
 SHELL = @SHELL@
-INSTALL = @INSTALL@
+INSTALL = $(SHELL) ../build-aux/install-sh
 LIBTOOL = @LIBTOOL@
 
 # Filenames with extension as determined by the OS
