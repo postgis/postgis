@@ -134,7 +134,12 @@ BEGIN
  ALTER EXTENSION $extname ADD $obj;
  RAISE NOTICE 'newly registered $obj';
 EXCEPTION WHEN object_not_in_prerequisite_state THEN
-  RAISE NOTICE 'already registered $obj';
+  IF SQLERRM like '% already a member of extension "$extname"'
+  THEN
+    RAISE NOTICE 'already registered $obj';
+  ELSE
+    RAISE EXCEPTION '%', SQLERRM;
+  END IF;
 END;
 \$\$ LANGUAGE 'plpgsql';
 EOF
