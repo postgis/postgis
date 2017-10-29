@@ -134,7 +134,7 @@ BEGIN
  ALTER EXTENSION $extname ADD $obj;
  RAISE NOTICE 'newly registered $obj';
 EXCEPTION WHEN object_not_in_prerequisite_state THEN
-  IF SQLERRM like '% already a member of extension "$extname"'
+  IF SQLERRM ~ '\\m$extname\\M'
   THEN
     RAISE NOTICE 'already registered $obj';
   ELSE
