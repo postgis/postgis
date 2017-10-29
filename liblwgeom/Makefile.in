@@ -163,7 +163,9 @@ install: install-liblwgeom
 uninstall: uninstall-liblwgeom
 
 install-liblwgeom: liblwgeom.la
+	$(INSTALL) -d "$(DESTDIR)$(libdir)"
 	$(LIBTOOL) --mode=install $(INSTALL) liblwgeom.la "$(DESTDIR)$(libdir)/liblwgeom.la"
+	$(INSTALL) -d "$(DESTDIR)$(includedir)"
 	$(INSTALL) -m 0644 liblwgeom.h "$(DESTDIR)$(includedir)/liblwgeom.h"
 	$(INSTALL) -m 0644 liblwgeom_topo.h "$(DESTDIR)$(includedir)/liblwgeom_topo.h"
 
