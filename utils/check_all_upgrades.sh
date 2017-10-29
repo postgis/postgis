@@ -12,7 +12,7 @@ EXTDIR=`pg_config --sharedir`/extension/
 cd $EXTDIR
 failures=0
 files=`'ls' postgis--* | grep -v -- '--.*--' | sed 's/^postgis--\(.*\)\.sql/\1/'`
-for fname in $files; do
+for fname in unpackaged $files; do
   from_version="$fname"
   UPGRADE_PATH="${from_version}--${to_version}"
   if test -e postgis--${UPGRADE_PATH}.sql; then
