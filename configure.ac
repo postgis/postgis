@@ -13,6 +13,7 @@ AC_INIT()
 AC_CONFIG_HEADERS([postgis_config.h])
 AC_CONFIG_MACRO_DIR([macros])
 AC_CONFIG_AUX_DIR([build-aux])
+AC_PROG_INSTALL
 
 
 dnl Invoke libtool: we do this as it is the easiest way to find the PIC
