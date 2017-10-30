@@ -2178,7 +2178,7 @@ lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
 				/* Skip bad rings */
 				if (pa->npoints >= 4)
 				{
-					j++;
+					ply->rings[j++] = pa;
 				}
 				else
 				{
