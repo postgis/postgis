@@ -41,3 +41,4 @@ D7|POINT(1 4094)
 TU2
 ERROR:  pgis_asmvt_transfn: parameter row cannot be other than a rowtype
 TU3|
+#3922|323
