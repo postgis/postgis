@@ -54,6 +54,7 @@ struct mvt_agg_context {
 	HeapTupleHeader row;
 	VectorTile__Tile__Feature *feature;
 	VectorTile__Tile__Layer *layer;
+	VectorTile__Tile *tile;
 	size_t features_capacity;
 	struct mvt_kv_key *keys_hash;
 	struct mvt_kv_string_value *string_values_hash;

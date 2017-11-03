@@ -4450,31 +4450,31 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(gj_version int4, geom geometry, maxdecim
 CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, int4)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, int4, text)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_finalfn(internal)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_finalfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE AGGREGATE ST_AsMVT(anyelement)
@@ -4542,19 +4542,19 @@ CREATE OR REPLACE FUNCTION postgis_libprotobuf_version()
 CREATE OR REPLACE FUNCTION pgis_asgeobuf_transfn(internal, anyelement)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asgeobuf_transfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asgeobuf_transfn(internal, anyelement, text)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asgeobuf_transfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asgeobuf_finalfn(internal)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME', 'pgis_asgeobuf_finalfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE AGGREGATE ST_AsGeobuf(anyelement)

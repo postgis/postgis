@@ -845,45 +845,68 @@ void mvt_agg_transfn(struct mvt_agg_context *ctx)
 	parse_values(ctx);
 }
 
+static bytea *mvt_ctx_to_bytea(struct mvt_agg_context *ctx)
+{
+	/* Fill out the file slot, if it's not already filled. */
+	/* We should only have a filled slow when all the work of building */
+	/* out the data is complete, so after a serialize/deserialize cycle */
+	/* or after a context combine */
+	if (!ctx->tile)
+	{
+		VectorTile__Tile__Layer **layers = ;
+		VectorTile__Tile tile = VECTOR_TILE__TILE__INIT;
+
+		POSTGIS_DEBUG(2, "mvt_agg_finalfn called");
+		POSTGIS_DEBUGF(2, "mvt_agg_finalfn n_features == %zd", ctx->layer->n_features);
+
+		/* Zero features => empty bytea output */
+		if (ctx->layer->n_features == 0)
+		{
+			buf = palloc(VARHDRSZ);
+			SET_VARSIZE(buf, VARHDRSZ);
+			return buf;
+		}
+
+		encode_keys(ctx);
+		encode_values(ctx);
+
+		int n_layers = 1;
+		ctx->tile = palloc(sizeof(VectorTile__Tile));
+		vector_tile__tile__init(ctx->tile);
+		ctx->tile->layers = palloc(sizeof(VectorTile__Tile__Layer*) * n_layers);
+		ctx->tile->layers[0] = ctx->layer;
+		ctx->tile->n_layers = n_layers;
+	}
+
+	/* Serialize the Tile */
+	size_t len = VARHDRSZ + vector_tile__tile__get_packed_size(ctx->tile);
+	bytea *ba = palloc(len);
+	vector_tile__tile__pack(ctx->tile, VARDATA(ba));
+	SET_VARSIZE(ba, len);
+	return ba;
+}
+
+
+bytea *mvt_ctx_serialize(struct mvt_agg_context *ctx)
+{
+	return mvt_ctx_to_bytea(ctx);
+}
+
+mvt_agg_context * mvt_ctx_deserialize(const bytea *ba)
+{
+
+}
+
 /**
  * Finalize aggregation.
  *
  * Encode keys and values and put the aggregated Layer message into
  * a Tile message and returns it packed as a bytea.
  */
-uint8_t *mvt_agg_finalfn(struct mvt_agg_context *ctx)
+bytea *mvt_agg_finalfn(struct mvt_agg_context *ctx)
 {
-	VectorTile__Tile__Layer *layers[1];
-	VectorTile__Tile tile = VECTOR_TILE__TILE__INIT;
-	size_t len;
-	uint8_t *buf;
-
-	POSTGIS_DEBUG(2, "mvt_agg_finalfn called");
-	POSTGIS_DEBUGF(2, "mvt_agg_finalfn n_features == %zd", ctx->layer->n_features);
-
-	/* Zero features => empty bytea output */
-	if (ctx->layer->n_features == 0)
-	{
-		buf = palloc(VARHDRSZ);
-		SET_VARSIZE(buf, VARHDRSZ);
-		return buf;
-	}
-
-	encode_keys(ctx);
-	encode_values(ctx);
-
-	layers[0] = ctx->layer;
-
-	tile.n_layers = 1;
-	tile.layers = layers;
-
-	len = vector_tile__tile__get_packed_size(&tile);
-	buf = palloc(sizeof(*buf) * (len + VARHDRSZ));
-	vector_tile__tile__pack(&tile, buf + VARHDRSZ);
-
-	SET_VARSIZE(buf, VARHDRSZ + len);
-
-	return buf;
+	return mvt_ctx_to_bytea(ctx);
 }
+
 
 #endif
