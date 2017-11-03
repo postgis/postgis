@@ -243,11 +243,16 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	/* Do the brute force calculation if the cached calculation doesn't tick over */
 	if ( LW_FAILURE == geography_distance_cache(fcinfo, g1, g2, &s, &distance) )
 	{
+		/* default to using tree-based distance calculation at all times */
+		/* in standard distance call. */
+		geography_tree_distance(g1, g2, &s, FP_TOLERANCE, &distance);
+		/*
 		LWGEOM* lwgeom1 = lwgeom_from_gserialized(g1);
 		LWGEOM* lwgeom2 = lwgeom_from_gserialized(g2);
 		distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, tolerance);
 		lwgeom_free(lwgeom1);
 		lwgeom_free(lwgeom2);
+		*/
 	}
 
 	/* Clean up */
