@@ -1526,8 +1526,8 @@ static void test_lwgeom_segmentize_sphere(void)
 	lwg1 = lwgeom_from_wkt("LINESTRING(0 20, 5 20)", LW_PARSER_CHECK_NONE);
 	lwg2 = lwgeom_segmentize_sphere(lwg1, max);
 	lwl = (LWLINE*)lwg2;
-	//wkt = lwgeom_to_ewkt(lwg2);
-	CU_ASSERT_EQUAL(lwl->points->npoints, 7);
+	// printf("%s\n", lwgeom_to_ewkt(lwg2));
+	CU_ASSERT_EQUAL(lwl->points->npoints, 9);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 	//lwfree(wkt);
