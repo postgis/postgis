@@ -3709,24 +3709,22 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 
 	  <refsection>
 		<title>Description</title>
-
 		<para>
 			ST_VoronoiLines computes a two-dimensional <ulink url="https://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi diagram</ulink> from the vertices of
-            the supplied geometry and returns the boundaries between cells in that diagram as a MultiLineString.
-        </para>
-
+			the supplied geometry and returns the boundaries between cells in that diagram as a MultiLineString.
+			Returns null if input geometry is null. Returns an empty geometry collection if the input geometry contains only one vertex. Returns an empty geometry collection if the extend_to envelope has zero area.
+		</para>
 		<para>
 			Optional parameters:
-		<itemizedlist>
-			<listitem>
-                <para> 'tolerance' : The distance within which vertices will be considered equivalent.  Robustness of the algorithm can be improved by supplying a nonzero tolerance distance.  (default = 0.0)</para>
-			</listitem>
-			<listitem>
-				<para>'extend_to' : If a geometry is supplied as the "extend_to" parameter, the diagram will be extended to cover the
-					envelope of the "extend_to" geometry, unless that envelope is smaller than the default envelope.
-					(default = NULL)</para>
-			</listitem>
-		</itemizedlist>
+			<itemizedlist>
+				<listitem>
+					<para> 'tolerance' : The distance within which vertices will be considered equivalent.  Robustness of the algorithm can be improved by supplying a nonzero tolerance distance.  (default = 0.0)</para>
+				</listitem>
+				<listitem>
+					<para>'extend_to' : If a geometry is supplied as the "extend_to" parameter, the diagram will be extended to cover the envelope of the "extend_to" geometry, unless
+						that envelope is smaller than the default envelope (default = NULL, default envelope is boundingbox of input geometry extended by about 50% in each direction).</para>
+				</listitem>
+			</itemizedlist>
 		</para>
 
 		<para>Availability: 2.3.0 - requires GEOS &gt;= 3.5.0.</para>
@@ -3806,20 +3804,21 @@ MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.818
 		<para>
 			ST_VoronoiPolygons computes a two-dimensional <ulink url="https://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi diagram</ulink> from the vertices of
 			the supplied geometry.  The result is a GeometryCollection of Polygons that covers an envelope larger than the extent of the input vertices.
+			Returns null if input geometry is null. Returns an empty geometry collection if the input geometry contains only one vertex. Returns an empty geometry collection if the extend_to envelope has zero area.
 		</para>
 
 		<para>
 			Optional parameters:
-		<itemizedlist>
-			<listitem>
-			<para>'tolerance' : The distance within which vertices will be considered equivalent.  Robustness of the algorithm can be improved by supplying a nonzero tolerance distance.  (default = 0.0)</para>
-			</listitem>
-			<listitem>
-				<para>'extend_to' : If a geometry is supplied as the "extend_to" parameter, the diagram will be extended to cover the
-					envelope of the "extend_to" geometry, unless that envelope is smaller than the default envelope.
-					(default = NULL)</para>
-			</listitem>
-		</itemizedlist>
+			<itemizedlist>
+				<listitem>
+					<para> 'tolerance' : The distance within which vertices will be considered equivalent.  Robustness of the algorithm can be improved by supplying a nonzero tolerance distance.  (default = 0.0)</para>
+				</listitem>
+				<listitem>
+					<para>'extend_to' : If a geometry is supplied as the "extend_to" parameter, the diagram will be extended to cover the envelope of the "extend_to" geometry, unless
+						that envelope is smaller than the default envelope (default = NULL, default envelope is boundingbox of input geometry extended by about 50% in each direction).
+					</para>
+				</listitem>
+			</itemizedlist>
 		</para>
 
 		<para>Availability: 2.3.0 - requires GEOS &gt;= 3.5.0.</para>
