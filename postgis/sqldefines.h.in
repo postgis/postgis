@@ -36,6 +36,17 @@
 
 #define SRID_USR_MAX @SRID_USR_MAX@
 
+#define _COST_C_LOW 8
+#define _COST_C_MED 64
+#define _COST_C_HIGH 512
+#define _COST_GEOS_LOW 64
+#define _COST_GEOS_MED 512
+#define _COST_GEOS_HIGH 2048
+#define _COST_PL_LOW 100
+#define _COST_PL_MED 200
+#define _COST_PL_HIGH 400
+
+
 #endif /* _LWPGIS_DEFINES */
 
 

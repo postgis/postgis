@@ -1797,55 +1797,55 @@ CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8
 CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_Affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_Affine($1,  cos($2), -sin($2), 0,  sin($2), cos($2), 0,  0, 0, 1,  0, 0, 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8,float8,float8)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_Affine($1,  cos($2), -sin($2), 0,  sin($2),  cos($2), 0, 0, 0, 1,	$3 - cos($2) * $3 + sin($2) * $4, $4 - sin($2) * $3 - cos($2) * $4, 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8,geometry)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_Affine($1,  cos($2), -sin($2), 0,  sin($2),  cos($2), 0, 0, 0, 1, @extschema@.ST_X($3) - cos($2) * @extschema@.ST_X($3) + sin($2) * @extschema@.ST_Y($3), @extschema@.ST_Y($3) - sin($2) * @extschema@.ST_X($3) - cos($2) * @extschema@.ST_Y($3), 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_RotateZ(geometry,float8)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_Rotate($1, $2)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_RotateX(geometry,float8)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_Affine($1, 1, 0, 0, 0, cos($2), -sin($2), 0, sin($2), cos($2), 0, 0, 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_RotateY(geometry,float8)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_Affine($1,  cos($2), 0, sin($2),  0, 1, 0,  -sin($2), 0, cos($2), 0,  0, 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Translate(geometry,float8,float8,float8)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_Affine($1, 1, 0, 0, 0, 1, 0, 0, 0, 1, $2, $3, $4)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Translate(geometry,float8,float8)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_Translate($1, $2, $3, 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_Scale(geometry,geometry)
@@ -1864,20 +1864,20 @@ CREATE OR REPLACE FUNCTION ST_Scale(geometry,float8,float8,float8)
 	RETURNS geometry
 	--AS 'SELECT ST_Affine($1,  $2, 0, 0,  0, $3, 0,  0, 0, $4,  0, 0, 0)'
 	AS 'SELECT @extschema@.ST_Scale($1, @extschema@.ST_MakePoint($2, $3, $4))'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Scale(geometry,float8,float8)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_Scale($1, $2, $3, 1)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Transscale(geometry,float8,float8,float8,float8)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_Affine($1,  $4, 0, 0,  0, $5, 0,
 		0, 0, 1,  $2 * $4, $3 * $5, 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -----------------------------------------------------------------------
 -- Dumping
@@ -3175,7 +3175,7 @@ CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, float8, float8, float8, float
 CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, float8, float8)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_SnapToGrid($1, 0, 0, $2, $3)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL
+	LANGUAGE 'sql' _PARALLEL
 	COST 1; -- reset cost, see #3675
 
 -- ST_SnapToGrid(input, size) # xsize=ysize=size, offsets=0
@@ -3183,7 +3183,7 @@ CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, float8, float8)
 CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, float8)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_SnapToGrid($1, 0, 0, $2, $2)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- ST_SnapToGrid(input, point_offsets, xsize, ysize, zsize, msize)
 -- Availability: 1.2.2
@@ -3269,7 +3269,7 @@ CREATE OR REPLACE FUNCTION ST_locate_between_measures(geometry, float8, float8)
 CREATE OR REPLACE FUNCTION ST_locate_along_measure(geometry, float8)
 	RETURNS geometry
 	AS $$ SELECT @extschema@.ST_locate_between_measures($1, $2, $2) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8)
@@ -3336,7 +3336,7 @@ CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8,integer)
 	AS $$ SELECT @extschema@._ST_Buffer($1, $2,
 		CAST('quad_segs='||CAST($3 AS text) as cstring))
 	   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql'  _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8,text)
@@ -3346,7 +3346,7 @@ CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8,text)
 			'quad_segs='||$3) AS cstring)
 		)
 	   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql'  _PARALLEL;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_MinimumBoundingRadius(geometry, OUT center geometry, OUT radius double precision)
@@ -3448,7 +3448,7 @@ SELECT CASE WHEN valid THEN 'Valid Geometry' ELSE reason END FROM (
 	SELECT (@extschema@.ST_isValidDetail($1, $2)).*
 ) foo
 	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL
+	LANGUAGE 'sql' _PARALLEL
 	COST 100;
 
 -- Requires GEOS >= 3.3.0
@@ -3456,7 +3456,7 @@ SELECT CASE WHEN valid THEN 'Valid Geometry' ELSE reason END FROM (
 CREATE OR REPLACE FUNCTION ST_IsValid(geometry, int4)
 	RETURNS boolean
 	AS 'SELECT (@extschema@.ST_isValidDetail($1, $2)).valid'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Requires GEOS >= 3.2.0
 -- Availability: 1.5.0
@@ -4070,7 +4070,7 @@ CREATE OR REPLACE FUNCTION _ST_Touches(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Touches(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Touches($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.3.4
 CREATE OR REPLACE FUNCTION _ST_DWithin(geom1 geometry, geom2 geometry,float8)
@@ -4083,7 +4083,7 @@ CREATE OR REPLACE FUNCTION _ST_DWithin(geom1 geometry, geom2 geometry,float8)
 CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry, float8)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_DWithin($1, $2, $3)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- PostGIS equivalent function: intersects(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION _ST_Intersects(geom1 geometry, geom2 geometry)
@@ -4097,7 +4097,7 @@ CREATE OR REPLACE FUNCTION _ST_Intersects(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Intersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Intersects($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- PostGIS equivalent function: crosses(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION _ST_Crosses(geom1 geometry, geom2 geometry)
@@ -4111,7 +4111,7 @@ CREATE OR REPLACE FUNCTION _ST_Crosses(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Crosses(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Crosses($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- PostGIS equivalent function: contains(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION _ST_Contains(geom1 geometry, geom2 geometry)
@@ -4125,7 +4125,7 @@ CREATE OR REPLACE FUNCTION _ST_Contains(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Contains(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.~) $2 AND @extschema@._ST_Contains($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_CoveredBy(geom1 geometry, geom2 geometry)
@@ -4138,7 +4138,7 @@ CREATE OR REPLACE FUNCTION _ST_CoveredBy(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_CoveredBy(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.@) $2 AND @extschema@._ST_CoveredBy($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Covers(geom1 geometry, geom2 geometry)
@@ -4152,7 +4152,7 @@ CREATE OR REPLACE FUNCTION _ST_Covers(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Covers(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.~) $2 AND @extschema@._ST_Covers($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION _ST_ContainsProperly(geom1 geometry, geom2 geometry)
@@ -4166,7 +4166,7 @@ CREATE OR REPLACE FUNCTION _ST_ContainsProperly(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_ContainsProperly(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.~) $2 AND @extschema@._ST_ContainsProperly($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- PostGIS equivalent function: overlaps(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION _ST_Overlaps(geom1 geometry, geom2 geometry)
@@ -4179,21 +4179,21 @@ CREATE OR REPLACE FUNCTION _ST_Overlaps(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION _ST_Within(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT @extschema@._ST_Contains($2,$1)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.2.2
 -- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Within(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $2 OPERATOR(@extschema@.~) $1 AND @extschema@._ST_Contains($2,$1)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.2.2
 -- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Overlaps(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Overlaps($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- PostGIS equivalent function: IsValid(geometry)
 -- TODO: change null returns to true
@@ -4266,7 +4266,7 @@ CREATE OR REPLACE FUNCTION _ST_Equals(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Equals(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.~=) $2 AND @extschema@._ST_Equals($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Deprecation in 1.2.3
 -- TODO: drop in 2.0.0 !
@@ -4293,13 +4293,13 @@ CREATE OR REPLACE FUNCTION ST_GeomFromGML(text, int4)
 CREATE OR REPLACE FUNCTION ST_GeomFromGML(text)
         RETURNS geometry
         AS 'SELECT @extschema@._ST_GeomFromGML($1, 0)'
-        LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+        LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GMLToSQL(text)
         RETURNS geometry
         AS 'SELECT @extschema@._ST_GeomFromGML($1, 0)'
-        LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+        LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_GMLToSQL(text, int4)
@@ -4398,7 +4398,7 @@ CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geometry, int4, int4, text, text)
 CREATE OR REPLACE FUNCTION ST_AsGML(geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS TEXT
 	AS $$ SELECT @extschema@._ST_AsGML(2, $1, $2, $3, null, null); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT  _PARALLEL;
+	LANGUAGE 'sql'  _PARALLEL;
 
 -- ST_AsGML(version, geom, precision, option)
 -- Availability: 1.4.0
@@ -4410,7 +4410,7 @@ CREATE OR REPLACE FUNCTION ST_AsGML(geom geometry, maxdecimaldigits int4 DEFAULT
 CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT null, id text DEFAULT null)
 	RETURNS TEXT
 	AS $$ SELECT @extschema@._ST_AsGML($1, $2, $3, $4, $5, $6); $$
-	LANGUAGE 'sql' IMMUTABLE  _PARALLEL;
+	LANGUAGE 'sql'  _PARALLEL;
 
 -----------------------------------------------------------------------
 -- KML OUTPUT
@@ -4427,7 +4427,7 @@ CREATE OR REPLACE FUNCTION _ST_AsKML(int4,geometry, int4, text)
 CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits int4 DEFAULT 15)
 	RETURNS TEXT
 	AS $$ SELECT @extschema@._ST_AsKML(2, ST_Transform($1,4326), $2, null); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT  _PARALLEL;
+	LANGUAGE 'sql'  _PARALLEL;
 
 -- ST_AsKML(version, geom, precision, text)
 -- Availability: 2.0.0
@@ -4435,7 +4435,7 @@ CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits int4 DEFAULT
 CREATE OR REPLACE FUNCTION ST_AsKML(version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, nprefix text DEFAULT null)
 	RETURNS TEXT
 	AS $$ SELECT @extschema@._ST_AsKML($1, @extschema@.ST_Transform($2,4326), $3, $4); $$
-	LANGUAGE 'sql' IMMUTABLE  _PARALLEL;
+	LANGUAGE 'sql'  _PARALLEL;
 
 -----------------------------------------------------------------------
 -- GEOJSON OUTPUT
@@ -4454,14 +4454,14 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits int4 DEF
 CREATE OR REPLACE FUNCTION _ST_AsGeoJson(int4, geometry, int4, int4)
 	RETURNS TEXT
 	AS $$ SELECT @extschema@.ST_AsGeoJson($2::@extschema@.geometry, $3::int4, $4::int4); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT  _PARALLEL;
+	LANGUAGE 'sql'  _PARALLEL;
 
 -- ST_AsGeoJson(version, geom, precision,options)
 -- Changed 2.0.0 to use default args and named args
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(gj_version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS TEXT
 	AS $$ SELECT @extschema@.ST_AsGeoJson($2::@extschema@.geometry, $3::int4, $4::int4); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -----------------------------------------------------------------------
 -- Mapbox Vector Tile OUTPUT
@@ -4664,7 +4664,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromGeoHash(text, int4 DEFAULT NULL)
 CREATE OR REPLACE FUNCTION ST_GeomFromGeoHash(text, int4 DEFAULT NULL)
 	RETURNS geometry
 	AS $$ SELECT CAST(@extschema@.ST_Box2dFromGeoHash($1, $2) AS geometry); $$
-	LANGUAGE 'sql' IMMUTABLE  _PARALLEL;
+	LANGUAGE 'sql'  _PARALLEL;
 
 ------------------------------------------------------------------------
 -- OGC defined
@@ -4746,7 +4746,7 @@ CREATE OR REPLACE FUNCTION ST_NumPatches(geometry)
 	THEN @extschema@.ST_NumGeometries($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_PatchN(geometry, integer)
@@ -4756,7 +4756,7 @@ CREATE OR REPLACE FUNCTION ST_PatchN(geometry, integer)
 	THEN @extschema@.ST_GeometryN($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- PostGIS equivalent function of old StartPoint(geometry))
 CREATE OR REPLACE FUNCTION ST_StartPoint(geometry)
@@ -4851,7 +4851,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromText(text)
 	THEN @extschema@.ST_GeomFromText($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- PostGIS equivalent function: PointFromText(text, int4)
 -- TODO: improve this ... by not duplicating constructor time.
@@ -4862,7 +4862,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromText(text, int4)
 	THEN @extschema@.ST_GeomFromText($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineFromText(text)
@@ -5288,7 +5288,7 @@ CREATE OR REPLACE FUNCTION _ST_MaxDistance(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_MaxDistance(geom1 geometry, geom2 geometry)
 	RETURNS float8
 	AS 'SELECT @extschema@._ST_MaxDistance(@extschema@.ST_ConvexHull($1), @extschema@.ST_ConvexHull($2))'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 CREATE OR REPLACE FUNCTION ST_ClosestPoint(geom1 geometry, geom2 geometry)
 	RETURNS geometry
@@ -5318,7 +5318,7 @@ CREATE OR REPLACE FUNCTION _ST_DFullyWithin(geom1 geometry, geom2 geometry,float
 CREATE OR REPLACE FUNCTION ST_DFullyWithin(geom1 geometry, geom2 geometry, float8)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_DFullyWithin(@extschema@.ST_ConvexHull($1), @extschema@.ST_ConvexHull($2), $3)'
-	LANGUAGE 'sql' IMMUTABLE;
+	LANGUAGE 'sql' ;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_SwapOrdinates(geom geometry, ords cstring)
