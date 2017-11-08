@@ -638,6 +638,7 @@ static void parse_values(struct mvt_agg_context *ctx)
 
 	POSTGIS_DEBUGF(3, "parse_values n_tags %zd", ctx->feature->n_tags);
 }
+
 static int max_type(LWCOLLECTION *lwcoll)
 {
 	int i, max = POINTTYPE;
@@ -649,6 +650,38 @@ static int max_type(LWCOLLECTION *lwcoll)
 			max = LINETYPE;
 	}
 	return max;
+}
+
+/**
+ * In place process a collection to find a concrete geometry
+ * object and expose that as the actual object. Will some
+ * geom be lost? Sure, but your MVT renderer couldn't
+ * draw it anyways.
+ */
+static void
+lwgeom_to_basic_type(LWGEOM *geom)
+{
+	if (lwgeom_get_type(geom) == COLLECTIONTYPE)
+	{
+		/* MVT doesn't handle generic collections, so we */
+		/* need to strip them down to a typed collection */
+		/* by finding the largest basic type available and */
+		/* using that as the basis of a typed collection. */
+		LWCOLLECTION *g = (LWCOLLECTION*)geom;
+		int i, maxtype = 0;
+		for (i = 0; i < g->ngeoms; i++)
+		{
+			LWGEOM *sg = g->geoms[i];
+			if (sg->type > maxtype && sg->type < COLLECTIONTYPE)
+				maxtype = sg->type;
+		}
+		if (maxtype > 3) maxtype -= 3;
+		/* Force the working geometry to be a simpler version */
+		/* of itself */
+		LWCOLLECTION *gc = lwcollection_extract(g, maxtype);
+		*g = *gc;
+	}
+	return;
 }
 
 /**
@@ -667,35 +700,48 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;
 	double resx = width / extent;
+	double resy = height / extent;
+	double res = (resx < resy ? resx : resy)/2;
 	double fx = extent / width;
 	double fy = -(extent / height);
 	double buffer_map_xunits = resx * buffer;
-	const GBOX *lwgeom_gbox;
+	int preserve_collapsed = LW_TRUE;
 	POSTGIS_DEBUG(2, "mvt_geom called");
 
 	/* Short circuit out on EMPTY */
 	if (lwgeom_is_empty(lwgeom))
 		return NULL;
 
-	lwgeom_gbox = lwgeom_get_bbox(lwgeom);
 	if (width == 0 || height == 0)
 		elog(ERROR, "mvt_geom: bounds width or height cannot be 0");
 
 	if (extent == 0)
 		elog(ERROR, "mvt_geom: extent cannot be 0");
 
-	if (clip_geom) {
-		GBOX *bgbox = gbox_copy(gbox);
-		gbox_expand(bgbox, buffer_map_xunits);
-		if (!gbox_overlaps_2d(lwgeom_gbox, bgbox)) {
+	/* Remove all non-essential points (under the output resolution) */
+	lwgeom_remove_repeated_points_in_place(lwgeom, res);
+	lwgeom_simplify_in_place(lwgeom, res, preserve_collapsed);
+
+	/* If geometry has disappeared, you're done */
+	if (lwgeom_is_empty(lwgeom))
+		return NULL;
+
+	if (clip_geom)
+	{
+		const GBOX *lwgeom_gbox = lwgeom_get_bbox(lwgeom);;
+		GBOX bgbox = *gbox;
+		gbox_expand(&bgbox, buffer_map_xunits);
+		if (!gbox_overlaps_2d(lwgeom_gbox, &bgbox))
+		{
 			POSTGIS_DEBUG(3, "mvt_geom: geometry outside clip box");
 			return NULL;
 		}
-		if (!gbox_contains_2d(bgbox, lwgeom_gbox)) {
-			double x0 = bgbox->xmin;
-			double y0 = bgbox->ymin;
-			double x1 = bgbox->xmax;
-			double y1 = bgbox->ymax;
+		if (!gbox_contains_2d(&bgbox, lwgeom_gbox))
+		{
+			double x0 = bgbox.xmin;
+			double y0 = bgbox.ymin;
+			double x1 = bgbox.xmax;
+			double y1 = bgbox.ymax;
 #if POSTGIS_GEOS_VERSION < 35
 			LWPOLY *lwenv = lwpoly_construct_envelope(0, x0, y0, x1, y1);
 			lwgeom = lwgeom_intersection(lwgeom, lwpoly_as_lwgeom(lwenv));
@@ -730,23 +776,17 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 		return NULL;
 
 	/* if polygon(s) make valid and force clockwise as per MVT spec */
-	if (lwgeom->type == POLYGONTYPE || lwgeom->type == MULTIPOLYGONTYPE) {
+	if (lwgeom->type == POLYGONTYPE ||
+		lwgeom->type == MULTIPOLYGONTYPE ||
+		lwgeom->type == COLLECTIONTYPE)
+	{
 		lwgeom = lwgeom_make_valid(lwgeom);
 		lwgeom_force_clockwise(lwgeom);
 	}
 
 	/* if geometry collection extract highest dimensional geometry type */
-	if (lwgeom->type == COLLECTIONTYPE) {
-		LWCOLLECTION *lwcoll = lwgeom_as_lwcollection(lwgeom);
-		lwgeom = lwcollection_as_lwgeom(
-			lwcollection_extract(lwcoll, max_type(lwcoll)));
-		lwgeom = lwgeom_homogenize(lwgeom);
-		/* if polygon(s) make valid and force clockwise as per MVT spec */
-		if (lwgeom->type == POLYGONTYPE || lwgeom->type == MULTIPOLYGONTYPE) {
-			lwgeom = lwgeom_make_valid(lwgeom);
-			lwgeom_force_clockwise(lwgeom);
-		}
-	}
+	if (lwgeom->type == COLLECTIONTYPE)
+		lwgeom_to_basic_type(lwgeom);
 
 	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;
