@@ -104,7 +104,6 @@ CREATE OR REPLACE FUNCTION ST_AsText(geography)
 	AS 'MODULE_PATHNAME','LWGEOM_asText'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_AsText(geography, int4)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asText'
@@ -260,7 +259,7 @@ CREATE OR REPLACE FUNCTION geography_distance_knn(geography, geography)
   RETURNS float8
   AS 'MODULE_PATHNAME','geography_distance_knn'
   LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-  COST 100;
+  _COST_C_MED;
 
 -- Availability: 2.2.0
 CREATE OPERATOR <-> (
@@ -518,7 +517,7 @@ CREATE OR REPLACE FUNCTION _ST_Distance(geography, geography, float8, boolean)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_distance'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 100;
+	_COST_C_HIGH;
 
 -- Stop calculation and return immediately once distance is less than tolerance
 -- Availability: 1.5.0
@@ -526,7 +525,7 @@ CREATE OR REPLACE FUNCTION _ST_DWithin(geography, geography, float8, boolean)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','geography_dwithin'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 100;
+	_COST_C_HIGH;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Distance(geography, geography, boolean)
@@ -553,7 +552,7 @@ CREATE OR REPLACE FUNCTION _ST_Expand(geography, float8)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_expand'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 50;
+	_COST_C_LOW;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8, boolean)
@@ -584,8 +583,7 @@ CREATE OR REPLACE FUNCTION ST_DWithin(text, text, float8)
 CREATE OR REPLACE FUNCTION _ST_DistanceUnCached(geography, geography, float8, boolean)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_distance_uncached'
-	LANGUAGE 'c' IMMUTABLE STRICT
-	COST 100;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Calculate the distance in geographics *without* using the caching code line or tree code
 CREATE OR REPLACE FUNCTION _ST_DistanceUnCached(geography, geography, boolean)
@@ -604,8 +602,7 @@ CREATE OR REPLACE FUNCTION _ST_DistanceUnCached(geography, geography)
 CREATE OR REPLACE FUNCTION _ST_DistanceTree(geography, geography, float8, boolean)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_distance_tree'
-	LANGUAGE 'c' IMMUTABLE STRICT
-	COST 100;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Calculate the distance in geographics using the circular tree code, but
 -- *without* using the caching code line
@@ -618,8 +615,7 @@ CREATE OR REPLACE FUNCTION _ST_DistanceTree(geography, geography)
 CREATE OR REPLACE FUNCTION _ST_DWithinUnCached(geography, geography, float8, boolean)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','geography_dwithin_uncached'
-	LANGUAGE 'c' IMMUTABLE STRICT
-	COST 100;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Calculate the dwithin relation *without* using the caching code line or tree code
 CREATE OR REPLACE FUNCTION _ST_DWithinUnCached(geography, geography, float8)
@@ -634,47 +630,47 @@ CREATE OR REPLACE FUNCTION ST_Area(geog geography, use_spheroid boolean DEFAULT 
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_area'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 100;
+	_COST_C_MED;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Area(text)
 	RETURNS float8 AS
 	$$ SELECT @extschema@.ST_Area($1::@extschema@.geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Length(geog geography, use_spheroid boolean DEFAULT true)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_length'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 100;
+	_COST_C_MED;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Length(text)
 	RETURNS float8 AS
 	$$ SELECT ST_Length($1::@extschema@.geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_Project(geog geography, distance float8, azimuth float8)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_project'
 	LANGUAGE 'c' IMMUTABLE _PARALLEL
-	COST 100;
+	_COST_C_MED;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_Azimuth(geog1 geography, geog2 geography)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_azimuth'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 100;
+	_COST_C_MED;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_Perimeter(geog geography, use_spheroid boolean DEFAULT true)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_perimeter'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 100;
+	_COST_C_MED;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_PointOutside(geography)
@@ -688,7 +684,7 @@ CREATE OR REPLACE FUNCTION _ST_Covers(geography, geography)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','geography_covers'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 100;
+	_COST_C_MED;
 
 -- Only implemented for polygon-over-point
 -- Availability: 1.5.0
@@ -721,7 +717,7 @@ CREATE OR REPLACE FUNCTION ST_Segmentize(geog geography, max_segment_length floa
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_segmentize'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 100;
+	_COST_C_MED;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Intersects(geography, geography)
@@ -805,7 +801,7 @@ CREATE OR REPLACE FUNCTION ST_AsBinary(geography)
 CREATE OR REPLACE FUNCTION ST_AsBinary(geography,text)
 	RETURNS bytea AS
 	$$ SELECT @extschema@.ST_AsBinary($1::@extschema@.geometry, $2);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsEWKT(geography)
@@ -817,7 +813,7 @@ CREATE OR REPLACE FUNCTION ST_AsEWKT(geography)
 CREATE OR REPLACE FUNCTION ST_AsEWKT(text)
 	RETURNS text AS
 	$$ SELECT @extschema@.ST_AsEWKT($1::@extschema@.geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION GeometryType(geography)
@@ -853,7 +849,8 @@ CREATE OR REPLACE FUNCTION ST_SetSRID(geog geography, srid int4)
 CREATE OR REPLACE FUNCTION ST_Centroid(geography, use_spheroid boolean DEFAULT true)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_centroid'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	_COST_C_MED;
 
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
