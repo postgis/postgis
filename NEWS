@@ -2,8 +2,8 @@ PostGIS 2.4.2dev
 2017/xx/xx
 
  * Bug fixes *
- - #3917, Fix zcta5 load
- - #3667, Fix for bug in geography ST_Segmentize
+  - #3917, Fix zcta5 load
+  - #3667, Fix for bug in geography ST_Segmentize
 
 
 PostGIS 2.4.1
