@@ -4476,46 +4476,80 @@ CREATE OR REPLACE FUNCTION pgis_asmvt_finalfn(internal)
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_finalfn'
 	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION pgis_asmvt_combinefn(internal, internal)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'pgis_asmvt_combinefn'
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION pgis_asmvt_serialfn(internal)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME', 'pgis_asmvt_serialfn'
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION pgis_asmvt_deserialfn(bytea, internal)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'pgis_asmvt_deserialfn'
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
+
 -- Availability: 2.4.0
+-- Changed: 2.5.0
 CREATE AGGREGATE ST_AsMVT(anyelement)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
+	serialfunc = pgis_asmvt_serialfn,
+	deserialfunc = pgis_asmvt_deserialfn,
+	combinefunc = pgis_asmvt_combinefn,
 #endif
 	finalfunc = pgis_asmvt_finalfn
 );
 
 -- Availability: 2.4.0
+-- Changed: 2.5.0
 CREATE AGGREGATE ST_AsMVT(anyelement, text)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
+	serialfunc = pgis_asmvt_serialfn,
+	deserialfunc = pgis_asmvt_deserialfn,
+	combinefunc = pgis_asmvt_combinefn,
 #endif
 	finalfunc = pgis_asmvt_finalfn
 );
 
 -- Availability: 2.4.0
+-- Changed: 2.5.0
 CREATE AGGREGATE ST_AsMVT(anyelement, text, int4)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
+	serialfunc = pgis_asmvt_serialfn,
+	deserialfunc = pgis_asmvt_deserialfn,
+	combinefunc = pgis_asmvt_combinefn,
 #endif
 	finalfunc = pgis_asmvt_finalfn
 );
 
 -- Availability: 2.4.0
+-- Changed: 2.5.0
 CREATE AGGREGATE ST_AsMVT(anyelement, text, int4, text)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
+	serialfunc = pgis_asmvt_serialfn,
+	deserialfunc = pgis_asmvt_deserialfn,
+	combinefunc = pgis_asmvt_combinefn,
 #endif
 	finalfunc = pgis_asmvt_finalfn
 );
