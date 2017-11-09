@@ -1582,12 +1582,6 @@ static int ptarray_segmentize_sphere_edge_recursive (
 	}
 }
 
-
-/*	xxx */
-// void geog2cart(const GEOGRAPHIC_POINT *g, POINT3D *p);
-// #define deg2rad(d) (M_PI * (d) / 180.0)
-// #define rad2deg(r) (180.0 * (r) / M_PI)
-
 /**
 * Create a new point array with no segment longer than the input segment length (expressed in radians!)
 * @param pa_in - input point array pointer
