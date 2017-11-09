@@ -4,6 +4,7 @@ PostGIS 2.4.2dev
  * Bug fixes *
   - #3917, Fix zcta5 load
   - #3667, Fix for bug in geography ST_Segmentize
+  - #3926, Add missing 2.2.6 and 2.3.4 upgrade paths (Muhammad Usama)
 
 
 PostGIS 2.4.1
