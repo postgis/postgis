@@ -13,6 +13,7 @@ PostGIS 2.5.0
            with core PostGIS functions.
 
 * Enhancements and Fixes*
+  - #3925, Simplify geometry using map grid cell size before generating MVT
   - #3899, BTree sort order is now defined on collections of EMPTY and
            same-prefix geometries (Darafei Praliaskouski)
   - #3864, Performance improvement for sorting POINT geometries
