@@ -639,19 +639,6 @@ static void parse_values(mvt_agg_context *ctx)
 	POSTGIS_DEBUGF(3, "parse_values n_tags %zd", ctx->feature->n_tags);
 }
 
-static int max_type(LWCOLLECTION *lwcoll)
-{
-	int i, max = POINTTYPE;
-	for (i = 0; i < lwcoll->ngeoms; i++) {
-		uint8_t type = lwcoll->geoms[i]->type;
-		if (type == POLYGONTYPE || type == MULTIPOLYGONTYPE)
-			return POLYGONTYPE;
-		else if (type == LINETYPE || type == MULTILINETYPE)
-			max = LINETYPE;
-	}
-	return max;
-}
-
 /**
  * In place process a collection to find a concrete geometry
  * object and expose that as the actual object. Will some
