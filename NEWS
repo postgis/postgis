@@ -3,7 +3,7 @@ PostGIS 2.3.5
 
   * Bug Fixes and Enhancements
 
-  -
+  - #3667, Fix for bug in geography ST_Segmentize
 
 
 PostGIS 2.3.4
