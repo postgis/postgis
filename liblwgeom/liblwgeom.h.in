@@ -771,7 +771,7 @@ extern int lwtype_get_collectiontype(uint8_t type);
 * (e.g. Point, LineString, Polygon)
 */
 extern const char *lwtype_name(uint8_t type);
-
+extern uint8_t lwtype_multitype(uint8_t type);
 
 /******************************************************************/
 

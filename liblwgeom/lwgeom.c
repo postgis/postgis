@@ -357,6 +357,12 @@ uint8_t MULTITYPE[NUMTYPES] =
 	0
 };
 
+uint8_t lwtype_multitype(uint8_t type)
+{
+	if (type > 15 || type < 0) return 0;
+	return MULTITYPE[type];
+}
+
 /**
 * Create a new LWGEOM of the appropriate MULTI* type.
 */
