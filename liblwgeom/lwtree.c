@@ -28,32 +28,15 @@
 
 
 /**
-* Internal nodes have their point references set to NULL.
+* Leaf nodes have an empty nodes list
 */
-static int
+static inline int
 rect_node_is_leaf(const RECT_NODE *node)
 {
 	return (node->num_nodes == 0);
 }
 
-/**
-* Recurse from top of node tree and free all children.
-* does not free underlying point array.
-*/
-void
-rect_tree_free(RECT_NODE *node)
-{
-	int i;
-	if (!node) return;
-	for (i = 0; i < node->num_nodes; i++)
-	{
-		rect_tree_free(node->nodes[i]);
-		node->nodes[i] = NULL;
-	}
-	lwfree(node);
-}
-
-const char *
+static const char *
 rect_node_to_str(const RECT_NODE *n)
 {
 	char buf[256];
@@ -75,89 +58,6 @@ rect_node_intersects(const RECT_NODE *n1, const RECT_NODE *n2)
 	return 1;
 }
 
-/* 0 => no containment */
-int
-rect_tree_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_boundary)
-{
-	/* Only test nodes that straddle our stabline */
-	if ((node->ymin <= pt->y) && (pt->y <= node->ymax))
-	{
-		if (rect_node_is_leaf(node))
-		{
-			const POINT2D *p1 = node->p1;
-			const POINT2D *p2 = node->p2;
-			double ymin = FP_MIN(p1->y, p2->y);
-			double ymax = FP_MAX(p1->y, p2->y);
-			/* Avoid vertex-grazing and through-vertex issues */
-			/* by only counting *one* of the crossings */
-			if (pt->y != p2->y)
-			{
-				double side = lw_segment_side(p1, node->p2, pt);
-				if ( side == 0 )
-					*on_boundary = LW_TRUE;
-				return (side < 0 ? -1 : 1 );
-			}
-		}
-		else
-		{
-			int i, r = 0;
-			for (i = 0; i < node->num_nodes; i++)
-			{
-				r += rect_tree_contains_point(node->nodes[i], pt, on_boundary);
-			}
-			return r;
-		}
-	}
-
-	return 0;
-}
-
-int
-rect_tree_intersects_tree(const RECT_NODE *n1, const RECT_NODE *n2)
-{
-	LWDEBUGF(4,"n1 %s  n2 %s", rect_node_to_str(n1), rect_node_to_str(n2));
-	/* There can only be an edge intersection if the rectangles overlap */
-	if (rect_node_intersects(n1, n2))
-	{
-		LWDEBUG(4," interaction found");
-		/* We can only test for a true intersection if the nodes are both leaf nodes */
-		if (rect_node_is_leaf(n1) && rect_node_is_leaf(n2))
-		{
-			LWDEBUG(4,"  leaf node test");
-			/* Check for true intersection */
-			if (lw_segment_intersects(n1->p1, n1->p2, n2->p1, n2->p2))
-				return LW_TRUE;
-			else
-				return LW_FALSE;
-		}
-		else
-		{
-			LWDEBUG(4,"  internal node found, recursing");
-			/* Recurse to children */
-			if (rect_node_is_leaf(n1))
-			{
-				if (rect_tree_intersects_tree(n2->left_node, n1) ||
-					rect_tree_intersects_tree(n2->right_node, n1))
-					return LW_TRUE;
-				else
-					return LW_FALSE;
-			}
-			else
-			{
-				if (rect_tree_intersects_tree(n1->left_node, n2) ||
-					rect_tree_intersects_tree(n1->right_node, n2))
-					return LW_TRUE;
-				else
-					return LW_FALSE;
-			}
-		}
-	}
-	else
-	{
-		LWDEBUG(4," no interaction found");
-		return LW_FALSE;
-	}
-}
 
 
 /**
@@ -189,9 +89,6 @@ rect_node_leaf_new(const POINTARRAY *pa, int i)
 	return node;
 }
 
-
-
-
 static int
 rect_node_consistent_type(int type1, int type2)
 {
@@ -214,7 +111,7 @@ rect_node_internal_add_node(RECT_NODE *node, RECT_NODE *add)
 	node->ymax = FP_MAX(node->ymax, add->ymax);
 	node->nodes[node->num_nodes++] = add;
 	node->geom_type = rect_node_consistent_type(node->geom_type, add->geom_type);
-	return node;
+	return;
 }
 
 static RECT_NODE *
@@ -255,6 +152,62 @@ rect_nodes_merge(RECT_NODE ** nodes, int num_nodes)
 		num_nodes = k;
 	}
 	return nodes[0];
+}
+
+
+/**
+* Recurse from top of node tree and free all children.
+* does not free underlying point array.
+*/
+void
+rect_tree_free(RECT_NODE *node)
+{
+	int i;
+	if (!node) return;
+	for (i = 0; i < node->num_nodes; i++)
+	{
+		rect_tree_free(node->nodes[i]);
+		node->nodes[i] = NULL;
+	}
+	lwfree(node);
+}
+
+
+/* 0 => no containment */
+int
+rect_tree_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_boundary)
+{
+	/* Only test nodes that straddle our stabline */
+	if ((node->ymin <= pt->y) && (pt->y <= node->ymax))
+	{
+		if (rect_node_is_leaf(node))
+		{
+			const POINT2D *p1 = node->p1;
+			const POINT2D *p2 = node->p2;
+			double ymin = FP_MIN(p1->y, p2->y);
+			double ymax = FP_MAX(p1->y, p2->y);
+			/* Avoid vertex-grazing and through-vertex issues */
+			/* by only counting *one* of the crossings */
+			if (pt->y != p2->y)
+			{
+				double side = lw_segment_side(p1, node->p2, pt);
+				if ( side == 0 )
+					*on_boundary = LW_TRUE;
+				return (side < 0 ? -1 : 1 );
+			}
+		}
+		else
+		{
+			int i, r = 0;
+			for (i = 0; i < node->num_nodes; i++)
+			{
+				r += rect_tree_contains_point(node->nodes[i], pt, on_boundary);
+			}
+			return r;
+		}
+	}
+
+	return 0;
 }
 
 
@@ -333,3 +286,53 @@ RECT_NODE* rect_tree_new(const POINTARRAY *pa)
 
 }
 
+
+
+
+
+int
+rect_tree_intersects_tree(const RECT_NODE *n1, const RECT_NODE *n2)
+{
+	LWDEBUGF(4,"n1 %s  n2 %s", rect_node_to_str(n1), rect_node_to_str(n2));
+	/* There can only be an edge intersection if the rectangles overlap */
+	if (rect_node_intersects(n1, n2))
+	{
+		LWDEBUG(4," interaction found");
+		/* We can only test for a true intersection if the nodes are both leaf nodes */
+		if (rect_node_is_leaf(n1) && rect_node_is_leaf(n2))
+		{
+			LWDEBUG(4,"  leaf node test");
+			/* Check for true intersection */
+			if (lw_segment_intersects(n1->p1, n1->p2, n2->p1, n2->p2))
+				return LW_TRUE;
+			else
+				return LW_FALSE;
+		}
+		else
+		{
+			LWDEBUG(4,"  internal node found, recursing");
+			/* Recurse to children */
+			if (rect_node_is_leaf(n1))
+			{
+				if (rect_tree_intersects_tree(n2->left_node, n1) ||
+					rect_tree_intersects_tree(n2->right_node, n1))
+					return LW_TRUE;
+				else
+					return LW_FALSE;
+			}
+			else
+			{
+				if (rect_tree_intersects_tree(n1->left_node, n2) ||
+					rect_tree_intersects_tree(n1->right_node, n2))
+					return LW_TRUE;
+				else
+					return LW_FALSE;
+			}
+		}
+	}
+	else
+	{
+		LWDEBUG(4," no interaction found");
+		return LW_FALSE;
+	}
+}
