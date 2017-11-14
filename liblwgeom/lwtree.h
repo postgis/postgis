@@ -24,21 +24,47 @@
 
 #define RECT_NODE_SIZE 4
 
-typedef struct rect_node
+typedef enum
 {
-	/* boundings of the node */
+	RECT_NODE_INTERNAL,
+	RECT_NODE_LEAF
+} RECT_NODE_TYPE;
+
+typedef enum
+{
+	RECT_NODE_SEG_LINEAR,
+	RECT_NODE_SEG_CIRCULAR,
+	RECT_NODE_SEG_UNKNOWN
+} RECT_NODE_SEG_TYPE;
+
+typedef struct
+{
+	const POINTARRAY *pa;
+	RECT_NODE_SEGMENT seg_type;
+	int seg_num;
+} RECT_NODE_LEAF;
+
+typedef struct
+{
+	num_nodes;
+	RECT_NODE *nodes[RECT_NODE_SIZE];
+} RECT_NODE_INTERNAL;
+
+struct rect_node
+{
+	RECT_NODE_TYPE type;
+	unsigned int geom_type;
 	double xmin;
 	double xmax;
 	double ymin;
 	double ymax;
-	/* interior nodes only */
-    int geom_type; /* for interior nodes, the geometry type it is proxying for */
-	unsigned int num_nodes; /* how many children? */
-	struct rect_node *nodes[RECT_NODE_SIZE];
-	/* leaf nodes only */
-	const POINT2D *p1;
-	const POINT2D *p2;
+	union {
+		RECT_NODE_INTERNAL i;
+		RECT_NODE_LEAF l;
+	}
 } RECT_NODE;
+
+
 
 int rect_tree_contains_point(const RECT_NODE *tree, const POINT2D *pt, int *on_boundary);
 int rect_tree_intersects_tree(const RECT_NODE *tree1, const RECT_NODE *tree2);
