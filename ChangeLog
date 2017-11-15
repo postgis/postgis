@@ -1,3 +1,93 @@
+2017-11-14 05:42  Regina Obe <lr@pcorp.us>
+
+	* [r16108] doc/extras_tigergeocoder.xml: note about enhanced
+	  feature in reverse_geocode when zcta5 data is loaded.
+
+2017-11-09 09:06  Regina Obe <lr@pcorp.us>
+
+	* [r16102] NEWS, extensions/upgradeable_versions.mk: Add missing
+	  2.3.4 upgrade path (as provided by Muhammad Usama)
+	  Also remove 2.3 and 2.4 dev releases and add missing 2.2.6
+	  Closes #3926 for PostGIS 2.4.2
+
+2017-11-09 08:53  Regina Obe <lr@pcorp.us>
+
+	* [r16099] NEWS: fix spacing
+
+2017-11-09 08:52  Regina Obe <lr@pcorp.us>
+
+	* [r16098] NEWS: Add missing release notes for ST_Segmentize
+	  geography fix.
+	  References #3667 for PostGIS 2.4.2
+
+2017-11-07 18:04  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16094] liblwgeom/cunit/cu_geodetic.c, liblwgeom/lwgeodetic.c,
+	  regress/geography_expected: Replace project-and-entend logic with
+	  bisect-and-recurse in geography segmentization.
+	  Preserves "mostly equal" segment lengths, and
+	  should be more numerically stable.
+	  Backport to 2.4.
+	  References #3667
+
+2017-10-31 15:15  Sandro Santilli <strk@kbt.io>
+
+	* [r16086] configure.ac, liblwgeom/Makefile.in: Make sure target
+	  directories are created before copying files to them
+	  
+	  References #3912 for 2.4 branch
+	  References #3916 for 2.4 branch
+
+2017-10-26 01:07  Regina Obe <lr@pcorp.us>
+
+	* [r16061] NEWS: Fix zcta5 load - NEWS item
+	  References #3917 for PostGIS 2.4.2
+
+2017-10-26 01:06  Regina Obe <lr@pcorp.us>
+
+	* [r16060] extras/tiger_geocoder/tiger_loader_2017.sql: Fix zcta5
+	  load
+	  References #3917 for PostGIS 2.4.2
+
+2017-10-21 09:02  Sandro Santilli <strk@kbt.io>
+
+	* [r16029] .gitignore, GNUmakefile.in, configure.ac,
+	  liblwgeom/Makefile.in, loader/Makefile.in, raster/install-sh,
+	  raster/loader/Makefile.in, utils/Makefile.in: Put build AUX files
+	  under build-aux
+	  
+	  Cleans and ignore build aux files from new location,
+	  and remove spurious install-sh from repository.
+	  
+	  References #3912 for 2.4 branch
+
+2017-10-20 13:05  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16018] raster/rt_pg/Makefile.in: Reflect CFLAGS passed into
+	  core
+
+2017-10-20 13:04  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16017] postgis/Makefile.in: Reflect CFLAGS passed into
+	  configure
+
+2017-10-18 19:28  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16014] liblwgeom/lwgeom_geos.c, postgis/geobuf.c,
+	  postgis/geography_centroid.c, postgis/gserialized_gist_2d.c,
+	  postgis/lwgeom_functions_basic.c, postgis/mvt.c: Quiet compile
+	  warnings
+
+2017-10-18 18:46  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16013] HOWTO_RELEASE, NEWS, README.postgis, Version.config,
+	  extensions/upgradeable_versions.mk: Bump forward versions
+
+2017-10-18 18:32  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16011] ChangeLog, NEWS, README.postgis, Version.config,
+	  doc/release_notes.xml: Prepare for 2.4.1 release
+
 2017-10-17 18:23  Regina Obe <lr@pcorp.us>
 
 	* [r16001] doc/introduction.xml:

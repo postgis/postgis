@@ -1,5 +1,5 @@
-PostGIS 2.4.2dev
-2017/xx/xx
+PostGIS 2.4.2
+2017/11/15
 
  * Bug fixes *
   - #3917, Fix zcta5 load
