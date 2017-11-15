@@ -1,3 +1,56 @@
+2017-11-09 09:01  Regina Obe <lr@pcorp.us>
+
+	* [r16101] NEWS, extensions/upgradeable_versions.mk: Add missing
+	  2.2.6 upgrade path
+	  References #3926 for PostGIS 2.3.5
+
+2017-11-09 08:55  Regina Obe <lr@pcorp.us>
+
+	* [r16100] NEWS: Add missing release notes for ST_Segmentize
+	  geography fix.
+	  References #3667 for PostGIS 2.3.5
+
+2017-11-07 18:31  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16095] liblwgeom/cunit/cu_geodetic.c, liblwgeom/lwgeodetic.c,
+	  regress/geography_expected: Replace project-and-entend logic with
+	  bisect-and-recurse in geography segmentization.
+	  Preserves "mostly equal" segment lengths, and
+	  should be more numerically stable.
+	  Backport to 2.3.
+	  References #3667
+
+2017-10-31 15:33  Sandro Santilli <strk@kbt.io>
+
+	* [r16087] configure.ac, liblwgeom/Makefile.in: Make sure target
+	  directories are created before copying files to them
+	  
+	  References #3912 for 2.3 branch
+	  References #3916 for 2.3 branch
+
+2017-10-21 09:04  Sandro Santilli <strk@kbt.io>
+
+	* [r16030] .gitignore, GNUmakefile.in, configure.ac,
+	  liblwgeom/Makefile.in, loader/Makefile.in, raster/install-sh,
+	  raster/loader/Makefile.in, utils/Makefile.in: Put build AUX files
+	  under build-aux
+	  
+	  Cleans and ignore build aux files from new location,
+	  and remove spurious install-sh from repository.
+	  
+	  References #3912 for 2.3 branch
+
+2017-10-18 18:19  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16010] HOWTO_RELEASE, NEWS, Version.config,
+	  extensions/upgradeable_versions.mk: Push versions to dev
+
+2017-10-18 18:09  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16008] ChangeLog, HOWTO_RELEASE, NEWS, README.postgis,
+	  Version.config, doc/release_notes.xml,
+	  extensions/upgradeable_versions.mk: Prepare for 2.3.4 release
+
 2017-10-17 16:54  Paul Ramsey <pramsey@cleverelephant.ca>
 
 	* [r15998] NEWS, liblwgeom/cunit/cu_geodetic.c, liblwgeom/g_box.c:
