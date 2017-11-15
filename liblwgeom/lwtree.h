@@ -26,8 +26,8 @@
 
 typedef enum
 {
-	RECT_NODE_INTERNAL,
-	RECT_NODE_LEAF
+	RECT_NODE_INTERNAL_TYPE,
+	RECT_NODE_LEAF_TYPE
 } RECT_NODE_TYPE;
 
 typedef enum
@@ -35,7 +35,7 @@ typedef enum
 	RECT_NODE_RING_NONE = 0,
 	RECT_NODE_RING_EXTERIOR,
 	RECT_NODE_RING_INTERIOR
-} RECT_NODE_RING_TYPE
+} RECT_NODE_RING_TYPE;
 
 typedef enum
 {
@@ -47,18 +47,20 @@ typedef enum
 typedef struct
 {
 	const POINTARRAY *pa;
-	RECT_NODE_SEGMENT seg_type;
+	RECT_NODE_SEG_TYPE seg_type;
 	int seg_num;
 } RECT_NODE_LEAF;
+
+struct rect_node;
 
 typedef struct
 {
 	int num_nodes;
 	RECT_NODE_RING_TYPE ring_type;
-	RECT_NODE *nodes[RECT_NODE_SIZE];
+	struct rect_node *nodes[RECT_NODE_SIZE];
 } RECT_NODE_INTERNAL;
 
-struct rect_node
+typedef struct rect_node
 {
 	RECT_NODE_TYPE type;
 	unsigned char geom_type;
@@ -69,7 +71,7 @@ struct rect_node
 	union {
 		RECT_NODE_INTERNAL i;
 		RECT_NODE_LEAF l;
-	}
+	};
 } RECT_NODE;
 
 
@@ -77,4 +79,4 @@ struct rect_node
 int rect_tree_contains_point(const RECT_NODE *tree, const POINT2D *pt, int *on_boundary);
 int rect_tree_intersects_tree(const RECT_NODE *tree1, const RECT_NODE *tree2);
 void rect_tree_free(RECT_NODE *node);
-RECT_NODE * rect_tree_from_lwgeom(const LWGOEM *geom);
+RECT_NODE * rect_tree_from_lwgeom(const LWGEOM *geom);
