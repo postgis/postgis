@@ -27,7 +27,7 @@
 #include "lwtree.h"
 
 static inline int
-rect_node_is_leaf(const RECT_NODE node)
+rect_node_is_leaf(const RECT_NODE *node)
 {
 	return node->type == RECT_NODE_LEAF;
 }
@@ -104,7 +104,7 @@ rect_tree_free(RECT_NODE *node)
 }
 
 static int
-rect_leaf_node_intersects(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n1)
+rect_leaf_node_intersects(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n2)
 {
 	const POINT2D *p1, *p2, *p3, *q1, *q2, *q3;
 	DISTPTS dl;
@@ -131,7 +131,7 @@ rect_leaf_node_intersects(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n1)
 					return dl.distance == 0.0;
 
 				default:
-					lwerror("%s: unsupported segment type");
+					lwerror("%s: unsupported segment type", __func__);
 					break;
 			}
 		}
@@ -157,7 +157,7 @@ rect_leaf_node_intersects(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n1)
 					return dl.distance == 0.0;
 
 				default:
-					lwerror("%s: unsupported segment type");
+					lwerror("%s: unsupported segment type", __func__);
 					break;
 			}
 		}
@@ -170,70 +170,78 @@ rect_leaf_node_intersects(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n1)
 * ymin/ymax range of the node
 */
 static inline int
-rect_node_segment_side(const RECT_NODE_LEAF *node, const POINT2D *q)
+rect_leaf_node_segment_side(const RECT_NODE_LEAF *node, const POINT2D *q, int *on_boundary)
 {
+	const POINT2D *p1, *p2, *p3;
+	int side = 0;
 	switch (node->seg_type)
 	{
 		case RECT_NODE_SEG_LINEAR:
 		{
-			const POINT2D *p1 = getPoint2d_cp(node->pa, node->seg_num);
-			const POINT2D *p2 = getPoint2d_cp(node->pa, node->seg_num+1);
+			p1 = getPoint2d_cp(node->pa, node->seg_num);
+			p2 = getPoint2d_cp(node->pa, node->seg_num+1);
 			/* Avoid vertex-grazing and through-vertex issues */
 			/* by only counting grazings on first vertex */
 			if (q->y != p2->y)
 			{
-				int side = lw_segment_side(p1, p2, q);
-				if (side == 0)
+				side = lw_segment_side(p1, p2, q);
+				if (side == 0 && lw_pt_in_seg(q, p1, p2))
 					*on_boundary = LW_TRUE;
-				return (side < 0 ? -1 : 1);
 			}
-			else
-				return 0;
+			break;
 		}
 		case RECT_NODE_SEG_CIRCULAR:
 		{
-			const POINT2D *p1 = getPoint2d_cp(node->pa, node->seg_num*2);
-			const POINT2D *p2 = getPoint2d_cp(node->pa, node->seg_num*2+1);
-			const POINT2D *p3 = getPoint2d_cp(node->pa, node->seg_num*2+2);
+			p1 = getPoint2d_cp(node->pa, node->seg_num*2);
+			p2 = getPoint2d_cp(node->pa, node->seg_num*2+1);
+			p3 = getPoint2d_cp(node->pa, node->seg_num*2+2);
 			double ymin = FP_MIN(p1->y, p3->y);
 			double ymax = FP_MAX(p1->y, p3->y);
 			/* Avoid vertex-grazing and through-vertex issues */
 			/* by only counting grazings on first vertex */
 			if (ymin <= q->y && q->y <= ymax && q->y != p3->y)
 			{
-				int side = lw_arc_side(p1, p2, p3, q);
+				side = lw_arc_side(p1, p2, p3, q);
 				if (side == 0)
 					*on_boundary = LW_TRUE;
-				return (side < 0 ? -1 : 1);
 			}
-			else
-				return 0;
+			break;
 		}
 		default:
 		{
 			lwerror("%s: unsupported seg_type - %d", __func__, leaf_node->seg_type);
-			return 0;
 		}
 	}
+	LWDEBUGF(2, "%s: seg_type=%d, side=%d, on_boundary=%d",
+		__func__, node->seg_type, side, *on_boundary);
+	return side;
 }
 
-/* 0 => no containment */
+/*
+* Only pass the head of a ring. Either a LinearRing from a polygon
+* or a CompoundCurve from a CurvePolygon.
+* Takes a horizontal line through the ring, and adds up the
+* crossing directions. An "inside" point will be on the same side
+* ("both left" or "both right") of the edges the line crosses,
+* so it will have a non-zero return sum. An "outside" point will
+* be on both sides, and will have a zero return sum.
+*/
 int
-rect_tree_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_boundary)
+rect_tree_ring_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_boundary)
 {
 	/* Only test nodes that straddle our stabline */
 	if (node->ymin <= pt->y && pt->y <= node->ymax)
 	{
 		if (rect_node_is_leaf(node))
 		{
-			return rect_node_segment_side(&node->l, pt);
+			return rect_leaf_node_segment_side(&node->l, pt, on_boundary);
 		}
 		else
 		{
 			int i, r = 0;
 			for (i = 0; i < node->i.num_nodes; i++)
 			{
-				r += rect_tree_contains_point(node->i.nodes[i], pt, on_boundary);
+				r += rect_tree_ring_contains_point(node->i.nodes[i], pt, on_boundary);
 			}
 			return r;
 		}
@@ -241,6 +249,27 @@ rect_tree_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_bound
 	return 0;
 }
 
+/*
+* Only pass in the head of an "area" type. Polygon or CurvePolygon.
+* Sums up containment of exterior (+1) and interior (-1) rings, so
+* that zero is uncontained, +1 is contained and negative is an error
+* (multiply contained by interior rings?)
+*/
+int
+rect_tree_area_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_boundary)
+{
+
+}
+
+/*
+* Pass in arbitrary tree, get back true if point is contained or on boundary,
+* and false otherwise.
+*/
+int
+rect_tree_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_boundary)
+{
+
+}
 
 static RECT_NODE_SEG_TYPE lwgeomTypeArc[] =
 {
