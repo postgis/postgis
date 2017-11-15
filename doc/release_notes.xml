@@ -4,6 +4,18 @@
     <subtitle>Release Notes</subtitle>
 
     <sect1>
+      <title>Release 2.4.2</title>
+      <para>Release date: 2017/11/15</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+        <para>#3917, Fix zcta5 load</para>
+        <para>#3667, Fix for bug in geography ST_Segmentize</para>
+        <para>#3926, Add missing 2.2.6 and 2.3.4 upgrade paths (Muhammad Usama)</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
       <title>Release 2.4.1</title>
       <para>Release date: 2017/10/18</para>
       <para>This is a bug fix and performance improvement release.</para>
