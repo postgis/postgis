@@ -33,7 +33,6 @@ rect_node_is_leaf(const RECT_NODE *node)
 	return node->type == RECT_NODE_LEAF_TYPE;
 }
 
-
 /*
 * Support qsort of nodes for collection/multi types so nodes
 * are in "spatial adjacent" order prior to merging.
@@ -147,29 +146,55 @@ rect_leaf_node_intersects(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n2)
 }
 
 /*
-* Assumes that we have already tested that q is inside the
-* ymin/ymax range of the node
+* Returns 1 if segment is to the right of point.
 */
 static inline int
 rect_leaf_node_segment_side(const RECT_NODE_LEAF *node, const POINT2D *q, int *on_boundary)
 {
 	const POINT2D *p1, *p2, *p3;
-	int side = 0;
 	switch (node->seg_type)
 	{
 		case RECT_NODE_SEG_LINEAR:
 		{
 			p1 = getPoint2d_cp(node->pa, node->seg_num);
 			p2 = getPoint2d_cp(node->pa, node->seg_num+1);
-			/* Avoid vertex-grazing and through-vertex issues */
-			/* by only counting grazings on first vertex */
-			if (q->y != p2->y)
+
+			int side = lw_segment_side(p1, p2, q);
+
+			//printf("LINESTRING(%g %g,%g %g)\n", p1->x, p1->y, p2->x, p2->y);
+			//printf("seg=%d side=%d\n", node->seg_num, side);
+
+			/* Always note case where we're on boundary */
+			if (side == 0 && lw_pt_in_seg(q, p1, p2))
 			{
-				side = lw_segment_side(p1, p2, q);
-				if (side == 0 && lw_pt_in_seg(q, p1, p2))
-					*on_boundary = LW_TRUE;
+				*on_boundary = LW_TRUE;
+				//printf("on boundary, flag, return 0\n");
+				return 0;
 			}
-			break;
+
+			/* Segment points up and point is on left */
+			if (p1->y < p2->y && side == -1 && q->y != p2->y)
+			{
+				//printf("side == -1, segment up, return 1\n");
+				return 1;
+			}
+
+			/* Segment points down and point is on right */
+			if (p1->y > p2->y && side == 1 && q->y != p2->y)
+			{
+				//printf("side == 1, segment down, return 1\n");
+				return 1;
+			}
+
+			/* Segment is horizontal, do we cross first point? */
+			if (p1->y == p2->y && q->x < p1->x)
+			{
+				//printf("segment horizontal, and we cross it, return 1\n");
+				return 1;
+			}
+
+			//printf("segment non-crossing, return 0\n");
+			return 0;
 		}
 		case RECT_NODE_SEG_CIRCULAR:
 		{
@@ -180,22 +205,36 @@ rect_leaf_node_segment_side(const RECT_NODE_LEAF *node, const POINT2D *q, int *o
 			double ymax = FP_MAX(p1->y, p3->y);
 			/* Avoid vertex-grazing and through-vertex issues */
 			/* by only counting grazings on first vertex */
-			if (ymin <= q->y && q->y <= ymax && q->y != p3->y)
+			if (ymin <= q->y && q->y <= ymax)
 			{
-				side = lw_arc_side(p1, p2, p3, q);
+				int side = lw_arc_side(p1, p2, p3, q);
 				if (side == 0)
+				{
 					*on_boundary = LW_TRUE;
+					return 0;
+				}
+
+				/* Arc points up and point is on left */
+				if (p1->y < p2->y && side == -1 && q->y != p3->y)
+					return 1;
+
+				/* Segment points down and point is on right */
+				if (p1->y > p2->y && side == 1 && q->y != p3->y)
+					return 1;
+
+				/* Arc is "horizontal", don't count those */
+				return 0;
 			}
-			break;
+			return 0;
 		}
 		default:
 		{
 			lwerror("%s: unsupported seg_type - %d", __func__, node->seg_type);
+			return 0;
 		}
 	}
-	LWDEBUGF(2, "%s: seg_type=%d, side=%d, on_boundary=%d",
-		__func__, node->seg_type, side, *on_boundary);
-	return side;
+
+	return 0;
 }
 
 /*
@@ -210,8 +249,9 @@ rect_leaf_node_segment_side(const RECT_NODE_LEAF *node, const POINT2D *q, int *o
 static int
 rect_tree_ring_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_boundary)
 {
-	/* Only test nodes that straddle our stabline */
-	if (node->ymin <= pt->y && pt->y <= node->ymax)
+	/* Only test nodes that straddle our stabline vertically */
+	/* and might be to the right horizontally */
+	if (node->ymin <= pt->y && pt->y <= node->ymax && pt->x <= node->xmax)
 	{
 		if (rect_node_is_leaf(node))
 		{
@@ -224,11 +264,59 @@ rect_tree_ring_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_
 			{
 				r += rect_tree_ring_contains_point(node->i.nodes[i], pt, on_boundary);
 			}
+			//printf("r=%d\n", r);
 			return r;
 		}
 	}
 	return 0;
 }
+
+/*
+* Only pass in the head of an "area" type. Polygon or CurvePolygon.
+* Sums up containment of exterior (+1) and interior (-1) rings, so
+* that zero is uncontained, +1 is contained and negative is an error
+* (multiply contained by interior rings?)
+*/
+static int
+rect_tree_area_contains_point(const RECT_NODE *node, const POINT2D *pt)
+{
+	/* Can't do anything with a leaf node, makes no sense */
+	if (rect_node_is_leaf(node))
+		return 0;
+
+	/* Iterate into area until we find ring heads */
+	if (node->i.ring_type == RECT_NODE_RING_NONE)
+	{
+		int i, sum = 0;
+		for (i = 0; i < node->i.num_nodes; i++)
+			sum += rect_tree_area_contains_point(node->i.nodes[i], pt);
+		return sum;
+	}
+	/* See if the ring encloses the point */
+	else
+	{
+		int on_boundary = 0;
+		int edge_crossing_count = rect_tree_ring_contains_point(node, pt, &on_boundary);
+		//printf("edge_crossing_count=%d\n", edge_crossing_count);
+		/* Odd number of crossings => contained */
+		int contained = (edge_crossing_count % 2 == 1);
+		/* External rings return positive containment, interior ones negative, */
+		/* so that a point-in-hole case nets out to zero (contained by both */
+		/* interior and exterior rings. */
+		if (node->i.ring_type == RECT_NODE_RING_INTERIOR)
+		{
+			//printf("rect_tree_area_contains_point [interior ring] %d\n", on_boundary ? 0 : -1 * contained);
+			return on_boundary ? 0 : -1 * contained;
+		}
+		else
+		{
+			//printf("rect_tree_area_contains_point [exterior ring] %d\n", contained || on_boundary);
+			return contained || on_boundary;
+		}
+
+	}
+}
+
 
 static int
 rect_node_bounds_point(const RECT_NODE *node, const POINT2D *pt)
@@ -241,45 +329,11 @@ rect_node_bounds_point(const RECT_NODE *node, const POINT2D *pt)
 }
 
 /*
-* Only pass in the head of an "area" type. Polygon or CurvePolygon.
-* Sums up containment of exterior (+1) and interior (-1) rings, so
-* that zero is uncontained, +1 is contained and negative is an error
-* (multiply contained by interior rings?)
-*/
-static int
-rect_tree_area_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_boundary)
-{
-	/* Can't do anything with a leaf node, makes no sense */
-	if (rect_node_is_leaf(node))
-		return 0;
-
-	/* Iterate into area until we find ring heads */
-	if (node->i.ring_type == RECT_NODE_RING_NONE)
-	{
-		int i, sum = 0;
-		for (i = 0; i < node->i.num_nodes; i++)
-			sum += rect_tree_area_contains_point(node->i.nodes[i], pt, on_boundary);
-		return sum;
-	}
-	/* See if the ring encloses the point */
-	else
-	{
-		int contained = (rect_tree_ring_contains_point(node, pt, on_boundary) != 0);
-		/* External rings return positive containment, interior ones negative, */
-		/* so that a point-in-hole case nets out to zero (contained by both */
-		/* interior and exterior rings. */
-		if (node->i.ring_type == RECT_NODE_RING_INTERIOR)
-			contained *= -1;
-		return contained;
-	}
-}
-
-/*
 * Pass in arbitrary tree, get back true if point is contained or on boundary,
 * and false otherwise.
 */
 int
-rect_tree_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_boundary)
+rect_tree_contains_point(const RECT_NODE *node, const POINT2D *pt)
 {
 	int i, c;
 
@@ -291,7 +345,7 @@ rect_tree_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_bound
 	{
 		case POLYGONTYPE:
 		case CURVEPOLYTYPE:
-			return rect_tree_area_contains_point(node, pt, on_boundary) > 0;
+			return rect_tree_area_contains_point(node, pt) > 0;
 
 		case MULTIPOLYGONTYPE:
 		case MULTISURFACETYPE:
@@ -299,7 +353,7 @@ rect_tree_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_bound
 		{
 			for (i = 0; i < node->i.num_nodes; i++)
 			{
-				c = rect_tree_contains_point(node->i.nodes[i], pt, on_boundary);
+				c = rect_tree_contains_point(node->i.nodes[i], pt);
 				if (c) return LW_TRUE;
 			}
 			return LW_FALSE;
@@ -677,7 +731,7 @@ static char *
 rect_node_to_str(const RECT_NODE *n)
 {
 	char *buf = lwalloc(256);
-	snprintf(buf, 256, "(%.9g %.9g,%.9g %.9g)",
+	sn//printf(buf, 256, "(%.9g %.9g,%.9g %.9g)",
 		n->xmin, n->ymin, n->xmax, n->ymax);
 	return buf;
 }
@@ -734,8 +788,6 @@ rect_tree_intersects_tree_recursive(const RECT_NODE *n1, const RECT_NODE *n2)
 int
 rect_tree_intersects_tree(const RECT_NODE *n1, const RECT_NODE *n2)
 {
-	int on_boundary;
-
 	/*
 	* It is possible for an area to intersect another object
 	* without any edges intersecting, if the object is fully contained.
@@ -743,13 +795,13 @@ rect_tree_intersects_tree(const RECT_NODE *n1, const RECT_NODE *n2)
 	* so we do a quick point-in-poly test first for those cases
 	*/
 	if (rect_tree_is_area(n1) &&
-		rect_tree_contains_point(n1, rect_tree_get_point(n2), &on_boundary))
+		rect_tree_contains_point(n1, rect_tree_get_point(n2)))
 	{
 		return LW_TRUE;
 	}
 
 	if (rect_tree_is_area(n2) &&
-		rect_tree_contains_point(n2, rect_tree_get_point(n1), &on_boundary))
+		rect_tree_contains_point(n2, rect_tree_get_point(n1)))
 	{
 		return LW_TRUE;
 	}

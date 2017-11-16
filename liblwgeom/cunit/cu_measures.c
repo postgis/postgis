@@ -193,31 +193,49 @@ static void test_mindistance2d_tolerance(void)
 
 }
 
+static int tree_pt(const RECT_NODE *tree, double x, double y)
+{
+	POINT2D pt;
+	pt.x = x; pt.y = y;
+	return rect_tree_contains_point(tree, &pt);
+}
+
 static void test_rect_tree_contains_point(void)
 {
 	LWGEOM *poly;
-	POINT2D p;
 	RECT_NODE* tree;
-	int result;
-	int boundary = 0;
 
-	/* square */
+	/**********************************************************************
+	* polygon with hole and concavities
+	*/
+	poly = lwgeom_from_wkt("POLYGON((0 0,0 10,10 10,10 0,9 0,9 9,8 6,8 0,2 0,2 9,1 6,1 0,0 0),(4 4,4 6,6 6,6 4,4 4))", LW_PARSER_CHECK_NONE);
+	tree = rect_tree_from_lwgeom(poly);
+
+	/* inside, many grazings */
+	CU_ASSERT_EQUAL(tree_pt(tree, 3, 6), 1);
+	/* inside */
+	CU_ASSERT_EQUAL(tree_pt(tree, 3, 5.5), 1);
+	/* outside */
+	CU_ASSERT_EQUAL(tree_pt(tree, -3, 5.5), 0);
+
+	/**********************************************************************
+	* square
+	*/
 	poly = lwgeom_from_wkt("POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))", LW_PARSER_CHECK_NONE);
 	tree = rect_tree_from_lwgeom(poly);
 
 	/* inside square */
-	boundary = 0;
-	p.x = 0.5;
-	p.y = 0.5;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_NOT_EQUAL(result, 0);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 0.5, 0.5), 1);
 	/* outside square */
-	boundary = 0;
-	p.x = 1.5;
-	p.y = 0.5;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(result, 0);
+	CU_ASSERT_EQUAL(tree_pt(tree, 1.5, 0.5), 0);
+	/* outside square grazing some edges */
+	CU_ASSERT_EQUAL(tree_pt(tree, -1, 1), 0);
+	/* inside square on corner */
+	CU_ASSERT_EQUAL(tree_pt(tree, 1, 1), 1);
+	/* inside square on top edge */
+	CU_ASSERT_EQUAL(tree_pt(tree, 0.5, 1), 1);
+	/* inside square on side edge */
+	CU_ASSERT_EQUAL(tree_pt(tree, 1, 0.5), 1);
 
 	rect_tree_free(tree);
 	lwgeom_free(poly);
@@ -227,116 +245,47 @@ static void test_rect_tree_contains_point(void)
 	tree = rect_tree_from_lwgeom(poly);
 
 	/* not in, left side */
-	boundary = 0;
-	p.x = -0.5;
-	p.y = 0.5;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(result, 0);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, -0.5, 0.5), 0);
 	/* not in, right side */
-	boundary = 0;
-	p.x = 3.0;
-	p.y = 1.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(result, 0);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 3, 1), 0);
 	/* inside */
-	boundary = 0;
-	p.x = 2.0;
-	p.y = 1.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_NOT_EQUAL(result, 0);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 2, 1), 1);
 	/* on left border */
-	boundary = 0;
-	p.x = 0.0;
-	p.y = 1.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 0, 1), 1);
+	/* on left border, grazing */
+	CU_ASSERT_EQUAL(tree_pt(tree, 0, 3), 1);
 	/* on right border */
-	boundary = 0;
-	p.x = 4.0;
-	p.y = 0.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 4, 0), 1);
 	/* on tooth concave */
-	boundary = 0;
-	p.x = 3.0;
-	p.y = 3.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 3, 3), 1);
 	/* on tooth convex */
-	boundary = 0;
-	p.x = 2.0;
-	p.y = 0.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 2, 0), 1);
 
 	rect_tree_free(tree);
 	lwgeom_free(poly);
 
-	/* ziggy zaggy vertical saw tooth polygon */
+	/**********************************************************************
+	* ziggy zaggy vertical saw tooth polygon
+	*/
 	poly = lwgeom_from_wkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", LW_PARSER_CHECK_NONE);
 	tree = rect_tree_from_lwgeom(poly);
 
 	/* not in, left side */
-	boundary = 0;
-	p.x = -0.5;
-	p.y = 3.5;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(result, 0);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, -0.5, 3.5), 0);
 	/* not in, right side */
-	boundary = 0;
-	p.x = 6.0;
-	p.y = 2.2;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(result, 0);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 6.0, 2.2), 0);
 	/* inside */
-	boundary = 0;
-	p.x = 3.0;
-	p.y = 2.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_NOT_EQUAL(result, 0);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 3, 2), 1);
 	/* on bottom border */
-	boundary = 0;
-	p.x = 1.0;
-	p.y = 0.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 1, 0), 1);
 	/* on top border */
-	boundary = 0;
-	p.x = 3.0;
-	p.y = 6.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 3, 6), 1);
 	/* on tooth concave */
-	boundary = 0;
-	p.x = 3.0;
-	p.y = 1.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 3, 1), 1);
 	/* on tooth convex */
-	boundary = 0;
-	p.x = 0.0;
-	p.y = 2.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 0, 2), 1);
 	/* on tooth convex */
-	boundary = 0;
-	p.x = 0.0;
-	p.y = 6.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 0, 6), 1);
 
 	rect_tree_free(tree);
 	lwgeom_free(poly);
