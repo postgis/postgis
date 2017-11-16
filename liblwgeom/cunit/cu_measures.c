@@ -217,6 +217,27 @@ static void test_rect_tree_contains_point(void)
 	CU_ASSERT_EQUAL(tree_pt(tree, 3, 5.5), 1);
 	/* outside */
 	CU_ASSERT_EQUAL(tree_pt(tree, -3, 5.5), 0);
+	/* touching interior ring */
+	CU_ASSERT_EQUAL(tree_pt(tree, 4, 4), 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 6, 6), 1);
+	/* touching interior ring */
+	CU_ASSERT_EQUAL(tree_pt(tree, 4.5, 4), 1);
+	/* touching exterior ring */
+	CU_ASSERT_EQUAL(tree_pt(tree, 8, 0), 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 9, 0), 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 10, 1), 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 9.5, 1), 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 0, 10), 1);
+	/* touching grazing spike */
+	CU_ASSERT_EQUAL(tree_pt(tree, 1, 6), 1);
+	/* outide, many grazings */
+	CU_ASSERT_EQUAL(tree_pt(tree, -1, 6), 0);
+	/* within hole */
+	CU_ASSERT_EQUAL(tree_pt(tree, 5, 5), 0);
+	/* within */
+	CU_ASSERT_EQUAL(tree_pt(tree, 0.5, 4), 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 0.5, 6), 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 0.5, 9), 1);
 
 	/**********************************************************************
 	* square

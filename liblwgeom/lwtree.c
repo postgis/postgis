@@ -731,9 +731,9 @@ static char *
 rect_node_to_str(const RECT_NODE *n)
 {
 	char *buf = lwalloc(256);
-	sn//printf(buf, 256, "(%.9g %.9g,%.9g %.9g)",
+	snprintf(buf, 256, "(%.9g %.9g,%.9g %.9g)",
 		n->xmin, n->ymin, n->xmax, n->ymax);
-	return buf;
+   	return buf;
 }
 #endif
 
