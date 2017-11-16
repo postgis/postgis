@@ -156,10 +156,11 @@ rect_leaf_node_segment_side(const RECT_NODE_LEAF *node, const POINT2D *q, int *o
 	{
 		case RECT_NODE_SEG_LINEAR:
 		{
+			int side;
 			p1 = getPoint2d_cp(node->pa, node->seg_num);
 			p2 = getPoint2d_cp(node->pa, node->seg_num+1);
 
-			int side = lw_segment_side(p1, p2, q);
+			side = lw_segment_side(p1, p2, q);
 
 			//printf("LINESTRING(%g %g,%g %g)\n", p1->x, p1->y, p2->x, p2->y);
 			//printf("seg=%d side=%d\n", node->seg_num, side);
@@ -198,34 +199,69 @@ rect_leaf_node_segment_side(const RECT_NODE_LEAF *node, const POINT2D *q, int *o
 		}
 		case RECT_NODE_SEG_CIRCULAR:
 		{
+			int arc_side, seg_side;
+			GBOX g;
+
 			p1 = getPoint2d_cp(node->pa, node->seg_num*2);
 			p2 = getPoint2d_cp(node->pa, node->seg_num*2+1);
 			p3 = getPoint2d_cp(node->pa, node->seg_num*2+2);
-			double ymin = FP_MIN(p1->y, p3->y);
-			double ymax = FP_MAX(p1->y, p3->y);
-			/* Avoid vertex-grazing and through-vertex issues */
-			/* by only counting grazings on first vertex */
-			if (ymin <= q->y && q->y <= ymax)
+
+			g.xmin = FP_MIN(p1->x, p3->x);
+			g.ymin = FP_MIN(p1->y, p3->y);
+			g.xmax = FP_MIN(p1->y, p3->y);
+			g.ymax = FP_MIN(p1->y, p3->y);
+
+			/* Always note case where we're on boundary */
+			arc_side = lw_arc_side(p1, p2, p3, q);
+			if (arc_side == 0)
 			{
-				int side = lw_arc_side(p1, p2, p3, q);
-				if (side == 0)
-				{
-					*on_boundary = LW_TRUE;
-					return 0;
-				}
-
-				/* Arc points up and point is on left */
-				if (p1->y < p2->y && side == -1 && q->y != p3->y)
-					return 1;
-
-				/* Segment points down and point is on right */
-				if (p1->y > p2->y && side == 1 && q->y != p3->y)
-					return 1;
-
-				/* Arc is "horizontal", don't count those */
+				*on_boundary = LW_TRUE;
 				return 0;
 			}
+
+			seg_side = lw_segment_side(p1, p3, q);
+			if (seg_side == arc_side)
+			{
+				/* Segment points up and point is on left */
+				if (p1->y < p3->y && seg_side == -1 && q->y != p3->y)
+				{
+					//printf("side == -1, segment up, return 1\n");
+					return 1;
+				}
+
+				/* Segment points down and point is on right */
+				if (p1->y > p3->y && seg_side == 1 && q->y != p3->y)
+				{
+					//printf("side == 1, segment down, return 1\n");
+					return 1;
+				}
+			}
+			else
+			{
+				/* Segment points up and point is on left */
+				if (p1->y < p3->y && seg_side == 1 && q->y != p3->y)
+				{
+					//printf("side == -1, segment up, return 1\n");
+					return 1;
+				}
+
+				/* Segment points down and point is on right */
+				if (p1->y > p3->y && seg_side == -1 && q->y != p3->y)
+				{
+					//printf("side == 1, segment down, return 1\n");
+					return 1;
+				}
+
+				/* Segment is horizontal, do we cross first point? */
+				if (p1->y == p3->y)
+				{
+					//printf("segment horizontal, and we cross it, return 1\n");
+					return 1;
+				}
+			}
+
 			return 0;
+
 		}
 		default:
 		{
@@ -255,6 +291,7 @@ rect_tree_ring_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_
 	{
 		if (rect_node_is_leaf(node))
 		{
+			//printf("NODE(%g %g,%g %g)\n", node->xmin, node->ymin, node->xmax, node->ymax);
 			return rect_leaf_node_segment_side(&node->l, pt, on_boundary);
 		}
 		else
@@ -444,7 +481,6 @@ rect_node_leaf_new(const POINTARRAY *pa, int seg_num, int geom_type)
 
 		case RECT_NODE_SEG_CIRCULAR:
 		{
-			GBOX gbox;
 			p1 = getPoint2d_cp(pa, 2*seg_num);
 			p2 = getPoint2d_cp(pa, 2*seg_num+1);
 			p3 = getPoint2d_cp(pa, 2*seg_num+2);
@@ -595,6 +631,36 @@ rect_tree_from_ptarray(const POINTARRAY *pa, int geom_type)
 
 	/* Return top of tree */
 	return tree;
+}
+
+LWGEOM *
+rect_tree_to_lwgeom(const RECT_NODE *node)
+{
+	LWGEOM *poly = (LWGEOM*)lwpoly_construct_envelope(0, node->xmin, node->ymin, node->xmax, node->ymax);
+	if (rect_node_is_leaf(node))
+	{
+		return poly;
+	}
+	else
+	{
+		int i;
+		LWCOLLECTION *col = lwcollection_construct_empty(COLLECTIONTYPE, 0, 0, 0);
+		lwcollection_add_lwgeom(col, poly);
+		for (i = 0; i < node->i.num_nodes; i++)
+		{
+			lwcollection_add_lwgeom(col, rect_tree_to_lwgeom(node->i.nodes[i]));
+		}
+		return (LWGEOM*)col;
+	}
+}
+
+char *
+rect_tree_to_wkt(const RECT_NODE *node)
+{
+	LWGEOM *geom = rect_tree_to_lwgeom(node);
+	char *wkt = lwgeom_to_wkt(geom, WKT_ISO, 12, 0);
+	lwgeom_free(geom);
+	return wkt;
 }
 
 

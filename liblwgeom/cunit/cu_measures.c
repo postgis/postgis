@@ -206,6 +206,34 @@ static void test_rect_tree_contains_point(void)
 	RECT_NODE* tree;
 
 	/**********************************************************************
+	* curvepolygon
+	*/
+	poly = lwgeom_from_wkt("CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,1 5,0 10),(0 10,10 10,10 0, 0 0)),COMPOUNDCURVE(CIRCULARSTRING(3 7,5 8,7 7),(7 7,7 3,3 3, 3 7)))", LW_PARSER_CHECK_NONE);
+	tree = rect_tree_from_lwgeom(poly);
+	// char *wkt = rect_tree_to_wkt(tree);
+	// printf("%s\n", wkt);
+	// lwfree(wkt);
+	// return;
+
+	/* in hole, within arc stroke */
+	CU_ASSERT_EQUAL(tree_pt(tree, 5, 7.5), 0);
+	/* inside */
+	CU_ASSERT_EQUAL(tree_pt(tree, 8, 9), 1);
+	/* outside */
+	CU_ASSERT_EQUAL(tree_pt(tree, -1, 5), 0);
+	/* outside */
+	CU_ASSERT_EQUAL(tree_pt(tree, -1, 7.5), 0);
+	/* outside, within arc stroke */
+	CU_ASSERT_EQUAL(tree_pt(tree, 0.2, 7.5), 0);
+	/* inside, within arc stroke */
+	CU_ASSERT_EQUAL(tree_pt(tree, 0.5, 0.5), 1);
+	/* inside, crossing arc stroke */
+	CU_ASSERT_EQUAL(tree_pt(tree, 2, 7.5), 1);
+	/* touching hole corner */
+	CU_ASSERT_EQUAL(tree_pt(tree, 7, 7), 1);
+
+
+	/**********************************************************************
 	* polygon with hole and concavities
 	*/
 	poly = lwgeom_from_wkt("POLYGON((0 0,0 10,10 10,10 0,9 0,9 9,8 6,8 0,2 0,2 9,1 6,1 0,0 0),(4 4,4 6,6 6,6 4,4 4))", LW_PARSER_CHECK_NONE);

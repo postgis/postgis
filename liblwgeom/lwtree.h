@@ -75,9 +75,10 @@ typedef struct rect_node
 } RECT_NODE;
 
 
-
 int rect_tree_contains_point(const RECT_NODE *tree, const POINT2D *pt);
 int rect_tree_intersects_tree(const RECT_NODE *tree1, const RECT_NODE *tree2);
 void rect_tree_free(RECT_NODE *node);
 RECT_NODE * rect_tree_from_lwgeom(const LWGEOM *geom);
 RECT_NODE * rect_tree_from_ptarray(const POINTARRAY *pa, int geom_type);
+LWGEOM * rect_tree_to_lwgeom(const RECT_NODE *tree);
+char * rect_tree_to_wkt(const RECT_NODE *node);
