@@ -474,7 +474,8 @@ rect_nodes_merge(RECT_NODE ** nodes, int num_nodes)
 				node = NULL;
 			}
 		}
-		nodes[k++] = node;
+		if (node)
+			nodes[k++] = node;
 		num_nodes = k;
 	}
 	return nodes[0];
@@ -483,7 +484,7 @@ rect_nodes_merge(RECT_NODE ** nodes, int num_nodes)
 /*
 * Build a tree of nodes from a point array, one node per edge.
 */
-static RECT_NODE *
+RECT_NODE *
 rect_tree_from_ptarray(const POINTARRAY *pa, int geom_type)
 {
 	int num_edges = 0, i = 0, j = 0;
