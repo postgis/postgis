@@ -89,6 +89,36 @@ rect_leaf_node_intersects(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n2)
 
 	switch (n1->seg_type)
 	{
+		case RECT_NODE_SEG_POINT:
+		{
+			p1 = getPoint2d_cp(n1->pa, n1->seg_num);
+
+			switch (n2->seg_type)
+			{
+				case RECT_NODE_SEG_POINT:
+					q1 = getPoint2d_cp(n2->pa, n2->seg_num);
+					lw_dist2d_pt_pt(q1, p1, &dl);
+					return dl.distance == 0.0;
+
+				case RECT_NODE_SEG_LINEAR:
+					q1 = getPoint2d_cp(n2->pa, n2->seg_num);
+					q2 = getPoint2d_cp(n2->pa, n2->seg_num+1);
+					lw_dist2d_pt_seg(p1, q1, q2, &dl);
+					return dl.distance == 0.0;
+
+				case RECT_NODE_SEG_CIRCULAR:
+					q1 = getPoint2d_cp(n2->pa, n2->seg_num*2);
+					q2 = getPoint2d_cp(n2->pa, n2->seg_num*2+1);
+					q3 = getPoint2d_cp(n2->pa, n2->seg_num*2+2);
+					lw_dist2d_pt_arc(p1, q1, q2, q3, &dl);
+					return dl.distance == 0.0;
+
+				default:
+					lwerror("%s: unsupported segment type", __func__);
+					break;
+			}
+		}
+
 		case RECT_NODE_SEG_LINEAR:
 		{
 			p1 = getPoint2d_cp(n1->pa, n1->seg_num);
@@ -96,6 +126,11 @@ rect_leaf_node_intersects(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n2)
 
 			switch (n2->seg_type)
 			{
+				case RECT_NODE_SEG_POINT:
+					q1 = getPoint2d_cp(n2->pa, n2->seg_num);
+					lw_dist2d_pt_seg(q1, p1, p2, &dl);
+					return dl.distance == 0.0;
+
 				case RECT_NODE_SEG_LINEAR:
 					q1 = getPoint2d_cp(n2->pa, n2->seg_num);
 					q2 = getPoint2d_cp(n2->pa, n2->seg_num+1);
@@ -121,6 +156,11 @@ rect_leaf_node_intersects(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n2)
 
 			switch (n2->seg_type)
 			{
+				case RECT_NODE_SEG_POINT:
+					q1 = getPoint2d_cp(n2->pa, n2->seg_num);
+					lw_dist2d_pt_arc(q1, p1, p2, p3, &dl);
+					return dl.distance == 0.0;
+
 				case RECT_NODE_SEG_LINEAR:
 					q1 = getPoint2d_cp(n2->pa, n2->seg_num);
 					q2 = getPoint2d_cp(n2->pa, n2->seg_num+1);
@@ -144,6 +184,7 @@ rect_leaf_node_intersects(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n2)
 	}
 	return LW_FALSE;
 }
+
 
 /*
 * Returns 1 if segment is to the right of point.
@@ -434,11 +475,11 @@ rect_tree_is_area(const RECT_NODE *node)
 
 static RECT_NODE_SEG_TYPE lwgeomTypeArc[] =
 {
-	RECT_NODE_SEG_UNKNOWN,   // "Unknown"
-	RECT_NODE_SEG_LINEAR,   // "Point"
+	RECT_NODE_SEG_UNKNOWN,  // "Unknown"
+	RECT_NODE_SEG_POINT,    // "Point"
 	RECT_NODE_SEG_LINEAR,   // "LineString"
 	RECT_NODE_SEG_LINEAR,   // "Polygon"
-	RECT_NODE_SEG_LINEAR,   // "MultiPoint"
+	RECT_NODE_SEG_UNKNOWN,  // "MultiPoint"
 	RECT_NODE_SEG_LINEAR,   // "MultiLineString"
 	RECT_NODE_SEG_LINEAR,   // "MultiPolygon"
 	RECT_NODE_SEG_UNKNOWN,  // "GeometryCollection"
@@ -449,7 +490,7 @@ static RECT_NODE_SEG_TYPE lwgeomTypeArc[] =
 	RECT_NODE_SEG_UNKNOWN,  // "MultiSurface"
 	RECT_NODE_SEG_LINEAR,   // "PolyhedralSurface"
 	RECT_NODE_SEG_LINEAR,   // "Triangle"
-	RECT_NODE_SEG_LINEAR   // "Tin"
+	RECT_NODE_SEG_LINEAR    // "Tin"
 };
 
 /*
@@ -465,6 +506,14 @@ rect_node_leaf_new(const POINTARRAY *pa, int seg_num, int geom_type)
 
 	switch (seg_type)
 	{
+		case RECT_NODE_SEG_POINT:
+		{
+			p1 = getPoint2d_cp(pa, seg_num);
+			gbox.xmin = gbox.xmax = p1->x;
+			gbox.ymin = gbox.ymax = p1->y;
+			break;
+		}
+
 		case RECT_NODE_SEG_LINEAR:
 		{
 			p1 = getPoint2d_cp(pa, seg_num);
@@ -586,24 +635,12 @@ rect_tree_from_ptarray(const POINTARRAY *pa, int geom_type)
 	if ( pa->npoints < 1 )
 		return NULL;
 
-	/* Special handling for POINT */
-	if (pa->npoints == 1)
-	{
-		const POINT2D *pt = getPoint2d_cp(pa, 0);
-		RECT_NODE *node = lwalloc(sizeof(RECT_NODE));
-		node->geom_type = geom_type;
-		node->type = RECT_NODE_LEAF_TYPE;
-		node->xmin = node->xmax = pt->x;
-		node->ymin = node->ymax = pt->y;
-		node->l.seg_num = 0;
-		node->l.seg_type = RECT_NODE_SEG_LINEAR;
-		node->l.pa = pa;
-		return node;
-	}
-
 	/* For arcs, 3 points per edge, for lines, 2 per edge */
 	switch(seg_type)
 	{
+		case RECT_NODE_SEG_POINT:
+			return rect_node_leaf_new(pa, 0, geom_type);
+			break;
 		case RECT_NODE_SEG_LINEAR:
 			num_edges = pa->npoints - 1;
 			break;
@@ -879,6 +916,285 @@ rect_tree_intersects_tree(const RECT_NODE *n1, const RECT_NODE *n2)
 	return rect_tree_intersects_tree_recursive(n1, n2);
 }
 
+static inline double
+distance_sq(double x1, double y1, double x2, double y2)
+{
+	double dx = x1-x2;
+	double dy = y1-y2;
+	return dx*dx + dy*dy;
+}
+
+static inline double
+distance(double x1, double y1, double x2, double y2)
+{
+	return sqrt(distance_sq(x1, y1, x2, y2));
+}
+
+static inline double
+rect_node_min_distance(const RECT_NODE *n1, const RECT_NODE *n2)
+{
+	double d;
+	int   left = n1->xmin > n2->xmax;
+	int  right = n1->xmax < n2->xmin;
+	int bottom = n1->ymin > n2->ymax;
+	int    top = n1->ymax < n2->ymin;
+
+	if (top && left)
+		d = distance(n1->xmin, n1->ymax, n2->xmax, n2->ymin);
+	else if (top && right)
+		return distance(n1->xmax, n1->ymax, n2->xmin, n2->ymin);
+	else if (bottom && left)
+		return distance(n1->xmin, n1->ymin, n2->xmax, n2->ymax);
+	else if (bottom && right)
+		return distance(n1->xmax, n1->ymin, n2->xmin, n2->ymax);
+	else if (left)
+		return n1->xmin - n2->xmax;
+	else if (right)
+		return n2->xmin - n1->xmax;
+	else if (bottom)
+		return n1->ymin - n2->ymax;
+	else if (top)
+		return n2->ymin - n1->ymax;
+	else
+		return 0.0;
+
+	return 0.0;
+}
+
+static inline double
+rect_node_max_distance(const RECT_NODE *n1, const RECT_NODE *n2)
+{
+	POINT2D p1[4];
+	POINT2D p2[4];
+	int i, j;
+	double d = 0.0;
+	double d_sq;
+
+	p1[0].x = n1->xmin;
+	p1[0].y = n1->ymin;
+	p1[1].x = n1->xmin;
+	p1[1].y = n1->ymax;
+	p1[2].x = n1->xmax;
+	p1[2].y = n1->ymin;
+	p1[3].x = n1->xmax;
+	p1[3].y = n1->ymax;
+
+	p2[0].x = n2->xmin;
+	p2[0].y = n2->ymin;
+	p2[1].x = n2->xmin;
+	p2[1].y = n2->ymax;
+	p2[2].x = n2->xmax;
+	p2[2].y = n2->ymin;
+	p2[3].x = n2->xmax;
+	p2[3].y = n2->ymax;
+
+	for (i = 0; i < 4; i++)
+	{
+		for (j = 0; j < 4; j++)
+		{
+			d_sq = distance_sq(p1[i].x, p1[i].y, p2[j].x, p2[j].y);
+			d = FP_MIN(d, d_sq);
+		}
+	}
+
+	return sqrt(d);
+}
+
+static double
+rect_leaf_node_distance(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n2, RECT_TREE_DISTANCE_STATE *state)
+{
+	const POINT2D *p1, *p2, *p3, *q1, *q2, *q3;
+	DISTPTS dl;
+
+	switch (n1->seg_type)
+	{
+		case RECT_NODE_SEG_POINT:
+		{
+			p1 = getPoint2d_cp(n1->pa, n1->seg_num);
+
+			switch (n2->seg_type)
+			{
+				case RECT_NODE_SEG_POINT:
+					q1 = getPoint2d_cp(n2->pa, n2->seg_num);
+					lw_dist2d_pt_pt(q1, p1, &dl);
+					break;
+
+				case RECT_NODE_SEG_LINEAR:
+					q1 = getPoint2d_cp(n2->pa, n2->seg_num);
+					q2 = getPoint2d_cp(n2->pa, n2->seg_num+1);
+					lw_dist2d_pt_seg(p1, q1, q2, &dl);
+					break;
+
+				case RECT_NODE_SEG_CIRCULAR:
+					q1 = getPoint2d_cp(n2->pa, n2->seg_num*2);
+					q2 = getPoint2d_cp(n2->pa, n2->seg_num*2+1);
+					q3 = getPoint2d_cp(n2->pa, n2->seg_num*2+2);
+					lw_dist2d_pt_arc(p1, q1, q2, q3, &dl);
+					break;
+
+				default:
+					lwerror("%s: unsupported segment type", __func__);
+			}
+			break;
+		}
+
+		case RECT_NODE_SEG_LINEAR:
+		{
+			p1 = getPoint2d_cp(n1->pa, n1->seg_num);
+			p2 = getPoint2d_cp(n1->pa, n1->seg_num+1);
+
+			switch (n2->seg_type)
+			{
+				case RECT_NODE_SEG_POINT:
+					q1 = getPoint2d_cp(n2->pa, n2->seg_num);
+					lw_dist2d_pt_seg(q1, p1, p2, &dl);
+					break;
+
+				case RECT_NODE_SEG_LINEAR:
+					q1 = getPoint2d_cp(n2->pa, n2->seg_num);
+					q2 = getPoint2d_cp(n2->pa, n2->seg_num+1);
+					lw_dist2d_seg_seg(q1, q2, p1, p2, &dl);
+					break;
+
+				case RECT_NODE_SEG_CIRCULAR:
+					q1 = getPoint2d_cp(n2->pa, n2->seg_num*2);
+					q2 = getPoint2d_cp(n2->pa, n2->seg_num*2+1);
+					q3 = getPoint2d_cp(n2->pa, n2->seg_num*2+2);
+					lw_dist2d_seg_arc(p1, p2, q1, q2, q3, &dl);
+					break;
+
+				default:
+					lwerror("%s: unsupported segment type", __func__);
+			}
+			break;
+		}
+		case RECT_NODE_SEG_CIRCULAR:
+		{
+			p1 = getPoint2d_cp(n1->pa, n1->seg_num*2);
+			p2 = getPoint2d_cp(n1->pa, n1->seg_num*2+1);
+			p3 = getPoint2d_cp(n1->pa, n1->seg_num*2+2);
+
+			switch (n2->seg_type)
+			{
+				case RECT_NODE_SEG_POINT:
+					q1 = getPoint2d_cp(n2->pa, n2->seg_num);
+					lw_dist2d_pt_arc(q1, p1, p2, p3, &dl);
+					break;
+
+				case RECT_NODE_SEG_LINEAR:
+					q1 = getPoint2d_cp(n2->pa, n2->seg_num);
+					q2 = getPoint2d_cp(n2->pa, n2->seg_num+1);
+					lw_dist2d_seg_arc(q1, q2, p1, p2, p3, &dl);
+					break;
+
+				case RECT_NODE_SEG_CIRCULAR:
+					q1 = getPoint2d_cp(n2->pa, n2->seg_num*2);
+					q2 = getPoint2d_cp(n2->pa, n2->seg_num*2+1);
+					q3 = getPoint2d_cp(n2->pa, n2->seg_num*2+2);
+					lw_dist2d_arc_arc(p1, p2, p3, q1, q2, q3, &dl);
+					break;
+
+				default:
+					lwerror("%s: unsupported segment type", __func__);
+			}
+			break;
+		}
+		default:
+			lwerror("%s: unsupported segment type", __func__);
+	}
+
+	/* If this is a new global minima, save it */
+	if (dl.distance < state->min_dist)
+	{
+		state->min_dist = dl.distance;
+		state->p1 = dl.p1;
+		state->p2 = dl.p2;
+	}
+
+	return dl.distance;
+}
 
 
+static double
+rect_tree_distance_tree_recursive(const RECT_NODE *n1, const RECT_NODE *n2, RECT_TREE_DISTANCE_STATE *state)
+{
+	double min, max;
 
+	/* Short circuit if we've already hit the minimum */
+	if (state->min_dist < state->threshold || state->min_dist == 0.0)
+		return state->min_dist;
+
+	/* If your minimum is greater than anyone's maximum, you can't hold the winner */
+	min = rect_node_min_distance(n1, n2);
+	if (min > state->max_dist)
+	{
+		LWDEBUGF(4, "pruning pair %p, %p", n1, n2);
+		return FLT_MAX;
+	}
+
+	/* If your maximum is a new low, we'll use that as our new global tolerance */
+	max = rect_node_max_distance(n1, n2);
+	if (max < state->max_dist)
+		state->max_dist = max;
+
+	/* Both leaf nodes, do a real distance calculation */
+	if (rect_node_is_leaf(n1) && rect_node_is_leaf(n2))
+	{
+		return rect_leaf_node_distance(&n1->l, &n2->l, state);
+	}
+	/* Recurse into nodes */
+	else
+	{
+		int i;
+		double d_min = FLT_MAX;
+		if (rect_node_is_leaf(n1))
+		{
+			for (i = 0; i < n2->i.num_nodes; i++)
+			{
+				min = rect_tree_distance_tree_recursive(n1, n2->i.nodes[i], state);
+				d_min = FP_MIN(d_min, min);
+			}
+		}
+		else
+		{
+			for (i = 0; i < n1->i.num_nodes; i++)
+			{
+				min = rect_tree_distance_tree_recursive(n1->i.nodes[i], n2, state);
+				d_min = FP_MIN(d_min, min);
+			}
+		}
+		return d_min;
+	}
+}
+
+double rect_tree_distance_tree(const RECT_NODE *n1, const RECT_NODE *n2, double threshold)
+{
+	double distance;
+	RECT_TREE_DISTANCE_STATE state;
+
+	/*
+	* It is possible for an area to intersect another object
+	* without any edges intersecting, if the object is fully contained.
+	* If that is so, then any point in the object will be contained,
+	* so we do a quick point-in-poly test first for those cases
+	*/
+	if (rect_tree_is_area(n1) &&
+		rect_tree_contains_point(n1, rect_tree_get_point(n2)))
+	{
+		return 0.0;
+	}
+
+	if (rect_tree_is_area(n2) &&
+		rect_tree_contains_point(n2, rect_tree_get_point(n1)))
+	{
+		return 0.0;
+	}
+
+	state.threshold = threshold;
+	state.min_dist = FLT_MAX;
+	state.max_dist = FLT_MAX;
+	distance = rect_tree_distance_tree_recursive(n1, n2, &state);
+	// *p1 = state.p1;
+	// *p2 = state.p2;
+	return distance;
+}

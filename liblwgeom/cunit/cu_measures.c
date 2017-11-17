@@ -385,6 +385,33 @@ static void test_rect_tree_intersects_tree(void)
 		LW_TRUE
 		);
 
+	/* Contained, complex */
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"GEOMETRYCOLLECTION(MULTILINESTRING((1 2, 3 2)),POINT(1 2))"),
+		LW_TRUE
+		);
+
+	/* Touching, complex */
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"GEOMETRYCOLLECTION(MULTILINESTRING((6 3, 8 4)),POINT(5 3))"),
+		LW_TRUE
+		);
+
+	/* Not Touching, complex */
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"GEOMETRYCOLLECTION(MULTILINESTRING((6 3, 8 4)),POINT(1 3.5))"),
+		LW_FALSE
+		);
+
+	/* Crossing, complex */
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"GEOMETRYCOLLECTION(MULTILINESTRING((1.5 4.1, 1.6 2)),POINT(1 3.5))"),
+		LW_TRUE
+		);
 }
 
 static void

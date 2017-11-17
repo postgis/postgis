@@ -39,9 +39,10 @@ typedef enum
 
 typedef enum
 {
+	RECT_NODE_SEG_UNKNOWN = 0,
+	RECT_NODE_SEG_POINT,
 	RECT_NODE_SEG_LINEAR,
-	RECT_NODE_SEG_CIRCULAR,
-	RECT_NODE_SEG_UNKNOWN
+	RECT_NODE_SEG_CIRCULAR
 } RECT_NODE_SEG_TYPE;
 
 typedef struct
@@ -74,9 +75,19 @@ typedef struct rect_node
 	};
 } RECT_NODE;
 
+typedef struct rect_tree_distance_state
+{
+	double threshold;
+	double min_dist;
+	double max_dist;
+	POINT2D p1;
+	POINT2D p2;
+} RECT_TREE_DISTANCE_STATE;
+
 
 int rect_tree_contains_point(const RECT_NODE *tree, const POINT2D *pt);
 int rect_tree_intersects_tree(const RECT_NODE *tree1, const RECT_NODE *tree2);
+double rect_tree_distance_tree(const RECT_NODE *n1, const RECT_NODE *n2, double threshold);
 void rect_tree_free(RECT_NODE *node);
 RECT_NODE * rect_tree_from_lwgeom(const LWGEOM *geom);
 RECT_NODE * rect_tree_from_ptarray(const POINTARRAY *pa, int geom_type);
