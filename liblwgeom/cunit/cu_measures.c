@@ -341,60 +341,49 @@ static void test_rect_tree_contains_point(void)
 
 }
 
+static int tree_inter(const char *wkt1, const char *wkt2)
+{
+	LWGEOM *poly1 = lwgeom_from_wkt(wkt1, LW_PARSER_CHECK_NONE);
+	LWGEOM *poly2 = lwgeom_from_wkt(wkt2, LW_PARSER_CHECK_NONE);
+	RECT_NODE *tree1 = rect_tree_from_lwgeom(poly1);
+	RECT_NODE *tree2 = rect_tree_from_lwgeom(poly2);
+	int result = rect_tree_intersects_tree(tree1, tree2);
+	lwgeom_free(poly1);
+	lwgeom_free(poly2);
+	rect_tree_free(tree1);
+	rect_tree_free(tree2);
+	return result;
+}
+
 static void test_rect_tree_intersects_tree(void)
 {
-	LWGEOM *poly1, *poly2;
-	RECT_NODE *tree1, *tree2;
-	int result;
-
 	/* total overlap, A == B */
-	poly1 = lwgeom_from_wkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", LW_PARSER_CHECK_NONE);
-	poly2 = lwgeom_from_wkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", LW_PARSER_CHECK_NONE);
-	tree1 = rect_tree_from_lwgeom(poly1);
-	tree2 = rect_tree_from_lwgeom(poly2);
-	result = rect_tree_intersects_tree(tree1, tree2);
-	CU_ASSERT_EQUAL(result, LW_TRUE);
-	lwgeom_free(poly1);
-	lwgeom_free(poly2);
-	rect_tree_free(tree1);
-	rect_tree_free(tree2);
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))"),
+		LW_TRUE
+		);
 
 	/* hiding between the tines of the comb */
-	poly1 = lwgeom_from_wkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", LW_PARSER_CHECK_NONE);
-	poly2 = lwgeom_from_wkt("POLYGON((0.3 0.7, 0.3 0.8, 0.4 0.8, 0.4 0.7, 0.3 0.7))", LW_PARSER_CHECK_NONE);
-	tree1 = rect_tree_from_lwgeom(poly1);
-	tree2 = rect_tree_from_lwgeom(poly2);
-	result = rect_tree_intersects_tree(tree1, tree2);
-	CU_ASSERT_EQUAL(result, LW_FALSE);
-	lwgeom_free(poly1);
-	lwgeom_free(poly2);
-	rect_tree_free(tree1);
-	rect_tree_free(tree2);
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"POLYGON((0.3 0.7, 0.3 0.8, 0.4 0.8, 0.4 0.7, 0.3 0.7))"),
+		LW_FALSE
+		);
 
 	/* between the tines, but with a corner overlapping */
-	poly1 = lwgeom_from_wkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", LW_PARSER_CHECK_NONE);
-	poly2 = lwgeom_from_wkt("POLYGON((0.3 0.7, 0.3 0.8, 0.4 0.8, 1.3 0.3, 0.3 0.7))", LW_PARSER_CHECK_NONE);
-	tree1 = rect_tree_from_lwgeom(poly1);
-	tree2 = rect_tree_from_lwgeom(poly2);
-	result = rect_tree_intersects_tree(tree1, tree2);
-	CU_ASSERT_EQUAL(result, LW_TRUE);
-	lwgeom_free(poly1);
-	lwgeom_free(poly2);
-	rect_tree_free(tree1);
-	rect_tree_free(tree2);
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"POLYGON((0.3 0.7, 0.3 0.8, 0.4 0.8, 1.3 0.3, 0.3 0.7))"),
+		LW_TRUE
+		);
 
 	/* Just touching the top left corner of the comb */
-	poly1 = lwgeom_from_wkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", LW_PARSER_CHECK_NONE);
-	poly2 = lwgeom_from_wkt("POLYGON((-1 5, 0 5, 0 7, -1 7, -1 5))", LW_PARSER_CHECK_NONE);
-	tree1 = rect_tree_from_lwgeom(poly1);
-	tree2 = rect_tree_from_lwgeom(poly2);
-	result = rect_tree_intersects_tree(tree1, tree2);
-	CU_ASSERT_EQUAL(result, LW_TRUE);
-	lwgeom_free(poly1);
-	lwgeom_free(poly2);
-	rect_tree_free(tree1);
-	rect_tree_free(tree2);
-
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"POLYGON((-1 5, 0 5, 0 7, -1 7, -1 5))"),
+		LW_TRUE
+		);
 
 }
 
