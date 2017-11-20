@@ -174,7 +174,7 @@ PreparedCacheIsEmpty(MemoryContext context)
 	 * Always return false since this call is mandatory according to tgl
 	 * (see postgis-devel archives July 2007)
 	 */
-	return FALSE;
+	return LW_FALSE;
 }
 
 static void

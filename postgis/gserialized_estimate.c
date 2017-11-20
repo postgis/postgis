@@ -499,7 +499,7 @@ nd_box_merge(const ND_BOX *source, ND_BOX *target)
 		target->min[d] = Min(target->min[d], source->min[d]);
 		target->max[d] = Max(target->max[d], source->max[d]);
 	}
-	return TRUE;
+	return true;
 }
 
 /** Zero out an ND_BOX */
@@ -507,7 +507,7 @@ static int
 nd_box_init(ND_BOX *a)
 {
 	memset(a, 0, sizeof(ND_BOX));
-	return TRUE;
+	return true;
 }
 
 /**
@@ -524,7 +524,7 @@ nd_box_init_bounds(ND_BOX *a)
 		a->min[d] = FLT_MAX;
 		a->max[d] = -1 * FLT_MAX;
 	}
-	return TRUE;
+	return true;
 }
 
 /** Set the values of an #ND_BOX from a #GBOX */
@@ -563,7 +563,7 @@ nd_box_from_gbox(const GBOX *gbox, ND_BOX *nd_box)
 }
 
 /**
-* Return TRUE if #ND_BOX a overlaps b, false otherwise.
+* Return true if #ND_BOX a overlaps b, false otherwise.
 */
 static int
 nd_box_intersects(const ND_BOX *a, const ND_BOX *b, int ndims)
@@ -572,13 +572,13 @@ nd_box_intersects(const ND_BOX *a, const ND_BOX *b, int ndims)
 	for ( d = 0; d < ndims; d++ )
 	{
 		if ( (a->min[d] > b->max[d]) || (a->max[d] < b->min[d]) )
-			return FALSE;
+			return false;
 	}
-	return TRUE;
+	return true;
 }
 
 /**
-* Return TRUE if #ND_BOX a contains b, false otherwise.
+* Return true if #ND_BOX a contains b, false otherwise.
 */
 static int
 nd_box_contains(const ND_BOX *a, const ND_BOX *b, int ndims)
@@ -587,9 +587,9 @@ nd_box_contains(const ND_BOX *a, const ND_BOX *b, int ndims)
 	for ( d = 0; d < ndims; d++ )
 	{
 		if ( ! ((a->min[d] < b->min[d]) && (a->max[d] > b->max[d])) )
-			return FALSE;
+			return false;
 	}
-	return TRUE;
+	return true;
 }
 
 /**
@@ -608,7 +608,7 @@ nd_box_expand(ND_BOX *nd_box, double expansion_factor)
 		nd_box->min[d] -= size * expansion_factor / 2;
 		nd_box->max[d] += size * expansion_factor / 2;
 	}
-	return TRUE;
+	return true;
 }
 
 /**
@@ -644,7 +644,7 @@ nd_box_overlap(const ND_STATS *nd_stats, const ND_BOX *nd_box, ND_IBOX *nd_ibox)
 		nd_ibox->min[d] = Max(nd_ibox->min[d], 0);
 		nd_ibox->max[d] = Min(nd_ibox->max[d], size-1);
 	}
-	return TRUE;
+	return true;
 }
 
 /**
@@ -654,7 +654,7 @@ static inline double
 nd_box_ratio(const ND_BOX *b1, const ND_BOX *b2, int ndims)
 {
 	int d;
-	bool covered = TRUE;
+	bool covered = true;
 	double ivol = 1.0;
 	double vol2 = 1.0;
 	double vol1 = 1.0;
@@ -665,7 +665,7 @@ nd_box_ratio(const ND_BOX *b1, const ND_BOX *b2, int ndims)
 			return 0.0; /* Disjoint */
 
 		if ( b1->min[d] > b2->min[d] || b1->max[d] < b2->max[d] )
-			covered = FALSE;
+			covered = false;
 	}
 
 	if ( covered )
@@ -793,7 +793,7 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 		distribution[d] = range;
 	}
 
-	return TRUE;
+	return true;
 }
 
 /**
@@ -818,10 +818,10 @@ nd_increment(ND_IBOX *ibox, int ndims, int *counter)
 	}
 	/* That's it, cannot increment any more! */
 	if ( d == ndims )
-		return FALSE;
+		return false;
 
 	/* Increment complete! */
-	return TRUE;
+	return true;
 }
 
 static ND_STATS*
@@ -889,7 +889,7 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode, bool only_par
 	if ( ! only_parent )
 	{
 		POSTGIS_DEBUGF(2, "searching whole tree stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
-		stats_tuple = SearchSysCache3(STATRELATT, table_oid, att_num, TRUE);
+		stats_tuple = SearchSysCache3(STATRELATT, table_oid, att_num, true);
 		if ( stats_tuple )
 			POSTGIS_DEBUGF(2, "found whole tree stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
 	}
@@ -924,7 +924,7 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode, bool only_par
 * debugging functions are taking human input (table names)
 * and columns, so we have to look those up first.
 * In case of parent tables whith INHERITS, when "only_parent"
-* is TRUE this function only searchs for stats in the parent
+* is true this function only searchs for stats in the parent
 * table ignoring any statistic collected from the children.
 */
 static ND_STATS*
@@ -1249,8 +1249,8 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 	                 get_rel_name(relid1) ? get_rel_name(relid1) : "NULL", relid1, get_rel_name(relid2) ? get_rel_name(relid2) : "NULL", relid2);
 
 	/* Pull the stats from the stats system. */
-	stats1 = pg_get_nd_stats(relid1, var1->varattno, mode, FALSE);
-	stats2 = pg_get_nd_stats(relid2, var2->varattno, mode, FALSE);
+	stats1 = pg_get_nd_stats(relid1, var1->varattno, mode, false);
+	stats2 = pg_get_nd_stats(relid2, var2->varattno, mode, false);
 
 	/* If we can't get stats, we have to stop here! */
 	if ( ! stats1 )
@@ -1803,7 +1803,7 @@ compute_gserialized_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 * It will need to return a stats builder function reference
 * and a "minimum" sample rows to feed it.
 * If we want analisys to be completely skipped we can return
-* FALSE and leave output vals untouched.
+* false and leave output vals untouched.
 *
 * What we know from this call is:
 *
@@ -1992,7 +1992,7 @@ Datum _postgis_gserialized_stats(PG_FUNCTION_ARGS)
 	char *str;
 	text *json;
 	int mode = 2; /* default to 2D mode */
-	bool only_parent = FALSE; /* default to whole tree stats */
+	bool only_parent = false; /* default to whole tree stats */
 
 	/* Check if we've been asked to not use 2d mode */
 	if ( ! PG_ARGISNULL(2) )
@@ -2036,7 +2036,7 @@ Datum _postgis_gserialized_sel(PG_FUNCTION_ARGS)
 		mode = text_p_get_mode(PG_GETARG_TEXT_P(3));
 
 	/* Retrieve the stats object */
-	nd_stats = pg_get_nd_stats_by_name(table_oid, att_text, mode, FALSE);
+	nd_stats = pg_get_nd_stats_by_name(table_oid, att_text, mode, false);
 
 	if ( ! nd_stats )
 		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid), text2cstring(att_text));
@@ -2072,8 +2072,8 @@ Datum _postgis_gserialized_joinsel(PG_FUNCTION_ARGS)
 
 
 	/* Retrieve the stats object */
-	nd_stats1 = pg_get_nd_stats_by_name(table_oid1, att_text1, mode, FALSE);
-	nd_stats2 = pg_get_nd_stats_by_name(table_oid2, att_text2, mode, FALSE);
+	nd_stats1 = pg_get_nd_stats_by_name(table_oid1, att_text1, mode, false);
+	nd_stats2 = pg_get_nd_stats_by_name(table_oid2, att_text2, mode, false);
 
 	if ( ! nd_stats1 )
 		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid1), text2cstring(att_text1));
@@ -2242,7 +2242,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	Oid tbl_oid;
 	ND_STATS *nd_stats;
 	GBOX *gbox;
-	bool only_parent = FALSE;
+	bool only_parent = false;
 
 	if ( PG_NARGS() == 4 )
 	{

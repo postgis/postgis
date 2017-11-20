@@ -1565,7 +1565,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 		 * notice now that we have ST_isValidReason ?
 		 */
 		lwpgnotice("%s", lwgeom_geos_errmsg);
-		PG_RETURN_BOOL(FALSE);
+		PG_RETURN_BOOL(false);
 	}
 
 	result = GEOSisValid(g1);
@@ -1749,7 +1749,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	{
 		if ( ! gbox_overlaps_2d(&box1, &box2) )
 		{
-			PG_RETURN_BOOL(FALSE);
+			PG_RETURN_BOOL(false);
 		}
 	}
 
@@ -1819,7 +1819,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	{
 		if ( ! gbox_contains_2d(&box1, &box2) )
 		{
-			PG_RETURN_BOOL(FALSE);
+			PG_RETURN_BOOL(false);
 		}
 	}
 
@@ -1964,7 +1964,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	        gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( ! gbox_contains_2d(&box1, &box2) )
-			PG_RETURN_BOOL(FALSE);
+			PG_RETURN_BOOL(false);
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -2049,7 +2049,7 @@ Datum covers(PG_FUNCTION_ARGS)
 	{
 		if ( ! gbox_contains_2d(&box1, &box2) )
 		{
-			PG_RETURN_BOOL(FALSE);
+			PG_RETURN_BOOL(false);
 		}
 	}
 	/*
@@ -2198,7 +2198,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	{
 		if ( ! gbox_contains_2d(&box2, &box1) )
 		{
-			PG_RETURN_BOOL(FALSE);
+			PG_RETURN_BOOL(false);
 		}
 
 		POSTGIS_DEBUG(3, "bounding box short-circuit missed.");
@@ -2323,7 +2323,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	{
 		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
-			PG_RETURN_BOOL(FALSE);
+			PG_RETURN_BOOL(false);
 		}
 	}
 
@@ -2389,7 +2389,7 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 	{
 		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
-			PG_RETURN_BOOL(FALSE);
+			PG_RETURN_BOOL(false);
 		}
 	}
 
@@ -2534,7 +2534,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	{
 		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
-			PG_RETURN_BOOL(FALSE);
+			PG_RETURN_BOOL(false);
 		}
 	}
 
@@ -2601,7 +2601,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	{
 		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
-			PG_RETURN_BOOL(TRUE);
+			PG_RETURN_BOOL(true);
 		}
 	}
 
@@ -2793,7 +2793,7 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 
 	/* Empty == Empty */
 	if ( gserialized_is_empty(geom1) && gserialized_is_empty(geom2) )
-		PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(true);
 
 	/*
 	 * short-circuit: If geom1 and geom2 do not have the same bounding box
@@ -2804,7 +2804,7 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 	{
 		if ( gbox_same_2d_float(&box1, &box2) == LW_FALSE )
 		{
-			PG_RETURN_BOOL(FALSE);
+			PG_RETURN_BOOL(false);
 		}
 	}
 
@@ -2813,7 +2813,7 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 	 * TRUE.  This is much faster than doing the comparison using GEOS.
 	 */
 	if (VARSIZE(geom1) == VARSIZE(geom2) && !memcmp(geom1, geom2, VARSIZE(geom1))) {
-	    PG_RETURN_BOOL(TRUE);
+	    PG_RETURN_BOOL(true);
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -2864,7 +2864,7 @@ Datum issimple(PG_FUNCTION_ARGS)
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
 	if ( gserialized_is_empty(geom) )
-		PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(true);
 
 	lwgeom_in = lwgeom_from_gserialized(geom);
 	result = lwgeom_is_simple(lwgeom_in);
@@ -2889,7 +2889,7 @@ Datum isring(PG_FUNCTION_ARGS)
 
 	/* Empty things can't close */
 	if ( gserialized_is_empty(geom) )
-		PG_RETURN_BOOL(FALSE);
+		PG_RETURN_BOOL(false);
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
