@@ -343,15 +343,15 @@ static void test_rect_tree_contains_point(void)
 
 static int tree_inter(const char *wkt1, const char *wkt2)
 {
-	LWGEOM *poly1 = lwgeom_from_wkt(wkt1, LW_PARSER_CHECK_NONE);
-	LWGEOM *poly2 = lwgeom_from_wkt(wkt2, LW_PARSER_CHECK_NONE);
-	RECT_NODE *tree1 = rect_tree_from_lwgeom(poly1);
-	RECT_NODE *tree2 = rect_tree_from_lwgeom(poly2);
-	int result = rect_tree_intersects_tree(tree1, tree2);
-	lwgeom_free(poly1);
-	lwgeom_free(poly2);
-	rect_tree_free(tree1);
-	rect_tree_free(tree2);
+	LWGEOM *g1 = lwgeom_from_wkt(wkt1, LW_PARSER_CHECK_NONE);
+	LWGEOM *g2 = lwgeom_from_wkt(wkt2, LW_PARSER_CHECK_NONE);
+	RECT_NODE *t1 = rect_tree_from_lwgeom(g1);
+	RECT_NODE *t2 = rect_tree_from_lwgeom(g2);
+	int result = rect_tree_intersects_tree(t1, t2);
+	rect_tree_free(t1);
+	rect_tree_free(t2);
+	lwgeom_free(g1);
+	lwgeom_free(g2);
 	return result;
 }
 
@@ -413,6 +413,34 @@ static void test_rect_tree_intersects_tree(void)
 		LW_TRUE
 		);
 }
+
+
+static double
+test_rect_tree_distance_tree_case(const char *wkt1, const char *wkt2)
+{
+	LWGEOM *lw1 = lwgeom_from_wkt(wkt1, LW_PARSER_CHECK_NONE);
+	LWGEOM *lw2 = lwgeom_from_wkt(wkt2, LW_PARSER_CHECK_NONE);
+	RECT_NODE *n1 = rect_tree_from_lwgeom(lw1);
+	RECT_NODE *n2 = rect_tree_from_lwgeom(lw2);
+	double dist = rect_tree_distance_tree(n1, n2, 0.0);
+	// printf("%g\n", dist);
+	rect_tree_free(n1);
+	rect_tree_free(n2);
+	lwgeom_free(lw1);
+	lwgeom_free(lw2);
+	return dist;
+}
+
+#define TDT(w1, w2, d) CU_ASSERT_DOUBLE_EQUAL(test_rect_tree_distance_tree_case(w1, w2), d, 0.000001);
+
+static void
+test_rect_tree_distance_tree(void)
+{
+	TDT("POINT(0 0)", "POINT(0 1)", 1.0) ;
+	TDT("POINT(0 0)", "POINT(1 0)", 1.0) ;
+	TDT("LINESTRING(0 0,1 0)", "LINESTRING(1 0,1 1)", 0.0) ;
+}
+
 
 static void
 test_lwgeom_segmentize2d(void)
@@ -1305,4 +1333,5 @@ void measures_suite_setup(void)
 	PG_ADD_TEST(suite, test_lw_dist2d_ptarray_ptarrayarc);
 	PG_ADD_TEST(suite, test_lwgeom_tcpa);
 	PG_ADD_TEST(suite, test_lwgeom_is_trajectory);
+	PG_ADD_TEST(suite, test_rect_tree_distance_tree);
 }

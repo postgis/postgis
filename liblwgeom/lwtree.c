@@ -967,7 +967,7 @@ rect_node_max_distance(const RECT_NODE *n1, const RECT_NODE *n2)
 	POINT2D p1[4];
 	POINT2D p2[4];
 	int i, j;
-	double d = 0.0;
+	double d = FLT_MAX;
 	double d_sq;
 
 	p1[0].x = n1->xmin;
@@ -1005,6 +1005,8 @@ rect_leaf_node_distance(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n2, RECT
 {
 	const POINT2D *p1, *p2, *p3, *q1, *q2, *q3;
 	DISTPTS dl;
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
 
 	switch (n1->seg_type)
 	{
