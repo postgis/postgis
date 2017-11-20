@@ -314,7 +314,7 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 	{
 		PG_FREE_IF_COPY(g1, 0);
 		PG_FREE_IF_COPY(g2, 1);
-		PG_RETURN_BOOL(FALSE);
+		PG_RETURN_BOOL(false);
 	}
 
 	/* Do the brute force calculation if the cached calculation doesn't tick over */
@@ -436,7 +436,7 @@ Datum geography_dwithin_uncached(PG_FUNCTION_ARGS)
 	/* Return FALSE on empty arguments. */
 	if ( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
 	{
-		PG_RETURN_BOOL(FALSE);
+		PG_RETURN_BOOL(false);
 	}
 
 	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, tolerance);
@@ -451,7 +451,7 @@ Datum geography_dwithin_uncached(PG_FUNCTION_ARGS)
 	if ( distance < 0.0 )
 	{
 		elog(ERROR, "lwgeom_distance_spheroid returned negative!");
-		PG_RETURN_BOOL(FALSE);
+		PG_RETURN_BOOL(false);
 	}
 
 	PG_RETURN_BOOL(distance <= tolerance);
