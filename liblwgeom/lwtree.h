@@ -84,12 +84,29 @@ typedef struct rect_tree_distance_state
 	POINT2D p2;
 } RECT_TREE_DISTANCE_STATE;
 
+/**
+* Create a tree index on top an LWGEOM. Do not free the LWGEOM
+* until the tree is freed.
+*/
+RECT_NODE * rect_tree_from_lwgeom(const LWGEOM *geom);
+
+/**
+* Test if two RECT_NODE trees intersect one another.
+*/
+int rect_tree_intersects_tree(const RECT_NODE *tree1, const RECT_NODE *tree2);
+
+/**
+* Return the distance between two RECT_NODE trees.
+*/
+double rect_tree_distance_tree(const RECT_NODE *n1, const RECT_NODE *n2, double threshold);
+
+/**
+* Free the rect-tree memory
+*/
+void rect_tree_free(RECT_NODE *node);
 
 int rect_tree_contains_point(const RECT_NODE *tree, const POINT2D *pt);
-int rect_tree_intersects_tree(const RECT_NODE *tree1, const RECT_NODE *tree2);
-double rect_tree_distance_tree(const RECT_NODE *n1, const RECT_NODE *n2, double threshold);
-void rect_tree_free(RECT_NODE *node);
-RECT_NODE * rect_tree_from_lwgeom(const LWGEOM *geom);
 RECT_NODE * rect_tree_from_ptarray(const POINTARRAY *pa, int geom_type);
 LWGEOM * rect_tree_to_lwgeom(const RECT_NODE *tree);
 char * rect_tree_to_wkt(const RECT_NODE *node);
+void rect_tree_printf(const RECT_NODE *node, int depth);

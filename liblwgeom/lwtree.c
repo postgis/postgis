@@ -687,10 +687,10 @@ rect_tree_to_wkt(const RECT_NODE *node)
 	return wkt;
 }
 
-#if 0
-static void
+void
 rect_tree_printf(const RECT_NODE *node, int depth)
 {
+	printf("%*s----\n", depth, "");
 	printf("%*stype: %d\n", depth, "", node->type);
 	printf("%*sgeom_type: %d\n", depth, "", node->geom_type);
 	printf("%*sbox: %g %g, %g %g\n", depth, "", node->xmin, node->ymin, node->xmax, node->ymax);
@@ -704,11 +704,10 @@ rect_tree_printf(const RECT_NODE *node, int depth)
 		int i;
 		for (i = 0; i < node->i.num_nodes; i++)
 		{
-			rect_tree_printf(node->i.nodes[i], depth+1);
+			rect_tree_printf(node->i.nodes[i], depth+2);
 		}
 	}
 }
-#endif
 
 static RECT_NODE *
 rect_tree_from_lwpoint(const LWGEOM *lwgeom)
@@ -1020,40 +1019,13 @@ rect_node_min_distance(const RECT_NODE *n1, const RECT_NODE *n2)
 static inline double
 rect_node_max_distance(const RECT_NODE *n1, const RECT_NODE *n2)
 {
-	POINT2D p1[4];
-	POINT2D p2[4];
-	int i, j;
-	double d = FLT_MAX;
-	double d_sq;
-
-	p1[0].x = n1->xmin;
-	p1[0].y = n1->ymin;
-	p1[1].x = n1->xmin;
-	p1[1].y = n1->ymax;
-	p1[2].x = n1->xmax;
-	p1[2].y = n1->ymin;
-	p1[3].x = n1->xmax;
-	p1[3].y = n1->ymax;
-
-	p2[0].x = n2->xmin;
-	p2[0].y = n2->ymin;
-	p2[1].x = n2->xmin;
-	p2[1].y = n2->ymax;
-	p2[2].x = n2->xmax;
-	p2[2].y = n2->ymin;
-	p2[3].x = n2->xmax;
-	p2[3].y = n2->ymax;
-
-	for (i = 0; i < 4; i++)
-	{
-		for (j = 0; j < 4; j++)
-		{
-			d_sq = distance_sq(p1[i].x, p1[i].y, p2[j].x, p2[j].y);
-			d = FP_MIN(d, d_sq);
-		}
-	}
-
-	return sqrt(d);
+	double xmin = FP_MIN(n1->xmin, n2->xmin);
+	double ymin = FP_MIN(n1->ymin, n2->ymin);
+	double xmax = FP_MAX(n1->xmax, n2->xmax);
+	double ymax = FP_MAX(n1->ymax, n2->ymax);
+	double dx = xmax - xmin;
+	double dy = ymax - ymin;
+	return sqrt(dx*dx + dy*dy);
 }
 
 static double

@@ -423,6 +423,12 @@ test_rect_tree_distance_tree_case(const char *wkt1, const char *wkt2)
 	RECT_NODE *n1 = rect_tree_from_lwgeom(lw1);
 	RECT_NODE *n2 = rect_tree_from_lwgeom(lw2);
 
+	// rect_tree_printf(n1, 0);
+	// rect_tree_printf(n2, 0);
+	//
+	// printf("%s\n", rect_tree_to_wkt(n1));
+	// printf("%s\n", rect_tree_to_wkt(n2));
+
 	double dist = rect_tree_distance_tree(n1, n2, 0.0);
 	// printf("%g\n", dist);
 	rect_tree_free(n1);
@@ -438,6 +444,9 @@ static void
 test_rect_tree_distance_tree(void)
 {
 	const char *wkt;
+
+	wkt = "MULTIPOLYGON(((-123.35702791281 48.4232302445918,-123.35689654493 48.4237265810249,-123.354053908057 48.4234039978588,-123.35417179975 48.4229151379279,-123.354369811539 48.4220987102936,-123.355779071731 48.4222571534228,-123.357238860904 48.4224209369449,-123.35702791281 48.4232302445918)))";
+	TDT(wkt, "MULTIPOLYGON(((-123.353452578038 48.4259519079838,-123.35072012771 48.4256699150083,-123.347337809991 48.4254740864963,-123.347469111645 48.4245757659326,-123.349409235923 48.4246224093429,-123.349966167324 48.4246562342604,-123.353650661317 48.4250703224683,-123.353452578038 48.4259519079838)))", 0.0017144228293396);
 
 	wkt = "POINT(0 0)";
 	TDT(wkt, "MULTIPOINT(0 1.5,0 2,0 2.5)", 1.5);
