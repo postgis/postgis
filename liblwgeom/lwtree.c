@@ -203,39 +203,31 @@ rect_leaf_node_segment_side(const RECT_NODE_LEAF *node, const POINT2D *q, int *o
 
 			side = lw_segment_side(p1, p2, q);
 
-			//printf("LINESTRING(%g %g,%g %g)\n", p1->x, p1->y, p2->x, p2->y);
-			//printf("seg=%d side=%d\n", node->seg_num, side);
-
 			/* Always note case where we're on boundary */
 			if (side == 0 && lw_pt_in_seg(q, p1, p2))
 			{
 				*on_boundary = LW_TRUE;
-				//printf("on boundary, flag, return 0\n");
 				return 0;
 			}
 
 			/* Segment points up and point is on left */
 			if (p1->y < p2->y && side == -1 && q->y != p2->y)
 			{
-				//printf("side == -1, segment up, return 1\n");
 				return 1;
 			}
 
 			/* Segment points down and point is on right */
 			if (p1->y > p2->y && side == 1 && q->y != p2->y)
 			{
-				//printf("side == 1, segment down, return 1\n");
 				return 1;
 			}
 
 			/* Segment is horizontal, do we cross first point? */
 			if (p1->y == p2->y && q->x < p1->x)
 			{
-				//printf("segment horizontal, and we cross it, return 1\n");
 				return 1;
 			}
 
-			//printf("segment non-crossing, return 0\n");
 			return 0;
 		}
 		case RECT_NODE_SEG_CIRCULAR:
@@ -266,14 +258,12 @@ rect_leaf_node_segment_side(const RECT_NODE_LEAF *node, const POINT2D *q, int *o
 				/* Segment points up and point is on left */
 				if (p1->y < p3->y && seg_side == -1 && q->y != p3->y)
 				{
-					//printf("side == -1, segment up, return 1\n");
 					return 1;
 				}
 
 				/* Segment points down and point is on right */
 				if (p1->y > p3->y && seg_side == 1 && q->y != p3->y)
 				{
-					//printf("side == 1, segment down, return 1\n");
 					return 1;
 				}
 			}
@@ -282,21 +272,18 @@ rect_leaf_node_segment_side(const RECT_NODE_LEAF *node, const POINT2D *q, int *o
 				/* Segment points up and point is on left */
 				if (p1->y < p3->y && seg_side == 1 && q->y != p3->y)
 				{
-					//printf("side == -1, segment up, return 1\n");
 					return 1;
 				}
 
 				/* Segment points down and point is on right */
 				if (p1->y > p3->y && seg_side == -1 && q->y != p3->y)
 				{
-					//printf("side == 1, segment down, return 1\n");
 					return 1;
 				}
 
 				/* Segment is horizontal, do we cross first point? */
 				if (p1->y == p3->y)
 				{
-					//printf("segment horizontal, and we cross it, return 1\n");
 					return 1;
 				}
 			}
@@ -332,7 +319,6 @@ rect_tree_ring_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_
 	{
 		if (rect_node_is_leaf(node))
 		{
-			//printf("NODE(%g %g,%g %g)\n", node->xmin, node->ymin, node->xmax, node->ymax);
 			return rect_leaf_node_segment_side(&node->l, pt, on_boundary);
 		}
 		else
@@ -342,7 +328,6 @@ rect_tree_ring_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_
 			{
 				r += rect_tree_ring_contains_point(node->i.nodes[i], pt, on_boundary);
 			}
-			//printf("r=%d\n", r);
 			return r;
 		}
 	}
@@ -375,7 +360,6 @@ rect_tree_area_contains_point(const RECT_NODE *node, const POINT2D *pt)
 	{
 		int on_boundary = 0;
 		int edge_crossing_count = rect_tree_ring_contains_point(node, pt, &on_boundary);
-		//printf("edge_crossing_count=%d\n", edge_crossing_count);
 		/* Odd number of crossings => contained */
 		int contained = (edge_crossing_count % 2 == 1);
 		/* External rings return positive containment, interior ones negative, */
@@ -383,12 +367,10 @@ rect_tree_area_contains_point(const RECT_NODE *node, const POINT2D *pt)
 		/* interior and exterior rings. */
 		if (node->i.ring_type == RECT_NODE_RING_INTERIOR)
 		{
-			//printf("rect_tree_area_contains_point [interior ring] %d\n", on_boundary ? 0 : -1 * contained);
 			return on_boundary ? 0 : -1 * contained;
 		}
 		else
 		{
-			//printf("rect_tree_area_contains_point [exterior ring] %d\n", contained || on_boundary);
 			return contained || on_boundary;
 		}
 
@@ -595,7 +577,11 @@ rect_node_internal_new(const RECT_NODE *seed)
 static RECT_NODE *
 rect_nodes_merge(RECT_NODE ** nodes, int num_nodes)
 {
-	if (num_nodes < 1) return NULL;
+	if (num_nodes < 1)
+	{
+		return NULL;
+	}
+
 	while (num_nodes > 1)
 	{
 		int i, k = 0;
@@ -617,6 +603,7 @@ rect_nodes_merge(RECT_NODE ** nodes, int num_nodes)
 			nodes[k++] = node;
 		num_nodes = k;
 	}
+
 	return nodes[0];
 }
 
@@ -700,6 +687,28 @@ rect_tree_to_wkt(const RECT_NODE *node)
 	return wkt;
 }
 
+#if 0
+static void
+rect_tree_printf(const RECT_NODE *node, int depth)
+{
+	printf("%*stype: %d\n", depth, "", node->type);
+	printf("%*sgeom_type: %d\n", depth, "", node->geom_type);
+	printf("%*sbox: %g %g, %g %g\n", depth, "", node->xmin, node->ymin, node->xmax, node->ymax);
+	if (node->type == RECT_NODE_LEAF_TYPE)
+	{
+		printf("%*sseg_type: %d\n", depth, "", node->l.seg_type);
+		printf("%*sseg_num: %d\n", depth, "", node->l.seg_num);
+	}
+	else
+	{
+		int i;
+		for (i = 0; i < node->i.num_nodes; i++)
+		{
+			rect_tree_printf(node->i.nodes[i], depth+1);
+		}
+	}
+}
+#endif
 
 static RECT_NODE *
 rect_tree_from_lwpoint(const LWGEOM *lwgeom)
@@ -743,6 +752,50 @@ rect_tree_from_lwpoly(const LWGEOM *lwgeom)
 }
 
 static RECT_NODE *
+rect_tree_from_lwcurvepoly(const LWGEOM *lwgeom)
+{
+	RECT_NODE **nodes;
+	RECT_NODE *tree;
+	int i, j = 0;
+	const LWCURVEPOLY *lwcol = (const LWCURVEPOLY*)lwgeom;
+
+	if (lwcol->nrings < 1)
+		return NULL;
+
+	nodes = lwalloc(sizeof(RECT_NODE*) * lwcol->nrings);
+	for (i = 0; i < lwcol->nrings; i++)
+	{
+		RECT_NODE *node = rect_tree_from_lwgeom(lwcol->rings[i]);
+		// rect_tree_printf(node, 0);
+		if (node)
+		{
+			/*
+			* In the case of arc circle, it's possible for a ring to consist
+			* of a single closed edge. That will arrive as a leaf node. We
+			* need to wrap that node in an internal node with an appropriate
+			* ring type so all the other code can try and make sense of it.
+			*/
+			if (node->type == RECT_NODE_LEAF_TYPE)
+			{
+				RECT_NODE *internal = rect_node_internal_new(node);
+				rect_node_internal_add_node(internal, node);
+				node = internal;
+			}
+			node->i.ring_type = i ? RECT_NODE_RING_INTERIOR : RECT_NODE_RING_EXTERIOR;
+			nodes[j++] = node;
+		}
+	}
+	qsort(nodes, j, sizeof(RECT_NODE*), rect_node_cmp);
+
+	tree = rect_nodes_merge(nodes, j);
+
+	tree->geom_type = lwgeom->type;
+	lwfree(nodes);
+	return tree;
+
+}
+
+static RECT_NODE *
 rect_tree_from_lwcollection(const LWGEOM *lwgeom)
 {
 	RECT_NODE **nodes;
@@ -757,6 +810,7 @@ rect_tree_from_lwcollection(const LWGEOM *lwgeom)
 	for (i = 0; i < lwcol->ngeoms; i++)
 	{
 		RECT_NODE *node = rect_tree_from_lwgeom(lwcol->geoms[i]);
+		// rect_tree_printf(node, 0);
 		if (node)
 		{
 			if (lwgeom->type == CURVEPOLYTYPE)
@@ -769,6 +823,7 @@ rect_tree_from_lwcollection(const LWGEOM *lwgeom)
 		qsort(nodes, j, sizeof(RECT_NODE*), rect_node_cmp);
 
 	tree = rect_nodes_merge(nodes, j);
+
 	tree->geom_type = lwgeom->type;
 	lwfree(nodes);
 	return tree;
@@ -787,8 +842,9 @@ rect_tree_from_lwgeom(const LWGEOM *lwgeom)
 			return rect_tree_from_lwline(lwgeom);
 		case POLYGONTYPE:
 			return rect_tree_from_lwpoly(lwgeom);
-		case COMPOUNDTYPE:
 		case CURVEPOLYTYPE:
+			return rect_tree_from_lwcurvepoly(lwgeom);
+		case COMPOUNDTYPE:
 		case MULTICURVETYPE:
 		case MULTISURFACETYPE:
 		case MULTIPOINTTYPE:
@@ -1028,7 +1084,7 @@ rect_leaf_node_distance(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n2, RECT
 					break;
 
 				case RECT_NODE_SEG_CIRCULAR:
-					q1 = getPoint2d_cp(n2->pa, n2->seg_num*2);
+				q1 = getPoint2d_cp(n2->pa, n2->seg_num*2);
 					q2 = getPoint2d_cp(n2->pa, n2->seg_num*2+1);
 					q3 = getPoint2d_cp(n2->pa, n2->seg_num*2+2);
 					lw_dist2d_pt_arc(p1, q1, q2, q3, &dl);

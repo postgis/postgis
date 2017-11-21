@@ -422,6 +422,7 @@ test_rect_tree_distance_tree_case(const char *wkt1, const char *wkt2)
 	LWGEOM *lw2 = lwgeom_from_wkt(wkt2, LW_PARSER_CHECK_NONE);
 	RECT_NODE *n1 = rect_tree_from_lwgeom(lw1);
 	RECT_NODE *n2 = rect_tree_from_lwgeom(lw2);
+
 	double dist = rect_tree_distance_tree(n1, n2, 0.0);
 	// printf("%g\n", dist);
 	rect_tree_free(n1);
@@ -431,14 +432,63 @@ test_rect_tree_distance_tree_case(const char *wkt1, const char *wkt2)
 	return dist;
 }
 
-#define TDT(w1, w2, d) CU_ASSERT_DOUBLE_EQUAL(test_rect_tree_distance_tree_case(w1, w2), d, 0.000001);
+#define TDT(w1, w2, d) CU_ASSERT_DOUBLE_EQUAL(test_rect_tree_distance_tree_case(w1, w2), d, 0.00001);
 
 static void
 test_rect_tree_distance_tree(void)
 {
-	TDT("POINT(0 0)", "POINT(0 1)", 1.0) ;
-	TDT("POINT(0 0)", "POINT(1 0)", 1.0) ;
-	TDT("LINESTRING(0 0,1 0)", "LINESTRING(1 0,1 1)", 0.0) ;
+	const char *wkt;
+
+	wkt = "POINT(0 0)";
+	TDT(wkt, "MULTIPOINT(0 1.5,0 2,0 2.5)", 1.5);
+	TDT(wkt, "GEOMETRYCOLLECTION(POINT(3 4))", 5.0);
+	TDT(wkt, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4)))", 5.0);
+	TDT(wkt, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4))))", 5.0);
+	TDT(wkt, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(3 4))))", 5.0);
+
+	TDT("LINESTRING(-2 0, -0.2 0)", "POINT(-2 0)", 0);
+	TDT("LINESTRING(-0.2 0, -2 0)", "POINT(-2 0)", 0);
+	TDT("LINESTRING(-1e-8 0, -0.2 0)", "POINT(-1e-8 0)", 0);
+	TDT("LINESTRING(-0.2 0, -1e-8 0)", "POINT(-1e-8 0)", 0);
+
+	wkt = "CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(1 6, 6 1, 9 7),(9 7, 3 13, 1 6)),COMPOUNDCURVE((3 6, 5 4, 7 4, 7 6),CIRCULARSTRING(7 6,5 8,3 6)))";
+	TDT(wkt, "POINT(3 14)", 1);
+	TDT(wkt, "POINT(3 8)", 0);
+	TDT(wkt, "POINT(6 5)", 1);
+	TDT(wkt, "POINT(6 4)", 0);
+
+	wkt = "MULTISURFACE(POLYGON((0 0,0 4,4 4,4 0,0 0)),CURVEPOLYGON(CIRCULARSTRING(8 2,10 4,12 2,10 0,8 2)))";
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(5 7,6 8,7 7,6 6,5 7))", 2.60555);
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(5 2,6 3,7 2,6 1,5 2))", 1);
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(4 2,5 3,6 2,5 1,4 2))", 0);
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(5 3,6 2,5 1,4 2,5 3))", 0);
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(4.5 3,5.5 2,4.5 1,3.5 2,4.5 3))", 0);
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(5.5 3,6.5 2,5.5 1,4.5 2,5.5 3))", 0.5);
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(10 3,11 2,10 1,9 2,10 3))", 0);
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(2 3,3 2,2 1,1 2,2 3))", 0);
+
+	wkt = "CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,5 0,0 0)))";
+	TDT(wkt, "POINT(3 0)", 0.0);
+	TDT(wkt, "POINT(5 0)", 0.0);
+	TDT(wkt, "POINT(7 0)", 2.0);
+	TDT(wkt, "POINT(2.5 3.5)", 1.0);
+
+	wkt = "POINT(0 0)";
+	TDT(wkt, "POINT(0 1)", 1.0);
+	TDT(wkt, "POINT(1 0)", 1.0);
+
+	wkt = "LINESTRING(0 0,1 0)";
+	TDT(wkt, "LINESTRING(1 0,1 1)", 0.0);
+	TDT(wkt, "LINESTRING(0 1,1 1)", 1.0);
+
+	wkt = "POLYGON((0 0,0 1,1 1,1 0,0 0))";
+	TDT(wkt, "POINT(2 2)", sqrt(2));
+	TDT(wkt, "POINT(0.5 0.5)", 0);
+	TDT(wkt, "POINT(1 1)", 0);
+
+	wkt = "POLYGON((0 0,0 10,10 10,10 0,0 0), (4 4,4 6,6 6,6 4,4 4))";
+	TDT(wkt, "POINT(5 5)", 1);
+	TDT(wkt, "POLYGON((5 5,5 5.5,5.5 5.5,5.5 5, 5 5))", 0.5);
 }
 
 
