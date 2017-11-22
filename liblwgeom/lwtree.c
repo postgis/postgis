@@ -994,6 +994,8 @@ rect_node_min_distance(const RECT_NODE *n1, const RECT_NODE *n2)
 	int bottom = n1->ymin > n2->ymax;
 	int    top = n1->ymax < n2->ymin;
 
+	//lwnotice("rect_node_min_distance");
+
 	if (top && left)
 		d = distance(n1->xmin, n1->ymax, n2->xmax, n2->ymin);
 	else if (top && right)
@@ -1025,6 +1027,7 @@ rect_node_max_distance(const RECT_NODE *n1, const RECT_NODE *n2)
 	double ymax = FP_MAX(n1->ymax, n2->ymax);
 	double dx = xmax - xmin;
 	double dy = ymax - ymin;
+	//lwnotice("rect_node_max_distance");
 	return sqrt(dx*dx + dy*dy);
 }
 
@@ -1033,6 +1036,8 @@ rect_leaf_node_distance(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n2, RECT
 {
 	const POINT2D *p1, *p2, *p3, *q1, *q2, *q3;
 	DISTPTS dl;
+
+	//lwnotice("rect_leaf_node_distance, %d<->%d", n1->seg_num, n2->seg_num);
 
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 
@@ -1144,6 +1149,16 @@ rect_leaf_node_distance(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n2, RECT
 	return dl.distance;
 }
 
+static void
+rect_tree_nodes_sort(RECT_NODE *n1, RECT_NODE *n2)
+{
+	POINT2D c1, c2;
+	c1.x = (n1->xmin + n1->xmax)/2;
+	c1.y = (n1->ymin + n1->ymax)/2;
+	c2.x = (n2->xmin + n2->xmax)/2;
+	c2.y = (n2->ymin + n2->ymax)/2;
+
+}
 
 static double
 rect_tree_distance_tree_recursive(const RECT_NODE *n1, const RECT_NODE *n2, RECT_TREE_DISTANCE_STATE *state)
@@ -1158,6 +1173,7 @@ rect_tree_distance_tree_recursive(const RECT_NODE *n1, const RECT_NODE *n2, RECT
 	min = rect_node_min_distance(n1, n2);
 	if (min > state->max_dist)
 	{
+		//lwnotice("pruning pair %p, %p", n1, n2);
 		LWDEBUGF(4, "pruning pair %p, %p", n1, n2);
 		return FLT_MAX;
 	}
@@ -1175,9 +1191,9 @@ rect_tree_distance_tree_recursive(const RECT_NODE *n1, const RECT_NODE *n2, RECT
 	/* Recurse into nodes */
 	else
 	{
-		int i;
+		int i, j;
 		double d_min = FLT_MAX;
-		if (rect_node_is_leaf(n1))
+		if (rect_node_is_leaf(n1) && !rect_node_is_leaf(n2))
 		{
 			for (i = 0; i < n2->i.num_nodes; i++)
 			{
@@ -1185,12 +1201,23 @@ rect_tree_distance_tree_recursive(const RECT_NODE *n1, const RECT_NODE *n2, RECT
 				d_min = FP_MIN(d_min, min);
 			}
 		}
-		else
+		else if (rect_node_is_leaf(n2) && !rect_node_is_leaf(n1))
 		{
 			for (i = 0; i < n1->i.num_nodes; i++)
 			{
 				min = rect_tree_distance_tree_recursive(n1->i.nodes[i], n2, state);
 				d_min = FP_MIN(d_min, min);
+			}
+		}
+		else
+		{
+			for (i = 0; i < n1->i.num_nodes; i++)
+			{
+				for (j = 0; j < n2->i.num_nodes; j++)
+				{
+					min = rect_tree_distance_tree_recursive(n1->i.nodes[i], n2->i.nodes[j], state);
+					d_min = FP_MIN(d_min, min);
+				}
 			}
 		}
 		return d_min;

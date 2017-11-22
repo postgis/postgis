@@ -22,7 +22,7 @@
  *
  **********************************************************************/
 
-#define RECT_NODE_SIZE 4
+#define RECT_NODE_SIZE 8
 
 typedef enum
 {
