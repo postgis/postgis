@@ -6,3 +6,5 @@ make
 export PGUSER=postgres
 export PGIS_REG_TMPDIR=~/tmp/pgis_reg_${TAG}
 make check
+sudo make install
+make check RUNTESTFLAGS=--extension
