@@ -26,18 +26,16 @@ DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
 
 PG_CONFIG    =  @PG_CONFIG@
 
-PG91         = $(shell $(PG_CONFIG) --version | $(GREP) -qE " 8\.| 9\.0" && echo no || echo yes)
 SQL_BITS     = $(wildcard sql_bits/*.sql)
-EXTRA_CLEAN += sql/*.sql ${SQL_BITS} 
+EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
 
 
-ifeq ($(PG91),yes)
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql sql_minor_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	mkdir -p sql
 	cp $< $@
-	
+
 sql/$(EXTENSION).sql: sql_bits/sfcgal.sql  sql_bits/sfcgal_comments.sql
 	mkdir -p sql
 	cat $^ > $@
@@ -66,7 +64,7 @@ sql_bits/sfcgal_comments.sql: ../../doc/sfcgal_comments.sql
 #then remove default values and extra junk
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/sfcgal.sql ../../utils/create_unpackaged.pl
 	mkdir -p sql
-	cat $< | ../../utils/create_unpackaged.pl ${EXTENSION} > $@
+	cat $< |  $(PERL) ../../utils/create_unpackaged.pl ${EXTENSION} > $@
 
 sql_bits/sfcgal_upgrade.sql : ../../postgis/sfcgal_upgrade.sql
 	mkdir -p sql_bits
@@ -74,17 +72,16 @@ sql_bits/sfcgal_upgrade.sql : ../../postgis/sfcgal_upgrade.sql
 
 sql_bits/sfcgal_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/sfcgal_upgrade.sql ../../doc/sfcgal_comments.sql ../postgis_extension_helper_uninstall.sql
 	mkdir -p sql_bits
-	echo '\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \quit' > $@
+	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ >> $@
 
 sql_minor_upgrade: sql_bits/sfcgal_upgrade_minor.sql
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
   	  cat $< > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
-	
+
 DATA = $(wildcard sql/*--*.sql)
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
-endif
 
 distclean: clean
 	rm Makefile
