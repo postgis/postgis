@@ -24,6 +24,7 @@ PostGIS 2.5.0
     #1855, #1946, #3718, #3838
   - #3234, Do not accept EMPTY points as topology nodes (Sandro Santilli)
   - #1014, Hashable geometry, allowing direct use in CTE signatures (Paul Ramsey)
+  - #3097, Really allow MULTILINESTRING blades in ST_Split() (Paul Ramsey)
 
 
 PostGIS 2.4.0
