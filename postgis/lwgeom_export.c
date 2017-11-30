@@ -635,7 +635,6 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 	lwgeom = lwgeom_from_gserialized(geom);
-	PG_FREE_IF_COPY(geom, 0);
 	
 	if (PG_NARGS() > 1 && !PG_ARGISNULL(1))
 	{
@@ -645,8 +644,9 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 
 	encodedpolyline = lwgeom_to_encoded_polyline(lwgeom, precision);
 	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
 
-  result = cstring2text(encodedpolyline);
+	result = cstring2text(encodedpolyline);
 	lwfree(encodedpolyline);
 
 	PG_RETURN_TEXT_P(result);
