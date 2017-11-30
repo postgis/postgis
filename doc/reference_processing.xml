@@ -3082,9 +3082,8 @@ LINESTRING M (5 2 3.40282346638529e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.4028234
             </para>
 
             <para>Availability: 2.0.0</para>
-            <para>Changed: 2.2.0 support for splitting a line by a multiline, a multipoint or (multi)polygon boundary was introduced.</para>
-
-        	<para>Enhanced: 2.5.0 support for MULTILINESTRING split blades.</para>
+            <para>Enhanced: 2.2.0 support for splitting a line by a multiline, a multipoint or (multi)polygon boundary was introduced.</para>
+        	<para>Enhanced: 2.5.0 support for splitting a polygon by a multiline was introduced.</para>
 
             <note><para>To improve the robustness of ST_Split it may be convenient to <xref linkend="ST_Snap"/> the input to the blade in advance using a very low tolerance. Otherwise the internally used coordinate grid may cause tolerance problems, where coordinates of input and blade do not fall onto each other and the input is not being split correctly (see <ulink url="http://trac.osgeo.org/postgis/ticket/2192">#2192</ulink>).</para></note>
 
