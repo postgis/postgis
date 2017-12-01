@@ -380,7 +380,7 @@ typedef struct
 	uint32_t size;    /* For PgSQL use only, use VAR* macros to manipulate. */
 	uint8_t  srid[3]; /* 24 bits of SRID */
 	uint8_t  flags;   /* HasZ, HasM, HasBBox, IsGeodetic, IsReadOnly */
-	void     data; /* See gserialized.txt */
+	char     data[1]; /* See gserialized.txt */
 } GSERIALIZED;
 
 
