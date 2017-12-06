@@ -3,7 +3,8 @@ PostGIS 2.4.3
 
  * Bug fixes *
   - #3713, Support encodings that happen to output a '\' character
-
+  - #3827, Set configure default to not do interrupt testing,
+          was causing false negatives for many people
 
 PostGIS 2.4.2
 2017/11/15
