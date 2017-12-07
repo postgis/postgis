@@ -2125,7 +2125,7 @@ extern LWGEOM* lwgeom_from_hexwkb(const char *hexwkb, const char check);
 
 extern uint8_t*  bytes_from_hexbytes(const char *hexbuf, size_t hexsize);
 
-extern char*   hexbytes_from_bytes(uint8_t *bytes, size_t size);
+extern char*   hexbytes_from_bytes(const uint8_t *bytes, size_t size);
 
 /*
 * WKT detailed parsing support
