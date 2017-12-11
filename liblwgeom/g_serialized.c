@@ -1332,6 +1332,7 @@ static LWPOLY* lwpoly_from_gserialized_buffer(uint8_t *data_ptr, uint8_t g_flags
 	if ( nrings > 0)
 	{
 		poly->rings = (POINTARRAY**)lwalloc( sizeof(POINTARRAY*) * nrings );
+		poly->maxrings = nrings;
 		ordinate_ptr += nrings * 4; /* Move past all the npoints values. */
 		if ( nrings % 2 ) /* If there is padding, move past that too. */
 			ordinate_ptr += 4;
@@ -1339,6 +1340,7 @@ static LWPOLY* lwpoly_from_gserialized_buffer(uint8_t *data_ptr, uint8_t g_flags
 	else /* Empty polygon */
 	{
 		poly->rings = NULL;
+		poly->maxrings = 0;
 	}
 
 	for ( i = 0; i < nrings; i++ )
@@ -1447,9 +1449,15 @@ static LWCOLLECTION* lwcollection_from_gserialized_buffer(uint8_t *data_ptr, uin
 	data_ptr += 4; /* Skip past the ngeoms. */
 
 	if ( ngeoms > 0 )
+	{
 		collection->geoms = lwalloc(sizeof(LWGEOM*) * ngeoms);
+		collection->maxgeoms = ngeoms;
+	}
 	else
+	{
 		collection->geoms = NULL;
+		collection->maxgeoms = 0;
+	}
 
 	/* Sub-geometries are never de-serialized with boxes (#1254) */
 	FLAGS_SET_BBOX(g_flags, 0);
