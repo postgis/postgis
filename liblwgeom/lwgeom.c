@@ -688,6 +688,13 @@ lwgeom_add_bbox(LWGEOM *lwgeom)
 }
 
 void
+lwgeom_refresh_bbox(LWGEOM *lwgeom)
+{
+	lwgeom_drop_bbox(lwgeom);
+	lwgeom_add_bbox(lwgeom);
+}
+
+void
 lwgeom_add_bbox_deep(LWGEOM *lwgeom, GBOX *gbox)
 {
 	if ( lwgeom_is_empty(lwgeom) ) return;
@@ -1556,8 +1563,7 @@ void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2)
 	/* only refresh bbox if X or Y changed */
 	if ( in->bbox && (o1 < 2 || o2 < 2) )
 	{
-		lwgeom_drop_bbox(in);
-		lwgeom_add_bbox(in);
+		lwgeom_refresh_bbox(in);
 	}
 }
 

@@ -735,6 +735,10 @@ extern void lwgeom_drop_srid(LWGEOM *lwgeom);
  */
 extern void lwgeom_add_bbox(LWGEOM *lwgeom);
 /**
+* Drop current bbox and calculate a fresh one.
+*/
+extern void lwgeom_refresh_bbox(LWGEOM *lwgeom);
+/**
 * Compute a box for geom and all sub-geometries, if not already computed
 */
 extern void lwgeom_add_bbox_deep(LWGEOM *lwgeom, GBOX *gbox);
