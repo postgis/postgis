@@ -307,8 +307,8 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 		sz2 > 16 &&
 		!FLAGS_GET_BBOX(g1->flags) &&
 		!FLAGS_GET_BBOX(g2->flags) &&
-		*(uint32_t*)(g1->data) == POINTTYPE &&
-		*(uint32_t*)(g2->data) == POINTTYPE
+		*(uint32_t*)(g1+8) == POINTTYPE &&
+		*(uint32_t*)(g2+8) == POINTTYPE
 	)
 	{
 		double *dptr = (double*)(g1->data + sizeof(double));
