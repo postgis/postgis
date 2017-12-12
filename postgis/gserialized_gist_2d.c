@@ -145,7 +145,7 @@ static char* box2df_to_string(const BOX2DF *a)
 }
 
 /* Allocate a new copy of BOX2DF */
-static BOX2DF* box2df_copy(BOX2DF *b)
+BOX2DF* box2df_copy(BOX2DF *b)
 {
 	BOX2DF *c = (BOX2DF*)palloc(sizeof(BOX2DF));
 	memcpy((void*)c, (void*)b, sizeof(BOX2DF));
@@ -157,7 +157,7 @@ static BOX2DF* box2df_copy(BOX2DF *b)
 
 /* Enlarge b_union to contain b_new. If b_new contains more
    dimensions than b_union, expand b_union to contain those dimensions. */
-static void box2df_merge(BOX2DF *b_union, BOX2DF *b_new)
+void box2df_merge(BOX2DF *b_union, BOX2DF *b_new)
 {
 
 	POSTGIS_DEBUGF(5, "merging %s with %s", box2df_to_string(b_union), box2df_to_string(b_new));
@@ -286,6 +286,16 @@ static inline int box2df_from_gbox_p(GBOX *box, BOX2DF *a)
 	a->xmax = next_float_up(box->xmax);
 	a->ymin = next_float_down(box->ymin);
 	a->ymax = next_float_up(box->ymax);
+	return LW_SUCCESS;
+}
+
+int box2df_to_gbox_p(BOX2DF *a, GBOX *box)
+{
+	memset(box, 0, sizeof(GBOX));
+	box->xmin = a->xmin;
+	box->xmax = a->xmax;
+	box->ymin = a->ymin;
+	box->ymax = a->ymax;
 	return LW_SUCCESS;
 }
 

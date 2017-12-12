@@ -60,6 +60,34 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 **********************************************************************/
 
 #include "postgres.h"
+
+#include "access/genam.h"
+#include "access/gin.h"
+#include "access/gist.h"
+#include "access/gist_private.h"
+#include "access/gistscan.h"
+#include "utils/datum.h"
+#include "access/heapam.h"
+#include "catalog/index.h"
+#include "catalog/pg_am.h"
+#include "miscadmin.h"
+#include "storage/lmgr.h"
+#include "catalog/namespace.h"
+#include "catalog/indexing.h"
+#if PG_VERSION_NUM >= 100000
+#include "utils/regproc.h"
+#include "utils/varlena.h"
+#endif
+#include "utils/tqual.h"
+#include "utils/builtins.h"
+#include "utils/datum.h"
+#include "utils/snapmgr.h"
+#include "utils/fmgroids.h"
+#include "funcapi.h"
+#include "access/heapam.h"
+#include "catalog/pg_type.h"
+#include "access/relscan.h"
+
 #include "executor/spi.h"
 #include "fmgr.h"
 #include "commands/vacuum.h"
@@ -93,6 +121,10 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 #include <errno.h>
 #include <ctype.h>
 
+
+/************************************************************************/
+
+
 /* Fall back to older finite() if necessary */
 #ifndef HAVE_ISFINITE
 # ifdef HAVE_GNU_ISFINITE
@@ -112,14 +144,20 @@ Datum gserialized_gist_sel_2d(PG_FUNCTION_ARGS);
 Datum gserialized_gist_sel_nd(PG_FUNCTION_ARGS);
 Datum gserialized_analyze_nd(PG_FUNCTION_ARGS);
 Datum gserialized_estimated_extent(PG_FUNCTION_ARGS);
+Datum _postgis_gserialized_index_extent(PG_FUNCTION_ARGS);
 Datum _postgis_gserialized_sel(PG_FUNCTION_ARGS);
 Datum _postgis_gserialized_joinsel(PG_FUNCTION_ARGS);
 Datum _postgis_gserialized_stats(PG_FUNCTION_ARGS);
 
+/* Local prototypes */
+static Oid table_get_spatial_index(Oid tbl_oid, text *col, int *key_type);
+static GBOX * spatial_index_read_extent(Oid idx_oid, int key_type);
+
+
 /* Old Prototype */
 Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
 
-/**
+/*
 * Assign a number to the n-dimensional statistics kind
 *
 * tgl suggested:
@@ -133,6 +171,13 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
 #define STATISTIC_KIND_2D 103
 #define STATISTIC_SLOT_ND 0
 #define STATISTIC_SLOT_2D 1
+
+/*
+* To look-up the spatial index associated with a table we
+* need to find GIST indexes using our spatial keys.
+*/
+#define INDEX_KEY_ND "gidx"
+#define INDEX_KEY_2D "box2df"
 
 /*
 * The SD factor restricts the side of the statistics histogram
@@ -262,10 +307,11 @@ static int
 text_p_get_mode(const text *txt)
 {
 	int mode = 2;
-	char *modestr = text2cstring(txt);
+	if (VARSIZE(txt) - VARHDRSZ <= 0)
+		return mode;
+	char *modestr = (char*)VARDATA(txt);
 	if ( modestr[0] == 'N' )
 		mode = 0;
-	pfree(modestr);
 	return mode;
 }
 
@@ -872,7 +918,7 @@ pg_nd_stats_from_tuple(HeapTuple stats_tuple, int mode)
 	free_attstatsslot(&sslot);
 #endif
 
-    return nd_stats;
+	return nd_stats;
 }
 
 /**
@@ -1873,7 +1919,7 @@ estimate_selectivity(const GBOX *box, const ND_STATS *nd_stats, int mode)
 	double max[ND_DIMS];
 	double total_count = 0.0;
 	int ndims_max = Max(nd_stats->ndims, gbox_ndims(box));
-//	int ndims_min = Min(nd_stats->ndims, gbox_ndims(box));
+	/* int ndims_min = Min(nd_stats->ndims, gbox_ndims(box)); */
 
 	/* Calculate the overlap of the box on the histogram */
 	if ( ! nd_stats )
@@ -2239,10 +2285,11 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	char *tbl = NULL;
 	text *col = NULL;
 	char *nsp_tbl = NULL;
-	Oid tbl_oid;
+	Oid tbl_oid, idx_oid;
 	ND_STATS *nd_stats;
-	GBOX *gbox;
+	GBOX *gbox = NULL;
 	bool only_parent = false;
+	int key_type;
 
 	if ( PG_NARGS() == 4 )
 	{
@@ -2280,26 +2327,38 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	/* Estimated extent only returns 2D bounds, so use mode 2 */
-	nd_stats = pg_get_nd_stats_by_name(tbl_oid, col, 2, only_parent);
+#if 0
+	/* Read the extent from the head of the spatial index, if there is one */
+	idx_oid = table_get_spatial_index(tbl_oid, col, &key_type);
+	if (!idx_oid)
+		elog(DEBUG2, "index for \"%s.%s\" does not exist", tbl, text2cstring(col));
+	gbox = spatial_index_read_extent(idx_oid, key_type);
+#endif
 
-	/* Error out on no stats */
-	if ( ! nd_stats ) {
-		elog(WARNING, "stats for \"%s.%s\" do not exist", tbl, text2cstring(col));
-		PG_RETURN_NULL();
+	/* Fall back to reading the stats, if no index answer */
+	if (!gbox)
+	{
+		/* Estimated extent only returns 2D bounds, so use mode 2 */
+		nd_stats = pg_get_nd_stats_by_name(tbl_oid, col, 2, only_parent);
+
+		/* Error out on no stats */
+		if ( ! nd_stats ) {
+			elog(WARNING, "stats for \"%s.%s\" do not exist", tbl, text2cstring(col));
+			PG_RETURN_NULL();
+		}
+
+		/* Construct the box */
+		gbox = palloc(sizeof(GBOX));
+		FLAGS_SET_GEODETIC(gbox->flags, 0);
+		FLAGS_SET_Z(gbox->flags, 0);
+		FLAGS_SET_M(gbox->flags, 0);
+		gbox->xmin = nd_stats->extent.min[0];
+		gbox->xmax = nd_stats->extent.max[0];
+		gbox->ymin = nd_stats->extent.min[1];
+		gbox->ymax = nd_stats->extent.max[1];
+		pfree(nd_stats);
 	}
 
-	/* Construct the box */
-	gbox = palloc(sizeof(GBOX));
-	FLAGS_SET_GEODETIC(gbox->flags, 0);
-	FLAGS_SET_Z(gbox->flags, 0);
-	FLAGS_SET_M(gbox->flags, 0);
-	gbox->xmin = nd_stats->extent.min[0];
-	gbox->xmax = nd_stats->extent.max[0];
-	gbox->ymin = nd_stats->extent.min[1];
-	gbox->ymax = nd_stats->extent.max[1];
-
-	pfree(nd_stats);
 	PG_RETURN_POINTER(gbox);
 }
 
@@ -2331,3 +2390,178 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 	elog(ERROR, "geometry_estimated_extent() called with wrong number of arguments");
 	PG_RETURN_NULL();
 }
+
+/************************************************************************/
+
+static Oid
+typname_to_oid(const char *typname)
+{
+    Oid typoid = TypenameGetTypid(typname);
+    if (OidIsValid(typoid) && get_typisdefined(typoid))
+		return typoid;
+	else
+		return InvalidOid;
+}
+
+static Oid
+table_get_spatial_index(Oid tbl_oid, text *col, int *key_type)
+{
+	Relation tbl_rel;
+	ListCell *lc;
+	List *idx_list;
+	Oid result = InvalidOid;
+	char *colname = text2cstring(col);
+
+	/* Lookup our spatial index key types */
+	Oid b2d_oid = typname_to_oid(INDEX_KEY_2D);
+	Oid gdx_oid = typname_to_oid(INDEX_KEY_ND);
+
+	if (!(b2d_oid && gdx_oid))
+		return InvalidOid;
+
+	tbl_rel = RelationIdGetRelation(tbl_oid);
+	idx_list = RelationGetIndexList(tbl_rel);
+	RelationClose(tbl_rel);
+
+	/* For each index associated with this table... */
+	foreach(lc, idx_list)
+	{
+		Form_pg_class idx_form;
+		HeapTuple idx_tup;
+		int idx_relam;
+		Oid idx_oid = lfirst_oid(lc);
+
+		idx_tup = SearchSysCache1(RELOID, ObjectIdGetDatum(idx_oid));
+		if (!HeapTupleIsValid(idx_tup))
+			elog(ERROR, "%s: unable to lookup index %u in syscache", __func__, idx_oid);
+		idx_form = (Form_pg_class) GETSTRUCT(idx_tup);
+		idx_relam = idx_form->relam;
+		ReleaseSysCache(idx_tup);
+
+		/* Does the index use a GIST access method? */
+		if (idx_relam == GIST_AM_OID)
+		{
+			Form_pg_attribute att;
+			Oid atttypid;
+			/* Is the index on the column name we are looking for? */
+			HeapTuple att_tup = SearchSysCache2(ATTNAME,
+			                                    ObjectIdGetDatum(idx_oid),
+			                                    PointerGetDatum(colname));
+			if (!HeapTupleIsValid(att_tup))
+				continue;
+
+			att = (Form_pg_attribute) GETSTRUCT(att_tup);
+			atttypid = att->atttypid;
+			ReleaseSysCache(att_tup);
+
+			/* Is the column actually spatial? */
+			if (b2d_oid == atttypid || gdx_oid == atttypid)
+			{
+				/* Save result, clean up, and break out */
+				result = idx_oid;
+				if (key_type)
+					*key_type = (atttypid == b2d_oid ? STATISTIC_SLOT_2D : STATISTIC_SLOT_ND);
+				break;
+			}
+		}
+	}
+	return result;
+}
+
+static GBOX *
+spatial_index_read_extent(Oid idx_oid, int key_type)
+{
+	BOX2DF *bounds_2df = NULL;
+	GIDX *bounds_gidx = NULL;
+	GBOX *gbox = NULL;
+
+	if (!idx_oid)
+		return NULL;
+
+	Relation idx_rel = index_open(idx_oid, AccessExclusiveLock);
+	Buffer buffer = ReadBuffer(idx_rel, GIST_ROOT_BLKNO);
+	Page page = (Page) BufferGetPage(buffer);
+	OffsetNumber offset = FirstOffsetNumber;
+	unsigned long offset_max = PageGetMaxOffsetNumber(page);
+	while (offset <= offset_max)
+	{
+		ItemId iid = PageGetItemId(page, offset);
+		if (!iid)
+		{
+			ReleaseBuffer(buffer);
+			index_close(idx_rel, AccessExclusiveLock);
+			return NULL;
+		}
+		IndexTuple ituple = (IndexTuple) PageGetItem(page, iid);
+		if (!GistTupleIsInvalid(ituple))
+		{
+			bool isnull;
+			Datum idx_attr = index_getattr(ituple, 1, idx_rel->rd_att, &isnull);
+			if (!isnull)
+			{
+				if (key_type == STATISTIC_SLOT_2D)
+				{
+					BOX2DF *b = (BOX2DF*)DatumGetPointer(idx_attr);
+					if (bounds_2df)
+						box2df_merge(bounds_2df, b);
+					else
+						bounds_2df = box2df_copy(b);
+				}
+				else
+				{
+					GIDX *b = (GIDX*)DatumGetPointer(idx_attr);
+					if (bounds_gidx)
+						gidx_merge(&bounds_gidx, b);
+					else
+						bounds_gidx = gidx_copy(b);
+				}
+			}
+		}
+		offset++;
+	}
+
+	ReleaseBuffer(buffer);
+	index_close(idx_rel, AccessExclusiveLock);
+
+	if (key_type == STATISTIC_SLOT_2D && bounds_2df)
+	{
+		gbox = gbox_new(0);
+		box2df_to_gbox_p(bounds_2df, gbox);
+	}
+	else if (key_type == STATISTIC_SLOT_ND && bounds_gidx)
+	{
+		gbox = gbox_new(0);
+		gbox_from_gidx(bounds_gidx, gbox, 0);
+	}
+	else
+		return NULL;
+
+	return gbox;
+}
+
+/*
+CREATE OR REPLACE FUNCTION _postgis_index_extent(tbl regclass, col text)
+	RETURNS box2d
+	AS '$libdir/postgis-2.5','_postgis_gserialized_index_extent'
+	LANGUAGE 'c' STABLE STRICT;
+*/
+
+PG_FUNCTION_INFO_V1(_postgis_gserialized_index_extent);
+Datum _postgis_gserialized_index_extent(PG_FUNCTION_ARGS)
+{
+	GBOX *gbox = NULL;
+	int key_type;
+	Oid tbl_oid = PG_GETARG_DATUM(0);
+	text *col = PG_GETARG_TEXT_P(1);
+
+	Oid idx_oid = table_get_spatial_index(tbl_oid, col, &key_type);
+	if (!idx_oid)
+		PG_RETURN_NULL();
+
+	gbox = spatial_index_read_extent(idx_oid, key_type);
+	if (!gbox)
+		PG_RETURN_NULL();
+	else
+		PG_RETURN_POINTER(gbox);
+}
+

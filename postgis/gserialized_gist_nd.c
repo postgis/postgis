@@ -123,7 +123,7 @@ typedef bool (*gidx_predicate)(GIDX *a, GIDX *b);
 
 
 /* Allocate a new copy of GIDX */
-static GIDX* gidx_copy(GIDX *b)
+GIDX* gidx_copy(GIDX *b)
 {
 	GIDX *c = (GIDX*)palloc(VARSIZE(b));
 	POSTGIS_DEBUGF(5, "copied gidx (%p) to gidx (%p)", b, c);
@@ -170,7 +170,7 @@ static inline void gidx_set_unknown(GIDX *a)
 
 /* Enlarge b_union to contain b_new. If b_new contains more
    dimensions than b_union, expand b_union to contain those dimensions. */
-static void gidx_merge(GIDX **b_union, GIDX *b_new)
+void gidx_merge(GIDX **b_union, GIDX *b_new)
 {
 	int i, dims_union, dims_new;
 	Assert(b_union);

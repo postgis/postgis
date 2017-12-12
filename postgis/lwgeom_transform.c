@@ -62,12 +62,6 @@ Datum transform(PG_FUNCTION_ARGS)
 	geom = PG_GETARG_GSERIALIZED_P_COPY(0);
 	input_srid = gserialized_get_srid(geom);
 
-	/* Moved this back down after input_srid set otherwise FreeBSD 11 (bessie goes nuts)
-	  Refer to https://trac.osgeo.org/postgis/ticket/3940 */
-	/* Input SRID and output SRID are equal, noop */
-	if ( input_srid == output_srid )
-		PG_RETURN_POINTER(PG_GETARG_DATUM(0));
-
 	if ( input_srid == SRID_UNKNOWN )
 	{
 		PG_FREE_IF_COPY(geom, 0);
@@ -75,7 +69,9 @@ Datum transform(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-
+	/* Input SRID and output SRID are equal, noop */
+	if ( input_srid == output_srid )
+		PG_RETURN_POINTER(PG_GETARG_DATUM(0));
 
 	if ( GetProjectionsUsingFCInfo(fcinfo, input_srid, output_srid, &input_pj, &output_pj) == LW_FAILURE )
 	{

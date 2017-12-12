@@ -87,6 +87,24 @@ typedef float _gidx_float_array[sizeof(float) * 2 * 4];
 /* Returns the size required to store a GIDX of requested dimension */
 #define GIDX_SIZE(dimensions) (sizeof(int32) + 2*(dimensions)*sizeof(float))
 
+/* Allocate a copy of the box */
+BOX2DF* box2df_copy(BOX2DF *b);
+
+/* Grow the first argument to contain the second */
+void box2df_merge(BOX2DF *b_union, BOX2DF *b_new);
+
+/* Allocate a copy of the box */
+GIDX* gidx_copy(GIDX *b);
+
+/* Grow the first argument to contain the second */
+void gidx_merge(GIDX **b_union, GIDX *b_new);
+
+/* Fill in a gbox from a GIDX */
+void gbox_from_gidx(GIDX *a, GBOX *gbox, int flags);
+
+/* Fill in a gbox from a BOX2DF */
+int box2df_to_gbox_p(BOX2DF *a, GBOX *box);
+
 /*********************************************************************************
 ** GSERIALIZED support functions.
 **
