@@ -71,7 +71,7 @@ Datum transform(PG_FUNCTION_ARGS)
 
 	/* Input SRID and output SRID are equal, noop */
 	if ( input_srid == output_srid )
-		PG_RETURN_POINTER(PG_GETARG_DATUM(0));
+		PG_RETURN_POINTER(geom);
 
 	if ( GetProjectionsUsingFCInfo(fcinfo, input_srid, output_srid, &input_pj, &output_pj) == LW_FAILURE )
 	{
