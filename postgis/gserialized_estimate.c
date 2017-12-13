@@ -2327,7 +2327,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-#if 0
+#if 1
 	/* Read the extent from the head of the spatial index, if there is one */
 	idx_oid = table_get_spatial_index(tbl_oid, col, &key_type);
 	if (!idx_oid)
@@ -2525,11 +2525,15 @@ spatial_index_read_extent(Oid idx_oid, int key_type)
 
 	if (key_type == STATISTIC_SLOT_2D && bounds_2df)
 	{
+		if (box2df_is_empty(bounds_2df))
+			return NULL;
 		gbox = gbox_new(0);
 		box2df_to_gbox_p(bounds_2df, gbox);
 	}
 	else if (key_type == STATISTIC_SLOT_ND && bounds_gidx)
 	{
+		if (gidx_is_unknown(bounds_gidx))
+			return NULL;
 		gbox = gbox_new(0);
 		gbox_from_gidx(bounds_gidx, gbox, 0);
 	}

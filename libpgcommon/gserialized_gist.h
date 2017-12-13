@@ -66,6 +66,8 @@ GIDX* gidx_new(int ndims) ;
 /* Increase the size of a GIDX */
 void gidx_expand(GIDX *a, float d);
 
+/* Note empty GIDX */
+bool gidx_is_unknown(const GIDX *a);
 
 /* Generate human readable form for GIDX. */
 char* gidx_to_string(GIDX *a) ;
@@ -98,6 +100,9 @@ GIDX* gidx_copy(GIDX *b);
 
 /* Grow the first argument to contain the second */
 void gidx_merge(GIDX **b_union, GIDX *b_new);
+
+/* Note empty BOX2DF */
+bool box2df_is_empty(const BOX2DF *a);
 
 /* Fill in a gbox from a GIDX */
 void gbox_from_gidx(GIDX *a, GBOX *gbox, int flags);

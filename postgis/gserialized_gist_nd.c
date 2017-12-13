@@ -154,7 +154,7 @@ static inline void gidx_validate(GIDX *b)
 /* An "unknown" GIDX is used to represent the bounds of an EMPTY
    geometry or other-wise unindexable geometry (like one with NaN
    or Inf bounds) */
-static inline bool gidx_is_unknown(const GIDX *a)
+inline bool gidx_is_unknown(const GIDX *a)
 {
 	size_t size = VARSIZE(a) - VARHDRSZ;
 	/* "unknown" gidx objects have a too-small size of one float */
@@ -164,6 +164,11 @@ static inline bool gidx_is_unknown(const GIDX *a)
 }
 
 static inline void gidx_set_unknown(GIDX *a)
+{
+	SET_VARSIZE(a, VARHDRSZ);
+}
+
+static inline void gidx_set_finite(GIDX *a)
 {
 	SET_VARSIZE(a, VARHDRSZ);
 }
