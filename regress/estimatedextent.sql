@@ -205,11 +205,11 @@ select '3.b null', _postgis_index_extent('test', 'geom2');
 insert into test (geom1, geom2) select st_makepoint(s, s), st_makepoint(2*s, 2*s) from generate_series(-100,100) s;
 select '4.a box',_postgis_index_extent('test', 'geom1');
 select '4.b box',_postgis_index_extent('test', 'geom2');
-delete from test;
-select '5.a bad-box',_postgis_index_extent('test', 'geom1');
-select '5.b bad-box',_postgis_index_extent('test', 'geom2');
-vacuum full test;
-select '6.a null', _postgis_index_extent('test', 'geom1');
-select '6.b null', _postgis_index_extent('test', 'geom2');
+-- delete from test;
+-- select '5.a bad-box',_postgis_index_extent('test', 'geom1');
+-- select '5.b bad-box',_postgis_index_extent('test', 'geom2');
+-- vacuum full test;
+-- select '6.a null', _postgis_index_extent('test', 'geom1');
+-- select '6.b null', _postgis_index_extent('test', 'geom2');
 drop table test cascade;
 
