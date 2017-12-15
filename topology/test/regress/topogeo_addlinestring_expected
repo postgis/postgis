@@ -1,0 +1,233 @@
+BEGIN
+t
+9
+22
+26
+COMMIT
+max|node|22
+max|edge|26
+ERROR:  Invalid geometry type (MULTILINESTRING) passed to TopoGeo_AddLinestring, expected LINESTRING
+ERROR:  Invalid geometry type (POINT) passed to TopoGeo_AddLinestring, expected LINESTRING
+ERROR:  No topology with name "invalid" in topology.topology
+iso_uni|27
+iso_uni|N|23||POINT(36 26)
+iso_uni|N|24||POINT(38 30)
+iso_uni|E|27|sn23|en24
+iso_f5|28
+iso_f5|N|25||POINT(37 20)
+iso_f5|N|26||POINT(41 16)
+iso_f5|E|28|sn25|en26
+iso_ex|27
+iso_ex_tol|27
+noniso_ex|18
+noniso_ex_tol|18
+contained|29
+contained|N|27||POINT(35 8)
+contained|N|28||POINT(35 12)
+contained|E|18|sn10|en27
+contained|E|29|sn27|en28
+contained|E|30|sn28|en13
+overlap|31
+overlap|32
+overlap|N|29||POINT(49 22)
+overlap|N|30||POINT(45 22)
+overlap|E|8|sn18|en30
+overlap|E|31|sn19|en29
+overlap|E|32|sn30|en19
+cross|34
+cross|35
+cross|N|31||POINT(49 18)
+cross|N|32||POINT(47 17.6)
+cross|N|33||POINT(44 17)
+cross|E|15|sn12|en32
+cross|E|33|sn32|en19
+cross|E|34|sn31|en32
+cross|E|35|sn32|en33
+snap|7
+snap|36
+snap|38
+snap|N|34||POINT(18 22.2)
+snap|N|35||POINT(22.4 22)
+snap|N|36||POINT(21.2 20.4)
+snap|E|7|sn17|en35
+snap|E|36|sn34|en17
+snap|E|37|sn35|en18
+snap|E|38|sn35|en36
+snap_again|7
+snap_again|36
+snap_again|38
+crossover|40
+crossover|41
+crossover|44
+crossover|45
+crossover|N|37||POINT(21 10)
+crossover|N|38||POINT(21 7)
+crossover|N|39||POINT(9 18)
+crossover|N|40||POINT(9 20)
+crossover|N|41||POINT(16.2 14)
+crossover|E|9|sn15|en41
+crossover|E|20|sn9|en38
+crossover|E|21|sn15|en39
+crossover|E|39|sn37|en14
+crossover|E|40|sn38|en37
+crossover|E|41|sn39|en40
+crossover|E|42|sn40|en16
+crossover|E|43|sn41|en14
+crossover|E|44|sn41|en37
+crossover|E|45|sn40|en41
+crossover_again|40
+crossover_again|41
+crossover_again|44
+crossover_again|45
+contains|25
+contains|46
+contains|47
+contains|N|42||POINT(7 36)
+contains|N|43||POINT(14 34)
+contains|E|46|sn21|en42
+contains|E|47|sn43|en22
+nodecross|48
+nodecross|49
+nodecross|N|44||POINT(18 37)
+nodecross|N|45||POINT(22 37)
+nodecross|E|48|sn44|en4
+nodecross|E|49|sn4|en45
+iso_ex_2segs|28
+#1613.1|50
+#1613.1|N|46||POINT(556267.6 144887)
+#1613.1|N|47||POINT(556267 144887.4)
+#1613.1|E|50|sn46|en47
+#1613.2|52
+#1613.2|53
+#1613.2|N|48||POINT(556267.6 144887)
+#1613.2|N|49||POINT(556310 144887)
+#1613.2|N|50||POINT(556250 144887)
+#1613.2|E|50|sn46|en48
+#1613.2|E|51|sn48|en47
+#1613.2|E|52|sn48|en49
+#1613.2|E|53|sn50|en48
+#1631.1|54
+#1631.1|N|51||POINT(556267.6 144887)
+#1631.1|N|52||POINT(556267.6 144888)
+#1631.1|E|54|sn51|en52
+#1631.2|55
+#1631.2|56
+#1631.2|N|53||POINT(556254.6 144886.6)
+#1631.2|N|54||POINT(556267.6 144887)
+#1631.2|E|55|sn53|en51
+#1631.2|E|56|sn51|en54
+#1641.1|57
+#1641.1|N|55||POINT(-0.2 0.4)
+#1641.1|N|56||POINT(0.2 0.4)
+#1641.1|E|57|sn55|en56
+#1641.2|59
+#1641.2|60
+#1641.2|N|57||POINT(0 0.2)
+#1641.2|N|58||POINT(0 0.4)
+#1641.2|N|59||POINT(0 0.4)
+#1641.2|E|57|sn55|en58
+#1641.2|E|58|sn58|en56
+#1641.2|E|59|sn57|en58
+#1641.2|E|60|sn58|en59
+#1641.3|61
+#1641.3|N|60||POINT(-0.2 0.4)
+#1641.3|N|61||POINT(0.2 0.4)
+#1641.3|E|61|sn60|en61
+#1641.4|63
+#1641.4|64
+#1641.4|N|62||POINT(0 0.2)
+#1641.4|N|63||POINT(0 0.4)
+#1641.4|N|64||POINT(0 0.4)
+#1641.4|E|61|sn60|en63
+#1641.4|E|62|sn63|en61
+#1641.4|E|63|sn62|en63
+#1641.4|E|64|sn63|en64
+#1650.1
+#1650.265
+#1650.2|N|65||POINT(0 0)
+#1650.2|N|66||POINT(0 1)
+#1650.2|E|65|sn65|en66
+#1650.3|65
+#1650.3|66
+#1650.3|N|67||POINT(10 0)
+#1650.3|E|66|sn65|en67
+#1654.1|N|68
+#1654.1|N|68|0|POINT(0 0)
+#1654.2|67
+#1654.2|68
+#1654.2|N|69||POINT(-10 1)
+#1654.2|N|70||POINT(10 1)
+#1654.2|E|67|sn69|en68
+#1654.2|E|68|sn68|en70
+#1706.1|E|69
+#1706.1|N|71||POINT(20 10)
+#1706.1|N|72||POINT(10 20)
+#1706.1|E|69|sn71|en72
+#1706.2|E*|69
+#1706.2|E*|70
+#1706.2|E*|71
+#1706.2|E*|73
+#1706.2|N|73||POINT(10 0)
+#1706.2|N|74||POINT(10 10)
+#1706.2|N|75||POINT(9 12)
+#1706.2|N|76||POINT(15 10)
+#1706.2|E|69|sn71|en76
+#1706.2|E|70|sn74|en75
+#1706.2|E|71|sn73|en74
+#1706.2|E|72|sn75|en72
+#1706.2|E|73|sn76|en74
+#1714.1|N|77
+#1714.1|N|77|0|POINT(10 0)
+#1714.2|E*|74
+#1714.2|N|78||POINT(0 20)
+#1714.2|E|74|sn77|en78
+Topology 'city_data' dropped
+t3280.start|t
+t3280|L11
+t3280|L22
+t3280|L1b4
+t3280|L1b2
+t3280.end|Topology 'bug3280' dropped
+t3380.start|t
+t3380.L1|1
+t3380.L2|3
+t3380.L2|4
+t3380.L3|5
+t3380.end|Topology 'bug3380' dropped
+t3402.start|t
+t3402.L1|1
+t3402.L2|3
+t3402.end|Topology 'bug3402' dropped
+t3412.start|t
+t3412.L1|1
+t3412.L2|2
+t3412.L2|3
+t3412.L2|5
+t3412.L2|4
+t3412.end|Topology 'bug3412' dropped
+t3371.start|t
+t3371.L1|1
+t3371.L2|3
+t3371.L2|2
+t3371.end|Topology 'bug3711' dropped
+t3838.start|t
+t3838.L1|1
+t3838.L2|1
+t3838.L2|3
+t3838.L2|4
+t3838.L2|5
+t3838.L2|6
+t3838.L2|7
+t3838.L2|8
+t3838.L2|9
+t3838.L2|2
+t3838.end|Topology 'bug3838' dropped
+t1855_1.start|t
+t1855_1.0|1
+t1855_1.end|Topology 'bug1855' dropped
+t1855_2.start|t
+t1855_2.0|1
+t1855_2.1|3
+t1855_2.1|5
+t1855_2.1|6
+t1855_2.end|Topology 'bug1855' dropped

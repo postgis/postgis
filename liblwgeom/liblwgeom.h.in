@@ -735,6 +735,10 @@ extern void lwgeom_drop_srid(LWGEOM *lwgeom);
  */
 extern void lwgeom_add_bbox(LWGEOM *lwgeom);
 /**
+* Drop current bbox and calculate a fresh one.
+*/
+extern void lwgeom_refresh_bbox(LWGEOM *lwgeom);
+/**
 * Compute a box for geom and all sub-geometries, if not already computed
 */
 extern void lwgeom_add_bbox_deep(LWGEOM *lwgeom, GBOX *gbox);
@@ -2125,7 +2129,7 @@ extern LWGEOM* lwgeom_from_hexwkb(const char *hexwkb, const char check);
 
 extern uint8_t*  bytes_from_hexbytes(const char *hexbuf, size_t hexsize);
 
-extern char*   hexbytes_from_bytes(uint8_t *bytes, size_t size);
+extern char*   hexbytes_from_bytes(const uint8_t *bytes, size_t size);
 
 /*
 * WKT detailed parsing support

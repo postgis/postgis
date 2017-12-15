@@ -109,7 +109,7 @@ static int gidx_from_gbox_p(GBOX box, GIDX *a)
 }
 
 /* Convert a gidx to a gbox */
-static void gbox_from_gidx(GIDX *a, GBOX *gbox, int flags)
+void gbox_from_gidx(GIDX *a, GBOX *gbox, int flags)
 {
 	gbox->xmin = (double)GIDX_GET_MIN(a,0);
 	gbox->xmax = (double)GIDX_GET_MAX(a,0);

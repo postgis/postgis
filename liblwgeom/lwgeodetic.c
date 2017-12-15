@@ -1539,6 +1539,49 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 }
 
 
+static int ptarray_segmentize_sphere_edge_recursive (
+	const POINT3D *p1, const POINT3D *p2, /* 3-space points we are interpolating beween */
+	const POINT4D *v1, const POINT4D *v2, /* real values and z/m values */
+	double d, double max_seg_length, /* current segment length and segment limit */
+	POINTARRAY *pa) /* write out results here */
+{
+	/* Reached the terminal leaf in recursion. Add */
+	/* the left-most point to the pointarray here */
+	/* We recurse down the left side first, so outputs should */
+	/* end up added to the array in order this way */
+	if (d <= max_seg_length)
+	{
+		GEOGRAPHIC_POINT g;
+		POINT4D p;
+		cart2geog(p1, &g);
+		p.x = rad2deg(g.lon);
+		p.y = rad2deg(g.lat);
+		p.z = v1->z;
+		p.m = v1->m;
+		return ptarray_append_point(pa, &p, LW_FALSE);
+	}
+	/* Find the mid-point and recurse on the left and then the right */
+	else
+	{
+		/* Calculate mid-point */
+		POINT3D mid;
+		mid.x = (p1->x + p2->x) / 2.0;
+		mid.y = (p1->y + p2->y) / 2.0;
+		mid.z = (p1->z + p2->z) / 2.0;
+		normalize(&mid);
+
+		/* Calculate z/m mid-values */
+		/* (ignore x/y, we get those from the 3-space calculations) */
+		POINT4D midv;
+		midv.z = (v1->z + v2->z) / 2.0;
+		midv.m = (v1->m + v2->m) / 2.0;
+		/* Recurse on the left first */
+		ptarray_segmentize_sphere_edge_recursive(p1, &mid, v1, &midv, d/2.0, max_seg_length, pa);
+		ptarray_segmentize_sphere_edge_recursive(&mid, p2, &midv, v2, d/2.0, max_seg_length, pa);
+		return LW_SUCCESS;
+	}
+}
+
 /**
 * Create a new point array with no segment longer than the input segment length (expressed in radians!)
 * @param pa_in - input point array pointer
@@ -1550,92 +1593,50 @@ ptarray_segmentize_sphere(const POINTARRAY *pa_in, double max_seg_length)
 	POINTARRAY *pa_out;
 	int hasz = ptarray_has_z(pa_in);
 	int hasm = ptarray_has_m(pa_in);
-	int pa_in_offset = 0; /* input point offset */
-	POINT4D p1, p2, p;
-	GEOGRAPHIC_POINT g1, g2, g;
-	double d;
+	POINT4D p1, p2;
+	POINT3D q1, q2;
+	GEOGRAPHIC_POINT g1, g2;
+	int i;
 
 	/* Just crap out on crazy input */
 	if ( ! pa_in )
-		lwerror("ptarray_segmentize_sphere: null input pointarray");
+		lwerror("%s: null input pointarray", __func__);
 	if ( max_seg_length <= 0.0 )
-		lwerror("ptarray_segmentize_sphere: maximum segment length must be positive");
+		lwerror("%s: maximum segment length must be positive", __func__);
 
 	/* Empty starting array */
 	pa_out = ptarray_construct_empty(hasz, hasm, pa_in->npoints);
 
-	/* Add first point */
-	getPoint4d_p(pa_in, pa_in_offset, &p1);
-	ptarray_append_point(pa_out, &p1, LW_FALSE);
-	geographic_point_init(p1.x, p1.y, &g1);
-	pa_in_offset++;
-
-	while ( pa_in_offset < pa_in->npoints )
+	/* Simple loop per edge */
+	for (i = 1; i < pa_in->npoints; i++)
 	{
-		getPoint4d_p(pa_in, pa_in_offset, &p2);
+		getPoint4d_p(pa_in, i-1, &p1);
+		getPoint4d_p(pa_in, i, &p2);
+		geographic_point_init(p1.x, p1.y, &g1);
 		geographic_point_init(p2.x, p2.y, &g2);
 
 		/* Skip duplicate points (except in case of 2-point lines!) */
-		if ( (pa_in->npoints > 2) && p4d_same(&p1, &p2) )
-		{
-			/* Move one offset forward */
-			p1 = p2;
-			g1 = g2;
-			pa_in_offset++;
+		if ((pa_in->npoints > 2) && p4d_same(&p1, &p2))
 			continue;
-		}
 
 		/* How long is this edge? */
-		d = sphere_distance(&g1, &g2);
+		double d = sphere_distance(&g1, &g2);
 
-		/* We need to segmentize this edge */
-		if ( d > max_seg_length )
+		if (d > max_seg_length)
 		{
-			int nsegs = 1 + d / max_seg_length;
-			int i;
-			double dzz = 0, dmm = 0;
-			double delta = d / nsegs;
-
-			/* The independent Z/M values on the ptarray */
-			if ( hasz ) dzz = (p2.z - p1.z) / nsegs;
-			if ( hasm ) dmm = (p2.m - p1.m) / nsegs;
-
-			g = g1;
-			p = p1;
-			for ( i = 0; i < nsegs - 1; i++ )
-			{
-				GEOGRAPHIC_POINT gn;
-				double heading;
-
-				/* Compute the current heading to the destination */
-				heading = sphere_direction(&g, &g2, (nsegs-i) * delta);
-				/* Move one increment forwards */
-				sphere_project(&g, delta, heading, &gn);
-				g = gn;
-
-				p.x = rad2deg(g.lon);
-				p.y = rad2deg(g.lat);
-				if ( hasz )
-					p.z += dzz;
-				if ( hasm )
-					p.m += dmm;
-				ptarray_append_point(pa_out, &p, LW_FALSE);
-			}
-
-			ptarray_append_point(pa_out, &p2, LW_FALSE);
+			geog2cart(&g1, &q1);
+			geog2cart(&g2, &q2);
+			/* 3-d end points, XYZM end point, current edge size, min edge size */
+			ptarray_segmentize_sphere_edge_recursive(&q1, &q2, &p1, &p2, d, max_seg_length, pa_out);
 		}
-		/* This edge is already short enough */
+		/* If we don't segmentize, we need to add first point manually */
 		else
 		{
-			ptarray_append_point(pa_out, &p2, (pa_in->npoints==2)?LW_TRUE:LW_FALSE);
+			ptarray_append_point(pa_out, &p1, LW_TRUE);
 		}
-
-		/* Move one offset forward */
-		p1 = p2;
-		g1 = g2;
-		pa_in_offset++;
 	}
-
+	/* Always add the last point */
+	ptarray_append_point(pa_out, &p2, LW_TRUE);
 	return pa_out;
 }
 

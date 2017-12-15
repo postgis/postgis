@@ -1,7 +1,7 @@
 Debbie:
    [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_trunk)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_trunk/)
 Winnie:
- [![Build Status](https://debbie.postgis.net:444/buildStatus/icon?job=PostGIS_trunk)](https://debbie.postgis.net:444/view/PostGIS/job/PostGIS_trunk/)
+ [![Build Status](https://winnie.postgis.net:444/buildStatus/icon?job=PostGIS_trunk)](https://winnie.postgis.net:444/view/PostGIS/job/PostGIS_trunk/)
 Dronie:
  [![Build Status](https://drone.osgeo.org/api/badges/postgis/postgis/status.svg?branch=svn-trunk)](https://drone.osgeo.org/postgis/postgis?branch=svn-trunk)
 Travis:

@@ -73,5 +73,9 @@ DROP FUNCTION IF EXISTS ST_AsMVTGeom(geom geometry, bounds box2d, extent int4, b
 DROP AGGREGATE IF EXISTS ST_AsGeobuf(text, anyelement);
 DROP FUNCTION IF EXISTS pgis_asgeobuf_transfn(internal, text, anyelement);
 DROP FUNCTION IF EXISTS pgis_asmvt_transfn(internal, text, int4, text, anyelement);
+-- Going from multiple functions to default args
+-- Need to drop old multiple variants to not get in trouble.
+DROP FUNCTION IF EXISTS  ST_CurveToLine(geometry, integer);
+DROP FUNCTION IF EXISTS  ST_CurveToLine(geometry);
 
 DROP VIEW IF EXISTS geometry_columns; -- removed cast 2.2.0 so need to recreate

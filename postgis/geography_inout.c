@@ -638,8 +638,7 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS)
 
 	/* Recalculate the boxes after re-setting the geodetic bit */
 	lwgeom_set_geodetic(lwgeom, false);
-	lwgeom_drop_bbox(lwgeom);
-	lwgeom_add_bbox(lwgeom);
+	lwgeom_refresh_bbox(lwgeom);
 
 	/* We want "geometry" to think all our "geography" has an SRID, and the
 	   implied SRID is the default, so we fill that in if our SRID is actually unknown. */

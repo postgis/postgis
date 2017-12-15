@@ -12,6 +12,8 @@ dnl **********************************************************************
 AC_INIT()
 AC_CONFIG_HEADERS([postgis_config.h])
 AC_CONFIG_MACRO_DIR([macros])
+AC_CONFIG_AUX_DIR([build-aux])
+AC_PROG_INSTALL
 
 
 dnl Invoke libtool: we do this as it is the easiest way to find the PIC
@@ -1184,8 +1186,13 @@ AC_ARG_WITH([interrupt-tests],
                     [Disable the interrupt tests (for CI servers)])],
     [], [])
 
-if test "x$with_interrupt_tests" != "xno"; then
-    INTERRUPTTESTS="yes"
+AC_ARG_WITH([interrupt-tests],
+    [AS_HELP_STRING([--with-interrupt-tests],
+                    [Enable interrupt tests])],
+    [INTERRUPTTESTS="yes"], [])
+
+if test "x$with_interrupt_tests" == "xno"; then
+    INTERRUPTTESTS="no"
 fi
 
 AC_SUBST([INTERRUPTTESTS])
@@ -1469,6 +1476,13 @@ AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Compiler Info ------------- ])
 AC_MSG_RESULT([  C compiler:           ${CC} ${CFLAGS}])
 AC_MSG_RESULT([  SQL preprocessor:     ${SQLPP}])
+AC_MSG_RESULT()
+AC_MSG_RESULT([ -------------- Additional Info ------------- ])
+if test "x$INTERRUPTTESTS" = "xyes"; then
+  AC_MSG_RESULT([  Interrupt Tests:   ENABLED])
+else
+  AC_MSG_RESULT([  Interrupt Tests:   DISABLED use: --with-interrupt-tests to enable])
+fi
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Dependencies -------------- ])
 AC_MSG_RESULT([  GEOS config:          ${GEOSCONFIG}])

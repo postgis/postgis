@@ -52,9 +52,9 @@ Datum geography_lt(PG_FUNCTION_ARGS)
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
 	int cmp = gserialized_cmp(g1, g2);
 	if (cmp < 0)
-		PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(true);
 	else
-		PG_RETURN_BOOL(FALSE);
+		PG_RETURN_BOOL(false);
 }
 
 /*
@@ -68,9 +68,9 @@ Datum geography_le(PG_FUNCTION_ARGS)
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
 	int cmp = gserialized_cmp(g1, g2);
 	if (cmp <= 0)
-		PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(true);
 	else
-		PG_RETURN_BOOL(FALSE);
+		PG_RETURN_BOOL(false);
 }
 
 /*
@@ -84,9 +84,9 @@ Datum geography_gt(PG_FUNCTION_ARGS)
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
 	int cmp = gserialized_cmp(g1, g2);
 	if (cmp > 0)
-		PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(true);
 	else
-		PG_RETURN_BOOL(FALSE);
+		PG_RETURN_BOOL(false);
 }
 
 /*
@@ -100,9 +100,9 @@ Datum geography_ge(PG_FUNCTION_ARGS)
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
 	int cmp = gserialized_cmp(g1, g2);
 	if (cmp >= 0)
-		PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(true);
 	else
-		PG_RETURN_BOOL(FALSE);
+		PG_RETURN_BOOL(false);
 }
 
 /*
@@ -116,9 +116,9 @@ Datum geography_eq(PG_FUNCTION_ARGS)
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
 	int cmp = gserialized_cmp(g1, g2);
 	if (cmp == 0)
-		PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(true);
 	else
-		PG_RETURN_BOOL(FALSE);
+		PG_RETURN_BOOL(false);
 }
 
 /*

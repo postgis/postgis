@@ -2,7 +2,7 @@
 set -e
 #### $Id:build_postgis210.sh 10208 2012-08-30 05:38:22Z robe $
 #all these get passed in by jenkins
-#export OS_BUILD=64 
+#export OS_BUILD=64
 #export PG_VER=9.2beta2
 #export PGHOST=localhost
 #export PGPORT=8442
@@ -61,7 +61,7 @@ fi;
 
 #export POSTGIS_SRC=${PROJECTS}/postgis/trunk
 export GDAL_DATA="${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/share/gdal"
-# export REL_PGVER=$(echo $PG_VER | tr '.' '') 
+# export REL_PGVER=$(echo $PG_VER | tr '.' '')
 # echo $REL_PGVER
 # export RELDIR=${MINGPROJECTS}/postgis/builds/postgis-21
 # export RELVERDIR=postgis-pg${REL_PGVER}-binaries-${POSTGIS_MICRO_VER}w64
@@ -102,7 +102,7 @@ if [ -n "$SFCGAL_VER" ]; then
 	#BOOST_VER_WU=1_49_0
 	export BOOST_VER_WU=1_53_0
 	export PATH="${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/boost/rel-${BOOST_VER_WU}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
-	
+
 CPPFLAGS="-I${PGPATH}/include -I${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/include" \
 LDFLAGS="-L${PGPATH}/lib -L${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/lib -L${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/lib" ./configure \
   --host=${MINGHOST} --with-xml2config=${PROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}${GCC_TYPE}/bin/xml2-config \
@@ -116,8 +116,9 @@ LDFLAGS="-L${PGPATH}/lib -L${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYP
   --with-gui --with-gettext=no \
   --with-protobufdir=${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE} \
   --with-sfcgal=${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/sfcgal-config \
-  --with-pcredir=${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}
-elif [ "$POSTGIS_MAJOR_VERSION" == "2" ] ; then
+  --with-pcredir=${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE} \
+  --prefix=${PROJECTS}/postgis/liblwgeom-${POSTGIS_VER}w${OS_BUILD}${GCC_TYPE}
+else
 CPPFLAGS="-I${PGPATH}/include -I${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/include" \
 LDFLAGS="-L${PGPATH}/lib -L${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/lib -L${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/lib" ./configure \
   --host=${MINGHOST} --with-xml2config=${PROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}${GCC_TYPE}/bin/xml2-config \
@@ -130,28 +131,14 @@ LDFLAGS="-L${PGPATH}/lib -L${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYP
   --with-jsondir=${MINGPROJECTS}/json-c/rel-${JSON_VER}w${OS_BUILD}${GCC_TYPE} \
   --with-libiconv=${PROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE} \
   --with-xsldir=${PROJECTS}/docbook/docbook-xsl-1.76.1 \
-else
-CPPFLAGS="-I${PGPATH}/include  -I${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/include" \
-    LDFLAGS="-L${PGPATH}/lib -L${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/lib -L${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/lib" ./configure \
-  --host=${MINGHOST} --with-xml2config=${PROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}${GCC_TYPE}/bin/xml2-config \
-  --with-pgconfig=${PGPATH}/bin/pg_config \
-  --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/geos-config \
-  --with-projdir=${MINGPROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE} \
-  --with-gdalconfig=${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/gdal-config \
-  --with-jsondir=${MINGPROJECTS}/json-c/rel-${JSON_VER}w${OS_BUILD}${GCC_TYPE} \
-  --with-libiconv=${PROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE} \
-  --with-xsldir=${PROJECTS}/docbook/docbook-xsl-1.76.1 \
-  --with-gettext=no
-fi;
-#make clean
-##hack to get around boolean incompatibility now only needed for 2.0 (no longer for 2.1)
-if [ "$POSTGIS_MINOR_VERSION" == "0" ] ; then
-cp ${MINGPROJECTS}/json-c/rel-${JSON_VER}w${OS_BUILD}${GCC_TYPE}/include/json/json_object.h.for_compile ${MINGPROJECTS}/json-c/rel-${JSON_VER}w${OS_BUILD}${GCC_TYPE}/include/json/json_object.h
+  --prefix=${PROJECTS}/postgis/liblwgeom-${POSTGIS_VER}w${OS_BUILD}${GCC_TYPE}
 fi;
 
 
 #patch liblwgeom generated make to get rid of dynamic linking
 sed -i 's/LDFLAGS += -no-undefined//g' liblwgeom/Makefile
+
+make uninstall
 
 make && make install
 

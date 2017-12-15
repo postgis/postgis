@@ -63,7 +63,7 @@ EXTRA_CLEAN += ${SQL_BITS} sql/*.sql
 
 CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
 
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql
 
 sql/$(EXTENSION).sql: $(EXTENSION_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
@@ -79,8 +79,17 @@ $(EXTENSION).control: $(EXTENSION).control.in Makefile
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
 	cp $< $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) ../../utils/create_unpackaged.pl | sql
-	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) | $(PERL) ../../utils/create_unpackaged.pl postgis > $@
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile | sql
+	# Ensure version is correct
+	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql > $@
+	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) \
+		| $(PERL) ../../utils/create_unpackaged.pl postgis \
+		>> $@
+
+unpackaged_check.sql: unpackaged_check.sql.in Makefile
+	cat $< \
+		| sed -e 's|@EXTVERSION@|$(EXTVERSION)|g' \
+		> $@
 
 sql:
 	mkdir -p $@
@@ -122,7 +131,7 @@ sql_bits/raster_comments.sql: ../../doc/raster_comments.sql | sql_bits
 	cp $< $@
 
 #postgis_extension_upgrade_minor.sql is the one that contains both postgis AND raster
-sql_bits/postgis_extension_upgrade_minor.sql: $(EXTENSION_UPGRADE_SCRIPTS) | sql_bits
+sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ >> $@
 
@@ -132,11 +141,11 @@ install: install-upgrade-paths
 
 # The "next" lines are a cludge to allow upgrading between different
 # revisions of the same version
-install-upgrade-paths: sql_bits/postgis_extension_upgrade_minor.sql
+install-upgrade-paths:
 	tpl='$(EXTENSION)--ANY--$(EXTVERSION).sql'; \
+	$(INSTALL_DATA) sql/$${tpl} "$(EXTDIR)/$${tpl}"; \
 	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql; \
 	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql; \
-	$(INSTALL_DATA) $^ "$(EXTDIR)/$${tpl}"; \
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
 		ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done

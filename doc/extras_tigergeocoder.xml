@@ -375,6 +375,7 @@ Time: 622.939 ms
       </refsection>
     </refentry>
 
+
     <refentry id="Geocode_Intersection">
       <refnamediv>
         <refname>Geocode_Intersection</refname>
@@ -839,8 +840,11 @@ rm -f ${TMPDIR}/*.*
             <para><varname>loader_lookuptables</varname> each record defines a kind of table (state, county), whether to process records in it and how to load them in.  Defines the steps to import data, stage data, add, removes columns, indexes, and constraints for each.  Each table is prefixed with the state and inherits from a table in the tiger schema. e.g. creates <varname>tiger_data.ma_faces</varname> which inherits from <varname>tiger.faces</varname></para>
           </listitem>
         </orderedlist>
+        <para>Enhanced: 2.4.1 zip code 5 tabulation area (zcta5) load step was fixed and when enabled, zcta5 data is loaded as a single table called zcta5_all as part of the nation script load.</para>
         <para>Availability: 2.1.0 </para>
-        <note><para>If you were running <varname>tiger_2010</varname> version and you want to reload as state with <varname>tiger_2011</varname>, you'll need to for the very first load generate and run drop statements <xref linkend="Drop_Nation_Tables_Generate_Script" /> before you run this script.</para></note>
+        <note><para>If you want zip code 5 tabulation area (zcta5) to be included in your nation script load, do the following:</para> <programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = 'zcta510';</programlisting></note>
+        <note><para>If you were running <varname>tiger_2010</varname> version and you want to reload as state with newer tiger data, you'll need to for the very first load generate and run drop statements <xref linkend="Drop_Nation_Tables_Generate_Script" /> before you run this script.</para></note>
+
       </refsection>
 
 
@@ -1231,7 +1235,8 @@ SELECT address As orig, (g.na).streetname, (g.na).streettypeabbrev
           </listitem>
         </orderedlist>
 
-        <!-- use this format if new function -->
+        <para>Enhanced: 2.4.1 if optional zcta5 dataset is loaded, the reverse_geocode function can resolve to state and zip even if the specific state data is not loaded. Refer to <xref linkend="Loader_Generate_Nation_Script" /> for details on loading zcta5 data.</para>
+
         <para>Availability: 2.0.0 </para>
       </refsection>
 
@@ -1284,7 +1289,7 @@ FROM (SELECT address As actual_addr, lon, lat,
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="Pprint_Addy" />, <xref linkend="Geocode" /></para>
+        <para><xref linkend="Pprint_Addy" />, <xref linkend="Geocode" />, <xref linkend="Loader_Generate_Nation_Script" /></para>
       </refsection>
     </refentry>
 

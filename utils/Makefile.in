@@ -21,12 +21,12 @@ MODULEDIR=contrib/$(MODULE_doc)
 DATA_built=postgis_restore.pl
 
 # PGXS information
-PG_CONFIG = @PG_CONFIG@ 
+PG_CONFIG = @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 
 SHELL = @SHELL@
-INSTALL = $(SHELL) ../install-sh
+INSTALL = $(SHELL) ../build-aux/install-sh
 
 SCRIPTS_built = postgis_restore.pl
 

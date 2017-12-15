@@ -344,8 +344,7 @@ lwline_add_lwpoint(LWLINE *line, LWPOINT *point, int where)
 	/* Update the bounding box */
 	if ( line->bbox )
 	{
-		lwgeom_drop_bbox(lwline_as_lwgeom(line));
-		lwgeom_add_bbox(lwline_as_lwgeom(line));
+		lwgeom_refresh_bbox((LWGEOM*)line);
 	}
 
 	return LW_SUCCESS;
@@ -377,8 +376,7 @@ lwline_setPoint4d(LWLINE *line, uint32_t index, POINT4D *newpoint)
 	/* Update the box, if there is one to update */
 	if ( line->bbox )
 	{
-		lwgeom_drop_bbox((LWGEOM*)line);
-		lwgeom_add_bbox((LWGEOM*)line);
+		lwgeom_refresh_bbox((LWGEOM*)line);
 	}
 }
 

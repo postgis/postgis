@@ -1,14 +1,32 @@
 PostGIS 2.5.0
 2018/xx/xx
+
 * New Features *
   - #3876, ST_Angle function (Rémi Cura)
   - #3564, ST_LineInterpolatePoints (Dan Baston)
   - #3896, PostGIS_Extensions_Upgrade()
+  - #3913, Upgrade when creating extension from unpackaged (Sandro Santilli)
+  - #2256, _postgis_index_extent() for extent from index (Paul Ramsey)
 
 * Breaking Changes *
   - #3885, version number removed from address_standardize lib file
   - #3893, raster support functions can only be loaded in the same schema
            with core PostGIS functions.
+
+* Enhancements and Fixes*
+  - #3927, Parallel implementation of ST_AsMVT
+  - #3925, Simplify geometry using map grid cell size before generating MVT
+  - #3899, BTree sort order is now defined on collections of EMPTY and
+           same-prefix geometries (Darafei Praliaskouski)
+  - #3864, Performance improvement for sorting POINT geometries
+           (Darafei Praliaskouski)
+  - #3900, GCC warnings fixed, make -j is now working (Darafei Praliaskouski)
+  - TopoGeo_addLinestring robustness improvements (Sandro Santilli)
+    #1855, #1946, #3718, #3838
+  - #3234, Do not accept EMPTY points as topology nodes (Sandro Santilli)
+  - #1014, Hashable geometry, allowing direct use in CTE signatures (Paul Ramsey)
+  - #3097, Really allow MULTILINESTRING blades in ST_Split() (Paul Ramsey)
+
 
 PostGIS 2.4.0
 2017/09/30

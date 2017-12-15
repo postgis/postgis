@@ -688,6 +688,13 @@ lwgeom_add_bbox(LWGEOM *lwgeom)
 }
 
 void
+lwgeom_refresh_bbox(LWGEOM *lwgeom)
+{
+	lwgeom_drop_bbox(lwgeom);
+	lwgeom_add_bbox(lwgeom);
+}
+
+void
 lwgeom_add_bbox_deep(LWGEOM *lwgeom, GBOX *gbox)
 {
 	if ( lwgeom_is_empty(lwgeom) ) return;
@@ -1556,8 +1563,7 @@ void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2)
 	/* only refresh bbox if X or Y changed */
 	if ( in->bbox && (o1 < 2 || o2 < 2) )
 	{
-		lwgeom_drop_bbox(in);
-		lwgeom_add_bbox(in);
+		lwgeom_refresh_bbox(in);
 	}
 }
 
@@ -1667,7 +1673,11 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 						break;
 					}
 				}
-				if (seen) continue;
+				if (seen)
+				{
+					lwpoint_free(p1);
+					continue;
+				}
 				out[n++] = p1;
 			}
 
@@ -1824,7 +1834,11 @@ LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist, int preserve_collapsed
 {
 	LWGEOM *lwgeom_out = lwgeom_clone_deep(igeom);
 	lwgeom_simplify_in_place(lwgeom_out, dist, preserve_collapsed);
-	if (lwgeom_is_empty(lwgeom_out)) return NULL;
+	if (lwgeom_is_empty(lwgeom_out))
+	{
+		lwgeom_free(lwgeom_out);
+		return NULL;
+	}
 	return lwgeom_out;
 }
 
@@ -2143,25 +2157,39 @@ lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
 		case POLYGONTYPE:
 		{
 			LWPOLY *ply = (LWPOLY*)(geom);
-			int i, j = 0;
 			if (!ply->rings) return;
-			for (i = 0; i < ply->nrings; i++)
+
+			/* Check first the external ring */
+			int i = 0;
+			POINTARRAY *pa = ply->rings[0];
+			ptarray_grid_in_place(pa, grid);
+			if (pa->npoints < 4)
+			{
+				/* External ring collapsed: free everything */
+				for (i = 0; i < ply->nrings; i++)
+				{
+					ptarray_free(ply->rings[i]);
+				}
+				ply->nrings = 0;
+				return;
+			}
+
+			/* Check the other rings */
+			int j = 1;
+			for (i = 1; i < ply->nrings; i++)
 			{
 				POINTARRAY *pa = ply->rings[i];
 				ptarray_grid_in_place(pa, grid);
+
 				/* Skip bad rings */
-				if (pa->npoints < 4)
+				if (pa->npoints >= 4)
+				{
+					ply->rings[j++] = pa;
+				}
+				else
 				{
 					ptarray_free(pa);
-					/* When internal rings collapse, we free */
-					/* then and move on */
-					if (i) continue;
-					/* If external ring collapses, we free */
-					/* it and stop processing */
-					else break;
 				}
-				/* Fill in just the rings we are keeping */
-				ply->rings[j++] = pa;
 			}
 			/* Adjust ring count appropriately */
 			ply->nrings = j;

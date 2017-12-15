@@ -243,11 +243,16 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	/* Do the brute force calculation if the cached calculation doesn't tick over */
 	if ( LW_FAILURE == geography_distance_cache(fcinfo, g1, g2, &s, &distance) )
 	{
+		/* default to using tree-based distance calculation at all times */
+		/* in standard distance call. */
+		geography_tree_distance(g1, g2, &s, FP_TOLERANCE, &distance);
+		/*
 		LWGEOM* lwgeom1 = lwgeom_from_gserialized(g1);
 		LWGEOM* lwgeom2 = lwgeom_from_gserialized(g2);
 		distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, tolerance);
 		lwgeom_free(lwgeom1);
 		lwgeom_free(lwgeom2);
+		*/
 	}
 
 	/* Clean up */
@@ -309,7 +314,7 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 	{
 		PG_FREE_IF_COPY(g1, 0);
 		PG_FREE_IF_COPY(g2, 1);
-		PG_RETURN_BOOL(FALSE);
+		PG_RETURN_BOOL(false);
 	}
 
 	/* Do the brute force calculation if the cached calculation doesn't tick over */
@@ -431,7 +436,7 @@ Datum geography_dwithin_uncached(PG_FUNCTION_ARGS)
 	/* Return FALSE on empty arguments. */
 	if ( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
 	{
-		PG_RETURN_BOOL(FALSE);
+		PG_RETURN_BOOL(false);
 	}
 
 	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, tolerance);
@@ -446,7 +451,7 @@ Datum geography_dwithin_uncached(PG_FUNCTION_ARGS)
 	if ( distance < 0.0 )
 	{
 		elog(ERROR, "lwgeom_distance_spheroid returned negative!");
-		PG_RETURN_BOOL(FALSE);
+		PG_RETURN_BOOL(false);
 	}
 
 	PG_RETURN_BOOL(distance <= tolerance);

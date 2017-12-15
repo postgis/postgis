@@ -408,6 +408,23 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	FUNCTION	1	geometry_cmp (geom1 geometry, geom2 geometry);
 
 
+--
+-- Sorting operators for Btree
+--
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_hash(geometry)
+	RETURNS integer
+	AS 'MODULE_PATHNAME','lwgeom_hash'
+	LANGUAGE 'c' STRICT IMMUTABLE _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OPERATOR CLASS hash_geometry_ops
+	DEFAULT FOR TYPE geometry USING hash AS
+    OPERATOR    1   = ,
+    FUNCTION    1   geometry_hash(geometry);
+
+
 -----------------------------------------------------------------------------
 -- GiST 2D GEOMETRY-over-GSERIALIZED INDEX
 -----------------------------------------------------------------------------
@@ -494,6 +511,14 @@ CREATE OR REPLACE FUNCTION _postgis_stats(tbl regclass, att_name text, text defa
 	RETURNS text
 	AS 'MODULE_PATHNAME', '_postgis_gserialized_stats'
 	LANGUAGE 'c' STRICT _PARALLEL;
+
+-- Availability: 2.5.0
+-- Given a table and a column, returns the extent of all boxes in the
+-- first page of the index (the head of the index)
+CREATE OR REPLACE FUNCTION _postgis_index_extent(tbl regclass, col text)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME','_postgis_gserialized_index_extent'
+	LANGUAGE 'c' STABLE STRICT;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION gserialized_gist_sel_2d (internal, oid, internal, int4)
@@ -4433,72 +4458,106 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(gj_version int4, geom geometry, maxdecim
 CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, int4)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, int4, text)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_finalfn(internal)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_finalfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION pgis_asmvt_combinefn(internal, internal)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'pgis_asmvt_combinefn'
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION pgis_asmvt_serialfn(internal)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME', 'pgis_asmvt_serialfn'
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION pgis_asmvt_deserialfn(bytea, internal)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'pgis_asmvt_deserialfn'
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
+-- Changed: 2.5.0
 CREATE AGGREGATE ST_AsMVT(anyelement)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
+	serialfunc = pgis_asmvt_serialfn,
+	deserialfunc = pgis_asmvt_deserialfn,
+	combinefunc = pgis_asmvt_combinefn,
 #endif
 	finalfunc = pgis_asmvt_finalfn
 );
 
 -- Availability: 2.4.0
+-- Changed: 2.5.0
 CREATE AGGREGATE ST_AsMVT(anyelement, text)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
+	serialfunc = pgis_asmvt_serialfn,
+	deserialfunc = pgis_asmvt_deserialfn,
+	combinefunc = pgis_asmvt_combinefn,
 #endif
 	finalfunc = pgis_asmvt_finalfn
 );
 
 -- Availability: 2.4.0
+-- Changed: 2.5.0
 CREATE AGGREGATE ST_AsMVT(anyelement, text, int4)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
+	serialfunc = pgis_asmvt_serialfn,
+	deserialfunc = pgis_asmvt_deserialfn,
+	combinefunc = pgis_asmvt_combinefn,
 #endif
 	finalfunc = pgis_asmvt_finalfn
 );
 
 -- Availability: 2.4.0
+-- Changed: 2.5.0
 CREATE AGGREGATE ST_AsMVT(anyelement, text, int4, text)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
+	serialfunc = pgis_asmvt_serialfn,
+	deserialfunc = pgis_asmvt_deserialfn,
+	combinefunc = pgis_asmvt_combinefn,
 #endif
 	finalfunc = pgis_asmvt_finalfn
 );
@@ -4525,19 +4584,19 @@ CREATE OR REPLACE FUNCTION postgis_libprotobuf_version()
 CREATE OR REPLACE FUNCTION pgis_asgeobuf_transfn(internal, anyelement)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asgeobuf_transfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asgeobuf_transfn(internal, anyelement, text)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asgeobuf_transfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asgeobuf_finalfn(internal)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME', 'pgis_asgeobuf_finalfn'
-	LANGUAGE c IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE AGGREGATE ST_AsGeobuf(anyelement)
@@ -5674,33 +5733,10 @@ CREATE OR REPLACE FUNCTION ST_CoordDim(Geometry geometry)
 --
 -- Availability: 2.4.0
 --
-CREATE OR REPLACE FUNCTION ST_CurveToLine(geom geometry, tol float8, toltype integer, flags integer)
+CREATE OR REPLACE FUNCTION ST_CurveToLine(geom geometry, tol float8 DEFAULT 32, toltype integer DEFAULT 0, flags integer DEFAULT 0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_CurveToLine'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
---
--- SQL-MM
---
--- ST_CurveToLine(Geometry geometry, SegmentsPerQuarter integer)
---
--- Converts a given geometry to a linear geometry.  Each curveed
--- geometry or segment is converted into a linear approximation using
--- the given number of segments per quarter circle.
---
-CREATE OR REPLACE FUNCTION ST_CurveToLine(geometry, integer)
-	RETURNS geometry AS 'SELECT ST_CurveToLine($1, $2::float8, 0, 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
---
--- SQL-MM
---
--- ST_CurveToLine(Geometry geometry, SegmentsPerQuarter integer)
---
--- Converts a given geometry to a linear geometry.  Each curveed
--- geometry or segment is converted into a linear approximation using
--- the default value of 32 segments per quarter circle
-CREATE OR REPLACE FUNCTION ST_CurveToLine(geometry)
-	RETURNS geometry AS 'SELECT ST_CurveToLine($1, 32::integer)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION ST_HasArc(Geometry geometry)
 	RETURNS boolean
