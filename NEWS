@@ -26,6 +26,7 @@ PostGIS 2.5.0
   - #3234, Do not accept EMPTY points as topology nodes (Sandro Santilli)
   - #1014, Hashable geometry, allowing direct use in CTE signatures (Paul Ramsey)
   - #3097, Really allow MULTILINESTRING blades in ST_Split() (Paul Ramsey)
+  - #3942, geojson: Do not include private header for json-c >= 0.13 (Björn Esser)
 
 
 PostGIS 2.4.0
