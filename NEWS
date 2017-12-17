@@ -14,6 +14,7 @@ PostGIS 2.5.0
            with core PostGIS functions.
 
 * Enhancements and Fixes*
+  - #3944, Update to EPSG register v9.2 (Even Rouault)
   - #3927, Parallel implementation of ST_AsMVT
   - #3925, Simplify geometry using map grid cell size before generating MVT
   - #3899, BTree sort order is now defined on collections of EMPTY and
