@@ -1545,17 +1545,17 @@ static int ptarray_segmentize_sphere_edge_recursive (
 	double d, double max_seg_length, /* current segment length and segment limit */
 	POINTARRAY *pa) /* write out results here */
 {
+	GEOGRAPHIC_POINT g;
 	/* Reached the terminal leaf in recursion. Add */
 	/* the left-most point to the pointarray here */
 	/* We recurse down the left side first, so outputs should */
 	/* end up added to the array in order this way */
 	if (d <= max_seg_length)
 	{
-		GEOGRAPHIC_POINT g;
 		POINT4D p;
 		cart2geog(p1, &g);
-		p.x = rad2deg(g.lon);
-		p.y = rad2deg(g.lat);
+		p.x = v1->x;
+		p.y = v1->y;
 		p.z = v1->z;
 		p.m = v1->m;
 		return ptarray_append_point(pa, &p, LW_FALSE);
@@ -1573,6 +1573,9 @@ static int ptarray_segmentize_sphere_edge_recursive (
 		/* Calculate z/m mid-values */
 		/* (ignore x/y, we get those from the 3-space calculations) */
 		POINT4D midv;
+		cart2geog(&mid, &g);
+		midv.x = rad2deg(g.lon);
+		midv.y = rad2deg(g.lat);
 		midv.z = (v1->z + v2->z) / 2.0;
 		midv.m = (v1->m + v2->m) / 2.0;
 		/* Recurse on the left first */
