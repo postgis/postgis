@@ -1,7 +1,7 @@
 env:
   global:
     - RUNTESTFLAGS=-v
-    - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer -Werror"
+    - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer"
     - LDFLAGS="-fsanitize=address"
 
 addons:
