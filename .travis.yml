@@ -1,8 +1,9 @@
 env:
   global:
     - RUNTESTFLAGS=-v
-    - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer"
-    - LDFLAGS="-fsanitize=address"
+  matrix:
+    - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address"
+    - CFLAGS="-O3 -fno-omit-frame-pointer -Werror"
 
 addons:
   postgresql: "9.6"
