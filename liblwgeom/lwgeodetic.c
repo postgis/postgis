@@ -1571,7 +1571,6 @@ static int ptarray_segmentize_sphere_edge_recursive (
 		normalize(&mid);
 
 		/* Calculate z/m mid-values */
-		/* (ignore x/y, we get those from the 3-space calculations) */
 		POINT4D midv;
 		cart2geog(&mid, &g);
 		midv.x = rad2deg(g.lon);
