@@ -209,16 +209,16 @@ Datum postgis_scripts_released(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(postgis_uses_stats);
 Datum postgis_uses_stats(PG_FUNCTION_ARGS)
 {
-	PG_RETURN_BOOL(TRUE);
+	PG_RETURN_BOOL(true);
 }
 
 PG_FUNCTION_INFO_V1(postgis_autocache_bbox);
 Datum postgis_autocache_bbox(PG_FUNCTION_ARGS)
 {
 #ifdef POSTGIS_AUTOCACHE_BBOX
-	PG_RETURN_BOOL(TRUE);
+	PG_RETURN_BOOL(true);
 #else
-	PG_RETURN_BOOL(FALSE);
+	PG_RETURN_BOOL(false);
 #endif
 }
 
@@ -2030,14 +2030,14 @@ Datum LWGEOM_same(PG_FUNCTION_ARGS)
 	{
 		PG_FREE_IF_COPY(g1, 0);
 		PG_FREE_IF_COPY(g2, 1);
-		PG_RETURN_BOOL(FALSE); /* different types */
+		PG_RETURN_BOOL(false); /* different types */
 	}
 
 	if ( gserialized_get_zm(g1) != gserialized_get_zm(g2) )
 	{
 		PG_FREE_IF_COPY(g1, 0);
 		PG_FREE_IF_COPY(g2, 1);
-		PG_RETURN_BOOL(FALSE); /* different dimensions */
+		PG_RETURN_BOOL(false); /* different dimensions */
 	}
 
 	/* ok, deserialize. */
@@ -2590,7 +2590,7 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 	     (g1_bvol.ymin > geom2->bbox->ymax) ||
 	     (g1_bvol.ymax < geom2->bbox->ymin) )
 	{
-		PG_RETURN_BOOL(FALSE);  /*bbox not overlap */
+		PG_RETURN_BOOL(false);  /*bbox not overlap */
 	}
 
 	/*
@@ -2632,8 +2632,7 @@ Datum LWGEOM_affine(PG_FUNCTION_ARGS)
 	/* COMPUTE_BBOX TAINTING */
 	if ( lwgeom->bbox )
 	{
-		lwgeom_drop_bbox(lwgeom);
-		lwgeom_add_bbox(lwgeom);
+		lwgeom_refresh_bbox(lwgeom);
 	}
 	ret = geometry_serialize(lwgeom);
 

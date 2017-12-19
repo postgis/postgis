@@ -28,12 +28,14 @@ rm -rf ${WORKSPACE}/tmp/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 rm -rf ${WORKSPACE}/tmp/${POSTGIS_MAJOR_VERSION}_${POSTGIS_MINOR_VERSION}_pg${PG_VER}w${OS_BUILD}
 #mkdir ${WORKSPACE}/tmp/
 export PGIS_REG_TMPDIR=${WORKSPACE}/tmp/${POSTGIS_MAJOR_VERSION}_${POSTGIS_MINOR_VERSION}_pg${PG_VER}w${OS_BUILD}
+export POSTGIS_REGRESS_DB="postgis_reg" # FIXME: tweak to avoid clashes
+psql -c "DROP DATABASE IF EXISTS $POSTGIS_REGRESS_DB"
 
 echo $PGPORT
 echo ${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 
 ## doesn't work for some reason - just hard-code to branches for now
-# if [[ $POSTGIS_MICRO_VERSION  == *SVN* || $POSTGIS_MICRO_VERSION  == *dev*  ]]  
+# if [[ $POSTGIS_MICRO_VERSION  == *SVN* || $POSTGIS_MICRO_VERSION  == *dev*  ]]
 # then
 # 	export POSTGIS_SRC=${PROJECTS}/postgis/branches/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 # else
@@ -59,7 +61,7 @@ fi
     --prefix=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}
 make clean
 ## install so we can later test extension upgrade
-make 
+make
 
 if [ "$?" != "0" ]; then
   exit $?

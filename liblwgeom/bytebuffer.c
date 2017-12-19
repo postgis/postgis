@@ -141,7 +141,6 @@ bytebuffer_makeroom(bytebuffer_t *s, size_t size_to_add)
 {
 	LWDEBUGF(2,"Entered bytebuffer_makeroom with space need of %d", size_to_add);
 	size_t current_write_size = (s->writecursor - s->buf_start);
-	size_t current_read_size = (s->readcursor - s->buf_start);
 	size_t capacity = s->capacity;
 	size_t required_size = current_write_size + size_to_add;
 
@@ -151,6 +150,7 @@ bytebuffer_makeroom(bytebuffer_t *s, size_t size_to_add)
 
 	if ( capacity > s->capacity )
 	{
+		size_t current_read_size = (s->readcursor - s->buf_start);
 		LWDEBUGF(4,"We need to realloc more memory. New capacity is %d", capacity);
 		if ( s->buf_start == s->buf_static )
 		{
@@ -238,10 +238,8 @@ bytebuffer_append_bytebuffer(bytebuffer_t *write_to,bytebuffer_t *write_from )
 void
 bytebuffer_append_varint(bytebuffer_t *b, const int64_t val)
 {
-	size_t size;
 	bytebuffer_makeroom(b, 16);
-	size = varint_s64_encode_buf(val, b->writecursor);
-	b->writecursor += size;
+	b->writecursor += varint_s64_encode_buf(val, b->writecursor);
 	return;
 }
 
@@ -251,10 +249,8 @@ bytebuffer_append_varint(bytebuffer_t *b, const int64_t val)
 void
 bytebuffer_append_uvarint(bytebuffer_t *b, const uint64_t val)
 {
-	size_t size;
 	bytebuffer_makeroom(b, 16);
-	size = varint_u64_encode_buf(val, b->writecursor);
-	b->writecursor += size;
+	b->writecursor += varint_u64_encode_buf(val, b->writecursor);
 	return;
 }
 

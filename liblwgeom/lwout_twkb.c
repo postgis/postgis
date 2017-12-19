@@ -406,7 +406,7 @@ static int lwgeom_to_twkb_buf(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_ST
 
 static int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_STATE *parent_state)
 {
-	int i, is_empty, has_z, has_m, ndims;
+	int i, is_empty, has_z = 0, has_m = 0, ndims;
 	size_t bbox_size = 0, optional_precision_byte = 0;
 	uint8_t flag = 0, type_prec = 0;
 	bytebuffer_t header_bytebuffer, geom_bytebuffer;
@@ -421,10 +421,13 @@ static int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWK
 	bytebuffer_init_with_size(child_state.geom_buf, 64);
 
 	/* Read dimensionality from input */
-	has_z = lwgeom_has_z(geom);
-	has_m = lwgeom_has_m(geom);
 	ndims = lwgeom_ndims(geom);
 	is_empty = lwgeom_is_empty(geom);
+	if ( ndims > 2 )
+	{
+		has_z = lwgeom_has_z(geom);
+		has_m = lwgeom_has_m(geom);
+	}
 
 	/* Do we need extended precision? If we have a Z or M we do. */
 	optional_precision_byte = (has_z || has_m);

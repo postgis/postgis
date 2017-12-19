@@ -39,3 +39,11 @@ WARNING:  stats for "p.g" do not exist
 #3391.19|0.00|1.00|0.00|1.00
 #3391.20|0.00|1.00|0.00|1.00
 NOTICE:  drop cascades to 2 other objects
+1.a null|
+1.b null|
+2.a null|
+2.b null|
+3.a null|
+3.b null|
+4.a box|BOX(-100 -100,100 100)
+4.b box|BOX(-200 -200,200 200)

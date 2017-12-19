@@ -36,7 +36,7 @@ static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant);
 */
 static char *hexchr = "0123456789ABCDEF";
 
-char* hexbytes_from_bytes(uint8_t *bytes, size_t size)
+char* hexbytes_from_bytes(const uint8_t *bytes, size_t size)
 {
 	char *hex;
 	int i;

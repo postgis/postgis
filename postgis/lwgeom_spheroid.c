@@ -534,7 +534,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_distance_ellipsoid);
 Datum LWGEOM_distance_ellipsoid(PG_FUNCTION_ARGS)
 {
 	PG_RETURN_DATUM(DirectFunctionCall4(geometry_distance_spheroid,
-	                                    PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PG_GETARG_DATUM(2), BoolGetDatum(TRUE)));
+	                                    PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PG_GETARG_DATUM(2), BoolGetDatum(true)));
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_distance_sphere);
@@ -547,6 +547,6 @@ Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS)
 	s.a = s.b = s.radius;
 
 	PG_RETURN_DATUM(DirectFunctionCall4(geometry_distance_spheroid,
-	                                    PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PointerGetDatum(&s), BoolGetDatum(FALSE)));
+	                                    PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PointerGetDatum(&s), BoolGetDatum(false)));
 }
 

@@ -64,7 +64,7 @@ sql_bits/sfcgal_comments.sql: ../../doc/sfcgal_comments.sql
 #then remove default values and extra junk
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/sfcgal.sql ../../utils/create_unpackaged.pl
 	mkdir -p sql
-	cat $< | ../../utils/create_unpackaged.pl ${EXTENSION} > $@
+	cat $< |  $(PERL) ../../utils/create_unpackaged.pl ${EXTENSION} > $@
 
 sql_bits/sfcgal_upgrade.sql : ../../postgis/sfcgal_upgrade.sql
 	mkdir -p sql_bits

@@ -512,6 +512,14 @@ CREATE OR REPLACE FUNCTION _postgis_stats(tbl regclass, att_name text, text defa
 	AS 'MODULE_PATHNAME', '_postgis_gserialized_stats'
 	LANGUAGE 'c' STRICT _PARALLEL;
 
+-- Availability: 2.5.0
+-- Given a table and a column, returns the extent of all boxes in the
+-- first page of the index (the head of the index)
+CREATE OR REPLACE FUNCTION _postgis_index_extent(tbl regclass, col text)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME','_postgis_gserialized_index_extent'
+	LANGUAGE 'c' STABLE STRICT;
+
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION gserialized_gist_sel_2d (internal, oid, internal, int4)
 	RETURNS float8

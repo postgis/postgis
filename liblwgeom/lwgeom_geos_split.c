@@ -34,7 +34,7 @@ static LWGEOM* lwline_split_by_line(const LWLINE* lwgeom_in, const LWGEOM* blade
 static LWGEOM* lwline_split_by_point(const LWLINE* lwgeom_in, const LWPOINT* blade_in);
 static LWGEOM* lwline_split_by_mpoint(const LWLINE* lwgeom_in, const LWMPOINT* blade_in);
 static LWGEOM* lwline_split(const LWLINE* lwgeom_in, const LWGEOM* blade_in);
-static LWGEOM* lwpoly_split_by_line(const LWPOLY* lwgeom_in, const LWLINE* blade_in);
+static LWGEOM* lwpoly_split_by_line(const LWPOLY* lwgeom_in, const LWGEOM* blade_in);
 static LWGEOM* lwcollection_split(const LWCOLLECTION* lwcoll_in, const LWGEOM* blade_in);
 static LWGEOM* lwpoly_split(const LWPOLY* lwpoly_in, const LWGEOM* blade_in);
 
@@ -342,7 +342,7 @@ lwline_split(const LWLINE* lwline_in, const LWGEOM* blade_in)
 
 /* Initializes and uses GEOS internally */
 static LWGEOM*
-lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWLINE* blade_in)
+lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWGEOM* blade_in)
 {
 	LWCOLLECTION* out;
 	GEOSGeometry* g1;
@@ -378,7 +378,7 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWLINE* blade_in)
 		return NULL;
 	}
 
-	g2 = LWGEOM2GEOS((LWGEOM*)blade_in, 0);
+	g2 = LWGEOM2GEOS(blade_in, 0);
 	if ( NULL == g2 )
 	{
 		GEOSGeom_destroy(g1);
@@ -547,8 +547,9 @@ lwpoly_split(const LWPOLY* lwpoly_in, const LWGEOM* blade_in)
 {
 	switch (blade_in->type)
 	{
+	case MULTILINETYPE:
 	case LINETYPE:
-		return lwpoly_split_by_line(lwpoly_in, (LWLINE*)blade_in);
+		return lwpoly_split_by_line(lwpoly_in, blade_in);
 	default:
 		lwerror("Splitting a Polygon by a %s is unsupported",
 		        lwtype_name(blade_in->type));

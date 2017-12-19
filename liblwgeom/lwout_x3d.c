@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2011-2016 Arrival 3D, Regina Obe
+ * Copyright 2011-2017 Arrival 3D, Regina Obe
  *
  **********************************************************************/
 
@@ -26,34 +26,11 @@
 * @file X3D output routines.
 *
 **********************************************************************/
-
-
-#include <string.h>
-#include "liblwgeom_internal.h"
-
-/** defid is the id of the coordinate can be used to hold other elements DEF='abc' transform='' etc. **/
-static size_t asx3d3_point_size(const LWPOINT *point, char *srs, int precision, int opts, const char *defid);
-static char *asx3d3_point(const LWPOINT *point, char *srs, int precision, int opts, const char *defid);
-static size_t asx3d3_line_size(const LWLINE *line, char *srs, int precision, int opts, const char *defid);
-static char *asx3d3_line(const LWLINE *line, char *srs, int precision, int opts, const char *defid);
-static size_t asx3d3_poly_size(const LWPOLY *poly, char *srs, int precision, int opts, const char *defid);
-static size_t asx3d3_triangle_size(const LWTRIANGLE *triangle, char *srs, int precision, int opts, const char *defid);
-static char *asx3d3_triangle(const LWTRIANGLE *triangle, char *srs, int precision, int opts, const char *defid);
-static size_t asx3d3_multi_size(const LWCOLLECTION *col, char *srs, int precisioSn, int opts, const char *defid);
-static char *asx3d3_multi(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *defid);
-static char *asx3d3_psurface(const LWPSURFACE *psur, char *srs, int precision, int opts, const char *defid);
-static char *asx3d3_tin(const LWTIN *tin, char *srs, int precision, int opts, const char *defid);
-static size_t asx3d3_collection_size(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *defid);
-static char *asx3d3_collection(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *defid);
-static size_t pointArray_toX3D3(POINTARRAY *pa, char *buf, int precision, int opts, int is_closed);
-
-static size_t pointArray_X3Dsize(POINTARRAY *pa, int precision);
-
+#include "lwout_x3d.h"
 
 /*
  * VERSION X3D 3.0.2 http://www.web3d.org/specifications/x3d-3.0.dtd
  */
-
 
 /* takes a GEOMETRY and returns an X3D representation */
 extern char *
