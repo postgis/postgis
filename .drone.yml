@@ -13,7 +13,7 @@ pipeline:
     pull: true
     commands:
       - ./autogen.sh
-      - ./configure CFLAGS="-O0 -Wall" --without-interrupt-tests
+      - ./configure CFLAGS="-O0 -Wall -fno-omit-frame-pointer -Werror" --without-interrupt-tests
       - make
   check:
     image: *test-image
