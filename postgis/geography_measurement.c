@@ -207,17 +207,12 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	GSERIALIZED* g1 = NULL;
 	GSERIALIZED* g2 = NULL;
 	double distance;
-	double tolerance = 0.0;
 	bool use_spheroid = true;
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
 	g1 = PG_GETARG_GSERIALIZED_P(0);
 	g2 = PG_GETARG_GSERIALIZED_P(1);
-
-	/* Read our tolerance value. */
-	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
-		tolerance = PG_GETARG_FLOAT8(2);
 
 	/* Read our calculation type. */
 	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
@@ -737,15 +732,11 @@ Datum geography_covers(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom2 = NULL;
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
-	int type1, type2;
 	int result = LW_FALSE;
 
 	/* Get our geometry objects loaded into memory. */
 	g1 = PG_GETARG_GSERIALIZED_P(0);
 	g2 = PG_GETARG_GSERIALIZED_P(1);
-
-	type1 = gserialized_get_type(g1);
-	type2 = gserialized_get_type(g2);
 
 	/* Construct our working geometries */
 	lwgeom1 = lwgeom_from_gserialized(g1);
