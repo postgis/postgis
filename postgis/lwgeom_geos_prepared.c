@@ -79,11 +79,14 @@ static HTAB* PrepGeomHash = NULL;
 
 #define PREPARED_BACKEND_HASH_SIZE	32
 
-typedef struct
+typedef struct PrepGeomHashEntry
 {
 	MemoryContext context;
 	const GEOSPreparedGeometry* prepared_geom;
 	const GEOSGeometry* geom;
+#if POSTGIS_PGSQL_VERSION >= 96
+	MemoryContextCallback callback; /* for releasing hashentry when done */
+#endif
 }
 PrepGeomHashEntry;
 
@@ -94,22 +97,25 @@ static void AddPrepGeomHashEntry(PrepGeomHashEntry pghe);
 static PrepGeomHashEntry *GetPrepGeomHashEntry(MemoryContext mcxt);
 static void DeletePrepGeomHashEntry(MemoryContext mcxt);
 
-/* Memory context cache function prototypes */
+#if POSTGIS_PGSQL_VERSION < 96
+static void PreparedCacheDelete(MemoryContext context);
+#else
+static void  PreparedCacheDelete(void *arg);
+#endif
+/* Memory context cache function prototypes
+Only need for PostgreSQL where we will not be using a built-in memory context*/
+#if POSTGIS_PGSQL_VERSION < 96
 static void PreparedCacheInit(MemoryContext context);
 static void PreparedCacheReset(MemoryContext context);
-static void PreparedCacheDelete(MemoryContext context);
+
 static bool PreparedCacheIsEmpty(MemoryContext context);
-#if POSTGIS_PGSQL_VERSION >= 96
-static void PreparedCacheStats(MemoryContext context, int level, bool print, MemoryContextCounters *totals);
-#else
+
 static void PreparedCacheStats(MemoryContext context, int level);
-#endif
 
 #ifdef MEMORY_CONTEXT_CHECKING
 static void PreparedCacheCheck(MemoryContext context);
 #endif
 
-/* Memory context definition must match the current version of PostgreSQL */
 static MemoryContextMethods PreparedCacheContextMethods =
 {
 	NULL,
@@ -135,28 +141,6 @@ PreparedCacheInit(MemoryContext context)
 	 */
 }
 
-static void
-PreparedCacheDelete(MemoryContext context)
-{
-	PrepGeomHashEntry* pghe;
-
-	/* Lookup the hash entry pointer in the global hash table so we can free it */
-	pghe = GetPrepGeomHashEntry(context);
-
-	if (!pghe)
-		elog(ERROR, "PreparedCacheDelete: Trying to delete non-existant hash entry object with MemoryContext key (%p)", (void *)context);
-
-	POSTGIS_DEBUGF(3, "deleting geom object (%p) and prepared geom object (%p) with MemoryContext key (%p)", pghe->geom, pghe->prepared_geom, context);
-
-	/* Free them */
-	if ( pghe->prepared_geom )
-		GEOSPreparedGeom_destroy( pghe->prepared_geom );
-	if ( pghe->geom )
-		GEOSGeom_destroy( (GEOSGeometry *)pghe->geom );
-
-	/* Remove the hash entry as it is no longer needed */
-	DeletePrepGeomHashEntry(context);
-}
 
 static void
 PreparedCacheReset(MemoryContext context)
@@ -178,11 +162,7 @@ PreparedCacheIsEmpty(MemoryContext context)
 }
 
 static void
-#if POSTGIS_PGSQL_VERSION >= 96
-PreparedCacheStats(MemoryContext context, int level, bool print, MemoryContextCounters *totals)
-#else
 PreparedCacheStats(MemoryContext context, int level)
-#endif
 {
 	/*
 	 * Simple stats display function - we must supply a function since this call is mandatory according to tgl
@@ -202,6 +182,40 @@ PreparedCacheCheck(MemoryContext context)
 	 */
 }
 #endif
+#endif
+
+
+
+static void
+#if POSTGIS_PGSQL_VERSION < 96
+PreparedCacheDelete(MemoryContext context)
+{
+	PrepGeomHashEntry* pghe;
+	/* Lookup the hash entry pointer in the global hash table so we can free it */
+	pghe = GetPrepGeomHashEntry(context);
+#else  /** to use built-in memory context we need to provide our delete hook in a form suitable for callback **/
+PreparedCacheDelete(void *arg)
+{
+	PrepGeomHashEntry *pghe =  (PrepGeomHashEntry *) arg;
+	MemoryContext context;
+	if (pghe)
+		context = pghe->context;
+#endif
+	if (!pghe)
+		elog(ERROR, "PreparedCacheDelete: Trying to delete non-existant hash entry object with MemoryContext key (%p)", (void *)context);
+
+	POSTGIS_DEBUGF(3, "deleting geom object (%p) and prepared geom object (%p) with MemoryContext key (%p)", pghe->geom, pghe->prepared_geom, context);
+
+	/* Free them */
+	if ( pghe->prepared_geom )
+		GEOSPreparedGeom_destroy( pghe->prepared_geom );
+	if ( pghe->geom )
+		GEOSGeom_destroy( (GEOSGeometry *)pghe->geom );
+
+	/* Remove the hash entry as it is no longer needed */
+	DeletePrepGeomHashEntry(context);
+}
+
 
 /* TODO: put this in common are for both transform and prepared
 ** mcxt_ptr_hash
@@ -307,7 +321,6 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 {
 	PrepGeomCache* prepcache = (PrepGeomCache*)cache;
 	PrepGeomHashEntry* pghe;
-
 	/*
 	* First time through? allocate the global hash.
 	*/
@@ -319,11 +332,26 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	*/
 	if ( ! prepcache->context_callback )
 	{
+		/** TODO: This is yucky that we are reusing the same variable name
+		 * we used as a global pointer above, as a local variable.  We should reconsider this.
+		 * Took me a while to realize they weren't the same. **/
 		PrepGeomHashEntry pghe;
-		prepcache->context_callback = MemoryContextCreate(T_AllocSetContext, 8192,
-		                             &PreparedCacheContextMethods,
-		                             prepcache->context_statement,
-		                             "PostGIS Prepared Geometry Context");
+		#if POSTGIS_PGSQL_VERSION < 96
+			prepcache->context_callback = MemoryContextCreate(T_AllocSetContext, 8192,
+											&PreparedCacheContextMethods,
+											prepcache->context_statement,
+											"PostGIS Prepared Geometry Context");
+		#else
+/**For 9.5+ we can use a PostgreSQL context instead of creating our own and add a delete callback to it.
+ * TODO: change so not just PostgreSQL 11 goes thru this loop **/
+/** TODO: Verify that CacheMemoryContext is best.  I originally tried PortalMemoryContext
+ * as suggested on pg-hackers, but that caused failures in delete of hash entries,
+ * I presume because PortalMemory was sometimes cleaned before delete happened.  **/
+			prepcache->context_callback = AllocSetContextCreate(CacheMemoryContext,
+											 "PostGIS PROJ4 PJ Memory Context",
+											ALLOCSET_SMALL_SIZES
+			);
+		#endif
 		pghe.context = prepcache->context_callback;
 		pghe.geom = 0;
 		pghe.prepared_geom = 0;
@@ -361,6 +389,15 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	* extra references in a global hash object.
 	*/
 	pghe = GetPrepGeomHashEntry(prepcache->context_callback);
+
+	#if POSTGIS_PGSQL_VERSION >= 96
+	/* Immediately register cleanup callback only for PostgreSQL where
+	 we are using built in context instead of our own  */
+	pghe->callback.func = PreparedCacheDelete;
+	pghe->callback.arg = (void *) pghe;
+	MemoryContextRegisterResetCallback(pghe->context,
+										&pghe->callback);
+	#endif
 	if ( ! pghe )
 	{
 		lwpgerror("PrepGeomCacheBuilder failed to find hash entry for context %p", prepcache->context_callback);
@@ -369,6 +406,8 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 
 	pghe->geom = prepcache->geom;
 	pghe->prepared_geom = prepcache->prepared_geom;
+
+
 
 	return LW_SUCCESS;
 }
