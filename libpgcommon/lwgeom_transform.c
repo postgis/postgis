@@ -197,9 +197,7 @@ PROJ4SRSCacheDelete(void *arg)
 	PJHashEntry *he = (PJHashEntry *) arg;
 	projPJ projection = he->projection;
 	MemoryContext context;
-	if (projection)
-		context = he->ProjectionContext;
-
+	context = he->ProjectionContext;
 #endif
 	if (!projection)
 		elog(ERROR, "PROJ4SRSCacheDelete: Trying to delete non-existant projection object with MemoryContext key (%p)", (void *)context);
