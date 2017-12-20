@@ -10,7 +10,7 @@ test:
     - service postgresql start
     - su -l postgres -c "createuser -s `whoami`"
     - ./autogen.sh
-    - ./configure
+    - ./configure CFLAGS="-Wall -fno-omit-frame-pointer -Werror"
     - make
     - make check RUNTESTFLAGS=-v
     - make check RUNTESTFLAGS="-v --dumprestore"
