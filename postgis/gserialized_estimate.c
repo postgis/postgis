@@ -935,7 +935,7 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode, bool only_par
 	if ( ! only_parent )
 	{
 		POSTGIS_DEBUGF(2, "searching whole tree stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
-		stats_tuple = SearchSysCache3(STATRELATT, table_oid, att_num, true);
+		stats_tuple = SearchSysCache3(STATRELATTINH, ObjectIdGetDatum(table_oid), Int16GetDatum(att_num), BoolGetDatum(true));
 		if ( stats_tuple )
 			POSTGIS_DEBUGF(2, "found whole tree stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
 	}
@@ -943,7 +943,7 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode, bool only_par
 	if ( only_parent || ! stats_tuple )
 	{
 		POSTGIS_DEBUGF(2, "searching parent table stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
-		stats_tuple = SearchSysCache2(STATRELATT, table_oid, att_num);
+		stats_tuple = SearchSysCache3(STATRELATTINH, ObjectIdGetDatum(table_oid), Int16GetDatum(att_num), BoolGetDatum(false));
 		if ( stats_tuple )
 		POSTGIS_DEBUGF(2, "found parent table stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
 	}
