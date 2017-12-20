@@ -76,7 +76,10 @@ uint32 mcxt_ptr_hash(const void *key, Size keysize);
 
 static HTAB *CreatePJHash(void);
 static void AddPJHashEntry(MemoryContext mcxt, projPJ projection);
+#if POSTGIS_PGSQL_VERSION < 96
+/** see note on function def why this is useless **/
 static projPJ GetPJHashEntry(MemoryContext mcxt);
+#endif
 static void DeletePJHashEntry(MemoryContext mcxt);
 
 /* Internal Cache API */
@@ -265,6 +268,11 @@ static void AddPJHashEntry(MemoryContext mcxt, projPJ projection)
 	}
 }
 
+/** TODO: May reconsider changing this to return entry as name implies
+ *  For now it's useless when we are using built-in context cause
+ * we need the entry for cleanup
+ * */
+#if POSTGIS_PGSQL_VERSION < 96
 static projPJ GetPJHashEntry(MemoryContext mcxt)
 {
 	void **key;
@@ -278,7 +286,7 @@ static projPJ GetPJHashEntry(MemoryContext mcxt)
 
 	return he->projection;
 }
-
+#endif
 
 static void DeletePJHashEntry(MemoryContext mcxt)
 {
