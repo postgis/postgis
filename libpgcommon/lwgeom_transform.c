@@ -64,9 +64,6 @@ typedef struct struct_PJHashEntry
 {
 	MemoryContext ProjectionContext;
 	projPJ projection;
-#if POSTGIS_PGSQL_VERSION >= 96
-	MemoryContextCallback callback; /* for releasing hashentry when done */
-#endif
 }
 PJHashEntry;
 
@@ -76,10 +73,7 @@ uint32 mcxt_ptr_hash(const void *key, Size keysize);
 
 static HTAB *CreatePJHash(void);
 static void AddPJHashEntry(MemoryContext mcxt, projPJ projection);
-#if POSTGIS_PGSQL_VERSION < 96
-/** see note on function def why this is useless **/
 static projPJ GetPJHashEntry(MemoryContext mcxt);
-#endif
 static void DeletePJHashEntry(MemoryContext mcxt);
 
 /* Internal Cache API */
@@ -93,39 +87,33 @@ static void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 static bool IsPROJ4LibPathSet = false;
 void SetPROJ4LibPath(void);
 
-#if POSTGIS_PGSQL_VERSION < 96
-static void PROJ4SRSCacheDelete(MemoryContext context);
-#else
-static void PROJ4SRSCacheDelete(void *arg);
-#endif
-/* Memory context cache function prototypes
-Only need for PostgreSQL where we will not be using a built-in memory context*/
-#if POSTGIS_PGSQL_VERSION < 96
-static void PROJ4SRSCacheInit(MemoryContext context);
-static void PROJ4SRSCacheReset(MemoryContext context);
-static bool PROJ4SRSCacheIsEmpty(MemoryContext context);
 
-static void PROJ4SRSCacheStats(MemoryContext context, int level);
-
-#ifdef MEMORY_CONTEXT_CHECKING
-static void PROJ4SRSCacheCheck(MemoryContext context);
-#endif
-
-static MemoryContextMethods PROJ4SRSCacheContextMethods =
+static void
+#if POSTGIS_PGSQL_VERSION < 95
+PROJ4SRSCacheDelete(MemoryContext context)
 {
-	NULL,
-	NULL,
-	NULL,
-	PROJ4SRSCacheInit,
-	PROJ4SRSCacheReset,
-	PROJ4SRSCacheDelete,
-	NULL,
-	PROJ4SRSCacheIsEmpty,
-	PROJ4SRSCacheStats
-#ifdef MEMORY_CONTEXT_CHECKING
-	,PROJ4SRSCacheCheck
+#else
+PROJ4SRSCacheDelete(void *ptr)
+{
+	MemoryContext context = (MemoryContext)ptr;
 #endif
-};
+	projPJ projection;
+
+	/* Lookup the projPJ pointer in the global hash table so we can free it */
+	projection = GetPJHashEntry(context);
+
+	if (!projection)
+		elog(ERROR, "PROJ4SRSCacheDelete: Trying to delete non-existant projection object with MemoryContext key (%p)", (void *)context);
+
+	POSTGIS_DEBUGF(3, "deleting projection object (%p) with MemoryContext key (%p)", projection, context);
+	/* Free it */
+	pj_free(projection);
+
+	/* Remove the hash entry as it is no longer needed */
+	DeletePJHashEntry(context);
+}
+
+#if POSTGIS_PGSQL_VERSION < 95
 
 static void
 PROJ4SRSCacheInit(MemoryContext context)
@@ -156,11 +144,7 @@ PROJ4SRSCacheIsEmpty(MemoryContext context)
 }
 
 static void
-#if POSTGIS_PGSQL_VERSION >= 96
-PROJ4SRSCacheStats(MemoryContext context, int level, bool print, MemoryContextCounters *totals)
-#else
 PROJ4SRSCacheStats(MemoryContext context, int level)
-#endif
 {
 	/*
 	 * Simple stats display function - we must supply a function since this call is mandatory according to tgl
@@ -181,36 +165,24 @@ PROJ4SRSCacheCheck(MemoryContext context)
 }
 #endif
 
-#endif
-
-
-static void
-#if POSTGIS_PGSQL_VERSION < 96
-PROJ4SRSCacheDelete(MemoryContext context)
+/* Memory context definition must match the current version of PostgreSQL */
+static MemoryContextMethods PROJ4SRSCacheContextMethods =
 {
-	projPJ projection;
-	/* Lookup the projPJ pointer in the global hash table so we can free it */
-	projection = GetPJHashEntry(context);
-#else  /** to use built-in memory context we need to provide our delete hook in a form suitable for callback **/
-PROJ4SRSCacheDelete(void *arg)
-{
-	PJHashEntry *he = (PJHashEntry *) arg;
-	projPJ projection = he->projection;
-	MemoryContext context;
-	context = he->ProjectionContext;
+	NULL,
+	NULL,
+	NULL,
+	PROJ4SRSCacheInit,
+	PROJ4SRSCacheReset,
+	PROJ4SRSCacheDelete,
+	NULL,
+	PROJ4SRSCacheIsEmpty,
+	PROJ4SRSCacheStats
+#ifdef MEMORY_CONTEXT_CHECKING
+	,PROJ4SRSCacheCheck
 #endif
-	if (!projection)
-		elog(ERROR, "PROJ4SRSCacheDelete: Trying to delete non-existant projection object with MemoryContext key (%p)", (void *)context);
+};
 
-	POSTGIS_DEBUGF(3, "deleting projection object (%p) with MemoryContext key (%p)", projection, context);
-
-	/* Free it */
-	pj_free(projection);
-
-	/* Remove the hash entry as it is no longer needed */
-	DeletePJHashEntry(context);
-}
-
+#endif /* POSTGIS_PGSQL_VERSION < 95 */
 
 /*
  * PROJ4 projPJ Hash Table functions
@@ -266,11 +238,6 @@ static void AddPJHashEntry(MemoryContext mcxt, projPJ projection)
 	}
 }
 
-/** TODO: May reconsider changing this to return entry as name implies
- *  For now it's useless when we are using built-in context cause
- * we need the entry for cleanup
- * */
-#if POSTGIS_PGSQL_VERSION < 96
 static projPJ GetPJHashEntry(MemoryContext mcxt)
 {
 	void **key;
@@ -284,7 +251,7 @@ static projPJ GetPJHashEntry(MemoryContext mcxt)
 
 	return he->projection;
 }
-#endif
+
 
 static void DeletePJHashEntry(MemoryContext mcxt)
 {
@@ -566,22 +533,27 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	 * store it in the backend hash
 	 */
 	POSTGIS_DEBUGF(3, "adding SRID %d with proj4text \"%s\" to query cache at index %d", srid, proj_str, PROJ4Cache->PROJ4SRSCacheCount);
-#if POSTGIS_PGSQL_VERSION < 96
-	PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
-											&PROJ4SRSCacheContextMethods,
-											PROJ4Cache->PROJ4SRSCacheContext,
-											"PostGIS PROJ4 PJ Memory Context");
-#else
-/** TODO: Verify that CacheMemoryContext is best.  I originally tried PortalMemoryContext
- * as suggested on pg-hackers, but that caused failures in delete of hash entries,
- * I presume because PortalMemory was sometimes cleaned before delete happened.  **/
-	PJMemoryContext = AllocSetContextCreate(CacheMemoryContext,
-											 "PostGIS PROJ4 PJ Memory Context",
-											 ALLOCSET_SMALL_SIZES);
 
+#if POSTGIS_PGSQL_VERSION < 95
+	PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
+	                                      &PROJ4SRSCacheContextMethods,
+	                                      PROJ4Cache->PROJ4SRSCacheContext,
+	                                      "PostGIS PROJ4 PJ Memory Context");
+#else
+	PJMemoryContext = AllocSetContextCreate(PROJ4Cache->PROJ4SRSCacheContext,
+	                                        "PostGIS PROJ4 PJ Memory Context",
+	                                        ALLOCSET_SMALL_SIZES);
+
+	/* PgSQL comments suggest allocating callback in the context */
+	/* being managed, so that the callback object gets cleaned along with */
+	/* the context */
+	MemoryContextCallback *callback = MemoryContextAlloc(PJMemoryContext, sizeof(MemoryContextCallback));
+	callback->arg = (void*)PJMemoryContext;
+	callback->func = PROJ4SRSCacheDelete;
+	MemoryContextRegisterResetCallback(PJMemoryContext, callback);
 #endif
 
-	/* Create the backend hash if it doesn't already exist */
+ 	/* Create the backend hash if it doesn't already exist */
 	if (!PJHash)
 		PJHash = CreatePJHash();
 
@@ -592,25 +564,6 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	POSTGIS_DEBUGF(3, "adding projection object (%p) to hash table with MemoryContext key (%p)", projection, PJMemoryContext);
 
 	AddPJHashEntry(PJMemoryContext, projection);
-
-	/* Register cleanup callback only for PostgreSQL where
-	 * we are using built-in context instead of our own
-	 */
-	#if POSTGIS_PGSQL_VERSION >= 96
-	/* The hash key is the MemoryContext pointer */
-	void **key;
-	key = (void *)&PJMemoryContext;
-	/** We need to do this because GetPJHashEntry returns the projection
-	 * and NOT the entry as the name would lead you to believe **/
-	PJHashEntry *he;
-
-	/* Return the projection object from the hash */
-	he = (PJHashEntry *) hash_search(PJHash, key, HASH_FIND, NULL);
-	he->callback.func = PROJ4SRSCacheDelete;
-	he->callback.arg = (void *) he;
-	MemoryContextRegisterResetCallback(he->ProjectionContext,
-										&he->callback);
-	#endif
 
 	PROJ4Cache->PROJ4SRSCache[PROJ4Cache->PROJ4SRSCacheCount].srid = srid;
 	PROJ4Cache->PROJ4SRSCache[PROJ4Cache->PROJ4SRSCacheCount].projection = projection;
@@ -700,51 +653,6 @@ Proj4Cache GetPROJ4Cache(FunctionCallInfo fcinfo) {
 	return (Proj4Cache)GetPROJ4SRSCache(fcinfo);
 }
 
-#if 0
-static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfo fcinfo)
-{
-	PROJ4PortalCache *PROJ4Cache = (GetGeomCache(fcinfo))->proj;
-
-	/*
-	 * If we have not already created PROJ4 cache for this portal
-	 * then create it
-	 */
-	if (fcinfo->flinfo->fn_extra == NULL)
-	{
-		MemoryContext old_context;
-
-		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-		PROJ4Cache = palloc(sizeof(PROJ4PortalCache));
-		MemoryContextSwitchTo(old_context);
-
-		if (PROJ4Cache)
-		{
-			int i;
-
-			POSTGIS_DEBUGF(3, "Allocating PROJ4Cache for portal with transform() MemoryContext %p", fcinfo->flinfo->fn_mcxt);
-			/* Put in any required defaults */
-			for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
-			{
-				PROJ4Cache->PROJ4SRSCache[i].srid = SRID_UNKNOWN;
-				PROJ4Cache->PROJ4SRSCache[i].projection = NULL;
-				PROJ4Cache->PROJ4SRSCache[i].projection_mcxt = NULL;
-			}
-			PROJ4Cache->PROJ4SRSCacheCount = 0;
-			PROJ4Cache->PROJ4SRSCacheContext = fcinfo->flinfo->fn_mcxt;
-
-			/* Store the pointer in fcinfo->flinfo->fn_extra */
-			fcinfo->flinfo->fn_extra = PROJ4Cache;
-		}
-	}
-	else
-	{
-		/* Use the existing cache */
-		PROJ4Cache = fcinfo->flinfo->fn_extra;
-	}
-
-	return PROJ4Cache ;
-}
-#endif
 
 int
 GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ *pj1, projPJ *pj2)
