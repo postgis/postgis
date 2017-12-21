@@ -2059,6 +2059,15 @@ LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *lwgeom_in, double tolerance,
 #endif /* POSTGIS_GEOS_VERSION < 34 */
 }
 
+#if POSTGIS_GEOS_VERSION < 35
+LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double tolerance, int output_edges)
+{
+	lwerror("lwgeom_voronoi_diagram: GEOS 3.5 or higher required");
+	return NULL;
+}
+
+#else /* POSTGIS_GEOS_VERSION >= 35 */
+
 static
 GEOSCoordSequence* lwgeom_get_geos_coordseq_2d(const LWGEOM* g, uint32_t num_points)
 {
@@ -2096,11 +2105,8 @@ GEOSCoordSequence* lwgeom_get_geos_coordseq_2d(const LWGEOM* g, uint32_t num_poi
 	return coords;
 }
 
-LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double tolerance, int output_edges) {
-#if POSTGIS_GEOS_VERSION < 35
-	lwerror("lwgeom_voronoi_diagram: GEOS 3.5 or higher required");
-	return NULL;
-#else
+LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double tolerance, int output_edges)
+{
 	uint32_t num_points = lwgeom_count_vertices(g);
 	LWGEOM *lwgeom_result;
 	char is_3d = LW_FALSE;
@@ -2156,5 +2162,6 @@ LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double toleranc
 	lwgeom_set_srid(lwgeom_result, srid);
 
 	return lwgeom_result;
-#endif /* POSTGIS_GEOS_VERSION < 35 */
 }
+
+#endif /* POSTGIS_GEOS_VERSION >= 35 */
