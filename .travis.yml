@@ -23,9 +23,9 @@ addons:
       - eatmydata
 
 before_install:
-  - sudo sh -c "echo /usr/lib/libeatmydata/libeatmydata.so  >> /etc/ld.so.preload"
+  - sudo sh -c "echo /usr/lib/libeatmydata/libeatmydata.so >> /etc/ld.so.preload"
   - sudo sh -c "echo /usr/lib/x86_64-linux-gnu/libasan.so.0 >> /etc/ld.so.preload"
-  - sudo service postgres restart
+  - sudo service postgresql restart
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update -qq
