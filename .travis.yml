@@ -21,7 +21,6 @@ addons:
       - libprotobuf-c0-dev
       - libgdal-dev
       - eatmydata
-      - llvm
 
 before_install:
   - sudo eatmydata add-apt-repository --yes ppa:ubuntugis/ppa
@@ -49,7 +48,7 @@ dist: trusty
 cache: ccache
 
 script:
-  - ./configure
+  - ./configure CFLAGS="$CFLAGS"
   - eatmydata make -j
   - chmod 755 /home/travis
   - eatmydata make check
