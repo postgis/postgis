@@ -23,8 +23,8 @@ addons:
       - eatmydata
 
 before_install:
-  - sudo sh -c "echo /usr/lib/x86_64-linux-gnu/libeatmydata.so >> /etc/ld.so.preload"
-  - sudo sh -c "echo /usr/lib/x86_64-linux-gnu/libasan.so.4 >> /etc/ld.so.preload"
+  - sudo sh -c "echo /usr/lib/libeatmydata/libeatmydata.so  >> /etc/ld.so.preload"
+  - sudo sh -c "echo /usr/lib/x86_64-linux-gnu/libasan.so.0 >> /etc/ld.so.preload"
   - sudo service postgres restart
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
@@ -41,6 +41,9 @@ before_install:
   - rm proj-4.9.2.tar.gz
   - sudo ldconfig
   - ./autogen.sh
+
+after_failure:
+  - cat /var/log/postgresql/postgresql-9.6-main.log
 
 language: c
 
