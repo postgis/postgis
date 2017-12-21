@@ -168,11 +168,6 @@ static inline void gidx_set_unknown(GIDX *a)
 	SET_VARSIZE(a, VARHDRSZ);
 }
 
-static inline void gidx_set_finite(GIDX *a)
-{
-	SET_VARSIZE(a, VARHDRSZ);
-}
-
 /* Enlarge b_union to contain b_new. If b_new contains more
    dimensions than b_union, expand b_union to contain those dimensions. */
 void gidx_merge(GIDX **b_union, GIDX *b_new)
