@@ -899,7 +899,7 @@ rect_node_to_str(const RECT_NODE *n)
 static int
 rect_tree_intersects_tree_recursive(RECT_NODE *n1, RECT_NODE *n2)
 {
-	int i;
+	int i, j;
 	LWDEBUGF(4,"n1 %s  n2 %s", rect_node_to_str(n1), rect_node_to_str(n2));
 	/* There can only be an edge intersection if the rectangles overlap */
 	if (rect_node_intersects(n1, n2))
@@ -912,35 +912,35 @@ rect_tree_intersects_tree_recursive(RECT_NODE *n1, RECT_NODE *n2)
 			/* Check for true intersection */
 			return rect_leaf_node_intersects(&n1->l, &n2->l);
 		}
+		else if (rect_node_is_leaf(n2) && !rect_node_is_leaf(n1))
+		{
+			for (i = 0; i < n1->i.num_nodes; i++)
+			{
+				if (rect_tree_intersects_tree_recursive(n1->i.nodes[i], n2))
+					return LW_TRUE;
+			}
+		}
+		else if (rect_node_is_leaf(n1) && !rect_node_is_leaf(n2))
+		{
+			for (i = 0; i < n2->i.num_nodes; i++)
+			{
+				if (rect_tree_intersects_tree_recursive(n2->i.nodes[i], n1))
+					return LW_TRUE;
+			}
+		}
 		else
 		{
-			LWDEBUG(4,"  internal node found, recursing");
-			/* Recurse to children */
-			if (!rect_node_is_leaf(n2))
+			for (j = 0; j < n1->i.num_nodes; j++)
 			{
 				for (i = 0; i < n2->i.num_nodes; i++)
 				{
-					if (rect_tree_intersects_tree_recursive(n2->i.nodes[i], n1))
+					if (rect_tree_intersects_tree_recursive(n2->i.nodes[i], n1->i.nodes[j]))
 						return LW_TRUE;
 				}
-				return LW_FALSE;
-			}
-			else
-			{
-				for (i = 0; i < n1->i.num_nodes; i++)
-				{
-					if (rect_tree_intersects_tree_recursive(n1->i.nodes[i], n2))
-						return LW_TRUE;
-				}
-				return LW_FALSE;
 			}
 		}
 	}
-	else
-	{
-		LWDEBUG(4," no interaction found");
-		return LW_FALSE;
-	}
+	return LW_FALSE;
 }
 
 
