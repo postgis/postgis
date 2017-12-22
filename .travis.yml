@@ -28,7 +28,7 @@ before_install:
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update -qq
-  - sudo apt-get install -y --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev
   - wget http://download.osgeo.org/proj/proj-4.9.2.tar.gz
   - tar zxvf proj-4.9.2.tar.gz
   - cd proj-4.9.2
