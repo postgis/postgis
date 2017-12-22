@@ -2,7 +2,7 @@ env:
   global:
     - RUNTESTFLAGS=-v
   matrix:
-    - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address"
+    - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer -static-libasan" LDFLAGS="-fsanitize=address -static-libasan"
     - CFLAGS="-O3 -march=native -mtune=native -fno-omit-frame-pointer -Werror"
     - CFLAGS="-O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage"
 
