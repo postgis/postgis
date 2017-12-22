@@ -1190,7 +1190,7 @@ rect_tree_node_sort(RECT_NODE *n1, RECT_NODE *n2)
 			n->d = distance2d_sqr_pt_pt(&c2, &c);
 		}
 		n1->i.sorted = 1;
-		heapsort(n1->i.nodes,
+		qsort(n1->i.nodes,
 		         n1->i.num_nodes,
 		         sizeof(RECT_NODE*),
 		         rect_tree_node_sort_cmp);
@@ -1205,7 +1205,7 @@ rect_tree_node_sort(RECT_NODE *n1, RECT_NODE *n2)
 			n->d = distance2d_sqr_pt_pt(&c1, &c);
 		}
 		n2->i.sorted = 1;
-		heapsort(n2->i.nodes,
+		qsort(n2->i.nodes,
 		         n2->i.num_nodes,
 		         sizeof(RECT_NODE*),
 		         rect_tree_node_sort_cmp);
