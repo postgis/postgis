@@ -46,7 +46,7 @@ dist: trusty
 cache: ccache
 
 script:
-  - ./configure CFLAGS="$CFLAGS"
+  - ./configure CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS"
   - make -j
   - chmod 755 /home/travis
   - make check
