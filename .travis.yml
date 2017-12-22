@@ -4,22 +4,12 @@ env:
   matrix:
     - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address"
     - CFLAGS="-O3 -fno-omit-frame-pointer -Werror"
+    - CFLAGS="-O0 -coverage"
 
 addons:
   postgresql: "9.6"
   apt:
     packages:
-      - postgresql-server-dev-9.6
-      - libxml2-utils
-      - libcunit1-dev
-      - xsltproc
-      - docbook-xsl
-      - docbook-mathml
-      - dblatex
-      - libgeos-dev
-      - libjson0-dev
-      - libprotobuf-c0-dev
-      - libgdal-dev
       - eatmydata
 
 before_install:
@@ -28,7 +18,7 @@ before_install:
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update -qq
-  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev postgresql-server-dev-9.6 libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson0-dev libprotobuf-c0-dev libgdal-dev
   - wget http://download.osgeo.org/proj/proj-4.9.2.tar.gz
   - tar zxvf proj-4.9.2.tar.gz
   - cd proj-4.9.2
@@ -42,7 +32,10 @@ before_install:
   - ./autogen.sh
 
 after_failure:
-  - cat /var/log/postgresql/postgresql-9.6-main.log
+  - sudo cat /var/log/postgresql/postgresql-9.6-main.log
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 
 language: c
 
