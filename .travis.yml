@@ -4,7 +4,7 @@ env:
   matrix:
     - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address"
     - CFLAGS="-O3 -march=native -mtune=native -fno-omit-frame-pointer -Werror"
-    - CFLAGS="-O0 -coverage -fprofile-arcs -ftest-coverage" LDFLAGS="-coverage -fprofile-arcs -ftest-coverage"
+    - CFLAGS="-O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage"
 
 addons:
   postgresql: "9.6"
@@ -52,9 +52,9 @@ script:
   - make check
   - make check RUNTESTFLAGS='--dumprestore'
   - sudo make install
+  - chmod -R a+w .
   - make installcheck
   - make installcheck RUNTESTFLAGS='--dumprestore'
-  - 
 
 notifications:
   email: false
