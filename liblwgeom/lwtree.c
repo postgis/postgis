@@ -233,16 +233,10 @@ rect_leaf_node_segment_side(RECT_NODE_LEAF *node, const POINT2D *q, int *on_boun
 		case RECT_NODE_SEG_CIRCULAR:
 		{
 			int arc_side, seg_side;
-			GBOX g;
 
 			p1 = getPoint2d_cp(node->pa, node->seg_num*2);
 			p2 = getPoint2d_cp(node->pa, node->seg_num*2+1);
 			p3 = getPoint2d_cp(node->pa, node->seg_num*2+2);
-
-			g.xmin = FP_MIN(p1->x, p3->x);
-			g.ymin = FP_MIN(p1->y, p3->y);
-			g.xmax = FP_MIN(p1->y, p3->y);
-			g.ymax = FP_MIN(p1->y, p3->y);
 
 			/* Always note case where we're on boundary */
 			arc_side = lw_arc_side(p1, p2, p3, q);
