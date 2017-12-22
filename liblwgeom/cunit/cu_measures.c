@@ -193,7 +193,7 @@ static void test_mindistance2d_tolerance(void)
 
 }
 
-static int tree_pt(const RECT_NODE *tree, double x, double y)
+static int tree_pt(RECT_NODE *tree, double x, double y)
 {
 	POINT2D pt;
 	pt.x = x; pt.y = y;
