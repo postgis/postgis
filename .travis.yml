@@ -24,7 +24,6 @@ before_install:
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update -qq
   - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev postgresql-server-dev-9.6 libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson0-dev libprotobuf-c0-dev libgdal-dev
-  - mkdir /home/travis/proj
   - cd /home/travis/proj
   - test -f proj-4.9.2.tar.gz || wget -c http://download.osgeo.org/proj/proj-4.9.2.tar.gz
   - test -d proj-4.9.2 || tar zxvf proj-4.9.2.tar.gz
