@@ -83,6 +83,7 @@ static void test_lwgeom_voronoi_diagram_custom_envelope(void)
 #endif /* POSTGIS_GEOS_VERSION >= 35 */
 }
 
+#if POSTGIS_GEOS_VERSION >= 35
 static void assert_empty_diagram(char* wkt, double tolerance)
 {
 	LWGEOM* in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
@@ -94,6 +95,7 @@ static void assert_empty_diagram(char* wkt, double tolerance)
 	lwgeom_free(in);
 	lwgeom_free(out);
 }
+#endif /* POSTGIS_GEOS_VERSION >= 35 */
 
 static void test_lwgeom_voronoi_diagram_expected_empty(void)
 {
