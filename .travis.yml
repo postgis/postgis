@@ -23,16 +23,14 @@ before_install:
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update -qq
-  - mkdir -p /home/travis/deb
-  - touch /home/travis/deb/__
-  - sudo cp -n /home/travis/deb/* /var/cache/apt/archives || true
+  - mkdir -p /home/travis/deb && touch /home/travis/deb/__ && sudo cp -n /home/travis/deb/* /var/cache/apt/archives || true
   - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev postgresql-server-dev-9.6 libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson0-dev libprotobuf-c0-dev libgdal-dev
   - cp -n /var/cache/apt/archives/* /home/travis/deb || true
   - cd /home/travis/proj
   - test -f proj-4.9.2.tar.gz || wget -c http://download.osgeo.org/proj/proj-4.9.2.tar.gz
   - test -d proj-4.9.2 || tar zxvf proj-4.9.2.tar.gz
   - cd proj-4.9.2
-  - CFLAGS="-O3" ./configure --prefix=/usr
+  - CFLAGS="-O3" ./configure --prefix=/usr || cat config.log
   - CFLAGS="-O3" make -j
   - sudo make install
   - cd /home/travis/build/postgis/postgis/
@@ -55,7 +53,7 @@ cache:
     - /home/travis/deb
 
 script:
-  - ./configure CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS"
+  - ./configure CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS" || cat config.log
   - make -j
   - chmod 755 /home/travis
   - sudo chmod -R a+wx /home/travis
