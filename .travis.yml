@@ -3,7 +3,7 @@ env:
     - RUNTESTFLAGS=-v
   matrix:
     - CFLAGS="-O3 -march=native -mtune=native"
-    - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address" MATRIX_EVAL="export ASAN_OPTIONS=verify_asan_link_order=0 && export CC=gcc-6 && export CXX=g++-6"
+    - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address" MATRIX_EVAL="export ASAN_OPTIONS=verify_asan_link_order=false && export CC=gcc-7 && export CXX=g++-7"
     - CFLAGS="-O3 -march=native -mtune=native -fno-omit-frame-pointer -Werror"
     - CFLAGS="-O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage"
 
@@ -14,7 +14,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - eatmydata  
-      - g++-6
+      - g++-7
       - libc6-dev
 
 before_install:
