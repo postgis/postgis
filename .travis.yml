@@ -3,7 +3,7 @@ env:
     - RUNTESTFLAGS=-v
   matrix:
     - CFLAGS="-O3 -march=native -mtune=native"
-    - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address" MATRIX_EVAL="export ASAN_OPTIONS=verify_asan_link_order=false && export CC=gcc-7 && export CXX=g++-7"
+    - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address -lasan" MATRIX_EVAL="export ASAN_OPTIONS=verify_asan_link_order=false && export CC=gcc-7 && export CXX=g++-7"
     - CFLAGS="-O3 -march=native -mtune=native -fno-omit-frame-pointer -Werror"
     - CFLAGS="-O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage"
 
@@ -44,6 +44,9 @@ before_install:
 after_failure:
   - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log 
 
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
 language: c
 
 compiler: gcc
@@ -68,7 +71,6 @@ script:
   - make installcheck
   - sudo chmod -R a+wx /home/travis
   - make installcheck RUNTESTFLAGS='--dumprestore'
-  - bash <(curl -s https://codecov.io/bash)
 
 notifications:
   email: false
