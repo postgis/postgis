@@ -3,7 +3,7 @@ env:
     - RUNTESTFLAGS=-v
   matrix:
     - CFLAGS="-O3 -march=native -mtune=native"
-    - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address" MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+    - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address" MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
     - CFLAGS="-O3 -march=native -mtune=native -fno-omit-frame-pointer -Werror"
     - CFLAGS="-O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage"
 
@@ -14,7 +14,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - eatmydata  
-      - g++-7
+      - g++-6
       - libc6-dev
 
 before_install:
@@ -23,6 +23,7 @@ before_install:
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update -qq
+  - mkdir -p /home/travis/deb
   - sudo cp -n /home/travis/deb/* /var/cache/apt/archives
   - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev postgresql-server-dev-9.6 libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson0-dev libprotobuf-c0-dev libgdal-dev
   - cp -n /var/cache/apt/archives/* /home/travis/deb
