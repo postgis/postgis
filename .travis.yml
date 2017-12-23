@@ -39,7 +39,8 @@ before_install:
   - cd /home/travis/build/postgis/postgis/
   - sudo ldconfig
   - ./autogen.sh
-  - sudo sh -c "echo /usr/lib/x86_64-linux-gnu/libasan.so.3 >> /etc/ld.so.preload"  
+  - sudo sh -c "echo /usr/lib/x86_64-linux-gnu/libasan.so.3 > /etc/ld.so.preload"
+  - sudo sh -c "echo /usr/lib/libeatmydata/libeatmydata.so >> /etc/ld.so.preload"
 
 after_failure:
   - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log 
