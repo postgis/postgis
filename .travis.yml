@@ -39,6 +39,7 @@ before_install:
   - cd /home/travis/build/postgis/postgis/
   - sudo ldconfig
   - ./autogen.sh
+  - sudo sh -c "echo > /etc/ld.so.preload"
 
 after_failure:
   - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log 
