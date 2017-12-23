@@ -33,8 +33,8 @@ before_install:
   - test -f proj-4.9.2.tar.gz || wget -c http://download.osgeo.org/proj/proj-4.9.2.tar.gz
   - test -d proj-4.9.2 || tar zxvf proj-4.9.2.tar.gz
   - cd proj-4.9.2
-  - CFLAGS="-O3" ./configure --prefix=/usr || cat config.log
-  - CFLAGS="-O3" make -j
+  - CFLAGS="-O3" LDFLAGS="" ./configure --prefix=/usr || cat config.log
+  - CFLAGS="-O3" LDFLAGS="" make -j
   - sudo make install
   - cd /home/travis/build/postgis/postgis/
   - sudo ldconfig
