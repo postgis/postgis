@@ -3,17 +3,21 @@ env:
     - RUNTESTFLAGS=-v
   matrix:
     - CFLAGS="-O3 -march=native -mtune=native"
-    - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address -lasan"
+    - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address -lasan" MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
     - CFLAGS="-O3 -march=native -mtune=native -fno-omit-frame-pointer -Werror"
     - CFLAGS="-O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage"
 
 addons:
   postgresql: "9.6"
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
     packages:
-      - eatmydata
+      - eatmydata  
+      - g++-7
 
 before_install:
+  - eval "${MATRIX_EVAL}"
   - sudo sh -c "echo /usr/lib/libeatmydata/libeatmydata.so >> /etc/ld.so.preload"
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
