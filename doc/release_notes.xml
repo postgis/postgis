@@ -90,6 +90,52 @@
     </sect1>
 
     <sect1>
+      <title>Release 2.3.5</title>
+      <para>Release date: 2017/11/15</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+        <para>#3667, Fix for bug in geography ST_Segmentize</para>
+        <para>#3926, Add missing 2.2.6 upgrade path</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
+      <title>Release 2.3.4</title>
+      <para>Release date: 2017/10/18</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+        <para>PostgreSQL 10 support</para>
+        <para>#3782, Memory leak in lwline_from_wkb_state (Even Rouault)</para>
+        <para>#3101, Fix buffer overflow in pgsql2shp (Sandro Santilli)</para>
+        <para>#3786, ptarray null and heap issues on is_closed</para>
+        <para>#3795, Solaris build issues due to missing isfinite define (Julian Schauder)</para>
+        <para>#3792, mark all 3D related including SFCGAL as parallel safe</para>
+        <para>#3800, shp2pgql-gui allow export of foreign tables, materialized views, and partitioned tables</para>
+        <para>#3806, Reverse geocoder missing suffix direction when present</para>
+        <para>#3698, loading census tabblock is broken</para>
+        <para>#3839, loader tests sometimes crash because of variables not initialized also reenable cunit loader tess to always run.</para>
+        <para>#3774, Trigonometric length for CompoundCurves</para>
+        <para>#3731, Crash on very small table of homogenous data</para>
+        <para>#2836, Receiving ERROR: ExteriorRing: geom is not a polygon with ST_ConcaveHull</para>
+        <para>#3781, Not-quite curved CurvePolygon rejected by ST_Contains</para>
+        <para>#3818, Triangles unclosed in M should be parseable</para>
+        <para>#3866, Rare crash generating TWKB with large coordinate values</para>
+        <para>#3869, Fix build with "gold" linker</para>
+        <para>#3845, Gracefully handle short-measure issue</para>
+        <para>#3879, Division by zero in some arc cases</para>
+        <para>#3878, Single defn of signum in header</para>
+        <para>#3880, Undefined behaviour in TYPMOD_GET_SRID</para>
+        <para>#3875, Fix undefined behaviour in shift operation</para>
+        <para>#3874, lw_dist2d_pt_arc division by zero</para>
+        <para>#3882, undefined behaviour in zigzag with negative inputs</para>
+        <para>#3891, undefined behaviour in pointarray_to_encoded_polyline</para>
+        <para>#3895, throw error on malformed WKB input</para>
+        <para>#3907, Allocate enough space for all possible GBOX string outputs (Raúl Marín Rodríguez)</para>
+      </simplesect>
+    </sect1>
+    <sect1>
       <title>Release 2.3.3</title>
       <para>Release date: 2017/07/01</para>
       <para>This is a bug fix and performance improvement release.</para>
