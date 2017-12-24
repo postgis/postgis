@@ -1,41 +1,45 @@
 env:
   global:
     - RUNTESTFLAGS=-v
-    - CFLAGS="-O3 -fno-omit-frame-pointer -Werror"
+  matrix:
+    - CFLAGS="-O3 -march=native -mtune=native"
+    - CFLAGS="-O3 -march=native -mtune=native -fno-omit-frame-pointer -Werror"
+    - CFLAGS="-O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage"
 
 addons:
   postgresql: "9.6"
   apt:
     packages:
-      - postgresql-server-dev-9.6
-      - libxml2-utils
-      - libcunit1-dev
-      - xsltproc
-      - docbook-xsl
-      - docbook-mathml
-      - dblatex
-      - libgeos-dev
-      - libjson0-dev
-      - libprotobuf-c0-dev
-      - libgdal-dev
       - eatmydata
 
 before_install:
-  - sudo eatmydata add-apt-repository --yes ppa:ubuntugis/ppa
-  - sudo eatmydata add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
-  - sudo eatmydata apt-get update -qq
-  - sudo eatmydata apt-get install -y --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev
-  - wget http://download.osgeo.org/proj/proj-4.9.2.tar.gz
-  - tar zxvf proj-4.9.2.tar.gz
+  - sudo sh -c "echo /usr/lib/libeatmydata/libeatmydata.so >> /etc/ld.so.preload"
+  - sudo add-apt-repository --yes ppa:ubuntugis/ppa
+  - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
+  - sudo apt-get update -qq
+  - mkdir -p /home/travis/deb && touch /home/travis/deb/__ && sudo cp -n /home/travis/deb/* /var/cache/apt/archives || true
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev postgresql-server-dev-9.6 libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson0-dev libprotobuf-c0-dev libgdal-dev
+  - sudo sh -c "echo deb http://archive.ubuntu.com/ubuntu/ artful main restricted universe multiverse >> /etc/apt/sources.list"
+  - sudo apt-get update -qq
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests binutils
+  - cp -n /var/cache/apt/archives/* /home/travis/deb || true
+  - ls -la /home/travis/deb/
+  - cd /home/travis/proj
+  - test -f proj-4.9.2.tar.gz || wget -c http://download.osgeo.org/proj/proj-4.9.2.tar.gz
+  - test -d proj-4.9.2 || tar zxvf proj-4.9.2.tar.gz
   - cd proj-4.9.2
-  - CFLAGS="-O3" ./configure --prefix=/usr
-  - CFLAGS="-O3" eatmydata make -j
+  - CFLAGS="-O3" LDFLAGS="" ./configure --prefix=/usr || cat config.log
+  - CFLAGS="-O3" LDFLAGS="" make -j
   - sudo make install
-  - cd ..
-  - rm -rf proj-4.9.2
-  - rm proj-4.9.2.tar.gz
+  - cd /home/travis/build/postgis/postgis/
   - sudo ldconfig
   - ./autogen.sh
+
+after_failure:
+  - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log 
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 
 language: c
 
@@ -43,17 +47,21 @@ compiler: gcc
 
 dist: trusty
 
-cache: ccache
+cache: 
+  ccache: true
+  directories:
+    - /home/travis/proj
+    - /home/travis/deb
 
 script:
-  - ./configure
-  - eatmydata make -j
+  - ./configure CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS" || cat config.log
+  - make -j
   - chmod 755 /home/travis
-  - eatmydata make check
-  - eatmydata make check RUNTESTFLAGS='--dumprestore'
+  - make check
+  - make check RUNTESTFLAGS='--dumprestore'
   - sudo make install
-  - eatmydata make installcheck
-  - eatmydata make installcheck RUNTESTFLAGS='--dumprestore'
+  - make installcheck
+  - make installcheck RUNTESTFLAGS='--dumprestore'
 
 notifications:
   email: false
