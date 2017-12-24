@@ -3,19 +3,14 @@ env:
     - RUNTESTFLAGS=-v
   matrix:
     - CFLAGS="-O3 -march=native -mtune=native"
-    - CFLAGS="-O3 -g -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address -lasan" MATRIX_EVAL="export ASAN_OPTIONS=verify_asan_link_order=false && export CC=gcc-7 && export CXX=g++-7"
     - CFLAGS="-O3 -march=native -mtune=native -fno-omit-frame-pointer -Werror"
     - CFLAGS="-O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage"
 
 addons:
   postgresql: "9.6"
   apt:
-    sources:
-      - ubuntu-toolchain-r-test
     packages:
-      - eatmydata  
-      - g++-7
-      - libc6-dev
+      - eatmydata
 
 before_install:
   - eval "${MATRIX_EVAL}"
@@ -29,6 +24,7 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests binutils
   - cp -n /var/cache/apt/archives/* /home/travis/deb || true
+  - ls -la /home/travis/deb/
   - cd /home/travis/proj
   - test -f proj-4.9.2.tar.gz || wget -c http://download.osgeo.org/proj/proj-4.9.2.tar.gz
   - test -d proj-4.9.2 || tar zxvf proj-4.9.2.tar.gz
@@ -39,7 +35,6 @@ before_install:
   - cd /home/travis/build/postgis/postgis/
   - sudo ldconfig
   - ./autogen.sh
-  - sudo sh -c "echo > /etc/ld.so.preload"
 
 after_failure:
   - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log 
