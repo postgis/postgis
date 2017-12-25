@@ -335,7 +335,6 @@ LWTRIANGLE *lwtriangle_clone(const LWTRIANGLE *lwgeom);
 LWCOLLECTION *lwcollection_clone(const LWCOLLECTION *lwgeom);
 LWCIRCSTRING *lwcircstring_clone(const LWCIRCSTRING *curve);
 POINTARRAY *ptarray_clone(const POINTARRAY *ptarray);
-GBOX *box2d_clone(const GBOX *lwgeom);
 LWLINE *lwline_clone_deep(const LWLINE *lwgeom);
 LWPOLY *lwpoly_clone_deep(const LWPOLY *lwgeom);
 LWCOLLECTION *lwcollection_clone_deep(const LWCOLLECTION *lwgeom);
