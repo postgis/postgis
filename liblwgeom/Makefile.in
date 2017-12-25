@@ -54,7 +54,6 @@ SA_OBJS = \
 	bytebuffer.o \
 	measures.o \
 	measures3d.o \
-	box2d.o \
 	ptarray.o \
 	lwgeom_api.o \
 	lwgeom.o \
