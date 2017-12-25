@@ -34,9 +34,6 @@ indent_size = 2
 [liblwgeom/lwgeom_topo.{c,h}]
 indent_style = space
 
-[liblwgeom/box2d.c]
-indent_style = space
-
 [liblwgeom/lwgeom_log.h]
 indent_style = space
 
