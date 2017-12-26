@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright 2015 Daniel Baston <dbaston@gmail.com>
+ * Copyright 2017 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -28,42 +29,50 @@
 #include "lwgeom_log.h"
 
 static void
-calc_distances_3d(const POINT3D* curr, const POINT3D* points, uint32_t npoints, double* distances)
+calc_weighted_distances_3d(const POINT3D* curr, const POINT4D* points, size_t npoints, double* distances)
 {
-	uint32_t i;
+	size_t i;
 	for (i = 0; i < npoints; i++)
 	{
-		distances[i] = distance3d_pt_pt(curr, &points[i]);
+		distances[i] = distance3d_pt_pt(curr, (POINT3D*)&points[i]) / points[i].m;
 	}
 }
 
 static double
-iterate_3d(POINT3D* curr, const POINT3D* points, uint32_t npoints, double* distances)
+iterate_4d(POINT4D* curr, const POINT4D* points, size_t npoints, double* distances)
 {
-	uint32_t i;
-	POINT3D next = { 0, 0, 0 };
+	size_t i;
+	POINT4D next = { 0, 0, 0, 1};
 	double delta;
 	double denom = 0;
 	char hit = LW_FALSE;
 
-	calc_distances_3d(curr, points, npoints, distances);
+	calc_weighted_distances_3d((POINT3D*)curr, points, npoints, distances);
 
 	for (i = 0; i < npoints; i++)
 	{
-		if (distances[i] == 0)
-			hit = LW_TRUE;
-		else
-			denom += 1.0 / distances[i];
-	}
-
-	for (i = 0; i < npoints; i++)
-	{
-		if (distances[i] > 0)
+		/* we need to use lower epsilon than in FP_IS_ZERO in the loop for calculation to converge */
+		if (fabs(distances[i]) > DBL_EPSILON)
 		{
-			next.x += (points[i].x / distances[i]) / denom;
-			next.y += (points[i].y / distances[i]) / denom;
-			next.z += (points[i].z / distances[i]) / denom;
+			next.x += points[i].x / distances[i];
+			next.y += points[i].y / distances[i];
+			next.z += points[i].z / distances[i];
+			denom += 1.0 / distances[i];
 		}
+		else
+		{
+			hit = LW_TRUE;
+		}
+	}
+	if (fabs(denom) > DBL_EPSILON)
+	{
+		next.x /= denom;
+		next.y /= denom;
+		next.z /= denom;
+	}
+	else
+	{
+		hit = LW_TRUE;
 	}
 
 	/* If any of the intermediate points in the calculation is found in the
@@ -86,10 +95,9 @@ iterate_3d(POINT3D* curr, const POINT3D* points, uint32_t npoints, double* dista
 		double dy = 0;
 		double dz = 0;
 		double r_inv;
-		POINT3D alt;
 		for (i = 0; i < npoints; i++)
 		{
-			if (distances[i] > 0)
+			if (fabs(distances[i]) > DBL_EPSILON)
 			{
 				dx += (points[i].x - curr->x) / distances[i];
 				dy += (points[i].y - curr->y) / distances[i];
@@ -99,14 +107,12 @@ iterate_3d(POINT3D* curr, const POINT3D* points, uint32_t npoints, double* dista
 
 		r_inv = 1.0 / sqrt ( dx*dx + dy*dy + dz*dz );
 
-		alt.x = FP_MAX(0, 1.0 - r_inv)*next.x + FP_MIN(1.0, r_inv)*curr->x;
-		alt.y = FP_MAX(0, 1.0 - r_inv)*next.y + FP_MIN(1.0, r_inv)*curr->y;
-		alt.z = FP_MAX(0, 1.0 - r_inv)*next.z + FP_MIN(1.0, r_inv)*curr->z;
-
-		next = alt;
+		next.x = FP_MAX(0, 1.0 - r_inv)*next.x + FP_MIN(1.0, r_inv)*curr->x;
+		next.y = FP_MAX(0, 1.0 - r_inv)*next.y + FP_MIN(1.0, r_inv)*curr->y;
+		next.z = FP_MAX(0, 1.0 - r_inv)*next.z + FP_MIN(1.0, r_inv)*curr->z;
 	}
 
-	delta = distance3d_pt_pt(curr, &next);
+	delta = distance3d_pt_pt((POINT3D*)curr, (POINT3D*)&next);
 
 	curr->x = next.x;
 	curr->y = next.y;
@@ -115,37 +121,59 @@ iterate_3d(POINT3D* curr, const POINT3D* points, uint32_t npoints, double* dista
 	return delta;
 }
 
-static POINT3D
-init_guess(const POINT3D* points, uint32_t npoints)
+static POINT4D
+init_guess(const POINT4D* points, size_t npoints)
 {
-	POINT3D guess = { 0, 0, 0 };
-	uint32_t i;
+	POINT4D guess = { 0, 0, 0, 0 };
+	size_t i;
 	for (i = 0; i < npoints; i++)
 	{
-		guess.x += points[i].x / npoints;
-		guess.y += points[i].y / npoints;
-		guess.z += points[i].z / npoints;
+		guess.x += points[i].x * points[i].m;
+		guess.y += points[i].y * points[i].m;
+		guess.z += points[i].z * points[i].m;
+		guess.m += points[i].m;
 	}
-
+	if (!FP_IS_ZERO(guess.m))
+	{
+		guess.x /= guess.m;
+		guess.y /= guess.m;
+		guess.z /= guess.m;
+	}
 	return guess;
 }
 
-static POINT3D*
-lwmpoint_extract_points_3d(const LWMPOINT* g, uint32_t* ngeoms)
+static POINT4D*
+lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* ngeoms)
 {
-	uint32_t i;
-	uint32_t n = 0;
+	size_t i;
+	size_t n = 0;
 	int is_3d = lwgeom_has_z((LWGEOM*) g);
+	int has_m = lwgeom_has_m((LWGEOM*) g);
 
-	POINT3D* points = lwalloc(g->ngeoms * sizeof(POINT3D));
+	POINT4D* points = lwalloc(g->ngeoms * sizeof(POINT4D));
 	for (i = 0; i < g->ngeoms; i++)
 	{
 		LWGEOM* subg = lwcollection_getsubgeom((LWCOLLECTION*) g, i);
 		if (!lwgeom_is_empty(subg))
 		{
-			getPoint3dz_p(((LWPOINT*) subg)->point, 0, (POINT3DZ*) &points[n++]);
+			getPoint4d_p(((LWPOINT*) subg)->point, 0, (POINT4D*) &points[n]);
 			if (!is_3d)
-				points[n-1].z = 0.0; /* in case the getPoint functions return NaN in the future for 2d */
+			{
+				points[n].z = 0.0; /* in case the getPoint functions return NaN in the future for 2d */
+			}
+			if (!has_m)
+			{
+				points[n].m = 1.0;
+				n++;
+			}
+			else
+			{
+				/* points with zero weight are not going to affect calculation, drop them early */
+				if (!FP_IS_ZERO(points[n].m))
+				{
+					n++;
+				}
+			}
 		}
 	}
 
@@ -155,29 +183,53 @@ lwmpoint_extract_points_3d(const LWMPOINT* g, uint32_t* ngeoms)
 	return points;
 }
 
+
 LWPOINT*
 lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_not_converged)
 {
-	uint32_t npoints; /* we need to count this ourselves so we can exclude empties */
-	uint32_t i;
+	size_t npoints; /* we need to count this ourselves so we can exclude empties and weightless points */
+	size_t i;
 	double delta = DBL_MAX;
 	double* distances;
-	POINT3D* points = lwmpoint_extract_points_3d(g, &npoints);
-	POINT3D median;
+	POINT4D* points = lwmpoint_extract_points_4d(g, &npoints); /* m ordinate is considered weight, if defined */
+	POINT4D median;
 
 	if (npoints == 0)
 	{
 		lwfree(points);
-		return lwpoint_construct_empty(g->srid, 0, 0);
+		if (fail_if_not_converged)
+		{
+			lwerror("Median failed to find input points with weight.");
+			return NULL;
+		}
+		else
+		{
+			return lwpoint_construct_empty(g->srid, 0, 0);
+		}
 	}
 
 	median = init_guess(points, npoints);
+
+	/* negative total weight means median cannot converge */
+	if (median.m <= 0.0)
+	{
+		lwfree(points);
+		if (fail_if_not_converged)
+		{
+			lwerror("Median cannot converge for input with negative sum of weights.");
+			return NULL;
+		}
+		else
+		{
+			return lwpoint_construct_empty(g->srid, 0, 0);
+		}
+	}
 
 	distances = lwalloc(npoints * sizeof(double));
 
 	for (i = 0; i < max_iter && delta > tol; i++)
 	{
-		delta = iterate_3d(&median, points, npoints, distances);
+		delta = iterate_4d(&median, points, npoints, distances);
 	}
 
 	lwfree(points);

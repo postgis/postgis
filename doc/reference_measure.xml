@@ -820,7 +820,7 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 		</refsection>
 
   </refentry>
-  
+
   	<refentry id="ST_Angle">
 		<refnamediv>
 		  <refname>ST_Angle</refname>
@@ -835,7 +835,7 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 			  <paramdef><type>geometry </type><parameter>point2</parameter></paramdef>
 			  <paramdef><type>geometry </type><parameter>point3</parameter></paramdef>
 			  <paramdef choice="opt"><type>geometry </type><parameter>point4</parameter></paramdef>
-			</funcprototype> 
+			</funcprototype>
 			<funcprototype>
 			  <funcdef>float <function>ST_Angle</function></funcdef>
 			  <paramdef><type>geometry </type><parameter>line1</parameter></paramdef>
@@ -850,12 +850,12 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 			If input are 2 lines, get first and last point of the lines as 4 points.
 			For 4 points,compute the angle measured clockwise of P1P2,P3P4.
 			Results are always positive, between 0 and 2*Pi radians.
-			
+
 			Uses azimuth of pairs or points.
 			</para>
-			<para>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</para> 
-			<para>Result is in radian and can be converted to degrees using a built-in PostgreSQL function degrees(), as shown in the example.</para> 
-			<para>Availability: 2.5.0</para> 
+			<para>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</para>
+			<para>Result is in radian and can be converted to degrees using a built-in PostgreSQL function degrees(), as shown in the example.</para>
+			<para>Availability: 2.5.0</para>
 		</refsection>
 
 		<refsection>
@@ -867,24 +867,24 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 			, random() * 2 * PI() AS rad2
 		FROM  generate_series(1,2,2) AS s
 	)
-	 , points AS ( 
+	 , points AS (
 		SELECT s, rad1,rad2, ST_MakePoint(cos1+s,sin1+s) as p1, ST_MakePoint(s,s) AS p2, ST_MakePoint(cos2+s,sin2+s) as p3
-		FROM rand 
-			,cos(rad1) cos1, sin(rad1) sin1 
+		FROM rand
+			,cos(rad1) cos1, sin(rad1) sin1
 			,cos(rad2) cos2, sin(rad2) sin2
 	)
 	SELECT s, ST_AsText(ST_SnapToGrid(ST_MakeLine(ARRAY[p1,p2,p3]),0.001)) AS line
 		, degrees(ST_Angle(p1,p2,p3)) as computed_angle
-		, round(degrees(2*PI()-rad2 -2*PI()+rad1+2*PI()))::int%360 AS reference 
-		, round(degrees(2*PI()-rad2 -2*PI()+rad1+2*PI()))::int%360 AS reference 
+		, round(degrees(2*PI()-rad2 -2*PI()+rad1+2*PI()))::int%360 AS reference
+		, round(degrees(2*PI()-rad2 -2*PI()+rad1+2*PI()))::int%360 AS reference
 	FROM points ;
 
 1 | line | computed_angle | reference
 ------------------+------------------
 1 | LINESTRING(1.511 1.86,1 1,0.896 0.005) | 155.27033848688 | 155
 
-</programlisting> 
-		</refsection> 
+</programlisting>
+		</refsection>
   </refentry>
 
   <refentry id="ST_Centroid">
@@ -3281,25 +3281,31 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 	<refsection>
 	  <title>Description</title>
 
-	  <para>
+	<para>
 		  Computes the approximate geometric median of a MultiPoint geometry
 		  using the Weiszfeld algorithm.  The geometric median provides a
 		  centrality measure that is less sensitive to outlier points than
 		  the centroid.
-
+	</para>
+	<para>
 		  The algorithm will iterate until the distance change between
 		  successive iterations is less than the supplied <varname>tolerance</varname>
 		  parameter.  If this condition has not been met after <varname>max_iterations</varname>
 		  iterations, the function will produce an error and exit, unless <varname>fail_if_not_converged</varname>
 		  is set to false.
-
-		  If a tolerance value is not provided, a default tolerance value
+	</para>
+	<para>
+		  If a <varname>tolerance</varname> value is not provided, a default tolerance value
 		  will be calculated based on the extent of the input geometry.
-	  </para>
-
-	  <para>Availability: 2.3.0</para>
-	  <para>&Z_support;</para>
-  </refsection>
+	</para>
+	<para>
+		  M value of points, if present, is interpreted as their relative weight.
+	</para>
+	<para>Availability: 2.3.0</para>
+	<para>Enhanced: 2.5.0 Added support for M as weight of points.</para>
+	<para>&Z_support;</para>
+	<para>&M_support;</para>
+    </refsection>
     <refsection>
       <title>Examples</title>
 	  <para>
