@@ -28,6 +28,10 @@ rm -rf ${WORKSPACE}/tmp/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 rm -rf ${WORKSPACE}/tmp/${POSTGIS_MAJOR_VERSION}_${POSTGIS_MINOR_VERSION}_pg${PG_VER}w${OS_BUILD}
 #mkdir ${WORKSPACE}/tmp/
 export PGIS_REG_TMPDIR=${WORKSPACE}/tmp/${POSTGIS_MAJOR_VERSION}_${POSTGIS_MINOR_VERSION}_pg${PG_VER}w${OS_BUILD}
+
+#adding this sleep so postgres instance has some grace period for starting
+#otherwise the attempt to drop the database, sometimes happes when pg is in middle of start
+sleep 5
 export POSTGIS_REGRESS_DB="postgis_reg" # FIXME: tweak to avoid clashes
 psql -c "DROP DATABASE IF EXISTS $POSTGIS_REGRESS_DB"
 
