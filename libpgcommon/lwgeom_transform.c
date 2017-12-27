@@ -89,7 +89,7 @@ void SetPROJ4LibPath(void);
 
 
 static void
-#if POSTGIS_PGSQL_VERSION < 95
+#if POSTGIS_PGSQL_VERSION < 96
 PROJ4SRSCacheDelete(MemoryContext context)
 {
 #else
@@ -113,7 +113,7 @@ PROJ4SRSCacheDelete(void *ptr)
 	DeletePJHashEntry(context);
 }
 
-#if POSTGIS_PGSQL_VERSION < 95
+#if POSTGIS_PGSQL_VERSION < 96
 
 static void
 PROJ4SRSCacheInit(MemoryContext context)
@@ -182,7 +182,7 @@ static MemoryContextMethods PROJ4SRSCacheContextMethods =
 #endif
 };
 
-#endif /* POSTGIS_PGSQL_VERSION < 95 */
+#endif /* POSTGIS_PGSQL_VERSION < 96 */
 
 /*
  * PROJ4 projPJ Hash Table functions
@@ -534,7 +534,7 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	 */
 	POSTGIS_DEBUGF(3, "adding SRID %d with proj4text \"%s\" to query cache at index %d", srid, proj_str, PROJ4Cache->PROJ4SRSCacheCount);
 
-#if POSTGIS_PGSQL_VERSION < 95
+#if POSTGIS_PGSQL_VERSION < 96
 	PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
 	                                      &PROJ4SRSCacheContextMethods,
 	                                      PROJ4Cache->PROJ4SRSCacheContext,

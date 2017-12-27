@@ -96,7 +96,7 @@ static void DeletePrepGeomHashEntry(MemoryContext mcxt);
 
 
 static void
-#if POSTGIS_PGSQL_VERSION < 95
+#if POSTGIS_PGSQL_VERSION < 96
 PreparedCacheDelete(MemoryContext context)
 {
 #else
@@ -125,7 +125,7 @@ PreparedCacheDelete(void *ptr)
 	DeletePrepGeomHashEntry(context);
 }
 
-#if POSTGIS_PGSQL_VERSION < 95
+#if POSTGIS_PGSQL_VERSION < 96
 static void
 PreparedCacheInit(MemoryContext context)
 {
@@ -192,7 +192,7 @@ static MemoryContextMethods PreparedCacheContextMethods =
 #endif
 };
 
-#endif /* POSTGIS_PGSQL_VERSION < 95 */
+#endif /* POSTGIS_PGSQL_VERSION < 96 */
 
 
 
@@ -313,7 +313,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	if ( ! prepcache->context_callback )
 	{
 		PrepGeomHashEntry pghe;
-#if POSTGIS_PGSQL_VERSION < 95
+#if POSTGIS_PGSQL_VERSION < 96
 		prepcache->context_callback = MemoryContextCreate(T_AllocSetContext, 8192,
 		                             &PreparedCacheContextMethods,
 		                             prepcache->context_statement,
