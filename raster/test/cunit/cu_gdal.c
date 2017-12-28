@@ -471,6 +471,9 @@ static void test_raster_to_gdal() {
 
 	if (gdal) CPLFree(gdal);
 
+	gdal = rt_raster_to_gdal(raster, srs, "PCIDSK", NULL, &gdalSize);
+	CU_ASSERT(gdal == NULL);
+
 	cu_free_raster(raster);
 }
 

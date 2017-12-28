@@ -1603,6 +1603,9 @@ rt_raster_to_gdal(
 	rt_raster raster, const char *srs,
 	char *format, char **options, uint64_t *gdalsize
 ) {
+	const char *cc;
+	const char *vio;
+
 	GDALDriverH src_drv = NULL;
 	int destroy_src_drv = 0;
 	GDALDatasetH src_ds = NULL;
@@ -1642,6 +1645,18 @@ rt_raster_to_gdal(
 		return 0;
 	}
 	RASTER_DEBUG(3, "Output driver loaded");
+
+	/* CreateCopy support */
+	cc = GDALGetMetadataItem(rtn_drv, GDAL_DCAP_CREATECOPY, NULL);
+	/* VirtualIO support */
+	vio = GDALGetMetadataItem(rtn_drv, GDAL_DCAP_VIRTUALIO, NULL);
+
+	if (cc == NULL || vio == NULL) {
+		rterror("rt_raster_to_gdal: Output GDAL driver does not support CreateCopy and/or VirtualIO");
+		GDALClose(src_ds);
+		if (destroy_src_drv) GDALDestroyDriver(src_drv);
+		return 0;
+	}
 
 	/* convert GDAL MEM raster to output format */
 	RASTER_DEBUG(3, "Copying GDAL MEM raster to memory file in output format");
@@ -1696,14 +1711,16 @@ rt_raster_to_gdal(
  * Returns a set of available GDAL drivers
  *
  * @param drv_count : number of GDAL drivers available
- * @param cancc : if non-zero, filter drivers to only those
+ * @param can_write : if non-zero, filter drivers to only those
  *   with support for CreateCopy and VirtualIO
  *
  * @return set of "gdaldriver" values of available GDAL drivers
  */
 rt_gdaldriver
-rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
-	const char *state;
+rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t can_write) {
+	const char *is_raster;
+	const char *cc;
+	const char *vio;
 	const char *txt;
 	int txt_len;
 	GDALDriverH *drv = NULL;
@@ -1730,19 +1747,27 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
 #ifdef GDAL_DCAP_RASTER
 		/* Starting with GDAL 2.0, vector drivers can also be returned */
 		/* Only keep raster drivers */
-		state = GDALGetMetadataItem(drv, GDAL_DCAP_RASTER, NULL);
-		if (state == NULL || !EQUAL(state, "YES"))
+		is_raster = GDALGetMetadataItem(drv, GDAL_DCAP_RASTER, NULL);
+		if (is_raster == NULL || !EQUAL(is_raster, "YES"))
 			continue;
 #endif
 
-		if (cancc) {
-			/* CreateCopy support */
-			state = GDALGetMetadataItem(drv, GDAL_DCAP_CREATECOPY, NULL);
-			if (state == NULL) continue;
+		/* CreateCopy support */
+		cc = GDALGetMetadataItem(drv, GDAL_DCAP_CREATECOPY, NULL);
 
-			/* VirtualIO support */
-			state = GDALGetMetadataItem(drv, GDAL_DCAP_VIRTUALIO, NULL);
-			if (state == NULL) continue;
+		/* VirtualIO support */
+		vio = GDALGetMetadataItem(drv, GDAL_DCAP_VIRTUALIO, NULL);
+
+		if (can_write && (cc == NULL || vio == NULL))
+			continue;
+
+		/* we can always read what GDAL can load */
+		rtn[j].can_read = 1;
+		/* we require CreateCopy and VirtualIO support to write to GDAL */
+		rtn[j].can_write = (cc != NULL && vio != NULL);
+
+		if (rtn[j].can_write) {
+			RASTER_DEBUGF(3, "driver %s (%d) supports CreateCopy() and VirtualIO()", txt, i);
 		}
 
 		/* index of driver */
@@ -1751,10 +1776,6 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
 		/* short name */
 		txt = GDALGetDriverShortName(drv);
 		txt_len = strlen(txt);
-
-		if (cancc) {
-			RASTER_DEBUGF(3, "driver %s (%d) supports CreateCopy() and VirtualIO()", txt, i);
-		}
 
 		txt_len = (txt_len + 1) * sizeof(char);
 		rtn[j].short_name = (char *) rtalloc(txt_len);

@@ -2424,6 +2424,8 @@ struct rt_gdaldriver_t {
 	char *short_name;
 	char *long_name;
 	char *create_options;
+	uint8_t can_read;
+	uint8_t can_write;
 };
 
 /* raster colormap entry */

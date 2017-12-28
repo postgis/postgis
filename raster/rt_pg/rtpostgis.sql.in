@@ -1932,7 +1932,14 @@ CREATE OR REPLACE FUNCTION st_fromgdalraster(gdaldata bytea, srid integer DEFAUL
 -- ST_AsGDALRaster and supporting functions
 -----------------------------------------------------------------------
 -- returns set of available and usable GDAL drivers
-CREATE OR REPLACE FUNCTION st_gdaldrivers(OUT idx int, OUT short_name text, OUT long_name text, OUT create_options text)
+CREATE OR REPLACE FUNCTION st_gdaldrivers(
+	OUT idx int,
+	OUT short_name text,
+	OUT long_name text,
+	OUT can_read boolean,
+	OUT can_write boolean,
+	OUT create_options text
+)
   RETURNS SETOF record
 	AS 'MODULE_PATHNAME', 'RASTER_getGDALDrivers'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;

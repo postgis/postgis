@@ -362,7 +362,7 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		/* switch to memory context appropriate for multiple function calls */
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-		drv_set = rt_raster_gdal_drivers(&drv_count, 1);
+		drv_set = rt_raster_gdal_drivers(&drv_count, 0);
 		if (NULL == drv_set || !drv_count) {
 			elog(NOTICE, "No GDAL drivers found");
 			MemoryContextSwitchTo(oldcontext);
@@ -403,7 +403,7 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 4;
+		int values_length = 6;
 		Datum values[values_length];
 		bool nulls[values_length];
 		HeapTuple tuple;
@@ -416,11 +416,15 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		values[0] = Int32GetDatum(drv_set2[call_cntr].idx);
 		values[1] = CStringGetTextDatum(drv_set2[call_cntr].short_name);
 		values[2] = CStringGetTextDatum(drv_set2[call_cntr].long_name);
-		values[3] = CStringGetTextDatum(drv_set2[call_cntr].create_options);
+		values[3] = BoolGetDatum(drv_set2[call_cntr].can_read);
+		values[4] = BoolGetDatum(drv_set2[call_cntr].can_write);
+		values[5] = CStringGetTextDatum(drv_set2[call_cntr].create_options);
 
 		POSTGIS_RT_DEBUGF(4, "Result %d, Index %d", call_cntr, drv_set2[call_cntr].idx);
 		POSTGIS_RT_DEBUGF(4, "Result %d, Short Name %s", call_cntr, drv_set2[call_cntr].short_name);
 		POSTGIS_RT_DEBUGF(4, "Result %d, Full Name %s", call_cntr, drv_set2[call_cntr].long_name);
+		POSTGIS_RT_DEBUGF(4, "Result %d, Can Read %s", call_cntr, drv_set2[call_cntr].can_read);
+		POSTGIS_RT_DEBUGF(4, "Result %d, Can Write %s", call_cntr, drv_set2[call_cntr].can_write);
 		POSTGIS_RT_DEBUGF(5, "Result %d, Create Options %s", call_cntr, drv_set2[call_cntr].create_options);
 
 		/* build a tuple */
