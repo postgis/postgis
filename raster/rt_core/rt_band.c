@@ -361,10 +361,10 @@ rt_band_load_offline_data(rt_band band) {
 	}
 
 	rt_util_gdal_register_all(0);
-	/*
 	hdsSrc = rt_util_gdal_open(band->data.offline.path, GA_ReadOnly, 1);
-	*/
+	/*
 	hdsSrc = rt_util_gdal_open(band->data.offline.path, GA_ReadOnly, 0);
+	*/
 	if (hdsSrc == NULL) {
 		rterror("rt_band_load_offline_data: Cannot open offline raster: %s", band->data.offline.path);
 		return ES_ERROR;
