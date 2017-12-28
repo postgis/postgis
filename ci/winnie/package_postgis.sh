@@ -58,7 +58,7 @@ else
 	export svnurl="http://svn.osgeo.org/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}"
 fi;
 
-if [[ "$POSTGIS_MINOR_VER"  == 2.3 ]] ; then
+if [[ "$reference"  == *trunk*]] ; then
 	export svnurl="http://svn.osgeo.org/postgis/trunk"
 fi;
 #export POSTGIS_SRC=${PROJECTS}/postgis/trunk
