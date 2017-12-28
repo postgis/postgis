@@ -1027,7 +1027,7 @@ POINT(0.5 1)
 	<refsection>
 	  <title>See Also</title>
 
-	  <para><xref linkend="ST_PointOnSurface" /></para>
+	  <para><xref linkend="ST_PointOnSurface" />, <xref linkend="ST_GeometricMedian" /></para>
 	</refsection>
   </refentry>
 
