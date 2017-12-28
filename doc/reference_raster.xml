@@ -1093,7 +1093,7 @@ postgis_raster_lib_version
 	  <refnamediv>
 		<refname>ST_GDALDrivers</refname>
 
-		<refpurpose>Returns a list of raster formats supported by your lib gdal.  These are the formats you can output your raster using ST_AsGDALRaster.</refpurpose>
+		<refpurpose>Returns a list of raster formats supported by PostGIS through GDAL.  Only those formats with can_write=True can be used by ST_AsGDALRaster</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1103,6 +1103,8 @@ postgis_raster_lib_version
 			<paramdef><type>integer </type> <parameter>OUT idx</parameter></paramdef>
 			<paramdef><type>text </type> <parameter>OUT short_name</parameter></paramdef>
 			<paramdef><type>text </type> <parameter>OUT long_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>OUT can_read</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>OUT can_write</parameter></paramdef>
 			<paramdef><type>text </type> <parameter>OUT create_options</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -1111,9 +1113,12 @@ postgis_raster_lib_version
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns a list of raster formats short_name,long_name and creator options of each format supported by your lib gdal.  Use the short_name as input in the <varname>format</varname> parameter of <xref linkend="RT_ST_AsGDALRaster" />.
-		Options vary depending on what drivers your libgdal was compiled with. <varname>create_options</varname> returns an xml formatted set of CreationOptionList/Option consisting of name and optional <varname>type</varname>, <varname>description</varname> and set of <varname>VALUE</varname> for each creator option for the specific driver.</para>
+		<para>
+			Returns a list of raster formats short_name,long_name and creator options of each format supported by GDAL.  Use the short_name as input in the <varname>format</varname> parameter of <xref linkend="RT_ST_AsGDALRaster" />.
+			Options vary depending on what drivers your libgdal was compiled with. <varname>create_options</varname> returns an xml formatted set of CreationOptionList/Option consisting of name and optional <varname>type</varname>, <varname>description</varname> and set of <varname>VALUE</varname> for each creator option for the specific driver.
+		</para>
 
+		 <para>Changed: 2.5.0 - add can_read and can_write columns.</para>
 		 <para>Changed: 2.0.6, 2.1.3 - by default no drivers are enabled, unless GUC or Environment variable gdal_enabled_drivers is set.</para>
 		 <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
 
@@ -1123,43 +1128,66 @@ postgis_raster_lib_version
 		<title>Examples: List of Drivers</title>
 
 		<programlisting>SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
-SELECT short_name, long_name
+SELECT short_name, long_name, can_write
 FROM st_gdaldrivers()
 ORDER BY short_name;
-   short_name    |              long_name
------------------+--------------------------------------
- AAIGrid         | Arc/Info ASCII Grid
- ARG             | Azavea Raster Grid format
- DTED            | DTED Elevation Raster
- EHdr            | ESRI .hdr Labelled
- FIT             | FIT Image
- GIF             | Graphics Interchange Format (.gif)
- GPKG            | GeoPackage
- GS7BG           | Golden Software 7 Binary Grid (.grd)
- GSAG            | Golden Software ASCII Grid (.grd)
- GSBG            | Golden Software Binary Grid (.grd)
- GTiff           | GeoTIFF
- HF2             | HF2/HFZ heightfield raster
- HFA             | Erdas Imagine Images (.img)
- ILWIS           | ILWIS Raster Map
- INGR            | Intergraph Raster
- JPEG            | JPEG JFIF
- KMLSUPEROVERLAY | Kml Super Overlay
- LCP             | FARSITE v.4 Landscape File (.lcp)
- MFF             | Vexcel MFF Raster
- NITF            | National Imagery Transmission Format
- PNG             | Portable Network Graphics
- R               | R Object Data Store
- RST             | Idrisi Raster A.1
- SAGA            | SAGA GIS Binary Grid (.sdat)
- SRTMHGT         | SRTMHGT File Format
- USGSDEM         | USGS Optional ASCII DEM (and CDED)
- VRT             | Virtual Raster
- WMS             | OGC Web Map Service
- XPM             | X11 PixMap Format
- XYZ             | ASCII Gridded XYZ
- ZMap            | ZMap Plus Grid
-(31 rows)</programlisting>
+
+   short_name    |                          long_name                          | can_write 
+-----------------+-------------------------------------------------------------+-----------
+ AAIGrid         | Arc/Info ASCII Grid                                         | t
+ ACE2            | ACE2                                                        | f
+ ADRG            | ARC Digitized Raster Graphics                               | f
+ AIG             | Arc/Info Binary Grid                                        | f
+ AirSAR          | AirSAR Polarimetric Image                                   | f
+ ARG             | Azavea Raster Grid format                                   | t
+ BAG             | Bathymetry Attributed Grid                                  | f
+ BIGGIF          | Graphics Interchange Format (.gif)                          | f
+ BLX             | Magellan topo (.blx)                                        | t
+ BMP             | MS Windows Device Independent Bitmap                        | f
+ BSB             | Maptech BSB Nautical Charts                                 | f
+ PAux            | PCI .aux Labelled                                           | f
+ PCIDSK          | PCIDSK Database File                                        | f
+ PCRaster        | PCRaster Raster File                                        | f
+ PDF             | Geospatial PDF                                              | f
+ PDS             | NASA Planetary Data System                                  | f
+ PDS4            | NASA Planetary Data System 4                                | t
+ PLMOSAIC        | Planet Labs Mosaics API                                     | f
+ PLSCENES        | Planet Labs Scenes API                                      | f
+ PNG             | Portable Network Graphics                                   | t
+ PNM             | Portable Pixmap Format (netpbm)                             | f
+ PRF             | Racurs PHOTOMOD PRF                                         | f
+ R               | R Object Data Store                                         | t
+ Rasterlite      | Rasterlite                                                  | t
+ RDA             | DigitalGlobe Raster Data Access driver                      | f
+ RIK             | Swedish Grid RIK (.rik)                                     | f
+ RMF             | Raster Matrix Format                                        | f
+ ROI_PAC         | ROI_PAC raster                                              | f
+ RPFTOC          | Raster Product Format TOC format                            | f
+ RRASTER         | R Raster                                                    | f
+ RS2             | RadarSat 2 XML Product                                      | f
+ RST             | Idrisi Raster A.1                                           | t
+ SAFE            | Sentinel-1 SAR SAFE Product                                 | f
+ SAGA            | SAGA GIS Binary Grid (.sdat, .sg-grd-z)                     | t
+ SAR_CEOS        | CEOS SAR Image                                              | f
+ SDTS            | SDTS Raster                                                 | f
+ SENTINEL2       | Sentinel 2                                                  | f
+ SGI             | SGI Image File Format 1.0                                   | f
+ SNODAS          | Snow Data Assimilation System                               | f
+ SRP             | Standard Raster Product (ASRP/USRP)                         | f
+ SRTMHGT         | SRTMHGT File Format                                         | t
+ Terragen        | Terragen heightfield                                        | f
+ TIL             | EarthWatch .TIL                                             | f
+ TSX             | TerraSAR-X Product                                          | f
+ USGSDEM         | USGS Optional ASCII DEM (and CDED)                          | t
+ VICAR           | MIPL VICAR file                                             | f
+ VRT             | Virtual Raster                                              | t
+ WCS             | OGC Web Coverage Service                                    | f
+ WMS             | OGC Web Map Service                                         | t
+ WMTS            | OGC Web Map Tile Service                                    | t
+ XPM             | X11 PixMap Format                                           | t
+ XYZ             | ASCII Gridded XYZ                                           | t
+ ZMap            | ZMap Plus Grid                                              | t
+</programlisting>
 </refsection>
 <refsection><title>Example: List of options for each driver</title>
 <programlisting>-- Output the create options XML column of JPEG as a table  --
