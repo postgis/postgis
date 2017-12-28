@@ -99,7 +99,7 @@ typedef struct kmeans_config
 	/* Number of objects in the preceding array */
 	size_t num_objs;
 
-	/* An array of inital centers for the algorithm */
+	/* An array of initial centers for the algorithm */
 	/* Can be randomly assigned, or using proportions, */
 	/* unfortunately the algorithm is sensitive to starting */
 	/* points, so using a "better" set of starting points */

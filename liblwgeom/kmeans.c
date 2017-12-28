@@ -117,7 +117,7 @@ static void update_r_threaded(kmeans_config *config)
 		{
 			/*
 			* Each thread gets a copy of the config, but with the list pointers
-			* offest to the start of the batch the thread is responsible for, and the
+			* offset to the start of the batch the thread is responsible for, and the
 			* object count number adjusted similarly.
 			*/
 			memcpy(&(thread_config[i]), config, sizeof(kmeans_config));
