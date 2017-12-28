@@ -577,6 +577,9 @@ DROP FUNCTION IF EXISTS _st_aspect4ma(float8[], text, text[]);
 DROP FUNCTION IF EXISTS _st_hillshade4ma(float8[], text, text[]);
 DROP FUNCTION IF EXISTS _st_slope4ma(float8[], text, text[]);
 
+-- function signature changed
+DROP FUNCTION IF EXISTS st_gdaldrivers();
+
 -- function signature change
 -- return value changed
 DO LANGUAGE 'plpgsql' $$
