@@ -143,7 +143,7 @@ init_guess(const POINT4D* points, size_t npoints)
 }
 
 static POINT4D*
-lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* ngeoms)
+lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* ngeoms, char fail_if_not_converged)
 {
 	size_t i;
 	size_t n = 0;
@@ -173,6 +173,22 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* ngeoms)
 				{
 					n++;
 				}
+
+				/* This limitation on non-negativity can be lifted 
+				 * by replacing Weiszfeld algorithm with different one.
+				 * Possible option described in:
+				 *
+				 * Drezner, Zvi & O. Wesolowsky, George. (1991).
+				 * The Weber Problem On The Plane With Some Negative Weights.
+				 * INFOR. Information Systems and Operational Research. 
+				 * 29. 10.1080/03155986.1991.11732158. 
+				 */
+				if (fail_if_not_converged && points[n].m < 0)
+				{
+					lwerror("Geometric median input contains points with negative weights. Implementation can't guarantee global minimum convergence and fail_if_not_converged was requested.");
+					n = 0;
+					break;
+				}				
 			}
 		}
 	}
@@ -191,7 +207,8 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 	size_t i;
 	double delta = DBL_MAX;
 	double* distances;
-	POINT4D* points = lwmpoint_extract_points_4d(g, &npoints); /* m ordinate is considered weight, if defined */
+	/* m ordinate is considered weight, if defined */
+	POINT4D* points = lwmpoint_extract_points_4d(g, &npoints, fail_if_not_converged);
 	POINT4D median;
 
 	if (npoints == 0)
@@ -199,7 +216,7 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 		lwfree(points);
 		if (fail_if_not_converged)
 		{
-			lwerror("Median failed to find input points with weight.");
+			lwerror("Median failed to find suitable input points.");
 			return NULL;
 		}
 		else
@@ -214,9 +231,14 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 	if (median.m <= 0.0)
 	{
 		lwfree(points);
-		if (fail_if_not_converged)
+		if (FP_IS_ZERO(median.m))
 		{
-			lwerror("Median cannot converge for input with negative sum of weights.");
+			lwerror("Sum of weights in multipoint is zero, cannot get initial guess for median.");
+			return NULL;
+		}
+		else if (fail_if_not_converged && median.m < 0.0)
+		{
+			lwerror("Sum of weights in multipoint is negative. Median is on infinity.");
 			return NULL;
 		}
 		else
