@@ -14,6 +14,10 @@ addons:
 
 before_install:
   - sudo sh -c "echo /usr/lib/libeatmydata/libeatmydata.so >> /etc/ld.so.preload"
+  - sudo service postgresql stop 9.6
+  - sudo find /etc -user postgres | xargs sudo chown travis
+  - sudo usermod -u 1000 postgres
+  - sudo service postgresql start 9.6
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update -qq
