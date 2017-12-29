@@ -174,14 +174,14 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* ngeoms, char fail_if_not_c
 					n++;
 				}
 
-				/* This limitation on non-negativity can be lifted 
+				/* This limitation on non-negativity can be lifted
 				 * by replacing Weiszfeld algorithm with different one.
 				 * Possible option described in:
 				 *
 				 * Drezner, Zvi & O. Wesolowsky, George. (1991).
 				 * The Weber Problem On The Plane With Some Negative Weights.
-				 * INFOR. Information Systems and Operational Research. 
-				 * 29. 10.1080/03155986.1991.11732158. 
+				 * INFOR. Information Systems and Operational Research.
+				 * 29. 10.1080/03155986.1991.11732158.
 				 */
 				if (fail_if_not_converged && points[n].m < 0)
 				{
