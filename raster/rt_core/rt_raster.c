@@ -1718,7 +1718,6 @@ rt_raster_to_gdal(
  */
 rt_gdaldriver
 rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t can_write) {
-	const char *is_raster;
 	const char *cc;
 	const char *vio;
 	const char *txt;
@@ -1747,6 +1746,7 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t can_write) {
 #ifdef GDAL_DCAP_RASTER
 		/* Starting with GDAL 2.0, vector drivers can also be returned */
 		/* Only keep raster drivers */
+		const char *is_raster;
 		is_raster = GDALGetMetadataItem(drv, GDAL_DCAP_RASTER, NULL);
 		if (is_raster == NULL || !EQUAL(is_raster, "YES"))
 			continue;
