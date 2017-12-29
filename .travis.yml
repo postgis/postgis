@@ -18,6 +18,7 @@ before_install:
   - sudo find /etc -user postgres | xargs sudo chown travis
   - sudo find /var -user postgres | xargs sudo chown travis
   - sudo usermod -u 1000 postgres
+  - sudo adduser travis ssl-cert
   - sudo service postgresql start 9.6
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
