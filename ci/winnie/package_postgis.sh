@@ -51,15 +51,15 @@ export POSTGIS_MICRO_VER=${POSTGIS_MICRO_VERSION}
 
 if [[ "$POSTGIS_MICRO_VERSION"  == *SVN* || "$POSTGIS_MICRO_VERSION"  == *dev* ]] ; then
 	export POSTGIS_SRC=${PROJECTS}/postgis/branches/${POSTGIS_MINOR_VER}
-	export svnurl="http://svn.osgeo.org/postgis/branches/${POSTGIS_MINOR_VER}"
+	export svnurl="https://svn.osgeo.org/postgis/branches/${POSTGIS_MINOR_VER}"
 else
 	#tagged version -- official release
 	export POSTGIS_SRC=${PROJECTS}/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}
-	export svnurl="http://svn.osgeo.org/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}"
+	export svnurl="https://svn.osgeo.org/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}"
 fi;
 
-if [[ "$reference"  == *trunk*]] ; then
-	export svnurl="http://svn.osgeo.org/postgis/trunk"
+if [[ "$reference"  == *trunk* ]] ; then
+	export svnurl="https://svn.osgeo.org/postgis/trunk"
 fi;
 #export POSTGIS_SRC=${PROJECTS}/postgis/trunk
 #POSTGIS_SVN_REVISION=will_be_passed_in_by_bot
