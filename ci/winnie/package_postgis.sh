@@ -9,13 +9,14 @@
 #POSTGIS_MAJOR_VERSION=2
 #POSTGIS_MINOR_VERSION=1
 #POSTGIS_MICRO_VERSION=0dev
-#export GEOS_VER=3.4.0dev
-#export GDAL_VER=2.0.0
 #export OS_BUILD=32
-#export PROJ_VER=4.9.1
+
 #export GCC_TYPE=
-#export SFCGAL_VER=1.1.0
-#export PCRE_VER
+export GEOS_VER=3.7.0dev
+export GDAL_VER=2.2.2
+export PROJ_VER=4.9.3
+export SFCGAL_VER=1.3
+export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
 

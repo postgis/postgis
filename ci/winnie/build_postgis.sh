@@ -7,8 +7,6 @@ set -e
 #export PGHOST=localhost
 #export PGPORT=8442
 #export PGUSER=postgres
-#export GEOS_VER=3.4.0dev
-#export GDAL_VER=1.9.1
 #POSTGIS_SVN_REVISION=passed_in_by_buildbot
 #POSTGIS_MAJOR_VERSION=2
 #POSTGIS_MINOR_VERSION=1
@@ -17,6 +15,14 @@ set -e
 #export JSON_VER=0.9
 #export SFCGAL_VER=1.0.4
 #export PROJ_VER=4.8.0
+
+export GEOS_VER=3.7.0dev
+export GDAL_VER=2.2.2
+export PROJ_VER=4.9.3
+export SFCGAL_VER=1.3
+export PCRE_VER=8.33
+export PROTOBUF_VER=3.2.0
+export PROTOBUFC_VER=1.2.1
 
 export PROTOBUF_VER=3.2.0
 export LIBXML_VER=2.7.8
