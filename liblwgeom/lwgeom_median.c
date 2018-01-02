@@ -64,16 +64,9 @@ iterate_4d(POINT4D* curr, const POINT4D* points, size_t npoints, double* distanc
 			hit = LW_TRUE;
 		}
 	}
-	if (fabs(denom) > DBL_EPSILON)
-	{
-		next.x /= denom;
-		next.y /= denom;
-		next.z /= denom;
-	}
-	else
-	{
-		hit = LW_TRUE;
-	}
+	next.x /= denom;
+	next.y /= denom;
+	next.z /= denom;
 
 	/* If any of the intermediate points in the calculation is found in the
 	 * set of input points, the standard Weiszfeld method gets stuck with a
@@ -133,17 +126,14 @@ init_guess(const POINT4D* points, size_t npoints)
 		guess.z += points[i].z * points[i].m;
 		guess.m += points[i].m;
 	}
-	if (!FP_IS_ZERO(guess.m))
-	{
-		guess.x /= guess.m;
-		guess.y /= guess.m;
-		guess.z /= guess.m;
-	}
+	guess.x /= guess.m;
+	guess.y /= guess.m;
+	guess.z /= guess.m;
 	return guess;
 }
 
 static POINT4D*
-lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* ngeoms, char fail_if_not_converged)
+lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* ngeoms)
 {
 	size_t i;
 	size_t n = 0;
@@ -183,7 +173,7 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* ngeoms, char fail_if_not_c
 				 * INFOR. Information Systems and Operational Research.
 				 * 29. 10.1080/03155986.1991.11732158.
 				 */
-				if (fail_if_not_converged && points[n].m < 0)
+				if (points[n].m < 0)
 				{
 					lwerror("Geometric median input contains points with negative weights. Implementation can't guarantee global minimum convergence and fail_if_not_converged was requested.");
 					n = 0;
@@ -226,26 +216,6 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 	}
 
 	median = init_guess(points, npoints);
-
-	/* negative total weight means median cannot converge */
-	if (median.m <= 0.0)
-	{
-		lwfree(points);
-		if (FP_IS_ZERO(median.m))
-		{
-			lwerror("Sum of weights in multipoint is zero, cannot get initial guess for median.");
-			return NULL;
-		}
-		else if (fail_if_not_converged && median.m < 0.0)
-		{
-			lwerror("Sum of weights in multipoint is negative. Median is on infinity.");
-			return NULL;
-		}
-		else
-		{
-			return lwpoint_construct_empty(g->srid, 0, 0);
-		}
-	}
 
 	distances = lwalloc(npoints * sizeof(double));
 
