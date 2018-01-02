@@ -2,8 +2,9 @@ env:
   global:
     - RUNTESTFLAGS=-v
   matrix:
-    - CFLAGS="-O3 -march=native -mtune=native"
-    - CFLAGS="-O3 -march=native -mtune=native -fno-omit-frame-pointer -Werror"
+    - CFLAGS="-Og"
+    - CFLAGS="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security" LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
+    - CFLAGS="-O3 -mtune=generic -fno-omit-frame-pointer -Werror"
     - CFLAGS="-O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage"
 
 addons:
@@ -43,6 +44,7 @@ before_install:
 
 after_failure:
   - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log 
+  - cat /proc/cpuinfo
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
