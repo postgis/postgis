@@ -1,11 +1,13 @@
 PostGIS 2.4.3
-2017/xx/xx
+2018/xx/xx
 
  * Bug fixes *
   - #3713, Support encodings that happen to output a '\' character
   - #3827, Set configure default to not do interrupt testing,
-          was causing false negatives for many people
+           was causing false negatives for many people
   - #3930, Minimum bounding circle issues on 32-bit platforms
+  - #3965, ST_ClusterKMeans used to lose some clusters on initialization
+           (Darafei Praliaskouski)
 
  * Enhancements *
   - #3944, Update to EPSG register v9.2 (Even Rouault)
