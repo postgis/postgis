@@ -10,9 +10,9 @@
 -- Copyright (c) 2009-2010 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 -- Copyright (c) 2009-2010 Mateusz Loskot <mateusz@loskot.net>
 -- Copyright (c) 2010 David Zwarg <dzwarg@azavea.com>
--- Copyright (C) 2011-2013 Regents of the University of California
+-- Copyright (c) 2011-2013 Regents of the University of California
 --   <bkpark@ucdavis.edu>
--- Copyright (C) 2013 Bborie Park <dustymugs@gmail.com>
+-- Copyright (c) 2013-2017 Bborie Park <dustymugs@gmail.com>
 --
 -- This program is free software; you can redistribute it and/or
 -- modify it under the terms of the GNU General Public License
@@ -3918,7 +3918,7 @@ CREATE OR REPLACE FUNCTION st_slope(
 		IF interpolate_nodata IS TRUE THEN
 			_rast := @extschema@.ST_MapAlgebra(
 				ARRAY[ROW(rast, nband)]::rastbandarg[],
-				'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
+				'@extschema@.st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
 				pixeltype,
 				'FIRST', NULL,
 				1, 1
@@ -4099,7 +4099,7 @@ CREATE OR REPLACE FUNCTION st_aspect(
 		IF interpolate_nodata IS TRUE THEN
 			_rast := @extschema@.ST_MapAlgebra(
 				ARRAY[ROW(rast, nband)]::rastbandarg[],
-				'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
+				'@extschema@.st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
 				pixeltype,
 				'FIRST', NULL,
 				1, 1
@@ -4307,7 +4307,7 @@ CREATE OR REPLACE FUNCTION st_hillshade(
 		IF interpolate_nodata IS TRUE THEN
 			_rast := @extschema@.ST_MapAlgebra(
 				ARRAY[ROW(rast, nband)]::rastbandarg[],
-				'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
+				'@extschema@.st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
 				pixeltype,
 				'FIRST', NULL,
 				1, 1
@@ -4467,7 +4467,7 @@ CREATE OR REPLACE FUNCTION st_tpi(
 		IF interpolate_nodata IS TRUE THEN
 			_rast := @extschema@.ST_MapAlgebra(
 				ARRAY[ROW(rast, nband)]::rastbandarg[],
-				'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
+				'@extschema@.st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
 				pixeltype,
 				'FIRST', NULL,
 				1, 1
@@ -4603,7 +4603,7 @@ CREATE OR REPLACE FUNCTION st_roughness(
 		IF interpolate_nodata IS TRUE THEN
 			_rast := @extschema@.ST_MapAlgebra(
 				ARRAY[ROW(rast, nband)]::rastbandarg[],
-				'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
+				'@extschema@.st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
 				pixeltype,
 				'FIRST', NULL,
 				1, 1
@@ -4749,7 +4749,7 @@ CREATE OR REPLACE FUNCTION st_tri(
 		IF interpolate_nodata IS TRUE THEN
 			_rast := @extschema@.ST_MapAlgebra(
 				ARRAY[ROW(rast, nband)]::rastbandarg[],
-				'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
+				'@extschema@.st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
 				pixeltype,
 				'FIRST', NULL,
 				1, 1
@@ -4783,6 +4783,63 @@ CREATE OR REPLACE FUNCTION st_tri(
 	RETURNS RASTER
 	AS $$ SELECT @extschema@.ST_tri($1, $2, NULL::raster, $3, $4) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+
+-----------------------------------------------------------------------
+-- ST_Grayscale
+-----------------------------------------------------------------------
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION _st_grayscale4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		ndims integer;
+		_value double precision[][][];
+
+		red double precision;
+		green double precision;
+		blue double precision;
+	BEGIN
+
+		RAISE NOTICE 'value = %', value;
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := @extschema@._ST_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		red := _value[1][1][1];
+		green := _value[2][1][1];
+		blue := _value[3][1][1];
+
+		RETURN 0.2989 * red + 0.5870 * green + 0.1140 * blue;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION st_grayscale(rast raster, redband integer DEFAULT 1, blueband DEFAULT 2, greenband DEFAULT 3)
+	RETURNS RASTER
+	AS $$
+	DECLARE
+	BEGIN
+
+		-- check that each band index is found in raster
+
+		-- check that each band is 8BUI. if not, reclassify to 8BUI
+
+		-- call map algebra with _st_grayscale4ma
+		RETURN @extschema@.ST_MapAlgebra(
+			rast,
+			ARRAY[redband, blueband, greenband],
+			'@extschema@._ST_Grayscale4MA(double precision[][][], integer[][], text[])'::regprocedure,,
+			'8BUI'
+		);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
 -- Get information about the raster
