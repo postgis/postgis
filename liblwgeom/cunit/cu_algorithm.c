@@ -1209,7 +1209,7 @@ static void test_median_robustness(void)
 	do_median_test("MULTIPOINT ((1 -1 3 1), (1 0 2 7), (2 1 1 2), (2 1 1 -1))", NULL, LW_TRUE, 1000);
 	do_median_test("MULTIPOINT ((1 -1 3 1), (1 0 2 7), (2 1 1 2), (2 1 1 -1))", NULL, LW_FALSE, 1000);
 	/* Weightless input is empty */
-	do_median_test("MULTIPOINT ((0 -1 0 0), (0 0 0 0), (0 0 0 0), (0 1 0 0))", "POINT EMPTY", LW_FALSE, 1000);
+	do_median_test("MULTIPOINT ((0 -1 0 0), (0 0 0 0), (0 0 0 0), (0 1 0 0))", NULL, LW_FALSE, 1000);
 	do_median_test("MULTIPOINT ((0 -1 0 0), (0 0 0 0), (0 0 0 0), (0 1 0 0))", NULL, LW_TRUE, 1000);
 	/* Negative weight won't converge */
 	do_median_test("MULTIPOINT ((0 -1 0 -1), (0 0 0 -1), (0 1 0 -1))", NULL, LW_FALSE, 1000);
