@@ -9075,12 +9075,154 @@ FROM funky_shapes;
 						<xref linkend="RT_ST_AsPNG" />,
 						<xref linkend="RT_ST_AsRaster" />
 						<xref linkend="RT_ST_MapAlgebra" />,
+						<xref linkend="RT_ST_Grayscale" />
 						<xref linkend="RT_ST_NumBands" />,
 						<xref linkend="RT_ST_Reclass" />,
 						<xref linkend="RT_ST_SetBandNoDataValue" />,
 						<xref linkend="RT_ST_Union" />
 					</para>
 				</refsection>
+			</refentry>
+
+			<refentry id="RT_ST_Grayscale">
+				<refnamediv>
+					<refname>ST_Grayscale</refname>
+					<refpurpose>Creates a new one-8BUI band raster from the source raster and specified bands representing Red, Green and Blue</refpurpose>
+				</refnamediv>
+
+				<refsynopsisdiv>
+					<funcsynopsis>
+					  <funcprototype>
+							<funcdef>(1) raster <function>ST_Grayscale</function></funcdef>
+							<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+							<paramdef choice="opt"><type>integer </type> <parameter>redband=1</parameter></paramdef>
+							<paramdef choice="opt"><type>integer </type> <parameter>greenband=2</parameter></paramdef>
+							<paramdef choice="opt"><type>integer </type> <parameter>blueband=3</parameter></paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+					  </funcprototype>
+					</funcsynopsis>
+
+					<funcsynopsis>
+					  <funcprototype>
+							<funcdef>(2) raster <function>ST_Grayscale</function></funcdef>
+							<paramdef><type>rastbandarg[] </type> <parameter>rastbandargset</parameter></paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+					  </funcprototype>
+					</funcsynopsis>
+				</refsynopsisdiv>
+
+				<refsection>
+					<title>Description</title>
+
+					<para>
+						Create a raster with one 8BUI band given three input bands (from one or more rasters). Any input band whose pixel type is not 8BUI will be reclassified using <xref linkend="RT_ST_Reclass" />.
+					</para>
+
+					<note>
+						<para>
+							This function is not like <xref linkend="RT_ST_ColorMap" /> with the <varname>grayscale</varname> keyword as ST_ColorMap operates on only one band while this function expects three bands for RGB.  This function applies the following equation for converting RGB to Grayscale: 0.2989 * RED + 0.5870 * GREEN + 0.1140 * BLUE
+						</para>
+					</note>
+
+					<para>Availability: 2.5.0 </para>
+
+				</refsection>
+
+				<refsection>
+					<title>Examples: Variant 1</title>
+
+					<programlisting>
+SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
+SET postgis.enable_outdb_rasters = True;
+
+WITH apple AS (
+	SELECT ST_AddBand(
+		ST_MakeEmptyRaster(350, 246, 0, 0, 1, -1, 0, 0, 0),
+		'/tmp/apple.png'::text,
+		NULL::int[]
+	) AS rast
+)
+SELECT
+	ST_AsPNG(rast) AS original_png,
+	ST_AsPNG(ST_Grayscale(rast)) AS grayscale_png
+FROM apple;
+					</programlisting>
+
+					<informaltable>
+						<tgroup cols="2">
+							<tbody>
+								<row>
+									<entry>
+										<para>
+											<informalfigure>
+												<mediaobject>
+													<imageobject>
+														<imagedata fileref="images/apple.png" />
+													</imageobject>
+													<caption>
+														<para>original_png</para>
+													</caption>
+												</mediaobject>
+											</informalfigure>
+										</para>
+									</entry>
+									<entry>
+										<para>
+											<informalfigure>
+												<mediaobject>
+													<imageobject>
+														<imagedata fileref="images/apple_st_grayscale.png" />
+													</imageobject>
+													<caption>
+														<para>grayscale_png</para>
+													</caption>
+												</mediaobject>
+											</informalfigure>
+										</para>
+									</entry>
+								</row>
+							</tbody>
+						</tgroup>
+					</informaltable>
+
+				</refsection>
+
+				<refsection>
+					<title>Examples: Variant 2</title>
+
+					<programlisting>
+SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
+SET postgis.enable_outdb_rasters = True;
+
+WITH apple AS (
+	SELECT ST_AddBand(
+		ST_MakeEmptyRaster(350, 246, 0, 0, 1, -1, 0, 0, 0),
+		'/tmp/apple.png'::text,
+		NULL::int[]
+	) AS rast
+)
+SELECT
+	ST_AsPNG(rast) AS original_png,
+	ST_AsPNG(ST_Grayscale(
+		ARRAY[
+			ROW(rast, 1)::rastbandarg, -- red
+			ROW(rast, 2)::rastbandarg, -- green
+			ROW(rast, 3)::rastbandarg, -- blue
+		]::rastbandarg[]
+	)) AS grayscale_png
+FROM apple;
+					</programlisting>
+				</refsection>
+
+				<refsection>
+					<title>See Also</title>
+					<para>
+						<xref linkend="RT_ST_AsPNG" />,
+						<xref linkend="RT_ST_Reclass" />,
+						<xref linkend="RT_ST_ColorMap" />
+					</para>
+				</refsection>
+
 			</refentry>
 
 			<refentry id="RT_ST_Intersection">
