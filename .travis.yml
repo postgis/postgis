@@ -3,7 +3,7 @@ env:
     - RUNTESTFLAGS=-v
   matrix:
     - CFLAGS="-Og"
-    - CFLAGS="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security" LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
+    - CFLAGS="-g -O2 -fstack-protector -Wformat -Werror=format-security" LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
     - CFLAGS="-O3 -mtune=generic -fno-omit-frame-pointer -Werror"
     - CFLAGS="-O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage"
 
