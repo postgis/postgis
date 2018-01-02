@@ -4786,6 +4786,7 @@ CREATE OR REPLACE FUNCTION st_tri(
 
 -----------------------------------------------------------------------
 -- ST_Grayscale
+-- Equation from algorithm section of https://www.mathworks.com/help/matlab/ref/rgb2gray.html
 -----------------------------------------------------------------------
 
 -- Availability: 2.5.0
@@ -4799,9 +4800,10 @@ CREATE OR REPLACE FUNCTION _st_grayscale4ma(value double precision[][][], pos in
 		red double precision;
 		green double precision;
 		blue double precision;
+
+		gray double precision;
 	BEGIN
 
-		RAISE NOTICE 'value = %', value;
 		ndims := array_ndims(value);
 		-- add a third dimension if 2-dimension
 		IF ndims = 2 THEN
@@ -4816,28 +4818,122 @@ CREATE OR REPLACE FUNCTION _st_grayscale4ma(value double precision[][][], pos in
 		green := _value[2][1][1];
 		blue := _value[3][1][1];
 
-		RETURN 0.2989 * red + 0.5870 * green + 0.1140 * blue;
+		gray = round(0.2989 * red + 0.5870 * green + 0.1140 * blue);
+		RETURN gray;
+
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.5.0
-CREATE OR REPLACE FUNCTION st_grayscale(rast raster, redband integer DEFAULT 1, blueband DEFAULT 2, greenband DEFAULT 3)
+CREATE OR REPLACE FUNCTION st_grayscale(
+	rastbandargset rastbandarg[],
+	extenttype text DEFAULT 'INTERSECTION'
+)
+	RETURNS RASTER
+	AS $$
+	DECLARE
+
+		_NBANDS integer DEFAULT 3;
+		_NODATA integer DEFAULT 255;
+		_PIXTYPE text DEFAULT '8BUI';
+
+		_set rastbandarg[];
+
+		nrast integer;
+		idx integer;
+		rast raster;
+		nband integer;
+
+		stats summarystats;
+		nodata double precision;
+		nodataval integer;
+		reclassexpr text;
+
+	BEGIN
+
+		-- check for three rastbandarg
+		nrast := array_length(rastbandargset, 1);
+		IF nrast < _NBANDS THEN
+			RAISE EXCEPTION '''rastbandargset'' must have three bands for red, green and blue';
+		ELSIF nrast > _NBANDS THEN
+			RAISE WARNING 'Only the first three elements of ''rastbandargset'' will be used';
+			_set := rastbandargset[1:3];
+		ELSE
+			_set := rastbandargset;
+		END IF;
+
+		FOR idx IN 1.._NBANDS LOOP
+
+			rast := _set[idx].rast;
+			nband := _set[idx].nband;
+
+			-- check that each raster has the specified band
+			IF @extschema@.ST_HasNoBand(rast, nband) THEN
+
+				RAISE EXCEPTION 'Band at index ''%'' not found for raster ''%''', nband, idx;
+
+			-- check that each band is 8BUI. if not, reclassify to 8BUI
+			ELSIF @extschema@.ST_BandPixelType(rast, nband) != _PIXTYPE THEN
+
+				stats := @extschema@.ST_SummaryStats(rast, nband);
+				nodata := @extschema@.ST_BandNoDataValue(rast, nband);
+
+				IF nodata IS NOT NULL THEN
+					nodataval := _NODATA;
+					reclassexpr := concat(
+						concat('[', nodata , '-', nodata, ']:', _NODATA, '-', _NODATA, ','),
+						concat('[', stats.min , '-', stats.max , ']:0-', _NODATA - 1)
+					);
+				ELSE
+					nodataval := NULL;
+					reclassexpr := concat('[', stats.min , '-', stats.max , ']:0-', _NODATA);
+				END IF;
+
+				_set[idx] := ROW(
+					@extschema@.ST_Reclass(
+						rast,
+						ROW(nband, reclassexpr, _PIXTYPE, nodataval)::reclassarg
+					),
+					nband
+				)::rastbandarg;
+
+			END IF;
+
+		END LOOP;
+
+		-- call map algebra with _st_grayscale4ma
+		RETURN @extschema@.ST_MapAlgebra(
+			_set,
+			'@extschema@._ST_Grayscale4MA(double precision[][][], integer[][], text[])'::regprocedure,
+			'8BUI',
+			extenttype
+		);
+
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION st_grayscale(
+	rast raster,
+ 	redband integer DEFAULT 1,
+ 	greenband integer DEFAULT 2,
+ 	blueband integer DEFAULT 3,
+	extenttype text DEFAULT 'INTERSECTION'
+)
 	RETURNS RASTER
 	AS $$
 	DECLARE
 	BEGIN
 
-		-- check that each band index is found in raster
-
-		-- check that each band is 8BUI. if not, reclassify to 8BUI
-
-		-- call map algebra with _st_grayscale4ma
-		RETURN @extschema@.ST_MapAlgebra(
-			rast,
-			ARRAY[redband, blueband, greenband],
-			'@extschema@._ST_Grayscale4MA(double precision[][][], integer[][], text[])'::regprocedure,,
-			'8BUI'
+		RETURN @extschema@.ST_Grayscale(
+			ARRAY[
+				ROW(rast, redband)::rastbandarg,
+				ROW(rast, greenband)::rastbandarg,
+				ROW(rast, blueband)::rastbandarg
+			]::rastbandarg[],
+			extenttype
 		);
+
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
 
@@ -6078,9 +6174,8 @@ CREATE OR REPLACE FUNCTION _st_samealignment_transfn(agg agg_samealignment, rast
 				m := ST_Metadata(rast);
 				agg.refraster := ST_MakeEmptyRaster(1, 1, m.upperleftx, m.upperlefty, m.scalex, m.scaley, m.skewx, m.skewy, m.srid);
 				agg.aligned := TRUE;
-			ELSE IF agg.aligned IS TRUE THEN
-					agg.aligned := ST_SameAlignment(agg.refraster, rast);
-				END IF;
+			ELSIF agg.aligned IS TRUE THEN
+				agg.aligned := ST_SameAlignment(agg.refraster, rast);
 			END IF;
 		END IF;
 		RETURN agg;
