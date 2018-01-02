@@ -1,10 +1,11 @@
 PostGIS 2.3.6
-2017/xx/xx
+2018/xx/xx
 
   * Bug Fixes and Enhancements
 
   - #3713, Support encodings that happen to output a '\' character
-
+  - #3965, ST_ClusterKMeans used to lose some clusters on initialization
+           (Darafei Praliaskouski)
 
 PostGIS 2.3.5
 2017/11/15

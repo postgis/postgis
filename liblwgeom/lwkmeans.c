@@ -194,6 +194,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 			if (seen[j] == closest)
 			{
 				closest = (closest + 1) % config.num_objs;
+				j = 0;
 			}
 			else
 			{
