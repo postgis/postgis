@@ -198,7 +198,7 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 	double delta = DBL_MAX;
 	double* distances;
 	/* m ordinate is considered weight, if defined */
-	POINT4D* points = lwmpoint_extract_points_4d(g, &npoints, fail_if_not_converged);
+	POINT4D* points = lwmpoint_extract_points_4d(g, &npoints);
 	POINT4D median;
 
 	if (npoints == 0)
