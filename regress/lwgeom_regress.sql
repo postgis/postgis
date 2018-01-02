@@ -169,3 +169,10 @@ SELECT 'ST_Angle_empty' , St_Angle(p1,p2,p3,p4)
 SELECT 'ST_Angle_2_lines', St_Angle(l1,l2)
 	FROM ST_GeomFromtext('LINESTRING(0 1,0 0)') AS l1
 	, ST_GeomFromtext('LINESTRING(1 0, 2 0)') AS l2 ;
+
+--- ST_ClusterKMeans
+select '#3965', count(distinct cid), count(*) from (
+	with points as (select ST_MakePoint(x,y) geom from generate_series(1,5) x, generate_series(1,5) y)
+  select ST_ClusterKMeans(geom, 25) over () as cid, geom
+  from points) z;
+
