@@ -67,7 +67,7 @@ iterate_4d(POINT4D* curr, const POINT4D* points, size_t npoints, double* distanc
 	}
 	/* negative weight shouldn't get here */
 	assert(denom > 0);
-	
+
 	/* denom is zero in case of multipoint of single point when we've converged perfectly */
 	if (denom > DBL_EPSILON)
 	{
@@ -111,7 +111,6 @@ iterate_4d(POINT4D* curr, const POINT4D* points, size_t npoints, double* distanc
 			next.y = FP_MAX(0, 1.0 - r_inv)*next.y + FP_MIN(1.0, r_inv)*curr->y;
 			next.z = FP_MAX(0, 1.0 - r_inv)*next.z + FP_MIN(1.0, r_inv)*curr->z;
 		}
-		
 
 		delta = distance3d_pt_pt((POINT3D*)curr, (POINT3D*)&next);
 
