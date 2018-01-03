@@ -23,6 +23,8 @@
  *
  **********************************************************************/
 
+#define POSTGIS_DEBUG_LEVEL 4
+
 #include <assert.h>
 #include <float.h>
 
