@@ -142,8 +142,10 @@ init_guess(const POINT4D* points, size_t npoints)
 }
 
 static POINT4D*
-lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* npoints)
+lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* npoints, int* input_ok)
 {
+	assert(npoints != NULL);
+	assert(input_ok == LW_TRUE);
 	size_t i;
 	size_t n = 0;
 	int is_3d = lwgeom_has_z((LWGEOM*) g);
@@ -186,14 +188,14 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* npoints)
 				{
 					lwerror("Geometric median input contains points with negative weights. Implementation can't guarantee global minimum convergence.");
 					n = 0;
+					input_ok = LW_FALSE;
 					break;
 				}				
 			}
 		}
 	}
 
-	if (npoints != NULL)
-		*npoints = n;
+	*npoints = n;
 
 	return points;
 }
@@ -204,11 +206,18 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 {
 	size_t npoints = 0; /* we need to count this ourselves so we can exclude empties and weightless points */
 	size_t i;
+	int input_ok = LW_TRUE;
 	double delta = DBL_MAX;
 	double* distances;
 	/* m ordinate is considered weight, if defined */
-	POINT4D* points = lwmpoint_extract_points_4d(g, &npoints);
+	POINT4D* points = lwmpoint_extract_points_4d(g, &npoints, &input_ok);
 	POINT4D median;
+	
+	if (!input_ok)
+	{
+		/* error reported upon input check */
+		return NULL;
+	}
 
 	if (npoints == 0)
 	{
@@ -216,7 +225,7 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 		if (fail_if_not_converged)
 		{
 			lwerror("Median failed to find suitable input points.");
-			return NULL;
+			
 		}
 		else
 		{
