@@ -1115,6 +1115,7 @@ static void test_median_handles_3d_correctly(void)
 
 static void do_median_test(char* input, char* expected, int fail_if_not_converged, int iter_count)
 {
+	cu_error_msg_reset();
 	LWGEOM* g = lwgeom_from_wkt(input, LW_PARSER_CHECK_NONE);
 	LWPOINT* expected_result = NULL;
 	POINT4D actual_pt;
@@ -1160,6 +1161,7 @@ static void do_median_test(char* input, char* expected, int fail_if_not_converge
 	else if (result == NULL && expected != NULL) /* got nothing, expecting something */
 	{
 		passed = LW_FALSE;
+		printf("%s", cu_error_msg);
 		printf("median_test expected %s got NULL\n", lwgeom_to_ewkt((LWGEOM*) expected_result));
 	}
 
