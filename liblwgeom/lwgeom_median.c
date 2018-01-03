@@ -142,7 +142,7 @@ init_guess(const POINT4D* points, uint32_t npoints)
 }
 
 static POINT4D*
-lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_ok)
+lwmpoint_extract_points_4d(const LWMPOINT* g, POINT4D* points, uint32_t* npoints, int* input_ok)
 {
 	assert(npoints != NULL);
 	assert(input_ok != NULL);
@@ -153,7 +153,6 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_ok)
 	int has_z = lwgeom_has_z((LWGEOM*) g);
 	int has_m = lwgeom_has_m((LWGEOM*) g);
 
-	POINT4D* points = lwalloc(g->ngeoms * sizeof(POINT4D));
 	for (i = 0; i < g->ngeoms; i++)
 	{
 		LWGEOM* subg = lwcollection_getsubgeom((LWCOLLECTION*) g, i);
@@ -210,7 +209,6 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_ok)
 	}
 
 	*npoints = n;
-
 	return points;
 }
 
@@ -218,14 +216,16 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_ok)
 LWPOINT*
 lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_not_converged)
 {
+	/* m ordinate is considered weight, if defined */
 	uint32_t npoints = 0; /* we need to count this ourselves so we can exclude empties and weightless points */
 	uint32_t i;
 	int input_ok = LW_TRUE;
 	double delta = DBL_MAX;
 	POINT4D median;
 	double* distances = NULL;
-	/* m ordinate is considered weight, if defined */
-	POINT4D* points = lwmpoint_extract_points_4d(g, &npoints, &input_ok);
+	
+	POINT4D* points = lwalloc(g->ngeoms * sizeof(POINT4D));
+	lwmpoint_extract_points_4d(g, &points, &npoints, &input_ok);
 
 	if (!input_ok)
 	{
