@@ -37,7 +37,6 @@ before_install:
 
 after_failure:
   - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log
-  - objdump -S --disassemble /usr/local/lib/liblwgeom-2.5.so.0.0.0
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
