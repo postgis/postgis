@@ -44,7 +44,8 @@ before_install:
   - ./autogen.sh
 
 after_failure:
-  - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log 
+  - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log
+  - sudo ls -la /var/run/postgresql/9.6-main.pg_stat_tmp/global.tmp 
   - cat /proc/cpuinfo
 
 after_success:
