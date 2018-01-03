@@ -27,8 +27,6 @@
 #include <float.h>
 
 #include "liblwgeom_internal.h"
-
-#define POSTGIS_DEBUG_LEVEL 4
 #include "lwgeom_log.h"
 
 static void
