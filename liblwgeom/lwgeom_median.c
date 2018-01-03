@@ -32,7 +32,7 @@
 #include "lwgeom_log.h"
 
 static void
-calc_weighted_distances_3d(const POINT3D* curr, const POINT4D* points, size_t npoints, double* distances)
+calc_weighted_distances_3d(const POINT3D* curr, const POINT4D* points, uint32_t npoints, double* distances)
 {
 	size_t i;
 	for (i = 0; i < npoints; i++)
@@ -42,9 +42,9 @@ calc_weighted_distances_3d(const POINT3D* curr, const POINT4D* points, size_t np
 }
 
 static double
-iterate_4d(POINT4D* curr, const POINT4D* points, size_t npoints, double* distances)
+iterate_4d(POINT4D* curr, const POINT4D* points, uint32_t npoints, double* distances)
 {
-	size_t i;
+	uint32_t i;
 	POINT4D next = { 0, 0, 0, 1};
 	double delta = 0;
 	double denom = 0;
@@ -125,11 +125,11 @@ iterate_4d(POINT4D* curr, const POINT4D* points, size_t npoints, double* distanc
 }
 
 static POINT4D
-init_guess(const POINT4D* points, size_t npoints)
+init_guess(const POINT4D* points, uint32_t npoints)
 {
 	assert(npoints > 0);
 	POINT4D guess = { 0, 0, 0, 0 };
-	size_t i;
+	uint32_t i;
 	for (i = 0; i < npoints; i++)
 	{
 		guess.x += points[i].x * points[i].m;
@@ -144,14 +144,14 @@ init_guess(const POINT4D* points, size_t npoints)
 }
 
 static POINT4D*
-lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* npoints, int* input_ok)
+lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_ok)
 {
 	assert(npoints != NULL);
 	assert(input_ok != NULL);
 	assert(*input_ok == LW_TRUE);
-	size_t i;
-	size_t n = 0;
-	int is_3d = lwgeom_has_z((LWGEOM*) g);
+	uint32_t i;
+	uint32_t n = 0;
+	int has_z = lwgeom_has_z((LWGEOM*) g);
 	int has_m = lwgeom_has_m((LWGEOM*) g);
 
 	POINT4D* points = lwalloc(g->ngeoms * sizeof(POINT4D));
@@ -194,7 +194,7 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* npoints, int* input_ok)
 	}
 	if (input_ok)
 	{
-		if (!is_3d) 
+		if (!has_z) 
 		{
 			for (i = 0; i < n; i++)
 			{
@@ -219,14 +219,14 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* npoints, int* input_ok)
 LWPOINT*
 lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_not_converged)
 {
-	size_t npoints = 0; /* we need to count this ourselves so we can exclude empties and weightless points */
-	size_t i;
+	uint32_t npoints = 0; /* we need to count this ourselves so we can exclude empties and weightless points */
+	uint32_t i;
 	int input_ok = LW_TRUE;
 	double delta = DBL_MAX;
+	POINT4D median;
 	double* distances;
 	/* m ordinate is considered weight, if defined */
-	POINT4D* points = lwmpoint_extract_points_4d(g, &npoints, &input_ok);
-	POINT4D median;
+	POINT4D* points = lwmpoint_extract_points_4d(g, &npoints, &input_ok);	
 
 	if (!input_ok)
 	{
@@ -257,8 +257,8 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 		delta = iterate_4d(&median, points, npoints, distances);
 	}
 
-	lwfree(points);
 	lwfree(distances);
+	lwfree(points);
 
 	if (fail_if_not_converged && delta > tol)
 	{
