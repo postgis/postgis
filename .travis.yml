@@ -17,7 +17,7 @@ before_install:
   - eval "${MATRIX_EVAL}"
   - sudo sh -c "echo /usr/lib/libeatmydata/libeatmydata.so >> /etc/ld.so.preload"
   - sudo service postgresql stop 9.6
-  - sudo chown -RH --from=postgres travis:travis /etc /var /tmp
+  - sudo chown -chRL --from=postgres travis:travis /etc /var /tmp
   - sudo usermod -u 1000 postgres
   - sudo adduser travis ssl-cert
   - sudo service postgresql start 9.6
