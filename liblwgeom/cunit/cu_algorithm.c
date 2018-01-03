@@ -1205,7 +1205,7 @@ static void test_median_robustness(void)
 	do_median_test("MULTIPOINT (EMPTY)", NULL, LW_TRUE, 1000);
 
 	/* Weighted input */
-	do_median_test("MULTIPOINT ZM ((1 -1 3 1), (1 0 2 7), (2 1 1 1))", "POINT (1 0 2)", LW_TRUE, 1000);
+	do_median_test("MULTIPOINT ZM (1 -1 3 1, 1 0 2 7, 2 1 1 1)", "POINT (1 0 2)", LW_TRUE, 1000);
 	/* Point that is replaced by two half-weighted */
 	do_median_test("MULTIPOINT ZM ((0 -1 0 1), (0 0 0 1), (0 1 0 0.5), (0 1 0 0.5))", "POINT (0 0 0)", LW_TRUE, 1000);
 	/* Point is doubled and then erased by negative weight */
