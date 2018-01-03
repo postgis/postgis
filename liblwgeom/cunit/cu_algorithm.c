@@ -1206,7 +1206,7 @@ static void test_median_robustness(void)
 	/* Weighted input */
 	do_median_test("MULTIPOINT ZM (1 -1 3 1, 1 0 2 7, 2 1 1 1)", "POINT (1 0 2)", LW_TRUE, 1000);
 	do_median_test("MULTIPOINT ZM (-1 1 -3 1, -1 0 -2 7, -2 -1 -1 1)", "POINT (-1 0 -2)", LW_TRUE, 1000);
-	do_median_test("MULTIPOINT ZM (-1 -2 -3 4, -5 -6 -7 8, -9 -10 -11 12, -13 -14 -15 16, -17 -18 -19 20)", "POINT (1 0 2)", LW_TRUE, 1000);
+	do_median_test("MULTIPOINT ZM (-1 1 -3 1, -1 0 -2 7, -2 -1 -1 0.5, -2 -1 -1 0.5)", "POINT (-1 0 -2)", LW_TRUE, 1000);
 	
 	/* Point that is replaced by two half-weighted */
 	do_median_test("MULTIPOINT ZM ((0 -1 0 1), (0 0 0 1), (0 1 0 0.5), (0 1 0 0.5))", "POINT (0 0 0)", LW_TRUE, 1000);
