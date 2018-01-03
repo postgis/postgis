@@ -160,17 +160,13 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* npoints, int* input_ok)
 		LWGEOM* subg = lwcollection_getsubgeom((LWCOLLECTION*) g, i);
 		if (!lwgeom_is_empty(subg))
 		{
-			getPoint4d_p(((LWPOINT*) subg)->point, 0, &points[n]);
-			if (!is_3d)
+			if (!getPoint4d_p(((LWPOINT*) subg)->point, 0, &points[n]))
 			{
-				points[n].z = 0.0; /* in case the getPoint functions return NaN in the future for 2d */
+				lwerror("Geometric median: getPoint4d_p reported failure on point (POINT(%g %g %g %g), number %d of %d in input).", points[n].x, points[n].y, points[n].z, points[n].m, i, g->ngeoms);
+				*input_ok = LW_FALSE;
+				break;
 			}
-			if (!has_m)
-			{
-				points[n].m = 1.0;
-				n++;
-			}
-			else
+			if (has_m)
 			{
 				/* points with zero weight are not going to affect calculation, drop them early */
 				if (points[n].m > DBL_EPSILON)
@@ -193,6 +189,23 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* npoints, int* input_ok)
 					*input_ok = LW_FALSE;
 					break;
 				}
+			}
+		}
+	}
+	if (input_ok)
+	{
+		if (!is_3d) 
+		{
+			for (i = 0; i < n; i++)
+			{
+				points[n].z = 0.0;
+			}
+		}
+		if (!has_m)
+		{
+			for (i = 0; i < n; i++)
+			{
+				points[n].m = 1.0;
 			}
 		}
 	}
