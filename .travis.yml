@@ -2,7 +2,7 @@ env:
   global:
     - RUNTESTFLAGS=-v
   matrix:
-    - CFLAGS="-Og"
+    - CFLAGS="-Og" MATRIX_EVAL="touch check-no-trailing-blanks"
     - CFLAGS="-g -O2 -fstack-protector -Wformat -Werror=format-security" LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
     - CFLAGS="-O3 -mtune=generic -fno-omit-frame-pointer -Werror"
     - CFLAGS="-O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage"
@@ -14,6 +14,7 @@ addons:
       - eatmydata
 
 before_install:
+  - eval "${MATRIX_EVAL}"
   - sudo sh -c "echo /usr/lib/libeatmydata/libeatmydata.so >> /etc/ld.so.preload"
   - sudo service postgresql stop 9.6
   - sudo find /etc -user postgres | xargs sudo chown travis
