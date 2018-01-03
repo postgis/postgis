@@ -125,6 +125,7 @@ iterate_4d(POINT4D* curr, const POINT4D* points, size_t npoints, double* distanc
 static POINT4D
 init_guess(const POINT4D* points, size_t npoints)
 {
+	assert(npoints > 0);
 	POINT4D guess = { 0, 0, 0, 0 };
 	size_t i;
 	for (i = 0; i < npoints; i++)
@@ -167,7 +168,7 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* npoints)
 			else
 			{
 				/* points with zero weight are not going to affect calculation, drop them early */
-				if (!FP_IS_ZERO(points[n].m))
+				if (points[n].m > DBL_EPSILON)
 				{
 					n++;
 				}
@@ -201,7 +202,7 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* npoints)
 LWPOINT*
 lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_not_converged)
 {
-	size_t npoints; /* we need to count this ourselves so we can exclude empties and weightless points */
+	size_t npoints = 0; /* we need to count this ourselves so we can exclude empties and weightless points */
 	size_t i;
 	double delta = DBL_MAX;
 	double* distances;
