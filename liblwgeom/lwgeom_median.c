@@ -32,7 +32,7 @@
 static void
 calc_weighted_distances_3d(const POINT3D* curr, const POINT4D* points, uint32_t npoints, double* distances)
 {
-	size_t i;
+	uint32_t i;
 	for (i = 0; i < npoints; i++)
 	{
 		distances[i] = distance3d_pt_pt(curr, (POINT3D*)&points[i]) / points[i].m;
