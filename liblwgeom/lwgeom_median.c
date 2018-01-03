@@ -229,6 +229,7 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 
 	if (!input_ok)
 	{
+		lwfree(points);
 		/* error reported upon input check */
 		return NULL;
 	}
