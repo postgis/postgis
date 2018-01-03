@@ -225,7 +225,7 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 		if (fail_if_not_converged)
 		{
 			lwerror("Median failed to find suitable input points.");
-			
+			return NULL;
 		}
 		else
 		{
