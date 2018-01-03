@@ -193,7 +193,7 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_ok)
 	}
 	if (input_ok)
 	{
-		if (!has_z) 
+		if (!has_z)
 		{
 			for (i = 0; i < n; i++)
 			{
@@ -225,7 +225,7 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 	POINT4D median;
 	double* distances;
 	/* m ordinate is considered weight, if defined */
-	POINT4D* points = lwmpoint_extract_points_4d(g, &npoints, &input_ok);	
+	POINT4D* points = lwmpoint_extract_points_4d(g, &npoints, &input_ok);
 
 	if (!input_ok)
 	{
