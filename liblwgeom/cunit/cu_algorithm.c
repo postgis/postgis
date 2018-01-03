@@ -3,6 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  * Copyright 2008 Paul Ramsey
+ * Copyright 2018 Darafei Praliaskouski, me@komzpa.net 
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -1204,18 +1205,18 @@ static void test_median_robustness(void)
 	do_median_test("MULTIPOINT (EMPTY)", NULL, LW_TRUE, 1000);
 
 	/* Weighted input */
-	do_median_test("MULTIPOINT ((1 -1 3 1), (1 0 2 7), (2 1 1 1))", "POINT (1 0 2)", LW_TRUE, 1000);
+	do_median_test("MULTIPOINT ZM ((1 -1 3 1), (1 0 2 7), (2 1 1 1))", "POINT (1 0 2)", LW_TRUE, 1000);
 	/* Point that is replaced by two half-weighted */
-	do_median_test("MULTIPOINT ((0 -1 0 1), (0 0 0 1), (0 1 0 0.5), (0 1 0 0.5))", "POINT (0 0 0)", LW_TRUE, 1000);
+	do_median_test("MULTIPOINT ZM ((0 -1 0 1), (0 0 0 1), (0 1 0 0.5), (0 1 0 0.5))", "POINT (0 0 0)", LW_TRUE, 1000);
 	/* Point is doubled and then erased by negative weight */
-	do_median_test("MULTIPOINT ((1 -1 3 1), (1 0 2 7), (2 1 1 2), (2 1 1 -1))", NULL, LW_TRUE, 1000);
-	do_median_test("MULTIPOINT ((1 -1 3 1), (1 0 2 7), (2 1 1 2), (2 1 1 -1))", NULL, LW_FALSE, 1000);
+	do_median_test("MULTIPOINT ZM ((1 -1 3 1), (1 0 2 7), (2 1 1 2), (2 1 1 -1))", NULL, LW_TRUE, 1000);
+	do_median_test("MULTIPOINT ZM ((1 -1 3 1), (1 0 2 7), (2 1 1 2), (2 1 1 -1))", NULL, LW_FALSE, 1000);
 	/* Weightless input is empty */
-	do_median_test("MULTIPOINT ((0 -1 0 0), (0 0 0 0), (0 0 0 0), (0 1 0 0))", "POINT EMPTY", LW_FALSE, 1000);
-	do_median_test("MULTIPOINT ((0 -1 0 0), (0 0 0 0), (0 0 0 0), (0 1 0 0))", NULL, LW_TRUE, 1000);
+	do_median_test("MULTIPOINT ZM ((0 -1 0 0), (0 0 0 0), (0 0 0 0), (0 1 0 0))", "POINT EMPTY", LW_FALSE, 1000);
+	do_median_test("MULTIPOINT ZM ((0 -1 0 0), (0 0 0 0), (0 0 0 0), (0 1 0 0))", NULL, LW_TRUE, 1000);
 	/* Negative weight won't converge */
-	do_median_test("MULTIPOINT ((0 -1 0 -1), (0 0 0 -1), (0 1 0 -1))", NULL, LW_FALSE, 1000);
-	do_median_test("MULTIPOINT ((0 -1 0 -1), (0 0 0 -1), (0 1 0 -1))", NULL, LW_TRUE, 1000);
+	do_median_test("MULTIPOINT ZM ((0 -1 0 -1), (0 0 0 -1), (0 1 0 -1))", NULL, LW_FALSE, 1000);
+	do_median_test("MULTIPOINT ZM ((0 -1 0 -1), (0 0 0 -1), (0 1 0 -1))", NULL, LW_TRUE, 1000);
 
 	/* Bind convergence too tightly */
 	do_median_test("MULTIPOINT ((0 0), (1 1), (0 1), (2 2))", "POINT(0.75 1.0)", LW_FALSE, 0);
