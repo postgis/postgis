@@ -45,7 +45,7 @@ before_install:
 
 after_failure:
   - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log
-  - sudo ls -la /var/run/postgresql/9.6-main.pg_stat_tmp/global.tmp 
+  - sudo ls -la /var/run/postgresql/
   - cat /proc/cpuinfo
 
 after_success:
