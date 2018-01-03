@@ -1147,7 +1147,7 @@ static void do_median_test(char* input, char* expected, int fail_if_not_converge
 			passed = passed && (!lwgeom_has_m((LWGEOM*) expected_result) || FP_EQUALS(actual_pt.m, expected_pt.m));
 		}
 		if (!passed)
-			printf("median_test expected %s got %s\n", lwgeom_to_ewkt((LWGEOM*) expected_result), lwgeom_to_ewkt((LWGEOM*) result));
+			printf("median_test input %s expected %s got %s\n", input, lwgeom_to_ewkt((LWGEOM*) expected_result), lwgeom_to_ewkt((LWGEOM*) result));
 	}
 	else if (result == NULL && expected == NULL) /* got nothing, expecting nothing */
 	{
@@ -1162,7 +1162,7 @@ static void do_median_test(char* input, char* expected, int fail_if_not_converge
 	{
 		passed = LW_FALSE;
 		printf("%s", cu_error_msg);
-		printf("median_test expected %s got NULL\n", lwgeom_to_ewkt((LWGEOM*) expected_result));
+		printf("median_test input %s expected %s got NULL\n", input, lwgeom_to_ewkt((LWGEOM*) expected_result));
 	}
 
 	CU_ASSERT_TRUE(passed);
