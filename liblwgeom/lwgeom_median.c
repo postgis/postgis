@@ -149,6 +149,7 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_ok)
 	assert(npoints != NULL);
 	assert(input_ok != NULL);
 	assert(*input_ok == LW_TRUE);
+	assert(g->ngeoms > 0);
 	uint32_t i;
 	uint32_t n = 0;
 	int has_z = lwgeom_has_z((LWGEOM*) g);
