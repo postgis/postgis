@@ -160,7 +160,7 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* npoints, int* input_ok)
 		LWGEOM* subg = lwcollection_getsubgeom((LWCOLLECTION*) g, i);
 		if (!lwgeom_is_empty(subg))
 		{
-			getPoint4d_p(((LWPOINT*) subg)->point, 0, (POINT4D*) &points[n]);
+			points[n] = getPoint4d(((LWPOINT*) subg)->point, 0);
 			if (!is_3d)
 			{
 				points[n].z = 0.0; /* in case the getPoint functions return NaN in the future for 2d */
