@@ -1156,7 +1156,7 @@ static void do_median_test(char* input, char* expected, int fail_if_not_converge
 	else if (result != NULL && expected == NULL) /* got something, expecting nothing */
 	{
 		passed = LW_FALSE;
-		printf("median_test expected NULL got %s\n", lwgeom_to_ewkt((LWGEOM*) result));
+		printf("median_test input %s expected NULL got %s\n", input, lwgeom_to_ewkt((LWGEOM*) result));
 	}
 	else if (result == NULL && expected != NULL) /* got nothing, expecting something */
 	{
@@ -1211,7 +1211,7 @@ static void test_median_robustness(void)
 	do_median_test("MULTIPOINT ((1 -1 3 1), (1 0 2 7), (2 1 1 2), (2 1 1 -1))", NULL, LW_TRUE, 1000);
 	do_median_test("MULTIPOINT ((1 -1 3 1), (1 0 2 7), (2 1 1 2), (2 1 1 -1))", NULL, LW_FALSE, 1000);
 	/* Weightless input is empty */
-	do_median_test("MULTIPOINT ((0 -1 0 0), (0 0 0 0), (0 0 0 0), (0 1 0 0))", NULL, LW_FALSE, 1000);
+	do_median_test("MULTIPOINT ((0 -1 0 0), (0 0 0 0), (0 0 0 0), (0 1 0 0))", "POINT EMPTY", LW_FALSE, 1000);
 	do_median_test("MULTIPOINT ((0 -1 0 0), (0 0 0 0), (0 0 0 0), (0 1 0 0))", NULL, LW_TRUE, 1000);
 	/* Negative weight won't converge */
 	do_median_test("MULTIPOINT ((0 -1 0 -1), (0 0 0 -1), (0 1 0 -1))", NULL, LW_FALSE, 1000);
