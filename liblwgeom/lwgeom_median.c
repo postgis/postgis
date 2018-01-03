@@ -23,6 +23,7 @@
  *
  **********************************************************************/
 
+#include <assert.h>
 #include <float.h>
 
 #include "liblwgeom_internal.h"
@@ -43,7 +44,7 @@ iterate_4d(POINT4D* curr, const POINT4D* points, size_t npoints, double* distanc
 {
 	size_t i;
 	POINT4D next = { 0, 0, 0, 1};
-	double delta;
+	double delta = 0;
 	double denom = 0;
 	char hit = LW_FALSE;
 
@@ -52,7 +53,7 @@ iterate_4d(POINT4D* curr, const POINT4D* points, size_t npoints, double* distanc
 	for (i = 0; i < npoints; i++)
 	{
 		/* we need to use lower epsilon than in FP_IS_ZERO in the loop for calculation to converge */
-		if (fabs(distances[i]) > DBL_EPSILON)
+		if (distances[i] > DBL_EPSILON)
 		{
 			next.x += points[i].x / distances[i];
 			next.y += points[i].y / distances[i];
@@ -64,52 +65,60 @@ iterate_4d(POINT4D* curr, const POINT4D* points, size_t npoints, double* distanc
 			hit = LW_TRUE;
 		}
 	}
-	next.x /= denom;
-	next.y /= denom;
-	next.z /= denom;
-
-	/* If any of the intermediate points in the calculation is found in the
-	 * set of input points, the standard Weiszfeld method gets stuck with a
-	 * divide-by-zero.
-	 *
-	 * To get ourselves out of the hole, we follow an alternate procedure to
-	 * get the next iteration, as described in:
-	 *
-	 * Vardi, Y. and Zhang, C. (2011) "A modified Weiszfeld algorithm for the
-	 * Fermat-Weber location problem."  Math. Program., Ser. A 90: 559-566.
-	 * DOI 10.1007/s101070100222
-	 *
-	 * Available online at the time of this writing at
-	 * http://www.stat.rutgers.edu/home/cunhui/papers/43.pdf
-	 */
-	if (hit)
+	/* negative weight shouldn't get here */
+	assert(denom > 0);
+	
+	/* denom is zero in case of multipoint of single point when we've converged perfectly */
+	if (denom > DBL_EPSILON)
 	{
-		double dx = 0;
-		double dy = 0;
-		double dz = 0;
-		double r_inv;
-		for (i = 0; i < npoints; i++)
+		next.x /= denom;
+		next.y /= denom;
+		next.z /= denom;
+
+		/* If any of the intermediate points in the calculation is found in the
+	 	* set of input points, the standard Weiszfeld method gets stuck with a
+	 	* divide-by-zero.
+	 	*
+	 	* To get ourselves out of the hole, we follow an alternate procedure to
+	 	* get the next iteration, as described in:
+	 	*
+	 	* Vardi, Y. and Zhang, C. (2011) "A modified Weiszfeld algorithm for the
+	 	* Fermat-Weber location problem."  Math. Program., Ser. A 90: 559-566.
+	 	* DOI 10.1007/s101070100222
+	 	*
+	 	* Available online at the time of this writing at
+	 	* http://www.stat.rutgers.edu/home/cunhui/papers/43.pdf
+	 	*/
+		if (hit)
 		{
-			if (fabs(distances[i]) > DBL_EPSILON)
+			double dx = 0;
+			double dy = 0;
+			double dz = 0;
+			double r_inv;
+			for (i = 0; i < npoints; i++)
 			{
-				dx += (points[i].x - curr->x) / distances[i];
-				dy += (points[i].y - curr->y) / distances[i];
-				dz += (points[i].y - curr->z) / distances[i];
+				if (distances[i] > DBL_EPSILON)
+				{
+					dx += (points[i].x - curr->x) / distances[i];
+					dy += (points[i].y - curr->y) / distances[i];
+					dz += (points[i].y - curr->z) / distances[i];
+				}
 			}
+
+			r_inv = 1.0 / sqrt ( dx*dx + dy*dy + dz*dz );
+
+			next.x = FP_MAX(0, 1.0 - r_inv)*next.x + FP_MIN(1.0, r_inv)*curr->x;
+			next.y = FP_MAX(0, 1.0 - r_inv)*next.y + FP_MIN(1.0, r_inv)*curr->y;
+			next.z = FP_MAX(0, 1.0 - r_inv)*next.z + FP_MIN(1.0, r_inv)*curr->z;
 		}
+		
 
-		r_inv = 1.0 / sqrt ( dx*dx + dy*dy + dz*dz );
+		delta = distance3d_pt_pt((POINT3D*)curr, (POINT3D*)&next);
 
-		next.x = FP_MAX(0, 1.0 - r_inv)*next.x + FP_MIN(1.0, r_inv)*curr->x;
-		next.y = FP_MAX(0, 1.0 - r_inv)*next.y + FP_MIN(1.0, r_inv)*curr->y;
-		next.z = FP_MAX(0, 1.0 - r_inv)*next.z + FP_MIN(1.0, r_inv)*curr->z;
+		curr->x = next.x;
+		curr->y = next.y;
+		curr->z = next.z;
 	}
-
-	delta = distance3d_pt_pt((POINT3D*)curr, (POINT3D*)&next);
-
-	curr->x = next.x;
-	curr->y = next.y;
-	curr->z = next.z;
 
 	return delta;
 }
@@ -133,7 +142,7 @@ init_guess(const POINT4D* points, size_t npoints)
 }
 
 static POINT4D*
-lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* ngeoms)
+lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* npoints)
 {
 	size_t i;
 	size_t n = 0;
@@ -175,7 +184,7 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* ngeoms)
 				 */
 				if (points[n].m < 0)
 				{
-					lwerror("Geometric median input contains points with negative weights. Implementation can't guarantee global minimum convergence and fail_if_not_converged was requested.");
+					lwerror("Geometric median input contains points with negative weights. Implementation can't guarantee global minimum convergence.");
 					n = 0;
 					break;
 				}				
@@ -183,8 +192,8 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* ngeoms)
 		}
 	}
 
-	if (ngeoms != NULL)
-		*ngeoms = n;
+	if (npoints != NULL)
+		*npoints = n;
 
 	return points;
 }
