@@ -187,7 +187,7 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, size_t* npoints, int* input_ok)
 				 */
 				if (points[n].m < 0)
 				{
-					lwerror("Geometric median input contains points with negative weights (POINT(%g %g %g %g), number %d in input). Implementation can't guarantee global minimum convergence.", points[n].x, points[n].y, points[n].z, points[n].m, i);
+					lwerror("Geometric median input contains points with negative weights (POINT(%g %g %g %g), number %d of %d in input). Implementation can't guarantee global minimum convergence.", points[n].x, points[n].y, points[n].z, points[n].m, i, g->ngeoms);
 					*input_ok = LW_FALSE;
 					break;
 				}
