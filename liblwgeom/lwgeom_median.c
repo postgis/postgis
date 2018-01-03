@@ -66,7 +66,7 @@ iterate_4d(POINT4D* curr, const POINT4D* points, size_t npoints, double* distanc
 		}
 	}
 	/* negative weight shouldn't get here */
-	assert(denom > 0);
+	assert(denom >= 0);
 
 	/* denom is zero in case of multipoint of single point when we've converged perfectly */
 	if (denom > DBL_EPSILON)
