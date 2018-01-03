@@ -2,10 +2,10 @@ env:
   global:
     - RUNTESTFLAGS=-v
   matrix:
-    - CFLAGS="-Og"
+    - CFLAGS="-g -Og" MATRIX_EVAL="touch check-no-trailing-blanks"
     - CFLAGS="-g -O2 -fstack-protector -Wformat -Werror=format-security" LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
-    - CFLAGS="-O3 -mtune=generic -fno-omit-frame-pointer -Werror"
-    - CFLAGS="-O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage"
+    - CFLAGS="-g -O3 -mtune=generic -fno-omit-frame-pointer -Werror"
+    - CFLAGS="-g -O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage"
 
 addons:
   postgresql: "9.6"
@@ -14,10 +14,10 @@ addons:
       - eatmydata
 
 before_install:
+  - eval "${MATRIX_EVAL}"
   - sudo sh -c "echo /usr/lib/libeatmydata/libeatmydata.so >> /etc/ld.so.preload"
   - sudo service postgresql stop 9.6
-  - sudo find /etc -user postgres | xargs sudo chown travis
-  - sudo find /var -user postgres | xargs sudo chown travis
+  - sudo chown -hRL --from=postgres travis:travis /etc /var /tmp
   - sudo usermod -u 1000 postgres
   - sudo adduser travis ssl-cert
   - sudo service postgresql start 9.6
@@ -28,23 +28,15 @@ before_install:
   - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev postgresql-server-dev-9.6 libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson0-dev libprotobuf-c0-dev libgdal-dev
   - sudo sh -c "echo deb http://archive.ubuntu.com/ubuntu/ artful main restricted universe multiverse >> /etc/apt/sources.list"
   - sudo apt-get update -qq
-  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests binutils
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests binutils libproj-dev
   - cp -n /var/cache/apt/archives/* /home/travis/deb || true
   - ls -la /home/travis/deb/
-  - cd /home/travis/proj
-  - test -f proj-4.9.2.tar.gz || wget -c http://download.osgeo.org/proj/proj-4.9.2.tar.gz
-  - test -d proj-4.9.2 || tar zxvf proj-4.9.2.tar.gz
-  - cd proj-4.9.2
-  - CFLAGS="-O3" LDFLAGS="" ./configure --prefix=/usr || cat config.log
-  - CFLAGS="-O3" LDFLAGS="" make -j
-  - sudo make install
   - cd /home/travis/build/postgis/postgis/
   - sudo ldconfig
   - ./autogen.sh
 
 after_failure:
-  - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log 
-  - cat /proc/cpuinfo
+  - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
@@ -58,7 +50,6 @@ dist: trusty
 cache: 
   ccache: true
   directories:
-    - /home/travis/proj
     - /home/travis/deb
 
 script:
