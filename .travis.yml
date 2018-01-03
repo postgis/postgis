@@ -2,10 +2,10 @@ env:
   global:
     - RUNTESTFLAGS=-v
   matrix:
-    - CFLAGS="-g -Og" MATRIX_EVAL="touch check-no-trailing-blanks"
-    - CFLAGS="-g -O2 -fstack-protector -Wformat -Werror=format-security" LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
-    - CFLAGS="-g -O3 -mtune=generic -fno-omit-frame-pointer -Werror"
-    - CFLAGS="-g -O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage"
+    - CFLAGS="-g -Og -fno-strict-aliasing" MATRIX_EVAL="touch check-no-trailing-blanks"
+    - CFLAGS="-g -O2 -fno-strict-aliasing -fstack-protector -Wformat -Werror=format-security" LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
+    - CFLAGS="-g -O3 -fno-strict-aliasing -mtune=generic -fno-omit-frame-pointer -Werror"
+    - CFLAGS="-g -O0 -fno-strict-aliasing --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage"
 
 addons:
   postgresql: "9.6"
