@@ -31,7 +31,8 @@ export PGIS_REG_TMPDIR=${WORKSPACE}/tmp/${POSTGIS_MAJOR_VERSION}_${POSTGIS_MINOR
 
 #adding this sleep so postgres instance has some grace period for starting
 #otherwise the attempt to drop the database, sometimes happes when pg is in middle of start
-sleep 5
+for i in {0..60}; do psql -c 'select;' && break; sleep 0.5; done
+
 export POSTGIS_REGRESS_DB="postgis_reg" # FIXME: tweak to avoid clashes
 psql -c "DROP DATABASE IF EXISTS $POSTGIS_REGRESS_DB"
 
