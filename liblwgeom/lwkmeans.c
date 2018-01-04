@@ -46,7 +46,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	const POINT2D *cp;
 	kmeans_config config;
 	kmeans_result result;
-	int boundary_point = 0;
+	int boundary_point_idx = 0;
 	double xmin = DBL_MAX;
 
 	assert(k>0);
@@ -131,7 +131,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 		/* Find the point that's on the boundary to use as seed */
 		if (xmin < cp->x)
 		{
-			boundary_point = geoms[i];
+			boundary_point_idx = i;
 			xmin = cp->x;
 		}
 	}
@@ -142,7 +142,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	}
 
 	/* start with point on boundary */
-	centers_raw[0] = *((POINT2D*)config.objs[boundary_point]);
+	centers_raw[0] = *((POINT2D*)config.objs[boundary_point_idx]);
 	config.centers[0] = &(centers_raw[0]);
 	/* loop i on clusters, skip 0 as it's found already */
 	for (i = 1; i < k; i++)
@@ -158,7 +158,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 			if (distances[j] < 0) continue;
 
 			/* greedily take a point that's farthest from all accepted clusters */
-			distances[j] += distance2d_sqr_pt_pt(config.objs[j], centers_raw[i-1]);
+			distances[j] += distance2d_sqr_pt_pt(&config.objs[j], &centers_raw[i-1]);
 			if (distances[j] > max_distance)
 			{
 				candidate_center = j;
