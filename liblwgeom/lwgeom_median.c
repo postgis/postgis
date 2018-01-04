@@ -225,7 +225,7 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 	double* distances = NULL;
 	
 	POINT4D* points = lwalloc(g->ngeoms * sizeof(POINT4D));
-	lwmpoint_extract_points_4d(g, &points, &npoints, &input_ok);
+	lwmpoint_extract_points_4d(g, points, &npoints, &input_ok);
 
 	if (!input_ok)
 	{
