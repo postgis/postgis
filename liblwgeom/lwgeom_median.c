@@ -160,7 +160,7 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, POINT4D* points, uint32_t* npoints
 		LWGEOM* subg = lwcollection_getsubgeom((LWCOLLECTION*) g, i);
 		if (!lwgeom_is_empty(subg))
 		{
-			input_empty = LW_FALSE;
+			*input_empty = LW_FALSE;
 			if (!getPoint4d_p(((LWPOINT*) subg)->point, 0, &points[n]))
 			{
 				lwerror("Geometric median: getPoint4d_p reported failure on point (POINT(%g %g %g %g), number %d of %d in input).", points[n].x, points[n].y, points[n].z, points[n].m, i, g->ngeoms);
