@@ -153,6 +153,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	}
 
 	/* start with point on boundary */
+	distances[boundary_point_idx] = -1;
 	centers_raw[0] = *((POINT2D*)config.objs[boundary_point_idx]);
 	config.centers[0] = &(centers_raw[0]);
 	/* loop i on clusters, skip 0 as it's found already */
