@@ -4,18 +4,6 @@
 #include "kmeans.h"
 #include "liblwgeom_internal.h"
 
-
-static double lwkmeans_pt_distance(const Pointer a, const Pointer b)
-{
-	POINT2D *pa = (POINT2D*)a;
-	POINT2D *pb = (POINT2D*)b;
-
-	double dx = (pa->x - pb->x);
-	double dy = (pa->y - pb->y);
-
-	return dx*dx + dy*dy;
-}
-
 static void lwkmeans_pt_centroid(const Pointer * objs, const int * clusters, size_t num_objs, int cluster, Pointer centroid)
 {
 	int i;
@@ -54,11 +42,10 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	int num_centroids = 0;
 	LWGEOM **centroids;
 	POINT2D *centers_raw;
+	double *distances;
 	const POINT2D *cp;
 	kmeans_config config;
 	kmeans_result result;
-	int *seen;
-	int sidx = 0;
 	int boundary_point = 0;
 	double xmin = DBL_MAX;
 
@@ -165,13 +152,13 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 		int candidate_center = 0;
 
 		/* loop j on objs */
-		for (j = 0; j < config.objs; j++)
+		for (j = 0; j < config.num_objs; j++)
 		{
 			/* empty objs and accepted clusters are already marked with distance = -1 */
 			if (distances[j] < 0) continue;
 
 			/* greedily take a point that's farthest from all accepted clusters */
-			distances[j] += lwkmeans_pt_distance(config.objs[j], centers_raw[i-1]);
+			distances[j] += distance2d_sqr_pt_pt(config.objs[j], centers_raw[i-1]);
 			if (distances[j] > max_distance)
 			{
 				candidate_center = j;
