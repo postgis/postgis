@@ -1200,8 +1200,9 @@ static void test_median_robustness(void)
 	/* Empty input */
 	do_median_test("MULTIPOINT EMPTY", "POINT EMPTY", LW_FALSE, 1000);
 	do_median_test("MULTIPOINT (EMPTY)", "POINT EMPTY", LW_FALSE, 1000);
-	do_median_test("MULTIPOINT EMPTY", NULL, LW_TRUE, 1000);
-	do_median_test("MULTIPOINT (EMPTY)", NULL, LW_TRUE, 1000);
+	do_median_test("MULTIPOINT EMPTY", "POINT EMPTY", LW_TRUE, 1000);
+	do_median_test("MULTIPOINT (EMPTY)", "POINT EMPTY", LW_TRUE, 1000);
+	do_median_test("MULTIPOINT ZM (1 -1 3 1, 1 0 2 7, 2 1 1 1, EMPTY)", "POINT (1 0 2)", LW_TRUE, 1000);
 
 	/* Weighted input */
 	do_median_test("MULTIPOINT ZM (1 -1 3 1, 1 0 2 7, 2 1 1 1)", "POINT (1 0 2)", LW_TRUE, 1000);
