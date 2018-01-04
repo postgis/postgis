@@ -188,6 +188,10 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, POINT4D* points, uint32_t* npoints
 					break;
 				}
 			}
+			else
+			{
+				n++;
+			}
 		}
 	}
 	if (*input_ok)
