@@ -168,12 +168,6 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, POINT4D* points, uint32_t* npoints
 			}
 			if (has_m)
 			{
-				/* points with zero weight are not going to affect calculation, drop them early */
-				if (points[n].m > DBL_EPSILON)
-				{
-					n++;
-				}
-
 				/* This limitation on non-negativity can be lifted
 				 * by replacing Weiszfeld algorithm with different one.
 				 * Possible option described in:
@@ -188,6 +182,12 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, POINT4D* points, uint32_t* npoints
 					lwerror("Geometric median input contains points with negative weights (POINT(%g %g %g %g), number %d of %d in input). Implementation can't guarantee global minimum convergence.", points[n].x, points[n].y, points[n].z, points[n].m, i, g->ngeoms);
 					*input_ok = LW_FALSE;
 					break;
+				}
+
+				/* points with zero weight are not going to affect calculation, drop them early */
+				if (points[n].m > DBL_EPSILON)
+				{
+					n++;
 				}
 			}
 			else
