@@ -202,14 +202,14 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, POINT4D* points, uint32_t* npoints
 		{
 			for (i = 0; i < n; i++)
 			{
-				points[n].z = 0.0;
+				points[i].z = 0.0;
 			}
 		}
 		if (!has_m)
 		{
 			for (i = 0; i < n; i++)
 			{
-				points[n].m = 1.0;
+				points[i].m = 1.0;
 			}
 		}
 	}
