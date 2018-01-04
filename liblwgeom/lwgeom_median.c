@@ -142,7 +142,7 @@ init_guess(const POINT4D* points, uint32_t npoints)
 }
 
 static POINT4D*
-lwmpoint_extract_points_4d(const LWMPOINT* g, POINT4D* points, uint32_t* npoints, int* input_ok)
+lwmpoint_extract_points_4d(const LWMPOINT* g, POINT4D* points, uint32_t* npoints, int* input_ok, int* input_empty)
 {
 	assert(npoints != NULL);
 	assert(input_ok != NULL);
@@ -160,6 +160,7 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, POINT4D* points, uint32_t* npoints
 		LWGEOM* subg = lwcollection_getsubgeom((LWCOLLECTION*) g, i);
 		if (!lwgeom_is_empty(subg))
 		{
+			input_empty = LW_FALSE;
 			if (!getPoint4d_p(((LWPOINT*) subg)->point, 0, &points[n]))
 			{
 				lwerror("Geometric median: getPoint4d_p reported failure on point (POINT(%g %g %g %g), number %d of %d in input).", points[n].x, points[n].y, points[n].z, points[n].m, i, g->ngeoms);
@@ -232,31 +233,32 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 	uint32_t npoints = 0; /* we need to count this ourselves so we can exclude empties and weightless points */
 	uint32_t i;
 	int input_ok = LW_TRUE;
+	int input_empty = LW_TRUE;
 	double delta = DBL_MAX;
 	POINT4D median;
 	double* distances = NULL;
 	POINT4D* points = lwalloc(g->ngeoms * sizeof(POINT4D));
 
-	lwmpoint_extract_points_4d(g, points, &npoints, &input_ok);
+	lwmpoint_extract_points_4d(g, points, &npoints, &input_ok, &input_empty);
 
 	if (!input_ok)
 	{
-		//lwfree(points);
+		lwfree(points);
 		/* error reported upon input check */
 		return NULL;
 	}
 
 	if (npoints == 0)
 	{
-		//lwfree(points);
-		if (fail_if_not_converged)
+		lwfree(points);
+		if (input_empty)
 		{
-			lwerror("Median failed to find suitable input points.");
-			return NULL;
+			return lwpoint_construct_empty(g->srid, 0, 0);
 		}
 		else
 		{
-			return lwpoint_construct_empty(g->srid, 0, 0);
+			lwerror("Median failed to find suitable input points.");
+			return NULL;
 		}
 	}
 
@@ -269,8 +271,8 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 		delta = iterate_4d(&median, points, npoints, distances);
 	}
 
-	//lwfree(distances);
-	//lwfree(points);
+	lwfree(distances);
+	lwfree(points);
 
 	if (fail_if_not_converged && delta > tol)
 	{
