@@ -225,18 +225,18 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 		return lwpoint_construct_empty(g->srid, 0, 0);
 	}
 	assert(g->ngeoms > 0);
-	
+
 	/* m ordinate is considered weight, if defined */
 	uint32_t npoints = 0; /* we need to count this ourselves so we can exclude empties and weightless points */
 	uint32_t i;
 	int input_ok = LW_TRUE;
 	double delta = DBL_MAX;
 	POINT4D median;
-	double* distances = NULL;	
+	double* distances = NULL;
 	POINT4D* points = lwalloc(g->ngeoms * sizeof(POINT4D));
-	
+
 	lwmpoint_extract_points_4d(g, points, &npoints, &input_ok);
-	
+
 	if (!input_ok)
 	{
 		//lwfree(points);
