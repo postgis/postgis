@@ -229,14 +229,14 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 
 	if (!input_ok)
 	{
-		lwfree(points);
+		//lwfree(points);
 		/* error reported upon input check */
 		return NULL;
 	}
 
 	if (npoints == 0)
 	{
-		lwfree(points);
+		//lwfree(points);
 		if (fail_if_not_converged)
 		{
 			lwerror("Median failed to find suitable input points.");
@@ -257,8 +257,8 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 		delta = iterate_4d(&median, points, npoints, distances);
 	}
 
-	lwfree(distances);
-	lwfree(points);
+	//lwfree(distances);
+	//lwfree(points);
 
 	if (fail_if_not_converged && delta > tol)
 	{
