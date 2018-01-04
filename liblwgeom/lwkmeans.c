@@ -140,7 +140,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 		config.objs[i] = (Pointer)cp;
 
 		/* Find the point that's on the boundary to use as seed */
-		if (xmin < cp->x)
+		if (xmin > cp->x)
 		{
 			boundary_point_idx = i;
 			xmin = cp->x;
