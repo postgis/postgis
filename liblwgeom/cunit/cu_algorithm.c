@@ -1012,7 +1012,6 @@ static void test_lwgeom_remove_repeated_points(void)
 	lwgeom_remove_repeated_points_in_place(g, 1);
 	ewkt = lwgeom_to_ewkt(g);
 	CU_ASSERT_STRING_EQUAL(ewkt, "MULTIPOINT(0 0,10 0,10 10,0 10,5 5)");
-	// printf("%s\n", ewkt);
 	lwgeom_free(g);
 	lwfree(ewkt);
 
@@ -1020,20 +1019,22 @@ static void test_lwgeom_remove_repeated_points(void)
 	lwgeom_remove_repeated_points_in_place(g, 0.01);
 	ewkt = lwgeom_to_ewkt(g);
 	CU_ASSERT_STRING_EQUAL(ewkt, "LINESTRING(1612830.15445 4841287.12672,1612829.98813 4841274.56198)");
-	// printf("%s\n", ewkt);
 	lwgeom_free(g);
 	lwfree(ewkt);
-
 
 	g = lwgeom_from_wkt("MULTIPOINT(0 0,10 0,10 10,10 10,0 10,0 10,0 10,0 0,0 0,0 0,5 5,5 5,5 8,8 8,8 8,8 8,8 5,8 5,5 5,5 5,5 5,5 5,5 5,50 50,50 50,50 50,50 60,50 60,50 60,60 60,60 50,60 50,50 50,55 55,55 58,58 58,58 55,58 55,55 55)", LW_PARSER_CHECK_NONE);
 	lwgeom_remove_repeated_points_in_place(g, 1);
 	ewkt = lwgeom_to_ewkt(g);
 	CU_ASSERT_STRING_EQUAL(ewkt, "MULTIPOINT(0 0,10 0,10 10,0 10,5 5,5 8,8 8,8 5,50 50,50 60,60 60,60 50,55 55,55 58,58 58,58 55)");
-	// printf("%s\n", ewkt);
 	lwgeom_free(g);
 	lwfree(ewkt);
 
-
+	g = lwgeom_from_wkt("POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))", LW_PARSER_CHECK_NONE);
+	lwgeom_remove_repeated_points_in_place(g, 10000);
+	ewkt = lwgeom_to_ewkt(g);
+	CU_ASSERT_STRING_EQUAL(ewkt, "POLYGON((0 0,1 1,1 0,0 0))");
+	lwgeom_free(g);
+	lwfree(ewkt);
 }
 
 static void test_lwgeom_simplify(void)

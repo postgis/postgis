@@ -27,5 +27,6 @@ SELECT 14, ST_AsText(ST_RemoveRepeatedPoints('LINESTRING(10 0,10 9,10 10)', 2));
 SELECT 15, ST_AsText(ST_RemoveRepeatedPoints('MULTIPOINT(0 0, 0 0, 1 1, 2 2)'::geometry));
 SELECT 16, ST_AsText(ST_RemoveRepeatedPoints('MULTIPOINT(0 0, 0 0, 1 1, 2 2)'::geometry,0.1));
 SELECT 17, ST_AsText(ST_RemoveRepeatedPoints('MULTIPOINT(0 0, 0 0, 1 1, 4 4)'::geometry,2));
+SELECT 18, ST_AsText(ST_RemoveRepeatedPoints('POLYGON((-215922 5325694,-218080 5321866,-218693 5322119,-216112 5325812,-215922 5325694))'::geometry, 10000));
 
 
