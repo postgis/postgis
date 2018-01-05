@@ -126,7 +126,7 @@ static POINT3D
 init_guess(const POINT4D* points, uint32_t npoints)
 {
 	assert(npoints > 0);
-	POINT3D guess = { 0, 0, 0, 0 };
+	POINT3D guess = { 0, 0, 0 };
 	double mass = 0;
 	uint32_t i;
 	for (i = 0; i < npoints; i++)
