@@ -186,13 +186,15 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_empt
 			else
 			{
 				points[n].m = 1.0;
-				n++;				
+				n++;		
 			}
 		}
 	}
-	
-	/* reset Z for 2D inputs */
-	if (!lwgeom_has_z((LWGEOM*) g)) for (i = 0; i < n; i++) points[i].z = 0.0;
+
+#if PARANOIA_LEVEL > 0
+	/* check Z=0 for 2D inputs*/
+	if (!lwgeom_has_z((LWGEOM*) g)) for (i = 0; i < n; i++) assert(points[i].z == 0);
+#endif
 
 	*npoints = n;
 	return points;
