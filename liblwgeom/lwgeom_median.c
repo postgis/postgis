@@ -186,7 +186,7 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_empt
 			else
 			{
 				points[n].m = 1.0;
-				n++;		
+				n++;
 			}
 		}
 	}
