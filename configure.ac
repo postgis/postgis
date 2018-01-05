@@ -1043,10 +1043,11 @@ AC_ARG_ENABLE([debug], AC_HELP_STRING([--enable-debug], [Enable debugging code a
 	[ENABLE_DEBUG=1], [ENABLE_DEBUG=0])
 
 if test $ENABLE_DEBUG -eq 1; then
-    AC_DEFINE_UNQUOTED([PARANOIA_LEVEL], [10], [Enable use of memory checks])
+    AC_DEFINE([PARANOIA_LEVEL], [10], [Enable use of memory checks])
     CFLAGS="$CFLAGS -g"
 else
-    AC_DEFINE_UNQUOTED([PARANOIA_LEVEL], [0], [Disable use of memory checks])
+    AC_DEFINE([PARANOIA_LEVEL], [0], [Disable use of memory checks])
+    AC_DEFINE([NDEBUG], [0], [Disable C asserts])
 fi
 
 
