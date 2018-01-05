@@ -122,7 +122,7 @@ iterate_4d(POINT3D* curr, const POINT4D* points, uint32_t npoints, double* dista
 	return delta;
 }
 
-static POINT4D
+static POINT3D
 init_guess(const POINT4D* points, uint32_t npoints)
 {
 	assert(npoints > 0);
@@ -159,8 +159,8 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_empt
 			if (!getPoint4d_p(((LWPOINT*) subg)->point, 0, &points[n]))
 			{
 				lwerror("Geometric median: getPoint4d_p reported failure on point (POINT(%g %g %g %g), number %d of %d in input).", points[n].x, points[n].y, points[n].z, points[n].m, i, g->ngeoms);
-				*input_ok = LW_FALSE;
-				break;
+				lwfree(points);
+				return NULL;
 			}
 			if (has_m)
 			{
@@ -205,7 +205,6 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 	/* m ordinate is considered weight, if defined */
 	uint32_t npoints = 0; /* we need to count this ourselves so we can exclude empties and weightless points */
 	uint32_t i;
-	int input_ok = LW_TRUE;
 	int input_empty = LW_TRUE;
 	double delta = DBL_MAX;
 	POINT3D median;
