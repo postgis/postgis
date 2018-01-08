@@ -204,5 +204,5 @@ from (
          from points
      ) z
 group by cid
-order by 1
+order by 2
 limit 1;
