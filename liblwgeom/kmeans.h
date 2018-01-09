@@ -23,14 +23,6 @@
 */
 
 /*
-* Threaded calculation is available using pthreads, which practically
-* means UNIX platforms only, unless you're building with a posix
-* compatible environment.
-*
-* #define KMEANS_THREADED
-*/
-
-/*
 * When clustering lists with NULL elements, they will get this as
 * their cluster number. (All the other clusters will be non-negative)
 */
@@ -41,17 +33,6 @@
 * it will return with a failure error code.
 */
 #define KMEANS_MAX_ITERATIONS 1000
-
-/*
-* The code doesn't try to figure out how many threads to use, so
-* best to set this to the number of cores you expect to have
-* available. The threshold is the the value of k*n at which to
-* move to multi-threading.
-*/
-#ifdef KMEANS_THREADED
-#define KMEANS_THR_MAX 4
-#define KMEANS_THR_THRESHOLD 250000
-#endif
 
 #define kmeans_malloc(size) lwalloc(size)
 #define kmeans_free(ptr) lwfree(ptr)
@@ -121,6 +102,5 @@ typedef struct kmeans_config
 
 } kmeans_config;
 
-/* This is where the magic happens. */
 kmeans_result kmeans(kmeans_config *config);
 
