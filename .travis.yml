@@ -1,6 +1,4 @@
 env:
-  global:
-    - RUNTESTFLAGS=-v
   matrix:
     - CFLAGS="-g -Og" MATRIX_EVAL="touch check-no-trailing-blanks"
     - CFLAGS="-g -O2 -fstack-protector -Wformat -Werror=format-security" LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
@@ -58,11 +56,11 @@ script:
   - ./configure CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS" $CONFIGURE_FLAGS || cat config.log
   - make -j
   - chmod 755 /home/travis
-  - logbt -- make check
-  - logbt -- make check RUNTESTFLAGS='--dumprestore'
+  - logbt -- make check RUNTESTFLAGS='--verbose'
+  - logbt -- make check RUNTESTFLAGS='--dumprestore --verbose'
   - sudo make install
-  - logbt -- make installcheck
-  - logbt -- make installcheck RUNTESTFLAGS='--dumprestore'
+  - logbt -- make installcheck RUNTESTFLAGS='--verbose'
+  - logbt -- make installcheck RUNTESTFLAGS='--dumprestore --verbose'
 
 notifications:
   email: false
