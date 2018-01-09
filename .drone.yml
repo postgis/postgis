@@ -19,7 +19,7 @@ pipeline:
     image: *test-image
     commands:
       - service postgresql start
-      - while :; do psql -tAc "select version()" && break; sleep 10; done
+      - while :; do psql -tAc "select version()" template1 && break; sleep 10; done
       - make check RUNTESTFLAGS=-v
       - make install
       - utils/check_all_upgrades.sh
