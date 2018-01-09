@@ -1,7 +1,6 @@
 #include <float.h>
 #include <math.h>
 
-#include "kmeans.h"
 #include "liblwgeom_internal.h"
 #include <stdlib.h>
 
