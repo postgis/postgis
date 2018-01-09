@@ -754,9 +754,6 @@ sub run_simple_test
 			print FILE $diff;
 			close(FILE);
 			fail("${msg}diff expected obtained", $diffile);
-			print "========";
-			print $diff;
-			print "========";
 			return 0;
 		}
 		else
