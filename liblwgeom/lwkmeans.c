@@ -16,9 +16,6 @@
 */
 #define KMEANS_MAX_ITERATIONS 1000
 
-#define kmeans_malloc(size) lwalloc(size)
-#define kmeans_free(ptr) lwfree(ptr)
-
 typedef void * Pointer;
 
 typedef enum {
@@ -27,29 +24,8 @@ typedef enum {
 	KMEANS_ERROR
 } kmeans_result;
 
-/*
-* Prototype for the distance calculating function
-*/
-typedef double (*kmeans_distance_method) (const Pointer a, const Pointer b);
-
-/*
-* Prototype for the centroid calculating function
-* @param objs the list of all objects in the calculation
-* @param clusters the list of cluster numbers for each object
-* @param num_objs the number of objects/cluster numbers in the previous arrays
-* @param cluster the cluster number we are actually generating a centroid for here
-* @param centroid the object to write the centroid result into (already allocated)
-*/
-typedef void (*kmeans_centroid_method) (const Pointer * objs, const int * clusters, size_t num_objs, int cluster, Pointer centroid);
-
 typedef struct kmeans_config
 {
-	/* Function returns the "distance" between any pair of objects */
-	kmeans_distance_method distance_method;
-
-	/* Function returns the "centroid" of a collection of objects */
-	kmeans_centroid_method centroid_method;
-
 	/* An array of objects to be analyzed. User allocates this array */
 	/* and is responsible for freeing it. */
 	/* For objects that are not capable of participating in the distance */
@@ -60,7 +36,7 @@ typedef struct kmeans_config
 	Pointer * objs;
 
 	/* Number of objects in the preceding array */
-	size_t num_objs;
+	size_t num_objs; 
 
 	/* An array of initial centers for the algorithm */
 	/* Can be randomly assigned, or using proportions, */
@@ -96,37 +72,6 @@ static double lwkmeans_pt_distance(const Pointer a, const Pointer b)
 
 	return dx*dx + dy*dy;
 }
-
-static void lwkmeans_pt_centroid(const Pointer * objs, const int * clusters, size_t num_objs, int cluster, Pointer centroid)
-{
-	int i;
-	int num_cluster = 0;
-	POINT2D sum;
-	POINT2D **pts = (POINT2D**)objs;
-	POINT2D *center = (POINT2D*)centroid;
-
-	sum.x = sum.y = 0.0;
-
-	if (num_objs <= 0) return;
-
-	for (i = 0; i < num_objs; i++)
-	{
-		/* Skip points that are not of interest */
-		if (clusters[i] != cluster) continue;
-
-		sum.x += pts[i]->x;
-		sum.y += pts[i]->y;
-		num_cluster++;
-	}
-	if (num_cluster)
-	{
-		sum.x /= num_cluster;
-		sum.y /= num_cluster;
-		*center = sum;
-	}
-	return;
-}
-
 
 int *
 lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
@@ -172,8 +117,6 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	config.centers = lwalloc(sizeof(Pointer) * k);
 	config.k = k;
 	config.max_iterations = 0;
-	config.distance_method = lwkmeans_pt_distance;
-	config.centroid_method = lwkmeans_pt_centroid;
 
 	/* Clean the memory */
 	memset(config.objs, 0, sizeof(Pointer) * ngeoms);
@@ -302,17 +245,15 @@ static void
 update_r(kmeans_config *config)
 {
 	int i;
-
+	assert(config->objs != NULL);
+	assert(config->num_objs > 0);
+	assert(config->centers);
+	assert(config->clusters);
 	for (i = 0; i < config->num_objs; i++)
 	{
 		double distance, curr_distance;
 		int cluster, curr_cluster;
 		Pointer obj;
-
-		assert(config->objs != NULL);
-		assert(config->num_objs > 0);
-		assert(config->centers);
-		assert(config->clusters);
 
 		obj = config->objs[i];
 
@@ -327,13 +268,13 @@ update_r(kmeans_config *config)
 		}
 
 		/* Initialize with distance to first cluster */
-		curr_distance = (config->distance_method)(obj, config->centers[0]);
+		curr_distance = lwkmeans_pt_distance(obj, config->centers[0]);
 		curr_cluster = 0;
 
 		/* Check all other cluster centers and find the nearest */
 		for (cluster = 1; cluster < config->k; cluster++)
 		{
-			distance = (config->distance_method)(obj, config->centers[cluster]);
+			distance = lwkmeans_pt_distance(obj, config->centers[cluster]);
 			if (distance < curr_distance)
 			{
 				curr_distance = distance;
@@ -350,11 +291,26 @@ static void
 update_means(kmeans_config *config)
 {
 	int i;
+	int *weights;
+	POINT2D zero = { 0, 0 };
+
+	weights = lwalloc(sizeof(int)*config.k);
+	memset(weights, 0, sizeof(int)*config.k);
 
 	for (i = 0; i < config->k; i++)
 	{
-		/* Update the centroid for this cluster */
-		(config->centroid_method)(config->objs, config->clusters, config->num_objs, i, config->centers[i]);
+		*config->centers[i] = zero;
+	}
+	for (i = 0; i < config->num_objs; i++)
+	{
+		config->centers[clusters[i]]->x += config->objs[i]->x;
+		config->centers[clusters[i]]->y += config->objs[i]->y;
+		weights[clusters[i]] += 1;
+	}
+	for (i = 0; i < config->k; i++)
+	{
+		*config->centers[i]->x /= weights[i];
+		*config->centers[i]->y /= weights[i];
 	}
 }
 
@@ -368,8 +324,6 @@ kmeans(kmeans_config *config)
 	assert(config);
 	assert(config->objs);
 	assert(config->num_objs);
-	assert(config->distance_method);
-	assert(config->centroid_method);
 	assert(config->centers);
 	assert(config->k);
 	assert(config->clusters);
@@ -386,11 +340,11 @@ kmeans(kmeans_config *config)
 	 * Previous cluster state array. At this time, r doesn't mean anything
 	 * but it's ok
 	 */
-	clusters_last = kmeans_malloc(clusters_sz);
+	clusters_last = lwalloc(clusters_sz);
 
 	while (1)
 	{
-		LW_ON_INTERRUPT(kmeans_free(clusters_last); return KMEANS_ERROR);
+		LW_ON_INTERRUPT(lwfree(clusters_last); return KMEANS_ERROR);
 
 		/* Store the previous state of the clustering */
 		memcpy(clusters_last, config->clusters, clusters_sz);
@@ -404,21 +358,20 @@ kmeans(kmeans_config *config)
 		 */
 		if (memcmp(clusters_last, config->clusters, clusters_sz) == 0)
 		{
-			kmeans_free(clusters_last);
+			lwfree(clusters_last);
 			config->total_iterations = iterations;
 			return KMEANS_OK;
 		}
 
 		if (iterations++ > config->max_iterations)
 		{
-			kmeans_free(clusters_last);
+			lwfree(clusters_last);
 			config->total_iterations = iterations;
 			return KMEANS_EXCEEDED_MAX_ITERATIONS;
 		}
-
 	}
 
-	kmeans_free(clusters_last);
+	lwfree(clusters_last);
 	config->total_iterations = iterations;
 	return KMEANS_ERROR;
 }
