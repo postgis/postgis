@@ -31,7 +31,7 @@ PostGIS 2.5.0
   - #3954, ST_GeometricMedian now supports point weights (Darafei Praliaskouski)
   - #3965, ST_ClusterKMeans used to lose some clusters on initialization
            (Darafei Praliaskouski)
-
+  - #3971, ST_ClusterKMeans now uses better initial seed (Darafei Praliaskouski)
 
 PostGIS 2.4.0
 2017/09/30
