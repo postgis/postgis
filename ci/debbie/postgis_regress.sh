@@ -65,7 +65,6 @@ fi
     --without-interrupt-tests \
     --prefix=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}
 make clean
-## install so we can later test extension upgrade
 make
 
 if [ "$?" != "0" ]; then
@@ -74,9 +73,11 @@ fi
 
 make check RUNTESTFLAGS=-v
 
+## install so we can test upgrades/dump-restores etc.
+make install
+
 if [ "$MAKE_EXTENSION" = "1" ]; then
  echo "Running extension testing"
- make install
  make check RUNTESTFLAGS=--extension
  if [ "$?" != "0" ]; then
   exit $?
@@ -85,7 +86,6 @@ fi
 
 if [ "$DUMP_RESTORE" = "1" ]; then
  echo "Dum restore test"
- make install
  make check RUNTESTFLAGS="-v --dumprestore"
  if [ "$?" != "0" ]; then
   exit $?
@@ -96,3 +96,7 @@ if [ "$MAKE_GARDEN" = "1" ]; then
  echo "Running garden test"
  make garden
 fi
+
+# Test all available upgrades
+# TODO: protect via some variable ?
+utils/check_all_upgrades.sh
