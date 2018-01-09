@@ -99,4 +99,5 @@ fi
 
 # Test all available upgrades
 # TODO: protect via some variable ?
-utils/check_all_upgrades.sh
+utils/check_all_upgrades.sh \
+        `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
