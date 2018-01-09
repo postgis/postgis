@@ -4,7 +4,6 @@
 #include "kmeans.h"
 #include "liblwgeom_internal.h"
 
-
 static double lwkmeans_pt_distance(const Pointer a, const Pointer b)
 {
 	POINT2D *pa = (POINT2D*)a;
@@ -14,32 +13,6 @@ static double lwkmeans_pt_distance(const Pointer a, const Pointer b)
 	double dy = (pa->y - pb->y);
 
 	return dx*dx + dy*dy;
-}
-
-static int lwkmeans_pt_closest(const Pointer * objs, size_t num_objs, const Pointer a)
-{
-	int i;
-	double d;
-	double d_closest = FLT_MAX;
-	int closest = -1;
-
-	assert(num_objs > 0);
-
-	for (i = 0; i < num_objs; i++)
-	{
-		/* Skip nulls/empties */
-		if (!objs[i])
-			continue;
-
-		d = lwkmeans_pt_distance(objs[i], a);
-		if (d < d_closest)
-		{
-			d_closest = d;
-			closest = i;
-		}
-	}
-
-	return closest;
 }
 
 static void lwkmeans_pt_centroid(const Pointer * objs, const int * clusters, size_t num_objs, int cluster, Pointer centroid)
@@ -80,24 +53,22 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	int num_centroids = 0;
 	LWGEOM **centroids;
 	POINT2D *centers_raw;
+	double *distances;
 	const POINT2D *cp;
-	POINT2D min = { DBL_MAX,   DBL_MAX };
-	POINT2D max = { -DBL_MAX, -DBL_MAX };
-	double dx, dy;
 	kmeans_config config;
 	kmeans_result result;
-	int *seen;
-	int sidx = 0;
+	int boundary_point_idx = 0;
+	double xmin = DBL_MAX;
 
 	assert(k>0);
 	assert(ngeoms>0);
 	assert(geoms);
 
-    /* Initialize our static structs */
-    memset(&config, 0, sizeof(kmeans_config));
-    memset(&result, 0, sizeof(kmeans_result));
+	/* Initialize our static structs */
+	memset(&config, 0, sizeof(kmeans_config));
+	memset(&result, 0, sizeof(kmeans_result));
 
-	if (ngeoms<k)
+	if (ngeoms < k)
 	{
 		lwerror("%s: number of geometries is less than the number of clusters requested", __func__);
 	}
@@ -127,6 +98,10 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	memset(config.clusters, 0, sizeof(int) * ngeoms);
 	memset(config.centers, 0, sizeof(Pointer) * k);
 
+	/* Array of sums of distances to a point from accepted cluster centers */
+	distances = lwalloc(sizeof(double)*config.num_objs);
+	memset(distances, 0, sizeof(double)*config.num_objs);
+
 	/* Prepare the list of object pointers for K-means */
 	for (i = 0; i < ngeoms; i++)
 	{
@@ -137,6 +112,8 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 		if ((!geom) || lwgeom_is_empty(geom))
 		{
 			config.objs[i] = NULL;
+			/* mark as unreachable */
+			distances[i] = -1;
 			continue;
 		}
 
@@ -162,58 +139,55 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 		cp = getPoint2d_cp(lwpoint->point, 0);
 		config.objs[i] = (Pointer)cp;
 
-		/* Since we're already here, let's calculate the extrema of the set */
-		if (cp->x < min.x) min.x = cp->x;
-		if (cp->y < min.y) min.y = cp->y;
-		if (cp->x > max.x) max.x = cp->x;
-		if (cp->y > max.y) max.y = cp->y;
+		/* Find the point that's on the boundary to use as seed */
+		if (xmin > cp->x)
+		{
+			boundary_point_idx = i;
+			xmin = cp->x;
+		}
 	}
 
-	/*
-	* We map a uniform assignment of points in the area covered by the set
-	* onto actual points in the set
-	*/
-	dx = (max.x - min.x)/k;
-	dy = (max.y - min.y)/k;
-	seen = lwalloc(sizeof(int)*config.k);
-	memset(seen, 0, sizeof(int)*config.k);
-	for (i = 0; i < k; i++)
+	if (xmin == DBL_MAX)
 	{
-		int closest;
-		POINT2D p;
+		lwerror("unable to calculate any cluster seed point, too many NULLs or empties?");
+	}
+
+	/* start with point on boundary */
+	distances[boundary_point_idx] = -1;
+	centers_raw[0] = *((POINT2D*)config.objs[boundary_point_idx]);
+	config.centers[0] = &(centers_raw[0]);
+	/* loop i on clusters, skip 0 as it's found already */
+	for (i = 1; i < k; i++)
+	{
 		int j;
+		double max_distance = -DBL_MAX;
+		int candidate_center = 0;
 
-		/* Calculate a point in the range */
-		p.x = min.x + dx * (i + 0.5);
-		p.y = min.y + dy * (i + 0.5);
-
-		/* Find the data point closest to the calculated point */
-		closest = lwkmeans_pt_closest(config.objs, config.num_objs, &p);
-
-		/* If something is terrible wrong w/ data, cannot find a closest */
-		if (closest < 0)
-			lwerror("unable to calculate cluster seed points, too many NULLs or empties?");
-
-		/* Ensure we aren't already using that point as a seed */
-		j = 0;
-		while(j < sidx)
+		/* loop j on objs */
+		for (j = 0; j < config.num_objs; j++)
 		{
-			if (seen[j] == closest)
+			/* empty objs and accepted clusters are already marked with distance = -1 */
+			if (distances[j] < 0) continue;
+
+			/* greedily take a point that's farthest from all accepted clusters */
+			distances[j] += lwkmeans_pt_distance(&config.objs[j], &centers_raw[i-1]);
+			if (distances[j] > max_distance)
 			{
-				closest = (closest + 1) % config.num_objs;
-				j = 0;
-			}
-			else
-			{
-				j++;
+				candidate_center = j;
+				max_distance = distances[j];
 			}
 		}
-		seen[sidx++] = closest;
 
+		/* something is wrong with data, cannot find a candidate */
+		if (max_distance < 0)
+			lwerror("unable to calculate cluster seed points, too many NULLs or empties?");
+
+		/* accept candidtate to centers */
+		distances[candidate_center] = -1;
 		/* Copy the point coordinates into the initial centers array */
 		/* This is ugly, but the centers array is an array of */
 		/* pointers to points, not an array of points */
-		centers_raw[i] = *((POINT2D*)config.objs[closest]);
+		centers_raw[i] = *((POINT2D*)config.objs[candidate_center]);
 		config.centers[i] = &(centers_raw[i]);
 	}
 
@@ -224,7 +198,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	lwfree(config.centers);
 	lwfree(centers_raw);
 	lwfree(centroids);
-	lwfree(seen);
+	lwfree(distances);
 
 	/* Good result */
 	if (result == KMEANS_OK)
@@ -241,4 +215,3 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	/* Unknown error */
 	return NULL;
 }
-
