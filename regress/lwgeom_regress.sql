@@ -190,7 +190,7 @@ from (
          from points) z;
 
 -- check that grid gets clustered to clusters of similar size
-select '#3971', count(*)
+select '#3971', count(*) >= 13 -- in perfect match it's 25, #3971 increases it to 13 from 4
 from (
          with
                  points as (
@@ -204,5 +204,5 @@ from (
          from points
      ) z
 group by cid
-order by 2
+order by count(*)
 limit 1;
