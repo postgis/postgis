@@ -475,7 +475,7 @@ EOF
 				}
 				$subcomment = '';
 			}
-			last if /\);/;
+			last if /;$/;
 		}
 		$opctype =~ tr/A-Z/a-z/;
 		$opcidx =~ tr/A-Z/a-z/;
