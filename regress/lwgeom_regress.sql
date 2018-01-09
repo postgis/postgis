@@ -171,8 +171,38 @@ SELECT 'ST_Angle_2_lines', St_Angle(l1,l2)
 	, ST_GeomFromtext('LINESTRING(1 0, 2 0)') AS l2 ;
 
 --- ST_ClusterKMeans
-select '#3965', count(distinct cid), count(*) from (
-	with points as (select ST_MakePoint(x,y) geom from generate_series(1,5) x, generate_series(1,5) y)
-  select ST_ClusterKMeans(geom, 25) over () as cid, geom
-  from points) z;
 
+-- check we have not less than k clusters
+select
+    '#3965',
+    count(distinct cid),
+    count(*)
+from (
+         with points as (
+             select ST_MakePoint(x, y) geom
+             from generate_series(1, 5) x,
+                  generate_series(1, 5) y
+         )
+         select
+             ST_ClusterKMeans(geom, 25)
+             over () as cid,
+             geom
+         from points) z;
+
+-- check that grid gets clustered to clusters of similar size
+select '#3971', count(*) >= 12 -- in perfect match it's 25, #3971 increases it to 12 from 4
+from (
+         with
+                 points as (
+                 select ST_MakePoint(x, y) geom
+                 from generate_series(1, 45) x, generate_series(1, 45) y
+             )
+         select
+             ST_ClusterKMeans(geom, 81)
+             over () as cid,
+             geom
+         from points
+     ) z
+group by cid
+order by count(*)
+limit 1;
