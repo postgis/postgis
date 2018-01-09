@@ -221,7 +221,7 @@ CREATE OPERATOR CLASS brin_geometry_inclusion_ops_2d
     OPERATOR      7         ~(box2df, geometry),
     OPERATOR      7         ~(geometry, box2df),
     OPERATOR      7        ~(geometry, geometry),
-    OPERATOR      8         @(box2df, box2df);
+    OPERATOR      8         @(box2df, box2df),
     OPERATOR      8         @(box2df, geometry),
     OPERATOR      8         @(geometry, box2df),
     OPERATOR      8        @(geometry, geometry),

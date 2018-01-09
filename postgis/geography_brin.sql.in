@@ -70,9 +70,9 @@ CREATE OPERATOR CLASS brin_geography_inclusion_ops
     FUNCTION      3        brin_inclusion_consistent(internal, internal, internal),
     FUNCTION      4        brin_inclusion_union(internal, internal, internal),
     OPERATOR      3        &&(geography, geography),
-    OPERATOR      3         &&(geography, gidx),
-    OPERATOR      3         &&(gidx, geography),
-    OPERATOR      3         &&(gidx, gidx),
+    OPERATOR      3        &&(geography, gidx),
+    OPERATOR      3        &&(gidx, geography),
+    OPERATOR      3        &&(gidx, gidx),
   STORAGE gidx;
 
 #endif
