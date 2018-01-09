@@ -170,7 +170,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 			if (distances[j] < 0) continue;
 
 			/* greedily take a point that's farthest from all accepted clusters */
-			distances[j] += sqrt(lwkmeans_pt_distance(&config.objs[j], &centers_raw[i-1]));
+			distances[j] += lwkmeans_pt_distance(&config.objs[j], &centers_raw[i-1]);
 			if (distances[j] > max_distance)
 			{
 				candidate_center = j;
