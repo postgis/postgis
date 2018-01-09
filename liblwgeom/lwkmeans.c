@@ -299,18 +299,18 @@ update_means(kmeans_config *config)
 
 	for (i = 0; i < config->k; i++)
 	{
-		config->centers[i] = zero;
+		POINT2D*(config->centers[i]) = zero;
 	}
 	for (i = 0; i < config->num_objs; i++)
 	{
-		config->centers[config->clusters[i]]->x += config->objs[i]->x;
-		config->centers[config->clusters[i]]->y += config->objs[i]->y;
+		POINT2D*(config->centers[config->clusters[i]])->x += config->objs[i]->x;
+		POINT2D*(config->centers[config->clusters[i]])->y += config->objs[i]->y;
 		weights[config->clusters[i]] += 1;
 	}
 	for (i = 0; i < config->k; i++)
 	{
-		*config->centers[i]->x /= weights[i];
-		*config->centers[i]->y /= weights[i];
+		POINT2D*(config->centers[i])->x /= weights[i];
+		POINT2D*(config->centers[i])->y /= weights[i];
 	}
 }
 
