@@ -209,7 +209,6 @@ CREATE OR REPLACE FUNCTION geom4d_brin_inclusion_add_value(internal, internal, i
 CREATE OPERATOR CLASS brin_geometry_inclusion_ops_2d
   DEFAULT FOR TYPE geometry
   USING brin
-  FAMILY brin_geometry_inclusion_ops_2d AS
     FUNCTION      1        brin_inclusion_opcinfo(internal),
     FUNCTION      2        geom2d_brin_inclusion_add_value(internal, internal, internal, internal),
     FUNCTION      3        brin_inclusion_consistent(internal, internal, internal),
@@ -236,7 +235,6 @@ CREATE OPERATOR CLASS brin_geometry_inclusion_ops_2d
 CREATE OPERATOR CLASS brin_geometry_inclusion_ops_3d
   FOR TYPE geometry
   USING brin
-  FAMILY brin_geometry_inclusion_ops_3d AS
     FUNCTION      1        brin_inclusion_opcinfo(internal) ,
     FUNCTION      2        geom3d_brin_inclusion_add_value(internal, internal, internal, internal),
     FUNCTION      3        brin_inclusion_consistent(internal, internal, internal),
@@ -255,7 +253,6 @@ CREATE OPERATOR CLASS brin_geometry_inclusion_ops_3d
 CREATE OPERATOR CLASS brin_geometry_inclusion_ops_4d
   FOR TYPE geometry
   USING brin
-  FAMILY brin_geometry_inclusion_ops_4d AS
     FUNCTION      1        brin_inclusion_opcinfo(internal),
     FUNCTION      2        geom4d_brin_inclusion_add_value(internal, internal, internal, internal),
     FUNCTION      3        brin_inclusion_consistent(internal, internal, internal),
