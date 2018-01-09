@@ -280,3 +280,14 @@ select '226', ST_SRID(ST_Expand('SRID=4326;POINT (0 0)'::geometry, 1))=4326;
 
 -- Drop test table
 DROP table test;
+
+-- Make sure all postgis-referencing probin are using the module
+-- version expected by postgis_lib_version()
+--
+SELECT distinct 'unexpected probin', proname || ':' || probin
+FROM pg_proc
+WHERE probin like '%postgis%'
+	AND probin NOT LIKE '%' ||
+		substring(postgis_lib_version() from '([0-9]*\.[0-9]*)')
+		|| '%'
+ORDER BY 2;
