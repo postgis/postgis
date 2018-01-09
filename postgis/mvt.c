@@ -286,7 +286,7 @@ static uint32_t get_key_index(mvt_agg_context *ctx, char *name)
 	size_t size = strlen(name);
 	HASH_FIND(hh, ctx->keys_hash, name, size, kv);
 	if (!kv)
-		return -1;
+		return UINT32_MAX;
 	return kv->id;
 }
 
@@ -310,7 +310,7 @@ static void parse_column_keys(mvt_agg_context *ctx)
 	char *key;
 	POSTGIS_DEBUG(2, "parse_column_keys called");
 
-	for (i = 0; i < natts; i++) {
+	for (i = 0; i < (uint32_t) natts; i++) {
 #if POSTGIS_PGSQL_VERSION < 110
 		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
 		char *tkey = tupdesc->attrs[i]->attname.data;
@@ -513,7 +513,7 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 			key[v.val.string.len] = '\0';
 
 			k = get_key_index(ctx, key);
-			if (k == -1) {
+			if (k == UINT32_MAX) {
 				uint32_t newSize = ctx->keys_hash_i + 1;
 				tags = repalloc(tags, newSize * 2 * sizeof(*tags));
 				k = add_key(ctx, key);
@@ -561,7 +561,7 @@ static void parse_values(mvt_agg_context *ctx)
 	bool isnull;
 	uint32_t i, k;
 	TupleDesc tupdesc = get_tuple_desc(ctx);
-	int natts = tupdesc->natts;
+	uint32_t natts = (uint32_t) tupdesc->natts;
 	ctx->c = 0;
 
 	POSTGIS_DEBUGF(3, "parse_values natts: %d", natts);
@@ -588,7 +588,7 @@ static void parse_values(mvt_agg_context *ctx)
 			continue;
 		}
 #if POSTGIS_PGSQL_VERSION >= 94
-		if (k == -1 && typoid != JSONBOID)
+		if (k == UINT32_MAX && typoid != JSONBOID)
 			elog(ERROR, "parse_values: unexpectedly could not find parsed key name '%s'", key);
 		if (typoid == JSONBOID) {
 			tags = parse_jsonb(ctx, DatumGetJsonbP(datum), tags);
@@ -655,7 +655,7 @@ lwgeom_to_basic_type(LWGEOM *geom)
 		/* by finding the largest basic type available and */
 		/* using that as the basis of a typed collection. */
 		LWCOLLECTION *g = (LWCOLLECTION*)geom;
-		int i, maxtype = 0;
+		uint32_t i, maxtype = 0;
 		for (i = 0; i < g->ngeoms; i++)
 		{
 			LWGEOM *sg = g->geoms[i];
@@ -960,7 +960,7 @@ tile_value_copy(const VectorTile__Tile__Value *value)
 static VectorTile__Tile__Feature *
 tile_feature_copy(const VectorTile__Tile__Feature *feature, int key_offset, int value_offset)
 {
-	int i;
+	uint32_t i;
 
 	/* Null in => Null out */
 	if (!feature) return NULL;
@@ -1003,7 +1003,7 @@ tile_feature_copy(const VectorTile__Tile__Feature *feature, int key_offset, int 
 static VectorTile__Tile__Layer *
 vectortile_layer_combine(const VectorTile__Tile__Layer *layer1, const VectorTile__Tile__Layer *layer2)
 {
-	int i, j;
+	uint32_t i, j;
 	int key2_offset, value2_offset;
 	VectorTile__Tile__Layer *layer = palloc(sizeof(VectorTile__Tile__Layer));
 	vector_tile__tile__layer__init(layer);
@@ -1011,7 +1011,7 @@ vectortile_layer_combine(const VectorTile__Tile__Layer *layer1, const VectorTile
 	/* Take globals from layer1 */
 	layer->version = layer1->version;
 	layer->name = pstrdup(layer1->name);
-    layer->has_extent = layer1->has_extent;
+	layer->has_extent = layer1->has_extent;
 	layer->extent = layer1->extent;
 
 	/* Copy keys into new layer */
@@ -1053,7 +1053,7 @@ vectortile_layer_combine(const VectorTile__Tile__Layer *layer1, const VectorTile
 static VectorTile__Tile *
 vectortile_tile_combine(VectorTile__Tile *tile1, VectorTile__Tile *tile2)
 {
-	int i, j;
+	uint32_t i, j;
 
 	/* Hopelessly messing up memory ownership here */
 	if (tile1->n_layers == 0 && tile2->n_layers == 0)

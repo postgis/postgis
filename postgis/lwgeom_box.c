@@ -508,10 +508,10 @@ Datum BOX2D_to_LWGEOM(PG_FUNCTION_ARGS)
 		LWPOLY *poly;
 
 		/* Initialize the 4 vertices of the polygon */
-		points[0] = (POINT4D) { box->xmin, box->ymin };
-		points[1] = (POINT4D) { box->xmin, box->ymax };
-		points[2] = (POINT4D) { box->xmax, box->ymax };
-		points[3] = (POINT4D) { box->xmax, box->ymin };
+		points[0] = (POINT4D) { box->xmin, box->ymin, 0.0, 0.0 };
+		points[1] = (POINT4D) { box->xmin, box->ymax, 0.0, 0.0 };
+		points[2] = (POINT4D) { box->xmax, box->ymax, 0.0, 0.0 };
+		points[3] = (POINT4D) { box->xmax, box->ymin, 0.0, 0.0 };
 
 		/* Construct polygon */
 		poly = lwpoly_construct_rectangle(LW_FALSE, LW_FALSE, &points[0], &points[1],

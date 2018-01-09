@@ -1736,7 +1736,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
 static int
 _lwt_GetInteriorEdgePoint(const LWLINE* edge, POINT2D* ip)
 {
-  int i;
+  uint32_t i;
   POINT2D fp, lp, tp;
   POINTARRAY *pa = edge->points;
 
@@ -2972,7 +2972,7 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
     POINTARRAY *epa = edge->points;
     POINT2D p2, pt;
     int match = 0;
-    int j;
+    int32_t j;
 
     /* Skip if the edge is a dangling one */
     if ( isoe->face_left == isoe->face_right )
@@ -3003,7 +3003,7 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
       LWDEBUGF(1, "First point of edge %" LWTFMT_ELEMID
                   " matches ring vertex %d", isoe->edge_id, from);
       /* first point matches, let's check next non-equal one */
-      for ( j=1; j<epa->npoints; ++j )
+      for ( j=1; j<(int32_t)epa->npoints; ++j )
       {
         getPoint2d_p(epa, j, &p2);
         LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " 'next' point %d is %g,%g",
@@ -3106,7 +3106,8 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
   LWPOLY *facepoly;
   LWT_ISO_EDGE *edges;
   int numfaceedges;
-  int fields, i;
+  int fields;
+  uint32_t i;
   int nseid = 0; /* number of signed edge ids */
   int prevseid;
   LWT_ELEMID *seid; /* signed edge ids */
@@ -3174,13 +3175,13 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
   for ( i=0; i<facepoly->nrings; ++i )
   {
     const POINTARRAY *ring = facepoly->rings[i];
-    int j = 0;
+    int32_t j = 0;
     LWT_ISO_EDGE *nextedge;
     LWLINE *nextline;
 
     LWDEBUGF(1, "Ring %d has %d points", i, ring->npoints);
 
-    while ( j < ring->npoints-1 )
+    while ( j < (int32_t) ring->npoints-1 )
     {
       LWDEBUGF(1, "Looking for edge covering ring %d from vertex %d",
                   i, j);
@@ -4376,7 +4377,7 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
   POINTARRAY *pa;
   char buf[256];
   char *ptr;
-  size_t bufleft = 256;
+  int bufleft = 256;
 
   ptr = buf;
 
@@ -5684,7 +5685,7 @@ static LWGEOM *
 _lwt_split_by_nodes(const LWGEOM *g, const LWGEOM *nodes)
 {
   LWCOLLECTION *col = lwgeom_as_lwcollection(nodes);
-  int i;
+  uint32_t i;
   LWGEOM *bg;
 
   bg = lwgeom_clone_deep(g);
@@ -5995,11 +5996,12 @@ lwt_AddLineNoFace(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
 LWT_ELEMID*
 lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
 {
-  int i;
+  uint32_t i;
   *nfaces = -1; /* error condition, by default */
   int num;
   LWT_ISO_FACE *faces;
   int nfacesinbox;
+  int j;
   LWT_ELEMID *ids = NULL;
   GBOX qbox;
   const GEOSPreparedGeometry *ppoly;
@@ -6057,9 +6059,9 @@ lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
     }
     ppoly = GEOSPrepare(polyg);
     ids = lwalloc(sizeof(LWT_ELEMID)*nfacesinbox);
-    for ( i=0; i<nfacesinbox; ++i )
+    for ( j=0; j<nfacesinbox; ++j )
     {
-      LWT_ISO_FACE *f = &(faces[i]);
+      LWT_ISO_FACE *f = &(faces[j]);
       LWGEOM *fg;
       GEOSGeometry *fgg, *sp;
       int covers;
@@ -6068,12 +6070,12 @@ lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
       fg = lwt_GetFaceGeometry( topo, f->face_id );
       if ( ! fg )
       {
-        i = f->face_id; /* so we can destroy faces */
+        j = f->face_id; /* so we can destroy faces */
         GEOSPreparedGeom_destroy(ppoly);
         GEOSGeom_destroy(polyg);
         lwfree(ids);
         _lwt_release_faces(faces, nfacesinbox);
-        lwerror("Could not get geometry of face %" LWTFMT_ELEMID, i);
+        lwerror("Could not get geometry of face %" LWTFMT_ELEMID, j);
         return NULL;
       }
       /* check if a point on this face's surface is covered by our polygon */
@@ -6273,7 +6275,7 @@ _lwt_EdgeRingIterator_next(LWT_EDGERING_POINT_ITERATOR *it, POINT2D *pt)
   getPoint2d_p(pa, it->curidx, pt);
   if ( el->left ) {
     it->curidx++;
-    if ( it->curidx >= pa->npoints ) tonext = 1;
+    if ( it->curidx >= (int) pa->npoints ) tonext = 1;
   } else {
     it->curidx--;
     if ( it->curidx < 0 ) tonext = 1;

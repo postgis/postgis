@@ -52,7 +52,7 @@ to_dec(POINT4D *pt)
 int
 ptarray_transform(POINTARRAY *pa, projPJ inpj, projPJ outpj)
 {
-	int i;
+	uint32_t i;
 	POINT4D p;
 
 	for ( i = 0; i < pa->npoints; i++ )
@@ -73,7 +73,7 @@ ptarray_transform(POINTARRAY *pa, projPJ inpj, projPJ outpj)
 int
 lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 {
-	int i;
+	uint32_t i;
 
 	/* No points to transform in an empty! */
 	if ( lwgeom_is_empty(geom) )

@@ -73,7 +73,7 @@ double lwcompound_length(const LWCOMPOUND *comp)
 
 double lwcompound_length_2d(const LWCOMPOUND *comp)
 {
-	int i;
+	uint32_t i;
 	double length = 0.0;
 	if ( lwgeom_is_empty((LWGEOM*)comp) )
 		return 0.0;
@@ -144,7 +144,7 @@ int lwgeom_contains_point(const LWGEOM *geom, const POINT2D *pt)
 int
 lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt)
 {
-	int i;
+	uint32_t i;
 	LWLINE *lwline;
 	LWCIRCSTRING *lwcirc;
 	int wn = 0;
@@ -210,16 +210,16 @@ lwcompound_construct_from_lwline(const LWLINE *lwline)
 }
 
 LWPOINT*
-lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, int where)
+lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, uint32_t where)
 {
-	int i;
-	int count = 0;
-	int npoints = 0;
+	uint32_t i;
+	uint32_t count = 0;
+	uint32_t npoints = 0;
 	if ( lwgeom_is_empty((LWGEOM*)lwcmp) )
 		return NULL;
 
 	npoints = lwgeom_count_vertices((LWGEOM*)lwcmp);
-	if ( where < 0 || where >= npoints )
+	if ( where >= npoints )
 	{
 		lwerror("%s: index %d is not in range of number of vertices (%d) in input", __func__, where, npoints);
 		return NULL;
@@ -228,7 +228,7 @@ lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, int where)
 	for ( i = 0; i < lwcmp->ngeoms; i++ )
 	{
 		LWGEOM* part = lwcmp->geoms[i];
-		int npoints_part = lwgeom_count_vertices(part);
+		uint32_t npoints_part = lwgeom_count_vertices(part);
 		if ( where >= count && where < count + npoints_part )
 		{
 			return lwline_get_lwpoint((LWLINE*)part, where - count);

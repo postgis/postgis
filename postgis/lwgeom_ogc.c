@@ -276,7 +276,7 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	coll = lwgeom_as_lwcollection(lwgeom_from_gserialized(geom));
 
 	if ( idx < 0 ) PG_RETURN_NULL();
-	if ( idx >= coll->ngeoms ) PG_RETURN_NULL();
+	if ( idx >= (int32) coll->ngeoms ) PG_RETURN_NULL();
 
 	subgeom = coll->geoms[idx];
 	subgeom->srid = coll->srid;
@@ -492,7 +492,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 		poly = lwgeom_as_lwpoly(lwgeom_from_gserialized(geom));
 
 		/* Ok, now we have a polygon. Let's see if it has enough holes */
-		if ( wanted_index >= poly->nrings )
+		if ( wanted_index >= (int32)poly->nrings )
 		{
 			lwpoly_free(poly);
 			PG_FREE_IF_COPY(geom, 0);
@@ -520,7 +520,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	{
 		curvepoly = lwgeom_as_lwcurvepoly(lwgeom_from_gserialized(geom));
 
-		if (wanted_index >= curvepoly->nrings)
+		if (wanted_index >= (int32)curvepoly->nrings)
 		{
 			PG_FREE_IF_COPY(geom, 0);
 			lwgeom_release((LWGEOM *)curvepoly);

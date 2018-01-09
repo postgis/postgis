@@ -65,7 +65,7 @@ lwmmpoint_to_encoded_polyline(const LWMPOINT* mpoint, int precision)
 static char*
 pointarray_to_encoded_polyline(const POINTARRAY* pa, int precision)
 {
-	int i;
+	uint32_t i;
 	const POINT2D* prevPoint;
 	int* delta = lwalloc(2 * sizeof(int) * pa->npoints);
 	char* encoded_polyline = NULL;

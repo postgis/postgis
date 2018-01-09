@@ -50,7 +50,7 @@ ptarray_has_m(const POINTARRAY *pa)
  * Size of point represeneted in the POINTARRAY
  * 16 for 2d, 24 for 3d, 32 for 4d
  */
-int inline
+inline size_t
 ptarray_point_size(const POINTARRAY *pa)
 {
 	LWDEBUGF(5, "ptarray_point_size: FLAGS_NDIMS(pa->flags)=%x",FLAGS_NDIMS(pa->flags));
@@ -93,7 +93,7 @@ ptarray_construct_empty(char hasz, char hasm, uint32_t maxpoints)
 * pointarray supports.
 */
 int
-ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, int where)
+ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, uint32_t where)
 {
 	size_t point_size = ptarray_point_size(pa);
 	LWDEBUGF(5,"pa = %p; p = %p; where = %d", pa, p, where);
@@ -106,7 +106,7 @@ ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, int where)
 	}
 
 	/* Error on invalid offset value */
-	if ( where > pa->npoints || where < 0)
+	if ( where > pa->npoints )
 	{
 		lwerror("ptarray_insert_point: offset out of range (%d)", where);
 		return LW_FAILURE;
@@ -258,7 +258,7 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 * pointarray supports.
 */
 int
-ptarray_remove_point(POINTARRAY *pa, int where)
+ptarray_remove_point(POINTARRAY *pa, uint32_t where)
 {
 	size_t ptsize = ptarray_point_size(pa);
 
@@ -270,7 +270,7 @@ ptarray_remove_point(POINTARRAY *pa, int where)
 	}
 
 	/* Error on invalid offset value */
-	if ( where >= pa->npoints || where < 0)
+	if ( where >= pa->npoints )
 	{
 		lwerror("ptarray_remove_point: offset out of range (%d)", where);
 		return LW_FAILURE;
@@ -369,7 +369,7 @@ ptarray_reverse_in_place(POINTARRAY *pa)
 POINTARRAY*
 ptarray_flip_coordinates(POINTARRAY *pa)
 {
-	int i;
+	uint32_t i;
 	double d;
 	POINT4D p;
 
@@ -388,7 +388,7 @@ ptarray_flip_coordinates(POINTARRAY *pa)
 void
 ptarray_swap_ordinates(POINTARRAY *pa, LWORD o1, LWORD o2)
 {
-	int i;
+	uint32_t i;
 	double d, *dp1, *dp2;
 	POINT4D p;
 
@@ -419,7 +419,7 @@ ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 	POINT4D	p1, p2;
 	POINT4D pbuf;
 	POINTARRAY *opa;
-	int ipoff=0; /* input point offset */
+	uint32_t ipoff=0; /* input point offset */
 	int hasz = FLAGS_GET_Z(ipa->flags);
 	int hasm = FLAGS_GET_M(ipa->flags);
 
@@ -535,7 +535,6 @@ ptarray_addPoint(const POINTARRAY *pa, uint8_t *p, size_t pdims, uint32_t where)
 	ret = ptarray_construct(FLAGS_GET_Z(pa->flags),
 	                        FLAGS_GET_M(pa->flags), pa->npoints+1);
 
-	if ( where == -1 ) where = pa->npoints;
 
 	if ( where )
 	{
@@ -736,7 +735,7 @@ int
 ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int check_closed, int *winding_number)
 {
 	int wn = 0;
-	int i;
+	uint32_t i;
 	double side;
 	const POINT2D *seg1;
 	const POINT2D *seg2;
@@ -835,7 +834,8 @@ int
 ptarrayarc_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int check_closed, int *winding_number)
 {
 	int wn = 0;
-	int i, side;
+	uint32_t i;
+	int side;
 	const POINT2D *seg1;
 	const POINT2D *seg2;
 	const POINT2D *seg3;
@@ -996,7 +996,7 @@ ptarray_signed_area(const POINTARRAY *pa)
 	const POINT2D *P3;
 	double sum = 0.0;
 	double x0, x, y1, y2;
-	int i;
+	uint32_t i;
 
 	if (! pa || pa->npoints < 3 )
 		return 0.0;
@@ -1032,7 +1032,7 @@ POINTARRAY*
 ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm)
 {
 	/* TODO handle zero-length point arrays */
-	int i;
+	uint32_t i;
 	int in_hasz = FLAGS_GET_Z(pa->flags);
 	int in_hasm = FLAGS_GET_M(pa->flags);
 	POINT4D pt;
@@ -1299,9 +1299,9 @@ closest_point_on_segment(const POINT4D *p, const POINT4D *A, const POINT4D *B, P
 double
 ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistout, POINT4D *proj4d)
 {
-	double mindist=-1;
+	double mindist=DBL_MAX;
 	double tlen, plen;
-	int t, seg=-1;
+	uint32_t t, seg=0;
 	POINT4D	start4d, end4d, projtmp;
 	POINT2D proj, p;
 	const POINT2D *start = NULL, *end = NULL;
@@ -1312,18 +1312,19 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 
 	if ( ! proj4d ) proj4d = &projtmp;
 
-	start = getPoint2d_cp(pa, 0);
-
-	/* If the pointarray has only one point, the nearest point is */
-	/* just that point */
-	if ( pa->npoints == 1 )
+	/* Check for special cases (length 0 and 1) */
+	if ( pa->npoints <= 1 )
 	{
-		getPoint4d_p(pa, 0, proj4d);
-		if ( mindistout )
-			*mindistout = distance2d_pt_pt(&p, start);
+		if ( pa->npoints == 1 )
+		{
+			getPoint4d_p(pa, 0, proj4d);
+			if ( mindistout )
+				*mindistout = distance2d_pt_pt(&p, getPoint2d_cp(pa, 0));
+		}
 		return 0.0;
 	}
 
+	start = getPoint2d_cp(pa, 0);
 	/* Loop through pointarray looking for nearest segment */
 	for (t=1; t<pa->npoints; t++)
 	{
@@ -1331,16 +1332,15 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 		end = getPoint2d_cp(pa, t);
 		dist = distance2d_pt_seg(&p, start, end);
 
-		if (t==1 || dist < mindist )
+		if ( dist < mindist )
 		{
 			mindist = dist;
 			seg=t-1;
-		}
-
-		if ( mindist == 0 )
-		{
-			LWDEBUG(3, "Breaking on mindist=0");
-			break;
+			if ( mindist == 0 )
+			{
+				LWDEBUG(3, "Breaking on mindist=0");
+				break;
+			}
 		}
 
 		start = end;
@@ -1410,7 +1410,7 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 void
 ptarray_longitude_shift(POINTARRAY *pa)
 {
-	int i;
+	uint32_t i;
 	double x;
 
 	for (i=0; i<pa->npoints; i++)
@@ -1445,14 +1445,16 @@ ptarray_remove_repeated_points(const POINTARRAY *in, double tolerance)
 
 
 void
-ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, int min_points)
+ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32_t min_points)
 {
-	int i;
+	uint32_t i;
 	double tolsq = tolerance * tolerance;
 	const POINT2D *last = NULL;
 	const POINT2D *pt;
-	int n_points = pa->npoints;
-	int n_points_out = 1;
+	uint32_t n_points = pa->npoints;
+	uint32_t n_points_out = 1;
+	size_t pt_size = ptarray_point_size(pa);
+
 	double dsq = FLT_MAX;
 
 	/* No-op on short inputs */
@@ -1482,7 +1484,7 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, int mi
 			else
 			{
 				/* At tolerance zero, only skip exact dupes */
-				if (memcmp((char*)pt, (char*)last, ptarray_point_size(pa)) == 0)
+				if (memcmp((char*)pt, (char*)last, pt_size) == 0)
 					continue;
 			}
 
@@ -1566,7 +1568,7 @@ int_cmp(const void *a, const void *b)
 }
 
 void
-ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, unsigned int minpts)
+ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, uint32_t minpts)
 {
 	static size_t stack_size = 256;
 	int *stack, *outlist; /* recursion stack */
@@ -1574,9 +1576,9 @@ ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, unsigned int minpts)
 	int outlist_static[stack_size];
 	int sp = -1; /* recursion stack pointer */
 	int p1, split;
-	int outn = 0;
+	uint32_t outn = 0;
 	int pai = 0;
-	int i;
+	uint32_t i;
 	double dist;
 	double eps_sqr = epsilon * epsilon;
 
@@ -1655,7 +1657,7 @@ double
 ptarray_arc_length_2d(const POINTARRAY *pts)
 {
 	double dist = 0.0;
-	int i;
+	uint32_t i;
 	const POINT2D *a1;
 	const POINT2D *a2;
 	const POINT2D *a3;
@@ -1682,7 +1684,7 @@ double
 ptarray_length_2d(const POINTARRAY *pts)
 {
 	double dist = 0.0;
-	int i;
+	uint32_t i;
 	const POINT2D *frm;
 	const POINT2D *to;
 
@@ -1710,7 +1712,7 @@ double
 ptarray_length(const POINTARRAY *pts)
 {
 	double dist = 0.0;
-	int i;
+	uint32_t i;
 	POINT3DZ frm;
 	POINT3DZ to;
 
@@ -1740,7 +1742,7 @@ ptarray_length(const POINTARRAY *pts)
  * aligned to double boundary.
  */
 uint8_t *
-getPoint_internal(const POINTARRAY *pa, int n)
+getPoint_internal(const POINTARRAY *pa, uint32_t n)
 {
 	size_t size;
 	uint8_t *ptr;
@@ -1789,7 +1791,7 @@ getPoint_internal(const POINTARRAY *pa, int n)
 void
 ptarray_affine(POINTARRAY *pa, const AFFINE *a)
 {
-	int i;
+	uint32_t i;
 	double x,y,z;
 	POINT4D p4d;
 
@@ -1840,7 +1842,7 @@ ptarray_affine(POINTARRAY *pa, const AFFINE *a)
 void
 ptarray_scale(POINTARRAY *pa, const POINT4D *fact)
 {
-	int i;
+	uint32_t i;
 	POINT4D p4d;
 	LWDEBUG(3, "ptarray_scale start");
 	for (i=0; i<pa->npoints; i++)
@@ -1873,7 +1875,7 @@ ptarray_startpoint(const POINTARRAY *pa, POINT4D *pt)
 void
 ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
 {
-	int i, j = 0;
+	uint32_t i, j = 0;
 	POINT4D *p, *p_out = NULL;
 	int ndims = FLAGS_NDIMS(pa->flags);
 	int has_z = FLAGS_GET_Z(pa->flags);
@@ -1943,7 +1945,7 @@ ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox)
 {
 	const POINT2D *pt;
 	int n = 0;
-	int i;
+	uint32_t i;
 	for ( i = 0; i < pa->npoints; i++ )
 	{
 		pt = getPoint2d_cp(pa, i);

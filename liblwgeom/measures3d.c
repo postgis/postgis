@@ -716,7 +716,7 @@ int lw_dist3d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS3D *dl)
 int
 lw_dist3d_pt_ptarray(POINT3DZ *p, POINTARRAY *pa,DISTPTS3D *dl)
 {
-	int t;
+	uint32_t t;
 	POINT3DZ	start, end;
 	int twist = dl->twisted;
 
@@ -843,7 +843,7 @@ Finds all combinationes of segments between two pointarrays
 int
 lw_dist3d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS3D *dl)
 {
-	int t,u;
+	uint32_t t,u;
 	POINT3DZ	start, end;
 	POINT3DZ	start2, end2;
 	int twist = dl->twisted;
@@ -1019,7 +1019,7 @@ If the projected point is inside a hole of the polygon we check the distance to 
 int
 lw_dist3d_pt_poly(POINT3DZ *p, LWPOLY *poly, PLANE3D *plane,POINT3DZ *projp, DISTPTS3D *dl)
 {
-	int i;
+	uint32_t i;
 
 	LWDEBUG(2, "lw_dist3d_point_poly called");
 
@@ -1055,7 +1055,7 @@ int lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly,PLANE3D *plane, DISTPTS3
 {
 
 
-	int i,j,k;
+	uint32_t i,j,k;
 	double f, s1, s2;
 	VECTOR3D projp1_projp2;
 	POINT3DZ p1, p2,projp1, projp2, intersectionp;
@@ -1136,7 +1136,7 @@ the plane is stored as a pont in plane (plane.pop) and a normal vector (plane.pv
 int
 define_plane(POINTARRAY *pa, PLANE3D *pl)
 {
-	int i,j, numberofvectors, pointsinslice;
+	uint32_t i,j, numberofvectors, pointsinslice;
 	POINT3DZ p, p1, p2;
 
 	double sumx=0;
@@ -1152,7 +1152,7 @@ define_plane(POINTARRAY *pa, PLANE3D *pl)
 	}
 	else
 	{
-		pointsinslice=(int) floor((pa->npoints-1)/4); /*divide the pointarray into 4 slices*/
+		pointsinslice=(uint32_t) floor((pa->npoints-1)/4); /*divide the pointarray into 4 slices*/
 	}
 
 	/*find the avg point*/
@@ -1241,8 +1241,8 @@ int
 pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring,PLANE3D *plane)
 {
 
-	int cn = 0;    /* the crossing number counter */
-	int i;
+	uint32_t cn = 0;    /* the crossing number counter */
+	uint32_t i;
 	POINT3DZ v1, v2;
 
 	POINT3DZ	first, last;

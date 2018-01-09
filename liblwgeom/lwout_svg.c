@@ -26,7 +26,7 @@
 /** @file
 *
 * SVG output routines.
-* Originally written by: Klaus Förster <klaus@svg.cc>
+* Originally written by: Klaus Fï¿½rster <klaus@svg.cc>
 * Refactored by: Olivier Courtin (Camptocamp)
 *
 * BNF SVG Path: <http://www.w3.org/TR/SVG/paths.html#PathDataBNF>
@@ -209,7 +209,7 @@ assvg_line(const LWLINE *line, int relative, int precision)
 static size_t
 assvg_polygon_size(const LWPOLY *poly, int relative, int precision)
 {
-	int i;
+	uint32_t i;
 	size_t size=0;
 
 	for (i=0; i<poly->nrings; i++)
@@ -222,7 +222,7 @@ assvg_polygon_size(const LWPOLY *poly, int relative, int precision)
 static size_t
 assvg_polygon_buf(const LWPOLY *poly, char * output, int relative, int precision)
 {
-	int i;
+	uint32_t i;
 	char *ptr=output;
 
 	for (i=0; i<poly->nrings; i++)
@@ -268,7 +268,7 @@ assvg_multipoint_size(const LWMPOINT *mpoint, int relative, int precision)
 {
 	const LWPOINT *point;
 	size_t size=0;
-	int i;
+	uint32_t i;
 
 	for (i=0 ; i<mpoint->ngeoms ; i++)
 	{
@@ -284,7 +284,7 @@ static size_t
 assvg_multipoint_buf(const LWMPOINT *mpoint, char *output, int relative, int precision)
 {
 	const LWPOINT *point;
-	int i;
+	uint32_t i;
 	char *ptr=output;
 
 	for (i=0 ; i<mpoint->ngeoms ; i++)
@@ -320,7 +320,7 @@ assvg_multiline_size(const LWMLINE *mline, int relative, int precision)
 {
 	const LWLINE *line;
 	size_t size=0;
-	int i;
+	uint32_t i;
 
 	for (i=0 ; i<mline->ngeoms ; i++)
 	{
@@ -336,7 +336,7 @@ static size_t
 assvg_multiline_buf(const LWMLINE *mline, char *output, int relative, int precision)
 {
 	const LWLINE *line;
-	int i;
+	uint32_t i;
 	char *ptr=output;
 
 	for (i=0 ; i<mline->ngeoms ; i++)
@@ -372,7 +372,7 @@ assvg_multipolygon_size(const LWMPOLY *mpoly, int relative, int precision)
 {
 	const LWPOLY *poly;
 	size_t size=0;
-	int i;
+	uint32_t i;
 
 	for (i=0 ; i<mpoly->ngeoms ; i++)
 	{
@@ -388,7 +388,7 @@ static size_t
 assvg_multipolygon_buf(const LWMPOLY *mpoly, char *output, int relative, int precision)
 {
 	const LWPOLY *poly;
-	int i;
+	uint32_t i;
 	char *ptr=output;
 
 	for (i=0 ; i<mpoly->ngeoms ; i++)
@@ -422,7 +422,7 @@ assvg_multipolygon(const LWMPOLY *mpoly, int relative, int precision)
 static size_t
 assvg_collection_size(const LWCOLLECTION *col, int relative, int precision)
 {
-	int i = 0;
+	uint32_t i = 0;
 	size_t size=0;
 	const LWGEOM *subgeom;
 
@@ -443,7 +443,7 @@ assvg_collection_size(const LWCOLLECTION *col, int relative, int precision)
 static size_t
 assvg_collection_buf(const LWCOLLECTION *col, char *output, int relative, int precision)
 {
-	int i;
+	uint32_t i;
 	char *ptr=output;
 	const LWGEOM *subgeom;
 

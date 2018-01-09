@@ -54,7 +54,7 @@ int
 lwgeom_has_arc(const LWGEOM *geom)
 {
 	LWCOLLECTION *col;
-	int i;
+	uint32_t i;
 
 	LWDEBUG(2, "lwgeom_has_arc called.");
 
@@ -489,7 +489,7 @@ lwcurvepoly_linearize(const LWCURVEPOLY *curvepoly, double tol,
 	LWGEOM *tmp;
 	LWLINE *line;
 	POINTARRAY **ptarray;
-	int i;
+	uint32_t i;
 
 	LWDEBUG(2, "lwcurvepoly_linearize called.");
 
@@ -549,7 +549,7 @@ lwmcurve_linearize(const LWMCURVE *mcurve, double tol,
 {
 	LWMLINE *ogeom;
 	LWGEOM **lines;
-	int i;
+	uint32_t i;
 
 	LWDEBUGF(2, "lwmcurve_linearize called, geoms=%d, dim=%d.", mcurve->ngeoms, FLAGS_NDIMS(mcurve->flags));
 
@@ -599,7 +599,7 @@ lwmsurface_linearize(const LWMSURFACE *msurface, double tol,
 	LWPOLY *poly;
 	LWGEOM **polys;
 	POINTARRAY **ptarray;
-	int i, j;
+	uint32_t i, j;
 
 	LWDEBUG(2, "lwmsurface_linearize called.");
 
@@ -643,7 +643,7 @@ lwcollection_linearize(const LWCOLLECTION *collection, double tol,
 	LWCOLLECTION *ocol;
 	LWGEOM *tmp;
 	LWGEOM **geoms;
-	int i;
+	uint32_t i;
 
 	LWDEBUG(2, "lwcollection_linearize called.");
 
@@ -1001,7 +1001,7 @@ LWGEOM *
 lwpolygon_unstroke(const LWPOLY *poly)
 {
 	LWGEOM **geoms;
-	int i, hascurve = 0;
+	uint32_t i, hascurve = 0;
 
 	LWDEBUG(2, "lwpolygon_unstroke called.");
 
@@ -1030,7 +1030,7 @@ LWGEOM *
 lwmline_unstroke(const LWMLINE *mline)
 {
 	LWGEOM **geoms;
-	int i, hascurve = 0;
+	uint32_t i, hascurve = 0;
 
 	LWDEBUG(2, "lwmline_unstroke called.");
 
@@ -1058,7 +1058,7 @@ LWGEOM *
 lwmpolygon_unstroke(const LWMPOLY *mpoly)
 {
 	LWGEOM **geoms;
-	int i, hascurve = 0;
+	uint32_t i, hascurve = 0;
 
 	LWDEBUG(2, "lwmpoly_unstroke called.");
 

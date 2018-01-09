@@ -52,7 +52,7 @@ LWMPOLY* lwmpoly_add_lwpoly(LWMPOLY *mobj, const LWPOLY *obj)
 
 void lwmpoly_free(LWMPOLY *mpoly)
 {
-	int i;
+	uint32_t i;
 	if ( ! mpoly ) return;
 	if ( mpoly->bbox )
 		lwfree(mpoly->bbox);

@@ -2653,7 +2653,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	char *patt;
 	bool result;
 	GEOSGeometry *g1, *g2;
-	int i;
+	size_t i;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);

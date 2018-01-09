@@ -185,7 +185,7 @@ double
 lwtriangle_area(const LWTRIANGLE *triangle)
 {
 	double area=0.0;
-	int i;
+	uint32_t i;
 	POINT2D p1;
 	POINT2D p2;
 

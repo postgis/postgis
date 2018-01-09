@@ -230,7 +230,7 @@ lwpoly_make_geos_friendly(LWPOLY *poly)
 {
 	LWGEOM* ret;
 	POINTARRAY **new_rings;
-	int i;
+	uint32_t i;
 
 	/* If the polygon has no rings there's nothing to do */
 	if ( ! poly->nrings ) return (LWGEOM*)poly;
@@ -795,7 +795,7 @@ LWGEOM_GEOS_makeValidCollection(const GEOSGeometry* gin)
 	int nvgeoms;
 	GEOSGeometry **vgeoms;
 	GEOSGeom gout;
-	unsigned int i;
+	int i;
 
 	nvgeoms = GEOSGetNumGeometries(gin);
 	if ( nvgeoms == -1 ) {

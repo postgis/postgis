@@ -129,9 +129,9 @@ static int
 asx3d3_mline_coordindex_sb(const LWMLINE *mgeom, stringbuffer_t *sb)
 {
 	LWLINE *geom;
-	int i, j, k, si;
+	uint32_t i, j, k, si;
 	POINTARRAY *pa;
-	int np;
+	uint32_t np;
 
 	j = 0;
 	for (i=0; i < mgeom->ngeoms; i++)
@@ -151,12 +151,12 @@ asx3d3_mline_coordindex_sb(const LWMLINE *mgeom, stringbuffer_t *sb)
 			*    and don't increment the index **/
 			if (!lwline_is_closed(geom) || k < (np -1) )
 			{
-				stringbuffer_aprintf(sb, "%d", j);
+				stringbuffer_aprintf(sb, "%u", j);
 				j += 1;
 			}
 			else
 			{
-				stringbuffer_aprintf(sb,"%d", si);
+				stringbuffer_aprintf(sb,"%u", si);
 			}
 		}
 		if (i < (mgeom->ngeoms - 1) )
@@ -174,8 +174,8 @@ static int
 asx3d3_mpoly_coordindex_sb(const LWMPOLY *psur, stringbuffer_t *sb)
 {
 	LWPOLY *patch;
-	int i, j, k, l;
-	int np;
+	uint32_t i, j, k, l;
+	uint32_t np;
 	j = 0;
 	for (i=0; i<psur->ngeoms; i++)
 	{
@@ -243,7 +243,7 @@ asx3d3_line_sb(const LWLINE *line, char *srs, int precision, int opts, const cha
 static int
 asx3d3_poly_sb(const LWPOLY *poly, char *srs, int precision, int opts, int is_patch, const char *defid, stringbuffer_t *sb)
 {
-	int i;
+	uint32_t i;
 	for (i=0; i<poly->nrings; i++)
 	{
 		if (i) stringbuffer_aprintf(sb, " "); /* inner ring points start */
@@ -266,7 +266,7 @@ static int
 asx3d3_multi_sb(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
 {
 	char *x3dtype;
-	int i;
+	uint32_t i;
 	int dimension=2;
 
 	if (FLAGS_GET_Z(col->flags)) dimension = 3;
@@ -344,10 +344,10 @@ asx3d3_multi_sb(const LWCOLLECTION *col, char *srs, int precision, int opts, con
 static int
 asx3d3_psurface_sb(const LWPSURFACE *psur, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
 {
-	int i;
-	int j;
-	int k;
-	int np;
+	uint32_t i;
+	uint32_t j;
+	uint32_t k;
+	uint32_t np;
 	LWPOLY *patch;
 
 	/* Open outmost tag */
@@ -397,8 +397,8 @@ asx3d3_psurface_sb(const LWPSURFACE *psur, char *srs, int precision, int opts, c
 static int
 asx3d3_tin_sb(const LWTIN *tin, char *srs,  int precision, int opts, const char *defid, stringbuffer_t *sb)
 {
-	int i;
-	int k;
+	uint32_t i;
+	uint32_t k;
 	/* int dimension=2; */
 
 	stringbuffer_aprintf(sb,"<IndexedTriangleSet %s index='",defid);
@@ -435,7 +435,7 @@ asx3d3_tin_sb(const LWTIN *tin, char *srs,  int precision, int opts, const char 
 static int
 asx3d3_collection_sb(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
 {
-	int i;
+	uint32_t i;
 	LWGEOM *subgeom;
 
 	/* Open outmost tag */
@@ -497,7 +497,7 @@ asx3d3_collection_sb(const LWCOLLECTION *col, char *srs, int precision, int opts
 static int
 ptarray_to_x3d3_sb(POINTARRAY *pa, int precision, int opts, int is_closed, stringbuffer_t *sb )
 {
-	int i;
+	uint32_t i;
 	char x[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
 	char y[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
 	char z[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];

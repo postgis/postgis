@@ -37,11 +37,11 @@ typedef struct circ_node
 {
 	GEOGRAPHIC_POINT center;
 	double radius;
-	int num_nodes;
+	uint32_t num_nodes;
 	struct circ_node** nodes;
 	int edge_num;
-    int geom_type;
-    POINT2D pt_outside;
+	uint32_t geom_type;
+	POINT2D pt_outside;
 	POINT2D* p1;
 	POINT2D* p2;
 } CIRC_NODE;

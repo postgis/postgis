@@ -2163,17 +2163,13 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 	GSERIALIZED *pglwg1, *pglwg2, *result;
 	LWPOINT *point;
 	LWLINE *line, *linecopy;
-	int where = -1;
+	int32 where = -1;
 
 	POSTGIS_DEBUGF(2, "%s called.", __func__);
 
 	pglwg1 = PG_GETARG_GSERIALIZED_P(0);
 	pglwg2 = PG_GETARG_GSERIALIZED_P(1);
 
-	if ( PG_NARGS() > 2 )
-	{
-		where = PG_GETARG_INT32(2);
-	}
 
 	if ( gserialized_get_type(pglwg1) != LINETYPE )
 	{
@@ -2189,8 +2185,16 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 
 	line = lwgeom_as_lwline(lwgeom_from_gserialized(pglwg1));
 
-	if ( where == -1 ) where = line->points->npoints;
-	else if ( where < 0 || where > line->points->npoints )
+	if ( PG_NARGS() > 2 )
+	{
+		where = PG_GETARG_INT32(2);
+	}
+	else
+	{
+		where = line->points->npoints;
+	}
+
+	if ( where < 0 || where > (int32) line->points->npoints )
 	{
 		elog(ERROR, "Invalid offset");
 		PG_RETURN_NULL();
@@ -2200,7 +2204,7 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 	linecopy = lwgeom_as_lwline(lwgeom_clone_deep(lwline_as_lwgeom(line)));
 	lwline_free(line);
 
-	if ( lwline_add_lwpoint(linecopy, point, where) == LW_FAILURE )
+	if ( lwline_add_lwpoint(linecopy, point, (uint32_t) where) == LW_FAILURE )
 	{
 		elog(ERROR, "Point insert failed");
 		PG_RETURN_NULL();
@@ -2302,7 +2306,7 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 		/* Use backward indexing for negative values */
 		which = which + line->points->npoints ;
 	}
-	if ( which > line->points->npoints-1 || which < 0 )
+	if ( (uint32_t)which + 1 > line->points->npoints )
 	{
 		elog(ERROR, "abs(Point index) out of range (-)(%d..%d)", 0, line->points->npoints-1);
 		PG_RETURN_NULL();
@@ -2311,7 +2315,7 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 	/*
 	 * This will change pointarray of the serialized pglwg1,
 	 */
-	lwline_setPoint4d(line, which, &newpoint);
+	lwline_setPoint4d(line, (uint32_t)which, &newpoint);
 	result = geometry_serialize((LWGEOM *)line);
 
 	/* Release memory */

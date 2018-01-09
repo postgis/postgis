@@ -51,7 +51,7 @@ LWMPOINT* lwmpoint_add_lwpoint(LWMPOINT *mobj, const LWPOINT *obj)
 LWMPOINT *
 lwmpoint_construct(int srid, const POINTARRAY *pa)
 {
-	int i;
+	uint32_t i;
 	int hasz = ptarray_has_z(pa);
 	int hasm = ptarray_has_m(pa);
 	LWMPOINT *ret = (LWMPOINT*)lwcollection_construct_empty(MULTIPOINTTYPE, srid, hasz, hasm);
@@ -71,7 +71,7 @@ lwmpoint_construct(int srid, const POINTARRAY *pa)
 
 void lwmpoint_free(LWMPOINT *mpt)
 {
-	int i;
+	uint32_t i;
 
 	if ( ! mpt ) return;
 

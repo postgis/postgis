@@ -74,7 +74,7 @@ int wkt_lexer_read_srid(char *str)
 
 static uint8_t wkt_dimensionality(char *dimensionality)
 {
-	int i = 0;
+	size_t i = 0;
 	uint8_t flags = 0;
 
 	if( ! dimensionality )
@@ -102,7 +102,7 @@ static int wkt_parser_set_dims(LWGEOM *geom, uint8_t flags)
 {
 	int hasz = FLAGS_GET_Z(flags);
 	int hasm = FLAGS_GET_M(flags);
-	int i = 0;
+	uint32_t i = 0;
 
 	/* Error on junk */
 	if( ! geom )
@@ -607,7 +607,7 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 	/* Apply check for minimum number of points, if requested. */
 	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_MINPOINTS) )
 	{
-		int vertices_needed = 3;
+		uint32_t vertices_needed = 3;
 
 		if ( ring->type == LINETYPE )
 			vertices_needed = 4;
@@ -817,7 +817,7 @@ LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *geom, char *dimension
 	if ( flagdims > 2 )
 	{
 		LWCOLLECTION *col = lwgeom_as_lwcollection(geom);
-		int i;
+		uint32_t i;
 
 		for ( i = 0 ; i < col->ngeoms; i++ )
 		{

@@ -1672,17 +1672,17 @@ lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 
 
 LWMPOINT*
-lwpoly_to_points(const LWPOLY *lwpoly, int npoints)
+lwpoly_to_points(const LWPOLY *lwpoly, uint32_t npoints)
 {
 	double area, bbox_area, bbox_width, bbox_height;
 	GBOX bbox;
 	const LWGEOM *lwgeom = (LWGEOM*)lwpoly;
-	int sample_npoints, sample_sqrt, sample_width, sample_height;
+	uint32_t sample_npoints, sample_sqrt, sample_width, sample_height;
 	double sample_cell_size;
-	int i, j, n;
-	int iterations = 0;
-	int npoints_generated = 0;
-	int npoints_tested = 0;
+	uint32_t i, j, n;
+	uint32_t iterations = 0;
+	uint32_t npoints_generated = 0;
+	uint32_t npoints_tested = 0;
 	GEOSGeometry *g;
 	const GEOSPreparedGeometry *gprep;
 	GEOSGeometry *gpt;
@@ -1864,11 +1864,11 @@ lwpoly_to_points(const LWPOLY *lwpoly, int npoints)
 * and bundle up final result in a single multipoint.
 */
 LWMPOINT*
-lwmpoly_to_points(const LWMPOLY *lwmpoly, int npoints)
+lwmpoly_to_points(const LWMPOLY *lwmpoly, uint32_t npoints)
 {
 	const LWGEOM *lwgeom = (LWGEOM*)lwmpoly;
 	double area;
-	int i;
+	uint32_t i;
 	LWMPOINT *mpt = NULL;
 
 	if (lwgeom_get_type(lwgeom) != MULTIPOLYGONTYPE)
@@ -1896,7 +1896,7 @@ lwmpoly_to_points(const LWMPOLY *lwmpoly, int npoints)
 			}
 			else
 			{
-				int j;
+				uint32_t j;
 				for (j = 0; j < sub_mpt->ngeoms; j++)
 				{
 					mpt = lwmpoint_add_lwpoint(mpt, sub_mpt->geoms[j]);
@@ -1914,7 +1914,7 @@ lwmpoly_to_points(const LWMPOLY *lwmpoly, int npoints)
 
 
 LWMPOINT*
-lwgeom_to_points(const LWGEOM *lwgeom, int npoints)
+lwgeom_to_points(const LWGEOM *lwgeom, uint32_t npoints)
 {
 	switch(lwgeom_get_type(lwgeom))
 	{
