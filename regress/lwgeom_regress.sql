@@ -190,7 +190,7 @@ from (
          from points) z;
 
 -- check that grid gets clustered to clusters of similar size
-select '#3971', count(*) -- in perfect match it's 25, #3971 increases it to 13 from 4
+select '#3971', count(*) >= 12 -- in perfect match it's 25, #3971 increases it to 12 from 4
 from (
          with
                  points as (
