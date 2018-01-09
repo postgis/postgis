@@ -6,6 +6,7 @@ PostGIS 2.3.6
   - #3713, Support encodings that happen to output a '\' character
   - #3965, ST_ClusterKMeans used to lose some clusters on initialization
            (Darafei Praliaskouski)
+  - #3956, Brin opclass object does not upgrade properly (Sandro Santilli)
 
 PostGIS 2.3.5
 2017/11/15
