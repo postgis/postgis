@@ -8,7 +8,7 @@ PostGIS 2.4.3
   - #3930, Minimum bounding circle issues on 32-bit platforms
   - #3965, ST_ClusterKMeans used to lose some clusters on initialization
            (Darafei Praliaskouski)
-
+  - #3956, Brin opclass object does not upgrade properly (Sandro Santilli)
  * Enhancements *
   - #3944, Update to EPSG register v9.2 (Even Rouault)
 
