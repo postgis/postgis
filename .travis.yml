@@ -56,11 +56,11 @@ script:
   - ./configure CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS" $CONFIGURE_FLAGS || cat config.log
   - make -j
   - chmod 755 /home/travis
-  - logbt -- make check RUNTESTFLAGS='--verbose'
-  - logbt -- make check RUNTESTFLAGS='--dumprestore --verbose'
+  - logbt -- make check "RUNTESTFLAGS=--verbose"
+  - logbt -- make check "RUNTESTFLAGS='--dumprestore --verbose'"
   - sudo make install
-  - logbt -- make installcheck RUNTESTFLAGS='--verbose'
-  - logbt -- make installcheck RUNTESTFLAGS='--dumprestore --verbose'
+  - logbt -- make installcheck "RUNTESTFLAGS=--verbose"
+  - logbt -- make installcheck "RUNTESTFLAGS=--dumprestore --verbose"
 
 notifications:
   email: false
