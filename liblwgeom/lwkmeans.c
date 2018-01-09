@@ -294,18 +294,18 @@ update_means(kmeans_config *config)
 	int *weights;
 	POINT2D zero = { 0, 0 };
 
-	weights = lwalloc(sizeof(int)*config.k);
-	memset(weights, 0, sizeof(int)*config.k);
+	weights = lwalloc(sizeof(int)*config->k);
+	memset(weights, 0, sizeof(int)*config->k);
 
 	for (i = 0; i < config->k; i++)
 	{
-		*config->centers[i] = zero;
+		config->centers[i] = zero;
 	}
 	for (i = 0; i < config->num_objs; i++)
 	{
-		config->centers[clusters[i]]->x += config->objs[i]->x;
-		config->centers[clusters[i]]->y += config->objs[i]->y;
-		weights[clusters[i]] += 1;
+		config->centers[config->clusters[i]]->x += config->objs[i]->x;
+		config->centers[config->clusters[i]]->y += config->objs[i]->y;
+		weights[config->clusters[i]] += 1;
 	}
 	for (i = 0; i < config->k; i++)
 	{
