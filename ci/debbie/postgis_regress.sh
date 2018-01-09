@@ -95,9 +95,15 @@ fi
 if [ "$MAKE_GARDEN" = "1" ]; then
  echo "Running garden test"
  make garden
+ if [ "$?" != "0" ]; then
+  exit $?
+ fi
 fi
 
 # Test all available upgrades
 # TODO: protect via some variable ?
 utils/check_all_upgrades.sh \
         `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
+if [ "$?" != "0" ]; then
+  exit $?
+fi
