@@ -6077,7 +6077,7 @@ PG_FUNCTION_INFO_V1(RASTER_mapAlgebra2);
 Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 {
 	const int set_count = 2;
-	rt_pgraster *pgrast[2];
+	rt_pgraster *pgrast[2] = { NULL, NULL };
 	int pgrastpos[2] = {-1, -1};
 	rt_pgraster *pgrtn;
 	rt_raster rast[2] = {NULL};
