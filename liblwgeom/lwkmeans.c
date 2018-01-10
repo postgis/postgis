@@ -1,3 +1,10 @@
+/*-------------------------------------------------------------------------
+ *
+ * Copyright (c) 2018, Darafei Praliaskouski <me@komzpa.net>
+ * Copyright (c) 2016, Paul Ramsey <pramsey@cleverelephant.ca>
+ *
+ *------------------------------------------------------------------------*/
+
 #include <float.h>
 #include <math.h>
 
