@@ -1469,7 +1469,7 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 		pt = getPoint2d_cp(pa, i);
 
 		/* Don't drop points if we are running short of points */
-		if (n_points - i > min_points - n_points_out)
+		if (n_points + n_points_out > min_points + i)
 		{
 			if (tolerance > 0.0)
 			{
