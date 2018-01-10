@@ -1732,7 +1732,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		 */
 		do
 		{
-			ND_BOX nd_cell;
+			ND_BOX nd_cell = { {0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0} };
 			double ratio;
 			/* Create a box for this histogram cell */
 			for ( d = 0; d < nd_stats->ndims; d++ )
@@ -1990,7 +1990,7 @@ estimate_selectivity(const GBOX *box, const ND_STATS *nd_stats, int mode)
 	do
 	{
 		float cell_count, ratio;
-		ND_BOX nd_cell;
+		ND_BOX nd_cell = { {0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0} };
 
 		/* We have to pro-rate partially overlapped cells. */
 		for ( d = 0; d < nd_stats->ndims; d++ )
