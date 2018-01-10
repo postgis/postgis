@@ -90,12 +90,12 @@ raster_destroy(rt_raster raster) {
 }
 
 static int
-array_range(int min, int max, int step, int **range, int *len) {
+array_range(int min, int max, int step, int **range, uint32_t *len) {
 	int i = 0;
 	int j = 0;
 
 	step = abs(step);
-	*len = (abs(max - min) + 1 + (step / 2)) / step;
+	*len = (uint32_t) ((abs(max - min) + 1 + (step / 2)) / step);
 	*range = rtalloc(sizeof(int) * *len);
 
 	if (min < max) {
@@ -194,7 +194,7 @@ strtolower(char * str) {
 
 /* split a string based on a delimiter */
 static char**
-strsplit(const char *str, const char *delimiter, int *n) {
+strsplit(const char *str, const char *delimiter, uint32_t *n) {
 	char *tmp = NULL;
 	char **rtn = NULL;
 	char *token = NULL;
@@ -599,7 +599,7 @@ copy_rastinfo(RASTERINFO *dst, RASTERINFO *src) {
 static void
 diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 	static uint8_t msg[6] = {0};
-	int i = 0;
+	uint32_t i = 0;
 
 	/* # of bands */
 	if (
@@ -789,7 +789,7 @@ rtdealloc_stringbuffer(STRINGBUFFER *buffer, int freebuffer) {
 
 static void
 dump_stringbuffer(STRINGBUFFER *buffer) {
-	int i = 0;
+	uint32_t i = 0;
 
 	for (i = 0; i < buffer->length; i++) {
 		printf("%s\n", buffer->line[i]);
@@ -1354,7 +1354,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 	double gtOv[6] = {0.};
 	int dimOv[2] = {0};
 
-	int j = 0;
+	uint32_t j = 0;
 	int factor;
 	const char *ovtable = NULL;
 
@@ -1564,7 +1564,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	GDALDatasetH hdsSrc;
 	GDALRasterBandH hbandSrc;
 	int nband = 0;
-	int i = 0;
+	uint32_t i = 0;
 	int ntiles[2] = {1, 1};
 	int _tile_size[2] = {0, 0};
 	int xtile = 0;
@@ -1574,7 +1574,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	int tilesize = 0;
 
 	rt_raster rast = NULL;
-	int numbands = 0;
+	uint32_t numbands = 0;
 	rt_band band = NULL;
 	char *hex;
 	uint32_t hexlen = 0;
@@ -1732,9 +1732,9 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		info->tile_size[1] = config->tile_size[1];
 
 	/* number of tiles */
-	if (info->tile_size[0] != info->dim[0])
+	if ((uint32_t)info->tile_size[0] != info->dim[0])
 		ntiles[0] = (info->dim[0] + info->tile_size[0]  - 1) / info->tile_size[0];
-	if (info->tile_size[1] != info->dim[1])
+	if ((uint32_t)info->tile_size[1] != info->dim[1])
 		ntiles[1] = (info->dim[1] + info->tile_size[1]  - 1) / info->tile_size[1];
 
 	/* estimate size of 1 tile */
@@ -2274,9 +2274,9 @@ main(int argc, char **argv) {
 	RTLOADERCFG *config = NULL;
 	STRINGBUFFER *buffer = NULL;
 	int i = 0;
-	int j = 0;
+	uint32_t j = 0;
 	char **elements = NULL;
-	int n = 0;
+	uint32_t n = 0;
 	GDALDriverH drv = NULL;
 	char *tmp = NULL;
 
@@ -2334,10 +2334,10 @@ main(int argc, char **argv) {
 				char *t = trim(elements[j]);
 				char **minmax = NULL;
 				int *range = NULL;
-				int p = 0;
-				int l = 0;
+				uint32_t p = 0;
+				uint32_t l = 0;
 				int m = 0;
-				int o = 0;
+				uint32_t o = 0;
 
 				/* is t a range? */
 				minmax = strsplit(t, "-", &o);
@@ -2522,7 +2522,7 @@ main(int argc, char **argv) {
 			elements = NULL;
 			n = 0;
 
-			for (j = 0; j < config->overview_count; j++) {
+			for (j = 0; j < (uint32_t)config->overview_count; j++) {
 				if (config->overview[j] < MINOVFACTOR || config->overview[j] > MAXOVFACTOR) {
 					rterror(_("Overview factor %d is not between %d and %d"), config->overview[j], MINOVFACTOR, MAXOVFACTOR);
 					rtdealloc_config(config);

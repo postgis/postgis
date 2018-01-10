@@ -1238,7 +1238,7 @@ rt_band_get_pixel(
  * @return -1 on error, otherwise the number of rt_pixel objects
  * in npixels
  */
-int rt_band_get_nearest_pixel(
+uint32_t rt_band_get_nearest_pixel(
 	rt_band band,
 	int x, int y,
 	uint16_t distancex, uint16_t distancey,
@@ -1249,7 +1249,7 @@ int rt_band_get_nearest_pixel(
 	int extent[4] = {0};
 	int max_extent[4] = {0};
 	int d0 = 0;
-	int distance[2] = {0};
+	uint32_t distance[2] = {0};
 	uint32_t _d[2] = {0};
 	uint32_t i = 0;
 	uint32_t j = 0;
@@ -1307,8 +1307,8 @@ int rt_band_get_nearest_pixel(
 			if distances won't capture extent of band, return 0
 		*/
 		else if (
-			((x < 0 && abs(x) > distance[0]) || (x - band->width >= distance[0])) ||
-			((y < 0 && abs(y) > distance[1]) || (y - band->height >= distance[1]))
+			((x < 0 && abs(x) > distance[0]) || (x - band->width >= (int)distance[0])) ||
+			((y < 0 && abs(y) > distance[1]) || (y - band->height >= (int)distance[1]))
 		) {
 			RASTER_DEBUG(4, "No nearest pixels possible for provided pixel and distances");
 			return 0;
@@ -1419,7 +1419,7 @@ int rt_band_get_nearest_pixel(
 				}
 
 				RASTER_DEBUGF(4, "_min, _max: %d, %d", *_min, _max);
-				for (k = 0; k < _max; k++) {
+				for (k = 0; k < (uint32_t) _max; k++) {
 					/* check that _x and _y are not outside max extent */
 					if (
 						_x < max_extent[0] || _x > max_extent[2] ||

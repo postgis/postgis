@@ -280,7 +280,7 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 	int disable_all = 0;
 
 	char **enabled_drivers_array = NULL;
-	int enabled_drivers_count = 0;
+	uint32_t enabled_drivers_count = 0;
 	bool *enabled_drivers_found = NULL;
 	char *gdal_skip = NULL;
 

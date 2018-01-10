@@ -29,7 +29,7 @@ static void test_band_get_nearest_pixel() {
 	rt_raster rast;
 	rt_band band;
 	uint32_t x, y;
-	int rtn;
+	uint32_t rtn;
 	const int maxX = 10;
 	const int maxY = 10;
 	rt_pixel npixels = NULL;

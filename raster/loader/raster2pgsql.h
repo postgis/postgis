@@ -104,7 +104,7 @@ typedef struct raster_loader_config {
 
 	/* bands to extract */
 	int *nband; /* 1-based */
-	int nband_count;
+	uint32_t nband_count;
 
 	/* tile size */
 	int tile_size[2];
@@ -173,7 +173,7 @@ typedef struct rasterinfo_t {
 
 	/* number of bands */
 	int *nband; /* 1-based */
-	int nband_count;
+	uint32_t nband_count;
 
 	/* array of pixeltypes */
 	GDALDataType *gdalbandtype;
