@@ -19,7 +19,11 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
                         $(GREP) "[a-zA-Z]" | \
                         sed "s/\([0-9][a-zA-Z]*\)[0-9]*/\1/")
 
-DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
+DATA_built = \
+	$(EXTENSION).control \
+	sql/$(EXTENSION)--$(EXTVERSION).sql \
+	sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql \
+	$(NULL)
 
 # Scripts making up the extension minor upgrade file
 # NOTE: order matters
