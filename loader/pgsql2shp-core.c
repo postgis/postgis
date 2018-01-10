@@ -108,7 +108,7 @@ create_multipoint(SHPDUMPERSTATE *state, LWMPOINT *lwmultipoint)
 {
 	SHPObject *obj;
 	POINT4D p4d;
-	int i;
+	uint32_t i;
 
 	double *xpts, *ypts, *zpts, *mpts;
 
@@ -147,7 +147,7 @@ create_polygon(SHPDUMPERSTATE *state, LWPOLY *lwpolygon)
 {
 	SHPObject *obj;
 	POINT4D p4d;
-	int i, j;
+	uint32_t i, j;
 
 	double *xpts, *ypts, *zpts, *mpts;
 
@@ -235,7 +235,7 @@ create_multipolygon(SHPDUMPERSTATE *state, LWMPOLY *lwmultipolygon)
 {
 	SHPObject *obj;
 	POINT4D p4d;
-	int i, j, k;
+	uint32_t i, j, k;
 
 	double *xpts, *ypts, *zpts, *mpts;
 
@@ -339,7 +339,7 @@ create_linestring(SHPDUMPERSTATE *state, LWLINE *lwlinestring)
 {
 	SHPObject *obj;
 	POINT4D p4d;
-	int i;
+	uint32_t i;
 
 	double *xpts, *ypts, *zpts, *mpts;
 
@@ -378,7 +378,7 @@ create_multilinestring(SHPDUMPERSTATE *state, LWMLINE *lwmultilinestring)
 {
 	SHPObject *obj;
 	POINT4D p4d;
-	int i, j;
+	uint32_t i, j;
 
 	double *xpts, *ypts, *zpts, *mpts;
 
@@ -685,7 +685,7 @@ goodDBFValue(char *in, char fieldType)
 
 char *convert_bytes_to_hex(uint8_t *ewkb, size_t size)
 {
-	int i;
+	size_t i;
 	char *hexewkb;
 
 	/* Convert the byte stream to a hex string using liblwgeom's deparse_hex function */
@@ -1557,8 +1557,11 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 
 		/* make UPPERCASE if keep_fieldname_case = 0 */
 		if (!state->config->keep_fieldname_case)
-			for (j = 0; j < strlen(dbffieldname); j++)
-				dbffieldname[j] = toupper(dbffieldname[j]);
+		{
+			size_t nameit;
+			for (nameit = 0; nameit < strlen(dbffieldname); nameit++)
+				dbffieldname[nameit] = toupper(dbffieldname[nameit]);
+		}
 
 		/* Issue warning if column has been renamed */
 		if (strcasecmp(dbffieldname, pgfieldname))
