@@ -16,7 +16,7 @@
 */
 #define KMEANS_MAX_ITERATIONS 1000
 
-typedef void * Pointer;
+typedef POINT2D* Pointer;
 
 typedef enum {
 	KMEANS_OK,
@@ -36,7 +36,7 @@ typedef struct kmeans_config
 	Pointer * objs;
 
 	/* Number of objects in the preceding array */
-	size_t num_objs; 
+	size_t num_objs;
 
 	/* An array of initial centers for the algorithm */
 	/* Can be randomly assigned, or using proportions, */
@@ -62,17 +62,6 @@ typedef struct kmeans_config
 
 kmeans_result kmeans(kmeans_config *config);
 
-static double lwkmeans_pt_distance(const Pointer a, const Pointer b)
-{
-	POINT2D *pa = (POINT2D*)a;
-	POINT2D *pb = (POINT2D*)b;
-
-	double dx = (pa->x - pb->x);
-	double dy = (pa->y - pb->y);
-
-	return dx*dx + dy*dy;
-}
-
 int *
 lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 {
@@ -85,7 +74,8 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	kmeans_config config;
 	kmeans_result result;
 	int boundary_point_idx = 0;
-	double xmin = DBL_MAX;
+	double max_norm = -DBL_MAX;
+	double curr_norm;
 
 	assert(k>0);
 	assert(ngeoms>0);
@@ -125,7 +115,6 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 
 	/* Array of sums of distances to a point from accepted cluster centers */
 	distances = lwalloc(sizeof(double)*config.num_objs);
-	memset(distances, 0, sizeof(double)*config.num_objs);
 
 	/* Prepare the list of object pointers for K-means */
 	for (i = 0; i < ngeoms; i++)
@@ -141,6 +130,8 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 			distances[i] = -1;
 			continue;
 		}
+
+		distances[i] = DBL_MAX;
 
 		/* If the input is a point, use its coordinates */
 		/* If its not a point, convert it to one via centroid */
@@ -164,15 +155,16 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 		cp = getPoint2d_cp(lwpoint->point, 0);
 		config.objs[i] = (Pointer)cp;
 
-		/* Find the point that's on the boundary to use as seed */
-		if (xmin > cp->x)
+		/* Find the point with largest Euclidean norm to use as seed */
+		curr_norm = (cp->x)*(cp->x) + (cp->y)*(cp->y);
+		if (curr_norm > max_norm)
 		{
 			boundary_point_idx = i;
-			xmin = cp->x;
+			max_norm = curr_norm;
 		}
 	}
 
-	if (xmin == DBL_MAX)
+	if (max_norm == -DBL_MAX)
 	{
 		lwerror("unable to calculate any cluster seed point, too many NULLs or empties?");
 	}
@@ -186,6 +178,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	{
 		int j;
 		double max_distance = -DBL_MAX;
+		double curr_distance;
 		int candidate_center = 0;
 
 		/* loop j on objs */
@@ -194,8 +187,11 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 			/* empty objs and accepted clusters are already marked with distance = -1 */
 			if (distances[j] < 0) continue;
 
-			/* greedily take a point that's farthest from all accepted clusters */
-			distances[j] += lwkmeans_pt_distance(&config.objs[j], &centers_raw[i-1]);
+			/* update distance to closest cluster */
+			curr_distance = distance2d_sqr_pt_pt(config.objs[j], config.centers[i-1]);
+			distances[j] = fmin(curr_distance, distances[j]);
+
+			/* greedily take a point that's farthest from any of accepted clusters */
 			if (distances[j] > max_distance)
 			{
 				candidate_center = j;
@@ -268,13 +264,13 @@ update_r(kmeans_config *config)
 		}
 
 		/* Initialize with distance to first cluster */
-		curr_distance = lwkmeans_pt_distance(obj, config->centers[0]);
+		curr_distance = distance2d_sqr_pt_pt(obj, config->centers[0]);
 		curr_cluster = 0;
 
 		/* Check all other cluster centers and find the nearest */
 		for (cluster = 1; cluster < config->k; cluster++)
 		{
-			distance = lwkmeans_pt_distance(obj, config->centers[cluster]);
+			distance = distance2d_sqr_pt_pt(obj, config->centers[cluster]);
 			if (distance < curr_distance)
 			{
 				curr_distance = distance;
@@ -292,26 +288,27 @@ update_means(kmeans_config *config)
 {
 	int i;
 	int *weights;
-	POINT2D zero = { 0, 0 };
 
 	weights = lwalloc(sizeof(int)*config->k);
 	memset(weights, 0, sizeof(int)*config->k);
 
 	for (i = 0; i < config->k; i++)
 	{
-		POINT2D*(config->centers[i]) = zero;
+		config->centers[i]->x = 0.0;
+		config->centers[i]->y = 0.0;
 	}
 	for (i = 0; i < config->num_objs; i++)
 	{
-		POINT2D*(config->centers[config->clusters[i]])->x += config->objs[i]->x;
-		POINT2D*(config->centers[config->clusters[i]])->y += config->objs[i]->y;
+		config->centers[config->clusters[i]]->x += config->objs[i]->x;
+		config->centers[config->clusters[i]]->y += config->objs[i]->y;
 		weights[config->clusters[i]] += 1;
 	}
 	for (i = 0; i < config->k; i++)
 	{
-		POINT2D*(config->centers[i])->x /= weights[i];
-		POINT2D*(config->centers[i])->y /= weights[i];
+		config->centers[i]->x /= weights[i];
+		config->centers[i]->y /= weights[i];
 	}
+	lwfree(weights);
 }
 
 kmeans_result
