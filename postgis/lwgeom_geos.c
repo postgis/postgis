@@ -420,7 +420,12 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 
 	/* One geom, good geom? Return it */
 	if ( count == 1 && nelems == 1 )
+	{
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-compare"
 		PG_RETURN_POINTER((GSERIALIZED *)(ARR_DATA_PTR(array)));
+#pragma GCC diagnostic pop
+	}
 
 	/* Ok, we really need GEOS now ;) */
 	initGEOS(lwpgnotice, lwgeom_geos_error);

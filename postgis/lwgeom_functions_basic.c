@@ -1560,7 +1560,10 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 		holes = lwalloc(sizeof(LWLINE *)*nholes);
 		for (i=0; i<nholes; i++)
 		{
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-compare"
 			GSERIALIZED *g = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
+#pragma GCC diagnostic pop
 			LWLINE *hole;
 			offset += INTALIGN(VARSIZE(g));
 			if ( gserialized_get_type(g) != LINETYPE )
