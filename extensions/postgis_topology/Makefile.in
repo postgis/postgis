@@ -19,7 +19,11 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
                         $(GREP) "[a-zA-Z]" | \
                         sed "s/\([0-9][a-zA-Z]*\)[0-9]*/\1/")
 
-DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
+DATA_built = \
+	$(EXTENSION).control \
+	sql/$(EXTENSION)--$(EXTVERSION).sql \
+	sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql \
+	$(NULL)
 
 # Scripts making up the extension minor upgrade file
 # NOTE: order matters
@@ -81,33 +85,7 @@ sql/topology_upgrade.sql:  ../../topology/topology_upgrade.sql
 sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS)
 	cat $(EXTENSION_UPGRADE_SCRIPTS) > $@
 
-EXTDIR=$(DESTDIR)$(datadir)/$(datamoduledir)
-
-install: install-upgrade-paths
-
-# The "next" lines are a cludge to allow upgrading between different
-# revisions of the same version
-install-upgrade-paths:
-	tpl='$(EXTENSION)--ANY--$(EXTVERSION).sql'; \
-	$(INSTALL_DATA) sql/$${tpl} "$(EXTDIR)/$${tpl}"; \
-	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql; \
-	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql; \
-	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
-		ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
-	done
-
-uninstall: uninstall-upgrade-paths
-
-INSTALLED_UPGRADE_SCRIPTS = \
-	$(wildcard $(EXTDIR)/*$(EXTVERSION).sql) \
-	$(wildcard $(EXTDIR)/*$(EXTVERSION)next.sql) \
-	$(NULL)
-
-uninstall-upgrade-paths:
-	rm -f $(INSTALLED_UPGRADE_SCRIPTS)
-
-DATA = $(wildcard sql/*--*.sql)
-EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
+include ../upgrade-paths-rules.mk
 
 distclean: clean
 	rm Makefile

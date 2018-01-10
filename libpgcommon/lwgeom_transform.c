@@ -338,6 +338,7 @@ char* GetProj4StringSPI(int srid)
 
 	/* Execute the lookup query */
 	snprintf(proj4_spi_buffer, 255, "SELECT proj4text FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
+	// spi_result = SPI_execute(proj4_spi_buffer, true, 1);
 	spi_result = SPI_exec(proj4_spi_buffer, 1);
 
 	/* Read back the PROJ4 text */
