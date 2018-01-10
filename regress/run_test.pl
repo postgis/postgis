@@ -754,9 +754,6 @@ sub run_simple_test
 			print FILE $diff;
 			close(FILE);
 			fail("${msg}diff expected obtained", $diffile);
-			print "========";
-			print $diff;
-			print "========";
 			return 0;
 		}
 		else
@@ -1401,6 +1398,22 @@ sub upgrade_spatial
             die "$script not found\n";
         }
     }
+
+    if ( $OPT_WITH_SFCGAL )
+    {
+        my $script = `ls ${STAGED_SCRIPTS_DIR}/sfcgal_upgrade.sql`;
+        chomp($script);
+        if ( -e $script )
+        {
+            print "Upgrading sfcgal\n";
+            load_sql_file($script);
+        }
+        else
+        {
+            die "$script not found\n";
+        }
+    }
+
     return 1;
 }
 
@@ -1433,6 +1446,17 @@ sub upgrade_spatial_extensions
       my $rv = system($cmd);
       if ( $rv ) {
         fail "Error encountered altering EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
+        die;
+      }
+    }
+
+    if ( $OPT_WITH_SFCGAL )
+    {
+      my $sql = "ALTER EXTENSION postgis_sfcgal UPDATE TO '${nextver}'";
+      $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+      $rv = system($cmd);
+      if ( $rv ) {
+        fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
         die;
       }
     }

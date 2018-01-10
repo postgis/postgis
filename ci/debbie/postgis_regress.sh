@@ -31,7 +31,8 @@ export PGIS_REG_TMPDIR=${WORKSPACE}/tmp/${POSTGIS_MAJOR_VERSION}_${POSTGIS_MINOR
 
 #adding this sleep so postgres instance has some grace period for starting
 #otherwise the attempt to drop the database, sometimes happes when pg is in middle of start
-sleep 5
+for i in {0..60}; do psql -c 'select;' && break; sleep 0.5; done
+
 export POSTGIS_REGRESS_DB="postgis_reg" # FIXME: tweak to avoid clashes
 psql -c "DROP DATABASE IF EXISTS $POSTGIS_REGRESS_DB"
 
@@ -64,7 +65,6 @@ fi
     --without-interrupt-tests \
     --prefix=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}
 make clean
-## install so we can later test extension upgrade
 make
 
 if [ "$?" != "0" ]; then
@@ -73,9 +73,11 @@ fi
 
 make check RUNTESTFLAGS=-v
 
+## install so we can test upgrades/dump-restores etc.
+make install
+
 if [ "$MAKE_EXTENSION" = "1" ]; then
  echo "Running extension testing"
- make install
  make check RUNTESTFLAGS=--extension
  if [ "$?" != "0" ]; then
   exit $?
@@ -84,7 +86,6 @@ fi
 
 if [ "$DUMP_RESTORE" = "1" ]; then
  echo "Dum restore test"
- make install
  make check RUNTESTFLAGS="-v --dumprestore"
  if [ "$?" != "0" ]; then
   exit $?
@@ -94,4 +95,15 @@ fi
 if [ "$MAKE_GARDEN" = "1" ]; then
  echo "Running garden test"
  make garden
+ if [ "$?" != "0" ]; then
+  exit $?
+ fi
+fi
+
+# Test all available upgrades
+# TODO: protect via some variable ?
+utils/check_all_upgrades.sh \
+        `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
+if [ "$?" != "0" ]; then
+  exit $?
 fi

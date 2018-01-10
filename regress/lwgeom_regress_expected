@@ -33,3 +33,4 @@ ERROR:  Operation on mixed SRID geometries
 ERROR:  Empty geometry
 ST_Angle_2_lines|4.71238898038469
 #3965|25|25
+#3971|t

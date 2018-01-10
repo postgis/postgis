@@ -289,3 +289,14 @@ select '181', ST_AsText('GEOMETRYCOLLECTION(TRIANGLE EMPTY,TIN EMPTY)');
 
 -- Drop test table
 DROP table test;
+
+-- Make sure all postgis-referencing probin are using the module
+-- version expected by postgis_lib_version()
+--
+SELECT distinct 'unexpected probin', proname || ':' || probin
+FROM pg_proc
+WHERE probin like '%postgis%'
+	AND probin NOT LIKE '%' ||
+		substring(postgis_lib_version() from '([0-9]*\.[0-9]*)')
+		|| '%'
+ORDER BY 2;

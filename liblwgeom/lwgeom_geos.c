@@ -356,9 +356,6 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 	GEOSCoordSeq sq;
 	GEOSGeom g, shell;
 	GEOSGeom *geoms = NULL;
-	/*
-	LWGEOM *tmp;
-	*/
 	uint32_t ngeoms, i, j;
 	int geostype;
 #if LWDEBUG_LEVEL >= 4
@@ -375,13 +372,13 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 		return g;
 	}
 
+	LWPOINT *lwp = NULL;
+	LWPOLY *lwpoly = NULL;
+	LWLINE *lwl = NULL;
+	LWCOLLECTION *lwc = NULL;
+
 	switch (lwgeom->type)
 	{
-		LWPOINT *lwp = NULL;
-		LWPOLY *lwpoly = NULL;
-		LWLINE *lwl = NULL;
-		LWCOLLECTION *lwc = NULL;
-
 	case POINTTYPE:
 		lwp = (LWPOINT *)lwgeom;
 

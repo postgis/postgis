@@ -5,9 +5,6 @@ CREATE TABLE test_data (
     wkb_ndr text
 );
 
-
-
-
 INSERT INTO test_data VALUES
 (1, 'MULTIPOINT(1 2)', '00000000040000000100000000013FF00000000000004000000000000000', '0104000000010000000101000000000000000000F03F0000000000000040'),
 (-5, 'LINESTRING(1 2,3 4)', '0000000002000000023FF0000000000000400000000000000040080000000000004010000000000000', '010200000002000000000000000000F03F000000000000004000000000000008400000000000001040'),
@@ -171,8 +168,38 @@ SELECT 'ST_Angle_2_lines', St_Angle(l1,l2)
 	, ST_GeomFromtext('LINESTRING(1 0, 2 0)') AS l2 ;
 
 --- ST_ClusterKMeans
-select '#3965', count(distinct cid), count(*) from (
-	with points as (select ST_MakePoint(x,y) geom from generate_series(1,5) x, generate_series(1,5) y)
-  select ST_ClusterKMeans(geom, 25) over () as cid, geom
-  from points) z;
 
+-- check we have not less than k clusters
+select
+    '#3965',
+    count(distinct cid),
+    count(*)
+from (
+         with points as (
+             select ST_MakePoint(x, y) geom
+             from generate_series(1, 5) x,
+                  generate_series(1, 5) y
+         )
+         select
+             ST_ClusterKMeans(geom, 25)
+             over () as cid,
+             geom
+         from points) z;
+
+-- check that grid gets clustered to clusters of similar size
+select '#3971', count(*) between 16 and 25 -- in perfect match it's 25, better kmeans init can improve
+from (
+         with
+                 points as (
+                 select ST_MakePoint(x, y) geom
+                 from generate_series(1, 45) x, generate_series(1, 45) y
+             )
+         select
+             ST_ClusterKMeans(geom, 81)
+             over () as cid,
+             geom
+         from points
+     ) z
+group by cid
+order by count(*)
+limit 1;
