@@ -115,7 +115,6 @@ SA_OBJS = \
 	lwunionfind.o \
 	effectivearea.o \
 	lwkmeans.o \
-	kmeans.o \
 	varint.o
 
 NM_OBJS = \
@@ -178,9 +177,6 @@ $(LT_OBJS): ../postgis_config.h ../postgis_svn_revision.h $(SA_HEADERS)
 
 ../postgis_svn_revision.h:
 	$(MAKE) -C .. postgis_svn_revision.h
-
-#liblwgeom.a: $(SA_OBJS) $(NM_OBJS) $(SA_HEADERS)
-#ar rs liblwgeom.a $(SA_OBJS) $(NM_OBJS)
 
 liblwgeom.la: $(LT_OBJS)
 	$(LIBTOOL) --tag=CC --mode=link $(CC) -rpath $(libdir) $(LT_OBJS) \
