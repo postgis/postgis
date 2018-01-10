@@ -1431,7 +1431,7 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 		char *expr = NULL;
 		char *tmp = NULL;
 		char *sql = NULL;
-		char place[5] = "$1";
+		char place[12] = "$1";
 
 		if (PG_ARGISNULL(exprpos[i]))
 			continue;
@@ -4434,7 +4434,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     int argcount = 0;
     Oid argtype[] = { FLOAT8OID, INT4OID, INT4OID };
     uint8_t argpos[3] = {0};
-    char place[5];
+    char place[12];
     int idx = 0;
     int ret = -1;
     TupleDesc tupdesc;
