@@ -425,7 +425,7 @@ int lwpoly_is_empty(const LWPOLY *poly)
 uint32_t lwpoly_count_vertices(LWPOLY *poly)
 {
 	uint32_t i = 0;
-	int v = 0; /* vertices */
+	uint32_t v = 0; /* vertices */
 	assert(poly);
 	for ( i = 0; i < poly->nrings; i ++ )
 	{

@@ -3403,7 +3403,7 @@ dot_product_side(const POINT3D *p, const POINT3D *q)
 * Returns non-zero if edges A and B interact. The type of interaction is given in the
 * return value with the bitmask elements defined above.
 */
-int
+uint32_t
 edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const POINT3D *B2)
 {
 	POINT3D AN, BN, VN;  /* Normals to plane A and plane B */
@@ -3514,8 +3514,7 @@ int ptarray_contains_point_sphere(const POINTARRAY *pa, const POINT2D *pt_outsid
 	POINT3D S1, S2; /* Stab line end points */
 	POINT3D E1, E2; /* Edge end points (3-space) */
 	POINT2D p; /* Edge end points (lon/lat) */
-	uint32_t i;
-	int count = 0, inter;
+	uint32_t count = 0, i, inter;
 
 	/* Null input, not enough points for a ring? You ain't closed! */
 	if ( ! pa || pa->npoints < 4 )

@@ -1204,7 +1204,7 @@ extern double lwgeom_length(const LWGEOM *geom);
 extern double lwgeom_length_2d(const LWGEOM *geom);
 extern double lwgeom_perimeter(const LWGEOM *geom);
 extern double lwgeom_perimeter_2d(const LWGEOM *geom);
-extern uint32_t lwgeom_dimension(const LWGEOM *geom);
+extern int lwgeom_dimension(const LWGEOM *geom);
 
 extern LWPOINT* lwline_get_lwpoint(const LWLINE *line, uint32_t where);
 extern LWPOINT* lwcircstring_get_lwpoint(const LWCIRCSTRING *circ, uint32_t where);

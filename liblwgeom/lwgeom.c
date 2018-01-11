@@ -1223,6 +1223,7 @@ int lwgeom_needs_bbox(const LWGEOM *geom)
 
 /**
 * Count points in an #LWGEOM.
+* TODO: Make sure the internal functions don't overflow
 */
 uint32_t lwgeom_count_vertices(const LWGEOM *geom)
 {
@@ -1276,7 +1277,7 @@ uint32_t lwgeom_count_vertices(const LWGEOM *geom)
 * 2 for polygons, 3 for volume, and the max dimension
 * of a collection.
 */
-uint32_t lwgeom_dimension(const LWGEOM *geom)
+int lwgeom_dimension(const LWGEOM *geom)
 {
 
 	/* Null? Zero. */
@@ -1314,11 +1315,12 @@ uint32_t lwgeom_dimension(const LWGEOM *geom)
 	}
 	case COLLECTIONTYPE:
 	{
-		uint32_t maxdim = 0, i;
+		int maxdim = 0;
+		uint32_t i;
 		LWCOLLECTION *col = (LWCOLLECTION*)geom;
 		for( i = 0; i < col->ngeoms; i++ )
 		{
-			uint32_t dim = lwgeom_dimension(col->geoms[i]);
+			int dim = lwgeom_dimension(col->geoms[i]);
 			maxdim = ( dim > maxdim ? dim : maxdim );
 		}
 		return maxdim;

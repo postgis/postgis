@@ -2972,7 +2972,7 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
     POINTARRAY *epa = edge->points;
     POINT2D p2, pt;
     int match = 0;
-    int32_t j;
+    int64_t j;
 
     /* Skip if the edge is a dangling one */
     if ( isoe->face_left == isoe->face_right )
@@ -3003,7 +3003,7 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
       LWDEBUGF(1, "First point of edge %" LWTFMT_ELEMID
                   " matches ring vertex %d", isoe->edge_id, from);
       /* first point matches, let's check next non-equal one */
-      for ( j=1; j<(int32_t)epa->npoints; ++j )
+      for ( j=1; j<(int64_t)epa->npoints; ++j )
       {
         getPoint2d_p(epa, j, &p2);
         LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " 'next' point %d is %g,%g",
@@ -4377,7 +4377,7 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
   POINTARRAY *pa;
   char buf[256];
   char *ptr;
-  int bufleft = 256;
+  size_t bufleft = 256;
 
   ptr = buf;
 
@@ -4479,10 +4479,10 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
       if ( node_edges[i].edge_id == eid2 ) continue;
       commonnode = -1;
       /* append to string, for error message */
-      if ( bufleft ) {
+      if ( bufleft > 0 ) {
         r = snprintf(ptr, bufleft, "%s%" LWTFMT_ELEMID,
                      ( ptr==buf ? "" : "," ), node_edges[i].edge_id);
-        if ( r >= bufleft )
+        if ( r >= (int) bufleft )
         {
           bufleft = 0;
           buf[252] = '.';
@@ -4530,10 +4530,10 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
         if ( node_edges[i].edge_id == eid2 ) continue;
         commonnode = -1;
         /* append to string, for error message */
-        if ( bufleft ) {
+        if ( bufleft > 0 ) {
           r = snprintf(ptr, bufleft, "%s%" LWTFMT_ELEMID,
                        ( ptr==buf ? "" : "," ), node_edges[i].edge_id);
-          if ( r >= bufleft )
+          if ( r >= (int) bufleft )
           {
             bufleft = 0;
             buf[252] = '.';

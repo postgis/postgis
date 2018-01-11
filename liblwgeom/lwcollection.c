@@ -498,7 +498,7 @@ int lwcollection_is_empty(const LWCOLLECTION *col)
 uint32_t lwcollection_count_vertices(LWCOLLECTION *col)
 {
 	uint32_t i = 0;
-	int v = 0; /* vertices */
+	uint32_t v = 0; /* vertices */
 	assert(col);
 	for ( i = 0; i < col->ngeoms; i++ )
 	{

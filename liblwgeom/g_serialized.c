@@ -1173,8 +1173,8 @@ static size_t gserialized_from_gbox(const GBOX *gbox, uint8_t *buf)
 
 GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size)
 {
-	uint32_t expected_size = 0;
-	uint32_t return_size = 0;
+	size_t expected_size = 0;
+	size_t return_size = 0;
 	uint8_t *serialized = NULL;
 	uint8_t *ptr = NULL;
 	GSERIALIZED *g = NULL;

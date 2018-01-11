@@ -304,13 +304,13 @@ static uint32_t add_key(mvt_agg_context *ctx, char *name)
 static void parse_column_keys(mvt_agg_context *ctx)
 {
 	TupleDesc tupdesc = get_tuple_desc(ctx);
-	int natts = tupdesc->natts;
+	uint32_t natts = (uint32_t) tupdesc->natts;
 	uint32_t i;
 	bool geom_found = false;
 	char *key;
 	POSTGIS_DEBUG(2, "parse_column_keys called");
 
-	for (i = 0; i < (uint32_t) natts; i++) {
+	for (i = 0; i < natts; i++) {
 #if POSTGIS_PGSQL_VERSION < 110
 		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
 		char *tkey = tupdesc->attrs[i]->attname.data;
