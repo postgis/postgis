@@ -44,6 +44,11 @@ EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
 
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql
 
+$(EXTENSION).control: $(EXTENSION).control.in Makefile
+	cat $< \
+		| sed -e 's|@EXTVERSION@|$(EXTVERSION)|g' \
+		> $@
+
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	mkdir -p sql
 	cp $< $@
