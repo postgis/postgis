@@ -53,11 +53,11 @@ out_encoded_polyline_test_geoms(void)
 		5,
 		"_p~iF~ps|U_ulLnnqC_mqNvxq`@");
 	do_encoded_polyline_test("LINESTRING EMPTY", 5, "");
-  
+
 	/* MultiPoint */
 	do_encoded_polyline_test(
 		"MULTIPOINT(-120.2 38.5,-120.95 40.7)", 5, "_p~iF~ps|U_ulLnnqC");
-  do_encoded_polyline_test("MULTIPOINT EMPTY", 5, "");
+	do_encoded_polyline_test("MULTIPOINT EMPTY", 5, "");
 }
 
 static void
