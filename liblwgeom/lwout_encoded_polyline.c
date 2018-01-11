@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright 2014 Kashif Rasul <kashif.rasul@gmail.com> and
+ *                Shoaib Burq <saburq@gmail.com>
  *
  **********************************************************************/
 
@@ -41,7 +42,8 @@ lwgeom_to_encoded_polyline(const LWGEOM* geom, int precision)
 	case MULTIPOINTTYPE:
 		return lwmmpoint_to_encoded_polyline((LWMPOINT*)geom, precision);
 	default:
-		lwerror("lwgeom_to_encoded_polyline: '%s' geometry type not supported", lwtype_name(type));
+		lwerror("lwgeom_to_encoded_polyline: '%s' geometry type not supported",
+				lwtype_name(type));
 		return NULL;
 	}
 }
@@ -81,7 +83,8 @@ pointarray_to_encoded_polyline(const POINTARRAY* pa, int precision)
 
 	delta = lwalloc(2 * sizeof(int) * pa->npoints);
 
-	/* Take the double value and multiply it by 1x10^precision, rounding the result */
+	/* Take the double value and multiply it by 1x10^precision, rounding the
+	 * result */
 	prevPoint = getPoint2d_cp(pa, 0);
 	delta[0] = round(prevPoint->y * scale);
 	delta[1] = round(prevPoint->x * scale);
@@ -91,11 +94,13 @@ pointarray_to_encoded_polyline(const POINTARRAY* pa, int precision)
 	{
 		const POINT2D* point = getPoint2d_cp(pa, i);
 		delta[2 * i] = round(point->y * scale) - round(prevPoint->y * scale);
-		delta[(2 * i) + 1] = round(point->x * scale) - round(prevPoint->x * scale);
+		delta[(2 * i) + 1] =
+			round(point->x * scale) - round(prevPoint->x * scale);
 		prevPoint = point;
 	}
 
-	/* value to binary: a negative value must be calculated using its two's complement */
+	/* value to binary: a negative value must be calculated using its two's
+	 * complement */
 	for (i = 0; i < pa->npoints * 2; i++)
 	{
 		/* Multiply by 2 for a signed left shift */
