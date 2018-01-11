@@ -1307,8 +1307,8 @@ uint32_t rt_band_get_nearest_pixel(
 			if distances won't capture extent of band, return 0
 		*/
 		else if (
-			((x < 0 && abs(x) > distance[0]) || (x - band->width >= (int)distance[0])) ||
-			((y < 0 && abs(y) > distance[1]) || (y - band->height >= (int)distance[1]))
+			((x < 0 && (uint32_t) abs(x) > distance[0]) || (x - band->width >= (int)distance[0])) ||
+			((y < 0 && (uint32_t) abs(y) > distance[1]) || (y - band->height >= (int)distance[1]))
 		) {
 			RASTER_DEBUG(4, "No nearest pixels possible for provided pixel and distances");
 			return 0;
