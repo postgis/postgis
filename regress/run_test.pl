@@ -258,6 +258,21 @@ if ( ! $libver )
 	exit(1);
 }
 
+sub semver_lessthan
+{
+  my ($a,$b) = @_;
+  my @acomp = split(/\./, $a);
+  my @bcomp = split(/\./, $b);
+	foreach my $ac (@acomp) {
+		my $bc = shift(@bcomp);
+		return 0 if not defined($bc); # $b has less components
+		return 1 if ( $ac < $bc ); # $a is less than $b
+		return 0 if ( $ac > $bc ); # $a is not less than $b
+	}
+	# $a is equal to $b so far, if $b has more elements,
+	# it is bigger
+	return @bcomp ? 1 : 0;
+}
 
 sub create_upgrade_test_objects
 {
@@ -1301,16 +1316,24 @@ sub prepare_spatial_extensions
 
 	if ( $OPT_WITH_SFCGAL )
 	{
-		my $sql = "CREATE EXTENSION postgis_sfcgal";
-		if ( $OPT_UPGRADE_FROM ) {
-			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
-		}
- 		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
-		$rv = system($cmd);
-		if ( $rv ) {
-		  fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
-		  die;
-		}
+		do {
+			my $sql = "CREATE EXTENSION postgis_sfcgal";
+			if ( $OPT_UPGRADE_FROM ) {
+				if ( semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
+				{
+					print "NOTICE: skipping SFCGAL extension create "
+							. "as not available in version $OPT_UPGRADE_FROM\n";
+					last;
+				}
+				$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
+			}
+			$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+			$rv = system($cmd);
+			if ( $rv ) {
+				fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
+				die;
+			}
+		} while (0);
 	}
 
  	return 1;
@@ -1452,7 +1475,16 @@ sub upgrade_spatial_extensions
 
     if ( $OPT_WITH_SFCGAL )
     {
-      my $sql = "ALTER EXTENSION postgis_sfcgal UPDATE TO '${nextver}'";
+			if ( semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
+			{
+				print "NOTICE: installing SFCGAL extension on upgrade "
+						. "as it was not available in version $OPT_UPGRADE_FROM\n";
+				my $sql = "CREATE EXTENSION postgis_sfcgal VERSION '${nextver}'";
+			}
+			else
+			{
+				my $sql = "ALTER EXTENSION postgis_sfcgal UPDATE TO '${nextver}'";
+			}
       $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
       $rv = system($cmd);
       if ( $rv ) {
