@@ -3048,11 +3048,11 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
         LWDEBUGF(1, "Last point of edge %" LWTFMT_ELEMID
                     " matches ring vertex %d", isoe->edge_id, from);
         /* last point matches, let's check next non-equal one */
-        for ( j=epa->npoints-2; j!=0; --j )
+        for ( j=2; j<=epa->npoints; j++ )
         {
-          getPoint2d_p(epa, j, &p2);
+          getPoint2d_p(epa, epa->npoints - j, &p2);
           LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " 'prev' point %d is %g,%g",
-                      isoe->edge_id, j, p2.x, p2.y);
+                      isoe->edge_id, epa->npoints - j, p2.x, p2.y);
           /* we won't check duplicated edge points */
           if ( p2d_same(&p1, &p2) ) continue;
           /* we assume there are no duplicated points in ring */
