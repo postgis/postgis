@@ -43,14 +43,15 @@ out_encoded_polyline_test_geoms(void)
 	do_encoded_polyline_test("SRID=4326;LINESTRING(33.6729 38.7071,33.6692 38.701,33.6673 38.6972,33.6626 38.6871)",
 				 5,
 				 "k~fkFsvolEbe@bVvVzJb~@j\\");
-	return;
 
 	/* Linestring */
 	do_encoded_polyline_test(
 	    "LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)", 5, "_p~iF~ps|U_ulLnnqC_mqNvxq`@");
+	do_encoded_polyline_test("LINESTRING EMPTY", 5, "");
 
 	/* MultiPoint */
 	do_encoded_polyline_test("MULTIPOINT(-120.2 38.5,-120.95 40.7)", 5, "_p~iF~ps|U_ulLnnqC");
+	do_encoded_polyline_test("MULTIPOINT EMPTY", 5, "");
 }
 
 static void
