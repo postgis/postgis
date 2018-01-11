@@ -812,7 +812,9 @@ LWGEOM_GEOS_makeValidCollection(const GEOSGeometry* gin)
 	for ( i=0; i<nvgeoms; ++i ) {
 		vgeoms[i] = LWGEOM_GEOS_makeValid( GEOSGetGeometryN(gin, i) );
 		if ( ! vgeoms[i] ) {
-			while (i--) GEOSGeom_destroy(vgeoms[i]);
+			int j;
+			for (j = 0; j<i-1; j++)
+				GEOSGeom_destroy(vgeoms[j]);
 			lwfree(vgeoms);
 			/* we expect lwerror being called already by makeValid */
 			return NULL;

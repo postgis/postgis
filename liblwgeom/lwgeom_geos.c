@@ -436,8 +436,9 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 				geoms[i-1] = ptarray_to_GEOSLinearRing(lwpoly->rings[i], autofix);
 				if ( ! geoms[i-1] )
 				{
-					--i;
-					while (i) GEOSGeom_destroy(geoms[--i]);
+					uint32_t k;
+					for (k = 0; k < i-1; k++)
+						GEOSGeom_destroy(geoms[k]);
 					free(geoms);
 					GEOSGeom_destroy(shell);
 					return NULL;
@@ -479,7 +480,9 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 			g = LWGEOM2GEOS(lwc->geoms[i], 0);
 			if ( ! g )
 			{
-				while (j) GEOSGeom_destroy(geoms[--j]);
+				uint32_t k;
+				for (k = 0; k < j; k++)
+					GEOSGeom_destroy(geoms[k]);
 				free(geoms);
 				return NULL;
 			}

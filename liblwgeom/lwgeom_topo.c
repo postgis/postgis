@@ -2972,7 +2972,7 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
     POINTARRAY *epa = edge->points;
     POINT2D p2, pt;
     int match = 0;
-    int64_t j;
+    uint32_t j;
 
     /* Skip if the edge is a dangling one */
     if ( isoe->face_left == isoe->face_right )
@@ -2981,6 +2981,14 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
                   " has same face (%" LWTFMT_ELEMID
                   ") on both sides, skipping",
                   isoe->edge_id, isoe->face_left);
+      continue;
+    }
+
+    if (epa->npoints < 2)
+    {
+      LWDEBUGF(3, "_lwt_FindNextRingEdge: edge %" LWTFMT_ELEMID
+                  " has only %"PRIu32" points",
+                  isoe->edge_id, epa->npoints);
       continue;
     }
 
@@ -3003,7 +3011,7 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
       LWDEBUGF(1, "First point of edge %" LWTFMT_ELEMID
                   " matches ring vertex %d", isoe->edge_id, from);
       /* first point matches, let's check next non-equal one */
-      for ( j=1; j<(int64_t)epa->npoints; ++j )
+      for ( j=1; j<epa->npoints; ++j )
       {
         getPoint2d_p(epa, j, &p2);
         LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " 'next' point %d is %g,%g",
@@ -3040,7 +3048,7 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
         LWDEBUGF(1, "Last point of edge %" LWTFMT_ELEMID
                     " matches ring vertex %d", isoe->edge_id, from);
         /* last point matches, let's check next non-equal one */
-        for ( j=epa->npoints-2; j>=0; --j )
+        for ( j=epa->npoints-2; j!=0; --j )
         {
           getPoint2d_p(epa, j, &p2);
           LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " 'prev' point %d is %g,%g",
