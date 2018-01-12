@@ -11,6 +11,8 @@ PostGIS 2.3.6
   - #3956, Brin opclass object does not upgrade properly (Sandro Santilli)
   - #3982, ST_AsEncodedPolyline supports LINESTRING EMPTY and MULTIPOINT EMPTY
            (Darafei Praliaskouski)
+  - #3975, ST_Transform runs query on spatial_ref_sys without schema 
+           qualification. May cause restore issues. (Paul Ramsey)
 
 PostGIS 2.3.5
 2017/11/15

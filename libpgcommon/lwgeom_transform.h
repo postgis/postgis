@@ -23,7 +23,6 @@ typedef struct srs_precision
 char* GetProj4StringSPI(int srid);
 void SetPROJ4LibPath(void) ;
 
-
 /**
  * Opaque type to use in the projection cache API.
  */
