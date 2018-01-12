@@ -69,10 +69,19 @@ pointarray_to_encoded_polyline(const POINTARRAY* pa, int precision)
 {
 	int i;
 	const POINT2D* prevPoint;
-	int* delta = lwalloc(2 * sizeof(int) * pa->npoints);
+	int* delta;
 	char* encoded_polyline = NULL;
 	stringbuffer_t* sb;
 	double scale = pow(10, precision);
+
+	/* Empty input is empty string */
+	if (pa->npoints == 0) {
+		encoded_polyline = lwalloc(1 * sizeof(char));
+		encoded_polyline[0] = 0;
+		return encoded_polyline;
+	}
+
+	delta = lwalloc(2 * sizeof(int) * pa->npoints);
 
 	/* Take the double value and multiply it by 1x10^precision, rounding the
 	 * result */
@@ -80,7 +89,7 @@ pointarray_to_encoded_polyline(const POINTARRAY* pa, int precision)
 	delta[0] = round(prevPoint->y * scale);
 	delta[1] = round(prevPoint->x * scale);
 
-	/*  points only include the offset from the previous point */
+	/* Points only include the offset from the previous point */
 	for (i = 1; i < pa->npoints; i++)
 	{
 		const POINT2D* point = getPoint2d_cp(pa, i);
