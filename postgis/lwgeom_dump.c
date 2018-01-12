@@ -48,7 +48,7 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS);
 
 typedef struct GEOMDUMPNODE_T
 {
-	int idx;
+	uint32_t idx;
 	LWGEOM *geom;
 }
 GEOMDUMPNODE;
@@ -83,7 +83,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	Datum result;
 	char address[256];
 	char *ptr;
-	uint32 i;
+	int i;
 	char *values[2];
 
 	if (SRF_IS_FIRSTCALL())
@@ -210,7 +210,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 
 struct POLYDUMPSTATE
 {
-	int ringnum;
+	uint32_t ringnum;
 	LWPOLY *poly;
 };
 

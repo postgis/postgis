@@ -546,7 +546,7 @@ static int lw_arc_calculate_gbox_cartesian(const POINT4D *p1, const POINT4D *p2,
 
 int ptarray_calculate_gbox_cartesian(const POINTARRAY *pa, GBOX *gbox )
 {
-	int i;
+	uint32_t i;
 	POINT4D p;
 	int has_z, has_m;
 
@@ -593,7 +593,7 @@ static int lwcircstring_calculate_gbox_cartesian(LWCIRCSTRING *curve, GBOX *gbox
 	uint8_t flags = gflags(FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags), 0);
 	GBOX tmp;
 	POINT4D p1, p2, p3;
-	int i;
+	uint32_t i;
 
 	if ( ! curve ) return LW_FAILURE;
 	if ( curve->points->npoints < 3 ) return LW_FAILURE;
@@ -648,7 +648,7 @@ static int lwpoly_calculate_gbox_cartesian(LWPOLY *poly, GBOX *gbox)
 static int lwcollection_calculate_gbox_cartesian(LWCOLLECTION *coll, GBOX *gbox)
 {
 	GBOX subbox;
-	int i;
+	uint32_t i;
 	int result = LW_FAILURE;
 	int first = LW_TRUE;
 	assert(coll);

@@ -280,7 +280,7 @@ int
 pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring)
 {
 	int cn = 0;    /* the crossing number counter */
-	int i;
+	uint32_t i;
 	const POINT2D *v1, *v2;
 	const POINT2D *first, *last;
 
@@ -459,7 +459,7 @@ int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q
 */
 int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 {
-	int i = 0, j = 0;
+	uint32_t i = 0, j = 0;
 	const POINT2D *p1, *p2, *q1, *q2;
 	POINTARRAY *pa1 = NULL, *pa2 = NULL;
 	int cross_left = 0;

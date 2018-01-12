@@ -166,7 +166,7 @@ RTreeCreateInteriorNode(RTREE_NODE* left, RTREE_NODE* right)
 * Creates a leaf node given the pointer to the start point of the segment.
 */
 static RTREE_NODE*
-RTreeCreateLeafNode(POINTARRAY* pa, int startPoint)
+RTreeCreateLeafNode(POINTARRAY* pa, uint32_t startPoint)
 {
 	RTREE_NODE *parent;
 	LWLINE *line;
@@ -219,8 +219,8 @@ RTreeCreate(POINTARRAY* pointArray)
 {
 	RTREE_NODE* root;
 	RTREE_NODE** nodes = lwalloc(pointArray->npoints * sizeof(RTREE_NODE*));
-	int i, nodeCount;
-	int childNodes, parentNodes;
+	uint32_t i, nodeCount;
+	uint32_t childNodes, parentNodes;
 
 	POSTGIS_DEBUGF(2, "RTreeCreate called with pointarray %p", pointArray);
 
@@ -283,7 +283,7 @@ RTreeMergeMultiLines(LWMLINE *line1, LWMLINE *line2)
 {
 	LWGEOM **geoms;
 	LWCOLLECTION *col;
-	int i, j, ngeoms;
+	uint32_t i, j, ngeoms;
 
 	POSTGIS_DEBUGF(2, "RTreeMergeMultiLines called on %p, %d, %d; %p, %d, %d", line1, line1->ngeoms, line1->type, line2, line2->ngeoms, line2->type);
 
@@ -315,7 +315,7 @@ RTreeMergeMultiLines(LWMLINE *line1, LWMLINE *line2)
 static int
 RTreeBuilder(const LWGEOM* lwgeom, GeomCache* cache)
 {
-	int i, p, r;
+	uint32_t i, p, r;
 	LWMPOLY *mpoly;
 	LWPOLY *poly;
 	int nrings;

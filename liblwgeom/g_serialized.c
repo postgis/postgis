@@ -715,7 +715,7 @@ static size_t gserialized_from_lwtriangle_size(const LWTRIANGLE *triangle)
 static size_t gserialized_from_lwpoly_size(const LWPOLY *poly)
 {
 	size_t size = 4; /* Type number. */
-	int i = 0;
+	uint32_t i = 0;
 
 	assert(poly);
 
@@ -751,7 +751,7 @@ static size_t gserialized_from_lwcircstring_size(const LWCIRCSTRING *curve)
 static size_t gserialized_from_lwcollection_size(const LWCOLLECTION *col)
 {
 	size_t size = 4; /* Type number. */
-	int i = 0;
+	uint32_t i = 0;
 
 	assert(col);
 
@@ -902,7 +902,7 @@ static size_t gserialized_from_lwline(const LWLINE *line, uint8_t *buf)
 
 static size_t gserialized_from_lwpoly(const LWPOLY *poly, uint8_t *buf)
 {
-	int i;
+	uint32_t i;
 	uint8_t *loc;
 	int ptsize;
 	int type = POLYGONTYPE;
@@ -1034,7 +1034,7 @@ static size_t gserialized_from_lwcollection(const LWCOLLECTION *coll, uint8_t *b
 {
 	size_t subsize = 0;
 	uint8_t *loc;
-	int i;
+	uint32_t i;
 	int type;
 
 	assert(coll);
@@ -1312,7 +1312,7 @@ static LWPOLY* lwpoly_from_gserialized_buffer(uint8_t *data_ptr, uint8_t g_flags
 	LWPOLY *poly;
 	uint8_t *ordinate_ptr;
 	uint32_t nrings = 0;
-	int i = 0;
+	uint32_t i = 0;
 
 	assert(data_ptr);
 
@@ -1431,7 +1431,7 @@ static LWCOLLECTION* lwcollection_from_gserialized_buffer(uint8_t *data_ptr, uin
 	uint8_t *start_ptr = data_ptr;
 	LWCOLLECTION *collection;
 	uint32_t ngeoms = 0;
-	int i = 0;
+	uint32_t i = 0;
 
 	assert(data_ptr);
 

@@ -103,10 +103,10 @@ static void write_bbox(TWKB_STATE *ts, int ndims)
 * @register_npoints, controls whether an npoints entry is added to the buffer (used to skip npoints for point types)
 * @dimension, states the dimensionality of object this array is part of (0 = point, 1 = linear, 2 = areal)
 */
-static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB_STATE *ts, int register_npoints, int minpoints)
+static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB_STATE *ts, int register_npoints, uint32_t minpoints)
 {
-	int ndims = FLAGS_NDIMS(pa->flags);
-	int i, j;
+	uint32_t ndims = FLAGS_NDIMS(pa->flags);
+	uint32_t i, j;
 	bytebuffer_t b;
 	bytebuffer_t *b_p;
 	int64_t nextdelta[MAX_N_DIMS];
@@ -256,7 +256,7 @@ static int lwline_to_twkb_buf(const LWLINE *line, TWKB_GLOBALS *globals, TWKB_ST
 
 static int lwpoly_to_twkb_buf(const LWPOLY *poly, TWKB_GLOBALS *globals, TWKB_STATE *ts)
 {
-	int i;
+	uint32_t i;
 
 	/* Set the number of rings */
 	bytebuffer_append_uvarint(ts->geom_buf, (uint64_t) poly->nrings);
@@ -278,7 +278,7 @@ static int lwpoly_to_twkb_buf(const LWPOLY *poly, TWKB_GLOBALS *globals, TWKB_ST
 
 static int lwmulti_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, TWKB_STATE *ts)
 {
-	int i;
+	uint32_t i;
 	int nempty = 0;
 
 	LWDEBUGF(2, "Entered %s", __func__);
@@ -328,7 +328,7 @@ static int lwmulti_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, T
 
 static int lwcollection_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, TWKB_STATE *ts)
 {
-	int i;
+	uint32_t i;
 
 	LWDEBUGF(2, "Entered %s", __func__);
 	LWDEBUGF(4, "Number of geometries in collection is %d", col->ngeoms);

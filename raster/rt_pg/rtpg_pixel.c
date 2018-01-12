@@ -1216,7 +1216,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 	size_t wkb_len;
 
 	int i = 0;
-	int j = 0;
+	uint32_t j = 0;
 	int noerr = 1;
 
 	/* pgraster is null, return null */

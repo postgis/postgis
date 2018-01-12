@@ -22,7 +22,7 @@
 
 static void test_geos_noop(void)
 {
-	int i;
+	size_t i;
 
 	char *ewkt[] =
 	{

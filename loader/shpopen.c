@@ -1563,7 +1563,7 @@ SHPObject SHPAPI_CALL1(*)
 SHPReadObject( SHPHandle psSHP, int hEntity )
 
 {
-    int                  nEntitySize, nRequiredSize;
+    int32                nEntitySize, nRequiredSize;
     SHPObject           *psShape;
     char                 szErrorMsg[128];
 
@@ -1577,7 +1577,7 @@ SHPReadObject( SHPHandle psSHP, int hEntity )
 /*      Ensure our record buffer is large enough.                       */
 /* -------------------------------------------------------------------- */
     nEntitySize = psSHP->panRecSize[hEntity]+8;
-    if( nEntitySize > psSHP->nBufSize )
+    if( nEntitySize > (int32) psSHP->nBufSize )
     {
         psSHP->pabyRec = (uchar *) SfRealloc(psSHP->pabyRec,nEntitySize);
         if (psSHP->pabyRec == NULL)
@@ -1668,7 +1668,7 @@ SHPReadObject( SHPHandle psSHP, int hEntity )
         || psShape->nSHPType == SHPT_MULTIPATCH )
     {
         int32		nPoints, nParts;
-        int    		i, nOffset;
+        int32    	i, nOffset;
 
         if ( 40 + 8 + 4 > nEntitySize )
         {
@@ -1885,7 +1885,7 @@ SHPReadObject( SHPHandle psSHP, int hEntity )
              || psShape->nSHPType == SHPT_MULTIPOINTZ )
     {
         int32		nPoints;
-        int    		i, nOffset;
+        int32    	i, nOffset;
 
         if ( 44 + 4 > nEntitySize )
         {
@@ -2020,7 +2020,7 @@ SHPReadObject( SHPHandle psSHP, int hEntity )
              || psShape->nSHPType == SHPT_POINTM
              || psShape->nSHPType == SHPT_POINTZ )
     {
-        int	nOffset;
+        int32	nOffset;
 
         psShape->nVertices = 1;
         psShape->padfX = (double *) calloc(1,sizeof(double));

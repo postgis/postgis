@@ -139,7 +139,7 @@ rtpg_chartrim(const char *input, char *remove) {
 
 /* split a string based on a delimiter */
 char**
-rtpg_strsplit(const char *str, const char *delimiter, int *n) {
+rtpg_strsplit(const char *str, const char *delimiter, uint32_t *n) {
 	char *tmp = NULL;
 	char **rtn = NULL;
 	char *token = NULL;

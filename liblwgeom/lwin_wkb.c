@@ -88,7 +88,7 @@ uint8_t* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 {
 	uint8_t *buf = NULL;
 	register uint8_t h1, h2;
-	int i;
+	uint32_t i;
 
 	if( hexsize % 2 )
 		lwerror("Invalid hex string, length (%d) has to be a multiple of two!", hexsize);
@@ -368,7 +368,7 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 	/* Otherwise we have to read each double, separately. */
 	else
 	{
-		int i = 0;
+		uint32_t i = 0;
 		double *dlist;
 		pa = ptarray_construct(s->has_z, s->has_m, npoints);
 		dlist = (double*)(pa->serialized_pointlist);
@@ -415,7 +415,7 @@ static LWPOINT* lwpoint_from_wkb_state(wkb_parse_state *s)
 	/* Otherwise we have to read each double, separately */
 	else
 	{
-		int i = 0;
+		uint32_t i = 0;
 		double *dlist;
 		pa = ptarray_construct(s->has_z, s->has_m, npoints);
 		dlist = (double*)(pa->serialized_pointlist);
@@ -507,7 +507,7 @@ static LWCIRCSTRING* lwcircstring_from_wkb_state(wkb_parse_state *s)
 static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 {
 	uint32_t nrings = integer_from_wkb_state(s);
-	int i = 0;
+	uint32_t i = 0;
 	LWPOLY *poly = lwpoly_construct_empty(s->srid, s->has_z, s->has_m);
 
 	LWDEBUGF(4,"Polygon has %d rings", nrings);
@@ -608,7 +608,7 @@ static LWCURVEPOLY* lwcurvepoly_from_wkb_state(wkb_parse_state *s)
 	uint32_t ngeoms = integer_from_wkb_state(s);
 	LWCURVEPOLY *cp = lwcurvepoly_construct_empty(s->srid, s->has_z, s->has_m);
 	LWGEOM *geom = NULL;
-	int i;
+	uint32_t i;
 
 	/* Empty collection? */
 	if ( ngeoms == 0 )
@@ -638,7 +638,7 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 	uint32_t ngeoms = integer_from_wkb_state(s);
 	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype, s->srid, s->has_z, s->has_m);
 	LWGEOM *geom = NULL;
-	int i;
+	uint32_t i;
 
 	LWDEBUGF(4,"Collection has %d components", ngeoms);
 

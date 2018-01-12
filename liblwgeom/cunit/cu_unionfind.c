@@ -151,7 +151,7 @@ static void test_unionfind_collapse_cluster_ids(void)
 	uint32_t expected_collapsed_ids2[] = { 8, 0, 0, 0, 7, 0, 8, 7, 8, 7 };
 
 	collapsed_ids = UF_get_collapsed_cluster_ids(uf, is_in_cluster);
-	int i;
+	uint32_t i;
 	for (i = 0; i < uf->N; i++)
 	{
 		if (is_in_cluster[i])

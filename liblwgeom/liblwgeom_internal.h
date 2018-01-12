@@ -190,9 +190,9 @@ int lwpoint_is_empty(const LWPOINT *point);
 /*
 * Number of vertices?
 */
-int lwline_count_vertices(LWLINE *line);
-int lwpoly_count_vertices(LWPOLY *poly);
-int lwcollection_count_vertices(LWCOLLECTION *col);
+uint32_t lwline_count_vertices(LWLINE *line);
+uint32_t lwpoly_count_vertices(LWPOLY *poly);
+uint32_t lwcollection_count_vertices(LWCOLLECTION *col);
 
 /*
 * DP simplification
@@ -201,7 +201,7 @@ int lwcollection_count_vertices(LWCOLLECTION *col);
 /**
  * @param minpts minimun number of points to retain, if possible.
  */
-void ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, unsigned int minpts);
+void ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, uint32_t minpts);
 
 /*
 * The possible ways a pair of segments can interact. Returned by lw_segment_intersects
@@ -374,7 +374,7 @@ void ptarray_longitude_shift(POINTARRAY *pa);
 * Support for in place modification of point arrays, fast
 * function to move coordinate values around
 */
-void ptarray_copy_point(POINTARRAY *pa, int from, int to);
+void ptarray_copy_point(POINTARRAY *pa, uint32_t from, uint32_t to);
 
 /*
 * Reverse
@@ -399,7 +399,7 @@ void closest_point_on_segment(const POINT4D *R, const POINT4D *A, const POINT4D 
 */
 POINTARRAY *ptarray_remove_repeated_points(const POINTARRAY *in, double tolerance);
 LWGEOM* lwline_remove_repeated_points(const LWLINE *in, double tolerance);
-void ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, int min_points);
+void ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32_t min_points);
 
 /*
 * Closure test
@@ -469,7 +469,7 @@ int lwgeom_contains_point(const LWGEOM *geom, const POINT2D *pt);
 int lwline_split_by_point_to(const LWLINE* ln, const LWPOINT* pt, LWMLINE* to);
 
 /** Ensure the collection can hold at least up to ngeoms geometries */
-void lwcollection_reserve(LWCOLLECTION *col, int ngeoms);
+void lwcollection_reserve(LWCOLLECTION *col, uint32_t ngeoms);
 
 /** Check if subtype is allowed in collectiontype */
 int lwcollection_allows_subtype(int collectiontype, int subtype);

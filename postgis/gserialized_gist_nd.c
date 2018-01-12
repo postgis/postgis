@@ -135,7 +135,7 @@ GIDX* gidx_copy(GIDX *b)
 /* Ensure all minimums are below maximums. */
 static inline void gidx_validate(GIDX *b)
 {
-	int i;
+	uint32_t i;
 	Assert(b);
 	POSTGIS_DEBUGF(5,"validating gidx (%s)", gidx_to_string(b));
 	for ( i = 0; i < GIDX_NDIMS(b); i++ )
@@ -217,7 +217,7 @@ void gidx_merge(GIDX **b_union, GIDX *b_new)
 static float gidx_volume(GIDX *a)
 {
 	float result;
-	int i;
+	uint32_t i;
 	if ( a == NULL || gidx_is_unknown(a) )
 	{
 		/* elog(ERROR, "gidx_volume received a null argument"); */
@@ -234,7 +234,7 @@ static float gidx_volume(GIDX *a)
 static float gidx_edge(GIDX *a)
 {
 	float result;
-	int i;
+	uint32_t i;
 	if ( a == NULL || gidx_is_unknown(a) )
 	{
 		return 0.0;
@@ -364,7 +364,7 @@ static float gidx_union_edge(GIDX *a, GIDX *b)
 /* Calculate the volume of the intersection of the boxes. */
 static float gidx_inter_volume(GIDX *a, GIDX *b)
 {
-	int i;
+	uint32_t i;
 	float result;
 
 	POSTGIS_DEBUG(5,"entered function");
@@ -495,7 +495,7 @@ bool gidx_contains(GIDX *a, GIDX *b)
 */
 static bool gidx_equals(GIDX *a, GIDX *b)
 {
-	int i;
+	uint32_t i;
 
 	POSTGIS_DEBUG(5, "entered function");
 
@@ -1094,7 +1094,7 @@ Datum gserialized_gist_compress(PG_FUNCTION_ARGS)
 	char gidxmem[GIDX_MAX_SIZE];
 	GIDX *bbox_out = (GIDX*)gidxmem;
 	int result = LW_SUCCESS;
-	int i;
+	uint32_t i;
 
 	POSTGIS_DEBUG(4, "[GIST] 'compress' function called");
 

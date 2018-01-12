@@ -29,7 +29,7 @@ static void test_gdal_configured() {
 }
 
 static void test_gdal_drivers() {
-	int i;
+	uint32_t i;
 	uint32_t size;
 	rt_gdaldriver drv = NULL;
 

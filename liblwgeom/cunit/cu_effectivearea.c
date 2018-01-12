@@ -23,7 +23,7 @@
 static void do_test_lwgeom_effectivearea(POINTARRAY *pa,double *the_areas,int avoid_collaps)
 {
 
-	int i;
+	uint32_t i;
 	EFFECTIVE_AREAS *ea;
 
 	ea=initiate_effectivearea(pa);

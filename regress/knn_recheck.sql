@@ -139,7 +139,7 @@ DELETE FROM spatial_ref_sys WHERE srid = 4326;
 -- create table and load
 CREATE TABLE knn_recheck_geom_nd(gid serial primary key, geom geometry);
 INSERT INTO knn_recheck_geom_nd(gid,geom)
-SELECT ROW_NUMBER() OVER(ORDER BY x,y) AS gid, ST_MakePoint(x*0.777,y*0.887,z*1.05) As geom
+SELECT ROW_NUMBER() OVER(ORDER BY x,y,z) AS gid, ST_MakePoint(x*0.777,y*0.887,z*1.05) As geom
 FROM generate_series(-100,1000, 7) AS x , 
     generate_series(-300,1000,9) As y,
  generate_series(1005,10000,5555) As z ;

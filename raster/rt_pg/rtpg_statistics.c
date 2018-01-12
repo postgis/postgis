@@ -1113,7 +1113,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		}
 
 		/* get histogram */
-		hist = rt_band_get_histogram(stats, bin_count, bin_width, bin_width_count, right, min, max, &count);
+		hist = rt_band_get_histogram(stats, (uint32_t)bin_count, bin_width, bin_width_count, right, min, max, &count);
 		if (bin_width_count) pfree(bin_width);
 		pfree(stats);
 		if (NULL == hist || !count) {
@@ -1196,7 +1196,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 	FuncCallContext *funcctx;
 	TupleDesc tupdesc;
 
-	int i;
+	uint32_t i;
 	rt_histogram covhist = NULL;
 	rt_histogram covhist2;
 	int call_cntr;
@@ -1340,7 +1340,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				&nulls, &n);
 
 			bin_width = palloc(sizeof(double) * n);
-			for (i = 0, j = 0; i < n; i++) {
+			for (i = 0, j = 0; i < (uint32_t) n; i++) {
 				if (nulls[i]) continue;
 
 				switch (etype) {
@@ -1977,7 +1977,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 	FuncCallContext *funcctx;
 	TupleDesc tupdesc;
 
-	int i;
+	uint32_t i;
 	rt_quantile covquant = NULL;
 	rt_quantile covquant2;
 	int call_cntr;
@@ -2111,7 +2111,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 				&nulls, &n);
 
 			quantiles = palloc(sizeof(double) * n);
-			for (i = 0, j = 0; i < n; i++) {
+			for (i = 0, j = 0; i < (uint32_t) n; i++) {
 				if (nulls[i]) continue;
 
 				switch (etype) {
@@ -2618,7 +2618,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 	FuncCallContext *funcctx;
 	TupleDesc tupdesc;
 
-	int i;
+	uint32_t i;
 	uint64_t covcount = 0;
 	uint64_t covtotal = 0;
 	rt_valuecount covvcnts = NULL;
@@ -2659,7 +2659,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 		rt_valuecount vcnts = NULL;
 		int exists = 0;
 
-		int j;
+		uint32_t j;
 		int n;
 
 		ArrayType *array;
@@ -2735,7 +2735,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 				&nulls, &n);
 
 			search_values = palloc(sizeof(double) * n);
-			for (i = 0, j = 0; i < n; i++) {
+			for (i = 0, j = 0; i < (uint32_t) n; i++) {
 				if (nulls[i]) continue;
 
 				switch (etype) {
