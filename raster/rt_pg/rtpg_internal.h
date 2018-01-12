@@ -52,7 +52,7 @@ char *
 rtpg_chartrim(const char* input, char *remove);
 
 char **
-rtpg_strsplit(const char *str, const char *delimiter, int *n);
+rtpg_strsplit(const char *str, const char *delimiter, uint32_t *n);
 
 char *
 rtpg_removespaces(char *str);

@@ -360,7 +360,7 @@ int gserialized_get_gidx_p(const GSERIALIZED *g, GIDX *gidx)
 */
 void gidx_expand(GIDX *a, float d)
 {
-	int i;
+	uint32_t i;
 
 	POSTGIS_DEBUG(5, "entered function");
 

@@ -171,7 +171,7 @@ lwcollection_clone_deep(const LWCOLLECTION *g)
 /**
  * Ensure the collection can hold up at least ngeoms
  */
-void lwcollection_reserve(LWCOLLECTION *col, int ngeoms)
+void lwcollection_reserve(LWCOLLECTION *col, uint32_t ngeoms)
 {
 	if ( ngeoms <= col->maxgeoms ) return;
 
@@ -236,7 +236,7 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 LWCOLLECTION *
 lwcollection_segmentize2d(const LWCOLLECTION *col, double dist)
 {
-	uint32_t i;
+	uint32_t i,j;
 	LWGEOM **newgeoms;
 
 	if ( ! col->ngeoms ) return lwcollection_clone(col);
@@ -246,7 +246,8 @@ lwcollection_segmentize2d(const LWCOLLECTION *col, double dist)
 	{
 		newgeoms[i] = lwgeom_segmentize2d(col->geoms[i], dist);
 		if ( ! newgeoms[i] ) {
-			while (i--) lwgeom_free(newgeoms[i]);
+			for (j=0; j < i; i++)
+				lwgeom_free(newgeoms[j]);
 			lwfree(newgeoms);
 			return NULL;
 		}
@@ -301,7 +302,7 @@ lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 
 int lwcollection_ngeoms(const LWCOLLECTION *col)
 {
-	int i;
+	uint32_t i;
 	int ngeoms = 0;
 
 	if ( ! col )
@@ -339,7 +340,7 @@ int lwcollection_ngeoms(const LWCOLLECTION *col)
 
 void lwcollection_free(LWCOLLECTION *col)
 {
-	int i;
+	uint32_t i;
 	if ( ! col ) return;
 
 	if ( col->bbox )
@@ -368,7 +369,7 @@ void lwcollection_free(LWCOLLECTION *col)
 */
 LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 {
-	int i = 0;
+	uint32_t i = 0;
 	LWGEOM **geomlist;
 	LWCOLLECTION *outcol;
 	int geomlistsize = 16;
@@ -419,7 +420,7 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 		/* Recurse into sub-collections */
 		if ( lwtype_is_collection( subtype ) )
 		{
-			int j = 0;
+			uint32_t j = 0;
 			LWCOLLECTION *tmpcol = lwcollection_extract((LWCOLLECTION*)col->geoms[i], type);
 			for ( j = 0; j < tmpcol->ngeoms; j++ )
 			{
@@ -469,7 +470,7 @@ lwcollection_force_dims(const LWCOLLECTION *col, int hasz, int hasm)
 	}
 	else
 	{
-		int i;
+		uint32_t i;
 		LWGEOM **geoms = NULL;
 		geoms = lwalloc(sizeof(LWGEOM*) * col->ngeoms);
 		for( i = 0; i < col->ngeoms; i++ )
@@ -483,7 +484,7 @@ lwcollection_force_dims(const LWCOLLECTION *col, int hasz, int hasm)
 
 int lwcollection_is_empty(const LWCOLLECTION *col)
 {
-	int i;
+	uint32_t i;
 	if ( (col->ngeoms == 0) || (!col->geoms) )
 		return LW_TRUE;
 	for( i = 0; i < col->ngeoms; i++ )
@@ -494,10 +495,10 @@ int lwcollection_is_empty(const LWCOLLECTION *col)
 }
 
 
-int lwcollection_count_vertices(LWCOLLECTION *col)
+uint32_t lwcollection_count_vertices(LWCOLLECTION *col)
 {
-	int i = 0;
-	int v = 0; /* vertices */
+	uint32_t i = 0;
+	uint32_t v = 0; /* vertices */
 	assert(col);
 	for ( i = 0; i < col->ngeoms; i++ )
 	{

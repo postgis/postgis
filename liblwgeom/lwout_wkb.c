@@ -39,7 +39,7 @@ static char *hexchr = "0123456789ABCDEF";
 char* hexbytes_from_bytes(const uint8_t *bytes, size_t size)
 {
 	char *hex;
-	int i;
+	uint32_t i;
 	if ( ! bytes || ! size )
 	{
 		lwerror("hexbutes_from_bytes: invalid input");
@@ -370,9 +370,9 @@ static size_t ptarray_to_wkb_size(const POINTARRAY *pa, uint8_t variant)
 
 static uint8_t* ptarray_to_wkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t variant)
 {
-	int dims = 2;
-	int pa_dims = FLAGS_NDIMS(pa->flags);
-	int i, j;
+	uint32_t dims = 2;
+	uint32_t pa_dims = FLAGS_NDIMS(pa->flags);
+	uint32_t i, j;
 	double *dbl_ptr;
 
 	/* SFSQL is always 2-d. Extended and ISO use all available dimensions */
@@ -548,7 +548,7 @@ static size_t lwpoly_to_wkb_size(const LWPOLY *poly, uint8_t variant)
 {
 	/* endian flag + type number + number of rings */
 	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE + WKB_INT_SIZE;
-	int i = 0;
+	uint32_t i = 0;
 
 	/* Only process empty at this level in the EXTENDED case */
 	if ( (variant & WKB_EXTENDED) && lwgeom_is_empty((LWGEOM*)poly) )
@@ -569,7 +569,7 @@ static size_t lwpoly_to_wkb_size(const LWPOLY *poly, uint8_t variant)
 
 static uint8_t* lwpoly_to_wkb_buf(const LWPOLY *poly, uint8_t *buf, uint8_t variant)
 {
-	int i;
+	uint32_t i;
 
 	/* Only process empty at this level in the EXTENDED case */
 	if ( (variant & WKB_EXTENDED) && lwgeom_is_empty((LWGEOM*)poly) )
@@ -603,7 +603,7 @@ static size_t lwcollection_to_wkb_size(const LWCOLLECTION *col, uint8_t variant)
 {
 	/* Endian flag + type number + number of subgeoms */
 	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE + WKB_INT_SIZE;
-	int i = 0;
+	uint32_t i = 0;
 
 	/* Extended WKB needs space for optional SRID integer */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)col, variant) )
@@ -620,7 +620,7 @@ static size_t lwcollection_to_wkb_size(const LWCOLLECTION *col, uint8_t variant)
 
 static uint8_t* lwcollection_to_wkb_buf(const LWCOLLECTION *col, uint8_t *buf, uint8_t variant)
 {
-	int i;
+	uint32_t i;
 
 	/* Set the endian flag */
 	buf = endian_to_wkb_buf(buf, variant);
@@ -831,7 +831,7 @@ uint8_t* lwgeom_to_wkb(const LWGEOM *geom, uint8_t variant, size_t *size_out)
 	LWDEBUGF(4,"buf (%p) - wkb_out (%p) = %d", buf, wkb_out, buf - wkb_out);
 
 	/* The buffer pointer should now land at the end of the allocated buffer space. Let's check. */
-	if ( buf_size != (buf - wkb_out) )
+	if ( buf_size != (size_t) (buf - wkb_out) )
 	{
 		LWDEBUG(4,"Output WKB is not the same size as the allocated buffer.");
 		lwerror("Output WKB is not the same size as the allocated buffer.");

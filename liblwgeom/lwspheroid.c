@@ -144,7 +144,7 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 	geod_init(&gd, spheroid->a, spheroid->f);
 	struct geod_polygon poly;
 	geod_polygon_init(&poly, 0);
-	int i;
+	uint32_t i;
 	double area; /* returned polygon area */
 	POINT2D p; /* long/lat units are degrees */
 
@@ -660,7 +660,7 @@ double lwgeom_area_spheroid(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 	if ( type == POLYGONTYPE )
 	{
 		LWPOLY *poly = (LWPOLY*)lwgeom;
-		int i;
+		uint32_t i;
 		double area = 0.0;
 
 		/* Just in case there's no rings */
@@ -682,7 +682,7 @@ double lwgeom_area_spheroid(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 	if ( type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE )
 	{
 		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom;
-		int i;
+		uint32_t i;
 		double area = 0.0;
 
 		for ( i = 0; i < col->ngeoms; i++ )

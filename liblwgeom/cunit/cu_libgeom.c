@@ -257,7 +257,7 @@ static void test_lwgeom_from_gserialized(void)
 	GSERIALIZED *g;
 	char *in_ewkt;
 	char *out_ewkt;
-	int i = 0;
+	size_t i = 0;
 
 	char *ewkt[] =
 	{
@@ -698,7 +698,7 @@ static void test_f2d(void)
  */
 static void test_lwgeom_clone(void)
 {
-	int i;
+	size_t i;
 
 	char *ewkt[] =
 	{

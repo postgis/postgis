@@ -75,7 +75,7 @@ free_homogenizebuffer(HomogenizeBuffer *buffer)
 static void
 lwcollection_build_buffer(const LWCOLLECTION *col, HomogenizeBuffer *buffer)
 {
-	int i;
+	uint32_t i;
 
 	if ( ! col ) return;
 	if ( lwgeom_is_empty(lwcollection_as_lwgeom(col)) ) return;

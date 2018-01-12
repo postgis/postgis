@@ -52,7 +52,7 @@ static TupleDesc get_tuple_desc(struct geobuf_agg_context *ctx)
 static void encode_keys(struct geobuf_agg_context *ctx)
 {
 	TupleDesc tupdesc = get_tuple_desc(ctx);
-	int natts = tupdesc->natts;
+	uint32_t natts = (uint32_t) tupdesc->natts;
 	char **keys = palloc(natts * sizeof(*keys));
 	uint32_t i, k = 0;
 	bool geom_found = false;
@@ -106,7 +106,7 @@ static void encode_properties(struct geobuf_agg_context *ctx,
 	Data__Value **values;
 	uint32_t i, k = 0, c = 0;
 	TupleDesc tupdesc = get_tuple_desc(ctx);
-	int natts = tupdesc->natts;
+	uint32_t natts = (uint32_t) tupdesc->natts;
 	properties = palloc(sizeof (*properties) * (natts - 1) * 2);
 	values = palloc (sizeof (*values) * (natts - 1));
 
@@ -447,7 +447,7 @@ static void analyze_val(struct geobuf_agg_context *ctx, double val)
 
 static void analyze_pa(struct geobuf_agg_context *ctx, POINTARRAY *pa)
 {
-	int i;
+	uint32_t i;
 	POINT4D pt;
 	for (i = 0; i < pa->npoints; i++) {
 		getPoint4d_p(pa, i, &pt);
@@ -462,7 +462,7 @@ static void analyze_pa(struct geobuf_agg_context *ctx, POINTARRAY *pa)
 
 static void analyze_geometry(struct geobuf_agg_context *ctx, LWGEOM *lwgeom)
 {
-	int i, type;
+	uint32_t i, type;
 	LWLINE *lwline;
 	LWPOLY *lwpoly;
 	LWCOLLECTION *lwcollection;
@@ -606,7 +606,7 @@ void geobuf_agg_transfn(struct geobuf_agg_context *ctx)
  */
 uint8_t *geobuf_agg_finalfn(struct geobuf_agg_context *ctx)
 {
-	int i;
+	size_t i;
 	Data *data;
 	Data__FeatureCollection *fc;
 

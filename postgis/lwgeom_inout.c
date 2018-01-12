@@ -529,7 +529,7 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 	Datum val_geom, val_id;
 
 	int is_homogeneous = true;
-	int subtype = 0;
+	uint32_t subtype = 0;
 	int has_z = 0;
 	int has_m  = 0;
 	LWCOLLECTION *col = NULL;

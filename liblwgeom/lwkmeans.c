@@ -23,12 +23,12 @@
 #define KMEANS_MAX_ITERATIONS 1000
 
 static void
-update_r(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, unsigned int k)
+update_r(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, uint32_t k)
 {
 	POINT2D* obj;
 	unsigned int i;
 	double distance, curr_distance;
-	int cluster, curr_cluster;
+	uint32_t cluster, curr_cluster;
 
 	for (i = 0; i < n; i++)
 	{
@@ -57,14 +57,14 @@ update_r(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, unsigned 
 		}
 
 		/* Store the nearest cluster this object is in */
-		clusters[i] = curr_cluster;
+		clusters[i] = (int) curr_cluster;
 	}
 }
 
 static void
-update_means(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, unsigned int* weights, unsigned int k)
+update_means(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, uint32_t* weights, uint32_t k)
 {
-	unsigned int i;
+	uint32_t i;
 
 	memset(weights, 0, sizeof(int) * k);
 	for (i = 0; i < k; i++)
@@ -86,13 +86,13 @@ update_means(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, unsig
 }
 
 static int
-kmeans(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, unsigned int k)
+kmeans(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, uint32_t k)
 {
-	unsigned int i = 0;
+	uint32_t i = 0;
 	int* clusters_last;
 	int converged = LW_FALSE;
-	uint32_t clusters_sz = sizeof(int) * n;
-	unsigned int* weights;
+	size_t clusters_sz = sizeof(int) * n;
+	uint32_t* weights;
 
 	weights = lwalloc(sizeof(int) * k);
 
@@ -124,16 +124,16 @@ kmeans(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, unsigned in
 }
 
 int*
-lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, int n, int k)
+lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 {
-	unsigned int i;
-	unsigned int num_centroids = 0;
+	uint32_t i;
+	uint32_t num_centroids = 0;
 	LWGEOM** centroids;
 	POINT2D* centers_raw;
 	double* distances;
 	const POINT2D* cp;
 	int result = LW_FALSE;
-	unsigned int boundary_point_idx = 0;
+	uint32_t boundary_point_idx = 0;
 	double max_norm = -DBL_MAX;
 	double curr_norm;
 
@@ -236,10 +236,10 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, int n, int k)
 	/* loop i on clusters, skip 0 as it's found already */
 	for (i = 1; i < k; i++)
 	{
-		unsigned int j;
+		uint32_t j;
 		double max_distance = -DBL_MAX;
 		double curr_distance;
-		unsigned int candidate_center = 0;
+		uint32_t candidate_center = 0;
 
 		/* loop j on objs */
 		for (j = 0; j < n; j++)

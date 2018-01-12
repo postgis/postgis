@@ -230,7 +230,7 @@ lwpoly_make_geos_friendly(LWPOLY *poly)
 {
 	LWGEOM* ret;
 	POINTARRAY **new_rings;
-	int i;
+	uint32_t i;
 
 	/* If the polygon has no rings there's nothing to do */
 	if ( ! poly->nrings ) return (LWGEOM*)poly;
@@ -795,7 +795,7 @@ LWGEOM_GEOS_makeValidCollection(const GEOSGeometry* gin)
 	int nvgeoms;
 	GEOSGeometry **vgeoms;
 	GEOSGeom gout;
-	unsigned int i;
+	int i;
 
 	nvgeoms = GEOSGetNumGeometries(gin);
 	if ( nvgeoms == -1 ) {
@@ -812,7 +812,9 @@ LWGEOM_GEOS_makeValidCollection(const GEOSGeometry* gin)
 	for ( i=0; i<nvgeoms; ++i ) {
 		vgeoms[i] = LWGEOM_GEOS_makeValid( GEOSGetGeometryN(gin, i) );
 		if ( ! vgeoms[i] ) {
-			while (i--) GEOSGeom_destroy(vgeoms[i]);
+			int j;
+			for (j = 0; j<i-1; j++)
+				GEOSGeom_destroy(vgeoms[j]);
 			lwfree(vgeoms);
 			/* we expect lwerror being called already by makeValid */
 			return NULL;

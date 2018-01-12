@@ -111,7 +111,7 @@ Datum geometry_to_path(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	GSERIALIZED *geom;
 	POINTARRAY *pa;
-	int i;
+	uint32_t i;
 	const POINT2D *pt;
 	size_t size;
 
@@ -197,7 +197,7 @@ Datum geometry_to_polygon(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom;
 	POINTARRAY *pa;
 	GBOX gbox;
-	int i;
+	uint32_t i;
 	size_t size;
 
 	POSTGIS_DEBUG(2, "geometry_to_polygon called");
@@ -217,8 +217,8 @@ Datum geometry_to_polygon(PG_FUNCTION_ARGS)
 
 	pa = lwpoly->rings[0];
 
-    size = offsetof(POLYGON, p[0]) + sizeof(polygon->p[0]) * pa->npoints;
-    polygon = (POLYGON*)palloc0(size); /* zero any holes */
+	size = offsetof(POLYGON, p[0]) + sizeof(polygon->p[0]) * pa->npoints;
+	polygon = (POLYGON*)palloc0(size); /* zero any holes */
 	SET_VARSIZE(polygon, size);
 
 	polygon->npts = pa->npoints;

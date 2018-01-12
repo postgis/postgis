@@ -172,7 +172,7 @@ static LWGEOM*
 lwline_split_by_mpoint(const LWLINE* lwline_in, const LWMPOINT* mp)
 {
   LWMLINE* out;
-  int i, j;
+  uint32_t i, j;
 
   out = lwmline_construct_empty(lwline_in->srid,
           FLAGS_GET_Z(lwline_in->flags),
@@ -215,7 +215,7 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	POINTARRAY *ipa = lwline_in->points;
 	POINTARRAY* pa1;
 	POINTARRAY* pa2;
-	int i, nsegs, seg = -1;
+	uint32_t i, nsegs, seg = UINT32_MAX;
 
 	/* Possible outcomes:
 	 *
@@ -257,7 +257,7 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	if ( mindist > 0 ) return 0;
 
 	/* empty or single-point line, intersection on boundary */
-	if ( seg < 0 ) return 1;
+	if ( seg == UINT32_MAX ) return 1;
 
 	/*
 	 * We need to project the

@@ -368,7 +368,7 @@ rt_raster_set_srid(rt_raster raster, int32_t srid) {
 	_rt_raster_geotransform_warn_offline_band(raster);
 }
 
-int
+uint16_t
 rt_raster_get_num_bands(rt_raster raster) {
 
 
@@ -1850,7 +1850,7 @@ rt_raster_to_gdal_mem(
 	int allocNodataValues = 0;
 
 	int i;
-	int numBands;
+	uint32_t numBands;
 	uint32_t width = 0;
 	uint32_t height = 0;
 	rt_band rtband = NULL;
@@ -2044,9 +2044,9 @@ rt_raster_to_gdal_mem(
 
 		/* PT_8BSI requires manual setting of pixels */
 		if (pt == PT_8BSI) {
-			int nXBlocks, nYBlocks;
+			uint32_t nXBlocks, nYBlocks;
 			int nXBlockSize, nYBlockSize;
-			int iXBlock, iYBlock;
+			uint32_t iXBlock, iYBlock;
 			int nXValid, nYValid;
 			int iX, iY;
 			int iXMax, iYMax;
@@ -2190,7 +2190,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 	uint32_t width = 0;
 	uint32_t height = 0;
 	uint32_t numBands = 0;
-	int i = 0;
+	uint32_t i = 0;
 	char *authname = NULL;
 	char *authcode = NULL;
 
@@ -2206,11 +2206,11 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 	int x;
 	int y;
 
-	int nXBlocks, nYBlocks;
+	uint32_t nXBlocks, nYBlocks;
 	int nXBlockSize, nYBlockSize;
-	int iXBlock, iYBlock;
-	int nXValid, nYValid;
-	int iY;
+	uint32_t iXBlock, iYBlock;
+	uint32_t nXValid, nYValid;
+	uint32_t iY;
 
 	uint8_t *values = NULL;
 	uint32_t valueslen = 0;
@@ -2524,7 +2524,7 @@ rt_raster_gdal_rasterize(
 	char **options
 ) {
 	rt_raster rast = NULL;
-	int i = 0;
+	uint32_t i = 0;
 	int err = 0;
 
 	_rti_rasterize_arg arg = NULL;

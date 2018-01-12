@@ -384,7 +384,7 @@ rt_band_reclass(
 
 typedef struct _rti_iterator_arg_t* _rti_iterator_arg;
 struct _rti_iterator_arg_t {
-	int count;
+	uint32_t count;
 
 	rt_raster *raster;
 	int *isempty;
@@ -458,7 +458,7 @@ _rti_iterator_arg_init() {
 
 static void
 _rti_iterator_arg_destroy(_rti_iterator_arg _param) {
-	int i = 0;
+	uint32_t i = 0;
 
 	if (_param->raster != NULL)
 		rtdealloc(_param->raster);
@@ -668,8 +668,8 @@ _rti_iterator_arg_populate(
 
 static int
 _rti_iterator_arg_empty_init(_rti_iterator_arg _param) {
-	int x = 0;
-	int y = 0;
+	uint32_t x = 0;
+	uint32_t y = 0;
 
 	_param->empty.values = rtalloc(sizeof(double *) * _param->dimension.rows);
 	_param->empty.nodata = rtalloc(sizeof(int *) * _param->dimension.rows);
@@ -698,7 +698,7 @@ _rti_iterator_arg_empty_init(_rti_iterator_arg _param) {
 
 static int
 _rti_iterator_arg_callback_init(_rti_iterator_arg _param) {
-	int i = 0;
+	uint32_t i = 0;
 
 	_param->arg = rtalloc(sizeof(struct rt_iterator_arg_t));
 	if (_param->arg == NULL) {
@@ -744,8 +744,8 @@ _rti_iterator_arg_callback_init(_rti_iterator_arg _param) {
 
 static void
 _rti_iterator_arg_callback_clean(_rti_iterator_arg _param) {
-	int i = 0;
-	int y = 0;
+	uint32_t i = 0;
+	uint32_t y = 0;
 
 	for (i = 0; i < _param->count; i++) {
 		RASTER_DEBUGF(5, "empty at @ %p", _param->empty.values);
