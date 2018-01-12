@@ -34,6 +34,15 @@
 #include <errno.h>
 
 
+/**
+* Global variable to hold cached information about what
+* schema functions are installed in. Currently used by
+* SetSpatialRefSysSchema and GetProj4StringSPI
+*/
+static char *spatialRefSysSchema = NULL;
+
+
+
 /* Expose an internal Proj function */
 int pj_transform_nodatum(projPJ srcdefn, projPJ dstdefn, long point_count, int point_offset, double *x, double *y, double *z );
 
@@ -349,9 +358,25 @@ char* GetProj4StringSPI(int srid)
 		elog(ERROR, "GetProj4StringSPI: Could not connect to database using SPI");
 	}
 
-	/* Execute the lookup query */
-	snprintf(proj4_spi_buffer, 255, "SELECT proj4text FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
-	spi_result = SPI_exec(proj4_spi_buffer, 1);
+	/*
+	* This global is allocated in CacheMemoryContext (lifespan of this backend)
+	* and is set by SetSpatialRefSysSchema the first time
+	* that GetProjectionsUsingFCInfo is called.
+	*/
+	if (spatialRefSysSchema)
+	{
+		/* Format the lookup query */
+		static char *proj_str_tmpl = "SELECT proj4text FROM %s.spatial_ref_sys WHERE srid = %d LIMIT 1";
+		snprintf(proj4_spi_buffer, 255, proj_str_tmpl, spatialRefSysSchema, srid);
+	}
+	else
+	{
+		/* Format the lookup query */
+		static char *proj_str_tmpl = "SELECT proj4text FROM spatial_ref_sys WHERE srid = %d LIMIT 1";
+		snprintf(proj4_spi_buffer, 255, proj_str_tmpl, srid);
+	}
+	/* Execute the query, noting the readonly status of this SQL */
+	spi_result = SPI_execute(proj4_spi_buffer, true, 1);
 
 	/* Read back the PROJ4 text */
 	if (spi_result == SPI_OK_SELECT && SPI_processed > 0)
@@ -698,6 +723,30 @@ static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfo fcinfo)
 }
 #endif
 
+/*
+* Given a function call context, figure out what namespace the
+* function is being called from, and copy that into a global
+* for use by GetProj4StringSPI
+*/
+static void
+SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
+{
+	char *nsp_name;
+
+	/* Schema info is already cached, we're done here */
+	if (spatialRefSysSchema) return;
+
+	/* For some reason we have a hobbled fcinfo/flinfo */
+	if (!fcinfo || !fcinfo->flinfo) return;
+
+	nsp_name = get_namespace_name(get_func_namespace(fcinfo->flinfo->fn_oid));
+	elog(DEBUG4, "%s located %s in namespace %s", __func__, get_func_name(fcinfo->flinfo->fn_oid), nsp_name);
+
+	spatialRefSysSchema = MemoryContextAlloc(CacheMemoryContext, strlen(nsp_name)+1);
+	strcpy(spatialRefSysSchema, nsp_name);
+	return;
+}
+
 int
 GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ *pj1, projPJ *pj2)
 {
@@ -705,6 +754,9 @@ GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ 
 
 	/* Set the search path if we haven't already */
 	SetPROJ4LibPath();
+
+	/* Look up the spatial_ref_sys schema if we haven't already */
+	SetSpatialRefSysSchema(fcinfo);
 
 	/* get or initialize the cache for this round */
 	proj_cache = GetPROJ4Cache(fcinfo);
