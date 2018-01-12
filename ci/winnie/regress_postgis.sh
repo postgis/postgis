@@ -22,6 +22,7 @@ export PROJECTS=/projects
 export MINGPROJECTS=/projects
 export PATHOLD=$PATH
 export PROTOBUF_VER=3.2.0
+export MAKE_EXTENSION=1
 
 
 if [ "$OS_BUILD" == "64" ] ; then
