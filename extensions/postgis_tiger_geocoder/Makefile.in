@@ -22,10 +22,10 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
                         $(GREP) "[a-zA-Z]" | \
                         $(PERL) -pe 's/(\d+[a-zA-Z]+)\d*/\1/'
 
-DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
-
 DATA_built = \
 	$(EXTENSION).control \
+	sql/$(EXTENSION)--$(EXTVERSION).sql \
+	sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql \
 	$(NULL)
 
 REGRESS = test-normalize_address test-upgrade
@@ -239,9 +239,7 @@ uninstall-upgrade-paths:
 	rm -f $(INSTALLED_UPGRADE_SCRIPTS)
 
 #only extension files
-DATA = ${EXTENSION}.control sql/$(EXTENSION).sql $(wildcard sql/*--*.sql)
 EXTRA_CLEAN += $(wildcard expected/*--*.out)
-EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 
 distclean: clean
 	rm Makefile

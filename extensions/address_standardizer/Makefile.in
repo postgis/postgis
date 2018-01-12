@@ -34,7 +34,7 @@ EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULE_big = address_standardizer
 EXTENSION = address_standardizer
-DATA = address_standardizer_data_us.control sql/$(EXTENSION).sql sql/$(EXTENSION)_data_us.sql
+DATA = sql/$(EXTENSION).sql sql/$(EXTENSION)_data_us.sql
 
 DATA_built = \
 	$(EXTENSION).control \
@@ -179,7 +179,8 @@ EXTRA_CLEAN += $(wildcard expected/*--*.out)
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql *.a *.so *.dll
 
-EXTRA_CLEAN += Makefile
+distclean: clean
+	rm Makefile
 
 PGXS := @PGXS@
 include $(PGXS)
