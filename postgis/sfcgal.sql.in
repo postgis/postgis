@@ -157,4 +157,13 @@ CREATE OR REPLACE FUNCTION ST_IsSolid(geometry)
        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
+#if POSTGIS_SFCGAL_VERSION >= 13
+-- Availability: 2.3
+CREATE OR REPLACE FUNCTION ST_Validate(geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME','sfcgal_validate'
+       LANGUAGE 'c' IMMUTABLE STRICT
+       COST 100;
+#endif
+
 COMMIT;

@@ -45,6 +45,8 @@ Datum geomunion(PG_FUNCTION_ARGS);
 Datum area(PG_FUNCTION_ARGS);
 Datum distance(PG_FUNCTION_ARGS);
 Datum distance3d(PG_FUNCTION_ARGS);
+Datum isvalid(PG_FUNCTION_ARGS);
+Datum isvaliddetail(PG_FUNCTION_ARGS);
 
 Datum intersects3d_dwithin(PG_FUNCTION_ARGS);
 
@@ -60,6 +62,8 @@ struct lwgeom_backend_definition
     Datum (*area_fn)          (PG_FUNCTION_ARGS);
     Datum (*distance_fn)      (PG_FUNCTION_ARGS);
     Datum (*distance3d_fn)    (PG_FUNCTION_ARGS);
+    Datum (*isvalid_fn)       (PG_FUNCTION_ARGS);
+    Datum (*isvaliddetail_fn) (PG_FUNCTION_ARGS);
 };
 
 #if HAVE_SFCGAL
@@ -77,7 +81,9 @@ struct lwgeom_backend_definition lwgeom_backends[LWGEOM_NUM_BACKENDS] = {
       .union_fn         = geos_geomunion,
       .area_fn          = LWGEOM_area_polygon,
       .distance_fn      = LWGEOM_mindistance2d,
-      .distance3d_fn    = LWGEOM_mindistance3d
+      .distance3d_fn    = LWGEOM_mindistance3d,
+      .isvalid_fn       = geos_isvalid,
+      .isvaliddetail_fn = geos_isvaliddetail
     },
 #if HAVE_SFCGAL
     { .name = "sfcgal",
@@ -88,7 +94,9 @@ struct lwgeom_backend_definition lwgeom_backends[LWGEOM_NUM_BACKENDS] = {
       .union_fn         = sfcgal_union,
       .area_fn          = sfcgal_area,
       .distance_fn      = sfcgal_distance,
-      .distance3d_fn    = sfcgal_distance3D
+      .distance3d_fn    = sfcgal_distance3D,
+      .isvalid_fn       = sfcgal_isValid,
+      .isvaliddetail_fn = sfcgal_isValidDetail
     }
 #endif
 };
@@ -213,6 +221,17 @@ Datum intersects3d(PG_FUNCTION_ARGS)
     return (*lwgeom_backend->intersects3d_fn)( fcinfo );
 }
 
+PG_FUNCTION_INFO_V1(isvalid);
+Datum isvalid(PG_FUNCTION_ARGS)
+{
+    return (*lwgeom_backend->isvalid_fn)( fcinfo );
+}
+
+PG_FUNCTION_INFO_V1(isvaliddetail);
+Datum isvaliddetail(PG_FUNCTION_ARGS)
+{
+    return (*lwgeom_backend->isvaliddetail_fn)( fcinfo );
+}
 
 
 /* intersects3d through dwithin

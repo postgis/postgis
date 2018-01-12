@@ -31,6 +31,12 @@
 #include "lwgeom_sfcgal.h"
 #include "../postgis_config.h"
 
+#include "funcapi.h"
+#if POSTGIS_PGSQL_VERSION >= 93
+#include "access/htup_details.h"
+#else
+#include "access/htup.h"
+#endif
 
 Datum postgis_sfcgal_version(PG_FUNCTION_ARGS);
 
@@ -59,6 +65,8 @@ Datum sfcgal_tesselate(PG_FUNCTION_ARGS);
 Datum sfcgal_minkowski_sum(PG_FUNCTION_ARGS);
 Datum sfcgal_make_solid(PG_FUNCTION_ARGS);
 Datum sfcgal_is_solid(PG_FUNCTION_ARGS);
+Datum sfcgal_validate(PG_FUNCTION_ARGS);
+Datum sfcgal_isValid(PG_FUNCTION_ARGS);
 
 
 GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
@@ -763,3 +771,115 @@ Datum sfcgal_make_solid(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(output);
 }
 
+PG_FUNCTION_INFO_V1(sfcgal_validate);	
+Datum sfcgal_validate(PG_FUNCTION_ARGS)
+{
+	sfcgal_geometry_t *geom;
+	GSERIALIZED *input = PG_GETARG_GSERIALIZED_P(0);
+
+	geom = POSTGIS2SFCGALGeometry(input);
+	
+	if ( !sfcgal_geometry_is_valid( geom ) )
+	{
+	    sfcgal_geometry_delete(geom);
+	    PG_FREE_IF_COPY(input, 0);
+	    PG_RETURN_NULL();
+	}
+
+	FLAGS_SET_VALID( input->flags, 1 );
+
+	sfcgal_geometry_delete(geom);
+
+	PG_RETURN_POINTER(input);
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_isValid);
+Datum sfcgal_isValid(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input;
+	sfcgal_geometry_t *geom;
+	bool result;
+	int fl;
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+
+	fl = FLAGS_GET_VALID(input->flags);
+	if ( fl )
+	{
+	    PG_FREE_IF_COPY(input, 0);
+	    PG_RETURN_BOOL( true );
+	}
+	
+	/* Empty.IsValid() == TRUE */
+	if ( gserialized_is_empty(input) )
+	{
+	    PG_FREE_IF_COPY(input, 0);
+	    PG_RETURN_BOOL(true);
+	}
+
+	geom = POSTGIS2SFCGALGeometry(input);
+
+	result = sfcgal_geometry_is_valid( geom );
+
+	sfcgal_geometry_delete(geom);
+
+	PG_RETURN_BOOL(result);
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_isValidDetail);
+Datum sfcgal_isValidDetail(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input = NULL;
+	sfcgal_geometry_t *geom = NULL;
+	char *sfcgal_reason = NULL;
+	char *values[3]; /* valid bool, reason text, location geometry */
+	char *reason = NULL;
+	int valid = 0;
+	HeapTupleHeader result;
+	TupleDesc tupdesc;
+	HeapTuple tuple;
+	AttInMetadata *attinmeta;
+
+	/*
+	 * Build a tuple description for a
+	 * valid_detail tuple
+	 */
+	tupdesc = RelationNameGetTupleDesc("valid_detail");
+	if ( ! tupdesc )
+	{
+		lwpgerror("TYPE valid_detail not found");
+		PG_RETURN_NULL();
+	}
+
+	/*
+	 * generate attribute metadata needed later to produce
+	 * tuples from raw C strings
+	 */
+	attinmeta = TupleDescGetAttInMetadata(tupdesc);
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	valid = sfcgal_geometry_is_valid_detail( geom, &sfcgal_reason, NULL );
+	if ( sfcgal_reason )
+	    reason = pstrdup( sfcgal_reason );
+
+	/* the boolean validity */
+	values[0] =  valid ? "t" : "f";
+
+	/* the reason */
+	values[1] =  reason;
+
+	/* the location */
+	values[2] =  0;
+
+	tuple = BuildTupleFromCStrings(attinmeta, values);
+	result = (HeapTupleHeader) palloc(tuple->t_len);
+	memcpy(result, tuple->t_data, tuple->t_len);
+	heap_freetuple(tuple);
+
+	sfcgal_geometry_delete(geom);
+
+	PG_RETURN_HEAPTUPLEHEADER(result);
+}

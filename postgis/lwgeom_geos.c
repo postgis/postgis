@@ -72,9 +72,9 @@ Datum contains(PG_FUNCTION_ARGS);
 Datum containsproperly(PG_FUNCTION_ARGS);
 Datum covers(PG_FUNCTION_ARGS);
 Datum overlaps(PG_FUNCTION_ARGS);
-Datum isvalid(PG_FUNCTION_ARGS);
+Datum geos_isvalid(PG_FUNCTION_ARGS);
 Datum isvalidreason(PG_FUNCTION_ARGS);
-Datum isvaliddetail(PG_FUNCTION_ARGS);
+Datum geos_isvaliddetail(PG_FUNCTION_ARGS);
 Datum buffer(PG_FUNCTION_ARGS);
 Datum geos_intersection(PG_FUNCTION_ARGS);
 Datum convexhull(PG_FUNCTION_ARGS);
@@ -1535,8 +1535,8 @@ void errorIfGeometryCollection(GSERIALIZED *g1, GSERIALIZED *g2)
 	}
 }
 
-PG_FUNCTION_INFO_V1(isvalid);
-Datum isvalid(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geos_isvalid);
+Datum geos_isvalid(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	LWGEOM *lwgeom;
@@ -1623,8 +1623,8 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 ** IsValidDetail is only available in the GEOS
 ** C API >= version 3.3
 */
-PG_FUNCTION_INFO_V1(isvaliddetail);
-Datum isvaliddetail(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geos_isvaliddetail);
+Datum geos_isvaliddetail(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = NULL;
 	const GEOSGeometry *g1 = NULL;

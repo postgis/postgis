@@ -280,6 +280,7 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t* geom, int force3D, int srid)
 	uint32_t ngeoms, nshells, nsolids;
 	uint32_t i, j, k;
 	int want3d;
+	LWGEOM* ret_lwgeom = NULL;
 
 	assert(geom);
 
@@ -290,43 +291,55 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t* geom, int force3D, int srid)
 	case SFCGAL_TYPE_POINT:
 	{
 		if (sfcgal_geometry_is_empty(geom))
-			return (LWGEOM*) lwpoint_construct_empty(srid, want3d, 0);
-
-		POINTARRAY* pa = ptarray_from_SFCGAL(geom, want3d);
-		return (LWGEOM*) lwpoint_construct(srid, NULL, pa);
+		    ret_lwgeom = (LWGEOM*) lwpoint_construct_empty(srid, want3d, 0);
+		else
+		{
+		    POINTARRAY* pa = ptarray_from_SFCGAL(geom, want3d);
+		    ret_lwgeom = (LWGEOM*) lwpoint_construct(srid, NULL, pa);
+		}
+		break;
 	}
 
 	case SFCGAL_TYPE_LINESTRING:
 	{
 		if (sfcgal_geometry_is_empty(geom))
-			return (LWGEOM*) lwline_construct_empty(srid, want3d, 0);
-
-		POINTARRAY* pa = ptarray_from_SFCGAL(geom, want3d);
-		return (LWGEOM*) lwline_construct(srid, NULL, pa);
+			ret_lwgeom = (LWGEOM*) lwline_construct_empty(srid, want3d, 0);
+		else
+		{
+		    POINTARRAY* pa = ptarray_from_SFCGAL(geom, want3d);
+		    ret_lwgeom = (LWGEOM*) lwline_construct(srid, NULL, pa);
+		}
+		break;
 	}
 
 	case SFCGAL_TYPE_TRIANGLE:
 	{
 		if (sfcgal_geometry_is_empty(geom))
-			return (LWGEOM*) lwtriangle_construct_empty(srid, want3d, 0);
-
-		POINTARRAY* pa = ptarray_from_SFCGAL(geom, want3d);
-		return (LWGEOM*) lwtriangle_construct(srid, NULL, pa);
+			ret_lwgeom = (LWGEOM*) lwtriangle_construct_empty(srid, want3d, 0);
+		else
+		{
+		    POINTARRAY* pa = ptarray_from_SFCGAL(geom, want3d);
+		    ret_lwgeom = (LWGEOM*) lwtriangle_construct(srid, NULL, pa);
+		}
+		break;
 	}
 
 	case SFCGAL_TYPE_POLYGON:
 	{
 		if (sfcgal_geometry_is_empty(geom))
-			return (LWGEOM*) lwpoly_construct_empty(srid, want3d, 0);
+			ret_lwgeom =  (LWGEOM*) lwpoly_construct_empty(srid, want3d, 0);
+		else
+		{
+		    uint32_t nrings = sfcgal_polygon_num_interior_rings(geom) + 1;
+		    POINTARRAY** pa = (POINTARRAY**) lwalloc(sizeof(POINTARRAY*) * nrings);
 
-		uint32_t nrings = sfcgal_polygon_num_interior_rings(geom) + 1;
-		POINTARRAY** pa = (POINTARRAY**) lwalloc(sizeof(POINTARRAY*) * nrings);
-
-		pa[0] = ptarray_from_SFCGAL(sfcgal_polygon_exterior_ring(geom), want3d);
-		for (i = 1; i < nrings; i++)
+		    pa[0] = ptarray_from_SFCGAL(sfcgal_polygon_exterior_ring(geom), want3d);
+		    for (i = 1; i < nrings; i++)
 			pa[i] = ptarray_from_SFCGAL(sfcgal_polygon_interior_ring_n(geom, i-1), want3d);
 
-		return (LWGEOM*) lwpoly_construct(srid, NULL, nrings, pa);
+		    ret_lwgeom = (LWGEOM*) lwpoly_construct(srid, NULL, nrings, pa);
+		}
+		break;
 	}
 
 	case SFCGAL_TYPE_MULTIPOINT:
@@ -349,14 +362,14 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t* geom, int force3D, int srid)
 			}
 			geoms = (LWGEOM**) lwrealloc(geoms, sizeof(LWGEOM*) * ngeoms);
 		}
-		LWGEOM* rgeom = (LWGEOM*) lwcollection_construct(SFCGAL_type_to_lwgeom_type(
+		ret_lwgeom = (LWGEOM*) lwcollection_construct(SFCGAL_type_to_lwgeom_type(
 				sfcgal_geometry_type_id(geom)), srid, NULL, ngeoms, geoms);
 		if ( ngeoms )
 		{
-		        if ( ngeoms == nsolids ) FLAGS_SET_SOLID( rgeom->flags, 1);
+			if ( ngeoms == nsolids ) FLAGS_SET_SOLID( ret_lwgeom->flags, 1);
 			else if ( nsolids ) lwnotice("SFCGAL2LWGEOM: SOLID in heterogeneous collection will be treated as a POLYHEDRALSURFACETYPE");
 		}
-		return rgeom;
+		break;
 	}
 
 #if 0
@@ -385,7 +398,8 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t* geom, int force3D, int srid)
 				geoms[i] = SFCGAL2LWGEOM(g, 0, srid);
 			}
 		}
-		return (LWGEOM*)lwcollection_construct(POLYHEDRALSURFACETYPE, srid, NULL, ngeoms, geoms);
+		ret_lwgeom = (LWGEOM*)lwcollection_construct(POLYHEDRALSURFACETYPE, srid, NULL, ngeoms, geoms);
+		break;
 	}
 
 	/* Solid is map as a closed PolyhedralSurface (for now) */
@@ -413,9 +427,9 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t* geom, int force3D, int srid)
 				}
 			}
 		}
-		LWGEOM* rgeom =  (LWGEOM*) lwcollection_construct(POLYHEDRALSURFACETYPE, srid, NULL, ngeoms, geoms);
-		if (ngeoms) FLAGS_SET_SOLID( rgeom->flags, 1);
-		return rgeom;
+		ret_lwgeom =  (LWGEOM*) lwcollection_construct(POLYHEDRALSURFACETYPE, srid, NULL, ngeoms, geoms);
+		if (ngeoms) FLAGS_SET_SOLID( ret_lwgeom->flags, 1);
+		break;
 	}
 
 	case SFCGAL_TYPE_TRIANGULATEDSURFACE:
@@ -431,13 +445,18 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t* geom, int force3D, int srid)
 				geoms[i] = SFCGAL2LWGEOM(g, 0, srid);
 			}
 		}
-		return (LWGEOM*) lwcollection_construct(TINTYPE, srid, NULL, ngeoms, geoms);
+		ret_lwgeom = (LWGEOM*) lwcollection_construct(TINTYPE, srid, NULL, ngeoms, geoms);
+		break;
 	}
 
 	default:
 		lwerror("SFCGAL2LWGEOM: Unknown Type");
-		return NULL;
+		break;
 	}
+	if (ret_lwgeom )
+	    FLAGS_SET_VALID( ret_lwgeom->flags, sfcgal_geometry_has_validity_flag( geom ) );
+
+	return ret_lwgeom;
 }
 
 
@@ -454,26 +473,30 @@ LWGEOM2SFCGAL(const LWGEOM* geom)
 	case POINTTYPE:
 	{
 		const LWPOINT* lwp = (const LWPOINT*) geom;
-		if (lwgeom_is_empty(geom)) return sfcgal_point_create();
-
-		return ptarray_to_SFCGAL(lwp->point, POINTTYPE);
+		if (lwgeom_is_empty(geom))
+		    ret_geom = sfcgal_point_create();
+		else
+		    ret_geom = ptarray_to_SFCGAL(lwp->point, POINTTYPE);
 	}
 	break;
 
 	case LINETYPE:
 	{
 		const LWLINE* line = (const LWLINE*) geom;
-		if (lwgeom_is_empty(geom)) return sfcgal_linestring_create();
-
-		return ptarray_to_SFCGAL(line->points, LINETYPE);
+		if (lwgeom_is_empty(geom))
+		    ret_geom = sfcgal_linestring_create();
+		else
+		    ret_geom = ptarray_to_SFCGAL(line->points, LINETYPE);
 	}
 	break;
 
 	case TRIANGLETYPE:
 	{
 		const LWTRIANGLE* triangle = (const LWTRIANGLE*) geom;
-		if (lwgeom_is_empty(geom)) return sfcgal_triangle_create();
-		return ptarray_to_SFCGAL(triangle->points, TRIANGLETYPE);
+		if (lwgeom_is_empty(geom))
+		    ret_geom = sfcgal_triangle_create();
+		else
+		    ret_geom = ptarray_to_SFCGAL(triangle->points, TRIANGLETYPE);
 	}
 	break;
 
@@ -482,17 +505,19 @@ LWGEOM2SFCGAL(const LWGEOM* geom)
 		const LWPOLY* poly = (const LWPOLY*) geom;
 		uint32_t nrings = poly->nrings - 1;
 
-		if (lwgeom_is_empty(geom)) return sfcgal_polygon_create();
-
-		sfcgal_geometry_t* exterior_ring = ptarray_to_SFCGAL(poly->rings[0], LINETYPE);
-		ret_geom = sfcgal_polygon_create_from_exterior_ring(exterior_ring);
-
-		for (i = 0; i < nrings; i++)
+		if (lwgeom_is_empty(geom))
+		    ret_geom = sfcgal_polygon_create();
+		else
 		{
+		    sfcgal_geometry_t* exterior_ring = ptarray_to_SFCGAL(poly->rings[0], LINETYPE);
+		    ret_geom = sfcgal_polygon_create_from_exterior_ring(exterior_ring);
+
+		    for (i = 0; i < nrings; i++)
+		    {
 			sfcgal_geometry_t* ring = ptarray_to_SFCGAL(poly->rings[i + 1], LINETYPE);
 			sfcgal_polygon_add_interior_ring(ret_geom, ring);
+		    }
 		}
-		return ret_geom;
 	}
 	break;
 
@@ -501,10 +526,10 @@ LWGEOM2SFCGAL(const LWGEOM* geom)
 	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
 	{
-		if (geom->type == MULTIPOINTTYPE)        ret_geom = sfcgal_multi_point_create();
-		else if (geom->type == MULTILINETYPE)    ret_geom = sfcgal_multi_linestring_create();
+		if (geom->type == MULTIPOINTTYPE)	 ret_geom = sfcgal_multi_point_create();
+		else if (geom->type == MULTILINETYPE)	 ret_geom = sfcgal_multi_linestring_create();
 		else if (geom->type == MULTIPOLYGONTYPE) ret_geom = sfcgal_multi_polygon_create();
-		else                                     ret_geom = sfcgal_geometry_collection_create();
+		else					 ret_geom = sfcgal_geometry_collection_create();
 
 		const LWCOLLECTION* lwc = (const LWCOLLECTION*)geom;
 		for (i = 0; i < lwc->ngeoms; i++)
@@ -512,8 +537,6 @@ LWGEOM2SFCGAL(const LWGEOM* geom)
 			sfcgal_geometry_t* g = LWGEOM2SFCGAL(lwc->geoms[i]);
 			sfcgal_geometry_collection_add_geometry(ret_geom, g);
 		}
-
-		return ret_geom;
 	}
 	break;
 
@@ -531,10 +554,8 @@ LWGEOM2SFCGAL(const LWGEOM* geom)
 		   since we can't distinguish exterior from interior shells ... */
 		if (FLAGS_GET_SOLID(lwp->flags))
 		{
-			return sfcgal_solid_create_from_exterior_shell(ret_geom);
+		    ret_geom = sfcgal_solid_create_from_exterior_shell(ret_geom);
 		}
-
-		return ret_geom;
 	}
 	break;
 
@@ -548,8 +569,6 @@ LWGEOM2SFCGAL(const LWGEOM* geom)
 			sfcgal_geometry_t* g = LWGEOM2SFCGAL((const LWGEOM*) lwp->geoms[i]);
 			sfcgal_triangulated_surface_add_triangle(ret_geom, g);
 		}
-
-		return ret_geom;
 	}
 	break;
 
@@ -557,6 +576,9 @@ LWGEOM2SFCGAL(const LWGEOM* geom)
 		lwerror("LWGEOM2SFCGAL: Unknown geometry type !");
 		return NULL;
 	}
+
+	sfcgal_geometry_force_valid( ret_geom, FLAGS_GET_VALID( geom->flags ) );
+	return ret_geom;
 }
 
 

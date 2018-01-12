@@ -10,6 +10,12 @@ ST_Orientation_2|1
 ST_MinkowskiSum|MULTIPOLYGON(((0 0,1 0,5 0,5 1,4 1,0 1,0 0)))
 ST_StraightSkeleton|MULTILINESTRING((1 1,1.5 1.5),(2 1,1.5 1.5),(2 2,1.5 1.5),(1 2,1.5 1.5))
 intersection_geos|POINT(0 0)
+ERROR:  Unknown geometry type: 13 - PolyhedralSurface
 intersection_sfcgal|POINT(-0 -0)
+isvalid_sfcgal|t
+validate_hasflag|t
+validate_returns_null|
+hasvalidflag|f
+extrude_output_is_valid|t
 ERROR:  Can't find foo geometry backend
 ERROR:  Can't find  geometry backend
