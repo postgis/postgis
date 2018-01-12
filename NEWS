@@ -9,6 +9,9 @@ PostGIS 2.4.3
   - #3965, ST_ClusterKMeans used to lose some clusters on initialization
            (Darafei Praliaskouski)
   - #3956, Brin opclass object does not upgrade properly (Sandro Santilli)
+  - #3982, ST_AsEncodedPolyline supports LINESTRING EMPTY and MULTIPOINT EMPTY
+           (Darafei Praliaskouski)
+
  * Enhancements *
   - #3944, Update to EPSG register v9.2 (Even Rouault)
 
