@@ -33,6 +33,8 @@ PostGIS 2.5.0
            (Darafei Praliaskouski)
   - #3971, ST_ClusterKMeans now uses better initial seed (Darafei Praliaskouski)
   - #3977, ST_ClusterKMeans is now faster and simpler (Darafei Praliaskouski)
+  - #3982, ST_AsEncodedPolyline supports LINESTRING EMPTY and MULTIPOINT EMPTY
+           (Darafei Praliaskouski)
 
 PostGIS 2.4.0
 2017/09/30
