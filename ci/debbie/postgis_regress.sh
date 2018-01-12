@@ -10,7 +10,7 @@ set -e
 # export POSTGIS_MICRO_VERSION=0dev
 # export JENKINS_HOME=/var/lib/jenkins/workspace
 export GEOS_VER=3.7.0dev
-export GDAL_VER=2.2.2
+export GDAL_VER=2.2
 export MAKE_GARDEN=0
 export MAKE_EXTENSION=1
 export DUMP_RESTORE=0
