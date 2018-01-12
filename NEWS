@@ -4,6 +4,8 @@ PostGIS 2.3.6
   * Bug Fixes and Enhancements
 
   - #3713, Support encodings that happen to output a '\' character
+  - #3822, Have postgis_full_version() also show and check version of
+           PostgreSQL the scripts were built against (Sandro Santilli)
   - #3965, ST_ClusterKMeans used to lose some clusters on initialization
            (Darafei Praliaskouski)
   - #3956, Brin opclass object does not upgrade properly (Sandro Santilli)
