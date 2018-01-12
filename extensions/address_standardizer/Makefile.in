@@ -36,6 +36,11 @@ MODULE_big = address_standardizer
 EXTENSION = address_standardizer
 DATA = address_standardizer_data_us.control sql/$(EXTENSION).sql sql/$(EXTENSION)_data_us.sql
 
+DATA_built = \
+	$(EXTENSION).control \
+	$(EXTENSION)_data_us.control \
+	$(NULL)
+
 all:  sql/address_standardizer.sql sql/address_standardizer--1.0--$(EXTVERSION).sql sql/address_standardizer--$(EXTVERSION).sql sql/address_standardizer--$(EXTVERSION)--$(EXTVERSION)next.sql sql/address_standardizer--$(EXTVERSION)next--$(EXTVERSION).sql \
  sql/$(EXTENSION)_data_us.sql sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql sql/$(EXTENSION)_data_us--@POSTGIS_LIB_VERSION@.sql  sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql \
 sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql \
@@ -67,6 +72,11 @@ sql/%.sql: %.sql.in
 	mkdir -p sql
 	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/${EXTENSION}'g" > $@
+
+%.control: %.control.in Makefile
+	cat $< \
+		| sed -e 's|@EXTVERSION@|$(EXTVERSION)|g' \
+		> $@
 
 sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql: sql/address_standardizer_types.sql \
     sql/address_standardizer_functions.sql
@@ -168,6 +178,8 @@ EXTRA_CLEAN += sql/*.sql
 EXTRA_CLEAN += $(wildcard expected/*--*.out)
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql *.a *.so *.dll
+
+EXTRA_CLEAN += Makefile
 
 PGXS := @PGXS@
 include $(PGXS)

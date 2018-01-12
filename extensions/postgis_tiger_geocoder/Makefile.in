@@ -23,6 +23,11 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
                         $(PERL) -pe 's/(\d+[a-zA-Z]+)\d*/\1/'
 
 DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
+
+DATA_built = \
+	$(EXTENSION).control \
+	$(NULL)
+
 REGRESS = test-normalize_address test-upgrade
 REGRESS_OPTS = --load-extension=fuzzystrmatch --load-extension=postgis --load-extension=$(EXTENSION)
 
@@ -61,6 +66,11 @@ sql/test-normalize_address.sql: sql_bits/test_tuples_only_unaligned.sql.in ../..
 
 sql/test-upgrade.sql: | sql
 	echo 'ALTER EXTENSION ${EXTENSION} UPDATE TO "$(EXTVERSION)next"' > $@
+
+%.control: %.control.in Makefile
+	cat $< \
+		| sed -e 's|@EXTVERSION@|$(EXTVERSION)|g' \
+		> $@
 
 expected/test-upgrade.out: sql/test-upgrade.sql | expected
 	cp $< $@
