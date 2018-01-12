@@ -9,11 +9,12 @@ set -e
 # export POSTGIS_MINOR_VERSION=2
 # export POSTGIS_MICRO_VERSION=0dev
 # export JENKINS_HOME=/var/lib/jenkins/workspace
-export GEOS_VER=3.7.0dev
-export GDAL_VER=2.2
+# sadly can't override GEOS and GDAL because the pg startup script uses this to set path of GEOS and GDAL to right one
+#export GEOS_VER=3.7.0dev
+#export GDAL_VER=2.2
 export MAKE_GARDEN=0
 export MAKE_EXTENSION=1
-export DUMP_RESTORE=0
+export DUMP_RESTORE=1
 
 ## end variables passed in by jenkins
 
