@@ -9,11 +9,11 @@ set -e
 # export POSTGIS_MINOR_VERSION=2
 # export POSTGIS_MICRO_VERSION=0dev
 # export JENKINS_HOME=/var/lib/jenkins/workspace
-# export GEOS_VER=3.6.0dev
-# export GDAL_VER=2.0
-# export MAKE_GARDEN=1
-# export MAKE_EXTENSION=0
-# export DUMP_RESTORE=1
+export GEOS_VER=3.6.1
+export GDAL_VER=2.2.2
+export MAKE_GARDEN=0
+export MAKE_EXTENSION=1
+export DUMP_RESTORE=0
 
 ## end variables passed in by jenkins
 
@@ -33,7 +33,7 @@ echo $PGPORT
 echo ${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 
 ## doesn't work for some reason - just hard-code to branches for now
-# if [[ $POSTGIS_MICRO_VERSION  == *SVN* || $POSTGIS_MICRO_VERSION  == *dev*  ]]  
+# if [[ $POSTGIS_MICRO_VERSION  == *SVN* || $POSTGIS_MICRO_VERSION  == *dev*  ]]
 # then
 # 	export POSTGIS_SRC=${PROJECTS}/postgis/branches/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 # else
@@ -59,7 +59,7 @@ fi
     --prefix=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}
 make clean
 ## install so we can later test extension upgrade
-make 
+make
 
 if [ "$?" != "0" ]; then
   exit $?
