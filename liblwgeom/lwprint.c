@@ -435,3 +435,40 @@ char* lwpoint_to_latlon(const LWPOINT * pt, const char *format)
 	p = getPoint2d_cp(pt->point, 0);
 	return lwdoubles_to_latlon(p->y, p->x, format);
 }
+
+/*
+ * Print an ordinate value using at most the given number of decimal digits
+ *
+ * The actual number of printed decimal digits may be less than the
+ * requested ones if out of significant digits.
+ *
+ * The function will not write more than maxsize bytes, including the
+ * terminating NULL. Returns the number of bytes that would have been
+ * written if there was enough space (excluding terminating NULL).
+ * So a return of ``bufsize'' or more means that the string was
+ * truncated and misses a terminating NULL.
+ *
+ */
+int
+lwprint_double(double d, int maxdd, char* buf, size_t bufsize)
+{
+	double ad = fabs(d);
+	int ndd = ad < 1 ? 0 : floor(log10(ad)) + 1; /* non-decimal digits */
+	int length = 0;
+	if (ad <= FP_TOLERANCE)
+	{
+		d = 0;
+		ad = 0;
+	}
+	if (ad < OUT_MAX_DOUBLE)
+	{
+		if (maxdd > (OUT_MAX_DOUBLE_PRECISION - ndd)) maxdd -= ndd;
+		length = snprintf(buf, bufsize, "%.*f", maxdd, d);
+	}
+	else
+	{
+		length = snprintf(buf, bufsize, "%g", d);
+	}
+	trim_trailing_zeros(buf);
+	return length;
+}
