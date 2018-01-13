@@ -32,3 +32,4 @@ export package=${newoutdir}.tar.gz
 echo "The package name is $package"
 
 cp $package $WEB_DIR
+sh ci/debbie/postgis_release_docs.sh
