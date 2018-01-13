@@ -677,9 +677,9 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 			pt = getPoint2d_cp(pa, i);
 
 			lwprint_double(
-			    pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
+			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
 			lwprint_double(
-			    pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
+			    pt->y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
 
 			if ( i ) ptr += sprintf(ptr, " ");
 			ptr += sprintf(ptr, "%s,%s", x, y);
@@ -692,11 +692,11 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 			const POINT3DZ *pt;
 			pt = getPoint3dz_cp(pa, i);
 			lwprint_double(
-			    pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
+			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
 			lwprint_double(
-			    pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
+			    pt->y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
 			lwprint_double(
-			    pt.z, precision, y, OUT_DOUBLE_BUFFER_SIZE);
+			    pt->z, precision, z, OUT_DOUBLE_BUFFER_SIZE);
 
 			if ( i ) ptr += sprintf(ptr, " ");
 			ptr += sprintf(ptr, "%s,%s,%s", x, y, z);
@@ -1904,9 +1904,9 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, int opts)
 			const POINT2D *pt;
 			pt = getPoint2d_cp(pa, i);
 			lwprint_double(
-			    pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
+			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
 			lwprint_double(
-			    pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
+			    pt->y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
 
 			if ( i ) ptr += sprintf(ptr, " ");
 			if (IS_DEGREE(opts))
@@ -1923,11 +1923,11 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, int opts)
 			pt = getPoint3dz_cp(pa, i);
 
 			lwprint_double(
-			    pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
+			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
 			lwprint_double(
-			    pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
+			    pt->y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
 			lwprint_double(
-			    pt.z, precision, z, OUT_DOUBLE_BUFFER_SIZE);
+			    pt->z, precision, z, OUT_DOUBLE_BUFFER_SIZE);
 
 			if ( i ) ptr += sprintf(ptr, " ");
 			if (IS_DEGREE(opts))
