@@ -481,7 +481,6 @@ double gbox_angular_width(const GBOX* gbox);
 int gbox_centroid(const GBOX* gbox, POINT2D* out);
 
 /* Utilities */
-void trim_trailing_zeros(char* str);
 int lwprint_double(double d, int maxdd, char* buf, size_t bufsize);
 extern uint8_t MULTITYPE[NUMTYPES];
 

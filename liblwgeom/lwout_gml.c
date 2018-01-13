@@ -663,9 +663,9 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 {
 	uint32_t i;
 	char *ptr;
-	char x[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
-	char y[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
-	char z[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
+	char x[OUT_DOUBLE_BUFFER_SIZE];
+	char y[OUT_DOUBLE_BUFFER_SIZE];
+	char z[OUT_DOUBLE_BUFFER_SIZE];
 
 	ptr = output;
 
@@ -676,17 +676,10 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 			const POINT2D *pt;
 			pt = getPoint2d_cp(pa, i);
 
-			if (fabs(pt->x) < OUT_MAX_DOUBLE)
-				sprintf(x, "%.*f", precision, pt->x);
-			else
-				sprintf(x, "%g", pt->x);
-			trim_trailing_zeros(x);
-
-			if (fabs(pt->y) < OUT_MAX_DOUBLE)
-				sprintf(y, "%.*f", precision, pt->y);
-			else
-				sprintf(y, "%g", pt->y);
-			trim_trailing_zeros(y);
+			lwprint_double(
+			    pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(
+			    pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
 
 			if ( i ) ptr += sprintf(ptr, " ");
 			ptr += sprintf(ptr, "%s,%s", x, y);
@@ -698,24 +691,12 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 		{
 			const POINT3DZ *pt;
 			pt = getPoint3dz_cp(pa, i);
-
-			if (fabs(pt->x) < OUT_MAX_DOUBLE)
-				sprintf(x, "%.*f", precision, pt->x);
-			else
-				sprintf(x, "%g", pt->x);
-			trim_trailing_zeros(x);
-
-			if (fabs(pt->y) < OUT_MAX_DOUBLE)
-				sprintf(y, "%.*f", precision, pt->y);
-			else
-				sprintf(y, "%g", pt->y);
-			trim_trailing_zeros(y);
-
-			if (fabs(pt->z) < OUT_MAX_DOUBLE)
-				sprintf(z, "%.*f", precision, pt->z);
-			else
-				sprintf(z, "%g", pt->z);
-			trim_trailing_zeros(z);
+			lwprint_double(
+			    pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(
+			    pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(
+			    pt.z, precision, y, OUT_DOUBLE_BUFFER_SIZE);
 
 			if ( i ) ptr += sprintf(ptr, " ");
 			ptr += sprintf(ptr, "%s,%s,%s", x, y, z);
@@ -1910,9 +1891,9 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, int opts)
 {
 	uint32_t i;
 	char *ptr;
-	char x[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
-	char y[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
-	char z[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
+	char x[OUT_DOUBLE_BUFFER_SIZE];
+	char y[OUT_DOUBLE_BUFFER_SIZE];
+	char z[OUT_DOUBLE_BUFFER_SIZE];
 
 	ptr = output;
 
@@ -1922,18 +1903,10 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, int opts)
 		{
 			const POINT2D *pt;
 			pt = getPoint2d_cp(pa, i);
-
-			if (fabs(pt->x) < OUT_MAX_DOUBLE)
-				sprintf(x, "%.*f", precision, pt->x);
-			else
-				sprintf(x, "%g", pt->x);
-			trim_trailing_zeros(x);
-
-			if (fabs(pt->y) < OUT_MAX_DOUBLE)
-				sprintf(y, "%.*f", precision, pt->y);
-			else
-				sprintf(y, "%g", pt->y);
-			trim_trailing_zeros(y);
+			lwprint_double(
+			    pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(
+			    pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
 
 			if ( i ) ptr += sprintf(ptr, " ");
 			if (IS_DEGREE(opts))
@@ -1949,23 +1922,12 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, int opts)
 			const POINT3DZ *pt;
 			pt = getPoint3dz_cp(pa, i);
 
-			if (fabs(pt->x) < OUT_MAX_DOUBLE)
-				sprintf(x, "%.*f", precision, pt->x);
-			else
-				sprintf(x, "%g", pt->x);
-			trim_trailing_zeros(x);
-
-			if (fabs(pt->y) < OUT_MAX_DOUBLE)
-				sprintf(y, "%.*f", precision, pt->y);
-			else
-				sprintf(y, "%g", pt->y);
-			trim_trailing_zeros(y);
-
-			if (fabs(pt->z) < OUT_MAX_DOUBLE)
-				sprintf(z, "%.*f", precision, pt->z);
-			else
-				sprintf(z, "%g", pt->z);
-			trim_trailing_zeros(z);
+			lwprint_double(
+			    pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(
+			    pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(
+			    pt.z, precision, z, OUT_DOUBLE_BUFFER_SIZE);
 
 			if ( i ) ptr += sprintf(ptr, " ");
 			if (IS_DEGREE(opts))

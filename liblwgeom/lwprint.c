@@ -437,6 +437,41 @@ char* lwpoint_to_latlon(const LWPOINT * pt, const char *format)
 }
 
 /*
+ * Removes trailing zeros and dot for a %f formatted number.
+ * Modifies input.
+ */
+static void
+trim_trailing_zeros(char* str)
+{
+	char *ptr, *totrim = NULL;
+	int len;
+	int i;
+
+	LWDEBUGF(3, "input: %s", str);
+
+	ptr = strchr(str, '.');
+	if (!ptr) return; /* no dot, no decimal digits */
+
+	LWDEBUGF(3, "ptr: %s", ptr);
+
+	len = strlen(ptr);
+	for (i = len - 1; i; i--)
+	{
+		if (ptr[i] != '0') break;
+		totrim = &ptr[i];
+	}
+	if (totrim)
+	{
+		if (ptr == totrim - 1)
+			*ptr = '\0';
+		else
+			*totrim = '\0';
+	}
+
+	LWDEBUGF(3, "output: %s", str);
+}
+
+/*
  * Print an ordinate value using at most the given number of decimal digits
  *
  * The actual number of printed decimal digits may be less than the
