@@ -4,6 +4,27 @@
     <subtitle>Release Notes</subtitle>
 
     <sect1>
+      <title>Release 2.4.8</title>
+      <para>Release date: 2018/01/xx</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+        <para>#3713, Support encodings that happen to output a '\' character</para>
+        <para>#3827, Set configure default to not do interrupt testing,
+                  was causing false negatives for many people</para>
+        <para>#3930, Minimum bounding circle issues on 32-bit platforms</para>
+        <para>#3965, ST_ClusterKMeans used to lose some clusters on initialization
+                  (Darafei Praliaskouski)</para>
+        <para>#3956, Brin opclass object does not upgrade properly (Sandro Santilli)</para>
+        <para>#3982, ST_AsEncodedPolyline supports LINESTRING EMPTY and MULTIPOINT EMPTY
+                  (Darafei Praliaskouski)</para>
+        <para>#3975, ST_Transform runs query on spatial_ref_sys without schema
+                  qualification. Was causing restore issues. (Paul Ramsey)</para>
+      </simplesect>
+    </sect1>
+
+
+    <sect1>
       <title>Release 2.4.2</title>
       <para>Release date: 2017/11/15</para>
       <para>This is a bug fix and performance improvement release.</para>

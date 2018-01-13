@@ -1,5 +1,5 @@
 PostGIS 2.4.3
-2018/xx/xx
+2018/01/xx
 
  * Bug fixes *
   - #3713, Support encodings that happen to output a '\' character
@@ -11,8 +11,8 @@ PostGIS 2.4.3
   - #3956, Brin opclass object does not upgrade properly (Sandro Santilli)
   - #3982, ST_AsEncodedPolyline supports LINESTRING EMPTY and MULTIPOINT EMPTY
            (Darafei Praliaskouski)
-  - #3975, ST_Transform runs query on spatial_ref_sys without schema 
-           qualification. May cause restore issues. (Paul Ramsey)
+  - #3975, ST_Transform runs query on spatial_ref_sys without schema
+           qualification. Was causing restore issues. (Paul Ramsey)
 
  * Enhancements *
   - #3944, Update to EPSG register v9.2 (Even Rouault)
