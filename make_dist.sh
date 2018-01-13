@@ -62,11 +62,6 @@ if [ -n "$1" ]; then
   fi
 fi
 
-if [ -v "$outdir" ]; then
-	echo "Output directory $outdir already exists."
-	exit 1
-fi
-
 outdir="postgis-$version"
 
 if [ -d "$outdir" ]; then
