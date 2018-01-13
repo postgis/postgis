@@ -1,5 +1,4 @@
 #!/bin/bash
-chmod -R 755 /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 export PG_VER=9.6
 # export PGPORT=8442
 export OS_BUILD=64
@@ -20,6 +19,8 @@ export LD_LIBRARY_PATH="${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/lib:${PROJE
 POSTGIS_MAJOR_VERSION=`grep ^POSTGIS_MAJOR_VERSION Version.config | cut -d= -f2`
 POSTGIS_MINOR_VERSION=`grep ^POSTGIS_MINOR_VERSION Version.config | cut -d= -f2`
 POSTGIS_MICRO_VERSION=`grep ^POSTGIS_MICRO_VERSION Version.config | cut -d= -f2`
+
+chmod -R 755 /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 echo $PATH
 
 sh autogen.sh
@@ -49,6 +50,14 @@ mkdir images
 cp html/images/* images
 make epub
 make -e chunked-html 2>&1 | tee -a doc-errors.log
+make update-po
+make -C po/ja/ local-html
+make -C po/de/ local-html
+make -C po/pt_BR/ local-html
+make -C po/ko_KR/ local-html
+package="doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz"
+export outdir=html
+tar -czf "$package" --exclude='.svn' --exclude='.git' --exclude='image_src' "$outdir"
 #make update-po
 #make -C po/it_IT/ local-html
 #make -C po/pt_BR/ local-html
@@ -62,3 +71,4 @@ cp -R html/images/* /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POST
 chmod -R 755 /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 cp -R *.pdf /var/www/postgis_stuff/
 cp -R *.epub /var/www/postgis_stuff/
+cp -R $package /var/www/postgis_stuff/

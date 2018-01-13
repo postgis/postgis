@@ -86,9 +86,11 @@ Release procedure
    $ brev=x.x
    $ rev=x.x.x
    $ svn copy -m "Tagged release $rev" $base/branches/$brev $base/tags/$rev
-- Run: sh make_dist.sh $rev (or use debbie for this)
+- Run: sh make_dist.sh $rev (note, debbie should have already done this,
+      and the file will be waiting in postgis.net/stuff)
+- Documentation should also have been built and should be in postgis.net/stuff
 - Build and test generated tarball (including extension upgrade)
-- Copy tarball to web site and edit downloads page
+- Copy tarball, pdf, doc-html.. to downloads.osgeo.org  web site and edit downloads page
 - Announce on e-mail
     - postgis-users
     - postgis-devel
@@ -96,9 +98,9 @@ Release procedure
     - osgeo-discuss
 - Update web sites
     - PostGIS News
-      - https://git.osgeo.org/gogs/postgis/postgis.net/src/master/_content/posts
+      - https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/posts
        a) create a new Post for current year making sure the page name starts with mm-dd
-       b) Update links on https://git.osgeo.org/gogs/postgis/postgis.net/src/master/_content/pages/source.html
+       b) Update links on https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/pages/source.html
        c) commit and wait 5 minutes to see changes on website
     - PostGIS doc release versioned doc - http://postgis.net/documentation/
      (For building pdf, debbie has tagged jobs
