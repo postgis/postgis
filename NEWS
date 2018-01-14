@@ -1,5 +1,5 @@
 PostGIS 2.4.3
-2018/01/xx
+2018/01/17
 
  * Bug fixes *
   - #3713, Support encodings that happen to output a '\' character
