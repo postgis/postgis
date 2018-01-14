@@ -141,7 +141,8 @@
 #define OUT_SHOW_DIGS_DOUBLE 20
 #define OUT_MAX_DOUBLE_PRECISION 15
 #define OUT_MAX_DIGS_DOUBLE (OUT_SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
-
+#define OUT_DOUBLE_BUFFER_SIZE \
+	OUT_MAX_DIGS_DOUBLE + OUT_MAX_DOUBLE_PRECISION + 1
 
 /**
 * Constants for point-in-polygon return values
@@ -480,8 +481,7 @@ double gbox_angular_width(const GBOX* gbox);
 int gbox_centroid(const GBOX* gbox, POINT2D* out);
 
 /* Utilities */
-void trim_trailing_zeros(char *num);
-
+int lwprint_double(double d, int maxdd, char* buf, size_t bufsize);
 extern uint8_t MULTITYPE[NUMTYPES];
 
 extern lwinterrupt_callback *_lwgeom_interrupt_callback;

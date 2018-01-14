@@ -119,24 +119,14 @@ static size_t
 assvg_point_buf(const LWPOINT *point, char * output, int circle, int precision)
 {
 	char *ptr=output;
-	char x[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
-	char y[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
+	char x[OUT_DOUBLE_BUFFER_SIZE];
+	char y[OUT_DOUBLE_BUFFER_SIZE];
 	POINT2D pt;
 
 	getPoint2d_p(point->point, 0, &pt);
 
-	if (fabs(pt.x) < OUT_MAX_DOUBLE)
-		sprintf(x, "%.*f", precision, pt.x);
-	else
-		sprintf(x, "%g", pt.x);
-	trim_trailing_zeros(x);
-
-	/* SVG Y axis is reversed, an no need to transform 0 into -0 */
-	if (fabs(pt.y) < OUT_MAX_DOUBLE)
-		sprintf(y, "%.*f", precision, fabs(pt.y) ? pt.y * -1 : pt.y);
-	else
-		sprintf(y, "%g", fabs(pt.y) ? pt.y * -1 : pt.y);
-	trim_trailing_zeros(y);
+	lwprint_double(pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
+	lwprint_double(-pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
 
 	if (circle) ptr += sprintf(ptr, "x=\"%s\" y=\"%s\"", x, y);
 	else ptr += sprintf(ptr, "cx=\"%s\" cy=\"%s\"", x, y);
@@ -561,8 +551,8 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, int close_ring, int precision)
 {
 	int i, end;
 	char *ptr;
-	char sx[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
-	char sy[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
+	char sx[OUT_DOUBLE_BUFFER_SIZE];
+	char sy[OUT_DOUBLE_BUFFER_SIZE];
 	const POINT2D *pt;
 
 	double f = 1.0;
@@ -584,18 +574,8 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, int close_ring, int precision)
 	x = round(pt->x*f)/f;
 	y = round(pt->y*f)/f;
 
-	if (fabs(x) < OUT_MAX_DOUBLE)
-		sprintf(sx, "%.*f", precision, x);
-	else
-		sprintf(sx, "%g", x);
-	trim_trailing_zeros(sx);
-
-	if (fabs(y) < OUT_MAX_DOUBLE)
-		sprintf(sy, "%.*f", precision, fabs(y) ? y * -1 : y);
-	else
-		sprintf(sy, "%g", fabs(y) ? y * -1 : y);
-	trim_trailing_zeros(sy);
-
+	lwprint_double(x, precision, sx, OUT_DOUBLE_BUFFER_SIZE);
+	lwprint_double(-y, precision, sy, OUT_DOUBLE_BUFFER_SIZE);
 	ptr += sprintf(ptr,"%s %s l", sx, sy);
 
 	/* accum */
@@ -614,20 +594,8 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, int close_ring, int precision)
 		dx = x - accum_x;
 		dy = y - accum_y;
 
-		if (fabs(dx) < OUT_MAX_DOUBLE)
-			sprintf(sx, "%.*f", precision, dx);
-		else
-			sprintf(sx, "%g", dx);
-		trim_trailing_zeros(sx);
-
-		/* SVG Y axis is reversed, an no need to transform 0 into -0 */
-		if (fabs(dy) < OUT_MAX_DOUBLE)
-			sprintf(sy, "%.*f", precision,
-			        fabs(dy) ? dy * -1: dy);
-		else
-			sprintf(sy, "%g",
-			        fabs(dy) ? dy * -1: dy);
-		trim_trailing_zeros(sy);
+		lwprint_double(dx, precision, sx, OUT_DOUBLE_BUFFER_SIZE);
+		lwprint_double(-dy, precision, sy, OUT_DOUBLE_BUFFER_SIZE);
 
 		accum_x += dx;
 		accum_y += dy;
@@ -647,8 +615,8 @@ pointArray_svg_abs(POINTARRAY *pa, char *output, int close_ring, int precision)
 {
 	int i, end;
 	char *ptr;
-	char x[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
-	char y[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
+	char x[OUT_DOUBLE_BUFFER_SIZE];
+	char y[OUT_DOUBLE_BUFFER_SIZE];
 	POINT2D pt;
 
 	ptr = output;
@@ -660,18 +628,8 @@ pointArray_svg_abs(POINTARRAY *pa, char *output, int close_ring, int precision)
 	{
 		getPoint2d_p(pa, i, &pt);
 
-		if (fabs(pt.x) < OUT_MAX_DOUBLE)
-			sprintf(x, "%.*f", precision, pt.x);
-		else
-			sprintf(x, "%g", pt.x);
-		trim_trailing_zeros(x);
-
-		/* SVG Y axis is reversed, an no need to transform 0 into -0 */
-		if (fabs(pt.y) < OUT_MAX_DOUBLE)
-			sprintf(y, "%.*f", precision, fabs(pt.y) ? pt.y * -1:pt.y);
-		else
-			sprintf(y, "%g", fabs(pt.y) ? pt.y * -1:pt.y);
-		trim_trailing_zeros(y);
+		lwprint_double(pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
+		lwprint_double(-pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
 
 		if (i == 1) ptr += sprintf(ptr, " L ");
 		else if (i) ptr += sprintf(ptr, " ");

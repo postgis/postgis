@@ -498,9 +498,9 @@ static int
 ptarray_to_x3d3_sb(POINTARRAY *pa, int precision, int opts, int is_closed, stringbuffer_t *sb )
 {
 	uint32_t i;
-	char x[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
-	char y[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
-	char z[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
+	char x[OUT_DOUBLE_BUFFER_SIZE];
+	char y[OUT_DOUBLE_BUFFER_SIZE];
+	char z[OUT_DOUBLE_BUFFER_SIZE];
 
 	if ( ! FLAGS_GET_Z(pa->flags) )
 	{
@@ -512,17 +512,10 @@ ptarray_to_x3d3_sb(POINTARRAY *pa, int precision, int opts, int is_closed, strin
 				POINT2D pt;
 				getPoint2d_p(pa, i, &pt);
 
-				if (fabs(pt.x) < OUT_MAX_DOUBLE)
-					sprintf(x, "%.*f", precision, pt.x);
-				else
-					sprintf(x, "%g", pt.x);
-				trim_trailing_zeros(x);
-
-				if (fabs(pt.y) < OUT_MAX_DOUBLE)
-					sprintf(y, "%.*f", precision, pt.y);
-				else
-					sprintf(y, "%g", pt.y);
-				trim_trailing_zeros(y);
+				lwprint_double(
+				    pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
+				lwprint_double(
+				    pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
 
 				if ( i ) stringbuffer_append(sb," ");
 
@@ -543,23 +536,12 @@ ptarray_to_x3d3_sb(POINTARRAY *pa, int precision, int opts, int is_closed, strin
 				POINT4D pt;
 				getPoint4d_p(pa, i, &pt);
 
-				if (fabs(pt.x) < OUT_MAX_DOUBLE)
-					sprintf(x, "%.*f", precision, pt.x);
-				else
-					sprintf(x, "%g", pt.x);
-				trim_trailing_zeros(x);
-
-				if (fabs(pt.y) < OUT_MAX_DOUBLE)
-					sprintf(y, "%.*f", precision, pt.y);
-				else
-					sprintf(y, "%g", pt.y);
-				trim_trailing_zeros(y);
-
-				if (fabs(pt.z) < OUT_MAX_DOUBLE)
-					sprintf(z, "%.*f", precision, pt.z);
-				else
-					sprintf(z, "%g", pt.z);
-				trim_trailing_zeros(z);
+				lwprint_double(
+				    pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
+				lwprint_double(
+				    pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
+				lwprint_double(
+				    pt.z, precision, z, OUT_DOUBLE_BUFFER_SIZE);
 
 				if ( i ) stringbuffer_append(sb," ");
 
