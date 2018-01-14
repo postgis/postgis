@@ -28,9 +28,9 @@
 
 #include <math.h>
 
-#include "liblwgeom.h"         /* For standard geometry types. */
-#include "lwgeom_pg.h"         /* For pg macros. */
-#include "lwgeom_transform.h"  /* For SRID functions */
+#include "liblwgeom.h"        /* For standard geometry types. */
+#include "lwgeom_pg.h"        /* For pg macros. */
+#include "lwgeom_transform.h" /* For SRID functions */
 
 #include "lwgeodetic_overlay.h"
 
@@ -39,7 +39,6 @@ Datum geography_difference(PG_FUNCTION_ARGS);
 Datum geography_symdifference(PG_FUNCTION_ARGS);
 Datum geography_union(PG_FUNCTION_ARGS);
 
-
 /**
  * geography_union(GSERIALIZED *g2, GSERIALIZED *g1)
  * returns union of both geographies
@@ -47,36 +46,29 @@ Datum geography_union(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(geography_union);
 Datum geography_union(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwgeom1 = NULL;
-	LWGEOM *lwgeom2 = NULL;
-	LWGEOM *lwgeom_out = NULL;
+	LWGEOM* lwgeom1 = NULL;
+	LWGEOM* lwgeom2 = NULL;
+	LWGEOM* lwgeom_out = NULL;
 
-	GSERIALIZED *g1 = NULL;
-	GSERIALIZED *g2 = NULL;
-	GSERIALIZED *g_out = NULL;
+	GSERIALIZED* g1 = NULL;
+	GSERIALIZED* g2 = NULL;
+	GSERIALIZED* g_out = NULL;
 
-    g1 = PG_GETARG_GSERIALIZED_P(0);
-    g2 = PG_GETARG_GSERIALIZED_P(1);
+	g1 = PG_GETARG_GSERIALIZED_P(0);
+	g2 = PG_GETARG_GSERIALIZED_P(1);
 
-	if (g1 == NULL)
-	{
-		PG_RETURN_POINTER(g2);
-	}
+	if (g1 == NULL) { PG_RETURN_POINTER(g2); }
 
-	if (g2 == NULL)
-	{
-		PG_RETURN_POINTER(g1);
-	}
+	if (g2 == NULL) { PG_RETURN_POINTER(g1); }
 
 	lwgeom1 = lwgeom_from_gserialized(g1);
 	lwgeom2 = lwgeom_from_gserialized(g2);
 
 	lwgeom_out = lwgeodetic_union(lwgeom1, lwgeom2);
-    g_out = gserialized_from_lwgeom(lwgeom_out, 0);
+	g_out = gserialized_from_lwgeom(lwgeom_out, 0);
 
 	PG_RETURN_POINTER(g_out);
 }
-
 
 /**
  * geography_intersection(GSERIALIZED *g2, GSERIALIZED *g1)
@@ -85,36 +77,29 @@ Datum geography_union(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_intersection);
 Datum geography_intersection(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwgeom1 = NULL;
-	LWGEOM *lwgeom2 = NULL;
-	LWGEOM *lwgeom_out = NULL;
+	LWGEOM* lwgeom1 = NULL;
+	LWGEOM* lwgeom2 = NULL;
+	LWGEOM* lwgeom_out = NULL;
 
-	GSERIALIZED *g1 = NULL;
-	GSERIALIZED *g2 = NULL;
-	GSERIALIZED *g_out = NULL;
+	GSERIALIZED* g1 = NULL;
+	GSERIALIZED* g2 = NULL;
+	GSERIALIZED* g_out = NULL;
 
-    g1 = PG_GETARG_GSERIALIZED_P(0);
-    g2 = PG_GETARG_GSERIALIZED_P(1);
+	g1 = PG_GETARG_GSERIALIZED_P(0);
+	g2 = PG_GETARG_GSERIALIZED_P(1);
 
-	if (g1 == NULL)
-	{
-		PG_RETURN_POINTER(g2);
-	}
+	if (g1 == NULL) { PG_RETURN_POINTER(g2); }
 
-	if (g2 == NULL)
-	{
-		PG_RETURN_POINTER(g1);
-	}
+	if (g2 == NULL) { PG_RETURN_POINTER(g1); }
 
 	lwgeom1 = lwgeom_from_gserialized(g1);
 	lwgeom2 = lwgeom_from_gserialized(g2);
 
 	lwgeom_out = lwgeodetic_intersection(lwgeom1, lwgeom2);
-    g_out = gserialized_from_lwgeom(lwgeom_out, 0);
+	g_out = gserialized_from_lwgeom(lwgeom_out, 0);
 
 	PG_RETURN_POINTER(g_out);
 }
-
 
 /**
  * geography_difference(GSERIALIZED *g2, GSERIALIZED *g1)
@@ -123,32 +108,26 @@ Datum geography_intersection(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_difference);
 Datum geography_difference(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwgeom1 = NULL;
-	LWGEOM *lwgeom2 = NULL;
-	LWGEOM *lwgeom_out = NULL;
+	LWGEOM* lwgeom1 = NULL;
+	LWGEOM* lwgeom2 = NULL;
+	LWGEOM* lwgeom_out = NULL;
 
-	GSERIALIZED *g1 = NULL;
-	GSERIALIZED *g2 = NULL;
-	GSERIALIZED *g_out = NULL;
+	GSERIALIZED* g1 = NULL;
+	GSERIALIZED* g2 = NULL;
+	GSERIALIZED* g_out = NULL;
 
-    g1 = PG_GETARG_GSERIALIZED_P(0);
-    g2 = PG_GETARG_GSERIALIZED_P(1);
+	g1 = PG_GETARG_GSERIALIZED_P(0);
+	g2 = PG_GETARG_GSERIALIZED_P(1);
 
-	if (g1 == NULL)
-	{
-		PG_RETURN_POINTER(g2);
-	}
+	if (g1 == NULL) { PG_RETURN_POINTER(g2); }
 
-	if (g2 == NULL)
-	{
-		PG_RETURN_POINTER(g1);
-	}
+	if (g2 == NULL) { PG_RETURN_POINTER(g1); }
 
 	lwgeom1 = lwgeom_from_gserialized(g1);
 	lwgeom2 = lwgeom_from_gserialized(g2);
 
 	lwgeom_out = lwgeodetic_difference(lwgeom1, lwgeom2);
-    g_out = gserialized_from_lwgeom(lwgeom_out, 0);
+	g_out = gserialized_from_lwgeom(lwgeom_out, 0);
 
 	PG_RETURN_POINTER(g_out);
 }
@@ -160,32 +139,26 @@ Datum geography_difference(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_symdifference);
 Datum geography_symdifference(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwgeom1 = NULL;
-	LWGEOM *lwgeom2 = NULL;
-	LWGEOM *lwgeom_out = NULL;
+	LWGEOM* lwgeom1 = NULL;
+	LWGEOM* lwgeom2 = NULL;
+	LWGEOM* lwgeom_out = NULL;
 
-	GSERIALIZED *g1 = NULL;
-	GSERIALIZED *g2 = NULL;
-	GSERIALIZED *g_out = NULL;
+	GSERIALIZED* g1 = NULL;
+	GSERIALIZED* g2 = NULL;
+	GSERIALIZED* g_out = NULL;
 
-    g1 = PG_GETARG_GSERIALIZED_P(0);
-    g2 = PG_GETARG_GSERIALIZED_P(1);
+	g1 = PG_GETARG_GSERIALIZED_P(0);
+	g2 = PG_GETARG_GSERIALIZED_P(1);
 
-	if (g1 == NULL)
-	{
-		PG_RETURN_POINTER(g2);
-	}
+	if (g1 == NULL) { PG_RETURN_POINTER(g2); }
 
-	if (g2 == NULL)
-	{
-		PG_RETURN_POINTER(g1);
-	}
+	if (g2 == NULL) { PG_RETURN_POINTER(g1); }
 
 	lwgeom1 = lwgeom_from_gserialized(g1);
 	lwgeom2 = lwgeom_from_gserialized(g2);
 
 	lwgeom_out = lwgeodetic_symdifference(lwgeom1, lwgeom2);
-    g_out = gserialized_from_lwgeom(lwgeom_out, 0);
+	g_out = gserialized_from_lwgeom(lwgeom_out, 0);
 
 	PG_RETURN_POINTER(g_out);
 }

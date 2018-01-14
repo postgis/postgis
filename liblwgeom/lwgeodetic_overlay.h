@@ -22,7 +22,6 @@
  *
  **********************************************************************/
 
-
 #ifndef _LWGEODETIC_OVERLAY_H
 #define _LWGEODETIC_OVERLAY_H 1
 
