@@ -2,6 +2,25 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+    <sect1>
+      <title>Release 2.3.6</title>
+      <para>Release date: 2018/01/17</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+          <para>#3713, Support encodings that happen to output a '\' character</para>
+          <para>#3822, Have postgis_full_version() also show and check version of
+                  PostgreSQL the scripts were built against (Sandro Santilli)</para>
+          <para>#3965, ST_ClusterKMeans used to lose some clusters on initialization
+                  (Darafei Praliaskouski)</para>
+          <para>#3956, Brin opclass object does not upgrade properly (Sandro Santilli)</para>
+          <para>#3982, ST_AsEncodedPolyline supports LINESTRING EMPTY and MULTIPOINT EMPTY
+                  (Darafei Praliaskouski)</para>
+          <para>#3975, ST_Transform runs query on spatial_ref_sys without schema
+                  qualification. May cause restore issues. (Paul Ramsey)</para>
+      </simplesect>
+    </sect1>
+
 
     <sect1>
       <title>Release 2.3.5</title>
