@@ -886,8 +886,7 @@ pg_nd_stats_from_tuple(HeapTuple stats_tuple, int mode)
 	float4 *floatptr;
 	int nvalues;
 
-	rv = get_attstatsslot(stats_tuple, 0, 0, stats_kind, InvalidOid,
-						NULL, NULL, NULL, &floatptr, &nvalues);
+	rv = get_attstatsslot(stats_tuple, 0, 0, stats_kind, InvalidOid, NULL, NULL, NULL, &floatptr, &nvalues);
 
 	if ( ! rv ) {
 		POSTGIS_DEBUGF(2,
