@@ -406,7 +406,7 @@ test_lwgeom_segmentize2d(void)
 	LWGEOM *linein = lwgeom_from_wkt("LINESTRING(0 0,10 0)", LW_PARSER_CHECK_NONE);
 	LWGEOM *lineout = lwgeom_segmentize2d(linein, 5);
 	char *strout = lwgeom_to_ewkt(lineout);
-	CU_ASSERT_STRING_EQUAL(strout, "LINESTRING(0 0,5 0,10 0)");
+	ASSERT_STRING_EQUAL(strout, "LINESTRING(0 0,5 0,10 0)");
 	lwfree(strout);
 	lwgeom_free(linein);
 	lwgeom_free(lineout);
@@ -446,7 +446,7 @@ test_lwgeom_segmentize2d(void)
 	/* NOT INTERRUPTED */
 	lineout = lwgeom_segmentize2d(linein, 5);
 	strout = lwgeom_to_ewkt(lineout);
-	CU_ASSERT_STRING_EQUAL(strout, "LINESTRING(20 0,25 0,30 0)");
+	ASSERT_STRING_EQUAL(strout, "LINESTRING(20 0,25 0,30 0)");
 	lwfree(strout);
 	lwgeom_free(linein);
 	lwgeom_free(lineout);
@@ -463,19 +463,19 @@ test_lwgeom_locate_along(void)
 	/* ST_Locatealong(ST_GeomFromText('MULTILINESTRING M ((1 2 3, 5 4 5), (50 50 1, 60 60 200))'), 105) */
 	geom = lwgeom_from_wkt("MULTILINESTRING M ((1 2 3, 5 4 5), (50 50 1, 60 60 200))", LW_PARSER_CHECK_NONE);
 	out = lwgeom_locate_along(geom, measure, 0.0);
-	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
+	str = lwgeom_to_wkt(out, WKT_ISO, 6, NULL);
 	lwgeom_free(geom);
 	lwgeom_free(out);
-	CU_ASSERT_STRING_EQUAL("MULTIPOINT M (55.226131 55.226131 105)", str);
+	ASSERT_STRING_EQUAL(str, "MULTIPOINT M (55.226131 55.226131 105)");
 	lwfree(str);
 
 	/* ST_Locatealong(ST_GeomFromText('MULTILINESTRING M ((1 2 3, 5 4 5), (50 50 1, 60 60 200))'), 105) */
 	geom = lwgeom_from_wkt("MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3), (1 2 3, 5 4 5), (50 50 1, 60 60 200))", LW_PARSER_CHECK_NONE);
 	out = lwgeom_locate_along(geom, measure, 0.0);
-	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
+	str = lwgeom_to_wkt(out, WKT_ISO, 6, NULL);
 	lwgeom_free(geom);
 	lwgeom_free(out);
-	CU_ASSERT_STRING_EQUAL("MULTIPOINT M (55.226131 55.226131 105)", str);
+	ASSERT_STRING_EQUAL(str, "MULTIPOINT M (55.226131 55.226131 105)");
 	lwfree(str);
 }
 
@@ -959,7 +959,9 @@ test_lw_dist2d_ptarray_ptarrayarc(void)
 	rv = lw_dist2d_ptarray_ptarrayarc(lwline1->points, lwline2->points, &dl);
 	//printf("%s\n", cu_error_msg);
 	CU_ASSERT_EQUAL( rv, LW_FAILURE );
-	CU_ASSERT_STRING_EQUAL("lw_dist2d_ptarray_ptarrayarc called with non-arc input", cu_error_msg);
+	ASSERT_STRING_EQUAL(
+	    cu_error_msg,
+	    "lw_dist2d_ptarray_ptarrayarc called with non-arc input");
 
 	lwline_free(lwline2);
 
@@ -997,10 +999,9 @@ test_lwgeom_tcpa(void)
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, -1.0);
-	CU_ASSERT_STRING_EQUAL(
-	  "Both input geometries must have a measure dimension",
-	  cu_error_msg
-	  );
+	ASSERT_STRING_EQUAL(
+	    cu_error_msg,
+	    "Both input geometries must have a measure dimension");
 
 	/* Invalid input, not linestrings */
 
@@ -1010,10 +1011,8 @@ test_lwgeom_tcpa(void)
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, -1.0);
-	CU_ASSERT_STRING_EQUAL(
-	  "Both input geometries must be linestrings",
-	  cu_error_msg
-	);
+	ASSERT_STRING_EQUAL(cu_error_msg,
+			    "Both input geometries must be linestrings");
 
 	/* Invalid input, too short linestring */
 
@@ -1025,9 +1024,11 @@ test_lwgeom_tcpa(void)
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(dist, -77.0); /* not touched */
 	ASSERT_DOUBLE_EQUAL(m, -1.0);
-	CU_ASSERT_STRING_EQUAL(
-	  "Both input lines must have at least 2 points", /* should be accepted ? */
-	  cu_error_msg
+	ASSERT_STRING_EQUAL(
+	    cu_error_msg,
+	    "Both input lines must have at least 2 points" /* should be accepted
+							      ? */
+
 	);
 
 	/* Invalid input, empty linestring */
@@ -1038,9 +1039,9 @@ test_lwgeom_tcpa(void)
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, -1.0);
-	CU_ASSERT_STRING_EQUAL(
-	  "Both input lines must have at least 2 points",
-	  cu_error_msg
+	ASSERT_STRING_EQUAL(cu_error_msg,
+			    "Both input lines must have at least 2 points"
+
 	);
 
 	/* Timeranges do not overlap */

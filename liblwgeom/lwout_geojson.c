@@ -676,61 +676,19 @@ asgeojson_geom_buf(const LWGEOM *geom, char *output, GBOX *bbox, int precision)
 	return (ptr-output);
 }
 
-/*
- * Print an ordinate value using at most the given number of decimal digits
- *
- * The actual number of printed decimal digits may be less than the
- * requested ones if out of significant digits.
- *
- * The function will not write more than maxsize bytes, including the
- * terminating NULL. Returns the number of bytes that would have been
- * written if there was enough space (excluding terminating NULL).
- * So a return of ``bufsize'' or more means that the string was
- * truncated and misses a terminating NULL.
- *
- * TODO: export ?
- *
- */
-static int
-lwprint_double(double d, int maxdd, char *buf, size_t bufsize)
-{
-  double ad = fabs(d);
-  int ndd = ad < 1 ? 0 : floor(log10(ad))+1; /* non-decimal digits */
-  if (fabs(d) < OUT_MAX_DOUBLE)
-  {
-    if ( maxdd > (OUT_MAX_DOUBLE_PRECISION - ndd) )  maxdd -= ndd;
-    return snprintf(buf, bufsize, "%.*f", maxdd, d);
-  }
-  else
-  {
-    return snprintf(buf, bufsize, "%g", d);
-  }
-}
-
-
-
 static size_t
 pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 {
 	uint32_t i;
 	char *ptr;
-#define BUFSIZE OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION
-	char x[BUFSIZE+1];
-	char y[BUFSIZE+1];
-	char z[BUFSIZE+1];
+	char x[OUT_DOUBLE_BUFFER_SIZE];
+	char y[OUT_DOUBLE_BUFFER_SIZE];
+	char z[OUT_DOUBLE_BUFFER_SIZE];
 
 	assert ( precision <= OUT_MAX_DOUBLE_PRECISION );
-
-  /* Ensure a terminating NULL at the end of buffers
-   * so that we don't need to check for truncation
-   * inprint_double */
-  x[BUFSIZE] = '\0';
-  y[BUFSIZE] = '\0';
-  z[BUFSIZE] = '\0';
-
 	ptr = output;
 
-  /* TODO: rewrite this loop to be simpler and possibly quicker */
+	/* TODO: rewrite this loop to be simpler and possibly quicker */
 	if (!FLAGS_GET_Z(pa->flags))
 	{
 		for (i=0; i<pa->npoints; i++)
@@ -738,10 +696,10 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 			const POINT2D *pt;
 			pt = getPoint2d_cp(pa, i);
 
-			lwprint_double(pt->x, precision, x, BUFSIZE);
-			trim_trailing_zeros(x);
-			lwprint_double(pt->y, precision, y, BUFSIZE);
-			trim_trailing_zeros(y);
+			lwprint_double(
+			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(
+			    pt->y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
 
 			if ( i ) ptr += sprintf(ptr, ",");
 			ptr += sprintf(ptr, "[%s,%s]", x, y);
@@ -754,12 +712,12 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 			const POINT3DZ *pt;
 			pt = getPoint3dz_cp(pa, i);
 
-			lwprint_double(pt->x, precision, x, BUFSIZE);
-			trim_trailing_zeros(x);
-			lwprint_double(pt->y, precision, y, BUFSIZE);
-			trim_trailing_zeros(y);
-			lwprint_double(pt->z, precision, z, BUFSIZE);
-			trim_trailing_zeros(z);
+			lwprint_double(
+			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(
+			    pt->y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(
+			    pt->z, precision, z, OUT_DOUBLE_BUFFER_SIZE);
 
 			if ( i ) ptr += sprintf(ptr, ",");
 			ptr += sprintf(ptr, "[%s,%s,%s]", x, y, z);
@@ -768,8 +726,6 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 
 	return (ptr-output);
 }
-
-
 
 /**
  * Returns maximum size of rendered pointarray in bytes.
