@@ -173,8 +173,6 @@ static void out_x3d3_test_option(void)
 	    "SRID=4326;POLYGON((15 10 3,13.536 6.464 3,10 5 3,6.464 6.464 3,5 10 3,6.464 13.536 3,10 15 3,13.536 13.536 3,15 10 3))",
 	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3 4 5 6 7'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"latitude_first\"' point='10 15 3 6.464 13.536 3 5 10 3 6.464 6.464 3 10 5 3 13.536 6.464 3 15 10 3 13.536 13.536 3 ' /></IndexedFaceSet>",
 	    NULL, 3, 3);
-
-
 }
 
 
