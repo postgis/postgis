@@ -54,10 +54,10 @@ typedef struct _overlay_point
 	while (point != start) \
 		;
 
-const int COMBINE_DIFFERENCE = 1;
-const int COMBINE_SYMDIFFERENCE = 2;
-const int COMBINE_INTERSECTION = 3;
-const int COMBINE_UNION = 4;
+#define COMBINE_DIFFERENCE 1
+#define COMBINE_SYMDIFFERENCE 2
+#define COMBINE_INTERSECTION 3
+#define COMBINE_UNION 4
 
 int lwmpoly_assign_hole(LWMPOLY* target, POINTARRAY* source);
 void overlay_add_holes_lwmpoly(LWMPOLY* target,
@@ -343,7 +343,7 @@ lwgeodetic_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 		//		if (!lwgeoms_related(geom1, geom2)) {
 		//			fprintf(stderr, "yes3\n\n");
 		//			return
-		//lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
+		// lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 		//		}
 		fprintf(stderr, "yes2\n\n");
 
@@ -563,8 +563,8 @@ overlay_from_lwpoly(const LWPOLY* geom)
 		     j += step)
 		{
 			POINT4D p;
-			//			fprintf(stderr, "Insert: %d %d\n",
-			//i, j);
+			//			fprintf(stderr, "Insert: %d
+			//%d\n", i, j);
 
 			/* get current vertex */
 			getPoint4d_p(geom->rings[i], j, &p);
@@ -678,7 +678,7 @@ overlay_points_to_ring(POINTARRAY* ring, OVERLAY_POINT* point)
 	{
 		// ERROR
 		//		LWDEBUG(4, "  point %.2f,%.2f has to be an
-		//intersection \n", point->x, point->y);
+		// intersection \n", point->x, point->y);
 		return;
 	}
 
@@ -854,7 +854,7 @@ overlay_insert_intersections(OVERLAY_POINT* geom1, OVERLAY_POINT* geom2)
 					{
 						//							fprintf(stderr,
 						//"check ring 2 %p\n",
-						//ring2->nextHole);
+						// ring2->nextHole);
 
 						FOREACH_OVERLAY_POINT(point2,
 								      ring2)
@@ -870,8 +870,8 @@ overlay_insert_intersections(OVERLAY_POINT* geom1, OVERLAY_POINT* geom2)
 							//"check intersection 2
 							//%.2f,%.2f -
 							//%.2f,%.2f\n",
-							//point2->x, 											point2->y,
-							//											next2->x,
+							// point2->x,
+							// point2->y, 											next2->x,
 							//											next2->y);
 							// TODO check for edge
 							// same
@@ -1046,7 +1046,7 @@ lwmpoly_assign_hole(LWMPOLY* target, POINTARRAY* ring)
 	{
 
 		//		fprintf(stderr, "inside %d?\n",
-		//lwgeom_get_type(target->geoms[i]));
+		// lwgeom_get_type(target->geoms[i]));
 
 		if (lwpoly_covers_point2d(target->geoms[i], &test_point))
 		{
@@ -1143,7 +1143,7 @@ starts_inside(const LWMPOLY* mpoly, const POINTARRAY* ring)
 	{
 
 		//		fprintf(stderr, "inside %d?\n",
-		//lwgeom_get_type(mpoly->geoms[i]));
+		// lwgeom_get_type(mpoly->geoms[i]));
 
 		if (mpoly->geoms[i]->nrings > 0 &&
 		    lwpoly_covers_point2d(mpoly->geoms[i], &test_point))
@@ -1250,7 +1250,7 @@ lwgeodetic_overlay(const LWMPOLY* lwfirst,
 
 	// A and B
 	case COMBINE_INTERSECTION:
-	{
+
 		result = overlay_mark_entries(
 		    first, second, lwfirst, lwsecond, LW_TRUE, LW_TRUE);
 
@@ -1279,8 +1279,8 @@ lwgeodetic_overlay(const LWMPOLY* lwfirst,
 				    POLYGONTYPE, lwfirst->srid, 0, 0);
 			}
 		}
-	}
-	break;
+
+		break;
 
 	// A or B
 	case COMBINE_UNION:
