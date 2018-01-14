@@ -90,7 +90,7 @@ Release procedure
       and the file will be waiting in postgis.net/stuff)
 - Documentation should also have been built and should be in postgis.net/stuff
 - Test generated tarball (including extension upgrade)
-- Copy tarball, pdf, doc-html.. to downloads.osgeo.org  web site and edit downloads page
+- Copy tarball, pdf, doc-html.. to http://download.osgeo.org/postgis/ web site and edit postgis.net/source page
 - Announce on e-mail
     - postgis-users
     - postgis-devel
@@ -103,11 +103,7 @@ Release procedure
        b) Update links on https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/pages/source.html
        c) commit and wait 5 minutes to see changes on website
     - PostGIS doc release versioned doc - http://postgis.net/documentation/
-     (For building pdf, debbie has tagged jobs
-       -- https://debbie.postgis.net (log in)
-       Create new job copy last tag e.g. PostGIS_2.0_tagged_docs to PostGIS_2.1_tagged_docs
-       and make appropriate edits and then just run.
-       Or just be lazy and bug Regina Obe do this.
+     Verify the documentation is up to date (might need to change the apach config)
     - Wikipedia
     - Twitter
        This should automatically happen as a result of posting to PostGIS website since Planet PostGIS autotweets.
