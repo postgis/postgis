@@ -85,6 +85,7 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 	/* OGC only includes X/Y */
 	uint32_t dimensions = 2;
 	uint32_t i, j;
+	char coord[OUT_DOUBLE_BUFFER_SIZE];
 
 	/* ISO and extended formats include all dimensions */
 	if ( variant & ( WKT_ISO | WKT_EXTENDED ) )
@@ -108,7 +109,11 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 			/* Spaces before every ordinate but the first */
 			if ( j > 0 )
 				stringbuffer_append(sb, " ");
-			stringbuffer_aprintf(sb, "%.*g", precision, dbl_ptr[j]);
+			lwprint_double(coord,
+				       precision,
+				       dbl_ptr[j],
+				       OUT_DOUBLE_BUFFER_SIZE);
+			stringbuffer_append(sb, coord);
 		}
 	}
 
@@ -657,15 +662,16 @@ static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precisi
 }
 
 /**
-* WKT emitter function. Allocates a new *char and fills it with the WKT
-* representation. If size_out is not NULL, it will be set to the size of the
-* allocated *char.
-*
-* @param variant Bitmasked value, accepts one of WKT_ISO, WKT_SFSQL, WKT_EXTENDED.
-* @param precision Number of significant digits in the output doubles.
-* @param size_out If supplied, will return the size of the returned string,
-* including the null terminator.
-*/
+ * WKT emitter function. Allocates a new *char and fills it with the WKT
+ * representation. If size_out is not NULL, it will be set to the size of the
+ * allocated *char.
+ *
+ * @param variant Bitmasked value, accepts one of WKT_ISO, WKT_SFSQL,
+ * WKT_EXTENDED.
+ * @param precision Maximal number of digits after comma in the output doubles.
+ * @param size_out If supplied, will return the size of the returned string,
+ * including the null terminator.
+ */
 char* lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision, size_t *size_out)
 {
 	stringbuffer_t *sb;
