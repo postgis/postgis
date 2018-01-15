@@ -41,8 +41,8 @@ make clean
 cd doc
 
 
-mv postgis.xml postgis.xml.orig
-sed -e "s:</title>:</title><subtitle><subscript>SVN Revision (<emphasis>${POSTGIS_SVN_REVISION}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
+#mv postgis.xml postgis.xml.orig
+#sed -e "s:</title>:</title><subtitle><subscript>SVN Revision (<emphasis>${POSTGIS_SVN_REVISION}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
 
 make pdf
 rm -rf images
