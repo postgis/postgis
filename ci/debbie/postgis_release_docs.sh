@@ -31,8 +31,6 @@ fi
 #  --with-gdalconfig=${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/bin/gdal-config
 #  --without-raster
 
-export GIT_TIMESTAMP = `git log -1 --pretty=format:%ct`
-
 CPPFLAGS="-I${PGPATH}/include"  \
 LDFLAGS="-L${PGPATH}/lib"  ./configure \
   --with-pgconfig=${PGPATH}/bin/pg_config \
@@ -47,6 +45,7 @@ mv postgis.xml postgis.xml.orig
 
 #inject a development time stamp if we are in development branch
 if [[ "${POSTGIS_MICRO_VERSION}"  == *dev* ]] ; then
+  export GIT_TIMESTAMP=`git log -1 --pretty=format:%ct`
   sed -e "s:</title>:</title><subtitle><subscript>DEV TIMESTAMP (<emphasis>${GIT_TIMESTAMP}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
 fi
 
