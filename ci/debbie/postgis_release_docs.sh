@@ -44,7 +44,7 @@ mv postgis.xml postgis.xml.orig
 #sed -e "s:</title>:</title><subtitle><subscript>SVN Revision (<emphasis>${POSTGIS_SVN_REVISION}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
 
 #inject a development time stamp if we are in development branch
-if [[ ${POSTGIS_MICRO_VERSION} == *"dev"* ]]; then
+if [[ $POSTGIS_MICRO_VERSION == *"dev"* ]]; then
   export GIT_TIMESTAMP=`git log -1 --pretty=format:%ct`
   sed -e "s:</title>:</title><subtitle><subscript>DEV TIMESTAMP (<emphasis>${GIT_TIMESTAMP}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
 fi
