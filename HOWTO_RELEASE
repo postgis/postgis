@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2018-01-14
+Date: 2015-10-08
 
 Versioning Scheme
 -----------------
@@ -24,7 +24,7 @@ a dump/reload of existing spatial databases is *REQUIRED* for things
 to work or rather *HIGHLY RECOMMENDED* to get new functionalities.
 
 All POSTGIS_MICRO_VERSION that are in branch or trunk should end in dev.
-So for example if you just released 2.1.1, then the 2.1 branch should have
+So for example if you just release 2.1.1, then the 2.1 branch should have
 POSTGIS_MICRO_VERSION set to 2dev so that the full version is 2.1.2dev.
 
 *Liblwgeom*
@@ -48,7 +48,6 @@ documentation -- that means having the required software:
   - Proj4
   - GDAL (for raster)
   - json-c (for GeoJSON load support)
-  - protobuf, protobuf-c (for MVT support)
 * For the docs:
   - xsltproc
   - DocBook XSL scripts
@@ -78,7 +77,6 @@ Release procedure
 	   a) Replace PostGIS_* string params with new version
 	   b) Replace repository url with new branch repo url
 	   c) Update the PostGIS_trunk by updating the PostGIS_* string params
-	   d) create a new tagged branch job from latest tagged (and repeat a, b for this new tagged)
 
 	   Go to: ​https://trac.osgeo.org/postgis/ edit the matrix to reflect new branch
 
@@ -104,7 +102,7 @@ Release procedure
        b) Update links on https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/pages/source.html
        c) commit and wait 5 minutes to see changes on website
     - PostGIS doc release versioned doc - http://postgis.net/documentation/
-     Verify the documentation is up to date (might need to change the apache config)
+     Verify the documentation is up to date (might need to change the apach config)
     - Wikipedia
     - Twitter
        This should automatically happen as a result of posting to PostGIS website since Planet PostGIS autotweets.
