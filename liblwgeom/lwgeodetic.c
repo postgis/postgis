@@ -2237,36 +2237,39 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 	}
 
-	/* Polygon/polygon case, if start point-in-poly, return zero, else return distance. */
-	if ( ( type1 == POLYGONTYPE && type2 == POLYGONTYPE ) ||
-	     ( type2 == POLYGONTYPE && type1 == POLYGONTYPE ) )
+	/* Polygon/polygon case, if start point-in-poly, return zero, else
+	 * return distance. */
+	if (type1 == POLYGONTYPE && type2 == POLYGONTYPE)
 	{
-		const POINT2D *p;
-		LWPOLY *lwpoly1 = (LWPOLY*)lwgeom1;
-		LWPOLY *lwpoly2 = (LWPOLY*)lwgeom2;
+		const POINT2D* p;
+		LWPOLY* lwpoly1 = (LWPOLY*)lwgeom1;
+		LWPOLY* lwpoly2 = (LWPOLY*)lwgeom2;
 		double distance = FLT_MAX;
 		uint32_t i, j;
 
 		/* Point of 2 in polygon 1 implies zero distance */
 		p = getPoint2d_cp(lwpoly1->rings[0], 0);
-		if ( lwpoly_covers_point2d(lwpoly2, p) )
-			return 0.0;
+		if (lwpoly_covers_point2d(lwpoly2, p)) return 0.0;
 
 		/* Point of 1 in polygon 2 implies zero distance */
 		p = getPoint2d_cp(lwpoly2->rings[0], 0);
-		if ( lwpoly_covers_point2d(lwpoly1, p) )
-			return 0.0;
+		if (lwpoly_covers_point2d(lwpoly1, p)) return 0.0;
 
 		/* Not contained, so what's the actual distance? */
-		for ( i = 0; i < lwpoly1->nrings; i++ )
+		for (i = 0; i < lwpoly1->nrings; i++)
 		{
-			for ( j = 0; j < lwpoly2->nrings; j++ )
+			for (j = 0; j < lwpoly2->nrings; j++)
 			{
-				double ring_distance = ptarray_distance_spheroid(lwpoly1->rings[i], lwpoly2->rings[j], spheroid, tolerance, check_intersection);
-				if ( ring_distance < distance )
+				double ring_distance =
+				    ptarray_distance_spheroid(
+					lwpoly1->rings[i],
+					lwpoly2->rings[j],
+					spheroid,
+					tolerance,
+					check_intersection);
+				if (ring_distance < distance)
 					distance = ring_distance;
-				if ( distance < tolerance )
-					return distance;
+				if (distance < tolerance) return distance;
 			}
 		}
 		return distance;
@@ -2281,7 +2284,8 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 		for ( i = 0; i < col->ngeoms; i++ )
 		{
-			double geom_distance = lwgeom_distance_spheroid(col->geoms[i], lwgeom2, spheroid, tolerance);
+			double geom_distance = lwgeom_distance_spheroid(
+			    col->geoms[i], lwgeom2, spheroid, tolerance);
 			if ( geom_distance < distance )
 				distance = geom_distance;
 			if ( distance < tolerance )

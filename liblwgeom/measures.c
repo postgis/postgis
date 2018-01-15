@@ -1405,14 +1405,14 @@ lw_dist2d_seg_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *B1, const
 
 	/* Closest point is in the arc, but not in the segment, so */
 	/* one of the segment end points must be the closest. */
-	if ( pt_in_arc & ! pt_in_seg )
+	if (pt_in_arc && !pt_in_seg)
 	{
 		lw_dist2d_pt_arc(A1, B1, B2, B3, dl);
 		lw_dist2d_pt_arc(A2, B1, B2, B3, dl);
 		return LW_TRUE;
 	}
 	/* or, one of the arc end points is the closest */
-	else if  ( pt_in_seg && ! pt_in_arc )
+	else if (pt_in_seg && !pt_in_arc)
 	{
 		lw_dist2d_pt_seg(B1, A1, A2, dl);
 		lw_dist2d_pt_seg(B3, A1, A2, dl);
@@ -1643,7 +1643,7 @@ lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
 
 	/* Closest point is in the arc A, but not in the arc B, so */
 	/* one of the B end points must be the closest. */
-	if ( pt_in_arc_A & ! pt_in_arc_B )
+	if (pt_in_arc_A && !pt_in_arc_B)
 	{
 		lw_dist2d_pt_arc(B1, A1, A2, A3, dl);
 		lw_dist2d_pt_arc(B3, A1, A2, A3, dl);

@@ -708,7 +708,7 @@ static uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t vari
 {
 
 	/* Do not simplify empties when outputting to canonical form */
-	if ( lwgeom_is_empty(geom) & ! (variant & WKB_EXTENDED) )
+	if (lwgeom_is_empty(geom) && !(variant & WKB_EXTENDED))
 		return empty_to_wkb_buf(geom, buf, variant);
 
 	switch ( geom->type )

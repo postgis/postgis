@@ -273,10 +273,10 @@ static void DeletePJHashEntry(MemoryContext mcxt)
 	/* Delete the projection object from the hash */
 	he = (PJHashEntry *) hash_search(PJHash, key, HASH_REMOVE, NULL);
 
-	he->projection = NULL;
-
 	if (!he)
 		elog(ERROR, "DeletePJHashEntry: There was an error removing the PROJ4 projection object from this MemoryContext (%p)", (void *)mcxt);
+	else
+		he->projection = NULL;
 }
 
 bool
