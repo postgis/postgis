@@ -1191,7 +1191,7 @@ AC_ARG_WITH([interrupt-tests],
                     [Enable interrupt tests])],
     [INTERRUPTTESTS="yes"], [])
 
-if test "x$with_interrupt_tests" == "xno"; then
+if test "x$with_interrupt_tests" = "xno"; then
     INTERRUPTTESTS="no"
 fi
 

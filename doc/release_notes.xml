@@ -11,7 +11,8 @@
         <title>Bug Fixes and Enhancements</title>
         <para>#3713, Support encodings that happen to output a '\' character</para>
         <para>#3827, Set configure default to not do interrupt testing,
-                  was causing false negatives for many people</para>
+                  was causing false negatives for many people. (Regina Obe)
+                 revised to be standards compliant in #3988 (Greg Troxel)</para>
         <para>#3930, Minimum bounding circle issues on 32-bit platforms</para>
         <para>#3965, ST_ClusterKMeans used to lose some clusters on initialization
                   (Darafei Praliaskouski)</para>
