@@ -203,8 +203,7 @@ Datum hausdorffdistance(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 
-	if (retcode == 0)
-		HANDLE_GEOS_ERROR("GEOSHausdorffDistance");
+	if (retcode == 0) HANDLE_GEOS_ERROR("GEOSHausdorffDistance");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -256,10 +255,7 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 
-	if (retcode == 0)
-	{
-		HANDLE_GEOS_ERROR("GEOSHausdorffDistanceDensify");
-	}
+	if (retcode == 0) HANDLE_GEOS_ERROR("GEOSHausdorffDistanceDensify");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -327,8 +323,7 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 
-	if (retcode == 0)
-		HANDLE_GEOS_ERROR("GEOSFrechetDistance");
+	if (retcode == 0) HANDLE_GEOS_ERROR("GEOSFrechetDistance");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -469,8 +464,9 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			/* Uh oh! Exception thrown at construction... */
 			if ( ! g )
 			{
-				HANDLE_GEOS_ERROR("One of the geometries in the set "
-				                  "could not be converted to GEOS");
+				HANDLE_GEOS_ERROR(
+				    "One of the geometries in the set "
+				    "could not be converted to GEOS");
 			}
 
 			/* Ensure we have enough space in our storage array */
@@ -494,13 +490,14 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	if (curgeom > 0)
 	{
 		g = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, geoms, curgeom);
-		if ( ! g )
-			HANDLE_GEOS_ERROR("Could not create GEOS COLLECTION from geometry array");
+		if (!g)
+			HANDLE_GEOS_ERROR(
+			    "Could not create GEOS COLLECTION from geometry "
+			    "array");
 
 		g_union = GEOSUnaryUnion(g);
 		GEOSGeom_destroy(g);
-		if ( ! g_union )
-			HANDLE_GEOS_ERROR("GEOSUnaryUnion");
+		if (!g_union) HANDLE_GEOS_ERROR("GEOSUnaryUnion");
 
 		GEOSSetSRID(g_union, srid);
 		gser_out = GEOS2POSTGIS(g_union, is3d);
@@ -1719,8 +1716,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
-	if (result == 2)
-		HANDLE_GEOS_ERROR("GEOSOverlaps");
+	if (result == 2) HANDLE_GEOS_ERROR("GEOSOverlaps");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -1846,11 +1842,15 @@ Datum contains(PG_FUNCTION_ARGS)
 	{
 		g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 		if (!g1)
-			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+			HANDLE_GEOS_ERROR(
+			    "First argument geometry could not be converted to "
+			    "GEOS");
 		g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
-			HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
+			HANDLE_GEOS_ERROR(
+			    "Second argument geometry could not be converted "
+			    "to GEOS");
 			GEOSGeom_destroy(g1);
 		}
 		POSTGIS_DEBUG(4, "containsPrepared: cache is not ready, running standard contains");
@@ -1859,8 +1859,7 @@ Datum contains(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 	}
 
-	if (result == 2)
-		HANDLE_GEOS_ERROR("GEOSContains");
+	if (result == 2) HANDLE_GEOS_ERROR("GEOSContains");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -1907,7 +1906,9 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	{
 		GEOSGeometry *g = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		if (!g)
-			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+			HANDLE_GEOS_ERROR(
+			    "First argument geometry could not be converted to "
+			    "GEOS");
 		result = GEOSPreparedContainsProperly( prep_cache->prepared_geom, g);
 		GEOSGeom_destroy(g);
 	}
@@ -1918,7 +1919,9 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 
 		g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 		if (!g1)
-			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+			HANDLE_GEOS_ERROR(
+			    "First argument geometry could not be converted to "
+			    "GEOS");
 		g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
@@ -1932,8 +1935,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 	}
 
-	if (result == 2)
-		HANDLE_GEOS_ERROR("GEOSContains");
+	if (result == 2) HANDLE_GEOS_ERROR("GEOSContains");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -2038,7 +2040,9 @@ Datum covers(PG_FUNCTION_ARGS)
 	{
 		GEOSGeometry *g1 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		if (!g1)
-			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+			HANDLE_GEOS_ERROR(
+			    "First argument geometry could not be converted to "
+			    "GEOS");
 		result = GEOSPreparedCovers( prep_cache->prepared_geom, g1);
 		GEOSGeom_destroy(g1);
 	}
@@ -2049,7 +2053,9 @@ Datum covers(PG_FUNCTION_ARGS)
 
 		g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 		if (!g1)
-			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+			HANDLE_GEOS_ERROR(
+			    "First argument geometry could not be converted to "
+			    "GEOS");
 		g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
@@ -2063,8 +2069,7 @@ Datum covers(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 	}
 
-	if (result == 2)
-		HANDLE_GEOS_ERROR("GEOSCovers");
+	if (result == 2) HANDLE_GEOS_ERROR("GEOSCovers");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -2194,8 +2199,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 
-	if (result == 2)
-		HANDLE_GEOS_ERROR("GEOSCoveredBy");
+	if (result == 2) HANDLE_GEOS_ERROR("GEOSCoveredBy");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -2254,8 +2258,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 
-	if (result == 2)
-		HANDLE_GEOS_ERROR("GEOSCrosses");
+	if (result == 2) HANDLE_GEOS_ERROR("GEOSCrosses");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -2373,7 +2376,9 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 		GEOSGeometry *g2;
 		g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 		if (!g1)
-			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+			HANDLE_GEOS_ERROR(
+			    "First argument geometry could not be converted to "
+			    "GEOS");
 		g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
@@ -2387,8 +2392,7 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 	}
 
-	if (result == 2)
-		HANDLE_GEOS_ERROR("GEOSIntersects");
+	if (result == 2) HANDLE_GEOS_ERROR("GEOSIntersects");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -2448,8 +2452,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 
-	if (result == 2)
-		HANDLE_GEOS_ERROR("GEOSTouches");
+	if (result == 2) HANDLE_GEOS_ERROR("GEOSTouches");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -2509,8 +2512,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 
-	if (result == 2)
-		HANDLE_GEOS_ERROR("GEOSDisjoint");
+	if (result == 2) HANDLE_GEOS_ERROR("GEOSDisjoint");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -2541,7 +2543,6 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	if (!g1)
-
 		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 	if (!g2)
@@ -2568,8 +2569,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g2);
 	pfree(patt);
 
-	if (result == 2)
-		HANDLE_GEOS_ERROR("GEOSRelatePattern");
+	if (result == 2) HANDLE_GEOS_ERROR("GEOSRelatePattern");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -2702,8 +2702,7 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 
-	if (result == 2)
-		HANDLE_GEOS_ERROR("GEOSEquals");
+	if (result == 2) HANDLE_GEOS_ERROR("GEOSEquals");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -2765,8 +2764,7 @@ Datum isring(PG_FUNCTION_ARGS)
 	result = GEOSisRing(g1);
 	GEOSGeom_destroy(g1);
 
-	if (result == 2)
-		HANDLE_GEOS_ERROR("GEOSisRing");
+	if (result == 2) HANDLE_GEOS_ERROR("GEOSisRing");
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_BOOL(result);
@@ -3578,8 +3576,7 @@ Datum ST_MinimumClearance(PG_FUNCTION_ARGS)
 
 	error = GEOSMinimumClearance(input_geos, &result);
 	GEOSGeom_destroy(input_geos);
-	if (error)
-		HANDLE_GEOS_ERROR("Error computing minimum clearance");
+	if (error) HANDLE_GEOS_ERROR("Error computing minimum clearance");
 
 	PG_FREE_IF_COPY(input, 0);
 	PG_RETURN_FLOAT8(result);
