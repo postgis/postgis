@@ -31,6 +31,8 @@ fi
 #  --with-gdalconfig=${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/bin/gdal-config
 #  --without-raster
 
+export GIT_TIMESTAMP = `git log -1 --pretty=format:%ct`
+
 CPPFLAGS="-I${PGPATH}/include"  \
 LDFLAGS="-L${PGPATH}/lib"  ./configure \
   --with-pgconfig=${PGPATH}/bin/pg_config \
@@ -40,8 +42,13 @@ make clean
 cd doc
 
 
-#mv postgis.xml postgis.xml.orig
+mv postgis.xml postgis.xml.orig
 #sed -e "s:</title>:</title><subtitle><subscript>SVN Revision (<emphasis>${POSTGIS_SVN_REVISION}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
+
+#inject a development time stamp if we are in development branch
+if [[ "${POSTGIS_MICRO_VERSION}"  == *dev* ]] ; then
+  sed -e "s:</title>:</title><subtitle><subscript>DEV TIMESTAMP (<emphasis>${GIT_TIMESTAMP}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
+fi
 
 make pdf
 rm -rf images
@@ -49,23 +56,25 @@ mkdir images
 cp html/images/* images
 make epub
 make -e chunked-html 2>&1 | tee -a doc-errors.log
-#make update-po  #we do this only for trunk because transifex only follows trunk
-make -C po/ja/ local-html
-make -C po/de/ local-html
-make -C po/pt_BR/ local-html
-make -C po/ko_KR/ local-html
+
+if [[ "$reference"  == *trunk* ]] ; then  #only do this for trunk because only trunk follows transifex
+	make update-po
+  make -C po/it_IT/ local-html
+  make -C po/pt_BR/ local-html
+  make -C po/ja/ local-html
+  make -C po/de/ local-html
+  make -C po/pt_BR/ local-html
+  make -C po/ko_KR/ local-html
+  #make pdf-localized
+fi
+
 package="doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz"
 export outdir=html
 tar -czf "$package" --exclude='.svn' --exclude='.git' --exclude='image_src' "$outdir"
 
-if [[ "$reference"  == *trunk* ]] ; then  #only due this for trunk because only trunk follows transifex
-	make update-po
-  make -C po/it_IT/ local-html
-  make -C po/pt_BR/ local-html
-  #make pdf-localized
-fi;
 
-#mv postgis.xml.orig postgis.xml
+
+mv postgis.xml.orig postgis.xml
 mkdir -p /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 mkdir -p /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}/images
 cp -R html/*.*  /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
