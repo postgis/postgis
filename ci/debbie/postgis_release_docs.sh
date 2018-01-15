@@ -22,7 +22,7 @@ POSTGIS_MICRO_VERSION=`grep ^POSTGIS_MICRO_VERSION Version.config | cut -d= -f2`
 chmod -R 755 /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 echo $PATH
 
-sh autogen.sh
+#sh autogen.sh
 
 if [ -f GNUMakefile ]; then
   make distclean
@@ -43,8 +43,9 @@ cd doc
 mv postgis.xml postgis.xml.orig
 #sed -e "s:</title>:</title><subtitle><subscript>SVN Revision (<emphasis>${POSTGIS_SVN_REVISION}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
 
+echo "Micro: $POSTGIS_MICRO_VERSION"
 #inject a development time stamp if we are in development branch
-if [[ $POSTGIS_MICRO_VERSION == *"dev"* ]]; then
+if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
   export GIT_TIMESTAMP=`git log -1 --pretty=format:%ct`
   sed -e "s:</title>:</title><subtitle><subscript>DEV TIMESTAMP (<emphasis>${GIT_TIMESTAMP}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
 fi
