@@ -99,11 +99,11 @@ static void out_geojson_test_precision(void)
    *       only zeroes will be returned
    * See http://trac.osgeo.org/postgis/ticket/2051#comment:11
    */
-	do_geojson_test(
-	    "POINT(1E-300 -2E-200)",
-	    "{\"type\":\"Point\",\"coordinates\":[0,-0]}",
-	    NULL, 300, 0);
-
+	do_geojson_test("POINT(1E-300 -2E-200)",
+			"{\"type\":\"Point\",\"coordinates\":[0,0]}",
+			NULL,
+			300,
+			0);
 }
 
 

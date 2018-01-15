@@ -52,10 +52,12 @@ circ_tree_free(CIRC_NODE* node)
 	uint32_t i;
 	if ( ! node ) return;
 
-	for ( i = 0; i < node->num_nodes; i++ )
-		circ_tree_free(node->nodes[i]);
-
-	if ( node->nodes ) lwfree(node->nodes);
+	if (node->nodes)
+	{
+		for (i = 0; i < node->num_nodes; i++)
+			circ_tree_free(node->nodes[i]);
+		lwfree(node->nodes);
+	}
 	lwfree(node);
 }
 

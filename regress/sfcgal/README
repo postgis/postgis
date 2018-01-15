@@ -41,18 +41,6 @@ sfcgal/ticket
    which .. also make sense
 
 
-
-==
-sfcgal/regress_ogc
-==
-
-65.OBT: intersection|POINT(-0 -0)
-65.EXP: intersection|POINT(0 0)
-
-=> No comment, except that the test itself could be sligthly rewrited
-
-
-
 ==
 sfcgal/empty
 ==

@@ -417,27 +417,25 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 		break;
 
 	case POLYGONTYPE:
-		lwpoly = (LWPOLY *)lwgeom;
-		if ( lwgeom_is_empty(lwgeom) )
-		{
+		lwpoly = (LWPOLY*)lwgeom;
+		if (lwgeom_is_empty(lwgeom))
 			g = GEOSGeom_createEmptyPolygon();
-		}
 		else
 		{
 			shell = ptarray_to_GEOSLinearRing(lwpoly->rings[0], autofix);
 			if ( ! shell ) return NULL;
 			/*lwerror("LWGEOM2GEOS: exception during polygon shell conversion"); */
 			ngeoms = lwpoly->nrings-1;
-			if ( ngeoms > 0 )
-				geoms = malloc(sizeof(GEOSGeom)*ngeoms);
+			if (ngeoms > 0)
+				geoms = malloc(sizeof(GEOSGeom) * ngeoms);
 
-			for (i=1; i<lwpoly->nrings; ++i)
+			for (i = 1; i < lwpoly->nrings; i++)
 			{
 				geoms[i-1] = ptarray_to_GEOSLinearRing(lwpoly->rings[i], autofix);
 				if ( ! geoms[i-1] )
 				{
 					uint32_t k;
-					for (k = 0; k < i-1; k++)
+					for (k = 0; k < i - 1; k++)
 						GEOSGeom_destroy(geoms[k]);
 					free(geoms);
 					GEOSGeom_destroy(shell);
@@ -466,8 +464,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 		lwc = (LWCOLLECTION *)lwgeom;
 
 		ngeoms = lwc->ngeoms;
-		if ( ngeoms > 0 )
-			geoms = malloc(sizeof(GEOSGeom)*ngeoms);
+		if (ngeoms > 0) geoms = malloc(sizeof(GEOSGeom) * ngeoms);
 
 		j = 0;
 		for (i=0; i<ngeoms; ++i)
@@ -489,7 +486,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 			geoms[j++] = g;
 		}
 		g = GEOSGeom_createCollection(geostype, geoms, j);
-		if ( geoms ) free(geoms);
+		if (ngeoms > 0) free(geoms);
 		if ( ! g ) return NULL;
 		break;
 

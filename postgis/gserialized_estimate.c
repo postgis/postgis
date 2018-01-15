@@ -1918,8 +1918,7 @@ estimate_selectivity(const GBOX *box, const ND_STATS *nd_stats, int mode)
 	double min[ND_DIMS];
 	double max[ND_DIMS];
 	double total_count = 0.0;
-	int ndims_max = Max(nd_stats->ndims, gbox_ndims(box));
-	/* int ndims_min = Min(nd_stats->ndims, gbox_ndims(box)); */
+	int ndims_max;
 
 	/* Calculate the overlap of the box on the histogram */
 	if ( ! nd_stats )
@@ -1927,6 +1926,8 @@ estimate_selectivity(const GBOX *box, const ND_STATS *nd_stats, int mode)
 		elog(NOTICE, " estimate_selectivity called with null input");
 		return FALLBACK_ND_SEL;
 	}
+
+	ndims_max = Max(nd_stats->ndims, gbox_ndims(box));
 
 	/* Initialize nd_box. */
 	nd_box_from_gbox(box, &nd_box);
