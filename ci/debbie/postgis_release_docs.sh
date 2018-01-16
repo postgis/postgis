@@ -2,9 +2,8 @@
 export PG_VER=9.6
 # export PGPORT=8442
 export OS_BUILD=64
-# export POSTGIS_MAJOR_VERSION=2
-# export POSTGIS_MINOR_VERSION=2
-# export POSTGIS_MICRO_VERSION=0dev
+#this is passed in via postgis_make_dist.sh via jenkins
+#export reference=
 export PROJECTS=/var/lib/jenkins/workspace
 export GEOS_VER=3.6
 export GDAL_VER=2.2
@@ -23,7 +22,7 @@ POSTGIS_MICRO_VERSION=`grep ^POSTGIS_MICRO_VERSION Version.config | cut -d= -f2`
 chmod -R 755 /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 echo $PATH
 
-sh autogen.sh
+#sh autogen.sh
 
 if [ -f GNUMakefile ]; then
   make distclean
@@ -41,8 +40,15 @@ make clean
 cd doc
 
 
-#mv postgis.xml postgis.xml.orig
+mv postgis.xml postgis.xml.orig
 #sed -e "s:</title>:</title><subtitle><subscript>SVN Revision (<emphasis>${POSTGIS_SVN_REVISION}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
+
+echo "Micro: $POSTGIS_MICRO_VERSION"
+#inject a development time stamp if we are in development branch
+if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
+  export GIT_TIMESTAMP=`git log -1 --pretty=format:%ct`
+  sed -e "s:</title>:</title><subtitle><subscript>DEV TIMESTAMP (<emphasis>${GIT_TIMESTAMP}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
+fi
 
 make pdf
 rm -rf images
@@ -50,18 +56,23 @@ mkdir images
 cp html/images/* images
 make epub
 make -e chunked-html 2>&1 | tee -a doc-errors.log
-#make update-po  #we do this only for trunk because transifex only follows trunk
-make -C po/ja/ local-html
-make -C po/de/ local-html
-make -C po/pt_BR/ local-html
-make -C po/ko_KR/ local-html
+
+if [[ "$reference" == *"trunk"* ]]; then  #only do this for trunk because only trunk follows transifex
+	make update-po
+  make -C po/it_IT/ local-html
+  make -C po/pt_BR/ local-html
+  make -C po/ja/ local-html
+  make -C po/de/ local-html
+  make -C po/pt_BR/ local-html
+  make -C po/ko_KR/ local-html
+  #make pdf-localized
+fi
+
 package="doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz"
 export outdir=html
 tar -czf "$package" --exclude='.svn' --exclude='.git' --exclude='image_src' "$outdir"
-#make update-po
-#make -C po/it_IT/ local-html
-#make -C po/pt_BR/ local-html
-#make pdf-localized
+
+
 
 mv postgis.xml.orig postgis.xml
 mkdir -p /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
