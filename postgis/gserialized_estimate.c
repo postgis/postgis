@@ -1693,9 +1693,9 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		int d;
 		double num_cells = 0;
 		double tmp_volume = 1.0;
-		double min[ND_DIMS];
-		double max[ND_DIMS];
-		double cellsize[ND_DIMS];
+		double min[ND_DIMS] = {0.0, 0.0, 0.0, 0.0};
+		double max[ND_DIMS] = {0.0, 0.0, 0.0, 0.0};
+		double cellsize[ND_DIMS] = {0.0, 0.0, 0.0, 0.0};
 
 		nd_box = sample_boxes[i];
 		if ( ! nd_box ) continue; /* Skip Null'ed out hard deviants */
