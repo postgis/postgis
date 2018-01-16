@@ -217,7 +217,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	char *srs;
 	int srid = SRID_DEFAULT;
 	int precision = DBL_DIG;
-	int option=0;
+	int option = 0;
 	int lwopts = LW_GML_IS_DIMS;
 	static const char *default_prefix = "gml:";
 	const char *prefix = default_prefix;
@@ -306,6 +306,22 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	/* Revert lat/lon only with long SRS */
 	if (option & 1) lwopts |= LW_GML_IS_DEGREE;
 	if (option & 2) lwopts &= ~LW_GML_IS_DIMS;
+	if (option & 8)
+	{
+		elog(ERROR,
+		     "Options %d passed to ST_AsGML(geography) sets "
+		     "unsupported value 8",
+		     option);
+		PG_RETURN_NULL();
+	}
+	if ((option & 4) || (option & 16) || (option & 32))
+	{
+		elog(ERROR,
+		     "Options %d passed to ST_AsGML(geography) but are only "
+		     "applicable to ST_AsGML(geometry)",
+		     option);
+		PG_RETURN_NULL();
+	}
 
 	if (version == 2)
 		gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);

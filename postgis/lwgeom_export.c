@@ -266,6 +266,14 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 
 	if (option & 2) lwopts &= ~LW_GML_IS_DIMS;
 	if (option & 4) lwopts |= LW_GML_SHORTLINE;
+	if (option & 8)
+	{
+		elog(ERROR,
+		     "Options %d passed to ST_AsGML(geography) sets "
+		     "unsupported value 8",
+		     option);
+		PG_RETURN_NULL();
+	}
 	if (option & 16) lwopts |= LW_GML_IS_DEGREE;
 	if (option & 32) lwopts |= LW_GML_EXTENT;
 
