@@ -2619,8 +2619,6 @@ Datum relate_full(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(3, "constructed geometries ");
 
-	if (!g1 || !g2) elog(NOTICE, "g1 or g2 are null");
-
 	POSTGIS_DEBUGF(3, "%s", GEOSGeomToWKT(g1));
 	POSTGIS_DEBUGF(3, "%s", GEOSGeomToWKT(g2));
 
