@@ -38,3 +38,14 @@ typmod_pointzm_0|(PointZM,4326)
 typmod_geometry_0|(Geometry,4326)
 typmod_geometry_4326|(Geometry,4326)
 ERROR:  Invalid geometry type modifier: Geogrpahy
+dwithin_pt_pt_1|t
+dwithin_pt_pt_2|f
+dwithin_pt_line_1|t
+dwithin_line_pt_1|t
+dwithin_pt_poly_1|t
+dwithin_poly_pt_1|t
+dwithin_line_poly_1|t
+dwithin_poly_line_1|t
+dwithin_poly_poly_1|f
+dwithin_poly_poly_2|t
+dwithin_poly_poly_3|t

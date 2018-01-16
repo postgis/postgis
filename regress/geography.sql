@@ -121,9 +121,6 @@ SELECT 'segmentize_geography2', st_dwithin(st_pointn(st_segmentize('linestring(1
 SELECT 'segmentize_geography_3667', abs(ST_Length(geog) - ST_Length(ST_Segmentize(geog, 30000))) < 0.00001
   FROM (SELECT ST_GeographyFromText('LINESTRING(38.769917 10.780694, 38.769917 9.106194)') As geog) AS f;
 
--- Clean up spatial_ref_sys
-DELETE FROM spatial_ref_sys WHERE srid IN (4269,4326);
-
 -- typmod checks
 select 'typmod_point_4326', geography_typmod_out(geography_typmod_in('{Point,4326}'));
 select 'typmod_point_0', geography_typmod_out(geography_typmod_in('{Point,0}'));
@@ -132,3 +129,19 @@ select 'typmod_pointzm_0', geography_typmod_out(geography_typmod_in('{PointZM,0}
 select 'typmod_geometry_0', geography_typmod_out(geography_typmod_in('{Geometry,0}'));
 select 'typmod_geometry_4326', geography_typmod_out(geography_typmod_in('{Geometry,4326}'));
 select 'typmod_geography_0', geography_typmod_out(geography_typmod_in('{Geogrpahy,0}'));
+
+-- ST_DWithin
+select 'dwithin_pt_pt_1', ST_DWithin('POINT(0 0)'::geography, 'POINT(1 1)'::geography, 300000);
+select 'dwithin_pt_pt_2', ST_DWithin('POINT(0 0)'::geography, 'POINT(1 1)'::geography, 10);
+select 'dwithin_pt_line_1', ST_DWithin('POINT(0 0)'::geography, 'LINESTRING(1 1, 2 2)'::geography, 300000);
+select 'dwithin_line_pt_1', ST_DWithin('LINESTRING(1 1, 2 2)'::geography, 'POINT(0 0)'::geography, 300000);
+select 'dwithin_pt_poly_1', ST_DWithin('POINT(0 0)'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 300000);
+select 'dwithin_poly_pt_1', ST_DWithin('POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 'POINT(0 0)'::geography, 300000);
+select 'dwithin_line_poly_1', ST_DWithin('LINESTRING(-1 -1, 0 0)'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 300000);
+select 'dwithin_poly_line_1', ST_DWithin('POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 'LINESTRING(-1 -1, 0 0)'::geography, 300000);
+select 'dwithin_poly_poly_1', ST_DWithin('POLYGON((0 0, -2 -2, -3 0, 0 0))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 10);
+select 'dwithin_poly_poly_2', ST_DWithin('POLYGON((0 0, -2 -2, -3 0, 0 0))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 300000);
+select 'dwithin_poly_poly_3', ST_DWithin('POLYGON((1 1, -2 -2, -3 0, 1 1))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 300000);
+
+-- Clean up spatial_ref_sys
+DELETE FROM spatial_ref_sys WHERE srid IN (4269, 4326);
