@@ -1172,8 +1172,11 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		{
 			if (strcmp(state->field_names[z], name) == 0)
 			{
-				strncat(name, "__", MAXFIELDNAMELEN);
-				snprintf(name + strlen(name), MAXFIELDNAMELEN, "%i", j);
+				strncat(name, "__", MAXFIELDNAMELEN - 1);
+				snprintf(name + strlen(name),
+					 MAXFIELDNAMELEN - 1 - strlen(name),
+					 "%i",
+					 j);
 				break;
 			}
 		}

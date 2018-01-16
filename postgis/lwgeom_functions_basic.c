@@ -2720,13 +2720,6 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 		lwcol = lwcollection_as_lwgeom(lwcollection_extract((LWCOLLECTION*)lwgeom, type));
 	}
 
-#if 0
-	if (lwgeom_is_empty(lwcollection_as_lwgeom(lwcol)))
-	{
-		lwgeom_free(lwgeom);
-		PG_RETURN_NULL();
-	}
-#endif
 	output = geometry_serialize((LWGEOM*)lwcol);
 	lwgeom_free(lwgeom);
 	lwgeom_free(lwcol);
@@ -2745,10 +2738,10 @@ Datum ST_CollectionHomogenize(PG_FUNCTION_ARGS)
 	lwoutput = lwgeom_homogenize(lwgeom);
 	lwgeom_free(lwgeom);
 
-	if ( ! lwoutput )
+	if (!lwoutput)
 	{
-		PG_RETURN_NULL();
 		PG_FREE_IF_COPY(input, 0);
+		PG_RETURN_NULL();
 	}
 
 	output = geometry_serialize(lwoutput);

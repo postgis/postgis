@@ -170,11 +170,11 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   static SPIPlanPtr plan = NULL;
 
   argtypes[0] = CSTRINGOID;
+  sql =
+      "SELECT id,srid,precision,null::geometry "
+      "FROM topology.topology WHERE name = $1::varchar";
   if ( ! plan ) /* prepare on first call */
   {
-    sql = "SELECT id,srid,precision,null::geometry"
-                          " FROM topology.topology "
-                          "WHERE name = $1::varchar";
     plan = SPI_prepare(sql, 1, argtypes);
     if ( ! plan )
     {

@@ -3862,19 +3862,21 @@ lwt_RemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID id)
 
   n = 2;
   edge = lwt_be_getEdgeByNode( topo, nid, &n, LWT_COL_EDGE_EDGE_ID );
-  if ( n == -1 )
+  if ((n == -1) || (edge == NULL))
   {
-    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
-    return -1;
+	  lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+	  return -1;
   }
-  for ( i=0; i<n; ++i )
+  for (i = 0; i < n; ++i)
   {
-    if ( edge[i].edge_id == id ) continue;
-    lwfree(edge);
-    lwerror("SQL/MM Spatial exception - not isolated edge");
-    return -1;
+	  if (edge[i].edge_id != id)
+	  {
+		  lwfree(edge);
+		  lwerror("SQL/MM Spatial exception - not isolated edge");
+		  return -1;
+	  }
   }
-  if ( edge ) lwfree(edge);
+  lwfree(edge);
 
   deledge.edge_id = id;
   n = lwt_be_deleteEdges( topo, &deledge, LWT_COL_EDGE_EDGE_ID );
@@ -4400,7 +4402,7 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
   ids[1] = eid2;
   nedges = 2;
   edges = lwt_be_getEdgeById(topo, ids, &nedges, LWT_COL_EDGE_ALL);
-  if ( nedges == -1 )
+  if ((nedges == -1) || (edges == NULL))
   {
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -4428,17 +4430,19 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
   }
   if ( ! e1 )
   {
-    if ( edges ) _lwt_release_edges(edges, nedges);
-    lwerror("SQL/MM Spatial exception - non-existent edge %"
-            LWTFMT_ELEMID, eid1);
-    return -1;
+	  _lwt_release_edges(edges, nedges);
+	  lwerror(
+	      "SQL/MM Spatial exception - non-existent edge %" LWTFMT_ELEMID,
+	      eid1);
+	  return -1;
   }
   if ( ! e2 )
   {
-    if ( edges ) _lwt_release_edges(edges, nedges);
-    lwerror("SQL/MM Spatial exception - non-existent edge %"
-            LWTFMT_ELEMID, eid2);
-    return -1;
+	  _lwt_release_edges(edges, nedges);
+	  lwerror(
+	      "SQL/MM Spatial exception - non-existent edge %" LWTFMT_ELEMID,
+	      eid2);
+	  return -1;
   }
 
   /* NOT IN THE SPECS: See if any of the two edges are closed. */

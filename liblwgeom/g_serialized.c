@@ -354,7 +354,7 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 		return -1;
 
 	/* Non-empty > Empty */
-	if (!g2_is_empty && g2_is_empty)
+	if (!g1_is_empty && g2_is_empty)
 		return 1;
 
 	/* Return equality for perfect equality only */

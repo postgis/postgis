@@ -783,12 +783,6 @@ LWGEOM* lwgeom_from_wkb(const uint8_t *wkb, const size_t wkb_size, const char ch
 	s.has_srid = LW_FALSE;
 	s.pos = wkb;
 
-	/* Hand the check catch-all values */
-	if ( check & LW_PARSER_CHECK_NONE )
-		s.check = 0;
-	else
-		s.check = check;
-
 	return lwgeom_from_wkb_state(&s);
 }
 
