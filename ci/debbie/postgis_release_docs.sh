@@ -69,6 +69,7 @@ if [[ "$reference" == *"trunk"* ]]; then  #only do this for trunk because only t
 fi
 
 package="doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz"
+
 export outdir=html
 tar -czf "$package" --exclude='.svn' --exclude='.git' --exclude='image_src' "$outdir"
 
@@ -83,3 +84,10 @@ chmod -R 755 /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MIN
 cp -R *.pdf /var/www/postgis_stuff/
 cp -R *.epub /var/www/postgis_stuff/
 cp -R $package /var/www/postgis_stuff/
+
+if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then #rename the files without the micro if it's a development branch
+  mv /var/www/postgis_stuff/doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz /var/www/postgis_stuff/doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.tar.gz
+  mv /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.pdf
+  mv /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.epub /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.epub
+else
+
