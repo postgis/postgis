@@ -17,6 +17,7 @@ PostGIS 2.4.3
 
  * Enhancements *
   - #3944, Update to EPSG register v9.2 (Even Rouault)
+  - #3946, Support for PgSQL 11 (Paul Ramsey)
 
 PostGIS 2.4.2
 2017/11/15
