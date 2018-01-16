@@ -260,8 +260,6 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 int
 ptarray_remove_point(POINTARRAY *pa, uint32_t where)
 {
-	size_t ptsize = ptarray_point_size(pa);
-
 	/* Check for pathology */
 	if( ! pa )
 	{
@@ -277,10 +275,10 @@ ptarray_remove_point(POINTARRAY *pa, uint32_t where)
 	}
 
 	/* If the point is any but the last, we need to copy the data back one point */
-	if( where < pa->npoints - 1 )
-	{
-		memmove(getPoint_internal(pa, where), getPoint_internal(pa, where+1), ptsize * (pa->npoints - where - 1));
-	}
+	if (where < pa->npoints - 1)
+		memmove(getPoint_internal(pa, where),
+			getPoint_internal(pa, where + 1),
+			ptarray_point_size(pa) * (pa->npoints - where - 1));
 
 	/* We have one less point */
 	pa->npoints--;

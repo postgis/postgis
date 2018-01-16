@@ -169,23 +169,21 @@ lwpoly_construct_empty(int srid, char hasz, char hasm)
 	return result;
 }
 
-void lwpoly_free(LWPOLY  *poly)
+void
+lwpoly_free(LWPOLY* poly)
 {
 	uint32_t t;
 
-	if( ! poly ) return;
+	if (!poly) return;
 
-	if ( poly->bbox )
-		lwfree(poly->bbox);
-
-	for (t=0; t<poly->nrings; t++)
-	{
-		if ( poly->rings[t] )
-			ptarray_free(poly->rings[t]);
-	}
+	if (poly->bbox) lwfree(poly->bbox);
 
 	if ( poly->rings )
+	{
+		for (t = 0; t < poly->nrings; t++)
+			if (poly->rings[t]) ptarray_free(poly->rings[t]);
 		lwfree(poly->rings);
+	}
 
 	lwfree(poly);
 }

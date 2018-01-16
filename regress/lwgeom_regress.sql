@@ -136,36 +136,36 @@ SELECT 'BoundingDiagonal6', ST_AsEwkt(ST_BoundingDiagonal(
 
 --- ST_Azimuth
 SELECT 'ST_Azimuth_regular' , round(ST_Azimuth(geom1,geom2)::numeric,4)
-FROM CAST('POINT(0 1)' AS geometry) AS geom1, CAST('POINT(1 0)' AS geometry) AS geom2 ; 
+FROM CAST('POINT(0 1)' AS geometry) AS geom1, CAST('POINT(1 0)' AS geometry) AS geom2 ;
 SELECT 'ST_Azimuth_same_point' , ST_Azimuth(geom1,geom1)
-FROM CAST('POINT(0 1)' AS geometry) AS geom1 ; 
+FROM CAST('POINT(0 1)' AS geometry) AS geom1 ;
 SELECT 'ST_Azimuth_mixed_srid' , ST_Azimuth(geom1,geom2)
-FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('POINT(1 0)',4326) AS geom2; 
+FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('POINT(1 0)',4326) AS geom2;
 SELECT 'ST_Azimuth_not_point' , ST_Azimuth(geom1,geom2)
-FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('LINESTRING(1 0 ,2 0)',4326) AS geom2; 
+FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('LINESTRING(1 0 ,2 0)',4326) AS geom2;
 SELECT 'ST_Azimuth_null_geom' , ST_Azimuth(geom1,geom2)
-FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('EMPTY') AS geom2; 
+FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('EMPTY') AS geom2;
 
---- ST_Angle( points)
+--- ST_Angle(points)
 SELECT 'ST_Angle_4_pts', St_Angle(p1,p2,p3,p4)
 	FROM ST_GeomFromtext('POINT(0 1)') AS p1, ST_GeomFromtext('POINT(0 0)') AS p2
-	, ST_GeomFromtext('POINT(1 0)') AS p3, ST_GeomFromtext('POINT(2 0)') AS p4 ;
+	, ST_GeomFromtext('POINT(1 0)') AS p3, ST_GeomFromtext('POINT(2 0)') AS p4;
 SELECT 'ST_Angle_4_pts', St_Angle(p1,p2,p3,p4)
 	FROM ST_GeomFromtext('POINT(2 0)') AS p1, ST_GeomFromtext('POINT(1 0)') AS p2
-	, ST_GeomFromtext('POINT(1 -1)') AS p3, ST_GeomFromtext('POINT(0 0)') AS p4 ;
+	, ST_GeomFromtext('POINT(1 -1)') AS p3, ST_GeomFromtext('POINT(0 0)') AS p4;
 SELECT 'ST_Angle_3_pts', St_Angle(p1,p2,p3)
 	FROM ST_GeomFromtext('POINT(0 1)') AS p1, ST_GeomFromtext('POINT(0 0)') AS p2
-	, ST_GeomFromtext('POINT(1 0)') AS p3, ST_GeomFromtext('POINT(2 0)') AS p4 ; 
+	, ST_GeomFromtext('POINT(1 0)') AS p3, ST_GeomFromtext('POINT(2 0)') AS p4;
 SELECT 'ST_Angle_mixed_srid', St_Angle(p1,p2,p3,p4)
 	FROM ST_GeomFromtext('POINT(0 1)') AS p1, ST_GeomFromtext('POINT(0 0)') AS p2
-	, ST_GeomFromtext('POINT(1 0)',4326) AS p3, ST_GeomFromtext('POINT(2 0)') AS p4 ;
+	, ST_GeomFromtext('POINT(1 0)',4326) AS p3, ST_GeomFromtext('POINT(2 0)') AS p4;
 SELECT 'ST_Angle_empty' , St_Angle(p1,p2,p3,p4)
 	FROM ST_GeomFromtext('POINT EMPTY') AS p1, ST_GeomFromtext('POINT(0 0)') AS p2
-	, ST_GeomFromtext('POINT(1 0)',4326) AS p3, ST_GeomFromtext('POINT(2 0)') AS p4 ;
---- ST_Angle( lines)
+	, ST_GeomFromtext('POINT(1 0)',4326) AS p3, ST_GeomFromtext('POINT(2 0)') AS p4;
+--- ST_Angle(lines)
 SELECT 'ST_Angle_2_lines', St_Angle(l1,l2)
 	FROM ST_GeomFromtext('LINESTRING(0 1,0 0)') AS l1
-	, ST_GeomFromtext('LINESTRING(1 0, 2 0)') AS l2 ;
+	, ST_GeomFromtext('LINESTRING(1 0, 2 0)') AS l2;
 
 --- ST_ClusterKMeans
 
@@ -203,3 +203,13 @@ from (
 group by cid
 order by count(*)
 limit 1;
+
+
+-- typmod checks
+select 'typmod_point_4326', geometry_typmod_out(geometry_typmod_in('{Point,4326}'));
+select 'typmod_point_0', geometry_typmod_out(geometry_typmod_in('{Point,0}'));
+select 'typmod_point_-1', geometry_typmod_out(geometry_typmod_in('{Point,-1}'));
+select 'typmod_pointzm_0', geometry_typmod_out(geometry_typmod_in('{PointZM,0}'));
+select 'typmod_geometry_0', geometry_typmod_out(geometry_typmod_in('{Geometry,0}'));
+select 'typmod_geometry_4326', geometry_typmod_out(geometry_typmod_in('{Geometry,4326}'));
+select 'typmod_geography_0', geometry_typmod_out(geometry_typmod_in('{Geogrpahy,0}'));

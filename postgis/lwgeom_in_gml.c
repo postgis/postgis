@@ -681,7 +681,6 @@ static POINTARRAY* parse_gml_coord(xmlNodePtr xnode, bool *hasz)
 	if (!z) *hasz = false;
 
 	ptarray_append_point(dpa, &p, LW_FALSE);
-	x = y = z = false;
 
 	return dpa; /* ptarray_clone_deep(dpa); */
 }
@@ -1514,9 +1513,9 @@ static LWGEOM* parse_gml_mpoint(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		{
 			for (xb = xa->children ; xb != NULL ; xb = xb->next)
 			{
-				if (xb != NULL)
-					geom = (LWGEOM*)lwmpoint_add_lwpoint((LWMPOINT*)geom,
-				                                         (LWPOINT*)parse_gml(xb, hasz, root_srid));
+				geom = (LWGEOM*)lwmpoint_add_lwpoint(
+				    (LWMPOINT*)geom,
+				    (LWPOINT*)parse_gml(xb, hasz, root_srid));
 			}
 		}
 		else if (!strcmp((char *) xa->name, "pointMember"))
