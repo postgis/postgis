@@ -96,13 +96,8 @@ Datum postgis_typmod_out(PG_FUNCTION_ARGS)
 	if ( hasm )
 		str += sprintf(str, "%s", "M");
 
-	/* Comma? */
-	if ( srid )
-		str += sprintf(str, ",");
-
 	/* Has SRID? */
-	if ( srid )
-		str += sprintf(str, "%d", srid);
+	if (srid) str += sprintf(str, ",%d", srid);
 
 	/* Closing bracket. */
 	str += sprintf(str, ")");
