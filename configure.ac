@@ -907,13 +907,12 @@ AC_SUBST([HAVE_JSON])
 
 fi
 
-
 dnl ===========================================================================
 dnl Detect if pkg-config installed
 dnl ===========================================================================
 # check for pkg-config
-AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
-if test "$PKG_CONFIG" = "no"; then
+PKG_PROG_PKG_CONFIG
+if test -z "$PKG_CONFIG"; then
    AC_MSG_WARN([Cannot find pkg-config, make sure it is installed in your PATH])
 fi
 
@@ -970,7 +969,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 
     dnl No user-specified protobuf dir, try to find one using pkg-config
     else
-        if test "$PKG_CONFIG" = "no"; then
+        if test -z "$PKG_CONFIG"; then
         	AC_MSG_WARN([Cannot find pkg-config, disabling protobuf support.])
         	HAVE_PROTOBUF=no
         else
