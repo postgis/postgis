@@ -1915,10 +1915,7 @@ lw_dist2d_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C, const PO
 			dl->p2=theP;
 		}
 		return LW_TRUE;
-
 	}
-	lwerror("unspecified error in function lw_dist2d_seg_seg");
-	return LW_FALSE; /*If we have come here something is wrong*/
 }
 
 
