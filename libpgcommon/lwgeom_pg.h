@@ -144,6 +144,13 @@ char* text2cstring(const text *textptr);
 	#define STATRELATT STATRELATTINH
 #endif
 
+#if POSTGIS_PGSQL_VERSION >= 110
+#ifndef FALSE
+#define FALSE 0
+#define TRUE 1
+#endif
+#endif
+
 /* PG-exposed */
 Datum BOX2D_same(PG_FUNCTION_ARGS);
 Datum BOX2D_overlap(PG_FUNCTION_ARGS);
