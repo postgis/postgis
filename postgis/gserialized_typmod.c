@@ -83,10 +83,10 @@ Datum postgis_typmod_out(PG_FUNCTION_ARGS)
 	str += sprintf(str, "(");
 
 	/* Has type? */
-	if ( type )
+	if (type)
 		str += sprintf(str, "%s", lwtype_name(type));
-  else if ( (!type) &&  ( srid || hasz || hasm ) )
-    str += sprintf(str, "Geometry");
+	else if (srid || hasz || hasm)
+		str += sprintf(str, "Geometry");
 
 	/* Has Z? */
 	if ( hasz )
