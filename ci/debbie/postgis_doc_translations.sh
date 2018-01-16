@@ -49,10 +49,10 @@ make check-localized
 #make pdf
 rm -rf images
 mkdir images
-cp html/images/* images 
+cp html/images/* images
 #make epub
 #make -e chunked-html 2>&1 | tee -a doc-errors.log
-#make update-po
+#make update-po  #we only do this for trunk, cause transifex only follows trunk
 make html-localized
 # make -C po/es/ local-html
 # make -C po/fr/ local-html
