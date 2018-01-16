@@ -124,3 +124,11 @@ SELECT 'segmentize_geography_3667', abs(ST_Length(geog) - ST_Length(ST_Segmentiz
 -- Clean up spatial_ref_sys
 DELETE FROM spatial_ref_sys WHERE srid IN (4269,4326);
 
+-- typmod checks
+select 'typmod_point_4326', geography_typmod_out(geography_typmod_in('{Point,4326}'));
+select 'typmod_point_0', geography_typmod_out(geography_typmod_in('{Point,0}'));
+select 'typmod_point_-1', geography_typmod_out(geography_typmod_in('{Point,-1}'));
+select 'typmod_pointzm_0', geography_typmod_out(geography_typmod_in('{PointZM,0}'));
+select 'typmod_geometry_0', geography_typmod_out(geography_typmod_in('{Geometry,0}'));
+select 'typmod_geometry_4326', geography_typmod_out(geography_typmod_in('{Geometry,4326}'));
+select 'typmod_geography_0', geography_typmod_out(geography_typmod_in('{Geogrpahy,0}'));

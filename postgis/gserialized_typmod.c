@@ -64,16 +64,16 @@ Datum postgis_typmod_out(PG_FUNCTION_ARGS)
 {
 	char *s = (char*)palloc(64);
 	char *str = s;
-	uint32 typmod = PG_GETARG_INT32(0);
-	uint32 srid = TYPMOD_GET_SRID(typmod);
-	uint32 type = TYPMOD_GET_TYPE(typmod);
-	uint32 hasz = TYPMOD_GET_Z(typmod);
-	uint32 hasm = TYPMOD_GET_M(typmod);
+	int32 typmod = PG_GETARG_INT32(0);
+	int32 srid = TYPMOD_GET_SRID(typmod);
+	int32 type = TYPMOD_GET_TYPE(typmod);
+	int32 hasz = TYPMOD_GET_Z(typmod);
+	int32 hasm = TYPMOD_GET_M(typmod);
 
 	POSTGIS_DEBUGF(3, "Got typmod(srid = %d, type = %d, hasz = %d, hasm = %d)", srid, type, hasz, hasm);
 
 	/* No SRID or type or dimensionality? Then no typmod at all. Return empty string. */
-	if ( ! ( srid || type || hasz || hasm ) )
+	if (!(srid || type || hasz || hasm) || typmod < 0)
 	{
 		*str = '\0';
 		PG_RETURN_CSTRING(str);
@@ -89,12 +89,10 @@ Datum postgis_typmod_out(PG_FUNCTION_ARGS)
 		str += sprintf(str, "Geometry");
 
 	/* Has Z? */
-	if ( hasz )
-		str += sprintf(str, "%s", "Z");
+	if (hasz) str += sprintf(str, "%s", "Z");
 
 	/* Has M? */
-	if ( hasm )
-		str += sprintf(str, "%s", "M");
+	if (hasm) str += sprintf(str, "%s", "M");
 
 	/* Has SRID? */
 	if (srid) str += sprintf(str, ",%d", srid);
@@ -213,7 +211,7 @@ GSERIALIZED* postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 
 static uint32 gserialized_typmod_in(ArrayType *arr, int is_geography)
 {
-	uint32 typmod = 0;
+	int32 typmod = 0;
 	Datum *elem_values;
 	int n = 0;
 	int	i = 0;
@@ -294,7 +292,7 @@ PG_FUNCTION_INFO_V1(geography_typmod_in);
 Datum geography_typmod_in(PG_FUNCTION_ARGS)
 {
 	ArrayType *arr = (ArrayType *) DatumGetPointer(PG_GETARG_DATUM(0));
-	uint32 typmod = gserialized_typmod_in(arr, LW_TRUE);
+	int32 typmod = gserialized_typmod_in(arr, LW_TRUE);
 	int srid = TYPMOD_GET_SRID(typmod);
 	/* Check the SRID is legal (geographic coordinates) */
 	srid_is_latlong(fcinfo, srid);
