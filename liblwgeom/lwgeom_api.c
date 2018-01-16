@@ -704,11 +704,7 @@ void
 interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, double F)
 {
 #if PARANOIA_LEVEL > 0
-	double absF=fabs(F);
-	if ( absF < 0 || absF > 1 )
-	{
-		lwerror("interpolate_point4d: invalid F (%g)", F);
-	}
+	if (F < 0 || F > 1) lwerror("interpolate_point4d: invalid F (%g)", F);
 #endif
 	I->x=A->x+((B->x-A->x)*F);
 	I->y=A->y+((B->y-A->y)*F);
