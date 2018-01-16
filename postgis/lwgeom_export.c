@@ -119,8 +119,7 @@ int getSRIDbySRS(const char* srs)
 	char query[256];
 	int srid, err;
 
-	if (srs == NULL)
-		return 0;
+	if (!srs) return 0;
 
 	if (SPI_OK_CONNECT != SPI_connect ())
 	{
@@ -166,11 +165,6 @@ int getSRIDbySRS(const char* srs)
 	}
 
 	srid = atoi(SPI_getvalue(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1));
-	if ( ! srs )
-	{
-		SPI_finish();
-		return 0;
-	}
 
 	SPI_finish();
 
