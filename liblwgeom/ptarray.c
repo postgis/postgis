@@ -1756,8 +1756,7 @@ getPoint_internal(const POINTARRAY *pa, uint32_t n)
 
 	LWDEBUGF(5, "(n=%d, pa.npoints=%d, pa.maxpoints=%d)",n,pa->npoints,pa->maxpoints);
 
-	if ( ( n < 0 ) ||
-	     ( n > pa->npoints ) ||
+	if ( ( n > pa->npoints ) ||
 	     ( n >= pa->maxpoints ) )
 	{
 		lwerror("%s [%d] called outside of ptarray range (n=%d, pa.npoints=%d, pa.maxpoints=%d)", __FILE__, __LINE__, n, pa->npoints, pa->maxpoints);
