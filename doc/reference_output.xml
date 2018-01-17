@@ -947,8 +947,8 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns the Well-Known Text representation of the geometry/geography. The optional integer precision
-				parameter can specify the number of significant digits in the output doubles.</para>
+			<para>Returns the Well-Known Text representation of the geometry/geography. Optional argument may be used to reduce the maximum number
+			of decimal places used in output (defaults to 15).</para>
 
 			<note>
 			  <para>The WKT spec does not include the SRID.  To get the SRID as part of the data, use the non-standard
@@ -969,7 +969,6 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 		  </refsection>
 
 		  <refsection>
-			<title>Examples</title>
 			<title>Examples</title>
 
 			<programlisting>SELECT ST_AsText('01030000000100000005000000000000000000
@@ -993,10 +992,8 @@ F000000000000000000000000000000000000000000000000');
 			<programlisting>SELECT ST_AsText(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)'),2)
 st_astext
 --------------------
-POINT(1.1e+02 1.1)
+POINT(111.11 1.11)
 (1 row)</programlisting>
-		  </refsection>
-
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
