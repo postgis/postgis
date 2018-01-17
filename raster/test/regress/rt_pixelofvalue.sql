@@ -93,7 +93,7 @@ FROM (
 	SELECT
 		ST_PixelOfValue(
 			rast,
-			2	
+			2
 		) AS pixval
 	FROM raster_pixelofvalue
 ) foo;

@@ -29,5 +29,4 @@ SET statement_timeout TO 0;
 -- Not affected by old timeout
 SELECT '1',ST_AsText(ST_Segmentize('LINESTRING(0 0,4 0)'::geometry, 2));
 
-
 DROP FUNCTION _timecheck(text, interval);

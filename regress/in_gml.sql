@@ -3,7 +3,6 @@
 -- Written by Olivier Courtin - Oslandia
 --
 
-
 --
 -- spatial_ref_sys datas
 --
@@ -16,9 +15,6 @@ INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4tex
 
 --- EPSG 27582 : NTF (Paris) / France II (deprecated)
 INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4text") VALUES (27582,'EPSG',27582,'PROJCS["NTF (Paris) / France II (deprecated)",GEOGCS["NTF (Paris)",DATUM["Nouvelle_Triangulation_Francaise_Paris",SPHEROID["Clarke 1880 (IGN)",6378249.2,293.4660212936265,AUTHORITY["EPSG","7011"]],TOWGS84[-168,-60,320,0,0,0,0],AUTHORITY["EPSG","6807"]],PRIMEM["Paris",2.33722917,AUTHORITY["EPSG","8903"]],UNIT["grad",0.01570796326794897,AUTHORITY["EPSG","9105"]],AUTHORITY["EPSG","4807"]],UNIT["metre",1,AUTHORITY["EPSG","9001"]],PROJECTION["Lambert_Conformal_Conic_1SP"],PARAMETER["latitude_of_origin",52],PARAMETER["central_meridian",0],PARAMETER["scale_factor",0.99987742],PARAMETER["false_easting",600000],PARAMETER["false_northing",2200000],AUTHORITY["EPSG","27582"],AXIS["X",EAST],AXIS["Y",NORTH]]','+proj=lcc +lat_1=46.8 +lat_0=46.8 +lon_0=0 +k_0=0.99987742 +x_0=600000 +y_0=2200000 +a=6378249.2 +b=6356515 +towgs84=-168,-60,320,0,0,0,0 +pm=paris +units=m +no_defs ');
-
-
-
 
 -- Empty Geometry
 SELECT 'empty_geom', ST_AsEWKT(ST_GeomFromGML(NULL));
@@ -36,8 +32,6 @@ SELECT 'xml_2', ST_AsEWKT(ST_GeomFromGML('<foo>'));
 -- ERROR: Not a GML Geometry
 SELECT 'xml_3', ST_AsEWKT(ST_GeomFromGML('<foo/>'));
 
-
-
 --
 -- Point
 --
@@ -53,8 +47,6 @@ SELECT 'point_3', ST_AsEWKT(ST_GeomFromGML('<gml:Point></gml:Point>'));
 
 -- srsName handle
 SELECT 'point_4', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
-
-
 
 --
 -- LineString
@@ -75,9 +67,6 @@ SELECT 'linestring_5', ST_AsEWKT(ST_GeomFromGML('<gml:LineString></gml:LineStrin
 
 -- XML not elements handle
 SELECT 'linestring_6', ST_AsEWKT(ST_GeomFromGML(' <!-- --> <gml:LineString> <!-- --> <gml:coordinates>1,2 3,4</gml:coordinates></gml:LineString>'));
-
-
-
 
 --
 -- Curve
@@ -120,9 +109,6 @@ SELECT 'curve_14', ST_AsEWKT(ST_GeomFromGML('<gml:Curve><gml:segments><gml:LineS
 -- 2 segments, mixed dimension
 SELECT 'curve_15', ST_AsEWKT(ST_GeomFromGML('<gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="3">1 2 3 4 5 6</gml:posList></gml:LineStringSegment><gml:LineStringSegment><gml:posList srsDimension="2">4 5 7 8</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve>'));
 SELECT 'curve_16', ST_AsEWKT(ST_GeomFromGML('<gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="2">1 2 3 4</gml:posList></gml:LineStringSegment><gml:LineStringSegment><gml:posList srsDimension="3">3 4 5 6 7 8</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve>'));
-
-
-
 
 --
 -- Polygon
@@ -177,8 +163,6 @@ SELECT 'polygon_17', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:exterior><gml:L
 SELECT 'polygon_18', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="2">10 11 12 13 14 15 10 11</gml:posList></gml:LinearRing></gml:interior></gml:Polygon>'));
 SELECT 'polygon_19', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="3">7 8 9 10 11 12 13 14 15 7 8 9</gml:posList></gml:LinearRing></gml:interior></gml:Polygon>'));
 
-
-
 --
 -- LinearRing
 --
@@ -204,7 +188,6 @@ SELECT 'linearring_7', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing></gml:LinearRin
 
 -- XML not elements handle
 SELECT 'linearring_8', ST_AsEWKT(ST_GeomFromGML(' <!-- --> <gml:LinearRing> <!-- --> <gml:posList>1 2 3 4 5 6 1 2</gml:posList> <!-- --> </gml:LinearRing>'));
-
 
 --
 -- Triangle
@@ -238,8 +221,6 @@ SELECT 'triangle_10', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle interpolation="pla
 
 -- ERROR: interpolation not planar
 SELECT 'triangle_11', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle interpolation="not_planar"><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:Triangle>'));
-
-
 
 --
 -- Surface
@@ -304,7 +285,6 @@ SELECT 'surface_22', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:Po
 -- ERROR: interior but no exterior
 SELECT 'surface_23', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch><gml:interior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 
-
 --
 -- MultiPoint
 --
@@ -337,7 +317,6 @@ SELECT 'mpoint_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint><gml:pointMembers><
 -- Empty pointMembers
 SELECT 'mpoint_10', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint><gml:pointMembers></gml:pointMembers></gml:MultiPoint>'));
 
-
 --
 -- MultiLineString
 --
@@ -364,7 +343,6 @@ SELECT 'mline_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiLineString><gml:lineString
 
 -- Mixed srsName
 SELECT 'mline_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiLineString srsName="EPSG:27582"><gml:lineStringMember><gml:LineString><gml:coordinates>1,2 3,4</gml:coordinates></gml:LineString></gml:lineStringMember><gml:lineStringMember><gml:LineString srsName="EPSG:27562"><gml:coordinates>400000,5000000 400010,5000010</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString>'));
-
 
 --
 -- MultiCurve
@@ -401,7 +379,6 @@ SELECT 'mcurve_11', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMembers>
 
 SELECT 'mcurve_12', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMembers></gml:curveMembers></gml:MultiCurve>'));
 
-
 --
 -- MultiPolygon
 --
@@ -419,7 +396,6 @@ SELECT 'mpoly_3', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPolygon srsName="EPSG:4326
 SELECT 'mpoly_4', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPolygon><gml:polygonMember></gml:polygonMember></gml:MultiPolygon>'));
 SELECT 'mpoly_5', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPolygon></gml:MultiPolygon>'));
 
-
 -- XML not elements handle
 SELECT 'mpoly_6', ST_AsEWKT(ST_GeomFromGML(' <!-- --> <gml:MultiPolygon> <!-- --> <gml:polygonMember> <!-- --> <gml:Polygon> <!-- --> <gml:outerBoundaryIs> <!-- --> <gml:LinearRing> <!-- --> <gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember> <!-- --> <gml:polygonMember> <!-- --> <gml:Polygon> <!-- --> <gml:outerBoundaryIs> <!-- --> <gml:LinearRing> <!-- --> <gml:coordinates>7,8 9,10 11,12 7,8</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>'));
 
@@ -429,9 +405,6 @@ SELECT 'mpoly_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPolygon><gml:polygonMember
 
 -- Mixed srsName
 SELECT 'mpoly_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPolygon srsName="EPSG:27582"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember><gml:polygonMember><gml:Polygon srsName="EPSG:27562"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>400000,5000000 400010,5000010 400020,5000020 400000,5000000</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs><gml:innerBoundaryIs><gml:LinearRing><gml:coordinates>400100,5000100 400110,5000110 400120,5000120 400100,5000100</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>'));
-
-
-
 
 --
 -- MultiSurface
@@ -468,7 +441,6 @@ SELECT 'msurface_11', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMe
 
 -- Empty surfaceMembers
 SELECT 'msurface_12', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMembers></gml:surfaceMembers></gml:MultiSurface>'));
-
 
 --
 -- PolyhedralSurface
@@ -541,7 +513,6 @@ SELECT 'polyhedralsurface_24', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface>
 -- ERROR: interpolation not planar
 SELECT 'polyhedralsurface_25', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch interpolation="not_planar"><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
 
-
 --
 -- Tin and TriangulatedSurface
 --
@@ -592,8 +563,6 @@ SELECT 'tin_17', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:trianglePatches><gml:Tr
 
 SELECT 'tin_18', ST_AsEWKT(ST_GeomFromGML('<gml:TriangulatedSurface><gml:trianglePatches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:trianglePatches></gml:TriangulatedSurface>'));
 
-
-
 --
 -- GeometryCollection
 --
@@ -635,9 +604,6 @@ SELECT 'collection_13', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geomet
 
 -- Mixed srsName
 SELECT 'collection_14', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry srsName="EPSG:27582"><gml:geometryMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:geometryMember><gml:geometryMember><gml:MultiGeometry><gml:geometryMember><gml:MultiGeometry srsName="EPSG:27562"><gml:geometryMember><gml:Point><gml:coordinates>400000,5000000</gml:coordinates></gml:Point></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry>'));
-
-
-
 
 --
 -- srsName
@@ -681,8 +647,6 @@ SELECT 'srs_17', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry srsName="urn:ogc:d
 -- Reverse axis with severals multi geometry types
 -- TODO
 
-
-
 --
 -- GML Namespace
 --
@@ -725,7 +689,6 @@ SELECT 'ns_12', ST_AsEWKT(ST_GeomFromGML('<gml:Point foo:srsName="EPSG:4326" xml
 
 -- Explicit GML namespace (no prefix)
 SELECT 'ns_13', ST_AsEWKT(ST_GeomFromGML('<Point srsName="EPSG:4326" xmlns="http://www.opengis.net/gml"><coordinates>1,2</coordinates></Point>'));
-
 
 --
 -- Coordinates (simple)
@@ -773,8 +736,6 @@ SELECT 'coordinates_16', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordina
 
 -- ERROR: Junk
 SELECT 'coordinates_17', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates>!@#$%^*()"</gml:coordinates></gml:LineString>'));
-
-
 
 --
 -- Coordinates (cs,ts,decimal)
@@ -830,12 +791,8 @@ SELECT 'coordinates_cs_16', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coord
 SELECT 'coordinates_cs_17', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates cs="." ts=";" decimal=".">1.1.2.2;3.3.4,4</gml:coordinates></gml:LineString>'));
 SELECT 'coordinates_cs_18', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates cs="." ts=";" decimal=";">1;1.2;2;3;3.4,4</gml:coordinates></gml:LineString>'));
 
-
 -- XML Entity substitution
 SELECT 'coordinates_cs_19', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates ts="," cs="&#x20;">1 2,3 4</gml:coordinates></gml:LineString>'));
-
-
-
 
 --
 -- pos
@@ -885,7 +842,6 @@ SELECT 'pos_16', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos srsDimension="3">
 -- ERROR: 4 dimensions
 SELECT 'pos_17', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos srsDimension="4">1 2 3 4</gml:pos></gml:Point>'));
 
-
 --
 -- posList
 --
@@ -930,8 +886,6 @@ SELECT 'poslist_17', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:posList> 1  
 -- ERROR: Junk
 SELECT 'poslist_18', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:posList>!@#$%^*()"</gml:posList></gml:LineString>'));
 
-
-
 --
 -- Generic data
 --
@@ -941,9 +895,6 @@ SELECT 'data_1', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:pos>1 2</gml:pos
 
 -- Mixed pos, posList, pointProperty, pointRep
 SELECT 'data_2', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:pos>1 2</gml:pos><gml:posList>3 4 5 6</gml:posList><gml:pointProperty><gml:Point><gml:pos>7 8</gml:pos></gml:Point></gml:pointProperty><gml:pointRep><gml:Point><gml:coordinates>9,10</gml:coordinates></gml:Point></gml:pointRep></gml:LineString>'));
-
-
-
 
 --
 -- XLink
@@ -1017,8 +968,6 @@ SELECT 'xlink_22', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http:
 
 -- ERROR circular ref
 SELECT 'xlink_23', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry gml:id="mg1" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:MultiGeometry xlink:type="simple" xlink:href="#mg1"/></gml:geometryMember></gml:MultiGeometry>'));
-
-
 
 --
 -- Bijective PostGIS GML test
@@ -1207,10 +1156,6 @@ SELECT 'gml_60', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('GEOMETRYCOLLECT
 -- Collection GML 3 - 3D & SRID lat/lon
 SELECT 'gml_61', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_AsEWKT('SRID=4326;GEOMETRYCOLLECTION(POINT(1 2 3))'), 16)));
 
-
-
-
-
 --
 -- coord
 --
@@ -1250,7 +1195,6 @@ SELECT 'coord_15', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coord><gml:X>1
 
 -- XML not elements handle
 SELECT 'coord_16', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coord> <!-- --> <gml:X>1</gml:X> <!-- --> <gml:Y>2</gml:Y> <!-- --> </gml:coord> <!-- --> <gml:coord> <!-- --> <gml:X>3</gml:X> <!-- --> <gml:Y>4</gml:Y></gml:coord></gml:LineString>'));
-
 
 --
 -- Double
@@ -1316,9 +1260,6 @@ SELECT 'double_30', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 -1.23E 2</gm
 
 -- ERROR: Junk
 SELECT 'double_31', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 $0%@#$^%#</gml:pos></gml:Point>'));
-
-
-
 
 --
 -- Delete inserted spatial data

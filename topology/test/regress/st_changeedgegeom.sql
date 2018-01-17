@@ -2,7 +2,6 @@ set client_min_messages to ERROR;
 
 \i load_topology.sql
 
-
 -- good one
 SELECT 'T1', topology.ST_ChangeEdgeGeom('city_data', 25,
  'LINESTRING(9 35, 11 33, 13 35)');

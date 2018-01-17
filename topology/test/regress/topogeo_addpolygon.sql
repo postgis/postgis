@@ -70,7 +70,6 @@ END;
 $$ LANGUAGE 'plpgsql';
 -- }
 
-
 -- Invalid calls
 SELECT 'invalid', TopoGeo_addPolygon('city_data', 'MULTILINESTRING((36 26, 38 30))');
 SELECT 'invalid', TopoGeo_addPolygon('city_data', 'POINT(36 26)');

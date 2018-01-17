@@ -212,7 +212,6 @@ FROM _edgepath
         RAISE DEBUG ' edge % lf:%(%) rf:%(%)' , rec.signed_edge_id, rec.lf, rec.left_face, rec.rf, rec.right_face;
 #endif
 
-
         IF rec.left_face = ANY (all_faces) AND NOT rec.left_face = ANY (shell_faces) THEN
           shell_faces := shell_faces || rec.left_face;
         END IF;
@@ -292,7 +291,6 @@ FROM _edgepath
     json := json || array_to_string(comptxt, ',') || ']}';
 
     EXECUTE 'SET search_path TO ' || old_search_path;
-
 
   ELSIF tg.type = 4 THEN -- collection
     RAISE EXCEPTION 'Collection TopoGeometries are not supported by AsTopoJSON';

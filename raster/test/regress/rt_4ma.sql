@@ -32,7 +32,7 @@ CREATE OR REPLACE FUNCTION make_value_array(
 					expr := replace(skip_expr, '[v]'::text, value::text);
 					EXECUTE 'SELECT (' || expr || ')::boolean' INTO result;
 				END IF;
-				
+
 				IF result IS TRUE THEN
 					values[1][y][x] := value;
 				END IF;

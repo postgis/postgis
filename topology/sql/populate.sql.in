@@ -626,7 +626,6 @@ BEGIN
     || ') ';
   END IF;
 
-
   --
   -- Set left_face/right_face of any contained edge
   --

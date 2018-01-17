@@ -88,7 +88,6 @@ SELECT id,wkt FROM test_data WHERE
        ST_asBinary(geometry(wkb_ndr)) != ST_asBinary(geometry(wkb_xdr)) OR
        ST_asBinary(geometry(wkt)) != ST_asBinary(geometry(wkb_xdr));
 
-
 SELECT ST_extent(geometry(wkb_ndr)) from test_data;
 SELECT ST_3DExtent(geometry(wkb_ndr)) from test_data WHERE ST_NDims(wkb_ndr) > 2;
 SELECT ST_MemSize(ST_collect(ST_Force2d(geometry(wkb_ndr)))) from test_data;
@@ -98,7 +97,6 @@ SELECT ST_MemSize(ST_collect(ST_Force3dm(geometry(wkb_ndr)))) from test_data;
 SELECT ST_MemSize(ST_collect(ST_Force2d(ST_force4d(ST_force3dm(ST_force3dz(ST_force2d(geometry(wkb_ndr)))))))) from test_data;
 
 DROP TABLE test_data;
-
 
 SELECT '#3069', ST_Summary(PostGIS_Noop('SRID=4326;POINT(1 1)'::geometry));
 SELECT '#3069', ST_Summary(PostGIS_Noop('SRID=4326;LINESTRING(1 1,0 0)'::geometry));
@@ -132,7 +130,6 @@ SELECT 'BoundingDiagonal5', ST_AsEwkt(ST_BoundingDiagonal(
 SELECT 'BoundingDiagonal6', ST_AsEwkt(ST_BoundingDiagonal(
     'SRID=3857;POLYGON M EMPTY'::geometry
 ));
-
 
 --- ST_Azimuth
 SELECT 'ST_Azimuth_regular' , round(ST_Azimuth(geom1,geom2)::numeric,4)
@@ -203,7 +200,6 @@ from (
 group by cid
 order by count(*)
 limit 1;
-
 
 -- typmod checks
 select 'typmod_point_4326', geometry_typmod_out(geometry_typmod_in('{Point,4326}'));

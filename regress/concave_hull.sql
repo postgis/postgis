@@ -9,7 +9,7 @@ FROM ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,
 			50 60, 125 100, 175 150))'),
 		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
 		) As geom;
-		
+
 SELECT
 	'ST_ConcaveHull Lines 0.80', ST_Within(geom,ST_ConcaveHull(
 		geom, 0.80) ) As encloses_geom,

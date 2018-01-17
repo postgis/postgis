@@ -63,7 +63,7 @@ BEGIN
                         , COALESCE(t.tfidr,0) As right_face, COALESCE(tl.tlid, t.tlid) AS next_left_edge,  COALESCE(tr.tlid, t.tlid) As next_right_edge, t.orig_geom
 						FROM
 							te AS t LEFT JOIN te As tl ON (t.tnidf = tl.tnidt AND t.tfidl = tl.tfidl)
-							 LEFT JOIN te As tr ON (t.tnidt = tr.tnidf AND t.tfidr = tr.tfidr)				
+							 LEFT JOIN te As tr ON (t.tnidt = tr.tnidf AND t.tfidr = tr.tfidr)
 						';
 	EXECUTE var_sql USING var_statefp, var_rgeom, var_srid, var_precision;
 	GET DIAGNOSTICS var_rcnt = ROW_COUNT;
@@ -84,7 +84,7 @@ BEGIN
 	var_sql := 'CREATE INDEX idx_tmp_edge_next_left_edge ON tmp_edge USING btree (next_left_edge ); CREATE INDEX idx_tmp_edge_next_right_edge ON tmp_edge USING btree (next_right_edge);';
 
 	EXECUTE var_sql;
-	
+
 	-- start load in faces
 	var_sql := 'INSERT INTO ' || quote_ident(toponame) || '.face(face_id, mbr)
 						SELECT f.tfid, ST_Envelope(ST_Transform(f.the_geom,$3)) As mbr
@@ -99,7 +99,7 @@ BEGIN
    -- end load in faces
 
    -- add remaining missing edges of present faces --
-   var_sql := 'INSERT INTO tmp_edge(edge_id, geom, start_node, end_node, left_face, right_face, next_left_edge, next_right_edge, orig_geom)	
+   var_sql := 'INSERT INTO tmp_edge(edge_id, geom, start_node, end_node, left_face, right_face, next_left_edge, next_right_edge, orig_geom)
    			WITH te AS
    			(SELECT tlid,  ST_GeometryN(ST_SnapToGrid(ST_Transform(ST_LineMerge(the_geom),$2),$3),1) As geom, tnidf, tnidt, tfidl, tfidr, the_geom As orig_geom
 									FROM tiger.edges
@@ -108,7 +108,7 @@ BEGIN
 				OR tfidr IN(SELECT face_id FROM ' || quote_ident(toponame) || '.face) )
 				AND tlid NOT IN(SELECT edge_id FROM tmp_edge)
 				 )
-				
+
 			SELECT DISTINCT ON (t.tlid) t.tlid As edge_id,t.geom
                         , t.tnidf As start_node, t.tnidt As end_node, t.tfidl As left_face
                         , t.tfidr As right_face, tl.tlid AS next_left_edge,  tr.tlid As next_right_edge, t.orig_geom
@@ -172,7 +172,7 @@ BEGIN
 					SELECT t.edge_id, t.geom, t.start_node, t.end_node, COALESCE(t.left_face,0) As left_face, COALESCE(t.right_face,0) As right_face, t.next_left_edge, t.next_right_edge
 						FROM
 							tmp_edge AS t
-							WHERE t.edge_id NOT IN(SELECT edge_id FROM ' || quote_ident(toponame) || '.edge) 				
+							WHERE t.edge_id NOT IN(SELECT edge_id FROM ' || quote_ident(toponame) || '.edge)
 						';
 	EXECUTE var_sql USING var_statefp, var_rgeom;
 	GET DIAGNOSTICS var_rcnt = ROW_COUNT;

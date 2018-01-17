@@ -245,7 +245,6 @@ BEGIN
         RETURN;
     END IF;
 
-
 -- There are a couple of different things to try, from the highest preference and falling back
   -- to lower-preference options.
   -- We start out with zip-code matching, where the zip code could possibly be in more than one

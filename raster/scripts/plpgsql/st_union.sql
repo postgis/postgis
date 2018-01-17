@@ -94,7 +94,6 @@ CREATE OR REPLACE FUNCTION MapAlgebra4UnionFinal1(rast rastexpr)
     $$
     LANGUAGE 'plpgsql';
 
-
 CREATE OR REPLACE FUNCTION MapAlgebra4Union(rast1 rastexpr,
                         rast2 raster,
                         p_expression text,
@@ -248,7 +247,6 @@ FROM (SELECT ST_PixelAsPolygons(ST_Union(rast, 'last'), 1) rast
             SELECT ST_TestRaster(0, 3, 3) AS rast
             ) foi) foo
 
-
 -- Explicit implementation of 'MEAN' to make sure directly passing expressions works properly
 SELECT ST_AsBinary((rast).geom), (rast).val
 FROM (SELECT ST_PixelAsPolygons(ST_Union(rast, '[rast1.val] + [rast2.val]'::text, '[rast2.val]'::text, '[rast1.val]'::text, NULL::double precision,
@@ -277,13 +275,11 @@ FROM (SELECT ST_PixelAsPolygons(ST_Union(rast, 'SUM'::text,
             SELECT ST_TestRaster(-1, 0, 6) AS rast
             ) foi) foo
 
-
 SELECT ST_AsBinary((rast).geom), (rast).val
 FROM (SELECT ST_PixelAsPolygons(ST_Union(rast), 1) AS rast
       FROM (SELECT ST_TestRaster(0, 0, 1) AS rast UNION ALL SELECT ST_TestRaster(2, 0, 2)
            ) foi
      ) foo
-
 
 SELECT ST_AsBinary((rast).geom), (rast).val
 FROM (SELECT ST_PixelAsPolygons(ST_Union(rast, 'mean'), 1) AS rast

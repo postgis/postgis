@@ -1,5 +1,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
@@ -11,7 +11,7 @@
 -- the terms of the GNU General Public Licence. See the COPYING file.
 --
 -- Author: Sandro Santilli <strk@kbt.io>
---  
+--
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
 -- STATUS:
@@ -21,7 +21,7 @@
 --  We have PostGIS-specific objects and SQL/MM objects.
 --  PostGIS-specific objects have no prefix, SQL/MM ones
 --  have the ``ST_' prefix.
---  
+--
 -- [PostGIS-specific]
 --
 -- TABLE topology
@@ -46,7 +46,7 @@
 --  the topology.topology table.
 --  TODO: add triggers (or rules, or whatever) enforcing
 --        precision to the edge and node tables.
---  
+--
 -- FUNCTION DropTopology(name)
 --    Delete a topology removing reference from the
 --    topology.topology table
@@ -119,25 +119,25 @@
 --    Done, can be modified to include explicit sequences or
 --    more constraints. Very noisy due to implicit index creations
 --    for primary keys and sequences for serial fields...
---  
+--
 --   ST_CreateTopoGeo
 --    Complete
---  
+--
 --   ST_AddIsoNode
 --    Complete
---  
+--
 --   ST_RemoveIsoNode
 --    Complete
---  
+--
 --   ST_MoveIsoNode
 --    Complete
---  
+--
 --   ST_AddIsoEdge
 --    Complete
 --
 --   ST_RemoveIsoEdge
 --    Complete, exceptions untested
---  
+--
 --   ST_ChangeEdgeGeom
 --    Complete
 --
@@ -156,7 +156,7 @@
 --   ST_AddEdgeModFace
 --    Complete
 --    Also updates the Relation table
---  
+--
 --   ST_GetFaceEdges
 --    Complete
 --
@@ -167,29 +167,28 @@
 --   ST_NewEdgeHeal
 --    Complete
 --    Also updates the Relation table
---  
+--
 --   ST_GetFaceGeometry
 --    Implemented using ST_BuildArea()
---  
+--
 --   ST_RemEdgeNewFace
 --    Complete
 --    Also updates the Relation table
---  
+--
 --   ST_RemEdgeModFace
 --    Complete
 --    Also updates the Relation table
---  
+--
 --   ST_ValidateTopoGeo
 --    Unimplemented (probably a wrapper around ValidateTopology)
---  
---  
+--
+--
 
 -- Uninstalling previous installation isn't really a good habit ...
 -- Let people decide about that
 -- DROP SCHEMA topology CASCADE;
 
 #include "../postgis/sqldefines.h"
-
 
 CREATE SCHEMA topology;
 COMMENT ON SCHEMA topology IS 'PostGIS Topology schema';
@@ -234,13 +233,11 @@ BEGIN
 
   --RAISE NOTICE 'LayerTrigger called % % at % level', TG_WHEN, TG_OP, TG_LEVEL;
 
-
   IF TG_OP = 'INSERT' THEN
     RAISE EXCEPTION 'LayerTrigger not meant to be called on INSERT';
   ELSIF TG_OP = 'UPDATE' THEN
     RAISE EXCEPTION 'The topology.layer table cannot be updated';
   END IF;
-
 
   -- Check for existance of any feature column referencing
   -- this layer
@@ -265,7 +262,6 @@ BEGIN
       RETURN NULL;
     END LOOP;
   END LOOP;
-
 
   -- Get topology name
   SELECT name FROM topology.topology INTO toponame
@@ -300,7 +296,6 @@ $$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} LayerTrigger()
 
-
 --{
 -- Layer table.
 -- Stores topology layer informations
@@ -325,7 +320,7 @@ ON topology.layer FOR EACH ROW EXECUTE PROCEDURE topology.LayerTrigger();
 --} Layer table.
 
 --
--- Type returned by ValidateTopology 
+-- Type returned by ValidateTopology
 --
 CREATE TYPE topology.ValidateTopology_ReturnType AS (
   error varchar,
@@ -346,7 +341,7 @@ CREATE TYPE topology.TopoGeometry AS (
 
 --
 -- TopoElement domain
--- 
+--
 -- This is an array of two elements: element_id and element_type.
 --
 -- When used to define _simple_ TopoGeometries,
@@ -369,14 +364,14 @@ ALTER DOMAIN topology.TopoElement ADD
         CONSTRAINT lower_dimension CHECK (
     array_lower(VALUE, 1) = 1
   );
-ALTER DOMAIN topology.TopoElement DROP CONSTRAINT 
+ALTER DOMAIN topology.TopoElement DROP CONSTRAINT
 #if POSTGIS_PGSQL_VERSION >= 92
   IF EXISTS
 #endif
   type_range;
 ALTER DOMAIN topology.TopoElement ADD
         CONSTRAINT type_range CHECK (
-    VALUE[2] > 0 
+    VALUE[2] > 0
   );
 
 --
@@ -413,7 +408,6 @@ BEGIN
   toponame = TG_ARGV[1];
 
   --RAISE NOTICE 'RelationTrigger called % % on %.relation for a %', TG_WHEN, TG_OP, toponame, TG_LEVEL;
-
 
   IF TG_OP = 'DELETE' THEN
     RAISE EXCEPTION 'RelationTrigger not meant to be called on DELETE';
@@ -477,7 +471,7 @@ BEGIN
     --
     -- Element is a Node
     --
-    IF NEW.element_type = 1 
+    IF NEW.element_type = 1
     THEN
       ok = false;
       FOR rec IN EXECUTE 'SELECT node_id FROM '
@@ -495,7 +489,7 @@ BEGIN
     --
     -- Element is an Edge
     --
-    ELSIF NEW.element_type = 2 
+    ELSIF NEW.element_type = 2
     THEN
       ok = false;
       FOR rec IN EXECUTE 'SELECT edge_id FROM '
@@ -513,7 +507,7 @@ BEGIN
     --
     -- Element is a Face
     --
-    ELSIF NEW.element_type = 3 
+    ELSIF NEW.element_type = 3
     THEN
       IF NEW.element_id = 0 THEN
         RAISE EXCEPTION 'Face % cannot be associated with any feature', NEW.element_id;
@@ -534,7 +528,7 @@ BEGIN
     END IF;
 
   END IF;
-  
+
   RETURN NEW;
 END;
 $$
@@ -585,10 +579,9 @@ BEGIN
   -- Add new TopoGeometry column in schema.table
   --
   EXECUTE 'ALTER TABLE ' || quote_ident(schema)
-    || '.' || quote_ident(tbl) 
+    || '.' || quote_ident(tbl)
     || ' ADD COLUMN ' || quote_ident(col)
     || ' topology.TopoGeometry;';
-
 
   --
   -- See if child id exists and extract its level
@@ -611,7 +604,7 @@ BEGIN
       quote_ident(toponame) || '.layer_id_seq'
     ) || ')' INTO STRICT newlayer_id;
 
-  EXECUTE 'INSERT INTO ' 
+  EXECUTE 'INSERT INTO '
        'topology.layer(topology_id, '
        'layer_id, level, child_id, schema_name, '
        'table_name, feature_column, feature_type) '
@@ -624,7 +617,6 @@ BEGIN
     || quote_literal(col) || ','
     || intltype || ');';
 
-
   --
   -- Create a sequence for TopoGeometries in this new layer
   --
@@ -635,7 +627,7 @@ BEGIN
   -- Add constraints on TopoGeom column
   --
   EXECUTE 'ALTER TABLE ' || quote_ident(schema)
-    || '.' || quote_ident(tbl) 
+    || '.' || quote_ident(tbl)
     || ' ADD CONSTRAINT "check_topogeom_' || col || '" CHECK ('
        'topology_id(' || quote_ident(col) || ') = ' || topoid
     || ' AND '
@@ -670,7 +662,7 @@ BEGIN
 --
 #if 0
   --
-  -- Add dependency of the topogeom sequence on the feature column 
+  -- Add dependency of the topogeom sequence on the feature column
   -- This is a dirty hack ...
   --
   query = 'INSERT INTO pg_catalog.pg_depend SELECT '
@@ -688,7 +680,7 @@ BEGIN
        ' AND fsub.attname = ' || quote_literal(col)
     || ' AND scat.relname = ''pg_class'' '
        ' AND snsp.nspname = ' || quote_literal(toponame)
-    || ' AND sobj.relnamespace = snsp.oid ' 
+    || ' AND sobj.relnamespace = snsp.oid '
        ' AND sobj.relname = '
        ' ''topogeo_s_' || newlayer_id || ''' ';
 
@@ -749,7 +741,7 @@ BEGIN
     RAISE EXCEPTION 'No layer registered on %.%.%',
       schema,tbl,col;
   END IF;
-    
+
   -- Clean up the topology schema
   BEGIN
     -- Cleanup the relation table
@@ -779,7 +771,6 @@ BEGIN
     ok = true;
     EXIT;
   END LOOP;
-
 
   IF ok THEN
     -- Set feature column to NULL to bypass referential integrity
@@ -861,18 +852,17 @@ $$
 $$
 LANGUAGE 'sql' VOLATILE;
 
-
 --{
 -- CreateTopoGeom(topology_name, topogeom_type, layer_id, elements)
 --
 -- Create a TopoGeometry object from Topology elements.
--- The elements parameter is a two-dimensional array. 
+-- The elements parameter is a two-dimensional array.
 -- Every element of the array is either a Topology element represented by
 -- (id, type) or a TopoGeometry element represented by (id, layer).
 -- The actual semantic depends on the TopoGeometry layer, either at
 -- level 0 (elements are topological primitives) or higer (elements
 -- are TopoGeoms from child layer).
--- 
+--
 -- @param toponame Topology name
 --
 -- @param tg_type Spatial type of geometry
@@ -884,7 +874,7 @@ LANGUAGE 'sql' VOLATILE;
 -- @param layer_id Layer identifier
 --
 -- @param tg_objs Array of components
--- 
+--
 -- Return a topology.TopoGeometry object.
 --
 CREATE OR REPLACE FUNCTION topology.CreateTopoGeom(toponame varchar, tg_type integer, layer_id integer, tg_objs topology.TopoElementArray)
@@ -1070,8 +1060,6 @@ AS $$
   SELECT SRID FROM topology.topology WHERE name = $1;
 $$ LANGUAGE 'sql' STABLE STRICT;
 --} GetTopologySRID(toponame)
-  
-
 
 --{
 -- GetTopoGeomElementArray(toponame, layer_id, topogeom_id)
@@ -1178,7 +1166,6 @@ BEGIN
     RAISE EXCEPTION 'Layer % does not exist', layerid;
   END IF;
 
-
   query = 'SELECT abs(element_id) as element_id, element_type FROM '
     || quote_ident(toponame) || '.relation WHERE '
        ' layer_id = ' || layerid
@@ -1205,7 +1192,7 @@ BEGIN
       ret = '{' || rec.element_id || ',' || rec.element_type || '}';
       RETURN NEXT ret;
     END IF;
-  
+
   END LOOP;
 
   RETURN;
@@ -1238,7 +1225,7 @@ LANGUAGE 'plpgsql' STABLE STRICT;
 -- Geometry(TopoGeometry)
 --
 -- Construct a Geometry from a TopoGeometry.
--- 
+--
 -- }{
 CREATE OR REPLACE FUNCTION topology.Geometry(topogeom topology.TopoGeometry)
   RETURNS Geometry
@@ -1302,13 +1289,13 @@ BEGIN
       || ') = pr.element_type ';
     --RAISE DEBUG '%', query;
     EXECUTE sql INTO geom;
-      
+
   ELSIF topogeom.type = 3 THEN -- [multi]polygon -- }{
 
     sql := 'SELECT st_multi(st_union('
          'topology.ST_GetFaceGeometry('
       || quote_literal(toponame) || ','
-      || 'element_id))) as g FROM ' 
+      || 'element_id))) as g FROM '
       || quote_ident(toponame)
       || '.relation WHERE topogeo_id = '
       || topogeom.id || ' AND layer_id = '
@@ -1317,7 +1304,7 @@ BEGIN
 
   ELSIF topogeom.type = 2 THEN -- [multi]line -- }{
 
-    sql := 
+    sql :=
       'SELECT st_multi(ST_LineMerge(ST_Collect(e.geom))) as g FROM '
       || quote_ident(toponame) || '.edge e, '
       || quote_ident(toponame) || '.relation r '
@@ -1326,7 +1313,7 @@ BEGIN
       || ' AND r.element_type = 2 '
          ' AND abs(r.element_id) = e.edge_id';
     EXECUTE sql INTO geom;
-  
+
   ELSIF topogeom.type = 1 THEN -- [multi]point -- }{
 
     sql :=
@@ -1344,7 +1331,7 @@ BEGIN
     sql := 'WITH areas AS ( SELECT ST_Union('
          'topology.ST_GetFaceGeometry('
       || quote_literal(toponame) || ','
-      || 'element_id)) as g FROM ' 
+      || 'element_id)) as g FROM '
       || quote_ident(toponame)
       || '.relation WHERE topogeo_id = '
       || topogeom.id || ' AND layer_id = '
@@ -1392,7 +1379,7 @@ $$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} Geometry(TopoGeometry)
 
--- 7.3+ explicit cast 
+-- 7.3+ explicit cast
 CREATE CAST (topology.TopoGeometry AS Geometry) WITH FUNCTION topology.Geometry(topology.TopoGeometry) AS IMPLICIT;
 
 --{
@@ -1443,7 +1430,7 @@ BEGIN
     RETURN NEXT retrec;
   END LOOP;
 
-  -- Scan all edges 
+  -- Scan all edges
   FOR rec IN EXECUTE 'SELECT e.geom, e.edge_id as id1, e.left_face, e.right_face FROM '
     || quote_ident(toponame) || '.edge e ORDER BY edge_id'
   LOOP
@@ -1523,7 +1510,7 @@ BEGIN
     ELSIF ST_RelateMatch(rec.im, 'F01FFF102') THEN
       -- second line (g2) is open, first (g1) is closed
       -- second boundary has puntual intersection with first interior
-      -- 
+      --
       -- compute intersection, check it equals first endpoint
       IF ST_Equals(ST_Intersection(rec.g2, rec.g1),
                    ST_StartPoint(rec.g1))
@@ -1534,7 +1521,7 @@ BEGIN
     ELSIF ST_RelateMatch(rec.im, '0F1FFF1F2') THEN
       -- both lines are closed (boundary intersects nothing)
       -- they have puntual intersection between interiors
-      -- 
+      --
       -- compute intersection, check it's a single point
       -- and equals first StartPoint _and_ second StartPoint
       IF ST_Equals(ST_Intersection(rec.g1, rec.g2),
@@ -1553,7 +1540,7 @@ BEGIN
   END LOOP;
 
   -- Check for edge start_node geometry mis-match
-  -- TODO: move this in the first edge table scan 
+  -- TODO: move this in the first edge table scan
   FOR rec IN EXECUTE 'SELECT e.edge_id as id1, n.node_id as id2 FROM '
     || quote_ident(toponame) || '.edge e, '
     || quote_ident(toponame) || '.node n '
@@ -1567,7 +1554,7 @@ BEGIN
   END LOOP;
 
   -- Check for edge end_node geometry mis-match
-  -- TODO: move this in the first edge table scan 
+  -- TODO: move this in the first edge table scan
   FOR rec IN EXECUTE 'SELECT e.edge_id as id1, n.node_id as id2 FROM '
     || quote_ident(toponame) || '.edge e, '
     || quote_ident(toponame) || '.node n '
@@ -1613,7 +1600,7 @@ BEGIN
        'face_check USING gist (geom);';
 
   -- Build a btree index on id
-  EXECUTE 'CREATE INDEX "face_check_bt" ON ' 
+  EXECUTE 'CREATE INDEX "face_check_bt" ON '
        'face_check (face_id);';
 
   -- Scan the table looking for NULL geometries
@@ -1627,7 +1614,6 @@ BEGIN
     retrec.id2 := NULL;
     RETURN NEXT retrec;
   END LOOP;
-
 
   -- Scan the table looking for overlap or containment
   -- TODO: also check for MBR consistency
@@ -1649,7 +1635,7 @@ BEGIN
     RETURN NEXT retrec;
     END IF;
 
-    -- Face 1 is within face 2 
+    -- Face 1 is within face 2
     IF ST_RelateMatch(rec.im, 'T*F**F***') THEN
     retrec.error = 'face within face';
     retrec.id1 = rec.id1;
@@ -1698,7 +1684,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --
 -- Create a topology schema, add a topology info record
 -- in the topology.topology relation, return it's numeric
--- id. 
+-- id.
 --
 CREATE OR REPLACE FUNCTION topology.CreateTopology(atopology varchar, srid integer, prec float8, hasZ boolean)
 RETURNS integer
@@ -1724,17 +1710,16 @@ BEGIN
     topology_id = rec.nextval;
   END LOOP;
 
-
   EXECUTE 'CREATE SCHEMA ' || quote_ident(atopology);
 
   -------------{ face CREATION
-  EXECUTE 
+  EXECUTE
   'CREATE TABLE ' || quote_ident(atopology) || '.face ('
      'face_id SERIAL,'
      ' CONSTRAINT face_primary_key PRIMARY KEY(face_id)'
      ');';
 
-  -- Add mbr column to the face table 
+  -- Add mbr column to the face table
   EXECUTE
   'SELECT AddGeometryColumn('||quote_literal(atopology)
   ||',''face'',''mbr'','||quote_literal(srid)
@@ -1747,10 +1732,9 @@ BEGIN
 
   -------------} END OF face CREATION
 
-
   --------------{ node CREATION
 
-  EXECUTE 
+  EXECUTE
   'CREATE TABLE ' || quote_ident(atopology) || '.node ('
      'node_id SERIAL,'
   --|| 'geom GEOMETRY,'
@@ -1766,7 +1750,7 @@ BEGIN
 
      ');';
 
-  -- Add geometry column to the node table 
+  -- Add geometry column to the node table
   EXECUTE
   'SELECT AddGeometryColumn('||quote_literal(atopology)
   ||',''node'',''geom'','||quote_literal(srid)
@@ -1782,7 +1766,7 @@ BEGIN
   --------------{ edge CREATION
 
   -- edge_data table
-  EXECUTE 
+  EXECUTE
   'CREATE TABLE ' || quote_ident(atopology) || '.edge_data ('
      'edge_id SERIAL NOT NULL PRIMARY KEY,'
      'start_node INTEGER NOT NULL,'
@@ -1822,12 +1806,11 @@ BEGIN
      ' DEFERRABLE INITIALLY DEFERRED'
      ');';
 
-  -- Add geometry column to the edge_data table 
+  -- Add geometry column to the edge_data table
   EXECUTE
   'SELECT AddGeometryColumn('||quote_literal(atopology)
   ||',''edge_data'',''geom'','||quote_literal(srid)
   ||',''LINESTRING'',' || ndims || ')';
-
 
   -- edge standard view (select rule)
   EXECUTE 'CREATE VIEW ' || quote_ident(atopology)
@@ -1879,14 +1862,14 @@ BEGIN
 
   --------------} END OF edge CREATION
 
-  --------------{ layer sequence 
+  --------------{ layer sequence
   EXECUTE 'CREATE SEQUENCE '
     || quote_ident(atopology) || '.layer_id_seq;';
   --------------} layer sequence
 
   --------------{ relation CREATION
   --
-  EXECUTE 
+  EXECUTE
   'CREATE TABLE ' || quote_ident(atopology) || '.relation ('
      ' topogeo_id integer NOT NULL, '
      ' layer_id integer NOT NULL, '
@@ -1894,7 +1877,7 @@ BEGIN
      ' element_type integer NOT NULL, '
      ' UNIQUE(layer_id,topogeo_id,element_id,element_type));';
 
-  EXECUTE 
+  EXECUTE
   'CREATE TRIGGER relation_integrity_checks '
      'BEFORE UPDATE OR INSERT ON '
   || quote_ident(atopology) || '.relation FOR EACH ROW '
@@ -1902,7 +1885,6 @@ BEGIN
   ||topology_id||','||quote_literal(atopology)||')';
   --------------} END OF relation CREATION
 
-  
   ------- Default (world) face
   EXECUTE 'INSERT INTO ' || quote_ident(atopology) || '.face(face_id) VALUES(0);';
 
@@ -1943,7 +1925,7 @@ BEGIN
     || quote_ident(atopology)
     || '.edge_data (end_node);';
 
-  -- TODO: consider also adding an index on node.containing_face 
+  -- TODO: consider also adding an index on node.containing_face
 
   ------- Add record to the "topology" metadata table
   EXECUTE 'INSERT INTO topology.topology '

@@ -8,7 +8,6 @@
 --
 ---------------------------------------------------------------------------
 
-
 --
 -- New SFCGAL functions (meaning prototype not already provided by GEOS)
 --
@@ -27,7 +26,7 @@ CREATE OR REPLACE FUNCTION postgis_sfcgal_scripts_installed() RETURNS text
 CREATE OR REPLACE FUNCTION postgis_sfcgal_version() RETURNS text
         AS 'MODULE_PATHNAME'
         LANGUAGE 'c' IMMUTABLE;
-        
+
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_3DIntersection(geom1 geometry, geom2 geometry)
        RETURNS geometry
@@ -41,21 +40,21 @@ CREATE OR REPLACE FUNCTION ST_3DDifference(geom1 geometry, geom2 geometry)
        AS 'MODULE_PATHNAME','sfcgal_difference3D'
        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
-       
+
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION ST_3DUnion(geom1 geometry, geom2 geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_union3D'
        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
-       
+
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Tesselate(geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_tesselate'
        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
-       
+
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_3DArea(geometry)
        RETURNS FLOAT8
@@ -63,20 +62,20 @@ CREATE OR REPLACE FUNCTION ST_3DArea(geometry)
        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
--- Availability: 2.1.0       
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Extrude(geometry, float8, float8, float8)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_extrude'
        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
--- Availability: 2.1.0       
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_ForceLHR(geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_force_lhr'
        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
-       
+
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Orientation(geometry)
        RETURNS INT4
@@ -126,10 +125,10 @@ CREATE OR REPLACE FUNCTION ST_ApproximateMedialAxis(geometry)
        AS 'MODULE_PATHNAME','sfcgal_approximate_medial_axis'
        LANGUAGE 'c'
 #endif // POSTGIS_SFCGAL_VERSION >= 12
-       IMMUTABLE STRICT  _PARALLEL 
+       IMMUTABLE STRICT  _PARALLEL
        COST 100;
 
--- Availability: 2.2.0       
+-- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_IsPlanar(geometry)
        RETURNS boolean
        AS 'MODULE_PATHNAME','sfcgal_is_planar'

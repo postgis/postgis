@@ -16,16 +16,15 @@ BEGIN;
 
 #if DO_POINT_POINT_INTERSECTS
 
--- Detect intersections between traffic_signs 
+-- Detect intersections between traffic_signs
 
 SELECT 'POINT/POINT INTERSECTS' as operation;
 
-SELECT a.feature_name, b.feature_name FROM 
+SELECT a.feature_name, b.feature_name FROM
 	features.traffic_signs a, features.traffic_signs b
 	WHERE a.oid < b.oid AND @SCHEMA@intersects(a.@COLUMN@, b.@COLUMN@);
 
 #endif
-
 
 #if DO_POINT_LINE_INTERSECTS
 
@@ -33,12 +32,11 @@ SELECT a.feature_name, b.feature_name FROM
 
 SELECT 'POINT/LINE INTERSECTS' as operation;
 
-SELECT a.feature_name, b.feature_name FROM 
+SELECT a.feature_name, b.feature_name FROM
 	features.traffic_signs a, features.city_streets b
 	WHERE @SCHEMA@intersects(a.@COLUMN@, b.@COLUMN@);
 
 #endif
-
 
 #if DO_LINE_LINE_INTERSECTS
 
@@ -46,7 +44,7 @@ SELECT a.feature_name, b.feature_name FROM
 
 SELECT 'LINE/LINE INTERSECTS' as operation;
 
-SELECT a.feature_name, b.feature_name FROM 
+SELECT a.feature_name, b.feature_name FROM
 	features.city_streets a, features.city_streets b
 	WHERE a.oid < b.oid AND @SCHEMA@intersects(a.@COLUMN@, b.@COLUMN@);
 #endif
@@ -57,7 +55,7 @@ SELECT a.feature_name, b.feature_name FROM
 
 SELECT 'POINT/POLY INTERSECTS' as operation;
 
-SELECT a.feature_name, b.feature_name FROM 
+SELECT a.feature_name, b.feature_name FROM
 	features.traffic_signs a, features.land_parcels b
 	WHERE @SCHEMA@intersects(a.@COLUMN@, b.@COLUMN@);
 #endif
@@ -68,7 +66,7 @@ SELECT a.feature_name, b.feature_name FROM
 
 SELECT 'LINE/POLY INTERSECTS' as operation;
 
-SELECT a.feature_name, b.feature_name FROM 
+SELECT a.feature_name, b.feature_name FROM
 	features.city_streets a, features.land_parcels b
 	WHERE @SCHEMA@intersects(a.@COLUMN@, b.@COLUMN@);
 #endif
@@ -79,7 +77,7 @@ SELECT a.feature_name, b.feature_name FROM
 
 SELECT 'POLY/POLY INTERSECTS' as operation;
 
-SELECT a.feature_name, b.feature_name FROM 
+SELECT a.feature_name, b.feature_name FROM
 	features.land_parcels a, features.land_parcels b
 	WHERE a.oid < b.oid AND @SCHEMA@intersects(a.@COLUMN@, b.@COLUMN@);
 #endif
@@ -88,7 +86,7 @@ SELECT a.feature_name, b.feature_name FROM
 
 SELECT 'POINT/POINT EQUALS' as operation;
 
-SELECT a.feature_name, b.feature_name FROM 
+SELECT a.feature_name, b.feature_name FROM
 	features.traffic_signs a, features.traffic_signs b
 	WHERE a.oid < b.oid AND @SCHEMA@equals(a.@COLUMN@, b.@COLUMN@);
 
@@ -98,7 +96,7 @@ SELECT a.feature_name, b.feature_name FROM
 
 SELECT 'LINE/LINE EQUALS' as operation;
 
-SELECT a.feature_name, b.feature_name FROM 
+SELECT a.feature_name, b.feature_name FROM
 	features.city_streets a, features.city_streets b
 	WHERE a.oid < b.oid AND @SCHEMA@equals(a.@COLUMN@, b.@COLUMN@);
 
@@ -108,7 +106,7 @@ SELECT a.feature_name, b.feature_name FROM
 
 SELECT 'POLYGON/POLYGON EQUALS' as operation;
 
-SELECT a.feature_name, b.feature_name FROM 
+SELECT a.feature_name, b.feature_name FROM
 	features.land_parcels a, features.land_parcels b
 	WHERE a.oid < b.oid AND @SCHEMA@equals(a.@COLUMN@, b.@COLUMN@);
 

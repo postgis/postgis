@@ -61,5 +61,4 @@ SELECT _timecheck('overlaps', '200ms');
 select ST_Relate(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 SELECT _timecheck('relate', '200ms');
 
-
 DROP FUNCTION _timecheck(text, interval);

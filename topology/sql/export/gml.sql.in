@@ -384,7 +384,6 @@ BEGIN
 
         END IF;
 
-
         gml = gml || '>';
 
         gml = gml || topology._AsGMLEdge(rec2.edge_id,
@@ -393,7 +392,6 @@ BEGIN
                                         visitedTable,
                                         nsprefix_in, precision,
                                         options, idprefix, gmlver);
-
 
         gml = gml || '</' || nsprefix || 'directedEdge>';
       END LOOP;
@@ -443,7 +441,6 @@ BEGIN
 
   END IF;
 
-
   RETURN gml;
 
 END
@@ -481,7 +478,6 @@ $$
  SELECT topology.AsGML($1, $2, $3, $4, $5, '');
 $$ LANGUAGE 'sql' VOLATILE; -- writes into visited table
 -- } AsGML(TopoGeometry, nsprefix, precision, options)
-
 
 --{
 --
@@ -538,7 +534,6 @@ $$
  SELECT topology.AsGML($1, $3, 15, 1, $2);
 $$ LANGUAGE 'sql' VOLATILE; -- writes into visited table
 -- } AsGML(TopoGeometry, visited_table, nsprefix)
-
 
 --{
 --

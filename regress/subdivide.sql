@@ -25,7 +25,6 @@ GROUP BY gs.full_area;
 
 SELECT '#3522', ST_AsText(ST_Subdivide(ST_GeomFromText('POINT(1 1)',4326),10));
 
-
 with inverted_geom as (
     select ST_Difference(
                ST_Expand('SRID=3857;POINT(0 0)' :: geometry, 20000000),

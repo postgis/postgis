@@ -276,7 +276,6 @@ SELECT create_census_base_tables();
 \i pagc_normalize/pagc_tables.sql
 \i pagc_normalize/pagc_normalize_address.sql
 
-
 ---- Geocoder functions
 -- General helpers
 \i geocode/other_helper_functions.sql

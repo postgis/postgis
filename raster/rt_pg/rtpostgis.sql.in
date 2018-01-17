@@ -75,7 +75,6 @@ BEGIN
 END
 $$ LANGUAGE 'plpgsql';
 
-
 ------------------------------------------------------------------------------
 -- RASTER Type
 ------------------------------------------------------------------------------
@@ -2919,7 +2918,6 @@ CREATE OR REPLACE FUNCTION st_max4ma(matrix float[][], nodatamode text, variadic
     $$
     LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
 
-
 CREATE OR REPLACE FUNCTION st_min4ma(matrix float[][], nodatamode text, variadic args text[])
     RETURNS float AS
     $$
@@ -3066,8 +3064,6 @@ CREATE OR REPLACE FUNCTION _st_mapalgebra(
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_nMapAlgebra'
 	LANGUAGE 'c' IMMUTABLE _PARALLEL;
-
-
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
 	rastbandargset rastbandarg[],
@@ -9029,7 +9025,6 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql' VOLATILE STRICT;
 
-
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION st_makeemptycoverage(tilewidth int, tileheight int, width int, height int, upperleftx float8, upperlefty float8, scalex float8, scaley float8, skewx float8, skewy float8, srid int4 DEFAULT 0)
     RETURNS SETOF RASTER AS $$
@@ -9083,7 +9078,6 @@ CREATE OR REPLACE FUNCTION st_makeemptycoverage(tilewidth int, tileheight int, w
     END;
     $$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
 
-
 -------------------------------------------------------------------
 --  Debugging
 -------------------------------------------------------------------
@@ -9093,7 +9087,6 @@ CREATE OR REPLACE FUNCTION postgis_noop(raster)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'RASTER_noop'
 	LANGUAGE 'c' STABLE STRICT;
-
 
 -------------------------------------------------------------------
 --  END

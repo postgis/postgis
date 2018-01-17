@@ -62,7 +62,6 @@ ANALYZE test;
 --       max(st_z(the_geom)) as maxz, max(st_m(the_geom)) as maxm
 --FROM test;
 
-
 SELECT '<<->> idx', qnodes('select * from test order by the_geom <<->> ST_MakePoint(0,0) LIMIT 1');
 SELECT '<<->> res1',num,
   (the_geom <<->> 'LINESTRING(0 0,5 5)'::geometry)::numeric(10,2),
@@ -76,7 +75,6 @@ SELECT '<<->> res3',num,
   (the_geom <<->> 'POINT(631 729 25023 -25022)'::geometry)::numeric(10,2),
   ST_astext(the_geom) from test
   order by the_geom <<->> 'POINT(631 729 25023 -25022)'::geometry LIMIT 1;
-
 
 -- Cleanup
 

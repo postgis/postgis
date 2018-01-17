@@ -20,7 +20,7 @@ BEGIN
     RETURN NULL;
   END IF;
 
-  result := COALESCE(input.address_alphanumeric, cull_null(input.address::text)) 
+  result := COALESCE(input.address_alphanumeric, cull_null(input.address::text))
          || COALESCE(' ' || input.preDirAbbrev, '')
          || CASE WHEN is_pretype(input.streetTypeAbbrev) THEN ' ' || input.streetTypeAbbrev  ELSE '' END
          || COALESCE(' ' || input.streetName, '')
