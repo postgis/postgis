@@ -1,23 +1,23 @@
 SET postgis.backend = 'sfcgal';
 
--- Tests to confirm the concave hull area is <= convex hull and 
+-- Tests to confirm the concave hull area is <= convex hull and
 -- covers the original geometry (can't use covers because always gives topo errors with 3.3
 -- vmora: the small tolerance for area comes from the reordering of the geometry that
 --        cause small errors on area to cummulate (difference of 5e-13 on 2224 in this case)
-SELECT 
+SELECT
 	'ST_ConcaveHull MultiPolygon 0.95', ST_Area(ST_Intersection(geom,ST_ConcaveHull(
-		geom, 0.95) )) - ST_Area(geom) < 1e-9 As encloses_geom, 
-		(ST_Area(ST_ConvexHull(geom)) 
+		geom, 0.95) )) - ST_Area(geom) < 1e-9 As encloses_geom,
+		(ST_Area(ST_ConvexHull(geom))
 		- ST_Area(ST_ConcaveHull(geom, 0.95))) < (0.95 * ST_Area(ST_ConvexHull(geom) ) ) As reached_target
-FROM ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 
+FROM ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,
 			50 60, 125 100, 175 150))'),
 		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
 		) As geom;
 		
-SELECT 
-	'ST_ConcaveHull Lines 0.80', ST_Intersection(geom,ST_ConcaveHull(
-		geom, 0.80) ) = geom As encloses_geom, 
-		(ST_Area(ST_ConvexHull(geom)) 
+SELECT
+	'ST_ConcaveHull Lines 0.80', ST_Within(geom,ST_ConcaveHull(
+		geom, 0.80) ) As encloses_geom,
+		(ST_Area(ST_ConvexHull(geom))
 		- ST_Area(ST_ConcaveHull(geom, 0.80))) < (0.80 * ST_Area(ST_ConvexHull(geom) ) ) As reached_target
 
 FROM ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 112,130 94,
@@ -30,9 +30,9 @@ FROM ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 112,130 94,
 132 186,92 182,56 158,36 150,62 150,76 128,88 118))') As geom;
 
 -- test holes vs. no holes - holes should still enclose but have smaller area than no holes --
-SELECT 
-	'ST_ConcaveHull Lines 0.80 holes', ST_Intersection(geom,ST_ConcaveHull(
-		geom, 0.80, true) ) = geom As encloses_geom, 
+SELECT
+	'ST_ConcaveHull Lines 0.80 holes', ST_Within(geom,ST_ConcaveHull(
+		geom, 0.80, true) ) As encloses_geom,
 		ST_Area(ST_ConcaveHull(geom, 0.80, true)) < ST_Area(ST_ConcaveHull(geom, 0.80)) As reached_target
 
 FROM ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 112,130 94,

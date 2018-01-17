@@ -13,8 +13,8 @@
 -- to be found in the script/plpgsql folder
 
 CREATE OR REPLACE FUNCTION ST_DeleteBand(rast raster,
-				         band int) 
-    RETURNS raster AS 
+				         band int)
+    RETURNS raster AS
     $$
     DECLARE
 	numband int := ST_NumBands(rast);

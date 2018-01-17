@@ -71,9 +71,9 @@ DECLARE
   rec RECORD;
   ws VARCHAR;
   rawInput VARCHAR;
-  -- is this a highway 
+  -- is this a highway
   -- (we treat these differently since the road name often comes after the streetType)
-  isHighway boolean := false; 
+  isHighway boolean := false;
 BEGIN
   result.parsed := FALSE;
   IF use_pagc THEN
@@ -96,6 +96,9 @@ BEGIN
   -- Assume that the address begins with a digit, and extract it from
   -- the input string.
   addressString := substring(rawInput from E'^([0-9].*?)[ ,/.]');
+  
+  -- try to pull full street number including non-digits like 1R
+  result.address_alphanumeric := substring(rawInput from E'^([0-9a-zA-Z].*?)[ ,/.]');
 
   IF debug_flag THEN
     raise notice '% addressString: %', clock_timestamp(), addressString;
@@ -103,15 +106,20 @@ BEGIN
 
   -- There are two formats for zip code, the normal 5 digit , and
   -- the nine digit zip-4.  It may also not exist.
-  
+
   zipString := substring(rawInput from ws || E'([0-9]{5})$');
   IF zipString IS NULL THEN
     -- Check if the zip is just a partial or a one with -s
     -- or one that just has more than 5 digits
-    zipString := COALESCE(substring(rawInput from ws || '([0-9]{5})-[0-9]{0,4}$'), 
+    zipString := COALESCE(substring(rawInput from ws || '([0-9]{5})-[0-9]{0,4}$'),
                 substring(rawInput from ws || '([0-9]{2,5})$'),
                 substring(rawInput from ws || '([0-9]{6,14})$'));
-   
+                
+    result.zip4 := COALESCE(substring(rawInput from ws || '[0-9]{5}-([0-9]{0,4})$'),substring(rawInput from ws || '[0-9]{5}([0-9]{0,4})$'));
+
+    IF debug_flag THEN
+        raise notice '% zip4: %', clock_timestamp(), result.zip4;
+    END IF;
      -- Check if all we got was a zipcode, of either form
     IF zipString IS NULL THEN
       zipString := substring(rawInput from '^([0-9]{5})$');
@@ -136,7 +144,7 @@ BEGIN
         || ws || '+' || cull_null(zipString) || '[- ]?([0-9]{4})?$');
     /** strip off any trailing  spaces or ,**/
     fullStreet :=  btrim(fullStreet, ' ,');
-    
+
   ELSE
     fullStreet := rawInput;
   END IF;
@@ -293,14 +301,14 @@ BEGIN
   -- Reject all street types where the fullstreet name is equal to the name
   fullStreet := ' ' || trim(fullStreet);
   tempInt := count(*) FROM street_type_lookup
-      WHERE fullStreet ILIKE '%' || name || '%' AND 
+      WHERE fullStreet ILIKE '%' || name || '%' AND
         trim(upper(fullStreet)) != name AND
         texticregexeq(fullStreet, '(?i)' || ws || '(' || name
       || ')(?:' || ws || '|$)');
   IF tempInt = 1 THEN
     SELECT INTO rec abbrev, substring(fullStreet, '(?i)' || ws || '('
         || name || ')(?:' || ws || '|$)') AS given, is_hw FROM street_type_lookup
-        WHERE fullStreet ILIKE '%' || name || '%' AND 
+        WHERE fullStreet ILIKE '%' || name || '%' AND
              trim(upper(fullStreet)) != name AND
             texticregexeq(fullStreet, '(?i)' || ws || '(' || name
         || ')(?:' || ws || '|$)')  ;
@@ -313,22 +321,22 @@ BEGIN
   ELSIF tempInt > 1 THEN
     tempInt := 0;
     -- the last matching abbrev in the string is the most likely one
-    FOR rec IN SELECT * FROM 
+    FOR rec IN SELECT * FROM
     	(SELECT abbrev, name, substring(fullStreet, '(?i)' || ws || '?('
         || name || ')(?:' || ws || '|$)') AS given, is_hw ,
         		RANK() OVER( ORDER BY position(name IN upper(trim(fullStreet))) ) As n_start,
         		RANK() OVER( ORDER BY position(name IN upper(trim(fullStreet))) + length(name) ) As n_end,
         		COUNT(*) OVER() As nrecs, position(name IN upper(trim(fullStreet)))
         		FROM street_type_lookup
-        WHERE fullStreet ILIKE '%' || name || '%'  AND 
-            trim(upper(fullStreet)) != name AND 
-            (texticregexeq(fullStreet, '(?i)' || ws || '(' || name 
+        WHERE fullStreet ILIKE '%' || name || '%'  AND
+            trim(upper(fullStreet)) != name AND
+            (texticregexeq(fullStreet, '(?i)' || ws || '(' || name
             -- we only consider street types that are regular and not at beginning of name or are highways (since those can be at beg or end)
             -- we take the one that is the longest e.g Country Road would be more correct than Road
         || ')(?:' || ws || '|$)') OR (is_hw AND fullstreet ILIKE name || ' %') )
      AND ((NOT is_hw AND position(name IN upper(trim(fullStreet))) > 1 OR is_hw) )
         ) As foo
-        -- N_start - N_end - ensure we first get the one with the most overlapping sub types 
+        -- N_start - N_end - ensure we first get the one with the most overlapping sub types
         -- Then of those get the one that ends last and then starts first
         ORDER BY n_start - n_end, n_end DESC, n_start LIMIT 1  LOOP
       -- If we have found an internal address, make sure the type
@@ -369,11 +377,11 @@ BEGIN
     -- Check if the fullStreet contains the streetType and ends in just numbers
     -- If it does its a road number like a country road or state route or other highway
     -- Just set the number to be the name of street
-    
+
     tempString := NULL;
     IF isHighway THEN
         tempString :=  substring(fullStreet, streetType || ws || '+' || E'([0-9a-zA-Z]+)' || ws || '*');
-    END IF;    
+    END IF;
     IF tempString > '' AND result.location IS NOT NULL THEN
         reducedStreet := tempString;
         result.streetName := reducedStreet;
@@ -426,14 +434,14 @@ BEGIN
 		tempString := trim(regexp_replace(fullStreet,  reducedStreet ||  ws || '+' || streetType,''));
 		IF tempString > '' THEN
 		  tempString := abbrev FROM direction_lookup WHERE
-			 tempString ILIKE '%' || name || '%'  
+			 tempString ILIKE '%' || name || '%'
 			 AND texticregexeq(fullStreet || ' ', '(?i)' || reducedStreet || ws || '+' || streetType || ws || '+(' || name || ')' || ws || '+')
 			ORDER BY length(name) DESC LIMIT 1;
 		  IF tempString IS NOT NULL THEN
 			result.postDirAbbrev = trim(tempString);
 		  END IF;
 		END IF;
- 
+
 
 		IF debug_flag THEN
 			raise notice '% reduced street: %', clock_timestamp(), reducedStreet;
@@ -465,7 +473,7 @@ BEGIN
       -- location was given.  We still need to look for post direction.
       SELECT INTO rec abbrev,
           substring(result.location, '(?i)^(' || name || ')' || ws) as value
-          FROM direction_lookup 
+          FROM direction_lookup
             WHERE result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)^'
           || name || ws) ORDER BY length(name) desc LIMIT 1;
       IF rec.value IS NOT NULL THEN
@@ -482,7 +490,7 @@ BEGIN
         SELECT INTO result.postDirAbbrev abbrev FROM direction_lookup WHERE
             upper(postDir) = upper(name);
         result.location := NULL;
-        
+
         IF debug_flag THEN
             RAISE NOTICE '% postDir exact match: %', clock_timestamp(), result.postDirAbbrev;
         END IF;
@@ -494,7 +502,7 @@ BEGIN
             result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)(^' || name || ')' || ws)
             	AND NOT  texticregexeq(rawInput, '(?i)(,' || ws || '+' || result.location || ')' || ws)
             ORDER BY length(name) desc LIMIT 1;
-            
+
         IF debug_flag THEN
             RAISE NOTICE '% location trying to extract postdir: %, tempstring: %, rawInput: %', clock_timestamp(), result.location, tempString, rawInput;
         END IF;
@@ -507,7 +515,7 @@ BEGIN
                   RAISE NOTICE '% postDir: %', clock_timestamp(), result.postDirAbbrev;
             END IF;
         END IF;
-        
+
       END IF;
     ELSE
       -- internal is not null, but is not at the end of the location string
@@ -517,7 +525,7 @@ BEGIN
         END IF;
         SELECT INTO tempString substring(fullStreet, '(?i)' || streetType
           || ws || '+(' || name || ')' || ws || '+' || result.internal)
-          FROM direction_lookup 
+          FROM direction_lookup
           WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)'
           || ws || name || ws || '+' || result.internal) ORDER BY length(name) desc LIMIT 1;
         IF tempString IS NOT NULL THEN
@@ -583,7 +591,7 @@ BEGIN
         reducedStreet := substring(fullStreet, '^(.*?)' || ws || '+'
                       || postDir);
         tempString := substring(reducedStreet, '(?i)(^' || name
-            || ')' || ws) FROM direction_lookup 
+            || ')' || ws) FROM direction_lookup
             WHERE
                 reducedStreet ILIKE '%' || name || '%' AND texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
             ORDER BY length(name) DESC;
@@ -697,7 +705,7 @@ BEGIN
   END IF;
 
  -- For address number only put numbers and stop if reach a non-number e.g. 123-456 will return 123
-  result.address := to_number(substring(addressString, '[0-9]+'), '99999999999');
+  result.address := to_number(substring(addressString, '[0-9]+'),  '99999999');
    --get rid of extraneous spaces before we return
   result.zip := trim(zipString);
   result.streetName := trim(result.streetName);

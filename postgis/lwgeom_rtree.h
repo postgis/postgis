@@ -66,17 +66,17 @@ RTREE_POLY_CACHE;
 
 typedef struct {
 	int                         type;       // <GeomCache>
-	GSERIALIZED*                geom1;      // 
-	GSERIALIZED*                geom2;      // 
-	size_t                      geom1_size; // 
-	size_t                      geom2_size; // 
+	GSERIALIZED*                geom1;      //
+	GSERIALIZED*                geom2;      //
+	size_t                      geom1_size; //
+	size_t                      geom2_size; //
 	int32                       argnum;     // </GeomCache>
 	RTREE_POLY_CACHE*           index;
 } RTreeGeomCache;
 
 
 /**
-* Retrieves a collection of line segments given the root and crossing value. 
+* Retrieves a collection of line segments given the root and crossing value.
 */
 LWMLINE *RTreeFindLineSegments(RTREE_NODE *root, double value);
 

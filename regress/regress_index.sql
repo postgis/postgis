@@ -60,7 +60,7 @@ BEGIN
 
   est := mat[1];
   act := mat[2];
-    
+
   err = abs(est-act);
 
   RETURN act || '+=' || tol || ':' || coalesce(
@@ -83,7 +83,7 @@ SELECT 3, 500, 'ST_MakeEnvelope(0,0,500,500)'
 SELECT 4, 600, 'ST_MakeEnvelope(0,0,1000,1000)'
 ;
 
--- We raise the statistics target to the limit 
+-- We raise the statistics target to the limit
 ALTER TABLE test ALTER COLUMN the_geom SET STATISTICS 10000;
 
 ANALYZE test;

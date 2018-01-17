@@ -3,112 +3,143 @@ include ../upgradeable_versions.mk
 EXTENSION     = postgis
 EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+MODULEPATH    = $$libdir/$(EXTENSION)-$(MINORVERSION)
 GREP = @GREP@
-PERL=@PERL@
+PERL = @PERL@
 
-MICRO_NUMBER  = $(shell echo $(EXTVERSION) | sed "s/[0-9]\.[0-9]\.\([0-9]*\)[a-zA-Z]*[0-9]*/\1/")
+MICRO_NUMBER  = $(shell echo $(EXTVERSION) | \
+						$(PERL) -pe 's/\d.\d.(\d+)[a-zA-Z]*\d*/$1/'
+
 PREREL_NUMBER = $(shell echo $(EXTVERSION) | \
-                        sed "s/[0-9]\.[0-9]\.\(.*\)/\1/" | \
+                        $(PERL) -pe 's/\d\.\d\.(.*)/\1/' | \
                         $(GREP) "[a-zA-Z]" | \
-                        sed "s/[0-9][a-zA-Z]\([0-9]*\)[a-zA-Z]*/\1/")
+                        $(PERL) -pe 's/\d+[a-zA-Z]+(\d+)/\1/'
+
 MICRO_PREV    = $(shell if test "$(MICRO_NUMBER)x" != "x"; then expr $(MICRO_NUMBER) - 1; fi)
 PREREL_PREV   = $(shell if test "$(PREREL_NUMBER)x" != "x"; then expr $(PREREL_NUMBER) - 1; fi)
 
 PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
-                        sed "s/[0-9]\.[0-9]\.\(.*\)/\1/" | \
+                        $(PERL) -pe 's/\d\.\d\.(.*)/\1/' | \
                         $(GREP) "[a-zA-Z]" | \
-                        sed "s/\([0-9][a-zA-Z]*\)[0-9]*/\1/")
+                        $(PERL) -pe 's/(\d+[a-zA-Z]+)\d*/\1/'
 
-DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
+DATA_built = \
+	$(EXTENSION).control \
+	sql/$(EXTENSION)--$(EXTVERSION).sql \
+	sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql \
+	$(NULL)
+
+# Scripts making up the extension file
+# NOTE: order matters
+EXTENSION_SCRIPTS = \
+	sql_bits/postgis.sql \
+	sql_bits/postgis_comments.sql \
+	sql_bits/rtpostgis.sql \
+	sql_bits/spatial_ref_sys_config_dump.sql \
+	sql_bits/raster_comments.sql \
+	sql_bits/spatial_ref_sys.sql
+
+# Scripts making up the extension minor upgrade file
+# NOTE: order matters
+EXTENSION_UPGRADE_SCRIPTS = \
+	../postgis_extension_helper.sql \
+	sql_bits/postgis_upgrade.sql \
+	sql_bits/rtpostgis_upgrade.sql \
+	../../doc/raster_comments.sql \
+	../../doc/postgis_comments.sql \
+	../postgis_extension_helper_uninstall.sql
+
+# Scripts making up the extension upgrade-from-unpackaged file
+# NOTE: order matters
+EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
+	sql_bits/postgis.sql \
+	sql_bits/rtpostgis.sql
 
 #DOCS         = $(wildcard ../../doc/html/*.html)
 PG_CONFIG    = @PG_CONFIG@
 
-PG91         = $(shell $(PG_CONFIG) --version | $(GREP) -qE " 8\.| 9\.0" && echo no || echo yes)
 SQL_BITS     = $(wildcard sql_bits/*.sql)
 EXTRA_CLEAN += ${SQL_BITS} sql/*.sql
 
 CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
 
-ifeq ($(PG91),yes)
-	
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql sql_minor_upgrade
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql
 
-sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/spatial_ref_sys_config_dump.sql sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
-	mkdir -p sql
-	echo '\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \quit' > $@
+sql/$(EXTENSION).sql: $(EXTENSION_SCRIPTS) | sql
+	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ >> $@
 
-sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
-	mkdir -p sql
+$(EXTENSION).control: $(EXTENSION).control.in Makefile
+	cat $< \
+		| sed -e 's|@EXTVERSION@|$(EXTVERSION)|g' \
+		| sed -e 's|@EXTENSION@|$(EXTENSION)|g' \
+		| sed -e 's|@MODULEPATH@|$(MODULEPATH)|g' \
+		> $@
+
+sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
 	cp $< $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../postgis/postgis.sql ../../raster/rt_pg/rtpostgis.sql ../../utils/create_unpackaged.pl
-	mkdir -p sql
-	cat ../../postgis/postgis.sql ../../raster/rt_pg/rtpostgis.sql | $(PERL) ../../utils/create_unpackaged.pl postgis > $@
-	
-#this is a cludge to allow upgrading from same SVN to same SVN
-sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql_bits/postgis_extension_upgrade_minor.sql
-	cp $< $@
-sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql_bits/postgis_extension_upgrade_minor.sql
-	cp $< $@
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile | sql
+	# Ensure version is correct
+	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql > $@
+	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) \
+		| $(PERL) ../../utils/create_unpackaged.pl postgis \
+		>> $@
+
+unpackaged_check.sql: unpackaged_check.sql.in Makefile
+	cat $< \
+		| sed -e 's|@EXTVERSION@|$(EXTVERSION)|g' \
+		> $@
+
+sql:
+	mkdir -p $@
+
+sql_bits:
+	mkdir -p $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
-sql_bits/spatial_ref_sys.sql: ../../spatial_ref_sys.sql	
-	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
+sql_bits/spatial_ref_sys.sql: ../../spatial_ref_sys.sql | sql_bits
+	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
-sql_bits/postgis.sql: ../../postgis/postgis.sql
-	mkdir -p sql_bits/
-	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
+sql_bits/postgis.sql: ../../postgis/postgis_for_extension.sql | sql_bits
+	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
 ../../doc/postgis_comments.sql:
 	$(MAKE) -C ../../doc comments
 
-sql_bits/postgis_comments.sql: ../../doc/postgis_comments.sql
+sql_bits/postgis_comments.sql: ../../doc/postgis_comments.sql | sql_bits
 	cp $< $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
-sql_bits/rtpostgis.sql: ../../raster/rt_pg/rtpostgis.sql
-	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
+sql_bits/rtpostgis.sql: ../../raster/rt_pg/rtpostgis_for_extension.sql | sql_bits
+	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
-sql_bits/spatial_ref_sys_config_dump.sql: ../../spatial_ref_sys.sql ../../utils/create_spatial_ref_sys_config_dump.pl
-	../../utils/create_spatial_ref_sys_config_dump.pl $< > $@
+sql_bits/spatial_ref_sys_config_dump.sql: ../../spatial_ref_sys.sql ../../utils/create_spatial_ref_sys_config_dump.pl | sql_bits
+	$(PERL) ../../utils/create_spatial_ref_sys_config_dump.pl $< > $@
 
-sql_bits/rtpostgis_upgrade.sql: ../../raster/rt_pg/rtpostgis_upgrade.sql
-	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
-		  -e "s/^\(DROP .*\);/SELECT postgis_extension_drop_if_exists('${EXTENSION}', '\1');\n\1;/" \
-	$< > $@
+sql_bits/rtpostgis_upgrade.sql: ../../raster/rt_pg/rtpostgis_upgrade_for_extension.sql | sql_bits
+	$(PERL) -pe "s/BEGIN\;//g ; s/COMMIT\;//g; s/^(DROP .*)\;/SELECT postgis_extension_drop_if_exists('$(EXTENSION)', '\1');\n\1\;/" $< > $@
 
-sql_bits/postgis_upgrade.sql: ../../postgis/postgis_upgrade.sql 
-		 sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
-		     -e "s/^\(DROP .*\);/SELECT postgis_extension_drop_if_exists('${EXTENSION}', '\1');\n\1;/" \
-	 	 $< > $@
-
+sql_bits/postgis_upgrade.sql: ../../postgis/postgis_upgrade_for_extension.sql | sql_bits
+	$(PERL) -pe "s/BEGIN\;//g ; s/COMMIT\;//g; s/^(DROP .*)\;/SELECT postgis_extension_drop_if_exists('$(EXTENSION)', '\1');\n\1\;/" $< > $@
 
 ../../doc/raster_comments.sql:
 	$(MAKE) -C ../../doc comments
 
-sql_bits/raster_comments.sql: ../../doc/raster_comments.sql
+sql_bits/raster_comments.sql: ../../doc/raster_comments.sql | sql_bits
 	cp $< $@
 
 #postgis_extension_upgrade_minor.sql is the one that contains both postgis AND raster
-sql_bits/postgis_extension_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/postgis_upgrade.sql sql_bits/rtpostgis_upgrade.sql ../../doc/raster_comments.sql ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
-	echo '\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \quit' > $@
+sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS) | sql
+	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ >> $@
 
-sql_minor_upgrade: sql_bits/postgis_extension_upgrade_minor.sql
-	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
-  	  cat $< > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
-	done
-
-DATA = $(wildcard sql/*--*.sql)
-EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/postgis--unpackaged--$(EXTVERSION).sql
-endif
+include ../upgrade-paths-rules.mk
 
 distclean: clean
 	rm -f Makefile
 
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)
-PERL=@PERL@
+PERL = @PERL@

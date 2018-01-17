@@ -4,13 +4,13 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2010, 2011 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2010, 2011 Sandro Santilli <strk@kbt.io>
 -- Copyright (C) 2005 Refractions Research Inc.
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
 --
--- Author: Sandro Santilli <strk@keybit.net>
+-- Author: Sandro Santilli <strk@kbt.io>
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
@@ -192,6 +192,7 @@
 
 
 CREATE SCHEMA topology;
+COMMENT ON SCHEMA topology IS 'PostGIS Topology schema';
 
 -- Doing everything outside of a transaction helps
 -- upgrading in the best case.
@@ -1739,6 +1740,11 @@ BEGIN
   ||',''face'',''mbr'','||quote_literal(srid)
   ||',''POLYGON'',2)'; -- 2d only mbr is good enough
 
+  -- Face standard view description
+  EXECUTE 'COMMENT ON TABLE ' || quote_ident(atopology)
+    || '.face IS '
+       '''Contains face topology primitives''';
+
   -------------} END OF face CREATION
 
 
@@ -1765,6 +1771,11 @@ BEGIN
   'SELECT AddGeometryColumn('||quote_literal(atopology)
   ||',''node'',''geom'','||quote_literal(srid)
   ||',''POINT'',' || ndims || ')';
+
+  -- Node standard view description
+  EXECUTE 'COMMENT ON TABLE ' || quote_ident(atopology)
+    || '.node IS '
+       '''Contains node topology primitives''';
 
   --------------} END OF node CREATION
 
@@ -1826,7 +1837,7 @@ BEGIN
        ' left_face, right_face, geom FROM '
     || quote_ident(atopology) || '.edge_data';
 
-  -- edge standard view description
+  -- Edge standard view description
   EXECUTE 'COMMENT ON VIEW ' || quote_ident(atopology)
     || '.edge IS '
        '''Contains edge topology primitives''';

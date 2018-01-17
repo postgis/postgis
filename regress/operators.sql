@@ -37,14 +37,14 @@ select '95','MULTIPOINT(0 0, 1 1)'::GEOMETRY && 'MULTIPOINT(1.0001 0, 2 2)'::GEO
 select '96','MULTIPOINT(0 0, 1 1)'::GEOMETRY && 'MULTIPOINT(0 1, 1 2)'::GEOMETRY as bool;
 select '97','MULTIPOINT(0 0, 1 1)'::GEOMETRY && 'MULTIPOINT(0 1.0001, 1 2)'::GEOMETRY as bool;
 
---- contains 
+--- contains
 
 select '98','MULTIPOINT(0 0, 10 10)'::GEOMETRY ~ 'MULTIPOINT(5 5, 7 7)'::GEOMETRY as bool;
 select '99','MULTIPOINT(5 5, 7 7)'::GEOMETRY ~ 'MULTIPOINT(0 0, 10 10)'::GEOMETRY as bool;
 select '100','MULTIPOINT(0 0, 7 7)'::GEOMETRY ~ 'MULTIPOINT(0 0, 10 10)'::GEOMETRY as bool;
 select '101','MULTIPOINT(-0.0001 0, 7 7)'::GEOMETRY ~ 'MULTIPOINT(0 0, 10 10)'::GEOMETRY as bool;
 
---- contained by 
+--- contained by
 
 select '102','MULTIPOINT(0 0, 10 10)'::GEOMETRY @ 'MULTIPOINT(5 5, 7 7)'::GEOMETRY as bool;
 select '103','MULTIPOINT(5 5, 7 7)'::GEOMETRY @ 'MULTIPOINT(0 0, 10 10)'::GEOMETRY as bool;
@@ -140,4 +140,27 @@ WITH v(i,g) AS ( VALUES
 SELECT 'ndovm2', array_agg(i) FROM v WHERE g &&& 'POINTZ(0 0 1)'::geometry
 ORDER BY 1;
 
+-- GROUP BY on empty
+SELECT '#3777', ST_AsText(geom), count(*) 
+FROM (VALUES 
+    ('POINT(0 0)'::geometry),
+    ('POINT(0 0)'::geometry),
+    ('POINT(0 0)'::geometry),
+    ('POINT(0 1)'::geometry),
+    ('LINESTRING(0 0,0 1)'::geometry),
+    ('GEOMETRYCOLLECTION EMPTY'::geometry),
+    ('POINT EMPTY'::geometry)
+) AS f(geom)
+GROUP BY geom ORDER BY 2;
 
+SELECT '#3777.1', ST_AsText(geom), count(*) 
+FROM (VALUES
+    ('POINT(0 0)'::geometry),
+    ('POINT(0 0)'::geometry),
+    ('POINT EMPTY'::geometry),
+    ('POINT(0 0)'::geometry),
+    ('POINT(0 1)'::geometry),
+    ('LINESTRING(0 0,0 1)'::geometry),
+    ('GEOMETRYCOLLECTION EMPTY'::geometry)
+) AS f(geom)
+GROUP BY geom ORDER BY 2;

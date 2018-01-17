@@ -36,9 +36,9 @@
 typedef struct
 {
 	/* Pointers to the bytes */
-	uint8_t *twkb; /* Points to start of TWKB */
-	uint8_t *twkb_end; /* Points to end of TWKB */
-	uint8_t *pos; /* Current read position */
+	const uint8_t *twkb; /* Points to start of TWKB */
+	const uint8_t *twkb_end; /* Points to end of TWKB */
+	const uint8_t *pos; /* Current read position */
 
 	uint32_t check; /* Simple validity checks on geometries */
 	uint32_t lwtype; /* Current type we are handling */
@@ -173,7 +173,7 @@ static POINTARRAY* ptarray_from_twkb_state(twkb_parse_state *s, uint32_t npoints
 {
 	POINTARRAY *pa = NULL;
 	uint32_t ndims = s->ndims;
-	int i;
+	uint32_t i;
 	double *dlist;
 
 	LWDEBUG(2,"Entering ptarray_from_twkb_state");
@@ -272,7 +272,7 @@ static LWLINE* lwline_from_twkb_state(twkb_parse_state *s)
 static LWPOLY* lwpoly_from_twkb_state(twkb_parse_state *s)
 {
 	uint32_t nrings;
-	int i;
+	uint32_t i;
 	LWPOLY *poly;
 
 	LWDEBUG(2,"Entering lwpoly_from_twkb_state");
@@ -653,7 +653,7 @@ LWGEOM* lwgeom_from_twkb_state(twkb_parse_state *s)
 * Check is a bitmask of: LW_PARSER_CHECK_MINPOINTS, LW_PARSER_CHECK_ODD,
 * LW_PARSER_CHECK_CLOSURE, LW_PARSER_CHECK_NONE, LW_PARSER_CHECK_ALL
 */
-LWGEOM* lwgeom_from_twkb(uint8_t *twkb, size_t twkb_size, char check)
+LWGEOM* lwgeom_from_twkb(const uint8_t *twkb, size_t twkb_size, char check)
 {
 	int64_t coords[TWKB_IN_MAXCOORDS] = {0, 0, 0, 0};
 	twkb_parse_state s;
@@ -669,13 +669,6 @@ LWGEOM* lwgeom_from_twkb(uint8_t *twkb, size_t twkb_size, char check)
 	s.twkb_end = twkb + twkb_size;
 	s.check = check;
 	s.coords = coords;
-
-	/* Handle the check catch-all values */
-	if ( check & LW_PARSER_CHECK_NONE )
-		s.check = 0;
-	else
-		s.check = check;
-
 
 	/* Read the rest of the geometry */
 	return lwgeom_from_twkb_state(&s);

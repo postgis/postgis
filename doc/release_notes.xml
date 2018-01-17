@@ -3,11 +3,274 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
 
+   <sect1>
+      <title>Release 2.4.2</title>
+      <para>Release date: 2017/11/15</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+        <para>#3917, Fix zcta5 load</para>
+        <para>#3667, Fix for bug in geography ST_Segmentize</para>
+        <para>#3926, Add missing 2.2.6 and 2.3.4 upgrade paths (Muhammad Usama)</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
+      <title>Release 2.4.1</title>
+      <para>Release date: 2017/10/18</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+        <para>#3864, Fix memory leaks in BTREE operators</para>
+        <para>#3869, Fix build with "gold" linker</para>
+        <para>#3845, Gracefully handle short-measure issue</para>
+        <para>#3871, Performance tweak for geometry cmp function</para>
+        <para>#3879, Division by zero in some arc cases</para>
+        <para>#3878, Single defn of signum in header</para>
+        <para>#3880, Undefined behaviour in TYPMOD_GET_SRID</para>
+        <para>#3875, Fix undefined behaviour in shift operation</para>
+        <para>#3864, Performance improvements for b-tree geometry sorts</para>
+        <para>#3874, lw_dist2d_pt_arc division by zero</para>
+        <para>#3882, undefined behaviour in zigzag with negative inputs</para>
+        <para>#3891, undefined behaviour in pointarray_to_encoded_polyline</para>
+        <para>#3895, throw error on malformed WKB input</para>
+        <para>#3886, fix rare missing boxes in geometry subdivision</para>
+        <para>#3907, Allocate enough space for all possible GBOX string outputs (Raúl Marín Rodríguez)</para>
+      </simplesect>
+    </sect1>
+    <sect1>
+        <title>Release 2.4.0</title>
+        <para>Release date: 2017/09/30</para>
+        <simplesect><title>New Features</title>
+<para>#3822, Have postgis_full_version() also show and check version of
+           PostgreSQL the scripts were built against (Sandro Santilli)</para>
+<para>#2411, curves support in ST_Reverse (Sandro Santilli)</para>
+<para>#2951, ST_Centroid for geography (Danny Götte)</para>
+<para>#3788, Allow postgis_restore.pl to work on directory-style (-Fd) dumps
+           (Roger Crew)</para>
+<para>#3772, Direction agnostic ST_CurveToLine output (Sandro Santilli / KKGeo)</para>
+<para>#2464, ST_CurveToLine with MaxError tolerance (Sandro Santilli / KKGeo)</para>
+<para>#3599, Geobuf output support via ST_AsGeobuf (Björn Harrtell)</para>
+<para>#3661, Mapbox vector tile output support via ST_AsMVT (Björn Harrtell / CartoDB)</para>
+<para>#3689, Add orientation checking and forcing functions (Dan Baston)</para>
+<para>#3753, Gist penalty speed improvements for 2D and ND points
+           (Darafei Praliaskouski, Andrey Borodin)</para>
+<para>#3677, ST_FrechetDistance (Shinichi Sugiyama)</para>
+<para>Most aggregates (raster and geometry),
+    and all stable / immutable (raster and geometry) marked as parallel safe</para>
+<para>#2249, ST_MakeEmptyCoverage for raster (David Zwarg, ainomieli)</para>
+<para>#3709, Allow signed distance for ST_Project (Darafei Praliaskouski)</para>
+<para>#524, Covers support for polygon on polygon, line on line,
+          point on line for geography (Danny Götte)</para>
+        </simplesect>
+
+        <simplesect><title>Enhancements and Fixes</title>
+<para>Many corrections to docs and several translations almost complete.
+    Andreas Schild who provided many corrections to core docs.
+    PostGIS Japanese translation team first to reach completion of translation.</para>
+
+<para>Support for PostgreSQL 10</para>
+<para>Preliminary support for PostgreSQL 11</para>
+<para>#3645, Avoid loading logically deleted records from shapefiles</para>
+<para>#3747, Add zip4 and address_alphanumeric as attributes
+           to norm_addy tiger_geocoder type.</para>
+<para>#3748, address_standardizer lookup tables update
+           so pagc_normalize_address better standardizes abbreviations</para>
+<para>#3647, better handling of noding in ST_Node using GEOSNode
+          (Wouter Geraedts)</para>
+<para>#3684, Update to EPSG register v9
+          (Even Rouault)</para>
+<para>#3830, Fix initialization of incompatible type (>=9.6) address_standardizer</para>
+<para>#3662, Make shp2pgsql work in debug mode by sending debug to stderr</para>
+<para>#3405, Fixed memory leak in lwgeom_to_points</para>
+<para>#3832, Support wide integer fields as int8 in shp2pgsql</para>
+<para>#3841, Deterministic sorting support for empty geometries in btree geography</para>
+<para>#3844, Make = operator a strict equality test, and &lt; &gt; to rough "spatial sorting"</para>
+<para>#3855, ST_AsTWKB memory and speed improvements</para>
+        </simplesect>
+
+        <simplesect><title>Breaking Changes</title>
+<para>Dropped support for PostgreSQL 9.2.</para>
+<para>#3810, GEOS 3.4.0 or above minimum required to compile</para>
+<para>Most aggregates now marked as parallel safe,
+    which means most aggs have to be dropped / recreated.
+    If you have views that utilize PostGIS aggs,
+    you'll need to drop before upgrade and recreate after upgrade</para>
+<para>#3578, ST_NumInteriorRings(POLYGON EMPTY) now returns 0 instead of NULL</para>
+<para>_ST_DumpPoints removed, was no longer needed after PostGIS 2.1.0
+    when ST_DumpPoints got reimplemented in C</para>
+<para>B-Tree index operators &lt; = &gt; changed to provide better spatial locality on sorting
+    and have expected behavior on GROUP BY.
+    If you have btree index for geometry or geography, you need to REINDEX it, or review
+    if it was created by accident and needs to be replaced with GiST index.
+    If your code relies on old left-to-right box compare ordering,
+    update it to use &lt;&lt; &gt;&gt; operators.</para>
+        </simplesect>
+    </sect1>
+
+    <sect1>
+      <title>Release 2.3.3</title>
+      <para>Release date: 2017/07/01</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+          <para>#3777, GROUP BY anomaly with empty geometries</para>
+          <para>#3711, Azimuth error upon adding 2.5D edges to topology</para>
+          <para>#3726, PDF manual from dblatex renders fancy quotes for programlisting
+                  (Mike Toews)</para>
+          <para>#3738, raster: Using -s without -Y in raster2pgsql transforms
+                  raster data instead of setting srid</para>
+          <para>#3744, ST_Subdivide loses subparts of inverted geometries
+                  (Darafei Praliaskouski Komzpa)</para>
+          <para>#3750, @ and ~ operator not always schema qualified in geometry
+                  and raster functions. Causes restore issues.
+                  (Shane StClair of Axiom Data Science)</para>
+          <para>#3682, Strange fieldlength for boolean in result of pgsql2shp</para>
+          <para>#3701, Escape double quotes issue in pgsql2shp</para>
+          <para>#3704, ST_AsX3D crashes on empty geometry</para>
+          <para>#3730, Change ST_Clip from Error to Notice when ST_Clip can't compute a band</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
+      <title>Release 2.3.2</title>
+      <para>Release date: 2017/01/31</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+          <para>#3418, KNN recheck in 9.5+ fails with index returned tuples in wrong order</para>
+          <para>#3675, Relationship functions not using an index in some cases</para>
+          <para>#3680, PostGIS upgrade scripts missing GRANT for views</para>
+          <para>#3683, Unable to update postgis after postgres pg_upgrade going from &lt; 9.5 to pg &gt; 9.4</para>
+          <para>#3688, ST_AsLatLonText: round minutes</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
+      <title>Release 2.3.1</title>
+      <para>Release date: 2016/11/28</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+          <para>#1973, st_concavehull() returns sometimes empty geometry collection
+                   Fix from gde</para>
+          <para>#3501, add raster constraint max extent exceeds array size limit
+                for large tables</para>
+          <para>#3643, PostGIS not building on latest OSX XCode</para>
+          <para>#3644, Deadlock on interrupt</para>
+          <para>#3650, Mark ST_Extent, ST_3DExtent and ST_Mem*
+                agg functions as parallel safe so they can be parallelized</para>
+          <para>#3652, Crash on Collection(MultiCurve())</para>
+          <para>#3656, Fix upgrade of aggregates from 2.2 or lower version</para>
+          <para>#3659, Crash caused by raster GUC define after CREATE EXTENSION
+             using wrong memory context. (manaeem)</para>
+          <para>#3665, Index corruption and memory leak in BRIN indexes
+            patch from Julien Rouhaud (Dalibo)</para>
+          <para>#3667, geography ST_Segmentize bug
+            patch from Hugo Mercier (Oslandia)</para>
+      </simplesect>
+    </sect1>
      <sect1>
-    	<title>Release 2.2.1</title>
+      <title>Release 2.3.0</title>
+          <para>Release date: 2016/09/26</para>
+          <para>This is a new feature release, with new functions, improved performance, all relevant bug fixes from PostGIS 2.2.3,and other goodies.</para>
+
+        <simplesect>
+          <title>Important / Breaking Changes</title>
+            <para>#3466, Casting from box3d to geometry now returns a 3D
+                     geometry (Julien Rouhaud of Dalibo)</para>
+            <para>#3396, ST_EstimatedExtent, throw WARNING instead of ERROR
+                     (Regina Obe)</para>
+        </simplesect>
+
+
+        <simplesect>
+            <title>New Features</title>
+              <para>Add support for custom TOC in postgis_restore.pl
+                (Christoph Moench-Tegeder)</para>
+              <para>Add support for negative indexing in ST_PointN and ST_SetPoint
+                (Rémi Cura)</para>
+              <para>Add parameters for geography ST_Buffer (Thomas Bonfort)</para>
+              <para>TopoGeom_addElement, TopoGeom_remElement (Sandro Santilli)</para>
+              <para>populate_topology_layer (Sandro Santilli)</para>
+              <para>#454,  ST_WrapX and lwgeom_wrapx (Sandro Santilli)</para>
+              <para>#1758, ST_Normalize (Sandro Santilli)</para>
+              <para>#2236, shp2pgsql -d now emits "DROP TABLE IF EXISTS"</para>
+              <para>#2259, ST_VoronoiPolygons and ST_VoronoiLines (Dan Baston)</para>
+              <para>#2841 and #2996, ST_MinimumBoundingRadius and new ST_MinimumBoundingCircle
+                       implementation using Welzl's algorithm (Dan Baston)</para>
+              <para>#2991, Enable ST_Transform to use PROJ.4 text (Mike Toews)</para>
+              <para>#3059, Allow passing per-dimension parameters in ST_Expand (Dan Baston)</para>
+              <para>#3339, ST_GeneratePoints (Paul Ramsey)</para>
+              <para>#3362, ST_ClusterDBSCAN (Dan Baston)</para>
+              <para>#3364, ST_GeometricMedian (Dan Baston)</para>
+              <para>#3391, Add table inheritance support in ST_EstimatedExtent
+                       (Alessandro Pasotti)</para>
+              <para>#3424, ST_MinimumClearance (Dan Baston)</para>
+              <para>#3428, ST_Points (Dan Baston)</para>
+              <para>#3465, ST_ClusterKMeans (Paul Ramsey)</para>
+              <para>#3469, ST_MakeLine with MULTIPOINTs (Paul Norman)</para>
+              <para>#3549, Support PgSQL 9.6 parallel query mode, as far as possible
+                       (Paul Ramsey, Regina Obe)</para>
+              <para>#3557, Geometry function costs based on query stats (Paul Norman)</para>
+              <para>#3591, Add support for BRIN indexes. PostgreSQL 9.4+ required.
+                       (Giuseppe Broccolo of 2nd Quadrant, Julien Rouhaud
+                        and Ronan Dunklau of Dalibo)</para>
+              <para>#3496, Make postgis non-relocateable for extension install,
+                       schema qualify calls in functions (Regina Obe)
+                       Should resolve once and for all for extensions #3494, #3486, #3076</para>
+              <para>#3547, Update tiger geocoder to support TIGER 2016
+                       and to support both http and ftp.</para>
+              <para>#3613, Segmentize geography using equal length segments
+                       (Hugo Mercier of Oslandia)</para>
+        </simplesect>
+
+        <simplesect>
+            <title>Bug Fixes</title>
+               <para>All relevant bug fixes from PostGIS 2.2.3</para>
+               <para>#2841, ST_MinimumBoundingCircle not covering original</para>
+               <para>#3604, pgcommon/Makefile.in orders CFLAGS incorrectly leading to
+                       wrong liblwgeom.h (Greg Troxel)</para>
+        </simplesect>
+
+        <simplesect>
+            <title>Performance Enhancements</title>
+              <para>#75, Enhancement to PIP short circuit (Dan Baston)</para>
+              <para>#3383, Avoid deserializing small geometries during index operations
+                       (Dan Baston)</para>
+              <para>#3400, Minor optimization of PIP routines (Dan Baston)</para>
+              <para>Make adding a line to topology interruptible (Sandro Santilli)</para>
+              <para>Documentation updates from Mike Toews</para>
+      </simplesect>
+
+   </sect1>
+
+   <sect1>
+      <title>Release 2.2.2</title>
+        <para>Release date: 2016/03/22</para>
+        <para>This is a bug fix and performance improvement release.</para>
+  		  <simplesect>
+  			  <title>New Features</title>
+          <para>#3463, Fix crash on face-collapsing edge change</para>
+          <para>#3422, Improve ST_Split robustness on standard precision double systems (arm64, ppc64el, s390c, powerpc, ...)</para>
+          <para>#3427, Update spatial_ref_sys to EPSG version 8.8</para>
+          <para>#3433, ST_ClusterIntersecting incorrect for MultiPoints</para>
+          <para>#3435, ST_AsX3D fix rendering of concave geometries</para>
+          <para>#3436, memory handling mistake in ptarray_clone_deep</para>
+          <para>#3437, ST_Intersects incorrect for MultiPoints</para>
+          <para>#3461, ST_GeomFromKML crashes Postgres when there are innerBoundaryIs and no outerBoundaryIs</para>
+          <para>#3429, upgrading to 2.3 or from 2.1 can cause loop/hang on some platforms</para>
+          <para>#3460, ST_ClusterWithin 'Tolerance not defined' error after upgrade</para>
+          <para>#3490, Raster data restore issues, materialized views. Scripts postgis_proc_set_search_path.sql, rtpostgis_proc_set_search_path.sql refer to http://postgis.net/docs/manual-2.2/RT_FAQ.html#faq_raster_data_not_restore</para>
+          <para>#3426, failing POINT EMPTY tests on fun architectures</para>
+  		  </simplesect>
+    </sect1>
+
+     <sect1>
+	<title>Release 2.2.1</title>
 		  <para>Release date: 2016/01/06</para>
 		  <para>This is a bug fix and performance improvement release.</para>
-		  
+
 		  <simplesect>
 			<title>New Features</title>
 			  <para>#2232, avoid accumulated error in SVG rounding</para>
@@ -39,9 +302,9 @@
 			  <para>Fix memory leak in lwt_ChangeEdgeGeom [liblwgeom]</para>
 		  </simplesect>
    </sect1>
-   
+
     <sect1>
-    	<title>Release 2.2.0</title>
+	<title>Release 2.2.0</title>
 		<para>Release date: 2015/10/07</para>
       <para>This is a new feature release, with new functions, improved performance, and other goodies.</para>
       <simplesect>
@@ -117,7 +380,7 @@
         <para><ulink url="http://trac.osgeo.org/postgis/ticket/3092"><ulink url="http://trac.osgeo.org/postgis/ticket/3092">#3092</ulink></ulink>, Slow performance of geometry_columns with many tables</para>
     </simplesect>
 	</sect1>
-	
+
     <sect1>
       <title>Release 2.1.8</title>
       <para>Release date: 2015-07-07</para>
@@ -126,7 +389,7 @@
         <title>Bug Fixes</title>
         <para>#3159, do not force a bbox cache on ST_Affine</para>
         <para>#3018, GROUP BY geography sometimes returns duplicate rows</para>
-        <para>#3048, shp2pgsql - illegal number format when specific system locale set</para>
+        <para>#3084, shp2pgsql - illegal number format when specific system locale set</para>
         <para>#3094, Malformed GeoJSON inputs crash backend</para>
         <para>#3104, st_asgml introduces random characters in ID field</para>
         <para>#3155, Remove liblwgeom.h on make uninstall</para>
@@ -134,7 +397,7 @@
         <para>Fix crash in ST_LineLocatePoint</para>
       </simplesect>
     </sect1>
-    
+
     <sect1>
       <title>Release 2.1.7</title>
       <para>Release date: 2015-03-30</para>
@@ -146,16 +409,16 @@
         <para>#3094, Malformed GeoJSON inputs crash backend</para>
       </simplesect>
     </sect1>
-  
+
     <sect1>
       <title>Release 2.1.6</title>
       <para>Release date: 2015-03-20</para>
       <para>This is a bug fix and performance improvement release.</para>
-      <simplesect>  
+      <simplesect>
         <title>Enhancements</title>
         <para>#3000, Ensure edge splitting and healing algorithms use indexes</para>
         <para>#3048, Speed up geometry simplification (J.Santana @ CartoDB)</para>
-        <para>#3050, Speep up geometry type reading (J.Santana @ CartoDB)</para>
+        <para>#3050, Speed up geometry type reading (J.Santana @ CartoDB)</para>
       </simplesect>
       <simplesect>
         <title>Bug Fixes</title>
@@ -172,7 +435,7 @@
         <para>#3031, Allow restore of Geometry(Point) tables dumped with empties in them</para>
       </simplesect>
     </sect1>
-    
+
 	<sect1>
         <title>Release 2.1.5</title>
         <para>Release date: 2014-12-18</para>
@@ -183,7 +446,7 @@
         </simplesect>
         <simplesect>
               <title>Bug Fixes</title>
-							
+
 						  <para><ulink url="http://trac.osgeo.org/postgis/ticket/2947"><ulink url="http://trac.osgeo.org/postgis/ticket/2947">#2947</ulink></ulink>, Fix memory leak in lwgeom_make_valid for single-component
 						           collection input</para>
 						  <para><ulink url="http://trac.osgeo.org/postgis/ticket/2949"><ulink url="http://trac.osgeo.org/postgis/ticket/2949">#2949</ulink></ulink>, Fix memory leak in lwgeom_mindistance2d for curve input</para>
@@ -193,7 +456,7 @@
 						  <para><ulink url="http://trac.osgeo.org/postgis/ticket/3009"><ulink url="http://trac.osgeo.org/postgis/ticket/3009">#3009</ulink></ulink>, Geography cast may effect underlying tuple</para>
          </simplesect>
     </sect1>
-    
+
 	<sect1>
         <title>Release 2.1.4</title>
         <para>Release date: 2014-09-10</para>
@@ -211,7 +474,7 @@
 
         <simplesect>
               <title>Bug Fixes</title>
-              <para><ulink url="http://trac.osgeo.org/postgis/ticket/2605"><ulink url="http://trac.osgeo.org/postgis/ticket/2605">#2605</ulink></ulink>, armel: _ST_Covers() returns true for point in hole</para> 
+              <para><ulink url="http://trac.osgeo.org/postgis/ticket/2605"><ulink url="http://trac.osgeo.org/postgis/ticket/2605">#2605</ulink></ulink>, armel: _ST_Covers() returns true for point in hole</para>
               <para><ulink url="http://trac.osgeo.org/postgis/ticket/2911"><ulink url="http://trac.osgeo.org/postgis/ticket/2911">#2911</ulink></ulink>, Fix output scale on ST_Rescale/ST_Resample/ST_Resize of rasters
                        with scale 1/-1 and offset 0/0.</para>
               <para>Fix crash in ST_Union(raster)</para>
@@ -227,7 +490,7 @@
               <para><ulink url="http://trac.osgeo.org/postgis/ticket/2784"><ulink url="http://trac.osgeo.org/postgis/ticket/2784">#2784</ulink></ulink>, Fix handling of bogus argument to --with-sfcgal</para>
               <para><ulink url="http://trac.osgeo.org/postgis/ticket/2772"><ulink url="http://trac.osgeo.org/postgis/ticket/2772">#2772</ulink></ulink>, Premature memory free in RASTER_getBandPath (ST_BandPath)</para>
               <para><ulink url="http://trac.osgeo.org/postgis/ticket/2755"><ulink url="http://trac.osgeo.org/postgis/ticket/2755">#2755</ulink></ulink>, Fix regressions tests against all versions of SFCGAL</para>
-              <para><ulink url="http://trac.osgeo.org/postgis/ticket/2775"><ulink url="http://trac.osgeo.org/postgis/ticket/2775">#2775</ulink></ulink>, lwline_from_lwmpoint leaks memory</para> 
+              <para><ulink url="http://trac.osgeo.org/postgis/ticket/2775"><ulink url="http://trac.osgeo.org/postgis/ticket/2775">#2775</ulink></ulink>, lwline_from_lwmpoint leaks memory</para>
               <para><ulink url="http://trac.osgeo.org/postgis/ticket/2802"><ulink url="http://trac.osgeo.org/postgis/ticket/2802">#2802</ulink></ulink>, ST_MapAlgebra checks for valid callback function return value</para>
               <para><ulink url="http://trac.osgeo.org/postgis/ticket/2803"><ulink url="http://trac.osgeo.org/postgis/ticket/2803">#2803</ulink></ulink>, ST_MapAlgebra handles no userarg and STRICT callback function</para>
               <para><ulink url="http://trac.osgeo.org/postgis/ticket/2834"><ulink url="http://trac.osgeo.org/postgis/ticket/2834">#2834</ulink></ulink>, ST_Estimated_Extent and mixedCase table names (regression bug)</para>
@@ -236,12 +499,12 @@
               <para><ulink url="http://trac.osgeo.org/postgis/ticket/2872"><ulink url="http://trac.osgeo.org/postgis/ticket/2872">#2872</ulink></ulink>, make install builds documentation (Greg Troxell)</para>
               <para><ulink url="http://trac.osgeo.org/postgis/ticket/2819"><ulink url="http://trac.osgeo.org/postgis/ticket/2819">#2819</ulink></ulink>, find isfinite or replacement on Centos5 / Solaris</para>
               <para><ulink url="http://trac.osgeo.org/postgis/ticket/2899"><ulink url="http://trac.osgeo.org/postgis/ticket/2899">#2899</ulink></ulink>, geocode limit 1 not returning best answer (tiger geocoder)</para>
-              <para><ulink url="http://trac.osgeo.org/postgis/ticket/2903"><ulink url="http://trac.osgeo.org/postgis/ticket/2903">#2903</ulink></ulink>, Unable to compile on FreeBSD</para> 
+              <para><ulink url="http://trac.osgeo.org/postgis/ticket/2903"><ulink url="http://trac.osgeo.org/postgis/ticket/2903">#2903</ulink></ulink>, Unable to compile on FreeBSD</para>
               <para><ulink url="http://trac.osgeo.org/postgis/ticket/2927"><ulink url="http://trac.osgeo.org/postgis/ticket/2927">#2927</ulink></ulink>  reverse_geocode not filling in direction prefix (tiger geocoder)
-                       get rid of deprecated ST_Line_Locate_Point called</para> 
+                       get rid of deprecated ST_Line_Locate_Point called</para>
          </simplesect>
     </sect1>
-	
+
 	<sect1>
       <title>Release 2.1.3</title>
       <para>Release date: 2014/05/13</para>
@@ -340,21 +603,21 @@
         <para><ulink url="http://trac.osgeo.org/postgis/ticket/2478">#2478</ulink>, support for tiger 2013</para>
         <para><ulink url="http://trac.osgeo.org/postgis/ticket/2463">#2463</ulink>, support for exact length calculations on arc geometries</para>
       </simplesect>
-    </sect1>    
+    </sect1>
 
-		
+
     <sect1>
 		  <title>Release 2.1.0</title>
 		  <para>Release date: 2013/08/17</para>
 		  <para>This is a minor release addressing both bug fixes and performance and functionality enhancements addressing issues since 2.0.3 release.
 		If you are upgrading from 2.0+, only a soft upgrade is required.  If you are upgrading from 1.5 or earlier, a hard upgrade is required.</para>
-		<simplesect>	
+		<simplesect>
     <title>Important / Breaking Changes</title>
      <para><ulink url="http://trac.osgeo.org/postgis/ticket/1653">#1653</ulink>, Removed srid parameter from ST_Resample(raster) and variants
                with reference raster no longer apply reference raster's SRID.</para>
-     <para><ulink url="http://trac.osgeo.org/postgis/ticket/1962">#1962</ulink> ST_Segmentize - As a result of 
+     <para><ulink url="http://trac.osgeo.org/postgis/ticket/1962">#1962</ulink> ST_Segmentize - As a result of
               the introduction of geography support, The construct:
-         <code>SELECT ST_Segmentize('LINESTRING(1 2, 3 4)',0.5);</code> 
+         <code>SELECT ST_Segmentize('LINESTRING(1 2, 3 4)',0.5);</code>
         will result in ambiguous function error</para>
      <para><ulink url="http://trac.osgeo.org/postgis/ticket/2026">#2026</ulink>, ST_Union(raster) now unions all bands of all rasters</para>
      <para><ulink url="http://trac.osgeo.org/postgis/ticket/2089">#2089</ulink>, liblwgeom: lwgeom_set_handlers replaces lwgeom_init_allocators.</para>
@@ -383,7 +646,7 @@
         Use ST_MapAlgebra instead</para>
      <para>1 and 2 raster variants of ST_MapAlgebraExpr.
         Use expression variants of ST_MapAlgebra instead</para>
-  </simplesect>    
+  </simplesect>
 
   <simplesect>
     <title>New Features</title>
@@ -391,8 +654,8 @@
      for complete list of new functions</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/310">#310</ulink>, ST_DumpPoints converted to a C function (Nathan Wagner) and much faster</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/739">#739</ulink>, UpdateRasterSRID()</para>
-   <para><ulink url="http://trac.osgeo.org/postgis/ticket/945">#945</ulink>, improved join selectivity, N-D selectivity calculations, 
-      user accessible selectivity and stats reader functions for 
+   <para><ulink url="http://trac.osgeo.org/postgis/ticket/945">#945</ulink>, improved join selectivity, N-D selectivity calculations,
+      user accessible selectivity and stats reader functions for
       testing (Paul Ramsey / OpenGeo)</para>
    <para>toTopoGeom with TopoGeometry sink (Sandro Santilli / Vizzuality)</para>
    <para>clearTopoGeom (Sandro Santilli / Vizzuality)</para>
@@ -410,7 +673,7 @@
       in one call (Bborie Park / UC Davis)</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1293">#1293</ulink>, ST_Resize(raster) to resize rasters based upon width/height</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1627">#1627</ulink>, package tiger_geocoder as a PostgreSQL extension</para>
-   <para><ulink url="http://trac.osgeo.org/postgis/ticket/1643">#1643</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/2076">#2076</ulink>, Upgrade tiger geocoder to support loading tiger 2011 and 2012 
+   <para><ulink url="http://trac.osgeo.org/postgis/ticket/1643">#1643</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/2076">#2076</ulink>, Upgrade tiger geocoder to support loading tiger 2011 and 2012
       (Regina Obe / Paragon Corporation) Funded by Hunter Systems Group</para>
    <para>GEOMETRYCOLLECTION support for ST_MakeValid (Sandro Santilli / Vizzuality)</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1709">#1709</ulink>, ST_NotSameAlignmentReason(raster, raster)</para>
@@ -427,7 +690,7 @@
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/2018">#2018</ulink>, ST_Distance support for CircularString, CurvePolygon, MultiCurve,
       MultiSurface, CompoundCurve </para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/2030">#2030</ulink>, n-raster (and n-band) ST_MapAlgebra (Bborie Park / UC Davis)</para>
-   <para><ulink url="http://trac.osgeo.org/postgis/ticket/2193">#2193</ulink>, Utilize PAGC parser as drop in replacement for tiger normalizer 
+   <para><ulink url="http://trac.osgeo.org/postgis/ticket/2193">#2193</ulink>, Utilize PAGC parser as drop in replacement for tiger normalizer
               (Steve Woodbridge, Regina Obe)</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/2210">#2210</ulink>, ST_MinConvexHull(raster)</para>
    <para>lwgeom_from_geojson in liblwgeom (Sandro Santilli / Vizzuality)</para>
@@ -443,8 +706,8 @@
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/2290">#2290</ulink>, ST_ColorMap(raster) to generate RGBA bands</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/2254">#2254</ulink>, Add SFCGAL backend support.
              (Backend selection throught postgis.backend var)
-             Functions available both throught GEOS or SFCGAL: 
-              ST_Intersects, ST_3DIntersects, ST_Intersection, ST_Area, 
+             Functions available both throught GEOS or SFCGAL:
+              ST_Intersects, ST_3DIntersects, ST_Intersection, ST_Area,
               ST_Distance, ST_3DDistance
              New functions available only with SFCGAL backend:
               ST_3DIntersection, ST_Tesselate, ST_3DArea, ST_Extrude, ST_ForceLHR
@@ -453,14 +716,14 @@
              New function available in PostGIS: ST_ForceSFS
              (Olivier Courtin and Hugo Mercier / Oslandia)</para>
   </simplesect>
-  
+
   <simplesect>
     <title>Enhancements</title>
          <para>For detail of new functions and function improvements, please refer to <xref linkend="NewFunctions_2_1" />.</para>
          <para>Much faster raster ST_Union,  ST_Clip and many more function additions operations</para>
          <para>For geometry/geography better planner selectivity and a lot more functions.</para>
-  
-   <para><ulink url="http://trac.osgeo.org/postgis/ticket/823">#823</ulink>,  tiger geocoder: Make loader_generate_script download portion 
+
+   <para><ulink url="http://trac.osgeo.org/postgis/ticket/823">#823</ulink>,  tiger geocoder: Make loader_generate_script download portion
              less greedy</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/826">#826</ulink>,  raster2pgsql no longer defaults to padding tiles. Flag -P
              can be used to pad tiles</para>
@@ -472,12 +735,12 @@
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1780">#1780</ulink>, support ST_GeoHash for geography</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1796">#1796</ulink>, Big performance boost for distance calculations in geography</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1802">#1802</ulink>, improved function interruptibility.</para>
-   <para><ulink url="http://trac.osgeo.org/postgis/ticket/1823">#1823</ulink>, add parameter in ST_AsGML to use id column for GML 3 output 
+   <para><ulink url="http://trac.osgeo.org/postgis/ticket/1823">#1823</ulink>, add parameter in ST_AsGML to use id column for GML 3 output
              (become mandatory since GML 3.2.1)</para>
-   <para><ulink url="http://trac.osgeo.org/postgis/ticket/1856">#1856</ulink>, tiger geocoder: reverse geocoder rating setting for prefer 
+   <para><ulink url="http://trac.osgeo.org/postgis/ticket/1856">#1856</ulink>, tiger geocoder: reverse geocoder rating setting for prefer
              numbered highway name</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1938">#1938</ulink>, Refactor basic ST_AddBand to add multiple new bands in one call</para>
-   <para><ulink url="http://trac.osgeo.org/postgis/ticket/1978">#1978</ulink>, wrong answer when calculating length of a closed circular 
+   <para><ulink url="http://trac.osgeo.org/postgis/ticket/1978">#1978</ulink>, wrong answer when calculating length of a closed circular
              arc (circle)</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1989">#1989</ulink>, Preprocess input geometry to just intersection with raster
              to be clipped</para>
@@ -499,10 +762,10 @@
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/2149">#2149</ulink>, Addition of spatially_unique constraint for raster</para>
    <para>TopologySummary output now includes unregistered layers and a count
              of missing TopoGeometry objects from their natural layer.</para>
-   <para>ST_HillShade(), ST_Aspect() and ST_Slope() have one new optional 
+   <para>ST_HillShade(), ST_Aspect() and ST_Slope() have one new optional
              parameter to interpolate NODATA pixels before running the
              operation.</para>
-   <para>Point variant of ST_SetValue(raster) is now a wrapper around geomval 
+   <para>Point variant of ST_SetValue(raster) is now a wrapper around geomval
              variant of ST_SetValues(rast).</para>
    <para>Proper support for raster band's isnodata flag in core API and loader.</para>
    <para>Additional default values for parameters of ST_Aspect and ST_HillShade</para>
@@ -518,7 +781,7 @@
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/2222">#2222</ulink>, add parameter OutAsIn to flag whether ST_AsBinary should
              return out-db bands as in-db bands</para>
   </simplesect>
-  
+
   <simplesect><title>Fixes</title>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1839">#1839</ulink>, handling of subdatasets in GeoTIFF in raster2pgsql.</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1840">#1840</ulink>, fix logic of when to compute # of tiles in raster2pgsql.</para>
@@ -528,14 +791,14 @@
              when count is zero</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1932">#1932</ulink>, fix raster2pgsql of syntax for index tablespaces</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1936">#1936</ulink>, ST_GeomFromGML on CurvePolygon causes server crash</para>
-   <para><ulink url="http://trac.osgeo.org/postgis/ticket/1939">#1939</ulink>, remove custom data types: summarystats, histogram, quantile, 
+   <para><ulink url="http://trac.osgeo.org/postgis/ticket/1939">#1939</ulink>, remove custom data types: summarystats, histogram, quantile,
              valuecount</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1951">#1951</ulink>, remove crash on zero-length linestrings</para>
-   <para><ulink url="http://trac.osgeo.org/postgis/ticket/1957">#1957</ulink>, ST_Distance to a one-point LineString returns NULL</para> 
+   <para><ulink url="http://trac.osgeo.org/postgis/ticket/1957">#1957</ulink>, ST_Distance to a one-point LineString returns NULL</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1976">#1976</ulink>, Geography point-in-ring code overhauled for more reliability</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1981">#1981</ulink>, cleanup of unused variables causing warnings with gcc 4.6+</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/1996">#1996</ulink>, support POINT EMPTY in GeoJSON output</para>
-   <para><ulink url="http://trac.osgeo.org/postgis/ticket/2062">#2062</ulink>, improve performance of distance calculations</para> 
+   <para><ulink url="http://trac.osgeo.org/postgis/ticket/2062">#2062</ulink>, improve performance of distance calculations</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/2057">#2057</ulink>, Fixed linking issue for raster2psql to libpq</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/2077">#2077</ulink>, Fixed incorrect values returning from ST_Hillshade()</para>
    <para><ulink url="http://trac.osgeo.org/postgis/ticket/2019">#2019</ulink>, ST_FlipCoordinates does not update bbox</para>
@@ -599,7 +862,7 @@
      <para>#<ulink url="http://trac.osgeo.org/postgis/ticket/2514">#2514</ulink>, Change raster license from GPL v3+ to v2+, allowing distribution of PostGIS Extension as GPLv2.</para>
    </simplesect>
   </sect1>
-     
+
 	<sect1>
     <title>Release 2.0.4</title>
       <para>Release date: 2013/09/06</para>
@@ -641,13 +904,13 @@
       <para><ulink url="http://trac.osgeo.org/postgis/ticket/2111">#2111</ulink>, Raster bands can only reference the first 256 bands of out-db rasters</para>
     </simplesect>
   </sect1>
-	  
+
   <sect1>
 		<title>Release 2.0.3</title>
 		<para>Release date: 2013/03/01</para>
 		<para>This is a bug fix release, addressing issues that have been filed since the 2.0.2 release. If you are using PostGIS 2.0+ a soft upgrade is required.  For users of PostGIS 1.5 or below, a hard upgrade is required.</para>
 		<simplesect>
-		 	<title>Bug Fixes</title>
+			<title>Bug Fixes</title>
   <para><ulink url="http://trac.osgeo.org/postgis/ticket/2126">#2126</ulink>, Better handling of empty rasters from ST_ConvexHull()</para>
   <para><ulink url="http://trac.osgeo.org/postgis/ticket/2134">#2134</ulink>, Make sure to process SRS before passing it off to GDAL functions</para>
   <para>Fix various memory leaks in liblwgeom</para>
@@ -671,62 +934,62 @@
 		<para>Release date: 2012/12/03</para>
 		<para>This is a bug fix release, addressing issues that have been filed since the 2.0.1 release.</para>
 		<simplesect>
-		 	<title>Bug Fixes</title>
-		 	<para><ulink url="http://trac.osgeo.org/postgis/ticket/1287">#1287</ulink>, Drop of "gist_geometry_ops" broke a few clients
+			<title>Bug Fixes</title>
+			<para><ulink url="http://trac.osgeo.org/postgis/ticket/1287">#1287</ulink>, Drop of "gist_geometry_ops" broke a few clients
      package of legacy_gist.sql for these cases</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1391">#1391</ulink>, Errors during upgrade from 1.5</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1828">#1828</ulink>, Poor selectivity estimate on ST_DWithin</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1838">#1838</ulink>, error importing tiger/line data</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1869">#1869</ulink>, ST_AsBinary is not unique added to legacy_minor/legacy.sql scripts</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1885">#1885</ulink>, Missing field from tabblock table in tiger2010 census_loader.sql</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1891">#1891</ulink>, Use LDFLAGS environment when building liblwgeom</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1900">#1900</ulink>, Fix pgsql2shp for big-endian systems </para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1932">#1932</ulink>, Fix raster2pgsql for invalid syntax for setting index tablespace</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1936">#1936</ulink>, ST_GeomFromGML on CurvePolygon causes server crash</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1955">#1955</ulink>, ST_ModEdgeHeal and ST_NewEdgeHeal for doubly connected edges</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1957">#1957</ulink>, ST_Distance to a one-point LineString returns NULL</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1976">#1976</ulink>, Geography point-in-ring code overhauled for more reliability</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1978">#1978</ulink>, wrong answer calculating length of closed circular arc (circle)</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1981">#1981</ulink>, Remove unused but set variables as found with gcc 4.6+</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1987">#1987</ulink>, Restore 1.5.x behaviour of ST_Simplify</para> 
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1989">#1989</ulink>, Preprocess input geometry to just intersection with raster
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1391">#1391</ulink>, Errors during upgrade from 1.5</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1828">#1828</ulink>, Poor selectivity estimate on ST_DWithin</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1838">#1838</ulink>, error importing tiger/line data</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1869">#1869</ulink>, ST_AsBinary is not unique added to legacy_minor/legacy.sql scripts</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1885">#1885</ulink>, Missing field from tabblock table in tiger2010 census_loader.sql</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1891">#1891</ulink>, Use LDFLAGS environment when building liblwgeom</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1900">#1900</ulink>, Fix pgsql2shp for big-endian systems </para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1932">#1932</ulink>, Fix raster2pgsql for invalid syntax for setting index tablespace</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1936">#1936</ulink>, ST_GeomFromGML on CurvePolygon causes server crash</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1955">#1955</ulink>, ST_ModEdgeHeal and ST_NewEdgeHeal for doubly connected edges</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1957">#1957</ulink>, ST_Distance to a one-point LineString returns NULL</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1976">#1976</ulink>, Geography point-in-ring code overhauled for more reliability</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1978">#1978</ulink>, wrong answer calculating length of closed circular arc (circle)</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1981">#1981</ulink>, Remove unused but set variables as found with gcc 4.6+</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1987">#1987</ulink>, Restore 1.5.x behaviour of ST_Simplify</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1989">#1989</ulink>, Preprocess input geometry to just intersection with raster
            to be clipped</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1991">#1991</ulink>, geocode really slow on PostgreSQL 9.2</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1996">#1996</ulink>, support POINT EMPTY in GeoJSON output</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1998">#1998</ulink>, Fix ST_{Mod,New}EdgeHeal joining edges sharing both endpoints</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2001">#2001</ulink>, ST_CurveToLine has no effect if the geometry doesn't actually contain an arc</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2015">#2015</ulink>, ST_IsEmpty('POLYGON(EMPTY)') returns False</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2019">#2019</ulink>, ST_FlipCoordinates does not update bbox</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2025">#2025</ulink>, Fix side location conflict at TopoGeo_AddLineString</para> 
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2026">#2026</ulink>, improve performance of distance calculations</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2033">#2033</ulink>, Fix adding a splitting point into a 2.5d topology </para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2051">#2051</ulink>, Fix excess of precision in ST_AsGeoJSON output</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2052">#2052</ulink>, Fix buffer overflow in lwgeom_to_geojson</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2056">#2056</ulink>, Fixed lack of SRID check of raster and geometry in ST_SetValue()</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2057">#2057</ulink>, Fixed linking issue for raster2psql to libpq</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2060">#2060</ulink>, Fix "dimension" check violation by GetTopoGeomElementArray</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2072">#2072</ulink>, Removed outdated checks preventing ST_Intersects(raster) from
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1991">#1991</ulink>, geocode really slow on PostgreSQL 9.2</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1996">#1996</ulink>, support POINT EMPTY in GeoJSON output</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1998">#1998</ulink>, Fix ST_{Mod,New}EdgeHeal joining edges sharing both endpoints</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2001">#2001</ulink>, ST_CurveToLine has no effect if the geometry doesn't actually contain an arc</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2015">#2015</ulink>, ST_IsEmpty('POLYGON(EMPTY)') returns False</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2019">#2019</ulink>, ST_FlipCoordinates does not update bbox</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2025">#2025</ulink>, Fix side location conflict at TopoGeo_AddLineString</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2026">#2026</ulink>, improve performance of distance calculations</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2033">#2033</ulink>, Fix adding a splitting point into a 2.5d topology </para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2051">#2051</ulink>, Fix excess of precision in ST_AsGeoJSON output</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2052">#2052</ulink>, Fix buffer overflow in lwgeom_to_geojson</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2056">#2056</ulink>, Fixed lack of SRID check of raster and geometry in ST_SetValue()</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2057">#2057</ulink>, Fixed linking issue for raster2psql to libpq</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2060">#2060</ulink>, Fix "dimension" check violation by GetTopoGeomElementArray</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2072">#2072</ulink>, Removed outdated checks preventing ST_Intersects(raster) from
            working on out-db bands</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2077">#2077</ulink>, Fixed incorrect answers from ST_Hillshade(raster) </para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2092">#2092</ulink>, Namespace issue with ST_GeomFromKML,ST_GeomFromGML for libxml 2.8+</para>
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2099">#2099</ulink>, Fix double free on exception in ST_OffsetCurve</para> 
- 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2100">#2100</ulink>, ST_AsRaster() may not return raster with specified pixel type</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2077">#2077</ulink>, Fixed incorrect answers from ST_Hillshade(raster) </para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2092">#2092</ulink>, Namespace issue with ST_GeomFromKML,ST_GeomFromGML for libxml 2.8+</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2099">#2099</ulink>, Fix double free on exception in ST_OffsetCurve</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2100">#2100</ulink>, ST_AsRaster() may not return raster with specified pixel type</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2108">#2108</ulink>, Ensure ST_Line_Interpolate_Point always returns POINT</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2109">#2109</ulink>, Ensure ST_Centroid always returns POINT</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2117">#2117</ulink>, Ensure ST_PointOnSurface always returns POINT</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2129">#2129</ulink>, Fix SRID in ST_Homogenize output with collection input</para>
        <para><ulink url="http://trac.osgeo.org/postgis/ticket/2130">#2130</ulink>, Fix memory error in MultiPolygon GeoJson parsing</para>
 
- 			 <para>Update URL of Maven jar</para>
+			 <para>Update URL of Maven jar</para>
 		</simplesect>
 		<simplesect>
 			 <title>Enhancements</title>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1581">#1581</ulink>, ST_Clip(raster, ...) no longer imposes NODATA on a band if the
            corresponding band from the source raster did not have NODATA</para>
-  			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1928">#1928</ulink>, Accept array properties in GML input multi-geom input
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1928">#1928</ulink>, Accept array properties in GML input multi-geom input
     (Kashif Rasul and Shoaib Burq / SpacialDB)</para>
-  			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2082">#2082</ulink>, Add indices on start_node and end_node of topology edge tables</para>
-  			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2087">#2087</ulink>, Speedup topology.GetRingEdges using a recursive CTE</para> 	
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2082">#2082</ulink>, Add indices on start_node and end_node of topology edge tables</para>
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/2087">#2087</ulink>, Speedup topology.GetRingEdges using a recursive CTE</para>
 		</simplesect>
 	</sect1>
     <sect1>
@@ -755,36 +1018,36 @@
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1791">#1791</ulink>, fix ST_Azimuth with very close but distinct points.</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1797">#1797</ulink>, fix (ValidateTopology(xxx)).* syntax calls.</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1805">#1805</ulink>, put back the 900913 SRID entry.</para>
-			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1813">#1813</ulink>, Only show readable relations in metadata tables.</para> 
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1813">#1813</ulink>, Only show readable relations in metadata tables.</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1819">#1819</ulink>, fix floating point issues with ST_World2RasterCoord and
 					   ST_Raster2WorldCoord variants.</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1820">#1820</ulink>  compilation on 9.2beta1.</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1822">#1822</ulink>, topology load on PostgreSQL 9.2beta1.</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1825">#1825</ulink>, fix prepared geometry cache lookup</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1829">#1829</ulink>, fix uninitialized read in GeoJSON parser</para>
-			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1834">#1834</ulink>, revise postgis extension to only backup 
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1834">#1834</ulink>, revise postgis extension to only backup
 					   user specified spatial_ref_sys</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1839">#1839</ulink>, handling of subdatasets in GeoTIFF in raster2pgsql.</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1840">#1840</ulink>, fix logic of when to compute # of tiles in raster2pgsql.</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1851">#1851</ulink>, fix spatial_ref_system parameters for EPSG:3844</para>
-			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1857">#1857</ulink>, fix failure to detect endpoint mismatch in ST_AddEdge*Face*</para> 
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1857">#1857</ulink>, fix failure to detect endpoint mismatch in ST_AddEdge*Face*</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1865">#1865</ulink>, data loss in postgis_restore.pl when data rows have leading
 					   dashes.</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1867">#1867</ulink>, catch invalid topology name passed to topogeo_add*</para>
 			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1872">#1872</ulink>, fix ST_ApproxSummarystats to prevent division by zero</para>
-			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1873">#1873</ulink>, fix ptarray_locate_point to return interpolated Z/M values for 
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1873">#1873</ulink>, fix ptarray_locate_point to return interpolated Z/M values for
 			              on-the-line case</para>
-			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1875">#1875</ulink>, ST_SummaryStats returns NULL for all parameters except count 
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1875">#1875</ulink>, ST_SummaryStats returns NULL for all parameters except count
 			              when count is zero </para>
-			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1881">#1881</ulink>, shp2pgsql-gui -- editing a field sometimes triggers 
-			 			  removing row</para>
-           	 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1883">#1883</ulink>, Geocoder install fails trying to run 
+			 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1881">#1881</ulink>, shp2pgsql-gui -- editing a field sometimes triggers
+						  removing row</para>
+	 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1883">#1883</ulink>, Geocoder install fails trying to run
            create_census_base_tables() (Brian Panulla)</para>
 		</simplesect>
 		<simplesect>
 			 <title>Enhancements</title>
 				<para>More detailed exception message from topology editing functions.</para>
-				<para><ulink url="http://trac.osgeo.org/postgis/ticket/1786">#1786</ulink>, improved build dependencies</para> 
+				<para><ulink url="http://trac.osgeo.org/postgis/ticket/1786">#1786</ulink>, improved build dependencies</para>
 				<para><ulink url="http://trac.osgeo.org/postgis/ticket/1806">#1806</ulink>, speedup of ST_BuildArea, ST_MakeValid and ST_GetFaceGeometry.</para>
 				<para><ulink url="http://trac.osgeo.org/postgis/ticket/1812">#1812</ulink>, Add lwgeom_normalize in LIBLWGEOM for more stable testing.</para>
 		</simplesect>
@@ -796,10 +1059,10 @@
         to <xref linkend="hard_upgrade" /> for details on upgrading.
         Refer to <xref linkend="NewFunctions_2_0" /> for more details and changed/new functions.</para>
        <simplesect>
-        	<title>Testers - Our unsung heroes</title>
-        	<para>We are most indebted to the numerous members in the PostGIS community 
- 	who were brave enough to test out the new features in this release.  
- 	No major release can be successful without these folk.</para>
+	<title>Testers - Our unsung heroes</title>
+	<para>We are most indebted to the numerous members in the PostGIS community
+	who were brave enough to test out the new features in this release.
+	No major release can be successful without these folk.</para>
 			<para>Below are those who have been most valiant, provided very detailed
 			and thorough bug reports,
 			and detailed analysis.</para>
@@ -808,32 +1071,32 @@
 			<member>Andreas Forø Tollefsen - raster testing</member>
 			<member>Chris English - topology stress testing loader functions</member>
 			<member>Salvatore Larosa - topology robustness testing</member>
-			<member>Brian Hamlin - Benchmarking 
-				(also experimental experimental branches 
+			<member>Brian Hamlin - Benchmarking
+				(also experimental experimental branches
 					before they are folded into core)
-				, general testing of various pieces 
+				, general testing of various pieces
 			   including Tiger and Topology. Testing on various server VMs</member>
 			<member>Mike Pease -  Tiger geocoder testing - very detailed reports of issues</member>
 			<member>Tom van Tilburg - raster testing</member>
 </simplelist>
         </simplesect>
         <simplesect>
-        	<title>Important / Breaking Changes</title>
-        	<para><ulink url="http://trac.osgeo.org/postgis/ticket/722">#722</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/302">#302</ulink>, Most deprecated functions removed (over 250 functions) (Regina Obe, Paul Ramsey)</para>
-        	<para>Unknown SRID changed from -1 to 0. (Paul Ramsey)</para>
-        	<para> -- (most deprecated in 1.2) removed non-ST variants buffer, length, intersects 
-        	 (and internal functions renamed) etc. </para>
-        	<para>-- If you have been using deprecated functions CHANGE your apps or suffer the consequences.
+	<title>Important / Breaking Changes</title>
+	<para><ulink url="http://trac.osgeo.org/postgis/ticket/722">#722</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/302">#302</ulink>, Most deprecated functions removed (over 250 functions) (Regina Obe, Paul Ramsey)</para>
+	<para>Unknown SRID changed from -1 to 0. (Paul Ramsey)</para>
+	<para> -- (most deprecated in 1.2) removed non-ST variants buffer, length, intersects
+	 (and internal functions renamed) etc. </para>
+	<para>-- If you have been using deprecated functions CHANGE your apps or suffer the consequences.
      If you don't see a function documented -- it ain't supported or it is an internal function.
      Some constraints in older tables were built with deprecated functions.
      If you restore you may need to rebuild table constraints with populate_geometry_columns().  If you have applications or tools
 					that rely on deprecated functions, please refer to <xref linkend="legacy_faq" /> for more details.</para>
-		<para><ulink url="http://trac.osgeo.org/postgis/ticket/944">#944</ulink> geometry_columns is now a view instead of a table 
+		<para><ulink url="http://trac.osgeo.org/postgis/ticket/944">#944</ulink> geometry_columns is now a view instead of a table
     (Paul Ramsey, Regina Obe)
     for tables created the old way reads (srid, type, dims) constraints
-    for geometry columns created with type modifiers 
+    for geometry columns created with type modifiers
     reads rom column definition</para>
-        <para><ulink url="http://trac.osgeo.org/postgis/ticket/1081">#1081</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/1082">#1082</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/1084">#1084</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/1088">#1088</ulink> - Mangement functions support typmod 
+        <para><ulink url="http://trac.osgeo.org/postgis/ticket/1081">#1081</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/1082">#1082</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/1084">#1084</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/1088">#1088</ulink> - Mangement functions support typmod
     geometry column creation functions now default to typmod creation
     (Regina Obe)</para>
         <para><ulink url="http://trac.osgeo.org/postgis/ticket/1083">#1083</ulink> probe_geometry_columns(), rename_geometry_table_constraints(),
@@ -841,16 +1104,16 @@
     - now obsolete with geometry_column view
     (Regina Obe)</para>
         <para><ulink url="http://trac.osgeo.org/postgis/ticket/817">#817</ulink> Renaming old 3D functions to the convention ST_3D (Nicklas Avén)</para>
-        <para><ulink url="http://trac.osgeo.org/postgis/ticket/548">#548</ulink> (sorta), ST_NumGeometries,ST_GeometryN now returns 1 (or the geometry) instead of null 
+        <para><ulink url="http://trac.osgeo.org/postgis/ticket/548">#548</ulink> (sorta), ST_NumGeometries,ST_GeometryN now returns 1 (or the geometry) instead of null
      for single geometries (Sandro Santilli, Maxime van Noppen)</para>
         </simplesect>
         <simplesect>
           <title>New Features</title>
-          <para><ulink url="http://blog.opengeo.org/2011/09/28/indexed-nearest-neighbour-search-in-postgis/">KNN Gist index based centroid (&lt;-&gt;) and box (&lt;#&gt;) distance operators (Paul Ramsey / funded by Vizzuality)</ulink></para> 
+          <para><ulink url="http://blog.opengeo.org/2011/09/28/indexed-nearest-neighbour-search-in-postgis/">KNN Gist index based centroid (&lt;-&gt;) and box (&lt;#&gt;) distance operators (Paul Ramsey / funded by Vizzuality)</ulink></para>
           <para>Support for TIN and PolyHedralSurface and enhancement of many functions to support 3D (Olivier Courtin / Oslandia)</para>
           <para><ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding">Raster support integrated and documented</ulink>
-          		(Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli, David Zwarg, Regina Obe, Bborie Park)
-          		(Company developer and funding: University Laval, Deimos Space, CadCorp,  Michigan Tech Research Institute, Azavea, Paragon Corporation, UC Davis Center for Vectorborne Diseases)</para>
+		(Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli, David Zwarg, Regina Obe, Bborie Park)
+		(Company developer and funding: University Laval, Deimos Space, CadCorp,  Michigan Tech Research Institute, Azavea, Paragon Corporation, UC Davis Center for Vectorborne Diseases)</para>
           <para>Making spatial indexes 3D aware - in progress (Paul Ramsey, Mark Cave-Ayland)</para>
           <para>Topology support improved (more functions), documented, testing (Sandro Santilli / Faunalia for RT-SIGTA), Andrea Peri, Regina Obe, Jose Carlos Martinez Llari</para>
           <para>3D relationship and measurement support functions  (Nicklas Avén)</para>
@@ -872,28 +1135,28 @@
           <para><ulink url="http://blog.opengeo.org/2011/11/21/st_geomfromgeojson/">ST_GeomFromGeoJSON (Kashif Rasul, Paul Ramsey / Vizzuality funding)</ulink></para>
         </simplesect>
         <simplesect>
-        	<title>Enhancements</title>
-        	<para>Made shape file loader tolerant of truncated multibyte values found in some free worldwide shapefiles (Sandro Santilli)</para>
-        	<para>Lots of bug fixes and enhancements to shp2pgsql
-        	       Beefing up regression tests for loaders 
-        	       Reproject support for both geometry and geography during import
-        	       (Jeff Adams / Azavea, Mark Cave-Ayland)</para>
-        	<para>pgsql2shp conversion from predefined list 
-        	       (Loic Dachary / Mark Cave-Ayland)</para>
-        	<para>Shp-pgsql GUI loader - support loading multiple files at a time.  (Mark Leslie)</para>  
-        	<para>Extras - upgraded tiger_geocoder from using old TIGER format to use new TIGER shp and file structure format (Stephen Frost)</para>
-        	<para>Extras - revised tiger_geocoder to work with TIGER census 2010 data, addition of reverse geocoder function, various bug fixes, accuracy enhancements, 
-        	     limit max result return, speed improvements, loading routines. 
-        	   (Regina Obe, Leo Hsu / Paragon Corporation / funding provided by Hunter Systems Group)</para>
-        	<para>Overall Documentation proofreading and corrections. (Kasif Rasul)</para>
-        	<para>Cleanup PostGIS JDBC classes, revise to use Maven build. (Maria Arias de Reyna, Sandro Santilli)</para>
+	<title>Enhancements</title>
+	<para>Made shape file loader tolerant of truncated multibyte values found in some free worldwide shapefiles (Sandro Santilli)</para>
+	<para>Lots of bug fixes and enhancements to shp2pgsql
+	       Beefing up regression tests for loaders
+	       Reproject support for both geometry and geography during import
+	       (Jeff Adams / Azavea, Mark Cave-Ayland)</para>
+	<para>pgsql2shp conversion from predefined list
+	       (Loic Dachary / Mark Cave-Ayland)</para>
+	<para>Shp-pgsql GUI loader - support loading multiple files at a time.  (Mark Leslie)</para>
+	<para>Extras - upgraded tiger_geocoder from using old TIGER format to use new TIGER shp and file structure format (Stephen Frost)</para>
+	<para>Extras - revised tiger_geocoder to work with TIGER census 2010 data, addition of reverse geocoder function, various bug fixes, accuracy enhancements,
+	     limit max result return, speed improvements, loading routines.
+	   (Regina Obe, Leo Hsu / Paragon Corporation / funding provided by Hunter Systems Group)</para>
+	<para>Overall Documentation proofreading and corrections. (Kasif Rasul)</para>
+	<para>Cleanup PostGIS JDBC classes, revise to use Maven build. (Maria Arias de Reyna, Sandro Santilli)</para>
         </simplesect>
         <simplesect>
-        	<title>Bug Fixes</title>
-        	<para><ulink url="http://trac.osgeo.org/postgis/ticket/1335">#1335</ulink> ST_AddPoint returns incorrect result on Linux (Even Rouault)</para>
+	<title>Bug Fixes</title>
+	<para><ulink url="http://trac.osgeo.org/postgis/ticket/1335">#1335</ulink> ST_AddPoint returns incorrect result on Linux (Even Rouault)</para>
         </simplesect>
         <simplesect>
-        	<title>Release specific credits</title>
+	<title>Release specific credits</title>
         <para>We thank <ulink url="http://blog.opengeo.org/2012/02/01/it-goes-up-to-2-0/">U.S Department of State Human Information Unit (HIU)</ulink> and <ulink url="http://blog.cartodb.com/post/17318840209/postgis-core-committer-sandro-santilli-joins-cartodb">Vizzuality</ulink> for general monetary support to get PostGIS 2.0 out the door.</para>
 		<!-- TODO: expand this list -->
 	</simplesect>
@@ -934,19 +1197,19 @@
 			 <para>Support builds with "gmake" (Greg Troxel)</para>
 		</simplesect>
 	</sect1>
-      
+
       <sect1>
         <title>Release 1.5.3</title>
         <para>Release date: 2011/06/25</para>
         <para>This is a bug fix release, addressing issues that have been filed since the 1.5.2 release. If you are running PostGIS 1.3+, a soft upgrade is sufficient
-        	otherwise a hard upgrade is recommended.</para>
+	otherwise a hard upgrade is recommended.</para>
         <simplesect>
           <title>Bug Fixes</title>
                 <para><ulink url="http://trac.osgeo.org/postgis/ticket/1056">#1056</ulink>, produce correct bboxes for arc geometries, fixes index errors
                     (Paul Ramsey)</para>
-			   <para><ulink url="http://trac.osgeo.org/postgis/ticket/1007">#1007</ulink>, ST_IsValid crash fix requires GEOS 3.3.0+ or 3.2.3+ 
+			   <para><ulink url="http://trac.osgeo.org/postgis/ticket/1007">#1007</ulink>, ST_IsValid crash fix requires GEOS 3.3.0+ or 3.2.3+
 				 (Sandro Santilli, reported by Birgit Laggner)</para>
-			   <para><ulink url="http://trac.osgeo.org/postgis/ticket/940">#940</ulink>, support for PostgreSQL 9.1 beta 1 
+			   <para><ulink url="http://trac.osgeo.org/postgis/ticket/940">#940</ulink>, support for PostgreSQL 9.1 beta 1
 				 (Regina Obe, Paul Ramsey, patch submitted by stl)</para>
 			   <para><ulink url="http://trac.osgeo.org/postgis/ticket/845">#845</ulink>, ST_Intersects precision error (Sandro Santilli, Nicklas Avén)
 				 Reported by cdestigter</para>
@@ -959,7 +1222,7 @@
 			   <para><ulink url="http://trac.osgeo.org/postgis/ticket/624">#624</ulink>, Memory leak in ST_GeogFromText (ryang, Paul Ramsey)</para>
 			   <para><ulink url="http://trac.osgeo.org/postgis/ticket/609">#609</ulink>, Bad source code in manual section 5.2 Java Clients (simoc, Regina Obe)</para>
 			   <para><ulink url="http://trac.osgeo.org/postgis/ticket/604">#604</ulink>, shp2pgsql usage touchups (Mike Toews, Paul Ramsey)</para>
-			   <para><ulink url="http://trac.osgeo.org/postgis/ticket/573">#573</ulink> ST_Union fails on a group of linestrings 
+			   <para><ulink url="http://trac.osgeo.org/postgis/ticket/573">#573</ulink> ST_Union fails on a group of linestrings
 				 Not a PostGIS bug, fixed in GEOS 3.3.0</para>
 			   <para><ulink url="http://trac.osgeo.org/postgis/ticket/457">#457</ulink> ST_CollectionExtract returns non-requested type
 				(Nicklas Avén, Paul Ramsey)</para>
@@ -972,19 +1235,19 @@
 				 Reported by psvensso</para>
         </simplesect>
       </sect1>
-      
+
       <sect1>
         <title>Release 1.5.2</title>
         <para>Release date: 2010/09/27</para>
         <para>This is a bug fix release, addressing issues that have been filed since the 1.5.1 release. If you are running PostGIS 1.3+, a soft upgrade is sufficient
-        	otherwise a hard upgrade is recommended.</para>
+	otherwise a hard upgrade is recommended.</para>
         <simplesect>
           <title>Bug Fixes</title>
            <para>Loader: fix handling of empty (0-verticed) geometries in shapefiles. (Sandro Santilli)</para>
            <para><ulink url="http://trac.osgeo.org/postgis/ticket/536">#536</ulink>, Geography ST_Intersects, ST_Covers, ST_CoveredBy and Geometry ST_Equals not using spatial index (Regina Obe, Nicklas Aven)</para>
            <para><ulink url="http://trac.osgeo.org/postgis/ticket/573">#573</ulink>, Improvement to ST_Contains geography (Paul Ramsey)</para>
            <para>Loader: Add support for command-q shutdown in Mac GTK build (Paul Ramsey)</para>
-           <para><ulink url="http://trac.osgeo.org/postgis/ticket/393">#393</ulink>, Loader: Add temporary patch for large DBF files (Maxime Guillaud, Paul Ramsey)</para>  
+           <para><ulink url="http://trac.osgeo.org/postgis/ticket/393">#393</ulink>, Loader: Add temporary patch for large DBF files (Maxime Guillaud, Paul Ramsey)</para>
            <para><ulink url="http://trac.osgeo.org/postgis/ticket/507">#507</ulink>, Fix wrong OGC URN in GeoJSON and GML output (Olivier Courtin)</para>
            <para>spatial_ref_sys.sql Add datum conversion for projection SRID 3021 (Paul Ramsey)</para>
            <para>Geography - remove crash for case when all geographies are out of the estimate (Paul Ramsey)</para>
@@ -999,16 +1262,16 @@
            <para><ulink url="http://trac.osgeo.org/postgis/ticket/581">#581</ulink>, LWGEOM-expand produces inconsistent results (Mark Cave-Ayland)</para>
            <para><ulink url="http://trac.osgeo.org/postgis/ticket/513">#513</ulink>, Add dbf filter to shp2pgsql-gui and allow uploading dbf only (Paul Ramsey)</para>
            <para>Fix further build issues against PostgreSQL 9.0 (Mark Cave-Ayland)</para>
-           <para><ulink url="http://trac.osgeo.org/postgis/ticket/572">#572</ulink>, Password whitespace for Shape File (Mark Cave-Ayland)</para> 
+           <para><ulink url="http://trac.osgeo.org/postgis/ticket/572">#572</ulink>, Password whitespace for Shape File (Mark Cave-Ayland)</para>
            <para><ulink url="http://trac.osgeo.org/postgis/ticket/603">#603</ulink>, shp2pgsql: "-w" produces invalid WKT for MULTI* objects. (Mark Cave-Ayland)</para>
         </simplesect>
       </sect1>
-          
+
       <sect1>
         <title>Release 1.5.1</title>
         <para>Release date: 2010/03/11</para>
         <para>This is a bug fix release, addressing issues that have been filed since the 1.4.1 release. If you are running PostGIS 1.3+, a soft upgrade is sufficient
-        	otherwise a hard upgrade is recommended.</para>
+	otherwise a hard upgrade is recommended.</para>
         <simplesect>
           <title>Bug Fixes</title>
            <para><ulink url="http://trac.osgeo.org/postgis/ticket/410">#410</ulink>, update embedded bbox when applying ST_SetPoint, ST_AddPoint ST_RemovePoint to a linestring (Paul Ramsey)</para>
@@ -1022,12 +1285,12 @@
            <para>Ensure support for upcoming 9.0 PgSQL release (Paul Ramsey)</para>
         </simplesect>
       </sect1>
-      
+
       <sect1>
         <title>Release 1.5.0</title>
         <para>Release date: 2010/02/04</para>
         <para>This release provides support for geographic coordinates (lat/lon) via a new GEOGRAPHY type. Also performance enhancements, new input format support (GML,KML) and general upkeep.</para>
-  
+
         <simplesect>
           <title>API Stability</title>
           <para>The public API of PostGIS will not change during minor (0.0.X) releases.</para>
@@ -1050,14 +1313,14 @@
           <para>Added Hausdorff distance calculations (<ulink url="http://trac.osgeo.org/postgis/ticket/209">#209</ulink>) (Vincent Picavet)</para>
           <para>Added parameters argument to ST_Buffer operation to support one-sided buffering and other buffering styles (Sandro Santilli)</para>
           <para>Addition of other Distance related visualization and analysis functions (Nicklas Aven)</para>
-      	  <itemizedlist>
-        		<listitem><para>ST_ClosestPoint</para></listitem>
-        		<listitem><para>ST_DFullyWithin</para></listitem>
-        		<listitem><para>ST_LongestLine</para></listitem>
-        		<listitem><para>ST_MaxDistance</para></listitem>
-        		<listitem><para>ST_ShortestLine</para></listitem>
-      	  </itemizedlist>  
-          <para>ST_DumpPoints (Maxime van Noppen)</para>     	  
+	  <itemizedlist>
+		<listitem><para>ST_ClosestPoint</para></listitem>
+		<listitem><para>ST_DFullyWithin</para></listitem>
+		<listitem><para>ST_LongestLine</para></listitem>
+		<listitem><para>ST_MaxDistance</para></listitem>
+		<listitem><para>ST_ShortestLine</para></listitem>
+	  </itemizedlist>
+          <para>ST_DumpPoints (Maxime van Noppen)</para>
           <para>KML, GML input via ST_GeomFromGML and ST_GeomFromKML (Olivier Courtin)</para>
           <para>Extract homogeneous collection with ST_CollectionExtract (Paul Ramsey)</para>
           <para>Add measure values to an existing linestring with ST_AddMeasure (Paul Ramsey)</para>
@@ -1081,20 +1344,20 @@
           <para>Win32 support and improvement of core shp2pgsql-gui (Mark Cave-Ayland)</para>
           <para>In place 'make check' support (Paul Ramsey)</para>
         </simplesect>
-        
+
         <simplesect>
           <title>Bug fixes</title>
           <para><ulink url="http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=PostGIS+1.5.0&amp;order=priority">http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=PostGIS+1.5.0&amp;order=priority</ulink></para>
         </simplesect>
       </sect1>
-      
+
       <sect1>
         <title>Release 1.4.0</title>
         <para>Release date: 2009/07/24</para>
         <para>This release provides performance enhancements, improved internal structures and testing, new features, and upgraded documentation.
         If you are running PostGIS 1.1+, a soft upgrade is sufficient
-        	otherwise a hard upgrade is recommended.</para>
-  
+	otherwise a hard upgrade is recommended.</para>
+
         <simplesect>
           <title>API Stability</title>
           <para>As of the 1.4 release series, the public API of PostGIS will not change during minor releases.</para>
@@ -1158,16 +1421,16 @@
         <title>Release 1.3.6</title>
         <para>Release date: 2009/05/04</para>
         <para>If you are running PostGIS 1.1+, a soft upgrade is sufficient
-        	otherwise a hard upgrade is recommended. This release adds support for PostgreSQL 8.4, exporting
+	otherwise a hard upgrade is recommended. This release adds support for PostgreSQL 8.4, exporting
         prj files from the database with shape data, some crash fixes for shp2pgsql, and several small
         bug fixes in the handling of "curve" types, logical error importing dbf only files, improved error handling of AddGeometryColumns.</para>
       </sect1>
-	  
+
       <sect1>
         <title>Release 1.3.5</title>
         <para>Release date: 2008/12/15</para>
         <para>If you are running PostGIS 1.1+, a soft upgrade is sufficient
-        	otherwise a hard upgrade is recommended. This release is a bug fix release to address a failure
+	otherwise a hard upgrade is recommended. This release is a bug fix release to address a failure
         in ST_Force_Collection and related functions that critically
         affects using MapServer with LINE layers.</para>
       </sect1>
@@ -1176,7 +1439,7 @@
       <title>Release 1.3.4</title>
       <para>Release date: 2008/11/24</para>
       <para>This release adds support for GeoJSON output, building
-      with PostgreSQL 8.4, improves documentation quality and 
+      with PostgreSQL 8.4, improves documentation quality and
       output aesthetics, adds function-level SQL documentation,
       and improves performance for some spatial predicates
       (point-in-polygon tests).</para>
@@ -1185,7 +1448,7 @@
       removed, a linear referencing failure for measures on vertices,
       and more. See the NEWS file for details.</para>
     </sect1>
-    
+
     <sect1>
       <title>Release 1.3.3</title>
 

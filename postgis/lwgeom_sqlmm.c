@@ -62,6 +62,8 @@ Datum LWGEOM_has_arc(PG_FUNCTION_ARGS)
  * Curve centers are determined by projecting the defining points into the 2d
  * plane.  Z and M values are assigned by linear interpolation between
  * defining points.
+ *
+ * TODO: drop, use ST_CurveToLine instead
  */
 PG_FUNCTION_INFO_V1(LWGEOM_curve_segmentize);
 Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
@@ -84,10 +86,37 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 	igeom = lwgeom_from_gserialized(geom);
 	ogeom = lwgeom_stroke(igeom, perQuad);
 	lwgeom_free(igeom);
-	
-	if (ogeom == NULL) 
+
+	if (ogeom == NULL)
 		PG_RETURN_NULL();
-		
+
+	ret = geometry_serialize(ogeom);
+	lwgeom_free(ogeom);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(ret);
+}
+
+PG_FUNCTION_INFO_V1(ST_CurveToLine);
+Datum ST_CurveToLine(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	double tol = PG_GETARG_FLOAT8(1);
+	int toltype = PG_GETARG_INT32(2);
+	int flags = PG_GETARG_INT32(3);
+	GSERIALIZED *ret;
+	LWGEOM *igeom = NULL, *ogeom = NULL;
+
+	POSTGIS_DEBUG(2, "ST_CurveToLine called.");
+
+	POSTGIS_DEBUGF(3, "tol = %g, typ = %d, flg = %d", tol, toltype, flags);
+
+	igeom = lwgeom_from_gserialized(geom);
+	ogeom = lwcurve_linearize(igeom, tol, toltype, flags);
+	lwgeom_free(igeom);
+
+	if (ogeom == NULL)
+		PG_RETURN_NULL();
+
 	ret = geometry_serialize(ogeom);
 	lwgeom_free(ogeom);
 	PG_FREE_IF_COPY(geom, 0);

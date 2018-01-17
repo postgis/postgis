@@ -1,12 +1,12 @@
 -----------------------------------------------------------------------
 -- ST_MultiBandMapAlgebra
--- Return the same map algebra expression to all the band of a raster. 
+-- Return the same map algebra expression to all the band of a raster.
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION ST_MultiBandMapAlgebra(rast1 raster, 
-                                            	  rast2 raster, 
-                                                  expression text, 
-                                            	  extentexpr text) 
-    RETURNS raster AS 
+CREATE OR REPLACE FUNCTION ST_MultiBandMapAlgebra(rast1 raster,
+                                            	  rast2 raster,
+                                                  expression text,
+                                            	  extentexpr text)
+    RETURNS raster AS
     $$
     DECLARE
 		numband int;

@@ -519,7 +519,7 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 	/* Get #LWGEOM structures */
 	lwgeom1 = lwgeom_from_gserialized(geom1);
 	lwgeom2 = lwgeom_from_gserialized(geom2);
-	
+
 	/* We are going to be calculating geodetic distances */
 	lwgeom_set_geodetic(lwgeom1, LW_TRUE);
 	lwgeom_set_geodetic(lwgeom2, LW_TRUE);
@@ -534,7 +534,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_distance_ellipsoid);
 Datum LWGEOM_distance_ellipsoid(PG_FUNCTION_ARGS)
 {
 	PG_RETURN_DATUM(DirectFunctionCall4(geometry_distance_spheroid,
-	                                    PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PG_GETARG_DATUM(2), BoolGetDatum(TRUE)));
+	                                    PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PG_GETARG_DATUM(2), BoolGetDatum(true)));
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_distance_sphere);
@@ -547,6 +547,6 @@ Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS)
 	s.a = s.b = s.radius;
 
 	PG_RETURN_DATUM(DirectFunctionCall4(geometry_distance_spheroid,
-	                                    PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PointerGetDatum(&s), BoolGetDatum(FALSE)));
+	                                    PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PointerGetDatum(&s), BoolGetDatum(false)));
 }
 

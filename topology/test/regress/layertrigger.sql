@@ -46,7 +46,7 @@ BEGIN;
   select 'after delete n.2: topology.layer count', count(*) from topology.layer;
 ROLLBACK;
 
--- the trigger must accept the delete 
+-- the trigger must accept the delete
 delete from t2.l1;
 delete from t2.relation;
 delete from topology.layer where topology_id=2;

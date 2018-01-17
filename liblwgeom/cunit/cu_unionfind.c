@@ -22,10 +22,10 @@ static void test_unionfind_create(void)
 	uint32_t expected_initial_ids[] =   { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 	uint32_t expected_initial_sizes[] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
-	CU_ASSERT_EQUAL(10, uf->N);
-	CU_ASSERT_EQUAL(10, uf->num_clusters);
-	CU_ASSERT_EQUAL(0, memcmp(uf->clusters, expected_initial_ids, 10*sizeof(uint32_t)));
-	CU_ASSERT_EQUAL(0, memcmp(uf->cluster_sizes, expected_initial_sizes, 10*sizeof(uint32_t)));
+	ASSERT_INT_EQUAL(uf->N, 10);
+	ASSERT_INT_EQUAL(uf->num_clusters, 10);
+	ASSERT_INTARRAY_EQUAL(uf->clusters, expected_initial_ids, 10);
+	ASSERT_INTARRAY_EQUAL(uf->cluster_sizes, expected_initial_sizes, 10);
 
 	UF_destroy(uf);
 }
@@ -42,10 +42,10 @@ static void test_unionfind_union(void)
 	uint32_t expected_final_ids[] =   { 0, 2, 2, 2, 4, 5, 6, 0, 0, 9 };
 	uint32_t expected_final_sizes[] = { 3, 0, 3, 0, 1, 1, 1, 0, 0, 1 };
 
-	CU_ASSERT_EQUAL(10, uf->N);
-	CU_ASSERT_EQUAL(6, uf->num_clusters);
-	CU_ASSERT_EQUAL(0, memcmp(uf->clusters, expected_final_ids, 10*sizeof(uint32_t)));
-	CU_ASSERT_EQUAL(0, memcmp(uf->cluster_sizes, expected_final_sizes, 10*sizeof(uint32_t)));
+	ASSERT_INT_EQUAL(uf->N, 10);
+	ASSERT_INT_EQUAL(uf->num_clusters, 6);
+	ASSERT_INTARRAY_EQUAL(uf->clusters, expected_final_ids, 10);
+	ASSERT_INTARRAY_EQUAL(uf->cluster_sizes, expected_final_sizes, 10);
 
 	UF_destroy(uf);
 }
@@ -110,12 +110,65 @@ static void test_unionfind_path_compression(void)
 	UF_destroy(uf);
 }
 
+static void test_unionfind_collapse_cluster_ids(void)
+{
+	UNIONFIND* uf = UF_create(10);
+
+	uf->clusters[0] = 8;
+	uf->clusters[1] = 5;
+	uf->clusters[2] = 5;
+	uf->clusters[3] = 5;
+	uf->clusters[4] = 7;
+	uf->clusters[5] = 5;
+	uf->clusters[6] = 8;
+	uf->clusters[7] = 7;
+	uf->clusters[8] = 8;
+	uf->clusters[9] = 7;
+
+	uf->cluster_sizes[0] = 3;
+	uf->cluster_sizes[1] = 4;
+	uf->cluster_sizes[2] = 4;
+	uf->cluster_sizes[3] = 4;
+	uf->cluster_sizes[4] = 3;
+	uf->cluster_sizes[5] = 4;
+	uf->cluster_sizes[6] = 3;
+	uf->cluster_sizes[7] = 3;
+	uf->cluster_sizes[8] = 3;
+	uf->cluster_sizes[9] = 3;
+
+	/* 5 -> 0
+	 * 7 -> 1
+	 * 8 -> 2
+	 */
+	uint32_t expected_collapsed_ids[] = { 2, 0, 0, 0, 1, 0, 2, 1, 2, 1 };
+	uint32_t* collapsed_ids = UF_get_collapsed_cluster_ids(uf, NULL);
+
+	ASSERT_INTARRAY_EQUAL(collapsed_ids, expected_collapsed_ids, 10);
+
+	lwfree(collapsed_ids);
+
+	char is_in_cluster[] = { 0, 1, 1, 1, 0, 1, 0, 0, 0, 0 };
+	uint32_t expected_collapsed_ids2[] = { 8, 0, 0, 0, 7, 0, 8, 7, 8, 7 };
+
+	collapsed_ids = UF_get_collapsed_cluster_ids(uf, is_in_cluster);
+	uint32_t i;
+	for (i = 0; i < uf->N; i++)
+	{
+		if (is_in_cluster[i])
+			ASSERT_INT_EQUAL(expected_collapsed_ids2[i], collapsed_ids[i]);
+	}
+
+	lwfree(collapsed_ids);
+	UF_destroy(uf);
+}
+
 void unionfind_suite_setup(void);
 void unionfind_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("Clustering Union-Find", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("clustering_unionfind", NULL, NULL);
 	PG_ADD_TEST(suite, test_unionfind_create);
 	PG_ADD_TEST(suite, test_unionfind_union);
 	PG_ADD_TEST(suite, test_unionfind_ordered_by_cluster);
 	PG_ADD_TEST(suite, test_unionfind_path_compression);
+	PG_ADD_TEST(suite, test_unionfind_collapse_cluster_ids);
 }

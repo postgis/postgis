@@ -36,5 +36,25 @@ SELECT ST_transform(ST_GeomFromEWKT('SRID=0;POINT(0 0)'),100002);
 --- test #8: Transforming to same SRID
 SELECT 8,ST_AsEWKT(ST_transform(ST_GeomFromEWKT('SRID=100002;POINT(0 0)'),100002));
 
+SELECT 9, ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+               ST_GeomFromEWKT('SRID=100002;POINT(16 48)'),
+               '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs '), 10));
+
+--- test #10: Transform from_proj to_proj
+SELECT 10, ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+               ST_GeomFromEWKT('POINT(16 48)'),
+               '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ',
+               '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs '), 10));
+
+--- test #11: Transform from_proj to_srid
+SELECT 11, ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+               ST_GeomFromEWKT('POINT(16 48)'),
+               '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ', 100001), 10));
+
+--- test #12: Transform with bad to_proj
+SELECT 12, ST_AsEWKT(ST_Transform(
+           ST_GeomFromEWKT('SRID=100002;POINT(16 48)'),
+           'invalid projection'));
+
 DELETE FROM spatial_ref_sys WHERE srid >= 100000;
 

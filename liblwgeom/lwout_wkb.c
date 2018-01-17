@@ -36,10 +36,10 @@ static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant);
 */
 static char *hexchr = "0123456789ABCDEF";
 
-char* hexbytes_from_bytes(uint8_t *bytes, size_t size) 
+char* hexbytes_from_bytes(const uint8_t *bytes, size_t size)
 {
 	char *hex;
-	int i;
+	uint32_t i;
 	if ( ! bytes || ! size )
 	{
 		lwerror("hexbutes_from_bytes: invalid input");
@@ -66,12 +66,12 @@ static int lwgeom_wkb_needs_srid(const LWGEOM *geom, uint8_t variant)
 	   We force that behavior with the WKB_NO_SRID flag */
 	if ( variant & WKB_NO_SRID )
 		return LW_FALSE;
-		
-	/* We can only add an SRID if the geometry has one, and the 
-	   WKB form is extended */	
+
+	/* We can only add an SRID if the geometry has one, and the
+	   WKB form is extended */
 	if ( (variant & WKB_EXTENDED) && lwgeom_has_srid(geom) )
 		return LW_TRUE;
-		
+
 	/* Everything else doesn't get an SRID */
 	return LW_FALSE;
 }
@@ -301,7 +301,7 @@ static size_t empty_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 	if ( geom->type == POINTTYPE )
 	{
 		const LWPOINT *pt = (LWPOINT*)geom;
-		size += WKB_DOUBLE_SIZE * FLAGS_NDIMS(pt->point->flags);		
+		size += WKB_DOUBLE_SIZE * FLAGS_NDIMS(pt->point->flags);
 	}
 	/* num-elements */
 	else
@@ -343,7 +343,7 @@ static uint8_t* empty_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t varia
 		/* Set nrings/npoints/ngeoms to zero */
 		buf = integer_to_wkb_buf(0, buf, variant);
 	}
-	
+
 	return buf;
 }
 
@@ -370,9 +370,9 @@ static size_t ptarray_to_wkb_size(const POINTARRAY *pa, uint8_t variant)
 
 static uint8_t* ptarray_to_wkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t variant)
 {
-	int dims = 2;
-	int pa_dims = FLAGS_NDIMS(pa->flags);
-	int i, j;
+	uint32_t dims = 2;
+	uint32_t pa_dims = FLAGS_NDIMS(pa->flags);
+	uint32_t i, j;
 	double *dbl_ptr;
 
 	/* SFSQL is always 2-d. Extended and ISO use all available dimensions */
@@ -392,7 +392,7 @@ static uint8_t* ptarray_to_wkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t v
 		buf += size;
 	}
 	/* Copy coordinates one-by-one otherwise */
-	else 
+	else
 	{
 		for ( i = 0; i < pa->npoints; i++ )
 		{
@@ -524,17 +524,17 @@ static uint8_t* lwtriangle_to_wkb_buf(const LWTRIANGLE *tri, uint8_t *buf, uint8
 
 	/* Set the endian flag */
 	buf = endian_to_wkb_buf(buf, variant);
-	
+
 	/* Set the geometry type */
 	buf = integer_to_wkb_buf(lwgeom_wkb_type((LWGEOM*)tri, variant), buf, variant);
-	
+
 	/* Set the optional SRID for extended variant */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)tri, variant) )
 		buf = integer_to_wkb_buf(tri->srid, buf, variant);
 
 	/* Set the number of rings (only one, it's a triangle, buddy) */
 	buf = integer_to_wkb_buf(1, buf, variant);
-	
+
 	/* Write that ring */
 	buf = ptarray_to_wkb_buf(tri->points, buf, variant);
 
@@ -548,8 +548,8 @@ static size_t lwpoly_to_wkb_size(const LWPOLY *poly, uint8_t variant)
 {
 	/* endian flag + type number + number of rings */
 	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE + WKB_INT_SIZE;
-	int i = 0;
-	
+	uint32_t i = 0;
+
 	/* Only process empty at this level in the EXTENDED case */
 	if ( (variant & WKB_EXTENDED) && lwgeom_is_empty((LWGEOM*)poly) )
 		return empty_to_wkb_size((LWGEOM*)poly, variant);
@@ -569,7 +569,7 @@ static size_t lwpoly_to_wkb_size(const LWPOLY *poly, uint8_t variant)
 
 static uint8_t* lwpoly_to_wkb_buf(const LWPOLY *poly, uint8_t *buf, uint8_t variant)
 {
-	int i;
+	uint32_t i;
 
 	/* Only process empty at this level in the EXTENDED case */
 	if ( (variant & WKB_EXTENDED) && lwgeom_is_empty((LWGEOM*)poly) )
@@ -596,14 +596,14 @@ static uint8_t* lwpoly_to_wkb_buf(const LWPOLY *poly, uint8_t *buf, uint8_t vari
 
 /*
 * MULTIPOINT, MULTILINESTRING, MULTIPOLYGON, GEOMETRYCOLLECTION
-* MULTICURVE, COMPOUNDCURVE, MULTISURFACE, CURVEPOLYGON, TIN, 
+* MULTICURVE, COMPOUNDCURVE, MULTISURFACE, CURVEPOLYGON, TIN,
 * POLYHEDRALSURFACE
 */
 static size_t lwcollection_to_wkb_size(const LWCOLLECTION *col, uint8_t variant)
 {
 	/* Endian flag + type number + number of subgeoms */
 	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE + WKB_INT_SIZE;
-	int i = 0;
+	uint32_t i = 0;
 
 	/* Extended WKB needs space for optional SRID integer */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)col, variant) )
@@ -620,7 +620,7 @@ static size_t lwcollection_to_wkb_size(const LWCOLLECTION *col, uint8_t variant)
 
 static uint8_t* lwcollection_to_wkb_buf(const LWCOLLECTION *col, uint8_t *buf, uint8_t variant)
 {
-	int i;
+	uint32_t i;
 
 	/* Set the endian flag */
 	buf = endian_to_wkb_buf(buf, variant);
@@ -708,7 +708,7 @@ static uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t vari
 {
 
 	/* Do not simplify empties when outputting to canonical form */
-	if ( lwgeom_is_empty(geom) & ! (variant & WKB_EXTENDED) )
+	if (lwgeom_is_empty(geom) && !(variant & WKB_EXTENDED))
 		return empty_to_wkb_buf(geom, buf, variant);
 
 	switch ( geom->type )
@@ -799,7 +799,7 @@ uint8_t* lwgeom_to_wkb(const LWGEOM *geom, uint8_t variant, size_t *size_out)
 	if ( ! (variant & WKB_NDR || variant & WKB_XDR) ||
 	       (variant & WKB_NDR && variant & WKB_XDR) )
 	{
-		if ( getMachineEndian() == NDR ) 
+		if ( getMachineEndian() == NDR )
 			variant = variant | WKB_NDR;
 		else
 			variant = variant | WKB_XDR;
@@ -831,7 +831,7 @@ uint8_t* lwgeom_to_wkb(const LWGEOM *geom, uint8_t variant, size_t *size_out)
 	LWDEBUGF(4,"buf (%p) - wkb_out (%p) = %d", buf, wkb_out, buf - wkb_out);
 
 	/* The buffer pointer should now land at the end of the allocated buffer space. Let's check. */
-	if ( buf_size != (buf - wkb_out) )
+	if ( buf_size != (size_t) (buf - wkb_out) )
 	{
 		LWDEBUG(4,"Output WKB is not the same size as the allocated buffer.");
 		lwerror("Output WKB is not the same size as the allocated buffer.");

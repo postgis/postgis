@@ -102,12 +102,12 @@ SELECT 't2.f4',  topology.addFace('t2',
 'POLYGON((3 1,4 1,4 2,3 2,3 1))'
 );
 
--- Register hole in right face 
+-- Register hole in right face
 SELECT 't2.f5',  topology.addFace('t2',
 'POLYGON((12 2,12 4,14 4,14 2,12 2))'
 );
 
--- Attempt to register a not-fully-defined face 
+-- Attempt to register a not-fully-defined face
 SELECT topology.addFace('t2',
 'POLYGON((12 2,12 5,14 5,14 2,12 2))'
 );
@@ -124,7 +124,7 @@ SELECT topology.DropTopology('t2');
 -- Test edge touching face ring on both endpoints but not covered
 -- (E1 with F1)
 --
---         
+--
 --   N2 +-------.
 --      |\  F1  |
 --   E1 | \     | E3
@@ -133,7 +133,7 @@ SELECT topology.DropTopology('t2');
 --      | /E2   |
 --      |/      |
 --   N1 +-------'
--- 
+--
 SELECT topology.CreateTopology('t3') > 0;
 
 SELECT 't3.e1',  topology.addEdge('t3', 'LINESTRING(0 0, 0 10)');

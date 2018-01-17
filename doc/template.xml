@@ -14,14 +14,30 @@
         <paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>
       </funcprototype>
 
-      <!-- an optional second method prototype -->
+      <!-- an optional second method prototype with default args -->
       <funcprototype>
         <funcdef>boolean <function>ST_MyMethod</function></funcdef>
         <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
         <paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>
         <paramdef><type>varchar </type> <parameter>myparam</parameter></paramdef>
-        
+
         <paramdef choice="opt"><type>varchar </type> <parameter>myparam=the_default_value</parameter></paramdef>
+      </funcprototype>
+
+      <!-- example of a spatial aggregate prototype -->
+      <!-- If your function is an aggregate, the input for the
+        set part eg. set of geometries, should be of type geometry set/geometry set instead of geometry/geography -->
+      <funcprototype>
+        <funcdef>geometry <function>ST_MyMethod</function></funcdef>
+        <paramdef><type>geometry set </type> <parameter>g1</parameter></paramdef>
+      </funcprototype>
+
+      <!-- example of a spatial window function prototype -->
+      <!-- If your function is window function, the input for the
+        set part (the input to the window) eg. set of geometries, should be of type geometry winset/geometry winset instead of geometry/geography -->
+      <funcprototype>
+        <funcdef>geometry <function>ST_MyMethod</function></funcdef>
+        <paramdef><type>geometry winset </type> <parameter>g1</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
   </refsynopsisdiv>
@@ -39,7 +55,7 @@
     </note>
     <!-- use this format if new function -->
 	<para>Availability: version goes here - requires GEOS &gt;= 3.3.0. </para>
-	
+
 	<!-- use this format if not a new function but functionality enhanced -->
 	<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 	<!-- use this format if function behavior has changed that could pose backward compatibility issues  -->
@@ -56,13 +72,13 @@
 
 	<!-- Optionally mention Circular String Support -->
 	<para>&curve_support;</para>
-	
+
 	<!-- Optionally mention supports Polyhedral Surface  -->
 	<para>&P_support;</para>
-	
+
 	<!-- Optionally mention support for Triangles and TINS  -->
 	<para>&T_support;</para>
-	
+
 	<!-- Optionally mention address_standardizer required -->
 	<para>&address_standardizer_required;</para>
   </refsection>

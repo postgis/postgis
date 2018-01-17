@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -132,6 +132,7 @@
 #include <postgres.h> /* for palloc */
 #include <fmgr.h> /* for PG_MODULE_MAGIC */
 #include "utils/guc.h"
+#include "utils/memutils.h"
 
 #include "../../postgis_config.h"
 #include "lwgeom_pg.h"
@@ -151,7 +152,93 @@ PG_MODULE_MAGIC;
 /* Module load callback */
 void _PG_init(void);
 
+/* Module unload callback */
+void _PG_fini(void);
+
 #define RT_MSG_MAXLEN 256
+
+
+/* ---------------------------------------------------------------- */
+/*  Memory allocation / error reporting hooks                       */
+/* ---------------------------------------------------------------- */
+
+static void *
+rt_pg_alloc(size_t size)
+{
+    void * result;
+
+    POSTGIS_RT_DEBUGF(5, "rt_pgalloc(%ld) called", (long int) size);
+
+    result = palloc(size);
+
+    return result;
+}
+
+static void *
+rt_pg_realloc(void *mem, size_t size)
+{
+    void * result;
+
+    POSTGIS_RT_DEBUGF(5, "rt_pg_realloc(%ld) called", (long int) size);
+
+    if (mem)
+        result = repalloc(mem, size);
+
+    else
+        result = palloc(size);
+
+    return result;
+}
+
+static void
+rt_pg_free(void *ptr)
+{
+    POSTGIS_RT_DEBUG(5, "rt_pfree called");
+    pfree(ptr);
+}
+
+static void rt_pg_error(const char *fmt, va_list ap)
+  __attribute__(( format(printf,1,0) ));
+
+static void
+rt_pg_error(const char *fmt, va_list ap)
+{
+    char errmsg[RT_MSG_MAXLEN+1];
+
+    vsnprintf (errmsg, RT_MSG_MAXLEN, fmt, ap);
+
+    errmsg[RT_MSG_MAXLEN]='\0';
+    ereport(ERROR, (errmsg_internal("%s", errmsg)));
+}
+
+static void rt_pg_notice(const char *fmt, va_list ap)
+  __attribute__(( format(printf,1,0) ));
+
+static void
+rt_pg_notice(const char *fmt, va_list ap)
+{
+    char msg[RT_MSG_MAXLEN+1];
+
+    vsnprintf (msg, RT_MSG_MAXLEN, fmt, ap);
+
+    msg[RT_MSG_MAXLEN]='\0';
+    ereport(NOTICE, (errmsg_internal("%s", msg)));
+}
+
+static void rt_pg_debug(const char *fmt, va_list ap)
+  __attribute__(( format(printf,1,0) ));
+
+static void
+rt_pg_debug(const char *fmt, va_list ap)
+{
+    char msg[RT_MSG_MAXLEN+1];
+
+    vsnprintf (msg, RT_MSG_MAXLEN, fmt, ap);
+
+    msg[RT_MSG_MAXLEN]='\0';
+    ereport(DEBUG1, (errmsg_internal("%s", msg)));
+}
+
 
 /* ---------------------------------------------------------------- */
 /*  PostGIS raster GUCs                                             */
@@ -160,6 +247,14 @@ void _PG_init(void);
 static char *gdal_datapath = NULL;
 extern char *gdal_enabled_drivers;
 extern char enable_outdb_rasters;
+
+/* ---------------------------------------------------------------- */
+/*  Useful variables                                                */
+/* ---------------------------------------------------------------- */
+
+static char *env_postgis_gdal_enabled_drivers = NULL;
+static char *boot_postgis_gdal_enabled_drivers = NULL;
+static char *env_postgis_enable_outdb_rasters = NULL;
 
 /* postgis.gdal_datapath */
 static void
@@ -185,7 +280,7 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 	int disable_all = 0;
 
 	char **enabled_drivers_array = NULL;
-	int enabled_drivers_count = 0;
+	uint32_t enabled_drivers_count = 0;
 	bool *enabled_drivers_found = NULL;
 	char *gdal_skip = NULL;
 
@@ -272,7 +367,7 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 						strlen(gdal_skip) + 1 + strlen(drv_set[i].short_name) + 1
 					)
 				);
-				strcat(gdal_skip, " "); 
+				strcat(gdal_skip, " ");
 			}
 			strcat(gdal_skip, drv_set[i].short_name);
 		}
@@ -325,11 +420,14 @@ rtpg_assignHookEnableOutDBRasters(bool enable, void *extra) {
 void
 _PG_init(void) {
 
-	char *env_postgis_gdal_enabled_drivers = NULL;
-	char *boot_postgis_gdal_enabled_drivers = NULL;
-
-	char *env_postgis_enable_outdb_rasters = NULL;
 	bool boot_postgis_enable_outdb_rasters = false;
+	MemoryContext old_context;
+
+	/*
+	 * Change to context for memory allocation calls like palloc() in the
+	 * extension initialization routine
+	 */
+	old_context = MemoryContextSwitchTo(TopMemoryContext);
 
 	/*
 	 use POSTGIS_GDAL_ENABLED_DRIVERS to set the bootValue
@@ -381,146 +479,103 @@ _PG_init(void) {
 	/* Install liblwgeom handlers */
 	pg_install_lwgeom_handlers();
 
-	/* TODO: Install raster callbacks (see rt_init_allocators)??? */
+	/* Install rtcore handlers */
+	rt_set_handlers(rt_pg_alloc, rt_pg_realloc, rt_pg_free, rt_pg_error, rt_pg_debug, rt_pg_notice);
 
 	/* Define custom GUC variables. */
+	if ( postgis_guc_find_option("postgis.gdal_datapath") )
+	{
+		/* In this narrow case the previously installed GUC is tied to the callback in */
+		/* the previously loaded library. Probably this is happening during an */
+		/* upgrade, so the old library is where the callback ties to. */
+		elog(WARNING, "'%s' is already set and cannot be changed until you reconnect", "postgis.gdal_datapath");
+	}
+	else
+	{
+		DefineCustomStringVariable(
+			"postgis.gdal_datapath", /* name */
+			"Path to GDAL data files.", /* short_desc */
+			"Physical path to directory containing GDAL data files (sets the GDAL_DATA config option).", /* long_desc */
+			&gdal_datapath, /* valueAddr */
+			NULL, /* bootValue */
+			PGC_SUSET, /* GucContext context */
+			0, /* int flags */
+			NULL, /* GucStringCheckHook check_hook */
+			rtpg_assignHookGDALDataPath, /* GucStringAssignHook assign_hook */
+			NULL  /* GucShowHook show_hook */
+		);
+	}
 
-	DefineCustomStringVariable(
-		"postgis.gdal_datapath", /* name */
-		"Path to GDAL data files.", /* short_desc */
-		"Physical path to directory containing GDAL data files (sets the GDAL_DATA config option).", /* long_desc */
-		&gdal_datapath, /* valueAddr */
-		NULL, /* bootValue */
-		PGC_SUSET, /* GucContext context */
-		0, /* int flags */
-#if POSTGIS_PGSQL_VERSION >= 91
-		NULL, /* GucStringCheckHook check_hook */
-#endif
-		rtpg_assignHookGDALDataPath, /* GucStringAssignHook assign_hook */
-		NULL  /* GucShowHook show_hook */
-	);
+	if ( postgis_guc_find_option("postgis.gdal_enabled_drivers") )
+	{
+		/* In this narrow case the previously installed GUC is tied to the callback in */
+		/* the previously loaded library. Probably this is happening during an */
+		/* upgrade, so the old library is where the callback ties to. */
+		elog(WARNING, "'%s' is already set and cannot be changed until you reconnect", "postgis.gdal_enabled_drivers");
+	}
+	else
+	{
+		DefineCustomStringVariable(
+			"postgis.gdal_enabled_drivers", /* name */
+			"Enabled GDAL drivers.", /* short_desc */
+			"List of enabled GDAL drivers by short name. To enable/disable all drivers, use 'ENABLE_ALL' or 'DISABLE_ALL' (sets the GDAL_SKIP config option).", /* long_desc */
+			&gdal_enabled_drivers, /* valueAddr */
+			boot_postgis_gdal_enabled_drivers, /* bootValue */
+			PGC_SUSET, /* GucContext context */
+			0, /* int flags */
+			NULL, /* GucStringCheckHook check_hook */
+			rtpg_assignHookGDALEnabledDrivers, /* GucStringAssignHook assign_hook */
+			NULL  /* GucShowHook show_hook */
+		);
+	}
 
-	DefineCustomStringVariable(
-		"postgis.gdal_enabled_drivers", /* name */
-		"Enabled GDAL drivers.", /* short_desc */
-		"List of enabled GDAL drivers by short name. To enable/disable all drivers, use 'ENABLE_ALL' or 'DISABLE_ALL' (sets the GDAL_SKIP config option).", /* long_desc */
-		&gdal_enabled_drivers, /* valueAddr */
-		boot_postgis_gdal_enabled_drivers, /* bootValue */
-		PGC_SUSET, /* GucContext context */
-		0, /* int flags */
-#if POSTGIS_PGSQL_VERSION >= 91
-		NULL, /* GucStringCheckHook check_hook */
-#endif
-		rtpg_assignHookGDALEnabledDrivers, /* GucStringAssignHook assign_hook */
-		NULL  /* GucShowHook show_hook */
-	);
+	if ( postgis_guc_find_option("postgis.enable_outdb_rasters") )
+	{
+		/* In this narrow case the previously installed GUC is tied to the callback in */
+		/* the previously loaded library. Probably this is happening during an */
+		/* upgrade, so the old library is where the callback ties to. */
+		elog(WARNING, "'%s' is already set and cannot be changed until you reconnect", "postgis.enable_outdb_rasters");
+	}
+	else
+	{
+		DefineCustomBoolVariable(
+			"postgis.enable_outdb_rasters", /* name */
+			"Enable Out-DB raster bands", /* short_desc */
+			"If true, rasters can access data located outside the database", /* long_desc */
+			&enable_outdb_rasters, /* valueAddr */
+			boot_postgis_enable_outdb_rasters, /* bootValue */
+			PGC_SUSET, /* GucContext context */
+			0, /* int flags */
+			NULL, /* GucStringCheckHook check_hook */
+			rtpg_assignHookEnableOutDBRasters, /* GucBoolAssignHook assign_hook */
+			NULL  /* GucShowHook show_hook */
+		);
+	}
 
-	DefineCustomBoolVariable(
-		"postgis.enable_outdb_rasters", /* name */
-		"Enable Out-DB raster bands", /* short_desc */
-		"If true, rasters can access data located outside the database", /* long_desc */
-		&enable_outdb_rasters, /* valueAddr */
-		boot_postgis_enable_outdb_rasters, /* bootValue */
-		PGC_SUSET, /* GucContext context */
-		0, /* int flags */
-#if POSTGIS_PGSQL_VERSION >= 91
-		NULL, /* GucStringCheckHook check_hook */
-#endif
-		rtpg_assignHookEnableOutDBRasters, /* GucBoolAssignHook assign_hook */
-		NULL  /* GucShowHook show_hook */
-	);
-
-	/* free memory allocations */
-	pfree(boot_postgis_gdal_enabled_drivers);
+	/* Revert back to old context */
+	MemoryContextSwitchTo(old_context);
 }
 
-/* ---------------------------------------------------------------- */
-/*  Memory allocation / error reporting hooks                       */
-/*  TODO: reuse the ones in libpgcommon ?                           */
-/* ---------------------------------------------------------------- */
-
-static void *
-rt_pg_alloc(size_t size)
-{
-    void * result;
-
-    POSTGIS_RT_DEBUGF(5, "rt_pgalloc(%ld) called", (long int) size);
-
-    result = palloc(size);
-
-    return result;
-}
-
-static void *
-rt_pg_realloc(void *mem, size_t size)
-{
-    void * result;
-
-    POSTGIS_RT_DEBUGF(5, "rt_pg_realloc(%ld) called", (long int) size);
-
-    if (mem)
-        result = repalloc(mem, size);
-
-    else
-        result = palloc(size);
-
-    return result;
-}
-
-static void
-rt_pg_free(void *ptr)
-{
-    POSTGIS_RT_DEBUG(5, "rt_pfree called");
-    pfree(ptr);
-}
-
-static void rt_pg_error(const char *fmt, va_list ap)
-  __attribute__(( format(printf,1,0) ));
-
-static void
-rt_pg_error(const char *fmt, va_list ap)
-{
-    char errmsg[RT_MSG_MAXLEN+1];
-
-    vsnprintf (errmsg, RT_MSG_MAXLEN, fmt, ap);
-
-    errmsg[RT_MSG_MAXLEN]='\0';
-    ereport(ERROR, (errmsg_internal("%s", errmsg)));
-}
-
-static void rt_pg_notice(const char *fmt, va_list ap)
-  __attribute__(( format(printf,1,0) ));
-
-static void
-rt_pg_notice(const char *fmt, va_list ap)
-{
-    char msg[RT_MSG_MAXLEN+1];
-
-    vsnprintf (msg, RT_MSG_MAXLEN, fmt, ap);
-
-    msg[RT_MSG_MAXLEN]='\0';
-    ereport(NOTICE, (errmsg_internal("%s", msg)));
-}
-
-static void rt_pg_debug(const char *fmt, va_list ap)
-  __attribute__(( format(printf,1,0) ));
-
-static void
-rt_pg_debug(const char *fmt, va_list ap)
-{
-    char msg[RT_MSG_MAXLEN+1];
-
-    vsnprintf (msg, RT_MSG_MAXLEN, fmt, ap);
-
-    msg[RT_MSG_MAXLEN]='\0';
-    ereport(DEBUG1, (errmsg_internal("%s", msg)));
-}
-
-
+/* Module unload callback */
 void
-rt_init_allocators(void)
-{
-    /* raster callback - install raster handlers */
-    rt_set_handlers(rt_pg_alloc, rt_pg_realloc, rt_pg_free, rt_pg_error,
-            rt_pg_debug, rt_pg_notice);
+_PG_fini(void) {
+
+	MemoryContext old_context;
+
+	old_context = MemoryContextSwitchTo(TopMemoryContext);
+
+	/* Clean up */
+	pfree(env_postgis_gdal_enabled_drivers);
+	pfree(boot_postgis_gdal_enabled_drivers);
+	pfree(env_postgis_enable_outdb_rasters);
+
+	env_postgis_gdal_enabled_drivers = NULL;
+	boot_postgis_gdal_enabled_drivers = NULL;
+	env_postgis_enable_outdb_rasters = NULL;
+
+	/* Revert back to old context */
+	MemoryContextSwitchTo(old_context);
 }
+
+
+

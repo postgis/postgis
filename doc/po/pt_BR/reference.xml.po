@@ -2,14 +2,16 @@
 #
 # Translators:
 # georgersilva <georger.silva@gmail.com>, 2014
+# georgersilva <georger.silva@gmail.com>, 2014
 # Marcelo Soares Souza <marcelo@juntadados.org>, 2014
+# Poliana Palhares <p.palhares@plamu.com.br>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
-"PO-Revision-Date: 2015-09-29 12:24+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"POT-Creation-Date: 2017-01-28 07:03+0000\n"
+"PO-Revision-Date: 2017-01-31 20:05+0000\n"
+"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
 "language/pt_BR/)\n"
 "Language: pt_BR\n"
@@ -67,3 +69,9 @@ msgid ""
 "&reference_temporal; &reference_transaction; &reference_misc; "
 "&reference_exception;"
 msgstr ""
+"&reference_type; &reference_guc; &reference_management; "
+"&reference_constructor; &reference_accessor; &reference_editor; "
+"&reference_output; &reference_operator; &reference_measure; "
+"&reference_sfcgal; &reference_processing; &reference_lrs; "
+"&reference_temporal; &reference_transaction; &reference_misc; "
+"&reference_exception;"

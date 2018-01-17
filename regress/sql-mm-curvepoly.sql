@@ -103,7 +103,7 @@ SELECT 'geometrytype04', geometrytype(ST_geomfromewkt('CURVEPOLYGON(CIRCULARSTRI
                 1 0,
                 0 1,
                 -1 0))'));
-                
+
 SELECT 'ndims05', ST_Ndims(ST_geomfromewkt('CURVEPOLYGON(
                 COMPOUNDCURVE(
                     (5 5 1 0,5 0 1 1,0 0 1 2,0 5 1 3),

@@ -1,16 +1,16 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2011 2012 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2011 2012 Sandro Santilli <strk@kbt.io>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
--- Developed by Sandro Santilli <strk@keybit.net>
+-- Developed by Sandro Santilli <strk@kbt.io>
 -- for Faunalia (http://www.faunalia.it) with funding from
 -- Regione Toscana - Sistema Informativo per la Gestione del Territorio
 -- e dell' Ambiente [RT-SIGTA].
@@ -24,7 +24,7 @@
 -- Return a list of edges (sequence, id) resulting by starting from the
 -- given edge and following the leftmost turn at each encountered node.
 --
--- Edge ids are signed, they are negative if traversed backward. 
+-- Edge ids are signed, they are negative if traversed backward.
 -- Sequence numbers start with 1.
 --
 -- Use a negative starting_edge to follow its rigth face rather than

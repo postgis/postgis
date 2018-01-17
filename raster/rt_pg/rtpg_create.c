@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -63,7 +63,7 @@ Datum RASTER_makeEmpty(PG_FUNCTION_ARGS)
 	if (PG_NARGS() < 9) {
 		elog(ERROR, "RASTER_makeEmpty: ST_MakeEmptyRaster requires 9 args");
 		PG_RETURN_NULL();
-	} 
+	}
 
 	if (!PG_ARGISNULL(0))
 		width = PG_GETARG_UINT16(0);
@@ -716,16 +716,16 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 			}
 			else if (numbands > 0 && dstnband > numbands) {
 				elog(NOTICE, "Invalid band index %d for adding bands. Using band index %d", dstnband, numbands);
-				dstnband = numbands + 1; 
+				dstnband = numbands + 1;
 			}
 		}
 		else
-			dstnband = numbands + 1; 
+			dstnband = numbands + 1;
 	}
 
 	/* open outdb raster file */
 	rt_util_gdal_register_all(0);
-	hdsOut = rt_util_gdal_open(outdbfile, GA_ReadOnly, 0);
+	hdsOut = rt_util_gdal_open(outdbfile, GA_ReadOnly, 1);
 	if (hdsOut == NULL) {
 		if (pgraster != NULL) {
 			rt_raster_destroy(raster);
@@ -1069,7 +1069,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		}
 
 		/* raster has bands */
-		numbands = rt_raster_get_num_bands(arg1->raster.raster); 
+		numbands = rt_raster_get_num_bands(arg1->raster.raster);
 		/*
 		if (!numbands) {
 			elog(NOTICE, "Raster provided has no bands");

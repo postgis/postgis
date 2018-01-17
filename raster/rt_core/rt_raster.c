@@ -3,14 +3,14 @@
  * WKTRaster - Raster Types for PostGIS
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
- * Copyright (C) 2013 Bborie Park <dustymugs@gmail.com> 
+ * Copyright (C) 2013 Bborie Park <dustymugs@gmail.com>
  * Copyright (C) 2011-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -73,7 +73,7 @@ rt_raster_new(uint32_t width, uint32_t height) {
 	ret->srid = SRID_UNKNOWN;
 
 	ret->numBands = 0;
-	ret->bands = NULL; 
+	ret->bands = NULL;
 
 	return ret;
 }
@@ -368,7 +368,7 @@ rt_raster_set_srid(rt_raster raster, int32_t srid) {
 	_rt_raster_geotransform_warn_offline_band(raster);
 }
 
-int
+uint16_t
 rt_raster_get_num_bands(rt_raster raster) {
 
 
@@ -686,7 +686,7 @@ rt_errorstate rt_raster_get_inverse_geotransform_matrix(
 		rt_raster_get_geotransform_matrix(raster, _gt);
 	else
 		memcpy(_gt, gt, sizeof(double) * 6);
-	
+
 	if (!GDALInvGeoTransform(_gt, igt)) {
 		rterror("rt_raster_get_inverse_geotransform_matrix: Could not compute inverse geotransform matrix");
 		return ES_ERROR;
@@ -749,7 +749,7 @@ rt_raster_set_geotransform_matrix(rt_raster raster,
  * @param yw : output parameter, Y ordinate of the geographical point
  * @param gt : input/output parameter, 3x2 geotransform matrix
  *
- * @return ES_NONE if success, ES_ERROR if error 
+ * @return ES_NONE if success, ES_ERROR if error
  */
 rt_errorstate
 rt_raster_cell_to_geopoint(
@@ -1288,7 +1288,7 @@ rt_raster_compute_skewed_raster(
 				raster->width--;
 			else
 				raster->height--;
-			
+
 			/* construct sgeom from raster */
 			if ((rt_raster_get_convex_hull(raster, &geom) != ES_NONE) || geom == NULL) {
 				rterror("rt_raster_compute_skewed_raster: Could not build skewed extent's geometry for minimizing dimensions");
@@ -1603,6 +1603,9 @@ rt_raster_to_gdal(
 	rt_raster raster, const char *srs,
 	char *format, char **options, uint64_t *gdalsize
 ) {
+	const char *cc;
+	const char *vio;
+
 	GDALDriverH src_drv = NULL;
 	int destroy_src_drv = 0;
 	GDALDatasetH src_ds = NULL;
@@ -1642,6 +1645,18 @@ rt_raster_to_gdal(
 		return 0;
 	}
 	RASTER_DEBUG(3, "Output driver loaded");
+
+	/* CreateCopy support */
+	cc = GDALGetMetadataItem(rtn_drv, GDAL_DCAP_CREATECOPY, NULL);
+	/* VirtualIO support */
+	vio = GDALGetMetadataItem(rtn_drv, GDAL_DCAP_VIRTUALIO, NULL);
+
+	if (cc == NULL || vio == NULL) {
+		rterror("rt_raster_to_gdal: Output GDAL driver does not support CreateCopy and/or VirtualIO");
+		GDALClose(src_ds);
+		if (destroy_src_drv) GDALDestroyDriver(src_drv);
+		return 0;
+	}
 
 	/* convert GDAL MEM raster to output format */
 	RASTER_DEBUG(3, "Copying GDAL MEM raster to memory file in output format");
@@ -1696,14 +1711,15 @@ rt_raster_to_gdal(
  * Returns a set of available GDAL drivers
  *
  * @param drv_count : number of GDAL drivers available
- * @param cancc : if non-zero, filter drivers to only those
+ * @param can_write : if non-zero, filter drivers to only those
  *   with support for CreateCopy and VirtualIO
  *
  * @return set of "gdaldriver" values of available GDAL drivers
  */
 rt_gdaldriver
-rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
-	const char *state;
+rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t can_write) {
+	const char *cc;
+	const char *vio;
 	const char *txt;
 	int txt_len;
 	GDALDriverH *drv = NULL;
@@ -1730,19 +1746,28 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
 #ifdef GDAL_DCAP_RASTER
 		/* Starting with GDAL 2.0, vector drivers can also be returned */
 		/* Only keep raster drivers */
-		state = GDALGetMetadataItem(drv, GDAL_DCAP_RASTER, NULL);
-		if (state == NULL || !EQUAL(state, "YES"))
+		const char *is_raster;
+		is_raster = GDALGetMetadataItem(drv, GDAL_DCAP_RASTER, NULL);
+		if (is_raster == NULL || !EQUAL(is_raster, "YES"))
 			continue;
 #endif
 
-		if (cancc) {
-			/* CreateCopy support */
-			state = GDALGetMetadataItem(drv, GDAL_DCAP_CREATECOPY, NULL);
-			if (state == NULL) continue;
+		/* CreateCopy support */
+		cc = GDALGetMetadataItem(drv, GDAL_DCAP_CREATECOPY, NULL);
 
-			/* VirtualIO support */
-			state = GDALGetMetadataItem(drv, GDAL_DCAP_VIRTUALIO, NULL);
-			if (state == NULL) continue;
+		/* VirtualIO support */
+		vio = GDALGetMetadataItem(drv, GDAL_DCAP_VIRTUALIO, NULL);
+
+		if (can_write && (cc == NULL || vio == NULL))
+			continue;
+
+		/* we can always read what GDAL can load */
+		rtn[j].can_read = 1;
+		/* we require CreateCopy and VirtualIO support to write to GDAL */
+		rtn[j].can_write = (cc != NULL && vio != NULL);
+
+		if (rtn[j].can_write) {
+			RASTER_DEBUGF(3, "driver %s (%d) supports CreateCopy() and VirtualIO()", txt, i);
 		}
 
 		/* index of driver */
@@ -1751,10 +1776,6 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
 		/* short name */
 		txt = GDALGetDriverShortName(drv);
 		txt_len = strlen(txt);
-
-		if (cancc) {
-			RASTER_DEBUGF(3, "driver %s (%d) supports CreateCopy() and VirtualIO()", txt, i);
-		}
 
 		txt_len = (txt_len + 1) * sizeof(char);
 		rtn[j].short_name = (char *) rtalloc(txt_len);
@@ -1829,7 +1850,7 @@ rt_raster_to_gdal_mem(
 	int allocNodataValues = 0;
 
 	int i;
-	int numBands;
+	uint32_t numBands;
 	uint32_t width = 0;
 	uint32_t height = 0;
 	rt_band rtband = NULL;
@@ -1963,7 +1984,7 @@ rt_raster_to_gdal_mem(
 			RASTER_DEBUGF(4, "rt_raster_to_gdal_mem: szDatapointer is %p",
 				pszDataPointer);
 
-			if (strnicmp(pszDataPointer, "0x", 2) == 0)
+			if (strncasecmp(pszDataPointer, "0x", 2) == 0)
 				sprintf(szGDALOption, "DATAPOINTER=%s", pszDataPointer);
 			else
 				sprintf(szGDALOption, "DATAPOINTER=0x%s", pszDataPointer);
@@ -2023,9 +2044,9 @@ rt_raster_to_gdal_mem(
 
 		/* PT_8BSI requires manual setting of pixels */
 		if (pt == PT_8BSI) {
-			int nXBlocks, nYBlocks;
+			uint32_t nXBlocks, nYBlocks;
 			int nXBlockSize, nYBlockSize;
-			int iXBlock, iYBlock;
+			uint32_t iXBlock, iYBlock;
 			int nXValid, nYValid;
 			int iX, iY;
 			int iXMax, iYMax;
@@ -2169,7 +2190,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 	uint32_t width = 0;
 	uint32_t height = 0;
 	uint32_t numBands = 0;
-	int i = 0;
+	uint32_t i = 0;
 	char *authname = NULL;
 	char *authcode = NULL;
 
@@ -2185,11 +2206,11 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 	int x;
 	int y;
 
-	int nXBlocks, nYBlocks;
+	uint32_t nXBlocks, nYBlocks;
 	int nXBlockSize, nYBlockSize;
-	int iXBlock, iYBlock;
-	int nXValid, nYValid;
-	int iY;
+	uint32_t iXBlock, iYBlock;
+	uint32_t nXValid, nYValid;
+	uint32_t iY;
 
 	uint8_t *values = NULL;
 	uint32_t valueslen = 0;
@@ -2400,7 +2421,7 @@ typedef struct _rti_rasterize_arg_t* _rti_rasterize_arg;
 struct _rti_rasterize_arg_t {
 	uint8_t noband;
 
-	uint32_t numbands; 
+	uint32_t numbands;
 
 	OGRSpatialReferenceH src_sr;
 
@@ -2503,7 +2524,7 @@ rt_raster_gdal_rasterize(
 	char **options
 ) {
 	rt_raster rast = NULL;
-	int i = 0;
+	uint32_t i = 0;
 	int err = 0;
 
 	_rti_rasterize_arg arg = NULL;

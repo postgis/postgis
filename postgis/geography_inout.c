@@ -159,7 +159,7 @@ Datum geography_in(PG_FUNCTION_ARGS)
 		/* TODO: 20101206: No parser checks! This is inline with current 1.5 behavior, but needs discussion */
 		lwgeom = lwgeom_from_hexwkb(str, LW_PARSER_CHECK_NONE);
 		/* Error out if something went sideways */
-		if ( ! lwgeom ) 
+		if ( ! lwgeom )
 			ereport(ERROR,(errmsg("parse error - invalid geometry")));
 	}
 	/* WKT then. */
@@ -173,7 +173,7 @@ Datum geography_in(PG_FUNCTION_ARGS)
 
 	/* Error on any SRID != default */
 	srid_is_latlong(fcinfo, lwgeom->srid);
-	
+
 	/* Convert to gserialized */
 	g_ser = gserialized_geography_from_lwgeom(lwgeom, geog_typmod);
 
@@ -217,7 +217,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	char *srs;
 	int srid = SRID_DEFAULT;
 	int precision = DBL_DIG;
-	int option=0;
+	int option = 0;
 	int lwopts = LW_GML_IS_DIMS;
 	static const char *default_prefix = "gml:";
 	const char *prefix = default_prefix;
@@ -305,7 +305,23 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 
 	/* Revert lat/lon only with long SRS */
 	if (option & 1) lwopts |= LW_GML_IS_DEGREE;
-	if (option & 2) lwopts &= ~LW_GML_IS_DIMS; 
+	if (option & 2) lwopts &= ~LW_GML_IS_DIMS;
+	if (option & 8)
+	{
+		elog(ERROR,
+		     "Options %d passed to ST_AsGML(geography) sets "
+		     "unsupported value 8",
+		     option);
+		PG_RETURN_NULL();
+	}
+	if ((option & 4) || (option & 16) || (option & 32))
+	{
+		elog(ERROR,
+		     "Options %d passed to ST_AsGML(geography) but are only "
+		     "applicable to ST_AsGML(geometry)",
+		     option);
+		PG_RETURN_NULL();
+	}
 
 	if (version == 2)
 		gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
@@ -316,7 +332,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(g, 1);
 
 	/* Return null on null */
-	if ( ! gml ) 
+	if ( ! gml )
 		PG_RETURN_NULL();
 
 	/* Turn string result into text for return */
@@ -440,7 +456,7 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 	}
 
 	svg = lwgeom_to_svg(lwgeom, precision, relative);
-	
+
     lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 0);
 
@@ -539,11 +555,11 @@ Datum geography_from_text(PG_FUNCTION_ARGS)
 	LWGEOM_PARSER_RESULT lwg_parser_result;
 	GSERIALIZED *g_ser = NULL;
 	text *wkt_text = PG_GETARG_TEXT_P(0);
-	
+
 	/* Extract the cstring from the varlena */
 	char *wkt = text2cstring(wkt_text);
 
-	/* Pass the cstring to the input parser, and magic occurs! */	
+	/* Pass the cstring to the input parser, and magic occurs! */
 	if ( lwgeom_parse_wkt(&lwg_parser_result, wkt, LW_PARSER_CHECK_ALL) == LW_FAILURE )
 		PG_PARSER_ERROR(lwg_parser_result);
 
@@ -571,13 +587,13 @@ Datum geography_from_binary(PG_FUNCTION_ARGS)
 	size_t wkb_size = VARSIZE(wkb_bytea);
 	uint8_t *wkb = (uint8_t*)VARDATA(wkb_bytea);
 	LWGEOM *lwgeom = lwgeom_from_wkb(wkb, wkb_size, LW_PARSER_CHECK_NONE);
-	
+
 	if ( ! lwgeom )
 		lwpgerror("Unable to parse WKB");
 
 	/* Error on any SRID != default */
 	srid_is_latlong(fcinfo, lwgeom->srid);
- 		
+
 	gser = gserialized_geography_from_lwgeom(lwgeom, -1);
 	lwgeom_free(lwgeom);
 	PG_RETURN_POINTER(gser);
@@ -616,8 +632,8 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	/* force recalculate of box by dropping */
 	lwgeom_drop_bbox(lwgeom);
 
-	lwgeom_set_geodetic(lwgeom, true);	
-	/* We are trusting geography_serialize will add a box if needed */	
+	lwgeom_set_geodetic(lwgeom, true);
+	/* We are trusting geography_serialize will add a box if needed */
 	g_ser = geography_serialize(lwgeom);
 
 
@@ -637,9 +653,8 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(g_ser);
 
 	/* Recalculate the boxes after re-setting the geodetic bit */
-	lwgeom_set_geodetic(lwgeom, false);	
-	lwgeom_drop_bbox(lwgeom);
-	lwgeom_add_bbox(lwgeom);
+	lwgeom_set_geodetic(lwgeom, false);
+	lwgeom_refresh_bbox(lwgeom);
 
 	/* We want "geometry" to think all our "geography" has an SRID, and the
 	   implied SRID is the default, so we fill that in if our SRID is actually unknown. */

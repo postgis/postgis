@@ -1,5 +1,5 @@
 /*=================================================================
-  -- pagc_tools.h -- 
+  -- pagc_tools.h --
 
 Certain common tools used both by the pagc library and its clients
 

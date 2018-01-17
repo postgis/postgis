@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-02-16 08:54+0000\n"
+"POT-Creation-Date: 2017-09-21 22:52+0000\n"
 "PO-Revision-Date: 2016-02-16 08:34+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
@@ -46,9 +46,9 @@ msgstr ""
 
 #. Tag: title
 #: reference_misc.xml:22 reference_misc.xml:64 reference_misc.xml:106
-#: reference_misc.xml:167 reference_misc.xml:243 reference_misc.xml:299
-#: reference_misc.xml:353 reference_misc.xml:406 reference_misc.xml:448
-#: reference_misc.xml:500
+#: reference_misc.xml:167 reference_misc.xml:267 reference_misc.xml:327
+#: reference_misc.xml:381 reference_misc.xml:434 reference_misc.xml:476
+#: reference_misc.xml:528
 #, no-c-format
 msgid "Description"
 msgstr ""
@@ -61,7 +61,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_misc.xml:25 reference_misc.xml:68 reference_misc.xml:109
-#: reference_misc.xml:265 reference_misc.xml:319 reference_misc.xml:365
+#: reference_misc.xml:290 reference_misc.xml:347 reference_misc.xml:393
 #, no-c-format
 msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
@@ -69,40 +69,40 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:26 reference_misc.xml:113 reference_misc.xml:367
-#: reference_misc.xml:458
+#: reference_misc.xml:26 reference_misc.xml:113 reference_misc.xml:395
+#: reference_misc.xml:486
 #, no-c-format
 msgid "&Z_support;"
 msgstr ""
 
 #. Tag: para
 #: reference_misc.xml:27 reference_misc.xml:69 reference_misc.xml:110
-#: reference_misc.xml:197 reference_misc.xml:368 reference_misc.xml:459
+#: reference_misc.xml:197 reference_misc.xml:396 reference_misc.xml:487
 #, no-c-format
 msgid "&curve_support;"
 msgstr ""
 
 #. Tag: para
 #: reference_misc.xml:28 reference_misc.xml:70 reference_misc.xml:111
-#: reference_misc.xml:266 reference_misc.xml:320 reference_misc.xml:369
-#: reference_misc.xml:460
+#: reference_misc.xml:294 reference_misc.xml:348 reference_misc.xml:397
+#: reference_misc.xml:488
 #, no-c-format
 msgid "&P_support;"
 msgstr ""
 
 #. Tag: para
 #: reference_misc.xml:29 reference_misc.xml:71 reference_misc.xml:112
-#: reference_misc.xml:267 reference_misc.xml:321 reference_misc.xml:370
-#: reference_misc.xml:461
+#: reference_misc.xml:295 reference_misc.xml:349 reference_misc.xml:398
+#: reference_misc.xml:489
 #, no-c-format
 msgid "&T_support;"
 msgstr ""
 
 #. Tag: title
 #: reference_misc.xml:34 reference_misc.xml:76 reference_misc.xml:118
-#: reference_misc.xml:202 reference_misc.xml:272 reference_misc.xml:326
-#: reference_misc.xml:374 reference_misc.xml:418 reference_misc.xml:467
-#: reference_misc.xml:514
+#: reference_misc.xml:202 reference_misc.xml:300 reference_misc.xml:354
+#: reference_misc.xml:402 reference_misc.xml:446 reference_misc.xml:495
+#: reference_misc.xml:542
 #, no-c-format
 msgid "Examples"
 msgstr ""
@@ -137,9 +137,9 @@ msgstr ""
 
 #. Tag: title
 #: reference_misc.xml:41 reference_misc.xml:83 reference_misc.xml:125
-#: reference_misc.xml:209 reference_misc.xml:278 reference_misc.xml:332
-#: reference_misc.xml:379 reference_misc.xml:425 reference_misc.xml:474
-#: reference_misc.xml:521
+#: reference_misc.xml:209 reference_misc.xml:306 reference_misc.xml:360
+#: reference_misc.xml:407 reference_misc.xml:453 reference_misc.xml:502
+#: reference_misc.xml:549
 #, no-c-format
 msgid "See Also"
 msgstr ""
@@ -363,56 +363,75 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Expand</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>units_to_expand</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>box2d "
-"<function>ST_Expand</function></funcdef> <paramdef><type>box2d </type> "
-"<parameter>g1</parameter></paramdef> <paramdef><type>float</type> "
+"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Expand</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geom</parameter></paramdef> <paramdef><type>float</type> "
+"<parameter>dx</parameter></paramdef> <paramdef><type>float</type> "
+"<parameter>dy</parameter></paramdef> <paramdef choice=\"opt\"><type>float</"
+"type> <parameter>dz=0</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>float</type> <parameter>dm=0</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>box2d <function>ST_Expand</"
+"function></funcdef> <paramdef><type>box2d </type> <parameter>box</"
+"parameter></paramdef> <paramdef><type>float</type> "
+"<parameter>units_to_expand</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>box2d <function>ST_Expand</function></funcdef> "
+"<paramdef><type>box2d </type> <parameter>box</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>dx</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>dy</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>box3d <function>ST_Expand</"
+"function></funcdef> <paramdef><type>box3d </type> <parameter>box</"
+"parameter></paramdef> <paramdef><type>float</type> "
 "<parameter>units_to_expand</parameter></paramdef> </funcprototype> "
 "<funcprototype> <funcdef>box3d <function>ST_Expand</function></funcdef> "
-"<paramdef><type>box3d </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>units_to_expand</parameter></"
-"paramdef> </funcprototype>"
+"<paramdef><type>box3d </type> <parameter>box</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>dx</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>dy</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>float</type> <parameter>dz=0</parameter></paramdef> </"
+"funcprototype>"
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:245
+#: reference_misc.xml:269
 #, no-c-format
 msgid ""
-"This function returns a bounding box expanded in all directions from the "
-"bounding box of the input geometry, by an amount specified in the second "
-"argument. Uses double-precision. Very useful for distance() queries, or "
-"bounding box queries to add an index filter to the query."
+"This function returns a bounding box expanded from the bounding box of the "
+"input, either by specifying a single distance with which the box should be "
+"expanded in all directions, or by specifying an expansion distance for each "
+"direction. Uses double-precision. Can be very useful for distance queries, "
+"or to add a bounding box filter to a query to take advantage of a spatial "
+"index."
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:249
+#: reference_misc.xml:275
 #, no-c-format
 msgid ""
-"There are 3 variants of this. The one that takes a geometry will return a "
-"POLYGON geometry representation of the bounding box and is the most commonly "
-"used variant."
+"In addition to the geometry version of ST_Expand, which is the most commonly "
+"used, variants are provided that accept and produce internal BOX2D and BOX3D "
+"data types."
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:251
+#: reference_misc.xml:278
 #, no-c-format
 msgid ""
-"ST_Expand is similar in concept to ST_Buffer except while buffer expands the "
-"geometry in all directions, ST_Expand expands the bounding box an x,y,z unit "
-"amount."
+"ST_Expand is similar in concept to ST_Buffer, except while buffer expands "
+"the geometry in all directions, ST_Expand expands the bounding box an x,y,z "
+"unit amount."
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:253
+#: reference_misc.xml:280
 #, no-c-format
 msgid ""
 "Units are in the units of the spatial reference system in use denoted by the "
-"SRID"
+"SRID."
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:256
+#: reference_misc.xml:283
 #, no-c-format
 msgid ""
 "Pre 1.3, ST_Expand was used in conjunction with distance to do indexable "
@@ -422,7 +441,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:262
+#: reference_misc.xml:289
 #, no-c-format
 msgid ""
 "Availability: 1.5.0 behavior changed to output double precision instead of "
@@ -430,7 +449,15 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:273
+#: reference_misc.xml:291
+#, no-c-format
+msgid ""
+"Enhanced: 2.3.0 support was added to expand a box by different amounts in "
+"different dimensions."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:301
 #, no-c-format
 msgid ""
 "Examples below use US National Atlas Equal Area (SRID=2163) which is a meter "
@@ -438,7 +465,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_misc.xml:274
+#: reference_misc.xml:302
 #, no-c-format
 msgid ""
 "<!-- TODO: fix results of documentation to reflect new behavior -->\n"
@@ -466,7 +493,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:279
+#: reference_misc.xml:307
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Buffer\"/>, <xref linkend=\"ST_DWithin\"/>, <xref "
@@ -475,13 +502,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_misc.xml:285
+#: reference_misc.xml:313
 #, no-c-format
 msgid "ST_Extent"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_misc.xml:286
+#: reference_misc.xml:314
 #, no-c-format
 msgid ""
 "an aggregate function that returns the bounding box that bounds rows of "
@@ -489,7 +516,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_misc.xml:291
+#: reference_misc.xml:319
 #, no-c-format
 msgid ""
 "<funcdef>box2d <function>ST_Extent</function></funcdef> "
@@ -498,7 +525,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:301
+#: reference_misc.xml:329
 #, no-c-format
 msgid ""
 "ST_Extent returns a bounding box that encloses a set of geometries. The "
@@ -508,7 +535,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:304 reference_misc.xml:358
+#: reference_misc.xml:332 reference_misc.xml:386
 #, no-c-format
 msgid ""
 "Since it returns a bounding box, the spatial Units are in the units of the "
@@ -516,14 +543,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:305
+#: reference_misc.xml:333
 #, no-c-format
 msgid ""
 "ST_Extent is similar in concept to Oracle Spatial/Locator's SDO_AGGR_MBR"
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:307
+#: reference_misc.xml:335
 #, no-c-format
 msgid ""
 "Since ST_Extent returns a bounding box, the SRID meta-data is lost. Use "
@@ -532,7 +559,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:312
+#: reference_misc.xml:340
 #, no-c-format
 msgid ""
 "ST_Extent will return boxes with only an x and y component even with (x,y,z) "
@@ -540,19 +567,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:316
+#: reference_misc.xml:344
 #, no-c-format
 msgid "Availability: 1.4.0"
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:327
+#: reference_misc.xml:355
 #, no-c-format
 msgid "Examples below use Massachusetts State Plane ft (SRID=2249)"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_misc.xml:328
+#: reference_misc.xml:356
 #, no-c-format
 msgid ""
 "SELECT ST_Extent(the_geom) as bextent FROM sometable;\n"
@@ -585,7 +612,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:333
+#: reference_misc.xml:361
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_3DExtent\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
@@ -593,13 +620,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_misc.xml:339
+#: reference_misc.xml:367
 #, no-c-format
 msgid "ST_3DExtent"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_misc.xml:340
+#: reference_misc.xml:368
 #, no-c-format
 msgid ""
 "an aggregate function that returns the box3D bounding box that bounds rows "
@@ -607,7 +634,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_misc.xml:345
+#: reference_misc.xml:373
 #, no-c-format
 msgid ""
 "<funcdef>box3d <function>ST_3DExtent</function></funcdef> "
@@ -616,7 +643,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:355
+#: reference_misc.xml:383
 #, no-c-format
 msgid ""
 "ST_3DExtent returns a box3d (includes Z coordinate) bounding box that "
@@ -626,7 +653,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:361
+#: reference_misc.xml:389
 #, no-c-format
 msgid ""
 "Since ST_3DExtent returns a bounding box, the SRID meta-data is lost. Use "
@@ -635,13 +662,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:366
+#: reference_misc.xml:394
 #, no-c-format
 msgid "Changed: 2.0.0 In prior versions this used to be called ST_Extent3D"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_misc.xml:375
+#: reference_misc.xml:403
 #, no-c-format
 msgid ""
 "SELECT ST_3DExtent(foo.the_geom) As b3extent\n"
@@ -668,19 +695,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:380
+#: reference_misc.xml:408
 #, no-c-format
 msgid ", <xref linkend=\"ST_Force_3DZ\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_misc.xml:387
+#: reference_misc.xml:415
 #, no-c-format
 msgid "Find_SRID"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_misc.xml:389
+#: reference_misc.xml:417
 #, no-c-format
 msgid ""
 "The syntax is find_srid(a_db_schema, a_table, a_column) and the function "
@@ -689,7 +716,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_misc.xml:396
+#: reference_misc.xml:424
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>Find_SRID</function></funcdef> "
@@ -700,7 +727,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:408
+#: reference_misc.xml:436
 #, no-c-format
 msgid ""
 "The syntax is find_srid(&lt;db/schema&gt;, &lt;table&gt;, &lt;column&gt;) "
@@ -711,7 +738,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_misc.xml:420
+#: reference_misc.xml:448
 #, no-c-format
 msgid ""
 "SELECT Find_SRID('public', 'tiger_us_state_2007', 'the_geom_4269');\n"
@@ -721,13 +748,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_misc.xml:433
+#: reference_misc.xml:461
 #, no-c-format
 msgid "ST_MemSize"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_misc.xml:435
+#: reference_misc.xml:463
 #, no-c-format
 msgid ""
 "<refpurpose>Returns the amount of space (in bytes) the geometry takes.</"
@@ -735,7 +762,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_misc.xml:440
+#: reference_misc.xml:468
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_MemSize</function></funcdef> "
@@ -743,13 +770,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:450
+#: reference_misc.xml:478
 #, no-c-format
 msgid "<para>Returns the amount of space (in bytes) the geometry takes.</para>"
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:451
+#: reference_misc.xml:479
 #, no-c-format
 msgid ""
 "This is a nice compliment to PostgreSQL built in functions pg_column_size, "
@@ -757,7 +784,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:452
+#: reference_misc.xml:480
 #, no-c-format
 msgid ""
 "pg_relation_size which gives the byte size of a table may return byte size "
@@ -766,7 +793,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:454
+#: reference_misc.xml:482
 #, no-c-format
 msgid ""
 "pg_total_relation_size - includes, the table, the toasted tables, and the "
@@ -774,7 +801,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:455
+#: reference_misc.xml:483
 #, no-c-format
 msgid ""
 "pg_column_size returns how much space a geometry would take in a column "
@@ -782,7 +809,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:462
+#: reference_misc.xml:490
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 name changed to ST_MemSize to follow naming convention. In "
@@ -791,7 +818,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_misc.xml:469
+#: reference_misc.xml:497
 #, no-c-format
 msgid ""
 "--Return how much byte space Boston takes up  in our Mass data set\n"
@@ -826,20 +853,20 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_misc.xml:482
+#: reference_misc.xml:510
 #, no-c-format
 msgid "ST_PointInsideCircle"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_misc.xml:484
+#: reference_misc.xml:512
 #, no-c-format
 msgid ""
-"Is the point geometry insert circle defined by center_x, center_y, radius"
+"Is the point geometry inside the circle defined by center_x, center_y, radius"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_misc.xml:489
+#: reference_misc.xml:517
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_PointInsideCircle</function></funcdef> "
@@ -850,7 +877,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:502
+#: reference_misc.xml:530
 #, no-c-format
 msgid ""
 "The syntax for this functions is ST_PointInsideCircle(&lt;geometry&gt;,&lt;"
@@ -860,19 +887,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:506
+#: reference_misc.xml:534
 #, no-c-format
 msgid "This only works for points as the name suggests"
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:508
+#: reference_misc.xml:536
 #, no-c-format
 msgid "Availability: 1.2"
 msgstr ""
 
 #. Tag: para
-#: reference_misc.xml:509
+#: reference_misc.xml:537
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 In prior versions this used to be called "
@@ -880,7 +907,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_misc.xml:516
+#: reference_misc.xml:544
 #, no-c-format
 msgid ""
 "SELECT ST_PointInsideCircle(ST_Point(1,2), 0.5, 2, 3);\n"

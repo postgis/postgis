@@ -66,13 +66,6 @@ static void point_rad2deg(GEOGRAPHIC_POINT *p)
 	p->lon = rad2deg(p->lon);
 }
 
-static void test_signum(void)
-{
-	CU_ASSERT_EQUAL(signum(-5.0),-1);
-	CU_ASSERT_EQUAL(signum(5.0),1);
-}
-
-
 static void test_sphere_direction(void)
 {
 	GEOGRAPHIC_POINT s, e;
@@ -93,7 +86,7 @@ static void test_sphere_direction(void)
 	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "0 0 1 0" */
 	CU_ASSERT_DOUBLE_EQUAL(dir, 0.0, 1e-14);
 	CU_ASSERT_DOUBLE_EQUAL(dist, 0.0174532925199433, 1e-14);
-	
+
 }
 
 static void test_sphere_project(void)
@@ -103,20 +96,20 @@ static void test_sphere_project(void)
 
 	dir1 = M_PI_2;
 	dist1 = 0.1;
-	
+
 	geographic_point_init(0, 0, &s);
 	sphere_project(&s, dist1, dir1, &e);
 
 	CU_ASSERT_DOUBLE_EQUAL(e.lon, 0.1, 1e-14);
 	CU_ASSERT_DOUBLE_EQUAL(e.lat, 0.0, 1e-14);
-	
+
 	/* Direct and inverse solutions agree */
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist1);
 
 	CU_ASSERT_DOUBLE_EQUAL(dist1, dist2, 1e-14);
 	CU_ASSERT_DOUBLE_EQUAL(dir1, dir2, 1e-14);
-	
+
 	dist1 = sphere_distance(&e, &s);
 	dir1 = sphere_direction(&e, &s, dist1);
 	sphere_project(&e, dist1, dir1, &s);
@@ -124,8 +117,8 @@ static void test_sphere_project(void)
 	CU_ASSERT_DOUBLE_EQUAL(s.lon, 0.0, 1e-14);
 	CU_ASSERT_DOUBLE_EQUAL(s.lat, 0.0, 1e-14);
 
-	geographic_point_init(0, 0.2, &e);  
-	geographic_point_init(0, 0.4, &s);  
+	geographic_point_init(0, 0.2, &e);
+	geographic_point_init(0, 0.4, &s);
 	dist1 = sphere_distance(&s, &e);
 	dir1 = sphere_direction(&e, &s, dist1);
 	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "0.2 0 0.4 0" */
@@ -133,42 +126,42 @@ static void test_sphere_project(void)
 	CU_ASSERT_DOUBLE_EQUAL(dist1, 0.0034906585039887, 1e-14);
 
 	geographic_point_init(0, 1, &s); /* same start point for remainder of tests */
-	geographic_point_init(0, 2, &e);  
+	geographic_point_init(0, 2, &e);
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
 	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 2 0" */
 	CU_ASSERT_DOUBLE_EQUAL(dir2, 0.0, 1e-14);
 	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0174532925199433, 1e-14);
-	
-	geographic_point_init(1, 1, &e);  
+
+	geographic_point_init(1, 1, &e);
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
 	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 1 1" */
 	CU_ASSERT_DOUBLE_EQUAL(dir2, 89.991273575329292895136 * M_PI / 180.0, 1e-14);
 	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0174506342314906, 1e-14);
 
-	geographic_point_init(0, 0, &e);  
+	geographic_point_init(0, 0, &e);
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
 	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 0 0" */
 	CU_ASSERT_DOUBLE_EQUAL(dir2, M_PI, 1e-14);
 	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0174532925199433, 1e-14);
 
-	geographic_point_init(-1, 1, &e);  
+	geographic_point_init(-1, 1, &e);
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
 	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 1 -1" */
 	CU_ASSERT_DOUBLE_EQUAL(dir2, -89.991273575329292895136 * M_PI / 180.0, 1e-14);
 	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0174506342314906, 1e-14);
 
-	geographic_point_init(1, 2, &e);  
+	geographic_point_init(1, 2, &e);
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
 	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 2 1" */
 	CU_ASSERT_DOUBLE_EQUAL(dir2, 44.978182941465044354783 * M_PI / 180.0, 1e-14);
 	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0246782972905467, 1e-14);
 
-	geographic_point_init(-1, 0, &e);  
+	geographic_point_init(-1, 0, &e);
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
 	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 0 -1" */
@@ -194,7 +187,7 @@ static void cross_product_stability(void)
 	p1.y = 45.0;
 	p2.x = 10.0;
 	p2.y = 50.0;
-	
+
 	geographic_point_init(p1.x, p1.y, &g1);
 	ll2cart(&p1, &A1);
 
@@ -202,15 +195,15 @@ static void cross_product_stability(void)
 	{
 		geographic_point_init(p2.x, p2.y, &g2);
 		ll2cart(&p2, &A2);
-		
+
 		/* Skea */
 		robust_cross_product(&g1, &g2, &Nr);
 		normalize(&Nr);
-		
+
 		/* Ramsey */
 		unit_normal(&A1, &A2, &Nc);
 
-		if ( i > 0 ) 
+		if ( i > 0 )
 		{
 			printf("\n- %d -------------------- %.24g ------------------------\n", i, p2.y);
 			printf("Skea:         %.24g,%.24g,%.24g\n", Nr.x, Nr.y, Nr.z);
@@ -219,10 +212,10 @@ static void cross_product_stability(void)
 			printf("Ramsey Diff:  %.24g,%.24g,%.24g\n", Oc.x-Nc.x, Oc.y-Nc.y, Oc.z-Nc.z);
 			printf("Diff:         %.24g,%.24g,%.24g\n", Nr.x-Nc.x, Nr.y-Nc.y, Nr.z-Nc.z);
 		}
-		
+
 		Or = Nr;
 		Oc = Nc;
-		
+
 		p2.y += (p1.y - p2.y)/2.0;
 	}
 }
@@ -249,7 +242,7 @@ static void test_gbox_from_spherical_coordinates(void)
 	ll[3] = -5.25;
 
 	pa = ptarray_construct_reference_data(0, 0, 2, (uint8_t*)ll);
-	
+
 	lwline = lwline_as_lwgeom(lwline_construct(SRID_UNKNOWN, 0, pa));
 	FLAGS_SET_GEODETIC(lwline->flags, 1);
 
@@ -571,7 +564,7 @@ static void line2pts(const char *wkt, POINT3D *A1, POINT3D *A2)
 	POINTARRAY *pa;
 	POINT2D p1, p2;
 	GEOGRAPHIC_POINT g1, g2;
-	if ( ! l ) 
+	if ( ! l )
 	{
 		printf("BAD WKT FOUND in test_edge_intersects:\n  %s\n\n", wkt);
 		exit(0);
@@ -591,7 +584,7 @@ static void test_edge_intersects(void)
 {
 	POINT3D A1, A2, B1, B2;
 	GEOGRAPHIC_POINT g;
-	int rv;
+	uint32_t rv;
 
 	/* Covers case, end-to-end intersection */
 	line2pts("LINESTRING(50 -10.999999999999998224, -10.0 50.0)", &A1, &A2);
@@ -682,8 +675,8 @@ static void test_edge_intersects(void)
 	line2pts("LINESTRING(45.0 10.0, 50.0 20.0)", &A1, &A2);
 	line2pts("LINESTRING(45.0 10.0, 50.0 20.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
-	CU_ASSERT(rv & PIR_INTERSECTS);	
-	
+	CU_ASSERT(rv & PIR_INTERSECTS);
+
 	/* Parallel edges (same great circle, different end points) return true  */
 	line2pts("LINESTRING(40.0 0.0, 70.0 0.0)", &A1, &A2);
 	line2pts("LINESTRING(60.0 0.0, 50.0 0.0)", &B1, &B2);
@@ -695,7 +688,7 @@ static void test_edge_intersects(void)
 	line2pts("LINESTRING(90.0 80.0, -90.0 90.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
 	CU_ASSERT(rv == (PIR_INTERSECTS|PIR_B_TOUCH_LEFT) );
-	
+
 	/* End touches end at north pole */
 	line2pts("LINESTRING(-180.0 80.0, 0.0 90.0)", &A1, &A2);
 	line2pts("LINESTRING(90.0 80.0, -90.0 90.0)", &B1, &B2);
@@ -720,12 +713,12 @@ static void test_edge_intersects(void)
 	line2pts("LINESTRING(65 0, -105 0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
 	CU_ASSERT(rv == 0);
-	
+
 	line2pts("LINESTRING(175 -85, 175 85)", &A1, &A2);
 	line2pts("LINESTRING(45 0, -125 0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
 	CU_ASSERT(rv == 0);
-	
+
 }
 
 static void test_edge_distance_to_point(void)
@@ -762,7 +755,7 @@ static void test_edge_distance_to_point(void)
 	// printf("CLOSE POINT(%g %g)\n", closest.lon,  closest.lat);
 	// printf(" ORIG POINT(%g %g)\n", g.lon, g.lat);
 	CU_ASSERT_DOUBLE_EQUAL(g.lat, closest.lat, 0.00001);
-	CU_ASSERT_DOUBLE_EQUAL(g.lon, closest.lon, 0.00001);		 
+	CU_ASSERT_DOUBLE_EQUAL(g.lon, closest.lon, 0.00001);
 }
 
 static void test_edge_distance_to_edge(void)
@@ -949,7 +942,7 @@ static void test_ptarray_contains_point_sphere(void)
 	result = ptarray_contains_point_sphere(poly->rings[0], &pt_outside, &pt_to_test);
 	CU_ASSERT_EQUAL(result, LW_FALSE);
 	lwgeom_free(lwg);
-	
+
 	/* Point on ring between vertexes case */
 	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
@@ -960,7 +953,7 @@ static void test_ptarray_contains_point_sphere(void)
 	result = ptarray_contains_point_sphere(poly->rings[0], &pt_outside, &pt_to_test);
 	CU_ASSERT_EQUAL(result, LW_TRUE);
 	lwgeom_free(lwg);
-	
+
 	/* Simple containment case */
 	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
@@ -1152,7 +1145,7 @@ static void test_lwpoly_covers_point2d(void)
 	result = lwpoly_covers_point2d(poly, &pt_to_test);
 	CU_ASSERT_EQUAL(result, LW_TRUE);
 	lwgeom_free(lwg);
-	
+
 }
 
 static void test_ptarray_contains_point_sphere_iowa(void)
@@ -1167,7 +1160,7 @@ static void test_ptarray_contains_point_sphere_iowa(void)
 	pt_to_test.y = 42.899999999999999;
 	pt_outside.x = -96.381873780830645;
 	pt_outside.y = 40.185394449416371;
-	
+
 	rv = ptarray_contains_point_sphere(pa, &pt_outside, &pt_to_test);
 	CU_ASSERT_EQUAL(rv, LW_TRUE);
 
@@ -1432,7 +1425,7 @@ static void test_gbox_utils(void)
 	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
 
 	gbox.flags = gflags(0, 0, 1);
-	
+
 	/* One-degree square by equator */
 	lwg = lwgeom_from_wkt("POLYGON((1 20,1 21,2 21,2 20,1 20))", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
@@ -1451,7 +1444,7 @@ static void test_gbox_utils(void)
 	CU_ASSERT_DOUBLE_EQUAL(a1, 0.0174613, 0.0000001);
 	CU_ASSERT_DOUBLE_EQUAL(a2, 0.0174553, 0.0000001);
 	lwgeom_free(lwg);
-	
+
 	/* One-degree square *across* antimeridian */
 	lwg = lwgeom_from_wkt("POLYGON((178.5 2,178.5 1,-179.5 1,-179.5 2,178.5 2))", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
@@ -1460,17 +1453,17 @@ static void test_gbox_utils(void)
 	CU_ASSERT_DOUBLE_EQUAL(pt.x, 179.5, 0.0001);
 	CU_ASSERT_DOUBLE_EQUAL(pt.y, 1.50024, 0.0001);
 	lwgeom_free(lwg);
-	
+
 }
 
 static void test_vector_angle(void)
 {
 	POINT3D p1, p2;
 	double angle;
-	
+
 	memset(&p1, 0, sizeof(POINT3D));
 	memset(&p2, 0, sizeof(POINT3D));
-	
+
 	p1.x = 1.0;
 	p2.y = 1.0;
 	angle = vector_angle(&p1, &p2);
@@ -1490,7 +1483,7 @@ static void test_vector_angle(void)
 	p2.x = p2.y = p2.z = 1.0;
 	normalize(&p2);
 	angle = vector_angle(&p1, &p2);
-	CU_ASSERT_DOUBLE_EQUAL(angle, 0.955317, 0.00001);	
+	CU_ASSERT_DOUBLE_EQUAL(angle, 0.955317, 0.00001);
 	//printf ("angle = %g\n\n", angle);
 }
 
@@ -1498,28 +1491,28 @@ static void test_vector_rotate(void)
 {
 	POINT3D p1, p2, n;
 	double angle;
-	
+
 	memset(&p1, 0, sizeof(POINT3D));
 	memset(&p2, 0, sizeof(POINT3D));
 	memset(&n, 0, sizeof(POINT3D));
-	
+
 	p1.x = 1.0;
 	p2.y = 1.0;
 	angle = M_PI_4;
 	vector_rotate(&p1, &p2, angle, &n);
 	//printf("%g %g %g\n\n", n.x, n.y, n.z);
-	CU_ASSERT_DOUBLE_EQUAL(n.x, 0.707107, 0.00001);	
+	CU_ASSERT_DOUBLE_EQUAL(n.x, 0.707107, 0.00001);
 
 	angle = 2*M_PI/400000000;
 	vector_rotate(&p1, &p2, angle, &n);
 	//printf("%.21g %.21g %.21g\n\n", n.x, n.y, n.z);
-	CU_ASSERT_DOUBLE_EQUAL(n.x, 0.999999999999999888978, 0.0000000000000001);	
-	CU_ASSERT_DOUBLE_EQUAL(n.y, 1.57079632679489654446e-08, 0.0000000000000001);	
+	CU_ASSERT_DOUBLE_EQUAL(n.x, 0.999999999999999888978, 0.0000000000000001);
+	CU_ASSERT_DOUBLE_EQUAL(n.y, 1.57079632679489654446e-08, 0.0000000000000001);
 
 	angle = 0;
 	vector_rotate(&p1, &p2, angle, &n);
 	//printf("%.16g %.16g %.16g\n\n", n.x, n.y, n.z);
-	CU_ASSERT_DOUBLE_EQUAL(n.x, 1.0, 0.00000001);	
+	CU_ASSERT_DOUBLE_EQUAL(n.x, 1.0, 0.00000001);
 }
 
 static void test_lwgeom_segmentize_sphere(void)
@@ -1533,12 +1526,12 @@ static void test_lwgeom_segmentize_sphere(void)
 	lwg1 = lwgeom_from_wkt("LINESTRING(0 20, 5 20)", LW_PARSER_CHECK_NONE);
 	lwg2 = lwgeom_segmentize_sphere(lwg1, max);
 	lwl = (LWLINE*)lwg2;
-	//wkt = lwgeom_to_ewkt(lwg2);
-	CU_ASSERT_EQUAL(lwl->points->npoints, 7);
+	// printf("%s\n", lwgeom_to_ewkt(lwg2));
+	CU_ASSERT_EQUAL(lwl->points->npoints, 9);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 	//lwfree(wkt);
-	
+
 	return;
 }
 
@@ -1554,7 +1547,7 @@ static void test_lwgeom_area_sphere(void)
 	/* Simple case */
 	lwg = lwgeom_from_wkt("POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))", LW_PARSER_CHECK_NONE);
 	area = lwgeom_area_sphere(lwg, &s);
-	
+
 	CU_ASSERT_DOUBLE_EQUAL(area, 12360265021.3561, 1.0);
 	lwgeom_free(lwg);
 
@@ -1576,6 +1569,28 @@ static void test_lwgeom_area_sphere(void)
 	/* end #3393 */
 }
 
+static void test_gbox_to_string_truncated(void)
+{
+	GBOX g = {
+		.flags = 0,
+		.xmin = -DBL_MAX,
+		.xmax = -DBL_MAX,
+		.ymin = -DBL_MAX,
+		.ymax = -DBL_MAX,
+		.zmin = -DBL_MAX,
+		.zmax = -DBL_MAX,
+		.mmin = -DBL_MAX,
+		.mmax = -DBL_MAX,
+	};
+	FLAGS_SET_Z(g.flags, 1);
+	FLAGS_SET_M(g.flags, 1);
+	char *c = gbox_to_string(&g);
+
+	ASSERT_STRING_EQUAL(c, "GBOX((-1.7976931e+308,-1.7976931e+308,-1.7976931e+308,-1.7976931e+308),(-1.7976931e+308,-1.7976931e+308,-1.7976931e+308,-1.7976931e+308))");
+
+	lwfree(c);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -1586,7 +1601,6 @@ void geodetic_suite_setup(void)
 	PG_ADD_TEST(suite, test_sphere_direction);
 	PG_ADD_TEST(suite, test_sphere_project);
 	PG_ADD_TEST(suite, test_lwgeom_area_sphere);
-	PG_ADD_TEST(suite, test_signum);
 	PG_ADD_TEST(suite, test_gbox_from_spherical_coordinates);
 	PG_ADD_TEST(suite, test_gserialized_get_gbox_geocentric);
 	PG_ADD_TEST(suite, test_clairaut);
@@ -1606,4 +1620,5 @@ void geodetic_suite_setup(void)
 	PG_ADD_TEST(suite, test_lwgeom_segmentize_sphere);
 	PG_ADD_TEST(suite, test_ptarray_contains_point_sphere);
 	PG_ADD_TEST(suite, test_ptarray_contains_point_sphere_iowa);
+	PG_ADD_TEST(suite, test_gbox_to_string_truncated);
 }

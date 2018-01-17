@@ -1,4 +1,4 @@
-/* -- pagc_api.h 
+/* -- pagc_api.h
 
 This file is the common header file for PAGC internal routines
 
@@ -75,9 +75,9 @@ typedef void * DS_Handle ;
 
 //#define WITH_ALT_LEFT_RIGHT
 
-/* 2009-07-21 : keep track of version 
+/* 2009-07-21 : keep track of version
    2010-02-01 : increase to 0.3.0
-   2010-08-20 : increase to 0.4.0 
+   2010-08-20 : increase to 0.4.0
    2011-08-14 : increase to 0.4.1 */
 
 #ifdef WITH_ALT_LEFT_RIGHT
@@ -236,13 +236,13 @@ typedef unsigned int PAGC_FLAG_T ;
 #endif
 /* -- error records -- */
 
-typedef struct err_rec 
+typedef struct err_rec
 {
 	int is_fatal ; /* -- is this a fatal error ? -- */
 	char content_buf[MAXSTRLEN] ; /* -- storage for message -- */
 } ERR_REC ;
 
-typedef struct err_param 
+typedef struct err_param
 {
 	int last_err ;
 	int first_err ;
@@ -302,7 +302,7 @@ typedef int DEFDEF ;
 #define PREFIX  3
 #define EXIT  4
 
-/* -- tokens -- 
+/* -- tokens --
    used in tokenize.c -- */
 #define DFRACT 0
 #define DSINGLE 1
@@ -322,17 +322,17 @@ typedef int DEFDEF ;
 /* ================= standardization records ===================*/
 
 /* -- This structure stores a definition for a lexical entry -- */
-typedef struct def  
+typedef struct def
 {
 	int Order ; /* -- the order in the list -- */
 	SYMB Type ; /* -- the Input symbol -- */
-	int Protect ; 
+	int Protect ;
 	char *Standard ; /* -- The standardization -- */
 	struct def *Next ;
 } DEF ;
 
 /* -- This stores the data for a lexical entry -- */
-typedef struct entry 
+typedef struct entry
 {
 	char *Lookup ; /* -- To match against the input word -- */
 	DEF *DefList ; /* -- list of definitions and outputs for this word -- */
@@ -341,7 +341,7 @@ typedef struct entry
 
 
 /* -- storage for standardization rules -- */
-typedef struct keyword 
+typedef struct keyword
 {
 	SYMB *Input ; /* -- List of input symbols -- */
 	SYMB *Output ; /* -- List of output symbols, 1-1 with input -- */
@@ -354,7 +354,7 @@ typedef struct keyword
 } KW ;
 
 
-typedef struct lexeme 
+typedef struct lexeme
 {
 	int StartMorph ;
 	int EndMorph ;
@@ -363,7 +363,7 @@ typedef struct lexeme
 } LEXEME ;
 
 /* 2006-11-02 */
-typedef struct rule_param 
+typedef struct rule_param
 {
 	int num_nodes ;
 	int rules_read ;
@@ -377,7 +377,7 @@ typedef struct rule_param
 } RULE_PARAM ;
 
 /* -- structure used to assemble composite output -- */
-typedef struct seg 
+typedef struct seg
 {
 	SYMB sub_sym ; /* -- Used in forced standardization -- */
 	int Start ; /* -- the start target position -- */
@@ -389,17 +389,17 @@ typedef struct seg
 } SEG ;
 
 /* -- storage structure for standardization candidates -- */
-typedef struct stz 
+typedef struct stz
 {
     DS_Score_t score ; /* -- standardization score -- */
     DS_Score_t raw_score ;
     KW *build_key ; /* -- use to collect statistics -- */
-    DEF *definitions[MAXLEX] ; /* -- lexical or input definitions -- */ 
+    DEF *definitions[MAXLEX] ; /* -- lexical or input definitions -- */
     SYMB output[MAXLEX] ; /* -- output tokens -- */
 } STZ ;
 
 /* 2006-11-02 */
-typedef struct stz_param 
+typedef struct stz_param
 {
 	int stz_list_size ;
 	int last_stz_output ;
@@ -409,7 +409,7 @@ typedef struct stz_param
 } STZ_PARAM ;
 
 /* 2006-11-14 */
-struct morph 
+struct morph
 {
 	int Term ;
 	int TextLen ;
@@ -417,7 +417,7 @@ struct morph
 	DEFDEF Sym ;
 } ;
 
-typedef struct stand_param 
+typedef struct stand_param
 {
 	int cur_morph ;
 	int base_morph ;
@@ -432,7 +432,7 @@ typedef struct stand_param
 	/*-- <revision date='2012-06-01'> Add gaz_lexicon to be triggered on __start_state__ = MACRO </revision> --*/
 	ENTRY **gaz_lexicon ;
 	/*-- <revision date='2012-07-22'> Keep track of start_state </revision> --*/
-	int start_state ; 
+	int start_state ;
 	ERR_PARAM *errors ;
 	STZ_PARAM *stz_info ; /* structure created by analyze.c (create_segments) */
 	DEF **default_def ;
@@ -441,14 +441,14 @@ typedef struct stand_param
 	SYMB best_output[MAXLEX] ;
 	SYMB target[MAXLEX] ; /* -- target for Aho-Corasick -- */
 	LEXEME lex_vector[MAXLEX] ;
-	int cur_sym_sel[MAXLEX] ; /* -- currently selected symbol 
+	int cur_sym_sel[MAXLEX] ; /* -- currently selected symbol
                                   for each lexeme -- */
 	int orig_str_pos[MAXLEX] ; /* -- compression buffer -- */
 	int def_cnt[MAXLEX] ; /* -- number of symbols for each lexeme -- */
-	NODE registry[MAXLEX + 1] ; /* -- Aho-Corasick : offsets to output 
+	NODE registry[MAXLEX + 1] ; /* -- Aho-Corasick : offsets to output
                                          links -- */
 	DEF *best_defs[MAXLEX] ;
-	DEF *def_array[MAXLEX][MAXDEF] ; /* -- the definitions for each 
+	DEF *def_array[MAXLEX][MAXDEF] ; /* -- the definitions for each
                                                lexeme -- */
 	SYMB comp_lex_sym[MAXLEX][MAXDEF] ; /* -- symbols for each lexeme -- */
 } STAND_PARAM ;
@@ -461,9 +461,9 @@ typedef struct stand_param
 /* -- The attribute structure is used to coordinate the schema in the
    reference data with the postal attributes identified by the standardizer
    and which may be used in the user's addresses. -- */
-typedef struct attribute 
+typedef struct attribute
 {
-	SYMB symbol ; 
+	SYMB symbol ;
 	int comp_type ; /* -- The comparision type used in matching -- */
 	int check_dir ; /* -- TRUE if a non-blank reference field is read -- */
 	int num_redirects ;
@@ -479,11 +479,11 @@ typedef struct attribute
                                         attribute should be redirected -- */
 } ATTRIBUTE ;
 
-/* -------------------------------------------------------------- 
+/* --------------------------------------------------------------
 This structure is used to store the information on each reference
-record with which we attempt to match the user record 
+record with which we attempt to match the user record
 ---------------------------------------------------------------- */
-typedef struct candidate 
+typedef struct candidate
 {
 	int score_card ; /*2008-12-15*/
 	DS_Entity_t record ; /* -- reference database record number -- */
@@ -496,7 +496,7 @@ typedef struct candidate
                    betaref.c (ReadScoreStandardized) -- */
 } CANDIDATE ; /* -- structure initialized in Index/CreateCandidate --*/
 
-typedef struct int_candidate 
+typedef struct int_candidate
 {
 	DS_Entity_t record_A ;
 	DS_Entity_t record_B ;
@@ -513,7 +513,7 @@ typedef struct int_candidate
 
 /* ================== global record =================== */
 
-typedef struct pagc_global 
+typedef struct pagc_global
 {
 	int log_init ;
 	RULE_PARAM *rules ;
@@ -522,7 +522,7 @@ typedef struct pagc_global
 	ENTRY **addr_lexicon ; /*-- 2006-11-20 --*/
 	ENTRY **poi_lexicon ;
 	/*-- <revision date='2012-07-16'> gaz_lexicon </revision> --*/
-	ENTRY **gaz_lexicon ; 
+	ENTRY **gaz_lexicon ;
 	DS_Handle _file_sys ;
 	ERR_PARAM *process_errors ;
 } PAGC_GLOBAL ;
@@ -533,7 +533,7 @@ typedef void * RECOGNIZER_HANDLE ;
 
 /* ============================ main schema record ========================== */
 
-typedef struct schema 
+typedef struct schema
 {
 	DS_Score_t match_weight[MAXOUTSYM] ; /* match weight for each token employed in the schema */
 	DS_Score_t unmatch_weight[MAXOUTSYM] ; /* the non-match weight for each */
@@ -564,7 +564,7 @@ typedef struct schema
 	DS_Coord_t MBR_min_X ; /* Minimum point X */
 	DS_Coord_t MBR_min_Y ; /* Minimum point Y */
 	int pagc_ver ; /*-- <revision date='2009-07-21'> Tracking version. </revision> --*/
-	DS_Dim_t shp_typ ; /* Shape type in shapefile - point, arc */ 
+	DS_Dim_t shp_typ ; /* Shape type in shapefile - point, arc */
 	int both_sides ; /* do arcs have both sides, ie both left and right? -- used for SITE_INTERPOLATE */
 	DS_Field_t from_cross_col ; /* the from cross street in the reference shapeset (for intersections) */
 	DS_Field_t to_cross_col ; /* the to cross street for intersections */
@@ -580,7 +580,7 @@ typedef struct schema
 	DS_Field_t subdistrict_beta ;
 	DS_Field_t occ_field1 ; /* -- if HAVE_OCCUPANCY -- */
 	DS_Field_t occ_field2 ; /* -- if HAVE_OCCUPANCY -- */
-	/*-- <revision date='2010-09-27'> Eliminate X_field and Y_field for HAVE_DBF_POSITION 
+	/*-- <revision date='2010-09-27'> Eliminate X_field and Y_field for HAVE_DBF_POSITION
 		and use following: </revision> --*/
 	DS_Geo_t typ_geo_cols ;
 	DS_Field_t num_geo_cols ;
@@ -627,7 +627,7 @@ typedef struct schema
 
 /* ===================== build database control record ============= */
 
-typedef struct bdb_build_param 
+typedef struct bdb_build_param
 {
 	ERR_PARAM *errors ;
 	SCHEMA *schema ;
@@ -637,9 +637,9 @@ typedef struct bdb_build_param
 } BDB_BUILD_PARAM ;
 
 
-/* ============ structures for intersection search =========== */ 
+/* ============ structures for intersection search =========== */
 
-typedef struct x_cand 
+typedef struct x_cand
 {
 	DS_Entity_t beta_rec ;
 	int reversed ;
@@ -651,14 +651,14 @@ typedef struct x_cand
 	struct x_cand *cluster ;
 } X_CAND ;
 
-typedef struct pair_read 
+typedef struct pair_read
 {
 	DS_Entity_t record_1 ;
 	DS_Entity_t record_2 ;
 	struct pair_read *next ;
 } PAIR_READ ;
 
-typedef struct box_cell 
+typedef struct box_cell
 {
 	X_CAND *splitter ;
 	PAIR_READ *pair_list ;
@@ -668,7 +668,7 @@ typedef struct box_cell
 
 /* ============== structure for recording beta records read ======== */
 
-typedef struct record_read 
+typedef struct record_read
 {
 	DS_Entity_t row_no ;
 	int stz ;
@@ -676,16 +676,16 @@ typedef struct record_read
 	struct record_read * right ;
 } RECORD_READ ;
 
-typedef struct r_r_mgr 
+typedef struct r_r_mgr
 {
 	int current_offset ;
 	void *base ; /* 2010-06-24 : change to void * for flexibility */
 	struct r_r_mgr *prev_block ;
 	struct r_r_mgr *next_block ;
-} R_R_MGR ; 
+} R_R_MGR ;
 
 /* 2011-01-24 : keep schema linkages on hand until closure */
-typedef struct schema_db_linkage 
+typedef struct schema_db_linkage
 {
 	SCHEMA * linked_schema ;
 	DS_Handle _linked_beta ;
@@ -694,7 +694,7 @@ typedef struct schema_db_linkage
 
 /* ============ main matching context record ========== */
 
-typedef struct pagc_context 
+typedef struct pagc_context
 {
 	SCHEMA *schema ;
 	ERR_PARAM *errors ;
@@ -726,12 +726,12 @@ typedef struct pagc_context
 	R_R_MGR *pair_r_r ; /* 2010-06-26 new structure */
 	R_R_MGR *box_r_r ; /* 2010-06-26 new structure */
 	R_R_MGR *x_cand_r_r ; /* 2010-06-26 new structure */
-	RECORD_READ **rec_hash_tab ; /* -- allocated memory -- */ 
+	RECORD_READ **rec_hash_tab ; /* -- allocated memory -- */
 	DS_Byte_t *shape_buf ;
 	char transfer_buf[MAX_TRANSFER_BUF_SIZE] ;
 /*   PAIR_READ *pair_buf ;  2010-06-26, no longer needed */
 	BOX_CELL **overlap_buf ; /* -- allocated memory -- */
-	BOX_CELL *box_root ; 
+	BOX_CELL *box_root ;
 /*   BOX_CELL *box_cell_array ;   2010-06-26, no longer needed */
 /*   int num_box_cells ;  2010-06-26, no longer needed */
 } PAGC_CONTEXT ;
@@ -739,7 +739,7 @@ typedef struct pagc_context
 
 /* =============== client interface record (not exposed) =========== */
 
-typedef struct client_handle 
+typedef struct client_handle
 {
 	int handle_check ;
 	int num_contexts ;
@@ -752,7 +752,7 @@ typedef struct client_handle
 } CLIENT_HANDLE ;
 
 /* 2009-07-27 : structure for landmark scoring */
-typedef struct cand_score_params 
+typedef struct cand_score_params
 {
 	int target_word_cnt ;
 	int postal_idx ; /* which requester field has the postal */
@@ -827,7 +827,7 @@ void send_fields_to_stream(char **, FILE *, int, int) ;
 /* -- analyze.c -- */
 int install_def_block_table(ENTRY **, ERR_PARAM *) ;
 STZ_PARAM *create_segments(ERR_PARAM *) ;
-void destroy_segments(STZ_PARAM *) ; 
+void destroy_segments(STZ_PARAM *) ;
 int get_next_stz(STAND_PARAM *, int) ;
 double get_stz_downgrade(STAND_PARAM *, int) ;
 /*-- <revision date='2012-07-22'> Keep track of start_state </revision> --*/
@@ -869,7 +869,7 @@ FILE *open_aux_file(PAGC_GLOBAL *, const char *) ;
 /* -- candform.c -- */
 int sads_format_standard_fields(STAND_PARAM *, int, char *) ;
 void fetch_standard_headers(char *) ;
-/* 2008-07-21 sads_format_candidate : add is_parity_mismatch argument, 
+/* 2008-07-21 sads_format_candidate : add is_parity_mismatch argument,
    add source_identifier argument */
 #ifdef THREE_SOURCE_IDS
 int sads_format_candidate(PAGC_CONTEXT *, DS_Entity_t, int, char *, int, int, int, int *, char *, char *, char *) ;
@@ -914,8 +914,8 @@ DS_Metric_t degree_dist(DS_Metric_t, DS_Coord_t,  DS_Coord_t) ;
 int collect_incident_arcs(PAGC_CONTEXT *, int, int, int) ;
 
 /* -- score.c -- */
-int read_score_stand(PAGC_CONTEXT *, DS_Score_t *, char **, DS_Entity_t, int, int *) ; 
-int read_score_stand_land( PAGC_CONTEXT *, DS_Score_t *, char **, DS_Entity_t, int *, CAND_SCORE_PARAMS *) ; 
+int read_score_stand(PAGC_CONTEXT *, DS_Score_t *, char **, DS_Entity_t, int, int *) ;
+int read_score_stand_land( PAGC_CONTEXT *, DS_Score_t *, char **, DS_Entity_t, int *, CAND_SCORE_PARAMS *) ;
 int resolve_range_direction(int *, int *, int, int, int, int) ;
 DS_Score_t interpolate_weight(DS_Score_t, DS_Score_t, DS_Score_t) ;
 int match_number_interval_left_right(int, int, int, int, int, int) ;
@@ -967,19 +967,19 @@ DS_Entity_t find_arcs_by_point(PAGC_CONTEXT *, DS_Entity_t, PAGC_POINT *, DS_Ang
 int print_beta_text(PAGC_CONTEXT *) ;
 int print_index_text(PAGC_CONTEXT *, DS_Index_Link) ;
 int print_shape_index(PAGC_CONTEXT *, DS_Index_Link) ;
-int calc_landmark_word_weights(PAGC_CONTEXT *, int, int *, DS_Score_t *) ; 
+int calc_landmark_word_weights(PAGC_CONTEXT *, int, int *, DS_Score_t *) ;
 
 /* -- alpharef.c -- */
 int read_alpha_house(DS_Handle, DS_Entity_t, DS_Field_t, int) ;
 int extract_house(const char *, int) ;
-/* 2008-07-30 : add unstandard_mac_alternate arg and flag for alternate city names 
+/* 2008-07-30 : add unstandard_mac_alternate arg and flag for alternate city names
    2009-11-23 : add arrays for official name fields */
 /*-- <revision date='2012-08-30'> Use check_macro </revision> --*/
 int read_unstandardized(SCHEMA *, DS_Handle, DS_Entity_t, int *, int *, int *, char *, CHECK_MACRO* , char *, char **, DS_Field_t *, int *, ERR_PARAM *) ;
 
-/* -- makebeta.c -- */	
+/* -- makebeta.c -- */
 int init_standardized_table(SCHEMA *, ERR_PARAM *) ;
-int soundex_street_words(char *, char **) ; 
+int soundex_street_words(char *, char **) ;
 /* 2008-08-01 : add stand_alt_macro flag for alternate city names */
 /*-- <revision date='2012-08-30'> Use check_macro </revision> --*/
 int write_standardized(SCHEMA *, BDB_BUILD_PARAM *, char **, char **, CHECK_MACRO *, int, int *, char *, char *, char *, DS_Entity_t, int) ;
@@ -1019,20 +1019,20 @@ int tokenize_landmark_words(char *, char **) ;
 #define LOG_MESS(STR,WHERE) \
    sprintf( WHERE -> error_buf , \
             STR ) ; \
-   register_error( WHERE ) 
+   register_error( WHERE )
 
 #define LOG_MESS1( TEMP,INSERT,WHERE) \
    sprintf( WHERE -> error_buf , \
             TEMP, \
             INSERT ) ; \
-   register_error( WHERE ) 
+   register_error( WHERE )
 
 #define LOG_MESS2( TEMP,INSERT1,INSERT2,WHERE ) \
    sprintf( WHERE -> error_buf , \
             TEMP, \
             INSERT1, \
             INSERT2 ) ; \
-   register_error( WHERE ) 
+   register_error( WHERE )
 
 #define LOG_MESS3( TEMP,INSERT1,INSERT2,INSERT3,WHERE ) \
    sprintf( WHERE -> error_buf , \
@@ -1040,9 +1040,9 @@ int tokenize_landmark_words(char *, char **) ;
             INSERT1, \
             INSERT2 , \
             INSERT3 ) ; \
-   register_error( WHERE  ) 
+   register_error( WHERE  )
 
-   
+
 #define RET_ERR(STR,WHERE,RET) \
    LOG_MESS(STR,WHERE) ; \
    return RET
@@ -1078,7 +1078,7 @@ int tokenize_landmark_words(char *, char **) ;
    DEST = (char * ) malloc( sizeof( char ) * ( strlen( SRC ) + 1 ) ) ; \
    MEM_ERR(DEST,WHERE,RET_VAL) ; \
    BLANK_STRING(DEST) ; \
-   strcpy(DEST,SRC) 
+   strcpy(DEST,SRC)
 
 
 #define PAGC_ALLOC_STRUC(LOC,TYP,WHERE,EXIT_TYPE) \
@@ -1157,7 +1157,7 @@ int tokenize_landmark_words(char *, char **) ;
 #define MAKE_CONCAT_KEY(TARGET,SOURCE_A,SOURCE_B) \
    BLANK_STRING(TARGET) ; \
    strcpy( TARGET , SOURCE_A ) ; \
-   COMMA_APPEND_WITH_LEN( TARGET , SOURCE_B , MAXSTRLEN ) 
+   COMMA_APPEND_WITH_LEN( TARGET , SOURCE_B , MAXSTRLEN )
 
 #define MAKE_CONCAT_SOUNDEX_KEY(SOURCE_A,SOURCE_B,DEST,HOLD,CNT,SW) \
    soundex_street_words( SOURCE_A, SW) ; \
@@ -1181,7 +1181,7 @@ macros for converting and verifying pagc_client args
    if ( CLIENT_PTR == NULL ) return FALSE ; \
    NATIVE_PTR = ( CLIENT_HANDLE * ) CLIENT_PTR ; \
    if ( NATIVE_PTR -> handle_check != HANDLE_CHECK ) return 0
-   
+
 #define CHECK_BOUNDS( ARRAY_SIZE , ARRAY_IDX ) \
    if ( ( ARRAY_IDX > ARRAY_SIZE ) || (ARRAY_IDX < 1 ) ) { \
       CLIENT_ERR( pagc_p -> global_record -> process_errors ) ; \
@@ -1243,7 +1243,7 @@ macros for converting and verifying pagc_client args
 
 #define INTEGER_AS_BYTES( PTR_VAL ) \
 	* ( ( int * ) ( PTR_VAL ) )
-	
+
 #define DOUBLE_AS_BYTES( PTR_VAL ) \
 	*( ( double * ) ( PTR_VAL ) )
 

@@ -3,7 +3,7 @@
 ----------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION ST_SetArea(rast raster, band, x int, y int, width int, height int, val float8)
-    RETURNS raster AS 
+    RETURNS raster AS
     $$
     DECLARE
 	newraster raster := rast;

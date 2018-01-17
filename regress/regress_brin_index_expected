@@ -1,0 +1,61 @@
+scan_seq|Seq Scan
+2594|POINT(130.504303 126.53112)
+3618|POINT(130.447205 131.655289)
+7245|POINT(128.10466 130.94133)
+scan_seq|Seq Scan
+2594|POINT(130.504303 126.53112)
+3618|POINT(130.447205 131.655289)
+7245|POINT(128.10466 130.94133)
+scan_seq|Seq Scan
+2594|POINT(130.504303 126.53112)
+3618|POINT(130.447205 131.655289)
+7245|POINT(128.10466 130.94133)
+scan_idx|Bitmap Heap Scan,Bitmap Index Scan
+2594|POINT(130.504303 126.53112)
+3618|POINT(130.447205 131.655289)
+7245|POINT(128.10466 130.94133)
+scan_idx|Bitmap Heap Scan,Bitmap Index Scan
+2594|POINT(130.504303 126.53112)
+3618|POINT(130.447205 131.655289)
+7245|POINT(128.10466 130.94133)
+scan_idx|Bitmap Heap Scan,Bitmap Index Scan
+2594|POINT(130.504303 126.53112)
+3618|POINT(130.447205 131.655289)
+7245|POINT(128.10466 130.94133)
+scan_seq|Seq Scan
+2594|POINT(130.504303 126.53112)
+3618|POINT(130.447205 131.655289)
+7245|POINT(128.10466 130.94133)
+scan_idx|Bitmap Heap Scan,Bitmap Index Scan
+2594|POINT(130.504303 126.53112)
+3618|POINT(130.447205 131.655289)
+7245|POINT(128.10466 130.94133)
+scan_seq|Seq Scan
+2594|POINT(130.504303 126.53112)
+3618|POINT(130.447205 131.655289)
+7245|POINT(128.10466 130.94133)
+scan_idx|Bitmap Heap Scan,Bitmap Index Scan
+2594|POINT(130.504303 126.53112)
+3618|POINT(130.447205 131.655289)
+7245|POINT(128.10466 130.94133)
+scan_idx|Bitmap Heap Scan,Bitmap Index Scan
+2d|1
+scan_idx|Bitmap Heap Scan,Bitmap Index Scan
+2d|20
+summarize 2d|8
+scan_idx|Bitmap Heap Scan,Bitmap Index Scan
+2d|20
+scan_idx|Bitmap Heap Scan,Bitmap Index Scan
+3d|1
+scan_idx|Bitmap Heap Scan,Bitmap Index Scan
+3d|20
+summarize 3d|8
+scan_idx|Bitmap Heap Scan,Bitmap Index Scan
+3d|20
+scan_idx|Bitmap Heap Scan,Bitmap Index Scan
+4d|1
+scan_idx|Bitmap Heap Scan,Bitmap Index Scan
+4d|20
+summarize 4d|8
+scan_idx|Bitmap Heap Scan,Bitmap Index Scan
+4d|20

@@ -35,6 +35,16 @@ static void test_typmod_macros(void)
 	rv = TYPMOD_GET_SRID(typmod);
 	CU_ASSERT_EQUAL(rv, srid);
 
+        srid = 999999;
+        TYPMOD_SET_SRID(typmod,srid);
+        rv = TYPMOD_GET_SRID(typmod);
+        CU_ASSERT_EQUAL(rv, srid);
+
+        srid = -999999;
+        TYPMOD_SET_SRID(typmod,srid);
+        rv = TYPMOD_GET_SRID(typmod);
+        CU_ASSERT_EQUAL(rv, srid);
+
 	srid = SRID_UNKNOWN;
 	TYPMOD_SET_SRID(typmod,srid);
 	rv = TYPMOD_GET_SRID(typmod);
@@ -197,7 +207,7 @@ static void test_lwgeom_calculate_gbox(void)
 	lwgeom_calculate_gbox_cartesian(g, &b);
 	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
 	lwgeom_free(g);
-	
+
 	/* Inf = 0x7FF0000000000000 */
 	/* POINT(0 0) = 00 00000001 0000000000000000 0000000000000000 */
 	/* POINT(0 Inf) = 00 00000001 0000000000000000 7FF0000000000000 */
@@ -214,14 +224,14 @@ static void test_lwgeom_calculate_gbox(void)
 	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
 	CU_ASSERT(isinf(b.ymax));
 	lwgeom_free(g);
-	
+
 	/* Geometry with NaN 0101000020E8640000000000000000F8FF000000000000F8FF */
 	/* NaN should show up in bbox for "SRID=4326;POINT(0 NaN)" */
 	g = lwgeom_from_hexwkb("0101000020E86400000000000000000000000000000000F8FF", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_cartesian(g, &b);
 	CU_ASSERT(isnan(b.ymax));
-	lwgeom_free(g);	
-	
+	lwgeom_free(g);
+
 }
 
 static void test_gbox_serialized_size(void)
@@ -247,7 +257,7 @@ static void test_lwgeom_from_gserialized(void)
 	GSERIALIZED *g;
 	char *in_ewkt;
 	char *out_ewkt;
-	int i = 0;
+	size_t i = 0;
 
 	char *ewkt[] =
 	{
@@ -314,7 +324,7 @@ static void test_gserialized_is_empty(void)
 		const char* wkt;
 		int isempty;
 	};
-	
+
 	struct gserialized_empty_cases cases[] = {
 		{ "POINT EMPTY", 1 },
 		{ "POINT(1 1)", 0 },
@@ -333,7 +343,7 @@ static void test_gserialized_is_empty(void)
 		{ "GEOMETRYCOLLECTION(POLYGON EMPTY,GEOMETRYCOLLECTION(POINT EMPTY),MULTILINESTRING(EMPTY,EMPTY),POINT EMPTY)", 1 },
 		{ NULL, 0 }
 	};
-	
+
 	while( cases[i].wkt )
 	{
 		// i = 11;
@@ -347,7 +357,7 @@ static void test_gserialized_is_empty(void)
 		i++;
 	}
 }
-	
+
 
 static void test_geometry_type_from_string(void)
 {
@@ -502,7 +512,7 @@ static void test_lwgeom_free(void)
 
 }
 
-static void do_lwgeom_flip_coordinates(char *in, char *out)
+static void do_lwgeom_swap_ordinates(char *in, char *out)
 {
 	LWGEOM *g;
 	char * t;
@@ -518,9 +528,9 @@ static void do_lwgeom_flip_coordinates(char *in, char *out)
 		xmax = g->bbox->xmax;
 		ymax = g->bbox->ymax;
 	}
-	
-	g = lwgeom_flip_coordinates(g);
-	
+
+    lwgeom_swap_ordinates(g,LWORD_X,LWORD_Y);
+
 	if ( testbox )
 	{
 		CU_ASSERT_DOUBLE_EQUAL(g->bbox->xmax, ymax, 0.00001);
@@ -538,82 +548,82 @@ static void do_lwgeom_flip_coordinates(char *in, char *out)
 	lwfree(t);
 }
 
-static void test_lwgeom_flip_coordinates(void)
+static void test_lwgeom_swap_ordinates(void)
 {
 	/*
 	     * 2D geometries types
 	     */
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "POINT(1 2)",
 	    "POINT(2 1)"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "LINESTRING(1 2,3 4)",
 	    "LINESTRING(2 1,4 3)"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "POLYGON((1 2,3 4,5 6,1 2))",
 	    "POLYGON((2 1,4 3,6 5,2 1))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))",
 	    "POLYGON((2 1,4 3,6 5,2 1),(8 7,10 9,12 11,8 7))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "MULTIPOINT(1 2,3 4)",
 	    "MULTIPOINT(2 1,4 3)"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "MULTILINESTRING((1 2,3 4),(5 6,7 8))",
 	    "MULTILINESTRING((2 1,4 3),(6 5,8 7))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "MULTIPOLYGON(((1 2,3 4,5 6,7 8)),((9 10,11 12,13 14,10 9)))",
 	    "MULTIPOLYGON(((2 1,4 3,6 5,8 7)),((10 9,12 11,14 13,9 10)))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "GEOMETRYCOLLECTION EMPTY",
 	    "GEOMETRYCOLLECTION EMPTY"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "GEOMETRYCOLLECTION(POINT(1 2),LINESTRING(3 4,5 6))",
 	    "GEOMETRYCOLLECTION(POINT(2 1),LINESTRING(4 3,6 5))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "GEOMETRYCOLLECTION(POINT(1 2),GEOMETRYCOLLECTION(LINESTRING(3 4,5 6)))",
 	    "GEOMETRYCOLLECTION(POINT(2 1),GEOMETRYCOLLECTION(LINESTRING(4 3,6 5)))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)",
 	    "CIRCULARSTRING(0 -2,2 0,0 2,2 0,4 2)"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "COMPOUNDCURVE(CIRCULARSTRING(0 1,1 1,1 0),(1 0,0 1))",
 	    "COMPOUNDCURVE(CIRCULARSTRING(1 0,1 1,0 1),(0 1,1 0))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))",
 	    "CURVEPOLYGON(CIRCULARSTRING(0 -2,-1 -1,0 0,-1 1,0 2,2 0,0 -2),(0 -1,0.5 0,0 1,1 0,0 -1))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 3))",
 	    "MULTICURVE((5 5,5 3,3 3,3 0),CIRCULARSTRING(0 0,1 2,3 2))"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
 	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(0 -2,-1 -1,0 0,-1 1,0 2,2 0,0 -2),(0 -1,0.5 0,0 1,1 0,0 -1)),((8 7,10 10,14 6,11 4,8 7)))"
 	);
@@ -623,17 +633,17 @@ static void test_lwgeom_flip_coordinates(void)
 	     * Ndims
 	     */
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "POINT(1 2 3)",
 	    "POINT(2 1 3)"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "POINTM(1 2 3)",
 	    "POINTM(2 1 3)"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "POINT(1 2 3 4)",
 	    "POINT(2 1 3 4)"
 	);
@@ -643,12 +653,12 @@ static void test_lwgeom_flip_coordinates(void)
 	* Srid
 	*/
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "SRID=4326;POINT(1 2)",
 	    "SRID=4326;POINT(2 1)"
 	);
 
-	do_lwgeom_flip_coordinates(
+	do_lwgeom_swap_ordinates(
 	    "SRID=0;POINT(1 2)",
 	    "POINT(2 1)"
 	);
@@ -659,14 +669,14 @@ static void test_f2d(void)
 	double d = 1000000.123456789123456789;
 	float f;
 	double e;
-	
+
 	f = next_float_down(d);
-	d = next_float_down(f);	
+	d = next_float_down(f);
 	CU_ASSERT_DOUBLE_EQUAL(f,d, 0.0000001);
-	
+
 	e = (double)f;
 	CU_ASSERT_DOUBLE_EQUAL(f,e, 0.0000001);
-	
+
 	f = next_float_down(d);
 	d = next_float_down(f);
 	CU_ASSERT_DOUBLE_EQUAL(f,d, 0.0000001);
@@ -688,7 +698,7 @@ static void test_f2d(void)
  */
 static void test_lwgeom_clone(void)
 {
-	int i;
+	size_t i;
 
 	char *ewkt[] =
 	{
@@ -741,6 +751,7 @@ static void test_lwgeom_force_clockwise(void)
 
 	/* counterclockwise, must be reversed */
 	geom = lwgeom_from_wkt("POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_FALSE(lwgeom_is_clockwise(geom));
 	lwgeom_force_clockwise(geom);
 	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0))";
 	out_ewkt = lwgeom_to_ewkt(geom);
@@ -752,6 +763,7 @@ static void test_lwgeom_force_clockwise(void)
 
 	/* clockwise, fine as is */
 	geom = lwgeom_from_wkt("POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_TRUE(lwgeom_is_clockwise(geom));
 	lwgeom_force_clockwise(geom);
 	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0))";
 	out_ewkt = lwgeom_to_ewkt(geom);
@@ -763,6 +775,7 @@ static void test_lwgeom_force_clockwise(void)
 
 	/* counterclockwise shell (must be reversed), mixed-wise holes */
 	geom = lwgeom_from_wkt("POLYGON((0 0,10 0,10 10,0 10,0 0),(2 2,2 4,4 2,2 2),(6 2,8 2,8 4,6 2))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_FALSE(lwgeom_is_clockwise(geom));
 	lwgeom_force_clockwise(geom);
 	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,2 4,2 2),(6 2,8 2,8 4,6 2))";
 	out_ewkt = lwgeom_to_ewkt(geom);
@@ -774,6 +787,7 @@ static void test_lwgeom_force_clockwise(void)
 
 	/* clockwise shell (fine), mixed-wise holes */
 	geom = lwgeom_from_wkt("POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,2 4,2 2),(6 2,8 4,8 2,6 2))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_FALSE(lwgeom_is_clockwise(geom));
 	lwgeom_force_clockwise(geom);
 	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,2 4,2 2),(6 2,8 2,8 4,6 2))";
 	out_ewkt = lwgeom_to_ewkt(geom);
@@ -789,8 +803,8 @@ static void test_lwgeom_force_clockwise(void)
 	geom = lwgeom_from_hexwkb(in_ewkt, LW_PARSER_CHECK_NONE);
 	geom2 = lwgeom_from_hexwkb(in_ewkt, LW_PARSER_CHECK_NONE);
 	lwgeom_force_clockwise(geom2);
-	
-	/** use same check instead of strcmp to account 
+
+	/** use same check instead of strcmp to account
 	  for difference in endianness **/
 	CU_ASSERT( lwgeom_same(geom, geom2) );
 	lwgeom_free(geom);
@@ -1000,7 +1014,7 @@ static void test_lwline_from_lwmpoint(void)
 	line = lwline_from_lwmpoint(SRID_DEFAULT, mpoint);
 	CU_ASSERT_EQUAL(line->points->npoints, mpoint->ngeoms);
 	CU_ASSERT_DOUBLE_EQUAL(lwline_length_2d(line), 4.0, 0.000001);
-	
+
 	lwline_free(line);
 	lwmpoint_free(mpoint);
 }
@@ -1052,7 +1066,7 @@ void test_gbox_same_2d(void)
 
     CU_ASSERT_TRUE(gbox_same_2d(g1->bbox, g2->bbox));
     CU_ASSERT_FALSE(gbox_same_2d(g1->bbox, g3->bbox));
-    
+
     /* Serializing a GBOX with precise coordinates renders the boxes not strictly equal,
      * but still equal according to gbox_same_2d_float.
      */
@@ -1188,6 +1202,16 @@ void test_gserialized_peek_gbox_p_fails_for_unsupported_cases(void)
 	}
 }
 
+void test_signum_macro(void);
+void test_signum_macro(void)
+{
+	CU_ASSERT_EQUAL(SIGNUM(-5.0),-1);
+	CU_ASSERT_EQUAL(SIGNUM( 5.0), 1);
+	CU_ASSERT_EQUAL(SIGNUM( 0.0), 0);
+	CU_ASSERT_EQUAL(SIGNUM(10) * 5, 5);
+	CU_ASSERT_EQUAL(SIGNUM(-10) * 5, -5);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -1206,7 +1230,7 @@ void libgeom_suite_setup(void)
 	PG_ADD_TEST(suite, test_geometry_type_from_string);
 	PG_ADD_TEST(suite, test_lwcollection_extract);
 	PG_ADD_TEST(suite, test_lwgeom_free);
-	PG_ADD_TEST(suite, test_lwgeom_flip_coordinates);
+	PG_ADD_TEST(suite, test_lwgeom_swap_ordinates);
 	PG_ADD_TEST(suite, test_f2d);
 	PG_ADD_TEST(suite, test_lwgeom_clone);
 	PG_ADD_TEST(suite, test_lwgeom_force_clockwise);
@@ -1221,4 +1245,5 @@ void libgeom_suite_setup(void)
 	PG_ADD_TEST(suite, test_gserialized_peek_gbox_p_gets_correct_box);
 	PG_ADD_TEST(suite, test_gserialized_peek_gbox_p_fails_for_unsupported_cases);
 	PG_ADD_TEST(suite, test_gbox_same_2d);
+	PG_ADD_TEST(suite, test_signum_macro);
 }

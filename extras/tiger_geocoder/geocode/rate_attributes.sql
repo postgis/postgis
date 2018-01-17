@@ -46,7 +46,7 @@ BEGIN
     RAISE NOTICE 'streetNameA: %, streetNameB: %', streetNameA, streetNameB;
   END IF;
   IF streetNameA IS NOT NULL AND streetNameB IS NOT NULL THEN
-    -- We want to treat numeric streets that have numerics as equal 
+    -- We want to treat numeric streets that have numerics as equal
     -- and not penalize if they are spelled different e.g. have ND instead of TH
     IF NOT numeric_streets_equal(streetNameA, streetNameB) THEN
         IF prequalabr IS NOT NULL THEN
@@ -56,7 +56,7 @@ BEGIN
         ELSE
             result := result + levenshtein_ignore_case(streetNameA, streetNameB) * nameWeight;
         END IF;
-    ELSE 
+    ELSE
     -- Penalize for numeric streets if one is completely numeric and the other is not
     -- This is to minimize on highways like 3A being matched with numbered streets since streets are usually number followed by 2 characters e.g nth ave and highways are just number with optional letter for name
         IF  (streetNameB ~ E'[a-zA-Z]{2,10}' AND NOT (streetNameA ~ E'[a-zA-Z]{2,10}') ) OR (streetNameA ~ E'[a-zA-Z]{2,10}' AND NOT (streetNameB ~ E'[a-zA-Z]{2,10}') ) THEN

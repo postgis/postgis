@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2014 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2014 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2013 Nicklas Avén
  *
  **********************************************************************/
@@ -30,20 +30,20 @@
 
 /* -------------------------------------------------------------------------------- */
 
-static size_t 
+static size_t
 _varint_u64_encode_buf(uint64_t val, uint8_t *buf)
 {
-	uint8_t grp;	
+	uint8_t grp;
 	uint64_t q = val;
 	uint8_t *ptr = buf;
-	while (1) 
+	while (1)
 	{
 		/* We put the 7 least significant bits in grp */
-		grp = 0x7f & q; 
+		grp = 0x7f & q;
 		/* We rightshift our input value 7 bits */
 		/* which means that the 7 next least significant bits */
 		/* becomes the 7 least significant */
-		q = q >> 7;	
+		q = q >> 7;
 		/* Check if, after our rightshifting, we still have */
 		/* anything to read in our input value. */
 		if ( q > 0 )
@@ -98,14 +98,14 @@ varint_s32_encode_buf(int32_t val, uint8_t *buf)
 }
 
 /* Read from signed 64bit varint */
-int64_t 
+int64_t
 varint_s64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size)
-{	
+{
 	return unzigzag64(varint_u64_decode(the_start, the_end, size));
 }
 
 /* Read from unsigned 64bit varint */
-uint64_t 
+uint64_t
 varint_u64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size)
 {
 	uint64_t nVal = 0;
@@ -123,16 +123,16 @@ varint_u64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size
 			/* We get here when there is more to read in the input varInt */
 			/* Here we take the least significant 7 bits of the read */
 			/* byte and put it in the most significant place in the result variable. */
-			nVal |= ((uint64_t)(nByte & 0x7f)) << nShift; 
+			nVal |= ((uint64_t)(nByte & 0x7f)) << nShift;
 			/* move the "cursor" of the input buffer step (8 bits) */
-			ptr++; 
+			ptr++;
 			/* move the cursor in the resulting variable (7 bits) */
 			nShift += 7;
 		}
 		else
 		{
 			/* move the "cursor" one step */
-			ptr++; 
+			ptr++;
 			/* Move the last read byte to the most significant */
 			/* place in the result and return the whole result */
 			*size = ptr - the_start;
@@ -143,7 +143,7 @@ varint_u64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size
 	return 0;
 }
 
-size_t 
+size_t
 varint_size(const uint8_t *the_start, const uint8_t *the_end)
 {
 	const uint8_t *ptr = the_start;
@@ -167,41 +167,44 @@ varint_size(const uint8_t *the_start, const uint8_t *the_end)
 
 uint64_t zigzag64(int64_t val)
 {
-	return (val << 1) ^ (val >> 63);
+	return val >= 0 ?
+		((uint64_t)val) << 1 :
+		((((uint64_t)(-1 - val)) << 1) | 0x01);
 }
 
 uint32_t zigzag32(int32_t val)
 {
-	return (val << 1) ^ (val >> 31);
+	return val >= 0 ?
+		((uint32_t)val) << 1 :
+		((((uint32_t)(-1 - val)) << 1) | 0x01);
 }
-	
+
 uint8_t zigzag8(int8_t val)
 {
-	return (val << 1) ^ (val >> 7);
+	return val >= 0 ?
+		((uint8_t)val) << 1 :
+		((((uint8_t)(-1 - val)) << 1) | 0x01);
 }
-	
+
 int64_t unzigzag64(uint64_t val)
 {
-        if ( val & 0x01 ) 
-            return -1 * (int64_t)((val+1) >> 1);
-        else
-            return (int64_t)(val >> 1);
+	return !(val & 0x01) ?
+		((int64_t)(val >> 1)) :
+		(-1 * (int64_t)((val+1) >> 1));
 }
-	
+
 int32_t unzigzag32(uint32_t val)
 {
-        if ( val & 0x01 ) 
-            return -1 * (int32_t)((val+1) >> 1);
-        else
-            return (int32_t)(val >> 1);
+	return !(val & 0x01) ?
+		((int32_t)(val >> 1)) :
+		(-1 * (int32_t)((val+1) >> 1));
 }
-	
+
 int8_t unzigzag8(uint8_t val)
 {
-        if ( val & 0x01 ) 
-            return -1 * (int8_t)((val+1) >> 1);
-        else
-            return (int8_t)(val >> 1);
+	return !(val & 0x01) ?
+		((int8_t)(val >> 1)) :
+		(-1 * (int8_t)((val+1) >> 1));
 }
-	
+
 

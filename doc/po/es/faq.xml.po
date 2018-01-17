@@ -3,13 +3,14 @@
 # Translators:
 # David Martinez Morata, 2013
 # David Martinez Morata, 2013
+# nramire1 nramire1 <nramire1@yahoo.com.ar>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
-"PO-Revision-Date: 2015-09-29 12:23+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"POT-Creation-Date: 2017-09-07 07:22+0000\n"
+"PO-Revision-Date: 2017-07-14 13:00+0000\n"
+"Last-Translator: nramire1 nramire1 <nramire1@yahoo.com.ar>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
 "es/)\n"
 "Language: es\n"
@@ -30,6 +31,7 @@ msgstr "Preguntas frecuentes sobre PostGIS"
 msgid ""
 "Where can I find tutorials, guides and workshops on working with PostGIS"
 msgstr ""
+"Donde puedo encontrar tutoriales, guías y talleres de trabajo con PostGIS"
 
 #. Tag: para
 #: faq.xml:12
@@ -40,6 +42,10 @@ msgid ""
 "It includes packaged data as well as intro to working with OpenGeo Suite. It "
 "is probably the best tutorial on PostGIS."
 msgstr ""
+"OpenGeo tiene un tutorial paso a paso taller de guía <ulink url=\"http://"
+"workshops.boundlessgeo.com/postgis-intro/\">Introducción a PostGIS</ulink>. "
+"Incluye los datos empaquetados así como introducción al trabajo con OpenGeo "
+"Suite. Es probablemente el mejor tutorial sobre PostGIS."
 
 #. Tag: para
 #: faq.xml:13
@@ -49,6 +55,10 @@ msgid ""
 "aspx?content_name=postgis_tut01\">PostGIS almost idiot's guide on getting "
 "started</ulink>. That one is more focused on the windows user."
 msgstr ""
+"BostonGIS también tiene un <ulink url=\"http://www.bostongis.com/"
+"PrinterFriendly.aspx?content_name=postgis_tut01\">PostGIS casi de idiotas "
+"guía sobre cómo empezar</ulink>. Que está más centrado en el usuario de "
+"Windows."
 
 #. Tag: para
 #: faq.xml:18
@@ -107,6 +117,10 @@ msgid ""
 "ERROR: operator class \"gist_geometry_ops\" does not exist for access method "
 "\"gist\" Error occurred. This worked fine in PostGIS 1.5."
 msgstr ""
+"Cuando cargo los datos de OpenStreetMap con osm2pgsql, estoy obteniendo un "
+"error fallido: ERROR: la clase de operador \"gist_geometry_ops\" no existe "
+"para el método de acceso \"GIST\" error ocurrido. Esto funcionó bien en "
+"PostGIS 1.5."
 
 #. Tag: para
 #: faq.xml:40
@@ -117,6 +131,11 @@ msgid ""
 "removed. This was done because PostGIS 2 also introduced Nd spatial indexes "
 "for 3D support and the old name was deemed confusing and a misnomer."
 msgstr ""
+"En PostGIS 2, la clase de operador de geometría predeterminada "
+"gist_geometry_ops fue cambiado a gist_geometry_ops_2d y el gist_geometry_ops "
+"fue eliminado por completo. Esto se hizo porque PostGIS 2 también presenta "
+"Nd índices espaciales de soporte 3D y el nombre antiguo fue considerada "
+"confuso y erróneo."
 
 #. Tag: para
 #: faq.xml:41
@@ -127,12 +146,16 @@ msgid ""
 "if you want the default 2D index. So if you manage said good, change index "
 "creation from:"
 msgstr ""
+"Algunas aplicaciones antiguas que como parte del proceso crean tablas e "
+"índices, se hace referencia explícitamente al nombre de clase del operador. "
+"Esto no era necesario si desea el índice predeterminado 2D. Así que si "
+"maneja la buena pronunciación, cambie la creación de índices de:"
 
 #. Tag: para
 #: faq.xml:42
 #, no-c-format
 msgid "BAD:"
-msgstr ""
+msgstr "MAL:"
 
 #. Tag: programlisting
 #: faq.xml:43
@@ -141,18 +164,20 @@ msgid ""
 "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom "
 "gist_geometry_ops);"
 msgstr ""
+"CREATE INDEX idx_my_table_geom ON my_table USING gist(geom "
+"gist_geometry_ops);"
 
 #. Tag: para
 #: faq.xml:44
 #, no-c-format
 msgid "To GOOD:"
-msgstr ""
+msgstr "a BIEN:"
 
 #. Tag: programlisting
 #: faq.xml:45
 #, no-c-format
 msgid "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom);"
-msgstr ""
+msgstr "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom);"
 
 #. Tag: para
 #: faq.xml:47
@@ -161,6 +186,8 @@ msgid ""
 "The only case where you WILL need to specify the operator class is if you "
 "want a 3D spatial index as follows:"
 msgstr ""
+"El único caso donde usted tendrá que especificar la clase de operador es si "
+"usted desea un índice espacial 3D como el siguiente:"
 
 #. Tag: programlisting
 #: faq.xml:48
@@ -169,6 +196,8 @@ msgid ""
 "CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom "
 "gist_geometry_ops_nd);"
 msgstr ""
+"CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom "
+"gist_geometry_ops_nd);"
 
 #. Tag: para
 #: faq.xml:50
@@ -181,6 +210,13 @@ msgid ""
 "index and recreate it without the operator class. This will save you grief "
 "in the future when you need to upgrade again."
 msgstr ""
+"Si usted es desafortunado para ser atrapado con código compilado que no se "
+"puede cambiar que tiene el antiguo gist_geometry_ops de código duro, "
+"entonces usted puede crear la antigua clase utilizando el "
+"<filename>legacy_gist.sql</filename> empaquetado en PostGIS 2.0.2 +. Sin "
+"embargo, si utiliza esta corrección, se le aconseja que en un punto "
+"posterior elimine el índice y lo recree sin la clase de operador. Esto le "
+"ahorrará problemas en el futuro cuando necesite actualizar de nuevo."
 
 #. Tag: para
 #: faq.xml:56
@@ -280,12 +316,11 @@ msgstr ""
 #: faq.xml:85
 #, no-c-format
 msgid ""
-"-- this should return no records if all your geom fields are filled "
-"in        \n"
+"-- this should return no records if all your geom fields are filled in\n"
 "SELECT somefield FROM mytable WHERE geom IS NULL;"
 msgstr ""
-"-- si todas tus geometrías estas rellenas, esto debería no devolver ningún "
-"registro         \n"
+"-- Esto debería devolver ningún registro si todos los campos geom están "
+"llenos\n"
 "SELECT somefield FROM mytable WHERE geom IS NULL;"
 
 #. Tag: programlisting
@@ -324,6 +359,18 @@ msgid ""
 "analyzing raster data. Raster has its very own FAQ. Refer to <xref linkend="
 "\"RT_FAQ\"/> and <xref linkend=\"RT_reference\"/> for more details."
 msgstr ""
+"Puede almacenar geometrías Point, LineString, Polygon, MultiPoint, "
+"MultiLineString, MultiPolygon y GeometryCollection. En PostGIS 2.0 y "
+"superior también se pueden almacenar TINS y superficies poliédricas en el "
+"tipo de geometría básica. Éstos se especifican en el Formato de texto bien "
+"conocido de GIS abierto (con extensiones Z, M y ZM). Actualmente hay tres "
+"tipos de datos soportados. El tipo de datos de geometría OGC estándar que "
+"utiliza un sistema de coordenadas planar para la medición, el tipo de datos "
+"geográficos que utiliza un sistema de coordenadas geodésicas, con cálculos "
+"en una esfera o en esferoide. El más reciente miembro de la familia de tipo "
+"espacial en PostGIS es raster para almacenar y analizar los datos raster. "
+"Raster tiene su propia FAQ. Refierase a <xref linkend=\"RT_FAQ\"/> y <xref "
+"linkend=\"RT_reference\"/> para más detalle."
 
 #. Tag: para
 #: faq.xml:110
@@ -353,6 +400,23 @@ msgid ""
 "benefits of each. Refer to <xref linkend=\"PostGIS_TypeFunctionMatrix\"/> to "
 "see what is currently supported and what is not."
 msgstr ""
+"Respuesta corta: geography es un tipo de datos más reciente que admite "
+"mediciones de distancias de largo alcance, pero la mayoría de los cálculos "
+"en él son más lentos de lo que son en geometry. Si utiliza la geography, no "
+"necesita aprender mucho sobre sistemas de coordenadas planas. Geography es "
+"generalmente mejor si lo único que le importa es medir distancias y "
+"longitudes y tiene datos de todo el mundo. El tipo de datos geometry es un "
+"tipo de datos antiguo que tiene muchas más funciones que lo soportan, "
+"disfruta de un mayor soporte de herramientas de terceros, y las operaciones "
+"en él son generalmente más rápidas --a veces hasta 10 veces más rápidas para "
+"geometrías más grandes. Geometry es mejor si se siente cómodo con los "
+"sistemas de referencia espacial o si se trata de datos localizados en los "
+"que todos sus datos encajan en un solo <link linkend=\"spatial_ref_sys\"> "
+"sistema de referencia espacial (SRID)</link>, o si usted necesita hacer un "
+"montón de procesamiento espacial. Es bastante fácil de hacer one-off entre "
+"los dos tipos de conversiones para obtener los beneficios de cada uno. "
+"Consulte <xref linkend=\"PostGIS_TypeFunctionMatrix\"/> para ver lo que "
+"actualmente se soporta y lo que no."
 
 #. Tag: para
 #: faq.xml:125
@@ -431,6 +495,8 @@ msgid ""
 "CREATE TABLE gtest ( gid serial primary key, name varchar(20)\n"
 "        , geom geometry(LINESTRING) );"
 msgstr ""
+"CREATE TABLE gtest ( gid serial primary key, name varchar(20)\n"
+"        , geom geometry(LINESTRING) );"
 
 #. Tag: para
 #: faq.xml:158
@@ -440,6 +506,10 @@ msgid ""
 "PostGIS functions and objects into this database or are using a pre-2.0 "
 "version of PostGIS. See the <xref linkend=\"PGInstall\"/>."
 msgstr ""
+"Si falla la definición de la columna de geometría, es probable que no haya "
+"cargado las funciones y los objetos de PostGIS en esta base de datos o que "
+"esté utilizando una versión de PostGIS anterior a la 2.0. Vea el <xref "
+"linkend=\"PGInstall\"/>."
 
 #. Tag: para
 #: faq.xml:162
@@ -457,13 +527,19 @@ msgstr ""
 #: faq.xml:166
 #, no-c-format
 msgid ""
-"INSERT INTO gtest (ID, NAME, GEOM) \n"
+"INSERT INTO gtest (ID, NAME, GEOM)\n"
 "VALUES (\n"
-"  1, \n"
-"  'First Geometry', \n"
+"  1,\n"
+"  'First Geometry',\n"
 "  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
 ");"
 msgstr ""
+"INSERT INTO gtest (ID, NAME, GEOM)\n"
+"VALUES (\n"
+"  1,\n"
+"  'First Geometry',\n"
+"  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
+");"
 
 #. Tag: para
 #: faq.xml:168
@@ -499,12 +575,12 @@ msgstr "El resultado devuelto debería parecerse a algo así:"
 msgid ""
 "id | name           | geom\n"
 "----+----------------+-----------------------------\n"
-"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8) \n"
+"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
 "(1 row)"
 msgstr ""
 "id | name           | geom\n"
 "----+----------------+-----------------------------\n"
-"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8) \n"
+"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
 "(1 row)"
 
 #. Tag: para
@@ -576,14 +652,14 @@ msgstr ""
 #: faq.xml:210
 #, no-c-format
 msgid ""
-"SELECT id, the_geom \n"
-"FROM thetable \n"
-"WHERE \n"
+"SELECT id, the_geom\n"
+"FROM thetable\n"
+"WHERE\n"
 "  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 msgstr ""
-"SELECT id, the_geom \n"
-"FROM thetable \n"
-"WHERE \n"
+"SELECT id, the_geom\n"
+"FROM thetable\n"
+"WHERE\n"
 "  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 
 #. Tag: para
@@ -831,10 +907,10 @@ msgstr ""
 #: faq.xml:330
 #, no-c-format
 msgid ""
-"SELECT * FROM geotable \n"
+"SELECT * FROM geotable\n"
 "WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
 msgstr ""
-"SELECT * FROM geotable \n"
+"SELECT * FROM geotable\n"
 "WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
 
 #. Tag: para
@@ -941,12 +1017,12 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:383
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Almost certainly not. As an example, consider Oracle database running on "
-"Linux. Linux is GPL, Oracle is not, does Oracle running on Linux have to be "
-"distributed using the GPL? No. So your software can use a PostgreSQL/PostGIS "
-"database as much as it wants and be under any license you like."
+"Linux. Linux is GPL, Oracle is not: does Oracle running on Linux have to be "
+"distributed using the GPL? No. Similarly your software can use a PostgreSQL/"
+"PostGIS database as much as it wants and be under any license you like."
 msgstr ""
 "Seguramente no. Como ejemplo, piensa en una base de datos Oracle "
 "ejecutandose en Linux. Linus tiene licencia GPL, Oracle no, ¿Oracle "
@@ -956,15 +1032,16 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:384
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The only exception would be if you made changes to the PostGIS source code, "
-"and distributed your changed version of PostGIS. In that case you would have "
-"to share the code of your changed PostGIS (but not the code of applications "
-"running on top of it). Even in this limited case, you would still only have "
-"to distribute source code to people you distributed binaries to. The GPL "
-"does not require that you <emphasis>publish</emphasis> your source code, "
-"only that you share it with people you give binaries to."
+"and <emphasis>distributed your changed version</emphasis> of PostGIS. In "
+"that case you would have to share the code of your changed PostGIS (but not "
+"the code of applications running on top of it). Even in this limited case, "
+"you would still only have to distribute source code to people you "
+"distributed binaries to. The GPL does not require that you "
+"<emphasis>publish</emphasis> your source code, only that you share it with "
+"people you give binaries to."
 msgstr ""
 "La unica excepción puede ser si realizas cambios en el código fuente de "
 "PostGIS, y distribuyes una version modificada de PostGIS. En este caso "
@@ -974,3 +1051,13 @@ msgstr ""
 "distribuyes los binarios. La licencia GPL no requiere que "
 "<emphasis>publiques</emphasis> tu código fuente, solo que lo compartas con "
 "la gente a la que entregas los binarios."
+
+#. Tag: para
+#: faq.xml:385
+#, no-c-format
+msgid ""
+"The above remains true even if you use PostGIS in conjunction with the "
+"optional CGAL-enabled functions. Portions of CGAL are GPL, but so is all of "
+"PostGIS already: using CGAL does not make PostGIS any more GPL than it was "
+"to start with."
+msgstr ""

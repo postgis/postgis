@@ -80,6 +80,8 @@ static void test_lwprint_default_format(void)
 	test_lwprint_assert_format("POINT(-181 -91)",           ""  , "89\xC2\xB0""0'0.000\"S 1\xC2\xB0""0'0.000\"W");
 	test_lwprint_assert_format("POINT(-180.0001 -90.0001)", NULL, "89\xC2\xB0""59'59.640\"S 0\xC2\xB0""0'0.360\"W");
 	test_lwprint_assert_format("POINT(-2348982391.123456 -238749827.34879)", ""  , "12\xC2\xB0""39'4.356\"N 31\xC2\xB0""7'24.442\"W");
+	/* See https://trac.osgeo.org/postgis/ticket/3688 */
+	test_lwprint_assert_format("POINT (76.6 -76.6)",        NULL, "76\xC2\xB0""36'0.000\"S 76\xC2\xB0""36'0.000\"E");
 }
 
 /*

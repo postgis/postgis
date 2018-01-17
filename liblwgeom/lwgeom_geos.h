@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2011 Sandro Santilli <strk@keybit.net>
+ * Copyright 2011 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -31,7 +31,7 @@
 #endif
 
 #include "liblwgeom.h"
-
+#include "lwunionfind.h"
 
 /*
 ** Public prototypes for GEOS utility functions.
@@ -41,8 +41,12 @@ GEOSGeometry * LWGEOM2GEOS(const LWGEOM *g, int autofix);
 GEOSGeometry * GBOX2GEOS(const GBOX *g);
 GEOSGeometry * LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
 
+GEOSGeometry * make_geos_point(double x, double y);
+GEOSGeometry * make_geos_segment(double x1, double y1, double x2, double y2);
+
 int cluster_intersecting(GEOSGeometry** geoms, uint32_t num_geoms, GEOSGeometry*** clusterGeoms, uint32_t* num_clusters);
 int cluster_within_distance(LWGEOM** geoms, uint32_t num_geoms, double tolerance, LWGEOM*** clusterGeoms, uint32_t* num_clusters);
+int union_dbscan(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint32_t min_points, char** is_in_cluster_ret);
 
 POINTARRAY *ptarray_from_GEOSCoordSeq(const GEOSCoordSequence *cs, char want3d);
 

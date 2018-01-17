@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,9 +37,9 @@
 
 #include "../../postgis_config.h"
 
-#if POSTGIS_PGSQL_VERSION > 92
+
 #include "access/htup_details.h" /* for heap_form_tuple() */
-#endif
+
 
 #include "rtpostgis.h"
 
@@ -330,7 +330,7 @@ Datum RASTER_getBandPath(PG_FUNCTION_ARGS)
 	}
 
 	result = (text *) palloc(VARHDRSZ + strlen(bandpath) + 1);
-	SET_VARSIZE(result, VARHDRSZ + strlen(bandpath) + 1); 
+	SET_VARSIZE(result, VARHDRSZ + strlen(bandpath) + 1);
 	strcpy((char *) VARDATA(result), bandpath);
 
 	rt_band_destroy(band);

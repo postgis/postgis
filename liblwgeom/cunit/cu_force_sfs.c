@@ -41,7 +41,7 @@ static void do_type_test(char * in, int type)
 	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
 	h = lwgeom_force_sfs(g, 110);
 	if(h->type != type)
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nExp:  %s\n", 
+		fprintf(stderr, "\nIn:   %s\nOut:  %s\nExp:  %s\n",
 			in, lwtype_name(h->type), lwtype_name(type));
 	CU_ASSERT_EQUAL(h->type, type);
 	lwgeom_free(h);
@@ -67,7 +67,7 @@ static void test_sqlmm(void)
 		     POLYGONTYPE);
 
 	do_type_test("CURVEPOLYGON (COMPOUNDCURVE (CIRCULARSTRING (0 0 2 5,1 1 2 6,1 0 2 5), (1 0 2 3,0 1 2 2), (0 1 2 2,30 1 2 2), CIRCULARSTRING (30 1 2 2,12 1 2 6,1 10 2 5, 1 10 3 5, 0 0 2 5)))",
-		     POLYGONTYPE);	
+		     POLYGONTYPE);
 
 	do_type_test("MULTISURFACE (CURVEPOLYGON (CIRCULARSTRING (-2 0, -1 -1, 0 0, 1 -1, 2 0, 0 2, -2 0), (-1 0, 0 0.5, 1 0, 0 1, -1 0)), ((7 8, 10 10, 6 14, 4 11, 7 8)))",
 		     MULTIPOLYGONTYPE);

@@ -32,7 +32,6 @@
 #include "lwgeom_log.h"
 
 void printLWCIRCSTRING(LWCIRCSTRING *curve);
-void lwcircstring_reverse(LWCIRCSTRING *curve);
 void lwcircstring_release(LWCIRCSTRING *lwcirc);
 char lwcircstring_same(const LWCIRCSTRING *me, const LWCIRCSTRING *you);
 LWCIRCSTRING *lwcircstring_from_lwpointarray(int srid, uint32_t npoints, LWPOINT **points);
@@ -65,7 +64,7 @@ lwcircstring_construct(int srid, GBOX *bbox, POINTARRAY *points)
 	result = (LWCIRCSTRING*) lwalloc(sizeof(LWCIRCSTRING));
 
 	result->type = CIRCSTRINGTYPE;
-	
+
 	result->flags = points->flags;
 	FLAGS_SET_BBOX(result->flags, bbox?1:0);
 
@@ -98,7 +97,7 @@ lwcircstring_release(LWCIRCSTRING *lwcirc)
 void lwcircstring_free(LWCIRCSTRING *curve)
 {
 	if ( ! curve ) return;
-	
+
 	if ( curve->bbox )
 		lwfree(curve->bbox);
 	if ( curve->points )
@@ -119,18 +118,12 @@ void printLWCIRCSTRING(LWCIRCSTRING *curve)
 
 /* @brief Clone LWCIRCSTRING object. Serialized point lists are not copied.
  *
- * @see ptarray_clone 
+ * @see ptarray_clone
  */
 LWCIRCSTRING *
 lwcircstring_clone(const LWCIRCSTRING *g)
 {
 	return (LWCIRCSTRING *)lwline_clone((LWLINE *)g);
-}
-
-
-void lwcircstring_reverse(LWCIRCSTRING *curve)
-{
-	ptarray_reverse(curve->points);
 }
 
 /* check coordinate equality */
@@ -188,7 +181,7 @@ lwcircstring_from_lwpointarray(int srid, uint32_t npoints, LWPOINT **points)
 		ptr += ptsize;
 	}
 	pa = ptarray_construct_reference_data(zmflag&2, zmflag&1, npoints, newpoints);
-	
+
 	return lwcircstring_construct(srid, NULL, pa);
 }
 
@@ -223,7 +216,7 @@ lwcircstring_from_lwmpoint(int srid, LWMPOINT *mpoint)
 	}
 
 	pa = ptarray_construct_reference_data(zmflag&2, zmflag&1, mpoint->ngeoms, newpoints);
-	
+
 	LWDEBUGF(3, "lwcurve_from_lwmpoint: constructed pointarray for %d points, %d zmflag", mpoint->ngeoms, zmflag);
 
 	return lwcircstring_construct(srid, NULL, pa);
@@ -289,7 +282,7 @@ double lwcircstring_length_2d(const LWCIRCSTRING *circ)
 {
 	if ( lwcircstring_is_empty(circ) )
 		return 0.0;
-	
+
 	return ptarray_arc_length_2d(circ->points);
 }
 
@@ -297,12 +290,12 @@ double lwcircstring_length_2d(const LWCIRCSTRING *circ)
  * Returns freshly allocated #LWPOINT that corresponds to the index where.
  * Returns NULL if the geometry is empty or the index invalid.
  */
-LWPOINT* lwcircstring_get_lwpoint(const LWCIRCSTRING *circ, int where) {
+LWPOINT* lwcircstring_get_lwpoint(const LWCIRCSTRING *circ, uint32_t where) {
 	POINT4D pt;
 	LWPOINT *lwpoint;
 	POINTARRAY *pa;
 
-	if ( lwcircstring_is_empty(circ) || where < 0 || where >= circ->points->npoints )
+	if ( lwcircstring_is_empty(circ) || where >= circ->points->npoints )
 		return NULL;
 
 	pa = ptarray_construct_empty(FLAGS_GET_Z(circ->flags), FLAGS_GET_M(circ->flags), 1);
@@ -312,22 +305,4 @@ LWPOINT* lwcircstring_get_lwpoint(const LWCIRCSTRING *circ, int where) {
 	return lwpoint;
 }
 
-/*
-* Snap to grid 
-*/
-LWCIRCSTRING* lwcircstring_grid(const LWCIRCSTRING *line, const gridspec *grid)
-{
-	LWCIRCSTRING *oline;
-	POINTARRAY *opa;
-
-	opa = ptarray_grid(line->points, grid);
-
-	/* Skip line3d with less then 2 points */
-	if ( opa->npoints < 2 ) return NULL;
-
-	/* TODO: grid bounding box... */
-	oline = lwcircstring_construct(line->srid, NULL, opa);
-
-	return oline;
-}
 

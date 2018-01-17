@@ -1,5 +1,3 @@
-*.vcproj	eol=crlf
-*.bat	    eol=crlf
 *.sh		eol=lf
 *.ac        eol=lf
 *.h.in      eol=lf

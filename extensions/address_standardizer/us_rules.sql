@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS us_rules (
-    id serial, rule text, is_custom boolean NOT NULL DEFAULT true, CONSTRAINT pk_us_rules PRIMARY KEY(id) 
+    id serial, rule text, is_custom boolean NOT NULL DEFAULT true, CONSTRAINT pk_us_rules PRIMARY KEY(id)
 );
 
 -- this will be needed for upgrading to prevent purging of custom entries

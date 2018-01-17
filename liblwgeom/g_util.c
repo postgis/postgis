@@ -137,7 +137,7 @@ const char dumb_upper_map[128] = "..............................................
 
 static char dump_toupper(int in)
 {
-	if ( in < 0 || in > 127 ) 
+	if ( in < 0 || in > 127 )
 		return '.';
 	return dumb_upper_map[in];
 }
@@ -163,8 +163,8 @@ uint8_t gflags(int hasz, int hasm, int geodetic)
 int geometry_type_from_string(const char *str, uint8_t *type, int *z, int *m)
 {
 	char *tmpstr;
-	int tmpstartpos, tmpendpos;
-	int i;
+	size_t tmpstartpos, tmpendpos;
+	size_t i;
 
 	assert(str);
 	assert(type);
@@ -188,7 +188,7 @@ int geometry_type_from_string(const char *str, uint8_t *type, int *z, int *m)
 	}
 
 	tmpendpos = strlen(str) - 1;
-	for (i = strlen(str) - 1; i >= 0; i--)
+	for (i = strlen(str) - 1; i != 0; i--)
 	{
 		if (str[i] != ' ')
 		{

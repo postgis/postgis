@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --
--- Copyright (c) 2009 Sandro Santilli <strk@keybit.net>
+-- Copyright (c) 2009 Sandro Santilli <strk@kbt.io>
 --
 -- This program is free software; you can redistribute it and/or
 -- modify it under the terms of the GNU General Public License
@@ -57,7 +57,7 @@ END;
 '
 LANGUAGE 'plpgsql';
 
-CREATE TABLE rt_gist_grid_test AS 
+CREATE TABLE rt_gist_grid_test AS
     SELECT * FROM makegrid(10, 10, 'BOX(-100 -100, 100 100)', 1, 1);
 
 CREATE TABLE rt_gist_query_test AS

@@ -5,9 +5,6 @@ CREATE TABLE test_data (
     wkb_ndr text
 );
 
-
-
-
 INSERT INTO test_data VALUES
 (1, 'MULTIPOINT(1 2)', '00000000040000000100000000013FF00000000000004000000000000000', '0104000000010000000101000000000000000000F03F0000000000000040'),
 (-5, 'LINESTRING(1 2,3 4)', '0000000002000000023FF0000000000000400000000000000040080000000000004010000000000000', '010200000002000000000000000000F03F000000000000004000000000000008400000000000001040'),
@@ -86,7 +83,7 @@ INSERT INTO test_data VALUES
 --
 SELECT id,wkt FROM test_data WHERE
        ST_asEWKT(geometry(wkt)) != wkt  OR
-       ST_asEWKT(geometry(wkb_xdr)) != wkt OR 
+       ST_asEWKT(geometry(wkb_xdr)) != wkt OR
        ST_asEWKT(geometry(wkb_ndr)) != wkt OR
        ST_asBinary(geometry(wkb_ndr)) != ST_asBinary(geometry(wkb_xdr)) OR
        ST_asBinary(geometry(wkt)) != ST_asBinary(geometry(wkb_xdr));
@@ -135,3 +132,84 @@ SELECT 'BoundingDiagonal5', ST_AsEwkt(ST_BoundingDiagonal(
 SELECT 'BoundingDiagonal6', ST_AsEwkt(ST_BoundingDiagonal(
     'SRID=3857;POLYGON M EMPTY'::geometry
 ));
+
+
+--- ST_Azimuth
+SELECT 'ST_Azimuth_regular' , round(ST_Azimuth(geom1,geom2)::numeric,4)
+FROM CAST('POINT(0 1)' AS geometry) AS geom1, CAST('POINT(1 0)' AS geometry) AS geom2 ;
+SELECT 'ST_Azimuth_same_point' , ST_Azimuth(geom1,geom1)
+FROM CAST('POINT(0 1)' AS geometry) AS geom1 ;
+SELECT 'ST_Azimuth_mixed_srid' , ST_Azimuth(geom1,geom2)
+FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('POINT(1 0)',4326) AS geom2;
+SELECT 'ST_Azimuth_not_point' , ST_Azimuth(geom1,geom2)
+FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('LINESTRING(1 0 ,2 0)',4326) AS geom2;
+SELECT 'ST_Azimuth_null_geom' , ST_Azimuth(geom1,geom2)
+FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('EMPTY') AS geom2;
+
+--- ST_Angle(points)
+SELECT 'ST_Angle_4_pts', St_Angle(p1,p2,p3,p4)
+	FROM ST_GeomFromtext('POINT(0 1)') AS p1, ST_GeomFromtext('POINT(0 0)') AS p2
+	, ST_GeomFromtext('POINT(1 0)') AS p3, ST_GeomFromtext('POINT(2 0)') AS p4;
+SELECT 'ST_Angle_4_pts', St_Angle(p1,p2,p3,p4)
+	FROM ST_GeomFromtext('POINT(2 0)') AS p1, ST_GeomFromtext('POINT(1 0)') AS p2
+	, ST_GeomFromtext('POINT(1 -1)') AS p3, ST_GeomFromtext('POINT(0 0)') AS p4;
+SELECT 'ST_Angle_3_pts', St_Angle(p1,p2,p3)
+	FROM ST_GeomFromtext('POINT(0 1)') AS p1, ST_GeomFromtext('POINT(0 0)') AS p2
+	, ST_GeomFromtext('POINT(1 0)') AS p3, ST_GeomFromtext('POINT(2 0)') AS p4;
+SELECT 'ST_Angle_mixed_srid', St_Angle(p1,p2,p3,p4)
+	FROM ST_GeomFromtext('POINT(0 1)') AS p1, ST_GeomFromtext('POINT(0 0)') AS p2
+	, ST_GeomFromtext('POINT(1 0)',4326) AS p3, ST_GeomFromtext('POINT(2 0)') AS p4;
+SELECT 'ST_Angle_empty' , St_Angle(p1,p2,p3,p4)
+	FROM ST_GeomFromtext('POINT EMPTY') AS p1, ST_GeomFromtext('POINT(0 0)') AS p2
+	, ST_GeomFromtext('POINT(1 0)',4326) AS p3, ST_GeomFromtext('POINT(2 0)') AS p4;
+--- ST_Angle(lines)
+SELECT 'ST_Angle_2_lines', St_Angle(l1,l2)
+	FROM ST_GeomFromtext('LINESTRING(0 1,0 0)') AS l1
+	, ST_GeomFromtext('LINESTRING(1 0, 2 0)') AS l2;
+
+--- ST_ClusterKMeans
+
+-- check we have not less than k clusters
+select
+    '#3965',
+    count(distinct cid),
+    count(*)
+from (
+         with points as (
+             select ST_MakePoint(x, y) geom
+             from generate_series(1, 5) x,
+                  generate_series(1, 5) y
+         )
+         select
+             ST_ClusterKMeans(geom, 25)
+             over () as cid,
+             geom
+         from points) z;
+
+-- check that grid gets clustered to clusters of similar size
+select '#3971', count(*) between 16 and 25 -- in perfect match it's 25, better kmeans init can improve
+from (
+         with
+                 points as (
+                 select ST_MakePoint(x, y) geom
+                 from generate_series(1, 45) x, generate_series(1, 45) y
+             )
+         select
+             ST_ClusterKMeans(geom, 81)
+             over () as cid,
+             geom
+         from points
+     ) z
+group by cid
+order by count(*)
+limit 1;
+
+
+-- typmod checks
+select 'typmod_point_4326', geometry_typmod_out(geometry_typmod_in('{Point,4326}'));
+select 'typmod_point_0', geometry_typmod_out(geometry_typmod_in('{Point,0}'));
+select 'typmod_point_-1', geometry_typmod_out(geometry_typmod_in('{Point,-1}'));
+select 'typmod_pointzm_0', geometry_typmod_out(geometry_typmod_in('{PointZM,0}'));
+select 'typmod_geometry_0', geometry_typmod_out(geometry_typmod_in('{Geometry,0}'));
+select 'typmod_geometry_4326', geometry_typmod_out(geometry_typmod_in('{Geometry,4326}'));
+select 'typmod_geography_0', geometry_typmod_out(geometry_typmod_in('{Geogrpahy,0}'));

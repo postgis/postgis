@@ -29,7 +29,7 @@ static void test_gdal_configured() {
 }
 
 static void test_gdal_drivers() {
-	int i;
+	uint32_t i;
 	uint32_t size;
 	rt_gdaldriver drv = NULL;
 
@@ -125,7 +125,7 @@ static rt_raster fillRasterToPolygonize(int hasnodata, double nodataval) {
 		for (x = 0; x < rt_band_get_width(band); ++x)
 			for (y = 0; y < rt_band_get_height(band); ++y)
 				rt_band_set_pixel(band, x, y, 0.0, NULL);
-	} 
+	}
 
 	rt_band_set_pixel(band, 3, 1, 1.8, NULL);
 	rt_band_set_pixel(band, 4, 1, 1.8, NULL);
@@ -266,7 +266,7 @@ static void test_gdal_polygonize() {
 	/* Third test: NODATA value = 2.8 */
 #ifdef GDALFPOLYGONIZE
 	rt = fillRasterToPolygonize(1, 2.8);
-#else	
+#else
 	rt = fillRasterToPolygonize(1, 3.0);
 #endif
 
@@ -320,7 +320,7 @@ static void test_gdal_polygonize() {
 
 	nPols = 0;
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
-	
+
 	/*
 	for (i = 0; i < nPols; i++) {
 		wkt = lwgeom_to_text((const LWGEOM *) gv[i].geom);
@@ -470,6 +470,9 @@ static void test_raster_to_gdal() {
 	CU_ASSERT(gdalSize);
 
 	if (gdal) CPLFree(gdal);
+
+	gdal = rt_raster_to_gdal(raster, srs, "PCIDSK", NULL, &gdalSize);
+	CU_ASSERT(gdal == NULL);
 
 	cu_free_raster(raster);
 }

@@ -15,6 +15,8 @@ LINEZM_3|MULTILINESTRING ZM ((0 8 80 2,0 0 0 10,8 0 0 2))
 LINEZM_4|MULTILINESTRING ZM ((0 9 90 2,0 1 10 18),(1 0 0 18,9 0 0 2))
 LINEZM_5|MULTILINESTRING ZM ((0 9 90 2,0 1 10 18),(5.5 4.5 4.5 18,9.5 0.5 0.5 2))
 LINEZM_6|MULTIPOINT ZM (9.5 0.5 0.5 2)
+#3119a|MULTILINESTRING Z EMPTY
+#3119b|MULTILINESTRING Z EMPTY
 line_locate_point_1|0.528602749909894
 line_locate_point_2|1
 line_locate_point_3|0
@@ -34,6 +36,8 @@ line_substring_11|POINT(0 0)
 line_substring_12|POINT Z (0.5 0.5 7.5)
 line_interpolate_point|POINT(0 0)
 line_interpolate_point|POINT Z (0.5 0.5 7.5)
+line_interpolate_points|POINT(0.7 0.7)
+line_interpolate_points|MULTIPOINT(0.3 0.3,0.6 0.6,0.9 0.9)
 addMeasure1|LINESTRING M (0 0 10,2 0 15,4 0 20)
 addMeasure2|LINESTRING M (0 0 10,9 0 19,10 0 20)
 interpolatePoint1|2

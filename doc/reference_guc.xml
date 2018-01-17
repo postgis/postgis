@@ -18,21 +18,21 @@
         <para>This GUC is only relevant if you compiled PostGIS with sfcgal support.  By default <varname>geos</varname> backend is used for functions where both GEOS and SFCGAL have the same named function.  This variable allows you to override and make sfcgal the backend to service the request.</para>
         <para>Availability: 2.1.0</para>
       </refsection>
-      
+
       <refsection>
-      	<title>Examples</title>
-      	<para>Sets backend just for life of connection</para>
-      	<programlisting>set postgis.backend = sfcgal;</programlisting>
-      	
-      	<para>Sets backend for new connections to database</para>
-      	<programlisting>ALTER DATABASE mygisdb SET postgis.backend = sfcgal;</programlisting>
+	<title>Examples</title>
+	<para>Sets backend just for life of connection</para>
+	<programlisting>set postgis.backend = sfcgal;</programlisting>
+
+	<para>Sets backend for new connections to database</para>
+	<programlisting>ALTER DATABASE mygisdb SET postgis.backend = sfcgal;</programlisting>
       </refsection>
       <refsection>
 			  <title>See Also</title>
 			  <para><xref linkend="reference_sfcgal" /></para>
 			</refsection>
   </refentry>
-  
+
   <refentry id="postgis_gdal_datapath">
 			<refnamediv>
 				<refname>postgis.gdal_datapath</refname>
@@ -73,7 +73,7 @@
 SET postgis.gdal_datapath TO '/usr/local/share/gdal.hidden';
 SET postgis.gdal_datapath TO default;
 				</programlisting>
-				
+
 				<para>Setting on windows for a particular database</para>
 				<programlisting>ALTER DATABASE gisdb
 SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</programlisting>
@@ -152,18 +152,18 @@ SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</progra
 
 				<para>Sets backend for all new connections to database</para>
 				<programlisting>ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';</programlisting>
-				
-				<para>Sets default enabled drivers for all new connections to server. Requires super user access and PostgreSQL 9.4+.  
+
+				<para>Sets default enabled drivers for all new connections to server. Requires super user access and PostgreSQL 9.4+.
 				    Also not that database, session, and user settings override this.</para>
 				<programlisting>ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';
 SELECT pg_reload_conf();
 				</programlisting>
-			
+
 				<programlisting>
 SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';
 SET postgis.gdal_enabled_drivers = default;
 				</programlisting>
-				
+
 				<para>Enable all GDAL Drivers</para>
 				<programlisting>
 SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
@@ -178,11 +178,11 @@ SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';
 			<refsection>
 				<title>See Also</title>
 				<para>
-					<xref linkend="RT_ST_FromGDALRaster" />, 
-					<xref linkend="RT_ST_AsGDALRaster" />, 
-					<xref linkend="RT_ST_AsTIFF" />, 
-					<xref linkend="RT_ST_AsPNG" />, 
-					<xref linkend="RT_ST_AsJPEG" />, 
+					<xref linkend="RT_ST_FromGDALRaster" />,
+					<xref linkend="RT_ST_AsGDALRaster" />,
+					<xref linkend="RT_ST_AsTIFF" />,
+					<xref linkend="RT_ST_AsPNG" />,
+					<xref linkend="RT_ST_AsJPEG" />,
 					<xref linkend="postgis_enable_outdb_rasters" />
 				</para>
 			</refsection>

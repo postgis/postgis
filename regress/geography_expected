@@ -27,3 +27,25 @@ geog_precision_pazafir|0|0
 #2422|1|1609|t|t|1400.230|1396.816|1400.230|1400.230
 #2422|1|1600|t|t|1400.230|1396.816|1400.230|1400.230
 #2422|1|1068|f|f|1400.230|1396.816|1400.230|1400.230
+segmentize_geography|39092
+segmentize_geography2|t
+segmentize_geography_3667|t
+typmod_point_4326|(Point,4326)
+typmod_point_0|(Point,4326)
+NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
+typmod_point_-1|(Point,4326)
+typmod_pointzm_0|(PointZM,4326)
+typmod_geometry_0|(Geometry,4326)
+typmod_geometry_4326|(Geometry,4326)
+ERROR:  Invalid geometry type modifier: Geogrpahy
+dwithin_pt_pt_1|t
+dwithin_pt_pt_2|f
+dwithin_pt_line_1|t
+dwithin_line_pt_1|t
+dwithin_pt_poly_1|t
+dwithin_poly_pt_1|t
+dwithin_line_poly_1|t
+dwithin_poly_line_1|t
+dwithin_poly_poly_1|f
+dwithin_poly_poly_2|t
+dwithin_poly_poly_3|t

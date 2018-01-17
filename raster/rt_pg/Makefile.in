@@ -1,6 +1,6 @@
 ############################################################################
 #
-# Copyright (c) 2009-2011 Sandro Santilli <strk@keybit.net>
+# Copyright (c) 2009-2011 Sandro Santilli <strk@kbt.io>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@ MODULE_big=rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 
 # Files to be copied to the contrib/ directory
-DATA_built=rtpostgis.sql rtpostgis_upgrade.sql uninstall_rtpostgis.sql rtpostgis_legacy.sql
+DATA_built=rtpostgis.sql rtpostgis_for_extension.sql rtpostgis_upgrade_for_extension.sql rtpostgis_upgrade.sql rtpostgis_proc_set_search_path.sql uninstall_rtpostgis.sql rtpostgis_legacy.sql
 DATA=
 
 # SQL preprocessor
@@ -54,7 +54,7 @@ OBJS = \
 # Note: we specify liblwgeom.a directly in SHLIB_LINK rather than using
 # -L... -l options to prevent issues with some platforms trying to link
 # to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
-# older version of PostGIS, rather than with the static liblwgeom.a 
+# older version of PostGIS, rather than with the static liblwgeom.a
 # supplied with newer versions of PostGIS
 #
 LIBLWGEOM_LDFLAGS=../../liblwgeom/.libs/liblwgeom.a
@@ -65,14 +65,15 @@ LIBGDAL_CFLAGS=@LIBGDAL_CFLAGS@
 LIBGDAL_LDFLAGS=@LIBGDAL_LDFLAGS@
 LIBPROJ_CFLAGS=@PROJ_CPPFLAGS@
 
-PG_CPPFLAGS+=@CPPFLAGS@ $(LIBLWGEOM_CFLAGS) $(LIBGDAL_CFLAGS) $(LIBPGCOMMON_CFLAGS) $(LIBPROJ_CFLAGS) -I../rt_core
-SHLIB_LINK_F = ../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBPGCOMMON_LDFLAGS) $(LIBGDAL_LDFLAGS) @SHLIB_LINK@ 
+override CFLAGS := $(LIBLWGEOM_CFLAGS) @CFLAGS@
+PG_CPPFLAGS+= @CPPFLAGS@ $(LIBGDAL_CFLAGS) $(LIBPGCOMMON_CFLAGS) $(LIBPROJ_CFLAGS) -I../rt_core
+SHLIB_LINK_F = ../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBPGCOMMON_LDFLAGS) $(LIBGDAL_LDFLAGS) @SHLIB_LINK@
 
 # Extra files to remove during 'make clean'
-EXTRA_CLEAN=$(SQL_OBJS) $(DATA_built) rtpostgis_upgrade.sql.in
+EXTRA_CLEAN=$(SQL_OBJS) $(DATA_built) rtpostgis_upgrade.sql.in rtpostgis_upgrade_for_extension.sql.in
 
 # PGXS information
-PG_CONFIG = @PG_CONFIG@ 
+PG_CONFIG = @PG_CONFIG@
 PGXS := @PGXS@
 # NO_TEMP_INSTALL is a workaround for a 9.5dev bug. See:
 # http://www.postgresql.org/message-id/CAB7nPqTsR5o3g-fBi6jbsVdhfPiLFWQ_0cGU5=94Rv_8W3qvFA@mail.gmail.com
@@ -98,10 +99,14 @@ endif
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number
+# replace @extschema@. with nothing, this is only used as placeholder for extension install
 %.sql: %.sql.in
 	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g;s'@extschema@\.''g" > $@
 
+rtpostgis_for_extension.sql: rtpostgis.sql.in
+	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
 
 ../../liblwgeom/.libs/liblwgeom.a:
 	$(MAKE) -C ../../liblwgeom
@@ -120,15 +125,28 @@ $(OBJS): ../../liblwgeom/.libs/liblwgeom.a ../rt_core/librtcore.a ../../libpgcom
 # SQL objects deps here
 $(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_svn_revision.h
 
+#this is redundant but trying to fold in with the  other just hangs
 rtpostgis_upgrade.sql.in: rtpostgis.sql ../../utils/postgis_proc_upgrade.pl
 	$(PERL) ../../utils/postgis_proc_upgrade.pl $< UNUSED > $@
+
+rtpostgis_upgrade_for_extension.sql.in: rtpostgis_for_extension.sql ../../utils/postgis_proc_upgrade.pl
+	$(PERL) ../../utils/postgis_proc_upgrade.pl $< UNUSED > $@
+
+rtpostgis_proc_set_search_path.sql: rtpostgis.sql ../../utils/postgis_proc_set_search_path.pl
+	$(PERL) ../../utils/postgis_proc_set_search_path.pl $< UNUSED > $@
 
 rtpostgis_upgrade.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql.in rtpostgis_drop.sql
 	echo 'BEGIN;' > $@
 	cat $^ | sed -e 's/^BEGIN;$$//' -e 's/^COMMIT;$$//' >> $@
 	echo 'COMMIT;' >> $@
 
-uninstall_rtpostgis.sql: rtpostgis.sql ../../utils/create_undef.pl 
+#this keeps the @extschema@. in place since extension machinery will replace during install
+rtpostgis_upgrade_for_extension.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade_for_extension.sql.in rtpostgis_drop.sql
+	echo 'BEGIN;' > $@
+	cat $^ | sed -e 's/^BEGIN;$$//' -e 's/^COMMIT;$$//' >> $@
+	echo 'COMMIT;' >> $@
+
+uninstall_rtpostgis.sql: rtpostgis.sql ../../utils/create_undef.pl
 	$(PERL) ../../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 distclean: clean

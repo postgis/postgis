@@ -1,13 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
+# nramire1 nramire1 <nramire1@yahoo.com.ar>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
-"PO-Revision-Date: 2015-09-29 12:23+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2017-05-31 16:20+0000\n"
+"Last-Translator: nramire1 nramire1 <nramire1@yahoo.com.ar>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
 "es/)\n"
 "Language: es\n"
@@ -26,7 +27,7 @@ msgstr ""
 #: reference_lrs.xml:7
 #, no-c-format
 msgid "ST_LineInterpolatePoint"
-msgstr ""
+msgstr "ST_LineInterpolatePoint"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:9
@@ -46,6 +47,10 @@ msgid ""
 "paramdef> <paramdef><type>float8 </type> <parameter>a_fraction</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>a_fraction</parameter></"
+"paramdef>"
 
 #. Tag: title
 #: reference_lrs.xml:24 reference_lrs.xml:86 reference_lrs.xml:138
@@ -53,7 +58,7 @@ msgstr ""
 #: reference_lrs.xml:359 reference_lrs.xml:403
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 #. Tag: para
 #: reference_lrs.xml:26
@@ -105,7 +110,7 @@ msgstr ""
 #: reference_lrs.xml:369 reference_lrs.xml:413
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Ejemplos"
 
 #. Tag: para
 #: reference_lrs.xml:51
@@ -165,12 +170,14 @@ msgid ""
 ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Length\"/>, <xref "
 "linkend=\"ST_LineLocatePoint\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Length\"/>, <xref "
+"linkend=\"ST_LineLocatePoint\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:68
 #, no-c-format
 msgid "ST_LineLocatePoint"
-msgstr ""
+msgstr "ST_LineLocatePoint"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:70
@@ -190,6 +197,10 @@ msgid ""
 "paramdef> <paramdef><type>geometry </type> <parameter>a_point</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>float8 <function>ST_LineLocatePoint</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
+"paramdef> <paramdef><type>geometry </type> <parameter>a_point</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:88
@@ -219,7 +230,7 @@ msgstr ""
 #: reference_lrs.xml:97
 #, no-c-format
 msgid "Availability: 1.1.0"
-msgstr ""
+msgstr "Disponibilidad: 1.1.0"
 
 #. Tag: para
 #: reference_lrs.xml:98
@@ -273,12 +284,14 @@ msgid ""
 ", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
 ">, <xref linkend=\"ST_LineSubstring\"/>"
 msgstr ""
+", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
+">, <xref linkend=\"ST_LineSubstring\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:118
 #, no-c-format
 msgid "ST_LineSubstring"
-msgstr ""
+msgstr "ST_LineSubstring"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:120
@@ -299,6 +312,11 @@ msgid ""
 "parameter></paramdef> <paramdef><type>float8 </type> <parameter>endfraction</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_LineSubstring</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>startfraction</"
+"parameter></paramdef> <paramdef><type>float8 </type> <parameter>endfraction</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:140
@@ -391,12 +409,14 @@ msgid ""
 ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
 "\"/>"
 msgstr ""
+", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
+"\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:186
 #, no-c-format
 msgid "ST_LocateAlong"
-msgstr ""
+msgstr "ST_LocateAlong"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:188
@@ -417,6 +437,11 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_LocateAlong</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>ageom_with_measure</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>a_measure</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:207
@@ -505,13 +530,13 @@ msgstr ""
 #: reference_lrs.xml:236
 #, no-c-format
 msgid ", <xref linkend=\"ST_LocateBetween\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:242
 #, no-c-format
 msgid "ST_LocateBetween"
-msgstr ""
+msgstr "ST_LocateBetween"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:244
@@ -533,6 +558,12 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_LocateBetween</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>measure_start</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>measure_end</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:265
@@ -592,13 +623,13 @@ msgstr ""
 #: reference_lrs.xml:288
 #, no-c-format
 msgid ", <xref linkend=\"ST_LocateAlong\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LocateAlong\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:294
 #, no-c-format
 msgid "ST_LocateBetweenElevations"
-msgstr ""
+msgstr "ST_LocateBetweenElevations"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:296
@@ -619,6 +650,11 @@ msgid ""
 "parameter></paramdef> <paramdef><type>float8 </type> "
 "<parameter>elevation_end</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom_mline</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>elevation_start</"
+"parameter></paramdef> <paramdef><type>float8 </type> "
+"<parameter>elevation_end</parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:316
@@ -633,7 +669,7 @@ msgstr ""
 #: reference_lrs.xml:320
 #, no-c-format
 msgid "Availability: 1.4.0"
-msgstr ""
+msgstr "Disponibilidad: 1.4.0"
 
 #. Tag: programlisting
 #: reference_lrs.xml:328
@@ -672,7 +708,7 @@ msgstr ""
 #: reference_lrs.xml:342
 #, no-c-format
 msgid "ST_InterpolatePoint"
-msgstr ""
+msgstr "ST_InterpolatePoint"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:344
@@ -690,6 +726,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>point</parameter></paramdef>"
 msgstr ""
+"<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:361
@@ -703,14 +742,14 @@ msgstr ""
 #: reference_lrs.xml:363
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr ""
+msgstr "Disponibilidad: 2.0.0"
 
 #. Tag: programlisting
 #: reference_lrs.xml:371
 #, no-c-format
 msgid ""
 "SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');\n"
-" st_interpolatepoint \n"
+" st_interpolatepoint\n"
 " ---------------------\n"
 "                                    10"
 msgstr ""
@@ -721,12 +760,13 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 msgstr ""
+", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:385
 #, no-c-format
 msgid "ST_AddMeasure"
-msgstr ""
+msgstr "ST_AddMeasure"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:387
@@ -746,6 +786,11 @@ msgid ""
 "parameter></paramdef> <paramdef><type>float8 </type> <parameter>measure_end</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_AddMeasure</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom_mline</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>measure_start</"
+"parameter></paramdef> <paramdef><type>float8 </type> <parameter>measure_end</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:405
@@ -761,7 +806,7 @@ msgstr ""
 #: reference_lrs.xml:407
 #, no-c-format
 msgid "Availability: 1.5.0"
-msgstr ""
+msgstr "Disponibilidad: 1.5.0"
 
 #. Tag: programlisting
 #: reference_lrs.xml:415
@@ -769,26 +814,26 @@ msgstr ""
 msgid ""
 "SELECT ST_AsText(ST_AddMeasure(\n"
 "ST_GeomFromEWKT('LINESTRING(1 0, 2 0, 4 0)'),1,4)) As ewelev;\n"
-"           ewelev             \n"
+"           ewelev\n"
 "--------------------------------\n"
 " LINESTRINGM(1 0 1,2 0 2,4 0 4)\n"
 "\n"
 "SELECT ST_AsText(ST_AddMeasure(\n"
 "ST_GeomFromEWKT('LINESTRING(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;\n"
-"                 ewelev                 \n"
+"                 ewelev\n"
 "----------------------------------------\n"
 " LINESTRING(1 0 4 10,2 0 4 20,4 0 4 40)\n"
 "\n"
 "SELECT ST_AsText(ST_AddMeasure(\n"
 "ST_GeomFromEWKT('LINESTRINGM(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;\n"
-"                 ewelev                 \n"
+"                 ewelev\n"
 "----------------------------------------\n"
 " LINESTRINGM(1 0 10,2 0 20,4 0 40)\n"
-" \n"
+"\n"
 "SELECT ST_AsText(ST_AddMeasure(\n"
 "ST_GeomFromEWKT('MULTILINESTRINGM((1 0 4, 2 0 4, 4 0 4),(1 0 4, 2 0 4, 4 0 "
 "4))'),10,70)) As ewelev;\n"
-"                             ewelev                              \n"
+"                             ewelev\n"
 "-----------------------------------------------------------------\n"
 " MULTILINESTRINGM((1 0 10,2 0 20,4 0 40),(1 0 40,2 0 50,4 0 70))"
 msgstr ""

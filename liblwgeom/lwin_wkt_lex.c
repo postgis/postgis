@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2010-2015 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright (C) 2011-2014 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2011-2014 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -78,7 +78,7 @@
 #if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 
 /* C99 says to define __STDC_LIMIT_MACROS before including stdint.h,
- * if you want the limit (max/min) macros for int types. 
+ * if you want the limit (max/min) macros for int types.
  */
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS 1
@@ -95,7 +95,7 @@ typedef uint32_t flex_uint32_t;
 typedef signed char flex_int8_t;
 typedef short int flex_int16_t;
 typedef int flex_int32_t;
-typedef unsigned char flex_uint8_t; 
+typedef unsigned char flex_uint8_t;
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
 
@@ -212,7 +212,7 @@ extern FILE *wkt_yyin, *wkt_yyout;
 #define EOB_ACT_LAST_MATCH 2
 
     #define YY_LESS_LINENO(n)
-    
+
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
 	do \
@@ -269,7 +269,7 @@ struct yy_buffer_state
 
     int yy_bs_lineno; /**< The line count. */
     int yy_bs_column; /**< The column count. */
-    
+
 	/* Whether to try to fill the input buffer when we reach the
 	 * end of it.
 	 */
@@ -653,29 +653,29 @@ char *wkt_yytext;
 #include "lwin_wkt_parse.h"
 #include "lwgeom_log.h"
 
-static YY_BUFFER_STATE wkt_yy_buf_state; 
+static YY_BUFFER_STATE wkt_yy_buf_state;
 
 
 /*
 * Set up the lexer!
 */
-void wkt_lexer_init(char *src) 
-{ 
-	wkt_yy_buf_state = wkt_yy_scan_string(src); 
-} 
+void wkt_lexer_init(char *src)
+{
+	wkt_yy_buf_state = wkt_yy_scan_string(src);
+}
 
 /*
 * Clean up the lexer!
 */
-void wkt_lexer_close() 
-{ 
-	wkt_yy_delete_buffer(wkt_yy_buf_state); 
-} 
+void wkt_lexer_close()
+{
+	wkt_yy_delete_buffer(wkt_yy_buf_state);
+}
 
 /*
 * Handle errors due to unexpected junk in WKT strings.
 */
-static void wkt_lexer_unknown() 
+static void wkt_lexer_unknown()
 {
 	/* Set the global error state */
 	global_parser_result.errcode = PARSER_ERROR_OTHER;
@@ -684,8 +684,8 @@ static void wkt_lexer_unknown()
 }
 
 
-/* 
-* This macro is magically run after a rule is found but before the main 
+/*
+* This macro is magically run after a rule is found but before the main
 * action is run. We use it to update the parse location information
 * so we can report on where things fail. Also optionally to dump
 * debugging info.
@@ -697,7 +697,7 @@ static void wkt_lexer_unknown()
 	LWDEBUGF(5,"lex: %s", wkt_yytext); \
 	} while (0);
 
- 
+
 #define YY_NO_INPUT 1
 /* Suppress the default implementations. */
 #line 679 "lwin_wkt_lex.c"
@@ -879,7 +879,7 @@ YY_DECL
 	register yy_state_type yy_current_state;
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
-    
+
 #line 67 "lwin_wkt_lex.l"
 
 
@@ -965,19 +965,19 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 69 "lwin_wkt_lex.l"
-{  
+{
 	LWDEBUG(5,"DOUBLE");
-	wkt_yylval.doublevalue = atof(wkt_yytext); 
-	return DOUBLE_TOK; 
+	wkt_yylval.doublevalue = atof(wkt_yytext);
+	return DOUBLE_TOK;
 	}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 75 "lwin_wkt_lex.l"
-{ 
+{
 	LWDEBUG(5,"SRID");
-	wkt_yylval.integervalue = wkt_lexer_read_srid(wkt_yytext); 
-	return SRID_TOK; 
+	wkt_yylval.integervalue = wkt_lexer_read_srid(wkt_yytext);
+	return SRID_TOK;
 	}
 	YY_BREAK
 case 3:
@@ -1063,10 +1063,10 @@ YY_RULE_SETUP
 case 19:
 YY_RULE_SETUP
 #line 98 "lwin_wkt_lex.l"
-{ 
+{
 	LWDEBUG(5,"DIMENSIONALITY");
 	wkt_yylval.stringvalue = wkt_yytext;
-	return DIMENSIONALITY_TOK; 
+	return DIMENSIONALITY_TOK;
 	}
 	YY_BREAK
 case 20:
@@ -1099,9 +1099,9 @@ case 25:
 YY_RULE_SETUP
 #line 111 "lwin_wkt_lex.l"
 { /* Error out and stop parsing on unknown/unexpected characters */
-	LWDEBUG(5,"UNKNOWN"); 
+	LWDEBUG(5,"UNKNOWN");
 	wkt_lexer_unknown();
-	yyterminate(); 
+	yyterminate();
 	}
 	YY_BREAK
 case 26:
@@ -1388,7 +1388,7 @@ static int yy_get_next_buffer (void)
 {
 	register yy_state_type yy_current_state;
 	register char *yy_cp;
-    
+
 	yy_current_state = (yy_start);
 
 	for ( yy_cp = (yytext_ptr) + YY_MORE_ADJ; yy_cp < (yy_c_buf_p); ++yy_cp )
@@ -1448,7 +1448,7 @@ static int yy_get_next_buffer (void)
 
 {
 	int c;
-    
+
 	*(yy_c_buf_p) = (yy_hold_char);
 
 	if ( *(yy_c_buf_p) == YY_END_OF_BUFFER_CHAR )
@@ -1515,12 +1515,12 @@ static int yy_get_next_buffer (void)
 
 /** Immediately switch to a different input stream.
  * @param input_file A readable stream.
- * 
+ *
  * @note This function does not reset the start condition to @c INITIAL .
  */
     void wkt_yyrestart  (FILE * input_file )
 {
-    
+
 	if ( ! YY_CURRENT_BUFFER ){
         wkt_yyensure_buffer_stack ();
 		YY_CURRENT_BUFFER_LVALUE =
@@ -1533,11 +1533,11 @@ static int yy_get_next_buffer (void)
 
 /** Switch to a different input buffer.
  * @param new_buffer The new input buffer.
- * 
+ *
  */
     void wkt_yy_switch_to_buffer  (YY_BUFFER_STATE  new_buffer )
 {
-    
+
 	/* TODO. We should be able to replace this entire function body
 	 * with
 	 *		wkt_yypop_buffer_state();
@@ -1577,13 +1577,13 @@ static void wkt_yy_load_buffer_state  (void)
 /** Allocate and initialize an input buffer state.
  * @param file A readable stream.
  * @param size The character buffer size in bytes. When in doubt, use @c YY_BUF_SIZE.
- * 
+ *
  * @return the allocated buffer state.
  */
     YY_BUFFER_STATE wkt_yy_create_buffer  (FILE * file, int  size )
 {
 	YY_BUFFER_STATE b;
-    
+
 	b = (YY_BUFFER_STATE) wkt_yyalloc(sizeof( struct yy_buffer_state )  );
 	if ( ! b )
 		YY_FATAL_ERROR( "out of dynamic memory in wkt_yy_create_buffer()" );
@@ -1606,11 +1606,11 @@ static void wkt_yy_load_buffer_state  (void)
 
 /** Destroy the buffer.
  * @param b a buffer created with wkt_yy_create_buffer()
- * 
+ *
  */
     void wkt_yy_delete_buffer (YY_BUFFER_STATE  b )
 {
-    
+
 	if ( ! b )
 		return;
 
@@ -1631,7 +1631,7 @@ static void wkt_yy_load_buffer_state  (void)
 
 {
 	int oerrno = errno;
-    
+
 	wkt_yy_flush_buffer(b );
 
 	b->yy_input_file = file;
@@ -1647,13 +1647,13 @@ static void wkt_yy_load_buffer_state  (void)
     }
 
         b->yy_is_interactive = 0;
-    
+
 	errno = oerrno;
 }
 
 /** Discard all buffered characters. On the next scan, YY_INPUT will be called.
  * @param b the buffer state to be flushed, usually @c YY_CURRENT_BUFFER.
- * 
+ *
  */
     void wkt_yy_flush_buffer (YY_BUFFER_STATE  b )
 {
@@ -1682,7 +1682,7 @@ static void wkt_yy_load_buffer_state  (void)
  *  the current state. This function will allocate the stack
  *  if necessary.
  *  @param new_buffer The new state.
- *  
+ *
  */
 void wkt_yypush_buffer_state (YY_BUFFER_STATE new_buffer )
 {
@@ -1712,7 +1712,7 @@ void wkt_yypush_buffer_state (YY_BUFFER_STATE new_buffer )
 
 /** Removes and deletes the top of the stack, if present.
  *  The next element becomes the new top.
- *  
+ *
  */
 void wkt_yypop_buffer_state (void)
 {
@@ -1736,7 +1736,7 @@ void wkt_yypop_buffer_state (void)
 static void wkt_yyensure_buffer_stack (void)
 {
 	yy_size_t num_to_alloc;
-    
+
 	if (!(yy_buffer_stack)) {
 
 		/* First allocation is just for 2 elements, since we don't know if this
@@ -1749,9 +1749,9 @@ static void wkt_yyensure_buffer_stack (void)
 								);
 		if ( ! (yy_buffer_stack) )
 			YY_FATAL_ERROR( "out of dynamic memory in wkt_yyensure_buffer_stack()" );
-								  
+
 		memset((yy_buffer_stack), 0, num_to_alloc * sizeof(struct yy_buffer_state*));
-				
+
 		(yy_buffer_stack_max) = num_to_alloc;
 		(yy_buffer_stack_top) = 0;
 		return;
@@ -1779,13 +1779,13 @@ static void wkt_yyensure_buffer_stack (void)
 /** Setup the input buffer state to scan directly from a user-specified character buffer.
  * @param base the character buffer
  * @param size the size in bytes of the character buffer
- * 
- * @return the newly allocated buffer state object. 
+ *
+ * @return the newly allocated buffer state object.
  */
 YY_BUFFER_STATE wkt_yy_scan_buffer  (char * base, yy_size_t  size )
 {
 	YY_BUFFER_STATE b;
-    
+
 	if ( size < 2 ||
 	     base[size-2] != YY_END_OF_BUFFER_CHAR ||
 	     base[size-1] != YY_END_OF_BUFFER_CHAR )
@@ -1814,22 +1814,21 @@ YY_BUFFER_STATE wkt_yy_scan_buffer  (char * base, yy_size_t  size )
 /** Setup the input buffer state to scan a string. The next call to wkt_yylex() will
  * scan from a @e copy of @a str.
  * @param yystr a NUL-terminated string to scan
- * 
+ *
  * @return the newly allocated buffer state object.
  * @note If you want to scan bytes that may contain NUL values, then use
  *       wkt_yy_scan_bytes() instead.
  */
 YY_BUFFER_STATE wkt_yy_scan_string (yyconst char * yystr )
 {
-    
-	return wkt_yy_scan_bytes(yystr,strlen(yystr) );
+	return wkt_yy_scan_bytes(yystr, strlen(yystr) );
 }
 
 /** Setup the input buffer state to scan the given bytes. The next call to wkt_yylex() will
  * scan from a @e copy of @a bytes.
  * @param yybytes the byte buffer to scan
  * @param _yybytes_len the number of bytes in the buffer pointed to by @a bytes.
- * 
+ *
  * @return the newly allocated buffer state object.
  */
 YY_BUFFER_STATE wkt_yy_scan_bytes  (yyconst char * yybytes, yy_size_t  _yybytes_len )
@@ -1837,8 +1836,8 @@ YY_BUFFER_STATE wkt_yy_scan_bytes  (yyconst char * yybytes, yy_size_t  _yybytes_
 	YY_BUFFER_STATE b;
 	char *buf;
 	yy_size_t n;
-	int i;
-    
+	yy_size_t i;
+
 	/* Get memory for full buffer, including space for trailing EOB's. */
 	n = _yybytes_len + 2;
 	buf = (char *) wkt_yyalloc(n  );
@@ -1892,16 +1891,16 @@ static void yy_fatal_error (yyconst char* msg )
 /* Accessor  methods (get/set functions) to struct members. */
 
 /** Get the current line number.
- * 
+ *
  */
 int wkt_yyget_lineno  (void)
 {
-        
+
     return wkt_yylineno;
 }
 
 /** Get the input stream.
- * 
+ *
  */
 FILE *wkt_yyget_in  (void)
 {
@@ -1909,7 +1908,7 @@ FILE *wkt_yyget_in  (void)
 }
 
 /** Get the output stream.
- * 
+ *
  */
 FILE *wkt_yyget_out  (void)
 {
@@ -1917,7 +1916,7 @@ FILE *wkt_yyget_out  (void)
 }
 
 /** Get the length of the current token.
- * 
+ *
  */
 yy_size_t wkt_yyget_leng  (void)
 {
@@ -1925,7 +1924,7 @@ yy_size_t wkt_yyget_leng  (void)
 }
 
 /** Get the current token.
- * 
+ *
  */
 
 char *wkt_yyget_text  (void)
@@ -1935,18 +1934,18 @@ char *wkt_yyget_text  (void)
 
 /** Set the current line number.
  * @param line_number
- * 
+ *
  */
 void wkt_yyset_lineno (int  line_number )
 {
-    
+
     wkt_yylineno = line_number;
 }
 
 /** Set the input stream. This does not discard the current
  * input buffer.
  * @param in_str A readable stream.
- * 
+ *
  * @see wkt_yy_switch_to_buffer
  */
 void wkt_yyset_in (FILE *  in_str )
@@ -2000,7 +1999,7 @@ static int yy_init_globals (void)
 /* wkt_yylex_destroy is for both reentrant and non-reentrant scanners. */
 int wkt_yylex_destroy  (void)
 {
-    
+
     /* Pop the buffer stack, destroying each element. */
 	while(YY_CURRENT_BUFFER){
 		wkt_yy_delete_buffer(YY_CURRENT_BUFFER  );

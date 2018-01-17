@@ -1,45 +1,52 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-02-15 12:05+0000\n"
-"PO-Revision-Date: 2016-02-15 12:10+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/ja/)\n"
+"POT-Creation-Date: 2017-08-30 03:58+0000\n"
+"PO-Revision-Date: 2016-12-19 08:04+0000\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
+"ja/)\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: title
 #: extras_address_standardizer.xml:3
 #, no-c-format
 msgid "Address Standardizer"
-msgstr ""
+msgstr "住所標準化"
 
 #. Tag: para
 #: extras_address_standardizer.xml:4
 #, no-c-format
 msgid ""
-"This is a fork of the <ulink "
-"url=\"http://www.pagcgeo.org/docs/html/pagc-11.html\">PAGC "
-"standardizer</ulink> (original code for this portion was <ulink "
-"url=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-"
-"refactor/postgresql\">PAGC PostgreSQL Address Standardizer</ulink>)."
+"This is a fork of the <ulink url=\"http://www.pagcgeo.org/docs/html/pagc-11."
+"html\">PAGC standardizer</ulink> (original code for this portion was <ulink "
+"url=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/"
+"postgresql\">PAGC PostgreSQL Address Standardizer</ulink>)."
 msgstr ""
+"これは、<ulink url=\"http://www.pagcgeo.org/docs/html/pagc-11.html\">PAGC "
+"standardizer</ulink>から分かれたものです (オリジナルのコードは<ulink url="
+"\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/"
+"postgresql\">PAGC PostgreSQL Address Standardizer</ulink>にあります)。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:5
 #, no-c-format
 msgid ""
-"The address standardizer is a single line address parser that takes an input"
-" address and normalizes it based on a set of rules stored in a table and "
+"The address standardizer is a single line address parser that takes an input "
+"address and normalizes it based on a set of rules stored in a table and "
 "helper lex and gaz tables."
 msgstr ""
+"住所標準化は単一行の住所のパーサで、入力に住所を取り、テーブルに保存された規"
+"則と、補助テーブルlex (lexicon, 語彙)およびgaz (gazetteer, 地名集)とを基に正"
+"規化します。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:6
@@ -53,29 +60,39 @@ msgid ""
 "contains gaz, lex, and rules tables for US data. This extensions can be "
 "installed via: <code>CREATE EXTENSION address_standardizer_data_us;</code>"
 msgstr ""
+"コードは、<code>address_standardizer</code>という名前の、1つのPostgreSQLエク"
+"ステンションとしてビルドされます。<code>CREATE EXTENSION "
+"address_standardizer;</code>でインストールできます。address_standardizerエク"
+"ステンションとともに、<code>address_standardizer_data_us</code>というサンプル"
+"データのエクステンションがビルドされます。これには、アメリカのgaz, lexとrules"
+"テーブルデータがあります。このエクステンションは<code>CREATE EXTENSION "
+"address_standardizer_data_us;</code>でインストールできます。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:7
 #, no-c-format
 msgid ""
-"The code for this extension can be found in the PostGIS "
-"<filename>extensions/address_standardizer</filename> and is currently self-"
-"contained."
+"The code for this extension can be found in the PostGIS <filename>extensions/"
+"address_standardizer</filename> and is currently self-contained."
 msgstr ""
+"このエクステンションのコードはPostGISの<filename>extensions/"
+"address_standardizer</filename>内にあり、現在は自己充足しています。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:8
 #, no-c-format
 msgid ""
-"For installation instructions refer to: <xref "
-"linkend=\"installing_pagc_address_standardizer\"/>."
+"For installation instructions refer to: <xref linkend="
+"\"installing_pagc_address_standardizer\"/>."
 msgstr ""
+"インストール手順については、<xref linkend="
+"\"installing_pagc_address_standardizer\"/>を参照してください。"
 
 #. Tag: title
 #: extras_address_standardizer.xml:9
 #, no-c-format
 msgid "How the Parser Works"
-msgstr ""
+msgstr "パーサの動作"
 
 #. Tag: para
 #: extras_address_standardizer.xml:10
@@ -83,16 +100,20 @@ msgstr ""
 msgid ""
 "The parser works from right to left looking first at the macro elements for "
 "postcode, state/province, city, and then looks micro elements to determine "
-"if we are dealing with a house number street or intersection or landmark. It"
-" currently does not look for a country code or name, but that could be "
+"if we are dealing with a house number street or intersection or landmark. It "
+"currently does not look for a country code or name, but that could be "
 "introduced in the future."
 msgstr ""
+"パーサは右から左に見ます。最初に郵便番号、州/県、市のMACRO (訳注: マクロ)要素"
+"を見ます。その後、番地または交差点もしくはランドマークを扱う場合には、MICRO "
+"(訳注: マイクロ)要素を見ます。現在は、国別コードや国名を見ませんが、将来的に"
+"は導入できると思います。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:17
 #, no-c-format
 msgid "Country code"
-msgstr ""
+msgstr "国別コード"
 
 #. Tag: para
 #: extras_address_standardizer.xml:18
@@ -101,57 +122,66 @@ msgid ""
 "Assumed to be US or CA based on: postcode as US or Canada state/province as "
 "US or Canada else US"
 msgstr ""
+"USまたはCAを仮定します。郵便番号か州/県で米国かカナダを分けますが、判別できな"
+"い場合は米国とします。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:21
 #, no-c-format
 msgid "Postcode/zipcode"
-msgstr ""
+msgstr "郵便番号"
 
 #. Tag: para
 #: extras_address_standardizer.xml:22
 #, no-c-format
 msgid ""
-"These are recognized using Perl compatible regular expressions. These regexs"
-" are currently in the parseaddress-api.c and are relatively simple to make "
+"These are recognized using Perl compatible regular expressions. These regexs "
+"are currently in the parseaddress-api.c and are relatively simple to make "
 "changes to if needed."
 msgstr ""
+"Perl互換の正規表現を使用して認識します。正規表現は現在はparseaddress-api.cに"
+"あり、必要な際の変更は比較的簡単です。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:27
 #, no-c-format
 msgid "State/province"
-msgstr ""
+msgstr "州/県"
 
 #. Tag: para
 #: extras_address_standardizer.xml:28
 #, no-c-format
 msgid ""
-"These are recognized using Perl compatible regular expressions. These regexs"
-" are currently in the parseaddress-api.c but could get moved into includes "
-"in the future for easier maintenance."
+"These are recognized using Perl compatible regular expressions. These regexs "
+"are currently in the parseaddress-api.c but could get moved into includes in "
+"the future for easier maintenance."
 msgstr ""
+"Perl互換の正規表現を使用して認識します。正規表現は現在はparseaddress-api.cに"
+"ありますが、将来的には、メンテナンスを簡単にするためにインクルードファイルに"
+"移動するかも知れません。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:37
 #, no-c-format
 msgid ""
 "This section lists the PostgreSQL data types installed by Address "
-"Standardizer extension. Note we describe the casting behavior of these which"
-" is very important especially when designing your own functions."
+"Standardizer extension. Note we describe the casting behavior of these which "
+"is very important especially when designing your own functions."
 msgstr ""
+"本節では住所標準化でインストールされたPostgreSQLデータ型の一覧を挙げます。独"
+"自関数をデザインする時に特に重要となるキャストの振る舞いを記述しています。"
 
 #. Tag: title
 #: extras_address_standardizer.xml:42
 #, no-c-format
 msgid "Address Standardizer Types"
-msgstr ""
+msgstr "住所標準化の型"
 
 #. Tag: refname
 #: extras_address_standardizer.xml:45
 #, no-c-format
 msgid "stdaddr"
-msgstr ""
+msgstr "stdaddr"
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:46
@@ -160,6 +190,8 @@ msgid ""
 "A composite type that consists of the elements of an address. This is the "
 "return type for <varname>standardize_address</varname> function."
 msgstr ""
+"住所の要素からなる複合型です。<varname>standardize_address</varname>関数が返"
+"す型です。"
 
 #. Tag: title
 #: extras_address_standardizer.xml:49 extras_address_standardizer.xml:153
@@ -173,33 +205,36 @@ msgstr "説明"
 #: extras_address_standardizer.xml:50
 #, no-c-format
 msgid ""
-"A composite type that consists of elements of an address. This is the return"
-" type for <xref linkend=\"standardize_address\"/> function. Some "
-"descriptions for elements are borrowed from <ulink "
-"url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.1\">PAGC Postal "
-"Attributes</ulink>."
+"A composite type that consists of elements of an address. This is the return "
+"type for <xref linkend=\"standardize_address\"/> function. Some descriptions "
+"for elements are borrowed from <ulink url=\"http://www.pagcgeo.org/docs/html/"
+"pagc-12.html#ss12.1\">PAGC Postal Attributes</ulink>."
 msgstr ""
+"住所の要素からなる複合型です。<varname>standardize_address</varname>関数が返"
+"す型です。要素の記述のいくつかは<ulink url=\"http://www.pagcgeo.org/docs/"
+"html/pagc-12.html#ss12.1\">PAGC Postal Attributes</ulink>から借りています。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:51
 #, no-c-format
 msgid ""
-"The token numbers denote the output reference number in the <xref "
-"linkend=\"rulestab\"/>."
+"The token numbers denote the output reference number in the <xref linkend="
+"\"rulestab\"/>."
 msgstr ""
+"トークン番号は、<xref linkend=\"rulestab\"/>内の出力参照番号を示します。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:52 extras_address_standardizer.xml:593
 #: extras_address_standardizer.xml:655
 #, no-c-format
 msgid "&address_standardizer_required;"
-msgstr ""
+msgstr "&address_standardizer_required;"
 
 #. Tag: term
 #: extras_address_standardizer.xml:55
 #, no-c-format
 msgid "building"
-msgstr ""
+msgstr "building"
 
 #. Tag: para
 #: extras_address_standardizer.xml:57
@@ -208,12 +243,14 @@ msgid ""
 "is text (token number <code>0</code>): Refers to building number or name. "
 "Unparsed building identifiers and types. Generally blank for most addresses."
 msgstr ""
+"文字列 (トークン番号<code>0</code>): 建物番号や建物名を参照します。解析されて"
+"いない建物識別子と型です。一般的に、ほとんどの住所では空白です。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:60
 #, no-c-format
 msgid "house_num"
-msgstr ""
+msgstr "house_num"
 
 #. Tag: para
 #: extras_address_standardizer.xml:62 extras_address_standardizer.xml:397
@@ -222,12 +259,14 @@ msgid ""
 "is a text (token number <code>1</code>): This is the street number on a "
 "street. Example <emphasis>75</emphasis> in <code>75 State Street</code>."
 msgstr ""
+"文字列 (トークン番号<code>1</code>): ストリートの番号です。<code>75 State "
+"Street</code>では<emphasis>75</emphasis>にあたります。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:65 extras_address_standardizer.xml:400
 #, no-c-format
 msgid "predir"
-msgstr ""
+msgstr "predir"
 
 #. Tag: para
 #: extras_address_standardizer.xml:66 extras_address_standardizer.xml:401
@@ -236,12 +275,14 @@ msgid ""
 "is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as "
 "North, South, East, West etc."
 msgstr ""
+"文字列 (トークン番号<code>2</code>): North, South, East, Westといった、スト"
+"リート名の方角前置語です。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:68 extras_address_standardizer.xml:403
 #, no-c-format
 msgid "qual"
-msgstr ""
+msgstr "qual"
 
 #. Tag: para
 #: extras_address_standardizer.xml:70 extras_address_standardizer.xml:405
@@ -250,104 +291,117 @@ msgid ""
 "is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example "
 "<emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>."
 msgstr ""
+"文字列 (トークン番号 <code>3</code>): ストリート名の修飾前置語です。"
+"<code>3715 OLD HIGHWAY 99</code>では<emphasis>OLD</emphasis>にあたります。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:73 extras_address_standardizer.xml:408
 #, no-c-format
 msgid "pretype"
-msgstr ""
+msgstr "pretype"
 
 #. Tag: para
 #: extras_address_standardizer.xml:75 extras_address_standardizer.xml:410
 #, no-c-format
 msgid "is text (token number <code>4</code>): STREET PREFIX TYPE"
 msgstr ""
+"文字列 (トークン番号 <code>4</code>): STREET PREFIX TYPE (ストリート名の前置"
+"詞の種別)"
 
 #. Tag: term
 #: extras_address_standardizer.xml:78
 #, no-c-format
 msgid "name"
-msgstr ""
+msgstr "name"
 
 #. Tag: para
 #: extras_address_standardizer.xml:80 extras_address_standardizer.xml:415
 #, no-c-format
 msgid "is text (token number <code>5</code>): STREET NAME"
-msgstr ""
+msgstr "文字列 (トークン番号 <code>5</code>): ストリート名"
 
 #. Tag: term
 #: extras_address_standardizer.xml:83 extras_address_standardizer.xml:418
 #, no-c-format
 msgid "suftype"
-msgstr ""
+msgstr "suftype"
 
 #. Tag: para
 #: extras_address_standardizer.xml:85 extras_address_standardizer.xml:420
 #, no-c-format
 msgid ""
-"is text (token number <code>6</code>): STREET POST TYPE e.g. St, Ave, Cir. A"
-" street type following the root street name. Example "
-"<emphasis>STREET</emphasis> in <code>75 State Street</code>."
+"is text (token number <code>6</code>): STREET POST TYPE e.g. St, Ave, Cir. A "
+"street type following the root street name. Example <emphasis>STREET</"
+"emphasis> in <code>75 State Street</code>."
 msgstr ""
+"文字列 (トークン番号 <code>6</code>): St, Ave, Cir等の、後置詞の種別。スト"
+"リート名に続いて記述されるものです。<code>75 State Street</code>では"
+"<emphasis>STREET</emphasis>が該当します。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:88 extras_address_standardizer.xml:423
 #, no-c-format
 msgid "sufdir"
-msgstr ""
+msgstr "sufdir"
 
 #. Tag: para
 #: extras_address_standardizer.xml:90 extras_address_standardizer.xml:425
 #, no-c-format
 msgid ""
-"is text (token number <code>7</code>): STREET POST-DIRECTIONAL A directional"
-" modifier that follows the street name.. Example <emphasis>WEST</emphasis> "
-"in <code>3715 TENTH AVENUE WEST</code>."
+"is text (token number <code>7</code>): STREET POST-DIRECTIONAL A directional "
+"modifier that follows the street name.. Example <emphasis>WEST</emphasis> in "
+"<code>3715 TENTH AVENUE WEST</code>."
 msgstr ""
+"文字列 (トークン番号 <code>7</code>): ストリート名に続くNorth, South, East, "
+"Westといった、ストリート名の方角前置語です。<code>3715 TENTH AVENUE WEST</"
+"code>では<emphasis>WEST</emphasis>が該当します。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:93
 #, no-c-format
 msgid "ruralroute"
-msgstr ""
+msgstr "ruralroute"
 
 #. Tag: para
 #: extras_address_standardizer.xml:95
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"is text (token number <code>8</code>): RURAL ROUTE . Example "
-"<emphasis>8</emphasis> in <code>RR 7</code>."
+"is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>7</"
+"emphasis> in <code>RR 7</code>."
 msgstr ""
+"文字列 (トークン番号 <code>8</code>): RURAL ROUTE (地方集配路線)。<code>RR "
+"7</code>では<emphasis>8</emphasis>が該当します。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:98
 #, no-c-format
 msgid "extra"
-msgstr ""
+msgstr "extra"
 
 #. Tag: para
 #: extras_address_standardizer.xml:100
 #, no-c-format
 msgid "is text: Extra information like Floor number."
-msgstr ""
+msgstr "文字列: 階番号のような追加的情報です。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:103
 #, no-c-format
 msgid "city"
-msgstr ""
+msgstr "city"
 
 #. Tag: para
 #: extras_address_standardizer.xml:105
 #, no-c-format
 msgid "is text (token number <code>10</code>): Example Boston."
 msgstr ""
+"文字列 (トークン番号 <code>10</code>): 市名です。Boston等が該当します。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:108
 #, no-c-format
 msgid "state"
-msgstr ""
+msgstr "state"
 
 #. Tag: para
 #: extras_address_standardizer.xml:110
@@ -355,24 +409,28 @@ msgstr ""
 msgid ""
 "is text (token number <code>11</code>): Example <code>MASSACHUSETTS</code>"
 msgstr ""
+"文字列 (トークン番号 <code>11</code>): 州名です。<code>MASSACHUSETTS</code>が"
+"該当します。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:113
 #, no-c-format
 msgid "country"
-msgstr ""
+msgstr "country"
 
 #. Tag: para
 #: extras_address_standardizer.xml:115
 #, no-c-format
 msgid "is text (token number <code>12</code>): Example <code>USA</code>"
 msgstr ""
+"文字列 (トークン番号 <code>12</code>): 国名です。<code>USA</code>が該当しま"
+"す。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:118
 #, no-c-format
 msgid "postcode"
-msgstr ""
+msgstr "postcode"
 
 #. Tag: para
 #: extras_address_standardizer.xml:120
@@ -381,12 +439,14 @@ msgid ""
 "is text POSTAL CODE (ZIP CODE) (token number <code>13</code>): Example "
 "<code>02109</code>"
 msgstr ""
+"文字列 (トークン番号 <code>13</code>): 郵便番号 (POSTAL CODE, ZIP CODE)です。"
+"<code>02109</code>等です。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:123
 #, no-c-format
 msgid "<term>box</term>"
-msgstr ""
+msgstr "<term>box</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:125
@@ -395,12 +455,14 @@ msgid ""
 "is text POSTAL BOX NUMBER (token number <code>14 and 15</code>): Example "
 "<code>02109</code>"
 msgstr ""
+"文字列 (トークン番号 <code>14</code>と<code>15</code>): 私書箱番号です。"
+"<code>02109</code>等です。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:128
 #, no-c-format
 msgid "unit"
-msgstr ""
+msgstr "unit"
 
 #. Tag: para
 #: extras_address_standardizer.xml:130
@@ -409,6 +471,8 @@ msgid ""
 "is text Apartment number or Suite Number (token number <code>17</code>): "
 "Example <emphasis>3B</emphasis> in <code>APT 3B</code>."
 msgstr ""
+"文字列 (トークン番号 <code>17</code>): 部屋番号です。<code>APT 3B</code>の"
+"<emphasis>3B</emphasis>が該当します。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:141
@@ -421,6 +485,11 @@ msgid ""
 "custom geocoder. The names of these tables get passed into the address "
 "standardizer functions."
 msgstr ""
+"本節では、住所標準化が住所の正規化に使うPostgreSQLテーブルの書式を挙げます。"
+"これらのテーブルはここで参照している名前と同じである必要はありません。例また"
+"は独自ジオコーダのために、国ごとに異なるlex (lexicon, 語彙)、gaz (gazetteer, "
+"地名集)およびrulesテーブルを持つことができます。これらのテーブルの名前は、住"
+"所標準化関数に渡されます。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:143
@@ -429,18 +498,20 @@ msgid ""
 "The packaged extension <varname>address_standardizer_data_us</varname> "
 "contains data for standardizing US addresses."
 msgstr ""
+"同梱されている<varname>address_standardizer_data_us</varname>エクステンション"
+"には、米国の住所標準化のためのデータがあります。"
 
 #. Tag: title
 #: extras_address_standardizer.xml:146
 #, no-c-format
 msgid "Address Standardizer Tables"
-msgstr ""
+msgstr "住所標準化テーブル"
 
 #. Tag: refname
 #: extras_address_standardizer.xml:149
 #, no-c-format
 msgid "rules table"
-msgstr ""
+msgstr "規則テーブル"
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:150
@@ -448,9 +519,12 @@ msgstr ""
 msgid ""
 "The rules table contains a set of rules that maps address input sequence "
 "tokens to standardized output sequence. A rule is defined as a set of input "
-"tokens followed by -1 (terminator) followed by set of output tokens followed"
-" by -1 followed by number denoting kind of rule followed by ranking of rule."
+"tokens followed by -1 (terminator) followed by set of output tokens followed "
+"by -1 followed by number denoting kind of rule followed by ranking of rule."
 msgstr ""
+"規則テーブルには、住所入力順列トークンから標準化した出力順列への対応付けに関"
+"する規則の集合が入ります。それぞれの規則は、入力トークン、-1 (終端)、出力トー"
+"クン、-1、規則の種類を示す数字、規則の階級、からなります。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:154
@@ -459,187 +533,206 @@ msgid ""
 "A rules table must have at least the following columns, though you are "
 "allowed to add more for your own uses."
 msgstr ""
+"規則テーブルには、少なくとも次に示すカラムが必要です。それ以外にカラムを追加"
+"してもかまいません。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:158 extras_address_standardizer.xml:492
 #: extras_address_standardizer.xml:534
 #, no-c-format
 msgid "<term>id</term>"
-msgstr ""
+msgstr "<term>id</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:160 extras_address_standardizer.xml:494
 #: extras_address_standardizer.xml:536
 #, no-c-format
 msgid "Primary key of table"
-msgstr ""
+msgstr "テーブルの主キー。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:163
 #, no-c-format
 msgid "rule"
-msgstr ""
+msgstr "rule"
 
 #. Tag: para
 #: extras_address_standardizer.xml:165
 #, no-c-format
 msgid ""
-"text field denoting the rule. Details at <ulink "
-"url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-rec--\">PAGC Address"
-" Standardizer Rule records</ulink>."
+"text field denoting the rule. Details at <ulink url=\"http://www.pagcgeo.org/"
+"docs/html/pagc-12.html#--r-rec--\">PAGC Address Standardizer Rule records</"
+"ulink>."
 msgstr ""
+"規則を示す文字列フィールド。 <ulink url=\"http://www.pagcgeo.org/docs/html/"
+"pagc-12.html#--r-rec--\">PAGC Address Standardizer Rule records</ulink>に詳細"
+"情報があります。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:166
 #, no-c-format
 msgid ""
-"A rule consists of a set of non-negative integers representing input tokens,"
-" terminated by a -1, followed by an equal number of non-negative integers "
+"A rule consists of a set of non-negative integers representing input tokens, "
+"terminated by a -1, followed by an equal number of non-negative integers "
 "representing postal attributes, terminated by a -1, followed by an integer "
 "representing a rule type, followed by an integer representing the rank of "
 "the rule. The rules are ranked from 0 (lowest) to 17 (highest)."
 msgstr ""
+"ruleには、入力トークンを表現する非負の整数、終端を示す-1、郵便属性を表現する"
+"非負の整数、終端を示す-1、規則種別を表現する整数、規則の階級を示す整数からな"
+"る集合が入ります。規則は0 (最低)から17 (最高)まであります。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:167
 #, no-c-format
 msgid ""
 "So for example the rule <code>2 0 2 22 3 -1 5 5 6 7 3 -1 2 6</code> maps to "
-"sequence of output tokens <emphasis>TYPE NUMBER TYPE DIRECT "
-"QUALIF</emphasis> to the output sequence <emphasis>STREET STREET SUFTYP "
-"SUFDIR QUALIF</emphasis>. The rule is an ARC_C rule of rank 6."
+"sequence of output tokens <emphasis>TYPE NUMBER TYPE DIRECT QUALIF</"
+"emphasis> to the output sequence <emphasis>STREET STREET SUFTYP SUFDIR "
+"QUALIF</emphasis>. The rule is an ARC_C rule of rank 6."
 msgstr ""
+"たとえば、<code>2 0 2 22 3 -1 5 5 6 7 3 -1 2 6</code>は、<emphasis>TYPE "
+"NUMBER TYPE DIRECT QUALIF</emphasis>なる入力トークン順列が、<emphasis>STREET "
+"STREET SUFTYP SUFDIR QUALIF</emphasis>なる出力トークン順列に対応付けされ、規"
+"則はARC_Cで、階級は6となります。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:168
 #, no-c-format
 msgid ""
-"Numbers for corresponding output tokens are listed in <xref "
-"linkend=\"stdaddr\"/>."
-msgstr ""
+"Numbers for corresponding output tokens are listed in <xref linkend=\"stdaddr"
+"\"/>."
+msgstr "対応する出力トークンは<xref linkend=\"stdaddr\"/>に挙げています。"
 
 #. Tag: title
 #: extras_address_standardizer.xml:174
 #, no-c-format
 msgid "Input Tokens"
-msgstr ""
+msgstr "入力トークン"
 
 #. Tag: para
 #: extras_address_standardizer.xml:175
 #, no-c-format
 msgid ""
 "Each rule starts with a set of input tokens followed by a terminator "
-"<code>-1</code>. Valid input tokens excerpted from <ulink "
-"url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC Input "
-"Tokens</ulink> are as follows:"
+"<code>-1</code>. Valid input tokens excerpted from <ulink url=\"http://www."
+"pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC Input Tokens</ulink> are as "
+"follows:"
 msgstr ""
+"個々の規則は、入力トークン順列、終端を示す<code>-1</code>の順です。<ulink "
+"url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC Input "
+"Tokens</ulink>から引用した正当な入力トークンは次の通りです。"
 
 #. Tag: emphasis
 #: extras_address_standardizer.xml:176
 #, no-c-format
 msgid "Form-Based Input Tokens"
-msgstr ""
+msgstr "書式ベースの入力トークン"
 
 #. Tag: term
 #: extras_address_standardizer.xml:179
 #, no-c-format
 msgid "AMPERS"
-msgstr ""
+msgstr "AMPERS"
 
 #. Tag: para
 #: extras_address_standardizer.xml:181
 #, no-c-format
 msgid ""
-"(13). The ampersand (&amp;) is frequently used to abbreviate the word "
-"\"and\"."
+"(13). The ampersand (&amp;) is frequently used to abbreviate the word \"and"
+"\"."
 msgstr ""
+"(13) アンパサンド (&amp;)は、\"and\"という語を短縮するために、よく使われます"
 
 #. Tag: term
 #: extras_address_standardizer.xml:186
 #, no-c-format
 msgid "DASH"
-msgstr ""
+msgstr "DASH"
 
 #. Tag: para
 #: extras_address_standardizer.xml:188
 #, no-c-format
 msgid "(9). A punctuation character."
-msgstr ""
+msgstr "(9) 区切り記号。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:193
 #, no-c-format
 msgid "DOUBLE"
-msgstr ""
+msgstr "DOUBLE"
 
 #. Tag: para
 #: extras_address_standardizer.xml:195
 #, no-c-format
 msgid "(21). A sequence of two letters. Often used as identifiers."
-msgstr ""
+msgstr "(21) 二つの文字の順列。しばしば識別子に用いられます。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:200
 #, no-c-format
 msgid "FRACT"
-msgstr ""
+msgstr "FRACT"
 
 #. Tag: para
 #: extras_address_standardizer.xml:202
 #, no-c-format
 msgid "(25). Fractions are sometimes used in civic numbers or unit numbers."
 msgstr ""
+"(25) ときどき\"civic nunber\"または\"unit number\" (訳注: 各戸に付けられる番"
+"号)で使われます。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:207
 #, no-c-format
 msgid "MIXED"
-msgstr ""
+msgstr "MIXED"
 
 #. Tag: para
 #: extras_address_standardizer.xml:209
 #, no-c-format
 msgid ""
-"(23). An alphanumeric string that contains both letters and digits. Used for"
-" identifiers."
-msgstr ""
+"(23). An alphanumeric string that contains both letters and digits. Used for "
+"identifiers."
+msgstr "(23) 英数文字列。識別子に用います。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:214
 #, no-c-format
 msgid "NUMBER"
-msgstr ""
+msgstr "NUMBER"
 
 #. Tag: para
 #: extras_address_standardizer.xml:216
 #, no-c-format
 msgid "(0). A string of digits."
-msgstr ""
+msgstr "(0) 数字からなる文字列。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:221 extras_address_standardizer.xml:228
 #, no-c-format
 msgid "<term>ORD</term>"
-msgstr ""
+msgstr "<term>ORD</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:223
 #, no-c-format
-msgid ""
-"(15). Representations such as First or 1st. Often used in street names."
+msgid "(15). Representations such as First or 1st. Often used in street names."
 msgstr ""
+"(15) \"First\"や\"1st\"といったものを表現する文字列。しばしばストリート名の中"
+"で使われています。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:230
 #, no-c-format
 msgid "(18). A single letter."
-msgstr ""
+msgstr "(18) 一つの文字"
 
 #. Tag: term
 #: extras_address_standardizer.xml:235
 #, no-c-format
 msgid "WORD"
-msgstr ""
+msgstr "WORD"
 
 #. Tag: para
 #: extras_address_standardizer.xml:237
@@ -648,110 +741,120 @@ msgid ""
 "(1). A word is a string of letters of arbitrary length. A single letter can "
 "be both a SINGLE and a WORD."
 msgstr ""
+"(1) 任意長を持つ文字列です。一つの文字はSINGLEおよびWORDの両方になりえます。"
 
 #. Tag: emphasis
 #: extras_address_standardizer.xml:242
 #, no-c-format
 msgid "Function-based Input Tokens"
-msgstr ""
+msgstr "機能ベースの入力トークン"
 
 #. Tag: term
 #: extras_address_standardizer.xml:245 extras_address_standardizer.xml:446
 #, no-c-format
 msgid "BOXH"
-msgstr ""
+msgstr "BOXH"
 
 #. Tag: para
 #: extras_address_standardizer.xml:247
 #, no-c-format
 msgid ""
-"(14). Words used to denote post office boxes. For example "
-"<emphasis>Box</emphasis> or <emphasis>PO Box</emphasis>."
+"(14). Words used to denote post office boxes. For example <emphasis>Box</"
+"emphasis> or <emphasis>PO Box</emphasis>."
 msgstr ""
+"(14) 私書箱を示すために使われる語です。たとえば <emphasis>Box</emphasis>また"
+"は<emphasis>PO Box</emphasis>です。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:252
 #, no-c-format
 msgid "BUILDH"
-msgstr ""
+msgstr "BUILDH"
 
 #. Tag: para
 #: extras_address_standardizer.xml:254
 #, no-c-format
 msgid ""
 "(19). Words used to denote buildings or building complexes, usually as a "
-"prefix. For example: <emphasis>Tower</emphasis> in <emphasis>Tower "
-"7A</emphasis>."
+"prefix. For example: <emphasis>Tower</emphasis> in <emphasis>Tower 7A</"
+"emphasis>."
 msgstr ""
+"(19) 建物またはその複合体を示すための語で、通常は前置語になります。たとえば"
+"<emphasis>Tower 7A</emphasis>では<emphasis>Tower</emphasis>が該当します。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:259
 #, no-c-format
 msgid "BUILDT"
-msgstr ""
+msgstr "BUILDT"
 
 #. Tag: para
 #: extras_address_standardizer.xml:261
 #, no-c-format
 msgid ""
 "(24). Words and abbreviations used to denote buildings or building "
-"complexes, usually as a suffix. For example: <emphasis>Shopping "
-"Centre</emphasis>."
+"complexes, usually as a suffix. For example: <emphasis>Shopping Centre</"
+"emphasis>."
 msgstr ""
+"(24) 建物またはその複合体を示すために使われる語または略語で、通常は後置語にな"
+"ります。たとえば<emphasis>Shopping Centre</emphasis>です。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:266
 #, no-c-format
 msgid "DIRECT"
-msgstr ""
+msgstr "DIRECT"
 
 #. Tag: para
 #: extras_address_standardizer.xml:268
 #, no-c-format
 msgid ""
-"(22). Words used to denote directions, for example "
-"<emphasis>North</emphasis>."
-msgstr ""
+"(22). Words used to denote directions, for example <emphasis>North</"
+"emphasis>."
+msgstr "(22) 方位を示す語です。たとえば <emphasis>North</emphasis>です。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:273
 #, no-c-format
 msgid "MILE"
-msgstr ""
+msgstr "MILE"
 
 #. Tag: para
 #: extras_address_standardizer.xml:275
 #, no-c-format
 msgid "(20). Words used to denote milepost addresses."
-msgstr ""
+msgstr "(20) 距離標の住所を示す語です。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:280
 #, no-c-format
 msgid "ROAD"
-msgstr ""
+msgstr "ROAD"
 
 #. Tag: para
 #: extras_address_standardizer.xml:282
 #, no-c-format
 msgid ""
-"(6). Words and abbreviations used to denote highways and roads. For example:"
-" the <emphasis>Interstate</emphasis> in <emphasis>Interstate 5</emphasis>"
+"(6). Words and abbreviations used to denote highways and roads. For example: "
+"the <emphasis>Interstate</emphasis> in <emphasis>Interstate 5</emphasis>"
 msgstr ""
+"(6) 高速道路と道路を示す語または略語です。たとえば<emphasis>Interstate 5</"
+"emphasis>の<emphasis>Interstate</emphasis>です。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:287 extras_address_standardizer.xml:456
 #, no-c-format
 msgid "<term>RR</term>"
-msgstr ""
+msgstr "<term>RR</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:289
 #, no-c-format
 msgid ""
-"(8). Words and abbreviations used to denote rural routes. "
-"<emphasis>RR</emphasis>."
+"(8). Words and abbreviations used to denote rural routes. <emphasis>RR</"
+"emphasis>."
 msgstr ""
+"(8) 地方集配路線を示す語または略語です。たとえば<emphasis>RR</emphasis>です。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:294
@@ -766,12 +869,14 @@ msgid ""
 "(2). Words and abbreviation used to denote street typess. For example: "
 "<emphasis>ST</emphasis> or <emphasis>AVE</emphasis>."
 msgstr ""
+"(2) ストリート種別を示す語または略語です。たとえば<emphasis>ST</emphasis>や"
+"<emphasis>AVE</emphasis>です。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:301 extras_address_standardizer.xml:461
 #, no-c-format
 msgid "UNITH"
-msgstr ""
+msgstr "UNITH"
 
 #. Tag: para
 #: extras_address_standardizer.xml:303
@@ -780,70 +885,73 @@ msgid ""
 "(16). Words and abbreviation used to denote internal subaddresses. For "
 "example, <emphasis>APT</emphasis> or <emphasis>UNIT</emphasis>."
 msgstr ""
+"(16) 内部の部分住所を示す語または略語です。たとえば<emphasis>APT</emphasis>や"
+"<emphasis>UNIT</emphasis>です。"
 
 #. Tag: emphasis
 #: extras_address_standardizer.xml:308
 #, no-c-format
 msgid "Postal Type Input Tokens"
-msgstr ""
+msgstr "郵便型入力トークン"
 
 #. Tag: term
 #: extras_address_standardizer.xml:311
 #, no-c-format
 msgid "QUINT"
-msgstr ""
+msgstr "QUINT"
 
 #. Tag: para
 #: extras_address_standardizer.xml:313
 #, no-c-format
 msgid "(28). A 5 digit number. Identifies a Zip Code"
-msgstr ""
+msgstr "(28) 5桁の番号。ZIPコードです。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:318
 #, no-c-format
 msgid "QUAD"
-msgstr ""
+msgstr "QUAD"
 
 #. Tag: para
 #: extras_address_standardizer.xml:320
 #, no-c-format
 msgid "(29). A 4 digit number. Identifies ZIP4."
-msgstr ""
+msgstr "(29) 4桁の番号。ZIP4です。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:325
 #, no-c-format
 msgid "<term>PCH</term>"
-msgstr ""
+msgstr "<term>PCH</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:327
 #, no-c-format
 msgid ""
-"(27). A 3 character sequence of letter number letter. Identifies an FSA, the"
-" first 3 characters of a Canadian postal code."
+"(27). A 3 character sequence of letter number letter. Identifies an FSA, the "
+"first 3 characters of a Canadian postal code."
 msgstr ""
+"(27) 英数3文字の順列です。カナダの郵便番号の先頭3文字であるFSAを示します。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:332
 #, no-c-format
 msgid "<term>PCT</term>"
-msgstr ""
+msgstr "<term>PCT</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:334
 #, no-c-format
 msgid ""
-"(26). A 3 character sequence of number letter number. Identifies an LDU, the"
-" last 3 characters of a Canadian postal code."
-msgstr ""
+"(26). A 3 character sequence of number letter number. Identifies an LDU, the "
+"last 3 characters of a Canadian postal code."
+msgstr "(26) 英数3文字の順列です。カナダの郵便番号の末尾3文字です。"
 
 #. Tag: emphasis
 #: extras_address_standardizer.xml:339
 #, no-c-format
 msgid "Stopwords"
-msgstr ""
+msgstr "ストップワード"
 
 #. Tag: para
 #: extras_address_standardizer.xml:340
@@ -852,12 +960,14 @@ msgid ""
 "STOPWORDS combine with WORDS. In rules a string of multiple WORDs and "
 "STOPWORDs will be represented by a single WORD token."
 msgstr ""
+"STOPWORD (訳注: 処理対象外とする語)はWORDと結合します。規則で、複数のWORDと"
+"STOPWORDの列は、単一のWORDトークンで表現されます。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:343
 #, no-c-format
 msgid "STOPWORD"
-msgstr ""
+msgstr "STOPWORD"
 
 #. Tag: para
 #: extras_address_standardizer.xml:345
@@ -866,12 +976,14 @@ msgid ""
 "(7). A word with low lexical significance, that can be omitted in parsing. "
 "For example: <emphasis>THE</emphasis>."
 msgstr ""
+"(7) 重要性が低い語で、パース時に省かれます。たとえば<emphasis>THE</emphasis>"
+"が該当します。"
 
 #. Tag: title
 #: extras_address_standardizer.xml:354
 #, no-c-format
 msgid "Output Tokens"
-msgstr ""
+msgstr "出力トークン"
 
 #. Tag: para
 #: extras_address_standardizer.xml:355
@@ -880,15 +992,19 @@ msgid ""
 "After the first -1 (terminator), follows the output tokens and their order, "
 "followed by a terminator <code>-1</code>. Numbers for corresponding output "
 "tokens are listed in <xref linkend=\"stdaddr\"/>. What are allowed is "
-"dependent on kind of rule. Output tokens valid for each rule type are listed"
-" in <xref linkend=\"rule_types_rank\"/>."
+"dependent on kind of rule. Output tokens valid for each rule type are listed "
+"in <xref linkend=\"rule_types_rank\"/>."
 msgstr ""
+"1番目の-1 (終端)の後に、出力トークンが続き、その後に<code>-1</code>が続きま"
+"す。対応する出力トークンの番号は、<xref linkend=\"stdaddr\"/>に挙げています。"
+"許されるものは、規則の種類に依存します。それぞれの規則種別で有効なトークンは"
+"<xref linkend=\"rule_types_rank\"/>に挙げています。"
 
 #. Tag: title
 #: extras_address_standardizer.xml:358
 #, no-c-format
 msgid "Rule Types and Rank"
-msgstr ""
+msgstr "規則種別と階級"
 
 #. Tag: para
 #: extras_address_standardizer.xml:359
@@ -898,12 +1014,14 @@ msgid ""
 "following, followed by a rule rank. The rules are ranked from 0 (lowest) to "
 "17 (highest)."
 msgstr ""
+"規則の最後の部分は規則種別で、次に挙げるものの一つが示すものです。この後には"
+"階級が続きます。規則は0 (最低) から17 (最高)までに階級付けされます。"
 
 #. Tag: emphasis
 #: extras_address_standardizer.xml:361
 #, no-c-format
 msgid "MACRO_C"
-msgstr ""
+msgstr "MACRO_C"
 
 #. Tag: para
 #: extras_address_standardizer.xml:362
@@ -912,45 +1030,51 @@ msgid ""
 "(token number = \"<emphasis role=\"bold\">0</emphasis>\"). The class of "
 "rules for parsing MACRO clauses such as <emphasis>PLACE STATE ZIP</emphasis>"
 msgstr ""
+"(トークン番号 = \"<emphasis role=\"bold\">0</emphasis>\") <emphasis>PLACE "
+"STATE ZIP</emphasis>のようなMACRO節をパースするための規則のクラス。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:363
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (excerpted from "
-"<ulink "
-"url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>."
+"<ulink url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>."
 msgstr ""
+"<emphasis role=\"bold\">MACRO_C出力トークン</emphasis> (<ulink url=\"http://"
+"www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www.pagcgeo.org/"
+"docs/html/pagc-12.html#--r-typ--</ulink>からの引用)"
 
 #. Tag: term
 #: extras_address_standardizer.xml:366
 #, no-c-format
 msgid "CITY"
-msgstr ""
+msgstr "CITY"
 
 #. Tag: para
 #: extras_address_standardizer.xml:368
 #, no-c-format
 msgid "(token number \"10\"). Example \"Albany\""
 msgstr ""
+"(トークン番号 \"10\") たとえば\"Albany\" (訳注: ニューヨーク州の州都)等。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:372
 #, no-c-format
 msgid "STATE"
-msgstr ""
+msgstr "STATE"
 
 #. Tag: para
 #: extras_address_standardizer.xml:374
 #, no-c-format
 msgid "(token number \"11\"). Example \"NY\""
-msgstr ""
+msgstr "(トークン番号 \"11\") たとえば\"NY\" (訳注: ニューヨーク州)等。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:378
 #, no-c-format
 msgid "NATION"
-msgstr ""
+msgstr "NATION"
 
 #. Tag: para
 #: extras_address_standardizer.xml:380
@@ -959,12 +1083,14 @@ msgid ""
 "(token number \"12\"). This attribute is not used in most reference files. "
 "Example \"USA\""
 msgstr ""
+"(トークン番号 \"12\") ほとんどの参照ファイル内で使われない属性です。たとえば"
+"\"USA\"等。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:384
 #, no-c-format
 msgid "POSTAL"
-msgstr ""
+msgstr "POSTAL"
 
 #. Tag: para
 #: extras_address_standardizer.xml:386
@@ -973,64 +1099,75 @@ msgid ""
 "(token number \"13\"). (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). This "
 "attribute is used for both the US Zip and the Canadian Postal Codes."
 msgstr ""
+"(トークン番号 \"13\") (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). 米国Zip (郵"
+"便番号)とカナダ郵便番号の両方で使われます。"
 
 #. Tag: emphasis
 #: extras_address_standardizer.xml:391
 #, no-c-format
 msgid "MICRO_C"
-msgstr ""
+msgstr "MICRO_C"
 
 #. Tag: para
 #: extras_address_standardizer.xml:392
 #, no-c-format
 msgid ""
 "(token number = \"<emphasis role=\"bold\">1</emphasis>\"). The class of "
-"rules for parsing full MICRO clauses (such as House, street, sufdir, predir,"
-" pretyp, suftype, qualif) (ie ARC_C plus CIVIC_C). These rules are not used "
+"rules for parsing full MICRO clauses (such as House, street, sufdir, predir, "
+"pretyp, suftype, qualif) (ie ARC_C plus CIVIC_C). These rules are not used "
 "in the build phase."
 msgstr ""
+"(トークン番号 = \"<emphasis role=\"bold\">1</emphasis>\") 完全なMICRO節 "
+"(House, street, sufdir, predir, pretyp, suftype, qualif等)をパースするための"
+"規則のクラス (ARC_CとCIVIC_Cの和)。建物フェーズでは使われません。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:393
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">MICRO_C output tokens</emphasis> (excerpted from "
-"<ulink "
-"url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>."
+"<ulink url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>."
 msgstr ""
+"<emphasis role=\"bold\">MICRO_C 出力トークン</emphasis> (<ulink url=\"http://"
+"www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www.pagcgeo.org/"
+"docs/html/pagc-12.html#--r-typ--</ulink>からの引用)"
 
 #. Tag: term
 #: extras_address_standardizer.xml:395
 #, no-c-format
 msgid "HOUSE"
-msgstr ""
+msgstr "HOUSE"
 
 #. Tag: term
 #: extras_address_standardizer.xml:413
 #, no-c-format
 msgid "street"
-msgstr ""
+msgstr "street"
 
 #. Tag: emphasis
 #: extras_address_standardizer.xml:430
 #, no-c-format
 msgid "ARC_C"
-msgstr ""
+msgstr "ARC_C"
 
 #. Tag: para
 #: extras_address_standardizer.xml:431
 #, no-c-format
 msgid ""
 "(token number = \"<emphasis role=\"bold\">2</emphasis>\"). The class of "
-"rules for parsing MICRO clauses, excluding the HOUSE attribute. As such uses"
-" same set of output tokens as MICRO_C minus the HOUSE token."
+"rules for parsing MICRO clauses, excluding the HOUSE attribute. As such uses "
+"same set of output tokens as MICRO_C minus the HOUSE token."
 msgstr ""
+"(トークン番号 = \"<emphasis role=\"bold\">2</emphasis>\") HOUSE属性を除いた"
+"MICRO節をパースするための規則のクラス。MICRO_CからHOUSEトークンを除いた出力"
+"トークン集合と同じです。"
 
 #. Tag: emphasis
 #: extras_address_standardizer.xml:433
 #, no-c-format
 msgid "CIVIC_C"
-msgstr ""
+msgstr "CIVIC_C"
 
 #. Tag: para
 #: extras_address_standardizer.xml:434
@@ -1039,12 +1176,14 @@ msgid ""
 "(token number = \"<emphasis role=\"bold\">3</emphasis>\"). The class of "
 "rules for parsing the HOUSE attribute."
 msgstr ""
+"(トークン番号 = \"<emphasis role=\"bold\">3</emphasis>\") HOUSE属性をパースす"
+"るための規則のクラス。"
 
 #. Tag: emphasis
 #: extras_address_standardizer.xml:436
 #, no-c-format
 msgid "EXTRA_C"
-msgstr ""
+msgstr "EXTRA_C"
 
 #. Tag: para
 #: extras_address_standardizer.xml:437
@@ -1054,50 +1193,58 @@ msgid ""
 "rules for parsing EXTRA attributes - attributes excluded from geocoding. "
 "These rules are not used in the build phase."
 msgstr ""
+"(トークン番号 = \"<emphasis role=\"bold\">4</emphasis>\") EXTRA属性 (ジオコー"
+"ディングから除かれる属性)をパースするための規則のクラス。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:439
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">EXTRA_C output tokens</emphasis> (excerpted from "
-"<ulink "
-"url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>."
+"<ulink url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>."
 msgstr ""
+"<emphasis role=\"bold\">EXTRA_C 出力トークン</emphasis> (<ulink url=\"http://"
+"www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www.pagcgeo.org/"
+"docs/html/pagc-12.html#--r-typ--</ulink>からの引用)"
 
 #. Tag: term
 #: extras_address_standardizer.xml:441
 #, no-c-format
 msgid "BLDNG"
-msgstr ""
+msgstr "BLDNG"
 
 #. Tag: para
 #: extras_address_standardizer.xml:443
 #, no-c-format
-msgid ""
-"(token number <code>0</code>): Unparsed building identifiers and types."
-msgstr ""
+msgid "(token number <code>0</code>): Unparsed building identifiers and types."
+msgstr "(トークン番号 <code>0</code>): パースされていない建物識別子と種別。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:448
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"i(token number <code>14</code>): The <emphasis role=\"bold\">BOX</emphasis> "
+"(token number <code>14</code>): The <emphasis role=\"bold\">BOX</emphasis> "
 "in <code>BOX 3B</code>"
 msgstr ""
+"(トークン番号 <code>14</code>): <code>BOX 3B</code>内の<emphasis role=\"bold"
+"\">BOX</emphasis>にあたります。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:451
 #, no-c-format
 msgid "BOXT"
-msgstr ""
+msgstr "BOXT"
 
 #. Tag: para
 #: extras_address_standardizer.xml:453
 #, no-c-format
 msgid ""
-"(token number <code>15</code>): The <emphasis role=\"bold\">3B</emphasis> in"
-" <code>BOX 3B</code>"
+"(token number <code>15</code>): The <emphasis role=\"bold\">3B</emphasis> in "
+"<code>BOX 3B</code>"
 msgstr ""
+"(トークン番号 <code>15</code>): <code>BOX 3B</code>内の<emphasis role=\"bold"
+"\">3B</emphasis>にあたります。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:458
@@ -1106,6 +1253,8 @@ msgid ""
 "(token number <code>8</code>): The <emphasis role=\"bold\">RR</emphasis> in "
 "<code>RR 7</code>"
 msgstr ""
+"(トークン番号 <code>8</code>): <code>RR 7</code>内の<emphasis role=\"bold"
+"\">RR</emphasis>にあたります。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:463
@@ -1114,38 +1263,42 @@ msgid ""
 "(token number <code>16</code>): The <emphasis role=\"bold\">APT</emphasis> "
 "in <code>APT 3B</code>"
 msgstr ""
+"(トークン番号 <code>16</code>): <code>APT 3B</code>内の<emphasis role=\"bold"
+"\">APT</emphasis>にあたります。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:466
 #, no-c-format
 msgid "UNITT"
-msgstr ""
+msgstr "UNITT"
 
 #. Tag: para
 #: extras_address_standardizer.xml:468
 #, no-c-format
 msgid ""
-"(token number <code>17</code>): The <emphasis role=\"bold\">3B</emphasis> in"
-" <code>APT 3B</code>"
+"(token number <code>17</code>): The <emphasis role=\"bold\">3B</emphasis> in "
+"<code>APT 3B</code>"
 msgstr ""
+"(トークン番号<code>17</code>): <code>APT 3B</code>内の<emphasis role=\"bold"
+"\">3B</emphasis>にあたります。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:471
 #, no-c-format
 msgid "UNKNWN"
-msgstr ""
+msgstr "UNKNWN"
 
 #. Tag: para
 #: extras_address_standardizer.xml:473
 #, no-c-format
 msgid "(token number <code>9</code>): An otherwise unclassified output."
-msgstr ""
+msgstr "(トークン番号<code>9</code>): その他分類対象外の出力。"
 
 #. Tag: refname
 #: extras_address_standardizer.xml:482
 #, no-c-format
 msgid "lex table"
-msgstr ""
+msgstr "lexテーブル"
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:483
@@ -1155,6 +1308,8 @@ msgid ""
 "with (a) input tokens ( See <xref linkend=\"rule_input_tokens\"/>) and (b) "
 "standardized representations."
 msgstr ""
+"lexテーブルは英数字の入力をクラス分けして (a) 入力トークン (<xref linkend="
+"\"rule_input_tokens\"/> 参照)と (b)  標準化表現 とに関連付けます。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:487
@@ -1165,89 +1320,98 @@ msgid ""
 "standardized representations. Things you will find in these tables are "
 "<code>ONE</code> mapped to stdword: <code>1</code>."
 msgstr ""
+"lex (lexiconの略語)テーブルは、英数入力を分類し、入力を (a) <xref linkend="
+"\"rule_input_tokens\"/>および (b) 標準化された表現、に関連付けます。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:489
 #, no-c-format
 msgid "A lex has at least the following columns in the table. You may add"
-msgstr ""
+msgstr "lexは少なくとも次のカラムを持ちます。追加できます。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:497 extras_address_standardizer.xml:539
 #, no-c-format
 msgid "<term>seq</term>"
-msgstr ""
+msgstr "<term>seq</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:499
 #, no-c-format
 msgid "integer: definition number?"
-msgstr ""
+msgstr "整数: 定義番号？"
 
 #. Tag: term
 #: extras_address_standardizer.xml:503 extras_address_standardizer.xml:544
 #, no-c-format
 msgid "word"
-msgstr ""
+msgstr "word"
 
 #. Tag: para
 #: extras_address_standardizer.xml:505 extras_address_standardizer.xml:546
 #, no-c-format
 msgid "text: the input word"
-msgstr ""
+msgstr "文字列: 入力単語"
 
 #. Tag: term
 #: extras_address_standardizer.xml:508 extras_address_standardizer.xml:549
 #, no-c-format
 msgid "stdword"
-msgstr ""
+msgstr "stdword"
 
 #. Tag: para
 #: extras_address_standardizer.xml:510 extras_address_standardizer.xml:551
 #, no-c-format
 msgid "text: the standardized replacement word"
-msgstr ""
+msgstr "文字列: 正規化した置き換え語"
 
 #. Tag: term
 #: extras_address_standardizer.xml:513 extras_address_standardizer.xml:554
 #, no-c-format
 msgid "token"
-msgstr ""
+msgstr "token"
 
 #. Tag: para
 #: extras_address_standardizer.xml:515 extras_address_standardizer.xml:556
 #, no-c-format
 msgid ""
 "integer: the kind of word it is. Only if it is used in this context will it "
-"be replaced. Refer to <ulink "
-"url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--\">PAGC "
-"Tokens</ulink>."
+"be replaced. Refer to <ulink url=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--i-tok--\">PAGC Tokens</ulink>."
 msgstr ""
+"整数: その語の種別。このコンテキストで使われる場合のみ置き換えられます。"
+"<ulink url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--\">PAGC "
+"Tokens</ulink>を参照して下さい。"
 
 #. Tag: refname
 #: extras_address_standardizer.xml:524
 #, no-c-format
 msgid "gaz table"
-msgstr ""
+msgstr "gaz table"
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:525
 #, no-c-format
 msgid ""
-"A gaz table is used to standardize place names and associate that input with"
-" (a) input tokens ( See <xref linkend=\"rule_input_tokens\"/>) and (b) "
+"A gaz table is used to standardize place names and associate that input with "
+"(a) input tokens ( See <xref linkend=\"rule_input_tokens\"/>) and (b) "
 "standardized representations."
 msgstr ""
+"gazテーブルは、地名を標準化し、入力と、(a)入力トークン (<xref linkend="
+"\"rule_input_tokens\"/>を参照して下さい)および (b) 標準化された表現とを関連付"
+"けるために使われます。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:529
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"A gaz (short for gazeteer) table is used to classify place names and "
+"A gaz (short for gazeteer) table is used to standardize place names and "
 "associate that input with <xref linkend=\"rule_input_tokens\"/> and (b) "
 "standardized representations. For example if you are in US, you may load "
 "these with State Names and associated abbreviations."
 msgstr ""
+"gaz (gazeteerの略語)テーブルは、地名を分類し、入力を (a) <xref linkend="
+"\"rule_input_tokens\"/>および (b) 標準化された表現、に関連付けます。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:531
@@ -1256,31 +1420,33 @@ msgid ""
 "A gaz table has at least the following columns in the table. You may add "
 "more columns if you wish for your own purposes."
 msgstr ""
+"gazテーブルは少なくとも次のカラムを持ちます。独自の目的のために追加することが"
+"できます。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:541
 #, no-c-format
 msgid ""
 "integer: definition number? - identifer used for that instance of the word"
-msgstr ""
+msgstr "整数: 定義番号？ - 語のインスタンスに使われる識別子"
 
 #. Tag: title
 #: extras_address_standardizer.xml:567
 #, no-c-format
 msgid "Address Standardizer Functions"
-msgstr ""
+msgstr "住所標準化関数"
 
 #. Tag: refname
 #: extras_address_standardizer.xml:570
 #, no-c-format
 msgid "parse_address"
-msgstr ""
+msgstr "parse_address"
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:572
 #, no-c-format
 msgid "Takes a 1 line address and breaks into parts"
-msgstr ""
+msgstr "1行の住所を取り、分割します。"
 
 #. Tag: funcprototype
 #: extras_address_standardizer.xml:577
@@ -1289,18 +1455,24 @@ msgid ""
 "<funcdef>record <function>parse_address</function></funcdef> "
 "<paramdef><type>text </type> <parameter>address</parameter></paramdef>"
 msgstr ""
+"<funcdef>record <function>parse_address</function></funcdef> "
+"<paramdef><type>text </type> <parameter>address</parameter></paramdef>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:588
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Returns takes as input an address, and returns a record output consisting of"
-" fields <emphasis>num</emphasis>, <emphasis>street</emphasis>, "
-"<emphasis>street2</emphasis>, <emphasis>address1</emphasis>, "
-"<emphasis>city</emphasis>, <emphasis>state</emphasis>, "
-"<emphasis>zip</emphasis>, <emphasis>zipplus</emphasis>, "
-"<emphasis>country</emphasis>."
+"Returns takes an address as input, and returns a record output consisting of "
+"fields <emphasis>num</emphasis>, <emphasis>street</emphasis>, "
+"<emphasis>street2</emphasis>, <emphasis>address1</emphasis>, <emphasis>city</"
+"emphasis>, <emphasis>state</emphasis>, <emphasis>zip</emphasis>, "
+"<emphasis>zipplus</emphasis>, <emphasis>country</emphasis>."
 msgstr ""
+"一つの住所を入力に取り、<emphasis>num</emphasis>、<emphasis>street</"
+"emphasis>、<emphasis>street2</emphasis>、<emphasis>address1</emphasis>、"
+"<emphasis>city</emphasis>、<emphasis>state</emphasis>、<emphasis>zip</"
+"emphasis>、<emphasis>zipplus</emphasis>、<emphasis>country</emphasis>からなる"
+"レコードを一つ返します。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:592 extras_address_standardizer.xml:654
@@ -1318,15 +1490,17 @@ msgstr "例"
 #: extras_address_standardizer.xml:600
 #, no-c-format
 msgid "Single Addresss"
-msgstr ""
+msgstr "単一の住所"
 
 #. Tag: programlisting
 #: extras_address_standardizer.xml:601
 #, no-c-format
 msgid ""
-"SELECT num, street, city, zip, zipplus \n"
+"SELECT num, street, city, zip, zipplus\n"
 "        FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234') AS a;"
 msgstr ""
+"SELECT num, street, city, zip, zipplus\n"
+"        FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234') AS a;"
 
 #. Tag: screen
 #: extras_address_standardizer.xml:602
@@ -1336,12 +1510,15 @@ msgid ""
 "-----+------------------+--------+-------+---------\n"
 " 1   | Devonshire Place | Boston | 02109 | 1234"
 msgstr ""
+"num |      street      |  city  |  zip  | zipplus\n"
+"-----+------------------+--------+-------+---------\n"
+" 1   | Devonshire Place | Boston | 02109 | 1234"
 
 #. Tag: para
 #: extras_address_standardizer.xml:604
 #, no-c-format
 msgid "Table of addresses"
-msgstr ""
+msgstr "住所テーブル"
 
 #. Tag: programlisting
 #: extras_address_standardizer.xml:605
@@ -1358,12 +1535,30 @@ msgid ""
 " ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),\n"
 " ('950 Main Street, Worcester, MA 01610');\n"
 "\n"
-" -- parse the addresses \n"
+" -- parse the addresses\n"
 " -- if you want all fields you can use (a).*\n"
-"SELECT addid, (a).num, (a).street, (a).city, (a).state, (a).zip, (a).zipplus\n"
+"SELECT addid, (a).num, (a).street, (a).city, (a).state, (a).zip, (a)."
+"zipplus\n"
 "FROM (SELECT addid, parse_address(address) As a\n"
 " FROM places) AS p;"
 msgstr ""
+"-- 基本テーブル\n"
+"CREATE TABLE places(addid serial PRIMARY KEY, address text);\n"
+"\n"
+"INSERT INTO places(address)\n"
+"VALUES ('529 Main Street, Boston MA, 02129'),\n"
+" ('77 Massachusetts Avenue, Cambridge, MA 02139'),\n"
+" ('25 Wizard of Oz, Walaford, KS 99912323'),\n"
+" ('26 Capen Street, Medford, MA'),\n"
+" ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),\n"
+" ('950 Main Street, Worcester, MA 01610');\n"
+"\n"
+" -- 住所のパース\n"
+" -- 全てのフィールドで使う場合には (a).* が使えます\n"
+"SELECT addid, (a).num, (a).street, (a).city, (a).state, (a).zip, (a)."
+"zipplus\n"
+"FROM (SELECT addid, parse_address(address) As a\n"
+" FROM places) AS p;"
 
 #. Tag: screen
 #: extras_address_standardizer.xml:606
@@ -1379,6 +1574,15 @@ msgid ""
 "     6 | 950 | Main Street          | Worcester | MA    | 01610 |\n"
 "(6 rows)"
 msgstr ""
+"addid | num |        street        |   city    | state |  zip  | zipplus\n"
+"-------+-----+----------------------+-----------+-------+-------+---------\n"
+"     1 | 529 | Main Street          | Boston    | MA    | 02129 |\n"
+"     2 | 77  | Massachusetts Avenue | Cambridge | MA    | 02139 |\n"
+"     3 | 25  | Wizard of Oz         | Walaford  | KS    | 99912 | 323\n"
+"     4 | 26  | Capen Street         | Medford   | MA    |       |\n"
+"     5 | 124 | Mount Auburn St      | Cambridge | MA    | 02138 |\n"
+"     6 | 950 | Main Street          | Worcester | MA    | 01610 |\n"
+"(6 rows)"
 
 #. Tag: title
 #: extras_address_standardizer.xml:611 extras_address_standardizer.xml:682
@@ -1390,7 +1594,7 @@ msgstr "関連情報"
 #: extras_address_standardizer.xml:619
 #, no-c-format
 msgid "standardize_address"
-msgstr ""
+msgstr "standardize_address"
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:621
@@ -1399,40 +1603,56 @@ msgid ""
 "Returns an stdaddr form of an input address utilizing lex, gaz, and rule "
 "tables."
 msgstr ""
+"lexテーブル、gazテーブルおよび規則テーブルを使って、入力住所をstdaddr形式で返"
+"します。"
 
 #. Tag: funcsynopsis
 #: extras_address_standardizer.xml:625
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>stdaddr "
-"<function>standardize_address</function></funcdef> <paramdef><type>text "
-"</type> <parameter>lextab</parameter></paramdef> <paramdef><type>text "
-"</type> <parameter>gaztab</parameter></paramdef> <paramdef><type>text "
-"</type> <parameter>rultab</parameter></paramdef> <paramdef><type>text "
-"</type> <parameter>address</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>stdaddr "
-"<function>standardize_address</function></funcdef> <paramdef><type>text "
-"</type> <parameter>lextab</parameter></paramdef> <paramdef><type>text "
-"</type> <parameter>gaztab</parameter></paramdef> <paramdef><type>text "
-"</type> <parameter>rultab</parameter></paramdef> <paramdef><type>text "
-"</type> <parameter>micro</parameter></paramdef> <paramdef><type>text </type>"
-" <parameter>macro</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>stdaddr <function>standardize_address</function></"
+"funcdef> <paramdef><type>text </type> <parameter>lextab</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>gaztab</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>rultab</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>address</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>stdaddr "
+"<function>standardize_address</function></funcdef> <paramdef><type>text </"
+"type> <parameter>lextab</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>gaztab</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>rultab</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>micro</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>macro</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>stdaddr <function>standardize_address</function></"
+"funcdef> <paramdef><type>text </type> <parameter>lextab</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>gaztab</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>rultab</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>address</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>stdaddr "
+"<function>standardize_address</function></funcdef> <paramdef><type>text </"
+"type> <parameter>lextab</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>gaztab</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>rultab</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>micro</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>macro</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:648
 #, no-c-format
 msgid ""
 "Returns an <xref linkend=\"stdaddr\"/> form of an input address utilizing "
-"<xref linkend=\"lextab\"/> table name, <xref linkend=\"gaztab\"/>, and <xref"
-" linkend=\"rulestab\"/> table names and an address."
+"<xref linkend=\"lextab\"/> table name, <xref linkend=\"gaztab\"/>, and <xref "
+"linkend=\"rulestab\"/> table names and an address."
 msgstr ""
+"指定された<xref linkend=\"lextab\"/>、<xref linkend=\"gaztab\"/>および<xref "
+"linkend=\"rulestab\"/>のテーブルを使って、入力住所を<xref linkend=\"stdaddr"
+"\"/>形式で返します。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:650
 #, no-c-format
 msgid "Variant 1: Takes an address as a single line."
-msgstr ""
+msgstr "1番目の形式: 単一行で住所を取る形式です。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:651
@@ -1443,12 +1663,16 @@ msgid ""
 "street</code>, and a macro consisting of standard postal second line of an "
 "address e.g <code>city, state postal_code country</code>."
 msgstr ""
+"2番目の形式: 住所を二つの部分から取ります。<varname>micro</varname>は"
+"<code>house_num street</code>等のような、標準的な宛先書式の1行目です。"
+"<varname>macro</varname>は、<code>city, state postal_code country</code>等の"
+"ような、標準的な宛先書式の2行目です。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:661
 #, no-c-format
 msgid "Using address_standardizer_data_us extension"
-msgstr ""
+msgstr "address_standardizer_data_usエクステンションを使います。"
 
 #. Tag: programlisting
 #: extras_address_standardizer.xml:662
@@ -1456,30 +1680,46 @@ msgstr ""
 msgid ""
 "CREATE EXTENSION address_standardizer_data_us; -- only needs to be done once"
 msgstr ""
+"CREATE EXTENSION address_standardizer_data_us; -- only needs to be done once"
 
 #. Tag: para
 #: extras_address_standardizer.xml:664
 #, no-c-format
 msgid ""
 "Variant 1: Single line address. This doesn't work well with non-US addresses"
-msgstr ""
+msgstr "一つ目の版: 単一行住所。米国でない住所では十分に働きません。"
 
 #. Tag: programlisting
 #: extras_address_standardizer.xml:665
 #, no-c-format
 msgid ""
-"SELECT house_num, name, suftype, city, country, state, unit  FROM standardize_address('us_lex', \n"
-"                           'us_gaz', 'us_rules', 'One Devonshire Place, PH 301, Boston, MA 02109');"
+"SELECT house_num, name, suftype, city, country, state, unit  FROM "
+"standardize_address('us_lex',\n"
+"                           'us_gaz', 'us_rules', 'One Devonshire Place, PH "
+"301, Boston, MA 02109');"
 msgstr ""
+"SELECT house_num, name, suftype, city, country, state, unit  FROM "
+"standardize_address('us_lex',\n"
+"                           'us_gaz', 'us_rules', 'One Devonshire Place, PH "
+"301, Boston, MA 02109');"
 
 #. Tag: screen
 #: extras_address_standardizer.xml:666
 #, no-c-format
 msgid ""
-"house_num |    name    | suftype |  city  | country |     state     |      unit\n"
-"----------+------------+---------+--------+---------+---------------+-----------------\n"
-"1         | DEVONSHIRE | PLACE   | BOSTON | USA     | MASSACHUSETTS | # PENTHOUSE 301"
+"house_num |    name    | suftype |  city  | country |     state     |      "
+"unit\n"
+"----------+------------+---------+--------+---------+---------------"
+"+-----------------\n"
+"1         | DEVONSHIRE | PLACE   | BOSTON | USA     | MASSACHUSETTS | # "
+"PENTHOUSE 301"
 msgstr ""
+"house_num |    name    | suftype |  city  | country |     state     |      "
+"unit\n"
+"----------+------------+---------+--------+---------+---------------"
+"+-----------------\n"
+"1         | DEVONSHIRE | PLACE   | BOSTON | USA     | MASSACHUSETTS | # "
+"PENTHOUSE 301"
 
 #. Tag: para
 #: extras_address_standardizer.xml:667
@@ -1488,14 +1728,21 @@ msgid ""
 "Using tables packaged with tiger geocoder. This example only works if you "
 "installed <varname>postgis_tiger_geocoder</varname>."
 msgstr ""
+"Tigerジオコーダに同梱されているテーブルを使います。この例は"
+"<varname>postgis_tiger_geocoder</varname>をインストールしている場合のみ動作し"
+"ます。"
 
 #. Tag: programlisting
 #: extras_address_standardizer.xml:668
 #, no-c-format
 msgid ""
-"SELECT *  FROM standardize_address('tiger.pagc_lex', \n"
-"         'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109-1234');"
+"SELECT *  FROM standardize_address('tiger.pagc_lex',\n"
+"         'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH "
+"301, Boston, MA 02109-1234');"
 msgstr ""
+"SELECT *  FROM standardize_address('tiger.pagc_lex',\n"
+"         'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH "
+"301, Boston, MA 02109-1234');"
 
 #. Tag: para
 #: extras_address_standardizer.xml:670
@@ -1504,15 +1751,22 @@ msgid ""
 "Make easier to read we'll dump output using hstore extension CREATE "
 "EXTENSION hstore; you need to install"
 msgstr ""
+"読みやすくするために、hstoreエクステンションを使ってダウンぷします。必要なら "
+"CREATE EXTENSION hstore; を実行します。"
 
 #. Tag: programlisting
 #: extras_address_standardizer.xml:671
 #, no-c-format
 msgid ""
-"SELECT (each(hstore(p))).*  \n"
-" FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz', \n"
-"   'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109') As p;"
+"SELECT (each(hstore(p))).*\n"
+" FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
+"   'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109') As "
+"p;"
 msgstr ""
+"SELECT (each(hstore(p))).*\n"
+" FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
+"   'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109') As "
+"p;"
 
 #. Tag: screen
 #: extras_address_standardizer.xml:672 extras_address_standardizer.xml:676
@@ -1538,26 +1792,52 @@ msgid ""
 " ruralroute |\n"
 "(16 rows)"
 msgstr ""
+"key     |      value\n"
+"------------+-----------------\n"
+" box        |\n"
+" city       | BOSTON\n"
+" name       | DEVONSHIRE\n"
+" qual       |\n"
+" unit       | # PENTHOUSE 301\n"
+" extra      |\n"
+" state      | MA\n"
+" predir     |\n"
+" sufdir     |\n"
+" country    | USA\n"
+" pretype    |\n"
+" suftype    | PL\n"
+" building   |\n"
+" postcode   | 02109\n"
+" house_num  | 1\n"
+" ruralroute |\n"
+"(16 rows)"
 
 #. Tag: para
 #: extras_address_standardizer.xml:674
 #, no-c-format
 msgid "Variant 2: As a two part Address"
-msgstr ""
+msgstr "二つ目の形式: 二つの部分からなる住所"
 
 #. Tag: programlisting
 #: extras_address_standardizer.xml:675
 #, no-c-format
 msgid ""
-"SELECT (each(hstore(p))).*  \n"
-" FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz', \n"
-"   'tiger.pagc_rules', 'One Devonshire Place, PH 301', 'Boston, MA 02109, US') As p;"
+"SELECT (each(hstore(p))).*\n"
+" FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
+"   'tiger.pagc_rules', 'One Devonshire Place, PH 301', 'Boston, MA 02109, "
+"US') As p;"
 msgstr ""
+"SELECT (each(hstore(p))).*\n"
+" FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
+"   'tiger.pagc_rules', 'One Devonshire Place, PH 301', 'Boston, MA 02109, "
+"US') As p;"
 
 #. Tag: para
 #: extras_address_standardizer.xml:684
 #, no-c-format
 msgid ""
-", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref "
-"linkend=\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
+", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref linkend="
+"\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
 msgstr ""
+", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref linkend="
+"\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"

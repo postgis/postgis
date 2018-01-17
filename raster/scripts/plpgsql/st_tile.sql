@@ -5,21 +5,21 @@
 --
 ----------------------------------------------------------------------
 -- ST_Tile
--- Split a raster into a set of raster tiles, one tile per row returned. 
--- Works on multiband rasters. There is no way to specify the upper left 
--- corner of the new tiled grid. The grid start at the upperleft corner 
+-- Split a raster into a set of raster tiles, one tile per row returned.
+-- Works on multiband rasters. There is no way to specify the upper left
+-- corner of the new tiled grid. The grid start at the upperleft corner
 -- of the provided raster.
 --
 -- rast   - Raster to be tiled.
 -- width  - Width of the tiles.
 -- height - Height of the tiles
--- padwithnodata - If TRUE, the produced tiles are strictly width x heigth pixels. 
---                 Pixels outside the extent of the passed raster are filled with 
---                 nodata value. When FALSE out of bound tiles are clipped to the 
+-- padwithnodata - If TRUE, the produced tiles are strictly width x heigth pixels.
+--                 Pixels outside the extent of the passed raster are filled with
+--                 nodata value. When FALSE out of bound tiles are clipped to the
 --                 extent of the raster. Default to FALSE.
--- nodatavalue   - nodata value to use to pad the outbound tiles when the provided 
---                 raster do not have a nodata value defined. If not provided and 
---                 the raster do not have a nodata value defined 
+-- nodatavalue   - nodata value to use to pad the outbound tiles when the provided
+--                 raster do not have a nodata value defined. If not provided and
+--                 the raster do not have a nodata value defined
 --                 ST_MinPossibleValue(ST_BandPixelType(rast, band)) is used for each band.
 --
 -- Example producing 120 x 120 pixel tiles
@@ -29,8 +29,8 @@
 -- FROM srtm_22_03;
 ----------------------------------------------------------------------------------------------------------------------
 DROP FUNCTION IF EXISTS ST_Tile(rast raster, width integer, height integer, padwithnodata boolean, nodatavalue double precision);
-CREATE OR REPLACE FUNCTION ST_Tile(rast raster, width integer, height integer, padwithnodata boolean DEFAULT FALSE, nodatavalue double precision DEFAULT NULL) 
-    RETURNS SETOF raster AS 
+CREATE OR REPLACE FUNCTION ST_Tile(rast raster, width integer, height integer, padwithnodata boolean DEFAULT FALSE, nodatavalue double precision DEFAULT NULL)
+    RETURNS SETOF raster AS
     $$
     DECLARE
         gridrast raster;
@@ -50,7 +50,7 @@ CREATE OR REPLACE FUNCTION ST_Tile(rast raster, width integer, height integer, p
         IF rast IS NULL THEN
             RETURN;
         END IF;
-    
+
         nbband := ST_Numbands(rast);
         IF nbband < 1 THEN
                 RAISE NOTICE 'Raster do not have band %. Returning null', band;
@@ -101,20 +101,20 @@ CREATE OR REPLACE FUNCTION ST_Tile(rast raster, width integer, height integer, p
     END;
     $$
     LANGUAGE 'plpgsql';
-    
+
 ----------------------------------------------------------------------
 -- ST_TileAsGeom
--- Split a raster into a set of raster tiles, returning only the geometry 
--- corresponding to each tile. 
--- There is no way to specify the upper left corner of the new tiled grid. 
+-- Split a raster into a set of raster tiles, returning only the geometry
+-- corresponding to each tile.
+-- There is no way to specify the upper left corner of the new tiled grid.
 -- The grid start at the upperleft corner of the provided raster.
 --
 -- rast   - Raster to be tiled.
 -- width  - Width of the tiles.
 -- height - Height of the tiles
--- padwithnodata - If TRUE, the produced tiles are strictly width x heigth pixels. 
---                 Pixels outside the extent of the passed raster are filled with 
---                 nodata value. When FALSE out of bound tiles are clipped to the 
+-- padwithnodata - If TRUE, the produced tiles are strictly width x heigth pixels.
+--                 Pixels outside the extent of the passed raster are filled with
+--                 nodata value. When FALSE out of bound tiles are clipped to the
 --                 extent of the raster. Default to FALSE.
 --
 -- Example producing 120 x 120 pixel tiles
@@ -123,8 +123,8 @@ CREATE OR REPLACE FUNCTION ST_Tile(rast raster, width integer, height integer, p
 -- FROM srtm_22_03;
 ----------------------------------------------------------------------------------------------------------------------
 DROP FUNCTION IF EXISTS ST_TileAsGeom(rast raster, width integer, height integer, padwithnodata boolean);
-CREATE OR REPLACE FUNCTION ST_TileAsGeom(rast raster, width integer, height integer, padwithnodata boolean DEFAULT FALSE) 
-    RETURNS SETOF geometry AS 
+CREATE OR REPLACE FUNCTION ST_TileAsGeom(rast raster, width integer, height integer, padwithnodata boolean DEFAULT FALSE)
+    RETURNS SETOF geometry AS
     $$
     DECLARE
         gridrast raster;
@@ -138,7 +138,7 @@ CREATE OR REPLACE FUNCTION ST_TileAsGeom(rast raster, width integer, height inte
         IF rast IS NULL THEN
             RETURN;
         END IF;
-    
+
         nbband := ST_Numbands(rast);
         IF nbband < 1 THEN
                 RAISE NOTICE 'Raster do not have band %. Returning null', band;
@@ -172,8 +172,8 @@ CREATE OR REPLACE FUNCTION ST_TileAsGeom(rast raster, width integer, height inte
 
 
 -- Redefine ST_TestRaster()
-CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8) 
-    RETURNS raster AS 
+CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8)
+    RETURNS raster AS
     $$
     DECLARE
     BEGIN

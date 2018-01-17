@@ -47,9 +47,9 @@ Datum line_from_encoded_polyline(PG_FUNCTION_ARGS)
   encodedpolyline_input = PG_GETARG_TEXT_P(0);
   encodedpolyline = text2cstring(encodedpolyline_input);
 
-  if (PG_NARGS() >2 && !PG_ARGISNULL(2))
+  if (PG_NARGS() > 1 && !PG_ARGISNULL(1))
   {
-    precision = PG_GETARG_INT32(2);
+    precision = PG_GETARG_INT32(1);
     if ( precision < 0 ) precision = 5;
   }
 

@@ -12,10 +12,10 @@ select '#1434.1',ST_GeomFromGeoJSON('{ "type": "Point", "crashme": [100.0, 0.0] 
 select '#1434.2',ST_GeomFromGeoJSON('crashme');;
 select '#1434.3',ST_GeomFromGeoJSON('');
 select '#1434.4',ST_GeomFromGeoJSON('{}');
-select '#1434.5',ST_GeomFromGeoJSON('{"type":"Point","coordinates":[]}'); 
-select '#1434.6',ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[]]}'); 
-select '#1434.7',ST_GeomFromGeoJSON('{"type":"MultiPoint"}'); 
-select '#1434.8',ST_GeomFromGeoJSON('{"type":"Point"}'); 
+select '#1434.5',ST_GeomFromGeoJSON('{"type":"Point","coordinates":[]}');
+select '#1434.6',ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[]]}');
+select '#1434.7',ST_GeomFromGeoJSON('{"type":"MultiPoint"}');
+select '#1434.8',ST_GeomFromGeoJSON('{"type":"Point"}');
 
 -- #2130 --
 SELECT '#2130', ST_NPoints(ST_GeomFromGeoJSON('{"type":"MultiPolygon","coordinates":[[[[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,32],[-117,32],[-117,32],[-117,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-117,32],[-117,32],[-117,32],[-117,32]],[[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,32],[-117,33]]]]}'));
@@ -45,3 +45,6 @@ SELECT 'geomfromgeojson_srs_1', ST_AsEWKT(ST_GeomFromGeoJSON('{"type":"GeometryC
 SELECT 'geomfromgeojson_srs_2', ST_AsEWKT(ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[100.0,0.0]},{"type":"LineString","coordinates":[[101.0,0.0],[102.0,1.0]]}],"crs":{"type":"name","properties":{"name":"EPSG:4326"}}}'));
 SELECT 'geomfromgeojson_srs_3', ST_AsEWKT(ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[100.0,0.0]},{"type":"LineString","coordinates":[[101.0,0.0],[102.0,1.0]]}],"crs":{"type":"name","props":{"name":"urn:ogc:def:crs:EPSG::4326"}}}'));
 SELECT 'geomfromgeojson_srs_4', ST_AsEWKT(ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[100.0,0.0]},{"type":"LineString","coordinates":[[101.0,0.0],[102.0,1.0]]}],"crs":{"type":"name","properties":{"nm":"EPSG:4326"}}}'));
+
+-- #3583
+SELECT '#3583', ST_AsText(ST_GeomFromGeoJSON('{"type":"MultiPolygon", "coordinates":[[[139.10030364990232,35.16777444430609],5842.4224490305424]]}'));

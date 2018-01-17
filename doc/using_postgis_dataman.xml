@@ -90,7 +90,7 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 	  SRID information.</para>
 
 	  <para>Examples of the text representations (EWKT) of the extended
-	  spatial objects of the features are as follows. The * ones are new in this version of PostGIS:</para>
+	  spatial objects of the features are as follows.</para>
 
 	  <itemizedlist>
 		<listitem>
@@ -131,23 +131,23 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 		<listitem>
 		  <para>GEOMETRYCOLLECTIONM( POINTM(2 3 9), LINESTRINGM(2 3 4, 3 4 5) )</para>
 		</listitem>
-		
+
 		<listitem>
 		    <para>MULTICURVE( (0 0, 5 5), CIRCULARSTRING(4 0, 4 4, 8 4) )</para>
 		</listitem>
-		
+
 		<listitem>
-		  <para>POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
-((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  
+		  <para>POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
 ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )</para>
 		</listitem>
-		
+
 		<listitem>
 		  <para>TRIANGLE ((0 0, 0 9, 9 0, 0 0))</para>
 		</listitem>
-		
+
 		<listitem>
-		  <para>TIN( ((0 0 0, 0 0 1, 0 1 0, 0 0 0)), 
+		  <para>TIN( ((0 0 0, 0 0 1, 0 1 0, 0 0 0)),
 		  ((0 0 0, 0 1 0, 1 1 0, 0 0 0)) )</para>
 		</listitem>
 	  </itemizedlist>
@@ -212,7 +212,7 @@ geometry
 		  the circle.  To chain arcs together, the last point of the previous
 		  arc becomes the first point of the next arc, just like in
 		  LINESTRING.  This means that a valid circular string must have an
-		  odd number of points greated than 1.</para>
+		  odd number of points greater than 1.</para>
 		</listitem>
 
 		<listitem>
@@ -275,32 +275,42 @@ geometry
 	  <para>The basis for the PostGIS geographic type is a sphere. The shortest path between two points on the sphere is a great circle arc. That means that calculations on geographies (areas, distances, lengths, intersections, etc) must be calculated on the sphere, using more complicated mathematics. For more accurate measurements, the calculations must take the actual spheroidal shape of the world into account, and the mathematics becomes very complicated indeed.</para>
 
 	  <para>Because the underlying mathematics is much more complicated, there are fewer functions defined for the geography type than for the geometry type. Over time, as new algorithms are added, the capabilities of the geography type will expand.</para>
-	 <!-- TODO: Fill in more information -->
 
-	  <para>One restriction is that it only supports WGS 84 long lat (SRID:4326).  It uses a new data type called
-	  geography.  None of the GEOS functions support this new
+		<para>It uses a data type called <varname>geography</varname>.  None of the GEOS functions support the <varname>geography</varname>
 	  type. As a workaround one can convert back and forth between geometry and geography types.</para>
 
-	  <para>The new geography type uses the PostgreSQL 8.3+ typmod definition format so that a table with a geography field
+	  <para>Prior to PostGIS 2.2, the geography type only supported WGS 84 long lat (SRID:4326).
+		For PostGIS 2.2 and above, any long/lat based spatial reference system defined in the <varname>spatial_ref_sys</varname> table can be used.
+		You can even add your own custom spheroidal spatial refence system as described in <ulink url="http://www.bostongis.com/blog/index.php?/archives/266-geography-type-is-not-limited-to-earth.html">geography type is not limited to earth</ulink>.</para>
+
+		<para>Regardless which spatial reference system you use, the units returned by the measurement (<xref linkend="ST_Distance" />, <xref linkend="ST_Length" />, <xref linkend="ST_Perimeter" />, <xref linkend="ST_Area" />) and for input of <xref linkend="ST_DWithin" /> are in meters.</para>
+
+
+	  <para>The geography type uses the PostgreSQL 8.3+ typmod definition format so that a table with a geography field
 			can be added in a single step.  All the standard OGC formats except for curves are supported.</para>
-			
+
 	<sect2 id="Geography_Basics">
 		<title>Geography Basics</title>
-		<para>The geography type only supports the simplest of simple features. Standard geometry type data will autocast to geography if it is of SRID 4326.  You can also use the EWKT and EWKB
+		<para>The geography type does not support curves, TINS, or POLYHEDRALSURFACEs, but other geometry types are supported. Standard geometry type data will autocast to geography if it is of SRID 4326.  You can also use the EWKT and EWKB
 			conventions to insert data.</para>
 
 		<itemizedlist>
 		<listitem>
-		  <para>POINT: Creating a table with 2d point geometry:</para>
-		  <para><programlisting>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINT,4326) );</programlisting></para>
-		  <para>Creating a table with z coordinate point</para>
-		  <para><programlisting>CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINTZ,4326) );</programlisting></para>
+		  <para>POINT: Creating a table with 2d point geography when srid is not specified defaults to 4326 WGS 84 long lat:</para>
+		  <para><programlisting>CREATE TABLE ptgeogwgs(gid serial PRIMARY KEY, geog geography(POINT) );</programlisting></para>
+		  <para>POINT: Creating a table with 2d point geography in NAD83 longlat:</para>
+		  <para><programlisting>CREATE TABLE ptgeognad83(gid serial PRIMARY KEY, geog geography(POINT,4269) );</programlisting></para>
+		  <para>Creating a table with z coordinate point and explicitly specifying srid</para>
+		  <para><programlisting>CREATE TABLE ptzgeogwgs84(gid serial PRIMARY KEY, geog geography(POINTZ,4326) );</programlisting></para>
 		</listitem>
 		<listitem>
 			<para>LINESTRING</para>
+			<para><programlisting>CREATE TABLE lgeog(gid serial PRIMARY KEY, geog geography(LINESTRING) );</programlisting></para>
 		</listitem>
 		<listitem>
 			<para>POLYGON</para>
+			<para><programlisting>--polygon NAD 1927 long lat
+CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog geography(POLYGON,4267) );</programlisting></para>
 		</listitem>
 		<listitem>
 			<para>MULTIPOINT</para>
@@ -316,28 +326,26 @@ geometry
 		</listitem>
 		<!-- TODO: Add other examples -->
 		</itemizedlist>
-		<para>The new geography fields don't get registered in the <varname>geometry_columns</varname>.  They get registered in a new view called
-				geography_columns which is a view against the system catalogs so is always automatically kept up to date without need
+		<para>The geography fields don't get registered in the <varname>geometry_columns</varname>.  They get registered in a view called
+				<varname>geography_columns</varname> which is a view against the system catalogs so is always automatically kept up to date without need
 					for an AddGeom... like function.</para>
 
 		<para>Now, check the "geography_columns" view and see that your table is listed.</para>
 
-		<para>You can create a new table with a GEOGRAPHY column using the CREATE TABLE syntax. 
-			Unlike GEOMETRY, there is no need to run a separate AddGeometryColumns() process to register the column in metadata.</para>
+		<para>You can create a new table with a GEOGRAPHY column using the CREATE TABLE syntax.</para>
 
 		<para>
-<programlisting>CREATE TABLE global_points ( 
+<programlisting>CREATE TABLE global_points (
     id SERIAL PRIMARY KEY,
     name VARCHAR(64),
     location GEOGRAPHY(POINT,4326)
   );</programlisting>
-  		</para>
-		
+		</para>
+
 		<para>Note that the location column has type GEOGRAPHY and that geography type supports two optional modifier: a type modifier that restricts the kind of shapes and dimensions allowed in the column; an SRID modifier that restricts the coordinate reference identifier to a particular number.</para>
-		<para>Allowable values for the type modifier are: POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON. The modifier also supports dimensionality restrictions through suffixes: Z, M and ZM. So, for example a modifier of 'LINESTRINGM' would only allow line strings with three dimensions in, and would treat the third dimension as a measure. 
+		<para>Allowable values for the type modifier are: POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON. The modifier also supports dimensionality restrictions through suffixes: Z, M and ZM. So, for example a modifier of 'LINESTRINGM' would only allow line strings with three dimensions in, and would treat the third dimension as a measure.
 		Similarly, 'POINTZM' would expect four dimensional data.</para>
-		<para>The SRID modifier is currently of limited use: only 4326 (WGS84) is allowed as a value. If you do not specify an SRID, the a value 0 (undefined spheroid) will be used, and all calculations will proceed using WGS84 anyways.</para> 
-		<para>In the future, alternate SRIDs will allow calculations on spheroids other than WGS84.</para>
+		<para>If you do not specify an SRID, the SRID will default to 4326 WGS 84 long/lat will be used, and all calculations will proceed using WGS84.</para>
 		<para>Once you have created your table, you can see it in the GEOGRAPHY_COLUMNS table:</para>
 		<para><programlisting>
 -- See the contents of the metadata view
@@ -346,11 +354,11 @@ SELECT * FROM geography_columns;</programlisting></para>
 <para>You can insert data into the table the same as you would if it was using a GEOMETRY column:</para>
 
 <para><programlisting>-- Add some data into the test table
-INSERT INTO global_points (name, location) VALUES ('Town', ST_GeographyFromText('SRID=4326;POINT(-110 30)') );
-INSERT INTO global_points (name, location) VALUES ('Forest', ST_GeographyFromText('SRID=4326;POINT(-109 29)') );
-INSERT INTO global_points (name, location) VALUES ('London', ST_GeographyFromText('SRID=4326;POINT(0 49)') );</programlisting></para>
+INSERT INTO global_points (name, location) VALUES ('Town', ST_GeogFromText('SRID=4326;POINT(-110 30)') );
+INSERT INTO global_points (name, location) VALUES ('Forest', ST_GeogFromText('SRID=4326;POINT(-109 29)') );
+INSERT INTO global_points (name, location) VALUES ('London', ST_GeogFromText('SRID=4326;POINT(0 49)') );</programlisting></para>
 
-<para>Creating an index works the same as GEOMETRY. 
+<para>Creating an index works the same as GEOMETRY.
 	PostGIS will note that the column type is GEOGRAPHY and create an appropriate sphere-based index instead of the usual planar index used for GEOMETRY.</para>
 
 <para><programlisting>-- Index the test table with a spherical index
@@ -360,10 +368,10 @@ INSERT INTO global_points (name, location) VALUES ('London', ST_GeographyFromTex
 <para>Query and measurement functions use units of meters. So distance parameters should be expressed in meters, and return values should be expected in meters (or square meters for areas).</para>
 
 <para><programlisting>-- Show a distance query and note, London is outside the 1000km tolerance
-  SELECT name FROM global_points WHERE ST_DWithin(location, ST_GeographyFromText('SRID=4326;POINT(-110 29)'), 1000000);</programlisting>
+  SELECT name FROM global_points WHERE ST_DWithin(location, ST_GeogFromText('SRID=4326;POINT(-110 29)'), 1000000);</programlisting>
 </para>
 
-<para>You can see the power of GEOGRAPHY in action by calculating the how close a plane flying from Seattle to London (LINESTRING(-122.33 47.606, 0.0 51.5)) comes to Reykjavik (POINT(-21.96 64.15)).</para>
+<para>You can see the power of GEOGRAPHY in action by calculating how close a plane flying from Seattle to London (LINESTRING(-122.33 47.606, 0.0 51.5)) comes to Reykjavik (POINT(-21.96 64.15)).</para>
 
 <para><programlisting>-- Distance calculation using GEOGRAPHY (122.2km)
   SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geography, 'POINT(-21.96 64.15)':: geography);</programlisting>
@@ -373,6 +381,29 @@ INSERT INTO global_points (name, location) VALUES ('London', ST_GeographyFromTex
   SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.96 64.15)':: geometry);</programlisting>
 </para>
 
+<para>Testing different lon/lat projects, requires PostGIS 2.2+.
+Any long lat spatial reference system listed in <varname>spatial_ref_sys</varname> table is allowed.</para>
+<para>	<programlisting>-- NAD 83 lon/lat
+SELECT 'SRID=4269;POINT(-123 34)'::geography;
+                    geography
+----------------------------------------------------
+ 0101000020AD1000000000000000C05EC00000000000004140
+(1 row)</programlisting>
+
+<programlisting>-- NAD27 lon/lat
+SELECT 'SRID=4267;POINT(-123 34)'::geography;
+
+                    geography
+----------------------------------------------------
+ 0101000020AB1000000000000000C05EC00000000000004140
+(1 row)</programlisting>
+
+<programlisting>-- NAD83 UTM zone meters, yields error since its a meter based projection
+SELECT 'SRID=26910;POINT(-123 34)'::geography;
+
+ERROR:  Only lon/lat coordinate systems are supported in geography.
+LINE 1: SELECT 'SRID=26910;POINT(-123 34)'::geography;</programlisting></para>
+
 <para>The GEOGRAPHY type calculates the true shortest distance over the sphere between Reykjavik and the great circle flight path between Seattle and London.</para>
 
 <para> <ulink url="http://gc.kls2.com/cgi-bin/gc?PATH=SEA-LHR">Great Circle mapper</ulink>
@@ -380,13 +411,13 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	</sect2>
 	<sect2 id="PostGIS_GeographyVSGeometry">
 	  <title>When to use Geography Data type over Geometry data type</title>
-	  <para>The new GEOGRAPHY type allows you to store data in longitude/latitude coordinates, but at a cost: there are fewer functions defined on GEOGRAPHY than there are on GEOMETRY; those functions that are defined take more CPU time to execute.</para>
+	  <para>The geography type allows you to store data in longitude/latitude coordinates, but at a cost: there are fewer functions defined on GEOGRAPHY than there are on GEOMETRY; those functions that are defined take more CPU time to execute.</para>
 	  <para>The type you choose should be conditioned on the expected working area of the application you are building. Will your data span the globe or a large continental area, or is it local to a state, county or municipality? </para>
 	  <itemizedlist>
 		<listitem><para>If your data is contained in a small area, you might find that choosing an appropriate projection and using GEOMETRY is the best solution, in terms of performance and functionality available.</para></listitem>
-		<listitem><para>If your data is global or covers a continental region, you may find that GEOGRAPHY allows you to build a system without having to worry about projection details. 
+		<listitem><para>If your data is global or covers a continental region, you may find that GEOGRAPHY allows you to build a system without having to worry about projection details.
 				You store your data in longitude/latitude, and use the functions that have been defined on GEOGRAPHY.</para></listitem>
-		<listitem><para>If you don't understand projections, and you don't want to learn about them, and you're prepared to accept the limitations in functionality available in GEOGRAPHY, then it might be easier for you to use GEOGRAPHY than GEOMETRY. 
+		<listitem><para>If you don't understand projections, and you don't want to learn about them, and you're prepared to accept the limitations in functionality available in GEOGRAPHY, then it might be easier for you to use GEOGRAPHY than GEOMETRY.
 		Simply load your data up as longitude/latitude and go from there.</para></listitem>
 	</itemizedlist>
 	<para>Refer to <xref linkend="PostGIS_TypeFunctionMatrix" /> for compare between
@@ -401,50 +432,50 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 				  <question>
 					<para>Do you calculate on the sphere or the spheroid?</para>
 				  </question>
-			
+
 				  <answer>
-					<para> By default, all distance and area calculations are done on the spheroid. You should find that the results of calculations in local areas match up will with local planar results in good local projections. 
+					<para> By default, all distance and area calculations are done on the spheroid. You should find that the results of calculations in local areas match up will with local planar results in good local projections.
 					Over larger areas, the spheroidal calculations will be more accurate than any calculation done on a projected plane.
 					</para>
 					<para>All the geography functions have the option of using a sphere calculation, by setting a final boolean parameter to 'FALSE'. This will somewhat speed up calculations, particularly for cases where the geometries are very simple.</para>
 				  </answer>
 				</qandaentry>
-				
+
 				<qandaentry>
 				  <question>
 					<para>What about the date-line and the poles?</para>
 				  </question>
-			
+
 				  <answer>
-					<para> All the calculations have no conception of date-line or poles, the coordinates are spherical (longitude/latitude) 
+					<para> All the calculations have no conception of date-line or poles, the coordinates are spherical (longitude/latitude)
 					so a shape that crosses the dateline is, from a calculation point of view, no different from any other shape.
 					</para>
 				  </answer>
 				</qandaentry>
-				
+
 				<qandaentry>
 				  <question>
 					<para>What is the longest arc you can process?</para>
 				  </question>
-			
+
 				  <answer>
-					<para>We use great circle arcs as the "interpolation line" between two points. That means any two points are actually joined up two ways, depending on which direction you travel along the great circle. All our code assumes that the points are joined by the *shorter* of the two paths along the great circle. 
+					<para>We use great circle arcs as the "interpolation line" between two points. That means any two points are actually joined up two ways, depending on which direction you travel along the great circle. All our code assumes that the points are joined by the *shorter* of the two paths along the great circle.
 					As a consequence, shapes that have arcs of more than 180 degrees will not be correctly modelled.</para>
 				  </answer>
 				</qandaentry>
-				
+
 				<qandaentry>
 				  <question>
 					<para>Why is it so slow to calculate the area of Europe / Russia / insert big geographic region here ?</para>
 				  </question>
-			
+
 				  <answer>
-					<para>Because the polygon is so darned huge! Big areas are bad for two reasons: their bounds are huge, 
-						so the index tends to pull the feature no matter what query you run; the number of vertices is huge, 
-						and tests (distance, containment) have to traverse the vertex list at least once and sometimes N times 
-						(with N being the number of vertices in the other candidate feature). 
+					<para>Because the polygon is so darned huge! Big areas are bad for two reasons: their bounds are huge,
+						so the index tends to pull the feature no matter what query you run; the number of vertices is huge,
+						and tests (distance, containment) have to traverse the vertex list at least once and sometimes N times
+						(with N being the number of vertices in the other candidate feature).
 					</para>
-					<para>As with GEOMETRY, we recommend that when you have very large polygons, but are doing queries in small areas, you "denormalize" your geometric data into smaller chunks so that the index can effectively subquery parts of the object and so queries don't have to pull out the whole object every time. 
+					<para>As with GEOMETRY, we recommend that when you have very large polygons, but are doing queries in small areas, you "denormalize" your geometric data into smaller chunks so that the index can effectively subquery parts of the object and so queries don't have to pull out the whole object every time.
 					Just because you *can* store all of Europe in one polygon doesn't mean you *should*.</para>
 				  </answer>
 				</qandaentry>
@@ -683,11 +714,11 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	  <para>Creating a table with spatial data, can be done in one step. As shown in the following example
 	  which creates a roads table with a 2D linestring geometry column in WGS84 long lat</para>
 	  <programlisting>CREATE TABLE ROADS ( ID int4
-	  	, ROAD_NAME varchar(25), geom geometry(LINESTRING,4326) );</programlisting>
-	  	
+		, ROAD_NAME varchar(25), geom geometry(LINESTRING,4326) );</programlisting>
+
 	  <para>We can add additional columns using standard ALTER TABLE command as we do in this next example where we add a 3-D linestring.</para>
 	  <programlisting>ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ,4326);</programlisting>
-	  
+
 	  <para>For backwards compability, you can still create a spatial table in two stages using the management functions.</para>
 
 	  <itemizedlist>
@@ -748,30 +779,31 @@ SELECT AddGeometryColumn( 'roads', 'roads_geom', 0, 'GEOMETRY', 3 );</programlis
 
 	<sect2 id="Manual_Register_Spatial_Column">
 		<title>Manually Registering Geometry Columns in geometry_columns</title>
-		<para>The AddGeometryColumn() approach creates a geometry column and also registers the new
-		column in the geometry_columns table.  If your software utilizes geometry_columns, then
-		any geometry columns you need to query by must be registered in this view.  
+		<para>The AddGeometryColumn() approach creates a geometry column of specified type.
+		This  type and dimension are queryable from the <varname>geometry_columns</varname> view.
 		Starting with PostGIS 2.0, geometry_columns is no longer editable and all geometry columns are autoregistered.</para>
-		<para>However they may be registered as a generic geometry column if the column was not defined as a specific type during creation.</para>
-		
+		<para>If your geometry columns were created as generic in a table or view and no constraints applied, they will not have a dimension, type or srid in geometry_columns views, but will still be listed.</para>
+
 		<para>Two of the cases
 		where this may happen, but you can't use
-		AddGeometryColumn, is in the case of SQL Views and bulk inserts.  For these cases, you can correct the registration in the geometry_columns table
-		by constraining the column.  Note in PostGIS 2.0+ if your column is typmod based, the creation process would register it correctly, so no need to do anything.</para>
+		AddGeometryColumn, is in the case of SQL Views and bulk inserts.  For bulk insert case, you can correct the registration in the geometry_columns table
+		by constraining the column or doing an alter table.  For views, you could expose using a CAST operation.
+		Note in PostGIS 2.0+ if your column is typmod based, the creation process would register it correctly, so no need to do anything.
+		Also views that have no spatial function applied to the geometry will register the same as the underlying table geometry column.</para>
 
 		<programlisting>--Lets say you have a view created like this
 CREATE VIEW  public.vwmytablemercator AS
 	SELECT gid, ST_Transform(geom,3395) As geom, f_name
 	FROM public.mytable;
-	
--- For it to register correctly in PostGIS 2.0+ 
+
+-- For it to register correctly in PostGIS 2.0+
 -- You need to cast the geometry
 --
 DROP VIEW public.vwmytablemercator;
 CREATE VIEW  public.vwmytablemercator AS
 	SELECT gid, ST_Transform(geom,3395)::geometry(Geometry, 3395) As geom, f_name
 	FROM public.mytable;
-	
+
 -- If you know the geometry type for sure is a 2D POLYGON then you could do
 DROP VIEW public.vwmytablemercator;
 CREATE VIEW  public.vwmytablemercator AS
@@ -785,11 +817,11 @@ FROM poi INNER JOIN citybounds ON ST_Intersects(citybounds.geom, poi.geom);
 --Create 2d index on new table
 CREATE INDEX idx_myschema_myspecialpois_geom_gist
   ON myschema.my_special_pois USING gist(geom);
-  
--- If your points are 3D points or 3M points, 
+
+-- If your points are 3D points or 3M points,
 -- then you might want to create an nd index instead of a 2d index
 -- like so
-CREATE INDEX my_special_pois_geom_gist_nd 
+CREATE INDEX my_special_pois_geom_gist_nd
 	ON my_special_pois USING gist(geom gist_geometry_ops_nd);
 
 --To manually register this new table's geometry column in geometry_columns
@@ -797,16 +829,16 @@ CREATE INDEX my_special_pois_geom_gist_nd
 -- For PostGIS 2.0 it will also change the underlying structure of the table to
 -- to make the column typmod based.
 -- For PostGIS prior to 2.0, this technique can also be used to register views
-SELECT populate_geometry_columns('myschema.my_special_pois'::regclass); 
+SELECT populate_geometry_columns('myschema.my_special_pois'::regclass);
 
 --If you are using PostGIS 2.0 and for whatever reason, you
--- you need the old constraint based definition behavior 
+-- you need the old constraint based definition behavior
 -- (such as case of inherited tables where all children do not have the same type and srid)
 -- set new optional  use_typmod argument to false
 SELECT populate_geometry_columns('myschema.my_special_pois'::regclass, false); </programlisting>
 
-<para>Although the old-constraint based method is still supported, a constraint-based geomentry column used directly
-in a view, will not register correctly in geometry_columns, as will a typmod one. 
+<para>Although the old-constraint based method is still supported, a constraint-based geometry column used directly
+in a view, will not register correctly in geometry_columns, as will a typmod one.
 In this example we define a column using typmod and another using constraints.</para>
 <programlisting>CREATE TABLE pois_ny(gid SERIAL PRIMARY KEY
    , poi_name text, cat varchar(20)
@@ -828,44 +860,44 @@ Indexes:
     "pois_ny_pkey" PRIMARY KEY, btree (gid)
 Check constraints:
     "enforce_dims_geom_2160" CHECK (st_ndims(geom_2160) = 2)
-    "enforce_geotype_geom_2160" CHECK (geometrytype(geom_2160) = 'POINT'::text 
+    "enforce_geotype_geom_2160" CHECK (geometrytype(geom_2160) = 'POINT'::text
         OR geom_2160 IS NULL)
     "enforce_srid_geom_2160" CHECK (st_srid(geom_2160) = 2160)</screen>
 <para>In geometry_columns, they both register correctly</para>
-<programlisting>SELECT f_table_name, f_geometry_column, srid, type 
-	FROM geometry_columns 
+<programlisting>SELECT f_table_name, f_geometry_column, srid, type
+	FROM geometry_columns
 	WHERE f_table_name = 'pois_ny';</programlisting>
 <screen>f_table_name | f_geometry_column | srid | type
 -------------+-------------------+------+-------
 pois_ny      | geom              | 4326 | POINT
 pois_ny      | geom_2160         | 2160 | POINT</screen>
 <para>However -- if we were to create a view like this</para>
-<programlisting>CREATE VIEW vw_pois_ny_parks AS 
-SELECT * 
-  FROM pois_ny 
+<programlisting>CREATE VIEW vw_pois_ny_parks AS
+SELECT *
+  FROM pois_ny
   WHERE cat='park';
-  
-SELECT f_table_name, f_geometry_column, srid, type 
-	FROM geometry_columns 
-	WHERE f_table_name = 'vw_pois_ny_parks';</programlisting> 
+
+SELECT f_table_name, f_geometry_column, srid, type
+	FROM geometry_columns
+	WHERE f_table_name = 'vw_pois_ny_parks';</programlisting>
 <para>The typmod based geom view column registers correctly,
 but the constraint based one does not.</para>
 <screen>   f_table_name   | f_geometry_column | srid |   type
 ------------------+-------------------+------+----------
  vw_pois_ny_parks | geom              | 4326 | POINT
  vw_pois_ny_parks | geom_2160         |    0 | GEOMETRY</screen>
- 
+
 <para>This may change in future versions of PostGIS, but for now
 To force the constraint based view column to register correctly, we need to do this:</para>
 <programlisting>DROP VIEW vw_pois_ny_parks;
-CREATE VIEW vw_pois_ny_parks AS 
+CREATE VIEW vw_pois_ny_parks AS
 SELECT gid, poi_name, cat
   , geom
-  , geom_2160::geometry(POINT,2160) As geom_2160 
-  FROM pois_ny 
+  , geom_2160::geometry(POINT,2160) As geom_2160
+  FROM pois_ny
   WHERE cat='park';
-SELECT f_table_name, f_geometry_column, srid, type 
-	FROM geometry_columns 
+SELECT f_table_name, f_geometry_column, srid, type
+	FROM geometry_columns
 	WHERE f_table_name = 'vw_pois_ny_parks';</programlisting>
 <screen>   f_table_name   | f_geometry_column | srid | type
 ------------------+-------------------+------+-------
@@ -1139,7 +1171,7 @@ SELECT f_table_name, f_geometry_column, srid, type
 					<caption><para><emphasis role="bold">(o)</emphasis></para></caption>
 				  </mediaobject>
 				</informalfigure></para></entry>
-				
+
 			  <entry><para><informalfigure>
 				  <mediaobject>
 					<imageobject>
@@ -1157,7 +1189,7 @@ SELECT f_table_name, f_geometry_column, srid, type
 			<row>
 				<entry><para><emphasis role="bold">(n)</emphasis> and
 				<emphasis role="bold">(o)</emphasis> are not valid
-				<varname>MULTIPOLYGON</varname>s.  
+				<varname>MULTIPOLYGON</varname>s.
 				<emphasis role="bold">(p)</emphasis>, however, is valid.</para></entry>
 			</row>
 		  </tbody>
@@ -1208,12 +1240,12 @@ gisdb=# SELECT
 		there.</para>
 	  </note>
 	</sect2>
-	
+
       <sect2 id="DE-9IM">
         <title>Dimensionally Extended 9 Intersection Model (DE-9IM)</title>
 
         <para>It is sometimes the case that the typical spatial predicates
-        (<xref linkend="ST_Contains" />, <xref linkend="ST_Crosses" />, 
+        (<xref linkend="ST_Contains" />, <xref linkend="ST_Crosses" />,
          <xref linkend="ST_Intersects" />, <xref linkend="ST_Touches" />, ...) are
         insufficient in and of themselves to adequately provide that desired
         spatial filter.</para>
@@ -1384,7 +1416,7 @@ gisdb=# SELECT
                   <entry><emphasis>dim( E(a) ∩ E(b) )</emphasis></entry>
                 </row>
               </tbody>
-              
+
             </tgroup>
           </informaltable>
 
@@ -1547,7 +1579,7 @@ gisdb=# SELECT
           <programlisting>-- Identify road segments that cross on a line
 SELECT a.id
 FROM roads a, roads b
-WHERE a.id != b.id 
+WHERE a.id != b.id
 AND a.geom &amp;&amp; b.geom
 AND ST_Relate(a.geom, b.geom, '1*1***1**');</programlisting>
 
@@ -1562,7 +1594,7 @@ WHERE a.geom &amp;&amp; b.geom
 AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
 
           <para>For more information or reading, see:</para>
-          
+
           <itemizedlist spacing="compact">
             <listitem>
               <para><ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
@@ -1570,7 +1602,7 @@ AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
             </listitem>
 
             <listitem>
-                <para><ulink url="https://en.wikipedia.org/wiki/DE-9IM">Dimensionally 
+                <para><ulink url="https://en.wikipedia.org/wiki/DE-9IM">Dimensionally
               Extended Nine-Intersection Model (DE-9IM)</ulink></para>
             </listitem>
             <listitem>
@@ -1583,7 +1615,7 @@ AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
 
         </sect3>
       </sect2>
-	
+
   </sect1>
 
   <sect1 id="loading_geometry_data">
@@ -1636,7 +1668,7 @@ COMMIT;</programlisting>
     distinguished by command line flags:
   </para>
   <para>In addition to the shp2pgsql command-line loader, there is an <filename>shp2pgsql-gui</filename> graphical interface with most
-  	of the options as the command-line loader, but may be easier to use for one-off non-scripted loading or if you are new to PostGIS.
+	of the options as the command-line loader, but may be easier to use for one-off non-scripted loading or if you are new to PostGIS.
 	It can also be configured as a plugin to PgAdminIII.
 	</para>
 
@@ -1691,7 +1723,7 @@ COMMIT;</programlisting>
         </para>
       </listitem>
     </varlistentry>
-    
+
     <varlistentry>
       <term>-?</term>
       <listitem>
@@ -1753,7 +1785,7 @@ COMMIT;</programlisting>
         </para>
       </listitem>
     </varlistentry>
-    
+
     <varlistentry>
       <term>-m</term>
       <listitem>
@@ -1767,7 +1799,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
         </para>
       </listitem>
     </varlistentry>
-    
+
     <varlistentry>
       <term>-S </term>
       <listitem>
@@ -1783,7 +1815,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
       <term>-t &lt;dimensionality&gt;</term>
       <listitem>
         <para>
-          Force the output geometry to have the specified dimensionality. Use the following 
+          Force the output geometry to have the specified dimensionality. Use the following
           strings to indicate the dimensionality: 2D, 3DZ, 3DM, 4D.
         </para>
         <para>
@@ -1827,7 +1859,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
         </para>
       </listitem>
     </varlistentry>
-    
+
     <varlistentry>
       <term>-N &lt;policy&gt;</term>
       <listitem>
@@ -1840,12 +1872,12 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
       <term>-n</term>
       <listitem>
         <para>
-          -n  Only import DBF file.  If your data has no corresponding shapefile, it will automatically switch to this mode 
-          	and load just the dbf.  So setting this flag is only needed if you have a full shapefile set, and you only want the attribute data and no geometry.
+          -n  Only import DBF file.  If your data has no corresponding shapefile, it will automatically switch to this mode
+	and load just the dbf.  So setting this flag is only needed if you have a full shapefile set, and you only want the attribute data and no geometry.
         </para>
       </listitem>
     </varlistentry>
-	
+
 	<varlistentry>
 	  <term>-G</term>
 	  <listitem>
@@ -1959,7 +1991,7 @@ road_id | geom                                    | road_name
 	  <para>Next, you can use these operators in queries. Note that when
 	  specifying geometries and boxes on the SQL command line, you must
 	  explicitly turn the string representations into geometries by using the
-	  "ST_GeomFromText()" function. The 312 is a fictitious spatial reference system that matches our data.  
+	  "ST_GeomFromText()" function. The 312 is a fictitious spatial reference system that matches our data.
 	  So, for example:</para>
 
 	  <programlisting>SELECT road_id, road_name
@@ -2086,7 +2118,7 @@ WHERE
 			from postgis-1.0.0+, dimensions are fully encoded.</para>
 		  </listitem>
 		</varlistentry>
-		
+
 		<varlistentry>
 		  <term>-m <varname>filename</varname></term>
 		  <listitem>
@@ -2178,6 +2210,81 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
 	  built.</para>
 	</sect2>
 
+	<sect2 id="brin_indexes">
+	  <title>BRIN Indexes</title>
+
+	  <para>BRIN stands for "Block Range Index" and is a generic form of
+	  indexing that has been introduced in PostgreSQL 9.5. BRIN is a lossy kind
+	  of index, and its main usage is to provide a compromise for both read and
+	  write performance. Its primary goal is to handle very large tables for
+	  which some of the columns have some natural correlation with their
+	  physical location within the table.  In addition to GIS indexing, BRIN is
+	  used to speed up searches on various kinds of regular or irregular data
+	  structures (integer, arrays etc).</para>
+
+	  <para>Once a GIS data table exceeds a few thousand rows, you will want
+	  to build an index to speed up spatial searches of the data (unless all
+	  your searches are based on attributes, in which case you'll want to
+      build a normal index on the attribute fields). GiST indexes are really
+      performant as long as their size doesn't exceed the amount of RAM
+      available for the database, and as long as you can afford the storage
+      size, and the penalty in write workload. Otherwise, BRIN index can be
+      considered as an alternative. </para>
+
+      <para>The idea of a BRIN index is to store only the bouding box englobing
+      all the geometries contained in all the rows in a set of table blocks,
+      called a range.  Obviously, this indexing method will only be efficient
+      if the data is physically ordered in a way where the resulting bouding
+      boxes for block ranges will be mutually exclusive. The resulting index
+      will be really small, but will be less efficient than a GiST index in
+      many cases.</para>
+
+	  <para>Building a BRIN index is way less intensive than building a GiST
+	  index. It's quite common to build a BRIN index in more than ten time less
+	  than a GiST index would have required. As a BRIN index only store one
+	  bouding box for one to many table blocks, it's pretty common to consume
+	  up to a thousand time less disk space for this kind of indexes.</para>
+
+      <para>You can choose the number of blocks to summarize in a range. If you
+      decrease this number, the index will be bigger but will probably help to
+      get better performance.</para>
+
+	  <para>The syntax for building a BRIN index on a "geometry" column is as
+	  follows:</para>
+
+	  <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geometryfield] ); </programlisting></para>
+	  <para>The above syntax will always build a 2D-index.  To get a 3d-dimensional index, you can create one using this syntax</para>
+	  <programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ([geometryfield] brin_geometry_inclusion_ops_3d);</programlisting>
+      <para>You can also get a 4d-dimensional index using the 4d operator class</para>
+	  <programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ([geometryfield] brin_geometry_inclusion_ops_4d);</programlisting>
+      <para>These above syntaxes will use the default number or block in a range, which is 128. To specify the number of blocks you want to summarise in a range, you can create one using this syntax</para>
+      <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geometryfield] ) WITH (pages_per_range = [number]); </programlisting></para>
+      <para>Also, keep in mind that a BRIN index will only store one index
+        value for a large number of rows.  If your table stores geometries with
+        a mixed number of dimensions, it's likely that the resulting index will
+        have poor performance.  You can avoid this drop of performance by
+        choosing the operator class whith the least number of dimensions of the
+        stored geometries
+      </para>
+
+          <para>Also the "geography" datatype is supported for BRIN indexing. The
+          syntax for building a BRIN index on a "geography" column is as follows:</para>
+
+          <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geographyfield] ); </programlisting></para>
+          <para>The above syntax will always build a 2D-index for geospatial objects on the spheroid. </para>
+
+          <para>Currently, just the "inclusion support" is considered here, meaning
+          that just <varname>&amp;&amp;</varname>, <varname>~</varname> and
+          <varname>@</varname> operators can be used for the 2D cases (both for
+          "geometry" and for "geography"), and just the <varname>&amp;&amp;&amp;</varname>
+          operator can be used for the 3D geometries. There is no support
+          for kNN searches at the moment.</para>
+
+	  <para><programlisting>VACUUM ANALYZE [table_name] [(column_name)];
+-- This is only needed for PostgreSQL 7.4 installations and below
+SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></para>
+	</sect2>
+
 	<sect2>
 	  <title>Using Indexes</title>
 
@@ -2244,12 +2351,16 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
 	requires knowing what spatial functions are available, and ensuring that
 	appropriate indexes are in place to provide good performance. The SRID of 312 used in these
 	examples is purely for demonstration.  You should be using a REAL SRID listed in the the spatial_ref_sys table
-	and one that matches the projection of your data.  If your data has no spatial reference system 
-	specified, you should be THINKING very thoughtfully why it doesn't and maybe it should.
-	If your reason is because you are modeling something that doesn't have a geographic spatial reference system defined such as the internals of a molecule
-	or a good location
-	on Mars to transport the human race in the event of a nuclear holocaust,
-	then simply leave out the SRID or make one up and insert it in the <varname>spatial_ref_sys</varname> table.</para>
+	and one that matches the projection of your data.  If your data has no spatial reference system
+	specified, you should be THINKING very thoughtfully why it doesn't and maybe it should.</para>
+	<para>If your reason is because you are modeling something that doesn't have a geographic spatial reference system defined such as the internals of a molecule
+	or the floorplan of a not yet built amusement park then that's fine.  If the location of the amusement park has been planned however, then it would make
+	sense to use a suitable planar coordinate system for that location if nothing more than to ensure the amusement part is not trespassing on already existing
+	structures.</para>
+	<para>Even in the case where you are planning a Mars expedition to transport the human race in the event of a nuclear holocaust
+and you want to map out the Mars planet for rehabitation,  you can use a non-earthly coordinate system such as <ulink url="http://spatialreference.org/ref/iau2000/mars-2000/">Mars 2000</ulink>
+ make one up and insert it in the <varname>spatial_ref_sys</varname> table.  Though this Mars coordinate system is a non-planar one (it's in degrees spheroidal),
+ you can use it with the geography type to have your length and proximity measurements in meters instead of degrees.</para>
 
 	<sect2>
 	  <title>Taking Advantage of Indexes</title>

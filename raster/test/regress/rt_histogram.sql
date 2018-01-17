@@ -302,7 +302,7 @@ SELECT
 	round(max::numeric, 3),
 	count,
 	round(percent::numeric, 3)
-FROM ST_Histogram('test1', 'rast', 1, TRUE, 0, NULL, FALSE);
+FROM ST_Histogram('test_histogram', 'rast', 1, TRUE, 0, NULL, FALSE);
 ROLLBACK TO SAVEPOINT test;
 RELEASE SAVEPOINT test;
 SAVEPOINT test;
@@ -311,7 +311,7 @@ SELECT
 	round(max::numeric, 3),
 	count,
 	round(percent::numeric, 3)
-FROM ST_Histogram('test_histogram', 'rast1', 1, TRUE, 0, NULL, FALSE);
+FROM ST_Histogram('test_histogram', 'rast', 1, TRUE, 0, NULL, FALSE);
 ROLLBACK TO SAVEPOINT test;
 RELEASE SAVEPOINT test;
 ROLLBACK;

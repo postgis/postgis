@@ -255,14 +255,128 @@ static void multipoint_test(void)
 	perform_cluster_intersecting_test(wkt_inputs_pt, 2, expected_outputs_pt, 1);
 }
 
+struct dbscan_test_info {
+	double eps;
+	uint32_t min_points;
+	uint32_t num_geoms;
+	char** wkt_inputs;
+	uint32_t* expected_ids;
+	int* expected_in_cluster;
+};
+
+static void do_dbscan_test(struct dbscan_test_info test)
+{
+	LWGEOM** geoms = WKTARRAY2LWGEOM(test.wkt_inputs, test.num_geoms);
+	UNIONFIND* uf = UF_create(test.num_geoms);
+	uint32_t* ids;
+	char* in_a_cluster;
+	uint32_t i;
+
+	union_dbscan(geoms, test.num_geoms, uf, test.eps, test.min_points, &in_a_cluster);
+	ids = UF_get_collapsed_cluster_ids(uf, in_a_cluster);
+
+	for (i = 0; i < test.num_geoms; i++)
+	{
+		ASSERT_INT_EQUAL(in_a_cluster[i], test.expected_in_cluster[i]);
+		if (in_a_cluster[i])
+			ASSERT_INT_EQUAL(ids[i], test.expected_ids[i]);
+	}
+
+	UF_destroy(uf);
+	for (i = 0; i < test.num_geoms; i++)
+	{
+		lwgeom_free(geoms[i]);
+	}
+	lwfree(geoms);
+	lwfree(in_a_cluster);
+	lwfree(ids);
+}
+
+static void dbscan_test(void)
+{
+	struct dbscan_test_info test;
+	char* wkt_inputs[] = { "POINT (0 0)", "POINT (-1 0)", "POINT (-1 -0.1)", "POINT (-1 0.1)",
+		                   "POINT (1 0)",
+						   "POINT (2 0)", "POINT (3  0)", "POINT ( 3 -0.1)", "POINT ( 3 0.1)" };
+	/* Although POINT (1 0) and POINT (2 0) are within eps distance of each other,
+	 * they do not connect the two clusters because POINT (1 0) is not a core point.
+	 * See #3572
+	 */
+	test.eps = 1.01;
+	test.min_points = 5;
+	uint32_t expected_ids[] =   { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1 };
+	int expected_in_cluster[] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+	test.num_geoms = sizeof(wkt_inputs) / sizeof(char*);
+
+	test.expected_ids = expected_ids;
+	test.wkt_inputs = wkt_inputs;
+	test.expected_in_cluster = expected_in_cluster;
+	do_dbscan_test(test);
+}
+
+static void dbscan_test_3612a(void)
+{
+	struct dbscan_test_info test;
+	char* wkt_inputs[] = { "POINT (1 1)" };
+
+	test.eps = 0.0;
+	test.min_points = 5;
+	uint32_t expected_ids[] = { rand() };
+	int expected_in_cluster[] = { 0 };
+	test.num_geoms = sizeof(wkt_inputs) / sizeof(char*);
+
+	test.expected_ids = expected_ids;
+	test.expected_in_cluster = expected_in_cluster;
+	test.wkt_inputs = wkt_inputs;
+	do_dbscan_test(test);
+}
+
+static void dbscan_test_3612b(void)
+{
+	struct dbscan_test_info test;
+	char* wkt_inputs[] = { "POINT (1 1)" };
+
+	test.eps = 0.0;
+	test.min_points = 1;
+	uint32_t expected_ids[]   = { 0 };
+	int expected_in_cluster[] = { 1 };
+	test.num_geoms = sizeof(wkt_inputs) / sizeof(char*);
+
+	test.expected_ids = expected_ids;
+	test.expected_in_cluster = expected_in_cluster;
+	test.wkt_inputs = wkt_inputs;
+	do_dbscan_test(test);
+}
+
+static void dbscan_test_3612c(void)
+{
+	struct dbscan_test_info test;
+	char* wkt_inputs[] = { "POLYGONM((-71.1319 42.2503 1,-71.132 42.2502 3,-71.1323 42.2504 -2,-71.1322 42.2505 1,-71.1319 42.2503 0))",
+						   "POLYGONM((-71.1319 42.2512 0,-71.1318 42.2511 20,-71.1317 42.2511 -20,-71.1317 42.251 5,-71.1317 42.2509 4,-71.132 42.2511 6,-71.1319 42.2512 30))" };
+	test.eps = 20.1;
+	test.min_points = 5;
+	uint32_t expected_ids[]   = { rand(), rand() };
+	int expected_in_cluster[] = { 0, 0 };
+	test.num_geoms = sizeof(wkt_inputs) / sizeof(char*);
+
+	test.expected_ids = expected_ids;
+	test.expected_in_cluster = expected_in_cluster;
+	test.wkt_inputs = wkt_inputs;
+	do_dbscan_test(test);
+}
+
 void geos_cluster_suite_setup(void);
 void geos_cluster_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("Clustering", init_geos_cluster_suite, clean_geos_cluster_suite);
+	CU_pSuite suite = CU_add_suite("clustering", init_geos_cluster_suite, clean_geos_cluster_suite);
 	PG_ADD_TEST(suite, basic_test);
 	PG_ADD_TEST(suite, nonsequential_test);
 	PG_ADD_TEST(suite, basic_distance_test);
 	PG_ADD_TEST(suite, single_input_test);
 	PG_ADD_TEST(suite, empty_inputs_test);
 	PG_ADD_TEST(suite, multipoint_test);
+	PG_ADD_TEST(suite, dbscan_test);
+	PG_ADD_TEST(suite, dbscan_test_3612a);
+	PG_ADD_TEST(suite, dbscan_test_3612b);
+	PG_ADD_TEST(suite, dbscan_test_3612c);
 }

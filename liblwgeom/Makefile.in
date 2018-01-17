@@ -25,7 +25,7 @@
 CC = @CC@
 CPPFLAGS = @CPPFLAGS@
 CFLAGS = @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @GEOS_CPPFLAGS@ @PROJ_CPPFLAGS@ @JSON_CPPFLAGS@
-LDFLAGS = @LDFLAGS@ @GEOS_LDFLAGS@ -lgeos_c @PROJ_LDFLAGS@ -lproj @JSON_LDFLAGS@
+LDFLAGS = @LDFLAGS@ @GEOS_LDFLAGS@ -lgeos_c @PROJ_LDFLAGS@ -lproj @JSON_LDFLAGS@ -lm
 NUMERICFLAGS = @NUMERICFLAGS@
 top_builddir = @top_builddir@
 prefix = @prefix@
@@ -33,7 +33,7 @@ exec_prefix = @exec_prefix@
 libdir = @libdir@
 includedir = @includedir@
 SHELL = @SHELL@
-INSTALL = $(SHELL) ../install-sh
+INSTALL = @INSTALL@
 LIBTOOL = @LIBTOOL@
 
 SOVER = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
@@ -54,7 +54,6 @@ SA_OBJS = \
 	bytebuffer.o \
 	measures.o \
 	measures3d.o \
-	box2d.o \
 	ptarray.o \
 	lwgeom_api.o \
 	lwgeom.o \
@@ -79,6 +78,7 @@ SA_OBJS = \
 	lwin_wkb.o \
 	lwin_twkb.o \
 	lwiterator.o \
+	lwgeom_median.o \
 	lwout_wkt.o \
 	lwout_twkb.o \
 	lwin_wkt_parse.o \
@@ -111,8 +111,10 @@ SA_OBJS = \
 	lwgeom_geos_split.o \
 	lwgeom_topo.o \
 	lwgeom_transform.o \
+	lwgeom_wrapx.o \
 	lwunionfind.o \
 	effectivearea.o \
+	lwkmeans.o \
 	varint.o
 
 NM_OBJS = \
@@ -159,7 +161,9 @@ install: install-liblwgeom
 uninstall: uninstall-liblwgeom
 
 install-liblwgeom: liblwgeom.la
+	$(INSTALL) -d "$(DESTDIR)$(libdir)"
 	$(LIBTOOL) --mode=install $(INSTALL) liblwgeom.la "$(DESTDIR)$(libdir)/liblwgeom.la"
+	$(INSTALL) -d "$(DESTDIR)$(includedir)"
 	$(INSTALL) -m 0644 liblwgeom.h "$(DESTDIR)$(includedir)/liblwgeom.h"
 	$(INSTALL) -m 0644 liblwgeom_topo.h "$(DESTDIR)$(includedir)/liblwgeom_topo.h"
 
@@ -173,9 +177,6 @@ $(LT_OBJS): ../postgis_config.h ../postgis_svn_revision.h $(SA_HEADERS)
 
 ../postgis_svn_revision.h:
 	$(MAKE) -C .. postgis_svn_revision.h
-
-#liblwgeom.a: $(SA_OBJS) $(NM_OBJS) $(SA_HEADERS)
-#ar rs liblwgeom.a $(SA_OBJS) $(NM_OBJS)
 
 liblwgeom.la: $(LT_OBJS)
 	$(LIBTOOL) --tag=CC --mode=link $(CC) -rpath $(libdir) $(LT_OBJS) \

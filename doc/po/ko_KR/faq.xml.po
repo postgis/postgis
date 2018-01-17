@@ -3,13 +3,14 @@
 # Translators:
 # BJ Jang <qgis.tr.kr@gmail.com>, 2013
 # Kwang Woo Nam <kwangwoo@gmail.com>, 2013
+# Kwon.Yongchan <ruvyn@naver.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
-"PO-Revision-Date: 2015-09-29 12:23+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"POT-Creation-Date: 2017-09-07 07:22+0000\n"
+"PO-Revision-Date: 2016-07-22 09:09+0000\n"
+"Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
 "language/ko_KR/)\n"
 "Language: ko_KR\n"
@@ -30,6 +31,7 @@ msgstr "PostGIS 자주 묻는 질문들"
 msgid ""
 "Where can I find tutorials, guides and workshops on working with PostGIS"
 msgstr ""
+"PostGIS 활용에 대한 예제, 지침서, 워크숍 등을 어디에서 찾아볼 수 있을까요?"
 
 #. Tag: para
 #: faq.xml:12
@@ -40,6 +42,10 @@ msgid ""
 "It includes packaged data as well as intro to working with OpenGeo Suite. It "
 "is probably the best tutorial on PostGIS."
 msgstr ""
+"OpenGeo가 단계별 예제 지침 워크숍 <ulink url=\"http://workshops.boundlessgeo."
+"com/postgis-intro/\">PostGIS 개론</ulink> 을 제공하고 있습니다. 이 워크숍은 "
+"패키징된 데이터는 물론 OpenGeo 스위트(suite) 활용법에 대한 소개를 포함하고 있"
+"습니다. 아마도 PostGIS에 대한 최고의 예제일 겁니다."
 
 #. Tag: para
 #: faq.xml:13
@@ -49,6 +55,9 @@ msgid ""
 "aspx?content_name=postgis_tut01\">PostGIS almost idiot's guide on getting "
 "started</ulink>. That one is more focused on the windows user."
 msgstr ""
+"BostonGIS에서도 <ulink url=\"http://www.bostongis.com/PrinterFriendly.aspx?"
+"content_name=postgis_tut01\">PostGIS: 멍청이도 할 수 있는 지침서</ulink> 를 "
+"제공합니다. 이 지침서는 윈도우 사용자를 더 중시하고 있습니다."
 
 #. Tag: para
 #: faq.xml:18
@@ -107,6 +116,9 @@ msgid ""
 "ERROR: operator class \"gist_geometry_ops\" does not exist for access method "
 "\"gist\" Error occurred. This worked fine in PostGIS 1.5."
 msgstr ""
+"osm2pgsql을 통해 OpenStreetMap 데이터를 로드할 때 다음과 같은 오류가 발생합니"
+"다. ERROR: operator class \"gist_geometry_ops\" does not exist for access "
+"method \"gist\". PostGIS 1.5에서는 잘 됐는데 말이죠."
 
 #. Tag: para
 #: faq.xml:40
@@ -117,6 +129,10 @@ msgid ""
 "removed. This was done because PostGIS 2 also introduced Nd spatial indexes "
 "for 3D support and the old name was deemed confusing and a misnomer."
 msgstr ""
+"PostGIS 2 버전부터 기본 도형 연산자 클래스가 gist_geometry_ops에서 "
+"gist_geometry_ops_2d로 변경되었고, gist_geometry_ops는 완전히 삭제되었습니"
+"다. PostGIS 2 버전부터 3D를 지원하기 위해 N-D 공간 인덱스를 도입했는데, 구 명"
+"칭 gist_geometry_ops가 부정확하고 혼동된다고 여겨졌기 때문입니다."
 
 #. Tag: para
 #: faq.xml:41
@@ -127,12 +143,16 @@ msgid ""
 "if you want the default 2D index. So if you manage said good, change index "
 "creation from:"
 msgstr ""
+"테이블 및 인덱스를 생성하는 과정의 일부인 몇몇 구 버전 응용 프로그램은 연산"
+"자 클래스 명을 정확히 참조합니다. 기본 2D 인덱스를 사용하고자 하는 경우 이렇"
+"게 정확히 참조할 필요는 없습니다. 따라서 이런 경우라면 인덱스 생성 명령어를 "
+"다음과 같이 변경하십시오:"
 
 #. Tag: para
 #: faq.xml:42
 #, no-c-format
 msgid "BAD:"
-msgstr ""
+msgstr "나쁜 예에서:"
 
 #. Tag: programlisting
 #: faq.xml:43
@@ -141,18 +161,20 @@ msgid ""
 "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom "
 "gist_geometry_ops);"
 msgstr ""
+"CREATE INDEX idx_my_table_geom ON my_table USING gist(geom "
+"gist_geometry_ops);"
 
 #. Tag: para
 #: faq.xml:44
 #, no-c-format
 msgid "To GOOD:"
-msgstr ""
+msgstr "좋은 예로:"
 
 #. Tag: programlisting
 #: faq.xml:45
 #, no-c-format
 msgid "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom);"
-msgstr ""
+msgstr "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom);"
 
 #. Tag: para
 #: faq.xml:47
@@ -161,6 +183,8 @@ msgid ""
 "The only case where you WILL need to specify the operator class is if you "
 "want a 3D spatial index as follows:"
 msgstr ""
+"사용자가 연산자 클래스를 지정해야만 하는 유일한 경우는 다음과 같이 3D 공간 인"
+"덱스를 생성하고자 할 때뿐입니다:"
 
 #. Tag: programlisting
 #: faq.xml:48
@@ -169,6 +193,8 @@ msgid ""
 "CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom "
 "gist_geometry_ops_nd);"
 msgstr ""
+"CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom "
+"gist_geometry_ops_nd);"
 
 #. Tag: para
 #: faq.xml:50
@@ -181,6 +207,12 @@ msgid ""
 "index and recreate it without the operator class. This will save you grief "
 "in the future when you need to upgrade again."
 msgstr ""
+"안타깝게도 사용자가 변경할 수 없는, 구 버전 gist_geometry_ops가 하드 코딩되"
+"어 있는 컴파일된 코드를 써야만 할 경우, PostGIS 2.0.2 이상 버전에 패키징된 "
+"<filename>legacy_gist.sql</filename> 을 이용해서 구 버전 클래스를 생성할 수 "
+"있습니다. 하지만 이 해결 방법을 쓸 경우, 이후 어떤 시점에서 해당 인덱스를 삭"
+"제하고 연산자 클래스 없이 재생성하는 것이 좋습니다. 이렇게 하면 향후 다시 업"
+"그레이드를 해야 할 때 수고를 덜게 될 것입니다."
 
 #. Tag: para
 #: faq.xml:56
@@ -279,11 +311,11 @@ msgstr ""
 #: faq.xml:85
 #, no-c-format
 msgid ""
-"-- this should return no records if all your geom fields are filled "
-"in        \n"
+"-- this should return no records if all your geom fields are filled in\n"
 "SELECT somefield FROM mytable WHERE geom IS NULL;"
 msgstr ""
-"-- 이것은 모든 geom 필드가 차 있다면 아무 행도 반환하지 않음\n"
+"-- 이 스크립트는 사용자의 모든 geom 항목이 차 있다면 어떤 레코드도 반환하지 "
+"않습니다.\n"
 "SELECT somefield FROM mytable WHERE geom IS NULL;"
 
 #. Tag: programlisting
@@ -321,6 +353,17 @@ msgid ""
 "analyzing raster data. Raster has its very own FAQ. Refer to <xref linkend="
 "\"RT_FAQ\"/> and <xref linkend=\"RT_reference\"/> for more details."
 msgstr ""
+"포인트, 라인스트링, 폴리곤, 멀티포인트, 멀티라인스트링, 멀티폴리곤, 그리고 지"
+"오메트리컬렉션(GeometryCollection) 도형을 저장할 수 있습니다. PostGIS 2.0 이"
+"상 버전이라면 TINS 및 다면체 표면(Polyhedral Surface)도 기본 도형 유형으로 저"
+"장할 수 있습니다. Z, M, ZM 확장자를 가지는 오픈GIS WKT 형식(Open GIS Well "
+"Known Text Format)이 이런 도형들을 지정하고 있습니다. 현재 다음 세 가지 데이"
+"터 유형을 지원합니다. 그 세 가지 유형은 측정시 평면좌표계를 이용하는 표준 "
+"OGC 도형 데이터 유형, 구체 또는 편구체 상에서 계산하는 측지좌표계를 이용하는 "
+"지리 데이터 유형, 그리고 PostGIS 공간 유형 계보에 새롭게 추가된 래스터 데이"
+"터 분석 및 저장을 위한 래스터입니다. 래스터 전용 FAQ도 있습니다. 더 자세한 설"
+"명은 <xref linkend=\"RT_FAQ\"/> 과 <xref linkend=\"RT_reference\"/> 를 참조하"
+"십시오."
 
 #. Tag: para
 #: faq.xml:110
@@ -350,6 +393,20 @@ msgid ""
 "benefits of each. Refer to <xref linkend=\"PostGIS_TypeFunctionMatrix\"/> to "
 "see what is currently supported and what is not."
 msgstr ""
+"짧은 답변: 지리형(geography)은 장거리(long range distance) 범위 측정을 지원하"
+"는 새로운 데이터 유형이지만, 이 유형을 대상으로 하는 계산 대부분은 도형의 경"
+"우보다 느립니다. 지리형을 이용할 경우, 평면좌표계를 자세히 알 필요는 없습니"
+"다. 사용자가 전세계에 걸친 데이터를 가지고 있고 거리 및 길이를 측정하는 데에"
+"만 관심이 있을 경우 일반적으로 지리형이 최선입니다. 도형 데이터 유형은 훨씬 "
+"많은 함수가 지원하고, 제3자 도구의 광범위한 지원을 받으며, 도형을 대상으로 하"
+"는 연산이 더 빠릅니다 -- 대용량 도형의 경우 때로는 10배 빠르기도 합니다. 사용"
+"자가 공간 참조 시스템(Spatial Reference System)에 꽤 익숙하거나, 사용자 데이"
+"터 전부가 단일 <link linkend=\"spatial_ref_sys\">공간 참조 시스템(SRID)</"
+"link> 의 적용을 받는 국지적인 데이터를 처리하는 경우, 또는 상당한 양의 공간 "
+"처리 작업을 해야할 경우 도형이 최선입니다. 주의: 각 유형의 장점을 취하기 위"
+"해 1단계 작업(one-off)만으로 꽤 쉽게 두 유형을 변환시킬 수 있습니다. 현재 어"
+"떤 지원을 받는지 그리고 받지 못 하는지 알고 싶다면 <xref linkend="
+"\"PostGIS_TypeFunctionMatrix\"/> 를 참조하십시오."
 
 #. Tag: para
 #: faq.xml:125
@@ -425,6 +482,8 @@ msgid ""
 "CREATE TABLE gtest ( gid serial primary key, name varchar(20)\n"
 "        , geom geometry(LINESTRING) );"
 msgstr ""
+"CREATE TABLE gtest ( gid serial primary key, name varchar(20)\n"
+"        , geom geometry(LINESTRING) );"
 
 #. Tag: para
 #: faq.xml:158
@@ -434,6 +493,9 @@ msgid ""
 "PostGIS functions and objects into this database or are using a pre-2.0 "
 "version of PostGIS. See the <xref linkend=\"PGInstall\"/>."
 msgstr ""
+"도형 열 정의가 실패하는 경우, 아마도 PostGIS 함수와 객체를 해당 데이터베이스"
+"에 로드하지 않았거나 PostGIS 2.0 미만 버전을 사용하고 있을 겁니다. <xref "
+"linkend=\"PGInstall\"/> 를 참조하십시오."
 
 #. Tag: para
 #: faq.xml:162
@@ -451,13 +513,19 @@ msgstr ""
 #: faq.xml:166
 #, no-c-format
 msgid ""
-"INSERT INTO gtest (ID, NAME, GEOM) \n"
+"INSERT INTO gtest (ID, NAME, GEOM)\n"
 "VALUES (\n"
-"  1, \n"
-"  'First Geometry', \n"
+"  1,\n"
+"  'First Geometry',\n"
 "  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
 ");"
 msgstr ""
+"INSERT INTO gtest (ID, NAME, GEOM)\n"
+"VALUES (\n"
+"  1,\n"
+"  'First Geometry',\n"
+"  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
+");"
 
 #. Tag: para
 #: faq.xml:168
@@ -493,12 +561,12 @@ msgstr "반환값은 대략 아래처럼 나타납니다:"
 msgid ""
 "id | name           | geom\n"
 "----+----------------+-----------------------------\n"
-"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8) \n"
+"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
 "(1 row)"
 msgstr ""
 "id | name           | geom\n"
 "----+----------------+-----------------------------\n"
-"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8) \n"
+"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
 "(1 row)"
 
 #. Tag: para
@@ -568,14 +636,14 @@ msgstr ""
 #: faq.xml:210
 #, no-c-format
 msgid ""
-"SELECT id, the_geom \n"
-"FROM thetable \n"
-"WHERE \n"
+"SELECT id, the_geom\n"
+"FROM thetable\n"
+"WHERE\n"
 "  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 msgstr ""
-"SELECT id, the_geom \n"
-"FROM thetable \n"
-"WHERE \n"
+"SELECT id, the_geom\n"
+"FROM thetable\n"
+"WHERE\n"
 "  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 
 #. Tag: para
@@ -814,10 +882,10 @@ msgstr ""
 #: faq.xml:330
 #, no-c-format
 msgid ""
-"SELECT * FROM geotable \n"
+"SELECT * FROM geotable\n"
 "WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
 msgstr ""
-"SELECT * FROM geotable \n"
+"SELECT * FROM geotable\n"
 "WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
 
 #. Tag: para
@@ -920,12 +988,12 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:383
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Almost certainly not. As an example, consider Oracle database running on "
-"Linux. Linux is GPL, Oracle is not, does Oracle running on Linux have to be "
-"distributed using the GPL? No. So your software can use a PostgreSQL/PostGIS "
-"database as much as it wants and be under any license you like."
+"Linux. Linux is GPL, Oracle is not: does Oracle running on Linux have to be "
+"distributed using the GPL? No. Similarly your software can use a PostgreSQL/"
+"PostGIS database as much as it wants and be under any license you like."
 msgstr ""
 "그렇지 않습니다. 예를 들어, 리눅스 버전의 오라클 데이터베이스를 생각해보십시"
 "오. 리눅스는 GPL이지만 오라클은 그렇지 않습니다. 리눅스에서 운용되는 오라클"
@@ -935,15 +1003,16 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:384
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The only exception would be if you made changes to the PostGIS source code, "
-"and distributed your changed version of PostGIS. In that case you would have "
-"to share the code of your changed PostGIS (but not the code of applications "
-"running on top of it). Even in this limited case, you would still only have "
-"to distribute source code to people you distributed binaries to. The GPL "
-"does not require that you <emphasis>publish</emphasis> your source code, "
-"only that you share it with people you give binaries to."
+"and <emphasis>distributed your changed version</emphasis> of PostGIS. In "
+"that case you would have to share the code of your changed PostGIS (but not "
+"the code of applications running on top of it). Even in this limited case, "
+"you would still only have to distribute source code to people you "
+"distributed binaries to. The GPL does not require that you "
+"<emphasis>publish</emphasis> your source code, only that you share it with "
+"people you give binaries to."
 msgstr ""
 "하나의 예외가 있는데, 본인께서 PostGIS 소스코드에 수정을 가하고 그것을 임의"
 "로 수정하신 PostGIS를 배포하는 경우일 것입니다. 이러한 경우에는 수정하신 "
@@ -951,3 +1020,13 @@ msgstr ""
 "는 애플리케이션은 제외) 심지어 이렇게 제한된 경우에서도 binaries를 배포하는 "
 "사람들에게만 소스 코드를 베포하시면 됩니다. GPL은 binariaes를 제공하는 사람들"
 "을 제외하고는 소스 코드 <emphasis>공개</emphasis>를 요구하지 않습니다"
+
+#. Tag: para
+#: faq.xml:385
+#, no-c-format
+msgid ""
+"The above remains true even if you use PostGIS in conjunction with the "
+"optional CGAL-enabled functions. Portions of CGAL are GPL, but so is all of "
+"PostGIS already: using CGAL does not make PostGIS any more GPL than it was "
+"to start with."
+msgstr ""

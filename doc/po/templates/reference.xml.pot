@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"POT-Creation-Date: 2017-01-28 07:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -23,18 +23,33 @@ msgstr ""
 #. Tag: para
 #: reference.xml:5
 #, no-c-format
-msgid "The functions given below are the ones which a user of PostGIS is likely to need. There are other functions which are required support functions to the PostGIS objects which are not of use to a general user."
+msgid ""
+"The functions given below are the ones which a user of PostGIS is likely to "
+"need. There are other functions which are required support functions to the "
+"PostGIS objects which are not of use to a general user."
 msgstr ""
 
 #. Tag: para
 #: reference.xml:11
 #, no-c-format
-msgid "PostGIS has begun a transition from the existing naming convention to an SQL-MM-centric convention. As a result, most of the functions that you know and love have been renamed using the standard spatial type (ST) prefix. Previous functions are still available, though are not listed in this document where updated functions are equivalent. The non ST_ functions not listed in this documentation are deprecated and will be removed in a future release so STOP USING THEM."
+msgid ""
+"PostGIS has begun a transition from the existing naming convention to an SQL-"
+"MM-centric convention. As a result, most of the functions that you know and "
+"love have been renamed using the standard spatial type (ST) prefix. Previous "
+"functions are still available, though are not listed in this document where "
+"updated functions are equivalent. The non ST_ functions not listed in this "
+"documentation are deprecated and will be removed in a future release so STOP "
+"USING THEM."
 msgstr ""
 
 #. Tag: chapter
 #: reference.xml:16
 #, no-c-format
-msgid "&reference_type; &reference_guc; &reference_management; &reference_constructor; &reference_accessor; &reference_editor; &reference_output; &reference_operator; &reference_measure; &reference_sfcgal; &reference_processing; &reference_lrs; &reference_temporal; &reference_transaction; &reference_misc; &reference_exception;"
+msgid ""
+"&reference_type; &reference_guc; &reference_management; "
+"&reference_constructor; &reference_accessor; &reference_editor; "
+"&reference_output; &reference_operator; &reference_measure; "
+"&reference_sfcgal; &reference_processing; &reference_lrs; "
+"&reference_temporal; &reference_transaction; &reference_misc; "
+"&reference_exception;"
 msgstr ""
-

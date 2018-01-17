@@ -3,14 +3,14 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2011-2012 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2011-2012 Sandro Santilli <strk@kbt.io>
 -- Copyright (C) 2005 Refractions Research Inc.
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
 --
--- Author: Sandro Santilli <strk@keybit.net>
---  
+-- Author: Sandro Santilli <strk@kbt.io>
+--
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
 --  Overloaded spatial predicates for TopoGeometry inputs
@@ -79,9 +79,9 @@ BEGIN
 
     IF tg2.type = 1 THEN -- point/point
   ---------------------------------------------------------
-  -- 
+  --
   --  Two [multi]point features intersect if they share
-  --  any Node 
+  --  any Node
   --
   --
   --
@@ -105,13 +105,13 @@ BEGIN
       RETURN FALSE; -- no elements shared
   --
   ---------------------------------------------------------
-      
+
 
     ELSIF tg2.type = 2 THEN -- point/line
   ---------------------------------------------------------
-  -- 
+  --
   --  A [multi]point intersects a [multi]line if they share
-  --  any Node. 
+  --  any Node.
   --
   --
   --
@@ -145,7 +145,7 @@ BEGIN
 
     ELSIF tg2.type = 3 THEN -- point/polygon
   ---------------------------------------------------------
-  -- 
+  --
   --  A [multi]point intersects a [multi]polygon if any
   --  Node of the point is contained in any face of the
   --  polygon OR ( is end_node or start_node of any edge
@@ -232,9 +232,9 @@ BEGIN
   ELSIF tg1.type = 2 THEN -- [multi]line
     IF tg2.type = 2 THEN -- line/line
   ---------------------------------------------------------
-  -- 
+  --
   --  A [multi]line intersects a [multi]line if they share
-  --  any Node. 
+  --  any Node.
   --
   --
   --
@@ -275,7 +275,7 @@ BEGIN
 
     ELSIF tg2.type = 3 THEN -- line/polygon
   ---------------------------------------------------------
-  -- 
+  --
   -- A [multi]line intersects a [multi]polygon if they share
   -- any Node (touch-only case), or if any line edge has any
   -- polygon face on the left or right (full-containment case
@@ -311,7 +311,7 @@ BEGIN
 
         || ' AND ( '
 
-        -- Check if E1 have left-or-right face 
+        -- Check if E1 have left-or-right face
         -- being part of R2.element_id
         || ' e1.left_face = r2.element_id '
         || ' OR '
@@ -354,7 +354,7 @@ BEGIN
 
     IF tg2.type = 3 THEN -- polygon/polygon
   ---------------------------------------------------------
-  -- 
+  --
   -- A [multi]polygon intersects a [multi]polygon if they share
   -- any Node (touch-only case), or if any face edge has any of the
   -- other polygon face on the left or right (full-containment case
@@ -395,7 +395,7 @@ BEGIN
 
         -- Check if any edge from a polygon face
         -- has any of the other polygon face
-        -- on the left or right 
+        -- on the left or right
         || ' e1.left_face = r2.element_id '
         || ' OR '
         || ' e1.right_face = r2.element_id '
@@ -483,7 +483,7 @@ BEGIN
         SELECT name FROM topology.topology into toponame
                 WHERE id = tg1.topology_id;
 
-  -- Two geometries are equal if they are composed by 
+  -- Two geometries are equal if they are composed by
   -- the same TopoElements
   FOR rec IN EXECUTE 'SELECT * FROM '
     || ' topology.GetTopoGeomElements('

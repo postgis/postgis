@@ -1,36 +1,36 @@
 SET client_min_messages TO warning;
 
 SELECT 'ndims01', ST_ndims(ST_geomfromewkt('CIRCULARSTRING(
-                0 0 0 0, 
-                0.26794919243112270647255365849413 1 3 -2, 
+                0 0 0 0,
+                0.26794919243112270647255365849413 1 3 -2,
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2)'));
 SELECT 'geometrytype01', geometrytype(ST_geomfromewkt('CIRCULARSTRING(
-                0 0 0 0, 
-                0.26794919243112270647255365849413 1 3 -2, 
+                0 0 0 0,
+                0.26794919243112270647255365849413 1 3 -2,
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2)'));
 SELECT 'ndims02', ST_ndims(ST_geomfromewkt('CIRCULARSTRING(
-                0 0 0, 
-                0.26794919243112270647255365849413 1 3, 
+                0 0 0,
+                0.26794919243112270647255365849413 1 3,
                 0.5857864376269049511981127579 1.4142135623730950488016887242097 1)'));
 SELECT 'geometrytype02', geometrytype(ST_geomfromewkt('CIRCULARSTRING(
-                0 0 0, 
-                0.26794919243112270647255365849413 1 3, 
+                0 0 0,
+                0.26794919243112270647255365849413 1 3,
                 0.5857864376269049511981127579 1.4142135623730950488016887242097 1)'));
 SELECT 'ndims03', ST_ndims(ST_geomfromewkt('CIRCULARSTRINGM(
-                0 0 0, 
-                0.26794919243112270647255365849413 1 -2, 
+                0 0 0,
+                0.26794919243112270647255365849413 1 -2,
                 0.5857864376269049511981127579 1.4142135623730950488016887242097 2)'));
 SELECT 'geometrytype03', geometrytype(ST_geomfromewkt('CIRCULARSTRINGM(
-                0 0 0, 
-                0.26794919243112270647255365849413 1 -2, 
+                0 0 0,
+                0.26794919243112270647255365849413 1 -2,
                 0.5857864376269049511981127579 1.4142135623730950488016887242097 2)'));
 SELECT 'ndims04', ST_ndims(ST_geomfromewkt('CIRCULARSTRING(
-                0 0, 
-                0.26794919243112270647255365849413 1, 
+                0 0,
+                0.26794919243112270647255365849413 1,
                 0.5857864376269049511981127579 1.4142135623730950488016887242097)'));
 SELECT 'geometrytype04', geometrytype(ST_geomfromewkt('CIRCULARSTRING(
-                0 0, 
-                0.26794919243112270647255365849413 1, 
+                0 0,
+                0.26794919243112270647255365849413 1,
                 0.5857864376269049511981127579 1.4142135623730950488016887242097)'));
 
 SELECT 'isClosed01', ST_IsClosed(ST_geomfromewkt('CIRCULARSTRING(
@@ -89,33 +89,33 @@ the_geom_3dz GEOMETRY(CIRCULARSTRINGZ),
 the_geom_4d GEOMETRY(CIRCULARSTRINGZM));
 
 INSERT INTO public.circularstring (
-        id, 
+        id,
         description
       ) VALUES (
-        1, 
+        1,
         '180-135 degrees');
 UPDATE public.circularstring
         SET the_geom_4d = ST_Geomfromewkt('CIRCULARSTRING(
-                0 0 0 0, 
-                0.26794919243112270647255365849413 1 3 -2, 
+                0 0 0 0,
+                0.26794919243112270647255365849413 1 3 -2,
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2)')
         WHERE id = 1;
 UPDATE public.circularstring
         SET the_geom_3dz = ST_Geomfromewkt('CIRCULARSTRING(
-                0 0 0, 
-                0.26794919243112270647255365849413 1 3, 
+                0 0 0,
+                0.26794919243112270647255365849413 1 3,
                 0.5857864376269049511981127579 1.4142135623730950488016887242097 1)')
         WHERE id = 1;
 UPDATE public.circularstring
         SET the_geom_3dm = ST_Geomfromewkt('CIRCULARSTRINGM(
-                0 0 0, 
-                0.26794919243112270647255365849413 1 -2, 
-                0.5857864376269049511981127579 1.4142135623730950488016887242097 2)') 
+                0 0 0,
+                0.26794919243112270647255365849413 1 -2,
+                0.5857864376269049511981127579 1.4142135623730950488016887242097 2)')
         WHERE id = 1;
-UPDATE public.circularstring       
+UPDATE public.circularstring
         SET the_geom_2d = ST_Geomfromewkt('CIRCULARSTRING(
-                0 0, 
-                0.26794919243112270647255365849413 1, 
+                0 0,
+                0.26794919243112270647255365849413 1,
                 0.5857864376269049511981127579 1.4142135623730950488016887242097)')
         WHERE id = 1;
 
@@ -127,46 +127,46 @@ INSERT INTO public.circularstring (
         '2-segment string');
 UPDATE public.circularstring
         SET the_geom_4d = ST_Geomfromewkt('CIRCULARSTRING(
-                -5 0 0 4, 
-                0 5 1 3, 
-                5 0 2 2, 
-                10 -5 3 1, 
+                -5 0 0 4,
+                0 5 1 3,
+                5 0 2 2,
+                10 -5 3 1,
                 15 0 4 0)')
         WHERE id = 2;
 UPDATE public.circularstring
         SET the_geom_3dz = ST_Geomfromewkt('CIRCULARSTRING(
-                -5 0 0, 
-                0 5 1, 
-                5 0 2, 
-                10 -5 3, 
+                -5 0 0,
+                0 5 1,
+                5 0 2,
+                10 -5 3,
                 15 0 4)')
         WHERE id = 2;
 UPDATE public.circularstring
         SET the_geom_3dm = ST_Geomfromewkt('CIRCULARSTRINGM(
-                -5 0 4, 
-                0 5 3, 
-                5 0 2, 
-                10 -5 1, 
+                -5 0 4,
+                0 5 3,
+                5 0 2,
+                10 -5 1,
                 15 0 0)')
         WHERE id = 2;
 UPDATE public.circularstring
         SET the_geom_2d = ST_Geomfromewkt('CIRCULARSTRING(
-                -5 0, 
-                0 5, 
-                5 0, 
-                10 -5, 
+                -5 0,
+                0 5,
+                5 0,
+                10 -5,
                 15 0)')
         WHERE id = 2;
 
-SELECT 'astext01', ST_astext(the_geom_2d) FROM public.circularstring;        
-SELECT 'astext02', ST_astext(the_geom_3dm) FROM public.circularstring;        
-SELECT 'astext03', ST_astext(the_geom_3dz) FROM public.circularstring;        
-SELECT 'astext04', ST_astext(the_geom_4d) FROM public.circularstring;        
+SELECT 'astext01', ST_astext(the_geom_2d) FROM public.circularstring;
+SELECT 'astext02', ST_astext(the_geom_3dm) FROM public.circularstring;
+SELECT 'astext03', ST_astext(the_geom_3dz) FROM public.circularstring;
+SELECT 'astext04', ST_astext(the_geom_4d) FROM public.circularstring;
 
-SELECT 'asewkt01', ST_AsEWKT(the_geom_2d) FROM public.circularstring;        
-SELECT 'asewkt02', ST_AsEWKT(the_geom_3dm) FROM public.circularstring;        
-SELECT 'asewkt03', ST_AsEWKT(the_geom_3dz) FROM public.circularstring;        
-SELECT 'asewkt04', ST_AsEWKT(the_geom_4d) FROM public.circularstring;        
+SELECT 'asewkt01', ST_AsEWKT(the_geom_2d) FROM public.circularstring;
+SELECT 'asewkt02', ST_AsEWKT(the_geom_3dm) FROM public.circularstring;
+SELECT 'asewkt03', ST_AsEWKT(the_geom_3dz) FROM public.circularstring;
+SELECT 'asewkt04', ST_AsEWKT(the_geom_4d) FROM public.circularstring;
 
 SELECT 'asbinary01', encode(ST_AsBinary(the_geom_2d, 'ndr'), 'hex') FROM public.circularstring;
 SELECT 'asbinary02', encode(ST_AsBinary(the_geom_3dm, 'xdr'), 'hex') FROM public.circularstring;
@@ -233,4 +233,3 @@ SELECT 'npoints_is_five', ST_NumPoints(ST_GeomFromEWKT('CIRCULARSTRING(0 0,2 0, 
 
 -- See http://trac.osgeo.org/postgis/ticket/2410
 SELECT 'straight_curve', ST_AsText(ST_CurveToLine(ST_GeomFromEWKT('CIRCULARSTRING(0 0,1 0,2 0,3 0,4 0)')));
-

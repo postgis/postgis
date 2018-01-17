@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright (C) 2012 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2012 Sandro Santilli <strk@kbt.io>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -38,7 +38,7 @@
     CU_ASSERT(1); \
   } \
 } while (0)
-	
+
 static void test_lwgeom_make_valid(void)
 {
 	LWGEOM *gin, *gout, *gexp;
@@ -56,7 +56,7 @@ static void test_lwgeom_make_valid(void)
 
 	/* We're really only interested in avoiding a crash in here.
 	 * See http://trac.osgeo.org/postgis/ticket/1738
-	 * TODO: enhance the test if we find a workaround 
+	 * TODO: enhance the test if we find a workaround
 	 *       to the excepion:
 	 * See http://trac.osgeo.org/postgis/ticket/1735
 	 */
@@ -95,7 +95,7 @@ static void test_lwgeom_make_valid(void)
 	ewkt = lwgeom_to_ewkt(gout);
 	/* printf("c = %s\n", ewkt); */
 	/*
-	 TODO: This doesn't work on windows returns in different order. 
+	 TODO: This doesn't work on windows returns in different order.
 	 strk figure out why. For now will replace with normalized version
 	*/
 /*	CU_ASSERT_STRING_EQUAL(ewkt,

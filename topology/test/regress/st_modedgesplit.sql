@@ -33,12 +33,12 @@ BEGIN
     o := rec.xx;
     RETURN NEXT;
   END LOOP;
-  
+
   -- Check effect on edges (there should be one split)
   sql := '
   WITH node_limits AS ( SELECT max FROM city_data.limits WHERE what = ''node''::text ),
        edge_limits AS ( SELECT max FROM city_data.limits WHERE what = ''edge''::text )
-  SELECT ''E|'' || e.edge_id || ''|sn'' || e.start_node || ''|en'' || e.end_node 
+  SELECT ''E|'' || e.edge_id || ''|sn'' || e.start_node || ''|en'' || e.end_node
          || ''|nl'' || e.next_left_edge
          || ''|nr'' || e.next_right_edge
          || ''|lf'' || e.left_face
@@ -72,7 +72,7 @@ SELECT 'invalid', ST_ModEdgeSplit('city_data', NULL, 'SRID=4326;POINT(28 14)');
 SELECT 'invalid', ST_ModEdgeSplit('city_data', 10, NULL);
 SELECT 'invalid', ST_ModEdgeSplit('fake', 10, 'SRID=4326;POINT(28 14)');
 
--- Non-isolated edge 
+-- Non-isolated edge
 SELECT 'noniso', ST_ModEdgeSplit('city_data', 10, 'SRID=4326;POINT(28 14)');
 SELECT check_changes();
 
@@ -80,11 +80,11 @@ SELECT check_changes();
 SELECT 'iso', ST_ModEdgeSplit('city_data', 25, 'SRID=4326;POINT(11 35)');
 SELECT check_changes();
 
--- Dangling on end point 
+-- Dangling on end point
 SELECT 'dangling_end', ST_ModEdgeSplit('city_data', 3, 'SRID=4326;POINT(25 32)');
 SELECT check_changes();
 
--- Dangling on start point 
+-- Dangling on start point
 SELECT 'dangling_start', ST_ModEdgeSplit('city_data', 4, 'SRID=4326;POINT(45 32)');
 SELECT check_changes();
 
@@ -109,9 +109,9 @@ SELECT check_changes();
 -- Robustness of edge splitting (#1711)
 
 -- clean all up first
-DELETE FROM city_data.edge_data; 
-DELETE FROM city_data.node; 
-DELETE FROM city_data.face where face_id > 0; 
+DELETE FROM city_data.edge_data;
+DELETE FROM city_data.node;
+DELETE FROM city_data.face where face_id > 0;
 SELECT 'seq_reset',
        setval('city_data.edge_data_edge_id_seq', 1, false),
        setval('city_data.face_face_id_seq', 1, false),
@@ -121,7 +121,7 @@ CREATE TEMP TABLE t AS
 SELECT
 ST_SetSRID(
 '01020000000400000000000000000034400000000000002440000000000000244000000000000024400000000000002240000000000000284000000000000024400000000000003440'
-::geometry, 4326) as line, 
+::geometry, 4326) as line,
 ST_SetSRID(
 '010100000000000000000022400000000000002840'
 ::geometry, 4326) as point,

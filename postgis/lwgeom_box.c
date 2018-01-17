@@ -62,13 +62,13 @@ Datum BOX2D_in(PG_FUNCTION_ARGS)
 	double tmp;
 	GBOX box;
 	int i;
-	
+
 	gbox_init(&box);
 
 	for(i = 0; str[i]; i++) {
 	  str[i] = tolower(str[i]);
 	}
-	
+
 	nitems = sscanf(str,"box(%lf %lf,%lf %lf)", &box.xmin, &box.ymin, &box.xmax, &box.ymax);
 	if (nitems != 4)
 	{
@@ -121,12 +121,12 @@ Datum LWGEOM_to_BOX2D(PG_FUNCTION_ARGS)
 
 	/* Cannot box empty! */
 	if ( lwgeom_is_empty(lwgeom) )
-		PG_RETURN_NULL(); 
+		PG_RETURN_NULL();
 
 	/* Cannot calculate box? */
 	if ( lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE )
 		PG_RETURN_NULL();
-		
+
 	/* Strip out higher dimensions */
 	FLAGS_SET_Z(gbox.flags, 0);
 	FLAGS_SET_M(gbox.flags, 0);
@@ -378,12 +378,22 @@ PG_FUNCTION_INFO_V1(BOX2D_expand);
 Datum BOX2D_expand(PG_FUNCTION_ARGS)
 {
 	GBOX *box = (GBOX *)PG_GETARG_POINTER(0);
-	double d = PG_GETARG_FLOAT8(1);
 	GBOX *result = (GBOX *)palloc(sizeof(GBOX));
-
 	memcpy(result, box, sizeof(GBOX));
-    gbox_expand(result, d);
-    
+
+	if (PG_NARGS() == 2)
+	{
+		double d = PG_GETARG_FLOAT8(1);
+		gbox_expand(result, d);
+	}
+	else
+	{
+		double dx = PG_GETARG_FLOAT8(1);
+		double dy = PG_GETARG_FLOAT8(2);
+
+		gbox_expand_xyzm(result, dx, dy, 0, 0);
+	}
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -494,29 +504,18 @@ Datum BOX2D_to_LWGEOM(PG_FUNCTION_ARGS)
 	}
 	else
 	{
+		POINT4D points[4];
 		LWPOLY *poly;
-		POINTARRAY **ppa = lwalloc(sizeof(POINTARRAY*));
 
-		/* Assign coordinates to point array */
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymax;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymax;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
+		/* Initialize the 4 vertices of the polygon */
+		points[0] = (POINT4D) { box->xmin, box->ymin, 0.0, 0.0 };
+		points[1] = (POINT4D) { box->xmin, box->ymax, 0.0, 0.0 };
+		points[2] = (POINT4D) { box->xmax, box->ymax, 0.0, 0.0 };
+		points[3] = (POINT4D) { box->xmax, box->ymin, 0.0, 0.0 };
 
 		/* Construct polygon */
-		ppa[0] = pa;
-		poly = lwpoly_construct(SRID_UNKNOWN, NULL, 1, ppa);
+		poly = lwpoly_construct_rectangle(LW_FALSE, LW_FALSE, &points[0], &points[1],
+				&points[2], &points[3]);
 		result = geometry_serialize(lwpoly_as_lwgeom(poly));
 		lwpoly_free(poly);
 	}
@@ -549,7 +548,7 @@ Datum BOX2D_construct(PG_FUNCTION_ARGS)
 	/* Process X min/max */
 	min = lwpoint_get_x(minpoint);
 	max = lwpoint_get_x(maxpoint);
-	if ( min > max ) 
+	if ( min > max )
 	{
 		tmp = min;
 		min = max;
@@ -561,7 +560,7 @@ Datum BOX2D_construct(PG_FUNCTION_ARGS)
 	/* Process Y min/max */
 	min = lwpoint_get_y(minpoint);
 	max = lwpoint_get_y(maxpoint);
-	if ( min > max ) 
+	if ( min > max )
 	{
 		tmp = min;
 		min = max;

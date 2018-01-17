@@ -39,13 +39,13 @@ WHERE l.topology_id = t.id and t.name = 'CITY_data_UP_down'
 ORDER BY l.layer_id;
 
 -- Check sequences
-SELECT * from "CITY_data_UP_down".node_node_id_seq;
-SELECT * from "CITY_data_UP_down".edge_data_edge_id_seq;
-SELECT * from "CITY_data_UP_down".face_face_id_seq;
-SELECT sequence_name, last_value, start_value, increment_by, max_value, min_value, cache_value, is_cycled, is_called from "CITY_data_UP_down".layer_id_seq;
-SELECT * from "CITY_data_UP_down".topogeo_s_1;
-SELECT * from "CITY_data_UP_down".topogeo_s_2;
-SELECT * from "CITY_data_UP_down".topogeo_s_3;
+SELECT tableoid::regclass AS sequence_name, last_value,  is_called from "CITY_data_UP_down".node_node_id_seq;
+SELECT tableoid::regclass AS sequence_name, last_value,  is_called from "CITY_data_UP_down".edge_data_edge_id_seq;
+SELECT tableoid::regclass AS sequence_name, last_value,  is_called from "CITY_data_UP_down".face_face_id_seq;
+SELECT tableoid::regclass AS sequence_name, last_value,  is_called from "CITY_data_UP_down".layer_id_seq;
+SELECT tableoid::regclass AS sequence_name, last_value,  is_called  from "CITY_data_UP_down".topogeo_s_1;
+SELECT tableoid::regclass AS sequence_name, last_value,  is_called  from "CITY_data_UP_down".topogeo_s_2;
+SELECT tableoid::regclass AS sequence_name, last_value,  is_called  from "CITY_data_UP_down".topogeo_s_3;
 
 SELECT topology.DropTopology('CITY_data_UP_down');
 SELECT topology.DropTopology('city_data');

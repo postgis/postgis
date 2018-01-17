@@ -2,20 +2,23 @@
 #
 # Translators:
 # Arnaud Vandecasteele <arnaud.sig@gmail.com>, 2013-2014
+# kamass <bjorkyy@yahoo.fr>, 2016
 # etrimaille <gustrimaille@yahoo.fr>, 2013
 # FPH <fabrice@phung.fr>, 2013
+# geojs, 2014
 # geojs, 2014
 # etrimaille <gustrimaille@yahoo.fr>, 2013
 # Jacolin <yjacolin@free.fr>, 2014
 # Vincent Picavet <vincent.ml@oslandia.com>, 2014-2015
+# Vincent Picavet <vincent.ml@oslandia.com>, 2014,2016
 # Vincent Picavet <vincent.ml@oslandia.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
-"PO-Revision-Date: 2015-09-29 12:23+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"POT-Creation-Date: 2017-09-07 07:22+0000\n"
+"PO-Revision-Date: 2016-11-25 09:19+0000\n"
+"Last-Translator: kamass <bjorkyy@yahoo.fr>\n"
 "Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
 "fr/)\n"
 "Language: fr\n"
@@ -325,13 +328,12 @@ msgstr ""
 #: faq.xml:85
 #, no-c-format
 msgid ""
-"-- this should return no records if all your geom fields are filled "
-"in        \n"
+"-- this should return no records if all your geom fields are filled in\n"
 "SELECT somefield FROM mytable WHERE geom IS NULL;"
 msgstr ""
-"-- cela ne doit pas retourner d'enregistrements si tous les champs "
-"géométriques sont remplis\n"
-"SELECT somefield FROM mytable WHERE geom IS NULL;"
+"-- Cela ne devrait retourner aucun résultat si tous les champs geom sont "
+"renseignés dans\n"
+"SELECT le_champ FROM ma_table WHERE geom IS NULL"
 
 #. Tag: programlisting
 #: faq.xml:87
@@ -370,6 +372,19 @@ msgid ""
 "analyzing raster data. Raster has its very own FAQ. Refer to <xref linkend="
 "\"RT_FAQ\"/> and <xref linkend=\"RT_reference\"/> for more details."
 msgstr ""
+"Vous pouvez stocker des géométries Point, LineString, Polygon, MultiPoint, "
+"MultiLineString, MultiPolygon et GeometryCollection. Dans PostGIS 2.0 et "
+"ultérieur, vous pouvez aussi stocker des TINS et des surfaces polyhédrales "
+"( Polyhedral Surfaces ) dans le type de base geometry. Ces types sont "
+"spécifiés dans le format Open GIS Well Known Text ( avec les extensions Z, M "
+"et ZM). Il y a trois types de données actuellement supportés. Le type "
+"geometry standard OGC utilise un système de coordonnées planaire pour les "
+"valeurs. Le type geography  utilise un système de coordonnées géodésique, "
+"avec les calculs sur une sphère ou un sphéroïde. Le membre le plus récent de "
+"la famille des types de données spatiales de PostGIS est le raster pour "
+"stocker et analyser des données raster. Raster possède sa propre FAQ. Voir "
+"<xref linkend=\"RT_FAQ\"/> et <xref linkend=\"RT_reference\"/> pour plus de "
+"détails."
 
 #. Tag: para
 #: faq.xml:110
@@ -399,6 +414,24 @@ msgid ""
 "benefits of each. Refer to <xref linkend=\"PostGIS_TypeFunctionMatrix\"/> to "
 "see what is currently supported and what is not."
 msgstr ""
+"Réponse courte : geography est un type de données récent qui supporte les "
+"calculs de distance sur de grandes étendues, mais la plupart des calculs "
+"l'utilisant sont plus lent que ceux avec le type geometry. Si vous utilisez "
+"geography, vous n'avez pas besoin de vous préoccuper de systèmes de "
+"coordonnées planaires. Geography est en général meilleur si tout ce qui vous "
+"importe est de mesurer des distances et des longueurs et que vous avez des "
+"données couvrant le monde entier. Le type de données geometry est plus "
+"ancien et a beaucoup plus de fonctions disponibles, un plus grand support "
+"des outils externes, et des calculs qui sont généralement plus rapide -- "
+"parfois jusqu'à 10 fois plus rapide pour de grosses géométries . Geometry "
+"est meilleur si vous connaissez les systèmes de référence spatiale ou si "
+"vous avez de la donnée locale qui tient toute dans un seul <link linkend="
+"\"spatial_ref_sys\">système de référence spatial ( SRID)</link>, ou que vous "
+"faites beaucoup de traitement spatiaux. Note : il est assez simple de faire "
+"des conversions entre les deux types pour bénéficier des avantages de "
+"chacun. Se référer à <xref linkend=\"PostGIS_TypeFunctionMatrix\"/> pour "
+"voir ce qui est actuellement supporté et ce qui ne l'est pas pour chaque "
+"type."
 
 #. Tag: para
 #: faq.xml:125
@@ -509,19 +542,13 @@ msgstr ""
 #: faq.xml:166
 #, no-c-format
 msgid ""
-"INSERT INTO gtest (ID, NAME, GEOM) \n"
+"INSERT INTO gtest (ID, NAME, GEOM)\n"
 "VALUES (\n"
-"  1, \n"
-"  'First Geometry', \n"
+"  1,\n"
+"  'First Geometry',\n"
 "  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
 ");"
 msgstr ""
-"INSERT INTO gtest (ID, NAME, GEOM) \n"
-"VALUES (\n"
-"  1, \n"
-"  'First Geometry', \n"
-"  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
-");"
 
 #. Tag: para
 #: faq.xml:168
@@ -557,13 +584,9 @@ msgstr "La valeur retournée doit ressembler à çà :"
 msgid ""
 "id | name           | geom\n"
 "----+----------------+-----------------------------\n"
-"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8) \n"
+"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
 "(1 row)"
 msgstr ""
-"id | name           | geom\n"
-"----+----------------+-----------------------------\n"
-"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8) \n"
-"(1 row)"
 
 #. Tag: para
 #: faq.xml:183
@@ -636,15 +659,11 @@ msgstr ""
 #: faq.xml:210
 #, no-c-format
 msgid ""
-"SELECT id, the_geom \n"
-"FROM thetable \n"
-"WHERE \n"
+"SELECT id, the_geom\n"
+"FROM thetable\n"
+"WHERE\n"
 "  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 msgstr ""
-"SELECT id, the_geom \n"
-"FROM thetable \n"
-"WHERE \n"
-"  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 
 #. Tag: para
 #: faq.xml:216
@@ -895,11 +914,9 @@ msgstr ""
 #: faq.xml:330
 #, no-c-format
 msgid ""
-"SELECT * FROM geotable \n"
+"SELECT * FROM geotable\n"
 "WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
 msgstr ""
-"SELECT * FROM geotable \n"
-"WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
 
 #. Tag: para
 #: faq.xml:336
@@ -1005,12 +1022,12 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:383
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Almost certainly not. As an example, consider Oracle database running on "
-"Linux. Linux is GPL, Oracle is not, does Oracle running on Linux have to be "
-"distributed using the GPL? No. So your software can use a PostgreSQL/PostGIS "
-"database as much as it wants and be under any license you like."
+"Linux. Linux is GPL, Oracle is not: does Oracle running on Linux have to be "
+"distributed using the GPL? No. Similarly your software can use a PostgreSQL/"
+"PostGIS database as much as it wants and be under any license you like."
 msgstr ""
 "Bien sur que non. Comme exemple, prenons une base de données Oracle tournant "
 "sur Linux. Linux est sous licence GPL, Oracle non. Est-ce qu'Oracle tournant "
@@ -1020,15 +1037,16 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:384
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The only exception would be if you made changes to the PostGIS source code, "
-"and distributed your changed version of PostGIS. In that case you would have "
-"to share the code of your changed PostGIS (but not the code of applications "
-"running on top of it). Even in this limited case, you would still only have "
-"to distribute source code to people you distributed binaries to. The GPL "
-"does not require that you <emphasis>publish</emphasis> your source code, "
-"only that you share it with people you give binaries to."
+"and <emphasis>distributed your changed version</emphasis> of PostGIS. In "
+"that case you would have to share the code of your changed PostGIS (but not "
+"the code of applications running on top of it). Even in this limited case, "
+"you would still only have to distribute source code to people you "
+"distributed binaries to. The GPL does not require that you "
+"<emphasis>publish</emphasis> your source code, only that you share it with "
+"people you give binaries to."
 msgstr ""
 "La seule exception est si vous faites des modifications au code source de "
 "PostGIS, et que vous distribuez cette version modifiée de PostGIS. Dans ce "
@@ -1038,3 +1056,13 @@ msgstr ""
 "binaires. La GPL n'oblige pas à <emphasis>publier</emphasis> votre code "
 "source, mais uniquement à le partager avec les personnes à qui vous donnez "
 "des binaires."
+
+#. Tag: para
+#: faq.xml:385
+#, no-c-format
+msgid ""
+"The above remains true even if you use PostGIS in conjunction with the "
+"optional CGAL-enabled functions. Portions of CGAL are GPL, but so is all of "
+"PostGIS already: using CGAL does not make PostGIS any more GPL than it was "
+"to start with."
+msgstr ""

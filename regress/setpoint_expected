@@ -1,5 +1,6 @@
-ERROR:  Point index out of range (0..2)
-ERROR:  Point index out of range (0..2)
+ERROR:  abs(Point index) out of range (-)(0..2)
+LINESTRING(0 0,1 1,9 9)
+ERROR:  abs(Point index) out of range (-)(0..2)
 ERROR:  First argument must be a LINESTRING
 ERROR:  Third argument must be a POINT
 LINESTRING(90 91 92,1 1 1,2 2 2)

@@ -46,7 +46,7 @@
 * while Contains only requires that the containing argument be checked.
 * Both the Geometry and the PreparedGeometry have to be cached,
 * because the PreparedGeometry contains a reference to the geometry.
-* 
+*
 * Note that the first 6 entries are part of the common GeomCache
 * structure and have to remain in order to allow the overall caching
 * system to share code (the cache checking code is common between
@@ -54,10 +54,10 @@
 */
 typedef struct {
 	int                         type;       // <GeomCache>
-	GSERIALIZED*                geom1;      // 
-	GSERIALIZED*                geom2;      // 
-	size_t                      geom1_size; // 
-	size_t                      geom2_size; // 
+	GSERIALIZED*                geom1;      //
+	GSERIALIZED*                geom2;      //
+	size_t                      geom1_size; //
+	size_t                      geom2_size; //
 	int32                       argnum;     // </GeomCache>
 	MemoryContext               context_statement;
 	MemoryContext               context_callback;

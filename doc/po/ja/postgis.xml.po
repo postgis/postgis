@@ -1,19 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
 "PO-Revision-Date: 2016-02-05 00:59+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/ja/)\n"
+"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
+"ja/)\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: title
@@ -32,11 +33,15 @@ msgstr "PostGIS開発グループ"
 #: postgis.xml:138
 #, no-c-format
 msgid ""
-"<orgname><ulink url=\"http://www.cleverelephant.ca\">clever "
-"elephant</ulink></orgname> <address><city>Victoria</city> <state>British "
-"Columbia</state> <country>Canada</country> "
-"<email>pramsey@cleverelephant.ca</email></address>"
-msgstr "<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</ulink></orgname><address><city>ビクトリア</city><state>ブリティッシュコロンビア</state><country>カナダ</country><email> pramsey@cleverelephant.ca </email></address>"
+"<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</"
+"ulink></orgname> <address><city>Victoria</city> <state>British Columbia</"
+"state> <country>Canada</country> <email>pramsey@cleverelephant.ca</email></"
+"address>"
+msgstr ""
+"<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</"
+"ulink></orgname><address><city>ビクトリア</city><state>ブリティッシュコロンビ"
+"ア</state><country>カナダ</country><email> pramsey@cleverelephant.ca </"
+"email></address>"
 
 #. Tag: para
 #: postgis.xml:152
@@ -46,7 +51,10 @@ msgid ""
 "which allows GIS (Geographic Information Systems) objects to be stored in "
 "the database. PostGIS includes support for GiST-based R-Tree spatial "
 "indexes, and functions for analysis and processing of GIS objects."
-msgstr "PostGISは、オブジェクトRDBであるPostgreSQLの拡張で、GIS (地理情報システム)オブジェクトを格納することができます。PostGISは、GiSTベースのR木空間インデクスをサポートし、GISオブジェクトの解析および処理を行う機能を持ちます。"
+msgstr ""
+"PostGISは、オブジェクトRDBであるPostgreSQLの拡張で、GIS (地理情報システム)オ"
+"ブジェクトを格納することができます。PostGISは、GiSTベースのR木空間インデクス"
+"をサポートし、GISオブジェクトの解析および処理を行う機能を持ちます。"
 
 #. Tag: para
 #: postgis.xml:161
@@ -58,10 +66,14 @@ msgstr "本マニュアルは、&last_release_version;版のマニュアルで�
 #: postgis.xml:162
 #, no-c-format
 msgid ""
-"This work is licensed under a <ulink "
-"url=\"http://creativecommons.org/licenses/by-sa/3.0/\">Creative Commons "
-"Attribution-Share Alike 3.0 License</ulink>. Feel free to use this material "
-"any way you like, but we ask that you attribute credit to the PostGIS "
-"Project and wherever possible, a link back to <ulink "
-"url=\"http://postgis.net\">http://postgis.net</ulink>."
-msgstr "この作品は<ulink url=\"http://creativecommons.org/licenses/by-sa/3.0/deed.ja\">クリエイティブ・コモンズ 表示 - 継承 3.0 非移植 ライセンス</ulink>の下に提供されています。好きなようにこの材料を使うことができますが、PostGIS Project のクレジット提示を求めます。また可能な限り<ulink url=\"http://postgis.net\">http://postgis.net</ulink>へのリンクを求めます。"
+"This work is licensed under a <ulink url=\"http://creativecommons.org/"
+"licenses/by-sa/3.0/\">Creative Commons Attribution-Share Alike 3.0 License</"
+"ulink>. Feel free to use this material any way you like, but we ask that you "
+"attribute credit to the PostGIS Project and wherever possible, a link back "
+"to <ulink url=\"http://postgis.net\">http://postgis.net</ulink>."
+msgstr ""
+"この作品は<ulink url=\"http://creativecommons.org/licenses/by-sa/3.0/deed.ja"
+"\">クリエイティブ・コモンズ 表示 - 継承 3.0 非移植 ライセンス</ulink>の下に提"
+"供されています。好きなようにこの材料を使うことができますが、PostGIS Project "
+"のクレジット提示を求めます。また可能な限り<ulink url=\"http://postgis.net"
+"\">http://postgis.net</ulink>へのリンクを求めます。"

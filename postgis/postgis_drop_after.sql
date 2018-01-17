@@ -4,7 +4,7 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2011-2012 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2011-2012 Sandro Santilli <strk@kbt.io>
 -- Copyright (C) 2010-2012 Regina Obe <lr@pcorp.us>
 -- Copyright (C) 2009      Paul Ramsey <pramsey@cleverelephant.ca>
 --
@@ -55,10 +55,10 @@ DROP FUNCTION IF EXISTS box2d_overlap(box2d, box2d);
 DROP FUNCTION IF EXISTS box2d_same(box2d, box2d);
 DROP FUNCTION IF EXISTS box2d_intersects(box2d, box2d);
 DROP FUNCTION IF EXISTS st_area(geography); -- this one changed to use default parameters
-DROP FUNCTION IF EXISTS ST_AsGeoJson(geometry); -- this one changed to use default args 
-DROP FUNCTION IF EXISTS ST_AsGeoJson(geography); -- this one changed to use default args 
-DROP FUNCTION IF EXISTS ST_AsGeoJson(geometry,int4); -- this one changed to use default args 
-DROP FUNCTION IF EXISTS ST_AsGeoJson(geography,int4); -- this one changed to use default args 
+DROP FUNCTION IF EXISTS ST_AsGeoJson(geometry); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(geography); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(geometry,int4); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(geography,int4); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4,geometry); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4,geography); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4,geometry,int4); -- this one changed to use default args
@@ -112,8 +112,8 @@ DROP FUNCTION IF EXISTS st_geometry(text);
 DROP FUNCTION IF EXISTS st_geometry(bytea);
 DROP FUNCTION IF EXISTS st_bytea(geometry);
 DROP FUNCTION IF EXISTS st_addbbox(geometry);
-DROP FUNCTION IF EXISTS st_dropbbox(geometry); 
-DROP FUNCTION IF EXISTS st_hasbbox(geometry); 
+DROP FUNCTION IF EXISTS st_dropbbox(geometry);
+DROP FUNCTION IF EXISTS st_hasbbox(geometry);
 DROP FUNCTION IF EXISTS cache_bbox();
 DROP FUNCTION IF EXISTS st_cache_bbox();
 DROP FUNCTION IF EXISTS ST_GeoHash(geometry); -- changed to use default args
@@ -146,6 +146,7 @@ DROP FUNCTION IF EXISTS st_geometry_eq(geometry, geometry);
 DROP FUNCTION IF EXISTS st_geometry_cmp(geometry, geometry);
 DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8, float8);
 DROP FUNCTION IF EXISTS st_removerepeatedpoints(geometry);
+DROP FUNCTION IF EXISTS st_voronoi(geometry, geometry, double precision, boolean); --temporarely introduced before 2.3.0 final
 
 DROP FUNCTION IF EXISTS geometry_gist_sel_2d (internal, oid, internal, int4);
 DROP FUNCTION IF EXISTS geometry_gist_joinsel_2d(internal, oid, internal, smallint);
@@ -165,3 +166,20 @@ DROP FUNCTION IF EXISTS pgis_twkb_accum_finalfn(internal); -- temporarely introd
 DROP FUNCTION IF EXISTS st_seteffectivearea(geometry, double precision); -- temporarely introduced before 2.2.0 final
 
 DROP FUNCTION IF EXISTS geometry_distance_box_nd(geometry,geometry); -- temporarely introduced before 2.2.0 final
+
+DROP FUNCTION IF EXISTS _ST_DumpPoints( geometry, integer[]); -- removed 2.4.0, but really should have been removed 2.1.0 when ST_DumpPoints got reimpmented in C
+
+-- pgis_abs type was increased from 8 bytes in 2.1 to 16 bytes in 2.2
+-- See #3460
+UPDATE pg_type SET typlen=16 WHERE typname='pgis_abs' AND typlen=8;
+
+DO language 'plpgsql'
+$$
+BEGIN
+IF _postgis_scripts_pgsql_version()::integer >= 96 THEN
+-- mark ST_Union agg as parallel safe if it is not already
+	UPDATE pg_proc SET proparallel = 's'
+	WHERE oid = 'st_union(geometry)'::regprocedure AND proparallel = 'u';
+END IF;
+END;
+$$;

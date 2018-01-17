@@ -33,7 +33,7 @@ from each vertex to the next.
 Valid trajectories are expected as input to some spatio-temporal queries
 like <xref linkend="ST_ClosestPointOfApproach" />
 			</para>
-      
+
 			<para>Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
@@ -95,12 +95,12 @@ lines are at the smallest distance. Inputs must be valid trajectories as
 checked by <xref linkend="ST_IsValidTrajectory" />. Null is returned if
 the trajectories do not overlap on the M range.
 			</para>
-      
+
 			<para>
 See <xref linkend="ST_LocateAlong" /> for getting the actual points at
 the given measure.
 			</para>
-			
+
 			<para>Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
@@ -177,7 +177,7 @@ Inputs must be valid trajectories as checked by
 <xref linkend="ST_IsValidTrajectory" />.
 Null is returned if the trajectories do not overlap on the M range.
 			</para>
-      
+
 			<para>Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
@@ -250,7 +250,7 @@ Inputs must be valid trajectories as checked by
 <xref linkend="ST_IsValidTrajectory" />.
 False is returned if the trajectories do not overlap on the M range.
 			</para>
-      
+
 			<para>Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 		  </refsection>

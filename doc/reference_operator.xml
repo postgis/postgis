@@ -90,7 +90,205 @@ FROM ( VALUES
 				<xref linkend="ST_Geometry_Contained" /></para>
 		  </refsection>
 		</refentry>
-		
+
+		<refentry id="overlaps_geometry_box2df">
+		  <refnamediv>
+			<refname>&amp;&amp;(geometry,box2df)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a geometry's (cached) 2D bounding box intersects a 2D float precision bounding box (BOX2DF).</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>box2df</type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the cached 2D bounding box of geometry A intersects the 2D bounding box B, using float precision. This means that if B is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakePoint(1,1) &amp;&amp; ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) AS overlaps;
+
+ overlaps
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="overlaps_box2df_geometry">
+		  <refnamediv>
+			<refname>&amp;&amp;(box2df,geometry)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a 2D float precision bounding box (BOX2DF) intersects a geometry's (cached) 2D bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the 2D bounding box A intersects the cached 2D bounding box of geometry B, using float precision. This means that if A is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) &amp;&amp; ST_MakePoint(1,1) AS overlaps;
+
+ overlaps
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="overlaps_box2df_box2df">
+		  <refnamediv>
+			<refname>&amp;&amp;(box2df,box2df)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if two 2D float precision bounding boxes (BOX2DF) intersect each other.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if two 2D bounding boxes A and B intersect each other, using float precision. This means that if A (or B) is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operator is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) &amp;&amp; ST_MakeBox2D(ST_MakePoint(1,1), ST_MakePoint(3,3)) AS overlaps;
+
+ overlaps
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
+		  </refsection>
+		</refentry>
+
 		<refentry id="geometry_overlaps_nd">
 		  <refnamediv>
 			<refname>&amp;&amp;&amp;</refname>
@@ -136,7 +334,7 @@ FROM ( VALUES
 		  <refsection>
 			<title>Examples: 3D LineStrings</title>
 
-			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp;&amp; tbl2.column2 AS overlaps_3d, 
+			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp;&amp; tbl2.column2 AS overlaps_3d,
 			            tbl1.column2 &amp;&amp; tbl2.column2 AS overlaps_2d
 FROM ( VALUES
 	(1, 'LINESTRING Z(0 0 1, 3 3 2)'::geometry),
@@ -154,7 +352,7 @@ FROM ( VALUES
 		  <refsection>
 			<title>Examples: 3M LineStrings</title>
 
-			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp;&amp; tbl2.column2 AS overlaps_3zm, 
+			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp;&amp; tbl2.column2 AS overlaps_3zm,
 			            tbl1.column2 &amp;&amp; tbl2.column2 AS overlaps_2d
 FROM ( VALUES
 	(1, 'LINESTRING M(0 0 1, 3 3 2)'::geometry),
@@ -174,6 +372,192 @@ FROM ( VALUES
 			<title>See Also</title>
 
 			<para><xref linkend="geometry_overlaps" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="overlaps_nd_geometry_gidx">
+		  <refnamediv>
+			<refname>&amp;&amp;&amp;(geometry,gidx)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a geometry's (cached) n-D bounding box intersects a n-D float precision bounding box (GIDX).</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>gidx </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the cached n-D bounding box of geometry A intersects the n-D bounding box B, using float precision. This means that if B is a (double precision) box3d, it will be internally converted to a float precision 3D bounding box (GIDX)</para>
+
+			<note><para>This operator is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+			<para>&T_support;</para>
+			<para>&Z_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakePoint(1,1,1) &amp;&amp;&amp; ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) AS overlaps;
+
+ overlaps
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_nd_gidx_geometry" />,
+				<xref linkend="overlaps_nd_gidx_gidx" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="overlaps_nd_gidx_geometry">
+		  <refnamediv>
+			<refname>&amp;&amp;&amp;(gidx,geometry)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a n-D float precision bounding box (GIDX) intersects a geometry's (cached) n-D bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef>
+
+				<paramdef>
+				  <type>gidx </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the n-D bounding box A intersects the cached n-D bounding box of geometry B, using float precision. This means that if A is a (double precision) box3d, it will be internally converted to a float precision 3D bounding box (GIDX)</para>
+
+			<note><para>This operator is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+			<para>&T_support;</para>
+			<para>&Z_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &amp;&amp;&amp; ST_MakePoint(1,1,1) AS overlaps;
+
+ overlaps
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_nd_geometry_gidx" />,
+				<xref linkend="overlaps_nd_gidx_gidx" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="overlaps_nd_gidx_gidx">
+		  <refnamediv>
+			<refname>&amp;&amp;&amp;(gidx,gidx)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if two n-D float precision bounding boxes (GIDX) intersect each other.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef>
+
+				<paramdef>
+				  <type>gidx </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>gidx </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&amp;&amp;</varname> operator returns <varname>TRUE</varname> if two n-D bounding boxes A and B intersect each other, using float precision. This means that if A (or B) is a (double precision) box3d, it will be internally converted to a float precision 3D bounding box (GIDX)</para>
+
+			<note><para>This operator is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+			<para>&T_support;</para>
+			<para>&Z_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &amp;&amp;&amp; ST_3DMakeBox(ST_MakePoint(1,1,1), ST_MakePoint(3,3,3)) AS overlaps;
+
+ overlaps
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+                                <xref linkend="overlaps_nd_geometry_gidx" />,
+                                <xref linkend="overlaps_nd_gidx_geometry" /></para>
 		  </refsection>
 		</refentry>
 
@@ -285,7 +669,7 @@ FROM
 			<para>The <varname>&amp;&lt;|</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
 			overlaps or is below of the bounding box of geometry B, or more accurately, overlaps or is NOT above the bounding
 			box of geometry B.</para>
-			
+
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 
@@ -534,7 +918,8 @@ FROM
 		  <refnamediv>
 			<refname>&#61;</refname>
 
-			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is the same as B's. Uses double precision bounding box.</refpurpose>
+			<refpurpose>Returns <varname>TRUE</varname> if the coordinates and coordinate order geometry/geography A
+			are the same as the coordinates and coordinate order of geometry/geography B.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -557,19 +942,19 @@ FROM
 				  <parameter>B</parameter>
 				</paramdef>
 			  </funcprototype>
-			  
+
 			  <funcprototype>
 				<funcdef>boolean <function>&#61;</function></funcdef>
-	
+
 					<paramdef>
 					  <type>geography </type>
-	
+
 					  <parameter>A</parameter>
 					</paramdef>
-	
+
 					<paramdef>
 					  <type>geography </type>
-	
+
 					  <parameter>B</parameter>
 					</paramdef>
 				 </funcprototype>
@@ -579,27 +964,28 @@ FROM
 		  <refsection>
 			<title>Description</title>
 
-			<para>The <varname>&#61;</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry/geography A
-			is the same as the bounding box of geometry/geography B.  PostgreSQL uses the =, &lt;, and &gt; operators defined for geometries to
+			<para>The <varname>&#61;</varname> operator returns <varname>TRUE</varname> if the coordinates and coordinate order geometry/geography A
+			are the same as the coordinates and coordinate order of geometry/geography B.  PostgreSQL uses the =, &lt;, and &gt; operators defined for geometries to
 			perform internal orderings and comparison of geometries (ie. in a GROUP BY or ORDER BY clause).</para>
 
-			<warning>
-			  <para>This is cause for a lot of confusion. When you compare geometryA =
-			  geometryB it will return true even when the geometries are clearly
-			  different IF their bounding boxes are the same. To check for true
-			  equality use <xref linkend="ST_OrderingEquals" /> or <xref
-			  linkend="ST_Equals" /></para>
-			</warning>
+			<note>
+			  <para>Only geometry/geography that are exactly equal in all respects,
+          with the same coordinates, in the same order, are considered
+          equal by this operator. For "spatial equality", that ignores
+          things like coordinate order, and can detect features that
+          cover the same spatial area with different representations,
+          use <xref linkend="ST_OrderingEquals" />
+          or <xref linkend="ST_Equals" /></para>
+			</note>
 
 			<caution><para>This operand will NOT make use of any indexes that may be available on the
-				geometries.</para></caution>
-				
+				geometries. For an index assisted exact equality test, combine &#61; with &amp;&amp;.</para></caution>
+
+
+			<para>Changed: 2.4.0, in prior versions this was bounding box equality not a geometric equality. If you need bounding box equality, use <xref linkend="ST_Geometry_Same" /> instead.</para>
+
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
-			<para>Changed:  2.0.0 , the bounding box of geometries was changed to use double precision instead of float4 precision of
-			prior. The side effect of this is that in particular points in prior versions that were a little different may have returned
-				true in prior versions and false in 2.0+ since their float4 boxes would be the same but there float8 (double precision), would be
-				different.</para>
 
 		  </refsection>
 
@@ -609,7 +995,7 @@ FROM
 			<programlisting>SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 0)'::geometry;
  ?column?
 ----------
- t
+ f
 (1 row)
 
 SELECT ST_AsText(column1)
@@ -628,15 +1014,16 @@ FROM ( VALUES
 	('LINESTRING(0 0, 1 1)'::geometry),
 	('LINESTRING(1 1, 0 0)'::geometry)) AS foo
 GROUP BY column1;
-	  st_astext
+      st_astext
 ---------------------
  LINESTRING(0 0,1 1)
-(1 row)
+ LINESTRING(1 1,0 0)
+(2 rows)
 
 -- In versions prior to 2.0, this used to return true --
  SELECT ST_GeomFromText('POINT(1707296.37 4820536.77)') =
 	ST_GeomFromText('POINT(1707296.27 4820536.87)') As pt_intersect;
-	
+
 --pt_intersect --
 f
 </programlisting>
@@ -645,7 +1032,7 @@ f
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Equals" />, <xref linkend="ST_OrderingEquals" />
+			<para><xref linkend="ST_Equals" />, <xref linkend="ST_OrderingEquals" />, <xref linkend="ST_Geometry_Same" />
 			<!--, <xref linkend="ST_Geometry_LT" />, <xref linkend="ST_Geometry_GT" /> --></para>
 		  </refsection>
 		</refentry>
@@ -786,6 +1173,204 @@ FROM
 		  </refsection>
 		</refentry>
 
+		<refentry id="is_contained_geometry_box2df">
+		  <refnamediv>
+			<refname>@(geometry,box2df)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a geometry's 2D bounding box is contained into a 2D float precision bounding box (BOX2DF).</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>@</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>@</varname> operator returns <varname>TRUE</varname> if the A geometry's 2D bounding box is contained the 2D bounding box B, using float precision. This means that if B is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) @ ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) AS is_contained;
+
+ is_contained
+--------------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="is_contained_box2df_geometry">
+		  <refnamediv>
+			<refname>@(box2df,geometry)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a 2D float precision bounding box (BOX2DF) is contained into a geometry's 2D bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>@</function></funcdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>@</varname> operator returns <varname>TRUE</varname> if the 2D bounding box A is contained into the B geometry's 2D bounding box, using float precision. This means that if B is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakeBox2D(ST_MakePoint(2,2), ST_MakePoint(3,3)) @ ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) AS is_contained;
+
+ is_contained
+--------------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="is_contained_box2df_box2df">
+		  <refnamediv>
+			<refname>@(box2df,box2df)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a 2D float precision bounding box (BOX2DF) is contained into another 2D float precision bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>@</function></funcdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>@</varname> operator returns <varname>TRUE</varname> if the 2D bounding box A is contained into the 2D bounding box B, using float precision. This means that if A (or B) is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakeBox2D(ST_MakePoint(2,2), ST_MakePoint(3,3)) @ ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) AS is_contained;
+
+ is_contained
+--------------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" /></para>
+		  </refsection>
+		</refentry>
+
 		<refentry id="ST_Geometry_Overabove">
 		  <refnamediv>
 			<refname>|&amp;&gt;</refname>
@@ -892,7 +1477,7 @@ FROM
 			<title>Description</title>
 
 			<para>The <varname>|&gt;&gt;</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
-			is strictly to the right of the bounding box of geometry B.</para>
+			is strictly above the bounding box of geometry B.</para>
 
 			<note><para>This operand will make use of any indexes that may be available on the
 			  geometries.</para></note>
@@ -992,6 +1577,204 @@ FROM
 		  </refsection>
 		</refentry>
 
+		<refentry id="contains_geometry_box2df">
+		  <refnamediv>
+			<refname>~(geometry,box2df)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a geometry's 2D bonding box contains a 2D float precision bounding box (GIDX).</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>~</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>~</varname> operator returns <varname>TRUE</varname> if the 2D bounding box of a geometry A contains the 2D bounding box B, using float precision. This means that if B is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) ~ ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) AS contains;
+
+ contains
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="contains_box2df_geometry">
+		  <refnamediv>
+			<refname>~(box2df,geometry)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a 2D float precision bounding box (BOX2DF) contains a geometry's 2D bonding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>~</function></funcdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>~</varname> operator returns <varname>TRUE</varname> if the 2D bounding box A contains the B geometry's bounding box, using float precision. This means that if A is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) ~ ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) AS contains;
+
+ contains
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="contains_box2df_box2df">
+		  <refnamediv>
+			<refname>~(box2df,box2df)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a 2D float precision bounding box (BOX2DF) contains another 2D float precision bounding box (BOX2DF).</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>~</function></funcdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>~</varname> operator returns <varname>TRUE</varname> if the 2D bounding box A contains the 2D bounding box B, using float precision. This means that if A is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) ~ ST_MakeBox2D(ST_MakePoint(2,2), ST_MakePoint(3,3)) AS contains;
+
+ contains
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
+		  </refsection>
+		</refentry>
+
 		<refentry id="ST_Geometry_Same">
 		  <refnamediv>
 			<refname>~=</refname>
@@ -1036,14 +1819,13 @@ FROM
 
 			<warning>
 			  <para>This operator has changed behavior in PostGIS 1.5
-			  from testing for actual geometric equality to only 
-			  checking for bounding box equality. To complicate things 
-			  it also depends on if you have done a hard or soft upgrade 
+			  from testing for actual geometric equality to only
+			  checking for bounding box equality. To complicate things
+			  it also depends on if you have done a hard or soft upgrade
 			  which behavior your database has. To find out which behavior
 			  your database has you can run the query below.
 				To check for true equality use <xref linkend="ST_OrderingEquals" /> or <xref
-			  linkend="ST_Equals" /> and to check for bounding box equality <xref linkend="ST_Geometry_EQ" />; 
-			  operator is a safer option.</para>
+			  linkend="ST_Equals" />.</para>
 			  </warning>
 		  </refsection>
 
@@ -1055,15 +1837,14 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
  equality   |
 -----------------+
           t    |
- 			</programlisting>
-			<para>The above can be used to test if you have the new or old behavior of ~= operator.</para>
+			</programlisting>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
 			<para><xref linkend="ST_Equals" />, <xref linkend="ST_OrderingEquals" />, <xref linkend="ST_Geometry_EQ" /></para>
 		  </refsection>
 		</refentry>
-		
+
 		<refentry id="geometry_distance_knn">
 		  <refnamediv>
 			<refname>&lt;-&gt;</refname>
@@ -1090,7 +1871,7 @@ Returns the 2D distance between A and B.
 				  <parameter>B</parameter>
 				</paramdef>
 			  </funcprototype>
-			  
+
 			   <funcprototype>
 				<funcdef>double precision <function>&lt;-&gt;</function></funcdef>
 
@@ -1128,14 +1909,14 @@ sphere for geographies.
 			 <para>Enhanced: 2.2.0 -- True KNN ("K nearest neighbor") behavior for geometry and geography for PostgreSQL 9.5+. Note for geography KNN is based on sphere rather than spheroid.  For PostgreSQL 9.4 and below, geography support is new but only supports centroid box.</para>
 			 <para>Changed: 2.2.0 -- For PostgreSQL 9.5 users, old Hybrid syntax may be slower, so you'll want to get rid of that hack if you are running your code only on PostGIS 2.2+ 9.5+.  See examples below.</para>
 			 <para>Availability: 2.0.0 -- Weak KNN provides nearest neighbors based on geometry centroid distances instead of true distances. Exact results for points, inexact for all other types. Available for PostgreSQL 9.1+</para>
-			 	
-		
+
+
 		  </refsection>
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting><![CDATA[SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr 
-FROM va2005 
+<programlisting><![CDATA[SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
+FROM va2005
 ORDER BY d limit 10;]]>
 
         d         | edabbr | vaabbr
@@ -1155,8 +1936,8 @@ ORDER BY d limit 10;]]>
 <para>
 Then the KNN raw answer:
 </para>
-<programlisting><![CDATA[SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr 
-FROM va2005 
+<programlisting><![CDATA[SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
+FROM va2005
 ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;]]>
 
         d         | edabbr | vaabbr
@@ -1182,10 +1963,10 @@ For users running with PostgreSQL &lt; 9.5, use a hybrid query to find the true 
 </para>
 <programlisting><![CDATA[WITH index_query AS (
   SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
-  	FROM va2005
-  ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry LIMIT 100) 
-  SELECT * 
-  	FROM index_query 
+	FROM va2005
+  ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry LIMIT 100)
+  SELECT *
+	FROM index_query
   ORDER BY d limit 10;]]>
 
         d         | edabbr | vaabbr
@@ -1202,7 +1983,7 @@ For users running with PostgreSQL &lt; 9.5, use a hybrid query to find the true 
  18472.5531479404 | ALQ    | 002
 (10 rows)
 
- 			</programlisting>
+			</programlisting>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -1289,7 +2070,7 @@ SELECT track_id, dist FROM (
       </para>
 		  </refsection>
 		</refentry>
-		
+
 		<refentry id="geometry_distance_box">
 		  <refnamediv>
 			<refname>&lt;#&gt;</refname>
@@ -1330,21 +2111,21 @@ Returns the 2D distance between A and B bounding boxes.
 			<note><para>Index only kicks in if one of the geometries is a constant e.g. ORDER BY (ST_GeomFromText('POINT(1 2)') &lt;#&gt; geom)  instead of g1.geom &lt;#&gt;.</para></note>
 
 			 <para>Availability: 2.0.0 -- KNN only available for PostgreSQL 9.1+</para>
-		
+
 		  </refsection>
 
 		  <refsection>
 			<title>Examples</title>
 <programlisting><![CDATA[SELECT *
 FROM (
-SELECT b.tlid, b.mtfcc, 
+SELECT b.tlid, b.mtfcc,
 	b.geom <#> ST_GeomFromText('LINESTRING(746149 2948672,745954 2948576,
 		745787 2948499,745740 2948468,745712 2948438,
-		745690 2948384,745677 2948319)',2249) As b_dist, 
+		745690 2948384,745677 2948319)',2249) As b_dist,
 		ST_Distance(b.geom, ST_GeomFromText('LINESTRING(746149 2948672,745954 2948576,
 		745787 2948499,745740 2948468,745712 2948438,
 		745690 2948384,745677 2948319)',2249)) As act_dist
-    FROM bos_roads As b 
+    FROM bos_roads As b
     ORDER BY b_dist, b.tlid
     LIMIT 100) As foo
     ORDER BY act_dist, tlid LIMIT 10;]]>
@@ -1405,7 +2186,7 @@ boxes.
 
 			<para>
 The <varname>&lt;&lt;-&gt;&gt;</varname> operator returns the n-D (euclidean)
-distance between the centroids of the bounding boxes of two geometries. 
+distance between the centroids of the bounding boxes of two geometries.
 Useful for doing nearest neighbor
 <emphasis role="strong">approximate</emphasis> distance ordering.
       </para>
@@ -1423,8 +2204,8 @@ of a.geom
       </para></note>
 
 			 <para>Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+</para>
-			 	
-		
+
+
 		  </refsection>
 
 		  <refsection>
@@ -1480,7 +2261,7 @@ Index only kicks in if one of the geometries is a constant e.g. ORDER BY
       </para></note>
 
 			 <para>Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+</para>
-		
+
 		  </refsection>
 
 		  <refsection>

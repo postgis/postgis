@@ -27,8 +27,8 @@ static void mbc_test(LWGEOM* g)
 		p.x = p4.x;
 		p.y = p4.y;
 
-		/* We need to store the distance in a variable before the assert so that 
-		 * it is rounded from its 80-bit representation (on x86) down to 64 bits. 
+		/* We need to store the distance in a variable before the assert so that
+		 * it is rounded from its 80-bit representation (on x86) down to 64 bits.
 		 * */
 		volatile double d = distance2d_pt_pt(result->center, &p);
 
@@ -69,7 +69,7 @@ static void test_empty(void)
 
 	LWBOUNDINGCIRCLE* result = lwgeom_calculate_mbc(input);
 	CU_ASSERT_TRUE(result == NULL);
-	
+
 	lwgeom_free(input);
 }
 

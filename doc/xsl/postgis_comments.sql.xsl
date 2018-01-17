@@ -36,17 +36,19 @@
 </xsl:when>
 		</xsl:choose>
 <!-- For each function prototype generate the DDL comment statement
-	If its input is a geometry set - we know it is an aggregate function rather than a regular function 
-	Do not output OUT params since they define output rather than act as input and do not put a comma after argument just before an OUT parameter -->
+	If its input has the word set we no it is an aggregate
+	If its input has the word winset we know it is a window function but comment signature of those are the same just have to strip off the winset
+	Do not output OUT params since they define output rather than act as input and do not put a comma after argument just before an OUT parameter
+	TODO:  revise case to handle any set, winset data type (right now hardcoded geometry, any element-->
 		<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
-COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,'geometry set')">AGGREGATE</xsl:when><xsl:otherwise>FUNCTION</xsl:otherwise></xsl:choose><xsl:text> </xsl:text> <xsl:value-of select="funcdef/function" />(<xsl:for-each select="paramdef"><xsl:choose><xsl:when test="count(parameter) &gt; 0"> 
-<xsl:choose><xsl:when test="contains(parameter,'OUT')"></xsl:when><xsl:when test="contains(type,'geometry set')">geometry</xsl:when><xsl:otherwise><xsl:value-of select="type" /></xsl:otherwise></xsl:choose><xsl:if test="position()&lt;last() and not(contains(parameter,'OUT')) and not(contains(following-sibling::paramdef[1],'OUT'))"><xsl:text>, </xsl:text></xsl:if></xsl:when>
+COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,' set')">AGGREGATE</xsl:when><xsl:otherwise>FUNCTION</xsl:otherwise></xsl:choose><xsl:text> </xsl:text> <xsl:value-of select="funcdef/function" />(<xsl:for-each select="paramdef"><xsl:choose><xsl:when test="count(parameter) &gt; 0">
+<xsl:choose><xsl:when test="contains(parameter,'OUT')"></xsl:when><xsl:when test="contains(type,'anyelement set')">anyelement</xsl:when><xsl:when test="contains(type,'geometry set')">geometry</xsl:when><xsl:when test="contains(type,'anyelement winset')">anyelement</xsl:when><xsl:when test="contains(type,'geometry winset')">geometry</xsl:when><xsl:when test="contains(type,'geography winset')">geography</xsl:when><xsl:otherwise><xsl:value-of select="type" /></xsl:otherwise></xsl:choose><xsl:if test="position()&lt;last() and not(contains(parameter,'OUT')) and not(contains(following-sibling::paramdef[1],'OUT'))"><xsl:text>, </xsl:text></xsl:if></xsl:when>
 </xsl:choose></xsl:for-each>) IS '<xsl:call-template name="listparams"><xsl:with-param name="func" select="." /></xsl:call-template> <xsl:value-of select='$comment' />';
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:template>
-	
-<!--General replace macro hack to make up for the fact xsl 1.0 does not have a built in one.  
+
+<!--General replace macro hack to make up for the fact xsl 1.0 does not have a built in one.
 	Not needed for xsl 2.0 lifted from http://www.xml.com/pub/a/2002/06/05/transforming.html -->
 	<xsl:template name="globalReplace">
 	  <xsl:param name="outputString"/>
@@ -58,10 +60,10 @@ COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,'geometry set')">A
 			"concat(substring-before($outputString,$target),
 				   $replacement)"/>
 		  <xsl:call-template name="globalReplace">
-			<xsl:with-param name="outputString" 
+			<xsl:with-param name="outputString"
 				 select="substring-after($outputString,$target)"/>
 			<xsl:with-param name="target" select="$target"/>
-			<xsl:with-param name="replacement" 
+			<xsl:with-param name="replacement"
 				 select="$replacement"/>
 		  </xsl:call-template>
 		</xsl:when>
@@ -78,14 +80,14 @@ COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,'geometry set')">A
 			<xsl:if test="count(paramdef/parameter) &gt; 0">args: </xsl:if>
 			<xsl:for-each select="paramdef">
 				<xsl:choose>
-					<xsl:when test="count(parameter) &gt; 0"> 
+					<xsl:when test="count(parameter) &gt; 0">
 						<xsl:value-of select="parameter" />
 					</xsl:when>
 				</xsl:choose>
 				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
 			</xsl:for-each>
 			<xsl:if test="count(paramdef/parameter) &gt; 0"> - </xsl:if>
-		</xsl:for-each>	
+		</xsl:for-each>
 	</xsl:template>
 
 </xsl:stylesheet>

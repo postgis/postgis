@@ -1,0 +1,57 @@
+# SOME DESCRIPTIVE TITLE.
+# 
+# Translators:
+# Andreas Schild <andreas.schild@bfw.gv.at>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: PostGIS\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2017-01-28 07:03+0000\n"
+"PO-Revision-Date: 2017-06-04 10:54+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"Language-Team: German (http://www.transifex.com/postgis/postgis/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Tag: title
+#: reference.xml:3
+#, no-c-format
+msgid "PostGIS Reference"
+msgstr "PostGIS Referenz"
+
+#. Tag: para
+#: reference.xml:5
+#, no-c-format
+msgid ""
+"The functions given below are the ones which a user of PostGIS is likely to "
+"need. There are other functions which are required support functions to the "
+"PostGIS objects which are not of use to a general user."
+msgstr "Nachfolgend sind jene Funktionen, die ein PostGIS Anwender am ehesten benötigt. Es gibt weitere Funktionen, die jedoch keinen Nutzen für den allgemeinen Anwender haben, da sie zu Unterstützungsaufgaben für PostGIS Objekte benötigt werden."
+
+#. Tag: para
+#: reference.xml:11
+#, no-c-format
+msgid ""
+"PostGIS has begun a transition from the existing naming convention to an "
+"SQL-MM-centric convention. As a result, most of the functions that you know "
+"and love have been renamed using the standard spatial type (ST) prefix. "
+"Previous functions are still available, though are not listed in this "
+"document where updated functions are equivalent. The non ST_ functions not "
+"listed in this documentation are deprecated and will be removed in a future "
+"release so STOP USING THEM."
+msgstr "PostGIS hat begonnen die bestehende Namensgebung in eine SQL-MM-orientierte Namensgebung zu ändern. Daher wurden die meisten Funktionen, die Sie kennen und lieben, unter Verwendung des standard spatial type (ST) Präfix umbenannt. Vorhergegangene Funktionen sind noch verfügbar,  werden aber in diesem Dokument nicht aufgeführt, wenn es entsprechende aktualisierte Funktionen gibt. Funktionen ohne das ST_ Präfix, die in dieser Dokumentation nicht aufgeführt sind, gelten als veraltet und werden in zukünftigen Ausgaben entfernt. Benutzten Sie diese daher BITTE NICHT MEHR."
+
+#. Tag: chapter
+#: reference.xml:16
+#, no-c-format
+msgid ""
+"&reference_type; &reference_guc; &reference_management; "
+"&reference_constructor; &reference_accessor; &reference_editor; "
+"&reference_output; &reference_operator; &reference_measure; "
+"&reference_sfcgal; &reference_processing; &reference_lrs; "
+"&reference_temporal; &reference_transaction; &reference_misc; "
+"&reference_exception;"
+msgstr "&reference_type; &reference_guc; &reference_management; &reference_constructor; &reference_accessor; &reference_editor; &reference_output; &reference_operator; &reference_measure; &reference_sfcgal; &reference_processing; &reference_lrs; &reference_temporal; &reference_transaction; &reference_misc; &reference_exception;"

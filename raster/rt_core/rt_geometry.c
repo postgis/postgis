@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -54,7 +54,7 @@ _rti_raster_get_band_perimeter(rt_band band, uint16_t *trim) {
 
 	width = rt_band_get_width(band);
 	height = rt_band_get_height(band);
-		
+
 	/* top */
 	for (y = 0; y < height; y++) {
 		for (offset = 0; offset < 3; offset++) {
@@ -212,7 +212,7 @@ rt_errorstate rt_raster_get_perimeter(
 	rt_raster_get_geotransform_matrix(raster, gt);
 	numband = rt_raster_get_num_bands(raster);
 
-	RASTER_DEBUGF(3, "rt_raster_get_perimeter: raster is %dx%d", raster->width, raster->height); 
+	RASTER_DEBUGF(3, "rt_raster_get_perimeter: raster is %dx%d", raster->width, raster->height);
 
 	/* nband < 0 means all bands */
 	if (nband >= 0) {
@@ -225,8 +225,8 @@ rt_errorstate rt_raster_get_perimeter(
 	}
 	else
 		nband = -1;
-	
-	RASTER_DEBUGF(3, "rt_raster_get_perimeter: nband, numband = %d, %d", nband, numband); 
+
+	RASTER_DEBUGF(3, "rt_raster_get_perimeter: nband, numband = %d, %d", nband, numband);
 
 	_nband = rtalloc(sizeof(uint16_t) * numband);
 	if (_nband == NULL) {
@@ -690,7 +690,7 @@ rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env) {
 		"rt_raster_get_envelope: raster is %dx%d",
 		raster->width,
 		raster->height
-	); 
+	);
 
 	/* return point or line since at least one of the two dimensions is 0 */
 	if ((!raster->width) || (!raster->height)) {
@@ -818,7 +818,7 @@ rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull) {
 	srid = rt_raster_get_srid(raster);
 	rt_raster_get_geotransform_matrix(raster, gt);
 
-	RASTER_DEBUGF(3, "rt_raster_get_convex_hull: raster is %dx%d", raster->width, raster->height); 
+	RASTER_DEBUGF(3, "rt_raster_get_convex_hull: raster is %dx%d", raster->width, raster->height);
 
 	/* return point or line since at least one of the two dimensions is 0 */
 	if ((!raster->width) || (!raster->height)) {
@@ -923,7 +923,7 @@ rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull) {
  * Returns a set of "geomval" value, one for each group of pixel
  * sharing the same value for the provided band.
  *
- * A "geomval" value is a complex type composed of a geometry 
+ * A "geomval" value is a complex type composed of a geometry
  * in LWPOLY representation (one for each group of pixel sharing
  * the same value) and the value associated with this geometry.
  *
@@ -1102,7 +1102,7 @@ rt_raster_gdal_polygonize(
 		OGR_Fld_Destroy(hFldDfn);
 		OGR_DS_DeleteLayer(memdatasource, 0);
 		OGRReleaseDataSource(memdatasource);
-		
+
 		return NULL;
 	}
 

@@ -1,6 +1,6 @@
 #-----------------------------------------------------
 #
-# Configuration directives are in postgis_config.h 
+# Configuration directives are in postgis_config.h
 #
 #-----------------------------------------------------
 
@@ -35,7 +35,15 @@ clean-local:
 # TODO: drop 'test' target..
 test: check
 
-check: all docs-check
+check: all docs-check check-no-trailing-blanks
+
+check-no-trailing-blanks:
+	! find . -name '*.c' -o -name '*.h' -o -name '*.proto' | \
+		grep -v lwin_wkt_lex.c | \
+		grep -v lwin_wkt_parse | \
+		grep -v vector_tile.pb-c | \
+		grep -v postgis/sqldefines.h | \
+		xargs grep -n '[[:space:]]$$'
 
 installcheck:
 	RUNTESTFLAGS="$(RUNTESTFLAGS) --extension" $(MAKE) check
@@ -45,15 +53,14 @@ distclean: distclean-local
 distclean-local: clean-local
 	rm -Rf autom4te.cache
 	rm -f GNUmakefile
-	rm -f config.log config.cache config.status 
+	rm -f config.log config.cache config.status
 	rm -f postgis_config.h
 
 maintainer-clean-local: distclean-local
 	rm -f configure
-	rm -f config.guess config.rpath config.sub
-	rm -f libtool install-sh ltmain.sh
+	rm -Rf build-aux
 
-maintainer-clean: 
+maintainer-clean:
 	@echo '------------------------------------------------------'
 	@echo 'This command is intended for maintainers to use; it'
 	@echo 'deletes files that may need special tools to rebuild.'
@@ -85,7 +92,7 @@ templategis-install:
 templategis-uninstall:
 	$(MAKE) -C extras/template_gis uninstall
 
-docs: 
+docs:
 	$(MAKE) -C doc html
 
 docs-clean:
@@ -96,7 +103,7 @@ docs-check:
 
 comments:
 	$(MAKE) -C doc comments
-	
+
 cheatsheets:
 	$(MAKE) -C doc cheatsheets
 
@@ -132,7 +139,7 @@ raster-sql:
 
 astyle:
 	./astyle.sh
-    
+
 commit:
 	$(MAKE) astyle && $(MAKE) clean && $(MAKE) check && svn commit
 
@@ -142,7 +149,7 @@ authors.git: authors.svn
 svnrebase: authors.git
 	git svn rebase --authors-file authors.git
 
-postgis_svn_revision.h: 
+postgis_svn_revision.h:
 	$(PERL) utils/svn_repo_revision.pl
 
 .PHONY: utils liblwgeom ChangeLog raster postgis_svn_revision.h

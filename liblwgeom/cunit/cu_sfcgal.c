@@ -94,6 +94,6 @@ static void test_sfcgal_noop(void)
 void sfcgal_suite_setup(void);
 void sfcgal_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("SFCGAL", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("sfcgal", NULL, NULL);
 	PG_ADD_TEST(suite, test_sfcgal_noop);
 }

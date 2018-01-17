@@ -1,6 +1,6 @@
 #############################################################################
 #
-# Copyright (c) 2009 Sandro Santilli <strk@keybit.net>, Pierre Racine <pierre.racine@sbf.ulaval.ca>
+# Copyright (c) 2009 Sandro Santilli <strk@kbt.io>, Pierre Racine <pierre.racine@sbf.ulaval.ca>
 # Copyright (c) 2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 # Copyright (c) 2011-2013 Regents of the University of California
 #   <bkpark@ucdavis.edu>
@@ -109,6 +109,7 @@ TEST_UTILITY = \
 	rt_gdalwarp \
 	rt_asraster \
 	rt_dumpvalues \
+	rt_makeemptycoverage \
 	rt_createoverview
 
 TEST_MAPALGEBRA = \
@@ -128,7 +129,8 @@ TEST_MAPALGEBRA = \
 	rt_4ma \
 	rt_setvalues_geomval \
 	rt_elevation_functions \
-	rt_colormap
+	rt_colormap \
+	rt_grayscale
 
 TEST_SREL = \
 	rt_gist_relationships \

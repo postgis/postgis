@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -135,7 +135,7 @@ rt_band_new_offline(
 
 	RASTER_DEBUGF(3, "Created rt_band @ %p with pixtype %s",
 		band, rt_pixtype_name(pixtype)
-	); 
+	);
 
 	band->pixtype = pixtype;
 	band->offline = 1;
@@ -194,7 +194,7 @@ rt_band_duplicate(rt_band band) {
 			band->width, band->height,
 			band->pixtype,
 			band->hasnodata, band->nodataval,
-			band->data.offline.bandNum, (const char *) band->data.offline.path 
+			band->data.offline.bandNum, (const char *) band->data.offline.path
 		);
 	}
 	/* online */
@@ -239,7 +239,7 @@ rt_band_is_offline(rt_band band) {
  * @param band : the band to destroy
  */
 void
-rt_band_destroy(rt_band band) { 
+rt_band_destroy(rt_band band) {
 	if (band == NULL)
 		return;
 
@@ -361,10 +361,10 @@ rt_band_load_offline_data(rt_band band) {
 	}
 
 	rt_util_gdal_register_all(0);
-	/*
 	hdsSrc = rt_util_gdal_open(band->data.offline.path, GA_ReadOnly, 1);
-	*/
+	/*
 	hdsSrc = rt_util_gdal_open(band->data.offline.path, GA_ReadOnly, 0);
+	*/
 	if (hdsSrc == NULL) {
 		rterror("rt_band_load_offline_data: Cannot open offline raster: %s", band->data.offline.path);
 		return ES_ERROR;
@@ -571,7 +571,7 @@ rt_band_set_isnodata_flag(rt_band band, int flag) {
 			return ES_ERROR;
 		}
 	}
-	else 
+	else
 		band->isnodata = (flag) ? 1 : 0;
 
 	return ES_NONE;
@@ -678,12 +678,12 @@ rt_band_set_nodata(rt_band band, double val, int *converted) {
 	}
 
 	RASTER_DEBUGF(3, "rt_band_set_nodata: band->hasnodata = %d", band->hasnodata);
-	RASTER_DEBUGF(3, "rt_band_set_nodata: band->nodataval = %f", band->nodataval); 
+	RASTER_DEBUGF(3, "rt_band_set_nodata: band->nodataval = %f", band->nodataval);
 	/* the nodata value was just set, so this band has NODATA */
 	band->hasnodata = 1;
 
 	/* also set isnodata flag to false */
-	band->isnodata = 0; 
+	band->isnodata = 0;
 
 	if (rt_util_dbl_trunc_warning(
 		val,
@@ -1010,7 +1010,7 @@ rt_errorstate rt_band_get_pixel_line(
 	uint8_t *_vals = NULL;
 	int pixsize = 0;
 	uint8_t *data = NULL;
-	uint32_t offset = 0; 
+	uint32_t offset = 0;
 	uint16_t _nvals = 0;
 	int maxlen = 0;
 	uint8_t *ptr = NULL;
@@ -1073,7 +1073,7 @@ rt_errorstate rt_band_get_pixel_line(
 }
 
 /**
- * Get pixel value. If band's isnodata flag is TRUE, value returned 
+ * Get pixel value. If band's isnodata flag is TRUE, value returned
  * will be the band's NODATA value
  *
  * @param band : the band to set nodata value to
@@ -1093,7 +1093,7 @@ rt_band_get_pixel(
 ) {
 	rt_pixtype pixtype = PT_END;
 	uint8_t* data = NULL;
-	uint32_t offset = 0; 
+	uint32_t offset = 0;
 
 	assert(NULL != band);
 	assert(NULL != value);
@@ -1238,7 +1238,7 @@ rt_band_get_pixel(
  * @return -1 on error, otherwise the number of rt_pixel objects
  * in npixels
  */
-int rt_band_get_nearest_pixel(
+uint32_t rt_band_get_nearest_pixel(
 	rt_band band,
 	int x, int y,
 	uint16_t distancex, uint16_t distancey,
@@ -1249,7 +1249,7 @@ int rt_band_get_nearest_pixel(
 	int extent[4] = {0};
 	int max_extent[4] = {0};
 	int d0 = 0;
-	int distance[2] = {0};
+	uint32_t distance[2] = {0};
 	uint32_t _d[2] = {0};
 	uint32_t i = 0;
 	uint32_t j = 0;
@@ -1307,8 +1307,8 @@ int rt_band_get_nearest_pixel(
 			if distances won't capture extent of band, return 0
 		*/
 		else if (
-			((x < 0 && abs(x) > distance[0]) || (x - band->width >= distance[0])) ||
-			((y < 0 && abs(y) > distance[1]) || (y - band->height >= distance[1]))
+			((x < 0 && (uint32_t) abs(x) > distance[0]) || (x - band->width >= (int)distance[0])) ||
+			((y < 0 && (uint32_t) abs(y) > distance[1]) || (y - band->height >= (int)distance[1]))
 		) {
 			RASTER_DEBUG(4, "No nearest pixels possible for provided pixel and distances");
 			return 0;
@@ -1419,7 +1419,7 @@ int rt_band_get_nearest_pixel(
 				}
 
 				RASTER_DEBUGF(4, "_min, _max: %d, %d", *_min, _max);
-				for (k = 0; k < _max; k++) {
+				for (k = 0; k < (uint32_t) _max; k++) {
 					/* check that _x and _y are not outside max extent */
 					if (
 						_x < max_extent[0] || _x > max_extent[2] ||
@@ -1594,7 +1594,7 @@ rt_band_get_pixel_of_value(
  * @return ES_NONE or ES_ERROR
  */
 rt_errorstate
-rt_band_get_nodata(rt_band band, double *nodata) { 
+rt_band_get_nodata(rt_band band, double *nodata) {
 	assert(NULL != band);
 	assert(NULL != nodata);
 
@@ -1689,7 +1689,7 @@ rt_band_clamped_value_is_nodata(rt_band band, double val) {
  * Correct value when clamped value is equal to clamped NODATA value.
  * Correction does NOT occur if unclamped value is exactly unclamped
  * NODATA value.
- * 
+ *
  * @param band : the band whose NODATA value will be used for comparison
  * @param val : the value to compare to the NODATA value and correct
  * @param *newval : pointer to corrected value

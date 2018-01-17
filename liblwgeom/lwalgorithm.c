@@ -27,17 +27,6 @@
 #include "lwgeom_log.h"
 #include <ctype.h> /* for tolower */
 
-
-/**
-* Returns -1 if n < 0.0 and 1 if n > 0.0
-*/
-int signum(double n)
-{
-	if( n < 0 ) return -1;
-	if( n > 0 ) return 1;
-	return 0;
-}
-
 int
 p4d_same(const POINT4D *p1, const POINT4D *p2)
 {
@@ -75,10 +64,7 @@ p2d_same(const POINT2D *p1, const POINT2D *p2)
 int lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q)
 {
 	double side = ( (q->x - p1->x) * (p2->y - p1->y) - (p2->x - p1->x) * (q->y - p1->y) );
-	if ( side == 0.0 )
-		return 0;
-	else
-		return signum(side);
+	return SIGNUM(side);
 }
 
 /**
@@ -91,7 +77,7 @@ lw_seg_length(const POINT2D *A1, const POINT2D *A2)
 }
 
 /**
-* Returns true if P is on the same side of the plane partition 
+* Returns true if P is on the same side of the plane partition
 * defined by A1/A3 as A2 is. Only makes sense if P has already been
 * determined to be on the circle defined by A1/A2/A3.
 */
@@ -118,7 +104,7 @@ lw_pt_in_seg(const POINT2D *P, const POINT2D *A1, const POINT2D *A2)
 int
 lw_arc_is_pt(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 {
-	if ( A1->x == A2->x && A2->x == A3->x && 
+	if ( A1->x == A2->x && A2->x == A3->x &&
 	     A1->y == A2->y && A2->y == A3->y )
 		return LW_TRUE;
 	else
@@ -136,35 +122,35 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 	int a2_side, clockwise;
 	double a1, a3;
 	double angle;
-	
+
 	if ( lw_arc_is_pt(A1, A2, A3) )
 		return 0.0;
-	
+
 	radius_A = lw_arc_center(A1, A2, A3, &C);
 
 	/* Co-linear! Return linear distance! */
-	if ( radius_A < 0 ) 
+	if ( radius_A < 0 )
 	{
         double dx = A1->x - A3->x;
         double dy = A1->y - A3->y;
 		return sqrt(dx*dx + dy*dy);
 	}
-	
+
 	/* Closed circle! Return the circumference! */
 	circumference_A = M_PI * 2 * radius_A;
 	if ( p2d_same(A1, A3) )
 		return circumference_A;
-	
+
 	/* Determine the orientation of the arc */
 	a2_side = lw_segment_side(A1, A3, A2);
 
-	/* The side of the A1/A3 line that A2 falls on dictates the sweep  
+	/* The side of the A1/A3 line that A2 falls on dictates the sweep
 	   direction from A1 to A3. */
-	if ( a2_side == -1 ) 
+	if ( a2_side == -1 )
 		clockwise = LW_TRUE;
-	else 
+	else
 		clockwise = LW_FALSE;
-		
+
 	/* Angles of each point that defines the arc section */
 	a1 = atan2(A1->y - C.y, A1->x - C.x);
 	a3 = atan2(A3->y - C.y, A3->x - C.x);
@@ -175,14 +161,14 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 		if ( a1 > a3 )
 			angle = a1 - a3;
 		else
-			angle = 2*M_PI + a1 - a3; 
+			angle = 2*M_PI + a1 - a3;
 	}
 	else
 	{
 		if ( a3 > a1 )
 			angle = a3 - a1;
 		else
-			angle = 2*M_PI + a3 - a1; 			
+			angle = 2*M_PI + a3 - a1;
 	}
 
 	/* Length as proportion of circumference */
@@ -195,38 +181,38 @@ int lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const P
 	double radius_A;
 	double side_Q, side_A2;
 	double d;
-	
+
 	side_Q = lw_segment_side(A1, A3, Q);
 	radius_A = lw_arc_center(A1, A2, A3, &C);
 	side_A2 = lw_segment_side(A1, A3, A2);
-	
+
 	/* Linear case */
 	if ( radius_A < 0 )
 		return side_Q;
-		
+
 	d = distance2d_pt_pt(Q, &C);
-	
+
 	/* Q is on the arc boundary */
 	if ( d == radius_A && side_Q == side_A2 )
-	{	
+	{
 		return 0;
 	}
-	
+
 	/* Q on A1-A3 line, so its on opposite side to A2 */
 	if ( side_Q == 0 )
 	{
 		return -1 * side_A2;
 	}
-	
-	/* 
-	* Q is inside the arc boundary, so it's not on the side we 
+
+	/*
+	* Q is inside the arc boundary, so it's not on the side we
 	* might think from examining only the end points
 	*/
 	if ( d < radius_A && side_Q == side_A2 )
 	{
 		side_Q *= -1;
 	}
-	
+
 	return side_Q;
 }
 
@@ -238,7 +224,7 @@ int lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const P
 * point is coincident with either end point, they are taken as colinear.
 */
 double
-lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *result)	
+lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *result)
 {
 	POINT2D c;
 	double cx, cy, cr;
@@ -294,7 +280,7 @@ int
 pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring)
 {
 	int cn = 0;    /* the crossing number counter */
-	int i;
+	uint32_t i;
 	const POINT2D *v1, *v2;
 	const POINT2D *first, *last;
 
@@ -346,7 +332,7 @@ pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring)
 }
 
 
-static int 
+static int
 lw_seg_interact(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2)
 {
 	double minq=FP_MIN(q1->x,q2->x);
@@ -473,7 +459,7 @@ int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q
 */
 int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 {
-	int i = 0, j = 0;
+	uint32_t i = 0, j = 0;
 	const POINT2D *p1, *p2, *q1, *q2;
 	POINTARRAY *pa1 = NULL, *pa2 = NULL;
 	int cross_left = 0;
@@ -680,7 +666,7 @@ unsigned int geohash_point_as_int(POINT2D *pt)
 			mid = (lon[0] + lon[1]) / 2;
 			if (longitude > mid)
 			{
-				ch |= 0x0001 << bit;
+				ch |= 0x0001u << bit;
 				lon[0] = mid;
 			}
 			else
@@ -795,6 +781,19 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 		{
 			lonmaxadjust = -1 * lonwidth / 2.0;
 		}
+		if ( lonminadjust || lonmaxadjust )
+		{
+			lonmin += lonminadjust;
+			lonmax += lonmaxadjust;
+			/* Each adjustment cycle corresponds to 2 bits of storage in the
+			** geohash.	*/
+			precision++;
+		}
+		else
+		{
+			break;
+		}
+
 		if ( miny > latmin + latwidth / 2.0 )
 		{
 			latminadjust = latwidth / 2.0;
@@ -804,15 +803,13 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 			latmaxadjust = -1 * latwidth / 2.0;
 		}
 		/* Only adjust if adjustments are legal (we haven't crossed any edges). */
-		if ( (lonminadjust || lonmaxadjust) && (latminadjust || latmaxadjust ) )
+		if ( latminadjust || latmaxadjust )
 		{
 			latmin += latminadjust;
-			lonmin += lonminadjust;
 			latmax += latmaxadjust;
-			lonmax += lonmaxadjust;
 			/* Each adjustment cycle corresponds to 2 bits of storage in the
 			** geohash.	*/
-			precision += 2;
+			precision++;
 		}
 		else
 		{
@@ -848,7 +845,7 @@ char *lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 	gbox_init(&gbox);
 	gbox_init(&gbox_bounds);
 
-	result = lwgeom_calculate_gbox_cartesian(lwgeom, &gbox);	
+	result = lwgeom_calculate_gbox_cartesian(lwgeom, &gbox);
 	if ( result == LW_FAILURE ) return NULL;
 
 	/* Return error if we are being fed something outside our working bounds */

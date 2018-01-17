@@ -55,33 +55,31 @@ Datum transform(PG_FUNCTION_ARGS)
 	output_srid = PG_GETARG_INT32(1);
 	if (output_srid == SRID_UNKNOWN)
 	{
-		elog(ERROR,"%d is an invalid target SRID",SRID_UNKNOWN);
+		elog(ERROR, "%d is an invalid target SRID", SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
 
 	geom = PG_GETARG_GSERIALIZED_P_COPY(0);
 	input_srid = gserialized_get_srid(geom);
+
 	if ( input_srid == SRID_UNKNOWN )
 	{
 		PG_FREE_IF_COPY(geom, 0);
-		elog(ERROR,"Input geometry has unknown (%d) SRID",SRID_UNKNOWN);
+		elog(ERROR, "Input geometry has unknown (%d) SRID", SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
 
-	/*
-	 * If input SRID and output SRID are equal, return geometry
-	 * without transform it
-	 */
+	/* Input SRID and output SRID are equal, noop */
 	if ( input_srid == output_srid )
-		PG_RETURN_POINTER(PG_GETARG_DATUM(0));
+		PG_RETURN_POINTER(geom);
 
 	if ( GetProjectionsUsingFCInfo(fcinfo, input_srid, output_srid, &input_pj, &output_pj) == LW_FAILURE )
 	{
 		PG_FREE_IF_COPY(geom, 0);
-		elog(ERROR,"Failure reading projections from spatial_ref_sys.");
+		elog(ERROR, "Failure reading projections from spatial_ref_sys.");
 		PG_RETURN_NULL();
 	}
-	
+
 	/* now we have a geometry, and input/output PJ structs. */
 	lwgeom = lwgeom_from_gserialized(geom);
 	lwgeom_transform(lwgeom, input_pj, output_pj);
@@ -90,8 +88,7 @@ Datum transform(PG_FUNCTION_ARGS)
 	/* Re-compute bbox if input had one (COMPUTE_BBOX TAINTING) */
 	if ( lwgeom->bbox )
 	{
-		lwgeom_drop_bbox(lwgeom);
-		lwgeom_add_bbox(lwgeom);
+		lwgeom_refresh_bbox(lwgeom);
 	}
 
 	result = geometry_serialize(lwgeom);
@@ -122,22 +119,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	int32 result_srid ;
 	char *pj_errstr;
 
-
-
 	result_srid = PG_GETARG_INT32(3);
-	if (result_srid == SRID_UNKNOWN)
-	{
-		elog(ERROR,"transform: destination SRID = %d",SRID_UNKNOWN);
-		PG_RETURN_NULL();
-	}
-
 	geom = PG_GETARG_GSERIALIZED_P_COPY(0);
-	if (gserialized_get_srid(geom) == SRID_UNKNOWN)
-	{
-		pfree(geom);
-		elog(ERROR,"transform_geom: source SRID = %d",SRID_UNKNOWN);
-		PG_RETURN_NULL();
-	}
 
 	/* Set the search path if we haven't already */
 	SetPROJ4LibPath();
@@ -161,7 +144,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		/* pfree(input_proj4); */
 		pfree(output_proj4);
 		pfree(geom);
-		
+
 		elog(ERROR,
 		    "transform_geom: could not parse proj4 string '%s' %s",
 		    input_proj4, pj_errstr);
@@ -200,8 +183,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	/* Re-compute bbox if input had one (COMPUTE_BBOX TAINTING) */
 	if ( lwgeom->bbox )
 	{
-		lwgeom_drop_bbox(lwgeom);
-		lwgeom_add_bbox(lwgeom);
+		lwgeom_refresh_bbox(lwgeom);
 	}
 
 	result = geometry_serialize(lwgeom);

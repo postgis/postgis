@@ -101,7 +101,7 @@
 				<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_BdPolyFromText" /></para>
 			</refsection>
 	</refentry>
-	
+
 		<refentry id="ST_Box2dFromGeoHash">
 	  <refnamediv>
 		<refname>ST_Box2dFromGeoHash</refname>
@@ -158,7 +158,7 @@ SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);
 		<para><xref linkend="ST_GeoHash" />, <xref linkend="ST_GeomFromGeoHash" />, <xref linkend="ST_PointFromGeoHash" /></para>
 	  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_GeogFromText">
 		  <refnamediv>
 			<refname>ST_GeogFromText</refname>
@@ -177,9 +177,9 @@ SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);
 			<para>Returns a geography object from the well-known text or extended well-known representation. SRID 4326 is assumed if unspecified.
 				This is an alias for ST_GeographyFromText.  Points are always expressed in long lat form.</para>
 		  </refsection>
-		  
+
 		 <refsection>
-		 	<title>Examples</title>
+			<title>Examples</title>
 			<programlisting>
 --- converting lon lat coords to geography
 ALTER TABLE sometable ADD COLUMN geog geography(POINT,4326);
@@ -218,7 +218,7 @@ SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));
 			<para><xref linkend="ST_GeogFromText" />, <xref linkend="ST_AsText" /></para>
 		  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_GeogFromWKB">
 	  <refnamediv>
 		<refname>ST_GeogFromWKB</refname>
@@ -329,7 +329,7 @@ LINESTRING(-113.98 39.198,-113.981 39.195)
 		<refname>ST_GeomCollFromText</refname>
 
 		<refpurpose>Makes a collection Geometry from collection WKT with the given SRID. If SRID is
-			not give, it defaults to 0.</refpurpose>
+			not given, it defaults to 0.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -352,7 +352,7 @@ LINESTRING(-113.98 39.198,-113.981 39.195)
 		<title>Description</title>
 
 		  <para>Makes a collection Geometry from the Well-Known-Text (WKT) representation with the given SRID. If SRID is
-			not give, it defaults to 0.</para>
+			not given, it defaults to 0.</para>
 
 		  <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance suite</para>
 
@@ -425,7 +425,7 @@ LINESTRING(-113.98 39.198,-113.981 39.195)
 \\312Q\\300\\366{b\\235*!E@\\225|\\354.P\\312Q
 \\300p\\231\\323e1!E@');</programlisting>
 
-		<note><para>In PostgreSQL 9.1+ - standard_conforming_strings is set to on by default, where as in past versions it was set to on.  You can change defaults as needed
+		<note><para>In PostgreSQL 9.1+ - standard_conforming_strings is set to on by default, where as in past versions it was set to off.  You can change defaults as needed
 		    for a single query or at the database or server level.  Below is how you would do it with standard_conforming_strings = on.  In this case we escape the ' with standard ansi ',
 		    but slashes are not escaped</para></note>
 	<programlisting>
@@ -508,13 +508,13 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 </programlisting>
 <programlisting>
 --Polyhedral Surface example
-SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE( 
-	((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
-	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), 
-	((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
-	((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  
-	((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  
-	((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) 
+SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
+	((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+	((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+	((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+	((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
+	((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))
 )');
 </programlisting>
 	  </refsection>
@@ -655,14 +655,14 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 		<para>GML allow mixed dimensions (2D and 3D inside the same MultiGeometry for instance). As PostGIS geometries don't, ST_GeomFromGML convert the whole geometry to 2D if a missing Z dimension is found once.</para>
-		
+
 		<para>GML support mixed SRS inside the same MultiGeometry. As PostGIS geometries don't, ST_GeomFromGML, in this case, reproject all subgeometries to the SRS root node. If no srsName attribute available for the GML root node, the function throw an error.</para>
-		
+
 		<para>ST_GeomFromGML function is not pedantic about an explicit GML namespace. You could avoid to mention it explicitly for common usages. But you need it if you want to use XLink feature inside GML.</para>
 		<note>
 			<para>ST_GeomFromGML function not support SQL/MM curves geometries.</para>
 		</note>
-		
+
 	  </refsection>
 
 	  <refsection>
@@ -679,7 +679,7 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 	  <refsection>
 		<title>Examples - XLink usage</title>
 		<programlisting>SELECT <![CDATA[ST_GeomFromGML('
-		<gml:LineString xmlns:gml="http://www.opengis.net/gml" 
+		<gml:LineString xmlns:gml="http://www.opengis.net/gml"
 				xmlns:xlink="http://www.w3.org/1999/xlink"
 				srsName="urn:ogc:def:crs:EPSG::4269">
 			<gml:pointProperty>
@@ -692,7 +692,7 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		</gml:LineString>');]]>);
 		</programlisting>
 	  </refsection>
-	  
+
 	 <refsection>
 		<title>Examples - Polyhedral Surface</title>
 		<programlisting>SELECT ST_AsEWKT(<![CDATA[ST_GeomFromGML('
@@ -705,27 +705,27 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
   </gml:PolygonPatch>
   <gml:PolygonPatch>
     <gml:exterior>
-    	<gml:LinearRing><gml:posList srsDimension="3">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList></gml:LinearRing>
+	<gml:LinearRing><gml:posList srsDimension="3">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList></gml:LinearRing>
     </gml:exterior>
   </gml:PolygonPatch>
   <gml:PolygonPatch>
     <gml:exterior>
-    	<gml:LinearRing><gml:posList srsDimension="3">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList></gml:LinearRing>
+	<gml:LinearRing><gml:posList srsDimension="3">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList></gml:LinearRing>
     </gml:exterior>
   </gml:PolygonPatch>
   <gml:PolygonPatch>
     <gml:exterior>
-    	<gml:LinearRing><gml:posList srsDimension="3">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList></gml:LinearRing>
+	<gml:LinearRing><gml:posList srsDimension="3">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList></gml:LinearRing>
     </gml:exterior>
   </gml:PolygonPatch>
   <gml:PolygonPatch>
     <gml:exterior>
-    	<gml:LinearRing><gml:posList srsDimension="3">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList></gml:LinearRing>
+	<gml:LinearRing><gml:posList srsDimension="3">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList></gml:LinearRing>
     </gml:exterior>
   </gml:PolygonPatch>
   <gml:PolygonPatch>
     <gml:exterior>
-    	<gml:LinearRing><gml:posList srsDimension="3">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList></gml:LinearRing>
+	<gml:LinearRing><gml:posList srsDimension="3">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList></gml:LinearRing>
     </gml:exterior>
   </gml:PolygonPatch>
 </gml:polygonPatches>
@@ -747,7 +747,7 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<para><xref linkend="installation_configuration" />, <xref linkend="ST_AsGML" />, <xref linkend="ST_GMLToSQL" /></para>
 	  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_GeomFromGeoJSON">
 	  <refnamediv>
 		<refname>ST_GeomFromGeoJSON</refname>
@@ -767,13 +767,13 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<title>Description</title>
 		<para>Constructs a PostGIS geometry object from the GeoJSON representation.</para>
 		<para>ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an error if you try to use it on a whole JSON document.</para>
-		
+
 		<para>Availability: 2.0.0 requires - JSON-C &gt;= 0.9</para>
 		<note><para>If you do not have JSON-C enabled, support you will get an error notice instead of seeing an output.
 			To enable JSON-C, run configure --with-jsondir=/path/to/json-c.  See <xref linkend="installation_configuration" /> for details.</para></note>
 		<para>&Z_support;</para>
 	  </refsection>
- 
+
 	 <refsection>
 		<title>Examples</title>
 		<programlisting>SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"Point","coordinates":[-48.23456,20.12345]}')) As wkt;
@@ -787,7 +787,7 @@ SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,3]
 wkt
 -------------------
 LINESTRING(1 2,4 5,7 8)
-</programlisting> 
+</programlisting>
 	  </refsection>
 
 
@@ -796,7 +796,7 @@ LINESTRING(1 2,4 5,7 8)
 		<para><xref linkend="ST_AsText" />, <xref linkend="ST_AsGeoJSON" />, <xref linkend="installation_configuration" /></para>
 	  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_GeomFromKML">
 	  <refnamediv>
 		<refname>ST_GeomFromKML</refname>
@@ -831,14 +831,14 @@ LINESTRING(1 2,4 5,7 8)
 		<note>
 			<para>ST_GeomFromKML function not support SQL/MM curves geometries.</para>
 		</note>
-		
+
 	  </refsection>
 
 	  <refsection>
 		<title>Examples - A single geometry with srsName</title>
 		<programlisting>SELECT ST_GeomFromKML('<![CDATA[
 		<LineString>
-			<coordinates>-71.1663,42.2614 
+			<coordinates>-71.1663,42.2614
 				-71.1667,42.2616</coordinates>
 		</LineString>']]>);
 		</programlisting>
@@ -855,19 +855,19 @@ LINESTRING(1 2,4 5,7 8)
 			<refname>ST_GMLToSQL</refname>
 			<refpurpose>Return a specified ST_Geometry value from GML representation.  This is an alias name for ST_GeomFromGML</refpurpose>
 		  </refnamediv>
-	  	<refsynopsisdiv>
+		<refsynopsisdiv>
 			<funcsynopsis>
-		  	<funcprototype>
+			<funcprototype>
 				<funcdef>geometry <function>ST_GMLToSQL</function></funcdef>
 				<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef>
-		  	</funcprototype>
-		  	<funcprototype>
+			</funcprototype>
+			<funcprototype>
 				<funcdef>geometry <function>ST_GMLToSQL</function></funcdef>
 				<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
-		  	</funcprototype>
+			</funcprototype>
 			</funcsynopsis>
-	  	</refsynopsisdiv>
+		</refsynopsisdiv>
 		  <refsection>
 			<title>Description</title>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support).</para>
@@ -907,10 +907,10 @@ LINESTRING(1 2,4 5,7 8)
 
 			<!-- optionally mention that this function uses indexes if appropriate -->
 			<note>
-				<para>There are 2 variants of ST_GeomFromText function, the first takes no SRID and returns a geometry
-					with no defined spatial reference system.  The second takes a spatial reference id as the second argument
-					and returns an ST_Geometry that includes this srid as part of its meta-data.  The srid must be defined
-					in the spatial_ref_sys table.</para>
+				<para>There are two variants of ST_GeomFromText function.  The first takes no SRID and returns a geometry
+					with no defined spatial reference system (SRID=0).  The second takes a SRID as the second argument
+					and returns a geometry that includes this SRID as part of its metadata.
+				</para>
 			</note>
 
 			<para>&sfs_compliant; s3.2.6.2 - option SRID is from the conformance suite.</para>
@@ -1007,7 +1007,7 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>--Although bytea rep contains single \, these need to be escaped when inserting into a table 
+		<programlisting>--Although bytea rep contains single \, these need to be escaped when inserting into a table
 		-- unless standard_conforming_strings is set to on.
 SELECT ST_AsEWKT(
 ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@',4326)
@@ -1152,7 +1152,7 @@ LINESTRING(1 2 3,4 5 6,7 8 9)
 		<title>Description</title>
 
 		<para>Makes a Geometry from WKT with the given SRID. If SRID is
-				not give, it defaults to 0.  If WKT passed in is not a LINESTRING, then null is returned.  </para>
+				not given, it defaults to 0.  If WKT passed in is not a LINESTRING, then null is returned.  </para>
 
 		<note>
 		  <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
@@ -1439,7 +1439,7 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 		<refnamediv>
 		<refname>ST_MakeLine</refname>
 
-		<refpurpose>Creates a Linestring from point or line geometries.</refpurpose>
+		<refpurpose>Creates a Linestring from point, multipoint, or line geometries.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -1466,17 +1466,23 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 		<title>Description</title>
 
 		<para>ST_MakeLine comes in 3 forms: a spatial aggregate that takes
-			rows of point-or-line geometries and returns a line string, a function that takes an array of point-or-lines, and a regular function that takes two point-or-line geometries. You
+			rows of point, multipoint, or line geometries and returns a line string, a
+			function that takes an array of point, multipoint, or line, and a regular
+			function that takes two point, multipoint, or line geometries. You
 			might want to use a subselect to order points before feeding them
 			to  the aggregate version of this function.</para>
 
+		<para>Inputs other than point, multipoint, or lines are ignored.</para>
 		<para>
-			When adding line components a common node is removed from the output.
+			When adding line components common nodes at the beginning of lines are removed from the output. Common nodes in point and multipoint inputs are not removed.
 		</para>
 
 		<para>&Z_support;</para>
-		<para>Availability: 1.4.0 -  ST_MakeLine(geomarray) was introduced. ST_MakeLine aggregate functions was enhanced to handle more points faster.</para>
+
+		<para>Availability: 2.3.0 -  Support for multipoint input elements was introduced</para>
 		<para>Availability: 2.0.0 -  Support for linestring input elements was introduced</para>
+		<para>Availability: 1.4.0 -  ST_MakeLine(geomarray) was introduced. ST_MakeLine aggregate functions was enhanced to handle more points faster.</para>
+
 		</refsection>
 
 		<refsection>
@@ -1486,15 +1492,15 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 			in the order of the travel.</para>
 
 		<programlisting>
--- For pre-PostgreSQL 9.0 - this usually works, 
+-- For pre-PostgreSQL 9.0 - this usually works,
 -- but the planner may on occasion choose not to respect the order of the subquery
 SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom
 	FROM (SELECT gps_track,gps_time, the_geom
 			FROM gps_points ORDER BY gps_track, gps_time) As gps
 	GROUP BY gps.gps_track;</programlisting>
-	
+
 		<programlisting>
--- If you are using PostgreSQL 9.0+ 
+-- If you are using PostgreSQL 9.0+
 -- (you can use the new ORDER BY support for aggregates)
 -- this is a guaranteed way to get a correctly ordered linestring
 -- Your order by part can order by more than one column if needed
@@ -1573,7 +1579,7 @@ LINESTRING(1 2 3,3 4 5,6 6 6)
 
 			<para>Creates a rectangular Polygon formed from the minima and maxima. by the given shell. Input
 				values must be in SRS specified by the SRID.  If no SRID is specified the unknown spatial reference system is assumed</para>
-				
+
 			<para>Availability: 1.5</para>
 			<para>Enhanced: 2.0: Ability to specify an envelope without specifying an SRID was introduced.</para>
 
@@ -1624,7 +1630,7 @@ POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))
 
 			<para>Creates a Polygon formed by the given shell. Input
 				geometries must be closed LINESTRINGS. Comes in 2 variants.</para>
-			<para>Variant 1: takes one closed linestring.</para>
+			<para>Variant 1:  Takes one closed linestring.</para>
 			<para>Variant 2:  Creates a Polygon formed by the given shell and array of
 			holes. You can construct a geometry array using ST_Accum or the PostgreSQL ARRAY[] and
 			ARRAY() constructs. Input geometries must be closed LINESTRINGS.</para>
@@ -1662,7 +1668,7 @@ POLYGONM((75.15 29.53 1,77 29 1,77.6 29.5 2,75.15 29.53 2))
 			  </programlisting>
 		</refsection>
 		<refsection>
-			<title>Examples: Outter shell with inner shells</title>
+			<title>Examples: Outer shell with inner shells</title>
 
 			<para>Build a donut with an ant hole</para>
 		   <programlisting>
@@ -1678,11 +1684,11 @@ FROM
 		</programlisting>
 		<para>Build province boundaries with holes
 		representing lakes in the province from a set of
-		province polygons/multipolygons and water line strings
-		this is an example of using PostGIS ST_Accum
-		<note><para>The use of CASE because feeding a null array into
-		ST_MakePolygon results in NULL</para></note>
-		<note><para>the use of left join to guarantee we get all provinces back even if they have no lakes</para></note></para>
+		province polygons/multipolygons and water linestrings.
+		This is an example of using PostGIS ST_Accum.
+		<note><para>The CASE construct is used because feeding a null array into
+		ST_MakePolygon results in NULL.</para></note>
+		<note><para>A left join is used to guarantee we get all provinces back even if they have no lakes.</para></note></para>
 		<programlisting>
 	SELECT p.gid, p.province_name,
 		CASE WHEN
@@ -1886,7 +1892,7 @@ result
 		<title>Description</title>
 
 		 <para>Makes a Geometry from  Well-Known-Text (WKT) with the given SRID. If SRID is
-			not give, it defaults to 0.</para>
+			not given, it defaults to 0.</para>
 
 		 <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
 			suite</para>
@@ -1924,7 +1930,7 @@ result
 		<refname>ST_MPointFromText</refname>
 
 		<refpurpose>Makes a Geometry from WKT with the given SRID. If SRID is
-			not give, it defaults to 0.</refpurpose>
+			not given, it defaults to 0.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1947,7 +1953,7 @@ result
 		<title>Description</title>
 
 		 <para>Makes a Geometry from WKT with the given SRID. If SRID is
-			not give, it defaults to 0.</para>
+			not given, it defaults to 0.</para>
 
 		 <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
 			suite</para>
@@ -1986,7 +1992,7 @@ SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 42.1223)', 4326)
 		<refname>ST_MPolyFromText</refname>
 
 		<refpurpose>Makes a MultiPolygon Geometry from WKT with the given SRID. If SRID is
-			not give, it defaults to 0.</refpurpose>
+			not given, it defaults to 0.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2009,7 +2015,7 @@ SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 42.1223)', 4326)
 		<title>Description</title>
 
 		 <para>Makes a MultiPolygon from WKT with the given SRID. If SRID is
-			not give, it defaults to 0.</para>
+			not given, it defaults to 0.</para>
 
 		 <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance suite</para>
 
@@ -2078,7 +2084,7 @@ SELECt ST_MPolyFromText('MULTIPOLYGON(((-70.916 42.1002,-70.9468 42.0946,-70.976
 
 		<programlisting>SELECT ST_SetSRID(ST_Point(-71.1043443253471, 42.3150676015829),4326)</programlisting>
 	  </refsection>
-	  
+
 	  <refsection>
 		<title>Examples: Geography</title>
 
@@ -2098,7 +2104,7 @@ SELECT ST_Transform(ST_SetSRID(ST_Point(3637510, 3014852),2273),4326)::geography
 		<para><xref linkend="Geography_Basics" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
-	
+
 		<refentry id="ST_PointFromGeoHash">
 	  <refnamediv>
 		<refname>ST_PointFromGeoHash</refname>
@@ -2178,7 +2184,7 @@ SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 			<title>Description</title>
 
 			<para>Constructs a PostGIS ST_Geometry point object from the OGC Well-Known text representation. If SRID is
-			not give, it defaults to unknown (currently 0).  If geometry is not a WKT point representation, returns null.
+			not given, it defaults to unknown (currently 0).  If geometry is not a WKT point representation, returns null.
 			If completely invalid WKT, then throws an error.</para>
 
 			<!-- optionally mention that this function uses indexes if appropriate -->
@@ -2309,7 +2315,7 @@ SELECT
 
 		<!-- optionally mention that this function uses indexes if appropriate -->
 		<note>
-		  <para>ST_Polygon is similar to first version oST_MakePolygon except it also sets the spatial ref sys (SRID) of the polygon. Will not work with MULTILINESTRINGS
+		  <para>ST_Polygon is similar to first version of ST_MakePolygon except it also sets the spatial ref sys (SRID) of the polygon. Will not work with MULTILINESTRINGS
 			so use LineMerge to merge multilines.  Also does not create polygons with holes.  Use ST_MakePolygon for that.</para>
 		</note>
 
@@ -2351,7 +2357,7 @@ SRID=4326;POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))
 		<refname>ST_PolygonFromText</refname>
 
 		<refpurpose>Makes a Geometry from WKT with the given SRID. If SRID is
-			not give, it defaults to 0.</refpurpose>
+			not given, it defaults to 0.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2372,7 +2378,7 @@ SRID=4326;POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))
 		<title>Description</title>
 
 		<para>Makes a Geometry from WKT with the given SRID. If SRID is
-			not give, it defaults to 0.  Returns null if WKT is not a polygon.</para>
+			not given, it defaults to 0.  Returns null if WKT is not a polygon.</para>
 
 
 		<para>OGC SPEC 3.2.6.2 - option SRID is from the conformance

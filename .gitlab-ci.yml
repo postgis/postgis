@@ -1,7 +1,6 @@
 test:
   script:
-    - apt-get update -qq
-    - apt-get install -y
+    - apt-get update -qq && apt-get install -y
         postgresql-9.4 postgresql-server-dev-9.4
         build-essential autoconf libtool libcunit1-dev
         xsltproc docbook-xsl docbook-mathml dblatex
@@ -11,8 +10,10 @@ test:
     - service postgresql start
     - su -l postgres -c "createuser -s `whoami`"
     - ./autogen.sh
-    - ./configure
+    - ./configure CFLAGS="-Wall -fno-omit-frame-pointer -Werror"
     - make
     - make check RUNTESTFLAGS=-v
+    - make check RUNTESTFLAGS="-v --dumprestore"
     - make install
     - make installcheck RUNTESTFLAGS=-v
+    - make installcheck RUNTESTFLAGS="-v --dumprestore"

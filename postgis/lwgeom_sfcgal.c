@@ -335,7 +335,7 @@ Datum sfcgal_distance3D(PG_FUNCTION_ARGS)
 }
 
 
-PG_FUNCTION_INFO_V1(sfcgal_tesselate);	
+PG_FUNCTION_INFO_V1(sfcgal_tesselate);
 Datum sfcgal_tesselate(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *input, *output;
@@ -360,7 +360,7 @@ Datum sfcgal_tesselate(PG_FUNCTION_ARGS)
 }
 
 
-PG_FUNCTION_INFO_V1(sfcgal_triangulate);	
+PG_FUNCTION_INFO_V1(sfcgal_triangulate);
 Datum sfcgal_triangulate(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *input, *output;
@@ -385,7 +385,7 @@ Datum sfcgal_triangulate(PG_FUNCTION_ARGS)
 }
 
 
-PG_FUNCTION_INFO_V1(sfcgal_force_lhr);	
+PG_FUNCTION_INFO_V1(sfcgal_force_lhr);
 Datum sfcgal_force_lhr(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *input, *output;
@@ -410,7 +410,7 @@ Datum sfcgal_force_lhr(PG_FUNCTION_ARGS)
 }
 
 
-PG_FUNCTION_INFO_V1(sfcgal_straight_skeleton);	
+PG_FUNCTION_INFO_V1(sfcgal_straight_skeleton);
 Datum sfcgal_straight_skeleton(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *input, *output;
@@ -467,7 +467,7 @@ Datum sfcgal_approximate_medial_axis(PG_FUNCTION_ARGS)
 }
 
 
-PG_FUNCTION_INFO_V1(sfcgal_intersection);	
+PG_FUNCTION_INFO_V1(sfcgal_intersection);
 Datum sfcgal_intersection(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *input0, *input1, *output;
@@ -496,7 +496,7 @@ Datum sfcgal_intersection(PG_FUNCTION_ARGS)
 }
 
 
-PG_FUNCTION_INFO_V1(sfcgal_intersection3D);	
+PG_FUNCTION_INFO_V1(sfcgal_intersection3D);
 Datum sfcgal_intersection3D(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *input0, *input1, *output;
@@ -524,7 +524,7 @@ Datum sfcgal_intersection3D(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(output);
 }
 
-PG_FUNCTION_INFO_V1(sfcgal_difference);	
+PG_FUNCTION_INFO_V1(sfcgal_difference);
 Datum sfcgal_difference(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *input0, *input1, *output;
@@ -553,7 +553,7 @@ Datum sfcgal_difference(PG_FUNCTION_ARGS)
 }
 
 
-PG_FUNCTION_INFO_V1(sfcgal_difference3D);	
+PG_FUNCTION_INFO_V1(sfcgal_difference3D);
 Datum sfcgal_difference3D(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *input0, *input1, *output;
@@ -581,7 +581,7 @@ Datum sfcgal_difference3D(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(output);
 }
 
-PG_FUNCTION_INFO_V1(sfcgal_union);	
+PG_FUNCTION_INFO_V1(sfcgal_union);
 Datum sfcgal_union(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *input0, *input1, *output;
@@ -610,7 +610,7 @@ Datum sfcgal_union(PG_FUNCTION_ARGS)
 }
 
 
-PG_FUNCTION_INFO_V1(sfcgal_union3D);	
+PG_FUNCTION_INFO_V1(sfcgal_union3D);
 Datum sfcgal_union3D(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *input0, *input1, *output;
@@ -658,7 +658,7 @@ Datum sfcgal_volume(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(result);
 }
 
-PG_FUNCTION_INFO_V1(sfcgal_minkowski_sum);	
+PG_FUNCTION_INFO_V1(sfcgal_minkowski_sum);
 Datum sfcgal_minkowski_sum(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *input0, *input1, *output;
@@ -697,23 +697,23 @@ Datum sfcgal_extrude(PG_FUNCTION_ARGS)
     srid_t srid;
 
     sfcgal_postgis_init();
-    
+
     input = PG_GETARG_GSERIALIZED_P(0);
     srid = gserialized_get_srid(input);
 
     geom = POSTGIS2SFCGALGeometry(input);
     PG_FREE_IF_COPY(input, 0);
-    
+
     dx = PG_GETARG_FLOAT8(1);
     dy = PG_GETARG_FLOAT8(2);
     dz = PG_GETARG_FLOAT8(3);
-    
+
     result = sfcgal_geometry_extrude(geom, dx, dy, dz);
     sfcgal_geometry_delete(geom);
-    
+
     output = SFCGALGeometry2POSTGIS(result, 0, srid);
     sfcgal_geometry_delete(result);
-    
+
     PG_RETURN_POINTER(output);
 }
 
@@ -725,7 +725,7 @@ Datum postgis_sfcgal_version(PG_FUNCTION_ARGS)
         PG_RETURN_POINTER(result);
 }
 
-PG_FUNCTION_INFO_V1(sfcgal_is_solid);	
+PG_FUNCTION_INFO_V1(sfcgal_is_solid);
 Datum sfcgal_is_solid(PG_FUNCTION_ARGS)
 {
 	int result;
@@ -734,7 +734,7 @@ Datum sfcgal_is_solid(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(input, 0);
 	if (! lwgeom)
 	{
-		lwerror("sfcgal_is_solid: Unable to deserialize input");
+		elog(ERROR, "sfcgal_is_solid: Unable to deserialize input");
 	}
         result = FLAGS_GET_SOLID( lwgeom->flags );
 
@@ -743,7 +743,7 @@ Datum sfcgal_is_solid(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-PG_FUNCTION_INFO_V1(sfcgal_make_solid);	
+PG_FUNCTION_INFO_V1(sfcgal_make_solid);
 Datum sfcgal_make_solid(PG_FUNCTION_ARGS)
 {
         GSERIALIZED *output;
@@ -752,7 +752,7 @@ Datum sfcgal_make_solid(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(input, 0);
 	if (! lwgeom)
 	{
-		lwerror("sfcgal_make_solid: Unable to deserialize input");
+		elog(ERROR, "sfcgal_make_solid: Unable to deserialize input");
 	}
 
         FLAGS_SET_SOLID( lwgeom->flags, 1);

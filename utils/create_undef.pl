@@ -25,9 +25,9 @@ eval "exec perl -w $0 $@"
 # drops are in the following order:
 #	1. Indexing system stuff
 #	2. Meta datatables <not done>
-#	3. Aggregates 
+#	3. Aggregates
 #	3. Casts
-#	4. Operators 
+#	4. Operators
 #	5. Functions
 #	6. Types
 #	7. Tables
@@ -161,7 +161,7 @@ print "-- Drop all tables.\n";
 @tables = reverse(@tables);
 foreach my $table (@tables)
 {
-	print "DROP TABLE $table;\n";
+	print "DROP TABLE IF EXISTS $table;\n";
 }
 
 
@@ -176,7 +176,7 @@ foreach my $agg (@aggs)
 	{
 		print "DROP AGGREGATE IF EXISTS $1 ($2);\n";
 	}
-	else 
+	else
 	{
 		die "Couldn't parse AGGREGATE line: $agg\n";
 	}
@@ -185,8 +185,8 @@ foreach my $agg (@aggs)
 print "-- Drop all operators classes and families.\n";
 foreach my $opc (@opcs)
 {
-	print "DROP OPERATOR CLASS $opc;\n";
-	print "DROP OPERATOR FAMILY $opc;\n";
+	print "DROP OPERATOR CLASS IF EXISTS $opc;\n";
+	print "DROP OPERATOR FAMILY IF EXISTS $opc;\n";
 }
 
 print "-- Drop all operators.\n";
@@ -194,7 +194,7 @@ foreach my $op (@ops)
 {
 	if ($op =~ /create operator ([^(]+)\s*\(.*LEFTARG\s*=\s*(\w+),\s*RIGHTARG\s*=\s*(\w+).*/ism )
 	{
-		print "DROP OPERATOR $1 ($2,$3) CASCADE;\n";
+		print "DROP OPERATOR IF EXISTS $1 ($2,$3) CASCADE;\n";
 	}
 	else
 	{
@@ -202,13 +202,13 @@ foreach my $op (@ops)
 	}
 }
 
-	
+
 print "-- Drop all casts.\n";
 foreach my $cast (@casts)
 {
 	if ($cast =~ /create cast\s*\((.+?)\)/i )
 	{
-		print "DROP CAST ($1);\n";
+		print "DROP CAST IF EXISTS ($1);\n";
 	}
 	else
 	{
@@ -231,7 +231,7 @@ foreach my $fn (@funcs)
 		if ( ! exists($type_funcs{$fn_nm}) )
 		{
 			print "DROP FUNCTION IF EXISTS $fn_nm ($fn_arg);\n";
-		} 
+		}
 		else
 		{
 			if ( $type_funcs{$fn_nm} =~ /(typmod|analyze)/ ) {
@@ -249,7 +249,7 @@ foreach my $fn (@funcs)
 print "-- Drop all types.\n";
 foreach my $type (@types)
 {
-	print "DROP TYPE $type CASCADE;\n";
+	print "DROP TYPE IF EXISTS $type CASCADE;\n";
 }
 
 print "-- Drop all functions needed for types definition.\n";
@@ -277,7 +277,7 @@ if (@schemas)
   foreach my $schema (@schemas)
   {
     print "SELECT undef_helper.StripFromSearchPath('$schema');\n";
-    print "DROP SCHEMA \"$schema\";\n";
+    print "DROP SCHEMA IF EXISTS \"$schema\";\n";
   }
   print "DROP SCHEMA undef_helper CASCADE;\n";
 }
@@ -295,7 +295,7 @@ create schema undef_helper;
 --  StripFromSearchPath(schema_name)
 --
 -- Strips the specified schema from the database search path
--- 
+--
 -- This is a helper function for uninstall
 -- We may want to move this function as a generic helper
 --
@@ -318,7 +318,7 @@ BEGIN
 		EXECUTE 'ALTER DATABASE ' || quote_ident(current_database()) || ' SET search_path = ' || var_search_path;
 		var_result := a_schema_name || ' has been stripped off database search_path ';
 	END IF;
-  
+
   RETURN var_result;
 END
 $$

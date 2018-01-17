@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-02-16 08:54+0000\n"
+"POT-Creation-Date: 2017-03-29 06:29+0000\n"
 "PO-Revision-Date: 2016-02-16 08:33+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -238,11 +238,23 @@ msgstr ""
 #. Tag: term
 #: introduction.xml:107
 #, no-c-format
+msgid "Björn Harrtell"
+msgstr ""
+
+#. Tag: para
+#: introduction.xml:110
+#, no-c-format
+msgid "MapBox Vector Tile and GeoBuf functions. Gogs testing."
+msgstr ""
+
+#. Tag: term
+#: introduction.xml:116
+#, no-c-format
 msgid "Mateusz Loskot"
 msgstr "Mateusz Loskot"
 
 #. Tag: para
-#: introduction.xml:109
+#: introduction.xml:118
 #, no-c-format
 msgid ""
 "CMake support for PostGIS, built original raster loader in python and low "
@@ -250,43 +262,31 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:114
+#: introduction.xml:123
 #, no-c-format
 msgid "Pierre Racine"
 msgstr "Pierre Racine"
 
 #. Tag: para
-#: introduction.xml:116
+#: introduction.xml:125
 #, no-c-format
 msgid "Raster overall architecture, prototyping, programming support"
 msgstr "Arquitectura, prototipo y soporte en la programación Raster."
 
-#. Tag: term
-#: introduction.xml:121
-#, no-c-format
-msgid "David Zwarg"
-msgstr "David Zwarg"
-
-#. Tag: para
-#: introduction.xml:123
-#, no-c-format
-msgid "Raster development (mostly map algebra analytic functions)"
-msgstr ""
-
 #. Tag: title
-#: introduction.xml:129
+#: introduction.xml:131
 #, no-c-format
 msgid "Core Contributors Past"
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:133
+#: introduction.xml:135
 #, no-c-format
 msgid "Chris Hodgson"
 msgstr "Chris Hodgson"
 
 #. Tag: para
-#: introduction.xml:135
+#: introduction.xml:137
 #, no-c-format
 msgid ""
 "Prior PSC Member. General development, site and buildbot maintenance, OSGeo "
@@ -296,13 +296,13 @@ msgstr ""
 "y buildbot, gestor de la incubación en el OSGeo"
 
 #. Tag: term
-#: introduction.xml:140
+#: introduction.xml:142
 #, no-c-format
 msgid "Kevin Neufeld"
 msgstr "Kevin Neufeld"
 
 #. Tag: para
-#: introduction.xml:142
+#: introduction.xml:144
 #, no-c-format
 msgid ""
 "Prior PSC Member. Documentation and documentation support tools, buildbot "
@@ -311,13 +311,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:148
+#: introduction.xml:150
 #, no-c-format
 msgid "Dave Blasby"
 msgstr "Dave Blasby"
 
 #. Tag: para
-#: introduction.xml:151
+#: introduction.xml:153
 #, no-c-format
 msgid ""
 "The original developer/Co-founder of PostGIS. Dave wrote the server side "
@@ -328,13 +328,13 @@ msgstr ""
 "funciones analíticas del lado del servidor."
 
 #. Tag: term
-#: introduction.xml:158
+#: introduction.xml:160
 #, no-c-format
 msgid "Jeff Lounsbury"
 msgstr "Jeff Lounsbury"
 
 #. Tag: para
-#: introduction.xml:160
+#: introduction.xml:162
 #, no-c-format
 msgid ""
 "Original development of the Shape file loader/dumper. Current PostGIS "
@@ -344,13 +344,13 @@ msgstr ""
 "propietario representativo actual del proyecto PostGIS."
 
 #. Tag: term
-#: introduction.xml:166
+#: introduction.xml:168
 #, no-c-format
 msgid "Mark Leslie"
 msgstr "Mark Leslie"
 
 #. Tag: para
-#: introduction.xml:168
+#: introduction.xml:170
 #, no-c-format
 msgid ""
 "Ongoing maintenance and development of core functions. Enhanced curve "
@@ -359,20 +359,32 @@ msgstr ""
 "Mantenimiento y desarrollo de funciones básicas. Soporte de la curva de "
 "mejora. Cargador de Shapefiles."
 
+#. Tag: term
+#: introduction.xml:175
+#, no-c-format
+msgid "David Zwarg"
+msgstr "David Zwarg"
+
+#. Tag: para
+#: introduction.xml:177
+#, no-c-format
+msgid "Raster development (mostly map algebra analytic functions)"
+msgstr ""
+
 #. Tag: title
-#: introduction.xml:174
+#: introduction.xml:183
 #, no-c-format
 msgid "Other Contributors"
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:177
+#: introduction.xml:186
 #, no-c-format
 msgid "Individual Contributors"
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:180
+#: introduction.xml:189
 #, no-c-format
 msgid ""
 "In alphabetical order: Alex Bodnaru, Alex Mayrhofer, Andrea Peri, Andreas "
@@ -381,22 +393,23 @@ msgid ""
 "Nordgren, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea, David "
 "Techer, Eduin Carrillo, Even Rouault, Frank Warmerdam, George Silva, Gerald "
 "Fenoy, Gino Lucrezi, Guillaume Lelarge, IIDA Tetsushi, Ingvild Nystuen, "
-"Jason Smith, Jeff Adams, Jose Carlos Martinez Llari, Kashif Rasul, Klaus "
-"Foerster, Kris Jurka, Leo Hsu, Loic Dachary, Luca S. Percich, Maria Arias de "
-"Reyna, Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime van Noppen, "
-"Michael Fuhr, Mike Toews, Nathan Wagner, Nathaniel Clay, Nikita Shulga, "
-"Norman Vine, Rafal Magda, Ralph Mason, Richard Greenwood, Silvio Grosso, "
-"Steffen Macke, Stephen Frost, Tom van Tilburg, Vincent Mora, Vincent Picavet"
+"Jason Smith, Jeff Adams, Jose Carlos Martinez Llari, Julien Rouhaud, Kashif "
+"Rasul, Klaus Foerster, Kris Jurka, Leo Hsu, Loic Dachary, Luca S. Percich, "
+"Maria Arias de Reyna, Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime "
+"van Noppen, Michael Fuhr, Mike Toews, Nathan Wagner, Nathaniel Clay, Nikita "
+"Shulga, Norman Vine, Rafal Magda, Ralph Mason, Rémi Cura, Richard Greenwood, "
+"Silvio Grosso, Steffen Macke, Stephen Frost, Tom van Tilburg, Vincent Mora, "
+"Vincent Picavet"
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:242
+#: introduction.xml:253
 #, no-c-format
 msgid "Corporate Sponsors"
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:245
+#: introduction.xml:256
 #, no-c-format
 msgid ""
 "These are corporate entities that have contributed developer time, hosting, "
@@ -406,7 +419,7 @@ msgstr ""
 "alojamiento o con aportes de capital económico al proyecto PostGIS"
 
 #. Tag: para
-#: introduction.xml:246
+#: introduction.xml:257
 #, no-c-format
 msgid ""
 "In alphabetical order: Arrival 3D, Associazione Italiana per l'Informazione "
@@ -414,22 +427,22 @@ msgid ""
 "CartoDB, City of Boston (DND), Clever Elephant Solutions, Cooperativa Alveo, "
 "Deimos Space, Faunalia, Geographic Data BC, Hunter Systems Group, Lidwala "
 "Consulting Engineers, LisaSoft, Logical Tracking &amp; Tracing International "
-"AG, Michigan Tech Research Institute, Natural Resources Canada, Norwegian "
-"Forest and Landscape Institute, Boundless (former OpenGeo), OSGeo, Oslandia, "
-"Palantir Technologies, Paragon Corporation, R3 GIS, Refractions Research, "
-"Regione Toscana - SITA, Safe Software, Sirius Corporation plc, Stadt Uster, "
-"UC Davis Center for Vectorborne Diseases, University of Laval, U.S "
-"Department of State (HIU), Zonar Systems"
+"AG, Maponics, Michigan Tech Research Institute, Natural Resources Canada, "
+"Norwegian Forest and Landscape Institute, Boundless (former OpenGeo), OSGeo, "
+"Oslandia, Palantir Technologies, Paragon Corporation, R3 GIS, Refractions "
+"Research, Regione Toscana - SITA, Safe Software, Sirius Corporation plc, "
+"Stadt Uster, UC Davis Center for Vectorborne Diseases, University of Laval, "
+"U.S Department of State (HIU), Zonar Systems"
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:287
+#: introduction.xml:299
 #, no-c-format
 msgid "Crowd Funding Campaigns"
 msgstr "Campañas de Crowd Funding"
 
 #. Tag: para
-#: introduction.xml:290
+#: introduction.xml:302
 #, no-c-format
 msgid ""
 "Crowd funding campaigns are campaigns we run to get badly wanted features "
@@ -444,7 +457,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:291
+#: introduction.xml:303
 #, no-c-format
 msgid ""
 "PostGIS 2.0.0 was the first release we tried this strategy. We used <ulink "
@@ -456,7 +469,7 @@ msgstr ""
 "hemos tenido dos campañas con éxito para realizarlas."
 
 #. Tag: para
-#: introduction.xml:292
+#: introduction.xml:304
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis role="
@@ -470,7 +483,7 @@ msgstr ""
 "toTopoGeometry y con este apoyo,  topología 2.0.0. Sucedió."
 
 #. Tag: para
-#: introduction.xml:293
+#: introduction.xml:305
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis role="
@@ -481,13 +494,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:298
+#: introduction.xml:310
 #, no-c-format
 msgid "Important Support Libraries"
 msgstr "Librerías de soporte importantes"
 
 #. Tag: para
-#: introduction.xml:301
+#: introduction.xml:313
 #, no-c-format
 msgid ""
 "The <ulink url=\"http://trac.osgeo.org/geos/\">GEOS</ulink> geometry "
@@ -501,7 +514,7 @@ msgstr ""
 "Sandro Santilli (strk), Paul Ramsey y otros."
 
 #. Tag: para
-#: introduction.xml:306
+#: introduction.xml:318
 #, no-c-format
 msgid ""
 "The <ulink url=\"http://trac.osgeo.org/gdal/\">GDAL</ulink> Geospatial Data "
@@ -516,7 +529,7 @@ msgstr ""
 "introducidas en el proyecto GDAL."
 
 #. Tag: para
-#: introduction.xml:311
+#: introduction.xml:323
 #, no-c-format
 msgid ""
 "The <ulink url=\"http://trac.osgeo.org/proj/\">Proj4</ulink> cartographic "
@@ -528,7 +541,7 @@ msgstr ""
 "la creación y mantenimiento de la misma."
 
 #. Tag: para
-#: introduction.xml:315
+#: introduction.xml:327
 #, no-c-format
 msgid ""
 "Last but not least, the <ulink url=\"http://www.postgresql.org\">PostgreSQL "
@@ -544,13 +557,13 @@ msgstr ""
 "cantidad de funciones SQL que ofrece PostgreSQL."
 
 #. Tag: title
-#: introduction.xml:324
+#: introduction.xml:336
 #, no-c-format
 msgid "More Information"
 msgstr "Mas información"
 
 #. Tag: para
-#: introduction.xml:328
+#: introduction.xml:340
 #, no-c-format
 msgid ""
 "The latest software, documentation and news items are available at the "
@@ -559,7 +572,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:334
+#: introduction.xml:346
 #, no-c-format
 msgid ""
 "More information about the GEOS geometry operations library is available "
@@ -571,7 +584,7 @@ msgstr ""
 "org/geos/</ulink>."
 
 #. Tag: para
-#: introduction.xml:340
+#: introduction.xml:352
 #, no-c-format
 msgid ""
 "More information about the Proj4 reprojection library is available at <ulink "
@@ -582,7 +595,7 @@ msgstr ""
 "org/proj/</ulink>."
 
 #. Tag: para
-#: introduction.xml:346
+#: introduction.xml:358
 #, no-c-format
 msgid ""
 "More information about the PostgreSQL database server is available at the "
@@ -594,7 +607,7 @@ msgstr ""
 "org\">http://www.postgresql.org</ulink>."
 
 #. Tag: para
-#: introduction.xml:352
+#: introduction.xml:364
 #, no-c-format
 msgid ""
 "More information about GiST indexing is available at the PostgreSQL GiST "
@@ -606,7 +619,7 @@ msgstr ""
 "postgres/gist/\">http://www.sai.msu.su/~megera/postgres/gist/</ulink>."
 
 #. Tag: para
-#: introduction.xml:358
+#: introduction.xml:370
 #, no-c-format
 msgid ""
 "More information about MapServer internet map server is available at <ulink "
@@ -616,7 +629,7 @@ msgstr ""
 "<ulink url=\"http://mapserver.org/\">http://mapserver.org</ulink>."
 
 #. Tag: para
-#: introduction.xml:364
+#: introduction.xml:376
 #, no-c-format
 msgid ""
 "The &quot;<ulink url=\"http://www.opengeospatial.org/standards/sfs\">Simple "

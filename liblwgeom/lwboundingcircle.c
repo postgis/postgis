@@ -87,7 +87,7 @@ point_inside_circle(const POINT2D* p, const LWBOUNDINGCIRCLE* c)
 	if (!c)
 		return LW_FALSE;
 
-	if (distance2d_pt_pt(p, c->center) > c->radius)
+	if (distance2d_pt_pt(p, c->center) - c->radius > DBL_EPSILON)
 		return LW_FALSE;
 
 	return LW_TRUE;
@@ -184,7 +184,7 @@ calculate_mbc(const POINT2D** points, uint32_t max_n, SUPPORTING_POINTS* support
 	{
 		/* If we're entering the function with three supporting points already, our circle
 		 * is already fully constrained - we couldn't add another supporting point if we
-		 * needed to. So, there's no point in proceeding further.  Welzl (1991) provides 
+		 * needed to. So, there's no point in proceeding further.  Welzl (1991) provides
 		 * a much better explanation of why this works.
 		 * */
 		return LW_SUCCESS;
@@ -274,7 +274,7 @@ lwgeom_calculate_mbc(const LWGEOM* g)
 	support = supporting_points_create();
 	result = lwboundingcircle_create();
 	/* Technically, a randomized algorithm would demand that we shuffle the input points
-	 * before we call calculate_mbc().  However, we make the (perhaps poor) assumption that 
+	 * before we call calculate_mbc().  However, we make the (perhaps poor) assumption that
 	 * the order we happen to find the points is as good as random, or close enough.
 	 * */
 	success = calculate_mbc((const POINT2D**) points, num_points, support, result);

@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -731,7 +731,7 @@ rt_raster_deserialize(void* serialized, int header_only) {
 	 * See note on SET_VARSIZE in rt_raster_serialize function above.
 	 */
 
-	/* Allocate memory for deserialized raster header */ 
+	/* Allocate memory for deserialized raster header */
 	RASTER_DEBUG(3, "rt_raster_deserialize: Allocating memory for deserialized raster header");
 	rast = (rt_raster) rtalloc(sizeof (struct rt_raster_t));
 	if (!rast) {

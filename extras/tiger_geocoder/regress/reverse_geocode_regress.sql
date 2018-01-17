@@ -6,4 +6,5 @@ SELECT pprint_addy(addy[1]), addy FROM reverse_geocode(ST_Point(-71.123848,42.41
 SELECT pprint_addy(addy[1]), addy FROM reverse_geocode(ST_Point(-71.09436,42.35981)); -- 58 Massachusetts Ave, Cambridge, MA 02139 (this gives me different answer but might be tiger change)
 SELECT '#1913' As ticket, pprint_addy(addy[1]) FROM reverse_geocode(ST_Point(-71.2248416, 42.30344833)); -- I- 95, Needham, MA 02494
 SELECT '#2927', pprint_addy(addy[1]) FROM reverse_geocode(ST_Point(-71.058246,42.36514)); -- 77 N Washington St, Boston, MA 02114
+SELECT '#3806', pprint_addy(addy[1]) FROM reverse_geocode(ST_Point(-93.271872, 44.98510)); -- 212 3rd Ave N, Minneapolis, MN 55401
 \timing

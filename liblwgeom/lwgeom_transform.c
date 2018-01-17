@@ -24,7 +24,7 @@
 
 
 #include "../postgis_config.h"
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include <string.h>
 
@@ -52,15 +52,15 @@ to_dec(POINT4D *pt)
 int
 ptarray_transform(POINTARRAY *pa, projPJ inpj, projPJ outpj)
 {
-  int i;
+	uint32_t i;
 	POINT4D p;
 
-  for ( i = 0; i < pa->npoints; i++ )
-  {
-    getPoint4d_p(pa, i, &p);
-    if ( ! point4d_transform(&p, inpj, outpj) ) return LW_FAILURE;
-    ptarray_set_point4d(pa, i, &p);
-  }
+	for ( i = 0; i < pa->npoints; i++ )
+	{
+		getPoint4d_p(pa, i, &p);
+		if ( ! point4d_transform(&p, inpj, outpj) ) return LW_FAILURE;
+		ptarray_set_point4d(pa, i, &p);
+	}
 
 	return LW_SUCCESS;
 }
@@ -73,7 +73,7 @@ ptarray_transform(POINTARRAY *pa, projPJ inpj, projPJ outpj)
 int
 lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 {
-	int i;
+	uint32_t i;
 
 	/* No points to transform in an empty! */
 	if ( lwgeom_is_empty(geom) )
@@ -87,7 +87,7 @@ lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 		case TRIANGLETYPE:
 		{
 			LWLINE *g = (LWLINE*)geom;
-      if ( ! ptarray_transform(g->points, inpj, outpj) ) return LW_FAILURE;
+			if ( ! ptarray_transform(g->points, inpj, outpj) ) return LW_FAILURE;
 			break;
 		}
 		case POLYGONTYPE:
@@ -95,7 +95,7 @@ lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 			LWPOLY *g = (LWPOLY*)geom;
 			for ( i = 0; i < g->nrings; i++ )
 			{
-        if ( ! ptarray_transform(g->rings[i], inpj, outpj) ) return LW_FAILURE;
+				if ( ! ptarray_transform(g->rings[i], inpj, outpj) ) return LW_FAILURE;
 			}
 			break;
 		}
@@ -153,7 +153,7 @@ point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj)
 		if (*pj_errno_ref == -38)
 		{
 			lwnotice("PostGIS was unable to transform the point because either no grid shift files were found, or the point does not lie within the range for which the grid shift is defined. Refer to the ST_Transform() section of the PostGIS manual for details on how to configure PostGIS to alter this behaviour.");
-			lwerror("transform: couldn't project point (%g %g %g): %s (%d)", 
+			lwerror("transform: couldn't project point (%g %g %g): %s (%d)",
 			        orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(*pj_errno_ref), *pj_errno_ref);
 			return 0;
 		}

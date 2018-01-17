@@ -1,8 +1,8 @@
---  Lookup tables used by pagc to standardize in format expected by tiger geocoder 
+--  Lookup tables used by pagc to standardize in format expected by tiger geocoder
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT tiger.SetSearchPathForInstall('tiger');
-CREATE OR REPLACE FUNCTION install_pagc_tables() 
+CREATE OR REPLACE FUNCTION install_pagc_tables()
 	RETURNS void AS
 $$
 DECLARE var_temp text;
@@ -1089,7 +1089,7 @@ INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (143, 1, 
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (144, 2, '93RD', '93RD', 15, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (145, 1, '9MI', 'NINE MILE', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (146, 1, 'A', 'A', 18, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (147, 2, 'A', 'A', 7, false);
+--INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (147, 2, 'A', 'A', 7, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (148, 1, 'A F B', 'AIR FORCE BASE', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (149, 2, 'A F B', 'AIR FORCE BASE', 24, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (150, 1, 'A F S', 'AIR FORCE BASE', 1, false);
@@ -1151,20 +1151,21 @@ INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (213, 1, 
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (215, 1, 'ANNEX', 'ANNEX', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (217, 1, 'ANNX', 'ANNEX', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (219, 1, 'ANX', 'ANNEX', 1, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (221, 1, 'AP', 'APARTMENT', 16, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (222, 1, 'APART', 'APARTMENT', 16, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (223, 1, 'APARTEMENT', 'APARTEMENT', 16, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (224, 1, 'APARTMENT', 'APARTMENT', 16, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (225, 1, 'APARTMENTS', 'APARTMENTS', 24, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (221, 1, 'AP', 'APT', 16, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (222, 1, 'APART', 'APT', 16, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (223, 1, 'APARTEMENT', 'APT', 16, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2938, 1, 'APARTMENT', 'APARTMENT', 2, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (224, 1, 'APARTMENT', 'APT', 16, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (225, 1, 'APARTMENTS', 'APS', 24, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (226, 1, 'APARTADO', 'BOX', 14, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (227, 1, 'APO', 'APO', 14, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (228, 1, 'APP', 'APARTEMENT', 16, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (229, 1, 'APPART', 'APARTEMENT', 16, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (230, 1, 'APPT', 'APARTEMENT', 16, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (228, 1, 'APP', 'APT', 16, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (229, 1, 'APPART', 'APT', 16, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (230, 1, 'APPT', 'APT', 16, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (231, 1, 'APRK', 'AIRPORT', 24, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (232, 1, 'APS', 'APARTMENTS', 24, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (233, 1, 'APT', 'APARTMENT', 16, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (234, 1, 'APT NO', 'APARTMENT', 16, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (232, 1, 'APS', 'APS', 24, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (233, 1, 'APT', 'APT', 16, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (234, 1, 'APT NO', 'APT', 16, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (235, 1, 'APTMT', 'APARTMENT', 16, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (236, 1, 'APTS', 'APARTMENTS', 24, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (237, 1, 'AR', 'ARRIERE', 17, false);
@@ -1810,14 +1811,14 @@ INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1025, 1,
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1026, 1, 'FIVE MILE', 'FIVE MILE', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1027, 1, 'FIVE POINTS', 'FIVE POINTS', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1028, 1, 'FIVE TOWN', 'FIVE TOWN', 1, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1029, 1, 'FL', 'FLOOR', 17, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1029, 1, 'FL', 'FL', 17, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1030, 1, 'FLAT', 'FLAT', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1031, 1, 'FLD', 'FIELD', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1032, 1, 'FLDS', 'FIELDS', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1033, 1, 'FLLS', 'FALLS', 1, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1034, 1, 'FLOOR', 'FLOOR', 17, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1035, 2, 'FLOOR', 'FLOOR', 1, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1036, 1, 'FLR', 'FLOOR', 17, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1034, 1, 'FLOOR', 'FL', 17, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1035, 2, 'FLOOR', 'FL', 1, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1036, 1, 'FLR', 'FL', 17, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1037, 1, 'FLS', 'FALLS', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1038, 1, 'FLT', 'FLAT', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1039, 1, 'FLTS', 'FLATS', 1, false);
@@ -2495,7 +2496,7 @@ INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1812, 1,
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1813, 1, 'OUTSIDE', 'OUTSIDE OF', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1817, 1, 'P BOX', 'POST OFFICE BOX', 14, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1818, 1, 'P BX', 'POST OFFICE BOX', 14, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1819, 1, 'P H', 'PENTHOUSE', 17, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1819, 1, 'P H', 'PH', 17, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1820, 1, 'P O', 'POST OFFICE BOX', 14, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1821, 1, 'P O B', 'POST OFFICE BOX', 14, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1695, 1, 'NE', 'NE', 22, false);
@@ -2542,8 +2543,9 @@ INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1865, 2,
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1866, 1, 'PAVL', 'PAVILLION', 24, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1867, 2, 'PAVL', 'PAVILLION', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1869, 1, 'PDA', 'PARADERO', 1, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1870, 1, 'PENTHOUSE', 'PENTHOUSE', 17, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1871, 1, 'PH', 'PENTHOUSE', 17, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2939, 1, 'PENTHOUSE', 'PENTHOUSE', 2, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1870, 1, 'PENTHOUSE', 'PH', 17, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1871, 1, 'PH', 'PH', 17, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1873, 1, 'PIECE', 'PIECE', 16, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1874, 2, 'PIECE', 'PIECE', 17, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1875, 1, 'PIER', 'PIER', 16, false);
@@ -2968,7 +2970,7 @@ INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2357, 4,
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2358, 1, 'SRA', 'RURAL ROUTE', 8, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2360, 1, 'SRV RTE', 'SERVICE ROUTE', 2, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2364, 1, 'SS', 'SUBURBAN SERVICE', 8, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2366, 2, 'ST', 'SAINT', 7, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2366, 2, 'SAINT', 'SAINT', 7, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2371, 1, 'ST R', 'STAR ROUTE', 6, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2372, 2, 'ST R', 'STAR ROUTE', 8, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2376, 2, 'ST ROUTE', 'STAR ROUTE', 8, false);
@@ -3012,7 +3014,8 @@ INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2448, 2,
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2451, 1, 'STS', 'STREETS', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2452, 1, 'STUDIO', 'STUDIO', 16, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2453, 2, 'STUDIO', 'STUDIO', 1, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2454, 1, 'SU', 'SUITE', 16, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2454, 1, 'SU', 'STE', 16, false);
+
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2455, 1, 'SUBD', 'SUBDIVISION', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2456, 2, 'SUBD', 'SUBDIVISION', 2, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2457, 1, 'SUBDIV', 'SUBDIVISION', 1, false);
@@ -3056,11 +3059,11 @@ INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2466, 1,
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2467, 1, 'SUD OUEST', 'SUD OUEST', 22, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2468, 1, 'SUDEST', 'SUD EST', 22, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2469, 1, 'SUDOUEST', 'SUD OUEST', 22, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2470, 1, 'SUIT', 'SUITE', 16, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2471, 2, 'SUIT', 'SUITE', 1, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2472, 1, 'SUITE', 'SUITE', 16, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2473, 1, 'SUITES', 'SUITES', 16, false);
-INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2474, 2, 'SUITES', 'SUITES', 24, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2470, 1, 'SUIT', 'STE', 16, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2471, 2, 'SUIT', 'STE', 1, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2472, 1, 'SUITE', 'STE', 16, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2473, 1, 'SUITES', 'STE', 16, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2474, 2, 'SUITES', 'STE', 24, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2475, 1, 'SUMMIT', 'SUMMIT', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2477, 1, 'SV RTE', 'SERVICE ROUTE', 2, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2481, 1, 'SWP', 'SWAMP', 1, false);
@@ -3822,7 +3825,7 @@ INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2937, 2,
 SELECT pg_catalog.setval('pagc_lex_id_seq', (SELECT greatest((SELECT MAX(id) FROM pagc_lex),50000)), true);
 
 
--- set default to false so all we input will be treated as no custom -- 
+-- set default to false so all we input will be treated as no custom --
 ALTER TABLE tiger.pagc_rules ALTER COLUMN is_custom SET DEFAULT false;
 INSERT INTO pagc_rules (id, rule) VALUES (1, '1 -1 5 -1 2 7');
 INSERT INTO pagc_rules (id, rule) VALUES (2, '1 3 -1 5 3 -1 2 7');
@@ -8181,7 +8184,7 @@ INSERT INTO pagc_rules (id, rule) VALUES (4355, '-1');
 
 -- for some reason all rules are coming in as custom.  just force by id
 UPDATE tiger.pagc_rules SET is_custom = false where id < 10000;
--- after insert we need to set back to true so all 
--- user inputs are treated as custom 
+-- after insert we need to set back to true so all
+-- user inputs are treated as custom
 ALTER TABLE tiger.pagc_rules ALTER COLUMN is_custom SET DEFAULT true;
 SELECT pg_catalog.setval('pagc_rules_id_seq', 10000, true);

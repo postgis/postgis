@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright 2001-2006 Refractions Research Inc.
+ * Copyright 2017 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -31,11 +32,6 @@
 #include <errno.h>
 #include <assert.h>
 #include "../postgis_svn_revision.h"
-
-/*
- * Lower this to reduce integrity checks
- */
-#define PARANOIA_LEVEL 1
 
 const char *
 lwgeom_version()
@@ -52,115 +48,15 @@ lwgeom_version()
 }
 
 
-/**********************************************************************
- * BOX routines
- *
- * returns the float thats very close to the input, but <=
- *  handles the funny differences in float4 and float8 reps.
- **********************************************************************/
-
-typedef union
-{
-	float value;
-	uint32_t word;
-} ieee_float_shape_type;
-
-#define GET_FLOAT_WORD(i,d)			\
-	do {					\
-		ieee_float_shape_type gf_u;	\
-		gf_u.value = (d);		\
-		(i) = gf_u.word;		\
-	} while (0)
-
-
-#define SET_FLOAT_WORD(d,i)			\
-	do {					\
-		ieee_float_shape_type sf_u;	\
-		sf_u.word = (i);		\
-		(d) = sf_u.value;		\
-	} while (0)
-
-
-/*
- * Returns the next smaller or next larger float
- * from x (in direction of y).
- */
-static float
-nextafterf_custom(float x, float y)
-{
-	int hx,hy,ix,iy;
-
-	GET_FLOAT_WORD(hx,x);
-	GET_FLOAT_WORD(hy,y);
-	ix = hx&0x7fffffff;             /* |x| */
-	iy = hy&0x7fffffff;             /* |y| */
-
-	if ((ix>0x7f800000) ||   /* x is nan */
-	        (iy>0x7f800000))     /* y is nan */
-		return x+y;
-	if (x==y) return y;              /* x=y, return y */
-	if (ix==0)
-	{
-		/* x == 0 */
-		SET_FLOAT_WORD(x,(hy&0x80000000)|1);/* return +-minsubnormal */
-		y = x*x;
-		if (y==x) return y;
-		else return x;   /* raise underflow flag */
-	}
-	if (hx>=0)
-	{
-		/* x > 0 */
-		if (hx>hy)
-		{
-			/* x > y, x -= ulp */
-			hx -= 1;
-		}
-		else
-		{
-			/* x < y, x += ulp */
-			hx += 1;
-		}
-	}
-	else
-	{
-		/* x < 0 */
-		if (hy>=0||hx>hy)
-		{
-			/* x < y, x -= ulp */
-			hx -= 1;
-		}
-		else
-		{
-			/* x > y, x += ulp */
-			hx += 1;
-		}
-	}
-	hy = hx&0x7f800000;
-	if (hy>=0x7f800000) return x+x;  /* overflow  */
-	if (hy<0x00800000)
-	{
-		/* underflow */
-		y = x*x;
-		if (y!=x)
-		{
-			/* raise underflow flag */
-			SET_FLOAT_WORD(y,hx);
-			return y;
-		}
-	}
-	SET_FLOAT_WORD(x,hx);
-	return x;
-}
-
-
-float next_float_down(double d)
+inline float
+next_float_down(double d)
 {
 	float result  = d;
 
-	if ( ((double) result) <=d)
+	if ( ((double)result) <=d )
 		return result;
 
-	return nextafterf_custom(result, result - 1000000);
+	return nextafterf(result, -1*FLT_MAX);
 
 }
 
@@ -168,47 +64,18 @@ float next_float_down(double d)
  * Returns the float thats very close to the input, but >=.
  * handles the funny differences in float4 and float8 reps.
  */
-float
+inline float
 next_float_up(double d)
 {
 	float result  = d;
 
-	if ( ((double) result) >=d)
+	if ( ((double)result) >=d )
 		return result;
 
-	return nextafterf_custom(result, result + 1000000);
+	return nextafterf(result, FLT_MAX);
 }
 
 
-/*
- * Returns the double thats very close to the input, but <.
- * handles the funny differences in float4 and float8 reps.
- */
-double
-next_double_down(float d)
-{
-	double result  = d;
-
-	if ( result < d)
-		return result;
-
-	return nextafterf_custom(result, result - 1000000);
-}
-
-/*
- * Returns the double thats very close to the input, but >
- * handles the funny differences in float4 and float8 reps.
- */
-double
-next_double_up(float d)
-{
-	double result  = d;
-
-	if ( result > d)
-		return result;
-
-	return nextafterf_custom(result, result + 1000000);
-}
 
 
 /************************************************************************
@@ -226,7 +93,7 @@ next_double_up(float d)
  * NOTE: point is a real POINT3D *not* a pointer
  */
 POINT4D
-getPoint4d(const POINTARRAY *pa, int n)
+getPoint4d(const POINTARRAY *pa, uint32_t n)
 {
 	POINT4D result;
 	getPoint4d_p(pa, n, &result);
@@ -239,21 +106,26 @@ getPoint4d(const POINTARRAY *pa, int n)
  * will set point's m=NO_M_VALUE  if pa is 3d or 2d
  *
  * NOTE: this will modify the point4d pointed to by 'point'.
+ *
+ * @return 0 on error, 1 on success
  */
 int
-getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
+getPoint4d_p(const POINTARRAY *pa, uint32_t n, POINT4D *op)
 {
 	uint8_t *ptr;
 	int zmflag;
 
-#if PARANOIA_LEVEL > 0
-	if ( ! pa ) lwerror("getPoint4d_p: NULL pointarray");
-
-	if ( (n<0) || (n>=pa->npoints))
+	if ( ! pa )
 	{
-		lwerror("getPoint4d_p: point offset out of range");
+		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
+		return 0;
 	}
-#endif
+
+	if ( n>=pa->npoints )
+	{
+		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
+		return 0;
+	}
 
 	LWDEBUG(4, "getPoint4d_p called.");
 
@@ -288,6 +160,7 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 
 	default:
 		lwerror("Unknown ZM flag ??");
+		return 0;
 	}
 	return 1;
 
@@ -301,7 +174,7 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
  * NOTE: point is a real POINT3DZ *not* a pointer
  */
 POINT3DZ
-getPoint3dz(const POINTARRAY *pa, int n)
+getPoint3dz(const POINTARRAY *pa, uint32_t n)
 {
 	POINT3DZ result;
 	getPoint3dz_p(pa, n, &result);
@@ -315,7 +188,7 @@ getPoint3dz(const POINTARRAY *pa, int n)
  * NOTE: point is a real POINT3DZ *not* a pointer
  */
 POINT3DM
-getPoint3dm(const POINTARRAY *pa, int n)
+getPoint3dm(const POINTARRAY *pa, uint32_t n)
 {
 	POINT3DM result;
 	getPoint3dm_p(pa, n, &result);
@@ -329,19 +202,21 @@ getPoint3dm(const POINTARRAY *pa, int n)
  * NOTE: this will modify the point3dz pointed to by 'point'.
  */
 int
-getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
+getPoint3dz_p(const POINTARRAY *pa, uint32_t n, POINT3DZ *op)
 {
 	uint8_t *ptr;
 
-#if PARANOIA_LEVEL > 0
-	if ( ! pa ) return 0;
-
-	if ( (n<0) || (n>=pa->npoints))
+	if ( ! pa )
 	{
-		LWDEBUGF(4, "%d out of numpoint range (%d)", n, pa->npoints);
-		return 0; /*error */
+		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
+		return 0;
 	}
-#endif
+
+	if ( n>=pa->npoints )
+	{
+		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
+		return 0;
+	}
 
 	LWDEBUGF(2, "getPoint3dz_p called on array of %d-dimensions / %u pts",
 	         FLAGS_NDIMS(pa->flags), pa->npoints);
@@ -379,20 +254,22 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
  * NOTE: this will modify the point3dm pointed to by 'point'.
  */
 int
-getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
+getPoint3dm_p(const POINTARRAY *pa, uint32_t n, POINT3DM *op)
 {
 	uint8_t *ptr;
 	int zmflag;
 
-#if PARANOIA_LEVEL > 0
-	if ( ! pa ) return 0;
-
-	if ( (n<0) || (n>=pa->npoints))
+	if ( ! pa )
 	{
-		lwerror("%d out of numpoint range (%d)", n, pa->npoints);
-		return 0; /*error */
+		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
+		return 0;
 	}
-#endif
+
+	if ( n>=pa->npoints )
+	{
+		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
+		return 0;
+	}
 
 	LWDEBUGF(2, "getPoint3dm_p(%d) called on array of %d-dimensions / %u pts",
 	         n, FLAGS_NDIMS(pa->flags), pa->npoints);
@@ -444,7 +321,7 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
  * NOTE: point is a real POINT2D *not* a pointer
  */
 POINT2D
-getPoint2d(const POINTARRAY *pa, int n)
+getPoint2d(const POINTARRAY *pa, uint32_t n)
 {
 	const POINT2D *result;
 	result = getPoint2d_cp(pa, n);
@@ -458,17 +335,19 @@ getPoint2d(const POINTARRAY *pa, int n)
  * NOTE: this will modify the point2d pointed to by 'point'.
  */
 int
-getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
+getPoint2d_p(const POINTARRAY *pa, uint32_t n, POINT2D *point)
 {
-#if PARANOIA_LEVEL > 0
-	if ( ! pa ) return 0;
-
-	if ( (n<0) || (n>=pa->npoints))
+	if ( ! pa )
 	{
-		lwerror("getPoint2d_p: point offset out of range");
-		return 0; /*error */
+		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
+		return 0;
 	}
-#endif
+
+	if ( n>=pa->npoints )
+	{
+		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
+		return 0;
+	}
 
 	/* this does x,y */
 	memcpy(point, getPoint_internal(pa, n), sizeof(POINT2D));
@@ -476,19 +355,19 @@ getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 }
 
 /**
-* Returns a pointer into the POINTARRAY serialized_ptlist, 
+* Returns a pointer into the POINTARRAY serialized_ptlist,
 * suitable for reading from. This is very high performance
-* and declared const because you aren't allowed to muck with the 
+* and declared const because you aren't allowed to muck with the
 * values, only read them.
 */
 const POINT2D*
-getPoint2d_cp(const POINTARRAY *pa, int n)
+getPoint2d_cp(const POINTARRAY *pa, uint32_t n)
 {
 	if ( ! pa ) return 0;
 
-	if ( (n<0) || (n>=pa->npoints))
+	if ( n>=pa->npoints )
 	{
-		lwerror("getPoint2D_const_p: point offset out of range");
+		lwerror("getPoint2d_cp: point offset out of range");
 		return 0; /*error */
 	}
 
@@ -496,17 +375,17 @@ getPoint2d_cp(const POINTARRAY *pa, int n)
 }
 
 const POINT3DZ*
-getPoint3dz_cp(const POINTARRAY *pa, int n)
+getPoint3dz_cp(const POINTARRAY *pa, uint32_t n)
 {
 	if ( ! pa ) return 0;
-	
+
 	if ( ! FLAGS_GET_Z(pa->flags) )
 	{
 		lwerror("getPoint3dz_cp: no Z coordinates in point array");
 		return 0; /*error */
 	}
 
-	if ( (n<0) || (n>=pa->npoints))
+	if ( n>=pa->npoints )
 	{
 		lwerror("getPoint3dz_cp: point offset out of range");
 		return 0; /*error */
@@ -515,28 +394,25 @@ getPoint3dz_cp(const POINTARRAY *pa, int n)
 	return (const POINT3DZ*)getPoint_internal(pa, n);
 }
 
-
 const POINT4D*
-getPoint4d_cp(const POINTARRAY *pa, int n)
+getPoint4d_cp(const POINTARRAY* pa, uint32_t n)
 {
-	if ( ! pa ) return 0;
-	
-	if ( ! (FLAGS_GET_Z(pa->flags) && FLAGS_GET_Z(pa->flags)) )
+	if (!pa) return 0;
+
+	if (!(FLAGS_GET_Z(pa->flags) && FLAGS_GET_M(pa->flags)))
 	{
-		lwerror("getPoint3dz_cp: no Z and M coordinates in point array");
+		lwerror("getPoint4d_cp: no Z and M coordinates in point array");
 		return 0; /*error */
 	}
 
-	if ( (n<0) || (n>=pa->npoints))
+	if (n >= pa->npoints)
 	{
-		lwerror("getPoint3dz_cp: point offset out of range");
+		lwerror("getPoint4d_cp: point offset out of range");
 		return 0; /*error */
 	}
 
 	return (const POINT4D*)getPoint_internal(pa, n);
 }
-
-
 
 /*
  * set point N to the given value
@@ -546,10 +422,10 @@ getPoint4d_cp(const POINTARRAY *pa, int n)
  *
  */
 void
-ptarray_set_point4d(POINTARRAY *pa, int n, const POINT4D *p4d)
+ptarray_set_point4d(POINTARRAY *pa, uint32_t n, const POINT4D *p4d)
 {
 	uint8_t *ptr;
-	assert(n >= 0 && n < pa->npoints);
+	assert(n < pa->npoints);
 	ptr=getPoint_internal(pa, n);
 	switch ( FLAGS_GET_ZM(pa->flags) )
 	{
@@ -570,31 +446,40 @@ ptarray_set_point4d(POINTARRAY *pa, int n, const POINT4D *p4d)
 	}
 }
 
-
-
-
-/*****************************************************************************
- * Basic sub-geometry types
- *****************************************************************************/
-
-/* handle missaligned uint32_t32 data */
-uint32_t
-lw_get_uint32_t(const uint8_t *loc)
+void
+ptarray_copy_point(POINTARRAY *pa, uint32_t from, uint32_t to)
 {
-	uint32_t result;
-
-	memcpy(&result, loc, sizeof(uint32_t));
-	return result;
-}
-
-/* handle missaligned signed int32_t data */
-int32_t
-lw_get_int32_t(const uint8_t *loc)
-{
-	int32_t result;
-
-	memcpy(&result,loc, sizeof(int32_t));
-	return result;
+	int ndims = FLAGS_NDIMS(pa->flags);
+	switch (ndims)
+	{
+		case 2:
+		{
+			POINT2D *p_from = (POINT2D*)(getPoint_internal(pa, from));
+			POINT2D *p_to = (POINT2D*)(getPoint_internal(pa, to));
+			*p_to = *p_from;
+			return;
+		}
+		case 3:
+		{
+			POINT3D *p_from = (POINT3D*)(getPoint_internal(pa, from));
+			POINT3D *p_to = (POINT3D*)(getPoint_internal(pa, to));
+			*p_to = *p_from;
+			return;
+		}
+		case 4:
+		{
+			POINT4D *p_from = (POINT4D*)(getPoint_internal(pa, from));
+			POINT4D *p_to = (POINT4D*)(getPoint_internal(pa, to));
+			*p_to = *p_from;
+			return;
+		}
+		default:
+		{
+			lwerror("%s: unsupported number of dimensions - %d", __func__, ndims);
+			return;
+		}
+	}
+	return;
 }
 
 
@@ -610,7 +495,7 @@ void printBOX3D(BOX3D *box)
 
 void printPA(POINTARRAY *pa)
 {
-	int t;
+	uint32_t t;
 	POINT4D pt;
 	char *mflag;
 
@@ -816,14 +701,10 @@ deparse_hex(uint8_t str, char *result)
  *   F=.2   :    A-I-------B
  */
 void
-interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F)
+interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, double F)
 {
 #if PARANOIA_LEVEL > 0
-	double absF=fabs(F);
-	if ( absF < 0 || absF > 1 )
-	{
-		lwerror("interpolate_point4d: invalid F (%g)", F);
-	}
+	if (F < 0 || F > 1) lwerror("interpolate_point4d: invalid F (%g)", F);
 #endif
 	I->x=A->x+((B->x-A->x)*F);
 	I->y=A->y+((B->y-A->y)*F);

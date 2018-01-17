@@ -8,7 +8,7 @@
 --
 
 CREATE TABLE "test" (
-	"num" integer,
+	"num" bigint,
 	"the_geom" geometry
 );
 
@@ -19,7 +19,7 @@ CREATE TABLE "test" (
 --
 
 
-COPY "test"  FROM stdin;
+COPY "test" FROM stdin;
 1	POINT(529.522339 509.260284)
 2	POINT(395.286469 439.218109)
 3	POINT(256.897461 933.949463)

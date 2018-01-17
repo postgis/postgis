@@ -9,17 +9,17 @@
 -- The material in this document details an Open GIS Consortium Test Suite in
 -- accordance with a license that your organization has signed. Please refer
 -- to http://www.opengis.org/testing/ to obtain a copy of the general license
--- (it is part of the Conformance Testing Agreement). 
+-- (it is part of the Conformance Testing Agreement).
 --
 --//////////////////////////////////////////////////////////////////////////////
 --
 -- OpenGIS Simple Features for SQL (Types and Functions) Test Suite Software
--- 
+--
 -- This file "sqltsch.sql" is part 1 of a two part standardized test
 -- suite in SQL script form. The other file that is required for this test
 -- suite, "sqltque.sql", one additional script is provided ("sqltcle.sql") that
--- performs cleanup operations between test runs, and other documents that 
--- describe the OGC Conformance Test Program are available via the WWW at 
+-- performs cleanup operations between test runs, and other documents that
+-- describe the OGC Conformance Test Program are available via the WWW at
 -- http://www.opengis.org/testing/index.htm
 --
 -- NOTE CONCERNING INFORMATION ON CONFORMANCE TESTING AND THIS TEST SUITE
@@ -38,11 +38,11 @@
 -- make it work properly. OGC has documented the allowable adaptations within
 -- this test suite where possible. Other information about adaptations may be
 -- discovered in the Test Suite Guidelines document for this test suite.
--- 
+--
 -- PLEASE NOTE THE OGC REQUIRES THAT ADAPTATIONS ARE FULLY DOCUMENTED USING
 -- LIBERAL COMMENT BLOCKS CONFORMING TO THE FOLLOWING FORMAT:
 --
--- -- !#@ ADAPTATION BEGIN 
+-- -- !#@ ADAPTATION BEGIN
 -- explanatory text goes here
 -- ---------------------
 -- -- BEGIN ORIGINAL SQL
@@ -57,7 +57,7 @@
 -- ---------------------
 -- -- END   ADAPTED  SQL
 -- ---------------------
--- -- !#@ ADAPTATION END 
+-- -- !#@ ADAPTATION END
 --
 --//////////////////////////////////////////////////////////////////////////////
 --
@@ -66,18 +66,18 @@
 --//////////////////////////////////////////////////////////////////////////////
 --
 -- Create the neccessary feature and geometry tables(views) and metadata tables
--- (views) to load and query the "Blue Lake" test data for OpenGIS Simple 
+-- (views) to load and query the "Blue Lake" test data for OpenGIS Simple
 -- Features for SQL (Types and Functions) test.
--- 
+--
 -- Required feature tables (views) are:
---                        Lakes 
+--                        Lakes
 --                        Road Segments
 --                        Divided Routes
 --                        Buildings
 --                        Forests
 --                        Bridges
---                        Named Places 
---                        Streams 
+--                        Named Places
+--                        Streams
 --                        Ponds
 --                        Map Neatlines
 --
@@ -118,8 +118,8 @@
 -- ---------------------
 -- -- !#@ ADAPTATION END
 --
-INSERT INTO spatial_ref_sys (SRID,AUTH_NAME,AUTH_SRID,SRTEXT) 
-VALUES (101, 'POSC', 32214, 
+INSERT INTO spatial_ref_sys (SRID,AUTH_NAME,AUTH_SRID,SRTEXT)
+VALUES (101, 'POSC', 32214,
 'PROJCS["UTM_ZONE_14N", GEOGCS["World Geodetic System 72",
 DATUM["WGS_72",  SPHEROID["NWL_10D", 6378135, 298.26]],
 PRIMEM["Greenwich", 0], UNIT["Meter", 1.0]],
@@ -142,7 +142,7 @@ UNIT["Meter", 1.0]]'
 -- The following schema is created using CREATE TABLE statements.
 -- Furthermore, it DOES NOT create the GEOMETRY_COLUMNS metadata table.
 -- Implementer's should replace the CREATE TABLES below with the mechanism
--- that it uses to create feature tables and the GEOMETRY_COLUMNS table/view 
+-- that it uses to create feature tables and the GEOMETRY_COLUMNS table/view
 --
 --//////////////////////////////////////////////////////////////////////////////
 --
@@ -157,8 +157,8 @@ UNIT["Meter", 1.0]]'
 --
 --
 -- !#@ ADAPTATION BEGIN
--- We break the schema creation into two steps, first create the 
--- attribute table, second use the AddGeometryColumn() function 
+-- We break the schema creation into two steps, first create the
+-- attribute table, second use the AddGeometryColumn() function
 -- to create and register the geometry column.
 -- ---------------------
 -- -- BEGIN ORIGINAL SQL
@@ -362,7 +362,7 @@ SELECT AddGeometryColumn('streams','centerline','101','LINESTRING','2');
 -- Buildings
 --
 --*** ADAPTATION ALERT ***
--- A view could be used to provide the below semantics without multiple geometry 
+-- A view could be used to provide the below semantics without multiple geometry
 -- columns in a table. In other words, create two tables. One table would
 -- contain the POINT position and the other would create the POLYGON footprint.
 -- Then create a view with the semantics of the buildings table below.
@@ -522,12 +522,12 @@ SELECT AddGeometryColumn('map_neatlines','neatline','101','POLYGON','2');
 --
 -- We have one lake, Blue Lake. It is a polygon with a hole. Its geometry is
 -- described in WKT format as:
---   'POLYGON( (52 18, 66 23, 73  9, 48  6, 52 18), 
+--   'POLYGON( (52 18, 66 23, 73  9, 48  6, 52 18),
 --             (59 18, 67 18, 67 13, 59 13, 59 18) )'
 --==============================================================================
 --
 --
-INSERT INTO lakes VALUES (101, 'Blue Lake', 
+INSERT INTO lakes VALUES (101, 'Blue Lake',
     PolygonFromText('POLYGON((52 18,66 23,73 9,48 6,52 18),(59 18,67 18,67 13,59 13,59 18))', 101)
 );
 --
@@ -539,32 +539,32 @@ INSERT INTO lakes VALUES (101, 'Blue Lake',
 --  name 'Route 5', fid 102
 --   'LINESTRING( 0 18, 10 21, 16 23, 28 26, 44 31 )'
 --  name 'Route 5', fid 103
---   'LINESTRING( 44 31, 56 34, 70 38 )' 
+--   'LINESTRING( 44 31, 56 34, 70 38 )'
 --  name 'Route 5', fid 104
---   'LINESTRING( 70 38, 72 48 )' 
+--   'LINESTRING( 70 38, 72 48 )'
 --  name 'Main Street', fid 105
---   'LINESTRING( 70 38, 84 42 )' 
+--   'LINESTRING( 70 38, 84 42 )'
 --  name 'Dirt Road by Green Forest', fid 106
 --   'LINESTRING( 28 26, 28 0 )'
 --
 --==================
 --
 --
-INSERT INTO road_segments VALUES(102, 'Route 5', NULL, 2, 
+INSERT INTO road_segments VALUES(102, 'Route 5', NULL, 2,
     LineStringFromText('LINESTRING( 0 18, 10 21, 16 23, 28 26, 44 31 )' ,101)
 );
-INSERT INTO road_segments VALUES(103, 'Route 5', 'Main Street', 4, 
+INSERT INTO road_segments VALUES(103, 'Route 5', 'Main Street', 4,
     LineStringFromText('LINESTRING( 44 31, 56 34, 70 38 )' ,101)
 );
-INSERT INTO road_segments VALUES(104, 'Route 5', NULL, 2, 
+INSERT INTO road_segments VALUES(104, 'Route 5', NULL, 2,
     LineStringFromText('LINESTRING( 70 38, 72 48 )' ,101)
 );
-INSERT INTO road_segments VALUES(105, 'Main Street', NULL, 4, 
+INSERT INTO road_segments VALUES(105, 'Main Street', NULL, 4,
     LineStringFromText('LINESTRING( 70 38, 84 42 )' ,101)
 );
-INSERT INTO road_segments VALUES(106, 'Dirt Road by Green Forest', NULL, 1, 
+INSERT INTO road_segments VALUES(106, 'Dirt Road by Green Forest', NULL, 1,
     LineStringFromText('LINESTRING( 28 26, 28 0 )',101)
-);                                    
+);
 --
 --==================
 -- DividedRoutes
@@ -575,7 +575,7 @@ INSERT INTO road_segments VALUES(106, 'Dirt Road by Green Forest', NULL, 1,
 --
 --==================
 --
-INSERT INTO divided_routes VALUES(119, 'Route 75', 4, 
+INSERT INTO divided_routes VALUES(119, 'Route 75', 4,
     MultiLineStringFromText('MULTILINESTRING((10 48,10 21,10 0),(16 0,16 23,16 48))', 101)
 );
 --
@@ -584,13 +584,13 @@ INSERT INTO divided_routes VALUES(119, 'Route 75', 4,
 --
 -- We have one forest. Its geometry is a multipolygon.
 -- The geometry is described in WKT format as:
---   'MULTIPOLYGON( ( (28 26, 28 0, 84 0, 84 42, 28 26), 
---                    (52 18, 66 23, 73 9, 48 6, 52 18) ), 
+--   'MULTIPOLYGON( ( (28 26, 28 0, 84 0, 84 42, 28 26),
+--                    (52 18, 66 23, 73 9, 48 6, 52 18) ),
 --                  ( (59 18, 67 18, 67 13, 59 13, 59 18) ) )'
 --
 --==================
 --
-INSERT INTO forests VALUES(109, 'Green Forest', 
+INSERT INTO forests VALUES(109, 'Green Forest',
     MultiPolygonFromText('MULTIPOLYGON(((28 26,28 0,84 0,84 42,28 26),(52 18,66 23,73 9,48 6,52 18)),((59 18,67 18,67 13,59 13,59 18)))', 101)
 );
 --
@@ -603,7 +603,7 @@ INSERT INTO forests VALUES(109, 'Green Forest',
 --
 --==================
 --
-INSERT INTO bridges VALUES(110, 'Cam Bridge', 
+INSERT INTO bridges VALUES(110, 'Cam Bridge',
     PointFromText('POINT( 44 31 )', 101)
 );
 --
@@ -617,10 +617,10 @@ INSERT INTO bridges VALUES(110, 'Cam Bridge',
 --
 --==================
 --
-INSERT INTO streams VALUES(111, 'Cam Stream', 
+INSERT INTO streams VALUES(111, 'Cam Stream',
     LineStringFromText('LINESTRING( 38 48, 44 41, 41 36, 44 31, 52 18 )', 101)
 );
-INSERT INTO streams VALUES(112, NULL, 
+INSERT INTO streams VALUES(112, NULL,
     LineStringFromText('LINESTRING( 76 0, 78 4, 73 9 )', 101)
 );
 --
@@ -638,12 +638,12 @@ INSERT INTO streams VALUES(112, NULL,
 --
 --==================
 --
-INSERT INTO buildings VALUES(113, '123 Main Street', 
-    PointFromText('POINT( 52 30 )', 101), 
+INSERT INTO buildings VALUES(113, '123 Main Street',
+    PointFromText('POINT( 52 30 )', 101),
     PolygonFromText('POLYGON( ( 50 31, 54 31, 54 29, 50 29, 50 31) )', 101)
 );
-INSERT INTO buildings VALUES(114, '215 Main Street', 
-    PointFromText('POINT( 64 33 )', 101), 
+INSERT INTO buildings VALUES(114, '215 Main Street',
+    PointFromText('POINT( 64 33 )', 101),
     PolygonFromText('POLYGON( ( 66 34, 62 34, 62 32, 66 32, 66 34) )', 101)
 );
 --
@@ -656,7 +656,7 @@ INSERT INTO buildings VALUES(114, '215 Main Street',
 --
 --==================
 --
-INSERT INTO ponds VALUES(120, NULL, 'Stock Pond', 
+INSERT INTO ponds VALUES(120, NULL, 'Stock Pond',
     MultiPolygonFromText('MULTIPOLYGON( ( ( 24 44, 22 42, 24 40, 24 44) ), ( ( 26 44, 26 40, 28 42, 26 44) ) )', 101)
 );
 --
@@ -672,10 +672,10 @@ INSERT INTO ponds VALUES(120, NULL, 'Stock Pond',
 --
 --==================
 --
-INSERT INTO named_places VALUES(117, 'Ashton', 
+INSERT INTO named_places VALUES(117, 'Ashton',
     PolygonFromText('POLYGON( ( 62 48, 84 48, 84 30, 56 30, 56 34, 62 48) )', 101)
 );
-INSERT INTO named_places VALUES(118, 'Goose Island', 
+INSERT INTO named_places VALUES(118, 'Goose Island',
     PolygonFromText('POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )', 101)
 );
 --
@@ -688,7 +688,7 @@ INSERT INTO named_places VALUES(118, 'Goose Island',
 --
 --==================
 --
-INSERT INTO map_neatlines VALUES(115, 
+INSERT INTO map_neatlines VALUES(115,
     PolygonFromText('POLYGON( ( 0 0, 0 48, 84 48, 84 0, 0 0 ) )', 101)
 );
 --

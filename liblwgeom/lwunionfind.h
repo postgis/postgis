@@ -45,11 +45,20 @@ void UF_destroy(UNIONFIND* uf);
 /* Identify the cluster id associated with specified component id */
 uint32_t UF_find(UNIONFIND* uf, uint32_t i);
 
-/* Merge the clusters that contain the two specified components ids */
+/* Get the size of the cluster associated with the specified component id */
+uint32_t UF_size(UNIONFIND* uf, uint32_t i);
+
+/* Merge the clusters that contain the two specified component ids */
 void UF_union(UNIONFIND* uf, uint32_t i, uint32_t j);
 
 /* Return an array of component ids, where components that are in the
  * same cluster are contiguous in the array */
 uint32_t* UF_ordered_by_cluster(UNIONFIND* uf);
+
+/* Replace the cluster ids in a UNIONFIND with sequential ids starting at one.
+ * If is_in_cluster array is provided, it will be used to skip any indexes
+ * that are not in a cluster.
+ * */
+uint32_t* UF_get_collapsed_cluster_ids(UNIONFIND* uf, const char* is_in_cluster);
 
 #endif

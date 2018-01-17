@@ -3,6 +3,13 @@
 
 #include "postgis_svn_revision.h"
 
+/* Manually manipulate the POSTGIS_DEBUG_LEVEL, it is not affected by the
+   configure process */
+#define POSTGIS_DEBUG_LEVEL 0
+
+/* Define to 1 to enable memory checks in pointarray management. */
+#undef PARANOIA_LEVEL
+
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS
@@ -53,6 +60,9 @@
 
 /* Define to 1 if you have the `libiconvctl' function. */
 #undef HAVE_LIBICONVCTL
+
+/* Define to 1 if libprotobuf-c is present */
+#undef HAVE_LIBPROTOBUF
 
 /* Define to 1 if libjson is present */
 #undef HAVE_LIBJSON
@@ -118,9 +128,6 @@
 /* PostGIS build date */
 #undef POSTGIS_BUILD_DATE
 
-/* PostGIS library debug level (0=disabled) */
-#undef POSTGIS_DEBUG_LEVEL
-
 /* SFCGAL library version at buil time */
 #undef POSTGIS_SFCGAL_VERSION
 
@@ -147,9 +154,6 @@
 
 /* PostgreSQL server version */
 #undef POSTGIS_PGSQL_VERSION
-
-/* Enable GEOS profiling (0=disabled) */
-#undef POSTGIS_PROFILE
 
 /* PROJ library version */
 #undef POSTGIS_PROJ_VERSION

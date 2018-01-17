@@ -27,11 +27,11 @@ MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/$(MODULE_big)
 
 # Files to be copied to the contrib/ directory
-SQL_built=postgis.sql uninstall_postgis.sql postgis_upgrade.sql  legacy.sql uninstall_legacy.sql legacy_minimal.sql legacy_gist.sql 
+SQL_built=postgis.sql postgis_for_extension.sql uninstall_postgis.sql postgis_upgrade.sql postgis_upgrade_for_extension.sql postgis_proc_set_search_path.sql legacy.sql uninstall_legacy.sql legacy_minimal.sql legacy_gist.sql
 DATA=../spatial_ref_sys.sql
 
 # SQL objects (files requiring pre-processing)
-SQL_objs=postgis.sql legacy.sql legacy_minimal.sql
+SQL_objs=postgis.sql postgis_for_extension.sql legacy.sql legacy_minimal.sql
 
 GEOM_BACKEND_OBJ = lwgeom_geos.o
 SFCGAL_BACKEND_OBJ = lwgeom_sfcgal.o
@@ -46,7 +46,13 @@ DATA_built=$(SQL_built)
 SQL_OBJS=$(SQL_objs)
 endif
 
+ifeq (@HAVE_BRIN@,yes)
+BRIN_OBJ= brin_2d.o brin_nd.o brin_common.o
+endif
 
+ifeq (@HAVE_PROTOBUF@,yes)
+PROTOBUF_OBJ=vector_tile.pb-c.o geobuf.pb-c.o
+endif
 
 # SQL preprocessor
 SQLPP = @SQLPP@
@@ -83,15 +89,24 @@ PG_OBJS= \
 	lwgeom_sqlmm.o \
 	lwgeom_rtree.o \
 	lwgeom_transform.o \
+	lwgeom_window.o \
 	gserialized_typmod.o \
 	gserialized_gist_2d.o \
 	gserialized_gist_nd.o \
+	$(BRIN_OBJ) \
 	gserialized_estimate.o \
 	geography_inout.o \
 	geography_btree.o \
+	geography_centroid.o \
 	geography_measurement.o \
 	geography_measurement_trees.o \
-	geometry_inout.o
+	geometry_inout.o \
+	postgis_libprotobuf.o \
+	$(PROTOBUF_OBJ) \
+	mvt.o \
+	lwgeom_out_mvt.o \
+	geobuf.o \
+	lwgeom_out_geobuf.o
 
 # Objects to build using PGXS
 OBJS=$(PG_OBJS)
@@ -103,7 +118,8 @@ OBJS=$(PG_OBJS)
 # to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
 # older version of PostGIS, rather than with the static liblwgeom.a
 # supplied with newer versions of PostGIS
-PG_CPPFLAGS += -I../liblwgeom -I../libpgcommon @CPPFLAGS@ -fPIC
+override CFLAGS := -I../liblwgeom @CFLAGS@
+PG_CPPFLAGS += -I../libpgcommon @CPPFLAGS@ -fPIC
 SHLIB_LINK_F = ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@
 
 # Add SFCGAL Flags if defined
@@ -120,7 +136,11 @@ EXTRA_CLEAN=$(SQL_OBJS) \
 	postgis_upgrade.sql.in \
 	postgis_upgrade.sql \
 	sfcgal_upgrade.sql.in \
-	sfcgal_upgrade.sql 
+	sfcgal_upgrade.sql \
+	vector_tile.pb-c.c \
+	vector_tile.pb-c.h \
+	geobuf.pb-c.c \
+	geobuf.pb-c.h
 
 # PGXS information
 PG_CONFIG = @PG_CONFIG@
@@ -141,10 +161,10 @@ SHLIB_LINK := $(SHLIB_LINK_F) $(SHLIB_LINK)
 # so that no prefix is included. This allows us to relocate to a temporary
 # directory for regression testing.
 ifeq ($(REGRESS),1)
-        bindir=/bin
-        pkglibdir=/lib
-        datadir=/share
-        datamoduledir=contrib/postgis
+	bindir=/bin
+	pkglibdir=/lib
+	datadir=/share
+	datamoduledir=contrib/postgis
 endif
 
 # Make all PostGIS objects depend upon liblwgeom, so that if an underlying
@@ -164,21 +184,54 @@ $(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postg
 ../libpgcommon/libpgcommon.a:
 	$(MAKE) -C ../libpgcommon libpgcommon.a
 
+# Get protobuf-c compiler command
+PROTOCC=@PROTOCC@
+
+# Generate Mapbox Vector Tile encoder/decoder using protobuf-c compiler
+vector_tile.pb-c.c vector_tile.pb-c.h: vector_tile.proto
+	$(PROTOCC) --c_out=. $<
+
+# Generate Geobuf encoder/decoder using protobuf-c compiler
+geobuf.pb-c.c geobuf.pb-c.h: geobuf.proto
+	$(PROTOCC) --c_out=. $<
+
+ifeq (@HAVE_PROTOBUF@,yes)
+lwgeom_out_mvt.o: vector_tile.pb-c.h
+mvt.o: vector_tile.pb-c.h
+lwgeom_out_geobuf.o: geobuf.pb-c.h
+geobuf.o: geobuf.pb-c.h
+endif
+
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number
+# replace @extschema@. with nothing, this is only used as placeholder for extension install
 %.sql: %.sql.in
+	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g;s'@extschema@\.''g" > $@
+
+postgis_upgrade_for_extension.sql: postgis_drop_before.sql postgis_upgrade_for_extension.sql.in postgis_drop_after.sql
+	cat $^ > $@
+
+postgis_for_extension.sql: postgis.sql.in
 	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
 
+#this is redundant but trying to fold in with extension just hangs
 postgis_upgrade.sql.in: postgis.sql ../utils/postgis_proc_upgrade.pl
 	$(PERL) ../utils/postgis_proc_upgrade.pl $< UNUSED > $@
+
+postgis_upgrade_for_extension.sql.in: postgis_for_extension.sql ../utils/postgis_proc_upgrade.pl
+	$(PERL) ../utils/postgis_proc_upgrade.pl $< UNUSED > $@
+
+postgis_proc_set_search_path.sql: postgis.sql ../utils/postgis_proc_set_search_path.pl
+	$(PERL) ../utils/postgis_proc_set_search_path.pl $< UNUSED > $@
 
 postgis_upgrade.sql: postgis_drop_before.sql postgis_upgrade.sql.in postgis_drop_after.sql
 	echo "BEGIN;" > $@
 	cat $^ >> $@
 	echo "COMMIT;" >> $@
 
-sfcgal_upgrade.sql.in: sfcgal.sql ../utils/postgis_proc_upgrade.pl 
+sfcgal_upgrade.sql.in: sfcgal.sql ../utils/postgis_proc_upgrade.pl
 	$(PERL) ../utils/postgis_proc_upgrade.pl $< UNUSED > $@
 
 sfcgal_upgrade.sql: sfcgal_upgrade.sql.in postgis_drop_after.sql

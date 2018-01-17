@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sect1 id="Linear_Referencing">
 	  <title>Linear Referencing</title>
-	
+
 		<refentry id="ST_LineInterpolatePoint">
 		  <refnamediv>
 			<refname>ST_LineInterpolatePoint</refname>
@@ -29,7 +29,7 @@
 
 			<para>See <xref linkend="ST_LineLocatePoint" /> for
 			computing the line location nearest to a Point.</para>
-			
+
 			<note>
 			  <para>Since release 1.1.1 this function also interpolates M and
 			  Z values (when present), while prior releases set them to
@@ -83,7 +83,82 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_AsText" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_Length" />, <xref linkend="ST_LineLocatePoint" /></para>
+			<para>
+				<xref linkend="ST_AsText" />,
+				<xref linkend="ST_AsEWKT" />,
+				<xref linkend="ST_Length" />,
+				<xref linkend="ST_LineInterpolatePoints" />
+				<xref linkend="ST_LineLocatePoint" />
+			O</para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="ST_LineInterpolatePoints">
+		  <refnamediv>
+			<refname>ST_LineInterpolatePoints</refname>
+
+			<refpurpose>
+				Returns one or more points interpolated along a line.
+			</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_LineInterpolatePoints</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+				<paramdef><type>float8 </type> <parameter>a_fraction</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>repeat</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Returns one or more points interpolated along a line. First argument
+			must be a LINESTRING. Second argument is a float8 between 0 and 1
+			representing the spacing between the points as a fraction of total
+			LineString length. If the third argument is false, at most one point
+			will be constructed (the function will be equivalent to <xref linkend="ST_LineInterpolatePoint" />.)
+		</para>
+
+		<para>
+			If the result has zero or one points, it will be returned as a POINT.
+			If it has two or more points, it will be returned as a MULTIPOINT.
+		</para>
+
+
+			<para>Availability: 2.5.0</para>
+			<para>&Z_support;</para>
+			<para>&M_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+			<informalfigure>
+			  <mediaobject>
+				<imageobject>
+				  <imagedata fileref="images/st_line_interpolate_points01.png" />
+				</imageobject>
+				<caption><para>A linestring with the interpolated points every 20% </para></caption>
+			  </mediaobject>
+			</informalfigure>
+			<programlisting>--Return points each 20% along a 2D line
+SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)', 0.20))
+   st_astext
+----------------
+ MULTIPOINT(51.5974135047432 76.5974135047432,78.1948270094864 103.194827009486,104.132163186446 130.37181214238,127.066081593223 160.18590607119,150 190)
+</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="ST_LineInterpolatePoint" />
+				<xref linkend="ST_LineLocatePoint" />
+			</para>
 		  </refsection>
 		</refentry>
 
@@ -293,15 +368,15 @@ WHERE n*100.00/length &lt; 1;
 		<para>Return a derived geometry collection value with elements
 		that match the specified measure. Polygonal elements are not
 		supported.</para>
-		
-		<para>If an offset is provided, the resultant will be offset to the 
+
+		<para>If an offset is provided, the resultant will be offset to the
 		left or right of the input line by the specified number of units.
-		A positive offset will be to the left, and a negative one to the 
+		A positive offset will be to the left, and a negative one to the
 		right.</para>
 
 		<para>Semantic is specified by: ISO/IEC CD 13249-3:200x(E) - Text
 		for Continuation CD Editing Meeting</para>
-		
+
 		<para>Availability: 1.1.0 by old name ST_Locate_Along_Measure. </para>
 		<para>Changed: 2.0.0 in prior versions this used to be called ST_Locate_Along_Measure.  The old name has been deprecated and will be removed in the future but is still available.</para>
 		<note><para>Use this function only for geometries with an M component</para></note>
@@ -523,7 +598,7 @@ LINESTRING(6.1 7.1 6,7 8 9)
 			<title>Examples</title>
 
 			<programlisting>SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');
- st_interpolatepoint 
+ st_interpolatepoint
  ---------------------
 			            10
 	</programlisting>
@@ -572,30 +647,30 @@ LINESTRING(6.1 7.1 6,7 8 9)
 
 		<programlisting>SELECT ST_AsText(ST_AddMeasure(
 ST_GeomFromEWKT('LINESTRING(1 0, 2 0, 4 0)'),1,4)) As ewelev;
-           ewelev             
+           ewelev
 --------------------------------
  LINESTRINGM(1 0 1,2 0 2,4 0 4)
 
 SELECT ST_AsText(ST_AddMeasure(
 ST_GeomFromEWKT('LINESTRING(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;
-                 ewelev                 
+                 ewelev
 ----------------------------------------
  LINESTRING(1 0 4 10,2 0 4 20,4 0 4 40)
 
 SELECT ST_AsText(ST_AddMeasure(
 ST_GeomFromEWKT('LINESTRINGM(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;
-                 ewelev                 
+                 ewelev
 ----------------------------------------
  LINESTRINGM(1 0 10,2 0 20,4 0 40)
- 
+
 SELECT ST_AsText(ST_AddMeasure(
 ST_GeomFromEWKT('MULTILINESTRINGM((1 0 4, 2 0 4, 4 0 4),(1 0 4, 2 0 4, 4 0 4))'),10,70)) As ewelev;
-                             ewelev                              
+                             ewelev
 -----------------------------------------------------------------
  MULTILINESTRINGM((1 0 10,2 0 20,4 0 40),(1 0 40,2 0 50,4 0 70))
 </programlisting>
 	  </refsection>
 
 	</refentry>
-	
+
   </sect1>

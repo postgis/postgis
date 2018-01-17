@@ -19,13 +19,14 @@
  **********************************************************************
  *
  * Copyright (C) 2010-2015 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright (C) 2011 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2011 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
 
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "liblwgeom_internal.h"
 
 /* Ensures the given lat and lon are in the "normal" range:
@@ -75,8 +76,8 @@ static void lwprint_normalize_latlon(double *lat, double *lon)
 static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char *neg_dir_symbol, const char * format)
 {
 	/* 3 numbers, 1 sign or compass dir, and 5 possible strings (degree signs, spaces, misc text, etc) between or around them.*/
-	static int NUM_PIECES = 9;
-	static int WORK_SIZE = 1024;
+#	define NUM_PIECES 9
+#	define WORK_SIZE 1024
 	char pieces[NUM_PIECES][WORK_SIZE];
 	int current_piece = 0;
 	int is_negative = 0;
@@ -104,6 +105,8 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 	int sec_has_decpoint = 0;
 	int sec_dec_digits = 0;
 	int sec_piece = -1;
+
+	int round_pow = 0;
 
 	int format_length = ((NULL == format) ? 0 : strlen(format));
 
@@ -312,8 +315,8 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 	degrees = val;
 	if (min_digits > 0)
 	{
-		degrees = (long)degrees;
-		minutes = (val - degrees) * 60;
+		/* Break degrees to integer and use fraction for minutes */
+		minutes = modf(val, &degrees) * 60;
 	}
 	if (sec_digits > 0)
 	{
@@ -321,8 +324,17 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 		{
 			lwerror("Bad format, cannot include seconds (SS.SSS) without including minutes (MM.MMM).");
 		}
-		minutes = (long)minutes;
-		seconds = (val - (degrees + (minutes / 60))) * 3600;
+		seconds = modf(minutes, &minutes) * 60;
+		if (sec_piece >= 0)
+		{
+			/* See if the formatted seconds round up to 60. If so, increment minutes and reset seconds. */
+			round_pow = pow(10, sec_dec_digits);
+			if (floorf(seconds * round_pow) / round_pow >= 60)
+			{
+				minutes += 1;
+				seconds = 0;
+			}
+		}
 	}
 
 	/* Handle the compass direction.  If not using compass dir, display degrees as a positive/negative number. */
@@ -340,7 +352,7 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 	{
 		lwerror("Bad format, degrees (DD.DDD) number of digits was greater than our working limit.");
 	}
-	if(deg_piece >= 0) 
+	if(deg_piece >= 0)
 	{
 		sprintf(pieces[deg_piece], "%*.*f", deg_digits, deg_dec_digits, degrees);
 	}
@@ -422,4 +434,77 @@ char* lwpoint_to_latlon(const LWPOINT * pt, const char *format)
 	}
 	p = getPoint2d_cp(pt->point, 0);
 	return lwdoubles_to_latlon(p->y, p->x, format);
+}
+
+/*
+ * Removes trailing zeros and dot for a %f formatted number.
+ * Modifies input.
+ */
+static void
+trim_trailing_zeros(char* str)
+{
+	char *ptr, *totrim = NULL;
+	int len;
+	int i;
+
+	LWDEBUGF(3, "input: %s", str);
+
+	ptr = strchr(str, '.');
+	if (!ptr) return; /* no dot, no decimal digits */
+
+	LWDEBUGF(3, "ptr: %s", ptr);
+
+	len = strlen(ptr);
+	for (i = len - 1; i; i--)
+	{
+		if (ptr[i] != '0') break;
+		totrim = &ptr[i];
+	}
+	if (totrim)
+	{
+		if (ptr == totrim - 1)
+			*ptr = '\0';
+		else
+			*totrim = '\0';
+	}
+
+	LWDEBUGF(3, "output: %s", str);
+}
+
+/*
+ * Print an ordinate value using at most the given number of decimal digits
+ *
+ * The actual number of printed decimal digits may be less than the
+ * requested ones if out of significant digits.
+ *
+ * The function will not write more than maxsize bytes, including the
+ * terminating NULL. Returns the number of bytes that would have been
+ * written if there was enough space (excluding terminating NULL).
+ * So a return of ``bufsize'' or more means that the string was
+ * truncated and misses a terminating NULL.
+ *
+ */
+int
+lwprint_double(double d, int maxdd, char* buf, size_t bufsize)
+{
+	double ad = fabs(d);
+	int ndd = ad < 1 ? 0 : floor(log10(ad)) + 1; /* non-decimal digits */
+	int length = 0;
+	if (ad <= FP_TOLERANCE)
+	{
+		d = 0;
+		ad = 0;
+	}
+	if (ad < OUT_MAX_DOUBLE)
+	{
+		if (maxdd > (OUT_MAX_DOUBLE_PRECISION - ndd)) maxdd -= ndd;
+		length = snprintf(buf, bufsize, "%.*f", maxdd, d);
+	}
+	else
+	{
+		length = snprintf(buf, bufsize, "%g", d);
+	}
+	assert(length < bufsize);
+	trim_trailing_zeros(buf);
+	return length;
 }

@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2009-2010 Sandro Santilli <strk@keybit.net>
+ * Copyright 2009-2010 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -230,7 +230,7 @@ lwpoly_make_geos_friendly(LWPOLY *poly)
 {
 	LWGEOM* ret;
 	POINTARRAY **new_rings;
-	int i;
+	uint32_t i;
 
 	/* If the polygon has no rings there's nothing to do */
 	if ( ! poly->nrings ) return (LWGEOM*)poly;
@@ -507,7 +507,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		GEOSGeometry* new_cut_edges=0;
 
 #ifdef LWGEOM_PROFILE_MAKEVALID
-    lwnotice("ST_MakeValid: building area from %d edges", GEOSGetNumGeometries(geos_cut_edges)); 
+    lwnotice("ST_MakeValid: building area from %d edges", GEOSGetNumGeometries(geos_cut_edges));
 #endif
 
 		/*
@@ -536,7 +536,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		 */
 
 #ifdef LWGEOM_PROFILE_MAKEVALID
-    lwnotice("ST_MakeValid: ring built with %d cut edges, saving boundaries", GEOSGetNumGeometries(geos_cut_edges)); 
+    lwnotice("ST_MakeValid: ring built with %d cut edges, saving boundaries", GEOSGetNumGeometries(geos_cut_edges));
 #endif
 
 		/*
@@ -557,7 +557,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		}
 
 #ifdef LWGEOM_PROFILE_MAKEVALID
-    lwnotice("ST_MakeValid: running SymDifference with new area"); 
+    lwnotice("ST_MakeValid: running SymDifference with new area");
 #endif
 
 		/*
@@ -587,12 +587,12 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		 *             left, so we don't need to reconsider
 		 *             the whole original boundaries
 		 *
-		 * NOTE: this is an expensive operation. 
+		 * NOTE: this is an expensive operation.
 		 *
 		 */
 
 #ifdef LWGEOM_PROFILE_MAKEVALID
-    lwnotice("ST_MakeValid: computing new cut_edges (GEOSDifference)"); 
+    lwnotice("ST_MakeValid: computing new cut_edges (GEOSDifference)");
 #endif
 
 		new_cut_edges = GEOSDifference(geos_cut_edges, new_area_bound);
@@ -795,7 +795,7 @@ LWGEOM_GEOS_makeValidCollection(const GEOSGeometry* gin)
 	int nvgeoms;
 	GEOSGeometry **vgeoms;
 	GEOSGeom gout;
-	unsigned int i;
+	int i;
 
 	nvgeoms = GEOSGetNumGeometries(gin);
 	if ( nvgeoms == -1 ) {
@@ -812,7 +812,9 @@ LWGEOM_GEOS_makeValidCollection(const GEOSGeometry* gin)
 	for ( i=0; i<nvgeoms; ++i ) {
 		vgeoms[i] = LWGEOM_GEOS_makeValid( GEOSGetGeometryN(gin, i) );
 		if ( ! vgeoms[i] ) {
-			while (i--) GEOSGeom_destroy(vgeoms[i]);
+			int j;
+			for (j = 0; j<i-1; j++)
+				GEOSGeom_destroy(vgeoms[j]);
 			lwfree(vgeoms);
 			/* we expect lwerror being called already by makeValid */
 			return NULL;
@@ -964,7 +966,7 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 			GEOSGeom_destroy(pd);
 			if ( loss )
 			{
-				lwnotice("Vertices lost in LWGEOM_GEOS_makeValid");
+				lwnotice("%s [%d] Vertices lost in LWGEOM_GEOS_makeValid", __FILE__, __LINE__);
 				/* return NULL */
 			}
 	}

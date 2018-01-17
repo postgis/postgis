@@ -13,7 +13,7 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
-typedef struct srs_precision 
+typedef struct srs_precision
 {
 	int precision_xy;
 	int precision_z;
@@ -22,7 +22,6 @@ typedef struct srs_precision
 
 char* GetProj4StringSPI(int srid);
 void SetPROJ4LibPath(void) ;
-
 
 /**
  * Opaque type to use in the projection cache API.

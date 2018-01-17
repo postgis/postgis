@@ -3,7 +3,7 @@
   <title>PostGIS Raster Frequently Asked Questions</title>
 
   <qandaset>
-  
+
      <qandaentry id="faq_security_change_1">
       <question>
         <para>I'm getting error <code>ERROR: RASTER_fromGDALRaster: Could not open bytea with GDAL. Check that the bytea is of a GDAL supported format.</code>  when using ST_FromGDALRaster
@@ -14,10 +14,10 @@
           <para>As of PostGIS 2.1.3 and 2.0.5, a security change was made to by default disable all GDAL drivers and out of db rasters. The release notes are at <ulink url="http://postgis.net/2014/05/19/postgis-2.0.6_and_2.1.3">PostGIS 2.0.6, 2.1.3 security release</ulink>. In order to reenable specific drivers or all drivers and reenable out of database support, refer to <xref linkend="install_short_version" />.</para>
       </answer>
     </qandaentry>
-    
-     
-    
-  	 <qandaentry>
+
+
+
+	 <qandaentry>
       <question>
         <para>Where can I find out more about the PostGIS Raster Project?</para>
       </question>
@@ -26,7 +26,7 @@
         <para>Refer to the <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster">PostGIS Raster home page</ulink>.</para>
       </answer>
     </qandaentry>
-    
+
     <qandaentry>
       <question>
         <para>Are there any books or tutorials to get me started with this wonderful invention?</para>
@@ -37,23 +37,23 @@
         Jorge has a series of blog articles on PostGIS Raster that demonstrate how to load raster data as well as cross compare to same tasks in Oracle GeoRaster. Check out
             <ulink url="http://gis4free.wordpress.com/category/postgis-raster/">Jorge's PostGIS Raster / Oracle GeoRaster Series</ulink>.
             There is a whole chapter (more than 35 pages of content) dedicated to PostGIS Raster with free code and data downloads at <ulink url="https://www.manning.com/books/postgis-in-action-second-edition">PostGIS in Action - Raster chapter</ulink>.
-        You can <ulink url="http://www.postgis.us/page_buy_book">buy PostGIS in Action</ulink>  now from Manning in hard-copy (significant discounts for bulk purchases) or just the E-book format. 
+        You can <ulink url="http://www.postgis.us/page_buy_book">buy PostGIS in Action</ulink>  now from Manning in hard-copy (significant discounts for bulk purchases) or just the E-book format.
         You can also buy from Amazon and various other book distributors. All hard-copy books come with a free coupon to download the E-book version.
         </para>
-        <para>Here is a review from a PostGIS Raster user <ulink url="http://fuzzytolerance.info/blog/2010/10/25/2010-10-26-postgis-raster-ftw/">PostGIS raster applied to land classification urban forestry</ulink></para>
+        <para>Here is a review from a PostGIS Raster user <ulink url="http://fuzzytolerance.info/blog/2010/10/26/2010-10-26-postgis-raster-ftw/">PostGIS raster applied to land classification urban forestry</ulink></para>
       </answer>
-    
+
     </qandaentry>
-	
+
 	<qandaentry>
       <question>
         <para>How do I install Raster support in my PostGIS database?</para>
       </question>
 
       <answer>
-        <para>The easiest is to download binaries for PostGIS and Raster which are currently available for windows and latest versions of Mac OSX. 
-        	First you need a working PostGIS 2.0.0 or above and be running PostgreSQL 8.4, 9.0, or 9.1. Note in PostGIS 2.0 PostGIS Raster is fully integrated, so it will be compiled when you compile PostGIS.</para>
-        	<para>Instructions for installing and running under windows are available at <ulink url="http://gis4free.wordpress.com/2011/03/10/how-to-install-and-configure-postgis-raster-on-windows/">How to Install and Configure PostGIS raster on windows</ulink></para>
+        <para>The easiest is to download binaries for PostGIS and Raster which are currently available for windows and latest versions of Mac OSX.
+	First you need a working PostGIS 2.0.0 or above and be running PostgreSQL 8.4, 9.0, or 9.1. Note in PostGIS 2.0 PostGIS Raster is fully integrated, so it will be compiled when you compile PostGIS.</para>
+	<para>Instructions for installing and running under windows are available at <ulink url="http://gis4free.wordpress.com/2011/03/10/how-to-install-and-configure-postgis-raster-on-windows/">How to Install and Configure PostGIS raster on windows</ulink></para>
         <para>
 			If you are on windows, you can compile yourself, or use the <ulink
             url="http://postgis.net/windows_downloads">pre-compiled
@@ -64,22 +64,22 @@
 		<para>For other platforms, you generally need to compile yourself. Dependencies are PostGIS and GDAL. For more details about compiling from source, please refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/Documentation01#a2.3-CompilingandInstallingfromSources">Installing PostGIS Raster from source (in prior versions of PostGIS)</ulink></para>
       </answer>
     </qandaentry>
-    
+
 	 <qandaentry>
       <question>
         <para>I get error could not load library "C:/Program Files/PostgreSQL/8.4/lib/rtpostgis.dll": The specified module could not be found.
-        	or could not load library on Linux when trying to run rtpostgis.sql</para>
+	or could not load library on Linux when trying to run rtpostgis.sql</para>
       </question>
 
       <answer>
-        <para>rtpostgis.so/dll is built with dependency on libgdal.dll/so. Make sure for Windows you have libgdal-1.dll in the bin folder of your PostgreSQL install.  
+        <para>rtpostgis.so/dll is built with dependency on libgdal.dll/so. Make sure for Windows you have libgdal-1.dll in the bin folder of your PostgreSQL install.
         For Linux libgdal has to be in your path or bin folder.  </para>
-		<para>You may also run into different errors if you don't have PostGIS installed in your database.  Make sure to install PostGIS first in your 
+		<para>You may also run into different errors if you don't have PostGIS installed in your database.  Make sure to install PostGIS first in your
 		database before trying to install the raster support.</para>
       </answer>
     </qandaentry>
-	
-  	<qandaentry>
+
+	<qandaentry>
       <question>
         <para>How do I load Raster data into PostGIS?</para>
       </question>
@@ -88,7 +88,7 @@
         <para>The latest version of PostGIS comes packaged with a <varname>raster2pgsql</varname> raster loader executable capable of loading many kinds of rasters and also generating lower resolution overviews without any additional software. Please refer to <xref linkend="RT_Raster_Loader" /> for more details. Pre-2.0 versions came with a <varname>raster2pgsql.py</varname> that required python with numpy and GDAL.  This is no longer needed.</para>
       </answer>
     </qandaentry>
-	
+
     <qandaentry>
       <question>
         <para>What kind of raster file formats can I load into my database?</para>
@@ -96,11 +96,11 @@
 
       <answer>
         <para>Any that your GDAL library supports. GDAL supported formats are documented <ulink url="http://www.gdal.org/formats_list.html">GDAL File Formats</ulink>.</para>
-		<para>Your particular GDAL install may not support all formats.  To verify the ones supported by your particular GDAL install, you can use</para> 
+		<para>Your particular GDAL install may not support all formats.  To verify the ones supported by your particular GDAL install, you can use</para>
 		<programlisting>raster2pgsql -G</programlisting>
       </answer>
     </qandaentry>
-    
+
     <qandaentry>
       <question>
         <para>Can I export my PostGIS raster data to other raster formats?</para>
@@ -109,49 +109,49 @@
       <answer>
         <para>Yes</para>
 		<para>GDAL 1.7+ has a PostGIS raster driver, but is only compiled in if you choose to compile with PostgreSQL support. </para>
-		<para>The driver currently doesn't support irregularly blocked rasters, 
+		<para>The driver currently doesn't support irregularly blocked rasters,
 		although you can store irregularly blocked rasters in PostGIS raster data type.</para>
-		<para>If you are compiling from source, you need to include in your configure 
+		<para>If you are compiling from source, you need to include in your configure
 		 <programlisting>--with-pg=path/to/pg_config</programlisting>  to enable the driver.
 		 Refer to <ulink url="http://trac.osgeo.org/gdal/wiki/BuildHints">GDAL Build Hints</ulink> for tips
 		 on building GDAL against in various OS platforms.
 		 </para>
-		 <para>If your version of GDAL is compiled with the PostGIS Raster driver 
-		 you should see PostGIS Raster in list when you do 
+		 <para>If your version of GDAL is compiled with the PostGIS Raster driver
+		 you should see PostGIS Raster in list when you do
 		 <programlisting>gdalinfo --formats</programlisting></para>
-		 
+
 		 <para>To get a summary about your raster via GDAL use gdalinfo:
 		 <programlisting>gdalinfo  "PG:host=localhost port=5432 dbname='mygisdb' user='postgres' password='whatever' schema='someschema' table=sometable"</programlisting>
 		 </para>
-		
-		 <para>To export data to other raster formats, 
-		 	use gdal_translate the below will export all data from a table to a PNG file at 10% size.</para>
-		 <para>Depending on your pixel band types, some translations may not work if the export format does not support that Pixel type.  
+
+		 <para>To export data to other raster formats,
+			use gdal_translate the below will export all data from a table to a PNG file at 10% size.</para>
+		 <para>Depending on your pixel band types, some translations may not work if the export format does not support that Pixel type.
 		 For example floating point band types and 32 bit unsigned ints
-		 	will not translate easily to JPG or some others.</para>
+			will not translate easily to JPG or some others.</para>
 		 <para>Here is an example simple translation</para>
 		  <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost port=5432 dbname='mygisdb' user='postgres' password='whatever' schema='someschema' table=sometable" C:\somefile.png</programlisting>
-		 <para>You can also use SQL where clauses in your export using the where=... in your driver connection string. 
-		 	Below are some using a where clause</para>
+		 <para>You can also use SQL where clauses in your export using the where=... in your driver connection string.
+			Below are some using a where clause</para>
 		 <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost port=5432 dbname='mygisdb' user='postgres' password='whatever' schema='someschema' table=sometable where='filename=\'abcd.sid\''" " C:\somefile.png</programlisting>
 		 <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost port=5432 dbname='mygisdb' user='postgres' password='whatever' schema='someschema' table=sometable where='ST_Intersects(rast, ST_SetSRID(ST_Point(-71.032,42.3793),4326) )' " C:\intersectregion.png</programlisting>
 		 <para>To see more examples and syntax refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html#a3.2-Readingrasterdatafromthedatabase">Reading Raster Data of PostGIS Raster section</ulink></para>
       </answer>
     </qandaentry>
-    
+
     <qandaentry>
-    	<question><para>Are their binaries of GDAL available already compiled with PostGIS Raster suppport?</para></question>
-    	<answer>
-    		<para>Yes. Check out the page <ulink url="http://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries">GDAL Binaries</ulink> page.  Any compiled with PostgreSQL
-    		support should have PostGIS Raster in them.  </para>
-    		<para>PostGIS Raster is undergoing many changes.  If you want to get the latest nightly build for Windows -- then check out 
+	<question><para>Are their binaries of GDAL available already compiled with PostGIS Raster suppport?</para></question>
+	<answer>
+		<para>Yes. Check out the page <ulink url="http://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries">GDAL Binaries</ulink> page.  Any compiled with PostgreSQL
+		support should have PostGIS Raster in them.  </para>
+		<para>PostGIS Raster is undergoing many changes.  If you want to get the latest nightly build for Windows -- then check out
 		 the Tamas Szekeres  nightly builds built with Visual Studio which contain GDAL trunk, Python Bindings and MapServer executables and PostGIS Raster driver built-in.  Just
          click the SDK bat and run your commands from there.  <ulink url="www.gisinternals.com">http://www.gisinternals.com</ulink>.
-		 	Also available are VS project files.</para>
-		 	<para><ulink url="http://fwtools.maptools.org/">FWTools latest stable version for Windows is compiled with Raster support</ulink>.</para>
-    	</answer>
+			Also available are VS project files.</para>
+			<para><ulink url="http://fwtools.maptools.org/">FWTools latest stable version for Windows is compiled with Raster support</ulink>.</para>
+	</answer>
     </qandaentry>
-    
+
     <qandaentry>
       <question>
         <para>What tools can I use to view PostGIS raster data?</para>
@@ -160,24 +160,24 @@
       <answer>
         <para>You can use MapServer compiled with GDAL 1.7+ and PostGIS Raster driver support to view Raster data. QuantumGIS (QGIS) now supports viewing of PostGIS Raster if you
         have PostGIS raster driver installed.</para>
-        <para>In theory any tool that renders data using GDAL can support PostGIS raster data or 
+        <para>In theory any tool that renders data using GDAL can support PostGIS raster data or
             support it with fairly minimal effort. Again for Windows, Tamas' binaries <ulink url="www.gisinternals.com">http://www.gisinternals.com</ulink> are a good choice if you don't want the hassle of having to setup to compile your own.</para>
       </answer>
     </qandaentry>
-    
+
     <qandaentry>
       <question>
         <para>How can I add a PostGIS raster layer to my MapServer map?</para>
       </question>
 
       <answer>
-        <para>First you need GDAL 1.7 or higher compiled with PostGIS raster support.  
+        <para>First you need GDAL 1.7 or higher compiled with PostGIS raster support.
             GDAL 1.8 or above is preferred since many issues have been fixed in 1.8 and more PostGIS raster issues fixed in trunk version.</para>
-        <para>You can much like you can with any other raster.  
+        <para>You can much like you can with any other raster.
         Refer to <ulink url="http://mapserver.org/input/raster.html">MapServer Raster processing options</ulink>
         for list of various processing functions you can use with MapServer raster layers.</para>
-        <para>What makes PostGIS raster data particularly interesting, is that since 
-        	each tile can have various standard database columns, you can segment it in your data source</para>
+        <para>What makes PostGIS raster data particularly interesting, is that since
+	each tile can have various standard database columns, you can segment it in your data source</para>
         <para>Below is an example of how you would define a PostGIS raster layer in MapServer.</para>
         <note><para>The mode=2 is required for tiled rasters and was added in PostGIS 2.0 and GDAL 1.8 drivers.  This does not exist in GDAL 1.7 drivers.</para></note>
         <programlisting>
@@ -186,8 +186,8 @@ LAYER
 	NAME coolwktraster
 	TYPE raster
 	STATUS ON
-	DATA "PG:host=localhost port=5432 dbname='somedb' user='someuser' password='whatever' 
-		schema='someschema' table='cooltable' mode='2'"	
+	DATA "PG:host=localhost port=5432 dbname='somedb' user='someuser' password='whatever'
+		schema='someschema' table='cooltable' mode='2'"
 	PROCESSING "NODATA=0"
 	PROCESSING "SCALE=AUTO"
 	#... other standard raster processing functions here
@@ -209,94 +209,94 @@ LAYER
 	END
 END
         </programlisting>
-        
+
         <programlisting>
 -- displaying raster with standard raster options and a where clause
 LAYER
 	NAME soil_survey2009
 	TYPE raster
 	STATUS ON
-	DATA "PG:host=localhost port=5432 dbname='somedb' user='someuser' password='whatever' 
-		schema='someschema' table='cooltable' where='survey_year=2009' mode='2'"	
+	DATA "PG:host=localhost port=5432 dbname='somedb' user='someuser' password='whatever'
+		schema='someschema' table='cooltable' where='survey_year=2009' mode='2'"
 	PROCESSING "NODATA=0"
 	#... other standard raster processing functions here
 	#... classes are optional but useful for 1 band data
 END
         </programlisting>
-        
+
       </answer>
     </qandaentry>
-    
-	
+
+
 	<qandaentry>
       <question>
         <para>What functions can I currently use with my raster data?</para>
       </question>
 
       <answer>
-        <para>Refer to the list of <xref linkend="RT_reference" />. 
+        <para>Refer to the list of <xref linkend="RT_reference" />.
         There are more, but this is still a work in progress.</para>
 		<para>Refer to the <ulink
-        url="http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding">PostGIS Raster roadmap page</ulink> 
+        url="http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding">PostGIS Raster roadmap page</ulink>
 		for details of what you can expect in the future.</para>
       </answer>
     </qandaentry>
-    
+
     <qandaentry id="qa_raster_function_not_unique">
       <question>
         <para>I am getting error  ERROR:  function st_intersects(raster, unknown) is not unique or st_union(geometry,text) is not unique.  How do I fix?</para>
       </question>
 
       <answer>
-        <para>The function is not unique error happens if one of your arguments is a textual representation of a geometry instead of a geometry.  In these cases, PostgreSQL marks the textual representation as an unknown type, which means it can fall into the st_intersects(raster, geometry) or st_intersects(raster,raster) thus resulting in a non-unique case since both functions can in theory support your request.  To prevent this, you need to cast the geometry to a geometry.</para>
+        <para>The function is not unique error happens if one of your arguments is a textual representation of a geometry instead of a geometry.  In these cases, PostgreSQL marks the textual representation as an unknown type, which means it can fall into the st_intersects(raster, geometry) or st_intersects(raster,raster) thus resulting in a non-unique case since both functions can in theory support your request.  To prevent this, you need to cast the textual representation of the geometry to a geometry.</para>
         <para>For example if your code looks like this:</para>
         <programlisting>SELECT rast
  FROM my_raster
    WHERE ST_Intersects(rast, 'SRID=4326;POINT(-10 10)');</programlisting>
-   		<para>Cast the textual geometry representation to a geometry by changing your code to this:</para>
-   		<programlisting>SELECT rast
+		<para>Cast the textual geometry representation to a geometry by changing your code to this:</para>
+		<programlisting>SELECT rast
  FROM my_raster
    WHERE ST_Intersects(rast, 'SRID=4326;POINT(-10 10)'::geometry);</programlisting>
       </answer>
     </qandaentry>
-    
+
     <qandaentry>
       <question>
         <para>How is PostGIS Raster different from Oracle GeoRaster (SDO_GEORASTER) and SDO_RASTER types?</para>
       </question>
 
       <answer>
-      	<para>For a more extensive discussion on this topic, check out Jorge Arévalo <ulink url="http://gis4free.wordpress.com/2010/07/19/oracle-georaster-part-i/">Oracle GeoRaster and PostGIS Raster: First impressions </ulink></para>
-       	<para>The major advantage of one-georeference-by-raster over one-georeference-by-layer is to allow:</para>
-       	<para>* coverages to be not necessarily rectangular (which is often the case of raster coverage covering large extents. See the possible raster arrangements in the documentation)</para>
-       	<para>* rasters to overlaps (which is necessary to implement lossless vector to raster conversion) </para>
-       	<para>These arrangements are possible in Oracle as well, but they imply
+	<para>For a more extensive discussion on this topic, check out Jorge Arévalo <ulink url="http://gis4free.wordpress.com/2010/07/19/oracle-georaster-part-i/">Oracle GeoRaster and PostGIS Raster: First impressions </ulink></para>
+	<para>The major advantage of one-georeference-by-raster over one-georeference-by-layer is to allow:</para>
+	<para>* coverages to be not necessarily rectangular (which is often the case of raster coverage covering large extents. See the possible raster arrangements in the documentation)</para>
+	<para>* rasters to overlaps (which is necessary to implement lossless vector to raster conversion) </para>
+	<para>These arrangements are possible in Oracle as well, but they imply
         the storage of multiple SDO_GEORASTER objects linked to as many
         SDO_RASTER tables. A complex coverage can lead to hundreds of tables in
         the database. With PostGIS Raster you can store a similar raster arrangement into a unique table.</para>
 
-       	<para>It's a bit like if PostGIS would force you to store only full rectangular vector coverage without gaps or overlaps (a perfect rectangular topological layer). 
-       	This is very practical in some applications but practice has shown that it is not realistic or desirable for most geographical coverages. Vector structures needs the flexibility to store discontinuous and non-rectangular coverages. 
-       	We think it is a big advantage that raster structure should benefit as well. </para>
+	<para>It's a bit like if PostGIS would force you to store only full rectangular vector coverage without gaps or overlaps (a perfect rectangular topological layer).
+	This is very practical in some applications but practice has shown that it is not realistic or desirable for most geographical coverages. Vector structures needs the flexibility to store discontinuous and non-rectangular coverages.
+	We think it is a big advantage that raster structure should benefit as well. </para>
       </answer>
-    </qandaentry> 
-  
+    </qandaentry>
+
   <qandaentry  id="qa_raster_fails_encoding_conversion">
       <question>
         <para>raster2pgsql load of large file fails with String of N bytes is too long for encoding conversion?</para>
       </question>
 
       <answer>
-      	<para>raster2pgsql doesn't make any connections to your database when generating the file to load. If your database has set an explicit client encoding different
-      	from your database encoding, then when loading large raster files (above 30 MB in size), you may run into a <code>bytes is too long for encoding conversion</code>.</para>
-      	<para>This generally happens if for example you have your database in UTF8, but to support windows apps, you have the client encoding set to <code>WIN1252</code>.</para>
-      	<para>To work around this make sure the client encoding is the same as your database encoding during load.  You can do this by explicitly setting the encoding in your load script.  Example, if you are on windows:
-      		<programlisting>set PGCLIENTENCODING=UTF8</programlisting></para>
-      	<para>If you are on Unix/Linux
-      	<programlisting>export PGCLIENTENCODING=UTF8</programlisting></para>
-      	<para>Gory details of this issue are detailed in <ulink url="http://trac.osgeo.org/postgis/ticket/2209">http://trac.osgeo.org/postgis/ticket/2209</ulink></para>
+	<para>raster2pgsql doesn't make any connections to your database when generating the file to load. If your database has set an explicit client encoding different
+	from your database encoding, then when loading large raster files (above 30 MB in size), you may run into a <code>bytes is too long for encoding conversion</code>.</para>
+	<para>This generally happens if for example you have your database in UTF8, but to support windows apps, you have the client encoding set to <code>WIN1252</code>.</para>
+	<para>To work around this make sure the client encoding is the same as your database encoding during load.  You can do this by explicitly setting the encoding in your load script.  Example, if you are on windows:
+		<programlisting>set PGCLIENTENCODING=UTF8</programlisting></para>
+	<para>If you are on Unix/Linux
+	<programlisting>export PGCLIENTENCODING=UTF8</programlisting></para>
+	<para>Gory details of this issue are detailed in <ulink url="http://trac.osgeo.org/postgis/ticket/2209">http://trac.osgeo.org/postgis/ticket/2209</ulink></para>
       </answer>
-  </qandaentry> 
-  
+  </qandaentry>
+
  </qandaset>
 </chapter>

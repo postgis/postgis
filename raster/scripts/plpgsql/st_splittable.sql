@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------------------------------------------------
 -- ST_SplitTable
 -- Split a table into a series of table which names are composed of the concatenation of a prefix
--- and the value of a column. This function is usefull when loading many raster in one operation but 
--- still wanting to split them in different tables afterward. They must have been loaded with the -F 
+-- and the value of a column. This function is usefull when loading many raster in one operation but
+-- still wanting to split them in different tables afterward. They must have been loaded with the -F
 -- raster2pgsql option so that different rasters are identifiable by a column.
 --
 -- sourcetablename   - The name of the table to split into multiple table
@@ -10,7 +10,7 @@
 -- targettableprefix - The prefix of the set of table names to create.
 -- suffixcolumnname  - The name of the column providing the suffix to each table name.
 --
--- Example to split the table 'test' into a set of table starting with 't_' and 
+-- Example to split the table 'test' into a set of table starting with 't_' and
 -- ending with the value of the column 'rid' to be created in the 'public' schema.
 --
 -- SELECT ST_SplitTable('test', 'public', 't_', 'rid');;

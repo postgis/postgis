@@ -13,7 +13,7 @@ SELECT topology.ST_ChangeEdgeGeom('city_data', 25,
 SELECT topology.ST_ChangeEdgeGeom('city_data', 25,
  'LINESTRING(9 35, 13 36)');
 
--- Node crossing 
+-- Node crossing
 SELECT topology.ST_ChangeEdgeGeom('city_data', 3,
   'LINESTRING(25 30, 20 36, 20 38, 25 35)');
 
@@ -37,7 +37,7 @@ SELECT topology.ST_ChangeEdgeGeom('city_data', 25,
 SELECT 'T2', topology.ST_ChangeEdgeGeom('city_data', 5,
  'LINESTRING(41 40, 57 33)');
 
--- Change to edge crossing old self 
+-- Change to edge crossing old self
 SELECT 'T3', topology.ST_ChangeEdgeGeom('city_data', 5,
  'LINESTRING(41 40, 49 40, 49 34, 57 33)');
 
@@ -82,7 +82,7 @@ SELECT topology.ST_ChangeEdgeGeom('city_data', 2,
 SELECT 'T7.1', topology.ST_ChangeEdgeGeom('city_data', 2,
 'LINESTRING(25 30, 28 39, 17 39, 25 30)');
 -- Check face update
-SELECT 'T7F.1', 
+SELECT 'T7F.1',
   ST_Equals(f.mbr, ST_Envelope(ST_GetFaceGeometry('city_data', f.face_id)))
   FROM city_data.face f, city_data.edge e
   WHERE e.edge_id = 2 AND f.face_id = e.left_face;
@@ -95,7 +95,7 @@ SELECT topology.ST_ChangeEdgeGeom('city_data', 26,
 SELECT 'T8', topology.ST_ChangeEdgeGeom('city_data', 26,
  'LINESTRING(4 31, 4 30.4, 5 30.4, 4 31)');
 -- Check face update
-SELECT 'T8F', 
+SELECT 'T8F',
   ST_Equals(f.mbr, ST_Envelope(ST_GetFaceGeometry('city_data', f.face_id)))
   FROM city_data.face f, city_data.edge e
   WHERE e.edge_id = 26 AND f.face_id = e.left_face;
@@ -117,7 +117,7 @@ SELECT ST_ChangeEdgeGeom('city_data', 28, -- should fail!
  'LINESTRING(21 22, 28 18, 35 22)');
 
 -- test enlarging a face MBR by moving an edge
-SELECT 'T11', ST_ChangeEdgeGeom('city_data', 16, 
+SELECT 'T11', ST_ChangeEdgeGeom('city_data', 16,
  'LINESTRING(47 6, 51 10, 47 14)');
 -- Check face update
 SELECT 'T11F',

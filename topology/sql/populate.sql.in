@@ -1,9 +1,9 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2010-2012 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2010-2012 Sandro Santilli <strk@kbt.io>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -77,7 +77,7 @@ $$ LANGUAGE 'plpgsql' STABLE STRICT;
 --
 -- The newly added nodes have no containing face.
 --
--- Developed by Sandro Santilli <strk@keybit.net>
+-- Developed by Sandro Santilli <strk@kbt.io>
 -- for Faunalia (http://www.faunalia.it) with funding from
 -- Regione Toscana - Sistema Informativo per la Gestione del Territorio
 -- e dell' Ambiente [RT-SIGTA].
@@ -96,7 +96,7 @@ DECLARE
 BEGIN
 	--
 	-- Atopology and apoint are required
-	-- 
+	--
 	IF atopology IS NULL OR apoint IS NULL THEN
 		RAISE EXCEPTION 'Invalid null argument';
 	END IF;
@@ -111,7 +111,7 @@ BEGIN
 
 	--
 	-- Check if a coincident node already exists
-	-- 
+	--
 	-- We use index AND x/y equality
 	--
 	FOR rec IN EXECUTE 'SELECT node_id FROM '
@@ -127,7 +127,7 @@ BEGIN
 	-- (endpoints are fine)
 	--
 	FOR rec IN EXECUTE 'SELECT edge_id FROM '
-		|| quote_ident(atopology) || '.edge ' 
+		|| quote_ident(atopology) || '.edge '
 		|| 'WHERE ST_DWithin($1, geom, 0) AND '
     || 'NOT ST_Equals($1, ST_StartPoint(geom)) AND '
     || 'NOT ST_Equals($1, ST_EndPoint(geom))'
@@ -164,12 +164,12 @@ BEGIN
 	-- Insert the new row
 	--
 	EXECUTE 'INSERT INTO ' || quote_ident(atopology)
-		|| '.node(node_id, containing_face, geom) 
+		|| '.node(node_id, containing_face, geom)
 		VALUES(' || nodeid || ',' || coalesce(containing_face::text, 'NULL')
     || ',$1)' USING apoint;
 
 	RETURN nodeid;
-	
+
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
@@ -203,13 +203,13 @@ LANGUAGE 'sql' VOLATILE;
 -- and links to itself as per next left/right edge.
 -- Calling code is expected to do further linking.
 --
--- Developed by Sandro Santilli <strk@keybit.net>
+-- Developed by Sandro Santilli <strk@kbt.io>
 -- for Faunalia (http://www.faunalia.it) with funding from
 -- Regione Toscana - Sistema Informativo per la Gestione del Territorio
 -- e dell' Ambiente [RT-SIGTA].
 -- For the project: "Sviluppo strumenti software per il trattamento di dati
 -- geografici basati su QuantumGIS e Postgis (CIG 0494241492)"
--- 
+--
 CREATE OR REPLACE FUNCTION topology.AddEdge(atopology varchar, aline geometry)
 	RETURNS int
 AS
@@ -217,11 +217,11 @@ $$
 DECLARE
 	edgeid int;
 	rec RECORD;
-  ix geometry; 
+  ix geometry;
 BEGIN
 	--
 	-- Atopology and apoint are required
-	-- 
+	--
 	IF atopology IS NULL OR aline IS NULL THEN
 		RAISE EXCEPTION 'Invalid null argument';
 	END IF;
@@ -262,7 +262,7 @@ BEGIN
 	-- on anything but endpoints
 	--
 	-- Following DE-9 Intersection Matrix represent
-	-- the only relation we accept. 
+	-- the only relation we accept.
 	--
 	--    F F 1
 	--    F * *
@@ -357,7 +357,7 @@ BEGIN
     USING aline;
 
 	RETURN edgeid;
-	
+
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
@@ -389,13 +389,13 @@ LANGUAGE 'plpgsql' VOLATILE;
 --  o The polygon boundary is not fully defined by existing edges.
 --  o The polygon overlaps an existing face.
 --
--- Developed by Sandro Santilli <strk@keybit.net>
+-- Developed by Sandro Santilli <strk@kbt.io>
 -- for Faunalia (http://www.faunalia.it) with funding from
 -- Regione Toscana - Sistema Informativo per la Gestione del Territorio
 -- e dell' Ambiente [RT-SIGTA].
 -- For the project: "Sviluppo strumenti software per il trattamento di dati
 -- geografici basati su QuantumGIS e Postgis (CIG 0494241492)"
--- 
+--
 CREATE OR REPLACE FUNCTION topology.AddFace(atopology varchar, apoly geometry, force_new boolean DEFAULT FALSE)
 	RETURNS int
 AS
@@ -424,7 +424,7 @@ DECLARE
 BEGIN
   --
   -- Atopology and apoly are required
-  -- 
+  --
   IF atopology IS NULL OR apoly IS NULL THEN
     RAISE EXCEPTION 'Invalid null argument';
   END IF;
@@ -437,7 +437,9 @@ BEGIN
     RAISE EXCEPTION 'Face geometry must be a polygon';
   END IF;
 
-  for rrec IN SELECT (ST_DumpRings(ST_ForceRHR(apoly))).geom
+  for rrec IN SELECT (d).* FROM (
+    SELECT ST_DumpRings(ST_ForceRHR(apoly)) d
+  ) foo
   LOOP -- {
     --
     -- Find all bounds edges, forcing right-hand-rule
@@ -494,20 +496,20 @@ BEGIN
         loc = ST_LineLocatePoint(edgeseg, p3);
         -- WARNING: this is as robust as length of edgeseg allows...
         IF loc > 0.9 THEN
-          -- shift last point down 
+          -- shift last point down
           p2 = ST_LineInterpolatePoint(edgeseg, loc - 0.1);
         ELSIF loc < 0.1 THEN
           -- shift first point up
-          p1 = ST_LineInterpolatePoint(edgeseg, loc + 0.1); 
+          p1 = ST_LineInterpolatePoint(edgeseg, loc + 0.1);
         ELSE
           -- when ring start point is in between, we swap the points
           p3 = p1; p1 = p2; p2 = p3;
         END IF;
       END IF;
 
-      right_side = ST_LineLocatePoint(bounds, p1) < 
+      right_side = ST_LineLocatePoint(bounds, p1) <
                    ST_LineLocatePoint(bounds, p2);
-  
+
 #ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Edge % (left:%, right:%) - ring : % - right_side : %',
         rec.edge_id, rec.left_face, rec.right_face, rrec.path, right_side;
@@ -552,7 +554,7 @@ BEGIN
   -- If the test fail either we need to add more edges
   -- from the polygon ring or we need to split
   -- some of the existing ones.
-  -- 
+  --
   bounds = ST_Boundary(apoly);
   IF NOT ST_isEmpty(ST_SymDifference(bounds, all_edges)) THEN
     IF NOT ST_isEmpty(ST_Difference(bounds, all_edges)) THEN
@@ -587,7 +589,7 @@ BEGIN
   END LOOP;
 
   --
-  -- Insert new face 
+  -- Insert new face
   --
   EXECUTE 'INSERT INTO '
     || quote_ident(atopology)
@@ -626,7 +628,7 @@ BEGIN
 
 
   --
-  -- Set left_face/right_face of any contained edge 
+  -- Set left_face/right_face of any contained edge
   --
   EXECUTE 'UPDATE '
     || quote_ident(atopology)
@@ -637,9 +639,9 @@ BEGIN
     || ' WHERE ST_Contains($1, geom)'
     USING apoly;
 
-  -- 
-  -- Set containing_face of any contained node 
-  -- 
+  --
+  -- Set containing_face of any contained node
+  --
   EXECUTE 'UPDATE '
     || quote_ident(atopology)
     || '.node SET containing_face = '
@@ -648,22 +650,22 @@ BEGIN
     USING apoly;
 
   RETURN faceid;
-	
+
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
 --} AddFace
 
 -- ----------------------------------------------------------------------------
--- 
+--
 -- Functions to incrementally populate a topology
--- 
+--
 -- ----------------------------------------------------------------------------
 
 --{
 --  TopoGeo_AddPoint(toponame, pointgeom, tolerance)
 --
---  Add a Point into a topology, with an optional tolerance 
+--  Add a Point into a topology, with an optional tolerance
 --
 CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint geometry, tolerance float8 DEFAULT 0)
 	RETURNS int AS
@@ -674,7 +676,7 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint g
 --{
 --  TopoGeo_addLinestring(toponame, linegeom, tolerance)
 --
---  Add a LineString into a topology 
+--  Add a LineString into a topology
 --
 -- }{
 CREATE OR REPLACE FUNCTION topology.TopoGeo_addLinestring(atopology varchar, aline geometry, tolerance float8 DEFAULT 0)
@@ -686,7 +688,7 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_addLinestring(atopology varchar, ali
 --{
 --  TopoGeo_AddPolygon(toponame, polygeom, tolerance)
 --
---  Add a Polygon into a topology 
+--  Add a Polygon into a topology
 --
 -- }{
 CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(atopology varchar, apoly geometry, tolerance float8 DEFAULT 0)
@@ -698,7 +700,7 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(atopology varchar, apoly 
 --{
 --  TopoGeo_AddGeometry(toponame, geom, tolerance)
 --
---  Add a Geometry into a topology 
+--  Add a Geometry into a topology
 --
 CREATE OR REPLACE FUNCTION topology.TopoGeo_AddGeometry(atopology varchar, ageom geometry, tolerance float8 DEFAULT 0)
 	RETURNS void AS

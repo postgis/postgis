@@ -7,7 +7,7 @@ INSERT INTO features.land_parcels VALUES ('F3', -- Feature name
     'city_data', -- Topology name
     3, -- Topology geometry type (polygon/multipolygon)
     1, -- TG_LAYER_ID for this topology (from topology.layer)
-    '{{3,3}}') -- face_id:3 
+    '{{3,3}}') -- face_id:3
     );
 
 INSERT INTO features.land_parcels VALUES ('F6', -- Feature name
@@ -15,7 +15,7 @@ INSERT INTO features.land_parcels VALUES ('F6', -- Feature name
     'city_data', -- Topology name
     3, -- Topology geometry type (polygon/multipolygon)
     1, -- TG_LAYER_ID for this topology (from topology.layer)
-    '{{6,3}}') -- face_id:3 
+    '{{6,3}}') -- face_id:3
     );
 
 INSERT INTO features.land_parcels VALUES ('F3F4', -- Feature name

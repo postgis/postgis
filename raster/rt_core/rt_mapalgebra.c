@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -384,7 +384,7 @@ rt_band_reclass(
 
 typedef struct _rti_iterator_arg_t* _rti_iterator_arg;
 struct _rti_iterator_arg_t {
-	int count;
+	uint32_t count;
 
 	rt_raster *raster;
 	int *isempty;
@@ -458,7 +458,7 @@ _rti_iterator_arg_init() {
 
 static void
 _rti_iterator_arg_destroy(_rti_iterator_arg _param) {
-	int i = 0;
+	uint32_t i = 0;
 
 	if (_param->raster != NULL)
 		rtdealloc(_param->raster);
@@ -668,8 +668,8 @@ _rti_iterator_arg_populate(
 
 static int
 _rti_iterator_arg_empty_init(_rti_iterator_arg _param) {
-	int x = 0;
-	int y = 0;
+	uint32_t x = 0;
+	uint32_t y = 0;
 
 	_param->empty.values = rtalloc(sizeof(double *) * _param->dimension.rows);
 	_param->empty.nodata = rtalloc(sizeof(int *) * _param->dimension.rows);
@@ -698,7 +698,7 @@ _rti_iterator_arg_empty_init(_rti_iterator_arg _param) {
 
 static int
 _rti_iterator_arg_callback_init(_rti_iterator_arg _param) {
-	int i = 0;
+	uint32_t i = 0;
 
 	_param->arg = rtalloc(sizeof(struct rt_iterator_arg_t));
 	if (_param->arg == NULL) {
@@ -744,8 +744,8 @@ _rti_iterator_arg_callback_init(_rti_iterator_arg _param) {
 
 static void
 _rti_iterator_arg_callback_clean(_rti_iterator_arg _param) {
-	int i = 0;
-	int y = 0;
+	uint32_t i = 0;
+	uint32_t y = 0;
 
 	for (i = 0; i < _param->count; i++) {
 		RASTER_DEBUGF(5, "empty at @ %p", _param->empty.values);
@@ -1071,7 +1071,7 @@ rt_raster_iterator(
 			}
 		case ET_LAST:
 			if (i < 0) i = itrcount - 1;
-			
+
 			/* input raster is null, return NULL */
 			if (_param->raster[i] == NULL) {
 				RASTER_DEBUGF(3, "returning NULL as %s raster is NULL and extent type is ET_%s",
@@ -1148,7 +1148,7 @@ rt_raster_iterator(
 
 		_rti_iterator_arg_destroy(_param);
 		rt_raster_destroy(rtnrast);
-		
+
 		return ES_ERROR;
 	}
 
@@ -1239,7 +1239,7 @@ rt_raster_iterator(
 					_param->band.isnodata[i]
 				) {
 					RASTER_DEBUG(4, "empty raster, band does not exist or band is NODATA. using empty values and NODATA");
-					
+
 					x = _x;
 					y = _y;
 
@@ -1366,7 +1366,7 @@ rt_raster_iterator(
 					return ES_ERROR;
 				}
 			}
-	
+
 			/* callback */
 			RASTER_DEBUG(4, "calling callback function");
 			value = 0;

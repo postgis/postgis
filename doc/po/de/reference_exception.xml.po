@@ -1,0 +1,223 @@
+# SOME DESCRIPTIVE TITLE.
+# 
+# Translators:
+# Andreas Schild <andreas.schild@bfw.gv.at>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: PostGIS\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2017-06-04 10:38+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"Language-Team: German (http://www.transifex.com/postgis/postgis/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Tag: title
+#: reference_exception.xml:3
+#, no-c-format
+msgid "Exceptional Functions"
+msgstr "Außergewöhnliche Funktionen"
+
+#. Tag: para
+#: reference_exception.xml:4
+#, no-c-format
+msgid ""
+"These functions are rarely used functions that should only be used if your "
+"data is corrupted in someway. They are used for troubleshooting corruption "
+"and also fixing things that should under normal circumstances, never happen."
+msgstr "Diese selten genutzten Funktionen sollten nur im Falle beschädigten Daten verwendet werden. Sie werden zur Fehlerbeseitigung und zur Reperatur von Dingen verwendet, die unter normalen Umständen nicht vorkommen sollten."
+
+#. Tag: refname
+#: reference_exception.xml:9
+#, no-c-format
+msgid "PostGIS_AddBBox"
+msgstr "PostGIS_AddBBox"
+
+#. Tag: refpurpose
+#: reference_exception.xml:11
+#, no-c-format
+msgid "Add bounding box to the geometry."
+msgstr "Fügt der Geometrie ein Umgebungsrechteck hinzu."
+
+#. Tag: funcprototype
+#: reference_exception.xml:16
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+
+#. Tag: title
+#: reference_exception.xml:24 reference_exception.xml:70
+#: reference_exception.xml:119
+#, no-c-format
+msgid "Description"
+msgstr "Beschreibung"
+
+#. Tag: para
+#: reference_exception.xml:26
+#, no-c-format
+msgid ""
+"Add bounding box to the geometry. This would make bounding box based queries"
+" faster, but will increase the size of the geometry."
+msgstr "Fügt ein Umgebungsrechteck zur Geometrie hinzu. Dies macht die, auf das Umgebungsrechteck bezogenen, Abfragen schneller, erhöht aber die Größe der Geometrie."
+
+#. Tag: para
+#: reference_exception.xml:31
+#, no-c-format
+msgid ""
+"Bounding boxes are automatically added to geometries so in general this is "
+"not needed unless the generated bounding box somehow becomes corrupted or "
+"you have an old install that is lacking bounding boxes. Then you need to "
+"drop the old and readd."
+msgstr "Umgebungsrechtecke werden üblicherweise automatisch zu den Geometrien hinzugefügt, so dass es nicht nötig ist dies händisch zu tun, außer das Umgebungsrechteck/Bounding Box wurde irgendwie beschädigt, oder Sie verfügen über eine alte Installation die noch keineUmgebungsrechtecke kannte. Falls dies der Fall ist, müssen Sie die Alten löschen und neu hinzufügen."
+
+#. Tag: para
+#: reference_exception.xml:35 reference_exception.xml:83
+#: reference_exception.xml:124
+#, no-c-format
+msgid "&curve_support;"
+msgstr "&curve_support;"
+
+#. Tag: title
+#: reference_exception.xml:40 reference_exception.xml:88
+#: reference_exception.xml:129
+#, no-c-format
+msgid "Examples"
+msgstr "Beispiele"
+
+#. Tag: programlisting
+#: reference_exception.xml:42
+#, no-c-format
+msgid ""
+"UPDATE sometable\n"
+" SET the_geom =  PostGIS_AddBBox(the_geom)\n"
+" WHERE PostGIS_HasBBox(the_geom) = false;"
+msgstr "UPDATE sometable\n SET the_geom =  PostGIS_AddBBox(the_geom)\n WHERE PostGIS_HasBBox(the_geom) = false;"
+
+#. Tag: title
+#: reference_exception.xml:47 reference_exception.xml:95
+#: reference_exception.xml:136
+#, no-c-format
+msgid "See Also"
+msgstr "Siehe auch"
+
+#. Tag: para
+#: reference_exception.xml:49
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_HasBBox\"/>"
+msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>"
+
+#. Tag: refname
+#: reference_exception.xml:55
+#, no-c-format
+msgid "PostGIS_DropBBox"
+msgstr "PostGIS_DropBBox"
+
+#. Tag: refpurpose
+#: reference_exception.xml:57
+#, no-c-format
+msgid "Drop the bounding box cache from the geometry."
+msgstr "Löscht das zwischengespeicherte Umgebungsrechteck der Geometrie."
+
+#. Tag: funcprototype
+#: reference_exception.xml:62
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+
+#. Tag: para
+#: reference_exception.xml:72
+#, no-c-format
+msgid ""
+"Drop the bounding box cache from the geometry. This reduces geometry size, "
+"but makes bounding-box based queries slower. It is also used to drop a "
+"corrupt bounding box. A tale-tell sign of a corrupt cached bounding box is "
+"when your ST_Intersects and other relation queries leave out geometries that"
+" rightfully should return true."
+msgstr "Löscht das zwischengespeicherte Umgebungsrechteck der Geometrie. Dies verringert die Größe der Geometrie, macht aber die auf Umgebungsrechtecke aufbauenden Abfragen langsamer. Wird auch zum Löschen eines beschädigten Umgebungsrechtecks benutzt. Ein guter Hinweis auf ein beschädigtes Umgebungsrechteck ist, wenn ST_Intersects und andere Abfragen über räumliche Beziehungen, Geometrien auslassen die eigentlich TRUE zurückgeben sollten."
+
+#. Tag: para
+#: reference_exception.xml:77
+#, no-c-format
+msgid ""
+"Bounding boxes are automatically added to geometries and improve speed of "
+"queries so in general this is not needed unless the generated bounding box "
+"somehow becomes corrupted or you have an old install that is lacking "
+"bounding boxes. Then you need to drop the old and readd. This kind of "
+"corruption has been observed in 8.3-8.3.6 series whereby cached bboxes were "
+"not always recalculated when a geometry changed and upgrading to a newer "
+"version without a dump reload will not correct already corrupted boxes. So "
+"one can manually correct using below and readd the bbox or do a dump reload."
+msgstr "Umgebungsrechtecke werden üblicherweise automatisch zu den Geometrien hinzugefügt, um die Geschwindigkeit von Abfragen zu steigern, somit ist es nicht nötig ist dies händisch zu tun, außer das Umgebungsrechteck wurde irgendwie beschädigt, oder Sie verfügen über eine alte Installation die noch keineUmgebungsrechtecke kannte. Falls dies der Fall ist, müssen Sie die Alten löschen und neu hinzufügen. Diese Art der Beschädigung wurde in den Versionen 8.3-8.3.6 beobachtet. Der Grund war, das zwischengespeicherte Umgebungsrechtecke nicht immer neu berechnet wurden, wenn sich die Geometrie geändert hat und das Upgraden auf eine neuere Version ohne einen PostgreSQL-Dump erfolgte. Dies kann händisch korrigiert werden, indem man die BBox wie unten angeführt neu hinzufügt, oder einen PostgreSQL-Dump einspielt."
+
+#. Tag: programlisting
+#: reference_exception.xml:90
+#, no-c-format
+msgid ""
+"--This example drops bounding boxes where the cached box is not correct\n"
+"                        --The force to ST_AsBinary before applying Box2D forces a recalculation of the box, and Box2D applied to the table geometry always\n"
+"                        -- returns the cached bounding box.\n"
+"                        UPDATE sometable\n"
+" SET the_geom =  PostGIS_DropBBox(the_geom)\n"
+" WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom));\n"
+"\n"
+"        UPDATE sometable\n"
+" SET the_geom =  PostGIS_AddBBox(the_geom)\n"
+" WHERE Not PostGIS_HasBBOX(the_geom);"
+msgstr "--Dieses Beispiel löscht unrichtige Umgebungsrechtecke\n--Durch die Anwendung von ST_AsBinary - vor Box2D - wird die Neuberechnung des Umgebungsrechteckes erzwungen,\n--and Box2D auf die Tabellengeometrie angewendet\n--gibt immer das zwischengespeicherte  Umgebungsrecheck zurück.\n                        UPDATE sometable\n SET the_geom =  PostGIS_DropBBox(the_geom)\n WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom));\n\n        UPDATE sometable\n SET the_geom =  PostGIS_AddBBox(the_geom)\n WHERE Not PostGIS_HasBBOX(the_geom);"
+
+#. Tag: para
+#: reference_exception.xml:97
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
+msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
+
+#. Tag: refname
+#: reference_exception.xml:104
+#, no-c-format
+msgid "PostGIS_HasBBox"
+msgstr "PostGIS_HasBBox"
+
+#. Tag: refpurpose
+#: reference_exception.xml:106
+#, no-c-format
+msgid "Returns TRUE if the bbox of this geometry is cached, FALSE otherwise."
+msgstr "Gibt TRUE zurück, wenn die BBox der Geometrie zwischengespeichert ist, andernfalls wird FALSE zurückgegeben."
+
+#. Tag: funcprototype
+#: reference_exception.xml:111
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr "<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+
+#. Tag: para
+#: reference_exception.xml:121
+#, no-c-format
+msgid ""
+"Returns TRUE if the bbox of this geometry is cached, FALSE otherwise. Use "
+"<xref linkend=\"PostGIS_AddBBox\"/> and <xref linkend=\"PostGIS_DropBBox\"/>"
+" to control caching."
+msgstr "Gibt TRUE zurück, wenn die BBox der Geometrie zwischengespeichert ist, sonst FALSE. Benutzen Sie bitte <xref linkend=\"PostGIS_AddBBox\"/> und <xref linkend=\"PostGIS_DropBBox\"/> um das Zwischenspeichern zu steuern."
+
+#. Tag: programlisting
+#: reference_exception.xml:131
+#, no-c-format
+msgid ""
+"SELECT the_geom\n"
+"FROM sometable WHERE PostGIS_HasBBox(the_geom) = false;"
+msgstr "SELECT the_geom\nFROM sometable WHERE PostGIS_HasBBox(the_geom) = false;"
+
+#. Tag: para
+#: reference_exception.xml:138
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_DropBBox\"/>"
+msgstr ", <xref linkend=\"PostGIS_DropBBox\"/>"

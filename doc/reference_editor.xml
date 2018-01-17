@@ -5,8 +5,7 @@
 		<refentry id="ST_AddPoint">
 		  <refnamediv>
 			<refname>ST_AddPoint</refname>
-			<refpurpose>Adds a point to a LineString before point &lt;position&gt;
-				(0-based index).</refpurpose>
+			<refpurpose>Add a point to a LineString.</refpurpose>
 		  </refnamediv>
 		  <refsynopsisdiv>
 			<funcsynopsis>
@@ -66,7 +65,7 @@
 	  <refnamediv>
 		<refname>ST_Affine</refname>
 
-		<refpurpose>Applies a 3d affine transformation to the geometry to do things like translate, rotate, scale in one step.</refpurpose>
+		<refpurpose>Apply a 3d affine transformation to a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -174,8 +173,7 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 	  <refnamediv>
 		<refname>ST_Force2D</refname>
 
-		<refpurpose>Forces the geometries into a "2-dimensional mode" so that
-		all output representations will only have the X and Y coordinates.</refpurpose>
+		<refpurpose>Force the geometries into a "2-dimensional mode".</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -197,9 +195,9 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_2D.</para>
-	  	<para>&curve_support;</para>
-	  	<para>&P_support;</para>
-	  	<para>&Z_support;</para>
+		<para>&curve_support;</para>
+		<para>&P_support;</para>
+		<para>&Z_support;</para>
 	  </refsection>
 
 
@@ -232,7 +230,7 @@ SELECT  ST_AsEWKT(ST_Force2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3
 	  <refnamediv>
 		<refname>ST_Force3D</refname>
 
-		<refpurpose>Forces the geometries into XYZ mode.  This is an alias for ST_Force3DZ.</refpurpose>
+		<refpurpose>Force the geometries into XYZ mode.  This is an alias for ST_Force3DZ.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -252,8 +250,8 @@ SELECT  ST_AsEWKT(ST_Force2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3D.</para>
 		<para>&P_support;</para>
-	  	<para>&curve_support;</para>
-	  	<para>&Z_support;</para>
+		<para>&curve_support;</para>
+		<para>&Z_support;</para>
 	  </refsection>
 
 
@@ -288,7 +286,7 @@ SELECT  ST_AsEWKT(ST_Force3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 	  <refnamediv>
 		<refname>ST_Force3DZ</refname>
 
-		<refpurpose>Forces the geometries into XYZ mode.  This is a synonym for ST_Force3D.</refpurpose>
+		<refpurpose>Force the geometries into XYZ mode.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -308,8 +306,8 @@ SELECT  ST_AsEWKT(ST_Force3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DZ.</para>
 		<para>&P_support;</para>
-	  	<para>&Z_support;</para>
-	  	<para>&curve_support;</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
 	  </refsection>
 
 
@@ -344,7 +342,7 @@ SELECT  ST_AsEWKT(ST_Force3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 	  <refnamediv>
 		<refname>ST_Force3DM</refname>
 
-		<refpurpose>Forces the geometries into XYM mode.</refpurpose>
+		<refpurpose>Force the geometries into XYM mode.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -363,7 +361,7 @@ SELECT  ST_AsEWKT(ST_Force3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 
 
 		  <para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DM.</para>
-	  	<para>&curve_support;</para>
+		<para>&curve_support;</para>
 	  </refsection>
 
 
@@ -399,7 +397,7 @@ SELECT  ST_AsEWKT(ST_Force3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 
 	  <refnamediv>
 		<refname>ST_Force4D</refname>
 
-		<refpurpose>Forces the geometries into XYZM mode.  </refpurpose>
+		<refpurpose>Force the geometries into XYZM mode.  </refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -417,8 +415,8 @@ SELECT  ST_AsEWKT(ST_Force3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 
 		<para>Forces the geometries into XYZM mode.  0 is tacked on for missing Z and M dimensions. </para>
 
 		  <para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_4D.</para>
-	  	<para>&Z_support;</para>
-	  	<para>&curve_support;</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
 	  </refsection>
 
 
@@ -451,11 +449,59 @@ SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,
 	  </refsection>
 	</refentry>
 
+	<refentry id="ST_ForcePolygonCCW">
+		<refnamediv>
+			<refname>
+				ST_ForcePolygonCCW
+			</refname>
+			<refpurpose>
+				Orients all exterior rings counter-clockwise and all interior rings clockwise.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>
+						geometry
+						<function>ST_ForcePolygonCCW</function>
+					</funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geom</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Forces (Multi)Polygons to use a counter-clockwise orientation for
+				their exterior ring, and a clockwise orientation for their interior
+				rings.  Non-polygonal geometries are returned unchanged.
+			</para>
+
+			<para>&Z_support;</para>
+			<para>&M_support;</para>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="ST_ForcePolygonCW" />,
+				<xref linkend="ST_IsPolygonCCW" />,
+				<xref linkend="ST_IsPolygonCW" />
+			</para>
+		</refsection>
+	</refentry>
+
 	<refentry id="ST_Force_Collection">
 	  <refnamediv>
 		<refname>ST_ForceCollection</refname>
 
-		<refpurpose>Converts the geometry into a GEOMETRYCOLLECTION.</refpurpose>
+		<refpurpose>Convert the geometry into a GEOMETRYCOLLECTION.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -476,10 +522,10 @@ SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>Availability: 1.2.2, prior to 1.3.4 this function will crash with Curves.  This is fixed in 1.3.4+</para>
 		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_Collection.</para>
-		
+
 		<para>&P_support;</para>
-	  	<para>&Z_support;</para>
-	  	<para>&curve_support;</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
 	  </refsection>
 
 
@@ -502,7 +548,7 @@ SELECT  ST_AsEWKT(ST_ForceCollection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3
 (1 row)
 
 		</programlisting>
-		
+
 		<programlisting>
 -- POLYHEDRAL example --
 SELECT ST_AsEWKT(ST_ForceCollection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
@@ -533,12 +579,59 @@ GEOMETRYCOLLECTION(
 	  </refsection>
 	</refentry>
 
+	<refentry id="ST_ForcePolygonCW">
+		<refnamediv>
+			<refname>
+				ST_ForcePolygonCW
+			</refname>
+			<refpurpose>
+				Orients all exterior rings clockwise and all interior rings counter-clockwise.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>
+						geometry
+						<function>ST_ForcePolygonCW</function>
+					</funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geom</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Forces (Multi)Polygons to use a clockwise orientation for
+				their exterior ring, and a counter-clockwise orientation for their interior
+				rings.  Non-polygonal geometries are returned unchanged.
+			</para>
+
+			<para>&Z_support;</para>
+			<para>&M_support;</para>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="ST_ForcePolygonCCW" />,
+				<xref linkend="ST_IsPolygonCCW" />,
+				<xref linkend="ST_IsPolygonCW" />
+			</para>
+		</refsection>
+	</refentry>
 
 	<refentry id="ST_ForceSFS">
 	  <refnamediv>
 		<refname>ST_ForceSFS</refname>
 
-		<refpurpose>Forces the geometries to use SFS 1.1 geometry types only.</refpurpose>
+		<refpurpose>Force the geometries to use SFS 1.1 geometry types only.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -560,8 +653,8 @@ GEOMETRYCOLLECTION(
 
 		<para>&P_support;</para>
 		<para>&T_support;</para>
-	  	<para>&curve_support;</para>
-	  	<para>&Z_support;</para>
+		<para>&curve_support;</para>
+		<para>&Z_support;</para>
 	  </refsection>
 	</refentry>
 
@@ -570,7 +663,7 @@ GEOMETRYCOLLECTION(
 		<refnamediv>
 			<refname>ST_ForceRHR</refname>
 
-			<refpurpose>Forces the orientation of the vertices in a polygon to follow the
+			<refpurpose>Force the orientation of the vertices in a polygon to follow the
 				Right-Hand-Rule.</refpurpose>
 		</refnamediv>
 
@@ -587,15 +680,21 @@ GEOMETRYCOLLECTION(
 		<refsection>
 			<title>Description</title>
 
-			<para>Forces the orientation of the vertices in a polygon to follow the
-				Right-Hand-Rule. In GIS terminology, this means that the area that is bounded by the
+			<para>Forces the orientation of the vertices in a polygon to follow a
+				Right-Hand-Rule, in which the area that is bounded by the
 				polygon is to the right of the boundary. In particular, the exterior ring is
 				orientated in a clockwise direction and the interior rings in a counter-clockwise
-				direction.</para>
+				direction.  This function is a synonym for <xref linkend="ST_ForcePolygonCW" /></para>
+
+			<note>
+				<para>
+					The above definition of the Right-Hand-Rule conflicts with definitions used in other contexts.  To avoid confusion, it is recommended to use ST_ForcePolygonCW.
+				</para>
+			</note>
 
 			<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
-	  		<para>&Z_support;</para>
-	  		<para>&P_support;</para>
+			<para>&Z_support;</para>
+			<para>&P_support;</para>
 		</refsection>
 
 		<refsection>
@@ -615,7 +714,12 @@ GEOMETRYCOLLECTION(
 		<refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_BuildArea"/>,
+			<para>
+				<xref linkend="ST_ForcePolygonCCW"/>,
+				<xref linkend="ST_ForcePolygonCW"/>,
+				<xref linkend="ST_IsPolygonCCW"/>,
+				<xref linkend="ST_IsPolygonCW"/>,
+				<xref linkend="ST_BuildArea"/>,
 				<xref linkend="ST_Polygonize"/>,
 				<xref linkend="ST_Reverse"/></para>
 		</refsection>
@@ -625,7 +729,7 @@ GEOMETRYCOLLECTION(
 		<refnamediv>
 			<refname>ST_ForceCurve</refname>
 
-			<refpurpose>Upcasts a geometry into its curved type, if applicable.</refpurpose>
+			<refpurpose>Upcast a geometry into its curved type, if applicable.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -648,9 +752,9 @@ GEOMETRYCOLLECTION(
                         </para>
 
 		        <para>Availability: 2.2.0</para>
-	  		<para>&Z_support;</para>
-	  			<!-- Optionally mention Circular String Support -->
-	  			<para>&curve_support;</para>
+			<para>&Z_support;</para>
+				<!-- Optionally mention Circular String Support -->
+				<para>&curve_support;</para>
 		</refsection>
 
 		<refsection>
@@ -678,7 +782,7 @@ GEOMETRYCOLLECTION(
 		<refnamediv>
 			<refname>ST_LineMerge</refname>
 
-			<refpurpose>Returns a (set of) LineString(s) formed by sewing together
+			<refpurpose>Return a (set of) LineString(s) formed by sewing together
 			a MULTILINESTRING.</refpurpose>
 		</refnamediv>
 
@@ -736,7 +840,7 @@ MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 			<refname>ST_CollectionExtract</refname>
 
 			<refpurpose>
-Given a (multi)geometry, returns a (multi)geometry consisting only of elements of the specified type.
+Given a (multi)geometry, return a (multi)geometry consisting only of elements of the specified type.
 			</refpurpose>
 		</refnamediv>
 
@@ -763,10 +867,10 @@ Only points, lines and polygons are supported. Type numbers are 1 == POINT, 2 ==
 
 			<note><para>
 Prior to 1.5.3 this function returned non-collection inputs untouched, no matter type.
-In 1.5.3 non-matching single geometries result in a NULL return. 
+In 1.5.3 non-matching single geometries result in a NULL return.
 In of 2.0.0 every case of missing match results in a typed EMPTY return.
 			</para></note>
-			
+
 			<warning><para>When specifying 3 == POLYGON a multipolygon is returned even when the edges are shared.  This results in an invalid multipolygon for many cases
 			such as applying this function on an <xref linkend="ST_Split" /> result.</para></warning>
 
@@ -794,13 +898,13 @@ MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
 			<para><xref linkend="ST_Multi" />, <xref linkend="ST_Dump" />, <xref linkend="ST_CollectionHomogenize" /></para>
 		</refsection>
 	</refentry>
-	
+
 		<refentry id="ST_CollectionHomogenize">
 			<refnamediv>
 				<refname>ST_CollectionHomogenize</refname>
 
 				<refpurpose>
-	Given a geometry collection, returns the "simplest" representation of the contents.
+	Given a geometry collection, return the "simplest" representation of the contents.
 				</refpurpose>
 			</refnamediv>
 
@@ -819,27 +923,27 @@ MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
 				<para>
 					Given a geometry collection, returns the "simplest" representation of the contents.  Singletons will be returned as singletons.  Collections that are homogeneous will be returned as the appropriate multi-type.
 				</para>
-				
+
 				<warning><para>When specifying 3 == POLYGON a multipolygon is returned even when the edges are shared.  This results in an invalid multipolygon for many cases
 			such as applying this function on an <xref linkend="ST_Split" /> result.</para></warning>
 
 
 				<para>Availability: 2.0.0</para>
-				
+
 			</refsection>
 
 			<refsection>
 				<title>Examples</title>
 
 				<programlisting>
-  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0))'));	
+  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0))'));
 
 	st_astext
 	------------
 	 POINT(0 0)
 	(1 row)
 
-  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1))'));	
+  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1))'));
 
 	st_astext
 	---------------------
@@ -852,14 +956,13 @@ MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
 				<title>See Also</title>
 				<para><xref linkend="ST_Multi" />, <xref linkend="ST_CollectionExtract" /></para>
 			</refsection>
-		</refentry>	
-	
+		</refentry>
+
 	<refentry id="ST_Multi">
 		<refnamediv>
 			<refname>ST_Multi</refname>
 
-			<refpurpose>Returns the geometry as a MULTI* geometry. If the geometry
-				is already a MULTI*, it is returned unchanged.</refpurpose>
+			<refpurpose>Return the geometry as a MULTI* geometry.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -897,10 +1000,73 @@ MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
 		</refsection>
 	</refentry>
 
+	<refentry id="ST_Normalize">
+		<refnamediv>
+			<refname>ST_Normalize</refname>
+
+			<refpurpose>Return the geometry in its canonical form.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_Normalize</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+        Returns the geometry in its normalized/canonical form.
+        May reorder vertices in polygon rings, rings in a polygon,
+        elements in a multi-geometry complex.
+      </para>
+
+			<para>
+        Mostly only useful for testing purposes (comparing expected
+        and obtained results).
+      </para>
+
+      <para>Availability: 2.3.0</para>
+
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+			<programlisting>
+SELECT ST_AsText(ST_Normalize(ST_GeomFromText(
+  'GEOMETRYCOLLECTION(
+    POINT(2 3),
+    MULTILINESTRING((0 0, 1 1),(2 2, 3 3)),
+    POLYGON(
+      (0 10,0 0,10 0,10 10,0 10),
+      (4 2,2 2,2 4,4 4,4 2),
+      (6 8,8 8,8 6,6 6,6 8)
+    )
+  )'
+)));
+                                                                     st_astext
+----------------------------------------------------------------------------------------------------------------------------------------------------
+ GEOMETRYCOLLECTION(POLYGON((0 0,0 10,10 10,10 0,0 0),(6 6,8 6,8 8,6 8,6 6),(2 2,4 2,4 4,2 4,2 2)),MULTILINESTRING((2 2,3 3),(0 0,1 1)),POINT(2 3))
+(1 row)
+			</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para>
+        <xref linkend="ST_Equals" />,
+      </para>
+		</refsection>
+	</refentry>
+
 	<refentry id="ST_RemovePoint">
 	  <refnamediv>
 		<refname>ST_RemovePoint</refname>
-		<refpurpose>Removes point from a linestring. Offset is 0-based.</refpurpose>
+		<refpurpose>Remove point from a linestring.</refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
@@ -915,9 +1081,9 @@ MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
 	  <refsection>
 		<title>Description</title>
 
-		<para>Removes point from a linestring.  Useful for turning a closed ring into an open line string</para>
+		<para>Remove a point from a linestring, given its 0-based index. Useful for turning a closed ring into an open line string</para>
 		<para>Availability: 1.1.0</para>
-	  	<para>&Z_support;</para>
+		<para>&Z_support;</para>
 	  </refsection>
 
 	  <refsection>
@@ -940,7 +1106,7 @@ UPDATE sometable
 	<refentry id="ST_Reverse">
 	  <refnamediv>
 		<refname>ST_Reverse</refname>
-		<refpurpose>Returns the geometry with vertex order reversed.</refpurpose>
+		<refpurpose>Return the geometry with vertex order reversed.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -956,6 +1122,10 @@ UPDATE sometable
 		<title>Description</title>
 
 		<para>Can be used on any geometry and reverses the order of the vertexes.</para>
+
+		<para>Enhanced: 2.4.0 support for curves was introduced.</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
 	  </refsection>
 
 	  <refsection>
@@ -1015,11 +1185,11 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>Enhanced: 2.0.0 additional parameters for specifying the origin of rotation were added.</para>
 		<para>Availability: 1.1.2. Name changed from Rotate to ST_Rotate in 1.2.2</para>
-	  	<para>&Z_support;</para>
-	  	<para>&curve_support;</para>
-	  	<para>&P_support;</para>
-	  	<para>&T_support;</para>
-	  	
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+
 	  </refsection>
 
 
@@ -1086,9 +1256,9 @@ FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS foo;
 
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>Availability: 1.1.2. Name changed from RotateX to ST_RotateX in 1.2.2</para>
-	  	<para>&P_support;</para>
-	  	<para>&Z_support;</para>
-	  	<para>&T_support;</para>
+		<para>&P_support;</para>
+		<para>&Z_support;</para>
+		<para>&T_support;</para>
 	  </refsection>
 
 
@@ -1139,11 +1309,11 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 
 		<para>Availability: 1.1.2. Name changed from RotateY to ST_RotateY in 1.2.2</para>
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-		
-	  	<para>&P_support;</para>
-	  	<para>&Z_support;</para>
-	  	<para>&T_support;</para>
-	  	
+
+		<para>&P_support;</para>
+		<para>&Z_support;</para>
+		<para>&T_support;</para>
+
 	  </refsection>
 
 
@@ -1194,14 +1364,14 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 			is short-hand for <code>SELECT ST_Affine(geomA,  cos(rotRadians), -sin(rotRadians), 0,  sin(rotRadians), cos(rotRadians), 0,  0, 0, 1,  0, 0, 0)</code>.</para></note>
 
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-		
+
 		<para>Availability: 1.1.2. Name changed from RotateZ to ST_RotateZ in 1.2.2</para>
 		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
-	  	<para>&Z_support;</para>
-	  	<para>&curve_support;</para>
-	  	<para>&P_support;</para>
-	  	<para>&T_support;</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
 	  </refsection>
 
 
@@ -1238,10 +1408,7 @@ FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) As 
 	  <refnamediv>
 		<refname>ST_Scale</refname>
 
-		<refpurpose>Scales the geometry to a new size by multiplying the
-			ordinates with the parameters. Ie: ST_Scale(geom, Xfactor, Yfactor,
-			Zfactor).
-			</refpurpose>
+		<refpurpose>Scale a geometry by given factors.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1290,10 +1457,10 @@ point are equivalent to no scaling the corresponding dimension.
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>Enhanced: 2.2.0 support for scaling all dimension (geometry parameter) was introduced.</para>
 		<para>&P_support;</para>
-	  	<para>&Z_support;</para>
-	  	<para>&curve_support;</para>
-	  	<para>&T_support;</para>
-	  	<para>&M_support;</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+		<para>&T_support;</para>
+		<para>&M_support;</para>
 	  </refsection>
 
 
@@ -1336,8 +1503,7 @@ SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75
 			<refname>ST_Segmentize</refname>
 
 			<refpurpose>Return a modified geometry/geography having no segment longer than the
-			given distance.  Distance computation is performed in 2d
-			only. For geometry, length units are in units of spatial reference.  For geography, units are in meters.</refpurpose>
+			given distance.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -1362,6 +1528,7 @@ SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75
 			given <varname>max_segment_length</varname>.  Distance computation is performed in 2d
 			only. For geometry, length units are in units of spatial reference.  For geography, units are in meters.</para>
 			<para>Availability: 1.2.2</para>
+			<para>Enhanced: 2.3.0 Segmentize geography now uses equal length segments</para>
 			<para>Enhanced: 2.1.0 support for geography was introduced.</para>
 			<para>Changed: 2.1.0 As a result of the introduction of geography support: The construct <code>SELECT ST_Segmentize('LINESTRING(1 2, 3 4)',0.5);</code> will result in ambiguous function error.  You need to have properly typed object e.g. a geometry/geography column, use ST_GeomFromText, ST_GeogFromText or
 				<code>SELECT ST_Segmentize('LINESTRING(1 2, 3 4)'::geometry,0.5);</code></para>
@@ -1400,8 +1567,7 @@ POLYGON((-29 28,-29.8304547985374 37.9654575824488,-30 40,-29.1695452014626 30.0
 	<refentry id="ST_SetPoint">
 		  <refnamediv>
 			<refname>ST_SetPoint</refname>
-			<refpurpose>Replace point N of linestring with given point. Index is
-			0-based.</refpurpose>
+			<refpurpose>Replace point of a linestring with a given point.</refpurpose>
 		  </refnamediv>
 		  <refsynopsisdiv>
 			 <funcsynopsis>
@@ -1418,11 +1584,12 @@ POLYGON((-29 28,-29.8304547985374 37.9654575824488,-30 40,-29.1695452014626 30.0
 			<title>Description</title>
 
 			<para>Replace point N of linestring with given point. Index is
-			0-based.
+			0-based.Negative index are counted backwards, so that -1 is last point.
 				This is especially useful in triggers when trying to maintain relationship of joints when one vertex moves.</para>
 			<para>Availability: 1.1.0</para>
+			<para>Updated 2.3.0 : negative indexing</para>
 
-	  		<para>&Z_support;</para>
+			<para>&Z_support;</para>
 		  </refsection>
 
 		  <refsection>
@@ -1440,6 +1607,14 @@ FROM (SELECT ST_GeomFromEWKT('LINESTRING(-1 2 3,-1 3 4, 5 6 7)') As the_geom) As
 	   st_asewkt
 -----------------------
 LINESTRING(-1 2 3,-1 3 4,-1 1 3)
+
+SELECT ST_AsText(ST_SetPoint(g, -3, p))
+FROM ST_GEomFromText('LINESTRING(0 0, 1 1, 2 2, 3 3, 4 4)') AS g
+	, ST_PointN(g,1) as p;
+	   st_astext
+-----------------------
+LINESTRING(0 0,1 1,0 0,3 3,4 4)
+
 			</programlisting>
 		  </refsection>
 		  <refsection>
@@ -1452,7 +1627,7 @@ LINESTRING(-1 2 3,-1 3 4,-1 1 3)
 	  <refnamediv>
 		<refname>ST_SetSRID</refname>
 
-		<refpurpose>Sets the SRID on a geometry to a particular integer
+		<refpurpose>Set the SRID on a geometry to a particular integer
 		value.</refpurpose>
 	  </refnamediv>
 
@@ -1485,7 +1660,7 @@ LINESTRING(-1 2 3,-1 3 4,-1 1 3)
 		<para>&sfs_compliant;</para>
 		<para>&curve_support;</para>
 	  </refsection>
-	  
+
 	  <refsection>
 			<title>Examples</title>
 			<para>-- Mark a point as WGS 84 long lat --</para>
@@ -1641,7 +1816,7 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Snap">
+		<refentry id="ST_Snap">
 	  <refnamediv>
 		<refname>ST_Snap</refname>
 
@@ -1669,6 +1844,8 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
  Snaps the vertices and segments of a geometry
  another Geometry's vertices.
  A snap distance tolerance is used to control where snapping is performed.
+  The result geometry is the input geometry with the vertices snapped.
+	If no snapping occurs then the input geometry is returned unchanged.
 		</para>
 		<para>
  Snapping one geometry to another can improve
@@ -1688,21 +1865,21 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 		<note>
 		  <para>
 		  The returned geometry might lose its simplicity (see
-		  <xref linkend="ST_IsSimple" />) and validity (see 
+		  <xref linkend="ST_IsSimple" />) and validity (see
 		  <xref linkend="ST_IsValid" />).
 		  </para>
 		</note>
 
 		<para>Availability: 2.0.0 requires GEOS &gt;= 3.3.0.</para>
 	  </refsection>
-	  
+
 	  <refsection>
 		<title>Examples</title>
 			<informaltable>
 				  <tgroup cols="2">
-				  	<colspec colname="column1" />
-				  	<colspec colname="column2" />
-				  	<spanspec namest="column1" nameend="column2" spanname="span-horiz" align="center" />
+					<colspec colname="column1" />
+					<colspec colname="column2" />
+					<spanspec namest="column1" nameend="column2" spanname="span-horiz" align="center" />
 					<tbody>
 					  <row>
 						<entry spanname="span-horiz"><para><informalfigure>
@@ -1721,19 +1898,19 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 							  <imageobject>
 								<imagedata fileref="images/st_snap02.png" />
 							  </imageobject>
-							  <caption><para>A multipolygon snapped to linestring to tolerance: 1.01 of distance. 
+							  <caption><para>A multipolygon snapped to linestring to tolerance: 1.01 of distance.
 							  The new multipolygon is shown with reference linestring</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
 SELECT ST_AsText(ST_Snap(poly,line, ST_Distance(poly,line)*1.01)) AS polysnapped
-FROM (SELECT 
+FROM (SELECT
    ST_GeomFromText('MULTIPOLYGON(
      ((26 125, 26 200, 126 200, 126 125, 26 125 ),
-      ( 51 150, 101 150, 76 175, 51 150 )), 
+      ( 51 150, 101 150, 76 175, 51 150 )),
       (( 151 100, 151 200, 176 175, 151 100 )))') As poly,
        ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line
-		
+
 	) As foo;
 
                              polysnapped
@@ -1747,7 +1924,7 @@ FROM (SELECT
 							  <imageobject>
 								<imagedata fileref="images/st_snap04.png" />
 							  </imageobject>
-							  <caption><para>A multipolygon snapped to linestring to tolerance: 1.25 of distance. 
+							  <caption><para>A multipolygon snapped to linestring to tolerance: 1.25 of distance.
 							  The new multipolygon is shown with reference linestring</para></caption>
 							</mediaobject>
 						  </informalfigure>
@@ -1755,13 +1932,13 @@ FROM (SELECT
 SELECT ST_AsText(
     ST_Snap(poly,line, ST_Distance(poly,line)*1.25)
   ) AS polysnapped
-FROM (SELECT 
+FROM (SELECT
   ST_GeomFromText('MULTIPOLYGON(
     (( 26 125, 26 200, 126 200, 126 125, 26 125 ),
       ( 51 150, 101 150, 76 175, 51 150 )),
       (( 151 100, 151 200, 176 175, 151 100 )))') As poly,
        ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line
-		
+
 	) As foo;
 
                              polysnapped
@@ -1777,7 +1954,7 @@ MULTIPOLYGON(((5 107,26 200,126 200,126 125,101 100,54 84,5 107),
 							  <imageobject>
 								<imagedata fileref="images/st_snap03.png" />
 							  </imageobject>
-							  <caption><para>The linestring snapped to the original multipolygon  at tolerance 1.01 of distance. 
+							  <caption><para>The linestring snapped to the original multipolygon  at tolerance 1.01 of distance.
 							  The new linestring is shown with reference multipolygon</para></caption>
 							</mediaobject>
 						  </informalfigure>
@@ -1785,10 +1962,10 @@ MULTIPOLYGON(((5 107,26 200,126 200,126 125,101 100,54 84,5 107),
 SELECT ST_AsText(
    ST_Snap(line, poly, ST_Distance(poly,line)*1.01)
   ) AS linesnapped
-FROM (SELECT 
+FROM (SELECT
   ST_GeomFromText('MULTIPOLYGON(
      ((26 125, 26 200, 126 200, 126 125, 26 125),
-      (51 150, 101 150, 76 175, 51 150 )), 
+      (51 150, 101 150, 76 175, 51 150 )),
       ((151 100, 151 200, 176 175, 151 100)))') As poly,
        ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line
 	) As foo;
@@ -1804,7 +1981,7 @@ FROM (SELECT
 							  <imageobject>
 								<imagedata fileref="images/st_snap05.png" />
 							  </imageobject>
-							  <caption><para>The linestring snapped to the original multipolygon  at tolerance 1.25 of distance. 
+							  <caption><para>The linestring snapped to the original multipolygon  at tolerance 1.25 of distance.
 							  The new linestring is shown with reference multipolygon</para></caption>
 							</mediaobject>
 						  </informalfigure>
@@ -1812,12 +1989,12 @@ FROM (SELECT
 SELECT ST_AsText(
  ST_Snap(line, poly, ST_Distance(poly,line)*1.25)
   ) AS linesnapped
-FROM (SELECT 
+FROM (SELECT
   ST_GeomFromText('MULTIPOLYGON(
      (( 26 125, 26 200, 126 200, 126 125, 26 125 ),
-      (51 150, 101 150, 76 175, 51 150 )), 
+      (51 150, 101 150, 76 175, 51 150 )),
       ((151 100, 151 200, 176 175, 151 100 )))') As poly,
-       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line	
+       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line
 	) As foo;
               linesnapped
 ---------------------------------------
@@ -1845,8 +2022,8 @@ LINESTRING(26 125,54 84,101 100)
 	  <refnamediv>
 		<refname>ST_Transform</refname>
 
-		<refpurpose>Returns a new geometry with its coordinates transformed to
-			the SRID referenced by the integer parameter.</refpurpose>
+		<refpurpose>Return a new geometry with its coordinates transformed to
+			a different spatial reference.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1856,18 +2033,50 @@ LINESTRING(26 125,54 84,101 100)
 			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
 		  </funcprototype>
+
+          <funcprototype>
+              <funcdef>geometry <function>ST_Transform</function></funcdef>
+              <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+              <paramdef><type>text </type> <parameter>to_proj</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+              <funcdef>geometry <function>ST_Transform</function></funcdef>
+              <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+              <paramdef><type>text </type> <parameter>from_proj</parameter></paramdef>
+              <paramdef><type>text </type> <parameter>to_proj</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+              <funcdef>geometry <function>ST_Transform</function></funcdef>
+              <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+              <paramdef><type>text </type> <parameter>from_proj</parameter></paramdef>
+              <paramdef><type>integer </type> <parameter>to_srid</parameter></paramdef>
+          </funcprototype>
+
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns a new geometry with its coordinates transformed to
-			spatial reference system referenced by the SRID integer parameter. The destination SRID
-			must exist in the <varname>SPATIAL_REF_SYS</varname> table.</para>
+        <para>Returns a new geometry with its coordinates transformed to
+            a different spatial reference system. The destination spatial
+			reference <varname>to_srid</varname> may be identified by a valid
+			SRID integer parameter (i.e. it must exist in the
+			<varname>spatial_ref_sys</varname> table).
+			Alternatively, a spatial reference defined as a PROJ.4 string
+			can be used for <varname>to_proj</varname> and/or
+			<varname>from_proj</varname>, however these methods are not
+			optimized. If the destination spatial reference system is
+			expressed with a PROJ.4 string instead of an SRID, the SRID of the
+			output geometry will be set to zero. With the exception of functions with
+			<varname>from_proj</varname>, input geometries must have a defined SRID.
+		</para>
+
 		<para>ST_Transform is often confused with ST_SetSRID().  ST_Transform actually changes the coordinates
 		of a geometry from one spatial reference system to another, while ST_SetSRID() simply changes the SRID identifier of
-		the geometry</para>
+		the geometry.</para>
 
 		<note>
 		  <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version" /> to confirm you have proj support compiled in.</para>
@@ -1881,6 +2090,7 @@ LINESTRING(26 125,54 84,101 100)
 		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Enhanced: 2.3.0 support for direct PROJ.4 text was introduced.</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.6</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
@@ -1889,7 +2099,7 @@ LINESTRING(26 125,54 84,101 100)
 
 	  <refsection>
 		<title>Examples</title>
-		<para>Change Mass state plane US feet geometry to WGS 84 long lat</para>
+		<para>Change Massachusetts state plane US feet geometry to WGS 84 long lat</para>
 		<programlisting>
 SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
 	743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As wgs_geom;
@@ -1920,11 +2130,40 @@ CREATE INDEX idx_the_geom_26986_parcels
   (ST_Transform(the_geom, 26986))
   WHERE the_geom IS NOT NULL;
 		</programlisting>
-	  </refsection>
 
+		<para>Examples of using PROJ.4 text to transform with custom spatial references.</para>
+		<programlisting>
+-- Find intersection of two polygons near the North pole, using a custom Gnomic projection
+-- See http://boundlessgeo.com/2012/02/flattening-the-peel/
+ WITH data AS (
+   SELECT
+     ST_GeomFromText('POLYGON((170 50,170 72,-130 72,-130 50,170 50))', 4326) AS p1,
+     ST_GeomFromText('POLYGON((-170 68,-170 90,-141 90,-141 68,-170 68))', 4326) AS p2,
+     '+proj=gnom +ellps=WGS84 +lat_0=70 +lon_0=-160 +no_defs'::text AS gnom
+ )
+ SELECT ST_AsText(
+   ST_Transform(
+     ST_Intersection(ST_Transform(p1, gnom), ST_Transform(p2, gnom)),
+   gnom, 4326))
+ FROM data;
+                                          st_astext
+ --------------------------------------------------------------------------------
+  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 74.053793645338))
+		</programlisting>
+
+	  </refsection>
 	  <refsection>
 		<title>Configuring transformation behaviour</title>
-				<para>Sometimes coordinate transformation involving a grid-shift can fail, for example if PROJ.4 has not been built with grid-shift files or the coordinate does not lie within the range for which the grid shift is defined. By default, PostGIS will throw an error if a grid shift file is not present, but this behaviour can be configured on a per-SRID basis by altering the proj4text value within the spatial_ref_sys table.</para>
+			<para>Sometimes coordinate transformation involving a grid-shift
+				can fail, for example if PROJ.4 has not been built with
+				grid-shift files or the coordinate does not lie within the
+				range for which the grid shift is defined. By default, PostGIS
+				will throw an error if a grid shift file is not present, but
+				this behaviour can be configured on a per-SRID basis either
+				by testing different <varname>to_proj</varname> values of
+				PROJ.4 text, or altering the <varname>proj4text</varname> value
+				within the <varname>spatial_ref_sys</varname> table.
+			</para>
 				<para>For example, the proj4text parameter +datum=NAD87 is a shorthand form for the following +nadgrids parameter:</para>
 				<programlisting>+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat</programlisting>
 				<para>The @ prefix means no error is reported if the files are not present, but if the end of the list is reached with no file having been appropriate (ie. found and overlapping) then an error is issued.</para>
@@ -1946,8 +2185,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 	  <refnamediv>
 		<refname>ST_Translate</refname>
 
-		<refpurpose>Translates the geometry to a new location using the numeric
-			parameters as offsets. Ie: ST_Translate(geom, X, Y) or  ST_Translate(geom, X, Y,Z).</refpurpose>
+		<refpurpose>Translate a geometry by given offsets.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2022,9 +2260,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 	  <refnamediv>
 		<refname>ST_TransScale</refname>
 
-		<refpurpose>Translates the geometry using the deltaX and deltaY args,
-			then scales it using the XFactor, YFactor args, working in 2D only.
-			</refpurpose>
+		<refpurpose>Translate a geometry by given factors and offsets.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>

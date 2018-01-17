@@ -34,6 +34,15 @@
 #include <errno.h>
 
 
+/**
+* Global variable to hold cached information about what
+* schema functions are installed in. Currently used by
+* SetSpatialRefSysSchema and GetProj4StringSPI
+*/
+static char *spatialRefSysSchema = NULL;
+
+
+
 /* Expose an internal Proj function */
 int pj_transform_nodatum(projPJ srcdefn, projPJ dstdefn, long point_count, int point_offset, double *x, double *y, double *z );
 
@@ -87,53 +96,16 @@ static void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 static bool IsPROJ4LibPathSet = false;
 void SetPROJ4LibPath(void);
 
-/* Memory context cache functions */
-static void PROJ4SRSCacheInit(MemoryContext context);
-static void PROJ4SRSCacheDelete(MemoryContext context);
-static void PROJ4SRSCacheReset(MemoryContext context);
-static bool PROJ4SRSCacheIsEmpty(MemoryContext context);
-
-#if POSTGIS_PGSQL_VERSION >= 96
-static void PROJ4SRSCacheStats(MemoryContext context, int level, bool print, MemoryContextCounters *totals);
-#else
-static void PROJ4SRSCacheStats(MemoryContext context, int level);
-#endif
-
-#ifdef MEMORY_CONTEXT_CHECKING
-static void PROJ4SRSCacheCheck(MemoryContext context);
-#endif
-
-
-/* Memory context definition must match the current version of PostgreSQL */
-static MemoryContextMethods PROJ4SRSCacheContextMethods =
-{
-	NULL,
-	NULL,
-	NULL,
-	PROJ4SRSCacheInit,
-	PROJ4SRSCacheReset,
-	PROJ4SRSCacheDelete,
-	NULL,
-	PROJ4SRSCacheIsEmpty,
-	PROJ4SRSCacheStats
-#ifdef MEMORY_CONTEXT_CHECKING
-	,PROJ4SRSCacheCheck
-#endif
-};
-
 
 static void
-PROJ4SRSCacheInit(MemoryContext context)
-{
-	/*
-	 * Do nothing as the cache is initialised when the transform()
-	 * function is first called
-	 */
-}
-
-static void
+#if POSTGIS_PGSQL_VERSION < 96
 PROJ4SRSCacheDelete(MemoryContext context)
 {
+#else
+PROJ4SRSCacheDelete(void *ptr)
+{
+	MemoryContext context = (MemoryContext)ptr;
+#endif
 	projPJ projection;
 
 	/* Lookup the projPJ pointer in the global hash table so we can free it */
@@ -143,12 +115,22 @@ PROJ4SRSCacheDelete(MemoryContext context)
 		elog(ERROR, "PROJ4SRSCacheDelete: Trying to delete non-existant projection object with MemoryContext key (%p)", (void *)context);
 
 	POSTGIS_DEBUGF(3, "deleting projection object (%p) with MemoryContext key (%p)", projection, context);
-
 	/* Free it */
 	pj_free(projection);
 
 	/* Remove the hash entry as it is no longer needed */
 	DeletePJHashEntry(context);
+}
+
+#if POSTGIS_PGSQL_VERSION < 96
+
+static void
+PROJ4SRSCacheInit(MemoryContext context)
+{
+	/*
+	 * Do nothing as the cache is initialised when the transform()
+	 * function is first called
+	 */
 }
 
 static void
@@ -167,15 +149,11 @@ PROJ4SRSCacheIsEmpty(MemoryContext context)
 	 * Always return false since this call is mandatory according to tgl
 	 * (see postgis-devel archives July 2007)
 	 */
-	return FALSE;
+	return LW_FALSE;
 }
 
 static void
-#if POSTGIS_PGSQL_VERSION >= 96
-PROJ4SRSCacheStats(MemoryContext context, int level, bool print, MemoryContextCounters *totals)
-#else
 PROJ4SRSCacheStats(MemoryContext context, int level)
-#endif
 {
 	/*
 	 * Simple stats display function - we must supply a function since this call is mandatory according to tgl
@@ -196,6 +174,24 @@ PROJ4SRSCacheCheck(MemoryContext context)
 }
 #endif
 
+/* Memory context definition must match the current version of PostgreSQL */
+static MemoryContextMethods PROJ4SRSCacheContextMethods =
+{
+	NULL,
+	NULL,
+	NULL,
+	PROJ4SRSCacheInit,
+	PROJ4SRSCacheReset,
+	PROJ4SRSCacheDelete,
+	NULL,
+	PROJ4SRSCacheIsEmpty,
+	PROJ4SRSCacheStats
+#ifdef MEMORY_CONTEXT_CHECKING
+	,PROJ4SRSCacheCheck
+#endif
+};
+
+#endif /* POSTGIS_PGSQL_VERSION < 96 */
 
 /*
  * PROJ4 projPJ Hash Table functions
@@ -277,10 +273,10 @@ static void DeletePJHashEntry(MemoryContext mcxt)
 	/* Delete the projection object from the hash */
 	he = (PJHashEntry *) hash_search(PJHash, key, HASH_REMOVE, NULL);
 
-	he->projection = NULL;
-
 	if (!he)
 		elog(ERROR, "DeletePJHashEntry: There was an error removing the PROJ4 projection object from this MemoryContext (%p)", (void *)mcxt);
+	else
+		he->projection = NULL;
 }
 
 bool
@@ -349,9 +345,25 @@ char* GetProj4StringSPI(int srid)
 		elog(ERROR, "GetProj4StringSPI: Could not connect to database using SPI");
 	}
 
-	/* Execute the lookup query */
-	snprintf(proj4_spi_buffer, 255, "SELECT proj4text FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
-	spi_result = SPI_exec(proj4_spi_buffer, 1);
+	/*
+	* This global is allocated in CacheMemoryContext (lifespan of this backend)
+	* and is set by SetSpatialRefSysSchema the first time
+	* that GetProjectionsUsingFCInfo is called.
+	*/
+	if (spatialRefSysSchema)
+	{
+		/* Format the lookup query */
+		static char *proj_str_tmpl = "SELECT proj4text FROM %s.spatial_ref_sys WHERE srid = %d LIMIT 1";
+		snprintf(proj4_spi_buffer, 255, proj_str_tmpl, spatialRefSysSchema, srid);
+	}
+	else
+	{
+		/* Format the lookup query */
+		static char *proj_str_tmpl = "SELECT proj4text FROM spatial_ref_sys WHERE srid = %d LIMIT 1";
+		snprintf(proj4_spi_buffer, 255, proj_str_tmpl, srid);
+	}
+	/* Execute the query, noting the readonly status of this SQL */
+	spi_result = SPI_execute(proj4_spi_buffer, true, 1);
 
 	/* Read back the PROJ4 text */
 	if (spi_result == SPI_OK_SELECT && SPI_processed > 0)
@@ -429,7 +441,7 @@ static char* GetProj4String(int srid)
 			int yzone = zone / 20;
 			double lat_0 = 30.0 * (yzone - 3) + 15.0;
 			double lon_0 = 0.0;
-			
+
 			/* The number of xzones is variable depending on yzone */
 			if  ( yzone == 2 || yzone == 3 )
 				lon_0 = 30.0 * (xzone - 6) + 15.0;
@@ -439,7 +451,7 @@ static char* GetProj4String(int srid)
 				lon_0 = 90.0 * (xzone - 2) + 45.0;
 			else
 				lwerror("Unknown yzone encountered!");
-			
+
 			snprintf(proj_str, maxproj4len, "+proj=laea +ellps=WGS84 +datum=WGS84 +lat_0=%g +lon_0=%g +units=m +no_defs", lat_0, lon_0);
 		}
 		/* Lambert Azimuthal Equal Area South Pole */
@@ -511,7 +523,7 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 		char *pj_errstr = pj_strerrno(*pj_get_errno_ref());
 		if ( ! pj_errstr )
 			pj_errstr = "";
-		
+
 		elog(ERROR,
 		    "AddToPROJ4SRSCache: could not parse proj4 string '%s' %s",
 		    proj_str, pj_errstr);
@@ -547,12 +559,26 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	 */
 	POSTGIS_DEBUGF(3, "adding SRID %d with proj4text \"%s\" to query cache at index %d", srid, proj_str, PROJ4Cache->PROJ4SRSCacheCount);
 
+#if POSTGIS_PGSQL_VERSION < 96
 	PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
 	                                      &PROJ4SRSCacheContextMethods,
 	                                      PROJ4Cache->PROJ4SRSCacheContext,
 	                                      "PostGIS PROJ4 PJ Memory Context");
+#else
+	PJMemoryContext = AllocSetContextCreate(PROJ4Cache->PROJ4SRSCacheContext,
+	                                        "PostGIS PROJ4 PJ Memory Context",
+	                                        ALLOCSET_SMALL_SIZES);
 
-	/* Create the backend hash if it doesn't already exist */
+	/* PgSQL comments suggest allocating callback in the context */
+	/* being managed, so that the callback object gets cleaned along with */
+	/* the context */
+	MemoryContextCallback *callback = MemoryContextAlloc(PJMemoryContext, sizeof(MemoryContextCallback));
+	callback->arg = (void*)PJMemoryContext;
+	callback->func = PROJ4SRSCacheDelete;
+	MemoryContextRegisterResetCallback(PJMemoryContext, callback);
+#endif
+
+ 	/* Create the backend hash if it doesn't already exist */
 	if (!PJHash)
 		PJHash = CreatePJHash();
 
@@ -652,51 +678,30 @@ Proj4Cache GetPROJ4Cache(FunctionCallInfo fcinfo) {
 	return (Proj4Cache)GetPROJ4SRSCache(fcinfo);
 }
 
-#if 0
-static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfo fcinfo)
+
+/*
+* Given a function call context, figure out what namespace the
+* function is being called from, and copy that into a global
+* for use by GetProj4StringSPI
+*/
+static void
+SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
 {
-	PROJ4PortalCache *PROJ4Cache = (GetGeomCache(fcinfo))->proj;
+	char *nsp_name;
 
-	/*
-	 * If we have not already created PROJ4 cache for this portal
-	 * then create it
-	 */
-	if (fcinfo->flinfo->fn_extra == NULL)
-	{
-		MemoryContext old_context;
+	/* Schema info is already cached, we're done here */
+	if (spatialRefSysSchema) return;
 
-		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-		PROJ4Cache = palloc(sizeof(PROJ4PortalCache));
-		MemoryContextSwitchTo(old_context);
+	/* For some reason we have a hobbled fcinfo/flinfo */
+	if (!fcinfo || !fcinfo->flinfo) return;
 
-		if (PROJ4Cache)
-		{
-			int i;
+	nsp_name = get_namespace_name(get_func_namespace(fcinfo->flinfo->fn_oid));
+	elog(DEBUG4, "%s located %s in namespace %s", __func__, get_func_name(fcinfo->flinfo->fn_oid), nsp_name);
 
-			POSTGIS_DEBUGF(3, "Allocating PROJ4Cache for portal with transform() MemoryContext %p", fcinfo->flinfo->fn_mcxt);
-			/* Put in any required defaults */
-			for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
-			{
-				PROJ4Cache->PROJ4SRSCache[i].srid = SRID_UNKNOWN;
-				PROJ4Cache->PROJ4SRSCache[i].projection = NULL;
-				PROJ4Cache->PROJ4SRSCache[i].projection_mcxt = NULL;
-			}
-			PROJ4Cache->PROJ4SRSCacheCount = 0;
-			PROJ4Cache->PROJ4SRSCacheContext = fcinfo->flinfo->fn_mcxt;
-
-			/* Store the pointer in fcinfo->flinfo->fn_extra */
-			fcinfo->flinfo->fn_extra = PROJ4Cache;
-		}
-	}
-	else
-	{
-		/* Use the existing cache */
-		PROJ4Cache = fcinfo->flinfo->fn_extra;
-	}
-
-	return PROJ4Cache ;
+	spatialRefSysSchema = MemoryContextAlloc(CacheMemoryContext, strlen(nsp_name)+1);
+	strcpy(spatialRefSysSchema, nsp_name);
+	return;
 }
-#endif
 
 int
 GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ *pj1, projPJ *pj2)
@@ -705,6 +710,9 @@ GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ 
 
 	/* Set the search path if we haven't already */
 	SetPROJ4LibPath();
+
+	/* Look up the spatial_ref_sys schema if we haven't already */
+	SetSpatialRefSysSchema(fcinfo);
 
 	/* get or initialize the cache for this round */
 	proj_cache = GetPROJ4Cache(fcinfo);
@@ -781,11 +789,11 @@ srs_precision srid_axis_precision(FunctionCallInfo fcinfo, int srid, int precisi
 	projPJ pj2;
 
 	srs_precision sp;
-	
+
 	sp.precision_xy = precision;
 	sp.precision_z = precision;
 	sp.precision_m = precision;
-	
+
 	if ( srid == SRID_UNKNOWN )
 		return sp;
 
@@ -797,6 +805,6 @@ srs_precision srid_axis_precision(FunctionCallInfo fcinfo, int srid, int precisi
 		sp.precision_xy += 5;
 		return sp;
 	}
-	
+
 	return sp;
 }

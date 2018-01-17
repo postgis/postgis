@@ -16,10 +16,17 @@ SELECT 9, ST_AsText(ST_RemoveRepeatedPoints('CURVEPOLYGON(CIRCULARSTRING(
                 0 2 2 4,
                 -2 0 0 0),
                 (-1 0 1 2,                                                                      0 0.5 2 4,
-                1 0 3 6,                                                                        0 1 3 4,                                                                        -1 0 1 2))'));        
+                1 0 3 6,                                                                        0 1 3 4,                                                                        -1 0 1 2))'));
 SELECT 10, ST_AsText(ST_RemoveRepeatedPoints('LINESTRING(0 0, 0 0)'));
 SELECT 11, ST_AsText(ST_RemoveRepeatedPoints('LINESTRING(0 0, 0 0, 0 0, 0 0, 0 0)'));
 SELECT 12, ST_SRID(ST_RemoveRepeatedPoints('SRID=3;LINESTRING(0 0, 0 0, 0 0, 0 0, 0 0)'));
 SELECT 13, ST_AsText(ST_RemoveRepeatedPoints('LINESTRING(0 0, 1 0, 2 0, 3 0, 4 0)',1.5));
 SELECT 14, ST_AsText(ST_RemoveRepeatedPoints('LINESTRING(10 0,10 9,10 10)', 2));
+
+-- #3670
+SELECT 15, ST_AsText(ST_RemoveRepeatedPoints('MULTIPOINT(0 0, 0 0, 1 1, 2 2)'::geometry));
+SELECT 16, ST_AsText(ST_RemoveRepeatedPoints('MULTIPOINT(0 0, 0 0, 1 1, 2 2)'::geometry,0.1));
+SELECT 17, ST_AsText(ST_RemoveRepeatedPoints('MULTIPOINT(0 0, 0 0, 1 1, 4 4)'::geometry,2));
+SELECT 18, ST_AsText(ST_RemoveRepeatedPoints('POLYGON((-215922 5325694,-218080 5321866,-218693 5322119,-216112 5325812,-215922 5325694))'::geometry, 10000));
+
 

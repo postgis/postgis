@@ -1,19 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"POT-Creation-Date: 2016-07-04 13:02+0000\n"
 "PO-Revision-Date: 2016-02-05 11:51+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/ja/)\n"
+"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
+"ja/)\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: title
@@ -34,23 +35,31 @@ msgstr "MapServerを使う"
 msgid ""
 "The Minnesota MapServer is an internet web-mapping server which conforms to "
 "the OpenGIS Web Mapping Server specification."
-msgstr "Minnesota MapServerはOpenGIS Web Mapping Server仕様を満たすウェブマッピングサーバです。"
+msgstr ""
+"Minnesota MapServerはOpenGIS Web Mapping Server仕様を満たすウェブマッピング"
+"サーバです。"
 
 #. Tag: para
 #: using_postgis_app.xml:12
 #, no-c-format
 msgid ""
-"The MapServer homepage is at <ulink "
-"url=\"http://mapserver.org\">http://mapserver.org</ulink>."
-msgstr "MapServerのウェブサイトは<ulink url=\"http://mapserver.org/\">http://mapserver.org/</ulink>です。"
+"The MapServer homepage is at <ulink url=\"http://mapserver.org\">http://"
+"mapserver.org</ulink>."
+msgstr ""
+"MapServerのウェブサイトは<ulink url=\"http://mapserver.org/\">http://"
+"mapserver.org/</ulink>です。"
 
 #. Tag: para
 #: using_postgis_app.xml:17
 #, no-c-format
 msgid ""
-"The OpenGIS Web Map Specification is at <ulink "
-"url=\"http://www.opengeospatial.org/standards/wms\">http://www.opengeospatial.org/standards/wms</ulink>."
-msgstr "The OpenGIS Web Map Specificationは<ulink url=\"http://www.opengeospatial.org/standards/wms\">http://www.opengeospatial.org/standards/wms</ulink>にあります。"
+"The OpenGIS Web Map Specification is at <ulink url=\"http://www."
+"opengeospatial.org/standards/wms\">http://www.opengeospatial.org/standards/"
+"wms</ulink>."
+msgstr ""
+"The OpenGIS Web Map Specificationは<ulink url=\"http://www.opengeospatial."
+"org/standards/wms\">http://www.opengeospatial.org/standards/wms</ulink>にあり"
+"ます。"
 
 #. Tag: title
 #: using_postgis_app.xml:23
@@ -65,7 +74,10 @@ msgid ""
 "To use PostGIS with MapServer, you will need to know about how to configure "
 "MapServer, which is beyond the scope of this documentation. This section "
 "will cover specific PostGIS issues and configuration details."
-msgstr "MapServerでPostGISを使うには、MapServerのコンフィギュレーション方法についての知識が必要ですが、この文書の範囲外です。この節では、PostGIS特有の問題とコンフィギュレーション詳細について記載します。"
+msgstr ""
+"MapServerでPostGISを使うには、MapServerのコンフィギュレーション方法についての"
+"知識が必要ですが、この文書の範囲外です。この節では、PostGIS特有の問題とコン"
+"フィギュレーション詳細について記載します。"
 
 #. Tag: para
 #: using_postgis_app.xml:30
@@ -90,11 +102,16 @@ msgstr "MapServer 3.5以上"
 #, no-c-format
 msgid ""
 "MapServer accesses PostGIS/PostgreSQL data like any other PostgreSQL client "
-"-- using the <filename>libpq</filename> interface. This means that MapServer"
-" can be installed on any machine with network access to the PostGIS server, "
+"-- using the <filename>libpq</filename> interface. This means that MapServer "
+"can be installed on any machine with network access to the PostGIS server, "
 "and use PostGIS as a source of data. The faster the connection between the "
 "systems, the better."
-msgstr "MapServerは、他のクライアントのように、<filename>libpq</filename>インタフェースを使って、PostGIS/PostgreSQLデータにアクセスします。よってMapServerはPostGISサーバにアクセスするネットワークを持つ計算機にインストールでき、PostGISをデータソースとして使用することができます。システム間の接続は速いほど良いです。"
+msgstr ""
+"MapServerは、他のクライアントのように、<filename>libpq</filename>インタフェー"
+"スを使って、PostGIS/PostgreSQLデータにアクセスします。よってMapServerは"
+"PostGISサーバにアクセスするネットワークを持つ計算機にインストールでき、"
+"PostGISをデータソースとして使用することができます。システム間の接続は速いほど"
+"良いです。"
 
 #. Tag: para
 #: using_postgis_app.xml:50
@@ -102,32 +119,65 @@ msgstr "MapServerは、他のクライアントのように、<filename>libpq</f
 msgid ""
 "Compile and install MapServer, with whatever options you desire, including "
 "the \"--with-postgis\" configuration option."
-msgstr "\"--with-postgis\"と好きなconfigureオプションを付けてMpaServerのコンパイルとインストールを行います。"
+msgstr ""
+"\"--with-postgis\"と好きなconfigureオプションを付けてMpaServerのコンパイルと"
+"インストールを行います。"
 
 #. Tag: para
 #: using_postgis_app.xml:55
 #, no-c-format
 msgid "In your MapServer map file, add a PostGIS layer. For example:"
-msgstr "Mapserverのmapファイルの中に、PostGISレイヤを追加します。たとえば次のようになります。"
+msgstr ""
+"Mapserverのmapファイルの中に、PostGISレイヤを追加します。たとえば次のようにな"
+"ります。"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:58
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"LAYER \n"
-"  CONNECTIONTYPE postgis \n"
-"  NAME \"widehighways\" \n"
+"LAYER\n"
+"  CONNECTIONTYPE postgis\n"
+"  NAME \"widehighways\"\n"
 "  # Connect to a remote spatial database\n"
 "  CONNECTION \"user=dbuser dbname=gisdatabase host=bigserver\"\n"
 "  PROCESSING \"CLOSE_CONNECTION=DEFER\"\n"
-"  # Get the lines from the 'geom' column of the 'roads' table \n"
+"  # Get the lines from the 'geom' column of the 'roads' table\n"
+"  DATA \"geom from roads using srid=4326 using unique gid\"\n"
+"  STATUS ON\n"
+"  TYPE LINE\n"
+"  # Of the lines in the extents, only render the wide highways\n"
+"  FILTER \"type = 'highway' and numlanes &gt;= 4\"\n"
+"  CLASS\n"
+"    # Make the superhighways brighter and 2 pixels wide\n"
+"    EXPRESSION ([numlanes] &gt;= 6)\n"
+"    STYLE\n"
+"      COLOR 255 22 22\n"
+"      WIDTH 2\n"
+"    END\n"
+"  END\n"
+"  CLASS\n"
+"    # All the rest are darker and only 1 pixel wide\n"
+"    EXPRESSION ([numlanes] &lt; 6)\n"
+"    STYLE\n"
+"      COLOR 205 92 82\n"
+"    END\n"
+"  END\n"
+"END"
+msgstr ""
+"LAYER \n"
+"  CONNECTIONTYPE postgis \n"
+"  NAME \"widehighways\" \n"
+"  # リモートの空間データベースに接続します\n"
+"  CONNECTION \"user=dbuser dbname=gisdatabase host=bigserver\"\n"
+"  PROCESSING \"CLOSE_CONNECTION=DEFER\"\n"
+"  # 'roads'テーブルの'geom'カラムからラインを取得します\n"
 "  DATA \"geom from roads using srid=4326 using unique gid\" \n"
 "  STATUS ON\n"
 "  TYPE LINE \n"
-"  # Of the lines in the extents, only render the wide highways \n"
+"  # 範囲内のラインである広い高速道路のみ描画します\n"
 "  FILTER \"type = 'highway' and numlanes &gt;= 4\" \n"
 "  CLASS \n"
-"    # Make the superhighways brighter and 2 pixels wide\n"
+"    # 非常に広い高速道路はより明るい色かつ2ピクセル幅にします\n"
 "    EXPRESSION ([numlanes] &gt;= 6) \n"
 "    STYLE\n"
 "      COLOR 255 22 22 \n"
@@ -135,6 +185,7 @@ msgid ""
 "    END\n"
 "  END \n"
 "  CLASS \n"
+"    # 残りは、暗い色かつ1ピクセル幅です\n"
 "    # All the rest are darker and only 1 pixel wide \n"
 "    EXPRESSION ([numlanes] &lt; 6) \n"
 "    STYLE\n"
@@ -142,7 +193,6 @@ msgid ""
 "    END\n"
 "  END \n"
 "END"
-msgstr "LAYER \n  CONNECTIONTYPE postgis \n  NAME \"widehighways\" \n  # リモートの空間データベースに接続します\n  CONNECTION \"user=dbuser dbname=gisdatabase host=bigserver\"\n  PROCESSING \"CLOSE_CONNECTION=DEFER\"\n  # 'roads'テーブルの'geom'カラムからラインを取得します\n  DATA \"geom from roads using srid=4326 using unique gid\" \n  STATUS ON\n  TYPE LINE \n  # 範囲内のラインである広い高速道路のみ描画します\n  FILTER \"type = 'highway' and numlanes &gt;= 4\" \n  CLASS \n    # 非常に広い高速道路はより明るい色かつ2ピクセル幅にします\n    EXPRESSION ([numlanes] &gt;= 6) \n    STYLE\n      COLOR 255 22 22 \n      WIDTH 2 \n    END\n  END \n  CLASS \n    # 残りは、暗い色かつ1ピクセル幅です\n    # All the rest are darker and only 1 pixel wide \n    EXPRESSION ([numlanes] &lt; 6) \n    STYLE\n      COLOR 205 92 82\n    END\n  END \nEND"
 
 #. Tag: para
 #: using_postgis_app.xml:60
@@ -173,9 +223,11 @@ msgstr "CONNECTION"
 #, no-c-format
 msgid ""
 "The database connection is governed by the a 'connection string' which is a "
-"standard set of keys and values like this (with the default values in "
-"&lt;&gt;):"
-msgstr "データベース接続は「接続文字列」によって制御されます。接続文字列は、次に示すような標準的なキーと値からなります(&lt;&gt;内はデフォルト値)。"
+"standard set of keys and values like this (with the default values in &lt;"
+"&gt;):"
+msgstr ""
+"データベース接続は「接続文字列」によって制御されます。接続文字列は、次に示す"
+"ような標準的なキーと値からなります(&lt;&gt;内はデフォルト値)。"
 
 #. Tag: para
 #: using_postgis_app.xml:80
@@ -183,16 +235,20 @@ msgstr "データベース接続は「接続文字列」によって制御され
 msgid ""
 "user=&lt;username&gt; password=&lt;password&gt; dbname=&lt;username&gt; "
 "hostname=&lt;server&gt; port=&lt;5432&gt;"
-msgstr "user=&lt;ユーザ名&gt; password=&lt;パスワード&gt; dbname=&lt;ユーザ名&gt; hostname=&lt;サーバ&gt; port=&lt;5432&gt;"
+msgstr ""
+"user=&lt;ユーザ名&gt; password=&lt;パスワード&gt; dbname=&lt;ユーザ名&gt; "
+"hostname=&lt;サーバ&gt; port=&lt;5432&gt;"
 
 #. Tag: para
 #: using_postgis_app.xml:84
 #, no-c-format
 msgid ""
 "An empty connection string is still valid, and any of the key/value pairs "
-"can be omitted. At a minimum you will generally supply the database name and"
-" username to connect with."
-msgstr "空の接続文字列も妥当とされますし、あらゆるキーと値のペアは省略できます。接続するためには一般的にはdbnameとusernameとが最少で与えるものとなります。"
+"can be omitted. At a minimum you will generally supply the database name and "
+"username to connect with."
+msgstr ""
+"空の接続文字列も妥当とされますし、あらゆるキーと値のペアは省略できます。接続"
+"するためには一般的にはdbnameとusernameとが最少で与えるものとなります。"
 
 #. Tag: term
 #: using_postgis_app.xml:92
@@ -209,16 +265,23 @@ msgid ""
 "is the spatial column to be rendered to the map, the SRID is SRID used by "
 "the column and the primary key is the table primary key (or any other "
 "uniquely-valued column with an index)."
-msgstr "このパラメータの形式は \"&lt;カラム名&gt; from &lt;テーブル名&gt; using srid=&lt;SRID&gt; using unique &lt;主キー&gt;\"となります。ここで、カラム名は地図に描画したい空間カラムを指し、SRIDはそのカラムで使われるSRIDで、主キーはそのテーブルの主キー (またはインデクスを伴う一意の値を持つカラム)です。"
+msgstr ""
+"このパラメータの形式は \"&lt;カラム名&gt; from &lt;テーブル名&gt; using "
+"srid=&lt;SRID&gt; using unique &lt;主キー&gt;\"となります。ここで、カラム名は"
+"地図に描画したい空間カラムを指し、SRIDはそのカラムで使われるSRIDで、主キーは"
+"そのテーブルの主キー (またはインデクスを伴う一意の値を持つカラム)です。"
 
 #. Tag: para
 #: using_postgis_app.xml:99
 #, no-c-format
 msgid ""
 "You can omit the \"using srid\" and \"using unique\" clauses and MapServer "
-"will automatically determine the correct values if possible, but at the cost"
-" of running a few extra queries on the server for each map draw."
-msgstr "\"using srid\"と\"using unique\"節は省略できます。MapServerは可能なら自動的に正しい値を判断しますが、地図を描画するサーバ上で余分なクエリを若干実行するコストがかかります。"
+"will automatically determine the correct values if possible, but at the cost "
+"of running a few extra queries on the server for each map draw."
+msgstr ""
+"\"using srid\"と\"using unique\"節は省略できます。MapServerは可能なら自動的に"
+"正しい値を判断しますが、地図を描画するサーバ上で余分なクエリを若干実行するコ"
+"ストがかかります。"
 
 #. Tag: term
 #: using_postgis_app.xml:106
@@ -235,7 +298,11 @@ msgid ""
 "for <ulink url=\"http://blog.cleverelephant.ca/2008/10/mapserverpostgis-"
 "performance-tips.html\">MapServer PostGIS Performance Tips</ulink> for a "
 "more detailed explanation."
-msgstr "接続を閉じずに複数のレイヤで再利用する場合にCLOSE_CONNECTION=DEFERとします。速度が改善します。詳細な説明については<ulink url=\"http://blog.cleverelephant.ca/2008/10/mapserverpostgis-performance-tips.html\">MapServer PostGIS Performance Tips</ulink>を参照して下さい。"
+msgstr ""
+"接続を閉じずに複数のレイヤで再利用する場合にCLOSE_CONNECTION=DEFERとします。"
+"速度が改善します。詳細な説明については<ulink url=\"http://blog."
+"cleverelephant.ca/2008/10/mapserverpostgis-performance-tips.html\">MapServer "
+"PostGIS Performance Tips</ulink>を参照して下さい。"
 
 #. Tag: term
 #: using_postgis_app.xml:115
@@ -250,7 +317,10 @@ msgid ""
 "The filter must be a valid SQL string corresponding to the logic normally "
 "following the \"WHERE\" keyword in a SQL query. So, for example, to render "
 "only roads with 6 or more lanes, use a filter of \"num_lanes &gt;= 6\"."
-msgstr "フィルタは、妥当なSQL文字列でなければなりません。この文字列は、通常はSQLクエリにおける\"WHERE\"に続く論理式に対応します。たとえば、6レーン以上の道路だけを描画する場合には、\"num_lanes &gt;= 6\"というフィルタを使います。"
+msgstr ""
+"フィルタは、妥当なSQL文字列でなければなりません。この文字列は、通常はSQLクエ"
+"リにおける\"WHERE\"に続く論理式に対応します。たとえば、6レーン以上の道路だけ"
+"を描画する場合には、\"num_lanes &gt;= 6\"というフィルタを使います。"
 
 #. Tag: para
 #: using_postgis_app.xml:128
@@ -258,14 +328,18 @@ msgstr "フィルタは、妥当なSQL文字列でなければなりません。
 msgid ""
 "In your spatial database, ensure you have spatial (GiST) indexes built for "
 "any the layers you will be drawing."
-msgstr "空間データベースにおいては、空間 (GiST)インデクスを、マップに描かれるレイヤ全てに構築していることを保証して下さい。"
+msgstr ""
+"空間データベースにおいては、空間 (GiST)インデクスを、マップに描かれるレイヤ全"
+"てに構築していることを保証して下さい。"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:131
 #, no-c-format
 msgid ""
 "CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] );"
-msgstr "CREATE INDEX [インデクス名] ON [テーブル名] USING GIST ( [ジオメトリカラム] );"
+msgstr ""
+"CREATE INDEX [インデクス名] ON [テーブル名] USING GIST ( [ジオメトリカラ"
+"ム] );"
 
 #. Tag: para
 #: using_postgis_app.xml:135
@@ -273,7 +347,9 @@ msgstr "CREATE INDEX [インデクス名] ON [テーブル名] USING GIST ( [ジ
 msgid ""
 "If you will be querying your layers using MapServer you will also need to "
 "use the \"using unique\" clause in your DATA statement."
-msgstr "MapServerを使用するレイヤのクエリを実行する場合には、\"using unique\"節もDATAステートメントに追加しなければなりません。"
+msgstr ""
+"MapServerを使用するレイヤのクエリを実行する場合には、\"using unique\"節もDATA"
+"ステートメントに追加しなければなりません。"
 
 #. Tag: para
 #: using_postgis_app.xml:138
@@ -283,7 +359,11 @@ msgid ""
 "queries, and the PostGIS module of MapServer uses the unique value you "
 "specify in order to provide these unique identifiers. Using the table "
 "primary key is the best practice."
-msgstr "MapServerでは、クエリ実行の際には、それぞれの空間レコードを識別するための一意な識別子が必要です。MapServerのPostGISモジュールは、一意な識別子を提供するために、ユーザ指定の一意な値を使います。テーブルの主キーを使うのが最も良い方法です。"
+msgstr ""
+"MapServerでは、クエリ実行の際には、それぞれの空間レコードを識別するための一意"
+"な識別子が必要です。MapServerのPostGISモジュールは、一意な識別子を提供するた"
+"めに、ユーザ指定の一意な値を使います。テーブルの主キーを使うのが最も良い方法"
+"です。"
 
 #. Tag: title
 #: using_postgis_app.xml:147
@@ -297,15 +377,19 @@ msgstr "よくある質問"
 msgid ""
 "When I use an <varname>EXPRESSION</varname> in my map file, the condition "
 "never returns as true, even though I know the values exist in my table."
-msgstr "<varname>EXPRESSION</varname>をマップファイルで使う時に、値がテーブルにあるのを確認しているのに条件がtrueになりません。"
+msgstr ""
+"<varname>EXPRESSION</varname>をマップファイルで使う時に、値がテーブルにあるの"
+"を確認しているのに条件がtrueになりません。"
 
 #. Tag: para
 #: using_postgis_app.xml:158
 #, no-c-format
 msgid ""
-"Unlike shape files, PostGIS field names have to be referenced in EXPRESSIONS"
-" using <emphasis>lower case</emphasis>."
-msgstr "EXPRESIONで使うフィールド名は、シェープファイルと違ってPostGISの場合<emphasis>小文字</emphasis>になります。"
+"Unlike shape files, PostGIS field names have to be referenced in EXPRESSIONS "
+"using <emphasis>lower case</emphasis>."
+msgstr ""
+"EXPRESIONで使うフィールド名は、シェープファイルと違ってPostGISの場合"
+"<emphasis>小文字</emphasis>になります。"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:162
@@ -319,7 +403,9 @@ msgstr "EXPRESSION ([numlanes] &gt;= 6)"
 msgid ""
 "The FILTER I use for my Shape files is not working for my PostGIS table of "
 "the same data."
-msgstr "シェープファイルで使っているFILTERが、同じデータを持つPostGISテーブルでは動作しません。"
+msgstr ""
+"シェープファイルで使っているFILTERが、同じデータを持つPostGISテーブルでは動作"
+"しません。"
 
 #. Tag: para
 #: using_postgis_app.xml:173
@@ -328,7 +414,10 @@ msgid ""
 "Unlike shape files, filters for PostGIS layers use SQL syntax (they are "
 "appended to the SQL statement the PostGIS connector generates for drawing "
 "layers in MapServer)."
-msgstr "シェープファイルと違い、PostGISレイヤのフィルタはSQL構文を使います (PostGISコネクタがMapServerでレイヤを描画するために生成するSQLステートメントに追加されます)。"
+msgstr ""
+"シェープファイルと違い、PostGISレイヤのフィルタはSQL構文を使います (PostGISコ"
+"ネクタがMapServerでレイヤを描画するために生成するSQLステートメントに追加され"
+"ます)。"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:177
@@ -341,7 +430,9 @@ msgstr "FILTER \"type = 'highway' and numlanes &gt;= 4\""
 #, no-c-format
 msgid ""
 "My PostGIS layer draws much slower than my Shape file layer, is this normal?"
-msgstr "PostGISレイヤの描画がシェープファイルより遅くなりますが、これが普通なのでしょうか?"
+msgstr ""
+"PostGISレイヤの描画がシェープファイルより遅くなりますが、これが普通なのでしょ"
+"うか?"
 
 #. Tag: para
 #: using_postgis_app.xml:188
@@ -351,7 +442,10 @@ msgid ""
 "likely it is that PostGIS will be slower than Shape files. For maps with "
 "relatively few features (100s), PostGIS will often be faster. For maps with "
 "high feature density (1000s), PostGIS will always be slower."
-msgstr "一般的に、地図に描画されるフィーチャーが多くなると、PostGISはシェープファイルより遅くなります。比較的少ないフィーチャー (100件台)ではPostGISの方が早く、フィーチャー密度が高くなる (1000件台)と、PostGISの方が遅くなります。"
+msgstr ""
+"一般的に、地図に描画されるフィーチャーが多くなると、PostGISはシェープファイル"
+"より遅くなります。比較的少ないフィーチャー (100件台)ではPostGISの方が早く、"
+"フィーチャー密度が高くなる (1000件台)と、PostGISの方が遅くなります。"
 
 #. Tag: para
 #: using_postgis_app.xml:194
@@ -359,22 +453,28 @@ msgstr "一般的に、地図に描画されるフィーチャーが多くなる
 msgid ""
 "If you are finding substantial draw performance problems, it is possible "
 "that you have not built a spatial index on your table."
-msgstr "重大な描画性能の問題があるようでしたら、テーブルにある空間インデクスを構築していないというのがありそうです。"
+msgstr ""
+"重大な描画性能の問題があるようでしたら、テーブルにある空間インデクスを構築し"
+"ていないというのがありそうです。"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:198
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
+"postgis# CREATE INDEX geotable_gix ON geotable USING GIST ( geocolumn );\n"
+"postgis# VACUUM ANALYZE;"
+msgstr ""
 "postgis# CREATE INDEX geotable_gix ON geotable USING GIST ( geocolumn ); \n"
 "postgis# VACUUM ANALYZE;"
-msgstr "postgis# CREATE INDEX geotable_gix ON geotable USING GIST ( geocolumn ); \npostgis# VACUUM ANALYZE;"
 
 #. Tag: para
 #: using_postgis_app.xml:204
 #, no-c-format
 msgid ""
 "My PostGIS layer draws fine, but queries are really slow. What is wrong?"
-msgstr "PostGISレイヤはちゃんと描けましたが、クエリが本当に遅いです。何が問題なのですか?"
+msgstr ""
+"PostGISレイヤはちゃんと描けましたが、クエリが本当に遅いです。何が問題なのです"
+"か?"
 
 #. Tag: para
 #: using_postgis_app.xml:209
@@ -382,15 +482,19 @@ msgstr "PostGISレイヤはちゃんと描けましたが、クエリが本当�
 msgid ""
 "For queries to be fast, you must have a unique key for your spatial table "
 "and you must have an index on that unique key."
-msgstr "クエリを早くするには、空間テーブルに一意なキーを持たせ、そのキーにインデクスを持たせなければなりません。"
+msgstr ""
+"クエリを早くするには、空間テーブルに一意なキーを持たせ、そのキーにインデクス"
+"を持たせなければなりません。"
 
 #. Tag: para
 #: using_postgis_app.xml:213
 #, no-c-format
 msgid ""
-"You can specify what unique key for mapserver to use with the <varname>USING"
-" UNIQUE</varname> clause in your <varname>DATA</varname> line:"
-msgstr "<varname>DATA</varname>行の<varname>USING UNIQUE</varname>節で、MapServerで使用する一意なキーをどれにするか指定することができます。"
+"You can specify what unique key for mapserver to use with the <varname>USING "
+"UNIQUE</varname> clause in your <varname>DATA</varname> line:"
+msgstr ""
+"<varname>DATA</varname>行の<varname>USING UNIQUE</varname>節で、MapServerで使"
+"用する一意なキーをどれにするか指定することができます。"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:217
@@ -404,7 +508,9 @@ msgstr "DATA \"geom FROM geotable USING UNIQUE gid\""
 msgid ""
 "Can I use \"geography\" columns (new in PostGIS 1.5) as a source for "
 "MapServer layers?"
-msgstr "ジオグラフィカラム (PostGIS 1.5で機能追加)をMapServerのレイヤのソースとして使用できますか?"
+msgstr ""
+"ジオグラフィカラム (PostGIS 1.5で機能追加)をMapServerのレイヤのソースとして使"
+"用できますか?"
 
 #. Tag: para
 #: using_postgis_app.xml:229
@@ -414,7 +520,10 @@ msgid ""
 "columns, but always using an SRID of 4326. Just make sure to include a "
 "\"using srid=4326\" clause in your <varname>DATA</varname> statement. "
 "Everything else works exactly the same as with geometry."
-msgstr "できます!MapServerはジオグラフィカラムをジオメトリカラムと同じに認識します。しかし、常にSRIDを4326とします。\"using srid=4326\"節を<varname>DATA</varname>ステートメントに入れて下さい。他の部分はジオメトリの場合と同じです。"
+msgstr ""
+"できます!MapServerはジオグラフィカラムをジオメトリカラムと同じに認識します。"
+"しかし、常にSRIDを4326とします。\"using srid=4326\"節を<varname>DATA</"
+"varname>ステートメントに入れて下さい。他の部分はジオメトリの場合と同じです。"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:234
@@ -434,18 +543,34 @@ msgstr "踏み込んだ使用法"
 msgid ""
 "The <varname>USING</varname> pseudo-SQL clause is used to add some "
 "information to help mapserver understand the results of more complex "
-"queries. More specifically, when either a view or a subselect is used as the"
-" source table (the thing to the right of \"FROM\" in a "
-"<varname>DATA</varname> definition) it is more difficult for mapserver to "
-"automatically determine a unique identifier for each row and also the SRID "
-"for the table. The <varname>USING</varname> clause can provide mapserver "
-"with these two pieces of information as follows:"
-msgstr "<varname>USING</varname>疑似SQL節を使ってMapServerがより複雑なクエリの結果を理解できるようにするための情報を追加します。より詳しく言うと、ビューまたは副問い合わせが元テーブル (<varname>DATA</varname>定義で\"FROM\"の右にあるもの)として使われる時、MapServerが自動的に一意な識別子がそれぞれの行にあるか、また、SRIDがテーブルにあるかを判別するのは困難です。<varname>USING</varname>節によって、MapServerがこれらの情報を得ることができます。例を次に挙げます。"
+"queries. More specifically, when either a view or a subselect is used as the "
+"source table (the thing to the right of \"FROM\" in a <varname>DATA</"
+"varname> definition) it is more difficult for mapserver to automatically "
+"determine a unique identifier for each row and also the SRID for the table. "
+"The <varname>USING</varname> clause can provide mapserver with these two "
+"pieces of information as follows:"
+msgstr ""
+"<varname>USING</varname>疑似SQL節を使ってMapServerがより複雑なクエリの結果を"
+"理解できるようにするための情報を追加します。より詳しく言うと、ビューまたは副"
+"問い合わせが元テーブル (<varname>DATA</varname>定義で\"FROM\"の右にあるもの)"
+"として使われる時、MapServerが自動的に一意な識別子がそれぞれの行にあるか、ま"
+"た、SRIDがテーブルにあるかを判別するのは困難です。<varname>USING</varname>節"
+"によって、MapServerがこれらの情報を得ることができます。例を次に挙げます。"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:255
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
+"DATA \"geom FROM (\n"
+"  SELECT\n"
+"    table1.geom AS geom,\n"
+"    table1.gid AS gid,\n"
+"    table2.data AS data\n"
+"  FROM table1\n"
+"  LEFT JOIN table2\n"
+"  ON table1.id = table2.id\n"
+") AS new_table USING UNIQUE gid USING SRID=4326\""
+msgstr ""
 "DATA \"geom FROM (\n"
 "  SELECT \n"
 "    table1.geom AS geom, \n"
@@ -455,7 +580,6 @@ msgid ""
 "  LEFT JOIN table2 \n"
 "  ON table1.id = table2.id\n"
 ") AS new_table USING UNIQUE gid USING SRID=4326\""
-msgstr "DATA \"geom FROM (\n  SELECT \n    table1.geom AS geom, \n    table1.gid AS gid, \n    table2.data AS data \n  FROM table1 \n  LEFT JOIN table2 \n  ON table1.id = table2.id\n) AS new_table USING UNIQUE gid USING SRID=4326\""
 
 #. Tag: term
 #: using_postgis_app.xml:259
@@ -470,21 +594,31 @@ msgid ""
 "MapServer requires a unique id for each row in order to identify the row "
 "when doing map queries. Normally it identifies the primary key from the "
 "system tables. However, views and subselects don't automatically have an "
-"known unique column. If you want to use MapServer's query functionality, you"
-" need to ensure your view or subselect includes a uniquely valued column, "
-"and declare it with <varname>USING UNIQUE</varname>. For example, you could "
-"explicitly select nee of the table's primary key values for this purpose, or"
-" any other column which is guaranteed to be unique for the result set."
-msgstr "MapServerは、マップクエリを実行する際、行識別のために、それぞれの行に一意な識別子を求めます。通常ならシステムテーブルから主キーを識別しますが、ビューや副問い合わせでは、一意性のあるカラムを自動的に知ることができません。MapServerのクエリ機能を使いたいなら、一意性のあるカラムをビューまたは副問い合わせに追加する必要があり、<varname>USING UNIQUE</varname>宣言を付ける必要があります。たとえば、この目的のための主キー値のテーブルでのカラム名や、結果セットで一意性が保障されたカラムを明示的にSELECTに入れることができます。"
+"known unique column. If you want to use MapServer's query functionality, you "
+"need to ensure your view or subselect includes a uniquely valued column, and "
+"declare it with <varname>USING UNIQUE</varname>. For example, you could "
+"explicitly select nee of the table's primary key values for this purpose, or "
+"any other column which is guaranteed to be unique for the result set."
+msgstr ""
+"MapServerは、マップクエリを実行する際、行識別のために、それぞれの行に一意な識"
+"別子を求めます。通常ならシステムテーブルから主キーを識別しますが、ビューや副"
+"問い合わせでは、一意性のあるカラムを自動的に知ることができません。MapServerの"
+"クエリ機能を使いたいなら、一意性のあるカラムをビューまたは副問い合わせに追加"
+"する必要があり、<varname>USING UNIQUE</varname>宣言を付ける必要があります。た"
+"とえば、この目的のための主キー値のテーブルでのカラム名や、結果セットで一意性"
+"が保障されたカラムを明示的にSELECTに入れることができます。"
 
 #. Tag: para
 #: using_postgis_app.xml:273
 #, no-c-format
 msgid ""
-"\"Querying a Map\" is the action of clicking on a map to ask for information"
-" about the map features in that location. Don't confuse \"map queries\" with"
-" the SQL query in a <varname>DATA</varname> definition."
-msgstr "「マップクエリ」はマップ上でクリックして、その場所におけるフィーチャーに関する情報を問い合わせる動作です。「マップクエリ」と<varname>DATA</varname>定義におけるSQLクエリと混同しないで下さい。"
+"\"Querying a Map\" is the action of clicking on a map to ask for information "
+"about the map features in that location. Don't confuse \"map queries\" with "
+"the SQL query in a <varname>DATA</varname> definition."
+msgstr ""
+"「マップクエリ」はマップ上でクリックして、その場所におけるフィーチャーに関す"
+"る情報を問い合わせる動作です。「マップクエリ」と<varname>DATA</varname>定義に"
+"おけるSQLクエリと混同しないで下さい。"
 
 #. Tag: term
 #: using_postgis_app.xml:282
@@ -498,12 +632,18 @@ msgstr "USING SRID=&lt;srid&gt;"
 msgid ""
 "PostGIS needs to know which spatial referencing system is being used by the "
 "geometries in order to return the correct data back to MapServer. Normally "
-"it is possible to find this information in the \"geometry_columns\" table in"
-" the PostGIS database, however, this is not possible for tables which are "
+"it is possible to find this information in the \"geometry_columns\" table in "
+"the PostGIS database, however, this is not possible for tables which are "
 "created on the fly such as subselects and views. So the <varname>USING "
 "SRID=</varname> option allows the correct SRID to be specified in the "
 "<varname>DATA</varname> definition."
-msgstr "PostGISは、MapServerに正しいデータを返すために、ジオメトリがどの空間参照系を使っているかを知る必要があります。通常は、この情報はPostGISデータベースの\"geometry_columns\"テーブルから得ることができます。しかし、副問い合わせやビューのような一時テーブルでは、この方法は不可能です。そこで、 <varname>USING SRID=</varname>オプションを使って、正しいSRIDが<varname>DATA</varname>定義で使われるように指定します。"
+msgstr ""
+"PostGISは、MapServerに正しいデータを返すために、ジオメトリがどの空間参照系を"
+"使っているかを知る必要があります。通常は、この情報はPostGISデータベースの"
+"\"geometry_columns\"テーブルから得ることができます。しかし、副問い合わせや"
+"ビューのような一時テーブルでは、この方法は不可能です。そこで、 "
+"<varname>USING SRID=</varname>オプションを使って、正しいSRIDが<varname>DATA</"
+"varname>定義で使われるように指定します。"
 
 #. Tag: title
 #: using_postgis_app.xml:300
@@ -515,14 +655,30 @@ msgstr "例"
 #: using_postgis_app.xml:302
 #, no-c-format
 msgid ""
-"Lets start with a simple example and work our way up. Consider the following"
-" MapServer layer definition:"
-msgstr "簡単な例から始めて、ステップアップしていきましょう。次のMapServerレイヤ定義を考えて下さい。"
+"Lets start with a simple example and work our way up. Consider the following "
+"MapServer layer definition:"
+msgstr ""
+"簡単な例から始めて、ステップアップしていきましょう。次のMapServerレイヤ定義を"
+"考えて下さい。"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:305
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
+"LAYER\n"
+"  CONNECTIONTYPE postgis\n"
+"  NAME \"roads\"\n"
+"  CONNECTION \"user=theuser password=thepass dbname=thedb host=theserver\"\n"
+"  DATA \"geom from roads\"\n"
+"  STATUS ON\n"
+"  TYPE LINE\n"
+"  CLASS\n"
+"    STYLE\n"
+"      COLOR 0 0 0\n"
+"    END\n"
+"  END\n"
+"END"
+msgstr ""
 "LAYER \n"
 "  CONNECTIONTYPE postgis \n"
 "  NAME \"roads\"\n"
@@ -536,7 +692,6 @@ msgid ""
 "    END\n"
 "  END \n"
 "END"
-msgstr "LAYER \n  CONNECTIONTYPE postgis \n  NAME \"roads\"\n  CONNECTION \"user=theuser password=thepass dbname=thedb host=theserver\" \n  DATA \"geom from roads\" \n  STATUS ON \n  TYPE LINE \n  CLASS \n    STYLE\n      COLOR 0 0 0 \n    END\n  END \nEND"
 
 #. Tag: para
 #: using_postgis_app.xml:307
@@ -544,7 +699,9 @@ msgstr "LAYER \n  CONNECTIONTYPE postgis \n  NAME \"roads\"\n  CONNECTION \"user
 msgid ""
 "This layer will display all the road geometries in the roads table as black "
 "lines."
-msgstr "このレイヤは\"roads\"テーブルにある道路ジオメトリの全部を黒線で表示するものです。"
+msgstr ""
+"このレイヤは\"roads\"テーブルにある道路ジオメトリの全部を黒線で表示するもので"
+"す。"
 
 #. Tag: para
 #: using_postgis_app.xml:310
@@ -552,12 +709,50 @@ msgstr "このレイヤは\"roads\"テーブルにある道路ジオメトリの
 msgid ""
 "Now lets say we want to show only the highways until we get zoomed in to at "
 "least a 1:100000 scale - the next two layers will achieve this effect:"
-msgstr "では、少なくとも1:100000にズームするまでは高速道路だけを表示したい、としましょう。次の二つのレイヤで、その効果が実現できます。"
+msgstr ""
+"では、少なくとも1:100000にズームするまでは高速道路だけを表示したい、としま"
+"しょう。次の二つのレイヤで、その効果が実現できます。"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:314
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
+"LAYER\n"
+"  CONNECTIONTYPE postgis\n"
+"  CONNECTION \"user=theuser password=thepass dbname=thedb host=theserver\"\n"
+"  PROCESSING \"CLOSE_CONNECTION=DEFER\"\n"
+"  DATA \"geom from roads\"\n"
+"  MINSCALE 100000\n"
+"  STATUS ON\n"
+"  TYPE LINE\n"
+"  FILTER \"road_type = 'highway'\"\n"
+"  CLASS\n"
+"    COLOR 0 0 0\n"
+"  END\n"
+"END\n"
+"LAYER\n"
+"  CONNECTIONTYPE postgis\n"
+"  CONNECTION \"user=theuser password=thepass dbname=thedb host=theserver\"\n"
+"  PROCESSING \"CLOSE_CONNECTION=DEFER\"\n"
+"  DATA \"geom from roads\"\n"
+"  MAXSCALE 100000\n"
+"  STATUS ON\n"
+"  TYPE LINE\n"
+"  CLASSITEM road_type\n"
+"  CLASS\n"
+"    EXPRESSION \"highway\"\n"
+"    STYLE\n"
+"      WIDTH 2\n"
+"      COLOR 255 0 0\n"
+"    END\n"
+"  END\n"
+"  CLASS\n"
+"    STYLE\n"
+"      COLOR 0 0 0\n"
+"    END\n"
+"  END\n"
+"END"
+msgstr ""
 "LAYER \n"
 "  CONNECTIONTYPE postgis \n"
 "  CONNECTION \"user=theuser password=thepass dbname=thedb host=theserver\" \n"
@@ -593,7 +788,6 @@ msgid ""
 "    END\n"
 "  END \n"
 "END"
-msgstr "LAYER \n  CONNECTIONTYPE postgis \n  CONNECTION \"user=theuser password=thepass dbname=thedb host=theserver\" \n  PROCESSING \"CLOSE_CONNECTION=DEFER\"\n  DATA \"geom from roads\"\n  MINSCALE 100000 \n  STATUS ON \n  TYPE LINE \n  FILTER \"road_type = 'highway'\" \n  CLASS \n    COLOR 0 0 0 \n  END \nEND \nLAYER \n  CONNECTIONTYPE postgis \n  CONNECTION \"user=theuser password=thepass dbname=thedb host=theserver\"\n  PROCESSING \"CLOSE_CONNECTION=DEFER\"\n  DATA \"geom from roads\" \n  MAXSCALE 100000 \n  STATUS ON \n  TYPE LINE\n  CLASSITEM road_type \n  CLASS \n    EXPRESSION \"highway\" \n    STYLE\n      WIDTH 2 \n      COLOR 255 0 0  \n    END\n  END \n  CLASS  \n    STYLE\n      COLOR 0 0 0 \n    END\n  END \nEND"
 
 #. Tag: para
 #: using_postgis_app.xml:316
@@ -601,18 +795,23 @@ msgstr "LAYER \n  CONNECTIONTYPE postgis \n  CONNECTION \"user=theuser password=
 msgid ""
 "The first layer is used when the scale is greater than 1:100000, and "
 "displays only the roads of type \"highway\" as black lines. The "
-"<varname>FILTER</varname> option causes only roads of type \"highway\" to be"
-" displayed."
-msgstr "一つ目のレイヤはスケールが1:100000以上であるときに使われ、道路タイプが\"highway\"である道路のみ黒線で表示されます。<varname>FILTER</varname>オプションによって、道路タイプが\"highway\"の場合のみ表示することになります。"
+"<varname>FILTER</varname> option causes only roads of type \"highway\" to be "
+"displayed."
+msgstr ""
+"一つ目のレイヤはスケールが1:100000以上であるときに使われ、道路タイプが"
+"\"highway\"である道路のみ黒線で表示されます。<varname>FILTER</varname>オプ"
+"ションによって、道路タイプが\"highway\"の場合のみ表示することになります。"
 
 #. Tag: para
 #: using_postgis_app.xml:321
 #, no-c-format
 msgid ""
 "The second layer is used when the scale is less than 1:100000, and will "
-"display highways as double-thick red lines, and other roads as regular black"
-" lines."
-msgstr "二つ目のレイヤはスケールが1:100000未満である時に使われ、\"highway\"は赤い二重細線で表示され、他の道路は黒線で表示されます。"
+"display highways as double-thick red lines, and other roads as regular black "
+"lines."
+msgstr ""
+"二つ目のレイヤはスケールが1:100000未満である時に使われ、\"highway\"は赤い二重"
+"細線で表示され、他の道路は黒線で表示されます。"
 
 #. Tag: para
 #: using_postgis_app.xml:325
@@ -622,12 +821,38 @@ msgid ""
 "functionality, but our <varname>DATA</varname> SQL statement has remained "
 "simple. Suppose that the name of the road is stored in another table (for "
 "whatever reason) and we need to do a join to get it and label our roads."
-msgstr "さて、MapServerの機能を使うだけで、二つのおもしろいことを実行しました。しかし、<varname>DATA</varname>のSQLステートメントは、単純なままです。道路名が (どういう理由かは知りませんが)他のテーブルに収められていて、それのデータを取得するためにテーブルを連結して、道路のラベルを取る必要がある、とします。"
+msgstr ""
+"さて、MapServerの機能を使うだけで、二つのおもしろいことを実行しました。しか"
+"し、<varname>DATA</varname>のSQLステートメントは、単純なままです。道路名が "
+"(どういう理由かは知りませんが)他のテーブルに収められていて、それのデータを取"
+"得するためにテーブルを連結して、道路のラベルを取る必要がある、とします。"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:331
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
+"LAYER\n"
+"  CONNECTIONTYPE postgis\n"
+"  CONNECTION \"user=theuser password=thepass dbname=thedb host=theserver\"\n"
+"  DATA \"geom FROM (SELECT roads.gid AS gid, roads.geom AS geom,\n"
+"        road_names.name as name FROM roads LEFT JOIN road_names ON\n"
+"        roads.road_name_id = road_names.road_name_id)\n"
+"        AS named_roads USING UNIQUE gid USING SRID=4326\"\n"
+"  MAXSCALE 20000\n"
+"  STATUS ON\n"
+"  TYPE ANNOTATION\n"
+"  LABELITEM name\n"
+"  CLASS\n"
+"    LABEL\n"
+"      ANGLE auto\n"
+"      SIZE 8\n"
+"      COLOR 0 192 0\n"
+"      TYPE truetype\n"
+"      FONT arial\n"
+"    END\n"
+"  END\n"
+"END"
+msgstr ""
 "LAYER \n"
 "  CONNECTIONTYPE postgis\n"
 "  CONNECTION \"user=theuser password=thepass dbname=thedb host=theserver\" \n"
@@ -649,16 +874,18 @@ msgid ""
 "    END\n"
 "  END \n"
 "END"
-msgstr "LAYER \n  CONNECTIONTYPE postgis\n  CONNECTION \"user=theuser password=thepass dbname=thedb host=theserver\" \n  DATA \"geom FROM (SELECT roads.gid AS gid, roads.geom AS geom, \n        road_names.name as name FROM roads LEFT JOIN road_names ON \n        roads.road_name_id = road_names.road_name_id) \n        AS named_roads USING UNIQUE gid USING SRID=4326\" \n  MAXSCALE 20000 \n  STATUS ON \n  TYPE ANNOTATION \n  LABELITEM name\n  CLASS \n    LABEL \n      ANGLE auto \n      SIZE 8 \n      COLOR 0 192 0 \n      TYPE truetype \n      FONT arial\n    END\n  END \nEND"
 
 #. Tag: para
 #: using_postgis_app.xml:333
 #, no-c-format
 msgid ""
-"This annotation layer adds green labels to all the roads when the scale gets"
-" down to 1:20000 or less. It also demonstrates how to use an SQL join in a "
+"This annotation layer adds green labels to all the roads when the scale gets "
+"down to 1:20000 or less. It also demonstrates how to use an SQL join in a "
 "<varname>DATA</varname> definition."
-msgstr "このANNOTAIONレイヤでは、縮尺が1:20000以下のときに、全ての道路に緑色のラベルを表示します。また、この例は、 <varname>DATA</varname>定義で、SQLのJOINを使用する方法も示しています。"
+msgstr ""
+"このANNOTAIONレイヤでは、縮尺が1:20000以下のときに、全ての道路に緑色のラベル"
+"を表示します。また、この例は、 <varname>DATA</varname>定義で、SQLのJOINを使用"
+"する方法も示しています。"
 
 #. Tag: title
 #: using_postgis_app.xml:340
@@ -671,16 +898,73 @@ msgstr "Javaクライアント (JDBC)"
 #, no-c-format
 msgid ""
 "Java clients can access PostGIS \"geometry\" objects in the PostgreSQL "
-"database either directly as text representations or using the JDBC extension"
-" objects bundled with PostGIS. In order to use the extension objects, the "
-"\"postgis.jar\" file must be in your CLASSPATH along with the "
-"\"postgresql.jar\" JDBC driver package."
-msgstr "Javaクライアントは、直接的にテキスト表現として、またはPostGISにバンドルされているJDBC拡張オブジェクトを使用して、PostgreSQLデータベース内にある、PostGISの\"geometry\"オブジェクトにアクセスできます。JDBC拡張オブジェクトを使うためには、\"postgis.jar\"ファイルを、JDBCドライバパッケージの\"postgresql.jar\"とともに、 CLASSPATHに置く必要があります。"
+"database either directly as text representations or using the JDBC extension "
+"objects bundled with PostGIS. In order to use the extension objects, the "
+"\"postgis.jar\" file must be in your CLASSPATH along with the \"postgresql."
+"jar\" JDBC driver package."
+msgstr ""
+"Javaクライアントは、直接的にテキスト表現として、またはPostGISにバンドルされて"
+"いるJDBC拡張オブジェクトを使用して、PostgreSQLデータベース内にある、PostGISの"
+"\"geometry\"オブジェクトにアクセスできます。JDBC拡張オブジェクトを使うために"
+"は、\"postgis.jar\"ファイルを、JDBCドライバパッケージの\"postgresql.jar\"とと"
+"もに、 CLASSPATHに置く必要があります。"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:348
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
+"import java.sql.*;\n"
+"import java.util.*;\n"
+"import java.lang.*;\n"
+"import org.postgis.*;\n"
+"\n"
+"public class JavaGIS {\n"
+"\n"
+"public static void main(String[] args) {\n"
+"\n"
+"  java.sql.Connection conn;\n"
+"\n"
+"  try {\n"
+"    /*\n"
+"    * Load the JDBC driver and establish a connection.\n"
+"    */\n"
+"    Class.forName(\"org.postgresql.Driver\");\n"
+"    String url = \"jdbc:postgresql://localhost:5432/database\";\n"
+"    conn = DriverManager.getConnection(url, \"postgres\", \"\");\n"
+"    /*\n"
+"    * Add the geometry types to the connection. Note that you\n"
+"    * must cast the connection to the pgsql-specific connection\n"
+"    * implementation before calling the addDataType() method.\n"
+"    */\n"
+"    ((org.postgresql.PGConnection)conn).addDataType(\"geometry\",Class."
+"forName(\"org.postgis.PGgeometry\"));\n"
+"    ((org.postgresql.PGConnection)conn).addDataType(\"box3d\",Class."
+"forName(\"org.postgis.PGbox3d\"));\n"
+"    /*\n"
+"    * Create a statement and execute a select query.\n"
+"    */\n"
+"    Statement s = conn.createStatement();\n"
+"    ResultSet r = s.executeQuery(\"select geom,id from geomtable\");\n"
+"    while( r.next() ) {\n"
+"      /*\n"
+"      * Retrieve the geometry as an object then cast it to the geometry "
+"type.\n"
+"      * Print things out.\n"
+"      */\n"
+"      PGgeometry geom = (PGgeometry)r.getObject(1);\n"
+"      int id = r.getInt(2);\n"
+"      System.out.println(\"Row \" + id + \":\");\n"
+"      System.out.println(geom.toString());\n"
+"    }\n"
+"    s.close();\n"
+"    conn.close();\n"
+"  }\n"
+"catch( Exception e ) {\n"
+"  e.printStackTrace();\n"
+"  }\n"
+"}\n"
+"}"
+msgstr ""
 "import java.sql.*; \n"
 "import java.util.*; \n"
 "import java.lang.*; \n"
@@ -694,27 +978,30 @@ msgid ""
 "\n"
 "  try { \n"
 "    /* \n"
-"    * Load the JDBC driver and establish a connection. \n"
+"    * JDBCドライバをロードして接続を確立します。\n"
 "    */\n"
 "    Class.forName(\"org.postgresql.Driver\"); \n"
 "    String url = \"jdbc:postgresql://localhost:5432/database\"; \n"
 "    conn = DriverManager.getConnection(url, \"postgres\", \"\"); \n"
-"    /* \n"
-"    * Add the geometry types to the connection. Note that you \n"
-"    * must cast the connection to the pgsql-specific connection \n"
-"    * implementation before calling the addDataType() method. \n"
+"    /*\n"
+"    * ジオメトリ型を接続に追加します。\n"
+"    * ご注意 : addDateType()を呼ぶ前に\n"
+"    *   接続をpgsql特有の接続実装にキャストしなければなりません。\n"
 "    */\n"
-"    ((org.postgresql.PGConnection)conn).addDataType(\"geometry\",Class.forName(\"org.postgis.PGgeometry\"));\n"
-"    ((org.postgresql.PGConnection)conn).addDataType(\"box3d\",Class.forName(\"org.postgis.PGbox3d\"));\n"
+"    ((org.postgresql.PGConnection)conn).addDataType(\"geometry\",Class."
+"forName(\"org.postgis.PGgeometry\"));\n"
+"    ((org.postgresql.PGConnection)conn).addDataType(\"box3d\",Class."
+"forName(\"org.postgis.PGbox3d\"));\n"
 "    /* \n"
-"    * Create a statement and execute a select query. \n"
+"    * ステートメントの生成とSELECTクエリの実行を行います。\n"
 "    */ \n"
 "    Statement s = conn.createStatement(); \n"
 "    ResultSet r = s.executeQuery(\"select geom,id from geomtable\"); \n"
 "    while( r.next() ) { \n"
 "      /* \n"
-"      * Retrieve the geometry as an object then cast it to the geometry type. \n"
-"      * Print things out. \n"
+"      * ジオメトリをオブジェクトとして検索してジオメトリ型にキャストしま"
+"す。\n"
+"      * オブジェクトを印字します\n"
 "      */ \n"
 "      PGgeometry geom = (PGgeometry)r.getObject(1); \n"
 "      int id = r.getInt(2); \n"
@@ -729,7 +1016,6 @@ msgid ""
 "  } \n"
 "} \n"
 "}"
-msgstr "import java.sql.*; \nimport java.util.*; \nimport java.lang.*; \nimport org.postgis.*; \n\npublic class JavaGIS { \n\npublic static void main(String[] args) { \n\n  java.sql.Connection conn; \n\n  try { \n    /* \n    * JDBCドライバをロードして接続を確立します。\n    */\n    Class.forName(\"org.postgresql.Driver\"); \n    String url = \"jdbc:postgresql://localhost:5432/database\"; \n    conn = DriverManager.getConnection(url, \"postgres\", \"\"); \n    /*\n    * ジオメトリ型を接続に追加します。\n    * ご注意 : addDateType()を呼ぶ前に\n    *   接続をpgsql特有の接続実装にキャストしなければなりません。\n    */\n    ((org.postgresql.PGConnection)conn).addDataType(\"geometry\",Class.forName(\"org.postgis.PGgeometry\"));\n    ((org.postgresql.PGConnection)conn).addDataType(\"box3d\",Class.forName(\"org.postgis.PGbox3d\"));\n    /* \n    * ステートメントの生成とSELECTクエリの実行を行います。\n    */ \n    Statement s = conn.createStatement(); \n    ResultSet r = s.executeQuery(\"select geom,id from geomtable\"); \n    while( r.next() ) { \n      /* \n      * ジオメトリをオブジェクトとして検索してジオメトリ型にキャストします。\n      * オブジェクトを印字します\n      */ \n      PGgeometry geom = (PGgeometry)r.getObject(1); \n      int id = r.getInt(2); \n      System.out.println(\"Row \" + id + \":\");\n      System.out.println(geom.toString()); \n    } \n    s.close(); \n    conn.close(); \n  } \ncatch( Exception e ) { \n  e.printStackTrace(); \n  } \n} \n}"
 
 #. Tag: para
 #: using_postgis_app.xml:350
@@ -739,12 +1025,29 @@ msgid ""
 "topological geometry object (subclasses of the abstract class \"Geometry\") "
 "depending on the type: Point, LineString, Polygon, MultiPoint, "
 "MultiLineString, MultiPolygon."
-msgstr "\"PGeometry\"オブジェクトは、Point、LineString、Polygon、MultiPoint、MultiLineString、MultiPolygonの各型に依存する、特定のトポロジカルジオメトリオブジェクト (\"Geometory\"抽象クラスの子クラス)を持つラッパオブジェクトです。"
+msgstr ""
+"\"PGeometry\"オブジェクトは、Point、LineString、Polygon、MultiPoint、"
+"MultiLineString、MultiPolygonの各型に依存する、特定のトポロジカルジオメトリオ"
+"ブジェクト (\"Geometory\"抽象クラスの子クラス)を持つラッパオブジェクトです。"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:355
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
+"PGgeometry geom = (PGgeometry)r.getObject(1);\n"
+"if( geom.getType() == Geometry.POLYGON ) {\n"
+"  Polygon pl = (Polygon)geom.getGeometry();\n"
+"  for( int r = 0; r &lt; pl.numRings(); r++) {\n"
+"    LinearRing rng = pl.getRing(r);\n"
+"    System.out.println(\"Ring: \" + r);\n"
+"    for( int p = 0; p &lt; rng.numPoints(); p++ ) {\n"
+"      Point pt = rng.getPoint(p);\n"
+"      System.out.println(\"Point: \" + p);\n"
+"      System.out.println(pt.toString());\n"
+"    }\n"
+"  }\n"
+"}"
+msgstr ""
 "PGgeometry geom = (PGgeometry)r.getObject(1); \n"
 "if( geom.getType() == Geometry.POLYGON ) { \n"
 "  Polygon pl = (Polygon)geom.getGeometry(); \n"
@@ -758,7 +1061,6 @@ msgid ""
 "    } \n"
 "  } \n"
 "}"
-msgstr "PGgeometry geom = (PGgeometry)r.getObject(1); \nif( geom.getType() == Geometry.POLYGON ) { \n  Polygon pl = (Polygon)geom.getGeometry(); \n  for( int r = 0; r &lt; pl.numRings(); r++) { \n    LinearRing rng = pl.getRing(r); \n    System.out.println(\"Ring: \" + r); \n    for( int p = 0; p &lt; rng.numPoints(); p++ ) { \n      Point pt = rng.getPoint(p); \n      System.out.println(\"Point: \" + p);\n      System.out.println(pt.toString()); \n    } \n  } \n}"
 
 #. Tag: para
 #: using_postgis_app.xml:357
@@ -766,7 +1068,9 @@ msgstr "PGgeometry geom = (PGgeometry)r.getObject(1); \nif( geom.getType() == Ge
 msgid ""
 "The JavaDoc for the extension objects provides a reference for the various "
 "data accessor functions in the geometric objects."
-msgstr "幾何オブジェクトのさまざまなデータアクセサ関数に関する参照情報については、拡張オブジェクトのJavaDocをご覧下さい。"
+msgstr ""
+"幾何オブジェクトのさまざまなデータアクセサ関数に関する参照情報については、拡"
+"張オブジェクトのJavaDocをご覧下さい。"
 
 #. Tag: title
 #: using_postgis_app.xml:362

@@ -10,7 +10,7 @@ VALUES (
 );
 
 -- Do cached and uncached distance agree?
-SELECT c, abs(ST_Distance(ply::geography, pt::geography) - _ST_DistanceUnCached(ply::geography, pt::geography)) < 0.01 FROM 
+SELECT c, abs(ST_Distance(ply::geography, pt::geography) - _ST_DistanceUnCached(ply::geography, pt::geography)) < 0.01 FROM
 ( VALUES
 ('geog_distance_cached_1a', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POINT(5 5)'),
 ('geog_distance_cached_1b', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POINT(5 5)'),
@@ -22,7 +22,7 @@ SELECT c, abs(ST_Distance(ply::geography, pt::geography) - _ST_DistanceUnCached(
 ) AS u(c,ply,pt);
 
 -- Does tolerance based distance work cached? Inside tolerance
-SELECT c, ST_DWithin(ply::geography, pt::geography, 3000) from 
+SELECT c, ST_DWithin(ply::geography, pt::geography, 3000) from
 ( VALUES
 ('geog_dithin_cached_1a', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POINT(10.01 5)'),
 ('geog_dithin_cached_1b', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POINT(10.01 5)'),
@@ -30,7 +30,7 @@ SELECT c, ST_DWithin(ply::geography, pt::geography, 3000) from
 ) as p(c, ply, pt);
 
 -- Does tolerance based distance work cached? Outside tolerance
-SELECT c, ST_DWithin(ply::geography, pt::geography, 1000) from 
+SELECT c, ST_DWithin(ply::geography, pt::geography, 1000) from
 ( VALUES
 ('geog_dithin_cached_2a', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POINT(10.01 5)'),
 ('geog_dithin_cached_2b', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POINT(10.01 5)'),
@@ -38,7 +38,7 @@ SELECT c, ST_DWithin(ply::geography, pt::geography, 1000) from
 ) as p(c, ply, pt);
 
 -- Do things work when there's cache coherence on the point side but not the poly side?
-SELECT c, ST_DWithin(ply::geography, pt::geography, 3000) from 
+SELECT c, ST_DWithin(ply::geography, pt::geography, 3000) from
 ( VALUES
 ('geog_dithin_cached_3a', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POINT(5 5)'),
 ('geog_dithin_cached_3b', 'POLYGON((1 1, 1 10, 10 10, 10 1, 1 1))', 'POINT(5 5)'),
@@ -46,8 +46,8 @@ SELECT c, ST_DWithin(ply::geography, pt::geography, 3000) from
 ) as p(c, ply, pt);
 
 -- Test a precision case near the south pole that came up during development.
-WITH pt AS ( 
-    SELECT point::geography FROM ( VALUES 
+WITH pt AS (
+    SELECT point::geography FROM ( VALUES
     ('0101000020E61000006C5B94D920EB4CC0A0FD481119B24FC0'),
     ('0101000020E610000097A8DE1AD8524CC09C8A54185B1050C0'),
     ('0101000020E61000008FC2F5285C4F4CC0E5ED08A7050F50C0'),
@@ -61,8 +61,8 @@ ply AS (
 SELECT 'geog_precision_savffir', _ST_DistanceUnCached(pt.point, ply.polygon), ST_Distance(pt.point, ply.polygon) FROM pt, ply;
 
 -- Test another precision case near the north poly and over the dateline
-WITH pt AS ( 
-    SELECT point::geography FROM ( VALUES 
+WITH pt AS (
+    SELECT point::geography FROM ( VALUES
     ('0101000020E610000000000000004065400000000000804840'),
     ('0101000020E610000075C8CD70033965C02176A6D079315040') ) AS p(point)
 ),
@@ -76,4 +76,4 @@ SELECT 'geog_precision_pazafir', _ST_DistanceUnCached(pt.point, ply.polygon), ST
 
 -- Clean up spatial_ref_sys
 DELETE FROM spatial_ref_sys WHERE srid = 4326;
-    
+

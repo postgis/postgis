@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -72,7 +72,7 @@ Datum RASTER_notSameAlignmentReason(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(RASTER_intersects);
 Datum RASTER_intersects(PG_FUNCTION_ARGS)
 {
-	const int set_count = 2;
+	const uint32_t set_count = 2;
 	rt_pgraster *pgrast[2];
 	int pgrastpos[2] = {-1, -1};
 	rt_raster rast[2] = {NULL};
@@ -168,8 +168,8 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 	}
 
 	rtn = rt_raster_intersects(
-		rast[0], (hasbandindex[0] ? bandindex[0] - 1 : -1),
-		rast[1], (hasbandindex[1] ? bandindex[1] - 1 : -1),
+		rast[0], (hasbandindex[0] ? (int)bandindex[0] - 1 : -1),
+		rast[1], (hasbandindex[1] ? (int)bandindex[1] - 1 : -1),
 		&result
 	);
 	for (k = 0; k < set_count; k++) {
@@ -191,7 +191,7 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_overlaps);
 Datum RASTER_overlaps(PG_FUNCTION_ARGS)
 {
-	const int set_count = 2;
+	const uint32_t set_count = 2;
 	rt_pgraster *pgrast[2];
 	int pgrastpos[2] = {-1, -1};
 	rt_raster rast[2] = {NULL};
@@ -287,8 +287,8 @@ Datum RASTER_overlaps(PG_FUNCTION_ARGS)
 	}
 
 	rtn = rt_raster_overlaps(
-		rast[0], (hasbandindex[0] ? bandindex[0] - 1 : -1),
-		rast[1], (hasbandindex[1] ? bandindex[1] - 1 : -1),
+		rast[0], (hasbandindex[0] ? (int)bandindex[0] - 1 : -1),
+		rast[1], (hasbandindex[1] ? (int)bandindex[1] - 1 : -1),
 		&result
 	);
 	for (k = 0; k < set_count; k++) {
@@ -310,7 +310,7 @@ Datum RASTER_overlaps(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_touches);
 Datum RASTER_touches(PG_FUNCTION_ARGS)
 {
-	const int set_count = 2;
+	const uint32_t set_count = 2;
 	rt_pgraster *pgrast[2];
 	int pgrastpos[2] = {-1, -1};
 	rt_raster rast[2] = {NULL};
@@ -406,8 +406,8 @@ Datum RASTER_touches(PG_FUNCTION_ARGS)
 	}
 
 	rtn = rt_raster_touches(
-		rast[0], (hasbandindex[0] ? bandindex[0] - 1 : -1),
-		rast[1], (hasbandindex[1] ? bandindex[1] - 1 : -1),
+		rast[0], (hasbandindex[0] ? (int)bandindex[0] - 1 : -1),
+		rast[1], (hasbandindex[1] ? (int)bandindex[1] - 1 : -1),
 		&result
 	);
 	for (k = 0; k < set_count; k++) {
@@ -429,7 +429,7 @@ Datum RASTER_touches(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_contains);
 Datum RASTER_contains(PG_FUNCTION_ARGS)
 {
-	const int set_count = 2;
+	const uint32_t set_count = 2;
 	rt_pgraster *pgrast[2];
 	int pgrastpos[2] = {-1, -1};
 	rt_raster rast[2] = {NULL};
@@ -525,8 +525,8 @@ Datum RASTER_contains(PG_FUNCTION_ARGS)
 	}
 
 	rtn = rt_raster_contains(
-		rast[0], (hasbandindex[0] ? bandindex[0] - 1 : -1),
-		rast[1], (hasbandindex[1] ? bandindex[1] - 1 : -1),
+		rast[0], (hasbandindex[0] ? (int)bandindex[0] - 1 : -1),
+		rast[1], (hasbandindex[1] ? (int)bandindex[1] - 1 : -1),
 		&result
 	);
 	for (k = 0; k < set_count; k++) {
@@ -548,7 +548,7 @@ Datum RASTER_contains(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_containsProperly);
 Datum RASTER_containsProperly(PG_FUNCTION_ARGS)
 {
-	const int set_count = 2;
+	const uint32_t set_count = 2;
 	rt_pgraster *pgrast[2];
 	int pgrastpos[2] = {-1, -1};
 	rt_raster rast[2] = {NULL};
@@ -644,8 +644,8 @@ Datum RASTER_containsProperly(PG_FUNCTION_ARGS)
 	}
 
 	rtn = rt_raster_contains_properly(
-		rast[0], (hasbandindex[0] ? bandindex[0] - 1 : -1),
-		rast[1], (hasbandindex[1] ? bandindex[1] - 1 : -1),
+		rast[0], (hasbandindex[0] ? (int)bandindex[0] - 1 : -1),
+		rast[1], (hasbandindex[1] ? (int)bandindex[1] - 1 : -1),
 		&result
 	);
 	for (k = 0; k < set_count; k++) {
@@ -667,7 +667,7 @@ Datum RASTER_containsProperly(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_covers);
 Datum RASTER_covers(PG_FUNCTION_ARGS)
 {
-	const int set_count = 2;
+	const uint32_t set_count = 2;
 	rt_pgraster *pgrast[2];
 	int pgrastpos[2] = {-1, -1};
 	rt_raster rast[2] = {NULL};
@@ -763,8 +763,8 @@ Datum RASTER_covers(PG_FUNCTION_ARGS)
 	}
 
 	rtn = rt_raster_covers(
-		rast[0], (hasbandindex[0] ? bandindex[0] - 1 : -1),
-		rast[1], (hasbandindex[1] ? bandindex[1] - 1 : -1),
+		rast[0], (hasbandindex[0] ? (int)bandindex[0] - 1 : -1),
+		rast[1], (hasbandindex[1] ? (int)bandindex[1] - 1 : -1),
 		&result
 	);
 	for (k = 0; k < set_count; k++) {
@@ -786,7 +786,7 @@ Datum RASTER_covers(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_coveredby);
 Datum RASTER_coveredby(PG_FUNCTION_ARGS)
 {
-	const int set_count = 2;
+	const uint32_t set_count = 2;
 	rt_pgraster *pgrast[2];
 	int pgrastpos[2] = {-1, -1};
 	rt_raster rast[2] = {NULL};
@@ -882,8 +882,8 @@ Datum RASTER_coveredby(PG_FUNCTION_ARGS)
 	}
 
 	rtn = rt_raster_coveredby(
-		rast[0], (hasbandindex[0] ? bandindex[0] - 1 : -1),
-		rast[1], (hasbandindex[1] ? bandindex[1] - 1 : -1),
+		rast[0], (hasbandindex[0] ? (int)bandindex[0] - 1 : -1),
+		rast[1], (hasbandindex[1] ? (int)bandindex[1] - 1 : -1),
 		&result
 	);
 	for (k = 0; k < set_count; k++) {
@@ -905,7 +905,7 @@ Datum RASTER_coveredby(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_dwithin);
 Datum RASTER_dwithin(PG_FUNCTION_ARGS)
 {
-	const int set_count = 2;
+	const uint32_t set_count = 2;
 	rt_pgraster *pgrast[2];
 	int pgrastpos[2] = {-1, -1};
 	rt_raster rast[2] = {NULL};
@@ -1022,8 +1022,8 @@ Datum RASTER_dwithin(PG_FUNCTION_ARGS)
 	}
 
 	rtn = rt_raster_within_distance(
-		rast[0], (hasbandindex[0] ? bandindex[0] - 1 : -1),
-		rast[1], (hasbandindex[1] ? bandindex[1] - 1 : -1),
+		rast[0], (hasbandindex[0] ? (int)bandindex[0] - 1 : -1),
+		rast[1], (hasbandindex[1] ? (int)bandindex[1] - 1 : -1),
 		distance,
 		&result
 	);
@@ -1046,7 +1046,7 @@ Datum RASTER_dwithin(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_dfullywithin);
 Datum RASTER_dfullywithin(PG_FUNCTION_ARGS)
 {
-	const int set_count = 2;
+	const uint32_t set_count = 2;
 	rt_pgraster *pgrast[2];
 	int pgrastpos[2] = {-1, -1};
 	rt_raster rast[2] = {NULL};
@@ -1163,8 +1163,8 @@ Datum RASTER_dfullywithin(PG_FUNCTION_ARGS)
 	}
 
 	rtn = rt_raster_fully_within_distance(
-		rast[0], (hasbandindex[0] ? bandindex[0] - 1 : -1),
-		rast[1], (hasbandindex[1] ? bandindex[1] - 1 : -1),
+		rast[0], (hasbandindex[0] ? (int)bandindex[0] - 1 : -1),
+		rast[1], (hasbandindex[1] ? (int)bandindex[1] - 1 : -1),
 		distance,
 		&result
 	);
@@ -1187,7 +1187,7 @@ Datum RASTER_dfullywithin(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_sameAlignment);
 Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 {
-	const int set_count = 2;
+	const uint32_t set_count = 2;
 	rt_pgraster *pgrast[2];
 	int pgrastpos[2] = {-1, -1};
 	rt_raster rast[2] = {NULL};
@@ -1254,7 +1254,7 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_notSameAlignmentReason);
 Datum RASTER_notSameAlignmentReason(PG_FUNCTION_ARGS)
 {
-	const int set_count = 2;
+	const uint32_t set_count = 2;
 	rt_pgraster *pgrast[2];
 	int pgrastpos[2] = {-1, -1};
 	rt_raster rast[2] = {NULL};

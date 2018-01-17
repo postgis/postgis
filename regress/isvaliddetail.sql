@@ -6,7 +6,7 @@ select 2, valid, reason, st_astext(location) FROM (
   SELECT (ST_IsValidDetail('LINESTRING (70 250, 70 250)')).*
 ) foo;
 
--- Twisted polygon 
+-- Twisted polygon
 select 3, valid, reason, st_astext(location) FROM (
   SELECT (ST_IsValidDetail(
 'POLYGON ((70 250, 70 500, 80 400, 40 400, 70 250))'

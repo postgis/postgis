@@ -4,7 +4,7 @@
 # PostGIS - Spatial Types for PostgreSQL
 # http://postgis.net
 #
-# Copyright (C) 2014 Sandro Santilli <strk@keybit.net>
+# Copyright (C) 2014 Sandro Santilli <strk@kbt.io>
 # Copyright (C) 2009-2010 Paul Ramsey <pramsey@opengeo.org>
 # Copyright (C) 2005 Refractions Research Inc.
 #
@@ -18,7 +18,7 @@
 # in postgis.sql
 #
 # In addition, the transaction contains
-# a check for Major postgis_lib_version() 
+# a check for Major postgis_lib_version()
 # to match the one contained in lwpostgis.sql
 #
 # This never happens by just running make install
@@ -34,69 +34,10 @@ use strict;
 use warnings;
 
 #
-# Conditionally upgraded types and operators. Only include these
-# if the major numbers in version_from are less than the version_to
-# number.
+# Conditionally upgraded types and operators based
+# on their last updated version and the version of
+# the target database
 #
-# TODO: move configuration outside of code
-#
-my $objs = {
- 	"102" => { 
-		"aggregates" => {
-			"st_extent(geometry)" => 1,
-			"st_memcollect(geometry)" => 1,
-			"st_memunion(geometry)" => 1,
-			"st_accum(geometry)" => 1,
-			"st_union(geometry)" => 1,
-			"st_collect(geometry)" => 1,
-			"st_polygonize(geometry)" => 1,
-			"st_makeline(geometry)" => 1
-		}
-	},
- 	"105" => { 
-		"views" => {
-			"geography_columns" => 1
-		},
-	},
- 	"200" => { 
-		"aggregates" => {
-			"st_3dextent(geometry)" => 1,
-      "topology.topoelementarray_agg(topology.topoelement)" => 1
-		}
-	},
- 	"201" => { 
-		"aggregates" => {
-			"st_samealignment(raster)" => 1,
-			"st_union(raster,unionarg[])" => 1,
-			"st_union(raster,integer,text)" => 1,
-			"st_union(raster,integer)" => 1,
-			"st_union(raster)" => 1,
-			"st_union(raster,text)" => 1
-		}
-	},
- 	"202" => { 
-		"aggregates" => {
-			"st_summarystatsagg(raster,integer,boolean,double precision)" => 1,
-			"st_summarystatsagg(raster,boolean,double precision)" => 1,
-			"st_summarystatsagg(raster,integer)" => 1,
-			"st_countagg(raster,integer,boolean,double precision)" => 1,
-			"st_countagg(raster,integer,boolean)" => 1,
-			"st_countagg(raster,boolean)" => 1
-		}
-	}
-};
-
-sub find_last_updated
-{
-  my $type = shift;
-  my $sig = shift;
-  for my $ver ( sort { $b cmp $a } keys %$objs ) {
-    if ( $objs->{$ver}->{$type}->{$sig} ) {
-      return $ver;
-    }
-  }
-  return 0;
-}
 
 sub parse_last_updated
 {
@@ -139,7 +80,7 @@ die "Unable to open input SQL file $sql_file\n"
 	if ( ! -f $sql_file );
 
 #
-# Search the SQL file for the target version number (the 
+# Search the SQL file for the target version number (the
 # version we are upgrading *to*.
 #
 open( INPUT, $sql_file ) || die "Couldn't open file: $sql_file\n";
@@ -162,7 +103,7 @@ while(<INPUT>)
         $soname = $1;
 	}
 }
-close(INPUT); 
+close(INPUT);
 
 die "Unable to locate target new version number in $sql_file\n"
  	if( ! $version_to );
@@ -170,7 +111,7 @@ die "Unable to locate target new version number in $sql_file\n"
 if ( $version_to =~ /(\d+)\.(\d+)\..*/ )
 {
 	$version_to = $1 . "." . $2;
-	$version_to_num = 100 * $1 + $2; 
+	$version_to_num = 100 * $1 + $2;
 }
 else
 {
@@ -201,7 +142,7 @@ while(<DATA>)
 }
 
 #
-# Go through the SQL file and strip out objects that cannot be 
+# Go through the SQL file and strip out objects that cannot be
 # applied to an existing, loaded database: types and operators
 # and operator classes that have already been defined.
 #
@@ -245,8 +186,7 @@ while(<INPUT>)
 
     my $last_updated = parse_last_updated($comment);
     if ( ! $last_updated ) {
-      print STDERR "WARNING: no last updated info for type '${newtype}'\n";
-      $last_updated = find_last_updated("types", $newtype);
+      die "ERROR: no last updated info for type '${newtype}'\n";
     }
     my $missing = parse_missing($comment);
     print "-- Type ${newtype} -- LastUpdated: ${last_updated}\n";
@@ -283,7 +223,7 @@ EOF
 		my $type1 = $1;
 		my $type2 = $2;
 		my $def = $_;
-    unless (/;$/) { 
+    unless (/;$/) {
       while(<INPUT>) {
         $def .= $_;
         last if /;$/;
@@ -316,8 +256,7 @@ EOF
     #print "-- Checking comment $comment\n";
     my $last_updated = parse_last_updated($comment);
     if ( ! $last_updated ) {
-      print STDERR "WARNING: no last updated info for aggregate '${aggsig}'\n";
-      $last_updated = find_last_updated("aggregates", $aggsig);
+      die "ERROR: no last updated info for aggregate '${aggsig}'\n";
     }
     print "-- Aggregate ${aggsig} -- LastUpdated: ${last_updated}\n";
       print <<"EOF";
@@ -335,7 +274,7 @@ END
 \$postgis_proc_upgrade\$;
 EOF
 	}
-	
+
 	# This code handles operators by creating them if we are doing a major upgrade
 	if ( /^create operator\s+(\S+)\s*\(/i )
 	{
@@ -352,8 +291,7 @@ EOF
 
     my $last_updated = parse_last_updated($comment);
     if ( ! $last_updated ) {
-      print STDERR "WARNING: no last updated info for operator '${opsig}'\n";
-      $last_updated = find_last_updated("operators", $opsig);
+      die "WARNING: no last updated info for operator '${opsig}'\n";
     }
     print "-- Operator ${opsig} -- LastUpdated: ${last_updated}\n";
       print <<"EOF";
@@ -379,7 +317,18 @@ EOF
 		}
 	}
 
-	# Always output create ore replace rule 
+	# Always output grant permissions (see ticket #3680)
+	if ( /^grant select\s+(\S+)\s*/i )
+	{
+		print;
+		while(<INPUT>)
+		{
+			print;
+			last if /\;\s*$/;
+		}
+	}
+
+	# Always output create ore replace rule
 	if ( /^create or replace rule\s+(\S+)\s*/i )
 	{
 		print;
@@ -388,6 +337,36 @@ EOF
 			print;
 			last if /\;\s*$/;
 		}
+	}
+
+	# This code handles operator family by creating them if we are doing a major upgrade
+	if ( /^create operator family\s+(\w+)\s+USING\s+(\w+)\s*/i )
+	{
+		my $opfname = $1;
+		my $amname = $2;
+		my $def = $_;
+		my $opfsig = $opfname . " " . $amname;
+		while(<INPUT>)
+		{
+			$def .= $_;
+			last if /\);/;
+		}
+
+	my $last_updated = parse_last_updated($comment);
+	if ( ! $last_updated ) {
+		die "WARNING: no last updated info for operator family '${opfname}'\n";
+	}
+	print "-- Operator family ${opfsig} -- LastUpdated: ${last_updated}\n";
+	print <<"EOF";
+DO LANGUAGE 'plpgsql'
+\$postgis_proc_upgrade\$
+BEGIN
+  IF $last_updated > version_from_num FROM _postgis_upgrade_info THEN
+    EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
+  END IF;
+END
+\$postgis_proc_upgrade\$;
+EOF
 	}
 
 	# This code handles operator classes by creating them if we are doing a major upgrade
@@ -433,15 +412,14 @@ EOF
 				}
 				$subcomment = '';
 			}
-			last if /\);/;
+			last if /;$/;
 		}
 		$opctype =~ tr/A-Z/a-z/;
 		$opcidx =~ tr/A-Z/a-z/;
 
     $last_updated = parse_last_updated($comment);
     if ( ! $last_updated ) {
-      print STDERR "WARNING: no last updated info for operator class '${opclassname}'\n";
-      $last_updated = find_last_updated("opclasses", $opclassname);
+      die "WARNING: no last updated info for operator class '${opclassname}'\n";
     }
     print "-- Operator class ${opclassname} -- LastUpdated: ${last_updated}\n";
     print <<"EOF";
@@ -509,7 +487,7 @@ BEGIN
 	-- Next releases will still be ok as
 	-- postgis_lib_version() and MODULE_scripts_installed()
 	-- would both return actual PostGIS release number.
-	-- 
+	--
 	BEGIN
 		SELECT into old_scripts MODULE_lib_version();
 	EXCEPTION WHEN OTHERS THEN
@@ -545,8 +523,8 @@ CREATE TEMPORARY TABLE _postgis_upgrade_info AS WITH versions AS (
   substring(installed from '([0-9]*)\.')::int * 100 +
   substring(installed from '[0-9]*\.([0-9]*)\.')::int
     as version_from_num,
-  position('dev' in  installed)::bool
+  installed ~ 'dev|alpha|beta'
     as version_from_isdev
   FROM versions
 ;
- 
+

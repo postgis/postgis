@@ -37,7 +37,7 @@ CREATE TABLE rt_band_properties_test (
     rast raster
 );
 
-INSERT INTO rt_band_properties_test 
+INSERT INTO rt_band_properties_test
 VALUES ( 1, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:3 b2pixeltype:16BSI b2hasnodatavalue:false b2nodatavalue:13',
         2, --- nbband
         '4BUI', true, 3, 2,   --- b1pixeltype, b1hasnodatavalue, b1nodatavalue, b1val
@@ -45,7 +45,7 @@ VALUES ( 1, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:
         'POLYGON((782325.5 26744042.5,782330.5 26744045.5,782333.5 26744040.5,782328.5 26744037.5,782325.5 26744042.5))',
 (
 '01' -- big endian (uint8 xdr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0200' -- nBands (uint16 2)
@@ -70,7 +70,7 @@ VALUES ( 1, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:
 ||
 '4' -- hasnodatavalue set to true
 ||
-'2' -- first band type (4BUI) 
+'2' -- first band type (4BUI)
 ||
 '03' -- novalue==3
 ||
@@ -86,7 +86,7 @@ VALUES ( 1, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:
 )::raster
 );
 
-INSERT INTO rt_band_properties_test 
+INSERT INTO rt_band_properties_test
 VALUES ( 2, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:3 b2pixeltype:16BSI b2hasnodatavalue:false b2nodatavalue:13',
         2, --- nbband
         '4BUI', true, 3, 2,   --- b1pixeltype, b1hasnodatavalue, b1nodatavalue, b1val
@@ -94,7 +94,7 @@ VALUES ( 2, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:
         'POLYGON((-75.5533328537098 49.2824585505576,-75.5525268884758 49.2826703629415,-75.5523150760919 49.2818643977075,-75.553121041326 49.2816525853236,-75.5533328537098 49.2824585505576))',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0200' -- nBands (uint16 0)
@@ -119,7 +119,7 @@ VALUES ( 2, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:
 ||
 '4' -- hasnodatavalue set to true
 ||
-'2' -- first band type (4BUI) 
+'2' -- first band type (4BUI)
 ||
 '03' -- novalue==3
 ||
@@ -135,7 +135,7 @@ VALUES ( 2, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:
 )::raster
 );
 
-INSERT INTO rt_band_properties_test 
+INSERT INTO rt_band_properties_test
 VALUES ( 3, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:3 b2pixeltype:16BSI b2hasnodatavalue:false b2nodatavalue:13',
         2, --- nbband
         '4BUI', true, 3, 3,   --- b1pixeltype, b1hasnodatavalue, b1nodatavalue, b1val
@@ -143,7 +143,7 @@ VALUES ( 3, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:
         'POLYGON((-75.5533328537098 49.2824585505576,-75.5525268884758 49.2826703629415,-75.5523150760919 49.2818643977075,-75.553121041326 49.2816525853236,-75.5533328537098 49.2824585505576))',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0200' -- nBands (uint16 0)
@@ -168,7 +168,7 @@ VALUES ( 3, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:
 ||
 '6' -- hasnodatavalue and isnodata set to true
 ||
-'2' -- first band type (4BUI) 
+'2' -- first band type (4BUI)
 ||
 '03' -- novalue==3
 ||
@@ -184,7 +184,7 @@ VALUES ( 3, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:
 )::raster
 );
 
-INSERT INTO rt_band_properties_test 
+INSERT INTO rt_band_properties_test
 VALUES ( 4, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:3 b2pixeltype:16BSI b2hasnodatavalue:false b2nodatavalue:13',
         2, --- nbband
         '4BUI', true, 3, 3,   --- b1pixeltype, b1hasnodatavalue, b1nodatavalue, b1val
@@ -192,7 +192,7 @@ VALUES ( 4, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:
         'POLYGON((-75.5533328537098 49.2824585505576,-75.5525268884758 49.2826703629415,-75.5523150760919 49.2818643977075,-75.553121041326 49.2816525853236,-75.5533328537098 49.2824585505576))',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0200' -- nBands (uint16 0)
@@ -217,7 +217,7 @@ VALUES ( 4, '1x1, nbband:2 b1pixeltype:4BUI b1hasnodatavalue:true b1nodatavalue:
 ||
 '4' -- hasnodatavalue set to true and isnodata set to false (should be updated)
 ||
-'2' -- first band type (4BUI) 
+'2' -- first band type (4BUI)
 ||
 '03' -- novalue==3
 ||

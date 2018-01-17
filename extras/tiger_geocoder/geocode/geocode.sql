@@ -29,7 +29,7 @@ BEGIN
 
     RETURN NEXT;
   END LOOP;*/
- 
+
   RETURN QUERY SELECT g.addy, g.geomout, g.rating FROM geocode(ADDY, max_results, restrict_geom) As g ORDER BY g.rating;
 
 END;
@@ -37,7 +37,7 @@ $_$ LANGUAGE plpgsql STABLE;
 
 
 CREATE OR REPLACE FUNCTION geocode(
-    IN_ADDY NORM_ADDY, 
+    IN_ADDY NORM_ADDY,
     max_results integer DEFAULT 10,
     restrict_geom geometry DEFAULT null,
     OUT ADDY NORM_ADDY,
@@ -74,7 +74,7 @@ BEGIN
               )
             *
            FROM
-             geocode_address(IN_ADDY, max_results, restrict_geom) a
+             tiger.geocode_address(IN_ADDY, max_results, restrict_geom) a
            ORDER BY
               (a.addy).address,
               (a.addy).predirabbrev,
@@ -109,7 +109,7 @@ BEGIN
 
   -- No zip code, try state/location, need both or we'll get too much stuffs.
   IF IN_ADDY.zip IS NOT NULL OR (IN_ADDY.stateAbbrev IS NOT NULL AND IN_ADDY.location IS NOT NULL) THEN
-    FOR rec in SELECT * FROM geocode_location(IN_ADDY, restrict_geom) As b ORDER BY b.rating LIMIT max_results
+    FOR rec in SELECT * FROM tiger.geocode_location(IN_ADDY, restrict_geom) As b ORDER BY b.rating LIMIT max_results
     LOOP
       ADDY := rec.addy;
       GEOMOUT := rec.geomout;

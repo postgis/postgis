@@ -1,13 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
+# nramire1 nramire1 <nramire1@yahoo.com.ar>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-02-16 08:54+0000\n"
-"PO-Revision-Date: 2015-09-29 12:24+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2017-05-29 14:56+0000\n"
+"Last-Translator: nramire1 nramire1 <nramire1@yahoo.com.ar>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
 "es/)\n"
 "Language: es\n"
@@ -33,6 +34,10 @@ msgid ""
 "<ulink url=\"http://www.sfcgal.org\">http://www.sfcgal.org</ulink>. To load "
 "the functions create extension postgis_sfcgal."
 msgstr ""
+"Las instrucciones de instalación de la biblioteca se pueden encontrar en la "
+"página principal de SFCGAL <ulink url=\"http://www.sfcgal.org\">http://"
+"www.sfcgal.org</ulink>. Para cargar las funciones crear la extensión "
+"postgis_sfcgal."
 
 #. Tag: para
 #: reference_sfcgal.xml:13
@@ -83,7 +88,7 @@ msgstr ""
 #: reference_sfcgal.xml:903
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 #. Tag: para
 #: reference_sfcgal.xml:42 reference_sfcgal.xml:74 reference_sfcgal.xml:167
@@ -91,7 +96,7 @@ msgstr ""
 #: reference_sfcgal.xml:482 reference_sfcgal.xml:707 reference_sfcgal.xml:745
 #, no-c-format
 msgid "Availability: 2.1.0"
-msgstr ""
+msgstr "Disponibilidad: 2.1.0"
 
 #. Tag: para
 #: reference_sfcgal.xml:43 reference_sfcgal.xml:75 reference_sfcgal.xml:168
@@ -112,7 +117,7 @@ msgstr ""
 #: reference_sfcgal.xml:838 reference_sfcgal.xml:879 reference_sfcgal.xml:907
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_sfcgal.xml:45 reference_sfcgal.xml:77 reference_sfcgal.xml:170
@@ -122,7 +127,7 @@ msgstr ""
 #: reference_sfcgal.xml:880 reference_sfcgal.xml:908
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_sfcgal.xml:46 reference_sfcgal.xml:78 reference_sfcgal.xml:171
@@ -132,13 +137,13 @@ msgstr ""
 #: reference_sfcgal.xml:881 reference_sfcgal.xml:909
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: refname
 #: reference_sfcgal.xml:54
 #, no-c-format
 msgid "ST_Extrude"
-msgstr ""
+msgstr "ST_Extrude"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:56
@@ -163,7 +168,7 @@ msgstr ""
 #: reference_sfcgal.xml:641 reference_sfcgal.xml:714 reference_sfcgal.xml:752
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Ejemplos"
 
 #. Tag: para
 #: reference_sfcgal.xml:82 reference_sfcgal.xml:491 reference_sfcgal.xml:567
@@ -234,7 +239,7 @@ msgstr ""
 #: reference_sfcgal.xml:677 reference_sfcgal.xml:720 reference_sfcgal.xml:851
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Ver también"
 
 #. Tag: refname
 #: reference_sfcgal.xml:150
@@ -311,7 +316,7 @@ msgstr ""
 #: reference_sfcgal.xml:836 reference_sfcgal.xml:877 reference_sfcgal.xml:905
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "Disponibilidad: 2.2.0"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:241
@@ -485,10 +490,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "SELECT ST_MinkowskiSum(line, circle))\n"
-"FROM (SELECT \n"
+"FROM (SELECT\n"
 "    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(100, 100)) As line,\n"
 "    ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;\n"
-"    \n"
+"\n"
 "-- wkt --\n"
 "MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 "
 "54.1472903395161,32.2836140246614 48.5194970290472,35.0559116309237 "
@@ -532,7 +537,7 @@ msgid ""
 "   'POLYGON((130 150, 20 40, 50 60, 125 100, 130 150))'::geometry As poly\n"
 "    ) As foo\n"
 "\n"
-"    \n"
+"\n"
 "-- wkt --\n"
 "MULTIPOLYGON(\n"
 "    ((70 115,100 135,175 175,225 225,70 115)),\n"
@@ -572,7 +577,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
-" 50, 'quad_segs=2'),0,0,30) AS geom1, \n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
 "        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
 " 50, 'quad_segs=1'),0,0,30) AS geom2;"
 msgstr ""
@@ -589,7 +594,7 @@ msgstr ""
 msgid ""
 "SELECT ST_3DIntersection(geom1,geom2)\n"
 "FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
-" 50, 'quad_segs=2'),0,0,30) AS geom1, \n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
 "        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
 " 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
 msgstr ""
@@ -633,12 +638,12 @@ msgstr ""
 msgid ""
 "SELECT ST_AsText(ST_3DIntersection(\n"
 "                ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, "
-"0 1 0, 0 0 0)), \n"
+"0 1 0, 0 0 0)),\n"
 "        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, "
-"0 0 0)), \n"
-"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"0 0 0)),\n"
+"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, "
-"0 0 1)) )'), \n"
+"0 0 1)) )'),\n"
 "        'POLYGON Z ((0 0 0, 0 0 0.5, 0 0.5 0.5, 0 0.5 0, 0 0 0))'::geometry))"
 msgstr ""
 
@@ -672,30 +677,30 @@ msgstr ""
 msgid ""
 "POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 "
 "10,13.3333333333333 13.3333333333333 10)),\n"
-"         ((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 "
+"        ((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 "
 "13.3333333333333 10,20 20 10)),\n"
-"         ((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),\n"
-"         ((13.3333333333333 13.3333333333333 10,10 10 0,20 20 "
+"        ((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),\n"
+"        ((13.3333333333333 13.3333333333333 10,10 10 0,20 20 "
 "0,13.3333333333333 13.3333333333333 10)),\n"
-"         ((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 "
+"        ((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 "
 "13.3333333333333 10,16.6666666666667 23.3333333333333 10)),\n"
-"         ((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 "
+"        ((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 "
 "10,20 20 0)),\n"
-"         ((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),"
-"((13.3333333333333 13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 "
-"13.3333333333333 10)),\n"
-"         ((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 "
+"        ((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 "
+"13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 "
 "10)),\n"
-"         ((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 "
+"        ((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 "
+"10)),\n"
+"        ((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 "
 "10,16.6666666666667 23.3333333333333 10)),\n"
-"         ((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),\n"
-"         ((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 "
+"        ((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),\n"
+"        ((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 "
 "10,12 28 10)),\n"
-"         ((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),"
+"        ((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),"
 "((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),\n"
-"         ((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 "
+"        ((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 "
 "10)),((12 28 10,11 29 10,11 11 10,12 28 10)),\n"
-"         ((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),"
+"        ((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),"
 "((11 11 10,11 29 10,2 20 10,11 11 10)))"
 msgstr ""
 
@@ -739,7 +744,7 @@ msgstr ""
 msgid ""
 "SELECT ST_3DDifference(geom1,geom2)\n"
 "FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
-" 50, 'quad_segs=2'),0,0,30) AS geom1, \n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
 "        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
 " 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
 msgstr ""
@@ -791,7 +796,7 @@ msgstr ""
 msgid ""
 "SELECT ST_3DUnion(geom1,geom2)\n"
 "FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
-" 50, 'quad_segs=2'),0,0,30) AS geom1, \n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
 "        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
 " 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
 msgstr ""
@@ -842,15 +847,15 @@ msgstr ""
 #: reference_sfcgal.xml:716
 #, no-c-format
 msgid ""
-"SELECT ST_3DArea(geom) As cube_surface_area, \n"
+"SELECT ST_3DArea(geom) As cube_surface_area,\n"
 "        ST_3DArea(ST_MakeSolid(geom)) As solid_surface_area\n"
-"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), \n"
-"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), \n"
-"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), \n"
-"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
-"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), \n"
+"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
+"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
 "    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);\n"
-"    \n"
+"\n"
 " cube_surface_area | solid_surface_area\n"
 "-------------------+--------------------\n"
 "                 6 |                  0"
@@ -899,10 +904,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 "
-"0 0)), \n"
+"0 0)),\n"
 "                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
-"1, 0 0 1, 0 0 0)), \n"
-"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"1, 0 0 1, 0 0 0)),\n"
+"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
 "1, 0 1 1, 0 0 1)) )');"
 msgstr ""
@@ -918,10 +923,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 "
-"1 1, 0 1 0, 0 0 0)), \n"
+"1 1, 0 1 0, 0 0 0)),\n"
 "        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, "
-"0 0 0)), \n"
-"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"0 0 0)),\n"
+"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, "
 "0 0 1)) )'));"
 msgstr ""
@@ -963,7 +968,7 @@ msgstr ""
 #: reference_sfcgal.xml:796
 #, no-c-format
 msgid ""
-"SELECT \n"
+"SELECT\n"
 "        ST_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 "
 "160, 120 190, 10 190 ))'::geometry);"
 msgstr ""
@@ -1015,7 +1020,7 @@ msgstr ""
 #: reference_sfcgal.xml:844
 #, no-c-format
 msgid "Example"
-msgstr ""
+msgstr "Ejemplo"
 
 #. Tag: para
 #: reference_sfcgal.xml:845
@@ -1030,15 +1035,15 @@ msgstr ""
 #: reference_sfcgal.xml:847
 #, no-c-format
 msgid ""
-"SELECT ST_Volume(geom) As cube_surface_vol, \n"
+"SELECT ST_Volume(geom) As cube_surface_vol,\n"
 "        ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol\n"
-"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), \n"
-"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), \n"
-"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), \n"
-"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
-"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), \n"
+"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
+"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
 "    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);\n"
-"    \n"
+"\n"
 " cube_surface_vol | solid_surface_vol\n"
 "------------------+-------------------\n"
 "                0 |                 1"

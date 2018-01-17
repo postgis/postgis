@@ -1,4 +1,4 @@
--- helper function to determine if street type 
+-- helper function to determine if street type
 -- should be put before or after the street name
 -- note in streettype lookup this is misnamed as is_hw
 -- because I originally thought only highways had that behavior
@@ -20,7 +20,7 @@ BEGIN
     RETURN NULL;
   END IF;
 
-  result := cull_null(input.address::text)
+  result := COALESCE(input.address_alphanumeric, cull_null(input.address::text)) 
          || COALESCE(' ' || input.preDirAbbrev, '')
          || CASE WHEN is_pretype(input.streetTypeAbbrev) THEN ' ' || input.streetTypeAbbrev  ELSE '' END
          || COALESCE(' ' || input.streetName, '')
@@ -35,7 +35,7 @@ BEGIN
          || cull_null(input.location)
          || CASE WHEN input.location IS NOT NULL THEN ', ' ELSE '' END
          || COALESCE(input.stateAbbrev || ' ' , '')
-         || cull_null(input.zip);
+         || cull_null(input.zip) || COALESCE('-' || input.zip4, '');
 
   RETURN trim(result);
 

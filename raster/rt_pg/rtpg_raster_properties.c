@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,9 +33,9 @@
 
 #include "../../postgis_config.h"
 
-#if POSTGIS_PGSQL_VERSION > 92
+
 #include "access/htup_details.h" /* for heap_form_tuple() */
-#endif
+
 
 #include "rtpostgis.h"
 
@@ -357,7 +357,7 @@ Datum RASTER_getYUpperLeft(PG_FUNCTION_ARGS)
 
 /**
  * Return the pixel width of the raster. The pixel width is
- * a read-only, dynamically computed value derived from the 
+ * a read-only, dynamically computed value derived from the
  * X Scale and the Y Skew.
  *
  * Pixel Width = sqrt( X Scale * X Scale + Y Skew * Y Skew )
@@ -393,7 +393,7 @@ Datum RASTER_getPixelWidth(PG_FUNCTION_ARGS)
 
 /**
  * Return the pixel height of the raster. The pixel height is
- * a read-only, dynamically computed value derived from the 
+ * a read-only, dynamically computed value derived from the
  * Y Scale and the X Skew.
  *
  * Pixel Height = sqrt( Y Scale * Y Scale + X Skew * X Skew )
@@ -1073,7 +1073,7 @@ Datum RASTER_setUpperLeftXY(PG_FUNCTION_ARGS)
 	if (!pgrtn)
 		PG_RETURN_NULL();
 
-	SET_VARSIZE(pgrtn, pgrtn->size); 
+	SET_VARSIZE(pgrtn, pgrtn->size);
 	PG_RETURN_POINTER(pgrtn);
 }
 
@@ -1121,7 +1121,7 @@ Datum RASTER_setGeotransform(PG_FUNCTION_ARGS)
 	rt_raster_destroy(raster);
 	PG_FREE_IF_COPY(pgraster, 0);
 	if (!pgrtn)
-		PG_RETURN_NULL(); 
+		PG_RETURN_NULL();
 
 	SET_VARSIZE(pgrtn, pgrtn->size);
 	PG_RETURN_POINTER(pgrtn);
@@ -1135,7 +1135,7 @@ Datum RASTER_setGeotransform(PG_FUNCTION_ARGS)
  * This method will set the rotation about the X axis and Y axis based on
  * the pixel size. This pixel size may not be uniform if rasters have different
  * skew values (the raster cells are diamond-shaped). If a raster has different
- * skew values has a rotation set upon it, this method will remove the 
+ * skew values has a rotation set upon it, this method will remove the
  * diamond distortions of the cells, as each axis will have the same rotation.
  */
 PG_FUNCTION_INFO_V1(RASTER_setRotation);

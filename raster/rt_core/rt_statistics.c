@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -411,14 +411,14 @@ rt_band_get_summary_stats(
 rt_histogram
 rt_band_get_histogram(
 	rt_bandstats stats,
-	int bin_count, double *bin_width, int bin_width_count,
+	uint32_t bin_count, double *bin_width, uint32_t bin_width_count,
 	int right, double min, double max,
 	uint32_t *rtn_count
 ) {
 	rt_histogram bins = NULL;
 	int init_width = 0;
-	int i;
-	int j;
+	uint32_t i;
+	uint32_t j;
 	double tmp;
 	double value;
 	int sum = 0;
@@ -1012,7 +1012,7 @@ rt_band_get_quantiles_stream(
 	int exclude_nodata_value, double sample,
 	uint64_t cov_count,
 	struct quantile_llist **qlls, uint32_t *qlls_count,
-	double *quantiles, int quantiles_count,
+	double *quantiles, uint32_t quantiles_count,
 	uint32_t *rtn_count
 ) {
 	rt_quantile rtn = NULL;
@@ -1618,7 +1618,7 @@ rt_band_get_value_count(
 	int scale = 0;
 	int doround = 0;
 	double tmpd = 0;
-	int i = 0;
+	uint32_t i = 0;
 
 	uint32_t x = 0;
 	uint32_t y = 0;
@@ -1627,8 +1627,8 @@ rt_band_get_value_count(
 	int isnodata = 0;
 	double rpxlval;
 	uint32_t total = 0;
-	int vcnts_count = 0;
-	int new_valuecount = 0;
+	uint32_t vcnts_count = 0;
+	uint32_t new_valuecount = 0;
 
 #if POSTGIS_DEBUG_LEVEL > 0
 	clock_t start, stop;
@@ -1669,7 +1669,7 @@ rt_band_get_value_count(
 	}
 	/* tenths, hundredths, thousandths, etc */
 	else if (roundto < 1) {
-    switch (pixtype) {
+	switch (pixtype) {
 			/* integer band types don't have digits after the decimal place */
 			case PT_1BB:
 			case PT_2BUI:

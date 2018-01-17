@@ -3,7 +3,6 @@ create table t(g geometry);
 select '#877.1', ST_EstimatedExtent('t','g');
 analyze t;
 select '#877.2', ST_EstimatedExtent('public', 't','g');
-SET client_min_messages TO DEBUG;
 select '#877.2.deprecated', ST_Estimated_Extent('public', 't','g');
 SET client_min_messages TO NOTICE;
 insert into t(g) values ('LINESTRING(-10 -50, 20 30)');
@@ -187,4 +186,30 @@ round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2) from e;
 
 
 drop table p cascade;
+
+--
+-- Index assisted extent generation
+--
+create table test (id serial primary key, geom1 geometry, geom2 geometry);
+create index test_x1 on test using gist (geom1);
+create index test_x2 on test using gist (geom2);
+select '1.a null', _postgis_index_extent('test', 'geom1');
+select '1.b null', _postgis_index_extent('test', 'geom2');
+insert into test (geom1, geom2) select NULL, NULL;
+insert into test (geom1, geom2) select 'POINT EMPTY', 'LINESTRING EMPTY';
+select '2.a null', _postgis_index_extent('test', 'geom1');
+select '2.b null', _postgis_index_extent('test', 'geom2');
+insert into test (geom1, geom2) select 'POINT EMPTY', 'LINESTRING EMPTY' from generate_series(0,1024);
+select '3.a null', _postgis_index_extent('test', 'geom1');
+select '3.b null', _postgis_index_extent('test', 'geom2');
+insert into test (geom1, geom2) select st_makepoint(s, s), st_makepoint(2*s, 2*s) from generate_series(-100,100) s;
+select '4.a box',_postgis_index_extent('test', 'geom1');
+select '4.b box',_postgis_index_extent('test', 'geom2');
+-- delete from test;
+-- select '5.a bad-box',_postgis_index_extent('test', 'geom1');
+-- select '5.b bad-box',_postgis_index_extent('test', 'geom2');
+-- vacuum full test;
+-- select '6.a null', _postgis_index_extent('test', 'geom1');
+-- select '6.b null', _postgis_index_extent('test', 'geom2');
+drop table test cascade;
 

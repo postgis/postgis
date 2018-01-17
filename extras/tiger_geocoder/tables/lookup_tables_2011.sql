@@ -542,7 +542,7 @@ INSERT INTO street_type_lookup (name, abbrev) VALUES ('RUE', 'Rue');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('RUN', 'Run');
 -- Start newly added 2011-7-12 --
 INSERT INTO street_type_lookup (name, abbrev)
- VALUES 
+ VALUES
  ('SERVICE DRIVE', 'Svc Dr'),
  ('SERVICE DR', 'Svc Dr'),
  ('SERVICE ROAD', 'Svc Rd'),
@@ -702,10 +702,10 @@ INSERT INTO street_type_lookup (name, abbrev) VALUES ('UPAS', 'Upas');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('UNS', 'Uns');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('WL', 'Wl');
 
--- prefix and suffix street names for highways and foreign named roads 
+-- prefix and suffix street names for highways and foreign named roads
 -- where street type is at front of streetname instead of after
 -- these usually have numbers for street names and often have spaces in type
-INSERT INTO street_type_lookup (name, abbrev, is_hw) 
+INSERT INTO street_type_lookup (name, abbrev, is_hw)
 SELECT name, abbrev, true
     FROM (VALUES
         ('CAM', 'Cam'),

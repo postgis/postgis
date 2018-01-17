@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"POT-Creation-Date: 2017-09-07 07:22+0000\n"
 "PO-Revision-Date: 2015-09-29 12:23+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/postgis/postgis/"
 "language/de_DE/)\n"
 "Language: de_DE\n"
@@ -315,10 +315,9 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:85
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"-- this should return no records if all your geom fields are filled "
-"in        \n"
+"-- this should return no records if all your geom fields are filled in\n"
 "SELECT somefield FROM mytable WHERE geom IS NULL;"
 msgstr ""
 "-- Falls alle Geometriefelder gefüllt sind, sollte dies keine Datensätze "
@@ -531,12 +530,12 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:166
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"INSERT INTO gtest (ID, NAME, GEOM) \n"
+"INSERT INTO gtest (ID, NAME, GEOM)\n"
 "VALUES (\n"
-"  1, \n"
-"  'First Geometry', \n"
+"  1,\n"
+"  'First Geometry',\n"
 "  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
 ");"
 msgstr ""
@@ -577,11 +576,11 @@ msgstr "Der Rückgabewert sollte etwa so aussehen:"
 
 #. Tag: programlisting
 #: faq.xml:177
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "id | name           | geom\n"
 "----+----------------+-----------------------------\n"
-"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8) \n"
+"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
 "(1 row)"
 msgstr ""
 "id | name           | geom\n"
@@ -656,11 +655,11 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:210
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"SELECT id, the_geom \n"
-"FROM thetable \n"
-"WHERE \n"
+"SELECT id, the_geom\n"
+"FROM thetable\n"
+"WHERE\n"
 "  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 msgstr ""
 "SELECT id, the_geom \n"
@@ -913,9 +912,9 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:330
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"SELECT * FROM geotable \n"
+"SELECT * FROM geotable\n"
 "WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
 msgstr ""
 "SELECT * FROM geotable \n"
@@ -1029,12 +1028,12 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:383
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Almost certainly not. As an example, consider Oracle database running on "
-"Linux. Linux is GPL, Oracle is not, does Oracle running on Linux have to be "
-"distributed using the GPL? No. So your software can use a PostgreSQL/PostGIS "
-"database as much as it wants and be under any license you like."
+"Linux. Linux is GPL, Oracle is not: does Oracle running on Linux have to be "
+"distributed using the GPL? No. Similarly your software can use a PostgreSQL/"
+"PostGIS database as much as it wants and be under any license you like."
 msgstr ""
 "Höchstwahrscheinlich nicht. Oracle-Datenbanken laufen zum Beispiel unter "
 "Linux. Linux steht unter der GPL, Oracles Datenbank nicht. Muss Oracles "
@@ -1044,15 +1043,16 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:384
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The only exception would be if you made changes to the PostGIS source code, "
-"and distributed your changed version of PostGIS. In that case you would have "
-"to share the code of your changed PostGIS (but not the code of applications "
-"running on top of it). Even in this limited case, you would still only have "
-"to distribute source code to people you distributed binaries to. The GPL "
-"does not require that you <emphasis>publish</emphasis> your source code, "
-"only that you share it with people you give binaries to."
+"and <emphasis>distributed your changed version</emphasis> of PostGIS. In "
+"that case you would have to share the code of your changed PostGIS (but not "
+"the code of applications running on top of it). Even in this limited case, "
+"you would still only have to distribute source code to people you "
+"distributed binaries to. The GPL does not require that you "
+"<emphasis>publish</emphasis> your source code, only that you share it with "
+"people you give binaries to."
 msgstr ""
 "Die einzige Ausnahme wäre, wenn Sie Veränderungen am PostGIS-Quellcode "
 "vorgenommen hätten und Ihre veränderte Version von PostGIS verteilen würden. "
@@ -1062,3 +1062,13 @@ msgstr ""
 "Binärcode weitergegeben haben. Die GPL verlangt nicht, dass Sie Ihren "
 "Quellcode <emphasis>veröffentlichen</emphasis>, nur dass Sie ihn mit Leuten "
 "teilen, denen Sie Binärcode geben."
+
+#. Tag: para
+#: faq.xml:385
+#, no-c-format
+msgid ""
+"The above remains true even if you use PostGIS in conjunction with the "
+"optional CGAL-enabled functions. Portions of CGAL are GPL, but so is all of "
+"PostGIS already: using CGAL does not make PostGIS any more GPL than it was "
+"to start with."
+msgstr ""

@@ -1,4 +1,4 @@
-/* -- err_param.c 
+/* -- err_param.c
 
 This file handles the buffering and output of errors
 
@@ -39,7 +39,7 @@ static int turn_off_error_log( ERR_PARAM * ) ;
    err_mem = err_p -> err_array  ; \
    err_p -> error_buf = err_mem -> content_buf ; \
    err_mem -> is_fatal = TRUE ; \
-   BLANK_STRING( err_mem -> content_buf ) 
+   BLANK_STRING( err_mem -> content_buf )
 
 
 
@@ -79,10 +79,10 @@ ERR_PARAM *init_errors( PAGC_GLOBAL *pagc_glo_p ,
                        log_name ) ;
 #endif
          return NULL ;
-      }                  
+      }
    }
    return err_p ;
-}   
+}
 
 
 /* ------------------------------------------------------------
@@ -115,7 +115,7 @@ void close_errors( ERR_PARAM *err_p ) {
 #endif
       }
       BLANK_STRING( err_out_buf ) ;
-   }    
+   }
    FREE_AND_NULL( err_p ) ;
 }
 
@@ -127,8 +127,8 @@ stdio.h (fclose)
 static int turn_off_error_log( ERR_PARAM *err_p ) {
    ERR_REC *err_mem ;
 
-   if ( ( err_p == NULL ) || 
-        ( err_p -> stream == NULL ) ) { 
+   if ( ( err_p == NULL ) ||
+        ( err_p -> stream == NULL ) ) {
       return FALSE ;
    }
    fclose( err_p -> stream ) ;
@@ -140,7 +140,7 @@ static int turn_off_error_log( ERR_PARAM *err_p ) {
 /* ----------------------------------------------------------
 err_param.c (empty_errors)
 calls : err_param.c (turn_off_error_log)
-returns FALSE when all errors have been reported. 
+returns FALSE when all errors have been reported.
 TRUE otherwise
 ------------------------------------------------------------*/
 int empty_errors( ERR_PARAM *err_p ,
@@ -148,7 +148,7 @@ int empty_errors( ERR_PARAM *err_p ,
                   char *err_dest ) {
 
    ERR_REC *err_mem ;
-	
+
    if ( err_p == NULL ) {
       return FALSE ;
    }
@@ -168,7 +168,7 @@ int empty_errors( ERR_PARAM *err_p ,
    err_mem = err_p -> err_array + err_p -> first_err ;
    append_string_to_max( err_dest ,
                          err_mem -> content_buf ,
-                         MAXSTRLEN ) ;   
+                         MAXSTRLEN ) ;
    *is_fatal = err_mem -> is_fatal ;
 
    /* -- update the low mark -- */
@@ -219,7 +219,7 @@ void register_error( ERR_PARAM *err_p ) {
    if ( strlen( err_p -> error_buf ) > MAXSTRLEN ) {
 #ifndef NO_STDERR_OUTPUT
       PRINT_ERROR( "Error message %s is too long" ,
-                    err_p -> error_buf ) ; 
+                    err_p -> error_buf ) ;
 #endif
       return ;
    }
@@ -253,16 +253,16 @@ void register_error( ERR_PARAM *err_p ) {
       }
    } else {
       /* -- last_err points to the next one to fill -- */
-      err_p -> last_err ++ ; 
+      err_p -> last_err ++ ;
       err_mem = err_p -> err_array + err_p -> last_err  ;
    }
 
    /* -- reset error_buf to the new content_buf -- */
-   err_p -> error_buf = err_mem -> content_buf ; 
+   err_p -> error_buf = err_mem -> content_buf ;
    BLANK_STRING( err_mem -> content_buf ) ;
    err_p -> next_fatal = TRUE ;
    return ;
-} 
+}
 
 
 /*==========================================

@@ -38,7 +38,7 @@ LWPSURFACE* lwpsurface_add_lwpoly(LWPSURFACE *mobj, const LWPOLY *obj)
 
 void lwpsurface_free(LWPSURFACE *psurf)
 {
-	int i;
+	uint32_t i;
 	if ( ! psurf ) return;
 	if ( psurf->bbox )
 		lwfree(psurf->bbox);
@@ -56,7 +56,7 @@ void lwpsurface_free(LWPSURFACE *psurf)
 
 void printLWPSURFACE(LWPSURFACE *psurf)
 {
-	int i, j;
+	uint32_t i, j;
 	LWPOLY *patch;
 
 	if (psurf->type != POLYHEDRALSURFACETYPE)
@@ -90,7 +90,7 @@ struct struct_psurface_arcs
 {
 	double ax, ay, az;
 	double bx, by, bz;
-	int cnt, face;
+	uint32_t cnt, face;
 };
 typedef struct struct_psurface_arcs *psurface_arcs;
 
@@ -98,8 +98,8 @@ typedef struct struct_psurface_arcs *psurface_arcs;
    we could have wrong result if not */
 int lwpsurface_is_closed(const LWPSURFACE *psurface)
 {
-	int i, j, k;
-	int narcs, carc;
+	uint32_t i, j, k;
+	uint32_t narcs, carc;
 	int found;
 	psurface_arcs arcs;
 	POINT4D pa, pb;

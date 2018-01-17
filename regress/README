@@ -24,9 +24,9 @@ How to add a regression test
 ----------------------------
 
 1. Write a /regress/<testname>.sql file with data and sql queries for testing
-2. Write a /regress/<testname>_expected or <testname>_expected.in file with 
+2. Write a /regress/<testname>_expected or <testname>_expected.in file with
    expected results per query
-   The expected results provided in the <testname>_expected file must be 
+   The expected results provided in the <testname>_expected file must be
    formatted using the following psql options:
       -a -- unaligned columns
       -f | -- use | (pipe) as the field separator between columns
@@ -74,9 +74,16 @@ configuration header.
 
   #include "../postgis_config.h"
 
-The ability to run a c preprocessor over the expected results prior to 
+The ability to run a c preprocessor over the expected results prior to
 regression testing was needed for testing curved string functionality that
 would elicit different responses from JTS vs GEOS compilations.  Since
 JTS is no longer supported, this may not be required anymore.
 
+Notes about running individual regression tests
+-----------------------------------------------
 
+The script run_test.pl can be called directly to run individual
+regression tests. Run it without parameters for info about its usage.
+
+Note that tests run in a staged install which is created by running
+make staged-install. This step is a part of the complete make check.

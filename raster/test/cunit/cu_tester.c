@@ -15,7 +15,7 @@
 #include "cu_tester.h"
 
 /* Internal funcs */
-static void 
+static void
 cu_error_reporter(const char *fmt, va_list ap);
 
 /* ADD YOUR SUITE SETUP FUNCTION HERE (1 of 2) */
@@ -71,6 +71,15 @@ int main(int argc, char *argv[])
 
 	/* install the custom error handler */
 	lwgeom_set_handlers(0, 0, 0, cu_error_reporter, 0);
+
+	rt_set_handlers(
+		default_rt_allocator,
+		default_rt_reallocator,
+		default_rt_deallocator,
+		cu_error_reporter,
+		default_rt_info_handler,
+		default_rt_warning_handler
+	);
 
 	/* initialize the CUnit test registry */
 	if (CUE_SUCCESS != CU_initialize_registry())
@@ -240,13 +249,3 @@ rt_band cu_add_band(rt_raster raster, rt_pixtype pixtype, int hasnodata, double 
 	return band;
 }
 
-void rt_init_allocators(void) {
-	rt_set_handlers(
-		default_rt_allocator,
-		default_rt_reallocator,
-		default_rt_deallocator,
-		cu_error_reporter,
-		default_rt_info_handler,
-		default_rt_warning_handler
-	);
-}

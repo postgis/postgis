@@ -809,7 +809,7 @@ DELETE FROM "spatial_ref_sys" WHERE srid = 974269;
 -- ST_Resize()
 WITH foo AS(
 SELECT
-	1 AS rid, 
+	1 AS rid,
 	ST_Resize(
 		ST_AddBand(
 			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
@@ -819,7 +819,7 @@ SELECT
 	) AS rast
 UNION ALL
 SELECT
-	2 AS rid, 
+	2 AS rid,
 	ST_Resize(
 		ST_AddBand(
 			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
@@ -829,7 +829,7 @@ SELECT
 	) AS rast
 UNION ALL
 SELECT
-	3 AS rid, 
+	3 AS rid,
 	ST_Resize(
 		ST_AddBand(
 			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
@@ -839,7 +839,7 @@ SELECT
 	) AS rast
 UNION ALL
 SELECT -- ticket #2188
-	4 AS rid, 
+	4 AS rid,
 	ST_Resize(
 		ST_AddBand(
 			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)

@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2011  OpenGeo.org 
+ * Copyright (C) 2011  OpenGeo.org
  *
  **********************************************************************/
 
@@ -46,8 +46,8 @@ static void handleInterrupt(int sig);
 
 #ifdef WIN32
 static void interruptCallback() {
-  if (UNBLOCKED_SIGNAL_QUEUE()) 
-    pgwin32_dispatch_queued_signals(); 
+  if (UNBLOCKED_SIGNAL_QUEUE())
+    pgwin32_dispatch_queued_signals();
 }
 #endif
 
@@ -59,10 +59,10 @@ void
 _PG_init(void)
 {
 
-  coreIntHandler = pqsignal(SIGINT, handleInterrupt); 
+  coreIntHandler = pqsignal(SIGINT, handleInterrupt);
 
 #ifdef WIN32
-#if POSTGIS_GEOS_VERSION >= 34 
+#if POSTGIS_GEOS_VERSION >= 34
   GEOS_interruptRegisterCallback(interruptCallback);
 #endif
   lwgeom_register_interrupt_callback(interruptCallback);
@@ -79,9 +79,7 @@ _PG_init(void)
     0, /* bootValue */
     PGC_SUSET, /* GucContext context */
     GUC_UNIT_MS, /* int flags */
-#if POSTGIS_PGSQL_VERSION >= 91
     NULL, /* GucStringCheckHook check_hook */
-#endif
     NULL, /* GucStringAssignHook assign_hook */
     NULL  /* GucShowHook show_hook */
    );
@@ -97,9 +95,7 @@ _PG_init(void)
     "Welcome to PostGIS " POSTGIS_VERSION, /* bootValue */
     PGC_SUSET, /* GucContext context */
     GUC_UNIT_MS, /* int flags */
-#if POSTGIS_PGSQL_VERSION >= 91
     NULL, /* GucStringCheckHook check_hook */
-#endif
     NULL, /* GucStringAssignHook assign_hook */
     NULL  /* GucShowHook show_hook */
    );
@@ -127,9 +123,14 @@ _PG_fini(void)
 static void
 handleInterrupt(int sig)
 {
-  printf("Interrupt requested\n"); fflush(stdout);
+  /* NOTE: printf here would be dangerous, see
+   * https://trac.osgeo.org/postgis/ticket/3644
+   *
+   * TODO: block interrupts during execution, to fix the problem
+   */
+  /* printf("Interrupt requested\n"); fflush(stdout); */
 
-#if POSTGIS_GEOS_VERSION >= 34 
+#if POSTGIS_GEOS_VERSION >= 34
   GEOS_interruptRequest();
 #endif
 

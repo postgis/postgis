@@ -82,7 +82,7 @@ all_em|grabone   | grab_rest
 		<title>Description</title>
 
 		<para>Returns a BOX2D representing the maximum extents of the geometry.</para>
-		
+
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
@@ -264,20 +264,44 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>geometry <function>ST_Expand</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>units_to_expand</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Expand</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>dx</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>dy</parameter></paramdef>
+			<paramdef choice="opt"><type>float</type> <parameter>dz=0</parameter></paramdef>
+			<paramdef choice="opt"><type>float</type> <parameter>dm=0</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>box2d <function>ST_Expand</function></funcdef>
+			<paramdef><type>box2d </type> <parameter>box</parameter></paramdef>
 			<paramdef><type>float</type> <parameter>units_to_expand</parameter></paramdef>
 		  </funcprototype>
 
 		  <funcprototype>
 			<funcdef>box2d <function>ST_Expand</function></funcdef>
-			<paramdef><type>box2d </type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>box2d </type> <parameter>box</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>dx</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>dy</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>box3d <function>ST_Expand</function></funcdef>
+			<paramdef><type>box3d </type> <parameter>box</parameter></paramdef>
 			<paramdef><type>float</type> <parameter>units_to_expand</parameter></paramdef>
 		  </funcprototype>
 
 		  <funcprototype>
 			<funcdef>box3d <function>ST_Expand</function></funcdef>
-			<paramdef><type>box3d </type> <parameter>g1</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>units_to_expand</parameter></paramdef>
+			<paramdef><type>box3d </type> <parameter>box</parameter></paramdef>
+			<paramdef><type>float</type>  <parameter>dx</parameter></paramdef>
+			<paramdef><type>float</type>  <parameter>dy</parameter></paramdef>
+			<paramdef choice="opt"><type>float</type>  <parameter>dz=0</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -285,15 +309,18 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 	  <refsection>
 		<title>Description</title>
 
-		<para>This function returns a bounding box expanded in all
-		directions from the bounding box of the input geometry, by an
-		amount specified in the second argument. Uses double-precision. Very useful for
-		distance() queries, or bounding box queries to add an index filter to the query.</para>
-		<para>There are 3 variants of this.  The one that takes a geometry will return a POLYGON geometry representation
-			of the bounding box and is the most commonly used variant.</para>
-		<para>ST_Expand is similar in concept to ST_Buffer except while buffer expands the geometry in all directions,
+		<para>This function returns a bounding box expanded from the bounding box of the input,
+			either by specifying a single distance with which the box should be expanded in all
+			directions, or by specifying an expansion distance for each direction.
+
+			Uses double-precision. Can be very useful for distance queries, or to add a bounding box
+			filter to a query to take advantage of a spatial index.</para>
+		<para>In addition to the geometry version of ST_Expand, which is the most commonly used, variants
+			are provided that accept and produce internal BOX2D and BOX3D data types.
+		</para>
+		<para>ST_Expand is similar in concept to ST_Buffer, except while buffer expands the geometry in all directions,
 			ST_Expand expands the bounding box an x,y,z unit amount.</para>
-		<para>Units are in the units of the spatial reference system in use denoted by the SRID</para>
+		<para>Units are in the units of the spatial reference system in use denoted by the SRID.</para>
 
 		<note>
 		  <para>Pre 1.3, ST_Expand was used in conjunction with distance to do indexable queries.  Something of the form
@@ -303,9 +330,10 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 
 		<note>
 			<para>Availability: 1.5.0 behavior changed to output double precision instead of float4 coordinates.</para>
+			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+			<para>Enhanced: 2.3.0 support was added to expand a box by different amounts in different dimensions.</para>
 		</note>
-		
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 
@@ -374,11 +402,11 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
 		<note>
 		  <para>ST_Extent will return boxes with only an x and y component even with (x,y,z) coordinate geometries.  To maintain x,y,z use ST_3DExtent instead.</para>
 		</note>
-		
+
 		<note>
 		  <para>Availability: 1.4.0</para>
 		</note>
-		
+
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -620,7 +648,7 @@ fulltable_size geomsize  pergeom
 	  <refnamediv>
 		<refname>ST_PointInsideCircle</refname>
 
-		<refpurpose>Is the point geometry insert circle defined by center_x, center_y, radius</refpurpose>
+		<refpurpose>Is the point geometry inside the circle defined by center_x, center_y, radius</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>

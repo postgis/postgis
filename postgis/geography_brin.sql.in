@@ -1,0 +1,78 @@
+#if POSTGIS_PGSQL_VERSION > 94
+--------------------------------------------------------------------
+-- BRIN support for geographies                                   --
+--------------------------------------------------------------------
+
+--------------------------------
+-- the needed cross-operators --
+--------------------------------
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION overlaps_geog(gidx, geography)
+RETURNS boolean
+AS 'MODULE_PATHNAME','gserialized_gidx_geog_overlaps'
+LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION overlaps_geog(gidx, gidx)
+RETURNS boolean
+AS 'MODULE_PATHNAME','gserialized_gidx_gidx_overlaps'
+LANGUAGE 'c' IMMUTABLE STRICT;
+
+
+
+-- Availability: 2.3.0
+CREATE OPERATOR && (
+  LEFTARG    = gidx,
+  RIGHTARG   = geography,
+  PROCEDURE  = overlaps_geog,
+  COMMUTATOR = &&
+);
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION overlaps_geog(geography, gidx)
+RETURNS boolean
+AS
+  'SELECT $2 OPERATOR(@extschema@.&&) $1;'
+ LANGUAGE SQL IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OPERATOR && (
+  LEFTARG    = geography,
+  RIGHTARG   = gidx,
+  PROCEDURE  = overlaps_geog,
+  COMMUTATOR = &&
+);
+
+-- Availability: 2.3.0
+CREATE OPERATOR && (
+  LEFTARG   = gidx,
+  RIGHTARG  = gidx,
+  PROCEDURE = overlaps_geog,
+  COMMUTATOR = &&
+);
+
+--------------------------------
+-- the OpFamily               --
+--------------------------------
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION geog_brin_inclusion_add_value(internal, internal, internal, internal) RETURNS boolean
+        AS 'MODULE_PATHNAME','geog_brin_inclusion_add_value'
+        LANGUAGE 'c';
+
+-- Availability: 2.3.0
+CREATE OPERATOR CLASS brin_geography_inclusion_ops
+  DEFAULT FOR TYPE geography
+  USING brin AS
+    FUNCTION      1        brin_inclusion_opcinfo(internal),
+    FUNCTION      2        geog_brin_inclusion_add_value(internal, internal, internal, internal),
+    FUNCTION      3        brin_inclusion_consistent(internal, internal, internal),
+    FUNCTION      4        brin_inclusion_union(internal, internal, internal),
+    OPERATOR      3        &&(geography, geography),
+    OPERATOR      3        &&(geography, gidx),
+    OPERATOR      3        &&(gidx, geography),
+    OPERATOR      3        &&(gidx, gidx),
+  STORAGE gidx;
+
+#endif

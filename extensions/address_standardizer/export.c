@@ -1,4 +1,4 @@
-/* -- export.c 
+/* -- export.c
 
 This file contains the routines for extracting the sequence of
 postal attributes and definitions produced by the standardizer
@@ -28,11 +28,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 #define ORDER_DISPLACEMENT 2
 
 /* -- local prototypes -- */
-static void _copy_standard_( STAND_PARAM * , SYMB , int , int  ) ; 
-static void _scan_target_( STAND_PARAM * , SYMB , int  ) ; 
+static void _copy_standard_( STAND_PARAM * , SYMB , int , int  ) ;
+static void _scan_target_( STAND_PARAM * , SYMB , int  ) ;
 static char *_get_standard_( STAND_PARAM * , int , int ) ;
 static char *_get_definition_text_( STAND_PARAM * , int ) ;
- 
+
 //#ifndef BUILD_API
 
 /* -- local storage -- */
@@ -116,8 +116,8 @@ void init_output_fields( STAND_PARAM *__stand_param__ , int which_fields )
 		{
 			__standard_fields__[i][0] = SENTINEL ;
 		}
-	} 
-	else 
+	}
+	else
 	{
 		/*-- Clean only one set --*/
 		if ( which_fields == RIGHT )
@@ -127,8 +127,8 @@ void init_output_fields( STAND_PARAM *__stand_param__ , int which_fields )
 			{
 				__standard_fields__[i][0] = SENTINEL ;
 			}
-		} 
-		else 
+		}
+		else
 		{
 			/*-- Erase the micro fields only --*/
 			for ( i = BLDNG ; i < CITY ; i++ )
@@ -174,12 +174,12 @@ static char *_get_definition_text_( STAND_PARAM *__stand_param__ , int lex_pos )
 export.c (stuff_fields)
 --calls export.c (_scan_target_)
 -------------------------------------------*/
-void stuff_fields( STAND_PARAM *__stand_param__ ) 
+void stuff_fields( STAND_PARAM *__stand_param__ )
 {
 	int fld ;
 	/*-- Translate the symbols and definitions of the standardization into
 		the __standard_fields__ for output --*/
-	for (fld = 0 ;fld < NEEDHEAD ;fld++) 
+	for (fld = 0 ;fld < NEEDHEAD ;fld++)
 	{
 		/*-- Fields that correspond one to one with the symbols --*/
 		_scan_target_(__stand_param__ ,fld,fld) ;
@@ -207,8 +207,8 @@ void send_fields_to_stream( char **__standard_fields__ , FILE *__dest_file__ , i
 		if (__dest_file__ != NULL)
 		{
 			fprintf(__dest_file__,"%s\n",(is_landmark? __landmark_record_start_tag__[opt] : __record_start_tag__[opt])) ;
-		} 
-		else 
+		}
+		else
 		{
 			printf("%s\n",(is_landmark? __landmark_record_start_tag__[opt] : __record_start_tag__[opt])) ;
 		}
@@ -241,8 +241,8 @@ void send_fields_to_stream( char **__standard_fields__ , FILE *__dest_file__ , i
 					default :
 						__source_start_tag__ = ( char * ) __field_start_tag__[loc][opt] ;
 					}
-				} 
-				else 
+				}
+				else
 				{
 					__source_start_tag__ = (char *) __field_start_tag__[loc][opt] ;
 				}
@@ -269,7 +269,7 @@ void send_fields_to_stream( char **__standard_fields__ , FILE *__dest_file__ , i
 						__source_end_tag__ = ( char * ) __field_tag_end__[ loc ][ opt ] ;
 					}
 				}
-				else 
+				else
 				{
 					__source_end_tag__ = ( char * ) __field_tag_end__[ loc ][ opt ] ;
 				}
@@ -278,20 +278,20 @@ void send_fields_to_stream( char **__standard_fields__ , FILE *__dest_file__ , i
 			if ( __dest_file__ != NULL )
 			{
 				fprintf( __dest_file__ , "%s" , __line_buf__ ) ;
-			} 
-			else 
+			}
+			else
 			{
 				printf( "%s" , __line_buf__ ) ;
 			}
 		}
 	}
-	if ( opt < NO_FORMAT ) 
+	if ( opt < NO_FORMAT )
 	{
-		if ( __dest_file__ != NULL ) 
+		if ( __dest_file__ != NULL )
 		{
 			fprintf( __dest_file__ , "%s\n", ( is_landmark? __landmark_record_end_tag__[ opt ] : __record_end_tag__[ opt ]));
-		} 
-		else 
+		}
+		else
 		{
 			printf( "%s\n" , ( is_landmark? __landmark_record_end_tag__[ opt ] :  __record_end_tag__[ opt ] ) );
 		}
@@ -299,8 +299,8 @@ void send_fields_to_stream( char **__standard_fields__ , FILE *__dest_file__ , i
 	if ( __dest_file__ != NULL )
 	{
 		fflush( __dest_file__ ) ;
-	} 
-	else 
+	}
+	else
 	{
 		fflush( stdout ) ;
 	}
@@ -331,7 +331,7 @@ static char *_get_standard_(STAND_PARAM *__stand_param__ ,int lex_pos, int outpu
 		{
 			if (__scan_DEF__->Type == ORD)
 			{
-				if ((__selected_standardization__ = __scan_DEF__->Standard) != NULL) 
+				if ((__selected_standardization__ = __scan_DEF__->Standard) != NULL)
 				{
 					return (__selected_standardization__) ;
 				}
@@ -353,10 +353,10 @@ static char *_get_standard_(STAND_PARAM *__stand_param__ ,int lex_pos, int outpu
 		char *__zero_pointer__ ;
 		char *__buffer_pointer__ = __zero_pointer__ = __selected_standardization__ ;
 		while ( *__zero_pointer__ == '0' ) __zero_pointer__++ ; /*-- Move to first nonzero character --*/
-		while ( *__zero_pointer__ != SENTINEL ) *__buffer_pointer__++ = *__zero_pointer__++ ; /*-- Move down in buffer --*/ 
+		while ( *__zero_pointer__ != SENTINEL ) *__buffer_pointer__++ = *__zero_pointer__++ ; /*-- Move down in buffer --*/
 		/*-- Trim down all-zeroes to a single zero: if deleting all
 			the zeros leaves an empty buffer, put a zero back --*/
-		if ( __buffer_pointer__ == __selected_standardization__ ) *__buffer_pointer__++ = '0' ; 
+		if ( __buffer_pointer__ == __selected_standardization__ ) *__buffer_pointer__++ = '0' ;
 		BLANK_STRING( __buffer_pointer__ ) ;
 	}
 	return ( __selected_standardization__ ) ;
@@ -364,7 +364,7 @@ static char *_get_standard_(STAND_PARAM *__stand_param__ ,int lex_pos, int outpu
 
 /*-----------------------------------------
 export.c (_scan_target_ )
--- calls export.c (_copy_standard_) 
+-- calls export.c (_copy_standard_)
 -- called by export.c (stuff_fields)
 -------------------------------------------*/
 static void _scan_target_(STAND_PARAM *__stand_param__,SYMB sym , int dest)
@@ -387,11 +387,11 @@ static void _scan_target_(STAND_PARAM *__stand_param__,SYMB sym , int dest)
 }
 
 /*-----------------------------------------
-export.c (_copy_standard_) 
--- called by export.c (_scan_target_) -- 
---calls export.c (_get_standard_, 
-strlen, strcpy 
-uses macro SPACE_APPEND_WITH_LEN 
+export.c (_copy_standard_)
+-- called by export.c (_scan_target_) --
+--calls export.c (_get_standard_,
+strlen, strcpy
+uses macro SPACE_APPEND_WITH_LEN
 -------------------------------------------*/
 static void _copy_standard_( STAND_PARAM *__stand_param__ , SYMB output_sym , int fld , int lex_pos )
 {
@@ -407,7 +407,7 @@ static void _copy_standard_( STAND_PARAM *__stand_param__ , SYMB output_sym , in
 	if ( *__dest_buf__ != SENTINEL )
 	{
 		SPACE_APPEND_WITH_LEN( __dest_buf__ , __stan_str__ , MAXFLDLEN ) ;
-	} 
+	}
 	else if ( output_sym == UNITT )
 	{
 		/*-- If the unit id type is missing, one needs to be provided.
@@ -418,13 +418,13 @@ static void _copy_standard_( STAND_PARAM *__stand_param__ , SYMB output_sym , in
 
 		strcpy( __dest_buf__ , "# " ) ; /* -- reconsider this -- */
 		append_string_to_max( __dest_buf__ , __stan_str__ , MAXFLDLEN ) ;
-	} 
+	}
 	else if ( output_sym == BOXT )
 	{
 		strcpy( __dest_buf__, "BOX " ) ;
 		append_string_to_max( __dest_buf__ , __stan_str__ ,MAXFLDLEN ) ;
-	} 
-	else 
+	}
+	else
 	{
 		strcpy( __dest_buf__ , __stan_str__ ) ;
 	}

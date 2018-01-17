@@ -75,8 +75,8 @@ free_homogenizebuffer(HomogenizeBuffer *buffer)
 static void
 lwcollection_build_buffer(const LWCOLLECTION *col, HomogenizeBuffer *buffer)
 {
-	int i;
-	
+	uint32_t i;
+
 	if ( ! col ) return;
 	if ( lwgeom_is_empty(lwcollection_as_lwgeom(col)) ) return;
 	for ( i = 0; i < col->ngeoms; i++ )
@@ -120,13 +120,13 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 	int ntypes = 0;
 	int type = 0;
 	LWGEOM *outgeom = NULL;
-	
+
 	HomogenizeBuffer buffer;
 
 	/* Sort all the parts into a buffer */
 	init_homogenizebuffer(&buffer);
 	lwcollection_build_buffer(col, &buffer);
-	
+
 	/* Check for homogeneity */
 	for ( i = 0; i < NUMTYPES; i++ )
 	{
@@ -136,7 +136,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 			type = i;
 		}
 	}
-	
+
 	/* No types? Huh. Return empty. */
 	if ( ntypes == 0 )
 	{
@@ -176,7 +176,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 					lwcollection_add_lwgeom(outcol, bcol->geoms[0]);
 					bcol->ngeoms=0; lwcollection_free(bcol);
 				}
-				else 
+				else
 				{
 					lwcollection_add_lwgeom(outcol, lwcollection_as_lwgeom(bcol));
 				}
@@ -211,13 +211,13 @@ lwgeom_homogenize(const LWGEOM *geom)
 	LWGEOM *hgeom;
 
 	/* EMPTY Geometry */
-	if (lwgeom_is_empty(geom)) 
+	if (lwgeom_is_empty(geom))
 	{
 		if( lwgeom_is_collection(geom) )
 		{
 			return lwcollection_as_lwgeom(lwcollection_construct_empty(geom->type, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom)));
 		}
-		
+
 		return lwgeom_clone(geom);
 	}
 
@@ -258,9 +258,9 @@ lwgeom_homogenize(const LWGEOM *geom)
 			/* Return proper multigeometry untouched */
 			return lwgeom_clone(geom);
 		}
-	
+
 		/* Work on anonymous collections separately */
-		case COLLECTIONTYPE: 
+		case COLLECTIONTYPE:
 			return lwcollection_homogenize((LWCOLLECTION *) geom);
 	}
 

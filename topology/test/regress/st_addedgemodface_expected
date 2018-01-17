@@ -167,6 +167,8 @@ T29|E21|6|34|0|35
 T29|E33|-55|-6|17|3
 T29|E34|55|9|35|16
 T29|E55|-21|19|35|17
+ERROR:  Corrupted topology: adjacent edges 6 and -21 bind different face (1 and 0)
+ERROR:  Side-location conflict: new edge starts in face 1 and ends in face 0
 F17|{3:17,3:35}
 F3,F4|{3:3,3:4,3:10,3:16,3:17,3:35}
 F5,N4|{1:4,3:5,3:11}

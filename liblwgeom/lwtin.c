@@ -38,7 +38,7 @@ LWTIN* lwtin_add_lwtriangle(LWTIN *mobj, const LWTRIANGLE *obj)
 
 void lwtin_free(LWTIN *tin)
 {
-	int i;
+	uint32_t i;
 	if ( ! tin ) return;
 	if ( tin->bbox )
 		lwfree(tin->bbox);
@@ -56,7 +56,7 @@ void lwtin_free(LWTIN *tin)
 
 void printLWTIN(LWTIN *tin)
 {
-	int i;
+	uint32_t i;
 	LWTRIANGLE *triangle;
 
 	if (tin->type != TINTYPE)
@@ -84,7 +84,7 @@ struct struct_tin_arcs
 {
 	double ax, ay, az;
 	double bx, by, bz;
-	int cnt, face;
+	uint32_t cnt, face;
 };
 typedef struct struct_tin_arcs *tin_arcs;
 
@@ -92,8 +92,8 @@ typedef struct struct_tin_arcs *tin_arcs;
    we could have wrong result if not */
 int lwtin_is_closed(const LWTIN *tin)
 {
-	int i, j, k;
-	int narcs, carc;
+	uint32_t i, j, k;
+	uint32_t narcs, carc;
 	int found;
 	tin_arcs arcs;
 	POINT4D pa, pb;

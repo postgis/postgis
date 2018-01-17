@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright (C) 2011 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2011 Sandro Santilli <strk@kbt.io>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -53,7 +53,7 @@ static void test_lwgeom_node(void)
 	tmp = lwgeom_to_ewkt(out);
 	/* printf("%s\n", tmp); */
 	CU_ASSERT_STRING_EQUAL(
-"MULTILINESTRING((0 0,2.5 2.5),(0 5,2.5 2.5),(22 0,20 0),(20 0,12 0,11 0,10 0),(10 0,5 5,2.5 2.5),(2.5 2.5,5 0))",
+"MULTILINESTRING((0 0,2.5 2.5),(0 5,2.5 2.5),(2.5 2.5,5 5,10 0),(10 0,11 0,12 0,20 0),(20 0,22 0),(2.5 2.5,5 0))",
 		tmp);
 	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
 }

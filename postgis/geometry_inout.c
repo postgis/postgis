@@ -52,16 +52,16 @@ Datum point_to_geometry(PG_FUNCTION_ARGS)
 
 	if ( PG_ARGISNULL(0) )
 		PG_RETURN_NULL();
-		
+
 	point = PG_GETARG_POINT_P(0);
-	
+
 	if ( ! point )
 		PG_RETURN_NULL();
-		
+
 	lwpoint = lwpoint_make2d(SRID_UNKNOWN, point->x, point->y);
 	geom = geometry_serialize(lwpoint_as_lwgeom(lwpoint));
 	lwpoint_free(lwpoint);
-	
+
 	PG_RETURN_POINTER(geom);
 }
 
@@ -80,26 +80,26 @@ Datum geometry_to_point(PG_FUNCTION_ARGS)
 
 	if ( PG_ARGISNULL(0) )
 		PG_RETURN_NULL();
-	
+
 	geom = PG_GETARG_GSERIALIZED_P(0);
-	
+
 	if ( gserialized_get_type(geom) != POINTTYPE )
 		elog(ERROR, "geometry_to_point only accepts Points");
-	
+
 	lwgeom = lwgeom_from_gserialized(geom);
-	
+
 	if ( lwgeom_is_empty(lwgeom) )
 		PG_RETURN_NULL();
-	
+
 	lwpoint = lwgeom_as_lwpoint(lwgeom);
-	
+
 	point = (Point*)palloc(sizeof(Point));
 	point->x = lwpoint_get_x(lwpoint);
 	point->y = lwpoint_get_y(lwpoint);
-	
+
 	lwpoint_free(lwpoint);
 	PG_FREE_IF_COPY(geom,0);
-	
+
 	PG_RETURN_POINT_P(point);
 }
 
@@ -111,7 +111,7 @@ Datum geometry_to_path(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	GSERIALIZED *geom;
 	POINTARRAY *pa;
-	int i;
+	uint32_t i;
 	const POINT2D *pt;
 	size_t size;
 
@@ -119,17 +119,17 @@ Datum geometry_to_path(PG_FUNCTION_ARGS)
 
 	if ( PG_ARGISNULL(0) )
 		PG_RETURN_NULL();
-		
+
 	geom = PG_GETARG_GSERIALIZED_P(0);
-	
+
 	if ( gserialized_get_type(geom) != LINETYPE )
 		elog(ERROR, "geometry_to_path only accepts LineStrings");
-	
+
 	lwgeom = lwgeom_from_gserialized(geom);
 	if ( lwgeom_is_empty(lwgeom) )
-		PG_RETURN_NULL();	
+		PG_RETURN_NULL();
 	lwline = lwgeom_as_lwline(lwgeom);
-	
+
 	pa = lwline->points;
     size = offsetof(PATH, p[0]) + sizeof(path->p[0]) * pa->npoints;
     path = (PATH*)palloc(size);
@@ -144,10 +144,10 @@ Datum geometry_to_path(PG_FUNCTION_ARGS)
 		(path->p[i]).x = pt->x;
 		(path->p[i]).y = pt->y;
 	}
-	
+
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom,0);
-	
+
 	PG_RETURN_PATH_P(path);
 }
 
@@ -167,24 +167,24 @@ Datum path_to_geometry(PG_FUNCTION_ARGS)
 
 	if ( PG_ARGISNULL(0) )
 		PG_RETURN_NULL();
-		
+
 	path = PG_GETARG_PATH_P(0);
 
 	if ( ! path )
 		PG_RETURN_NULL();
-	
+
 	pa = ptarray_construct_empty(0, 0, path->npts);
 	for ( i = 0; i < path->npts; i++ )
 	{
 		p = path->p[i];
-		pt.x = p.x; 
+		pt.x = p.x;
 		pt.y = p.y;
 		ptarray_append_point(pa, &pt, LW_FALSE);
 	}
 	lwline = lwline_construct(SRID_UNKNOWN, NULL, pa);
 	geom = geometry_serialize(lwline_as_lwgeom(lwline));
 	lwline_free(lwline);
-	
+
 	PG_RETURN_POINTER(geom);
 }
 
@@ -197,38 +197,38 @@ Datum geometry_to_polygon(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom;
 	POINTARRAY *pa;
 	GBOX gbox;
-	int i;
+	uint32_t i;
 	size_t size;
 
 	POSTGIS_DEBUG(2, "geometry_to_polygon called");
 
 	if ( PG_ARGISNULL(0) )
 		PG_RETURN_NULL();
-		
+
 	geom = PG_GETARG_GSERIALIZED_P(0);
-	
+
 	if ( gserialized_get_type(geom) != POLYGONTYPE )
 		elog(ERROR, "geometry_to_polygon only accepts Polygons");
-	
+
 	lwgeom = lwgeom_from_gserialized(geom);
 	if ( lwgeom_is_empty(lwgeom) )
-		PG_RETURN_NULL();	
+		PG_RETURN_NULL();
 	lwpoly = lwgeom_as_lwpoly(lwgeom);
-	
+
 	pa = lwpoly->rings[0];
 
-    size = offsetof(POLYGON, p[0]) + sizeof(polygon->p[0]) * pa->npoints;
-    polygon = (POLYGON*)palloc0(size); /* zero any holes */
+	size = offsetof(POLYGON, p[0]) + sizeof(polygon->p[0]) * pa->npoints;
+	polygon = (POLYGON*)palloc0(size); /* zero any holes */
 	SET_VARSIZE(polygon, size);
 
-	polygon->npts = pa->npoints;	
+	polygon->npts = pa->npoints;
 
 	lwgeom_calculate_gbox(lwgeom, &gbox);
 	polygon->boundbox.low.x = gbox.xmin;
 	polygon->boundbox.low.y = gbox.ymin;
 	polygon->boundbox.high.x = gbox.xmax;
 	polygon->boundbox.high.y = gbox.ymax;
-		
+
 	for ( i = 0; i < pa->npoints; i++ )
 	{
 		const POINT2D *pt = getPoint2d_cp(pa, i);
@@ -238,7 +238,7 @@ Datum geometry_to_polygon(PG_FUNCTION_ARGS)
 
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom,0);
-	
+
 	PG_RETURN_POLYGON_P(polygon);
 }
 
@@ -258,7 +258,7 @@ Datum polygon_to_geometry(PG_FUNCTION_ARGS)
 
 	if ( PG_ARGISNULL(0) )
 		PG_RETURN_NULL();
-		
+
 	polygon = PG_GETARG_POLYGON_P(0);
 
 	if ( ! polygon )
@@ -269,24 +269,24 @@ Datum polygon_to_geometry(PG_FUNCTION_ARGS)
 	{
 		unclosed = 1;
 	}
-	
+
 	pa = ptarray_construct_empty(0, 0, polygon->npts + unclosed);
-		
+
 	for ( i = 0; i < (polygon->npts+unclosed); i++ )
 	{
 		POINT4D pt;
 		p = polygon->p[i % polygon->npts];
-		pt.x = p.x; 
+		pt.x = p.x;
 		pt.y = p.y;
 		ptarray_append_point(pa, &pt, LW_FALSE);
 	}
-	
+
 	ppa = palloc(sizeof(POINTARRAY*));
 	ppa[0] = pa;
-	lwpoly = lwpoly_construct(SRID_UNKNOWN, NULL, 1, ppa);	
+	lwpoly = lwpoly_construct(SRID_UNKNOWN, NULL, 1, ppa);
 	geom = geometry_serialize(lwpoly_as_lwgeom(lwpoly));
 	lwpoly_free(lwpoly);
-	
+
 	PG_RETURN_POINTER(geom);
 }
 

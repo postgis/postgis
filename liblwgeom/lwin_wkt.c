@@ -32,7 +32,7 @@
 
 
 /*
-* Error messages for failures in the parser. 
+* Error messages for failures in the parser.
 */
 const char *parser_error_messages[] =
 {
@@ -54,7 +54,7 @@ const char *parser_error_messages[] =
 		global_parser_result.errcode = (errno); \
 		global_parser_result.errlocation = wkt_yylloc.last_column; \
 	}
-		
+
 /**
 * Read the SRID number from an SRID=<> string
 */
@@ -74,12 +74,12 @@ int wkt_lexer_read_srid(char *str)
 
 static uint8_t wkt_dimensionality(char *dimensionality)
 {
-	int i = 0;
+	size_t i = 0;
 	uint8_t flags = 0;
-	
-	if( ! dimensionality ) 
+
+	if( ! dimensionality )
 		return flags;
-	
+
 	/* If there's an explicit dimensionality, we use that */
 	for( i = 0; i < strlen(dimensionality); i++ )
 	{
@@ -102,15 +102,15 @@ static int wkt_parser_set_dims(LWGEOM *geom, uint8_t flags)
 {
 	int hasz = FLAGS_GET_Z(flags);
 	int hasm = FLAGS_GET_M(flags);
-	int i = 0;
-	
+	uint32_t i = 0;
+
 	/* Error on junk */
-	if( ! geom ) 
+	if( ! geom )
 		return LW_FAILURE;
 
 	FLAGS_SET_Z(geom->flags, hasz);
 	FLAGS_SET_M(geom->flags, hasm);
-	
+
 	switch( geom->type )
 	{
 		case POINTTYPE:
@@ -155,13 +155,13 @@ static int wkt_parser_set_dims(LWGEOM *geom, uint8_t flags)
 				wkt_parser_set_dims(poly->rings[i], flags);
 			break;
 		}
-		default: 
+		default:
 		{
 			if ( lwtype_is_collection(geom->type) )
 			{
 				LWCOLLECTION *col = (LWCOLLECTION*)geom;
 				for ( i = 0; i < col->ngeoms; i++ )
-					wkt_parser_set_dims(col->geoms[i], flags);			
+					wkt_parser_set_dims(col->geoms[i], flags);
 				return LW_SUCCESS;
 			}
 			else
@@ -172,7 +172,7 @@ static int wkt_parser_set_dims(LWGEOM *geom, uint8_t flags)
 		}
 	}
 
-	return LW_SUCCESS;				
+	return LW_SUCCESS;
 }
 
 /**
@@ -181,7 +181,7 @@ static int wkt_parser_set_dims(LWGEOM *geom, uint8_t flags)
 * match, ensure the pointarray is using the right "Z" or "M".
 */
 static int wkt_pointarray_dimensionality(POINTARRAY *pa, uint8_t flags)
-{	
+{
 	int hasz = FLAGS_GET_Z(flags);
 	int hasm = FLAGS_GET_M(flags);
 	int ndims = 2 + hasz + hasm;
@@ -189,11 +189,11 @@ static int wkt_pointarray_dimensionality(POINTARRAY *pa, uint8_t flags)
 	/* No dimensionality or array means we go with what we have */
 	if( ! (flags && pa) )
 		return LW_TRUE;
-		
+
 	LWDEBUGF(5,"dimensionality ndims == %d", ndims);
 	LWDEBUGF(5,"FLAGS_NDIMS(pa->flags) == %d", FLAGS_NDIMS(pa->flags));
-	
-	/* 
+
+	/*
 	* ndims > 2 implies that the flags have something useful to add,
 	* that there is a 'Z' or an 'M' or both.
 	*/
@@ -266,14 +266,14 @@ POINTARRAY* wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 {
 	POINT4D pt;
 	LWDEBUG(4,"entered");
-	
+
 	/* Error on trouble */
-	if( ! pa ) 
+	if( ! pa )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
-		return NULL;	
+		return NULL;
 	}
-	
+
 	/* Check that the coordinate has the same dimesionality as the array */
 	if( FLAGS_NDIMS(p.flags) != FLAGS_NDIMS(pa->flags) )
 	{
@@ -281,7 +281,7 @@ POINTARRAY* wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 		return NULL;
 	}
-	
+
 	/* While parsing the point arrays, XYM and XMZ points are both treated as XYZ */
 	pt.x = p.x;
 	pt.y = p.y;
@@ -292,7 +292,7 @@ POINTARRAY* wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 	/* If the destination is XYM, we'll write the third coordinate to m */
 	if( FLAGS_GET_M(pa->flags) && ! FLAGS_GET_Z(pa->flags) )
 		pt.m = p.z;
-		
+
 	ptarray_append_point(pa, &pt, LW_TRUE); /* Allow duplicate points in array */
 	return pa;
 }
@@ -321,7 +321,7 @@ LWGEOM* wkt_parser_point_new(POINTARRAY *pa, char *dimensionality)
 {
 	uint8_t flags = wkt_dimensionality(dimensionality);
 	LWDEBUG(4,"entered");
-	
+
 	/* No pointarray means it is empty */
 	if( ! pa )
 		return lwpoint_as_lwgeom(lwpoint_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(flags), FLAGS_GET_M(flags)));
@@ -334,13 +334,13 @@ LWGEOM* wkt_parser_point_new(POINTARRAY *pa, char *dimensionality)
 		return NULL;
 	}
 
-	/* Only one point allowed in our point array! */	
+	/* Only one point allowed in our point array! */
 	if( pa->npoints != 1 )
 	{
 		ptarray_free(pa);
 		SET_PARSER_ERROR(PARSER_ERROR_LESSPOINTS);
 		return NULL;
-	}		
+	}
 
 	return lwpoint_as_lwgeom(lwpoint_construct(SRID_UNKNOWN, NULL, pa));
 }
@@ -367,8 +367,8 @@ LWGEOM* wkt_parser_linestring_new(POINTARRAY *pa, char *dimensionality)
 		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 		return NULL;
 	}
-	
-	/* Apply check for not enough points, if requested. */	
+
+	/* Apply check for not enough points, if requested. */
 	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_MINPOINTS) && (pa->npoints < 2) )
 	{
 		ptarray_free(pa);
@@ -381,9 +381,9 @@ LWGEOM* wkt_parser_linestring_new(POINTARRAY *pa, char *dimensionality)
 
 /**
 * Create a new circularstring. Null point array implies empty. Null dimensionality
-* implies no specified dimensionality in the WKT. 
+* implies no specified dimensionality in the WKT.
 * Circular strings are just like linestrings, except with slighty different
-* validity rules (minpoint == 3, numpoints % 2 == 1). 
+* validity rules (minpoint == 3, numpoints % 2 == 1).
 */
 LWGEOM* wkt_parser_circularstring_new(POINTARRAY *pa, char *dimensionality)
 {
@@ -401,24 +401,24 @@ LWGEOM* wkt_parser_circularstring_new(POINTARRAY *pa, char *dimensionality)
 		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 		return NULL;
 	}
-	
-	/* Apply check for not enough points, if requested. */	
+
+	/* Apply check for not enough points, if requested. */
 	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_MINPOINTS) && (pa->npoints < 3) )
 	{
 		ptarray_free(pa);
 		SET_PARSER_ERROR(PARSER_ERROR_MOREPOINTS);
 		return NULL;
-	}	
+	}
 
-	/* Apply check for odd number of points, if requested. */	
+	/* Apply check for odd number of points, if requested. */
 	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_ODD) && ((pa->npoints % 2) == 0) )
 	{
 		ptarray_free(pa);
 		SET_PARSER_ERROR(PARSER_ERROR_ODDPOINTS);
 		return NULL;
 	}
-	
-	return lwcircstring_as_lwgeom(lwcircstring_construct(SRID_UNKNOWN, NULL, pa));	
+
+	return lwcircstring_as_lwgeom(lwcircstring_construct(SRID_UNKNOWN, NULL, pa));
 }
 
 LWGEOM* wkt_parser_triangle_new(POINTARRAY *pa, char *dimensionality)
@@ -438,21 +438,21 @@ LWGEOM* wkt_parser_triangle_new(POINTARRAY *pa, char *dimensionality)
 		return NULL;
 	}
 
-	/* Triangles need four points. */	
+	/* Triangles need four points. */
 	if( (pa->npoints != 4) )
 	{
 		ptarray_free(pa);
 		SET_PARSER_ERROR(PARSER_ERROR_TRIANGLEPOINTS);
 		return NULL;
-	}	
-	
-	/* Triangles need closure. */	
-	if( ! ptarray_is_closed(pa) )
+	}
+
+	/* Triangles need closure. */
+	if( ! ptarray_is_closed_z(pa) )
 	{
 		ptarray_free(pa);
 		SET_PARSER_ERROR(PARSER_ERROR_UNCLOSED);
 		return NULL;
-	}	
+	}
 
 	return lwtriangle_as_lwgeom(lwtriangle_construct(SRID_UNKNOWN, NULL, pa));
 }
@@ -461,24 +461,24 @@ LWGEOM* wkt_parser_polygon_new(POINTARRAY *pa, char dimcheck)
 {
 	LWPOLY *poly = NULL;
 	LWDEBUG(4,"entered");
-	
+
 	/* No pointarray is a problem */
 	if( ! pa )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
-		return NULL;	
+		return NULL;
 	}
 
 	poly = lwpoly_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(pa->flags), FLAGS_GET_M(pa->flags));
-	
+
 	/* Error out if we can't build this polygon. */
 	if( ! poly )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
 		return NULL;
 	}
-	
-	wkt_parser_polygon_add_ring(lwpoly_as_lwgeom(poly), pa, dimcheck);	
+
+	wkt_parser_polygon_add_ring(lwpoly_as_lwgeom(poly), pa, dimcheck);
 	return lwpoly_as_lwgeom(poly);
 }
 
@@ -490,7 +490,7 @@ LWGEOM* wkt_parser_polygon_add_ring(LWGEOM *poly, POINTARRAY *pa, char dimcheck)
 	if( ! (pa && poly) )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
-		return NULL;	
+		return NULL;
 	}
 
 	/* Rings must agree on dimensionality */
@@ -502,7 +502,7 @@ LWGEOM* wkt_parser_polygon_add_ring(LWGEOM *poly, POINTARRAY *pa, char dimcheck)
 		return NULL;
 	}
 
-	/* Apply check for minimum number of points, if requested. */	
+	/* Apply check for minimum number of points, if requested. */
 	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_MINPOINTS) && (pa->npoints < 4) )
 	{
 		ptarray_free(pa);
@@ -510,9 +510,9 @@ LWGEOM* wkt_parser_polygon_add_ring(LWGEOM *poly, POINTARRAY *pa, char dimcheck)
 		SET_PARSER_ERROR(PARSER_ERROR_MOREPOINTS);
 		return NULL;
 	}
-	
-	/* Apply check for not closed rings, if requested. */	
-	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_CLOSURE) && 
+
+	/* Apply check for not closed rings, if requested. */
+	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_CLOSURE) &&
 	    ! (dimcheck == 'Z' ? ptarray_is_closed_z(pa) : ptarray_is_closed_2d(pa)) )
 	{
 		ptarray_free(pa);
@@ -527,7 +527,7 @@ LWGEOM* wkt_parser_polygon_add_ring(LWGEOM *poly, POINTARRAY *pa, char dimcheck)
 		ptarray_free(pa);
 		lwgeom_free(poly);
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
-		return NULL;	
+		return NULL;
 	}
 	return poly;
 }
@@ -537,7 +537,7 @@ LWGEOM* wkt_parser_polygon_finalize(LWGEOM *poly, char *dimensionality)
 	uint8_t flags = wkt_dimensionality(dimensionality);
 	int flagdims = FLAGS_NDIMS(flags);
 	LWDEBUG(4,"entered");
-	
+
 	/* Null input implies empty return */
 	if( ! poly )
 		return lwpoly_as_lwgeom(lwpoly_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(flags), FLAGS_GET_M(flags)));
@@ -551,7 +551,7 @@ LWGEOM* wkt_parser_polygon_finalize(LWGEOM *poly, char *dimensionality)
 			SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 			return NULL;
 		}
-	
+
 		/* Harmonize the flags in the sub-components with the wkt flags */
 		if( LW_FAILURE == wkt_parser_set_dims(poly, flags) )
 		{
@@ -560,13 +560,13 @@ LWGEOM* wkt_parser_polygon_finalize(LWGEOM *poly, char *dimensionality)
 			return NULL;
 		}
 	}
-	
+
 	return poly;
 }
 
-LWGEOM* wkt_parser_curvepolygon_new(LWGEOM *ring) 
+LWGEOM* wkt_parser_curvepolygon_new(LWGEOM *ring)
 {
-	LWGEOM *poly;	
+	LWGEOM *poly;
 	LWDEBUG(4,"entered");
 
 	/* Toss error on null geometry input */
@@ -575,7 +575,7 @@ LWGEOM* wkt_parser_curvepolygon_new(LWGEOM *ring)
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
 		return NULL;
 	}
-	
+
 	/* Construct poly and add the ring. */
 	poly = lwcurvepoly_as_lwgeom(lwcurvepoly_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(ring->flags), FLAGS_GET_M(ring->flags)));
 	/* Return the result. */
@@ -593,7 +593,7 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 		LWDEBUG(4,"inputs are null");
 		return NULL;
 	}
-	
+
 	/* All the elements must agree on dimensionality */
 	if( FLAGS_NDIMS(poly->flags) != FLAGS_NDIMS(ring->flags) )
 	{
@@ -603,15 +603,15 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 		return NULL;
 	}
-	
-	/* Apply check for minimum number of points, if requested. */	
+
+	/* Apply check for minimum number of points, if requested. */
 	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_MINPOINTS) )
 	{
-		int vertices_needed = 3;
+		uint32_t vertices_needed = 3;
 
 		if ( ring->type == LINETYPE )
 			vertices_needed = 4;
-					
+
 		if (lwgeom_count_vertices(ring) < vertices_needed)
 		{
 			LWDEBUG(4,"number of points is incorrect");
@@ -619,10 +619,10 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 			lwgeom_free(poly);
 			SET_PARSER_ERROR(PARSER_ERROR_MOREPOINTS);
 			return NULL;
-		}		
+		}
 	}
-	
-	/* Apply check for not closed rings, if requested. */	
+
+	/* Apply check for not closed rings, if requested. */
 	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_CLOSURE) )
 	{
 		int is_closed = 1;
@@ -632,11 +632,11 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 			case LINETYPE:
 			is_closed = lwline_is_closed(lwgeom_as_lwline(ring));
 			break;
-			
+
 			case CIRCSTRINGTYPE:
 			is_closed = lwcircstring_is_closed(lwgeom_as_lwcircstring(ring));
 			break;
-			
+
 			case COMPOUNDTYPE:
 			is_closed = lwcompound_is_closed(lwgeom_as_lwcompound(ring));
 			break;
@@ -650,7 +650,7 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 			return NULL;
 		}
 	}
-		
+
 	if( LW_FAILURE == lwcurvepoly_add_ring(lwgeom_as_lwcurvepoly(poly), ring) )
 	{
 		LWDEBUG(4,"failed to add ring");
@@ -659,7 +659,7 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
 		return NULL;
 	}
-	
+
 	return poly;
 }
 
@@ -668,7 +668,7 @@ LWGEOM* wkt_parser_curvepolygon_finalize(LWGEOM *poly, char *dimensionality)
 	uint8_t flags = wkt_dimensionality(dimensionality);
 	int flagdims = FLAGS_NDIMS(flags);
 	LWDEBUG(4,"entered");
-	
+
 	/* Null input implies empty return */
 	if( ! poly )
 		return lwcurvepoly_as_lwgeom(lwcurvepoly_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(flags), FLAGS_GET_M(flags)));
@@ -691,28 +691,28 @@ LWGEOM* wkt_parser_curvepolygon_finalize(LWGEOM *poly, char *dimensionality)
 			return NULL;
 		}
 	}
-	
+
 	return poly;
 }
 
-LWGEOM* wkt_parser_collection_new(LWGEOM *geom) 
+LWGEOM* wkt_parser_collection_new(LWGEOM *geom)
 {
 	LWCOLLECTION *col;
 	LWGEOM **geoms;
 	static int ngeoms = 1;
 	LWDEBUG(4,"entered");
-	
+
 	/* Toss error on null geometry input */
 	if( ! geom )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
 		return NULL;
 	}
-	
+
 	/* Create our geometry array */
 	geoms = lwalloc(sizeof(LWGEOM*) * ngeoms);
 	geoms[0] = geom;
-	
+
 	/* Make a new collection */
 	col = lwcollection_construct(COLLECTIONTYPE, SRID_UNKNOWN, NULL, ngeoms, geoms);
 
@@ -721,33 +721,33 @@ LWGEOM* wkt_parser_collection_new(LWGEOM *geom)
 }
 
 
-LWGEOM* wkt_parser_compound_new(LWGEOM *geom) 
+LWGEOM* wkt_parser_compound_new(LWGEOM *geom)
 {
 	LWCOLLECTION *col;
 	LWGEOM **geoms;
 	static int ngeoms = 1;
 	LWDEBUG(4,"entered");
-	
+
 	/* Toss error on null geometry input */
 	if( ! geom )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
 		return NULL;
 	}
-	
+
 	/* Elements of a compoundcurve cannot be empty, because */
 	/* empty things can't join up and form a ring */
 	if ( lwgeom_is_empty(geom) )
 	{
 		lwgeom_free(geom);
 		SET_PARSER_ERROR(PARSER_ERROR_INCONTINUOUS);
-		return NULL;		
+		return NULL;
 	}
-	
+
 	/* Create our geometry array */
 	geoms = lwalloc(sizeof(LWGEOM*) * ngeoms);
 	geoms[0] = geom;
-	
+
 	/* Make a new collection */
 	col = lwcollection_construct(COLLECTIONTYPE, SRID_UNKNOWN, NULL, ngeoms, geoms);
 
@@ -775,7 +775,7 @@ LWGEOM* wkt_parser_compound_add_geom(LWGEOM *col, LWGEOM *geom)
 		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 		return NULL;
 	}
-	
+
 	if( LW_FAILURE == lwcompound_add_lwgeom((LWCOMPOUND*)col, geom) )
 	{
 		lwgeom_free(col);
@@ -783,7 +783,7 @@ LWGEOM* wkt_parser_compound_add_geom(LWGEOM *col, LWGEOM *geom)
 		SET_PARSER_ERROR(PARSER_ERROR_INCONTINUOUS);
 		return NULL;
 	}
-	
+
 	return col;
 }
 
@@ -798,15 +798,15 @@ LWGEOM* wkt_parser_collection_add_geom(LWGEOM *col, LWGEOM *geom)
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
 		return NULL;
 	}
-			
+
 	return lwcollection_as_lwgeom(lwcollection_add_lwgeom(lwgeom_as_lwcollection(col), geom));
 }
 
-LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *geom, char *dimensionality) 
+LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *geom, char *dimensionality)
 {
 	uint8_t flags = wkt_dimensionality(dimensionality);
 	int flagdims = FLAGS_NDIMS(flags);
-	
+
 	/* No geometry means it is empty */
 	if( ! geom )
 	{
@@ -817,8 +817,8 @@ LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *geom, char *dimension
 	if ( flagdims > 2 )
 	{
 		LWCOLLECTION *col = lwgeom_as_lwcollection(geom);
-		int i;
-		
+		uint32_t i;
+
 		for ( i = 0 ; i < col->ngeoms; i++ )
 		{
 			LWGEOM *subgeom = col->geoms[i];
@@ -829,7 +829,7 @@ LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *geom, char *dimension
 				SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 				return NULL;
 			}
-			
+
 			if ( lwtype == COLLECTIONTYPE &&
 			   ( (FLAGS_GET_Z(flags) != FLAGS_GET_Z(subgeom->flags)) ||
 			     (FLAGS_GET_M(flags) != FLAGS_GET_M(subgeom->flags)) ) &&
@@ -840,7 +840,7 @@ LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *geom, char *dimension
 				return NULL;
 			}
 		}
-		
+
 		/* Harmonize the collection dimensionality */
 		if( LW_FAILURE == wkt_parser_set_dims(geom, flags) )
 		{
@@ -849,10 +849,10 @@ LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *geom, char *dimension
 			return NULL;
 		}
 	}
-		
+
 	/* Set the collection type */
 	geom->type = lwtype;
-			
+
 	return geom;
 }
 
@@ -862,17 +862,17 @@ void wkt_parser_geometry_new(LWGEOM *geom, int srid)
 	LWDEBUGF(4,"geom %p",geom);
 	LWDEBUGF(4,"srid %d",srid);
 
-	if ( geom == NULL ) 
+	if ( geom == NULL )
 	{
 		lwerror("Parsed geometry is null!");
 		return;
 	}
-		
+
 	if ( srid != SRID_UNKNOWN && srid < SRID_MAXIMUM )
 		lwgeom_set_srid(geom, srid);
 	else
 		lwgeom_set_srid(geom, SRID_UNKNOWN);
-	
+
 	global_parser_result.geom = geom;
 }
 
@@ -910,8 +910,8 @@ LWGEOM *lwgeom_from_wkt(const char *wkt, const char check)
 		lwerror(r.message);
 		return NULL;
 	}
-	
-	return r.geom;	
+
+	return r.geom;
 }
 
 

@@ -13,3 +13,6 @@ SELECT 'swap1', ST_AsText(ST_SwapOrdinates('POINTZ(0 1 2)','xz'));
 SELECT 'swap2', ST_AsText(ST_SwapOrdinates('POINTM(0 1 2)','my'));
 SELECT 'swap3', ST_AsText(ST_SwapOrdinates('POINTZM(0 1 2 3)','mz'));
 SELECT 'swap4', ST_AsText(ST_SwapOrdinates('MULTICURVE ZM ((5 5 1 3, 3 5 2 2, 3 3 3 1, 0 3 1 1), CIRCULARSTRING ZM (0 0 0 0, 0.2 1 3 -2, 0.5 1.4 1 2), COMPOUNDCURVE ZM (CIRCULARSTRING ZM (0 0 0 0,1 1 1 2,1 0 0 1),(1 0 0 1,0 1 5 4)))','my'));
+
+select '#3628.1', ST_AsText(ST_SwapOrdinates('POINT(1 2 3)', 'XY'));
+select '#3628.2', ST_AsText(ST_SwapOrdinates('POINT(1 2 3)', 'YZ'));

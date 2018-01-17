@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright 2012 Sandro Santilli <strk@keybit.net>
+ * Copyright 2012 Sandro Santilli <strk@kbt.io>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -23,10 +23,10 @@
 static void do_test_lwgeom_effectivearea(POINTARRAY *pa,double *the_areas,int avoid_collaps)
 {
 
-	int i;
-	EFFECTIVE_AREAS *ea;	
-	
-	ea=initiate_effectivearea(pa);		
+	uint32_t i;
+	EFFECTIVE_AREAS *ea;
+
+	ea=initiate_effectivearea(pa);
 	ptarray_calc_areas(ea,avoid_collaps,1,0);
 
 	for (i=0;i<pa->npoints;i++)
@@ -35,8 +35,8 @@ static void do_test_lwgeom_effectivearea(POINTARRAY *pa,double *the_areas,int av
 	}
 
 	destroy_effectivearea(ea);
-	
-	
+
+
 }
 
 static void do_test_lwgeom_effectivearea_lines(void)
@@ -61,7 +61,7 @@ static void do_test_lwgeom_effectivearea_polys(void)
 {
 	LWPOLY *the_geom;
 	int avoid_collaps=4;
-	
+
 	/*POLYGON 1*/
 	the_geom = (LWPOLY*)lwgeom_from_wkt("POLYGON((10 10,12 8, 15 7, 18 7, 20 20, 15 21, 18 22, 10 30,1 99, 0 100, 10 10))", LW_PARSER_CHECK_NONE);
 	double the_areas1[]={FLT_MAX,5,1.5,55,100,4,4,FLT_MAX,30,FLT_MAX,FLT_MAX};

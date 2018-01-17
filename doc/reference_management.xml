@@ -7,7 +7,7 @@
 		<refname>AddGeometryColumn</refname>
 
 		<refpurpose>Adds a geometry column to an existing table of
-		attributes. By default uses type modifier to define rather than constraints.  
+		attributes. By default uses type modifier to define rather than constraints.
 		Pass in false for use_typmod to get old check constraint based behavior</refpurpose>
 	  </refnamediv>
 
@@ -81,7 +81,7 @@
 
 			<paramdef><type>integer </type>
 			<parameter>dimension</parameter></paramdef>
-			
+
 			<paramdef choice="opt"><type>boolean </type>
 			<parameter>use_typmod=true</parameter></paramdef>
 		  </funcprototype>
@@ -102,15 +102,15 @@
 
 		<note>
 			<para>Changed: 2.0.0 This function no longer updates geometry_columns since geometry_columns is a view that reads from system catalogs.  It by default
-			also does not create constraints, but instead uses the built in type modifier behavior of PostgreSQL.  So for example building a wgs84 POINT column with this function is now 
+			also does not create constraints, but instead uses the built in type modifier behavior of PostgreSQL.  So for example building a wgs84 POINT column with this function is now
 			equivalent to: <code>ALTER TABLE some_table ADD COLUMN geom geometry(Point,4326);</code> </para>
 			<para>Changed: 2.0.0 If you require the old behavior of constraints use the default <varname>use_typmod</varname>, but set it to false.</para>
 		</note>
-		
+
 		<note>
 		    <para>Changed: 2.0.0 Views can no longer be manually registered in geometry_columns, however views built against geometry typmod tables geometries and used without wrapper functions will register themselves correctly
 		            because they inherit the typmod behavior of their parent table column.
-		            Views that use geometry functions that output other geometries will need to be cast to typmod geometries for these view geometry columns to be registered correctly 
+		            Views that use geometry functions that output other geometries will need to be cast to typmod geometries for these view geometry columns to be registered correctly
 		            in geometry_columns. Refer to <xref linkend="Manual_Register_Spatial_Column"/>.
 			</para>
 		</note>
@@ -146,18 +146,18 @@ SELECT AddGeometryColumn ('my_schema','my_spatial_table','geomcp_c',4326,'CURVEP
 
 -- Describe the table again reveals the addition of a new geometry columns.
 \d my_schema.my_spatial_table
-                            addgeometrycolumn                            
+                            addgeometrycolumn
 -------------------------------------------------------------------------
- my_schema.my_spatial_table.geomcp_c SRID:4326 TYPE:CURVEPOLYGON DIMS:2 
+ my_schema.my_spatial_table.geomcp_c SRID:4326 TYPE:CURVEPOLYGON DIMS:2
 (1 row)
 
                                     Table "my_schema.my_spatial_table"
-  Column  |         Type         |                                Modifiers                                
+  Column  |         Type         |                                Modifiers
 ----------+----------------------+-------------------------------------------------------------------------
  id       | integer              | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
- geom     | geometry(Point,4326) | 
- geom_c   | geometry             | 
- geomcp_c | geometry             | 
+ geom     | geometry(Point,4326) |
+ geom_c   | geometry             |
+ geomcp_c | geometry             |
 Check constraints:
     "enforce_dims_geom_c" CHECK (st_ndims(geom_c) = 2)
     "enforce_dims_geomcp_c" CHECK (st_ndims(geomcp_c) = 2)
@@ -165,13 +165,13 @@ Check constraints:
     "enforce_geotype_geomcp_c" CHECK (geometrytype(geomcp_c) = 'CURVEPOLYGON'::text OR geomcp_c IS NULL)
     "enforce_srid_geom_c" CHECK (st_srid(geom_c) = 4326)
     "enforce_srid_geomcp_c" CHECK (st_srid(geomcp_c) = 4326)
-    
+
 -- geometry_columns view also registers the new columns --
-SELECT f_geometry_column As col_name, type, srid, coord_dimension As ndims 
+SELECT f_geometry_column As col_name, type, srid, coord_dimension As ndims
     FROM geometry_columns
     WHERE f_table_name = 'my_spatial_table' AND f_table_schema = 'my_schema';
 
- col_name |     type     | srid | ndims 
+ col_name |     type     | srid | ndims
 ----------+--------------+------+-------
  geom     | Point        | 4326 |     2
  geom_c   | Point        | 4326 |     2
@@ -261,7 +261,7 @@ SELECT f_geometry_column As col_name, type, srid, coord_dimension As ndims
 			                  dropgeometrycolumn
 ------------------------------------------------------
  my_schema.my_spatial_table.geom effectively removed.
- 
+
 -- In PostGIS 2.0+ the above is also equivalent to the standard
 -- the standard alter table.  Both will deregister from geometry_columns
 ALTER TABLE my_schema.my_spatial_table DROP column geom;
@@ -319,7 +319,7 @@ ALTER TABLE my_schema.my_spatial_table DROP column geom;
 		<para>Drops a table and all its references in geometry_columns. Note:
 		uses current_schema() on schema-aware pgsql installations if schema is
 		not provided.</para>
-		
+
 		<note>
 			<para>Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
 			    you can drop a table with geometry columns like any other table using <code>DROP TABLE</code></para>
@@ -332,7 +332,7 @@ ALTER TABLE my_schema.my_spatial_table DROP column geom;
 		<programlisting>SELECT DropGeometryTable ('my_schema','my_spatial_table');
 ----RESULT output ---
 my_schema.my_spatial_table dropped.
-			
+
 -- The above is now equivalent to --
 DROP TABLE my_schema.my_spatial_table;
 		</programlisting>
@@ -343,6 +343,71 @@ DROP TABLE my_schema.my_spatial_table;
 		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="DropGeometryColumn"/>, <xref linkend="geometry_columns"/></para>
 	  </refsection>
 	</refentry>
+
+<refentry id="PostGIS_Extensions_Upgrade">
+	  <refnamediv>
+		<refname>PostGIS_Extensions_Upgrade</refname>
+
+		<refpurpose>Upgrades installed postgis packaged extensions (e.g. postgis_sfcgal, postgis_topology, postgis_sfcgal)
+		to latest installed version. Reports full postgis version and build configuration
+		infos after.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_Extensions_Upgrade</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Upgrades installed postgis packaged extensions
+		to latest installed version. Only extensions you have installed in the database will be upgraded and if they are already at last installed version,
+		they will not be upgraded. Reports full postgis version and build configuration
+		infos after.  This is short-hand for doing multiple ALTER EXTENSION .. UPDATE for each postgis extension.
+		Currently only tries to upgrade extensions postgis, postgis_sfcgal, postgis_topology, and postgis_tiger_geocoder.</para>
+
+		<para>Availability: 2.5.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_Extensions_Upgrade();</programlisting>
+<screen>
+NOTICE:  ALTER EXTENSION postgis_tiger_geocoder UPDATE TO "2.5.0dev";
+CONTEXT:  PL/pgSQL function postgis_extensions_upgrade() line 10 at RAISE
+NOTICE:  ALTER EXTENSION postgis_topology UPDATE TO "2.5.0dev";
+CONTEXT:  PL/pgSQL function postgis_extensions_upgrade() line 10 at RAISE
+
+							   postgis_extensions_upgrade
+----------------------------------------------------------------------------------
+POSTGIS="2.5.0dev r15966" [EXTENSION] PGSQL="100"
+GEOS="3.7.0dev-CAPI-1.11.0 8fe2ce6" SFCGAL="1.3.1"
+PROJ="Rel. 4.9.3, 15 August 2016" GDAL="GDAL 2.2.2, released 2017/09/15"
+LIBXML="2.7.8" LIBJSON="0.12" LIBPROTOBUF="1.2.1" TOPOLOGY RASTER
+(1 row)</screen>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+		<xref linkend="upgrading" />,
+		<xref linkend="PostGIS_GEOS_Version" />,
+		<xref linkend="PostGIS_Lib_Version" />,
+		<xref linkend="PostGIS_LibXML_Version" />,
+		<xref linkend="PostGIS_PROJ_Version" />,
+		<xref linkend="PostGIS_Version" />
+		</para>
+	  </refsection>
+	</refentry>
+
 
 
 	<refentry id="PostGIS_Full_Version">
@@ -377,7 +442,7 @@ DROP TABLE my_schema.my_spatial_table;
 		<programlisting>SELECT PostGIS_Full_Version();
 							   postgis_full_version
 ----------------------------------------------------------------------------------
-POSTGIS="2.2.0dev r12699" GEOS="3.5.0dev-CAPI-1.9.0 r3989" SFCGAL="1.0.4" PROJ="Rel. 4.8.0, 6 March 2012" 
+POSTGIS="2.2.0dev r12699" GEOS="3.5.0dev-CAPI-1.9.0 r3989" SFCGAL="1.0.4" PROJ="Rel. 4.8.0, 6 March 2012"
 GDAL="GDAL 1.11.0, released 2014/04/16" LIBXML="2.7.8" LIBJSON="0.12" RASTER
 (1 row)</programlisting>
 	  </refsection>
@@ -428,6 +493,51 @@ GDAL="GDAL 1.11.0, released 2014/04/16" LIBXML="2.7.8" LIBJSON="0.12" RASTER
  postgis_geos_version
 ----------------------
  3.1.0-CAPI-1.5.0
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="PostGIS_Full_Version" />, <xref
+		linkend="PostGIS_Lib_Version" />, <xref
+		linkend="PostGIS_LibXML_Version" />, <xref
+		linkend="PostGIS_PROJ_Version" />, <xref
+		linkend="PostGIS_Version" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="PostGIS_Liblwgeom_Version">
+	  <refnamediv>
+		<refname>PostGIS_Liblwgeom_Version</refname>
+
+		<refpurpose>Returns the version number of the liblwgeom
+		library.  This should match the version of PostGIS.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_Liblwgeom_Version</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the version number of the liblwgeom library/</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_Liblwgeom_Version();
+postgis_liblwgeom_version
+--------------------------
+2.3.3 r15473
 (1 row)</programlisting>
 	  </refsection>
 
@@ -811,7 +921,7 @@ GDAL="GDAL 1.11.0, released 2014/04/16" LIBXML="2.7.8" LIBJSON="0.12" RASTER
 		<refname>Populate_Geometry_Columns</refname>
 
 		<refpurpose>Ensures geometry columns are defined with type modifiers or have appropriate spatial constraints
-		This ensures they will be registered correctly in <varname>geometry_columns</varname> view. By default will convert all geometry 
+		This ensures they will be registered correctly in <varname>geometry_columns</varname> view. By default will convert all geometry
 		    columns with no type modifier to ones with type modifiers. To get old behavior set <varname>use_typmod=false</varname></refpurpose>
 	  </refnamediv>
 
@@ -836,8 +946,8 @@ GDAL="GDAL 1.11.0, released 2014/04/16" LIBXML="2.7.8" LIBJSON="0.12" RASTER
 		<title>Description</title>
 
 		<para>Ensures geometry columns have appropriate type modifiers or spatial constraints to ensure they are registered correctly in <varname>geometry_columns</varname> table.</para>
-		
-		<para>For backwards compatibility and for spatial needs such as table inheritance where each child table may have different geometry type, the old check constraint behavior is still supported. 
+
+		<para>For backwards compatibility and for spatial needs such as table inheritance where each child table may have different geometry type, the old check constraint behavior is still supported.
 		If you need the old behavior, you need to pass in the new optional argument as false <varname>use_typmod=false</varname>. When this is done geometry columns will be created with no type modifiers
 		but will have 3 constraints defined.  In particular,
 		this means that every geometry column belonging to a table has at least
@@ -885,7 +995,7 @@ GDAL="GDAL 1.11.0, released 2014/04/16" LIBXML="2.7.8" LIBJSON="0.12" RASTER
 		parameterized version simply returns the number of rows inserted into
 		the <varname>geometry_columns</varname> table.</para>
 		<para>Availability: 1.4.0</para>
-		<para>Changed: 2.0.0 By default, now uses type modifiers instead of check constraints to constrain geometry types.  You can still use check 
+		<para>Changed: 2.0.0 By default, now uses type modifiers instead of check constraints to constrain geometry types.  You can still use check
 		    constraint behavior instead by using the new  <varname>use_typmod</varname> and setting it to false.</para>
 		<para>Enhanced: 2.0.0 <varname>use_typmod</varname> optional argument was introduced that allows controlling if columns are created with typmodifiers or with check constraints.</para>
 	  </refsection>
@@ -902,18 +1012,18 @@ SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);
 populate_geometry_columns
 --------------------------
                         1
-                        
-                        
+
+
 \d myspatial_table
 
                                    Table "public.myspatial_table"
- Column |           Type            |                           Modifiers                           
+ Column |           Type            |                           Modifiers
 --------+---------------------------+---------------------------------------------------------------
  gid    | integer                   | not null default nextval('myspatial_table_gid_seq'::regclass)
- geom   | geometry(LineString,4326) | 
+ geom   | geometry(LineString,4326) |
 </programlisting>
-		    
-		<programlisting>-- This will change the geometry columns to use constraints if they are not typmod or have constraints already.  
+
+		<programlisting>-- This will change the geometry columns to use constraints if they are not typmod or have constraints already.
 --For this to work, there must exist data
 CREATE TABLE public.myspatial_table_cs(gid serial, geom geometry);
 INSERT INTO myspatial_table_cs(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );
@@ -924,10 +1034,10 @@ populate_geometry_columns
 \d myspatial_table_cs
 
                           Table "public.myspatial_table_cs"
- Column |   Type   |                            Modifiers                             
+ Column |   Type   |                            Modifiers
 --------+----------+------------------------------------------------------------------
  gid    | integer  | not null default nextval('myspatial_table_cs_gid_seq'::regclass)
- geom   | geometry | 
+ geom   | geometry |
 Check constraints:
     "enforce_dims_geom" CHECK (st_ndims(geom) = 2)
     "enforce_geotype_geom" CHECK (geometrytype(geom) = 'LINESTRING'::text OR geom IS NULL)
@@ -1019,21 +1129,21 @@ Check constraints:
 		<title>Examples</title>
 		<para>This will change the srid of the roads table to 4326 from whatever it was before</para>
 		<programlisting>SELECT UpdateGeometrySRID('roads','geom',4326);</programlisting>
-		
+
 		<para>The prior example is equivalent to this DDL statement</para>
-		<programlisting>ALTER TABLE roads 
-  ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 4326) 
+		<programlisting>ALTER TABLE roads
+  ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 4326)
     USING ST_SetSRID(geom,4326);</programlisting>
-    
-    	<para>If you got the projection wrong (or brought it in as unknown) in load and you wanted to transform to web mercator all in one shot
-    		You can do this with 
-    	DDL but there is no equivalent PostGIS management function to do so in one go.</para>
-    	<programlisting>ALTER TABLE roads 
+
+	<para>If you got the projection wrong (or brought it in as unknown) in load and you wanted to transform to web mercator all in one shot
+		You can do this with
+	DDL but there is no equivalent PostGIS management function to do so in one go.</para>
+	<programlisting>ALTER TABLE roads
  ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 3857) USING ST_Transform(ST_SetSRID(geom,4326),3857) ;</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
-		
+
 		<para>
   <xref linkend="RT_UpdateRasterSRID"/>,
   <xref linkend="ST_SetSRID"/>,

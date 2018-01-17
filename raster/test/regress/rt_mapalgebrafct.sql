@@ -1,5 +1,5 @@
-CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8) 
-    RETURNS raster AS 
+CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8)
+    RETURNS raster AS
     $$
     DECLARE
     BEGIN
@@ -9,16 +9,16 @@ CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8)
     LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION raster_plus_twenty(pixel FLOAT, VARIADIC args TEXT[])
-    RETURNS FLOAT AS 
+    RETURNS FLOAT AS
     $$
     BEGIN
         RETURN pixel + 20;
     END;
-    $$ 
+    $$
     LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION raster_plus_arg1(pixel FLOAT, VARIADIC args TEXT[])
-    RETURNS FLOAT AS 
+    RETURNS FLOAT AS
     $$
     DECLARE
         x float := 0;
@@ -28,7 +28,7 @@ CREATE OR REPLACE FUNCTION raster_plus_arg1(pixel FLOAT, VARIADIC args TEXT[])
         END IF;
         RETURN pixel + x;
     END;
-    $$ 
+    $$
     LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION raster_polynomial(pixel FLOAT, VARIADIC args TEXT[])

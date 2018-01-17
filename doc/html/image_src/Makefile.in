@@ -37,6 +37,8 @@ IMAGES= \
 	../images/st_buildarea02.png \
 	../images/st_closestpoint01.png \
 	../images/st_closestpoint02.png \
+	../images/st_clusterkmeans01.png \
+	../images/st_clusterkmeans02.png \
 	../images/st_centroid01.png \
 	../images/st_centroid02.png \
 	../images/st_centroid03.png \
@@ -67,6 +69,7 @@ IMAGES= \
 	../images/st_extrude03.png \
 	../images/st_generatepoints01.png \
 	../images/st_generatepoints02.png \
+	../images/st_geometricmedian01.png \
 	../images/st_issimple01.png \
 	../images/st_issimple02.png \
 	../images/st_issimple03.png \
@@ -88,6 +91,7 @@ IMAGES= \
 	../images/st_linecrossingdirection03.png \
 	../images/st_linecrossingdirection04.png \
 	../images/st_line_interpolate_point01.png \
+	../images/st_line_interpolate_points01.png \
 	../images/st_line_substring01.png \
 	../images/st_longestline01.png \
 	../images/st_longestline02.png \

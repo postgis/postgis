@@ -1,4 +1,4 @@
-/*-- pagc_common.h -- 
+/*-- pagc_common.h --
 
 Certain common definitions used both by the pagc library and its clients
 
@@ -18,7 +18,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 */
 
 /* For pagc-0.4.0 : last revised 2010-11-08 */
- 
+
 
 #ifndef PAGC_COM_H
 #define PAGC_COM_H
@@ -57,10 +57,10 @@ strategy types
 #define SITE_INTERPOLATE 1
 #define INTERSECTION 2
 #define ADDRESS_RANGE_2 3
-#define ADDRESS_RANGE_4 4 
+#define ADDRESS_RANGE_4 4
 #define REVERSE_SITE 5
-#define REVERSE_INTERSECTION 6 
-#define INTERSECTION_B 7 
+#define REVERSE_INTERSECTION 6
+#define INTERSECTION_B 7
 #define CONCAT 8
 #define LANDMARK_NAME 9
 

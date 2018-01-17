@@ -15,7 +15,7 @@
 #include <string.h>
 #include "CUnit/Basic.h"
 #include "CUnit/CUnit.h"
-#include "liblwgeom_internal.h" 
+#include "liblwgeom_internal.h"
 #include "varint.h"
 #include "cu_tester.h"
 
@@ -36,15 +36,15 @@ static void do_test_u32_varint(uint32_t nr, int expected_size, char* expected_re
 	int size;
 	char *hex;
 	uint8_t buf[16];
-	
+
 	size = varint_u32_encode_buf(nr, buf);
-	if ( size != expected_size ) 
+	if ( size != expected_size )
 		printf("Expected: %d\nObtained: %d\n", expected_size, size);
 
 	CU_ASSERT_EQUAL(size, expected_size);
-	
+
 	hex = hexbytes_from_bytes(buf, size);
-	ASSERT_STRING_EQUAL(hex, expected_res);	
+	ASSERT_STRING_EQUAL(hex, expected_res);
 	lwfree(hex);
 }
 
@@ -53,16 +53,16 @@ static void do_test_s32_varint(int32_t nr,int expected_size, char* expected_res)
 	uint8_t buf[16];
 	int size;
 	char *hex;
-	
+
 	size = varint_s32_encode_buf(nr, buf);
-	if ( size != expected_size ) 
+	if ( size != expected_size )
 	{
 		printf("Expected: %d\nObtained: %d\n", expected_size, size);
 	}
 	CU_ASSERT_EQUAL(size,expected_size);
 
 	hex = hexbytes_from_bytes(buf, size);
-	ASSERT_STRING_EQUAL(hex, expected_res);	
+	ASSERT_STRING_EQUAL(hex, expected_res);
 	lwfree(hex);
 }
 
@@ -71,9 +71,9 @@ static void do_test_u64_varint(uint64_t nr,int expected_size, char* expected_res
 	uint8_t buf[16];
 	int size;
 	char *hex;
-	
+
 	size = varint_u64_encode_buf(nr, buf);
-	if ( size != expected_size ) 
+	if ( size != expected_size )
 	{
 		printf("Expected: %d\nObtained: %d\n", expected_size, size);
 	}
@@ -89,16 +89,16 @@ static void do_test_s64_varint(int64_t nr,int expected_size, char* expected_res)
 	uint8_t buf[16];
 	int size;
 	char *hex;
-	
+
 	size = varint_s64_encode_buf(nr, buf);
-	if ( size != expected_size ) 
+	if ( size != expected_size )
 	{
 		printf("Expected: %d\nObtained: %d\n", expected_size, size);
 	}
 	CU_ASSERT_EQUAL(size,expected_size);
-	
+
 	hex = hexbytes_from_bytes(buf,size);
-	ASSERT_STRING_EQUAL(hex, expected_res);	
+	ASSERT_STRING_EQUAL(hex, expected_res);
 	lwfree(hex);
 }
 
@@ -198,6 +198,9 @@ static void do_test_s64_roundtrip(int64_t i64_in)
 
 static void test_varint_roundtrip(void)
 {
+
+	do_test_u64_roundtrip(0xFFFFFFFFFFFFFFFF);
+
 	int i;
 	for ( i = 0; i < 1024; i += 63 )
 	{
@@ -217,13 +220,27 @@ static void test_zigzag(void)
 	{
 		a = b = i;
 		CU_ASSERT_EQUAL(a, unzigzag64(zigzag64(a)));
-		CU_ASSERT_EQUAL(b, unzigzag32(zigzag64(b)));
-		
+		CU_ASSERT_EQUAL(b, unzigzag32(zigzag32(b)));
+
 		a = b = -1 * i;
 		CU_ASSERT_EQUAL(a, unzigzag64(zigzag64(a)));
-		CU_ASSERT_EQUAL(b, unzigzag32(zigzag64(b)));
+		CU_ASSERT_EQUAL(b, unzigzag32(zigzag32(b)));
 	}
 
+	//8
+	CU_ASSERT_EQUAL(-INT8_MAX, unzigzag8(zigzag8(-INT8_MAX)));
+	CU_ASSERT_EQUAL(INT8_MAX, unzigzag8(zigzag8(INT8_MAX)));
+	CU_ASSERT_EQUAL(0, unzigzag8(zigzag8(0)));
+
+	//32
+	CU_ASSERT_EQUAL(-INT32_MAX, unzigzag32(zigzag32(-INT32_MAX)));
+	CU_ASSERT_EQUAL(INT32_MAX, unzigzag32(zigzag32(INT32_MAX)));
+	CU_ASSERT_EQUAL(0, unzigzag32(zigzag32(0)));
+
+	//64
+	CU_ASSERT_EQUAL(-INT64_MAX, unzigzag64(zigzag64(-INT64_MAX)));
+	CU_ASSERT_EQUAL(INT64_MAX, unzigzag64(zigzag64(INT64_MAX)));
+	CU_ASSERT_EQUAL(0, unzigzag64(zigzag64(0)));
 }
 
 

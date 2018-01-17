@@ -66,13 +66,13 @@ static void cu_wkb_in(char *wkt)
 	uint8_t *wkb_a, *wkb_b;
 	size_t wkb_size_a, wkb_size_b;
 	/* int i; char *hex; */
-	
+
 	if ( hex_a ) free(hex_a);
 	if ( hex_b ) free(hex_b);
 
 	/* Turn WKT into geom */
 	lwgeom_parse_wkt(&pr, wkt, LW_PARSER_CHECK_NONE);
-	if ( pr.errcode ) 
+	if ( pr.errcode )
 	{
 		printf("ERROR: %s\n", pr.message);
 		printf("POSITION: %d\n", pr.errlocation);
@@ -81,7 +81,7 @@ static void cu_wkb_in(char *wkt)
 
 	/* Get the geom */
 	g_a = pr.geom;
-	
+
 	/* Turn geom into WKB */
 	wkb_a = lwgeom_to_wkb(g_a, WKB_NDR | WKB_EXTENDED, &wkb_size_a);
 
@@ -110,7 +110,7 @@ static void test_wkb_in_point(void)
 
 	cu_wkb_in("SRID=4;POINTM(1 1 1)");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
-	
+
 	cu_wkb_in("POINT EMPTY");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
@@ -152,7 +152,7 @@ static void test_wkb_in_polygon(void)
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_wkb_in_multipoint(void) 
+static void test_wkb_in_multipoint(void)
 {
 	cu_wkb_in("SRID=4;MULTIPOINT(0 0 0,0 1 0,1 1 0,1 0 0,0 0 1)");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
@@ -183,7 +183,7 @@ static void test_wkb_in_collection(void)
 
 }
 
-static void test_wkb_in_circularstring(void) 
+static void test_wkb_in_circularstring(void)
 {
 	cu_wkb_in("CIRCULARSTRING(0 -2,-2 0,0 2,2 0,0 -2)");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
@@ -195,13 +195,13 @@ static void test_wkb_in_circularstring(void)
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_wkb_in_compoundcurve(void) 
+static void test_wkb_in_compoundcurve(void)
 {
 	cu_wkb_in("COMPOUNDCURVE(CIRCULARSTRING(0 0 0, 0.26794919243112270647255365849413 1 3, 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1),(0.5857864376269049511983112757903 1.4142135623730950488016887242097 1,2 0 0,0 0 0))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_wkb_in_curvpolygon(void) 
+static void test_wkb_in_curvpolygon(void)
 {
 	cu_wkb_in("CURVEPOLYGON(CIRCULARSTRING(-2 0 0 0,-1 -1 1 2,0 0 2 4,1 -1 3 6,2 0 4 8,0 2 2 4,-2 0 0 0),(-1 0 1 2,0 0.5 2 4,1 0 3 6,0 1 3 4,-1 0 1 2))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
@@ -213,6 +213,10 @@ static void test_wkb_in_multisurface(void) {}
 
 static void test_wkb_in_malformed(void)
 {
+
+	/* OSSFUXX */
+	cu_wkb_malformed_in("0000000008200000002020202020202020");
+
 	/* See http://trac.osgeo.org/postgis/ticket/1445 */
 	cu_wkb_malformed_in("01060000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F");
 	cu_wkb_malformed_in("01050000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F");

@@ -46,7 +46,7 @@ lwtriangle_construct(int srid, GBOX *bbox, POINTARRAY *points)
 
 	result->flags = points->flags;
 	FLAGS_SET_BBOX(result->flags, bbox?1:0);
-	
+
 	result->srid = srid;
 	result->points = points;
 	result->bbox = bbox;
@@ -69,13 +69,13 @@ lwtriangle_construct_empty(int srid, char hasz, char hasm)
 void lwtriangle_free(LWTRIANGLE  *triangle)
 {
 	if ( ! triangle ) return;
-	
+
 	if (triangle->bbox)
 		lwfree(triangle->bbox);
-		
+
 	if (triangle->points)
 		ptarray_free(triangle->points);
-		
+
 	lwfree(triangle);
 }
 
@@ -93,7 +93,7 @@ void printLWTRIANGLE(LWTRIANGLE *triangle)
 
 /* @brief Clone LWTRIANGLE object. Serialized point lists are not copied.
  *
- * @see ptarray_clone 
+ * @see ptarray_clone
  */
 LWTRIANGLE *
 lwtriangle_clone(const LWTRIANGLE *g)
@@ -106,14 +106,13 @@ void
 lwtriangle_force_clockwise(LWTRIANGLE *triangle)
 {
 	if ( ptarray_isccw(triangle->points) )
-		ptarray_reverse(triangle->points);
+		ptarray_reverse_in_place(triangle->points);
 }
 
-void
-lwtriangle_reverse(LWTRIANGLE *triangle)
+int
+lwtriangle_is_clockwise(LWTRIANGLE *triangle)
 {
-	if( lwtriangle_is_empty(triangle) ) return;
-	ptarray_reverse(triangle->points);
+	return !ptarray_isccw(triangle->points);
 }
 
 void
@@ -129,6 +128,19 @@ lwtriangle_same(const LWTRIANGLE *t1, const LWTRIANGLE *t2)
 	char r = ptarray_same(t1->points, t2->points);
 	LWDEBUGF(5, "returning %d", r);
 	return r;
+}
+
+static char
+lwtriangle_is_repeated_points(LWTRIANGLE *triangle)
+{
+	char ret;
+	POINTARRAY *pa;
+
+	pa = ptarray_remove_repeated_points(triangle->points, 0.0);
+	ret = ptarray_same(pa, triangle->points);
+	ptarray_free(pa);
+
+	return ret;
 }
 
 /*
@@ -159,19 +171,6 @@ lwtriangle_from_lwline(const LWLINE *shell)
 	return ret;
 }
 
-char
-lwtriangle_is_repeated_points(LWTRIANGLE *triangle)
-{
-	char ret;
-	POINTARRAY *pa;
-
-	pa = ptarray_remove_repeated_points(triangle->points, 0.0);
-	ret = ptarray_same(pa, triangle->points);
-	ptarray_free(pa);
-
-	return ret;
-}
-
 int lwtriangle_is_empty(const LWTRIANGLE *triangle)
 {
 	if ( !triangle->points || triangle->points->npoints < 1 )
@@ -180,13 +179,13 @@ int lwtriangle_is_empty(const LWTRIANGLE *triangle)
 }
 
 /**
- * Find the area of the outer ring 
+ * Find the area of the outer ring
  */
 double
 lwtriangle_area(const LWTRIANGLE *triangle)
 {
 	double area=0.0;
-	int i;
+	uint32_t i;
 	POINT2D p1;
 	POINT2D p2;
 
@@ -208,17 +207,17 @@ lwtriangle_area(const LWTRIANGLE *triangle)
 double
 lwtriangle_perimeter(const LWTRIANGLE *triangle)
 {
-	if( triangle->points ) 
+	if( triangle->points )
 		return ptarray_length(triangle->points);
-	else 
+	else
 		return 0.0;
 }
 
 double
 lwtriangle_perimeter_2d(const LWTRIANGLE *triangle)
 {
-	if( triangle->points ) 
+	if( triangle->points )
 		return ptarray_length_2d(triangle->points);
-	else 
+	else
 		return 0.0;
 }

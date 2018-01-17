@@ -5,9 +5,13 @@ gml_version_01|<gml:Point srsName="EPSG:4326"><gml:coordinates>1,1</gml:coordina
 gml_version_02|<gml:Point srsName="EPSG:4326"><gml:pos srsDimension="2">1 1</gml:pos></gml:Point>
 ERROR:  Only GML 2 and GML 3 are supported
 ERROR:  Only GML 2 and GML 3 are supported
-gml_option_01|<gml:Point srsName="EPSG:4326"><gml:coordinates>1,1</gml:coordinates></gml:Point>
-gml_option_02|<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">1 1</gml:pos></gml:Point>
-gml_option_03|<gml:Point srsName="EPSG:4326"><gml:pos>1 1</gml:pos></gml:Point>
+gml_option_01|<gml:Point srsName="EPSG:4326"><gml:coordinates>1,2</gml:coordinates></gml:Point>
+gml_option_02|<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">2 1</gml:pos></gml:Point>
+gml_option_03|<gml:Point srsName="EPSG:4326"><gml:pos>1 2</gml:pos></gml:Point>
+ERROR:  Options 4 passed to ST_AsGML(geography) but are only applicable to ST_AsGML(geometry)
+ERROR:  Options 16 passed to ST_AsGML(geography) but are only applicable to ST_AsGML(geometry)
+ERROR:  Options 32 passed to ST_AsGML(geography) but are only applicable to ST_AsGML(geometry)
+ERROR:  Options 32 passed to ST_AsGML(geography) but are only applicable to ST_AsGML(geometry)
 gml_deegree_01|<gml:Point srsName="EPSG:4326"><gml:coordinates>1,2</gml:coordinates></gml:Point>
 gml_deegree_02|<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:coordinates>1,2</gml:coordinates></gml:Point>
 gml_deegree_03|<gml:Point srsName="EPSG:4326"><gml:pos srsDimension="2">1 2</gml:pos></gml:Point>

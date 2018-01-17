@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2006 Corporacion Autonoma Regional de Santander 
+ * Copyright 2006 Corporacion Autonoma Regional de Santander
  * Copyright 2010 Paul Ramsey <pramsey@cleverelephant.ca>
  *
  **********************************************************************/
@@ -52,20 +52,20 @@ lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix)
 
 	sb = stringbuffer_create();
 	rv = lwgeom_to_kml2_sb(geom, precision, prefix, sb);
-	
+
 	if ( rv == LW_FAILURE )
 	{
 		stringbuffer_destroy(sb);
 		return NULL;
 	}
-	
+
 	kml = stringbuffer_getstringcopy(sb);
 	stringbuffer_destroy(sb);
-	
+
 	return kml;
 }
 
-static int 
+static int
 lwgeom_to_kml2_sb(const LWGEOM *geom, int precision, const char *prefix, stringbuffer_t *sb)
 {
 	switch (geom->type)
@@ -90,14 +90,14 @@ lwgeom_to_kml2_sb(const LWGEOM *geom, int precision, const char *prefix, stringb
 	}
 }
 
-static int 
+static int
 ptarray_to_kml2_sb(const POINTARRAY *pa, int precision, stringbuffer_t *sb)
 {
-	int i, j;
-	int dims = FLAGS_GET_Z(pa->flags) ? 3 : 2;
+	uint32_t i, j;
+	uint32_t dims = FLAGS_GET_Z(pa->flags) ? 3 : 2;
 	POINT4D pt;
 	double *d;
-	
+
 	for ( i = 0; i < pa->npoints; i++ )
 	{
 		getPoint4d_p(pa, i, &pt);
@@ -110,7 +110,7 @@ ptarray_to_kml2_sb(const POINTARRAY *pa, int precision, stringbuffer_t *sb)
 			{
 				if ( stringbuffer_aprintf(sb, "%.*f", precision, d[j]) < 0 ) return LW_FAILURE;
 			}
-			else 
+			else
 			{
 				if ( stringbuffer_aprintf(sb, "%g", d[j]) < 0 ) return LW_FAILURE;
 			}
@@ -121,7 +121,7 @@ ptarray_to_kml2_sb(const POINTARRAY *pa, int precision, stringbuffer_t *sb)
 }
 
 
-static int 
+static int
 lwpoint_to_kml2_sb(const LWPOINT *point, int precision, const char *prefix, stringbuffer_t *sb)
 {
 	/* Open point */
@@ -133,7 +133,7 @@ lwpoint_to_kml2_sb(const LWPOINT *point, int precision, const char *prefix, stri
 	return LW_SUCCESS;
 }
 
-static int 
+static int
 lwline_to_kml2_sb(const LWLINE *line, int precision, const char *prefix, stringbuffer_t *sb)
 {
 	/* Open linestring */
@@ -142,15 +142,16 @@ lwline_to_kml2_sb(const LWLINE *line, int precision, const char *prefix, stringb
 	if ( ptarray_to_kml2_sb(line->points, precision, sb) == LW_FAILURE ) return LW_FAILURE;
 	/* Close linestring */
 	if ( stringbuffer_aprintf(sb, "</%scoordinates></%sLineString>", prefix, prefix) < 0 ) return LW_FAILURE;
-	
+
 	return LW_SUCCESS;
 }
 
-static int 
+static int
 lwpoly_to_kml2_sb(const LWPOLY *poly, int precision, const char *prefix, stringbuffer_t *sb)
 {
-	int i, rv;
-	
+	uint32_t i;
+	int rv;
+
 	/* Open polygon */
 	if ( stringbuffer_aprintf(sb, "<%sPolygon>", prefix) < 0 ) return LW_FAILURE;
 	for ( i = 0; i < poly->nrings; i++ )
@@ -159,17 +160,17 @@ lwpoly_to_kml2_sb(const LWPOLY *poly, int precision, const char *prefix, stringb
 		if( i )
 			rv = stringbuffer_aprintf(sb, "<%sinnerBoundaryIs><%sLinearRing><%scoordinates>", prefix, prefix, prefix);
 		else
-			rv = stringbuffer_aprintf(sb, "<%souterBoundaryIs><%sLinearRing><%scoordinates>", prefix, prefix, prefix);		
+			rv = stringbuffer_aprintf(sb, "<%souterBoundaryIs><%sLinearRing><%scoordinates>", prefix, prefix, prefix);
 		if ( rv < 0 ) return LW_FAILURE;
-		
+
 		/* Coordinate array */
 		if ( ptarray_to_kml2_sb(poly->rings[i], precision, sb) == LW_FAILURE ) return LW_FAILURE;
-		
+
 		/* Inner or outer ring closing tags */
 		if( i )
 			rv = stringbuffer_aprintf(sb, "</%scoordinates></%sLinearRing></%sinnerBoundaryIs>", prefix, prefix, prefix);
 		else
-			rv = stringbuffer_aprintf(sb, "</%scoordinates></%sLinearRing></%souterBoundaryIs>", prefix, prefix, prefix);		
+			rv = stringbuffer_aprintf(sb, "</%scoordinates></%sLinearRing></%souterBoundaryIs>", prefix, prefix, prefix);
 		if ( rv < 0 ) return LW_FAILURE;
 	}
 	/* Close polygon */
@@ -178,17 +179,18 @@ lwpoly_to_kml2_sb(const LWPOLY *poly, int precision, const char *prefix, stringb
 	return LW_SUCCESS;
 }
 
-static int 
+static int
 lwcollection_to_kml2_sb(const LWCOLLECTION *col, int precision, const char *prefix, stringbuffer_t *sb)
 {
-	int i, rv;
-		
+	uint32_t i;
+	int rv;
+
 	/* Open geometry */
 	if ( stringbuffer_aprintf(sb, "<%sMultiGeometry>", prefix) < 0 ) return LW_FAILURE;
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
 		rv = lwgeom_to_kml2_sb(col->geoms[i], precision, prefix, sb);
-		if ( rv == LW_FAILURE ) return LW_FAILURE;		
+		if ( rv == LW_FAILURE ) return LW_FAILURE;
 	}
 	/* Close geometry */
 	if ( stringbuffer_aprintf(sb, "</%sMultiGeometry>", prefix) < 0 ) return LW_FAILURE;

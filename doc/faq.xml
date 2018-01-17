@@ -3,7 +3,7 @@
   <title>PostGIS Frequently Asked Questions</title>
 
   <qandaset>
-  	<qandaentry id="faq_where_tutorials">
+	<qandaentry id="faq_where_tutorials">
       <question>
         <para>Where can I find tutorials, guides and workshops on working with PostGIS</para>
       </question>
@@ -22,17 +22,17 @@
         <para>A lot of deprecated functions were removed from the PostGIS code base in PostGIS 2.0.  This has affected applications in addition to third-party tools such as
             Geoserver, MapServer, QuantumGIS, and OpenJump to name a few.  There are a couple of ways to resolve this. For the third-party apps, you can try to upgrade to the latest versions
                 of these which have many of these issues fixed.  For your own code, you can change your code to not use the functions removed.  Most of these functions are non ST_ aliases of ST_Union, ST_Length etc.
-               and as a last resort, install the whole of <varname>legacy.sql</varname> or just the 
+               and as a last resort, install the whole of <varname>legacy.sql</varname> or just the
                 portions of <varname>legacy.sql</varname> you need.</para>
-        
+
          <para>The <varname>legacy.sql</varname> file is located in the same folder as postgis.sql.  You can install this file after you have installed postgis.sql and spatial_ref_sys.sql
             to get back all the 200 some-odd old functions we removed.</para>
       </answer>
     </qandaentry>
-    
+
     <qandaentry id="legacy_faq_gist">
       <question>
-        <para>When I load OpenStreetMap data with osm2pgsql, I'm getting an error     
+        <para>When I load OpenStreetMap data with osm2pgsql, I'm getting an error
     failed: ERROR:  operator class "gist_geometry_ops" does not exist for access method "gist" Error occurred.  This worked fine in PostGIS 1.5.</para>
       </question>
 
@@ -43,10 +43,10 @@
         <programlisting>CREATE INDEX idx_my_table_geom ON my_table USING gist(geom gist_geometry_ops);</programlisting>
         <para>To GOOD:</para>
          <programlisting>CREATE INDEX idx_my_table_geom ON my_table USING gist(geom);</programlisting>
-         
+
          <para>The only case where you WILL need to specify the operator class is if you want a 3D spatial index as follows:</para>
          <programlisting>CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom gist_geometry_ops_nd);</programlisting>
-         
+
          <para>If you are unfortunate to be stuck with compiled code you can't change that has the old gist_geometry_ops hard-coded, then you can create the old class using the <filename>legacy_gist.sql</filename> packaged in PostGIS 2.0.2+. However if you use this fix, you are advised to at a later point drop the index and recreate it without the operator class.  This will save you grief in the future when you need to upgrade again.</para>
       </answer>
     </qandaentry>
@@ -59,20 +59,20 @@
       <answer>
         <para>In PostgreSQL 9.0+, the default encoding for bytea data has been changed to hex and older JDBC drivers still assume escape format. This has affected some applications
         such as Java applications using older JDBC drivers or .NET applications that use the older npgsql driver
-        	that expect the old behavior of ST_AsBinary.  There are two approaches to getting this to work again.</para>
-        
-        <para>You can upgrade your JDBC driver to the latest PostgreSQL 9.0 version which you can get from  
+	that expect the old behavior of ST_AsBinary.  There are two approaches to getting this to work again.</para>
+
+        <para>You can upgrade your JDBC driver to the latest PostgreSQL 9.0 version which you can get from
             <ulink url="http://jdbc.postgresql.org/download.html">http://jdbc.postgresql.org/download.html</ulink></para>
         <para>If you are running a .NET app, you can use Npgsql 2.0.11 or higher which you can download from
-        	<ulink url="http://pgfoundry.org/frs/?group_id=1000140">http://pgfoundry.org/frs/?group_id=1000140</ulink> and
+	<ulink url="http://pgfoundry.org/frs/?group_id=1000140">http://pgfoundry.org/frs/?group_id=1000140</ulink> and
         as described on <ulink url="http://fxjr.blogspot.com/2010/11/npgsql-2011-released.html">Francisco Figueiredo's NpgSQL 2.0.11 released blog entry</ulink></para>
-         
+
         <para>If upgrading your PostgreSQL driver is not an option, then you can set the default back to the old behavior  with the following change:</para>
         <programlisting>ALTER DATABASE mypostgisdb SET bytea_output='escape';</programlisting>
-        
+
       </answer>
     </qandaentry>
-    
+
     <qandaentry id="pgadmin_shows_no_data_in_geom">
       <question>
         <para>I tried to use PgAdmin to view my geometry column and it is blank, what gives?</para>
@@ -80,17 +80,17 @@
 
       <answer>
         <para>PgAdmin doesn't show anything for large geometries.  The best ways to verify you do have data in your geometry columns are?</para>
-        
-        
-        <programlisting>-- this should return no records if all your geom fields are filled in        
+
+
+        <programlisting>-- this should return no records if all your geom fields are filled in
 SELECT somefield FROM mytable WHERE geom IS NULL;</programlisting>
-      
+
         <programlisting>-- To tell just how large your geometry is do a query of the form
 --which will tell you the most number of points you have in any of your geometry columns
 SELECT MAX(ST_NPoints(geom)) FROM sometable;</programlisting>
       </answer>
     </qandaentry>
-    
+
     <qandaentry>
       <question>
         <para>What kind of geometric objects can I store?</para>
@@ -101,13 +101,13 @@ SELECT MAX(ST_NPoints(geom)) FROM sometable;</programlisting>
         MultiPolygon, and GeometryCollection geometries. In PostGIS 2.0 and above you can also store TINS and Polyhedral Surfaces in the basic geometry type.
         These are specified in the Open
         GIS Well Known Text Format (with Z, M, and ZM extensions).  There are three data types currently supported.
-		The standard OGC geometry data type which uses a planar coordinate system for measurement, the 
+		The standard OGC geometry data type which uses a planar coordinate system for measurement, the
 		geography data type which uses a geodetic coordinate system, with calculations on either a sphere or spheroid.
 		The newest family member of the PostGIS spatial type family is raster for storing and analyzing raster data. Raster has its very own FAQ. Refer to <xref linkend="RT_FAQ"/>
 		and <xref linkend="RT_reference" /> for more details.</para>
       </answer>
     </qandaentry>
-	
+
     <qandaentry>
       <question>
         <para>I'm all confused.  Which data store should I use geometry or geography?</para>
@@ -126,11 +126,11 @@ SELECT MAX(ST_NPoints(geom)) FROM sometable;</programlisting>
 		  Refer to <xref linkend="PostGIS_TypeFunctionMatrix" /> to see what is currently supported and what is not.
 		 </para>
 		 <para>
-		 	Long Answer: Refer to our more lengthy discussion in the <xref linkend="PostGIS_GeographyVSGeometry" /> and <link linkend="PostGIS_TypeFunctionMatrix">function type matrix</link>.
+			Long Answer: Refer to our more lengthy discussion in the <xref linkend="PostGIS_GeographyVSGeometry" /> and <link linkend="PostGIS_TypeFunctionMatrix">function type matrix</link>.
 		 </para>
       </answer>
     </qandaentry>
-	
+
     <qandaentry>
       <question>
         <para>I have more intense questions about geography, such as how big of a geographic region can I stuff in a geography column and
@@ -149,7 +149,7 @@ SELECT MAX(ST_NPoints(geom)) FROM sometable;</programlisting>
 
       <answer>
         <para>First, you need to create a table with a column of type
-        "geometry" or "geography" to hold your GIS data. 
+        "geometry" or "geography" to hold your GIS data.
 		Storing geography type data is a little different than storing geometry.  Refer
 		to <xref linkend="Geography_Basics" /> for details on storing geography. </para>
 		<para>
@@ -167,10 +167,10 @@ SELECT MAX(ST_NPoints(geom)) FROM sometable;</programlisting>
         insert statement. The GIS object itself is formatted using the OpenGIS
         Consortium "well-known text" format:</para>
 
-        <programlisting>INSERT INTO gtest (ID, NAME, GEOM) 
+        <programlisting>INSERT INTO gtest (ID, NAME, GEOM)
 VALUES (
-  1, 
-  'First Geometry', 
+  1,
+  'First Geometry',
   ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')
 );</programlisting>
 
@@ -185,7 +185,7 @@ VALUES (
 
         <programlisting> id | name           | geom
 ----+----------------+-----------------------------
-  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8) 
+  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)
 (1 row)</programlisting>
       </answer>
     </qandaentry>
@@ -219,9 +219,9 @@ VALUES (
         <emphasis>might</emphasis> meet the condition of interest. The spatial
         functions are then use to test the condition exactly.</para>
 
-        <programlisting>SELECT id, the_geom 
-FROM thetable 
-WHERE 
+        <programlisting>SELECT id, the_geom
+FROM thetable
+WHERE
   ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');</programlisting>
       </answer>
     </qandaentry>
@@ -342,7 +342,7 @@ WHERE
         <para>For example, to find all objects with 100 meters of POINT(1000
         1000) the following query would work well:</para>
 
-        <programlisting>SELECT * FROM geotable 
+        <programlisting>SELECT * FROM geotable
 WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
       </answer>
     </qandaentry>
@@ -358,13 +358,13 @@ WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
         coordinate systems must be defined in the SPATIAL_REF_SYS table, and
         the geometries being reprojected must already have an SRID set on
         them. Once that is done, a reprojection is as simple as referring to
-        the desired destination SRID. The below projects a geometry to NAD 83 long lat.  
+        the desired destination SRID. The below projects a geometry to NAD 83 long lat.
 		The below will only work if the srid of the_geom is not -1 (not undefined spatial ref)</para>
 
         <programlisting>SELECT ST_Transform(the_geom,4269) FROM geotable;</programlisting>
       </answer>
     </qandaentry>
-	
+
 	<qandaentry>
       <question>
         <para>I did an ST_AsEWKT and ST_AsText on my rather large geometry and it returned blank field.  What gives?</para>
@@ -379,7 +379,7 @@ WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
 				SELECT count(gid) FROM geotable WHERE the_geom IS NULL;</programlisting>
       </answer>
     </qandaentry>
-	
+
 	<qandaentry>
       <question>
         <para>When I do an ST_Intersects, it says my two geometries don't intersect when I KNOW THEY DO. What gives?</para>
@@ -387,7 +387,7 @@ WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
 
       <answer>
         <para>This generally happens in two common cases.  Your geometry is invalid -- check <xref linkend="ST_IsValid" />
-			or you are assuming they intersect because ST_AsText truncates the numbers and you have lots of decimals after 
+			or you are assuming they intersect because ST_AsText truncates the numbers and you have lots of decimals after
 				it is not showing you.</para>
       </answer>
     </qandaentry>
@@ -398,8 +398,9 @@ WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
       </question>
 
       <answer>
-        <para>Almost certainly not. As an example, consider Oracle database running on Linux. Linux is GPL, Oracle is not, does Oracle running on Linux have to be distributed using the GPL? No. So your software can use a PostgreSQL/PostGIS database as much as it wants and be under any license you like.</para>
-				<para>The only exception would be if you made changes to the PostGIS source code, and distributed your changed version of PostGIS. In that case you would have to share the code of your changed PostGIS (but not the code of applications running on top of it). Even in this limited case, you would still only have to distribute source code to people you distributed binaries to. The GPL does not require that you <emphasis>publish</emphasis> your source code, only that you share it with people you give binaries to.</para>
+        <para>Almost certainly not. As an example, consider Oracle database running on Linux. Linux is GPL, Oracle is not: does Oracle running on Linux have to be distributed using the GPL? No. Similarly your software can use a PostgreSQL/PostGIS database as much as it wants and be under any license you like.</para>
+				<para>The only exception would be if you made changes to the PostGIS source code, and <emphasis>distributed your changed version</emphasis> of PostGIS. In that case you would have to share the code of your changed PostGIS (but not the code of applications running on top of it). Even in this limited case, you would still only have to distribute source code to people you distributed binaries to. The GPL does not require that you <emphasis>publish</emphasis> your source code, only that you share it with people you give binaries to.</para>
+        <para>The above remains true even if you use PostGIS in conjunction with the optional CGAL-enabled functions. Portions of CGAL are GPL, but so is all of PostGIS already: using CGAL does not make PostGIS any more GPL than it was to start with.</para>
       </answer>
     </qandaentry>
 

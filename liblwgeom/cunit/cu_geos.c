@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright 2011 Sandro Santilli <strk@keybit.net>
+ * Copyright 2011 Sandro Santilli <strk@kbt.io>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -22,7 +22,7 @@
 
 static void test_geos_noop(void)
 {
-	int i;
+	size_t i;
 
 	char *ewkt[] =
 	{
@@ -37,6 +37,7 @@ static void test_geos_noop(void)
 		"SRID=100000;POLYGON((-1 -1 3,-1 2.5 3,2 2 3,2 -1 3,-1 -1 3),(0 0 3,0 1 3,1 1 3,1 0 3,0 0 3),(-0.5 -0.5 3,-0.5 -0.4 3,-0.4 -0.4 3,-0.4 -0.5 3,-0.5 -0.5 3))",
 		"SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
 		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
+		"GEOMETRYCOLLECTION( LINESTRING (1 1, 2 2), POINT EMPTY, TRIANGLE ((0 0, 1 0, 1 1, 0 0)) )",
 	};
 
 
@@ -50,7 +51,7 @@ static void test_geos_noop(void)
 		geom_in = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
 		geom_out = lwgeom_geos_noop(geom_in);
 		if ( ! geom_out ) {
-			fprintf(stderr, "\nNull return from lwgeom_geos_noop with wkt:   %s\n", in_ewkt);
+			// fprintf(stderr, "\nNull return from lwgeom_geos_noop with wkt:   %s\n", in_ewkt);
 			lwgeom_free(geom_in);
 			continue;
 		}
@@ -103,7 +104,7 @@ static void test_geos_subdivide(void)
 	char *out_ewkt;
 	LWGEOM *geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
 	LWGEOM *geom2 = lwgeom_segmentize2d(geom1, 1.0);
-	
+
 	LWCOLLECTION *geom3 = lwgeom_subdivide(geom2, 80);
 	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom3);
 	// printf("\n--------\n%s\n--------\n", out_ewkt);
@@ -129,7 +130,7 @@ static void test_geos_subdivide(void)
 void geos_suite_setup(void);
 void geos_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("GEOS", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("geos", NULL, NULL);
 	PG_ADD_TEST(suite, test_geos_noop);
 	PG_ADD_TEST(suite, test_geos_subdivide);
 	PG_ADD_TEST(suite, test_geos_linemerge);

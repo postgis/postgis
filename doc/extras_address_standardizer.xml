@@ -7,8 +7,8 @@
 	 <para>The code for this extension can be found in the PostGIS <filename>extensions/address_standardizer</filename> and is currently self-contained.</para>
 	 <para>For installation instructions refer to: <xref linkend="installing_pagc_address_standardizer" />.</para>
   <sect1 id="Address_Standardizer_Basics"><title>How the Parser Works</title>
-  		<para>The parser works from right to left looking first at the macro elements 
-  			for postcode, state/province, city, and then looks micro elements to determine
+		<para>The parser works from right to left looking first at the macro elements
+			for postcode, state/province, city, and then looks micro elements to determine
 if we are dealing with a house number street or intersection or landmark.
 It currently does not look for a country code or name, but that could be
 introduced in the future.</para>
@@ -34,9 +34,9 @@ into includes in the future for easier maintenance.</para></listitem>
   <sect1 id="Address_Standardizer_Types">
 	<sect1info>
 		<abstract>
-			<para>This section lists the PostgreSQL data types installed by Address Standardizer extension.  Note we describe the casting behavior of these which is very 
-				important especially when designing your own functions.  
-			</para>	
+			<para>This section lists the PostgreSQL data types installed by Address Standardizer extension.  Note we describe the casting behavior of these which is very
+				important especially when designing your own functions.
+			</para>
 		</abstract>
 	</sect1info>
 	<title>Address Standardizer Types</title>
@@ -57,7 +57,7 @@ into includes in the future for easier maintenance.</para></listitem>
 								<para> is text (token number <code>0</code>):  Refers to building number or name. Unparsed building identifiers and types. Generally blank for most addresses.</para>
 							</listitem>
 					</varlistentry>
-					<varlistentry><term>house_num</term> 
+					<varlistentry><term>house_num</term>
 						<listitem>
 							<para>is a text (token number <code>1</code>): This is the street number on a street. Example <emphasis>75</emphasis> in <code>75 State Street</code>.</para>
 						</listitem>
@@ -65,7 +65,7 @@ into includes in the future for easier maintenance.</para></listitem>
 					<varlistentry><term>predir</term><listitem>
 							<para> is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as North, South, East, West etc.</para>
 					</listitem></varlistentry>
-					<varlistentry><term>qual</term> 
+					<varlistentry><term>qual</term>
 						<listitem>
 								<para>is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example <emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>.</para>
 						</listitem>
@@ -92,7 +92,7 @@ into includes in the future for easier maintenance.</para></listitem>
 					</varlistentry>
 					<varlistentry><term>ruralroute</term>
 						<listitem>
-							<para>is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>8</emphasis> in <code>RR 7</code>.</para>
+							<para>is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>7</emphasis> in <code>RR 7</code>.</para>
 						</listitem>
 					</varlistentry>
 					<varlistentry><term>extra</term>
@@ -134,12 +134,12 @@ into includes in the future for easier maintenance.</para></listitem>
 		</refsection>
 	</refentry>
   </sect1>
-  
+
   <sect1 id="Address_Standardizer_Tables">
-  		  <sect1info>
+		  <sect1info>
             <abstract>
-                <para>This section lists the PostgreSQL table formats used by the address_standardizer for normalizing addresses.  Note that these tables do not need to be named the same as what is referenced here.  You can have different lex, gaz, rules tables for each country for example or for your custom geocoder.  The names of these tables get passed into the address standardizer functions.  
-                </para>	
+                <para>This section lists the PostgreSQL table formats used by the address_standardizer for normalizing addresses.  Note that these tables do not need to be named the same as what is referenced here.  You can have different lex, gaz, rules tables for each country for example or for your custom geocoder.  The names of these tables get passed into the address standardizer functions.
+                </para>
                 <para>The packaged extension <varname>address_standardizer_data_us</varname> contains data for standardizing US addresses.</para>
             </abstract>
         </sect1info>
@@ -152,7 +152,7 @@ into includes in the future for easier maintenance.</para></listitem>
 			<refsection>
 				<title>Description</title>
 				<para>A rules table must have at least the following columns, though you are allowed to add more for your own uses. </para>
-				
+
 					<variablelist>
 						<varlistentry>
 								<term>id</term>
@@ -160,7 +160,7 @@ into includes in the future for easier maintenance.</para></listitem>
 									<para>Primary key of table</para>
 								</listitem>
 						</varlistentry>
-						<varlistentry><term>rule</term> 
+						<varlistentry><term>rule</term>
 							<listitem>
 								<para>text field denoting the rule. Details at <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-rec--">PAGC Address Standardizer Rule records</ulink>.</para>
 								<para>A rule consists of a set of non-negative integers representing input tokens, terminated by a -1, followed by an equal number of non-negative integers representing postal attributes, terminated by a -1, followed by an integer representing a rule type, followed by an integer representing the rank of the rule. The rules are ranked from 0 (lowest) to 17 (highest).</para>
@@ -170,7 +170,7 @@ into includes in the future for easier maintenance.</para></listitem>
 						</varlistentry>
 				</variablelist>
 			</refsection>
-			
+
 			<refsection id="rule_input_tokens"><title>Input Tokens</title>
 				<para>Each rule starts with a set of input tokens followed by a terminator <code>-1</code>. Valid input tokens excerpted from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2">PAGC Input Tokens</ulink> are as follows:</para>
 				<para><emphasis role="bold">Form-Based Input Tokens</emphasis></para>
@@ -181,56 +181,56 @@ into includes in the future for easier maintenance.</para></listitem>
 									<para>(13). The ampersand (&amp;) is frequently used to abbreviate the word "and".</para>
 								</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 								<term>DASH</term>
 								<listitem>
 									<para>(9). A punctuation character.</para>
 								</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 								<term>DOUBLE</term>
 								<listitem>
 									<para>(21). A sequence of two letters. Often used as identifiers.</para>
 								</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 								<term>FRACT</term>
 								<listitem>
 									<para>(25). Fractions are sometimes used in civic numbers or unit numbers.</para>
 								</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 							<term>MIXED</term>
 							<listitem>
 								<para>(23). An alphanumeric string that contains both letters and digits. Used for identifiers.</para>
 							</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 							<term>NUMBER</term>
 							<listitem>
 								<para>(0). A string of digits.</para>
 							</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 							<term>ORD</term>
 							<listitem>
 								<para>(15). Representations such as First or 1st. Often used in street names.</para>
 							</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 							<term>ORD</term>
 							<listitem>
 								<para>(18). A single letter.</para>
 							</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 							<term>WORD</term>
 							<listitem>
@@ -238,7 +238,7 @@ into includes in the future for easier maintenance.</para></listitem>
 							</listitem>
 						</varlistentry>
 				</variablelist>
-				
+
 				<para><emphasis role="bold">Function-based Input Tokens</emphasis></para>
 				<variablelist>
 						<varlistentry>
@@ -247,56 +247,56 @@ into includes in the future for easier maintenance.</para></listitem>
 									<para>(14). Words used to denote post office boxes. For example <emphasis>Box</emphasis> or <emphasis>PO Box</emphasis>.</para>
 								</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 								<term>BUILDH</term>
 								<listitem>
 									<para>(19). Words used to denote buildings or building complexes, usually as a prefix. For example: <emphasis>Tower</emphasis> in <emphasis>Tower 7A</emphasis>.</para>
 								</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 								<term>BUILDT</term>
 								<listitem>
 									<para>(24). Words and abbreviations used to denote buildings or building complexes, usually as a suffix. For example: <emphasis>Shopping Centre</emphasis>.</para>
 								</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 								<term>DIRECT</term>
 								<listitem>
 									<para>(22). Words used to denote directions, for example <emphasis>North</emphasis>.</para>
 								</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 								<term>MILE</term>
 								<listitem>
 									<para>(20). Words used to denote milepost addresses.</para>
 								</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 								<term>ROAD</term>
 								<listitem>
 									<para>(6). Words and abbreviations used to denote highways and roads. For example: the <emphasis>Interstate</emphasis> in <emphasis>Interstate 5</emphasis></para>
 								</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 								<term>RR</term>
 								<listitem>
 									<para>(8). Words and abbreviations used to denote rural routes. <emphasis>RR</emphasis>.</para>
 								</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 								<term>TYPE</term>
 								<listitem>
 									<para>(2). Words and abbreviation used to denote street typess. For example: <emphasis>ST</emphasis> or <emphasis>AVE</emphasis>.</para>
 								</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 								<term>UNITH</term>
 								<listitem>
@@ -304,7 +304,7 @@ into includes in the future for easier maintenance.</para></listitem>
 								</listitem>
 						</varlistentry>
 				</variablelist>
-				
+
 				<para><emphasis role="bold">Postal Type Input Tokens</emphasis></para>
 				<variablelist>
 						<varlistentry>
@@ -313,21 +313,21 @@ into includes in the future for easier maintenance.</para></listitem>
 									<para>(28). A 5 digit number. Identifies a Zip Code</para>
 								</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 								<term>QUAD</term>
 								<listitem>
 									<para>(29). A 4 digit number. Identifies ZIP4.</para>
 								</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 								<term>PCH</term>
 								<listitem>
 									<para>(27). A 3 character sequence of letter number letter. Identifies an FSA, the first 3 characters of a Canadian postal code.</para>
 								</listitem>
 						</varlistentry>
-						
+
 						<varlistentry>
 								<term>PCT</term>
 								<listitem>
@@ -335,7 +335,7 @@ into includes in the future for easier maintenance.</para></listitem>
 								</listitem>
 						</varlistentry>
 				</variablelist>
-				
+
 				<para><emphasis role="bold">Stopwords</emphasis></para>
 					<para>STOPWORDS combine with WORDS. In rules a string of multiple WORDs and STOPWORDs will be represented by a single WORD token.</para>
 					<variablelist>
@@ -347,17 +347,17 @@ into includes in the future for easier maintenance.</para></listitem>
 						</varlistentry>
 					</variablelist>
 
-    
+
 
 			</refsection>
-					
+
 			<refsection><title>Output Tokens</title>
 				<para>After the first -1 (terminator), follows the output tokens and their order, followed by a terminator <code>-1</code>.  Numbers for corresponding output tokens are listed in <xref linkend="stdaddr" />. What are allowed is dependent on kind of rule.  Output tokens valid for each rule type are listed in <xref linkend="rule_types_rank" />.</para>
 			</refsection>
-				
+
 			<refsection id="rule_types_rank"><title>Rule Types and Rank</title>
 				<para>The final part of the rule is the rule type which is denoted by one of the following, followed by a rule rank.  The rules are ranked from 0 (lowest) to 17 (highest).</para>
-				
+
 				<para><emphasis role="bold">MACRO_C</emphasis></para>
 				<para>(token number = "<emphasis role="bold">0</emphasis>"). The class of rules for parsing MACRO clauses such as <emphasis>PLACE STATE ZIP</emphasis></para>
 				<para><emphasis role="bold">MACRO_C output tokens</emphasis> (excerpted from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>.</para>
@@ -387,12 +387,12 @@ into includes in the future for easier maintenance.</para></listitem>
                             </listitem>
                     </varlistentry>
                 </variablelist>
-                
+
                <para><emphasis role="bold">MICRO_C</emphasis></para>
 				<para>(token number = "<emphasis role="bold">1</emphasis>"). The class of rules for parsing full MICRO clauses (such as House, street, sufdir, predir, pretyp, suftype, qualif) (ie ARC_C plus CIVIC_C). These rules are not used in the build phase.</para>
 				<para><emphasis role="bold">MICRO_C output tokens</emphasis> (excerpted from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>.</para>
                 <variablelist>
-                    <varlistentry><term>HOUSE</term> 
+                    <varlistentry><term>HOUSE</term>
 						<listitem>
 							<para>is a text (token number <code>1</code>): This is the street number on a street. Example <emphasis>75</emphasis> in <code>75 State Street</code>.</para>
 						</listitem>
@@ -400,7 +400,7 @@ into includes in the future for easier maintenance.</para></listitem>
 					<varlistentry><term>predir</term><listitem>
 							<para> is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as North, South, East, West etc.</para>
 					</listitem></varlistentry>
-					<varlistentry><term>qual</term> 
+					<varlistentry><term>qual</term>
 						<listitem>
 								<para>is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example <emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>.</para>
 						</listitem>
@@ -426,49 +426,49 @@ into includes in the future for easier maintenance.</para></listitem>
 						</listitem>
 					</varlistentry>
                 </variablelist>
-				
+
 				<para><emphasis role="bold">ARC_C</emphasis></para>
 				<para>(token number = "<emphasis role="bold">2</emphasis>"). The class of rules for parsing MICRO clauses, excluding the HOUSE attribute. As such uses same set of output tokens as MICRO_C minus the HOUSE token.</para>
-				
+
 				<para><emphasis role="bold">CIVIC_C</emphasis></para>
 				<para>(token number = "<emphasis role="bold">3</emphasis>"). The class of rules for parsing the HOUSE attribute.</para>
 
 				<para><emphasis role="bold">EXTRA_C</emphasis></para>
 				<para>(token number = "<emphasis role="bold">4</emphasis>"). The class of rules for parsing EXTRA attributes - attributes excluded from geocoding. These rules are not used in the build phase.</para>
-				
+
 				<para><emphasis role="bold">EXTRA_C output tokens</emphasis> (excerpted from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>.</para>
                 <variablelist>
-                    <varlistentry><term>BLDNG</term> 
+                    <varlistentry><term>BLDNG</term>
 						<listitem>
 							<para>(token number <code>0</code>):  Unparsed building identifiers and types.</para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>BOXH</term> 
+					<varlistentry><term>BOXH</term>
 						<listitem>
-							<para>i(token number <code>14</code>): The <emphasis role="bold">BOX</emphasis> in <code>BOX 3B</code></para>
+							<para>(token number <code>14</code>): The <emphasis role="bold">BOX</emphasis> in <code>BOX 3B</code></para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>BOXT</term> 
+					<varlistentry><term>BOXT</term>
 						<listitem>
 							<para>(token number <code>15</code>): The <emphasis role="bold">3B</emphasis> in <code>BOX 3B</code></para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>RR</term> 
+					<varlistentry><term>RR</term>
 						<listitem>
 							<para>(token number <code>8</code>): The <emphasis role="bold">RR</emphasis> in <code>RR 7</code></para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>UNITH</term> 
+					<varlistentry><term>UNITH</term>
 						<listitem>
 							<para>(token number <code>16</code>): The <emphasis role="bold">APT</emphasis> in <code>APT 3B</code></para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>UNITT</term> 
+					<varlistentry><term>UNITT</term>
 						<listitem>
 							<para>(token number <code>17</code>): The <emphasis role="bold">3B</emphasis> in <code>APT 3B</code></para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>UNKNWN</term> 
+					<varlistentry><term>UNKNWN</term>
 						<listitem>
 							<para>(token number <code>9</code>): An otherwise unclassified output.</para>
 						</listitem>
@@ -476,7 +476,7 @@ into includes in the future for easier maintenance.</para></listitem>
 				</variablelist>
 			</refsection>
 		</refentry>
-				
+
 		<refentry id="lextab">
 			<refnamediv>
 			<refname>lex table</refname>
@@ -485,7 +485,7 @@ into includes in the future for easier maintenance.</para></listitem>
 			<refsection>
 				<title>Description</title>
 				<para>A lex (short for lexicon) table is used to classify alphanumeric input and associate that input with  <xref linkend="rule_input_tokens" /> and (b) standardized representations. Things you will find in these tables are <code>ONE</code> mapped to stdword: <code>1</code>.</para>
-				
+
 				<para>A lex has at least the following columns in the table. You may add</para>
 					<variablelist>
 						<varlistentry>
@@ -494,23 +494,23 @@ into includes in the future for easier maintenance.</para></listitem>
 									<para>Primary key of table</para>
 								</listitem>
 						</varlistentry>
-						<varlistentry><term>seq</term> 
+						<varlistentry><term>seq</term>
 							<listitem>
 								<para>integer: definition number?</para>
 							</listitem>
 						</varlistentry>
-		
-						<varlistentry><term>word</term> 
+
+						<varlistentry><term>word</term>
 							<listitem>
 								<para>text: the input word</para>
 							</listitem>
 						</varlistentry>
-						<varlistentry><term>stdword</term> 
+						<varlistentry><term>stdword</term>
 							<listitem>
 								<para>text: the standardized replacement word</para>
 							</listitem>
 						</varlistentry>
-						<varlistentry><term>token</term> 
+						<varlistentry><term>token</term>
 							<listitem>
 								<para>integer: the kind of word it is.  Only if it is used in this context will it be replaced. Refer to <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">PAGC Tokens</ulink>.</para>
 							</listitem>
@@ -518,7 +518,7 @@ into includes in the future for easier maintenance.</para></listitem>
 				</variablelist>
 			</refsection>
 		</refentry>
-				
+
 		<refentry id="gaztab">
 			<refnamediv>
 			<refname>gaz table</refname>
@@ -526,8 +526,8 @@ into includes in the future for easier maintenance.</para></listitem>
 			</refnamediv>
 			<refsection>
 				<title>Description</title>
-				<para>A gaz (short for gazeteer) table is used to classify place names and associate that input with <xref linkend="rule_input_tokens" /> and (b) standardized representations. For example if you are in US, you may load these with State Names and associated abbreviations.</para>
-				
+				<para>A gaz (short for gazeteer) table is used to standardize place names and associate that input with <xref linkend="rule_input_tokens" /> and (b) standardized representations. For example if you are in US, you may load these with State Names and associated abbreviations.</para>
+
 				<para>A gaz table has at least the following columns in the table. You may add more columns if you wish for your own purposes.</para>
 					<variablelist>
 						<varlistentry>
@@ -536,42 +536,42 @@ into includes in the future for easier maintenance.</para></listitem>
 									<para>Primary key of table</para>
 								</listitem>
 						</varlistentry>
-						<varlistentry><term>seq</term> 
+						<varlistentry><term>seq</term>
 							<listitem>
 								<para>integer: definition number? - identifer used for that instance of the word</para>
 							</listitem>
 						</varlistentry>
-						<varlistentry><term>word</term> 
+						<varlistentry><term>word</term>
 							<listitem>
 								<para>text: the input word</para>
 							</listitem>
 						</varlistentry>
-						<varlistentry><term>stdword</term> 
+						<varlistentry><term>stdword</term>
 							<listitem>
 								<para>text: the standardized replacement word</para>
 							</listitem>
 						</varlistentry>
-						<varlistentry><term>token</term> 
+						<varlistentry><term>token</term>
 							<listitem>
 								<para>integer: the kind of word it is.  Only if it is used in this context will it be replaced. Refer to <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">PAGC Tokens</ulink>.</para>
 							</listitem>
 						</varlistentry>
 				</variablelist>
-				
-			
-				
+
+
+
 			</refsection>
 		</refentry>
   </sect1>
-  
+
   <sect1 id="Address_Standardizer_Functions"><title>Address Standardizer Functions</title>
-  		<refentry id="parse_address">
+		<refentry id="parse_address">
 		<refnamediv>
 			<refname>parse_address</refname>
-	
+
 			<refpurpose>Takes a 1 line address and breaks into parts</refpurpose>
 		</refnamediv>
-	
+
 		<refsynopsisdiv>
 			<funcsynopsis>
 				 <funcprototype>
@@ -581,29 +581,29 @@ into includes in the future for easier maintenance.</para></listitem>
 
 			</funcsynopsis>
 		</refsynopsisdiv>
-	
+
 		<refsection>
 			<title>Description</title>
-	
-			<para>Returns takes as input an address, and returns a record output consisting of fields <emphasis>num</emphasis>, <emphasis>street</emphasis>, <emphasis>street2</emphasis>,
+
+			<para>Returns takes an address as input, and returns a record output consisting of fields <emphasis>num</emphasis>, <emphasis>street</emphasis>, <emphasis>street2</emphasis>,
 			<emphasis>address1</emphasis>, <emphasis>city</emphasis>, <emphasis>state</emphasis>, <emphasis>zip</emphasis>, <emphasis>zipplus</emphasis>, <emphasis>country</emphasis>.</para>
 
 			<!-- use this format if new function -->
 		<para>Availability: 2.2.0</para>
 		<para>&address_standardizer_required;</para>
 		</refsection>
-	
-	
+
+
 		<refsection>
 			<title>Examples</title>
-	
+
 			<para>Single Addresss</para>
-			<programlisting>SELECT num, street, city, zip, zipplus 
+			<programlisting>SELECT num, street, city, zip, zipplus
 	FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234') AS a;</programlisting>
-<screen>	
+<screen>
  num |      street      |  city  |  zip  | zipplus
 -----+------------------+--------+-------+---------
- 1   | Devonshire Place | Boston | 02109 | 1234		</screen>	
+ 1   | Devonshire Place | Boston | 02109 | 1234		</screen>
 
 			<para>Table of addresses</para>
 			<programlisting>-- basic table
@@ -617,7 +617,7 @@ VALUES ('529 Main Street, Boston MA, 02129'),
  ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),
  ('950 Main Street, Worcester, MA 01610');
 
- -- parse the addresses 
+ -- parse the addresses
  -- if you want all fields you can use (a).*
 SELECT addid, (a).num, (a).street, (a).city, (a).state, (a).zip, (a).zipplus
 FROM (SELECT addid, parse_address(address) As a
@@ -632,22 +632,22 @@ FROM (SELECT addid, parse_address(address) As a
      6 | 950 | Main Street          | Worcester | MA    | 01610 |
 (6 rows)</screen>
 		</refsection>
-	
+
 		<!-- Optionally add a "See Also" section -->
 		<refsection>
 			<title>See Also</title>
-	
+
 			<para></para>
 		</refsection>
 	</refentry>
-	
+
 	<refentry id="standardize_address">
 		<refnamediv>
 			<refname>standardize_address</refname>
-	
+
 			<refpurpose>Returns an stdaddr form of an input address utilizing lex, gaz, and rule tables.</refpurpose>
 		</refnamediv>
-	
+
 		<refsynopsisdiv>
 			<funcsynopsis>
 				 <funcprototype>
@@ -657,7 +657,7 @@ FROM (SELECT addid, parse_address(address) As a
 					<paramdef><type>text </type> <parameter>rultab</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>address</parameter></paramdef>
 				</funcprototype>
-				
+
 				<funcprototype>
 					<funcdef>stdaddr <function>standardize_address</function></funcdef>
 					<paramdef><type>text </type> <parameter>lextab</parameter></paramdef>
@@ -668,39 +668,39 @@ FROM (SELECT addid, parse_address(address) As a
 				</funcprototype>
 			</funcsynopsis>
 		</refsynopsisdiv>
-	
+
 		<refsection>
 			<title>Description</title>
-	
+
 			<para>Returns an <xref linkend="stdaddr" /> form of an input address utilizing <xref linkend="lextab" /> table name, <xref linkend="gaztab" />, and <xref linkend="rulestab" /> table names and an address.</para>
-			
+
 			<para>Variant 1: Takes an address as a single line.</para>
-			<para>Variant 2: Takes an address as 2 parts.  A <varname>micro</varname> consisting of standard first line of postal address e.g. <code>house_num street</code>, and a macro consisting of standard postal second line of an address e.g <code>city, state postal_code country</code>.</para> 
+			<para>Variant 2: Takes an address as 2 parts.  A <varname>micro</varname> consisting of standard first line of postal address e.g. <code>house_num street</code>, and a macro consisting of standard postal second line of an address e.g <code>city, state postal_code country</code>.</para>
 
 			<!-- use this format if new function -->
 		<para>Availability: 2.2.0</para>
 		<para>&address_standardizer_required;</para>
 		</refsection>
-	
-	
+
+
 		<refsection>
 			<title>Examples</title>
 			<para>Using address_standardizer_data_us extension</para>
 			<programlisting>CREATE EXTENSION address_standardizer_data_us; -- only needs to be done once</programlisting>
-			
+
 <para>Variant 1: Single line address.  This doesn't work well with non-US addresses</para>
-<programlisting>SELECT house_num, name, suftype, city, country, state, unit  FROM standardize_address('us_lex', 
+<programlisting>SELECT house_num, name, suftype, city, country, state, unit  FROM standardize_address('us_lex',
 			   'us_gaz', 'us_rules', 'One Devonshire Place, PH 301, Boston, MA 02109');</programlisting>
 			<screen>house_num |    name    | suftype |  city  | country |     state     |      unit
 ----------+------------+---------+--------+---------+---------------+-----------------
 1         | DEVONSHIRE | PLACE   | BOSTON | USA     | MASSACHUSETTS | # PENTHOUSE 301</screen>
       <para>Using tables packaged with tiger geocoder. This example only works if you installed <varname>postgis_tiger_geocoder</varname>.</para>
-      <programlisting>SELECT *  FROM standardize_address('tiger.pagc_lex', 
+      <programlisting>SELECT *  FROM standardize_address('tiger.pagc_lex',
          'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109-1234');</programlisting>
-         
+
       <para>Make easier to read we'll dump output using hstore extension CREATE EXTENSION hstore; you need to install</para>
-      <programlisting>SELECT (each(hstore(p))).*  
- FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz', 
+      <programlisting>SELECT (each(hstore(p))).*
+ FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',
    'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109') As p;</programlisting>
        <screen>    key     |      value
 ------------+-----------------
@@ -720,12 +720,12 @@ FROM (SELECT addid, parse_address(address) As a
  postcode   | 02109
  house_num  | 1
  ruralroute |
-(16 rows)       
- 			</screen>
- 	
+(16 rows)
+			</screen>
+
 <para>Variant 2: As a two part Address</para>
-<programlisting>SELECT (each(hstore(p))).*  
- FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz', 
+<programlisting>SELECT (each(hstore(p))).*
+ FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',
    'tiger.pagc_rules', 'One Devonshire Place, PH 301', 'Boston, MA 02109, US') As p;</programlisting>
 <screen>    key     |      value
 ------------+-----------------
@@ -748,14 +748,14 @@ FROM (SELECT addid, parse_address(address) As a
 (16 rows)</screen>
 
 		</refsection>
-	
+
 		<!-- Optionally add a "See Also" section -->
 		<refsection>
 			<title>See Also</title>
-	
+
 			<para><xref linkend="stdaddr" />, <xref linkend="rulestab" />, <xref linkend="lextab" />, <xref linkend="gaztab" />, <xref linkend="Pagc_Normalize_Address" /></para>
 		</refsection>
 	</refentry>
-  
+
   </sect1>
 </chapter>

@@ -4,17 +4,17 @@
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 --
 ----------------------------------------------------------------------
--- NOTE: The ST_Histogram() function is already implemented in C. This plpgsql script is provided only as an example. 
+-- NOTE: The ST_Histogram() function is already implemented in C. This plpgsql script is provided only as an example.
 -- Defining the plpgsql function below might overwrite the current C implementation and brake other functions dependent on it.
 -- Use with caution.
 ----------------------------------------------------------------------
 -- _ST_Values(rast raster, band int)
 -- Return all rast pixels values which center are in a geometry
--- Values are returned as groups of identical adjacent values (value, count) 
+-- Values are returned as groups of identical adjacent values (value, count)
 -- in order to reduce the number of row returned.
 ----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION _ST_Values(rast raster, band int, geom geometry, OUT val float8, OUT count int) 
-    RETURNS SETOF record AS 
+CREATE OR REPLACE FUNCTION _ST_Values(rast raster, band int, geom geometry, OUT val float8, OUT count int)
+    RETURNS SETOF record AS
     $$
     DECLARE
         geomintersect geometry;
@@ -56,15 +56,15 @@ CREATE OR REPLACE FUNCTION _ST_Values(rast raster, band int, geom geometry, OUT 
     END;
     $$
     LANGUAGE 'plpgsql' IMMUTABLE STRICT;
-   
+
 ----------------------------------------------------------------------
 -- _ST_Values(rast raster, band int)
 -- Return all rast pixels values
--- Values are returned as groups of identical adjacent values (value, count) 
+-- Values are returned as groups of identical adjacent values (value, count)
 -- in order to reduce the number of row returned.
 ----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION _ST_Values(rast raster, band int, OUT val float8, OUT count int) 
-    RETURNS SETOF record AS 
+CREATE OR REPLACE FUNCTION _ST_Values(rast raster, band int, OUT val float8, OUT count int)
+    RETURNS SETOF record AS
     $$
     DECLARE
         x int;
@@ -102,7 +102,7 @@ CREATE OR REPLACE FUNCTION _ST_Values(rast raster, band int, OUT val float8, OUT
 CREATE OR REPLACE FUNCTION ST_Histogram(rast raster, band int, OUT val double precision, OUT count bigint)
 RETURNS SETOF record
     AS $$
-    SELECT (vc).val val, sum((vc).count)::bigint count 
+    SELECT (vc).val val, sum((vc).count)::bigint count
     FROM (SELECT _ST_Values($1, $2) vc) foo GROUP BY (vc).val;
     $$
     LANGUAGE SQL;
@@ -110,20 +110,20 @@ RETURNS SETOF record
 CREATE OR REPLACE FUNCTION ST_Histogram(rast raster, OUT val double precision, OUT count bigint)
 RETURNS SETOF record
     AS $$
-    SELECT (vc).val val, sum((vc).count)::bigint count 
+    SELECT (vc).val val, sum((vc).count)::bigint count
     FROM (SELECT _ST_Values($1, 1) vc) foo GROUP BY (vc).val;
     $$
     LANGUAGE SQL;
 
 ----------------------------------------------------------------------
 -- ST_Histogram(rast raster, band int, geom geometry) group
--- Return a set of (val, count) rows forming the value histogram for the area of a raster covered by a polygon geometry. 
--- Pixels are selected only when their center intersects the polygon 
+-- Return a set of (val, count) rows forming the value histogram for the area of a raster covered by a polygon geometry.
+-- Pixels are selected only when their center intersects the polygon
 ----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION ST_Histogram(rast raster, band int, geom geometry, OUT val double precision, OUT count bigint)
 RETURNS SETOF record
     AS $$
-    SELECT (vc).val val, sum((vc).count)::bigint count 
+    SELECT (vc).val val, sum((vc).count)::bigint count
     FROM (SELECT _ST_Values($1, $2, $3) vc) foo GROUP BY (vc).val;
     $$
     LANGUAGE SQL;
@@ -131,7 +131,7 @@ RETURNS SETOF record
 CREATE OR REPLACE FUNCTION ST_Histogram(rast raster, geom geometry, OUT val double precision, OUT count bigint)
 RETURNS SETOF record
     AS $$
-    SELECT (vc).val val, sum((vc).count)::bigint count 
+    SELECT (vc).val val, sum((vc).count)::bigint count
     FROM (SELECT _ST_Values($1, 1, $2) vc) foo GROUP BY (vc).val;
     $$
     LANGUAGE SQL;
@@ -142,8 +142,8 @@ RETURNS SETOF record
 CREATE OR REPLACE FUNCTION ST_Histogram2(rast raster, band int, OUT val double precision, OUT count bigint)
 RETURNS SETOF record
     AS $$
-    SELECT val, count(*) count 
-    FROM (SELECT ST_Value($1, $2, x, y) val FROM generate_series(1, ST_Width($1)) x , generate_series(1, ST_Height($1)) y) foo 
+    SELECT val, count(*) count
+    FROM (SELECT ST_Value($1, $2, x, y) val FROM generate_series(1, ST_Width($1)) x , generate_series(1, ST_Height($1)) y) foo
     GROUP BY val;
     $$
     LANGUAGE SQL IMMUTABLE;
@@ -155,7 +155,7 @@ ORDER BY count DESC
 
 ----------------------------------------------------------------------
 -- Other variant (not grouping in the function) (not using an intermediate _ST_Values function)
-----------------------------------------------------------------------    
+----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION ST_Histogram3(rast raster, band int, OUT val double precision)
 RETURNS SETOF double precision
     AS $$
@@ -174,7 +174,7 @@ ORDER BY count DESC
 
 ----------------------------------------------------------------------
 -- This might actually be the fasters query to get the histogram
-----------------------------------------------------------------------    
+----------------------------------------------------------------------
 SELECT val, count(*) count
 FROM (SELECT ST_Value(rast, 1, x, y) val
       FROM generate_series(1, 10) x, generate_series(1, 10) y, srtm_22_03_tiled_10x10
@@ -190,10 +190,10 @@ ORDER BY count DESC
 -- The subquery gets the histogram for each tile
 -- The main query split the resulting records in their two components (val & count)
 -------------------------------
-SELECT rid, 
-       (hist).val, 
-       (hist).count 
-FROM (SELECT rid, 
+SELECT rid,
+       (hist).val,
+       (hist).count
+FROM (SELECT rid,
              ST_Histogram(rast) hist
       FROM srtm_22_03_tiled_25x25
       WHERE rid = 234
@@ -207,12 +207,12 @@ ORDER BY (hist).count DESC
 
 -------------------------------
 -- The subquery gets the histogram for each tile
--- The main query split the resulting records in their two 
+-- The main query split the resulting records in their two
 -- components (val & count) and sum the count over all the tiles
 -------------------------------
-SELECT (hist).val, 
+SELECT (hist).val,
        SUM((hist).count) count
-FROM (SELECT rid, 
+FROM (SELECT rid,
              ST_Histogram(rast) hist
       FROM srtm_22_03_tiled_25x25
      ) foo
@@ -220,20 +220,20 @@ GROUP BY (hist).val
 ORDER BY count DESC
 
 ----------------------------------------------------------------------
--- Example 3: Query returning the mean pixel value for each tile of a 
+-- Example 3: Query returning the mean pixel value for each tile of a
 -- tiled raster (might be very long)
 ----------------------------------------------------------------------
 
 -------------------------------
 -- The subquery gets the histogram for each tile
--- The main query split the resulting records in their two 
+-- The main query split the resulting records in their two
 -- components (val & count) computing a mean value per tile at the same time
 -------------------------------
-SELECT rid, 
-       geom, 
+SELECT rid,
+       geom,
        round(((SUM((hist).val * (hist).count)) / SUM((hist).count))::numeric, 2) meanval
-FROM (SELECT rid, 
-             rast::geometry geom, 
+FROM (SELECT rid,
+             rast::geometry geom,
              ST_Histogram(rast) hist
       FROM srtm_22_03_tiled_25x25
      ) foo
@@ -241,9 +241,9 @@ GROUP BY rid, geom
 ORDER BY rid;
 
 ----------------------------------------------------------------------
--- Example 4: Query returning the most frequent pixel value for each tile 
+-- Example 4: Query returning the most frequent pixel value for each tile
 -- of a tiled raster (might be very long)
--- This example requires an aggregate function tracking the value 
+-- This example requires an aggregate function tracking the value
 -- associated with the maximum count
 ----------------------------------------------------------------------
 CREATE TYPE dblIntSet AS (
@@ -270,16 +270,16 @@ CREATE AGGREGATE maxFromDblIntSet (
 -------------------------------
 -- Actual query
 -- The subquery gets the histogram for each tile
--- The main query split the resulting records in their two 
+-- The main query split the resulting records in their two
 -- components (val & count) and compute the maximum count and its associated value
 -------------------------------
-SELECT rid, 
-       geom, 
-       maxFromDblIntSet(ROW((hist).count, (hist).val::int)) mostfreqval, 
+SELECT rid,
+       geom,
+       maxFromDblIntSet(ROW((hist).count, (hist).val::int)) mostfreqval,
        MAX((hist).count) count
-FROM (SELECT rid, 
-             rast::geometry geom, 
-             ST_Histogram(rast) hist 
+FROM (SELECT rid,
+             rast::geometry geom,
+             ST_Histogram(rast) hist
       FROM srtm_22_03_tiled_25x25
      ) foo
 GROUP BY rid, geom
@@ -287,17 +287,17 @@ ORDER BY rid
 
 ----------------------------------------------------------------------
 -- Example 5: Query returning the most frequent pixel value per polygon from a raster
--- Do not use when the raster is big, in this case it should be tiled and 
+-- Do not use when the raster is big, in this case it should be tiled and
 -- the next example (6) should be used instead
 ----------------------------------------------------------------------
 SELECT polyid,
-       geom, 
-       maxFromDblIntSet(ROW((hist).count, (hist).val::int)) mostfreqval, 
+       geom,
+       maxFromDblIntSet(ROW((hist).count, (hist).val::int)) mostfreqval,
        MAX((hist).count) count
 FROM (
-      SELECT polyid, 
-             geom, 
-             ST_Histogram(rast, geom) hist 
+      SELECT polyid,
+             geom,
+             ST_Histogram(rast, geom) hist
       FROM srtm_22_03, mypolygons
       WHERE ST_Intersects(rast, geom)
      ) foo
@@ -309,20 +309,20 @@ GROUP BY polyid, geom
 
 -------------------------------
 -- The first subquery gets the histogram for each tile
--- The second subquery split the resulting records in their two 
+-- The second subquery split the resulting records in their two
 -- components (val & count) and sum the count for each polygon-value couple
 -- The main query compute the maximum count and its associated value
 -------------------------------
-SELECT polyid, 
-       geom, 
-       maxFromDblIntSet(ROW(count, val)) mostfreqval, 
+SELECT polyid,
+       geom,
+       maxFromDblIntSet(ROW(count, val)) mostfreqval,
        MAX(count) count
-FROM (SELECT polyid, 
-             geom, (hist).val::int val, 
+FROM (SELECT polyid,
+             geom, (hist).val::int val,
              SUM((hist).count) count
-      FROM (SELECT polyid, 
-                   geom, 
-                   ST_Histogram(rast, geom) hist 
+      FROM (SELECT polyid,
+                   geom,
+                   ST_Histogram(rast, geom) hist
             FROM srtm_22_03_tiled_25x25, mypolygons
             WHERE ST_Intersects(rast, geom)
            ) foo
@@ -336,19 +336,19 @@ GROUP BY polyid, geom
 
 -------------------------------
 -- The first subquery gets the histogram for each tile
--- The second subquery split the resulting records in their two 
+-- The second subquery split the resulting records in their two
 -- components (val & count) and sum the count for each polygon-value couple
 -- The main query compute the mean pixel value
 -------------------------------
-SELECT polyid, 
-       geom, 
+SELECT polyid,
+       geom,
        round((SUM(val * count) / SUM(count))::numeric, 2) meanval
-FROM (SELECT polyid, 
-             geom, (hist).val::int val, 
+FROM (SELECT polyid,
+             geom, (hist).val::int val,
              SUM((hist).count) count
-      FROM (SELECT polyid, 
-                   geom, 
-                   ST_Histogram(rast, geom) hist 
+      FROM (SELECT polyid,
+                   geom,
+                   ST_Histogram(rast, geom) hist
             FROM srtm_22_03_tiled_25x25, mypolygons
             WHERE ST_Intersects(rast, geom)
            ) foo

@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2010-2015 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright (C) 2011      Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2011      Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -36,7 +36,7 @@ typedef struct
 	double y;
 	double z;
 	double m;
-}	
+}
 POINT;
 
 /*

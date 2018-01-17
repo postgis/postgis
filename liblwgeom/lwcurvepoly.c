@@ -53,7 +53,7 @@ LWCURVEPOLY *
 lwcurvepoly_construct_from_lwpoly(LWPOLY *lwpoly)
 {
 	LWCURVEPOLY *ret;
-	int i;
+	uint32_t i;
 	ret = lwalloc(sizeof(LWCURVEPOLY));
 	ret->type = CURVEPOLYTYPE;
 	ret->flags = lwpoly->flags;
@@ -71,10 +71,10 @@ lwcurvepoly_construct_from_lwpoly(LWPOLY *lwpoly)
 
 int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 {
-	int i;
-	
+	uint32_t i;
+
 	/* Can't do anything with NULLs */
-	if( ! poly || ! ring ) 
+	if( ! poly || ! ring )
 	{
 		LWDEBUG(4,"NULL inputs!!! quitting");
 		return LW_FAILURE;
@@ -94,7 +94,7 @@ int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 		return LW_FAILURE;
 	}
 
-		
+
 	/* In case this is a truly empty, make some initial space  */
 	if ( poly->rings == NULL )
 	{
@@ -123,7 +123,7 @@ int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 	/* Add the ring and increment the ring count */
 	poly->rings[poly->nrings] = (LWGEOM*)ring;
 	poly->nrings++;
-	return LW_SUCCESS;	
+	return LW_SUCCESS;
 }
 
 /**
@@ -147,7 +147,7 @@ double
 lwcurvepoly_perimeter(const LWCURVEPOLY *poly)
 {
 	double result=0.0;
-	int i;
+	uint32_t i;
 
 	for (i=0; i<poly->nrings; i++)
 		result += lwgeom_length(poly->rings[i]);
@@ -159,7 +159,7 @@ double
 lwcurvepoly_perimeter_2d(const LWCURVEPOLY *poly)
 {
 	double result=0.0;
-	int i;
+	uint32_t i;
 
 	for (i=0; i<poly->nrings; i++)
 		result += lwgeom_length_2d(poly->rings[i]);

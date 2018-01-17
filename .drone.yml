@@ -1,0 +1,25 @@
+# See http://readme.drone.io/0.5/usage/overview
+
+# See https://git.osgeo.org/gogs/postgis/postgis-docker
+test-image: &test-image docker.kbt.io/postgis/build-test:trisquel
+
+pipeline:
+  clone:
+    image: plugins/git
+    depth: 20
+    recursive: false
+  build:
+    image: *test-image
+    pull: true
+    commands:
+      - ./autogen.sh
+      - ./configure CFLAGS="-O0 -Wall -fno-omit-frame-pointer -Werror" --without-interrupt-tests
+      - make
+  check:
+    image: *test-image
+    commands:
+      - service postgresql start
+      - make check RUNTESTFLAGS=-v
+      - make install
+      - utils/check_all_upgrades.sh
+        `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`

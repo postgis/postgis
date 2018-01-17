@@ -24,8 +24,8 @@ select 'BdPolyFromText', ST_Equals(ST_BdPolyFromText('MULTILINESTRING((0 0, 10 0
 select ST_BdPolyFromText('POINT(0 0)', 3);
 select ST_BdMPolyFromText('POINT(0 0)', 3);
 
--- MultiPolygon forming input to BdPolyFromText 
+-- MultiPolygon forming input to BdPolyFromText
 select ST_BdPolyFromText('MULTILINESTRING( (0 0, 10 0, 10 10, 0 10, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2), (5 5, 5 7, 7 7, 7 5, 5 5), (20 0,30 0,30 10,20 10,20 0), (22 2,22 4,24 4,24 2,22 2), (25 5,25 7,27 7,27 5,25 5))', 3);
 
--- SinglePolygon forming input to BdMPolyFromText 
+-- SinglePolygon forming input to BdMPolyFromText
 select 'BdMPolyFromText', ST_asewkt(ST_BdMPolyFromText('MULTILINESTRING((0 0, 10 0, 10 10, 0 10, 0 0),(2 2, 2 4, 4 4, 4 2, 2 2),(5 5, 5 7, 7 7, 7 5, 5 5))', 3));

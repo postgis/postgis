@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2011-2015 Sandro Santilli <strk@keybit.net>
+ * Copyright 2011-2015 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -34,7 +34,7 @@ static LWGEOM* lwline_split_by_line(const LWLINE* lwgeom_in, const LWGEOM* blade
 static LWGEOM* lwline_split_by_point(const LWLINE* lwgeom_in, const LWPOINT* blade_in);
 static LWGEOM* lwline_split_by_mpoint(const LWLINE* lwgeom_in, const LWMPOINT* blade_in);
 static LWGEOM* lwline_split(const LWLINE* lwgeom_in, const LWGEOM* blade_in);
-static LWGEOM* lwpoly_split_by_line(const LWPOLY* lwgeom_in, const LWLINE* blade_in);
+static LWGEOM* lwpoly_split_by_line(const LWPOLY* lwgeom_in, const LWGEOM* blade_in);
 static LWGEOM* lwcollection_split(const LWCOLLECTION* lwcoll_in, const LWGEOM* blade_in);
 static LWGEOM* lwpoly_split(const LWPOLY* lwpoly_in, const LWGEOM* blade_in);
 
@@ -172,7 +172,7 @@ static LWGEOM*
 lwline_split_by_mpoint(const LWLINE* lwline_in, const LWMPOINT* mp)
 {
   LWMLINE* out;
-  int i, j;
+  uint32_t i, j;
 
   out = lwmline_construct_empty(lwline_in->srid,
           FLAGS_GET_Z(lwline_in->flags),
@@ -215,7 +215,7 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	POINTARRAY *ipa = lwline_in->points;
 	POINTARRAY* pa1;
 	POINTARRAY* pa2;
-	int i, nsegs, seg = -1;
+	uint32_t i, nsegs, seg = UINT32_MAX;
 
 	/* Possible outcomes:
 	 *
@@ -257,7 +257,7 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	if ( mindist > 0 ) return 0;
 
 	/* empty or single-point line, intersection on boundary */
-	if ( seg < 0 ) return 1;
+	if ( seg == UINT32_MAX ) return 1;
 
 	/*
 	 * We need to project the
@@ -342,7 +342,7 @@ lwline_split(const LWLINE* lwline_in, const LWGEOM* blade_in)
 
 /* Initializes and uses GEOS internally */
 static LWGEOM*
-lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWLINE* blade_in)
+lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWGEOM* blade_in)
 {
 	LWCOLLECTION* out;
 	GEOSGeometry* g1;
@@ -378,7 +378,7 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWLINE* blade_in)
 		return NULL;
 	}
 
-	g2 = LWGEOM2GEOS((LWGEOM*)blade_in, 0);
+	g2 = LWGEOM2GEOS(blade_in, 0);
 	if ( NULL == g2 )
 	{
 		GEOSGeom_destroy(g1);
@@ -397,16 +397,6 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWLINE* blade_in)
 		return NULL;
 	}
 
-	/* debugging..
-		lwnotice("Bounds poly: %s",
-		               lwgeom_to_ewkt(GEOS2LWGEOM(g1_bounds, hasZ)));
-		lwnotice("Line: %s",
-		               lwgeom_to_ewkt(GEOS2LWGEOM(g2, hasZ)));
-
-		lwnotice("Noded bounds: %s",
-		               lwgeom_to_ewkt(GEOS2LWGEOM(vgeoms[0], hasZ)));
-	*/
-
 	polygons = GEOSPolygonize(vgeoms, 1);
 	if ( NULL == polygons )
 	{
@@ -419,14 +409,14 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWLINE* blade_in)
 	}
 
 #if PARANOIA_LEVEL > 0
-	if ( GEOSGeometryTypeId(polygons) != COLLECTIONTYPE )
+	if ( GEOSGeomTypeId(polygons) != COLLECTIONTYPE )
 	{
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 		GEOSGeom_destroy(g1_bounds);
 		GEOSGeom_destroy((GEOSGeometry*)vgeoms[0]);
 		GEOSGeom_destroy(polygons);
-		lwerror("Unexpected return from GEOSpolygonize");
+		lwerror("%s [%s] Unexpected return from GEOSpolygonize", __FILE__, __LINE__);
 		return 0;
 	}
 #endif
@@ -557,8 +547,9 @@ lwpoly_split(const LWPOLY* lwpoly_in, const LWGEOM* blade_in)
 {
 	switch (blade_in->type)
 	{
+	case MULTILINETYPE:
 	case LINETYPE:
-		return lwpoly_split_by_line(lwpoly_in, (LWLINE*)blade_in);
+		return lwpoly_split_by_line(lwpoly_in, blade_in);
 	default:
 		lwerror("Splitting a Polygon by a %s is unsupported",
 		        lwtype_name(blade_in->type));

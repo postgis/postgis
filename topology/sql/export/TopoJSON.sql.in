@@ -1,9 +1,9 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2013 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2013 Sandro Santilli <strk@kbt.io>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -152,7 +152,7 @@ BEGIN
       FOR rec in -- {
 WITH RECURSIVE
 _edges AS (
-  SELECT e.*, 
+  SELECT e.*,
          e.left_face = ANY ( faces ) as lf,
          e.right_face = ANY ( faces ) as rf
   FROM edge e
@@ -161,7 +161,7 @@ _edges AS (
 ),
 _leftmost_non_dangling_edge AS (
   SELECT e.* FROM _edges e WHERE e.lf != e.rf
-  ORDER BY geom LIMIT 1
+  ORDER BY ST_XMin(geom), ST_YMin(geom) LIMIT 1
 ),
 _edgepath AS (
   SELECT
@@ -298,9 +298,9 @@ FROM _edgepath
     RAISE EXCEPTION 'Collection TopoGeometries are not supported by AsTopoJSON';
 
   END IF;
-	
+
   RETURN json;
-	
+
 END
 $$ LANGUAGE 'plpgsql' VOLATILE; -- writes into visited table
 -- } AsTopoJSON(TopoGeometry, visited_table)

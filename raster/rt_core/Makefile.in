@@ -1,6 +1,6 @@
 #############################################################################
 #
-# Copyright (c) 2009 Sandro Santilli <strk@keybit.net>
+# Copyright (c) 2009 Sandro Santilli <strk@kbt.io>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@ LIBGDAL_LDFLAGS = @LIBGDAL_LDFLAGS@
 GEOS_LDFLAGS = @GEOS_LDFLAGS@ -lgeos_c
 PROJ_LDFLAGS = @PROJ_LDFLAGS@ -lproj
 LDFLAGS = $(LIBLWGEOM_LDFLAGS) $(LIBGDAL_LDFLAGS) $(PROJ_LDFLAGS) $(GEOS_LDFLAGS)
-CFLAGS = @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ $(LIBLWGEOM_CFLAGS) $(LIBGDAL_CFLAGS) @PROJ_CPPFLAGS@ @GEOS_CPPFLAGS@
+CFLAGS = $(LIBLWGEOM_CFLAGS) @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ $(LIBGDAL_CFLAGS) @PROJ_CPPFLAGS@ @GEOS_CPPFLAGS@
 
 # Standalone RTCORE objects
 RT_OBJS = \

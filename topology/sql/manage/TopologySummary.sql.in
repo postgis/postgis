@@ -1,9 +1,9 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2011 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2011 Sandro Santilli <strk@kbt.io>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -58,7 +58,7 @@ BEGIN
          )
       THEN
         ret = ret || 'missing schema';
-        RETURN ret; 
+        RETURN ret;
       ELSE
         ret = ret || 'missing nodes, ';
       END IF;
@@ -110,7 +110,7 @@ BEGIN
         ret = ret || 'Polygonal';
       WHEN rec.feature_type = 4 THEN
         ret = ret || 'Mixed';
-      ELSE 
+      ELSE
         ret = ret || '???';
     END CASE;
 
@@ -131,7 +131,7 @@ BEGIN
     END;
 
       IF rec.level > 0 THEN
-        ret = ret || ' Hierarchy level ' || rec.level 
+        ret = ret || ' Hierarchy level ' || rec.level
                   || ', child layer ' || rec.child_id || E'\n';
       END IF;
 

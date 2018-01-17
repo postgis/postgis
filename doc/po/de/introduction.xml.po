@@ -1,0 +1,559 @@
+# SOME DESCRIPTIVE TITLE.
+# 
+# Translators:
+# Andreas Schild <andreas.schild@bfw.gv.at>, 2017
+# Daniel Kastl, 2013
+# Daniel Kastl, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: PostGIS\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2017-03-29 06:29+0000\n"
+"PO-Revision-Date: 2017-09-04 08:55+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"Language-Team: German (http://www.transifex.com/postgis/postgis/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Tag: title
+#: introduction.xml:3
+#, no-c-format
+msgid "Introduction"
+msgstr "Einführung"
+
+#. Tag: para
+#: introduction.xml:5
+#, no-c-format
+msgid ""
+"PostGIS was developed by Refractions Research Inc, as a spatial database "
+"technology research project. Refractions is a GIS and database consulting "
+"company in Victoria, British Columbia, Canada, specializing in data "
+"integration and custom software development. We plan on supporting and "
+"developing PostGIS to support a range of important GIS functionality, "
+"including full OpenGIS support, advanced topological constructs (coverages, "
+"surfaces, networks), desktop user interface tools for viewing and editing "
+"GIS data, and web-based access tools."
+msgstr "PostGIS wurde von Refractions Research Inc, im Rahmen eines Forschungsprojektes über Geodatenbanktechnologie entwickelt. Refractions ist ein Beratungsunternehmen im GIS- und Datenbankbereich, das auf Datenintegration und kundenspezifische Softwareentwicklung spezialisiert ist und in Victoria, British Columbia, Kanada beheimatet ist. Wir beabsichtigen die Unterstützung und Entwicklung von PostGIS, um eine Reihe wichtiger GIS-Funktionalitäten, einschließlich OpenGIS Kompatibilität, hochentwickelte topologische Konstrukte (Coverages, Oberflächen, Netzwerke), Desktop Benutzeroberflächen zum darstellen und bearbeiten von GIS Daten sowie Werkzeuge für den Zugriff via Internettechnologie zu unterstützen."
+
+#. Tag: para
+#: introduction.xml:15
+#, no-c-format
+msgid ""
+"PostGIS is an incubation project of the OSGeo Foundation. PostGIS is being "
+"continually improved and funded by many FOSS4G Developers as well as "
+"corporations all over the world that gain great benefit from its "
+"functionality and versatility."
+msgstr "PostGIS ist ein Inkubationsprojekt der OSGeo Foundation. PostGIS wird von vielen FOSS4G-Entwicklern und Unternehmen auf der ganzen Welt laufend verbessert bzw. finanziert, da diese einen großen Nutzen aus dessen Funktionalität und Vielseitigkeit ziehen."
+
+#. Tag: title
+#: introduction.xml:21
+#, no-c-format
+msgid "Project Steering Committee"
+msgstr "Projektleitung"
+
+#. Tag: para
+#: introduction.xml:22
+#, no-c-format
+msgid ""
+"The PostGIS Project Steering Committee (PSC) coordinates the general "
+"direction, release cycles, documentation, and outreach efforts for the "
+"PostGIS project. In addition the PSC provides general user support, accepts "
+"and approves patches from the general PostGIS community and votes on "
+"miscellaneous issues involving PostGIS such as developer commit access, new "
+"PSC members or significant API changes."
+msgstr "Das PostGIS Project Steering Committee (PSC) koordiniert die allgemeine Ausrichtung, den Releasezyklus, die Dokumentation und die Öffentlichkeitsarbeit des PostGIS Projektes. Zusätzlich bietet das PSC allgemeine Unterstützung für Anwender, übernimmt und prüft Patches aus der PostGIS Gemeinschaft und stimmt über sonstige Themen, wie Commit-Zugriff für Entwickler, neue PSC Mitglieder oder entscheidende Änderungen an der API, ab."
+
+#. Tag: term
+#: introduction.xml:31
+#, no-c-format
+msgid "Mark Cave-Ayland"
+msgstr "Mark Cave-Ayland"
+
+#. Tag: para
+#: introduction.xml:33
+#, no-c-format
+msgid ""
+"Coordinates bug fixing and maintenance effort, alignment of PostGIS with "
+"PostgreSQL releases, spatial index selectivity and binding, loader/dumper, "
+"and Shapefile GUI Loader, integration of new and new function enhancements."
+msgstr "Koordiniert die Wartung und Fehlerbehebung, das Abgleichen mit PostgreSQL Releases, die Auswahl und das Binden von räumlichen Indizes, Loader/Dumper und die Shapfile Loader GUI, die Einbindung von neuen Funktionen sowie die Verbesserung von Funktionen."
+
+#. Tag: term
+#: introduction.xml:40
+#, no-c-format
+msgid "Regina Obe"
+msgstr "Regina Obe"
+
+#. Tag: para
+#: introduction.xml:42
+#, no-c-format
+msgid ""
+"Buildbot Maintenance, windows production and experimental builds, "
+"Documentation, general user support on PostGIS newsgroup, X3D support, Tiger"
+" Geocoder Support, management functions, and smoke testing new functionality"
+" or major code changes."
+msgstr "Buildbot Wartung, kompiliert produktive und experimentelle Softwarepakete für Windows, allgemeine Unterstützung von Anwendern auf der PostGIS Newsgroup, Mitarbeit an X3D, Tiger Geokodierer, an Funktionen zur Verwaltung von Geometrien, und Smoke testing von neuer Funktionalität und wichtigen Änderungen am Code."
+
+#. Tag: term
+#: introduction.xml:49
+#, no-c-format
+msgid "Bborie Park"
+msgstr "Bborie Park"
+
+#. Tag: para
+#: introduction.xml:51
+#, no-c-format
+msgid ""
+"Raster development, integration with GDAL, raster loader, user support, "
+"general bug fixing, testing on various OS (Slackware, Mac, Windows, and "
+"more)"
+msgstr "Entwicklung im Bereich Raster, Integration mit GDAL, Raster-Lader, Anwender-Support, allgemeine Fehlerbeseitigung, Softwaretests auf verschiedenen Betriebssystemen (Slackware, Mac, Windows und andere)."
+
+#. Tag: term
+#: introduction.xml:56
+#, no-c-format
+msgid "Paul Ramsey (Chair)"
+msgstr "Paul Ramsey (Chair)"
+
+#. Tag: para
+#: introduction.xml:58
+#, no-c-format
+msgid ""
+"Co-founder of PostGIS project. General bug fixing, geography support, "
+"geography and geometry index support (2D, 3D, nD index and anything spatial "
+"index), underlying geometry internal structures, PointCloud (in "
+"development), GEOS functionality integration and alignment with GEOS "
+"releases, loader/dumper, and Shapefile GUI loader."
+msgstr "Mitbegründer des PostGIS Projektes. Allgemeine Fehlerbehebung, geographische Unterstützung, Indizes zur Unterstützung von Geographie und Geometrie (2D, 3D, nD Index und jegliche räumliche Indizes), grundlegende interne geometrische Strukturen, PointCloud (in Entwicklung), Einbindung von GEOS Funktionalität und Abstimmung mit GEOS Releases, Loader/Dumper, und die Shapefile Loader GUI."
+
+#. Tag: term
+#: introduction.xml:64
+#, no-c-format
+msgid "Sandro Santilli"
+msgstr "Sandro Santilli"
+
+#. Tag: para
+#: introduction.xml:67
+#, no-c-format
+msgid ""
+"Bug fixes and maintenance and integration of new GEOS functionality and "
+"alignment with GEOS releases, Topology support, and Raster framework and low"
+" level api functions."
+msgstr "Bugfixes, Wartung, und Integration neuer GEOS-Funktionalitäten, sowie Abstimmung mit den GEOS Versionen, Topologieunterstützung, und Raster Grundstruktur, sowie Funktionen der Low-Level-API."
+
+#. Tag: title
+#: introduction.xml:74
+#, no-c-format
+msgid "Core Contributors Present"
+msgstr "Aktuelle Kernentwickler"
+
+#. Tag: term
+#: introduction.xml:77
+#, no-c-format
+msgid "Jorge Arévalo"
+msgstr "Jorge Arévalo"
+
+#. Tag: para
+#: introduction.xml:79
+#, no-c-format
+msgid "Raster development, GDAL driver support, loader"
+msgstr "Entwicklung von PostGIS Raster, GDAL-Treiberunterstützung, Lader/loader"
+
+#. Tag: term
+#: introduction.xml:84
+#, no-c-format
+msgid "Nicklas Avén"
+msgstr "Nicklas Avén"
+
+#. Tag: para
+#: introduction.xml:87
+#, no-c-format
+msgid ""
+"Distance function enhancements (including 3D distance and relationship "
+"functions) and additions, Tiny WKB output format (TWKB) (in development) and"
+" general user support"
+msgstr "Verbesserung und Erweiterung von Distanzfunktionen (einschließlich 3D-Distanz und Funktionen zu räumlichen Beziehungen), Tiny WKB Ausgabeformat (TWKB) (in Entwicklung) und allgemeine Unterstützung von Anwendern."
+
+#. Tag: term
+#: introduction.xml:92
+#, no-c-format
+msgid "Dan Baston"
+msgstr "Dan Baston"
+
+#. Tag: para
+#: introduction.xml:95
+#, no-c-format
+msgid ""
+"Geometry clustering function additions, other geometry algorithm "
+"enhancements, and general user support"
+msgstr "Beiträge zu den geometrischen Clusterfunktionen, Verbesserung anderer geometrischer Alorithmen, und allgemeine Unterstützung von Anwendern."
+
+#. Tag: term
+#: introduction.xml:100
+#, no-c-format
+msgid "Olivier Courtin"
+msgstr "Olivier Courtin"
+
+#. Tag: para
+#: introduction.xml:102
+#, no-c-format
+msgid ""
+"Input output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes."
+msgstr "Ein- und Ausgabefunktionen für XML (KML,GML)/GeoJSON, 3D Unterstützng und Bugfixes."
+
+#. Tag: term
+#: introduction.xml:107
+#, no-c-format
+msgid "Björn Harrtell"
+msgstr "Björn Harrtell"
+
+#. Tag: para
+#: introduction.xml:110
+#, no-c-format
+msgid "MapBox Vector Tile and GeoBuf functions. Gogs testing."
+msgstr "MapBox Vector Tile und GeoBuf Funktionen. Gogs Tests."
+
+#. Tag: term
+#: introduction.xml:116
+#, no-c-format
+msgid "Mateusz Loskot"
+msgstr "Mateusz Loskot"
+
+#. Tag: para
+#: introduction.xml:118
+#, no-c-format
+msgid ""
+"CMake support for PostGIS, built original raster loader in python and low "
+"level raster api functions"
+msgstr "CMake Unterstützung für PostGIS, Entwicklung des ursprünglichen Raster-Laders in Python und systemnahe Funktionen der Raster-API"
+
+#. Tag: term
+#: introduction.xml:123
+#, no-c-format
+msgid "Pierre Racine"
+msgstr "Pierre Racine"
+
+#. Tag: para
+#: introduction.xml:125
+#, no-c-format
+msgid "Raster overall architecture, prototyping, programming support"
+msgstr "Gesamtarchitektur für Raster, Prototyping, Unterstützung bei der Programmierung"
+
+#. Tag: title
+#: introduction.xml:131
+#, no-c-format
+msgid "Core Contributors Past"
+msgstr "Frühere Hauptteilnehmer"
+
+#. Tag: term
+#: introduction.xml:135
+#, no-c-format
+msgid "Chris Hodgson"
+msgstr "Chris Hodgson"
+
+#. Tag: para
+#: introduction.xml:137
+#, no-c-format
+msgid ""
+"Prior PSC Member. General development, site and buildbot maintenance, OSGeo "
+"incubation management"
+msgstr "Ehemaliges PSC Mitglied. Allgemeine Entwicklungsarbeit, Wartung von Buildbot und Homepage, OSGeo Inkubationsmanagement."
+
+#. Tag: term
+#: introduction.xml:142
+#, no-c-format
+msgid "Kevin Neufeld"
+msgstr "Kevin Neufeld"
+
+#. Tag: para
+#: introduction.xml:144
+#, no-c-format
+msgid ""
+"Prior PSC Member. Documentation and documentation support tools, buildbot "
+"maintenance, advanced user support on PostGIS newsgroup, and PostGIS "
+"maintenance function enhancements."
+msgstr "Ehemaliges PSC Mitglied. Dokumentation und Werkzeuge zur Dokumentationsunterstützung, Buildbot Wartung, fortgeschrittene Anwenderunterstützung auf der PostGIS Newsgroup, Verbesserungen an den Funktionen zur Verwaltung von Geometrien."
+
+#. Tag: term
+#: introduction.xml:150
+#, no-c-format
+msgid "Dave Blasby"
+msgstr "Dave Blasby"
+
+#. Tag: para
+#: introduction.xml:153
+#, no-c-format
+msgid ""
+"The original developer/Co-founder of PostGIS. Dave wrote the server side "
+"objects, index bindings, and many of the server side analytical functions."
+msgstr "Der ursprüngliche Entwickler und Mitbegründer von PostGIS. Dave schrieb die serverseitigen Bereiche, wie das Binden von Indizes und viele der serverseitiger analytischer Funktionen."
+
+#. Tag: term
+#: introduction.xml:160
+#, no-c-format
+msgid "Jeff Lounsbury"
+msgstr "Jeff Lounsbury"
+
+#. Tag: para
+#: introduction.xml:162
+#, no-c-format
+msgid ""
+"Original development of the Shape file loader/dumper. Current PostGIS "
+"Project Owner representative."
+msgstr "Ursprüngliche Entwicklung des Shapefile Loader/Dumper. Aktuell ist er Vertreter der PostGIS Projekt Inhaber."
+
+#. Tag: term
+#: introduction.xml:168
+#, no-c-format
+msgid "Mark Leslie"
+msgstr "Mark Leslie"
+
+#. Tag: para
+#: introduction.xml:170
+#, no-c-format
+msgid ""
+"Ongoing maintenance and development of core functions. Enhanced curve "
+"support. Shapefile GUI loader."
+msgstr "Laufende Wartung und Entwicklung der Kernfunktionen. Erweiterte Unterstützung von Kurven. Shapefile Loader GUI."
+
+#. Tag: term
+#: introduction.xml:175
+#, no-c-format
+msgid "David Zwarg"
+msgstr "David Zwarg"
+
+#. Tag: para
+#: introduction.xml:177
+#, no-c-format
+msgid "Raster development (mostly map algebra analytic functions)"
+msgstr "Entwickelt für Raster (in erster Linie analytische Funktionen in Map Algebra)"
+
+#. Tag: title
+#: introduction.xml:183
+#, no-c-format
+msgid "Other Contributors"
+msgstr "Weitere Mitwirkende"
+
+#. Tag: term
+#: introduction.xml:186
+#, no-c-format
+msgid "Individual Contributors"
+msgstr "Die einzelnen Mitwirkenden"
+
+#. Tag: para
+#: introduction.xml:189
+#, no-c-format
+msgid ""
+"In alphabetical order: Alex Bodnaru, Alex Mayrhofer, Andrea Peri, Andreas "
+"Forø Tollefsen, Andreas Neumann, Anne Ghisla, Barbara Phillipot, Ben Jubb, "
+"Bernhard Reiter, Brian Hamlin, Bruce Rindahl, Bruno Wolff III, Bryce L. "
+"Nordgren, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea, David"
+" Techer, Eduin Carrillo, Even Rouault, Frank Warmerdam, George Silva, Gerald"
+" Fenoy, Gino Lucrezi, Guillaume Lelarge, IIDA Tetsushi, Ingvild Nystuen, "
+"Jason Smith, Jeff Adams, Jose Carlos Martinez Llari, Julien Rouhaud, Kashif "
+"Rasul, Klaus Foerster, Kris Jurka, Leo Hsu, Loic Dachary, Luca S. Percich, "
+"Maria Arias de Reyna, Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime"
+" van Noppen, Michael Fuhr, Mike Toews, Nathan Wagner, Nathaniel Clay, Nikita"
+" Shulga, Norman Vine, Rafal Magda, Ralph Mason, Rémi Cura, Richard "
+"Greenwood, Silvio Grosso, Steffen Macke, Stephen Frost, Tom van Tilburg, "
+"Vincent Mora, Vincent Picavet"
+msgstr "In alphabetischer Reihenfolge: Alex Bodnaru, Alex Mayrhofer, Andrea Peri, Andreas Forø Tollefsen, Andreas Neumann, Anne Ghisla, Barbara Phillipot, Ben Jubb, Bernhard Reiter, Brian Hamlin, Bruce Rindahl, Bruno Wolff III, Bryce L. Nordgren, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea, David Techer, Eduin Carrillo, Even Rouault, Frank Warmerdam, George Silva, Gerald Fenoy, Gino Lucrezi, Guillaume Lelarge, IIDA Tetsushi, Ingvild Nystuen, Jason Smith, Jeff Adams, Jose Carlos Martinez Llari, Julien Rouhaud, Kashif Rasul, Klaus Foerster, Kris Jurka, Leo Hsu, Loic Dachary, Luca S. Percich, Maria Arias de Reyna, Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime van Noppen, Michael Fuhr, Mike Toews, Nathan Wagner, Nathaniel Clay, Nikita Shulga, Norman Vine, Rafal Magda, Ralph Mason, Rémi Cura, Richard Greenwood, Silvio Grosso, Steffen Macke, Stephen Frost, Tom van Tilburg, Vincent Mora, Vincent Picavet"
+
+#. Tag: term
+#: introduction.xml:253
+#, no-c-format
+msgid "Corporate Sponsors"
+msgstr "Gründungs-Sponsoren"
+
+#. Tag: para
+#: introduction.xml:256
+#, no-c-format
+msgid ""
+"These are corporate entities that have contributed developer time, hosting, "
+"or direct monetary funding to the PostGIS project"
+msgstr "Dabei handelt es sich um Unternehmen, die Entwicklungszeit, Hosting, oder direkte finanzielle Förderungen, in das PostGIS Projekt eingebracht haben"
+
+#. Tag: para
+#: introduction.xml:257
+#, no-c-format
+msgid ""
+"In alphabetical order: Arrival 3D, Associazione Italiana per l'Informazione "
+"Geografica Libera (GFOSS.it), AusVet, Avencia, Azavea, Cadcorp, CampToCamp, "
+"CartoDB, City of Boston (DND), Clever Elephant Solutions, Cooperativa Alveo,"
+" Deimos Space, Faunalia, Geographic Data BC, Hunter Systems Group, Lidwala "
+"Consulting Engineers, LisaSoft, Logical Tracking &amp; Tracing International"
+" AG, Maponics, Michigan Tech Research Institute, Natural Resources Canada, "
+"Norwegian Forest and Landscape Institute, Boundless (former OpenGeo), OSGeo,"
+" Oslandia, Palantir Technologies, Paragon Corporation, R3 GIS, Refractions "
+"Research, Regione Toscana - SITA, Safe Software, Sirius Corporation plc, "
+"Stadt Uster, UC Davis Center for Vectorborne Diseases, University of Laval, "
+"U.S Department of State (HIU), Zonar Systems"
+msgstr "In alphabetischer Reihenfolge: Arrival 3D, Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it), AusVet, Avencia, Azavea, Cadcorp, CampToCamp, CartoDB, City of Boston (DND), Clever Elephant Solutions, Cooperativa Alveo, Deimos Space, Faunalia, Geographic Data BC, Hunter Systems Group, Lidwala Consulting Engineers, LisaSoft, Logical Tracking &amp; Tracing International AG, Maponics, Michigan Tech Research Institute, Natural Resources Canada, Norwegian Forest and Landscape Institute, Boundless (former OpenGeo), OSGeo, Oslandia, Palantir Technologies, Paragon Corporation, R3 GIS, Refractions Research, Regione Toscana - SITA, Safe Software, Sirius Corporation plc, Stadt Uster, UC Davis Center for Vectorborne Diseases, University of Laval, U.S Department of State (HIU), Zonar Systems"
+
+#. Tag: term
+#: introduction.xml:299
+#, no-c-format
+msgid "Crowd Funding Campaigns"
+msgstr "Crowd Funding-Kampagnen"
+
+#. Tag: para
+#: introduction.xml:302
+#, no-c-format
+msgid ""
+"Crowd funding campaigns are campaigns we run to get badly wanted features "
+"funded that can service a large number of people. Each campaign is "
+"specifically focused on a particular feature or set of features. Each "
+"sponsor chips in a small fraction of the needed funding and with enough "
+"people/organizations contributing, we have the funds to pay for the work "
+"that will help many. If you have an idea for a feature you think many others"
+" would be willing to co-fund, please post to the <ulink "
+"url=\"https://lists.osgeo.org/mailman/listinfo/postgis-users\">PostGIS "
+"newsgroup</ulink> your thoughts and together we can make it happen."
+msgstr "Wir starten Crowdfunding Kampagnen, um dringend gewünschte und von vielen Anwendern benötigte Funktionalitäten zu finanzieren. Jede Kampagne konzentriert sich auf eine bestimmte Funktionalität oder eine Gruppe von Funktionen. Jeder Sponsor spendiert einen kleinen Teil des benötigten Geldes und wenn genug Menschen/Organisationen mitmachen können wir die Arbeit bezahlen, von der dann Viele etwas haben. Falls Sie eine Idee für eine Funktionalität haben, bei der Sie glauben das viele andere bereit sind diese mitzufinanzieren, dann schicken Sie bitte Ihre Überlegungen an die <ulink url=\"https://lists.osgeo.org/mailman/listinfo/postgis-users\">PostGIS newsgroup</ulink> - gemeinsam wird es Uns gelingen."
+
+#. Tag: para
+#: introduction.xml:303
+#, no-c-format
+msgid ""
+"PostGIS 2.0.0 was the first release we tried this strategy. We used <ulink "
+"url=\"http://www.pledgebank.com\">PledgeBank</ulink> and we got two "
+"successful campaigns out of it."
+msgstr "PostGIS 2.0.0 war die erste Version mit der wir diese Strategie verfolgten. Wir benutzten <ulink url=\"http://www.pledgebank.com\">PledgeBank</ulink> und hatten zwei erfolgreiche Kampagnen."
+
+#. Tag: para
+#: introduction.xml:304
+#, no-c-format
+msgid ""
+"<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis "
+"role=\"bold\">postgistopology</emphasis></ulink> - 10 plus sponsors each "
+"contributed $250 USD to build toTopoGeometry function and beef up topology "
+"support in 2.0.0. It happened."
+msgstr "<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis role=\"bold\">postgistopology</emphasis></ulink> - mehr als 10 Sponsoren förderten mit jeweils $250 USD die Entwicklung von TopoGeometry Funktionen und das Aufmöbeln der Topologie-Unterstützung für 2.0.0. Ist passiert."
+
+#. Tag: para
+#: introduction.xml:305
+#, no-c-format
+msgid ""
+"<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis "
+"role=\"bold\">postgis64windows</emphasis></ulink> - 20 someodd sponsors each"
+" contributed $100 USD to pay for the work needed to work out PostGIS 64-bit "
+"issues on windows. It happened. We now have a 64-bit release for PostGIS "
+"2.0.1 available on PostgreSQL stack builder."
+msgstr "<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis role=\"bold\">postgis64windows</emphasis></ulink> - 20 Sonderlinge förderten die Arbeit an den Problemen mit der 64-bit Version von PostGIS für Windows mit jeweils $100 USD. Es ist tatsächlich geschehen und nun steht eine 64-bit Version von PostGIS 2.0.1, als PostgreSQL Stack-Builder, zur Verfügung."
+
+#. Tag: term
+#: introduction.xml:310
+#, no-c-format
+msgid "Important Support Libraries"
+msgstr "Wichtige Support-Bibliotheken"
+
+#. Tag: para
+#: introduction.xml:313
+#, no-c-format
+msgid ""
+"The <ulink url=\"http://trac.osgeo.org/geos/\">GEOS</ulink> geometry "
+"operations library, and the algorithmic work of Martin Davis in making it "
+"all work, ongoing maintenance and support of Mateusz Loskot, Sandro Santilli"
+" (strk), Paul Ramsey and others."
+msgstr "Die <ulink url=\"http://trac.osgeo.org/geos/\">GEOS</ulink> Bibliothek zur Handhabung von Geometrien, und die Arbeit an den Algorithmen von Martin Davis die erst alles zum Laufen brachte, laufende Wartung und Unterstützung durch Mateusz Loskot, Sandro Santilli (strk), Paul Ramsey und andere."
+
+#. Tag: para
+#: introduction.xml:318
+#, no-c-format
+msgid ""
+"The <ulink url=\"http://trac.osgeo.org/gdal/\">GDAL</ulink> Geospatial Data "
+"Abstraction Library, by Frank Warmerdam and others is used to power much of "
+"the raster functionality introduced in PostGIS 2.0.0. In kind, improvements "
+"needed in GDAL to support PostGIS are contributed back to the GDAL project."
+msgstr "Die <ulink url=\"http://trac.osgeo.org/gdal/\">GDAL</ulink> Geospatial Data Abstraction Library von Frank Warmerdam und anderen ist die Grundlage für einen großen Teil der Rasterfunktionalität, die mit PostGIS 2.0.0 eingeführt wurde. Im Prinzip werden die zur Unterstützung von PostGIS nötigen Neuerungen in GDAL, an das GDAL-Projekt zurückgegeben."
+
+#. Tag: para
+#: introduction.xml:323
+#, no-c-format
+msgid ""
+"The <ulink url=\"http://trac.osgeo.org/proj/\">Proj4</ulink> cartographic "
+"projection library, and the work of Gerald Evenden and Frank Warmerdam in "
+"creating and maintaining it."
+msgstr "Die <ulink url=\"http://trac.osgeo.org/proj/\">Proj4</ulink> Bibliothek für kartographische Projektionen, und die Arbeit von Gerald Evenden und Frank Warmerdam bei der Erstellung und Erhaltung dieser."
+
+#. Tag: para
+#: introduction.xml:327
+#, no-c-format
+msgid ""
+"Last but not least, the <ulink url=\"http://www.postgresql.org\">PostgreSQL "
+"DBMS</ulink>, The giant that PostGIS stands on. Much of the speed and "
+"flexibility of PostGIS would not be possible without the extensibility, "
+"great query planner, GIST index, and plethora of SQL features provided by "
+"PostgreSQL."
+msgstr "Zu guter Letzt das <ulink url=\"http://www.postgresql.org\">PostgreSQL DBMS</ulink>, der Gigant auf dessen Schultern PostGIS steht. Die Geschwindigkeit und Flexibilität von PostGIS wäre ohne die Erweiterbarkeit, den großartigen Anfrageplaner, den GIST index, und der Unmenge an SQL Funktionen die von PostgreSQL bereitgestellt werden, nicht möglich."
+
+#. Tag: title
+#: introduction.xml:336
+#, no-c-format
+msgid "More Information"
+msgstr "Weitere Information"
+
+#. Tag: para
+#: introduction.xml:340
+#, no-c-format
+msgid ""
+"The latest software, documentation and news items are available at the "
+"PostGIS web site, <ulink "
+"url=\"http://postgis.net\">http://postgis.net</ulink>."
+msgstr "Die neueste Software, Dokumentation und Neuigkeiten finden Sie auf der PostGIS Webseite <ulink url=\"http://postgis.net\">http://postgis.net</ulink>."
+
+#. Tag: para
+#: introduction.xml:346
+#, no-c-format
+msgid ""
+"More information about the GEOS geometry operations library is available "
+"at<ulink url=\"http://trac.osgeo.org/geos/\"> "
+"http://trac.osgeo.org/geos/</ulink>."
+msgstr "Weitere Information zur GEOS Geometriebearbeitungs-Bibliothekgeometry finden Sie unter <ulink url=\"http://trac.osgeo.org/geos/\"> http://trac.osgeo.org/geos/</ulink>."
+
+#. Tag: para
+#: introduction.xml:352
+#, no-c-format
+msgid ""
+"More information about the Proj4 reprojection library is available at <ulink"
+" url=\"http://trac.osgeo.org/proj/\">http://trac.osgeo.org/proj/</ulink>."
+msgstr "Weitere Information zur Proj4 Koordinatentransformations-Bibliothek finden Sie unter <ulink url=\"http://trac.osgeo.org/proj/\">http://trac.osgeo.org/proj/</ulink>."
+
+#. Tag: para
+#: introduction.xml:358
+#, no-c-format
+msgid ""
+"More information about the PostgreSQL database server is available at the "
+"PostgreSQL main site <ulink "
+"url=\"http://www.postgresql.org\">http://www.postgresql.org</ulink>."
+msgstr "Weitere Information zum PostgreSQL Datenbankserver finden Sie auf der PostgreSQL Hauptseite <ulink url=\"http://www.postgresql.org\">http://www.postgresql.org</ulink>."
+
+#. Tag: para
+#: introduction.xml:364
+#, no-c-format
+msgid ""
+"More information about GiST indexing is available at the PostgreSQL GiST "
+"development site, <ulink "
+"url=\"http://www.sai.msu.su/~megera/postgres/gist/\">http://www.sai.msu.su/~megera/postgres/gist/</ulink>."
+msgstr "Weitere Information zum GIST-Index finden Sie auf der PostgreSQL GiST Entwicklerseite: <ulink url=\"http://www.sai.msu.su/~megera/postgres/gist/\">http://www.sai.msu.su/~megera/postgres/gist/</ulink>."
+
+#. Tag: para
+#: introduction.xml:370
+#, no-c-format
+msgid ""
+"More information about MapServer internet map server is available at <ulink "
+"url=\"http://mapserver.org/\">http://mapserver.org</ulink>."
+msgstr "Weitere Information zu MapServer finden sie unter <ulink url=\"http://mapserver.org/\">http://mapserver.org</ulink>."
+
+#. Tag: para
+#: introduction.xml:376
+#, no-c-format
+msgid ""
+"The &quot;<ulink url=\"http://www.opengeospatial.org/standards/sfs\">Simple "
+"Features for Specification for SQL</ulink>&quot; is available at the OpenGIS"
+" Consortium web site: <ulink "
+"url=\"http://www.opengeospatial.org/\">http://www.opengeospatial.org/</ulink>."
+msgstr "Die &quot;<ulink url=\"http://www.opengeospatial.org/standards/sfs\">Simple Features Specification for SQL</ulink>&quot; finden Sie auf der Webseite des OpenGIS Consortiums: <ulink url=\"http://www.opengeospatial.org/\">http://www.opengeospatial.org/</ulink>."

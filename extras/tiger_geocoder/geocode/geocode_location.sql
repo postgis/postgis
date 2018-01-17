@@ -67,7 +67,7 @@ BEGIN
 
   IF var_debug THEN
     RAISE NOTICE 'geocode_location stmt: %', stmt;
-  END IF;     
+  END IF;
   FOR result IN EXECUTE stmt
   LOOP
 
@@ -87,7 +87,7 @@ BEGIN
       END IF;
     END IF;
   END LOOP;
-  
+
   IF var_debug THEN
     RAISE NOTICE 'geocode_location ending: %', clock_timestamp();
   END IF;

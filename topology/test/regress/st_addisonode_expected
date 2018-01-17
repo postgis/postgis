@@ -22,4 +22,5 @@ T3|25|9
 T4|26|5
 T5|27|0
 T6|28|9
+ERROR:  SQL/MM Spatial exception - empty point
 Topology 'city_data' dropped

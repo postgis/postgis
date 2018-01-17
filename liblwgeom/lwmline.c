@@ -55,7 +55,7 @@ LWMLINE* lwmline_add_lwline(LWMLINE *mobj, const LWLINE *obj)
 LWMLINE*
 lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_end)
 {
-	int i = 0;
+	uint32_t i = 0;
 	int hasm = 0, hasz = 0;
 	double length = 0.0, length_so_far = 0.0;
 	double m_range = m_end - m_start;
@@ -111,9 +111,9 @@ lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_e
 
 void lwmline_free(LWMLINE *mline)
 {
-	int i;
+	uint32_t i;
 	if ( ! mline ) return;
-	
+
 	if ( mline->bbox )
 		lwfree(mline->bbox);
 

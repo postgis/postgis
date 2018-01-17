@@ -30,11 +30,11 @@ NOTICE:  Raster does not have band at index 2. Skipping raster
 COMMIT
 RELEASE
 SAVEPOINT
-ERROR:  relation "test1" does not exist at character 82
+20|-68.584|-3.429|6.571|-10.000|3.142
 COMMIT
 RELEASE
 SAVEPOINT
-ERROR:  column "rast1" does not exist at character 50
+20|-68.584|-3.429|6.571|-10.000|3.142
 COMMIT
 RELEASE
 SAVEPOINT

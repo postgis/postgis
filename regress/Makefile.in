@@ -2,8 +2,8 @@
 # *
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.net
-# * 
-# * Copyright (C) 2011-2012 Sandro Santilli <strk@keybit.net>
+# *
+# * Copyright (C) 2011-2012 Sandro Santilli <strk@kbt.io>
 # * Copyright (C) 2009-2011 Paul Ramsey <pramsey@cleverelephant.ca>
 # * Copyright (C) 2008-2009 Mark Cave-Ayland
 # *
@@ -22,7 +22,9 @@ POSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 HAVE_JSON=@HAVE_JSON@
+HAVE_PROTOBUF=@HAVE_PROTOBUF@
 HAVE_SFCGAL=@HAVE_SFCGAL@
+HAVE_BRIN=@HAVE_BRIN@
 MINGWBUILD=@MINGWBUILD@
 INTERRUPTTESTS=@INTERRUPTTESTS@
 
@@ -32,7 +34,7 @@ INTERRUPTTESTS=@INTERRUPTTESTS@
 # colons in drive letters will break PATH.
 PGSQL_BINDIR=$(shell cd "@PGSQL_BINDIR@" && pwd)
 
-# Where we put our regression installation 
+# Where we put our regression installation
 ifeq ($(MINGWBUILD),1)
 	srcdir=$(shell bash -c "pwd -W")
 else
@@ -40,7 +42,7 @@ else
 endif
 REGRESS_INSTALLDIR=$(srcdir)/00-regress-install
 
-# 
+#
 # Put path from pg_config into front of search path
 #
 PATH := $(PGSQL_BINDIR):$(PATH)
@@ -81,12 +83,14 @@ TESTS = \
 	cluster \
 	concave_hull\
 	ctors \
+	curvetoline \
 	dump \
 	dumppoints \
 	empty \
 	estimatedextent \
 	forcecurve \
 	geography \
+	geometric_median \
 	in_geohash \
 	in_gml \
 	in_kml \
@@ -97,7 +101,9 @@ TESTS = \
 	lwgeom_regress \
 	measures \
 	minimum_bounding_circle \
+	normalize \
 	operators \
+	orientation \
 	out_geometry \
 	out_geography \
 	polygonize \
@@ -117,6 +123,7 @@ TESTS = \
 	relate \
 	remove_repeated_points \
 	removepoint \
+	reverse \
 	setpoint \
 	simplify \
 	simplifyvw \
@@ -140,49 +147,52 @@ TESTS = \
 	wkt \
 	wmsservers
 
-ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 91),1)
 ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) "<"  95),1)
 	# Index supported KNN only available in PostgreSQL 9.1 and higher
 	# For 9.5 and higher, use the recheck suite instead
 	TESTS += knn
 endif
-endif
 
 ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 95),1)
 	# Index supported KNN recheck only available in PostgreSQL 9.5 and higher
 	TESTS += knn_recheck \
-           temporal_knn
+			temporal_knn
 endif
 
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)
-	# GEOS-3.3 adds:
-	# ST_HausdorffDistance, ST_Buffer(params)
+
+TESTS += \
+	hausdorff \
+	regress_buffer_params
+
+
+ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 37),1)
+	# GEOS-3.7 adds:
+	# ST_FrechetDistance
 	TESTS += \
-		hausdorff \
-		regress_buffer_params
+		frechet
 endif
 
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
-	# GEOS-3.3 adds:
-	# ST_RelateMatch, ST_IsValidDetail, ST_SharedPaths ,
-	# ST_Snap, ST_UnaryUnion, ST_MakeClean 
-	TESTS += \
-		offsetcurve \
-		relatematch \
-		isvaliddetail \
-		sharedpaths \
-		snap \
-		node \
-		unaryunion \
-		clean \
-		relate_bnr
-endif
+
+# GEOS-3.3 adds:
+# ST_RelateMatch, ST_IsValidDetail, ST_SharedPaths ,
+# ST_Snap, ST_UnaryUnion, ST_MakeClean
+TESTS += \
+	offsetcurve \
+	relatematch \
+	isvaliddetail \
+	sharedpaths \
+	snap \
+	node \
+	unaryunion \
+	clean \
+	relate_bnr
+
 
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 34),1)
 	# GEOS-3.4 adds:
 	# ST_DelaunayTriangles
 	TESTS += \
-		delaunaytriangles 
+		delaunaytriangles
 endif
 
 
@@ -202,7 +212,7 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 34),1)
 	TESTS += \
 		interrupt_buffer
 endif
-		 
+
 endif
 
 
@@ -215,12 +225,37 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 35),1)
 		voronoi
 endif
 
+ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 36),1)
+	# GEOS-3.6 adds:
+	# ST_MinimumClearance
+	TESTS += \
+		minimum_clearance
+endif
 
 ifeq ($(HAVE_JSON),yes)
 	# JSON-C adds:
 	# ST_GeomFromGeoJSON()
 	TESTS += \
-		in_geojson 
+		in_geojson
+endif
+
+ifeq ($(HAVE_BRIN),yes)
+	TESTS += \
+		regress_brin_index \
+		regress_brin_index_3d \
+		regress_brin_index_geography
+endif
+
+ifeq ($(HAVE_PROTOBUF),yes)
+	# protobuf-c adds:
+	# ST_AsMVT, ST_AsGeobuf
+	TESTS += \
+		mvt \
+		geobuf
+ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 94),1)
+	TESTS += \
+		mvt_jsonb
+endif
 endif
 
 ifeq ($(HAVE_SFCGAL),yes)

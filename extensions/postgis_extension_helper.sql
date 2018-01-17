@@ -1,5 +1,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 ----
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
@@ -10,7 +10,7 @@
 -- the terms of the GNU General Public Licence. See the COPYING file.
 --
 -- Author: Regina Obe <lr@pcorp.us>
---  
+--
 -- This is a suite of SQL helper functions for use during a PostGIS extension install/upgrade
 -- The functions get uninstalled after the extention install/upgrade process
 ---------------------------
@@ -21,7 +21,7 @@
 CREATE OR REPLACE FUNCTION postgis_extension_remove_objects(param_extension text, param_type text)
   RETURNS boolean AS
 $$
-DECLARE 
+DECLARE
 	var_sql text := '';
 	var_r record;
 	var_result boolean := false;
@@ -29,9 +29,9 @@ DECLARE
 	var_is_aggregate boolean := false;
 	var_sql_list text := '';
 BEGIN
-		var_class := CASE WHEN lower(param_type) = 'function' OR lower(param_type) = 'aggregate' THEN 'pg_proc' ELSE '' END; 
+		var_class := CASE WHEN lower(param_type) = 'function' OR lower(param_type) = 'aggregate' THEN 'pg_proc' ELSE '' END;
 		var_is_aggregate := CASE WHEN lower(param_type) = 'aggregate' THEN true ELSE false END;
-		var_sql_list := 'SELECT ''ALTER EXTENSION '' || e.extname || '' DROP '' || $3 || '' '' || COALESCE(proc.proname || ''('' || oidvectortypes(proc.proargtypes) || '')'',typ.typname, cd.relname, op.oprname, 
+		var_sql_list := 'SELECT ''ALTER EXTENSION '' || e.extname || '' DROP '' || $3 || '' '' || COALESCE(proc.proname || ''('' || oidvectortypes(proc.proargtypes) || '')'',typ.typname, cd.relname, op.oprname,
 				cs.typname || '' AS '' || ct.typname || '') '', opcname, opfname) || '';'' AS remove_command
 		FROM pg_depend As d INNER JOIN pg_extension As e
 			ON d.refobjid = e.oid INNER JOIN pg_class As c ON
@@ -62,7 +62,7 @@ LANGUAGE plpgsql VOLATILE;
 CREATE OR REPLACE FUNCTION postgis_extension_drop_if_exists(param_extension text, param_statement text)
   RETURNS boolean AS
 $$
-DECLARE 
+DECLARE
 	var_sql_ext text := 'ALTER EXTENSION ' || quote_ident(param_extension) || ' ' || replace(param_statement, 'IF EXISTS', '');
 	var_result boolean := false;
 BEGIN
@@ -92,14 +92,14 @@ BEGIN
 		var_result := a_schema_name || ' already in database search_path';
 	ELSE
 		var_cur_search_path := var_cur_search_path || ', '
-                        || quote_ident(a_schema_name); 
+                        || quote_ident(a_schema_name);
 		EXECUTE 'ALTER DATABASE ' || quote_ident(current_database())
                               || ' SET search_path = ' || var_cur_search_path;
 		var_result := a_schema_name || ' has been added to end of database search_path ';
 	END IF;
 
 	EXECUTE 'SET search_path = ' || var_cur_search_path;
-  
+
   RETURN var_result;
 END
 $$

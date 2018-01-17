@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,9 +37,9 @@
 
 #include "../../postgis_config.h"
 
-#if POSTGIS_PGSQL_VERSION > 92
+
 #include "access/htup_details.h" /* for heap_form_tuple() */
-#endif
+
 
 #include "rtpostgis.h"
 #include "rtpg_internal.h"
@@ -103,7 +103,7 @@ Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS)
 		elog(ERROR, "RASTER_fromGDALRaster: Could not open bytea with GDAL. Check that the bytea is of a GDAL supported format");
 		PG_RETURN_NULL();
 	}
-	
+
 #if POSTGIS_DEBUG_LEVEL > 3
 	{
 		GDALDriverH hdrv = GDALGetDatasetDriver(hdsSrc);
@@ -131,7 +131,7 @@ Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS)
 	/* apply SRID if set */
 	if (srid != -1)
 		rt_raster_set_srid(raster, srid);
- 
+
 	pgraster = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
 	if (!pgraster)
@@ -198,7 +198,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 		formattext = PG_GETARG_TEXT_P(1);
 		format = text_to_cstring(formattext);
 	}
-		
+
 	POSTGIS_RT_DEBUGF(3, "RASTER_asGDALRaster: Arg 1 (format) is %s", format);
 
 	/* process options */
@@ -274,7 +274,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 	/* NULL srid means use raster's srid */
 	if (PG_ARGISNULL(3))
 		srid = rt_raster_get_srid(raster);
-	else 
+	else
 		srid = PG_GETARG_INT32(3);
 
 	/* get srs from srid */
@@ -362,7 +362,7 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		/* switch to memory context appropriate for multiple function calls */
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-		drv_set = rt_raster_gdal_drivers(&drv_count, 1);
+		drv_set = rt_raster_gdal_drivers(&drv_count, 0);
 		if (NULL == drv_set || !drv_count) {
 			elog(NOTICE, "No GDAL drivers found");
 			MemoryContextSwitchTo(oldcontext);
@@ -403,7 +403,7 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 4;
+		int values_length = 6;
 		Datum values[values_length];
 		bool nulls[values_length];
 		HeapTuple tuple;
@@ -416,11 +416,15 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		values[0] = Int32GetDatum(drv_set2[call_cntr].idx);
 		values[1] = CStringGetTextDatum(drv_set2[call_cntr].short_name);
 		values[2] = CStringGetTextDatum(drv_set2[call_cntr].long_name);
-		values[3] = CStringGetTextDatum(drv_set2[call_cntr].create_options);
+		values[3] = BoolGetDatum(drv_set2[call_cntr].can_read);
+		values[4] = BoolGetDatum(drv_set2[call_cntr].can_write);
+		values[5] = CStringGetTextDatum(drv_set2[call_cntr].create_options);
 
 		POSTGIS_RT_DEBUGF(4, "Result %d, Index %d", call_cntr, drv_set2[call_cntr].idx);
 		POSTGIS_RT_DEBUGF(4, "Result %d, Short Name %s", call_cntr, drv_set2[call_cntr].short_name);
 		POSTGIS_RT_DEBUGF(4, "Result %d, Full Name %s", call_cntr, drv_set2[call_cntr].long_name);
+		POSTGIS_RT_DEBUGF(4, "Result %d, Can Read %s", call_cntr, drv_set2[call_cntr].can_read);
+		POSTGIS_RT_DEBUGF(4, "Result %d, Can Write %s", call_cntr, drv_set2[call_cntr].can_write);
 		POSTGIS_RT_DEBUGF(5, "Result %d, Create Options %s", call_cntr, drv_set2[call_cntr].create_options);
 
 		/* build a tuple */

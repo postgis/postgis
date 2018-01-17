@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2014-10-18 10:29+0000\n"
+"POT-Creation-Date: 2017-08-24 19:57+0000\n"
 "PO-Revision-Date: 2013-11-30 05:55+0000\n"
 "Last-Translator: Tommaso Di Bucchianico\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/"
@@ -37,9 +37,9 @@ msgstr "Descrizione del problema"
 
 #. Tag: para
 #: performance_tips.xml:11
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Current PostgreSQL versions (including 8.0) suffer from a query optimizer "
+"Current PostgreSQL versions (including 9.6) suffer from a query optimizer "
 "weakness regarding TOAST tables. TOAST tables are a kind of \"extension room"
 "\" used to store large (in the sense of data size) values that do not fit "
 "into normal data pages (like long texts, images or complex geometries with "
@@ -58,10 +58,10 @@ msgstr ""
 
 #. Tag: para
 #: performance_tips.xml:19
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The problem appears if you happen to have a table with rather large "
-"geometries, but not too much rows of them (like a table containing the "
+"geometries, but not too manyrows of them (like a table containing the "
 "boundaries of all European countries in high resolution). Then the table "
 "itself is small, but it uses lots of TOAST space. In our example case, the "
 "table itself had about 80 rows and used only 3 data pages, but the TOAST "
@@ -76,13 +76,13 @@ msgstr ""
 
 #. Tag: para
 #: performance_tips.xml:26
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Now issue a query where you use the geometry operator &amp;&amp; to search "
 "for a bounding box that matches only very few of those rows. Now the query "
-"optimizer sees that the table has only 3 pages and 80 rows. He estimates "
+"optimizer sees that the table has only 3 pages and 80 rows. It estimates "
 "that a sequential scan on such a small table is much faster than using an "
-"index. And so he decides to ignore the GIST index. Usually, this estimation "
+"index. And so it decides to ignore the GIST index. Usually, this estimation "
 "is correct. But in our case, the &amp;&amp; operator has to fetch every "
 "geometry from disk to compare the bounding boxes, thus reading all TOAST "
 "pages, too."
@@ -92,12 +92,14 @@ msgstr ""
 
 #. Tag: para
 #: performance_tips.xml:35
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"To see whether your suffer from this bug, use the \"EXPLAIN ANALYZE\" "
+"To see whether your suffer from this issue, use the \"EXPLAIN ANALYZE\" "
 "postgresql command. For more information and the technical details, you can "
-"read the thread on the postgres performance mailing list: http://archives."
-"postgresql.org/pgsql-performance/2005-02/msg00030.php"
+"read the thread on the postgres performance mailing list: <ulink url="
+"\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php"
+"\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
+"ulink>"
 msgstr ""
 "Per controllare se i propri dati sono interessati da questo bug, si può "
 "usare il comando PostgreSQL \"EXPLAIN ANALYZE\". Per maggiori informazioni e "
@@ -105,14 +107,23 @@ msgstr ""
 "PostgreSQL: http://archives.postgresql.org/pgsql-performance/2005-02/"
 "msg00030.php"
 
+#. Tag: para
+#: performance_tips.xml:41
+#, no-c-format
+msgid ""
+"and newer thread on PostGIS <ulink url=\"https://lists.osgeo.org/pipermail/"
+"postgis-devel/2017-June/026209.html\">https://lists.osgeo.org/pipermail/"
+"postgis-devel/2017-June/026209.html</ulink>"
+msgstr ""
+
 #. Tag: title
-#: performance_tips.xml:43
+#: performance_tips.xml:45
 #, no-c-format
 msgid "Workarounds"
 msgstr "Possibili soluzioni"
 
 #. Tag: para
-#: performance_tips.xml:45
+#: performance_tips.xml:47
 #, no-c-format
 msgid ""
 "The PostgreSQL people are trying to solve this issue by making the query "
@@ -123,7 +134,7 @@ msgstr ""
 "ora ci sono due possibili soluzioni alternative:"
 
 #. Tag: para
-#: performance_tips.xml:48
+#: performance_tips.xml:50
 #, no-c-format
 msgid ""
 "The first workaround is to force the query planner to use the index. Send "
@@ -142,7 +153,7 @@ msgstr ""
 "della query interessata con il comando \"SET enable_seqscan TO on;\" ."
 
 #. Tag: para
-#: performance_tips.xml:56
+#: performance_tips.xml:58
 #, no-c-format
 msgid ""
 "The second workaround is to make the sequential scan as fast as the query "
@@ -156,11 +167,11 @@ msgstr ""
 "nostro esempio i comandi sarebbero:"
 
 #. Tag: programlisting
-#: performance_tips.xml:61
+#: performance_tips.xml:63
 #, fuzzy, no-c-format
 msgid ""
 "SELECT "
-"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2'); \n"
+"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
 "UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(the_geom));"
 msgstr ""
 "SELECT "
@@ -168,7 +179,7 @@ msgstr ""
 "UPDATE mytable SET bbox = ST_Envelope(ST_Force_2d(the_geom));"
 
 #. Tag: para
-#: performance_tips.xml:63
+#: performance_tips.xml:65
 #, no-c-format
 msgid ""
 "Now change your query to use the &amp;&amp; operator against bbox instead of "
@@ -178,11 +189,11 @@ msgstr ""
 "con la colonna bbox piuttosto che con la colonna geom_column:"
 
 #. Tag: programlisting
-#: performance_tips.xml:66
-#, no-c-format
+#: performance_tips.xml:68
+#, fuzzy, no-c-format
 msgid ""
-"SELECT geom_column \n"
-"FROM mytable \n"
+"SELECT geom_column\n"
+"FROM mytable\n"
 "WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
 msgstr ""
 "SELECT geom_column\n"
@@ -190,7 +201,7 @@ msgstr ""
 "WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
 
 #. Tag: para
-#: performance_tips.xml:68
+#: performance_tips.xml:70
 #, no-c-format
 msgid ""
 "Of course, if you change or add rows to mytable, you have to keep the bbox "
@@ -205,13 +216,13 @@ msgstr ""
 "precedente dopo ogni modifica."
 
 #. Tag: title
-#: performance_tips.xml:77
+#: performance_tips.xml:79
 #, no-c-format
 msgid "CLUSTERing on geometry indices"
 msgstr "CLUSTERing di indici geometrici"
 
 #. Tag: para
-#: performance_tips.xml:79
+#: performance_tips.xml:81
 #, no-c-format
 msgid ""
 "For tables that are mostly read-only, and where a single index is used for "
@@ -236,7 +247,7 @@ msgstr ""
 "PostgreSQL riguardante il comando CLUSTER)."
 
 #. Tag: para
-#: performance_tips.xml:89
+#: performance_tips.xml:91
 #, no-c-format
 msgid ""
 "However, currently PostgreSQL does not allow clustering on PostGIS GIST "
@@ -247,10 +258,10 @@ msgstr ""
 "GIST, perché gli indici GIST ignorano i valori nulli:"
 
 #. Tag: programlisting
-#: performance_tips.xml:93
-#, no-c-format
+#: performance_tips.xml:95
+#, fuzzy, no-c-format
 msgid ""
-"lwgeom=# CLUSTER my_geom_index ON my_table; \n"
+"lwgeom=# CLUSTER my_geom_index ON my_table;\n"
 "ERROR: cannot cluster when index access method does not handle null values\n"
 "HINT: You may be able to work around this by marking column \"the_geom\" NOT "
 "NULL."
@@ -261,7 +272,7 @@ msgstr ""
 "NULL."
 
 #. Tag: para
-#: performance_tips.xml:95
+#: performance_tips.xml:97
 #, no-c-format
 msgid ""
 "As the HINT message tells you, one can work around this deficiency by adding "
@@ -271,17 +282,17 @@ msgstr ""
 "aggiungendo un vincolo \"NOT NULL\" alla tabella:"
 
 #. Tag: programlisting
-#: performance_tips.xml:98
-#, no-c-format
+#: performance_tips.xml:100
+#, fuzzy, no-c-format
 msgid ""
-"lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null; \n"
+"lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null;\n"
 "ALTER TABLE"
 msgstr ""
 "lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null; \n"
 "ALTER TABLE"
 
 #. Tag: para
-#: performance_tips.xml:100
+#: performance_tips.xml:102
 #, no-c-format
 msgid ""
 "Of course, this will not work if you in fact need NULL values in your "
@@ -295,13 +306,13 @@ msgstr ""
 "not null);\" non funzionerà."
 
 #. Tag: title
-#: performance_tips.xml:107
+#: performance_tips.xml:109
 #, no-c-format
 msgid "Avoiding dimension conversion"
 msgstr "Evitare la conversione della dimensione"
 
 #. Tag: para
-#: performance_tips.xml:109
+#: performance_tips.xml:111
 #, fuzzy, no-c-format
 msgid ""
 "Sometimes, you happen to have 3D or 4D data in your table, but always access "
@@ -320,17 +331,17 @@ msgstr ""
 "utilizzate una volte e per sempre:"
 
 #. Tag: programlisting
-#: performance_tips.xml:116
+#: performance_tips.xml:118
 #, fuzzy, no-c-format
 msgid ""
-"UPDATE mytable SET the_geom = ST_Force2D(the_geom); \n"
+"UPDATE mytable SET the_geom = ST_Force2D(the_geom);\n"
 "VACUUM FULL ANALYZE mytable;"
 msgstr ""
 "UPDATE mytable SET the_geom = ST_Force_2d(the_geom); \n"
 "VACUUM FULL ANALYZE mytable;"
 
 #. Tag: para
-#: performance_tips.xml:118
+#: performance_tips.xml:120
 #, no-c-format
 msgid ""
 "Note that if you added your geometry column using AddGeometryColumn() "
@@ -345,7 +356,7 @@ msgstr ""
 "vincolo successivamente. "
 
 #. Tag: para
-#: performance_tips.xml:124
+#: performance_tips.xml:126
 #, no-c-format
 msgid ""
 "In case of large tables, it may be wise to divide this UPDATE into smaller "
@@ -366,116 +377,91 @@ msgstr ""
 "riscrivere le geometrie che sono già in 2D."
 
 #. Tag: title
-#: performance_tips.xml:136
+#: performance_tips.xml:138
 #, no-c-format
 msgid "Tuning your configuration"
 msgstr "Mettere a punto la configurazione"
 
 #. Tag: para
-#: performance_tips.xml:138
+#: performance_tips.xml:140
 #, no-c-format
 msgid ""
-"These tips are taken from Kevin Neufeld's presentation \"Tips for the "
-"PostGIS Power User\" at the FOSS4G 2007 conference. Depending on your use of "
-"PostGIS (for example, static data and complex analysis vs frequently updated "
-"data and lots of users) these changes can provide significant speedups to "
-"your queries."
+"Tuning for PostGIS is much like tuning for any PostgreSQL workload. The only "
+"additional note to keep in mind is that geometries and rasters are heavy so "
+"memory related optimizations generally have more of an impact on PostGIS "
+"than other types of PostgreSQL queries."
 msgstr ""
-"Questi consigli sono tratti dalla presentazione di Kevin Neufeld  \"Tips for "
-"the PostGIS Power User\" alla conferenza FOSS4G 2007. A seconda del contesto "
-"in cui viene usato PostGIS (per esempio dati statici e analisi complesse "
-"piuttosto che update frequenti e numerosi utenti) questi cambiamenti possono "
-"significare un significativo aumento della velocità delle query."
 
 #. Tag: para
-#: performance_tips.xml:144
+#: performance_tips.xml:143
 #, no-c-format
 msgid ""
-"For a more tips (and better formatting), the original presentation is at "
-"<ulink url=\"http://2007.foss4g.org/presentations/view.php?"
-"abstract_id=117\"> http://2007.foss4g.org/presentations/view.php?"
-"abstract_id=117</ulink>."
+"For general details about optimizing PostgreSQL, refer to <ulink url="
+"\"https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server\">Tuning "
+"your PostgreSQL Server</ulink>."
 msgstr ""
-"Per più consigli (e una formattazione migliore) la presentazione originale è "
-"consultabile a <ulink url=\"http://2007.foss4g.org/presentations/view.php?"
-"abstract_id=117\"> http://2007.foss4g.org/presentations/view.php?"
-"abstract_id=117</ulink>."
+
+#. Tag: para
+#: performance_tips.xml:145
+#, no-c-format
+msgid ""
+"For PostgreSQL 9.4+ all these can be set at the server level without "
+"touching postgresql.conf or postgresql.auto.conf by using the <code>ALTER "
+"SYSTEM..</code> command."
+msgstr ""
+
+#. Tag: programlisting
+#: performance_tips.xml:147
+#, no-c-format
+msgid ""
+"ALTER SYSTEM SET work_mem = '256MB';\n"
+"-- this will force, non-startup configs to take effect for new connections\n"
+"SELECT pg_reload_conf();\n"
+"-- show current setting value\n"
+"-- use SHOW ALL to see all settings\n"
+"SHOW work_mem;"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:149
+#, no-c-format
+msgid ""
+"In addition to these settings, PostGIS also has some custom settings which "
+"you can find listed in <xref linkend=\"PostGIS_GUC\"/>."
+msgstr ""
 
 #. Tag: title
-#: performance_tips.xml:151
+#: performance_tips.xml:152
 #, no-c-format
 msgid "Startup"
 msgstr "Startup"
 
 #. Tag: para
-#: performance_tips.xml:153
+#: performance_tips.xml:154
 #, no-c-format
 msgid "These settings are configured in postgresql.conf:"
 msgstr "Queste impostazioni sono definite in postgresql.conf:"
 
 #. Tag: ulink
-#: performance_tips.xml:158
-#, no-c-format
-msgid "checkpoint_segments"
-msgstr "checkpoint_segments"
-
-#. Tag: para
-#: performance_tips.xml:163
-#, no-c-format
-msgid ""
-"Maximum number of log file segments between automatic WAL checkpoints (each "
-"segment is normally 16MB); default is 3"
-msgstr ""
-"Numero massimo di segmenti del log file tra checkpoint WAL (ogni segmento è "
-"normalmente 16MB); l'impostazione predefinita è 3."
-
-#. Tag: para
-#: performance_tips.xml:169
-#, no-c-format
-msgid ""
-"Set to at least 10 or 30 for databases with heavy write activity, or more "
-"for large database loads. Another article on the topic worth reading <ulink "
-"url=\"http://www.westnet.com/~gsmith/content/postgresql/chkp-bgw-83.htm"
-"\">Greg Smith: Checkpoint and Background writer</ulink>"
-msgstr ""
-"Impostare almeno su 10 o 30 per database con intensa attività di scrittura, "
-"o più quando si importa nel database grandi quantità di dati. Un altro "
-"articolo da leggere sull'argomento è <ulink url=\"http://www.westnet.com/"
-"~gsmith/content/postgresql/chkp-bgw-83.htm\">Greg Smith: Checkpoint and "
-"Background writer</ulink> "
-
-#. Tag: para
-#: performance_tips.xml:175
-#, no-c-format
-msgid "Possibly store the xlog on a separate disk device"
-msgstr "Se possibile, salvare il xlog su un disco separato"
-
-#. Tag: ulink
-#: performance_tips.xml:182
+#: performance_tips.xml:159
 #, no-c-format
 msgid "constraint_exclusion"
 msgstr "constraint_exclusion"
 
 #. Tag: para
-#: performance_tips.xml:187
-#, no-c-format
-msgid ""
-"Default: off (prior to PostgreSQL 8.4 and for PostgreSQL 8.4+ is set to "
-"partition)"
-msgstr ""
-"Il valore di default è \"off\" per versioni inferiori alla 8.4 e \"partition"
-"\" a partire dalla 8.4()"
+#: performance_tips.xml:164
+#, fuzzy, no-c-format
+msgid "Default: partition"
+msgstr "Default: 1MB"
 
 #. Tag: para
-#: performance_tips.xml:192
-#, no-c-format
+#: performance_tips.xml:169
+#, fuzzy, no-c-format
 msgid ""
-"This is generally used for table partitioning. If you are running PostgreSQL "
-"versions below 8.4, set to \"on\" to ensure the query planner will optimize "
-"as desired. As of PostgreSQL 8.4, the default for this is set to \"partition"
-"\" which is ideal for PostgreSQL 8.4 and above since it will force the "
-"planner to only analyze tables for constraint consideration if they are in "
-"an inherited hierarchy and not pay the planner penalty otherwise."
+"This is generally used for table partitioning. The default for this is set "
+"to \"partition\" which is ideal for PostgreSQL 8.4 and above since it will "
+"force the planner to only analyze tables for constraint consideration if "
+"they are in an inherited hierarchy and not pay the planner penalty otherwise."
 msgstr ""
 "Generalmente usato per il partizionamento delle tabelle. Con versioni di "
 "PostgreSQL inferiori alla 8.4 impostare il parametro su \"on\" per "
@@ -486,31 +472,61 @@ msgstr ""
 "penalizzate dal planner in caso contrario."
 
 #. Tag: ulink
-#: performance_tips.xml:202
+#: performance_tips.xml:178
 #, no-c-format
 msgid "shared_buffers"
 msgstr "shared_buffers"
 
 #. Tag: para
-#: performance_tips.xml:207
+#: performance_tips.xml:183
 #, no-c-format
-msgid "Default: ~32MB"
-msgstr "Default: ~32MB"
+msgid "Default: ~128MB in PostgreSQL 9.6"
+msgstr ""
 
 #. Tag: para
-#: performance_tips.xml:212
+#: performance_tips.xml:188
 #, no-c-format
-msgid "Set to about 1/3 to 3/4 of available RAM"
-msgstr "Impostare da 1/3 a 3/4 della RAM disponibile."
+msgid ""
+"Set to about 25% to 40% of available RAM. On windows you may not be able to "
+"set as high."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:195
+#, fuzzy, no-c-format
+msgid ""
+"<ulink url=\"https://www.postgresql.org/docs/current/static/runtime-config-"
+"resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</ulink> This "
+"setting is only available for PostgreSQL 9.4+. For PostgreSQL 9.6+ this "
+"setting has additional importance in that it controls the max number of "
+"processes you can have for parallel queries."
+msgstr ""
+"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+"resource.html#GUC-WORK-MEM\">work_mem</ulink> (memoria usata per operazioni "
+"di ordinamento e query complesse)"
+
+#. Tag: para
+#: performance_tips.xml:203
+#, fuzzy, no-c-format
+msgid "Default: 8"
+msgstr "Default: 1MB"
+
+#. Tag: para
+#: performance_tips.xml:208
+#, no-c-format
+msgid ""
+"Sets the maximum number of background processes that the system can support. "
+"This parameter can only be set at server start."
+msgstr ""
 
 #. Tag: title
-#: performance_tips.xml:220
+#: performance_tips.xml:218
 #, no-c-format
 msgid "Runtime"
 msgstr "Runtime"
 
 #. Tag: para
-#: performance_tips.xml:222
+#: performance_tips.xml:220
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
@@ -522,20 +538,20 @@ msgstr ""
 "di ordinamento e query complesse)"
 
 #. Tag: para
-#: performance_tips.xml:228
-#, no-c-format
-msgid "Default: 1MB"
+#: performance_tips.xml:226
+#, fuzzy, no-c-format
+msgid "Default: 1-4MB"
 msgstr "Default: 1MB"
 
 #. Tag: para
-#: performance_tips.xml:233
+#: performance_tips.xml:231
 #, no-c-format
 msgid "Adjust up for large dbs, complex queries, lots of RAM"
 msgstr ""
 "Aumentare il valore per grandi database, query complesse, abbondanza di RAM"
 
 #. Tag: para
-#: performance_tips.xml:238
+#: performance_tips.xml:236
 #, no-c-format
 msgid "Adjust down for many concurrent users or low RAM."
 msgstr ""
@@ -543,19 +559,19 @@ msgstr ""
 "disponibilità di RAM ridotta"
 
 #. Tag: para
-#: performance_tips.xml:243
+#: performance_tips.xml:241
 #, no-c-format
 msgid "If you have lots of RAM and few developers:"
 msgstr "Nel caso di molta RAM e pochi programmatori:"
 
 #. Tag: programlisting
-#: performance_tips.xml:245
-#, no-c-format
-msgid "SET work_mem TO 1200000;"
+#: performance_tips.xml:243
+#, fuzzy, no-c-format
+msgid "SET work_mem TO '256MB';"
 msgstr "SET work_mem TO 1200000;"
 
 #. Tag: para
-#: performance_tips.xml:250
+#: performance_tips.xml:248
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
@@ -567,13 +583,13 @@ msgstr ""
 "per VACUUM, CREATE INDEX, etc.)"
 
 #. Tag: para
-#: performance_tips.xml:256
-#, no-c-format
-msgid "Default: 16MB"
+#: performance_tips.xml:254
+#, fuzzy, no-c-format
+msgid "Default: 16-64MB"
 msgstr "Default: 16MB"
 
 #. Tag: para
-#: performance_tips.xml:261
+#: performance_tips.xml:259
 #, no-c-format
 msgid "Generally too low - ties up I/O, locks objects while swapping memory"
 msgstr ""
@@ -581,10 +597,10 @@ msgstr ""
 "oggetti quando viene impegnata la memoria swap."
 
 #. Tag: para
-#: performance_tips.xml:266
-#, no-c-format
+#: performance_tips.xml:264
+#, fuzzy, no-c-format
 msgid ""
-"Recommend 32MB to 256MB on production servers w/lots of RAM, but depends on "
+"Recommend 32MB to 1GB on production servers w/lots of RAM, but depends on "
 "the # of concurrent users. If you have lots of RAM and few developers:"
 msgstr ""
 "Si raccomandano 32MB oppure 256MB su server di produzione con molta RAM, ma "
@@ -592,7 +608,105 @@ msgstr ""
 "sviluppatori:"
 
 #. Tag: programlisting
-#: performance_tips.xml:269
-#, no-c-format
-msgid "SET maintainence_work_mem TO 1200000;"
+#: performance_tips.xml:267
+#, fuzzy, no-c-format
+msgid "SET maintenance_work_mem TO '1GB';"
 msgstr "SET maintainence_work_mem TO 1200000;"
+
+#. Tag: para
+#: performance_tips.xml:272
+#, no-c-format
+msgid ""
+"<ulink url=\"https://www.postgresql.org/docs/current/static/runtime-config-"
+"resource.html#GUC-MAX-PARALLEL-WORKERS-PER-GATHER"
+"\">max_parallel_workers_per_gather</ulink> This setting is only available "
+"for PostgreSQL 9.6+ and will only affect PostGIS 2.3+, since only PostGIS "
+"2.3+ supports parallel queries. If set to higher than 0, then some queries "
+"such as those involving relation functions like <code>ST_Intersects</code> "
+"can use multiple processes and can run more than twice as fast when doing "
+"so. If you have a lot of processors to spare, you should change the value of "
+"this to as many processors as you have. Also make sure to bump up "
+"<code>max_worker_processes</code> to at least as high as this number."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:282
+#, fuzzy, no-c-format
+msgid "Default: 0"
+msgstr "Default: 1MB"
+
+#. Tag: para
+#: performance_tips.xml:287
+#, no-c-format
+msgid ""
+"Sets the maximum number of workers that can be started by a single "
+"<varname>Gather</varname> node. Parallel workers are taken from the pool of "
+"processes established by <varname>max_worker_processes</varname>. Note that "
+"the requested number of workers may not actually be available at run time. "
+"If this occurs, the plan will run with fewer workers than expected, which "
+"may be inefficient. Setting this value to 0, which is the default, disables "
+"parallel query execution."
+msgstr ""
+
+#~ msgid "Default: ~32MB"
+#~ msgstr "Default: ~32MB"
+
+#~ msgid "Set to about 1/3 to 3/4 of available RAM"
+#~ msgstr "Impostare da 1/3 a 3/4 della RAM disponibile."
+
+#~ msgid ""
+#~ "These tips are taken from Kevin Neufeld's presentation \"Tips for the "
+#~ "PostGIS Power User\" at the FOSS4G 2007 conference. Depending on your use "
+#~ "of PostGIS (for example, static data and complex analysis vs frequently "
+#~ "updated data and lots of users) these changes can provide significant "
+#~ "speedups to your queries."
+#~ msgstr ""
+#~ "Questi consigli sono tratti dalla presentazione di Kevin Neufeld  \"Tips "
+#~ "for the PostGIS Power User\" alla conferenza FOSS4G 2007. A seconda del "
+#~ "contesto in cui viene usato PostGIS (per esempio dati statici e analisi "
+#~ "complesse piuttosto che update frequenti e numerosi utenti) questi "
+#~ "cambiamenti possono significare un significativo aumento della velocità "
+#~ "delle query."
+
+#~ msgid ""
+#~ "For a more tips (and better formatting), the original presentation is at "
+#~ "<ulink url=\"http://2007.foss4g.org/presentations/view.php?"
+#~ "abstract_id=117\"> http://2007.foss4g.org/presentations/view.php?"
+#~ "abstract_id=117</ulink>."
+#~ msgstr ""
+#~ "Per più consigli (e una formattazione migliore) la presentazione "
+#~ "originale è consultabile a <ulink url=\"http://2007.foss4g.org/"
+#~ "presentations/view.php?abstract_id=117\"> http://2007.foss4g.org/"
+#~ "presentations/view.php?abstract_id=117</ulink>."
+
+#~ msgid "checkpoint_segments"
+#~ msgstr "checkpoint_segments"
+
+#~ msgid ""
+#~ "Maximum number of log file segments between automatic WAL checkpoints "
+#~ "(each segment is normally 16MB); default is 3"
+#~ msgstr ""
+#~ "Numero massimo di segmenti del log file tra checkpoint WAL (ogni segmento "
+#~ "è normalmente 16MB); l'impostazione predefinita è 3."
+
+#~ msgid ""
+#~ "Set to at least 10 or 30 for databases with heavy write activity, or more "
+#~ "for large database loads. Another article on the topic worth reading "
+#~ "<ulink url=\"http://www.westnet.com/~gsmith/content/postgresql/chkp-"
+#~ "bgw-83.htm\">Greg Smith: Checkpoint and Background writer</ulink>"
+#~ msgstr ""
+#~ "Impostare almeno su 10 o 30 per database con intensa attività di "
+#~ "scrittura, o più quando si importa nel database grandi quantità di dati. "
+#~ "Un altro articolo da leggere sull'argomento è <ulink url=\"http://www."
+#~ "westnet.com/~gsmith/content/postgresql/chkp-bgw-83.htm\">Greg Smith: "
+#~ "Checkpoint and Background writer</ulink> "
+
+#~ msgid "Possibly store the xlog on a separate disk device"
+#~ msgstr "Se possibile, salvare il xlog su un disco separato"
+
+#~ msgid ""
+#~ "Default: off (prior to PostgreSQL 8.4 and for PostgreSQL 8.4+ is set to "
+#~ "partition)"
+#~ msgstr ""
+#~ "Il valore di default è \"off\" per versioni inferiori alla 8.4 e "
+#~ "\"partition\" a partire dalla 8.4()"

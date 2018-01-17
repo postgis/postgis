@@ -71,7 +71,7 @@
 
 typedef struct raster_loader_config {
 	/* raster filename */
-	int rt_file_count;
+	uint32_t rt_file_count;
 	char **rt_file;
 	char **rt_filename;
 
@@ -89,7 +89,7 @@ typedef struct raster_loader_config {
 	char *file_column_name;
 
 	/* overview factor */
-	int overview_count;
+	uint32_t overview_count;
 	int *overview;
 	char **overview_table;
 
@@ -104,7 +104,7 @@ typedef struct raster_loader_config {
 
 	/* bands to extract */
 	int *nband; /* 1-based */
-	int nband_count;
+	uint32_t nband_count;
 
 	/* tile size */
 	int tile_size[2];
@@ -173,7 +173,7 @@ typedef struct rasterinfo_t {
 
 	/* number of bands */
 	int *nband; /* 1-based */
-	int nband_count;
+	uint32_t nband_count;
 
 	/* array of pixeltypes */
 	GDALDataType *gdalbandtype;

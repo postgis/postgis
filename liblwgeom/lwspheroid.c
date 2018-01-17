@@ -144,7 +144,7 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 	geod_init(&gd, spheroid->a, spheroid->f);
 	struct geod_polygon poly;
 	geod_polygon_init(&poly, 0);
-	int i;
+	uint32_t i;
 	double area; /* returned polygon area */
 	POINT2D p; /* long/lat units are degrees */
 
@@ -487,7 +487,7 @@ static double spheroid_striparea(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POI
 	LWDEBUGF(4, "tE %.12g", tE);
 
 	ratio = (bE + tE)/tE;
-	sign = signum(B.lon - A.lon);
+	sign = SIGNUM(B.lon - A.lon);
 	return (baseArea + topArea / ratio) * sign;
 }
 
@@ -511,7 +511,7 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 	/* Get the raw min/max values for the latitudes */
 	ptarray_calculate_gbox_cartesian(pa, &gbox2d);
 
-	if ( signum(gbox2d.ymin) != signum(gbox2d.ymax) )
+	if ( SIGNUM(gbox2d.ymin) != SIGNUM(gbox2d.ymax) )
 		lwerror("ptarray_area_spheroid: cannot handle ptarray that crosses equator");
 
 	/* Geodetic bbox < 0.0 implies geometry is entirely in southern hemisphere */
@@ -660,7 +660,7 @@ double lwgeom_area_spheroid(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 	if ( type == POLYGONTYPE )
 	{
 		LWPOLY *poly = (LWPOLY*)lwgeom;
-		int i;
+		uint32_t i;
 		double area = 0.0;
 
 		/* Just in case there's no rings */
@@ -682,7 +682,7 @@ double lwgeom_area_spheroid(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 	if ( type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE )
 	{
 		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom;
-		int i;
+		uint32_t i;
 		double area = 0.0;
 
 		for ( i = 0; i < col->ngeoms; i++ )

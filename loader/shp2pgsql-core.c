@@ -2,14 +2,14 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
- * 
+ *
  * Copyright (C) 2008 OpenGeo.org
  * Copyright (C) 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
  *
- * Maintainer: Paul Ramsey <pramsey@opengeo.org>
+ * Maintainer: Paul Ramsey <pramsey@cleverelephant.ca>
  *
  **********************************************************************/
 
@@ -56,7 +56,7 @@ int GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geomet
 
 
 /* Return allocated string containing UTF8 string converted from encoding fromcode */
-static int 
+static int
 utf8(const char *fromcode, char *inputbuf, char **outputbuf)
 {
 	iconv_t cd;
@@ -80,7 +80,7 @@ utf8(const char *fromcode, char *inputbuf, char **outputbuf)
 	outputptr = *outputbuf;
 
 	/* Does this string convert cleanly? */
-	if ( iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1 )
+	if ( iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == (size_t)-1 )
 	{
 #ifdef HAVE_ICONVCTL
 		int on = 1;
@@ -248,7 +248,7 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, in
 	{
 		/* Create a ptarray containing a single point */
 		POINTARRAY *pa = ptarray_construct_empty(state->has_z, state->has_m, 1);
-		
+
 		/* Generate the point */
 		point4d.x = obj->padfX[u];
 		point4d.y = obj->padfY[u];
@@ -294,7 +294,7 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, in
 
 	/* Free all of the allocated items */
 	lwgeom_free(lwgeom);
-	
+
 	/* Return the string - everything ok */
 	*geometry = mem;
 
@@ -524,9 +524,9 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		pt2.x = inner->list[1].x;
 		pt2.y = inner->list[1].y;
 
-		/* 
-		* If we assume that the case of the "big polygon w/o hole 
-		* containing little polygon w/ hold" is ordered so that the 
+		/*
+		* If we assume that the case of the "big polygon w/o hole
+		* containing little polygon w/ hold" is ordered so that the
 		* big polygon comes first, then checking the list in reverse
 		* will assign the little polygon's hole to the little polygon
 		* w/o a lot of extra fancy containment logic here
@@ -563,11 +563,11 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 	}
 
 	*Out = Outer;
-	/* 
+	/*
 	* Only free the containing Inner array, not the ring elements, because
 	* the rings are now owned by the linked lists in the Outer array elements.
 	*/
-	free(Inner); 
+	free(Inner);
 
 	return out_index;
 }
@@ -639,7 +639,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	for (pi = 0; pi < polygon_total; pi++)
 	{
 		LWPOLY *lwpoly = lwpoly_construct_empty(state->from_srid, state->has_z, state->has_m);
-		
+
 		Ring *polyring;
 		int ring_index = 0;
 
@@ -703,6 +703,9 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 
 	if ( !mem )
 	{
+		/* Free the linked list of rings */
+		ReleasePolygons(Outer, polygon_total);
+
 		snprintf(state->message, SHPLOADERMSGLEN, "unable to write geometry");
 		return SHPLOADERERR;
 	}
@@ -729,7 +732,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 void
 strtolower(char *s)
 {
-	int j;
+	size_t j;
 
 	for (j = 0; j < strlen(s); j++)
 		s[j] = tolower(s[j]);
@@ -784,6 +787,8 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 	state->precisions = NULL;
 	state->col_names = NULL;
 	state->field_names = NULL;
+	state->num_fields = 0;
+	state->pgfieldtypes = NULL;
 
 	state->from_srid = config->shp_sr_id;
 	state->to_srid = config->sr_id;
@@ -856,8 +861,8 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 		return SHPLOADERERR;
 	}
-	
-		
+
+
 	/* Open the column map if one was specified */
 	if (state->config->column_map_filename)
 	{
@@ -865,7 +870,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		                  &state->column_map, state->message, SHPLOADERMSGLEN);
 		if (!ret) return SHPLOADERERR;
 	}
-	
+
 	/* User hasn't altered the default encoding preference... */
 	if ( strcmp(state->config->encoding, ENCODING_DEFAULT) == 0 )
 	{
@@ -1023,7 +1028,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 			break;
 		}
-		
+
 		/* Force Z/M-handling if configured to do so */
 		switch(state->config->force_output)
 		{
@@ -1075,6 +1080,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 	/* Get the field information from the DBF */
 	state->num_fields = DBFGetFieldCount(state->hDBFHandle);
+
 	state->num_records = DBFGetRecordCount(state->hDBFHandle);
 
 	/* Allocate storage for field information */
@@ -1096,6 +1102,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		state->types[j] = type;
 		state->widths[j] = field_width;
 		state->precisions[j] = field_precision;
+/*		fprintf(stderr, "XXX %s width:%d prec:%d\n", name, field_width, field_precision); */
 
 		if (state->config->encoding)
 		{
@@ -1121,7 +1128,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			strncpy(name, utf8str, MAXFIELDNAMELEN);
 			free(utf8str);
 		}
-		
+
 		/* If a column map file has been passed in, use this to create the postgresql field name from
 		   the dbf column name */
 		{
@@ -1165,71 +1172,71 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		{
 			if (strcmp(state->field_names[z], name) == 0)
 			{
-				strncat(name, "__", MAXFIELDNAMELEN);
-				snprintf(name + strlen(name), MAXFIELDNAMELEN, "%i", j);
+				strncat(name, "__", MAXFIELDNAMELEN - 1);
+				snprintf(name + strlen(name),
+					 MAXFIELDNAMELEN - 1 - strlen(name),
+					 "%i",
+					 j);
 				break;
 			}
 		}
 
-		state->field_names[j] = malloc(strlen(name) + 1);
-		strcpy(state->field_names[j], name);
+		state->field_names[j] = strdup(name);
 
 		/* Now generate the PostgreSQL type name string and width based upon the shapefile type */
 		switch (state->types[j])
 		{
 		case FTString:
-			state->pgfieldtypes[j] = malloc(strlen("varchar") + 1);
-			strcpy(state->pgfieldtypes[j], "varchar");
+			state->pgfieldtypes[j] = strdup("varchar");
 			break;
 
 		case FTDate:
-			state->pgfieldtypes[j] = malloc(strlen("date") + 1);
-			strcpy(state->pgfieldtypes[j], "date");
+			state->pgfieldtypes[j] = strdup("date");
 			break;
 
 		case FTInteger:
 			/* Determine exact type based upon field width */
 			if (state->config->forceint4 || (state->widths[j] >=5 && state->widths[j] < 10))
 			{
-				state->pgfieldtypes[j] = malloc(strlen("int4") + 1);
-				strcpy(state->pgfieldtypes[j], "int4");	
+				state->pgfieldtypes[j] = strdup("int4");
+			}
+			else if (state->widths[j] >=10 && state->widths[j] < 19)
+			{
+				state->pgfieldtypes[j] = strdup("int8");
 			}
 			else if (state->widths[j] < 5)
 			{
-				state->pgfieldtypes[j] = malloc(strlen("int2") + 1);
-				strcpy(state->pgfieldtypes[j], "int2");
+				state->pgfieldtypes[j] = strdup("int2");
 			}
 			else
 			{
-				state->pgfieldtypes[j] = malloc(strlen("numeric") + 1);
-				strcpy(state->pgfieldtypes[j], "numeric");
+				state->pgfieldtypes[j] = strdup("numeric");
 			}
 			break;
 
 		case FTDouble:
 			/* Determine exact type based upon field width */
+			fprintf(stderr, "Field %s is an FTDouble with width %d and precision %d\n",
+					state->field_names[j], state->widths[j], state->precisions[j]);
 			if (state->widths[j] > 18)
 			{
-				state->pgfieldtypes[j] = malloc(strlen("numeric") + 1);
-				strcpy(state->pgfieldtypes[j], "numeric");
+				state->pgfieldtypes[j] = strdup("numeric");
 			}
 			else
 			{
-				state->pgfieldtypes[j] = malloc(strlen("float8") + 1);
-				strcpy(state->pgfieldtypes[j], "float8");
+				state->pgfieldtypes[j] = strdup("float8");
 			}
 			break;
 
 		case FTLogical:
-			state->pgfieldtypes[j] = malloc(strlen("boolean") + 1);
-			strcpy(state->pgfieldtypes[j], "boolean");
+			state->pgfieldtypes[j] = strdup("boolean");
 			break;
 
 		default:
 			snprintf(state->message, SHPLOADERMSGLEN, _("Invalid type %x in DBF file"), state->types[j]);
 			return SHPLOADERERR;
 		}
-		
+
 		strcat(state->col_names, "\"");
 		strcat(state->col_names, name);
 
@@ -1267,13 +1274,13 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 	   for handling string resizing during append */
 	sb = stringbuffer_create();
 	stringbuffer_clear(sb);
-	
+
 	/* Set the client encoding if required */
 	if (state->config->encoding)
 	{
 		stringbuffer_aprintf(sb, "SET CLIENT_ENCODING TO UTF8;\n");
 	}
-	
+
 	/* Use SQL-standard string escaping rather than PostgreSQL standard */
 	stringbuffer_aprintf(sb, "SET STANDARD_CONFORMING_STRINGS TO ON;\n");
 
@@ -1299,7 +1306,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 				                     state->config->schema, state->config->table, state->geo_col);
 			}
 
-			stringbuffer_aprintf(sb, "DROP TABLE \"%s\".\"%s\";\n", state->config->schema,
+			stringbuffer_aprintf(sb, "DROP TABLE IF EXISTS \"%s\".\"%s\";\n", state->config->schema,
 			                     state->config->table);
 		}
 		else
@@ -1310,7 +1317,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 				                     state->config->table, state->geo_col);
 			}
 
-			stringbuffer_aprintf(sb, "DROP TABLE \"%s\";\n", state->config->table);
+			stringbuffer_aprintf(sb, "DROP TABLE IF EXISTS \"%s\";\n", state->config->table);
 		}
 	}
 
@@ -1344,7 +1351,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 
 			/* First output the raw field type string */
 			stringbuffer_aprintf(sb, "%s", state->pgfieldtypes[j]);
-			
+
 			/* Some types do have typmods though... */
 			if (!strcmp("varchar", state->pgfieldtypes[j]))
 				stringbuffer_aprintf(sb, "(%d)", state->widths[j]);
@@ -1518,8 +1525,8 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	sb = stringbuffer_create();
 	stringbuffer_clear(sb);
 
-	/* If we are reading the DBF only and the record has been marked deleted, return deleted record status */
-	if (state->config->readshape == 0 && DBFIsRecordDeleted(state->hDBFHandle, item))
+	/* Skip deleted records */
+	if (state->hDBFHandle && DBFIsRecordDeleted(state->hDBFHandle, item))
 	{
 		*strrecord = NULL;
 		return SHPLOADERRECDELETED;
@@ -1612,10 +1619,10 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			default:
 				snprintf(state->message, SHPLOADERMSGLEN, _("Error: field %d has invalid or unknown field type (%d)"), i, state->types[i]);
 
+				/* clean up and return err */
 				SHPDestroyObject(obj);
 				stringbuffer_destroy(sbwarn);
 				stringbuffer_destroy(sb);
-
 				return SHPLOADERERR;
 			}
 
@@ -1637,6 +1644,10 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 					if ( rv == UTF8_BAD_RESULT )
 						free(utf8str);
 
+					/* clean up and return err */
+					SHPDestroyObject(obj);
+					stringbuffer_destroy(sbwarn);
+					stringbuffer_destroy(sb);
 					return SHPLOADERERR;
 				}
 				strncpy(val, utf8str, MAXVALUELEN);
@@ -1679,7 +1690,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	{
 		/* Force the locale to C */
 		char *oldlocale = setlocale(LC_NUMERIC, "C");
-		
+
 		/* Handle the case of a NULL shape */
 		if (obj->nVertices == 0)
 		{
@@ -1772,7 +1783,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 
 		/* Tidy up everything */
 		SHPDestroyObject(obj);
-		
+
 		setlocale(LC_NUMERIC, oldlocale);
 	}
 
@@ -1866,7 +1877,6 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 {
 	/* Destroy a state object created with ShpLoaderOpenShape */
 	int i;
-	
 	if (state != NULL)
 	{
 		if (state->hSHPHandle)
@@ -1884,7 +1894,7 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 		{
 			for (i = 0; i < state->num_fields; i++)
 				free(state->pgfieldtypes[i]);
-			
+
 			free(state->pgfieldtypes);
 		}
 		if (state->types)
@@ -1898,7 +1908,7 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 
 		/* Free any column map fieldnames if specified */
 		colmap_clean(&state->column_map);
-		
+
 		/* Free the state itself */
 		free(state);
 	}

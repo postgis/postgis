@@ -9,23 +9,23 @@
 
 --------------------------------------------------------------------
 -- ST_SetValues   - Set a range of raster pixels to a value.
--- 
+--
 -- Arguments
 --
 -- rast raster    - Raster to be edited.
 -- band integer   - Band number of the raster to be edited. Default to 1.
--- x, y           - Raster coordinates of the upper left corner of the range 
+-- x, y           - Raster coordinates of the upper left corner of the range
 --                  of pixel to be edited.
 -- width, height  - Width and height of the range of pixel to be edited.
 -- val            - Value to set the range. If NULL, pixels are set to nodata.
 -- keepdestnodata - Flag indicating not to change pixels set to nodata value.
 --                  Default to FALSE.
 --
--- When x, y, width or height are out of the raster range, only the part 
+-- When x, y, width or height are out of the raster range, only the part
 -- of the range intersecting with the raster is set.
 --------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION ST_SetValues(rast raster, band int, x int, y int, width int, height int, val float8, keepdestnodata boolean)
-    RETURNS raster AS 
+    RETURNS raster AS
     $$
     DECLARE
         newraster raster := rast;
@@ -46,21 +46,21 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast raster, band int, x int, y int, wid
             RAISE NOTICE 'ST_SetValues: No raster provided. Returns NULL';
             RETURN NULL;
         END IF;
-        
+
         IF ST_IsEmpty(rast) OR ST_HasNoBand(rast, band) THEN
             RAISE NOTICE 'ST_SetValues: Empty or no band raster provided. Returns rast';
             RETURN rast;
         END IF;
-        
+
         IF newband IS NULL THEN
             newband := 1;
         END IF;
-        
+
         IF newband < 1 THEN
             RAISE NOTICE 'ST_SetValues: band out of range. Returns rast';
             RETURN rast;
         END IF;
-        
+
         IF width IS NULL OR width < 1 OR height IS NULL OR height < 1 THEN
             RAISE NOTICE 'ST_SetValues: invalid width or height. Returns rast';
             RETURN rast;
@@ -71,23 +71,23 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast raster, band int, x int, y int, wid
         END IF;
 
         newx := 1 + LEAST(GREATEST(0, oldx - 1), ST_Width(rast));
-        newwidth := GREATEST(LEAST(1 + ST_Width(rast), oldx + newwidth), 1) - newx;        
-                
+        newwidth := GREATEST(LEAST(1 + ST_Width(rast), oldx + newwidth), 1) - newx;
+
         IF y IS NULL THEN
             oldy := 1;
         END IF;
-        
+
         newy := 1 + LEAST(GREATEST(0, oldy - 1), ST_Height(rast));
         newheight := GREATEST(LEAST(1 + ST_Height(rast), oldy + newheight), 1) - newy;
 
         IF newwidth < 1 OR newheight < 1 THEN
             RETURN rast;
         END IF;
-        
+
         IF newkeepdestnodata IS NULL THEN
             newkeepdestnodata := FALSE;
         END IF;
-        
+
         IF newkeepdestnodata THEN
             IF NOT ST_BandNodataValue(rast, newband) IS NULL THEN
                 rastnodataval := ST_BandNoDataValue(rast, newband);
@@ -124,7 +124,7 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast raster, band int, x int, y int, wid
                 END LOOP;
             END LOOP;
         END IF;
-        
+
         RETURN newraster;
     END;
     $$
@@ -149,8 +149,8 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast raster, band int, x int, y int, wid
     LANGUAGE 'SQL' IMMUTABLE;
 
 --Test rasters
-CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8) 
-    RETURNS raster AS 
+CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8)
+    RETURNS raster AS
     $$
     DECLARE
     BEGIN
@@ -185,27 +185,27 @@ SELECT ST_AsBinary((pix).geom), (pix).val
 FROM (SELECT ST_PixelAsPolygons(ST_SetValues(ST_SetBandNoDataValue(ST_TestRaster(0, 0, -1), NULL), 2, 2, 2, 2, 0, TRUE)) as pix) foo
 
 --------------------------------------------------------------------
--- ST_SetValues   - Set a range of raster pixels to values copied from 
+-- ST_SetValues   - Set a range of raster pixels to values copied from
 --                  the corresponding pixels in another raster.
 -- Arguments
 --
 -- rast1 raster   - Raster to be edited.
 -- band1 integer  - Band number of the raster to be edited. Default to 1.
--- x, y           - Raster coordinates of the upper left corner of the 
+-- x, y           - Raster coordinates of the upper left corner of the
 --                  range of pixel to be edited.
 -- width, height  - Width and height of the range of pixel to be edited.
 -- rast2          - Raster values are copied from.
--- band2          - Band number of the raster values are copied from. 
--- keepdestnodata - Flag indicating not to change pixels (in the edited 
+-- band2          - Band number of the raster values are copied from.
+-- keepdestnodata - Flag indicating not to change pixels (in the edited
 --                  raster) set to nodata value. Default to FALSE.
--- keepsourcetnodata - Flag indicating not to copy pixels (from the source 
+-- keepsourcetnodata - Flag indicating not to copy pixels (from the source
 --                  raster) set to nodata value. Default to FALSE.
 --
--- When x, y, width or height are out of the raster range, only the part 
+-- When x, y, width or height are out of the raster range, only the part
 -- of the range intersecting with the raster is set.
 --------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION ST_SetValues(rast1 raster, band1 int, x int, y int, width int, height int, rast2 raster, band2 int, keepdestnodata boolean, keepsourcenodata boolean)
-    RETURNS raster AS 
+    RETURNS raster AS
     $$
     DECLARE
         newraster raster := rast1;
@@ -232,12 +232,12 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast1 raster, band1 int, x int, y int, w
             RAISE NOTICE 'ST_SetValues: No raster provided. Return NULL';
             RETURN NULL;
         END IF;
-        
+
         IF ST_IsEmpty(rast1) OR ST_HasNoBand(rast1, band1) THEN
             RAISE NOTICE 'ST_SetValues: Empty or no band destination raster provided. Returns rast1';
             RETURN rast1;
         END IF;
-        
+
         IF  rast2 IS NULL OR ST_IsEmpty(rast2) OR ST_HasNoBand(rast2, band2) THEN
             RAISE NOTICE 'ST_SetValues: Empty or no band source raster provided. Returns rast1';
             RETURN rast1;
@@ -246,7 +246,7 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast1 raster, band1 int, x int, y int, w
         IF newband1 IS NULL THEN
             newband1 := 1;
         END IF;
-        
+
         IF newband1 < 1 THEN
             RAISE NOTICE 'ST_SetValues: band1 out of range. Returns rast';
             RETURN rast1;
@@ -255,29 +255,29 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast1 raster, band1 int, x int, y int, w
         IF newband2 IS NULL THEN
             newband2 := 1;
         END IF;
-        
+
         IF newband2 < 1 THEN
             RAISE NOTICE 'ST_SetValues: band2 out of range. Returns rast';
             RETURN rast1;
         END IF;
-        
+
         IF x IS NULL THEN
             oldx := 1;
         END IF;
 
         newx := 1 + LEAST(GREATEST(0, oldx - 1), ST_Width(rast1));
         newwidth := GREATEST(LEAST(1 + ST_Width(rast1), oldx + newwidth), 1) - newx;
-        oldx := newx;      
-                
+        oldx := newx;
+
         IF y IS NULL THEN
             oldy := 1;
         END IF;
-        
+
 --RAISE NOTICE 'aaa oldy=%, newheight=%', oldy, newheight;
 
         newy := 1 + LEAST(GREATEST(0, oldy - 1), ST_Height(rast1));
         newheight := GREATEST(LEAST(1 + ST_Height(rast1), oldy + newheight), 1) - newy;
-        oldy := newy;      
+        oldy := newy;
 
 --RAISE NOTICE 'bbb newx=%, newy=%', newx, newy;
 --RAISE NOTICE 'ccc newwidth=%, newheight=%', newwidth, newheight;
@@ -287,14 +287,14 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast1 raster, band1 int, x int, y int, w
 
         x2 := ST_World2RasterCoordX(rast1, ST_Raster2WorldCoordX(rast2, 1, 1), ST_Raster2WorldCoordY(rast2, 1, 1));
         y2 := ST_World2RasterCoordY(rast1, ST_Raster2WorldCoordY(rast2, 1, 1), ST_Raster2WorldCoordY(rast2, 1, 1));
-    
+
 --RAISE NOTICE '111 x2=%, y2=%', x2, y2;
 
         newx := x2 + LEAST(GREATEST(0, oldx - x2), ST_Width(rast2));
-        newwidth := GREATEST(LEAST(x2 + ST_Width(rast2), oldx + newwidth), x2) - newx; 
+        newwidth := GREATEST(LEAST(x2 + ST_Width(rast2), oldx + newwidth), x2) - newx;
 
         newy := y2 + LEAST(GREATEST(0, oldy - y2), ST_Height(rast2));
-        newheight := GREATEST(LEAST(y2 + ST_Height(rast2), oldy + newheight), y2) - newy; 
+        newheight := GREATEST(LEAST(y2 + ST_Height(rast2), oldy + newheight), y2) - newy;
 
         IF newwidth < 1 OR newheight < 1 THEN
             RETURN rast1;
@@ -306,7 +306,7 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast1 raster, band1 int, x int, y int, w
         IF newkeepdestnodata IS NULL THEN
             newkeepdestnodata := FALSE;
         END IF;
-        
+
         IF newkeepdestnodata THEN
             IF NOT ST_BandNodataValue(rast1, newband1) IS NULL THEN
                 rast1nodataval := ST_BandNoDataValue(rast1, newband1);
@@ -322,7 +322,7 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast1 raster, band1 int, x int, y int, w
         IF newkeepsourcenodata IS NULL THEN
             newkeepsourcenodata := FALSE;
         END IF;
-        
+
         IF newkeepsourcenodata THEN
             IF NOT ST_BandNodataValue(rast2, newband2) IS NULL THEN
                 rast2nodataval := ST_BandNoDataValue(rast2, newband2);

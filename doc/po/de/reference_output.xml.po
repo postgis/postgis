@@ -1,0 +1,2374 @@
+# SOME DESCRIPTIVE TITLE.
+# 
+# Translators:
+# Andreas Schild <andreas.schild@bfw.gv.at>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: PostGIS\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2017-09-11 22:04+0000\n"
+"PO-Revision-Date: 2017-09-12 12:04+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"Language-Team: German (http://www.transifex.com/postgis/postgis/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Tag: title
+#: reference_output.xml:4
+#, no-c-format
+msgid "Geometry Outputs"
+msgstr "Geometrie Ausgabe"
+
+#. Tag: refname
+#: reference_output.xml:7
+#, no-c-format
+msgid "ST_AsBinary"
+msgstr "ST_AsBinary"
+
+#. Tag: refpurpose
+#: reference_output.xml:8
+#, no-c-format
+msgid ""
+"Return the Well-Known Binary (WKB) representation of the geometry/geography "
+"without SRID meta data."
+msgstr "Gibt die Well-known-Binary(WKB)-Darstellung der Geometrie/Geographie ohne die SRID Metadaten zurück."
+
+#. Tag: funcsynopsis
+#: reference_output.xml:12
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>bytea "
+"<function>ST_AsBinary</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>text "
+"</type><parameter>NDR_or_XDR</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> "
+"<paramdef><type>geography </type> <parameter>g1</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>bytea "
+"<function>ST_AsBinary</function></funcdef> <paramdef><type>geography </type>"
+" <parameter>g1</parameter></paramdef> <paramdef><type>text "
+"</type><parameter>NDR_or_XDR</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> <paramdef><type>geography </type> <parameter>g1</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> <paramdef><type>geography </type> <parameter>g1</parameter></paramdef> <paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef> </funcprototype>"
+
+#. Tag: title
+#: reference_output.xml:35 reference_output.xml:106 reference_output.xml:154
+#: reference_output.xml:207 reference_output.xml:283 reference_output.xml:384
+#: reference_output.xml:485 reference_output.xml:541 reference_output.xml:599
+#: reference_output.xml:671 reference_output.xml:715 reference_output.xml:781
+#: reference_output.xml:828 reference_output.xml:950 reference_output.xml:999
+#: reference_output.xml:1039 reference_output.xml:1094
+#, no-c-format
+msgid "Description"
+msgstr "Beschreibung"
+
+#. Tag: para
+#: reference_output.xml:37
+#, no-c-format
+msgid ""
+"Returns the Well-Known Binary representation of the geometry. There are 2 "
+"variants of the function. The first variant takes no endian encoding "
+"parameter and defaults to server machine endian. The second variant takes a "
+"second argument denoting the encoding - using little-endian ('NDR') or big-"
+"endian ('XDR') encoding."
+msgstr "Gibt die Well-known Binary Darstellung der Geometrie aus. Die Funktion hat 2 Varianten. Die erste Variante nimmt einen nicht als Endian kodierten Parameter entgegen und setzt diesen in das Endian der Rechnerarchitektur um. Die zweite Variante nimmt ein zweites Argument, welches  die Zeichenkodierung festlegt - nämlich Little-Endian ('NDR') oder Big-Endian ('XDR') Zeichenkodierung."
+
+#. Tag: para
+#: reference_output.xml:40 reference_output.xml:158
+#, no-c-format
+msgid ""
+"This is useful in binary cursors to pull data out of the database without "
+"converting it to a string representation."
+msgstr "Dies ist nützlich mit binären Cursor, um Daten aus der Datenbank zu holen ohne dass diese in eine Zeichenkette-Darstellung konvertiert werden."
+
+#. Tag: para
+#: reference_output.xml:44
+#, no-c-format
+msgid ""
+"The WKB spec does not include the SRID. To get the WKB with SRID format use "
+"ST_AsEWKB"
+msgstr "Die WKB Spezifikation bezieht die SRID nicht mit ein. Um eine WKB-Darstellung im SRID-Format zu erhalten verwenden Sie bitte ST_AsEWKB."
+
+#. Tag: para
+#: reference_output.xml:47
+#, no-c-format
+msgid ""
+"ST_AsBinary is the reverse of <xref linkend=\"ST_GeomFromWKB\"/> for "
+"geometry. Use <xref linkend=\"ST_GeomFromWKB\"/> to convert to a postgis "
+"geometry from ST_AsBinary representation."
+msgstr "ST_AsBinary ist das Gegenstück von <xref linkend=\"ST_GeomFromWKB\"/> für Geometrie. Verwenden Sie <xref linkend=\"ST_GeomFromWKB\"/> um eine ST_AsBinary Darstellung in eine PostGIS Geometrie zu konvertieren."
+
+#. Tag: para
+#: reference_output.xml:51
+#, no-c-format
+msgid ""
+"The default behavior in PostgreSQL 9.0 has been changed to output bytea in "
+"hex encoding. ST_AsBinary is the reverse of <xref "
+"linkend=\"ST_GeomFromWKB\"/> for geometry. If your GUI tools require the old"
+" behavior, then SET bytea_output='escape' in your database."
+msgstr "Das Standardverhalten von PostgreSQL 9.0 wurde dahingegen geändert, dass die Ausgabe von BYTEA jetzt in hexadezimaler Kodierung erfolgt. ST_AsBinary ist das Gegenteil von <xref linkend=\"ST_GeomFromWKB\"/> für Geometrie. Falls Ihre graphischen Werkzeuge die alte Verhaltensweise benötigen, dann führen Sie bitte SET bytea_output='excape' in Ihrer Datenbank aus."
+
+#. Tag: para
+#: reference_output.xml:55 reference_output.xml:166
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
+"introduced."
+msgstr "Erweiterung: 2.0.0 - Unterstützung für polyedrische Oberflächen, Dreiecke und TIN eingeführt."
+
+#. Tag: para
+#: reference_output.xml:56
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 support for higher coordinate dimensions was introduced."
+msgstr "Erweiterung: 2.0.0 - Unterstützung für höherdimensionale Koordinatensysteme eingeführt."
+
+#. Tag: para
+#: reference_output.xml:57
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 support for specifying endian with geography was introduced."
+msgstr "Erweiterung: 2.0.0 Unterstützung zum Festlegen des Endian beim geographischen Datentyp eingeführt."
+
+#. Tag: para
+#: reference_output.xml:58 reference_output.xml:324 reference_output.xml:428
+#, no-c-format
+msgid "Availability: 1.5.0 geography support was introduced."
+msgstr "Verfügbarkeit: 1.5.0 Unterstützung von geograpischen Koordinaten."
+
+#. Tag: para
+#: reference_output.xml:59
+#, no-c-format
+msgid ""
+"Changed: 2.0.0 Inputs to this function can not be unknown -- must be "
+"geometry. Constructs such as <code>ST_AsBinary('POINT(1 2)')</code> are no "
+"longer valid and you will get an <code>n st_asbinary(unknown) is not unique "
+"error</code>. Code like that needs to be changed to "
+"<code>ST_AsBinary('POINT(1 2)'::geometry);</code>. If that is not possible, "
+"then install <filename>legacy.sql</filename>."
+msgstr "Änderung: 2.0.0 - Eingabewerte für diese Funktion dürfen nicht \"unknown\" sein -- es muss sich um eine Geometrie handeln. Konstrukte, wie <code>ST_AsBinary('POINT(1 2)')</code>, sind nicht länger gültig und geben folgende Fehlermeldung aus: <code>n st_asbinary(unknown) is not unique error</code>. Dieser Code muss in <code>ST_AsBinary('POINT(1 2)'::geometry);</code> geändert werden. Falls dies nicht möglich ist, so installieren Sie bitte <filename>legacy.sql</filename>."
+
+#. Tag: para
+#: reference_output.xml:61 reference_output.xml:731
+#, no-c-format
+msgid "&sfs_compliant; s2.1.1.1"
+msgstr "&sfs_compliant; s2.1.1.1"
+
+#. Tag: para
+#: reference_output.xml:62
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.37"
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.37"
+
+#. Tag: para
+#: reference_output.xml:63 reference_output.xml:168 reference_output.xml:222
+#: reference_output.xml:494 reference_output.xml:733 reference_output.xml:964
+#, no-c-format
+msgid "&curve_support;"
+msgstr "&curve_support;"
+
+#. Tag: para
+#: reference_output.xml:64 reference_output.xml:169 reference_output.xml:223
+#: reference_output.xml:435 reference_output.xml:907
+#, no-c-format
+msgid "&P_support;"
+msgstr "&P_support;"
+
+#. Tag: para
+#: reference_output.xml:65 reference_output.xml:170 reference_output.xml:224
+#: reference_output.xml:436 reference_output.xml:910
+#, no-c-format
+msgid "&T_support;"
+msgstr "&T_support;"
+
+#. Tag: para
+#: reference_output.xml:66 reference_output.xml:167 reference_output.xml:221
+#: reference_output.xml:326 reference_output.xml:434 reference_output.xml:493
+#: reference_output.xml:568 reference_output.xml:905
+#, no-c-format
+msgid "&Z_support;"
+msgstr "&Z_support;"
+
+#. Tag: title
+#: reference_output.xml:71 reference_output.xml:115 reference_output.xml:175
+#: reference_output.xml:229 reference_output.xml:330 reference_output.xml:498
+#: reference_output.xml:572 reference_output.xml:628 reference_output.xml:690
+#: reference_output.xml:738 reference_output.xml:795 reference_output.xml:968
+#: reference_output.xml:1014 reference_output.xml:1055
+#: reference_output.xml:1117
+#, no-c-format
+msgid "Examples"
+msgstr "Beispiele"
+
+#. Tag: programlisting
+#: reference_output.xml:73
+#, no-c-format
+msgid ""
+"SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
+"\n"
+"                   st_asbinary\n"
+"--------------------------------\n"
+"\\001\\003\\000\\000\\000\\001\\000\\000\\000\\005\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\360?\\000\\000\\000\\000\\000\\000\n"
+"\\360?\\000\\000\\000\\000\\000\\000\\360?\\000\\000\n"
+"\\000\\000\\000\\000\\360?\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"(1 row)"
+msgstr "SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n\n                   st_asbinary\n--------------------------------\n\\001\\003\\000\\000\\000\\001\\000\\000\\000\\005\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\360?\\000\\000\\000\\000\\000\\000\n\\360?\\000\\000\\000\\000\\000\\000\\360?\\000\\000\n\\000\\000\\000\\000\\360?\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\n(1 row)"
+
+#. Tag: programlisting
+#: reference_output.xml:74
+#, no-c-format
+msgid ""
+"SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');\n"
+"                   st_asbinary\n"
+"--------------------------------\n"
+"\\000\\000\\000\\000\\003\\000\\000\\000\\001\\000\\000\\000\\005\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000?\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\n"
+"\\000\\000\\000\\000?\\360\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"(1 row)"
+msgstr "SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');\n                   st_asbinary\n--------------------------------\n\\000\\000\\000\\000\\003\\000\\000\\000\\001\\000\\000\\000\\005\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000?\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\n\\000\\000\\000\\000?\\360\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n(1 row)"
+
+#. Tag: title
+#: reference_output.xml:79 reference_output.xml:128 reference_output.xml:183
+#: reference_output.xml:236 reference_output.xml:454 reference_output.xml:576
+#: reference_output.xml:745 reference_output.xml:804 reference_output.xml:972
+#: reference_output.xml:1122
+#, no-c-format
+msgid "See Also"
+msgstr "Siehe auch"
+
+#. Tag: para
+#: reference_output.xml:80
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsTWKB\"/>, <xref "
+"linkend=\"ST_AsText\"/>,"
+msgstr ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsTWKB\"/>, <xref linkend=\"ST_AsText\"/>,"
+
+#. Tag: refname
+#: reference_output.xml:91
+#, no-c-format
+msgid "ST_AsEncodedPolyline"
+msgstr "ST_AsEncodedPolyline"
+
+#. Tag: refpurpose
+#: reference_output.xml:92
+#, no-c-format
+msgid "Returns an Encoded Polyline from a LineString geometry."
+msgstr "Erzeugt eine codierte Polylinie aus einer LineString Geometrie."
+
+#. Tag: funcprototype
+#: reference_output.xml:97
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_AsEncodedPolyline</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>precision=5</parameter></paramdef>"
+msgstr "<funcdef>text <function>ST_AsEncodedPolyline</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>precision=5</parameter></paramdef>"
+
+#. Tag: para
+#: reference_output.xml:108
+#, no-c-format
+msgid ""
+"Returns the geometry as an Encoded Polyline. This is a format very useful if"
+" you are using google maps"
+msgstr "Gibt die Geometrie als codierte Polylinie zurück. Dieses Format ist geeignet, wenn Sie Google Maps verwenden."
+
+#. Tag: para
+#: reference_output.xml:111 reference_output.xml:790
+#, no-c-format
+msgid "Availability: 2.2.0"
+msgstr "Verfügbarkeit: 2.2.0"
+
+#. Tag: para
+#: reference_output.xml:116
+#, no-c-format
+msgid "Basic"
+msgstr "Grundlegendes"
+
+#. Tag: programlisting
+#: reference_output.xml:117
+#, no-c-format
+msgid ""
+"SELECT ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));\n"
+"        --result--\n"
+"        |_p~iF~ps|U_ulLnnqC_mqNvxq`@"
+msgstr "SELECT ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));\n        --result--\n        |_p~iF~ps|U_ulLnnqC_mqNvxq`@"
+
+#. Tag: para
+#: reference_output.xml:119
+#, no-c-format
+msgid ""
+"Use in conjunction with geography linestring and geography segmentize, and "
+"put on google maps"
+msgstr "Anwendung in Verbindung mit LINESTRING und ST_Segmentize für den geographischen Datentyp, und auf Google Maps stellen"
+
+#. Tag: programlisting
+#: reference_output.xml:120
+#, no-c-format
+msgid ""
+"-- the SQL for Boston to San Francisco, segments every 100 KM\n"
+"        SELECT ST_AsEncodedPolyline(\n"
+"                ST_Segmentize(\n"
+"                        ST_GeogFromText('LINESTRING(-71.0519 42.4935,-122.4483 37.64)'),\n"
+"                                100000)::geometry) As encodedFlightPath;"
+msgstr "-- das SQL von Boston nach San Francisco, segmentiert alle 100 KM\n        SELECT ST_AsEncodedPolyline(\n                ST_Segmentize(\n                        ST_GeogFromText('LINESTRING(-71.0519 42.4935,-122.4483 37.64)'),\n                                100000)::geometry) As encodedFlightPath;"
+
+#. Tag: para
+#: reference_output.xml:123
+#, no-c-format
+msgid ""
+"javascript will look something like this where $ variable you replace with "
+"query result"
+msgstr "In JavaScript sieht dies ungefähr wie folgt aus, wobei die $ Variable durch das Abfrageergebnis ersetzt wird"
+
+#. Tag: programlisting
+#: reference_output.xml:124
+#, no-c-format
+msgid ""
+"<![CDATA[<script type=\"text/javascript\" src=\"http://maps.googleapis.com/maps/api/js?libraries=geometry\"></script>\n"
+"<script type=\"text/javascript\">\n"
+"         flightPath = new google.maps.Polyline({\n"
+"                        path:  google.maps.geometry.encoding.decodePath(\"$encodedFlightPath\"),\n"
+"                        map: map,\n"
+"                        strokeColor: '#0000CC',\n"
+"                        strokeOpacity: 1.0,\n"
+"                        strokeWeight: 4\n"
+"                });\n"
+"</script>\n"
+"        ]]>"
+msgstr "<![CDATA[<script type=\"text/javascript\" src=\"http://maps.googleapis.com/maps/api/js?libraries=geometry\"></script>\n<script type=\"text/javascript\">\n         flightPath = new google.maps.Polyline({\n                        path:  google.maps.geometry.encoding.decodePath(\"$encodedFlightPath\"),\n                        map: map,\n                        strokeColor: '#0000CC',\n                        strokeOpacity: 1.0,\n                        strokeWeight: 4\n                });\n</script>\n        ]]>"
+
+#. Tag: para
+#: reference_output.xml:129
+#, no-c-format
+msgid ", <xref linkend=\"ST_Segmentize\"/>"
+msgstr ", <xref linkend=\"ST_Segmentize\"/>"
+
+#. Tag: refname
+#: reference_output.xml:135
+#, no-c-format
+msgid "ST_AsEWKB"
+msgstr "ST_AsEWKB"
+
+#. Tag: refpurpose
+#: reference_output.xml:136
+#, no-c-format
+msgid ""
+"Return the Well-Known Binary (WKB) representation of the geometry with SRID "
+"meta data."
+msgstr "Gibt die Well-known-Binary(WKB)-Darstellung der Geometrie mit den SRID Metadaten zurück."
+
+#. Tag: funcsynopsis
+#: reference_output.xml:140
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>bytea <function>ST_AsEWKB</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>bytea "
+"<function>ST_AsEWKB</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>text "
+"</type><parameter>NDR_or_XDR</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>bytea <function>ST_AsEWKB</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsEWKB</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:155
+#, no-c-format
+msgid ""
+"Returns the Well-Known Binary representation of the geometry with SRID "
+"metadata. There are 2 variants of the function. The first variant takes no "
+"endian encoding parameter and defaults to little endian. The second variant "
+"takes a second argument denoting the encoding - using little-endian ('NDR') "
+"or big-endian ('XDR') encoding."
+msgstr "Gibt die Well-known Binary Darstellung der Geometrie mit den SRID Metadaten aus. Die Funktion hat 2 Varianten. Die erste Variante nimmt einen nicht als Endian kodierten Parameter entgegen und setzt diesen auf Little-Endian. Die zweite Variante nimmt ein zweites Argument, welches  die Zeichenkodierung festlegt - nämlich Little-Endian ('NDR') oder Big-Endian ('XDR') Zeichenkodierung."
+
+#. Tag: para
+#: reference_output.xml:161
+#, no-c-format
+msgid ""
+"The WKB spec does not include the SRID. To get the OGC WKB format use "
+"ST_AsBinary"
+msgstr "Die WKT Spezifikation bezieht die SRID nicht mit ein. Für die OGC WKB-Darstellung verwenden Sie bitte ST_AsBinary. "
+
+#. Tag: para
+#: reference_output.xml:164
+#, no-c-format
+msgid ""
+"ST_AsEWKB is the reverse of ST_GeomFromEWKB. Use ST_GeomFromEWKB to convert "
+"to a postgis geometry from ST_AsEWKB representation."
+msgstr "ST_AsEWKB ist das Gegenstück von ST_GeomFromEWKB.. Verwenden Sie ST_GeomFromEWKB um eine ST_AsEWKB Darstellung in eine PostGIS Geometrie zu konvertieren."
+
+#. Tag: programlisting
+#: reference_output.xml:177
+#, no-c-format
+msgid ""
+"SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
+"\n"
+"                   st_asewkb\n"
+"--------------------------------\n"
+"\\001\\003\\000\\000 \\346\\020\\000\\000\\001\\000\n"
+"\\000\\000\\005\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\360?\\000\\000\\000\\000\\000\\000\\360?\n"
+"\\000\\000\\000\\000\\000\\000\\360?\\000\\000\\000\\000\\000\n"
+"\\000\\360?\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"(1 row)"
+msgstr "SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n\n                   st_asewkb\n--------------------------------\n\\001\\003\\000\\000 \\346\\020\\000\\000\\001\\000\n\\000\\000\\005\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\360?\\000\\000\\000\\000\\000\\000\\360?\n\\000\\000\\000\\000\\000\\000\\360?\\000\\000\\000\\000\\000\n\\000\\360?\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n(1 row)"
+
+#. Tag: programlisting
+#: reference_output.xml:178
+#, no-c-format
+msgid ""
+"SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');\n"
+"                   st_asewkb\n"
+"--------------------------------\n"
+"\\000 \\000\\000\\003\\000\\000\\020\\346\\000\\000\\000\\001\\000\\000\\000\\005\\000\\000\\000\\000\\\n"
+"000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000?\n"
+"\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\\000\\000\n"
+"\\000\\000?\\360\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000"
+msgstr "SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');\n                   st_asewkb\n--------------------------------\n\\000 \\000\\000\\003\\000\\000\\020\\346\\000\\000\\000\\001\\000\\000\\000\\005\\000\\000\\000\\000\\\n000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000?\n\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\\000\\000\n\\000\\000?\\360\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000"
+
+#. Tag: para
+#: reference_output.xml:184
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+"linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_SRID\"/>"
+msgstr ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_SRID\"/>"
+
+#. Tag: refname
+#: reference_output.xml:189
+#, no-c-format
+msgid "ST_AsEWKT"
+msgstr "ST_AsEWKT"
+
+#. Tag: refpurpose
+#: reference_output.xml:190
+#, no-c-format
+msgid ""
+"Return the Well-Known Text (WKT) representation of the geometry with SRID "
+"meta data."
+msgstr "Gibt die Well-known-Text(WKT) Darstellung der Geometrie mit den SRID-Metadaten zurück."
+
+#. Tag: funcsynopsis
+#: reference_output.xml:194
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>text <function>ST_AsEWKT</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>text "
+"<function>ST_AsEWKT</function></funcdef> <paramdef><type>geography </type> "
+"<parameter>g1</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>text <function>ST_AsEWKT</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsEWKT</function></funcdef> <paramdef><type>geography </type> <parameter>g1</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:209
+#, no-c-format
+msgid ""
+"Returns the Well-Known Text representation of the geometry prefixed with the"
+" SRID."
+msgstr "Gibt die Well-known-Text Darstellung der Geometrie mit vorausgestellter SRID zurück."
+
+#. Tag: para
+#: reference_output.xml:212
+#, no-c-format
+msgid ""
+"The WKT spec does not include the SRID. To get the OGC WKT format use "
+"ST_AsText"
+msgstr "Die WKT Spezifikation bezieht die SRID nicht mit ein. Für die OGC WKT-Darstellung verwenden Sie bitte ST_AsText."
+
+#. Tag: para
+#: reference_output.xml:214 reference_output.xml:723
+#, no-c-format
+msgid ""
+"WKT format does not maintain precision so to prevent floating truncation, "
+"use ST_AsBinary or ST_AsEWKB format for transport."
+msgstr "Das WKT Format erhält die Genauigkeit von Fließpunktzahlen nicht. Um das Abschneiden von Kommastellen zu verhindern, benutzen Sie bitte das ST_AsBinary oder das ST_AsEWBK Format für die Übertragung."
+
+#. Tag: para
+#: reference_output.xml:218
+#, no-c-format
+msgid ""
+"ST_AsEWKT is the reverse of <xref linkend=\"ST_GeomFromEWKT\"/>. Use <xref "
+"linkend=\"ST_GeomFromEWKT\"/> to convert to a postgis geometry from "
+"ST_AsEWKT representation."
+msgstr "ST_AsEWKT ist die Umkehrfunktion von <xref linkend=\"ST_GeomFromEWKT\"/>. Verwenden Sie bitte <xref linkend=\"ST_GeomFromEWKT\"/> um eine PostGIS Geometrie aus einer ST_AsEWKT Darstellung zu erstellen."
+
+#. Tag: para
+#: reference_output.xml:220
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 support for Geography, Polyhedral surfaces, Triangles and "
+"TIN was introduced."
+msgstr "Erweiterung: Mit 2.0.0 wurde die Unterstützung für den geographischen Datentyp, polyedrische Oberflächen, Dreiecke und TIN eingeführt."
+
+#. Tag: programlisting
+#: reference_output.xml:231
+#, no-c-format
+msgid ""
+"SELECT ST_AsEWKT('0103000020E61000000100000005000000000000\n"
+"                        000000000000000000000000000000000000000000000000000000\n"
+"                        F03F000000000000F03F000000000000F03F000000000000F03\n"
+"                        F000000000000000000000000000000000000000000000000'::geometry);\n"
+"\n"
+"                   st_asewkt\n"
+"--------------------------------\n"
+"SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))\n"
+"(1 row)\n"
+"\n"
+"SELECT ST_AsEWKT('0108000080030000000000000060E30A4100000000785C0241000000000000F03F0000000018\n"
+"E20A4100000000485F024100000000000000400000000018\n"
+"E20A4100000000305C02410000000000000840')\n"
+"\n"
+"--st_asewkt---\n"
+"CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)"
+msgstr "SELECT ST_AsEWKT('0103000020E61000000100000005000000000000\n                        000000000000000000000000000000000000000000000000000000\n                        F03F000000000000F03F000000000000F03F000000000000F03\n                        F000000000000000000000000000000000000000000000000'::geometry);\n\n                   st_asewkt\n--------------------------------\nSRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))\n(1 row)\n\nSELECT ST_AsEWKT('0108000080030000000000000060E30A4100000000785C0241000000000000F03F0000000018\nE20A4100000000485F024100000000000000400000000018\nE20A4100000000305C02410000000000000840')\n\n--st_asewkt---\nCIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)"
+
+#. Tag: para
+#: reference_output.xml:237
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+"linkend=\"ST_GeomFromEWKT\"/>"
+msgstr ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
+
+#. Tag: refname
+#: reference_output.xml:246
+#, no-c-format
+msgid "ST_AsGeoJSON"
+msgstr "ST_AsGeoJSON"
+
+#. Tag: refpurpose
+#: reference_output.xml:248
+#, no-c-format
+msgid "Return the geometry as a GeoJSON element."
+msgstr "Gibt die Geometrie eines GeoJSON Elements zurück."
+
+#. Tag: funcsynopsis
+#: reference_output.xml:252
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>text <function>ST_AsGeoJSON</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype>"
+" <funcdef>text <function>ST_AsGeoJSON</function></funcdef> "
+"<paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype>"
+" <funcdef>text <function>ST_AsGeoJSON</function></funcdef> "
+"<paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef>"
+" <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype>"
+" <funcdef>text <function>ST_AsGeoJSON</function></funcdef> "
+"<paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef>"
+" <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>text <function>ST_AsGeoJSON</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsGeoJSON</function></funcdef> <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsGeoJSON</function></funcdef> <paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsGeoJSON</function></funcdef> <paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef> <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:285
+#, no-c-format
+msgid ""
+"Return the geometry as a Geometry Javascript Object Notation (GeoJSON) "
+"element. (Cf <ulink url=\"http://geojson.org/geojson-spec.html\">GeoJSON "
+"specifications 1.0</ulink>). 2D and 3D Geometries are both supported. "
+"GeoJSON only support SFS 1.1 geometry type (no curve support for example)."
+msgstr "Gibt die Geometrie als Geometrische Javascript Objekt Notation (GeoJSON) Element aus. (Vggl. <ulink url=\"http://geojson.org/geojson-spec.html\">GeoJSON specifications 1.0</ulink>). Es werden sowohl 2D- als auch 3D-Geometrien unterstützt. GeoJSON unterstützt lediglich den geometrischer Datentyp SFS 1.1 (hat z.B. keine Unterstützung für Kurven)."
+
+#. Tag: para
+#: reference_output.xml:291
+#, no-c-format
+msgid ""
+"The gj_version parameter is the major version of the GeoJSON spec. If "
+"specified, must be 1. This represents the spec version of GeoJSON."
+msgstr "Der Paramter gj_version ist die Hauptversion der GeoJSON Spezifikation. Diese muss 1 sein, wenn angegeben. Dies stellt die Version der GeoJSON Spezifikation dar."
+
+#. Tag: para
+#: reference_output.xml:293
+#, no-c-format
+msgid ""
+"The third argument may be used to reduce the maximum number of decimal "
+"places used in output (defaults to 15)."
+msgstr "Das dritte Argument kann verwendet werden um die maximale Anzahl der Dezimalstellen in der Ausgabe zu beschränken (Sandardwert ist 15)."
+
+#. Tag: para
+#: reference_output.xml:296
+#, no-c-format
+msgid ""
+"The last 'options' argument could be used to add Bbox or Crs in GeoJSON "
+"output:"
+msgstr "Mit dem letzten 'options' Argument kann eine BBox oder ein CRS zur GeoJSON Ausgabe hinzugefügt werden:"
+
+#. Tag: para
+#: reference_output.xml:300
+#, no-c-format
+msgid "0: means no option (default value)"
+msgstr "0: bedeutet keine Option (Standardwert)"
+
+#. Tag: para
+#: reference_output.xml:304
+#, no-c-format
+msgid "1: GeoJSON Bbox"
+msgstr "1: GeoJSON Bbox"
+
+#. Tag: para
+#: reference_output.xml:308
+#, no-c-format
+msgid "2: GeoJSON Short CRS (e.g EPSG:4326)"
+msgstr "2: GeoJSON CRS-Kurzform (z.B. EPSG:4326)"
+
+#. Tag: para
+#: reference_output.xml:312
+#, no-c-format
+msgid "4: GeoJSON Long CRS (e.g urn:ogc:def:crs:EPSG::4326)"
+msgstr "4: GeoJSON CRS-Langform (z.B. urn:ogc:def:crs:EPSG::4326)"
+
+#. Tag: para
+#: reference_output.xml:316
+#, no-c-format
+msgid "Version 1: ST_AsGeoJSON(geom) / precision=15 version=1 options=0"
+msgstr "Version 1: ST_AsGeoJSON(geom) / precision=15 version=1 options=0"
+
+#. Tag: para
+#: reference_output.xml:317
+#, no-c-format
+msgid "Version 2: ST_AsGeoJSON(geom, precision) / version=1 options=0"
+msgstr "Version 2: ST_AsGeoJSON(geom, precision) / version=1 options=0"
+
+#. Tag: para
+#: reference_output.xml:318
+#, no-c-format
+msgid "Version 3: ST_AsGeoJSON(geom, precision, options) / version=1"
+msgstr "Version 3: ST_AsGeoJSON(geom, precision, options) / version=1"
+
+#. Tag: para
+#: reference_output.xml:319
+#, no-c-format
+msgid "Version 4: ST_AsGeoJSON(gj_version, geom) / precision=15 options=0"
+msgstr "Version 4: ST_AsGeoJSON(gj_version, geom) / precision=15 options=0"
+
+#. Tag: para
+#: reference_output.xml:320
+#, no-c-format
+msgid "Version 5: ST_AsGeoJSON(gj_version, geom, precision) /options=0"
+msgstr "Version 5: ST_AsGeoJSON(gj_version, geom, precision) /options=0"
+
+#. Tag: para
+#: reference_output.xml:321
+#, no-c-format
+msgid "Version 6: ST_AsGeoJSON(gj_version, geom, precision,options)"
+msgstr "Version 6: ST_AsGeoJSON(gj_version, geom, precision,options)"
+
+#. Tag: para
+#: reference_output.xml:323
+#, no-c-format
+msgid "Availability: 1.3.4"
+msgstr "Verfügbarkeit: 1.3.4"
+
+#. Tag: para
+#: reference_output.xml:325
+#, no-c-format
+msgid "Changed: 2.0.0 support default args and named args."
+msgstr "Änderung: 2.0.0 Unterstützung für Standardargumente und benannte Argumente."
+
+#. Tag: para
+#: reference_output.xml:331
+#, no-c-format
+msgid ""
+"GeoJSON format is generally more efficient than other formats for use in "
+"ajax mapping. One popular javascript client that supports this is Open "
+"Layers. Example of its use is <ulink "
+"url=\"http://openlayers.org/en/v3.10.1/examples/geojson.html\">OpenLayers "
+"GeoJSON Example</ulink>"
+msgstr "Das GeoJSON Format ist im Allgemeinen bei AJAX-Karten effizienter als andere Formate. Ein beliebter JavaScript Client der dies unterstützt ist OpenLayers. Ein Anwendungsbeispiel finden Sie unter <ulink url=\"http://openlayers.org/en/v3.10.1/examples/geojson.html\">GeoJSON specifications 1.0</ulink>"
+
+#. Tag: programlisting
+#: reference_output.xml:336
+#, no-c-format
+msgid ""
+"SELECT ST_AsGeoJSON(the_geom) from fe_edges limit 1;\n"
+"                                           st_asgeojson\n"
+"-----------------------------------------------------------------------------------------------------------\n"
+"\n"
+"{\"type\":\"MultiLineString\",\"coordinates\":[[[-89.734634999999997,31.492072000000000],\n"
+"[-89.734955999999997,31.492237999999997]]]}\n"
+"(1 row)\n"
+"--3d point\n"
+"SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');\n"
+"\n"
+"st_asgeojson\n"
+"-----------------------------------------------------------------------------------------\n"
+" {\"type\":\"LineString\",\"coordinates\":[[1,2,3],[4,5,6]]}"
+msgstr "SELECT ST_AsGeoJSON(the_geom) from fe_edges limit 1;\n                                           st_asgeojson\n-----------------------------------------------------------------------------------------------------------\n\n{\"type\":\"MultiLineString\",\"coordinates\":[[[-89.734634999999997,31.492072000000000],\n[-89.734955999999997,31.492237999999997]]]}\n(1 row)\n--3d point\nSELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');\n\nst_asgeojson\n-----------------------------------------------------------------------------------------\n {\"type\":\"LineString\",\"coordinates\":[[1,2,3],[4,5,6]]}"
+
+#. Tag: refname
+#: reference_output.xml:341
+#, no-c-format
+msgid "ST_AsGML"
+msgstr "ST_AsGML"
+
+#. Tag: refpurpose
+#: reference_output.xml:342
+#, no-c-format
+msgid "Return the geometry as a GML version 2 or 3 element."
+msgstr "Gibt die Geometrie als GML-Element - Version 2 oder 3 - zurück."
+
+#. Tag: funcsynopsis
+#: reference_output.xml:346
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>text <function>ST_AsGML</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype>"
+" <funcdef>text <function>ST_AsGML</function></funcdef> "
+"<paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype>"
+" <funcdef>text <function>ST_AsGML</function></funcdef> "
+"<paramdef><type>integer </type> <parameter>version</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>text </type> "
+"<parameter>nprefix=null</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>text </type> <parameter>id=null</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>text "
+"<function>ST_AsGML</function></funcdef> <paramdef><type>integer </type> "
+"<parameter>version</parameter></paramdef> <paramdef><type>geography </type> "
+"<parameter>geog</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>text </type> "
+"<parameter>nprefix=null</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>text </type> <parameter>id=null</parameter></paramdef> "
+"</funcprototype>"
+msgstr "<funcprototype> <funcdef>text <function>ST_AsGML</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsGML</function></funcdef> <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsGML</function></funcdef> <paramdef><type>integer </type> <parameter>version</parameter></paramdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter>nprefix=null</parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter>id=null</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsGML</function></funcdef> <paramdef><type>integer </type> <parameter>version</parameter></paramdef> <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter>nprefix=null</parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter>id=null</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:386
+#, no-c-format
+msgid ""
+"Return the geometry as a Geography Markup Language (GML) element. The "
+"version parameter, if specified, may be either 2 or 3. If no version "
+"parameter is specified then the default is assumed to be 2. The precision "
+"argument may be used to reduce the maximum number of decimal places "
+"(<varname>maxdecimaldigits</varname>) used in output (defaults to 15)."
+msgstr "Gibt die Geometrie als ein Geography Markup Language (GML) Element zurück. Der Versionsparameter kann 2 oder 3 sein, falls angegeben. Wenn kein Versionsparameter angegeben ist, wird dieser standardmäßig mit 2 angenommen. Das Genauigkeitsargument \"precision\" kann verwendet werden, um die Anzahl der Dezimalstellen <varname>(maxdecimaldigits) </varname> bei der Ausgabe zu reduzieren (standardmäßig 15)."
+
+#. Tag: para
+#: reference_output.xml:391
+#, no-c-format
+msgid "GML 2 refer to 2.1.2 version, GML 3 to 3.1.1 version"
+msgstr "GML 2 verweist auf Version 2.1.2, GML 3 auf Version 3.1.1"
+
+#. Tag: para
+#: reference_output.xml:392
+#, no-c-format
+msgid ""
+"The 'options' argument is a bitfield. It could be used to define CRS output "
+"type in GML output, and to declare data as lat/lon:"
+msgstr "Der Übergabewert \"options\" ist ein Bitfeld. Es kann verwendet werden um das Koordinatenreferenzsystem bei der GML Ausgabe zu bestimmen und um die Daten in Länge/Breite anzugeben."
+
+#. Tag: para
+#: reference_output.xml:396
+#, no-c-format
+msgid "0: GML Short CRS (e.g EPSG:4326), default value"
+msgstr "0: GML Kurzform für das CRS (z.B. EPSG:4326), Standardwert"
+
+#. Tag: para
+#: reference_output.xml:400
+#, no-c-format
+msgid "1: GML Long CRS (e.g urn:ogc:def:crs:EPSG::4326)"
+msgstr "1: GML Langform für das CRS (z.B. urn:ogc:def:crs:EPSG::4326)"
+
+#. Tag: para
+#: reference_output.xml:404
+#, no-c-format
+msgid "2: For GML 3 only, remove srsDimension attribute from output."
+msgstr "2: Nur für GML 3, entfernt das srsDimension Attribut von der Ausgabe."
+
+#. Tag: para
+#: reference_output.xml:408
+#, no-c-format
+msgid ""
+"4: For GML 3 only, use &lt;LineString&gt; rather than &lt;Curve&gt; tag for "
+"lines."
+msgstr "4: Nur für GML 3, Für Linien verwenden Sie bitte den Tag &lt;LineString&gt; anstatt &lt;Curve&gt;."
+
+#. Tag: para
+#: reference_output.xml:412
+#, no-c-format
+msgid ""
+"16: Declare that datas are lat/lon (e.g srid=4326). Default is to assume "
+"that data are planars. This option is useful for GML 3.1.1 output only, "
+"related to axis order. So if you set it, it will swap the coordinates so "
+"order is lat lon instead of database lon lat."
+msgstr "16: Deklarieren, dass die Daten in Breite/Länge (z.B. SRID=4326) vorliegen. Standardmäßig wird angenommen, dass die Daten planar sind. Diese Option ist nur bei Ausgabe in GML 3.1.1, in Bezug auf die Anordnung der Achsen sinnvoll. Falls Sie diese setzen, werden die Koordinaten von Länge/Breite auf Breite/Länge vertauscht."
+
+#. Tag: para
+#: reference_output.xml:418
+#, no-c-format
+msgid "32: Output the box of the geometry (envelope)."
+msgstr "32: Ausgabe der BBox der Geometrie (Umhüllende/Envelope)."
+
+#. Tag: para
+#: reference_output.xml:423
+#, no-c-format
+msgid ""
+"The 'namespace prefix' argument may be used to specify a custom namespace "
+"prefix or no prefix (if empty). If null or omitted 'gml' prefix is used"
+msgstr "Der Übergabewert 'namespace prefix' kann verwendet werden, um ein benutzerdefiniertes Präfix für den Namensraum anzugeben, oder kein Präfix (wenn leer). Wenn Null oder weggelassen, so wird das Präfix \"gml\" verwendet."
+
+#. Tag: para
+#: reference_output.xml:427
+#, no-c-format
+msgid "Availability: 1.3.2"
+msgstr "Verfügbarkeit: 1.3.2"
+
+#. Tag: para
+#: reference_output.xml:429
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 prefix support was introduced. Option 4 for GML3 was "
+"introduced to allow using LineString instead of Curve tag for lines. GML3 "
+"Support for Polyhedral surfaces and TINS was introduced. Option 32 was "
+"introduced to output the box."
+msgstr "Erweiterung: 2.0.0 Unterstützung durch Präfix eingeführt. Für GML3 wurde die Option 4 eingeführt, um die Verwendung von LineString anstatt von Kurven für Linien zu erlauben. Ebenfalls wurde die GML3 Unterstützung für polyedrische Oberflächen und TINS eingeführt, sowie die Option 32 zur Ausgabe der BBox. "
+
+#. Tag: para
+#: reference_output.xml:430
+#, no-c-format
+msgid "Changed: 2.0.0 use default named args"
+msgstr "Änderung: 2.0.0 verwendet standardmäßig benannte Argumente."
+
+#. Tag: para
+#: reference_output.xml:431
+#, no-c-format
+msgid "Enhanced: 2.1.0 id support was introduced, for GML 3."
+msgstr "Erweiterung: 2.1.0 Für GML 3 wurde die Unterstützung einer ID eingeführt."
+
+#. Tag: para
+#: reference_output.xml:433
+#, no-c-format
+msgid "Only version 3+ of ST_AsGML supports Polyhedral Surfaces and TINS."
+msgstr "Nur die Version 3+ von ST_AsGML unterstützt polyedrische Oberflächen und TINs."
+
+#. Tag: title
+#: reference_output.xml:440
+#, no-c-format
+msgid "Examples: Version 2"
+msgstr "Beispiele: Version 2"
+
+#. Tag: programlisting
+#: reference_output.xml:441
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
+"                st_asgml\n"
+"                --------\n"
+"                <gml:Polygon srsName=\"EPSG:4326\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>]]>"
+msgstr "<![CDATA[SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n                st_asgml\n                --------\n                <gml:Polygon srsName=\"EPSG:4326\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>]]>"
+
+#. Tag: title
+#: reference_output.xml:444
+#, no-c-format
+msgid "Examples: Version 3"
+msgstr "Beispiele: Version 3"
+
+#. Tag: programlisting
+#: reference_output.xml:445
+#, no-c-format
+msgid ""
+"-- Flip coordinates and output extended EPSG (16 | 1)--\n"
+"<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);\n"
+"                        st_asgml\n"
+"                        --------\n"
+"                <gml:Point srsName=\"urn:ogc:def:crs:EPSG::4326\"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>]]>"
+msgstr "-- Koordinaten umdrehen und Ausgabe in erweitertem EPSG (16 | 1)--\n<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);\n                        st_asgml\n                        --------\n                <gml:Point srsName=\"urn:ogc:def:crs:EPSG::4326\"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>]]>"
+
+#. Tag: programlisting
+#: reference_output.xml:446
+#, no-c-format
+msgid ""
+"-- Output the envelope (32) --\n"
+"<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);\n"
+"                st_asgml\n"
+"                --------\n"
+"        <gml:Envelope srsName=\"EPSG:4326\">\n"
+"                <gml:lowerCorner>1 2</gml:lowerCorner>\n"
+"                <gml:upperCorner>10 20</gml:upperCorner>\n"
+"        </gml:Envelope>]]>"
+msgstr "-- Die Umhüllende/Envelope ausgeben (32) --\n<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);\n                st_asgml\n                --------\n        <gml:Envelope srsName=\"EPSG:4326\">\n                <gml:lowerCorner>1 2</gml:lowerCorner>\n                <gml:upperCorner>10 20</gml:upperCorner>\n        </gml:Envelope>]]>"
+
+#. Tag: programlisting
+#: reference_output.xml:448
+#, no-c-format
+msgid ""
+"-- Output the envelope (32) , reverse (lat lon instead of lon lat) (16), long srs (1)= 32 | 16 | 1 = 49 --\n"
+"<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);\n"
+"        st_asgml\n"
+"        --------\n"
+"<gml:Envelope srsName=\"urn:ogc:def:crs:EPSG::4326\">\n"
+"        <gml:lowerCorner>2 1</gml:lowerCorner>\n"
+"        <gml:upperCorner>20 10</gml:upperCorner>\n"
+"</gml:Envelope>]]>"
+msgstr "-- Die Umhüllende (32) ausgeben, umgedreht (Breite/Länge anstatt Länge/Bereite) (16), long srs (1)= 32 | 16 | 1 = 49 --\n<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);\n        st_asgml\n        --------\n<gml:Envelope srsName=\"urn:ogc:def:crs:EPSG::4326\">\n        <gml:lowerCorner>2 1</gml:lowerCorner>\n        <gml:upperCorner>20 10</gml:upperCorner>\n</gml:Envelope>]]>"
+
+#. Tag: programlisting
+#: reference_output.xml:450
+#, no-c-format
+msgid ""
+"-- Polyhedral Example --\n"
+"SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));\n"
+"        st_asgml\n"
+"        --------\n"
+"<![CDATA[ <gml:PolyhedralSurface>\n"
+"<gml:polygonPatches>\n"
+"   <gml:PolygonPatch>\n"
+"                <gml:exterior>\n"
+"                          <gml:LinearRing>\n"
+"                                   <gml:posList srsDimension=\"3\">0 0 0 0 0 1 0 1 1 0 1 0 0 0 0</gml:posList>\n"
+"                          </gml:LinearRing>\n"
+"                </gml:exterior>\n"
+"   </gml:PolygonPatch>\n"
+"   <gml:PolygonPatch>\n"
+"                <gml:exterior>\n"
+"                          <gml:LinearRing>\n"
+"                                   <gml:posList srsDimension=\"3\">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList>\n"
+"                          </gml:LinearRing>\n"
+"                </gml:exterior>\n"
+"   </gml:PolygonPatch>\n"
+"   <gml:PolygonPatch>\n"
+"                <gml:exterior>\n"
+"                          <gml:LinearRing>\n"
+"                                   <gml:posList srsDimension=\"3\">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList>\n"
+"                          </gml:LinearRing>\n"
+"                </gml:exterior>\n"
+"   </gml:PolygonPatch>\n"
+"   <gml:PolygonPatch>\n"
+"                <gml:exterior>\n"
+"                          <gml:LinearRing>\n"
+"                                   <gml:posList srsDimension=\"3\">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList>\n"
+"                          </gml:LinearRing>\n"
+"                </gml:exterior>\n"
+"   </gml:PolygonPatch>\n"
+"   <gml:PolygonPatch>\n"
+"                <gml:exterior>\n"
+"                          <gml:LinearRing>\n"
+"                                   <gml:posList srsDimension=\"3\">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList>\n"
+"                          </gml:LinearRing>\n"
+"                </gml:exterior>\n"
+"   </gml:PolygonPatch>\n"
+"   <gml:PolygonPatch>\n"
+"                <gml:exterior>\n"
+"                          <gml:LinearRing>\n"
+"                                   <gml:posList srsDimension=\"3\">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList>\n"
+"                          </gml:LinearRing>\n"
+"                </gml:exterior>\n"
+"   </gml:PolygonPatch>\n"
+"</gml:polygonPatches>\n"
+"</gml:PolyhedralSurface>]]>"
+msgstr "-- Polyeder Beispiel --\nSELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));\n        st_asgml\n        --------\n<![CDATA[ <gml:PolyhedralSurface>\n<gml:polygonPatches>\n   <gml:PolygonPatch>\n                <gml:exterior>\n                          <gml:LinearRing>\n                                   <gml:posList srsDimension=\"3\">0 0 0 0 0 1 0 1 1 0 1 0 0 0 0</gml:posList>\n                          </gml:LinearRing>\n                </gml:exterior>\n   </gml:PolygonPatch>\n   <gml:PolygonPatch>\n                <gml:exterior>\n                          <gml:LinearRing>\n                                   <gml:posList srsDimension=\"3\">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList>\n                          </gml:LinearRing>\n                </gml:exterior>\n   </gml:PolygonPatch>\n   <gml:PolygonPatch>\n                <gml:exterior>\n                          <gml:LinearRing>\n                                   <gml:posList srsDimension=\"3\">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList>\n                          </gml:LinearRing>\n                </gml:exterior>\n   </gml:PolygonPatch>\n   <gml:PolygonPatch>\n                <gml:exterior>\n                          <gml:LinearRing>\n                                   <gml:posList srsDimension=\"3\">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList>\n                          </gml:LinearRing>\n                </gml:exterior>\n   </gml:PolygonPatch>\n   <gml:PolygonPatch>\n                <gml:exterior>\n                          <gml:LinearRing>\n                                   <gml:posList srsDimension=\"3\">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList>\n                          </gml:LinearRing>\n                </gml:exterior>\n   </gml:PolygonPatch>\n   <gml:PolygonPatch>\n                <gml:exterior>\n                          <gml:LinearRing>\n                                   <gml:posList srsDimension=\"3\">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList>\n                          </gml:LinearRing>\n                </gml:exterior>\n   </gml:PolygonPatch>\n</gml:polygonPatches>\n</gml:PolyhedralSurface>]]>"
+
+#. Tag: refname
+#: reference_output.xml:463
+#, no-c-format
+msgid "ST_AsHEXEWKB"
+msgstr "ST_AsHEXEWKB"
+
+#. Tag: refpurpose
+#: reference_output.xml:465
+#, no-c-format
+msgid ""
+"Returns a Geometry in HEXEWKB format (as text) using either little-endian "
+"(NDR) or big-endian (XDR) encoding."
+msgstr "Gibt eine Geometrie im HEXEWKB Format (als Text) aus; verwendet entweder die Little-Endian (NDR) oder die Big-Endian (XDR) Zeichenkodierung."
+
+#. Tag: funcsynopsis
+#: reference_output.xml:470
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>text <function>ST_AsHEXEWKB</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>NDRorXDR</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>text "
+"<function>ST_AsHEXEWKB</function></funcdef> <paramdef><type>geometry </type>"
+" <parameter>g1</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>text <function>ST_AsHEXEWKB</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>text </type> <parameter>NDRorXDR</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsHEXEWKB</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:487
+#, no-c-format
+msgid ""
+"Returns a Geometry in HEXEWKB format (as text) using either little-endian "
+"(NDR) or big-endian (XDR) encoding. If no encoding is specified, then NDR is"
+" used."
+msgstr "Gibt eine Geometrie im HEXEWKB Format (als Text) aus; verwendet entweder die Little-Endian (NDR) oder die Big-Endian (XDR) Zeichenkodierung. Wenn keine Zeichenkodierung angegeben wurde, wird NDR verwendet."
+
+#. Tag: para
+#: reference_output.xml:491
+#, no-c-format
+msgid "Availability: 1.2.2"
+msgstr "Verfügbarkeit: 1.2.2"
+
+#. Tag: programlisting
+#: reference_output.xml:499
+#, no-c-format
+msgid ""
+"SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
+"                which gives same answer as\n"
+"\n"
+"                SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326)::text;\n"
+"\n"
+"                st_ashexewkb\n"
+"                --------\n"
+"                0103000020E6100000010000000500\n"
+"                00000000000000000000000000000000\n"
+"                00000000000000000000000000000000F03F\n"
+"                000000000000F03F000000000000F03F000000000000F03\n"
+"                F000000000000000000000000000000000000000000000000"
+msgstr "SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n               --gibt die selbe Antword wie\n\n                SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326)::text;\n\n                st_ashexewkb\n                --------\n                0103000020E6100000010000000500\n                00000000000000000000000000000000\n                00000000000000000000000000000000F03F\n                000000000000F03F000000000000F03F000000000000F03\n                F000000000000000000000000000000000000000000000000"
+
+#. Tag: refname
+#: reference_output.xml:505
+#, no-c-format
+msgid "ST_AsKML"
+msgstr "ST_AsKML"
+
+#. Tag: refpurpose
+#: reference_output.xml:507
+#, no-c-format
+msgid ""
+"Return the geometry as a KML element. Several variants. Default version=2, "
+"default precision=15"
+msgstr "Gibt die Geometrie als ein KML Element aus. Mehrere Varianten. Standardmäßig ist version=2 und precision=15"
+
+#. Tag: funcsynopsis
+#: reference_output.xml:511
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
+"<paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
+"<paramdef><type>integer </type> <parameter>version</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>text </type> "
+"<parameter>nprefix=NULL</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
+"<paramdef><type>integer </type> <parameter>version</parameter></paramdef> "
+"<paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>text </type> "
+"<parameter>nprefix=NULL</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> <paramdef><type>integer </type> <parameter>version</parameter></paramdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> <paramdef><type>integer </type> <parameter>version</parameter></paramdef> <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:543
+#, no-c-format
+msgid ""
+"Return the geometry as a Keyhole Markup Language (KML) element. There are "
+"several variants of this function. maximum number of decimal places used in "
+"output (defaults to 15), version default to 2 and default namespace is no "
+"prefix."
+msgstr "Gibt die Geometrie als ein Keyhole Markup Language (KML)  Element zurück. Diese Funktion verfügt über mehrere Varianten. Die maximale Anzahl der Dezimalstellen die bei der Ausgabe verwendet wird (standardmäßig 15), die Version ist standardmäßig 2 und der Standardnamensraum hat kein Präfix."
+
+#. Tag: para
+#: reference_output.xml:547
+#, no-c-format
+msgid ""
+"Version 1: ST_AsKML(geom_or_geog, maxdecimaldigits) / version=2 / "
+"maxdecimaldigits=15"
+msgstr "Version 1: ST_AsKML(geom_or_geog, maxdecimaldigits) / version=2 / maxdecimaldigits=15"
+
+#. Tag: para
+#: reference_output.xml:548
+#, no-c-format
+msgid ""
+"Version 2: ST_AsKML(version, geom_or_geog, maxdecimaldigits, nprefix) "
+"maxdecimaldigits=15 / nprefix=NULL"
+msgstr "Version 2: ST_AsKML(version, geom_or_geog, maxdecimaldigits, nprefix) maxdecimaldigits=15 / nprefix=NULL"
+
+#. Tag: para
+#: reference_output.xml:551
+#, no-c-format
+msgid ""
+"Requires PostGIS be compiled with Proj support. Use <xref "
+"linkend=\"PostGIS_Full_Version\"/> to confirm you have proj support compiled"
+" in."
+msgstr "Setzt voraus, dass PostGIS mit Proj-Unterstützung kompiliert wurde. Verwenden Sie bitte <xref linkend=\"PostGIS_Full_Version\"/>, um festzustellen ob mit proj kompiliert wurde."
+
+#. Tag: para
+#: reference_output.xml:555
+#, no-c-format
+msgid ""
+"Availability: 1.2.2 - later variants that include version param came in "
+"1.3.2"
+msgstr "Verfügbarkeit: 1.2.2 - spätere Varianten ab 1.3.2 nehmen den Versionsparameter mit auf"
+
+#. Tag: para
+#: reference_output.xml:558
+#, no-c-format
+msgid "Enhanced: 2.0.0 - Add prefix namespace. Default is no prefix"
+msgstr "Erweiterung: 2.0.0 - Präfix Namensraum hinzugefügt. Standardmäßig kein Präfix"
+
+#. Tag: para
+#: reference_output.xml:561
+#, no-c-format
+msgid "Changed: 2.0.0 - uses default args and supports named args"
+msgstr "Änderung: 2.0.0 verwendet Standardargumente und unterstützt benannte Argumente."
+
+#. Tag: para
+#: reference_output.xml:565
+#, no-c-format
+msgid "AsKML output will not work with geometries that do not have an SRID"
+msgstr "Die Ausgabe AsKML funktioniert nicht bei Geometrien ohne SRID"
+
+#. Tag: programlisting
+#: reference_output.xml:573
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
+"\n"
+"                st_askml\n"
+"                --------\n"
+"                <Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 0,1 1,1 1,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>\n"
+"\n"
+"                --3d linestring\n"
+"                SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3, 4 5 6)');\n"
+"                <LineString><coordinates>1,2,3 4,5,6</coordinates></LineString>\n"
+"                ]]>"
+msgstr "<![CDATA[SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n\n                st_askml\n                --------\n                <Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 0,1 1,1 1,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>\n\n                --3D Linienzug\n                SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3, 4 5 6)');\n                <LineString><coordinates>1,2,3 4,5,6</coordinates></LineString>\n                ]]>"
+
+#. Tag: para
+#: reference_output.xml:578
+#, no-c-format
+msgid ", <xref linkend=\"ST_AsGML\"/>"
+msgstr ", <xref linkend=\"ST_AsGML\"/>"
+
+#. Tag: refname
+#: reference_output.xml:584
+#, no-c-format
+msgid "ST_AsLatLonText"
+msgstr "ST_AsLatLonText"
+
+#. Tag: refpurpose
+#: reference_output.xml:585
+#, no-c-format
+msgid ""
+"Return the Degrees, Minutes, Seconds representation of the given point."
+msgstr "Gibt die \"Grad, Minuten, Sekunden\"-Darstellung für den angegebenen Punkt aus."
+
+#. Tag: funcprototype
+#: reference_output.xml:590
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_AsLatLonText</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>format=''</parameter></paramdef>"
+msgstr "<funcdef>text <function>ST_AsLatLonText</function></funcdef> <paramdef><type>geometry </type> <parameter>pt</parameter></paramdef> <paramdef><type>text </type> <parameter>format=''</parameter></paramdef>"
+
+#. Tag: para
+#: reference_output.xml:601
+#, no-c-format
+msgid "Returns the Degrees, Minutes, Seconds representation of the point."
+msgstr "Gibt die \"Grad, Minuten, Sekunden\"-Darstellung des Punktes aus."
+
+#. Tag: para
+#: reference_output.xml:604
+#, no-c-format
+msgid ""
+"It is assumed the point is in a lat/lon projection. The X (lon) and Y (lat) "
+"coordinates are normalized in the output to the \"normal\" range (-180 to "
+"+180 for lon, -90 to +90 for lat)."
+msgstr "Es wird angenommen, dass der Punkt in einer Breite/Länge-Projektion vorliegt. Die X (Länge) und Y (Breite) Koordinaten werden bei der Ausgabe in den \"üblichen\" Bereich (-180 to +180 für die Länge, -90 to +90 für die Breite) normalisiert."
+
+#. Tag: para
+#: reference_output.xml:607
+#, no-c-format
+msgid ""
+"The text parameter is a format string containing the format for the "
+"resulting text, similar to a date format string. Valid tokens are \"D\" for "
+"degrees, \"M\" for minutes, \"S\" for seconds, and \"C\" for cardinal "
+"direction (NSEW). DMS tokens may be repeated to indicate desired width and "
+"precision (\"SSS.SSSS\" means \" 1.0023\")."
+msgstr "Der Textparameter ist eine Zeichenkette für die Formatierung der Ausgabe, ähnlich wie die Zeichenkette für die Formatierung der Datumsausgabe. Gültige Zeichen sind \"D\" für Grad/Degrees, \"M\" für Minuten, \"S\" für Sekunden, und \"C\" für die Himmelsrichtung (NSEW). DMS Zeichen können wiederholt werden, um die gewünschte Zeichenbreite und Genauigkeit anzugeben (\"SSS.SSSS\" bedeutet z.B. \" 1.0023\")."
+
+#. Tag: para
+#: reference_output.xml:612
+#, no-c-format
+msgid ""
+"\"M\", \"S\", and \"C\" are optional. If \"C\" is omitted, degrees are shown"
+" with a \"-\" sign if south or west. If \"S\" is omitted, minutes will be "
+"shown as decimal with as many digits of precision as you specify. If \"M\" "
+"is also omitted, degrees are shown as decimal with as many digits precision "
+"as you specify."
+msgstr "\"M\", \"S\", und \"C\" sind optional. Wenn \"C\" weggelassen wird, werden Grad mit einem \"-\" Zeichen versehen, wenn Süd oder West. Wenn \"S\" weggelassen wird, werden die Minuten als Dezimalzahl mit der vorgegebenen Anzahl an Kommastellen angezeigt. Wenn \"M\" wegggelassen wird, werden die Grad als Dezimalzahl mit der vorgegebenen Anzahl an Kommastellen angezeigt."
+
+#. Tag: para
+#: reference_output.xml:617
+#, no-c-format
+msgid ""
+"If the format string is omitted (or zero-length) a default format will be "
+"used."
+msgstr "Wenn die Zeichenkette für das Ausgabeformat weggelassen wird (oder leer ist) wird ein Standardformat verwendet."
+
+#. Tag: para
+#: reference_output.xml:623
+#, no-c-format
+msgid "Availability: 2.0"
+msgstr "Verfügbarkeit: 2.0"
+
+#. Tag: para
+#: reference_output.xml:629
+#, no-c-format
+msgid "Default format."
+msgstr "Standardformat."
+
+#. Tag: programlisting
+#: reference_output.xml:630
+#, no-c-format
+msgid ""
+"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));\n"
+"      st_aslatlontext\n"
+"----------------------------\n"
+" 2°19'29.928\"S 3°14'3.243\"W"
+msgstr "SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));\n      st_aslatlontext\n----------------------------\n 2°19'29.928\"S 3°14'3.243\"W"
+
+#. Tag: para
+#: reference_output.xml:631
+#, no-c-format
+msgid "Providing a format (same as the default)."
+msgstr "Ein Format angeben (identisch mit Standardformat)."
+
+#. Tag: programlisting
+#: reference_output.xml:632
+#, no-c-format
+msgid ""
+"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS\"C'));\n"
+"      st_aslatlontext\n"
+"----------------------------\n"
+" 2°19'29.928\"S 3°14'3.243\"W"
+msgstr "SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS\"C'));\n      st_aslatlontext\n----------------------------\n 2°19'29.928\"S 3°14'3.243\"W"
+
+#. Tag: para
+#: reference_output.xml:633
+#, no-c-format
+msgid "Characters other than D, M, S, C and . are just passed through."
+msgstr "Andere Zeichen als D, M, S, C und \".\" werden lediglich durchgereicht."
+
+#. Tag: programlisting
+#: reference_output.xml:634
+#, no-c-format
+msgid ""
+"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M minutes, S seconds to the C'));\n"
+"                                   st_aslatlontext\n"
+"--------------------------------------------------------------------------------------\n"
+" 2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds to the W"
+msgstr "SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M minutes, S seconds to the C'));\n                                   st_aslatlontext\n--------------------------------------------------------------------------------------\n 2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds to the W"
+
+#. Tag: para
+#: reference_output.xml:635
+#, no-c-format
+msgid "Signed degrees instead of cardinal directions."
+msgstr "Grad mit einem Vorzeichen versehen - anstatt der Himmelsrichtung."
+
+#. Tag: programlisting
+#: reference_output.xml:636
+#, no-c-format
+msgid ""
+"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS\"'));\n"
+"      st_aslatlontext\n"
+"----------------------------\n"
+" -2°19'29.928\" -3°14'3.243\""
+msgstr "SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS\"'));\n      st_aslatlontext\n----------------------------\n -2°19'29.928\" -3°14'3.243\""
+
+#. Tag: para
+#: reference_output.xml:637
+#, no-c-format
+msgid "Decimal degrees."
+msgstr "Dezimalgrad."
+
+#. Tag: programlisting
+#: reference_output.xml:638
+#, no-c-format
+msgid ""
+"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees C'));\n"
+"          st_aslatlontext\n"
+"-----------------------------------\n"
+" 2.3250 degrees S 3.2342 degrees W"
+msgstr "SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees C'));\n          st_aslatlontext\n-----------------------------------\n 2.3250 degrees S 3.2342 degrees W"
+
+#. Tag: para
+#: reference_output.xml:639
+#, no-c-format
+msgid "Excessively large values are normalized."
+msgstr "Überhöhte Werte werden normalisiert."
+
+#. Tag: programlisting
+#: reference_output.xml:640
+#, no-c-format
+msgid ""
+"SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));\n"
+"        st_aslatlontext\n"
+"-------------------------------\n"
+" 72°19'29.928\"S 57°45'56.757\"E"
+msgstr "SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));\n        st_aslatlontext\n-------------------------------\n 72°19'29.928\"S 57°45'56.757\"E"
+
+#. Tag: refname
+#: reference_output.xml:648
+#, no-c-format
+msgid "ST_AsSVG"
+msgstr "ST_AsSVG"
+
+#. Tag: refpurpose
+#: reference_output.xml:650
+#, no-c-format
+msgid ""
+"Returns a Geometry in SVG path data given a geometry or geography object."
+msgstr "Gibt ein Geoobjekt als SVG-Pfadgeometrie zurück. Unterstützt den geometrischen und den geographischen Datentyp."
+
+#. Tag: funcsynopsis
+#: reference_output.xml:654
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>text <function>ST_AsSVG</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>rel=0</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>text <function>ST_AsSVG</function></funcdef> "
+"<paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>rel=0</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>text <function>ST_AsSVG</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>rel=0</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsSVG</function></funcdef> <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>rel=0</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:673
+#, no-c-format
+msgid ""
+"Return the geometry as Scalar Vector Graphics (SVG) path data. Use 1 as "
+"second argument to have the path data implemented in terms of relative "
+"moves, the default (or 0) uses absolute moves. Third argument may be used to"
+" reduce the maximum number of decimal digits used in output (defaults to "
+"15). Point geometries will be rendered as cx/cy when 'rel' arg is 0, x/y "
+"when 'rel' is 1. Multipoint geometries are delimited by commas (\",\"), "
+"GeometryCollection geometries are delimited by semicolons (\";\")."
+msgstr "Gibt die Geometrie als Skalare Vektor Graphik (SVG-Pfadgeometrie) aus. Verwenden Sie 1 als zweiten Übergabewert um die Pfadgeometrie in relativen Schritten zu implementieren; Standardmäßig (oder 0) verwendet absolute Schritte. Der dritte Übergabewert kann verwendet werden, um die maximale Anzahl der Dezimalstellen bei der Ausgabe einzuschränken (standardmäßig 15). Punktgeometrie wird als cx/cy übersetzt wenn der Übergabewert 'rel' gleich 0 ist, x/y wenn 'rel' 1 ist. Mehrfachgeometrie wird durch Beistriche (\",\") getrennt, Sammelgeometrie wird durch Strichpunkt (\";\") getrennt."
+
+#. Tag: para
+#: reference_output.xml:683
+#, no-c-format
+msgid ""
+"Availability: 1.2.2. Availability: 1.4.0 Changed in PostGIS 1.4.0 to include"
+" L command in absolute path to conform to <ulink "
+"url=\"http://www.w3.org/TR/SVG/paths.html#PathDataBNF\">http://www.w3.org/TR/SVG/paths.html#PathDataBNF</ulink>"
+msgstr "Verfügbarkeit: 1.2.2. Änderung: 1.4.0 L-Befehl beim absoluten Pfad aufgenommen, um mit <ulink url=\"http://www.w3.org/TR/SVG/paths.html#PathDataBNF\">http://www.w3.org/TR/SVG/paths.html#PathDataBNF</ulink> konform zu sein."
+
+#. Tag: para
+#: reference_output.xml:686
+#, no-c-format
+msgid "Changed: 2.0.0 to use default args and support named args"
+msgstr "Änderung: 2.0.0 verwendet Standardargumente und unterstützt benannte Argumente."
+
+#. Tag: programlisting
+#: reference_output.xml:691
+#, no-c-format
+msgid ""
+"SELECT ST_AsSVG(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
+"\n"
+"                st_assvg\n"
+"                --------\n"
+"                M 0 0 L 0 -1 1 -1 1 0 Z"
+msgstr "SELECT ST_AsSVG(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n\n                st_assvg\n                --------\n                M 0 0 L 0 -1 1 -1 1 0 Z"
+
+#. Tag: refname
+#: reference_output.xml:697
+#, no-c-format
+msgid "ST_AsText"
+msgstr "ST_AsText"
+
+#. Tag: refpurpose
+#: reference_output.xml:698
+#, no-c-format
+msgid ""
+"Return the Well-Known Text (WKT) representation of the geometry/geography "
+"without SRID metadata."
+msgstr "Gibt die Well-known-Text(WKT) Darstellung der Geometrie/Geographie ohne die SRID Metadaten zurück."
+
+#. Tag: funcsynopsis
+#: reference_output.xml:702
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>text <function>ST_AsText</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>text "
+"<function>ST_AsText</function></funcdef> <paramdef><type>geography </type> "
+"<parameter>g1</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>text <function>ST_AsText</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsText</function></funcdef> <paramdef><type>geography </type> <parameter>g1</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:717
+#, no-c-format
+msgid "Returns the Well-Known Text representation of the geometry/geography."
+msgstr "Gibt die Well-known-Text Darstellung der Geometrie/Geographie zurück."
+
+#. Tag: para
+#: reference_output.xml:720
+#, no-c-format
+msgid ""
+"The WKT spec does not include the SRID. To get the SRID as part of the data,"
+" use the non-standard PostGIS <xref linkend=\"ST_AsEWKT\"/>"
+msgstr "Die WKT Spezifikation bezieht die SRID nicht mit ein. Um SRID als einen Teil der Daten zu erhalten, verwenden Sie bitte die nicht standardkonforme PostGIS Funktion <xref linkend=\"ST_AsEWKT\"/>"
+
+#. Tag: para
+#: reference_output.xml:727
+#, no-c-format
+msgid ""
+"ST_AsText is the reverse of <xref linkend=\"ST_GeomFromText\"/>. Use <xref "
+"linkend=\"ST_GeomFromText\"/> to convert to a postgis geometry from "
+"ST_AsText representation."
+msgstr "ST_AsText ist die Umkehrfunktion von <xref linkend=\"ST_GeomFromText\"/>. Verwenden Sie bitte <xref linkend=\"ST_GeomFromText\"/> um eine PostGIS Geometrie aus einer ST_AsText Darstellung zu konvertieren."
+
+#. Tag: para
+#: reference_output.xml:730
+#, no-c-format
+msgid "Availability: 1.5 - support for geography was introduced."
+msgstr "Verfügbarkeit: 1.5 - Unterstützung von geograpischen Koordinaten."
+
+#. Tag: para
+#: reference_output.xml:732
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.25"
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.25"
+
+#. Tag: programlisting
+#: reference_output.xml:740
+#, no-c-format
+msgid ""
+"SELECT ST_AsText('01030000000100000005000000000000000000\n"
+"000000000000000000000000000000000000000000000000\n"
+"F03F000000000000F03F000000000000F03F000000000000F03\n"
+"F000000000000000000000000000000000000000000000000');\n"
+"\n"
+"                   st_astext\n"
+"--------------------------------\n"
+" POLYGON((0 0,0 1,1 1,1 0,0 0))\n"
+"(1 row)"
+msgstr "SELECT ST_AsText('01030000000100000005000000000000000000\n000000000000000000000000000000000000000000000000\nF03F000000000000F03F000000000000F03F000000000000F03\nF000000000000000000000000000000000000000000000000');\n\n                   st_astext\n--------------------------------\n POLYGON((0 0,0 1,1 1,1 0,0 0))\n(1 row)"
+
+#. Tag: para
+#: reference_output.xml:747 reference_output.xml:805
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
+"linkend=\"ST_GeomFromText\"/>"
+msgstr ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_GeomFromText\"/>"
+
+#. Tag: refname
+#: reference_output.xml:753
+#, no-c-format
+msgid "ST_AsTWKB"
+msgstr "ST_AsTWKB"
+
+#. Tag: refpurpose
+#: reference_output.xml:754
+#, no-c-format
+msgid "Returns the geometry as TWKB, aka \"Tiny Well-Known Binary\""
+msgstr "Gibt die Geometrie als TWKB, aka \"Tiny Well-known Binary\" zurück"
+
+#. Tag: funcsynopsis
+#: reference_output.xml:758
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>bytea <function>ST_AsTWKB</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>integer </type> "
+"<parameter>decimaldigits_xy=0</parameter></paramdef> <paramdef><type>integer"
+" </type> <parameter>decimaldigits_z=0</parameter></paramdef> "
+"<paramdef><type>integer </type> "
+"<parameter>decimaldigits_m=0</parameter></paramdef> <paramdef><type>boolean "
+"</type> <parameter>include_sizes=false</parameter></paramdef> "
+"<paramdef><type>boolean </type> <parameter>include_bounding "
+"boxes=false</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>bytea <function>ST_AsTWKB</function></funcdef> "
+"<paramdef><type>geometry[] </type> "
+"<parameter>geometries</parameter></paramdef> <paramdef><type>bigint[] "
+"</type> <parameter>unique_ids</parameter></paramdef> <paramdef><type>integer"
+" </type> <parameter>decimaldigits_xy=0</parameter></paramdef> "
+"<paramdef><type>integer </type> "
+"<parameter>decimaldigits_z=0</parameter></paramdef> <paramdef><type>integer "
+"</type> <parameter>decimaldigits_m=0</parameter></paramdef> "
+"<paramdef><type>boolean </type> "
+"<parameter>include_sizes=false</parameter></paramdef> "
+"<paramdef><type>boolean </type> "
+"<parameter>include_bounding_boxes=false</parameter></paramdef> "
+"</funcprototype>"
+msgstr "<funcprototype> <funcdef>bytea <function>ST_AsTWKB</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>integer </type> <parameter>decimaldigits_xy=0</parameter></paramdef> <paramdef><type>integer </type> <parameter>decimaldigits_z=0</parameter></paramdef> <paramdef><type>integer </type> <parameter>decimaldigits_m=0</parameter></paramdef> <paramdef><type>boolean </type> <parameter>include_sizes=false</parameter></paramdef> <paramdef><type>boolean </type> <parameter>include_bounding boxes=false</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsTWKB</function></funcdef> <paramdef><type>geometry[] </type> <parameter>geometries</parameter></paramdef> <paramdef><type>bigint[] </type> <parameter>unique_ids</parameter></paramdef> <paramdef><type>integer </type> <parameter>decimaldigits_xy=0</parameter></paramdef> <paramdef><type>integer </type> <parameter>decimaldigits_z=0</parameter></paramdef> <paramdef><type>integer </type> <parameter>decimaldigits_m=0</parameter></paramdef> <paramdef><type>boolean </type> <parameter>include_sizes=false</parameter></paramdef> <paramdef><type>boolean </type> <parameter>include_bounding_boxes=false</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:782
+#, no-c-format
+msgid ""
+"Returns the geometry in TWKB (Tiny Well-Known Binary) format. TWKB is a "
+"<ulink "
+"url=\"https://github.com/TWKB/Specification/blob/master/twkb.md\">compressed"
+" binary format</ulink> with a focus on minimizing the size of the output."
+msgstr "Gibt die Geometrie im TWKB (\"Tiny Well-Known Binary\") Format aus. TWKB ist ein <ulink url=\"https://github.com/TWKB/Specification/blob/master/twkb.md\">komprimiertes binäres Format</ulink> mit dem Schwerpunkt, die Ausgabegröße zu minimieren."
+
+#. Tag: para
+#: reference_output.xml:783
+#, no-c-format
+msgid ""
+"The decimal digits parameters control how much precision is stored in the "
+"output. By default, values are rounded to the nearest unit before encoding. "
+"If you want to transfer more precision, increase the number. For example, a "
+"value of 1 implies that the first digit to the right of the decimal point "
+"will be preserved."
+msgstr "Der Parameter 'decimaldigits' bestimmt die Anzahl der Dezimalstellen bei der Ausgabe. Standardmäßig werden die Werte vor der Zeichenkodierung auf die Einserstelle gerundet. Wenn Sie die Daten mit höherer Genauigkeit übergeben wollen, erhöhen Sie bitte die Anzahl der Dezimalstellen. Zum Beispiel bedeutet ein Wert von 1, dass die erste Dezimalstelle erhalten bleibt."
+
+#. Tag: para
+#: reference_output.xml:784
+#, no-c-format
+msgid ""
+"The sizes and bounding boxes parameters control whether optional information"
+" about the encoded length of the object and the bounds of the object are "
+"included in the output. By default they are not. Do not turn them on unless "
+"your client software has a use for them, as they just use up space (and "
+"saving space is the point of TWKB)."
+msgstr "Die Parameter \"sizes\" und \"bounding_boxes\" bestimmen ob zusätzliche Information über die kodierte Länge und die Abgrenzung des Objektes in der Ausgabe eingebunden werden. Standardmäßig passiert dies nicht. Drehen Sie diese bitte nicht auf, solange dies nicht von Ihrer Client-Software benötigt wird, da dies nur unnötig Speicherplatz verbraucht (Einsparen von Speicherplatz ist der Sinn von TWKB)."
+
+#. Tag: para
+#: reference_output.xml:785
+#, no-c-format
+msgid ""
+"The array-input form of the function is used to convert a collection of "
+"geometries and unique identifiers into a TWKB collection that preserves the "
+"identifiers. This is useful for clients that expect to unpack a collection "
+"and then access further information about the objects inside. You can create"
+" the arrays using the <ulink url=\"http://www.postgresql.org/docs/9.4/static"
+"/functions-aggregate.html\">array_agg</ulink> function. The other parameters"
+" operate the same as for the simple form of the function."
+msgstr "Das Feld-Eingabeformat dieser Funktion wird verwendet um eine Sammelgeometriee und eindeutige Identifikatoren in eine TWKB-Collection zu konvertieren, welche die Identifikatoren erhält. Dies ist nützlich für Clients, die davon ausgehen, eine Sammelgeometrie auszupacken, um so auf zusätzliche Information über die internen Objekte zuzugreifen. Sie können das Feld mit der Funktion <ulink url=\"http://www.postgresql.org/docs/9.4/static/functions-aggregate.html\">array_agg</ulink> erstellen. Die anderen Parameter bewirken dasselbe wie bei dem einfachen Format dieser Funktion."
+
+#. Tag: para
+#: reference_output.xml:787
+#, no-c-format
+msgid ""
+"The format specification is available online at <ulink "
+"url=\"https://github.com/TWKB/Specification\">https://github.com/TWKB/Specification</ulink>,"
+" and code for building a JavaScript client can be found at <ulink "
+"url=\"https://github.com/TWKB/twkb.js\">https://github.com/TWKB/twkb.js</ulink>."
+msgstr "Die Formatspezifikation steht Online unter <ulink url=\"https://github.com/TWKB/Specification\">https://github.com/TWKB/Specification</ulink> zur Verfügung, und Code zum Aufbau eines JavaScript Clints findet sich unter <ulink url=\"https://github.com/TWKB/twkb.js\">https://github.com/TWKB/twkb.js</ulink>."
+
+#. Tag: programlisting
+#: reference_output.xml:796
+#, no-c-format
+msgid ""
+"SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry);\n"
+"                 st_astwkb\n"
+"--------------------------------------------\n"
+"\\x02000202020808"
+msgstr "SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry);\n                 st_astwkb\n--------------------------------------------\n\\x02000202020808"
+
+#. Tag: para
+#: reference_output.xml:797
+#, no-c-format
+msgid ""
+"To create an aggregate TWKB object including identifiers aggregate the "
+"desired geometries and objects first, using \"array_agg()\", then call the "
+"appropriate TWKB function."
+msgstr "Um ein aggregiertes TWKB-Objekt inklusive Identifikatoren zu erzeugen, fassen Sie bitte die gewünschte Geometrie und Objekte zuerst mittels \"array_agg()\" zusammen und rufen anschließend die passende TWKB Funktion auf."
+
+#. Tag: programlisting
+#: reference_output.xml:799
+#, no-c-format
+msgid ""
+"SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;\n"
+"                 st_astwkb\n"
+"--------------------------------------------\n"
+"\\x040402020400000202"
+msgstr "SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;\n                 st_astwkb\n--------------------------------------------\n\\x040402020400000202"
+
+#. Tag: refname
+#: reference_output.xml:811
+#, no-c-format
+msgid "ST_AsX3D"
+msgstr "ST_AsX3D"
+
+#. Tag: refpurpose
+#: reference_output.xml:813
+#, no-c-format
+msgid ""
+"Returns a Geometry in X3D xml node element format: ISO-IEC-19776-1.2"
+"-X3DEncodings-XML"
+msgstr "Gibt eine Geometrie im X3D XML Knotenelement-Format zurück: ISO-IEC-19776-1.2-X3DEncodings-XML"
+
+#. Tag: funcprototype
+#: reference_output.xml:818
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_AsX3D</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef>"
+msgstr "<funcdef>text <function>ST_AsX3D</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef>"
+
+#. Tag: para
+#: reference_output.xml:830
+#, no-c-format
+msgid ""
+"Returns a geometry as an X3D xml formatted node element <ulink "
+"url=\"http://www.web3d.org/standards/number/19776-1\">http://www.web3d.org/standards/number/19776-1</ulink>."
+" If <varname>maxdecimaldigits</varname> (precision) is not specified then "
+"defaults to 15."
+msgstr "Gibt eine Geometrie als X3D knotenformatiertes XML Element zurück <ulink url=\"http://www.web3d.org/standards/number/19776-1\">http://www.web3d.org/standards/number/19776-1</ulink>. Falls <varname>maxdecimaldigits</varname> (Genauigkeit) nicht angegeben ist, wird sie standardmäßig 15."
+
+#. Tag: para
+#: reference_output.xml:832
+#, no-c-format
+msgid ""
+"There are various options for translating PostGIS geometries to X3D since "
+"X3D geometry types don't map directly to PostGIS geometry types and some "
+"newer X3D types that might be better mappings we have avoided since most "
+"rendering tools don't currently support them. These are the mappings we have"
+" settled on. Feel free to post a bug ticket if you have thoughts on the idea"
+" or ways we can allow people to denote their preferred mappings."
+msgstr "Es gibt  verschiedene Möglichkeiten eine PostGIS Geometrie in X3D zu übersetzen, da sich der X3D Geometrietyp nicht direkt in den geometrischen Datentyp von PostGIS abbilden lässt. Einige neuere X3D Datentypen, die sich besser abbilden lassen könnten haben wir vermieden, da diese von den meisten Rendering-Tools zurzeit nicht untestützt werden. Dies sind die Abbildungen für die wir uns entschieden haben. Falls Sie Ideen haben, wie wir es den Anwendern ermöglichen können ihre bevorzugten Abbildungen anzugeben, können Sie gerne ein Bug-Ticket senden."
+
+#. Tag: para
+#: reference_output.xml:834
+#, no-c-format
+msgid "Below is how we currently map PostGIS 2D/3D types to X3D types"
+msgstr "Im Folgenden wird beschrieben, wie der PostGIS 2D/3D Datentyp derzeit in den X3D Datentyp abgebildet wird"
+
+#. Tag: para
+#: reference_output.xml:837
+#, no-c-format
+msgid ""
+"The 'options' argument is a bitfield. For PostGIS 2.2+, this is used to "
+"denote whether to represent coordinates with X3D GeoCoordinates Geospatial "
+"node and also whether to flip the x/y axis. By default, "
+"<code>ST_AsX3D</code> outputs in database form (long,lat or X,Y), but X3D "
+"default of lat/lon, y/x may be preferred."
+msgstr "Das Argument 'options' ist ein Bitfeld. Ab PostGIS 2.2+ wird dieses verwendet, um anzuzeigen ob die Koordinaten als X3D geospatiale Knoten in GeoKoordinaten dargestellt werden und auch ob X- und Y-Achse vertauscht werden sollen. Standardmäßig erfolgt die Ausgabe durch <code>ST_AsX3D</code> im Datenbankformat (Länge, Breite oder X,Y), aber es kann auch der X3D Standard mit Breite/Länge oder Y/X bevorzugt werden."
+
+#. Tag: para
+#: reference_output.xml:841
+#, no-c-format
+msgid ""
+"0: X/Y in database order (e.g. long/lat = X,Y is standard database order), "
+"default value, and non-spatial coordinates (just regular old Coordinate "
+"tag)."
+msgstr "0: X/Y in der Datenbankreihenfolge (z.B. ist Länge/Breite = X,Y die standardmäßige Datenbankreihenfolge), Standardwert, und nicht-spatiale Koordinaten (nur der normale alte Koordinaten-Tag)."
+
+#. Tag: para
+#: reference_output.xml:845
+#, no-c-format
+msgid ""
+"1: Flip X and Y. If used in conjunction with the GeoCoordinate option "
+"switch, then output will be default \"latitude_first\" and coordinates will "
+"be flipped as well."
+msgstr "1: X und Y umdrehen. In Verbindung mit der Option für GeoKoordinaten wird bei der Standardausgabe die Breite zuerst/\"latitude_first\" ausgegeben und die Koordinaten umgedreht."
+
+#. Tag: para
+#: reference_output.xml:849
+#, no-c-format
+msgid ""
+"2: Output coordinates in GeoSpatial GeoCoordinates. This option will throw "
+"an error if geometries are not in WGS 84 long lat (srid: 4326). This is "
+"currently the only GeoCoordinate type supported. <ulink "
+"url=\"http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata.html#Specifyingaspatialreference\">Refer"
+" to X3D specs specifying a spatial reference system.</ulink>. Default output"
+" will be <code>GeoCoordinate geoSystem='\"GD\" \"WE\" "
+"\"longitude_first\"'</code>. If you prefer the X3D default of "
+"<code>GeoCoordinate geoSystem='\"GD\" \"WE\" \"latitude_first\"'</code> use "
+"<code>(2 + 1)</code> = <code>3</code>"
+msgstr "2: Die Koordinaten werden als geospatiale GeoKoordinaten ausgegeben. Diese Option gibt eine Fehlermeldung aus, falls die Geometrie nicht in WGS 84 Länge/Breite (SRID: 4326) vorliegt. Dies ist zurzeit der einzige GeoKoordinaten-Typ der unterstützt wird.<ulink url=\"http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata.html#Specifyingaspatialreference\">Siehe die X3D Spezifikation für Koordinatenreferenzsysteme</ulink>. Die Standardausgabe ist <code>GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"'</code>. Wenn Sie den X3D Standard bevorzugen <code>GeoCoordinate geoSystem='\"GD\" \"WE\" \"latitude_first\"'</code> verwenden Sie bitte <code>(2+1)</code> = <code>3</code>"
+
+#. Tag: entry
+#: reference_output.xml:859
+#, no-c-format
+msgid "PostGIS Type"
+msgstr "PostGIS Datentyp"
+
+#. Tag: entry
+#: reference_output.xml:860
+#, no-c-format
+msgid "2D X3D Type"
+msgstr "2D X3D Datentyp"
+
+#. Tag: entry
+#: reference_output.xml:861
+#, no-c-format
+msgid "3D X3D Type"
+msgstr "3D X3D Datentyp"
+
+#. Tag: entry
+#: reference_output.xml:866
+#, no-c-format
+msgid "LINESTRING"
+msgstr "LINESTRING"
+
+#. Tag: entry
+#: reference_output.xml:867 reference_output.xml:872
+#, no-c-format
+msgid "not yet implemented - will be PolyLine2D"
+msgstr "zurzeit nicht implementiert - wird PolyLine2D"
+
+#. Tag: entry
+#: reference_output.xml:868
+#, no-c-format
+msgid "LineSet"
+msgstr "LineSet"
+
+#. Tag: entry
+#: reference_output.xml:871
+#, no-c-format
+msgid "MULTILINESTRING"
+msgstr "MULTILINESTRING"
+
+#. Tag: entry
+#: reference_output.xml:873
+#, no-c-format
+msgid "IndexedLineSet"
+msgstr "IndexedLineSet"
+
+#. Tag: entry
+#: reference_output.xml:876
+#, no-c-format
+msgid "MULTIPOINT"
+msgstr "MULTIPOINT"
+
+#. Tag: entry
+#: reference_output.xml:877
+#, no-c-format
+msgid "Polypoint2D"
+msgstr "Polypoint2D"
+
+#. Tag: entry
+#: reference_output.xml:878
+#, no-c-format
+msgid "PointSet"
+msgstr "PointSet"
+
+#. Tag: entry
+#: reference_output.xml:881
+#, no-c-format
+msgid "POINT"
+msgstr "POINT"
+
+#. Tag: entry
+#: reference_output.xml:882 reference_output.xml:883
+#, no-c-format
+msgid "outputs the space delimited coordinates"
+msgstr "gibt leerzeichengetrennte Koordinaten aus"
+
+#. Tag: entry
+#: reference_output.xml:886
+#, no-c-format
+msgid "(MULTI) POLYGON, POLYHEDRALSURFACE"
+msgstr "(MULTI) POLYGON, POLYHEDRALSURFACE"
+
+#. Tag: entry
+#: reference_output.xml:887
+#, no-c-format
+msgid "Invalid X3D markup"
+msgstr "Ungültiges X3D Markup"
+
+#. Tag: entry
+#: reference_output.xml:888
+#, no-c-format
+msgid "IndexedFaceSet (inner rings currently output as another faceset)"
+msgstr "IndexedFaceSet (die inneren Ringe werden zurzeit als ein weiteres FaceSet abgebildet)"
+
+#. Tag: entry
+#: reference_output.xml:891
+#, no-c-format
+msgid "<entry>TIN</entry>"
+msgstr "<entry>TIN</entry>"
+
+#. Tag: entry
+#: reference_output.xml:892
+#, no-c-format
+msgid "TriangleSet2D (Not Yet Implemented)"
+msgstr "TriangleSet2D (zurzeit nicht implementiert)"
+
+#. Tag: entry
+#: reference_output.xml:893
+#, no-c-format
+msgid "IndexedTriangleSet"
+msgstr "IndexedTriangleSet"
+
+#. Tag: para
+#: reference_output.xml:898
+#, no-c-format
+msgid ""
+"2D geometry support not yet complete. Inner rings currently just drawn as "
+"separate polygons. We are working on these."
+msgstr "Die Unterstützung von 2D-Geometrie ist noch nicht vollständig. Die inneren Ringe werden zur Zeit lediglich als gesonderte Polygone abgebildet. Wir arbeiten daran."
+
+#. Tag: para
+#: reference_output.xml:899
+#, no-c-format
+msgid ""
+"Lots of advancements happening in 3D space particularly with <ulink "
+"url=\"http://www.web3d.org/x3d/wiki/index.php/X3D_and_HTML5#Goals:_X3D_and_HTML5\">X3D"
+" Integration with HTML5</ulink>"
+msgstr "Bezüglich 3D sind viele Weiterentwicklungen im Gange, insbesondere in Bezug auf <ulink url=\"http://www.web3d.org/x3d/wiki/index.php/X3D_and_HTML5#Goals:_X3D_and_HTML5\">X3D Integration mit HTML5</ulink>"
+
+#. Tag: para
+#: reference_output.xml:900
+#, no-c-format
+msgid ""
+"There is also a nice open source X3D viewer you can use to view rendered "
+"geometries. Free Wrl <ulink "
+"url=\"http://freewrl.sourceforge.net/\">http://freewrl.sourceforge.net/</ulink>"
+" binaries available for Mac, Linux, and Windows. Use the FreeWRL_Launcher "
+"packaged to view the geometries."
+msgstr "Es gibt auch einen feinen OpenSource X3D Viewer, den Sie benützen können, um Geometrien darzustellen. Free Wrl <ulink url=\"http://freewrl.sourceforge.net/\">http://freewrl.sourceforge.net/</ulink> Binärdateien sind für Mac, Linux und Windows verfügbar. Sie können den mitgelieferten FreeWRL_Launcher verwenden, um Gemetrien darzustellen."
+
+#. Tag: para
+#: reference_output.xml:901
+#, no-c-format
+msgid ""
+"Also check out <ulink "
+"url=\"https://github.com/robe2/postgis_x3d_viewer\">PostGIS minimalist X3D "
+"viewer</ulink> that utilizes this function and <ulink "
+"url=\"http://www.x3dom.org/\">x3dDom html/js open source toolkit</ulink>."
+msgstr "Riskieren Sie auch einen Blick auf <ulink url=\"https://github.com/robe2/postgis_x3d_viewer\">PostGIS minimalist X3D viewer</ulink>, der diese Funktionalität einsetzt und auf <ulink url=\"http://www.x3dom.org/\">x3dDom HTML/JS OpenSource Toolkit</ulink>."
+
+#. Tag: para
+#: reference_output.xml:902
+#, no-c-format
+msgid "Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML"
+msgstr "Verfügbarkeit: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML"
+
+#. Tag: para
+#: reference_output.xml:903
+#, no-c-format
+msgid ""
+"Enhanced: 2.2.0: Support for GeoCoordinates and axis (x/y, long/lat) "
+"flipping. Look at options for details."
+msgstr "Erweiterung: 2.2.0: Unterstützung für geographische Koordinaten und Vertauschen der Achsen (x/y, Länge/Breite). Für nähere Details siehe Optionen."
+
+#. Tag: title
+#: reference_output.xml:915
+#, no-c-format
+msgid ""
+"Example: Create a fully functional X3D document - This will generate a cube "
+"that is viewable in FreeWrl and other X3D viewers."
+msgstr "Beispiel: Erzeugung eines voll funktionsfähigen X3D Dokuments - Dieses erzeugt einen Würfel, den man sich mit FreeWrl und anderen X3D-Viewern ansehen kann."
+
+#. Tag: programlisting
+#: reference_output.xml:916
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<!DOCTYPE X3D PUBLIC \"ISO//Web3D//DTD X3D 3.0//EN\" \"http://www.web3d.org/specifications/x3d-3.0.dtd\">\n"
+"<X3D>\n"
+"  <Scene>\n"
+"    <Transform>\n"
+"      <Shape>\n"
+"       <Appearance>\n"
+"            <Material emissiveColor=''0 0 1''/>\n"
+"       </Appearance> ' ||\n"
+"       ST_AsX3D( ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )')) ||\n"
+"      '</Shape>\n"
+"    </Transform>\n"
+"  </Scene>\n"
+"</X3D>' As x3ddoc;]]>\n"
+"\n"
+"                x3ddoc\n"
+"                --------\n"
+"<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<!DOCTYPE X3D PUBLIC \"ISO//Web3D//DTD X3D 3.0//EN\" \"http://www.web3d.org/specifications/x3d-3.0.dtd\">\n"
+"<X3D>\n"
+"  <Scene>\n"
+"    <Transform>\n"
+"      <Shape>\n"
+"       <Appearance>\n"
+"            <Material emissiveColor='0 0 1'/>\n"
+"       </Appearance>\n"
+"       <IndexedFaceSet  coordIndex='0 1 2 3 -1 4 5 6 7 -1 8 9 10 11 -1 12 13 14 15 -1 16 17 18 19 -1 20 21 22 23'>\n"
+"            <Coordinate point='0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 0 1 0 1 0 0 1 1 1 0 1 1 1 1 0 1 1 0 0 0 1 0 0 1 1 1 1 1 1 1 0 0 0 1 1 0 1 1 1 1 0 1 1' />\n"
+"      </IndexedFaceSet>\n"
+"      </Shape>\n"
+"    </Transform>\n"
+"  </Scene>\n"
+"</X3D>]]>"
+msgstr "<![CDATA[SELECT '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE X3D PUBLIC \"ISO//Web3D//DTD X3D 3.0//EN\" \"http://www.web3d.org/specifications/x3d-3.0.dtd\">\n<X3D>\n  <Scene>\n    <Transform>\n      <Shape>\n       <Appearance>\n            <Material emissiveColor=''0 0 1''/>\n       </Appearance> ' ||\n       ST_AsX3D( ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )')) ||\n      '</Shape>\n    </Transform>\n  </Scene>\n</X3D>' As x3ddoc;]]>\n\n                x3ddoc\n                --------\n<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE X3D PUBLIC \"ISO//Web3D//DTD X3D 3.0//EN\" \"http://www.web3d.org/specifications/x3d-3.0.dtd\">\n<X3D>\n  <Scene>\n    <Transform>\n      <Shape>\n       <Appearance>\n            <Material emissiveColor='0 0 1'/>\n       </Appearance>\n       <IndexedFaceSet  coordIndex='0 1 2 3 -1 4 5 6 7 -1 8 9 10 11 -1 12 13 14 15 -1 16 17 18 19 -1 20 21 22 23'>\n            <Coordinate point='0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 0 1 0 1 0 0 1 1 1 0 1 1 1 1 0 1 1 0 0 0 1 0 0 1 1 1 1 1 1 1 0 0 0 1 1 0 1 1 1 1 0 1 1' />\n      </IndexedFaceSet>\n      </Shape>\n    </Transform>\n  </Scene>\n</X3D>]]>"
+
+#. Tag: title
+#: reference_output.xml:919
+#, no-c-format
+msgid "Example: An Octagon elevated 3 Units and decimal precision of 6"
+msgstr "Beispiel: Ein Achteck, um 3 Einheiten gehoben und mit einer dezimalen Genauigkeit von 6"
+
+#. Tag: programlisting
+#: reference_output.xml:920
+#, no-c-format
+msgid ""
+"SELECT ST_AsX3D(\n"
+"ST_Translate(\n"
+"    ST_Force_3d(\n"
+"        ST_Buffer(ST_Point(10,10),5, 'quad_segs=2')), 0,0,\n"
+"    3)\n"
+"  ,6) As x3dfrag;\n"
+"\n"
+"x3dfrag\n"
+"--------\n"
+"<![CDATA[<IndexedFaceSet coordIndex=\"0 1 2 3 4 5 6 7\">\n"
+"    <Coordinate point=\"15 10 3 13.535534 6.464466 3 10 5 3 6.464466 6.464466 3 5 10 3 6.464466 13.535534 3 10 15 3 13.535534 13.535534 3 \" />\n"
+"</IndexedFaceSet>]]>"
+msgstr "SELECT ST_AsX3D(\nST_Translate(\n    ST_Force_3d(\n        ST_Buffer(ST_Point(10,10),5, 'quad_segs=2')), 0,0,\n    3)\n  ,6) As x3dfrag;\n\nx3dfrag\n--------\n<![CDATA[<IndexedFaceSet coordIndex=\"0 1 2 3 4 5 6 7\">\n    <Coordinate point=\"15 10 3 13.535534 6.464466 3 10 5 3 6.464466 6.464466 3 5 10 3 6.464466 13.535534 3 10 15 3 13.535534 13.535534 3 \" />\n</IndexedFaceSet>]]>"
+
+#. Tag: title
+#: reference_output.xml:923
+#, no-c-format
+msgid "Example: TIN"
+msgstr "Beispiel: TIN"
+
+#. Tag: programlisting
+#: reference_output.xml:924
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((\n"
+"                0 0 0,\n"
+"                0 0 1,\n"
+"                0 1 0,\n"
+"                0 0 0\n"
+"            )), ((\n"
+"                0 0 0,\n"
+"                0 1 0,\n"
+"                1 1 0,\n"
+"                0 0 0\n"
+"            ))\n"
+"            )')) As x3dfrag;]]>\n"
+"\n"
+"                x3dfrag\n"
+"                --------\n"
+"<![CDATA[<IndexedTriangleSet  index='0 1 2 3 4 5'><Coordinate point='0 0 0 0 0 1 0 1 0 0 0 0 0 1 0 1 1 0'/></IndexedTriangleSet>]]>"
+msgstr "<![CDATA[SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((\n                0 0 0,\n                0 0 1,\n                0 1 0,\n                0 0 0\n            )), ((\n                0 0 0,\n                0 1 0,\n                1 1 0,\n                0 0 0\n            ))\n            )')) As x3dfrag;]]>\n\n                x3dfrag\n                --------\n<![CDATA[<IndexedTriangleSet  index='0 1 2 3 4 5'><Coordinate point='0 0 0 0 0 1 0 1 0 0 0 0 0 1 0 1 1 0'/></IndexedTriangleSet>]]>"
+
+#. Tag: title
+#: reference_output.xml:927
+#, no-c-format
+msgid "Example: Closed multilinestring (the boundary of a polygon with holes)"
+msgstr "Beispiel: Geschlossener MultiLinestring (die Begrenzung eines Polygons mit Lücken)"
+
+#. Tag: programlisting
+#: reference_output.xml:928
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_AsX3D(\n"
+"                    ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12 -12 10,-20 0 10,-12 16 10,0 24 10,16 16 10,20 0 10),\n"
+"  (12 0 10,8 8 10,0 12 10,-8 8 10,-8 0 10,-8 -4 10,0 -8 10,8 -4 10,12 0 10))')\n"
+") As x3dfrag;]]>\n"
+"\n"
+"                x3dfrag\n"
+"                --------\n"
+"<![CDATA[<IndexedLineSet  coordIndex='0 1 2 3 4 5 6 7 0 -1 8 9 10 11 12 13 14 15 8'>\n"
+"    <Coordinate point='20 0 10 16 -12 10 0 -16 10 -12 -12 10 -20 0 10 -12 16 10 0 24 10 16 16 10 12 0 10 8 8 10 0 12 10 -8 8 10 -8 0 10 -8 -4 10 0 -8 10 8 -4 10 ' />\n"
+" </IndexedLineSet>]]>"
+msgstr "<![CDATA[SELECT ST_AsX3D(\n                    ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12 -12 10,-20 0 10,-12 16 10,0 24 10,16 16 10,20 0 10),\n  (12 0 10,8 8 10,0 12 10,-8 8 10,-8 0 10,-8 -4 10,0 -8 10,8 -4 10,12 0 10))')\n) As x3dfrag;]]>\n\n                x3dfrag\n                --------\n<![CDATA[<IndexedLineSet  coordIndex='0 1 2 3 4 5 6 7 0 -1 8 9 10 11 12 13 14 15 8'>\n    <Coordinate point='20 0 10 16 -12 10 0 -16 10 -12 -12 10 -20 0 10 -12 16 10 0 24 10 16 16 10 12 0 10 8 8 10 0 12 10 -8 8 10 -8 0 10 -8 -4 10 0 -8 10 8 -4 10 ' />\n </IndexedLineSet>]]>"
+
+#. Tag: refname
+#: reference_output.xml:934
+#, no-c-format
+msgid "ST_GeoHash"
+msgstr "ST_GeoHash"
+
+#. Tag: refpurpose
+#: reference_output.xml:936
+#, no-c-format
+msgid "Return a GeoHash representation of the geometry."
+msgstr "Gibt die Geometrie in der GeoHash Darstellung aus."
+
+#. Tag: funcprototype
+#: reference_output.xml:941
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_GeoHash</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxchars=full_precision_of_point</parameter></paramdef>"
+msgstr "<funcdef>text <function>ST_GeoHash</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxchars=full_precision_of_point</parameter></paramdef>"
+
+#. Tag: para
+#: reference_output.xml:952
+#, no-c-format
+msgid ""
+"Return a GeoHash representation (<ulink "
+"url=\"http://en.wikipedia.org/wiki/Geohash\">http://en.wikipedia.org/wiki/Geohash</ulink>)"
+" of the geometry. A GeoHash encodes a point into a text form that is "
+"sortable and searchable based on prefixing. A shorter GeoHash is a less "
+"precise representation of a point. It can also be thought of as a box, that "
+"contains the actual point."
+msgstr "Gibt die Geometrie in der GeoHash-Darstellung (<ulink url=\"http://en.wikipedia.org/wiki/Geohash\">http://en.wikipedia.org/wiki/Geohash</ulink>) aus. Ein GeoHash codiert einen Punkt in einem Textformat, das über Präfixe sortierbar und durchsuchbar ist. Ein kürzer codierter GeoHash ergibt eine ungenauere Darstellung des Punktes. Man kann sich einen GeoHash auch als eine Box vorstellen, welche den tatsächlichen Punkt enthält."
+
+#. Tag: para
+#: reference_output.xml:954
+#, no-c-format
+msgid ""
+"If no <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash "
+"based on full precision of the input geometry type. Points return a GeoHash "
+"with 20 characters of precision (about enough to hold the full double "
+"precision of the input). Other types return a GeoHash with a variable amount"
+" of precision, based on the size of the feature. Larger features are "
+"represented with less precision, smaller features with more precision. The "
+"idea is that the box implied by the GeoHash will always contain the input "
+"feature."
+msgstr "Wenn <varname>maxchars</varname> nicht angegeben wird, gibt ST_GeoHash einen GeoHash mit der vollen Genauigkeit der Eingabegeometrie zurück.  Punkte ergeben so einen GeoHash mit einer Genauigkeit von 20 Zeichen (dies sollte ausreichen um die Eingabe in Double Precision zur Gänze abzuspeichern). Andere Varianten geben einen Geohash, basierend auf der Größe des Geoobjektes, mit veränderlicher Genauigkeit zurück, Größere Geoobjekte werden mit geringerer, kleinere Geoobjekte mit höherer Genauigkeit dargestellt. Die Idee dahinter ist, dass die durch den GeoHash implizierte Box immer das gegebene Geoobjekt beinhaltet."
+
+#. Tag: para
+#: reference_output.xml:956
+#, no-c-format
+msgid ""
+"If <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash "
+"with at most that many characters so a possibly lower precision "
+"representation of the input geometry. For non-points, the starting point of "
+"the calculation is the center of the bounding box of the geometry."
+msgstr "Wenn <varname>maxchars</varname> angegeben wird, gibt ST_GeoHash einen GeoHash zurück, der maximal die Anzahl dieser Zeichen aufweist. Auf diese Weise ist es möglich die Eingabegeometrie mit einer geringeren Präzision darzustellen. Bei Nicht-Punkten befindet sich der Anfangspunkt der Berechnung im Mittelpunkt des Umgebungsrechtecks der Geometrie."
+
+#. Tag: para
+#: reference_output.xml:958
+#, no-c-format
+msgid "Availability: 1.4.0"
+msgstr "Verfügbarkeit: 1.4.0"
+
+#. Tag: para
+#: reference_output.xml:961
+#, no-c-format
+msgid ""
+"ST_GeoHash will not work with geometries that are not in geographic "
+"(lon/lat) coordinates."
+msgstr "ST_GeoHash funktioniert nicht, wenn die Geometrien nicht in geographischen (Länge/Breite) Koordinaten vorliegen."
+
+#. Tag: programlisting
+#: reference_output.xml:969
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326));\n"
+"\n"
+"         st_geohash\n"
+"----------------------\n"
+" c0w3hf1s70w3hf1s70w3\n"
+"\n"
+"SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);\n"
+"\n"
+" st_geohash\n"
+"------------\n"
+" c0w3h\n"
+"                ]]>"
+msgstr "<![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326));\n\n         st_geohash\n----------------------\n c0w3hf1s70w3hf1s70w3\n\nSELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);\n\n st_geohash\n------------\n c0w3h\n                ]]>"
+
+#. Tag: refname
+#: reference_output.xml:980
+#, no-c-format
+msgid "ST_AsGeobuf"
+msgstr "ST_AsGeobuf"
+
+#. Tag: refpurpose
+#: reference_output.xml:982
+#, no-c-format
+msgid "Return a Geobuf representation of a set of rows."
+msgstr "Gibt eine Menge an Zeilen in der Geobuf Darstellung aus."
+
+#. Tag: funcsynopsis
+#: reference_output.xml:985
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>bytea <function>ST_AsGeobuf</function></funcdef> "
+"<paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef>"
+" </funcprototype> <funcprototype> <funcdef>bytea "
+"<function>ST_AsGeobuf</function></funcdef> <paramdef><type>anyelement "
+"</type> <parameter>row</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>geom_name</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>bytea <function>ST_AsGeobuf</function></funcdef> <paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsGeobuf</function></funcdef> <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef> <paramdef><type>text </type> <parameter>geom_name</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:1001
+#, no-c-format
+msgid ""
+"Return a Geobuf representation (<ulink "
+"url=\"https://github.com/mapbox/geobuf\">https://github.com/mapbox/geobuf</ulink>)"
+" of a set of rows corresponding to a FeatureCollection. Every input geometry"
+" is analyzed to determine maximum precision for optimal storage. Note that "
+"Geobuf in its current form cannot be streamed so the full output will be "
+"assembled in memory."
+msgstr "Gibt Zeilen einer FeatureCollection in der Geobuf Darstellung (<ulink url=\"https://github.com/mapbox/geobuf\">https://github.com/mapbox/geobuf</ulink>) aus. Von jeder Eingabegeometrie wird die maximale Genauigkeit analysiert, um eine optimale Speicherung zu erreichen. Anmerkung: In der jetzigen Form kann Geobuf nicht \"gestreamt\" werden, wodurch die gesamte Ausgabe im Arbeitsspeicher zusammengestellt wird."
+
+#. Tag: para
+#: reference_output.xml:1007 reference_output.xml:1108
+#, no-c-format
+msgid "<varname>row</varname> row data with at least a geometry column."
+msgstr "<varname>row</varname> Datenzeilen mit zumindest einer Geometriespalte."
+
+#. Tag: para
+#: reference_output.xml:1008 reference_output.xml:1111
+#, no-c-format
+msgid ""
+"<varname>geom_name</varname> is the name of the geometry column in the row "
+"data. If NULL it will default to the first found geometry column."
+msgstr "<varname>geom_name</varname> ist die Bezeichnung der Geometriespalte in den Datenzeilen. Wenn NULL, dann wird standardmäßig die erste aufgefundene Geometriespalte verwendet."
+
+#. Tag: para
+#: reference_output.xml:1010 reference_output.xml:1051
+#: reference_output.xml:1113
+#, no-c-format
+msgid "Availability: 2.4.0"
+msgstr "Verfügbarkeit: 2.4.0"
+
+#. Tag: programlisting
+#: reference_output.xml:1015
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')\n"
+"    FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') AS geom) AS q;\n"
+" st_asgeobuf\n"
+"----------------------------------\n"
+" GAAiEAoOCgwIBBoIAAAAAgIAAAE=\n"
+"\n"
+"                ]]>"
+msgstr "<![CDATA[SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')\n    FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') AS geom) AS q;\n st_asgeobuf\n----------------------------------\n GAAiEAoOCgwIBBoIAAAAAgIAAAE=\n\n                ]]>"
+
+#. Tag: refname
+#: reference_output.xml:1021
+#, no-c-format
+msgid "ST_AsMVTGeom"
+msgstr "ST_AsMVTGeom"
+
+#. Tag: refpurpose
+#: reference_output.xml:1023
+#, no-c-format
+msgid ""
+"Transform a geometry into the coordinate space of a <ulink "
+"url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</ulink>."
+msgstr "Transformiert eine Geometrie in das Koordinatensystem eines <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</ulink>s."
+
+#. Tag: funcprototype
+#: reference_output.xml:1027
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_AsMVTGeom</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>int4 </type> "
+"<parameter>extent=4096</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>int4 </type> "
+"<parameter>buffer=256</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>bool </type> "
+"<parameter>clip_geom=true</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_AsMVTGeom</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef> <paramdef choice=\"opt\"><type>int4 </type> <parameter>extent=4096</parameter></paramdef> <paramdef choice=\"opt\"><type>int4 </type> <parameter>buffer=256</parameter></paramdef> <paramdef choice=\"opt\"><type>bool </type> <parameter>clip_geom=true</parameter></paramdef>"
+
+#. Tag: para
+#: reference_output.xml:1041
+#, no-c-format
+msgid ""
+"Transform a geometry into the coordinate space of a <ulink "
+"url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</ulink> of a"
+" set of rows corresponding to a Layer. Makes best effort to keep and even "
+"correct validity and might collapse geometry into a lower dimension in the "
+"process."
+msgstr "Transformiert eine Geometrie in das Koordinatensystem eines <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</ulink>s aus Zeilen die einem Layer entsprechen. Unternimmt alle Anstrengungen, damit die Geometrie valide bleibt oder korrigiert sie eventuell sogar. Bei diesem Prozess kann es vorkommen, dass die Geometrie in eine niedrigere Dimension übergeführt wird."
+
+#. Tag: para
+#: reference_output.xml:1045
+#, no-c-format
+msgid "<varname>geom</varname> is the geometry to transform."
+msgstr "<varname>geom</varname> Die zu Transformierende Geometrie."
+
+#. Tag: para
+#: reference_output.xml:1046
+#, no-c-format
+msgid ""
+"<varname>bounds</varname> is the geometric bounds of the tile contents "
+"without buffer."
+msgstr "<varname>bounds</varname> ist die geometrische Abgrenzung des Inhalts der Kachel ohne Puffer."
+
+#. Tag: para
+#: reference_output.xml:1047
+#, no-c-format
+msgid ""
+"<varname>extent</varname> is the tile extent in tile coordinate space as "
+"defined by the <ulink url=\"https://www.mapbox.com/vector-"
+"tiles/specification/\">specification</ulink>. If NULL it will default to "
+"4096."
+msgstr "<varname>extent</varname> ist die Größe der Kachel, angegeben im Koordinatensystem der Vektorkacheln und so wie in der <ulink url=\"https://www.mapbox.com/vector-tiles/specification/\">Spezifikation</ulink> festgelegt. Wenn dieser Wert NULL ist, wird der Standardwert 4096 angenommen."
+
+#. Tag: para
+#: reference_output.xml:1048
+#, no-c-format
+msgid ""
+"<varname>buffer</varname> is the buffer distance in tile coordinate space to"
+" optionally clip geometries. If NULL it will default to 256."
+msgstr "<varname>buffer</varname> ist die Puffergröße im Koordinatensystem der Vektorkacheln, an der die Geometrie optional ausgeschnitten werden kann. Wenn NULL, dann wird der Standardwert 256 angenommen."
+
+#. Tag: para
+#: reference_output.xml:1049
+#, no-c-format
+msgid ""
+"<varname>clip_geom</varname> is a boolean to control if geometries should be"
+" clipped or encoded as is. If NULL it will default to true."
+msgstr "<varname>clip_geom</varname> ist ein boolescher Eingabewert, der bestimmt ob die Geometrie ausgeschnitten werden soll, oder so wie sie vorliegt codiert wird. Wenn der Wert NULL ist, wird der Standardwert TRUE angenommen."
+
+#. Tag: programlisting
+#: reference_output.xml:1056
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_AsText(ST_AsMVTGeom(\n"
+"        ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),\n"
+"        ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),\n"
+"        4096, 0, false));\n"
+"                              st_astext\n"
+"--------------------------------------------------------------------\n"
+" MULTIPOLYGON(((5 4096,10 4096,10 4091,5 4096)),((5 4096,0 4096,0 4101,5 4096)))\n"
+"\n"
+"                ]]>"
+msgstr "<![CDATA[SELECT ST_AsText(ST_AsMVTGeom(\n        ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),\n        ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),\n        4096, 0, false));\n                              st_astext\n--------------------------------------------------------------------\n MULTIPOLYGON(((5 4096,10 4096,10 4091,5 4096)),((5 4096,0 4096,0 4101,5 4096)))\n\n                ]]>"
+
+#. Tag: refname
+#: reference_output.xml:1062
+#, no-c-format
+msgid "ST_AsMVT"
+msgstr "ST_AsMVT"
+
+#. Tag: refpurpose
+#: reference_output.xml:1064
+#, no-c-format
+msgid ""
+"Return a <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector "
+"Tile</ulink> representation of a set of rows."
+msgstr "Gibt Zeilen in der <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</ulink> Darstellung aus."
+
+#. Tag: funcsynopsis
+#: reference_output.xml:1067
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>bytea <function>ST_AsMVT</function></funcdef> "
+"<paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef>"
+" </funcprototype> <funcprototype> <funcdef>bytea "
+"<function>ST_AsMVT</function></funcdef> <paramdef><type>anyelement </type> "
+"<parameter>row</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>name</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>bytea <function>ST_AsMVT</function></funcdef> "
+"<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>name</parameter></paramdef> "
+"<paramdef><type>int4 </type> <parameter>extent</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>bytea "
+"<function>ST_AsMVT</function></funcdef> <paramdef><type>anyelement </type> "
+"<parameter>row</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>name</parameter></paramdef> <paramdef><type>int4 </type> "
+"<parameter>extent</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>geom_name</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>bytea <function>ST_AsMVT</function></funcdef> <paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsMVT</function></funcdef> <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef> <paramdef><type>text </type> <parameter>name</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsMVT</function></funcdef> <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef> <paramdef><type>text </type> <parameter>name</parameter></paramdef> <paramdef><type>int4 </type> <parameter>extent</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsMVT</function></funcdef> <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef> <paramdef><type>text </type> <parameter>name</parameter></paramdef> <paramdef><type>int4 </type> <parameter>extent</parameter></paramdef> <paramdef><type>text </type> <parameter>geom_name</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:1096
+#, no-c-format
+msgid ""
+"Return a <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector "
+"Tile</ulink> representation of a set of rows corresponding to a Layer. "
+"Multiple calls can be concatenated to a tile with multiple Layers. Geometry "
+"is assumed to be in tile coordinate space and valid as per <ulink "
+"url=\"https://www.mapbox.com/vector-"
+"tiles/specification/\">specification</ulink>. Typically <xref "
+"linkend=\"ST_AsMVTGeom\"/> can be used to transform geometry into tile "
+"coordinate space. Other row data will be encoded as attributes."
+msgstr "Gibt eine Menge an Zeilen, die einem Layer entsprechen, in der <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</ulink> Darstellung aus. Mehrere Aufrufe können aneinandergereiht werden, um eine Kachel mit mehreren Layern zu erstellen. Es wird angenommen, dass die Geometrie im Koordinatensystem der Vektorkacheln vorliegt und entsprechend der<ulink url=\"https://www.mapbox.com/vector-tiles/specification/\">Spezifikation</ulink> valide ist. Üblicherweise wird <xref linkend=\"ST_AsMVTGeom\"/> verwendet, um die Geometrie in das Koordinatensystem der Vektorkacheln zu transformieren. Die übrigen Daten werden als Attribute codiert."
+
+#. Tag: para
+#: reference_output.xml:1103
+#, no-c-format
+msgid ""
+"The <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector "
+"Tile</ulink> format can store features with a different set of attributes "
+"per feature. To make use of this feature supply a JSONB column in the row "
+"data containing Json objects one level deep. The keys and values in the "
+"object will be parsed into feature attributes."
+msgstr "Das <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</ulink> Format kann Geoobjekte mit unterschiedlichen Attributen pro Feature speichern. Um dies zu nutzen, legen Sie bitte eine JSONB-Spalte mit JSON-Objekten in den Rohdaten an. Die Schlüssel und Werte in dem Objekt werden in die Feature-Attribute zerlegt."
+
+#. Tag: para
+#: reference_output.xml:1109
+#, no-c-format
+msgid ""
+"<varname>name</varname> is the name of the Layer. If NULL it will use the "
+"string \"default\"."
+msgstr "<varname>name</varname> ist der Name des Layers. Wenn NULL, dann wird die Zeichenfolge \"default\" verwendet."
+
+#. Tag: para
+#: reference_output.xml:1110
+#, no-c-format
+msgid ""
+"<varname>extent</varname> is the tile extent in screen space as defined by "
+"the specification. If NULL it will default to 4096."
+msgstr "<varname>extent</varname> ist die Kachelausdehnung in Bildschirmeinheiten, so wie in der Spezifikation festgelegt. Wenn NULL, wird der Standardwert 4096 angenommen."
+
+#. Tag: programlisting
+#: reference_output.xml:1118
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_AsMVT(q, 'test', 4096, 'geom') FROM (SELECT 1 AS c1,\n"
+"    ST_AsMVTGeom(ST_GeomFromText('POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))'),\n"
+"    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;\n"
+"                              st_asmvt\n"
+"--------------------------------------------------------------------\n"
+" \\x1a320a0474657374121d12020000180322150946ec3f1a14453b0a09280f091413121e09091e0f1a026331220228012880207802\n"
+"\n"
+"                ]]>"
+msgstr "<![CDATA[SELECT ST_AsMVT(q, 'test', 4096, 'geom') FROM (SELECT 1 AS c1,\n    ST_AsMVTGeom(ST_GeomFromText('POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))'),\n    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;\n                              st_asmvt\n--------------------------------------------------------------------\n \\x1a320a0474657374121d12020000180322150946ec3f1a14453b0a09280f091413121e09091e0f1a026331220228012880207802\n\n                ]]>"

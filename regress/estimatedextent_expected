@@ -1,15 +1,23 @@
-ERROR:  stats for "t.g" do not exist
-ERROR:  stats for "t.g" do not exist
+WARNING:  stats for "t.g" do not exist
+#877.1|
+WARNING:  stats for "t.g" do not exist
+#877.2|
 WARNING:  ST_Estimated_Extent signature was deprecated in 2.1.0. Please use ST_EstimatedExtent
-ERROR:  stats for "t.g" do not exist
-ERROR:  stats for "t.g" do not exist
+WARNING:  stats for "t.g" do not exist
+#877.2.deprecated|
+WARNING:  stats for "t.g" do not exist
+#877.3||||
 #877.4|-10.15000|20.15000|-50.40000|30.40000
 #877.5|-10.15000|20.15000|-50.40000|30.40000
-ERROR:  stats for "c1.g" do not exist
-ERROR:  stats for "c2.g" do not exist
-ERROR:  stats for "p.g" do not exist
+WARNING:  stats for "c1.g" do not exist
+#3391.1||||
+WARNING:  stats for "c2.g" do not exist
+#3391.2||||
+WARNING:  stats for "p.g" do not exist
+#3391.3||||
 #3391.4|0.00|1.00|0.00|1.00
-ERROR:  stats for "c2.g" do not exist
+WARNING:  stats for "c2.g" do not exist
+#3391.5||||
 #3391.6|0.00|1.00|0.00|1.00
 #3391.7|0.00|1.00|0.00|1.00
 #3391.8|-1.00|0.00|-1.00|0.00
@@ -17,12 +25,25 @@ ERROR:  stats for "c2.g" do not exist
 #3391.10|0.00|1.00|0.00|1.00
 #3391.11|-1.00|0.00|-1.00|0.00
 #3391.12|-1.01|2.02|-1.01|2.02
-ERROR:  stats for "p.g" do not exist
-ERROR:  stats for "p.g" do not exist
-ERROR:  stats for "c1.g" do not exist
-ERROR:  stats for "c1.g" do not exist
+WARNING:  stats for "p.g" do not exist
+#3391.13||||
+WARNING:  stats for "p.g" do not exist
+#3391.14||||
+WARNING:  stats for "c1.g" do not exist
+#3391.15||||
+WARNING:  stats for "c1.g" do not exist
+#3391.16||||
 #3391.17|0.00|1.00|0.00|1.00
-ERROR:  stats for "p.g" do not exist
+WARNING:  stats for "p.g" do not exist
+#3391.18||||
 #3391.19|0.00|1.00|0.00|1.00
 #3391.20|0.00|1.00|0.00|1.00
 NOTICE:  drop cascades to 2 other objects
+1.a null|
+1.b null|
+2.a null|
+2.b null|
+3.a null|
+3.b null|
+4.a box|BOX(-100 -100,100 100)
+4.b box|BOX(-200 -200,200 200)

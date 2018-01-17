@@ -25,7 +25,7 @@
 
 
 /**********************************************************************
-**  Useful functions for all GSERIALIZED handlers. 
+**  Useful functions for all GSERIALIZED handlers.
 **  TODO: Move to common.h in pgcommon
 */
 

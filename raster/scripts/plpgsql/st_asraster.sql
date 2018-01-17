@@ -5,12 +5,12 @@
 --
 ----------------------------------------------------------------------
 
--- NOTE: The ST_AsRaster() function is already implemented in C. This plpgsql script is provided only as an example. 
+-- NOTE: The ST_AsRaster() function is already implemented in C. This plpgsql script is provided only as an example.
 -- Defining the plpgsql function below might overwrite the current C implementation and brake other functions dependent on it.
 -- Use with caution.
 
-CREATE OR REPLACE FUNCTION ST_AsRaster(geom geometry, rast raster, pixeltype text, nodatavalue float8, val float8) 
-    RETURNS raster AS 
+CREATE OR REPLACE FUNCTION ST_AsRaster(geom geometry, rast raster, pixeltype text, nodatavalue float8, val float8)
+    RETURNS raster AS
     $$
     DECLARE
     numband int := ST_NumBands(rast);

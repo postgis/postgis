@@ -12,7 +12,7 @@
 # PGXS information
 #
 # Note that PGXS currently doesn't handle building FE executables, but we need
-# the DESTDIR variable so we can get the correct install paths. 
+# the DESTDIR variable so we can get the correct install paths.
 # Hence we include the PGXS Makefile here, but ensure that we override the
 # 'all' and 'install' targets with the ones we really want to use below.
 PG_CONFIG = @PG_CONFIG@
@@ -20,12 +20,12 @@ PGXS := @PGXS@
 include $(PGXS)
 
 # Set CFLAGS afer PGXS, otherwise it will get overwritten with the PGXS
-# version which is not what we want. 
+# version which is not what we want.
 CC=@CC@
 CFLAGS=-I ../liblwgeom @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@
 top_builddir = @top_builddir@
 SHELL = @SHELL@
-INSTALL = $(SHELL) ../install-sh
+INSTALL = @INSTALL@
 LIBTOOL = @LIBTOOL@
 
 # Filenames with extension as determined by the OS
@@ -81,8 +81,8 @@ gui: $(SHP2PGSQL-GUI) $(SHP2PGSQL-CLI) @GTK_WIN32_RES@
 shp2pgsql-gui.res: shp2pgsql-gui.rc shp2pgsql-gui.ico
 	windres $< -O coff -o $@
 
-# liblwgeom.a dependency to allow "make install" in 
-# the loader/ subdirectory to work  
+# liblwgeom.a dependency to allow "make install" in
+# the loader/ subdirectory to work
 $(LIBLWGEOM):
 	$(MAKE) -C ../liblwgeom
 
@@ -95,11 +95,11 @@ pgsql2shp-core.o: pgsql2shp-core.c pgsql2shp-core.h shpcommon.h
 pgsql2shp-cli.o: pgsql2shp-cli.c pgsql2shp-core.h shpcommon.h
 	$(CC) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
 
-$(PGSQL2SHP-CLI): $(SHPLIB_OBJS) pgsql2shp-core.o pgsql2shp-cli.o $(LIBLWGEOM) 
+$(PGSQL2SHP-CLI): $(SHPLIB_OBJS) pgsql2shp-core.o pgsql2shp-cli.o $(LIBLWGEOM)
 	$(LIBTOOL) --mode=link \
 	  $(CC) $(CFLAGS) $^ $(LDFLAGS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS) -o $@
 
-$(SHP2PGSQL-CLI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM) 
+$(SHP2PGSQL-CLI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM)
 	$(LIBTOOL) --mode=link \
 	  $(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(GETTEXT_LDFLAGS) $(ICONV_LDFLAGS)
 
@@ -114,22 +114,46 @@ $(SHP2PGSQL-GUI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-gui.o pgsql2shp-core
 installdir:
 	@mkdir -p $(DESTDIR)$(bindir)
 
-install: installdir 
+install-desktop:
+ifdef gtk_build
+	mkdir -p $(DESTDIR)$(datadir)/applications
+	$(INSTALL_DATA) shp2pgsql-gui.desktop $(DESTDIR)$(datadir)/applications/shp2pgsql-gui.desktop
+endif
+
+ICON_SIZES = 8x8 16x16 22x22 24x24 32x32 36x36 40x40 42x42 48x48 64x64
+
+install-icons:
+ifdef gtk_build
+	for size in $(ICON_SIZES); do \
+		mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/$${size}/apps; \
+		$(INSTALL_DATA) icons/hicolor/$${size}/apps/shp2pgsql-gui.png $(DESTDIR)$(datadir)/icons/hicolor/$${size}/apps/shp2pgsql-gui.png; \
+	done
+endif
+
+install: installdir install-desktop install-icons
 ifdef gtk_build
 	$(LIBTOOL) --mode=install $(INSTALL) $(SHP2PGSQL-GUI) "$(DESTDIR)$(bindir)/$(SHP2PGSQL-GUI)"
 endif
 	$(LIBTOOL) --mode=install $(INSTALL) $(PGSQL2SHP-CLI) "$(DESTDIR)$(bindir)/$(PGSQL2SHP-CLI)"
 	$(LIBTOOL) --mode=install $(INSTALL) $(SHP2PGSQL-CLI) "$(DESTDIR)$(bindir)/$(SHP2PGSQL-CLI)"
 
-uninstall:
+uninstall-desktop:
+ifdef gtk_build
+	rm -f $(DESTDIR)$(datadir)/applications/shp2pgsql-gui.desktop
+endif
+
+uninstall-icons:
+ifdef gtk_build
+	rm -f $(DESTDIR)$(datadir)/icons/hicolor/*/apps/shp2pgsql-gui.png
+endif
+
+uninstall: uninstall-desktop uninstall-icons
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(PGSQL2SHP-CLI)"
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(SHP2PGSQL-CLI)"
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(SHP2PGSQL-GUI)"
 
 check:
-ifdef gtk_build
 	$(MAKE) -C cunit check
-endif
 
 clean:
 	rm -rf .libs
@@ -142,10 +166,10 @@ distclean:
 
 
 #
-# Internationalization targets. These are going to need some work and 
+# Internationalization targets. These are going to need some work and
 # love to land the files in the right places in all platforms.
 #
-pot: 
+pot:
 	xgettext -k_ shp2pgsql-core.c shp2pgsql-cli.c shp2pgsql-gui.c -o po/shp2pgsql.pot
 	xgettext -k_ pgsql2shp-core.c pgsql2shp-cli.c -o po/pgsql2shp.pot
 

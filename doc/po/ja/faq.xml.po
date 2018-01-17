@@ -1,19 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
-"PO-Revision-Date: 2016-02-11 13:54+0000\n"
+"POT-Creation-Date: 2017-09-07 07:22+0000\n"
+"PO-Revision-Date: 2016-11-11 05:50+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/ja/)\n"
+"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
+"ja/)\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: title
@@ -27,27 +28,35 @@ msgstr "PostGIS よくある質問"
 #, no-c-format
 msgid ""
 "Where can I find tutorials, guides and workshops on working with PostGIS"
-msgstr "PostGISでの作業に関するチュートリアル、ガイド、ワークショップはどこにありますか?"
+msgstr ""
+"PostGISでの作業に関するチュートリアル、ガイド、ワークショップはどこにあります"
+"か?"
 
 #. Tag: para
 #: faq.xml:12
 #, no-c-format
 msgid ""
-"OpenGeo has a step by step tutorial guide workshop <ulink "
-"url=\"http://workshops.boundlessgeo.com/postgis-intro/\">Introduction to "
-"PostGIS</ulink>. It includes packaged data as well as intro to working with "
-"OpenGeo Suite. It is probably the best tutorial on PostGIS."
-msgstr "OpenGeoが手順ごとのチュートリアルガイドワークショップ<ulink url=\"http://workshops.boundlessgeo.com/postgis-intro/\">Introduction to PostGIS</ulink>を出しています。OpenGeo Suiteでの作業の入門編だけでなく梱包されたデータもあります。PostGISの最善のチュートリアルかも知れません。"
+"OpenGeo has a step by step tutorial guide workshop <ulink url=\"http://"
+"workshops.boundlessgeo.com/postgis-intro/\">Introduction to PostGIS</ulink>. "
+"It includes packaged data as well as intro to working with OpenGeo Suite. It "
+"is probably the best tutorial on PostGIS."
+msgstr ""
+"OpenGeoが手順ごとのチュートリアルガイドワークショップ<ulink url=\"http://"
+"workshops.boundlessgeo.com/postgis-intro/\">Introduction to PostGIS</ulink>を"
+"出しています。OpenGeo Suiteでの作業の入門編だけでなく梱包されたデータもありま"
+"す。PostGISの最善のチュートリアルかも知れません。"
 
 #. Tag: para
 #: faq.xml:13
 #, no-c-format
 msgid ""
-"BostonGIS also has a <ulink "
-"url=\"http://www.bostongis.com/PrinterFriendly.aspx?content_name=postgis_tut01\">PostGIS"
-" almost idiot's guide on getting started</ulink>. That one is more focused "
-"on the windows user."
-msgstr "BostonGISにも<ulink url=\"http://www.bostongis.com/PrinterFriendly.aspx?content_name=postgis_tut01\">PostGIS almost idiot's guide on getting started</ulink>があります。Windowsユーザに、より軸足を置いています。"
+"BostonGIS also has a <ulink url=\"http://www.bostongis.com/PrinterFriendly."
+"aspx?content_name=postgis_tut01\">PostGIS almost idiot's guide on getting "
+"started</ulink>. That one is more focused on the windows user."
+msgstr ""
+"BostonGISにも<ulink url=\"http://www.bostongis.com/PrinterFriendly.aspx?"
+"content_name=postgis_tut01\">PostGIS almost idiot's guide on getting "
+"started</ulink>があります。Windowsユーザに、より軸足を置いています。"
 
 #. Tag: para
 #: faq.xml:18
@@ -55,23 +64,33 @@ msgstr "BostonGISにも<ulink url=\"http://www.bostongis.com/PrinterFriendly.asp
 msgid ""
 "My applications and desktop tools worked with PostGIS 1.5,but they don't "
 "work with PostGIS 2.0. How do I fix this?"
-msgstr "PostGIS 1.5で動作していたアプリケーションやデスクトップツールがPostGIS 2.0では動作しなくなりました。解消するにはどうすればよいでしょうか?"
+msgstr ""
+"PostGIS 1.5で動作していたアプリケーションやデスクトップツールがPostGIS 2.0で"
+"は動作しなくなりました。解消するにはどうすればよいでしょうか?"
 
 #. Tag: para
 #: faq.xml:22
 #, no-c-format
 msgid ""
 "A lot of deprecated functions were removed from the PostGIS code base in "
-"PostGIS 2.0. This has affected applications in addition to third-party tools"
-" such as Geoserver, MapServer, QuantumGIS, and OpenJump to name a few. There"
-" are a couple of ways to resolve this. For the third-party apps, you can try"
-" to upgrade to the latest versions of these which have many of these issues "
+"PostGIS 2.0. This has affected applications in addition to third-party tools "
+"such as Geoserver, MapServer, QuantumGIS, and OpenJump to name a few. There "
+"are a couple of ways to resolve this. For the third-party apps, you can try "
+"to upgrade to the latest versions of these which have many of these issues "
 "fixed. For your own code, you can change your code to not use the functions "
 "removed. Most of these functions are non ST_ aliases of ST_Union, ST_Length "
-"etc. and as a last resort, install the whole of "
-"<varname>legacy.sql</varname> or just the portions of "
-"<varname>legacy.sql</varname> you need."
-msgstr "PostGIS 2.0で、多数の非推奨関数がPostGISコードから削除されました。これは、GeoServer, MapServer, QuantumGIS, OpenJump等のサードバーティツールに加えて、アプリケーションにも影響が出ます。これを解決する方法が二つあります。サードパーティアプリケーションの場合は、これらの問題の多くが解決されている最新版にアップグレードしてみることで対応できます。 ご自身のコードの場合は、削除された関数を使わないようにソースを変更することで対応できます。 削除された関数のほとんどは、ST_Unino, ST_Length等のエイリアスで、ST_を取ったものです。最後の手段として<varname>legacy.sql</varname>の全体または<varname>legacy.sql</varname>の必要な部分をインストールします。"
+"etc. and as a last resort, install the whole of <varname>legacy.sql</"
+"varname> or just the portions of <varname>legacy.sql</varname> you need."
+msgstr ""
+"PostGIS 2.0で、多数の非推奨関数がPostGISコードから削除されました。これは、"
+"GeoServer, MapServer, QuantumGIS, OpenJump等のサードバーティツールに加えて、"
+"アプリケーションにも影響が出ます。これを解決する方法が二つあります。サード"
+"パーティアプリケーションの場合は、これらの問題の多くが解決されている最新版に"
+"アップグレードしてみることで対応できます。 ご自身のコードの場合は、削除された"
+"関数を使わないようにソースを変更することで対応できます。 削除された関数のほと"
+"んどは、ST_Unino, ST_Length等のエイリアスで、ST_を取ったものです。最後の手段"
+"として<varname>legacy.sql</varname>の全体または<varname>legacy.sql</varname>"
+"の必要な部分をインストールします。"
 
 #. Tag: para
 #: faq.xml:28
@@ -81,16 +100,22 @@ msgid ""
 "postgis.sql. You can install this file after you have installed postgis.sql "
 "and spatial_ref_sys.sql to get back all the 200 some-odd old functions we "
 "removed."
-msgstr " <varname>legacy.sql</varname>ファイルはpostgis.sqlのインストール先と同じフォルダにあります。postgis.sqlとspatial_ref_sys.sqlをインストールした後、このファイルをインストールすると、削除した200余の関数を復帰させられます。"
+msgstr ""
+" <varname>legacy.sql</varname>ファイルはpostgis.sqlのインストール先と同じフォ"
+"ルダにあります。postgis.sqlとspatial_ref_sys.sqlをインストールした後、この"
+"ファイルをインストールすると、削除した200余の関数を復帰させられます。"
 
 #. Tag: para
 #: faq.xml:35
 #, no-c-format
 msgid ""
 "When I load OpenStreetMap data with osm2pgsql, I'm getting an error failed: "
-"ERROR: operator class \"gist_geometry_ops\" does not exist for access method"
-" \"gist\" Error occurred. This worked fine in PostGIS 1.5."
-msgstr "osm2pgsqlを使ってOpenStreetMapデータをロードするときに、failed: ERROR: operator class \"gist_geometry_ops\" does not exist for access method \"gist\"というエラーが発生しました。PostGIS 1.5では正しく動作していました。"
+"ERROR: operator class \"gist_geometry_ops\" does not exist for access method "
+"\"gist\" Error occurred. This worked fine in PostGIS 1.5."
+msgstr ""
+"osm2pgsqlを使ってOpenStreetMapデータをロードするときに、failed: ERROR: "
+"operator class \"gist_geometry_ops\" does not exist for access method \"gist"
+"\"というエラーが発生しました。PostGIS 1.5では正しく動作していました。"
 
 #. Tag: para
 #: faq.xml:40
@@ -100,17 +125,25 @@ msgid ""
 "changed to gist_geometry_ops_2d and the gist_geometry_ops was completely "
 "removed. This was done because PostGIS 2 also introduced Nd spatial indexes "
 "for 3D support and the old name was deemed confusing and a misnomer."
-msgstr "PostGIS 2では、デフォルトのジオメトリ演算子クラスがgist_geometry_opsからgist_geometry_ops_2dに変更され、gist_geometry_opsは完全に削除されました。PostGIS 2は3次元対応のためN次元空間インデクスを導入しました。古い名前は混乱させるものであり、誤称であると考えました。"
+msgstr ""
+"PostGIS 2では、デフォルトのジオメトリ演算子クラスがgist_geometry_opsから"
+"gist_geometry_ops_2dに変更され、gist_geometry_opsは完全に削除されました。"
+"PostGIS 2は3次元対応のためN次元空間インデクスを導入しました。古い名前は混乱さ"
+"せるものであり、誤称であると考えました。"
 
 #. Tag: para
 #: faq.xml:41
 #, no-c-format
 msgid ""
 "Some older applications that as part of the process create tables and "
-"indexes, explicitly referenced the operator class name. This was unnecessary"
-" if you want the default 2D index. So if you manage said good, change index "
+"indexes, explicitly referenced the operator class name. This was unnecessary "
+"if you want the default 2D index. So if you manage said good, change index "
 "creation from:"
-msgstr "古いアプリケーションには、処理の一部として、テーブルやインデクスを生成する際に、明示的に演算子クラス名を参照しているものがありました。デフォルトの2次元インデクスが欲しい場合には重要ではありません。エラーが内容に管理するために、インデクス生成を次に示す悪い例から良い例に変えて下さい。"
+msgstr ""
+"古いアプリケーションには、処理の一部として、テーブルやインデクスを生成する際"
+"に、明示的に演算子クラス名を参照しているものがありました。デフォルトの2次元イ"
+"ンデクスが欲しい場合には重要ではありません。エラーが内容に管理するために、イ"
+"ンデクス生成を次に示す悪い例から良い例に変えて下さい。"
 
 #. Tag: para
 #: faq.xml:42
@@ -124,7 +157,9 @@ msgstr "悪い例"
 msgid ""
 "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom "
 "gist_geometry_ops);"
-msgstr "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom gist_geometry_ops);"
+msgstr ""
+"CREATE INDEX idx_my_table_geom ON my_table USING gist(geom "
+"gist_geometry_ops);"
 
 #. Tag: para
 #: faq.xml:44
@@ -144,7 +179,9 @@ msgstr "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom);"
 msgid ""
 "The only case where you WILL need to specify the operator class is if you "
 "want a 3D spatial index as follows:"
-msgstr "演算子クラスを指定する必要が出るのは、3次元空間が求められる場合です。次のようにします。"
+msgstr ""
+"演算子クラスを指定する必要が出るのは、3次元空間が求められる場合です。次のよう"
+"にします。"
 
 #. Tag: programlisting
 #: faq.xml:48
@@ -152,7 +189,9 @@ msgstr "演算子クラスを指定する必要が出るのは、3次元空間�
 msgid ""
 "CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom "
 "gist_geometry_ops_nd);"
-msgstr "CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom gist_geometry_ops_nd);"
+msgstr ""
+"CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom "
+"gist_geometry_ops_nd);"
 
 #. Tag: para
 #: faq.xml:50
@@ -164,7 +203,13 @@ msgid ""
 "However if you use this fix, you are advised to at a later point drop the "
 "index and recreate it without the operator class. This will save you grief "
 "in the future when you need to upgrade again."
-msgstr "不幸にもgist_geometry_opsがハードコーディングされていて変更不可なコンパイルされたコードを突きつけられているなら、PostGIS 2.0.2以上に同梱されている<filename>legacy_gist.sql</filename>を使用して、古いクラスを生成することができます。しかしながら、この方法を使う場合は、後ほどインデクスを削除して、演算子クラスを指定せずに再生成させるべきです。将来再びアップデートする必要がある時に泣いてしまうことを抑制します。"
+msgstr ""
+"不幸にもgist_geometry_opsがハードコーディングされていて変更不可なコンパイルさ"
+"れたコードを突きつけられているなら、PostGIS 2.0.2以上に同梱されている"
+"<filename>legacy_gist.sql</filename>を使用して、古いクラスを生成することがで"
+"きます。しかしながら、この方法を使う場合は、後ほどインデクスを削除して、演算"
+"子クラスを指定せずに再生成させるべきです。将来再びアップデートする必要がある"
+"時に泣いてしまうことを抑制します。"
 
 #. Tag: para
 #: faq.xml:56
@@ -172,7 +217,9 @@ msgstr "不幸にもgist_geometry_opsがハードコーディングされてい�
 msgid ""
 "I'm running PostgreSQL 9.0 and I can no longer read/view geometries in "
 "OpenJump, Safe FME, and some other tools?"
-msgstr "PostgreSQL 9.0を使っていますが、OpenJump、Safe FME等のツールでジオメトリの読み取りや表示ができなくなってしまいましたが?"
+msgstr ""
+"PostgreSQL 9.0を使っていますが、OpenJump、Safe FME等のツールでジオメトリの読"
+"み取りや表示ができなくなってしまいましたが?"
 
 #. Tag: para
 #: faq.xml:60
@@ -180,31 +227,44 @@ msgstr "PostgreSQL 9.0を使っていますが、OpenJump、Safe FME等のツー
 msgid ""
 "In PostgreSQL 9.0+, the default encoding for bytea data has been changed to "
 "hex and older JDBC drivers still assume escape format. This has affected "
-"some applications such as Java applications using older JDBC drivers or .NET"
-" applications that use the older npgsql driver that expect the old behavior "
+"some applications such as Java applications using older JDBC drivers or .NET "
+"applications that use the older npgsql driver that expect the old behavior "
 "of ST_AsBinary. There are two approaches to getting this to work again."
-msgstr "PostgreSQL 9.0以上では、byteaデータのデフォルトのエンコーディングがhexに変更されました。古いJDBCドライバはエスケープ形式を仮定しています。古いJDBCドライバを使ったJavaアプリケーションや古いNpgsqlドライバを使った.Netアプリケーションといった、ST_AsBinaryの古い挙動を期待するアプリケーションが影響を受けます。再び動作させるには二つの方法があります。"
+msgstr ""
+"PostgreSQL 9.0以上では、byteaデータのデフォルトのエンコーディングがhexに変更"
+"されました。古いJDBCドライバはエスケープ形式を仮定しています。古いJDBCドライ"
+"バを使ったJavaアプリケーションや古いNpgsqlドライバを使った.Netアプリケーショ"
+"ンといった、ST_AsBinaryの古い挙動を期待するアプリケーションが影響を受けます。"
+"再び動作させるには二つの方法があります。"
 
 #. Tag: para
 #: faq.xml:64
 #, no-c-format
 msgid ""
 "You can upgrade your JDBC driver to the latest PostgreSQL 9.0 version which "
-"you can get from <ulink "
-"url=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/download.html</ulink>"
-msgstr "JDBCドライバを最新のPostgreSQL 9.0版にアップグレードします。<ulink url=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/download.html</ulink>からダウンロードできます。"
+"you can get from <ulink url=\"http://jdbc.postgresql.org/download.html"
+"\">http://jdbc.postgresql.org/download.html</ulink>"
+msgstr ""
+"JDBCドライバを最新のPostgreSQL 9.0版にアップグレードします。<ulink url="
+"\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/"
+"download.html</ulink>からダウンロードできます。"
 
 #. Tag: para
 #: faq.xml:66
 #, no-c-format
 msgid ""
-"If you are running a .NET app, you can use Npgsql 2.0.11 or higher which you"
-" can download from <ulink "
-"url=\"http://pgfoundry.org/frs/?group_id=1000140\">http://pgfoundry.org/frs/?group_id=1000140</ulink>"
-" and as described on <ulink "
-"url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-released.html\">Francisco"
-" Figueiredo's NpgSQL 2.0.11 released blog entry</ulink>"
-msgstr ".Netアプリケーションについては、Npgsql 2.0.11以上を使います。<ulink url=\"http://pgfoundry.org/frs/?group_id=1000140\">http://pgfoundry.org/frs/?group_id=1000140</ulink>からダウンロードできます。また、<ulink url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-released.html\">Francisco Figueiredo's NpgSQL 2.0.11 released blog entry</ulink>に説明があります。"
+"If you are running a .NET app, you can use Npgsql 2.0.11 or higher which you "
+"can download from <ulink url=\"http://pgfoundry.org/frs/?"
+"group_id=1000140\">http://pgfoundry.org/frs/?group_id=1000140</ulink> and as "
+"described on <ulink url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-"
+"released.html\">Francisco Figueiredo's NpgSQL 2.0.11 released blog entry</"
+"ulink>"
+msgstr ""
+".Netアプリケーションについては、Npgsql 2.0.11以上を使います。<ulink url="
+"\"http://pgfoundry.org/frs/?group_id=1000140\">http://pgfoundry.org/frs/?"
+"group_id=1000140</ulink>からダウンロードできます。また、<ulink url=\"http://"
+"fxjr.blogspot.com/2010/11/npgsql-2011-released.html\">Francisco Figueiredo's "
+"NpgSQL 2.0.11 released blog entry</ulink>に説明があります。"
 
 #. Tag: para
 #: faq.xml:70
@@ -212,7 +272,9 @@ msgstr ".Netアプリケーションについては、Npgsql 2.0.11以上を使�
 msgid ""
 "If upgrading your PostgreSQL driver is not an option, then you can set the "
 "default back to the old behavior with the following change:"
-msgstr "PostgreSQLドライバのアップグレードが選択できないなら、デフォルトで古い挙動をするようにします。次のようにします。"
+msgstr ""
+"PostgreSQLドライバのアップグレードが選択できないなら、デフォルトで古い挙動を"
+"するようにします。次のようにします。"
 
 #. Tag: programlisting
 #: faq.xml:71
@@ -226,7 +288,9 @@ msgstr "ALTER DATABASE mypostgisdb SET bytea_output='escape';"
 msgid ""
 "I tried to use PgAdmin to view my geometry column and it is blank, what "
 "gives?"
-msgstr "pgAdminを使ってジオメトリカラムを表示しようとしたら空っぽでした。何か方法はありませんか?"
+msgstr ""
+"pgAdminを使ってジオメトリカラムを表示しようとしたら空っぽでした。何か方法はあ"
+"りませんか?"
 
 #. Tag: para
 #: faq.xml:82
@@ -234,24 +298,33 @@ msgstr "pgAdminを使ってジオメトリカラムを表示しようとした�
 msgid ""
 "PgAdmin doesn't show anything for large geometries. The best ways to verify "
 "you do have data in your geometry columns are?"
-msgstr "pgAdminは大きなジオメトリを表示しません。ジオメトリカラムがそうなっていないかを確かめる最善の方法は次の通りです。"
+msgstr ""
+"pgAdminは大きなジオメトリを表示しません。ジオメトリカラムがそうなっていないか"
+"を確かめる最善の方法は次の通りです。"
 
 #. Tag: programlisting
 #: faq.xml:85
 #, no-c-format
 msgid ""
-"-- this should return no records if all your geom fields are filled in        \n"
+"-- this should return no records if all your geom fields are filled in\n"
 "SELECT somefield FROM mytable WHERE geom IS NULL;"
-msgstr "-- 全てのジオメトリフィールドに値が入っている場合\n-- レコードが返りません。\nSELECT somefield FROM mytable WHERE geom IS NULL;"
+msgstr ""
+"-- 全てのgeomカラムに値が入っている場合にはレコードが返りません\n"
+"SELECT somefield FROM mytable WHERE geom IS NULL;"
 
 #. Tag: programlisting
 #: faq.xml:87
 #, no-c-format
 msgid ""
 "-- To tell just how large your geometry is do a query of the form\n"
-"--which will tell you the most number of points you have in any of your geometry columns\n"
+"--which will tell you the most number of points you have in any of your "
+"geometry columns\n"
 "SELECT MAX(ST_NPoints(geom)) FROM sometable;"
-msgstr "-- ジオメトリがどれぐらい大きいかを調べるには\n-- ジオメトリカラムの中でジオメトリごとに、それが持つポイントの数を\n-- 尋ねるかたちのクエリを実行します\nSELECT MAX(ST_NPoints(geom)) FROM sometable;"
+msgstr ""
+"-- ジオメトリがどれぐらい大きいかを調べるには\n"
+"-- ジオメトリカラムの中でジオメトリごとに、それが持つポイントの数を\n"
+"-- 尋ねるかたちのクエリを実行します\n"
+"SELECT MAX(ST_NPoints(geom)) FROM sometable;"
 
 #. Tag: para
 #: faq.xml:93
@@ -267,70 +340,101 @@ msgid ""
 "MultiPolygon, and GeometryCollection geometries. In PostGIS 2.0 and above "
 "you can also store TINS and Polyhedral Surfaces in the basic geometry type. "
 "These are specified in the Open GIS Well Known Text Format (with Z, M, and "
-"ZM extensions). There are three data types currently supported. The standard"
-" OGC geometry data type which uses a planar coordinate system for "
+"ZM extensions). There are three data types currently supported. The standard "
+"OGC geometry data type which uses a planar coordinate system for "
 "measurement, the geography data type which uses a geodetic coordinate "
 "system, with calculations on either a sphere or spheroid. The newest family "
 "member of the PostGIS spatial type family is raster for storing and "
-"analyzing raster data. Raster has its very own FAQ. Refer to <xref "
-"linkend=\"RT_FAQ\"/> and <xref linkend=\"RT_reference\"/> for more details."
-msgstr "ポイント、ラインストリング、ポリゴン、マルチポイント、マルチラインストリング、マルチポリゴン、ジオメトリコレクションです。PostGIS 2.0以上では、基本ジオメトリタイプとしてTINと多面体サーフェスも格納できます。これらはOpen GIS Well Known Text形式(XYZ, XYM, XYZM拡張付き)で指定されます。現在サポートされているのは3つのデータ型です。計測に平面座標系を使う標準OGCジオメトリデータ型があります。また、地理座標系を使い、球面または回転楕円体面上の計算を行うジオグラフィデータ型があります。最新のPostGIS空間型群に追加されたのが、ラスタデータの格納と解析に使われるラスタ型です。ラスタ型単独で「よくある質問」を用意しています。詳細については<xref linkend=\"RT_FAQ\"/>と<xref linkend=\"RT_reference\"/>をご覧ください。"
+"analyzing raster data. Raster has its very own FAQ. Refer to <xref linkend="
+"\"RT_FAQ\"/> and <xref linkend=\"RT_reference\"/> for more details."
+msgstr ""
+"ポイント、ラインストリング、ポリゴン、マルチポイント、マルチラインストリン"
+"グ、マルチポリゴン、ジオメトリコレクションです。PostGIS 2.0以上では、基本ジオ"
+"メトリタイプとしてTINと多面体サーフェスも格納できます。これらはOpen GIS Well "
+"Known Text形式(XYZ, XYM, XYZM拡張付き)で指定されます。現在サポートされている"
+"のは3つのデータ型です。計測に平面座標系を使う標準OGCジオメトリデータ型があり"
+"ます。また、地理座標系を使い、球面または回転楕円体面上の計算を行うジオグラ"
+"フィデータ型があります。最新のPostGIS空間型群に追加されたのが、ラスタデータの"
+"格納と解析に使われるラスタ型です。ラスタ型単独で「よくある質問」を用意してい"
+"ます。詳細については<xref linkend=\"RT_FAQ\"/>と<xref linkend=\"RT_reference"
+"\"/>をご覧ください。"
 
 #. Tag: para
 #: faq.xml:110
 #, no-c-format
 msgid "I'm all confused. Which data store should I use geometry or geography?"
-msgstr "たいへん混乱しました。ジオメトリとジオグラフィのどちらを使うべきでしょうか?"
+msgstr ""
+"たいへん混乱しました。ジオメトリとジオグラフィのどちらを使うべきでしょうか?"
 
 #. Tag: para
 #: faq.xml:114
 #, no-c-format
 msgid ""
 "Short Answer: geography is a newer data type that supports long range "
-"distances measurements, but most computations on it are slower than they are"
-" on geometry. If you use geography, you don't need to learn much about "
-"planar coordinate systems. Geography is generally best if all you care about"
-" is measuring distances and lengths and you have data from all over the "
-"world. Geometry data type is an older data type that has many more functions"
-" supporting it, enjoys greater support from third party tools, and "
-"operations on it are generally faster -- sometimes as much as 10 fold faster"
-" for larger geometries. Geometry is best if you are pretty comfortable with "
-"spatial reference systems or you are dealing with localized data where all "
-"your data fits in a single <link linkend=\"spatial_ref_sys\">spatial "
-"reference system (SRID)</link>, or you need to do a lot of spatial "
-"processing. Note: It is fairly easy to do one-off conversions between the "
-"two types to gain the benefits of each. Refer to <xref "
-"linkend=\"PostGIS_TypeFunctionMatrix\"/> to see what is currently supported "
-"and what is not."
-msgstr "短い答: ジオグラフィは長距離の測定をサポートする新しいデータ型ですが、計算速度は現在のところジオメトリの計算より遅いです。ジオグラフィを使う場合は、平面座標系についてあまり多く学習する必要がありません。行うことが距離や長さの計測に限定され、かつ世界中からのデータを持っている場合は、一般的にジオグラフィが最善です。ジオメトリは古いデータ型で、サポートする関数が多く、サードパーティからの多大なサポートが得られます。計算速度も早く、大きなジオメトリでは10倍違います。空間参照系に慣れているか、<link linkend=\"spatial_ref_sys\">空間参照系 (SRID)</link>が単一で済むような局所的なデータを扱っているか、あるいは、空間処理を多く行う必要がある場合には、ジオメトリが最善です。ご注意: 簡単に二つの型の相互変換を行ってそれぞれの利点を得ることができます。現在サポートされているもの、サポートされていないものについては<xref linkend=\"PostGIS_TypeFunctionMatrix\"/>を参照して下さい。"
+"distances measurements, but most computations on it are slower than they are "
+"on geometry. If you use geography, you don't need to learn much about planar "
+"coordinate systems. Geography is generally best if all you care about is "
+"measuring distances and lengths and you have data from all over the world. "
+"Geometry data type is an older data type that has many more functions "
+"supporting it, enjoys greater support from third party tools, and operations "
+"on it are generally faster -- sometimes as much as 10 fold faster for larger "
+"geometries. Geometry is best if you are pretty comfortable with spatial "
+"reference systems or you are dealing with localized data where all your data "
+"fits in a single <link linkend=\"spatial_ref_sys\">spatial reference system "
+"(SRID)</link>, or you need to do a lot of spatial processing. Note: It is "
+"fairly easy to do one-off conversions between the two types to gain the "
+"benefits of each. Refer to <xref linkend=\"PostGIS_TypeFunctionMatrix\"/> to "
+"see what is currently supported and what is not."
+msgstr ""
+"短い答: ジオグラフィは長距離の測定をサポートする新しいデータ型ですが、計算速"
+"度は現在のところジオメトリの計算より遅いです。ジオグラフィを使う場合は、平面"
+"座標系についてあまり多く学習する必要がありません。行うことが距離や長さの計測"
+"に限定され、かつ世界中からのデータを持っている場合は、一般的にジオグラフィが"
+"最善です。ジオメトリは古いデータ型で、サポートする関数が多く、サードパーティ"
+"からの多大なサポートが得られます。計算速度も早く、大きなジオメトリでは10倍違"
+"います。空間参照系に慣れているか、<link linkend=\"spatial_ref_sys\">空間参照"
+"系 (SRID)</link>が単一で済むような局所的なデータを扱っているか、あるいは、空"
+"間処理を多く行う必要がある場合には、ジオメトリが最善です。ご注意: 簡単に二つ"
+"の型の相互変換を行ってそれぞれの利点を得ることができます。現在サポートされて"
+"いるもの、サポートされていないものについては<xref linkend="
+"\"PostGIS_TypeFunctionMatrix\"/>を参照して下さい。"
 
 #. Tag: para
 #: faq.xml:125
 #, no-c-format
 msgid ""
-"Long Answer: Refer to our more lengthy discussion in the <xref "
-"linkend=\"PostGIS_GeographyVSGeometry\"/> and <link "
-"linkend=\"PostGIS_TypeFunctionMatrix\">function type matrix</link>."
-msgstr " 長い答: <xref linkend=\"PostGIS_GeographyVSGeometry\"/>と<link linkend=\"PostGIS_TypeFunctionMatrix\">function type matrix</link>とを参照して下さい。"
+"Long Answer: Refer to our more lengthy discussion in the <xref linkend="
+"\"PostGIS_GeographyVSGeometry\"/> and <link linkend="
+"\"PostGIS_TypeFunctionMatrix\">function type matrix</link>."
+msgstr ""
+" 長い答: <xref linkend=\"PostGIS_GeographyVSGeometry\"/>と<link linkend="
+"\"PostGIS_TypeFunctionMatrix\">function type matrix</link>とを参照して下さ"
+"い。"
 
 #. Tag: para
 #: faq.xml:133
 #, no-c-format
 msgid ""
 "I have more intense questions about geography, such as how big of a "
-"geographic region can I stuff in a geography column and still get reasonable"
-" answers. Are there limitations such as poles, everything in the field must "
+"geographic region can I stuff in a geography column and still get reasonable "
+"answers. Are there limitations such as poles, everything in the field must "
 "fit in a hemisphere (like SQL Server 2008 has), speed etc?"
-msgstr "もっとジオグラフィについて聞きたいです。 たとえば、ジオグラフィカラムにデータを入れて合理的な答えが得られる領域範囲はどれぐらいでしょうか、とか。極、全データが半球上になければならないのでしょうか(SQL Server 2008はそう)、速度等の制限はあるのでしょうか、とか。"
+msgstr ""
+"もっとジオグラフィについて聞きたいです。 たとえば、ジオグラフィカラムにデータ"
+"を入れて合理的な答えが得られる領域範囲はどれぐらいでしょうか、とか。極、全"
+"データが半球上になければならないのでしょうか(SQL Server 2008はそう)、速度等の"
+"制限はあるのでしょうか、とか。"
 
 #. Tag: para
 #: faq.xml:137
 #, no-c-format
 msgid ""
 "Your questions are too deep and complex to be adequately answered in this "
-"section. Please refer to our <xref "
-"linkend=\"PostGIS_Geography_AdvancedFAQ\"/>."
-msgstr "その質問は相当深く複雑で、このセクションで十分に答えられません。<xref linkend=\"PostGIS_Geography_AdvancedFAQ\"/>を参照して下さい。"
+"section. Please refer to our <xref linkend=\"PostGIS_Geography_AdvancedFAQ\"/"
+">."
+msgstr ""
+"その質問は相当深く複雑で、このセクションで十分に答えられません。<xref "
+"linkend=\"PostGIS_Geography_AdvancedFAQ\"/>を参照して下さい。"
 
 #. Tag: para
 #: faq.xml:144
@@ -343,10 +447,14 @@ msgstr "GISオブジェクトをデータベースに挿入するにはどうし
 #, no-c-format
 msgid ""
 "First, you need to create a table with a column of type \"geometry\" or "
-"\"geography\" to hold your GIS data. Storing geography type data is a little"
-" different than storing geometry. Refer to <xref "
-"linkend=\"Geography_Basics\"/> for details on storing geography."
-msgstr "まず、GISデータを保持するために\"geometry\"または\"geogprahy\"カラムを持つテーブルを作成します。ジオグラフィデータ型の格納は、ジオメトリデータ型とは若干異なります。ジオグラフィの格納については<xref linkend=\"Geography_Basics\"/>を参照して下さい。"
+"\"geography\" to hold your GIS data. Storing geography type data is a little "
+"different than storing geometry. Refer to <xref linkend=\"Geography_Basics\"/"
+"> for details on storing geography."
+msgstr ""
+"まず、GISデータを保持するために\"geometry\"または\"geogprahy\"カラムを持つ"
+"テーブルを作成します。ジオグラフィデータ型の格納は、ジオメトリデータ型とは若"
+"干異なります。ジオグラフィの格納については<xref linkend=\"Geography_Basics\"/"
+">を参照して下さい。"
 
 #. Tag: para
 #: faq.xml:152
@@ -354,7 +462,9 @@ msgstr "まず、GISデータを保持するために\"geometry\"または\"geog
 msgid ""
 "For geometry: Connect to your database with <filename>psql</filename> and "
 "try the following SQL:"
-msgstr "ジオメトリについては、psqlでデータベースに接続して、次のSQLを試してみて下さい。"
+msgstr ""
+"ジオメトリについては、psqlでデータベースに接続して、次のSQLを試してみて下さ"
+"い。"
 
 #. Tag: programlisting
 #: faq.xml:156
@@ -362,7 +472,9 @@ msgstr "ジオメトリについては、psqlでデータベースに接続し�
 msgid ""
 "CREATE TABLE gtest ( gid serial primary key, name varchar(20)\n"
 "        , geom geometry(LINESTRING) );"
-msgstr "CREATE TABLE gtest ( gid serial primary key, name varchar(20)\n        , geom geometry(LINESTRING) );"
+msgstr ""
+"CREATE TABLE gtest ( gid serial primary key, name varchar(20)\n"
+"        , geom geometry(LINESTRING) );"
 
 #. Tag: para
 #: faq.xml:158
@@ -371,36 +483,50 @@ msgid ""
 "If the geometry column definition fails, you probably have not loaded the "
 "PostGIS functions and objects into this database or are using a pre-2.0 "
 "version of PostGIS. See the <xref linkend=\"PGInstall\"/>."
-msgstr "ジオメトリカラムの追加に失敗する場合は、もしかしたらPostGISの関数とオブジェクトをデータベースにロードしていないか、2.0より前の版のPostGISなのかも知れません。<xref linkend=\"PGInstall\"/>を参照して下さい。"
+msgstr ""
+"ジオメトリカラムの追加に失敗する場合は、もしかしたらPostGISの関数とオブジェク"
+"トをデータベースにロードしていないか、2.0より前の版のPostGISなのかも知れませ"
+"ん。<xref linkend=\"PGInstall\"/>を参照して下さい。"
 
 #. Tag: para
 #: faq.xml:162
 #, no-c-format
 msgid ""
-"Then, you can insert a geometry into the table using a SQL insert statement."
-" The GIS object itself is formatted using the OpenGIS Consortium \"well-"
-"known text\" format:"
-msgstr "これで、SQLのINSERTステートメントを使って、ジオメトリをテーブルに挿入することができます。GISオブジェクト自体は、OpenGISコンソーシアムの\"well-known text\"形式を使っています。"
+"Then, you can insert a geometry into the table using a SQL insert statement. "
+"The GIS object itself is formatted using the OpenGIS Consortium \"well-known "
+"text\" format:"
+msgstr ""
+"これで、SQLのINSERTステートメントを使って、ジオメトリをテーブルに挿入すること"
+"ができます。GISオブジェクト自体は、OpenGISコンソーシアムの\"well-known text"
+"\"形式を使っています。"
 
 #. Tag: programlisting
 #: faq.xml:166
 #, no-c-format
 msgid ""
-"INSERT INTO gtest (ID, NAME, GEOM) \n"
+"INSERT INTO gtest (ID, NAME, GEOM)\n"
 "VALUES (\n"
-"  1, \n"
-"  'First Geometry', \n"
+"  1,\n"
+"  'First Geometry',\n"
 "  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
 ");"
-msgstr "INSERT INTO gtest (ID, NAME, GEOM) \nVALUES (\n  1, \n  'First Geometry', \n  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n);"
+msgstr ""
+"INSERT INTO gtest (ID, NAME, GEOM)\n"
+"VALUES (\n"
+"  1,\n"
+"  'First Geometry',\n"
+"  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
+");"
 
 #. Tag: para
 #: faq.xml:168
 #, no-c-format
 msgid ""
-"For more information about other GIS objects, see the <link "
-"linkend=\"RefObject\">object reference</link>."
-msgstr "他のGISオブジェクトの詳細については<link linkend=\"RefObject\">object reference</link>をご覧ください。"
+"For more information about other GIS objects, see the <link linkend="
+"\"RefObject\">object reference</link>."
+msgstr ""
+"他のGISオブジェクトの詳細については<link linkend=\"RefObject\">object "
+"reference</link>をご覧ください。"
 
 #. Tag: para
 #: faq.xml:171
@@ -426,9 +552,13 @@ msgstr "返り値は次のようなかんじになります。"
 msgid ""
 "id | name           | geom\n"
 "----+----------------+-----------------------------\n"
-"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8) \n"
+"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
 "(1 row)"
-msgstr "id | name           | geom\n----+----------------+-----------------------------\n  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8) \n(1 row)"
+msgstr ""
+"id | name           | geom\n"
+"----+----------------+-----------------------------\n"
+"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
+"(1 row)"
 
 #. Tag: para
 #: faq.xml:183
@@ -442,51 +572,70 @@ msgstr "空間クエリを作成するにはどうするのですか?"
 msgid ""
 "The same way you construct any other database query, as an SQL combination "
 "of return values, functions, and boolean tests."
-msgstr "他のデータベースクエリを作るのと同じで、返り値、関数、テストのSQLの組み合わせです。"
+msgstr ""
+"他のデータベースクエリを作るのと同じで、返り値、関数、テストのSQLの組み合わせ"
+"です。"
 
 #. Tag: para
 #: faq.xml:190
 #, no-c-format
 msgid ""
-"For spatial queries, there are two issues that are important to keep in mind"
-" while constructing your query: is there a spatial index you can make use "
-"of; and, are you doing expensive calculations on a large number of "
-"geometries."
-msgstr "空間クエリでは、クエリを作成する際に心を平静に保つための重要な二つの問題があります。 一つは、使用することができる空間インデクスがあるか、です。もう一つは、多数のジオメトリを相手に計算量の多い計算を行っているか、です。"
+"For spatial queries, there are two issues that are important to keep in mind "
+"while constructing your query: is there a spatial index you can make use of; "
+"and, are you doing expensive calculations on a large number of geometries."
+msgstr ""
+"空間クエリでは、クエリを作成する際に心を平静に保つための重要な二つの問題があ"
+"ります。 一つは、使用することができる空間インデクスがあるか、です。もう一つ"
+"は、多数のジオメトリを相手に計算量の多い計算を行っているか、です。"
 
 #. Tag: para
 #: faq.xml:195
 #, no-c-format
 msgid ""
 "In general, you will want to use the \"intersects operator\" (&amp;&amp;) "
-"which tests whether the bounding boxes of features intersect. The reason the"
-" &amp;&amp; operator is useful is because if a spatial index is available to"
-" speed up the test, the &amp;&amp; operator will make use of this. This can "
+"which tests whether the bounding boxes of features intersect. The reason the "
+"&amp;&amp; operator is useful is because if a spatial index is available to "
+"speed up the test, the &amp;&amp; operator will make use of this. This can "
 "make queries much much faster."
-msgstr "一般的に、フィーチャーのバウンディングボックスがインタセクト (交差)しているかをテストするインタセクト演算子 (&amp;&amp;)を使います。&amp;&amp;演算子が便利な理由は、速度向上のために空間インデクスが付けられているなら、&amp;&amp;演算子は空間インデクスを使うからです。これによって、クエリの速度はとてもとても速くなります。"
+msgstr ""
+"一般的に、フィーチャーのバウンディングボックスがインタセクト (交差)しているか"
+"をテストするインタセクト演算子 (&amp;&amp;)を使います。&amp;&amp;演算子が便利"
+"な理由は、速度向上のために空間インデクスが付けられているなら、&amp;&amp;演算"
+"子は空間インデクスを使うからです。これによって、クエリの速度はとてもとても速"
+"くなります。"
 
 #. Tag: para
 #: faq.xml:202
 #, no-c-format
 msgid ""
 "You will also make use of spatial functions, such as Distance(), "
-"ST_Intersects(), ST_Contains() and ST_Within(), among others, to narrow down"
-" the results of your search. Most spatial queries include both an indexed "
+"ST_Intersects(), ST_Contains() and ST_Within(), among others, to narrow down "
+"the results of your search. Most spatial queries include both an indexed "
 "test and a spatial function test. The index test serves to limit the number "
 "of return tuples to only tuples that <emphasis>might</emphasis> meet the "
 "condition of interest. The spatial functions are then use to test the "
 "condition exactly."
-msgstr "また、検索結果をより狭めるために、Distance(), ST_Intersects(), ST_Contains(), ST_Within() などといった空間関数を使うことでしょう。ほとんどの空間クエリは、インデクスのテストと空間関数のテストを含みます。インデクスのテストで返ってくるタプルを、求める条件に<emphasis>合致するかもしれない</emphasis>タプルのみとして、タプルの数を制限します。それから、空間関数で確実な条件のテストを行います。"
+msgstr ""
+"また、検索結果をより狭めるために、Distance(), ST_Intersects(), "
+"ST_Contains(), ST_Within() などといった空間関数を使うことでしょう。ほとんどの"
+"空間クエリは、インデクスのテストと空間関数のテストを含みます。インデクスのテ"
+"ストで返ってくるタプルを、求める条件に<emphasis>合致するかもしれない</"
+"emphasis>タプルのみとして、タプルの数を制限します。それから、空間関数で確実な"
+"条件のテストを行います。"
 
 #. Tag: programlisting
 #: faq.xml:210
 #, no-c-format
 msgid ""
-"SELECT id, the_geom \n"
-"FROM thetable \n"
-"WHERE \n"
+"SELECT id, the_geom\n"
+"FROM thetable\n"
+"WHERE\n"
 "  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
-msgstr "SELECT id, the_geom \nFROM thetable \nWHERE \n  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
+msgstr ""
+"SELECT id, the_geom\n"
+"FROM thetable\n"
+"WHERE\n"
+"  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 
 #. Tag: para
 #: faq.xml:216
@@ -499,9 +648,12 @@ msgstr "大きなテーブルでの空間クエリの速度向上はどうする
 #, no-c-format
 msgid ""
 "Fast queries on large tables is the <emphasis>raison d'etre</emphasis> of "
-"spatial databases (along with transaction support) so having a good index is"
-" important."
-msgstr "大きなテーブルの速いクエリは、空間データベースの<emphasis>レゾンデートル</emphasis> (トランザクションサポートもそうですが)で、良いインデクスは重要です。"
+"spatial databases (along with transaction support) so having a good index is "
+"important."
+msgstr ""
+"大きなテーブルの速いクエリは、空間データベースの<emphasis>レゾンデートル</"
+"emphasis> (トランザクションサポートもそうですが)で、良いインデクスは重要で"
+"す。"
 
 #. Tag: para
 #: faq.xml:224
@@ -509,22 +661,28 @@ msgstr "大きなテーブルの速いクエリは、空間データベースの
 msgid ""
 "To build a spatial index on a table with a <varname>geometry</varname> "
 "column, use the \"CREATE INDEX\" function as follows:"
-msgstr "<varname>geometry</varname>カラムを持つテーブルでの空間インデクスの構築は、\"CREATE INDEX\"を使って、次のようにします。"
+msgstr ""
+"<varname>geometry</varname>カラムを持つテーブルでの空間インデクスの構築"
+"は、\"CREATE INDEX\"を使って、次のようにします。"
 
 #. Tag: programlisting
 #: faq.xml:228
 #, no-c-format
 msgid ""
 "CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] );"
-msgstr "CREATE INDEX [インデクス名] ON [テーブル名] USING GIST ( [ジオメトリカラム] );"
+msgstr ""
+"CREATE INDEX [インデクス名] ON [テーブル名] USING GIST ( [ジオメトリカラ"
+"ム] );"
 
 #. Tag: para
 #: faq.xml:230
 #, no-c-format
 msgid ""
-"The \"USING GIST\" option tells the server to use a GiST (Generalized Search"
-" Tree) index."
-msgstr "\"USING GIST\"オプションによって、サーバにGiST (Generalized Search Tree)インデクスを作るよう指示が渡ります。"
+"The \"USING GIST\" option tells the server to use a GiST (Generalized Search "
+"Tree) index."
+msgstr ""
+"\"USING GIST\"オプションによって、サーバにGiST (Generalized Search Tree)イン"
+"デクスを作るよう指示が渡ります。"
 
 #. Tag: para
 #: faq.xml:234
@@ -532,7 +690,9 @@ msgstr "\"USING GIST\"オプションによって、サーバにGiST (Generalize
 msgid ""
 "GiST indexes are assumed to be lossy. Lossy indexes uses a proxy object (in "
 "the spatial case, a bounding box) for building the index."
-msgstr "GiSTインデクスは、不可逆であると仮定します。不可逆インデクスの構築には、代理オブジェクト (空間インデクスの場合はバウンディングボックス)を使います。"
+msgstr ""
+"GiSTインデクスは、不可逆であると仮定します。不可逆インデクスの構築には、代理"
+"オブジェクト (空間インデクスの場合はバウンディングボックス)を使います。"
 
 #. Tag: para
 #: faq.xml:239
@@ -541,15 +701,20 @@ msgid ""
 "You should also ensure that the PostgreSQL query planner has enough "
 "information about your index to make rational decisions about when to use "
 "it. To do this, you have to \"gather statistics\" on your geometry tables."
-msgstr "PostgreSQLのクエリプランナがインデクスを作るべきかについて合理的な決定を行うよう、十分な情報を確実に持てるようにすべきです。そのために、ジオメトリテーブル上で\"gather statistics\"を実行しなければなりません。"
+msgstr ""
+"PostgreSQLのクエリプランナがインデクスを作るべきかについて合理的な決定を行う"
+"よう、十分な情報を確実に持てるようにすべきです。そのために、ジオメトリテーブ"
+"ル上で\"gather statistics\"を実行しなければなりません。"
 
 #. Tag: para
 #: faq.xml:244
 #, no-c-format
 msgid ""
-"For PostgreSQL 8.0.x and greater, just run the <command>VACUUM "
-"ANALYZE</command> command."
-msgstr "PostgreSQL 8.0.x以上では、<command>VACUUM ANALYZE</command>コマンドを実行するだけです。"
+"For PostgreSQL 8.0.x and greater, just run the <command>VACUUM ANALYZE</"
+"command> command."
+msgstr ""
+"PostgreSQL 8.0.x以上では、<command>VACUUM ANALYZE</command>コマンドを実行する"
+"だけです。"
 
 #. Tag: para
 #: faq.xml:247
@@ -557,7 +722,9 @@ msgstr "PostgreSQL 8.0.x以上では、<command>VACUUM ANALYZE</command>コマ�
 msgid ""
 "For PostgreSQL 7.4.x and below, run the <command>SELECT "
 "UPDATE_GEOMETRY_STATS()</command> command."
-msgstr "PostgreSQL 7.4.x以下では、<command>SELECT UPDATE_GEOMETRY_STATS()</command>を実行します。"
+msgstr ""
+"PostgreSQL 7.4.x以下では、<command>SELECT UPDATE_GEOMETRY_STATS()</command>を"
+"実行します。"
 
 #. Tag: para
 #: faq.xml:254
@@ -572,7 +739,10 @@ msgid ""
 "Early versions of PostGIS used the PostgreSQL R-Tree indexes. However, "
 "PostgreSQL R-Trees have been completely discarded since version 0.6, and "
 "spatial indexing is provided with an R-Tree-over-GiST scheme."
-msgstr "PostGISの、かつての版では、PostgreSQLのR木インデクスを使っていましたが、0.6版でPostgreSQLのR木は完全に捨てて、R-Tree-over-GiSTスキームによる空間インデクスを提供しています。"
+msgstr ""
+"PostGISの、かつての版では、PostgreSQLのR木インデクスを使っていましたが、0.6版"
+"でPostgreSQLのR木は完全に捨てて、R-Tree-over-GiSTスキームによる空間インデクス"
+"を提供しています。"
 
 #. Tag: para
 #: faq.xml:263
@@ -583,16 +753,23 @@ msgid ""
 "undesirable for use with GIS features (note that these limitations are due "
 "to the current PostgreSQL native R-Tree implementation, not the R-Tree "
 "concept in general):"
-msgstr "私たちの試験では、R木とGiSTの検索速度は同程度であることが示されています。PostgreSQLのR木には、GISフィーチャーで使うためには好ましくない二つの制限があります (これらの制限は現在のPostgreSQLネイティブのR木実装についてであって、R木一般の話ではありません)。"
+msgstr ""
+"私たちの試験では、R木とGiSTの検索速度は同程度であることが示されています。"
+"PostgreSQLのR木には、GISフィーチャーで使うためには好ましくない二つの制限があ"
+"ります (これらの制限は現在のPostgreSQLネイティブのR木実装についてであって、R"
+"木一般の話ではありません)。"
 
 #. Tag: para
 #: faq.xml:271
 #, no-c-format
 msgid ""
-"R-Tree indexes in PostgreSQL cannot handle features which are larger than 8K"
-" in size. GiST indexes can, using the \"lossy\" trick of substituting the "
+"R-Tree indexes in PostgreSQL cannot handle features which are larger than 8K "
+"in size. GiST indexes can, using the \"lossy\" trick of substituting the "
 "bounding box for the feature itself."
-msgstr "PostgreSQLのR木インデクスは、8K以上のサイズのフィーチャーは扱えません。GiSTインデクスはフィーチャー自体の代わりにバウンディングボックスを用いる「不可逆」トリックを使っているので扱うことができます。"
+msgstr ""
+"PostgreSQLのR木インデクスは、8K以上のサイズのフィーチャーは扱えません。GiSTイ"
+"ンデクスはフィーチャー自体の代わりにバウンディングボックスを用いる「不可逆」"
+"トリックを使っているので扱うことができます。"
 
 #. Tag: para
 #: faq.xml:278
@@ -600,28 +777,38 @@ msgstr "PostgreSQLのR木インデクスは、8K以上のサイズのフィー�
 msgid ""
 "R-Tree indexes in PostgreSQL are not \"null safe\", so building an index on "
 "a geometry column which contains null geometries will fail."
-msgstr "PostgreSQLのR木インデクスは「NULLセーフ」ではなく、NULLジオメトリを含むジオメトリカラムではインデクス作成に失敗します。"
+msgstr ""
+"PostgreSQLのR木インデクスは「NULLセーフ」ではなく、NULLジオメトリを含むジオメ"
+"トリカラムではインデクス作成に失敗します。"
 
 #. Tag: para
 #: faq.xml:288
 #, no-c-format
 msgid ""
-"Why should I use the <varname>AddGeometryColumn()</varname> function and all"
-" the other OpenGIS stuff?"
-msgstr "なぜ <varname>AddGeometryColumn()</varname>関数と他のOpsnGIS関数を使うべきなのですか?"
+"Why should I use the <varname>AddGeometryColumn()</varname> function and all "
+"the other OpenGIS stuff?"
+msgstr ""
+"なぜ <varname>AddGeometryColumn()</varname>関数と他のOpsnGIS関数を使うべきな"
+"のですか?"
 
 #. Tag: para
 #: faq.xml:293
 #, no-c-format
 msgid ""
-"If you do not want to use the OpenGIS support functions, you do not have to."
-" Simply create tables as in older versions, defining your geometry columns "
-"in the CREATE statement. All your geometries will have SRIDs of -1, and the "
+"If you do not want to use the OpenGIS support functions, you do not have to. "
+"Simply create tables as in older versions, defining your geometry columns in "
+"the CREATE statement. All your geometries will have SRIDs of -1, and the "
 "OpenGIS meta-data tables will <emphasis>not</emphasis> be filled in "
 "properly. However, this will cause most applications based on PostGIS to "
 "fail, and it is generally suggested that you do use "
 "<varname>AddGeometryColumn()</varname> to create geometry tables."
-msgstr "OpenGIS関数を使いたくないのでしたら、使う必要はありません。単純にジオメトリカラムをCREATEステートメントで定義する古いやり方で作成して下さい。全てのジオメトリはSRIDが-1になり、OpenGISメタデータテーブルは適切に<emphasis>書き込まれません</emphasis>。これによって、ほとんどのPostGISベースのアプリケーションでは失敗します。一般的には<varname>AddGeometryColumn()</varname>を用いることをお勧めします。"
+msgstr ""
+"OpenGIS関数を使いたくないのでしたら、使う必要はありません。単純にジオメトリカ"
+"ラムをCREATEステートメントで定義する古いやり方で作成して下さい。全てのジオメ"
+"トリはSRIDが-1になり、OpenGISメタデータテーブルは適切に<emphasis>書き込まれま"
+"せん</emphasis>。これによって、ほとんどのPostGISベースのアプリケーションでは"
+"失敗します。一般的には<varname>AddGeometryColumn()</varname>を用いることをお"
+"勧めします。"
 
 #. Tag: para
 #: faq.xml:302
@@ -631,7 +818,10 @@ msgid ""
 "<varname>geometry_columns</varname> meta-data. Specifically, MapServer can "
 "use the SRID of the geometry column to do on-the-fly reprojection of "
 "features into the correct map projection."
-msgstr "MapServerは<varname>geometry_columns</varname>メタデータを使うアプリケーションのひとつです。踏み込んでいえば、MpaServerはジオメトリカラムのSRIDを使って、正しい地図投影へのフィーチャーの自動投影変換を行います。"
+msgstr ""
+"MapServerは<varname>geometry_columns</varname>メタデータを使うアプリケーショ"
+"ンのひとつです。踏み込んでいえば、MpaServerはジオメトリカラムのSRIDを使って、"
+"正しい地図投影へのフィーチャーの自動投影変換を行います。"
 
 #. Tag: para
 #: faq.xml:311
@@ -645,20 +835,28 @@ msgstr "半径内にあるオブジェクトを全て検索する最善の方法
 #, no-c-format
 msgid ""
 "To use the database most efficiently, it is best to do radius queries which "
-"combine the radius test with a bounding box test: the bounding box test uses"
-" the spatial index, giving fast access to a subset of data which the radius "
+"combine the radius test with a bounding box test: the bounding box test uses "
+"the spatial index, giving fast access to a subset of data which the radius "
 "test is then applied to."
-msgstr "データベースを最も効果的に使うには、半径検索とバウンディングボックス検索を組み合わせた半径検索を行うのが最も良いです。バウンディングボックス検索で空間インデクスを使用するので、半径検索が適用されるサブセットへのアクセスが早くなります。"
+msgstr ""
+"データベースを最も効果的に使うには、半径検索とバウンディングボックス検索を組"
+"み合わせた半径検索を行うのが最も良いです。バウンディングボックス検索で空間イ"
+"ンデクスを使用するので、半径検索が適用されるサブセットへのアクセスが早くなり"
+"ます。"
 
 #. Tag: para
 #: faq.xml:321
 #, no-c-format
 msgid ""
 "The <varname>ST_DWithin(geometry, geometry, distance)</varname> function is "
-"a handy way of performing an indexed distance search. It works by creating a"
-" search rectangle large enough to enclose the distance radius, then "
+"a handy way of performing an indexed distance search. It works by creating a "
+"search rectangle large enough to enclose the distance radius, then "
 "performing an exact distance search on the indexed subset of results."
-msgstr "<varname>ST_DWithin(geometry, geometry, distance)</varname>関数は、インデクス付きの距離検索を実行する手軽な方法です。この関数は、距離半径を十分に含む大きさの検索矩形を作成して、 インデクス付きの結果サブセットに対して確実な距離検索を行います。"
+msgstr ""
+"<varname>ST_DWithin(geometry, geometry, distance)</varname>関数は、インデクス"
+"付きの距離検索を実行する手軽な方法です。この関数は、距離半径を十分に含む大き"
+"さの検索矩形を作成して、 インデクス付きの結果サブセットに対して確実な距離検索"
+"を行います。"
 
 #. Tag: para
 #: faq.xml:327
@@ -666,15 +864,19 @@ msgstr "<varname>ST_DWithin(geometry, geometry, distance)</varname>関数は、�
 msgid ""
 "For example, to find all objects with 100 meters of POINT(1000 1000) the "
 "following query would work well:"
-msgstr "たとえば、POINT(1000 1000)から100メートル内の全てのオブジェクトを見つけるためには、次のクエリで動作します。"
+msgstr ""
+"たとえば、POINT(1000 1000)から100メートル内の全てのオブジェクトを見つけるため"
+"には、次のクエリで動作します。"
 
 #. Tag: programlisting
 #: faq.xml:330
 #, no-c-format
 msgid ""
-"SELECT * FROM geotable \n"
+"SELECT * FROM geotable\n"
 "WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
-msgstr "SELECT * FROM geotable \nWHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
+msgstr ""
+"SELECT * FROM geotable\n"
+"WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
 
 #. Tag: para
 #: faq.xml:336
@@ -692,7 +894,12 @@ msgid ""
 "a reprojection is as simple as referring to the desired destination SRID. "
 "The below projects a geometry to NAD 83 long lat. The below will only work "
 "if the srid of the_geom is not -1 (not undefined spatial ref)"
-msgstr "投影変換を行うには、変換元と変換先双方の座標系がSPATIAL_REF_SYSテーブルに定義されていて、 かつ投影変換されるジオメトリがそのSRIDを持っている必要があります。これが行われていると、投影変換は求める変換先SRIDを参照するのと同じぐらい簡単です。次のクエリは、ジオメトリをNAD 83経度緯度に投影しています。このクエリはthe_geomが-1 (空間参照系が定義されていない)でない場合のみ動作します。"
+msgstr ""
+"投影変換を行うには、変換元と変換先双方の座標系がSPATIAL_REF_SYSテーブルに定義"
+"されていて、 かつ投影変換されるジオメトリがそのSRIDを持っている必要がありま"
+"す。これが行われていると、投影変換は求める変換先SRIDを参照するのと同じぐらい"
+"簡単です。次のクエリは、ジオメトリをNAD 83経度緯度に投影しています。このクエ"
+"リはthe_geomが-1 (空間参照系が定義されていない)でない場合のみ動作します。"
 
 #. Tag: programlisting
 #: faq.xml:348
@@ -704,9 +911,11 @@ msgstr "SELECT ST_Transform(the_geom,4269) FROM geotable;"
 #: faq.xml:354
 #, no-c-format
 msgid ""
-"I did an ST_AsEWKT and ST_AsText on my rather large geometry and it returned"
-" blank field. What gives?"
-msgstr "ST_AsEWKTとST_AsTextとを、かなり大きいジオメトリで実行すると、空のフィールドが返りました。どうしたら良いですか?"
+"I did an ST_AsEWKT and ST_AsText on my rather large geometry and it returned "
+"blank field. What gives?"
+msgstr ""
+"ST_AsEWKTとST_AsTextとを、かなり大きいジオメトリで実行すると、空のフィールド"
+"が返りました。どうしたら良いですか?"
 
 #. Tag: para
 #: faq.xml:358
@@ -715,23 +924,32 @@ msgid ""
 "You are probably using PgAdmin or some other tool that doesn't output large "
 "text. If your geometry is big enough, it will appear blank in these tools. "
 "Use PSQL if you really need to see it or output it in WKT."
-msgstr "pgAdminまたは大きなテキストを表示しないその他のツールを使用しているのかも知れません。 ジオメトリが十分に大きい場合、ツールには空として表示されます。本当にWKTで見たり出力したりしなければならない場合は、PSQLを使用して下さい。"
+msgstr ""
+"pgAdminまたは大きなテキストを表示しないその他のツールを使用しているのかも知れ"
+"ません。 ジオメトリが十分に大きい場合、ツールには空として表示されます。本当に"
+"WKTで見たり出力したりしなければならない場合は、PSQLを使用して下さい。"
 
 #. Tag: programlisting
 #: faq.xml:361
 #, no-c-format
 msgid ""
 "--To check number of geometries are really blank\n"
-"                                SELECT count(gid) FROM geotable WHERE the_geom IS NULL;"
-msgstr "-- 本当に空のジオメトリの数を検索します\n                                SELECT count(gid) FROM geotable WHERE the_geom IS NULL;"
+"                                SELECT count(gid) FROM geotable WHERE "
+"the_geom IS NULL;"
+msgstr ""
+"-- 本当に空のジオメトリの数を検索します\n"
+"                                SELECT count(gid) FROM geotable WHERE "
+"the_geom IS NULL;"
 
 #. Tag: para
 #: faq.xml:367
 #, no-c-format
 msgid ""
-"When I do an ST_Intersects, it says my two geometries don't intersect when I"
-" KNOW THEY DO. What gives?"
-msgstr "ST_Intersectsを使うと、二つのジオメトリがインタセクトしているのが分かっているのに、インタセクトしていないと言います。どうしたら良いですか?"
+"When I do an ST_Intersects, it says my two geometries don't intersect when I "
+"KNOW THEY DO. What gives?"
+msgstr ""
+"ST_Intersectsを使うと、二つのジオメトリがインタセクトしているのが分かっている"
+"のに、インタセクトしていないと言います。どうしたら良いですか?"
 
 #. Tag: para
 #: faq.xml:371
@@ -741,36 +959,62 @@ msgid ""
 "check <xref linkend=\"ST_IsValid\"/> or you are assuming they intersect "
 "because ST_AsText truncates the numbers and you have lots of decimals after "
 "it is not showing you."
-msgstr "二つの場合がよくあります。一つは、ジオメトリが不正な場合です。<xref linkend=\"ST_IsValid\"/>で確認できます。もう一つは、ST_AsTextで数字を切り捨てていて、表示されている分より後にたくさんの小数が付いている場合です。"
+msgstr ""
+"二つの場合がよくあります。一つは、ジオメトリが不正な場合です。<xref linkend="
+"\"ST_IsValid\"/>で確認できます。もう一つは、ST_AsTextで数字を切り捨てていて、"
+"表示されている分より後にたくさんの小数が付いている場合です。"
 
 #. Tag: para
 #: faq.xml:379
 #, no-c-format
 msgid ""
-"I am releasing software that uses PostGIS, does that mean my software has to"
-" be licensed using the GPL like PostGIS? Will I have to publish all my code "
+"I am releasing software that uses PostGIS, does that mean my software has to "
+"be licensed using the GPL like PostGIS? Will I have to publish all my code "
 "if I use PostGIS?"
-msgstr "PostGISを用いたソフトウェアをリリースしています。PostGISのようにGPLライセンスを使う必要があるのでしょうか?PostGISを使うとコードを全て公開しなければならないのでしょうか?"
+msgstr ""
+"PostGISを用いたソフトウェアをリリースしています。PostGISのようにGPLライセンス"
+"を使う必要があるのでしょうか?PostGISを使うとコードを全て公開しなければならな"
+"いのでしょうか?"
 
 #. Tag: para
 #: faq.xml:383
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Almost certainly not. As an example, consider Oracle database running on "
-"Linux. Linux is GPL, Oracle is not, does Oracle running on Linux have to be "
-"distributed using the GPL? No. So your software can use a PostgreSQL/PostGIS"
-" database as much as it wants and be under any license you like."
-msgstr "ほぼ確実に違います。 例として、Linux上で動作するOracleを考えてみます。 LinuxはGPLでOracleは違いますが、Linuxで動作するOracleはGPLで配布しなければならないでしょうか?違います。あなたのソフトウェアはPostgreSQL/PostGISデータベースを好きなだけ使うことができ、ライセンスは好きなようにできます。"
+"Linux. Linux is GPL, Oracle is not: does Oracle running on Linux have to be "
+"distributed using the GPL? No. Similarly your software can use a PostgreSQL/"
+"PostGIS database as much as it wants and be under any license you like."
+msgstr ""
+"ほぼ確実に違います。 例として、Linux上で動作するOracleを考えてみます。 Linux"
+"はGPLでOracleは違いますが、Linuxで動作するOracleはGPLで配布しなければならない"
+"でしょうか?違います。あなたのソフトウェアはPostgreSQL/PostGISデータベースを好"
+"きなだけ使うことができ、ライセンスは好きなようにできます。"
 
 #. Tag: para
 #: faq.xml:384
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The only exception would be if you made changes to the PostGIS source code, "
-"and distributed your changed version of PostGIS. In that case you would have"
-" to share the code of your changed PostGIS (but not the code of applications"
-" running on top of it). Even in this limited case, you would still only have"
-" to distribute source code to people you distributed binaries to. The GPL "
-"does not require that you <emphasis>publish</emphasis> your source code, "
-"only that you share it with people you give binaries to."
-msgstr "PostGISソースコードに変更を加えて、変更したPostGISを配布したときだけは例外です。この場合、変更したPostGISのコードを共有しなければなりません (PostGIS上で動作するアプリケーションのコードではありません)。この限られた場合でも、ソースコードはバイナリの配布相手にだけ配布します。GPLはソースコードの<emphasis>公開</emphasis>までは求めておらず、バイナリを配布した相手との共有を求めています。"
+"and <emphasis>distributed your changed version</emphasis> of PostGIS. In "
+"that case you would have to share the code of your changed PostGIS (but not "
+"the code of applications running on top of it). Even in this limited case, "
+"you would still only have to distribute source code to people you "
+"distributed binaries to. The GPL does not require that you "
+"<emphasis>publish</emphasis> your source code, only that you share it with "
+"people you give binaries to."
+msgstr ""
+"PostGISソースコードに変更を加えて、変更したPostGISを配布したときだけは例外で"
+"す。この場合、変更したPostGISのコードを共有しなければなりません (PostGIS上で"
+"動作するアプリケーションのコードではありません)。この限られた場合でも、ソース"
+"コードはバイナリの配布相手にだけ配布します。GPLはソースコードの<emphasis>公開"
+"</emphasis>までは求めておらず、バイナリを配布した相手との共有を求めています。"
+
+#. Tag: para
+#: faq.xml:385
+#, no-c-format
+msgid ""
+"The above remains true even if you use PostGIS in conjunction with the "
+"optional CGAL-enabled functions. Portions of CGAL are GPL, but so is all of "
+"PostGIS already: using CGAL does not make PostGIS any more GPL than it was "
+"to start with."
+msgstr ""

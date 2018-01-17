@@ -63,7 +63,7 @@ int clean_shp2pgsql_suite(void)
 }
 
 void test_ShpLoaderCreate(void)
-{	
+{
 	loader_config = (SHPLOADERCONFIG*)calloc(1, sizeof(SHPLOADERCONFIG));
 	set_loader_config_defaults(loader_config);
 	loader_state = ShpLoaderCreate(loader_config);

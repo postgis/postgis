@@ -1,3 +1,4 @@
+-- postgres
 --- regression test for postGIS
 
 
@@ -129,7 +130,12 @@ select '76a',ST_OrderingEquals('LINESTRING(1 1, 2 2)'::GEOMETRY,'LINESTRING(1 1,
 select '106',box3d('MULTIPOINT(0 0, 7 7)'::GEOMETRY) as bvol;
 
 -- box3d only type is only used for indexing -- NEVER use one yourself
-select '107',ST_AsEWKT(geometry('BOX3D(0 0 0, 7 7 7 )'::BOX3D));
+select '107a',ST_AsEWKT(geometry('BOX3D(1 2 3, 1 2 3 )'::BOX3D));
+select '107b',ST_AsEWKT(geometry('BOX3D(2 3 3, 7 3 3 )'::BOX3D));
+select '107c',ST_AsEWKT(geometry('BOX3D(2 3 5, 6 8 5 )'::BOX3D));
+select '107d',ST_AsEWKT(geometry('BOX3D(1 -1 4, 2 -1 9 )'::BOX3D));
+select '107e',ST_AsEWKT(geometry('BOX3D(-1 3 5, -1 6 8 )'::BOX3D));
+select '107f',ST_AsEWKT(geometry('BOX3D(1 2 3, 4 5 6 )'::BOX3D));
 
 --- debug function testing
 
@@ -153,7 +159,7 @@ create table TEST(a GEOMETRY, b GEOMETRY);
 \i regress_biginsert.sql
 
 
----test basic ops on this 
+---test basic ops on this
 
 select '121',box3d(a) as box3d_a, box3d(b) as box3d_b from TEST;
 
@@ -164,7 +170,7 @@ select '125',a &>b from TEST;
 
 select '126',a ~= b from TEST;
 select '127',a @ b from TEST;
-select '128',a ~ b from TEST; 
+select '128',a ~ b from TEST;
 
 -- ST_Mem_Size was deprecated in favor of ST_MemSize in 2.2.0
 --  ST_Mem_Size will be removed in 2.4.0
@@ -242,5 +248,46 @@ select '190', ST_Points(NULL) IS NULL;
 select '191', ST_AsText(ST_Points('MULTICURVE EMPTY'));
 select '192', ST_AsText(ST_Points('POLYGON((35 10,45 45,15 40,10 20,35 10),(20 30,35 35,30 20,20 30))'));
 
+select '200', ST_Expand(null::geometry, 1);
+select '201', ST_AsText(ST_Expand('LINESTRING (1 2 3, 10 20 30)'::geometry, 1));
+select '202', ST_AsText(ST_Expand('LINESTRINGM (1 2 3, 10 20 30)'::geometry, 1));
+select '203', ST_AsText(ST_Expand('LINESTRING (1 2, 10 20)'::geometry, 3));
+select '204', ST_AsText(ST_Expand('POLYGON EMPTY'::geometry, 4));
+select '205', ST_AsText(ST_Expand('POINT EMPTY'::geometry, 2));
+select '206', ST_AsText(ST_Expand('POINT (2 3)'::geometry, 0));
+select '207', ST_AsText(ST_Expand('LINESTRING (1 2, 3 4)'::geometry, 0));
+select '208', ST_AsText(ST_Expand('POINT (0 0)'::geometry, -1));
+select '209', ST_AsText(ST_Expand('LINESTRING (0 0, 10 10)'::geometry, -4));
+select '210', ST_Expand(null::box3d, 1);
+select '211', ST_Expand('BOX3D(-1 3 5, -1 6 8)'::BOX3D, 1);
+select '212', ST_Expand(null::box2d, 1);
+select '213', ST_Expand('BOX(-2 3, -1 6'::BOX2D, 4);
+
+select '214', ST_Expand(null::geometry, 1, 1, 1, 1);
+select '215', ST_AsText(ST_Expand('LINESTRING (1 2 3, 10 20 30)'::geometry, 1, 4, 2, 7));
+
+select '216', ST_AsText(ST_Expand('LINESTRINGM (1 2 3, 10 20 30)'::geometry, 1, 4, 2, 7));
+select '217', ST_AsText(ST_Expand('LINESTRING (1 2, 10 20)'::geometry, 1, 4, 2, 7));
+select '218', ST_AsText(ST_Expand('POLYGON EMPTY'::geometry, 4, 3, 1, 1));
+select '219', ST_AsText(ST_Expand('POINT EMPTY'::geometry, 2, 3, 1, -1));
+select '220', ST_AsText(ST_Expand('POINT (2 3)'::geometry, 0, 4, -2, 8));
+select '221', ST_AsText(ST_Expand('POINT (0 0)'::geometry, -1, -2));
+select '222', ST_Expand(null::box3d, 1, 1, 1);
+select '223', ST_Expand('BOX3D(-1 3 5, -1 6 8)'::BOX3D, 1, -1, 7);
+select '224', ST_Expand(null::box2d, 1, 1);
+select '225', ST_Expand('BOX(-2 3, -1 6'::BOX2D, 4, 2);
+select '226', ST_SRID(ST_Expand('SRID=4326;POINT (0 0)'::geometry, 1))=4326;
+
 -- Drop test table
 DROP table test;
+
+-- Make sure all postgis-referencing probin are using the module
+-- version expected by postgis_lib_version()
+--
+SELECT distinct 'unexpected probin', proname || ':' || probin
+FROM pg_proc
+WHERE probin like '%postgis%'
+	AND probin NOT LIKE '%' ||
+		substring(postgis_lib_version() from '([0-9]*\.[0-9]*)')
+		|| '%'
+ORDER BY 2;

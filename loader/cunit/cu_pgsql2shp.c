@@ -63,7 +63,7 @@ int clean_pgsql2shp_suite(void)
 }
 
 void test_ShpDumperCreate(void)
-{	
+{
 	dumper_config = (SHPDUMPERCONFIG*)calloc(1, sizeof(SHPDUMPERCONFIG));
 	set_dumper_config_defaults(dumper_config);
 	dumper_state = ShpDumperCreate(dumper_config);

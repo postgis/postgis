@@ -1,13 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
+# Kwon.Yongchan <ruvyn@naver.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
-"PO-Revision-Date: 2015-09-29 12:24+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"POT-Creation-Date: 2017-09-14 18:44+0000\n"
+"PO-Revision-Date: 2016-07-22 09:08+0000\n"
+"Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
 "language/ko_KR/)\n"
 "Language: ko_KR\n"
@@ -20,13 +21,13 @@ msgstr ""
 #: reference_operator.xml:3
 #, no-c-format
 msgid "Operators"
-msgstr ""
+msgstr "연산자(operator)"
 
 #. Tag: refname
 #: reference_operator.xml:6
 #, no-c-format
 msgid "&amp;&amp;"
-msgstr ""
+msgstr "&amp;&amp;"
 
 #. Tag: refpurpose
 #: reference_operator.xml:8
@@ -35,6 +36,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A's 2D bounding box intersects B's 2D "
 "bounding box."
 msgstr ""
+"A의 2D 경계 상자와 B의 2D 경계 상자가 교차하는 경우 <varname>TRUE</varname> "
+"를 반환합니다."
 
 #. Tag: funcsynopsis
 #: reference_operator.xml:12
@@ -48,21 +51,34 @@ msgid ""
 "parameter> </paramdef> <paramdef> <type>geography </type> <parameter>B</"
 "parameter> </paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>boolean <function>&amp;&amp;</function></funcdef> "
+"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
+"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef> </"
+"funcprototype> <funcprototype> <funcdef>boolean <function>&amp;&amp;</"
+"function></funcdef> <paramdef> <type>geography </type> <parameter>A</"
+"parameter> </paramdef> <paramdef> <type>geography </type> <parameter>B</"
+"parameter> </paramdef> </funcprototype>"
 
 #. Tag: title
 #: reference_operator.xml:50 reference_operator.xml:111
-#: reference_operator.xml:176 reference_operator.xml:234
-#: reference_operator.xml:295 reference_operator.xml:353
-#: reference_operator.xml:406 reference_operator.xml:475
-#: reference_operator.xml:546 reference_operator.xml:599
-#: reference_operator.xml:654 reference_operator.xml:712
-#: reference_operator.xml:765 reference_operator.xml:818
-#: reference_operator.xml:899 reference_operator.xml:974
-#: reference_operator.xml:1035 reference_operator.xml:1089
-#: reference_operator.xml:1154
+#: reference_operator.xml:172 reference_operator.xml:233
+#: reference_operator.xml:294 reference_operator.xml:356
+#: reference_operator.xml:413 reference_operator.xml:470
+#: reference_operator.xml:530 reference_operator.xml:588
+#: reference_operator.xml:649 reference_operator.xml:707
+#: reference_operator.xml:760 reference_operator.xml:830
+#: reference_operator.xml:902 reference_operator.xml:955
+#: reference_operator.xml:1007 reference_operator.xml:1068
+#: reference_operator.xml:1129 reference_operator.xml:1193
+#: reference_operator.xml:1251 reference_operator.xml:1304
+#: reference_operator.xml:1354 reference_operator.xml:1415
+#: reference_operator.xml:1476 reference_operator.xml:1540
+#: reference_operator.xml:1619 reference_operator.xml:1694
+#: reference_operator.xml:1755 reference_operator.xml:1809
+#: reference_operator.xml:1874
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "설명"
 
 #. Tag: para
 #: reference_operator.xml:52
@@ -72,60 +88,83 @@ msgid ""
 "if the 2D bounding box of geometry A intersects the 2D bounding box of "
 "geometry B."
 msgstr ""
+"<varname>&amp;&amp;</varname> 연산자는 도형 A의 2D 경계 상자와 도형 B의 2D 경"
+"계 상자가 교차하는 경우 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: para
-#: reference_operator.xml:54 reference_operator.xml:115
-#: reference_operator.xml:182 reference_operator.xml:243
-#: reference_operator.xml:301 reference_operator.xml:358
-#: reference_operator.xml:411 reference_operator.xml:551
-#: reference_operator.xml:605 reference_operator.xml:660
-#: reference_operator.xml:717 reference_operator.xml:770
-#: reference_operator.xml:823
+#: reference_operator.xml:54 reference_operator.xml:298
+#: reference_operator.xml:536 reference_operator.xml:597
+#: reference_operator.xml:655 reference_operator.xml:712
+#: reference_operator.xml:765 reference_operator.xml:907
+#: reference_operator.xml:961 reference_operator.xml:1199
+#: reference_operator.xml:1256 reference_operator.xml:1309
+#: reference_operator.xml:1545
 #, no-c-format
 msgid ""
 "This operand will make use of any indexes that may be available on the "
 "geometries."
 msgstr ""
+"이 피연산자(operand)는 도형에서 이용할 수도 있는 모든 인덱스를 활용할 것입니"
+"다."
 
 #. Tag: para
 #: reference_operator.xml:57
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
 msgstr ""
+"개선 사항: 2.0.0 버전부터 다면체 표면(polyhedral surface)을 지원합니다."
 
 #. Tag: para
 #: reference_operator.xml:58
 #, no-c-format
 msgid "Availability: 1.5.0 support for geography was introduced."
-msgstr ""
+msgstr "1.5.0 버전부터 지리형을 지원합니다."
 
 #. Tag: para
 #: reference_operator.xml:59 reference_operator.xml:119
-#: reference_operator.xml:240 reference_operator.xml:492
+#: reference_operator.xml:180 reference_operator.xml:241
+#: reference_operator.xml:302 reference_operator.xml:364
+#: reference_operator.xml:421 reference_operator.xml:478
+#: reference_operator.xml:594 reference_operator.xml:852
+#: reference_operator.xml:1015 reference_operator.xml:1076
+#: reference_operator.xml:1137 reference_operator.xml:1362
+#: reference_operator.xml:1423 reference_operator.xml:1484
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: para
 #: reference_operator.xml:60 reference_operator.xml:120
-#: reference_operator.xml:241 reference_operator.xml:493
-#: reference_operator.xml:827
+#: reference_operator.xml:181 reference_operator.xml:242
+#: reference_operator.xml:303 reference_operator.xml:365
+#: reference_operator.xml:422 reference_operator.xml:479
+#: reference_operator.xml:595 reference_operator.xml:853
+#: reference_operator.xml:1016 reference_operator.xml:1077
+#: reference_operator.xml:1138 reference_operator.xml:1363
+#: reference_operator.xml:1424 reference_operator.xml:1485
+#: reference_operator.xml:1549
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: title
-#: reference_operator.xml:64 reference_operator.xml:187
-#: reference_operator.xml:248 reference_operator.xml:306
-#: reference_operator.xml:363 reference_operator.xml:416
-#: reference_operator.xml:502 reference_operator.xml:556
-#: reference_operator.xml:611 reference_operator.xml:665
-#: reference_operator.xml:722 reference_operator.xml:775
-#: reference_operator.xml:843 reference_operator.xml:922
-#: reference_operator.xml:992 reference_operator.xml:1049
+#: reference_operator.xml:64 reference_operator.xml:124
+#: reference_operator.xml:185 reference_operator.xml:246
+#: reference_operator.xml:371 reference_operator.xml:428
+#: reference_operator.xml:485 reference_operator.xml:541
+#: reference_operator.xml:602 reference_operator.xml:660
+#: reference_operator.xml:717 reference_operator.xml:770
+#: reference_operator.xml:858 reference_operator.xml:912
+#: reference_operator.xml:967 reference_operator.xml:1020
+#: reference_operator.xml:1081 reference_operator.xml:1142
+#: reference_operator.xml:1204 reference_operator.xml:1261
+#: reference_operator.xml:1314 reference_operator.xml:1367
+#: reference_operator.xml:1428 reference_operator.xml:1489
+#: reference_operator.xml:1564 reference_operator.xml:1642
+#: reference_operator.xml:1712 reference_operator.xml:1769
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "예시"
 
 #. Tag: programlisting
 #: reference_operator.xml:66
@@ -145,21 +184,40 @@ msgid ""
 "           2 |       3 | f\n"
 "(2 rows)"
 msgstr ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp; tbl2.column2 AS "
+"overlaps\n"
+"FROM ( VALUES\n"
+"        (1, 'LINESTRING(0 0, 3 3)'::geometry),\n"
+"        (2, 'LINESTRING(0 1, 0 5)'::geometry)) AS tbl1,\n"
+"( VALUES\n"
+"        (3, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | overlaps\n"
+"---------+---------+----------\n"
+"           1 |       3 | t\n"
+"           2 |       3 | f\n"
+"(2 rows)"
 
 #. Tag: title
-#: reference_operator.xml:71 reference_operator.xml:139
-#: reference_operator.xml:193 reference_operator.xml:254
-#: reference_operator.xml:312 reference_operator.xml:369
-#: reference_operator.xml:422 reference_operator.xml:508
-#: reference_operator.xml:562 reference_operator.xml:617
-#: reference_operator.xml:671 reference_operator.xml:728
-#: reference_operator.xml:781 reference_operator.xml:848
-#: reference_operator.xml:938 reference_operator.xml:996
-#: reference_operator.xml:1053 reference_operator.xml:1116
-#: reference_operator.xml:1172
+#: reference_operator.xml:71 reference_operator.xml:130
+#: reference_operator.xml:191 reference_operator.xml:252
+#: reference_operator.xml:322 reference_operator.xml:377
+#: reference_operator.xml:434 reference_operator.xml:491
+#: reference_operator.xml:547 reference_operator.xml:608
+#: reference_operator.xml:666 reference_operator.xml:723
+#: reference_operator.xml:776 reference_operator.xml:864
+#: reference_operator.xml:918 reference_operator.xml:973
+#: reference_operator.xml:1026 reference_operator.xml:1087
+#: reference_operator.xml:1148 reference_operator.xml:1210
+#: reference_operator.xml:1267 reference_operator.xml:1320
+#: reference_operator.xml:1373 reference_operator.xml:1434
+#: reference_operator.xml:1495 reference_operator.xml:1568
+#: reference_operator.xml:1658 reference_operator.xml:1716
+#: reference_operator.xml:1773 reference_operator.xml:1836
+#: reference_operator.xml:1892
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "참고"
 
 #. Tag: para
 #: reference_operator.xml:73
@@ -169,69 +227,306 @@ msgid ""
 "\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
 "linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
 msgstr ""
+", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
+"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
 
 #. Tag: refname
 #: reference_operator.xml:85
 #, no-c-format
-msgid "&amp;&amp;&amp;"
+msgid "&amp;&amp;(geometry,box2df)"
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_operator.xml:87
+#, fuzzy, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if a geometry's (cached) 2D bounding box "
+"intersects a 2D float precision bounding box (BOX2DF)."
+msgstr ""
+"A의 2D 경계 상자와 B의 2D 경계 상자가 교차하는 경우 <varname>TRUE</varname> "
+"를 반환합니다."
+
+#. Tag: funcprototype
+#: reference_operator.xml:92
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>box2df</type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+
+#. Tag: para
+#: reference_operator.xml:113
+#, fuzzy, no-c-format
+msgid ""
+"The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> "
+"if the cached 2D bounding box of geometry A intersects the 2D bounding box "
+"B, using float precision. This means that if B is a (double precision) "
+"box2d, it will be internally converted to a float precision 2D bounding box "
+"(BOX2DF)"
+msgstr ""
+"<varname>&amp;&amp;</varname> 연산자는 도형 A의 2D 경계 상자와 도형 B의 2D 경"
+"계 상자가 교차하는 경우 <varname>TRUE</varname> 를 반환합니다."
+
+#. Tag: para
+#: reference_operator.xml:115 reference_operator.xml:176
+#: reference_operator.xml:1011 reference_operator.xml:1072
+#: reference_operator.xml:1133 reference_operator.xml:1358
+#: reference_operator.xml:1419 reference_operator.xml:1480
+#, no-c-format
+msgid ""
+"This operand is intended to be used internally by BRIN indexes, more than by "
+"users."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:118 reference_operator.xml:179
+#: reference_operator.xml:240 reference_operator.xml:363
+#: reference_operator.xml:420 reference_operator.xml:477
+#: reference_operator.xml:1014 reference_operator.xml:1075
+#: reference_operator.xml:1136 reference_operator.xml:1361
+#: reference_operator.xml:1422 reference_operator.xml:1483
+#, fuzzy, no-c-format
+msgid ""
+"Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. "
+"Requires PostgreSQL 9.5+."
+msgstr "1.5.0 버전부터 지리형을 지원합니다."
+
+#. Tag: programlisting
+#: reference_operator.xml:126
+#, no-c-format
+msgid ""
+"SELECT ST_MakePoint(1,1) &amp;&amp; ST_MakeBox2D(ST_MakePoint(0,0), "
+"ST_MakePoint(2,2)) AS overlaps;\n"
+"\n"
+" overlaps\n"
+"----------\n"
+" t\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:132 reference_operator.xml:193
+#, no-c-format
+msgid ""
+", <xref linkend=\"overlaps_box2df_box2df\"/>, <xref linkend="
+"\"contains_geometry_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/"
+">, <xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:146
+#, no-c-format
+msgid "&amp;&amp;(box2df,geometry)"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:148
+#, fuzzy, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if a 2D float precision bounding box "
+"(BOX2DF) intersects a geometry's (cached) 2D bounding box."
+msgstr ""
+"A의 2D 경계 상자와 B의 2D 경계 상자가 교차하는 경우 <varname>TRUE</varname> "
+"를 반환합니다."
+
+#. Tag: funcprototype
+#: reference_operator.xml:153
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
+"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+
+#. Tag: para
+#: reference_operator.xml:174
+#, fuzzy, no-c-format
+msgid ""
+"The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> "
+"if the 2D bounding box A intersects the cached 2D bounding box of geometry "
+"B, using float precision. This means that if A is a (double precision) "
+"box2d, it will be internally converted to a float precision 2D bounding box "
+"(BOX2DF)"
+msgstr ""
+"<varname>&amp;&lt;</varname> 연산자는 도형 A의 경계 상자가 도형 B의 경계 상자"
+"와 겹치거나 그 왼쪽에 있을 경우, 또는 더 정확히 말하자면 도형 B의 경계 상자"
+"와 겹치거나 그 오른쪽에 있지 않을 경우, <varname>TRUE</varname> 를 반환합니"
+"다."
+
+#. Tag: programlisting
+#: reference_operator.xml:187
+#, no-c-format
+msgid ""
+"SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) &amp;&amp; "
+"ST_MakePoint(1,1) AS overlaps;\n"
+"\n"
+" overlaps\n"
+"----------\n"
+" t\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:207
+#, no-c-format
+msgid "&amp;&amp;(box2df,box2df)"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:209
+#, fuzzy, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if two 2D float precision bounding boxes "
+"(BOX2DF) intersect each other."
+msgstr ""
+"A의 2D 경계 상자와 B의 2D 경계 상자가 교차하는 경우 <varname>TRUE</varname> "
+"를 반환합니다."
+
+#. Tag: funcprototype
+#: reference_operator.xml:214
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
+"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>box2df </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+
+#. Tag: para
+#: reference_operator.xml:235
+#, fuzzy, no-c-format
+msgid ""
+"The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> "
+"if two 2D bounding boxes A and B intersect each other, using float "
+"precision. This means that if A (or B) is a (double precision) box2d, it "
+"will be internally converted to a float precision 2D bounding box (BOX2DF)"
+msgstr ""
+"<varname>&amp;&lt;</varname> 연산자는 도형 A의 경계 상자가 도형 B의 경계 상자"
+"와 겹치거나 그 왼쪽에 있을 경우, 또는 더 정확히 말하자면 도형 B의 경계 상자"
+"와 겹치거나 그 오른쪽에 있지 않을 경우, <varname>TRUE</varname> 를 반환합니"
+"다."
+
+#. Tag: para
+#: reference_operator.xml:237 reference_operator.xml:360
+#: reference_operator.xml:417 reference_operator.xml:474
+#, no-c-format
+msgid ""
+"This operator is intended to be used internally by BRIN indexes, more than "
+"by users."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:248
+#, no-c-format
+msgid ""
+"SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) &amp;&amp; "
+"ST_MakeBox2D(ST_MakePoint(1,1), ST_MakePoint(3,3)) AS overlaps;\n"
+"\n"
+" overlaps\n"
+"----------\n"
+" t\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:254
+#, fuzzy, no-c-format
+msgid ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"contains_geometry_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/"
+">, <xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
+msgstr ""
+", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
+"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
+
+#. Tag: refname
+#: reference_operator.xml:268
+#, no-c-format
+msgid "&amp;&amp;&amp;"
+msgstr "&amp;&amp;&amp;"
+
+#. Tag: refpurpose
+#: reference_operator.xml:270
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's n-D bounding box intersects B's n-D "
 "bounding box."
 msgstr ""
+"A의 n차원 경계 상자와 B의 n차원 경계 상자가 교차하는 경우 <varname>TRUE</"
+"varname> 를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:92
+#: reference_operator.xml:275
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
 "<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>geometry </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:113
+#: reference_operator.xml:296
 #, no-c-format
 msgid ""
 "The <varname>&amp;&amp;&amp;</varname> operator returns <varname>TRUE</"
 "varname> if the n-D bounding box of geometry A intersects the n-D bounding "
 "box of geometry B."
 msgstr ""
+"<varname>&amp;&amp;&amp;</varname> 연산자는 도형 A의 n차원 경계 상자와 도형 B"
+"의 n차원 경계 상자가 교차하는 경우 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: para
-#: reference_operator.xml:118
+#: reference_operator.xml:301
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr ""
+msgstr "2.0.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_operator.xml:121
+#: reference_operator.xml:304 reference_operator.xml:366
+#: reference_operator.xml:423 reference_operator.xml:480
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: para
-#: reference_operator.xml:122
+#: reference_operator.xml:305 reference_operator.xml:367
+#: reference_operator.xml:424 reference_operator.xml:481
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: title
-#: reference_operator.xml:126
+#: reference_operator.xml:309
 #, no-c-format
 msgid "Examples: 3D LineStrings"
-msgstr ""
+msgstr "예시: 3차원 라인스트링"
 
 #. Tag: programlisting
-#: reference_operator.xml:128
+#: reference_operator.xml:311
 #, no-c-format
 msgid ""
 "SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp;&amp; tbl2.column2 "
-"AS overlaps_3d, \n"
+"AS overlaps_3d,\n"
 "                                    tbl1.column2 &amp;&amp; tbl2.column2 AS "
 "overlaps_2d\n"
 "FROM ( VALUES\n"
@@ -245,19 +540,33 @@ msgid ""
 "       1 |       3 | t           | t\n"
 "       2 |       3 | f           | t"
 msgstr ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp;&amp; tbl2.column2 "
+"AS overlaps_3d,\n"
+"                                    tbl1.column2 &amp;&amp; tbl2.column2 AS "
+"overlaps_2d\n"
+"FROM ( VALUES\n"
+"        (1, 'LINESTRING Z(0 0 1, 3 3 2)'::geometry),\n"
+"        (2, 'LINESTRING Z(1 2 0, 0 5 -1)'::geometry)) AS tbl1,\n"
+"( VALUES\n"
+"        (3, 'LINESTRING Z(1 2 1, 4 6 1)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | overlaps_3d | overlaps_2d\n"
+"---------+---------+-------------+-------------\n"
+"       1 |       3 | t           | t\n"
+"       2 |       3 | f           | t"
 
 #. Tag: title
-#: reference_operator.xml:132
+#: reference_operator.xml:315
 #, no-c-format
 msgid "Examples: 3M LineStrings"
-msgstr ""
+msgstr "예시: 3DM 라인스트링"
 
 #. Tag: programlisting
-#: reference_operator.xml:134
+#: reference_operator.xml:317
 #, no-c-format
 msgid ""
 "SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp;&amp; tbl2.column2 "
-"AS overlaps_3zm, \n"
+"AS overlaps_3zm,\n"
 "                                    tbl1.column2 &amp;&amp; tbl2.column2 AS "
 "overlaps_2d\n"
 "FROM ( VALUES\n"
@@ -271,32 +580,224 @@ msgid ""
 "       1 |       3 | t           | t\n"
 "       2 |       3 | f           | t"
 msgstr ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp;&amp; tbl2.column2 "
+"AS overlaps_3zm,\n"
+"                                    tbl1.column2 &amp;&amp; tbl2.column2 AS "
+"overlaps_2d\n"
+"FROM ( VALUES\n"
+"        (1, 'LINESTRING M(0 0 1, 3 3 2)'::geometry),\n"
+"        (2, 'LINESTRING M(1 2 0, 0 5 -1)'::geometry)) AS tbl1,\n"
+"( VALUES\n"
+"        (3, 'LINESTRING M(1 2 1, 4 6 1)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | overlaps_3zm | overlaps_2d\n"
+"---------+---------+-------------+-------------\n"
+"       1 |       3 | t           | t\n"
+"       2 |       3 | f           | t"
 
 #. Tag: refname
-#: reference_operator.xml:147
-#, no-c-format
-msgid "&amp;&lt;"
-msgstr ""
+#: reference_operator.xml:330
+#, fuzzy, no-c-format
+msgid "&amp;&amp;&amp;(geometry,gidx)"
+msgstr "&amp;&amp;&amp;"
 
 #. Tag: refpurpose
-#: reference_operator.xml:149
+#: reference_operator.xml:332
+#, fuzzy, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if a geometry's (cached) n-D bounding box "
+"intersects a n-D float precision bounding box (GIDX)."
+msgstr ""
+"A의 n차원 경계 상자와 B의 n차원 경계 상자가 교차하는 경우 <varname>TRUE</"
+"varname> 를 반환합니다."
+
+#. Tag: funcprototype
+#: reference_operator.xml:337
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>gidx </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+
+#. Tag: para
+#: reference_operator.xml:358
+#, fuzzy, no-c-format
+msgid ""
+"The <varname>&amp;&amp;&amp;</varname> operator returns <varname>TRUE</"
+"varname> if the cached n-D bounding box of geometry A intersects the n-D "
+"bounding box B, using float precision. This means that if B is a (double "
+"precision) box3d, it will be internally converted to a float precision 3D "
+"bounding box (GIDX)"
+msgstr ""
+"<varname>&amp;&amp;&amp;</varname> 연산자는 도형 A의 n차원 경계 상자와 도형 B"
+"의 n차원 경계 상자가 교차하는 경우 <varname>TRUE</varname> 를 반환합니다."
+
+#. Tag: programlisting
+#: reference_operator.xml:373
+#, no-c-format
+msgid ""
+"SELECT ST_MakePoint(1,1,1) &amp;&amp;&amp; ST_3DMakeBox(ST_MakePoint(0,0,0), "
+"ST_MakePoint(2,2,2)) AS overlaps;\n"
+"\n"
+" overlaps\n"
+"----------\n"
+" t\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:379 reference_operator.xml:436
+#, fuzzy, no-c-format
+msgid ", <xref linkend=\"overlaps_nd_gidx_gidx\"/>"
+msgstr ", <xref linkend=\"geometry_overlaps\"/>"
+
+#. Tag: refname
+#: reference_operator.xml:387
+#, fuzzy, no-c-format
+msgid "&amp;&amp;&amp;(gidx,geometry)"
+msgstr "&amp;&amp;&amp;"
+
+#. Tag: refpurpose
+#: reference_operator.xml:389
+#, fuzzy, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if a n-D float precision bounding box (GIDX) "
+"intersects a geometry's (cached) n-D bounding box."
+msgstr ""
+"A의 n차원 경계 상자와 B의 n차원 경계 상자가 교차하는 경우 <varname>TRUE</"
+"varname> 를 반환합니다."
+
+#. Tag: funcprototype
+#: reference_operator.xml:394
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
+"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+
+#. Tag: para
+#: reference_operator.xml:415
+#, fuzzy, no-c-format
+msgid ""
+"The <varname>&amp;&amp;&amp;</varname> operator returns <varname>TRUE</"
+"varname> if the n-D bounding box A intersects the cached n-D bounding box of "
+"geometry B, using float precision. This means that if A is a (double "
+"precision) box3d, it will be internally converted to a float precision 3D "
+"bounding box (GIDX)"
+msgstr ""
+"<varname>&amp;&amp;&amp;</varname> 연산자는 도형 A의 n차원 경계 상자와 도형 B"
+"의 n차원 경계 상자가 교차하는 경우 <varname>TRUE</varname> 를 반환합니다."
+
+#. Tag: programlisting
+#: reference_operator.xml:430
+#, no-c-format
+msgid ""
+"SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &amp;&amp;"
+"&amp; ST_MakePoint(1,1,1) AS overlaps;\n"
+"\n"
+" overlaps\n"
+"----------\n"
+" t\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:444
+#, fuzzy, no-c-format
+msgid "&amp;&amp;&amp;(gidx,gidx)"
+msgstr "&amp;&amp;&amp;"
+
+#. Tag: refpurpose
+#: reference_operator.xml:446
+#, fuzzy, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if two n-D float precision bounding boxes "
+"(GIDX) intersect each other."
+msgstr ""
+"A의 n차원 경계 상자와 B의 n차원 경계 상자가 교차하는 경우 <varname>TRUE</"
+"varname> 를 반환합니다."
+
+#. Tag: funcprototype
+#: reference_operator.xml:451
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
+"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>gidx </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+
+#. Tag: para
+#: reference_operator.xml:472
+#, fuzzy, no-c-format
+msgid ""
+"The <varname>&amp;&amp;&amp;</varname> operator returns <varname>TRUE</"
+"varname> if two n-D bounding boxes A and B intersect each other, using float "
+"precision. This means that if A (or B) is a (double precision) box3d, it "
+"will be internally converted to a float precision 3D bounding box (GIDX)"
+msgstr ""
+"<varname>&amp;&amp;&amp;</varname> 연산자는 도형 A의 n차원 경계 상자와 도형 B"
+"의 n차원 경계 상자가 교차하는 경우 <varname>TRUE</varname> 를 반환합니다."
+
+#. Tag: programlisting
+#: reference_operator.xml:487
+#, no-c-format
+msgid ""
+"SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &amp;&amp;"
+"&amp; ST_3DMakeBox(ST_MakePoint(1,1,1), ST_MakePoint(3,3,3)) AS overlaps;\n"
+"\n"
+" overlaps\n"
+"----------\n"
+" t\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:493
+#, fuzzy, no-c-format
+msgid ", <xref linkend=\"overlaps_nd_gidx_geometry\"/>"
+msgstr ", <xref linkend=\"geometry_overlaps\"/>"
+
+#. Tag: refname
+#: reference_operator.xml:501
+#, no-c-format
+msgid "&amp;&lt;"
+msgstr "&amp;&lt;"
+
+#. Tag: refpurpose
+#: reference_operator.xml:503
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box overlaps or is to the "
 "left of B's."
 msgstr ""
+"A의 경계 상자가 B의 경계 상자와 겹치거나 그 왼쪽에 있을 경우 <varname>TRUE</"
+"varname> 를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:154
+#: reference_operator.xml:508
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
 "<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>geometry </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:178
+#: reference_operator.xml:532
 #, no-c-format
 msgid ""
 "The <varname>&amp;&lt;</varname> operator returns <varname>TRUE</varname> if "
@@ -304,9 +805,13 @@ msgid ""
 "box of geometry B, or more accurately, overlaps or is NOT to the right of "
 "the bounding box of geometry B."
 msgstr ""
+"<varname>&amp;&lt;</varname> 연산자는 도형 A의 경계 상자가 도형 B의 경계 상자"
+"와 겹치거나 그 왼쪽에 있을 경우, 또는 더 정확히 말하자면 도형 B의 경계 상자"
+"와 겹치거나 그 오른쪽에 있지 않을 경우, <varname>TRUE</varname> 를 반환합니"
+"다."
 
 #. Tag: programlisting
-#: reference_operator.xml:189
+#: reference_operator.xml:543
 #, no-c-format
 msgid ""
 "SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&lt; tbl2.column2 AS "
@@ -326,39 +831,62 @@ msgid ""
 "           1 |       4 | t\n"
 "(3 rows)"
 msgstr ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&lt; tbl2.column2 AS "
+"overleft\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING(0 0, 3 3)'::geometry),\n"
+"        (3, 'LINESTRING(0 1, 0 5)'::geometry),\n"
+"        (4, 'LINESTRING(6 0, 6 1)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | overleft\n"
+"---------+---------+----------\n"
+"           1 |       2 | f\n"
+"           1 |       3 | f\n"
+"           1 |       4 | t\n"
+"(3 rows)"
 
 #. Tag: para
-#: reference_operator.xml:195
+#: reference_operator.xml:549
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
 "\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overbelow\"/>"
 msgstr ""
+", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
+"\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overbelow\"/>"
 
 #. Tag: refname
-#: reference_operator.xml:205
+#: reference_operator.xml:559
 #, no-c-format
 msgid "&amp;&lt;|"
-msgstr ""
+msgstr "&amp;&lt;|"
 
 #. Tag: refpurpose
-#: reference_operator.xml:207
+#: reference_operator.xml:561
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box overlaps or is below B's."
 msgstr ""
+"A의 경계 상자가 B의 경계 상자와 겹치거나 그 아래에 있을 경우 <varname>TRUE</"
+"varname> 를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:212
+#: reference_operator.xml:566
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>&amp;&lt;|</function></funcdef> <paramdef> "
 "<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>geometry </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>boolean <function>&amp;&lt;|</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:236
+#: reference_operator.xml:590
 #, no-c-format
 msgid ""
 "The <varname>&amp;&lt;|</varname> operator returns <varname>TRUE</varname> "
@@ -366,9 +894,12 @@ msgid ""
 "of geometry B, or more accurately, overlaps or is NOT above the bounding box "
 "of geometry B."
 msgstr ""
+"<varname>&amp;&lt;|</varname> 연산자는 도형 A의 경계 상자가 도형 B의 경계 상"
+"자와 겹치거나 그 아래에 있을 경우, 또는 더 정확히 말하자면 도형 B의 경계 상자"
+"와 겹치거나 위에 있지 않을 경우, <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: programlisting
-#: reference_operator.xml:250
+#: reference_operator.xml:604
 #, no-c-format
 msgid ""
 "SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&lt;| tbl2.column2 AS "
@@ -388,40 +919,63 @@ msgid ""
 "           1 |       4 | t\n"
 "(3 rows)"
 msgstr ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&lt;| tbl2.column2 AS "
+"overbelow\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING(6 0, 6 4)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING(0 0, 3 3)'::geometry),\n"
+"        (3, 'LINESTRING(0 1, 0 5)'::geometry),\n"
+"        (4, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | overbelow\n"
+"---------+---------+-----------\n"
+"           1 |       2 | f\n"
+"           1 |       3 | t\n"
+"           1 |       4 | t\n"
+"(3 rows)"
 
 #. Tag: para
-#: reference_operator.xml:256
+#: reference_operator.xml:610
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
 "\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 msgstr ""
+", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
+"\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 
 #. Tag: refname
-#: reference_operator.xml:266
+#: reference_operator.xml:620
 #, no-c-format
 msgid "&amp;&gt;"
-msgstr ""
+msgstr "&amp;&gt;"
 
 #. Tag: refpurpose
-#: reference_operator.xml:268
+#: reference_operator.xml:622
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A' bounding box overlaps or is to the "
 "right of B's."
 msgstr ""
+"A의 경계 상자가 B의 경계 상자와 겹치거나 그 오른쪽에 있을 경우 "
+"<varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:273
+#: reference_operator.xml:627
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
 "<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>geometry </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:297
+#: reference_operator.xml:651
 #, no-c-format
 msgid ""
 "The <varname>&amp;&gt;</varname> operator returns <varname>TRUE</varname> if "
@@ -429,9 +983,12 @@ msgid ""
 "box of geometry B, or more accurately, overlaps or is NOT to the left of the "
 "bounding box of geometry B."
 msgstr ""
+"<varname>&amp;&gt;</varname> 연산자는 도형 A의 경계 상자가 도형 B의 경계 상자"
+"와 겹치거나 그 오른쪽에 있을 경우, 또는 더 정확히 말하자면 도형 B의 경계 상자"
+"와 겹치거나 그 왼쪽에 있지 않을 경우, <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: programlisting
-#: reference_operator.xml:308
+#: reference_operator.xml:662
 #, no-c-format
 msgid ""
 "SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&gt; tbl2.column2 AS "
@@ -451,49 +1008,74 @@ msgid ""
 "           1 |       4 | f\n"
 "(3 rows)"
 msgstr ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&gt; tbl2.column2 AS "
+"overright\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING(0 0, 3 3)'::geometry),\n"
+"        (3, 'LINESTRING(0 1, 0 5)'::geometry),\n"
+"        (4, 'LINESTRING(6 0, 6 1)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | overright\n"
+"---------+---------+-----------\n"
+"           1 |       2 | t\n"
+"           1 |       3 | t\n"
+"           1 |       4 | f\n"
+"(3 rows)"
 
 #. Tag: para
-#: reference_operator.xml:314
+#: reference_operator.xml:668
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
 "\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 msgstr ""
+", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 
 #. Tag: refname
-#: reference_operator.xml:324
+#: reference_operator.xml:678
 #, no-c-format
 msgid "&lt;&lt;"
-msgstr ""
+msgstr "&lt;&lt;"
 
 #. Tag: refpurpose
-#: reference_operator.xml:326
+#: reference_operator.xml:680
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is strictly to the left "
 "of B's."
 msgstr ""
+"A의 경계 상자가 오로지 B의 경계 상자 왼쪽에 있을 경우에만 <varname>TRUE</"
+"varname> 를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:331
+#: reference_operator.xml:685
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>&lt;&lt;</function></funcdef> <paramdef> "
 "<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>geometry </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>boolean <function>&lt;&lt;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:355
+#: reference_operator.xml:709
 #, no-c-format
 msgid ""
 "The <varname>&lt;&lt;</varname> operator returns <varname>TRUE</varname> if "
 "the bounding box of geometry A is strictly to the left of the bounding box "
 "of geometry B."
 msgstr ""
+"<varname>&lt;&lt;</varname> 연산자는 도형 A의 경계 상자가 오로지 도형 B의 경"
+"계 상자 왼쪽에 있을 경우에만 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: programlisting
-#: reference_operator.xml:365
+#: reference_operator.xml:719
 #, no-c-format
 msgid ""
 "SELECT tbl1.column1, tbl2.column1, tbl1.column2 &lt;&lt; tbl2.column2 AS "
@@ -513,48 +1095,73 @@ msgid ""
 "           1 |       4 | t\n"
 "(3 rows)"
 msgstr ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &lt;&lt; tbl2.column2 AS "
+"left\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING (1 2, 1 5)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING (0 0, 4 3)'::geometry),\n"
+"        (3, 'LINESTRING (6 0, 6 5)'::geometry),\n"
+"        (4, 'LINESTRING (2 2, 5 6)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | left\n"
+"---------+---------+------\n"
+"           1 |       2 | f\n"
+"           1 |       3 | t\n"
+"           1 |       4 | t\n"
+"(3 rows)"
 
 #. Tag: para
-#: reference_operator.xml:371 reference_operator.xml:564
+#: reference_operator.xml:725 reference_operator.xml:920
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Geometry_Above\"/>, <xref linkend=\"ST_Geometry_Below\"/"
 ">"
 msgstr ""
+", <xref linkend=\"ST_Geometry_Above\"/>, <xref linkend=\"ST_Geometry_Below\"/"
+">"
 
 #. Tag: refname
-#: reference_operator.xml:377
+#: reference_operator.xml:731
 #, no-c-format
 msgid "&lt;&lt;|"
-msgstr ""
+msgstr "&lt;&lt;|"
 
 #. Tag: refpurpose
-#: reference_operator.xml:379
+#: reference_operator.xml:733
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is strictly below B's."
 msgstr ""
+"A의 경계 상자가 오로지 B의 경계 상자 아래에 있을 경우에만 <varname>TRUE</"
+"varname> 를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:384
+#: reference_operator.xml:738
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>&lt;&lt;|</function></funcdef> <paramdef> "
 "<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>geometry </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>boolean <function>&lt;&lt;|</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:408
+#: reference_operator.xml:762
 #, no-c-format
 msgid ""
 "The <varname>&lt;&lt;|</varname> operator returns <varname>TRUE</varname> if "
 "the bounding box of geometry A is strictly below the bounding box of "
 "geometry B."
 msgstr ""
+"<varname>&lt;&lt;|</varname> 연산자는 도형 A의 경계 상자가 오로지 도형 B의 경"
+"계 상자 아래에 있을 경우에만 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: programlisting
-#: reference_operator.xml:418
+#: reference_operator.xml:772
 #, no-c-format
 msgid ""
 "SELECT tbl1.column1, tbl2.column1, tbl1.column2 &lt;&lt;| tbl2.column2 AS "
@@ -574,31 +1181,52 @@ msgid ""
 "           1 |       4 | f\n"
 "(3 rows)"
 msgstr ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &lt;&lt;| tbl2.column2 AS "
+"below\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING (0 0, 4 3)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING (1 4, 1 7)'::geometry),\n"
+"        (3, 'LINESTRING (6 1, 6 5)'::geometry),\n"
+"        (4, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | below\n"
+"---------+---------+-------\n"
+"           1 |       2 | t\n"
+"           1 |       3 | f\n"
+"           1 |       4 | f\n"
+"(3 rows)"
 
 #. Tag: para
-#: reference_operator.xml:424
+#: reference_operator.xml:778
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Geometry_Right\"/>, <xref linkend=\"ST_Geometry_Above\"/"
 ">"
 msgstr ""
+", <xref linkend=\"ST_Geometry_Right\"/>, <xref linkend=\"ST_Geometry_Above\"/"
+">"
 
 #. Tag: refname
-#: reference_operator.xml:430
+#: reference_operator.xml:784
 #, no-c-format
 msgid "&#61;"
-msgstr ""
+msgstr "<refname>=</refname>"
 
 #. Tag: refpurpose
-#: reference_operator.xml:432
-#, no-c-format
+#: reference_operator.xml:786
+#, fuzzy, no-c-format
 msgid ""
-"Returns <varname>TRUE</varname> if A's bounding box is the same as B's. Uses "
-"double precision bounding box."
+"Returns <varname>TRUE</varname> if the coordinates and coordinate order "
+"geometry/geography A are the same as the coordinates and coordinate order of "
+"geometry/geography B."
 msgstr ""
+"<varname>~=</varname> 연산자는 도형/지리형 A의 경계 상자와 도형/지리형 B의 경"
+"계 상자가 동일할 경우 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: funcsynopsis
-#: reference_operator.xml:436
+#: reference_operator.xml:791
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>&#61;</function></funcdef> "
@@ -609,57 +1237,71 @@ msgid ""
 "paramdef> <paramdef> <type>geography </type> <parameter>B</parameter> </"
 "paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>boolean <function>&#61;</function></funcdef> "
+"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
+"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef> </"
+"funcprototype> <funcprototype> <funcdef>boolean <function>&#61;</function></"
+"funcdef> <paramdef> <type>geography </type> <parameter>A</parameter> </"
+"paramdef> <paramdef> <type>geography </type> <parameter>B</parameter> </"
+"paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_operator.xml:477
-#, no-c-format
+#: reference_operator.xml:832
+#, fuzzy, no-c-format
 msgid ""
 "The <varname>&#61;</varname> operator returns <varname>TRUE</varname> if the "
-"bounding box of geometry/geography A is the same as the bounding box of "
-"geometry/geography B. PostgreSQL uses the =, &lt;, and &gt; operators "
-"defined for geometries to perform internal orderings and comparison of "
-"geometries (ie. in a GROUP BY or ORDER BY clause)."
+"coordinates and coordinate order geometry/geography A are the same as the "
+"coordinates and coordinate order of geometry/geography B. PostgreSQL uses "
+"the =, &lt;, and &gt; operators defined for geometries to perform internal "
+"orderings and comparison of geometries (ie. in a GROUP BY or ORDER BY "
+"clause)."
 msgstr ""
+"<varname>=</varname> 연산자는 도형/지리형 A의 경계 상자와 도형/지리형 B의 경"
+"계 상자가 동일할 경우 <varname>TRUE</varname> 를 반환합니다. PostgreSQL은 도"
+"형을 내부 정렬하고 비교하기 위해 도형에 대해 정의된 =, &lt;, 및 &gt; 연산자"
+"를 이용합니다(예: GROUP BY 또는 ORDER BY 절에서)."
 
 #. Tag: para
-#: reference_operator.xml:482
+#: reference_operator.xml:837
 #, no-c-format
 msgid ""
-"This is cause for a lot of confusion. When you compare geometryA = geometryB "
-"it will return true even when the geometries are clearly different IF their "
-"bounding boxes are the same. To check for true equality use <xref linkend="
-"\"ST_OrderingEquals\"/> or <xref linkend=\"ST_Equals\"/>"
+"Only geometry/geography that are exactly equal in all respects, with the "
+"same coordinates, in the same order, are considered equal by this operator. "
+"For \"spatial equality\", that ignores things like coordinate order, and can "
+"detect features that cover the same spatial area with different "
+"representations, use <xref linkend=\"ST_OrderingEquals\"/> or <xref linkend="
+"\"ST_Equals\"/>"
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:489
-#, no-c-format
+#: reference_operator.xml:846
+#, fuzzy, no-c-format
 msgid ""
 "This operand will NOT make use of any indexes that may be available on the "
-"geometries."
+"geometries. For an index assisted exact equality test, combine &#61; with "
+"&amp;&amp;."
 msgstr ""
+"이 피연산자(operand)는 도형에서 이용할 수도 있는 어떤 인덱스도 활용하지 않을 "
+"것입니다."
 
 #. Tag: para
-#: reference_operator.xml:494
+#: reference_operator.xml:850
 #, no-c-format
 msgid ""
-"Changed: 2.0.0 , the bounding box of geometries was changed to use double "
-"precision instead of float4 precision of prior. The side effect of this is "
-"that in particular points in prior versions that were a little different may "
-"have returned true in prior versions and false in 2.0+ since their float4 "
-"boxes would be the same but there float8 (double precision), would be "
-"different."
+"Changed: 2.4.0, in prior versions this was bounding box equality not a "
+"geometric equality. If you need bounding box equality, use <xref linkend="
+"\"ST_Geometry_Same\"/> instead."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_operator.xml:504
-#, no-c-format
+#: reference_operator.xml:860
+#, fuzzy, no-c-format
 msgid ""
 "SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 0)'::"
 "geometry;\n"
 " ?column?\n"
 "----------\n"
-" t\n"
+" f\n"
 "(1 row)\n"
 "\n"
 "SELECT ST_AsText(column1)\n"
@@ -678,59 +1320,104 @@ msgid ""
 "        ('LINESTRING(0 0, 1 1)'::geometry),\n"
 "        ('LINESTRING(1 1, 0 0)'::geometry)) AS foo\n"
 "GROUP BY column1;\n"
+"      st_astext\n"
+"---------------------\n"
+" LINESTRING(0 0,1 1)\n"
+" LINESTRING(1 1,0 0)\n"
+"(2 rows)\n"
+"\n"
+"-- In versions prior to 2.0, this used to return true --\n"
+" SELECT ST_GeomFromText('POINT(1707296.37 4820536.77)') =\n"
+"        ST_GeomFromText('POINT(1707296.27 4820536.87)') As pt_intersect;\n"
+"\n"
+"--pt_intersect --\n"
+"f"
+msgstr ""
+"SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 0)'::"
+"geometry;\n"
+" ?column?\n"
+"----------\n"
+" t\n"
+"(1 row)\n"
+"\n"
+"SELECT ST_AsText(column1)\n"
+"FROM ( VALUES\n"
+"        ('LINESTRING(0 0, 1 1)'::geometry),\n"
+"        ('LINESTRING(1 1, 0 0)'::geometry)) AS foo;\n"
+"          st_astext\n"
+"---------------------\n"
+" LINESTRING(0 0,1 1)\n"
+" LINESTRING(1 1,0 0)\n"
+"(2 rows)\n"
+"\n"
+"-- 주의: GROUP BY 절이 도형의 동치 관계를 비교하기 위해 \"=\" 를 이용합니"
+"다.\n"
+"SELECT ST_AsText(column1)\n"
+"FROM ( VALUES\n"
+"        ('LINESTRING(0 0, 1 1)'::geometry),\n"
+"        ('LINESTRING(1 1, 0 0)'::geometry)) AS foo\n"
+"GROUP BY column1;\n"
 "          st_astext\n"
 "---------------------\n"
 " LINESTRING(0 0,1 1)\n"
 "(1 row)\n"
 "\n"
-"-- In versions prior to 2.0, this used to return true --\n"
+"-- 2.0 미만 버전에서, 다음은 참을 반환했습니다. --\n"
 " SELECT ST_GeomFromText('POINT(1707296.37 4820536.77)') =\n"
 "        ST_GeomFromText('POINT(1707296.27 4820536.87)') As pt_intersect;\n"
-"        \n"
+"\n"
 "--pt_intersect --\n"
 "f"
-msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:510
-#, no-c-format
-msgid ", <xref linkend=\"ST_OrderingEquals\"/>"
+#: reference_operator.xml:866
+#, fuzzy, no-c-format
+msgid ""
+", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_Same\"/>"
 msgstr ""
+", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_EQ\"/>"
 
 #. Tag: refname
-#: reference_operator.xml:517
+#: reference_operator.xml:873
 #, no-c-format
 msgid "&gt;&gt;"
-msgstr ""
+msgstr "&gt;&gt;"
 
 #. Tag: refpurpose
-#: reference_operator.xml:519
+#: reference_operator.xml:875
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is strictly to the right "
 "of B's."
 msgstr ""
+"A의 경계 상자가 오로지 B의 경계 상자 오른쪽에 있을 경우에만 <varname>TRUE</"
+"varname> 를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:524
+#: reference_operator.xml:880
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>&gt;&gt;</function></funcdef> <paramdef> "
 "<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>geometry </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>boolean <function>&gt;&gt;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:548
+#: reference_operator.xml:904
 #, no-c-format
 msgid ""
 "The <varname>&gt;&gt;</varname> operator returns <varname>TRUE</varname> if "
 "the bounding box of geometry A is strictly to the right of the bounding box "
 "of geometry B."
 msgstr ""
+"<varname>&gt;&gt;</varname> 연산자는 도형 A의 경계 상자가 오로지 도형 B의 경"
+"계 상자 오른쪽에 있을 경우에만 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: programlisting
-#: reference_operator.xml:558
+#: reference_operator.xml:914
 #, no-c-format
 msgid ""
 "SELECT tbl1.column1, tbl2.column1, tbl1.column2 &gt;&gt; tbl2.column2 AS "
@@ -750,40 +1437,63 @@ msgid ""
 "           1 |       4 | f\n"
 "(3 rows)"
 msgstr ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &gt;&gt; tbl2.column2 AS "
+"right\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING (1 4, 1 7)'::geometry),\n"
+"        (3, 'LINESTRING (6 1, 6 5)'::geometry),\n"
+"        (4, 'LINESTRING (0 0, 4 3)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | right\n"
+"---------+---------+-------\n"
+"           1 |       2 | t\n"
+"           1 |       3 | f\n"
+"           1 |       4 | f\n"
+"(3 rows)"
 
 #. Tag: refname
-#: reference_operator.xml:570
+#: reference_operator.xml:926
 #, no-c-format
 msgid "<refname>@</refname>"
-msgstr ""
+msgstr "<refname>@</refname>"
 
 #. Tag: refpurpose
-#: reference_operator.xml:572
+#: reference_operator.xml:928
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is contained by B's."
 msgstr ""
+"B의 경계 상자가 A의 경계 상자를 담고 있을 경우 <varname>TRUE</varname> 를 반"
+"환합니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:577
+#: reference_operator.xml:933
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
 "</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
 "type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
+"type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:601
+#: reference_operator.xml:957
 #, no-c-format
 msgid ""
 "The <varname>@</varname> operator returns <varname>TRUE</varname> if the "
 "bounding box of geometry A is completely contained by the bounding box of "
 "geometry B."
 msgstr ""
+"<varname>@</varname> 연산자는 도형 B의 경계 상자가 도형 A의 경계 상자를 완전"
+"히 담고 있을 경우 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: programlisting
-#: reference_operator.xml:613
+#: reference_operator.xml:969
 #, no-c-format
 msgid ""
 "SELECT tbl1.column1, tbl2.column1, tbl1.column2 @ tbl2.column2 AS contained\n"
@@ -802,37 +1512,260 @@ msgid ""
 "           1 |       4 | t\n"
 "(3 rows)"
 msgstr ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 @ tbl2.column2 AS contained\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING (1 1, 3 3)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING (0 0, 4 4)'::geometry),\n"
+"        (3, 'LINESTRING (2 2, 4 4)'::geometry),\n"
+"        (4, 'LINESTRING (1 1, 3 3)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | contained\n"
+"---------+---------+-----------\n"
+"           1 |       2 | t\n"
+"           1 |       3 | f\n"
+"           1 |       4 | t\n"
+"(3 rows)"
 
 #. Tag: para
-#: reference_operator.xml:619 reference_operator.xml:783
+#: reference_operator.xml:975 reference_operator.xml:1322
 #, no-c-format
 msgid ", <xref linkend=\"geometry_overlaps\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"geometry_overlaps\"/>"
 
 #. Tag: refname
-#: reference_operator.xml:625
+#: reference_operator.xml:981
 #, no-c-format
-msgid "|&amp;&gt;"
+msgid "@(geometry,box2df)"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_operator.xml:627
+#: reference_operator.xml:983
+#, fuzzy, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if a geometry's 2D bounding box is contained "
+"into a 2D float precision bounding box (BOX2DF)."
+msgstr ""
+"A의 경계 상자와 B의 경계 상자가 동일할 경우 <varname>TRUE</varname> 를 반환합"
+"니다. 이중 정밀도 경계 상자를 이용합니다."
+
+#. Tag: funcprototype
+#: reference_operator.xml:988
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
+"<parameter>B</parameter> </paramdef>"
+msgstr ""
+"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
+"type> <parameter>B</parameter> </paramdef>"
+
+#. Tag: para
+#: reference_operator.xml:1009
+#, no-c-format
+msgid ""
+"The <varname>@</varname> operator returns <varname>TRUE</varname> if the A "
+"geometry's 2D bounding box is contained the 2D bounding box B, using float "
+"precision. This means that if B is a (double precision) box2d, it will be "
+"internally converted to a float precision 2D bounding box (BOX2DF)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:1022
+#, no-c-format
+msgid ""
+"SELECT ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) @ "
+"ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) AS is_contained;\n"
+"\n"
+" is_contained\n"
+"--------------\n"
+" t\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:1028
+#, fuzzy, no-c-format
+msgid ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_box2df_geometry\"/"
+">, <xref linkend=\"is_contained_box2df_box2df\"/>"
+msgstr ""
+", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
+"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
+
+#. Tag: refname
+#: reference_operator.xml:1042
+#, no-c-format
+msgid "@(box2df,geometry)"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:1044
+#, fuzzy, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if a 2D float precision bounding box "
+"(BOX2DF) is contained into a geometry's 2D bounding box."
+msgstr ""
+"A의 2D 경계 상자와 B의 2D 경계 상자가 교차하는 경우 <varname>TRUE</varname> "
+"를 반환합니다."
+
+#. Tag: funcprototype
+#: reference_operator.xml:1049
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
+"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
+"<parameter>B</parameter> </paramdef>"
+msgstr ""
+"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
+"type> <parameter>B</parameter> </paramdef>"
+
+#. Tag: para
+#: reference_operator.xml:1070
+#, fuzzy, no-c-format
+msgid ""
+"The <varname>@</varname> operator returns <varname>TRUE</varname> if the 2D "
+"bounding box A is contained into the B geometry's 2D bounding box, using "
+"float precision. This means that if B is a (double precision) box2d, it will "
+"be internally converted to a float precision 2D bounding box (BOX2DF)"
+msgstr ""
+"<varname>&amp;&lt;</varname> 연산자는 도형 A의 경계 상자가 도형 B의 경계 상자"
+"와 겹치거나 그 왼쪽에 있을 경우, 또는 더 정확히 말하자면 도형 B의 경계 상자"
+"와 겹치거나 그 오른쪽에 있지 않을 경우, <varname>TRUE</varname> 를 반환합니"
+"다."
+
+#. Tag: programlisting
+#: reference_operator.xml:1083
+#, no-c-format
+msgid ""
+"SELECT ST_MakeBox2D(ST_MakePoint(2,2), ST_MakePoint(3,3)) @ "
+"ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) AS is_contained;\n"
+"\n"
+" is_contained\n"
+"--------------\n"
+" t\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:1089
+#, fuzzy, no-c-format
+msgid ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_geometry_box2df\"/"
+">, <xref linkend=\"is_contained_box2df_box2df\"/>"
+msgstr ""
+", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
+"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
+
+#. Tag: refname
+#: reference_operator.xml:1103
+#, no-c-format
+msgid "@(box2df,box2df)"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:1105
+#, fuzzy, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if a 2D float precision bounding box "
+"(BOX2DF) is contained into another 2D float precision bounding box."
+msgstr ""
+"A의 경계 상자와 B의 경계 상자가 동일할 경우 <varname>TRUE</varname> 를 반환합"
+"니다. 이중 정밀도 경계 상자를 이용합니다."
+
+#. Tag: funcprototype
+#: reference_operator.xml:1110
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
+"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
+"<parameter>B</parameter> </paramdef>"
+msgstr ""
+"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
+"type> <parameter>B</parameter> </paramdef>"
+
+#. Tag: para
+#: reference_operator.xml:1131
+#, fuzzy, no-c-format
+msgid ""
+"The <varname>@</varname> operator returns <varname>TRUE</varname> if the 2D "
+"bounding box A is contained into the 2D bounding box B, using float "
+"precision. This means that if A (or B) is a (double precision) box2d, it "
+"will be internally converted to a float precision 2D bounding box (BOX2DF)"
+msgstr ""
+"<varname>&amp;&lt;</varname> 연산자는 도형 A의 경계 상자가 도형 B의 경계 상자"
+"와 겹치거나 그 왼쪽에 있을 경우, 또는 더 정확히 말하자면 도형 B의 경계 상자"
+"와 겹치거나 그 오른쪽에 있지 않을 경우, <varname>TRUE</varname> 를 반환합니"
+"다."
+
+#. Tag: programlisting
+#: reference_operator.xml:1144
+#, no-c-format
+msgid ""
+"SELECT ST_MakeBox2D(ST_MakePoint(2,2), ST_MakePoint(3,3)) @ "
+"ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) AS is_contained;\n"
+"\n"
+" is_contained\n"
+"--------------\n"
+" t\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:1150
+#, fuzzy, no-c-format
+msgid ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_geometry_box2df\"/"
+">, <xref linkend=\"is_contained_box2df_geometry\"/>"
+msgstr ""
+", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
+"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
+
+#. Tag: refname
+#: reference_operator.xml:1164
+#, no-c-format
+msgid "|&amp;&gt;"
+msgstr "|&amp;&gt;"
+
+#. Tag: refpurpose
+#: reference_operator.xml:1166
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box overlaps or is above B's."
 msgstr ""
+"A의 경계 상자가 B의 경계 상자와 겹치거나 그 위에 있을 경우 <varname>TRUE</"
+"varname> 를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:632
+#: reference_operator.xml:1171
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>|&amp;&gt;</function></funcdef> <paramdef> "
 "<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>geometry </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>boolean <function>|&amp;&gt;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:656
+#: reference_operator.xml:1195
 #, no-c-format
 msgid ""
 "The <varname>|&amp;&gt;</varname> operator returns <varname>TRUE</varname> "
@@ -840,9 +1773,12 @@ msgid ""
 "geometry B, or more accurately, overlaps or is NOT below the bounding box of "
 "geometry B."
 msgstr ""
+"<varname>|&amp;&gt;</varname> 연산자는 도형 A의 경계 상자가 도형 B의 경계 상"
+"자와 겹치거나 그 위에 있을 경우, 또는 더 정확히 말하자면 도형 B의 경계 상자"
+"와 겹치거나 아래에 있지 않을 경우, <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: programlisting
-#: reference_operator.xml:667
+#: reference_operator.xml:1206
 #, no-c-format
 msgid ""
 "SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&amp;&gt; tbl2.column2 AS "
@@ -862,48 +1798,73 @@ msgid ""
 "           1 |       4 | f\n"
 "(3 rows)"
 msgstr ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&amp;&gt; tbl2.column2 AS "
+"overabove\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING(6 0, 6 4)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING(0 0, 3 3)'::geometry),\n"
+"        (3, 'LINESTRING(0 1, 0 5)'::geometry),\n"
+"        (4, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | overabove\n"
+"---------+---------+-----------\n"
+"           1 |       2 | t\n"
+"           1 |       3 | f\n"
+"           1 |       4 | f\n"
+"(3 rows)"
 
 #. Tag: para
-#: reference_operator.xml:673
+#: reference_operator.xml:1212
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
 "\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 msgstr ""
+", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 
 #. Tag: refname
-#: reference_operator.xml:683
+#: reference_operator.xml:1222
 #, no-c-format
 msgid "|&gt;&gt;"
-msgstr ""
+msgstr "|&gt;&gt;"
 
 #. Tag: refpurpose
-#: reference_operator.xml:685
+#: reference_operator.xml:1224
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is strictly above B's."
 msgstr ""
+"A의 경계 상자가 오로지 B의 경계 상자 위에 있을 경우에만 <varname>TRUE</"
+"varname> 를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:690
+#: reference_operator.xml:1229
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>|&gt;&gt;</function></funcdef> <paramdef> "
 "<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>geometry </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>boolean <function>|&gt;&gt;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:714
-#, no-c-format
+#: reference_operator.xml:1253
+#, fuzzy, no-c-format
 msgid ""
 "The <varname>|&gt;&gt;</varname> operator returns <varname>TRUE</varname> if "
-"the bounding box of geometry A is strictly to the right of the bounding box "
-"of geometry B."
+"the bounding box of geometry A is strictly above the bounding box of "
+"geometry B."
 msgstr ""
+"<varname>&lt;&lt;|</varname> 연산자는 도형 A의 경계 상자가 오로지 도형 B의 경"
+"계 상자 아래에 있을 경우에만 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: programlisting
-#: reference_operator.xml:724
+#: reference_operator.xml:1263
 #, no-c-format
 msgid ""
 "SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&gt;&gt; tbl2.column2 AS "
@@ -923,47 +1884,72 @@ msgid ""
 "           1 |       4 | f\n"
 "(3 rows)"
 msgstr ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&gt;&gt; tbl2.column2 AS "
+"above\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING (1 4, 1 7)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING (0 0, 4 2)'::geometry),\n"
+"        (3, 'LINESTRING (6 1, 6 5)'::geometry),\n"
+"        (4, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | above\n"
+"---------+---------+-------\n"
+"           1 |       2 | t\n"
+"           1 |       3 | f\n"
+"           1 |       4 | f\n"
+"(3 rows)"
 
 #. Tag: para
-#: reference_operator.xml:730
+#: reference_operator.xml:1269
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Geometry_Right\"/>, <xref linkend=\"ST_Geometry_Below\"/"
 ">"
 msgstr ""
+", <xref linkend=\"ST_Geometry_Right\"/>, <xref linkend=\"ST_Geometry_Below\"/"
+">"
 
 #. Tag: refname
-#: reference_operator.xml:736
+#: reference_operator.xml:1275
 #, no-c-format
 msgid "<refname>~</refname>"
-msgstr ""
+msgstr "<refname>~</refname>"
 
 #. Tag: refpurpose
-#: reference_operator.xml:738
+#: reference_operator.xml:1277
 #, no-c-format
 msgid "Returns <varname>TRUE</varname> if A's bounding box contains B's."
 msgstr ""
+"A의 경계 상자가 B의 경계 상자를 담고 있을 경우 <varname>TRUE</varname> 를 반"
+"환합니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:743
+#: reference_operator.xml:1282
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
 "</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
 "type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
+"type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:767
+#: reference_operator.xml:1306
 #, no-c-format
 msgid ""
 "The <varname>~</varname> operator returns <varname>TRUE</varname> if the "
 "bounding box of geometry A completely contains the bounding box of geometry "
 "B."
 msgstr ""
+"<varname>~</varname> 연산자는 도형 A의 경계 상자가 도형 B의 경계 상자를 완전"
+"히 담고 있을 경우 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: programlisting
-#: reference_operator.xml:777
+#: reference_operator.xml:1316
 #, no-c-format
 msgid ""
 "SELECT tbl1.column1, tbl2.column1, tbl1.column2 ~ tbl2.column2 AS contains\n"
@@ -982,59 +1968,286 @@ msgid ""
 "           1 |       4 | t\n"
 "(3 rows)"
 msgstr ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 ~ tbl2.column2 AS contains\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING (0 0, 4 4)'::geometry),\n"
+"        (3, 'LINESTRING (1 1, 2 2)'::geometry),\n"
+"        (4, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | contains\n"
+"---------+---------+----------\n"
+"           1 |       2 | f\n"
+"           1 |       3 | t\n"
+"           1 |       4 | t\n"
+"(3 rows)"
 
 #. Tag: refname
-#: reference_operator.xml:789
+#: reference_operator.xml:1328
 #, no-c-format
-msgid "<refname>~=</refname>"
+msgid "~(geometry,box2df)"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_operator.xml:791
+#: reference_operator.xml:1330
+#, fuzzy, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if a geometry's 2D bonding box contains a 2D "
+"float precision bounding box (GIDX)."
+msgstr ""
+"A의 2D 경계 상자와 B의 2D 경계 상자가 교차하는 경우 <varname>TRUE</varname> "
+"를 반환합니다."
+
+#. Tag: funcprototype
+#: reference_operator.xml:1335
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
+"<parameter>B</parameter> </paramdef>"
+msgstr ""
+"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
+"type> <parameter>B</parameter> </paramdef>"
+
+#. Tag: para
+#: reference_operator.xml:1356
+#, fuzzy, no-c-format
+msgid ""
+"The <varname>~</varname> operator returns <varname>TRUE</varname> if the 2D "
+"bounding box of a geometry A contains the 2D bounding box B, using float "
+"precision. This means that if B is a (double precision) box2d, it will be "
+"internally converted to a float precision 2D bounding box (BOX2DF)"
+msgstr ""
+"<varname>|&amp;&gt;</varname> 연산자는 도형 A의 경계 상자가 도형 B의 경계 상"
+"자와 겹치거나 그 위에 있을 경우, 또는 더 정확히 말하자면 도형 B의 경계 상자"
+"와 겹치거나 아래에 있지 않을 경우, <varname>TRUE</varname> 를 반환합니다."
+
+#. Tag: programlisting
+#: reference_operator.xml:1369
+#, no-c-format
+msgid ""
+"SELECT ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) ~ "
+"ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) AS contains;\n"
+"\n"
+" contains\n"
+"----------\n"
+" t\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:1375
+#, no-c-format
+msgid ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/>, "
+"<xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:1389
+#, no-c-format
+msgid "~(box2df,geometry)"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:1391
+#, fuzzy, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if a 2D float precision bounding box "
+"(BOX2DF) contains a geometry's 2D bonding box."
+msgstr ""
+"A의 2D 경계 상자와 B의 2D 경계 상자가 교차하는 경우 <varname>TRUE</varname> "
+"를 반환합니다."
+
+#. Tag: funcprototype
+#: reference_operator.xml:1396
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
+"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
+"<parameter>B</parameter> </paramdef>"
+msgstr ""
+"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
+"type> <parameter>B</parameter> </paramdef>"
+
+#. Tag: para
+#: reference_operator.xml:1417
+#, fuzzy, no-c-format
+msgid ""
+"The <varname>~</varname> operator returns <varname>TRUE</varname> if the 2D "
+"bounding box A contains the B geometry's bounding box, using float "
+"precision. This means that if A is a (double precision) box2d, it will be "
+"internally converted to a float precision 2D bounding box (BOX2DF)"
+msgstr ""
+"<varname>@</varname> 연산자는 도형 B의 경계 상자가 도형 A의 경계 상자를 완전"
+"히 담고 있을 경우 <varname>TRUE</varname> 를 반환합니다."
+
+#. Tag: programlisting
+#: reference_operator.xml:1430
+#, no-c-format
+msgid ""
+"SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) ~ "
+"ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) AS contains;\n"
+"\n"
+" contains\n"
+"----------\n"
+" t\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:1436
+#, no-c-format
+msgid ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:1450
+#, no-c-format
+msgid "~(box2df,box2df)"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:1452
+#, fuzzy, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if a 2D float precision bounding box "
+"(BOX2DF) contains another 2D float precision bounding box (BOX2DF)."
+msgstr ""
+"A의 경계 상자와 B의 경계 상자가 동일할 경우 <varname>TRUE</varname> 를 반환합"
+"니다. 이중 정밀도 경계 상자를 이용합니다."
+
+#. Tag: funcprototype
+#: reference_operator.xml:1457
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
+"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
+"<parameter>B</parameter> </paramdef>"
+msgstr ""
+"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
+"type> <parameter>B</parameter> </paramdef>"
+
+#. Tag: para
+#: reference_operator.xml:1478
+#, fuzzy, no-c-format
+msgid ""
+"The <varname>~</varname> operator returns <varname>TRUE</varname> if the 2D "
+"bounding box A contains the 2D bounding box B, using float precision. This "
+"means that if A is a (double precision) box2d, it will be internally "
+"converted to a float precision 2D bounding box (BOX2DF)"
+msgstr ""
+"<varname>@</varname> 연산자는 도형 B의 경계 상자가 도형 A의 경계 상자를 완전"
+"히 담고 있을 경우 <varname>TRUE</varname> 를 반환합니다."
+
+#. Tag: programlisting
+#: reference_operator.xml:1491
+#, no-c-format
+msgid ""
+"SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) ~ "
+"ST_MakeBox2D(ST_MakePoint(2,2), ST_MakePoint(3,3)) AS contains;\n"
+"\n"
+" contains\n"
+"----------\n"
+" t\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:1497
+#, fuzzy, no-c-format
+msgid ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
+msgstr ""
+", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
+"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
+
+#. Tag: refname
+#: reference_operator.xml:1511
+#, no-c-format
+msgid "<refname>~=</refname>"
+msgstr "<refname>~=</refname>"
+
+#. Tag: refpurpose
+#: reference_operator.xml:1513
 #, no-c-format
 msgid "Returns <varname>TRUE</varname> if A's bounding box is the same as B's."
 msgstr ""
+"A의 경계 상자와 B의 경계 상자가 동일할 경우 <varname>TRUE</varname> 를 반환합"
+"니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:796
+#: reference_operator.xml:1518
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>geometry "
 "</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
 "type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>geometry "
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
+"type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:820
+#: reference_operator.xml:1542
 #, no-c-format
 msgid ""
 "The <varname>~=</varname> operator returns <varname>TRUE</varname> if the "
 "bounding box of geometry/geography A is the same as the bounding box of "
 "geometry/geography B."
 msgstr ""
+"<varname>~=</varname> 연산자는 도형/지리형 A의 경계 상자와 도형/지리형 B의 경"
+"계 상자가 동일할 경우 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: para
-#: reference_operator.xml:826
+#: reference_operator.xml:1548
 #, no-c-format
 msgid "Availability: 1.5.0 changed behavior"
-msgstr ""
+msgstr "1.5.0 버전에서 습성이 변경됐습니다."
 
 #. Tag: para
-#: reference_operator.xml:830
-#, no-c-format
+#: reference_operator.xml:1552
+#, fuzzy, no-c-format
 msgid ""
 "This operator has changed behavior in PostGIS 1.5 from testing for actual "
 "geometric equality to only checking for bounding box equality. To complicate "
 "things it also depends on if you have done a hard or soft upgrade which "
 "behavior your database has. To find out which behavior your database has you "
 "can run the query below. To check for true equality use <xref linkend="
-"\"ST_OrderingEquals\"/> or <xref linkend=\"ST_Equals\"/> and to check for "
-"bounding box equality <xref linkend=\"ST_Geometry_EQ\"/>; operator is a "
-"safer option."
+"\"ST_OrderingEquals\"/> or <xref linkend=\"ST_Equals\"/>."
 msgstr ""
+"이 연산자는 PostGIS 1.5 버전에서 실제 도형 동일성을 테스트하는 것에서 오직 경"
+"계 상자 동일성을 확인하는 것으로 습성이 변경됐습니다. 또 사용자가 하드 업그레"
+"이드를 했는지 소프트 업그레이드를 했는지에 따라 사용자 데이터베이스가 어떤 습"
+"성을 가질지가 달라지기 때문에 문제가 복잡해집니다. 사용자 데이터베이스가 어"
+"떤 습성을 가지고 있는지 알아보려면 다음 쿼리를 실행해보면 됩니다. 진정한 도"
+"형 동일성을 확인하려면 <xref linkend=\"ST_OrderingEquals\"/> 또는 <xref "
+"linkend=\"ST_Equals\"/> 함수를 이용하십시오. 경계 상자 동일성을 확인하려면 "
+"<xref linkend=\"ST_Geometry_EQ\"/>; 연산자가 더 안전한 선택입니다."
 
 #. Tag: programlisting
-#: reference_operator.xml:844
+#: reference_operator.xml:1565
 #, no-c-format
 msgid ""
 "select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry "
@@ -1043,36 +2256,34 @@ msgid ""
 "-----------------+\n"
 "          t    |"
 msgstr ""
+"select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry "
+"as equality;\n"
+" equality   |\n"
+"-----------------+\n"
+"          t    |"
 
 #. Tag: para
-#: reference_operator.xml:845
-#, no-c-format
-msgid ""
-"The above can be used to test if you have the new or old behavior of ~= "
-"operator."
-msgstr ""
-
-#. Tag: para
-#: reference_operator.xml:849
+#: reference_operator.xml:1569
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_EQ\"/>"
 msgstr ""
+", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_EQ\"/>"
 
 #. Tag: refname
-#: reference_operator.xml:855
+#: reference_operator.xml:1575
 #, no-c-format
 msgid "&lt;-&gt;"
-msgstr ""
+msgstr "&lt;-&gt;"
 
 #. Tag: refpurpose
-#: reference_operator.xml:857
+#: reference_operator.xml:1577
 #, no-c-format
 msgid "Returns the 2D distance between A and B."
-msgstr ""
+msgstr "A와 B 사이의 2차원 거리를 반환합니다."
 
 #. Tag: funcsynopsis
-#: reference_operator.xml:863
+#: reference_operator.xml:1583
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>double precision <function>&lt;-&gt;</function></"
@@ -1083,9 +2294,16 @@ msgid ""
 "<parameter>A</parameter> </paramdef> <paramdef> <type>geography </type> "
 "<parameter>B</parameter> </paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>double precision <function>&lt;-&gt;</function></"
+"funcdef> <paramdef> <type>geometry </type> <parameter>A</parameter> </"
+"paramdef> <paramdef> <type>geometry </type> <parameter>B</parameter> </"
+"paramdef> </funcprototype> <funcprototype> <funcdef>double precision "
+"<function>&lt;-&gt;</function></funcdef> <paramdef> <type>geography </type> "
+"<parameter>A</parameter> </paramdef> <paramdef> <type>geography </type> "
+"<parameter>B</parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_operator.xml:901
+#: reference_operator.xml:1621
 #, no-c-format
 msgid ""
 "The <varname>&lt;-&gt;</varname> operator returns the 2D distance between "
@@ -1095,9 +2313,15 @@ msgid ""
 "search giving true distance between geometries, and distance sphere for "
 "geographies."
 msgstr ""
+"<varname>&lt;-&gt;</varname> 연산자는 두 도형 사이의 2차원 거리를 반환합니"
+"다. \"ORDER BY\" 절 안에서 이용하면 인덱스 지원형(index-assisted) 최근접"
+"(nearest neighbor) 결과 집합을 출력합니다. PostgreSQL 9.5 미만 버전은 경계 상"
+"자의 중심점 사이의 거리만 출력하고, 9.5 이상 버전은 도형 사이의 진정한 거리, "
+"그리고 지리형 사이의 구면 거리(distance sphere)를 산출하는 진정한 KNN 거리 탐"
+"색을 실행합니다."
 
 #. Tag: para
-#: reference_operator.xml:910
+#: reference_operator.xml:1630
 #, no-c-format
 msgid ""
 "This operand will make use of 2D GiST indexes that may be available on the "
@@ -1105,27 +2329,36 @@ msgid ""
 "that the spatial index is only used when the operator is in the ORDER BY "
 "clause."
 msgstr ""
+"이 피연산자(operand)는 도형에 대해 이용할 수 있을지도 모르는 2차원 GiST 인덱"
+"스를 활용할 것입니다. 연산자가 ORDER BY 절 안에 있을 때만 공간 인덱스를 쓴다"
+"는 점에서 공간 인덱스를 이용하는 다른 연산자들과는 다릅니다."
 
 #. Tag: para
-#: reference_operator.xml:911 reference_operator.xml:1104
+#: reference_operator.xml:1631 reference_operator.xml:1824
 #, no-c-format
 msgid ""
 "Index only kicks in if one of the geometries is a constant (not in a "
 "subquery/cte). e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a."
 "geom"
 msgstr ""
+"도형 가운데 하나가, 예를 들어 a.geom이 아니라 'SRID=3005;POINT(1011102 "
+"450541)'::geometry와 같이, (하위 쿼리/CTE(common table expression) 안에 있지 "
+"않은) 상수일 경우에만 인덱스의 효과가 나타납니다."
 
 #. Tag: para
-#: reference_operator.xml:912
+#: reference_operator.xml:1632
 #, no-c-format
 msgid ""
 "Refer to <ulink url=\"http://workshops.opengeo.org/postgis-intro/knn.html"
 "\">OpenGeo workshop: Nearest-Neighbour Searching</ulink> for real live "
 "example."
 msgstr ""
+"실제 사용례를 살펴보려면 <ulink url=\"http://workshops.opengeo.org/postgis-"
+"intro/knn.html\">OpenGeo workshop: Nearest-Neighbour Searching</ulink> 을 참"
+"조하십시오."
 
 #. Tag: para
-#: reference_operator.xml:914
+#: reference_operator.xml:1634
 #, no-c-format
 msgid ""
 "Enhanced: 2.2.0 -- True KNN (\"K nearest neighbor\") behavior for geometry "
@@ -1133,32 +2366,44 @@ msgid ""
 "rather than spheroid. For PostgreSQL 9.4 and below, geography support is new "
 "but only supports centroid box."
 msgstr ""
+"개선 사항: 2.2.0 버전 -- PostgreSQL 9.5 이상 버전에서 도형 및 지리형에 대해 "
+"진정한 KNN(\"K nearest neighbor\") 습성을 도입했습니다. 지리형 KNN이 타원체"
+"가 아니라 구체를 기반으로 한다는 점에 주의하십시오. PostgreSQL 9.4 이하 버전"
+"에서 지리형을 쓸 수 있긴 하지만, 중심점 상자만 지원합니다."
 
 #. Tag: para
-#: reference_operator.xml:915
+#: reference_operator.xml:1635
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 -- For PostgreSQL 9.5 users, old Hybrid syntax may be slower, "
 "so you'll want to get rid of that hack if you are running your code only on "
 "PostGIS 2.2+ 9.5+. See examples below."
 msgstr ""
+"변경 사항: 2.2.0 버전 -- PostgreSQL 9.5 버전 사용자의 경우, 예전의 하이브리"
+"드 문법(Hybrid syntax)이 느릴 수도 있기 때문에 PostGIS 2.2 이상, PostgreSQL "
+"9.5 이상 버전에서만 사용자 코드를 실행하는 경우 이 꼼수를 제거하는 편이 좋을 "
+"수도 있습니다. 다음 예시를 참조하세요."
 
 #. Tag: para
-#: reference_operator.xml:916
+#: reference_operator.xml:1636
 #, no-c-format
 msgid ""
 "Availability: 2.0.0 -- Weak KNN provides nearest neighbors based on geometry "
 "centroid distances instead of true distances. Exact results for points, "
 "inexact for all other types. Available for PostgreSQL 9.1+"
 msgstr ""
+"2.0.0 버전부터 사용할 수 있습니다. 약한 KNN이 실제 거리 대신 도형 중심점 거리"
+"에 기반한 최근접 탐색을 제공합니다. 포인트의 경우 정확한 결과를 출력하지만, "
+"다른 모든 유형에 대해서는 부정확한 결과를 냅니다. PostgreSQL 9.1 이상 버전에"
+"서 이용할 수 있습니다."
 
 #. Tag: programlisting
-#: reference_operator.xml:923
+#: reference_operator.xml:1643
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::"
-"geometry) as d,edabbr, vaabbr \n"
-"FROM va2005 \n"
+"geometry) as d,edabbr, vaabbr\n"
+"FROM va2005\n"
 "ORDER BY d limit 10;]]>\n"
 "\n"
 "        d         | edabbr | vaabbr\n"
@@ -1175,20 +2420,38 @@ msgid ""
 " 18472.5531479404 | ALQ    | 002\n"
 "(10 rows)"
 msgstr ""
+"<![CDATA[SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::"
+"geometry) as d,edabbr, vaabbr\n"
+"FROM va2005\n"
+"ORDER BY d limit 10;]]>\n"
+"\n"
+"        d         | edabbr | vaabbr\n"
+"------------------+--------+--------\n"
+"                0 | ALQ    | 128\n"
+" 5541.57712511724 | ALQ    | 129A\n"
+" 5579.67450712005 | ALQ    | 001\n"
+"  6083.4207708641 | ALQ    | 131\n"
+"  7691.2205404848 | ALQ    | 003\n"
+" 7900.75451037313 | ALQ    | 122\n"
+" 8694.20710669982 | ALQ    | 129B\n"
+" 9564.24289057111 | ALQ    | 130\n"
+"  12089.665931705 | ALQ    | 127\n"
+" 18472.5531479404 | ALQ    | 002\n"
+"(10 rows)"
 
 #. Tag: para
-#: reference_operator.xml:924
+#: reference_operator.xml:1644
 #, no-c-format
 msgid "Then the KNN raw answer:"
-msgstr ""
+msgstr "그리고 KNN의 가공되지 않은 답은:"
 
 #. Tag: programlisting
-#: reference_operator.xml:927
+#: reference_operator.xml:1647
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::"
-"geometry) as d,edabbr, vaabbr \n"
-"FROM va2005 \n"
+"geometry) as d,edabbr, vaabbr\n"
+"FROM va2005\n"
 "ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;]]>\n"
 "\n"
 "        d         | edabbr | vaabbr\n"
@@ -1205,35 +2468,59 @@ msgid ""
 " 18472.5531479404 | ALQ    | 002\n"
 "(10 rows)"
 msgstr ""
+"<![CDATA[SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::"
+"geometry) as d,edabbr, vaabbr\n"
+"FROM va2005\n"
+"ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;]]>\n"
+"\n"
+"        d         | edabbr | vaabbr\n"
+"------------------+--------+--------\n"
+"                0 | ALQ    | 128\n"
+" 5541.57712511724 | ALQ    | 129A\n"
+" 5579.67450712005 | ALQ    | 001\n"
+"  6083.4207708641 | ALQ    | 131\n"
+"  7691.2205404848 | ALQ    | 003\n"
+" 7900.75451037313 | ALQ    | 122\n"
+" 8694.20710669982 | ALQ    | 129B\n"
+" 9564.24289057111 | ALQ    | 130\n"
+"  12089.665931705 | ALQ    | 127\n"
+" 18472.5531479404 | ALQ    | 002\n"
+"(10 rows)"
 
 #. Tag: para
-#: reference_operator.xml:928
+#: reference_operator.xml:1648
 #, no-c-format
 msgid ""
 "If you run \"EXPLAIN ANALYZE\" on the two queries you would see a "
 "performance improvement for the second."
 msgstr ""
+"사용자가 이 두 쿼리에 대해 \"EXPLAIN ANALYZE\"를 실행하면 두 번째 쿼리의 성능"
+"이 향상되는 것을 볼 수 있을 겁니다."
 
 #. Tag: para
-#: reference_operator.xml:932
+#: reference_operator.xml:1652
 #, no-c-format
 msgid ""
 "For users running with PostgreSQL &lt; 9.5, use a hybrid query to find the "
 "true nearest neighbors. First a CTE query using the index-assisted KNN, then "
 "an exact query to get correct ordering:"
 msgstr ""
+"PostgreSQL 9.5 미만 버전을 실행하는 사용자의 경우, 실제 최근접 거리를 찾으려"
+"면 하이브리드 쿼리를 이용하십시오. 먼저 인덱스 지원형 KNN을 이용한 "
+"CTE(common table expression) 쿼리를 실행한 다음, 올바른 정렬 순서를 얻기 위"
+"해 정확한 쿼리를 실행합니다:"
 
 #. Tag: programlisting
-#: reference_operator.xml:935
+#: reference_operator.xml:1655
 #, no-c-format
 msgid ""
 "<![CDATA[WITH index_query AS (\n"
 "  SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,"
 "edabbr, vaabbr\n"
-"          FROM va2005\n"
-"  ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry LIMIT 100) \n"
-"  SELECT * \n"
-"          FROM index_query \n"
+"        FROM va2005\n"
+"  ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry LIMIT 100)\n"
+"  SELECT *\n"
+"        FROM index_query\n"
 "  ORDER BY d limit 10;]]>\n"
 "\n"
 "        d         | edabbr | vaabbr\n"
@@ -1250,39 +2537,67 @@ msgid ""
 " 18472.5531479404 | ALQ    | 002\n"
 "(10 rows)"
 msgstr ""
+"<![CDATA[WITH index_query AS (\n"
+"  SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,"
+"edabbr, vaabbr\n"
+"        FROM va2005\n"
+"  ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry LIMIT 100)\n"
+"  SELECT *\n"
+"        FROM index_query\n"
+"  ORDER BY d limit 10;]]>\n"
+"\n"
+"        d         | edabbr | vaabbr\n"
+"------------------+--------+--------\n"
+"                0 | ALQ    | 128\n"
+" 5541.57712511724 | ALQ    | 129A\n"
+" 5579.67450712005 | ALQ    | 001\n"
+"  6083.4207708641 | ALQ    | 131\n"
+"  7691.2205404848 | ALQ    | 003\n"
+" 7900.75451037313 | ALQ    | 122\n"
+" 8694.20710669982 | ALQ    | 129B\n"
+" 9564.24289057111 | ALQ    | 130\n"
+"  12089.665931705 | ALQ    | 127\n"
+" 18472.5531479404 | ALQ    | 002\n"
+"(10 rows)"
 
 #. Tag: para
-#: reference_operator.xml:939
+#: reference_operator.xml:1659
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_box\"/>"
 msgstr ""
+", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_box\"/>"
 
 #. Tag: refname
-#: reference_operator.xml:945
+#: reference_operator.xml:1665
 #, no-c-format
 msgid "<refname>|=|</refname>"
-msgstr ""
+msgstr "<refname>|=|</refname>"
 
 #. Tag: refpurpose
-#: reference_operator.xml:947
+#: reference_operator.xml:1667
 #, no-c-format
 msgid ""
 "Returns the distance between A and B trajectories at their closest point of "
 "approach."
 msgstr ""
+"A와 B 사이의 최근접점(closest point of approach)을 잇는 궤도(trajectory)의 거"
+"리를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:954
+#: reference_operator.xml:1674
 #, no-c-format
 msgid ""
 "<funcdef>double precision <function>|=|</function></funcdef> <paramdef> "
 "<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>geometry </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>double precision <function>|=|</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:976
+#: reference_operator.xml:1696
 #, no-c-format
 msgid ""
 "The <varname>|=|</varname> operator returns the 3D distance between two "
@@ -1291,9 +2606,14 @@ msgid ""
 "for doing nearest neightbor searches using an N-dimensional index (requires "
 "PostgreSQL 9.5.0 or higher)."
 msgstr ""
+"<varname>|=|</varname> 연산자는 두 궤도(<xref linkend=\"ST_IsValidTrajectory"
+"\"/> 참조) 사이의 3차원 거리를 반환합니다. 이 연산자는 <xref linkend="
+"\"ST_DistanceCPA\"/> 함수와 동일하지만, 연산자이기 때문에 (PostgreSQL 9.5.0 "
+"이상 버전이 필요한) N차원 인덱스를 이용하는 최근접(nearest neightbor) 탐색을 "
+"실행하는 데 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_operator.xml:984
+#: reference_operator.xml:1704
 #, no-c-format
 msgid ""
 "This operand will make use of ND GiST indexes that may be available on the "
@@ -1301,24 +2621,32 @@ msgid ""
 "that the spatial index is only used when the operator is in the ORDER BY "
 "clause."
 msgstr ""
+"이 피연산자(operand)는 도형에 대해 이용할 수 있을지도 모르는 N차원 GiST 인덱"
+"스를 활용할 것입니다. 연산자가 ORDER BY 절 안에 있을 때만 공간 인덱스를 쓴다"
+"는 점에서 공간 인덱스를 이용하는 다른 연산자들과는 다릅니다."
 
 #. Tag: para
-#: reference_operator.xml:985
+#: reference_operator.xml:1705
 #, no-c-format
 msgid ""
 "Index only kicks in if one of the geometries is a constant (not in a "
 "subquery/cte). e.g. 'SRID=3005;LINESTRINGM(0 0 0,0 0 1)'::geometry instead "
 "of a.geom"
 msgstr ""
+"도형 가운데 하나가, 예를 들어 a.geom이 아니라 'SRID=3005;LINESTRINGM(0 0 0,0 "
+"0 1)'::geometry와 같이, (하위 쿼리/CTE(common table expression) 안에 있지 않"
+"은) 상수일 경우에만 인덱스의 효과가 나타납니다."
 
 #. Tag: para
-#: reference_operator.xml:987
+#: reference_operator.xml:1707
 #, no-c-format
 msgid "Availability: 2.2.0. Index-supported only available for PostgreSQL 9.5+"
 msgstr ""
+"2.2.0 버전부터 사용할 수 있습니다. PostgreSQL 9.5 이상 버전에서만 인덱스 지원"
+"형(index-supported)을 사용할 수 있습니다."
 
 #. Tag: programlisting
-#: reference_operator.xml:993
+#: reference_operator.xml:1713
 #, no-c-format
 msgid ""
 "-- Save a literal query trajectory in a psql variable...\n"
@@ -1340,38 +2668,61 @@ msgid ""
 "      405 |  10.9534397988433\n"
 "(5 rows)"
 msgstr ""
+"-- 글자 그대로의 쿼리 궤도를 psql 변수로 저장합니다...\n"
+"\\set qt 'ST_AddMeasure(ST_MakeLine(ST_MakePointM(-350,300,0),"
+"ST_MakePointM(-410,490,0)),10,20)'\n"
+"-- 쿼리를 실행합니다!\n"
+"SELECT track_id, dist FROM (\n"
+"  SELECT track_id, ST_DistanceCPA(tr,:qt) dist\n"
+"  FROM trajectories\n"
+"  ORDER BY tr |=| :qt\n"
+"  LIMIT 5\n"
+") foo;\n"
+" track_id        dist\n"
+"----------+-------------------\n"
+"      395 | 0.576496831518066\n"
+"      380 |  5.06797130410151\n"
+"      390 |  7.72262293958322\n"
+"      385 |   9.8004461358071\n"
+"      405 |  10.9534397988433\n"
+"(5 rows)"
 
 #. Tag: para
-#: reference_operator.xml:997
+#: reference_operator.xml:1717
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
 "\"ST_IsValidTrajectory\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
+"\"ST_IsValidTrajectory\"/>"
 
 #. Tag: refname
-#: reference_operator.xml:1007
+#: reference_operator.xml:1727
 #, no-c-format
 msgid "&lt;#&gt;"
-msgstr ""
+msgstr "&lt;#&gt;"
 
 #. Tag: refpurpose
-#: reference_operator.xml:1009
+#: reference_operator.xml:1729
 #, no-c-format
 msgid "Returns the 2D distance between A and B bounding boxes."
-msgstr ""
+msgstr "A와 B의 경계 상자 사이의 2차원 거리를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:1016
+#: reference_operator.xml:1736
 #, no-c-format
 msgid ""
 "<funcdef>double precision <function>&lt;#&gt;</function></funcdef> "
 "<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
 "<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>double precision <function>&lt;#&gt;</function></funcdef> "
+"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
+"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:1037
+#: reference_operator.xml:1757
 #, no-c-format
 msgid ""
 "The <varname>&lt;#&gt;</varname> operator returns distance between two "
@@ -1379,9 +2730,13 @@ msgid ""
 "(PostgreSQL 9.1+ required). Useful for doing nearest neighbor <emphasis role="
 "\"strong\">approximate</emphasis> distance ordering."
 msgstr ""
+"<varname>&lt;#&gt;</varname> 연산자는 두 부동소수점(floating point) 경계 상"
+"자 사이의 거리를 반환합니다. 공간 인덱스(PostgreSQL 9.1 이상 버전 필요)로부"
+"터 경계 상자들을 읽어 올 수도 있습니다. 최근접 <emphasis role=\"strong\">근사"
+"치</emphasis> 거리의 순서를 정렬하는 데 유용합니다."
 
 #. Tag: para
-#: reference_operator.xml:1039 reference_operator.xml:1158
+#: reference_operator.xml:1759 reference_operator.xml:1878
 #, no-c-format
 msgid ""
 "This operand will make use of any indexes that may be available on the "
@@ -1389,37 +2744,45 @@ msgid ""
 "that the spatial index is only used when the operator is in the ORDER BY "
 "clause."
 msgstr ""
+"이 피연산자(operand)는 도형에 대해 이용할 수 있을지도 모르는 어떤 인덱스라도 "
+"활용할 것입니다. 연산자가 ORDER BY 절 안에 있을 때만 공간 인덱스를 쓴다는 점"
+"에서 공간 인덱스를 이용하는 다른 연산자들과는 다릅니다."
 
 #. Tag: para
-#: reference_operator.xml:1042
+#: reference_operator.xml:1762
 #, no-c-format
 msgid ""
 "Index only kicks in if one of the geometries is a constant e.g. ORDER BY "
 "(ST_GeomFromText('POINT(1 2)') &lt;#&gt; geom) instead of g1.geom &lt;#&gt;."
 msgstr ""
+"도형 가운데 하나가, 예를 들어 g1.geom &lt;#&gt;가 아니라 ORDER BY "
+"(ST_GeomFromText('POINT(1 2)') &lt;#&gt; geom)과 같이, 상수일 경우에만 인덱스"
+"의 효과가 나타납니다."
 
 #. Tag: para
-#: reference_operator.xml:1044
+#: reference_operator.xml:1764
 #, no-c-format
 msgid "Availability: 2.0.0 -- KNN only available for PostgreSQL 9.1+"
 msgstr ""
+"2.0.0 버전부터 사용할 수 있습니다. PostgreSQL 9.1 이상 버전에서만 KNN을 쓸 "
+"수 있습니다."
 
 #. Tag: programlisting
-#: reference_operator.xml:1050
+#: reference_operator.xml:1770
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT *\n"
 "FROM (\n"
-"SELECT b.tlid, b.mtfcc, \n"
+"SELECT b.tlid, b.mtfcc,\n"
 "        b.geom <#> ST_GeomFromText('LINESTRING(746149 2948672,745954 "
 "2948576,\n"
 "                745787 2948499,745740 2948468,745712 2948438,\n"
-"                745690 2948384,745677 2948319)',2249) As b_dist, \n"
+"                745690 2948384,745677 2948319)',2249) As b_dist,\n"
 "                ST_Distance(b.geom, ST_GeomFromText('LINESTRING(746149 "
 "2948672,745954 2948576,\n"
 "                745787 2948499,745740 2948468,745712 2948438,\n"
 "                745690 2948384,745677 2948319)',2249)) As act_dist\n"
-"    FROM bos_roads As b \n"
+"    FROM bos_roads As b\n"
 "    ORDER BY b_dist, b.tlid\n"
 "    LIMIT 100) As foo\n"
 "    ORDER BY act_dist, tlid LIMIT 10;]]>\n"
@@ -1438,38 +2801,71 @@ msgid ""
 "  85735592 | S1400 |           222.25 | 311.830282365264\n"
 "(10 rows)"
 msgstr ""
+"<![CDATA[SELECT *\n"
+"FROM (\n"
+"SELECT b.tlid, b.mtfcc,\n"
+"        b.geom <#> ST_GeomFromText('LINESTRING(746149 2948672,745954 "
+"2948576,\n"
+"                745787 2948499,745740 2948468,745712 2948438,\n"
+"                745690 2948384,745677 2948319)',2249) As b_dist,\n"
+"                ST_Distance(b.geom, ST_GeomFromText('LINESTRING(746149 "
+"2948672,745954 2948576,\n"
+"                745787 2948499,745740 2948468,745712 2948438,\n"
+"                745690 2948384,745677 2948319)',2249)) As act_dist\n"
+"    FROM bos_roads As b\n"
+"    ORDER BY b_dist, b.tlid\n"
+"    LIMIT 100) As foo\n"
+"    ORDER BY act_dist, tlid LIMIT 10;]]>\n"
+"\n"
+"   tlid    | mtfcc |      b_dist      |     act_dist\n"
+"-----------+-------+------------------+------------------\n"
+"  85732027 | S1400 |                0 |                0\n"
+"  85732029 | S1400 |                0 |                0\n"
+"  85732031 | S1400 |                0 |                0\n"
+"  85734335 | S1400 |                0 |                0\n"
+"  85736037 | S1400 |                0 |                0\n"
+" 624683742 | S1400 |                0 | 128.528874268666\n"
+"  85719343 | S1400 | 260.839270432962 | 260.839270432962\n"
+"  85741826 | S1400 | 164.759294123275 | 260.839270432962\n"
+"  85732032 | S1400 |           277.75 | 311.830282365264\n"
+"  85735592 | S1400 |           222.25 | 311.830282365264\n"
+"(10 rows)"
 
 #. Tag: para
-#: reference_operator.xml:1054
+#: reference_operator.xml:1774
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_knn\"/>"
 msgstr ""
+", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_knn\"/>"
 
 #. Tag: refname
-#: reference_operator.xml:1060
+#: reference_operator.xml:1780
 #, no-c-format
 msgid "&lt;&lt;-&gt;&gt;"
-msgstr ""
+msgstr "&lt;&lt;-&gt;&gt;"
 
 #. Tag: refpurpose
-#: reference_operator.xml:1062
+#: reference_operator.xml:1782
 #, no-c-format
 msgid ""
 "Returns the n-D distance between the centroids of A and B bounding boxes."
-msgstr ""
+msgstr "A 경계 상자와 B의 경계 상자의 중심점 사이의 N차원 거리를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:1070
+#: reference_operator.xml:1790
 #, no-c-format
 msgid ""
 "<funcdef>double precision <function>&lt;&lt;-&gt;&gt;</function></funcdef> "
 "<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
 "<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>double precision <function>&lt;&lt;-&gt;&gt;</function></funcdef> "
+"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
+"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:1091
+#: reference_operator.xml:1811
 #, no-c-format
 msgid ""
 "The <varname>&lt;&lt;-&gt;&gt;</varname> operator returns the n-D "
@@ -1477,9 +2873,12 @@ msgid ""
 "geometries. Useful for doing nearest neighbor <emphasis role=\"strong"
 "\">approximate</emphasis> distance ordering."
 msgstr ""
+"<varname>&lt;&lt;-&gt;&gt;</varname> 연산자는 두 도형의 경계 상자의 중심점 사"
+"이의 N차 (유클리드) 거리를 반환합니다. 최근접 <emphasis role=\"strong\">근사"
+"치</emphasis> 거리의 순서를 정렬하는 데 유용합니다."
 
 #. Tag: para
-#: reference_operator.xml:1098
+#: reference_operator.xml:1818
 #, no-c-format
 msgid ""
 "This operand will make use of n-D GiST indexes that may be available on the "
@@ -1487,42 +2886,50 @@ msgid ""
 "that the spatial index is only used when the operator is in the ORDER BY "
 "clause."
 msgstr ""
+"이 피연산자(operand)는 도형에 대해 이용할 수 있을지도 모르는 N차원 GiST 인덱"
+"스를 활용할 것입니다. 연산자가 ORDER BY 절 안에 있을 때만 공간 인덱스를 쓴다"
+"는 점에서 공간 인덱스를 이용하는 다른 연산자들과는 다릅니다."
 
 #. Tag: para
-#: reference_operator.xml:1110 reference_operator.xml:1167
+#: reference_operator.xml:1830 reference_operator.xml:1887
 #, no-c-format
 msgid "Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+"
 msgstr ""
+"2.2.0 버전부터 사용할 수 있습니다. PostgreSQL 9.1 이상 버전에서만 KNN을 쓸 "
+"수 있습니다."
 
 #. Tag: para
-#: reference_operator.xml:1117
+#: reference_operator.xml:1837
 #, no-c-format
 msgid ", <xref linkend=\"geometry_distance_knn\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"geometry_distance_knn\"/>"
 
 #. Tag: refname
-#: reference_operator.xml:1126
+#: reference_operator.xml:1846
 #, no-c-format
 msgid "&lt;&lt;#&gt;&gt;"
-msgstr ""
+msgstr "&lt;&lt;#&gt;&gt;"
 
 #. Tag: refpurpose
-#: reference_operator.xml:1128
+#: reference_operator.xml:1848
 #, no-c-format
 msgid "Returns the n-D distance between A and B bounding boxes."
-msgstr ""
+msgstr "A와 B의 경계 상자 사이의 N차원 거리를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_operator.xml:1135
+#: reference_operator.xml:1855
 #, no-c-format
 msgid ""
 "<funcdef>double precision <function>&lt;&lt;#&gt;&gt;</function></funcdef> "
 "<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
 "<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>double precision <function>&lt;&lt;#&gt;&gt;</function></funcdef> "
+"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
+"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_operator.xml:1156
+#: reference_operator.xml:1876
 #, no-c-format
 msgid ""
 "The <varname>&lt;&lt;#&gt;&gt;</varname> operator returns distance between "
@@ -1530,18 +2937,77 @@ msgid ""
 "index (PostgreSQL 9.1+ required). Useful for doing nearest neighbor "
 "<emphasis role=\"strong\">approximate</emphasis> distance ordering."
 msgstr ""
+"<varname>&lt;#&gt;</varname> 연산자는 두 부동소수점(floating point) 경계 상"
+"자 사이의 거리를 반환합니다. 공간 인덱스(PostgreSQL 9.1 이상 버전 필요)로부"
+"터 경계 상자들을 읽어 올 수도 있습니다. 최근접 <emphasis role=\"strong\">근사"
+"치</emphasis> 거리의 순서를 정렬하는 데 유용합니다."
 
 #. Tag: para
-#: reference_operator.xml:1161
+#: reference_operator.xml:1881
 #, no-c-format
 msgid ""
 "Index only kicks in if one of the geometries is a constant e.g. ORDER BY "
 "(ST_GeomFromText('POINT(1 2)') &lt;&lt;#&gt;&gt; geom) instead of g1.geom "
 "&lt;&lt;#&gt;&gt;."
 msgstr ""
+"도형 가운데 하나가, 예를 들어 g1.geom &lt;&lt;#&gt;&gt;가 아니라 ORDER BY "
+"(ST_GeomFromText('POINT(1 2)') &lt;&lt;#&gt;&gt; geom)과 같이, 상수일 경우에"
+"만 인덱스의 효과가 나타납니다."
 
 #. Tag: para
-#: reference_operator.xml:1173
+#: reference_operator.xml:1893
 #, no-c-format
 msgid ", <xref linkend=\"geometry_distance_box\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"geometry_distance_box\"/>"
+
+#~ msgid ""
+#~ "Returns <varname>TRUE</varname> if A's bounding box is the same as B's. "
+#~ "Uses double precision bounding box."
+#~ msgstr ""
+#~ "A의 경계 상자와 B의 경계 상자가 동일할 경우 <varname>TRUE</varname> 를 반"
+#~ "환합니다. 이중 정밀도 경계 상자를 이용합니다."
+
+#~ msgid ""
+#~ "This is cause for a lot of confusion. When you compare geometryA = "
+#~ "geometryB it will return true even when the geometries are clearly "
+#~ "different IF their bounding boxes are the same. To check for true "
+#~ "equality use <xref linkend=\"ST_OrderingEquals\"/> or <xref linkend="
+#~ "\"ST_Equals\"/>"
+#~ msgstr ""
+#~ "이 함수는 많은 혼란을 야기합니다. geometryA = geometryB 를 비교할 때 두 도"
+#~ "형이 명백히 다르더라도 두 도형의 경계 상자가 동일하기만 하면 참을 반환하"
+#~ "기 때문입니다. 진정한 동일성을 확인하려면 <xref linkend="
+#~ "\"ST_OrderingEquals\"/> 또는 <xref linkend=\"ST_Equals\"/> 함수를 이용하십"
+#~ "시오."
+
+#~ msgid ""
+#~ "Changed: 2.0.0 , the bounding box of geometries was changed to use double "
+#~ "precision instead of float4 precision of prior. The side effect of this "
+#~ "is that in particular points in prior versions that were a little "
+#~ "different may have returned true in prior versions and false in 2.0+ "
+#~ "since their float4 boxes would be the same but there float8 (double "
+#~ "precision), would be different."
+#~ msgstr ""
+#~ "변경 사항: 2.0.0 버전부터 도형의 경계 상자가 예전의 FLOAT4 정밀도 대신 이"
+#~ "중 정밀도를 이용하도록 바뀌었습니다. 이 변경 사항의 부작용으로, 현재 버전"
+#~ "과는 조금 다른 예전 버전에서 참을 반환할 수도 있었던 특정 포인트들이 "
+#~ "2.0.0 이상 버전에서는 거짓을 반환할 수도 있습니다. FLOAT4 상자는 동일하게 "
+#~ "유지되지만 FLOAT8(이중 정밀도) 상황에서는 다를 수도 있기 때문입니다."
+
+#~ msgid ", <xref linkend=\"ST_OrderingEquals\"/>"
+#~ msgstr ", <xref linkend=\"ST_OrderingEquals\"/>"
+
+#~ msgid ""
+#~ "The above can be used to test if you have the new or old behavior of ~= "
+#~ "operator."
+#~ msgstr ""
+#~ "<varname>~=</varname> 연산자가 새 습성을 가지고 있는지 예전 습성을 가지고 "
+#~ "있는지 테스트하는 데 이 쿼리를 쓸 수 있습니다."
+
+#~ msgid ""
+#~ "The <varname>|&gt;&gt;</varname> operator returns <varname>TRUE</varname> "
+#~ "if the bounding box of geometry A is strictly to the right of the "
+#~ "bounding box of geometry B."
+#~ msgstr ""
+#~ "<varname>|&gt;&gt;</varname> 연산자는 도형 A의 경계 상자가 오로지 도형 B"
+#~ "의 경계 상자 위에 있을 경우에만 <varname>TRUE</varname> 를 반환합니다."

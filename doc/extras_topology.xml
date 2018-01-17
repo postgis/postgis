@@ -2,7 +2,7 @@
 <chapter id="Topology">
 	<title>Topology</title>
 	<para>The PostGIS Topology types and functions are used to manage topological objects such as faces, edges and nodes. </para>
-	<para>Sandro Santilli's presentation at PostGIS Day Paris 2011  conference gives a good synopsis of PostGIS Topology and where it is headed <ulink url="http://strk.keybit.net/projects/postgis/Paris2011_TopologyWithPostGIS_2_0.pdf">Topology with PostGIS 2.0 slide deck</ulink>.</para>
+	<para>Sandro Santilli's presentation at PostGIS Day Paris 2011  conference gives a good synopsis of PostGIS Topology and where it is headed <ulink url="http://strk.kbt.io/projects/postgis/Paris2011_TopologyWithPostGIS_2_0.pdf">Topology with PostGIS 2.0 slide deck</ulink>.</para>
 	<para>Vincent Picavet provides a good synopsis and overview of what is Topology, how is it used, and various FOSS4G tools that support it in <ulink url="https://github.com/Oslandia/presentations/blob/master/pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology.pdf?raw=true">PostGIS Topology PGConf EU 2012</ulink>.</para>
     <para>An example of a topologically based GIS database is the <ulink url="https://www.census.gov/geo/maps-data/data/tiger.html">US Census Topologically Integrated Geographic Encoding and Referencing System (TIGER)</ulink> database. If you want to experiment with PostGIS topology and need some data, check out <xref linkend="Topology_Load_Tiger" />.</para>
 	<para>The PostGIS topology module has existed in prior versions of PostGIS but was never part of the Official PostGIS documentation.
@@ -10,18 +10,18 @@
 	<para>Details of this project can be found at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology">PostGIS Topology Wiki</ulink></para>
 	<para>All functions and tables associated with this module are installed in a schema called <varname>topology</varname>.</para>
 	<para>Functions that are defined in SQL/MM standard are prefixed with ST_ and functions specific to PostGIS are not prefixed.</para>
-	<para>To build PostGIS 2.0 with topology support, compile with the --with-topology option as described in <xref linkend="postgis_installation"/>.  Some functions depend on GEOS 3.3+ so you should compile with GEOS 3.3+ to fully utilize the topology support.</para>
-	
+	<para>Topolgy support is build by default starting with PostGIS 2.0, and can be disabled specifying --without-topology configure option at build time as described in <xref linkend="postgis_installation"/></para>
+
 	<sect1 id="Topology_Types">
         <sect1info>
             <abstract>
-                <para>This section lists the PostgreSQL data types installed by PostGIS Topology.  Note we describe the casting behavior of these which is very 
-                    important especially when designing your own functions.  
-                </para>	
+                <para>This section lists the PostgreSQL data types installed by PostGIS Topology.  Note we describe the casting behavior of these which is very
+                    important especially when designing your own functions.
+                </para>
             </abstract>
         </sect1info>
         <title>Topology Types</title>
-		
+
 		<refentry id="getfaceedges_returntype">
 		  <refnamediv>
 			<refname>getfaceedges_returntype</refname>
@@ -40,7 +40,7 @@
 			</orderedlist>
 		  </refsection>
 		</refentry>
-		
+
 		<refentry id="topogeometry">
 			  <refnamediv>
 				<refname>TopoGeometry</refname>
@@ -64,7 +64,7 @@
 				  </listitem>
 				</orderedlist>
 			  </refsection>
-			  
+
 			  <refsection>
 				<title>Casting Behavior</title>
 				<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
@@ -89,7 +89,7 @@
 				<para><xref linkend="CreateTopoGeom"/></para>
 			</refsection>
 		</refentry>
-		
+
 		<refentry id="validatetopology_returntype">
             <refnamediv>
                 <refname>validatetopology_returntype</refname>
@@ -110,7 +110,7 @@
                     <para><varname>id2</varname> is an integer: For errors that involve 2 objects denotes the secondary edge / or node</para>
                   </listitem>
                 </orderedlist>
-                
+
             </refsection>
 		  <!-- Optionally add a "See Also" section -->
             <refsection>
@@ -119,17 +119,17 @@
             </refsection>
 		</refentry>
 	</sect1>
-	
+
 	<sect1 id="Topology_Domains">
         <sect1info>
             <abstract>
                 <para>This section lists the PostgreSQL domains installed by PostGIS Topology.  Domains can be used like object types as return objects of functions or table columns. The distinction between
                     a domain and a type is that a domain is an existing type with a check constraint bound to it.
-                </para>	
+                </para>
             </abstract>
         </sect1info>
         <title>Topology Domains</title>
-		
+
 		<refentry id="topoelement">
 		  <refnamediv>
 			<refname>TopoElement</refname>
@@ -191,7 +191,7 @@ ERROR:  value for domain topology.topoelement violates check constraint "dimensi
                 </para>
             </refsection>
 		</refentry>
-		
+
 		<refentry id="topoelementarray">
 		  <refnamediv>
 			<refname>TopoElementArray</refname>
@@ -237,7 +237,7 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
             </refsection>
 		</refentry>
 	</sect1>
-	
+
 	<sect1 id="Topology_ManagementFunctions">
 	     <sect1info>
             <abstract>
@@ -250,72 +250,72 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
 				<refname>AddTopoGeometryColumn</refname>
 				<refpurpose>Adds a topogeometry column to an existing table, registers this new column as a layer in topology.layer and returns the new layer_id.</refpurpose>
 			</refnamediv>
-		
+
             <refsynopsisdiv>
                 <funcsynopsis>
                      <funcprototype>
                         <funcdef>integer <function>AddTopoGeometryColumn</function></funcdef>
                         <paramdef><type>varchar </type>
                         <parameter>topology_name</parameter></paramdef>
-                        
+
                         <paramdef><type>varchar </type>
                         <parameter>schema_name</parameter></paramdef>
-                        
+
                         <paramdef><type>varchar </type>
                         <parameter>table_name</parameter></paramdef>
-                        
+
                         <paramdef><type>varchar </type>
                         <parameter>column_name</parameter></paramdef>
-                        
+
                         <paramdef><type>varchar </type>
                         <parameter>feature_type</parameter></paramdef>
                     </funcprototype>
                     <funcprototype>
                         <funcdef>integer <function>AddTopoGeometryColumn</function></funcdef>
-                        
+
                         <paramdef><type>varchar </type>
                         <parameter>topology_name</parameter></paramdef>
-                        
+
                         <paramdef><type>varchar </type>
                         <parameter>schema_name</parameter></paramdef>
-                        
+
                         <paramdef><type>varchar </type>
                         <parameter>table_name</parameter></paramdef>
-                        
+
                         <paramdef><type>varchar </type>
                         <parameter>column_name</parameter></paramdef>
-                        
+
                         <paramdef><type>varchar </type>
                         <parameter>feature_type</parameter></paramdef>
-                        
+
                         <paramdef><type>integer </type>
                         <parameter>child_layer</parameter></paramdef>
                     </funcprototype>
                 </funcsynopsis>
             </refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
-                <para>Each TopoGeometry object belongs to a specific Layer of a specific Topology. Before creating a TopoGeometry object you need to create its TopologyLayer. 
+
+                <para>Each TopoGeometry object belongs to a specific Layer of a specific Topology. Before creating a TopoGeometry object you need to create its TopologyLayer.
                     A Topology Layer is an association of a feature-table with the topology. It also contain type and hierarchy information. We create a layer using the AddTopoGeometryColumn() function: </para>
                 <para>This function will both add the requested column to the table and add a record to the topology.layer table with all the given info.</para>
-                <para>If you don't specify [child_layer] (or set it to NULL) this layer would contain Basic TopoGeometries (composed by primitive topology elements). 
+                <para>If you don't specify [child_layer] (or set it to NULL) this layer would contain Basic TopoGeometries (composed by primitive topology elements).
                     Otherwise this layer will contain hierarchical TopoGeometries (composed by TopoGeometries from the child_layer).</para>
-    
+
                 <para>Once the layer is created (its id is returned by the AddTopoGeometryColumn function) you're ready to construct TopoGeometry objects in it</para>
-                <para>Valid <varname>feature_type</varname>s are: POINT, LINE, POLYGON, COLLECTION</para> 
-        
+                <para>Valid <varname>feature_type</varname>s are: POINT, LINE, POLYGON, COLLECTION</para>
+
                 <!-- use this format if new function -->
                 <para>Availability: 1.?</para>
-			
+
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
-				<programlisting>-- Note for this example we created our new table in the ma_topo schema 
--- though we could have created it in a different schema -- in which case topology_name and schema_name would be different 
+				<programlisting>-- Note for this example we created our new table in the ma_topo schema
+-- though we could have created it in a different schema -- in which case topology_name and schema_name would be different
 CREATE SCHEMA ma;
 CREATE TABLE ma.parcels(gid serial, parcel_id varchar(20) PRIMARY KEY, address text);
 SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma', 'parcels', 'topo', 'POLYGON');</programlisting>
@@ -325,21 +325,21 @@ CREATE TABLE ri.roads(gid serial PRIMARY KEY, road_name text);
 SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 </programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-			
+
 				<para><xref linkend="CreateTopology"/>, <xref linkend="CreateTopoGeom"/></para>
 			</refsection>
 		</refentry>
 		<refentry id="DropTopology">
 			<refnamediv>
 				<refname>DropTopology</refname>
-			
+
 				<refpurpose>Use with caution: Drops a topology schema and deletes its reference from  topology.topology table and references to tables in that schema from the geometry_columns table.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -348,24 +348,24 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Drops a topology schema and deletes its reference from topology.topology table and references to tables in that schema from the geometry_columns table.
                 This function should be USED WITH CAUTION, as it could destroy data you care about.  If the schema does not exist, it just removes reference entries the named schema.</para>
-        
+
                 <!-- use this format if new function -->
                 <para>Availability: 1.?</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<para>Cascade drops the ma_topo schema and removes all references to it in topology.topology and geometry_columns.</para>
 				<programlisting>SELECT topology.DropTopology('ma_topo');</programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -375,10 +375,10 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 		<refentry id="DropTopoGeometryColumn">
 			<refnamediv>
 				<refname>DropTopoGeometryColumn</refname>
-			
+
 				<refpurpose>Drops the topogeometry column from the table named <varname>table_name</varname> in schema <varname>schema_name</varname> and unregisters the columns from topology.layer table.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -389,37 +389,104 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Drops the topogeometry column from the table named <varname>table_name</varname> in schema <varname>schema_name</varname> and unregisters the columns from topology.layer table. Returns summary
                 of drop status.  NOTE: it first sets all values to NULL before dropping to bypass referential integrity checks.</para>
-        
+
                 <!-- use this format if new function -->
                 <para>Availability: 1.?</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.DropTopoGeometryColumn('ma_topo', 'parcel_topo', 'topo');</programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="AddTopoGeometryColumn"/></para>
 			</refsection>
 		</refentry>
-		
+
+		<refentry id="Populate_Topology_Layer">
+			<refnamediv>
+				<refname>Populate_Topology_Layer</refname>
+
+				<refpurpose>Adds missing entries to topology.layer table by reading metadata from topo tables.</refpurpose>
+			</refnamediv>
+
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>setof record <function>Populate_Topology_Layer</function></funcdef>
+					<paramdef></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>Adds missing entries to the <varname>topology.layer</varname> table by inspecting topology constraints on tables.
+                This function is useful for fixing up entries in topology catalog after restores of schemas with topo data.</para>
+                <para>It returns the list of entries created. Returned columns are <varname>schema_name</varname>, <varname>table_name</varname>, <varname>feature_column</varname>.</para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 2.3.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT CreateTopology('strk_topo');
+CREATE SCHEMA strk;
+CREATE TABLE strk.parcels(gid serial, parcel_id varchar(20) PRIMARY KEY, address text);
+SELECT topology.AddTopoGeometryColumn('strk_topo', 'strk', 'parcels', 'topo', 'POLYGON');
+-- this will return no records because this feature is already registered
+SELECT *
+  FROM topology.Populate_Topology_Layer();
+
+-- let's rebuild
+TRUNCATE TABLE topology.layer;
+
+SELECT *
+  FROM topology.Populate_Topology_Layer();
+
+SELECT topology_id,layer_id, schema_name As sn, table_name As tn, feature_column As fc
+FROM topology.layer;
+
+				</programlisting>
+				<screen> schema_name | table_name | feature_column
+-------------+------------+----------------
+ strk        | parcels    | topo
+(1 row)
+
+ topology_id | layer_id |  sn  |   tn    |  fc
+-------------+----------+------+---------+------
+           2 |        2 | strk | parcels | topo
+(1 row)</screen>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddTopoGeometryColumn"/></para>
+			</refsection>
+		</refentry>
+
 		<refentry id="TopologySummary">
 			<refnamediv>
 				<refname>TopologySummary</refname>
-			
+
 				<refpurpose>Takes a topology name and provides summary totals of types of objects in topology</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -428,21 +495,21 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Takes a topology name and provides summary totals of types of objects in topology.</para>
-        
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.topologysummary('city_data');
-                    topologysummary                     
+                    topologysummary
 --------------------------------------------------------
  Topology city_data (329), SRID 4326, precision: 0
  22 nodes, 24 edges, 10 faces, 29 topogeoms in 5 layers
@@ -465,14 +532,14 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 				<para><xref linkend="Topology_Load_Tiger" /></para>
 			</refsection>
 		</refentry>
-		
+
 		<refentry id="ValidateTopology">
 			<refnamediv>
 				<refname>ValidateTopology</refname>
-			
+
 				<refpurpose>Returns a set of validatetopology_returntype objects detailing issues with topology</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -481,12 +548,12 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Returns a set of <xref linkend="validatetopology_returntype"/> objects detailing issues with topology. List of possible errors and what the returned ids represent are displayed below:</para>
-                   
+
                   <informaltable rowsep="1" frame="all">
                     <tgroup cols="3">
                         <thead><row><entry>Error</entry><entry>id1</entry><entry>id2</entry></row></thead>
@@ -544,24 +611,24 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
                          </tbody>
                         </tgroup>
                     </informaltable>
-        
+
                 <!-- use this format if new function -->
                 <para>Availability: 1.0.0</para>
-                	<!-- use this format if not a new function but functionality enhanced -->
+	<!-- use this format if not a new function but functionality enhanced -->
                 <para>Enhanced: 2.0.0 more efficient edge crossing detection and fixes for false positives that were existent in prior versions.</para>
                 <para>Changed: 2.2.0 values for id1 and id2 were swapped for 'edge crosses node' to be consistent with error description.</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT * FROM  topology.ValidateTopology('ma_topo');
       error        | id1 | id2
 -------------------+-----+-----
-face without edges |   0 |				
+face without edges |   0 |
 				</programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -583,68 +650,68 @@ face without edges |   0 |
 				<refname>CreateTopology</refname>
 				<refpurpose>Creates a new topology schema and registers this new schema in the topology.topology table.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
 						<funcdef>integer <function>CreateTopology</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
 					</funcprototype>
-					
+
 					<funcprototype>
 						<funcdef>integer <function>CreateTopology</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
 					</funcprototype>
-		
+
 					<funcprototype>
 						<funcdef>integer <function>CreateTopology</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
-						<paramdef><type>double precision </type> <parameter>tolerance</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>prec</parameter></paramdef>
 					</funcprototype>
-					
+
 					<funcprototype>
 						<funcdef>integer <function>CreateTopology</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
-						<paramdef><type>double precision </type> <parameter>tolerance</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>prec</parameter></paramdef>
 						<paramdef><type>boolean </type> <parameter>hasz</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Creates a new schema with name <varname>topology_name</varname> consisting of tables (<varname>edge_data</varname>,<varname>face</varname>,<varname>node</varname>, <varname>relation</varname>
-                    and registers this new topology in the topology.topology table. It returns the id of the topology in the topology table. The srid is the spatial reference identified as 
-                defined in spatial_ref_sys table for that topology.  Topologies must be uniquely named.  The tolerance is measured in the units of the spatial reference system.  If the tolerance is not specified defaults to 0.</para>
-                
+                    and registers this new topology in the topology.topology table. It returns the id of the topology in the topology table. The srid is the spatial reference identified as
+                defined in spatial_ref_sys table for that topology.  Topologies must be uniquely named.  The tolerance is measured in the units of the spatial reference system.  If the tolerance (<varname>prec</varname>) is not specified defaults to 0.</para>
+
                 <para>This is similar to the SQL/MM <xref linkend="ST_InitTopoGeo" /> but a bit more functional.  <varname>hasz</varname> defaults to false if not specified.</para>
-        
+
                 <!-- use this format if new function -->
                 <para>Availability: 1.?</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<para>This example creates a new schema called ma_topo that will store edges, faces, and relations in Massachusetts State Plane meters.
 					The tolerance represents 1/2 meter since the spatial reference system is a meter based spatial reference system</para>
 				<programlisting>SELECT topology.CreateTopology('ma_topo',26986, 0.5);</programlisting>
-				
+
 				<para>Create Rhode Island topology in State Plane ft</para>
 <programlisting>SELECT topology.CreateTopology('ri_topo',3438) As topoid;
 topoid
 ------
 2</programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-			
+
 				<para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_InitTopoGeo" />, <xref linkend="Topology_Load_Tiger" /></para>
 			</refsection>
 		</refentry>
@@ -654,7 +721,7 @@ topoid
 				<refname>CopyTopology</refname>
 				<refpurpose>Makes a copy of a topology structure (nodes, edges, faces, layers and TopoGeometries).</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -664,36 +731,36 @@ topoid
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Creates a new topology with name <varname>new_topology_name</varname> and SRID and precision taken from <varname>existing_topology_name</varname>, copies all nodes, edges and faces in there, copies layers and their TopoGeometries too.
 		</para>
-                
+
                 <note><para>
 The new rows in topology.layer will contain synthesized values for schema_name, table_name and feature_column. This is because the TopoGeometry will only exist as a definition but won't be available in any user-level table yet.
 		</para></note>
-        
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<para>
-This example makes a backup of a topology called ma_topo 
+This example makes a backup of a topology called ma_topo
 				</para>
 				<programlisting>SELECT topology.CopyTopology('ma_topo', 'ma_topo_bakup');</programlisting>
-				
+
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-			
+
 				<para><xref linkend="spatial_ref_sys"/>, <xref linkend="CreateTopology" /></para>
 			</refsection>
 		</refentry>
@@ -703,7 +770,7 @@ This example makes a backup of a topology called ma_topo
 				<refname>ST_InitTopoGeo</refname>
 				<refpurpose>Creates a new topology schema and registers this new schema in the topology.topology table and details summary of process.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -712,18 +779,18 @@ This example makes a backup of a topology called ma_topo
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>This is an SQL-MM equivalent of CreateTopology but lacks the spatial reference and tolerance options of CreateTopology and outputs a text description of creation instead of topology id.</para>
-        
+
                 <!-- use this format if new function -->
                 <para>Availability: 1.?</para>
                 <para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.17</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.ST_InitTopoGeo('topo_schema_to_create') AS topocreation;
@@ -732,25 +799,25 @@ This example makes a backup of a topology called ma_topo
  Topology-Geometry 'topo_schema_to_create' (id:7) created.
 				</programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-			
+
 				<para><xref linkend="CreateTopology"/></para>
 			</refsection>
 		</refentry>
-		
+
 
 		<refentry id="ST_CreateTopoGeo">
 			<refnamediv>
 				<refname>ST_CreateTopoGeo</refname>
-			
+
 				<refpurpose>
-Adds a collection of geometries to a given empty topology and returns a message detailing success.  
+Adds a collection of geometries to a given empty topology and returns a message detailing success.
 				</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -760,28 +827,28 @@ Adds a collection of geometries to a given empty topology and returns a message 
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
-Adds a collection of geometries to a given empty topology and returns a message detailing success.  
+Adds a collection of geometries to a given empty topology and returns a message detailing success.
                 </para>
-				
+
 				<para>Useful for populating an empty topology.</para>
-             
-                
+
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0 </para>
-                	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details -- X.3.18</para>
+	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details -- X.3.18</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>
 -- Populate topology --
-SELECT topology.ST_CreateTopoGeo('ri_topo', 
+SELECT topology.ST_CreateTopoGeo('ri_topo',
  ST_GeomFromText('MULTILINESTRING((384744 236928,384750 236923,384769 236911,384799 236895,384811 236890,384833 236884,
   384844 236882,384866 236881,384879 236883,384954 236898,385087 236932,385117 236938,
   385167 236938,385203 236941,385224 236946,385233 236950,385241 236956,385254 236971,
@@ -791,21 +858,21 @@ SELECT topology.ST_CreateTopoGeo('ri_topo',
   385237 237383,385238 237399,385236 237407,385227 237419,385213 237430,385193 237439,
   385174 237451,385170 237455,385169 237460,385171 237475,385181 237503,385190 237521,
   385200 237533,385206 237538,385213 237541,385221 237542,385235 237540,385242 237541,
-  385249 237544,385260 237555,385270 237570,385289 237584,385292 237589,385291 237596,385284 237630))',3438) 
+  385249 237544,385260 237555,385270 237570,385289 237584,385292 237589,385291 237596,385284 237630))',3438)
   );
 
       st_createtopogeo
 ----------------------------
  Topology ri_topo populated
- 
- 
+
+
 -- create tables and topo geometries --
 CREATE TABLE ri.roads(gid serial PRIMARY KEY, road_name text);
 
 SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 				</programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -816,12 +883,12 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 		<refentry id="TopoGeo_AddPoint">
 			<refnamediv>
 				<refname>TopoGeo_AddPoint</refname>
-			
+
 				<refpurpose>
 Adds a point to an existing topology using a tolerance and possibly splitting an existing edge.
 				</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -832,10 +899,10 @@ Adds a point to an existing topology using a tolerance and possibly splitting an
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Adds a point to an existing topology and return its identifier.
 The given point will snap to existing nodes or edges within given tolerance.
@@ -845,8 +912,8 @@ An existing edge may be split by the snapped point.
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
 			</refsection>
-		
-		
+
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -862,12 +929,12 @@ An existing edge may be split by the snapped point.
 		<refentry id="TopoGeo_AddLineString">
 			<refnamediv>
 				<refname>TopoGeo_AddLineString</refname>
-			
+
 				<refpurpose>
 Adds a linestring to an existing topology using a tolerance and possibly splitting existing edges/faces. Returns edge identifiers
 				</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -878,10 +945,10 @@ Adds a linestring to an existing topology using a tolerance and possibly splitti
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Adds a linestring to an existing topology and return a set of edge identifiers forming it up.
 The given line will snap to existing nodes or edges within given tolerance.
@@ -891,8 +958,8 @@ Existing edges and faces may be split by the line.
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
 			</refsection>
-		
-		
+
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -908,12 +975,12 @@ Existing edges and faces may be split by the line.
 		<refentry id="TopoGeo_AddPolygon">
 			<refnamediv>
 				<refname>TopoGeo_AddPolygon</refname>
-			
+
 				<refpurpose>
 Adds a polygon to an existing topology using a tolerance and possibly splitting existing edges/faces.
 				</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -924,10 +991,10 @@ Adds a polygon to an existing topology using a tolerance and possibly splitting 
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Adds a polygon to an existing topology and return a set of face identifiers forming it up.
 The boundary of the given polygon will snap to existing nodes or edges within given tolerance.
@@ -937,8 +1004,8 @@ Existing edges and faces may be split by the boundary of the new polygon.
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
 			</refsection>
-		
-		
+
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -951,7 +1018,7 @@ Existing edges and faces may be split by the boundary of the new polygon.
 			</refsection>
 		</refentry>
 
-		
+
 	</sect1>
 
 	<sect1 id="Topology_Editing">
@@ -965,10 +1032,10 @@ Existing edges and faces may be split by the boundary of the new polygon.
 		<refentry id="ST_AddIsoNode">
 			<refnamediv>
 				<refname>ST_AddIsoNode</refname>
-			
+
 				<refpurpose>Adds an isolated node to a face in a topology and returns the nodeid of the new node. If face is null, the node is still created.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -979,27 +1046,27 @@ Existing edges and faces may be split by the boundary of the new polygon.
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Adds an isolated node with point location <varname>apoint</varname> to an existing face with faceid <varname>aface</varname> to a topology <varname>atopology</varname> and returns the nodeid of the new node.</para>
                 <para>If the spatial reference system (srid) of the point geometry is not the same as the topology, the <varname>apoint</varname> is not a point geometry, the point is null, or the point intersects an existing edge (even at the boundaries) then an exception is thrown. If the point already
                     exists as a node, an exception is thrown. </para>
                 <para>If <varname>aface</varname> is not null and the <varname>apoint</varname> is not within the face, then an exception is thrown.</para>
-			
+
                 <!-- use this format if new function -->
                 <para>Availability: 1.? </para>
-                	<para>&sqlmm_compliant; SQL-MM: Topo-Net Routines:  X+1.3.1</para>
+	<para>&sqlmm_compliant; SQL-MM: Topo-Net Routines:  X+1.3.1</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<para/>
 				 <!-- TODO -->
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -1010,10 +1077,10 @@ Existing edges and faces may be split by the boundary of the new polygon.
 		<refentry id="ST_AddIsoEdge">
 			<refnamediv>
 				<refname>ST_AddIsoEdge</refname>
-			
+
 				<refpurpose>Adds an isolated edge defined by geometry <varname>alinestring</varname> to a topology connecting two existing isolated nodes <varname>anode</varname> and <varname>anothernode</varname> and returns the edge id of the new edge.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -1025,42 +1092,42 @@ Existing edges and faces may be split by the boundary of the new polygon.
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Adds an isolated edge defined by geometry <varname>alinestring</varname> to a topology connecting two existing isolated nodes <varname>anode</varname> and <varname>anothernode</varname> and returns the edge id of the new edge.</para>
                 <para>If the spatial reference system (srid) of the <varname>alinestring</varname> geometry is not the same as the topology, any of the input arguments are null,   or the nodes are contained in more than one face, or the nodes are start or end nodes of an existing edge,
                     then an exception is thrown. </para>
                 <para>If the <varname>alinestring</varname> is not within the face of the face the <varname>anode</varname> and <varname>anothernode</varname> belong to, then an exception is thrown. </para>
                 <para>If the <varname>anode</varname> and <varname>anothernode</varname> are not the start and end points of the <varname>alinestring</varname> then an exception is thrown.</para>
-              
+
                 <!-- use this format if new function -->
                 <para>Availability: 1.? </para>
-                	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.4</para>
+	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.4</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<para/>
 				 <!-- TODO -->
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="ST_AddIsoNode"/>,  <xref linkend="ST_IsSimple"/>, <xref linkend="ST_Within"/></para>
 			</refsection>
 		</refentry>
-		
-	    	  <refentry id="ST_AddEdgeNewFaces">
+
+		  <refentry id="ST_AddEdgeNewFaces">
 			<refnamediv>
 				<refname>ST_AddEdgeNewFaces</refname>
-			
+
 				<refpurpose>Add a new edge and, if in doing so it splits a face, delete the original face and replace it with two new faces.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -1072,10 +1139,10 @@ Existing edges and faces may be split by the boundary of the new polygon.
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Add a new edge and, if in doing so it splits a face, delete the original
 face and replace it with two new faces.
@@ -1087,22 +1154,22 @@ Updates all existing joined edges and relationships accordingly.
 		</para>
 
                 <para>If any arguments are null, the given nodes are unknown (must already exist in the <varname>node</varname> table of the topology schema) ,
-                    the <varname>acurve</varname> is not a <varname>LINESTRING</varname>, the <varname>anode</varname> and <varname>anothernode</varname> are not the start 
+                    the <varname>acurve</varname> is not a <varname>LINESTRING</varname>, the <varname>anode</varname> and <varname>anothernode</varname> are not the start
                     and endpoints of <varname>acurve</varname> then an error is thrown.</para>
                 <para>If the spatial reference system (srid) of the <varname>acurve</varname> geometry is not the same as the topology an exception is thrown.</para>
-			
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0 </para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.12</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<para/>
 				<!--TODO: Need examples -->
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -1111,13 +1178,13 @@ Updates all existing joined edges and relationships accordingly.
 			</refsection>
 		</refentry>
 
-	    	  <refentry id="ST_AddEdgeModFace">
+		  <refentry id="ST_AddEdgeModFace">
 			<refnamediv>
 				<refname>ST_AddEdgeModFace</refname>
-			
+
 				<refpurpose>Add a new edge and, if in doing so it splits a face, modify the original face and add a new face.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -1129,17 +1196,17 @@ Updates all existing joined edges and relationships accordingly.
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Add a new edge and, if doing so splits a face, modify the original
 face and add a new one.
                 </para>
 
 <note><para>
-If possible, the new face will be created on left side of the new edge. 
+If possible, the new face will be created on left side of the new edge.
 This will not be possible if the face on the left side will need to
 be the Universe face (unbounded).
 </para></note>
@@ -1153,21 +1220,21 @@ Updates all existing joined edges and relationships accordingly.
 		</para>
 
                 <para>If any arguments are null, the given nodes are unknown (must already exist in the <varname>node</varname> table of the topology schema) ,
-                    the <varname>acurve</varname> is not a <varname>LINESTRING</varname>, the <varname>anode</varname> and <varname>anothernode</varname> are not the start 
+                    the <varname>acurve</varname> is not a <varname>LINESTRING</varname>, the <varname>anode</varname> and <varname>anothernode</varname> are not the start
                     and endpoints of <varname>acurve</varname> then an error is thrown.</para>
                 <para>If the spatial reference system (srid) of the <varname>acurve</varname> geometry is not the same as the topology an exception is thrown.</para>
                 <!-- use this format if new function -->
                 <para>Availability: 2.0 </para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.13</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<para/>
 				<!--TODO: Need examples -->
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -1179,13 +1246,13 @@ Updates all existing joined edges and relationships accordingly.
     <refentry id="ST_RemEdgeNewFace">
 			<refnamediv>
 				<refname>ST_RemEdgeNewFace</refname>
-			
+
 				<refpurpose>
 Removes an edge and, if the removed edge separated two faces,
 delete the original faces and replace them with a new face.
         </refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -1195,10 +1262,10 @@ delete the original faces and replace them with a new face.
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Removes an edge and, if the removed edge separated two faces,
 delete the original faces and replace them with a new face.
@@ -1206,7 +1273,7 @@ delete the original faces and replace them with a new face.
 
                 <para>
 Returns the id of a newly created face or NULL, if no new face is created.
-No new face is created when the removed edge is dangling or isolated or 
+No new face is created when the removed edge is dangling or isolated or
 confined with the universe face (possibly making the universe flood into
 the face on the other side).
 		            </para>
@@ -1216,7 +1283,7 @@ Updates all existing joined edges and relationships accordingly.
 		            </para>
 
                 <para>
-Refuses to remove an edge partecipating in the definition of an
+Refuses to remove an edge participating in the definition of an
 existing TopoGeometry.
 Refuses to heal two faces if any TopoGeometry is defined by only
 one of them (and not the other).
@@ -1227,19 +1294,19 @@ If any arguments are null, the given edge is unknown (must already exist in
 the <varname>edge</varname> table of the topology schema), the topology
 name is invalid then an error is thrown.
                 </para>
-			
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0 </para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.14</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<para/>
 				<!--TODO: Need examples -->
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -1248,16 +1315,16 @@ name is invalid then an error is thrown.
 			</refsection>
 		</refentry>
 
-    		<refentry id="ST_RemEdgeModFace">
+		<refentry id="ST_RemEdgeModFace">
 			<refnamediv>
 				<refname>ST_RemEdgeModFace</refname>
-			
+
 				<refpurpose>
 Removes an edge and, if the removed edge separated two faces,
 delete one of the them and modify the other to take the space of both.
         </refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -1267,14 +1334,14 @@ delete one of the them and modify the other to take the space of both.
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Removes an edge and, if the removed edge separated two faces,
 delete one of the them and modify the other to take the space of both.
-Preferentially keeps the face on the right, to be symmetric with 
+Preferentially keeps the face on the right, to be symmetric with
 ST_AddEdgeModFace also keeping it.
 Returns the id of the face remaining in place of the removed edge.
 		            </para>
@@ -1295,19 +1362,19 @@ If any arguments are null, the given edge is unknown (must already exist in
 the <varname>edge</varname> table of the topology schema), the topology
 name is invalid then an error is thrown.
                 </para>
-			
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0 </para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.15</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<para/>
 				<!--TODO: Need examples -->
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -1315,16 +1382,16 @@ name is invalid then an error is thrown.
 				<para><xref linkend="ST_RemEdgeNewFace"/></para>
 			</refsection>
 		</refentry>
-		
+
 		<refentry id="ST_ChangeEdgeGeom">
 			<refnamediv>
 				<refname>ST_ChangeEdgeGeom</refname>
-			
+
 				<refpurpose>
 Changes the shape of an edge without affecting the topology structure.
 				</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -1335,16 +1402,16 @@ Changes the shape of an edge without affecting the topology structure.
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Changes the shape of an edge without affecting the topology structure.
 		</para>
                 <para>
 If any arguments are null, the given edge does not exist in
-the <varname>node</varname> table of the topology schema, the
+the <varname>edge</varname> table of the topology schema, the
 <varname>acurve</varname> is not a <varname>LINESTRING</varname>, the
 <varname>anode</varname> and <varname>anothernode</varname> are not the
 start and endpoints of <varname>acurve</varname> or the modification would
@@ -1357,7 +1424,7 @@ change the underlying topology then an error is thrown.
 If moving the edge from old to new position would hit an obstacle then
 an error is thrown.
 		</para>
-             
+
                 <!-- use this format if new function -->
                 <para>Availability: 1.1.0</para>
 
@@ -1368,16 +1435,16 @@ an error is thrown.
 
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details X.3.6</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
-				<programlisting>SELECT topology.ST_ChangeEdgeGeom('ma_topo', 1,  
+				<programlisting>SELECT topology.ST_ChangeEdgeGeom('ma_topo', 1,
 		ST_GeomFromText('LINESTRING(227591.9 893900.4,227622.6 893844.3,227641.6 893816.6, 227704.5 893778.5)', 26986) );
  ----
  Edge 1 changed</programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -1386,14 +1453,14 @@ an error is thrown.
 				<para><xref linkend="ST_ModEdgeSplit"/></para>
 			</refsection>
 		</refentry>
-		
+
 		<refentry id="ST_ModEdgeSplit">
 			<refnamediv>
 				<refname>ST_ModEdgeSplit</refname>
-			
+
 				<refpurpose>Split an edge by creating a new node along an existing edge, modifying the original edge and adding a new edge.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -1404,10 +1471,10 @@ an error is thrown.
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Split an edge by creating a new node along an existing edge,
 modifying the original edge and adding a new edge.
@@ -1420,14 +1487,14 @@ Returns the identifier of the newly added node.
                 <para>Changed: 2.0 - In prior versions, this was misnamed ST_ModEdgesSplit</para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.9</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>
 -- Add an edge --
  SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227592 893910, 227600 893910)', 26986) ) As edgeid;
- 
+
 -- edgeid-
 3
 
@@ -1439,7 +1506,7 @@ SELECT topology.ST_ModEdgeSplit('ma_topo',  3, ST_SetSRID(ST_Point(227594,893910
 7
 </programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -1455,13 +1522,13 @@ SELECT topology.ST_ModEdgeSplit('ma_topo',  3, ST_SetSRID(ST_Point(227594,893910
 		<refentry id="ST_ModEdgeHeal">
 			<refnamediv>
 				<refname>ST_ModEdgeHeal</refname>
-			
+
 				<refpurpose>
 Heal two edges by deleting the node connecting them, modifying the first edge
 and deleting the second edge. Returns the id of the deleted node.
 				</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -1472,10 +1539,10 @@ and deleting the second edge. Returns the id of the deleted node.
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Heal two edges by deleting the node connecting them, modifying the first edge
 and deleting the second edge.
@@ -1487,8 +1554,8 @@ Updates all existing joined edges and relationships accordingly.
                 <para>Availability: 2.0</para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.9</para>
 			</refsection>
-		
-		
+
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -1502,14 +1569,14 @@ Updates all existing joined edges and relationships accordingly.
 		<refentry id="ST_NewEdgeHeal">
 			<refnamediv>
 				<refname>ST_NewEdgeHeal</refname>
-			
+
 				<refpurpose>
 Heal two edges by deleting the node connecting them, deleting both edges,
 and replacing them with an edge whose direction is the same as the first
 edge provided.
 				</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -1520,10 +1587,10 @@ edge provided.
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Heal two edges by deleting the node connecting them, deleting both edges,
 and replacing them with an edge whose direction is the same as the first
@@ -1531,14 +1598,14 @@ edge provided.
 Returns the id of the new edge replacing the healed ones.
 Updates all existing joined edges and relationships accordingly.
 		</para>
-              
-			
+
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0</para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.9</para>
 			</refsection>
-		
-		
+
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -1550,13 +1617,13 @@ Updates all existing joined edges and relationships accordingly.
 			</refsection>
 		</refentry>
 
-	    	<refentry id="ST_MoveIsoNode">
+		<refentry id="ST_MoveIsoNode">
 			<refnamediv>
 				<refname>ST_MoveIsoNode</refname>
-			
-				<refpurpose>Moves an isolated node in a topology from one point to another.  If new <varname>apoint</varname> geometry exists as a node an error is thrown. REturns description of move.</refpurpose>
+
+				<refpurpose>Moves an isolated node in a topology from one point to another.  If new <varname>apoint</varname> geometry exists as a node an error is thrown. Returns description of move.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -1567,21 +1634,21 @@ Updates all existing joined edges and relationships accordingly.
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Moves an isolated node in a topology from one point to another.  If new <varname>apoint</varname> geometry exists as a node an error is thrown.</para>
                 <para>If any arguments are null, the <varname>apoint</varname> is not a point, the existing node is not isolated (is a start or end point of an existing edge), new node location intersects an existing edge (even at the end points) then an exception is thrown.</para>
                 <para>If the spatial reference system (srid) of the point geometry is not the same as the topology an exception is thrown.</para>
-              
-			
+
+
                 <!-- use this format if new function -->
                 <para>Availability: 1.? </para>
-                	<para>&sqlmm_compliant; SQL-MM: Topo-Net Routines:  X.3.2</para>
+	<para>&sqlmm_compliant; SQL-MM: Topo-Net Routines:  X.3.2</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>
@@ -1591,25 +1658,25 @@ SELECT topology.ST_AddIsoNode('ma_topo',  NULL, ST_GeomFromText('POINT(227579 89
 --------
       7
 -- Move the new node --
-SELECT topology.ST_MoveIsoNode('ma_topo', 7,  ST_GeomFromText('POINT(227579.5 893916.5)', 26986) ) As descrip; 
+SELECT topology.ST_MoveIsoNode('ma_topo', 7,  ST_GeomFromText('POINT(227579.5 893916.5)', 26986) ) As descrip;
                       descrip
 ----------------------------------------------------
 Isolated Node 7 moved to location 227579.5,893916.5</programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="ST_AddIsoNode"/></para>
 			</refsection>
 		</refentry>
-	    	  <refentry id="ST_NewEdgesSplit">
+		  <refentry id="ST_NewEdgesSplit">
 			<refnamediv>
 				<refname>ST_NewEdgesSplit</refname>
-			
+
 				<refpurpose>Split an edge by creating a new node along an existing edge, deleting the original edge and replacing it with two new edges.  Returns the id of the new node created that joins the new edges.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -1620,10 +1687,10 @@ Isolated Node 7 moved to location 227579.5,893916.5</programlisting>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Split an edge with edge id <varname>anedge</varname> by creating a
 new node with point location <varname>apoint</varname> along current
@@ -1633,14 +1700,14 @@ Updates all existing joined edges and relationships accordingly.
 		</para>
 
                 <para>If the spatial reference system (srid) of the point geometry is not the same as the topology, the <varname>apoint</varname> is not a point geometry, the point is null, the point already exists as a node, the edge does not correspond to an existing edge or the point is not within the edge then an exception is thrown.</para>
-              
-			
+
+
                 <!-- use this format if new function -->
                 <para>Availability: 1.? </para>
-                	<para>&sqlmm_compliant; SQL-MM: Topo-Net Routines:  X.3.8</para>
+	<para>&sqlmm_compliant; SQL-MM: Topo-Net Routines:  X.3.8</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>
@@ -1651,12 +1718,12 @@ edgeid
 ------
 	2
 -- Split the new edge --
-SELECT topology.ST_NewEdgesSplit('ma_topo', 2,  ST_GeomFromText('POINT(227578.5 893913.5)', 26986) ) As newnodeid; 
+SELECT topology.ST_NewEdgesSplit('ma_topo', 2,  ST_GeomFromText('POINT(227578.5 893913.5)', 26986) ) As newnodeid;
  newnodeid
 ---------
        6</programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -1668,14 +1735,14 @@ SELECT topology.ST_NewEdgesSplit('ma_topo', 2,  ST_GeomFromText('POINT(227578.5 
 				</para>
 			</refsection>
 		</refentry>
-		
+
 		<refentry id="ST_RemoveIsoNode">
 			<refnamediv>
 				<refname>ST_RemoveIsoNode</refname>
-			
+
 				<refpurpose>Removes an isolated node and returns description of action. If the node is not isolated (is start or end of an edge), then an exception is thrown.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -1685,30 +1752,77 @@ SELECT topology.ST_NewEdgesSplit('ma_topo', 2,  ST_GeomFromText('POINT(227578.5 
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Removes an isolated node and returns description of action. If the node is not isolated (is start or end of an edge), then an exception is thrown.</para>
-              
-			
+
+
                 <!-- use this format if new function -->
                 <para>Availability: 1.? </para>
-                	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X+1.3.3</para>
+	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X+1.3.3</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>
--- Add an isolated node with no face  --
+-- Remove an isolated node with no face  --
 SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
          result
 -------------------------
  Isolated node 7 removed
 </programlisting>
 			</refsection>
-		
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_AddIsoNode"/></para>
+			</refsection>
+		</refentry>
+
+		<refentry id="ST_RemoveIsoEdge">
+			<refnamediv>
+				<refname>ST_RemoveIsoEdge</refname>
+
+				<refpurpose>Removes an isolated edge and returns description of action. If the edge is not isolated, then an exception is thrown.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>text <function>ST_RemoveIsoEdge</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>Removes an isolated edge and returns description of action. If the edge is not isolated, then an exception is thrown.</para>
+
+
+                <!-- use this format if new function -->
+                <para>Availability: 1.? </para>
+	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X+1.3.3</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- Remove an isolated node with no face  --
+SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
+         result
+-------------------------
+ Isolated node 7 removed
+</programlisting>
+			</refsection>
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -1717,15 +1831,16 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
 		</refentry>
 	</sect1>
 
+
 	<sect1 id="Topology_Accessors">
 	  <title>Topology Accessors</title>
         <refentry id="GetEdgeByPoint">
           <refnamediv>
             <refname>GetEdgeByPoint</refname>
-        
+
             <refpurpose>Find the edge-id of an edge that intersects a given point</refpurpose>
           </refnamediv>
-        
+
           <refsynopsisdiv>
             <funcsynopsis>
               <funcprototype>
@@ -1734,18 +1849,18 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
                 <paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
                 <paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>
               </funcprototype>
-        
+
             </funcsynopsis>
           </refsynopsisdiv>
-        
+
           <refsection>
             <title>Retrieve the id of an edge that intersects a Point</title>
-        
+
             <para>The function returns an integer (id-edge) given a topology, a POINT and a tolerance. If tolerance = 0 then the point has to intersect the edge.</para>
             <para>If the point doesn't intersect an edge, returns 0 (zero).</para>
             <para>If use tolerance > 0 and there is more than one edge near the point then an exception is thrown.</para>
-        
-        
+
+
             <!-- optionally mention that this function uses indexes if appropriate -->
             <note>
               <para>If tolerance = 0, the function use ST_Intersects otherwise uses ST_DWithin.</para>
@@ -1753,8 +1868,8 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
             <!-- use this format if new function -->
             <para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0. </para>
           </refsection>
-        
-        
+
+
           <refsection>
             <title>Examples</title>
                 <para>These examples use edges we created in <xref linkend="AddEdge" /></para>
@@ -1770,11 +1885,11 @@ FROM ST_GeomFromEWKT('SRID=26986;POINT(227591.9 893900.4)') As geom;
 -- get error --
 ERROR:  Two or more edges found</programlisting>
           </refsection>
-        
+
           <!-- Optionally add a "See Also" section -->
           <refsection>
             <title>See Also</title>
-        
+
 <para>
 <xref linkend="AddEdge" />,
 <xref linkend="GetNodeByPoint" />,
@@ -1782,7 +1897,7 @@ ERROR:  Two or more edges found</programlisting>
 </para>
           </refsection>
         </refentry>
-        
+
         <refentry id="GetFaceByPoint">
 		<refnamediv>
 			<refname>GetFaceByPoint</refname>
@@ -1804,7 +1919,7 @@ ERROR:  Two or more edges found</programlisting>
 			<para>The function returns an integer (id-face) given a topology, a POINT and a tolerance. If tolerance = 0 then the point has to intersect the face.</para>
 			<para>If the point doesn't intersect a face, returns 0 (zero).</para>
 			<para>If use tolerance > 0 and there is more than one face near the point then an exception is thrown.</para>
-			
+
 			<!-- optionally mention that this function uses indexes if appropriate -->
 			<note>
 				<para>If tolerance = 0, the function uses ST_Intersects otherwise uses ST_DWithin.</para>
@@ -1817,13 +1932,13 @@ ERROR:  Two or more edges found</programlisting>
 			<para>These examples use edges faces created in <xref linkend="AddFace" /></para>
 			<programlisting>SELECT topology.GetFaceByPoint('ma_topo',geom, 10) As with1mtol, topology.GetFaceByPoint('ma_topo',geom,0) As withnotol
 	FROM ST_GeomFromEWKT('POINT(234604.6 899382.0)') As geom;
-	
+
 	 with1mtol | withnotol
 	-----------+-----------
 			 1 |         0</programlisting>
 			<programlisting>SELECT topology.GetFaceByPoint('ma_topo',geom, 1) As nearnode
 	FROM ST_GeomFromEWKT('POINT(227591.9 893900.4)') As geom;
-	
+
 -- get error --
 ERROR:  Two or more faces found</programlisting>
 		</refsection>
@@ -1837,14 +1952,14 @@ ERROR:  Two or more faces found</programlisting>
 </para>
 		</refsection>
 	</refentry>
-        
+
         <refentry id="GetNodeByPoint">
           <refnamediv>
             <refname>GetNodeByPoint</refname>
-        
+
             <refpurpose>Find the id of a node at a point location</refpurpose>
           </refnamediv>
-        
+
           <refsynopsisdiv>
             <funcsynopsis>
               <funcprototype>
@@ -1853,18 +1968,18 @@ ERROR:  Two or more faces found</programlisting>
                 <paramdef><type>geometry </type> <parameter>point</parameter></paramdef>
                 <paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>
               </funcprototype>
-        
+
             </funcsynopsis>
           </refsynopsisdiv>
-        
+
           <refsection>
             <title>Retrieve the id of a node at a point location</title>
-        
+
             <para>The function return an integer (id-node) given a topology, a POINT and a tolerance. If tolerance = 0 mean exactly intersection otherwise retrieve the node from an interval.</para>
             <para>If there isn't a node at the point, it return 0 (zero).</para>
             <para>If use tolerance > 0 and near the point there are more than one node it throw an exception.</para>
-        
-        
+
+
             <!-- optionally mention that this function uses indexes if appropriate -->
             <note>
               <para>If tolerance = 0, the function use ST_Intersects otherwise will use ST_DWithin.</para>
@@ -1872,12 +1987,12 @@ ERROR:  Two or more faces found</programlisting>
             <!-- use this format if new function -->
             <para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0. </para>
           </refsection>
-        
-        
+
+
           <refsection>
             <title>Examples</title>
              <para>These examples use edges we created in <xref linkend="AddEdge" /></para>
-            <programlisting>SELECT topology.GetNodeByPoint('ma_topo',geom, 1) As nearnode 
+            <programlisting>SELECT topology.GetNodeByPoint('ma_topo',geom, 1) As nearnode
  FROM ST_GeomFromEWKT('SRID=26986;POINT(227591.9 893900.4)') As geom;
   nearnode
 ----------
@@ -1885,16 +2000,16 @@ ERROR:  Two or more faces found</programlisting>
  </programlisting>
             <programlisting>SELECT topology.GetNodeByPoint('ma_topo',geom, 1000) As too_much_tolerance
  FROM ST_GeomFromEWKT('SRID=26986;POINT(227591.9 893900.4)') As geom;
- 
+
  ----get error--
  ERROR:  Two or more nodes found
  </programlisting>
           </refsection>
-        
+
           <!-- Optionally add a "See Also" section -->
           <refsection>
             <title>See Also</title>
-        
+
 <para>
 <xref linkend="AddEdge" />,
 <xref linkend="GetEdgeByPoint" />,
@@ -1902,14 +2017,14 @@ ERROR:  Two or more faces found</programlisting>
 </para>
           </refsection>
         </refentry>
-          
+
 		<refentry id="GetTopologyID">
 			<refnamediv>
 				<refname>GetTopologyID</refname>
-			
+
 				<refpurpose>Returns the id of a topology in the topology.topology table given the name of the topology.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -1918,16 +2033,16 @@ ERROR:  Two or more faces found</programlisting>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Returns the id of a topology in the topology.topology table given the name of the topology.</para>
               <!-- use this format if new function -->
                 <para>Availability: 1.?</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.GetTopologyID('ma_topo') As topo_id;
@@ -1935,7 +2050,7 @@ ERROR:  Two or more faces found</programlisting>
 ---------
        1</programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -1951,10 +2066,10 @@ ERROR:  Two or more faces found</programlisting>
 		<refentry id="GetTopologySRID">
 			<refnamediv>
 				<refname>GetTopologySRID</refname>
-			
+
 				<refpurpose>Returns the SRID of a topology in the topology.topology table given the name of the topology.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -1963,16 +2078,16 @@ ERROR:  Two or more faces found</programlisting>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Returns the spatial reference id of a topology in the topology.topology table given the name of the topology.</para>
               <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.GetTopologySRID('ma_topo') As SRID;
@@ -1980,7 +2095,7 @@ ERROR:  Two or more faces found</programlisting>
 -------
   4326</programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -1992,14 +2107,14 @@ ERROR:  Two or more faces found</programlisting>
 				</para>
 			</refsection>
 		</refentry>
-		
+
 		<refentry id="GetTopologyName">
 			<refnamediv>
 				<refname>GetTopologyName</refname>
-			
+
 				<refpurpose>Returns the name of a topology (schema) given the id of the topology.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -2008,16 +2123,16 @@ ERROR:  Two or more faces found</programlisting>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Returns the topology name (schema) of a topology from the topology.topology table given the topology id of the topology.</para>
               <!-- use this format if new function -->
                 <para>Availability: 1.?</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.GetTopologyName(1) As topo_name;
@@ -2025,7 +2140,7 @@ ERROR:  Two or more faces found</programlisting>
 -----------
  ma_topo</programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -2037,14 +2152,14 @@ ERROR:  Two or more faces found</programlisting>
 				</para>
 			</refsection>
 		</refentry>
-		
+
 		<refentry id="ST_GetFaceEdges">
 			<refnamediv>
 				<refname>ST_GetFaceEdges</refname>
-			
+
 				<refpurpose>Returns a set of ordered edges that bound <varname>aface</varname>.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -2054,10 +2169,10 @@ ERROR:  Two or more faces found</programlisting>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Returns a set of ordered edges that bound <varname>aface</varname>. Each output consists of a sequence and edgeid. Sequence numbers start with value 1.</para>
 
 		<para>
@@ -2067,10 +2182,10 @@ Order of edges follows a left-hand-rule (bound face is on the left of each direc
 
                 <!-- use this format if new function -->
                 <para>Availability: 2.0 </para>
-                	<para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.5</para>
+	<para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.5</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>
@@ -2097,7 +2212,7 @@ FROM topology.ST_GetFaceEdges('tt',1) As t(seq,edge)
 	INNER JOIN tt.edge AS e ON abs(t.edge) = e.edge_id;
 </programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -2108,14 +2223,14 @@ FROM topology.ST_GetFaceEdges('tt',1) As t(seq,edge)
 				</para>
 			</refsection>
 		</refentry>
-		
+
 		<refentry id="ST_GetFaceGeometry">
 			<refnamediv>
 				<refname>ST_GetFaceGeometry</refname>
-			
+
 				<refpurpose>Returns the polygon in the given topology with the specified face id.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -2125,19 +2240,19 @@ FROM topology.ST_GetFaceEdges('tt',1) As t(seq,edge)
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Returns the polygon in the given topology with the specified face id. Builds the polygon from the edges making up the face.</para>
-             
-                
+
+
                 <!-- use this format if new function -->
                 <para>Availability: 1.? </para>
-                	<para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.16</para>
+	<para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.16</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>
@@ -2149,10 +2264,10 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
 --------------------------------------------------------------------------------
  POLYGON((234776.9 899563.7,234896.5 899456.7,234914 899436.4,234946.6 899356.9,
 234872.5 899328.7,234891 899285.4,234992.5 899145,234890.6 899069,
-234755.2 899255.4,234612.7 899379.4,234776.9 899563.7)) 
+234755.2 899255.4,234612.7 899379.4,234776.9 899563.7))
 </programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -2163,13 +2278,13 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
 		<refentry id="GetRingEdges">
 			<refnamediv>
 				<refname>GetRingEdges</refname>
-			
+
 				<refpurpose>
 Returns the ordered set of signed edge identifiers met by walking on an
 a given edge side.
 				</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -2180,10 +2295,10 @@ a given edge side.
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Returns the ordered set of signed edge identifiers met by walking on an
 a given edge side.
@@ -2207,12 +2322,12 @@ when dealing with possibly invalid topologies.
     <note><para>
 This function uses edge ring linking metadata.
     </para></note>
-                
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0 </para>
 			</refsection>
-		
-		
+
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -2226,12 +2341,12 @@ This function uses edge ring linking metadata.
 		<refentry id="GetNodeEdges">
 			<refnamediv>
 				<refname>GetNodeEdges</refname>
-			
+
 				<refpurpose>
 Returns an ordered set of edges incident to the given node.
 				</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -2241,16 +2356,16 @@ Returns an ordered set of edges incident to the given node.
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Returns an ordered set of edges incident to the given node.
 Each output consists of a sequence and a signed edge id.
 Sequence numbers start with value 1.
 A positive edge starts at the given node.
-A negative edge ends into the given node. 
+A negative edge ends into the given node.
 Closed edges will appear twice (with both signs).
 Order is clockwise starting from northbound.
 		</para>
@@ -2265,7 +2380,7 @@ and is thus usable to build edge ring linking.
                 <!-- use this format if new function -->
                 <para>Availability: 2.0 </para>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -2275,7 +2390,7 @@ and is thus usable to build edge ring linking.
 				</para>
 			</refsection>
 		</refentry>
-		
+
 	</sect1>
 
 
@@ -2299,10 +2414,10 @@ and is thus usable to build edge ring linking.
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Register all faces that can be built out a topology edge primitives.</para>
                 <para>The target topology is assumed to contain no self-intersecting edges.</para>
                 <note><para>Already known faces are recognized, so it is safe to call Polygonize multiple times on the same topology.</para></note>
@@ -2310,25 +2425,25 @@ and is thus usable to build edge ring linking.
 This function does not use nor set the next_left_edge and next_right_edge fields of the edge table.
                 </para></note>
 
-                
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="AddFace"/>, <xref linkend="ST_Polygonize"/></para>
 			</refsection>
 		</refentry>
-		
+
 		<refentry id="AddNode">
 			<refnamediv>
 				<refname>AddNode</refname>
-			
+
 				<refpurpose>Adds a point node to the node table in the specified topology schema and returns the nodeid of new node. If point already exists as node, the existing nodeid is returned.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -2340,10 +2455,10 @@ This function does not use nor set the next_left_edge and next_right_edge fields
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Adds a point node to the node table in the specified topology schema.
 The <xref linkend="AddEdge" /> function automatically adds start and end
@@ -2363,12 +2478,12 @@ get the correct containing face computed.
 	</para>
 
                 <note><para>If the <varname>apoint</varname> geometry already exists as a node, the node is not added but the existing nodeid is returned.</para></note>
-                
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.AddNode('ma_topo', ST_GeomFromText('POINT(227641.6 893816.5)', 26986) ) As nodeid;
@@ -2376,10 +2491,10 @@ get the correct containing face computed.
 nodeid
 --------
  4
- 
+
 </programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -2390,10 +2505,10 @@ nodeid
 	     <refentry id="AddEdge">
 			<refnamediv>
 				<refname>AddEdge</refname>
-			
+
 				<refpurpose>Adds a linestring edge to the edge table and associated start and end points to the point nodes table of the specified topology schema using the specified linestring geometry and returns the edgeid of the new (or existing) edge.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -2403,21 +2518,21 @@ nodeid
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
-                <para>Adds an edge to the edge table and associated nodes to the nodes table of the specified <varname>toponame</varname> schema using the specified linestring geometry and returns the edgeid of the new or existing record. 
+
+                <para>Adds an edge to the edge table and associated nodes to the nodes table of the specified <varname>toponame</varname> schema using the specified linestring geometry and returns the edgeid of the new or existing record.
                 The newly added edge has "universe" face on both sides and links to itself.</para>
                 <note><para>If the <varname>aline</varname> geometry crosses, overlaps, contains or is contained by an existing linestring edge, then an error is thrown and the edge is not added.</para></note>
                 <note><para>The geometry of <varname>aline</varname> must have the same <varname>srid</varname> as defined for the topology otherwise an invalid spatial reference sys error will be thrown.</para></note>
-        
-        
+
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0 requires GEOS &gt;= 3.3.0.</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575.8 893917.2,227591.9 893900.4)', 26986) ) As edgeid;
@@ -2425,37 +2540,41 @@ nodeid
 edgeid
 --------
  1
-				
+
 SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.9 893900.4,227622.6 893844.2,227641.6 893816.5,
  227704.5 893778.5)', 26986) ) As edgeid;
 -- result --
 edgeid
 --------
  2
- 
+
  SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.2 893900, 227591.9 893900.4,
   227704.5 893778.5)', 26986) ) As edgeid;
  -- gives error --
  ERROR:  Edge intersects (not on endpoints) with existing edge 1
 </programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="CreateTopology"/>, <xref linkend="spatial_ref_sys"/></para>
+				<para>
+<xref linkend="TopoGeo_AddLineString"/>,
+<xref linkend="CreateTopology"/>,
+<xref linkend="spatial_ref_sys"/>
+        </para>
 			</refsection>
-		</refentry>		
-		
+		</refentry>
+
 		<refentry id="AddFace">
 			<refnamediv>
 				<refname>AddFace</refname>
-			
+
 				<refpurpose>
 Registers a face primitive to a topology and gets its identifier.
         </refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -2466,16 +2585,16 @@ Registers a face primitive to a topology and gets its identifier.
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Registers a face primitive to a topology and gets its identifier.
                 </para>
 
                 <para>
-For a newly added face, the edges forming its boundaries and the ones 
+For a newly added face, the edges forming its boundaries and the ones
 contained in the face will be updated to have correct values in the
 left_face and right_face fields.
 Isolated nodes contained in the face will also be updated to have a correct
@@ -2504,20 +2623,20 @@ existing face record be updated. It is up to the caller to deal with that.
                 </para></note>
 
                 <note><para>The <varname>apolygon</varname> geometry must have the same <varname>srid</varname> as defined for the topology otherwise an invalid spatial reference sys error will be thrown.</para></note>
-                
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>
--- first add the edges we use generate_series as an iterator (the below 
--- will only work for polygons with &lt; 10000 points because of our max in gs) 
+-- first add the edges we use generate_series as an iterator (the below
+-- will only work for polygons with &lt; 10000 points because of our max in gs)
 SELECT topology.AddEdge('ma_topo', ST_MakeLine(ST_PointN(geom,i), ST_PointN(geom, i + 1) )) As edgeid
     FROM (SELECT  ST_NPoints(geom) AS npt, geom
-            FROM 
+            FROM
                 (SELECT ST_Boundary(ST_GeomFromText('POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,
                 234891 899285.4,234992.5 899145, 234890.6 899069,234755.2 899255.4,
                 234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))', 26986) )  As geom
@@ -2538,8 +2657,8 @@ SELECT topology.AddEdge('ma_topo', ST_MakeLine(ST_PointN(geom,i), ST_PointN(geom
      12
 (10 rows)
 -- then add the face -
-				
-SELECT topology.AddFace('ma_topo', 
+
+SELECT topology.AddFace('ma_topo',
     ST_GeomFromText('POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,
     234891 899285.4,234992.5 899145, 234890.6 899069,234755.2 899255.4,
     234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))', 26986) ) As faceid;
@@ -2547,10 +2666,10 @@ SELECT topology.AddFace('ma_topo',
 faceid
 --------
  1
- 
+
 </programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -2593,7 +2712,7 @@ faceid
 		  </refsection>
 	</refentry>
 
-		
+
 	</sect1>
 
 	<sect1 id="TopoGeometry_Constructors">
@@ -2603,13 +2722,13 @@ faceid
         </abstract>
     </sect1info>
 	  <title>TopoGeometry Constructors</title>
-	  	<refentry id="CreateTopoGeom">
+		<refentry id="CreateTopoGeom">
 			<refnamediv>
 				<refname>CreateTopoGeom</refname>
-			
+
 				<refpurpose>Creates a new topo geometry object from topo element array - tg_type: 1:[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -2628,41 +2747,41 @@ faceid
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Creates a topogeometry object for layer denoted by layer_id and registers it in the relations table in the <varname>toponame</varname> schema.</para>
                 <para>tg_type is an integer: 1:[multi]point (punctal), 2:[multi]line (lineal), 3:[multi]poly (areal), 4:collection. layer_id is the layer id in the topology.layer table.</para>
                 <para>punctal layers are formed from set of nodes, lineal layers are formed from a set of edges, areal layers are formed from a set of faces,
-                	and collections can be formed from a mixture of nodes, edges, and faces.</para>
+	and collections can be formed from a mixture of nodes, edges, and faces.</para>
                 <para>Omitting the array of components generates an empty TopoGeometry object.</para>
                 <!-- use this format if new function -->
                 <para>Availability: 1.?</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples: Form from existing edges</title>
-				<para>Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>.</para> 
+				<para>Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>).</para>
 				<programlisting>INSERT INTO ri.ri_roads(road_name, topo) VALUES('Unknown', topology.CreateTopoGeom('ri_topo',2,2,'{{1,2}}'::topology.topoelementarray);</programlisting>
-				
+
 			</refsection>
-			
+
 			<refsection>
 				<title>Examples: Convert an areal geometry to best guess topogeometry</title>
-				<para>Lets say we have geometries that should be formed from a collection of faces. We have for example blockgroups table 
-					and want to know the topo geometry of each block group. If our data was perfectly aligned, we could do this:</para> 
+				<para>Lets say we have geometries that should be formed from a collection of faces. We have for example blockgroups table
+					and want to know the topo geometry of each block group. If our data was perfectly aligned, we could do this:</para>
 				<programlisting>
 -- create our topo geometry column --
 SELECT topology.AddTopoGeometryColumn(
-	'topo_boston', 
+	'topo_boston',
 	'boston', 'blockgroups', 'topo', 'POLYGON');
-	
+
 -- addtopgeometrycolumn --
 1
-	
--- update our column assuming 
+
+-- update our column assuming
 -- everything is perfectly aligned with our edges
 UPDATE boston.blockgroups AS bg
 	SET topo = topology.CreateTopoGeom('topo_boston'
@@ -2673,12 +2792,12 @@ FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces
             INNER JOIN topo_boston.face As f ON b.geom &amp;&amp; f.mbr
         WHERE ST_Covers(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
             GROUP BY b.gid) As foo
-WHERE foo.gid = bg.gid; 
+WHERE foo.gid = bg.gid;
 </programlisting>
 
 <programlisting>
 --the world is rarely perfect allow for some error
---count the face if 50% of it falls 
+--count the face if 50% of it falls
 -- within what we think is our blockgroup boundary
 UPDATE boston.blockgroups AS bg
 	SET topo = topology.CreateTopoGeom('topo_boston'
@@ -2688,46 +2807,46 @@ FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces
 	FROM boston.blockgroups As b
             INNER JOIN topo_boston.face As f ON b.geom &amp;&amp; f.mbr
         WHERE ST_Covers(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
-        	OR
+	OR
  (  ST_Intersects(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
-            AND ST_Area(ST_Intersection(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id) ) ) > 
+            AND ST_Area(ST_Intersection(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id) ) ) >
                 ST_Area(topology.ST_GetFaceGeometry('topo_boston', f.face_id))*0.5
                 )
             GROUP BY b.gid) As foo
-WHERE foo.gid = bg.gid; 
+WHERE foo.gid = bg.gid;
 
 -- and if we wanted to convert our topogeometry back
--- to a denomalized geometry aligned with our faces and edges 
+-- to a denomalized geometry aligned with our faces and edges
 -- cast the topo to a geometry
 -- The really cool thing is my new geometries
 -- are now aligned with my tiger street centerlines
 UPDATE boston.blockgroups SET new_geom = topo::geometry;
 </programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
 				<para>
 <xref linkend="AddTopoGeometryColumn"/>,
-<xref linkend="toTopoGeom" />  
+<xref linkend="toTopoGeom" />
 <xref linkend="ST_CreateTopoGeo" />,
 <xref linkend="ST_GetFaceGeometry"/>,
 <xref linkend="topoelementarray" />,
-<xref linkend="TopoElementArray_Agg" />  
+<xref linkend="TopoElementArray_Agg" />
 				</para>
 			</refsection>
 		</refentry>
 
-	  	<refentry id="toTopoGeom">
+		<refentry id="toTopoGeom">
 			<refnamediv>
 				<refname>toTopoGeom</refname>
-			
+
 				<refpurpose>
 Converts a simple Geometry into a topo geometry
         </refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -2746,10 +2865,10 @@ Converts a simple Geometry into a topo geometry
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Converts a simple Geometry into a <xref linkend="topogeometry" />.
                 </para>
@@ -2809,9 +2928,9 @@ FROM neighborhoods
 WHERE gid BETWEEN 1 and 15;
 
 --use to verify what has happened --
-SELECT * FROM 
-    topology.TopologySummary('topo_boston_test'); 
-    
+SELECT * FROM
+    topology.TopologySummary('topo_boston_test');
+
 -- summary--
 Topology topo_boston_test (5), SRID 2249, precision 0
 61 nodes, 87 edges, 35 faces, 15 topogeoms in 1 layers
@@ -2824,7 +2943,7 @@ UPDATE nei_topo SET topo = ST_Buffer(clearTopoGeom(topo), -10);
 
 -- Get the no-one-lands left by the above operation
 -- I think GRASS calls this "polygon0 layer"
-SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id) 
+SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
   FROM topo_boston_test.face f
   WHERE f.face_id > 0 -- don't consider the universe face
   AND NOT EXISTS ( -- check that no TopoGeometry references the face
@@ -2852,7 +2971,7 @@ SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
             <refname>TopoElementArray_Agg</refname>
             <refpurpose>Returns a <varname>topoelementarray</varname> for a set of element_id, type arrays (topoelements)</refpurpose>
           </refnamediv>
-        
+
           <refsynopsisdiv>
             <funcsynopsis>
               <funcprototype>
@@ -2861,17 +2980,17 @@ SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
               </funcprototype>
             </funcsynopsis>
           </refsynopsisdiv>
-          
-          	<refsection>
+
+	<refsection>
                 <title>Description</title>
-            
+
                 <para>Used to create a <xref linkend="topoelementarray" /> from a set of <xref linkend="topoelement" />.</para>
-                
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.TopoElementArray_Agg(ARRAY[e,t]) As tea
@@ -2895,13 +3014,13 @@ SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
     </sect1info>
 	  <title>TopoGeometry Editors</title>
 
-	  	<refentry id="clearTopoGeom">
+		<refentry id="clearTopoGeom">
 			<refnamediv>
 				<refname>clearTopoGeom</refname>
-			
+
 				<refpurpose>Clears the content of a topo geometry</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -2910,10 +3029,10 @@ SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>
 Clears the content a <xref linkend="topogeometry" />
 turning it into an empty one. Mostly useful in conjunction with <xref
@@ -2929,7 +3048,7 @@ objects and any dependent object in higher hierarchical levels.
         <programlisting>
 -- Shrink all TopoGeometry polygons by 10 meters
 UPDATE nei_topo SET topo = ST_Buffer(clearTopoGeom(topo), -10);
-				</programlisting> 
+				</programlisting>
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
@@ -3040,24 +3159,24 @@ UPDATE mylayer SET tg = TopoGeom_remElement(tg, '{43,3}');
 			<refsection>
                 <title>Description</title>
 <para>
-Refer to <xref linkend="toTopoGeom" />  
+Refer to <xref linkend="toTopoGeom" />
 </para>
       </refsection>
     </refentry>
 
-		
+
 	</sect1>
-	
+
 	<sect1 id="TopoGeom_Accessors">
 	  <title>TopoGeometry Accessors</title>
-          
+
 	      <refentry id="GetTopoGeomElementArray">
 			<refnamediv>
 				<refname>GetTopoGeomElementArray</refname>
-			
+
 				<refpurpose>Returns a <varname>topoelementarray</varname> (an array of topoelements) containing the topological elements and type of the given TopoGeometry (primitive elements)</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -3074,38 +3193,38 @@ Refer to <xref linkend="toTopoGeom" />
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Returns a <xref linkend="topoelementarray"/> containing the topological elements and type of the given TopoGeometry (primitive elements).  This is similar to GetTopoGeomElements except it returns the elements as an array rather
                 than as a dataset.</para>
                 <para>tg_id is the topogeometry id of the topogeometry object in the topology in the layer denoted by <varname>layer_id</varname> in the topology.layer table.</para>
-        
+
                 <!-- use this format if new function -->
                 <para>Availability: 1.?</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<para/>
 				<!-- TODO: -->
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="GetTopoGeomElements"/>, <xref linkend="topoelementarray"/></para>
 			</refsection>
 		</refentry>
-	  	<refentry id="GetTopoGeomElements">
+		<refentry id="GetTopoGeomElements">
 			<refnamediv>
 				<refname>GetTopoGeomElements</refname>
-			
+
 				<refpurpose>Returns a set of <varname>topoelement</varname> objects containing the topological  element_id,element_type of the given TopoGeometry (primitive elements)</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -3122,24 +3241,24 @@ Refer to <xref linkend="toTopoGeom" />
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Returns a set of element_id,element_type (topoelements) for a given topogeometry object in <varname>toponame</varname> schema.</para>
                 <para>tg_id is the topogeometry id of the topogeometry object in the topology in the layer denoted by <varname>layer_id</varname> in the topology.layer table.</para>
-        
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<para/>
 				<!-- TODO: -->
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -3153,20 +3272,20 @@ Refer to <xref linkend="toTopoGeom" />
 		</refentry>
 
 	</sect1>
-	
-	
+
+
 	<sect1 id="TopoGeometry_Outputs">
 	  <title>TopoGeometry Outputs</title>
 	  <refentry id="AsGML">
-	  	    <refnamediv>
+		    <refnamediv>
 				<refname>AsGML</refname>
-			
+
 				<refpurpose>Returns the GML representation of a topogeometry.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
-				    	<funcprototype>
+					<funcprototype>
                         <funcdef>text <function>AsGML</function></funcdef>
                         <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
 					</funcprototype>
@@ -3222,16 +3341,16 @@ Refer to <xref linkend="toTopoGeom" />
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Returns the GML representation of a topogeometry in version GML3 format. If no <varname>nsprefix_in</varname> is specified then <varname>gml</varname> is used. Pass in an empty string for nsprefix to get a non-qualified name space. The precision (default: 15) and options (default 1) parameters, if given, are passed untouched to the underlying call to ST_AsGML.</para>
 
 		<para>
 The <varname>visitedTable</varname> parameter, if given, is used for keeping track of the visited Node and Edge elements so to use cross-references (xlink:xref) rather than duplicating definitions. The table is expected to have (at least) two integer fields: 'element_type' and 'element_id'. The calling user must have both read and write privileges on the given table.
 For best performance, an index should be defined on
-<varname>element_type</varname> and <varname>element_id</varname>, 
+<varname>element_type</varname> and <varname>element_id</varname>,
 in that order. Such index would be created automatically by adding a unique
 constraint to the fields. Example:
 <programlisting>
@@ -3241,23 +3360,23 @@ CREATE TABLE visited (
 );
 </programlisting>
 		</para>
-              
+
 		<para>The <varname>idprefix</varname> parameter, if given, will be prepended to Edge and Node tag identifiers.</para>
-			
+
 		<para>The <varname>gmlver</varname> parameter, if given, will be passed to the underlying ST_AsGML. Defaults to 3.</para>
 
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0 </para>
 			</refsection>
-		
-		
+
+
 			<refsection>
 				<title>Examples</title>
 				<para>This uses the topo geometry we created in <xref linkend="CreateTopoGeom" /></para>
-				<programlisting>SELECT topology.AsGML(topo) As rdgml 
-  FROM ri.roads 
+				<programlisting>SELECT topology.AsGML(topo) As rdgml
+  FROM ri.roads
   WHERE road_name = 'Unknown';
-  
+
 -- rdgml--
 <![CDATA[<gml:TopoCurve>
     <gml:directedEdge>
@@ -3270,14 +3389,14 @@ CREATE TABLE visited (
                 <gml:Curve srsName="urn:ogc:def:crs:EPSG::3438">
                     <gml:segments>
                         <gml:LineStringSegment>
-                            <gml:posList srsDimension="2">384744 236928 384750 236923 384769 236911 384799 236895 384811 236890 
-                            384833 236884 384844 236882 384866 236881 384879 236883 384954 236898 385087 236932 385117 236938 
-                            385167 236938 385203 236941 385224 236946 385233 236950 385241 236956 385254 236971 
-                            385260 236979 385268 236999 385273 237018 385273 237037 385271 237047 385267 237057 385225 237125 
-                            385210 237144 385192 237161 385167 237192 385162 237202 385159 237214 385159 237227 385162 237241 
-                            385166 237256 385196 237324 385209 237345 385234 237375 385237 237383 385238 237399 385236 237407 
-                            385227 237419 385213 237430 385193 237439 385174 237451 385170 237455 385169 237460 385171 237475 
-                            385181 237503 385190 237521 385200 237533 385206 237538 385213 237541 385221 237542 385235 237540 385242 237541 
+                            <gml:posList srsDimension="2">384744 236928 384750 236923 384769 236911 384799 236895 384811 236890
+                            384833 236884 384844 236882 384866 236881 384879 236883 384954 236898 385087 236932 385117 236938
+                            385167 236938 385203 236941 385224 236946 385233 236950 385241 236956 385254 236971
+                            385260 236979 385268 236999 385273 237018 385273 237037 385271 237047 385267 237057 385225 237125
+                            385210 237144 385192 237161 385167 237192 385162 237202 385159 237214 385159 237227 385162 237241
+                            385166 237256 385196 237324 385209 237345 385234 237375 385237 237383 385238 237399 385236 237407
+                            385227 237419 385213 237430 385193 237439 385174 237451 385170 237455 385169 237460 385171 237475
+                            385181 237503 385190 237521 385200 237533 385206 237538 385213 237541 385221 237542 385235 237540 385242 237541
                             385249 237544 385260 237555 385270 237570 385289 237584 385292 237589 385291 237596 385284 237630</gml:posList>
                         </gml:LineStringSegment>
                     </gml:segments>
@@ -3285,13 +3404,13 @@ CREATE TABLE visited (
             </gml:curveProperty>
         </gml:Edge>
     </gml:directedEdge>
-</gml:TopoCurve>]]>		
+</gml:TopoCurve>]]>
 </programlisting>
 <para>Same exercise as previous without namespace</para>
-<programlisting>SELECT topology.AsGML(topo,'') As rdgml 
-  FROM ri.roads 
+<programlisting>SELECT topology.AsGML(topo,'') As rdgml
+  FROM ri.roads
   WHERE road_name = 'Unknown';
-  
+
 -- rdgml--
 <![CDATA[<TopoCurve>
     <directedEdge>
@@ -3304,14 +3423,14 @@ CREATE TABLE visited (
                 <Curve srsName="urn:ogc:def:crs:EPSG::3438">
                     <segments>
                         <LineStringSegment>
-                            <posList srsDimension="2">384744 236928 384750 236923 384769 236911 384799 236895 384811 236890 
-                            384833 236884 384844 236882 384866 236881 384879 236883 384954 236898 385087 236932 385117 236938 
-                            385167 236938 385203 236941 385224 236946 385233 236950 385241 236956 385254 236971 
-                            385260 236979 385268 236999 385273 237018 385273 237037 385271 237047 385267 237057 385225 237125 
-                            385210 237144 385192 237161 385167 237192 385162 237202 385159 237214 385159 237227 385162 237241 
-                            385166 237256 385196 237324 385209 237345 385234 237375 385237 237383 385238 237399 385236 237407 
-                            385227 237419 385213 237430 385193 237439 385174 237451 385170 237455 385169 237460 385171 237475 
-                            385181 237503 385190 237521 385200 237533 385206 237538 385213 237541 385221 237542 385235 237540 385242 237541 
+                            <posList srsDimension="2">384744 236928 384750 236923 384769 236911 384799 236895 384811 236890
+                            384833 236884 384844 236882 384866 236881 384879 236883 384954 236898 385087 236932 385117 236938
+                            385167 236938 385203 236941 385224 236946 385233 236950 385241 236956 385254 236971
+                            385260 236979 385268 236999 385273 237018 385273 237037 385271 237047 385267 237057 385225 237125
+                            385210 237144 385192 237161 385167 237192 385162 237202 385159 237214 385159 237227 385162 237241
+                            385166 237256 385196 237324 385209 237345 385234 237375 385237 237383 385238 237399 385236 237407
+                            385227 237419 385213 237430 385193 237439 385174 237451 385170 237455 385169 237460 385171 237475
+                            385181 237503 385190 237521 385200 237533 385206 237538 385213 237541 385221 237542 385235 237540 385242 237541
                             385249 237544 385260 237555 385270 237570 385289 237584 385292 237589 385291 237596 385284 237630</posList>
                          </LineStringSegment>
                     </segments>
@@ -3319,10 +3438,10 @@ CREATE TABLE visited (
             </curveProperty>
         </Edge>
     </directedEdge>
-</TopoCurve>]]>		
+</TopoCurve>]]>
 </programlisting>
 			</refsection>
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -3330,25 +3449,25 @@ CREATE TABLE visited (
 			</refsection>
 	  </refentry>
 	  <refentry id="AsTopoJSON">
-	  	    <refnamediv>
+		    <refnamediv>
 				<refname>AsTopoJSON</refname>
-			
+
 				<refpurpose>Returns the TopoJSON representation of a topogeometry.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
-				    	<funcprototype>
+					<funcprototype>
                         <funcdef>text <function>AsTopoJSON</function></funcdef>
                         <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
                         <paramdef><type>regclass </type> <parameter>edgeMapTable</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
                 <title>Description</title>
-            
+
                 <para>Returns the TopoJSON representation of a topogeometry. If <varname>edgeMapTable</varname> is not null, it will be used as a lookup/storage mapping of edge identifiers to arc indices. This is to be able to allow for a compact "arcs" array in the final document.
 </para>
 
@@ -3358,7 +3477,7 @@ The table, if given, is expected to have an "arc_id" field of type "serial" and 
 
 		<note>
 <para>
-Arc indices in the TopoJSONjoutput are 0-based but they are 1-based
+Arc indices in the TopoJSON output are 0-based but they are 1-based
 in the "edgeMapTable" table.
 </para>
     </note>
@@ -3370,13 +3489,13 @@ the actual arcs plus some headers. See the <ulink
 url="http://github.com/mbostock/topojson-specification/blob/master/README.md"
 >TopoJSON specification</ulink>.
 		</para>
-              
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.1.0 </para>
                 <para>Enhanced: 2.2.1 added support for puntal inputs</para>
 			</refsection>
-		
-		
+
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
@@ -3396,7 +3515,7 @@ UNION ALL SELECT '"' || feature_name || '": ' || AsTopoJSON(feature, 'edgemap')
 FROM features.big_parcels WHERE feature_name = 'P3P4';
 
 -- arcs
-WITH edges AS ( 
+WITH edges AS (
   SELECT m.arc_id, e.geom FROM edgemap m, city_data.edge e
   WHERE e.edge_id = m.edge_id
 ), points AS (
@@ -3450,10 +3569,10 @@ UNION ALL SELECT ']}'::text as t;
 	    <refentry id="TG_Equals">
         <refnamediv>
           <refname>Equals</refname>
-      
+
           <refpurpose>Returns true if two topogeometries are composed of the same topology primitives.</refpurpose>
         </refnamediv>
-      
+
         <refsynopsisdiv>
           <funcsynopsis>
             <funcprototype>
@@ -3463,49 +3582,49 @@ UNION ALL SELECT ']}'::text as t;
             </funcprototype>
           </funcsynopsis>
         </refsynopsisdiv>
-      
+
         <refsection>
           <title>Description</title>
-      
+
           <para>Returns true if two topogeometries are composed of the same topology primitives: faces, edges, nodes.</para>
-      
+
           <!-- optionally mention that this function uses indexes if appropriate -->
           <note>
             <para>This function not supported for topogeometries that are geometry collections.  It also can not compare topogeometries from different topologies.</para>
           </note>
           <!-- use this format if new function -->
         <para>Availability: 1.1.0 </para>
-        
-       
+
+
         <!-- Optionally mention 3d support -->
         <para>&Z_support;</para>
         </refsection>
-      
-      
+
+
         <refsection>
           <title>Examples</title>
-      
+
           <programlisting><!--TODO: Need example --></programlisting>
         </refsection>
-      
+
         <!-- Optionally add a "See Also" section -->
         <refsection>
           <title>See Also</title>
-      
+
           <para><xref linkend="GetTopoGeomElements" />, <xref linkend="ST_Equals" /></para>
         </refsection>
       </refentry>
-      
+
       <refentry id="TG_Intersects">
         <refnamediv>
           <refname>Intersects</refname>
-      
+
           <refpurpose>
 Returns true if any pair of primitives from the
 two topogeometries intersect.
           </refpurpose>
         </refnamediv>
-      
+
         <refsynopsisdiv>
           <funcsynopsis>
             <funcprototype>
@@ -3515,15 +3634,15 @@ two topogeometries intersect.
             </funcprototype>
           </funcsynopsis>
         </refsynopsisdiv>
-      
+
         <refsection>
           <title>Description</title>
-      
+
           <para>
 Returns true if any pair of primitives from the
 two topogeometries intersect.
           </para>
-      
+
           <!-- optionally mention that this function uses indexes if appropriate -->
           <note>
             <para>This function not supported for topogeometries that are geometry collections.  It also can not compare topogeometries from different topologies.
@@ -3531,23 +3650,23 @@ two topogeometries intersect.
           </note>
           <!-- use this format if new function -->
         <para>Availability: 1.1.0 </para>
-        
-       
+
+
         <!-- Optionally mention 3d support -->
         <para>&Z_support;</para>
         </refsection>
-      
-      
+
+
         <refsection>
           <title>Examples</title>
-      
+
           <programlisting><!--TODO: Need example --></programlisting>
         </refsection>
-      
+
         <!-- Optionally add a "See Also" section -->
         <refsection>
           <title>See Also</title>
-      
+
           <para><xref linkend="ST_Intersects" /></para>
         </refsection>
       </refentry>

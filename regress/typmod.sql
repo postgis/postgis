@@ -279,7 +279,7 @@ BEGIN
 
 	tmpfile := tmpfile_prefix;
 
-	FOR rec2 IN SELECT * from tm.types ORDER BY id 
+	FOR rec2 IN SELECT * from tm.types ORDER BY id
 	LOOP
 		tmpfile := tmpfile_prefix || rec2.id;
 		sql := 'COPY ( SELECT g FROM tm.types WHERE id = ' || rec2.id || ') TO '
@@ -289,7 +289,7 @@ BEGIN
 	END LOOP;
 
 	FOR rec IN SELECT * from geometry_columns
-		WHERE f_table_name != 'types' ORDER BY 3 
+		WHERE f_table_name != 'types' ORDER BY 3
 	LOOP
 		out_where := rec.f_table_name;
 
@@ -299,7 +299,7 @@ BEGIN
   			AND rec.type NOT LIKE 'TRIANGLE%'
   			AND rec.type NOT LIKE 'TIN%';
 
-		FOR rec2 IN SELECT * from tm.types ORDER BY id 
+		FOR rec2 IN SELECT * from tm.types ORDER BY id
 		LOOP
 			out_srid := ST_Srid(rec2.g);
 			out_type := substr(ST_GeometryType(rec2.g), 4);
@@ -338,7 +338,7 @@ BEGIN
 			-- }
 
 
-			IF NOT hasgeog THEN 
+			IF NOT hasgeog THEN
 				RETURN NEXT;
 				CONTINUE;
 			END IF;
@@ -388,7 +388,7 @@ BEGIN
 		RETURN NEXT;
 
 		IF hasgeog THEN
-			-- Count number of geographies in the table 
+			-- Count number of geographies in the table
 			sql := 'SELECT count(gg) FROM '
 				|| quote_ident(rec.f_table_schema)
 				|| '.' || quote_ident(rec.f_table_name);

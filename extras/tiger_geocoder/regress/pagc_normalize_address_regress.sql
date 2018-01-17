@@ -8,7 +8,7 @@ SELECT '#1051b' As ticket, * FROM normalize_address('3937 43RD AVE S, MINNEAPOLI
 -- this currently turns 3rd to 3, we want to fix to keep 3rd as is
 SELECT '#1051c' As ticket, * FROM normalize_address('212 N 3rd Ave, Minneapolis, MN 55401');
 -- this currently turns 3rd to 3, we want to fix to keep 3rd as is
-SELECT '#1051d' As ticket, * FROM normalize_address('212 3rd Ave N Minneapolis, MN 55401'); 
+SELECT '#1051d' As ticket, * FROM normalize_address('212 3rd Ave N Minneapolis, MN 55401');
 -- comma in wrong spot
 SELECT * FROM normalize_address('529 Main Street, Boston MA, 02129');
 -- comma in right spot
@@ -38,16 +38,16 @@ SELECT '#1086a' As ticket, * FROM normalize_address('949 N 3rd St, New Hyde Park
 SELECT '#1086b' As ticket, * FROM normalize_address('949 N 3rd St, New Hyde Park, NY 11040');
 
 -- country roads and highways with spaces in street type
-SELECT '#1076a' As ticket, * FROM normalize_address('16725 Co Rd 24, Plymouth, MN 55447'); 
-SELECT '#1076b' As ticket, * FROM normalize_address('16725 County Road 24, Plymouth, MN 55447'); 
+SELECT '#1076a' As ticket, * FROM normalize_address('16725 Co Rd 24, Plymouth, MN 55447');
+SELECT '#1076b' As ticket, * FROM normalize_address('16725 County Road 24, Plymouth, MN 55447');
 SELECT '#1076c' As ticket, * FROM normalize_address('13800 County Hwy 9, Andover, MN 55304');
 SELECT '#1076d' As ticket, * FROM normalize_address('13800 9, Andover, MN 55304');
 -- this one is a regular street that happens to have a street type as the name
 SELECT '#1076e' As ticket, * FROM normalize_address('14 Forest Road, Acton, MA');
 
--- A country road with a letter name and direction 
+-- A country road with a letter name and direction
 -- NOTE this doesn't completely normalize right since the direction W is being cut off --
-SELECT '#1076f' As ticket, * FROM normalize_address('1940 County Road C W, Roseville, MN 55113'); 
+SELECT '#1076f' As ticket, * FROM normalize_address('1940 County Road C W, Roseville, MN 55113');
 
 -- Route with a name that sounds like a direction --
 SELECT '#1076g' As ticket, * FROM normalize_address('3900 Route 6, Eastham, Massachusetts 02642');
@@ -55,7 +55,7 @@ SELECT '#1076g' As ticket, * FROM normalize_address('3900 Route 6, Eastham, Mass
 -- Street that has same name as type  --
 SELECT '#1076h' As ticket, * FROM normalize_address('4533 PARK AVE S, MINNEAPOLIS, MN 55407');
 -- same street with alternate county name
-SELECT '#1076i' As ticket, * FROM normalize_address('4533 County Road 33, MINNEAPOLIS, MN 55407'); 
+SELECT '#1076i' As ticket, * FROM normalize_address('4533 County Road 33, MINNEAPOLIS, MN 55407');
 
 -- Same case of street type that has name as a type --
 -- this matches -

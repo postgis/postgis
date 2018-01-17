@@ -204,26 +204,26 @@ static void test_twkb_out_idlist(void)
 	idlist[0] = 2;
 	idlist[1] = 4;
 	cu_twkb_idlist("MULTIPOINT(1 1, 0 0)",idlist, 0, 0, 0, 0);
-	// printf("TWKB: %s\n",s);   
-	// printf("WKT: %s\n",w);   
-	CU_ASSERT_STRING_EQUAL(s,"040402040802020101");		
-	CU_ASSERT_STRING_EQUAL(w,"MULTIPOINT(1 1,0 0)");		
+	// printf("TWKB: %s\n",s);
+	// printf("WKT: %s\n",w);
+	CU_ASSERT_STRING_EQUAL(s,"040402040802020101");
+	CU_ASSERT_STRING_EQUAL(w,"MULTIPOINT(1 1,0 0)");
 
-	/* 
+	/*
 	04 06 multipoint, size/idlist
 	07 size 7 bytes
 	02 two geometries
 	0408 idlist (2, 4)
 	0202 first point @ 1,1
-	0101 second point offset -1,-1 
+	0101 second point offset -1,-1
 	*/
 	idlist[0] = 2;
 	idlist[1] = 4;
 	cu_twkb_idlist("MULTIPOINT(1 1, 0 0)",idlist, 0, 0, 0, TWKB_SIZE);
 	// printf("TWKB: %s\n",s);
-	// printf("WKT: %s\n",w);   
-	CU_ASSERT_STRING_EQUAL(s,"04060702040802020101");		
-	CU_ASSERT_STRING_EQUAL(w,"MULTIPOINT(1 1,0 0)");		
+	// printf("WKT: %s\n",w);
+	CU_ASSERT_STRING_EQUAL(s,"04060702040802020101");
+	CU_ASSERT_STRING_EQUAL(w,"MULTIPOINT(1 1,0 0)");
 
 	/*
 	04 07 multipoint, bbox/size/idlist
@@ -238,9 +238,9 @@ static void test_twkb_out_idlist(void)
 	idlist[1] = 4;
 	cu_twkb_idlist("MULTIPOINT(1 1, 0 0)",idlist, 0, 0, 0, TWKB_SIZE | TWKB_BBOX);
 	// printf("TWKB: %s\n",s);
-	// printf("WKT: %s\n",w);   
-	CU_ASSERT_STRING_EQUAL(s,"04070B0002000202040802020101");		
-	CU_ASSERT_STRING_EQUAL(w,"MULTIPOINT(1 1,0 0)");		
+	// printf("WKT: %s\n",w);
+	CU_ASSERT_STRING_EQUAL(s,"04070B0002000202040802020101");
+	CU_ASSERT_STRING_EQUAL(w,"MULTIPOINT(1 1,0 0)");
 
 	/*
 	0704 geometrycollection, idlist
@@ -248,13 +248,13 @@ static void test_twkb_out_idlist(void)
 	0408 idlist (2,4)
 	01000202 first point (type, meta, x, y)
 	01000000 second point (type, meta, x, y)
-	*/		
+	*/
 	idlist[0] = 2;
 	idlist[1] = 4;
 	cu_twkb_idlist("GEOMETRYCOLLECTION(POINT(1 1),POINT(0 0))",idlist, 0, 0, 0, 0);
 	// printf("TWKB: %s\n",s);
 	CU_ASSERT_STRING_EQUAL(s,"07040204080100020201000000");
-	CU_ASSERT_STRING_EQUAL(w,"GEOMETRYCOLLECTION(POINT(1 1),POINT(0 0))");		
+	CU_ASSERT_STRING_EQUAL(w,"GEOMETRYCOLLECTION(POINT(1 1),POINT(0 0))");
 
 	/*
 	0706 geometrycollection, size/idlist
@@ -269,7 +269,7 @@ static void test_twkb_out_idlist(void)
 	cu_twkb_idlist("GEOMETRYCOLLECTION(POINT(1 1),POINT(0 0))",idlist, 0, 0, 0, TWKB_SIZE);
 	// printf("TWKB: %s\n",s);
 	CU_ASSERT_STRING_EQUAL(s,"07060D02040801020202020102020000");
-	CU_ASSERT_STRING_EQUAL(w,"GEOMETRYCOLLECTION(POINT(1 1),POINT(0 0))");		
+	CU_ASSERT_STRING_EQUAL(w,"GEOMETRYCOLLECTION(POINT(1 1),POINT(0 0))");
 
 }
 

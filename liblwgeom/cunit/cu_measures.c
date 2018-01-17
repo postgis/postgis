@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright (C) 2015 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2015 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2009 Paul Ramsey <pramsey@cleverelephant.ca>
  *
  * This is free software; you can redistribute and/or modify it under
@@ -112,12 +112,12 @@ static void test_mindistance2d_tolerance(void)
 	DIST2DTEST("GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(0 0)))", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(3 4)))", 5.0);
 
 	/*
-	** Linestring vs its start point 
+	** Linestring vs its start point
 	*/
 	DIST2DTEST("LINESTRING(-2 0, -0.2 0)", "POINT(-2 0)", 0);
 
 	/*
-	** Linestring vs its end point 
+	** Linestring vs its end point
 	*/
 	DIST2DTEST("LINESTRING(-0.2 0, -2 0)", "POINT(-2 0)", 0);
 
@@ -132,13 +132,13 @@ static void test_mindistance2d_tolerance(void)
 	DIST2DTEST("LINESTRING(-0.2 0, -1e-8 0)", "POINT(-1e-8 0)", 0);
 
 	/*
-	* Circular string and point 
+	* Circular string and point
 	*/
 	DIST2DTEST("CIRCULARSTRING(-1 0, 0 1, 1 0)", "POINT(0 0)", 1);
 	DIST2DTEST("CIRCULARSTRING(-3 0, -2 0, -1 0, 0 1, 1 0)", "POINT(0 0)", 1);
 
 	/*
-	* Circular string and Circular string 
+	* Circular string and Circular string
 	*/
 	DIST2DTEST("CIRCULARSTRING(-1 0, 0 1, 1 0)", "CIRCULARSTRING(0 0, 1 -1, 2 0)", 1);
 
@@ -174,7 +174,7 @@ static void test_mindistance2d_tolerance(void)
 	DIST2DTEST(cs1, "CURVEPOLYGON(CIRCULARSTRING(1 4, 2 5, 3 4, 2 3, 1 4))", 0.0);
 
 	/*
-	* MultiSurface and CurvePolygon 
+	* MultiSurface and CurvePolygon
 	*/
 	static char *cs2 = "MULTISURFACE(POLYGON((0 0,0 4,4 4,4 0,0 0)),CURVEPOLYGON(CIRCULARSTRING(8 2,10 4,12 2,10 0,8 2)))";
 	DIST2DTEST(cs2, "CURVEPOLYGON(CIRCULARSTRING(5 2,6 3,7 2,6 1,5 2))", 1);
@@ -406,7 +406,7 @@ test_lwgeom_segmentize2d(void)
 	LWGEOM *linein = lwgeom_from_wkt("LINESTRING(0 0,10 0)", LW_PARSER_CHECK_NONE);
 	LWGEOM *lineout = lwgeom_segmentize2d(linein, 5);
 	char *strout = lwgeom_to_ewkt(lineout);
-	CU_ASSERT_STRING_EQUAL(strout, "LINESTRING(0 0,5 0,10 0)");
+	ASSERT_STRING_EQUAL(strout, "LINESTRING(0 0,5 0,10 0)");
 	lwfree(strout);
 	lwgeom_free(linein);
 	lwgeom_free(lineout);
@@ -446,7 +446,7 @@ test_lwgeom_segmentize2d(void)
 	/* NOT INTERRUPTED */
 	lineout = lwgeom_segmentize2d(linein, 5);
 	strout = lwgeom_to_ewkt(lineout);
-	CU_ASSERT_STRING_EQUAL(strout, "LINESTRING(20 0,25 0,30 0)");
+	ASSERT_STRING_EQUAL(strout, "LINESTRING(20 0,25 0,30 0)");
 	lwfree(strout);
 	lwgeom_free(linein);
 	lwgeom_free(lineout);
@@ -459,23 +459,23 @@ test_lwgeom_locate_along(void)
 	LWGEOM *out = NULL;
 	double measure = 105.0;
 	char *str;
-	
+
 	/* ST_Locatealong(ST_GeomFromText('MULTILINESTRING M ((1 2 3, 5 4 5), (50 50 1, 60 60 200))'), 105) */
 	geom = lwgeom_from_wkt("MULTILINESTRING M ((1 2 3, 5 4 5), (50 50 1, 60 60 200))", LW_PARSER_CHECK_NONE);
 	out = lwgeom_locate_along(geom, measure, 0.0);
-	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
+	str = lwgeom_to_wkt(out, WKT_ISO, 6, NULL);
 	lwgeom_free(geom);
 	lwgeom_free(out);
-	CU_ASSERT_STRING_EQUAL("MULTIPOINT M (55.226131 55.226131 105)", str);
+	ASSERT_STRING_EQUAL(str, "MULTIPOINT M (55.226131 55.226131 105)");
 	lwfree(str);
-	
+
 	/* ST_Locatealong(ST_GeomFromText('MULTILINESTRING M ((1 2 3, 5 4 5), (50 50 1, 60 60 200))'), 105) */
 	geom = lwgeom_from_wkt("MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3), (1 2 3, 5 4 5), (50 50 1, 60 60 200))", LW_PARSER_CHECK_NONE);
 	out = lwgeom_locate_along(geom, measure, 0.0);
-	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
+	str = lwgeom_to_wkt(out, WKT_ISO, 6, NULL);
 	lwgeom_free(geom);
 	lwgeom_free(out);
-	CU_ASSERT_STRING_EQUAL("MULTIPOINT M (55.226131 55.226131 105)", str);
+	ASSERT_STRING_EQUAL(str, "MULTIPOINT M (55.226131 55.226131 105)");
 	lwfree(str);
 }
 
@@ -487,12 +487,12 @@ test_lw_dist2d_pt_arc(void)
 	POINT2D P, A1, A2, A3;
 	int rv;
 
-	
+
 	/* Point within unit semicircle, 0.5 units from arc */
 	A1.x = -1; A1.y = 0;
 	A2.x = 0 ; A2.y = 1;
 	A3.x = 1 ; A3.y = 0;
-	P.x  = 0 ; P.y  = 0.5;	
+	P.x  = 0 ; P.y  = 0.5;
 
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
@@ -500,39 +500,46 @@ test_lw_dist2d_pt_arc(void)
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
 
 	/* Point outside unit semicircle, 0.5 units from arc */
-	P.x  = 0 ; P.y  = 1.5;	
+	P.x  = 0 ; P.y  = 1.5;
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
 
 	/* Point outside unit semicircle, sqrt(2) units from arc end point*/
-	P.x  = 0 ; P.y  = -1;	
+	P.x  = 0 ; P.y  = -1;
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2.0), 0.000001);
 
 	/* Point outside unit semicircle, sqrt(2)-1 units from arc end point*/
-	P.x  = 1 ; P.y  = 1;	
+	P.x  = 1 ; P.y  = 1;
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2.0)-1, 0.000001);
 
 	/* Point on unit semicircle midpoint */
-	P.x  = 0 ; P.y  = 1;	
+	P.x  = 0 ; P.y  = 1;
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
 
 	/* Point on unit semicircle endpoint */
-	P.x  = 1 ; P.y  = 0;	
+	P.x  = 1 ; P.y  = 0;
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
+
+	/* Point on semicircle center */
+	P.x  = 0 ; P.y  = 0;
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
 
 	/* Point inside closed circle */
 	P.x  = 0 ; P.y  = 0.5;
@@ -542,7 +549,7 @@ test_lw_dist2d_pt_arc(void)
 	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
 	//printf("distance %g\n", dl.distance);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
-	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);	
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
 }
 
 static void
@@ -553,7 +560,7 @@ test_lw_dist2d_seg_arc(void)
 	DISTPTS dl;
 	POINT2D A1, A2, B1, B2, B3;
 	int rv;
-	
+
 	/* Unit semicircle */
 	B1.x = -1; B1.y = 0;
 	B2.x = 0 ; B2.y = 1;
@@ -628,13 +635,13 @@ test_lw_dist2d_seg_arc(void)
 static void
 test_lw_dist2d_arc_arc(void)
 {
-	/* lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, 
+	/* lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
 	                     const POINT2D *B1, const POINT2D *B2, const POINT2D *B3,
 	                     DISTPTS *dl) */
 	DISTPTS dl;
 	POINT2D A1, A2, A3, B1, B2, B3;
 	int rv;
-	
+
 	/* Unit semicircle at 0,0 */
 	B1.x = -1; B1.y = 0;
 	B2.x = 0 ; B2.y = 1;
@@ -676,25 +683,130 @@ test_lw_dist2d_arc_arc(void)
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
 
-	/* inscribed and closest on arcs */
+	/* Concentric: and fully parallel */
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
-	A1.x = -0.5; A1.y = 0.0;
-	A2.x =  0.0; A2.y = 0.5;
-	A3.x =  0.5; A3.y = 0.0;
+	A1.x = -2.0; A1.y = 0.0;
+	A2.x =  0.0; A2.y = 2.0;
+	A3.x =  2.0; A3.y = 0.0;
 	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
-	//printf("distance %g\n", dl.distance);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1.0, 0.000001);
+
+	/* Concentric: with A fully included in B's range */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -0.5 / sqrt(2.0); A1.y =  0.5 / sqrt(2.0);
+	A2.x =  0.0;             A2.y =  0.5;
+	A3.x =  0.5 / sqrt(2.0); A3.y =  0.5 / sqrt(2.0);
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
 
-	/* inscribed and closest not on arcs */
+	/* Concentric: with A partially included in B's range */
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
-	A1.x = -0.5; A1.y =  0.0;
-	A2.x =  0.0; A2.y = -0.5;
-	A3.x =  0.5; A3.y =  0.0;
+	A1.x = -0.5 / sqrt(2.0); A1.y = -0.5 / sqrt(2.0);
+	A2.x = -0.5;             A2.y =  0.0;
+	A3.x = -0.5 / sqrt(2.0); A3.y = 0.5 / sqrt(2.0);
 	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
-	//printf("distance %g\n", dl.distance);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
+
+	/* Concentric: with A and B without parallel segments */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -0.5 / sqrt(2.0); A1.y = -0.5 / sqrt(2.0);
+	A2.x =  0.0;             A2.y = -0.5;
+	A3.x =  0.5 / sqrt(2.0); A3.y = -0.5 / sqrt(2.0);
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.736813, 0.000001);
+
+	/* Concentric: Arcs are the same */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -1.0; A1.y =  0.0;
+	A2.x =  0.0; A2.y =  1.0;
+	A3.x =  1.0; A3.y =  0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.0, 0.000001);
+
+	/* Check different orientations */
+	B1.x = -10.0;  B1.y =  0.0;
+	B2.x =   0.0 ; B2.y = 10.0;
+	B3.x =  10.0 ; B3.y =  0.0;
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -22.0; A1.y =   0.0;
+	A2.x = -17.0; A2.y =  -5.0;
+	A3.x = -12.0; A3.y =   0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 2.0, 0.000001);
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -19.0; A1.y =   0.0;
+	A2.x = -14.0; A2.y =  -5.0;
+	A3.x = - 9.0; A3.y =   0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1.0, 0.000001);
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -9.0;  A1.y =   0.0;
+	A2.x = -4.0;  A2.y =  -5.0;
+	A3.x =  1.0;  A3.y =   0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1.0, 0.000001);
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -1.0;  A1.y =   0.0;
+	A2.x =  4.0;  A2.y =  -5.0;
+	A3.x =  9.0;  A3.y =   0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1.0, 0.000001);
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x =  1.0;  A1.y =   0.0;
+	A2.x =  6.0;  A2.y =  -5.0;
+	A3.x = 11.0;  A3.y =   0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1.0, 0.000001);
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = 11.0;  A1.y =   0.0;
+	A2.x = 16.0;  A2.y =  -5.0;
+	A3.x = 21.0;  A3.y =   0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1.0, 0.000001);
+
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -15.0; A1.y =  -6.0;
+	A2.x = -10.0; A2.y =  -1.0;
+	A3.x = - 5.0; A3.y =  -6.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1.0, 0.000001);
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -5.0; A1.y =  0.0;
+	A2.x =  0.0; A2.y =  5.0;
+	A3.x =  5.0; A3.y =  0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 5.0, 0.000001);
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -5.0; A1.y =  0.0;
+	A2.x =  0.0; A2.y = -5.0;
+	A3.x =  5.0; A3.y =  0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 5.0, 0.000001);
+
+
 }
 
 static void
@@ -704,7 +816,7 @@ test_lw_arc_length(void)
 
 	POINT2D A1, A2, A3;
 	double d;
-	
+
 	/* Unit semicircle at 0,0 */
 	A1.x = -1; A1.y = 0;
 	A2.x = 0 ; A2.y = 1;
@@ -750,7 +862,7 @@ test_lw_dist2d_pt_ptarrayarc(void)
 
 	/* Unit semi-circle above X axis */
 	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 0 1, 1 0)"));
-	
+
 	/* Point at origin */
 	P.x = P.y = 0;
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
@@ -833,7 +945,7 @@ test_lw_dist2d_ptarray_ptarrayarc(void)
 
 	/* Unit semi-circle above X axis */
 	lwline1 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 0 1, 1 0)"));
-	
+
 	/* Line above top of semi-circle */
 	lwline2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-2 2, -1 2, 1 2, 2 2)"));
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
@@ -847,10 +959,12 @@ test_lw_dist2d_ptarray_ptarrayarc(void)
 	rv = lw_dist2d_ptarray_ptarrayarc(lwline1->points, lwline2->points, &dl);
 	//printf("%s\n", cu_error_msg);
 	CU_ASSERT_EQUAL( rv, LW_FAILURE );
-	CU_ASSERT_STRING_EQUAL("lw_dist2d_ptarray_ptarrayarc called with non-arc input", cu_error_msg);
+	ASSERT_STRING_EQUAL(
+	    cu_error_msg,
+	    "lw_dist2d_ptarray_ptarrayarc called with non-arc input");
 
 	lwline_free(lwline2);
-	
+
 	/* Line along side of semi-circle */
 	lwline2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-2 -3, -2 -2, -2 2, -2 3)"));
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
@@ -885,10 +999,9 @@ test_lwgeom_tcpa(void)
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, -1.0);
-	CU_ASSERT_STRING_EQUAL(
-	  "Both input geometries must have a measure dimension",
-	  cu_error_msg
-	  );
+	ASSERT_STRING_EQUAL(
+	    cu_error_msg,
+	    "Both input geometries must have a measure dimension");
 
 	/* Invalid input, not linestrings */
 
@@ -898,10 +1011,8 @@ test_lwgeom_tcpa(void)
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, -1.0);
-	CU_ASSERT_STRING_EQUAL(
-	  "Both input geometries must be linestrings",
-	  cu_error_msg
-	);
+	ASSERT_STRING_EQUAL(cu_error_msg,
+			    "Both input geometries must be linestrings");
 
 	/* Invalid input, too short linestring */
 
@@ -913,9 +1024,11 @@ test_lwgeom_tcpa(void)
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(dist, -77.0); /* not touched */
 	ASSERT_DOUBLE_EQUAL(m, -1.0);
-	CU_ASSERT_STRING_EQUAL(
-	  "Both input lines must have at least 2 points", /* should be accepted ? */
-	  cu_error_msg
+	ASSERT_STRING_EQUAL(
+	    cu_error_msg,
+	    "Both input lines must have at least 2 points" /* should be accepted
+							      ? */
+
 	);
 
 	/* Invalid input, empty linestring */
@@ -926,9 +1039,9 @@ test_lwgeom_tcpa(void)
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, -1.0);
-	CU_ASSERT_STRING_EQUAL(
-	  "Both input lines must have at least 2 points",
-	  cu_error_msg
+	ASSERT_STRING_EQUAL(cu_error_msg,
+			    "Both input lines must have at least 2 points"
+
 	);
 
 	/* Timeranges do not overlap */

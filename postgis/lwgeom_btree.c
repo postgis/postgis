@@ -27,6 +27,7 @@
 
 #include "postgres.h"
 #include "fmgr.h"
+#include "access/hash.h"
 #include "utils/geo_decls.h"
 
 #include "../postgis_config.h"
@@ -49,312 +50,108 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(lwgeom_lt);
 Datum lwgeom_lt(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
-	GBOX box1;
-	GBOX box2;
-
-	POSTGIS_DEBUG(2, "lwgeom_lt called");
-
-	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
-
-	POSTGIS_DEBUG(3, "lwgeom_lt passed getSRID test");
-
-	gserialized_get_gbox_p(geom1, &box1);
-	gserialized_get_gbox_p(geom2, &box2);
-
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-
-	POSTGIS_DEBUG(3, "lwgeom_lt getbox2d_p passed");
-
-	if  ( ! FPeq(box1.xmin , box2.xmin) )
-	{
-		if  (box1.xmin < box2.xmin)
-			PG_RETURN_BOOL(TRUE);
-	}
-
-	if  ( ! FPeq(box1.ymin , box2.ymin) )
-	{
-		if  (box1.ymin < box2.ymin)
-			PG_RETURN_BOOL(TRUE);
-	}
-
-	if  ( ! FPeq(box1.xmax , box2.xmax) )
-	{
-		if  (box1.xmax < box2.xmax)
-			PG_RETURN_BOOL(TRUE);
-	}
-
-	if  ( ! FPeq(box1.ymax , box2.ymax) )
-	{
-		if  (box1.ymax < box2.ymax)
-			PG_RETURN_BOOL(TRUE);
-	}
-
-	PG_RETURN_BOOL(FALSE);
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	int cmp = gserialized_cmp(g1, g2);
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+	if (cmp < 0)
+		PG_RETURN_BOOL(true);
+	else
+		PG_RETURN_BOOL(false);
 }
 
 PG_FUNCTION_INFO_V1(lwgeom_le);
 Datum lwgeom_le(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
-	GBOX box1;
-	GBOX box2;
-
-	POSTGIS_DEBUG(2, "lwgeom_le called");
-
-	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
-
-	gserialized_get_gbox_p(geom1, &box1);
-	gserialized_get_gbox_p(geom2, &box2);
-
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-
-	if  ( ! FPeq(box1.xmin , box2.xmin) )
-	{
-		if  (box1.xmin < box2.xmin)
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	if  ( ! FPeq(box1.ymin , box2.ymin) )
-	{
-		if  (box1.ymin < box2.ymin)
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	if  ( ! FPeq(box1.xmax , box2.xmax) )
-	{
-		if  (box1.xmax < box2.xmax)
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	if  ( ! FPeq(box1.ymax , box2.ymax) )
-	{
-		if  (box1.ymax < box2.ymax)
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	PG_RETURN_BOOL(TRUE);
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	int cmp = gserialized_cmp(g1, g2);
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+	if (cmp == 0)
+		PG_RETURN_BOOL(true);
+	else
+		PG_RETURN_BOOL(false);
 }
 
 PG_FUNCTION_INFO_V1(lwgeom_eq);
 Datum lwgeom_eq(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
-	GBOX box1;
-	GBOX box2;
-  bool empty1, empty2;
-	bool result;
-
-	POSTGIS_DEBUG(2, "lwgeom_eq called");
-
-	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
-
-	gbox_init(&box1);
-	gbox_init(&box2);
-	
-	empty1 = ( gserialized_get_gbox_p(geom1, &box1) == LW_FAILURE );
-	empty2 = ( gserialized_get_gbox_p(geom2, &box2) == LW_FAILURE );
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-
-	if  ( empty1 != empty2 ) 
-	{
-    result = FALSE;
-	}
-  else if  ( ! (FPeq(box1.xmin, box2.xmin) && FPeq(box1.ymin, box2.ymin) &&
-	         FPeq(box1.xmax, box2.xmax) && FPeq(box1.ymax, box2.ymax)) )
-	{
-		result = FALSE;
-	}
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	int cmp = gserialized_cmp(g1, g2);
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+	if (cmp == 0)
+		PG_RETURN_BOOL(true);
 	else
-	{
-		result = TRUE;
-	}
-
-	PG_RETURN_BOOL(result);
+		PG_RETURN_BOOL(false);
 }
 
 PG_FUNCTION_INFO_V1(lwgeom_ge);
 Datum lwgeom_ge(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
-	GBOX box1;
-	GBOX box2;
-
-	POSTGIS_DEBUG(2, "lwgeom_ge called");
-
-	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
-
-	gserialized_get_gbox_p(geom1, &box1);
-	gserialized_get_gbox_p(geom2, &box2);
-
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-
-	if  ( ! FPeq(box1.xmin , box2.xmin) )
-	{
-		if  (box1.xmin > box2.xmin)
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	if  ( ! FPeq(box1.ymin , box2.ymin) )
-	{
-		if  (box1.ymin > box2.ymin)
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	if  ( ! FPeq(box1.xmax , box2.xmax) )
-	{
-		if  (box1.xmax > box2.xmax)
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	if  ( ! FPeq(box1.ymax , box2.ymax) )
-	{
-		if  (box1.ymax > box2.ymax)
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	PG_RETURN_BOOL(TRUE);
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	int cmp = gserialized_cmp(g1, g2);
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+	if (cmp >= 0)
+		PG_RETURN_BOOL(true);
+	else
+		PG_RETURN_BOOL(false);
 }
 
 PG_FUNCTION_INFO_V1(lwgeom_gt);
 Datum lwgeom_gt(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
-	GBOX box1;
-	GBOX box2;
-
-	POSTGIS_DEBUG(2, "lwgeom_gt called");
-
-	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
-
-	gserialized_get_gbox_p(geom1, &box1);
-	gserialized_get_gbox_p(geom2, &box2);
-
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-
-	if  ( ! FPeq(box1.xmin , box2.xmin) )
-	{
-		if  (box1.xmin > box2.xmin)
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-	}
-
-	if  ( ! FPeq(box1.ymin , box2.ymin) )
-	{
-		if  (box1.ymin > box2.ymin)
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-	}
-
-	if  ( ! FPeq(box1.xmax , box2.xmax) )
-	{
-		if  (box1.xmax > box2.xmax)
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-	}
-
-	if  ( ! FPeq(box1.ymax , box2.ymax) )
-	{
-		if  (box1.ymax > box2.ymax)
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-	}
-
-	PG_RETURN_BOOL(FALSE);
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	int cmp = gserialized_cmp(g1, g2);
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+	if (cmp > 0)
+		PG_RETURN_BOOL(true);
+	else
+		PG_RETURN_BOOL(false);
 }
 
 PG_FUNCTION_INFO_V1(lwgeom_cmp);
 Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
-	GBOX box1;
-	GBOX box2;
-
-	POSTGIS_DEBUG(2, "lwgeom_cmp called");
-
-	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
-
-	gserialized_get_gbox_p(geom1, &box1);
-	gserialized_get_gbox_p(geom2, &box2);
-
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-
-	if  ( ! FPeq(box1.xmin , box2.xmin) )
-	{
-		if  (box1.xmin < box2.xmin)
-		{
-			PG_RETURN_INT32(-1);
-		}
-		PG_RETURN_INT32(1);
-	}
-
-	if  ( ! FPeq(box1.ymin , box2.ymin) )
-	{
-		if  (box1.ymin < box2.ymin)
-		{
-			PG_RETURN_INT32(-1);
-		}
-		PG_RETURN_INT32(1);
-	}
-
-	if  ( ! FPeq(box1.xmax , box2.xmax) )
-	{
-		if  (box1.xmax < box2.xmax)
-		{
-			PG_RETURN_INT32(-1);
-		}
-		PG_RETURN_INT32(1);
-	}
-
-	if  ( ! FPeq(box1.ymax , box2.ymax) )
-	{
-		if  (box1.ymax < box2.ymax)
-		{
-			PG_RETURN_INT32(-1);
-		}
-		PG_RETURN_INT32(1);
-	}
-
-	PG_RETURN_INT32(0);
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	int ret = gserialized_cmp(g1, g2);
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+	PG_RETURN_INT32(ret);
 }
+
+PG_FUNCTION_INFO_V1(lwgeom_hash);
+Datum lwgeom_hash(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	/* Point to just the type/coordinate part of buffer */
+	size_t hsz1 = gserialized_header_size(g1);
+	uint8_t *b1 = (uint8_t*)g1 + hsz1;
+	/* Calculate size of type/coordinate buffer */
+	size_t sz1 = VARSIZE(g1);
+	size_t bsz1 = sz1 - hsz1;
+	/* Calculate size of srid/type/coordinate buffer */
+	int srid = gserialized_get_srid(g1);
+	size_t bsz2 = bsz1 + sizeof(int);
+	uint8_t *b2 = palloc(bsz2);
+	/* Copy srid into front of combined buffer */
+	memcpy(b2, &srid, sizeof(int));
+	/* Copy type/coordinates into rest of combined buffer */
+	memcpy(b2+sizeof(int), b1, bsz1);
+	/* Hash combined buffer */
+	Datum hval = hash_any(b2, bsz2);
+	pfree(b2);
+	PG_FREE_IF_COPY(g1, 0);
+	PG_RETURN_DATUM(hval);
+}
+
+
 

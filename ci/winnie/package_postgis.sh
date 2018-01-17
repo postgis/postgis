@@ -9,13 +9,17 @@
 #POSTGIS_MAJOR_VERSION=2
 #POSTGIS_MINOR_VERSION=1
 #POSTGIS_MICRO_VERSION=0dev
-#export GEOS_VER=3.4.0dev
-#export GDAL_VER=2.0.0
 #export OS_BUILD=32
-#export PROJ_VER=4.9.1
+
 #export GCC_TYPE=
-#export SFCGAL_VER=1.1.0
-#export PCRE_VER
+export GEOS_VER=3.7.0dev
+export GDAL_VER=2.2.2
+export PROJ_VER=4.9.3
+export SFCGAL_VER=1.3
+export PCRE_VER=8.33
+export PROTOBUF_VER=3.2.0
+export PROTOBUFC_VER=1.2.1
+
 if [[ "${GCC_TYPE}" == *gcc48* ]] ; then
 	export PROJECTS=/projects
 	export MINGPROJECTS=/projects
@@ -48,15 +52,15 @@ export POSTGIS_MICRO_VER=${POSTGIS_MICRO_VERSION}
 
 if [[ "$POSTGIS_MICRO_VERSION"  == *SVN* || "$POSTGIS_MICRO_VERSION"  == *dev* ]] ; then
 	export POSTGIS_SRC=${PROJECTS}/postgis/branches/${POSTGIS_MINOR_VER}
-	export svnurl="http://svn.osgeo.org/postgis/branches/${POSTGIS_MINOR_VER}"
+	export svnurl="https://svn.osgeo.org/postgis/branches/${POSTGIS_MINOR_VER}"
 else
 	#tagged version -- official release
 	export POSTGIS_SRC=${PROJECTS}/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}
-	export svnurl="http://svn.osgeo.org/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}"
+	export svnurl="https://svn.osgeo.org/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}"
 fi;
 
-if [[ "$POSTGIS_MINOR_VER"  == 2.2 ]] ; then
-	export svnurl="http://svn.osgeo.org/postgis/branches/trunk"
+if [[ "$reference"  == *trunk* ]] ; then
+	export svnurl="https://svn.osgeo.org/postgis/trunk"
 fi;
 #export POSTGIS_SRC=${PROJECTS}/postgis/trunk
 #POSTGIS_SVN_REVISION=will_be_passed_in_by_bot
@@ -91,12 +95,13 @@ cp ${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}/bin/*.dll  $outdir/bin/postgi
 # it seems 9.2 and 9.3 doesn't come with its own libiconv good grief
 # and trying to use their libiconv2.dll makes shp2pgsql crash
 if [[ "$PG_VER" == *9.2* || "$PG_VER" == *9.3* ]]; then
-	cp ${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin 
+	cp ${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin
 fi;
-cp ${PGPATHEDB}/bin/libpq.dll  $outdir/bin/postgisgui 
-#cp ${PGPATHEDB}/bin/libiconv2.dll  $outdir/bin/postgisgui 
+cp ${PGPATHEDB}/bin/libpq.dll  $outdir/bin/postgisgui
+#cp ${PGPATHEDB}/bin/libiconv2.dll  $outdir/bin/postgisgui
 cp ${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin/libicon*.dll $outdir/bin/postgisgui
-cp ${PGPATHEDB}/bin/libintl.dll $outdir/bin/postgisgui 
+cp ${PGPATHEDB}/bin/libintl*.dll $outdir/bin/postgisgui
+
 cp ${PGPATHEDB}/bin/ssleay32.dll $outdir/bin/postgisgui
 cp ${PGPATHEDB}/bin/libeay32.dll $outdir/bin/postgisgui
 
@@ -119,17 +124,19 @@ cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/
 cp ${MINGPROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 
+#for protobuf
+cp ${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/bin/libprotobuf-c-*.dll $outdir/bin
+
 echo "POSTGIS: ${POSTGIS_MINOR_VER} r${POSTGIS_SVN_REVISION} http://postgis.net/source" > $verfile
 
 if [ "$POSTGIS_MAJOR_VERSION" == "2" ] ; then
   ## only copy gdal components if 2+.  1.5 doesn't have raster support
   cp -p ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
   cp -rp  ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/share/gdal $outdir/gdal-data
-  
+
   if [ "$POSTGIS_MINOR_VERSION" > "0" ] ; then
     ## only copy pagc standardizer components for 2.1+
     cp -p ${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/bin/libpcre-1*.dll $outdir/bin
-    cp -p ${PGPATH}/lib/address*.dll $outdir/lib
     # cp -p ${PGPATH}/share/extension/address*.* $outdir/share/extension
     # cp -p ${PGPATH}/share/extension/us-*.sql $outdir/share/extension
   fi;
@@ -146,12 +153,15 @@ if [ -n "$SFCGAL_VER"  ]; then
 	echo "Boost VERSION: ${BOOST_VER} http://www.boost.org" >> $verfile
 	echo "GMP VERSION: ${GMP_VER} https://gmplib.org" >> $verfile
 	echo "MPFR VERSION: ${MPFR_VER} http://www.mpfr.org" >> $verfile
-	
+
 	cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
 	cp -p ${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin
 	# cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 	# cp -p ${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin/postgisgui
 fi;
+
+echo "PROTOBUF VERSION: ${PROTOBUF_VER} https://github.com/google/protobuf" >> $verfile
+echo "PROTOBUF-C VERSION: ${PROTOBUFC_VER} https://github.com/protobuf-c/protobuf-c"  >> $verfile
 #cp ${MINGPROJECTS}/libxml/rel-libxml2-2.7.8w${OS_BUILD}/bin/*.dll  $outdir/bin/
 cp ${PGPATHEDB}/bin/libxml2-2.dll   $outdir/bin/
 
@@ -187,8 +197,11 @@ cp topology/topology_upgrade_*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-
 #cp topology/README* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 #cp utils/* ${RELDIR}/${RELVERDIR}/utils
 #cp extras/* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}/extras
-cp -r extensions/*/sql/* ${RELDIR}/${RELVERDIR}/share/extension
+cp ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+cp ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}next.sql ${RELDIR}/${RELVERDIR}/share/extension
+cp ${PGPATH}/share/extension/address_standardizer*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
 cp -r extensions/*/*.control ${RELDIR}/${RELVERDIR}/share/extension
+cp -r extensions/*/*.dll ${RELDIR}/${RELVERDIR}/lib #only address_standardizer in theory has this
 #cp extensions/postgis_topology/sql/* ${RELDIR}/${RELVERDIR}/share/extension
 #cp extensions/postgis_topology/*.control ${RELDIR}/${RELVERDIR}/share/extension
 cp -r ${RELDIR}/packaging_notes/* ${RELDIR}/${RELVERDIR}/

@@ -14,19 +14,19 @@ SELECT 'hausdorff_ls_ls', st_hausdorffdistance(
 
 -- other linestrings
 SELECT 'hausdorff_ls_ls_2', st_hausdorffdistance(
-	'LINESTRING (0 0, 2 0)'::geometry, 
+	'LINESTRING (0 0, 2 0)'::geometry,
 	'LINESTRING (0 1, 1 2, 2 1)'::geometry);
 -- 2.0
 
 -- linestring and multipoint
 SELECT 'hausdorff_ls_mp', st_hausdorffdistance(
-	'LINESTRING (0 0, 2 0)'::geometry, 
+	'LINESTRING (0 0, 2 0)'::geometry,
 	'MULTIPOINT (0 1, 1 0, 2 1)'::geometry);
 -- 1.0
 
 -- another linestring and linestring
 SELECT 'hausdorff_ls_ls_3', st_hausdorffdistance(
-	'LINESTRING (130 0, 0 0, 0 150)'::geometry, 
+	'LINESTRING (130 0, 0 0, 0 150)'::geometry,
 	'LINESTRING (10 10, 10 150, 130 10)'::geometry);
 -- 14.142135623730951
 

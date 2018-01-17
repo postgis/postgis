@@ -33,13 +33,13 @@ CREATE TABLE rt_properties_test (
     rast raster
 );
 
-INSERT INTO rt_properties_test 
+INSERT INTO rt_properties_test
 VALUES ( 0, '10x20, ip:0.5,0.5 scale:2,3 skew:0,0 srid:10 width:10 height:20',
         10, 10, 20, --- SRID, width, height
         2, 3, 0.5, 0.5, 0, 0, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -64,13 +64,13 @@ VALUES ( 0, '10x20, ip:0.5,0.5 scale:2,3 skew:0,0 srid:10 width:10 height:20',
 )::raster
 );
 
-INSERT INTO rt_properties_test 
+INSERT INTO rt_properties_test
 VALUES ( 1, '1x1, ip:2.5,2.5 scale:5,5 skew:0,0, srid:12, width:1, height:1',
         12, 1, 1, --- SRID, width, height
          5, 5, 2.5, 2.5, 0, 0, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -95,13 +95,13 @@ VALUES ( 1, '1x1, ip:2.5,2.5 scale:5,5 skew:0,0, srid:12, width:1, height:1',
 )::raster
 );
 
-INSERT INTO rt_properties_test 
+INSERT INTO rt_properties_test
 VALUES ( 2, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:0, width:1, height:1',
          0, 1, 1, --- SRID, width, height
          5, 5, 7.5, 2.5, 0, 0, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -126,13 +126,13 @@ VALUES ( 2, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:0, width:1, height:1',
 )::raster
 );
 
-INSERT INTO rt_properties_test 
+INSERT INTO rt_properties_test
 VALUES ( 3, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:-1, width:1, height:1',
          0, 1, 1, --- SRID, width, height
          5, 5, 7.5, 2.5, 0, 0, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -155,15 +155,15 @@ VALUES ( 3, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:-1, width:1, height:1',
 ||
 '0100' -- height (uint16 1)
 )::raster
-); 
+);
 
-INSERT INTO rt_properties_test 
+INSERT INTO rt_properties_test
 VALUES ( 4, '1x1, ip:7.5,2.5 scale:5,5 skew:1,1, srid:-1, width:1, height:1',
          0, 1, 1, --- SRID, width, height
          5, 5, 7.5, 2.5, 1, 1, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -188,13 +188,13 @@ VALUES ( 4, '1x1, ip:7.5,2.5 scale:5,5 skew:1,1, srid:-1, width:1, height:1',
 )::raster
 );
 
-INSERT INTO rt_properties_test 
+INSERT INTO rt_properties_test
 VALUES ( 5, '1x1, ip:7.5,2.5 scale:5,5 skew:3,7, srid:-1, width:1, height:1',
          0, 1, 1, --- SRID, width, height
          5, 5, 7.5, 2.5, 3, 7, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -217,7 +217,7 @@ VALUES ( 5, '1x1, ip:7.5,2.5 scale:5,5 skew:3,7, srid:-1, width:1, height:1',
 ||
 '0100' -- height (uint16 1)
 )::raster
-); 
+);
 
 -----------------------------------------------------------------------
 -- st_skewx
@@ -275,7 +275,7 @@ UPDATE rt_properties_test
         ipy = round(st_upperlefty(rast)*1000000000000)
     WHERE id > 100;
 
-SELECT 'T5', id, scalex, scaley, skewx, skewy, 
+SELECT 'T5', id, scalex, scaley, skewx, skewy,
     round(st_rotation(rast)*1000000000000)
     FROM rt_properties_test
     WHERE id > 100;
@@ -293,7 +293,7 @@ UPDATE rt_properties_test
         ipy = round(st_upperlefty(rast)*1000000000000)
     WHERE id > 100;
 
-SELECT 'T6', id, scalex, scaley, skewx, skewy, 
+SELECT 'T6', id, scalex, scaley, skewx, skewy,
     round(st_rotation(rast)*1000000000000)
     FROM rt_properties_test
     WHERE id > 100;

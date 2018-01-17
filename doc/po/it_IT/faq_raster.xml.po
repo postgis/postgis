@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-02-16 08:54+0000\n"
+"POT-Creation-Date: 2017-09-21 22:52+0000\n"
 "PO-Revision-Date: 2015-09-29 12:23+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
 "language/it_IT/)\n"
 "Language: it_IT\n"
@@ -113,7 +113,7 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 "Here is a review from a PostGIS Raster user <ulink url=\"http://"
-"fuzzytolerance.info/blog/2010/10/25/2010-10-26-postgis-raster-ftw/\">PostGIS "
+"fuzzytolerance.info/blog/2010/10/26/2010-10-26-postgis-raster-ftw/\">PostGIS "
 "raster applied to land classification urban forestry</ulink>"
 msgstr ""
 "Qui trovi una rassegna da parte di un utente di PostGIS Raster per <ulink "
@@ -597,7 +597,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq_raster.xml:183
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "-- displaying raster with standard raster options\n"
 "LAYER\n"
@@ -605,8 +605,8 @@ msgid ""
 "        TYPE raster\n"
 "        STATUS ON\n"
 "        DATA \"PG:host=localhost port=5432 dbname='somedb' user='someuser' "
-"password='whatever' \n"
-"                schema='someschema' table='cooltable' mode='2'\"        \n"
+"password='whatever'\n"
+"                schema='someschema' table='cooltable' mode='2'\"\n"
 "        PROCESSING \"NODATA=0\"\n"
 "        PROCESSING \"SCALE=AUTO\"\n"
 "        #... other standard raster processing functions here\n"
@@ -659,7 +659,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq_raster.xml:185
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "-- displaying raster with standard raster options and a where clause\n"
 "LAYER\n"
@@ -667,9 +667,9 @@ msgid ""
 "        TYPE raster\n"
 "        STATUS ON\n"
 "        DATA \"PG:host=localhost port=5432 dbname='somedb' user='someuser' "
-"password='whatever' \n"
+"password='whatever'\n"
 "                schema='someschema' table='cooltable' "
-"where='survey_year=2009' mode='2'\"        \n"
+"where='survey_year=2009' mode='2'\"\n"
 "        PROCESSING \"NODATA=0\"\n"
 "        #... other standard raster processing functions here\n"
 "        #... classes are optional but useful for 1 band data\n"
@@ -729,15 +729,15 @@ msgstr ""
 
 #. Tag: para
 #: faq_raster.xml:211
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The function is not unique error happens if one of your arguments is a "
 "textual representation of a geometry instead of a geometry. In these cases, "
 "PostgreSQL marks the textual representation as an unknown type, which means "
 "it can fall into the st_intersects(raster, geometry) or st_intersects(raster,"
 "raster) thus resulting in a non-unique case since both functions can in "
-"theory support your request. To prevent this, you need to cast the geometry "
-"to a geometry."
+"theory support your request. To prevent this, you need to cast the textual "
+"representation of the geometry to a geometry."
 msgstr ""
 "L'errore \"function is not unique\" si ha quando uno dei vostri argomenti e "
 "la rappresentazione testuale di una geometria, anziché una geometria vera e "

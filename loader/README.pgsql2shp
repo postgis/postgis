@@ -85,7 +85,7 @@ EXAMPLES
 
 AUTHORS
        Originally   written   by  Jeff  Lounsbury  <jeffloun@refractions.net>.
-       Improved and  maintained  by  Sandro  Santilli  <strk@keybit.net>.
+       Improved and  maintained  by  Sandro  Santilli  <strk@kbt.io>.
        Includes small contributions and improvements by others.
 
        This  application  uses  functionality  from  shapelib  1.2.9  by Frank

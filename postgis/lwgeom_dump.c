@@ -48,7 +48,7 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS);
 
 typedef struct GEOMDUMPNODE_T
 {
-	int idx;
+	uint32_t idx;
 	LWGEOM *geom;
 }
 GEOMDUMPNODE;
@@ -83,7 +83,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	Datum result;
 	char address[256];
 	char *ptr;
-	uint32 i;
+	int i;
 	char *values[2];
 
 	if (SRF_IS_FIRSTCALL())
@@ -210,7 +210,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 
 struct POLYDUMPSTATE
 {
-	int ringnum;
+	uint32_t ringnum;
 	LWPOLY *poly;
 };
 
@@ -322,7 +322,7 @@ struct FLATCOLLECTIONDUMPSTATE
 };
 
 /*
-* Break an object up into smaller objects of no more than N vertices 
+* Break an object up into smaller objects of no more than N vertices
 */
 PG_FUNCTION_INFO_V1(ST_Subdivide);
 Datum ST_Subdivide(PG_FUNCTION_ARGS)
@@ -365,23 +365,23 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
 		/*
-		* Get the geometry value 
+		* Get the geometry value
 		*/
 		gser = PG_GETARG_GSERIALIZED_P(0);
 		geom = lwgeom_from_gserialized(gser);
-		
+
 		/*
-		* Get the max vertices value 
+		* Get the max vertices value
 		*/
 		if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
 			maxvertices = PG_GETARG_INT32(1);
-		
+
 		/*
 		* Compute the subdivision of the geometry
 		*/
 		col = lwgeom_subdivide(geom, maxvertices);
-		
-		if ( ! col ) 
+
+		if ( ! col )
 			SRF_RETURN_DONE(funcctx);
 
 		/* allocate memory for user context */
@@ -412,7 +412,7 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 		/* do when there is no more left */
 		SRF_RETURN_DONE(funcctx);
 	}
-	
+
 #endif /* POSTGIS_GEOS_VERSION >= 35 */
 }
 

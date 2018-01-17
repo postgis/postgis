@@ -8,12 +8,12 @@
 -- the terms of the GNU General Public Licence. See the COPYING file.
 --
 -- Author: Regina Obe and Leo Hsu <lr@pcorp.us>
---  
+--
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
 \i utility/set_search_path.sql;
 -- Tiger is where we're going to create the functions, but we need
--- the PostGIS functions/types which may be anywhere 
+-- the PostGIS functions/types which may be anywhere
 -- we'll assume user has postgis functions and other contribs as part of search path
 -- the below call will put tiger schema in front so all objects in this script
 -- will get created in search path
@@ -24,6 +24,18 @@ SELECT tiger.SetSearchPathForInstall('tiger');
 ALTER TABLE state_lookup ADD COLUMN statefp char(2);
 UPDATE state_lookup SET statefp = lpad(st_code::text,2,'0') WHERE statefp IS NULL;
 ALTER TABLE state_lookup ADD CONSTRAINT state_lookup_statefp_key UNIQUE(statefp);
+
+-- these introduced in PostGIS 2.4
+DO language plpgsql
+$$
+    BEGIN
+        ALTER TYPE tiger.norm_addy ADD ATTRIBUTE zip4 varchar;
+        ALTER TYPE tiger.norm_addy ADD ATTRIBUTE address_alphanumeric varchar;
+    EXCEPTION
+        WHEN others THEN  -- ignore the error probably cause it already exists
+    END;
+$$;
+
 CREATE INDEX idx_tiger_edges_countyfp ON edges USING btree(countyfp);
 CREATE INDEX idx_tiger_faces_countyfp ON faces USING btree(countyfp);
 CREATE INDEX tiger_place_the_geom_gist ON place USING gist(the_geom);
@@ -116,7 +128,7 @@ BEGIN;
 -- This is s bit dangerous since it could potentially drop peoples tables
 -- TODO: put in logic to check if any tables have norm_addy and don't drop if they do
 -- Remarking this out for now since we aren't changing norm_addy anyway
-/*DROP TYPE IF EXISTS norm_addy CASCADE; 
+/*DROP TYPE IF EXISTS norm_addy CASCADE;
 CREATE TYPE norm_addy AS (
     address INTEGER,
     preDirAbbrev VARCHAR,
@@ -207,32 +219,32 @@ SELECT name, abbrev, true
         ('USFS ROAD', 'USFS Rd')
            ) t(name, abbrev)
            WHERE t.name NOT IN(SELECT name FROM street_type_lookup);
-           
-DELETE FROM street_type_lookup WHERE name IN(SELECT name FROM temp_types);         
-INSERT INTO street_type_lookup (name, abbrev, is_hw) 
+
+DELETE FROM street_type_lookup WHERE name IN(SELECT name FROM temp_types);
+INSERT INTO street_type_lookup (name, abbrev, is_hw)
 SELECT name, abbrev, true
     FROM temp_types As t
            WHERE t.name NOT IN(SELECT name FROM street_type_lookup);
-DROP TABLE temp_types;           
+DROP TABLE temp_types;
 DELETE FROM street_type_lookup WHERE name = 'FOREST';
 UPDATE street_type_lookup SET is_hw = false WHERE abbrev = 'Loop';
 
 CREATE TEMPORARY TABLE temp_types AS
 SELECT name, abbrev
-    FROM (VALUES 
+    FROM (VALUES
  ('LOOP', 'Loop'),
  ('SERVICE DRIVE', 'Svc Dr'),
  ('SERVICE DR', 'Svc Dr'),
  ('SERVICE ROAD', 'Svc Rd'),
- ('SERVICE RD', 'Svc Rd') 
+ ('SERVICE RD', 'Svc Rd')
     ) t(name, abbrev);
- 
-DELETE FROM street_type_lookup WHERE name IN(SELECT name FROM temp_types);         
-INSERT INTO street_type_lookup (name, abbrev, is_hw) 
+
+DELETE FROM street_type_lookup WHERE name IN(SELECT name FROM temp_types);
+INSERT INTO street_type_lookup (name, abbrev, is_hw)
 SELECT name, abbrev, false
     FROM temp_types As t
            WHERE t.name NOT IN(SELECT name FROM street_type_lookup);
- 
+
 SELECT tiger.SetSearchPathForInstall('tiger');
 \i geocode_settings.sql
 -- new census loader
@@ -292,6 +304,6 @@ SELECT install_missing_indexes();
 \a
 --\o 'drop_dup_feat_create_index.sql'
 --\i generate_drop_dupe_featnames.sql
-\o 
+\o
 --\i drop_dup_feat_create_index.sql
 \echo 'Missing index Install completed'

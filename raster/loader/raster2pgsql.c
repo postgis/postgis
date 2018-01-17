@@ -60,7 +60,8 @@ loader_rt_info_handler(const char *fmt, va_list ap) {
 	va_end(ap);
 }
 
-void rt_init_allocators(void) {
+static void
+rt_init_allocators(void) {
 	rt_set_handlers(
 		default_rt_allocator,
 		default_rt_reallocator,
@@ -89,12 +90,12 @@ raster_destroy(rt_raster raster) {
 }
 
 static int
-array_range(int min, int max, int step, int **range, int *len) {
+array_range(int min, int max, int step, int **range, uint32_t *len) {
 	int i = 0;
 	int j = 0;
 
 	step = abs(step);
-	*len = (abs(max - min) + 1 + (step / 2)) / step;
+	*len = (uint32_t) ((abs(max - min) + 1 + (step / 2)) / step);
 	*range = rtalloc(sizeof(int) * *len);
 
 	if (min < max) {
@@ -193,7 +194,7 @@ strtolower(char * str) {
 
 /* split a string based on a delimiter */
 static char**
-strsplit(const char *str, const char *delimiter, int *n) {
+strsplit(const char *str, const char *delimiter, uint32_t *n) {
 	char *tmp = NULL;
 	char **rtn = NULL;
 	char *token = NULL;
@@ -383,7 +384,7 @@ usage() {
 	));
 	printf(_(
 		"  -l <overview factor> Create overview of the raster. For more than\n"
-		"      one factor, separate with comma(,). Overview table name follows\n" 
+		"      one factor, separate with comma(,). Overview table name follows\n"
 		"      the pattern o_<overview factor>_<table>. Created overview is\n"
 		"      stored in the database and is not affected by -R.\n"
 	));
@@ -510,7 +511,7 @@ static void
 init_rastinfo(RASTERINFO *info) {
 	info->srid = SRID_UNKNOWN;
 	info->srs = NULL;
-	memset(info->dim, 0, sizeof(double) * 2);
+	memset(info->dim, 0, sizeof(uint32_t) * 2);
 	info->nband_count = 0;
 	info->nband = NULL;
 	info->gdalbandtype = NULL;
@@ -598,7 +599,7 @@ copy_rastinfo(RASTERINFO *dst, RASTERINFO *src) {
 static void
 diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 	static uint8_t msg[6] = {0};
-	int i = 0;
+	uint32_t i = 0;
 
 	/* # of bands */
 	if (
@@ -788,7 +789,7 @@ rtdealloc_stringbuffer(STRINGBUFFER *buffer, int freebuffer) {
 
 static void
 dump_stringbuffer(STRINGBUFFER *buffer) {
-	int i = 0;
+	uint32_t i = 0;
 
 	for (i = 0; i < buffer->length; i++) {
 		printf("%s\n", buffer->line[i]);
@@ -1228,7 +1229,7 @@ add_raster_constraints(
 		(regular_blocking ? "TRUE" : "FALSE"),
 		(max_extent ? "TRUE" : "FALSE")
 	);
-	
+
 	if (_schema != NULL)
 		rtdealloc(_schema);
 	rtdealloc(_table);
@@ -1329,7 +1330,7 @@ add_overview_constraints(
 		_column,
 		factor
 	);
-	
+
 	if (_ovschema != NULL)
 		rtdealloc(_ovschema);
 	rtdealloc(_ovtable);
@@ -1346,14 +1347,14 @@ add_overview_constraints(
 }
 
 static int
-build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBUFFER *tileset, STRINGBUFFER *buffer) {
+build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STRINGBUFFER *tileset, STRINGBUFFER *buffer) {
 	GDALDatasetH hdsSrc;
 	VRTDatasetH hdsOv;
 	VRTSourcedRasterBandH hbandOv;
 	double gtOv[6] = {0.};
 	int dimOv[2] = {0};
 
-	int j = 0;
+	uint32_t j = 0;
 	int factor;
 	const char *ovtable = NULL;
 
@@ -1563,7 +1564,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	GDALDatasetH hdsSrc;
 	GDALRasterBandH hbandSrc;
 	int nband = 0;
-	int i = 0;
+	uint32_t i = 0;
 	int ntiles[2] = {1, 1};
 	int _tile_size[2] = {0, 0};
 	int xtile = 0;
@@ -1573,7 +1574,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	int tilesize = 0;
 
 	rt_raster rast = NULL;
-	int numbands = 0;
+	uint32_t numbands = 0;
 	rt_band band = NULL;
 	char *hex;
 	uint32_t hexlen = 0;
@@ -1731,9 +1732,9 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		info->tile_size[1] = config->tile_size[1];
 
 	/* number of tiles */
-	if (info->tile_size[0] != info->dim[0])
+	if ((uint32_t)info->tile_size[0] != info->dim[0])
 		ntiles[0] = (info->dim[0] + info->tile_size[0]  - 1) / info->tile_size[0];
-	if (info->tile_size[1] != info->dim[1]) 
+	if ((uint32_t)info->tile_size[1] != info->dim[1])
 		ntiles[1] = (info->dim[1] + info->tile_size[1]  - 1) / info->tile_size[1];
 
 	/* estimate size of 1 tile */
@@ -2000,7 +2001,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 static int
 process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
-	int i = 0;
+	uint32_t i = 0;
 
 	assert(config != NULL);
 	assert(config->table != NULL);
@@ -2101,7 +2102,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 			/* overviews */
 			if (config->overview_count) {
-				int j = 0;
+				uint32_t j = 0;
 
 				for (j = 0; j < config->overview_count; j++) {
 
@@ -2272,12 +2273,15 @@ int
 main(int argc, char **argv) {
 	RTLOADERCFG *config = NULL;
 	STRINGBUFFER *buffer = NULL;
-	int i = 0;
-	int j = 0;
+	uint32_t i = 0;
+	uint32_t j = 0;
 	char **elements = NULL;
-	int n = 0;
+	uint32_t n = 0;
 	GDALDriverH drv = NULL;
 	char *tmp = NULL;
+	int argit = 0;
+
+	rt_init_allocators();
 
 #ifdef USE_NLS
 	setlocale (LC_ALL, "");
@@ -2303,23 +2307,24 @@ main(int argc, char **argv) {
 	* parse arguments
 	****************************************************************************/
 
-	for (i = 1; i < argc; i++) {
+	for (argit = 1; argit < argc; argit++) {
 		char *optarg, *ptr;
 		/* srid */
-		if (CSEQUAL(argv[i], "-s") && i < argc - 1) {
-			optarg = argv[++i];
+
+		if (CSEQUAL(argv[argit], "-s") && argit < argc - 1) {
+			optarg = argv[++argit];
 			ptr = strchr(optarg, ':');
 			if (ptr) {
 				*ptr++ = '\0';
 				sscanf(optarg, "%d", &config->srid);
 				sscanf(ptr, "%d", &config->out_srid);
 			} else {
-				config->srid = config->out_srid = atoi(optarg);
+				config->srid = atoi(optarg);
 			}
 		}
 		/* band index */
-		else if (CSEQUAL(argv[i], "-b") && i < argc - 1) {
-			elements = strsplit(argv[++i], ",", &n);
+		else if (CSEQUAL(argv[argit], "-b") && argit < argc - 1) {
+			elements = strsplit(argv[++argit], ",", &n);
 			if (n < 1) {
 				rterror(_("Could not process -b"));
 				rtdealloc_config(config);
@@ -2331,10 +2336,10 @@ main(int argc, char **argv) {
 				char *t = trim(elements[j]);
 				char **minmax = NULL;
 				int *range = NULL;
-				int p = 0;
-				int l = 0;
+				uint32_t p = 0;
+				uint32_t l = 0;
 				int m = 0;
-				int o = 0;
+				uint32_t o = 0;
 
 				/* is t a range? */
 				minmax = strsplit(t, "-", &o);
@@ -2412,13 +2417,13 @@ main(int argc, char **argv) {
 			}
 		}
 		/* tile size */
-		else if (CSEQUAL(argv[i], "-t") && i < argc - 1) {
-			if (CSEQUAL(argv[++i], "auto")) {
+		else if (CSEQUAL(argv[argit], "-t") && argit < argc - 1) {
+			if (CSEQUAL(argv[++argit], "auto")) {
 				config->tile_size[0] = -1;
 				config->tile_size[1] = -1;
 			}
 			else {
-				elements = strsplit(argv[i], "x", &n);
+				elements = strsplit(argv[argit], "x", &n);
 				if (n != 2) {
 					rterror(_("Could not process -t"));
 					rtdealloc_config(config);
@@ -2445,57 +2450,57 @@ main(int argc, char **argv) {
 			}
 		}
 		/* pad tiles */
-		else if (CSEQUAL(argv[i], "-P")) {
+		else if (CSEQUAL(argv[argit], "-P")) {
 			config->pad_tile = 1;
 		}
 		/* out-of-db raster */
-		else if (CSEQUAL(argv[i], "-R")) {
+		else if (CSEQUAL(argv[argit], "-R")) {
 			config->outdb = 1;
 		}
 		/* drop table and recreate */
-		else if (CSEQUAL(argv[i], "-d")) {
+		else if (CSEQUAL(argv[argit], "-d")) {
 			config->opt = 'd';
 		}
 		/* append to table */
-		else if (CSEQUAL(argv[i], "-a")) {
+		else if (CSEQUAL(argv[argit], "-a")) {
 			config->opt = 'a';
 		}
 		/* create new table */
-		else if (CSEQUAL(argv[i], "-c")) {
+		else if (CSEQUAL(argv[argit], "-c")) {
 			config->opt = 'c';
 		}
 		/* prepare only */
-		else if (CSEQUAL(argv[i], "-p")) {
+		else if (CSEQUAL(argv[argit], "-p")) {
 			config->opt = 'p';
 		}
 		/* raster column name */
-		else if (CSEQUAL(argv[i], "-f") && i < argc - 1) {
-			config->raster_column = rtalloc(sizeof(char) * (strlen(argv[++i]) + 1));
+		else if (CSEQUAL(argv[argit], "-f") && argit < argc - 1) {
+			config->raster_column = rtalloc(sizeof(char) * (strlen(argv[++argit]) + 1));
 			if (config->raster_column == NULL) {
 				rterror(_("Could not allocate memory for storing raster column name"));
 				rtdealloc_config(config);
 				exit(1);
 			}
-			strncpy(config->raster_column, argv[i], strlen(argv[i]) + 1);
+			strncpy(config->raster_column, argv[argit], strlen(argv[argit]) + 1);
 		}
 		/* filename column */
-		else if (CSEQUAL(argv[i], "-F")) {
+		else if (CSEQUAL(argv[argit], "-F")) {
 			config->file_column = 1;
 		}
 		/* filename column name */
-		else if (CSEQUAL(argv[i], "-n") && i < argc - 1) {
-			config->file_column_name = rtalloc(sizeof(char) * (strlen(argv[++i]) + 1));
+		else if (CSEQUAL(argv[argit], "-n") && argit < argc - 1) {
+			config->file_column_name = rtalloc(sizeof(char) * (strlen(argv[++argit]) + 1));
 			if (config->file_column_name == NULL) {
 				rterror(_("Could not allocate memory for storing filename column name"));
 				rtdealloc_config(config);
 				exit(1);
 			}
-			strncpy(config->file_column_name, argv[i], strlen(argv[i]) + 1);
+			strncpy(config->file_column_name, argv[argit], strlen(argv[argit]) + 1);
 			config->file_column = 1;
 		}
 		/* overview factors */
-		else if (CSEQUAL(argv[i], "-l") && i < argc - 1) {
-			elements = strsplit(argv[++i], ",", &n);
+		else if (CSEQUAL(argv[argit], "-l") && argit < argc - 1) {
+			elements = strsplit(argv[++argit], ",", &n);
 			if (n < 1) {
 				rterror(_("Could not process -l"));
 				rtdealloc_config(config);
@@ -2519,7 +2524,7 @@ main(int argc, char **argv) {
 			elements = NULL;
 			n = 0;
 
-			for (j = 0; j < config->overview_count; j++) {
+			for (j = 0; j < (uint32_t)config->overview_count; j++) {
 				if (config->overview[j] < MINOVFACTOR || config->overview[j] > MAXOVFACTOR) {
 					rterror(_("Overview factor %d is not between %d and %d"), config->overview[j], MINOVFACTOR, MAXOVFACTOR);
 					rtdealloc_config(config);
@@ -2528,78 +2533,78 @@ main(int argc, char **argv) {
 			}
 		}
 		/* quote identifiers */
-		else if (CSEQUAL(argv[i], "-q")) {
+		else if (CSEQUAL(argv[argit], "-q")) {
 			config->quoteident = 1;
 		}
 		/* create index */
-		else if (CSEQUAL(argv[i], "-I")) {
+		else if (CSEQUAL(argv[argit], "-I")) {
 			config->idx = 1;
 		}
 		/* maintenance */
-		else if (CSEQUAL(argv[i], "-M")) {
+		else if (CSEQUAL(argv[argit], "-M")) {
 			config->maintenance = 1;
 		}
 		/* set constraints */
-		else if (CSEQUAL(argv[i], "-C")) {
+		else if (CSEQUAL(argv[argit], "-C")) {
 			config->constraints = 1;
 		}
 		/* disable extent constraint */
-		else if (CSEQUAL(argv[i], "-x")) {
+		else if (CSEQUAL(argv[argit], "-x")) {
 			config->max_extent = 0;
 		}
 		/* enable regular_blocking */
-		else if (CSEQUAL(argv[i], "-r")) {
+		else if (CSEQUAL(argv[argit], "-r")) {
 			config->regular_blocking = 1;
 		}
 		/* tablespace of new table */
-		else if (CSEQUAL(argv[i], "-T") && i < argc - 1) {
-			config->tablespace = rtalloc(sizeof(char) * (strlen(argv[++i]) + 1));
+		else if (CSEQUAL(argv[argit], "-T") && argit < argc - 1) {
+			config->tablespace = rtalloc(sizeof(char) * (strlen(argv[++argit]) + 1));
 			if (config->tablespace == NULL) {
 				rterror(_("Could not allocate memory for storing tablespace of new table"));
 				rtdealloc_config(config);
 				exit(1);
 			}
-			strncpy(config->tablespace, argv[i], strlen(argv[i]) + 1);
+			strncpy(config->tablespace, argv[argit], strlen(argv[argit]) + 1);
 		}
 		/* tablespace of new index */
-		else if (CSEQUAL(argv[i], "-X") && i < argc - 1) {
-			config->idx_tablespace = rtalloc(sizeof(char) * (strlen(argv[++i]) + 1));
+		else if (CSEQUAL(argv[argit], "-X") && argit < argc - 1) {
+			config->idx_tablespace = rtalloc(sizeof(char) * (strlen(argv[++argit]) + 1));
 			if (config->idx_tablespace == NULL) {
 				rterror(_("Could not allocate memory for storing tablespace of new indices"));
 				rtdealloc_config(config);
 				exit(1);
 			}
-			strncpy(config->idx_tablespace, argv[i], strlen(argv[i]) + 1);
+			strncpy(config->idx_tablespace, argv[argit], strlen(argv[argit]) + 1);
 		}
 		/* nodata value */
-		else if (CSEQUAL(argv[i], "-N") && i < argc - 1) {
+		else if (CSEQUAL(argv[argit], "-N") && argit < argc - 1) {
 			config->hasnodata = 1;
-			config->nodataval = atof(argv[++i]);
+			config->nodataval = atof(argv[++argit]);
 		}
 		/* skip NODATA value check for bands */
-		else if (CSEQUAL(argv[i], "-k")) {
+		else if (CSEQUAL(argv[argit], "-k")) {
 			config->skip_nodataval_check = 1;
 		}
 		/* endianness */
-		else if (CSEQUAL(argv[i], "-E") && i < argc - 1) {
-			config->endian = atoi(argv[++i]);
+		else if (CSEQUAL(argv[argit], "-E") && argit < argc - 1) {
+			config->endian = atoi(argv[++argit]);
 			config->endian = 1;
 		}
 		/* version */
-		else if (CSEQUAL(argv[i], "-V") && i < argc - 1) {
-			config->version = atoi(argv[++i]);
+		else if (CSEQUAL(argv[argit], "-V") && argit < argc - 1) {
+			config->version = atoi(argv[++argit]);
 			config->version = 0;
 		}
 		/* transaction */
-		else if (CSEQUAL(argv[i], "-e")) {
+		else if (CSEQUAL(argv[argit], "-e")) {
 			config->transaction = 0;
 		}
 		/* COPY statements */
-		else if (CSEQUAL(argv[i], "-Y")) {
+		else if (CSEQUAL(argv[argit], "-Y")) {
 			config->copy_statements = 1;
 		}
 		/* GDAL formats */
-		else if (CSEQUAL(argv[i], "-G")) {
+		else if (CSEQUAL(argv[argit], "-G")) {
 			uint32_t drv_count = 0;
 			rt_gdaldriver drv_set = rt_raster_gdal_drivers(&drv_count, 0);
 			if (drv_set == NULL || !drv_count) {
@@ -2621,7 +2626,7 @@ main(int argc, char **argv) {
 			exit(0);
 		}
 		/* help */
-		else if (CSEQUAL(argv[i], "-?")) {
+		else if (CSEQUAL(argv[argit], "-?")) {
 			usage();
 			rtdealloc_config(config);
 			exit(0);
@@ -2635,23 +2640,19 @@ main(int argc, char **argv) {
 				exit(1);
 			}
 
-			config->rt_file[config->rt_file_count - 1] = rtalloc(sizeof(char) * (strlen(argv[i]) + 1));
+			config->rt_file[config->rt_file_count - 1] = rtalloc(sizeof(char) * (strlen(argv[argit]) + 1));
 			if (config->rt_file[config->rt_file_count - 1] == NULL) {
 				rterror(_("Could not allocate memory for storing raster filename"));
 				rtdealloc_config(config);
 				exit(1);
 			}
-			strncpy(config->rt_file[config->rt_file_count - 1], argv[i], strlen(argv[i]) + 1);
+			strncpy(config->rt_file[config->rt_file_count - 1], argv[argit], strlen(argv[argit]) + 1);
 		}
 	}
 
-	if (config->srid != config->out_srid) {
+	if (config->srid != config->out_srid && config->out_srid != SRID_UNKNOWN) {
 		if (config->copy_statements) {
 			rterror(_("Invalid argument combination - cannot use -Y with -s FROM_SRID:TO_SRID"));
-			exit(1);
-		}
-		if (config->out_srid == SRID_UNKNOWN) {
-			rterror(_("Unknown target SRID is invalid when source SRID is given"));
 			exit(1);
 		}
 	}

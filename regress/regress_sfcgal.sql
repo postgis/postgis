@@ -12,14 +12,14 @@ SELECT 'ST_Extrude_point', ST_AsText(ST_Extrude('POINT(0 0)', 1, 0, 0));
 SELECT 'ST_Extrude_line', ST_AsText(ST_Extrude(ST_Extrude('POINT(0 0)', 1, 0, 0), 0, 1, 0));
 -- In the first SFCGAL versions, the extruded face was wrongly oriented
 -- we change the extrusion result to match the original
-SELECT 'ST_Extrude_surface', 
-CASE WHEN postgis_sfcgal_version() = '1.0' 
+SELECT 'ST_Extrude_surface',
+CASE WHEN postgis_sfcgal_version() = '1.0'
 THEN
     ST_AsText(ST_Extrude(ST_Extrude(ST_Extrude('POINT(0 0)', 1, 0, 0), 0, 1, 0), 0, 0, 1))
 ELSE
     regexp_replace(
     regexp_replace(
-    ST_AsText(ST_Extrude(ST_Extrude(ST_Extrude('POINT(0 0)', 1, 0, 0), 0, 1, 0), 0, 0, 1)) , 
+    ST_AsText(ST_Extrude(ST_Extrude(ST_Extrude('POINT(0 0)', 1, 0, 0), 0, 1, 0), 0, 0, 1)) ,
     '\(\(0 1 0,1 1 0,1 0 0,0 1 0\)\)', '((1 1 0,1 0 0,0 1 0,1 1 0))'),
     '\(\(0 1 0,1 0 0,0 0 0,0 1 0\)\)', '((1 0 0,0 0 0,0 1 0,1 0 0))')
 END;

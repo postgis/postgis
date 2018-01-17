@@ -1,6 +1,6 @@
 BEGIN;
 
--- Create the topology. 
+-- Create the topology.
 -- NOTE:
 --  Returns topology id... which depend on how many
 --  topologies where created in the regress database
@@ -128,7 +128,7 @@ INSERT INTO invalid_topology.edge VALUES(26, 20, 20, 26, -26, 9, 1,
 -- Next edge crosses node N14
 INSERT INTO invalid_topology.edge VALUES(27, 15, 13, 27, -27, 6, 3,
   'LINESTRING(9 14, 21 14, 35 14)');
--- Next edge is not simple 
+-- Next edge is not simple
 INSERT INTO invalid_topology.edge VALUES(28, 3, 3, 28, 28, 2, 2,
   'LINESTRING(25 35, 28 30, 27 27, 27 32, 25 35)');
 -- Next edge crosses E2
@@ -146,7 +146,7 @@ INSERT INTO invalid_topology.edge VALUES(31, 3, 3, 31, -31, 11, 11,
 INSERT INTO invalid_topology.edge VALUES(32, 4, 4, 31, -31, 12, 12,
   'LINESTRING(20 37, 20 42, 21 42, 21 37, 20 37)');
 
--- Next edge is not valid 
+-- Next edge is not valid
 INSERT INTO invalid_topology.edge VALUES(33, 3, 3, 28, 28, 13, 13,
   '01020000000100000000000000000039400000000000804140');
 

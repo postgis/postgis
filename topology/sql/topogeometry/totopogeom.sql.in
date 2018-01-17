@@ -1,9 +1,9 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2011-2012 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2011-2012 Sandro Santilli <strk@kbt.io>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -66,7 +66,7 @@ BEGIN
   END IF;
 
 
-  -- 
+  --
   -- Check type compatibility and create empty TopoGeometry
   -- 1:puntal, 2:lineal, 3:areal, 4:collection
   --
@@ -187,7 +187,7 @@ BEGIN
   END IF;
 
 
-  -- 
+  --
   -- Check type compatibility and set TopoGeometry type
   -- 1:puntal, 2:lineal, 3:areal, 4:collection
   --
@@ -230,23 +230,30 @@ BEGIN
         'Unexpected feature dimension %', ST_Dimension(ageom);
   END IF;
 
-  -- Now that we have an empty topogeometry, we loop over distinct components 
+  -- Now that we have an empty topogeometry, we loop over distinct components
   -- and add them to the definition of it. We add them as soon
   -- as possible so that each element can further edit the
   -- definition by splitting
   FOR rec IN SELECT id(tg), alayer as lyr,
-    geom, ST_Dimension(geom) as dims
-    FROM (SELECT (ST_Dump(ageom)).geom) as f
-    WHERE NOT ST_IsEmpty(geom)
+    geom, ST_Dimension(gd.geom) as dims
+    FROM ST_Dump(ageom) AS gd
+    WHERE NOT ST_IsEmpty(gd.geom)
   LOOP
-    FOR rec2 IN SELECT CASE
-       WHEN rec.dims = 0 THEN
-         topology.topogeo_addPoint(atopology, rec.geom, tolerance)
-       WHEN rec.dims = 1 THEN
-         topology.topogeo_addLineString(atopology, rec.geom, tolerance)
-       WHEN rec.dims = 2 THEN
-         topology.topogeo_addPolygon(atopology, rec.geom, tolerance)
-       END as primitive
+    -- NOTE: Switched from using case to this because of PG 10 behavior change
+    -- Using a UNION ALL only one will be processed because of the WHERE
+    -- Since the WHERE clause will be processed first
+    FOR rec2 IN SELECT primitive
+          FROM
+            (
+              SELECT topology.topogeo_addPoint(atopology, rec.geom, tolerance)
+                WHERE rec.dims = 0
+              UNION ALL
+              SELECT topology.topogeo_addLineString(atopology, rec.geom, tolerance)
+                WHERE rec.dims = 1
+              UNION ALL
+              SELECT topology.topogeo_addPolygon(atopology, rec.geom, tolerance)
+                WHERE rec.dims = 2
+            ) AS f(primitive)
     LOOP
       elem := ARRAY[rec.dims+1, rec2.primitive]::text;
       IF elems @> ARRAY[elem] THEN

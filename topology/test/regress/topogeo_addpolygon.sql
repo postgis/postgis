@@ -30,8 +30,8 @@ BEGIN
     o := rec.xx;
     RETURN NEXT;
   END LOOP;
-  
-  -- Check effect on edges 
+
+  -- Check effect on edges
   sql := '
   WITH node_limits AS ( SELECT max FROM city_data.limits WHERE what = ''node''::text ),
        edge_limits AS ( SELECT max FROM city_data.limits WHERE what = ''edge''::text )
@@ -111,3 +111,36 @@ SELECT check_changes();
 DROP FUNCTION check_changes();
 SELECT DropTopology('city_data');
 
+-- See https://trac.osgeo.org/postgis/ticket/1855
+-- Original submission (more simplifications are
+-- in topogeo_addlinestring.sql)
+-- Original submission
+SELECT 't1855_0.start', topology.CreateTopology('bug1855', 0, 0.00001) > 0;
+SELECT 't1855_0.0', topology.TopoGeo_addPolygon('bug1855',
+        'POLYGON((76.26727 9.85751,76.29001 9.90026,
+                  76.29942 9.86257,76.26727 9.85751))'
+::geometry);
+SELECT 't1855_0.1', topology.TopoGeo_addPolygon('bug1855',
+'POLYGON((76.31988 9.89696,76.30482 9.88391,
+          76.2941 9.88391,76.29409 9.88391,76.29409 9.88392,
+          76.29001 9.90026,76.31988 9.89696))'
+::geometry);
+SELECT 't1855_0.end', topology.DropTopology('bug1855');
+
+-- See https://trac.osgeo.org/postgis/ticket/1946
+SELECT 't1946.start', topology.CreateTopology('bug1946', 0, 0.00001) > 0;
+SELECT 't1946.0', topology.topogeo_AddPolygon('bug1946',
+'POLYGON((76.68554 30.74,76.68726 30.74248,
+          76.69223 30.74157,76.68554 30.74))'
+::geometry);
+SELECT 't1946.1', topology.topogeo_AddPolygon('bug1946',
+'POLYGON((76.68554 30.74,76.67933 30.75,
+          76.68727 30.74249,76.68727 30.74248,
+          76.68726 30.74248,76.68554 30.74))'
+::geometry);
+SELECT 't1946.2', topology.topogeo_AddPolygon('bug1946',
+'POLYGON((76.68728 30.74248,76.68727 30.74248,
+          76.68727 30.74249,76.67933 30.75,
+          76.69223 30.74157,76.68728 30.74248))'
+::geometry);
+SELECT 't1946.end', topology.DropTopology('bug1946');

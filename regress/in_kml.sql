@@ -61,7 +61,7 @@ SELECT 'linestring_1', ST_AsEWKT(ST_GeomFromKML('<kml:LineString><kml:coordinate
 -- ERROR 1 Point
 SELECT 'linestring_2', ST_AsEWKT(ST_GeomFromKML('<kml:LineString><kml:coordinates>1,2</kml:coordinates></kml:LineString>'));
 
--- ERROR: empty coordinates 
+-- ERROR: empty coordinates
 SELECT 'linestring_3', ST_AsEWKT(ST_GeomFromKML('<kml:LineString><kml:coordinates></kml:coordinates></kml:LineString>'));
 SELECT 'linestring_4', ST_AsEWKT(ST_GeomFromKML('<kml:LineString></kml:LineString>'));
 
@@ -78,7 +78,7 @@ SELECT 'linestring_5', ST_AsEWKT(ST_GeomFromKML(' <!-- --> <kml:LineString> <!--
 -- 1 ring
 SELECT 'polygon_1', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>1,2 3,4 5,6 1,2</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs></kml:Polygon>'));
 
--- ERROR: In exterior ring: Last point is not the same as the first one 
+-- ERROR: In exterior ring: Last point is not the same as the first one
 SELECT 'polygon_2', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>1,2 3,4 5,6 1,3</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs></kml:Polygon>'));
 
 -- FORCE CLOSE: In exterior 3D ring: Last point is not the same as the first one in Z
@@ -87,7 +87,7 @@ SELECT 'polygon_3', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs>
 -- FORCE CLOSE: Only 3 points in exterior ring
 SELECT 'polygon_4', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>1,2 3,4 1,2</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs></kml:Polygon>'));
 
--- ERROR: Empty exterior ring coordinates 
+-- ERROR: Empty exterior ring coordinates
 SELECT 'polygon_5', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates></kml:coordinates></kml:LinearRing></kml:outerBoundaryIs></kml:Polygon>'));
 SELECT 'polygon_6', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing></kml:LinearRing></kml:outerBoundaryIs></kml:Polygon>'));
 SELECT 'polygon_7', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs></kml:outerBoundaryIs></kml:Polygon>'));
@@ -105,7 +105,7 @@ SELECT 'polygon_11', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs
 -- ERROR: Only 3 points in interior ring
 SELECT 'polygon_12', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>1,2 3,4 5,6 1,2</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs><kml:innerBoundaryIs><kml:LinearRing><kml:coordinates>7,8 9,10 7,8</kml:coordinates></kml:LinearRing></kml:innerBoundaryIs></kml:Polygon>'));
 
--- FORCE CLOSE: In interior ring: Last point is not the same as the first one 
+-- FORCE CLOSE: In interior ring: Last point is not the same as the first one
 SELECT 'polygon_13', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>1,2 3,4 5,6 1,2</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs><kml:innerBoundaryIs><kml:LinearRing><kml:coordinates>7,8 9,10 11,12 7,9</kml:coordinates></kml:LinearRing></kml:innerBoundaryIs></kml:Polygon>'));
 
 -- FORCE CLOSE: In interior 3D ring: Last point is not the same as the first one in Z
@@ -121,19 +121,19 @@ SELECT 'polygon_15', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs
 -- MultiGeometry
 --
 
--- 1 point 
+-- 1 point
 --SELECT 'multi_1', ST_AsEWKT(ST_GeomFromKML('<kml:MultiGeometry><kml:Point><kml:coordinates>1,2</kml:coordinates></kml:Point></kml:MultiGeometry>'));
 
 -- 2 points
 --SELECT 'multi_2', ST_AsEWKT(ST_GeomFromKML('<kml:MultiGeometry><kml:Point><kml:coordinates>1,2</kml:coordinates></kml:Point><kml:Point><kml:coordinates>1,2</kml:coordinates></kml:Point></kml:MultiGeometry>'));
 
--- 1 line 
+-- 1 line
 --SELECT 'multi_3', ST_AsEWKT(ST_GeomFromKML('<kml:MultiGeometry><kml:LineString><kml:coordinates>1,2 3,4</kml:coordinates></kml:LineString></kml:MultiGeometry>'));
 
 -- 2 lines
 --SELECT 'multi_4', ST_AsEWKT(ST_GeomFromKML('<kml:MultiGeometry><kml:LineString><kml:coordinates>1,2 3,4</kml:coordinates></kml:LineString><kml:LineString><kml:coordinates>5,6 7,8</kml:coordinates></kml:LineString></kml:MultiGeometry>'));
 
--- 1 polygon 
+-- 1 polygon
 --SELECT 'multi_5', ST_AsEWKT(ST_GeomFromKML('<kml:MultiGeometry><kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>1,2 3,4 5,6 1,2</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs></kml:Polygon></kml:MultiGeometry>'));
 
 -- 2 polygons
@@ -156,12 +156,12 @@ SELECT 'multi_10', ST_AsEWKT(ST_GeomFromKML(' <!-- --> <kml:MultiGeometry> <!-- 
 
 --
 -- KML Namespace
--- 
+--
 
 -- KML namespace
 SELECT 'ns_1', ST_AsEWKT(ST_GeomFromKML('<kml:Point xmlns:kml="http://www.opengis.net/kml/2.2"><kml:coordinates>1,2</kml:coordinates></kml:Point>'));
 
--- KML namespace without explicit prefix 
+-- KML namespace without explicit prefix
 SELECT 'ns_2', ST_AsEWKT(ST_GeomFromKML('<kml:Point xmlns="http://www.opengis.net/kml/2.2"><kml:coordinates>1,2</kml:coordinates></kml:Point>'));
 
 -- ERROR wrong namespace
@@ -219,13 +219,13 @@ SELECT 'coordinates_10', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1
 -- ERROR: Begin on comma
 SELECT 'coordinates_11', ST_AsEWKT(ST_GeomFromKML('<kml:LineString><kml:coordinates>,1 2,3</kml:coordinates></kml:LineString>'));
 
--- Whitespaces before and after 
+-- Whitespaces before and after
 SELECT 'coordinates_12', ST_AsEWKT(ST_GeomFromKML('<kml:LineString><kml:coordinates> 1,2 3,4 </kml:coordinates></kml:LineString>'));
-SELECT 'coordinates_13', ST_AsEWKT(ST_GeomFromKML('<kml:LineString><kml:coordinates> 
-								1,2 3,4  
+SELECT 'coordinates_13', ST_AsEWKT(ST_GeomFromKML('<kml:LineString><kml:coordinates>
+								1,2 3,4
 						   </kml:coordinates></kml:LineString>'));
 
--- ERROR: Spaces insides 
+-- ERROR: Spaces insides
 SELECT 'coordinates_14', ST_AsEWKT(ST_GeomFromKML('<kml:LineString><kml:coordinates>1, 2 3, 4</kml:coordinates></kml:LineString>'));
 
 -- Several spaces as tuples separator
@@ -255,7 +255,7 @@ SELECT 'kml_1', ST_AsEWKT(ST_GeomFromKML(ST_AsKML(ST_AsEWKT('SRID=4326;POINT(1 2
 -- Point - 3D
 SELECT 'kml_2', ST_AsEWKT(ST_GeomFromKML(ST_AsKML(ST_AsEWKT('SRID=4326;POINT(1 2 3)'))));
 
--- Linestring  
+-- Linestring
 SELECT 'kml_3', ST_AsEWKT(ST_GeomFromKML(ST_AsKML(ST_AsEWKT('SRID=4326;LINESTRING(1 2,3 4)'))));
 
 -- Linestring - 3D
@@ -279,7 +279,7 @@ SELECT 'kml_9', ST_AsEWKT(ST_GeomFromKML(ST_AsKML(ST_AsEWKT('SRID=4326;MULTILINE
 -- Multilinestring - 3D
 SELECT 'kml_10', ST_AsEWKT(ST_GeomFromKML(ST_AsKML(ST_AsEWKT('SRID=4326;MULTILINESTRING((1 2 3,4 5 6),(7 8 9,10 11 12))'))));
 
--- Multipolygon 
+-- Multipolygon
 SELECT 'kml_11', ST_AsEWKT(ST_GeomFromKML(ST_AsKML(ST_AsEWKT('SRID=4326;MULTIPOLYGON(((1 2,3 4,5 6,1 2)),((7 8,9 10,11 12,7 8)))'))));
 
 -- Multipolygon - 3D
@@ -293,7 +293,7 @@ SELECT 'kml_12', ST_AsEWKT(ST_GeomFromKML(ST_AsKML(ST_AsEWKT('SRID=4326;MULTIPOL
 -- Several digits
 SELECT 'double_1', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,1234567890</kml:coordinates></kml:Point>'));
 
--- Sign +/- 
+-- Sign +/-
 SELECT 'double_2', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,-1</kml:coordinates></kml:Point>'));
 SELECT 'double_3', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,+1</kml:coordinates></kml:Point>'));
 
@@ -322,7 +322,7 @@ SELECT 'double_12', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,a</k
 SELECT 'double_13', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,1a</kml:coordinates></kml:Point>'));
 SELECT 'double_14', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,1a2</kml:coordinates></kml:Point>'));
 
--- Exp 
+-- Exp
 SELECT 'double_15', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,1e2</kml:coordinates></kml:Point>'));
 SELECT 'double_16', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,1E+2</kml:coordinates></kml:Point>'));
 SELECT 'double_17', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,1e-2</kml:coordinates></kml:Point>'));
@@ -341,14 +341,14 @@ SELECT 'double_23', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,1e</
 SELECT 'double_24', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,1e2.3</kml:coordinates></kml:Point>'));
 SELECT 'double_25', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,1E2.3</kml:coordinates></kml:Point>'));
 
--- ERROR: spaces inside 
+-- ERROR: spaces inside
 SELECT 'double_26', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,- 1.23</kml:coordinates></kml:Point>'));
 SELECT 'double_27', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,-1 .23</kml:coordinates></kml:Point>'));
 SELECT 'double_28', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,-1. 23</kml:coordinates></kml:Point>'));
 SELECT 'double_29', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,-1.23 E2</kml:coordinates></kml:Point>'));
 SELECT 'double_30', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,-1.23E 2</kml:coordinates></kml:Point>'));
 
--- ERROR: Junk 
+-- ERROR: Junk
 SELECT 'double_31', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,$0%@#$^%#</kml:coordinates></kml:Point>'));
 
 -- ERROR: mixed coordinate dimension

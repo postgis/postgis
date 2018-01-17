@@ -289,7 +289,9 @@ pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS)
 	p = (pgis_abs*) PG_GETARG_POINTER(0);
 
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-	result = DirectFunctionCall1( polygonize_garray, geometry_array );
+	result = PGISDirectFunctionCall1( polygonize_garray, geometry_array );
+	if (!result)
+		PG_RETURN_NULL();
 
 	PG_RETURN_DATUM(result);
 }
@@ -384,13 +386,9 @@ PGISDirectFunctionCall1(PGFunction func, Datum arg1)
 	FunctionCallInfoData fcinfo;
 	Datum           result;
 
-#if POSTGIS_PGSQL_VERSION > 90
 
 	InitFunctionCallInfoData(fcinfo, NULL, 1, InvalidOid, NULL, NULL);
-#else
 
-	InitFunctionCallInfoData(fcinfo, NULL, 1, NULL, NULL);
-#endif
 
 	fcinfo.arg[0] = arg1;
 	fcinfo.argnull[0] = false;
@@ -416,10 +414,10 @@ PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2)
 
 #if POSTGIS_PGSQL_VERSION > 90
 
-	InitFunctionCallInfoData(fcinfo, NULL, 1, InvalidOid, NULL, NULL);
+	InitFunctionCallInfoData(fcinfo, NULL, 2, InvalidOid, NULL, NULL);
 #else
 
-	InitFunctionCallInfoData(fcinfo, NULL, 1, NULL, NULL);
+	InitFunctionCallInfoData(fcinfo, NULL, 2, NULL, NULL);
 #endif
 
 	fcinfo.arg[0] = arg1;

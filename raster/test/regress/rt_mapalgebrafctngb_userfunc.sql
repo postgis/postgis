@@ -14,8 +14,8 @@ CREATE OR REPLACE FUNCTION ST_Nullage(matrix float[][], nodatamode text, VARIADI
 --
 --Test rasters
 --
-CREATE OR REPLACE FUNCTION ST_TestRasterNgb(h integer, w integer, val float8) 
-    RETURNS raster AS 
+CREATE OR REPLACE FUNCTION ST_TestRasterNgb(h integer, w integer, val float8)
+    RETURNS raster AS
     $$
     DECLARE
     BEGIN
@@ -45,7 +45,7 @@ SELECT
   ST_Value(rast, 2, 2) = 1,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'st_max4ma(float[][], text, text[])'::regprocedure, '22', NULL), 2, 2
-  ) = 22 
+  ) = 22
   FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 3, 3, NULL) AS rast;
 
 -- test st_min4ma, uniform values
@@ -69,7 +69,7 @@ SELECT
   ST_Value(rast, 2, 2) = 22,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'st_min4ma(float[][], text, text[])'::regprocedure, '2', NULL), 2, 2
-  ) = 2 
+  ) = 2
   FROM ST_SetValue(ST_TestRasterNgb(3, 3, 22), 3, 3, NULL) AS rast;
 
 -- test st_sum4ma happens in rt_mapalgebrafctngb.sql
@@ -95,7 +95,7 @@ SELECT
   ST_Value(rast, 2, 2) = 10,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'st_mean4ma(float[][], text, text[])'::regprocedure, '1', NULL), 2, 2
-  ) = 9 
+  ) = 9
   FROM ST_SetValue(ST_TestRasterNgb(3, 3, 10), 3, 3, NULL) AS rast;
 
 -- test st_range4ma, uniform values
@@ -119,7 +119,7 @@ SELECT
   ST_Value(rast, 2, 2) = 10,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'st_range4ma(float[][], text, text[])'::regprocedure, '1', NULL), 2, 2
-  ) = 9 
+  ) = 9
   FROM ST_SetValue(ST_TestRasterNgb(3, 3, 10), 3, 3, NULL) AS rast;
 
 -- test st_slope, flat plane
@@ -219,7 +219,7 @@ SELECT
     ), 3, 3, 2477
   ) AS rast;
 
--- test st_hillshade, defaults on known set from: http://webhelp.esri.com/arcgiSDEsktop/9.3/index.cfm?TopicName=How%20Hillshade%20works  
+-- test st_hillshade, defaults on known set from: http://webhelp.esri.com/arcgiSDEsktop/9.3/index.cfm?TopicName=How%20Hillshade%20works
 SELECT
   round(ST_Value(
     ST_Hillshade(rast, 1, NULL, 315.0, 45.), 2, 2
@@ -249,7 +249,7 @@ SELECT
   ST_Value(rast, 2, 2) = 10,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'st_distinct4ma(float[][], text, text[])'::regprocedure, '1', NULL), 2, 2
-  ) = 1 
+  ) = 1
   FROM ST_TestRasterNgb(3, 3, 10) AS rast;
 
 -- test st_distinct4ma, three distinct values

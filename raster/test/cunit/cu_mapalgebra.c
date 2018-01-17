@@ -933,7 +933,7 @@ static void test_raster_colormap() {
 	colormap->method = CM_INTERPOLATE;
 
 	rtn = rt_raster_colormap(
-		raster, 0, 
+		raster, 0,
 		colormap
 	);
 	CU_ASSERT(rtn != NULL);
@@ -954,7 +954,7 @@ static void test_raster_colormap() {
 	colormap->ncolor = 4;
 
 	rtn = rt_raster_colormap(
-		raster, 0, 
+		raster, 0,
 		colormap
 	);
 	CU_ASSERT(rtn != NULL);
@@ -965,7 +965,7 @@ static void test_raster_colormap() {
 	colormap->method = CM_EXACT;
 
 	rtn = rt_raster_colormap(
-		raster, 0, 
+		raster, 0,
 		colormap
 	);
 	CU_ASSERT(rtn != NULL);
@@ -990,7 +990,7 @@ static void test_raster_colormap() {
 	colormap->method = CM_NEAREST;
 
 	rtn = rt_raster_colormap(
-		raster, 0, 
+		raster, 0,
 		colormap
 	);
 	CU_ASSERT(rtn != NULL);
@@ -1020,7 +1020,7 @@ static void test_raster_colormap() {
 	colormap->method = CM_NEAREST;
 
 	rtn = rt_raster_colormap(
-		raster, 0, 
+		raster, 0,
 		colormap
 	);
 	CU_ASSERT(rtn != NULL);
@@ -1144,7 +1144,7 @@ static void test_raster_colormap() {
 	colormap->method = CM_INTERPOLATE;
 
 	rtn = rt_raster_colormap(
-		raster, 0, 
+		raster, 0,
 		colormap
 	);
 	CU_ASSERT(rtn != NULL);

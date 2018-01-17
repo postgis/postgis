@@ -1,9 +1,9 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2012 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2012 Sandro Santilli <strk@kbt.io>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -100,7 +100,7 @@ BEGIN
 
   ELSIF tg.type = 2 THEN -- [multi]line -- }{
 
-    sql := 
+    sql :=
       'SELECT st_multi(ST_LineMerge(ST_Node(ST_Collect(ST_Simplify(e.geom,'
       || tolerance || '))))) as g FROM '
       || quote_ident(topology_info.name) || '.edge e, '
@@ -110,10 +110,10 @@ BEGIN
       || ' AND r.element_type = 2 '
       || ' AND abs(r.element_id) = e.edge_id';
     EXECUTE sql INTO geom;
-  
+
   ELSIF tg.type = 1 THEN -- [multi]point -- }{
 
-    -- Can't simplify points... 
+    -- Can't simplify points...
     geom := topology.Geometry(tg);
 
   ELSIF tg.type = 4 THEN -- mixed collection -- }{

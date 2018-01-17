@@ -2,15 +2,16 @@
 #
 # Translators:
 # Carlos Barrios <gbarrios@aaa.upv.es>, 2014
+# nramire1 nramire1 <nramire1@yahoo.com.ar>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2014-10-14 22:30+0000\n"
-"PO-Revision-Date: 2014-10-14 22:34+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
-"Language-Team: Spanish (http://www.transifex.com/projects/p/postgis-1/"
-"language/es/)\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2017-01-02 16:26+0000\n"
+"Last-Translator: nramire1 nramire1 <nramire1@yahoo.com.ar>\n"
+"Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
+"es/)\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,7 +22,7 @@ msgstr ""
 #: extras.xml:3
 #, no-c-format
 msgid "PostGIS Extras"
-msgstr ""
+msgstr "Extras de PostGIS"
 
 #. Tag: para
 #: extras.xml:5
@@ -32,9 +33,14 @@ msgid ""
 "PostGIS binary releases, but are usually plpgsql based or standard shell "
 "scripts that can be run as is."
 msgstr ""
+"Este capítulo documenta las características encontradas en la carpeta Extras "
+"de fuente de tarballs y fuente de repositorio de PostGIS. Estos no siempre "
+"son empaquetados con las versiones binarias de PostGIS, pero son "
+"generalmente plpgsql básicos o scripts de shell estándar que pueden ser "
+"ejectuados tal cual."
 
 #. Tag: chapter
 #: extras.xml:6
 #, no-c-format
 msgid "&extras_tigergeocoder;"
-msgstr ""
+msgstr "&extras_tigergeocoder;"

@@ -1,20 +1,20 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2010, 2011 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2010, 2011 Sandro Santilli <strk@kbt.io>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
--- TopoElement management functions 
+-- TopoElement management functions
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
--- Developed by Sandro Santilli <strk@keybit.net>
+-- Developed by Sandro Santilli <strk@kbt.io>
 -- for Faunalia (http://www.faunalia.it) with funding from
 -- Regione Toscana - Sistema Informativo per la Gestione del Territorio
 -- e dell' Ambiente [RT-SIGTA].

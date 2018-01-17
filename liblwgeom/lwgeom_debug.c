@@ -89,7 +89,7 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 	size_t size = 128;
 	char *result;
 	char *tmp;
-	int i;
+	uint32_t i;
 	static char *nl = "\n";
 	char *pad="";
 	char *zmflags = lwgeom_flagchars((LWGEOM*)col);
@@ -127,7 +127,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 	char tmp[256];
 	size_t size = 64*(poly->nrings+1)+128;
 	char *result;
-	int i;
+	uint32_t i;
 	char *pad="";
 	static char *nl = "\n";
 	char *zmflags = lwgeom_flagchars((LWGEOM*)poly);

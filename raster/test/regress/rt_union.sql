@@ -143,13 +143,13 @@ INSERT INTO raster_union_out
 
 SELECT
 	uniontype,
-	x,
-	y,
-	val
+	(pp).x,
+	(pp).y,
+	(pp).val
 FROM (
 	SELECT
 		uniontype,
-		(ST_PixelAsPoints(rast)).*
+		(ST_PixelAsPoints(rast)) AS pp
 	FROM raster_union_out
 ) foo
 ORDER BY uniontype, y, x;

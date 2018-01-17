@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,9 +38,9 @@
 #include "lwgeom_pg.h"
 
 
-#if POSTGIS_PGSQL_VERSION > 92
+
 #include "access/htup_details.h" /* for heap_form_tuple() */
-#endif
+
 
 #include "rtpostgis.h"
 
@@ -272,7 +272,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 		*/
 
 		/* raster has bands */
-		numbands = rt_raster_get_num_bands(raster); 
+		numbands = rt_raster_get_num_bands(raster);
 		if (!numbands) {
 			elog(NOTICE, "Raster provided has no bands");
 			rt_raster_destroy(raster);
@@ -584,7 +584,7 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
 		bandindex = -1;
 	else
 		bandindex = PG_GETARG_INT32(1);
-	
+
 	if (bandindex < 1) {
 		elog(NOTICE, "Invalid band index (must use 1-based). Value not set. Returning original raster");
 		skipset = TRUE;
@@ -1216,7 +1216,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 	size_t wkb_len;
 
 	int i = 0;
-	int j = 0;
+	uint32_t j = 0;
 	int noerr = 1;
 
 	/* pgraster is null, return null */
@@ -2156,7 +2156,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 		/* error */
 		if (count < 0) {
 			elog(NOTICE, "Could not get the pixel's neighborhood for band at index %d", bandindex);
-			
+
 			rt_band_destroy(band);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);

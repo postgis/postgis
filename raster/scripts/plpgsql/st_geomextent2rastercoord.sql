@@ -1,5 +1,5 @@
 DROP FUNCTION ST_GeomExtent2RasterCoord(rast raster, geomin geometry);
-CREATE OR REPLACE FUNCTION ST_GeomExtent2RasterCoord(rast raster, 
+CREATE OR REPLACE FUNCTION ST_GeomExtent2RasterCoord(rast raster,
 							geomin geometry)
     RETURNS int[] AS
     $$
@@ -74,7 +74,7 @@ CREATE OR REPLACE FUNCTION ST_GeomExtent2RasterCoord(rast raster,
         -- of the raster.
         x2 := int4smaller(x2, st_width(rast));
         y2 := int4smaller(y2, st_height(rast));
-        
+
         RETURN ARRAY[x1, y1, x2, y2];
 
     END;
@@ -93,7 +93,7 @@ FROM srtm_22_03_tiled, rect3
 WHERE st_intersects(rast, geom)
 
 
-SELECT rid, id, ST_GeomExtent2RasterCoord(rast, geom) 
+SELECT rid, id, ST_GeomExtent2RasterCoord(rast, geom)
 FROM srtm_22_03_tiled, rect3
 WHERE st_intersects(rast, geom)
 

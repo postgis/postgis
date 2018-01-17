@@ -32,7 +32,7 @@ typedef struct rect_node
 	struct rect_node *right_node;
 	POINT2D *p1;
 	POINT2D *p2;
-} RECT_NODE;	
+} RECT_NODE;
 
 int rect_tree_contains_point(const RECT_NODE *tree, const POINT2D *pt, int *on_boundary);
 int rect_tree_intersects_tree(const RECT_NODE *tree1, const RECT_NODE *tree2);
