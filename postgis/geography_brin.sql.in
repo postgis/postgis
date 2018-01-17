@@ -19,8 +19,6 @@ RETURNS boolean
 AS 'MODULE_PATHNAME','gserialized_gidx_gidx_overlaps'
 LANGUAGE 'c' IMMUTABLE STRICT;
 
-
-
 -- Availability: 2.3.0
 CREATE OPERATOR && (
   LEFTARG    = gidx,

@@ -67,13 +67,11 @@ SELECT topology.ST_AddIsoEdge('tt',
 -- See http://trac.osgeo.org/postgis/ticket/978
 SELECT topology.ST_AddIsoEdge('tt', 6, 7, 'LINESTRING(20 10, 30 10)');
 
-
 -- Edge intersection (geometry intersects an edge)
 SELECT topology.ST_AddIsoEdge('tt',
   3, 6, 'LINESTRING(5 0, 20 10)');
 
 -- TODO: check closed edge (not-isolated I guess...)
 -- on different faces (TODO req. nodes contained in face)
-
 
 SELECT topology.DropTopology('tt');

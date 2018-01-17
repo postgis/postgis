@@ -15,7 +15,6 @@
 --ORA---- 7. Query the data.
 --ORA---- 8. Optionally, edit data using the PL/SQL or Java API.
 
-
 BEGIN;
 
 -- 7. Query the data.
@@ -42,7 +41,6 @@ FROM features.big_streets;
 
 SELECT feature_name,ST_AsText(topology.geometry(feature))
 FROM features.big_parcels;
-
 
 --NOTYET--
 --NOTYET--/* Window is city_streets */

@@ -40,7 +40,6 @@ BEGIN;
 	UPDATE test_locks SET state = 'authorized' where id = 2;
 END;
 
-
 BEGIN;
 
 	-- Add authorization for row 2

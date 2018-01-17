@@ -18,7 +18,6 @@ CREATE TABLE "test" (
 -- Name: test Type: TABLE DATA Owner: postgres
 --
 
-
 COPY "test" FROM stdin;
 1	POINT(529.522339 509.260284)
 2	POINT(395.286469 439.218109)

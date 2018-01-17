@@ -3,7 +3,6 @@ set client_min_messages to ERROR;
 
 INSERT INTO spatial_ref_sys ( auth_name, auth_srid, srid, proj4text ) VALUES ( 'EPSG', 4326, 4326, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' );
 
-
 -- Import city_data
 \i load_topology-4326.sql
 
@@ -19,7 +18,6 @@ AS $$
     containing_face
     FROM city_data.node;
 $$ LANGUAGE 'sql';
-
 
 CREATE OR REPLACE FUNCTION check_nodes(lbl text)
 RETURNS TABLE (l text, o text, node_id int,
@@ -153,7 +151,6 @@ SELECT * FROM check_edges('bogus');
 SELECT * FROM check_faces('bogus');
 -- }
 
-
 -- Remove isolated edge
 SELECT 'RN(25)', topology.ST_RemEdgeNewFace('city_data', 25);
 SELECT * FROM check_nodes('RN(25)/nodes');
@@ -214,7 +211,6 @@ SELECT * FROM check_nodes('RN(15)/nodes');
 SELECT * FROM check_edges('RN(15)/edges');
 SELECT * FROM check_faces('RN(15)/faces');
 SELECT save_edges(); SELECT save_faces(); SELECT save_nodes();
-
 
 -- Universe flooding existing single-edge (closed) face
 -- with dangling edge starting from the closing node and
@@ -361,7 +357,6 @@ SELECT save_edges(); SELECT save_faces(); SELECT save_nodes();
 
 SELECT topology.DropTopology('city_data');
 
-
 -------------------------------------------------------------------------
 -- Now test in presence of features
 -------------------------------------------------------------------------
@@ -415,5 +410,4 @@ DROP FUNCTION check_faces(text);
 DROP FUNCTION save_nodes();
 DROP FUNCTION check_nodes(text);
 DELETE FROM spatial_ref_sys where srid = 4326;
-
 

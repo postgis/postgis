@@ -143,7 +143,6 @@ WHERE n.node_id = t.node_id
 
 DROP TABLE t;
 
-
 DROP FUNCTION check_changes();
 SELECT DropTopology('city_data');
 DELETE FROM spatial_ref_sys where srid = 4326;

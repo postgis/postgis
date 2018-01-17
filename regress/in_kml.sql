@@ -3,14 +3,12 @@
 -- Written by Olivier Courtin - Oslandia
 --
 
-
 --
 -- spatial_ref_sys datas
 --
 
 -- EPSG 4326 : WGS 84
 INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4text") VALUES (4326,'EPSG',4326,'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ');
-
 
 -- Empty Geometry
 SELECT 'empty_geom', ST_AsEWKT(ST_GeomFromKML(NULL));
@@ -27,8 +25,6 @@ SELECT 'xml_2', ST_AsEWKT(ST_GeomFromKML('<foo>'));
 
 -- ERROR: Not a KML Geometry
 SELECT 'xml_3', ST_AsEWKT(ST_GeomFromKML('<foo/>'));
-
-
 
 --
 -- Point
@@ -49,8 +45,6 @@ SELECT 'point_error_1', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,
 -- ERROR: empty point
 SELECT 'point_error_2', ST_AsEWKT(ST_GeomFromKML('<kml:Point></kml:Point>'));
 
-
-
 --
 -- LineString
 --
@@ -67,9 +61,6 @@ SELECT 'linestring_4', ST_AsEWKT(ST_GeomFromKML('<kml:LineString></kml:LineStrin
 
 -- XML not elements handle
 SELECT 'linestring_5', ST_AsEWKT(ST_GeomFromKML(' <!-- --> <kml:LineString> <!-- --> <kml:coordinates>1,2 3,4</kml:coordinates></kml:LineString>'));
-
-
-
 
 --
 -- Polygon
@@ -114,9 +105,6 @@ SELECT 'polygon_14', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs
 -- 3 rings
 SELECT 'polygon_15', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>1,2 3,4 5,6 1,2</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs><kml:innerBoundaryIs><kml:LinearRing><kml:coordinates>7,8 9,10 11,12 7,8</kml:coordinates></kml:LinearRing></kml:innerBoundaryIs><kml:innerBoundaryIs><kml:LinearRing><kml:coordinates>13,14 15,16 17,18 13,14</kml:coordinates></kml:LinearRing></kml:innerBoundaryIs></kml:Polygon>'));
 
-
-
-
 --
 -- MultiGeometry
 --
@@ -151,9 +139,6 @@ SELECT 'multi_9', ST_AsEWKT(ST_GeomFromKML('<kml:MultiGeometry><kml:Point><kml:c
 -- XML not elements handle
 SELECT 'multi_10', ST_AsEWKT(ST_GeomFromKML(' <!-- --> <kml:MultiGeometry> <!-- --> <kml:Point> <!-- --> <kml:coordinates>1,2</kml:coordinates></kml:Point> <!-- --> <kml:LineString><kml:coordinates>3,4 5,6</kml:coordinates></kml:LineString> <!-- --> <kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>7,8 9,10 11,12 7,8</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs></kml:Polygon></kml:MultiGeometry>'));
 
-
-
-
 --
 -- KML Namespace
 --
@@ -184,9 +169,6 @@ SELECT 'ns_5', ST_AsEWKT(ST_GeomFromKML('<kml:Point xmlns:foo="http://foo.net" x
 
 -- Ignore other namespace attribute
 -- TODO SELECT 'ns_11', ST_AsEWKT(ST_GeomFromKML('<kml:Point foo:srsName="EPSG:4326" xmlns:foo="http://foo.net" xmlns:gml="http://www.opengis.net/gml"><kml:coordinates>1,2</kml:coordinates><foo:coordinates>3,4</foo:coordinates></kml:Point>'));
-
-
-
 
 --
 -- Coordinates
@@ -238,13 +220,6 @@ SELECT 'coordinates_16', ST_AsEWKT(ST_GeomFromKML('<kml:LineString><kml:coordina
 -- ERROR: Junk
 SELECT 'coordinates_17', ST_AsEWKT(ST_GeomFromKML('<kml:LineString><kml:coordinates>!@#$%^*()"</kml:coordinates></kml:LineString>'));
 
-
-
-
-
-
-
-
 --
 -- Bijective PostGIS KML test
 --
@@ -284,7 +259,6 @@ SELECT 'kml_11', ST_AsEWKT(ST_GeomFromKML(ST_AsKML(ST_AsEWKT('SRID=4326;MULTIPOL
 
 -- Multipolygon - 3D
 SELECT 'kml_12', ST_AsEWKT(ST_GeomFromKML(ST_AsKML(ST_AsEWKT('SRID=4326;MULTIPOLYGON(((1 2 3,4 5 6,7 8 9,1 2 3)),((10 11 12,13 14 15,16 17 18,10 11 12)))'))));
-
 
 --
 -- Double
@@ -354,10 +328,6 @@ SELECT 'double_31', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,$0%@
 -- ERROR: mixed coordinate dimension
 SELECT 'mixed_dims_1', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,2 1,2,3</kml:coordinates></kml:Point>'));
 SELECT 'mixed_dims_2', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,2,3 1,2</kml:coordinates></kml:Point>'));
-
-
-
-
 
 --
 -- Delete inserted spatial data

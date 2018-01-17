@@ -16,7 +16,6 @@ SELECT 'dimension_07', ST_Dimension('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0
 -- ST_Dimension on 3D: invalid polyedron (redundant point inside each face)
 SELECT 'dimension_08', ST_Dimension('POLYHEDRALSURFACE(((0 0 0,1 0 0,1 0 0,0 0 0)),((0 0 1,1 0 1,1 0 1,0 0 1)),((0 0 2,1 0 2,1 0 2,0 0 2)),((0 0 3,1 0 3,1 0 3,0 0 3)))'::geometry);
 
-
 -- ST_NumPatches
 SELECT 'numpatches_01', ST_NumPatches('POLYHEDRALSURFACE EMPTY'::geometry);
 SELECT 'numpatches_02', ST_NumPatches('POLYHEDRALSURFACE(((0 0,0 0,0 1,0 0)))'::geometry);

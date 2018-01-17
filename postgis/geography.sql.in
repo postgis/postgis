@@ -69,8 +69,6 @@ CREATE TYPE geography (
 	alignment = double
 );
 
-
-
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography(geography, integer, boolean)
 	RETURNS geography
@@ -104,11 +102,11 @@ CREATE OR REPLACE FUNCTION ST_AsText(geography)
 	AS 'MODULE_PATHNAME','LWGEOM_asText'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 2.3.0
+-- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_AsText(geography, int4)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asText'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_AsText(text)
@@ -274,7 +272,6 @@ CREATE OR REPLACE FUNCTION geography_gist_distance(internal, geography, int4)
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_geog_distance'
 	LANGUAGE 'c';
 
-
 -- Availability: 1.5.0
 CREATE OPERATOR CLASS gist_geography_ops
 	DEFAULT FOR TYPE geography USING GIST AS
@@ -385,7 +382,6 @@ CREATE OPERATOR CLASS btree_geography_ops
 	OPERATOR	4	>= ,
 	OPERATOR	5	> ,
 	FUNCTION	1	geography_cmp (geography, geography);
-
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 -- Export Functions
@@ -572,7 +568,6 @@ CREATE OR REPLACE FUNCTION ST_DWithin(text, text, float8)
 	RETURNS boolean AS
 	$$ SELECT ST_DWithin($1::@extschema@.geometry, $2::@extschema@.geometry, $3);  $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
-
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 -- Distance/DWithin testing functions for cached operations.

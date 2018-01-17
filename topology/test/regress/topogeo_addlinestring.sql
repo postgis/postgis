@@ -58,7 +58,6 @@ END;
 $$ LANGUAGE 'plpgsql';
 -- }
 
-
 -- Invalid calls
 SELECT 'invalid', TopoGeo_addLineString('city_data', 'SRID=4326;MULTILINESTRING((36 26, 38 30))');
 SELECT 'invalid', TopoGeo_addLineString('city_data', 'SRID=4326;POINT(36 26)');

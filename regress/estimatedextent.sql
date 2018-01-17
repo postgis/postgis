@@ -36,7 +36,6 @@ analyze c1;
 analyze c2;
 analyze p;
 
-
 -- #3391.1
 with e as ( select ST_EstimatedExtent('c1','g') as e )
 select '#3391.1', round(st_xmin(e.e)::numeric, 2), round(st_xmax(e.e)::numeric, 2),
@@ -51,7 +50,6 @@ round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2) from e;
 with e as ( select ST_EstimatedExtent('p','g') as e )
 select '#3391.3', round(st_xmin(e.e)::numeric, 2), round(st_xmax(e.e)::numeric, 2),
 round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2) from e;
-
 
 insert into c1 values ('Point(0 0)'::geometry);
 insert into c1 values ('Point(1 1)'::geometry);
@@ -75,7 +73,6 @@ with e as ( select ST_EstimatedExtent('p','g') as e )
 select '#3391.6', round(st_xmin(e.e)::numeric, 2), round(st_xmax(e.e)::numeric, 2),
 round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2) from e;
 
-
 insert into c2 values ('Point(0 0)'::geometry);
 insert into c2 values ('Point(-1 -1)'::geometry);
 
@@ -97,7 +94,6 @@ round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2) from e;
 with e as ( select ST_EstimatedExtent('p','g') as e )
 select '#3391.9', round(st_xmin(e.e)::numeric, 2), round(st_xmax(e.e)::numeric, 2),
 round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2) from e;
-
 
 insert into p values ('Point(1 1)'::geometry);
 insert into p values ('Point(2 2)'::geometry);
@@ -135,7 +131,6 @@ analyze c1;
 analyze c2;
 analyze p;
 
-
 -- #3391.13
 with e as ( select ST_EstimatedExtent('public','p','g','t') as e )
 select '#3391.13', round(st_xmin(e.e)::numeric, 2), round(st_xmax(e.e)::numeric, 2),
@@ -155,7 +150,6 @@ round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2) from e;
 with e as ( select ST_EstimatedExtent('public','c1','g', 'f') as e )
 select '#3391.16', round(st_xmin(e.e)::numeric, 2), round(st_xmax(e.e)::numeric, 2),
 round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2) from e;
-
 
 insert into c1 values ('Point(0 0)'::geometry);
 insert into c1 values ('Point(1 1)'::geometry);
@@ -183,7 +177,6 @@ round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2) from e;
 with e as ( select ST_EstimatedExtent('public','c1','g', 't') as e )
 select '#3391.20', round(st_xmin(e.e)::numeric, 2), round(st_xmax(e.e)::numeric, 2),
 round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2) from e;
-
 
 drop table p cascade;
 

@@ -6,7 +6,6 @@ INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","proj4text") VALUE
 
 INSERT INTO "spatial_ref_sys" ("srid", "proj4text") VALUES (102189, '+proj=tmerc +lat_0=4.599047222222222 +lon_0=-74.08091666666667 +k=1.000000 +x_0=1000000 +y_0=1000000 +ellps=intl +towgs84=307,304,-318,0,0,0,0 +units=m +no_defs ');
 
-
 --
 -- GML
 --
@@ -47,7 +46,6 @@ SELECT 'gml_prefix_02', ST_AsGML(3, geography(ST_GeomFromEWKT('SRID=4326;POINT(1
 SELECT 'gml_prefix_03', ST_AsGML(2, geography(ST_GeomFromEWKT('SRID=4326;POINT(1 2)')), 0, 0, 'foo');
 SELECT 'gml_prefix_04', ST_AsGML(3, geography(ST_GeomFromEWKT('SRID=4326;POINT(1 2)')), 0, 0, 'foo');
 
-
 --
 -- KML
 --
@@ -76,7 +74,6 @@ SELECT 'kml_prefix_02', ST_AsKML(2, geography(ST_GeomFromEWKT('SRID=4326;POINT(1
 -- National Astronomical Observatory of Colombia - Bogota, Colombia (Placemark)
 SELECT 'kml_projection_01', ST_AsKML(geography(ST_GeomFromEWKT('SRID=102189;POINT(1000000 1000000)')), 3);
 
-
 --
 -- SVG
 --
@@ -93,7 +90,6 @@ SELECT 'svg_option_04', ST_AsSVG(geography(ST_GeomFromEWKT('LINESTRING(1 1, 4 4,
 -- Precision
 SELECT 'svg_precision_01', ST_AsSVG(geography(ST_GeomFromEWKT('POINT(1.1111111 1.1111111)')), 1, -2);
 SELECT 'svg_precision_02', ST_AsSVG(geography(ST_GeomFromEWKT('POINT(1.1111111 1.1111111)')), 1, 19);
-
 
 --
 -- GeoJSON
@@ -142,7 +138,6 @@ SELECT 'geojson_options_13', ST_AsGeoJSON(geography(ST_GeomFromEWKT('LINESTRING(
 SELECT 'geojson_options_14', ST_AsGeoJSON(geography(ST_GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 6);
 SELECT 'geojson_options_15', ST_AsGeoJSON(geography(ST_GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 7);
 SELECT 'geojson_options_16', ST_AsGeoJSON(geography(ST_GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 7);
-
 
 --
 -- Text

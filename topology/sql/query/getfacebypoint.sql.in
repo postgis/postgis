@@ -1,5 +1,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
@@ -21,7 +21,7 @@
 --
 -- Returns return the integer ID if there is a face on the Point.
 --
--- When the Point is even a Node it raise an exception. 
+-- When the Point is even a Node it raise an exception.
 -- This case is testable with the GetNodeByPoint(atopology, apoint, tol)
 --
 -- If there isn't any face in the Point, GetFaceByPoint return 0.

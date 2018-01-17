@@ -17,7 +17,6 @@ INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 3395, '+proj=merc +lon_
 
 INSERT INTO spatial_ref_sys (srid,proj4text) VALUES (32707,'+proj=utm +zone=7 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs ');
 
-
 -- #2 --
 SELECT '#2', ST_AsText(ST_Union(g)) FROM
 ( VALUES
@@ -29,7 +28,7 @@ SELECT '#2', ST_AsText(ST_Union(g)) FROM
 SELECT '#11', round(ST_Distance (a.g, ST_Intersection(b.g, a.g))) AS distance
 FROM (SELECT '01020000000200000050E8303FC2E85141B017CFC05A825541000000E0C0E85141000000205C825541'::geometry AS g) a,
 	 (SELECT 'LINESTRING(4694792.35840419 5638508.89950758,4694793.20840419 5638506.34950758)'::geometry AS g) b;
-	
+
 -- #21 --
 SELECT '#21', ST_AsEWKT(ST_Locate_Along_Measure(g, 4566)) FROM
 ( VALUES
@@ -123,7 +122,6 @@ FROM ( VALUES
 	( ST_LineToCurve(ST_Boundary(ST_Buffer(ST_Point(1,2), 3))) )
 	) AS v(g);
 
-
 -- #168 --
 SELECT '#168', ST_NPoints(g), ST_AsText(g), ST_isValidReason(g)
 FROM ( VALUES
@@ -207,7 +205,7 @@ SELECT '#263', ST_AsEWKT(geometry(geography(pt.the_geom))) As wkt,
 	 As pca,
 	ST_Covers(geometry(geography(poly.the_geom)),
 		geometry(geography(pt.the_geom))) As gm_to_gg_gm_pca
-	
+
 FROM (SELECT ST_GeomFromEWKT('SRID=4326;POLYGON((-119.5434 34.9438,-119.5437 34.9445,-119.5452 34.9442,-119.5434 34.9438))') As the_geom)
 	As poly
     CROSS JOIN
@@ -349,7 +347,6 @@ SELECT '#681e', ST_AsGML(ST_GeomFromText('MULTILINESTRING EMPTY', 4326));
 SELECT '#681f', ST_AsGML(ST_GeomFromText('MULTIPOLYGON EMPTY', 4326));
 SELECT '#681g', ST_AsGML(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY', 4326));
 
-
 -- #682 --
 SELECT '#682', ST_AsText(ST_Buffer(ST_GeomFromText('POLYGON EMPTY',4326) , 0.5));
 
@@ -405,7 +402,6 @@ FROM (VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFrom
 -- #804
 SELECT '#804', ST_AsGML(3, 'SRID=4326;POINT(0 0)'::geometry, 0, 1);
 
-
 -- #845
 SELECT '#845', ST_Intersects('POINT(169.69960846592 -46.5061209281002)'::geometry, 'POLYGON((169.699607857174 -46.5061218662,169.699607857174 -46.5061195965597,169.699608806526 -46.5061195965597,169.699608806526 -46.5061218662,169.699607857174 -46.5061218662))'::geometry);
 
@@ -440,7 +436,6 @@ WITH inp AS ( SELECT 'LINESTRING(0 0, 1 1)'::geometry as s,
  SELECT '#756.1', ST_Equals(s, st_multi(s)),
                   ST_Equals(s, st_collect(s, e))
  FROM inp;
-
 
 -- #1023 --
 select '#1023', 'POINT(10 4)'::geometry = 'POINT(10 4)'::geometry;
@@ -527,7 +522,6 @@ SELECT '</#1320>';
 
 -- st_AsText POLYGON((0 0,10 0,10 10,0 0))
 
-
 -- #1344
 select '#1344', octet_length(ST_AsEWKB(st_makeline(g))) FROM ( values ('POINT(0 0)'::geometry ) ) as foo(g);
 
@@ -552,7 +546,6 @@ SELECT '010400004002000000010400004001000000010100004000000000000000000000000000
 SELECT '01090000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F'::geometry;
 SELECT '010B0000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F'::geometry;
 SELECT '010C0000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F'::geometry;
-
 
 -- #1453
 SELECT '#1453.1', ST_OrderingEquals('POINT EMPTY', 'POINT EMPTY');
@@ -705,7 +698,6 @@ with inp as ( SELECT
  '010100000001000000004065C0041AD965BE5554C0'::geometry as b
 ) SELECT '#1791', round(ST_Azimuth(a,b)*10)/10 from inp;
 
-
 -- #1799 --
 SELECT '#1799', ST_Segmentize('LINESTRING(0 0, 10 0)'::geometry, 0);
 
@@ -755,7 +747,6 @@ SELECT '#2001', ST_AsText(ST_CurveToLine(ST_GeomFromText('CURVEPOLYGON((0 0, 0 1
 -- #2028 --
 SELECT '#2028', ST_AsText(ST_Multi('TRIANGLE((0 0, 0 1, 1 1, 0 0))'));
 
-
 -- #2035 START ------------------------------------------------------------
 
 -- Simple geographic table, with single point.
@@ -789,7 +780,6 @@ SELECT '#2035b', Count(*) FROM "city"
 DROP TABLE "city";
 -- #2035 END --------------------------------------------------------------
 
-
 -- #2084 --
 SELECT '#2048', num, ST_Within('POINT(-54.394 56.522)', "the_geom"), ST_CoveredBy('POINT(-54.394 56.522)', "the_geom")
 FROM ( VALUES
@@ -815,10 +805,8 @@ SELECT '#2110.1', 'POINT(0 0)'::geometry = 'POINT EMPTY'::geometry;
 SELECT '#2110.2', 'POINT EMPTY'::geometry = 'POINT EMPTY'::geometry;
 SELECT '#2110.3', 'POINT(0 0)'::geometry = 'POINT(0 0)'::geometry;
 
-
 SELECT '#2145',
 round(ST_Length(St_Segmentize(ST_GeographyFromText('LINESTRING(-89.3000030518 28.2000007629,-89.1999969482 89.1999969482,-89.1999969482 89.1999969482)'), 10000))::numeric,0);
-
 
 -- Clean up
 DELETE FROM spatial_ref_sys;

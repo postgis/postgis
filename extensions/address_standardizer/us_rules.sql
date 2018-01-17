@@ -4378,6 +4378,5 @@ INSERT INTO us_rules (rule) VALUES ('0 3 1 2 22 -1 1 3 5 6 7 -1 1 17');
 INSERT INTO us_rules (rule) VALUES ('0 1 6 -1 1 5 5 -1 1 9');
 INSERT INTO us_rules (rule) VALUES ('-1');
 
-
 -- needed so entries added by users will default to custom
 ALTER TABLE us_rules ALTER COLUMN is_custom SET DEFAULT true;

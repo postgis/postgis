@@ -69,7 +69,6 @@ SELECT 'L' || topology.AddTopoGeometryColumn('city_data',
 INSERT INTO city_data.fc VALUES ('F5,N4',
   topology.CreateTopoGeom('city_data', 4, 2, '{{5,3},{4,1}}'));
 
-
 ---------------------------------------------------------------------
 -- Now add some edges splitting faces...
 ---------------------------------------------------------------------

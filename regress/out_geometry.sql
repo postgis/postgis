@@ -7,7 +7,6 @@ INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","proj4text") VALUE
 --- EPSG 1021892 : Bogota 1975 / Colombia Bogota zone (deprecated)
 INSERT INTO "spatial_ref_sys" ("srid", "proj4text") VALUES (102189, '+proj=tmerc +lat_0=4.599047222222222 +lon_0=-74.08091666666667 +k=1.000000 +x_0=1000000 +y_0=1000000 +ellps=intl +towgs84=307,304,-318,0,0,0,0 +units=m +no_defs ');
 
-
 --
 -- GML
 --
@@ -113,7 +112,6 @@ SELECT 'svg_option_04', ST_AsSVG(ST_GeomFromEWKT('LINESTRING(1 1, 4 4, 5 7)'), 1
 -- Precision
 SELECT 'svg_precision_01', ST_AsSVG(ST_GeomFromEWKT('POINT(1.1111111 1.1111111)'), 1, -2);
 SELECT 'svg_precision_02', ST_AsSVG(ST_GeomFromEWKT('POINT(1.1111111 1.1111111)'), 1, 19);
-
 
 --
 -- GeoJSON

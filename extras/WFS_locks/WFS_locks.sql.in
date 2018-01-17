@@ -1,5 +1,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
@@ -7,7 +7,7 @@
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
---  
+--
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 #define CREATEFUNCTION CREATE OR REPLACE FUNCTION
@@ -20,20 +20,19 @@
 # define _VOLATILE_STRICT VOLATILE STRICT
 # define _VOLATILE VOLATILE
 # define _STRICT STRICT
-#else 
+#else
 # define _IMMUTABLE_STRICT  with(iscachable,isstrict)
 # define _IMMUTABLE with(iscachable)
 # define _STABLE_STRICT with(isstrict)
-# define _STABLE 
+# define _STABLE
 # define _VOLATILE_STRICT with(isstrict)
-# define _VOLATILE 
+# define _VOLATILE
 # define _STRICT with(isstrict)
-#endif 
+#endif
 
 #if USE_VERSION >= 73
 # define HAS_SCHEMAS 1
 #endif
-
 
 -----------------------------------------------------------------------
 -- LONG TERM LOCKING
@@ -63,7 +62,7 @@ END;
 '
 LANGUAGE 'plpgsql' _VOLATILE_STRICT;
 
--- LockRow([schema], table, rowid, auth, [expires]) 
+-- LockRow([schema], table, rowid, auth, [expires])
 -- Returns 1 if successfully obtained the lock, 0 otherwise
 CREATEFUNCTION LockRow(text, text, text, text, timestamp)
 	RETURNS int
@@ -77,14 +76,14 @@ DECLARE
 	ret int;
 	mytoid oid;
 	myrec RECORD;
-	
+
 BEGIN
 
 	IF NOT LongTransactionsEnabled() THEN
 		RAISE EXCEPTION ''Long transaction support disabled, use EnableLongTransaction() to enable.'';
 	END IF;
 
-	EXECUTE ''DELETE FROM authorization_table WHERE expires < now()''; 
+	EXECUTE ''DELETE FROM authorization_table WHERE expires < now()'';
 
 #ifdef HAS_SCHEMAS
 	SELECT c.oid INTO mytoid FROM pg_class c, pg_namespace n
@@ -98,7 +97,7 @@ BEGIN
 
 	-- RAISE NOTICE ''toid: %'', mytoid;
 
-	FOR myrec IN SELECT * FROM authorization_table WHERE 
+	FOR myrec IN SELECT * FROM authorization_table WHERE
 		toid = mytoid AND rid = myrid
 	LOOP
 		IF myrec.authid != authid THEN
@@ -148,7 +147,6 @@ CREATEFUNCTION LockRow(text, text, text, timestamp)
 #endif
 	LANGUAGE 'sql' _VOLATILE_STRICT;
 
-
 CREATEFUNCTION AddAuth(text)
 	RETURNS BOOLEAN
 	AS '
@@ -162,8 +160,8 @@ BEGIN
 	okay := ''f'';
 	FOR myrec IN SELECT * FROM pg_class WHERE relname = ''temp_lock_have_table'' LOOP
 		okay := ''t'';
-	END LOOP; 
-	IF (okay <> ''t'') THEN 
+	END LOOP;
+	IF (okay <> ''t'') THEN
 		CREATE TEMP TABLE temp_lock_have_table (transid xid, lockcode text);
 			-- this will only work from pgsql7.4 up
 			-- ON COMMIT DELETE ROWS;
@@ -180,7 +178,6 @@ BEGIN
 END;
 '
 LANGUAGE PLPGSQL;
- 
 
 -- CheckAuth( <schema>, <table>, <ridcolumn> )
 --
@@ -208,7 +205,7 @@ BEGIN
 
 	-- TODO: check for an already existing trigger ?
 
-	EXECUTE ''CREATE TRIGGER check_auth BEFORE UPDATE OR DELETE ON '' 
+	EXECUTE ''CREATE TRIGGER check_auth BEFORE UPDATE OR DELETE ON ''
 #ifdef HAS_SCHEMAS
 		|| quote_ident(schema) || ''.'' || quote_ident($2)
 #else
@@ -230,15 +227,14 @@ CREATEFUNCTION CheckAuth(text, text)
 	LANGUAGE 'SQL';
 
 CREATEFUNCTION CheckAuthTrigger()
-	RETURNS trigger AS 
+	RETURNS trigger AS
 	'@MODULE_FILENAME@', 'check_authorization'
 	LANGUAGE C;
 
 CREATEFUNCTION GetTransactionID()
-	RETURNS xid AS 
+	RETURNS xid AS
 	'@MODULE_FILENAME@', 'getTransactionID'
 	LANGUAGE C;
-
 
 --
 -- Enable Long transactions support
@@ -325,7 +321,7 @@ LANGUAGE 'plpgsql';
 --
 -- Disable Long transactions support
 --
---  (1) Drop any long_xact trigger 
+--  (1) Drop any long_xact trigger
 --  (2) Drop the authorization_table
 --  (3) KEEP the authorized_tables view
 --

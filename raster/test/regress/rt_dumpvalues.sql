@@ -45,7 +45,7 @@ CREATE OR REPLACE FUNCTION make_raster(
 					expr := replace(skip_expr, '[v]'::text, value::text);
 					EXECUTE 'SELECT (' || expr || ')::boolean' INTO result;
 				END IF;
-				
+
 				IF result IS TRUE THEN
 					values[y][x] := value;
 				END IF;
@@ -99,7 +99,6 @@ ORDER BY rid;
 DROP TABLE IF EXISTS raster_dumpvalues;
 
 SELECT (ST_DumpValues(ST_AddBand(ST_MakeEmptyRaster(0, 0, 0, 0, 1), ARRAY[ROW(NULL, '8BUI', 255, 0),ROW(NULL, '16BUI', 1, 2)]::addbandarg[]))).*;
-
 
 -- #3086
 DROP TABLE IF EXISTS raster_tile;

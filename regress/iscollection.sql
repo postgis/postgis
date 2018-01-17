@@ -25,4 +25,3 @@ SELECT 'empty collection', ST_IsCollection('GEOMETRYCOLLECTION EMPTY');
 SELECT 'collection', ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))');
 SELECT 'collection+', ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0), POINT(42 42))');
 
-

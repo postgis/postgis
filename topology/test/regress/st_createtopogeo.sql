@@ -38,7 +38,6 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql';
 
-
 -- Invalid geometries
 select null from ( select topology.CreateTopology('t', 4326) > 0 ) as ct;
 select topology.st_createtopogeo('t', null); -- Invalid geometry

@@ -32,7 +32,7 @@ CREATE OR REPLACE FUNCTION make_value_array(
 					expr := replace(skip_expr, '[v]'::text, value::text);
 					EXECUTE 'SELECT (' || expr || ')::boolean' INTO result;
 				END IF;
-				
+
 				IF result IS TRUE THEN
 					values[1][y][x] := value;
 				END IF;
@@ -64,7 +64,6 @@ INSERT INTO raster_value_arrays VALUES
 	(17, make_value_array(3, 3, 0, 3.14, '([v] IN (3.14, 12.56, 25.12))')),
 	(18, make_value_array(3, 3, 1, 1, '[v] > 8'))
 ;
-
 
 SELECT
 	id,

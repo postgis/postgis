@@ -32,7 +32,6 @@ CREATE OR REPLACE FUNCTION make_test_raster(
 		rast := ST_MakeEmptyRaster(width, height, ul_x, ul_y, 1, 1, skew_x, skew_y, 0);
 		rast := ST_AddBand(rast, 1, '8BUI', initvalue, nodataval);
 
-
 		INSERT INTO raster_intersection VALUES (rid, rast);
 
 		RETURN;

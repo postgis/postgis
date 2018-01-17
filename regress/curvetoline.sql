@@ -1,5 +1,4 @@
 
-
 -- Semantic of tolerance depends on the `toltype` argument, which can be:
 --    0: Tolerance is number of segments per quadrant
 --    1: Tolerance is max distance between curve and line
@@ -60,5 +59,4 @@ SELECT 'multiarc1.maxerr20.sym', ST_AsText(ST_SnapToGrid(ST_CurveToLine(
 	1, -- Above is max distance between curve and line
 	1  -- Symmetric
 ), 2));
-
 

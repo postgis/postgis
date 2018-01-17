@@ -223,7 +223,6 @@ VALUES ( 5, '1x1, ip:7.5,2.5 scale:5,5 skew:3,7, srid:-1, width:1, height:1',
 --- (Objective B03a)
 -----------------------------------------------------------------------
 
-
 -----------------------------------------------------------------------
 --- ST_SetSRID
 -----------------------------------------------------------------------
@@ -233,7 +232,6 @@ SELECT
     st_srid(st_setsrid(rast,srid+1)) AS obtained
  FROM rt_properties_test
 WHERE (srid+1) != st_srid(st_setsrid(rast,srid+1));
-
 
 -----------------------------------------------------------------------
 --- ST_SetScale
@@ -282,7 +280,6 @@ SELECT
 WHERE
     (skewx+2) != st_skewx(st_setskew(rast,skewx+2)) OR
     (skewy+3) != st_skewy(st_setskew(rast,skewy+3));
-
 
 -----------------------------------------------------------------------
 --- ST_SetUpperLeft

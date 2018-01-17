@@ -89,7 +89,6 @@ AS
 	'SELECT $2 OPERATOR(@extschema@.&&) $1;'
 LANGUAGE SQL IMMUTABLE STRICT;
 
-
 -- Availability: 2.3.0
 CREATE OPERATOR ~ (
 	LEFTARG = geometry,
@@ -164,7 +163,6 @@ AS
 	'SELECT $2 OPERATOR(@extschema@.&&&) $1;'
 LANGUAGE SQL IMMUTABLE STRICT;
 
-
 -- Availability: 2.3.0
 CREATE OPERATOR &&& (
 	LEFTARG    = geometry,
@@ -172,7 +170,6 @@ CREATE OPERATOR &&& (
 	PROCEDURE  = overlaps_nd,
 	COMMUTATOR = &&&
 );
-
 
 -- Availability: 2.3.0
 CREATE OPERATOR &&& (

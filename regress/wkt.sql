@@ -41,16 +41,11 @@ SELECT g,
 'POINT ZM (0 0 0)' -- broken, misses an ordinate value
 ::text as g ) as foo;
 
-
-
-
 SELECT g,
       ST_AsText(g::geometry),
       ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
 'POINT((0 0))'
 ::text as g ) as foo;
-
-
 
 -- MULTIPOINT --
 
@@ -103,7 +98,6 @@ SELECT g,
 'MULTIPOINT ZM ((0 0 0 0), (2 0 0 0))'
 ::text as g ) as foo;
 
-
 -- LINESTRING --
 
 SELECT g,
@@ -153,7 +147,6 @@ SELECT g,
       ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
 'LINESTRING ZM (0 0 0 0, 1 1 0 0)'
 ::text as g ) as foo;
-
 
 -- MULTILINESTRING --
 
@@ -217,7 +210,6 @@ SELECT g,
 'MULTILINESTRING ZM ((0 0 0 0, 2 0 0 0), (1 1 0 0, 2 2 0 0))'
 ::text as g ) as foo;
 
-
 -- POLYGON --
 
 SELECT g,
@@ -262,8 +254,6 @@ SELECT g,
 'POLYGON ZM ((0 0 0 2,10 0 0 2,10 10 0 2,0 10 0 2,0 0 0 2),(2 2 0 2,2 5 0 2,5 5 0 2,5 2 0 2,2 2 0 2))'
 ::text as g ) as foo;
 
-
-
 -- MULTIPOLYGON --
 
 SELECT g,
@@ -307,7 +297,6 @@ SELECT g,
       ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
 'MULTIPOLYGON ZM (((0 0 2 5,10 0 2 5,10 10 2 5,0 10 2 5,0 0 2 5),(2 2 2 5,2 5 2 5,5 5 2 5,5 2 2 5,2 2 2 5)))'
 ::text as g ) as foo;
-
 
 -- GEOMETRYCOLLECTION --
 
@@ -403,7 +392,6 @@ SELECT g,
       ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
 'CIRCULARSTRING ZM (0 0 0 0, 1 1 0 0, 1 2 3 4)'
 ::text as g ) as foo;
-
 
 -- COMPOUNDCURVE --
 
@@ -531,7 +519,6 @@ SELECT g,
 'MULTICURVE ZM ((5 5 1 3, 3 5 2 2, 3 3 3 1, 0 3 1 1), CIRCULARSTRING ZM (0 0 0 0, 0.2 1 3 -2, 0.5 1.4 1 2), COMPOUNDCURVE ZM (CIRCULARSTRING ZM (0 0 0 0,1 1 1 2,1 0 0 1),(1 0 0 1,0 1 5 4)))'
 ::text as g ) as foo;
 
-
 -- MULTISURFACE --
 
 SELECT g,
@@ -596,7 +583,6 @@ SELECT g,
 'POLYHEDRALSURFACE ZM (((0 0 0 0,0 0 1 0,0 1 0 2,0 0 0 0)),((0 0 0 0,0 1 0 0,1 0 0 4,0 0 0 0)),((0 0 0 0,1 0 0 0,0 0 1 6,0 0 0 0)),((1 0 0 0,0 1 0 0,0 0 1 0,1 0 0 0)))'
 ::text as g ) as foo;
 
-
 -- TRIANGLE --
 
 SELECT g,  -- invalid (non-closed ring)
@@ -635,7 +621,6 @@ SELECT g,
 'TRIANGLE ZM ((1 2 3 -1,4 5 6 -2,7 8 9 -3,1 2 3 -1))'
 ::text as g ) as foo;
 
-
 -- TIN --
 
 SELECT g,  -- invalid (non-closed ring)
@@ -673,5 +658,4 @@ SELECT g,
       ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
 'TIN ZM ( ((0 0 0 0, 0 0 1 0, 0 1 0 4, 0 0 0 0)), ((0 0 0 1, 0 1 0 2, 1 1 0 3, 0 0 0 1)) )'
 ::text as g ) as foo;
-
 

@@ -22,7 +22,7 @@ SELECT 'frechet_ls_mp', st_frechetdistance(
 SELECT 'frechet_ls_ls_3', st_frechetdistance(
 	'LINESTRING (0 0, 100 0)'::geometry,
 	'LINESTRING (0 0, 50 50, 100 0)'::geometry);
--- 70.7106781186548 
+-- 70.7106781186548
 
 -- rechet with densification
 SELECT 'frechetdensify_ls_ls', st_frechetdistance(

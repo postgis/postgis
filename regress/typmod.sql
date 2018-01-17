@@ -337,7 +337,6 @@ BEGIN
 			END;
 			-- }
 
-
 			IF NOT hasgeog THEN
 				RETURN NEXT;
 				CONTINUE;

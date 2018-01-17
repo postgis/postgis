@@ -65,7 +65,6 @@ BEGIN
         alayer, atopology;
   END IF;
 
-
   --
   -- Check type compatibility and create empty TopoGeometry
   -- 1:puntal, 2:lineal, 3:areal, 4:collection
@@ -157,7 +156,6 @@ BEGIN
   alayer := layer_id(tg);
   atopology := topology_info.name;
 
-
   -- Get tolerance, if 0 was given
   tolerance := COALESCE( NULLIF(atolerance, 0), topology._st_mintolerance(topology_info.name, ageom) );
 
@@ -185,7 +183,6 @@ BEGIN
       RAISE EXCEPTION 'Layer "%" of topology "%" is hierarchical, cannot convert a simple geometry to it.',
         alayer, atopology;
   END IF;
-
 
   --
   -- Check type compatibility and set TopoGeometry type

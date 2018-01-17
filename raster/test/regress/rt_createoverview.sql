@@ -53,14 +53,13 @@ DROP TABLE o_16_res1;
 DROP TABLE o_8_res1;
 DROP TABLE o_4_res1;
 DROP TABLE o_2_res1;
--- Keep the source table 
-
+-- Keep the source table
 
 -- Test overview with table in schema
--- 
+--
 CREATE SCHEMA oschm;
 -- offset the schema tableto distinguish it from original
--- let it be small to reduce time cost. 
+-- let it be small to reduce time cost.
 CREATE TABLE oschm.res1 AS SELECT
   ST_AddBand(
     ST_MakeEmptyRaster(10, 10, x, y, 1, -1, 0, 0, 0)
@@ -82,7 +81,7 @@ SELECT ST_CreateOverview('res1', 'r', 4)::text = 'o_4_res1';
 -- Create overview for table in public schema with explict path
 -- at same factor of schema table
 SELECT ST_CreateOverview('public.res1', 'r', 8)::text = 'public.o_8_res1';
- 
+
 -- Reset the search_path
 SET search_path to public;
 
@@ -90,7 +89,7 @@ SET search_path to public;
 -- and scale as schema table above using reset search path.
 SELECT ST_CreateOverview('res1', 'r', 4)::text = 'o_4_res1';
 
--- Check scale and extent 
+-- Check scale and extent
 -- Offset means that original raster overviews won't match
 -- extent and values only mach on schema table not public one
 SELECT r_table_schema, r_table_name tab, r_raster_column c,
@@ -134,7 +133,7 @@ DROP TABLE o_8_res1;
 DROP TABLE o_4_res1;
 DROP TABLE res1;
 
--- Reset the session environment 
+-- Reset the session environment
 -- possibly a bit harsh, but we had to set the search_path
 -- and need to reset it back to default.
 DISCARD ALL;

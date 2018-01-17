@@ -17,7 +17,6 @@
 --ORA---- 5. Initialize topology
 --ORA---- 6. Load feature tables using the SDO_TOPO_GEOMETRY constructor.
 
-
 BEGIN;
 
 -- 3. Create feature tables
@@ -31,8 +30,6 @@ CREATE TABLE features.city_streets ( -- City streets (selected edges)
 CREATE TABLE features.traffic_signs ( -- Traffic signs (selected nodes)
   feature_name VARCHAR PRIMARY KEY) with oids;
 
-
-
 -- 4. Associate feature tables with the topology.
 --    Add the three topology geometry layers to the CITY_DATA topology.
 --    Any order is OK.
@@ -45,7 +42,6 @@ SELECT topology.AddTopoGeometryColumn('city_data', 'features', 'city_streets','f
 
 --NOTYET---- 5. Initialize topology metadata.
 --NOTYET--EXECUTE topology.INITIALIZE_METADATA('CITY_DATA');
-
 
 -- 6. Load feature tables using the CreateTopoGeom constructor.
 -- Each topology feature can consist of one or more objects (face, edge, node)

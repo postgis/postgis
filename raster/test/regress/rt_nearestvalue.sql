@@ -16,7 +16,6 @@ CREATE OR REPLACE FUNCTION make_test_raster()
 		rast := ST_MakeEmptyRaster(width, height, 0, 0, 1, -1, 0, 0, 0);
 		rast := ST_AddBand(rast, 1, '8BUI', 1, 0);
 
-
 		valset := array_fill(0., ARRAY[height, width]);
 		FOR y IN 1..height LOOP
 			FOR x IN 1..width LOOP
