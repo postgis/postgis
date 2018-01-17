@@ -915,7 +915,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 		M 0 0 L 0 -1 1 -1 1 0 Z</programlisting>
 	  </refsection>
 	</refentry>
-<refentry id="ST_AsText">
+	<refentry id="ST_AsText">
 		  <refnamediv>
 			<refname>ST_AsText</refname>
 			<refpurpose>Return the Well-Known Text (WKT) representation of the geometry/geography without SRID metadata.</refpurpose>
@@ -962,7 +962,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 			</note>
 
 			<para>Availability: 1.5 - support for geography was introduced.</para>
-			<para>Enhanced: 2.3 - optional parameter precision introduced.</para>
+			<para>Enhanced: 2.5 - optional parameter precision introduced.</para>
 			<para>&sfs_compliant; s2.1.1.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.25</para>
 			<para>&curve_support;</para>
