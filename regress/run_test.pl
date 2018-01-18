@@ -1475,15 +1475,16 @@ sub upgrade_spatial_extensions
 
     if ( $OPT_WITH_SFCGAL )
     {
+			my $sql;
 			if ( semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
 			{
 				print "NOTICE: installing SFCGAL extension on upgrade "
 						. "as it was not available in version $OPT_UPGRADE_FROM\n";
-				my $sql = "CREATE EXTENSION postgis_sfcgal VERSION '${nextver}'";
+				$sql = "CREATE EXTENSION postgis_sfcgal VERSION '${nextver}'";
 			}
 			else
 			{
-				my $sql = "ALTER EXTENSION postgis_sfcgal UPDATE TO '${nextver}'";
+				$sql = "ALTER EXTENSION postgis_sfcgal UPDATE TO '${nextver}'";
 			}
       $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
       $rv = system($cmd);
