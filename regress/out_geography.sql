@@ -140,6 +140,15 @@ SELECT 'geojson_options_15', ST_AsGeoJSON(geography(ST_GeomFromEWKT('LINESTRING(
 SELECT 'geojson_options_16', ST_AsGeoJSON(geography(ST_GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 7);
 
 --
+-- Text
+--
+
+-- Precision
+SELECT 'text_precision_01', ST_AsText(geography(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)')));
+SELECT 'text_precision_02', ST_AsText(geography(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)')),2);
+
+
+--
 -- Delete inserted spatial data
 --
 DELETE FROM spatial_ref_sys;

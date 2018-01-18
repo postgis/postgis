@@ -173,6 +173,16 @@ SELECT 'pgcast_04','LINESTRING EMPTY'::geometry::path IS NULL;
 SELECT 'pgcast_05','POINT EMPTY'::geometry::point IS NULL;
 SELECT 'pgcast_06',ST_AsText('((0,0),(0,1),(1,1),(1,0))'::polygon::geometry);
 
+
+--
+-- Text
+--
+
+-- Precision
+SELECT 'text_precision_01', ST_AsText(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)'));
+SELECT 'text_precision_02', ST_AsText(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)'),2);
+
+
 --
 -- Delete inserted spatial data
 --
