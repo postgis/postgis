@@ -70,3 +70,5 @@ geojson_options_13|{"type":"LineString","crs":{"type":"name","properties":{"name
 geojson_options_14|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 geojson_options_15|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 geojson_options_16|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
+text_precision_01|POINT(111.1111111 1.1111111)
+text_precision_02|POINT(111.11 1.11)

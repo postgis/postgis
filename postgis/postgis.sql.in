@@ -4756,6 +4756,13 @@ CREATE OR REPLACE FUNCTION ST_AsText(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 750; --guess
 
+-- Availability: 2.5.0
+-- PostGIS equivalent function: AsText(geometry, int4)
+CREATE OR REPLACE FUNCTION ST_AsText(geometry, int4)
+    RETURNS TEXT
+    AS 'MODULE_PATHNAME','LWGEOM_asText'
+    LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeometryFromText(text)
 	RETURNS geometry

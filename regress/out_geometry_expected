@@ -92,3 +92,5 @@ pgcast_03|t
 pgcast_04|t
 pgcast_05|t
 pgcast_06|POLYGON((0 0,0 1,1 1,1 0,0 0))
+text_precision_01|POINT(111.1111111 1.1111111)
+text_precision_02|POINT(111.11 1.11)

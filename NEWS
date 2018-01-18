@@ -35,6 +35,8 @@ PostGIS 2.5.0
   - #3977, ST_ClusterKMeans is now faster and simpler (Darafei Praliaskouski)
   - #3982, ST_AsEncodedPolyline supports LINESTRING EMPTY and MULTIPOINT EMPTY
            (Darafei Praliaskouski)
+  - #3986, ST_AsText now has second argument to limit decimal digits 
+           (Marc Ducobu, Darafei Praliaskouski)
 
 PostGIS 2.4.0
 2017/09/30
