@@ -1325,7 +1325,7 @@ sub prepare_spatial_extensions
 				if ( semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
 				{
 					print "NOTICE: skipping SFCGAL extension create "
-							. "as not available in version $OPT_UPGRADE_FROM\n";
+							. "as not available in version '$OPT_UPGRADE_FROM'\n";
 					last;
 				}
 				$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
@@ -1493,10 +1493,10 @@ sub upgrade_spatial_extensions
 			if ( $OPT_UPGRADE_FROM eq "unpackaged" ) {
 				$sql = "CREATE EXTENSION postgis_sfcgal VERSION '${nextver}' FROM unpackaged";
 			}
-			elsif ( semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
+			elsif ( $OPT_UPGRADE_FROM && semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
 			{
 				print "NOTICE: installing SFCGAL extension on upgrade "
-						. "as it was not available in version $OPT_UPGRADE_FROM\n";
+						. "as it was not available in version '$OPT_UPGRADE_FROM'\n";
 				$sql = "CREATE EXTENSION postgis_sfcgal VERSION '${nextver}'";
 			}
 			else
