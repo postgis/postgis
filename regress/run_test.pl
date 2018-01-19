@@ -1306,6 +1306,9 @@ sub prepare_spatial_extensions
 		if ( $OPT_UPGRADE_FROM ) {
 			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
 		}
+
+		print "Preparing db '${DB}' using: ${sql}\n";
+
  		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
 		$rv = system($cmd);
   	if ( $rv ) {
@@ -1327,6 +1330,9 @@ sub prepare_spatial_extensions
 				}
 				$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
 			}
+
+			print "Preparing db '${DB}' using: ${sql}\n";
+
 			$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
 			$rv = system($cmd);
 			if ( $rv ) {
