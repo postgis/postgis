@@ -67,7 +67,7 @@ my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
 my $OPT_EXTVERSION = '';
 my $OPT_UPGRADE_PATH = '';
-my $OPT_UPGRADE_FROM = '';
+our $OPT_UPGRADE_FROM = '';
 my $OPT_UPGRADE_TO = '';
 my $VERBOSE = 0;
 
