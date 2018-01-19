@@ -518,11 +518,20 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   dnl Ensure we can link against libpq
   LIBS_SAVE="$LIBS"
   LIBS="$PGSQL_FE_LDFLAGS"
+
+  CC_SAVE="$CC"
+  CC=`"$PG_CONFIG" --cc`
+
+  CFLAGS_SAVE="$CFLAGS"
+  CFLAGS=`"$PG_CONFIG" --cflags`
+
   AC_CHECK_LIB([pq], [PQserverVersion],
     [],
     [AC_MSG_ERROR([could not find libpq])],
     [])
   LIBS="$LIBS_SAVE"
+  CC="$CC_SAVE"
+  CFLAGS="$CFLAGS_SAVE"
 
   AC_DEFINE_UNQUOTED([POSTGIS_PGSQL_VERSION], [$POSTGIS_PGSQL_VERSION], [PostgreSQL server version])
   AC_SUBST([POSTGIS_PGSQL_VERSION])
@@ -1337,7 +1346,10 @@ if test "x$with_raster" != "xno"; then
 		CPPFLAGS_SAVE="$CPPFLAGS"
 		CPPFLAGS="$LIBGDAL_CFLAGS"
 		CFLAGS_SAVE="$CFLAGS"
-		CFLAGS=""
+		CFLAGS=`"$PG_CONFIG" --cflags`
+		CC_SAVE="$CC"
+		CC=`"$PG_CONFIG" --cc`
+
 		LIBS_SAVE="$LIBS"
 		LIBS="$LIBGDAL_LDFLAGS"
 
@@ -1366,6 +1378,7 @@ if test "x$with_raster" != "xno"; then
 
 		CPPFLAGS="$CPPFLAGS_SAVE"
 		CFLAGS="$CFLAGS_SAVE"
+		CC="$CC_SAVE"
 		LIBS="$LIBS_SAVE"
 
 		AC_SUBST([LIBGDAL_CFLAGS])
