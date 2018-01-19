@@ -101,7 +101,7 @@ iterate_4d(POINT3D* curr, const POINT4D* points, uint32_t npoints, double* dista
 				{
 					dx += (points[i].x - curr->x) / distances[i];
 					dy += (points[i].y - curr->y) / distances[i];
-					dz += (points[i].y - curr->z) / distances[i];
+					dz += (points[i].z - curr->z) / distances[i];
 				}
 			}
 
