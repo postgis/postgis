@@ -275,13 +275,15 @@ select '181', ST_AsText('GEOMETRYCOLLECTION(TRIANGLE EMPTY,TIN EMPTY)');
 -- Drop test table
 DROP table test;
 
--- Make sure all postgis-referencing probin are using the module
--- version expected by postgis_lib_version()
+-- Make sure all postgis-referencing probin are using the
+-- same module version and path as expected by postgis_lib_version()
 --
-SELECT distinct 'unexpected probin', proname || ':' || probin
+SELECT DISTINCT 'unexpected probin', proname || ':' || probin
 FROM pg_proc
 WHERE probin like '%postgis%'
-	AND probin NOT LIKE '%' ||
-		substring(postgis_lib_version() from '([0-9]*\.[0-9]*)')
-		|| '%'
+   AND regexp_replace(probin, '(rt)?postgis(_[^-]*)?', '') !=
+(
+SELECT regexp_replace(probin, '(rt)?postgis(_[^-]*)?', '')
+	FROM pg_proc WHERE proname = 'postgis_lib_version'
+)
 ORDER BY 2;
