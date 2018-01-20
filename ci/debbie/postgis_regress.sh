@@ -67,10 +67,10 @@ if [ "$?" != "0" ]; then
 fi
 
 make check RUNTESTFLAGS=-v
+make install
 
 if [ "$MAKE_EXTENSION" = "1" ]; then
  echo "Running extension testing"
- make install
  make check RUNTESTFLAGS=--extension
  if [ "$?" != "0" ]; then
   exit $?
@@ -79,7 +79,6 @@ fi
 
 if [ "$DUMP_RESTORE" = "1" ]; then
  echo "Dum restore test"
- make install
  make check RUNTESTFLAGS="-v --dumprestore"
  if [ "$?" != "0" ]; then
   exit $?
@@ -89,4 +88,15 @@ fi
 if [ "$MAKE_GARDEN" = "1" ]; then
  echo "Running garden test"
  make garden
+ if [ "$?" != "0" ]; then
+  exit $?
+ fi
+fi
+
+# Test all available upgrades
+# TODO: protect via some variable ?
+utils/check_all_upgrades.sh \
+  `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
+if [ "$?" != "0" ]; then
+  exit $?
 fi
