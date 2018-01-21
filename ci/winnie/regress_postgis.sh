@@ -7,21 +7,21 @@ set -e
 #export POSTGIS_MAJOR_VERSION=2
 #export POSTGIS_MINOR_VERSION=2
 #export POSTGIS_MICRO_VERSION=0dev
-export GEOS_VER=3.7.0dev
-export GDAL_VER=2.2.2
-export PROJ_VER=4.9.3
-export SFCGAL_VER=1.3
-export PCRE_VER=8.33
-export PROTOBUF_VER=3.2.0
-export PROTOBUFC_VER=1.2.1
+# export GEOS_VER=3.7.0dev
+# export GDAL_VER=2.2.3
+# export PROJ_VER=4.9.3
+# export SFCGAL_VER=1.3.2
+# export PCRE_VER=8.33
+# export PROTOBUF_VER=3.2.0
+# export PROTOBUFC_VER=1.2.1
 
-export PROTOBUF_VER=3.2.0
-export LIBXML_VER=2.7.8
+# export PROTOBUF_VER=3.2.0
+# export LIBXML_VER=2.7.8
 
 export PROJECTS=/projects
 export MINGPROJECTS=/projects
 export PATHOLD=$PATH
-export PROTOBUF_VER=3.2.0
+
 export MAKE_EXTENSION=1
 
 
