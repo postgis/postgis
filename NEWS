@@ -1,5 +1,11 @@
-PostGIS 2.4.4
+PostGIS 2.4.4dev
 2018/MM/DD
+
+ * Bug fixes *
+  - #3978, Fix KNN when upgrading from 2.1 or older (Sandro Santilli)
+
+PostGIS 2.3.6
+2018/01/17
 
  * Enhancements *
     - #3992, Use PKG_PROG_PKG_CONFIG macro from pkg.m4 to detect pkg-config
