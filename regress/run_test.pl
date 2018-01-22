@@ -4,7 +4,7 @@
 # PostGIS - Spatial Types for PostgreSQL
 # http://postgis.net
 #
-# Copyright (C) 2012-2014 Sandro Santilli <strk@keybit.net>
+# Copyright (C) 2012-2018 Sandro Santilli <strk@kbt.io>
 # Copyright (C) 2014-2015 Regina Obe <lr@pcorp.us>
 # Copyright (C) 2012-2013 Paul Ramsey <pramsey@cleverelephant.ca>
 #
@@ -67,7 +67,7 @@ my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
 my $OPT_EXTVERSION = '';
 my $OPT_UPGRADE_PATH = '';
-my $OPT_UPGRADE_FROM = '';
+our $OPT_UPGRADE_FROM = '';
 my $OPT_UPGRADE_TO = '';
 my $VERBOSE = 0;
 
@@ -205,7 +205,7 @@ else
 	$TMPDIR = tempdir( CLEANUP => 0 );
 }
 
-mkdir $TMPDIR if ( ! -d $TMPDIR );
+mkpath $TMPDIR; # make sure tmp dir exists
 
 # Set log name
 my $REGRESS_LOG = "${TMPDIR}/regress_log";
@@ -258,6 +258,21 @@ if ( ! $libver )
 	exit(1);
 }
 
+sub semver_lessthan
+{
+  my ($a,$b) = @_;
+  my @acomp = split(/\./, $a);
+  my @bcomp = split(/\./, $b);
+	foreach my $ac (@acomp) {
+		my $bc = shift(@bcomp);
+		return 0 if not defined($bc); # $b has less components
+		return 1 if ( $ac < $bc ); # $a is less than $b
+		return 0 if ( $ac > $bc ); # $a is not less than $b
+	}
+	# $a is equal to $b so far, if $b has more elements,
+	# it is bigger
+	return @bcomp ? 1 : 0;
+}
 
 sub create_upgrade_test_objects
 {
@@ -430,7 +445,8 @@ foreach $TEST (@ARGV)
 	{
 		print " skipped (can't read any ${TEST}.{sql,dbf,tif,dmp})\n";
 		$SKIP++;
-		next;
+		# Even though we skipped this test, we will still run the cleanup
+		# scripts
 	}
 
 	if ( -r "${TEST}-post.sql" )
@@ -1290,6 +1306,9 @@ sub prepare_spatial_extensions
 		if ( $OPT_UPGRADE_FROM ) {
 			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
 		}
+
+		print "Preparing db '${DB}' using: ${sql}\n";
+
  		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
 		$rv = system($cmd);
   	if ( $rv ) {
@@ -1300,16 +1319,27 @@ sub prepare_spatial_extensions
 
 	if ( $OPT_WITH_SFCGAL )
 	{
-		my $sql = "CREATE EXTENSION postgis_sfcgal";
-		if ( $OPT_UPGRADE_FROM ) {
-			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
-		}
- 		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
-		$rv = system($cmd);
-		if ( $rv ) {
-		  fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
-		  die;
-		}
+		do {
+			my $sql = "CREATE EXTENSION postgis_sfcgal";
+			if ( $OPT_UPGRADE_FROM ) {
+				if ( semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
+				{
+					print "NOTICE: skipping SFCGAL extension create "
+							. "as not available in version '$OPT_UPGRADE_FROM'\n";
+					last;
+				}
+				$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
+			}
+
+			print "Preparing db '${DB}' using: ${sql}\n";
+
+			$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+			$rv = system($cmd);
+			if ( $rv ) {
+				fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
+				die;
+			}
+		} while (0);
 	}
 
  	return 1;
@@ -1323,6 +1353,7 @@ sub prepare_spatial
 	# Load postgis.sql into the database
 	load_sql_file("${STAGED_SCRIPTS_DIR}/postgis.sql", 1);
 	load_sql_file("${STAGED_SCRIPTS_DIR}/postgis_comments.sql", 0);
+	load_sql_file("${STAGED_SCRIPTS_DIR}/postgis_proc_set_search_path.sql", 0);
 
 	if ( $OPT_WITH_TOPO )
 	{
@@ -1336,6 +1367,7 @@ sub prepare_spatial
 		print "Loading Raster into '${DB}'\n";
 		load_sql_file("${STAGED_SCRIPTS_DIR}/rtpostgis.sql", 1);
 		load_sql_file("${STAGED_SCRIPTS_DIR}/raster_comments.sql", 0);
+		load_sql_file("${STAGED_SCRIPTS_DIR}/rtpostgis_proc_set_search_path.sql", 0);
 	}
 
 	if ( $OPT_WITH_SFCGAL )
@@ -1395,6 +1427,22 @@ sub upgrade_spatial
             die "$script not found\n";
         }
     }
+
+    if ( $OPT_WITH_SFCGAL )
+    {
+        my $script = `ls ${STAGED_SCRIPTS_DIR}/sfcgal_upgrade.sql`;
+        chomp($script);
+        if ( -e $script )
+        {
+            print "Upgrading sfcgal\n";
+            load_sql_file($script);
+        }
+        else
+        {
+            die "$script not found\n";
+        }
+    }
+
     return 1;
 }
 
@@ -1423,10 +1471,45 @@ sub upgrade_spatial_extensions
     if ( $OPT_WITH_TOPO )
     {
       my $sql = "ALTER EXTENSION postgis_topology UPDATE TO '${nextver}'";
+
+			if ( $OPT_UPGRADE_FROM eq "unpackaged" ) {
+				$sql = "CREATE EXTENSION postgis_topology VERSION '${nextver}' FROM unpackaged";
+			}
+
+			print "Upgrading PostGIS Topology in '${DB}' using: ${sql}\n" ;
+
       my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
       my $rv = system($cmd);
       if ( $rv ) {
         fail "Error encountered altering EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
+        die;
+      }
+    }
+
+    if ( $OPT_WITH_SFCGAL )
+    {
+			my $sql;
+
+			if ( $OPT_UPGRADE_FROM eq "unpackaged" ) {
+				$sql = "CREATE EXTENSION postgis_sfcgal VERSION '${nextver}' FROM unpackaged";
+			}
+			elsif ( $OPT_UPGRADE_FROM && semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
+			{
+				print "NOTICE: installing SFCGAL extension on upgrade "
+						. "as it was not available in version '$OPT_UPGRADE_FROM'\n";
+				$sql = "CREATE EXTENSION postgis_sfcgal VERSION '${nextver}'";
+			}
+			else
+			{
+				$sql = "ALTER EXTENSION postgis_sfcgal UPDATE TO '${nextver}'";
+			}
+      $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+
+			print "Upgrading PostGIS SFCGAL in '${DB}' using: ${sql}\n" ;
+
+      $rv = system($cmd);
+      if ( $rv ) {
+        fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
         die;
       }
     }
@@ -1530,7 +1613,7 @@ sub dump_restore
 
 	print "Dumping and restoring database '${DB}'\n";
 
-  $rv = system("pg_dump -Fc ${DB} -f ${DBDUMP} >> $REGRESS_LOG 2>&1");
+  $rv = system("pg_dump -Fc -f${DBDUMP} ${DB} >> $REGRESS_LOG 2>&1");
   if ( $rv ) {
     fail("Could not dump ${DB}", $REGRESS_LOG);
 		die;
