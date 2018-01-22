@@ -1,3 +1,10 @@
+PostGIS 2.3.7dev
+2018/MM/DD
+
+  * Bug Fixes and Enhancements
+
+  - #3978, Fix KNN when upgrading from 2.1 or older (Sandro Santilli)
+
 PostGIS 2.3.6
 2018/01/17
 
