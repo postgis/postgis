@@ -282,6 +282,7 @@ CREATE OPERATOR CLASS gist_geography_ops
 --	OPERATOR        8        @	,
 -- Availability: 2.2.0
 	OPERATOR        13       <-> FOR ORDER BY pg_catalog.float_ops,
+-- Availability: 2.2.0
 	FUNCTION        8        geography_gist_distance (internal, geography, int4),
 	FUNCTION        1        geography_gist_consistent (internal, geography, int4),
 	FUNCTION        2        geography_gist_union (bytea, internal),
