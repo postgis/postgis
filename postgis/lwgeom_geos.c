@@ -3627,3 +3627,46 @@ Datum ST_MinimumClearanceLine(PG_FUNCTION_ARGS)
 #endif
 }
 
+/******************************************
+ *
+ * ST_MinimumRotatedRectangle
+ *
+ ******************************************/
+Datum ST_MinimumRotatedRectangle(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_MinimumRotatedRectangle);
+Datum ST_MinimumRotatedRectangle(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 36
+	lwpgerror("The GEOS version this PostGIS binary "
+	        "was compiled against (%d) doesn't support "
+	        "'ST_MinimumRotatedRectangle' function (3.6.0+ required)",
+	        POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else
+    GSERIALIZED* input;
+	GSERIALIZED* result;
+	GEOSGeometry* input_geos;
+	GEOSGeometry* result_geos;
+    int srid;
+
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input);
+	input_geos = POSTGIS2GEOS(input);
+	if (!input_geos)
+	HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+
+	result_geos = GEOSMinimumRotatedRectangle(input_geos);
+	GEOSGeom_destroy(input_geos);
+	if (!result_geos)
+	HANDLE_GEOS_ERROR("Error computing minimum rotated rectangle");
+
+	GEOSSetSRID(result_geos, srid);
+	result = GEOS2POSTGIS(result_geos, LW_FALSE);
+	GEOSGeom_destroy(result_geos);
+
+	PG_FREE_IF_COPY(input, 0);
+	PG_RETURN_POINTER(result);
+#endif
+}

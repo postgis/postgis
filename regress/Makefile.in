@@ -229,7 +229,8 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 36),1)
 	# GEOS-3.6 adds:
 	# ST_MinimumClearance
 	TESTS += \
-		minimum_clearance
+		minimum_clearance \
+		minimum_rotated_rectangle
 endif
 
 ifeq ($(HAVE_JSON),yes)
