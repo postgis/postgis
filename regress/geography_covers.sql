@@ -17,7 +17,6 @@ SELECT c, ST_Covers(g1::geography, g2::geography) FROM
     ('geog_covers_poly_line_out', 'POLYGON((0 40, 40 40, 40 0, 0 0, 0 40))', 'LINESTRING (-10 -40, -40 -40, -40 -10, -10 -10)')
 ) AS u(c, g1, g2);
 
-
 -- poly in poly (reversed arguments)
 SELECT c, ST_CoveredBy(g1::geography, g2::geography) FROM
 ( VALUES

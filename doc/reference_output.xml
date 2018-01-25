@@ -270,7 +270,7 @@
 			<para>Returns the Well-Known Text representation of the geometry prefixed with the SRID.</para>
 
 			<note>
-			  <para>The WKT spec does not include the SRID.  To get the OGC WKT format use ST_AsText</para>
+			  <para>The WKT spec does not include the SRID.  To get the OGC WKT format use ST_AsText.</para>
 			</note>
 			<para><inlinegraphic fileref="images/warning.png" />
 				WKT format does not maintain precision so to prevent floating truncation, use ST_AsBinary or ST_AsEWKB format for transport.
@@ -390,12 +390,12 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 				</listitem>
 			  </itemizedlist>
 			</para>
-			<para>Version 1: ST_AsGeoJSON(geom) / precision=15 version=1 options=0</para>
-			<para>Version 2: ST_AsGeoJSON(geom, precision) / version=1 options=0</para>
-			<para>Version 3: ST_AsGeoJSON(geom, precision, options) / version=1</para>
-			<para>Version 4: ST_AsGeoJSON(gj_version, geom) / precision=15 options=0</para>
-			<para>Version 5: ST_AsGeoJSON(gj_version, geom, precision) /options=0</para>
-			<para>Version 6: ST_AsGeoJSON(gj_version, geom, precision,options)</para>
+			<para>Version 1: ST_AsGeoJSON(geom) / maxdecimaldigits=15 version=1 options=0</para>
+			<para>Version 2: ST_AsGeoJSON(geom, maxdecimaldigits) / version=1 options=0</para>
+			<para>Version 3: ST_AsGeoJSON(geom, maxdecimaldigits, options) / version=1</para>
+			<para>Version 4: ST_AsGeoJSON(gj_version, geom) / maxdecimaldigits=15 options=0</para>
+			<para>Version 5: ST_AsGeoJSON(gj_version, geom, maxdecimaldigits) / options=0</para>
+			<para>Version 6: ST_AsGeoJSON(gj_version, geom, maxdecimaldigits, options)</para>
 
 			<para>Availability: 1.3.4</para>
 			<para>Availability: 1.5.0 geography support was introduced.</para>
@@ -476,8 +476,8 @@ st_asgeojson
 
 		<para>Return the geometry as a Geography Markup Language (GML) element. The version parameter,
 			if specified, may be either 2 or 3. If no version parameter is
-			specified then the default is assumed to be 2. The precision argument
-			may be used to reduce the maximum number of decimal places (<varname>maxdecimaldigits</varname>)
+			specified then the default is assumed to be 2. The <varname>maxdecimaldigits</varname> argument
+			may be used to reduce the maximum number of decimal places
 			used in output (defaults to 15).</para>
 		<para>GML 2 refer to 2.1.2 version, GML 3 to 3.1.1 version</para>
 		<para>The 'options' argument is a bitfield. It could be used to define CRS output type
@@ -684,7 +684,7 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 	  <refnamediv>
 		<refname>ST_AsKML</refname>
 
-		<refpurpose>Return the geometry as a KML element. Several variants. Default version=2, default precision=15</refpurpose>
+		<refpurpose>Return the geometry as a KML element. Several variants. Default version=2, default maxdecimaldigits=15</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -915,8 +915,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 		M 0 0 L 0 -1 1 -1 1 0 Z</programlisting>
 	  </refsection>
 	</refentry>
-
-		<refentry id="ST_AsText">
+	<refentry id="ST_AsText">
 		  <refnamediv>
 			<refname>ST_AsText</refname>
 			<refpurpose>Return the Well-Known Text (WKT) representation of the geometry/geography without SRID metadata.</refpurpose>
@@ -930,7 +929,17 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 			  </funcprototype>
 			  <funcprototype>
 				<funcdef>text <function>ST_AsText</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>text <function>ST_AsText</function></funcdef>
 				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>text <function>ST_AsText</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
@@ -938,7 +947,8 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns the Well-Known Text representation of the geometry/geography.</para>
+			<para>Returns the Well-Known Text representation of the geometry/geography. Optional argument may be used to reduce the maximum number
+			of decimal digits after floating point used in output (defaults to 15).</para>
 
 			<note>
 			  <para>The WKT spec does not include the SRID.  To get the SRID as part of the data, use the non-standard
@@ -952,11 +962,11 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 			</note>
 
 			<para>Availability: 1.5 - support for geography was introduced.</para>
+			<para>Enhanced: 2.5 - optional parameter precision introduced.</para>
 			<para>&sfs_compliant; s2.1.1.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.25</para>
 			<para>&curve_support;</para>
 		  </refsection>
-
 
 		  <refsection>
 			<title>Examples</title>
@@ -969,6 +979,20 @@ F000000000000000000000000000000000000000000000000');
 		   st_astext
 --------------------------------
  POLYGON((0 0,0 1,1 1,1 0,0 0))
+(1 row)</programlisting>
+
+			<para>Providing the precision is optional.</para>
+
+			<programlisting>SELECT ST_AsText(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)'))
+          st_astext
+------------------------------
+ POINT(111.1111111 1.1111111)
+(1 row)</programlisting>
+
+			<programlisting>SELECT ST_AsText(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)'),2)
+st_astext
+--------------------
+POINT(111.11 1.11)
 (1 row)</programlisting>
 		  </refsection>
 

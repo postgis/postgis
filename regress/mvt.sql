@@ -129,7 +129,6 @@ FROM (
 	)) AS geom
 ) AS q;
 
-
 -- default values tests
 SELECT 'D1', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1, 'abcd'::text AS c2,
     ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),

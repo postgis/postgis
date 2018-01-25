@@ -57,21 +57,21 @@ sub strip_default {
 
 my $time = POSIX::strftime("%c", localtime);
 print "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
-print "-- \n";
-print "-- PostGIS - Spatial Types for PostgreSQL \n";
-print "-- http://postgis.net \n";
-print "-- \n";
-print "-- This is free software; you can redistribute and/or modify it under \n";
-print "-- the terms of the GNU General Public Licence. See the COPYING file. \n";
-print "-- \n";
+print "--\n";
+print "-- PostGIS - Spatial Types for PostgreSQL\n";
+print "-- http://postgis.net\n";
+print "--\n";
+print "-- This is free software; you can redistribute and/or modify it under\n";
+print "-- the terms of the GNU General Public Licence. See the COPYING file.\n";
+print "--\n";
 print "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
-print "-- \n";
+print "--\n";
 print "-- Generated on: " . $time . "\n";
 print "--           by: " . $0 . "\n";
 print "--         from: " . $ARGV[0] . "\n";
-print "-- \n";
+print "--\n";
 print "-- Do not edit manually, your changes will be lost.\n";
-print "-- \n";
+print "--\n";
 print "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
 print "\n";
 

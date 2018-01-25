@@ -670,13 +670,6 @@ LWGEOM* lwgeom_from_twkb(const uint8_t *twkb, size_t twkb_size, char check)
 	s.check = check;
 	s.coords = coords;
 
-	/* Handle the check catch-all values */
-	if ( check & LW_PARSER_CHECK_NONE )
-		s.check = 0;
-	else
-		s.check = check;
-
-
 	/* Read the rest of the geometry */
 	return lwgeom_from_twkb_state(&s);
 }

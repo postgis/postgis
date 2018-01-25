@@ -559,9 +559,6 @@ lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3
 		lwerror("Unsupported geometry type: %s", lwtype_name(t1));
 		return LW_FALSE;
 	}
-	/*You shouldn't being able to get here*/
-	lwerror("unspecified error in function lw_dist3d_distribute_bruteforce");
-	return LW_FALSE;
 }
 
 

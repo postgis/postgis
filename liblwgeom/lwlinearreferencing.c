@@ -555,9 +555,8 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 	int added_last_point = 0;
 	POINT4D *p = NULL, *q = NULL, *r = NULL;
 	double ordinate_value_p = 0.0, ordinate_value_q = 0.0;
-	char hasz = lwgeom_has_z(lwline_as_lwgeom(line));
-	char hasm = lwgeom_has_m(lwline_as_lwgeom(line));
-	char dims = FLAGS_NDIMS(line->flags);
+	char hasz, hasm;
+	char dims;
 
 	/* Null input, nothing we can do. */
 	if ( ! line )
@@ -565,6 +564,9 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 		lwerror("Null input geometry.");
 		return NULL;
 	}
+	hasz = lwgeom_has_z(lwline_as_lwgeom(line));
+	hasm = lwgeom_has_m(lwline_as_lwgeom(line));
+	dims = FLAGS_NDIMS(line->flags);
 
 	/* Ensure 'from' is less than 'to'. */
 	if ( to < from )
@@ -800,7 +802,8 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 		lwerror("lwgeom_clip_to_ordinate_range clipping routine returned NULL");
 
 	/* Return if we aren't going to offset the result */
-	if ( FP_EQUALS(offset, 0.0) || lwgeom_is_empty(lwcollection_as_lwgeom(out_col)) )
+	if (FP_IS_ZERO(offset) ||
+	    lwgeom_is_empty(lwcollection_as_lwgeom(out_col)))
 		return out_col;
 
 	/* Construct a collection to hold our outputs. */

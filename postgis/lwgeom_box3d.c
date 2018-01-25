@@ -487,11 +487,9 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	int rv;
 
 	/* Can't do anything with null inputs */
-	if  ( (box == NULL) && (geom == NULL) )
-		PG_RETURN_NULL();
-
+	if ((box == NULL) && (geom == NULL)) { PG_RETURN_NULL(); }
 	/* Null geometry but non-null box, return the box */
-	if (geom == NULL)
+	else if (geom == NULL)
 	{
 		result = palloc(sizeof(BOX3D));
 		memcpy(result, box, sizeof(BOX3D));

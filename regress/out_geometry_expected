@@ -5,9 +5,13 @@ gml_version_01|<gml:Point srsName="EPSG:4326"><gml:coordinates>1,1</gml:coordina
 gml_version_02|<gml:Point srsName="EPSG:4326"><gml:pos srsDimension="2">1 1</gml:pos></gml:Point>
 ERROR:  Only GML 2 and GML 3 are supported
 ERROR:  Only GML 2 and GML 3 are supported
-gml_option_01|<gml:Point srsName="EPSG:4326"><gml:coordinates>1,1</gml:coordinates></gml:Point>
-gml_option_02|<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">1 1</gml:pos></gml:Point>
-gml_option_03|<gml:Point srsName="EPSG:4326"><gml:pos>1 1</gml:pos></gml:Point>
+gml_option_01|<gml:Point srsName="EPSG:4326"><gml:coordinates>1,2</gml:coordinates></gml:Point>
+gml_option_02|<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">1 2</gml:pos></gml:Point>
+gml_option_03|<gml:Point srsName="EPSG:4326"><gml:pos>1 2</gml:pos></gml:Point>
+gml_option_04|<gml:Point srsName="EPSG:4326"><gml:pos srsDimension="2">1 2</gml:pos></gml:Point>
+gml_option_05|<gml:Point srsName="EPSG:4326"><gml:pos srsDimension="2">2 1</gml:pos></gml:Point>
+gml_option_06|<gml:Box srsName="EPSG:4326"><gml:coordinates>1,2 3,4</gml:coordinates></gml:Box>
+gml_option_07|<gml:Envelope srsName="EPSG:4326" srsDimension="2"><gml:lowerCorner>1 2</gml:lowerCorner><gml:upperCorner>3 4</gml:upperCorner></gml:Envelope>
 gml_deegree_01|<gml:Point srsName="EPSG:4326"><gml:pos srsDimension="2">1 2</gml:pos></gml:Point>
 gml_deegree_02|<gml:Point srsName="EPSG:4326"><gml:coordinates>1,2</gml:coordinates></gml:Point>
 gml_deegree_03|<gml:Point srsName="EPSG:4326"><gml:pos srsDimension="2">2 1</gml:pos></gml:Point>
@@ -88,3 +92,5 @@ pgcast_03|t
 pgcast_04|t
 pgcast_05|t
 pgcast_06|POLYGON((0 0,0 1,1 1,1 0,0 0))
+text_precision_01|POINT(111.1111111 1.1111111)
+text_precision_02|POINT(111.11 1.11)

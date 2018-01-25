@@ -8,8 +8,6 @@ SELECT AddGeometryColumn('features','land_parcels','the_geom',-1,'MULTIPOLYGON',
 SELECT AddGeometryColumn('features','city_streets','the_geom',-1,'MULTILINESTRING',2);
 SELECT AddGeometryColumn('features','traffic_signs','the_geom',-1,'MULTIPOINT',2);
 
-
-
 --ALTER TABLE features.city_streets ADD the_geom geometry;
 UPDATE features.city_streets set the_geom =
   st_multi(topology.Geometry(feature));

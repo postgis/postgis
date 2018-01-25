@@ -1,6 +1,6 @@
 CREATE TABLE "test" (
-        "num" integer,
-        "the_geom" geometry
+	"num" bigint,
+	"the_geom" geometry
 );
 
 INSERT INTO test (num, the_geom)

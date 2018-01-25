@@ -312,7 +312,6 @@ FROM X1W1X2W2() as (nx int, x1 int, w1 int, x2 int, w2 int), Y1H1Y2H2() as (ny i
 SELECT asbinary(_MapAlgebraPartsGeom(nx, ny, x1, y1, w1, h1, x2, y2, w2, h2))
 FROM X1W1X2W2() as (nx int, x1 int, w1 int, x2 int, w2 int), Y1H1Y2H2() as (ny int, y1 int, h1 int, y2 int, h2 int);
 
-
 -- First series of zones covering raster 1
 SELECT nx, ny, map[1], map[2], map[3], map[4],
        asbinary(ST_MakeBox2D(ST_Point(10 * ny + map[1], -10 * nx + 5 - map[2]), ST_Point(10 * ny + map[1] + map[3], -10 * nx + 5 - (map[2] + map[4])))::geometry)

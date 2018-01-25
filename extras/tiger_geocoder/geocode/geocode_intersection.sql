@@ -50,7 +50,7 @@ BEGIN
         var_zip := array_agg(zip) FROM zip_lookup_base WHERE statefp = in_statefp AND lower(city) LIKE lower(in_city) || '%'  ;
     END IF;
     IF var_debug THEN
-		RAISE NOTICE 'var_zip: %, city: %', quote_nullable(var_zip), quote_nullable(in_city);	
+		RAISE NOTICE 'var_zip: %, city: %', quote_nullable(var_zip), quote_nullable(in_city);
     END IF;
     var_sql := '
     WITH
@@ -84,7 +84,7 @@ BEGIN
     				FROM (SELECT * FROM tiger.edges WHERE statefp = $1) AS e INNER JOIN a2 AS a ON (e.statefp = a.statefp AND a.tlid = e.tlid)
     					INNER JOIN e1 ON (e.statefp = e1.statefp
     					AND ARRAY[e.tnidf, e.tnidt] && ARRAY[e1.tnidf, e1.tnidt] )
-    					
+
     				WHERE (lower(e.fullname) = $7 or lower(a.name) LIKE $4 || ''%'')
     				ORDER BY CASE WHEN lower(a.name) = $4 THEN 0 ELSE 1 END + CASE WHEN lower(e.fullname) = $7 THEN 0 ELSE 1 END
     				LIMIT 5000

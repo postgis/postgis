@@ -394,19 +394,18 @@ getPoint3dz_cp(const POINTARRAY *pa, uint32_t n)
 	return (const POINT3DZ*)getPoint_internal(pa, n);
 }
 
-
 const POINT4D*
-getPoint4d_cp(const POINTARRAY *pa, uint32_t n)
+getPoint4d_cp(const POINTARRAY* pa, uint32_t n)
 {
-	if ( ! pa ) return 0;
+	if (!pa) return 0;
 
-	if ( ! (FLAGS_GET_Z(pa->flags) && FLAGS_GET_Z(pa->flags)) )
+	if (!(FLAGS_GET_Z(pa->flags) && FLAGS_GET_M(pa->flags)))
 	{
 		lwerror("getPoint4d_cp: no Z and M coordinates in point array");
 		return 0; /*error */
 	}
 
-	if ( n>=pa->npoints )
+	if (n >= pa->npoints)
 	{
 		lwerror("getPoint4d_cp: point offset (%d) out of range", n);
 		return 0; /*error */
@@ -414,8 +413,6 @@ getPoint4d_cp(const POINTARRAY *pa, uint32_t n)
 
 	return (const POINT4D*)getPoint_internal(pa, n);
 }
-
-
 
 /*
  * set point N to the given value
@@ -707,11 +704,7 @@ void
 interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, double F)
 {
 #if PARANOIA_LEVEL > 0
-	double absF=fabs(F);
-	if ( absF < 0 || absF > 1 )
-	{
-		lwerror("interpolate_point4d: invalid F (%g)", F);
-	}
+	if (F < 0 || F > 1) lwerror("interpolate_point4d: invalid F (%g)", F);
 #endif
 	I->x=A->x+((B->x-A->x)*F);
 	I->y=A->y+((B->y-A->y)*F);

@@ -97,7 +97,6 @@ BEGIN
     RAISE DEBUG '%', sql;
     EXECUTE sql INTO geom;
 
-
   ELSIF tg.type = 2 THEN -- [multi]line -- }{
 
     sql :=

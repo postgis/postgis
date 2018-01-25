@@ -96,4 +96,3 @@ INSERT INTO features.city_streets VALUES ('R1a', -- Feature name
 
 --END;
 
-

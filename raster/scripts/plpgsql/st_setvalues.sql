@@ -159,7 +159,6 @@ CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8)
     $$
     LANGUAGE 'plpgsql';
 
-
 -- Test
 SELECT ST_SetValues(ST_TestRaster(0, 0, 1), 2, 2, 1, 1, 0)
 
@@ -380,6 +379,4 @@ FROM (SELECT ST_PixelAsPolygons(ST_TestRaster(0, 0, 1)) as pix) foo
 
 SELECT ST_AsBinary((pix).geom), (pix).val
 FROM (SELECT ST_PixelAsPolygons(ST_SetValues(ST_TestRaster(0, 0, 1), 2, 1, 3, 1, ST_TestRaster(3, 0, 3))) as pix) foo
-
-
 

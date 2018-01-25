@@ -69,7 +69,6 @@ SELECT c, ST_ContainsProperly(ply, pt) FROM
 ('containsproperly104', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POINT(0 12)')
 ) AS v(c,ply,pt);
 
-
 -- PIP - point vertically aligned with polygon vertex, poly first
 SELECT 'intersects105', ST_Intersects(p, ST_GeomFromText('POINT(521513 5377804)', 32631)) FROM
 ( VALUES
@@ -98,7 +97,6 @@ SELECT 'intersects108', ST_Intersects(ST_GeomFromText('POINT(521543 5377804)', 3
 	(ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631)),
 	(ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631))
 ) AS v(p);
-
 
 -- PIP - point vertically aligned with polygon vertex, poly first
 SELECT 'contains105', ST_Contains(p, ST_GeomFromText('POINT(521513 5377804)', 32631)) FROM
@@ -187,7 +185,6 @@ SELECT 'covers108', ST_Covers(ST_GeomFromText('POINT(521543 5377804)', 32631), p
 	(ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631))
 ) AS v(p);
 
-
 SELECT c, ST_Intersects(p1, p2) AS intersects_p1p2, ST_Intersects(p2, p1) AS intersects_p2p1 FROM
 ( VALUES
 ('intersects200', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POLYGON((2 2, 2 3, 3 3, 3 2, 2 2))'),
@@ -268,7 +265,6 @@ SELECT c, ST_Contains(p1, p2) AS contains_p1p2, ST_Contains(p2, p1) AS contains_
 ('types113', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'LINESTRING(0 0, 0 10, 10 10, 10 0)'),
 ('types114', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'LINESTRING(0 0, 0 10, 10 10, 10 0)')
 ) AS v(c,p1,p2);
-
 
 SELECT 'intersects310', ST_intersects('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', p) FROM ( VALUES
 ('LINESTRING(1 10, 9 10, 9 8)'),('LINESTRING(1 10, 9 10, 9 8)'),('LINESTRING(1 10, 9 10, 9 8)')

@@ -71,14 +71,16 @@ if [ "$?" != "0" ]; then
   exit $?
 fi
 
-make check RUNTESTFLAGS=-v
+export RUNTESTFLAGS=-v
+
+make check
 
 ## install so we can test upgrades/dump-restores etc.
 make install
 
 if [ "$MAKE_EXTENSION" = "1" ]; then
  echo "Running extension testing"
- make check RUNTESTFLAGS=--extension
+ make check RUNTESTFLAGS="$RUNTESTFLAGS --extension"
  if [ "$?" != "0" ]; then
   exit $?
  fi
@@ -86,7 +88,7 @@ fi
 
 if [ "$DUMP_RESTORE" = "1" ]; then
  echo "Dum restore test"
- make check RUNTESTFLAGS="-v --dumprestore"
+ make check RUNTESTFLAGS="$RUNTESTFLAGS --dumprestore"
  if [ "$?" != "0" ]; then
   exit $?
  fi

@@ -1,11 +1,7 @@
 SET postgis.backend = 'sfcgal';
 --- regression test for postGIS
 
-
-
 --- assume datatypes already defined
-
-
 
 --- basic datatypes (correct)
 
@@ -51,7 +47,6 @@ select '33',ST_asewkt('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)) )'::GEOMETR
 select '34',ST_asewkt('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) )'::GEOMETRY) as geom;
 select '35',ST_asewkt('MULTIPOLYGON( ((0 0 0, 10 0 0, 10 10 0, 0 10 0, 0 0 0)),( (0 0 0, 10 0 0, 10 10 0, 0 10 0, 0 0 0),(5 5 0, 7 5 0, 7 7 0, 5 7 0, 5 5 0) ) ,( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7 1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) )'::GEOMETRY) as geom;
 
-
 select '36',ST_asewkt('GEOMETRYCOLLECTION(MULTIPOINT( 1 2))'::GEOMETRY);
 select '37',ST_asewkt('GEOMETRYCOLLECTION(MULTIPOINT( 1 2 3))'::GEOMETRY);
 select '38',ST_asewkt('GEOMETRYCOLLECTION(MULTIPOINT( 1 2 3, 5 6 7, 8 9 10, 11 12 13))'::GEOMETRY);
@@ -80,7 +75,6 @@ select '56', ST_asewkt('POLYGON( (0 0, 10 0, 10 10, 0 10) )'::GEOMETRY);
 select '57', ST_asewkt('POLYGON( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7) )'::GEOMETRY);
 select '58', ST_asewkt('MULTILINESTRING((0 0, 1 1),(0 0, 1 1, 2 2,) )'::GEOMETRY);
 
-
 --- funny results
 
 select '59',ST_asewkt('POINT(1 2 3, 4 5 6)'::GEOMETRY);
@@ -91,7 +85,6 @@ select '63',regexp_replace(ST_asewkt('POINT( -1e700 0)'::GEOMETRY), E'(Infinity|
 --select '62',ST_asewkt('POINT( 1e700 0)'::GEOMETRY);
 --select '63',ST_asewkt('POINT( -1e700 0)'::GEOMETRY);
 select '64',ST_asewkt('MULTIPOINT(1 1, 2 2'::GEOMETRY);
-
 
 --- is_same() testing
 
@@ -116,7 +109,6 @@ select '72a',ST_OrderingEquals('MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY,'GEOMETRYCOL
 select '73','MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY ~= 'GEOMETRYCOLLECTION(MULTIPOINT(1 2 3, 4 5 6))'::GEOMETRY as bool;
 select '73a',ST_OrderingEquals('MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY,'GEOMETRYCOLLECTION(MULTIPOINT(1 2 3, 4 5 6))'::GEOMETRY) as bool;
 
-
 select '74','LINESTRING(1 1,2 2)'::GEOMETRY ~= 'POINT(1 1)'::GEOMETRY as bool;
 select '74a',ST_OrderingEquals('LINESTRING(1 1,2 2)'::GEOMETRY,'POINT(1 1)'::GEOMETRY) as bool;
 select '75','LINESTRING(1 1, 2 2)'::GEOMETRY ~= 'LINESTRING(2 2, 1 1)'::GEOMETRY as bool;
@@ -133,7 +125,6 @@ select '79','POINT(2 1)'::GEOMETRY &< 'POINT(1 1)'::GEOMETRY as bool;
 select '80','POINT(1 1)'::GEOMETRY << 'POINT(1 1)'::GEOMETRY as bool;
 select '81','POINT(1 1)'::GEOMETRY << 'POINT(2 1)'::GEOMETRY as bool;
 select '82','POINT(2 1)'::GEOMETRY << 'POINT(1 1)'::GEOMETRY as bool;
-
 
 select '83','POINT(1 1)'::GEOMETRY &> 'POINT(1 1)'::GEOMETRY as bool;
 select '84','POINT(1 1)'::GEOMETRY &> 'POINT(2 1)'::GEOMETRY as bool;
@@ -170,8 +161,6 @@ select '103','MULTIPOINT(5 5, 7 7)'::GEOMETRY @ 'MULTIPOINT(0 0, 10 10)'::GEOMET
 select '104','MULTIPOINT(0 0, 7 7)'::GEOMETRY @ 'MULTIPOINT(0 0, 10 10)'::GEOMETRY as bool;
 select '105','MULTIPOINT(-0.0001 0, 7 7)'::GEOMETRY @ 'MULTIPOINT(0 0, 10 10)'::GEOMETRY as bool;
 
-
-
 --- function testing
 --- conversion function
 
@@ -198,14 +187,11 @@ select '112',ST_NumGeometries('GEOMETRYCOLLECTION(POINT(1 1), LINESTRING( 1 1 , 
 
 ---selection
 
-
-
 --- TOAST testing
 
 -- create a table with data that will be TOASTed (even after compression)
 create table TEST(a GEOMETRY, b GEOMETRY);
 \i regress_biginsert.sql
-
 
 ---test basic ops on this
 
@@ -286,17 +272,18 @@ select '179', ST_AsText('MULTICURVE EMPTY');
 select '180', ST_AsText('GEOMETRYCOLLECTION EMPTY');
 select '181', ST_AsText('GEOMETRYCOLLECTION(TRIANGLE EMPTY,TIN EMPTY)');
 
-
 -- Drop test table
 DROP table test;
 
--- Make sure all postgis-referencing probin are using the module
--- version expected by postgis_lib_version()
+-- Make sure all postgis-referencing probin are using the
+-- same module version and path as expected by postgis_lib_version()
 --
-SELECT distinct 'unexpected probin', proname || ':' || probin
+SELECT DISTINCT 'unexpected probin', proname || ':' || probin
 FROM pg_proc
 WHERE probin like '%postgis%'
-	AND probin NOT LIKE '%' ||
-		substring(postgis_lib_version() from '([0-9]*\.[0-9]*)')
-		|| '%'
+   AND regexp_replace(probin, '(rt)?postgis(_[^-]*)?', '') !=
+(
+SELECT regexp_replace(probin, '(rt)?postgis(_[^-]*)?', '')
+	FROM pg_proc WHERE proname = 'postgis_lib_version'
+)
 ORDER BY 2;

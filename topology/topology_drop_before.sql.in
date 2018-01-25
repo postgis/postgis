@@ -5,7 +5,7 @@
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
 --
---  
+--
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- These are functions where the argument names may have changed  --
 -- so have to be dropped before upgrade can happen for 9.0+ --

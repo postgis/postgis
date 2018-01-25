@@ -64,8 +64,7 @@ static void encode_keys(struct geobuf_agg_context *ctx)
 		Oid typoid = getBaseType(tupdesc->attrs[i].atttypid);
 		char *tkey = tupdesc->attrs[i].attname.data;
 #endif
-		char *key = palloc(strlen(tkey) + 1);
-		strcpy(key, tkey);
+		char *key = pstrdup(tkey);
 		if (ctx->geom_name == NULL) {
 			if (!geom_found && typoid == TypenameGetTypid("geometry")) {
 				ctx->geom_index = i;

@@ -23,4 +23,3 @@ CREATE OR REPLACE FUNCTION ST_SetArea(rast raster, band, x int, y int, width int
     $$
     LANGUAGE 'plpgsql';
 
-

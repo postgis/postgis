@@ -34,3 +34,11 @@ ERROR:  Empty geometry
 ST_Angle_2_lines|4.71238898038469
 #3965|25|25
 #3971|t
+typmod_point_4326|(Point,4326)
+typmod_point_0|(Point)
+NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
+typmod_point_-1|(Point)
+typmod_pointzm_0|(PointZM)
+typmod_geometry_0|
+typmod_geometry_4326|(Geometry,4326)
+ERROR:  Invalid geometry type modifier: Geogrpahy

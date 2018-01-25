@@ -77,7 +77,6 @@ Release procedure
 	   a) Replace PostGIS_* string params with new version
 	   b) Replace repository url with new branch repo url
 	   c) Update the PostGIS_trunk by updating the PostGIS_* string params
-	   d) create a new tagged branch job from latest tagged (and repeat a, b for this new tagged)
 
 	   Go to: ​https://trac.osgeo.org/postgis/ edit the matrix to reflect new branch
 
@@ -87,8 +86,10 @@ Release procedure
    $ rev=x.x.x
    $ svn copy -m "Tagged release $rev" $base/branches/$brev $base/tags/$rev
 - Run: sh make_dist.sh $rev (note, debbie should have already done this,
-      and the file will be waiting in postgis.net/stuff)
+      and the file will be waiting in postgis.net/stuff.  You might need to wait a few minutes to see it.)
+      If impatient check status of job - https://debbie.postgis.net/job/PostGIS_Make_Dist/
 - Documentation should also have been built and should be in postgis.net/stuff
+  (this sometimes takes sometime so wait 15 minutes)
 - Test generated tarball (including extension upgrade)
 - Copy tarball, pdf, doc-html.. to http://download.osgeo.org/postgis/ web site and edit postgis.net/source page
 - Announce on e-mail

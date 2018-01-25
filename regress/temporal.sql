@@ -66,7 +66,6 @@ SELECT 'cpad4', ST_DistanceCPA('LINESTRINGM(0 0 0, 10 0 10)'::geometry
 SELECT 'invalid', ST_DistanceCPA('LINESTRING(0 0 0, 1 0 0)'::geometry
             ,'LINESTRING(0 0 3 0, 1 0 2 1)'::geometry);
 
-
 ----------------------------------------
 --
 -- ST_CPAWithin

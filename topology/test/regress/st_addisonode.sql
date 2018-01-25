@@ -5,7 +5,6 @@ set client_min_messages to WARNING;
 
 \i load_topology.sql
 
-
 -- NULL exceptions
 select ST_AddIsoNode(NULL, 0, 'POINT(1 4)');
 select ST_AddIsoNode('tt', 0, NULL);

@@ -92,11 +92,9 @@ SELECT DISTINCT rid
 FROM srtm_22_03_tiled, rect3
 WHERE st_intersects(rast, geom)
 
-
 SELECT rid, id, ST_GeomExtent2RasterCoord(rast, geom)
 FROM srtm_22_03_tiled, rect3
 WHERE st_intersects(rast, geom)
-
 
 SELECT (ext).x1, (ext).y1, (ext).x2, (ext).y2 FROM (SELECT ST_GeomExtent2RasterCoord(rast, geom) ext FROM srtm_22_03_tiled, rect3
 WHERE st_intersects(rast, geom)) foo

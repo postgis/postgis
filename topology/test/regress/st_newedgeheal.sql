@@ -176,7 +176,6 @@ SELECT '#1998.-', topology.DropTopology('t1998');
 -------------------------------------------------------------------------
 -------------------------------------------------------------------------
 
-
 -- TODO: test registered but unexistent topology
 -- TODO: test registered but corrupted topology
 --       (missing node, edge, relation...)

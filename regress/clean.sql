@@ -44,7 +44,6 @@ SELECT origin,caseno,
        (st_isvaliddetail(orig)).valid
   FROM clean_cases;
 
-
 SELECT '#1719.1', ST_AsEWKT(ST_MakeValid('POINT(0 0)'));
 SELECT '#1719.2', ST_AsEWKT(ST_MakeValid('GEOMETRYCOLLECTION(POINT(0 0),MULTIPOINT(3 4,5 2),LINESTRING(4 4, 4 4),POLYGON((0 0,10 10,0 10,10 0,0 0)))'));
 SELECT '#1719.3', ST_AsEWKT(ST_MakeValid('MULTIPOINT(3 4,5 2)'));

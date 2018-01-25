@@ -48,4 +48,3 @@ select '6s', ST_IsValid(
 select '5r', ST_IsValidReason(
 'POLYGON ((70 250, 40 500, 100 400, 70 250, 80 350, 60 350, 70 250))' , 1);
 
-

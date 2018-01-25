@@ -119,8 +119,7 @@ int getSRIDbySRS(const char* srs)
 	char query[256];
 	int srid, err;
 
-	if (srs == NULL)
-		return 0;
+	if (!srs) return 0;
 
 	if (SPI_OK_CONNECT != SPI_connect ())
 	{
@@ -166,11 +165,6 @@ int getSRIDbySRS(const char* srs)
 	}
 
 	srid = atoi(SPI_getvalue(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1));
-	if ( ! srs )
-	{
-		SPI_finish();
-		return 0;
-	}
 
 	SPI_finish();
 
@@ -215,18 +209,18 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	geom = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Retrieve precision if any (default is max) */
-	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
+	if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
 	{
 		precision = PG_GETARG_INT32(2);
 		/* TODO: leave this to liblwgeom ? */
-		if ( precision > DBL_DIG )
+		if (precision > DBL_DIG)
 			precision = DBL_DIG;
-		else if ( precision < 0 ) precision = 0;
+		else if (precision < 0)
+			precision = 0;
 	}
 
 	/* retrieve option */
-	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
-		option = PG_GETARG_INT32(3);
+	if (PG_NARGS() > 3 && !PG_ARGISNULL(3)) option = PG_GETARG_INT32(3);
 
 	/* retrieve prefix */
 	if (PG_NARGS() >4 && !PG_ARGISNULL(4))
@@ -270,21 +264,38 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	else if (option & 1) srs = getSRSbySRID(srid, false);
 	else                 srs = getSRSbySRID(srid, true);
 
-	if (option & 2)  lwopts &= ~LW_GML_IS_DIMS;
-	if (option & 4)  lwopts |= LW_GML_SHORTLINE;
+	if (option & 2) lwopts &= ~LW_GML_IS_DIMS;
+	if (option & 4) lwopts |= LW_GML_SHORTLINE;
+	if (option & 8)
+	{
+		elog(ERROR,
+		     "Options %d passed to ST_AsGML(geography) sets "
+		     "unsupported value 8",
+		     option);
+		PG_RETURN_NULL();
+	}
 	if (option & 16) lwopts |= LW_GML_IS_DEGREE;
-        if (option & 32) lwopts |= LW_GML_EXTENT;
+	if (option & 32) lwopts |= LW_GML_EXTENT;
 
 	lwgeom = lwgeom_from_gserialized(geom);
 
-	if (version == 2 && lwopts & LW_GML_EXTENT)
-		gml = lwgeom_extent_to_gml2(lwgeom, srs, precision, prefix);
-	else if (version == 2)
-		gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
-	else if (version == 3 && lwopts & LW_GML_EXTENT)
-		gml = lwgeom_extent_to_gml3(lwgeom, srs, precision, lwopts, prefix);
-	else if (version == 3)
-		gml = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix, gml_id);
+	if (version == 2)
+	{
+		if (lwopts & LW_GML_EXTENT)
+			gml = lwgeom_extent_to_gml2(
+			    lwgeom, srs, precision, prefix);
+		else
+			gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
+	}
+	if (version == 3)
+	{
+		if (lwopts & LW_GML_EXTENT)
+			gml = lwgeom_extent_to_gml3(
+			    lwgeom, srs, precision, lwopts, prefix);
+		else
+			gml = lwgeom_to_gml3(
+			    lwgeom, srs, precision, lwopts, prefix, gml_id);
+	}
 
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 1);
