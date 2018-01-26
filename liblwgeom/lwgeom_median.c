@@ -94,7 +94,7 @@ iterate_4d(POINT3D* curr, const POINT4D* points, uint32_t npoints, double* dista
 			double dx = 0;
 			double dy = 0;
 			double dz = 0;
-			double r_inv;
+			double d_sqr;
 			for (i = 0; i < npoints; i++)
 			{
 				if (distances[i] > DBL_EPSILON)
@@ -105,11 +105,15 @@ iterate_4d(POINT3D* curr, const POINT4D* points, uint32_t npoints, double* dista
 				}
 			}
 
-			r_inv = 1.0 / sqrt ( dx*dx + dy*dy + dz*dz );
-
-			next.x = FP_MAX(0, 1.0 - r_inv)*next.x + FP_MIN(1.0, r_inv)*curr->x;
-			next.y = FP_MAX(0, 1.0 - r_inv)*next.y + FP_MIN(1.0, r_inv)*curr->y;
-			next.z = FP_MAX(0, 1.0 - r_inv)*next.z + FP_MIN(1.0, r_inv)*curr->z;
+			d_sqr = sqrt(dx*dx + dy*dy + dz*dz);
+			/* Avoid division by zero if the intermediate point is the median */
+			if (d_sqr > DBL_EPSILON)
+			{
+				double r_inv = FP_MAX(0, 1.0 / d_sqr);
+				next.x = (1.0 - r_inv)*next.x + r_inv*curr->x;
+				next.y = (1.0 - r_inv)*next.y + r_inv*curr->y;
+				next.z = (1.0 - r_inv)*next.z + r_inv*curr->z;
+			}
 		}
 
 		delta = distance3d_pt_pt(curr, &next);

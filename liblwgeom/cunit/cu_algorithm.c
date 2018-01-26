@@ -1122,8 +1122,9 @@ static void do_median_test(char* input, char* expected, int fail_if_not_converge
 	LWPOINT* expected_result = NULL;
 	POINT4D actual_pt;
 	POINT4D expected_pt;
+	const double tolerance = FP_TOLERANCE / 10.0;
 
-	LWPOINT* result = lwgeom_median(g, FP_TOLERANCE / 10.0, iter_count, fail_if_not_converged);
+	LWPOINT* result = lwgeom_median(g, tolerance, iter_count, fail_if_not_converged);
 	int passed = LW_FALSE;
 
 	if (expected != NULL)
@@ -1143,10 +1144,10 @@ static void do_median_test(char* input, char* expected, int fail_if_not_converge
 		passed = passed && (lwgeom_has_z((LWGEOM*) expected_result) == lwgeom_has_z((LWGEOM*) result));
 		if (!lwgeom_is_empty((LWGEOM*) result))
 		{
-			passed = passed && FP_EQUALS(actual_pt.x, expected_pt.x);
-			passed = passed && FP_EQUALS(actual_pt.y, expected_pt.y);
-			passed = passed && (!lwgeom_has_z((LWGEOM*) expected_result) || FP_EQUALS(actual_pt.z, expected_pt.z));
-			passed = passed && (!lwgeom_has_m((LWGEOM*) expected_result) || FP_EQUALS(actual_pt.m, expected_pt.m));
+			passed = passed && abs(actual_pt.x - expected_pt.x) < tolerance;
+			passed = passed && abs(actual_pt.y - expected_pt.y) < tolerance;
+			passed = passed && (!lwgeom_has_z((LWGEOM*) expected_result) || abs(actual_pt.z - expected_pt.z) < tolerance);
+			passed = passed && (!lwgeom_has_m((LWGEOM*) expected_result) || abs(actual_pt.m - expected_pt.m) < tolerance);
 		}
 		if (!passed)
 			printf("median_test input %s (parsed %s) expected %s got %s\n", input, lwgeom_to_ewkt(g), lwgeom_to_ewkt((LWGEOM*) expected_result), lwgeom_to_ewkt((LWGEOM*) result));
@@ -1229,6 +1230,19 @@ static void test_median_robustness(void)
 	/* Unsupported geometry type */
 	do_median_test("POLYGON((1 0,0 1,1 2,2 1,1 0))", NULL, LW_TRUE, 1000);
 	do_median_test("POLYGON((1 0,0 1,1 2,2 1,1 0))", NULL, LW_FALSE, 1000);
+
+	/* Intermediate point included in the set */
+	do_median_test("MULTIPOINT ZM ("
+			"(0 0 20000 0.5),"
+			"(0 0 59000 0.5),"
+			"(0 48000 -20000 1.3),"
+			"(0 -48000 -20000 1.3),"
+			"(0 -3000 -3472.22222222222262644208967685699462890625 1),"
+			"(0 3000 3472.22222222222262644208967685699462890625 1),"
+			"(0 0 -1644.736842105263121993630193173885345458984375 1),"
+			"(0 0 1644.736842105263121993630193173885345458984375 1)"
+			")",
+		"POINT (0 0 0)", LW_TRUE, 296);
 }
 
 static void test_point_density(void)
