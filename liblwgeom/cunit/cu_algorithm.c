@@ -1230,6 +1230,19 @@ static void test_median_robustness(void)
 	/* Unsupported geometry type */
 	do_median_test("POLYGON((1 0,0 1,1 2,2 1,1 0))", NULL, LW_TRUE, 1000);
 	do_median_test("POLYGON((1 0,0 1,1 2,2 1,1 0))", NULL, LW_FALSE, 1000);
+
+	/* Intermediate point included in the set */
+	do_median_test("MULTIPOINT ZM ("
+			"(0 0 20000 0.5),"
+			"(0 0 59000 0.5),"
+			"(0 48000 -20000 1.3),"
+			"(0 -48000 -20000 1.3),"
+			"(0 -3000 -3472.22222222222262644208967685699462890625 1),"
+			"(0 3000 3472.22222222222262644208967685699462890625 1),"
+			"(0 0 -1644.736842105263121993630193173885345458984375 1),"
+			"(0 0 1644.736842105263121993630193173885345458984375 1)"
+			")",
+		"POINT (0 0 0)", LW_TRUE, 296);
 }
 
 static void test_point_density(void)
