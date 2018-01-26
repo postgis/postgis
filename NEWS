@@ -4,6 +4,7 @@ PostGIS 2.4.4dev
  * Bug fixes *
   - #3978, Fix KNN when upgrading from 2.1 or older (Sandro Santilli)
   - #4004, Avoid memory exhaustion when building a btree index (Edmund Horner)
+  - #4003, lwpoly_construct_circle: Avoid division by zero (Raúl Marín Rodríguez)
 
 PostGIS 2.3.6
 2018/01/17
