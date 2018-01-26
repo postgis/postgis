@@ -98,13 +98,13 @@ LWPOLY*
 lwpoly_construct_circle(int srid, double x, double y, double radius, uint32_t segments_per_quarter, char exterior)
 {
 	const int segments = 4*segments_per_quarter;
-	const double theta = 2*M_PI / segments;
+	double theta;
 	LWPOLY *lwpoly;
 	POINTARRAY *pa;
 	POINT4D pt;
 	uint32_t i;
 
-	if (segments_per_quarter < 1)
+	if (segments_per_quarter == 0)
 	{
 		lwerror("Need at least one segment per quarter-circle.");
 		return NULL;
@@ -115,6 +115,8 @@ lwpoly_construct_circle(int srid, double x, double y, double radius, uint32_t se
 		lwerror("Radius must be positive.");
 		return NULL;
 	}
+
+	theta = 2*M_PI / segments;
 
 	lwpoly = lwpoly_construct_empty(srid, LW_FALSE, LW_FALSE);
 	pa = ptarray_construct_empty(LW_FALSE, LW_FALSE, segments + 1);

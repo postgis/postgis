@@ -4,6 +4,8 @@ PostGIS 2.3.7dev
   * Bug Fixes and Enhancements
 
   - #3978, Fix KNN when upgrading from 2.1 or older (Sandro Santilli)
+  - #4003, lwpoly_construct_circle: Avoid division by zero (Raúl Marín Rodríguez)
+
 
 PostGIS 2.3.6
 2018/01/17
