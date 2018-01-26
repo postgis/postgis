@@ -34,7 +34,7 @@ DECLARE
     ipx float8;
     ipy float8;
 BEGIN
-	
+
     -- compute some sizes
     -- each tile extent width is extent.width / gridRows
     scalex = ((ST_xmax(extent)-ST_xmin(extent))/gridCols)/tileWidth;

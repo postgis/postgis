@@ -159,7 +159,7 @@ lwline_same(const LWLINE *l1, const LWLINE *l2)
 LWLINE *
 lwline_from_lwgeom_array(int srid, uint32_t ngeoms, LWGEOM **geoms)
 {
-	int i;
+	uint32_t i;
 	int hasz = LW_FALSE;
 	int hasm = LW_FALSE;
 	POINTARRAY *pa;
@@ -236,7 +236,7 @@ lwline_from_lwgeom_array(int srid, uint32_t ngeoms, LWGEOM **geoms)
 LWLINE *
 lwline_from_ptarray(int srid, uint32_t npoints, LWPOINT **points)
 {
- 	int i;
+ 	uint32_t i;
 	int hasz = LW_FALSE;
 	int hasm = LW_FALSE;
 	POINTARRAY *pa;
@@ -315,13 +315,13 @@ lwline_from_lwmpoint(int srid, const LWMPOINT *mpoint)
 * Returns NULL if the geometry is empty or the index invalid.
 */
 LWPOINT*
-lwline_get_lwpoint(const LWLINE *line, int where)
+lwline_get_lwpoint(const LWLINE *line, uint32_t where)
 {
 	POINT4D pt;
 	LWPOINT *lwpoint;
 	POINTARRAY *pa;
 
-	if ( lwline_is_empty(line) || where < 0 || where >= line->points->npoints )
+	if ( lwline_is_empty(line) || where >= line->points->npoints )
 		return NULL;
 
 	pa = ptarray_construct_empty(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1);
@@ -333,7 +333,7 @@ lwline_get_lwpoint(const LWLINE *line, int where)
 
 
 int
-lwline_add_lwpoint(LWLINE *line, LWPOINT *point, int where)
+lwline_add_lwpoint(LWLINE *line, LWPOINT *point, uint32_t where)
 {
 	POINT4D pt;
 	getPoint4d_p(point->point, 0, &pt);
@@ -516,7 +516,7 @@ int lwline_is_empty(const LWLINE *line)
 }
 
 
-int lwline_count_vertices(LWLINE *line)
+uint32_t lwline_count_vertices(LWLINE *line)
 {
 	assert(line);
 	if ( ! line->points )

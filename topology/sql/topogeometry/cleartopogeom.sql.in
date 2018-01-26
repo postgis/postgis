@@ -42,7 +42,6 @@ BEGIN
 #endif
   EXECUTE sql;
 
-
   RETURN tg;
 
 END

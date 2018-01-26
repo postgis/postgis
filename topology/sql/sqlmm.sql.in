@@ -30,7 +30,6 @@ CREATE TYPE topology.GetFaceEdges_ReturnType AS (
   edge integer
 );
 
-
 --{
 -- Topo-Geo and Topo-Net 3: Routine Details
 -- X.3.5
@@ -129,7 +128,6 @@ CREATE OR REPLACE FUNCTION topology.ST_RemEdgeModFace(toponame varchar, e1id int
   LANGUAGE 'c' VOLATILE;
 --} ST_RemEdgeModFace
 
-
 --{
 -- Topo-Geo and Topo-Net 3: Routine Details
 -- X.3.16
@@ -141,7 +139,6 @@ CREATE OR REPLACE FUNCTION topology.ST_GetFaceGeometry(toponame varchar, aface i
 	'MODULE_PATHNAME', 'ST_GetFaceGeometry'
   LANGUAGE 'c' STABLE;
 --} ST_GetFaceGeometry
-
 
 --{
 -- Topo-Geo and Topo-Net 3: Routine Details
@@ -483,7 +480,6 @@ BEGIN
   RAISE DEBUG 'Merged edges: %', ST_NumGeometries(nodededges);
 #endif
 
-
   --
   -- Collect input points and input lines endpoints
   --
@@ -548,7 +544,6 @@ BEGIN
   LOOP
     PERFORM topology.ST_AddIsoNode(atopology, 0, rec.geom);
   END LOOP;
-
 
   FOR rec IN SELECT geom FROM ST_Dump(nodededges)
   LOOP

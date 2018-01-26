@@ -409,7 +409,6 @@ RAISE NOTICE 'ST_MapAlgebra2 000';
                 RETURN ST_MakeEmptyRaster(0, 0, 0, 0, 0, 0, 0, 0, newsrid);
             END IF;
 
-
             -- Compute the new ulx and uly
             newulx := st_raster2worldcoordx(rast1, zcx - r1x + 1, zcy - r1y + 1);
             newuly := st_raster2worldcoordy(rast1, zcx - r1x + 1, zcy - r1y + 1);
@@ -539,7 +538,6 @@ RAISE NOTICE 'ST_MapAlgebra2 111 z11x=%, z11y=%, z11w=%, z11h=%', z11x, z11y, z1
         IF z11w > 0 AND z11h > 0 AND NOT ST_BandIsNodata(rast1, band1) AND NOT nodata2expr IS NULL THEN
             IF upnodata2expr = 'RAST' THEN
 
-
                 -- IF rast1nodataval != nodatanodataval THEN
 RAISE NOTICE 'ST_MapAlgebra2 222';
                 --     newrast := ST_SetValues(newrast, 1, z11x, z11y, z11w, z11h, nodatanodataval);
@@ -626,7 +624,6 @@ RAISE NOTICE 'ST_MapAlgebra2 666';
     $$
     LANGUAGE 'plpgsql';
 
-
 CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8)
     RETURNS raster AS
     $$
@@ -637,7 +634,6 @@ CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8)
     $$
     LANGUAGE 'plpgsql';
 
-
 SELECT asbinary((gv).geom), (gv).val
 FROM st_pixelaspolygons(ST_TestRaster(-10, 2, 1)) gv;
 
@@ -645,7 +641,4 @@ SELECT asbinary(_MapAlgebraAllPartsGeom(0, 0, 2, 1, 1, 0, 2, 1))
 
 SELECT asbinary(pix.geom) as geom, pix.val
 FROM st_pixelaspolygons(ST_MapAlgebra2(ST_TestRaster(0, 1, 1), 1, ST_TestRaster(1, 0, 1), 1, '(rast1 + rast2) / 2', NULL, 'union', '2*rast', 'rast', NULL), 1) as pix
-
-
-
 

@@ -93,8 +93,8 @@ lwgeom_to_kml2_sb(const LWGEOM *geom, int precision, const char *prefix, stringb
 static int
 ptarray_to_kml2_sb(const POINTARRAY *pa, int precision, stringbuffer_t *sb)
 {
-	int i, j;
-	int dims = FLAGS_GET_Z(pa->flags) ? 3 : 2;
+	uint32_t i, j;
+	uint32_t dims = FLAGS_GET_Z(pa->flags) ? 3 : 2;
 	POINT4D pt;
 	double *d;
 
@@ -149,7 +149,8 @@ lwline_to_kml2_sb(const LWLINE *line, int precision, const char *prefix, stringb
 static int
 lwpoly_to_kml2_sb(const LWPOLY *poly, int precision, const char *prefix, stringbuffer_t *sb)
 {
-	int i, rv;
+	uint32_t i;
+	int rv;
 
 	/* Open polygon */
 	if ( stringbuffer_aprintf(sb, "<%sPolygon>", prefix) < 0 ) return LW_FAILURE;
@@ -181,7 +182,8 @@ lwpoly_to_kml2_sb(const LWPOLY *poly, int precision, const char *prefix, stringb
 static int
 lwcollection_to_kml2_sb(const LWCOLLECTION *col, int precision, const char *prefix, stringbuffer_t *sb)
 {
-	int i, rv;
+	uint32_t i;
+	int rv;
 
 	/* Open geometry */
 	if ( stringbuffer_aprintf(sb, "<%sMultiGeometry>", prefix) < 0 ) return LW_FAILURE;

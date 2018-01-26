@@ -137,7 +137,6 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast raster, band integer, expression t
         --Create the raster receiving all the computed values. Initialize it to the new initial value.
         newrast := ST_AddBand(newrast, newpixeltype, newinitialvalue, newnodatavalue);
 
-
         -- Optimization: If expression is NULL, or all the pixels could be set in a one step, return the initialised raster now
         IF expression IS NULL OR skipcomputation = 2 THEN
             RETURN newrast;
@@ -221,7 +220,6 @@ CREATE OR REPLACE FUNCTION ST_TestRaster(val float8)
 -- Test pixeltype 1. Should return 101 and 3.
 --SELECT ST_Value(rast, 1, 2), ST_Value(ST_MapAlgebra(rast, 1, 'rast + 20', 'rast + 2', '2BUI'), 1, 2)
 --FROM ST_TestRaster(0, 0, 101) rast;
-
 
 --------------------------------------------------------------------
 -- ST_SameAlignment
@@ -822,7 +820,6 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
     $$
     LANGUAGE 'plpgsql';
 
-
 --------------------------------------------------------------------
 -- ST_MapAlgebra (two raster version) variants
 --------------------------------------------------------------------
@@ -858,7 +855,6 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
     RETURNS raster
     AS 'SELECT ST_MapAlgebra($1, 1, $2, 1, $3, $4, NULL, NULL, NULL, NULL)'
     LANGUAGE 'SQL' IMMUTABLE;
-
 
 -- Variant 8
 CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
@@ -921,7 +917,6 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
 
 --SELECT ST_MapAlgebra(NULL, 1, NULL, 1, 'rast2', NULL, 'UNION', 0);
 
-
 --Test rasters
 CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8)
     RETURNS raster AS
@@ -932,7 +927,6 @@ CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8)
     END;
     $$
     LANGUAGE 'plpgsql';
-
 
 CREATE OR REPLACE FUNCTION ST_TestRotatedRaster(ulx float8, uly float8)
     RETURNS raster AS
@@ -954,7 +948,6 @@ CREATE OR REPLACE FUNCTION ST_TestRotatedRaster(ulx float8, uly float8)
 --SELECT (gv).val, ST_AsBinary((gv).geom)
 --FROM (SELECT ST_PixelAsPolygons(ST_TestRaster(1, 1, 3)) gv) foo
 
-
 -- 1) ST_Intersection and ST_Clip
 --SELECT ST_MapAlgebra(rast1, rast2, 'rast1', '32BF', 'INTERSECTION')
 --FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
@@ -963,7 +956,6 @@ CREATE OR REPLACE FUNCTION ST_TestRotatedRaster(ulx float8, uly float8)
 --SELECT (gv).val, ST_AsBinary((gv).geom)
 --FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'rast1', '32BF', 'INTERSECTION')) gv
 --      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
-
 
 -- 2) ST_Intersection returning a two band raster
 --SELECT ST_AddBand(ST_MapAlgebra(rast1, rast2, 'rast1', '32BF', 'INTERSECTION'), ST_MapAlgebra(rast1, rast2, 'rast2', '32BF', 'INTERSECTION'))
@@ -979,7 +971,6 @@ CREATE OR REPLACE FUNCTION ST_TestRotatedRaster(ulx float8, uly float8)
 --FROM (SELECT ST_PixelAsPolygons(ST_AddBand(ST_MapAlgebra(rast1, rast2, 'rast1', '32BF', 'INTERSECTION'), ST_MapAlgebra(rast1, rast2, 'rast2', '32BF', 'INTERSECTION')), 2) gv
 --      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
 
-
 -- 3) ST_Union
 --SELECT ST_MapAlgebra(rast1, rast2, '(rast1 + rast2)/2::numeric', '32BF', 'UNION', 'rast2', 'rast1', NULL)
 --FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
@@ -988,7 +979,6 @@ CREATE OR REPLACE FUNCTION ST_TestRotatedRaster(ulx float8, uly float8)
 --SELECT (gv).val, ST_AsBinary((gv).geom)
 --FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, '(rast1 + rast2)/2::numeric', '32BF', 'UNION', 'rast2', 'rast1', NULL)) gv
 --      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
-
 
 -- 4) ST_Collect
 --SELECT ST_MapAlgebra(rast1, rast2, 'rast2', '32BF', 'UNION', 'rast2', 'rast1', NULL)
@@ -999,7 +989,6 @@ CREATE OR REPLACE FUNCTION ST_TestRotatedRaster(ulx float8, uly float8)
 --FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'rast2', '32BF', 'UNION', 'rast2', 'rast1', NULL)) gv
 --      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
 
-
 -- 5) ST_Difference making a mere geometric difference
 --SELECT ST_MapAlgebra(rast1, rast2, 'CASE WHEN NOT rast2 IS NULL THEN NULL ELSE rast1 END', '32BF', 'FIRST', NULL, 'rast1', NULL)
 --FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
@@ -1009,7 +998,6 @@ CREATE OR REPLACE FUNCTION ST_TestRotatedRaster(ulx float8, uly float8)
 --FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'CASE WHEN NOT rast2 IS NULL THEN NULL ELSE rast1 END', '32BF', 'FIRST', NULL, 'rast1', NULL)) gv
 --      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
 
-
 -- 6) ST_Difference making an arithmetic difference
 --SELECT ST_MapAlgebra(rast1, rast2, 'rast1 - rast2', '32BF', 'FIRST', NULL, 'rast1', NULL)
 --FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
@@ -1018,7 +1006,6 @@ CREATE OR REPLACE FUNCTION ST_TestRotatedRaster(ulx float8, uly float8)
 --SELECT (gv).val, ST_AsBinary((gv).geom)
 --FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'rast1 - rast2', '32BF', 'FIRST', NULL, 'rast1', NULL)) gv
 --      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
-
 
 -- 7) ST_SymDifference making a mere geometric difference (commutative)
 --SELECT ST_MapAlgebra(rast1, rast2, 'NULL', '32BF', 'UNION', 'rast2', 'rast1', NULL)
@@ -1034,7 +1021,6 @@ CREATE OR REPLACE FUNCTION ST_TestRotatedRaster(ulx float8, uly float8)
 --FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'NULL', '32BF', 'UNION', 'rast2', 'rast1', NULL)) gv
 --      FROM (SELECT ST_TestRaster(1, 1, 3) rast1, ST_TestRaster(0, 0, 1) rast2) foo) foo2
 
-
 -- 8) ST_SymDifference making an arithmetic difference (not commutative)
 --Commutation 1
 --SELECT ST_MapAlgebra(rast1, rast2, 'rast1 - rast2', '32BF', 'UNION', 'rast2', 'rast1', NULL)
@@ -1043,7 +1029,6 @@ CREATE OR REPLACE FUNCTION ST_TestRotatedRaster(ulx float8, uly float8)
 --Commutation 2
 --SELECT ST_MapAlgebra(rast1, rast2, 'rast1 - rast2', '32BF', 'UNION', 'rast2', 'rast1', NULL)
 --FROM (SELECT ST_TestRaster(1, 1, 2) rast1, ST_TestRaster(0, 0, 1) rast2) foo
-
 
 -- Other tests
 
@@ -1070,7 +1055,6 @@ CREATE OR REPLACE FUNCTION ST_TestRotatedRaster(ulx float8, uly float8)
 --       ST_Height(rast)
 --FROM (SELECT ST_MapAlgebra(ST_TestRaster(0, 0, 1), 1, ST_TestRaster(1, 0, 1), 1, '(rast1 + rast2)/3::float8', '64BF', 'INTERSECTION', '0'::text) AS rast) foo
 
-
 -- FIRST -- Doesn't work...
 --SELECT ST_Value(rast, 1, 1),
 --       ST_Value(rast, 1, 2),
@@ -1090,7 +1074,6 @@ CREATE OR REPLACE FUNCTION ST_TestRotatedRaster(ulx float8, uly float8)
 --       ST_Width(rast),
 --       ST_Height(rast)
 --FROM (SELECT ST_MapAlgebra(ST_TestRaster(0, 0, 1), 1, ST_TestRaster(1, 1, 1), 1, 'rast1 + rast2 + 2*rast2 + toto()', '8BSI', 'SECOND', NULL) AS rast) foo
-
 
 -- INTERSECTION with rotated. -- Doesn't work...
 --SELECT ST_IsEmpty(rast),

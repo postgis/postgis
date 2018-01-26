@@ -437,7 +437,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 {
 	POINTARRAYSET ret;
 	POINTARRAY *dpa=NULL;
-	int i;
+	uint32_t i;
 
 	ret.nptarrays=0;
 
@@ -628,7 +628,7 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 static LWGEOM *
 lwcollection_locate_between_m(LWCOLLECTION *lwcoll, double m0, double m1)
 {
-	int i;
+	uint32_t i;
 	int ngeoms=0;
 	LWGEOM **geoms;
 

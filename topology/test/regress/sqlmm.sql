@@ -87,7 +87,6 @@ SELECT topology.ST_AddIsoEdge('sqlmm_topology', 1, 2, 'LINESTRING(0 0, 2 20, 10 
 
 -- on different faces (TODO req. nodes contained in face)
 
-
 -------------------------------------------------------------
 -- ST_AddIsoNode (2)
 -------------------------------------------------------------

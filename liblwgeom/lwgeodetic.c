@@ -1598,7 +1598,7 @@ ptarray_segmentize_sphere(const POINTARRAY *pa_in, double max_seg_length)
 	POINT4D p1, p2;
 	POINT3D q1, q2;
 	GEOGRAPHIC_POINT g1, g2;
-	int i;
+	uint32_t i;
 
 	/* Just crap out on crazy input */
 	if ( ! pa_in )
@@ -1655,7 +1655,7 @@ lwgeom_segmentize_sphere(const LWGEOM *lwg_in, double max_seg_length)
 	LWLINE *lwline;
 	LWPOLY *lwpoly_in, *lwpoly_out;
 	LWCOLLECTION *lwcol_in, *lwcol_out;
-	int i;
+	uint32_t i;
 
 	/* Reflect NULL */
 	if ( ! lwg_in )
@@ -1715,7 +1715,7 @@ lwgeom_segmentize_sphere(const LWGEOM *lwg_in, double max_seg_length)
 double
 ptarray_area_sphere(const POINTARRAY *pa)
 {
-	int i;
+	uint32_t i;
 	const POINT2D *p;
 	GEOGRAPHIC_POINT a, b, c;
 	double area = 0.0;
@@ -1749,7 +1749,7 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 	POINT3D A1, A2, B1, B2;
 	const POINT2D *p;
 	double distance;
-	int i, j;
+	uint32_t i, j;
 	int use_sphere = (s->a == s->b ? 1 : 0);
 
 	/* Make result really big, so that everything will be smaller than it */
@@ -1782,7 +1782,7 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 	if ( pa1->npoints == 1 || pa2->npoints == 1 )
 	{
 		/* Handle one/many case here */
-		int i;
+		uint32_t i;
 		const POINTARRAY *pa_one;
 		const POINTARRAY *pa_many;
 
@@ -1959,7 +1959,7 @@ double lwgeom_area_sphere(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 	if ( type == POLYGONTYPE )
 	{
 		LWPOLY *poly = (LWPOLY*)lwgeom;
-		int i;
+		uint32_t i;
 		double area = 0.0;
 
 		/* Just in case there's no rings */
@@ -1981,7 +1981,7 @@ double lwgeom_area_sphere(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 	if ( type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE )
 	{
 		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom;
-		int i;
+		uint32_t i;
 		double area = 0.0;
 
 		for ( i = 0; i < col->ngeoms; i++ )
@@ -2160,7 +2160,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 		LWPOLY *lwpoly;
 		LWPOINT *lwpt;
 		double distance = FLT_MAX;
-		int i;
+		uint32_t i;
 
 		if ( type1 == POINTTYPE )
 		{
@@ -2200,7 +2200,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 		LWPOLY *lwpoly;
 		LWLINE *lwline;
 		double distance = FLT_MAX;
-		int i;
+		uint32_t i;
 
 		if ( type1 == LINETYPE )
 		{
@@ -2237,36 +2237,39 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 	}
 
-	/* Polygon/polygon case, if start point-in-poly, return zero, else return distance. */
-	if ( ( type1 == POLYGONTYPE && type2 == POLYGONTYPE ) ||
-	     ( type2 == POLYGONTYPE && type1 == POLYGONTYPE ) )
+	/* Polygon/polygon case, if start point-in-poly, return zero, else
+	 * return distance. */
+	if (type1 == POLYGONTYPE && type2 == POLYGONTYPE)
 	{
-		const POINT2D *p;
-		LWPOLY *lwpoly1 = (LWPOLY*)lwgeom1;
-		LWPOLY *lwpoly2 = (LWPOLY*)lwgeom2;
+		const POINT2D* p;
+		LWPOLY* lwpoly1 = (LWPOLY*)lwgeom1;
+		LWPOLY* lwpoly2 = (LWPOLY*)lwgeom2;
 		double distance = FLT_MAX;
-		int i, j;
+		uint32_t i, j;
 
 		/* Point of 2 in polygon 1 implies zero distance */
 		p = getPoint2d_cp(lwpoly1->rings[0], 0);
-		if ( lwpoly_covers_point2d(lwpoly2, p) )
-			return 0.0;
+		if (lwpoly_covers_point2d(lwpoly2, p)) return 0.0;
 
 		/* Point of 1 in polygon 2 implies zero distance */
 		p = getPoint2d_cp(lwpoly2->rings[0], 0);
-		if ( lwpoly_covers_point2d(lwpoly1, p) )
-			return 0.0;
+		if (lwpoly_covers_point2d(lwpoly1, p)) return 0.0;
 
 		/* Not contained, so what's the actual distance? */
-		for ( i = 0; i < lwpoly1->nrings; i++ )
+		for (i = 0; i < lwpoly1->nrings; i++)
 		{
-			for ( j = 0; j < lwpoly2->nrings; j++ )
+			for (j = 0; j < lwpoly2->nrings; j++)
 			{
-				double ring_distance = ptarray_distance_spheroid(lwpoly1->rings[i], lwpoly2->rings[j], spheroid, tolerance, check_intersection);
-				if ( ring_distance < distance )
+				double ring_distance =
+				    ptarray_distance_spheroid(
+					lwpoly1->rings[i],
+					lwpoly2->rings[j],
+					spheroid,
+					tolerance,
+					check_intersection);
+				if (ring_distance < distance)
 					distance = ring_distance;
-				if ( distance < tolerance )
-					return distance;
+				if (distance < tolerance) return distance;
 			}
 		}
 		return distance;
@@ -2275,13 +2278,14 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	/* Recurse into collections */
 	if ( lwtype_is_collection(type1) )
 	{
-		int i;
+		uint32_t i;
 		double distance = FLT_MAX;
 		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom1;
 
 		for ( i = 0; i < col->ngeoms; i++ )
 		{
-			double geom_distance = lwgeom_distance_spheroid(col->geoms[i], lwgeom2, spheroid, tolerance);
+			double geom_distance = lwgeom_distance_spheroid(
+			    col->geoms[i], lwgeom2, spheroid, tolerance);
 			if ( geom_distance < distance )
 				distance = geom_distance;
 			if ( distance < tolerance )
@@ -2293,7 +2297,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	/* Recurse into collections */
 	if ( lwtype_is_collection(type2) )
 	{
-		int i;
+		uint32_t i;
 		double distance = FLT_MAX;
 		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom2;
 
@@ -2380,7 +2384,7 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 	/* If any of the first argument parts covers the second argument, it's true */
 	if ( lwtype_is_collection( type1 ) )
 	{
-		int i;
+		uint32_t i;
 		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom1;
 
 		for ( i = 0; i < col->ngeoms; i++ )
@@ -2396,7 +2400,7 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 	/* Only if all of the second arguments are covered by the first argument is the condition true */
 	if ( lwtype_is_collection( type2 ) )
 	{
-		int i;
+		uint32_t i;
 		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom2;
 
 		for ( i = 0; i < col->ngeoms; i++ )
@@ -2422,7 +2426,7 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 */
 int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test)
 {
-	int i;
+	uint32_t i;
 	int in_hole_count = 0;
 	POINT3D p;
 	GEOGRAPHIC_POINT gpt_to_test;
@@ -2497,7 +2501,7 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test)
  */
 int lwpoly_covers_lwpoly(const LWPOLY *poly1, const LWPOLY *poly2)
 {
-	int i;
+	uint32_t i;
 
 	/* Nulls and empties don't contain anything! */
 	if ( ! poly1 || lwgeom_is_empty((LWGEOM*)poly1) )
@@ -2591,7 +2595,7 @@ int lwpoly_covers_lwline(const LWPOLY *poly, const LWLINE *line)
  */
 int lwpoly_covers_pointarray(const LWPOLY* lwpoly, const POINTARRAY* pta)
 {
-	int i;
+	uint32_t i;
 	for (i = 0; i < pta->npoints; i++) {
 		const POINT2D* pt_to_test = getPoint2d_cp(pta, i);
 
@@ -2610,7 +2614,7 @@ int lwpoly_covers_pointarray(const LWPOLY* lwpoly, const POINTARRAY* pta)
  */
 int lwpoly_intersects_line(const LWPOLY* lwpoly, const POINTARRAY* line)
 {
-	int i, j, k;
+	uint32_t i, j, k;
 	POINT3D pa1, pa2, pb1, pb2;
 	for (i = 0; i < lwpoly->nrings; i++)
 	{
@@ -2652,7 +2656,7 @@ int lwpoly_intersects_line(const LWPOLY* lwpoly, const POINTARRAY* line)
  */
 int lwline_covers_lwpoint(const LWLINE* lwline, const LWPOINT* lwpoint)
 {
-	int i;
+	uint32_t i;
 	GEOGRAPHIC_POINT p;
 	GEOGRAPHIC_EDGE e;
 
@@ -2681,7 +2685,7 @@ int lwline_covers_lwpoint(const LWLINE* lwline, const LWPOINT* lwpoint)
  */
 int lwline_covers_lwline(const LWLINE* lwline1, const LWLINE* lwline2)
 {
-	int i, j;
+	uint32_t i, j;
 	GEOGRAPHIC_EDGE e1, e2;
 	GEOGRAPHIC_POINT p1, p2;
 	int start = LW_FALSE;
@@ -2768,11 +2772,10 @@ int lwline_covers_lwline(const LWLINE* lwline1, const LWLINE* lwline2)
 * This function can only be used on LWGEOM that is built on top of
 * GSERIALIZED, otherwise alignment errors will ensue.
 */
-int getPoint2d_p_ro(const POINTARRAY *pa, int n, POINT2D **point)
+int getPoint2d_p_ro(const POINTARRAY *pa, uint32_t n, POINT2D **point)
 {
 	uint8_t *pa_ptr = NULL;
 	assert(pa);
-	assert(n >= 0);
 	assert(n < pa->npoints);
 
 	pa_ptr = getPoint_internal(pa, n);
@@ -2784,7 +2787,7 @@ int getPoint2d_p_ro(const POINTARRAY *pa, int n, POINT2D **point)
 
 int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox)
 {
-	int i;
+	uint32_t i;
 	int first = LW_TRUE;
 	const POINT2D *p;
 	POINT3D A1, A2;
@@ -2852,7 +2855,7 @@ static int lwline_calculate_gbox_geodetic(const LWLINE *line, GBOX *gbox)
 static int lwpolygon_calculate_gbox_geodetic(const LWPOLY *poly, GBOX *gbox)
 {
 	GBOX ringbox;
-	int i;
+	uint32_t i;
 	int first = LW_TRUE;
 	assert(poly);
 	if ( poly->nrings == 0 )
@@ -2889,7 +2892,7 @@ static int lwtriangle_calculate_gbox_geodetic(const LWTRIANGLE *triangle, GBOX *
 static int lwcollection_calculate_gbox_geodetic(const LWCOLLECTION *coll, GBOX *gbox)
 {
 	GBOX subbox;
-	int i;
+	uint32_t i;
 	int result = LW_FAILURE;
 	int first = LW_TRUE;
 	assert(coll);
@@ -2963,7 +2966,7 @@ int lwgeom_calculate_gbox_geodetic(const LWGEOM *geom, GBOX *gbox)
 
 static int ptarray_check_geodetic(const POINTARRAY *pa)
 {
-	int t;
+	uint32_t t;
 	POINT2D pt;
 
 	assert(pa);
@@ -2993,7 +2996,7 @@ static int lwline_check_geodetic(const LWLINE *line)
 
 static int lwpoly_check_geodetic(const LWPOLY *poly)
 {
-	int i = 0;
+	uint32_t i = 0;
 	assert(poly);
 
 	for ( i = 0; i < poly->nrings; i++ )
@@ -3013,7 +3016,7 @@ static int lwtriangle_check_geodetic(const LWTRIANGLE *triangle)
 
 static int lwcollection_check_geodetic(const LWCOLLECTION *col)
 {
-	int i = 0;
+	uint32_t i = 0;
 	assert(col);
 
 	for ( i = 0; i < col->ngeoms; i++ )
@@ -3055,7 +3058,7 @@ int lwgeom_check_geodetic(const LWGEOM *geom)
 
 static int ptarray_force_geodetic(POINTARRAY *pa)
 {
-	int t;
+	uint32_t t;
 	int changed = LW_FALSE;
 	POINT4D pt;
 
@@ -3089,7 +3092,7 @@ static int lwline_force_geodetic(LWLINE *line)
 
 static int lwpoly_force_geodetic(LWPOLY *poly)
 {
-	int i = 0;
+	uint32_t i = 0;
 	int changed = LW_FALSE;
 	assert(poly);
 
@@ -3103,7 +3106,7 @@ static int lwpoly_force_geodetic(LWPOLY *poly)
 
 static int lwcollection_force_geodetic(LWCOLLECTION *col)
 {
-	int i = 0;
+	uint32_t i = 0;
 	int changed = LW_FALSE;
 	assert(col);
 
@@ -3142,7 +3145,7 @@ double ptarray_length_spheroid(const POINTARRAY *pa, const SPHEROID *s)
 	GEOGRAPHIC_POINT a, b;
 	double za = 0.0, zb = 0.0;
 	POINT4D p;
-	int i;
+	uint32_t i;
 	int hasz = LW_FALSE;
 	double length = 0.0;
 	double seglength = 0.0;
@@ -3193,7 +3196,7 @@ double ptarray_length_spheroid(const POINTARRAY *pa, const SPHEROID *s)
 double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s)
 {
 	int type;
-	int i = 0;
+	uint32_t i = 0;
 	double length = 0.0;
 
 	assert(geom);
@@ -3248,7 +3251,7 @@ static int
 ptarray_nudge_geodetic(POINTARRAY *pa)
 {
 
-	int i;
+	uint32_t i;
 	POINT4D p;
 	int altered = LW_FALSE;
 	int rv = LW_FALSE;
@@ -3300,7 +3303,7 @@ int
 lwgeom_nudge_geodetic(LWGEOM *geom)
 {
 	int type;
-	int i = 0;
+	uint32_t i = 0;
 	int rv = LW_FALSE;
 
 	assert(geom);
@@ -3404,7 +3407,7 @@ dot_product_side(const POINT3D *p, const POINT3D *q)
 * Returns non-zero if edges A and B interact. The type of interaction is given in the
 * return value with the bitmask elements defined above.
 */
-int
+uint32_t
 edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const POINT3D *B2)
 {
 	POINT3D AN, BN, VN;  /* Normals to plane A and plane B */
@@ -3515,7 +3518,7 @@ int ptarray_contains_point_sphere(const POINTARRAY *pa, const POINT2D *pt_outsid
 	POINT3D S1, S2; /* Stab line end points */
 	POINT3D E1, E2; /* Edge end points (3-space) */
 	POINT2D p; /* Edge end points (lon/lat) */
-	int count = 0, i, inter;
+	uint32_t count = 0, i, inter;
 
 	/* Null input, not enough points for a ring? You ain't closed! */
 	if ( ! pa || pa->npoints < 4 )

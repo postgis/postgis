@@ -80,7 +80,7 @@ utf8(const char *fromcode, char *inputbuf, char **outputbuf)
 	outputptr = *outputbuf;
 
 	/* Does this string convert cleanly? */
-	if ( iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1 )
+	if ( iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == (size_t)-1 )
 	{
 #ifdef HAVE_ICONVCTL
 		int on = 1;
@@ -732,7 +732,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 void
 strtolower(char *s)
 {
-	int j;
+	size_t j;
 
 	for (j = 0; j < strlen(s); j++)
 		s[j] = tolower(s[j]);
@@ -1172,8 +1172,11 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		{
 			if (strcmp(state->field_names[z], name) == 0)
 			{
-				strncat(name, "__", MAXFIELDNAMELEN);
-				snprintf(name + strlen(name), MAXFIELDNAMELEN, "%i", j);
+				strncat(name, "__", MAXFIELDNAMELEN - 1);
+				snprintf(name + strlen(name),
+					 MAXFIELDNAMELEN - 1 - strlen(name),
+					 "%i",
+					 j);
 				break;
 			}
 		}

@@ -170,7 +170,6 @@ CREATE OR REPLACE FUNCTION ST_TileAsGeom(rast raster, width integer, height inte
     $$
     LANGUAGE 'plpgsql';
 
-
 -- Redefine ST_TestRaster()
 CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8)
     RETURNS raster AS
@@ -216,7 +215,6 @@ FROM (SELECT ST_PixelAsPolygons(rast) gv, rid
 
 -- Test ST_TileAsGeom
 SELECT ST_TileAsGeom(ST_TestRaster(0, 0, 1), 10, 10);
-
 
 -- Other tests
 SELECT ST_Tile(ST_AddBand(ST_MakeEmptyRaster(48, 63, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BSI'::text, 0, -2), 10, 10, true, -10);

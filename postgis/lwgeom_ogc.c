@@ -276,7 +276,7 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	coll = lwgeom_as_lwcollection(lwgeom_from_gserialized(geom));
 
 	if ( idx < 0 ) PG_RETURN_NULL();
-	if ( idx >= coll->ngeoms ) PG_RETURN_NULL();
+	if ( idx >= (int32) coll->ngeoms ) PG_RETURN_NULL();
 
 	subgeom = coll->geoms[idx];
 	subgeom->srid = coll->srid;
@@ -492,7 +492,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 		poly = lwgeom_as_lwpoly(lwgeom_from_gserialized(geom));
 
 		/* Ok, now we have a polygon. Let's see if it has enough holes */
-		if ( wanted_index >= poly->nrings )
+		if ( wanted_index >= (int32)poly->nrings )
 		{
 			lwpoly_free(poly);
 			PG_FREE_IF_COPY(geom, 0);
@@ -520,7 +520,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	{
 		curvepoly = lwgeom_as_lwcurvepoly(lwgeom_from_gserialized(geom));
 
-		if (wanted_index >= curvepoly->nrings)
+		if (wanted_index >= (int32)curvepoly->nrings)
 		{
 			PG_FREE_IF_COPY(geom, 0);
 			lwgeom_release((LWGEOM *)curvepoly);
@@ -863,14 +863,17 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	char *wkt;
 	size_t wkt_size;
 	text *result;
+	int dbl_dig_for_wkt = DBL_DIG;
 
 	POSTGIS_DEBUG(2, "Called.");
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
 	lwgeom = lwgeom_from_gserialized(geom);
 
+	if (PG_NARGS() > 1) dbl_dig_for_wkt = PG_GETARG_INT32(1);
+
 	/* Write to WKT and free the geometry */
-	wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, &wkt_size);
+	wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, dbl_dig_for_wkt, &wkt_size);
 	lwgeom_free(lwgeom);
 	POSTGIS_DEBUGF(3, "WKT size = %u, WKT length = %u", (unsigned int)wkt_size, (unsigned int)strlen(wkt));
 

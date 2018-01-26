@@ -14,7 +14,13 @@ set -e
 export PROJECTS=/projects
 export MINGPROJECTS=/projects
 export PATHOLD=$PATH
+export GEOS_VER=3.7.0dev
+export GDAL_VER=2.2.2
+export PROJ_VER=4.9.3
+export SFCGAL_VER=1.3
+export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
+export PROTOBUFC_VER=1.2.1
 
 
 if [ "$OS_BUILD" == "64" ] ; then

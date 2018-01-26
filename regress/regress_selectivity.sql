@@ -2135,7 +2135,6 @@ COPY regular_overdots_ab (a, b) FROM stdin;
 10	10
 \.
 
-
 -- Check for error messages
 create table no_stats ( g geometry, id integer );
 create table no_stats_join ( g geometry, id integer );

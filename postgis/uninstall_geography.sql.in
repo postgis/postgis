@@ -1,5 +1,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.org/
@@ -7,11 +7,11 @@
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
---  
+--
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 -- metadata table
-DROP VIEW geography_columns; 
+DROP VIEW geography_columns;
 
 -- indexes
 DROP OPERATOR FAMILY gist_geography_ops USING gist CASCADE;
@@ -34,7 +34,7 @@ DROP CAST IF EXISTS (geometry AS geography);
 
 --
 -- Text hacks to over-ride implicit casting issues with GEOMETRY
--- TODO Remove for 2.0	
+-- TODO Remove for 2.0
 --
 DROP FUNCTION IF EXISTS ST_AsText(text);
 DROP FUNCTION IF EXISTS ST_AsBinary(text);
@@ -63,16 +63,16 @@ DROP FUNCTION IF EXISTS geography_typmod_type(integer);
 DROP FUNCTION IF EXISTS geography(geometry);
 DROP FUNCTION IF EXISTS geometry(geography);
 
-DROP FUNCTION IF EXISTS geography_gist_consistent(internal,geometry,int4); 
-DROP FUNCTION IF EXISTS geography_gist_compress(internal); 
-DROP FUNCTION IF EXISTS geography_gist_penalty(internal,internal,internal); 
-DROP FUNCTION IF EXISTS geography_gist_picksplit(internal, internal); 
-DROP FUNCTION IF EXISTS geography_gist_union(bytea, internal); 
-DROP FUNCTION IF EXISTS geography_gist_same(box2d, box2d, internal); 
-DROP FUNCTION IF EXISTS geography_gist_decompress(internal); 
+DROP FUNCTION IF EXISTS geography_gist_consistent(internal,geometry,int4);
+DROP FUNCTION IF EXISTS geography_gist_compress(internal);
+DROP FUNCTION IF EXISTS geography_gist_penalty(internal,internal,internal);
+DROP FUNCTION IF EXISTS geography_gist_picksplit(internal, internal);
+DROP FUNCTION IF EXISTS geography_gist_union(bytea, internal);
+DROP FUNCTION IF EXISTS geography_gist_same(box2d, box2d, internal);
+DROP FUNCTION IF EXISTS geography_gist_decompress(internal);
 DROP FUNCTION IF EXISTS geography_gist_selectivity (internal, oid, internal, int4);
 DROP FUNCTION IF EXISTS geography_gist_join_selectivity(internal, oid, internal, smallint);
-DROP FUNCTION IF EXISTS geography_overlaps(geography, geography); 
+DROP FUNCTION IF EXISTS geography_overlaps(geography, geography);
 
 DROP FUNCTION IF EXISTS geography_lt(geography, geography);
 DROP FUNCTION IF EXISTS geography_le(geography, geography);

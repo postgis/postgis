@@ -367,8 +367,8 @@ typedef struct
 	/* Use FLAGS_* macros to handle */
 	uint8_t  flags;
 
-	int npoints;   /* how many points we are currently storing */
-	int maxpoints; /* how many points we have space for in serialized_pointlist */
+	uint32_t npoints;   /* how many points we are currently storing */
+	uint32_t maxpoints; /* how many points we have space for in serialized_pointlist */
 }
 POINTARRAY;
 
@@ -451,8 +451,8 @@ typedef struct
 	uint8_t flags;
 	GBOX *bbox;
 	int32_t srid;
-	int nrings;   /* how many rings we are currently storing */
-	int maxrings; /* how many rings we have space for in **rings */
+	uint32_t nrings;   /* how many rings we are currently storing */
+	uint32_t maxrings; /* how many rings we have space for in **rings */
 	POINTARRAY **rings; /* list of rings (list of points) */
 }
 LWPOLY; /* "light-weight polygon" */
@@ -464,8 +464,8 @@ typedef struct
 	uint8_t flags;
 	GBOX *bbox;
 	int32_t srid;
-	int ngeoms;   /* how many geometries we are currently storing */
-	int maxgeoms; /* how many geometries we have space for in **geoms */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 	LWPOINT **geoms;
 }
 LWMPOINT;
@@ -477,8 +477,8 @@ typedef struct
 	uint8_t flags;
 	GBOX *bbox;
 	int32_t srid;
-	int ngeoms;   /* how many geometries we are currently storing */
-	int maxgeoms; /* how many geometries we have space for in **geoms */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 	LWLINE **geoms;
 }
 LWMLINE;
@@ -490,8 +490,8 @@ typedef struct
 	uint8_t flags;
 	GBOX *bbox;
 	int32_t srid;
-	int ngeoms;   /* how many geometries we are currently storing */
-	int maxgeoms; /* how many geometries we have space for in **geoms */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 	LWPOLY **geoms;
 }
 LWMPOLY;
@@ -503,8 +503,8 @@ typedef struct
 	uint8_t flags;
 	GBOX *bbox;
 	int32_t srid;
-	int ngeoms;   /* how many geometries we are currently storing */
-	int maxgeoms; /* how many geometries we have space for in **geoms */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 	LWGEOM **geoms;
 }
 LWCOLLECTION;
@@ -516,8 +516,8 @@ typedef struct
 	uint8_t flags;
 	GBOX *bbox;
 	int32_t srid;
-	int ngeoms;   /* how many geometries we are currently storing */
-	int maxgeoms; /* how many geometries we have space for in **geoms */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 	LWGEOM **geoms;
 }
 LWCOMPOUND; /* "light-weight compound line" */
@@ -529,8 +529,8 @@ typedef struct
 	uint8_t flags;
 	GBOX *bbox;
 	int32_t srid;
-	int nrings;    /* how many rings we are currently storing */
-	int maxrings;  /* how many rings we have space for in **rings */
+	uint32_t nrings;    /* how many rings we are currently storing */
+	uint32_t maxrings;  /* how many rings we have space for in **rings */
 	LWGEOM **rings; /* list of rings (list of points) */
 }
 LWCURVEPOLY; /* "light-weight polygon" */
@@ -542,8 +542,8 @@ typedef struct
 	uint8_t flags;
 	GBOX *bbox;
 	int32_t srid;
-	int ngeoms;   /* how many geometries we are currently storing */
-	int maxgeoms; /* how many geometries we have space for in **geoms */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 	LWGEOM **geoms;
 }
 LWMCURVE;
@@ -555,8 +555,8 @@ typedef struct
 	uint8_t flags;
 	GBOX *bbox;
 	int32_t srid;
-	int ngeoms;   /* how many geometries we are currently storing */
-	int maxgeoms; /* how many geometries we have space for in **geoms */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 	LWGEOM **geoms;
 }
 LWMSURFACE;
@@ -568,8 +568,8 @@ typedef struct
 	uint8_t flags;
 	GBOX *bbox;
 	int32_t srid;
-	int ngeoms;   /* how many geometries we are currently storing */
-	int maxgeoms; /* how many geometries we have space for in **geoms */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 	LWPOLY **geoms;
 }
 LWPSURFACE;
@@ -581,8 +581,8 @@ typedef struct
 	uint8_t flags;
 	GBOX *bbox;
 	int32_t srid;
-	int ngeoms;   /* how many geometries we are currently storing */
-	int maxgeoms; /* how many geometries we have space for in **geoms */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 	LWTRIANGLE **geoms;
 }
 LWTIN;
@@ -768,7 +768,7 @@ extern int lwtype_is_collection(uint8_t type);
 /**
 * Given an lwtype number, what homogeneous collection can hold it?
 */
-extern int lwtype_get_collectiontype(uint8_t type);
+extern uint32_t lwtype_get_collectiontype(uint8_t type);
 
 /**
 * Return the type name string associated with a type number
@@ -785,7 +785,7 @@ extern uint8_t lwtype_multitype(uint8_t type);
  * will set point's m=0 (or NaN) if pa is 3d or 2d
  * NOTE: point is a real POINT3D *not* a pointer
  */
-extern POINT4D getPoint4d(const POINTARRAY *pa, int n);
+extern POINT4D getPoint4d(const POINTARRAY *pa, uint32_t n);
 
 /*
  * copies a point from the point array into the parameter point
@@ -793,23 +793,23 @@ extern POINT4D getPoint4d(const POINTARRAY *pa, int n);
  * will set point's m=0 (or NaN) if pa is 3d or 2d
  * NOTE: this will modify the point4d pointed to by 'point'.
  */
-extern int getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *point);
+extern int getPoint4d_p(const POINTARRAY *pa, uint32_t n, POINT4D *point);
 
 /*
  * copies a point from the point array into the parameter point
  * will set point's z=0 (or NaN) if pa is 2d
  * NOTE: point is a real POINT3D *not* a pointer
  */
-extern POINT3DZ getPoint3dz(const POINTARRAY *pa, int n);
-extern POINT3DM getPoint3dm(const POINTARRAY *pa, int n);
+extern POINT3DZ getPoint3dz(const POINTARRAY *pa, uint32_t n);
+extern POINT3DM getPoint3dm(const POINTARRAY *pa, uint32_t n);
 
 /*
  * copies a point from the point array into the parameter point
  * will set point's z=0 (or NaN) if pa is 2d
  * NOTE: this will modify the point3d pointed to by 'point'.
  */
-extern int getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *point);
-extern int getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *point);
+extern int getPoint3dz_p(const POINTARRAY *pa, uint32_t n, POINT3DZ *point);
+extern int getPoint3dm_p(const POINTARRAY *pa, uint32_t n, POINT3DM *point);
 
 
 /*
@@ -817,14 +817,14 @@ extern int getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *point);
  * z value (if present is not returned)
  * NOTE: point is a real POINT3D *not* a pointer
  */
-extern POINT2D getPoint2d(const POINTARRAY *pa, int n);
+extern POINT2D getPoint2d(const POINTARRAY *pa, uint32_t n);
 
 /*
  * copies a point from the point array into the parameter point
  * z value (if present is not returned)
  * NOTE: this will modify the point2d pointed to by 'point'.
  */
-extern int getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point);
+extern int getPoint2d_p(const POINTARRAY *pa, uint32_t n, POINT2D *point);
 
 /**
 * Returns a POINT2D pointer into the POINTARRAY serialized_ptlist,
@@ -832,7 +832,7 @@ extern int getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point);
 * and declared const because you aren't allowed to muck with the
 * values, only read them.
 */
-extern const POINT2D* getPoint2d_cp(const POINTARRAY *pa, int n);
+extern const POINT2D* getPoint2d_cp(const POINTARRAY *pa, uint32_t n);
 
 /**
 * Returns a POINT3DZ pointer into the POINTARRAY serialized_ptlist,
@@ -840,7 +840,7 @@ extern const POINT2D* getPoint2d_cp(const POINTARRAY *pa, int n);
 * and declared const because you aren't allowed to muck with the
 * values, only read them.
 */
-extern const POINT3DZ* getPoint3dz_cp(const POINTARRAY *pa, int n);
+extern const POINT3DZ* getPoint3dz_cp(const POINTARRAY *pa, uint32_t n);
 
 /**
 * Returns a POINT4D pointer into the POINTARRAY serialized_ptlist,
@@ -848,7 +848,7 @@ extern const POINT3DZ* getPoint3dz_cp(const POINTARRAY *pa, int n);
 * and declared const because you aren't allowed to muck with the
 * values, only read them.
 */
-extern const POINT4D* getPoint4d_cp(const POINTARRAY *pa, int n);
+extern const POINT4D* getPoint4d_cp(const POINTARRAY *pa, uint32_t n);
 
 /*
  * set point N to the given value
@@ -858,7 +858,7 @@ extern const POINT4D* getPoint4d_cp(const POINTARRAY *pa, int n);
  *
  * N must be a valid point index
  */
-extern void ptarray_set_point4d(POINTARRAY *pa, int n, const POINT4D *p4d);
+extern void ptarray_set_point4d(POINTARRAY *pa, uint32_t n, const POINT4D *p4d);
 
 /*
  * get a pointer to nth point of a POINTARRAY
@@ -869,13 +869,13 @@ extern void ptarray_set_point4d(POINTARRAY *pa, int n, const POINT4D *p4d);
  * WARNING: Don't cast this to a POINT !
  * it would not be reliable due to memory alignment constraints
  */
-extern uint8_t *getPoint_internal(const POINTARRAY *pa, int n);
+extern uint8_t *getPoint_internal(const POINTARRAY *pa, uint32_t n);
 
 /*
  * size of point represeneted in the POINTARRAY
  * 16 for 2d, 24 for 3d, 32 for 4d
  */
-extern int ptarray_point_size(const POINTARRAY *pa);
+extern size_t ptarray_point_size(const POINTARRAY *pa);
 
 
 /**
@@ -926,13 +926,13 @@ extern int ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_t
 * Insert a point into an existing #POINTARRAY. Zero
 * is the index of the start of the array.
 */
-extern int ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, int where);
+extern int ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, uint32_t where);
 
 /**
 * Remove a point from an existing #POINTARRAY. Zero
 * is the index of the start of the array.
 */
-extern int ptarray_remove_point(POINTARRAY *pa, int where);
+extern int ptarray_remove_point(POINTARRAY *pa, uint32_t where);
 
 /**
  * @brief Add a point in a pointarray.
@@ -1015,7 +1015,7 @@ extern int lwpoint_getPoint4d_p(const LWPOINT *point, POINT4D *out);
 /**
  * Add a LWPOINT to an LWLINE
  */
-extern int lwline_add_lwpoint(LWLINE *line, LWPOINT *point, int where);
+extern int lwline_add_lwpoint(LWLINE *line, LWPOINT *point, uint32_t where);
 
 /**
  * Interpolate one or more points along a line
@@ -1206,12 +1206,12 @@ extern double lwgeom_perimeter(const LWGEOM *geom);
 extern double lwgeom_perimeter_2d(const LWGEOM *geom);
 extern int lwgeom_dimension(const LWGEOM *geom);
 
-extern LWPOINT* lwline_get_lwpoint(const LWLINE *line, int where);
-extern LWPOINT* lwcircstring_get_lwpoint(const LWCIRCSTRING *circ, int where);
+extern LWPOINT* lwline_get_lwpoint(const LWLINE *line, uint32_t where);
+extern LWPOINT* lwcircstring_get_lwpoint(const LWCIRCSTRING *circ, uint32_t where);
 
 extern LWPOINT* lwcompound_get_startpoint(const LWCOMPOUND *lwcmp);
 extern LWPOINT* lwcompound_get_endpoint(const LWCOMPOUND *lwcmp);
-extern LWPOINT* lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, int where);
+extern LWPOINT* lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, uint32_t where);
 
 extern double ptarray_length_2d(const POINTARRAY *pts);
 extern int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
@@ -1283,13 +1283,13 @@ extern int lwgeom_needs_bbox(const LWGEOM *geom);
 /**
 * Count the total number of vertices in any #LWGEOM.
 */
-extern int lwgeom_count_vertices(const LWGEOM *geom);
+extern uint32_t lwgeom_count_vertices(const LWGEOM *geom);
 
 /**
 * Count the total number of rings in any #LWGEOM. Multipolygons
 * and other collections get counted, not the same as OGC st_numrings.
 */
-extern int lwgeom_count_rings(const LWGEOM *geom);
+extern uint32_t lwgeom_count_rings(const LWGEOM *geom);
 
 /**
 * Return true or false depending on whether a geometry has
@@ -1487,9 +1487,9 @@ extern LWCOLLECTION *lwcollection_segmentize2d(const LWCOLLECTION *coll, double 
 /*
  * Point density functions
  */
-extern LWMPOINT *lwpoly_to_points(const LWPOLY *poly, int npoints);
-extern LWMPOINT *lwmpoly_to_points(const LWMPOLY *mpoly, int npoints);
-extern LWMPOINT *lwgeom_to_points(const LWGEOM *lwgeom, int npoints);
+extern LWMPOINT *lwpoly_to_points(const LWPOLY *poly, uint32_t npoints);
+extern LWMPOINT *lwmpoly_to_points(const LWMPOLY *mpoly, uint32_t npoints);
+extern LWMPOINT *lwgeom_to_points(const LWGEOM *lwgeom, uint32_t npoints);
 
 /*
  * Geometric median
@@ -1807,7 +1807,7 @@ extern int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox);
 * New function to read doubles directly from the double* coordinate array
 * of an aligned lwgeom #POINTARRAY (built by de-serializing a #GSERIALIZED).
 */
-extern int getPoint2d_p_ro(const POINTARRAY *pa, int n, POINT2D **point);
+extern int getPoint2d_p_ro(const POINTARRAY *pa, uint32_t n, POINT2D **point);
 
 /**
 * Calculate geodetic (x/y/z) box and add values to gbox. Return #LW_SUCCESS on success.
@@ -2005,8 +2005,8 @@ extern int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *gbox);
 typedef struct struct_lwgeom_parser_result
 {
 	const char *wkinput;        /* Copy of pointer to input WKT/WKB */
-	uint8_t *serialized_lwgeom;   /* Pointer to serialized LWGEOM */
-	int size;                   /* Size of serialized LWGEOM in bytes */
+	uint8_t *serialized_lwgeom; /* Pointer to serialized LWGEOM */
+	size_t size;                /* Size of serialized LWGEOM in bytes */
 	LWGEOM *geom;               /* Pointer to LWGEOM struct */
 	const char *message;        /* Error/warning message */
 	int errcode;                /* Error/warning number */
@@ -2038,7 +2038,7 @@ typedef struct struct_lwgeom_unparser_result
 {
 	uint8_t *serialized_lwgeom;	/* Copy of pointer to input serialized LWGEOM */
 	char *wkoutput;			/* Pointer to WKT or WKB output */
-	int size;			/* Size of serialized LWGEOM in bytes */
+	size_t size;			/* Size of serialized LWGEOM in bytes */
 	const char *message;		/* Error/warning message */
 	int errlocation;		/* Location of error */
 }
@@ -2260,7 +2260,7 @@ LWGEOM *lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_linemerge(const LWGEOM *geom1);
 LWGEOM *lwgeom_unaryunion(const LWGEOM *geom1);
 LWGEOM *lwgeom_clip_by_rect(const LWGEOM *geom1, double x0, double y0, double x1, double y1);
-LWCOLLECTION *lwgeom_subdivide(const LWGEOM *geom, int maxvertices);
+LWCOLLECTION *lwgeom_subdivide(const LWGEOM *geom, uint32_t maxvertices);
 
 /**
  * Snap vertices and segments of a geometry to another using a given tolerance.
@@ -2399,7 +2399,7 @@ LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double toleranc
 * @param ngeoms the number of elements in the array
 * @param k the number of clusters to calculate
 */
-int * lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k);
+int * lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, uint32_t ngeoms, uint32_t k);
 
 
 #endif /* !defined _LIBLWGEOM_H  */

@@ -23,7 +23,6 @@ CREATE OR REPLACE FUNCTION make_test_raster(
 		rast := ST_MakeEmptyRaster(width, height, ul_x, ul_y, 1, 1, skew_x, skew_y, 0);
 		rast := ST_AddBand(rast, 1, '8BUI', 1, 0);
 
-
 		INSERT INTO raster_geos_rast VALUES (rid, rast);
 
 		RETURN;
@@ -229,7 +228,6 @@ FROM raster_geos_rast r1
 JOIN raster_geos_rast r2
 	ON r1.rid != r2.rid
 WHERE r2.rid = 0;
-
 
 SELECT
 	'2.1',

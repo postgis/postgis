@@ -5,7 +5,6 @@ CREATE INDEX "test_geom_idx" ON "test" using gist (the_geom);
 
 DROP TABLE "test";
 
-
 -- Test node splits in geometry and geography with null-filled, empty-filled, and mixed collections of rows
 -- Previous issues showed crashing behaviour, so if we don't crash, we're golden.
 

@@ -25,7 +25,6 @@ SELECT 'p5',  topology.addNode('nodes', 'POINT(5 10)', true);
 -- ... and verify the edge was split
 SELECT 'post-p5', edge_id, ST_AsText(geom) FROM nodes.edge ORDER BY edge_id;
 
-
 -- And same against a closed edge
 INSERT INTO nodes.face VALUES(nextval('nodes.face_face_id_seq'), 'POLYGON((0 20, 10 20, 10 30, 0 30, 0 20))');
 INSERT INTO nodes.edge VALUES(nextval('nodes.edge_data_edge_id_seq'),2,2,2,-2,1,0,

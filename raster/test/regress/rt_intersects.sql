@@ -21,7 +21,6 @@ CREATE OR REPLACE FUNCTION make_test_raster(rid integer, width integer DEFAULT 2
 		rast := ST_MakeEmptyRaster(width, height, ul_x, ul_y, 1, 1, skew_x, skew_y, 0);
 		rast := ST_AddBand(rast, 1, '8BUI', 1, 0);
 
-
 		INSERT INTO raster_intersects_rast VALUES (rid, rast);
 
 		RETURN;

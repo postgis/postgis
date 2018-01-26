@@ -33,8 +33,8 @@ ORDER BY 'MULTILINESTRING((-95 -300, 100 200, 100 323),(-50 2000, 30 6000))'::ge
 
 -- lateral check before index
 SELECT '#3' As t, a.gid, b.gid As match, ST_Distance(a.geom, b.geom)::numeric(15,4) As true_rn, b.knn_dist::numeric(15,4)
-FROM knn_recheck_geom As a 
-	LEFT JOIN 
+FROM knn_recheck_geom As a
+	LEFT JOIN
 		LATERAL ( SELECT  gid, geom, a.geom <-> g.geom As knn_dist
 			FROM knn_recheck_geom As g WHERE a.gid <> g.gid ORDER BY a.geom <-> g.geom LIMIT 5) As b ON true
 	WHERE a.gid IN(1,500101)
@@ -56,8 +56,8 @@ ORDER BY 'MULTILINESTRING((-95 -300, 100 200, 100 323),(-50 2000, 30 6000))'::ge
 
 -- lateral check before index
 SELECT '#3' As t, a.gid, b.gid As match, ST_Distance(a.geom, b.geom)::numeric(15,4) As true_rn, b.knn_dist::numeric(15,4)
-FROM knn_recheck_geom As a 
-	LEFT JOIN 
+FROM knn_recheck_geom As a
+	LEFT JOIN
 		LATERAL ( SELECT  gid, geom, a.geom <-> g.geom As knn_dist
 			FROM knn_recheck_geom As g WHERE a.gid <> g.gid ORDER BY a.geom <-> g.geom LIMIT 5) As b ON true
 	WHERE a.gid IN(1,500101)
@@ -67,7 +67,7 @@ DROP TABLE knn_recheck_geom;
 
 -- geography tests
 DELETE FROM spatial_ref_sys where srid = 4326;
-INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","proj4text") 
+INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","proj4text")
     VALUES (4326,'EPSG',4326,'+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ');
 -- create table
 CREATE TABLE knn_recheck_geog(gid serial primary key, geog geography);
@@ -101,7 +101,7 @@ ORDER BY 'LINESTRING(75 10, 75 12, 80 20)'::geography <-> geog LIMIT 5;
 SELECT '#3g' As t, a.gid,  ARRAY(SELECT  gid
 			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY ST_Distance(a.geog, g.geog, false) LIMIT 5) = ARRAY(SELECT  gid
 			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY a.geog <-> g.geog LIMIT 5) As dist_order_agree
-FROM knn_recheck_geog As a 
+FROM knn_recheck_geog As a
 	WHERE a.gid IN(500000,500010,1000)
 ORDER BY a.gid;
 
@@ -124,7 +124,7 @@ ORDER BY 'LINESTRING(75 10, 75 12, 80 20)'::geography <-> geog LIMIT 5;
 SELECT '#3g' As t, a.gid,  ARRAY(SELECT  g.gid
 			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY ST_Distance(a.geog, g.geog, false) LIMIT 5) = ARRAY(SELECT  gid
 			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY a.geog <-> g.geog LIMIT 5) As dist_order_agree
-FROM knn_recheck_geog As a 
+FROM knn_recheck_geog As a
 	WHERE a.gid IN(500000,500010,1000)
 ORDER BY a.gid;
 
@@ -139,8 +139,8 @@ DELETE FROM spatial_ref_sys WHERE srid = 4326;
 -- create table and load
 CREATE TABLE knn_recheck_geom_nd(gid serial primary key, geom geometry);
 INSERT INTO knn_recheck_geom_nd(gid,geom)
-SELECT ROW_NUMBER() OVER(ORDER BY x,y) AS gid, ST_MakePoint(x*0.777,y*0.887,z*1.05) As geom
-FROM generate_series(-100,1000, 7) AS x , 
+SELECT ROW_NUMBER() OVER(ORDER BY x,y,z) AS gid, ST_MakePoint(x*0.777,y*0.887,z*1.05) As geom
+FROM generate_series(-100,1000, 7) AS x ,
     generate_series(-300,1000,9) As y,
  generate_series(1005,10000,5555) As z ;
 
@@ -159,14 +159,14 @@ FROM generate_series(0,3) i;
 INSERT INTO knn_recheck_geom_nd(gid,geom)
 SELECT 600000 + row_number() over(), ST_Translate(the_geom,100, 450,1000) As the_geom
 		FROM (VALUES ( ST_GeomFromText(
-'PolyhedralSurface( 
-((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
-((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  
-((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) 
+'PolyhedralSurface(
+((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))
 )') ) ,
 ( ST_GeomFromText(
-'PolyhedralSurface( 
-((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
+'PolyhedralSurface(
+((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)) )') ) )
 As foo(the_geom) ;
 
@@ -177,7 +177,7 @@ SELECT '#1nd-3' As t, gid, ST_3DDistance( 'POINT(-305 998.5 1000)'::geometry, ge
 FROM knn_recheck_geom_nd
 ORDER BY 'POINT(-305 998.5 1000)'::geometry <<->> geom LIMIT 5;
 
--- linestring check 
+-- linestring check
 SELECT '#2nd-3' As t, gid, ST_3DDistance( 'MULTILINESTRING((-95 -300 5000, 105 451 1000, 100 323 200),(-50 2000 456, 30 6000 789))'::geometry::geometry, geom)::numeric(12,4),
  ('MULTILINESTRING((-95 -300 5000, 105 451 1000, 100 323 200),(-50 2000 456, 30 6000 789))'::geometry <<->> geom)::numeric(12,4) As knn_dist
 FROM knn_recheck_geom_nd
@@ -185,8 +185,8 @@ ORDER BY 'MULTILINESTRING((-95 -300 5000, 105 451 1000, 100 323 200),(-50 2000 4
 
 -- lateral test
 SELECT '#3nd-3' As t, a.gid, b.gid As match, ST_3DDistance(a.geom, b.geom)::numeric(15,4) As true_rn, b.knn_dist::numeric(15,4)
-FROM knn_recheck_geom_nd As a 
-	LEFT JOIN 
+FROM knn_recheck_geom_nd As a
+	LEFT JOIN
 		LATERAL ( SELECT  gid, geom, a.geom <<->> g.geom As knn_dist
 			FROM knn_recheck_geom_nd As g WHERE a.gid <> g.gid ORDER BY a.geom <<->> g.geom LIMIT 5) As b ON true
 	WHERE a.gid IN(1,600001)
@@ -202,7 +202,7 @@ SELECT '#1nd-3' As t, gid, ST_3DDistance( 'POINT(-305 998.5 1000)'::geometry, ge
 FROM knn_recheck_geom_nd
 ORDER BY 'POINT(-305 998.5 1000)'::geometry <<->> geom LIMIT 5;
 
--- linestring check 
+-- linestring check
 SELECT '#2nd-3' As t, gid, ST_3DDistance( 'MULTILINESTRING((-95 -300 5000, 105 451 1000, 100 323 200),(-50 2000 456, 30 6000 789))'::geometry::geometry, geom)::numeric(12,4),
  ('MULTILINESTRING((-95 -300 5000, 105 451 1000, 100 323 200),(-50 2000 456, 30 6000 789))'::geometry <<->> geom)::numeric(12,4) As knn_dist
 FROM knn_recheck_geom_nd
@@ -210,8 +210,8 @@ ORDER BY 'MULTILINESTRING((-95 -300 5000, 105 451 1000, 100 323 200),(-50 2000 4
 
 -- lateral test
 SELECT '#3nd-3' As t, a.gid, b.gid As match, ST_3DDistance(a.geom, b.geom)::numeric(15,4) As true_rn, b.knn_dist::numeric(15,4)
-FROM knn_recheck_geom_nd As a 
-	LEFT JOIN 
+FROM knn_recheck_geom_nd As a
+	LEFT JOIN
 		LATERAL ( SELECT  gid, geom, a.geom <<->> g.geom As knn_dist
 			FROM knn_recheck_geom_nd As g WHERE a.gid <> g.gid ORDER BY a.geom <<->> g.geom LIMIT 5) As b ON true
 	WHERE a.gid IN(1,600001)
@@ -225,13 +225,13 @@ SELECT '#3573', 'POINT M (0 0 13)'::geometry <<->> 'LINESTRING M (0 0 5, 0 1 6)'
 
 -- #3418
 CREATE TABLE test_wo (geo geometry);
-INSERT INTO test_wo VALUES 
-  ('0101000020E61000007D91D0967329E4BF6631B1F9B8D64A40'::geometry), 
+INSERT INTO test_wo VALUES
+  ('0101000020E61000007D91D0967329E4BF6631B1F9B8D64A40'::geometry),
   ('0101000020E6100000E2AFC91AF510C1BFCDCCCCCCCCAC4A40'::geometry);
 CREATE INDEX ON TEST_WO USING GIST (GEO);
 analyze test_wo;
 SET enable_seqscan = false;
-SELECT '#3418' As ticket, '0101000020E610000092054CE0D6DDE5BFCDCCCCCCCCAC4A40'::geometry <-> geo, ST_Distance('0101000020E610000092054CE0D6DDE5BFCDCCCCCCCCAC4A40'::geometry, geo) 
+SELECT '#3418' As ticket, '0101000020E610000092054CE0D6DDE5BFCDCCCCCCCCAC4A40'::geometry <-> geo, ST_Distance('0101000020E610000092054CE0D6DDE5BFCDCCCCCCCCAC4A40'::geometry, geo)
 FROM test_wo ORDER BY geo <->
 ('0101000020E610000092054CE0D6DDE5BFCDCCCCCCCCAC4A40'::geometry);
 DROP TABLE test_wo;

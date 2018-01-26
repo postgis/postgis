@@ -46,7 +46,7 @@ SELECT 'line_locate_point_5', ST_LineLocatePoint(ST_MakeLine('POINT(1 2)'::geome
 --- postgis-devel/2006-January/001951.html
 with substr as (
   select ST_LineSubstring(ST_geomfromewkt('SRID=4326;LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 3 3 3, 4 4 4 4)'), 0.5, 0.8) as ln
-)	
+)
 select 'line_substring_1', ST_SRID(ln), ST_AsText(ln) from substr;
 
 select 'line_substring_2', ST_AsText(ST_LineSubstring('LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 3 3 3, 4 4 4 4)', 0.5, 0.75));

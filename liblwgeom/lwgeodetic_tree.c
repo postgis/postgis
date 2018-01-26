@@ -49,13 +49,15 @@ circ_node_is_leaf(const CIRC_NODE* node)
 void
 circ_tree_free(CIRC_NODE* node)
 {
-	int i;
+	uint32_t i;
 	if ( ! node ) return;
 
-	for ( i = 0; i < node->num_nodes; i++ )
-		circ_tree_free(node->nodes[i]);
-
-	if ( node->nodes ) lwfree(node->nodes);
+	if (node->nodes)
+	{
+		for (i = 0; i < node->num_nodes; i++)
+			circ_tree_free(node->nodes[i]);
+		lwfree(node->nodes);
+	}
 	lwfree(node);
 }
 
@@ -226,13 +228,13 @@ circ_center_cartesian(const GEOGRAPHIC_POINT* c1, const GEOGRAPHIC_POINT* c2, do
 * and storing pointers to the child nodes.
 */
 static CIRC_NODE*
-circ_node_internal_new(CIRC_NODE** c, int num_nodes)
+circ_node_internal_new(CIRC_NODE** c, uint32_t num_nodes)
 {
 	CIRC_NODE *node = NULL;
 	GEOGRAPHIC_POINT new_center, c1;
 	double new_radius;
 	double offset1, dist, D, r1, ri;
-	int i, new_geom_type;
+	uint32_t i, new_geom_type;
 
 	LWDEBUGF(3, "called with %d nodes --", num_nodes);
 
@@ -483,7 +485,7 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 	GEOGRAPHIC_EDGE stab_edge, edge;
 	POINT3D S1, S2, E1, E2;
 	double d;
-	int i, c;
+	uint32_t i, c;
 
 	/* Construct a stabline edge from our "inside" to our known outside point */
 	geographic_point_init(pt->x, pt->y, &(stab_edge.start));
@@ -604,7 +606,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 {
 	double max;
 	double d, d_min;
-	int i;
+	uint32_t i;
 
 	LWDEBUGF(4, "entered, min_dist=%.8g max_dist=%.8g, type1=%d, type2=%d", *min_dist, *max_dist, n1->geom_type, n2->geom_type);
 /*
@@ -789,7 +791,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 
 void circ_tree_print(const CIRC_NODE* node, int depth)
 {
-	int i;
+	uint32_t i;
 
 	if (circ_node_is_leaf(node))
 	{
@@ -857,7 +859,7 @@ lwline_calculate_circ_tree(const LWLINE* lwline)
 static CIRC_NODE*
 lwpoly_calculate_circ_tree(const LWPOLY* lwpoly)
 {
-	int i = 0, j = 0;
+	uint32_t i = 0, j = 0;
 	CIRC_NODE** nodes;
 	CIRC_NODE* node;
 
@@ -895,7 +897,7 @@ lwpoly_calculate_circ_tree(const LWPOLY* lwpoly)
 static CIRC_NODE*
 lwcollection_calculate_circ_tree(const LWCOLLECTION* lwcol)
 {
-	int i = 0, j = 0;
+	uint32_t i = 0, j = 0;
 	CIRC_NODE** nodes;
 	CIRC_NODE* node;
 

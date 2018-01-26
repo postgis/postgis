@@ -611,7 +611,7 @@ int
 lw_dist2d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS *dl)
 {
 	const POINT2D *p;
-	int i;
+	uint32_t i;
 
 	LWDEBUG(2, "lw_dist2d_point_poly called");
 
@@ -659,7 +659,7 @@ int
 lw_dist2d_point_curvepoly(LWPOINT *point, LWCURVEPOLY *poly, DISTPTS *dl)
 {
 	const POINT2D *p;
-	int i;
+	uint32_t i;
 
 	p = getPoint2d_cp(point->point, 0);
 
@@ -733,7 +733,7 @@ int
 lw_dist2d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS *dl)
 {
 	const POINT2D *pt;
-	int i;
+	uint32_t i;
 
 	LWDEBUGF(2, "lw_dist2d_line_poly called (%d rings)", poly->nrings);
 
@@ -796,7 +796,7 @@ int
 lw_dist2d_line_curvepoly(LWLINE *line, LWCURVEPOLY *poly, DISTPTS *dl)
 {
 	const POINT2D *pt = getPoint2d_cp(line->points, 0);
-	int i;
+	uint32_t i;
 
 	if ( lwgeom_contains_point(poly->rings[0], pt) == LW_OUTSIDE )
 	{
@@ -844,7 +844,7 @@ lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
 {
 
 	const POINT2D *pt;
-	int i;
+	uint32_t i;
 
 	LWDEBUG(2, "lw_dist2d_poly_poly called");
 
@@ -970,7 +970,7 @@ int
 lw_dist2d_curvepoly_curvepoly(LWCURVEPOLY *poly1, LWCURVEPOLY *poly2, DISTPTS *dl)
 {
 	const POINT2D *pt;
-	int i;
+	uint32_t i;
 
 	LWDEBUG(2, "lw_dist2d_curvepoly_curvepoly called");
 
@@ -1048,7 +1048,7 @@ lw_dist2d_curvepoly_curvepoly(LWCURVEPOLY *poly1, LWCURVEPOLY *poly2, DISTPTS *d
 int
 lw_dist2d_pt_ptarray(const POINT2D *p, POINTARRAY *pa,DISTPTS *dl)
 {
-	int t;
+	uint32_t t;
 	const POINT2D *start, *end;
 	int twist = dl->twisted;
 
@@ -1078,7 +1078,7 @@ lw_dist2d_pt_ptarray(const POINT2D *p, POINTARRAY *pa,DISTPTS *dl)
 int
 lw_dist2d_pt_ptarrayarc(const POINT2D *p, const POINTARRAY *pa, DISTPTS *dl)
 {
-	int t;
+	uint32_t t;
 	const POINT2D *A1;
 	const POINT2D *A2;
 	const POINT2D *A3;
@@ -1130,7 +1130,7 @@ lw_dist2d_pt_ptarrayarc(const POINT2D *p, const POINTARRAY *pa, DISTPTS *dl)
 int
 lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl)
 {
-	int t,u;
+	uint32_t t,u;
 	const POINT2D	*start, *end;
 	const POINT2D	*start2, *end2;
 	int twist = dl->twisted;
@@ -1182,7 +1182,7 @@ lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl)
 int
 lw_dist2d_ptarray_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, DISTPTS *dl)
 {
-	int t, u;
+	uint32_t t, u;
 	const POINT2D *A1;
 	const POINT2D *A2;
 	const POINT2D *B1;
@@ -1236,7 +1236,7 @@ lw_dist2d_ptarray_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, DISTPTS
 int
 lw_dist2d_ptarrayarc_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, DISTPTS *dl)
 {
-	int t, u;
+	uint32_t t, u;
 	const POINT2D *A1;
 	const POINT2D *A2;
 	const POINT2D *A3;
@@ -1405,14 +1405,14 @@ lw_dist2d_seg_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *B1, const
 
 	/* Closest point is in the arc, but not in the segment, so */
 	/* one of the segment end points must be the closest. */
-	if ( pt_in_arc & ! pt_in_seg )
+	if (pt_in_arc && !pt_in_seg)
 	{
 		lw_dist2d_pt_arc(A1, B1, B2, B3, dl);
 		lw_dist2d_pt_arc(A2, B1, B2, B3, dl);
 		return LW_TRUE;
 	}
 	/* or, one of the arc end points is the closest */
-	else if  ( pt_in_seg && ! pt_in_arc )
+	else if (pt_in_seg && !pt_in_arc)
 	{
 		lw_dist2d_pt_seg(B1, A1, A2, dl);
 		lw_dist2d_pt_seg(B3, A1, A2, dl);
@@ -1643,7 +1643,7 @@ lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
 
 	/* Closest point is in the arc A, but not in the arc B, so */
 	/* one of the B end points must be the closest. */
-	if ( pt_in_arc_A & ! pt_in_arc_B )
+	if (pt_in_arc_A && !pt_in_arc_B)
 	{
 		lw_dist2d_pt_arc(B1, A1, A2, A3, dl);
 		lw_dist2d_pt_arc(B3, A1, A2, A3, dl);
@@ -1915,10 +1915,7 @@ lw_dist2d_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C, const PO
 			dl->p2=theP;
 		}
 		return LW_TRUE;
-
 	}
-	lwerror("unspecified error in function lw_dist2d_seg_seg");
-	return LW_FALSE; /*If we have come here something is wrong*/
 }
 
 

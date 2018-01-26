@@ -518,11 +518,20 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   dnl Ensure we can link against libpq
   LIBS_SAVE="$LIBS"
   LIBS="$PGSQL_FE_LDFLAGS"
+
+  CC_SAVE="$CC"
+  CC=`"$PG_CONFIG" --cc`
+
+  CFLAGS_SAVE="$CFLAGS"
+  CFLAGS=`"$PG_CONFIG" --cflags`
+
   AC_CHECK_LIB([pq], [PQserverVersion],
     [],
     [AC_MSG_ERROR([could not find libpq])],
     [])
   LIBS="$LIBS_SAVE"
+  CC="$CC_SAVE"
+  CFLAGS="$CFLAGS_SAVE"
 
   AC_DEFINE_UNQUOTED([POSTGIS_PGSQL_VERSION], [$POSTGIS_PGSQL_VERSION], [PostgreSQL server version])
   AC_SUBST([POSTGIS_PGSQL_VERSION])
@@ -907,13 +916,12 @@ AC_SUBST([HAVE_JSON])
 
 fi
 
-
 dnl ===========================================================================
 dnl Detect if pkg-config installed
 dnl ===========================================================================
 # check for pkg-config
-AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
-if test "$PKG_CONFIG" = "no"; then
+PKG_PROG_PKG_CONFIG
+if test -z "$PKG_CONFIG"; then
    AC_MSG_WARN([Cannot find pkg-config, make sure it is installed in your PATH])
 fi
 
@@ -970,7 +978,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 
     dnl No user-specified protobuf dir, try to find one using pkg-config
     else
-        if test "$PKG_CONFIG" = "no"; then
+        if test -z "$PKG_CONFIG"; then
         	AC_MSG_WARN([Cannot find pkg-config, disabling protobuf support.])
         	HAVE_PROTOBUF=no
         else
@@ -1043,10 +1051,11 @@ AC_ARG_ENABLE([debug], AC_HELP_STRING([--enable-debug], [Enable debugging code a
 	[ENABLE_DEBUG=1], [ENABLE_DEBUG=0])
 
 if test $ENABLE_DEBUG -eq 1; then
-    AC_DEFINE_UNQUOTED([PARANOIA_LEVEL], [10], [Enable use of memory checks])
+    AC_DEFINE([PARANOIA_LEVEL], [10], [Enable use of memory checks])
     CFLAGS="$CFLAGS -g"
 else
-    AC_DEFINE_UNQUOTED([PARANOIA_LEVEL], [0], [Disable use of memory checks])
+    AC_DEFINE([PARANOIA_LEVEL], [0], [Disable use of memory checks])
+    AC_DEFINE([NDEBUG], [0], [Disable C asserts])
 fi
 
 
@@ -1141,8 +1150,6 @@ if test "x$with_address_standardizer" != "xno"; then
     AC_SUBST([PCRE_CPPFLAGS])
     AC_SUBST([PCRE_LDFLAGS])
 
-
-
 else
     ADDRESS_STANDARDIZER=""
     AC_SUBST([ADDRESS_STANDARDIZER])
@@ -1152,7 +1159,7 @@ fi
 CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $PROTOBUF_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $PCRE_CPPFLAGS $CPPFLAGS"
 dnl AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])
 
-SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $JSON_LDFLAGS $PROTOBUF_LDFLAGS $XML2_LDFLAGS $SFCGAL_LDFLAGS $PCRE_LDFLAGS $EXCLUDELIBS_LDFLAGS"
+SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $JSON_LDFLAGS $PROTOBUF_LDFLAGS $XML2_LDFLAGS $SFCGAL_LDFLAGS $PCRE_LDFLAGS $EXCLUDELIBS_LDFLAGS $LDFLAGS"
 AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
@@ -1191,7 +1198,7 @@ AC_ARG_WITH([interrupt-tests],
                     [Enable interrupt tests])],
     [INTERRUPTTESTS="yes"], [])
 
-if test "x$with_interrupt_tests" == "xno"; then
+if test "x$with_interrupt_tests" = "xno"; then
     INTERRUPTTESTS="no"
 fi
 
@@ -1339,7 +1346,10 @@ if test "x$with_raster" != "xno"; then
 		CPPFLAGS_SAVE="$CPPFLAGS"
 		CPPFLAGS="$LIBGDAL_CFLAGS"
 		CFLAGS_SAVE="$CFLAGS"
-		CFLAGS=""
+		CFLAGS=`"$PG_CONFIG" --cflags`
+		CC_SAVE="$CC"
+		CC=`"$PG_CONFIG" --cc`
+
 		LIBS_SAVE="$LIBS"
 		LIBS="$LIBGDAL_LDFLAGS"
 
@@ -1368,6 +1378,7 @@ if test "x$with_raster" != "xno"; then
 
 		CPPFLAGS="$CPPFLAGS_SAVE"
 		CFLAGS="$CFLAGS_SAVE"
+		CC="$CC_SAVE"
 		LIBS="$LIBS_SAVE"
 
 		AC_SUBST([LIBGDAL_CFLAGS])
@@ -1440,14 +1451,10 @@ AC_OUTPUT([GNUmakefile
    extensions/Makefile
    extensions/postgis/Makefile
    extensions/postgis_sfcgal/Makefile
-   extensions/postgis_sfcgal/postgis_sfcgal.control
    extensions/postgis_topology/Makefile
-   extensions/postgis_topology/postgis_topology.control
    extensions/postgis_tiger_geocoder/Makefile
    extensions/postgis_tiger_geocoder/postgis_tiger_geocoder.control
    extensions/address_standardizer/Makefile
-   extensions/address_standardizer/address_standardizer.control
-   extensions/address_standardizer/address_standardizer_data_us.control
    liblwgeom/Makefile
    liblwgeom/cunit/Makefile
    liblwgeom/liblwgeom.h

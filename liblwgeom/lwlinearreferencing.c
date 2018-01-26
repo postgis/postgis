@@ -79,7 +79,7 @@ segment_locate_along(const POINT4D *p1, const POINT4D *p2, double m, double offs
 static POINTARRAY*
 ptarray_locate_along(const POINTARRAY *pa, double m, double offset)
 {
-	int i;
+	uint32_t i;
 	POINT4D p1, p2, pn;
 	POINTARRAY *dpa = NULL;
 
@@ -150,7 +150,7 @@ lwmline_locate_along(const LWMLINE *lwmline, double m, double offset)
 {
 	LWMPOINT *lwmpoint = NULL;
 	LWGEOM *lwg = lwmline_as_lwgeom(lwmline);
-	int i, j;
+	uint32_t i, j;
 
 	/* Return degenerates upwards */
 	if ( (!lwmline) || (lwmline->ngeoms < 1) ) return NULL;
@@ -197,7 +197,7 @@ lwmpoint_locate_along(const LWMPOINT *lwin, double m, double offset)
 {
 	LWGEOM *lwg = lwmpoint_as_lwgeom(lwin);
 	LWMPOINT *lwout = NULL;
-	int i;
+	uint32_t i;
 
 	/* Construct return */
 	lwout = lwmpoint_construct_empty(lwgeom_get_srid(lwg), lwgeom_has_z(lwg), lwgeom_has_m(lwg));
@@ -416,7 +416,7 @@ lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double fr
 {
 	LWCOLLECTION *lwgeom_out = NULL;
 	char hasz, hasm;
-	int i;
+	uint32_t i;
 
 	/* Nothing to do with NULL */
 	if ( ! mpoint )
@@ -485,7 +485,7 @@ lwmline_clip_to_ordinate_range(const LWMLINE *mline, char ordinate, double from,
 		LWCOLLECTION *col;
 		char hasz = lwgeom_has_z(lwmline_as_lwgeom(mline));
 		char hasm = lwgeom_has_m(lwmline_as_lwgeom(mline));
-		int i, j;
+		uint32_t i, j;
 		char homogeneous = 1;
 		size_t geoms_size = 0;
 		lwgeom_out = lwcollection_construct_empty(MULTILINETYPE, mline->srid, hasz, hasm);
@@ -551,13 +551,12 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 	POINTARRAY *pa_in = NULL;
 	LWCOLLECTION *lwgeom_out = NULL;
 	POINTARRAY *dp = NULL;
-	int i;
+	uint32_t i;
 	int added_last_point = 0;
 	POINT4D *p = NULL, *q = NULL, *r = NULL;
 	double ordinate_value_p = 0.0, ordinate_value_q = 0.0;
-	char hasz = lwgeom_has_z(lwline_as_lwgeom(line));
-	char hasm = lwgeom_has_m(lwline_as_lwgeom(line));
-	char dims = FLAGS_NDIMS(line->flags);
+	char hasz, hasm;
+	char dims;
 
 	/* Null input, nothing we can do. */
 	if ( ! line )
@@ -565,6 +564,9 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 		lwerror("Null input geometry.");
 		return NULL;
 	}
+	hasz = lwgeom_has_z(lwline_as_lwgeom(line));
+	hasm = lwgeom_has_m(lwline_as_lwgeom(line));
+	dims = FLAGS_NDIMS(line->flags);
 
 	/* Ensure 'from' is less than 'to'. */
 	if ( to < from )
@@ -771,7 +773,7 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 {
 	LWCOLLECTION *out_col;
 	LWCOLLECTION *out_offset;
-	int i;
+	uint32_t i;
 
 	if ( ! lwin )
 		lwerror("lwgeom_clip_to_ordinate_range: null input geometry!");
@@ -800,7 +802,8 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 		lwerror("lwgeom_clip_to_ordinate_range clipping routine returned NULL");
 
 	/* Return if we aren't going to offset the result */
-	if ( FP_EQUALS(offset, 0.0) || lwgeom_is_empty(lwcollection_as_lwgeom(out_col)) )
+	if (FP_IS_ZERO(offset) ||
+	    lwgeom_is_empty(lwcollection_as_lwgeom(out_col)))
 		return out_col;
 
 	/* Construct a collection to hold our outputs. */
@@ -989,7 +992,7 @@ static int
 ptarray_collect_mvals(const POINTARRAY *pa, double tmin, double tmax, double *mvals)
 {
 	POINT4D pbuf;
-	int i, n=0;
+	uint32_t i, n=0;
 	for (i=0; i<pa->npoints; ++i)
 	{
 		getPoint4d_p(pa, i, &pbuf); /* could be optimized */
@@ -1044,9 +1047,9 @@ uniq(double *vals, int nvals)
  *         or -1 if given measure was out of the known range.
  */
 static int
-ptarray_locate_along_linear(const POINTARRAY *pa, double m, POINT4D *p, int from)
+ptarray_locate_along_linear(const POINTARRAY *pa, double m, POINT4D *p, uint32_t from)
 {
-	int i = from;
+	uint32_t i = from;
 	POINT4D p1, p2;
 
 	/* Walk through each segment in the point array */

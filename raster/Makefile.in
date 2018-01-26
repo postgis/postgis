@@ -19,15 +19,19 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #############################################################################
 
-all: @RT_CORE_LIB@ @RT_PG_LIB@ @RT_LOADER@ @RT_POSTGIS_SQL@ 
+CC=@CC@
+CFLAGS=-I../liblwgeom @CFLAGS@ @WARNFLAGS@
+LDFLAGS = @LDFLAGS@
+
+all: @RT_CORE_LIB@ @RT_PG_LIB@ @RT_LOADER@ @RT_POSTGIS_SQL@
 
 corelib:
 	$(MAKE) -C rt_core
 
-pglib:
+pglib: corelib
 	$(MAKE) -C rt_pg
 
-rtloader:
+rtloader: corelib
 	$(MAKE) -C loader
 
 rtpostgis.sql:

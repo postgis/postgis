@@ -94,7 +94,7 @@ SELECT r.topogeo_id, r.element_id
   FROM t.relation r, t.f f WHERE
   r.layer_id = layer_id(f.g) AND r.topogeo_id = id(f.g)
   AND r.topogeo_id in (2,3)
-  ORDER BY r.layer_id, r.topogeo_id;
+  ORDER BY r.layer_id, r.topogeo_id, r.element_id;
 
 -- This is fine, but will have to tweak definition of
 -- 'F+E3-E4' and 'F-E3+E4'
@@ -107,7 +107,7 @@ SELECT r.topogeo_id, r.element_id
   FROM t.relation r, t.f f WHERE
   r.layer_id = layer_id(f.g) AND r.topogeo_id = id(f.g)
   AND r.topogeo_id in (2,3)
-  ORDER BY r.layer_id, r.topogeo_id;
+  ORDER BY r.layer_id, r.topogeo_id, r.element_id;
 
 SELECT topology.DropTopology('t');
 
@@ -175,7 +175,6 @@ SELECT '#1998.-', topology.DropTopology('t1998');
 -------------------------------------------------------------------------
 -------------------------------------------------------------------------
 -------------------------------------------------------------------------
-
 
 -- TODO: test registered but unexistent topology
 -- TODO: test registered but corrupted topology

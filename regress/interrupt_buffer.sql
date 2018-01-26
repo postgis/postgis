@@ -41,5 +41,4 @@ SELECT _timecheck('buffer', '200ms');
 -- Not affected by old timeout
 SELECT '1', ST_NPoints(ST_Buffer('POINT(4 0)'::geometry, 2, 1));
 
-
 DROP FUNCTION _timecheck(text, interval);

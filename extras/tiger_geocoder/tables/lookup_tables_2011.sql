@@ -33,8 +33,6 @@ INSERT INTO direction_lookup (name, abbrev) VALUES('EAST', 'E');
 INSERT INTO direction_lookup (name, abbrev) VALUES('E', 'E');
 CREATE INDEX direction_lookup_abbrev_idx ON direction_lookup (abbrev);
 
-
-
 -- Create secondary unit lookup table
 DROP TABLE IF EXISTS tiger.secondary_unit_lookup;
 CREATE TABLE secondary_unit_lookup (name VARCHAR(20) PRIMARY KEY, abbrev VARCHAR(5));
@@ -78,8 +76,6 @@ INSERT INTO secondary_unit_lookup (name, abbrev) VALUES ('UNIT', 'UNIT');
 INSERT INTO secondary_unit_lookup (name, abbrev) VALUES ('UPPER', 'UPPR');
 INSERT INTO secondary_unit_lookup (name, abbrev) VALUES ('UPPR', 'UPPR');
 CREATE INDEX secondary_unit_lookup_abbrev_idx ON secondary_unit_lookup (abbrev);
-
-
 
 -- Create state lookup table
 DROP TABLE IF EXISTS tiger.state_lookup;
@@ -145,7 +141,6 @@ INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Wisconsin', 'WI', '55'
 INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Wyoming', 'WY', '56');
 -- NOTE: fix later -- this is wrong for those - state code ones
 UPDATE state_lookup SET statefp = lpad(st_code::text,2,'0');
-
 
 -- Create street type lookup table
 DROP TABLE IF EXISTS tiger.street_type_lookup;
@@ -1182,7 +1177,6 @@ CREATE INDEX idx_addrfeat_geom_gist ON addrfeat USING gist(the_geom );
 CREATE INDEX idx_addrfeat_tlid ON addrfeat USING btree(tlid);
 CREATE INDEX idx_addrfeat_zipl ON addrfeat USING btree(zipl);
 CREATE INDEX idx_addrfeat_zipr ON addrfeat USING btree(zipr);
-
 
 DROP TABLE IF EXISTS tiger.faces;
 CREATE TABLE faces

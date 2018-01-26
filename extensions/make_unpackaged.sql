@@ -28,4 +28,3 @@ WHERE d.refclassid = 'pg_catalog.pg_extension'::pg_catalog.regclass
 AND deptype = 'e' AND e.extname = 'postgis_tiger_geocoder'
 ORDER BY sqladd;
 
-

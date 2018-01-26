@@ -67,7 +67,7 @@ my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
 my $OPT_EXTVERSION = '';
 my $OPT_UPGRADE_PATH = '';
-my $OPT_UPGRADE_FROM = '';
+our $OPT_UPGRADE_FROM = '';
 my $OPT_UPGRADE_TO = '';
 my $VERBOSE = 0;
 
@@ -258,6 +258,21 @@ if ( ! $libver )
 	exit(1);
 }
 
+sub semver_lessthan
+{
+  my ($a,$b) = @_;
+  my @acomp = split(/\./, $a);
+  my @bcomp = split(/\./, $b);
+	foreach my $ac (@acomp) {
+		my $bc = shift(@bcomp);
+		return 0 if not defined($bc); # $b has less components
+		return 1 if ( $ac < $bc ); # $a is less than $b
+		return 0 if ( $ac > $bc ); # $a is not less than $b
+	}
+	# $a is equal to $b so far, if $b has more elements,
+	# it is bigger
+	return @bcomp ? 1 : 0;
+}
 
 sub create_upgrade_test_objects
 {
@@ -754,9 +769,6 @@ sub run_simple_test
 			print FILE $diff;
 			close(FILE);
 			fail("${msg}diff expected obtained", $diffile);
-			print "========";
-			print $diff;
-			print "========";
 			return 0;
 		}
 		else
@@ -1294,6 +1306,9 @@ sub prepare_spatial_extensions
 		if ( $OPT_UPGRADE_FROM ) {
 			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
 		}
+
+		print "Preparing db '${DB}' using: ${sql}\n";
+
  		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
 		$rv = system($cmd);
   	if ( $rv ) {
@@ -1304,16 +1319,27 @@ sub prepare_spatial_extensions
 
 	if ( $OPT_WITH_SFCGAL )
 	{
-		my $sql = "CREATE EXTENSION postgis_sfcgal";
-		if ( $OPT_UPGRADE_FROM ) {
-			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
-		}
- 		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
-		$rv = system($cmd);
-		if ( $rv ) {
-		  fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
-		  die;
-		}
+		do {
+			my $sql = "CREATE EXTENSION postgis_sfcgal";
+			if ( $OPT_UPGRADE_FROM ) {
+				if ( semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
+				{
+					print "NOTICE: skipping SFCGAL extension create "
+							. "as not available in version '$OPT_UPGRADE_FROM'\n";
+					last;
+				}
+				$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
+			}
+
+			print "Preparing db '${DB}' using: ${sql}\n";
+
+			$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+			$rv = system($cmd);
+			if ( $rv ) {
+				fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
+				die;
+			}
+		} while (0);
 	}
 
  	return 1;
@@ -1401,6 +1427,22 @@ sub upgrade_spatial
             die "$script not found\n";
         }
     }
+
+    if ( $OPT_WITH_SFCGAL )
+    {
+        my $script = `ls ${STAGED_SCRIPTS_DIR}/sfcgal_upgrade.sql`;
+        chomp($script);
+        if ( -e $script )
+        {
+            print "Upgrading sfcgal\n";
+            load_sql_file($script);
+        }
+        else
+        {
+            die "$script not found\n";
+        }
+    }
+
     return 1;
 }
 
@@ -1429,10 +1471,45 @@ sub upgrade_spatial_extensions
     if ( $OPT_WITH_TOPO )
     {
       my $sql = "ALTER EXTENSION postgis_topology UPDATE TO '${nextver}'";
+
+			if ( $OPT_UPGRADE_FROM eq "unpackaged" ) {
+				$sql = "CREATE EXTENSION postgis_topology VERSION '${nextver}' FROM unpackaged";
+			}
+
+			print "Upgrading PostGIS Topology in '${DB}' using: ${sql}\n" ;
+
       my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
       my $rv = system($cmd);
       if ( $rv ) {
         fail "Error encountered altering EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
+        die;
+      }
+    }
+
+    if ( $OPT_WITH_SFCGAL )
+    {
+			my $sql;
+
+			if ( $OPT_UPGRADE_FROM eq "unpackaged" ) {
+				$sql = "CREATE EXTENSION postgis_sfcgal VERSION '${nextver}' FROM unpackaged";
+			}
+			elsif ( $OPT_UPGRADE_FROM && semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
+			{
+				print "NOTICE: installing SFCGAL extension on upgrade "
+						. "as it was not available in version '$OPT_UPGRADE_FROM'\n";
+				$sql = "CREATE EXTENSION postgis_sfcgal VERSION '${nextver}'";
+			}
+			else
+			{
+				$sql = "ALTER EXTENSION postgis_sfcgal UPDATE TO '${nextver}'";
+			}
+      $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+
+			print "Upgrading PostGIS SFCGAL in '${DB}' using: ${sql}\n" ;
+
+      $rv = system($cmd);
+      if ( $rv ) {
+        fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
         die;
       }
     }

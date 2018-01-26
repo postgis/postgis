@@ -584,7 +584,7 @@ static void test_edge_intersects(void)
 {
 	POINT3D A1, A2, B1, B2;
 	GEOGRAPHIC_POINT g;
-	int rv;
+	uint32_t rv;
 
 	/* Covers case, end-to-end intersection */
 	line2pts("LINESTRING(50 -10.999999999999998224, -10.0 50.0)", &A1, &A2);

@@ -122,7 +122,7 @@ lwcollection_wrapx(const LWCOLLECTION* lwcoll_in, double cutx, double amount)
 {
 	LWGEOM** wrap_geoms;
 	LWCOLLECTION* out;
-	int i;
+	uint32_t i;
 	int outtype = lwcoll_in->type;
 
 	wrap_geoms = lwalloc(lwcoll_in->ngeoms * sizeof(LWGEOM*));
@@ -138,10 +138,12 @@ lwcollection_wrapx(const LWCOLLECTION* lwcoll_in, double cutx, double amount)
 		wrap_geoms[i] = lwgeom_wrapx(lwcoll_in->geoms[i], cutx, amount);
 		/* an exception should prevent this from ever returning NULL */
 		if ( ! wrap_geoms[i] ) {
+			uint32_t j;
 			lwnotice("Error wrapping geometry, cleaning up");
-			while ((--i)>=0) {
-				lwnotice("cleaning geometry %d (%p)", i, wrap_geoms[i]);
-				lwgeom_free(wrap_geoms[i]);
+			for (j = 0; j < i; j++)
+			{
+				lwnotice("cleaning geometry %d (%p)", j, wrap_geoms[j]);
+				lwgeom_free(wrap_geoms[j]);
 			}
 			lwfree(wrap_geoms);
 			lwnotice("cleanup complete");

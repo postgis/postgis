@@ -200,7 +200,6 @@ CREATE AGGREGATE ST_AreaWeightedSummaryStats(geometry, double precision) (
   FINALFUNC=geomval_arealweightedfinal
 );
 
-
 SELECT id,
        (aws).count,
        (aws).distinctcount,

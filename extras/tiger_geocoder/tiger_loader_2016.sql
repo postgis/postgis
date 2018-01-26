@@ -159,7 +159,6 @@ BEGIN
 END
 $$ LANGUAGE 'plpgsql';
 
-
 DELETE FROM loader_platform WHERE os IN ('sh', 'windows');
 GRANT SELECT ON TABLE loader_platform TO public;
 INSERT INTO loader_platform(os, wget, pgbin, declare_sect, unzip_command, psql,path_sep,loader, environ_set_command, county_process_command)
@@ -184,7 +183,6 @@ for /r %%z in (*.zip) do %UNZIPTOOL% e %%z  -o%TMPDIR%
 cd %TMPDIR%', E'%PSQL%', E'\\', E'%SHP2PGSQL%', 'set ',
 'for /r %%z in (*${table_name}*.dbf) do (${loader} -D -s 4269 -g the_geom -W "latin1" %%z tiger_staging.${state_abbrev}_${table_name} | ${psql} & ${psql} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));")'
 );
-
 
 INSERT INTO loader_platform(os, wget, pgbin, declare_sect, unzip_command, psql, path_sep, loader, environ_set_command, county_process_command)
 VALUES('sh', 'wget', '',
@@ -243,7 +241,6 @@ $$ LANGUAGE 'plpgsql';
 
 TRUNCATE TABLE loader_lookuptables;
 
-
 GRANT SELECT ON TABLE loader_lookuptables TO public;
 
 -- put in explanatory comments of what each column is for
@@ -269,7 +266,6 @@ VALUES(11, 'tabblock', 'tabblock10', false, false, true,false, 'c',
 ${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
 ${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_${lookup_name}_the_geom_gist ON ${data_schema}.${state_abbrev}_${lookup_name} USING gist(the_geom);"
 ${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"', '{gid, uatyp10, uatype, suffix1ce}'::text[]);
-
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
 VALUES(12, 'bg', 'bg', false,false, true,false, 'c',
@@ -320,7 +316,6 @@ VALUES(4, 'zcta5', 'zcta510', false,true, false,false, false, 'a',
 	'${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
 ${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_${lookup_name}_the_geom_gist ON ${data_schema}.${state_abbrev}_${lookup_name} USING gist(the_geom);"'
 , ARRAY['gid','geoid','geoid10'], 'ftp://ftp2.census.gov/geo/tiger/TIGER2010/ZCTA5/2010');**/
-
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process )
 VALUES(6, 'faces', 'faces', true, true, false,false, 'c',

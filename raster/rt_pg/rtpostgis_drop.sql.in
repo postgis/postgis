@@ -48,7 +48,6 @@ DROP AGGREGATE IF EXISTS ST_Union(raster, text, text);
 DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text, double precision);
 DROP AGGREGATE IF EXISTS ST_Union(raster, record[]);
 
-
 DROP FUNCTION IF EXISTS ST_Intersects(raster,boolean,geometry);
 DROP FUNCTION IF EXISTS ST_Intersects(geometry,raster,boolean);
 DROP FUNCTION IF EXISTS ST_Intersects(raster,geometry);

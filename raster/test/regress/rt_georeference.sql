@@ -243,7 +243,6 @@ SELECT
 FROM rt_properties_test
 WHERE id = 2;
 
-
 SELECT
     replace(st_georeference(rast)::text, E'\n', E'EOL'),
     replace(st_georeference(rast)::text, E'\n', E'EOL') =
@@ -356,7 +355,6 @@ SELECT
     '5.0000000000EOL7.0000000000EOL3.0000000000EOL5.0000000000EOL10.0000000000EOL5.0000000000EOL'
 FROM rt_properties_test
 WHERE id = 5;
-
 
 -----------------------------------------------------------------------
 -- st_setgeoreference (error conditions)

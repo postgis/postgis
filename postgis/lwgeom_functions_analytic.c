@@ -481,7 +481,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 	else if ( type == MULTILINETYPE )
 	{
 		LWMLINE *iline;
-		int i = 0, g = 0;
+		uint32_t i = 0, g = 0;
 		int homogeneous = LW_TRUE;
 		LWGEOM **geoms = NULL;
 		double length = 0.0, sublength = 0.0, minprop = 0.0, maxprop = 0.0;
@@ -651,7 +651,7 @@ static int isOnSegment(const POINT2D *seg1, const POINT2D *seg2, const POINT2D *
 static int point_in_ring_rtree(RTREE_NODE *root, const POINT2D *point)
 {
 	int wn = 0;
-	int i;
+	uint32_t i;
 	double side;
 	const POINT2D *seg1;
 	const POINT2D *seg2;
@@ -734,14 +734,14 @@ static int point_in_ring_rtree(RTREE_NODE *root, const POINT2D *point)
 static int point_in_ring(POINTARRAY *pts, const POINT2D *point)
 {
 	int wn = 0;
-	int i;
+	uint32_t i;
 	double side;
 	const POINT2D* seg1;
 	const POINT2D* seg2;
 
 	POSTGIS_DEBUG(2, "point_in_ring called.");
 
-    seg2 = getPoint2d_cp(pts, 0);
+	seg2 = getPoint2d_cp(pts, 0);
 	for (i=0; i<pts->npoints-1; i++)
 	{
 		seg1 = seg2;
@@ -911,7 +911,8 @@ int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int *ringCount
  */
 int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
 {
-	int i, result, in_ring;
+	uint32_t i;
+	int result, in_ring;
 	POINT2D pt;
 
 	POSTGIS_DEBUG(2, "point_in_polygon called.");
@@ -954,7 +955,8 @@ int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
  */
 int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point)
 {
-	int i, j, result, in_ring;
+	uint32_t i, j;
+	int result, in_ring;
 	POINT2D pt;
 
 	POSTGIS_DEBUG(2, "point_in_polygon called.");

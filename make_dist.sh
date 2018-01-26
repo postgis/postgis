@@ -18,7 +18,8 @@
 #
 #   CONFIGURE_ARGS    passed to ./configure call
 #   MAKE              useed for builds (defaults to "make")
-#
+#   newoutdir  this variable can be overriden to control the outdir and package name.
+#              package name will be set to {newoutdir}.tar.gz if this variabe is overridden
 #
 
 version=dev
@@ -130,16 +131,23 @@ if test "$version" = "dev"; then
   VMIC=`grep ^POSTGIS_MICRO_VERSION "$outdir"/Version.config | cut -d= -f2`
   VREV=`cat "$outdir"/postgis_svn_revision.h | awk '{print $3}'`
   version="${VMAJ}.${VMIN}.${VMIC}-r${VREV}"
-  newoutdir=postgis-${version}
+  #if newoutdir is not already set, then set it
+  if test "x$newoutdir" = "x"; then
+      newoutdir=postgis-${version}
+  else
+      package=${newoutdir}.tar.gz
+  fi
   rm -rf ${newoutdir}
   mv -v "$outdir" "$newoutdir"
   outdir=${newoutdir}
 fi
 
-package="postgis-$version.tar.gz"
+#if package name is not already set then set it
+if test "x$package" = "x"; then
+    package="postgis-$version.tar.gz"
+fi
 echo "Generating $package file"
 tar czf "$package" "$outdir"
 
 #echo "Cleaning up"
 #rm -Rf "$outdir"
-

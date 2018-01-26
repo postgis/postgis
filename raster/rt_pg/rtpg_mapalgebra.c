@@ -369,8 +369,8 @@ static int rtpg_nmapalgebra_callback(
 	bool *_null = NULL;
 
 	int i = 0;
-	int x = 0;
-	int y = 0;
+	uint32_t x = 0;
+	uint32_t y = 0;
 	int z = 0;
 	int dim[3] = {0};
 	int lbound[3] = {1, 1, 1};
@@ -1431,7 +1431,7 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 		char *expr = NULL;
 		char *tmp = NULL;
 		char *sql = NULL;
-		char place[5] = "$1";
+		char place[12] = "$1";
 
 		if (PG_ARGISNULL(exprpos[i]))
 			continue;
@@ -3454,9 +3454,9 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 	int j = 0;
 	int k = 0;
 
-	int a = 0;
-	int b = 0;
-	int c = 0;
+	uint32_t a = 0;
+	uint32_t b = 0;
+	uint32_t c = 0;
 
 	rt_reclassexpr *exprset = NULL;
 	HeapTupleHeader tup;
@@ -3476,11 +3476,11 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 	bool hasnodata = FALSE;
 
 	char **comma_set = NULL;
-	int comma_n = 0;
+	uint32_t comma_n = 0;
 	char **colon_set = NULL;
-	int colon_n = 0;
+	uint32_t colon_n = 0;
 	char **dash_set = NULL;
-	int dash_n = 0;
+	uint32_t dash_n = 0;
 
 	POSTGIS_RT_DEBUG(3, "RASTER_reclass: Starting");
 
@@ -3681,6 +3681,7 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 							strchr(dash_set[c], ']') != NULL
 						)
 					) {
+						uint32_t dash_it;
 						junk = palloc(sizeof(char) * (strlen(dash_set[c + 1]) + 2));
 						if (NULL == junk) {
 							for (k = 0; k <= j; k++) pfree(exprset[k]);
@@ -3699,9 +3700,9 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 						pfree(junk);
 
 						/* rebuild dash_set */
-						for (k = 1; k < dash_n; k++) {
-							dash_set[k - 1] = repalloc(dash_set[k - 1], (strlen(dash_set[k]) + 1) * sizeof(char));
-							strcpy(dash_set[k - 1], dash_set[k]);
+						for (dash_it = 1; dash_it < dash_n; dash_it++) {
+							dash_set[dash_it - 1] = repalloc(dash_set[dash_it - 1], (strlen(dash_set[dash_it]) + 1) * sizeof(char));
+							strcpy(dash_set[dash_it - 1], dash_set[dash_it]);
 						}
 						dash_n--;
 						c--;
@@ -3983,9 +3984,9 @@ struct rtpg_colormap_arg_t {
 	int nodataentry;
 
 	char **entry;
-	int nentry;
+	uint32_t nentry;
 	char **element;
-	int nelement;
+	uint32_t nelement;
 };
 
 static rtpg_colormap_arg
@@ -4024,7 +4025,7 @@ rtpg_colormap_arg_init() {
 
 static void
 rtpg_colormap_arg_destroy(rtpg_colormap_arg arg) {
-	int i = 0;
+	uint32_t i = 0;
 	if (arg->raster != NULL)
 		rt_raster_destroy(arg->raster);
 
@@ -4165,8 +4166,8 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 		char *colormap = text_to_cstring(PG_GETARG_TEXT_P(2));
 		char *_entry;
 		char *_element;
-		int i = 0;
-		int j = 0;
+		uint32_t i = 0;
+		uint32_t j = 0;
 
 		POSTGIS_RT_DEBUGF(4, "colormap = %s", colormap);
 
@@ -4232,7 +4233,7 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 			}
 
 			/* smallest # of colors */
-			if ((arg->nelement - 1) < arg->colormap->ncolor)
+			if (((int)arg->nelement - 1) < arg->colormap->ncolor)
 				arg->colormap->ncolor = arg->nelement - 1;
 
 			/* each element of entry */
@@ -4434,7 +4435,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     int argcount = 0;
     Oid argtype[] = { FLOAT8OID, INT4OID, INT4OID };
     uint8_t argpos[3] = {0};
-    char place[5];
+    char place[12];
     int idx = 0;
     int ret = -1;
     TupleDesc tupdesc;
@@ -6076,8 +6077,8 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_mapAlgebra2);
 Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 {
-	const int set_count = 2;
-	rt_pgraster *pgrast[2];
+	const uint32_t set_count = 2;
+	rt_pgraster *pgrast[2] = { NULL, NULL };
 	int pgrastpos[2] = {-1, -1};
 	rt_pgraster *pgrtn;
 	rt_raster rast[2] = {NULL};
@@ -6109,7 +6110,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 	Oid calltype = InvalidOid;
 
-	const int spi_count = 3;
+	const uint32_t spi_count = 3;
 	uint16_t spi_exprpos[3] = {4, 7, 8};
 	uint32_t spi_argcount[3] = {0};
 	char *expr = NULL;
@@ -6117,7 +6118,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	SPIPlanPtr spi_plan[3] = {NULL};
 	uint16_t spi_empty = 0;
 	Oid *argtype = NULL;
-	const int argkwcount = 8;
+	const uint32_t argkwcount = 8;
 	uint8_t argpos[3][8] = {{0}};
 	char *argkw[] = {"[rast1.x]", "[rast1.y]", "[rast1.val]", "[rast1]", "[rast2.x]", "[rast2.y]", "[rast2.val]", "[rast2]"};
 	Datum values[argkwcount];

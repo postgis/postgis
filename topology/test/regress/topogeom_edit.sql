@@ -19,6 +19,5 @@ SELECT id, 'rem',  id, ST_Length(TopoGeom_remElement(g, '{1,2}')) FROM tt.f_line
 SELECT id, 'dup',  id, ST_Length(TopoGeom_addElement(g, '{2,2}')) FROM tt.f_line WHERE id = 1;
 SELECT id, 'mis',  id, ST_Length(TopoGeom_remElement(g, '{1,2}')) FROM tt.f_line WHERE id = 1;
 
-
 DROP TABLE tt.f_line;
 select droptopology('tt');

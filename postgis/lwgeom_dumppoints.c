@@ -48,7 +48,7 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS);
 
 struct dumpnode {
 	LWGEOM *geom;
-	int idx; /* which member geom we're working on */
+	uint32_t idx; /* which member geom we're working on */
 } ;
 
 /* 32 is the max depth for st_dump, so it seems reasonable
@@ -67,8 +67,8 @@ struct dumpstate {
 	bool	byval;
 	char	align;
 
-	int ring; /* ring of top polygon */
-	int pt; /* point of top geom or current ring */
+	uint32_t ring; /* ring of top polygon */
+	uint32_t pt; /* point of top geom or current ring */
 };
 
 PG_FUNCTION_INFO_V1(LWGEOM_dumppoints);

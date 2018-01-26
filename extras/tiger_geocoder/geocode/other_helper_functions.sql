@@ -46,7 +46,6 @@ $$
 LANGUAGE sql IMMUTABLE
 COST 5;
 
-
 -- Generate script to drop all non-primary unique indexes on tiger and tiger_data tables
 CREATE OR REPLACE FUNCTION drop_indexes_generate_script(tiger_data_schema text DEFAULT 'tiger_data')
 RETURNS text AS
@@ -199,7 +198,6 @@ ORDER BY 1), E'\r');
 $$
 LANGUAGE sql VOLATILE;
 
-
 CREATE OR REPLACE FUNCTION install_missing_indexes() RETURNS boolean
 AS
 $$
@@ -211,7 +209,6 @@ END
 $$
 language plpgsql;
 
-
 CREATE OR REPLACE FUNCTION drop_dupe_featnames_generate_script() RETURNS text
 AS
 $$
@@ -221,7 +218,7 @@ SELECT min(f.gid) As min_gid, f.tlid, lower(f.fullname) As fname
 	FROM ONLY ' || t.table_schema || '.' || t.table_name || ' As f
 	GROUP BY f.tlid, lower(f.fullname)
 	HAVING count(*) > 1;
-	
+
 DELETE FROM ' || t.table_schema || '.' || t.table_name || ' AS feat
 WHERE EXISTS (SELECT tlid FROM dup WHERE feat.tlid = dup.tlid AND lower(feat.fullname) = dup.fname
 		AND feat.gid > dup.min_gid);

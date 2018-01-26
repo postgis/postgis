@@ -247,39 +247,6 @@ lwfree(void *mem)
 }
 
 /*
- * Removes trailing zeros and dot for a %f formatted number.
- * Modifies input.
- */
-void
-trim_trailing_zeros(char *str)
-{
-	char *ptr, *totrim=NULL;
-	int len;
-	int i;
-
-	LWDEBUGF(3, "input: %s", str);
-
-	ptr = strchr(str, '.');
-	if ( ! ptr ) return; /* no dot, no decimal digits */
-
-	LWDEBUGF(3, "ptr: %s", ptr);
-
-	len = strlen(ptr);
-	for (i=len-1; i; i--)
-	{
-		if ( ptr[i] != '0' ) break;
-		totrim=&ptr[i];
-	}
-	if ( totrim )
-	{
-		if ( ptr == totrim-1 ) *ptr = '\0';
-		else *totrim = '\0';
-	}
-
-	LWDEBUGF(3, "output: %s", str);
-}
-
-/*
  * Returns a new string which contains a maximum of maxlength characters starting
  * from startpos and finishing at endpos (0-based indexing). If the string is
  * truncated then the first or last characters are replaced by "..." as

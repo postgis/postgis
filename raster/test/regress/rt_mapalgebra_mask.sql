@@ -70,8 +70,6 @@ FROM (SELECT rid, st_dumpvalues(st_mapalgebra(rast,1,'raster_nmapalgebra_test(do
     from raster_nmapalgebra_mask_in) AS f
 ORDER BY rid, (dv).nband;
 
-
-
 select st_mapalgebra(rast,1,'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,ARRAY[[1,1],[1,1],[1,1]]::double precision[],true) from raster_nmapalgebra_mask_in;
 
 select st_mapalgebra(rast,1,'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,ARRAY[[1,1,1],[1,1,1]]::double precision[],true) from raster_nmapalgebra_mask_in;
@@ -101,7 +99,6 @@ SELECT *
 FROM (SELECT rid, st_dumpvalues(st_mapalgebra(rast,1,'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,ARRAY[[1,0,0],[0,0,0],[0,0,0]]::double precision[],true)) AS dv
     from raster_nmapalgebra_mask_in) As f
 ORDER BY rid, (dv).nband;
-
 
 select st_mapalgebra(rast,1,'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,ARRAY[[.5,.5],[.5,.5],[.5,.5]]::double precision[],true) from raster_nmapalgebra_mask_in;
 

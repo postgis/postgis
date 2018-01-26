@@ -35,7 +35,6 @@ END;
 $$
 language plpgsql;
 
-
 SELECT install_pagc_tables();
 DELETE FROM pagc_gaz WHERE is_custom = false;
 DELETE FROM pagc_lex WHERE is_custom = false;
@@ -3821,9 +3820,7 @@ INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2935, 2,
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2936, 2, 'NORTH', 'NORTH', 1, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2937, 2, 'SOUTH', 'SOUTH', 1, false);
 
-
 SELECT pg_catalog.setval('pagc_lex_id_seq', (SELECT greatest((SELECT MAX(id) FROM pagc_lex),50000)), true);
-
 
 -- set default to false so all we input will be treated as no custom --
 ALTER TABLE tiger.pagc_rules ALTER COLUMN is_custom SET DEFAULT false;

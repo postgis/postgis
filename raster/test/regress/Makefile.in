@@ -129,7 +129,8 @@ TEST_MAPALGEBRA = \
 	rt_4ma \
 	rt_setvalues_geomval \
 	rt_elevation_functions \
-	rt_colormap
+	rt_colormap \
+	rt_grayscale
 
 TEST_SREL = \
 	rt_gist_relationships \

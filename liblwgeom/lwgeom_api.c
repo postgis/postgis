@@ -93,7 +93,7 @@ next_float_up(double d)
  * NOTE: point is a real POINT3D *not* a pointer
  */
 POINT4D
-getPoint4d(const POINTARRAY *pa, int n)
+getPoint4d(const POINTARRAY *pa, uint32_t n)
 {
 	POINT4D result;
 	getPoint4d_p(pa, n, &result);
@@ -110,7 +110,7 @@ getPoint4d(const POINTARRAY *pa, int n)
  * @return 0 on error, 1 on success
  */
 int
-getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
+getPoint4d_p(const POINTARRAY *pa, uint32_t n, POINT4D *op)
 {
 	uint8_t *ptr;
 	int zmflag;
@@ -121,7 +121,7 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 		return 0;
 	}
 
-	if ( (n<0) || (n>=pa->npoints))
+	if ( n>=pa->npoints )
 	{
 		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
@@ -174,7 +174,7 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
  * NOTE: point is a real POINT3DZ *not* a pointer
  */
 POINT3DZ
-getPoint3dz(const POINTARRAY *pa, int n)
+getPoint3dz(const POINTARRAY *pa, uint32_t n)
 {
 	POINT3DZ result;
 	getPoint3dz_p(pa, n, &result);
@@ -188,7 +188,7 @@ getPoint3dz(const POINTARRAY *pa, int n)
  * NOTE: point is a real POINT3DZ *not* a pointer
  */
 POINT3DM
-getPoint3dm(const POINTARRAY *pa, int n)
+getPoint3dm(const POINTARRAY *pa, uint32_t n)
 {
 	POINT3DM result;
 	getPoint3dm_p(pa, n, &result);
@@ -202,7 +202,7 @@ getPoint3dm(const POINTARRAY *pa, int n)
  * NOTE: this will modify the point3dz pointed to by 'point'.
  */
 int
-getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
+getPoint3dz_p(const POINTARRAY *pa, uint32_t n, POINT3DZ *op)
 {
 	uint8_t *ptr;
 
@@ -212,7 +212,7 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 		return 0;
 	}
 
-	if ( (n<0) || (n>=pa->npoints))
+	if ( n>=pa->npoints )
 	{
 		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
@@ -254,7 +254,7 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
  * NOTE: this will modify the point3dm pointed to by 'point'.
  */
 int
-getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
+getPoint3dm_p(const POINTARRAY *pa, uint32_t n, POINT3DM *op)
 {
 	uint8_t *ptr;
 	int zmflag;
@@ -265,7 +265,7 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 		return 0;
 	}
 
-	if ( (n<0) || (n>=pa->npoints))
+	if ( n>=pa->npoints )
 	{
 		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
@@ -321,7 +321,7 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
  * NOTE: point is a real POINT2D *not* a pointer
  */
 POINT2D
-getPoint2d(const POINTARRAY *pa, int n)
+getPoint2d(const POINTARRAY *pa, uint32_t n)
 {
 	const POINT2D *result;
 	result = getPoint2d_cp(pa, n);
@@ -335,7 +335,7 @@ getPoint2d(const POINTARRAY *pa, int n)
  * NOTE: this will modify the point2d pointed to by 'point'.
  */
 int
-getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
+getPoint2d_p(const POINTARRAY *pa, uint32_t n, POINT2D *point)
 {
 	if ( ! pa )
 	{
@@ -343,7 +343,7 @@ getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 		return 0;
 	}
 
-	if ( (n<0) || (n>=pa->npoints))
+	if ( n>=pa->npoints )
 	{
 		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
@@ -361,11 +361,11 @@ getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 * values, only read them.
 */
 const POINT2D*
-getPoint2d_cp(const POINTARRAY *pa, int n)
+getPoint2d_cp(const POINTARRAY *pa, uint32_t n)
 {
 	if ( ! pa ) return 0;
 
-	if ( (n<0) || (n>=pa->npoints))
+	if ( n>=pa->npoints )
 	{
 		lwerror("getPoint2d_cp: point offset out of range");
 		return 0; /*error */
@@ -375,7 +375,7 @@ getPoint2d_cp(const POINTARRAY *pa, int n)
 }
 
 const POINT3DZ*
-getPoint3dz_cp(const POINTARRAY *pa, int n)
+getPoint3dz_cp(const POINTARRAY *pa, uint32_t n)
 {
 	if ( ! pa ) return 0;
 
@@ -385,7 +385,7 @@ getPoint3dz_cp(const POINTARRAY *pa, int n)
 		return 0; /*error */
 	}
 
-	if ( (n<0) || (n>=pa->npoints))
+	if ( n>=pa->npoints )
 	{
 		lwerror("getPoint3dz_cp: point offset out of range");
 		return 0; /*error */
@@ -394,19 +394,18 @@ getPoint3dz_cp(const POINTARRAY *pa, int n)
 	return (const POINT3DZ*)getPoint_internal(pa, n);
 }
 
-
 const POINT4D*
-getPoint4d_cp(const POINTARRAY *pa, int n)
+getPoint4d_cp(const POINTARRAY* pa, uint32_t n)
 {
-	if ( ! pa ) return 0;
+	if (!pa) return 0;
 
-	if ( ! (FLAGS_GET_Z(pa->flags) && FLAGS_GET_Z(pa->flags)) )
+	if (!(FLAGS_GET_Z(pa->flags) && FLAGS_GET_M(pa->flags)))
 	{
 		lwerror("getPoint4d_cp: no Z and M coordinates in point array");
 		return 0; /*error */
 	}
 
-	if ( (n<0) || (n>=pa->npoints))
+	if (n >= pa->npoints)
 	{
 		lwerror("getPoint4d_cp: point offset out of range");
 		return 0; /*error */
@@ -414,8 +413,6 @@ getPoint4d_cp(const POINTARRAY *pa, int n)
 
 	return (const POINT4D*)getPoint_internal(pa, n);
 }
-
-
 
 /*
  * set point N to the given value
@@ -425,10 +422,10 @@ getPoint4d_cp(const POINTARRAY *pa, int n)
  *
  */
 void
-ptarray_set_point4d(POINTARRAY *pa, int n, const POINT4D *p4d)
+ptarray_set_point4d(POINTARRAY *pa, uint32_t n, const POINT4D *p4d)
 {
 	uint8_t *ptr;
-	assert(n >= 0 && n < pa->npoints);
+	assert(n < pa->npoints);
 	ptr=getPoint_internal(pa, n);
 	switch ( FLAGS_GET_ZM(pa->flags) )
 	{
@@ -450,7 +447,7 @@ ptarray_set_point4d(POINTARRAY *pa, int n, const POINT4D *p4d)
 }
 
 void
-ptarray_copy_point(POINTARRAY *pa, int from, int to)
+ptarray_copy_point(POINTARRAY *pa, uint32_t from, uint32_t to)
 {
 	int ndims = FLAGS_NDIMS(pa->flags);
 	switch (ndims)
@@ -498,7 +495,7 @@ void printBOX3D(BOX3D *box)
 
 void printPA(POINTARRAY *pa)
 {
-	int t;
+	uint32_t t;
 	POINT4D pt;
 	char *mflag;
 
@@ -707,11 +704,7 @@ void
 interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, double F)
 {
 #if PARANOIA_LEVEL > 0
-	double absF=fabs(F);
-	if ( absF < 0 || absF > 1 )
-	{
-		lwerror("interpolate_point4d: invalid F (%g)", F);
-	}
+	if (F < 0 || F > 1) lwerror("interpolate_point4d: invalid F (%g)", F);
 #endif
 	I->x=A->x+((B->x-A->x)*F);
 	I->y=A->y+((B->y-A->y)*F);

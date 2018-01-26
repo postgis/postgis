@@ -119,14 +119,14 @@ lwpoly_construct_envelope(int srid, double x1, double y1, double x2, double y2)
 LWPOLY*
 lwpoly_construct_circle(int srid, double x, double y, double radius, uint32_t segments_per_quarter, char exterior)
 {
-	const int segments = 4*segments_per_quarter;
-	const double theta = 2*M_PI / segments;
+	const uint32_t segments = 4*segments_per_quarter;
+	double theta;
 	LWPOLY *lwpoly;
 	POINTARRAY *pa;
 	POINT4D pt;
 	uint32_t i;
 
-	if (segments_per_quarter < 1)
+	if (segments_per_quarter == 0)
 	{
 		lwerror("Need at least one segment per quarter-circle.");
 		return NULL;
@@ -137,6 +137,8 @@ lwpoly_construct_circle(int srid, double x, double y, double radius, uint32_t se
 		lwerror("Radius must be positive.");
 		return NULL;
 	}
+
+	theta = 2*M_PI / segments;
 
 	lwpoly = lwpoly_construct_empty(srid, LW_FALSE, LW_FALSE);
 	pa = ptarray_construct_empty(LW_FALSE, LW_FALSE, segments + 1);
@@ -169,30 +171,28 @@ lwpoly_construct_empty(int srid, char hasz, char hasm)
 	return result;
 }
 
-void lwpoly_free(LWPOLY  *poly)
+void
+lwpoly_free(LWPOLY* poly)
 {
-	int t;
+	uint32_t t;
 
-	if( ! poly ) return;
+	if (!poly) return;
 
-	if ( poly->bbox )
-		lwfree(poly->bbox);
-
-	for (t=0; t<poly->nrings; t++)
-	{
-		if ( poly->rings[t] )
-			ptarray_free(poly->rings[t]);
-	}
+	if (poly->bbox) lwfree(poly->bbox);
 
 	if ( poly->rings )
+	{
+		for (t = 0; t < poly->nrings; t++)
+			if (poly->rings[t]) ptarray_free(poly->rings[t]);
 		lwfree(poly->rings);
+	}
 
 	lwfree(poly);
 }
 
 void printLWPOLY(LWPOLY *poly)
 {
-	int t;
+	uint32_t t;
 	lwnotice("LWPOLY {");
 	lwnotice("    ndims = %i", (int)FLAGS_NDIMS(poly->flags));
 	lwnotice("    SRID = %i", (int)poly->srid);
@@ -212,7 +212,7 @@ void printLWPOLY(LWPOLY *poly)
 LWPOLY *
 lwpoly_clone(const LWPOLY *g)
 {
-	int i;
+	uint32_t i;
 	LWPOLY *ret = lwalloc(sizeof(LWPOLY));
 	memcpy(ret, g, sizeof(LWPOLY));
 	ret->rings = lwalloc(sizeof(POINTARRAY *)*g->nrings);
@@ -227,7 +227,7 @@ lwpoly_clone(const LWPOLY *g)
 LWPOLY *
 lwpoly_clone_deep(const LWPOLY *g)
 {
-	int i;
+	uint32_t i;
 	LWPOLY *ret = lwalloc(sizeof(LWPOLY));
 	memcpy(ret, g, sizeof(LWPOLY));
 	if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);
@@ -267,7 +267,7 @@ lwpoly_add_ring(LWPOLY *poly, POINTARRAY *pa)
 void
 lwpoly_force_clockwise(LWPOLY *poly)
 {
-	int i;
+	uint32_t i;
 
 	/* No-op empties */
 	if ( lwpoly_is_empty(poly) )
@@ -287,7 +287,7 @@ lwpoly_force_clockwise(LWPOLY *poly)
 int
 lwpoly_is_clockwise(LWPOLY *poly)
 {
-	int i;
+	uint32_t i;
 
 	if ( lwpoly_is_empty(poly) )
 		return LW_TRUE;
@@ -318,8 +318,11 @@ lwpoly_segmentize2d(const LWPOLY *poly, double dist)
 	for (i=0; i<poly->nrings; i++)
 	{
 		newrings[i] = ptarray_segmentize2d(poly->rings[i], dist);
-		if ( ! newrings[i] ) {
-			while (i--) ptarray_free(newrings[i]);
+		if ( ! newrings[i] )
+		{
+			uint32_t j = 0;
+			for (j = 0; j < i; j++)
+				ptarray_free(newrings[j]);
 			lwfree(newrings);
 			return NULL;
 		}
@@ -400,7 +403,7 @@ lwpoly_force_dims(const LWPOLY *poly, int hasz, int hasm)
 	else
 	{
 		POINTARRAY **rings = NULL;
-		int i;
+		uint32_t i;
 		rings = lwalloc(sizeof(POINTARRAY*) * poly->nrings);
 		for( i = 0; i < poly->nrings; i++ )
 		{
@@ -419,10 +422,10 @@ int lwpoly_is_empty(const LWPOLY *poly)
 	return LW_FALSE;
 }
 
-int lwpoly_count_vertices(LWPOLY *poly)
+uint32_t lwpoly_count_vertices(LWPOLY *poly)
 {
-	int i = 0;
-	int v = 0; /* vertices */
+	uint32_t i = 0;
+	uint32_t v = 0; /* vertices */
 	assert(poly);
 	for ( i = 0; i < poly->nrings; i ++ )
 	{
@@ -438,7 +441,7 @@ double
 lwpoly_area(const LWPOLY *poly)
 {
 	double poly_area = 0.0;
-	int i;
+	uint32_t i;
 
 	if ( ! poly )
 		lwerror("lwpoly_area called with null polygon pointer!");
@@ -471,7 +474,7 @@ double
 lwpoly_perimeter(const LWPOLY *poly)
 {
 	double result=0.0;
-	int i;
+	uint32_t i;
 
 	LWDEBUGF(2, "in lwgeom_polygon_perimeter (%d rings)", poly->nrings);
 
@@ -489,7 +492,7 @@ double
 lwpoly_perimeter_2d(const LWPOLY *poly)
 {
 	double result=0.0;
-	int i;
+	uint32_t i;
 
 	LWDEBUGF(2, "in lwgeom_polygon_perimeter (%d rings)", poly->nrings);
 
@@ -502,7 +505,7 @@ lwpoly_perimeter_2d(const LWPOLY *poly)
 int
 lwpoly_is_closed(const LWPOLY *poly)
 {
-	int i = 0;
+	uint32_t i = 0;
 
 	if ( poly->nrings == 0 )
 		return LW_TRUE;
@@ -535,7 +538,7 @@ lwpoly_startpoint(const LWPOLY* poly, POINT4D* pt)
 int
 lwpoly_contains_point(const LWPOLY *poly, const POINT2D *pt)
 {
-	int i;
+	uint32_t i;
 
 	if ( lwpoly_is_empty(poly) )
 		return LW_FALSE;

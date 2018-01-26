@@ -22,10 +22,6 @@
  *
  **********************************************************************/
 
-
-#if !HAVE_ISFINITE
-#endif
-
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include <stdlib.h>
@@ -147,13 +143,12 @@ int gbox_union(const GBOX *g1, const GBOX *g2, GBOX *gout)
 {
 	if ( ( ! g1 ) && ( ! g2 ) )
 		return LW_FALSE;
-
-	if  ( ! g1 )
+	else if (!g1)
 	{
 		memcpy(gout, g2, sizeof(GBOX));
 		return LW_TRUE;
 	}
-	if ( ! g2 )
+	else if (!g2)
 	{
 		memcpy(gout, g1, sizeof(GBOX));
 		return LW_TRUE;
@@ -546,7 +541,7 @@ static int lw_arc_calculate_gbox_cartesian(const POINT4D *p1, const POINT4D *p2,
 
 int ptarray_calculate_gbox_cartesian(const POINTARRAY *pa, GBOX *gbox )
 {
-	int i;
+	uint32_t i;
 	POINT4D p;
 	int has_z, has_m;
 
@@ -590,15 +585,15 @@ int ptarray_calculate_gbox_cartesian(const POINTARRAY *pa, GBOX *gbox )
 
 static int lwcircstring_calculate_gbox_cartesian(LWCIRCSTRING *curve, GBOX *gbox)
 {
-	uint8_t flags = gflags(FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags), 0);
 	GBOX tmp;
 	POINT4D p1, p2, p3;
-	int i;
+	uint32_t i;
 
-	if ( ! curve ) return LW_FAILURE;
-	if ( curve->points->npoints < 3 ) return LW_FAILURE;
+	if (!curve) return LW_FAILURE;
+	if (curve->points->npoints < 3) return LW_FAILURE;
 
-	tmp.flags = flags;
+	tmp.flags =
+	    gflags(FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags), 0);
 
 	/* Initialize */
 	gbox->xmin = gbox->ymin = gbox->zmin = gbox->mmin = FLT_MAX;
@@ -648,7 +643,7 @@ static int lwpoly_calculate_gbox_cartesian(LWPOLY *poly, GBOX *gbox)
 static int lwcollection_calculate_gbox_cartesian(LWCOLLECTION *coll, GBOX *gbox)
 {
 	GBOX subbox;
-	int i;
+	uint32_t i;
 	int result = LW_FAILURE;
 	int first = LW_TRUE;
 	assert(coll);

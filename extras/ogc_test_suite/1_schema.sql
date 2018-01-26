@@ -325,7 +325,6 @@ SELECT AddGeometryColumn('bridges','position','101','POINT','2');
 -- ---------------------
 -- -- !#@ ADAPTATION END
 
-
 --
 -- Streams
 --

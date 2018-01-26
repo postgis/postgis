@@ -15,9 +15,9 @@ BOX3D(0 0.1 -55,11 12 12)
 #3069|BOX(0 0,1 1)
 #3069|BOX(1 1,1 1)
 #3069|BOX(0 0,1 1)
-BoundingDiagonal1|SRID=4326;LINESTRING(999999986991104 999999986991104,1.00000005409997e+15 1.00000005409997e+15)
+BoundingDiagonal1|SRID=4326;LINESTRING(999999986991104 999999986991104,1e+15 1e+15)
 BoundingDiagonal2|SRID=4326;LINESTRING(1e+15 1e+15,1e+15 1e+15)
-BoundingDiagonal3|SRID=4326;LINESTRING(999999986991104 999999986991104,1.00000005409997e+15 1.00000005409997e+15)
+BoundingDiagonal3|SRID=4326;LINESTRING(999999986991104 999999986991104,1e+15 1e+15)
 BoundingDiagonal4|SRID=3857;LINESTRING(-1 -2 -8 2,1 2 3 9)
 BoundingDiagonal5|SRID=3857;LINESTRINGM(4 4 0,5 4 1)
 BoundingDiagonal6|SRID=3857;LINESTRINGM EMPTY
@@ -32,3 +32,13 @@ ST_Angle_3_pts|1.5707963267949
 ERROR:  Operation on mixed SRID geometries
 ERROR:  Empty geometry
 ST_Angle_2_lines|4.71238898038469
+#3965|25|25
+#3971|t
+typmod_point_4326|(Point,4326)
+typmod_point_0|(Point)
+NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
+typmod_point_-1|(Point)
+typmod_pointzm_0|(PointZM)
+typmod_geometry_0|
+typmod_geometry_4326|(Geometry,4326)
+ERROR:  Invalid geometry type modifier: Geogrpahy

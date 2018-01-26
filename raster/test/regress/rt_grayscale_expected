@@ -1,0 +1,31 @@
+NOTICE:  table "raster_grayscale_out" does not exist, skipping
+NOTICE:  table "raster_grayscale_in" does not exist, skipping
+WARNING:  Only the first three elements of 'rastbandargset' will be used
+WARNING:  Only the first three elements of 'rastbandargset' will be used
+WARNING:  Only the first three elements of 'rastbandargset' will be used
+WARNING:  Only the first three elements of 'rastbandargset' will be used
+WARNING:  Only the first three elements of 'rastbandargset' will be used
+1|1|1|{{NULL,128},{254,255}}
+1|2|1|{{NULL,128},{254,255}}
+1|3|1|{{NULL,0},{254,254}}
+1|4|1|{{NULL,0},{254,254}}
+1|5|1|{{NULL,NULL},{128,128},{255,255}}
+2|1|1|{{NULL,128},{254,255}}
+2|2|1|{{NULL,128},{254,255}}
+2|3|1|{{NULL,0},{254,254}}
+2|4|1|{{NULL,0},{254,254}}
+2|5|1|{{NULL,NULL},{128,128},{255,255}}
+3|1|1|{{NULL,128},{254,255}}
+3|2|1|{{NULL,128},{254,255}}
+3|3|1|{{NULL,0},{254,254}}
+3|4|1|{{NULL,0},{254,254}}
+3|5|1|{{NULL,NULL},{128,128},{255,255}}
+BEGIN
+ERROR:  'rastbandargset' must have three bands for red, green and blue
+COMMIT
+BEGIN
+ERROR:  Band at index '2' not found for raster '2'
+COMMIT
+BEGIN
+ERROR:  Band at index '2' not found for raster '2'
+COMMIT

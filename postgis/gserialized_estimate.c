@@ -1693,9 +1693,9 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		int d;
 		double num_cells = 0;
 		double tmp_volume = 1.0;
-		double min[ND_DIMS];
-		double max[ND_DIMS];
-		double cellsize[ND_DIMS];
+		double min[ND_DIMS] = {0.0, 0.0, 0.0, 0.0};
+		double max[ND_DIMS] = {0.0, 0.0, 0.0, 0.0};
+		double cellsize[ND_DIMS] = {0.0, 0.0, 0.0, 0.0};
 
 		nd_box = sample_boxes[i];
 		if ( ! nd_box ) continue; /* Skip Null'ed out hard deviants */
@@ -1732,7 +1732,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		 */
 		do
 		{
-			ND_BOX nd_cell;
+			ND_BOX nd_cell = { {0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0} };
 			double ratio;
 			/* Create a box for this histogram cell */
 			for ( d = 0; d < nd_stats->ndims; d++ )
@@ -1918,8 +1918,7 @@ estimate_selectivity(const GBOX *box, const ND_STATS *nd_stats, int mode)
 	double min[ND_DIMS];
 	double max[ND_DIMS];
 	double total_count = 0.0;
-	int ndims_max = Max(nd_stats->ndims, gbox_ndims(box));
-	/* int ndims_min = Min(nd_stats->ndims, gbox_ndims(box)); */
+	int ndims_max;
 
 	/* Calculate the overlap of the box on the histogram */
 	if ( ! nd_stats )
@@ -1927,6 +1926,8 @@ estimate_selectivity(const GBOX *box, const ND_STATS *nd_stats, int mode)
 		elog(NOTICE, " estimate_selectivity called with null input");
 		return FALLBACK_ND_SEL;
 	}
+
+	ndims_max = Max(nd_stats->ndims, gbox_ndims(box));
 
 	/* Initialize nd_box. */
 	nd_box_from_gbox(box, &nd_box);
@@ -1990,7 +1991,7 @@ estimate_selectivity(const GBOX *box, const ND_STATS *nd_stats, int mode)
 	do
 	{
 		float cell_count, ratio;
-		ND_BOX nd_cell;
+		ND_BOX nd_cell = { {0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0} };
 
 		/* We have to pro-rate partially overlapped cells. */
 		for ( d = 0; d < nd_stats->ndims; d++ )

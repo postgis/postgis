@@ -69,7 +69,6 @@ SELECT 'L' || topology.AddTopoGeometryColumn('city_data',
 INSERT INTO city_data.fc VALUES ('F5,N4',
   topology.CreateTopoGeom('city_data', 4, 2, '{{5,3},{4,1}}'));
 
-
 ---------------------------------------------------------------------
 -- Now add some edges splitting faces...
 ---------------------------------------------------------------------
@@ -520,7 +519,6 @@ SELECT f.id, r.element_type||':'||r.element_id as comp
 ) f GROUP BY id;
 
 SELECT 'F'||face_id, st_astext(mbr) FROM city_data.face ORDER BY face_id;
-
 
 ---------------------------------------------------------------------
 -- Cleanups

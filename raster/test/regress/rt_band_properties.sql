@@ -253,7 +253,6 @@ SELECT
  FROM rt_band_properties_test
 WHERE b1nodatavalue != st_bandnodatavalue(rast, 1) or b2nodatavalue != st_bandnodatavalue(rast, 2);
 
-
 -----------------------------------------------------------------------
 --- ST_BandIsNoData
 -----------------------------------------------------------------------
@@ -266,7 +265,6 @@ SELECT
     st_bandisnodata(rast, 2)
   FROM rt_band_properties_test
 WHERE id = 3;
-
 
 -----------------------------------------------------------------------
 --- ST_SetBandIsNoData

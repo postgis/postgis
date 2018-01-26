@@ -96,7 +96,7 @@ BEGIN
   -- Assume that the address begins with a digit, and extract it from
   -- the input string.
   addressString := substring(rawInput from E'^([0-9].*?)[ ,/.]');
-  
+
   -- try to pull full street number including non-digits like 1R
   result.address_alphanumeric := substring(rawInput from E'^([0-9a-zA-Z].*?)[ ,/.]');
 
@@ -114,7 +114,7 @@ BEGIN
     zipString := COALESCE(substring(rawInput from ws || '([0-9]{5})-[0-9]{0,4}$'),
                 substring(rawInput from ws || '([0-9]{2,5})$'),
                 substring(rawInput from ws || '([0-9]{6,14})$'));
-                
+
     result.zip4 := COALESCE(substring(rawInput from ws || '[0-9]{5}-([0-9]{0,4})$'),substring(rawInput from ws || '[0-9]{5}([0-9]{0,4})$'));
 
     IF debug_flag THEN
@@ -442,11 +442,10 @@ BEGIN
 		  END IF;
 		END IF;
 
-
 		IF debug_flag THEN
 			raise notice '% reduced street: %', clock_timestamp(), reducedStreet;
 		END IF;
-		
+
 		-- The pre direction should be at the beginning of the fullStreet string.
 		-- The post direction should be at the beginning of the location string
 		-- if there is no internal address

@@ -40,7 +40,6 @@ BEGIN;
 
 END;
 
-
 BEGIN;
 
 	-- Add authorization for row 2

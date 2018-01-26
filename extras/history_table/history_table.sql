@@ -18,7 +18,6 @@ language 'plpgsql';
 
 --end build_history_table
 
-
 --im open to suggestions for the names of the functions.
 --just realized that one is build_history_table and the other create_...
 CREATE OR REPLACE FUNCTION postgis_enable_history(p_schema text,p_table text,p_geometry_field text) returns boolean as
@@ -55,7 +54,7 @@ BEGIN
 	v_srid:= (SELECT srid FROM public.geometry_columns WHERE f_table_schema = p_schema AND f_table_name = p_table AND f_geometry_column = p_geometry_field);
 	v_gid:= (SELECT column_name FROM information_schema.key_column_usage WHERE table_schema = p_schema AND table_name = p_table);
 	--end sql
-	
+
 	--generate sql for creating the historic table
 	v_table_sql:= 'CREATE TABLE ' || v_history_table ||
 	'(' ||
@@ -79,7 +78,7 @@ BEGIN
 	v_srid::text || ',' ||
 	quote_literal(v_geometry_type) || ');';
 	--end update geometry_columns
-	
+
 	--insert into historic_tables
 	v_update_history_sql:='INSERT INTO public.historic_information(table_id,table_name,primary_field,geometry_field) VALUES (' ||
 	'DEFAULT,' ||
@@ -98,7 +97,7 @@ BEGIN
 	execute _postgis_create_history_indexes(p_schema,p_table,p_geometry_field);
 
 	return true;
-	
+
 END
 $$
 language 'plpgsql';
@@ -131,7 +130,7 @@ BEGIN
 
 END
 $$
-language 'plpgsql';	
+language 'plpgsql';
 --end add_insert_rule
 
 --add_update_rule

@@ -1,5 +1,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
@@ -7,12 +7,10 @@
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
---  
+--
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-
 #include "sqldefines.h"
-
 
 -----------------------------------------------------------------------
 -- LONG TERM LOCKING
@@ -23,7 +21,7 @@
 -- returns the number of locks released
 CREATE OR REPLACE FUNCTION UnlockRows(text)
 	RETURNS int
-	AS $$ 
+	AS $$
 DECLARE
 	ret int;
 BEGIN
@@ -42,11 +40,11 @@ END;
 $$
 LANGUAGE 'plpgsql'  VOLATILE STRICT;
 
--- LockRow([schema], table, rowid, auth, [expires]) 
+-- LockRow([schema], table, rowid, auth, [expires])
 -- Returns 1 if successfully obtained the lock, 0 otherwise
 CREATE OR REPLACE FUNCTION LockRow(text, text, text, text, timestamp)
 	RETURNS int
-	AS $$ 
+	AS $$
 DECLARE
 	myschema alias for $1;
 	mytable alias for $2;
@@ -56,14 +54,14 @@ DECLARE
 	ret int;
 	mytoid oid;
 	myrec RECORD;
-	
+
 BEGIN
 
 	IF NOT LongTransactionsEnabled() THEN
 		RAISE EXCEPTION 'Long transaction support disabled, use EnableLongTransaction() to enable.';
 	END IF;
 
-	EXECUTE 'DELETE FROM authorization_table WHERE expires < now()'; 
+	EXECUTE 'DELETE FROM authorization_table WHERE expires < now()';
 
 	SELECT c.oid INTO mytoid FROM pg_class c, pg_namespace n
 		WHERE c.relname = mytable
@@ -72,7 +70,7 @@ BEGIN
 
 	-- RAISE NOTICE 'toid: %', mytoid;
 
-	FOR myrec IN SELECT * FROM authorization_table WHERE 
+	FOR myrec IN SELECT * FROM authorization_table WHERE
 		toid = mytoid AND rid = myrid
 	LOOP
 		IF myrec.authid != authid THEN
@@ -115,10 +113,9 @@ CREATE OR REPLACE FUNCTION LockRow(text, text, text, timestamp)
 $$ SELECT LockRow(current_schema(), $1, $2, $3, $4); $$
 	LANGUAGE 'sql'  VOLATILE STRICT;
 
-
 CREATE OR REPLACE FUNCTION AddAuth(text)
 	RETURNS BOOLEAN
-	AS $$ 
+	AS $$
 DECLARE
 	lockid alias for $1;
 	okay boolean;
@@ -129,8 +126,8 @@ BEGIN
 	okay := 'f';
 	FOR myrec IN SELECT * FROM pg_class WHERE relname = 'temp_lock_have_table' LOOP
 		okay := 't';
-	END LOOP; 
-	IF (okay <> 't') THEN 
+	END LOOP;
+	IF (okay <> 't') THEN
 		CREATE TEMP TABLE temp_lock_have_table (transid xid, lockcode text);
 			-- this will only work from pgsql7.4 up
 			-- ON COMMIT DELETE ROWS;
@@ -147,7 +144,6 @@ BEGIN
 END;
 $$
 LANGUAGE PLPGSQL;
- 
 
 -- CheckAuth( <schema>, <table>, <ridcolumn> )
 --
@@ -155,7 +151,7 @@ LANGUAGE PLPGSQL;
 --
 CREATE OR REPLACE FUNCTION CheckAuth(text, text, text)
 	RETURNS INT
-	AS $$ 
+	AS $$
 DECLARE
 	schema text;
 BEGIN
@@ -171,7 +167,7 @@ BEGIN
 
 	-- TODO: check for an already existing trigger ?
 
-	EXECUTE 'CREATE TRIGGER check_auth BEFORE UPDATE OR DELETE ON ' 
+	EXECUTE 'CREATE TRIGGER check_auth BEFORE UPDATE OR DELETE ON '
 		|| quote_ident(schema) || '.' || quote_ident($2)
 		||' FOR EACH ROW EXECUTE PROCEDURE CheckAuthTrigger('
 		|| quote_literal($3) || ')';
@@ -189,15 +185,14 @@ CREATE OR REPLACE FUNCTION CheckAuth(text, text)
 	LANGUAGE 'sql';
 
 CREATE OR REPLACE FUNCTION CheckAuthTrigger()
-	RETURNS trigger AS 
+	RETURNS trigger AS
 	'MODULE_PATHNAME', 'check_authorization'
 	LANGUAGE C;
 
 CREATE OR REPLACE FUNCTION GetTransactionID()
-	RETURNS xid AS 
+	RETURNS xid AS
 	'MODULE_PATHNAME', 'getTransactionID'
 	LANGUAGE C;
-
 
 --
 -- Enable Long transactions support
@@ -206,7 +201,7 @@ CREATE OR REPLACE FUNCTION GetTransactionID()
 --
 CREATE OR REPLACE FUNCTION EnableLongTransactions()
 	RETURNS TEXT
-	AS $$ 
+	AS $$
 DECLARE
 	"query" text;
 	exists bool;
@@ -262,7 +257,7 @@ LANGUAGE 'plpgsql';
 --
 CREATE OR REPLACE FUNCTION LongTransactionsEnabled()
 	RETURNS bool
-AS $$ 
+AS $$
 DECLARE
 	rec RECORD;
 BEGIN
@@ -278,13 +273,13 @@ LANGUAGE 'plpgsql';
 --
 -- Disable Long transactions support
 --
---  (1) Drop any long_xact trigger 
+--  (1) Drop any long_xact trigger
 --  (2) Drop the authorization_table
 --  (3) KEEP the authorized_tables view
 --
 CREATE OR REPLACE FUNCTION DisableLongTransactions()
 	RETURNS TEXT
-	AS $$ 
+	AS $$
 DECLARE
 	rec RECORD;
 

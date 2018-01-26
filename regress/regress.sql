@@ -1,11 +1,7 @@
 -- postgres
 --- regression test for postGIS
 
-
-
 --- assume datatypes already defined
-
-
 
 --- basic datatypes (correct)
 
@@ -51,7 +47,6 @@ select '33',ST_asewkt('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)) )'::GEOMETR
 select '34',ST_asewkt('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) )'::GEOMETRY) as geom;
 select '35',ST_asewkt('MULTIPOLYGON( ((0 0 0, 10 0 0, 10 10 0, 0 10 0, 0 0 0)),( (0 0 0, 10 0 0, 10 10 0, 0 10 0, 0 0 0),(5 5 0, 7 5 0, 7 7 0, 5 7 0, 5 5 0) ) ,( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7 1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) )'::GEOMETRY) as geom;
 
-
 select '36',ST_asewkt('GEOMETRYCOLLECTION(MULTIPOINT( 1 2))'::GEOMETRY);
 select '37',ST_asewkt('GEOMETRYCOLLECTION(MULTIPOINT( 1 2 3))'::GEOMETRY);
 select '38',ST_asewkt('GEOMETRYCOLLECTION(MULTIPOINT( 1 2 3, 5 6 7, 8 9 10, 11 12 13))'::GEOMETRY);
@@ -80,7 +75,6 @@ select '56', ST_asewkt('POLYGON( (0 0, 10 0, 10 10, 0 10) )'::GEOMETRY);
 select '57', ST_asewkt('POLYGON( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7) )'::GEOMETRY);
 select '58', ST_asewkt('MULTILINESTRING((0 0, 1 1),(0 0, 1 1, 2 2,) )'::GEOMETRY);
 
-
 --- funny results
 
 select '59',ST_asewkt('POINT(1 2 3, 4 5 6)'::GEOMETRY);
@@ -91,7 +85,6 @@ select '63',regexp_replace(ST_asewkt('POINT( -1e700 0)'::GEOMETRY), E'(Infinity|
 --select '62',ST_asewkt('POINT( 1e700 0)'::GEOMETRY);
 --select '63',ST_asewkt('POINT( -1e700 0)'::GEOMETRY);
 select '64',ST_asewkt('MULTIPOINT(1 1, 2 2'::GEOMETRY);
-
 
 --- is_same() testing
 
@@ -115,7 +108,6 @@ select '72','MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY ~= 'GEOMETRYCOLLECTION(POINT( 4
 select '72a',ST_OrderingEquals('MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY,'GEOMETRYCOLLECTION(POINT( 4 5 6),POINT(1 2 3))'::GEOMETRY) as bool;
 select '73','MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY ~= 'GEOMETRYCOLLECTION(MULTIPOINT(1 2 3, 4 5 6))'::GEOMETRY as bool;
 select '73a',ST_OrderingEquals('MULTIPOINT(1 2 3, 4 5 6)'::GEOMETRY,'GEOMETRYCOLLECTION(MULTIPOINT(1 2 3, 4 5 6))'::GEOMETRY) as bool;
-
 
 select '74','LINESTRING(1 1,2 2)'::GEOMETRY ~= 'POINT(1 1)'::GEOMETRY as bool;
 select '74a',ST_OrderingEquals('LINESTRING(1 1,2 2)'::GEOMETRY,'POINT(1 1)'::GEOMETRY) as bool;
@@ -150,14 +142,11 @@ select '112',ST_NumGeometries('GEOMETRYCOLLECTION(POINT(1 1), LINESTRING( 1 1 , 
 
 ---selection
 
-
-
 --- TOAST testing
 
 -- create a table with data that will be TOASTed (even after compression)
 create table TEST(a GEOMETRY, b GEOMETRY);
 \i regress_biginsert.sql
-
 
 ---test basic ops on this
 
@@ -280,3 +269,16 @@ select '226', ST_SRID(ST_Expand('SRID=4326;POINT (0 0)'::geometry, 1))=4326;
 
 -- Drop test table
 DROP table test;
+
+-- Make sure all postgis-referencing probin are using the
+-- same module version and path as expected by postgis_lib_version()
+--
+SELECT DISTINCT 'unexpected probin', proname || ':' || probin
+FROM pg_proc
+WHERE probin like '%postgis%'
+   AND regexp_replace(probin, '(rt)?postgis(_[^-]*)?', '') !=
+(
+SELECT regexp_replace(probin, '(rt)?postgis(_[^-]*)?', '')
+	FROM pg_proc WHERE proname = 'postgis_lib_version'
+)
+ORDER BY 2;

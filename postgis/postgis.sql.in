@@ -40,7 +40,6 @@ BEGIN
 END
 $$ LANGUAGE 'plpgsql';
 
-
 -- Let the user know about a deprecated signature and its new name, if any
 CREATE OR REPLACE FUNCTION _postgis_deprecate(oldname text, newname text, version text)
 RETURNS void AS
@@ -141,7 +140,6 @@ CREATE TYPE geometry (
 	storage = main
 );
 
-
 -- Availability: 2.0.0
 -- Special cast for enforcing the typmod restrictions
 CREATE OR REPLACE FUNCTION geometry(geometry, integer, boolean)
@@ -151,7 +149,6 @@ CREATE OR REPLACE FUNCTION geometry(geometry, integer, boolean)
 
 -- Availability: 2.0.0
 CREATE CAST (geometry AS geometry) WITH FUNCTION geometry(geometry, integer, boolean) AS IMPLICIT;
-
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION geometry(point)
@@ -295,7 +292,6 @@ CREATE TYPE box2df (
 	alignment = double
 );
 
-
 -------------------------------------------------------------------
 --  GIDX TYPE (INTERNAL ONLY)
 -------------------------------------------------------------------
@@ -407,7 +403,6 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	OPERATOR	5	> ,
 	FUNCTION	1	geometry_cmp (geom1 geometry, geom2 geometry);
 
-
 --
 -- Sorting operators for Btree
 --
@@ -423,7 +418,6 @@ CREATE OPERATOR CLASS hash_geometry_ops
 	DEFAULT FOR TYPE geometry USING hash AS
     OPERATOR    1   = ,
     FUNCTION    1   geometry_hash(geometry);
-
 
 -----------------------------------------------------------------------------
 -- GiST 2D GEOMETRY-over-GSERIALIZED INDEX
@@ -480,7 +474,6 @@ CREATE OR REPLACE FUNCTION geometry_gist_decompress_2d(internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress_2d'
 	LANGUAGE 'c' _PARALLEL;
-
 
 -----------------------------------------------------------------------------
 
@@ -543,7 +536,6 @@ CREATE OR REPLACE FUNCTION gserialized_gist_joinsel_nd (internal, oid, internal,
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'gserialized_gist_joinsel_nd'
 	LANGUAGE 'c' _PARALLEL;
-
 
 -----------------------------------------------------------------------------
 -- GEOMETRY Operators
@@ -818,7 +810,6 @@ CREATE OR REPLACE FUNCTION geometry_gist_decompress_nd(internal)
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress'
 	LANGUAGE 'c' _PARALLEL;
 
-
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 -- N-D GEOMETRY Operators
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
@@ -874,7 +865,6 @@ CREATE OR REPLACE FUNCTION geometry_gist_distance_nd(internal,geometry,int4)
 	AS 'MODULE_PATHNAME', 'gserialized_gist_distance'
 	LANGUAGE 'c' _PARALLEL;
 
-
 -- Availability: 2.0.0
 CREATE OPERATOR CLASS gist_geometry_ops_nd
 	FOR TYPE geometry USING GIST AS
@@ -898,7 +888,6 @@ CREATE OPERATOR CLASS gist_geometry_ops_nd
 	FUNCTION        5        geometry_gist_penalty_nd (internal, internal, internal),
 	FUNCTION        6        geometry_gist_picksplit_nd (internal, internal),
 	FUNCTION        7        geometry_gist_same_nd (geometry, geometry, internal);
-
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_ShiftLongitude(geometry)
@@ -1110,7 +1099,6 @@ CREATE OR REPLACE FUNCTION postgis_hasbbox(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_hasBBOX'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
-
 ------------------------------------------------------------------------
 -- DEBUG
 ------------------------------------------------------------------------
@@ -1193,7 +1181,6 @@ CREATE OR REPLACE FUNCTION ST_3DLength_spheroid(geometry, spheroid)
   $$
 	LANGUAGE 'sql' IMMUTABLE STRICT
 	COST 100;
-
 
 -- Availability: 1.2.2
 -- Deprecation in 2.2.0
@@ -1327,7 +1314,6 @@ CREATE OR REPLACE FUNCTION ST_DistanceRectTree(g1 geometry, g2 geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'ST_DistanceRectTree'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
-
 
 ------------------------------------------------------------------------
 -- MISC
@@ -1901,7 +1887,6 @@ CREATE OR REPLACE FUNCTION ST_DumpRings(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_dump_rings'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
-
 -----------------------------------------------------------------------
 -- ST_DumpPoints()
 -----------------------------------------------------------------------
@@ -1914,7 +1899,6 @@ CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100;
 
-
 -------------------------------------------------------------------
 -- SPATIAL_REF_SYS
 -------------------------------------------------------------------
@@ -1926,7 +1910,6 @@ CREATE TABLE spatial_ref_sys (
 	 srtext varchar(2048),
 	 proj4text varchar(2048)
 );
-
 
 -----------------------------------------------------------------------
 -- POPULATE_GEOMETRY_COLUMNS()
@@ -2208,7 +2191,6 @@ BEGIN
 		RETURN 'fail';
 	END IF;
 
-
 	-- Verify dimension
 	IF ( (new_dim >4) OR (new_dim <2) ) THEN
 		RAISE EXCEPTION 'invalid dimension';
@@ -2219,7 +2201,6 @@ BEGIN
 		RAISE EXCEPTION 'TypeM needs 3 dimensions';
 		RETURN 'fail';
 	END IF;
-
 
 	-- Verify SRID
 	IF ( new_srid_in > 0 ) THEN
@@ -2238,7 +2219,6 @@ BEGIN
 			RAISE NOTICE 'SRID value % converted to the officially unknown SRID value %', new_srid_in, new_srid;
 		END IF;
 	END IF;
-
 
 	-- Verify schema
 	IF ( schema_name IS NOT NULL AND schema_name != '' ) THEN
@@ -2271,7 +2251,6 @@ BEGIN
 			RETURN 'fail';
 		END IF;
 	END IF;
-
 
 	-- Add geometry column to table
 	IF use_typmod THEN
@@ -2388,7 +2367,6 @@ DECLARE
 	real_schema name;
 
 BEGIN
-
 
 	-- Find, check or fix schema_name
 	IF ( schema_name != '' ) THEN
@@ -2557,7 +2535,6 @@ DECLARE
 	new_srid integer := new_srid_in;
 
 BEGIN
-
 
 	-- Find, check or fix schema_name
 	IF ( schema_name != '' ) THEN
@@ -2852,7 +2829,6 @@ BEGIN
 END
 $$ language plpgsql;
 
-
 -- Changed: 2.4.0
 CREATE OR REPLACE FUNCTION postgis_full_version() RETURNS text
 AS $$
@@ -3124,7 +3100,6 @@ CREATE CAST (text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
 CREATE CAST (geometry AS text) WITH FUNCTION text(geometry) AS IMPLICIT;
 CREATE CAST (bytea AS geometry) WITH FUNCTION geometry(bytea) AS IMPLICIT;
 CREATE CAST (geometry AS bytea) WITH FUNCTION bytea(geometry) AS IMPLICIT;
-
 
 ---------------------------------------------------------------
 -- Algorithms
@@ -3448,7 +3423,6 @@ CREATE OR REPLACE FUNCTION ST_IsValid(geometry, int4)
 	AS 'SELECT (@extschema@.ST_isValidDetail($1, $2)).valid'
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
-
 -- Requires GEOS >= 3.2.0
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geom1 geometry, geom2 geometry)
@@ -3545,7 +3519,6 @@ CREATE OR REPLACE FUNCTION ST_Subdivide(geom geometry, maxvertices integer DEFAU
 	AS 'MODULE_PATHNAME', 'ST_Subdivide'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
-
 
 --------------------------------------------------------------------------------
 -- ST_CleanGeometry / ST_MakeValid
@@ -3707,7 +3680,6 @@ CREATE OR REPLACE FUNCTION ST_DelaunayTriangles(g1 geometry, tolerance float8 DE
        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 1; -- reset cost, see #3675
 
-
 --------------------------------------------------------------------------------
 -- _ST_Voronoi
 --------------------------------------------------------------------------------
@@ -3738,7 +3710,6 @@ CREATE OR REPLACE FUNCTION _ST_Voronoi(g1 geometry, clip geometry DEFAULT NULL, 
        AS 'MODULE_PATHNAME', 'ST_Voronoi'
        LANGUAGE 'c' IMMUTABLE _PARALLEL
        COST 1; -- reset cost, see #3675
-
 
 CREATE OR REPLACE FUNCTION ST_VoronoiPolygons(g1 geometry, tolerance float8 DEFAULT 0.0, extend_to geometry DEFAULT NULL)
        RETURNS geometry
@@ -3793,7 +3764,6 @@ CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
     SELECT @extschema@.ST_CombineBbox($1,$2);
   $$
 	LANGUAGE 'sql' IMMUTABLE;
-
 
 -- Availability: 1.2.2
 -- Changed: 2.2.0 to use non-deprecated ST_CombineBBox (r13535)
@@ -3971,7 +3941,6 @@ CREATE AGGREGATE ST_Union (geometry) (
 	finalfunc = pgis_geometry_union_finalfn
 	);
 
-
 -- Availability: 1.2.2
 -- Changed: 2.4.0: marked parallel safe
 CREATE AGGREGATE ST_Collect (geometry) (
@@ -4026,7 +3995,6 @@ CREATE AGGREGATE ST_MakeLine (geometry) (
 #endif
 	FINALFUNC = pgis_geometry_makeline_finalfn
 	);
-
 
 --------------------------------------------------------------------------------
 
@@ -4224,7 +4192,6 @@ CREATE OR REPLACE FUNCTION ST_Centroid(geometry)
 	AS 'MODULE_PATHNAME', 'centroid'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
-
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_GeometricMedian(g geometry, tolerance float8 DEFAULT NULL, max_iter int DEFAULT 10000, fail_if_not_converged boolean DEFAULT false)
@@ -4427,7 +4394,6 @@ CREATE OR REPLACE FUNCTION ST_AsKML(version int4, geom geometry, maxdecimaldigit
 	AS $$ SELECT @extschema@._ST_AsKML($1, @extschema@.ST_Transform($2,4326), $3, $4); $$
 	LANGUAGE 'sql' IMMUTABLE  _PARALLEL;
 
-
 -----------------------------------------------------------------------
 -- GEOJSON OUTPUT
 -- Availability: 1.3.4
@@ -4579,7 +4545,6 @@ CREATE OR REPLACE FUNCTION postgis_libprotobuf_version()
 	AS 'MODULE_PATHNAME','postgis_libprotobuf_version'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
-
 -----------------------------------------------------------------------
 -- GEOBUF OUTPUT
 -- Availability: 2.4.0
@@ -4624,7 +4589,6 @@ CREATE AGGREGATE ST_AsGeobuf(anyelement, text)
 #endif
 	finalfunc = pgis_asgeobuf_finalfn
 );
-
 
 ------------------------------------------------------------------------
 -- GeoHash (geohash.org)
@@ -4798,6 +4762,13 @@ CREATE OR REPLACE FUNCTION ST_AsText(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 750; --guess
 
+-- Availability: 2.5.0
+-- PostGIS equivalent function: AsText(geometry, int4)
+CREATE OR REPLACE FUNCTION ST_AsText(geometry, int4)
+    RETURNS TEXT
+    AS 'MODULE_PATHNAME','LWGEOM_asText'
+    LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeometryFromText(text)
 	RETURNS geometry
@@ -4838,7 +4809,6 @@ CREATE OR REPLACE FUNCTION ST_PointFromText(text)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
 
 -- PostGIS equivalent function: PointFromText(text, int4)
 -- TODO: improve this ... by not duplicating constructor time.
@@ -4923,7 +4893,6 @@ CREATE OR REPLACE FUNCTION ST_MLineFromText(text)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiLineStringFromText(text)
@@ -5139,7 +5108,6 @@ CREATE OR REPLACE FUNCTION ST_MPointFromWKB(bytea, int)
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MPointFromWKB(bytea)
 	RETURNS geometry
@@ -5231,7 +5199,6 @@ CREATE OR REPLACE FUNCTION ST_MultiPolyFromWKB(bytea, int)
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiPolyFromWKB(bytea)
 	RETURNS geometry
@@ -5252,7 +5219,6 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromWKB(bytea, int)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeomCollFromWKB(bytea)
@@ -5411,7 +5377,6 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 /* Should we include the .sql directly here ? */
 #include "long_xact.sql.in"
 #include "geography.sql.in"
-
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_DistanceSphere(geom1 geometry, geom2 geometry)
@@ -5622,7 +5587,6 @@ CREATE OR REPLACE VIEW geometry_columns AS
   AND NOT c.relname = 'raster_columns'::name AND t.typname = 'geometry'::name
   AND NOT pg_is_other_temp_schema(c.relnamespace) AND has_table_privilege(c.oid, 'SELECT'::text);
 
-
 -- TODO: support RETURNING and raise a WARNING
 CREATE OR REPLACE RULE geometry_columns_insert AS
         ON INSERT TO geometry_columns
@@ -5637,7 +5601,6 @@ CREATE OR REPLACE RULE geometry_columns_update AS
 CREATE OR REPLACE RULE geometry_columns_delete AS
         ON DELETE TO geometry_columns
         DO INSTEAD NOTHING;
-
 
 ---------------------------------------------------------------
 -- 3D-functions
@@ -5708,7 +5671,6 @@ CREATE OR REPLACE FUNCTION ST_3DIntersects(geom1 geometry, geom2 geometry)
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_3DIntersects($1, $2)'
 	LANGUAGE 'sql' IMMUTABLE  _PARALLEL
 	COST 100;
-
 
 ---------------------------------------------------------------
 -- SQL-MM
@@ -5821,7 +5783,6 @@ CREATE OR REPLACE FUNCTION ST_InterpolatePoint(Line geometry, Point geometry)
 	AS 'MODULE_PATHNAME', 'ST_InterpolatePoint'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
-
 -- moved to separate file cause its invovled
 #include "postgis_brin.sql.in"
 
@@ -5885,7 +5846,6 @@ $$
 				)
 			)
 		;
-
 
 		var_resultgeom := @extschema@.ST_MakeLine(geom)
 			FROM @extschema@.ST_Dump(cavering) As foo;
@@ -6077,7 +6037,6 @@ CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFA
 	AS $$SELECT @extschema@._ST_AsX3D(3,$1,$2,$3,'');$$
 	LANGUAGE 'sql' IMMUTABLE  _PARALLEL;
 
-
 -----------------------------------------------------------------------
 -- ST_Angle
 -----------------------------------------------------------------------
@@ -6086,7 +6045,6 @@ CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFA
 CREATE OR REPLACE FUNCTION ST_Angle(line1 geometry, line2 geometry)
 	RETURNS float8 AS 'SELECT ST_Angle(St_StartPoint($1), ST_EndPoint($1), St_StartPoint($2), ST_EndPoint($2))'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
-
 
 -- make views and spatial_ref_sys public viewable --
 GRANT SELECT ON TABLE geography_columns TO public;

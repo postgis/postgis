@@ -1736,7 +1736,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
 static int
 _lwt_GetInteriorEdgePoint(const LWLINE* edge, POINT2D* ip)
 {
-  int i;
+  uint32_t i;
   POINT2D fp, lp, tp;
   POINTARRAY *pa = edge->points;
 
@@ -2972,7 +2972,7 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
     POINTARRAY *epa = edge->points;
     POINT2D p2, pt;
     int match = 0;
-    int j;
+    uint32_t j;
 
     /* Skip if the edge is a dangling one */
     if ( isoe->face_left == isoe->face_right )
@@ -2981,6 +2981,14 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
                   " has same face (%" LWTFMT_ELEMID
                   ") on both sides, skipping",
                   isoe->edge_id, isoe->face_left);
+      continue;
+    }
+
+    if (epa->npoints < 2)
+    {
+      LWDEBUGF(3, "_lwt_FindNextRingEdge: edge %" LWTFMT_ELEMID
+                  " has only %"PRIu32" points",
+                  isoe->edge_id, epa->npoints);
       continue;
     }
 
@@ -3040,11 +3048,11 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
         LWDEBUGF(1, "Last point of edge %" LWTFMT_ELEMID
                     " matches ring vertex %d", isoe->edge_id, from);
         /* last point matches, let's check next non-equal one */
-        for ( j=epa->npoints-2; j>=0; --j )
+        for ( j=2; j<=epa->npoints; j++ )
         {
-          getPoint2d_p(epa, j, &p2);
+          getPoint2d_p(epa, epa->npoints - j, &p2);
           LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " 'prev' point %d is %g,%g",
-                      isoe->edge_id, j, p2.x, p2.y);
+                      isoe->edge_id, epa->npoints - j, p2.x, p2.y);
           /* we won't check duplicated edge points */
           if ( p2d_same(&p1, &p2) ) continue;
           /* we assume there are no duplicated points in ring */
@@ -3106,7 +3114,8 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
   LWPOLY *facepoly;
   LWT_ISO_EDGE *edges;
   int numfaceedges;
-  int fields, i;
+  int fields;
+  uint32_t i;
   int nseid = 0; /* number of signed edge ids */
   int prevseid;
   LWT_ELEMID *seid; /* signed edge ids */
@@ -3174,13 +3183,13 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
   for ( i=0; i<facepoly->nrings; ++i )
   {
     const POINTARRAY *ring = facepoly->rings[i];
-    int j = 0;
+    int32_t j = 0;
     LWT_ISO_EDGE *nextedge;
     LWLINE *nextline;
 
     LWDEBUGF(1, "Ring %d has %d points", i, ring->npoints);
 
-    while ( j < ring->npoints-1 )
+    while ( j < (int32_t) ring->npoints-1 )
     {
       LWDEBUGF(1, "Looking for edge covering ring %d from vertex %d",
                   i, j);
@@ -3853,19 +3862,21 @@ lwt_RemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID id)
 
   n = 2;
   edge = lwt_be_getEdgeByNode( topo, nid, &n, LWT_COL_EDGE_EDGE_ID );
-  if ( n == -1 )
+  if ((n == -1) || (edge == NULL))
   {
-    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
-    return -1;
+	  lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+	  return -1;
   }
-  for ( i=0; i<n; ++i )
+  for (i = 0; i < n; ++i)
   {
-    if ( edge[i].edge_id == id ) continue;
-    lwfree(edge);
-    lwerror("SQL/MM Spatial exception - not isolated edge");
-    return -1;
+	  if (edge[i].edge_id != id)
+	  {
+		  lwfree(edge);
+		  lwerror("SQL/MM Spatial exception - not isolated edge");
+		  return -1;
+	  }
   }
-  if ( edge ) lwfree(edge);
+  lwfree(edge);
 
   deledge.edge_id = id;
   n = lwt_be_deleteEdges( topo, &deledge, LWT_COL_EDGE_EDGE_ID );
@@ -4391,7 +4402,7 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
   ids[1] = eid2;
   nedges = 2;
   edges = lwt_be_getEdgeById(topo, ids, &nedges, LWT_COL_EDGE_ALL);
-  if ( nedges == -1 )
+  if ((nedges == -1) || (edges == NULL))
   {
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -4419,17 +4430,19 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
   }
   if ( ! e1 )
   {
-    if ( edges ) _lwt_release_edges(edges, nedges);
-    lwerror("SQL/MM Spatial exception - non-existent edge %"
-            LWTFMT_ELEMID, eid1);
-    return -1;
+	  _lwt_release_edges(edges, nedges);
+	  lwerror(
+	      "SQL/MM Spatial exception - non-existent edge %" LWTFMT_ELEMID,
+	      eid1);
+	  return -1;
   }
   if ( ! e2 )
   {
-    if ( edges ) _lwt_release_edges(edges, nedges);
-    lwerror("SQL/MM Spatial exception - non-existent edge %"
-            LWTFMT_ELEMID, eid2);
-    return -1;
+	  _lwt_release_edges(edges, nedges);
+	  lwerror(
+	      "SQL/MM Spatial exception - non-existent edge %" LWTFMT_ELEMID,
+	      eid2);
+	  return -1;
   }
 
   /* NOT IN THE SPECS: See if any of the two edges are closed. */
@@ -4478,10 +4491,10 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
       if ( node_edges[i].edge_id == eid2 ) continue;
       commonnode = -1;
       /* append to string, for error message */
-      if ( bufleft ) {
+      if ( bufleft > 0 ) {
         r = snprintf(ptr, bufleft, "%s%" LWTFMT_ELEMID,
                      ( ptr==buf ? "" : "," ), node_edges[i].edge_id);
-        if ( r >= bufleft )
+        if ( r >= (int) bufleft )
         {
           bufleft = 0;
           buf[252] = '.';
@@ -4529,10 +4542,10 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
         if ( node_edges[i].edge_id == eid2 ) continue;
         commonnode = -1;
         /* append to string, for error message */
-        if ( bufleft ) {
+        if ( bufleft > 0 ) {
           r = snprintf(ptr, bufleft, "%s%" LWTFMT_ELEMID,
                        ( ptr==buf ? "" : "," ), node_edges[i].edge_id);
-          if ( r >= bufleft )
+          if ( r >= (int) bufleft )
           {
             bufleft = 0;
             buf[252] = '.';
@@ -5684,7 +5697,7 @@ static LWGEOM *
 _lwt_split_by_nodes(const LWGEOM *g, const LWGEOM *nodes)
 {
   LWCOLLECTION *col = lwgeom_as_lwcollection(nodes);
-  int i;
+  uint32_t i;
   LWGEOM *bg;
 
   bg = lwgeom_clone_deep(g);
@@ -5995,11 +6008,12 @@ lwt_AddLineNoFace(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
 LWT_ELEMID*
 lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
 {
-  int i;
+  uint32_t i;
   *nfaces = -1; /* error condition, by default */
   int num;
   LWT_ISO_FACE *faces;
   int nfacesinbox;
+  int j;
   LWT_ELEMID *ids = NULL;
   GBOX qbox;
   const GEOSPreparedGeometry *ppoly;
@@ -6057,9 +6071,9 @@ lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
     }
     ppoly = GEOSPrepare(polyg);
     ids = lwalloc(sizeof(LWT_ELEMID)*nfacesinbox);
-    for ( i=0; i<nfacesinbox; ++i )
+    for ( j=0; j<nfacesinbox; ++j )
     {
-      LWT_ISO_FACE *f = &(faces[i]);
+      LWT_ISO_FACE *f = &(faces[j]);
       LWGEOM *fg;
       GEOSGeometry *fgg, *sp;
       int covers;
@@ -6068,12 +6082,12 @@ lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
       fg = lwt_GetFaceGeometry( topo, f->face_id );
       if ( ! fg )
       {
-        i = f->face_id; /* so we can destroy faces */
+        j = f->face_id; /* so we can destroy faces */
         GEOSPreparedGeom_destroy(ppoly);
         GEOSGeom_destroy(polyg);
         lwfree(ids);
         _lwt_release_faces(faces, nfacesinbox);
-        lwerror("Could not get geometry of face %" LWTFMT_ELEMID, i);
+        lwerror("Could not get geometry of face %" LWTFMT_ELEMID, j);
         return NULL;
       }
       /* check if a point on this face's surface is covered by our polygon */
@@ -6273,7 +6287,7 @@ _lwt_EdgeRingIterator_next(LWT_EDGERING_POINT_ITERATOR *it, POINT2D *pt)
   getPoint2d_p(pa, it->curidx, pt);
   if ( el->left ) {
     it->curidx++;
-    if ( it->curidx >= pa->npoints ) tonext = 1;
+    if ( it->curidx >= (int) pa->npoints ) tonext = 1;
   } else {
     it->curidx--;
     if ( it->curidx < 0 ) tonext = 1;

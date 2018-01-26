@@ -42,7 +42,6 @@ select g,encode(ST_AsTWKB(g::geometry,p),'hex') from
 select g,encode(ST_AsTWKB(g::geometry,p),'hex') from
 (select 'MULTIPOLYGON(((1 1, 1 20, 20 20, 20 1, 1 1),(3 3,3 4, 4 4,4 3,3 3)),((-1 1, -1 20, -20 20, -20 1, -1 1),(-3 3,-3 4, -4 4,-4 3,-3 3)))'::text g, 0 p) foo;
 
-
 --GEOMETRYCOLLECTION
 select st_astext(st_collect(g::geometry)), encode(ST_AsTWKB(ST_Collect(g::geometry),0),'hex') from
 (
@@ -50,7 +49,6 @@ select 'POINT(1 1)'::text g
 union all
 select 'LINESTRING(2 2, 3 3)'::text g
 ) foo;
-
 
 select st_astext(st_collect(g::geometry)), encode(ST_AsTWKB(ST_Collect(g::geometry),0),'hex') from
 (

@@ -40,8 +40,8 @@ BEGIN
 			, ('use_pagc_address_parser', 'false', 'boolean','normalize', 'If set to true, will try to use the address_standardizer extension (via pagc_normalize_address) instead of tiger normalize_address built on')
 			, ('zip_penalty', '2', 'numeric','rating', 'As input to rating will add (ref_zip - tar_zip)*zip_penalty where ref_zip is input address and tar_zip is a target address candidate')
 		) f(name,setting,unit,category,short_desc);
-		
-	-- delete entries that are the same as default values 	
+
+	-- delete entries that are the same as default values
 	DELETE FROM geocode_settings As gc USING geocode_settings_default As gf WHERE gf.name = gc.name AND gf.setting = gc.setting;
 END;
 $$

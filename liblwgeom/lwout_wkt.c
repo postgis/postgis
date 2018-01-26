@@ -83,8 +83,9 @@ static void empty_to_wkt_sb(stringbuffer_t *sb)
 static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	/* OGC only includes X/Y */
-	int dimensions = 2;
-	int i, j;
+	uint32_t dimensions = 2;
+	uint32_t i, j;
+	char coord[OUT_DOUBLE_BUFFER_SIZE];
 
 	/* ISO and extended formats include all dimensions */
 	if ( variant & ( WKT_ISO | WKT_EXTENDED ) )
@@ -108,7 +109,11 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 			/* Spaces before every ordinate but the first */
 			if ( j > 0 )
 				stringbuffer_append(sb, " ");
-			stringbuffer_aprintf(sb, "%.*g", precision, dbl_ptr[j]);
+			lwprint_double(dbl_ptr[j],
+				       precision,
+				       coord,
+				       OUT_DOUBLE_BUFFER_SIZE);
+			stringbuffer_append(sb, coord);
 		}
 	}
 
@@ -168,7 +173,7 @@ static void lwline_to_wkt_sb(const LWLINE *line, stringbuffer_t *sb, int precisi
 */
 static void lwpoly_to_wkt_sb(const LWPOLY *poly, stringbuffer_t *sb, int precision, uint8_t variant)
 {
-	int i = 0;
+	uint32_t i = 0;
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
 		stringbuffer_append(sb, "POLYGON"); /* "POLYGON" */
@@ -215,7 +220,7 @@ static void lwcircstring_to_wkt_sb(const LWCIRCSTRING *circ, stringbuffer_t *sb,
 */
 static void lwmpoint_to_wkt_sb(const LWMPOINT *mpoint, stringbuffer_t *sb, int precision, uint8_t variant)
 {
-	int i = 0;
+	uint32_t i = 0;
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
 		stringbuffer_append(sb, "MULTIPOINT"); /* "MULTIPOINT" */
@@ -243,7 +248,7 @@ static void lwmpoint_to_wkt_sb(const LWMPOINT *mpoint, stringbuffer_t *sb, int p
 */
 static void lwmline_to_wkt_sb(const LWMLINE *mline, stringbuffer_t *sb, int precision, uint8_t variant)
 {
-	int i = 0;
+	uint32_t i = 0;
 
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
@@ -273,7 +278,7 @@ static void lwmline_to_wkt_sb(const LWMLINE *mline, stringbuffer_t *sb, int prec
 */
 static void lwmpoly_to_wkt_sb(const LWMPOLY *mpoly, stringbuffer_t *sb, int precision, uint8_t variant)
 {
-	int i = 0;
+	uint32_t i = 0;
 
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
@@ -305,7 +310,7 @@ static void lwmpoly_to_wkt_sb(const LWMPOLY *mpoly, stringbuffer_t *sb, int prec
 */
 static void lwcompound_to_wkt_sb(const LWCOMPOUND *comp, stringbuffer_t *sb, int precision, uint8_t variant)
 {
-	int i = 0;
+	uint32_t i = 0;
 
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
@@ -350,7 +355,7 @@ static void lwcompound_to_wkt_sb(const LWCOMPOUND *comp, stringbuffer_t *sb, int
 */
 static void lwcurvepoly_to_wkt_sb(const LWCURVEPOLY *cpoly, stringbuffer_t *sb, int precision, uint8_t variant)
 {
-	int i = 0;
+	uint32_t i = 0;
 
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
@@ -398,7 +403,7 @@ static void lwcurvepoly_to_wkt_sb(const LWCURVEPOLY *cpoly, stringbuffer_t *sb, 
 */
 static void lwmcurve_to_wkt_sb(const LWMCURVE *mcurv, stringbuffer_t *sb, int precision, uint8_t variant)
 {
-	int i = 0;
+	uint32_t i = 0;
 
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
@@ -446,7 +451,7 @@ static void lwmcurve_to_wkt_sb(const LWMCURVE *mcurv, stringbuffer_t *sb, int pr
 */
 static void lwmsurface_to_wkt_sb(const LWMSURFACE *msurf, stringbuffer_t *sb, int precision, uint8_t variant)
 {
-	int i = 0;
+	uint32_t i = 0;
 
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
@@ -489,7 +494,7 @@ static void lwmsurface_to_wkt_sb(const LWMSURFACE *msurf, stringbuffer_t *sb, in
 */
 static void lwcollection_to_wkt_sb(const LWCOLLECTION *collection, stringbuffer_t *sb, int precision, uint8_t variant)
 {
-	int i = 0;
+	uint32_t i = 0;
 
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
@@ -538,7 +543,7 @@ static void lwtriangle_to_wkt_sb(const LWTRIANGLE *tri, stringbuffer_t *sb, int 
 */
 static void lwtin_to_wkt_sb(const LWTIN *tin, stringbuffer_t *sb, int precision, uint8_t variant)
 {
-	int i = 0;
+	uint32_t i = 0;
 
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
@@ -567,7 +572,7 @@ static void lwtin_to_wkt_sb(const LWTIN *tin, stringbuffer_t *sb, int precision,
 */
 static void lwpsurface_to_wkt_sb(const LWPSURFACE *psurf, stringbuffer_t *sb, int precision, uint8_t variant)
 {
-	int i = 0;
+	uint32_t i = 0;
 
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
@@ -657,15 +662,16 @@ static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precisi
 }
 
 /**
-* WKT emitter function. Allocates a new *char and fills it with the WKT
-* representation. If size_out is not NULL, it will be set to the size of the
-* allocated *char.
-*
-* @param variant Bitmasked value, accepts one of WKT_ISO, WKT_SFSQL, WKT_EXTENDED.
-* @param precision Number of significant digits in the output doubles.
-* @param size_out If supplied, will return the size of the returned string,
-* including the null terminator.
-*/
+ * WKT emitter function. Allocates a new *char and fills it with the WKT
+ * representation. If size_out is not NULL, it will be set to the size of the
+ * allocated *char.
+ *
+ * @param variant Bitmasked value, accepts one of WKT_ISO, WKT_SFSQL,
+ * WKT_EXTENDED.
+ * @param precision Maximal number of digits after comma in the output doubles.
+ * @param size_out If supplied, will return the size of the returned string,
+ * including the null terminator.
+ */
 char* lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision, size_t *size_out)
 {
 	stringbuffer_t *sb;

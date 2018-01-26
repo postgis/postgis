@@ -62,4 +62,3 @@ SELECT '416', ST_IsPolygonCCW('MULTIPOLYGON (((0 0, 1 1, 1 0, 0 0)), ((100 0, 10
 SELECT '417', ST_IsPolygonCW( 'MULTIPOLYGON (((0 0, 1 0, 1 1, 0 0)), ((100 0, 101 1, 101 0, 100 0)))');
 SELECT '418', ST_IsPolygonCCW('MULTIPOLYGON (((0 0, 1 0, 1 1, 0 0)), ((100 0, 101 1, 101 0, 100 0)))');
 
-

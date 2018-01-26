@@ -248,7 +248,6 @@ int
 gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 {
 	GSERIALIZED *gpart;
-	int result = LW_SUCCESS;
 
 	POSTGIS_DEBUG(4, "entered function");
 
@@ -278,7 +277,6 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 			GIDX_SET_MAX(gidx,2,FLT_MAX);
 		}
 		SET_VARSIZE(gidx, VARHDRSZ + size);
-		result = LW_SUCCESS;
 	}
 	else
 	{
@@ -296,17 +294,14 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 		}
 		lwgeom_free(lwgeom);
 		POSTGIS_FREE_IF_COPY_P(g, gsdatum);
-		result = gidx_from_gbox_p(gbox, gidx);
+		gidx_from_gbox_p(gbox, gidx);
 	}
 
 	POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
 
-	if ( result == LW_SUCCESS )
-	{
-		POSTGIS_DEBUGF(4, "got gidx %s", gidx_to_string(gidx));
-	}
+	POSTGIS_DEBUGF(4, "got gidx %s", gidx_to_string(gidx));
 
-	return result;
+	return LW_SUCCESS;
 }
 
 
@@ -318,10 +313,7 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 */
 int gserialized_get_gidx_p(const GSERIALIZED *g, GIDX *gidx)
 {
-	int result = LW_SUCCESS;
-
 	POSTGIS_DEBUG(4, "entered function");
-
 	POSTGIS_DEBUGF(4, "got flags %d", g->flags);
 
 	if ( FLAGS_GET_BBOX(g->flags) )
@@ -344,14 +336,11 @@ int gserialized_get_gidx_p(const GSERIALIZED *g, GIDX *gidx)
 			return LW_FAILURE;
 		}
 		lwgeom_free(lwgeom);
-		result = gidx_from_gbox_p(gbox, gidx);
+		gidx_from_gbox_p(gbox, gidx);
 	}
-	if ( result == LW_SUCCESS )
-	{
-		POSTGIS_DEBUGF(4, "got gidx %s", gidx_to_string(gidx));
-	}
+	POSTGIS_DEBUGF(4, "got gidx %s", gidx_to_string(gidx));
 
-	return result;
+	return LW_SUCCESS;
 }
 
 
@@ -360,7 +349,7 @@ int gserialized_get_gidx_p(const GSERIALIZED *g, GIDX *gidx)
 */
 void gidx_expand(GIDX *a, float d)
 {
-	int i;
+	uint32_t i;
 
 	POSTGIS_DEBUG(5, "entered function");
 

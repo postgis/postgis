@@ -386,7 +386,7 @@ rt_errorstate rt_pixtype_compare_clamped_values(
  * @return ES_NONE on success, ES_ERROR on error
  */
 rt_errorstate rt_pixel_set_to_array(
-	rt_pixel npixel,int count,
+	rt_pixel npixel,uint32_t count,
 	rt_mask mask,
 	int x, int y,
 	uint16_t distancex, uint16_t distancey,
@@ -725,7 +725,7 @@ rt_errorstate rt_band_get_pixel(
  * @return -1 on error, otherwise the number of rt_pixel objects
  * in npixels
  */
-int rt_band_get_nearest_pixel(
+uint32_t rt_band_get_nearest_pixel(
 	rt_band band,
 	int x, int y,
 	uint16_t distancex, uint16_t distancey,
@@ -838,7 +838,7 @@ rt_bandstats rt_band_get_summary_stats(
  */
 rt_histogram rt_band_get_histogram(
 	rt_bandstats stats,
-	int bin_count, double *bin_widths, int bin_widths_count,
+	uint32_t bin_count, double *bin_widths, uint32_t bin_widths_count,
 	int right, double min, double max,
 	uint32_t *rtn_count
 );
@@ -895,7 +895,7 @@ rt_quantile rt_band_get_quantiles_stream(
 	int exclude_nodata_value, double sample,
 	uint64_t cov_count,
 	struct quantile_llist **qlls, uint32_t *qlls_count,
-	double *quantiles, int quantiles_count,
+	double *quantiles, uint32_t quantiles_count,
 	uint32_t *rtn_count
 );
 
@@ -1012,7 +1012,7 @@ char *rt_raster_to_hexwkb(rt_raster raster, int outasin, uint32_t *hexwkbsize);
 void rt_raster_destroy(rt_raster raster);
 
 /* Get number of bands */
-int rt_raster_get_num_bands(rt_raster raster);
+uint16_t rt_raster_get_num_bands(rt_raster raster);
 
 /**
  * Return Nth band, or NULL if unavailable
@@ -2424,6 +2424,8 @@ struct rt_gdaldriver_t {
 	char *short_name;
 	char *long_name;
 	char *create_options;
+	uint8_t can_read;
+	uint8_t can_write;
 };
 
 /* raster colormap entry */

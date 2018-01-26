@@ -10,7 +10,6 @@ CREATE OR REPLACE FUNCTION ST_Nullage(matrix float[][], nodatamode text, VARIADI
     $$
     LANGUAGE 'plpgsql' IMMUTABLE;
 
-
 --
 --Test rasters
 --

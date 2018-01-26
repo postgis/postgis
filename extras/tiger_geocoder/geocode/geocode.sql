@@ -35,7 +35,6 @@ BEGIN
 END;
 $_$ LANGUAGE plpgsql STABLE;
 
-
 CREATE OR REPLACE FUNCTION geocode(
     IN_ADDY NORM_ADDY,
     max_results integer DEFAULT 10,

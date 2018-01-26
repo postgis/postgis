@@ -435,3 +435,77 @@ char* lwpoint_to_latlon(const LWPOINT * pt, const char *format)
 	p = getPoint2d_cp(pt->point, 0);
 	return lwdoubles_to_latlon(p->y, p->x, format);
 }
+
+/*
+ * Removes trailing zeros and dot for a %f formatted number.
+ * Modifies input.
+ */
+static void
+trim_trailing_zeros(char* str)
+{
+	char *ptr, *totrim = NULL;
+	int len;
+	int i;
+
+	LWDEBUGF(3, "input: %s", str);
+
+	ptr = strchr(str, '.');
+	if (!ptr) return; /* no dot, no decimal digits */
+
+	LWDEBUGF(3, "ptr: %s", ptr);
+
+	len = strlen(ptr);
+	for (i = len - 1; i; i--)
+	{
+		if (ptr[i] != '0') break;
+		totrim = &ptr[i];
+	}
+	if (totrim)
+	{
+		if (ptr == totrim - 1)
+			*ptr = '\0';
+		else
+			*totrim = '\0';
+	}
+
+	LWDEBUGF(3, "output: %s", str);
+}
+
+/*
+ * Print an ordinate value using at most the given number of decimal digits
+ *
+ * The actual number of printed decimal digits may be less than the
+ * requested ones if out of significant digits.
+ *
+ * The function will not write more than maxsize bytes, including the
+ * terminating NULL. Returns the number of bytes that would have been
+ * written if there was enough space (excluding terminating NULL).
+ * So a return of ``bufsize'' or more means that the string was
+ * truncated and misses a terminating NULL.
+ *
+ */
+int
+lwprint_double(double d, int maxdd, char* buf, size_t bufsize)
+{
+	double ad = fabs(d);
+	int ndd;
+	int length = 0;
+	if (ad <= FP_TOLERANCE)
+	{
+		d = 0;
+		ad = 0;
+	}
+	if (ad < OUT_MAX_DOUBLE)
+	{
+		ndd = ad < 1 ? 0 : floor(log10(ad)) + 1; /* non-decimal digits */
+		if (maxdd > (OUT_MAX_DOUBLE_PRECISION - ndd)) maxdd -= ndd;
+		length = snprintf(buf, bufsize, "%.*f", maxdd, d);
+	}
+	else
+	{
+		length = snprintf(buf, bufsize, "%g", d);
+	}
+	assert(length < bufsize);
+	trim_trailing_zeros(buf);
+	return length;
+}

@@ -402,7 +402,7 @@ void ptarray_calc_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
 static POINTARRAY * ptarray_set_effective_area(POINTARRAY *inpts,int avoid_collaps,int set_area, double trshld)
 {
 	LWDEBUG(2, "Entered  ptarray_set_effective_area");
-	int p;
+	uint32_t p;
 	POINT4D pt;
 	EFFECTIVE_AREAS *ea;
 	POINTARRAY *opts;
@@ -477,7 +477,7 @@ static LWLINE* lwline_set_effective_area(const LWLINE *iline,int set_area, doubl
 static LWPOLY* lwpoly_set_effective_area(const LWPOLY *ipoly,int set_area, double trshld)
 {
 	LWDEBUG(2, "Entered  lwpoly_set_effective_area");
-	int i;
+	uint32_t i;
 	int set_m;
 	int avoid_collapse=4;
 	if(set_area)
@@ -516,7 +516,7 @@ static LWPOLY* lwpoly_set_effective_area(const LWPOLY *ipoly,int set_area, doubl
 static LWCOLLECTION* lwcollection_set_effective_area(const LWCOLLECTION *igeom,int set_area, double trshld)
 {
 	LWDEBUG(2, "Entered  lwcollection_set_effective_area");
-	int i;
+	uint32_t i;
 	int set_m;
 	if(set_area)
 		set_m=1;

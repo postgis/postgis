@@ -3,6 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  * Copyright 2008 Paul Ramsey
+ * Copyright 2018 Darafei Praliaskouski, me@komzpa.net
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -1012,7 +1013,6 @@ static void test_lwgeom_remove_repeated_points(void)
 	lwgeom_remove_repeated_points_in_place(g, 1);
 	ewkt = lwgeom_to_ewkt(g);
 	CU_ASSERT_STRING_EQUAL(ewkt, "MULTIPOINT(0 0,10 0,10 10,0 10,5 5)");
-	// printf("%s\n", ewkt);
 	lwgeom_free(g);
 	lwfree(ewkt);
 
@@ -1020,20 +1020,22 @@ static void test_lwgeom_remove_repeated_points(void)
 	lwgeom_remove_repeated_points_in_place(g, 0.01);
 	ewkt = lwgeom_to_ewkt(g);
 	CU_ASSERT_STRING_EQUAL(ewkt, "LINESTRING(1612830.15445 4841287.12672,1612829.98813 4841274.56198)");
-	// printf("%s\n", ewkt);
 	lwgeom_free(g);
 	lwfree(ewkt);
-
 
 	g = lwgeom_from_wkt("MULTIPOINT(0 0,10 0,10 10,10 10,0 10,0 10,0 10,0 0,0 0,0 0,5 5,5 5,5 8,8 8,8 8,8 8,8 5,8 5,5 5,5 5,5 5,5 5,5 5,50 50,50 50,50 50,50 60,50 60,50 60,60 60,60 50,60 50,50 50,55 55,55 58,58 58,58 55,58 55,55 55)", LW_PARSER_CHECK_NONE);
 	lwgeom_remove_repeated_points_in_place(g, 1);
 	ewkt = lwgeom_to_ewkt(g);
 	CU_ASSERT_STRING_EQUAL(ewkt, "MULTIPOINT(0 0,10 0,10 10,0 10,5 5,5 8,8 8,8 5,50 50,50 60,60 60,60 50,55 55,55 58,58 58,58 55)");
-	// printf("%s\n", ewkt);
 	lwgeom_free(g);
 	lwfree(ewkt);
 
-
+	g = lwgeom_from_wkt("POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))", LW_PARSER_CHECK_NONE);
+	lwgeom_remove_repeated_points_in_place(g, 10000);
+	ewkt = lwgeom_to_ewkt(g);
+	CU_ASSERT_STRING_EQUAL(ewkt, "POLYGON((0 0,1 1,1 0,0 0))");
+	lwgeom_free(g);
+	lwfree(ewkt);
 }
 
 static void test_lwgeom_simplify(void)
@@ -1113,31 +1115,58 @@ static void test_median_handles_3d_correctly(void)
 	do_median_dims_check("MULTIPOINT ZM ((1 3 4 5), (4 7 8 6), (2 9 1 7), (0 4 4 8), (2 2 3 9))", 3);
 }
 
-static void do_median_test(char* input, char* expected)
+static void do_median_test(char* input, char* expected, int fail_if_not_converged, int iter_count)
 {
+	cu_error_msg_reset();
 	LWGEOM* g = lwgeom_from_wkt(input, LW_PARSER_CHECK_NONE);
-	LWPOINT* expected_result = lwgeom_as_lwpoint(lwgeom_from_wkt(expected, LW_PARSER_CHECK_NONE));
-	POINT3DZ actual_pt;
-	POINT3DZ expected_pt;
+	LWPOINT* expected_result = NULL;
+	POINT4D actual_pt;
+	POINT4D expected_pt;
+	const double tolerance = FP_TOLERANCE / 10.0;
 
-	LWPOINT* result = lwgeom_median(g, FP_TOLERANCE / 10.0, 1000, LW_TRUE);
-	int passed = LW_TRUE;
+	LWPOINT* result = lwgeom_median(g, tolerance, iter_count, fail_if_not_converged);
+	int passed = LW_FALSE;
 
-	lwpoint_getPoint3dz_p(result, &actual_pt);
-	lwpoint_getPoint3dz_p(expected_result, &expected_pt);
-
-	passed = passed && lwgeom_is_empty((LWGEOM*) expected_result) == lwgeom_is_empty((LWGEOM*) result);
-	passed = passed && (lwgeom_has_z((LWGEOM*) expected_result) == lwgeom_has_z((LWGEOM*) result));
-
-	if (!lwgeom_is_empty((LWGEOM*) result))
+	if (expected != NULL)
 	{
-		passed = passed && FP_EQUALS(actual_pt.x, expected_pt.x);
-		passed = passed && FP_EQUALS(actual_pt.y, expected_pt.y);
-		passed = passed && (!lwgeom_has_z((LWGEOM*) expected_result) || FP_EQUALS(actual_pt.z, expected_pt.z));
+		expected_result = lwgeom_as_lwpoint(lwgeom_from_wkt(expected, LW_PARSER_CHECK_NONE));
+		lwpoint_getPoint4d_p(expected_result, &expected_pt);
+	}
+	if (result != NULL)
+	{
+		lwpoint_getPoint4d_p(result, &actual_pt);
 	}
 
-	if (!passed)
-		printf("median_test expected %s got %s\n", lwgeom_to_ewkt((LWGEOM*) expected_result), lwgeom_to_ewkt((LWGEOM*) result));
+	if (result != NULL && expected != NULL) /* got something, expecting something */
+	{
+		passed = LW_TRUE;
+		passed = passed && lwgeom_is_empty((LWGEOM*) expected_result) == lwgeom_is_empty((LWGEOM*) result);
+		passed = passed && (lwgeom_has_z((LWGEOM*) expected_result) == lwgeom_has_z((LWGEOM*) result));
+		if (!lwgeom_is_empty((LWGEOM*) result))
+		{
+			passed = passed && abs(actual_pt.x - expected_pt.x) < tolerance;
+			passed = passed && abs(actual_pt.y - expected_pt.y) < tolerance;
+			passed = passed && (!lwgeom_has_z((LWGEOM*) expected_result) || abs(actual_pt.z - expected_pt.z) < tolerance);
+			passed = passed && (!lwgeom_has_m((LWGEOM*) expected_result) || abs(actual_pt.m - expected_pt.m) < tolerance);
+		}
+		if (!passed)
+			printf("median_test input %s (parsed %s) expected %s got %s\n", input, lwgeom_to_ewkt(g), lwgeom_to_ewkt((LWGEOM*) expected_result), lwgeom_to_ewkt((LWGEOM*) result));
+	}
+	else if (result == NULL && expected == NULL) /* got nothing, expecting nothing */
+	{
+		passed = LW_TRUE;
+	}
+	else if (result != NULL && expected == NULL) /* got something, expecting nothing */
+	{
+		passed = LW_FALSE;
+		printf("median_test input %s (parsed %s) expected NULL got %s\n", input, lwgeom_to_ewkt(g), lwgeom_to_ewkt((LWGEOM*) result));
+	}
+	else if (result == NULL && expected != NULL) /* got nothing, expecting something */
+	{
+		passed = LW_FALSE;
+		printf("%s", cu_error_msg);
+		printf("median_test input %s (parsed %s) expected %s got NULL\n", input, lwgeom_to_ewkt(g), lwgeom_to_ewkt((LWGEOM*) expected_result));
+	}
 
 	CU_ASSERT_TRUE(passed);
 
@@ -1154,24 +1183,66 @@ static void test_median_robustness(void)
 	 * Because the algorithm uses the centroid as a starting point, this situation will
 	 * occur in the test case below.
 	 */
-	do_median_test("MULTIPOINT ((0 -1), (0 0), (0 1))", "POINT (0 0)");
+	do_median_test("MULTIPOINT ((0 -1), (0 0), (0 1))", "POINT (0 0)", LW_TRUE, 1000);
 
 	/* Same as above but 3D, and shifter */
-	do_median_test("MULTIPOINT ((1 -1 3), (1 0 2), (2 1 1))", "POINT (1 0 2)");
+	do_median_test("MULTIPOINT ((1 -1 3), (1 0 2), (2 1 1))", "POINT (1 0 2)", LW_TRUE, 1000);
 
 	/* Starting point is duplicated */
-	do_median_test("MULTIPOINT ((0 -1), (0 0), (0 0), (0 1))", "POINT (0 0)");
+	do_median_test("MULTIPOINT ((0 -1), (0 0), (0 0), (0 1))", "POINT (0 0)", LW_TRUE, 1000);
 
 	/* Cube */
 	do_median_test("MULTIPOINT ((10 10 10), (10 20 10), (20 10 10), (20 20 10), (10 10 20), (10 20 20), (20 10 20), (20 20 20))",
-				   "POINT (15 15 15)");
+				   "POINT (15 15 15)", LW_TRUE, 1000);
 
 	/* Some edge cases */
-	do_median_test("MULTIPOINT EMPTY", "POINT EMPTY");
-	do_median_test("MULTIPOINT (EMPTY)", "POINT EMPTY");
-	do_median_test("POINT (7 6)", "POINT (7 6)");
-	do_median_test("POINT (7 6 2)", "POINT (7 6 2)");
-	do_median_test("MULTIPOINT ((7 6 2), EMPTY)", "POINT (7 6 2)");
+	do_median_test("POINT (7 6)", "POINT (7 6)", LW_TRUE, 1000);
+	do_median_test("POINT (7 6 2)", "POINT (7 6 2)", LW_TRUE, 1000);
+	do_median_test("MULTIPOINT ((7 6 2), EMPTY)", "POINT (7 6 2)", LW_TRUE, 1000);
+
+	/* Empty input */
+	do_median_test("MULTIPOINT EMPTY", "POINT EMPTY", LW_FALSE, 1000);
+	do_median_test("MULTIPOINT (EMPTY)", "POINT EMPTY", LW_FALSE, 1000);
+	do_median_test("MULTIPOINT EMPTY", "POINT EMPTY", LW_TRUE, 1000);
+	do_median_test("MULTIPOINT (EMPTY)", "POINT EMPTY", LW_TRUE, 1000);
+	do_median_test("MULTIPOINT ZM (1 -1 3 1, 1 0 2 7, 2 1 1 1, EMPTY)", "POINT (1 0 2)", LW_TRUE, 1000);
+
+	/* Weighted input */
+	do_median_test("MULTIPOINT ZM (1 -1 3 1, 1 0 2 7, 2 1 1 1)", "POINT (1 0 2)", LW_TRUE, 1000);
+	do_median_test("MULTIPOINT ZM (-1 1 -3 1, -1 0 -2 7, -2 -1 -1 1)", "POINT (-1 0 -2)", LW_TRUE, 1000);
+	do_median_test("MULTIPOINT ZM (-1 1 -3 1, -1 0 -2 7, -2 -1 -1 0.5, -2 -1 -1 0.5)", "POINT (-1 0 -2)", LW_TRUE, 1000);
+
+	/* Point that is replaced by two half-weighted */
+	do_median_test("MULTIPOINT ZM ((0 -1 0 1), (0 0 0 1), (0 1 0 0.5), (0 1 0 0.5))", "POINT (0 0 0)", LW_TRUE, 1000);
+	/* Point is doubled and then erased by negative weight */
+	do_median_test("MULTIPOINT ZM ((1 -1 3 1), (1 0 2 7), (2 1 1 2), (2 1 1 -1))", NULL, LW_TRUE, 1000);
+	do_median_test("MULTIPOINT ZM ((1 -1 3 1), (1 0 2 7), (2 1 1 2), (2 1 1 -1))", NULL, LW_FALSE, 1000);
+	/* Weightless input won't converge */
+	do_median_test("MULTIPOINT ZM ((0 -1 0 0), (0 0 0 0), (0 0 0 0), (0 1 0 0))", NULL, LW_FALSE, 1000);
+	do_median_test("MULTIPOINT ZM ((0 -1 0 0), (0 0 0 0), (0 0 0 0), (0 1 0 0))", NULL, LW_TRUE, 1000);
+	/* Negative weight won't converge */
+	do_median_test("MULTIPOINT ZM ((0 -1 0 -1), (0 0 0 -1), (0 1 0 -1))", NULL, LW_FALSE, 1000);
+	do_median_test("MULTIPOINT ZM ((0 -1 0 -1), (0 0 0 -1), (0 1 0 -1))", NULL, LW_TRUE, 1000);
+
+	/* Bind convergence too tightly */
+	do_median_test("MULTIPOINT ((0 0), (1 1), (0 1), (2 2))", "POINT(0.75 1.0)", LW_FALSE, 0);
+	do_median_test("MULTIPOINT ((0 0), (1 1), (0 1), (2 2))", NULL, LW_TRUE, 1);
+	/* Unsupported geometry type */
+	do_median_test("POLYGON((1 0,0 1,1 2,2 1,1 0))", NULL, LW_TRUE, 1000);
+	do_median_test("POLYGON((1 0,0 1,1 2,2 1,1 0))", NULL, LW_FALSE, 1000);
+
+	/* Intermediate point included in the set */
+	do_median_test("MULTIPOINT ZM ("
+			"(0 0 20000 0.5),"
+			"(0 0 59000 0.5),"
+			"(0 48000 -20000 1.3),"
+			"(0 -48000 -20000 1.3),"
+			"(0 -3000 -3472.22222222222262644208967685699462890625 1),"
+			"(0 3000 3472.22222222222262644208967685699462890625 1),"
+			"(0 0 -1644.736842105263121993630193173885345458984375 1),"
+			"(0 0 1644.736842105263121993630193173885345458984375 1)"
+			")",
+		"POINT (0 0 0)", LW_TRUE, 296);
 }
 
 static void test_point_density(void)

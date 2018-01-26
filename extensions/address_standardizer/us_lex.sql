@@ -2951,6 +2951,5 @@ INSERT INTO us_lex (seq, word, stdword, token) VALUES (1, 'ZERO', '0', 0);
 INSERT INTO us_lex (seq, word, stdword, token) VALUES (1, 'ZERO', '0', 1);
 INSERT INTO us_lex (seq, word, stdword, token) VALUES (1, 'ZNJA', 'ZANJA', 1);
 
-
 -- needed set default back to original
 ALTER TABLE us_lex ALTER COLUMN is_custom SET DEFAULT true;

@@ -18,7 +18,7 @@ trim_trailing_whitespace = false
 indent_style = tab
 
 # Perl files want tab indentation
-[*.{pl}]
+[*.pl]
 indent_style = tab
 
 # SQL files want tab indentation
@@ -32,9 +32,6 @@ indent_size = 2
 
 # topology C files want space indentation
 [liblwgeom/lwgeom_topo.{c,h}]
-indent_style = space
-
-[liblwgeom/box2d.c]
 indent_style = space
 
 [liblwgeom/lwgeom_log.h]

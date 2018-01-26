@@ -45,7 +45,6 @@ select totopogeom('TIN( ((0 0 0, 0 0 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 0
 select totopogeom('TRIANGLE ((0 0, 0 9, 9 0, 0 0))'::geometry, 'tt', 4); -- TODO: support !
 select totopogeom('CIRCULARSTRING(0 0, 1 1, 1 0)'::geometry, 'tt', 3); -- Unsupported feature type
 
-
 -- Convert a point
 with inp as ( select 'POINT(0 0)' ::geometry as g)
 select St_AsText(g), ST_Equals(totopogeom(g, 'tt', 1)::geometry, g) from inp;

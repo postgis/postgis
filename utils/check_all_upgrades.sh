@@ -14,6 +14,10 @@ failures=0
 files=`'ls' postgis--* | grep -v -- '--.*--' | sed 's/^postgis--\(.*\)\.sql/\1/'`
 for fname in unpackaged $files; do
   from_version="$fname"
+  if test "${from_version}" = "${to_version}"; then
+    # TODO: upgrade to ${from_version}next instead ?
+    continue
+  fi
   UPGRADE_PATH="${from_version}--${to_version}"
   if test -e postgis--${UPGRADE_PATH}.sql; then
     echo "Testing upgrade $UPGRADE_PATH"
