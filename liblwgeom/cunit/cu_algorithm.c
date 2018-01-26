@@ -1122,8 +1122,9 @@ static void do_median_test(char* input, char* expected, int fail_if_not_converge
 	LWPOINT* expected_result = NULL;
 	POINT4D actual_pt;
 	POINT4D expected_pt;
+	const double tolerance = FP_TOLERANCE / 10.0;
 
-	LWPOINT* result = lwgeom_median(g, FP_TOLERANCE / 10.0, iter_count, fail_if_not_converged);
+	LWPOINT* result = lwgeom_median(g, tolerance, iter_count, fail_if_not_converged);
 	int passed = LW_FALSE;
 
 	if (expected != NULL)
@@ -1143,10 +1144,10 @@ static void do_median_test(char* input, char* expected, int fail_if_not_converge
 		passed = passed && (lwgeom_has_z((LWGEOM*) expected_result) == lwgeom_has_z((LWGEOM*) result));
 		if (!lwgeom_is_empty((LWGEOM*) result))
 		{
-			passed = passed && FP_EQUALS(actual_pt.x, expected_pt.x);
-			passed = passed && FP_EQUALS(actual_pt.y, expected_pt.y);
-			passed = passed && (!lwgeom_has_z((LWGEOM*) expected_result) || FP_EQUALS(actual_pt.z, expected_pt.z));
-			passed = passed && (!lwgeom_has_m((LWGEOM*) expected_result) || FP_EQUALS(actual_pt.m, expected_pt.m));
+			passed = passed && abs(actual_pt.x - expected_pt.x) < tolerance;
+			passed = passed && abs(actual_pt.y - expected_pt.y) < tolerance;
+			passed = passed && (!lwgeom_has_z((LWGEOM*) expected_result) || abs(actual_pt.z - expected_pt.z) < tolerance);
+			passed = passed && (!lwgeom_has_m((LWGEOM*) expected_result) || abs(actual_pt.m - expected_pt.m) < tolerance);
 		}
 		if (!passed)
 			printf("median_test input %s (parsed %s) expected %s got %s\n", input, lwgeom_to_ewkt(g), lwgeom_to_ewkt((LWGEOM*) expected_result), lwgeom_to_ewkt((LWGEOM*) result));
