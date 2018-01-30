@@ -684,6 +684,7 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 	char x[OUT_DOUBLE_BUFFER_SIZE];
 	char y[OUT_DOUBLE_BUFFER_SIZE];
 	char z[OUT_DOUBLE_BUFFER_SIZE];
+	char m[OUT_DOUBLE_BUFFER_SIZE];
 
 	assert ( precision <= OUT_MAX_DOUBLE_PRECISION );
 	ptr = output;
@@ -705,7 +706,7 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 			ptr += sprintf(ptr, "[%s,%s]", x, y);
 		}
 	}
-	else
+	else if (!FLAGS_GET_M(pa->flags))
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
@@ -721,6 +722,26 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 
 			if ( i ) ptr += sprintf(ptr, ",");
 			ptr += sprintf(ptr, "[%s,%s,%s]", x, y, z);
+		}
+	}
+	else
+	{
+		for (i=0; i<pa->npoints; i++)
+		{
+			const POINT4D *pt;
+			pt = getPoint4d_cp(pa, i);
+
+			lwprint_double(
+			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(
+			    pt->y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(
+			    pt->z, precision, z, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(
+			    pt->m, precision, m, OUT_DOUBLE_BUFFER_SIZE);
+
+			if ( i ) ptr += sprintf(ptr, ",");
+			ptr += sprintf(ptr, "[%s,%s,%s,%s]", x, y, z, m);
 		}
 	}
 
