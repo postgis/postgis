@@ -15208,7 +15208,11 @@ Max realtime timeout      unlimited            unlimited            us
 					</para>
 
 					<para>
-						In Ubuntu (and assuming you are using PostgreSQL's packages for Ubuntu), the easiest way to change the <emphasis>Soft Limit</emphasis> and <emphasis>Hard Limit</emphasis> is to edit <emphasis role="strong">/etc/init.d/postgresql</emphasis>. In the example, we add <emphasis role="strong">ulimit -H -n 262144</emphasis> and <emphasis role="strong">ulimit -n 131072</emphasis>.
+						In Ubuntu (and assuming you are using PostgreSQL's packages for Ubuntu), the easiest way to change the <emphasis>Soft Limit</emphasis> and <emphasis>Hard Limit</emphasis> is to edit <emphasis role="strong">/etc/init.d/postgresql</emphasis> (SysV) or <emphasis role="strong">/lib/systemd/system/postgresql*.service</emphasis> (systemd).
+					</para>
+
+					<para>
+						Let's first address the SysV Ubuntu case where we add <emphasis role="strong">ulimit -H -n 262144</emphasis> and <emphasis role="strong">ulimit -n 131072</emphasis> to <emphasis role="strong">/etc/init.d/postgresql</emphasis>.
 					</para>
 
 					<programlisting>
@@ -15233,6 +15237,31 @@ case "$1" in
         ;;
     status)
 ...
+</programlisting>
+
+					<para>
+						Now to address the systemd Ubuntu case. We will add <emphasis role="strong">LimitNOFILE=131072</emphasis> to every <emphasis role="strong">/lib/systemd/system/postgresql*.service</emphasis> file in the <emphasis role="strong">[Service]</emphasis> section.
+					</para>
+
+					<programlisting>
+...
+[Service]
+<emphasis role="strong">
+LimitNOFILE=131072
+</emphasis>
+...
+
+[Install]
+WantedBy=multi-user.target
+...
+</programlisting>
+
+					<para>
+						After making the necessary systemd changes, make sure to reload the daemon
+					</para>
+
+					<programlisting>
+systemctl daemon-reload
 </programlisting>
 
 				</sect4>
