@@ -2250,10 +2250,12 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 {
 	const uint32_t maxdepth = 50;
 	uint32_t nvertices = 0;
-	uint32_t i, n = 0;
+	uint32_t i, j, n = 0;
 	double width;
 	double height;
-	POINT2D pivot, box_center;
+	POINT2D pivot, box_center, pt;
+	LWPOLY* lwpoly = NULL;
+	POINTARRAY* pa;
 	GBOX* subbox1;
 	GBOX* subbox2;
 	LWGEOM* clipped;
@@ -2309,6 +2311,61 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 
 	pivot.x = box_center.x = (clip->xmin + clip->xmax) / 2;
 	pivot.y = box_center.y = (clip->ymin + clip->ymax) / 2;
+
+	if (geom->type == POLYGONTYPE)
+	{
+		pivot.x = DBL_MAX;
+		pivot.y = DBL_MAX;
+		lwpoly = (LWPOLY*)geom;
+
+		if (width > height)
+		{
+			for (i = 0; i < lwpoly->nrings; i++)
+			{
+				pa = lwpoly->rings[i];
+				for (j = 0; j < pa->npoints; j++)
+				{
+					if (getPoint2d_p(pa, j, &pt))
+					{
+						if (pt.x > clip->xmin && pt.x < clip->xmax &&
+						    (fabs(pivot.x - box_center.x) > fabs(pt.x - box_center.x)))
+						{
+							pivot.x = pt.x;
+							if (fabs(pivot.x - box_center.x) < EPSILON_SQLMM) break;
+						}
+					}
+					else
+						break;
+				}
+				if (fabs(pivot.x - box_center.x) < EPSILON_SQLMM) break;
+			}
+		}
+		else
+		{
+			for (i = 0; i < lwpoly->nrings; i++)
+			{
+				pa = lwpoly->rings[i];
+				for (j = 0; j < pa->npoints; j++)
+				{
+					if (getPoint2d_p(pa, j, &pt))
+					{
+						if (pt.y > clip->ymin && pt.y < clip->ymax &&
+						    (fabs(pivot.y - box_center.y) > fabs(pt.y - box_center.y)))
+						{
+							pivot.y = pt.y;
+							if (fabs(pivot.y - box_center.y) < EPSILON_SQLMM) break;
+						}
+					}
+					else
+						break;
+				}
+				if (fabs(pivot.y - box_center.y) < EPSILON_SQLMM) break;
+			}
+		}
+
+		if (pivot.x == DBL_MAX) pivot.x = box_center.x;
+		if (pivot.y == DBL_MAX) pivot.y = box_center.y;
+	}
 
 	subbox1 = gbox_copy(clip);
 	subbox2 = gbox_copy(clip);
