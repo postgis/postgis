@@ -371,7 +371,9 @@ rect_tree_area_contains_point(RECT_NODE *node, const POINT2D *pt)
 	}
 }
 
-
+/*
+* Simple containment test for node/point inputs
+*/
 static int
 rect_node_bounds_point(RECT_NODE *node, const POINT2D *pt)
 {
@@ -418,6 +420,12 @@ rect_tree_contains_point(RECT_NODE *node, const POINT2D *pt)
 	}
 }
 
+/*
+* For area types, doing intersects and distance, we will
+* need to do a point-in-poly test first to find the full-contained
+* case where an intersection exists without any edges actually
+* intersecting.
+*/
 static int
 rect_tree_is_area(const RECT_NODE *node)
 {
@@ -568,7 +576,16 @@ rect_node_internal_new(const RECT_NODE *seed)
 	return node;
 }
 
-
+/*
+* We expect the incoming nodes to be in a spatially coherent
+* order. For incoming nodes derived from point arrays,
+* the very fact that they are
+* a vertex list implies a reasonable ordering: points nearby in
+* the list will be nearby in space. For incoming nodes from higher
+* level structures (collections, etc) the caller should sort the
+* nodes using a z-order first, so that this merge step results in a
+* spatially coherent structure.
+*/
 static RECT_NODE *
 rect_nodes_merge(RECT_NODE ** nodes, int num_nodes)
 {
@@ -760,7 +777,6 @@ rect_tree_from_lwcurvepoly(const LWGEOM *lwgeom)
 	for (i = 0; i < lwcol->nrings; i++)
 	{
 		RECT_NODE *node = rect_tree_from_lwgeom(lwcol->rings[i]);
-		// rect_tree_printf(node, 0);
 		if (node)
 		{
 			/*
@@ -775,10 +791,13 @@ rect_tree_from_lwcurvepoly(const LWGEOM *lwgeom)
 				rect_node_internal_add_node(internal, node);
 				node = internal;
 			}
+			/* Each subcomponent is a ring */
 			node->i.ring_type = i ? RECT_NODE_RING_INTERIOR : RECT_NODE_RING_EXTERIOR;
 			nodes[j++] = node;
 		}
 	}
+	/* Put the top nodes in a z-order curve for a spatially coherent */
+	/* tree after node merge */
 	qsort(nodes, j, sizeof(RECT_NODE*), rect_node_cmp);
 
 	tree = rect_nodes_merge(nodes, j);
@@ -800,19 +819,28 @@ rect_tree_from_lwcollection(const LWGEOM *lwgeom)
 	if (lwcol->ngeoms < 1)
 		return NULL;
 
+	/* Build one tree for each sub-geometry, then below */
+	/* we merge the root notes of those trees to get a single */
+	/* top node for the collection */
 	nodes = lwalloc(sizeof(RECT_NODE*) * lwcol->ngeoms);
 	for (i = 0; i < lwcol->ngeoms; i++)
 	{
 		RECT_NODE *node = rect_tree_from_lwgeom(lwcol->geoms[i]);
-		// rect_tree_printf(node, 0);
 		if (node)
 		{
+			/* Curvepolygons are collections where the sub-geometries */
+			/* are the rings, and will need to doint point-in-poly */
+			/* tests in order to do intersects and distance calculations */
+			/* correctly */
 			if (lwgeom->type == CURVEPOLYTYPE)
 				node->i.ring_type = i ? RECT_NODE_RING_INTERIOR : RECT_NODE_RING_EXTERIOR;
 			nodes[j++] = node;
 		}
 	}
-	/* CompoundCurve has edges already spatially organized */
+	/* Sort the nodes using a z-order curve, so that merging the nodes */
+	/* gives a spatially coherent tree (near things are in near nodes) */
+	/* Note: CompoundCurve has edges already spatially organized, no */
+	/* sorting needed */
 	if (lwgeom->type != COMPOUNDTYPE)
 		qsort(nodes, j, sizeof(RECT_NODE*), rect_node_cmp);
 
@@ -855,6 +883,10 @@ rect_tree_from_lwgeom(const LWGEOM *lwgeom)
 	return NULL;
 }
 
+/*
+* Get an actual coordinate point from a tree to use
+* for point-in-polygon testing.
+*/
 static const POINT2D *
 rect_tree_get_point(const RECT_NODE *node)
 {
@@ -890,6 +922,10 @@ rect_node_to_str(const RECT_NODE *n)
 }
 #endif
 
+/*
+* Work down to leaf nodes, until we find a pair of leaf nodes
+* that intersect. Prune branches that do not intersect.
+*/
 static int
 rect_tree_intersects_tree_recursive(RECT_NODE *n1, RECT_NODE *n2)
 {
@@ -966,6 +1002,12 @@ rect_tree_intersects_tree(RECT_NODE *n1, RECT_NODE *n2)
 	return rect_tree_intersects_tree_recursive(n1, n2);
 }
 
+/*
+* For slightly more speed when doing distance comparisons,
+* where we only care if d1 < d2 and not what the actual value
+* of d1 or d2 is, we use the squared distance and avoid the
+* sqrt()
+*/
 static inline double
 distance_sq(double x1, double y1, double x2, double y2)
 {
@@ -980,6 +1022,10 @@ distance(double x1, double y1, double x2, double y2)
 	return sqrt(distance_sq(x1, y1, x2, y2));
 }
 
+/*
+* The closest any two objects in two nodes can be is the smallest
+* distance between the nodes themselves.
+*/
 static inline double
 rect_node_min_distance(const RECT_NODE *n1, const RECT_NODE *n2)
 {
@@ -1012,6 +1058,10 @@ rect_node_min_distance(const RECT_NODE *n1, const RECT_NODE *n2)
 	return 0.0;
 }
 
+/*
+* The furthest apart the objects in two nodes can be is if they
+* are at opposite corners of the bbox that contains both nodes
+*/
 static inline double
 rect_node_max_distance(const RECT_NODE *n1, const RECT_NODE *n2)
 {
@@ -1025,6 +1075,15 @@ rect_node_max_distance(const RECT_NODE *n1, const RECT_NODE *n2)
 	return sqrt(dx*dx + dy*dy);
 }
 
+/*
+* Leaf nodes represent individual edges from the original shape.
+* As such, they can be either points (if original was a (multi)point)
+* two-point straight edges (for linear types), or
+* three-point circular arcs (for curvilinear types).
+* The distance calculations for each possible combination of primitive
+* edges is different, so there's a big case switch in here to match
+* up the right combination of inputs to the right distance calculation.
+*/
 static double
 rect_leaf_node_distance(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n2, RECT_TREE_DISTANCE_STATE *state)
 {
@@ -1161,6 +1220,7 @@ rect_tree_node_sort_cmp(const void *a, const void *b)
 	else return 0;
 }
 
+/* Calculate the center of a node */
 static inline void
 rect_node_to_p2d(const RECT_NODE *n, POINT2D *pt)
 {
@@ -1168,6 +1228,10 @@ rect_node_to_p2d(const RECT_NODE *n, POINT2D *pt)
 	pt->y = (n->ymin + n->ymax)/2;
 }
 
+/*
+* (If necessary), sort the children of each node in
+* order of their distance from the enter of the other node.
+*/
 static void
 rect_tree_node_sort(RECT_NODE *n1, RECT_NODE *n2)
 {
@@ -1177,12 +1241,14 @@ rect_tree_node_sort(RECT_NODE *n1, RECT_NODE *n2)
 	if (!rect_node_is_leaf(n1) && ! n1->i.sorted)
 	{
 		rect_node_to_p2d(n2, &c2);
+		/* Distance of each child from center of other node */
 		for (i = 0; i < n1->i.num_nodes; i++)
 		{
 			n = n1->i.nodes[i];
 			rect_node_to_p2d(n, &c);
 			n->d = distance2d_sqr_pt_pt(&c2, &c);
 		}
+		/* Sort the children by distance */
 		n1->i.sorted = 1;
 		qsort(n1->i.nodes,
 		         n1->i.num_nodes,
@@ -1192,12 +1258,14 @@ rect_tree_node_sort(RECT_NODE *n1, RECT_NODE *n2)
 	if (!rect_node_is_leaf(n2) && ! n2->i.sorted)
 	{
 		rect_node_to_p2d(n1, &c1);
+		/* Distance of each child from center of other node */
 		for (i = 0; i < n2->i.num_nodes; i++)
 		{
 			n = n2->i.nodes[i];
 			rect_node_to_p2d(n, &c);
 			n->d = distance2d_sqr_pt_pt(&c1, &c);
 		}
+		/* Sort the children by distance */
 		n2->i.sorted = 1;
 		qsort(n2->i.nodes,
 		         n2->i.num_nodes,
