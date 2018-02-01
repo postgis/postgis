@@ -2251,15 +2251,19 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 	const uint32_t maxdepth = 50;
 	uint32_t nvertices = 0;
 	uint32_t i, n = 0;
-	double width = clip->xmax - clip->xmin;
-	double height = clip->ymax - clip->ymin;
-	GBOX subbox1, subbox2;
-	LWGEOM *clipped1, *clipped2;
+	double width;
+	double height;
+	POINT2D pivot, box_center;
+	GBOX* subbox1;
+	GBOX* subbox2;
+	LWGEOM* clipped;
+
+	if (!clip) return 0;
+	width = clip->xmax - clip->xmin;
+	height = clip->ymax - clip->ymin;
 
 	if ( geom->type == POLYHEDRALSURFACETYPE || geom->type == TINTYPE )
-	{
 		lwerror("%s: unsupported geometry type '%s'", __func__, lwtype_name(geom->type));
-	}
 
 	if ( width == 0.0 && height == 0.0 )
 	{
@@ -2269,9 +2273,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 			return 1;
 		}
 		else
-		{
 			return 0;
-		}
 	}
 
 	/* Always just recurse into collections */
@@ -2279,11 +2281,10 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 	{
 		LWCOLLECTION *incol = (LWCOLLECTION*)geom;
 		int n = 0;
+		/* Don't increment depth yet, since we aren't actually
+		 * subdividing geomtries yet */
 		for ( i = 0; i < incol->ngeoms; i++ )
-		{
-			/* Don't increment depth yet, since we aren't actually subdividing geomtries yet */
 			n += lwgeom_subdivide_recursive(incol->geoms[i], maxvertices, depth, col, clip);
-		}
 		return n;
 	}
 
@@ -2297,10 +2298,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 
 	nvertices = lwgeom_count_vertices(geom);
 	/* Skip empties entirely */
-	if ( nvertices == 0 )
-	{
-		return 0;
-	}
+	if (nvertices == 0) return 0;
 
 	/* If it is under the vertex tolerance, just add it, we're done */
 	if ( nvertices < maxvertices )
@@ -2309,51 +2307,50 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 		return 1;
 	}
 
-	subbox1 = subbox2 = *clip;
-	if ( width > height )
-	{
-		subbox1.xmax = subbox2.xmin = (clip->xmin + clip->xmax)/2;
-	}
+	pivot.x = box_center.x = (clip->xmin + clip->xmax) / 2;
+	pivot.y = box_center.y = (clip->ymin + clip->ymax) / 2;
+
+	subbox1 = gbox_copy(clip);
+	subbox2 = gbox_copy(clip);
+
+	if (width > height)
+		subbox1->xmax = subbox2->xmin = pivot.x;
 	else
-	{
-		subbox1.ymax = subbox2.ymin = (clip->ymin + clip->ymax)/2;
-	}
+		subbox1->ymax = subbox2->ymin = pivot.y;
 
 	if ( height == 0 )
 	{
-		subbox1.ymax += FP_TOLERANCE;
-		subbox2.ymax += FP_TOLERANCE;
-		subbox1.ymin -= FP_TOLERANCE;
-		subbox2.ymin -= FP_TOLERANCE;
+		subbox1->ymax += FP_TOLERANCE;
+		subbox2->ymax += FP_TOLERANCE;
+		subbox1->ymin -= FP_TOLERANCE;
+		subbox2->ymin -= FP_TOLERANCE;
 	}
 
 	if ( width == 0 )
 	{
-		subbox1.xmax += FP_TOLERANCE;
-		subbox2.xmax += FP_TOLERANCE;
-		subbox1.xmin -= FP_TOLERANCE;
-		subbox2.xmin -= FP_TOLERANCE;
+		subbox1->xmax += FP_TOLERANCE;
+		subbox2->xmax += FP_TOLERANCE;
+		subbox1->xmin -= FP_TOLERANCE;
+		subbox2->xmin -= FP_TOLERANCE;
 	}
-
-	clipped1 = lwgeom_clip_by_rect(geom, subbox1.xmin, subbox1.ymin, subbox1.xmax, subbox1.ymax);
-	clipped2 = lwgeom_clip_by_rect(geom, subbox2.xmin, subbox2.ymin, subbox2.xmax, subbox2.ymax);
 
 	++depth;
 
-	if ( clipped1 )
+	clipped = lwgeom_clip_by_rect(geom, subbox1->xmin, subbox1->ymin, subbox1->xmax, subbox1->ymax);
+	if (clipped)
 	{
-		n += lwgeom_subdivide_recursive(clipped1, maxvertices, depth, col, &subbox1);
-		lwgeom_free(clipped1);
+		n += lwgeom_subdivide_recursive(clipped, maxvertices, depth, col, lwgeom_get_bbox(clipped));
+		lwgeom_free(clipped);
 	}
 
-	if ( clipped2 )
+	clipped = lwgeom_clip_by_rect(geom, subbox2->xmin, subbox2->ymin, subbox2->xmax, subbox2->ymax);
+	if (clipped)
 	{
-		n += lwgeom_subdivide_recursive(clipped2, maxvertices, depth, col, &subbox2);
-		lwgeom_free(clipped2);
+		n += lwgeom_subdivide_recursive(clipped, maxvertices, depth, col, lwgeom_get_bbox(clipped));
+		lwgeom_free(clipped);
 	}
 
 	return n;
-
 }
 
 LWCOLLECTION *
