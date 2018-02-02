@@ -782,9 +782,6 @@ LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry* gin)
 
 	return gout;
 }
-
-static GEOSGeometry* LWGEOM_GEOS_makeValid(const GEOSGeometry*);
-
 /*
  * We expect initGEOS being called already.
  * Will return NULL on error (expect error handler being called by then)
@@ -839,7 +836,7 @@ LWGEOM_GEOS_makeValidCollection(const GEOSGeometry* gin)
 }
 
 
-static GEOSGeometry*
+GEOSGeometry*
 LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 {
 	GEOSGeometry* gout;
@@ -870,8 +867,6 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 	               "Geometry [%s] is still not valid: %s. "
 	               "Will try to clean up further.",
 	               lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0)), lwgeom_geos_errmsg);
-
-
 
 	/*
 	 * Step 3 : make what we got valid
@@ -971,7 +966,6 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 			}
 	}
 #endif /* PARANOIA_LEVEL > 1 */
-
 
 	return gout;
 }

@@ -22,24 +22,18 @@
  *
  **********************************************************************/
 
-
-/* Workaround for GEOS 2.2 compatibility: old geos_c.h does not contain
-   header guards to protect from multiple inclusion */
-#ifndef GEOS_C_INCLUDED
-#define GEOS_C_INCLUDED
 #include "geos_c.h"
-#endif
-
 #include "liblwgeom.h"
 #include "lwunionfind.h"
 
 /*
 ** Public prototypes for GEOS utility functions.
 */
-LWGEOM *GEOS2LWGEOM(const GEOSGeometry *geom, char want3d);
-GEOSGeometry * LWGEOM2GEOS(const LWGEOM *g, int autofix);
-GEOSGeometry * GBOX2GEOS(const GBOX *g);
-GEOSGeometry * LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
+LWGEOM* GEOS2LWGEOM(const GEOSGeometry* geom, char want3d);
+GEOSGeometry* LWGEOM2GEOS(const LWGEOM* g, int autofix);
+GEOSGeometry* GBOX2GEOS(const GBOX* g);
+GEOSGeometry* LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
+GEOSGeometry* LWGEOM_GEOS_makeValid(const GEOSGeometry*);
 
 GEOSGeometry * make_geos_point(double x, double y);
 GEOSGeometry * make_geos_segment(double x1, double y1, double x2, double y2);
