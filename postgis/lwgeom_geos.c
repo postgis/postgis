@@ -3629,17 +3629,17 @@ Datum ST_MinimumClearanceLine(PG_FUNCTION_ARGS)
 
 /******************************************
  *
- * ST_MinimumRotatedRectangle
+ * ST_OrientedEnvelope
  *
  ******************************************/
-Datum ST_MinimumRotatedRectangle(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(ST_MinimumRotatedRectangle);
-Datum ST_MinimumRotatedRectangle(PG_FUNCTION_ARGS)
+Datum ST_OrientedEnvelope(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_OrientedEnvelope);
+Datum ST_OrientedEnvelope(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 36
 	lwpgerror("The GEOS version this PostGIS binary "
 			"was compiled against (%d) doesn't support "
-			"'ST_MinimumRotatedRectangle' function (3.6.0+ required)",
+			"'ST_OrientedEnvelope' function (3.6.0+ required)",
 			POSTGIS_GEOS_VERSION);
 	PG_RETURN_NULL();
 #else
@@ -3660,7 +3660,7 @@ Datum ST_MinimumRotatedRectangle(PG_FUNCTION_ARGS)
 	result_geos = GEOSMinimumRotatedRectangle(input_geos);
 	GEOSGeom_destroy(input_geos);
 	if (!result_geos)
-		HANDLE_GEOS_ERROR("Error computing minimum rotated rectangle");
+		HANDLE_GEOS_ERROR("Error computing oriented envelope");
 
 	GEOSSetSRID(result_geos, srid);
 	result = GEOS2POSTGIS(result_geos, LW_FALSE);

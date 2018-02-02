@@ -230,7 +230,7 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 36),1)
 	# ST_MinimumClearance
 	TESTS += \
 		minimum_clearance \
-		minimum_rotated_rectangle
+		oriented_envelope
 endif
 
 ifeq ($(HAVE_JSON),yes)

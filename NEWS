@@ -7,7 +7,7 @@ PostGIS 2.5.0
   - #3896, PostGIS_Extensions_Upgrade()
   - #3913, Upgrade when creating extension from unpackaged (Sandro Santilli)
   - #2256, _postgis_index_extent() for extent from index (Paul Ramsey)
-  - #3176, Add ST_MinimumRotatedRectangle (Dan Baston)
+  - #3176, Add ST_OrientedEnvelope (Dan Baston)
 
 * Breaking Changes *
   - #3885, version number removed from address_standardize lib file
