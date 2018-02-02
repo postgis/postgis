@@ -1065,67 +1065,52 @@ lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2)
 	return result;
 }
 
-LWGEOM *
-lwgeom_clip_by_rect(const LWGEOM *geom1, double x0, double y0, double x1, double y1)
+LWGEOM*
+lwgeom_clip_by_rect(const LWGEOM* geom1, double x1, double y1, double x2, double y2)
 {
-#if POSTGIS_GEOS_VERSION < 35
-	lwerror("The GEOS version this postgis binary "
-	        "was compiled against (%d) doesn't support "
-	        "'GEOSClipByRect' function (3.5.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	return NULL;
-#else /* POSTGIS_GEOS_VERSION >= 35 */
-	LWGEOM *result ;
-	GEOSGeometry *g1, *g3 ;
-	int is3d ;
+	return lwgeom_intersection(geom1, (LWGEOM*)lwpoly_construct_envelope(geom1->srid, x1, y1, x2, y2));
+
+	/* POSTGIS_GEOS_VERSION >= 35, enable only after bugs in geos are fixed */
+#if 0
+	LWGEOM* result;
+	GEOSGeometry *g1, *g3;
+	int is3d;
 
 	/* A.Intersection(Empty) == Empty */
-	if ( lwgeom_is_empty(geom1) )
-		return lwgeom_clone_deep(geom1);
+	if (lwgeom_is_empty(geom1)) return lwgeom_clone_deep(geom1);
 
 	is3d = FLAGS_GET_Z(geom1->flags);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	LWDEBUG(3, "clip_by_rect() START");
-
 	g1 = LWGEOM2GEOS(geom1, 1); /* auto-fix structure */
-	if ( 0 == g1 )   /* exception thrown at construction */
+	if (!g1)                    /* exception thrown at construction */
 	{
 		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL ;
+		return NULL;
 	}
 
-	LWDEBUG(3, " constructed geometrys - calling geos");
-	LWDEBUGF(3, " g1 = %s", GEOSGeomToWKT(g1));
-	/*LWDEBUGF(3, "g1 is valid = %i",GEOSisvalid(g1)); */
-
-	g3 = GEOSClipByRect(g1,x0,y0,x1,y1);
+	g3 = GEOSClipByRect(g1, x1, y1, x2, y2);
 	GEOSGeom_destroy(g1);
 
-	LWDEBUG(3, " clip_by_rect finished");
-
-	if (g3 == NULL)
+	if (!g3)
 	{
 		lwnotice("Error performing rectangular clipping: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 
-	LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3) ) ;
-
 	result = GEOS2LWGEOM(g3, is3d);
 	GEOSGeom_destroy(g3);
 
-	if (result == NULL)
+	if (!result)
 	{
 		lwerror("Error performing intersection: GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
-		return NULL ; /* never get here */
+		return NULL;
 	}
 
 	result->srid = geom1->srid;
-
-	return result ;
-#endif /* POSTGIS_GEOS_VERSION >= 35 */
+	return result;
+#endif
 }
 
 
