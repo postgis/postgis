@@ -333,14 +333,10 @@ getMachineEndian(void)
 	                                       */
 }
 
-
 void
-error_if_srid_mismatch(int srid1, int srid2)
+error_if_srid_mismatch(int32_t srid1, int32_t srid2)
 {
-	if ( srid1 != srid2 )
-	{
-		lwerror("Operation on mixed SRID geometries");
-	}
+	if (srid1 != srid2) lwerror("Operation on mixed SRID geometries");
 }
 
 int
