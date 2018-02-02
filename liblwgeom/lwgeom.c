@@ -2242,13 +2242,13 @@ lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid)
 
 
 /* Prototype for recursion */
-static int
-lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col, const GBOX *clip);
+static int lwgeom_subdivide_recursive(const LWGEOM* geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION* col);
 
 static int
-lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col, const GBOX *clip)
+lwgeom_subdivide_recursive(const LWGEOM* geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION* col)
 {
 	const uint32_t maxdepth = 50;
+	const GBOX* clip = lwgeom_get_bbox(geom);
 	uint32_t nvertices = 0;
 	uint32_t i, j, n = 0;
 	double width;
@@ -2286,7 +2286,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 		/* Don't increment depth yet, since we aren't actually
 		 * subdividing geomtries yet */
 		for ( i = 0; i < incol->ngeoms; i++ )
-			n += lwgeom_subdivide_recursive(incol->geoms[i], maxvertices, depth, col, clip);
+			n += lwgeom_subdivide_recursive(incol->geoms[i], maxvertices, depth, col);
 		return n;
 	}
 
@@ -2393,17 +2393,23 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 
 	++depth;
 
+	printf("\n\n\n\n");
+	printf("split on %f %f\n", pivot.x, pivot.y);
+	printf("Subdivide %s\n", lwgeom_to_ewkt(geom));
+	printf("box %f %f %f %f\n", subbox1->xmin, subbox1->ymin, subbox1->xmax, subbox1->ymax);
+	fflush(stdout);
 	clipped = lwgeom_clip_by_rect(geom, subbox1->xmin, subbox1->ymin, subbox1->xmax, subbox1->ymax);
 	if (clipped)
 	{
-		n += lwgeom_subdivide_recursive(clipped, maxvertices, depth, col, lwgeom_get_bbox(clipped));
+		n += lwgeom_subdivide_recursive(clipped, maxvertices, depth, col);
 		lwgeom_free(clipped);
 	}
 
+	printf("box %f %f %f %f\n", subbox2->xmin, subbox2->ymin, subbox2->xmax, subbox2->ymax);
 	clipped = lwgeom_clip_by_rect(geom, subbox2->xmin, subbox2->ymin, subbox2->xmax, subbox2->ymax);
 	if (clipped)
 	{
-		n += lwgeom_subdivide_recursive(clipped, maxvertices, depth, col, lwgeom_get_bbox(clipped));
+		n += lwgeom_subdivide_recursive(clipped, maxvertices, depth, col);
 		lwgeom_free(clipped);
 	}
 
@@ -2416,7 +2422,6 @@ lwgeom_subdivide(const LWGEOM *geom, uint32_t maxvertices)
 	static uint32_t startdepth = 0;
 	static uint32_t minmaxvertices = 8;
 	LWCOLLECTION *col;
-	GBOX clip;
 
 	col = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
 
@@ -2429,8 +2434,7 @@ lwgeom_subdivide(const LWGEOM *geom, uint32_t maxvertices)
 		lwerror("%s: cannot subdivide to fewer than %d vertices per output", __func__, minmaxvertices);
 	}
 
-	clip = *(lwgeom_get_bbox(geom));
-	lwgeom_subdivide_recursive(geom, maxvertices, startdepth, col, &clip);
+	lwgeom_subdivide_recursive(geom, maxvertices, startdepth, col);
 	lwgeom_set_srid((LWGEOM*)col, geom->srid);
 	return col;
 }
