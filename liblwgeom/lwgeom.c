@@ -2393,11 +2393,6 @@ lwgeom_subdivide_recursive(const LWGEOM* geom, uint32_t maxvertices, uint32_t de
 
 	++depth;
 
-	printf("\n\n\n\n");
-	printf("split on %f %f\n", pivot.x, pivot.y);
-	printf("Subdivide %s\n", lwgeom_to_ewkt(geom));
-	printf("box %f %f %f %f\n", subbox1->xmin, subbox1->ymin, subbox1->xmax, subbox1->ymax);
-	fflush(stdout);
 	clipped = lwgeom_clip_by_rect(geom, subbox1->xmin, subbox1->ymin, subbox1->xmax, subbox1->ymax);
 	if (clipped)
 	{
