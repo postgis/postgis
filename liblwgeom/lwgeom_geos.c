@@ -362,6 +362,13 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 	char *wkt;
 #endif
 
+	if (autofix)
+	{
+		/* cross fingers and try without autofix, maybe it'll work? */
+		g = LWGEOM2GEOS(lwgeom, LW_FALSE);
+		if (g) return g;
+	}
+
 	LWDEBUGF(4, "LWGEOM2GEOS got a %s", lwtype_name(lwgeom->type));
 
 	if (lwgeom_has_arc(lwgeom))
@@ -579,7 +586,7 @@ lwgeom_normalize(const LWGEOM *geom1)
 
 	if (result == NULL)
 	{
-	  lwerror("Error performing intersection: GEOS2LWGEOM: %s",
+	  lwerror("Error performing normalize: GEOS2LWGEOM: %s",
 	                lwgeom_geos_errmsg);
 		return NULL ; /* never get here */
 	}
@@ -631,19 +638,29 @@ lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 	LWDEBUG(3, " constructed geometrys - calling geos");
 	LWDEBUGF(3, " g1 = %s", GEOSGeomToWKT(g1));
 	LWDEBUGF(3, " g2 = %s", GEOSGeomToWKT(g2));
-	/*LWDEBUGF(3, "g2 is valid = %i",GEOSisvalid(g2)); */
-	/*LWDEBUGF(3, "g1 is valid = %i",GEOSisvalid(g1)); */
 
 	g3 = GEOSIntersection(g1, g2);
 
-	LWDEBUG(3, " intersection finished");
+	LWDEBUG(3, "intersection finished");
 
-	if (g3 == NULL)
+	if (!g3)
 	{
+		/* we're failing but not losing hope, try make all input valid */
+		if (!GEOSisValid(g1) || !GEOSisValid(g2))
+		{
+			g1 = LWGEOM_GEOS_makeValid(g1);
+			g2 = LWGEOM_GEOS_makeValid(g2);
+			g3 = GEOSIntersection(g1, g2);
+			LWDEBUG(3, "retry intersection finished");
+		}
+	}
+
+	if (!g3)
+	{
+		/* we're hopeless. */
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
-		lwerror("Error performing intersection: %s",
-		        lwgeom_geos_errmsg);
+		lwerror("Error performing intersection: %s", lwgeom_geos_errmsg);
 		return NULL; /* never get here */
 	}
 
@@ -658,8 +675,7 @@ lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 		GEOSGeom_destroy(g3);
-		lwerror("Error performing intersection: GEOS2LWGEOM: %s",
-		        lwgeom_geos_errmsg);
+		lwerror("Error performing intersection: GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
 		return NULL ; /* never get here */
 	}
 
@@ -667,7 +683,7 @@ lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 	GEOSGeom_destroy(g2);
 	GEOSGeom_destroy(g3);
 
-	return result ;
+	return result;
 }
 
 LWGEOM *
@@ -1068,7 +1084,7 @@ lwgeom_clip_by_rect(const LWGEOM* geom1, double x1, double y1, double x2, double
 
 	/* POSTGIS_GEOS_VERSION >= 35, enable only after bugs in geos are fixed */
 #if 0
-	LWGEOM* result;
+
 	GEOSGeometry *g1, *g3;
 	int is3d;
 
