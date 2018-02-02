@@ -1144,10 +1144,10 @@ static void do_median_test(char* input, char* expected, int fail_if_not_converge
 		passed = passed && (lwgeom_has_z((LWGEOM*) expected_result) == lwgeom_has_z((LWGEOM*) result));
 		if (!lwgeom_is_empty((LWGEOM*) result))
 		{
-			passed = passed && abs(actual_pt.x - expected_pt.x) < tolerance;
-			passed = passed && abs(actual_pt.y - expected_pt.y) < tolerance;
-			passed = passed && (!lwgeom_has_z((LWGEOM*) expected_result) || abs(actual_pt.z - expected_pt.z) < tolerance);
-			passed = passed && (!lwgeom_has_m((LWGEOM*) expected_result) || abs(actual_pt.m - expected_pt.m) < tolerance);
+			passed = passed && fabs(actual_pt.x - expected_pt.x) < tolerance;
+			passed = passed && fabs(actual_pt.y - expected_pt.y) < tolerance;
+			passed = passed && (!lwgeom_has_z((LWGEOM*) expected_result) || fabs(actual_pt.z - expected_pt.z) < tolerance);
+			passed = passed && (!lwgeom_has_m((LWGEOM*) expected_result) || fabs(actual_pt.m - expected_pt.m) < tolerance);
 		}
 		if (!passed)
 			printf("median_test input %s (parsed %s) expected %s got %s\n", input, lwgeom_to_ewkt(g), lwgeom_to_ewkt((LWGEOM*) expected_result), lwgeom_to_ewkt((LWGEOM*) result));
