@@ -391,11 +391,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 			sq = ptarray_to_GEOSCoordSeq(lwp->point, 0);
 			g = GEOSGeom_createPoint(sq);
 		}
-		if ( ! g )
-		{
-			/* lwnotice("Exception in LWGEOM2GEOS"); */
-			return NULL;
-		}
+		if (!g) return NULL;
 		break;
 	case LINETYPE:
 		lwl = (LWLINE *)lwgeom;
@@ -594,10 +590,10 @@ lwgeom_normalize(const LWGEOM *geom1)
 LWGEOM *
 lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 {
-	LWGEOM *result ;
-	GEOSGeometry *g1, *g2, *g3 ;
-	int is3d ;
-	int srid ;
+	LWGEOM* result;
+	GEOSGeometry *g1, *g2, *g3;
+	int is3d;
+	uint32_t srid;
 
 	/* A.Intersection(Empty) == Empty */
 	if ( lwgeom_is_empty(geom2) )
@@ -617,19 +613,19 @@ lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 
 	LWDEBUG(3, "intersection() START");
 
-	g1 = LWGEOM2GEOS(geom1, 0);
-	if ( 0 == g1 )   /* exception thrown at construction */
+	g1 = LWGEOM2GEOS(geom1, 1);
+	if (!g1) /* exception thrown at construction */
 	{
 		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL ;
+		return NULL;
 	}
 
-	g2 = LWGEOM2GEOS(geom2, 0);
-	if ( 0 == g2 )   /* exception thrown at construction */
+	g2 = LWGEOM2GEOS(geom2, 1);
+	if (!g2) /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS.");
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
-		return NULL ;
+		return NULL;
 	}
 
 	LWDEBUG(3, " constructed geometrys - calling geos");
@@ -638,7 +634,7 @@ lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 	/*LWDEBUGF(3, "g2 is valid = %i",GEOSisvalid(g2)); */
 	/*LWDEBUGF(3, "g1 is valid = %i",GEOSisvalid(g1)); */
 
-	g3 = GEOSIntersection(g1,g2);
+	g3 = GEOSIntersection(g1, g2);
 
 	LWDEBUG(3, " intersection finished");
 
