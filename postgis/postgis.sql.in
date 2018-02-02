@@ -3324,6 +3324,12 @@ CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(inputgeom geometry, segs_per
     AS 'MODULE_PATHNAME', 'ST_MinimumBoundingCircle'
     LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_OrientedEnvelope(geometry)
+    RETURNS geometry
+    AS 'MODULE_PATHNAME', 'ST_OrientedEnvelope'
+    LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
 -- Availability: 2.0.0 - requires GEOS-3.2 or higher
 CREATE OR REPLACE FUNCTION ST_OffsetCurve(line geometry, distance float8, params text DEFAULT '')
        RETURNS geometry
