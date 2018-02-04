@@ -893,9 +893,8 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
-	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
-	if ( 0 == g1 )   /* exception thrown at construction */
-	{
+	g1 = POSTGIS2GEOS(geom1);
+	if (!g1) {
 		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		PG_RETURN_NULL();
 	}

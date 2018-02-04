@@ -7,6 +7,7 @@ SELECT ST_AsText(ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),1
 SELECT ST_AsText(ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),10,'join=bevel'));
 SELECT ST_AsText(ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),10,'join=mitre mitre_limit=5.0'));
 SELECT ST_AsText(ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),10,'join=mitre mitre_limit=1.0'));
+SELECT ST_AsText(ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),10,'join=mitre mitre_limit=1.0 side=both'));
 SELECT ST_AsText(ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),10,'side=left'));
 SELECT ST_AsText(ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),10,'side=right'));
 SELECT ST_AsText(ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),10,'side=left join=mitre'));
