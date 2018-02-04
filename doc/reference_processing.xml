@@ -238,6 +238,55 @@ SELECT ST_Buffer(
 				</programlisting>
 						  </para></entry>
 					  </row>
+						<row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer09.png" />
+							  </imageobject>
+							  <caption><para>side=left</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'side=left');
+				</programlisting>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer10.png" />
+							  </imageobject>
+							  <caption><para>side=right</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'side=right');
+				</programlisting>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer11.png" />
+							  </imageobject>
+							  <caption><para>side=left join=mitre</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'side=left join=mitre');
+				</programlisting>
+						  </para></entry>
+					  </row>
 					</tbody>
 				  </tgroup>
 			</informaltable>
