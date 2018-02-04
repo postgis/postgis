@@ -848,10 +848,12 @@ Datum buffer(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED	*geom1;
 	double	size;
+	GEOSBufferParams *bufferparams;
 	GEOSGeometry *g1, *g3;
 	GSERIALIZED *result;
 	int quadsegs = 8; /* the default */
 	int nargs;
+	int singleside = 0; /* the default */
 	enum
 	{
 	    ENDCAP_ROUND = 1,
@@ -891,9 +893,8 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
-	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
-	if ( 0 == g1 )   /* exception thrown at construction */
-	{
+	g1 = POSTGIS2GEOS(geom1);
+	if (!g1) {
 		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		PG_RETURN_NULL();
 	}
@@ -990,12 +991,37 @@ Datum buffer(PG_FUNCTION_ARGS)
 				/* quadrant segments is an int */
 				quadsegs = atoi(val);
 			}
+			else if ( !strcmp(key, "side") ||
+					  !strcmp(key, "side")    )
+			{
+				if ( !strcmp(val, "both") ) 
+				{
+					singleside = 0;
+				}
+				else if ( !strcmp(val, "left") ) 
+				{
+					singleside = 1;
+				}
+				else if ( !strcmp(val, "right") )
+				{
+					singleside = 1;
+					size *= -1;
+				}
+				else
+				{
+					lwpgerror("Invalid side "
+					        "parameter: %s (accept: "
+					        "'right', 'left', 'both' "
+					        ")", val);
+					break;
+				}
+			}
 			else
 			{
 				lwpgerror("Invalid buffer parameter: %s (accept: "
 				        "'endcap', 'join', 'mitre_limit', "
-				        "'miter_limit and "
-				        "'quad_segs')", key);
+				        "'miter_limit', 'quad_segs' and "
+				        "'side')", key);
 				break;
 			}
 		}
@@ -1007,8 +1033,15 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	}
 
-	g3 = GEOSBufferWithStyle(g1, size, quadsegs, endCapStyle, joinStyle, mitreLimit);
+	bufferparams = GEOSBufferParams_create();
+ 	GEOSBufferParams_setEndCapStyle(bufferparams, endCapStyle);
+ 	GEOSBufferParams_setJoinStyle(bufferparams, joinStyle);
+ 	GEOSBufferParams_setMitreLimit(bufferparams, mitreLimit);
+ 	GEOSBufferParams_setQuadrantSegments(bufferparams, quadsegs);
+ 	GEOSBufferParams_setSingleSided(bufferparams, singleside);
+ 	g3 = GEOSBufferWithParams(g1, bufferparams, size);
 	GEOSGeom_destroy(g1);
+	GEOSBufferParams_destroy(bufferparams);
 
 	if (g3 == NULL)
 	{
