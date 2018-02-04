@@ -146,7 +146,7 @@ init_guess(const POINT4D* points, uint32_t npoints)
 	return guess;
 }
 
-static POINT4D*
+POINT4D*
 lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_empty)
 {
 	uint32_t i;
