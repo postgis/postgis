@@ -38,7 +38,7 @@
 #include "liblwgeom_internal.h"
 
 
-LWGEOM* pta_unstroke(const POINTARRAY *points, int type, int srid);
+LWGEOM* pta_unstroke(const POINTARRAY *points, int srid);
 LWGEOM* lwline_unstroke(const LWLINE *line);
 LWGEOM* lwpolygon_unstroke(const LWPOLY *poly);
 LWGEOM* lwmline_unstroke(const LWMLINE *mline);
@@ -827,7 +827,7 @@ geom_from_pa(const POINTARRAY *pa, int srid, int is_arc, int start, int end)
 }
 
 LWGEOM*
-pta_unstroke(const POINTARRAY *points, int type, int srid)
+pta_unstroke(const POINTARRAY *points, int srid)
 {
 	int i = 0, j, k;
 	POINT4D a1, a2, a3, b;
@@ -994,7 +994,7 @@ lwline_unstroke(const LWLINE *line)
 	LWDEBUG(2, "lwline_unstroke called.");
 
 	if ( line->points->npoints < 4 ) return lwline_as_lwgeom(lwline_clone(line));
-	else return pta_unstroke(line->points, line->flags, line->srid);
+	else return pta_unstroke(line->points, line->srid);
 }
 
 LWGEOM *
@@ -1008,7 +1008,7 @@ lwpolygon_unstroke(const LWPOLY *poly)
 	geoms = lwalloc(sizeof(LWGEOM *)*poly->nrings);
 	for (i=0; i<poly->nrings; i++)
 	{
-		geoms[i] = pta_unstroke(poly->rings[i], poly->flags, poly->srid);
+		geoms[i] = pta_unstroke(poly->rings[i], poly->srid);
 		if (geoms[i]->type == CIRCSTRINGTYPE || geoms[i]->type == COMPOUNDTYPE)
 		{
 			hascurve = 1;
