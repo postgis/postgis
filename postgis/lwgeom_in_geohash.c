@@ -35,7 +35,7 @@
 Datum box2d_from_geohash(PG_FUNCTION_ARGS);
 Datum point_from_geohash(PG_FUNCTION_ARGS);
 
-static void geohash_lwpgerror(char *msg, int error_code)
+static void geohash_lwpgerror(char *msg, __attribute__((__unused__)) int error_code)
 {
 	POSTGIS_DEBUGF(3, "ST_Box2dFromGeoHash ERROR %i", error_code);
 	lwpgerror("%s", msg);
