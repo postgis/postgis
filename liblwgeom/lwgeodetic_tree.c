@@ -624,7 +624,7 @@ circ_nodes_sort_cmp(const void *a, const void *b)
 static void
 circ_internal_nodes_sort(CIRC_NODE **nodes, uint32_t num_nodes, const CIRC_NODE *target_node)
 {
-	int i;
+	uint32_t i;
 	struct sort_node sort_nodes[CIRC_NODE_SIZE];
 
 	/* Copy incoming nodes into sorting array and calculate */

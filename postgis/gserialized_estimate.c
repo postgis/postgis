@@ -945,7 +945,7 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode, bool only_par
 		POSTGIS_DEBUGF(2, "searching parent table stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
 		stats_tuple = SearchSysCache3(STATRELATTINH, ObjectIdGetDatum(table_oid), Int16GetDatum(att_num), BoolGetDatum(false));
 		if ( stats_tuple )
-		POSTGIS_DEBUGF(2, "found parent table stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
+			POSTGIS_DEBUGF(2, "found parent table stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
 	}
 	if ( ! stats_tuple )
 	{
