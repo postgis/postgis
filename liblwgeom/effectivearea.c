@@ -166,7 +166,7 @@ static void down(MINHEAP *tree,areanode *arealist,int parent)
 
 Sift Up
 */
-static void up(MINHEAP *tree,areanode *arealist,int c)
+static void up(MINHEAP *tree, __attribute__((__unused__)) areanode *e,int c)
 {
 	LWDEBUG(2, "Entered  up");
 	void *tmp;

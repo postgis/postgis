@@ -104,7 +104,7 @@ lwgeom_to_svg(const LWGEOM *geom, int precision, int relative)
  */
 
 static size_t
-assvg_point_size(const LWPOINT *point, int circle, int precision)
+assvg_point_size(__attribute__((__unused__)) const LWPOINT *point, int circle, int precision)
 {
 	size_t size;
 
@@ -153,7 +153,7 @@ assvg_point(const LWPOINT *point, int circle, int precision)
  */
 
 static size_t
-assvg_line_size(const LWLINE *line, int relative, int precision)
+assvg_line_size(const LWLINE *line, __attribute__((__unused__)) int relative, int precision)
 {
 	size_t size;
 
@@ -197,7 +197,7 @@ assvg_line(const LWLINE *line, int relative, int precision)
  */
 
 static size_t
-assvg_polygon_size(const LWPOLY *poly, int relative, int precision)
+assvg_polygon_size(const LWPOLY *poly, __attribute__((__unused__)) int relative, int precision)
 {
 	uint32_t i;
 	size_t size=0;

@@ -3745,9 +3745,14 @@ FROM dummy_rast;
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>record <function>ST_BandMetaData</function></funcdef>
-					<paramdef><type>raster </type><parameter>rast</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type><parameter>bandnum=1</parameter></paramdef>
+						<funcdef>(1) record <function>ST_BandMetaData</function></funcdef>
+						<paramdef><type>raster </type><parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type><parameter>band=1</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+						<funcdef>(2) record <function>ST_BandMetaData</function></funcdef>
+						<paramdef><type>raster </type><parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>integer[] </type><parameter>band</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3755,32 +3760,70 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 
-				<para>Returns basic meta data about a raster band. Columns returned
-					 pixeltype | nodatavalue | isoutdb | path.
+				<para>Returns basic meta data about a raster band. Columns returned: pixeltype, nodatavalue, isoutdb, path, outdbbandnum.
 				</para>
 				<note>
-                                  <para>
-					If raster contains no bands then an error is thrown.
-                                  </para>
+					<para>
+						If raster contains no bands then an error is thrown.
+					</para>
+				</note>
+
+				<note>
+					<para>
+						If band has no NODATA value, nodatavalue are NULL.
+					</para>
 				</note>
 				<note>
-                                  <para>
-					If band has no NODATA value, nodatavalue will be NULL.
-                                  </para>
+					<para>
+						If isoutdb is False, path and outdbbandnum are NULL.
+					</para>
 				</note>
 			</refsection>
 
 			<refsection>
-				<title>Examples</title>
+				<title>Examples: Variant 1</title>
 
-				<programlisting>SELECT rid, (foo.md).*
- FROM (SELECT rid, ST_BandMetaData(rast,1) As md
-FROM dummy_rast WHERE rid=2) As foo;
+				<programlisting>
+WITH foo AS (
+	SELECT
+		ST_AddBand(NULL::raster, '/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif', NULL::int[]) AS rast
+)
+SELECT
+	*
+FROM ST_BandMetadata(
+	(SELECT rast FROM foo),
+ 	ARRAY[1,3,2]::int[]
+);
 
- rid | pixeltype | nodatavalue | isoutdb | path
------+-----------+----------------+-------------+---------+------
-   2 | 8BUI      |           0 | f       |
+ bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                      | outdbbandnum 
+---------+-----------+-------------+---------+--------------------------------------------------------------------------------+--------------
+       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            1
+       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            3
+       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            2
 				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples: Variant 2</title>
+
+				<programlisting>
+SELECT
+	rid,
+	(foo.md).*
+FROM (
+	SELECT
+		rid,
+		ST_BandMetaData(rast, 1) AS md
+	FROM dummy_rast
+	WHERE rid=2
+) As foo;
+
+ rid | pixeltype | nodatavalue | isoutdb | path | outdbbandnum
+-----+-----------+---- --------+---------+------+--------------
+   2 | 8BUI      |           0 | f       |      |
+				</programlisting>
+
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
@@ -7088,6 +7131,191 @@ select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
                 linkend="RT_ST_BandIsNoData"/></para>
 			</refsection>
 		</refentry>
+
+		<refentry id="RT_ST_SetBandPath">
+			<refnamediv>
+				<refname>ST_SetBandPath</refname>
+				<refpurpose>Update the external path and band number of an out-db band</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>raster <function>ST_SetBandPath</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>outdbpath</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>outdbindex</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>force=false</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>Updates an out-db band's external raster file path and external band number.</para>
+
+				<note>
+					<para>
+						If <varname>force</varname> is set to true, no tests are done to ensure compatibility (e.g. alignment, pixel support) between the external raster file and the PostGIS raster. This mode is intended for file system changes where the external raster resides.
+					</para>
+				</note>
+
+				<note>
+					<para>
+						Internally, this method replaces the PostGIS raster's band at index <varname>band</varname> with a new band instead of updating the existing path information.
+					</para>
+				</note>
+
+				<para>Availability: 2.5.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+WITH foo AS (
+	SELECT
+		ST_AddBand(NULL::raster, '/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif', NULL::int[]) AS rast
+)
+SELECT
+	1 AS query,
+	*
+FROM ST_BandMetadata(
+	(SELECT rast FROM foo),
+ 	ARRAY[1,3,2]::int[]
+)
+UNION ALL
+SELECT
+	2,
+	*
+FROM ST_BandMetadata(
+	(
+		SELECT
+			<emphasis role="strong">ST_SetBandPath(
+				rast,
+				2,
+				'/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected2.tif',
+				1
+			)</emphasis> AS rast
+	 	FROM foo
+	),
+ 	ARRAY[1,3,2]::int[]
+)
+ORDER BY 1, 2;
+
+ query | bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                       | outdbbandnum 
+-------+---------+-----------+-------------+---------+---------------------------------------------------------------------------------+--------------
+     1 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
+     1 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            2
+     1 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3
+     2 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
+<emphasis role="strong">     2 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected2.tif      |            1</emphasis>
+     2 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_BandMetaData" />,
+					<xref linkend="RT_ST_SetBandIndex" />
+				</para>
+			</refsection>
+
+		</refentry>
+
+		<refentry id="RT_ST_SetBandIndex">
+			<refnamediv>
+				<refname>ST_SetBandIndex</refname>
+				<refpurpose>Update the external band number of an out-db band</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>raster <function>ST_SetBandIndex</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>outdbindex</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>force=false</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>Updates an out-db band's external band number. This does not touch the external raster file associated with the out-db band</para>
+
+				<note>
+					<para>
+						If <varname>force</varname> is set to true, no tests are done to ensure compatibility (e.g. alignment, pixel support) between the external raster file and the PostGIS raster. This mode is intended for where bands are moved around in the external raster file.
+					</para>
+				</note>
+
+				<note>
+					<para>
+						Internally, this method replaces the PostGIS raster's band at index <varname>band</varname> with a new band instead of updating the existing path information.
+					</para>
+				</note>
+
+				<para>Availability: 2.5.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+WITH foo AS (
+	SELECT
+		ST_AddBand(NULL::raster, '/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif', NULL::int[]) AS rast
+)
+SELECT
+	1 AS query,
+	*
+FROM ST_BandMetadata(
+	(SELECT rast FROM foo),
+ 	ARRAY[1,3,2]::int[]
+)
+UNION ALL
+SELECT
+	2,
+	*
+FROM ST_BandMetadata(
+	(
+		SELECT
+			<emphasis role="strong">ST_SetBandIndex(
+				rast,
+				2,
+				1
+			)</emphasis> AS rast
+	 	FROM foo
+	),
+ 	ARRAY[1,3,2]::int[]
+)
+ORDER BY 1, 2;
+
+ query | bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                       | outdbbandnum 
+-------+---------+-----------+-------------+---------+---------------------------------------------------------------------------------+--------------
+     1 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
+     1 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            2
+     1 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3
+     2 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
+<emphasis role="strong">     2 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1</emphasis>
+     2 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_BandMetaData" />,
+					<xref linkend="RT_ST_SetBandPath" />
+				</para>
+			</refsection>
+
+		</refentry>
+
 	</sect1>
 
 	<sect1 id="RasterBand_Stats">

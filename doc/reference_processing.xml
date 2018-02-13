@@ -2170,6 +2170,57 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
 
 	</refentry>
 
+	<refentry id="ST_OrientedEnvelope">
+		<refnamediv>
+			<refname>ST_OrientedEnvelope</refname>
+			<refpurpose>Returns a minimum rotated rectangle enclosing a geometry.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>geometry<function>ST_OrientedEnvelope</function></funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geom</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>
+				Returns a mimimum rotated rectangle enclosing a geometry.
+				Note that more than one minimum rotated rectangle may exist.
+				May return a Point or LineString in the case of degenerate inputs.	
+			</para>
+			<para>
+				Availability - 2.5.0
+			</para>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="ST_Envelope" />
+				<xref linkend="ST_MinimumBoundingCircle" />
+			</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>
+				SELECT ST_AsText(ST_OrientedEnvelope('MULTIPOINT ((0 0), (-1 -1), (3 2))'));
+
+				st_astext                    
+				------------------------------------------------
+				POLYGON((3 2,2.88 2.16,-1.12 -0.84,-1 -1,3 2))
+			</programlisting>
+
+		</refsection>
+	</refentry>
+
 	<refentry id="ST_Polygonize">
 		<refnamediv>
 			<refname>ST_Polygonize</refname>

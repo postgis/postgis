@@ -3,6 +3,7 @@
  * WKTRaster - Raster Types for PostGIS
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
+ * Copyright (C) 2018 Bborie Park <dustymugs@gmail.com>
  * Copyright (C) 2011-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
@@ -173,6 +174,102 @@ rt_band_new_offline(
 }
 
 /**
+ * Create an out-db rt_band from path
+ *
+ * @param width     : number of pixel columns
+ * @param height    : number of pixel rows
+ * @param hasnodata : indicates if the band has nodata value
+ * @param nodataval : the nodata value, will be appropriately
+ * @param bandNum   : 1-based band number in the external file
+ *                    to associate this band with.
+ * @param path      : NULL-terminated path string pointing to the file
+ *                    containing band data. The string will NOT be
+ *                    copied, ownership is left to caller which is
+ *                    responsible to keep it allocated for the whole
+ *                    lifetime of the returned rt_band.
+ * @param force     : if True, ignore all validation checks
+ *
+ * @return an rt_band, or 0 on failure
+ */
+rt_band
+rt_band_new_offline_from_path(
+	uint16_t width,
+	uint16_t height,
+	int hasnodata,
+	double nodataval,
+	uint8_t bandNum,
+	const char* path,
+	int force
+) {
+	GDALDatasetH hdsSrc = NULL;
+	int nband = 0;
+	GDALRasterBandH hbandSrc = NULL;
+
+	GDALDataType gdpixtype;
+	rt_pixtype pt = PT_END;
+
+	/* open outdb raster file */
+	rt_util_gdal_register_all(0);
+	hdsSrc = rt_util_gdal_open(path, GA_ReadOnly, 1);
+	if (hdsSrc == NULL && !force) {
+		rterror("rt_band_new_offline_from_path: Cannot open offline raster: %s", path);
+		return NULL;
+	}
+
+	nband = GDALGetRasterCount(hdsSrc);
+	if (!nband && !force) {
+		rterror("rt_band_new_offline_from_path: No bands found in offline raster: %s", path);
+		GDALClose(hdsSrc);
+		return NULL;
+	}
+	/* bandNum is 1-based */
+	else if (bandNum > nband && !force) {
+		rterror(
+			"rt_band_new_offline_from_path: Specified band %d not found in offline raster: %s",
+			bandNum,
+			path
+		);
+		GDALClose(hdsSrc);
+		return NULL;
+	}
+
+	hbandSrc = GDALGetRasterBand(hdsSrc, bandNum);
+	if (hbandSrc == NULL && !force) {
+		rterror(
+			"rt_band_new_offline_from_path: Cannot get band %d from GDAL dataset",
+			bandNum
+		);
+		GDALClose(hdsSrc);
+		return NULL;
+	}
+
+	gdpixtype = GDALGetRasterDataType(hbandSrc);
+	pt = rt_util_gdal_datatype_to_pixtype(gdpixtype);
+	if (pt == PT_END && !force) {
+		rterror(
+			"rt_band_new_offline_from_path: Unsupported pixel type %s of band %d from GDAL dataset",
+			GDALGetDataTypeName(gdpixtype),
+			bandNum
+		);
+		GDALClose(hdsSrc);
+		return NULL;
+	}
+
+	/* use out-db band's nodata value if nodataval not already set */
+	if (!hasnodata)
+		nodataval = GDALGetRasterNoDataValue(hbandSrc, &hasnodata);
+
+	GDALClose(hdsSrc);
+
+	return rt_band_new_offline(
+		width, height,
+		pt,
+		hasnodata, nodataval,
+		bandNum - 1, path
+	);
+}
+
+/**
  * Create a new band duplicated from source band.  Memory is allocated
  * for band path (if band is offline) or band data (if band is online).
  * The caller is responsible for freeing the memory when the returned
@@ -226,11 +323,8 @@ rt_band_duplicate(rt_band band) {
 
 int
 rt_band_is_offline(rt_band band) {
-
-    assert(NULL != band);
-
-
-    return band->offline ? 1 : 0;
+  assert(NULL != band);
+	return band->offline ? 1 : 0;
 }
 
 /**
@@ -333,7 +427,6 @@ rt_band_load_offline_data(rt_band band) {
 	int nband = 0;
 	VRTDatasetH hdsDst = NULL;
 	VRTSourcedRasterBandH hbandDst = NULL;
-	double gt[6] = {0.};
 	double ogt[6] = {0};
 	double offset[2] = {0};
 
@@ -362,9 +455,6 @@ rt_band_load_offline_data(rt_band band) {
 
 	rt_util_gdal_register_all(0);
 	hdsSrc = rt_util_gdal_open(band->data.offline.path, GA_ReadOnly, 1);
-	/*
-	hdsSrc = rt_util_gdal_open(band->data.offline.path, GA_ReadOnly, 0);
-	*/
 	if (hdsSrc == NULL) {
 		rterror("rt_band_load_offline_data: Cannot open offline raster: %s", band->data.offline.path);
 		return ES_ERROR;
@@ -383,11 +473,6 @@ rt_band_load_offline_data(rt_band band) {
 		GDALClose(hdsSrc);
 		return ES_ERROR;
 	}
-
-	/* get raster's geotransform */
-	rt_raster_get_geotransform_matrix(band->raster, gt);
-	RASTER_DEBUGF(3, "Raster geotransform (%f, %f, %f, %f, %f, %f)",
-		gt[0], gt[1], gt[2], gt[3], gt[4], gt[5]);
 
 	/* get offline raster's geotransform */
 	if (GDALGetGeoTransform(hdsSrc, ogt) != CE_None) {
@@ -430,7 +515,7 @@ rt_band_load_offline_data(rt_band band) {
 
 	/* create VRT dataset */
 	hdsDst = VRTCreate(band->width, band->height);
-	GDALSetGeoTransform(hdsDst, gt);
+	GDALSetGeoTransform(hdsDst, ogt);
 	/*
 	GDALSetDescription(hdsDst, "/tmp/offline.vrt");
 	*/

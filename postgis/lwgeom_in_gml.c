@@ -78,7 +78,7 @@ gmlSrs;
 
 
 
-static void gml_lwpgerror(char *msg, int error_code)
+static void gml_lwpgerror(char *msg, __attribute__((__unused__)) int error_code)
 {
         POSTGIS_DEBUGF(3, "ST_GeomFromGML ERROR %i", error_code);
         lwpgerror("%s", msg);

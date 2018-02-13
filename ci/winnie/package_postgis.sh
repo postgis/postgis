@@ -13,12 +13,13 @@
 
 #export GCC_TYPE=
 export GEOS_VER=3.7.0dev
-export GDAL_VER=2.2.2
+export GDAL_VER=2.2.3
 export PROJ_VER=4.9.3
-export SFCGAL_VER=1.3
+export SFCGAL_VER=1.3.2
 export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
+export CGAL_VER=4.11
 
 if [[ "${GCC_TYPE}" == *gcc48* ]] ; then
 	export PROJECTS=/projects
@@ -144,7 +145,6 @@ fi;
 
 if [ -n "$SFCGAL_VER"  ]; then
 	## only copy cgal and sfcgal stuff if sfcgal is packaged
-	export CGAL_VER=4.6.1
 	export BOOST_VER=1.59.0
 	export BOOST_VER_WU=1_59_0
 	export GMP_VER=5.1.2

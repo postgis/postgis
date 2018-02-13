@@ -2,6 +2,7 @@
  * PostGIS Raster - Raster Types for PostGIS
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
+ * Copyright (C) 2018 Bborie Park <dustymugs@gmail.com>
  * Copyright (C) 2012 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  *
@@ -1252,6 +1253,42 @@ static void test_band_get_pixel_line() {
 	cu_free_raster(rast);
 }
 
+static void test_band_new_offline_from_path() {
+	rt_band band = NULL;
+	int width = 10;
+	int height = 10;
+	char *path = "../regress/loader/testraster.tif";
+	uint8_t extband = 0;
+
+	/* offline band */
+	band = rt_band_new_offline_from_path(
+		width, height,
+		0, 0,
+		2, path,
+		FALSE
+	);
+	CU_ASSERT(band != NULL);
+
+	/* isoffline */
+	CU_ASSERT(rt_band_is_offline(band));
+
+	/* ext path */
+	CU_ASSERT_STRING_EQUAL(rt_band_get_ext_path(band), path);
+
+	/* ext band number */
+	CU_ASSERT_EQUAL(rt_band_get_ext_band_num(band, &extband), ES_NONE);
+	CU_ASSERT_EQUAL(extband, 1);
+
+	/* test rt_band_check_is_nodata */
+	CU_ASSERT_EQUAL(rt_band_check_is_nodata(band), FALSE);
+
+	/* dimensions */
+	CU_ASSERT_EQUAL(rt_band_get_width(band), width);
+	CU_ASSERT_EQUAL(rt_band_get_height(band), height);
+
+	rt_band_destroy(band);
+}
+
 /* register tests */
 void band_basics_suite_setup(void);
 void band_basics_suite_setup(void)
@@ -1270,5 +1307,6 @@ void band_basics_suite_setup(void)
 	PG_ADD_TEST(suite, test_band_pixtype_32BF);
 	PG_ADD_TEST(suite, test_band_pixtype_64BF);
 	PG_ADD_TEST(suite, test_band_get_pixel_line);
+	PG_ADD_TEST(suite, test_band_new_offline_from_path);
 }
 
