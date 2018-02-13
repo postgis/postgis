@@ -953,13 +953,13 @@ Datum buffer(PG_FUNCTION_ARGS)
 				quadsegs = atoi(val);
 			}
 			else if ( !strcmp(key, "side") ||
-					  !strcmp(key, "side")    )
+					  !strcmp(key, "side") )
 			{
-				if ( !strcmp(val, "both") ) 
+				if ( !strcmp(val, "both") )
 				{
 					singleside = 0;
 				}
-				else if ( !strcmp(val, "left") ) 
+				else if ( !strcmp(val, "left") )
 				{
 					singleside = 1;
 				}
