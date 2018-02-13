@@ -2486,7 +2486,7 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 			default: /*always executed*/
 			for (j=0;j<=i;j++)
 				PG_FREE_IF_COPY(seri_geoms[j], j);
-
+			/*FALLTHROUGH*/
 			case 1:
 			lwpgerror("Empty geometry");
 			PG_RETURN_NULL() ;

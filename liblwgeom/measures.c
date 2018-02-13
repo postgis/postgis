@@ -392,6 +392,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS *
 					return lw_dist2d_point_curvepoly((LWPOINT *)lwg1, (LWCURVEPOLY *)lwg2, dl);
 				default:
 					lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+					return LW_FALSE;
 			}
 		}
 		case LINETYPE:
@@ -412,6 +413,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS *
 					return lw_dist2d_line_curvepoly((LWLINE *)lwg1, (LWCURVEPOLY *)lwg2, dl);
 				default:
 					lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+					return LW_FALSE;
 			}
 		}
 		case CIRCSTRINGTYPE:
@@ -433,6 +435,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS *
 					return lw_dist2d_circstring_curvepoly((LWCIRCSTRING *)lwg1, (LWCURVEPOLY *)lwg2, dl);
 				default:
 					lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+					return LW_FALSE;
 			}
 		}
 		case POLYGONTYPE:
@@ -454,6 +457,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS *
 					return lw_dist2d_poly_curvepoly((LWPOLY *)lwg1, (LWCURVEPOLY *)lwg2, dl);
 				default:
 					lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+					return LW_FALSE;
 			}
 		}
 		case CURVEPOLYTYPE:
@@ -474,16 +478,16 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS *
 					return lw_dist2d_curvepoly_curvepoly((LWCURVEPOLY *)lwg1, (LWCURVEPOLY *)lwg2, dl);
 				default:
 					lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+					return LW_FALSE;
 			}
 		}
 		default:
 		{
 			lwerror("Unsupported geometry type: %s", lwtype_name(t1));
+			return LW_FALSE;
 		}
 	}
 
-	/*You shouldn't being able to get here*/
-	lwerror("unspecified error in function lw_dist2d_distribute_bruteforce");
 	return LW_FALSE;
 }
 

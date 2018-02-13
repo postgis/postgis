@@ -27,7 +27,7 @@ int wkt_yydebug = 0;
 * from WKT_ERROR in the grammar, but we keep this one 
 * around just in case.
 */
-void wkt_yyerror(const char *str)
+void wkt_yyerror(__attribute__((__unused__)) const char *str)
 {
 	/* If we haven't already set a message and location, let's set one now. */
 	if ( ! global_parser_result.message ) 

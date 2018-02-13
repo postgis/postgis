@@ -59,8 +59,8 @@ geom4d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 }
 
 Datum
-gidx_brin_inclusion_add_value(BrinDesc *bdesc, BrinValues *column, Datum newval,
-		bool isnull, int max_dims)
+gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
+		BrinValues *column, Datum newval, bool isnull, int max_dims)
 {
 	char gboxmem[GIDX_MAX_SIZE];
 	GIDX *gidx_geom, *gidx_key;
