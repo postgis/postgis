@@ -179,7 +179,7 @@ Datum pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, FunctionCallInfo fcinf
 ** using the PostgreSQL built-in function makeMdArrayResult
 */
 Datum
-pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, FunctionCallInfo fcinfo)
+pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, __attribute__((__unused__)) FunctionCallInfo fcinfo)
 {
 	int dims[1];
 	int lbs[1];

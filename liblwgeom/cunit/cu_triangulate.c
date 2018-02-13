@@ -87,7 +87,7 @@ static void test_lwgeom_voronoi_diagram_custom_envelope(void)
 static void assert_empty_diagram(char* wkt, double tolerance)
 {
 	LWGEOM* in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
-	LWGEOM* out = lwgeom_voronoi_diagram(in, NULL, 0, 0);
+	LWGEOM* out = lwgeom_voronoi_diagram(in, NULL, tolerance, 0);
 
 	CU_ASSERT_TRUE(lwgeom_is_collection(out));
 	CU_ASSERT_EQUAL(COLLECTIONTYPE, lwgeom_get_type(out));

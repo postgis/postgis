@@ -180,7 +180,7 @@ lwmline_locate_along(const LWMLINE *lwmline, double m, double offset)
 }
 
 static LWMPOINT*
-lwpoint_locate_along(const LWPOINT *lwpoint, double m, double offset)
+lwpoint_locate_along(const LWPOINT *lwpoint, double m, __attribute__((__unused__)) double offset)
 {
 	double point_m = lwpoint_get_m(lwpoint);
 	LWGEOM *lwg = lwpoint_as_lwgeom(lwpoint);
@@ -193,7 +193,7 @@ lwpoint_locate_along(const LWPOINT *lwpoint, double m, double offset)
 }
 
 static LWMPOINT*
-lwmpoint_locate_along(const LWMPOINT *lwin, double m, double offset)
+lwmpoint_locate_along(const LWMPOINT *lwin, double m, __attribute__((__unused__)) double offset)
 {
 	LWGEOM *lwg = lwmpoint_as_lwgeom(lwin);
 	LWMPOINT *lwout = NULL;

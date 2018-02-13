@@ -6329,7 +6329,7 @@ _lwt_EdgeRingIterator_begin(LWT_EDGERING *er)
 #define LWT_HOLES_FACE_PLACEHOLDER INT32_MIN
 
 static int
-_lwt_FetchNextUnvisitedEdge(LWT_TOPOLOGY *topo, LWT_ISO_EDGE_TABLE *etab, int from)
+_lwt_FetchNextUnvisitedEdge(__attribute__((__unused__)) LWT_TOPOLOGY *topo, LWT_ISO_EDGE_TABLE *etab, int from)
 {
   while (
     from < etab->size &&
@@ -6458,7 +6458,7 @@ _lwt_UpdateEdgeRingSideFace(LWT_TOPOLOGY *topo, LWT_EDGERING *ring,
  * @param side 1 for left side, -1 for right side
  */
 static LWT_EDGERING *
-_lwt_BuildEdgeRing(LWT_TOPOLOGY *topo, LWT_ISO_EDGE_TABLE *edges,
+_lwt_BuildEdgeRing(__attribute__((__unused__)) LWT_TOPOLOGY *topo, LWT_ISO_EDGE_TABLE *edges,
                    LWT_ISO_EDGE *edge, int side)
 {
   LWT_EDGERING *ring;

@@ -568,11 +568,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 	int j = 0;
 
 	GDALDatasetH hdsOut;
-	GDALRasterBandH hbandOut;
-	GDALDataType gdpixtype;
 
-	rt_pixtype pt = PT_END;
-	double gt[6] = {0.};
 	double ogt[6] = {0.};
 	rt_raster _rast = NULL;
 	int aligned = 0;
@@ -586,7 +582,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 		raster = rt_raster_deserialize(pgraster, FALSE);
 		if (!raster) {
 			PG_FREE_IF_COPY(pgraster, 0);
-			elog(ERROR, "RASTER_addBandOutDB: Could not deserialize destination raster");
+			elog(ERROR, "RASTER_addBandOutDB: Cannot deserialize destination raster");
 			PG_RETURN_NULL();
 		}
 
@@ -661,7 +657,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 				rt_raster_destroy(raster);
 				PG_FREE_IF_COPY(pgraster, 0);
 			}
-			elog(ERROR, "RASTER_addBandOutDB: Could not allocate memory for band indexes");
+			elog(ERROR, "RASTER_addBandOutDB: Cannot allocate memory for band indexes");
 			PG_RETURN_NULL();
 		}
 
@@ -686,7 +682,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 					rt_raster_destroy(raster);
 					PG_FREE_IF_COPY(pgraster, 0);
 				}
-				elog(ERROR, "RASTER_addBandOutDB: Could not reallocate memory for band indexes");
+				elog(ERROR, "RASTER_addBandOutDB: Cannot reallocate memory for band indexes");
 				PG_RETURN_NULL();
 			}
 
@@ -731,7 +727,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 		}
-		elog(ERROR, "RASTER_addBandOutDB: Could not open out-db file with GDAL");
+		elog(ERROR, "RASTER_addBandOutDB: Cannot open out-db file with GDAL");
 		PG_RETURN_NULL();
 	}
 
@@ -749,11 +745,10 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 	if (raster == NULL) {
 		raster = rt_raster_new(GDALGetRasterXSize(hdsOut), GDALGetRasterYSize(hdsOut));
 		if (rt_raster_is_empty(raster)) {
-			elog(ERROR, "RASTER_addBandOutDB: Could not create new raster");
+			elog(ERROR, "RASTER_addBandOutDB: Cannot create new raster");
 			PG_RETURN_NULL();
 		}
 		rt_raster_set_geotransform_matrix(raster, ogt);
-		rt_raster_get_geotransform_matrix(raster, gt);
 
 		if (rt_util_gdal_sr_auth_info(hdsOut, &authname, &authcode) == ES_NONE) {
 			if (
@@ -767,7 +762,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 				elog(INFO, "Unknown SRS auth name and code from out-db file. Defaulting SRID of new raster to %d", SRID_UNKNOWN);
 		}
 		else
-			elog(INFO, "Could not get SRS auth name and code from out-db file. Defaulting SRID of new raster to %d", SRID_UNKNOWN);
+			elog(INFO, "Cannot get SRS auth name and code from out-db file. Defaulting SRID of new raster to %d", SRID_UNKNOWN);
 	}
 
 	/* some raster info */
@@ -787,101 +782,59 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 			rt_raster_destroy(raster);
 		if (pgraster != NULL)
 			PG_FREE_IF_COPY(pgraster, 0);
-		elog(ERROR, "RASTER_addBandOutDB: Could not test alignment of out-db file");
+		elog(ERROR, "RASTER_addBandOutDB: Cannot test alignment of out-db file");
 		return ES_ERROR;
 	}
 	else if (!aligned)
 		elog(WARNING, "The in-db representation of the out-db raster is not aligned. Band data may be incorrect");
 
-	numbands = GDALGetRasterCount(hdsOut);
-
 	/* build up srcnband */
 	if (allbands) {
-		numsrcnband = numbands;
+		numsrcnband = GDALGetRasterCount(hdsOut);
+		GDALClose(hdsOut);
+
 		srcnband = palloc(sizeof(int) * numsrcnband);
 		if (srcnband == NULL) {
-			GDALClose(hdsOut);
 			if (raster != NULL)
 				rt_raster_destroy(raster);
 			if (pgraster != NULL)
 				PG_FREE_IF_COPY(pgraster, 0);
-			elog(ERROR, "RASTER_addBandOutDB: Could not allocate memory for band indexes");
+			elog(ERROR, "RASTER_addBandOutDB: Cannot allocate memory for band indexes");
 			PG_RETURN_NULL();
 		}
 
 		for (i = 0, j = 1; i < numsrcnband; i++, j++)
 			srcnband[i] = j;
 	}
+	else
+		GDALClose(hdsOut);
 
-	/* check band properties and add band */
+	/* add band */
 	for (i = 0, j = dstnband - 1; i < numsrcnband; i++, j++) {
-		/* valid index? */
-		if (srcnband[i] < 1 || srcnband[i] > numbands) {
-			elog(NOTICE, "Out-db file does not have a band at index %d. Returning original raster", srcnband[i]);
-			GDALClose(hdsOut);
-			if (raster != NULL)
-				rt_raster_destroy(raster);
-			if (pgraster != NULL)
-				PG_RETURN_POINTER(pgraster);
-			else
-				PG_RETURN_NULL();
-		}
 
-		/* get outdb band */
-		hbandOut = NULL;
-		hbandOut = GDALGetRasterBand(hdsOut, srcnband[i]);
-		if (NULL == hbandOut) {
-			GDALClose(hdsOut);
-			if (raster != NULL)
-				rt_raster_destroy(raster);
-			if (pgraster != NULL)
-				PG_FREE_IF_COPY(pgraster, 0);
-			elog(ERROR, "RASTER_addBandOutDB: Could not get band %d from GDAL dataset", srcnband[i]);
-			PG_RETURN_NULL();
-		}
-
-		/* supported pixel type */
-		gdpixtype = GDALGetRasterDataType(hbandOut);
-		pt = rt_util_gdal_datatype_to_pixtype(gdpixtype);
-		if (pt == PT_END) {
-			elog(NOTICE, "Pixel type %s of band %d from GDAL dataset is not supported. Returning original raster", GDALGetDataTypeName(gdpixtype), srcnband[i]);
-			GDALClose(hdsOut);
-			if (raster != NULL)
-				rt_raster_destroy(raster);
-			if (pgraster != NULL)
-				PG_RETURN_POINTER(pgraster);
-			else
-				PG_RETURN_NULL();
-		}
-
-		/* use out-db band's nodata value if nodataval not already set */
-		if (!hasnodata)
-			nodataval = GDALGetRasterNoDataValue(hbandOut, &hasnodata);
-
-		/* add band */
-		band = rt_band_new_offline(
+		/* create band with path */
+		band = rt_band_new_offline_from_path(
 			width, height,
-			pt,
 			hasnodata, nodataval,
-			srcnband[i] - 1, outdbfile
+			srcnband[i], outdbfile,
+			FALSE
 		);
 		if (band == NULL) {
-			GDALClose(hdsOut);
 			if (raster != NULL)
 				rt_raster_destroy(raster);
 			if (pgraster != NULL)
 				PG_FREE_IF_COPY(pgraster, 0);
-			elog(ERROR, "RASTER_addBandOutDB: Could not create new out-db band");
+			elog(ERROR, "RASTER_addBandOutDB: Cannot create new out-db band");
 			PG_RETURN_NULL();
 		}
 
+		/* add band */
 		if (rt_raster_add_band(raster, band, j) < 0) {
-			GDALClose(hdsOut);
 			if (raster != NULL)
 				rt_raster_destroy(raster);
 			if (pgraster != NULL)
 				PG_FREE_IF_COPY(pgraster, 0);
-			elog(ERROR, "RASTER_addBandOutDB: Could not add new out-db band to raster");
+			elog(ERROR, "RASTER_addBandOutDB: Cannot add new out-db band to raster");
 			PG_RETURN_NULL();
 		}
 	}

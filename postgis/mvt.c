@@ -103,8 +103,8 @@ static inline uint32_t p_int(int32_t value)
 	return (value << 1) ^ (value >> 31);
 }
 
-static uint32_t encode_ptarray(mvt_agg_context *ctx, enum mvt_type type,
-			       POINTARRAY *pa, uint32_t *buffer,
+static uint32_t encode_ptarray(__attribute__((__unused__)) mvt_agg_context *ctx,
+			       enum mvt_type type, POINTARRAY *pa, uint32_t *buffer,
 			       int32_t *px, int32_t *py)
 {
 	uint32_t offset = 0;
@@ -921,12 +921,12 @@ bytea * mvt_ctx_serialize(mvt_agg_context *ctx)
 	return mvt_ctx_to_bytea(ctx);
 }
 
-static void * mvt_allocator(void *data, size_t size)
+static void * mvt_allocator(__attribute__((__unused__)) void *data, size_t size)
 {
 	return palloc(size);
 }
 
-static void mvt_deallocator(void *data, void *ptr)
+static void mvt_deallocator(__attribute__((__unused__)) void *data, void *ptr)
 {
 	return pfree(ptr);
 }

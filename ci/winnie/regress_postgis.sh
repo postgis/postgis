@@ -16,7 +16,7 @@ set -e
 #export PCRE_VER=8.33
 #export PROTOBUF_VER=3.2.0
 #export PROTOBUFC_VER=1.2.1
-#export CGAL_VER=4.11
+export CGAL_VER=4.11
 
 export PROJECTS=/projects
 export MINGPROJECTS=/projects
@@ -94,7 +94,7 @@ fi
 
 if [ -n "$SFCGAL_VER" ]; then
 	##hard code versions of cgal etc. for now
-	#export CGAL_VER=4.11
+	export CGAL_VER=4.11
 	BOOST_VER=1.53.0
 	#BOOST_VER_WU=1_49_0
 	export BOOST_VER_WU=1_53_0
