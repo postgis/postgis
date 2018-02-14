@@ -2166,6 +2166,8 @@ extern uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, int8_t preci
 
 extern uint8_t* lwgeom_to_twkb_with_idlist(const LWGEOM *geom, int64_t *idlist, uint8_t variant, int8_t precision_xy, int8_t precision_z, int8_t precision_m, size_t *twkb_size);
 
+extern void lwgeom_trim_bits_in_place(LWGEOM *geom, int digits_precision);
+
 /*******************************************************************************
  * SQLMM internal functions
  ******************************************************************************/

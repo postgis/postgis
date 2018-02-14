@@ -2395,3 +2395,46 @@ lwgeom_is_trajectory(const LWGEOM *geom)
 	return lwline_is_trajectory((LWLINE*)geom);
 }
 
+static int
+bits_for_precision(int digits_precision)
+{
+	if (digits_precision < 1)
+		lwerror("Must have at least one digit of precision");
+	
+	if (digits_precision > 15) {
+		lwerror("Can't request more than 15 digits of precision");
+	}
+	
+	return (int) ceil(digits_precision / log10(2));
+}
+
+static inline
+double mask_double(double d, int64_t mask)
+{
+	int64_t* double_bits = (int64_t*) (&d);
+	
+	(*double_bits) &= mask;
+	
+	return *((double*) double_bits);
+}
+
+void lwgeom_trim_bits_in_place(LWGEOM* geom, int digits_precision)
+{
+	LWPOINTITERATOR* it = lwpointiterator_create_rw(geom);
+	int bits_to_keep = bits_for_precision(digits_precision);
+	int64_t mask = 0xffffffffffffffff << (52 - bits_to_keep);
+	POINT4D p;
+	
+	while (lwpointiterator_has_next(it)) {
+		lwpointiterator_peek(it, &p);
+		p.x = mask_double(p.x, mask);
+		p.y = mask_double(p.y, mask);
+		if (lwgeom_has_z(geom))
+			p.z = mask_double(p.z, mask);
+		if (lwgeom_has_m(geom))
+			p.m = mask_double(p.m, mask);
+		lwpointiterator_modify_next(it, &p);
+	}
+	
+	lwpointiterator_destroy(it);
+}

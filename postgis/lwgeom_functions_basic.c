@@ -57,6 +57,7 @@ Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS);
+Datum postgis_optimize_geometry(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
@@ -2981,4 +2982,24 @@ Datum ST_Points(PG_FUNCTION_ARGS)
 		lwmpoint_free(result);
 		PG_RETURN_POINTER(ret);
 	}
+}
+
+PG_FUNCTION_INFO_V1(postgis_optimize_geometry);
+Datum postgis_optimize_geometry(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED* input;
+	GSERIALIZED* result;
+	LWGEOM* g;
+	int digits_precision;
+	
+	input = PG_GETARG_GSERIALIZED_P_COPY(0);
+	digits_precision = PG_GETARG_INT32(1);
+	g = lwgeom_from_gserialized(input);
+	
+	lwgeom_trim_bits_in_place(g, digits_precision);
+	
+	result = geometry_serialize(g);
+	lwgeom_free(g);
+	PG_FREE_IF_COPY(input, 0);
+	PG_RETURN_POINTER(result);
 }

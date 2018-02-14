@@ -1099,6 +1099,13 @@ CREATE OR REPLACE FUNCTION postgis_hasbbox(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_hasBBOX'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION postgis_optimize_geometry(g geometry, digits_precision int)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'postgis_optimize_geometry'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 10;
+
 ------------------------------------------------------------------------
 -- DEBUG
 ------------------------------------------------------------------------
@@ -6062,5 +6069,7 @@ CREATE OR REPLACE FUNCTION ST_Angle(line1 geometry, line2 geometry)
 GRANT SELECT ON TABLE geography_columns TO public;
 GRANT SELECT ON TABLE geometry_columns TO public;
 GRANT SELECT ON TABLE spatial_ref_sys TO public;
+
+
 
 COMMIT;
