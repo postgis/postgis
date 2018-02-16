@@ -43,6 +43,7 @@ LWGEOM* lwline_unstroke(const LWLINE *line);
 LWGEOM* lwpolygon_unstroke(const LWPOLY *poly);
 LWGEOM* lwmline_unstroke(const LWMLINE *mline);
 LWGEOM* lwmpolygon_unstroke(const LWMPOLY *mpoly);
+LWGEOM* lwcollection_unstroke(const LWCOLLECTION *c);
 LWGEOM* lwgeom_unstroke(const LWGEOM *geom);
 
 
@@ -1083,6 +1084,34 @@ lwmpolygon_unstroke(const LWMPOLY *mpoly)
 }
 
 LWGEOM *
+lwcollection_unstroke(const LWCOLLECTION *c)
+{
+	LWCOLLECTION *ret = lwalloc(sizeof(LWCOLLECTION));
+	memcpy(ret, c, sizeof(LWCOLLECTION));
+
+	if (c->ngeoms > 0)
+	{
+		uint32_t i;
+		ret->geoms = lwalloc(sizeof(LWGEOM *)*c->ngeoms);
+		for (i=0; i < c->ngeoms; i++)
+		{
+			ret->geoms[i] = lwgeom_unstroke(c->geoms[i]);
+		}
+		if (c->bbox)
+		{
+			ret->bbox = gbox_copy(c->bbox);
+		}
+	}
+	else
+	{
+		ret->bbox = NULL;
+		ret->geoms = NULL;
+	}
+	return (LWGEOM *)ret;
+}
+
+
+LWGEOM *
 lwgeom_unstroke(const LWGEOM *geom)
 {
 	LWDEBUG(2, "lwgeom_unstroke called.");
@@ -1097,6 +1126,8 @@ lwgeom_unstroke(const LWGEOM *geom)
 		return lwmline_unstroke((LWMLINE *)geom);
 	case MULTIPOLYGONTYPE:
 		return lwmpolygon_unstroke((LWMPOLY *)geom);
+	case COLLECTIONTYPE:
+		return lwcollection_unstroke((LWCOLLECTION *)geom);
 	default:
 		return lwgeom_clone_deep(geom);
 	}

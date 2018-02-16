@@ -474,6 +474,17 @@ static void test_ptarray_unstroke()
 	lwgeom_free(out);
 	lwfree(str);
 
+	in = lwgeom_from_text("GEOMETRYCOLLECTION(LINESTRING(4 4,4 8),CIRCULARSTRING(4 8,6 10,8 8),LINESTRING(8 8,8 4))");
+	out = lwgeom_stroke(in,8);
+	lwgeom_free(in);
+	in = out;
+	out = lwgeom_unstroke(in);
+	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
+	// printf("%s\n", str);
+	ASSERT_STRING_EQUAL(str, "GEOMETRYCOLLECTION(LINESTRING(4 4,4 8),CIRCULARSTRING(4 8,6 10,8 8),LINESTRING(8 8,8 4))");
+	lwgeom_free(in);
+	lwgeom_free(out);
+	lwfree(str);
 }
 
 static void test_ptarray_contains_point()
