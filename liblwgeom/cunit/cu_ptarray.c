@@ -463,6 +463,17 @@ static void test_ptarray_unstroke()
 	lwgeom_free(out);
 	lwfree(str);
 
+	in = lwgeom_from_text("GEOMETRYCOLLECTION(LINESTRING(10 10,10 11),LINESTRING(10 11,11 11),LINESTRING(11 11,10 10))");
+	out = lwgeom_stroke(in,8);
+	lwgeom_free(in);
+	in = out;
+	out = lwgeom_unstroke(in);
+	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
+	ASSERT_STRING_EQUAL(str, "GEOMETRYCOLLECTION(LINESTRING(10 10,10 11),LINESTRING(10 11,11 11),LINESTRING(11 11,10 10))");
+	lwgeom_free(in);
+	lwgeom_free(out);
+	lwfree(str);
+
 }
 
 static void test_ptarray_contains_point()
