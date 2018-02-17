@@ -130,7 +130,7 @@ lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 int
 point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj)
 {
-	int* pj_errno_ref;
+
 	POINT4D orig_pt;
 
 	/* Make a copy of the input point so we can report the original should an error occur */
@@ -142,25 +142,25 @@ point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj)
 
 	LWDEBUGF(4, "transforming POINT(%f %f) from '%s' to '%s'", orig_pt.x, orig_pt.y, pj_get_def(srcpj,0), pj_get_def(dstpj,0));
 
-	/* Perform the transform */
-	pj_transform(srcpj, dstpj, 1, 0, &(pt->x), &(pt->y), &(pt->z));
-
-	/* For NAD grid-shift errors, display an error message with an additional hint */
-	pj_errno_ref = pj_get_errno_ref();
-
-	if (*pj_errno_ref != 0)
+	if (pj_transform(srcpj, dstpj, 1, 0, &(pt->x), &(pt->y), &(pt->z)) != 0)
 	{
-		if (*pj_errno_ref == -38)
+		int* pj_errno_ref = pj_get_errno_ref();
+		int pj_errno_val = *pj_errno_ref;
+
+		/* Force a reset of pj_errno to avoid future errors */
+		*pj_errno_ref = 0;
+
+		if (pj_errno_val == -38)
 		{
 			lwnotice("PostGIS was unable to transform the point because either no grid shift files were found, or the point does not lie within the range for which the grid shift is defined. Refer to the ST_Transform() section of the PostGIS manual for details on how to configure PostGIS to alter this behaviour.");
 			lwerror("transform: couldn't project point (%g %g %g): %s (%d)",
-			        orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(*pj_errno_ref), *pj_errno_ref);
+			        orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(pj_errno_val), pj_errno_val);
 			return 0;
 		}
 		else
 		{
 			lwerror("transform: couldn't project point (%g %g %g): %s (%d)",
-			        orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(*pj_errno_ref), *pj_errno_ref);
+			        orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(pj_errno_val), pj_errno_val);
 			return 0;
 		}
 	}
