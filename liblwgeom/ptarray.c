@@ -653,7 +653,7 @@ ptarray_clone(const POINTARRAY *in)
 {
 	POINTARRAY *out = lwalloc(sizeof(POINTARRAY));
 
-	LWDEBUG(3, "ptarray_clone_deep called.");
+	LWDEBUG(3, "ptarray_clone called.");
 
 	out->flags = in->flags;
 	out->npoints = in->npoints;
