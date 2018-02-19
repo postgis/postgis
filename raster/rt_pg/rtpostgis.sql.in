@@ -79,11 +79,15 @@ $$ LANGUAGE 'plpgsql';
 -- RASTER Type
 ------------------------------------------------------------------------------
 
+-- part of Raster type
+-- expects input to be Hex WKB
 CREATE OR REPLACE FUNCTION raster_in(cstring)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_in'
     LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
+-- part of Raster type
+-- expects output to be Hex WKB
 CREATE OR REPLACE FUNCTION raster_out(raster)
     RETURNS cstring
     AS 'MODULE_PATHNAME','RASTER_out'
@@ -156,6 +160,7 @@ CREATE OR REPLACE FUNCTION st_envelope(raster)
 
 -- Availability: 2.0.0
 -- Changed: 2.1.4 raised cost
+-- used to cast raster -> geometry
 CREATE OR REPLACE FUNCTION st_convexhull(raster)
     RETURNS geometry
     AS 'MODULE_PATHNAME','RASTER_convex_hull'
@@ -170,6 +175,7 @@ CREATE OR REPLACE FUNCTION st_minconvexhull(
 	AS 'MODULE_PATHNAME','RASTER_convex_hull'
 	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
+-- used to cast raster -> box3d
 CREATE OR REPLACE FUNCTION box3d(raster)
     RETURNS box3d
     AS 'select box3d( @extschema@.ST_convexhull($1))'
@@ -5836,14 +5842,49 @@ CREATE OR REPLACE FUNCTION st_minpossiblevalue(pixeltype text)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------
+-- Raster Inputs
+-----------------------------------------------------------------------
+
+-- expects input to be WKB
+CREATE OR REPLACE FUNCTION st_rastfromwkb(bytea)
+    RETURNS raster
+    AS 'MODULE_PATHNAME', 'RASTER_fromWKB'
+    LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- expectes input to be Hex WKB
+CREATE OR REPLACE FUNCTION st_rastfromhexwkb(text)
+    RETURNS raster
+    AS 'MODULE_PATHNAME', 'RASTER_fromHexWKB'
+    LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-----------------------------------------------------------------------
 -- Raster Outputs
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION st_asbinary(raster, outasin boolean DEFAULT FALSE)
+-- Availability: 2.5.0
+-- expects output to be WKB
+-- ST_AsWKB() is functionally identitical to bytea()
+-- kept separate as bytea(raster) is for casting 
+CREATE OR REPLACE FUNCTION st_aswkb(raster, outasin boolean DEFAULT FALSE)
     RETURNS bytea
-    AS 'MODULE_PATHNAME', 'RASTER_to_binary'
+    AS 'MODULE_PATHNAME', 'RASTER_asWKB'
     LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
+-- Changed: 2.5.0 change logic to use ST_AsWKB. Deprecate in 2.6.0
+-- expects output to be WKB
+CREATE OR REPLACE FUNCTION st_asbinary(raster, outasin boolean DEFAULT FALSE)
+    RETURNS bytea
+		AS $$ SELECT @extschema@.ST_AsWKB($1, $2) $$
+    LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 2.5.0
+-- expect output to be Hex WKB
+CREATE OR REPLACE FUNCTION st_ashexwkb(raster, outasin boolean DEFAULT FALSE)
+    RETURNS text
+    AS 'MODULE_PATHNAME', 'RASTER_asHexWKB'
+    LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- used to cast raster -> bytea
 CREATE OR REPLACE FUNCTION bytea(raster)
     RETURNS bytea
     AS 'MODULE_PATHNAME', 'RASTER_to_bytea'
