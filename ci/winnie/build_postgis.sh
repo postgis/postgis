@@ -12,15 +12,16 @@ set -e
 #POSTGIS_MINOR_VERSION=1
 #POSTGIS_MICRO_VERSION=0SVN
 #export GCC_TYPE=gcc48  #for pre-4.8.0 compiles this is blank
-#export JSON_VER=0.9
-#export SFCGAL_VER=1.3
-#export PROJ_VER=4.8.0
+export SFCGAL_VER=1.3.2
+export GEOS_VER=3.7.0dev
+export GDAL_VER=2.2.3
+export PROJ_VER=4.9.3
+export SFCGAL_VER=1.3.2
+export PCRE_VER=8.33
+export PROTOBUF_VER=3.2.0
+export PROTOBUFC_VER=1.2.1
+export CGAL_VER=4.11
 
-#export GEOS_VER=3.7.0dev
-#export GDAL_VER=2.2.3
-#export PROJ_VER=4.9.3
-
-bash lib_envs.sh
 
 export LIBXML_VER=2.7.8
 
