@@ -45,6 +45,7 @@
 #include <string.h>
 
 #include "postgres.h"
+#include "utils/builtins.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
@@ -86,7 +87,7 @@ Datum geom_from_kml(PG_FUNCTION_ARGS)
 	/* Get the KML stream */
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 	xml_input = PG_GETARG_TEXT_P(0);
-	xml = text2cstring(xml_input);
+	xml = text_to_cstring(xml_input);
 	xml_size = VARSIZE(xml_input) - VARHDRSZ;
 
 	/* Begin to Parse XML doc */
