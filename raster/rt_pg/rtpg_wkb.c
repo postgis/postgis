@@ -33,7 +33,6 @@
 #include <utils/builtins.h> /*  for cstring_to_text */
 
 #include "rtpostgis.h"
-#include "lwgeom_pg.h"
 
 Datum RASTER_asWKB(PG_FUNCTION_ARGS);
 Datum RASTER_asHexWKB(PG_FUNCTION_ARGS);
@@ -184,7 +183,7 @@ Datum RASTER_fromHexWKB(PG_FUNCTION_ARGS)
 
 	POSTGIS_RT_DEBUG(3, "Starting");
 
-	hexwkb = text2cstring(hexwkb_text);
+	hexwkb = text_to_cstring(hexwkb_text);
 
 	raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
 	PG_FREE_IF_COPY(hexwkb_text, 0);
