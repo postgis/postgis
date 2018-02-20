@@ -8300,11 +8300,122 @@ SELECT rid, ST_ValueCount(rast,2,100) As count
 		</refentry>
 	</sect1>
 
+	<sect1 id="Raster_Inputs">
+		<title>Raster Inputs</title>
+		<refentry id="RT_ST_RastFromWKB">
+			<refnamediv>
+				<refname>ST_RastFromWKB</refname>
+				<refpurpose>Return a raster value from a Well-Known Binary (WKB) raster.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>raster <function>ST_RastFromWKB</function></funcdef>
+						<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Given a Well-Known Binary (WKB) raster, return a raster.
+				</para>
+
+				<para>Availability: 2.5.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+
+				<programlisting>
+SELECT (ST_Metadata(
+	ST_RastFromWKB(
+		'\001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000'::bytea
+	)
+)).* AS metadata;
+
+ upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands 
+------------+------------+-------+--------+--------+--------+-------+-------+------+----------
+        0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |     0 |   10 |        0
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MetaData" />, 
+					<xref linkend="RT_ST_RastFromHexWKB" />, 
+					<xref linkend="RT_ST_AsBinary" />, 
+					<xref linkend="RT_ST_AsHexWKB" />
+				</para>
+			</refsection>
+		</refentry>
+
+		<refentry id="RT_ST_RastFromHexWKB">
+			<refnamediv>
+				<refname>ST_RastFromHexWKB</refname>
+				<refpurpose>Return a raster value from a Hex representation of Well-Known Binary (WKB) raster.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>raster <function>ST_RastFromHexWKB</function></funcdef>
+						<paramdef><type>text </type> <parameter>wkb</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Given a Well-Known Binary (WKB) raster in Hex representation, return a raster.
+				</para>
+
+				<para>Availability: 2.5.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+
+				<programlisting>
+SELECT (ST_Metadata(
+	ST_RastFromHexWKB(
+		'010000000000000000000000400000000000000840000000000000E03F000000000000E03F000000000000000000000000000000000A0000000A001400'
+	)
+)).* AS metadata;
+
+ upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands 
+------------+------------+-------+--------+--------+--------+-------+-------+------+----------
+        0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |     0 |   10 |        0
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MetaData" />, 
+					<xref linkend="RT_ST_RastFromWKB" />, 
+					<xref linkend="RT_ST_AsBinary" />, 
+					<xref linkend="RT_ST_AsHexWKB" />
+				</para>
+			</refsection>
+		</refentry>
+
+	</sect1>
+
 	<sect1 id="Raster_Outputs">
 		<title>Raster Outputs</title>
+
 		<refentry id="RT_ST_AsBinary">
 			<refnamediv>
-				<refname>ST_AsBinary</refname>
+				<refname>ST_AsBinary/ST_AsWKB</refname>
 				<refpurpose>Return the Well-Known Binary (WKB) representation of the raster.</refpurpose>
 			</refnamediv>
 
@@ -8312,6 +8423,11 @@ SELECT rid, ST_ValueCount(rast,2,100) As count
 				<funcsynopsis>
 				  <funcprototype>
 						<funcdef>bytea <function>ST_AsBinary</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>outasin=FALSE</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+						<funcdef>bytea <function>ST_AsWKB</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef choice="opt"><type>boolean </type> <parameter>outasin=FALSE</parameter></paramdef>
 				  </funcprototype>
@@ -8336,6 +8452,7 @@ SELECT rid, ST_ValueCount(rast,2,100) As count
 				</note>
 
 				<para>Enhanced: 2.1.0 Addition of <varname>outasin</varname></para>
+				<para>Enhanced: 2.5.0 Addition of <varname>ST_AsWKB</varname></para>
 			</refsection>
 
 				<refsection>
@@ -8346,12 +8463,73 @@ SELECT ST_AsBinary(rast) As rastbin FROM dummy_rast WHERE rid=1;
 
 					 rastbin
 ---------------------------------------------------------------------------------
-\001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\
-000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\00
-0\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000
+\001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000
 				</programlisting>
 
 			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_RastFromWKB" />, 
+					<xref linkend="RT_ST_AsHexWKB" />
+				</para>
+			</refsection>
+		</refentry>
+
+		<refentry id="RT_ST_AsHexWKB">
+			<refnamediv>
+				<refname>ST_AsHexWKB</refname>
+				<refpurpose>Return the Well-Known Binary (WKB) in Hex representation of the raster.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>bytea <function>ST_AsHexWKB</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>outasin=FALSE</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Returns the Binary representation in Hex representation of the raster. If <varname>outasin</varname> is TRUE, out-db bands are treated as in-db.
+					Refer to raster/doc/RFC2-WellKnownBinaryFormat located in the PostGIS source folder for details of the representation.
+				</para>
+
+				<note>
+					<para>
+						By default, Hex WKB output contains the external file path for out-db bands. If the client does not have access to the raster file underlying an out-db band, set <varname>outasin</varname> to TRUE.</para>
+				</note>
+
+				<para>Availability: 2.5.0 </para>
+			</refsection>
+
+				<refsection>
+					<title>Examples</title>
+
+					<programlisting>
+SELECT ST_AsHexWKB(rast) As rastbin FROM dummy_rast WHERE rid=1;
+
+                                                        st_ashexwkb                                                         
+----------------------------------------------------------------------------------------------------------------------------
+ 010000000000000000000000400000000000000840000000000000E03F000000000000E03F000000000000000000000000000000000A0000000A001400
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_RastFromHexWKB" />, 
+					<xref linkend="RT_ST_AsBinary" />
+				</para>
+			</refsection>
+
 		</refentry>
 
 		<refentry id="RT_ST_AsGDALRaster">

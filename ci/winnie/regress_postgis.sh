@@ -1,27 +1,18 @@
 #!/bin/bash
 set -e
-#winnie passed in variables
-#export OS_BUILD=64
-#export GCC_TYPE=gcc48
-#export PG_VER=9.3
-#export PROJ_VER=4.8.0
-#export PROJSO=libproj-0.dll
-#export POSTGIS_MAJOR_VERSION=2
-#export POSTGIS_MINOR_VERSION=2
-#export POSTGIS_MICRO_VERSION=0dev
-#export GEOS_VER=3.7.0dev
-#export GDAL_VER=2.2.2
-#export PROJ_VER=4.9.3
-#export SFCGAL_VER=1.3
-#export PCRE_VER=8.33
-#export PROTOBUF_VER=3.2.0
-#export PROTOBUFC_VER=1.2.1
+export SFCGAL_VER=1.3.2
+export GEOS_VER=3.7.0dev
+export GDAL_VER=2.2.3
+export PROJ_VER=4.9.3
+export SFCGAL_VER=1.3.2
+export PCRE_VER=8.33
+export PROTOBUF_VER=3.2.0
+export PROTOBUFC_VER=1.2.1
 export CGAL_VER=4.11
 
 export PROJECTS=/projects
 export MINGPROJECTS=/projects
 export PATHOLD=$PATH
-
 
 
 if [ "$OS_BUILD" == "64" ] ; then
