@@ -1085,20 +1085,26 @@ lwgeom_clip_by_rect(const LWGEOM* geom1, double x1, double y1, double x2, double
 
 	result = lwgeom_intersection(geom1, (LWGEOM*)lwpoly_construct_envelope(geom1->srid, x1, y1, x2, y2));
 
+	if (!result) return NULL;
+
 	/* clipping should not produce lower dimension objects */
 	if (
-		/* input has exact dimensionality */
-		geom1->type != COLLECTIONTYPE && lwgeom_is_collection(geom1) &&
-		/* output may have different things inside */
-		result->type == COLLECTIONTYPE
-	)
+	    /* input has exact dimensionality, isn't a generic collection */
+	    geom1->type != COLLECTIONTYPE &&
+	    /* output may have different things inside */
+	    result->type == COLLECTIONTYPE)
 	{
-		tmp = lwcollection_as_lwgeom(lwcollection_extract(lwgeom_as_lwcollection(result), lwgeom_dimension(geom1)));
+		tmp = lwcollection_as_lwgeom(
+		    lwcollection_extract(lwgeom_as_lwcollection(result), lwgeom_dimension(geom1) + 1));
 		lwfree(result);
 		result = tmp;
+		if (!result) return NULL;
 	}
-	return result;
 
+	/* clean up stray points on geometry boundary */
+	lwgeom_simplify_in_place(result, 0.0, LW_TRUE);
+
+	return result;
 
 #if 0 /* POSTGIS_GEOS_VERSION >= 35, enable only after bugs in geos are fixed */
 	GEOSGeometry *g1, *g3;

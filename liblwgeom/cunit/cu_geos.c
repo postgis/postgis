@@ -97,13 +97,13 @@ static void test_geos_linemerge(void)
 static void test_geos_subdivide(void)
 {
 #if POSTGIS_GEOS_VERSION < 35
-	// printf("%d\n", POSTGIS_GEOS_VERSION);
 	return;
 #else
-	char *ewkt = "MULTILINESTRING((0 0, 0 100))";
+	char* ewkt = "LINESTRING(0 0, 10 10)";
 	char *out_ewkt;
 	LWGEOM *geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
-	LWGEOM *geom2 = lwgeom_segmentize2d(geom1, 1.0);
+	/* segmentize as geography to generate a non-simple curve */
+	LWGEOM* geom2 = lwgeom_segmentize_sphere(geom1, 0.002);
 
 	LWCOLLECTION *geom3 = lwgeom_subdivide(geom2, 80);
 	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom3);
