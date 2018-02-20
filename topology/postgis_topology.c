@@ -13,6 +13,7 @@
 #include "postgres.h"
 #include "fmgr.h"
 #include "c.h" /* for UINT64_FORMAT and uint64 */
+#include "utils/builtins.h"
 #include "utils/elog.h"
 #include "utils/memutils.h" /* for TopMemoryContext */
 #include "utils/array.h" /* for ArrayType */
@@ -3011,7 +3012,7 @@ Datum ST_ModEdgeSplit(PG_FUNCTION_ARGS)
   }
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   edge_id = PG_GETARG_INT32(1) ;
@@ -3076,7 +3077,7 @@ Datum ST_NewEdgesSplit(PG_FUNCTION_ARGS)
   }
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   edge_id = PG_GETARG_INT32(1) ;
@@ -3141,7 +3142,7 @@ Datum ST_AddIsoNode(PG_FUNCTION_ARGS)
   }
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   if ( PG_ARGISNULL(1) ) containing_face = -1;
@@ -3221,7 +3222,7 @@ Datum ST_AddIsoEdge(PG_FUNCTION_ARGS)
   }
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   start_node = PG_GETARG_INT32(1);
@@ -3292,7 +3293,7 @@ Datum ST_AddEdgeModFace(PG_FUNCTION_ARGS)
   }
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   startnode_id = PG_GETARG_INT32(1) ;
@@ -3358,7 +3359,7 @@ Datum ST_AddEdgeNewFaces(PG_FUNCTION_ARGS)
   }
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   startnode_id = PG_GETARG_INT32(1) ;
@@ -3423,7 +3424,7 @@ Datum ST_GetFaceGeometry(PG_FUNCTION_ARGS)
   }
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   face_id = PG_GETARG_INT32(1) ;
@@ -3508,7 +3509,7 @@ Datum ST_GetFaceEdges(PG_FUNCTION_ARGS)
     }
 
     toponame_text = PG_GETARG_TEXT_P(0);
-    toponame = text2cstring(toponame_text);
+    toponame = text_to_cstring(toponame_text);
     PG_FREE_IF_COPY(toponame_text, 0);
 
     face_id = PG_GETARG_INT32(1) ;
@@ -3618,7 +3619,7 @@ Datum ST_ChangeEdgeGeom(PG_FUNCTION_ARGS)
   }
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   edge_id = PG_GETARG_INT32(1) ;
@@ -3665,7 +3666,7 @@ Datum ST_ChangeEdgeGeom(PG_FUNCTION_ARGS)
   {
     buf[63] = '\0';
   }
-  PG_RETURN_TEXT_P(cstring2text(buf));
+  PG_RETURN_TEXT_P(cstring_to_text(buf));
 }
 
 /*  ST_RemoveIsoNode(atopology, anode) */
@@ -3686,7 +3687,7 @@ Datum ST_RemoveIsoNode(PG_FUNCTION_ARGS)
   }
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   node_id = PG_GETARG_INT32(1) ;
@@ -3725,7 +3726,7 @@ Datum ST_RemoveIsoNode(PG_FUNCTION_ARGS)
   {
     buf[63] = '\0';
   }
-  PG_RETURN_TEXT_P(cstring2text(buf));
+  PG_RETURN_TEXT_P(cstring_to_text(buf));
 }
 
 /*  ST_RemIsoEdge(atopology, anedge) */
@@ -3746,7 +3747,7 @@ Datum ST_RemIsoEdge(PG_FUNCTION_ARGS)
   }
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   node_id = PG_GETARG_INT32(1) ;
@@ -3785,7 +3786,7 @@ Datum ST_RemIsoEdge(PG_FUNCTION_ARGS)
   {
     buf[63] = '\0';
   }
-  PG_RETURN_TEXT_P(cstring2text(buf));
+  PG_RETURN_TEXT_P(cstring_to_text(buf));
 }
 
 /*  ST_MoveIsoNode(atopology, anode, apoint) */
@@ -3810,7 +3811,7 @@ Datum ST_MoveIsoNode(PG_FUNCTION_ARGS)
   }
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   node_id = PG_GETARG_INT32(1) ;
@@ -3869,7 +3870,7 @@ Datum ST_MoveIsoNode(PG_FUNCTION_ARGS)
   {
     buf[63] = '\0';
   }
-  PG_RETURN_TEXT_P(cstring2text(buf));
+  PG_RETURN_TEXT_P(cstring_to_text(buf));
 }
 
 /*  ST_RemEdgeModFace(atopology, anedge) */
@@ -3889,7 +3890,7 @@ Datum ST_RemEdgeModFace(PG_FUNCTION_ARGS)
   }
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   node_id = PG_GETARG_INT32(1) ;
@@ -3940,7 +3941,7 @@ Datum ST_RemEdgeNewFace(PG_FUNCTION_ARGS)
   }
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   node_id = PG_GETARG_INT32(1) ;
@@ -3989,7 +3990,7 @@ Datum ST_ModEdgeHeal(PG_FUNCTION_ARGS)
   }
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   eid1 = PG_GETARG_INT32(1) ;
@@ -4039,7 +4040,7 @@ Datum ST_NewEdgeHeal(PG_FUNCTION_ARGS)
   }
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   eid1 = PG_GETARG_INT32(1) ;
@@ -4087,7 +4088,7 @@ Datum GetNodeByPoint(PG_FUNCTION_ARGS)
   LWT_TOPOLOGY *topo;
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   geom = PG_GETARG_GSERIALIZED_P(1);
@@ -4153,7 +4154,7 @@ Datum GetEdgeByPoint(PG_FUNCTION_ARGS)
   LWT_TOPOLOGY *topo;
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   geom = PG_GETARG_GSERIALIZED_P(1);
@@ -4219,7 +4220,7 @@ Datum GetFaceByPoint(PG_FUNCTION_ARGS)
   LWT_TOPOLOGY *topo;
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   geom = PG_GETARG_GSERIALIZED_P(1);
@@ -4285,7 +4286,7 @@ Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS)
   LWT_TOPOLOGY *topo;
 
   toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text2cstring(toponame_text);
+  toponame = text_to_cstring(toponame_text);
 	PG_FREE_IF_COPY(toponame_text, 0);
 
   geom = PG_GETARG_GSERIALIZED_P(1);
@@ -4376,7 +4377,7 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
     }
 
     toponame_text = PG_GETARG_TEXT_P(0);
-    toponame = text2cstring(toponame_text);
+    toponame = text_to_cstring(toponame_text);
     PG_FREE_IF_COPY(toponame_text, 0);
 
     geom = PG_GETARG_GSERIALIZED_P(1);
@@ -4500,7 +4501,7 @@ Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
     }
 
     toponame_text = PG_GETARG_TEXT_P(0);
-    toponame = text2cstring(toponame_text);
+    toponame = text_to_cstring(toponame_text);
     PG_FREE_IF_COPY(toponame_text, 0);
 
     geom = PG_GETARG_GSERIALIZED_P(1);

@@ -25,6 +25,7 @@
 
 #include "postgres.h"
 #include "fmgr.h"
+#include "utils/builtins.h"
 #include "../liblwgeom/liblwgeom.h"
 
 #include "lwgeom_pg.h"
@@ -62,7 +63,7 @@ Datum sfcgal_is_solid(PG_FUNCTION_ARGS);
 
 
 GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
-char* text2cstring(const text *textptr);
+char* text_to_cstring(const text *textptr);
 
 static int __sfcgal_init = 0;
 
@@ -143,7 +144,7 @@ Datum sfcgal_from_ewkt(PG_FUNCTION_ARGS)
 	GSERIALIZED* result;
 	sfcgal_prepared_geometry_t* g;
 	text *wkttext = PG_GETARG_TEXT_P(0);
-	char *cstring = text2cstring(wkttext);
+	char *cstring = text_to_cstring(wkttext);
 
 	sfcgal_postgis_init();
 
@@ -721,7 +722,7 @@ PG_FUNCTION_INFO_V1(postgis_sfcgal_version);
 Datum postgis_sfcgal_version(PG_FUNCTION_ARGS)
 {
         const char *ver = lwgeom_sfcgal_version();
-        text *result = cstring2text(ver);
+        text *result = cstring_to_text(ver);
         PG_RETURN_POINTER(result);
 }
 

@@ -31,40 +31,6 @@
 
 #define PGC_ERRMSG_MAXLEN 2048 //256
 
-/**
-* Utility to convert cstrings to textp pointers
-*/
-text*
-cstring2text(const char *cstring)
-{
-	text *output;
-	size_t sz;
-
-	/* Guard against null input */
-	if( !cstring )
-		return NULL;
-
-	sz = strlen(cstring);
-	output = palloc(sz + VARHDRSZ);
-	if ( ! output )
-		return NULL;
-	SET_VARSIZE(output, sz + VARHDRSZ);
-	if ( sz )
-		memcpy(VARDATA(output),cstring,sz);
-	return output;
-}
-
-char*
-text2cstring(const text *textptr)
-{
-	size_t size = VARSIZE(textptr) - VARHDRSZ;
-	char *str = lwalloc(size+1);
-	memcpy(str, VARDATA(textptr), size);
-	str[size]='\0';
-	return str;
-}
-
-
 /*
  * Error message parsing functions
  *

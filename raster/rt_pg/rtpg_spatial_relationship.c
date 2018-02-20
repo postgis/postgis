@@ -29,6 +29,7 @@
 
 #include <postgres.h> /* for palloc */
 #include <fmgr.h>
+#include <utils/builtins.h>
 
 #include "../../postgis_config.h"
 
@@ -1309,6 +1310,6 @@ Datum RASTER_notSameAlignmentReason(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	result = cstring2text(reason);
+	result = cstring_to_text(reason);
 	PG_RETURN_TEXT_P(result);
 }
