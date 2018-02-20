@@ -25,8 +25,9 @@
 
 #include "postgres.h"
 #include "fmgr.h"
-#include "utils/elog.h"
 #include "utils/array.h"
+#include "utils/builtins.h"
+#include "utils/elog.h"
 #include "utils/geo_decls.h"
 
 #include "../postgis_config.h"
@@ -140,7 +141,7 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 
 	/* create a text obj to return */
-	mytext = cstring2text(result);
+	mytext = cstring_to_text(result);
 	pfree(result);
 
 	PG_FREE_IF_COPY(geom,0);
@@ -151,7 +152,7 @@ PG_FUNCTION_INFO_V1(postgis_version);
 Datum postgis_version(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_VERSION;
-	text *result = cstring2text(ver);
+	text *result = cstring_to_text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -159,7 +160,7 @@ PG_FUNCTION_INFO_V1(postgis_liblwgeom_version);
 Datum postgis_liblwgeom_version(PG_FUNCTION_ARGS)
 {
 	const char *ver = lwgeom_version();
-	text *result = cstring2text(ver);
+	text *result = cstring_to_text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -167,7 +168,7 @@ PG_FUNCTION_INFO_V1(postgis_lib_version);
 Datum postgis_lib_version(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_LIB_VERSION;
-	text *result = cstring2text(ver);
+	text *result = cstring_to_text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -179,7 +180,7 @@ Datum postgis_svn_version(PG_FUNCTION_ARGS)
 	if ( rev > 0 )
 	{
 		snprintf(ver, 32, "%d", rev);
-		PG_RETURN_TEXT_P(cstring2text(ver));
+		PG_RETURN_TEXT_P(cstring_to_text(ver));
 	}
 	else
 		PG_RETURN_NULL();
@@ -189,7 +190,7 @@ PG_FUNCTION_INFO_V1(postgis_lib_build_date);
 Datum postgis_lib_build_date(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_BUILD_DATE;
-	text *result = cstring2text(ver);
+	text *result = cstring_to_text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -202,7 +203,7 @@ Datum postgis_scripts_released(PG_FUNCTION_ARGS)
 	snprintf(ver, 64, "%s r%d", POSTGIS_LIB_VERSION, POSTGIS_SVN_REVISION);
 	ver[63] = '\0';
 
-	result = cstring2text(ver);
+	result = cstring_to_text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -227,7 +228,7 @@ PG_FUNCTION_INFO_V1(postgis_libxml_version);
 Datum postgis_libxml_version(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_LIBXML2_VERSION;
-	text *result = cstring2text(ver);
+	text *result = cstring_to_text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -2345,7 +2346,7 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 
 	/* Write to text and free the WKT */
-	result = cstring2text(wkt);
+	result = cstring_to_text(wkt);
 	pfree(wkt);
 
 	/* Return the text */
@@ -2676,7 +2677,7 @@ Datum ST_GeoHash(PG_FUNCTION_ARGS)
 	if ( ! geohash )
 		PG_RETURN_NULL();
 
-	result = cstring2text(geohash);
+	result = cstring_to_text(geohash);
 	pfree(geohash);
 
 	PG_RETURN_TEXT_P(result);

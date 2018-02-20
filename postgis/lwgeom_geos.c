@@ -113,7 +113,7 @@ PG_FUNCTION_INFO_V1(postgis_geos_version);
 Datum postgis_geos_version(PG_FUNCTION_ARGS)
 {
 	const char *ver = lwgeom_geos_version();
-	text *result = cstring2text(ver);
+	text *result = cstring_to_text(ver);
 	PG_RETURN_POINTER(result);
 }
 
@@ -1140,7 +1140,7 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 	if ( nargs > 2 )
 	{
 		text *wkttext = PG_GETARG_TEXT_P(2);
-		paramstr = text2cstring(wkttext);
+		paramstr = text_to_cstring(wkttext);
 
 		POSTGIS_DEBUGF(3, "paramstr: %s", paramstr);
 
@@ -1204,7 +1204,7 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 			}
 		}
 		POSTGIS_DEBUGF(3, "joinStyle:%d mitreLimit:%g", joinStyle, mitreLimit);
-		pfree(paramstr); /* alloc'ed in text2cstring */
+		pfree(paramstr); /* alloc'ed in text_to_cstring */
 	}
 
 	lwgeom_result = lwgeom_offsetcurve(lwgeom_as_lwline(lwgeom_input), size, quadsegs, joinStyle, mitreLimit);
@@ -1600,12 +1600,12 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 		reason_str = GEOSisValidReason(g1);
 		GEOSGeom_destroy((GEOSGeometry *)g1);
 		if (!reason_str) HANDLE_GEOS_ERROR("GEOSisValidReason");
-		result = cstring2text(reason_str);
+		result = cstring_to_text(reason_str);
 		GEOSFree(reason_str);
 	}
 	else
 	{
-		result = cstring2text(lwgeom_geos_errmsg);
+		result = cstring_to_text(lwgeom_geos_errmsg);
 	}
 
 	PG_FREE_IF_COPY(geom, 0);
@@ -2677,7 +2677,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 
 	if (!relate_str) HANDLE_GEOS_ERROR("GEOSRelate");
 
-	result = cstring2text(relate_str);
+	result = cstring_to_text(relate_str);
 	GEOSFree(relate_str);
 
 	PG_FREE_IF_COPY(geom1, 0);

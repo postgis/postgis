@@ -336,7 +336,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 
 	/* Turn string result into text for return */
-	result = cstring2text(gml);
+	result = cstring_to_text(gml);
 	lwfree(gml);
 
 	PG_RETURN_TEXT_P(result);
@@ -415,7 +415,7 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	if ( ! kml )
 		PG_RETURN_NULL();
 
-	result = cstring2text(kml);
+	result = cstring_to_text(kml);
 	lwfree(kml);
 
 	PG_RETURN_TEXT_P(result);
@@ -460,7 +460,7 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
     lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 0);
 
-	result = cstring2text(svg);
+	result = cstring_to_text(svg);
 	lwfree(svg);
 
 	PG_RETURN_TEXT_P(result);
@@ -537,7 +537,7 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(g, 1);
 	if (srs) pfree(srs);
 
-	result = cstring2text(geojson);
+	result = cstring_to_text(geojson);
 	lwfree(geojson);
 
 	PG_RETURN_TEXT_P(result);
@@ -557,7 +557,7 @@ Datum geography_from_text(PG_FUNCTION_ARGS)
 	text *wkt_text = PG_GETARG_TEXT_P(0);
 
 	/* Extract the cstring from the varlena */
-	char *wkt = text2cstring(wkt_text);
+	char *wkt = text_to_cstring(wkt_text);
 
 	/* Pass the cstring to the input parser, and magic occurs! */
 	if ( lwgeom_parse_wkt(&lwg_parser_result, wkt, LW_PARSER_CHECK_ALL) == LW_FAILURE )

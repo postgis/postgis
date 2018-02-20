@@ -124,18 +124,6 @@ GSERIALIZED* geography_serialize(LWGEOM *lwgeom);
 */
 int gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox);
 
-/**
-* Convert cstrings (null-terminated byte array) to textp pointers
-* (PgSQL varlena structure with VARSIZE header).
-*/
-text* cstring2text(const char *cstring);
-
-/**
-* Convert textp (PgSQL varlena structure with VARSIZE header) to
-* cstrings (null-terminated byte array).
-*/
-char* text2cstring(const text *textptr);
-
 /*
  * For PostgreSQL >= 8.5 redefine the STATRELATT macro to its
  * new value of STATRELATTINH
