@@ -505,7 +505,7 @@ lwprint_double(double d, int maxdd, char* buf, size_t bufsize)
 	{
 		length = snprintf(buf, bufsize, "%g", d);
 	}
-	assert(length < bufsize);
+	assert(length < (int) bufsize);
 	trim_trailing_zeros(buf);
 	return length;
 }

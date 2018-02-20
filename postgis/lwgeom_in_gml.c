@@ -54,6 +54,7 @@
 
 #include "postgres.h"
 #include "executor/spi.h"
+#include "utils/builtins.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
@@ -78,7 +79,7 @@ gmlSrs;
 
 
 
-static void gml_lwpgerror(char *msg, int error_code)
+static void gml_lwpgerror(char *msg, __attribute__((__unused__)) int error_code)
 {
         POSTGIS_DEBUGF(3, "ST_GeomFromGML ERROR %i", error_code);
         lwpgerror("%s", msg);
@@ -106,7 +107,7 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 	/* Get the GML stream */
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 	xml_input = PG_GETARG_TEXT_P(0);
-	xml = text2cstring(xml_input);
+	xml = text_to_cstring(xml_input);
 
 	/* Zero for undefined */
 	root_srid = PG_GETARG_INT32(1);

@@ -38,11 +38,12 @@
 #include "liblwgeom_internal.h"
 
 
-LWGEOM* pta_unstroke(const POINTARRAY *points, int type, int srid);
+LWGEOM* pta_unstroke(const POINTARRAY *points, int srid);
 LWGEOM* lwline_unstroke(const LWLINE *line);
 LWGEOM* lwpolygon_unstroke(const LWPOLY *poly);
 LWGEOM* lwmline_unstroke(const LWMLINE *mline);
 LWGEOM* lwmpolygon_unstroke(const LWMPOLY *mpoly);
+LWGEOM* lwcollection_unstroke(const LWCOLLECTION *c);
 LWGEOM* lwgeom_unstroke(const LWGEOM *geom);
 
 
@@ -669,7 +670,7 @@ lwcollection_linearize(const LWCOLLECTION *collection, double tol,
 			geoms[i] = (LWGEOM *)lwcollection_linearize((LWCOLLECTION *)tmp, tol, type, flags);
 			break;
 		default:
-			geoms[i] = lwgeom_clone(tmp);
+			geoms[i] = lwgeom_clone_deep(tmp);
 			break;
 		}
 	}
@@ -704,7 +705,7 @@ lwcurve_linearize(const LWGEOM *geom, double tol,
 		ogeom = (LWGEOM *)lwcollection_linearize((LWCOLLECTION *)geom, tol, type, flags);
 		break;
 	default:
-		ogeom = lwgeom_clone(geom);
+		ogeom = lwgeom_clone_deep(geom);
 	}
 	return ogeom;
 }
@@ -827,7 +828,7 @@ geom_from_pa(const POINTARRAY *pa, int srid, int is_arc, int start, int end)
 }
 
 LWGEOM*
-pta_unstroke(const POINTARRAY *points, int type, int srid)
+pta_unstroke(const POINTARRAY *points, int srid)
 {
 	int i = 0, j, k;
 	POINT4D a1, a2, a3, b;
@@ -993,8 +994,8 @@ lwline_unstroke(const LWLINE *line)
 {
 	LWDEBUG(2, "lwline_unstroke called.");
 
-	if ( line->points->npoints < 4 ) return lwline_as_lwgeom(lwline_clone(line));
-	else return pta_unstroke(line->points, line->flags, line->srid);
+	if ( line->points->npoints < 4 ) return lwline_as_lwgeom(lwline_clone_deep(line));
+	else return pta_unstroke(line->points, line->srid);
 }
 
 LWGEOM *
@@ -1008,7 +1009,7 @@ lwpolygon_unstroke(const LWPOLY *poly)
 	geoms = lwalloc(sizeof(LWGEOM *)*poly->nrings);
 	for (i=0; i<poly->nrings; i++)
 	{
-		geoms[i] = pta_unstroke(poly->rings[i], poly->flags, poly->srid);
+		geoms[i] = pta_unstroke(poly->rings[i], poly->srid);
 		if (geoms[i]->type == CIRCSTRINGTYPE || geoms[i]->type == COMPOUNDTYPE)
 		{
 			hascurve = 1;
@@ -1020,7 +1021,7 @@ lwpolygon_unstroke(const LWPOLY *poly)
 		{
 			lwfree(geoms[i]); /* TODO: should this be lwgeom_free instead ? */
 		}
-		return lwgeom_clone((LWGEOM *)poly);
+		return lwgeom_clone_deep((LWGEOM *)poly);
 	}
 
 	return (LWGEOM *)lwcollection_construct(CURVEPOLYTYPE, poly->srid, NULL, poly->nrings, geoms);
@@ -1049,7 +1050,7 @@ lwmline_unstroke(const LWMLINE *mline)
 		{
 			lwfree(geoms[i]); /* TODO: should this be lwgeom_free instead ? */
 		}
-		return lwgeom_clone((LWGEOM *)mline);
+		return lwgeom_clone_deep((LWGEOM *)mline);
 	}
 	return (LWGEOM *)lwcollection_construct(MULTICURVETYPE, mline->srid, NULL, mline->ngeoms, geoms);
 }
@@ -1077,10 +1078,38 @@ lwmpolygon_unstroke(const LWMPOLY *mpoly)
 		{
 			lwfree(geoms[i]); /* TODO: should this be lwgeom_free instead ? */
 		}
-		return lwgeom_clone((LWGEOM *)mpoly);
+		return lwgeom_clone_deep((LWGEOM *)mpoly);
 	}
 	return (LWGEOM *)lwcollection_construct(MULTISURFACETYPE, mpoly->srid, NULL, mpoly->ngeoms, geoms);
 }
+
+LWGEOM *
+lwcollection_unstroke(const LWCOLLECTION *c)
+{
+	LWCOLLECTION *ret = lwalloc(sizeof(LWCOLLECTION));
+	memcpy(ret, c, sizeof(LWCOLLECTION));
+
+	if (c->ngeoms > 0)
+	{
+		uint32_t i;
+		ret->geoms = lwalloc(sizeof(LWGEOM *)*c->ngeoms);
+		for (i=0; i < c->ngeoms; i++)
+		{
+			ret->geoms[i] = lwgeom_unstroke(c->geoms[i]);
+		}
+		if (c->bbox)
+		{
+			ret->bbox = gbox_copy(c->bbox);
+		}
+	}
+	else
+	{
+		ret->bbox = NULL;
+		ret->geoms = NULL;
+	}
+	return (LWGEOM *)ret;
+}
+
 
 LWGEOM *
 lwgeom_unstroke(const LWGEOM *geom)
@@ -1097,8 +1126,10 @@ lwgeom_unstroke(const LWGEOM *geom)
 		return lwmline_unstroke((LWMLINE *)geom);
 	case MULTIPOLYGONTYPE:
 		return lwmpolygon_unstroke((LWMPOLY *)geom);
+	case COLLECTIONTYPE:
+		return lwcollection_unstroke((LWCOLLECTION *)geom);
 	default:
-		return lwgeom_clone(geom);
+		return lwgeom_clone_deep(geom);
 	}
 }
 

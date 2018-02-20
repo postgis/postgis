@@ -52,7 +52,7 @@
 
 #include <string.h>
 
-static void geojson_lwerror(char *msg, int error_code)
+static void geojson_lwerror(char *msg, __attribute__((__unused__)) int error_code)
 {
 	LWDEBUGF(3, "lwgeom_from_geojson ERROR %i", error_code);
 	lwerror("%s", msg);

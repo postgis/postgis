@@ -37,7 +37,8 @@ SELECT
 	pixeltype,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
-	path
+	path,
+	outdbbandnum
 FROM ST_BandMetaData(
 	ST_SetBandNoDataValue(make_test_raster(10, 10, 0, 0, 0, 0), NULL)
 );
@@ -46,7 +47,8 @@ SELECT
 	pixeltype,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
-	path
+	path,
+	outdbbandnum
 FROM ST_BandMetaData(
 	make_test_raster(10, 10, 0, 0, 0, 0)
 );
@@ -55,7 +57,8 @@ SELECT
 	pixeltype,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
-	path
+	path,
+	outdbbandnum
 FROM ST_BandMetaData(
 	make_test_raster(10, 10, 0, 0, 0, 0, 2),
 	2
@@ -65,7 +68,8 @@ SELECT
 	pixeltype,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
-	path
+	path,
+	outdbbandnum
 FROM ST_BandMetaData(
 	make_test_raster(10, 10, 0, 0, 0, 0, 3, TRUE),
 	3
@@ -75,7 +79,8 @@ SELECT
 	pixeltype,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
-	path
+	path,
+	outdbbandnum
 FROM ST_BandMetaData(
 	make_test_raster(10, 10, 0, 0, 0, 0, 5, TRUE),
 	4
@@ -85,7 +90,8 @@ SELECT
 	pixeltype,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
-	path
+	path,
+	outdbbandnum
 FROM ST_BandMetaData(
 	make_test_raster(10, 10, 0, 0, 0, 0, 5, TRUE),
 	6
@@ -96,7 +102,8 @@ SELECT
 	pixeltype,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
-	path
+	path,
+	outdbbandnum
 FROM ST_BandMetaData(
 	make_test_raster(10, 10, 0, 0, 0, 0, 5, TRUE),
 	ARRAY[1,2,5]
@@ -107,7 +114,8 @@ SELECT
 	pixeltype,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
-	path
+	path,
+	outdbbandnum
 FROM ST_BandMetaData(
 	make_test_raster(10, 10, 0, 0, 0, 0, 5, TRUE),
 	ARRAY[]::int[]

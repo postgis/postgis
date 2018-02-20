@@ -451,6 +451,35 @@ rt_band rt_band_new_offline(
 );
 
 /**
+ * Create an out-db rt_band from path
+ *
+ * @param width     : number of pixel columns
+ * @param height    : number of pixel rows
+ * @param hasnodata : indicates if the band has nodata value
+ * @param nodataval : the nodata value, will be appropriately
+ * @param bandNum   : 1-based band number in the external file
+ *                    to associate this band with.
+ * @param path      : NULL-terminated path string pointing to the file
+ *                    containing band data. The string will NOT be
+ *                    copied, ownership is left to caller which is
+ *                    responsible to keep it allocated for the whole
+ *                    lifetime of the returned rt_band.
+ * @param force     : if True, ignore all validation checks
+ *
+ * @return an rt_band, or 0 on failure
+ */
+rt_band
+rt_band_new_offline_from_path(
+	uint16_t width,
+	uint16_t height,
+	int hasnodata,
+	double nodataval,
+	uint8_t bandNum,
+	const char* path,
+	int force
+);
+
+/**
  * Create a new band duplicated from source band.  Memory is allocated
  * for band path (if band is offline) or band data (if band is online).
  * The caller is responsible for freeing the memory when the returned

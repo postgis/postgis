@@ -113,7 +113,7 @@ PG_FUNCTION_INFO_V1(postgis_geos_version);
 Datum postgis_geos_version(PG_FUNCTION_ARGS)
 {
 	const char *ver = lwgeom_geos_version();
-	text *result = cstring2text(ver);
+	text *result = cstring_to_text(ver);
 	PG_RETURN_POINTER(result);
 }
 
@@ -811,10 +811,12 @@ Datum buffer(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED	*geom1;
 	double	size;
-	GEOSGeometry *g1, *g3;
+	GEOSBufferParams *bufferparams;
+	GEOSGeometry *g1, *g3 = NULL;
 	GSERIALIZED *result;
 	int quadsegs = 8; /* the default */
 	int nargs;
+	int singleside = 0; /* the default */
 	enum
 	{
 	    ENDCAP_ROUND = 1,
@@ -950,12 +952,37 @@ Datum buffer(PG_FUNCTION_ARGS)
 				/* quadrant segments is an int */
 				quadsegs = atoi(val);
 			}
+			else if ( !strcmp(key, "side") ||
+					  !strcmp(key, "side") )
+			{
+				if ( !strcmp(val, "both") )
+				{
+					singleside = 0;
+				}
+				else if ( !strcmp(val, "left") )
+				{
+					singleside = 1;
+				}
+				else if ( !strcmp(val, "right") )
+				{
+					singleside = 1;
+					size *= -1;
+				}
+				else
+				{
+					lwpgerror("Invalid side "
+					        "parameter: %s (accept: "
+					        "'right', 'left', 'both' "
+					        ")", val);
+					break;
+				}
+			}
 			else
 			{
 				lwpgerror("Invalid buffer parameter: %s (accept: "
 				        "'endcap', 'join', 'mitre_limit', "
-				        "'miter_limit and "
-				        "'quad_segs')", key);
+				        "'miter_limit', 'quad_segs' and "
+				        "'side')", key);
 				break;
 			}
 		}
@@ -967,7 +994,28 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	}
 
-	g3 = GEOSBufferWithStyle(g1, size, quadsegs, endCapStyle, joinStyle, mitreLimit);
+	bufferparams = GEOSBufferParams_create();
+	if (bufferparams)
+	{
+		if (GEOSBufferParams_setEndCapStyle(bufferparams, endCapStyle) &&
+			GEOSBufferParams_setJoinStyle(bufferparams, joinStyle) &&
+			GEOSBufferParams_setMitreLimit(bufferparams, mitreLimit) &&
+			GEOSBufferParams_setQuadrantSegments(bufferparams, quadsegs) &&
+			GEOSBufferParams_setSingleSided(bufferparams, singleside))
+		{
+			g3 = GEOSBufferWithParams(g1, bufferparams, size);
+		}
+		else
+		{
+			lwpgerror("Error setting buffer parameters.");
+		}
+		GEOSBufferParams_destroy(bufferparams);
+	}
+	else
+	{
+		lwpgerror("Error setting buffer parameters.");
+	}
+
 	GEOSGeom_destroy(g1);
 
 	if (!g3) HANDLE_GEOS_ERROR("GEOSBuffer");
@@ -1092,7 +1140,7 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 	if ( nargs > 2 )
 	{
 		text *wkttext = PG_GETARG_TEXT_P(2);
-		paramstr = text2cstring(wkttext);
+		paramstr = text_to_cstring(wkttext);
 
 		POSTGIS_DEBUGF(3, "paramstr: %s", paramstr);
 
@@ -1156,7 +1204,7 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 			}
 		}
 		POSTGIS_DEBUGF(3, "joinStyle:%d mitreLimit:%g", joinStyle, mitreLimit);
-		pfree(paramstr); /* alloc'ed in text2cstring */
+		pfree(paramstr); /* alloc'ed in text_to_cstring */
 	}
 
 	lwgeom_result = lwgeom_offsetcurve(lwgeom_as_lwline(lwgeom_input), size, quadsegs, joinStyle, mitreLimit);
@@ -1552,12 +1600,12 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 		reason_str = GEOSisValidReason(g1);
 		GEOSGeom_destroy((GEOSGeometry *)g1);
 		if (!reason_str) HANDLE_GEOS_ERROR("GEOSisValidReason");
-		result = cstring2text(reason_str);
+		result = cstring_to_text(reason_str);
 		GEOSFree(reason_str);
 	}
 	else
 	{
-		result = cstring2text(lwgeom_geos_errmsg);
+		result = cstring_to_text(lwgeom_geos_errmsg);
 	}
 
 	PG_FREE_IF_COPY(geom, 0);
@@ -2629,7 +2677,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 
 	if (!relate_str) HANDLE_GEOS_ERROR("GEOSRelate");
 
-	result = cstring2text(relate_str);
+	result = cstring_to_text(relate_str);
 	GEOSFree(relate_str);
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -3627,3 +3675,46 @@ Datum ST_MinimumClearanceLine(PG_FUNCTION_ARGS)
 #endif
 }
 
+/******************************************
+ *
+ * ST_OrientedEnvelope
+ *
+ ******************************************/
+Datum ST_OrientedEnvelope(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_OrientedEnvelope);
+Datum ST_OrientedEnvelope(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 36
+	lwpgerror("The GEOS version this PostGIS binary "
+			"was compiled against (%d) doesn't support "
+			"'ST_OrientedEnvelope' function (3.6.0+ required)",
+			POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else
+	GSERIALIZED* input;
+	GSERIALIZED* result;
+	GEOSGeometry* input_geos;
+	GEOSGeometry* result_geos;
+	int srid;
+
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input);
+	input_geos = POSTGIS2GEOS(input);
+	if (!input_geos)
+		HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+
+	result_geos = GEOSMinimumRotatedRectangle(input_geos);
+	GEOSGeom_destroy(input_geos);
+	if (!result_geos)
+		HANDLE_GEOS_ERROR("Error computing oriented envelope");
+
+	GEOSSetSRID(result_geos, srid);
+	result = GEOS2POSTGIS(result_geos, LW_FALSE);
+	GEOSGeom_destroy(result_geos);
+
+	PG_FREE_IF_COPY(input, 0);
+	PG_RETURN_POINTER(result);
+#endif
+}

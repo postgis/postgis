@@ -31,6 +31,7 @@
 #include "float.h" /* for DBL_DIG */
 #include "postgres.h"
 #include "executor/spi.h"
+#include "utils/builtins.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
@@ -304,7 +305,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	if ( ! gml )
 		PG_RETURN_NULL();
 
-	result = cstring2text(gml);
+	result = cstring_to_text(gml);
 	lwfree(gml);
 	PG_RETURN_TEXT_P(result);
 }
@@ -379,7 +380,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	if( ! kml )
 		PG_RETURN_NULL();
 
-	result = cstring2text(kml);
+	result = cstring_to_text(kml);
 	lwfree(kml);
 
 	PG_RETURN_POINTER(result);
@@ -480,7 +481,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	if (srs) pfree(srs);
 
-	result = cstring2text(geojson);
+	result = cstring_to_text(geojson);
 	lwfree(geojson);
 
 	PG_FREE_IF_COPY(geom, 0);
@@ -520,7 +521,7 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 
 	lwgeom = lwgeom_from_gserialized(geom);
 	svg = lwgeom_to_svg(lwgeom, precision, relative);
-	result = cstring2text(svg);
+	result = cstring_to_text(svg);
 	lwgeom_free(lwgeom);
 	pfree(svg);
 	PG_FREE_IF_COPY(geom, 0);
@@ -619,7 +620,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 1);
 
-	result = cstring2text(x3d);
+	result = cstring_to_text(x3d);
 	lwfree(x3d);
 
 	PG_RETURN_TEXT_P(result);
@@ -657,7 +658,7 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 
-	result = cstring2text(encodedpolyline);
+	result = cstring_to_text(encodedpolyline);
 	lwfree(encodedpolyline);
 
 	PG_RETURN_TEXT_P(result);

@@ -945,7 +945,7 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode, bool only_par
 		POSTGIS_DEBUGF(2, "searching parent table stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
 		stats_tuple = SearchSysCache3(STATRELATTINH, ObjectIdGetDatum(table_oid), Int16GetDatum(att_num), BoolGetDatum(false));
 		if ( stats_tuple )
-		POSTGIS_DEBUGF(2, "found parent table stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
+			POSTGIS_DEBUGF(2, "found parent table stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
 	}
 	if ( ! stats_tuple )
 	{
@@ -976,7 +976,7 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode, bool only_par
 static ND_STATS*
 pg_get_nd_stats_by_name(const Oid table_oid, const text *att_text, int mode, bool only_parent)
 {
-	const char *att_name = text2cstring(att_text);
+	const char *att_name = text_to_cstring(att_text);
 	AttrNumber att_num;
 
 	/* We know the name? Look up the num */
@@ -2052,11 +2052,11 @@ Datum _postgis_gserialized_stats(PG_FUNCTION_ARGS)
 	/* Retrieve the stats object */
 	nd_stats = pg_get_nd_stats_by_name(table_oid, att_text, mode, only_parent);
 	if ( ! nd_stats )
-		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid), text2cstring(att_text));
+		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid), text_to_cstring(att_text));
 
 	/* Convert to JSON */
 	str = nd_stats_to_json(nd_stats);
-	json = cstring2text(str);
+	json = cstring_to_text(str);
 	pfree(str);
 	pfree(nd_stats);
 	PG_RETURN_TEXT_P(json);
@@ -2086,7 +2086,7 @@ Datum _postgis_gserialized_sel(PG_FUNCTION_ARGS)
 	nd_stats = pg_get_nd_stats_by_name(table_oid, att_text, mode, false);
 
 	if ( ! nd_stats )
-		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid), text2cstring(att_text));
+		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid), text_to_cstring(att_text));
 
 	/* Calculate the gbox */
 	if ( ! gserialized_datum_get_gbox_p(geom_datum, &gbox) )
@@ -2123,16 +2123,16 @@ Datum _postgis_gserialized_joinsel(PG_FUNCTION_ARGS)
 	nd_stats2 = pg_get_nd_stats_by_name(table_oid2, att_text2, mode, false);
 
 	if ( ! nd_stats1 )
-		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid1), text2cstring(att_text1));
+		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid1), text_to_cstring(att_text1));
 
 	if ( ! nd_stats2 )
-		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid2), text2cstring(att_text2));
+		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid2), text_to_cstring(att_text2));
 
 	/* Check if we've been asked to not use 2d mode */
 	if ( ! PG_ARGISNULL(4) )
 	{
 		text *modetxt = PG_GETARG_TEXT_P(4);
-		char *modestr = text2cstring(modetxt);
+		char *modestr = text_to_cstring(modetxt);
 		if ( modestr[0] == 'N' )
 			mode = 0;
 	}
@@ -2294,8 +2294,8 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 
 	if ( PG_NARGS() == 4 )
 	{
-		nsp = text2cstring(PG_GETARG_TEXT_P(0));
-		tbl = text2cstring(PG_GETARG_TEXT_P(1));
+		nsp = text_to_cstring(PG_GETARG_TEXT_P(0));
+		tbl = text_to_cstring(PG_GETARG_TEXT_P(1));
 		col = PG_GETARG_TEXT_P(2);
 		only_parent = PG_GETARG_BOOL(3);
 		nsp_tbl = palloc(strlen(nsp) + strlen(tbl) + 6);
@@ -2305,8 +2305,8 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	}
 	else if ( PG_NARGS() == 3 )
 	{
-		nsp = text2cstring(PG_GETARG_TEXT_P(0));
-		tbl = text2cstring(PG_GETARG_TEXT_P(1));
+		nsp = text_to_cstring(PG_GETARG_TEXT_P(0));
+		tbl = text_to_cstring(PG_GETARG_TEXT_P(1));
 		col = PG_GETARG_TEXT_P(2);
 		nsp_tbl = palloc(strlen(nsp) + strlen(tbl) + 6);
 		sprintf(nsp_tbl, "\"%s\".\"%s\"", nsp, tbl);
@@ -2315,7 +2315,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	}
 	else if ( PG_NARGS() == 2 )
 	{
-		tbl = text2cstring(PG_GETARG_TEXT_P(0));
+		tbl = text_to_cstring(PG_GETARG_TEXT_P(0));
 		col = PG_GETARG_TEXT_P(1);
 		nsp_tbl = palloc(strlen(tbl) + 3);
 		sprintf(nsp_tbl, "\"%s\"", tbl);
@@ -2332,7 +2332,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	/* Read the extent from the head of the spatial index, if there is one */
 	idx_oid = table_get_spatial_index(tbl_oid, col, &key_type);
 	if (!idx_oid)
-		elog(DEBUG2, "index for \"%s.%s\" does not exist", tbl, text2cstring(col));
+		elog(DEBUG2, "index for \"%s.%s\" does not exist", tbl, text_to_cstring(col));
 	gbox = spatial_index_read_extent(idx_oid, key_type);
 #endif
 
@@ -2344,7 +2344,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 
 		/* Error out on no stats */
 		if ( ! nd_stats ) {
-			elog(WARNING, "stats for \"%s.%s\" do not exist", tbl, text2cstring(col));
+			elog(WARNING, "stats for \"%s.%s\" do not exist", tbl, text_to_cstring(col));
 			PG_RETURN_NULL();
 		}
 
@@ -2411,7 +2411,7 @@ table_get_spatial_index(Oid tbl_oid, text *col, int *key_type)
 	ListCell *lc;
 	List *idx_list;
 	Oid result = InvalidOid;
-	char *colname = text2cstring(col);
+	char *colname = text_to_cstring(col);
 
 	/* Lookup our spatial index key types */
 	Oid b2d_oid = typname_to_oid(INDEX_KEY_2D);

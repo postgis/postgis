@@ -25,6 +25,7 @@
 
 #include "postgres.h"
 #include "fmgr.h"
+#include "utils/builtins.h"
 
 #include "../postgis_config.h"
 #include "liblwgeom.h"
@@ -130,8 +131,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	output_proj4_text = (PG_GETARG_TEXT_P(2));
 
 	/* Convert from text to cstring for libproj */
-	input_proj4 = text2cstring(input_proj4_text);
-	output_proj4 = text2cstring(output_proj4_text);
+	input_proj4 = text_to_cstring(input_proj4_text);
+	output_proj4 = text_to_cstring(output_proj4_text);
 
 	/* make input and output projection objects */
 	input_pj = lwproj_from_string(input_proj4);
@@ -199,6 +200,6 @@ PG_FUNCTION_INFO_V1(postgis_proj_version);
 Datum postgis_proj_version(PG_FUNCTION_ARGS)
 {
 	const char *ver = pj_get_release();
-	text *result = cstring2text(ver);
+	text *result = cstring_to_text(ver);
 	PG_RETURN_POINTER(result);
 }

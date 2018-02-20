@@ -41,6 +41,7 @@ OBJS = \
 	rtpg_mapalgebra.o \
 	rtpg_utility.o \
 	rtpg_inout.o \
+	rtpg_wkb.o \
 	rtpg_geometry.o \
 	rtpg_raster_properties.o \
 	rtpg_band_properties.o \

@@ -36,7 +36,7 @@
 #include <executor/spi.h>
 #include <utils/lsyscache.h> /* for get_typlenbyvalalign */
 #include <utils/array.h> /* for ArrayType */
-#include <utils/builtins.h>
+#include <utils/builtins.h> /* for cstring_to_text */
 #include <catalog/pg_type.h> /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
 #include <executor/executor.h> /* for GetAttributeByName */
 

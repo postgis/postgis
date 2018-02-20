@@ -500,5 +500,6 @@ extern int _lwgeom_interrupt_requested;
 int ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox);
 int gbox_contains_point2d(const GBOX *g, const POINT2D *p);
 int lwpoly_contains_point(const LWPOLY *poly, const POINT2D *pt);
+POINT4D* lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_empty);
 
 #endif /* _LIBLWGEOM_INTERNAL_H */

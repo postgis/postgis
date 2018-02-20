@@ -30,7 +30,7 @@
 #include <postgres.h>
 #include <fmgr.h>
 #include <funcapi.h>
-#include <utils/builtins.h>
+#include <utils/builtins.h> /* for text_to_cstring() */
 #include "utils/lsyscache.h" /* for get_typlenbyvalalign */
 #include "utils/array.h" /* for ArrayType */
 #include "catalog/pg_type.h" /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
@@ -56,6 +56,8 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS);
 /* Set all the properties of a raster band */
 Datum RASTER_setBandIsNoData(PG_FUNCTION_ARGS);
 Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS);
+Datum RASTER_setBandPath(PG_FUNCTION_ARGS);
+Datum RASTER_setBandIndex(PG_FUNCTION_ARGS);
 
 /**
  * Return pixel type of the specified band of raster.
@@ -329,9 +331,7 @@ Datum RASTER_getBandPath(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	result = (text *) palloc(VARHDRSZ + strlen(bandpath) + 1);
-	SET_VARSIZE(result, VARHDRSZ + strlen(bandpath) + 1);
-	strcpy((char *) VARDATA(result), bandpath);
+	result = cstring_to_text(bandpath);
 
 	rt_band_destroy(band);
 	rt_raster_destroy(raster);
@@ -358,6 +358,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		double nodataval;
 		bool isoutdb;
 		char *bandpath;
+		uint8_t extbandnum;
 	};
 	struct bandmetadata *bmd = NULL;
 	struct bandmetadata *bmd2 = NULL;
@@ -386,7 +387,9 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		uint32_t numBands;
 		uint32_t idx = 1;
 		uint32_t *bandNums = NULL;
-		const char *tmp = NULL;
+		const char *chartmp = NULL;
+		size_t charlen;
+		uint8_t extbandnum;
 
 		POSTGIS_RT_DEBUG(3, "RASTER_bandmetadata: Starting");
 
@@ -496,9 +499,10 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 			bmd[i].bandnum = bandNums[i];
 
 			/* pixeltype */
-			tmp = rt_pixtype_name(rt_band_get_pixtype(band));
-			bmd[i].pixeltype = palloc(sizeof(char) * (strlen(tmp) + 1));
-			strncpy(bmd[i].pixeltype, tmp, strlen(tmp) + 1);
+			chartmp = rt_pixtype_name(rt_band_get_pixtype(band));
+			charlen = strlen(chartmp) + 1;
+			bmd[i].pixeltype = palloc(sizeof(char) * charlen);
+			strncpy(bmd[i].pixeltype, chartmp, charlen);
 
 			/* hasnodatavalue */
 			if (rt_band_get_hasnodata_flag(band))
@@ -512,17 +516,24 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 			else
 				bmd[i].nodataval = 0;
 
-			/* path */
-			tmp = rt_band_get_ext_path(band);
-			if (tmp) {
-				bmd[i].bandpath = palloc(sizeof(char) * (strlen(tmp) + 1));
-				strncpy(bmd[i].bandpath, tmp, strlen(tmp) + 1);
+			/* out-db path */
+			chartmp = rt_band_get_ext_path(band);
+			if (chartmp) {
+				charlen = strlen(chartmp) + 1;
+				bmd[i].bandpath = palloc(sizeof(char) * charlen);
+				strncpy(bmd[i].bandpath, chartmp, charlen);
 			}
 			else
 				bmd[i].bandpath = NULL;
 
 			/* isoutdb */
 			bmd[i].isoutdb = bmd[i].bandpath ? TRUE : FALSE;
+
+			/* out-db bandnum */
+			if (rt_band_get_ext_band_num(band, &extbandnum) == ES_NONE)
+				bmd[i].extbandnum = extbandnum + 1;
+			else
+				bmd[i].extbandnum = 0;
 
 			rt_band_destroy(band);
 		}
@@ -564,7 +575,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 5;
+		int values_length = 6;
 		Datum values[values_length];
 		bool nulls[values_length];
 
@@ -579,10 +590,14 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 			nulls[2] = TRUE;
 
 		values[3] = BoolGetDatum(bmd2[call_cntr].isoutdb);
-		if (bmd2[call_cntr].bandpath && strlen(bmd2[call_cntr].bandpath))
+		if (bmd2[call_cntr].bandpath && strlen(bmd2[call_cntr].bandpath)) {
 			values[4] = CStringGetTextDatum(bmd2[call_cntr].bandpath);
-		else
+			values[5] = UInt32GetDatum(bmd2[call_cntr].extbandnum);
+		}
+		else {
 			nulls[4] = TRUE;
+			nulls[5] = TRUE;
+		}
 
 		/* build a tuple */
 		tuple = heap_form_tuple(tupdesc, values, nulls);
@@ -679,6 +694,9 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(pgrtn);
 }
 
+/**
+ * Set flag indicating that the entire band is NODATA
+ */
 PG_FUNCTION_INFO_V1(RASTER_setBandIsNoData);
 Datum RASTER_setBandIsNoData(PG_FUNCTION_ARGS)
 {
@@ -734,3 +752,94 @@ Datum RASTER_setBandIsNoData(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(pgrtn);
 }
 
+/**
+ * Set the path value of an out-db band
+ */
+PG_FUNCTION_INFO_V1(RASTER_setBandPath);
+Datum RASTER_setBandPath(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster = NULL;
+	rt_pgraster *pgrtn = NULL;
+	rt_raster raster = NULL;
+	rt_band band = NULL;
+	int32_t bandindex = 1;
+	const char *outdbpathchar = NULL;
+	int32_t outdbindex = 1;
+	bool forceset = FALSE;
+	rt_band newband = NULL;
+
+	int hasnodata;
+	double nodataval = 0.;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	raster = rt_raster_deserialize(pgraster, FALSE);
+	if (!raster) {
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "RASTER_setBandPath: Cannot deserialize raster");
+		PG_RETURN_NULL();
+	}
+
+	/* Check index is not NULL or smaller than 1 */
+	if (!PG_ARGISNULL(1))
+		bandindex = PG_GETARG_INT32(1);
+
+	if (bandindex < 1)
+		elog(NOTICE, "Invalid band index (must use 1-based). Returning original raster");
+	else {
+		/* Fetch requested band */
+		band = rt_raster_get_band(raster, bandindex - 1);
+
+		if (!band)
+			elog(NOTICE, "Cannot find raster band of index %d. Returning original raster", bandindex);
+		else if (!rt_band_is_offline(band)) {
+			elog(NOTICE, "Band of index %d is not out-db. Returning original raster", bandindex);
+		}
+		else {
+			/* outdbpath */
+			if (!PG_ARGISNULL(2))
+				outdbpathchar = text_to_cstring(PG_GETARG_TEXT_P(2));
+			else
+				outdbpathchar = rt_band_get_ext_path(band);
+
+			/* outdbindex, is 1-based */
+			if (!PG_ARGISNULL(3))
+			outdbindex = PG_GETARG_INT32(3);
+
+			/* force */
+			if (!PG_ARGISNULL(4))
+				forceset = PG_GETARG_BOOL(4);
+
+			hasnodata = rt_band_get_hasnodata_flag(band);
+			if (hasnodata)
+				rt_band_get_nodata(band, &nodataval);
+
+			newband = rt_band_new_offline_from_path(
+				rt_raster_get_width(raster),
+				rt_raster_get_height(raster),
+				hasnodata,
+				nodataval,
+				outdbindex,
+				outdbpathchar,
+				forceset
+			);
+
+			if (rt_raster_replace_band(raster, newband, bandindex - 1) == NULL)
+				elog(NOTICE, "Cannot change path of band. Returning original raster");
+			else
+				/* old band is in the variable band */
+				rt_band_destroy(band);
+		}
+	}
+
+	/* Serialize raster again */
+	pgrtn = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+	PG_FREE_IF_COPY(pgraster, 0);
+	if (!pgrtn) PG_RETURN_NULL();
+
+	SET_VARSIZE(pgrtn, pgrtn->size);
+	PG_RETURN_POINTER(pgrtn);
+}
