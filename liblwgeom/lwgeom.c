@@ -2248,19 +2248,22 @@ static int
 lwgeom_subdivide_recursive(const LWGEOM* geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION* col)
 {
 	const uint32_t maxdepth = 50;
-	const GBOX* clip = lwgeom_get_bbox(geom);
+	GBOX* clip = gbox_copy(lwgeom_get_bbox(geom));
 	uint32_t nvertices = 0;
-	uint32_t i, j, n = 0;
+	uint32_t i, n = 0;
+	uint32_t split_ordinate;
 	double width;
 	double height;
-	POINT2D pivot, box_center, pt;
+	double pivot = DBL_MAX;
+	double center = DBL_MAX;
 	LWPOLY* lwpoly = NULL;
-	POINTARRAY* pa;
+
 	GBOX* subbox1;
 	GBOX* subbox2;
 	LWGEOM* clipped;
 
 	if (!clip) return 0;
+
 	width = clip->xmax - clip->xmin;
 	height = clip->ymax - clip->ymin;
 
@@ -2276,6 +2279,19 @@ lwgeom_subdivide_recursive(const LWGEOM* geom, uint32_t maxvertices, uint32_t de
 		}
 		else
 			return 0;
+	}
+
+	if (width == 0.0)
+	{
+		clip->xmax += FP_TOLERANCE;
+		clip->xmin -= FP_TOLERANCE;
+		width = 2 * FP_TOLERANCE;
+	}
+	if (height == 0.0)
+	{
+		clip->ymax += FP_TOLERANCE;
+		clip->ymin -= FP_TOLERANCE;
+		height = 2 * FP_TOLERANCE;
 	}
 
 	/* Always just recurse into collections */
@@ -2299,97 +2315,76 @@ lwgeom_subdivide_recursive(const LWGEOM* geom, uint32_t maxvertices, uint32_t de
 	}
 
 	nvertices = lwgeom_count_vertices(geom);
+
 	/* Skip empties entirely */
 	if (nvertices == 0) return 0;
 
 	/* If it is under the vertex tolerance, just add it, we're done */
-	if ( nvertices < maxvertices )
+	if (nvertices <= maxvertices)
 	{
 		lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
 		return 1;
 	}
 
-	pivot.x = box_center.x = (clip->xmin + clip->xmax) / 2;
-	pivot.y = box_center.y = (clip->ymin + clip->ymax) / 2;
+	split_ordinate = (width > height) ? 0 : 1;
+	if (split_ordinate == 0)
+		center = (clip->xmin + clip->xmax) / 2;
+	else
+		center = (clip->ymin + clip->ymax) / 2;
 
 	if (geom->type == POLYGONTYPE)
 	{
-		pivot.x = DBL_MAX;
-		pivot.y = DBL_MAX;
+		uint32_t ring_to_trim = 0;
+		double ring_area = 0;
+		double pivot_eps = DBL_MAX;
+		double pt_eps = DBL_MAX;
+		POINTARRAY* pa;
+		pivot = DBL_MAX;
 		lwpoly = (LWPOLY*)geom;
 
-		if (width > height)
+		/* if there are more points in holes than in outer ring */
+		if (nvertices > 2 * lwpoly->rings[0]->npoints)
 		{
-			for (i = 0; i < lwpoly->nrings; i++)
+			/* trim holes starting from biggest */
+			for (i = 1; i < lwpoly->nrings; i++)
 			{
-				pa = lwpoly->rings[i];
-				for (j = 0; j < pa->npoints; j++)
+				double current_ring_area = fabs(ptarray_signed_area(lwpoly->rings[i]));
+				if (current_ring_area >= ring_area)
 				{
-					if (getPoint2d_p(pa, j, &pt))
-					{
-						if (pt.x > clip->xmin && pt.x < clip->xmax &&
-						    (fabs(pivot.x - box_center.x) > fabs(pt.x - box_center.x)))
-						{
-							pivot.x = pt.x;
-							if (fabs(pivot.x - box_center.x) < EPSILON_SQLMM) break;
-						}
-					}
-					else
-						break;
+					ring_area = current_ring_area;
+					ring_to_trim = i;
 				}
-				if (fabs(pivot.x - box_center.x) < EPSILON_SQLMM) break;
-			}
-		}
-		else
-		{
-			for (i = 0; i < lwpoly->nrings; i++)
-			{
-				pa = lwpoly->rings[i];
-				for (j = 0; j < pa->npoints; j++)
-				{
-					if (getPoint2d_p(pa, j, &pt))
-					{
-						if (pt.y > clip->ymin && pt.y < clip->ymax &&
-						    (fabs(pivot.y - box_center.y) > fabs(pt.y - box_center.y)))
-						{
-							pivot.y = pt.y;
-							if (fabs(pivot.y - box_center.y) < EPSILON_SQLMM) break;
-						}
-					}
-					else
-						break;
-				}
-				if (fabs(pivot.y - box_center.y) < EPSILON_SQLMM) break;
 			}
 		}
 
-		if (pivot.x == DBL_MAX) pivot.x = box_center.x;
-		if (pivot.y == DBL_MAX) pivot.y = box_center.y;
+		pa = lwpoly->rings[ring_to_trim];
+
+		/* find most central point in chosen ring */
+		for (i = 0; i < pa->npoints; i++)
+		{
+			double pt;
+			if (split_ordinate == 0)
+				pt = getPoint2d_cp(pa, i)->x;
+			else
+				pt = getPoint2d_cp(pa, i)->y;
+			pt_eps = fabs(pt - center);
+			if (pivot_eps > pt_eps)
+			{
+				pivot = pt;
+				pivot_eps = pt_eps;
+			}
+		}
 	}
 
 	subbox1 = gbox_copy(clip);
 	subbox2 = gbox_copy(clip);
 
-	if (width > height)
-		subbox1->xmax = subbox2->xmin = pivot.x;
+	if (pivot == DBL_MAX) pivot = center;
+
+	if (split_ordinate == 0)
+		subbox1->xmax = subbox2->xmin = pivot;
 	else
-		subbox1->ymax = subbox2->ymin = pivot.y;
-
-	if ( height == 0 )
-	{
-		subbox1->ymax += FP_TOLERANCE;
-		subbox2->ymax += FP_TOLERANCE;
-		subbox1->ymin -= FP_TOLERANCE;
-		subbox2->ymin -= FP_TOLERANCE;
-	}
-
-	if ( width == 0 )
-	{
-		subbox1->xmax += FP_TOLERANCE;
-		subbox2->xmax += FP_TOLERANCE;
-		subbox1->xmin -= FP_TOLERANCE;
-		subbox2->xmin -= FP_TOLERANCE;
-	}
+		subbox1->ymax = subbox2->ymin = pivot;
 
 	++depth;
 
@@ -2400,7 +2395,6 @@ lwgeom_subdivide_recursive(const LWGEOM* geom, uint32_t maxvertices, uint32_t de
 		lwgeom_free(clipped);
 	}
 
-	printf("box %f %f %f %f\n", subbox2->xmin, subbox2->ymin, subbox2->xmax, subbox2->ymax);
 	clipped = lwgeom_clip_by_rect(geom, subbox2->xmin, subbox2->ymin, subbox2->xmax, subbox2->ymax);
 	if (clipped)
 	{
@@ -2415,7 +2409,7 @@ LWCOLLECTION *
 lwgeom_subdivide(const LWGEOM *geom, uint32_t maxvertices)
 {
 	static uint32_t startdepth = 0;
-	static uint32_t minmaxvertices = 8;
+	static uint32_t minmaxvertices = 5;
 	LWCOLLECTION *col;
 
 	col = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
