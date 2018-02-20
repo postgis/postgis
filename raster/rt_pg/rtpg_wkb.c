@@ -33,6 +33,7 @@
 #include <utils/builtins.h> /*  for cstring_to_text */
 
 #include "rtpostgis.h"
+#include "lwgeom_pg.h"
 
 Datum RASTER_asWKB(PG_FUNCTION_ARGS);
 Datum RASTER_asHexWKB(PG_FUNCTION_ARGS);
