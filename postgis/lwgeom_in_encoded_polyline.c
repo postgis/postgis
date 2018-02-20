@@ -26,6 +26,7 @@
 #include <assert.h>
 
 #include "postgres.h"
+#include "utils/builtins.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
@@ -45,7 +46,7 @@ Datum line_from_encoded_polyline(PG_FUNCTION_ARGS)
   if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 
   encodedpolyline_input = PG_GETARG_TEXT_P(0);
-  encodedpolyline = text2cstring(encodedpolyline_input);
+  encodedpolyline = text_to_cstring(encodedpolyline_input);
 
   if (PG_NARGS() > 1 && !PG_ARGISNULL(1))
   {
