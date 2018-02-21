@@ -2379,7 +2379,7 @@ LWGEOM* lwgeom_node(const LWGEOM* lwgeom_in);
  * @param edgeOnly if non-zero the result will be a MULTILINESTRING,
  *                 otherwise it'll be a COLLECTION of polygons.
  */
-LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *geom, double tolerance, int edgeOnly);
+LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *geom, double tolerance, int32_t edgeOnly);
 
 /**
  * Take vertices of a geometry and build the Voronoi diagram

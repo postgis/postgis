@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-LWTIN* lwtin_from_geos(const GEOSGeometry* geom, int want3d);
+LWTIN* lwtin_from_geos(const GEOSGeometry* geom, uint8_t want3d);
 
 #define LWGEOM_GEOS_ERRMSG_MAXSIZE 256
 char lwgeom_geos_errmsg[LWGEOM_GEOS_ERRMSG_MAXSIZE];
@@ -59,7 +59,7 @@ lwgeom_geos_error(const char* fmt, ...)
 
 /* Return a POINTARRAY from a GEOSCoordSeq */
 POINTARRAY*
-ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, char want3d)
+ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d)
 {
 	uint32_t dims = 2;
 	uint32_t size, i;
@@ -99,7 +99,7 @@ ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, char want3d)
 
 /* Return an LWGEOM from a Geometry */
 LWGEOM*
-GEOS2LWGEOM(const GEOSGeometry* geom, uint32_t want3d)
+GEOS2LWGEOM(const GEOSGeometry* geom, uint8_t want3d)
 {
 	int type = GEOSGeomTypeId(geom);
 	int SRID = GEOSGetSRID(geom);
@@ -178,10 +178,10 @@ GEOS2LWGEOM(const GEOSGeometry* geom, uint32_t want3d)
 	}
 }
 
-GEOSCoordSeq ptarray_to_GEOSCoordSeq(const POINTARRAY*, int fix_ring);
+GEOSCoordSeq ptarray_to_GEOSCoordSeq(const POINTARRAY*, uint8_t fix_ring);
 
 GEOSCoordSeq
-ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, int fix_ring)
+ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 {
 	uint32_t dims = 2;
 	uint32_t i;
@@ -254,7 +254,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, int fix_ring)
 }
 
 static inline GEOSGeometry*
-ptarray_to_GEOSLinearRing(const POINTARRAY* pa, int autofix)
+ptarray_to_GEOSLinearRing(const POINTARRAY* pa, uint8_t autofix)
 {
 	GEOSCoordSeq sq;
 	GEOSGeom g;
@@ -304,7 +304,7 @@ GBOX2GEOS(const GBOX* box)
 }
 
 GEOSGeometry*
-LWGEOM2GEOS(const LWGEOM* lwgeom, int autofix)
+LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 {
 	GEOSCoordSeq sq;
 	GEOSGeom g, shell;
@@ -520,7 +520,7 @@ input_lwgeom_to_geos(GEOSGeometry** g, const LWGEOM* geom, const char* funcname)
 
 /* Output encoder and sanity checker for GEOS wrappers */
 inline static const uint32_t
-output_geos_as_lwgeom(GEOSGeometry** g, LWGEOM** geom, const uint32_t srid, const uint32_t is3d, const char* funcname)
+output_geos_as_lwgeom(GEOSGeometry** g, LWGEOM** geom, const uint32_t srid, const uint8_t is3d, const char* funcname)
 {
 	GEOSSetSRID(*g, srid);
 	*geom = GEOS2LWGEOM(*g, is3d);
@@ -558,7 +558,7 @@ lwgeom_normalize(const LWGEOM* geom)
 {
 	LWGEOM* result;
 	uint32_t srid = get_result_srid(geom, NULL, __func__);
-	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry* g;
 
 	if (srid == SRID_INVALID) return NULL;
@@ -579,7 +579,7 @@ lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 {
 	LWGEOM* result;
 	uint32_t srid = get_result_srid(geom1, geom2, __func__);
-	uint32_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
+	uint8_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
 	GEOSGeometry* g1;
 	GEOSGeometry* g2;
 	GEOSGeometry* g3;
@@ -613,7 +613,7 @@ lwgeom_linemerge(const LWGEOM* geom)
 {
 	LWGEOM* result;
 	uint32_t srid = get_result_srid(geom, NULL, __func__);
-	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry* g1;
 	GEOSGeometry* g3;
 
@@ -643,7 +643,7 @@ lwgeom_unaryunion(const LWGEOM* geom)
 {
 	LWGEOM* result;
 	uint32_t srid = get_result_srid(geom, NULL, __func__);
-	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry* g1;
 	GEOSGeometry* g3;
 
@@ -673,7 +673,7 @@ lwgeom_difference(const LWGEOM* geom1, const LWGEOM* geom2)
 {
 	LWGEOM* result;
 	uint32_t srid = get_result_srid(geom1, geom2, __func__);
-	uint32_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
+	uint8_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
 	GEOSGeometry *g1, *g2, *g3;
 
 	if (srid == SRID_INVALID) return NULL;
@@ -705,7 +705,7 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 {
 	LWGEOM* result;
 	uint32_t srid = get_result_srid(geom1, geom2, __func__);
-	uint32_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
+	uint8_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
 	GEOSGeometry *g1, *g2, *g3;
 
 	if (srid == SRID_INVALID) return NULL;
@@ -737,7 +737,7 @@ lwgeom_centroid(const LWGEOM* geom)
 {
 	LWGEOM* result;
 	uint32_t srid = get_result_srid(geom, NULL, __func__);
-	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry *g1, *g3;
 
 	if (srid == SRID_INVALID) return NULL;
@@ -769,7 +769,7 @@ lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 {
 	LWGEOM* result;
 	uint32_t srid = get_result_srid(geom1, geom2, __func__);
-	uint32_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
+	uint8_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
 	GEOSGeometry *g1, *g2, *g3;
 
 	if (srid == SRID_INVALID) return NULL;
@@ -808,7 +808,7 @@ lwgeom_clip_by_rect(const LWGEOM* geom, double x0, double y0, double x1, double 
 #else  /* POSTGIS_GEOS_VERSION >= 35 */
 	LWGEOM* result;
 	uint32_t srid = get_result_srid(geom, NULL, __func__);
-	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry *g1, *g3;
 
 	if (srid == SRID_INVALID) return NULL;
@@ -1077,7 +1077,7 @@ lwgeom_buildarea(const LWGEOM* geom)
 {
 	LWGEOM* result;
 	uint32_t srid = get_result_srid(geom, NULL, __func__);
-	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry *g1, *g3;
 
 	if (srid == SRID_INVALID) return NULL;
@@ -1136,7 +1136,7 @@ lwgeom_geos_noop(const LWGEOM* geom)
 {
 	LWGEOM* result;
 	uint32_t srid = get_result_srid(geom, NULL, __func__);
-	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry* g;
 
 	if (srid == SRID_INVALID) return NULL;
@@ -1160,7 +1160,7 @@ lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance)
 {
 	LWGEOM* result;
 	uint32_t srid = get_result_srid(geom1, geom2, __func__);
-	uint32_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
+	uint8_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
 	GEOSGeometry *g1, *g2, *g3;
 
 	if (srid == SRID_INVALID) return NULL;
@@ -1186,7 +1186,7 @@ lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2)
 {
 	LWGEOM* result;
 	uint32_t srid = get_result_srid(geom1, geom2, __func__);
-	uint32_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
+	uint8_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
 	GEOSGeometry *g1, *g2, *g3;
 
 	if (srid == SRID_INVALID) return NULL;
@@ -1213,7 +1213,7 @@ lwgeom_offsetcurve(const LWLINE* lwline, double size, int quadsegs, int joinStyl
 	LWGEOM* result;
 	LWGEOM* geom = lwline_as_lwgeom(lwline);
 	uint32_t srid = get_result_srid(geom, NULL, __func__);
-	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry *g1, *g3;
 
 	if (srid == SRID_INVALID) return NULL;
@@ -1467,7 +1467,7 @@ lwgeom_to_points(const LWGEOM* lwgeom, uint32_t npoints)
 }
 
 LWTIN*
-lwtin_from_geos(const GEOSGeometry* geom, int want3d)
+lwtin_from_geos(const GEOSGeometry* geom, uint8_t want3d)
 {
 	int type = GEOSGeomTypeId(geom);
 	int SRID = GEOSGetSRID(geom);
@@ -1535,7 +1535,7 @@ lwtin_from_geos(const GEOSGeometry* geom, int want3d)
  * output = 1 for edges, 2 for TIN, 0 for polygons
  */
 LWGEOM*
-lwgeom_delaunay_triangulation(const LWGEOM* geom, double tolerance, int output)
+lwgeom_delaunay_triangulation(const LWGEOM* geom, double tolerance, int32_t output)
 {
 #if POSTGIS_GEOS_VERSION < 34
 	lwerror("lwgeom_delaunay_triangulation: GEOS 3.4 or higher required");
@@ -1543,7 +1543,7 @@ lwgeom_delaunay_triangulation(const LWGEOM* geom, double tolerance, int output)
 #else
 	LWGEOM* result;
 	uint32_t srid = get_result_srid(geom, NULL, __func__);
-	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry *g1, *g3;
 
 	if (output < 0 || output > 2)

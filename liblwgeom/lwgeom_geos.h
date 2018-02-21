@@ -31,8 +31,8 @@
 /*
 ** Public prototypes for GEOS utility functions.
 */
-LWGEOM* GEOS2LWGEOM(const GEOSGeometry* geom, uint32_t want3d);
-GEOSGeometry* LWGEOM2GEOS(const LWGEOM* g, int autofix);
+LWGEOM* GEOS2LWGEOM(const GEOSGeometry* geom, uint8_t want3d);
+GEOSGeometry* LWGEOM2GEOS(const LWGEOM* g, uint8_t autofix);
 GEOSGeometry* GBOX2GEOS(const GBOX* g);
 GEOSGeometry* LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
 
@@ -43,7 +43,7 @@ int cluster_intersecting(GEOSGeometry** geoms, uint32_t num_geoms, GEOSGeometry*
 int cluster_within_distance(LWGEOM** geoms, uint32_t num_geoms, double tolerance, LWGEOM*** clusterGeoms, uint32_t* num_clusters);
 int union_dbscan(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint32_t min_points, char** is_in_cluster_ret);
 
-POINTARRAY* ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, char want3d);
+POINTARRAY* ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d);
 
 extern char lwgeom_geos_errmsg[];
 extern void lwgeom_geos_error(const char* fmt, ...);
