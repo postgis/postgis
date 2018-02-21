@@ -2,17 +2,18 @@
 <chapter id="postgis_introduction">
   <title>Introduction</title>
 
-  <para>PostGIS was created by Refractions Research Inc, as a spatial
+  <para>PostGIS is a spatial extender for the PostgreSQL relational database
+	that was created by Refractions Research Inc, as a spatial
   database technology research project. Refractions is a GIS and database
   consulting company in Victoria, British Columbia, Canada, specializing in
   data integration and custom software development.</para>
 
-	<para>PostGIS is now a project of the OSGeo Foundation and is now developed and funded by many FOSS4G Developers as well
+	<para>PostGIS is now a project of the OSGeo Foundation and is developed and funded by many FOSS4G Developers as well
     as corporations all over the world that gain great benefit from its functionality and versatility.</para>
 	<para>The PostGIS project development group plans on supporting and
   enhancing PostGIS to better support a range of important GIS functionality
 	in the areas of OpenGIS and SQL/MM spatial standards, advanced topological constructs (coverages,
-  surfaces, networks), a datasource used by desktop user interface tools for viewing and editing
+  surfaces, networks), data source for desktop user interface tools for viewing and editing
   GIS data, and web-based access tools.</para>
 
 
