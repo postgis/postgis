@@ -732,52 +732,31 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 LWGEOM*
 lwgeom_centroid(const LWGEOM* geom)
 {
-	GEOSGeometry *g, *g_centroid;
-	LWGEOM* centroid;
-	int srid, is3d;
+	LWGEOM* result;
+	uint32_t srid = get_result_srid(geom, NULL, __func__);
+	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	GEOSGeometry* g1 = init_geos_geometry_and_return_null();
+	GEOSGeometry* g3;
+
+	if (srid == SRID_INVALID) return NULL;
 
 	if (lwgeom_is_empty(geom))
 	{
-		LWPOINT* lwp = lwpoint_construct_empty(lwgeom_get_srid(geom), lwgeom_has_z(geom), lwgeom_has_m(geom));
+		LWPOINT* lwp = lwpoint_construct_empty(srid, is3d, lwgeom_has_m(geom));
 		return lwpoint_as_lwgeom(lwp);
 	}
 
-	srid = lwgeom_get_srid(geom);
-	is3d = lwgeom_has_z(geom);
+	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
 
-	initGEOS(lwnotice, lwgeom_geos_error);
+	g3 = GEOSGetCentroid(g1);
 
-	g = LWGEOM2GEOS(geom, 0);
+	if (!g3) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
-	if (!g) /* exception thrown at construction */
-	{
-		lwerror("Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, NULL, &g3, __func__);
 
-	g_centroid = GEOSGetCentroid(g);
-	GEOSGeom_destroy(g);
+	geos_clean(&g1, NULL, &g3);
 
-	if (!g_centroid)
-	{
-		lwerror("GEOSGetCentroid: %s", lwgeom_geos_errmsg);
-		return NULL; /* never get here */
-	}
-
-	LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g_centroid));
-
-	GEOSSetSRID(g_centroid, srid);
-
-	centroid = GEOS2LWGEOM(g_centroid, is3d);
-	GEOSGeom_destroy(g_centroid);
-
-	if (!centroid)
-	{
-		lwerror("GEOS GEOSGetCentroid() threw an error (result postgis geometry formation)!");
-		return NULL; /* never get here */
-	}
-
-	return centroid;
+	return result;
 }
 
 LWGEOM*
