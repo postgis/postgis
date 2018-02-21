@@ -762,12 +762,14 @@ lwgeom_centroid(const LWGEOM* geom)
 LWGEOM*
 lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 {
-	int is3d;
-	int srid;
-	GEOSGeometry *g1, *g2, *g3;
 	LWGEOM* result;
+	uint32_t srid = get_result_srid(geom1, geom2, __func__);
+	uint32_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
+	GEOSGeometry* g1 = init_geos_geometry_and_return_null();
+	GEOSGeometry* g2;
+	GEOSGeometry* g3;
 
-	LWDEBUG(2, "in geomunion");
+	if (srid == SRID_INVALID) return NULL;
 
 	/* A.Union(empty) == A */
 	if (lwgeom_is_empty(geom1)) return lwgeom_clone_deep(geom2);
@@ -775,64 +777,21 @@ lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 	/* B.Union(empty) == B */
 	if (lwgeom_is_empty(geom2)) return lwgeom_clone_deep(geom1);
 
-	/* ensure srids are identical */
-	srid = (int)(geom1->srid);
-	error_if_srid_mismatch(srid, (int)(geom2->srid));
-
-	is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
-
-	initGEOS(lwnotice, lwgeom_geos_error);
-
-	g1 = LWGEOM2GEOS(geom1, 0);
-
-	if (!g1) /* exception thrown at construction */
-	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
-
-	g2 = LWGEOM2GEOS(geom2, 0);
-
-	if (!g2) /* exception thrown at construction */
-	{
-		GEOSGeom_destroy(g1);
-		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
-
-	LWDEBUGF(3, "g1=%s", GEOSGeomToWKT(g1));
-	LWDEBUGF(3, "g2=%s", GEOSGeomToWKT(g2));
+	if (!input_lwgeom_to_geos(&g1, geom1, __func__)) return NULL;
+	if (!input_lwgeom_to_geos(&g2, geom2, __func__)) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
 	g3 = GEOSUnion(g1, g2);
 
-	LWDEBUGF(3, "g3=%s", GEOSGeomToWKT(g3));
+	if (!g3) return geos_clean_and_fail(&g1, &g2, NULL, __func__);
 
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g2);
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, &g2, &g3, __func__);
 
-	if (!g3)
-	{
-		lwerror("GEOSUnion: %s", lwgeom_geos_errmsg);
-		return NULL; /* never get here */
-	}
-
-	GEOSSetSRID(g3, srid);
-
-	result = GEOS2LWGEOM(g3, is3d);
-
-	GEOSGeom_destroy(g3);
-
-	if (!result)
-	{
-		lwerror("Error performing union: GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
-		return NULL; /* never get here */
-	}
-
+	geos_clean(&g1, &g2, &g3);
 	return result;
 }
 
 LWGEOM*
-lwgeom_clip_by_rect(const LWGEOM* geom1, double x0, double y0, double x1, double y1)
+lwgeom_clip_by_rect(const LWGEOM* geom, double x0, double y0, double x1, double y1)
 {
 #if POSTGIS_GEOS_VERSION < 35
 	lwerror(
@@ -842,51 +801,25 @@ lwgeom_clip_by_rect(const LWGEOM* geom1, double x0, double y0, double x1, double
 	return NULL;
 #else  /* POSTGIS_GEOS_VERSION >= 35 */
 	LWGEOM* result;
-	GEOSGeometry *g1, *g3;
-	int is3d;
+	uint32_t srid = get_result_srid(geom, NULL, __func__);
+	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	GEOSGeometry* g1 = init_geos_geometry_and_return_null();
+	GEOSGeometry* g3;
+
+	if (srid == SRID_INVALID) return NULL;
 
 	/* A.Intersection(Empty) == Empty */
-	if (lwgeom_is_empty(geom1)) return lwgeom_clone_deep(geom1);
+	if (lwgeom_is_empty(geom)) return lwgeom_clone_deep(geom);
 
-	is3d = FLAGS_GET_Z(geom1->flags);
-
-	initGEOS(lwnotice, lwgeom_geos_error);
-
-	LWDEBUG(3, "clip_by_rect() START");
-
-	g1 = LWGEOM2GEOS(geom1, 1); /* auto-fix structure */
-	if (!g1)                    /* exception thrown at construction */
-	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
-
-	LWDEBUG(3, " constructed geometrys - calling geos");
-	LWDEBUGF(3, " g1 = %s", GEOSGeomToWKT(g1));
+	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
 
 	g3 = GEOSClipByRect(g1, x0, y0, x1, y1);
-	GEOSGeom_destroy(g1);
 
-	LWDEBUG(3, " clip_by_rect finished");
+	if (!g3) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
-	if (!g3)
-	{
-		lwnotice("Error performing rectangular clipping: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, NULL, &g3, __func__);
 
-	LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
-
-	result = GEOS2LWGEOM(g3, is3d);
-	GEOSGeom_destroy(g3);
-
-	if (!result)
-	{
-		lwerror("Error performing rectangular clipping: GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
-		return NULL; /* never get here */
-	}
-
-	result->srid = geom1->srid;
+	geos_clean(&g1, NULL, &g3);
 
 	return result;
 #endif /* POSTGIS_GEOS_VERSION >= 35 */
