@@ -1073,77 +1073,49 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 LWGEOM*
 lwgeom_buildarea(const LWGEOM* geom)
 {
-	GEOSGeometry* geos_in;
-	GEOSGeometry* geos_out;
-	LWGEOM* geom_out;
-	int SRID = (int)(geom->srid);
-	int is3d = FLAGS_GET_Z(geom->flags);
+	LWGEOM* result;
+	uint32_t srid = get_result_srid(geom, NULL, __func__);
+	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	GEOSGeometry* g1 = init_geos_geometry_and_return_null();
+	GEOSGeometry* g3;
+
+	if (srid == SRID_INVALID) return NULL;
 
 	/* Can't build an area from an empty! */
-	if (lwgeom_is_empty(geom)) return (LWGEOM*)lwpoly_construct_empty(SRID, is3d, 0);
+	if (lwgeom_is_empty(geom)) return (LWGEOM*)lwpoly_construct_empty(srid, is3d, 0);
 
-	LWDEBUG(3, "buildarea called");
+	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
 
-	LWDEBUGF(3, "ST_BuildArea got geom @ %p", geom);
+	g3 = LWGEOM_GEOS_buildArea(g1);
 
-	initGEOS(lwnotice, lwgeom_geos_error);
-
-	geos_in = LWGEOM2GEOS(geom, 0);
-
-	if (!geos_in) /* exception thrown at construction */
-	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
-	geos_out = LWGEOM_GEOS_buildArea(geos_in);
-	GEOSGeom_destroy(geos_in);
-
-	if (!geos_out) /* exception thrown.. */
-	{
-		lwerror("LWGEOM_GEOS_buildArea: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
+	if (!g3) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
 	/* If no geometries are in result collection, return NULL */
-	if (GEOSGetNumGeometries(geos_out) == 0)
-	{
-		GEOSGeom_destroy(geos_out);
-		return NULL;
-	}
+	if (GEOSGetNumGeometries(g3) == 0) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
-	geom_out = GEOS2LWGEOM(geos_out, is3d);
-	GEOSGeom_destroy(geos_out);
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(&g1, NULL, &g3, __func__);
 
-#if PARANOIA_LEVEL > 0
-	if (!geom_out)
-	{
-		lwerror("%s [%s] serialization error", __FILE__, __LINE__);
-		return NULL;
-	}
-#endif
+	geos_clean(&g1, NULL, &g3);
 
-	return geom_out;
+	return result;
 }
+
+/* ------------ end of BuildArea stuff ---------------------------------------------------------------------} */
 
 int
 lwgeom_is_simple(const LWGEOM* geom)
 {
-	GEOSGeometry* geos_in;
+	GEOSGeometry* g = init_geos_geometry_and_return_null();
 	int simple;
 
 	/* Empty is always simple */
 	if (lwgeom_is_empty(geom)) return LW_TRUE;
 
-	initGEOS(lwnotice, lwgeom_geos_error);
+	if (!input_lwgeom_to_geos(&g, geom, __func__)) return -1;
 
-	geos_in = LWGEOM2GEOS(geom, 0);
-	if (!geos_in) /* exception thrown at construction */
-	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return -1;
-	}
-	simple = GEOSisSimple(geos_in);
-	GEOSGeom_destroy(geos_in);
+	simple = GEOSisSimple(g);
+	GEOSGeom_destroy(g);
 
 	if (simple == 2) /* exception thrown */
 	{
@@ -1154,178 +1126,104 @@ lwgeom_is_simple(const LWGEOM* geom)
 	return simple ? LW_TRUE : LW_FALSE;
 }
 
-/* ------------ end of BuildArea stuff ---------------------------------------------------------------------} */
-
 LWGEOM*
-lwgeom_geos_noop(const LWGEOM* geom_in)
+lwgeom_geos_noop(const LWGEOM* geom)
 {
-	GEOSGeometry* geosgeom;
-	LWGEOM* geom_out;
+	LWGEOM* result;
+	uint32_t srid = get_result_srid(geom, NULL, __func__);
+	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	GEOSGeometry* g = init_geos_geometry_and_return_null();
 
-	int is3d = FLAGS_GET_Z(geom_in->flags);
+	if (srid == SRID_INVALID) return NULL;
 
-	initGEOS(lwnotice, lwgeom_geos_error);
-	geosgeom = LWGEOM2GEOS(geom_in, 0);
-	if (!geosgeom)
-	{
-		lwerror("Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
+	if (!input_lwgeom_to_geos(&g, geom, __func__)) return NULL;
 
-	geom_out = GEOS2LWGEOM(geosgeom, is3d);
-	GEOSGeom_destroy(geosgeom);
-	if (!geom_out) lwerror("GEOS Geometry could not be converted to LWGEOM: %s", lwgeom_geos_errmsg);
+	if (!g) return geos_clean_and_fail(&g, NULL, NULL, __func__);
 
-	return geom_out;
+	if (!output_geos_as_lwgeom(&g, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(&g, NULL, NULL, __func__);
+
+	geos_clean(&g, NULL, NULL);
+
+	return result;
 }
 
 LWGEOM*
 lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance)
 {
-	int srid, is3d;
-	GEOSGeometry *g1, *g2, *g3;
-	LWGEOM* out;
+	LWGEOM* result;
+	uint32_t srid = get_result_srid(geom1, geom2, __func__);
+	uint32_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
+	GEOSGeometry* g1 = init_geos_geometry_and_return_null();
+	GEOSGeometry* g2;
+	GEOSGeometry* g3;
 
-	srid = geom1->srid;
-	error_if_srid_mismatch(srid, (int)(geom2->srid));
+	if (srid == SRID_INVALID) return NULL;
 
-	is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
-
-	initGEOS(lwnotice, lwgeom_geos_error);
-
-	g1 = (GEOSGeometry*)LWGEOM2GEOS(geom1, 0);
-	if (!g1) /* exception thrown at construction */
-	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
-
-	g2 = (GEOSGeometry*)LWGEOM2GEOS(geom2, 0);
-	if (!g2) /* exception thrown at construction */
-	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		GEOSGeom_destroy(g1);
-		return NULL;
-	}
+	if (!input_lwgeom_to_geos(&g1, geom1, __func__)) return NULL;
+	if (!input_lwgeom_to_geos(&g2, geom2, __func__)) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
 	g3 = GEOSSnap(g1, g2, tolerance);
-	if (!g3)
-	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g2);
-		lwerror("GEOSSnap: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
 
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g2);
+	if (!g3) return geos_clean_and_fail(&g1, &g2, NULL, __func__);
 
-	GEOSSetSRID(g3, srid);
-	out = GEOS2LWGEOM(g3, is3d);
-	if (!out)
-	{
-		GEOSGeom_destroy(g3);
-		lwerror("GEOSSnap() threw an error (result LWGEOM geometry formation)!");
-		return NULL;
-	}
-	GEOSGeom_destroy(g3);
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(&g1, &g2, &g3, __func__);
 
-	return out;
+	geos_clean(&g1, &g2, &g3);
+	return result;
 }
 
 LWGEOM*
 lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2)
 {
-	GEOSGeometry *g1, *g2, *g3;
-	LWGEOM* out;
-	int is3d, srid;
+	LWGEOM* result;
+	uint32_t srid = get_result_srid(geom1, geom2, __func__);
+	uint32_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
+	GEOSGeometry* g1 = init_geos_geometry_and_return_null();
+	GEOSGeometry* g2;
+	GEOSGeometry* g3;
 
-	srid = geom1->srid;
-	error_if_srid_mismatch(srid, (int)(geom2->srid));
+	if (srid == SRID_INVALID) return NULL;
 
-	is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
-
-	initGEOS(lwnotice, lwgeom_geos_error);
-
-	g1 = (GEOSGeometry*)LWGEOM2GEOS(geom1, 0);
-	if (!g1) /* exception thrown at construction */
-	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
-
-	g2 = (GEOSGeometry*)LWGEOM2GEOS(geom2, 0);
-	if (!g2) /* exception thrown at construction */
-	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		GEOSGeom_destroy(g1);
-		return NULL;
-	}
+	if (!input_lwgeom_to_geos(&g1, geom1, __func__)) return NULL;
+	if (!input_lwgeom_to_geos(&g2, geom2, __func__)) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
 	g3 = GEOSSharedPaths(g1, g2);
 
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g2);
+	if (!g3) return geos_clean_and_fail(&g1, &g2, NULL, __func__);
 
-	if (!g3)
-	{
-		lwerror("GEOSSharedPaths: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(&g1, &g2, &g3, __func__);
 
-	GEOSSetSRID(g3, srid);
-	out = GEOS2LWGEOM(g3, is3d);
-	GEOSGeom_destroy(g3);
-
-	if (!out)
-	{
-		lwerror("GEOS2LWGEOM threw an error");
-		return NULL;
-	}
-
-	return out;
+	geos_clean(&g1, &g2, &g3);
+	return result;
 }
 
 LWGEOM*
 lwgeom_offsetcurve(const LWLINE* lwline, double size, int quadsegs, int joinStyle, double mitreLimit)
 {
-	GEOSGeometry *g1, *g3;
-	LWGEOM* lwgeom_result;
-	LWGEOM* lwgeom_in = lwline_as_lwgeom(lwline);
+	LWGEOM* result;
+	LWGEOM* geom = lwline_as_lwgeom(lwline);
+	uint32_t srid = get_result_srid(geom, NULL, __func__);
+	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	GEOSGeometry* g1 = init_geos_geometry_and_return_null();
+	GEOSGeometry* g3;
 
-	initGEOS(lwnotice, lwgeom_geos_error);
+	if (srid == SRID_INVALID) return NULL;
 
-	g1 = (GEOSGeometry*)LWGEOM2GEOS(lwgeom_in, 0);
-	if (!g1)
-	{
-		lwerror("lwgeom_offsetcurve: Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
+	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
 
 	g3 = GEOSOffsetCurve(g1, size, quadsegs, joinStyle, mitreLimit);
 
-	/* Don't need input geometry anymore */
-	GEOSGeom_destroy(g1);
+	if (!g3) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
-	if (!g3)
-	{
-		lwerror("GEOSOffsetCurve: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(&g1, NULL, &g3, __func__);
 
-	LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
+	geos_clean(&g1, NULL, &g3);
 
-	GEOSSetSRID(g3, lwgeom_get_srid(lwgeom_in));
-	lwgeom_result = GEOS2LWGEOM(g3, lwgeom_has_z(lwgeom_in));
-	GEOSGeom_destroy(g3);
-
-	if (!lwgeom_result)
-	{
-		lwerror("lwgeom_offsetcurve: GEOS2LWGEOM returned null");
-		return NULL;
-	}
-
-	return lwgeom_result;
+	return result;
 }
 
 LWMPOINT*
@@ -1362,9 +1260,9 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints)
 
 	if (!lwpoly->bbox)
 		lwgeom_calculate_gbox(lwgeom, &bbox);
-
 	else
 		bbox = *(lwpoly->bbox);
+
 	area = lwpoly_area(lwpoly);
 	bbox_width = bbox.xmax - bbox.xmin;
 	bbox_height = bbox.ymax - bbox.ymin;
@@ -1564,20 +1462,15 @@ LWTIN*
 lwtin_from_geos(const GEOSGeometry* geom, int want3d)
 {
 	int type = GEOSGeomTypeId(geom);
-	int hasZ;
 	int SRID = GEOSGetSRID(geom);
 
 	/* GEOS's 0 is equivalent to our unknown as for SRID values */
 	if (SRID == 0) SRID = SRID_UNKNOWN;
 
-	if (want3d)
+	if (want3d && !GEOSHasZ(geom))
 	{
-		hasZ = GEOSHasZ(geom);
-		if (!hasZ)
-		{
-			LWDEBUG(3, "Geometry has no Z, won't provide one");
-			want3d = 0;
-		}
+		LWDEBUG(3, "Geometry has no Z, won't provide one");
+		want3d = 0;
 	}
 
 	switch (type)
@@ -1634,66 +1527,49 @@ lwtin_from_geos(const GEOSGeometry* geom, int want3d)
  * output = 1 for edges, 2 for TIN, 0 for polygons
  */
 LWGEOM*
-lwgeom_delaunay_triangulation(const LWGEOM* lwgeom_in, double tolerance, int output)
+lwgeom_delaunay_triangulation(const LWGEOM* geom, double tolerance, int output)
 {
 #if POSTGIS_GEOS_VERSION < 34
 	lwerror("lwgeom_delaunay_triangulation: GEOS 3.4 or higher required");
 	return NULL;
 #else
-	GEOSGeometry *g1, *g3;
-	LWGEOM* lwgeom_result;
+	LWGEOM* result;
+	uint32_t srid = get_result_srid(geom, NULL, __func__);
+	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	GEOSGeometry* g1 = init_geos_geometry_and_return_null();
+	GEOSGeometry* g3;
 
 	if (output < 0 || output > 2)
 	{
-		lwerror("lwgeom_delaunay_triangulation: invalid output type specified %d", output);
+		lwerror("%s: invalid output type specified %d", __func__, output);
 		return NULL;
 	}
 
-	initGEOS(lwnotice, lwgeom_geos_error);
+	if (srid == SRID_INVALID) return NULL;
 
-	g1 = (GEOSGeometry*)LWGEOM2GEOS(lwgeom_in, 0);
-	if (!g1)
-	{
-		lwerror("lwgeom_delaunay_triangulation: Geometry could not be converted to GEOS: %s",
-			lwgeom_geos_errmsg);
-		return NULL;
-	}
+	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
 
 	/* if output != 1 we want polys */
 	g3 = GEOSDelaunayTriangulation(g1, tolerance, output == 1);
 
-	/* Don't need input geometry anymore */
-	GEOSGeom_destroy(g1);
-
-	if (!g3)
-	{
-		lwerror("GEOSDelaunayTriangulation: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
-
-	/* LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3)); */
-
-	GEOSSetSRID(g3, lwgeom_get_srid(lwgeom_in));
+	if (!g3) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
 	if (output == 2)
-		lwgeom_result = (LWGEOM*)lwtin_from_geos(g3, lwgeom_has_z(lwgeom_in));
-	else
-		lwgeom_result = GEOS2LWGEOM(g3, lwgeom_has_z(lwgeom_in));
-
-	GEOSGeom_destroy(g3);
-
-	if (!lwgeom_result)
 	{
-		if (output != 2)
-			lwerror("lwgeom_delaunay_triangulation: GEOS2LWGEOM returned null");
-		else
-			lwerror("lwgeom_delaunay_triangulation: lwtin_from_geos returned null");
-
-		return NULL;
+		result = (LWGEOM*)lwtin_from_geos(g3, is3d);
+		if (!result)
+		{
+			geos_clean(&g1, NULL, &g3);
+			lwerror("%s: cannot convert output geometry", __func__);
+			return NULL;
+		}
+		lwgeom_set_srid(result, srid);
 	}
+	else if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(&g1, NULL, &g3, __func__);
 
-	return lwgeom_result;
-
+	geos_clean(&g1, NULL, &g3);
+	return result;
 #endif /* POSTGIS_GEOS_VERSION < 34 */
 }
 
