@@ -609,7 +609,6 @@ lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, &g2, &g3, __func__);
 
-	lwgeom_set_srid(result, srid);
 	geos_clean(&g1, &g2, &g3);
 	return result;
 }
@@ -671,79 +670,45 @@ lwgeom_unaryunion(const LWGEOM* geom)
 LWGEOM*
 lwgeom_difference(const LWGEOM* geom1, const LWGEOM* geom2)
 {
-	GEOSGeometry *g1, *g2, *g3;
 	LWGEOM* result;
-	int is3d;
-	int srid;
+	uint32_t srid = get_result_srid(geom1, geom2, __func__);
+	uint32_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
+	GEOSGeometry* g1 = init_geos_geometry_and_return_null();
+	GEOSGeometry* g2;
+	GEOSGeometry* g3;
 
-	/* A.Difference(Empty) == A */
-	if (lwgeom_is_empty(geom2)) return lwgeom_clone_deep(geom1);
+	if (srid == SRID_INVALID) return NULL;
 
-	/* Empty.Difference(A) == Empty */
-	if (lwgeom_is_empty(geom1)) return lwgeom_clone_deep(geom1);
+	/* A.Intersection(Empty) == Empty */
+	if (lwgeom_is_empty(geom2)) return lwgeom_clone_deep(geom1); /* match empty type? */
 
-	/* ensure srids are identical */
-	srid = (int)(geom1->srid);
-	error_if_srid_mismatch(srid, (int)(geom2->srid));
+	/* Empty.Intersection(A) == Empty */
+	if (lwgeom_is_empty(geom1)) return lwgeom_clone_deep(geom1); /* match empty type? */
 
-	is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
-
-	initGEOS(lwnotice, lwgeom_geos_error);
-
-	g1 = LWGEOM2GEOS(geom1, 0);
-	if (!g1) /* exception thrown at construction */
-	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
-
-	g2 = LWGEOM2GEOS(geom2, 0);
-	if (!g2) /* exception thrown at construction */
-	{
-		GEOSGeom_destroy(g1);
-		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
+	if (!input_lwgeom_to_geos(&g1, geom1, __func__)) return NULL;
+	if (!input_lwgeom_to_geos(&g2, geom2, __func__)) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
 	g3 = GEOSDifference(g1, g2);
 
-	if (!g3)
-	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g2);
-		lwerror("GEOSDifference: %s", lwgeom_geos_errmsg);
-		return NULL; /* never get here */
-	}
+	if (!g3) return geos_clean_and_fail(&g1, &g2, NULL, __func__);
 
-	LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, &g2, &g3, __func__);
 
-	GEOSSetSRID(g3, srid);
-
-	result = GEOS2LWGEOM(g3, is3d);
-
-	if (!result)
-	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g2);
-		GEOSGeom_destroy(g3);
-		lwerror("Error performing difference: GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
-		return NULL; /* never get here */
-	}
-
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g2);
-	GEOSGeom_destroy(g3);
-
+	geos_clean(&g1, &g2, &g3);
 	return result;
 }
 
 LWGEOM*
 lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 {
-	GEOSGeometry *g1, *g2, *g3;
 	LWGEOM* result;
-	int is3d;
-	int srid;
+	uint32_t srid = get_result_srid(geom1, geom2, __func__);
+	uint32_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
+	GEOSGeometry* g1 = init_geos_geometry_and_return_null();
+	GEOSGeometry* g2;
+	GEOSGeometry* g3;
+
+	if (srid == SRID_INVALID) return NULL;
 
 	/* A.SymDifference(Empty) == A */
 	if (lwgeom_is_empty(geom2)) return lwgeom_clone_deep(geom1);
@@ -751,60 +716,16 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 	/* Empty.DymDifference(B) == B */
 	if (lwgeom_is_empty(geom1)) return lwgeom_clone_deep(geom2);
 
-	/* ensure srids are identical */
-	srid = (int)(geom1->srid);
-	error_if_srid_mismatch(srid, (int)(geom2->srid));
-
-	is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
-
-	initGEOS(lwnotice, lwgeom_geos_error);
-
-	g1 = LWGEOM2GEOS(geom1, 0);
-
-	if (!g1) /* exception thrown at construction */
-	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
-
-	g2 = LWGEOM2GEOS(geom2, 0);
-
-	if (!g2) /* exception thrown at construction */
-	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		GEOSGeom_destroy(g1);
-		return NULL;
-	}
+	if (!input_lwgeom_to_geos(&g1, geom1, __func__)) return NULL;
+	if (!input_lwgeom_to_geos(&g2, geom2, __func__)) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
 	g3 = GEOSSymDifference(g1, g2);
 
-	if (!g3)
-	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g2);
-		lwerror("GEOSSymDifference: %s", lwgeom_geos_errmsg);
-		return NULL; /* never get here */
-	}
+	if (!g3) return geos_clean_and_fail(&g1, &g2, NULL, __func__);
 
-	LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, &g2, &g3, __func__);
 
-	GEOSSetSRID(g3, srid);
-
-	result = GEOS2LWGEOM(g3, is3d);
-
-	if (!result)
-	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g2);
-		GEOSGeom_destroy(g3);
-		lwerror("GEOS symdifference() threw an error (result postgis geometry formation)!");
-		return NULL; /* never get here */
-	}
-
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g2);
-	GEOSGeom_destroy(g3);
-
+	geos_clean(&g1, &g2, &g3);
 	return result;
 }
 
