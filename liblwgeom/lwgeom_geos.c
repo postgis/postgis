@@ -522,9 +522,10 @@ input_lwgeom_to_geos(GEOSGeometry** g, const LWGEOM* geom, const char* funcname)
 
 /* Output encoder and sanity checker for GEOS wrappers */
 inline static const uint32_t
-output_geos_as_lwgeom(const GEOSGeometry* g, LWGEOM** geom, const uint32_t is3d, const char* funcname)
+output_geos_as_lwgeom(GEOSGeometry** g, LWGEOM** geom, const uint32_t srid, const uint32_t is3d, const char* funcname)
 {
-	*geom = GEOS2LWGEOM(g, is3d);
+	GEOSSetSRID(*g, srid);
+	*geom = GEOS2LWGEOM(*g, is3d);
 	if (!*geom)
 	{
 		lwerror("%s: result geometry could not be converted from GEOS: %s", funcname, lwgeom_geos_errmsg);
@@ -576,8 +577,7 @@ lwgeom_normalize(const LWGEOM* geom)
 
 	if (GEOSNormalize(g) == -1) return geos_clean_and_fail(&g, NULL, NULL, __func__);
 
-	assert(GEOSGetSRID(g) == srid);
-	output_geos_as_lwgeom(g, &result, is3d, __func__);
+	output_geos_as_lwgeom(&g, &result, srid, is3d, __func__);
 	GEOSGeom_destroy(g);
 	return result;
 }
@@ -595,10 +595,10 @@ lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 	if (srid == SRID_INVALID) return NULL;
 
 	/* A.Intersection(Empty) == Empty */
-	if (lwgeom_is_empty(geom2)) return lwgeom_clone_deep(geom2);
+	if (lwgeom_is_empty(geom2)) return lwgeom_clone_deep(geom2); /* match empty type? */
 
 	/* Empty.Intersection(A) == Empty */
-	if (lwgeom_is_empty(geom1)) return lwgeom_clone_deep(geom1);
+	if (lwgeom_is_empty(geom1)) return lwgeom_clone_deep(geom1); /* match empty type? */
 
 	if (!input_lwgeom_to_geos(&g1, geom1, __func__)) return NULL;
 	if (!input_lwgeom_to_geos(&g2, geom2, __func__)) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
@@ -607,7 +607,7 @@ lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	if (!g3) return geos_clean_and_fail(&g1, &g2, NULL, __func__);
 
-	if (!output_geos_as_lwgeom(g3, &result, is3d, __func__)) return geos_clean_and_fail(&g1, &g2, &g3, __func__);
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, &g2, &g3, __func__);
 
 	lwgeom_set_srid(result, srid);
 	geos_clean(&g1, &g2, &g3);
@@ -615,59 +615,28 @@ lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 }
 
 LWGEOM*
-lwgeom_linemerge(const LWGEOM* geom1)
+lwgeom_linemerge(const LWGEOM* geom)
 {
 	LWGEOM* result;
-	GEOSGeometry *g1, *g3;
-	int is3d = FLAGS_GET_Z(geom1->flags);
-	int srid = geom1->srid;
+	uint32_t srid = get_result_srid(geom, NULL, __func__);
+	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	GEOSGeometry* g1 = init_geos_geometry_and_return_null();
+	GEOSGeometry* g3;
+
+	if (srid == SRID_INVALID) return NULL;
 
 	/* Empty.Linemerge() == Empty */
-	if (lwgeom_is_empty(geom1))
-		return (LWGEOM*)lwcollection_construct_empty(COLLECTIONTYPE, srid, is3d, lwgeom_has_m(geom1));
+	if (lwgeom_is_empty(geom)) lwgeom_clone_deep(geom); /* match empty type to linestring? */
 
-	initGEOS(lwnotice, lwgeom_geos_error);
-
-	LWDEBUG(3, "linemerge() START");
-
-	g1 = LWGEOM2GEOS(geom1, 0);
-	if (!g1) /* exception thrown at construction */
-	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
-
-	LWDEBUG(3, " constructed geometrys - calling geos");
-	LWDEBUGF(3, " g1 = %s", GEOSGeomToWKT(g1));
-	/*LWDEBUGF(3, "g1 is valid = %i",GEOSisvalid(g1)); */
+	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
 
 	g3 = GEOSLineMerge(g1);
 
-	LWDEBUG(3, " linemerge finished");
+	if (!g3) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
-	if (!g3)
-	{
-		GEOSGeom_destroy(g1);
-		lwerror("Error performing linemerge: %s", lwgeom_geos_errmsg);
-		return NULL; /* never get here */
-	}
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, NULL, &g3, __func__);
 
-	LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
-
-	GEOSSetSRID(g3, srid);
-
-	result = GEOS2LWGEOM(g3, is3d);
-
-	if (!result)
-	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g3);
-		lwerror("Error performing linemerge: GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
-		return NULL; /* never get here */
-	}
-
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g3);
+	geos_clean(&g1, NULL, &g3);
 
 	return result;
 }
@@ -732,7 +701,7 @@ lwgeom_difference(const LWGEOM* geom1, const LWGEOM* geom2)
 	/* A.Difference(Empty) == A */
 	if (lwgeom_is_empty(geom2)) return lwgeom_clone_deep(geom1);
 
-	/* Empty.Intersection(A) == Empty */
+	/* Empty.Difference(A) == Empty */
 	if (lwgeom_is_empty(geom1)) return lwgeom_clone_deep(geom1);
 
 	/* ensure srids are identical */
