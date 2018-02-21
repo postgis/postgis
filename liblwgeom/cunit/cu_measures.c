@@ -193,212 +193,313 @@ static void test_mindistance2d_tolerance(void)
 
 }
 
+static int tree_pt(RECT_NODE *tree, double x, double y)
+{
+	POINT2D pt;
+	pt.x = x; pt.y = y;
+	return rect_tree_contains_point(tree, &pt);
+}
+
 static void test_rect_tree_contains_point(void)
 {
-	LWPOLY *poly;
-	POINT2D p;
+	LWGEOM *poly;
 	RECT_NODE* tree;
-	int result;
-	int boundary = 0;
 
-	/* square */
-	poly = (LWPOLY*)lwgeom_from_wkt("POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))", LW_PARSER_CHECK_NONE);
-	tree = rect_tree_new(poly->rings[0]);
+	/**********************************************************************
+	* curvepolygon
+	*/
+	poly = lwgeom_from_wkt("CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,1 5,0 10),(0 10,10 10,10 0, 0 0)),COMPOUNDCURVE(CIRCULARSTRING(3 7,5 8,7 7),(7 7,7 3,3 3, 3 7)))", LW_PARSER_CHECK_NONE);
+	tree = rect_tree_from_lwgeom(poly);
+	// char *wkt = rect_tree_to_wkt(tree);
+	// printf("%s\n", wkt);
+	// lwfree(wkt);
+	// return;
+
+	/* in hole, within arc stroke */
+	CU_ASSERT_EQUAL(tree_pt(tree, 5, 7.5), 0);
+	/* inside */
+	CU_ASSERT_EQUAL(tree_pt(tree, 8, 9), 1);
+	/* outside */
+	CU_ASSERT_EQUAL(tree_pt(tree, -1, 5), 0);
+	/* outside */
+	CU_ASSERT_EQUAL(tree_pt(tree, -1, 7.5), 0);
+	/* outside, within arc stroke */
+	CU_ASSERT_EQUAL(tree_pt(tree, 0.2, 7.5), 0);
+	/* inside, within arc stroke */
+	CU_ASSERT_EQUAL(tree_pt(tree, 0.5, 0.5), 1);
+	/* inside, crossing arc stroke */
+	CU_ASSERT_EQUAL(tree_pt(tree, 2, 7.5), 1);
+	/* touching hole corner */
+	CU_ASSERT_EQUAL(tree_pt(tree, 7, 7), 1);
+
+
+	/**********************************************************************
+	* polygon with hole and concavities
+	*/
+	poly = lwgeom_from_wkt("POLYGON((0 0,0 10,10 10,10 0,9 0,9 9,8 6,8 0,2 0,2 9,1 6,1 0,0 0),(4 4,4 6,6 6,6 4,4 4))", LW_PARSER_CHECK_NONE);
+	tree = rect_tree_from_lwgeom(poly);
+
+	/* inside, many grazings */
+	CU_ASSERT_EQUAL(tree_pt(tree, 3, 6), 1);
+	/* inside */
+	CU_ASSERT_EQUAL(tree_pt(tree, 3, 5.5), 1);
+	/* outside */
+	CU_ASSERT_EQUAL(tree_pt(tree, -3, 5.5), 0);
+	/* touching interior ring */
+	CU_ASSERT_EQUAL(tree_pt(tree, 4, 4), 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 6, 6), 1);
+	/* touching interior ring */
+	CU_ASSERT_EQUAL(tree_pt(tree, 4.5, 4), 1);
+	/* touching exterior ring */
+	CU_ASSERT_EQUAL(tree_pt(tree, 8, 0), 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 9, 0), 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 10, 1), 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 9.5, 1), 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 0, 10), 1);
+	/* touching grazing spike */
+	CU_ASSERT_EQUAL(tree_pt(tree, 1, 6), 1);
+	/* outide, many grazings */
+	CU_ASSERT_EQUAL(tree_pt(tree, -1, 6), 0);
+	/* within hole */
+	CU_ASSERT_EQUAL(tree_pt(tree, 5, 5), 0);
+	/* within */
+	CU_ASSERT_EQUAL(tree_pt(tree, 0.5, 4), 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 0.5, 6), 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 0.5, 9), 1);
+
+	/**********************************************************************
+	* square
+	*/
+	poly = lwgeom_from_wkt("POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))", LW_PARSER_CHECK_NONE);
+	tree = rect_tree_from_lwgeom(poly);
 
 	/* inside square */
-	boundary = 0;
-	p.x = 0.5;
-	p.y = 0.5;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_NOT_EQUAL(result, 0);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 0.5, 0.5), 1);
 	/* outside square */
-	boundary = 0;
-	p.x = 1.5;
-	p.y = 0.5;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(result, 0);
+	CU_ASSERT_EQUAL(tree_pt(tree, 1.5, 0.5), 0);
+	/* outside square grazing some edges */
+	CU_ASSERT_EQUAL(tree_pt(tree, -1, 1), 0);
+	/* inside square on corner */
+	CU_ASSERT_EQUAL(tree_pt(tree, 1, 1), 1);
+	/* inside square on top edge */
+	CU_ASSERT_EQUAL(tree_pt(tree, 0.5, 1), 1);
+	/* inside square on side edge */
+	CU_ASSERT_EQUAL(tree_pt(tree, 1, 0.5), 1);
 
 	rect_tree_free(tree);
-	lwpoly_free(poly);
+	lwgeom_free(poly);
 
 	/* ziggy zaggy horizontal saw tooth polygon */
-	poly = (LWPOLY*)lwgeom_from_wkt("POLYGON((0 0, 1 3, 2 0, 3 3, 4 0, 4 5, 0 5, 0 0))", LW_PARSER_CHECK_NONE);
-	tree = rect_tree_new(poly->rings[0]);
+	poly = lwgeom_from_wkt("POLYGON((0 0, 1 3, 2 0, 3 3, 4 0, 4 5, 0 5, 0 0))", LW_PARSER_CHECK_NONE);
+	tree = rect_tree_from_lwgeom(poly);
 
 	/* not in, left side */
-	boundary = 0;
-	p.x = -0.5;
-	p.y = 0.5;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(result, 0);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, -0.5, 0.5), 0);
 	/* not in, right side */
-	boundary = 0;
-	p.x = 3.0;
-	p.y = 1.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(result, 0);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 3, 1), 0);
 	/* inside */
-	boundary = 0;
-	p.x = 2.0;
-	p.y = 1.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_NOT_EQUAL(result, 0);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 2, 1), 1);
 	/* on left border */
-	boundary = 0;
-	p.x = 0.0;
-	p.y = 1.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 0, 1), 1);
+	/* on left border, grazing */
+	CU_ASSERT_EQUAL(tree_pt(tree, 0, 3), 1);
 	/* on right border */
-	boundary = 0;
-	p.x = 4.0;
-	p.y = 0.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 4, 0), 1);
 	/* on tooth concave */
-	boundary = 0;
-	p.x = 3.0;
-	p.y = 3.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 3, 3), 1);
 	/* on tooth convex */
-	boundary = 0;
-	p.x = 2.0;
-	p.y = 0.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 2, 0), 1);
 
 	rect_tree_free(tree);
-	lwpoly_free(poly);
+	lwgeom_free(poly);
 
-	/* ziggy zaggy vertical saw tooth polygon */
-	poly = (LWPOLY*)lwgeom_from_wkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", LW_PARSER_CHECK_NONE);
-	tree = rect_tree_new(poly->rings[0]);
+	/**********************************************************************
+	* ziggy zaggy vertical saw tooth polygon
+	*/
+	poly = lwgeom_from_wkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", LW_PARSER_CHECK_NONE);
+	tree = rect_tree_from_lwgeom(poly);
 
 	/* not in, left side */
-	boundary = 0;
-	p.x = -0.5;
-	p.y = 3.5;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(result, 0);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, -0.5, 3.5), 0);
 	/* not in, right side */
-	boundary = 0;
-	p.x = 6.0;
-	p.y = 2.2;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(result, 0);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 6.0, 2.2), 0);
 	/* inside */
-	boundary = 0;
-	p.x = 3.0;
-	p.y = 2.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_NOT_EQUAL(result, 0);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 3, 2), 1);
 	/* on bottom border */
-	boundary = 0;
-	p.x = 1.0;
-	p.y = 0.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 1, 0), 1);
 	/* on top border */
-	boundary = 0;
-	p.x = 3.0;
-	p.y = 6.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 3, 6), 1);
 	/* on tooth concave */
-	boundary = 0;
-	p.x = 3.0;
-	p.y = 1.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 3, 1), 1);
 	/* on tooth convex */
-	boundary = 0;
-	p.x = 0.0;
-	p.y = 2.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
-
+	CU_ASSERT_EQUAL(tree_pt(tree, 0, 2), 1);
 	/* on tooth convex */
-	boundary = 0;
-	p.x = 0.0;
-	p.y = 6.0;
-	result = rect_tree_contains_point(tree, &p, &boundary);
-	CU_ASSERT_EQUAL(boundary, 1);
+	CU_ASSERT_EQUAL(tree_pt(tree, 0, 6), 1);
 
 	rect_tree_free(tree);
-	lwpoly_free(poly);
+	lwgeom_free(poly);
 
+}
+
+static int tree_inter(const char *wkt1, const char *wkt2)
+{
+	LWGEOM *g1 = lwgeom_from_wkt(wkt1, LW_PARSER_CHECK_NONE);
+	LWGEOM *g2 = lwgeom_from_wkt(wkt2, LW_PARSER_CHECK_NONE);
+	RECT_NODE *t1 = rect_tree_from_lwgeom(g1);
+	RECT_NODE *t2 = rect_tree_from_lwgeom(g2);
+	int result = rect_tree_intersects_tree(t1, t2);
+	rect_tree_free(t1);
+	rect_tree_free(t2);
+	lwgeom_free(g1);
+	lwgeom_free(g2);
+	return result;
 }
 
 static void test_rect_tree_intersects_tree(void)
 {
-	LWPOLY *poly1, *poly2;
-	RECT_NODE *tree1, *tree2;
-	int result;
-
 	/* total overlap, A == B */
-	poly1 = (LWPOLY*)lwgeom_from_wkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", LW_PARSER_CHECK_NONE);
-	poly2 = (LWPOLY*)lwgeom_from_wkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", LW_PARSER_CHECK_NONE);
-	tree1 = rect_tree_new(poly1->rings[0]);
-	tree2 = rect_tree_new(poly2->rings[0]);
-	result = rect_tree_intersects_tree(tree1, tree2);
-	CU_ASSERT_EQUAL(result, LW_TRUE);
-	lwpoly_free(poly1);
-	lwpoly_free(poly2);
-	rect_tree_free(tree1);
-	rect_tree_free(tree2);
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))"),
+		LW_TRUE
+		);
 
 	/* hiding between the tines of the comb */
-	poly1 = (LWPOLY*)lwgeom_from_wkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", LW_PARSER_CHECK_NONE);
-	poly2 = (LWPOLY*)lwgeom_from_wkt("POLYGON((0.3 0.7, 0.3 0.8, 0.4 0.8, 0.4 0.7, 0.3 0.7))", LW_PARSER_CHECK_NONE);
-	tree1 = rect_tree_new(poly1->rings[0]);
-	tree2 = rect_tree_new(poly2->rings[0]);
-	result = rect_tree_intersects_tree(tree1, tree2);
-	CU_ASSERT_EQUAL(result, LW_FALSE);
-	lwpoly_free(poly1);
-	lwpoly_free(poly2);
-	rect_tree_free(tree1);
-	rect_tree_free(tree2);
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"POLYGON((0.3 0.7, 0.3 0.8, 0.4 0.8, 0.4 0.7, 0.3 0.7))"),
+		LW_FALSE
+		);
 
 	/* between the tines, but with a corner overlapping */
-	poly1 = (LWPOLY*)lwgeom_from_wkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", LW_PARSER_CHECK_NONE);
-	poly2 = (LWPOLY*)lwgeom_from_wkt("POLYGON((0.3 0.7, 0.3 0.8, 0.4 0.8, 1.3 0.3, 0.3 0.7))", LW_PARSER_CHECK_NONE);
-	tree1 = rect_tree_new(poly1->rings[0]);
-	tree2 = rect_tree_new(poly2->rings[0]);
-	result = rect_tree_intersects_tree(tree1, tree2);
-	CU_ASSERT_EQUAL(result, LW_TRUE);
-	lwpoly_free(poly1);
-	lwpoly_free(poly2);
-	rect_tree_free(tree1);
-	rect_tree_free(tree2);
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"POLYGON((0.3 0.7, 0.3 0.8, 0.4 0.8, 1.3 0.3, 0.3 0.7))"),
+		LW_TRUE
+		);
 
 	/* Just touching the top left corner of the comb */
-	poly1 = (LWPOLY*)lwgeom_from_wkt("POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))", LW_PARSER_CHECK_NONE);
-	poly2 = (LWPOLY*)lwgeom_from_wkt("POLYGON((-1 5, 0 5, 0 7, -1 7, -1 5))", LW_PARSER_CHECK_NONE);
-	tree1 = rect_tree_new(poly1->rings[0]);
-	tree2 = rect_tree_new(poly2->rings[0]);
-	result = rect_tree_intersects_tree(tree1, tree2);
-	CU_ASSERT_EQUAL(result, LW_TRUE);
-	lwpoly_free(poly1);
-	lwpoly_free(poly2);
-	rect_tree_free(tree1);
-	rect_tree_free(tree2);
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"POLYGON((-1 5, 0 5, 0 7, -1 7, -1 5))"),
+		LW_TRUE
+		);
 
+	/* Contained, complex */
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"GEOMETRYCOLLECTION(MULTILINESTRING((1 2, 3 2)),POINT(1 2))"),
+		LW_TRUE
+		);
 
+	/* Touching, complex */
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"GEOMETRYCOLLECTION(MULTILINESTRING((6 3, 8 4)),POINT(5 3))"),
+		LW_TRUE
+		);
+
+	/* Not Touching, complex */
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"GEOMETRYCOLLECTION(MULTILINESTRING((6 3, 8 4)),POINT(1 3.5))"),
+		LW_FALSE
+		);
+
+	/* Crossing, complex */
+	CU_ASSERT_EQUAL(tree_inter(
+		"POLYGON((0 0, 3 1, 0 2, 3 3, 0 4, 3 5, 0 6, 5 6, 5 0, 0 0))",
+		"GEOMETRYCOLLECTION(MULTILINESTRING((1.5 4.1, 1.6 2)),POINT(1 3.5))"),
+		LW_TRUE
+		);
 }
+
+
+static double
+test_rect_tree_distance_tree_case(const char *wkt1, const char *wkt2)
+{
+	LWGEOM *lw1 = lwgeom_from_wkt(wkt1, LW_PARSER_CHECK_NONE);
+	LWGEOM *lw2 = lwgeom_from_wkt(wkt2, LW_PARSER_CHECK_NONE);
+	RECT_NODE *n1 = rect_tree_from_lwgeom(lw1);
+	RECT_NODE *n2 = rect_tree_from_lwgeom(lw2);
+
+	// rect_tree_printf(n1, 0);
+	// rect_tree_printf(n2, 0);
+	//
+	// printf("%s\n", rect_tree_to_wkt(n1));
+	// printf("%s\n", rect_tree_to_wkt(n2));
+
+	double dist = rect_tree_distance_tree(n1, n2, 0.0);
+	// printf("%g\n", dist);
+	rect_tree_free(n1);
+	rect_tree_free(n2);
+	lwgeom_free(lw1);
+	lwgeom_free(lw2);
+	return dist;
+}
+
+#define TDT(w1, w2, d) CU_ASSERT_DOUBLE_EQUAL(test_rect_tree_distance_tree_case(w1, w2), d, 0.00001);
+
+static void
+test_rect_tree_distance_tree(void)
+{
+	const char *wkt;
+
+	wkt = "MULTIPOLYGON(((-123.35702791281 48.4232302445918,-123.35689654493 48.4237265810249,-123.354053908057 48.4234039978588,-123.35417179975 48.4229151379279,-123.354369811539 48.4220987102936,-123.355779071731 48.4222571534228,-123.357238860904 48.4224209369449,-123.35702791281 48.4232302445918)))";
+	TDT(wkt, "MULTIPOLYGON(((-123.353452578038 48.4259519079838,-123.35072012771 48.4256699150083,-123.347337809991 48.4254740864963,-123.347469111645 48.4245757659326,-123.349409235923 48.4246224093429,-123.349966167324 48.4246562342604,-123.353650661317 48.4250703224683,-123.353452578038 48.4259519079838)))", 0.0017144228293396);
+
+	wkt = "POINT(0 0)";
+	TDT(wkt, "MULTIPOINT(0 1.5,0 2,0 2.5)", 1.5);
+	TDT(wkt, "GEOMETRYCOLLECTION(POINT(3 4))", 5.0);
+	TDT(wkt, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4)))", 5.0);
+	TDT(wkt, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4))))", 5.0);
+	TDT(wkt, "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(3 4))))", 5.0);
+
+	TDT("LINESTRING(-2 0, -0.2 0)", "POINT(-2 0)", 0);
+	TDT("LINESTRING(-0.2 0, -2 0)", "POINT(-2 0)", 0);
+	TDT("LINESTRING(-1e-8 0, -0.2 0)", "POINT(-1e-8 0)", 0);
+	TDT("LINESTRING(-0.2 0, -1e-8 0)", "POINT(-1e-8 0)", 0);
+
+	wkt = "CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(1 6, 6 1, 9 7),(9 7, 3 13, 1 6)),COMPOUNDCURVE((3 6, 5 4, 7 4, 7 6),CIRCULARSTRING(7 6,5 8,3 6)))";
+	TDT(wkt, "POINT(3 14)", 1);
+	TDT(wkt, "POINT(3 8)", 0);
+	TDT(wkt, "POINT(6 5)", 1);
+	TDT(wkt, "POINT(6 4)", 0);
+
+	wkt = "MULTISURFACE(POLYGON((0 0,0 4,4 4,4 0,0 0)),CURVEPOLYGON(CIRCULARSTRING(8 2,10 4,12 2,10 0,8 2)))";
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(5 7,6 8,7 7,6 6,5 7))", 2.60555);
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(5 2,6 3,7 2,6 1,5 2))", 1);
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(4 2,5 3,6 2,5 1,4 2))", 0);
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(5 3,6 2,5 1,4 2,5 3))", 0);
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(4.5 3,5.5 2,4.5 1,3.5 2,4.5 3))", 0);
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(5.5 3,6.5 2,5.5 1,4.5 2,5.5 3))", 0.5);
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(10 3,11 2,10 1,9 2,10 3))", 0);
+	TDT(wkt, "CURVEPOLYGON(CIRCULARSTRING(2 3,3 2,2 1,1 2,2 3))", 0);
+
+	wkt = "CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,5 0,0 0)))";
+	TDT(wkt, "POINT(3 0)", 0.0);
+	TDT(wkt, "POINT(5 0)", 0.0);
+	TDT(wkt, "POINT(7 0)", 2.0);
+	TDT(wkt, "POINT(2.5 3.5)", 1.0);
+
+	wkt = "POINT(0 0)";
+	TDT(wkt, "POINT(0 1)", 1.0);
+	TDT(wkt, "POINT(1 0)", 1.0);
+
+	wkt = "LINESTRING(0 0,1 0)";
+	TDT(wkt, "LINESTRING(1 0,1 1)", 0.0);
+	TDT(wkt, "LINESTRING(0 1,1 1)", 1.0);
+
+	wkt = "POLYGON((0 0,0 1,1 1,1 0,0 0))";
+	TDT(wkt, "POINT(2 2)", sqrt(2));
+	TDT(wkt, "POINT(0.5 0.5)", 0);
+	TDT(wkt, "POINT(1 1)", 0);
+
+	wkt = "POLYGON((0 0,0 10,10 10,10 0,0 0), (4 4,4 6,6 6,6 4,4 4))";
+	TDT(wkt, "POINT(5 5)", 1);
+	TDT(wkt, "POLYGON((5 5,5 5.5,5.5 5.5,5.5 5, 5 5))", 0.5);
+}
+
 
 static void
 test_lwgeom_segmentize2d(void)
@@ -1292,4 +1393,5 @@ void measures_suite_setup(void)
 	PG_ADD_TEST(suite, test_lw_dist2d_ptarray_ptarrayarc);
 	PG_ADD_TEST(suite, test_lwgeom_tcpa);
 	PG_ADD_TEST(suite, test_lwgeom_is_trajectory);
+	PG_ADD_TEST(suite, test_rect_tree_distance_tree);
 }
