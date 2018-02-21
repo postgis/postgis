@@ -101,23 +101,18 @@ ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, char want3d)
 
 /* Return an LWGEOM from a Geometry */
 LWGEOM*
-GEOS2LWGEOM(const GEOSGeometry* geom, char want3d)
+GEOS2LWGEOM(const GEOSGeometry* geom, uint32_t want3d)
 {
 	int type = GEOSGeomTypeId(geom);
-	int hasZ;
 	int SRID = GEOSGetSRID(geom);
 
 	/* GEOS's 0 is equivalent to our unknown as for SRID values */
 	if (SRID == 0) SRID = SRID_UNKNOWN;
 
-	if (want3d)
+	if (want3d && !GEOSHasZ(geom))
 	{
-		hasZ = GEOSHasZ(geom);
-		if (!hasZ)
-		{
-			LWDEBUG(3, "Geometry has no Z, won't provide one");
-			want3d = 0;
-		}
+		LWDEBUG(3, "Geometry has no Z, won't provide one");
+		want3d = 0;
 	}
 
 	switch (type)
@@ -495,41 +490,75 @@ lwgeom_geos_version()
 	return ver;
 }
 
+inline static const uint32_t
+get_result_srid(const LWGEOM* geom1, const LWGEOM* geom2, const char* funcname)
+{
+	if (!geom1) lwerror("%s: First argument is null pointer", funcname);
+	if (geom2 && (geom1->srid != geom2->srid))
+		lwerror("%s: Operation on mixed SRID geometries (%u != %u)", funcname, geom1->srid, geom2->srid);
+	return geom1->srid;
+}
+
+/* Input decoder and sanity checker for GEOS wrappers */
+inline static const uint32_t
+input_lwgeom_to_geos(GEOSGeometry** g, const LWGEOM* geom, const char* funcname)
+{
+	*g = LWGEOM2GEOS(geom, 1);
+	if (!*g)
+	{
+		lwerror("%s: argument geometry could not be converted to GEOS: %s", funcname, lwgeom_geos_errmsg);
+		return LW_FALSE;
+	}
+	return LW_TRUE;
+}
+
+/* Output encoder and sanity checker for GEOS wrappers */
+inline static const uint32_t
+output_geos_as_lwgeom(const GEOSGeometry* g, LWGEOM** geom, const uint32_t is3d, const char* funcname)
+{
+	*geom = GEOS2LWGEOM(g, is3d);
+	if (!*geom)
+	{
+		lwerror("%s: result geometry could not be converted from GEOS: %s", funcname, lwgeom_geos_errmsg);
+		return LW_FALSE;
+	}
+	return LW_TRUE;
+}
+
+/* Inintialize GEOS and first GEOSGeometry in wrapper in one line */
+inline static GEOSGeometry*
+init_geos_geometry_and_return_null()
+{
+	initGEOS(lwnotice, lwgeom_geos_error);
+	return NULL;
+}
+
+/* Output encoder and sanity checker for GEOS wrappers */
+inline static LWGEOM*
+geos_clean_and_fail(GEOSGeometry** g1, GEOSGeometry** g2, GEOSGeometry** g3, const char* funcname)
+{
+	if (g1) GEOSGeom_destroy(*g1);
+	if (g2) GEOSGeom_destroy(*g2);
+	if (g3) GEOSGeom_destroy(*g3);
+	lwerror("%s: GEOS Error: %s", funcname, lwgeom_geos_errmsg);
+	return NULL;
+}
+
 LWGEOM*
-lwgeom_normalize(const LWGEOM* geom1)
+lwgeom_normalize(const LWGEOM* geom)
 {
 	LWGEOM* result;
-	GEOSGeometry* g1;
-	int is3d;
-	int srid;
+	uint32_t srid = get_result_srid(geom, NULL, __func__);
+	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	GEOSGeometry* g = init_geos_geometry_and_return_null();
 
-	srid = (int)(geom1->srid);
-	is3d = FLAGS_GET_Z(geom1->flags);
+	if (!input_lwgeom_to_geos(&g, geom, __func__)) return NULL;
 
-	initGEOS(lwnotice, lwgeom_geos_error);
+	if (GEOSNormalize(g) == -1) return geos_clean_and_fail(&g, NULL, NULL, __func__);
 
-	g1 = LWGEOM2GEOS(geom1, 0);
-	if (!g1) /* exception thrown at construction */
-	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
-
-	if (GEOSNormalize(g1) == -1)
-	{
-		lwerror("Error in GEOSNormalize: %s", lwgeom_geos_errmsg);
-		return NULL; /* never get here */
-	}
-
-	GEOSSetSRID(g1, srid); /* needed ? */
-	result = GEOS2LWGEOM(g1, is3d);
-	GEOSGeom_destroy(g1);
-
-	if (!result)
-	{
-		lwerror("Error performing normalize: GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
-		return NULL; /* never get here */
-	}
+	assert(GEOSGetSRID(g) == srid);
+	output_geos_as_lwgeom(g, &result, is3d, __func__);
+	GEOSGeom_destroy(g);
 	return result;
 }
 
@@ -547,10 +576,9 @@ lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 	/* Empty.Intersection(A) == Empty */
 	if (lwgeom_is_empty(geom1)) return lwgeom_clone_deep(geom1);
 
-	/* ensure srids are identical */
-	srid = (int)(geom1->srid);
-	error_if_srid_mismatch(srid, (int)(geom2->srid));
+	// error_if_srid_mismatch(geom1, geom2);
 
+	srid = (int)(geom1->srid);
 	is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
 
 	initGEOS(lwnotice, lwgeom_geos_error);
