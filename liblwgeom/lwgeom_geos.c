@@ -495,7 +495,15 @@ get_result_srid(const LWGEOM* geom1, const LWGEOM* geom2, const char* funcname)
 {
 	if (!geom1) lwerror("%s: First argument is null pointer", funcname);
 	if (geom2 && (geom1->srid != geom2->srid))
+	{
 		lwerror("%s: Operation on mixed SRID geometries (%u != %u)", funcname, geom1->srid, geom2->srid);
+		return SRID_INVALID;
+	}
+	if (geom1->srid > SRID_MAXIMUM)
+	{
+		lwerror("%s: SRID is more than maximum (%u > %u)", funcname, geom1->srid, SRID_USER_MAXIMUM);
+		return SRID_INVALID;
+	}
 	return geom1->srid;
 }
 
@@ -544,6 +552,16 @@ geos_clean_and_fail(GEOSGeometry** g1, GEOSGeometry** g2, GEOSGeometry** g3, con
 	return NULL;
 }
 
+/* Output encoder and sanity checker for GEOS wrappers */
+inline static void
+geos_clean(GEOSGeometry** g1, GEOSGeometry** g2, GEOSGeometry** g3)
+{
+	if (g1) GEOSGeom_destroy(*g1);
+	if (g2) GEOSGeom_destroy(*g2);
+	if (g3) GEOSGeom_destroy(*g3);
+	return;
+}
+
 LWGEOM*
 lwgeom_normalize(const LWGEOM* geom)
 {
@@ -551,6 +569,8 @@ lwgeom_normalize(const LWGEOM* geom)
 	uint32_t srid = get_result_srid(geom, NULL, __func__);
 	uint32_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry* g = init_geos_geometry_and_return_null();
+
+	if (srid == SRID_INVALID) return NULL;
 
 	if (!input_lwgeom_to_geos(&g, geom, __func__)) return NULL;
 
@@ -566,9 +586,13 @@ LWGEOM*
 lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 {
 	LWGEOM* result;
-	GEOSGeometry *g1, *g2, *g3;
-	int is3d;
-	int srid;
+	uint32_t srid = get_result_srid(geom1, geom2, __func__);
+	uint32_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
+	GEOSGeometry* g1 = init_geos_geometry_and_return_null();
+	GEOSGeometry* g2;
+	GEOSGeometry* g3;
+
+	if (srid == SRID_INVALID) return NULL;
 
 	/* A.Intersection(Empty) == Empty */
 	if (lwgeom_is_empty(geom2)) return lwgeom_clone_deep(geom2);
@@ -576,65 +600,17 @@ lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 	/* Empty.Intersection(A) == Empty */
 	if (lwgeom_is_empty(geom1)) return lwgeom_clone_deep(geom1);
 
-	// error_if_srid_mismatch(geom1, geom2);
-
-	srid = (int)(geom1->srid);
-	is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
-
-	initGEOS(lwnotice, lwgeom_geos_error);
-
-	LWDEBUG(3, "intersection() START");
-
-	g1 = LWGEOM2GEOS(geom1, 0);
-	if (!g1) /* exception thrown at construction */
-	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
-
-	g2 = LWGEOM2GEOS(geom2, 0);
-	if (!g2) /* exception thrown at construction */
-	{
-		lwerror("Second argument geometry could not be converted to GEOS.");
-		GEOSGeom_destroy(g1);
-		return NULL;
-	}
-
-	LWDEBUG(3, " constructed geometrys - calling geos");
-	LWDEBUGF(3, " g1 = %s", GEOSGeomToWKT(g1));
-	LWDEBUGF(3, " g2 = %s", GEOSGeomToWKT(g2));
+	if (!input_lwgeom_to_geos(&g1, geom1, __func__)) return NULL;
+	if (!input_lwgeom_to_geos(&g2, geom2, __func__)) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
 	g3 = GEOSIntersection(g1, g2);
 
-	LWDEBUG(3, " intersection finished");
+	if (!g3) return geos_clean_and_fail(&g1, &g2, NULL, __func__);
 
-	if (!g3)
-	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g2);
-		lwerror("Error performing intersection: %s", lwgeom_geos_errmsg);
-		return NULL; /* never get here */
-	}
+	if (!output_geos_as_lwgeom(g3, &result, is3d, __func__)) return geos_clean_and_fail(&g1, &g2, &g3, __func__);
 
-	LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
-
-	GEOSSetSRID(g3, srid);
-
-	result = GEOS2LWGEOM(g3, is3d);
-
-	if (!result)
-	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g2);
-		GEOSGeom_destroy(g3);
-		lwerror("Error performing intersection: GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
-		return NULL; /* never get here */
-	}
-
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g2);
-	GEOSGeom_destroy(g3);
-
+	lwgeom_set_srid(result, srid);
+	geos_clean(&g1, &g2, &g3);
 	return result;
 }
 
