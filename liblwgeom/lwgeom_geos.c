@@ -642,50 +642,28 @@ lwgeom_linemerge(const LWGEOM* geom)
 }
 
 LWGEOM*
-lwgeom_unaryunion(const LWGEOM* geom1)
+lwgeom_unaryunion(const LWGEOM* geom)
 {
 	LWGEOM* result;
-	GEOSGeometry *g1, *g3;
-	int is3d = FLAGS_GET_Z(geom1->flags);
-	int srid = geom1->srid;
+	uint32_t srid = get_result_srid(geom, NULL, __func__);
+	uint32_t is3d = FLAGS_GET_Z(geom->flags);
+	GEOSGeometry* g1 = init_geos_geometry_and_return_null();
+	GEOSGeometry* g3;
+
+	if (srid == SRID_INVALID) return NULL;
 
 	/* Empty.UnaryUnion() == Empty */
-	if (lwgeom_is_empty(geom1)) return lwgeom_clone_deep(geom1);
+	if (lwgeom_is_empty(geom)) return lwgeom_clone_deep(geom);
 
-	initGEOS(lwnotice, lwgeom_geos_error);
-
-	g1 = LWGEOM2GEOS(geom1, 0);
-	if (!g1) /* exception thrown at construction */
-	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
+	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
 
 	g3 = GEOSUnaryUnion(g1);
 
-	if (!g3)
-	{
-		GEOSGeom_destroy(g1);
-		lwerror("Error performing unaryunion: %s", lwgeom_geos_errmsg);
-		return NULL; /* never get here */
-	}
+	if (!g3) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
-	LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, NULL, &g3, __func__);
 
-	GEOSSetSRID(g3, srid);
-
-	result = GEOS2LWGEOM(g3, is3d);
-
-	if (!result)
-	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g3);
-		lwerror("Error performing unaryunion: GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
-		return NULL; /* never get here */
-	}
-
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g3);
+	geos_clean(&g1, NULL, &g3);
 
 	return result;
 }
