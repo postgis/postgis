@@ -232,6 +232,9 @@ static void test_rect_tree_contains_point(void)
 	/* touching hole corner */
 	CU_ASSERT_EQUAL(tree_pt(tree, 7, 7), 1);
 
+	rect_tree_free(tree);
+	lwgeom_free(poly);
+
 
 	/**********************************************************************
 	* polygon with hole and concavities
@@ -266,6 +269,9 @@ static void test_rect_tree_contains_point(void)
 	CU_ASSERT_EQUAL(tree_pt(tree, 0.5, 4), 1);
 	CU_ASSERT_EQUAL(tree_pt(tree, 0.5, 6), 1);
 	CU_ASSERT_EQUAL(tree_pt(tree, 0.5, 9), 1);
+
+	rect_tree_free(tree);
+	lwgeom_free(poly);
 
 	/**********************************************************************
 	* square
