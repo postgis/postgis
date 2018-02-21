@@ -33,8 +33,6 @@
 
 LWTIN* lwtin_from_geos(const GEOSGeometry* geom, int want3d);
 
-#undef LWGEOM_PROFILE_BUILDAREA
-
 #define LWGEOM_GEOS_ERRMSG_MAXSIZE 256
 char lwgeom_geos_errmsg[LWGEOM_GEOS_ERRMSG_MAXSIZE];
 
@@ -607,7 +605,8 @@ lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	if (!g3) return geos_clean_and_fail(&g1, &g2, NULL, __func__);
 
-	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, &g2, &g3, __func__);
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(&g1, &g2, &g3, __func__);
 
 	geos_clean(&g1, &g2, &g3);
 	return result;
@@ -633,7 +632,8 @@ lwgeom_linemerge(const LWGEOM* geom)
 
 	if (!g3) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
-	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, NULL, &g3, __func__);
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(&g1, NULL, &g3, __func__);
 
 	geos_clean(&g1, NULL, &g3);
 
@@ -660,7 +660,8 @@ lwgeom_unaryunion(const LWGEOM* geom)
 
 	if (!g3) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
-	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, NULL, &g3, __func__);
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(&g1, NULL, &g3, __func__);
 
 	geos_clean(&g1, NULL, &g3);
 
@@ -692,7 +693,8 @@ lwgeom_difference(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	if (!g3) return geos_clean_and_fail(&g1, &g2, NULL, __func__);
 
-	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, &g2, &g3, __func__);
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(&g1, &g2, &g3, __func__);
 
 	geos_clean(&g1, &g2, &g3);
 	return result;
@@ -723,7 +725,8 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	if (!g3) return geos_clean_and_fail(&g1, &g2, NULL, __func__);
 
-	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, &g2, &g3, __func__);
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(&g1, &g2, &g3, __func__);
 
 	geos_clean(&g1, &g2, &g3);
 	return result;
@@ -752,7 +755,8 @@ lwgeom_centroid(const LWGEOM* geom)
 
 	if (!g3) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
-	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, NULL, &g3, __func__);
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(&g1, NULL, &g3, __func__);
 
 	geos_clean(&g1, NULL, &g3);
 
@@ -784,7 +788,8 @@ lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	if (!g3) return geos_clean_and_fail(&g1, &g2, NULL, __func__);
 
-	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, &g2, &g3, __func__);
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(&g1, &g2, &g3, __func__);
 
 	geos_clean(&g1, &g2, &g3);
 	return result;
@@ -817,7 +822,8 @@ lwgeom_clip_by_rect(const LWGEOM* geom, double x0, double y0, double x1, double 
 
 	if (!g3) return geos_clean_and_fail(&g1, NULL, NULL, __func__);
 
-	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__)) return geos_clean_and_fail(&g1, NULL, &g3, __func__);
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(&g1, NULL, &g3, __func__);
 
 	geos_clean(&g1, NULL, &g3);
 
@@ -957,9 +963,6 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 	Face** geoms;
 
 	vgeoms[0] = geom_in;
-#ifdef LWGEOM_PROFILE_BUILDAREA
-	lwnotice("Polygonizing");
-#endif
 	geos_result = GEOSPolygonize(vgeoms, 1);
 
 	LWDEBUGF(3, "GEOSpolygonize returned @ %p", geos_result);
@@ -978,9 +981,6 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 #endif
 
 	ngeoms = GEOSGetNumGeometries(geos_result);
-#ifdef LWGEOM_PROFILE_BUILDAREA
-	lwnotice("Num geometries from polygonizer: %d", ngeoms);
-#endif
 
 	LWDEBUGF(3, "GEOSpolygonize: ngeoms in polygonize output: %d", ngeoms);
 	LWDEBUGF(3, "GEOSpolygonize: polygonized:%s", lwgeom_to_ewkt(GEOS2LWGEOM(geos_result, 0)));
@@ -1036,32 +1036,16 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 	 *
 	 */
 
-#ifdef LWGEOM_PROFILE_BUILDAREA
-	lwnotice("Preparing face structures");
-#endif
-
 	/* Prepare face structures for later analysis */
 	geoms = lwalloc(sizeof(Face**) * ngeoms);
 	for (i = 0; i < ngeoms; ++i)
 		geoms[i] = newFace(GEOSGetGeometryN(geos_result, i));
 
-#ifdef LWGEOM_PROFILE_BUILDAREA
-	lwnotice("Finding face holes");
-#endif
-
 	/* Find faces representing other faces holes */
 	findFaceHoles(geoms, ngeoms);
 
-#ifdef LWGEOM_PROFILE_BUILDAREA
-	lwnotice("Colletting even ancestor faces");
-#endif
-
 	/* Build a MultiPolygon composed only by faces with an even number of ancestors */
 	tmp = collectFacesWithEvenAncestors(geoms, ngeoms);
-
-#ifdef LWGEOM_PROFILE_BUILDAREA
-	lwnotice("Cleaning up");
-#endif
 
 	/* Cleanup face structures */
 	for (i = 0; i < ngeoms; ++i)
@@ -1071,10 +1055,6 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 	/* Faces referenced memory owned by geos_result. It is safe to destroy geos_result after deleting them. */
 	GEOSGeom_destroy(geos_result);
 
-#ifdef LWGEOM_PROFILE_BUILDAREA
-	lwnotice("Self-unioning");
-#endif
-
 	/* Run a single overlay operation to dissolve shared edges */
 	shp = GEOSUnionCascaded(tmp);
 	if (!shp)
@@ -1082,10 +1062,6 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 		GEOSGeom_destroy(tmp);
 		return 0; /* exception */
 	}
-
-#ifdef LWGEOM_PROFILE_BUILDAREA
-	lwnotice("Final cleanup");
-#endif
 
 	GEOSGeom_destroy(tmp);
 
