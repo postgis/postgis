@@ -37,6 +37,8 @@
 #undef LWGEOM_PROFILE_MAKEVALID
 
 
+GEOSGeometry* LWGEOM_GEOS_makeValid(const GEOSGeometry* gin);
+
 /*
  * Return Nth vertex in GEOSGeometry as a POINT.
  * May return NULL if the geometry has NO vertexex.
