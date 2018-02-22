@@ -23,24 +23,39 @@
  **********************************************************************/
 
 /**
-* @file X3D output routines.
-*
-**********************************************************************/
+ * @file X3D output routines.
+ *
+ **********************************************************************/
 #include <string.h>
 #include "liblwgeom_internal.h"
 #include "stringbuffer.h"
 
 /** defid is the id of the coordinate can be used to hold other elements DEF='abc' transform='' etc. **/
-static int lwgeom_to_x3d3_sb(const LWGEOM *geom, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb);
+static int
+lwgeom_to_x3d3_sb(const LWGEOM* geom, char* srs, int precision, int opts, const char* defid, stringbuffer_t* sb);
 
-static int asx3d3_point_sb(const LWPOINT *point, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb);
-static int asx3d3_line_sb(const LWLINE *line, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb);
+static int
+asx3d3_point_sb(const LWPOINT* point, char* srs, int precision, int opts, const char* defid, stringbuffer_t* sb);
+static int
+asx3d3_line_sb(const LWLINE* line, char* srs, int precision, int opts, const char* defid, stringbuffer_t* sb);
 
-static int asx3d3_triangle_sb(const LWTRIANGLE *triangle, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb);
+static int asx3d3_triangle_sb(const LWTRIANGLE* triangle,
+			      char* srs,
+			      int precision,
+			      int opts,
+			      const char* defid,
+			      stringbuffer_t* sb);
 
-static int asx3d3_multi_sb(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb);
-static int asx3d3_psurface_sb(const LWPSURFACE *psur, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb);
-static int asx3d3_tin_sb(const LWTIN *tin, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb);
+static int
+asx3d3_multi_sb(const LWCOLLECTION* col, char* srs, int precision, int opts, const char* defid, stringbuffer_t* sb);
+static int
+asx3d3_psurface_sb(const LWPSURFACE* psur, char* srs, int precision, int opts, const char* defid, stringbuffer_t* sb);
+static int asx3d3_tin_sb(const LWTIN* tin, char* srs, int precision, int opts, const char* defid, stringbuffer_t* sb);
 
-static int asx3d3_collection_sb(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb);
-static int ptarray_to_x3d3_sb(POINTARRAY *pa, int precision, int opts, int is_closed, stringbuffer_t *sb );
+static int asx3d3_collection_sb(const LWCOLLECTION* col,
+				char* srs,
+				int precision,
+				int opts,
+				const char* defid,
+				stringbuffer_t* sb);
+static int ptarray_to_x3d3_sb(POINTARRAY* pa, int precision, int opts, int is_closed, stringbuffer_t* sb);

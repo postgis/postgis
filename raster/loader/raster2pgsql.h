@@ -45,7 +45,7 @@
 #include "../../postgis_config.h"
 #include "../raster_config.h"
 
-#define CSEQUAL(a,b) (strcmp(a,b)==0)
+#define CSEQUAL(a, b) (strcmp(a, b) == 0)
 
 /*
 	max length of of "name" data type in PostgreSQL as
@@ -69,29 +69,30 @@
 
 #define RCSID "$Id$"
 
-typedef struct raster_loader_config {
+typedef struct raster_loader_config
+{
 	/* raster filename */
 	uint32_t rt_file_count;
-	char **rt_file;
-	char **rt_filename;
+	char** rt_file;
+	char** rt_filename;
 
 	/* schema to load into */
-	char *schema;
+	char* schema;
 
 	/* table to load into */
-	char *table;
+	char* table;
 
 	/* raster column name specified by user */
-	char *raster_column;
+	char* raster_column;
 
 	/* add column with raster filename, 1 = yes, 0 = no (default) */
 	int file_column;
-	char *file_column_name;
+	char* file_column_name;
 
 	/* overview factor */
 	uint32_t overview_count;
-	int *overview;
-	char **overview_table;
+	int* overview;
+	char** overview_table;
 
 	/* case-sensitive of identifiers, 1 = yes, 0 = no (default) */
 	int quoteident;
@@ -103,7 +104,7 @@ typedef struct raster_loader_config {
 	int out_srid;
 
 	/* bands to extract */
-	int *nband; /* 1-based */
+	int* nband; /* 1-based */
 	uint32_t nband_count;
 
 	/* tile size */
@@ -134,10 +135,10 @@ typedef struct raster_loader_config {
 	int regular_blocking;
 
 	/* new table's tablespace */
-	char *tablespace;
+	char* tablespace;
 
 	/* new index's tablespace */
-	char *idx_tablespace;
+	char* idx_tablespace;
 
 	/* flag indicating that user specified a nodata value */
 	int hasnodata;
@@ -161,28 +162,29 @@ typedef struct raster_loader_config {
 
 } RTLOADERCFG;
 
-typedef struct rasterinfo_t {
+typedef struct rasterinfo_t
+{
 	/* SRID of raster */
 	int srid;
 
 	/* srs of raster */
-	char *srs;
+	char* srs;
 
 	/* width, height */
 	uint32_t dim[2];
 
 	/* number of bands */
-	int *nband; /* 1-based */
+	int* nband; /* 1-based */
 	uint32_t nband_count;
 
 	/* array of pixeltypes */
-	GDALDataType *gdalbandtype;
-	rt_pixtype *bandtype;
+	GDALDataType* gdalbandtype;
+	rt_pixtype* bandtype;
 
 	/* array of hasnodata flags */
-	int *hasnodata;
+	int* hasnodata;
 	/* array of nodatavals */
-	double *nodataval;
+	double* nodataval;
 
 	/* geotransform matrix */
 	double gt[6];
@@ -192,7 +194,8 @@ typedef struct rasterinfo_t {
 
 } RASTERINFO;
 
-typedef struct stringbuffer_t {
+typedef struct stringbuffer_t
+{
 	uint32_t length;
-	char **line;
+	char** line;
 } STRINGBUFFER;

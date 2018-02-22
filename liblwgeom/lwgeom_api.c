@@ -23,8 +23,6 @@
  *
  **********************************************************************/
 
-
-
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 
@@ -33,31 +31,28 @@
 #include <assert.h>
 #include "../postgis_svn_revision.h"
 
-const char *
+const char*
 lwgeom_version()
 {
-  static char *ptr = NULL;
-  static char buf[256];
-  if ( ! ptr )
-  {
-    ptr = buf;
-    snprintf(ptr, 256, LIBLWGEOM_VERSION" r%d", POSTGIS_SVN_REVISION);
-  }
+	static char* ptr = NULL;
+	static char buf[256];
+	if (!ptr)
+	{
+		ptr = buf;
+		snprintf(ptr, 256, LIBLWGEOM_VERSION " r%d", POSTGIS_SVN_REVISION);
+	}
 
-  return ptr;
+	return ptr;
 }
-
 
 inline float
 next_float_down(double d)
 {
-	float result  = d;
+	float result = d;
 
-	if ( ((double)result) <=d )
-		return result;
+	if (((double)result) <= d) return result;
 
-	return nextafterf(result, -1*FLT_MAX);
-
+	return nextafterf(result, -1 * FLT_MAX);
 }
 
 /*
@@ -67,16 +62,12 @@ next_float_down(double d)
 inline float
 next_float_up(double d)
 {
-	float result  = d;
+	float result = d;
 
-	if ( ((double)result) >=d )
-		return result;
+	if (((double)result) >= d) return result;
 
 	return nextafterf(result, FLT_MAX);
 }
-
-
-
 
 /************************************************************************
  * POINTARRAY support functions
@@ -93,7 +84,7 @@ next_float_up(double d)
  * NOTE: point is a real POINT3D *not* a pointer
  */
 POINT4D
-getPoint4d(const POINTARRAY *pa, uint32_t n)
+getPoint4d(const POINTARRAY* pa, uint32_t n)
 {
 	POINT4D result;
 	getPoint4d_p(pa, n, &result);
@@ -110,18 +101,18 @@ getPoint4d(const POINTARRAY *pa, uint32_t n)
  * @return 0 on error, 1 on success
  */
 int
-getPoint4d_p(const POINTARRAY *pa, uint32_t n, POINT4D *op)
+getPoint4d_p(const POINTARRAY* pa, uint32_t n, POINT4D* op)
 {
-	uint8_t *ptr;
+	uint8_t* ptr;
 	int zmflag;
 
-	if ( ! pa )
+	if (!pa)
 	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
 		return 0;
 	}
 
-	if ( n>=pa->npoints )
+	if (n >= pa->npoints)
 	{
 		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
@@ -130,8 +121,8 @@ getPoint4d_p(const POINTARRAY *pa, uint32_t n, POINT4D *op)
 	LWDEBUG(4, "getPoint4d_p called.");
 
 	/* Get a pointer to nth point offset and zmflag */
-	ptr=getPoint_internal(pa, n);
-	zmflag=FLAGS_GET_ZM(pa->flags);
+	ptr = getPoint_internal(pa, n);
+	zmflag = FLAGS_GET_ZM(pa->flags);
 
 	LWDEBUGF(4, "ptr %p, zmflag %d", ptr, zmflag);
 
@@ -139,8 +130,8 @@ getPoint4d_p(const POINTARRAY *pa, uint32_t n, POINT4D *op)
 	{
 	case 0: /* 2d  */
 		memcpy(op, ptr, sizeof(POINT2D));
-		op->m=NO_M_VALUE;
-		op->z=NO_Z_VALUE;
+		op->m = NO_M_VALUE;
+		op->z = NO_Z_VALUE;
 		break;
 
 	case 3: /* ZM */
@@ -149,13 +140,13 @@ getPoint4d_p(const POINTARRAY *pa, uint32_t n, POINT4D *op)
 
 	case 2: /* Z */
 		memcpy(op, ptr, sizeof(POINT3DZ));
-		op->m=NO_M_VALUE;
+		op->m = NO_M_VALUE;
 		break;
 
 	case 1: /* M */
 		memcpy(op, ptr, sizeof(POINT3DM));
-		op->m=op->z; /* we use Z as temporary storage */
-		op->z=NO_Z_VALUE;
+		op->m = op->z; /* we use Z as temporary storage */
+		op->z = NO_Z_VALUE;
 		break;
 
 	default:
@@ -163,10 +154,7 @@ getPoint4d_p(const POINTARRAY *pa, uint32_t n, POINT4D *op)
 		return 0;
 	}
 	return 1;
-
 }
-
-
 
 /*
  * Copy a point from the point array into the parameter point
@@ -174,7 +162,7 @@ getPoint4d_p(const POINTARRAY *pa, uint32_t n, POINT4D *op)
  * NOTE: point is a real POINT3DZ *not* a pointer
  */
 POINT3DZ
-getPoint3dz(const POINTARRAY *pa, uint32_t n)
+getPoint3dz(const POINTARRAY* pa, uint32_t n)
 {
 	POINT3DZ result;
 	getPoint3dz_p(pa, n, &result);
@@ -188,7 +176,7 @@ getPoint3dz(const POINTARRAY *pa, uint32_t n)
  * NOTE: point is a real POINT3DZ *not* a pointer
  */
 POINT3DM
-getPoint3dm(const POINTARRAY *pa, uint32_t n)
+getPoint3dm(const POINTARRAY* pa, uint32_t n)
 {
 	POINT3DM result;
 	getPoint3dm_p(pa, n, &result);
@@ -202,36 +190,32 @@ getPoint3dm(const POINTARRAY *pa, uint32_t n)
  * NOTE: this will modify the point3dz pointed to by 'point'.
  */
 int
-getPoint3dz_p(const POINTARRAY *pa, uint32_t n, POINT3DZ *op)
+getPoint3dz_p(const POINTARRAY* pa, uint32_t n, POINT3DZ* op)
 {
-	uint8_t *ptr;
+	uint8_t* ptr;
 
-	if ( ! pa )
+	if (!pa)
 	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
 		return 0;
 	}
 
-	if ( n>=pa->npoints )
+	if (n >= pa->npoints)
 	{
 		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
 	}
 
-	LWDEBUGF(2, "getPoint3dz_p called on array of %d-dimensions / %u pts",
-	         FLAGS_NDIMS(pa->flags), pa->npoints);
+	LWDEBUGF(2, "getPoint3dz_p called on array of %d-dimensions / %u pts", FLAGS_NDIMS(pa->flags), pa->npoints);
 
 	/* Get a pointer to nth point offset */
-	ptr=getPoint_internal(pa, n);
+	ptr = getPoint_internal(pa, n);
 
 	/*
 	 * if input POINTARRAY has the Z, it is always
 	 * at third position so make a single copy
 	 */
-	if ( FLAGS_GET_Z(pa->flags) )
-	{
-		memcpy(op, ptr, sizeof(POINT3DZ));
-	}
+	if (FLAGS_GET_Z(pa->flags)) { memcpy(op, ptr, sizeof(POINT3DZ)); }
 
 	/*
 	 * Otherwise copy the 2d part and initialize
@@ -240,11 +224,10 @@ getPoint3dz_p(const POINTARRAY *pa, uint32_t n, POINT3DZ *op)
 	else
 	{
 		memcpy(op, ptr, sizeof(POINT2D));
-		op->z=NO_Z_VALUE;
+		op->z = NO_Z_VALUE;
 	}
 
 	return 1;
-
 }
 
 /*
@@ -254,36 +237,35 @@ getPoint3dz_p(const POINTARRAY *pa, uint32_t n, POINT3DZ *op)
  * NOTE: this will modify the point3dm pointed to by 'point'.
  */
 int
-getPoint3dm_p(const POINTARRAY *pa, uint32_t n, POINT3DM *op)
+getPoint3dm_p(const POINTARRAY* pa, uint32_t n, POINT3DM* op)
 {
-	uint8_t *ptr;
+	uint8_t* ptr;
 	int zmflag;
 
-	if ( ! pa )
+	if (!pa)
 	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
 		return 0;
 	}
 
-	if ( n>=pa->npoints )
+	if (n >= pa->npoints)
 	{
 		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
 	}
 
-	LWDEBUGF(2, "getPoint3dm_p(%d) called on array of %d-dimensions / %u pts",
-	         n, FLAGS_NDIMS(pa->flags), pa->npoints);
-
+	LWDEBUGF(
+	    2, "getPoint3dm_p(%d) called on array of %d-dimensions / %u pts", n, FLAGS_NDIMS(pa->flags), pa->npoints);
 
 	/* Get a pointer to nth point offset and zmflag */
-	ptr=getPoint_internal(pa, n);
-	zmflag=FLAGS_GET_ZM(pa->flags);
+	ptr = getPoint_internal(pa, n);
+	zmflag = FLAGS_GET_ZM(pa->flags);
 
 	/*
 	 * if input POINTARRAY has the M and NO Z,
 	 * we can issue a single memcpy
 	 */
-	if ( zmflag == 1 )
+	if (zmflag == 1)
 	{
 		memcpy(op, ptr, sizeof(POINT3DM));
 		return 1;
@@ -300,19 +282,18 @@ getPoint3dm_p(const POINTARRAY *pa, uint32_t n, POINT3DM *op)
 	 * copy next double, otherwise initialize
 	 * M to NO_M_VALUE
 	 */
-	if ( zmflag == 3 )
+	if (zmflag == 3)
 	{
-		ptr+=sizeof(POINT3DZ);
+		ptr += sizeof(POINT3DZ);
 		memcpy(&(op->m), ptr, sizeof(double));
 	}
 	else
 	{
-		op->m=NO_M_VALUE;
+		op->m = NO_M_VALUE;
 	}
 
 	return 1;
 }
-
 
 /*
  * Copy a point from the point array into the parameter point
@@ -321,9 +302,9 @@ getPoint3dm_p(const POINTARRAY *pa, uint32_t n, POINT3DM *op)
  * NOTE: point is a real POINT2D *not* a pointer
  */
 POINT2D
-getPoint2d(const POINTARRAY *pa, uint32_t n)
+getPoint2d(const POINTARRAY* pa, uint32_t n)
 {
-	const POINT2D *result;
+	const POINT2D* result;
 	result = getPoint2d_cp(pa, n);
 	return *result;
 }
@@ -335,15 +316,15 @@ getPoint2d(const POINTARRAY *pa, uint32_t n)
  * NOTE: this will modify the point2d pointed to by 'point'.
  */
 int
-getPoint2d_p(const POINTARRAY *pa, uint32_t n, POINT2D *point)
+getPoint2d_p(const POINTARRAY* pa, uint32_t n, POINT2D* point)
 {
-	if ( ! pa )
+	if (!pa)
 	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
 		return 0;
 	}
 
-	if ( n>=pa->npoints )
+	if (n >= pa->npoints)
 	{
 		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
@@ -355,17 +336,17 @@ getPoint2d_p(const POINTARRAY *pa, uint32_t n, POINT2D *point)
 }
 
 /**
-* Returns a pointer into the POINTARRAY serialized_ptlist,
-* suitable for reading from. This is very high performance
-* and declared const because you aren't allowed to muck with the
-* values, only read them.
-*/
+ * Returns a pointer into the POINTARRAY serialized_ptlist,
+ * suitable for reading from. This is very high performance
+ * and declared const because you aren't allowed to muck with the
+ * values, only read them.
+ */
 const POINT2D*
-getPoint2d_cp(const POINTARRAY *pa, uint32_t n)
+getPoint2d_cp(const POINTARRAY* pa, uint32_t n)
 {
-	if ( ! pa ) return 0;
+	if (!pa) return 0;
 
-	if ( n>=pa->npoints )
+	if (n >= pa->npoints)
 	{
 		lwerror("getPoint2d_cp: point offset out of range");
 		return 0; /*error */
@@ -375,17 +356,17 @@ getPoint2d_cp(const POINTARRAY *pa, uint32_t n)
 }
 
 const POINT3DZ*
-getPoint3dz_cp(const POINTARRAY *pa, uint32_t n)
+getPoint3dz_cp(const POINTARRAY* pa, uint32_t n)
 {
-	if ( ! pa ) return 0;
+	if (!pa) return 0;
 
-	if ( ! FLAGS_GET_Z(pa->flags) )
+	if (!FLAGS_GET_Z(pa->flags))
 	{
 		lwerror("getPoint3dz_cp: no Z coordinates in point array");
 		return 0; /*error */
 	}
 
-	if ( n>=pa->npoints )
+	if (n >= pa->npoints)
 	{
 		lwerror("getPoint3dz_cp: point offset out of range");
 		return 0; /*error */
@@ -422,12 +403,12 @@ getPoint4d_cp(const POINTARRAY* pa, uint32_t n)
  *
  */
 void
-ptarray_set_point4d(POINTARRAY *pa, uint32_t n, const POINT4D *p4d)
+ptarray_set_point4d(POINTARRAY* pa, uint32_t n, const POINT4D* p4d)
 {
-	uint8_t *ptr;
+	uint8_t* ptr;
 	assert(n < pa->npoints);
-	ptr=getPoint_internal(pa, n);
-	switch ( FLAGS_GET_ZM(pa->flags) )
+	ptr = getPoint_internal(pa, n);
+	switch (FLAGS_GET_ZM(pa->flags))
 	{
 	case 3:
 		memcpy(ptr, p4d, sizeof(POINT4D));
@@ -437,7 +418,7 @@ ptarray_set_point4d(POINTARRAY *pa, uint32_t n, const POINT4D *p4d)
 		break;
 	case 1:
 		memcpy(ptr, p4d, sizeof(POINT2D));
-		ptr+=sizeof(POINT2D);
+		ptr += sizeof(POINT2D);
 		memcpy(ptr, &(p4d->m), sizeof(double));
 		break;
 	case 0:
@@ -447,217 +428,208 @@ ptarray_set_point4d(POINTARRAY *pa, uint32_t n, const POINT4D *p4d)
 }
 
 void
-ptarray_copy_point(POINTARRAY *pa, uint32_t from, uint32_t to)
+ptarray_copy_point(POINTARRAY* pa, uint32_t from, uint32_t to)
 {
 	int ndims = FLAGS_NDIMS(pa->flags);
 	switch (ndims)
 	{
-		case 2:
-		{
-			POINT2D *p_from = (POINT2D*)(getPoint_internal(pa, from));
-			POINT2D *p_to = (POINT2D*)(getPoint_internal(pa, to));
-			*p_to = *p_from;
-			return;
-		}
-		case 3:
-		{
-			POINT3D *p_from = (POINT3D*)(getPoint_internal(pa, from));
-			POINT3D *p_to = (POINT3D*)(getPoint_internal(pa, to));
-			*p_to = *p_from;
-			return;
-		}
-		case 4:
-		{
-			POINT4D *p_from = (POINT4D*)(getPoint_internal(pa, from));
-			POINT4D *p_to = (POINT4D*)(getPoint_internal(pa, to));
-			*p_to = *p_from;
-			return;
-		}
-		default:
-		{
-			lwerror("%s: unsupported number of dimensions - %d", __func__, ndims);
-			return;
-		}
+	case 2:
+	{
+		POINT2D* p_from = (POINT2D*)(getPoint_internal(pa, from));
+		POINT2D* p_to = (POINT2D*)(getPoint_internal(pa, to));
+		*p_to = *p_from;
+		return;
+	}
+	case 3:
+	{
+		POINT3D* p_from = (POINT3D*)(getPoint_internal(pa, from));
+		POINT3D* p_to = (POINT3D*)(getPoint_internal(pa, to));
+		*p_to = *p_from;
+		return;
+	}
+	case 4:
+	{
+		POINT4D* p_from = (POINT4D*)(getPoint_internal(pa, from));
+		POINT4D* p_to = (POINT4D*)(getPoint_internal(pa, to));
+		*p_to = *p_from;
+		return;
+	}
+	default:
+	{
+		lwerror("%s: unsupported number of dimensions - %d", __func__, ndims);
+		return;
+	}
 	}
 	return;
 }
-
 
 /************************************************
  * debugging routines
  ************************************************/
 
-void printBOX3D(BOX3D *box)
+void
+printBOX3D(BOX3D* box)
 {
-	lwnotice("BOX3D: %g %g, %g %g", box->xmin, box->ymin,
-	         box->xmax, box->ymax);
+	lwnotice("BOX3D: %g %g, %g %g", box->xmin, box->ymin, box->xmax, box->ymax);
 }
 
-void printPA(POINTARRAY *pa)
+void
+printPA(POINTARRAY* pa)
 {
 	uint32_t t;
 	POINT4D pt;
-	char *mflag;
+	char* mflag;
 
-
-	if ( FLAGS_GET_M(pa->flags) ) mflag = "M";
-	else mflag = "";
+	if (FLAGS_GET_M(pa->flags))
+		mflag = "M";
+	else
+		mflag = "";
 
 	lwnotice("      POINTARRAY%s{", mflag);
-	lwnotice("                 ndims=%i,   ptsize=%i",
-	         FLAGS_NDIMS(pa->flags), ptarray_point_size(pa));
+	lwnotice("                 ndims=%i,   ptsize=%i", FLAGS_NDIMS(pa->flags), ptarray_point_size(pa));
 	lwnotice("                 npoints = %i", pa->npoints);
 
-	for (t =0; t<pa->npoints; t++)
+	for (t = 0; t < pa->npoints; t++)
 	{
 		getPoint4d_p(pa, t, &pt);
-		if (FLAGS_NDIMS(pa->flags) == 2)
-		{
-			lwnotice("                    %i : %lf,%lf",t,pt.x,pt.y);
-		}
+		if (FLAGS_NDIMS(pa->flags) == 2) { lwnotice("                    %i : %lf,%lf", t, pt.x, pt.y); }
 		if (FLAGS_NDIMS(pa->flags) == 3)
-		{
-			lwnotice("                    %i : %lf,%lf,%lf",t,pt.x,pt.y,pt.z);
-		}
+		{ lwnotice("                    %i : %lf,%lf,%lf", t, pt.x, pt.y, pt.z); }
 		if (FLAGS_NDIMS(pa->flags) == 4)
-		{
-			lwnotice("                    %i : %lf,%lf,%lf,%lf",t,pt.x,pt.y,pt.z,pt.m);
-		}
+		{ lwnotice("                    %i : %lf,%lf,%lf,%lf", t, pt.x, pt.y, pt.z, pt.m); }
 	}
 
 	lwnotice("      }");
 }
-
 
 /**
  * Given a string with at least 2 chars in it, convert them to
  * a byte value.  No error checking done!
  */
 uint8_t
-parse_hex(char *str)
+parse_hex(char* str)
 {
 	/* do this a little brute force to make it faster */
 
-	uint8_t		result_high = 0;
-	uint8_t		result_low = 0;
+	uint8_t result_high = 0;
+	uint8_t result_low = 0;
 
 	switch (str[0])
 	{
-	case '0' :
+	case '0':
 		result_high = 0;
 		break;
-	case '1' :
+	case '1':
 		result_high = 1;
 		break;
-	case '2' :
+	case '2':
 		result_high = 2;
 		break;
-	case '3' :
+	case '3':
 		result_high = 3;
 		break;
-	case '4' :
+	case '4':
 		result_high = 4;
 		break;
-	case '5' :
+	case '5':
 		result_high = 5;
 		break;
-	case '6' :
+	case '6':
 		result_high = 6;
 		break;
-	case '7' :
+	case '7':
 		result_high = 7;
 		break;
-	case '8' :
+	case '8':
 		result_high = 8;
 		break;
-	case '9' :
+	case '9':
 		result_high = 9;
 		break;
-	case 'A' :
-	case 'a' :
+	case 'A':
+	case 'a':
 		result_high = 10;
 		break;
-	case 'B' :
-	case 'b' :
+	case 'B':
+	case 'b':
 		result_high = 11;
 		break;
-	case 'C' :
-	case 'c' :
+	case 'C':
+	case 'c':
 		result_high = 12;
 		break;
-	case 'D' :
-	case 'd' :
+	case 'D':
+	case 'd':
 		result_high = 13;
 		break;
-	case 'E' :
-	case 'e' :
+	case 'E':
+	case 'e':
 		result_high = 14;
 		break;
-	case 'F' :
-	case 'f' :
+	case 'F':
+	case 'f':
 		result_high = 15;
 		break;
 	}
 	switch (str[1])
 	{
-	case '0' :
+	case '0':
 		result_low = 0;
 		break;
-	case '1' :
+	case '1':
 		result_low = 1;
 		break;
-	case '2' :
+	case '2':
 		result_low = 2;
 		break;
-	case '3' :
+	case '3':
 		result_low = 3;
 		break;
-	case '4' :
+	case '4':
 		result_low = 4;
 		break;
-	case '5' :
+	case '5':
 		result_low = 5;
 		break;
-	case '6' :
+	case '6':
 		result_low = 6;
 		break;
-	case '7' :
+	case '7':
 		result_low = 7;
 		break;
-	case '8' :
+	case '8':
 		result_low = 8;
 		break;
-	case '9' :
+	case '9':
 		result_low = 9;
 		break;
-	case 'A' :
-	case 'a' :
+	case 'A':
+	case 'a':
 		result_low = 10;
 		break;
-	case 'B' :
-	case 'b' :
+	case 'B':
+	case 'b':
 		result_low = 11;
 		break;
-	case 'C' :
-	case 'c' :
+	case 'C':
+	case 'c':
 		result_low = 12;
 		break;
-	case 'D' :
-	case 'd' :
+	case 'D':
+	case 'd':
 		result_low = 13;
 		break;
-	case 'E' :
-	case 'e' :
+	case 'E':
+	case 'e':
 		result_low = 14;
 		break;
-	case 'F' :
-	case 'f' :
+	case 'F':
+	case 'f':
 		result_low = 15;
 		break;
 	}
-	return (uint8_t) ((result_high<<4) + result_low);
+	return (uint8_t)((result_high << 4) + result_low);
 }
-
 
 /**
  * Given one byte, populate result with two byte representing
@@ -669,23 +641,18 @@ parse_hex(char *str)
  * No error checking done
  */
 void
-deparse_hex(uint8_t str, char *result)
+deparse_hex(uint8_t str, char* result)
 {
-	int	input_high;
-	int  input_low;
-	static char outchr[]=
-	{
-		"0123456789ABCDEF"
-	};
+	int input_high;
+	int input_low;
+	static char outchr[] = {"0123456789ABCDEF"};
 
-	input_high = (str>>4);
+	input_high = (str >> 4);
 	input_low = (str & 0x0F);
 
 	result[0] = outchr[input_high];
 	result[1] = outchr[input_low];
-
 }
-
 
 /**
  * Find interpolation point I
@@ -701,32 +668,34 @@ deparse_hex(uint8_t str, char *result)
  *   F=.2   :    A-I-------B
  */
 void
-interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, double F)
+interpolate_point4d(const POINT4D* A, const POINT4D* B, POINT4D* I, double F)
 {
 #if PARANOIA_LEVEL > 0
 	if (F < 0 || F > 1) lwerror("interpolate_point4d: invalid F (%g)", F);
 #endif
-	I->x=A->x+((B->x-A->x)*F);
-	I->y=A->y+((B->y-A->y)*F);
-	I->z=A->z+((B->z-A->z)*F);
-	I->m=A->m+((B->m-A->m)*F);
+	I->x = A->x + ((B->x - A->x) * F);
+	I->y = A->y + ((B->y - A->y) * F);
+	I->z = A->z + ((B->z - A->z) * F);
+	I->m = A->m + ((B->m - A->m) * F);
 }
-
 
 int _lwgeom_interrupt_requested = 0;
 void
-lwgeom_request_interrupt() {
-  _lwgeom_interrupt_requested = 1;
+lwgeom_request_interrupt()
+{
+	_lwgeom_interrupt_requested = 1;
 }
 void
-lwgeom_cancel_interrupt() {
-  _lwgeom_interrupt_requested = 0;
+lwgeom_cancel_interrupt()
+{
+	_lwgeom_interrupt_requested = 0;
 }
 
-lwinterrupt_callback *_lwgeom_interrupt_callback = 0;
-lwinterrupt_callback *
-lwgeom_register_interrupt_callback(lwinterrupt_callback *cb) {
-  lwinterrupt_callback *old = _lwgeom_interrupt_callback;
-  _lwgeom_interrupt_callback = cb;
-  return old;
+lwinterrupt_callback* _lwgeom_interrupt_callback = 0;
+lwinterrupt_callback*
+lwgeom_register_interrupt_callback(lwinterrupt_callback* cb)
+{
+	lwinterrupt_callback* old = _lwgeom_interrupt_callback;
+	_lwgeom_interrupt_callback = cb;
+	return old;
 }

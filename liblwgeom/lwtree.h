@@ -47,7 +47,7 @@ typedef enum
 
 typedef struct
 {
-	const POINTARRAY *pa;
+	const POINTARRAY* pa;
 	RECT_NODE_SEG_TYPE seg_type;
 	int seg_num;
 } RECT_NODE_LEAF;
@@ -58,7 +58,7 @@ typedef struct
 {
 	int num_nodes;
 	RECT_NODE_RING_TYPE ring_type;
-	struct rect_node *nodes[RECT_NODE_SIZE];
+	struct rect_node* nodes[RECT_NODE_SIZE];
 	int sorted;
 } RECT_NODE_INTERNAL;
 
@@ -87,28 +87,28 @@ typedef struct rect_tree_distance_state
 } RECT_TREE_DISTANCE_STATE;
 
 /**
-* Create a tree index on top an LWGEOM. Do not free the LWGEOM
-* until the tree is freed.
-*/
-RECT_NODE * rect_tree_from_lwgeom(const LWGEOM *geom);
+ * Create a tree index on top an LWGEOM. Do not free the LWGEOM
+ * until the tree is freed.
+ */
+RECT_NODE* rect_tree_from_lwgeom(const LWGEOM* geom);
 
 /**
-* Test if two RECT_NODE trees intersect one another.
-*/
-int rect_tree_intersects_tree(RECT_NODE *tree1, RECT_NODE *tree2);
+ * Test if two RECT_NODE trees intersect one another.
+ */
+int rect_tree_intersects_tree(RECT_NODE* tree1, RECT_NODE* tree2);
 
 /**
-* Return the distance between two RECT_NODE trees.
-*/
-double rect_tree_distance_tree(RECT_NODE *n1, RECT_NODE *n2, double threshold);
+ * Return the distance between two RECT_NODE trees.
+ */
+double rect_tree_distance_tree(RECT_NODE* n1, RECT_NODE* n2, double threshold);
 
 /**
-* Free the rect-tree memory
-*/
-void rect_tree_free(RECT_NODE *node);
+ * Free the rect-tree memory
+ */
+void rect_tree_free(RECT_NODE* node);
 
-int rect_tree_contains_point(RECT_NODE *tree, const POINT2D *pt);
-RECT_NODE * rect_tree_from_ptarray(const POINTARRAY *pa, int geom_type);
-LWGEOM * rect_tree_to_lwgeom(const RECT_NODE *tree);
-char * rect_tree_to_wkt(const RECT_NODE *node);
-void rect_tree_printf(const RECT_NODE *node, int depth);
+int rect_tree_contains_point(RECT_NODE* tree, const POINT2D* pt);
+RECT_NODE* rect_tree_from_ptarray(const POINTARRAY* pa, int geom_type);
+LWGEOM* rect_tree_to_lwgeom(const RECT_NODE* tree);
+char* rect_tree_to_wkt(const RECT_NODE* node);
+void rect_tree_printf(const RECT_NODE* node, int depth);

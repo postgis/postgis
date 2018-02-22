@@ -8,17 +8,22 @@ This file is part of PAGC.
 
 Copyright (c) 2010 Walter Bruce Sinclair
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+persons to whom the Software is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
 /* For pagc-0.4.0 : last revised 2010-11-08 */
-
 
 #ifndef PAGC_COM_H
 #define PAGC_COM_H
@@ -30,21 +35,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 #endif
 
 /* -- 2006-04-25 : structure added to index arc endpoints -- */
-typedef struct pagc_point {
-   double X ;
-   double Y ;
-} PAGC_POINT ;
+typedef struct pagc_point
+{
+	double X;
+	double Y;
+} PAGC_POINT;
 
-
-typedef int SYMB ;
-
+typedef int SYMB;
 
 #define ERR_FAIL -2
 #define FAIL -1
 #define NULL_READ 0
 #define MATCH_READ 2
 #define BOTH 2
-
 
 /*------------------------------------
 strategy types
@@ -72,10 +75,10 @@ response format types :
 #define XML 2
 
 /* -- build flags -- */
-#define STATISTICS 2 /* -- output statistics on rules used. FLSTATS in schema-- */
-#define PRINT_PROGRESS 128 /* output 10% completion points */
-#define LOG_COMPLETE 2048 /* log certain initializations when complete */
-#define ZERO_IS_BLANK 512 /* schema: FLZBLNK */
+#define STATISTICS 2              /* -- output statistics on rules used. FLSTATS in schema-- */
+#define PRINT_PROGRESS 128        /* output 10% completion points */
+#define LOG_COMPLETE 2048         /* log certain initializations when complete */
+#define ZERO_IS_BLANK 512         /* schema: FLZBLNK */
 #define RNF_PRETYPE_REDIRECT 4096 /* schema: FLRNFRE */
 
 #define SENTINEL '\0'
@@ -103,16 +106,11 @@ response format types :
 
 #define BACK_SLASH 0x5c
 #define FORE_SLASH '/'
-#define IS_DOT(CH) ( CH == '.' )
-#define IS_DIR_SEP(CH) ( CH == global_path_separator )
-#define IS_COLON(CH) ( CH == ':' )
-#define NOT_PATH_DELIMITOR(CH) \
-   ( CH != global_path_separator ) && \
-   ( !IS_COLON(CH) )
-#define IS_PATH_DELIMITOR(CH) \
-   ( IS_DIR_SEP(CH) || \
-   IS_COLON(CH) )
-#define COMMA_APPEND_WITH_LEN( D , S , L ) \
-   char_append( "," , D , S , L )
+#define IS_DOT(CH) (CH == '.')
+#define IS_DIR_SEP(CH) (CH == global_path_separator)
+#define IS_COLON(CH) (CH == ':')
+#define NOT_PATH_DELIMITOR(CH) (CH != global_path_separator) && (!IS_COLON(CH))
+#define IS_PATH_DELIMITOR(CH) (IS_DIR_SEP(CH) || IS_COLON(CH))
+#define COMMA_APPEND_WITH_LEN(D, S, L) char_append(",", D, S, L)
 
 #endif

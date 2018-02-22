@@ -18,45 +18,44 @@
 
 #include "styles.h"
 
-
 void
-getStyles( LAYERSTYLE **headRef )
+getStyles(LAYERSTYLE** headRef)
 {
-	char line [128];
+	char line[128];
 	FILE* pFile;
-	char *getResults;
+	char* getResults;
 
 	*headRef = NULL;
 
 	if ((pFile = fopen("styles.conf", "r")) == NULL)
 	{
-		perror ( "styles.conf: No such file or directory" );
+		perror("styles.conf: No such file or directory");
 		return;
 	}
 
-	getResults = fgets ( line, sizeof line, pFile );
-	while ( getResults != NULL )
+	getResults = fgets(line, sizeof line, pFile);
+	while (getResults != NULL)
 	{
 
 		// process defined styles
-		while ( (getResults != NULL) && strncmp(line, "[Style]", 7) == 0)
+		while ((getResults != NULL) && strncmp(line, "[Style]", 7) == 0)
 		{
-			char *styleName = "DefaultStyle";
+			char* styleName = "DefaultStyle";
 			int pointSize = 5;
-			char *pointColor = "Grey";
+			char* pointColor = "Grey";
 			int lineWidth = 5;
-			char *lineColor = "Grey";
-			char *polygonFillColor = "Grey";
-			char *polygonStrokeColor = "Grey";
+			char* lineColor = "Grey";
+			char* polygonFillColor = "Grey";
+			char* polygonStrokeColor = "Grey";
 			int polygonStrokeWidth = 0;
 
-			getResults = fgets ( line, sizeof line, pFile );
-			while ( (getResults != NULL) && (strncmp(line, "[Style]", 7) != 0) )
+			getResults = fgets(line, sizeof line, pFile);
+			while ((getResults != NULL) && (strncmp(line, "[Style]", 7) != 0))
 			{
-				char *ptr;
+				char* ptr;
 
 				// loop over all lines until [Style] is reached again
-				if ( (*line != '#') && (ptr = strchr(line, '=')) )
+				if ((*line != '#') && (ptr = strchr(line, '=')))
 				{
 					ptr = trim((++ptr));
 
@@ -85,26 +84,32 @@ getStyles( LAYERSTYLE **headRef )
 						polygonStrokeWidth = atoi(ptr);
 						free(ptr);
 					}
-
 				}
-				getResults = fgets ( line, sizeof line, pFile );
+				getResults = fgets(line, sizeof line, pFile);
 			}
 
-			addStyle(headRef, styleName, pointSize, pointColor, lineWidth, lineColor, polygonFillColor, polygonStrokeColor, polygonStrokeWidth);
+			addStyle(headRef,
+				 styleName,
+				 pointSize,
+				 pointColor,
+				 lineWidth,
+				 lineColor,
+				 polygonFillColor,
+				 polygonStrokeColor,
+				 polygonStrokeWidth);
 		}
 
-		getResults = fgets ( line, sizeof line, pFile );
+		getResults = fgets(line, sizeof line, pFile);
 	}
 
-	fclose( pFile );
+	fclose(pFile);
 }
 
-
 void
-freeStyles( LAYERSTYLE **headRef )
+freeStyles(LAYERSTYLE** headRef)
 {
-	LAYERSTYLE *curr = *headRef;
-	LAYERSTYLE *next;
+	LAYERSTYLE* curr = *headRef;
+	LAYERSTYLE* next;
 
 	while (curr != NULL)
 	{
@@ -121,16 +126,18 @@ freeStyles( LAYERSTYLE **headRef )
 	*headRef = NULL;
 }
 
-
 void
-addStyle(
-    LAYERSTYLE **headRef,
-    char* styleName,
-    int pointSize, char* pointColor,
-    int lineWidth, char* lineColor,
-    char* polygonFillColor, char* polygonStrokeColor, int polygonStrokeWidth)
+addStyle(LAYERSTYLE** headRef,
+	 char* styleName,
+	 int pointSize,
+	 char* pointColor,
+	 int lineWidth,
+	 char* lineColor,
+	 char* polygonFillColor,
+	 char* polygonStrokeColor,
+	 int polygonStrokeWidth)
 {
-	LAYERSTYLE *style = malloc( sizeof(LAYERSTYLE) );
+	LAYERSTYLE* style = malloc(sizeof(LAYERSTYLE));
 
 	style->styleName = styleName;
 	style->pointSize = pointSize;
@@ -144,12 +151,11 @@ addStyle(
 	*headRef = style;
 }
 
-
 int
-length( LAYERSTYLE *head )
+length(LAYERSTYLE* head)
 {
 	int count = 0;
-	LAYERSTYLE *curr = head;
+	LAYERSTYLE* curr = head;
 
 	while (curr != NULL)
 	{
@@ -160,18 +166,16 @@ length( LAYERSTYLE *head )
 	return (count);
 }
 
-
 LAYERSTYLE*
-getStyle( LAYERSTYLE *headRef, char* styleName )
+getStyle(LAYERSTYLE* headRef, char* styleName)
 {
-	LAYERSTYLE *curr = headRef;
+	LAYERSTYLE* curr = headRef;
 
 	while (curr != NULL && (strcmp(curr->styleName, styleName) != 0))
 		curr = curr->next;
 
 	return (curr);
 }
-
 
 char*
 trim(char* str)
@@ -180,10 +184,12 @@ trim(char* str)
 	char* result;
 	char* start = str;
 	char* end = strchr(start, '\0');
-	while (start<end && isspace(*start)) start++;
-	while (start<end && isspace(*(end-1))) end--;
-	len = end-start;
-	result = malloc( len+1 );
+	while (start < end && isspace(*start))
+		start++;
+	while (start < end && isspace(*(end - 1)))
+		end--;
+	len = end - start;
+	result = malloc(len + 1);
 	strncpy(result, start, len);
 	result[len] = '\0';
 	return result;
