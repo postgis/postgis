@@ -187,6 +187,9 @@ typedef enum LWORD_T {
 #define SRID_UNKNOWN 0
 #define SRID_IS_UNKNOWN(x) ((int)x<=0)
 
+/* Invalid SRID value, for internal use */
+#define SRID_INVALID (@SRID_MAX@ + 2)
+
 /*
 ** EPSG WGS84 geographics, OGC standard default SRS, better be in
 ** the SPATIAL_REF_SYS table!
@@ -2376,7 +2379,7 @@ LWGEOM* lwgeom_node(const LWGEOM* lwgeom_in);
  * @param edgeOnly if non-zero the result will be a MULTILINESTRING,
  *                 otherwise it'll be a COLLECTION of polygons.
  */
-LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *geom, double tolerance, int edgeOnly);
+LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *geom, double tolerance, int32_t edgeOnly);
 
 /**
  * Take vertices of a geometry and build the Voronoi diagram
