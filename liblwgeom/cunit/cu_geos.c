@@ -87,7 +87,7 @@ static void test_geos_linemerge(void)
 	geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
 	geom2 = lwgeom_linemerge(geom1);
 	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom2);
-	ASSERT_STRING_EQUAL(out_ewkt, "GEOMETRYCOLLECTION EMPTY");
+	ASSERT_STRING_EQUAL(out_ewkt, "MULTILINESTRING EMPTY");
 	lwfree(out_ewkt);
 	lwgeom_free(geom1);
 	lwgeom_free(geom2);
