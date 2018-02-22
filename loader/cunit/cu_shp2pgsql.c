@@ -17,13 +17,14 @@
 void test_ShpLoaderCreate(void);
 void test_ShpLoaderDestroy(void);
 
-SHPLOADERCONFIG *loader_config;
-SHPLOADERSTATE *loader_state;
+SHPLOADERCONFIG* loader_config;
+SHPLOADERSTATE* loader_state;
 
 /*
 ** Called from test harness to register the tests in this file.
 */
-CU_pSuite register_shp2pgsql_suite(void)
+CU_pSuite
+register_shp2pgsql_suite(void)
 {
 	CU_pSuite pSuite;
 	pSuite = CU_add_suite("Shapefile Loader File shp2pgsql Test", init_shp2pgsql_suite, clean_shp2pgsql_suite);
@@ -33,10 +34,8 @@ CU_pSuite register_shp2pgsql_suite(void)
 		return NULL;
 	}
 
-	if (
-	    (NULL == CU_add_test(pSuite, "test_ShpLoaderCreate()", test_ShpLoaderCreate)) ||
-	    (NULL == CU_add_test(pSuite, "test_ShpLoaderDestroy()", test_ShpLoaderDestroy))
-	)
+	if ((NULL == CU_add_test(pSuite, "test_ShpLoaderCreate()", test_ShpLoaderCreate)) ||
+	    (NULL == CU_add_test(pSuite, "test_ShpLoaderDestroy()", test_ShpLoaderDestroy)))
 	{
 		CU_cleanup_registry();
 		return NULL;
@@ -48,7 +47,8 @@ CU_pSuite register_shp2pgsql_suite(void)
 ** The suite initialization function.
 ** Create any re-used objects.
 */
-int init_shp2pgsql_suite(void)
+int
+init_shp2pgsql_suite(void)
 {
 	return 0;
 }
@@ -57,12 +57,14 @@ int init_shp2pgsql_suite(void)
 ** The suite cleanup function.
 ** Frees any global objects.
 */
-int clean_shp2pgsql_suite(void)
+int
+clean_shp2pgsql_suite(void)
 {
 	return 0;
 }
 
-void test_ShpLoaderCreate(void)
+void
+test_ShpLoaderCreate(void)
 {
 	loader_config = (SHPLOADERCONFIG*)calloc(1, sizeof(SHPLOADERCONFIG));
 	set_loader_config_defaults(loader_config);
@@ -71,7 +73,8 @@ void test_ShpLoaderCreate(void)
 	CU_ASSERT_STRING_EQUAL(loader_state->config->encoding, ENCODING_DEFAULT);
 }
 
-void test_ShpLoaderDestroy(void)
+void
+test_ShpLoaderDestroy(void)
 {
 	ShpLoaderDestroy(loader_state);
 }

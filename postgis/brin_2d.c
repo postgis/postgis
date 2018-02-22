@@ -12,13 +12,12 @@
  */
 
 PG_FUNCTION_INFO_V1(geom2d_brin_inclusion_add_value);
-Datum
-geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
+Datum geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 {
-	BrinValues *column = (BrinValues *) PG_GETARG_POINTER(1);
-	Datum      newval = PG_GETARG_DATUM(2);
-	bool	   isnull = PG_GETARG_BOOL(3);
-	BOX2DF     box_geom, *box_key;
+	BrinValues* column = (BrinValues*)PG_GETARG_POINTER(1);
+	Datum newval = PG_GETARG_DATUM(2);
+	bool isnull = PG_GETARG_BOOL(3);
+	BOX2DF box_geom, *box_key;
 
 	/*
 	 * If the new value is null, we record that we saw it if it's the first
@@ -26,8 +25,7 @@ geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 	 */
 	if (isnull)
 	{
-		if (column->bv_hasnulls)
-			PG_RETURN_BOOL(false);
+		if (column->bv_hasnulls) PG_RETURN_BOOL(false);
 
 		column->bv_hasnulls = true;
 		PG_RETURN_BOOL(true);
@@ -43,7 +41,8 @@ geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 		 * new value for emptiness; if it returns true, we need to set the
 		 * "contains empty" flag in the element (unless already set).
 		 */
-		if (is_gserialized_from_datum_empty(newval)) {
+		if (is_gserialized_from_datum_empty(newval))
+		{
 			if (!DatumGetBool(column->bv_values[INCLUSION_CONTAINS_EMPTY]))
 			{
 				column->bv_values[INCLUSION_CONTAINS_EMPTY] = BoolGetDatum(true);
@@ -51,7 +50,8 @@ geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 			}
 
 			PG_RETURN_BOOL(false);
-		} else
+		}
+		else
 		{
 			/*
 			 * in case the entry is not empty and it is not possible to
@@ -64,19 +64,17 @@ geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 	/* if the recorded value is null, we just need to store the box2df */
 	if (column->bv_allnulls)
 	{
-		column->bv_values[INCLUSION_UNION] = datumCopy((Datum) &box_geom, false,
-				sizeof(BOX2DF));
+		column->bv_values[INCLUSION_UNION] = datumCopy((Datum)&box_geom, false, sizeof(BOX2DF));
 		column->bv_values[INCLUSION_UNMERGEABLE] = BoolGetDatum(false);
 		column->bv_values[INCLUSION_CONTAINS_EMPTY] = BoolGetDatum(false);
 		column->bv_allnulls = false;
 		PG_RETURN_BOOL(true);
 	}
 
-	box_key = (BOX2DF *) column->bv_values[INCLUSION_UNION];
+	box_key = (BOX2DF*)column->bv_values[INCLUSION_UNION];
 
 	/* Check if the stored bouding box already contains the geometry's one */
-	if (box2df_contains(box_key, &box_geom))
-			PG_RETURN_BOOL(false);
+	if (box2df_contains(box_key, &box_geom)) PG_RETURN_BOOL(false);
 
 	/*
 	 * Otherwise, we need to enlarge the stored box2df to make it contains the

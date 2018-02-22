@@ -22,13 +22,12 @@
  *
  **********************************************************************/
 
-
 #include "liblwgeom.h"
 #include "lwunionfind.h"
 #include <string.h>
 
-static int cmp_int(const void *a, const void *b);
-static int cmp_int_ptr(const void *a, const void *b);
+static int cmp_int(const void* a, const void* b);
+static int cmp_int_ptr(const void* a, const void* b);
 
 UNIONFIND*
 UF_create(uint32_t N)
@@ -58,14 +57,16 @@ UF_destroy(UNIONFIND* uf)
 }
 
 uint32_t
-UF_find (UNIONFIND* uf, uint32_t i)
+UF_find(UNIONFIND* uf, uint32_t i)
 {
 	uint32_t base = i;
-	while (uf->clusters[base] != base) {
+	while (uf->clusters[base] != base)
+	{
 		base = uf->clusters[base];
 	}
 
-	while (i != base) {
+	while (i != base)
+	{
 		uint32_t next = uf->clusters[i];
 		uf->clusters[i] = base;
 		i = next;
@@ -75,9 +76,9 @@ UF_find (UNIONFIND* uf, uint32_t i)
 }
 
 uint32_t
-UF_size (UNIONFIND* uf, uint32_t i)
+UF_size(UNIONFIND* uf, uint32_t i)
 {
-    return uf->cluster_sizes[UF_find(uf, i)];
+	return uf->cluster_sizes[UF_find(uf, i)];
 }
 
 void
@@ -86,13 +87,9 @@ UF_union(UNIONFIND* uf, uint32_t i, uint32_t j)
 	uint32_t a = UF_find(uf, i);
 	uint32_t b = UF_find(uf, j);
 
-	if (a == b)
-	{
-		return;
-	}
+	if (a == b) { return; }
 
-	if (uf->cluster_sizes[a] < uf->cluster_sizes[b] ||
-	        (uf->cluster_sizes[a] == uf->cluster_sizes[b] && a > b))
+	if (uf->cluster_sizes[a] < uf->cluster_sizes[b] || (uf->cluster_sizes[a] == uf->cluster_sizes[b] && a > b))
 	{
 		uf->clusters[a] = uf->clusters[b];
 		uf->cluster_sizes[b] += uf->cluster_sizes[a];
@@ -112,8 +109,8 @@ uint32_t*
 UF_ordered_by_cluster(UNIONFIND* uf)
 {
 	size_t i;
-	uint32_t** cluster_id_ptr_by_elem_id = lwalloc(uf->N * sizeof (uint32_t*));
-	uint32_t* ordered_ids = lwalloc(uf->N * sizeof (uint32_t));
+	uint32_t** cluster_id_ptr_by_elem_id = lwalloc(uf->N * sizeof(uint32_t*));
+	uint32_t* ordered_ids = lwalloc(uf->N * sizeof(uint32_t));
 
 	for (i = 0; i < uf->N; i++)
 	{
@@ -127,12 +124,12 @@ UF_ordered_by_cluster(UNIONFIND* uf)
 	/* Sort the array of cluster id pointers, so that pointers to the
 	 * same cluster id are grouped together.
 	 * */
-	qsort(cluster_id_ptr_by_elem_id, uf->N, sizeof (uint32_t*), &cmp_int_ptr);
+	qsort(cluster_id_ptr_by_elem_id, uf->N, sizeof(uint32_t*), &cmp_int_ptr);
 
 	/* Recover the input element ids from the cluster id pointers, so
 	 * we can return element ids grouped by cluster id.
 	 * */
-	for (i = 0; i < uf-> N; i++)
+	for (i = 0; i < uf->N; i++)
 	{
 		ordered_ids[i] = (cluster_id_ptr_by_elem_id[i] - uf->clusters);
 	}
@@ -149,7 +146,8 @@ UF_get_collapsed_cluster_ids(UNIONFIND* uf, const char* is_in_cluster)
 	uint32_t last_old_id, current_new_id, i;
 	char encountered_cluster = LW_FALSE;
 
-	current_new_id = 0; last_old_id = 0;
+	current_new_id = 0;
+	last_old_id = 0;
 	for (i = 0; i < uf->N; i++)
 	{
 		uint32_t j = ordered_components[i];
@@ -162,8 +160,7 @@ UF_get_collapsed_cluster_ids(UNIONFIND* uf, const char* is_in_cluster)
 				last_old_id = current_old_id;
 			}
 
-			if (current_old_id != last_old_id)
-				current_new_id++;
+			if (current_old_id != last_old_id) current_new_id++;
 
 			new_ids[j] = current_new_id;
 			last_old_id = current_old_id;
@@ -176,13 +173,10 @@ UF_get_collapsed_cluster_ids(UNIONFIND* uf, const char* is_in_cluster)
 }
 
 static int
-cmp_int(const void *a, const void *b)
+cmp_int(const void* a, const void* b)
 {
-	if (*((uint32_t*) a) > *((uint32_t*) b))
-	{
-		return 1;
-	}
-	else if (*((uint32_t*) a) < *((uint32_t*) b))
+	if (*((uint32_t*)a) > *((uint32_t*)b)) { return 1; }
+	else if (*((uint32_t*)a) < *((uint32_t*)b))
 	{
 		return -1;
 	}
@@ -193,20 +187,11 @@ cmp_int(const void *a, const void *b)
 }
 
 static int
-cmp_int_ptr(const void *a, const void *b)
+cmp_int_ptr(const void* a, const void* b)
 {
-	int val_cmp = cmp_int(*((uint32_t**) a), *((uint32_t**) b));
-	if (val_cmp != 0)
-	{
-		return val_cmp;
-	}
-	if (a > b)
-	{
-		return 1;
-	}
-	if (a < b)
-	{
-		return -1;
-	}
+	int val_cmp = cmp_int(*((uint32_t**)a), *((uint32_t**)b));
+	if (val_cmp != 0) { return val_cmp; }
+	if (a > b) { return 1; }
+	if (a < b) { return -1; }
 	return 0;
 }

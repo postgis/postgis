@@ -19,12 +19,12 @@
 ** Returns a CUE_SUCCESS on successful running, another
 ** CUnit error code on failure.
 */
-int main()
+int
+main()
 {
 
 	/* initialize the CUnit test registry */
-	if (CUE_SUCCESS != CU_initialize_registry())
-		return CU_get_error();
+	if (CUE_SUCCESS != CU_initialize_registry()) return CU_get_error();
 
 	/* Add the shp2pgsql test suite */
 	if (NULL == register_shp2pgsql_suite())
@@ -46,5 +46,4 @@ int main()
 	CU_cleanup_registry();
 
 	return CU_get_error();
-
 }
