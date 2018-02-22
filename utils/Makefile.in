@@ -17,6 +17,8 @@
 MODULE_doc=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/$(MODULE_doc)
 
+SUBDIRS=external/astyle
+
 # Files to be copied to the contrib/ directory
 DATA_built=postgis_restore.pl
 
@@ -43,6 +45,12 @@ SRID_USER_MAXIMUM = @SRID_USR_MAX@
 
 all: postgis_restore.pl
 	chmod +x $(SCRIPTS)
+
+all clean:
+	for s in $(SUBDIRS); do \
+		echo "---- Making $@ in $${s}"; \
+		$(MAKE) -C $${s} $@ || exit 1; \
+	done;
 
 DROP_FILES = \
   ../raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in \
