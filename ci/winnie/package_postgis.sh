@@ -9,13 +9,19 @@
 #POSTGIS_MAJOR_VERSION=2
 #POSTGIS_MINOR_VERSION=1
 #POSTGIS_MICRO_VERSION=0dev
-#export GEOS_VER=3.4.0dev
-#export GDAL_VER=2.0.0
 #export OS_BUILD=32
-#export PROJ_VER=4.9.1
+
 #export GCC_TYPE=
-#export SFCGAL_VER=1.1.0
-#export PCRE_VER
+export SFCGAL_VER=1.3.2
+export GEOS_VER=3.7.0dev
+export GDAL_VER=2.2.3
+export PROJ_VER=4.9.3
+export SFCGAL_VER=1.3.2
+export PCRE_VER=8.33
+export PROTOBUF_VER=3.2.0
+export PROTOBUFC_VER=1.2.1
+export CGAL_VER=4.11
+
 if [[ "${GCC_TYPE}" == *gcc48* ]] ; then
 	export PROJECTS=/projects
 	export MINGPROJECTS=/projects
@@ -48,15 +54,15 @@ export POSTGIS_MICRO_VER=${POSTGIS_MICRO_VERSION}
 
 if [[ "$POSTGIS_MICRO_VERSION"  == *SVN* || "$POSTGIS_MICRO_VERSION"  == *dev* ]] ; then
 	export POSTGIS_SRC=${PROJECTS}/postgis/branches/${POSTGIS_MINOR_VER}
-	export svnurl="http://svn.osgeo.org/postgis/branches/${POSTGIS_MINOR_VER}"
+	export svnurl="https://svn.osgeo.org/postgis/branches/${POSTGIS_MINOR_VER}"
 else
 	#tagged version -- official release
 	export POSTGIS_SRC=${PROJECTS}/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}
-	export svnurl="http://svn.osgeo.org/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}"
+	export svnurl="https://svn.osgeo.org/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}"
 fi;
 
-if [[ "$POSTGIS_MINOR_VER"  == 2.3 ]] ; then
-	export svnurl="http://svn.osgeo.org/postgis/trunk"
+if [[ "$reference"  == *trunk* ]] ; then
+	export svnurl="https://svn.osgeo.org/postgis/trunk"
 fi;
 #export POSTGIS_SRC=${PROJECTS}/postgis/trunk
 #POSTGIS_SVN_REVISION=will_be_passed_in_by_bot
@@ -97,6 +103,7 @@ cp ${PGPATHEDB}/bin/libpq.dll  $outdir/bin/postgisgui
 #cp ${PGPATHEDB}/bin/libiconv2.dll  $outdir/bin/postgisgui
 cp ${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin/libicon*.dll $outdir/bin/postgisgui
 cp ${PGPATHEDB}/bin/libintl*.dll $outdir/bin/postgisgui
+
 cp ${PGPATHEDB}/bin/ssleay32.dll $outdir/bin/postgisgui
 cp ${PGPATHEDB}/bin/libeay32.dll $outdir/bin/postgisgui
 
@@ -119,6 +126,9 @@ cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/
 cp ${MINGPROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 
+#for protobuf
+cp ${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/bin/libprotobuf-c-*.dll $outdir/bin
+
 echo "POSTGIS: ${POSTGIS_MINOR_VER} r${POSTGIS_SVN_REVISION} http://postgis.net/source" > $verfile
 
 if [ "$POSTGIS_MAJOR_VERSION" == "2" ] ; then
@@ -136,7 +146,6 @@ fi;
 
 if [ -n "$SFCGAL_VER"  ]; then
 	## only copy cgal and sfcgal stuff if sfcgal is packaged
-	export CGAL_VER=4.6.1
 	export BOOST_VER=1.59.0
 	export BOOST_VER_WU=1_59_0
 	export GMP_VER=5.1.2
@@ -151,6 +160,9 @@ if [ -n "$SFCGAL_VER"  ]; then
 	# cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 	# cp -p ${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin/postgisgui
 fi;
+
+echo "PROTOBUF VERSION: ${PROTOBUF_VER} https://github.com/google/protobuf" >> $verfile
+echo "PROTOBUF-C VERSION: ${PROTOBUFC_VER} https://github.com/protobuf-c/protobuf-c"  >> $verfile
 #cp ${MINGPROJECTS}/libxml/rel-libxml2-2.7.8w${OS_BUILD}/bin/*.dll  $outdir/bin/
 cp ${PGPATHEDB}/bin/libxml2-2.dll   $outdir/bin/
 
@@ -186,7 +198,9 @@ cp topology/topology_upgrade_*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-
 #cp topology/README* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 #cp utils/* ${RELDIR}/${RELVERDIR}/utils
 #cp extras/* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}/extras
-cp -r extensions/*/sql/* ${RELDIR}/${RELVERDIR}/share/extension
+cp ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+cp ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}next.sql ${RELDIR}/${RELVERDIR}/share/extension
+cp ${PGPATH}/share/extension/address_standardizer*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
 cp -r extensions/*/*.control ${RELDIR}/${RELVERDIR}/share/extension
 cp -r extensions/*/*.dll ${RELDIR}/${RELVERDIR}/lib #only address_standardizer in theory has this
 #cp extensions/postgis_topology/sql/* ${RELDIR}/${RELVERDIR}/share/extension
