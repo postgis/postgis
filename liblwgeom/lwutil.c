@@ -129,8 +129,8 @@ default_debuglogger(int level, const char *fmt, va_list ap)
 	if ( POSTGIS_DEBUG_LEVEL >= level )
 	{
 		/* Space pad the debug output */
-		int i;
-		for ( i = 0; i < level; i++ )
+		size_t i;
+		for ( i = 0; i < (size_t) level; i++ )
 			msg[i] = ' ';
 		vsnprintf(msg+i, LW_MSG_MAXLEN-i, fmt, ap);
 		msg[LW_MSG_MAXLEN]='\0';
@@ -258,7 +258,7 @@ lwfree(void *mem)
  *    1 - end trunctation (i.e. characters are removed from the end)
  */
 
-char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int truncdirection)
+char *lwmessage_truncate(char *str, size_t startpos, size_t endpos, size_t maxlength, int truncdirection)
 {
 	char *output;
 	char *outstart;
@@ -335,7 +335,7 @@ getMachineEndian(void)
 
 
 void
-error_if_srid_mismatch(int srid1, int srid2)
+error_if_srid_mismatch(int32_t srid1, int32_t srid2)
 {
 	if ( srid1 != srid2 )
 	{
@@ -343,21 +343,25 @@ error_if_srid_mismatch(int srid1, int srid2)
 	}
 }
 
-int
-clamp_srid(int srid)
+int32_t
+clamp_srid(int32_t srid)
 {
 	int newsrid = srid;
 
-	if ( newsrid <= 0 ) {
-		if ( newsrid != SRID_UNKNOWN ) {
+	if ( newsrid <= 0 )
+	{
+		if ( newsrid != SRID_UNKNOWN )
+		{
 			newsrid = SRID_UNKNOWN;
 			lwnotice("SRID value %d converted to the officially unknown SRID value %d", srid, newsrid);
 		}
-	} else if ( srid > SRID_MAXIMUM ) {
-    newsrid = SRID_USER_MAXIMUM + 1 +
-      /* -1 is to reduce likelyhood of clashes */
-      /* NOTE: must match implementation in postgis_restore.pl */
-      ( srid % ( SRID_MAXIMUM - SRID_USER_MAXIMUM - 1 ) );
+	}
+	else if ( srid > SRID_MAXIMUM )
+	{
+		newsrid = SRID_USER_MAXIMUM + 1 +
+			/* -1 is to reduce likelyhood of clashes */
+			/* NOTE: must match implementation in postgis_restore.pl */
+			( srid % ( SRID_MAXIMUM - SRID_USER_MAXIMUM - 1 ) );
 		lwnotice("SRID value %d > SRID_MAXIMUM converted to %d", srid, newsrid);
 	}
 

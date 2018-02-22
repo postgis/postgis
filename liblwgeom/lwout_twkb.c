@@ -24,6 +24,7 @@
 
 
 #include "lwout_twkb.h"
+#include <stddef.h>
 
 /*
 * GeometryType, and dimensions
@@ -105,13 +106,13 @@ static void write_bbox(TWKB_STATE *ts, int ndims)
 */
 static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB_STATE *ts, int register_npoints, uint32_t minpoints)
 {
-	uint32_t ndims = FLAGS_NDIMS(pa->flags);
+	uint32_t ndims = (uint32_t) FLAGS_NDIMS(pa->flags);
 	uint32_t i, j;
 	bytebuffer_t b;
 	bytebuffer_t *b_p;
 	int64_t nextdelta[MAX_N_DIMS];
-	int npoints = 0;
-	size_t npoints_offset = 0;
+	uint32_t npoints = 0;
+	ptrdiff_t npoints_offset = 0;
 
 	LWDEBUGF(2, "Entered %s", __func__);
 
@@ -156,7 +157,7 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 	for ( i = 0; i < pa->npoints; i++ )
 	{
 		double *dbl_ptr = (double*)getPoint_internal(pa, i);
-		int diff = 0;
+		long long int diff = 0;
 
 		/* Write this coordinate to the buffer as a varint */
 		for ( j = 0; j < ndims; j++ )
@@ -279,7 +280,7 @@ static int lwpoly_to_twkb_buf(const LWPOLY *poly, TWKB_GLOBALS *globals, TWKB_ST
 static int lwmulti_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, TWKB_STATE *ts)
 {
 	uint32_t i;
-	int nempty = 0;
+	uint32_t nempty = 0;
 
 	LWDEBUGF(2, "Entered %s", __func__);
 	LWDEBUGF(4, "Number of geometries in multi is %d", col->ngeoms);
@@ -293,7 +294,7 @@ static int lwmulti_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, T
 	}
 
 	/* Set the number of geometries */
-	bytebuffer_append_uvarint(ts->geom_buf, (uint64_t) (col->ngeoms - nempty));
+	bytebuffer_append_uvarint(ts->geom_buf, (col->ngeoms - nempty));
 
 	/* We've been handed an idlist, so write it in */
 	if ( ts->idlist )

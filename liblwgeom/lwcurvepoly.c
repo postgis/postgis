@@ -33,7 +33,7 @@
 
 
 LWCURVEPOLY *
-lwcurvepoly_construct_empty(int srid, char hasz, char hasm)
+lwcurvepoly_construct_empty(int32_t srid, char hasz, char hasm)
 {
 	LWCURVEPOLY *ret;
 

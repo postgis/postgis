@@ -54,9 +54,9 @@ extern void stringbuffer_append(stringbuffer_t *sb, const char *s);
 extern int stringbuffer_aprintf(stringbuffer_t *sb, const char *fmt, ...);
 extern const char *stringbuffer_getstring(stringbuffer_t *sb);
 extern char *stringbuffer_getstringcopy(stringbuffer_t *sb);
-extern int stringbuffer_getlength(stringbuffer_t *sb);
+extern size_t stringbuffer_getlength(stringbuffer_t *sb);
 extern char stringbuffer_lastchar(stringbuffer_t *s);
-extern int stringbuffer_trim_trailing_white(stringbuffer_t *s);
-extern int stringbuffer_trim_trailing_zeroes(stringbuffer_t *s);
+extern size_t stringbuffer_trim_trailing_white(stringbuffer_t *s);
+extern size_t stringbuffer_trim_trailing_zeroes(stringbuffer_t *s);
 
 #endif /* _STRINGBUFFER_H */

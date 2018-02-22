@@ -158,7 +158,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    */
   LWT_BE_TOPOLOGY* (*createTopology) (
     const LWT_BE_DATA* be,
-    const char* name, int srid, double precision, int hasZ
+    const char* name, int32_t srid, double precision, int hasZ
   );
 
   /**
@@ -949,7 +949,7 @@ typedef struct LWT_TOPOLOGY_T LWT_TOPOLOGY;
  *         (liblwgeom error handler will be invoked with error message)
  */
 LWT_TOPOLOGY *lwt_CreateTopology(LWT_BE_IFACE *iface, const char *name,
-                        int srid, double prec, int hasz);
+                        int32_t srid, double prec, int hasz);
 
 /**
  * Loads an existing topology by name from the database

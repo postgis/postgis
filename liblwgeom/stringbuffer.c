@@ -23,10 +23,10 @@
  *
  **********************************************************************/
 
-
+#include "stringbuffer.h"
 
 #include "liblwgeom_internal.h"
-#include "stringbuffer.h"
+#include <stddef.h>
 
 /**
 * Allocate a new stringbuffer_t. Use stringbuffer_destroy to free.
@@ -100,7 +100,7 @@ stringbuffer_clear(stringbuffer_t *s)
 static inline void
 stringbuffer_makeroom(stringbuffer_t *s, size_t size_to_add)
 {
-	size_t current_size = (s->str_end - s->str_start);
+	size_t current_size = (size_t) (s->str_end - s->str_start);
 	size_t capacity = s->capacity;
 	size_t required_size = current_size + size_to_add;
 
@@ -133,8 +133,8 @@ stringbuffer_lastchar(stringbuffer_t *s)
 void
 stringbuffer_append(stringbuffer_t *s, const char *a)
 {
-	int alen = strlen(a); /* Length of string to append */
-	int alen0 = alen + 1; /* Length including null terminator */
+	size_t alen = strlen(a); /* Length of string to append */
+	size_t alen0 = alen + 1; /* Length including null terminator */
 	stringbuffer_makeroom(s, alen0);
 	memcpy(s->str_end, a, alen0);
 	s->str_end += alen;
@@ -159,7 +159,7 @@ stringbuffer_getstring(stringbuffer_t *s)
 char*
 stringbuffer_getstringcopy(stringbuffer_t *s)
 {
-	size_t size = (s->str_end - s->str_start) + 1;
+	size_t size = (size_t) (s->str_end - s->str_start) + 1;
 	char *str = lwalloc(size);
 	memcpy(str, s->str_start, size);
 	str[size - 1] = '\0';
@@ -170,10 +170,10 @@ stringbuffer_getstringcopy(stringbuffer_t *s)
 * Returns the length of the current string, not including the
 * null terminator (same behavior as strlen()).
 */
-int
+size_t
 stringbuffer_getlength(stringbuffer_t *s)
 {
-	return (s->str_end - s->str_start);
+	return (size_t) (s->str_end - s->str_start);
 }
 
 /**
@@ -203,7 +203,7 @@ stringbuffer_copy(stringbuffer_t *dst, stringbuffer_t *src)
 static int
 stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 {
-	int maxlen = (s->capacity - (s->str_end - s->str_start));
+	size_t maxlen = (s->capacity - (size_t) (s->str_end - s->str_start));
 	int len = 0; /* Length of the output */
 	va_list ap2;
 
@@ -224,10 +224,10 @@ stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 	/* We didn't have enough space! */
 	/* Either Unix vsnprint returned write length larger than our buffer */
 	/*     or Windows vsnprintf returned an error code. */
-	if ( len >= maxlen )
+	if ( (size_t) len >= maxlen )
 	{
-		stringbuffer_makeroom(s, len + 1);
-		maxlen = (s->capacity - (s->str_end - s->str_start));
+		stringbuffer_makeroom(s, (size_t) len + 1);
+		maxlen = (s->capacity - (size_t) (s->str_end - s->str_start));
 
 		/* Try to print a second time */
 		len = vsnprintf(s->str_end, maxlen, fmt, ap);
@@ -235,7 +235,7 @@ stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 		/* Printing error? Error! */
 		if ( len < 0 ) return len;
 		/* Too long still? Error! */
-		if ( len >= maxlen ) return -1;
+		if ( (size_t) len >= maxlen ) return -1;
 	}
 
 	/* Move end pointer forward and return. */
@@ -264,11 +264,11 @@ stringbuffer_aprintf(stringbuffer_t *s, const char *fmt, ...)
 * Trims whitespace off the end of the stringbuffer. Returns
 * the number of characters trimmed.
 */
-int
+size_t
 stringbuffer_trim_trailing_white(stringbuffer_t *s)
 {
 	char *ptr = s->str_end;
-	int dist = 0;
+	size_t dist = 0;
 
 	/* Roll backwards until we hit a non-space. */
 	while( ptr > s->str_start )
@@ -281,7 +281,7 @@ stringbuffer_trim_trailing_white(stringbuffer_t *s)
 		else
 		{
 			ptr++;
-			dist = s->str_end - ptr;
+			dist = (size_t) (s->str_end - ptr);
 			*ptr = '\0';
 			s->str_end = ptr;
 			return dist;
@@ -300,12 +300,12 @@ stringbuffer_trim_trailing_white(stringbuffer_t *s)
 *     1.0 -> 1
 *     0.0 -> 0
 */
-int
+size_t
 stringbuffer_trim_trailing_zeroes(stringbuffer_t *s)
 {
 	char *ptr = s->str_end;
 	char *decimal_ptr = NULL;
-	int dist;
+	size_t dist;
 
 	if ( s->str_end - s->str_start < 2)
 		return 0;
@@ -353,7 +353,7 @@ stringbuffer_trim_trailing_zeroes(stringbuffer_t *s)
 
 	/* Add null terminator re-set the end of the stringbuffer. */
 	*ptr = '\0';
-	dist = s->str_end - ptr;
+	dist = (size_t) (s->str_end - ptr);
 	s->str_end = ptr;
 	return dist;
 }

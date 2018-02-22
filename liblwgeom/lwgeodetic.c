@@ -2321,7 +2321,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 {
-	int type1, type2;
+	uint8_t type1, type2;
 	GBOX gbox1, gbox2;
 	gbox1.flags = gbox2.flags = 0;
 
@@ -2636,7 +2636,7 @@ int lwpoly_intersects_line(const LWPOLY* lwpoly, const POINTARRAY* line)
 				ll2cart(b1, &pb1);
 				ll2cart(b2, &pb2);
 
-				int inter = edge_intersects(&pa1, &pa2, &pb1, &pb2);
+				uint32_t inter = edge_intersects(&pa1, &pa2, &pb1, &pb2);
 
 				/* ignore same edges */
 				if (inter & PIR_INTERSECTS
@@ -3195,7 +3195,7 @@ double ptarray_length_spheroid(const POINTARRAY *pa, const SPHEROID *s)
 
 double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s)
 {
-	int type;
+	uint8_t type;
 	uint32_t i = 0;
 	double length = 0.0;
 
@@ -3302,7 +3302,7 @@ ptarray_nudge_geodetic(POINTARRAY *pa)
 int
 lwgeom_nudge_geodetic(LWGEOM *geom)
 {
-	int type;
+	uint8_t type;
 	uint32_t i = 0;
 	int rv = LW_FALSE;
 
@@ -3413,7 +3413,7 @@ edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const P
 	POINT3D AN, BN, VN;  /* Normals to plane A and plane B */
 	double ab_dot;
 	int a1_side, a2_side, b1_side, b2_side;
-	int rv = PIR_NO_INTERACT;
+	uint32_t rv = PIR_NO_INTERACT;
 
 	/* Normals to the A-plane and B-plane */
 	unit_normal(A1, A2, &AN);

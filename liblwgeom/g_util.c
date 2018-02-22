@@ -31,9 +31,9 @@
 struct geomtype_struct
 {
 	char *typename;
-	int type;
-	int z;
-	int m;
+	uint8_t type;
+	uint8_t z;
+	uint8_t m;
 };
 
 /* Type array. Note that the order of this array is important in
@@ -142,7 +142,7 @@ static char dump_toupper(int in)
 	return dumb_upper_map[in];
 }
 
-uint8_t gflags(int hasz, int hasm, int geodetic)
+uint8_t gflags(char hasz, char hasm, int geodetic)
 {
 	uint8_t flags = 0;
 	if ( hasz )

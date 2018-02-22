@@ -365,7 +365,7 @@ LWCOLLECTION*
 lwpoint_clip_to_ordinate_range(const LWPOINT *point, char ordinate, double from, double to)
 {
 	LWCOLLECTION *lwgeom_out = NULL;
-	char hasz, hasm;
+	int hasz, hasm;
 	POINT4D p4d;
 	double ordinate_value;
 
@@ -415,7 +415,7 @@ LWCOLLECTION*
 lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double from, double to)
 {
 	LWCOLLECTION *lwgeom_out = NULL;
-	char hasz, hasm;
+	int hasz, hasm;
 	uint32_t i;
 
 	/* Nothing to do with NULL */
@@ -483,8 +483,8 @@ lwmline_clip_to_ordinate_range(const LWMLINE *mline, char ordinate, double from,
 	else
 	{
 		LWCOLLECTION *col;
-		char hasz = lwgeom_has_z(lwmline_as_lwgeom(mline));
-		char hasm = lwgeom_has_m(lwmline_as_lwgeom(mline));
+		int hasz = lwgeom_has_z(lwmline_as_lwgeom(mline));
+		int hasm = lwgeom_has_m(lwmline_as_lwgeom(mline));
 		uint32_t i, j;
 		char homogeneous = 1;
 		size_t geoms_size = 0;
@@ -555,8 +555,7 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 	int added_last_point = 0;
 	POINT4D *p = NULL, *q = NULL, *r = NULL;
 	double ordinate_value_p = 0.0, ordinate_value_q = 0.0;
-	char hasz, hasm;
-	char dims;
+	int hasz, hasm;
 
 	/* Null input, nothing we can do. */
 	if ( ! line )
@@ -566,7 +565,6 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 	}
 	hasz = lwgeom_has_z(lwline_as_lwgeom(line));
 	hasm = lwgeom_has_m(lwline_as_lwgeom(line));
-	dims = FLAGS_NDIMS(line->flags);
 
 	/* Ensure 'from' is less than 'to'. */
 	if ( to < from )
@@ -582,7 +580,7 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 	/* Asking for an ordinate we don't have. Error. */
 	if ( (ordinate == 'Z' && ! hasz) || (ordinate == 'M' && ! hasm) )
 	{
-		lwerror("Cannot clip on ordinate %d in a %d-d geometry.", ordinate, dims);
+		lwerror("Cannot clip on ordinate %d in a %d-d geometry.", ordinate, FLAGS_NDIMS(line->flags));
 		return NULL;
 	}
 
@@ -813,7 +811,7 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 	/* Try and offset the linear portions of the return value */
 	for ( i = 0; i < out_col->ngeoms; i++ )
 	{
-		int type = out_col->geoms[i]->type;
+		uint8_t type = out_col->geoms[i]->type;
 		if ( type == POINTTYPE )
 		{
 			lwnotice("lwgeom_clip_to_ordinate_range cannot offset a clipped point");
@@ -988,7 +986,7 @@ segments_tcpa(POINT4D* p0, const POINT4D* p1,
 	return t;
 }
 
-static int
+static uint32_t
 ptarray_collect_mvals(const POINTARRAY *pa, double tmin, double tmax, double *mvals)
 {
 	POINT4D pbuf;
@@ -1016,10 +1014,10 @@ compare_double(const void *pa, const void *pb)
 }
 
 /* Return number of elements in unique array */
-static int
-uniq(double *vals, int nvals)
+static uint32_t
+uniq(double *vals, uint32_t nvals)
 {
-	int i, last=0;
+	uint32_t i, last=0;
 	for (i=1; i<nvals; ++i)
 	{
 		// lwnotice("(I%d):%g", i, vals[i]);
@@ -1046,7 +1044,7 @@ uniq(double *vals, int nvals)
  * @return the segment number the point was found into
  *         or -1 if given measure was out of the known range.
  */
-static int
+static int64_t
 ptarray_locate_along_linear(const POINTARRAY *pa, double m, POINT4D *p, uint32_t from)
 {
 	uint32_t i = from;
@@ -1071,11 +1069,11 @@ double
 lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 {
 	LWLINE *l1, *l2;
-	int i;
+	uint32_t i;
 	const GBOX *gbox1, *gbox2;
 	double tmin, tmax;
 	double *mvals;
-	int nmvals = 0;
+	uint32_t nmvals = 0;
 	double mintime;
 	double mindist2 = FLT_MAX; /* minimum distance, squared */
 
@@ -1179,7 +1177,7 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 		double t1 = mvals[i];
 		double t;
 		POINT4D p0, p1, q0, q1;
-		int seg;
+		int64_t seg;
 		double dist2;
 
 		// lwnotice("T %g-%g", t0, t1);
@@ -1188,7 +1186,7 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t0, seg, p0.x, p0.y, p0.z);
 
-		seg = ptarray_locate_along_linear(l1->points, t1, &p1, seg);
+		seg = ptarray_locate_along_linear(l1->points, t1, &p1, (uint32_t) seg);
 		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t1, seg, p1.x, p1.y, p1.z);
 
@@ -1196,7 +1194,7 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t0, seg, q0.x, q0.y, q0.z);
 
-		seg = ptarray_locate_along_linear(l2->points, t1, &q1, seg);
+		seg = ptarray_locate_along_linear(l2->points, t1, &q1, (uint32_t) seg);
 		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t1, seg, q1.x, q1.y, q1.z);
 
@@ -1238,11 +1236,11 @@ int
 lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 {
 	LWLINE *l1, *l2;
-	int i;
+	uint32_t i;
 	const GBOX *gbox1, *gbox2;
 	double tmin, tmax;
 	double *mvals;
-	int nmvals = 0;
+	uint32_t nmvals = 0;
 	double maxdist2 = maxdist * maxdist;
 	int within = LW_FALSE;
 
@@ -1342,7 +1340,7 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 		double t;
 #endif
 		POINT4D p0, p1, q0, q1;
-		int seg;
+		int64_t seg;
 		double dist2;
 
 		// lwnotice("T %g-%g", t0, t1);
@@ -1351,7 +1349,7 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t0, seg, p0.x, p0.y, p0.z);
 
-		seg = ptarray_locate_along_linear(l1->points, t1, &p1, seg);
+		seg = ptarray_locate_along_linear(l1->points, t1, &p1, (uint32_t) seg);
 		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t1, seg, p1.x, p1.y, p1.z);
 
@@ -1359,7 +1357,7 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t0, seg, q0.x, q0.y, q0.z);
 
-		seg = ptarray_locate_along_linear(l2->points, t1, &q1, seg);
+		seg = ptarray_locate_along_linear(l2->points, t1, &q1, (uint32_t) seg);
 		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t1, seg, q1.x, q1.y, q1.z);
 

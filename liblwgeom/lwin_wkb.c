@@ -40,7 +40,7 @@ typedef struct
 	int swap_bytes; /* Do an endian flip? */
 	int check; /* Simple validity checks on geometries */
 	uint32_t lwtype; /* Current type we are handling */
-	uint32_t srid; /* Current SRID we are handling */
+	int32_t srid; /* Current SRID we are handling */
 	int has_z; /* Z? */
 	int has_m; /* M? */
 	int has_srid; /* SRID? */
@@ -107,7 +107,7 @@ uint8_t* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 		if( h2 > 15 )
 			lwerror("Invalid hex character (%c) encountered", hexbuf[2*i+1]);
 		/* First character is high bits, second is low bits */
-		buf[i] = ((h1 & 0x0F) << 4) | (h2 & 0x0F);
+		buf[i] = (uint8_t) (((h1 & 0x0F) << 4) | (h2 & 0x0F));
 	}
 	return buf;
 }
@@ -257,7 +257,7 @@ static char byte_from_wkb_state(wkb_parse_state *s)
 	wkb_parse_state_check(s, WKB_BYTE_SIZE);
 	LWDEBUG(4, "Passed state check");
 
-	char_value = s->pos[0];
+	char_value = (char) s->pos[0];
 	LWDEBUGF(4, "Read byte value: %x", char_value);
 	s->pos += WKB_BYTE_SIZE;
 
@@ -458,7 +458,7 @@ static LWLINE* lwline_from_wkb_state(wkb_parse_state *s)
 
 	if( s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 2 )
 	{
-		lwerror("%s must have at least two points", lwtype_name(s->lwtype));
+		lwerror("%s must have at least two points", lwtype_name((uint8_t)s->lwtype));
 		return NULL;
 	}
 
@@ -483,13 +483,13 @@ static LWCIRCSTRING* lwcircstring_from_wkb_state(wkb_parse_state *s)
 
 	if( s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 3 )
 	{
-		lwerror("%s must have at least three points", lwtype_name(s->lwtype));
+		lwerror("%s must have at least three points", lwtype_name((uint8_t)s->lwtype));
 		return NULL;
 	}
 
 	if( s->check & LW_PARSER_CHECK_ODD && ! (pa->npoints % 2) )
 	{
-		lwerror("%s must have an odd number of points", lwtype_name(s->lwtype));
+		lwerror("%s must have an odd number of points", lwtype_name((uint8_t)s->lwtype));
 		return NULL;
 	}
 
@@ -526,7 +526,7 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 		if( s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 4 )
 		{
 			LWDEBUGF(2, "%s must have at least four points in each ring", lwtype_name(s->lwtype));
-			lwerror("%s must have at least four points in each ring", lwtype_name(s->lwtype));
+			lwerror("%s must have at least four points in each ring", lwtype_name((uint8_t)s->lwtype));
 			return NULL;
 		}
 
@@ -534,7 +534,7 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 		if( s->check & LW_PARSER_CHECK_CLOSURE && ! ptarray_is_closed_2d(pa) )
 		{
 			LWDEBUGF(2, "%s must have closed rings", lwtype_name(s->lwtype));
-			lwerror("%s must have closed rings", lwtype_name(s->lwtype));
+			lwerror("%s must have closed rings", lwtype_name((uint8_t)s->lwtype));
 			return NULL;
 		}
 
@@ -582,13 +582,13 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 	if( s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 4 )
 	{
 		LWDEBUGF(2, "%s must have at least four points", lwtype_name(s->lwtype));
-		lwerror("%s must have at least four points", lwtype_name(s->lwtype));
+		lwerror("%s must have at least four points", lwtype_name((uint8_t)s->lwtype));
 		return NULL;
 	}
 
 	if( s->check & LW_PARSER_CHECK_ZCLOSURE && ! ptarray_is_closed_z(pa) )
 	{
-		lwerror("%s must have closed rings", lwtype_name(s->lwtype));
+		lwerror("%s must have closed rings", lwtype_name((uint8_t)s->lwtype));
 		return NULL;
 	}
 
@@ -636,7 +636,7 @@ static LWCURVEPOLY* lwcurvepoly_from_wkb_state(wkb_parse_state *s)
 static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 {
 	uint32_t ngeoms = integer_from_wkb_state(s);
-	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype, s->srid, s->has_z, s->has_m);
+	LWCOLLECTION *col = lwcollection_construct_empty((uint8_t)s->lwtype, s->srid, s->has_z, s->has_m);
 	LWGEOM *geom = NULL;
 	uint32_t i;
 
@@ -708,7 +708,7 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 	/* Read the SRID, if necessary */
 	if( s->has_srid )
 	{
-		s->srid = clamp_srid(integer_from_wkb_state(s));
+		s->srid = clamp_srid((int32_t) integer_from_wkb_state(s));
 		/* TODO: warn on explicit UNKNOWN srid ? */
 		LWDEBUGF(4,"Got SRID: %u", s->srid);
 	}
@@ -748,7 +748,7 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 
 		/* Unknown type! */
 		default:
-			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(s->lwtype), s->lwtype);
+			lwerror("Unsupported geometry type: %s [%d]", lwtype_name((uint8_t) s->lwtype), s->lwtype);
 	}
 
 	/* Return value to keep compiler happy. */
@@ -788,7 +788,7 @@ LWGEOM* lwgeom_from_wkb(const uint8_t *wkb, const size_t wkb_size, const char ch
 
 LWGEOM* lwgeom_from_hexwkb(const char *hexwkb, const char check)
 {
-	int hexwkb_len;
+	size_t hexwkb_len;
 	uint8_t *wkb;
 	LWGEOM *lwgeom;
 

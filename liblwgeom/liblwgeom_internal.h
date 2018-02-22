@@ -258,8 +258,8 @@ LWCOLLECTION *lwpoint_clip_to_ordinate_range(const LWPOINT *mpoint, char ordinat
 * Geohash
 */
 int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds);
-char *geohash_point(double longitude, double latitude, int precision);
-void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision);
+char *geohash_point(double longitude, double latitude, int32_t precision);
+void decode_geohash_bbox(char *geohash, double *lat, double *lon, int32_t precision);
 
 /*
 * Point comparisons
@@ -473,7 +473,7 @@ int lwline_split_by_point_to(const LWLINE* ln, const LWPOINT* pt, LWMLINE* to);
 void lwcollection_reserve(LWCOLLECTION *col, uint32_t ngeoms);
 
 /** Check if subtype is allowed in collectiontype */
-int lwcollection_allows_subtype(int collectiontype, int subtype);
+int lwcollection_allows_subtype(uint8_t collectiontype, uint8_t subtype);
 
 /** GBOX utility functions to figure out coverage/location on the globe */
 double gbox_angular_height(const GBOX* gbox);

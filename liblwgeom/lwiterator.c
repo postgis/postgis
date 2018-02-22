@@ -98,10 +98,10 @@ extract_pointarrays_from_lwgeom(LWGEOM* g)
 		LISTNODE* n = NULL;
 
 		LWPOLY* p = lwgeom_as_lwpoly(g);
-		int i;
-		for (i = p->nrings - 1; i >= 0; i--)
+		uint32_t i;
+		for (i = 0; i < p->nrings; i++)
 		{
-			n = prepend_node(p->rings[i], n);
+			n = prepend_node(p->rings[p->nrings - i - 1], n);
 		}
 
 		return n;
@@ -119,7 +119,7 @@ extract_pointarrays_from_lwgeom(LWGEOM* g)
 static void
 unroll_collection(LWPOINTITERATOR* s)
 {
-	int i;
+	uint32_t i;
 	LWCOLLECTION* c;
 
 	if (!s->geoms)
@@ -130,9 +130,9 @@ unroll_collection(LWPOINTITERATOR* s)
 	c = (LWCOLLECTION*) s->geoms->item;
 	s->geoms = pop_node(s->geoms);
 
-	for (i = c->ngeoms - 1; i >= 0; i--)
+	for (i = 0; i < c->ngeoms; i++)
 	{
-		LWGEOM* g = lwcollection_getsubgeom(c, i);
+		LWGEOM* g = lwcollection_getsubgeom(c, c->ngeoms - i -1);
 
 		add_lwgeom_to_stack(s, g);
 	}

@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <assert.h>
+#include <math.h>
 #include "../postgis_svn_revision.h"
 
 const char *
@@ -51,7 +52,7 @@ lwgeom_version()
 inline float
 next_float_down(double d)
 {
-	float result  = d;
+	float result  = (float) d;
 
 	if ( ((double)result) <=d )
 		return result;
@@ -67,7 +68,7 @@ next_float_down(double d)
 inline float
 next_float_up(double d)
 {
-	float result  = d;
+	float result  = (float) d;
 
 	if ( ((double)result) >=d )
 		return result;

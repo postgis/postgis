@@ -38,7 +38,7 @@
 #include "liblwgeom_internal.h"
 
 
-LWGEOM* pta_unstroke(const POINTARRAY *points, int srid);
+LWGEOM* pta_unstroke(const POINTARRAY *points, int32_t srid);
 LWGEOM* lwline_unstroke(const LWLINE *line);
 LWGEOM* lwpolygon_unstroke(const LWPOLY *poly);
 LWGEOM* lwmline_unstroke(const LWMLINE *mline);
@@ -189,7 +189,7 @@ lwarc_linearize(POINTARRAY *to,
 
 	if ( tolerance_type == LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD )
 	{{
-		int perQuad = rint(tol);
+		int perQuad = (int) nearbyint(tol);
 		// error out if tol != perQuad ? (not-round)
 		if ( perQuad != tol )
 		{
@@ -250,7 +250,7 @@ lwarc_linearize(POINTARRAY *to,
 		if ( flags & LW_LINEARIZE_FLAG_RETAIN_ANGLE )
 		{{
 			/* Number of steps */
-			int steps = trunc(angle / increment);
+			int steps = (int) trunc(angle / increment);
 			/* Angle reminder */
 			double angle_reminder = angle - ( increment * steps );
 			angle_shift = angle_reminder / 2.0;
@@ -263,7 +263,7 @@ lwarc_linearize(POINTARRAY *to,
 		else
 		{{
 			/* Number of segments in output */
-			int segs = ceil(angle / increment);
+			int segs = (int) ceil(angle / increment);
 			/* Tweak increment to be regular for all the arc */
 			increment = angle/segs;
 
@@ -310,7 +310,7 @@ lwarc_linearize(POINTARRAY *to,
 		angle_shift * 180/M_PI, increment * 180/M_PI);
 
 	if ( reverse ) {{
-		const int capacity = 8; /* TODO: compute exactly ? */
+		const uint32_t capacity = 8; /* TODO: compute exactly ? */
 		pa = ptarray_construct_empty(ptarray_has_z(to), ptarray_has_m(to), capacity);
 	}}
 
@@ -336,10 +336,10 @@ lwarc_linearize(POINTARRAY *to,
 	}
 
 	if ( reverse ) {{
-		int i;
+		uint32_t i;
 		ptarray_append_point(to, p3, LW_FALSE);
-		for ( i=pa->npoints; i>0; i-- ) {
-			getPoint4d_p(pa, i-1, &pt);
+		for ( i=0; i<pa->npoints; i++) {
+			getPoint4d_p(pa, pa->npoints - i - 1, &pt);
 			ptarray_append_point(to, &pt, LW_FALSE);
 		}
 		ptarray_free(pa);
@@ -787,9 +787,9 @@ static int pt_continues_arc(const POINT4D *a1, const POINT4D *a2, const POINT4D 
 }
 
 static LWGEOM*
-linestring_from_pa(const POINTARRAY *pa, int srid, int start, int end)
+linestring_from_pa(const POINTARRAY *pa, int32_t srid, uint32_t start, uint32_t end)
 {
-	int i = 0, j = 0;
+	uint32_t i = 0, j = 0;
 	POINT4D p;
 	POINTARRAY *pao = ptarray_construct(ptarray_has_z(pa), ptarray_has_m(pa), end-start+2);
 	LWDEBUGF(4, "srid=%d, start=%d, end=%d", srid, start, end);
@@ -802,7 +802,7 @@ linestring_from_pa(const POINTARRAY *pa, int srid, int start, int end)
 }
 
 static LWGEOM*
-circstring_from_pa(const POINTARRAY *pa, int srid, int start, int end)
+circstring_from_pa(const POINTARRAY *pa, int32_t srid, uint32_t start, uint32_t end)
 {
 
 	POINT4D p0, p1, p2;
@@ -818,7 +818,7 @@ circstring_from_pa(const POINTARRAY *pa, int srid, int start, int end)
 }
 
 static LWGEOM*
-geom_from_pa(const POINTARRAY *pa, int srid, int is_arc, int start, int end)
+geom_from_pa(const POINTARRAY *pa, int32_t srid, uint32_t is_arc, uint32_t start, uint32_t end)
 {
 	LWDEBUGF(4, "srid=%d, is_arc=%d, start=%d, end=%d", srid, is_arc, start, end);
 	if ( is_arc )
@@ -828,17 +828,17 @@ geom_from_pa(const POINTARRAY *pa, int srid, int is_arc, int start, int end)
 }
 
 LWGEOM*
-pta_unstroke(const POINTARRAY *points, int srid)
+pta_unstroke(const POINTARRAY *points, int32_t srid)
 {
-	int i = 0, j, k;
+	int64_t i = 0, j, k;
 	POINT4D a1, a2, a3, b;
 	POINT4D first, center;
-	char *edges_in_arcs;
-	int found_arc = LW_FALSE;
-	int current_arc = 1;
-	int num_edges;
-	int edge_type; /* non-zero if edge is part of an arc */
-	int start, end;
+	uint32_t *edges_in_arcs;
+	uint8_t found_arc = LW_FALSE;
+	uint32_t current_arc = 1;
+	uint32_t num_edges;
+	uint32_t edge_type; /* non-zero if edge is part of an arc */
+	uint32_t start, end;
 	LWCOLLECTION *outcol;
 	/* Minimum number of edges, per quadrant, required to define an arc */
 	const unsigned int min_quad_edges = 2;
@@ -860,28 +860,28 @@ pta_unstroke(const POINTARRAY *points, int srid)
 
 	/* Allocate our result array of vertices that are part of arcs */
 	num_edges = points->npoints - 1;
-	edges_in_arcs = lwalloc(num_edges + 1);
-	memset(edges_in_arcs, 0, num_edges + 1);
+	edges_in_arcs = lwalloc((num_edges + 1) * sizeof(uint32_t));
+	memset(edges_in_arcs, 0, (num_edges + 1) * sizeof(uint32_t));
 
 	/* We make a candidate arc of the first two edges, */
 	/* And then see if the next edge follows it */
 	while( i < num_edges-2 )
 	{
-		unsigned int arc_edges;
+		uint32_t arc_edges;
 		double num_quadrants;
 		double angle;
 
 		found_arc = LW_FALSE;
 		/* Make candidate arc */
-		getPoint4d_p(points, i  , &a1);
-		getPoint4d_p(points, i+1, &a2);
-		getPoint4d_p(points, i+2, &a3);
+		getPoint4d_p(points, (uint32_t) i  , &a1);
+		getPoint4d_p(points, (uint32_t) i+1, &a2);
+		getPoint4d_p(points, (uint32_t) i+2, &a3);
 		memcpy(&first, &a1, sizeof(POINT4D));
 
 		for( j = i+3; j < num_edges+1; j++ )
 		{
 			LWDEBUGF(4, "i=%d, j=%d", i, j);
-			getPoint4d_p(points, j, &b);
+			getPoint4d_p(points, (uint32_t) j, &b);
 			/* Does this point fall on our candidate arc? */
 			if ( pt_continues_arc(&a1, &a2, &a3, &b) )
 			{
@@ -910,7 +910,7 @@ pta_unstroke(const POINTARRAY *points, int srid)
 			 * really considered an arc
 			 * See http://trac.osgeo.org/postgis/ticket/2420
 			 */
-			arc_edges = j - 1 - i;
+			arc_edges = (uint32_t) (j - 1 - i);
 			LWDEBUGF(4, "arc defined by %d edges found", arc_edges);
 			if ( first.x == b.x && first.y == b.y ) {
 				LWDEBUG(4, "arc is a circle");
@@ -966,9 +966,9 @@ pta_unstroke(const POINTARRAY *points, int srid)
 	{
 		if( edge_type != edges_in_arcs[i] )
 		{
-			end = i - 1;
+			end = (uint32_t) i - 1;
 			lwcollection_add_lwgeom(outcol, geom_from_pa(points, srid, edge_type, start, end));
-			start = i;
+			start = (uint32_t) i;
 			edge_type = edges_in_arcs[i];
 		}
 	}

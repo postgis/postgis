@@ -169,7 +169,7 @@ typedef enum LWORD_T {
 #define TYPMOD_SET_Z(typmod) ((typmod) = typmod | 0x00000002)
 #define TYPMOD_GET_M(typmod) (typmod & 0x00000001)
 #define TYPMOD_SET_M(typmod) ((typmod) = typmod | 0x00000001)
-#define TYPMOD_GET_NDIMS(typmod) (2+TYPMOD_GET_Z(typmod)+TYPMOD_GET_M(typmod))
+#define TYPMOD_GET_NDIMS(typmod) (uint32_t)(2+TYPMOD_GET_Z(typmod)+TYPMOD_GET_M(typmod))
 
 /**
 * Maximum allowed SRID value in serialized geometry.
@@ -206,10 +206,10 @@ typedef enum LWORD_T {
 * what went in.
 * Raises an error if SRID value is out of bounds.
 */
-extern int clamp_srid(int srid);
+extern int32_t clamp_srid(int32_t srid);
 
 /* Raise an lwerror if srids do not match */
-void error_if_srid_mismatch(int srid1, int srid2);
+void error_if_srid_mismatch(int32_t srid1, int32_t srid2);
 
 /**
  * Global functions for memory/logging handlers.
@@ -639,7 +639,7 @@ extern LWTIN* lwtin_add_lwtriangle(LWTIN *mobj, const LWTRIANGLE *obj);
 /**
 * Construct a new flags char.
 */
-extern uint8_t gflags(int hasz, int hasm, int geodetic);
+extern uint8_t gflags(char hasz, char hasm, int geodetic);
 
 /**
 * Extract the geometry type from the serialized form (it hides in
@@ -771,7 +771,7 @@ extern int lwtype_is_collection(uint8_t type);
 /**
 * Given an lwtype number, what homogeneous collection can hold it?
 */
-extern uint32_t lwtype_get_collectiontype(uint8_t type);
+extern uint8_t lwtype_get_collectiontype(uint8_t type);
 
 /**
 * Return the type name string associated with a type number
@@ -875,10 +875,10 @@ extern void ptarray_set_point4d(POINTARRAY *pa, uint32_t n, const POINT4D *p4d);
 extern uint8_t *getPoint_internal(const POINTARRAY *pa, uint32_t n);
 
 /*
- * size of point represeneted in the POINTARRAY
+ * size of point represented in the POINTARRAY
  * 16 for 2d, 24 for 3d, 32 for 4d
  */
-extern size_t ptarray_point_size(const POINTARRAY *pa);
+extern uint32_t ptarray_point_size(const POINTARRAY *pa);
 
 
 /**
@@ -1064,7 +1064,7 @@ extern LWCURVEPOLY* lwcurvepoly_construct_from_lwpoly(LWPOLY *lwpoly);
  * LWGEOM functions
  ******************************************************************/
 
-extern int lwcollection_ngeoms(const LWCOLLECTION *col);
+extern uint32_t lwcollection_ngeoms(const LWCOLLECTION *col);
 
 /* Given a generic geometry/collection, return the "simplest" form.
  * The elements of the homogenized collection are references to the
@@ -1079,11 +1079,11 @@ extern LWGEOM *lwgeom_homogenize(const LWGEOM *geom);
  * LWMULTIx and LWCOLLECTION functions
  ******************************************************************/
 
-LWGEOM *lwcollection_getsubgeom(LWCOLLECTION *col, int gnum);
+LWGEOM *lwcollection_getsubgeom(LWCOLLECTION *col, uint32_t gnum);
 
 /* WARNING: the output will contain references to geometries in the input, */
 /* so the result must be carefully released, not freed. */
-LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type);
+LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, uint8_t type);
 
 
 /******************************************************************
@@ -1095,7 +1095,7 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type);
 * For collections, only the parent gets an SRID, all
 * the children get SRID_UNKNOWN.
 */
-extern void lwgeom_set_srid(LWGEOM *geom, int srid);
+extern void lwgeom_set_srid(LWGEOM *geom, int32_t srid);
 
 /*------------------------------------------------------
  * other stuff
@@ -1342,47 +1342,47 @@ extern POINTARRAY *ptarray_clone_deep(const POINTARRAY *ptarray);
 * passed to them, they just take references, so do not free them out
 * from underneath the geometries.
 */
-extern LWPOINT* lwpoint_construct(int srid, GBOX *bbox, POINTARRAY *point);
-extern LWMPOINT *lwmpoint_construct(int srid, const POINTARRAY *pa);
-extern LWLINE* lwline_construct(int srid, GBOX *bbox, POINTARRAY *points);
-extern LWCIRCSTRING* lwcircstring_construct(int srid, GBOX *bbox, POINTARRAY *points);
-extern LWPOLY* lwpoly_construct(int srid, GBOX *bbox, uint32_t nrings, POINTARRAY **points);
-extern LWCURVEPOLY* lwcurvepoly_construct(int srid, GBOX *bbox, uint32_t nrings, LWGEOM **geoms);
-extern LWTRIANGLE* lwtriangle_construct(int srid, GBOX *bbox, POINTARRAY *points);
-extern LWCOLLECTION* lwcollection_construct(uint8_t type, int srid, GBOX *bbox, uint32_t ngeoms, LWGEOM **geoms);
+extern LWPOINT* lwpoint_construct(int32_t srid, GBOX *bbox, POINTARRAY *point);
+extern LWMPOINT *lwmpoint_construct(int32_t srid, const POINTARRAY *pa);
+extern LWLINE* lwline_construct(int32_t srid, GBOX *bbox, POINTARRAY *points);
+extern LWCIRCSTRING* lwcircstring_construct(int32_t srid, GBOX *bbox, POINTARRAY *points);
+extern LWPOLY* lwpoly_construct(int32_t srid, GBOX *bbox, uint32_t nrings, POINTARRAY **points);
+extern LWCURVEPOLY* lwcurvepoly_construct(int32_t srid, GBOX *bbox, uint32_t nrings, LWGEOM **geoms);
+extern LWTRIANGLE* lwtriangle_construct(int32_t srid, GBOX *bbox, POINTARRAY *points);
+extern LWCOLLECTION* lwcollection_construct(uint8_t type, int32_t srid, GBOX *bbox, uint32_t ngeoms, LWGEOM **geoms);
 /*
 * Empty geometry constructors.
 */
-extern LWGEOM* lwgeom_construct_empty(uint8_t type, int srid, char hasz, char hasm);
-extern LWPOINT* lwpoint_construct_empty(int srid, char hasz, char hasm);
-extern LWLINE* lwline_construct_empty(int srid, char hasz, char hasm);
-extern LWPOLY* lwpoly_construct_empty(int srid, char hasz, char hasm);
-extern LWCURVEPOLY* lwcurvepoly_construct_empty(int srid, char hasz, char hasm);
-extern LWCIRCSTRING* lwcircstring_construct_empty(int srid, char hasz, char hasm);
-extern LWCOMPOUND* lwcompound_construct_empty(int srid, char hasz, char hasm);
-extern LWTRIANGLE* lwtriangle_construct_empty(int srid, char hasz, char hasm);
-extern LWMPOINT* lwmpoint_construct_empty(int srid, char hasz, char hasm);
-extern LWMLINE* lwmline_construct_empty(int srid, char hasz, char hasm);
-extern LWMPOLY* lwmpoly_construct_empty(int srid, char hasz, char hasm);
-extern LWCOLLECTION* lwcollection_construct_empty(uint8_t type, int srid, char hasz, char hasm);
+extern LWGEOM* lwgeom_construct_empty(uint8_t type, int32_t srid, char hasz, char hasm);
+extern LWPOINT* lwpoint_construct_empty(int32_t srid, char hasz, char hasm);
+extern LWLINE* lwline_construct_empty(int32_t srid, char hasz, char hasm);
+extern LWPOLY* lwpoly_construct_empty(int32_t srid, char hasz, char hasm);
+extern LWCURVEPOLY* lwcurvepoly_construct_empty(int32_t srid, char hasz, char hasm);
+extern LWCIRCSTRING* lwcircstring_construct_empty(int32_t srid, char hasz, char hasm);
+extern LWCOMPOUND* lwcompound_construct_empty(int32_t srid, char hasz, char hasm);
+extern LWTRIANGLE* lwtriangle_construct_empty(int32_t srid, char hasz, char hasm);
+extern LWMPOINT* lwmpoint_construct_empty(int32_t srid, char hasz, char hasm);
+extern LWMLINE* lwmline_construct_empty(int32_t srid, char hasz, char hasm);
+extern LWMPOLY* lwmpoly_construct_empty(int32_t srid, char hasz, char hasm);
+extern LWCOLLECTION* lwcollection_construct_empty(uint8_t type, int32_t srid, char hasz, char hasm);
 
 
 /* Other constructors */
-extern LWPOINT *lwpoint_make2d(int srid, double x, double y);
-extern LWPOINT *lwpoint_make3dz(int srid, double x, double y, double z);
-extern LWPOINT *lwpoint_make3dm(int srid, double x, double y, double m);
-extern LWPOINT *lwpoint_make4d(int srid, double x, double y, double z, double m);
-extern LWPOINT *lwpoint_make(int srid, int hasz, int hasm, const POINT4D *p);
-extern LWLINE *lwline_from_lwgeom_array(int srid, uint32_t ngeoms, LWGEOM **geoms);
-extern LWLINE *lwline_from_ptarray(int srid, uint32_t npoints, LWPOINT **points); /* TODO: deprecate */
-extern LWLINE *lwline_from_lwmpoint(int srid, const LWMPOINT *mpoint);
+extern LWPOINT *lwpoint_make2d(int32_t srid, double x, double y);
+extern LWPOINT *lwpoint_make3dz(int32_t srid, double x, double y, double z);
+extern LWPOINT *lwpoint_make3dm(int32_t srid, double x, double y, double m);
+extern LWPOINT *lwpoint_make4d(int32_t srid, double x, double y, double z, double m);
+extern LWPOINT *lwpoint_make(int32_t srid, char hasz, char hasm, const POINT4D *p);
+extern LWLINE *lwline_from_lwgeom_array(int32_t srid, uint32_t ngeoms, LWGEOM **geoms);
+extern LWLINE *lwline_from_ptarray(int32_t srid, uint32_t npoints, LWPOINT **points); /* TODO: deprecate */
+extern LWLINE *lwline_from_lwmpoint(int32_t srid, const LWMPOINT *mpoint);
 extern LWLINE *lwline_addpoint(LWLINE *line, LWPOINT *point, uint32_t where);
 extern LWLINE *lwline_removepoint(LWLINE *line, uint32_t which);
 extern void lwline_setPoint4d(LWLINE *line, uint32_t which, POINT4D *newpoint);
 extern LWPOLY *lwpoly_from_lwlines(const LWLINE *shell, uint32_t nholes, const LWLINE **holes);
 extern LWPOLY *lwpoly_construct_rectangle(char hasz, char hasm, POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D *p4);
-extern LWPOLY *lwpoly_construct_envelope(int srid, double x1, double y1, double x2, double y2);
-extern LWPOLY *lwpoly_construct_circle(int srid, double x, double y, double radius, uint32_t segments_per_quarter, char exterior);
+extern LWPOLY *lwpoly_construct_envelope(int32_t srid, double x1, double y1, double x2, double y2);
+extern LWPOLY *lwpoly_construct_circle(int32_t srid, double x, double y, double radius, uint32_t segments_per_quarter, char exterior);
 extern LWTRIANGLE *lwtriangle_from_lwline(const LWLINE *shell);
 extern LWMPOINT *lwmpoint_from_lwgeom(const LWGEOM *g); /* Extract the coordinates of an LWGEOM into an LWMPOINT */
 
@@ -1503,7 +1503,7 @@ extern LWPOINT* lwmpoint_median(const LWMPOINT *g, double tol, uint32_t maxiter,
 /**
 * Calculate the GeoHash (http://geohash.org) string for a geometry. Caller must free.
 */
-char *lwgeom_geohash(const LWGEOM *lwgeom, int precision);
+char *lwgeom_geohash(const LWGEOM *lwgeom, int32_t precision);
 unsigned int geohash_point_as_int(POINT2D *pt);
 
 
@@ -1559,18 +1559,18 @@ LWCOLLECTION* lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, d
 
 
 
-extern char* lwgeom_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix);
-extern char* lwgeom_extent_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix);
+extern char* lwgeom_to_gml2(const LWGEOM *geom, const char *srs, int32_t precision, const char *prefix);
+extern char* lwgeom_extent_to_gml2(const LWGEOM *geom, const char *srs, int32_t precision, const char *prefix);
 /**
  * @param opts output options bitfield, see LW_GML macros for meaning
  */
-extern char* lwgeom_extent_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix);
-extern char* lwgeom_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix, const char *id);
-extern char* lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix);
-extern char* lwgeom_to_geojson(const LWGEOM *geo, char *srs, int precision, int has_bbox);
-extern char* lwgeom_to_svg(const LWGEOM *geom, int precision, int relative);
-extern char* lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const char *defid);
-extern char* lwgeom_to_encoded_polyline(const LWGEOM *geom, int precision);
+extern char* lwgeom_extent_to_gml3(const LWGEOM *geom, const char *srs, int32_t precision, int opts, const char *prefix);
+extern char* lwgeom_to_gml3(const LWGEOM *geom, const char *srs, int32_t precision, int opts, const char *prefix, const char *id);
+extern char* lwgeom_to_kml2(const LWGEOM *geom, int32_t precision, const char *prefix);
+extern char* lwgeom_to_geojson(const LWGEOM *geo, char *srs, int32_t precision, int has_bbox);
+extern char* lwgeom_to_svg(const LWGEOM *geom, int32_t precision, int relative);
+extern char* lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int32_t precision, int opts, const char *defid);
+extern char* lwgeom_to_encoded_polyline(const LWGEOM *geom, int32_t precision);
 
 /**
  * Create an LWGEOM object from a GeoJSON representation
@@ -1588,7 +1588,7 @@ extern LWGEOM* lwgeom_from_geojson(const char *geojson, char **srs);
  *
  * @param encodedpolyline the Encoded Polyline input
  */
-extern LWGEOM* lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision);
+extern LWGEOM* lwgeom_from_encoded_polyline(const char *encodedpolyline, int32_t precision);
 
 /**
 * Initialize a spheroid object for use in geodetic functions.
@@ -1913,7 +1913,7 @@ extern void gbox_duplicate(const GBOX *original, GBOX *duplicate);
 * Return the number of bytes necessary to hold a #GBOX of this dimension in
 * serialized form.
 */
-extern size_t gbox_serialized_size(uint8_t flags);
+extern uint32_t gbox_serialized_size(uint8_t flags);
 
 /**
 * Check if 2 given Gbox are the same
@@ -1961,7 +1961,7 @@ extern int geometry_type_from_string(const char *str, uint8_t *type, int *z, int
 * Primarily used internally by the serialization code. Exposed to allow the cunit
 * tests to exercise it.
 */
-extern size_t gserialized_from_lwgeom_size(const LWGEOM *geom);
+extern uint32_t gserialized_from_lwgeom_size(const LWGEOM *geom);
 
 /**
 * Allocate a new #GSERIALIZED from an #LWGEOM. For all non-point types, a bounding
@@ -2091,7 +2091,7 @@ LWGEOM_UNPARSER_RESULT;
 * @param lwgeom geometry to convert to WKT
 * @param variant output format to use (WKT_ISO, WKT_SFSQL, WKT_EXTENDED)
 */
-extern char*   lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision, size_t *size_out);
+extern char*   lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int32_t precision, size_t *size_out);
 
 /**
 * @param lwgeom geometry to convert to WKT
@@ -2148,7 +2148,7 @@ extern void *lwrealloc(void *mem, size_t size);
 extern void lwfree(void *mem);
 
 /* Utilities */
-extern char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int truncdirection);
+extern char *lwmessage_truncate(char *str, size_t startpos, size_t endpos, size_t maxlength, int truncdirection);
 
 /*
 * TWKB functions
@@ -2158,7 +2158,7 @@ extern char *lwmessage_truncate(char *str, int startpos, int endpos, int maxleng
  * @param check parser check flags, see LW_PARSER_CHECK_* macros
  * @param size parser check flags, see LW_PARSER_CHECK_* macros
  */
-extern LWGEOM* lwgeom_from_twkb(const uint8_t *twkb, size_t twkb_size, char check);
+extern LWGEOM* lwgeom_from_twkb(const uint8_t *twkb, size_t twkb_size, uint32_t check);
 
 /**
  * @param geom input geometry

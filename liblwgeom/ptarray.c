@@ -50,12 +50,12 @@ ptarray_has_m(const POINTARRAY *pa)
  * Size of point represeneted in the POINTARRAY
  * 16 for 2d, 24 for 3d, 32 for 4d
  */
-inline size_t
+inline uint32_t
 ptarray_point_size(const POINTARRAY *pa)
 {
 	LWDEBUGF(5, "ptarray_point_size: FLAGS_NDIMS(pa->flags)=%x",FLAGS_NDIMS(pa->flags));
 
-	return sizeof(double)*FLAGS_NDIMS(pa->flags);
+	return (uint32_t)(sizeof(double) * (uint32_t) FLAGS_NDIMS(pa->flags));
 }
 
 POINTARRAY*
@@ -189,7 +189,7 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 	unsigned int poff = 0;
 	unsigned int npoints;
 	unsigned int ncap;
-	unsigned int ptsize;
+	size_t ptsize;
 
 	/* Check for pathology */
 	if( ! pa1 || ! pa2 )
@@ -340,13 +340,16 @@ void ptarray_free(POINTARRAY *pa)
 void
 ptarray_reverse_in_place(POINTARRAY *pa)
 {
-	int i;
-	int last = pa->npoints-1;
-	int mid = pa->npoints/2;
-
+	uint32_t i, j;
+	uint32_t last, mid;
 	double *d = (double*)(pa->serialized_pointlist);
-	int j;
-	int ndims = FLAGS_NDIMS(pa->flags);
+	uint32_t ndims = (uint32_t) FLAGS_NDIMS(pa->flags);
+
+	if (pa->npoints == 0)
+		return;
+	last = pa->npoints-1;
+	mid = pa->npoints/2;
+
 	for (i = 0; i < mid; i++)
 	{
 		for (j = 0; j < ndims; j++)
@@ -678,7 +681,7 @@ ptarray_is_closed(const POINTARRAY *in)
 		lwerror("ptarray_is_closed: called with null point array");
 		return 0;
 	}
-	if (in->npoints <= 1 ) return in->npoints; /* single-point are closed, empty not closed */
+	if (in->npoints <= 1 ) return (int) in->npoints; /* single-point are closed, empty not closed */
 
 	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), ptarray_point_size(in));
 }
@@ -692,7 +695,7 @@ ptarray_is_closed_2d(const POINTARRAY *in)
 		lwerror("ptarray_is_closed_2d: called with null point array");
 		return 0;
 	}
-	if (in->npoints <= 1 ) return in->npoints; /* single-point are closed, empty not closed */
+	if (in->npoints <= 1 ) return (int) in->npoints; /* single-point are closed, empty not closed */
 
 	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), sizeof(POINT2D) );
 }
@@ -705,7 +708,7 @@ ptarray_is_closed_3d(const POINTARRAY *in)
 		lwerror("ptarray_is_closed_3d: called with null point array");
 		return 0;
 	}
-	if (in->npoints <= 1 ) return in->npoints; /* single-point are closed, empty not closed */
+	if (in->npoints <= 1 ) return (int) in->npoints; /* single-point are closed, empty not closed */
 
 	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), sizeof(POINT3D) );
 }
@@ -1057,7 +1060,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 	POINT4D p1, p2;
 	POINT4D *p1ptr=&p1; /* don't break strict-aliasing rule */
 	POINT4D *p2ptr=&p2;
-	int nsegs, i;
+	uint32_t nsegs, i;
 	double length, slength, tlength;
 	int state = 0; /* 0=before, 1=inside */
 
@@ -1066,6 +1069,8 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 	 * equal to full copy of input points
 	 */
 	dpa = ptarray_construct_empty(FLAGS_GET_Z(ipa->flags), FLAGS_GET_M(ipa->flags), ipa->npoints);
+	if (ipa->npoints == 0)
+		return dpa;
 
 	/* Compute total line length */
 	length = ptarray_length_2d(ipa);
@@ -1428,7 +1433,7 @@ ptarray_longitude_shift(POINTARRAY *pa)
  * Always returns a newly allocated object.
  */
 static POINTARRAY *
-ptarray_remove_repeated_points_minpoints(const POINTARRAY *in, double tolerance, int minpoints)
+ptarray_remove_repeated_points_minpoints(const POINTARRAY *in, double tolerance, uint32_t minpoints)
 {
 	POINTARRAY *out = ptarray_clone_deep(in);
 	ptarray_remove_repeated_points_in_place(out, tolerance, minpoints);
@@ -1509,9 +1514,9 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 /************************************************************************/
 
 static void
-ptarray_dp_findsplit_in_place(const POINTARRAY *pts, int p1, int p2, int *split, double *dist)
+ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t p1, uint32_t p2, uint32_t *split, double *dist)
 {
-	int k;
+	uint32_t k;
 	const POINT2D *pk, *pa, *pb;
 	double tmp, d;
 
@@ -1569,13 +1574,13 @@ void
 ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, uint32_t minpts)
 {
 	static size_t stack_size = 256;
-	int *stack, *outlist; /* recursion stack */
-	int stack_static[stack_size];
-	int outlist_static[stack_size];
-	int sp = -1; /* recursion stack pointer */
-	int p1, split;
+	uint32_t *stack, *outlist; /* recursion stack */
+	uint32_t stack_static[stack_size];
+	uint32_t outlist_static[stack_size];
+	int64_t sp = -1; /* recursion stack pointer */
+	uint32_t p1, split;
 	uint32_t outn = 0;
-	int pai = 0;
+	uint32_t pai = 0;
 	uint32_t i;
 	double dist;
 	double eps_sqr = epsilon * epsilon;
@@ -1586,8 +1591,8 @@ ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, uint32_t minpts)
 	/* Only heap allocate book-keeping arrays if necessary */
 	if (pa->npoints > stack_size)
 	{
-		stack = lwalloc(sizeof(int) * pa->npoints);
-		outlist = lwalloc(sizeof(int) * pa->npoints);
+		stack = lwalloc(sizeof(uint32_t) * pa->npoints);
+		outlist = lwalloc(sizeof(uint32_t) * pa->npoints);
 	}
 	else
 	{
@@ -1621,7 +1626,7 @@ ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, uint32_t minpts)
 	/* Copy retained points to front of array */
 	for (i = 0; i < outn; i++)
 	{
-		int j = outlist[i];
+		uint32_t j = outlist[i];
 		/* Indexes the same, means no copy required */
 		if (j == pai)
 		{

@@ -68,7 +68,7 @@ geometries lacks z-values. The vertical line crosses the 2d point that is closes
 and the z-range is from maxz to minz in the geoemtrie that has z values.
 */
 static
-LWGEOM* create_v_line(const LWGEOM *lwgeom,double x, double y, int srid)
+LWGEOM* create_v_line(const LWGEOM *lwgeom,double x, double y, int32_t srid)
 {
 
 	LWPOINT *lwpoints[2];
@@ -107,7 +107,7 @@ lwgeom_closest_point_3d(const LWGEOM *lw1, const LWGEOM *lw2)
 Function initializing 3dshortestline and 3dlongestline calculations.
 */
 LWGEOM *
-lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
+lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int32_t srid, int mode)
 {
 	LWDEBUG(2, "lw_dist3d_distanceline is called");
 	double x1,x2,y1,y2, z1, z2, x, y;
@@ -211,7 +211,7 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 Function initializing 3dclosestpoint calculations.
 */
 LWGEOM *
-lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
+lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int32_t srid, int mode)
 {
 
 	double x,y,z;
@@ -398,9 +398,9 @@ This is a recursive function delivering every possible combination of subgeometr
 */
 int lw_dist3d_recursive(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS3D *dl)
 {
-	int i, j;
-	int n1=1;
-	int n2=1;
+	uint32_t i, j;
+	uint32_t n1=1;
+	uint32_t n2=1;
 	LWGEOM *g1 = NULL;
 	LWGEOM *g2 = NULL;
 	LWCOLLECTION *c1 = NULL;
@@ -480,8 +480,8 @@ int
 lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D *dl)
 {
 
-	int	t1 = lwg1->type;
-	int	t2 = lwg2->type;
+	uint8_t	t1 = lwg1->type;
+	uint8_t	t2 = lwg2->type;
 
 	LWDEBUGF(2, "lw_dist3d_distribute_bruteforce is called with typ1=%d, type2=%d", lwg1->type, lwg2->type);
 
@@ -1167,7 +1167,7 @@ define_plane(POINTARRAY *pa, PLANE3D *pl)
 	sumx=0;
 	sumy=0;
 	sumz=0;
-	numberofvectors= floor((pa->npoints-1)/pointsinslice); /*the number of vectors we try can be 3, 4 or 5*/
+	numberofvectors= (pa->npoints-1)/pointsinslice; /*the number of vectors we try can be 3, 4 or 5*/
 
 	getPoint3dz_p(pa, 0, &p1);
 	for (j=pointsinslice;j<pa->npoints;j+=pointsinslice)
