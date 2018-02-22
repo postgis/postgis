@@ -494,12 +494,12 @@ get_result_srid(const LWGEOM* geom1, const LWGEOM* geom2, const char* funcname)
 	if (!geom1) lwerror("%s: First argument is null pointer", funcname);
 	if (geom2 && (geom1->srid != geom2->srid))
 	{
-		lwerror("%s: Operation on mixed SRID geometries (%u != %u)", funcname, geom1->srid, geom2->srid);
+		lwerror("%s: Operation on mixed SRID geometries (%d != %d)", funcname, geom1->srid, geom2->srid);
 		return SRID_INVALID;
 	}
 	if (geom1->srid > SRID_MAXIMUM)
 	{
-		lwerror("%s: SRID is more than maximum (%u > %u)", funcname, geom1->srid, SRID_USER_MAXIMUM);
+		lwerror("%s: SRID is more than maximum (%d > %d)", funcname, geom1->srid, SRID_USER_MAXIMUM);
 		return SRID_INVALID;
 	}
 	return geom1->srid;
