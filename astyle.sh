@@ -12,8 +12,8 @@ fi
 
 
 RET=`astyle --version 2>&1`
-if [ "$RET" != "Artistic Style Version 1.23" ]; then
-	echo "Only 1.23 astyle version is 'allowed'"
+if [ "$RET" != "Artistic Style Version 3.1" ]; then
+	echo "Only 3.1 astyle version is 'allowed'"
 	exit
 fi
 
