@@ -5,7 +5,8 @@ PostGIS 2.3.7dev
 
   - #3978, Fix KNN when upgrading from 2.1 or older (Sandro Santilli)
   - #4003, lwpoly_construct_circle: Avoid division by zero (Raúl Marín Rodríguez)
-
+  - #4020, Casting from box3d to geometry now returns correctly connected
+           PolyhedralSurface (Matthias Bay)
 
 PostGIS 2.3.6
 2018/01/17
