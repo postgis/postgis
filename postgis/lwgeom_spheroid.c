@@ -223,7 +223,7 @@ distance_ellipse(double lat1, double long1,
 	result2 =  distance_sphere_method(lat1, long1,lat2,long2, sphere);
 
 	POSTGIS_DEBUGF(4, "delta = %lf, skae says: %.15lf,2 circle says: %.15lf",
-	         (result2-result),result,result2);
+	               (result2-result),result,result2);
 	POSTGIS_DEBUGF(4, "2 circle says: %.15lf",result2);
 #endif
 

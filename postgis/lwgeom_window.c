@@ -40,7 +40,8 @@
 extern Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS);
 extern Datum ST_ClusterKMeans(PG_FUNCTION_ARGS);
 
-typedef struct {
+typedef struct
+{
 	bool	isdone;
 	bool	isnull;
 	int		result[1];
@@ -67,7 +68,8 @@ read_lwgeom_from_partition(WindowObject win_obj, uint32_t i, bool* is_null)
 	GSERIALIZED* g;
 	Datum arg = WinGetFuncArgInPartition(win_obj, 0, i, WINDOW_SEEK_HEAD, false, is_null, NULL);
 
-	if (*is_null) {
+	if (*is_null)
+	{
 		/* So that the indexes in our clustering input array can match our partition positions,
 		 * toss an empty point into the clustering inputs, as a pass-through.
 		 * NOTE: this will cause gaps in the output cluster id sequence.
@@ -121,7 +123,8 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		{
 			geoms[i] = read_lwgeom_from_partition(win_obj, i, &(context->cluster_assignments[i].is_null));
 
-			if (!geoms[i]) {
+			if (!geoms[i])
+			{
 				/* TODO release memory ? */
 				lwpgerror("Error reading geometry.");
 				PG_RETURN_NULL();
@@ -178,8 +181,8 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 
 	rowcount = WinGetPartitionRowCount(winobj);
 	context = (kmeans_context *)
-		WinGetPartitionLocalMemory(winobj,
-			sizeof(kmeans_context) + sizeof(int) * rowcount);
+	          WinGetPartitionLocalMemory(winobj,
+	                                     sizeof(kmeans_context) + sizeof(int) * rowcount);
 
 	if (!context->isdone)
 	{
@@ -218,7 +221,7 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 		{
 			GSERIALIZED *g;
 			Datum arg = WinGetFuncArgInPartition(winobj, 0, i,
-						WINDOW_SEEK_HEAD, false, &isnull, &isout);
+			                                     WINDOW_SEEK_HEAD, false, &isnull, &isout);
 
 			/* Null geometries are entered as NULL pointers */
 			if (isnull)

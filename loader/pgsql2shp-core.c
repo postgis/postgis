@@ -837,16 +837,16 @@ projFileCreate(SHPDUMPERSTATE *state)
 				}
 				else
 				{
-				    result = fputs (srtext,fp);
-                    LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);
-                    if (result == EOF)
-                    {
-                        fclose( fp );
-                        free( pszFullname );
-                        PQclear(res);
-                        free(query);
-                        return 0;
-                    }
+					result = fputs (srtext,fp);
+					LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);
+					if (result == EOF)
+					{
+						fclose( fp );
+						free( pszFullname );
+						PQclear(res);
+						free(query);
+						return 0;
+					}
 				}
 				fclose( fp );
 				free( pszFullname );
@@ -888,14 +888,14 @@ getTableInfo(SHPDUMPERSTATE *state)
 			query = malloc(150 + 4 * strlen(state->geo_col_name) + strlen(state->schema) + strlen(state->table));
 
 			sprintf(query, "SELECT count(\"%s\"), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\".\"%s\" GROUP BY geometrytype(\"%s\"::geometry)",
-			state->geo_col_name, state->geo_col_name, state->geo_col_name, state->schema, state->table, state->geo_col_name);
+			        state->geo_col_name, state->geo_col_name, state->geo_col_name, state->schema, state->table, state->geo_col_name);
 		}
 		else
 		{
 			query = malloc(150 + 4 * strlen(state->geo_col_name) + strlen(state->table));
 
 			sprintf(query, "SELECT count(\"%s\"), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\" GROUP BY geometrytype(\"%s\"::geometry)",
-			state->geo_col_name, state->geo_col_name, state->geo_col_name, state->table, state->geo_col_name);
+			        state->geo_col_name, state->geo_col_name, state->geo_col_name, state->table, state->geo_col_name);
 		}
 	}
 	else
@@ -1185,9 +1185,9 @@ ShpDumperGetConnectionStringFromConn(SHPCONNECTIONCONFIG *conn)
 	int connlen;
 
 	connlen = 64 +
-		(conn->host ? strlen(conn->host) : 0) + (conn->port ? strlen(conn->port) : 0) +
-		(conn->username ? strlen(conn->username) : 0) + (conn->password ? strlen(conn->password) : 0) +
-		(conn->database ? strlen(conn->database) : 0);
+	          (conn->host ? strlen(conn->host) : 0) + (conn->port ? strlen(conn->port) : 0) +
+	          (conn->username ? strlen(conn->username) : 0) + (conn->password ? strlen(conn->password) : 0) +
+	          (conn->database ? strlen(conn->database) : 0);
 
 	connstring = malloc(connlen);
 	memset(connstring, 0, connlen);
@@ -1533,11 +1533,11 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		 * use this to create the dbf field name from
 		 * the PostgreSQL column name */
 		{
-		  const char *mapped = colmap_dbf_by_pg(&state->column_map, dbffieldname);
-		  if (mapped)
-		  {
-			  strncpy(dbffieldname, mapped, 10);
-			  dbffieldname[10] = '\0';
+			const char *mapped = colmap_dbf_by_pg(&state->column_map, dbffieldname);
+			if (mapped)
+			{
+				strncpy(dbffieldname, mapped, 10);
+				dbffieldname[10] = '\0';
 			}
 		}
 
@@ -1567,7 +1567,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		if (strcasecmp(dbffieldname, pgfieldname))
 		{
 			if ( snprintf(buf, 256, _("Warning, field %s renamed to %s\n"),
-							 pgfieldname, dbffieldname) >= 256 )
+			              pgfieldname, dbffieldname) >= 256 )
 			{
 				buf[255] = '\0';
 			}
@@ -1763,7 +1763,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			{
 				/* Note: we concatenate all warnings from the main loop as this is useful information */
 				snprintf(buf, 256, _("Warning: values of field '%s' exceeding maximum dbf field width (%d) "
-					"will be truncated.\n"), dbffieldname, MAX_DBF_FIELD_SIZE);
+				                     "will be truncated.\n"), dbffieldname, MAX_DBF_FIELD_SIZE);
 				strncat(state->message, buf, SHPDUMPERMSGLEN - strlen(state->message));
 				dbffieldsize = MAX_DBF_FIELD_SIZE;
 
@@ -1883,7 +1883,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			else
 			{
 				sprintf(buf, "asbinary(%s::geometry, 'XDR') AS _geoX",
-					quote_identifier(state->geo_col_name) );
+				        quote_identifier(state->geo_col_name) );
 			}
 		}
 		else /* little_endian */
@@ -1895,7 +1895,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			else
 			{
 				sprintf(buf, "asbinary(%s::geometry, 'NDR') AS _geoX",
-					quote_identifier(state->geo_col_name) );
+				        quote_identifier(state->geo_col_name) );
 			}
 		}
 

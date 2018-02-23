@@ -49,7 +49,8 @@ Datum ST_DistanceRectTreeCached(PG_FUNCTION_ARGS);
 * the PgSQL specific bits of the code (fcinfo) back into
 * liblwgeom/lwtree.c, where most of the rect_tree logic lives.
 */
-typedef struct {
+typedef struct
+{
 	GeomCache           gcache;
 	RECT_NODE           *index;
 } RectTreeGeomCache;

@@ -89,7 +89,8 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 		elog(ERROR, "%s called in non-aggregate context", __func__);
 	MemoryContextSwitchTo(aggcontext);
 
-	if (PG_ARGISNULL(0)) {
+	if (PG_ARGISNULL(0))
+	{
 		ctx = palloc(sizeof(*ctx));
 		ctx->name = "default";
 		if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
@@ -101,7 +102,9 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 		if (PG_NARGS() > 4 && !PG_ARGISNULL(4))
 			ctx->geom_name = text_to_cstring(PG_GETARG_TEXT_P(4));
 		mvt_agg_init_context(ctx);
-	} else {
+	}
+	else
+	{
 		ctx = (mvt_agg_context *) PG_GETARG_POINTER(0);
 	}
 

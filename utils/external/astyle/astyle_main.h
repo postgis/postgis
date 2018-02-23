@@ -16,31 +16,31 @@
 #include <ctime>
 
 #if defined(__BORLANDC__) && __BORLANDC__ < 0x0650
-	// Embarcadero needs this for the following utime.h
-	// otherwise "struct utimbuf" gets an error on time_t
-	// 0x0650 for C++Builder XE3
-	using std::time_t;
+// Embarcadero needs this for the following utime.h
+// otherwise "struct utimbuf" gets an error on time_t
+// 0x0650 for C++Builder XE3
+using std::time_t;
 #endif
 
 #if defined(_MSC_VER)
-	#include <sys/utime.h>
-	#include <sys/stat.h>
+#include <sys/utime.h>
+#include <sys/stat.h>
 #else
-	#include <utime.h>
-	#include <sys/stat.h>
+#include <utime.h>
+#include <sys/stat.h>
 #endif                         // end compiler checks
 
 #ifdef ASTYLE_JNI
-	#include <jni.h>
-	#ifndef ASTYLE_LIB    // ASTYLE_LIB must be defined for ASTYLE_JNI
-		#define ASTYLE_LIB
-	#endif
+#include <jni.h>
+#ifndef ASTYLE_LIB    // ASTYLE_LIB must be defined for ASTYLE_JNI
+#define ASTYLE_LIB
+#endif
 #endif  //  ASTYLE_JNI
 
 #ifndef ASTYLE_LIB
-	// for console build only
-	#include "ASLocalizer.h"
-	#define _(a) localizer.settext(a)
+// for console build only
+#include "ASLocalizer.h"
+#define _(a) localizer.settext(a)
 #endif	// ASTYLE_LIB
 
 //-----------------------------------------------------------------------------
@@ -49,61 +49,61 @@
 
 // for G++ implementation of string.compare:
 #if defined(__GNUC__) && __GNUC__ < 3
-	#error - Use GNU C compiler release 3 or higher
+#error - Use GNU C compiler release 3 or higher
 #endif
 
 // for getenv and localtime
 #if defined(_MSC_VER)
-	#pragma warning(disable: 4996)  // secure version deprecation warnings
+#pragma warning(disable: 4996)  // secure version deprecation warnings
 #endif
 
 // for Visual Studio supported C++11 standard
 #if defined(_MSC_VER) && _MSC_VER < 1600
-	#error Use Microsoft Visual Studio 2010 or higher
+#error Use Microsoft Visual Studio 2010 or higher
 #endif
 
 #ifdef __clang__
-	#pragma clang diagnostic ignored "-Wdeprecated-declarations"  // getenv, localtime
-	#pragma clang diagnostic ignored "-Wmissing-braces"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"  // getenv, localtime
+#pragma clang diagnostic ignored "-Wmissing-braces"
 #endif
 
 // for mingw BOM, UTF-16, and Unicode functions
 #if defined(__MINGW32__) && !defined(__MINGW64_VERSION_MAJOR)
-	#if (__MINGW32_MAJOR_VERSION > 3) || \
+#if (__MINGW32_MAJOR_VERSION > 3) || \
 		((__MINGW32_MAJOR_VERSION == 3) && (__MINGW32_MINOR_VERSION < 16))
-		#error - Use MinGW compiler version 4 or higher
-	#endif
+#error - Use MinGW compiler version 4 or higher
+#endif
 #endif
 
 #ifdef ASTYLE_LIB
 
-	// define STDCALL and EXPORT for Windows
-	// MINGW defines STDCALL in Windows.h (actually windef.h)
-	// EXPORT has no value if ASTYLE_NO_EXPORT is defined
-	#ifdef _WIN32
-		#ifndef STDCALL
-			#define STDCALL __stdcall
-		#endif
-		// define this to prevent compiler warning and error messages
-		#ifdef ASTYLE_NO_EXPORT
-			#define EXPORT
-		#else
-			#define EXPORT __declspec(dllexport)
-		#endif
-		// define STDCALL and EXPORT for non-Windows
-		// visibility attribute allows "-fvisibility=hidden" compiler option
-	#else
-		#define STDCALL
-		#if __GNUC__ >= 4
-			#define EXPORT __attribute__ ((visibility ("default")))
-		#else
-			#define EXPORT
-		#endif
-	#endif	// #ifdef _WIN32
+// define STDCALL and EXPORT for Windows
+// MINGW defines STDCALL in Windows.h (actually windef.h)
+// EXPORT has no value if ASTYLE_NO_EXPORT is defined
+#ifdef _WIN32
+#ifndef STDCALL
+#define STDCALL __stdcall
+#endif
+// define this to prevent compiler warning and error messages
+#ifdef ASTYLE_NO_EXPORT
+#define EXPORT
+#else
+#define EXPORT __declspec(dllexport)
+#endif
+// define STDCALL and EXPORT for non-Windows
+// visibility attribute allows "-fvisibility=hidden" compiler option
+#else
+#define STDCALL
+#if __GNUC__ >= 4
+#define EXPORT __attribute__ ((visibility ("default")))
+#else
+#define EXPORT
+#endif
+#endif	// #ifdef _WIN32
 
-	// define pointers to callback error handler and memory allocation
-	typedef void (STDCALL* fpError)(int errorNumber, const char* errorMessage);
-	typedef char* (STDCALL* fpAlloc)(unsigned long memoryNeeded);
+// define pointers to callback error handler and memory allocation
+typedef void (STDCALL* fpError)(int errorNumber, const char* errorMessage);
+typedef char* (STDCALL* fpAlloc)(unsigned long memoryNeeded);
 
 #endif  // #ifdef ASTYLE_LIB
 
@@ -111,7 +111,8 @@
 // astyle namespace
 //----------------------------------------------------------------------------
 
-namespace astyle {
+namespace astyle
+{
 //
 //----------------------------------------------------------------------------
 // ASStreamIterator class
@@ -153,10 +154,21 @@ private:
 
 public:	// inline functions
 	bool compareToInputBuffer(const string& nextLine_) const
-	{ return (nextLine_ == prevBuffer); }
-	const string& getOutputEOL() const { return outputEOL; }
-	streamoff getPeekStart() const { return peekStart; }
-	bool hasMoreLines() const { return !inStream->eof(); }
+	{
+		return (nextLine_ == prevBuffer);
+	}
+	const string& getOutputEOL() const
+	{
+		return outputEOL;
+	}
+	streamoff getPeekStart() const
+	{
+		return peekStart;
+	}
+	bool hasMoreLines() const
+	{
+		return !inStream->eof();
+	}
 };
 
 //----------------------------------------------------------------------------
@@ -418,9 +430,9 @@ extern "C" EXPORT
 jstring STDCALL Java_AStyleInterface_AStyleGetVersion(JNIEnv* env, jclass);
 extern "C" EXPORT
 jstring STDCALL Java_AStyleInterface_AStyleMain(JNIEnv* env,
-                                                jobject obj,
-                                                jstring textInJava,
-                                                jstring optionsJava);
+        jobject obj,
+        jstring textInJava,
+        jstring optionsJava);
 #endif //  ASTYLE_JNI
 
 //----------------------------------------------------------------------------
@@ -441,9 +453,9 @@ char16_t* STDCALL AStyleMainUtf16(const char16_t* pSourceIn,
 //-----------------------------------------------------------------------------
 #ifdef ASTYLE_LIB
 extern "C" EXPORT char* STDCALL AStyleMain(const char* pSourceIn,
-                                           const char* pOptions,
-                                           fpError fpErrorHandler,
-                                           fpAlloc fpMemoryAlloc);
+        const char* pOptions,
+        fpError fpErrorHandler,
+        fpAlloc fpMemoryAlloc);
 extern "C" EXPORT const char* STDCALL AStyleGetVersion(void);
 #endif	// ASTYLE_LIB
 

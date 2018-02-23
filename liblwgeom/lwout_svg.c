@@ -467,7 +467,7 @@ assvg_collection(const LWCOLLECTION *col, int relative, int precision)
 static size_t
 assvg_geom_buf(const LWGEOM *geom, char *output, int relative, int precision)
 {
-    int type = geom->type;
+	int type = geom->type;
 	char *ptr=output;
 
 	switch (type)
@@ -508,7 +508,7 @@ assvg_geom_buf(const LWGEOM *geom, char *output, int relative, int precision)
 static size_t
 assvg_geom_size(const LWGEOM *geom, int relative, int precision)
 {
-    int type = geom->type;
+	int type = geom->type;
 	size_t size = 0;
 
 	switch (type)

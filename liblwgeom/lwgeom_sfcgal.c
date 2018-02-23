@@ -35,8 +35,8 @@ static sfcgal_geometry_t* ptarray_to_SFCGAL(const POINTARRAY* pa, int type);
 const char*
 lwgeom_sfcgal_version()
 {
-        const char *version = sfcgal_version();
-        return version;
+	const char *version = sfcgal_version();
+	return version;
 }
 
 
@@ -350,10 +350,10 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t* geom, int force3D, int srid)
 			geoms = (LWGEOM**) lwrealloc(geoms, sizeof(LWGEOM*) * ngeoms);
 		}
 		LWGEOM* rgeom = (LWGEOM*) lwcollection_construct(SFCGAL_type_to_lwgeom_type(
-				sfcgal_geometry_type_id(geom)), srid, NULL, ngeoms, geoms);
+		                    sfcgal_geometry_type_id(geom)), srid, NULL, ngeoms, geoms);
 		if ( ngeoms )
 		{
-		        if ( ngeoms == nsolids ) FLAGS_SET_SOLID( rgeom->flags, 1);
+			if ( ngeoms == nsolids ) FLAGS_SET_SOLID( rgeom->flags, 1);
 			else if ( nsolids ) lwnotice("SFCGAL2LWGEOM: SOLID in heterogeneous collection will be treated as a POLYHEDRALSURFACETYPE");
 		}
 		return rgeom;
@@ -368,7 +368,7 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t* geom, int force3D, int srid)
 	case SFCGAL_TYPE_CURVE:
 	case SFCGAL_TYPE_SURFACE:
 
-	/* TODO curve types handling */
+		/* TODO curve types handling */
 #endif
 
 	case SFCGAL_TYPE_POLYHEDRALSURFACE:

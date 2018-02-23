@@ -91,7 +91,8 @@ lwline_split_by_line(const LWLINE* lwline_in, const LWGEOM* blade_in)
 			lwerror("GEOSBoundary: %s", lwgeom_geos_errmsg);
 			return NULL;
 		}
-		g2 = gdiff; gdiff = NULL;
+		g2 = gdiff;
+		gdiff = NULL;
 	}
 
 	/* If interior intersecton is linear we can't split */
@@ -139,10 +140,10 @@ lwline_split_by_line(const LWLINE* lwline_in, const LWGEOM* blade_in)
 	}
 	else
 	{
-	  /* Set SRID */
+		/* Set SRID */
 		lwgeom_set_srid((LWGEOM*)out, lwline_in->srid);
-	  /* Force collection type */
-	  out->type = COLLECTIONTYPE;
+		/* Force collection type */
+		out->type = COLLECTIONTYPE;
 	}
 
 
@@ -155,8 +156,8 @@ lwline_split_by_point(const LWLINE* lwline_in, const LWPOINT* blade_in)
 	LWMLINE* out;
 
 	out = lwmline_construct_empty(lwline_in->srid,
-		FLAGS_GET_Z(lwline_in->flags),
-		FLAGS_GET_M(lwline_in->flags));
+	                              FLAGS_GET_Z(lwline_in->flags),
+	                              FLAGS_GET_M(lwline_in->flags));
 	if ( lwline_split_by_point_to(lwline_in, blade_in, out) < 2 )
 	{
 		lwmline_add_lwline(out, lwline_clone_deep(lwline_in));
@@ -171,38 +172,38 @@ lwline_split_by_point(const LWLINE* lwline_in, const LWPOINT* blade_in)
 static LWGEOM*
 lwline_split_by_mpoint(const LWLINE* lwline_in, const LWMPOINT* mp)
 {
-  LWMLINE* out;
-  uint32_t i, j;
+	LWMLINE* out;
+	uint32_t i, j;
 
-  out = lwmline_construct_empty(lwline_in->srid,
-          FLAGS_GET_Z(lwline_in->flags),
-          FLAGS_GET_M(lwline_in->flags));
-  lwmline_add_lwline(out, lwline_clone_deep(lwline_in));
+	out = lwmline_construct_empty(lwline_in->srid,
+	                              FLAGS_GET_Z(lwline_in->flags),
+	                              FLAGS_GET_M(lwline_in->flags));
+	lwmline_add_lwline(out, lwline_clone_deep(lwline_in));
 
-  for (i=0; i<mp->ngeoms; ++i)
-  {
-    for (j=0; j<out->ngeoms; ++j)
-    {
-      lwline_in = out->geoms[j];
-      LWPOINT *blade_in = mp->geoms[i];
-      int ret = lwline_split_by_point_to(lwline_in, blade_in, out);
-      if ( 2 == ret )
-      {
-        /* the point splits this line,
-         * 2 splits were added to collection.
-         * We'll move the latest added into
-         * the slot of the current one.
-         */
-        lwline_free(out->geoms[j]);
-        out->geoms[j] = out->geoms[--out->ngeoms];
-      }
-    }
-  }
+	for (i=0; i<mp->ngeoms; ++i)
+	{
+		for (j=0; j<out->ngeoms; ++j)
+		{
+			lwline_in = out->geoms[j];
+			LWPOINT *blade_in = mp->geoms[i];
+			int ret = lwline_split_by_point_to(lwline_in, blade_in, out);
+			if ( 2 == ret )
+			{
+				/* the point splits this line,
+				 * 2 splits were added to collection.
+				 * We'll move the latest added into
+				 * the slot of the current one.
+				 */
+				lwline_free(out->geoms[j]);
+				out->geoms[j] = out->geoms[--out->ngeoms];
+			}
+		}
+	}
 
-  /* Turn multiline into collection */
-  out->type = COLLECTIONTYPE;
+	/* Turn multiline into collection */
+	out->type = COLLECTIONTYPE;
 
-  return (LWGEOM*)out;
+	return (LWGEOM*)out;
 }
 
 int
@@ -278,7 +279,7 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 
 	/* When closest point == an endpoint, this is a boundary intersection */
 	if ( ( (seg == nsegs-1) && p4d_same(&pt_projected, &p2) ) ||
-	     ( (seg == 0)       && p4d_same(&pt_projected, &p1) ) )
+	        ( (seg == 0)       && p4d_same(&pt_projected, &p1) ) )
 	{
 		return 1;
 	}
@@ -304,7 +305,8 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	}
 
 	/* NOTE: I've seen empty pointarrays with loc != 0 and loc != 1 */
-	if ( pa1->npoints == 0 || pa2->npoints == 0 ) {
+	if ( pa1->npoints == 0 || pa2->npoints == 0 )
+	{
 		ptarray_free(pa1);
 		ptarray_free(pa2);
 		/* Intersection is on the boundary */
@@ -427,7 +429,7 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWGEOM* blade_in)
 	 */
 	n = GEOSGetNumGeometries(polygons);
 	out = lwcollection_construct_empty(COLLECTIONTYPE, lwpoly_in->srid,
-				     hasZ, 0);
+	                                   hasZ, 0);
 	/* Allocate space for all polys */
 	out->geoms = lwrealloc(out->geoms, sizeof(LWGEOM*)*n);
 	assert(0 == out->ngeoms);

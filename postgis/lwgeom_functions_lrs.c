@@ -451,7 +451,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 	ret.ptarrays=lwalloc(sizeof(POINTARRAY *)*ipa->npoints-1);
 
 	POSTGIS_DEBUGF(2, "ptarray_locate...: called for pointarray %p, m0:%g, m1:%g",
-	         ipa, m0, m1);
+	               ipa, m0, m1);
 
 
 	for (i=1; i<ipa->npoints; i++)
@@ -463,9 +463,9 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		getPoint4d_p(ipa, i, &p2);
 
 		POSTGIS_DEBUGF(3, " segment %d-%d [ %g %g %g %g -  %g %g %g %g ]",
-		         i-1, i,
-		         p1.x, p1.y, p1.z, p1.m,
-		         p2.x, p2.y, p2.z, p2.m);
+		               i-1, i,
+		               p1.x, p1.y, p1.z, p1.m,
+		               p2.x, p2.y, p2.z, p2.m);
 
 		clipval = clip_seg_by_m_range(&p1, &p2, m0, m1);
 
@@ -473,7 +473,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		if (! clipval ) continue;
 
 		POSTGIS_DEBUGF(3, " clipped to: [ %g %g %g %g - %g %g %g %g ]   clipval: %d", p1.x, p1.y, p1.z, p1.m,
-		         p2.x, p2.y, p2.z, p2.m, clipval);
+		               p2.x, p2.y, p2.z, p2.m, clipval);
 
 		/* If no points have been accumulated so far, then if clipval != 0 the first point must be the
 		   start of the intersection */
@@ -564,7 +564,7 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 	POSTGIS_DEBUGF(2, "lwline_locate_between called for lwline %p", lwline_in);
 
 	POSTGIS_DEBUGF(3, " ptarray_locate... returned %d pointarrays",
-	         paset.nptarrays);
+	               paset.nptarrays);
 
 	if ( paset.nptarrays == 0 )
 	{
@@ -678,7 +678,7 @@ lwgeom_locate_between_m(LWGEOM *lwin, double m0, double m1)
 		return lwcollection_locate_between_m(
 		           (LWCOLLECTION *)lwin, m0, m1);
 
-		/* Polygon types are not supported */
+	/* Polygon types are not supported */
 	case POLYGONTYPE:
 	case MULTIPOLYGONTYPE:
 		lwpgerror("Areal geometries are not supported by locate_between_measures");
@@ -749,7 +749,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	if ( lwout == NULL )
 	{
 		lwout = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE,
-		            gserialized_get_srid(gin), hasz, hasm);
+		        gserialized_get_srid(gin), hasz, hasm);
 	}
 
 	gout = geometry_serialize(lwout);

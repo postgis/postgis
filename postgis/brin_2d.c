@@ -43,7 +43,8 @@ geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 		 * new value for emptiness; if it returns true, we need to set the
 		 * "contains empty" flag in the element (unless already set).
 		 */
-		if (is_gserialized_from_datum_empty(newval)) {
+		if (is_gserialized_from_datum_empty(newval))
+		{
 			if (!DatumGetBool(column->bv_values[INCLUSION_CONTAINS_EMPTY]))
 			{
 				column->bv_values[INCLUSION_CONTAINS_EMPTY] = BoolGetDatum(true);
@@ -51,7 +52,8 @@ geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 			}
 
 			PG_RETURN_BOOL(false);
-		} else
+		}
+		else
 		{
 			/*
 			 * in case the entry is not empty and it is not possible to
@@ -65,7 +67,7 @@ geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 	if (column->bv_allnulls)
 	{
 		column->bv_values[INCLUSION_UNION] = datumCopy((Datum) &box_geom, false,
-				sizeof(BOX2DF));
+		                                     sizeof(BOX2DF));
 		column->bv_values[INCLUSION_UNMERGEABLE] = BoolGetDatum(false);
 		column->bv_values[INCLUSION_CONTAINS_EMPTY] = BoolGetDatum(false);
 		column->bv_allnulls = false;
@@ -76,7 +78,7 @@ geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 
 	/* Check if the stored bouding box already contains the geometry's one */
 	if (box2df_contains(box_key, &box_geom))
-			PG_RETURN_BOOL(false);
+		PG_RETURN_BOOL(false);
 
 	/*
 	 * Otherwise, we need to enlarge the stored box2df to make it contains the

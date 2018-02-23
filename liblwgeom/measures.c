@@ -41,25 +41,25 @@ The functions starting the distance-calculation processses
 LWGEOM *
 lwgeom_closest_line(const LWGEOM *lw1, const LWGEOM *lw2)
 {
-  return lw_dist2d_distanceline(lw1, lw2, lw1->srid, DIST_MIN);
+	return lw_dist2d_distanceline(lw1, lw2, lw1->srid, DIST_MIN);
 }
 
 LWGEOM *
 lwgeom_furthest_line(const LWGEOM *lw1, const LWGEOM *lw2)
 {
-  return lw_dist2d_distanceline(lw1, lw2, lw1->srid, DIST_MAX);
+	return lw_dist2d_distanceline(lw1, lw2, lw1->srid, DIST_MAX);
 }
 
 LWGEOM *
 lwgeom_closest_point(const LWGEOM *lw1, const LWGEOM *lw2)
 {
-  return lw_dist2d_distancepoint(lw1, lw2, lw1->srid, DIST_MIN);
+	return lw_dist2d_distancepoint(lw1, lw2, lw1->srid, DIST_MIN);
 }
 
 LWGEOM *
 lwgeom_furthest_point(const LWGEOM *lw1, const LWGEOM *lw2)
 {
-  return lw_dist2d_distancepoint(lw1, lw2, lw1->srid, DIST_MAX);
+	return lw_dist2d_distancepoint(lw1, lw2, lw1->srid, DIST_MAX);
 }
 
 
@@ -349,9 +349,9 @@ int lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 			if (lwgeom_is_empty(g1)||lwgeom_is_empty(g2)) return LW_TRUE;
 
 			if ( (dl->mode != DIST_MAX) &&
-				 (! lw_dist2d_check_overlap(g1, g2)) &&
-			     (g1->type == LINETYPE || g1->type == POLYGONTYPE) &&
-			     (g2->type == LINETYPE || g2->type == POLYGONTYPE) )
+			        (! lw_dist2d_check_overlap(g1, g2)) &&
+			        (g1->type == LINETYPE || g1->type == POLYGONTYPE) &&
+			        (g2->type == LINETYPE || g2->type == POLYGONTYPE) )
 			{
 				if (!lw_dist2d_distribute_fast(g1, g2, dl)) return LW_FALSE;
 			}
@@ -375,117 +375,117 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS *
 
 	switch ( t1 )
 	{
+	case POINTTYPE:
+	{
+		dl->twisted = 1;
+		switch ( t2 )
+		{
 		case POINTTYPE:
-		{
-			dl->twisted = 1;
-			switch ( t2 )
-			{
-				case POINTTYPE:
-					return lw_dist2d_point_point((LWPOINT *)lwg1, (LWPOINT *)lwg2, dl);
-				case LINETYPE:
-					return lw_dist2d_point_line((LWPOINT *)lwg1, (LWLINE *)lwg2, dl);
-				case POLYGONTYPE:
-					return lw_dist2d_point_poly((LWPOINT *)lwg1, (LWPOLY *)lwg2, dl);
-				case CIRCSTRINGTYPE:
-					return lw_dist2d_point_circstring((LWPOINT *)lwg1, (LWCIRCSTRING *)lwg2, dl);
-				case CURVEPOLYTYPE:
-					return lw_dist2d_point_curvepoly((LWPOINT *)lwg1, (LWCURVEPOLY *)lwg2, dl);
-				default:
-					lwerror("Unsupported geometry type: %s", lwtype_name(t2));
-					return LW_FALSE;
-			}
-		}
+			return lw_dist2d_point_point((LWPOINT *)lwg1, (LWPOINT *)lwg2, dl);
 		case LINETYPE:
-		{
-			dl->twisted = 1;
-			switch ( t2 )
-			{
-				case POINTTYPE:
-					dl->twisted=(-1);
-					return lw_dist2d_point_line((LWPOINT *)lwg2, (LWLINE *)lwg1, dl);
-				case LINETYPE:
-					return lw_dist2d_line_line((LWLINE *)lwg1, (LWLINE *)lwg2, dl);
-				case POLYGONTYPE:
-					return lw_dist2d_line_poly((LWLINE *)lwg1, (LWPOLY *)lwg2, dl);
-				case CIRCSTRINGTYPE:
-					return lw_dist2d_line_circstring((LWLINE *)lwg1, (LWCIRCSTRING *)lwg2, dl);
-				case CURVEPOLYTYPE:
-					return lw_dist2d_line_curvepoly((LWLINE *)lwg1, (LWCURVEPOLY *)lwg2, dl);
-				default:
-					lwerror("Unsupported geometry type: %s", lwtype_name(t2));
-					return LW_FALSE;
-			}
-		}
-		case CIRCSTRINGTYPE:
-		{
-			dl->twisted = 1;
-			switch ( t2 )
-			{
-				case POINTTYPE:
-					dl->twisted = -1;
-					return lw_dist2d_point_circstring((LWPOINT *)lwg2, (LWCIRCSTRING *)lwg1, dl);
-				case LINETYPE:
-					dl->twisted = -1;
-					return lw_dist2d_line_circstring((LWLINE *)lwg2, (LWCIRCSTRING *)lwg1, dl);
-				case POLYGONTYPE:
-					return lw_dist2d_circstring_poly((LWCIRCSTRING *)lwg1, (LWPOLY *)lwg2, dl);
-				case CIRCSTRINGTYPE:
-					return lw_dist2d_circstring_circstring((LWCIRCSTRING *)lwg1, (LWCIRCSTRING *)lwg2, dl);
-				case CURVEPOLYTYPE:
-					return lw_dist2d_circstring_curvepoly((LWCIRCSTRING *)lwg1, (LWCURVEPOLY *)lwg2, dl);
-				default:
-					lwerror("Unsupported geometry type: %s", lwtype_name(t2));
-					return LW_FALSE;
-			}
-		}
+			return lw_dist2d_point_line((LWPOINT *)lwg1, (LWLINE *)lwg2, dl);
 		case POLYGONTYPE:
-		{
-			dl->twisted = -1;
-			switch ( t2 )
-			{
-				case POINTTYPE:
-					return lw_dist2d_point_poly((LWPOINT *)lwg2, (LWPOLY *)lwg1, dl);
-				case LINETYPE:
-					return lw_dist2d_line_poly((LWLINE *)lwg2, (LWPOLY *)lwg1, dl);
-				case CIRCSTRINGTYPE:
-					return lw_dist2d_circstring_poly((LWCIRCSTRING *)lwg2, (LWPOLY *)lwg1, dl);
-				case POLYGONTYPE:
-					dl->twisted = 1;
-					return lw_dist2d_poly_poly((LWPOLY *)lwg1, (LWPOLY *)lwg2, dl);
-				case CURVEPOLYTYPE:
-					dl->twisted = 1;
-					return lw_dist2d_poly_curvepoly((LWPOLY *)lwg1, (LWCURVEPOLY *)lwg2, dl);
-				default:
-					lwerror("Unsupported geometry type: %s", lwtype_name(t2));
-					return LW_FALSE;
-			}
-		}
+			return lw_dist2d_point_poly((LWPOINT *)lwg1, (LWPOLY *)lwg2, dl);
+		case CIRCSTRINGTYPE:
+			return lw_dist2d_point_circstring((LWPOINT *)lwg1, (LWCIRCSTRING *)lwg2, dl);
 		case CURVEPOLYTYPE:
-		{
-			dl->twisted = (-1);
-			switch ( t2 )
-			{
-				case POINTTYPE:
-					return lw_dist2d_point_curvepoly((LWPOINT *)lwg2, (LWCURVEPOLY *)lwg1, dl);
-				case LINETYPE:
-					return lw_dist2d_line_curvepoly((LWLINE *)lwg2, (LWCURVEPOLY *)lwg1, dl);
-				case POLYGONTYPE:
-					return lw_dist2d_poly_curvepoly((LWPOLY *)lwg2, (LWCURVEPOLY *)lwg1, dl);
-				case CIRCSTRINGTYPE:
-					return lw_dist2d_circstring_curvepoly((LWCIRCSTRING *)lwg2, (LWCURVEPOLY *)lwg1, dl);
-				case CURVEPOLYTYPE:
-					dl->twisted = 1;
-					return lw_dist2d_curvepoly_curvepoly((LWCURVEPOLY *)lwg1, (LWCURVEPOLY *)lwg2, dl);
-				default:
-					lwerror("Unsupported geometry type: %s", lwtype_name(t2));
-					return LW_FALSE;
-			}
-		}
+			return lw_dist2d_point_curvepoly((LWPOINT *)lwg1, (LWCURVEPOLY *)lwg2, dl);
 		default:
-		{
-			lwerror("Unsupported geometry type: %s", lwtype_name(t1));
+			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
 			return LW_FALSE;
 		}
+	}
+	case LINETYPE:
+	{
+		dl->twisted = 1;
+		switch ( t2 )
+		{
+		case POINTTYPE:
+			dl->twisted=(-1);
+			return lw_dist2d_point_line((LWPOINT *)lwg2, (LWLINE *)lwg1, dl);
+		case LINETYPE:
+			return lw_dist2d_line_line((LWLINE *)lwg1, (LWLINE *)lwg2, dl);
+		case POLYGONTYPE:
+			return lw_dist2d_line_poly((LWLINE *)lwg1, (LWPOLY *)lwg2, dl);
+		case CIRCSTRINGTYPE:
+			return lw_dist2d_line_circstring((LWLINE *)lwg1, (LWCIRCSTRING *)lwg2, dl);
+		case CURVEPOLYTYPE:
+			return lw_dist2d_line_curvepoly((LWLINE *)lwg1, (LWCURVEPOLY *)lwg2, dl);
+		default:
+			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+			return LW_FALSE;
+		}
+	}
+	case CIRCSTRINGTYPE:
+	{
+		dl->twisted = 1;
+		switch ( t2 )
+		{
+		case POINTTYPE:
+			dl->twisted = -1;
+			return lw_dist2d_point_circstring((LWPOINT *)lwg2, (LWCIRCSTRING *)lwg1, dl);
+		case LINETYPE:
+			dl->twisted = -1;
+			return lw_dist2d_line_circstring((LWLINE *)lwg2, (LWCIRCSTRING *)lwg1, dl);
+		case POLYGONTYPE:
+			return lw_dist2d_circstring_poly((LWCIRCSTRING *)lwg1, (LWPOLY *)lwg2, dl);
+		case CIRCSTRINGTYPE:
+			return lw_dist2d_circstring_circstring((LWCIRCSTRING *)lwg1, (LWCIRCSTRING *)lwg2, dl);
+		case CURVEPOLYTYPE:
+			return lw_dist2d_circstring_curvepoly((LWCIRCSTRING *)lwg1, (LWCURVEPOLY *)lwg2, dl);
+		default:
+			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+			return LW_FALSE;
+		}
+	}
+	case POLYGONTYPE:
+	{
+		dl->twisted = -1;
+		switch ( t2 )
+		{
+		case POINTTYPE:
+			return lw_dist2d_point_poly((LWPOINT *)lwg2, (LWPOLY *)lwg1, dl);
+		case LINETYPE:
+			return lw_dist2d_line_poly((LWLINE *)lwg2, (LWPOLY *)lwg1, dl);
+		case CIRCSTRINGTYPE:
+			return lw_dist2d_circstring_poly((LWCIRCSTRING *)lwg2, (LWPOLY *)lwg1, dl);
+		case POLYGONTYPE:
+			dl->twisted = 1;
+			return lw_dist2d_poly_poly((LWPOLY *)lwg1, (LWPOLY *)lwg2, dl);
+		case CURVEPOLYTYPE:
+			dl->twisted = 1;
+			return lw_dist2d_poly_curvepoly((LWPOLY *)lwg1, (LWCURVEPOLY *)lwg2, dl);
+		default:
+			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+			return LW_FALSE;
+		}
+	}
+	case CURVEPOLYTYPE:
+	{
+		dl->twisted = (-1);
+		switch ( t2 )
+		{
+		case POINTTYPE:
+			return lw_dist2d_point_curvepoly((LWPOINT *)lwg2, (LWCURVEPOLY *)lwg1, dl);
+		case LINETYPE:
+			return lw_dist2d_line_curvepoly((LWLINE *)lwg2, (LWCURVEPOLY *)lwg1, dl);
+		case POLYGONTYPE:
+			return lw_dist2d_poly_curvepoly((LWPOLY *)lwg2, (LWCURVEPOLY *)lwg1, dl);
+		case CIRCSTRINGTYPE:
+			return lw_dist2d_circstring_curvepoly((LWCIRCSTRING *)lwg2, (LWCURVEPOLY *)lwg1, dl);
+		case CURVEPOLYTYPE:
+			dl->twisted = 1;
+			return lw_dist2d_curvepoly_curvepoly((LWCURVEPOLY *)lwg1, (LWCURVEPOLY *)lwg2, dl);
+		default:
+			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+			return LW_FALSE;
+		}
+	}
+	default:
+	{
+		lwerror("Unsupported geometry type: %s", lwtype_name(t1));
+		return LW_FALSE;
+	}
 	}
 
 	return LW_FALSE;
@@ -954,18 +954,18 @@ lw_curvering_getfirstpoint2d_cp(LWGEOM *geom)
 {
 	switch( geom->type )
 	{
-		case LINETYPE:
-			return getPoint2d_cp(((LWLINE*)geom)->points, 0);
-		case CIRCSTRINGTYPE:
-			return getPoint2d_cp(((LWCIRCSTRING*)geom)->points, 0);
-		case COMPOUNDTYPE:
-		{
-			LWCOMPOUND *comp = (LWCOMPOUND*)geom;
-			LWLINE *line = (LWLINE*)(comp->geoms[0]);
-			return getPoint2d_cp(line->points, 0);
-		}
-		default:
-			lwerror("lw_curvering_getfirstpoint2d_cp: unknown type");
+	case LINETYPE:
+		return getPoint2d_cp(((LWLINE*)geom)->points, 0);
+	case CIRCSTRINGTYPE:
+		return getPoint2d_cp(((LWCIRCSTRING*)geom)->points, 0);
+	case COMPOUNDTYPE:
+	{
+		LWCOMPOUND *comp = (LWCOMPOUND*)geom;
+		LWLINE *line = (LWLINE*)(comp->geoms[0]);
+		return getPoint2d_cp(line->points, 0);
+	}
+	default:
+		lwerror("lw_curvering_getfirstpoint2d_cp: unknown type");
 	}
 	return NULL;
 }
@@ -1488,10 +1488,10 @@ lw_dist2d_pt_arc(const POINT2D* P, const POINT2D* A1, const POINT2D* A2, const P
 
 /* Auxiliary function to calculate the distance between 2 concentric arcs*/
 int lw_dist2d_arc_arc_concentric(	const POINT2D *A1, const POINT2D *A2,
-					const POINT2D *A3, double radius_A,
-					const POINT2D *B1, const POINT2D *B2,
-					const POINT2D *B3, double radius_B,
-					const POINT2D *CENTER, DISTPTS *dl);
+                                    const POINT2D *A3, double radius_A,
+                                    const POINT2D *B1, const POINT2D *B2,
+                                    const POINT2D *B3, double radius_B,
+                                    const POINT2D *CENTER, DISTPTS *dl);
 
 int
 lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
@@ -1539,18 +1539,28 @@ lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
 	/* Concentric arcs */
 	if ( FP_EQUALS(d, 0.0) )
 		return lw_dist2d_arc_arc_concentric(A1, A2, A3, radius_A,
-						    B1, B2, B3, radius_B,
-						    &CA, dl);
+		                                    B1, B2, B3, radius_B,
+		                                    &CA, dl);
 
 	/* Make sure that arc "A" has the bigger radius */
 	if ( radius_B > radius_A )
 	{
 		const POINT2D *tmp;
-		tmp = B1; B1 = A1; A1 = tmp;
-		tmp = B2; B2 = A2; A2 = tmp;
-		tmp = B3; B3 = A3; A3 = tmp;
-		P = CB; CB = CA; CA = P;
-		d = radius_B; radius_B = radius_A; radius_A = d;
+		tmp = B1;
+		B1 = A1;
+		A1 = tmp;
+		tmp = B2;
+		B2 = A2;
+		A2 = tmp;
+		tmp = B3;
+		B3 = A3;
+		A3 = tmp;
+		P = CB;
+		CB = CA;
+		CA = P;
+		d = radius_B;
+		radius_B = radius_A;
+		radius_A = d;
 	}
 
 	/* Circles touch at a point. Is that point within the arcs? */
@@ -1676,10 +1686,10 @@ lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
 
 int
 lw_dist2d_arc_arc_concentric(	const POINT2D *A1, const POINT2D *A2,
-				const POINT2D *A3, double radius_A,
-				const POINT2D *B1, const POINT2D *B2,
-				const POINT2D *B3, double radius_B,
-				const POINT2D *CENTER, DISTPTS *dl)
+                                const POINT2D *A3, double radius_A,
+                                const POINT2D *B1, const POINT2D *B2,
+                                const POINT2D *B3, double radius_B,
+                                const POINT2D *CENTER, DISTPTS *dl)
 {
 	int seg_size;
 	double dist_sqr, shortest_sqr;

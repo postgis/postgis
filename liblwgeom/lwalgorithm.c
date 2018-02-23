@@ -105,7 +105,7 @@ int
 lw_arc_is_pt(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 {
 	if ( A1->x == A2->x && A2->x == A3->x &&
-	     A1->y == A2->y && A2->y == A3->y )
+	        A1->y == A2->y && A2->y == A3->y )
 		return LW_TRUE;
 	else
 		return LW_FALSE;
@@ -131,8 +131,8 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 	/* Co-linear! Return linear distance! */
 	if ( radius_A < 0 )
 	{
-        double dx = A1->x - A3->x;
-        double dy = A1->y - A3->y;
+		double dx = A1->x - A3->x;
+		double dy = A1->y - A3->y;
 		return sqrt(dx*dx + dy*dy);
 	}
 
@@ -236,7 +236,7 @@ lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *
 
 	/* Closed circle */
 	if (fabs(p1->x - p3->x) < EPSILON_SQLMM &&
-	    fabs(p1->y - p3->y) < EPSILON_SQLMM)
+	        fabs(p1->y - p3->y) < EPSILON_SQLMM)
 	{
 		cx = p1->x + (p2->x - p1->x) / 2.0;
 		cy = p1->y + (p2->y - p1->y) / 2.0;
@@ -852,8 +852,8 @@ char *lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 	if ( gbox.xmin < -180 || gbox.ymin < -90 || gbox.xmax > 180 || gbox.ymax > 90 )
 	{
 		lwerror("Geohash requires inputs in decimal degrees, got (%g %g, %g %g).",
-			 gbox.xmin, gbox.ymin,
-			 gbox.xmax, gbox.ymax);
+		        gbox.xmin, gbox.ymin,
+		        gbox.xmax, gbox.ymax);
 		return NULL;
 	}
 

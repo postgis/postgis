@@ -80,7 +80,7 @@ BOX3D* box3d_from_gbox(const GBOX *gbox)
 	}
 
 	b->srid = SRID_UNKNOWN;
- 	return b;
+	return b;
 }
 
 /* TODO to be removed */
@@ -98,7 +98,7 @@ GBOX* box3d_to_gbox(const BOX3D *b3d)
 	b->zmin = b3d->zmin;
 	b->zmax = b3d->zmax;
 
- 	return b;
+	return b;
 }
 
 void gbox_expand(GBOX *g, double d)
@@ -185,39 +185,39 @@ int gbox_same(const GBOX *g1, const GBOX *g2)
 
 int gbox_same_2d(const GBOX *g1, const GBOX *g2)
 {
-    if (g1->xmin == g2->xmin && g1->ymin == g2->ymin &&
-        g1->xmax == g2->xmax && g1->ymax == g2->ymax)
+	if (g1->xmin == g2->xmin && g1->ymin == g2->ymin &&
+	        g1->xmax == g2->xmax && g1->ymax == g2->ymax)
 		return LW_TRUE;
 	return LW_FALSE;
 }
 
 int gbox_same_2d_float(const GBOX *g1, const GBOX *g2)
 {
-  if  ((g1->xmax == g2->xmax || next_float_up(g1->xmax)   == next_float_up(g2->xmax))   &&
-       (g1->ymax == g2->ymax || next_float_up(g1->ymax)   == next_float_up(g2->ymax))   &&
-       (g1->xmin == g2->xmin || next_float_down(g1->xmin) == next_float_down(g1->xmin)) &&
-       (g1->ymin == g2->ymin || next_float_down(g2->ymin) == next_float_down(g2->ymin)))
-      return LW_TRUE;
-  return LW_FALSE;
+	if  ((g1->xmax == g2->xmax || next_float_up(g1->xmax)   == next_float_up(g2->xmax))   &&
+	        (g1->ymax == g2->ymax || next_float_up(g1->ymax)   == next_float_up(g2->ymax))   &&
+	        (g1->xmin == g2->xmin || next_float_down(g1->xmin) == next_float_down(g1->xmin)) &&
+	        (g1->ymin == g2->ymin || next_float_down(g2->ymin) == next_float_down(g2->ymin)))
+		return LW_TRUE;
+	return LW_FALSE;
 }
 
 int gbox_is_valid(const GBOX *gbox)
 {
 	/* X */
 	if ( ! isfinite(gbox->xmin) || isnan(gbox->xmin) ||
-	     ! isfinite(gbox->xmax) || isnan(gbox->xmax) )
+	        ! isfinite(gbox->xmax) || isnan(gbox->xmax) )
 		return LW_FALSE;
 
 	/* Y */
 	if ( ! isfinite(gbox->ymin) || isnan(gbox->ymin) ||
-	     ! isfinite(gbox->ymax) || isnan(gbox->ymax) )
+	        ! isfinite(gbox->ymax) || isnan(gbox->ymax) )
 		return LW_FALSE;
 
 	/* Z */
 	if ( FLAGS_GET_GEODETIC(gbox->flags) || FLAGS_GET_Z(gbox->flags) )
 	{
 		if ( ! isfinite(gbox->zmin) || isnan(gbox->zmin) ||
-		     ! isfinite(gbox->zmax) || isnan(gbox->zmax) )
+		        ! isfinite(gbox->zmax) || isnan(gbox->zmax) )
 			return LW_FALSE;
 	}
 
@@ -225,7 +225,7 @@ int gbox_is_valid(const GBOX *gbox)
 	if ( FLAGS_GET_M(gbox->flags) )
 	{
 		if ( ! isfinite(gbox->mmin) || isnan(gbox->mmin) ||
-		     ! isfinite(gbox->mmax) || isnan(gbox->mmax) )
+		        ! isfinite(gbox->mmax) || isnan(gbox->mmax) )
 			return LW_FALSE;
 	}
 
@@ -296,7 +296,7 @@ int gbox_overlaps(const GBOX *g1, const GBOX *g2)
 
 	/* Check X/Y first */
 	if ( g1->xmax < g2->xmin || g1->ymax < g2->ymin ||
-	     g1->xmin > g2->xmax || g1->ymin > g2->ymax )
+	        g1->xmin > g2->xmax || g1->ymin > g2->ymax )
 		return LW_FALSE;
 
 	/* Deal with the geodetic case special: we only compare the geodetic boxes (x/y/z) */
@@ -336,7 +336,7 @@ gbox_overlaps_2d(const GBOX *g1, const GBOX *g2)
 
 	/* Check X/Y first */
 	if ( g1->xmax < g2->xmin || g1->ymax < g2->ymin ||
-	     g1->xmin > g2->xmax || g1->ymin > g2->ymax )
+	        g1->xmin > g2->xmax || g1->ymin > g2->ymax )
 		return LW_FALSE;
 
 	return LW_TRUE;
@@ -346,7 +346,7 @@ int
 gbox_contains_2d(const GBOX *g1, const GBOX *g2)
 {
 	if ( ( g2->xmin < g1->xmin ) || ( g2->xmax > g1->xmax ) ||
-	     ( g2->ymin < g1->ymin ) || ( g2->ymax > g1->ymax ) )
+	        ( g2->ymin < g1->ymin ) || ( g2->ymax > g1->ymax ) )
 	{
 		return LW_FALSE;
 	}
@@ -357,7 +357,7 @@ int
 gbox_contains_point2d(const GBOX *g, const POINT2D *p)
 {
 	if ( ( g->xmin <= p->x ) && ( g->xmax >= p->x ) &&
-	     ( g->ymin <= p->y ) && ( g->ymax >= p->y ) )
+	        ( g->ymin <= p->y ) && ( g->ymax >= p->y ) )
 	{
 		return LW_TRUE;
 	}
@@ -470,11 +470,11 @@ int lw_arc_calculate_gbox_cartesian_2d(const POINT2D *A1, const POINT2D *A2, con
 	/* Negative radius signals straight line, p1/p2/p3 are colinear */
 	if (radius_A < 0.0)
 	{
-        gbox->xmin = FP_MIN(A1->x, A3->x);
-        gbox->ymin = FP_MIN(A1->y, A3->y);
-        gbox->xmax = FP_MAX(A1->x, A3->x);
-        gbox->ymax = FP_MAX(A1->y, A3->y);
-	    return LW_SUCCESS;
+		gbox->xmin = FP_MIN(A1->x, A3->x);
+		gbox->ymin = FP_MIN(A1->y, A3->y);
+		gbox->xmax = FP_MAX(A1->x, A3->x);
+		gbox->ymax = FP_MAX(A1->y, A3->y);
+		return LW_SUCCESS;
 	}
 
 	/* Matched start/end points imply circle */
@@ -488,10 +488,10 @@ int lw_arc_calculate_gbox_cartesian_2d(const POINT2D *A1, const POINT2D *A2, con
 	}
 
 	/* First approximation, bounds of start/end points */
-    gbox->xmin = FP_MIN(A1->x, A3->x);
-    gbox->ymin = FP_MIN(A1->y, A3->y);
-    gbox->xmax = FP_MAX(A1->x, A3->x);
-    gbox->ymax = FP_MAX(A1->y, A3->y);
+	gbox->xmin = FP_MIN(A1->x, A3->x);
+	gbox->ymin = FP_MIN(A1->y, A3->y);
+	gbox->xmax = FP_MAX(A1->x, A3->x);
+	gbox->ymax = FP_MAX(A1->y, A3->y);
 
 	/* Create points for the possible extrema */
 	xmin.x = C.x - radius_A;
@@ -532,10 +532,10 @@ static int lw_arc_calculate_gbox_cartesian(const POINT4D *p1, const POINT4D *p2,
 	LWDEBUG(2, "lw_arc_calculate_gbox_cartesian called.");
 
 	rv = lw_arc_calculate_gbox_cartesian_2d((POINT2D*)p1, (POINT2D*)p2, (POINT2D*)p3, gbox);
-    gbox->zmin = FP_MIN(p1->z, p3->z);
-    gbox->mmin = FP_MIN(p1->m, p3->m);
-    gbox->zmax = FP_MAX(p1->z, p3->z);
-    gbox->mmax = FP_MAX(p1->m, p3->m);
+	gbox->zmin = FP_MIN(p1->z, p3->z);
+	gbox->mmin = FP_MIN(p1->m, p3->m);
+	gbox->zmax = FP_MAX(p1->z, p3->z);
+	gbox->mmax = FP_MAX(p1->m, p3->m);
 	return rv;
 }
 

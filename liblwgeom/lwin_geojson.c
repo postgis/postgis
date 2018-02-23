@@ -200,7 +200,7 @@ parse_geojson_linestring(json_object *geojson, int *hasz, int root_srid)
 	if ( ! points )
 	{
 		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
-	return NULL;
+		return NULL;
 	}
 
 	pa = ptarray_construct_empty(1, 0, 1);

@@ -32,7 +32,8 @@
 * the PgSQL specific bits of the code (fcinfo) back into
 * liblwgeom, where most of the circtree logic lives.
 */
-typedef struct {
+typedef struct
+{
 	GeomCache    gcache;
 	CIRC_NODE*   index;
 } CircTreeGeomCache;

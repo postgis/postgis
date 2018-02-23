@@ -4,50 +4,54 @@
 
 #define BUILD_API
 
-typedef struct LEXICON_s {
-    ENTRY **hash_table;
-    ERR_PARAM *err_p;
+typedef struct LEXICON_s
+{
+	ENTRY **hash_table;
+	ERR_PARAM *err_p;
 } LEXICON;
 
-typedef struct RULES_s {
-    int ready;
-    int rule_number;
-    int last_node;
-    RULE_PARAM *r_p;
-    ERR_PARAM *err_p;
-    NODE **Trie;
-    SYMB *rule_end ;
-    SYMB *r ;
+typedef struct RULES_s
+{
+	int ready;
+	int rule_number;
+	int last_node;
+	RULE_PARAM *r_p;
+	ERR_PARAM *err_p;
+	NODE **Trie;
+	SYMB *rule_end ;
+	SYMB *r ;
 } RULES;
 
-typedef struct STANDARDIZER_s {
-    PAGC_GLOBAL *pagc_p;
-    STAND_PARAM *misc_stand;
-    ERR_PARAM *err_p;
+typedef struct STANDARDIZER_s
+{
+	PAGC_GLOBAL *pagc_p;
+	STAND_PARAM *misc_stand;
+	ERR_PARAM *err_p;
 } STANDARDIZER;
 
-typedef struct STDADDR_s {  // define as required
-   char *building;
-   char *house_num;
-   char *predir;
-   char *qual;
-   char *pretype;
-   char *name;
-   char *suftype;
-   char *sufdir;
-   char *ruralroute;
-   char *extra;
-   char *city;
-   char *state;
-   char *country;
-   char *postcode;
-   char *box;
-   char *unit;
+typedef struct STDADDR_s    // define as required
+{
+	char *building;
+	char *house_num;
+	char *predir;
+	char *qual;
+	char *pretype;
+	char *name;
+	char *suftype;
+	char *sufdir;
+	char *ruralroute;
+	char *extra;
+	char *city;
+	char *state;
+	char *country;
+	char *postcode;
+	char *box;
+	char *unit;
 } STDADDR;
 
 LEXICON * lex_init();
 int lex_add_entry(LEXICON *lex, int seq, char *word, char
-*stdword, SYMB token);
+                  *stdword, SYMB token);
 void lex_free(LEXICON *lex);
 
 RULES *rules_init();

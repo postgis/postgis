@@ -24,7 +24,8 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_raster_envelope() {
+static void test_raster_envelope()
+{
 	rt_raster raster = NULL;
 	rt_envelope rtenv;
 
@@ -85,7 +86,8 @@ static void test_raster_envelope() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_envelope_geom() {
+static void test_raster_envelope_geom()
+{
 	rt_raster raster = NULL;
 	LWGEOM *env = NULL;
 	LWPOLY *poly = NULL;
@@ -163,7 +165,8 @@ static void test_raster_envelope_geom() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_convex_hull() {
+static void test_raster_convex_hull()
+{
 	rt_raster raster = NULL;
 	LWGEOM *hull = NULL;
 	LWPOLY *poly = NULL;
@@ -243,7 +246,8 @@ static void test_raster_convex_hull() {
 }
 
 static char *
-lwgeom_to_text(const LWGEOM *lwgeom) {
+lwgeom_to_text(const LWGEOM *lwgeom)
+{
 	char *wkt;
 	size_t wkt_size;
 
@@ -252,7 +256,8 @@ lwgeom_to_text(const LWGEOM *lwgeom) {
 	return wkt;
 }
 
-static void test_raster_surface() {
+static void test_raster_surface()
+{
 	rt_raster rast;
 	rt_band band;
 	const int maxX = 5;
@@ -271,8 +276,10 @@ static void test_raster_surface() {
 	band = cu_add_band(rast, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (y = 0; y < maxY; y++) {
-		for (x = 0; x < maxX; x++) {
+	for (y = 0; y < maxY; y++)
+	{
+		for (x = 0; x < maxX; x++)
+		{
 			rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
@@ -368,7 +375,8 @@ static void test_raster_surface() {
 	cu_free_raster(rast);
 }
 
-static void test_raster_perimeter() {
+static void test_raster_perimeter()
+{
 	rt_raster rast;
 	rt_band band;
 	const int maxX = 5;
@@ -387,8 +395,10 @@ static void test_raster_perimeter() {
 	band = cu_add_band(rast, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (y = 0; y < maxY; y++) {
-		for (x = 0; x < maxX; x++) {
+	for (y = 0; y < maxY; y++)
+	{
+		for (x = 0; x < maxX; x++)
+		{
 			rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
@@ -504,8 +514,10 @@ static void test_raster_perimeter() {
 	band = cu_add_band(rast, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (y = 0; y < maxY; y++) {
-		for (x = 0; x < maxX; x++) {
+	for (y = 0; y < maxY; y++)
+	{
+		for (x = 0; x < maxX; x++)
+		{
 			rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
@@ -522,7 +534,8 @@ static void test_raster_perimeter() {
 	cu_free_raster(rast);
 }
 
-static void test_raster_pixel_as_polygon() {
+static void test_raster_pixel_as_polygon()
+{
 	rt_raster rast;
 	rt_band band;
 	uint32_t x, y;
@@ -536,8 +549,10 @@ static void test_raster_pixel_as_polygon() {
 	band = cu_add_band(rast, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (x = 0; x < maxX; x++) {
-		for (y = 0; y < maxY; y++) {
+	for (x = 0; x < maxX; x++)
+	{
+		for (y = 0; y < maxY; y++)
+		{
 			rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}

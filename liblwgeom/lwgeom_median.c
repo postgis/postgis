@@ -89,19 +89,19 @@ iterate_4d(POINT3D* curr, const POINT4D* points, const uint32_t npoints, const u
 		next.z /= denom;
 
 		/* If any of the intermediate points in the calculation is found in the
-	 	* set of input points, the standard Weiszfeld method gets stuck with a
-	 	* divide-by-zero.
-	 	*
-	 	* To get ourselves out of the hole, we follow an alternate procedure to
-	 	* get the next iteration, as described in:
-	 	*
-	 	* Vardi, Y. and Zhang, C. (2011) "A modified Weiszfeld algorithm for the
-	 	* Fermat-Weber location problem."  Math. Program., Ser. A 90: 559-566.
-	 	* DOI 10.1007/s101070100222
-	 	*
-	 	* Available online at the time of this writing at
-	 	* http://www.stat.rutgers.edu/home/cunhui/papers/43.pdf
-	 	*/
+		* set of input points, the standard Weiszfeld method gets stuck with a
+		* divide-by-zero.
+		*
+		* To get ourselves out of the hole, we follow an alternate procedure to
+		* get the next iteration, as described in:
+		*
+		* Vardi, Y. and Zhang, C. (2011) "A modified Weiszfeld algorithm for the
+		* Fermat-Weber location problem."  Math. Program., Ser. A 90: 559-566.
+		* DOI 10.1007/s101070100222
+		*
+		* Available online at the time of this writing at
+		* http://www.stat.rutgers.edu/home/cunhui/papers/43.pdf
+		*/
 		if (hit)
 		{
 			double dx = 0, dy = 0, dz = 0;
@@ -281,13 +281,13 @@ lwgeom_median(const LWGEOM* g, double tol, uint32_t max_iter, char fail_if_not_c
 {
 	switch( lwgeom_get_type(g) )
 	{
-		case POINTTYPE:
-			return lwpoint_clone(lwgeom_as_lwpoint(g));
-		case MULTIPOINTTYPE:
-			return lwmpoint_median(lwgeom_as_lwmpoint(g), tol, max_iter, fail_if_not_converged);
-		default:
-			lwerror("Unsupported geometry type in lwgeom_median");
-			return NULL;
+	case POINTTYPE:
+		return lwpoint_clone(lwgeom_as_lwpoint(g));
+	case MULTIPOINTTYPE:
+		return lwmpoint_median(lwgeom_as_lwmpoint(g), tol, max_iter, fail_if_not_converged);
+	default:
+		lwerror("Unsupported geometry type in lwgeom_median");
+		return NULL;
 	}
 }
 

@@ -12,7 +12,7 @@
  */
 
 Datum gidx_brin_inclusion_add_value(BrinDesc *bdesc, BrinValues *column, Datum
-		newval, bool isnull, int max_dims);
+                                    newval, bool isnull, int max_dims);
 
 /*
  * As for the GiST case, geographies are converted into GIDX before
@@ -28,7 +28,7 @@ geog_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 	bool            isnull = PG_GETARG_BOOL(3);
 
 	PG_RETURN_DATUM(gidx_brin_inclusion_add_value(bdesc, column, newval, isnull,
-					2));
+	                2));
 }
 
 
@@ -42,7 +42,7 @@ geom3d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 	bool		isnull = PG_GETARG_BOOL(3);
 
 	PG_RETURN_DATUM(gidx_brin_inclusion_add_value(bdesc, column, newval, isnull,
-					3));
+	                3));
 }
 
 PG_FUNCTION_INFO_V1(geom4d_brin_inclusion_add_value);
@@ -55,12 +55,12 @@ geom4d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 	bool		isnull = PG_GETARG_BOOL(3);
 
 	PG_RETURN_DATUM(gidx_brin_inclusion_add_value(bdesc, column, newval, isnull,
-					4));
+	                4));
 }
 
 Datum
 gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
-		BrinValues *column, Datum newval, bool isnull, int max_dims)
+                              BrinValues *column, Datum newval, bool isnull, int max_dims)
 {
 	char gboxmem[GIDX_MAX_SIZE];
 	GIDX *gidx_geom, *gidx_key;
@@ -86,7 +86,7 @@ gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
 	 * and is marked as containing unmergeable values.
 	 */
 	if (!column->bv_allnulls &&
-			DatumGetBool(column->bv_values[INCLUSION_UNMERGEABLE]))
+	        DatumGetBool(column->bv_values[INCLUSION_UNMERGEABLE]))
 		PG_RETURN_BOOL(false);
 
 	/* create a new GIDX in stack memory, maximum dimensions */
@@ -111,7 +111,8 @@ gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
 			}
 
 			PG_RETURN_BOOL(false);
-		} else
+		}
+		else
 		{
 			/*
 			 * in case the entry is not empty and it is not possible to
@@ -145,7 +146,7 @@ gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
 		}
 
 		column->bv_values[INCLUSION_UNION] = datumCopy((Datum) gidx_geom, false,
-				GIDX_SIZE(dims_geom));
+		                                     GIDX_SIZE(dims_geom));
 		column->bv_values[INCLUSION_UNMERGEABLE] = BoolGetDatum(false);
 		column->bv_values[INCLUSION_CONTAINS_EMPTY] = BoolGetDatum(false);
 		column->bv_allnulls = false;
@@ -167,7 +168,7 @@ gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
 
 	/* Check if the stored bounding box already contains the geometry's one */
 	if (gidx_contains(gidx_key, gidx_geom))
-			PG_RETURN_BOOL(false);
+		PG_RETURN_BOOL(false);
 
 	/*
 	 * Otherwise, we need to enlarge the stored GIDX to make it contains the
@@ -178,10 +179,10 @@ gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
 	{
 		/* Adjust minimums */
 		GIDX_SET_MIN(gidx_key, i,
-				Min(GIDX_GET_MIN(gidx_key,i),GIDX_GET_MIN(gidx_geom,i)));
+		             Min(GIDX_GET_MIN(gidx_key,i),GIDX_GET_MIN(gidx_geom,i)));
 		/* Adjust maximums */
 		GIDX_SET_MAX(gidx_key, i,
-				Max(GIDX_GET_MAX(gidx_key,i),GIDX_GET_MAX(gidx_geom,i)));
+		             Max(GIDX_GET_MAX(gidx_key,i),GIDX_GET_MAX(gidx_geom,i)));
 	}
 
 	PG_RETURN_BOOL(true);

@@ -25,14 +25,16 @@
 #include "cu_tester.h"
 
 typedef struct _callback_userargs_t* _callback_userargs;
-struct _callback_userargs_t {
+struct _callback_userargs_t
+{
 	uint16_t rasters;
 	uint32_t rows;
 	uint32_t columns;
 };
 
 /* callback for 1 raster, 0 distance, FIRST or SECOND or LAST or UNION or INTERSECTION */
-static int testRasterIterator1_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
+static int testRasterIterator1_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata)
+{
 	_callback_userargs _userarg = (_callback_userargs) userarg;
 
 	/* check that we're getting what we expect from userarg */
@@ -42,48 +44,54 @@ static int testRasterIterator1_callback(rt_iterator_arg arg, void *userarg, doub
 
 	/* 0,0 */
 	if (
-		arg->dst_pixel[0] == 0 &&
-		arg->dst_pixel[1] == 0
-	) {
+	    arg->dst_pixel[0] == 0 &&
+	    arg->dst_pixel[1] == 0
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 0, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 	}
 	/* 4,4 */
 	else if (
-		arg->dst_pixel[0] == 4 &&
-		arg->dst_pixel[1] == 4
-	) {
+	    arg->dst_pixel[0] == 4 &&
+	    arg->dst_pixel[1] == 4
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 24, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 	}
 	/* 1,1 */
 	else if (
-		arg->dst_pixel[0] == 1 &&
-		arg->dst_pixel[1] == 1
-	) {
+	    arg->dst_pixel[0] == 1 &&
+	    arg->dst_pixel[1] == 1
+	)
+	{
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 1);
 	}
 	/* 2,2 */
 	else if (
-		arg->dst_pixel[0] == 2 &&
-		arg->dst_pixel[1] == 2
-	) {
+	    arg->dst_pixel[0] == 2 &&
+	    arg->dst_pixel[1] == 2
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 12, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 	}
 	/* 3,1 */
 	else if (
-		arg->dst_pixel[0] == 3 &&
-		arg->dst_pixel[1] == 1
-	) {
+	    arg->dst_pixel[0] == 3 &&
+	    arg->dst_pixel[1] == 1
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 8, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 	}
 	/* 1,0 */
 	else if (
-		arg->dst_pixel[0] == 1 &&
-		arg->dst_pixel[1] == 0
-	) {
+	    arg->dst_pixel[0] == 1 &&
+	    arg->dst_pixel[1] == 0
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 1, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 	}
@@ -92,7 +100,8 @@ static int testRasterIterator1_callback(rt_iterator_arg arg, void *userarg, doub
 }
 
 /* callback for 2 raster, 0 distance, UNION */
-static int testRasterIterator2_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
+static int testRasterIterator2_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata)
+{
 	_callback_userargs _userarg = (_callback_userargs) userarg;
 
 	/* check that we're getting what we expect from userarg */
@@ -102,9 +111,10 @@ static int testRasterIterator2_callback(rt_iterator_arg arg, void *userarg, doub
 
 	/* 0,0 */
 	if (
-		arg->dst_pixel[0] == 0 &&
-		arg->dst_pixel[1] == 0
-	) {
+	    arg->dst_pixel[0] == 0 &&
+	    arg->dst_pixel[1] == 0
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 0, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -112,9 +122,10 @@ static int testRasterIterator2_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 4,4 */
 	else if (
-		arg->dst_pixel[0] == 4 &&
-		arg->dst_pixel[1] == 4
-	) {
+	    arg->dst_pixel[0] == 4 &&
+	    arg->dst_pixel[1] == 4
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 24, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -123,9 +134,10 @@ static int testRasterIterator2_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 1,1 */
 	else if (
-		arg->dst_pixel[0] == 1 &&
-		arg->dst_pixel[1] == 1
-	) {
+	    arg->dst_pixel[0] == 1 &&
+	    arg->dst_pixel[1] == 1
+	)
+	{
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 1);
 
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[1][0][0], 100, DBL_EPSILON);
@@ -133,9 +145,10 @@ static int testRasterIterator2_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 2,2 */
 	else if (
-		arg->dst_pixel[0] == 2 &&
-		arg->dst_pixel[1] == 2
-	) {
+	    arg->dst_pixel[0] == 2 &&
+	    arg->dst_pixel[1] == 2
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 12, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -144,9 +157,10 @@ static int testRasterIterator2_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 3,1 */
 	else if (
-		arg->dst_pixel[0] == 3 &&
-		arg->dst_pixel[1] == 1
-	) {
+	    arg->dst_pixel[0] == 3 &&
+	    arg->dst_pixel[1] == 1
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 8, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -155,9 +169,10 @@ static int testRasterIterator2_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 1,0 */
 	else if (
-		arg->dst_pixel[0] == 1 &&
-		arg->dst_pixel[1] == 0
-	) {
+	    arg->dst_pixel[0] == 1 &&
+	    arg->dst_pixel[1] == 0
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 1, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -165,9 +180,10 @@ static int testRasterIterator2_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 1,3 */
 	else if (
-		arg->dst_pixel[0] == 1 &&
-		arg->dst_pixel[1] == 3
-	) {
+	    arg->dst_pixel[0] == 1 &&
+	    arg->dst_pixel[1] == 3
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 16, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -175,9 +191,10 @@ static int testRasterIterator2_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 5,0 */
 	else if (
-		arg->dst_pixel[0] == 5 &&
-		arg->dst_pixel[1] == 0
-	) {
+	    arg->dst_pixel[0] == 5 &&
+	    arg->dst_pixel[1] == 0
+	)
+	{
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 1);
 
 		CU_ASSERT_EQUAL(arg->nodata[1][0][0], 1);
@@ -187,7 +204,8 @@ static int testRasterIterator2_callback(rt_iterator_arg arg, void *userarg, doub
 }
 
 /* callback for 2 raster, 0 distance, INTERSECTION */
-static int testRasterIterator3_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
+static int testRasterIterator3_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata)
+{
 	_callback_userargs _userarg = (_callback_userargs) userarg;
 
 	/* check that we're getting what we expect from userarg */
@@ -197,9 +215,10 @@ static int testRasterIterator3_callback(rt_iterator_arg arg, void *userarg, doub
 
 	/* 0,0 */
 	if (
-		arg->dst_pixel[0] == 0 &&
-		arg->dst_pixel[1] == 0
-	) {
+	    arg->dst_pixel[0] == 0 &&
+	    arg->dst_pixel[1] == 0
+	)
+	{
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 1);
 
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[1][0][0], 100, DBL_EPSILON);
@@ -207,9 +226,10 @@ static int testRasterIterator3_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 0,3 */
 	else if (
-		arg->dst_pixel[0] == 0 &&
-		arg->dst_pixel[1] == 3
-	) {
+	    arg->dst_pixel[0] == 0 &&
+	    arg->dst_pixel[1] == 3
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 21, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -218,9 +238,10 @@ static int testRasterIterator3_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 3,0 */
 	else if (
-		arg->dst_pixel[0] == 3 &&
-		arg->dst_pixel[1] == 0
-	) {
+	    arg->dst_pixel[0] == 3 &&
+	    arg->dst_pixel[1] == 0
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 9, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -229,9 +250,10 @@ static int testRasterIterator3_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 3,3 */
 	else if (
-		arg->dst_pixel[0] == 3 &&
-		arg->dst_pixel[1] == 3
-	) {
+	    arg->dst_pixel[0] == 3 &&
+	    arg->dst_pixel[1] == 3
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 24, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -240,9 +262,10 @@ static int testRasterIterator3_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 0,2 */
 	else if (
-		arg->dst_pixel[0] == 3 &&
-		arg->dst_pixel[1] == 3
-	) {
+	    arg->dst_pixel[0] == 3 &&
+	    arg->dst_pixel[1] == 3
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 16, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -253,7 +276,8 @@ static int testRasterIterator3_callback(rt_iterator_arg arg, void *userarg, doub
 }
 
 /* callback for 2 raster, 0 distance, FIRST */
-static int testRasterIterator4_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
+static int testRasterIterator4_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata)
+{
 	_callback_userargs _userarg = (_callback_userargs) userarg;
 
 	/* check that we're getting what we expect from userarg */
@@ -263,9 +287,10 @@ static int testRasterIterator4_callback(rt_iterator_arg arg, void *userarg, doub
 
 	/* 0,0 */
 	if (
-		arg->dst_pixel[0] == 0 &&
-		arg->dst_pixel[1] == 0
-	) {
+	    arg->dst_pixel[0] == 0 &&
+	    arg->dst_pixel[1] == 0
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 0, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -273,9 +298,10 @@ static int testRasterIterator4_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 4,4 */
 	else if (
-		arg->dst_pixel[0] == 4 &&
-		arg->dst_pixel[1] == 4
-	) {
+	    arg->dst_pixel[0] == 4 &&
+	    arg->dst_pixel[1] == 4
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 24, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -284,9 +310,10 @@ static int testRasterIterator4_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 4,1 */
 	else if (
-		arg->dst_pixel[0] == 4 &&
-		arg->dst_pixel[1] == 1
-	) {
+	    arg->dst_pixel[0] == 4 &&
+	    arg->dst_pixel[1] == 1
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 9, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -295,9 +322,10 @@ static int testRasterIterator4_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 4,0 */
 	else if (
-		arg->dst_pixel[0] == 4 &&
-		arg->dst_pixel[1] == 0
-	) {
+	    arg->dst_pixel[0] == 4 &&
+	    arg->dst_pixel[1] == 0
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 4, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -308,7 +336,8 @@ static int testRasterIterator4_callback(rt_iterator_arg arg, void *userarg, doub
 }
 
 /* callback for 2 raster, 0 distance, SECOND or LAST */
-static int testRasterIterator5_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
+static int testRasterIterator5_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata)
+{
 	_callback_userargs _userarg = (_callback_userargs) userarg;
 
 	/* check that we're getting what we expect from userarg */
@@ -318,9 +347,10 @@ static int testRasterIterator5_callback(rt_iterator_arg arg, void *userarg, doub
 
 	/* 0,0 */
 	if (
-		arg->dst_pixel[0] == 0 &&
-		arg->dst_pixel[1] == 0
-	) {
+	    arg->dst_pixel[0] == 0 &&
+	    arg->dst_pixel[1] == 0
+	)
+	{
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 1);
 
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[1][0][0], 100, DBL_EPSILON);
@@ -328,9 +358,10 @@ static int testRasterIterator5_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 4,4 */
 	else if (
-		arg->dst_pixel[0] == 4 &&
-		arg->dst_pixel[1] == 4
-	) {
+	    arg->dst_pixel[0] == 4 &&
+	    arg->dst_pixel[1] == 4
+	)
+	{
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 1);
 
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[1][0][0], 124, DBL_EPSILON);
@@ -338,9 +369,10 @@ static int testRasterIterator5_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 4,1 */
 	else if (
-		arg->dst_pixel[0] == 4 &&
-		arg->dst_pixel[1] == 1
-	) {
+	    arg->dst_pixel[0] == 4 &&
+	    arg->dst_pixel[1] == 1
+	)
+	{
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 1);
 
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[1][0][0], 109, DBL_EPSILON);
@@ -348,9 +380,10 @@ static int testRasterIterator5_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 0,2 */
 	else if (
-		arg->dst_pixel[0] == 0 &&
-		arg->dst_pixel[1] == 2
-	) {
+	    arg->dst_pixel[0] == 0 &&
+	    arg->dst_pixel[1] == 2
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 16, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -361,7 +394,8 @@ static int testRasterIterator5_callback(rt_iterator_arg arg, void *userarg, doub
 }
 
 /* callback for 2 raster, 0 distance, CUSTOM */
-static int testRasterIterator6_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
+static int testRasterIterator6_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata)
+{
 	_callback_userargs _userarg = (_callback_userargs) userarg;
 
 	/* check that we're getting what we expect from userarg */
@@ -371,9 +405,10 @@ static int testRasterIterator6_callback(rt_iterator_arg arg, void *userarg, doub
 
 	/* 0,0 */
 	if (
-		arg->dst_pixel[0] == 0 &&
-		arg->dst_pixel[1] == 0
-	) {
+	    arg->dst_pixel[0] == 0 &&
+	    arg->dst_pixel[1] == 0
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 16, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -381,9 +416,10 @@ static int testRasterIterator6_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 1,0 */
 	else if (
-		arg->dst_pixel[0] == 1 &&
-		arg->dst_pixel[1] == 0
-	) {
+	    arg->dst_pixel[0] == 1 &&
+	    arg->dst_pixel[1] == 0
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 17, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -392,9 +428,10 @@ static int testRasterIterator6_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 0,1 */
 	else if (
-		arg->dst_pixel[0] == 0 &&
-		arg->dst_pixel[1] == 1
-	) {
+	    arg->dst_pixel[0] == 0 &&
+	    arg->dst_pixel[1] == 1
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 21, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -403,9 +440,10 @@ static int testRasterIterator6_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 1,1 */
 	else if (
-		arg->dst_pixel[0] == 1 &&
-		arg->dst_pixel[1] == 1
-	) {
+	    arg->dst_pixel[0] == 1 &&
+	    arg->dst_pixel[1] == 1
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][0][0], 22, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][0][0], 0);
 
@@ -417,7 +455,8 @@ static int testRasterIterator6_callback(rt_iterator_arg arg, void *userarg, doub
 }
 
 /* callback for 2 raster, 1 distance, CUSTOM */
-static int testRasterIterator7_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
+static int testRasterIterator7_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata)
+{
 	_callback_userargs _userarg = (_callback_userargs) userarg;
 
 	/* check that we're getting what we expect from userarg */
@@ -427,9 +466,10 @@ static int testRasterIterator7_callback(rt_iterator_arg arg, void *userarg, doub
 
 	/* 0,0 */
 	if (
-		arg->dst_pixel[0] == 0 &&
-		arg->dst_pixel[1] == 0
-	) {
+	    arg->dst_pixel[0] == 0 &&
+	    arg->dst_pixel[1] == 0
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][1][1], 16, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][1][1], 0);
 
@@ -442,9 +482,10 @@ static int testRasterIterator7_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 1,0 */
 	else if (
-		arg->dst_pixel[0] == 1 &&
-		arg->dst_pixel[1] == 0
-	) {
+	    arg->dst_pixel[0] == 1 &&
+	    arg->dst_pixel[1] == 0
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][1][1], 17, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][1][1], 0);
 
@@ -459,9 +500,10 @@ static int testRasterIterator7_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 0,1 */
 	else if (
-		arg->dst_pixel[0] == 0 &&
-		arg->dst_pixel[1] == 1
-	) {
+	    arg->dst_pixel[0] == 0 &&
+	    arg->dst_pixel[1] == 1
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][1][1], 21, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][1][1], 0);
 
@@ -474,9 +516,10 @@ static int testRasterIterator7_callback(rt_iterator_arg arg, void *userarg, doub
 	}
 	/* 1,1 */
 	else if (
-		arg->dst_pixel[0] == 1 &&
-		arg->dst_pixel[1] == 1
-	) {
+	    arg->dst_pixel[0] == 1 &&
+	    arg->dst_pixel[1] == 1
+	)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(arg->values[0][1][1], 22, DBL_EPSILON);
 		CU_ASSERT_EQUAL(arg->nodata[0][1][1], 0);
 
@@ -492,7 +535,8 @@ static int testRasterIterator7_callback(rt_iterator_arg arg, void *userarg, doub
 	return 1;
 }
 
-static void test_raster_iterator() {
+static void test_raster_iterator()
+{
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_raster rast3;
@@ -518,8 +562,10 @@ static void test_raster_iterator() {
 	band = cu_add_band(rast1, PT_32BUI, 1, 6);
 	CU_ASSERT(band != NULL);
 
-	for (y = 0; y < maxY; y++) {
-		for (x = 0; x < maxX; x++) {
+	for (y = 0; y < maxY; y++)
+	{
+		for (x = 0; x < maxX; x++)
+		{
 			rt_band_set_pixel(band, x, y, x + (y * maxX), NULL);
 		}
 	}
@@ -533,8 +579,10 @@ static void test_raster_iterator() {
 	band = cu_add_band(rast2, PT_32BUI, 1, 110);
 	CU_ASSERT(band != NULL);
 
-	for (y = 0; y < maxY; y++) {
-		for (x = 0; x < maxX; x++) {
+	for (y = 0; y < maxY; y++)
+	{
+		for (x = 0; x < maxX; x++)
+		{
 			rt_band_set_pixel(band, x, y, (x + (y * maxX)) + 100, NULL);
 		}
 	}
@@ -565,16 +613,16 @@ static void test_raster_iterator() {
 	userargs->columns = 1;
 
 	noerr = rt_raster_iterator(
-		itrset, 1,
-		ET_INTERSECTION, NULL,
-		PT_32BUI,
-		1, 0,
-		0, 0,
-		NULL,
-		userargs,
-		testRasterIterator1_callback,
-		&rtn
-	);
+	            itrset, 1,
+	            ET_INTERSECTION, NULL,
+	            PT_32BUI,
+	            1, 0,
+	            0, 0,
+	            NULL,
+	            userargs,
+	            testRasterIterator1_callback,
+	            &rtn
+	        );
 	CU_ASSERT_EQUAL(noerr, ES_NONE);
 	CU_ASSERT_EQUAL(rt_raster_get_width(rtn), 5);
 	CU_ASSERT_EQUAL(rt_raster_get_height(rtn), 5);
@@ -595,16 +643,16 @@ static void test_raster_iterator() {
 	userargs->columns = 1;
 
 	noerr = rt_raster_iterator(
-		itrset, 1,
-		ET_UNION, NULL,
-		PT_32BUI,
-		1, 0,
-		0, 0,
-		NULL,
-		userargs,
-		testRasterIterator1_callback,
-		&rtn
-	);
+	            itrset, 1,
+	            ET_UNION, NULL,
+	            PT_32BUI,
+	            1, 0,
+	            0, 0,
+	            NULL,
+	            userargs,
+	            testRasterIterator1_callback,
+	            &rtn
+	        );
 	CU_ASSERT_EQUAL(noerr, ES_NONE);
 	CU_ASSERT_EQUAL(rt_raster_get_width(rtn), 5);
 	CU_ASSERT_EQUAL(rt_raster_get_height(rtn), 5);
@@ -625,16 +673,16 @@ static void test_raster_iterator() {
 	userargs->columns = 1;
 
 	noerr = rt_raster_iterator(
-		itrset, 2,
-		ET_UNION, NULL,
-		PT_32BUI,
-		1, 0,
-		0, 0,
-		NULL,
-		userargs,
-		testRasterIterator2_callback,
-		&rtn
-	);
+	            itrset, 2,
+	            ET_UNION, NULL,
+	            PT_32BUI,
+	            1, 0,
+	            0, 0,
+	            NULL,
+	            userargs,
+	            testRasterIterator2_callback,
+	            &rtn
+	        );
 	CU_ASSERT_EQUAL(noerr, ES_NONE);
 	CU_ASSERT_EQUAL(rt_raster_get_width(rtn), 6);
 	CU_ASSERT_EQUAL(rt_raster_get_height(rtn), 6);
@@ -651,16 +699,16 @@ static void test_raster_iterator() {
 
 	/* 2 raster, 0 distance, INTERSECTION */
 	noerr = rt_raster_iterator(
-		itrset, 2,
-		ET_INTERSECTION, NULL,
-		PT_32BUI,
-		1, 0,
-		0, 0,
-		NULL,
-		userargs,
-		testRasterIterator3_callback,
-		&rtn
-	);
+	            itrset, 2,
+	            ET_INTERSECTION, NULL,
+	            PT_32BUI,
+	            1, 0,
+	            0, 0,
+	            NULL,
+	            userargs,
+	            testRasterIterator3_callback,
+	            &rtn
+	        );
 	CU_ASSERT_EQUAL(noerr, ES_NONE);
 	CU_ASSERT_EQUAL(rt_raster_get_width(rtn), 4);
 	CU_ASSERT_EQUAL(rt_raster_get_height(rtn), 4);
@@ -677,16 +725,16 @@ static void test_raster_iterator() {
 
 	/* 2 raster, 0 distance, FIRST */
 	noerr = rt_raster_iterator(
-		itrset, 2,
-		ET_FIRST, NULL,
-		PT_32BUI,
-		1, 0,
-		0, 0,
-		NULL,
-		userargs,
-		testRasterIterator4_callback,
-		&rtn
-	);
+	            itrset, 2,
+	            ET_FIRST, NULL,
+	            PT_32BUI,
+	            1, 0,
+	            0, 0,
+	            NULL,
+	            userargs,
+	            testRasterIterator4_callback,
+	            &rtn
+	        );
 	CU_ASSERT_EQUAL(noerr, ES_NONE);
 	CU_ASSERT_EQUAL(rt_raster_get_width(rtn), 5);
 	CU_ASSERT_EQUAL(rt_raster_get_height(rtn), 5);
@@ -703,16 +751,16 @@ static void test_raster_iterator() {
 
 	/* 2 raster, 0 distance, LAST or SECOND */
 	noerr = rt_raster_iterator(
-		itrset, 2,
-		ET_LAST, NULL,
-		PT_32BUI,
-		1, 0,
-		0, 0,
-		NULL,
-		userargs,
-		testRasterIterator5_callback,
-		&rtn
-	);
+	            itrset, 2,
+	            ET_LAST, NULL,
+	            PT_32BUI,
+	            1, 0,
+	            0, 0,
+	            NULL,
+	            userargs,
+	            testRasterIterator5_callback,
+	            &rtn
+	        );
 	CU_ASSERT_EQUAL(noerr, ES_NONE);
 	CU_ASSERT_EQUAL(rt_raster_get_width(rtn), 5);
 	CU_ASSERT_EQUAL(rt_raster_get_height(rtn), 5);
@@ -729,16 +777,16 @@ static void test_raster_iterator() {
 
 	/* 2 raster, 0 distance, CUSTOM */
 	noerr = rt_raster_iterator(
-		itrset, 2,
-		ET_CUSTOM, rast3,
-		PT_32BUI,
-		1, 0,
-		0, 0,
-		NULL,
-		userargs,
-		testRasterIterator6_callback,
-		&rtn
-	);
+	            itrset, 2,
+	            ET_CUSTOM, rast3,
+	            PT_32BUI,
+	            1, 0,
+	            0, 0,
+	            NULL,
+	            userargs,
+	            testRasterIterator6_callback,
+	            &rtn
+	        );
 	CU_ASSERT_EQUAL(noerr, ES_NONE);
 	CU_ASSERT_EQUAL(rt_raster_get_width(rtn), 2);
 	CU_ASSERT_EQUAL(rt_raster_get_height(rtn), 2);
@@ -759,16 +807,16 @@ static void test_raster_iterator() {
 	userargs->columns = 3;
 
 	noerr = rt_raster_iterator(
-		itrset, 2,
-		ET_CUSTOM, rast3,
-		PT_32BUI,
-		1, 0,
-		1, 1,
-		NULL,
-		userargs,
-		testRasterIterator7_callback,
-		&rtn
-	);
+	            itrset, 2,
+	            ET_CUSTOM, rast3,
+	            PT_32BUI,
+	            1, 0,
+	            1, 1,
+	            NULL,
+	            userargs,
+	            testRasterIterator7_callback,
+	            &rtn
+	        );
 	CU_ASSERT_EQUAL(noerr, ES_NONE);
 	CU_ASSERT_EQUAL(rt_raster_get_width(rtn), 2);
 	CU_ASSERT_EQUAL(rt_raster_get_height(rtn), 2);
@@ -793,7 +841,8 @@ static void test_raster_iterator() {
 	if (rtn != NULL) cu_free_raster(rtn);
 }
 
-static void test_band_reclass() {
+static void test_band_reclass()
+{
 	rt_reclassexpr *exprset;
 
 	rt_raster raster;
@@ -813,8 +862,10 @@ static void test_band_reclass() {
 	CU_ASSERT(band != NULL);
 	rt_band_set_nodata(band, 0, NULL);
 
-	for (x = 0; x < 100; x++) {
-		for (y = 0; y < 10; y++) {
+	for (x = 0; x < 100; x++)
+	{
+		for (y = 0; y < 10; y++)
+		{
 			rtn = rt_band_set_pixel(band, x, y, x * y + (x + y), NULL);
 		}
 	}
@@ -825,11 +876,13 @@ static void test_band_reclass() {
 	exprset = rtalloc(cnt * sizeof(rt_reclassexpr));
 	CU_ASSERT(exprset != NULL);
 
-	for (i = 0; i < cnt; i++) {
+	for (i = 0; i < cnt; i++)
+	{
 		exprset[i] = rtalloc(sizeof(struct rt_reclassexpr_t));
 		CU_ASSERT(exprset[i] != NULL);
 
-		if (i == 0) {
+		if (i == 0)
+		{
 			/* nodata */
 			exprset[i]->src.min = 0;
 			exprset[i]->src.inc_min = 0;
@@ -842,7 +895,8 @@ static void test_band_reclass() {
 			exprset[i]->dst.min = 0;
 			exprset[i]->dst.max = 0;
 		}
-		else {
+		else
+		{
 			/* range */
 			exprset[i]->src.min = 0;
 			exprset[i]->src.inc_min = 0;
@@ -861,15 +915,15 @@ static void test_band_reclass() {
 	CU_ASSERT(newband != NULL);
 
 	rtn = rt_band_get_pixel(newband, 0, 0, &val, NULL);
- 	CU_ASSERT_EQUAL(rtn, ES_NONE);
+	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_DOUBLE_EQUAL(val, 0, DBL_EPSILON);
 
 	rtn = rt_band_get_pixel(newband, 49, 5, &val, NULL);
- 	CU_ASSERT_EQUAL(rtn, ES_NONE);
+	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_DOUBLE_EQUAL(val, 77, DBL_EPSILON);
 
 	rtn = rt_band_get_pixel(newband, 99, 9, &val, NULL);
- 	CU_ASSERT_EQUAL(rtn, ES_NONE);
+	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_DOUBLE_EQUAL(val, 255, DBL_EPSILON);
 
 	for (i = cnt - 1; i >= 0; i--) rtdealloc(exprset[i]);
@@ -879,7 +933,8 @@ static void test_band_reclass() {
 	rt_band_destroy(newband);
 }
 
-static void test_raster_colormap() {
+static void test_raster_colormap()
+{
 	rt_raster raster;
 	rt_raster rtn;
 	rt_band band;
@@ -895,8 +950,10 @@ static void test_raster_colormap() {
 	CU_ASSERT(band != NULL);
 	rt_band_set_nodata(band, 0, NULL);
 
-	for (y = 0; y < 9; y++) {
-		for (x = 0; x < 9; x++) {
+	for (y = 0; y < 9; y++)
+	{
+		for (x = 0; x < 9; x++)
+		{
 			rt_band_set_pixel(band, x, y, x, NULL);
 		}
 	}
@@ -933,9 +990,9 @@ static void test_raster_colormap() {
 	colormap->method = CM_INTERPOLATE;
 
 	rtn = rt_raster_colormap(
-		raster, 0,
-		colormap
-	);
+	          raster, 0,
+	          colormap
+	      );
 	CU_ASSERT(rtn != NULL);
 	CU_ASSERT_EQUAL(rt_raster_get_num_bands(rtn), colormap->ncolor);
 
@@ -954,9 +1011,9 @@ static void test_raster_colormap() {
 	colormap->ncolor = 4;
 
 	rtn = rt_raster_colormap(
-		raster, 0,
-		colormap
-	);
+	          raster, 0,
+	          colormap
+	      );
 	CU_ASSERT(rtn != NULL);
 	CU_ASSERT_EQUAL(rt_raster_get_num_bands(rtn), colormap->ncolor);
 	cu_free_raster(rtn);
@@ -965,9 +1022,9 @@ static void test_raster_colormap() {
 	colormap->method = CM_EXACT;
 
 	rtn = rt_raster_colormap(
-		raster, 0,
-		colormap
-	);
+	          raster, 0,
+	          colormap
+	      );
 	CU_ASSERT(rtn != NULL);
 	CU_ASSERT_EQUAL(rt_raster_get_num_bands(rtn), colormap->ncolor);
 
@@ -990,9 +1047,9 @@ static void test_raster_colormap() {
 	colormap->method = CM_NEAREST;
 
 	rtn = rt_raster_colormap(
-		raster, 0,
-		colormap
-	);
+	          raster, 0,
+	          colormap
+	      );
 	CU_ASSERT(rtn != NULL);
 	CU_ASSERT_EQUAL(rt_raster_get_num_bands(rtn), colormap->ncolor);
 
@@ -1020,9 +1077,9 @@ static void test_raster_colormap() {
 	colormap->method = CM_NEAREST;
 
 	rtn = rt_raster_colormap(
-		raster, 0,
-		colormap
-	);
+	          raster, 0,
+	          colormap
+	      );
 	CU_ASSERT(rtn != NULL);
 	CU_ASSERT_EQUAL(rt_raster_get_num_bands(rtn), colormap->ncolor);
 
@@ -1057,8 +1114,10 @@ static void test_raster_colormap() {
 	CU_ASSERT(band != NULL);
 	rt_band_set_nodata(band, 0, NULL);
 
-	for (y = 0; y < 10; y++) {
-		for (x = 0; x < 10; x++) {
+	for (y = 0; y < 10; y++)
+	{
+		for (x = 0; x < 10; x++)
+		{
 			rt_band_set_pixel(band, x, y, (x * y) + x, NULL);
 		}
 	}
@@ -1144,9 +1203,9 @@ static void test_raster_colormap() {
 	colormap->method = CM_INTERPOLATE;
 
 	rtn = rt_raster_colormap(
-		raster, 0,
-		colormap
-	);
+	          raster, 0,
+	          colormap
+	      );
 	CU_ASSERT(rtn != NULL);
 	CU_ASSERT_EQUAL(rt_raster_get_num_bands(rtn), colormap->ncolor);
 

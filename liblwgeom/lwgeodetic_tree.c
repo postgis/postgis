@@ -380,7 +380,8 @@ circ_tree_new(const POINTARRAY* pa)
 	}
 
 	/* Special case: only zero-length edges. Make a point node. */
-	if ( j == 0 ) {
+	if ( j == 0 )
+	{
 		lwfree(nodes);
 		return circ_node_leaf_point_new(pa);
 	}
@@ -606,7 +607,8 @@ circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, const SPHEROID
 * Internal node sorting routine to make distance calculations faster?
 */
 
-struct sort_node {
+struct sort_node
+{
 	CIRC_NODE *node;
 	double d;
 };
@@ -654,10 +656,10 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 	uint32_t i;
 
 	LWDEBUGF(4, "entered, min_dist=%.8g max_dist=%.8g, type1=%d, type2=%d", *min_dist, *max_dist, n1->geom_type, n2->geom_type);
-/*
-	circ_tree_print(n1, 0);
-	circ_tree_print(n2, 0);
-*/
+	/*
+		circ_tree_print(n1, 0);
+		circ_tree_print(n2, 0);
+	*/
 
 	/* Short circuit if we've already hit the minimum */
 	if( *min_dist < threshold || *min_dist == 0.0 )
@@ -726,7 +728,8 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 			{
 				geographic_point_init(n1->p1->x, n1->p1->y, &gp1);
 				geographic_point_init(n2->p1->x, n2->p1->y, &gp2);
-				close1 = gp1; close2 = gp2;
+				close1 = gp1;
+				close2 = gp2;
 				d = sphere_distance(&gp1, &gp2);
 			}
 			/* Node 1 is a point */
@@ -845,38 +848,38 @@ void circ_tree_print(const CIRC_NODE* node, int depth)
 	if (circ_node_is_leaf(node))
 	{
 		printf("%*s[%d] C(%.5g %.5g) R(%.5g) ((%.5g %.5g),(%.5g,%.5g))",
-		  3*depth + 6, "NODE", node->edge_num,
-		  node->center.lon, node->center.lat,
-		  node->radius,
-		  node->p1->x, node->p1->y,
-		  node->p2->x, node->p2->y
-		);
-  		if ( node->geom_type )
-  		{
-  			printf(" %s", lwtype_name(node->geom_type));
-  		}
-  		if ( node->geom_type == POLYGONTYPE )
-  		{
-  			printf(" O(%.5g %.5g)", node->pt_outside.x, node->pt_outside.y);
-  		}
-  		printf("\n");
+		       3*depth + 6, "NODE", node->edge_num,
+		       node->center.lon, node->center.lat,
+		       node->radius,
+		       node->p1->x, node->p1->y,
+		       node->p2->x, node->p2->y
+		      );
+		if ( node->geom_type )
+		{
+			printf(" %s", lwtype_name(node->geom_type));
+		}
+		if ( node->geom_type == POLYGONTYPE )
+		{
+			printf(" O(%.5g %.5g)", node->pt_outside.x, node->pt_outside.y);
+		}
+		printf("\n");
 
 	}
 	else
 	{
 		printf("%*s C(%.5g %.5g) R(%.5g)",
-		  3*depth + 6, "NODE",
-		  node->center.lon, node->center.lat,
-		  node->radius
-		);
+		       3*depth + 6, "NODE",
+		       node->center.lon, node->center.lat,
+		       node->radius
+		      );
 		if ( node->geom_type )
 		{
 			printf(" %s", lwtype_name(node->geom_type));
 		}
-  		if ( node->geom_type == POLYGONTYPE )
-  		{
-  			printf(" O(%.5g %.5g)", node->pt_outside.x, node->pt_outside.y);
-  		}
+		if ( node->geom_type == POLYGONTYPE )
+		{
+			printf(" O(%.5g %.5g)", node->pt_outside.x, node->pt_outside.y);
+		}
 		printf("\n");
 	}
 	for ( i = 0; i < node->num_nodes; i++ )
@@ -980,20 +983,20 @@ lwgeom_calculate_circ_tree(const LWGEOM* lwgeom)
 
 	switch ( lwgeom->type )
 	{
-		case POINTTYPE:
-			return lwpoint_calculate_circ_tree((LWPOINT*)lwgeom);
-		case LINETYPE:
-			return lwline_calculate_circ_tree((LWLINE*)lwgeom);
-		case POLYGONTYPE:
-			return lwpoly_calculate_circ_tree((LWPOLY*)lwgeom);
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COLLECTIONTYPE:
-			return lwcollection_calculate_circ_tree((LWCOLLECTION*)lwgeom);
-		default:
-			lwerror("Unable to calculate spherical index tree for type %s", lwtype_name(lwgeom->type));
-			return NULL;
+	case POINTTYPE:
+		return lwpoint_calculate_circ_tree((LWPOINT*)lwgeom);
+	case LINETYPE:
+		return lwline_calculate_circ_tree((LWLINE*)lwgeom);
+	case POLYGONTYPE:
+		return lwpoly_calculate_circ_tree((LWPOLY*)lwgeom);
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COLLECTIONTYPE:
+		return lwcollection_calculate_circ_tree((LWCOLLECTION*)lwgeom);
+	default:
+		lwerror("Unable to calculate spherical index tree for type %s", lwtype_name(lwgeom->type));
+		return NULL;
 	}
 
 }

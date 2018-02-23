@@ -117,12 +117,14 @@ void gbox_from_gidx(GIDX *a, GBOX *gbox, int flags)
 	gbox->ymin = (double)GIDX_GET_MIN(a,1);
 	gbox->ymax = (double)GIDX_GET_MAX(a,1);
 
-	if ( FLAGS_GET_Z(flags) ) {
+	if ( FLAGS_GET_Z(flags) )
+	{
 		gbox->zmin = (double)GIDX_GET_MIN(a,2);
 		gbox->zmax = (double)GIDX_GET_MAX(a,2);
 	}
 
-	if ( FLAGS_GET_M(flags) ) {
+	if ( FLAGS_GET_M(flags) )
+	{
 		gbox->mmin = (double)GIDX_GET_MIN(a,3);
 		gbox->mmax = (double)GIDX_GET_MAX(a,3);
 	}

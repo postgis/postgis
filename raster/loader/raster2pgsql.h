@@ -69,7 +69,8 @@
 
 #define RCSID "$Id$"
 
-typedef struct raster_loader_config {
+typedef struct raster_loader_config
+{
 	/* raster filename */
 	uint32_t rt_file_count;
 	char **rt_file;
@@ -161,7 +162,8 @@ typedef struct raster_loader_config {
 
 } RTLOADERCFG;
 
-typedef struct rasterinfo_t {
+typedef struct rasterinfo_t
+{
 	/* SRID of raster */
 	int srid;
 
@@ -192,7 +194,8 @@ typedef struct rasterinfo_t {
 
 } RASTERINFO;
 
-typedef struct stringbuffer_t {
+typedef struct stringbuffer_t
+{
 	uint32_t length;
 	char **line;
 } STRINGBUFFER;

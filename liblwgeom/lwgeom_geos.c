@@ -352,9 +352,9 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 		{
 			/* Duplicate point, to make geos-friendly */
 			lwl->points = ptarray_addPoint(lwl->points,
-						       getPoint_internal(lwl->points, 0),
-						       FLAGS_NDIMS(lwl->points->flags),
-						       lwl->points->npoints);
+			                               getPoint_internal(lwl->points, 0),
+			                               FLAGS_NDIMS(lwl->points->flags),
+			                               lwl->points->npoints);
 		}
 		sq = ptarray_to_GEOSCoordSeq(lwl->points, 0);
 		g = GEOSGeom_createLineString(sq);
@@ -909,11 +909,11 @@ findFaceHoles(Face** faces, int nfaces)
 		{
 			const GEOSGeometry* hole = GEOSGetInteriorRingN(f->geom, h);
 			LWDEBUGF(2,
-				 "Looking for hole %d/%d of face %d among %d other faces",
-				 h + 1,
-				 nholes,
-				 i,
-				 nfaces - i - 1);
+			         "Looking for hole %d/%d of face %d among %d other faces",
+			         h + 1,
+			         nholes,
+			         i,
+			         nfaces - i - 1);
 			for (j = i + 1; j < nfaces; ++j)
 			{
 				const GEOSGeometry* f2er;
@@ -971,7 +971,7 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 	/* Null return from GEOSpolygonize (an exception) */
 	if (!geos_result) return 0;
 
-		/* We should now have a collection */
+	/* We should now have a collection */
 #if PARANOIA_LEVEL > 0
 	if (GEOSGeomTypeId(geos_result) != COLLECTIONTYPE)
 	{

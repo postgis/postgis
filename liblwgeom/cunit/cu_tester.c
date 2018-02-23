@@ -91,7 +91,7 @@ PG_SuiteSetup setupfuncs[] =
 #if HAVE_LIBJSON
 	in_geojson_suite_setup,
 #endif
-    iterator_suite_setup,
+	iterator_suite_setup,
 	twkb_in_suite_setup,
 	libgeom_suite_setup,
 	lwstroke_suite_setup,
@@ -269,27 +269,27 @@ int main(int argc, char *argv[])
 static void
 cu_errorreporter(const char *fmt, va_list ap)
 {
-  vsnprintf (cu_error_msg, MAX_CUNIT_MSG_LENGTH, fmt, ap);
-  cu_error_msg[MAX_CUNIT_MSG_LENGTH]='\0';
-  /*fprintf(stderr, "ERROR: %s\n", cu_error_msg);*/
+	vsnprintf (cu_error_msg, MAX_CUNIT_MSG_LENGTH, fmt, ap);
+	cu_error_msg[MAX_CUNIT_MSG_LENGTH]='\0';
+	/*fprintf(stderr, "ERROR: %s\n", cu_error_msg);*/
 }
 
 static void
 cu_noticereporter(const char *fmt, va_list ap)
 {
-  char buf[MAX_CUNIT_MSG_LENGTH+1];
-  vsnprintf (buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
-  buf[MAX_CUNIT_MSG_LENGTH]='\0';
-  fprintf(stderr, "NOTICE: %s\n", buf);
+	char buf[MAX_CUNIT_MSG_LENGTH+1];
+	vsnprintf (buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
+	buf[MAX_CUNIT_MSG_LENGTH]='\0';
+	fprintf(stderr, "NOTICE: %s\n", buf);
 }
 
 static void
 cu_debuglogger(int level, const char *fmt, va_list ap)
 {
-  char buf[MAX_CUNIT_MSG_LENGTH+1];
-  vsnprintf (buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
-  buf[MAX_CUNIT_MSG_LENGTH]='\0';
-  fprintf(stderr, "DEBUG%d: %s\n", level, buf);
+	char buf[MAX_CUNIT_MSG_LENGTH+1];
+	vsnprintf (buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
+	buf[MAX_CUNIT_MSG_LENGTH]='\0';
+	fprintf(stderr, "DEBUG%d: %s\n", level, buf);
 }
 
 void

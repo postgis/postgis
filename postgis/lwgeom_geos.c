@@ -120,8 +120,8 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS)
 static char
 is_poly(const GSERIALIZED* g)
 {
-    int type = gserialized_get_type(g);
-    return type == POLYGONTYPE || type == MULTIPOLYGONTYPE;
+	int type = gserialized_get_type(g);
+	return type == POLYGONTYPE || type == MULTIPOLYGONTYPE;
 }
 
 static char
@@ -141,7 +141,7 @@ pip_short_circuit(RTREE_POLY_CACHE* poly_cache, LWPOINT* point, GSERIALIZED* gpo
 
 	if ( poly_cache && poly_cache->ringIndices )
 	{
-        result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
+		result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
 	}
 	else
 	{
@@ -276,9 +276,9 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 #if POSTGIS_GEOS_VERSION < 37
 
 	lwpgerror("The GEOS version this PostGIS binary "
-					"was compiled against (%d) doesn't support "
-					"'GEOSFechetDistance' function (3.7.0+ required)",
-					POSTGIS_GEOS_VERSION);
+	          "was compiled against (%d) doesn't support "
+	          "'GEOSFechetDistance' function (3.7.0+ required)",
+	          POSTGIS_GEOS_VERSION);
 	PG_RETURN_NULL();
 
 #else /* POSTGIS_GEOS_VERSION >= 37 */
@@ -644,7 +644,8 @@ Datum boundary(PG_FUNCTION_ARGS)
 	srid = gserialized_get_srid(geom1);
 
 	lwgeom = lwgeom_from_gserialized(geom1);
-	if ( ! lwgeom ) {
+	if ( ! lwgeom )
+	{
 		lwpgerror("POSTGIS2GEOS: unable to deserialize input");
 		PG_RETURN_NULL();
 	}
@@ -819,15 +820,15 @@ Datum buffer(PG_FUNCTION_ARGS)
 	int singleside = 0; /* the default */
 	enum
 	{
-	    ENDCAP_ROUND = 1,
-	    ENDCAP_FLAT = 2,
-	    ENDCAP_SQUARE = 3
+		ENDCAP_ROUND = 1,
+		ENDCAP_FLAT = 2,
+		ENDCAP_SQUARE = 3
 	};
 	enum
 	{
-	    JOIN_ROUND = 1,
-	    JOIN_MITRE = 2,
-	    JOIN_BEVEL = 3
+		JOIN_ROUND = 1,
+		JOIN_MITRE = 2,
+		JOIN_BEVEL = 3
 	};
 	static const double DEFAULT_MITRE_LIMIT = 5.0;
 	static const int DEFAULT_ENDCAP_STYLE = ENDCAP_ROUND;
@@ -847,8 +848,8 @@ Datum buffer(PG_FUNCTION_ARGS)
 	if ( gserialized_is_empty(geom1) )
 	{
 		lwg = lwpoly_as_lwgeom(lwpoly_construct_empty(
-		        gserialized_get_srid(geom1),
-		        0, 0)); // buffer wouldn't give back z or m anyway
+		                           gserialized_get_srid(geom1),
+		                           0, 0)); // buffer wouldn't give back z or m anyway
 		PG_RETURN_POINTER(geometry_serialize(lwg));
 	}
 
@@ -879,7 +880,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 			if (!val || *(val + 1) == '\0')
 			{
 				lwpgerror("Missing value for buffer "
-				        "parameter %s", key);
+				          "parameter %s", key);
 				break;
 			}
 			*val = '\0';
@@ -908,10 +909,10 @@ Datum buffer(PG_FUNCTION_ARGS)
 				else
 				{
 					lwpgerror("Invalid buffer end cap "
-					        "style: %s (accept: "
-					        "'round', 'flat', 'butt' "
-					        "or 'square'"
-					        ")", val);
+					          "style: %s (accept: "
+					          "'round', 'flat', 'butt' "
+					          "or 'square'"
+					          ")", val);
 					break;
 				}
 
@@ -934,10 +935,10 @@ Datum buffer(PG_FUNCTION_ARGS)
 				else
 				{
 					lwpgerror("Invalid buffer end cap "
-					        "style: %s (accept: "
-					        "'round', 'mitre', 'miter' "
-					        " or 'bevel'"
-					        ")", val);
+					          "style: %s (accept: "
+					          "'round', 'mitre', 'miter' "
+					          " or 'bevel'"
+					          ")", val);
 					break;
 				}
 			}
@@ -953,7 +954,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 				quadsegs = atoi(val);
 			}
 			else if ( !strcmp(key, "side") ||
-					  !strcmp(key, "side") )
+			          !strcmp(key, "side") )
 			{
 				if ( !strcmp(val, "both") )
 				{
@@ -971,18 +972,18 @@ Datum buffer(PG_FUNCTION_ARGS)
 				else
 				{
 					lwpgerror("Invalid side "
-					        "parameter: %s (accept: "
-					        "'right', 'left', 'both' "
-					        ")", val);
+					          "parameter: %s (accept: "
+					          "'right', 'left', 'both' "
+					          ")", val);
 					break;
 				}
 			}
 			else
 			{
 				lwpgerror("Invalid buffer parameter: %s (accept: "
-				        "'endcap', 'join', 'mitre_limit', "
-				        "'miter_limit', 'quad_segs' and "
-				        "'side')", key);
+				          "'endcap', 'join', 'mitre_limit', "
+				          "'miter_limit', 'quad_segs' and "
+				          "'side')", key);
 				break;
 			}
 		}
@@ -998,10 +999,10 @@ Datum buffer(PG_FUNCTION_ARGS)
 	if (bufferparams)
 	{
 		if (GEOSBufferParams_setEndCapStyle(bufferparams, endCapStyle) &&
-			GEOSBufferParams_setJoinStyle(bufferparams, joinStyle) &&
-			GEOSBufferParams_setMitreLimit(bufferparams, mitreLimit) &&
-			GEOSBufferParams_setQuadrantSegments(bufferparams, quadsegs) &&
-			GEOSBufferParams_setSingleSided(bufferparams, singleside))
+		        GEOSBufferParams_setJoinStyle(bufferparams, joinStyle) &&
+		        GEOSBufferParams_setMitreLimit(bufferparams, mitreLimit) &&
+		        GEOSBufferParams_setQuadrantSegments(bufferparams, quadsegs) &&
+		        GEOSBufferParams_setSingleSided(bufferparams, singleside))
 		{
 			g3 = GEOSBufferWithParams(g1, bufferparams, size);
 		}
@@ -1180,7 +1181,7 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 				else
 				{
 					lwpgerror("Invalid buffer end cap style: %s (accept: "
-					        "'round', 'mitre', 'miter' or 'bevel')", val);
+					          "'round', 'mitre', 'miter' or 'bevel')", val);
 					break;
 				}
 			}
@@ -1198,8 +1199,8 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 			else
 			{
 				lwpgerror("Invalid buffer parameter: %s (accept: "
-				        "'join', 'mitre_limit', 'miter_limit and "
-				        "'quad_segs')", key);
+				          "'join', 'mitre_limit', 'miter_limit and "
+				          "'quad_segs')", key);
 				break;
 			}
 		}
@@ -1370,7 +1371,8 @@ Datum centroid(PG_FUNCTION_ARGS)
 	type = gserialized_get_type(geom) ;
 	/* Converting curve geometry to linestring if necessary*/
 	if(type == CIRCSTRINGTYPE || type == COMPOUNDTYPE )
-	{/* curve geometry?*/
+	{
+		/* curve geometry?*/
 		igeom = lwgeom_from_gserialized(geom);
 		PG_FREE_IF_COPY(geom, 0); /*free memory, we already have a lwgeom geometry copy*/
 		linear_geom = lwgeom_stroke(igeom, perQuad);
@@ -1422,9 +1424,9 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 #if POSTGIS_GEOS_VERSION < 35
 
 	lwpgerror("The GEOS version this PostGIS binary "
-					"was compiled against (%d) doesn't support "
-					"'GEOSClipByRect' function (3.5.0+ required)",
-					POSTGIS_GEOS_VERSION);
+	          "was compiled against (%d) doesn't support "
+	          "'GEOSClipByRect' function (3.5.0+ required)",
+	          POSTGIS_GEOS_VERSION);
 	PG_RETURN_NULL();
 
 #else /* POSTGIS_GEOS_VERSION >= 35 */
@@ -2473,7 +2475,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-			gserialized_get_gbox_p(geom2, &box2) )
+	        gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
@@ -2711,7 +2713,7 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 	 * we can return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	     gserialized_get_gbox_p(geom2, &box2) )
+	        gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( gbox_same_2d_float(&box1, &box2) == LW_FALSE )
 		{
@@ -2723,8 +2725,9 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 	 * short-circuit: if geom1 and geom2 are binary-equivalent, we can return
 	 * TRUE.  This is much faster than doing the comparison using GEOS.
 	 */
-	if (VARSIZE(geom1) == VARSIZE(geom2) && !memcmp(geom1, geom2, VARSIZE(geom1))) {
-	    PG_RETURN_BOOL(true);
+	if (VARSIZE(geom1) == VARSIZE(geom2) && !memcmp(geom1, geom2, VARSIZE(geom1)))
+	{
+		PG_RETURN_BOOL(true);
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -2775,7 +2778,8 @@ Datum issimple(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom_in) ;
 	PG_FREE_IF_COPY(geom, 0);
 
-	if (result == -1) {
+	if (result == -1)
+	{
 		PG_RETURN_NULL(); /*never get here */
 	}
 
@@ -2869,11 +2873,12 @@ POSTGIS2GEOS(GSERIALIZED *pglwgeom)
 	return ret;
 }
 
-uint32_t array_nelems_not_null(ArrayType* array) {
-    ArrayIterator iterator;
-    Datum value;
-    bool isnull;
-    uint32_t nelems_not_null = 0;
+uint32_t array_nelems_not_null(ArrayType* array)
+{
+	ArrayIterator iterator;
+	Datum value;
+	bool isnull;
+	uint32_t nelems_not_null = 0;
 
 #if POSTGIS_PGSQL_VERSION >= 95
 	iterator = array_create_iterator(array, 0, NULL);
@@ -2882,41 +2887,41 @@ uint32_t array_nelems_not_null(ArrayType* array) {
 #endif
 	while(array_iterate(iterator, &value, &isnull) )
 	{
-        if (!isnull)
-        {
-            nelems_not_null++;
-        }
-    }
-    array_free_iterator(iterator);
+		if (!isnull)
+		{
+			nelems_not_null++;
+		}
+	}
+	array_free_iterator(iterator);
 
-    return nelems_not_null;
+	return nelems_not_null;
 }
 
 /* ARRAY2LWGEOM: Converts the non-null elements of a Postgres array into a LWGEOM* array */
 LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems,  int* is3d, int* srid)
 {
-    ArrayIterator iterator;
-    Datum value;
-    bool isnull;
-    bool gotsrid = false;
-    uint32_t i = 0;
+	ArrayIterator iterator;
+	Datum value;
+	bool isnull;
+	bool gotsrid = false;
+	uint32_t i = 0;
 
 	LWGEOM** lw_geoms = palloc(nelems * sizeof(LWGEOM*));
 
 #if POSTGIS_PGSQL_VERSION >= 95
-    iterator = array_create_iterator(array, 0, NULL);
+	iterator = array_create_iterator(array, 0, NULL);
 #else
-    iterator = array_create_iterator(array, 0);
+	iterator = array_create_iterator(array, 0);
 #endif
 
 	while(array_iterate(iterator, &value, &isnull))
 	{
 		GSERIALIZED *geom = (GSERIALIZED*) DatumGetPointer(value);
 
-        if (isnull)
-        {
-            continue;
-        }
+		if (isnull)
+		{
+			continue;
+		}
 
 		*is3d = *is3d || gserialized_has_z(geom);
 
@@ -2928,12 +2933,12 @@ LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems,  int* is3d, int* srid)
 		}
 		if (!gotsrid)
 		{
-            gotsrid = true;
+			gotsrid = true;
 			*srid = gserialized_get_srid(geom);
 		}
 		else if (*srid != gserialized_get_srid(geom))
 		{
-            error_if_srid_mismatch(*srid, gserialized_get_srid(geom));
+			error_if_srid_mismatch(*srid, gserialized_get_srid(geom));
 			return NULL;
 		}
 
@@ -2946,38 +2951,39 @@ LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems,  int* is3d, int* srid)
 /* ARRAY2GEOS: Converts the non-null elements of a Postgres array into a GEOSGeometry* array */
 GEOSGeometry** ARRAY2GEOS(ArrayType* array, uint32_t nelems, int* is3d, int* srid)
 {
-    ArrayIterator iterator;
-    Datum value;
-    bool isnull;
-    bool gotsrid = false;
-    uint32_t i = 0;
+	ArrayIterator iterator;
+	Datum value;
+	bool isnull;
+	bool gotsrid = false;
+	uint32_t i = 0;
 
 	GEOSGeometry** geos_geoms = palloc(nelems * sizeof(GEOSGeometry*));
 
 #if POSTGIS_PGSQL_VERSION >= 95
-    iterator = array_create_iterator(array, 0, NULL);
+	iterator = array_create_iterator(array, 0, NULL);
 #else
-    iterator = array_create_iterator(array, 0);
+	iterator = array_create_iterator(array, 0);
 #endif
 
-    while(array_iterate(iterator, &value, &isnull))
+	while(array_iterate(iterator, &value, &isnull))
 	{
-        GSERIALIZED *geom = (GSERIALIZED*) DatumGetPointer(value);
+		GSERIALIZED *geom = (GSERIALIZED*) DatumGetPointer(value);
 
-        if (isnull)
-        {
-            continue;
-        }
+		if (isnull)
+		{
+			continue;
+		}
 
 		*is3d = *is3d || gserialized_has_z(geom);
 
 		geos_geoms[i] = POSTGIS2GEOS(geom);
 		if (!geos_geoms[i])
 		{
-            uint32_t j;
-            lwpgerror("Geometry could not be converted to GEOS");
+			uint32_t j;
+			lwpgerror("Geometry could not be converted to GEOS");
 
-			for (j = 0; j < i; j++) {
+			for (j = 0; j < i; j++)
+			{
 				GEOSGeom_destroy(geos_geoms[j]);
 			}
 			return NULL;
@@ -2986,23 +2992,24 @@ GEOSGeometry** ARRAY2GEOS(ArrayType* array, uint32_t nelems, int* is3d, int* sri
 		if (!gotsrid)
 		{
 			*srid = gserialized_get_srid(geom);
-            gotsrid = true;
+			gotsrid = true;
 		}
 		else if (*srid != gserialized_get_srid(geom))
 		{
-            uint32_t j;
-            error_if_srid_mismatch(*srid, gserialized_get_srid(geom));
+			uint32_t j;
+			error_if_srid_mismatch(*srid, gserialized_get_srid(geom));
 
-            for (j = 0; j <= i; j++) {
+			for (j = 0; j <= i; j++)
+			{
 				GEOSGeom_destroy(geos_geoms[j]);
 			}
 			return NULL;
 		}
 
-        i++;
+		i++;
 	}
 
-    array_free_iterator(iterator);
+	array_free_iterator(iterator);
 	return geos_geoms;
 }
 
@@ -3101,17 +3108,17 @@ Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 	char elmalign;
 
 	/* Null array, null geometry (should be empty?) */
-    if (PG_ARGISNULL(0))
-        PG_RETURN_NULL();
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
 
 	array = PG_GETARG_ARRAYTYPE_P(0);
-    nelems = array_nelems_not_null(array);
+	nelems = array_nelems_not_null(array);
 
 	POSTGIS_DEBUGF(3, "clusterintersecting_garray: number of non-null elements: %d", nelems);
 
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
-    /* TODO short-circuit for one element? */
+	/* TODO short-circuit for one element? */
 
 	/* Ok, we really need geos now ;) */
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -3187,7 +3194,7 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
-    /* TODO short-circuit for one element? */
+	/* TODO short-circuit for one element? */
 
 	/* Ok, we really need geos now ;) */
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -3504,9 +3511,9 @@ Datum ST_Voronoi(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 35
 	lwpgerror("The GEOS version this PostGIS binary "
-	        "was compiled against (%d) doesn't support "
-	        "'ST_Voronoi' function (3.5.0+ required)",
-	        POSTGIS_GEOS_VERSION);
+	          "was compiled against (%d) doesn't support "
+	          "'ST_Voronoi' function (3.5.0+ required)",
+	          POSTGIS_GEOS_VERSION);
 	PG_RETURN_NULL();
 #else /* POSTGIS_GEOS_VERSION >= 35 */
 	GSERIALIZED* input;
@@ -3548,7 +3555,8 @@ Datum ST_Voronoi(PG_FUNCTION_ARGS)
 
 	/* Read our clipping envelope, if applicable. */
 	custom_clip_envelope = !PG_ARGISNULL(1);
-	if (custom_clip_envelope) {
+	if (custom_clip_envelope)
+	{
 		clip = PG_GETARG_GSERIALIZED_P(1);
 		if (!gserialized_get_gbox_p(clip, &clip_envelope))
 		{
@@ -3603,9 +3611,9 @@ Datum ST_MinimumClearance(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 36
 	lwpgerror("The GEOS version this PostGIS binary "
-	        "was compiled against (%d) doesn't support "
-	        "'ST_MinimumClearance' function (3.6.0+ required)",
-	        POSTGIS_GEOS_VERSION);
+	          "was compiled against (%d) doesn't support "
+	          "'ST_MinimumClearance' function (3.6.0+ required)",
+	          POSTGIS_GEOS_VERSION);
 	PG_RETURN_NULL();
 #else /* POSTGIS_GEOS_VERSION >= 36 */
 	GSERIALIZED* input;
@@ -3642,9 +3650,9 @@ Datum ST_MinimumClearanceLine(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 36
 	lwpgerror("The GEOS version this PostGIS binary "
-	        "was compiled against (%d) doesn't support "
-	        "'ST_MinimumClearanceLine' function (3.6.0+ required)",
-	        POSTGIS_GEOS_VERSION);
+	          "was compiled against (%d) doesn't support "
+	          "'ST_MinimumClearanceLine' function (3.6.0+ required)",
+	          POSTGIS_GEOS_VERSION);
 	PG_RETURN_NULL();
 #else /* POSTGIS_GEOS_VERSION >= 36 */
 	GSERIALIZED* input;
@@ -3686,9 +3694,9 @@ Datum ST_OrientedEnvelope(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 36
 	lwpgerror("The GEOS version this PostGIS binary "
-			"was compiled against (%d) doesn't support "
-			"'ST_OrientedEnvelope' function (3.6.0+ required)",
-			POSTGIS_GEOS_VERSION);
+	          "was compiled against (%d) doesn't support "
+	          "'ST_OrientedEnvelope' function (3.6.0+ required)",
+	          POSTGIS_GEOS_VERSION);
 	PG_RETURN_NULL();
 #else
 	GSERIALIZED* input;

@@ -54,13 +54,13 @@ static void buildarea1(void)
 	cu_error_msg_reset();
 
 	gin = lwgeom_from_wkt(
-"MULTILINESTRING((0 0, 10 0, 10 10, 0 10, 0 0),(10 10, 20 10, 20 20, 10 20, 10 10))",
-		LW_PARSER_CHECK_NONE);
+	          "MULTILINESTRING((0 0, 10 0, 10 10, 0 10, 0 0),(10 10, 20 10, 20 20, 10 20, 10 10))",
+	          LW_PARSER_CHECK_NONE);
 	CU_ASSERT( gin != NULL );
 
 	gexp = lwgeom_from_wkt(
-"MULTIPOLYGON(((0 0,0 10,10 10,10 0,0 0)),((10 10,10 20,20 20,20 10,10 10)))",
-		LW_PARSER_CHECK_NONE);
+	           "MULTIPOLYGON(((0 0,0 10,10 10,10 0,0 0)),((10 10,10 20,20 20,20 10,10 10)))",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT( gexp != NULL );
 
 	gout = lwgeom_buildarea(gin);
@@ -86,13 +86,13 @@ static void buildarea2(void)
 	cu_error_msg_reset();
 
 	gin = lwgeom_from_wkt(
-"MULTILINESTRING((0 0, 10 0, 10 10, 0 10, 0 0),(10 10, 20 10, 20 0, 10 0, 10 10))",
-		LW_PARSER_CHECK_NONE);
+	          "MULTILINESTRING((0 0, 10 0, 10 10, 0 10, 0 0),(10 10, 20 10, 20 0, 10 0, 10 10))",
+	          LW_PARSER_CHECK_NONE);
 	CU_ASSERT(gin != NULL);
 
 	gexp = lwgeom_from_wkt(
-"POLYGON((0 0,0 10,10 10,20 10,20 0,10 0,0 0))",
-		LW_PARSER_CHECK_NONE);
+	           "POLYGON((0 0,0 10,10 10,20 10,20 0,10 0,0 0))",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT(gexp != NULL);
 
 	gout = lwgeom_buildarea(gin);
@@ -120,13 +120,13 @@ static void buildarea3(void)
 	cu_error_msg_reset();
 
 	gin = lwgeom_from_wkt(
-"MULTILINESTRING((0 0, 20 0, 20 20, 0 20, 0 0),(2 2, 18 2, 18 18, 2 18, 2 2))",
-		LW_PARSER_CHECK_NONE);
+	          "MULTILINESTRING((0 0, 20 0, 20 20, 0 20, 0 0),(2 2, 18 2, 18 18, 2 18, 2 2))",
+	          LW_PARSER_CHECK_NONE);
 	CU_ASSERT(gin != NULL);
 
 	gexp = lwgeom_from_wkt(
-"POLYGON((0 0,0 20,20 20,20 0,0 0),(2 2,18 2,18 18,2 18,2 2))",
-		LW_PARSER_CHECK_NONE);
+	           "POLYGON((0 0,0 20,20 20,20 0,0 0),(2 2,18 2,18 18,2 18,2 2))",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT(gexp != NULL);
 
 	gout = lwgeom_buildarea(gin);
@@ -156,13 +156,13 @@ static void buildarea4(void)
 	cu_error_msg_reset();
 
 	gin = lwgeom_from_wkt(
-"MULTILINESTRING((0 0, 20 0, 20 20, 0 20, 0 0),(2 2, 18 2, 18 18, 2 18, 2 2),(8 8, 8 12, 12 12, 12 8, 8 8))",
-		LW_PARSER_CHECK_NONE);
+	          "MULTILINESTRING((0 0, 20 0, 20 20, 0 20, 0 0),(2 2, 18 2, 18 18, 2 18, 2 2),(8 8, 8 12, 12 12, 12 8, 8 8))",
+	          LW_PARSER_CHECK_NONE);
 	CU_ASSERT(gin != NULL);
 
 	gexp = lwgeom_from_wkt(
-"MULTIPOLYGON(((0 0,0 20,20 20,20 0,0 0),(2 2,18 2,18 18,2 18,2 2)),((8 8,8 12,12 12,12 8,8 8)))",
-		LW_PARSER_CHECK_NONE);
+	           "MULTIPOLYGON(((0 0,0 20,20 20,20 0,0 0),(2 2,18 2,18 18,2 18,2 2)),((8 8,8 12,12 12,12 8,8 8)))",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT(gexp != NULL);
 
 	gout = lwgeom_buildarea(gin);
@@ -192,13 +192,13 @@ static void buildarea4b(void)
 	cu_error_msg_reset();
 
 	gin = lwgeom_from_wkt(
-"MULTILINESTRING((0 0, 20 0, 20 20, 0 20, 0 0),(2 2, 18 2, 18 18, 2 18, 2 2), (8 8, 8 9, 8 10, 8 11, 8 12, 9 12, 10 12, 11 12, 12 12, 12 11, 12 10, 12 9, 12 8, 11 8, 10 8, 9 8, 8 8))",
-		LW_PARSER_CHECK_NONE);
+	          "MULTILINESTRING((0 0, 20 0, 20 20, 0 20, 0 0),(2 2, 18 2, 18 18, 2 18, 2 2), (8 8, 8 9, 8 10, 8 11, 8 12, 9 12, 10 12, 11 12, 12 12, 12 11, 12 10, 12 9, 12 8, 11 8, 10 8, 9 8, 8 8))",
+	          LW_PARSER_CHECK_NONE);
 	CU_ASSERT(gin != NULL);
 
 	gexp = lwgeom_from_wkt(
-"MULTIPOLYGON(((0 0,0 20,20 20,20 0,0 0),(2 2,18 2,18 18,2 18,2 2)),((8 8,8 9,8 10,8 11,8 12,9 12,10 12,11 12,12 12,12 11,12 10,12 9,12 8,11 8,10 8,9 8,8 8)))",
-		LW_PARSER_CHECK_NONE);
+	           "MULTIPOLYGON(((0 0,0 20,20 20,20 0,0 0),(2 2,18 2,18 18,2 18,2 2)),((8 8,8 9,8 10,8 11,8 12,9 12,10 12,11 12,12 12,12 11,12 10,12 9,12 8,11 8,10 8,9 8,8 8)))",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT(gexp != NULL);
 
 	gout = lwgeom_buildarea(gin);
@@ -228,13 +228,13 @@ static void buildarea5(void)
 	cu_error_msg_reset();
 
 	gin = lwgeom_from_wkt(
-"MULTILINESTRING((0 0, 20 0, 20 20, 0 20, 0 0),(2 2, 18 2, 18 18, 2 18, 2 2),(8 8, 8 12, 12 12, 12 8, 8 8),(10 8, 10 12))",
-		LW_PARSER_CHECK_NONE);
+	          "MULTILINESTRING((0 0, 20 0, 20 20, 0 20, 0 0),(2 2, 18 2, 18 18, 2 18, 2 2),(8 8, 8 12, 12 12, 12 8, 8 8),(10 8, 10 12))",
+	          LW_PARSER_CHECK_NONE);
 	CU_ASSERT(gin != NULL);
 
 	gexp = lwgeom_from_wkt(
-"MULTIPOLYGON(((0 0,0 20,20 20,20 0,0 0),(2 2,18 2,18 18,2 18,2 2)),((8 8,8 12,12 12,12 8,8 8)))",
-		LW_PARSER_CHECK_NONE);
+	           "MULTIPOLYGON(((0 0,0 20,20 20,20 0,0 0),(2 2,18 2,18 18,2 18,2 2)),((8 8,8 12,12 12,12 8,8 8)))",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT(gexp != NULL);
 
 	gout = lwgeom_buildarea(gin);
@@ -264,13 +264,13 @@ static void buildarea6(void)
 	cu_error_msg_reset();
 
 	gin = lwgeom_from_wkt(
-"MULTILINESTRING((0 0, 20 0, 20 20, 0 20, 0 0),(2 2, 18 2, 18 18, 2 18, 2 2),(10 2, 10 18))",
-		LW_PARSER_CHECK_NONE);
+	          "MULTILINESTRING((0 0, 20 0, 20 20, 0 20, 0 0),(2 2, 18 2, 18 18, 2 18, 2 2),(10 2, 10 18))",
+	          LW_PARSER_CHECK_NONE);
 	CU_ASSERT(gin != NULL);
 
 	gexp = lwgeom_from_wkt(
-"POLYGON((0 0,0 20,20 20,20 0,0 0),(2 2,18 2,18 18,2 18,2 2))",
-		LW_PARSER_CHECK_NONE);
+	           "POLYGON((0 0,0 20,20 20,20 0,0 0),(2 2,18 2,18 18,2 18,2 2))",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT(gexp != NULL);
 
 	gout = lwgeom_buildarea(gin);
@@ -302,13 +302,13 @@ static void buildarea7(void)
 	cu_error_msg_reset();
 
 	gin = lwgeom_from_wkt(
-"MULTILINESTRING( (0 0, 70 0, 70 70, 0 70, 0 0), (10 10, 10 60, 40 60, 40 10, 10 10), (20 20, 20 30, 30 30, 30 20, 20 20), (20 30, 30 30, 30 50, 20 50, 20 30), (50 20, 60 20, 60 40, 50 40, 50 20), (50 40, 60 40, 60 60, 50 60, 50 40), (80 0, 110 0, 110 70, 80 70, 80 0), (90 60, 100 60, 100 50, 90 50, 90 60))",
-		LW_PARSER_CHECK_NONE);
+	          "MULTILINESTRING( (0 0, 70 0, 70 70, 0 70, 0 0), (10 10, 10 60, 40 60, 40 10, 10 10), (20 20, 20 30, 30 30, 30 20, 20 20), (20 30, 30 30, 30 50, 20 50, 20 30), (50 20, 60 20, 60 40, 50 40, 50 20), (50 40, 60 40, 60 60, 50 60, 50 40), (80 0, 110 0, 110 70, 80 70, 80 0), (90 60, 100 60, 100 50, 90 50, 90 60))",
+	          LW_PARSER_CHECK_NONE);
 	CU_ASSERT(gin != NULL);
 
 	gexp = lwgeom_from_wkt(
-"MULTIPOLYGON(((80 0,80 70,110 70,110 0,80 0),(90 60,90 50,100 50,100 60,90 60)),((20 20,20 30,20 50,30 50,30 30,30 20,20 20)),((0 0,0 70,70 70,70 0,0 0),(10 10,40 10,40 60,10 60,10 10),(50 20,60 20,60 40,60 60,50 60,50 40,50 20)))",
-		LW_PARSER_CHECK_NONE);
+	           "MULTIPOLYGON(((80 0,80 70,110 70,110 0,80 0),(90 60,90 50,100 50,100 60,90 60)),((20 20,20 30,20 50,30 50,30 30,30 20,20 20)),((0 0,0 70,70 70,70 0,0 0),(10 10,40 10,40 60,10 60,10 10),(50 20,60 20,60 40,60 60,50 60,50 40,50 20)))",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT(gexp != NULL);
 
 	gout = lwgeom_buildarea(gin);

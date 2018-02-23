@@ -40,9 +40,9 @@
 
 char
 *rtpg_strreplace(
-	const char *str,
-	const char *oldstr, const char *newstr,
-	int *count
+    const char *str,
+    const char *oldstr, const char *newstr,
+    int *count
 );
 
 char *

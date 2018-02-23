@@ -28,71 +28,79 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 #define ORDER_DISPLACEMENT 2
 
 /* -- local prototypes -- */
-static void _copy_standard_( STAND_PARAM * , SYMB , int , int  ) ;
-static void _scan_target_( STAND_PARAM * , SYMB , int  ) ;
-static char *_get_standard_( STAND_PARAM * , int , int ) ;
-static char *_get_definition_text_( STAND_PARAM * , int ) ;
+static void _copy_standard_( STAND_PARAM *, SYMB, int, int  ) ;
+static void _scan_target_( STAND_PARAM *, SYMB, int  ) ;
+static char *_get_standard_( STAND_PARAM *, int, int ) ;
+static char *_get_definition_text_( STAND_PARAM *, int ) ;
 
 //#ifndef BUILD_API
 
 /* -- local storage -- */
-static const char *__field_start_tag__[][3] = {
-   { "    <Build>",  "\"", "Building:         " },
-   { "    <Civic>",  "\"", "House Address:    " },
-   { "    <PreDir>", "\"", "Prefix Direction: " },
-   { "    <Qualif>", "\"", "Qualifier:        " },
-   { "    <PreTyp>", "\"", "Prefix Type:      " },
-   { "    <Street>", "\"", "Street Name:      " },
-   { "    <SufTyp>", "\"", "Suffix Type:      " },
-   { "    <SufDir>", "\"", "Suffix Direction: " },
-   { "    <Rural>",  "\"", "Rural Route:      " },
-   { "    <Extra>",  "\"", "Additional Info:  " },
-   { "    <City>",   "\"", "Municipal:        " },
-   { "    <Prov>",   "\"", "Province/State:   " },
-   { "    <Nation>", "\"", "Country:          " },
-   { "    <Postal>", "\"", "Postal/Zip Code:  " },
-   { "    <Box>",    "\"", "Box:              " },
-   { "    <Unit>",   "\"", "Unit:             " }
+static const char *__field_start_tag__[][3] =
+{
+	{ "    <Build>",  "\"", "Building:         " },
+	{ "    <Civic>",  "\"", "House Address:    " },
+	{ "    <PreDir>", "\"", "Prefix Direction: " },
+	{ "    <Qualif>", "\"", "Qualifier:        " },
+	{ "    <PreTyp>", "\"", "Prefix Type:      " },
+	{ "    <Street>", "\"", "Street Name:      " },
+	{ "    <SufTyp>", "\"", "Suffix Type:      " },
+	{ "    <SufDir>", "\"", "Suffix Direction: " },
+	{ "    <Rural>",  "\"", "Rural Route:      " },
+	{ "    <Extra>",  "\"", "Additional Info:  " },
+	{ "    <City>",   "\"", "Municipal:        " },
+	{ "    <Prov>",   "\"", "Province/State:   " },
+	{ "    <Nation>", "\"", "Country:          " },
+	{ "    <Postal>", "\"", "Postal/Zip Code:  " },
+	{ "    <Box>",    "\"", "Box:              " },
+	{ "    <Unit>",   "\"", "Unit:             " }
 } ;
-static const char *__land_field_start_tag__[][3] = {
-   { "<FeatureName>",  "\"", "FeatureName       " },
-   { "<FeatureType>",  "\"", "FeatureType       " },
-   { "<FeatureArea>", "\"", "FeatureArea       " }
+static const char *__land_field_start_tag__[][3] =
+{
+	{ "<FeatureName>",  "\"", "FeatureName       " },
+	{ "<FeatureType>",  "\"", "FeatureType       " },
+	{ "<FeatureArea>", "\"", "FeatureArea       " }
 } ;
-static const char *__land_field_tag_end__[][3] = {
-   { "</FeatureName>\n",  "\",", "\n" },
-   { "</FeatureType>\n",  "\",", "\n" },
-   { "</FeatureArea>\n", "\",", "\n" }
+static const char *__land_field_tag_end__[][3] =
+{
+	{ "</FeatureName>\n",  "\",", "\n" },
+	{ "</FeatureType>\n",  "\",", "\n" },
+	{ "</FeatureArea>\n", "\",", "\n" }
 } ;
-static const char *__field_tag_end__[][3] = {
-   { "</Build>\n",  "\",", "\n" },
-   { "</Civic>\n",  "\",", "\n" },
-   { "</PreDir>\n", "\",", "\n" },
-   { "</Qualif>\n", "\",", "\n" },
-   { "</PreTyp>\n", "\",", "\n" },
-   { "</Street>\n", "\",", "\n" },
-   { "</SufTyp>\n", "\",", "\n" },
-   { "</SufDir>\n", "\",", "\n" },
-   { "</Rural>\n",  "\",", "\n" },
-   { "</Extra>\n",  "\",", "\n" },
-   { "</City>\n",   "\",", "\n" },
-   { "</Prov>\n",   "\",", "\n" },
-   { "</Nation>\n", "\",", "\n" },
-   { "</Postal>\n", "\",", "\n" },
-   { "</Box>\n",    "\",", "\n" },
-   { "</Unit>\n",   "\",", "\n" }
+static const char *__field_tag_end__[][3] =
+{
+	{ "</Build>\n",  "\",", "\n" },
+	{ "</Civic>\n",  "\",", "\n" },
+	{ "</PreDir>\n", "\",", "\n" },
+	{ "</Qualif>\n", "\",", "\n" },
+	{ "</PreTyp>\n", "\",", "\n" },
+	{ "</Street>\n", "\",", "\n" },
+	{ "</SufTyp>\n", "\",", "\n" },
+	{ "</SufDir>\n", "\",", "\n" },
+	{ "</Rural>\n",  "\",", "\n" },
+	{ "</Extra>\n",  "\",", "\n" },
+	{ "</City>\n",   "\",", "\n" },
+	{ "</Prov>\n",   "\",", "\n" },
+	{ "</Nation>\n", "\",", "\n" },
+	{ "</Postal>\n", "\",", "\n" },
+	{ "</Box>\n",    "\",", "\n" },
+	{ "</Unit>\n",   "\",", "\n" }
 } ;
-static const char *__record_start_tag__[ ] = {
-   "   <address>\n" , "\n", "\n"
+static const char *__record_start_tag__[ ] =
+{
+	"   <address>\n", "\n", "\n"
 } ;
-static const char *__landmark_record_start_tag__[ ] = {
-   "   <landmark>\n" , "\n", "\n"
+static const char *__landmark_record_start_tag__[ ] =
+{
+	"   <landmark>\n", "\n", "\n"
 } ;
-static const char *__record_end_tag__[ ] = {
-  "   </address>\n", "\n", "\n"
+static const char *__record_end_tag__[ ] =
+{
+	"   </address>\n", "\n", "\n"
 } ;
-static const char *__landmark_record_end_tag__[ ] = {
-   "   </landmark>\n" , "\n", "\n"
+static const char *__landmark_record_end_tag__[ ] =
+{
+	"   </landmark>\n", "\n", "\n"
 } ;
 
 //#endif
@@ -102,7 +110,7 @@ static SYMB __ord_list__[] = { ORD, FAIL } ;
 /*----------------------------------------------------------------
 export.c (init_output_fields)
 ----------------------------------------------------------------*/
-void init_output_fields( STAND_PARAM *__stand_param__ , int which_fields )
+void init_output_fields( STAND_PARAM *__stand_param__, int which_fields )
 {
 	/* -- called with BOTH to erase both the micro and macro fields
 		called with RIGHT to erase only the macro fields, and
@@ -160,7 +168,7 @@ int sym_to_field( SYMB sym )
 export.c (_get_definition_text_)
 -- called by export.c (_get_standard_)
 ---------------------------------------------------*/
-static char *_get_definition_text_( STAND_PARAM *__stand_param__ , int lex_pos )
+static char *_get_definition_text_( STAND_PARAM *__stand_param__, int lex_pos )
 {
 	DEF *__best_DEF__ = __stand_param__->best_defs[lex_pos] ;
 	if (!( __best_DEF__->Protect ))
@@ -179,16 +187,16 @@ void stuff_fields( STAND_PARAM *__stand_param__ )
 	int fld ;
 	/*-- Translate the symbols and definitions of the standardization into
 		the __standard_fields__ for output --*/
-	for (fld = 0 ;fld < NEEDHEAD ;fld++)
+	for (fld = 0 ; fld < NEEDHEAD ; fld++)
 	{
 		/*-- Fields that correspond one to one with the symbols --*/
-		_scan_target_(__stand_param__ ,fld,fld) ;
+		_scan_target_(__stand_param__,fld,fld) ;
 	}
 	/*-- These two fields have two tokens for each field --*/
-	_scan_target_( __stand_param__ , BOXH, NEEDHEAD ) ;
-	_scan_target_( __stand_param__ , BOXT, NEEDHEAD ) ;
-	_scan_target_( __stand_param__ , UNITH, NEEDHEAD+1 ) ;
-	_scan_target_( __stand_param__ , UNITT, NEEDHEAD+1 ) ;
+	_scan_target_( __stand_param__, BOXH, NEEDHEAD ) ;
+	_scan_target_( __stand_param__, BOXT, NEEDHEAD ) ;
+	_scan_target_( __stand_param__, UNITH, NEEDHEAD+1 ) ;
+	_scan_target_( __stand_param__, UNITT, NEEDHEAD+1 ) ;
 }
 
 //#ifndef BUILD_API
@@ -199,7 +207,7 @@ uses BLANK_STRING
 2009-09-27 modify to display landmark fields
 ----------------------------------------------------------------------*/
 #define STREAM_BUF_SIZE MAXSTRLEN
-void send_fields_to_stream( char **__standard_fields__ , FILE *__dest_file__ , int opt , int is_landmark)
+void send_fields_to_stream( char **__standard_fields__, FILE *__dest_file__, int opt, int is_landmark)
 {
 	int output_order ;
 	if (opt < NO_FORMAT)
@@ -229,13 +237,13 @@ void send_fields_to_stream( char **__standard_fields__ , FILE *__dest_file__ , i
 				{
 					switch (loc)
 					{
-			        case FEATNAME :
+					case FEATNAME :
 						__source_start_tag__ = ( char *) __land_field_start_tag__[0][opt] ;
-     				    break ;
-                    case FEATTYPE :
-                       __source_start_tag__ = ( char *) __land_field_start_tag__[1][opt] ;
-                        break ;
-                    case FEATAREA :
+						break ;
+					case FEATTYPE :
+						__source_start_tag__ = ( char *) __land_field_start_tag__[1][opt] ;
+						break ;
+					case FEATAREA :
 						__source_start_tag__ = ( char *) __land_field_start_tag__[2][opt] ;
 						break ;
 					default :
@@ -246,15 +254,15 @@ void send_fields_to_stream( char **__standard_fields__ , FILE *__dest_file__ , i
 				{
 					__source_start_tag__ = (char *) __field_start_tag__[loc][opt] ;
 				}
-				append_string_to_max(__line_buf__, __source_start_tag__ , STREAM_BUF_SIZE) ;
+				append_string_to_max(__line_buf__, __source_start_tag__, STREAM_BUF_SIZE) ;
 			}
-			append_string_to_max( __line_buf__,  __field_string__ , STREAM_BUF_SIZE ) ;
+			append_string_to_max( __line_buf__,  __field_string__, STREAM_BUF_SIZE ) ;
 			if (opt < NO_FORMAT)
 			{
 				char * __source_end_tag__ ;
 				if (is_landmark)
 				{
- 					switch (loc)
+					switch (loc)
 					{
 					case FEATNAME :
 						__source_end_tag__ = ( char *) __land_field_tag_end__[ 0 ][ opt ] ;
@@ -273,15 +281,15 @@ void send_fields_to_stream( char **__standard_fields__ , FILE *__dest_file__ , i
 				{
 					__source_end_tag__ = ( char * ) __field_tag_end__[ loc ][ opt ] ;
 				}
-				append_string_to_max( __line_buf__ , __source_end_tag__ , STREAM_BUF_SIZE ) ;
+				append_string_to_max( __line_buf__, __source_end_tag__, STREAM_BUF_SIZE ) ;
 			}
 			if ( __dest_file__ != NULL )
 			{
-				fprintf( __dest_file__ , "%s" , __line_buf__ ) ;
+				fprintf( __dest_file__, "%s", __line_buf__ ) ;
 			}
 			else
 			{
-				printf( "%s" , __line_buf__ ) ;
+				printf( "%s", __line_buf__ ) ;
 			}
 		}
 	}
@@ -289,11 +297,11 @@ void send_fields_to_stream( char **__standard_fields__ , FILE *__dest_file__ , i
 	{
 		if ( __dest_file__ != NULL )
 		{
-			fprintf( __dest_file__ , "%s\n", ( is_landmark? __landmark_record_end_tag__[ opt ] : __record_end_tag__[ opt ]));
+			fprintf( __dest_file__, "%s\n", ( is_landmark? __landmark_record_end_tag__[ opt ] : __record_end_tag__[ opt ]));
 		}
 		else
 		{
-			printf( "%s\n" , ( is_landmark? __landmark_record_end_tag__[ opt ] :  __record_end_tag__[ opt ] ) );
+			printf( "%s\n", ( is_landmark? __landmark_record_end_tag__[ opt ] :  __record_end_tag__[ opt ] ) );
 		}
 	}
 	if ( __dest_file__ != NULL )
@@ -314,7 +322,7 @@ export.c (_get_standard_)
 -- calls _get_definition_text_ , find_def_type
 uses MACRO BLANK_STRING
 -------------------------------------------*/
-static char *_get_standard_(STAND_PARAM *__stand_param__ ,int lex_pos, int output_sym)
+static char *_get_standard_(STAND_PARAM *__stand_param__,int lex_pos, int output_sym)
 {
 	char *__selected_standardization__ ;
 	DEF *__best_DEF__ = __stand_param__->best_defs[lex_pos] ;
@@ -327,7 +335,7 @@ static char *_get_standard_(STAND_PARAM *__stand_param__ ,int lex_pos, int outpu
 
 		DEF *__scan_DEF__ ;
 
-		for (__scan_DEF__ = __stand_param__->lex_vector[lex_pos].DefList;__scan_DEF__ != NULL;__scan_DEF__ = __scan_DEF__->Next)
+		for (__scan_DEF__ = __stand_param__->lex_vector[lex_pos].DefList; __scan_DEF__ != NULL; __scan_DEF__ = __scan_DEF__->Next)
 		{
 			if (__scan_DEF__->Type == ORD)
 			{
@@ -367,17 +375,17 @@ export.c (_scan_target_ )
 -- calls export.c (_copy_standard_)
 -- called by export.c (stuff_fields)
 -------------------------------------------*/
-static void _scan_target_(STAND_PARAM *__stand_param__,SYMB sym , int dest)
+static void _scan_target_(STAND_PARAM *__stand_param__,SYMB sym, int dest)
 {
 	int i ;
 
 	int n = __stand_param__->LexNum ;
 	SYMB *__output_syms__ = __stand_param__->best_output ;
 	/*-- <remarks> Probe the array of output symbols in the best output and find
-      the position of a matching symbol and send it to be copied to
-      the output string fields. The order of the words in each field
-      will therefore follow the order that they appear in the input </remarks> --*/
-	for (i = FIRST_LEX_POS;i < n;i++)
+	  the position of a matching symbol and send it to be copied to
+	  the output string fields. The order of the words in each field
+	  will therefore follow the order that they appear in the input </remarks> --*/
+	for (i = FIRST_LEX_POS; i < n; i++)
 	{
 		if (__output_syms__[i] == sym)
 		{
@@ -393,11 +401,11 @@ export.c (_copy_standard_)
 strlen, strcpy
 uses macro SPACE_APPEND_WITH_LEN
 -------------------------------------------*/
-static void _copy_standard_( STAND_PARAM *__stand_param__ , SYMB output_sym , int fld , int lex_pos )
+static void _copy_standard_( STAND_PARAM *__stand_param__, SYMB output_sym, int fld, int lex_pos )
 {
 
 	/*-- Retrieve the standardized string --*/
-	char *__stan_str__ = _get_standard_( __stand_param__ , lex_pos , output_sym ) ;
+	char *__stan_str__ = _get_standard_( __stand_param__, lex_pos, output_sym ) ;
 	char *__dest_buf__ = __stand_param__->standard_fields[fld] ;
 	if (( strlen( __stan_str__ ) + strlen( __dest_buf__ )) > MAXFLDLEN )
 	{
@@ -406,27 +414,27 @@ static void _copy_standard_( STAND_PARAM *__stand_param__ , SYMB output_sym , in
 	}
 	if ( *__dest_buf__ != SENTINEL )
 	{
-		SPACE_APPEND_WITH_LEN( __dest_buf__ , __stan_str__ , MAXFLDLEN ) ;
+		SPACE_APPEND_WITH_LEN( __dest_buf__, __stan_str__, MAXFLDLEN ) ;
 	}
 	else if ( output_sym == UNITT )
 	{
 		/*-- If the unit id type is missing, one needs to be provided.
-         This might result in a mismatch, when the type is implicit
-         in one of the compared addresses, and explicit in the
-         other. Not much you can do with implicit. Better a generic
-         identifier than nothing at all --*/
+		 This might result in a mismatch, when the type is implicit
+		 in one of the compared addresses, and explicit in the
+		 other. Not much you can do with implicit. Better a generic
+		 identifier than nothing at all --*/
 
-		strcpy( __dest_buf__ , "# " ) ; /* -- reconsider this -- */
-		append_string_to_max( __dest_buf__ , __stan_str__ , MAXFLDLEN ) ;
+		strcpy( __dest_buf__, "# " ) ;  /* -- reconsider this -- */
+		append_string_to_max( __dest_buf__, __stan_str__, MAXFLDLEN ) ;
 	}
 	else if ( output_sym == BOXT )
 	{
 		strcpy( __dest_buf__, "BOX " ) ;
-		append_string_to_max( __dest_buf__ , __stan_str__ ,MAXFLDLEN ) ;
+		append_string_to_max( __dest_buf__, __stan_str__,MAXFLDLEN ) ;
 	}
 	else
 	{
-		strcpy( __dest_buf__ , __stan_str__ ) ;
+		strcpy( __dest_buf__, __stan_str__ ) ;
 	}
 }
 

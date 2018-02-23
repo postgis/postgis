@@ -138,7 +138,7 @@ GSERIALIZED* postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 	* point EMPTY, rather than throwing an error.
 	*/
 	if ( typmod_type == POINTTYPE && geom_type == MULTIPOINTTYPE &&
-	     gserialized_is_empty(gser) )
+	        gserialized_is_empty(gser) )
 	{
 		LWPOINT *empty_point = lwpoint_construct_empty(geom_srid, geom_z, geom_m);
 		geom_type = POINTTYPE;
@@ -161,9 +161,9 @@ GSERIALIZED* postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 	if ( typmod_type > 0 &&
 	        /* GEOMETRYCOLLECTION column can hold any kind of collection */
 	        ((typmod_type == COLLECTIONTYPE && ! (geom_type == COLLECTIONTYPE ||
-	                                              geom_type == MULTIPOLYGONTYPE ||
-	                                              geom_type == MULTIPOINTTYPE ||
-	                                              geom_type == MULTILINETYPE )) ||
+	                geom_type == MULTIPOLYGONTYPE ||
+	                geom_type == MULTIPOINTTYPE ||
+	                geom_type == MULTILINETYPE )) ||
 	         /* Other types must be strictly equal. */
 	         (typmod_type != geom_type)) )
 	{
@@ -237,9 +237,9 @@ static uint32 gserialized_typmod_in(ArrayType *arr, int is_geography)
 
 	/* Set the SRID to the default value first */
 	if ( is_geography)
-	    TYPMOD_SET_SRID(typmod, SRID_DEFAULT);
+		TYPMOD_SET_SRID(typmod, SRID_DEFAULT);
 	else
-	    TYPMOD_SET_SRID(typmod, SRID_UNKNOWN);
+		TYPMOD_SET_SRID(typmod, SRID_UNKNOWN);
 
 	for (i = 0; i < n; i++)
 	{

@@ -311,7 +311,7 @@ static int gbox_check_poles(GBOX *gbox)
 	LWDEBUGF(4, "gbox %s", gbox_to_string(gbox));
 	/* Z axis */
 	if ( gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
-	     gbox->ymin < 0.0 && gbox->ymax > 0.0 )
+	        gbox->ymin < 0.0 && gbox->ymax > 0.0 )
 	{
 		if ( (gbox->zmin + gbox->zmax) > 0.0 )
 		{
@@ -328,7 +328,7 @@ static int gbox_check_poles(GBOX *gbox)
 
 	/* Y axis */
 	if ( gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
-	     gbox->zmin < 0.0 && gbox->zmax > 0.0 )
+	        gbox->zmin < 0.0 && gbox->zmax > 0.0 )
 	{
 		if ( gbox->ymin + gbox->ymax > 0.0 )
 		{
@@ -345,7 +345,7 @@ static int gbox_check_poles(GBOX *gbox)
 
 	/* X axis */
 	if ( gbox->ymin < 0.0 && gbox->ymax > 0.0 &&
-	     gbox->zmin < 0.0 && gbox->zmax > 0.0 )
+	        gbox->zmin < 0.0 && gbox->zmax > 0.0 )
 	{
 		if ( gbox->xmin + gbox->xmax > 0.0 )
 		{
@@ -822,7 +822,7 @@ int edge_contains_coplanar_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POIN
 			return LW_FALSE;
 
 		if ( ( g.start.lat <= q.lat && q.lat <= g.end.lat ) ||
-		     ( g.end.lat <= q.lat && q.lat <= g.start.lat ) )
+		        ( g.end.lat <= q.lat && q.lat <= g.start.lat ) )
 		{
 			return LW_TRUE;
 		}
@@ -896,7 +896,7 @@ int edge_contains_coplanar_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POIN
 	}
 
 	if ( ( g.start.lon <= q.lon && q.lon <= g.end.lon ) ||
-	     ( g.end.lon <= q.lon && q.lon <= g.start.lon ) )
+	        ( g.end.lon <= q.lon && q.lon <= g.start.lon ) )
 	{
 		LWDEBUG(4, "true, this edge contains point");
 		return LW_TRUE;
@@ -1540,10 +1540,10 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 
 
 static int ptarray_segmentize_sphere_edge_recursive (
-	const POINT3D *p1, const POINT3D *p2, /* 3-space points we are interpolating beween */
-	const POINT4D *v1, const POINT4D *v2, /* real values and z/m values */
-	double d, double max_seg_length, /* current segment length and segment limit */
-	POINTARRAY *pa) /* write out results here */
+    const POINT3D *p1, const POINT3D *p2, /* 3-space points we are interpolating beween */
+    const POINT4D *v1, const POINT4D *v2, /* real values and z/m values */
+    double d, double max_seg_length, /* current segment length and segment limit */
+    POINTARRAY *pa) /* write out results here */
 {
 	GEOGRAPHIC_POINT g;
 	/* Reached the terminal leaf in recursion. Add */
@@ -2014,7 +2014,8 @@ LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, dou
 	LWPOINT *lwp;
 
 	/* Normalize distance to be positive*/
-	if ( distance < 0.0 ) {
+	if ( distance < 0.0 )
+	{
 		distance = -distance;
 		azimuth += M_PI;
 	}
@@ -2135,7 +2136,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 	/* Point/line combinations can all be handled with simple point array iterations */
 	if ( ( type1 == POINTTYPE || type1 == LINETYPE ) &&
-	     ( type2 == POINTTYPE || type2 == LINETYPE ) )
+	        ( type2 == POINTTYPE || type2 == LINETYPE ) )
 	{
 		POINTARRAY *pa1, *pa2;
 
@@ -2154,7 +2155,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 	/* Point/Polygon cases, if point-in-poly, return zero, else return distance. */
 	if ( ( type1 == POLYGONTYPE && type2 == POINTTYPE ) ||
-	     ( type2 == POLYGONTYPE && type1 == POINTTYPE ) )
+	        ( type2 == POLYGONTYPE && type1 == POINTTYPE ) )
 	{
 		const POINT2D *p;
 		LWPOLY *lwpoly;
@@ -2194,7 +2195,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 	/* Line/polygon case, if start point-in-poly, return zero, else return distance. */
 	if ( ( type1 == POLYGONTYPE && type2 == LINETYPE ) ||
-	     ( type2 == POLYGONTYPE && type1 == LINETYPE ) )
+	        ( type2 == POLYGONTYPE && type1 == LINETYPE ) )
 	{
 		const POINT2D *p;
 		LWPOLY *lwpoly;
@@ -2262,11 +2263,11 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 			{
 				double ring_distance =
 				    ptarray_distance_spheroid(
-					lwpoly1->rings[i],
-					lwpoly2->rings[j],
-					spheroid,
-					tolerance,
-					check_intersection);
+				        lwpoly1->rings[i],
+				        lwpoly2->rings[j],
+				        spheroid,
+				        tolerance,
+				        check_intersection);
 				if (ring_distance < distance)
 					distance = ring_distance;
 				if (distance < tolerance) return distance;
@@ -2285,7 +2286,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 		for ( i = 0; i < col->ngeoms; i++ )
 		{
 			double geom_distance = lwgeom_distance_spheroid(
-			    col->geoms[i], lwgeom2, spheroid, tolerance);
+			                           col->geoms[i], lwgeom2, spheroid, tolerance);
 			if ( geom_distance < distance )
 				distance = geom_distance;
 			if ( distance < tolerance )
@@ -2333,8 +2334,8 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 
 	/* dim(geom2) > dim(geom1) always returns false (because geom2 is bigger) */
 	if ( (type1 == POINTTYPE && type2 == LINETYPE)
-		|| (type1 == POINTTYPE && type2 == POLYGONTYPE)
-		|| (type1 == LINETYPE && type2 == POLYGONTYPE) )
+	        || (type1 == POINTTYPE && type2 == POLYGONTYPE)
+	        || (type1 == LINETYPE && type2 == POLYGONTYPE) )
 	{
 		LWDEBUG(4, "dimension of geom2 is bigger than geom1");
 		return LW_FALSE;
@@ -2559,35 +2560,35 @@ int lwpoly_covers_lwpoly(const LWPOLY *poly1, const LWPOLY *poly2)
  */
 int lwpoly_covers_lwline(const LWPOLY *poly, const LWLINE *line)
 {
-   /* Nulls and empties don't contain anything! */
-   if ( ! poly || lwgeom_is_empty((LWGEOM*)poly) )
-   {
-	   LWDEBUG(4,"returning false, geometry1 is empty or null");
-	   return LW_FALSE;
-   }
+	/* Nulls and empties don't contain anything! */
+	if ( ! poly || lwgeom_is_empty((LWGEOM*)poly) )
+	{
+		LWDEBUG(4,"returning false, geometry1 is empty or null");
+		return LW_FALSE;
+	}
 
-   /* Nulls and empties don't contain anything! */
-   if ( ! line || lwgeom_is_empty((LWGEOM*)line) )
-   {
-	   LWDEBUG(4,"returning false, geometry2 is empty or null");
-	   return LW_FALSE;
-   }
+	/* Nulls and empties don't contain anything! */
+	if ( ! line || lwgeom_is_empty((LWGEOM*)line) )
+	{
+		LWDEBUG(4,"returning false, geometry2 is empty or null");
+		return LW_FALSE;
+	}
 
-   if (LW_FALSE == lwpoly_covers_pointarray(poly, line->points))
-   {
-	   LWDEBUG(4,"returning false, geometry2 has point outside of geometry1");
-	   return LW_FALSE;
-   }
+	if (LW_FALSE == lwpoly_covers_pointarray(poly, line->points))
+	{
+		LWDEBUG(4,"returning false, geometry2 has point outside of geometry1");
+		return LW_FALSE;
+	}
 
-   /* check for any edge intersections, so nothing is partially outside of poly1 */
-   if (LW_TRUE == lwpoly_intersects_line(poly, line->points))
-   {
-	   LWDEBUG(4,"returning false, geometry2 is partially outside of geometry1");
-	   return LW_FALSE;
-   }
+	/* check for any edge intersections, so nothing is partially outside of poly1 */
+	if (LW_TRUE == lwpoly_intersects_line(poly, line->points))
+	{
+		LWDEBUG(4,"returning false, geometry2 is partially outside of geometry1");
+		return LW_FALSE;
+	}
 
-   /* no abort condition found, so the poly2 should be completly inside poly1 */
-   return LW_TRUE;
+	/* no abort condition found, so the poly2 should be completly inside poly1 */
+	return LW_TRUE;
 }
 
 /**
@@ -2596,10 +2597,12 @@ int lwpoly_covers_lwline(const LWPOLY *poly, const LWLINE *line)
 int lwpoly_covers_pointarray(const LWPOLY* lwpoly, const POINTARRAY* pta)
 {
 	uint32_t i;
-	for (i = 0; i < pta->npoints; i++) {
+	for (i = 0; i < pta->npoints; i++)
+	{
 		const POINT2D* pt_to_test = getPoint2d_cp(pta, i);
 
-		if ( LW_FALSE == lwpoly_covers_point2d(lwpoly, pt_to_test) ) {
+		if ( LW_FALSE == lwpoly_covers_point2d(lwpoly, pt_to_test) )
+		{
 			LWDEBUG(4,"returning false, geometry2 has point outside of geometry1");
 			return LW_FALSE;
 		}
@@ -2640,7 +2643,7 @@ int lwpoly_intersects_line(const LWPOLY* lwpoly, const POINTARRAY* line)
 
 				/* ignore same edges */
 				if (inter & PIR_INTERSECTS
-					&& !(inter & PIR_B_TOUCH_RIGHT || inter & PIR_COLINEAR) )
+				        && !(inter & PIR_B_TOUCH_RIGHT || inter & PIR_COLINEAR) )
 				{
 					return LW_TRUE;
 				}
@@ -2670,7 +2673,8 @@ int lwline_covers_lwpoint(const LWLINE* lwline, const LWPOINT* lwpoint)
 
 		geographic_point_init(lwpoint_get_x(lwpoint), lwpoint_get_y(lwpoint), &p);
 
-		if ( edge_contains_point(&e, &p) ) {
+		if ( edge_contains_point(&e, &p) )
+		{
 			return LW_TRUE;
 		}
 	}
@@ -2727,7 +2731,8 @@ int lwline_covers_lwline(const LWLINE* lwline1, const LWLINE* lwline2)
 		else if (start == LW_TRUE)
 		{
 			/* point is on current line1 edge, check next point in line2 */
-			if ( edge_contains_point(&e1, &p2)) {
+			if ( edge_contains_point(&e1, &p2))
+			{
 				j++;
 				changed = LW_TRUE;
 			}
@@ -2737,7 +2742,8 @@ int lwline_covers_lwline(const LWLINE* lwline1, const LWLINE* lwline2)
 			geographic_point_init(a1->x, a1->y, &p1);
 
 			/* point is on current line2 edge, check next point in line1 */
-			if ( edge_contains_point(&e2, &p1)) {
+			if ( edge_contains_point(&e2, &p1))
+			{
 				i++;
 				changed = LW_TRUE;
 			}
@@ -3122,19 +3128,19 @@ int lwgeom_force_geodetic(LWGEOM *geom)
 {
 	switch ( lwgeom_get_type(geom) )
 	{
-		case POINTTYPE:
-			return lwpoint_force_geodetic((LWPOINT *)geom);
-		case LINETYPE:
-			return lwline_force_geodetic((LWLINE *)geom);
-		case POLYGONTYPE:
-			return lwpoly_force_geodetic((LWPOLY *)geom);
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COLLECTIONTYPE:
-			return lwcollection_force_geodetic((LWCOLLECTION *)geom);
-		default:
-			lwerror("unsupported input geometry type: %d", lwgeom_get_type(geom));
+	case POINTTYPE:
+		return lwpoint_force_geodetic((LWPOINT *)geom);
+	case LINETYPE:
+		return lwline_force_geodetic((LWLINE *)geom);
+	case POLYGONTYPE:
+		return lwpoly_force_geodetic((LWPOLY *)geom);
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COLLECTIONTYPE:
+		return lwcollection_force_geodetic((LWCOLLECTION *)geom);
+	default:
+		lwerror("unsupported input geometry type: %d", lwgeom_get_type(geom));
 	}
 	return LW_FALSE;
 }
@@ -3425,7 +3431,7 @@ edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const P
 	{
 		/* Co-linear case */
 		if ( point_in_cone(A1, A2, B1) || point_in_cone(A1, A2, B2) ||
-		     point_in_cone(B1, B2, A1) || point_in_cone(B1, B2, A2) )
+		        point_in_cone(B1, B2, A1) || point_in_cone(B1, B2, A2) )
 		{
 			rv |= PIR_INTERSECTS;
 			rv |= PIR_COLINEAR;
@@ -3456,7 +3462,7 @@ edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const P
 
 	/* A straddles B and B straddles A, so... */
 	if ( a1_side != a2_side && (a1_side + a2_side) == 0 &&
-	     b1_side != b2_side && (b1_side + b2_side) == 0 )
+	        b1_side != b2_side && (b1_side + b2_side) == 0 )
 	{
 		/* Have to check if intersection point is inside both arcs */
 		unit_normal(&AN, &BN, &VN);

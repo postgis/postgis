@@ -268,7 +268,7 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	/* call is valid on multi* geoms only */
 	if (type==POINTTYPE || type==LINETYPE || type==CIRCSTRINGTYPE ||
 	        type==COMPOUNDTYPE || type==POLYGONTYPE ||
-		type==CURVEPOLYTYPE || type==TRIANGLETYPE)
+	        type==CURVEPOLYTYPE || type==TRIANGLETYPE)
 	{
 		if ( idx == 0 ) PG_RETURN_POINTER(geom);
 		PG_RETURN_NULL();
@@ -339,8 +339,8 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_exteriorring_polygon called.");
 
 	if ( (type != POLYGONTYPE) &&
-	     (type != CURVEPOLYTYPE) &&
-	     (type != TRIANGLETYPE))
+	        (type != CURVEPOLYTYPE) &&
+	        (type != TRIANGLETYPE))
 	{
 		PG_RETURN_NULL();
 	}
@@ -417,8 +417,8 @@ Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 	int result = -1;
 
 	if ( (type != POLYGONTYPE) &&
-	     (type != CURVEPOLYTYPE) &&
-	     (type != TRIANGLETYPE))
+	        (type != CURVEPOLYTYPE) &&
+	        (type != TRIANGLETYPE))
 	{
 		PG_RETURN_NULL();
 	}
@@ -909,7 +909,7 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 		text *wkb_endian = PG_GETARG_TEXT_P(1);
 
 		if  ( ! strncmp(VARDATA(wkb_endian), "xdr", 3) ||
-		      ! strncmp(VARDATA(wkb_endian), "XDR", 3) )
+		        ! strncmp(VARDATA(wkb_endian), "XDR", 3) )
 		{
 			variant = variant | WKB_XDR;
 		}

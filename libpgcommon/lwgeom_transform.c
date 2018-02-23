@@ -280,7 +280,8 @@ static void DeletePJHashEntry(MemoryContext mcxt)
 }
 
 bool
-IsInPROJ4Cache(Proj4Cache PROJ4Cache, int srid) {
+IsInPROJ4Cache(Proj4Cache PROJ4Cache, int srid)
+{
 	return IsInPROJ4SRSCache((PROJ4PortalCache *)PROJ4Cache, srid) ;
 }
 
@@ -490,7 +491,8 @@ static char* GetProj4String(int srid)
 	}
 }
 
-void AddToPROJ4Cache(Proj4Cache cache, int srid, int other_srid) {
+void AddToPROJ4Cache(Proj4Cache cache, int srid, int other_srid)
+{
 	AddToPROJ4SRSCache((PROJ4PortalCache *)cache, srid, other_srid) ;
 }
 
@@ -525,8 +527,8 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 			pj_errstr = "";
 
 		elog(ERROR,
-		    "AddToPROJ4SRSCache: could not parse proj4 string '%s' %s",
-		    proj_str, pj_errstr);
+		     "AddToPROJ4SRSCache: could not parse proj4 string '%s' %s",
+		     proj_str, pj_errstr);
 	}
 
 	/*
@@ -578,7 +580,7 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	MemoryContextRegisterResetCallback(PJMemoryContext, callback);
 #endif
 
- 	/* Create the backend hash if it doesn't already exist */
+	/* Create the backend hash if it doesn't already exist */
 	if (!PJHash)
 		PJHash = CreatePJHash();
 
@@ -600,7 +602,8 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 
 }
 
-void DeleteFromPROJ4Cache(Proj4Cache cache, int srid) {
+void DeleteFromPROJ4Cache(Proj4Cache cache, int srid)
+{
 	DeleteFromPROJ4SRSCache((PROJ4PortalCache *)cache, srid) ;
 }
 
@@ -650,7 +653,8 @@ void SetPROJ4LibPath(void)
 	char *share_path;
 	const char **proj_lib_path;
 
-	if (!IsPROJ4LibPathSet) {
+	if (!IsPROJ4LibPathSet)
+	{
 
 		/*
 		 * Get the sharepath and append /contrib/postgis/proj to form a suitable
@@ -674,7 +678,8 @@ void SetPROJ4LibPath(void)
 	}
 }
 
-Proj4Cache GetPROJ4Cache(FunctionCallInfo fcinfo) {
+Proj4Cache GetPROJ4Cache(FunctionCallInfo fcinfo)
+{
 	return (Proj4Cache)GetPROJ4SRSCache(fcinfo);
 }
 

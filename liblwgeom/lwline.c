@@ -220,7 +220,8 @@ lwline_from_lwgeom_array(int srid, uint32_t ngeoms, LWGEOM **geoms)
 
 	if ( pa->npoints > 0 )
 		line = lwline_construct(srid, NULL, pa);
-	else  {
+	else
+	{
 		/* Is this really any different from the above ? */
 		ptarray_free(pa);
 		line = lwline_construct_empty(srid, hasz, hasm);
@@ -236,7 +237,7 @@ lwline_from_lwgeom_array(int srid, uint32_t ngeoms, LWGEOM **geoms)
 LWLINE *
 lwline_from_ptarray(int srid, uint32_t npoints, LWPOINT **points)
 {
- 	uint32_t i;
+	uint32_t i;
 	int hasz = LW_FALSE;
 	int hasm = LW_FALSE;
 	POINTARRAY *pa;
@@ -462,29 +463,32 @@ lwline_is_closed(const LWLINE *line)
 int
 lwline_is_trajectory(const LWLINE *line)
 {
-  POINT3DM p;
-  int i, n;
-  double m = -1 * FLT_MAX;
+	POINT3DM p;
+	int i, n;
+	double m = -1 * FLT_MAX;
 
-  if ( ! FLAGS_GET_M(line->flags) ) {
-    lwnotice("Line does not have M dimension");
-    return LW_FALSE;
-  }
+	if ( ! FLAGS_GET_M(line->flags) )
+	{
+		lwnotice("Line does not have M dimension");
+		return LW_FALSE;
+	}
 
-  n = line->points->npoints;
-  if ( n < 2 ) return LW_TRUE; /* empty or single-point are "good" */
+	n = line->points->npoints;
+	if ( n < 2 ) return LW_TRUE; /* empty or single-point are "good" */
 
-  for (i=0; i<n; ++i) {
-    getPoint3dm_p(line->points, i, &p);
-    if ( p.m <= m ) {
-      lwnotice("Measure of vertex %d (%g) not bigger than measure of vertex %d (%g)",
-        i, p.m, i-1, m);
-      return LW_FALSE;
-    }
-    m = p.m;
-  }
+	for (i=0; i<n; ++i)
+	{
+		getPoint3dm_p(line->points, i, &p);
+		if ( p.m <= m )
+		{
+			lwnotice("Measure of vertex %d (%g) not bigger than measure of vertex %d (%g)",
+			         i, p.m, i-1, m);
+			return LW_FALSE;
+		}
+		m = p.m;
+	}
 
-  return LW_TRUE;
+	return LW_TRUE;
 }
 
 
@@ -539,7 +543,8 @@ double lwline_length_2d(const LWLINE *line)
 }
 
 
-POINTARRAY* lwline_interpolate_points(const LWLINE *line, double length_fraction, char repeat) {
+POINTARRAY* lwline_interpolate_points(const LWLINE *line, double length_fraction, char repeat)
+{
 	POINT4D pt;
 	uint32_t i;
 	uint32_t points_to_interpolate;
@@ -607,11 +612,12 @@ POINTARRAY* lwline_interpolate_points(const LWLINE *line, double length_fraction
 
 	/* Return the last point on the line. This shouldn't happen, but
 	 * could if there's some floating point rounding errors. */
-	if (points_found < points_to_interpolate) {
+	if (points_found < points_to_interpolate)
+	{
 		getPoint4d_p(ipa, ipa->npoints - 1, &pt);
 		ptarray_set_point4d(opa, points_found, &pt);
 	}
 
-    return opa;
+	return opa;
 }
 

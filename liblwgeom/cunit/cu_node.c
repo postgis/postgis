@@ -30,14 +30,17 @@ static void test_lwgeom_node(void)
 	out = lwgeom_node(in);
 	/* printf("%s\n", lwgeom_to_ewkt(out)); */
 	CU_ASSERT(lwgeom_same(in, out));
-	lwgeom_free(out); lwgeom_free(in);
+	lwgeom_free(out);
+	lwgeom_free(in);
 
 	wkt = "MULTILINESTRING((0 0,0 5),(10 0, -10 5))";
 	in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	out = lwgeom_node(in);
 	tmp = lwgeom_to_ewkt(out);
 	CU_ASSERT_STRING_EQUAL("MULTILINESTRING((0 2.5,-10 5),(0 0,0 2.5),(0 2.5,0 5),(10 0,0 2.5))", tmp)
-	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
+	lwfree(tmp);
+	lwgeom_free(out);
+	lwgeom_free(in);
 
 	wkt = "MULTILINESTRING((0 0,5 5,10 0, 11 0, 20 0),(10 0, 12 0, 22 0))";
 	in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
@@ -45,7 +48,9 @@ static void test_lwgeom_node(void)
 	tmp = lwgeom_to_ewkt(out);
 	/* printf("%s\n", tmp); */
 	CU_ASSERT_STRING_EQUAL("MULTILINESTRING((0 0,5 5,10 0),(10 0,11 0,12 0,20 0),(20 0,22 0))", tmp);
-	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
+	lwfree(tmp);
+	lwgeom_free(out);
+	lwgeom_free(in);
 
 	wkt = "MULTILINESTRING((0 0,5 5,10 0, 11 0, 20 0),(22 0, 12 0, 10 0),(0 5, 5 0))";
 	in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
@@ -53,9 +58,11 @@ static void test_lwgeom_node(void)
 	tmp = lwgeom_to_ewkt(out);
 	/* printf("%s\n", tmp); */
 	CU_ASSERT_STRING_EQUAL(
-"MULTILINESTRING((0 0,2.5 2.5),(0 5,2.5 2.5),(2.5 2.5,5 5,10 0),(10 0,11 0,12 0,20 0),(20 0,22 0),(2.5 2.5,5 0))",
-		tmp);
-	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
+	    "MULTILINESTRING((0 0,2.5 2.5),(0 5,2.5 2.5),(2.5 2.5,5 5,10 0),(10 0,11 0,12 0,20 0),(20 0,22 0),(2.5 2.5,5 0))",
+	    tmp);
+	lwfree(tmp);
+	lwgeom_free(out);
+	lwgeom_free(in);
 }
 
 /*

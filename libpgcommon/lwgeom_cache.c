@@ -30,7 +30,8 @@
 * the type number is what you expect before casting
 * and de-referencing struct members.
 */
-typedef struct {
+typedef struct
+{
 	int type;
 	char data[1];
 } GenericCache;
@@ -43,7 +44,8 @@ typedef struct {
 * one slot for each tree type as well as a slot for
 * projections.
 */
-typedef struct {
+typedef struct
+{
 	GenericCache* entry[NUM_CACHE_ENTRIES];
 } GenericCacheCollection;
 
@@ -148,9 +150,9 @@ GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods
 
 	/* Cache hit on the first argument */
 	if ( g1 &&
-	     cache->argnum != 2 &&
-	     cache->geom1_size == VARSIZE(g1) &&
-	     memcmp(cache->geom1, g1, cache->geom1_size) == 0 )
+	        cache->argnum != 2 &&
+	        cache->geom1_size == VARSIZE(g1) &&
+	        memcmp(cache->geom1, g1, cache->geom1_size) == 0 )
 	{
 		cache_hit = 1;
 		geom = cache->geom1;

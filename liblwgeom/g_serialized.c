@@ -64,7 +64,7 @@ int gserialized_ndims(const GSERIALIZED *gser)
 
 int gserialized_is_geodetic(const GSERIALIZED *gser)
 {
-	  return FLAGS_GET_GEODETIC(gser->flags);
+	return FLAGS_GET_GEODETIC(gser->flags);
 }
 
 uint32_t gserialized_max_header_size(void)
@@ -132,10 +132,10 @@ void gserialized_set_srid(GSERIALIZED *s, int32_t srid)
 inline static int gserialized_cmp_srid(const GSERIALIZED *s1, const GSERIALIZED *s2)
 {
 	return (
-		s1->srid[0] == s2->srid[0] &&
-		s1->srid[1] == s2->srid[1] &&
-		s1->srid[2] == s2->srid[2]
-	) ? 0 : 1;
+	           s1->srid[0] == s2->srid[0] &&
+	           s1->srid[1] == s2->srid[1] &&
+	           s1->srid[2] == s2->srid[2]
+	       ) ? 0 : 1;
 }
 
 GSERIALIZED* gserialized_copy(const GSERIALIZED *g)
@@ -204,53 +204,54 @@ dead code for the forseeable future. */
 /* http://www.joshbarczak.com/blog/?p=454 */
 static uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2)
 {
-    uint64_t x = u1;
-    uint64_t y = u2;
-    uint64_t x_mask = 0x5555555555555555;
-    uint64_t y_mask = 0xAAAAAAAAAAAAAAAA;
-    return _pdep_u64(x, x_mask) | _pdep_u64(y, y_mask);
+	uint64_t x = u1;
+	uint64_t y = u2;
+	uint64_t x_mask = 0x5555555555555555;
+	uint64_t y_mask = 0xAAAAAAAAAAAAAAAA;
+	return _pdep_u64(x, x_mask) | _pdep_u64(y, y_mask);
 }
 
 static uint64_t uint32_interleave_3(uint32_t u1, uint32_t u2, uint32_t u3)
 {
-    /* only look at the first 21 bits */
-    uint64_t x = u1 & 0x1FFFFF;
-    uint64_t y = u2 & 0x1FFFFF;
-    uint64_t z = u3 & 0x1FFFFF;
-    uint64_t x_mask = 0x9249249249249249;
-    uint64_t y_mask = 0x2492492492492492;
-    uint64_t z_mask = 0x4924924924924924;
-    return _pdep_u64(x, x_mask) | _pdep_u64(y, y_mask) | _pdep_u64(z, z_mask);
+	/* only look at the first 21 bits */
+	uint64_t x = u1 & 0x1FFFFF;
+	uint64_t y = u2 & 0x1FFFFF;
+	uint64_t z = u3 & 0x1FFFFF;
+	uint64_t x_mask = 0x9249249249249249;
+	uint64_t y_mask = 0x2492492492492492;
+	uint64_t z_mask = 0x4924924924924924;
+	return _pdep_u64(x, x_mask) | _pdep_u64(y, y_mask) | _pdep_u64(z, z_mask);
 }
 
 #else
 static uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2)
 {
-    uint64_t x = u1;
-    uint64_t y = u2;
-    int i;
+	uint64_t x = u1;
+	uint64_t y = u2;
+	int i;
 
-    static uint64_t B[5] =
-    {
-        0x5555555555555555,
-        0x3333333333333333,
-        0x0F0F0F0F0F0F0F0F,
-        0x00FF00FF00FF00FF,
-        0x0000FFFF0000FFFF
-    };
-    static uint64_t S[5] = { 1, 2, 4, 8, 16 };
+	static uint64_t B[5] =
+	{
+		0x5555555555555555,
+		0x3333333333333333,
+		0x0F0F0F0F0F0F0F0F,
+		0x00FF00FF00FF00FF,
+		0x0000FFFF0000FFFF
+	};
+	static uint64_t S[5] = { 1, 2, 4, 8, 16 };
 
-    for ( i = 4; i >= 0; i-- )
-    {
-        x = (x | (x << S[i])) & B[i];
-        y = (y | (y << S[i])) & B[i];
-    }
+	for ( i = 4; i >= 0; i-- )
+	{
+		x = (x | (x << S[i])) & B[i];
+		y = (y | (y << S[i])) & B[i];
+	}
 
-    return x | (y << 1);
+	return x | (y << 1);
 }
 #endif
 
-union floatuint {
+union floatuint
+{
 	uint32_t u;
 	float f;
 };
@@ -303,12 +304,12 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 	* For two non-same points, we can skip a lot of machinery.
 	*/
 	if (
-		sz1 > 16 && // 16 is size of EMPTY, if it's larger - it has coordinates
-		sz2 > 16 &&
-		!FLAGS_GET_BBOX(g1->flags) &&
-		!FLAGS_GET_BBOX(g2->flags) &&
-		*(uint32_t*)(g1+8) == POINTTYPE &&
-		*(uint32_t*)(g2+8) == POINTTYPE
+	    sz1 > 16 && // 16 is size of EMPTY, if it's larger - it has coordinates
+	    sz2 > 16 &&
+	    !FLAGS_GET_BBOX(g1->flags) &&
+	    !FLAGS_GET_BBOX(g2->flags) &&
+	    *(uint32_t*)(g1+8) == POINTTYPE &&
+	    *(uint32_t*)(g2+8) == POINTTYPE
 	)
 	{
 		double *dptr = (double*)(g1->data + sizeof(double));
@@ -403,9 +404,9 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 	if (bsz1 != bsz2 && cmp == 0)
 	{
 		if (bsz1 < bsz2)
- 			return -1;
+			return -1;
 		else if (bsz1 > bsz2)
- 			return 1;
+			return 1;
 	}
 	return cmp > 0 ? 1 : -1;
 }
@@ -1069,8 +1070,8 @@ static size_t gserialized_from_lwgeom_any(const LWGEOM *geom, uint8_t *buf)
 	assert(buf);
 
 	LWDEBUGF(2, "Input type (%d) %s, hasz: %d hasm: %d",
-		geom->type, lwtype_name(geom->type),
-		FLAGS_GET_Z(geom->flags), FLAGS_GET_M(geom->flags));
+	         geom->type, lwtype_name(geom->type),
+	         FLAGS_GET_Z(geom->flags), FLAGS_GET_M(geom->flags));
 	LWDEBUGF(2, "LWGEOM(%p) uint8_t(%p)", geom, buf);
 
 	switch (geom->type)
@@ -1492,7 +1493,7 @@ LWGEOM* lwgeom_from_gserialized_buffer(uint8_t *data_ptr, uint8_t g_flags, size_
 	type = gserialized_get_uint32_t(data_ptr);
 
 	LWDEBUGF(2, "Got type %d (%s), hasz=%d hasm=%d geodetic=%d hasbox=%d", type, lwtype_name(type),
-		FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), FLAGS_GET_GEODETIC(g_flags), FLAGS_GET_BBOX(g_flags));
+	         FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), FLAGS_GET_GEODETIC(g_flags), FLAGS_GET_BBOX(g_flags));
 
 	switch (type)
 	{

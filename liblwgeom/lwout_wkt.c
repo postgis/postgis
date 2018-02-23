@@ -110,9 +110,9 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 			if ( j > 0 )
 				stringbuffer_append(sb, " ");
 			lwprint_double(dbl_ptr[j],
-				       precision,
-				       coord,
-				       OUT_DOUBLE_BUFFER_SIZE);
+			               precision,
+			               coord,
+			               OUT_DOUBLE_BUFFER_SIZE);
 			stringbuffer_append(sb, coord);
 		}
 	}
@@ -165,7 +165,7 @@ static void lwline_to_wkt_sb(const LWLINE *line, stringbuffer_t *sb, int precisi
 		return;
 	}
 
-    ptarray_to_wkt_sb(line->points, sb, precision, variant);
+	ptarray_to_wkt_sb(line->points, sb, precision, variant);
 }
 
 /*
@@ -605,8 +605,8 @@ static void lwpsurface_to_wkt_sb(const LWPSURFACE *psurf, stringbuffer_t *sb, in
 static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	LWDEBUGF(4, "lwgeom_to_wkt_sb: type %s, hasz %d, hasm %d",
-		lwtype_name(geom->type), (geom->type),
-		FLAGS_GET_Z(geom->flags)?1:0, FLAGS_GET_M(geom->flags)?1:0);
+	         lwtype_name(geom->type), (geom->type),
+	         FLAGS_GET_Z(geom->flags)?1:0, FLAGS_GET_M(geom->flags)?1:0);
 
 	switch (geom->type)
 	{

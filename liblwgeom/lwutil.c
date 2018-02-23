@@ -156,8 +156,9 @@ default_errorreporter(const char *fmt, va_list ap)
  */
 void
 lwgeom_set_handlers(lwallocator allocator, lwreallocator reallocator,
-	        lwfreeor freeor, lwreporter errorreporter,
-	        lwreporter noticereporter) {
+                    lwfreeor freeor, lwreporter errorreporter,
+                    lwreporter noticereporter)
+{
 
 	if ( allocator ) lwalloc_var = allocator;
 	if ( reallocator ) lwrealloc_var = reallocator;
@@ -168,7 +169,8 @@ lwgeom_set_handlers(lwallocator allocator, lwreallocator reallocator,
 }
 
 void
-lwgeom_set_debuglogger(lwdebuglogger debuglogger) {
+lwgeom_set_debuglogger(lwdebuglogger debuglogger)
+{
 
 	if ( debuglogger ) lwdebug_var = debuglogger;
 }
@@ -348,16 +350,20 @@ clamp_srid(int srid)
 {
 	int newsrid = srid;
 
-	if ( newsrid <= 0 ) {
-		if ( newsrid != SRID_UNKNOWN ) {
+	if ( newsrid <= 0 )
+	{
+		if ( newsrid != SRID_UNKNOWN )
+		{
 			newsrid = SRID_UNKNOWN;
 			lwnotice("SRID value %d converted to the officially unknown SRID value %d", srid, newsrid);
 		}
-	} else if ( srid > SRID_MAXIMUM ) {
-    newsrid = SRID_USER_MAXIMUM + 1 +
-      /* -1 is to reduce likelyhood of clashes */
-      /* NOTE: must match implementation in postgis_restore.pl */
-      ( srid % ( SRID_MAXIMUM - SRID_USER_MAXIMUM - 1 ) );
+	}
+	else if ( srid > SRID_MAXIMUM )
+	{
+		newsrid = SRID_USER_MAXIMUM + 1 +
+		          /* -1 is to reduce likelyhood of clashes */
+		          /* NOTE: must match implementation in postgis_restore.pl */
+		          ( srid % ( SRID_MAXIMUM - SRID_USER_MAXIMUM - 1 ) );
 		lwnotice("SRID value %d > SRID_MAXIMUM converted to %d", srid, newsrid);
 	}
 

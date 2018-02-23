@@ -185,7 +185,7 @@ typedef struct shp_dumper_state
 	char message[SHPDUMPERMSGLEN];
 
 	/* Column map */
-  colmap column_map;
+	colmap column_map;
 
 } SHPDUMPERSTATE;
 

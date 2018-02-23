@@ -81,48 +81,48 @@ lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 
 	switch(geom->type)
 	{
-		case POINTTYPE:
-		case LINETYPE:
-		case CIRCSTRINGTYPE:
-		case TRIANGLETYPE:
+	case POINTTYPE:
+	case LINETYPE:
+	case CIRCSTRINGTYPE:
+	case TRIANGLETYPE:
+	{
+		LWLINE *g = (LWLINE*)geom;
+		if ( ! ptarray_transform(g->points, inpj, outpj) ) return LW_FAILURE;
+		break;
+	}
+	case POLYGONTYPE:
+	{
+		LWPOLY *g = (LWPOLY*)geom;
+		for ( i = 0; i < g->nrings; i++ )
 		{
-			LWLINE *g = (LWLINE*)geom;
-			if ( ! ptarray_transform(g->points, inpj, outpj) ) return LW_FAILURE;
-			break;
+			if ( ! ptarray_transform(g->rings[i], inpj, outpj) ) return LW_FAILURE;
 		}
-		case POLYGONTYPE:
+		break;
+	}
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COLLECTIONTYPE:
+	case COMPOUNDTYPE:
+	case CURVEPOLYTYPE:
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
+	{
+		LWCOLLECTION *g = (LWCOLLECTION*)geom;
+		for ( i = 0; i < g->ngeoms; i++ )
 		{
-			LWPOLY *g = (LWPOLY*)geom;
-			for ( i = 0; i < g->nrings; i++ )
-			{
-				if ( ! ptarray_transform(g->rings[i], inpj, outpj) ) return LW_FAILURE;
-			}
-			break;
+			if ( ! lwgeom_transform(g->geoms[i], inpj, outpj) ) return LW_FAILURE;
 		}
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COLLECTIONTYPE:
-		case COMPOUNDTYPE:
-		case CURVEPOLYTYPE:
-		case MULTICURVETYPE:
-		case MULTISURFACETYPE:
-		case POLYHEDRALSURFACETYPE:
-		case TINTYPE:
-		{
-			LWCOLLECTION *g = (LWCOLLECTION*)geom;
-			for ( i = 0; i < g->ngeoms; i++ )
-			{
-				if ( ! lwgeom_transform(g->geoms[i], inpj, outpj) ) return LW_FAILURE;
-			}
-			break;
-		}
-		default:
-		{
-			lwerror("lwgeom_transform: Cannot handle type '%s'",
-			          lwtype_name(geom->type));
-			return LW_FAILURE;
-		}
+		break;
+	}
+	default:
+	{
+		lwerror("lwgeom_transform: Cannot handle type '%s'",
+		        lwtype_name(geom->type));
+		return LW_FAILURE;
+	}
 	}
 	return LW_SUCCESS;
 }
@@ -135,7 +135,7 @@ point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj)
 	if (pj_is_latlong(srcpj)) to_rad(pt) ;
 
 	LWDEBUGF(4, "transforming POINT(%f %f) from '%s' to '%s'",
-		 orig_pt.x, orig_pt.y, pj_get_def(srcpj,0), pj_get_def(dstpj,0));
+	         orig_pt.x, orig_pt.y, pj_get_def(srcpj,0), pj_get_def(dstpj,0));
 
 	if (pj_transform(srcpj, dstpj, 1, 0, &(pt->x), &(pt->y), &(pt->z)) != 0)
 	{
@@ -143,19 +143,19 @@ point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj)
 		if (pj_errno_val == -38)
 		{
 			lwnotice("PostGIS was unable to transform the point because either no grid"
-				 " shift files were found, or the point does not lie within the "
-				 "range for which the grid shift is defined. Refer to the "
-				 "ST_Transform() section of the PostGIS manual for details on how "
-				 "to configure PostGIS to alter this behaviour.");
+			         " shift files were found, or the point does not lie within the "
+			         "range for which the grid shift is defined. Refer to the "
+			         "ST_Transform() section of the PostGIS manual for details on how "
+			         "to configure PostGIS to alter this behaviour.");
 			lwerror("transform: couldn't project point (%g %g %g): %s (%d)",
-				orig_pt.x, orig_pt.y, orig_pt.z,
-				pj_strerrno(pj_errno_val), pj_errno_val);
+			        orig_pt.x, orig_pt.y, orig_pt.z,
+			        pj_strerrno(pj_errno_val), pj_errno_val);
 		}
 		else
 		{
 			lwerror("transform: couldn't project point (%g %g %g): %s (%d)",
-				orig_pt.x, orig_pt.y, orig_pt.z,
-				pj_strerrno(pj_errno_val), pj_errno_val);
+			        orig_pt.x, orig_pt.y, orig_pt.z,
+			        pj_strerrno(pj_errno_val), pj_errno_val);
 		}
 		return LW_FAILURE;
 	}

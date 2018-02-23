@@ -113,63 +113,63 @@ static int wkt_parser_set_dims(LWGEOM *geom, uint8_t flags)
 
 	switch( geom->type )
 	{
-		case POINTTYPE:
+	case POINTTYPE:
+	{
+		LWPOINT *pt = (LWPOINT*)geom;
+		if ( pt->point )
 		{
-			LWPOINT *pt = (LWPOINT*)geom;
-			if ( pt->point )
-			{
-				FLAGS_SET_Z(pt->point->flags, hasz);
-				FLAGS_SET_M(pt->point->flags, hasm);
-			}
-			break;
+			FLAGS_SET_Z(pt->point->flags, hasz);
+			FLAGS_SET_M(pt->point->flags, hasm);
 		}
-		case TRIANGLETYPE:
-		case CIRCSTRINGTYPE:
-		case LINETYPE:
+		break;
+	}
+	case TRIANGLETYPE:
+	case CIRCSTRINGTYPE:
+	case LINETYPE:
+	{
+		LWLINE *ln = (LWLINE*)geom;
+		if ( ln->points )
 		{
-			LWLINE *ln = (LWLINE*)geom;
-			if ( ln->points )
-			{
-				FLAGS_SET_Z(ln->points->flags, hasz);
-				FLAGS_SET_M(ln->points->flags, hasm);
-			}
-			break;
+			FLAGS_SET_Z(ln->points->flags, hasz);
+			FLAGS_SET_M(ln->points->flags, hasm);
 		}
-		case POLYGONTYPE:
+		break;
+	}
+	case POLYGONTYPE:
+	{
+		LWPOLY *poly = (LWPOLY*)geom;
+		for ( i = 0; i < poly->nrings; i++ )
 		{
-			LWPOLY *poly = (LWPOLY*)geom;
-			for ( i = 0; i < poly->nrings; i++ )
+			if( poly->rings[i] )
 			{
-				if( poly->rings[i] )
-				{
-					FLAGS_SET_Z(poly->rings[i]->flags, hasz);
-					FLAGS_SET_M(poly->rings[i]->flags, hasm);
-				}
-			}
-			break;
-		}
-		case CURVEPOLYTYPE:
-		{
-			LWCURVEPOLY *poly = (LWCURVEPOLY*)geom;
-			for ( i = 0; i < poly->nrings; i++ )
-				wkt_parser_set_dims(poly->rings[i], flags);
-			break;
-		}
-		default:
-		{
-			if ( lwtype_is_collection(geom->type) )
-			{
-				LWCOLLECTION *col = (LWCOLLECTION*)geom;
-				for ( i = 0; i < col->ngeoms; i++ )
-					wkt_parser_set_dims(col->geoms[i], flags);
-				return LW_SUCCESS;
-			}
-			else
-			{
-				LWDEBUGF(2,"Unknown geometry type: %d", geom->type);
-				return LW_FAILURE;
+				FLAGS_SET_Z(poly->rings[i]->flags, hasz);
+				FLAGS_SET_M(poly->rings[i]->flags, hasm);
 			}
 		}
+		break;
+	}
+	case CURVEPOLYTYPE:
+	{
+		LWCURVEPOLY *poly = (LWCURVEPOLY*)geom;
+		for ( i = 0; i < poly->nrings; i++ )
+			wkt_parser_set_dims(poly->rings[i], flags);
+		break;
+	}
+	default:
+	{
+		if ( lwtype_is_collection(geom->type) )
+		{
+			LWCOLLECTION *col = (LWCOLLECTION*)geom;
+			for ( i = 0; i < col->ngeoms; i++ )
+				wkt_parser_set_dims(col->geoms[i], flags);
+			return LW_SUCCESS;
+		}
+		else
+		{
+			LWDEBUGF(2,"Unknown geometry type: %d", geom->type);
+			return LW_FAILURE;
+		}
+	}
 	}
 
 	return LW_SUCCESS;
@@ -236,15 +236,15 @@ POINT wkt_parser_coord_2(double c1, double c2)
 */
 POINT wkt_parser_coord_3(double c1, double c2, double c3)
 {
-		POINT p;
-		p.flags = 0;
-		p.x = c1;
-		p.y = c2;
-		p.z = c3;
-		p.m = 0;
-		FLAGS_SET_Z(p.flags, 1);
-		FLAGS_SET_M(p.flags, 0);
-		return p;
+	POINT p;
+	p.flags = 0;
+	p.x = c1;
+	p.y = c2;
+	p.z = c3;
+	p.m = 0;
+	FLAGS_SET_Z(p.flags, 1);
+	FLAGS_SET_M(p.flags, 0);
+	return p;
 }
 
 /**
@@ -513,7 +513,7 @@ LWGEOM* wkt_parser_polygon_add_ring(LWGEOM *poly, POINTARRAY *pa, char dimcheck)
 
 	/* Apply check for not closed rings, if requested. */
 	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_CLOSURE) &&
-	    ! (dimcheck == 'Z' ? ptarray_is_closed_z(pa) : ptarray_is_closed_2d(pa)) )
+	        ! (dimcheck == 'Z' ? ptarray_is_closed_z(pa) : ptarray_is_closed_2d(pa)) )
 	{
 		ptarray_free(pa);
 		lwgeom_free(poly);
@@ -629,15 +629,15 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 		LWDEBUG(4,"checking ring closure");
 		switch ( ring->type )
 		{
-			case LINETYPE:
+		case LINETYPE:
 			is_closed = lwline_is_closed(lwgeom_as_lwline(ring));
 			break;
 
-			case CIRCSTRINGTYPE:
+		case CIRCSTRINGTYPE:
 			is_closed = lwcircstring_is_closed(lwgeom_as_lwcircstring(ring));
 			break;
 
-			case COMPOUNDTYPE:
+		case COMPOUNDTYPE:
 			is_closed = lwcompound_is_closed(lwgeom_as_lwcompound(ring));
 			break;
 		}
@@ -823,7 +823,7 @@ LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *geom, char *dimension
 		{
 			LWGEOM *subgeom = col->geoms[i];
 			if ( FLAGS_NDIMS(flags) != FLAGS_NDIMS(subgeom->flags) &&
-				 ! lwgeom_is_empty(subgeom) )
+			        ! lwgeom_is_empty(subgeom) )
 			{
 				lwgeom_free(geom);
 				SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
@@ -831,9 +831,9 @@ LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *geom, char *dimension
 			}
 
 			if ( lwtype == COLLECTIONTYPE &&
-			   ( (FLAGS_GET_Z(flags) != FLAGS_GET_Z(subgeom->flags)) ||
-			     (FLAGS_GET_M(flags) != FLAGS_GET_M(subgeom->flags)) ) &&
-				! lwgeom_is_empty(subgeom) )
+			        ( (FLAGS_GET_Z(flags) != FLAGS_GET_Z(subgeom->flags)) ||
+			          (FLAGS_GET_M(flags) != FLAGS_GET_M(subgeom->flags)) ) &&
+			        ! lwgeom_is_empty(subgeom) )
 			{
 				lwgeom_free(geom);
 				SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);

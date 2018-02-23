@@ -35,15 +35,15 @@ static void test_typmod_macros(void)
 	rv = TYPMOD_GET_SRID(typmod);
 	CU_ASSERT_EQUAL(rv, srid);
 
-        srid = 999999;
-        TYPMOD_SET_SRID(typmod,srid);
-        rv = TYPMOD_GET_SRID(typmod);
-        CU_ASSERT_EQUAL(rv, srid);
+	srid = 999999;
+	TYPMOD_SET_SRID(typmod,srid);
+	rv = TYPMOD_GET_SRID(typmod);
+	CU_ASSERT_EQUAL(rv, srid);
 
-        srid = -999999;
-        TYPMOD_SET_SRID(typmod,srid);
-        rv = TYPMOD_GET_SRID(typmod);
-        CU_ASSERT_EQUAL(rv, srid);
+	srid = -999999;
+	TYPMOD_SET_SRID(typmod,srid);
+	rv = TYPMOD_GET_SRID(typmod);
+	CU_ASSERT_EQUAL(rv, srid);
 
 	srid = SRID_UNKNOWN;
 	TYPMOD_SET_SRID(typmod,srid);
@@ -320,12 +320,14 @@ static void test_lwgeom_from_gserialized(void)
 static void test_gserialized_is_empty(void)
 {
 	int i = 0;
-	struct gserialized_empty_cases {
+	struct gserialized_empty_cases
+	{
 		const char* wkt;
 		int isempty;
 	};
 
-	struct gserialized_empty_cases cases[] = {
+	struct gserialized_empty_cases cases[] =
+	{
 		{ "POINT EMPTY", 1 },
 		{ "POINT(1 1)", 0 },
 		{ "LINESTRING EMPTY", 1 },
@@ -529,7 +531,7 @@ static void do_lwgeom_swap_ordinates(char *in, char *out)
 		ymax = g->bbox->ymax;
 	}
 
-    lwgeom_swap_ordinates(g,LWORD_X,LWORD_Y);
+	lwgeom_swap_ordinates(g,LWORD_X,LWORD_Y);
 
 	if ( testbox )
 	{
@@ -1030,7 +1032,10 @@ static void test_lwgeom_scale(void)
 	GBOX *box;
 
 	geom = lwgeom_from_wkt("SRID=4326;GEOMETRYCOLLECTION(POINT(0 1 2 3),POLYGON((-1 -1 0 1,-1 2.5 0 1,2 2 0 1,2 -1 0 1,-1 -1 0 1),(0 0 1 2,0 1 1 2,1 1 1 2,1 0 2 3,0 0 1 2)),LINESTRING(0 0 0 0, 1 2 3 4))", LW_PARSER_CHECK_NONE);
-	factor.x = 2; factor.y = 3; factor.z = 4; factor.m = 5;
+	factor.x = 2;
+	factor.y = 3;
+	factor.z = 4;
+	factor.m = 5;
 	lwgeom_scale(geom, &factor);
 	out_ewkt = lwgeom_to_ewkt(geom);
 	ASSERT_STRING_EQUAL(out_ewkt, "SRID=4326;GEOMETRYCOLLECTION(POINT(0 3 8 15),POLYGON((-2 -3 0 5,-2 7.5 0 5,4 6 0 5,4 -3 0 5,-2 -3 0 5),(0 0 4 10,0 3 4 10,2 3 4 10,2 0 8 15,0 0 4 10)),LINESTRING(0 0 0 0,2 6 12 20))");
@@ -1039,7 +1044,10 @@ static void test_lwgeom_scale(void)
 
 	geom = lwgeom_from_wkt("POINT(1 1 1 1)", LW_PARSER_CHECK_NONE);
 	lwgeom_add_bbox(geom);
-	factor.x = 2; factor.y = 3; factor.z = 4; factor.m = 5;
+	factor.x = 2;
+	factor.y = 3;
+	factor.z = 4;
+	factor.m = 5;
 	lwgeom_scale(geom, &factor);
 	box = geom->bbox;
 	ASSERT_DOUBLE_EQUAL(box->xmin, 2);
@@ -1057,34 +1065,34 @@ void test_gbox_same_2d(void);
 void test_gbox_same_2d(void)
 {
 	LWGEOM* g1 = lwgeom_from_wkt("LINESTRING(0 0, 1 1)", LW_PARSER_CHECK_NONE);
-    LWGEOM* g2 = lwgeom_from_wkt("LINESTRING(0 0, 0 1, 1 1)", LW_PARSER_CHECK_NONE);
-    LWGEOM* g3 = lwgeom_from_wkt("LINESTRING(0 0, 1 1.000000000001)", LW_PARSER_CHECK_NONE);
+	LWGEOM* g2 = lwgeom_from_wkt("LINESTRING(0 0, 0 1, 1 1)", LW_PARSER_CHECK_NONE);
+	LWGEOM* g3 = lwgeom_from_wkt("LINESTRING(0 0, 1 1.000000000001)", LW_PARSER_CHECK_NONE);
 
-    lwgeom_add_bbox(g1);
-    lwgeom_add_bbox(g2);
-    lwgeom_add_bbox(g3);
+	lwgeom_add_bbox(g1);
+	lwgeom_add_bbox(g2);
+	lwgeom_add_bbox(g3);
 
-    CU_ASSERT_TRUE(gbox_same_2d(g1->bbox, g2->bbox));
-    CU_ASSERT_FALSE(gbox_same_2d(g1->bbox, g3->bbox));
+	CU_ASSERT_TRUE(gbox_same_2d(g1->bbox, g2->bbox));
+	CU_ASSERT_FALSE(gbox_same_2d(g1->bbox, g3->bbox));
 
-    /* Serializing a GBOX with precise coordinates renders the boxes not strictly equal,
-     * but still equal according to gbox_same_2d_float.
-     */
-    GSERIALIZED* s3 = gserialized_from_lwgeom(g3, NULL);
-    GBOX s3box;
-    gserialized_read_gbox_p(s3, &s3box);
+	/* Serializing a GBOX with precise coordinates renders the boxes not strictly equal,
+	 * but still equal according to gbox_same_2d_float.
+	 */
+	GSERIALIZED* s3 = gserialized_from_lwgeom(g3, NULL);
+	GBOX s3box;
+	gserialized_read_gbox_p(s3, &s3box);
 
-    CU_ASSERT_FALSE(gbox_same_2d(g3->bbox, &s3box));
-    CU_ASSERT_TRUE(gbox_same_2d_float(g3->bbox, &s3box));
+	CU_ASSERT_FALSE(gbox_same_2d(g3->bbox, &s3box));
+	CU_ASSERT_TRUE(gbox_same_2d_float(g3->bbox, &s3box));
 
-    /* The serialized box equals itself by either the exact or closest-float compares */
-    CU_ASSERT_TRUE(gbox_same_2d(&s3box, &s3box));
-    CU_ASSERT_TRUE(gbox_same_2d_float(&s3box, &s3box));
+	/* The serialized box equals itself by either the exact or closest-float compares */
+	CU_ASSERT_TRUE(gbox_same_2d(&s3box, &s3box));
+	CU_ASSERT_TRUE(gbox_same_2d_float(&s3box, &s3box));
 
-    lwgeom_free(g1);
-    lwgeom_free(g2);
-    lwgeom_free(g3);
-    lwfree(s3);
+	lwgeom_free(g1);
+	lwgeom_free(g2);
+	lwgeom_free(g3);
+	lwfree(s3);
 }
 
 void test_gserialized_peek_gbox_p_no_box_when_empty(void);

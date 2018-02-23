@@ -36,7 +36,8 @@
 * and the argument number the cached index/tree is going
 * to refer to.
 */
-typedef struct {
+typedef struct
+{
 	int                         type;
 	GSERIALIZED*                geom1;
 	GSERIALIZED*                geom2;

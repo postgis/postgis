@@ -330,9 +330,9 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 #if POSTGIS_GEOS_VERSION < 35
 
 	elog(ERROR, "The GEOS version this PostGIS binary "
-	        "was compiled against (%d) doesn't support "
-	        "'%s' function (3.5.0+ required)",
-	        POSTGIS_GEOS_VERSION, __func__);
+	     "was compiled against (%d) doesn't support "
+	     "'%s' function (3.5.0+ required)",
+	     POSTGIS_GEOS_VERSION, __func__);
 	PG_RETURN_NULL();
 
 #else /* POSTGIS_GEOS_VERSION >= 35 */

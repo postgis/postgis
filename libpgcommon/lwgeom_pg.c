@@ -49,8 +49,8 @@ pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result)
 		/* Return a copy of the input string start truncated
 		 * at the error location */
 		hintbuffer = lwmessage_truncate(
-			(char *)lwg_parser_result->wkinput, 0,
-			lwg_parser_result->errlocation - 1, 40, 0);
+		                 (char *)lwg_parser_result->wkinput, 0,
+		                 lwg_parser_result->errlocation - 1, 40, 0);
 
 		ereport(ERROR,
 		        (errmsg("%s", lwg_parser_result->message),
@@ -217,7 +217,7 @@ lwpgnotice(const char *fmt, ...)
 
 	va_start(ap, fmt);
 
-  pg_notice(fmt, ap);
+	pg_notice(fmt, ap);
 
 	va_end(ap);
 }
@@ -229,7 +229,7 @@ lwpgwarning(const char *fmt, ...)
 
 	va_start(ap, fmt);
 
-  pg_warning(fmt, ap);
+	pg_warning(fmt, ap);
 
 	va_end(ap);
 }
@@ -241,7 +241,7 @@ lwpgerror(const char *fmt, ...)
 
 	va_start(ap, fmt);
 
-  pg_error(fmt, ap);
+	pg_error(fmt, ap);
 
 	va_end(ap);
 }
@@ -307,10 +307,10 @@ postgis_guc_find_option(const char *name)
 	 * the name field is first in config_generic.
 	 */
 	res = (struct config_generic **) bsearch((void *) &key,
-		 (void *) get_guc_variables(),
-		 GetNumConfigOptions(),
-		 sizeof(struct config_generic *),
-		 postgis_guc_var_compare);
+	        (void *) get_guc_variables(),
+	        GetNumConfigOptions(),
+	        sizeof(struct config_generic *),
+	        postgis_guc_var_compare);
 
 	/* Found nothing? Good */
 	if ( ! res ) return 0;

@@ -39,8 +39,8 @@
 
 struct LWT_BE_IFACE_T
 {
-  const LWT_BE_DATA *data;
-  const LWT_BE_CALLBACKS *cb;
+	const LWT_BE_DATA *data;
+	const LWT_BE_CALLBACKS *cb;
 };
 
 const char* lwt_be_lastErrorMessage(const LWT_BE_IFACE* be);
@@ -60,10 +60,10 @@ int lwt_be_ExistsEdgeIntersectingPoint(LWT_TOPOLOGY* topo, LWPOINT* pt);
 
 LWT_ELEMID lwt_be_getNextEdgeId(LWT_TOPOLOGY* topo);
 LWT_ISO_EDGE* lwt_be_getEdgeById(LWT_TOPOLOGY* topo, const LWT_ELEMID* ids,
-                               int* numelems, int fields);
+                                 int* numelems, int fields);
 LWT_ISO_EDGE* lwt_be_getEdgeWithinDistance2D(LWT_TOPOLOGY* topo, LWPOINT* pt,
-                               double dist, int* numelems, int fields,
-                               int limit);
+        double dist, int* numelems, int fields,
+        int limit);
 int
 lwt_be_insertEdges(LWT_TOPOLOGY* topo, LWT_ISO_EDGE* edge, int numelems);
 int
@@ -84,11 +84,11 @@ int lwt_be_updateTopoGeomEdgeSplit(LWT_TOPOLOGY* topo, LWT_ELEMID split_edge, LW
 
 struct LWT_TOPOLOGY_T
 {
-  const LWT_BE_IFACE *be_iface;
-  LWT_BE_TOPOLOGY *be_topo;
-  int srid;
-  double precision;
-  int hasZ;
+	const LWT_BE_IFACE *be_iface;
+	LWT_BE_TOPOLOGY *be_topo;
+	int srid;
+	double precision;
+	int hasZ;
 };
 
 #endif /* LIBLWGEOM_TOPO_INTERNAL_H */

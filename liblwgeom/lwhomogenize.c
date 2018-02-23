@@ -28,7 +28,8 @@
 #include "lwgeom_log.h"
 
 
-typedef struct {
+typedef struct
+{
 	int cnt[NUMTYPES];
 	LWCOLLECTION* buf[NUMTYPES];
 } HomogenizeBuffer;
@@ -84,32 +85,32 @@ lwcollection_build_buffer(const LWCOLLECTION *col, HomogenizeBuffer *buffer)
 		LWGEOM *geom = col->geoms[i];
 		switch(geom->type)
 		{
-			case POINTTYPE:
-			case LINETYPE:
-			case CIRCSTRINGTYPE:
-			case COMPOUNDTYPE:
-			case TRIANGLETYPE:
-			case CURVEPOLYTYPE:
-			case POLYGONTYPE:
+		case POINTTYPE:
+		case LINETYPE:
+		case CIRCSTRINGTYPE:
+		case COMPOUNDTYPE:
+		case TRIANGLETYPE:
+		case CURVEPOLYTYPE:
+		case POLYGONTYPE:
+		{
+			/* Init if necessary */
+			if ( ! buffer->buf[geom->type] )
 			{
-				/* Init if necessary */
-				if ( ! buffer->buf[geom->type] )
-				{
-					LWCOLLECTION *bufcol = lwcollection_construct_empty(COLLECTIONTYPE, col->srid, FLAGS_GET_Z(col->flags), FLAGS_GET_M(col->flags));
-					bufcol->type = lwtype_get_collectiontype(geom->type);
-					buffer->buf[geom->type] = bufcol;
-				}
-				/* Add sub-geom to buffer */
-				lwcollection_add_lwgeom(buffer->buf[geom->type], lwgeom_clone(geom));
-				/* Increment count for this singleton type */
-				buffer->cnt[geom->type] = buffer->cnt[geom->type] + 1;
+				LWCOLLECTION *bufcol = lwcollection_construct_empty(COLLECTIONTYPE, col->srid, FLAGS_GET_Z(col->flags), FLAGS_GET_M(col->flags));
+				bufcol->type = lwtype_get_collectiontype(geom->type);
+				buffer->buf[geom->type] = bufcol;
 			}
-			/* FALLTHROUGH */
-			default:
-			{
-				lwcollection_build_buffer(lwgeom_as_lwcollection(geom), buffer);
-				break;
-			}
+			/* Add sub-geom to buffer */
+			lwcollection_add_lwgeom(buffer->buf[geom->type], lwgeom_clone(geom));
+			/* Increment count for this singleton type */
+			buffer->cnt[geom->type] = buffer->cnt[geom->type] + 1;
+		}
+		/* FALLTHROUGH */
+		default:
+		{
+			lwcollection_build_buffer(lwgeom_as_lwcollection(geom), buffer);
+			break;
+		}
 		}
 	}
 	return;
@@ -154,7 +155,8 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 		if ( outcol->ngeoms == 1 )
 		{
 			outgeom = outcol->geoms[0];
-			outcol->ngeoms=0; lwcollection_free(outcol);
+			outcol->ngeoms=0;
+			lwcollection_free(outcol);
 		}
 		else
 		{
@@ -176,7 +178,8 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 				if ( bcol->ngeoms == 1 )
 				{
 					lwcollection_add_lwgeom(outcol, bcol->geoms[0]);
-					bcol->ngeoms=0; lwcollection_free(bcol);
+					bcol->ngeoms=0;
+					lwcollection_free(bcol);
 				}
 				else
 				{
@@ -226,44 +229,44 @@ lwgeom_homogenize(const LWGEOM *geom)
 	switch (geom->type)
 	{
 
-		/* Return simple geometries untouched */
-		case POINTTYPE:
-		case LINETYPE:
-		case CIRCSTRINGTYPE:
-		case COMPOUNDTYPE:
-		case TRIANGLETYPE:
-		case CURVEPOLYTYPE:
-		case POLYGONTYPE:
-			return lwgeom_clone(geom);
+	/* Return simple geometries untouched */
+	case POINTTYPE:
+	case LINETYPE:
+	case CIRCSTRINGTYPE:
+	case COMPOUNDTYPE:
+	case TRIANGLETYPE:
+	case CURVEPOLYTYPE:
+	case POLYGONTYPE:
+		return lwgeom_clone(geom);
 
-		/* Process homogeneous geometries lightly */
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case MULTICURVETYPE:
-		case MULTISURFACETYPE:
-		case POLYHEDRALSURFACETYPE:
-		case TINTYPE:
+	/* Process homogeneous geometries lightly */
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
+	{
+		LWCOLLECTION *col = (LWCOLLECTION*)geom;
+
+		/* Strip single-entry multi-geometries down to singletons */
+		if ( col->ngeoms == 1 )
 		{
-			LWCOLLECTION *col = (LWCOLLECTION*)geom;
-
-			/* Strip single-entry multi-geometries down to singletons */
-			if ( col->ngeoms == 1 )
-			{
-				hgeom = lwgeom_clone((LWGEOM*)(col->geoms[0]));
-				hgeom->srid = geom->srid;
-				if (geom->bbox)
-					hgeom->bbox = gbox_copy(geom->bbox);
-				return hgeom;
-			}
-
-			/* Return proper multigeometry untouched */
-			return lwgeom_clone(geom);
+			hgeom = lwgeom_clone((LWGEOM*)(col->geoms[0]));
+			hgeom->srid = geom->srid;
+			if (geom->bbox)
+				hgeom->bbox = gbox_copy(geom->bbox);
+			return hgeom;
 		}
 
-		/* Work on anonymous collections separately */
-		case COLLECTIONTYPE:
-			return lwcollection_homogenize((LWCOLLECTION *) geom);
+		/* Return proper multigeometry untouched */
+		return lwgeom_clone(geom);
+	}
+
+	/* Work on anonymous collections separately */
+	case COLLECTIONTYPE:
+		return lwcollection_homogenize((LWCOLLECTION *) geom);
 	}
 
 	/* Unknown type */

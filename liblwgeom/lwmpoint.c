@@ -98,7 +98,8 @@ lwmpoint_from_lwgeom(const LWGEOM *g)
 	LWMPOINT* result = lwmpoint_construct_empty(g->srid, has_z, has_m);
 	POINT4D p;
 
-	while(lwpointiterator_next(it, &p)) {
+	while(lwpointiterator_next(it, &p))
+	{
 		LWPOINT* lwp = lwpoint_make(g->srid, has_z, has_m, &p);
 		lwmpoint_add_lwpoint(result, lwp);
 	}

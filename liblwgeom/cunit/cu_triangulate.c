@@ -32,13 +32,13 @@ static void test_lwgeom_delaunay_triangulation(void)
 	out = lwgeom_normalize(tmp);
 	lwgeom_free(tmp);
 
-        wkt = lwgeom_to_ewkt(out);
+	wkt = lwgeom_to_ewkt(out);
 	lwgeom_free(out);
 
 	exp_wkt = "GEOMETRYCOLLECTION(POLYGON((5 5,20 0,10 0,5 5)))";
-        if ( strcmp(wkt, exp_wkt) )
+	if ( strcmp(wkt, exp_wkt) )
 	{
-                fprintf(stderr, "\nExp:  %s\nObt:  %s\n", exp_wkt, wkt);
+		fprintf(stderr, "\nExp:  %s\nObt:  %s\n", exp_wkt, wkt);
 	}
 	CU_ASSERT_STRING_EQUAL(wkt, exp_wkt);
 	lwfree(wkt);

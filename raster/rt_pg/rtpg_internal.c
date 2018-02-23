@@ -53,10 +53,11 @@
 --------------------------------------------------------------------------- */
 char*
 rtpg_strreplace(
-	const char *str,
-	const char *oldstr, const char *newstr,
-	int *count
-) {
+    const char *str,
+    const char *oldstr, const char *newstr,
+    int *count
+)
+{
 	const char *tmp = str;
 	char *result;
 	int found = 0;
@@ -70,17 +71,20 @@ rtpg_strreplace(
 		found++, tmp += oldlen;
 
 	length = strlen(str) + found * (newlen - oldlen);
-	if ((result = (char *) palloc(length + 1)) == NULL) {
+	if ((result = (char *) palloc(length + 1)) == NULL)
+	{
 		fprintf(stderr, "Not enough memory\n");
 		found = -1;
 	}
-	else {
+	else
+	{
 		tmp = str;
 		limit = found; /* Countdown */
 		reslen = 0; /* length of current result */
 
 		/* Replace each old string found with new string  */
-		while ((limit-- > 0) && (tmp = strstr(tmp, oldstr)) != NULL) {
+		while ((limit-- > 0) && (tmp = strstr(tmp, oldstr)) != NULL)
+		{
 			length = (tmp - str); /* Number of chars to keep intouched */
 			strncpy(result + reslen, str, length); /* Original part keeped */
 			strcpy(result + (reslen += length), newstr); /* Insert new string */
@@ -97,7 +101,8 @@ rtpg_strreplace(
 }
 
 char *
-rtpg_strtoupper(char * str) {
+rtpg_strtoupper(char * str)
+{
 	int j;
 
 	for (j = strlen(str) - 1; j >= 0; j--)
@@ -107,7 +112,8 @@ rtpg_strtoupper(char * str) {
 }
 
 char*
-rtpg_chartrim(const char *input, char *remove) {
+rtpg_chartrim(const char *input, char *remove)
+{
 	char *rtn = NULL;
 	char *ptr = NULL;
 	uint32_t offset = 0;
@@ -127,7 +133,8 @@ rtpg_chartrim(const char *input, char *remove) {
 		offset++;
 
 	rtn = palloc(sizeof(char) * (strlen(input) - offset + 1));
-	if (rtn == NULL) {
+	if (rtn == NULL)
+	{
 		fprintf(stderr, "Not enough memory\n");
 		return NULL;
 	}
@@ -139,7 +146,8 @@ rtpg_chartrim(const char *input, char *remove) {
 
 /* split a string based on a delimiter */
 char**
-rtpg_strsplit(const char *str, const char *delimiter, uint32_t *n) {
+rtpg_strsplit(const char *str, const char *delimiter, uint32_t *n)
+{
 	char *tmp = NULL;
 	char **rtn = NULL;
 	char *token = NULL;
@@ -150,21 +158,25 @@ rtpg_strsplit(const char *str, const char *delimiter, uint32_t *n) {
 
 	/* copy str to tmp as strtok will mangle the string */
 	tmp = palloc(sizeof(char) * (strlen(str) + 1));
-	if (NULL == tmp) {
+	if (NULL == tmp)
+	{
 		fprintf(stderr, "Not enough memory\n");
 		return NULL;
 	}
 	strcpy(tmp, str);
 
-	if (!strlen(tmp) || !delimiter || !strlen(delimiter)) {
+	if (!strlen(tmp) || !delimiter || !strlen(delimiter))
+	{
 		*n = 1;
 		rtn = (char **) palloc(*n * sizeof(char *));
-		if (NULL == rtn) {
+		if (NULL == rtn)
+		{
 			fprintf(stderr, "Not enough memory\n");
 			return NULL;
 		}
 		rtn[0] = (char *) palloc(sizeof(char) * (strlen(tmp) + 1));
-		if (NULL == rtn[0]) {
+		if (NULL == rtn[0])
+		{
 			fprintf(stderr, "Not enough memory\n");
 			return NULL;
 		}
@@ -174,21 +186,26 @@ rtpg_strsplit(const char *str, const char *delimiter, uint32_t *n) {
 	}
 
 	token = strtok(tmp, delimiter);
-	while (token != NULL) {
-		if (*n < 1) {
+	while (token != NULL)
+	{
+		if (*n < 1)
+		{
 			rtn = (char **) palloc(sizeof(char *));
 		}
-		else {
+		else
+		{
 			rtn = (char **) repalloc(rtn, (*n + 1) * sizeof(char *));
 		}
-		if (NULL == rtn) {
+		if (NULL == rtn)
+		{
 			fprintf(stderr, "Not enough memory\n");
 			return NULL;
 		}
 
 		rtn[*n] = NULL;
 		rtn[*n] = (char *) palloc(sizeof(char) * (strlen(token) + 1));
-		if (NULL == rtn[*n]) {
+		if (NULL == rtn[*n])
+		{
 			fprintf(stderr, "Not enough memory\n");
 			return NULL;
 		}
@@ -204,7 +221,8 @@ rtpg_strsplit(const char *str, const char *delimiter, uint32_t *n) {
 }
 
 char *
-rtpg_removespaces(char *str) {
+rtpg_removespaces(char *str)
+{
 	char *rtn;
 	char *tmp;
 
@@ -223,7 +241,8 @@ rtpg_removespaces(char *str) {
 }
 
 char*
-rtpg_trim(const char *input) {
+rtpg_trim(const char *input)
+{
 	char *rtn;
 	char *ptr;
 	uint32_t offset = 0;
@@ -240,14 +259,16 @@ rtpg_trim(const char *input) {
 
 	/* trim right */
 	inputlen = strlen(input);
-	if (inputlen) {
+	if (inputlen)
+	{
 		ptr = ((char *) input) + inputlen;
 		while (isspace(*--ptr))
 			offset++;
 	}
 
 	rtn = palloc(sizeof(char) * (inputlen - offset + 1));
-	if (rtn == NULL) {
+	if (rtn == NULL)
+	{
 		fprintf(stderr, "Not enough memory\n");
 		return NULL;
 	}
@@ -262,7 +283,8 @@ rtpg_trim(const char *input) {
  * http://stackoverflow.com/a/1634398
  */
 char *
-rtpg_strrstr(const char *s1, const char *s2) {
+rtpg_strrstr(const char *s1, const char *s2)
+{
 	int s1len = strlen(s1);
 	int s2len = strlen(s2);
 	char *s;
@@ -279,7 +301,8 @@ rtpg_strrstr(const char *s1, const char *s2) {
 }
 
 char*
-rtpg_getSR(int srid) {
+rtpg_getSR(int srid)
+{
 	int i = 0;
 	int len = 0;
 	char *sql = NULL;
@@ -290,31 +313,33 @@ rtpg_getSR(int srid) {
 	char *tmp = NULL;
 	char *srs = NULL;
 
-/*
-SELECT
-	CASE
-		WHEN (upper(auth_name) = 'EPSG' OR upper(auth_name) = 'EPSGA') AND length(COALESCE(auth_srid::text, '')) > 0
-			THEN upper(auth_name) || ':' || auth_srid
-		WHEN length(COALESCE(auth_name, '') || COALESCE(auth_srid::text, '')) > 0
-			THEN COALESCE(auth_name, '') || COALESCE(auth_srid::text, '')
-		ELSE ''
-	END,
-	proj4text,
-	srtext
-FROM spatial_ref_sys
-WHERE srid = X
-LIMIT 1
-*/
+	/*
+	SELECT
+		CASE
+			WHEN (upper(auth_name) = 'EPSG' OR upper(auth_name) = 'EPSGA') AND length(COALESCE(auth_srid::text, '')) > 0
+				THEN upper(auth_name) || ':' || auth_srid
+			WHEN length(COALESCE(auth_name, '') || COALESCE(auth_srid::text, '')) > 0
+				THEN COALESCE(auth_name, '') || COALESCE(auth_srid::text, '')
+			ELSE ''
+		END,
+		proj4text,
+		srtext
+	FROM spatial_ref_sys
+	WHERE srid = X
+	LIMIT 1
+	*/
 
 	len = sizeof(char) * (strlen("SELECT CASE WHEN (upper(auth_name) = 'EPSG' OR upper(auth_name) = 'EPSGA') AND length(COALESCE(auth_srid::text, '')) > 0 THEN upper(auth_name) || ':' || auth_srid WHEN length(COALESCE(auth_name, '') || COALESCE(auth_srid::text, '')) > 0 THEN COALESCE(auth_name, '') || COALESCE(auth_srid::text, '') ELSE '' END, proj4text, srtext FROM spatial_ref_sys WHERE srid =  LIMIT 1") + MAX_INT_CHARLEN + 1);
 	sql = (char *) palloc(len);
-	if (NULL == sql) {
+	if (NULL == sql)
+	{
 		elog(ERROR, "rtpg_getSR: Could not allocate memory for sql\n");
 		return NULL;
 	}
 
 	spi_result = SPI_connect();
-	if (spi_result != SPI_OK_CONNECT) {
+	if (spi_result != SPI_OK_CONNECT)
+	{
 		pfree(sql);
 		elog(ERROR, "rtpg_getSR: Could not connect to database using SPI\n");
 		return NULL;
@@ -325,7 +350,8 @@ LIMIT 1
 	POSTGIS_RT_DEBUGF(4, "SRS query: %s", sql);
 	spi_result = SPI_execute(sql, TRUE, 0);
 	SPI_pfree(sql);
-	if (spi_result != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
+	if (spi_result != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1)
+	{
 		if (SPI_tuptable) SPI_freetuptable(tuptable);
 		SPI_finish();
 		elog(ERROR, "rtpg_getSR: Cannot find SRID (%d) in spatial_ref_sys", srid);
@@ -337,22 +363,25 @@ LIMIT 1
 	tuple = tuptable->vals[0];
 
 	/* which column to use? */
-	for (i = 1; i < 4; i++) {
+	for (i = 1; i < 4; i++)
+	{
 		tmp = SPI_getvalue(tuple, tupdesc, i);
 
 		/* value AND GDAL supports this SR */
 		if (
-			SPI_result != SPI_ERROR_NOATTRIBUTE &&
-			SPI_result != SPI_ERROR_NOOUTFUNC &&
-			tmp != NULL &&
-			strlen(tmp) &&
-			rt_util_gdal_supported_sr(tmp)
-		) {
+		    SPI_result != SPI_ERROR_NOATTRIBUTE &&
+		    SPI_result != SPI_ERROR_NOOUTFUNC &&
+		    tmp != NULL &&
+		    strlen(tmp) &&
+		    rt_util_gdal_supported_sr(tmp)
+		)
+		{
 			POSTGIS_RT_DEBUGF(4, "Value for column %d is %s", i, tmp);
 
 			len = strlen(tmp) + 1;
 			srs = SPI_palloc(sizeof(char) * len);
-			if (NULL == srs) {
+			if (NULL == srs)
+			{
 				pfree(tmp);
 				if (SPI_tuptable) SPI_freetuptable(tuptable);
 				SPI_finish();
@@ -374,7 +403,8 @@ LIMIT 1
 	SPI_finish();
 
 	/* unable to get SR info */
-	if (srs == NULL) {
+	if (srs == NULL)
+	{
 		if (SPI_tuptable) SPI_freetuptable(tuptable);
 		SPI_finish();
 		elog(ERROR, "rtpg_getSR: Could not find a viable spatial reference for SRID (%d)", srid);

@@ -11,10 +11,10 @@
 //-----------------------------------------------------------------------------
 
 #ifdef __VMS
-	#define __USE_STD_IOSTREAM 1
-	#include <assert>
+#define __USE_STD_IOSTREAM 1
+#include <assert>
 #else
-	#include <cassert>
+#include <cassert>
 #endif
 
 #include <cctype>
@@ -24,7 +24,7 @@
 #include <vector>
 
 #ifdef __GNUC__
-	#include <cstring>              // need both string and cstring for GCC
+#include <cstring>              // need both string and cstring for GCC
 #endif
 
 //-----------------------------------------------------------------------------
@@ -32,31 +32,32 @@
 //-----------------------------------------------------------------------------
 
 #ifdef _MSC_VER
-	#pragma warning(disable: 4267)  // conversion from size_t to int
+#pragma warning(disable: 4267)  // conversion from size_t to int
 #endif
 
 #ifdef __BORLANDC__
-	#pragma warn -8004	            // variable is assigned a value that is never used
+#pragma warn -8004	            // variable is assigned a value that is never used
 #endif
 
 #ifdef __GNUC__
-	#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wconversion"
 #endif
 
 #ifdef __INTEL_COMPILER
-	#pragma warning(disable:  383)  // value copied to temporary, reference to temporary used
-	#pragma warning(disable:  981)  // operands are evaluated in unspecified order
+#pragma warning(disable:  383)  // value copied to temporary, reference to temporary used
+#pragma warning(disable:  981)  // operands are evaluated in unspecified order
 #endif
 
 #ifdef __clang__
-	#pragma clang diagnostic ignored "-Wshorten-64-to-32"
+#pragma clang diagnostic ignored "-Wshorten-64-to-32"
 #endif
 
 //-----------------------------------------------------------------------------
 // astyle namespace
 //-----------------------------------------------------------------------------
 
-namespace astyle {
+namespace astyle
+{
 //
 using namespace std;
 
@@ -211,16 +212,26 @@ private:
 
 public:
 	explicit ASPeekStream(ASSourceIterator* sourceIterator_)
-	{ sourceIterator = sourceIterator_; needReset = false; }
+	{
+		sourceIterator = sourceIterator_;
+		needReset = false;
+	}
 
 	~ASPeekStream()
-	{ if (needReset) sourceIterator->peekReset(); }
+	{
+		if (needReset) sourceIterator->peekReset();
+	}
 
 	bool hasMoreLines() const
-	{ return sourceIterator->hasMoreLines(); }
+	{
+		return sourceIterator->hasMoreLines();
+	}
 
 	string peekNextLine()
-	{ needReset = true; return sourceIterator->peekNextLine(); }
+	{
+		needReset = true;
+		return sourceIterator->peekNextLine();
+	}
 };
 
 
@@ -302,11 +313,26 @@ protected:
 	ASBase() : baseFileType(C_TYPE) { }
 
 protected:  // inline functions
-	void init(int fileTypeArg) { baseFileType = fileTypeArg; }
-	bool isCStyle() const { return (baseFileType == C_TYPE); }
-	bool isJavaStyle() const { return (baseFileType == JAVA_TYPE); }
-	bool isSharpStyle() const { return (baseFileType == SHARP_TYPE); }
-	bool isWhiteSpace(char ch) const { return (ch == ' ' || ch == '\t'); }
+	void init(int fileTypeArg)
+	{
+		baseFileType = fileTypeArg;
+	}
+	bool isCStyle() const
+	{
+		return (baseFileType == C_TYPE);
+	}
+	bool isJavaStyle() const
+	{
+		return (baseFileType == JAVA_TYPE);
+	}
+	bool isSharpStyle() const
+	{
+		return (baseFileType == SHARP_TYPE);
+	}
+	bool isWhiteSpace(char ch) const
+	{
+		return (ch == ' ' || ch == '\t');
+	}
 
 protected:  // functions definitions are at the end of ASResource.cpp
 	const string* findHeader(const string& line, int i,
@@ -1054,19 +1080,27 @@ private:  // variables
 private:  // inline functions
 	// append the CURRENT character (curentChar) to the current formatted line.
 	void appendCurrentChar(bool canBreakLine = true)
-	{ appendChar(currentChar, canBreakLine); }
+	{
+		appendChar(currentChar, canBreakLine);
+	}
 
 	// check if a specific sequence exists in the current placement of the current line
 	bool isSequenceReached(const char* sequence) const
-	{ return currentLine.compare(charNum, strlen(sequence), sequence) == 0; }
+	{
+		return currentLine.compare(charNum, strlen(sequence), sequence) == 0;
+	}
 
 	// call ASBase::findHeader for the current character
 	const string* findHeader(const vector<const string*>* headers_)
-	{ return ASBase::findHeader(currentLine, charNum, headers_); }
+	{
+		return ASBase::findHeader(currentLine, charNum, headers_);
+	}
 
 	// call ASBase::findOperator for the current character
 	const string* findOperator(const vector<const string*>* operators_)
-	{ return ASBase::findOperator(currentLine, charNum, operators_); }
+	{
+		return ASBase::findOperator(currentLine, charNum, operators_);
+	}
 };  // Class ASFormatter
 
 //-----------------------------------------------------------------------------

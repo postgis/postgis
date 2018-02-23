@@ -78,7 +78,7 @@ lwpoly_construct(int srid, GBOX *bbox, uint32_t nrings, POINTARRAY **points)
 
 LWPOLY*
 lwpoly_construct_rectangle(char hasz, char hasm, POINT4D *p1, POINT4D *p2,
-		POINT4D *p3, POINT4D *p4)
+                           POINT4D *p3, POINT4D *p4)
 {
 	POINTARRAY *pa = ptarray_construct_empty(hasz, hasm, 5);
 	LWPOLY *lwpoly = lwpoly_construct_empty(SRID_UNKNOWN, hasz, hasm);
@@ -216,7 +216,8 @@ lwpoly_clone(const LWPOLY *g)
 	LWPOLY *ret = lwalloc(sizeof(LWPOLY));
 	memcpy(ret, g, sizeof(LWPOLY));
 	ret->rings = lwalloc(sizeof(POINTARRAY *)*g->nrings);
-	for ( i = 0; i < g->nrings; i++ ) {
+	for ( i = 0; i < g->nrings; i++ )
+	{
 		ret->rings[i] = ptarray_clone(g->rings[i]);
 	}
 	if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);

@@ -132,7 +132,7 @@ static uint32_t lwgeom_wkb_type(const LWGEOM *geom, uint8_t variant)
 		break;
 	default:
 		lwerror("Unsupported geometry type: %s [%d]",
-			lwtype_name(geom->type), geom->type);
+		        lwtype_name(geom->type), geom->type);
 	}
 
 	if ( variant & WKB_EXTENDED )
@@ -141,7 +141,7 @@ static uint32_t lwgeom_wkb_type(const LWGEOM *geom, uint8_t variant)
 			wkb_type |= WKBZOFFSET;
 		if ( FLAGS_GET_M(geom->flags) )
 			wkb_type |= WKBMOFFSET;
-/*		if ( geom->srid != SRID_UNKNOWN && ! (variant & WKB_NO_SRID) ) */
+		/*		if ( geom->srid != SRID_UNKNOWN && ! (variant & WKB_NO_SRID) ) */
 		if ( lwgeom_wkb_needs_srid(geom, variant) )
 			wkb_type |= WKBSRIDFLAG;
 	}
@@ -183,7 +183,7 @@ static inline int wkb_swap_bytes(uint8_t variant)
 {
 	/* If requested variant matches machine arch, we don't have to swap! */
 	if ( ((variant & WKB_NDR) && (getMachineEndian() == NDR)) ||
-	     ((! (variant & WKB_NDR)) && (getMachineEndian() == XDR)) )
+	        ((! (variant & WKB_NDR)) && (getMachineEndian() == XDR)) )
 	{
 		return LW_FALSE;
 	}
@@ -660,43 +660,43 @@ static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 
 	switch ( geom->type )
 	{
-		case POINTTYPE:
-			size += lwpoint_to_wkb_size((LWPOINT*)geom, variant);
-			break;
+	case POINTTYPE:
+		size += lwpoint_to_wkb_size((LWPOINT*)geom, variant);
+		break;
 
-		/* LineString and CircularString both have points elements */
-		case CIRCSTRINGTYPE:
-		case LINETYPE:
-			size += lwline_to_wkb_size((LWLINE*)geom, variant);
-			break;
+	/* LineString and CircularString both have points elements */
+	case CIRCSTRINGTYPE:
+	case LINETYPE:
+		size += lwline_to_wkb_size((LWLINE*)geom, variant);
+		break;
 
-		/* Polygon has nrings and rings elements */
-		case POLYGONTYPE:
-			size += lwpoly_to_wkb_size((LWPOLY*)geom, variant);
-			break;
+	/* Polygon has nrings and rings elements */
+	case POLYGONTYPE:
+		size += lwpoly_to_wkb_size((LWPOLY*)geom, variant);
+		break;
 
-		/* Triangle has one ring of three points */
-		case TRIANGLETYPE:
-			size += lwtriangle_to_wkb_size((LWTRIANGLE*)geom, variant);
-			break;
+	/* Triangle has one ring of three points */
+	case TRIANGLETYPE:
+		size += lwtriangle_to_wkb_size((LWTRIANGLE*)geom, variant);
+		break;
 
-		/* All these Collection types have ngeoms and geoms elements */
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COMPOUNDTYPE:
-		case CURVEPOLYTYPE:
-		case MULTICURVETYPE:
-		case MULTISURFACETYPE:
-		case COLLECTIONTYPE:
-		case POLYHEDRALSURFACETYPE:
-		case TINTYPE:
-			size += lwcollection_to_wkb_size((LWCOLLECTION*)geom, variant);
-			break;
+	/* All these Collection types have ngeoms and geoms elements */
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COMPOUNDTYPE:
+	case CURVEPOLYTYPE:
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
+	case COLLECTIONTYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
+		size += lwcollection_to_wkb_size((LWCOLLECTION*)geom, variant);
+		break;
 
-		/* Unknown type! */
-		default:
-			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(geom->type), geom->type);
+	/* Unknown type! */
+	default:
+		lwerror("Unsupported geometry type: %s [%d]", lwtype_name(geom->type), geom->type);
 	}
 
 	return size;
@@ -713,38 +713,38 @@ static uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t vari
 
 	switch ( geom->type )
 	{
-		case POINTTYPE:
-			return lwpoint_to_wkb_buf((LWPOINT*)geom, buf, variant);
+	case POINTTYPE:
+		return lwpoint_to_wkb_buf((LWPOINT*)geom, buf, variant);
 
-		/* LineString and CircularString both have 'points' elements */
-		case CIRCSTRINGTYPE:
-		case LINETYPE:
-			return lwline_to_wkb_buf((LWLINE*)geom, buf, variant);
+	/* LineString and CircularString both have 'points' elements */
+	case CIRCSTRINGTYPE:
+	case LINETYPE:
+		return lwline_to_wkb_buf((LWLINE*)geom, buf, variant);
 
-		/* Polygon has 'nrings' and 'rings' elements */
-		case POLYGONTYPE:
-			return lwpoly_to_wkb_buf((LWPOLY*)geom, buf, variant);
+	/* Polygon has 'nrings' and 'rings' elements */
+	case POLYGONTYPE:
+		return lwpoly_to_wkb_buf((LWPOLY*)geom, buf, variant);
 
-		/* Triangle has one ring of three points */
-		case TRIANGLETYPE:
-			return lwtriangle_to_wkb_buf((LWTRIANGLE*)geom, buf, variant);
+	/* Triangle has one ring of three points */
+	case TRIANGLETYPE:
+		return lwtriangle_to_wkb_buf((LWTRIANGLE*)geom, buf, variant);
 
-		/* All these Collection types have 'ngeoms' and 'geoms' elements */
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COMPOUNDTYPE:
-		case CURVEPOLYTYPE:
-		case MULTICURVETYPE:
-		case MULTISURFACETYPE:
-		case COLLECTIONTYPE:
-		case POLYHEDRALSURFACETYPE:
-		case TINTYPE:
-			return lwcollection_to_wkb_buf((LWCOLLECTION*)geom, buf, variant);
+	/* All these Collection types have 'ngeoms' and 'geoms' elements */
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COMPOUNDTYPE:
+	case CURVEPOLYTYPE:
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
+	case COLLECTIONTYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
+		return lwcollection_to_wkb_buf((LWCOLLECTION*)geom, buf, variant);
 
-		/* Unknown type! */
-		default:
-			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(geom->type), geom->type);
+	/* Unknown type! */
+	default:
+		lwerror("Unsupported geometry type: %s [%d]", lwtype_name(geom->type), geom->type);
 	}
 	/* Return value to keep compiler happy. */
 	return 0;
@@ -797,7 +797,7 @@ uint8_t* lwgeom_to_wkb(const LWGEOM *geom, uint8_t variant, size_t *size_out)
 
 	/* If neither or both variants are specified, choose the native order */
 	if ( ! (variant & WKB_NDR || variant & WKB_XDR) ||
-	       (variant & WKB_NDR && variant & WKB_XDR) )
+	        (variant & WKB_NDR && variant & WKB_XDR) )
 	{
 		if ( getMachineEndian() == NDR )
 			variant = variant | WKB_NDR;
