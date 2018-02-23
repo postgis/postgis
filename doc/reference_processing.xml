@@ -1996,7 +1996,7 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 
 		<para>Converts plain LINESTRING/POLYGON to CIRCULAR STRINGs and Curved Polygons.  Note much fewer points are needed to describe the curved equivalent.</para>
 		<note><para>If the input LINESTRING/POLYGON is not curved enough to clearly represent a curve, the function will return the same input geometry.</para></note>
-		<para>Availability: 1.2.2?</para>
+		<para>Availability: 1.3.0</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 	  </refsection>
