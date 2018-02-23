@@ -26,6 +26,7 @@
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include <ctype.h> /* for tolower */
+#include <stddef.h> /* ptrdiff_t */
 
 int
 p4d_same(const POINT4D *p1, const POINT4D *p2)
@@ -179,7 +180,7 @@ int lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const P
 {
 	POINT2D C;
 	double radius_A;
-	double side_Q, side_A2;
+	int side_Q, side_A2;
 	double d;
 
 	side_Q = lw_segment_side(A1, A3, Q);
@@ -578,15 +579,16 @@ static char *base32 = "0123456789bcdefghjkmnpqrstuvwxyz";
 ** From geohash-native.c, (c) 2008 David Troy <dave@roundhousetech.com>
 ** Released under the MIT License.
 */
-char *geohash_point(double longitude, double latitude, int precision)
+char *geohash_point(double longitude, double latitude, int32_t precision)
 {
-	int is_even=1, i=0;
+	int is_even=1;
+	int8_t i=0;
 	double lat[2], lon[2], mid;
 	char bits[] = {16,8,4,2,1};
 	int bit=0, ch=0;
 	char *geohash = NULL;
 
-	geohash = lwalloc(precision + 1);
+	geohash = lwalloc((uint32_t) precision + 1);
 
 	lat[0] = -90.0;
 	lat[1] = 90.0;
@@ -679,7 +681,7 @@ unsigned int geohash_point_as_int(POINT2D *pt)
 			mid = (lat[0] + lat[1]) / 2;
 			if (latitude > mid)
 			{
-				ch |= 0x0001 << bit;
+				ch |= 0x0001u << bit;
 				lat[0] = mid;
 			}
 			else
@@ -700,10 +702,11 @@ unsigned int geohash_point_as_int(POINT2D *pt)
 ** box accordingly. A precision less than 0 indicates that the entire length
 ** of the GeoHash should be used.
 */
-void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision)
+void decode_geohash_bbox(char *geohash, double *lat, double *lon, int32_t precision)
 {
-	int i, j, hashlen;
-	char c, cd, mask, is_even = 1;
+	int32_t i, j;
+	size_t hashlen;
+	char c, mask, is_even = 1;
 	static char bits[] = {16, 8, 4, 2, 1};
 
 	lat[0] = -90.0;
@@ -713,14 +716,15 @@ void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision)
 
 	hashlen = strlen(geohash);
 
-	if (precision < 0 || precision > hashlen)
+	if (precision < 0 || (size_t) precision > hashlen)
 	{
-		precision = hashlen;
+		precision = (int32_t) hashlen;
 	}
 
 	for (i = 0; i < precision; i++)
 	{
-		c = tolower(geohash[i]);
+		ptrdiff_t cd;
+		c = (char) tolower(geohash[i]);
 		cd = strchr(base32, c) - base32;
 
 		for (j = 0; j < 5; j++)

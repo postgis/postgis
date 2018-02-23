@@ -1033,11 +1033,11 @@ WITH RECURSIVE path (id, g) AS (
     WHERE ST_Y(path.g) = ST_X(rec.g)
 )
 SELECT '#1014c', id, st_astext(g) FROM path;
-SELECT '#1014d', ST_AsEWKT(g) FROM (
+SELECT '#1014d', ST_AsEWKT(g) as t FROM (
 	SELECT 'SRID=1;POINT(0 1)'::geometry AS g
 	UNION
 	SELECT 'SRID=2;POINT(0 1)'::geometry AS g
-) a;
+) a ORDER BY t;
 DROP TABLE IF EXISTS rec;
 
 -- #3930

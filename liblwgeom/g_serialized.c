@@ -804,7 +804,7 @@ static size_t gserialized_from_any_size(const LWGEOM *geom)
 
 /* Public function */
 
-size_t gserialized_from_lwgeom_size(const LWGEOM *geom)
+uint32_t gserialized_from_lwgeom_size(const LWGEOM *geom)
 {
 	size_t size = 8; /* Header overhead. */
 	assert(geom);

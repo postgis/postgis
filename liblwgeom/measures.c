@@ -81,7 +81,7 @@ lw_dist2d_distpts_init(DISTPTS *dl, int mode)
 Function initializing shortestline and longestline calculations.
 */
 LWGEOM *
-lw_dist2d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
+lw_dist2d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int32_t srid, int mode)
 {
 	double x1,x2,y1,y2;
 
@@ -128,7 +128,7 @@ lw_dist2d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 Function initializing closestpoint calculations.
 */
 LWGEOM *
-lw_dist2d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2,int srid,int mode)
+lw_dist2d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2,int32_t srid,int mode)
 {
 	double x,y;
 	DISTPTS thedl;
@@ -276,9 +276,9 @@ This is a recursive function delivering every possible combinatin of subgeometri
 */
 int lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 {
-	int i, j;
-	int n1=1;
-	int n2=1;
+	uint32_t i, j;
+	uint32_t n1=1;
+	uint32_t n2=1;
 	LWGEOM *g1 = NULL;
 	LWGEOM *g2 = NULL;
 	LWCOLLECTION *c1 = NULL;
@@ -370,8 +370,8 @@ int
 lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS *dl)
 {
 
-	int	t1 = lwg1->type;
-	int	t2 = lwg2->type;
+	uint8_t	t1 = lwg1->type;
+	uint8_t	t2 = lwg2->type;
 
 	switch ( t1 )
 	{
@@ -526,8 +526,8 @@ int
 lw_dist2d_distribute_fast(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
 {
 	POINTARRAY *pa1, *pa2;
-	int	type1 = lwg1->type;
-	int	type2 = lwg2->type;
+	uint8_t	type1 = lwg1->type;
+	uint8_t	type2 = lwg2->type;
 
 	LWDEBUGF(2, "lw_dist2d_distribute_fast is called with typ1=%d, type2=%d", lwg1->type, lwg2->type);
 
@@ -1945,13 +1945,13 @@ lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl, GBOX 
 	/*here we define two lists to hold our calculated "z"-values and the order number in the geometry*/
 
 	double k, thevalue;
-	float	deltaX, deltaY, c1m, c2m;
+	double	deltaX, deltaY, c1m, c2m;
 	POINT2D	c1, c2;
 	const POINT2D *theP;
-	float min1X, max1X, max1Y, min1Y,min2X, max2X, max2Y, min2Y;
-	int t;
-	int n1 = l1->npoints;
-	int n2 = l2->npoints;
+	double min1X, max1X, max1Y, min1Y,min2X, max2X, max2Y, min2Y;
+	uint32_t t;
+	uint32_t n1 = l1->npoints;
+	uint32_t n2 = l2->npoints;
 
 	LISTSTRUCT *list1, *list2;
 	list1 = (LISTSTRUCT*)lwalloc(sizeof(LISTSTRUCT)*n1);
@@ -2071,10 +2071,12 @@ int
 lw_dist2d_pre_seg_seg(POINTARRAY *l1, POINTARRAY *l2,LISTSTRUCT *list1, LISTSTRUCT *list2,double k, DISTPTS *dl)
 {
 	const POINT2D *p1, *p2, *p3, *p4, *p01, *p02;
-	int pnr1,pnr2,pnr3,pnr4, n1, n2, i, u, r, twist;
+	uint32_t pnr1,pnr2,pnr3,pnr4, u;
+	int twist;
 	double maxmeasure;
-	n1=	l1->npoints;
-	n2 = l2->npoints;
+	uint32_t n1 = l1->npoints;
+	uint32_t n2 = l2->npoints;
+	int64_t i, r;
 
 	LWDEBUG(2, "lw_dist2d_pre_seg_seg is called");
 
@@ -2106,7 +2108,7 @@ lw_dist2d_pre_seg_seg(POINTARRAY *l1, POINTARRAY *l2,LISTSTRUCT *list1, LISTSTRU
 				if (( p1->x == p01->x) && (p1->y == p01->y)) pnr2 = 0;
 				else pnr2 = pnr1; /* if it is a line and the last and first point is not the same we avoid the edge between start and end this way*/
 			}
-			else pnr2 = pnr1+r;
+			else pnr2 = (uint32_t) ((int64_t) pnr1 + r);
 
 
 			p2 = getPoint2d_cp(l1, pnr2);

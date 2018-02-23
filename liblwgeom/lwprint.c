@@ -106,14 +106,12 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 	int sec_dec_digits = 0;
 	int sec_piece = -1;
 
-	int round_pow = 0;
-
-	int format_length = ((NULL == format) ? 0 : strlen(format));
+	size_t format_length = ((NULL == format) ? 0 : strlen(format));
 
 	char * result;
 
-	int index, following_byte_index;
-	int multibyte_char_width = 1;
+	size_t index, following_byte_index;
+	size_t multibyte_char_width = 1;
 
 	/* Initialize the working strs to blank.  We may not populate all of them, and
 	 * this allows us to concat them all at the end without worrying about how many
@@ -324,12 +322,12 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 		{
 			lwerror("Bad format, cannot include seconds (SS.SSS) without including minutes (MM.MMM).");
 		}
-		seconds = modf(minutes, &minutes) * 60;
+		seconds = modf(minutes, &minutes) * 60.0;
 		if (sec_piece >= 0)
 		{
 			/* See if the formatted seconds round up to 60. If so, increment minutes and reset seconds. */
-			round_pow = pow(10, sec_dec_digits);
-			if (floorf(seconds * round_pow) / round_pow >= 60)
+			double round_pow = pow(10, sec_dec_digits);
+			if ((round(seconds * round_pow) / round_pow) >= 60.0)
 			{
 				minutes += 1;
 				seconds = 0;
@@ -444,8 +442,7 @@ static void
 trim_trailing_zeros(char* str)
 {
 	char *ptr, *totrim = NULL;
-	int len;
-	int i;
+	size_t len, i;
 
 	LWDEBUGF(3, "input: %s", str);
 
@@ -497,7 +494,7 @@ lwprint_double(double d, int maxdd, char* buf, size_t bufsize)
 	}
 	if (ad < OUT_MAX_DOUBLE)
 	{
-		ndd = ad < 1 ? 0 : floor(log10(ad)) + 1; /* non-decimal digits */
+		ndd = ad < 1 ? 0 : (int) floor(log10(ad)) + 1; /* non-decimal digits */
 		if (maxdd > (OUT_MAX_DOUBLE_PRECISION - ndd)) maxdd -= ndd;
 		length = snprintf(buf, bufsize, "%.*f", maxdd, d);
 	}

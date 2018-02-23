@@ -39,7 +39,7 @@
  * use SRID=SRID_UNKNOWN for unknown SRID (will have 8bit type's S = 0)
  */
 LWLINE *
-lwline_construct(int srid, GBOX *bbox, POINTARRAY *points)
+lwline_construct(int32_t srid, GBOX *bbox, POINTARRAY *points)
 {
 	LWLINE *result;
 	result = (LWLINE*) lwalloc(sizeof(LWLINE));
@@ -61,7 +61,7 @@ lwline_construct(int srid, GBOX *bbox, POINTARRAY *points)
 }
 
 LWLINE *
-lwline_construct_empty(int srid, char hasz, char hasm)
+lwline_construct_empty(int32_t srid, char hasz, char hasm)
 {
 	LWLINE *result = lwalloc(sizeof(LWLINE));
 	result->type = LINETYPE;
@@ -157,7 +157,7 @@ lwline_same(const LWLINE *l1, const LWLINE *l2)
  * LWLINE dimensions are large enough to host all input dimensions.
  */
 LWLINE *
-lwline_from_lwgeom_array(int srid, uint32_t ngeoms, LWGEOM **geoms)
+lwline_from_lwgeom_array(int32_t srid, uint32_t ngeoms, LWGEOM **geoms)
 {
 	uint32_t i;
 	int hasz = LW_FALSE;
@@ -234,7 +234,7 @@ lwline_from_lwgeom_array(int srid, uint32_t ngeoms, LWGEOM **geoms)
  * LWLINE dimensions are large enough to host all input dimensions.
  */
 LWLINE *
-lwline_from_ptarray(int srid, uint32_t npoints, LWPOINT **points)
+lwline_from_ptarray(int32_t srid, uint32_t npoints, LWPOINT **points)
 {
  	uint32_t i;
 	int hasz = LW_FALSE;
@@ -281,15 +281,15 @@ lwline_from_ptarray(int srid, uint32_t npoints, LWPOINT **points)
  * Construct a LWLINE from a LWMPOINT
  */
 LWLINE *
-lwline_from_lwmpoint(int srid, const LWMPOINT *mpoint)
+lwline_from_lwmpoint(int32_t srid, const LWMPOINT *mpoint)
 {
 	uint32_t i;
 	POINTARRAY *pa = NULL;
 	LWGEOM *lwgeom = (LWGEOM*)mpoint;
 	POINT4D pt;
 
-	char hasz = lwgeom_has_z(lwgeom);
-	char hasm = lwgeom_has_m(lwgeom);
+	int hasz = lwgeom_has_z(lwgeom);
+	int hasm = lwgeom_has_m(lwgeom);
 	uint32_t npoints = mpoint->ngeoms;
 
 	if ( lwgeom_is_empty(lwgeom) )
@@ -387,9 +387,9 @@ lwline_setPoint4d(LWLINE *line, uint32_t index, POINT4D *newpoint)
 LWLINE*
 lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
 {
-	int i = 0;
+	uint32_t i = 0;
 	int hasm = 0, hasz = 0;
-	int npoints = 0;
+	uint32_t npoints = 0;
 	double length = 0.0;
 	double length_so_far = 0.0;
 	double m_range = m_end - m_start;
@@ -463,7 +463,7 @@ int
 lwline_is_trajectory(const LWLINE *line)
 {
   POINT3DM p;
-  int i, n;
+  uint32_t i, n;
   double m = -1 * FLT_MAX;
 
   if ( ! FLAGS_GET_M(line->flags) ) {

@@ -76,6 +76,6 @@ LWGEOM* wkt_parser_compound_new(LWGEOM *element);
 LWGEOM* wkt_parser_compound_add_geom(LWGEOM *col, LWGEOM *geom);
 LWGEOM* wkt_parser_collection_new(LWGEOM *geom);
 LWGEOM* wkt_parser_collection_add_geom(LWGEOM *col, LWGEOM *geom);
-LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *col, char *dimensionality);
-void    wkt_parser_geometry_new(LWGEOM *geom, int srid);
+LWGEOM* wkt_parser_collection_finalize(uint8_t lwtype, LWGEOM *col, char *dimensionality);
+void    wkt_parser_geometry_new(LWGEOM *geom, int32_t srid);
 

@@ -40,13 +40,13 @@ lwcollection_release(LWCOLLECTION *lwcollection)
 
 
 LWCOLLECTION *
-lwcollection_construct(uint8_t type, int srid, GBOX *bbox,
+lwcollection_construct(uint8_t type, int32_t srid, GBOX *bbox,
                        uint32_t ngeoms, LWGEOM **geoms)
 {
 	LWCOLLECTION *ret;
 	int hasz, hasm;
 #ifdef CHECK_LWGEOM_ZM
-	char zm;
+	int zm;
 	uint32_t i;
 #endif
 
@@ -91,7 +91,7 @@ lwcollection_construct(uint8_t type, int srid, GBOX *bbox,
 }
 
 LWCOLLECTION *
-lwcollection_construct_empty(uint8_t type, int srid, char hasz, char hasm)
+lwcollection_construct_empty(uint8_t type, int32_t srid, char hasz, char hasm)
 {
 	LWCOLLECTION *ret;
 	if( ! lwtype_is_collection(type) )
@@ -110,7 +110,7 @@ lwcollection_construct_empty(uint8_t type, int srid, char hasz, char hasm)
 }
 
 LWGEOM *
-lwcollection_getsubgeom(LWCOLLECTION *col, int gnum)
+lwcollection_getsubgeom(LWCOLLECTION *col, uint32_t gnum)
 {
 	return (LWGEOM *)col->geoms[gnum];
 }
@@ -301,10 +301,10 @@ lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 	return LW_TRUE;
 }
 
-int lwcollection_ngeoms(const LWCOLLECTION *col)
+uint32_t lwcollection_ngeoms(const LWCOLLECTION *col)
 {
 	uint32_t i;
-	int ngeoms = 0;
+	uint32_t ngeoms = 0;
 
 	if ( ! col )
 	{
@@ -369,13 +369,13 @@ void lwcollection_free(LWCOLLECTION *col)
 * so the result must be carefully released, not freed.
 */
 LWCOLLECTION*
-lwcollection_extract(LWCOLLECTION* col, int type)
+lwcollection_extract(LWCOLLECTION* col, uint8_t type)
 {
 	uint32_t i = 0;
 	LWGEOM** geomlist;
 	LWCOLLECTION* outcol;
-	int geomlistsize = 16;
-	int geomlistlen = 0;
+	uint32_t geomlistsize = 16;
+	uint32_t geomlistlen = 0;
 	uint8_t outtype;
 
 	if (!col) return NULL;
@@ -404,7 +404,7 @@ lwcollection_extract(LWCOLLECTION* col, int type)
 	/* Process each sub-geometry */
 	for (i = 0; i < col->ngeoms; i++)
 	{
-		int subtype = col->geoms[i]->type;
+		uint8_t subtype = col->geoms[i]->type;
 		/* Don't bother adding empty sub-geometries */
 		if (lwgeom_is_empty(col->geoms[i])) continue;
 		/* Copy our sub-types into the output list */
@@ -517,7 +517,7 @@ uint32_t lwcollection_count_vertices(LWCOLLECTION *col)
 }
 
 
-int lwcollection_allows_subtype(int collectiontype, int subtype)
+int lwcollection_allows_subtype(uint8_t collectiontype, uint8_t subtype)
 {
 	if ( collectiontype == COLLECTIONTYPE )
 		return LW_TRUE;

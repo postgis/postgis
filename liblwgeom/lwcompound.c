@@ -35,7 +35,7 @@ int
 lwcompound_is_closed(const LWCOMPOUND *compound)
 {
 	size_t size;
-	int npoints=0;
+	uint32_t npoints=0;
 
 	if ( lwgeom_has_z((LWGEOM*)compound) )
 	{
@@ -120,7 +120,7 @@ int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom)
 }
 
 LWCOMPOUND *
-lwcompound_construct_empty(int srid, char hasz, char hasm)
+lwcompound_construct_empty(int32_t srid, char hasz, char hasm)
 {
 	LWCOMPOUND *ret = (LWCOMPOUND*)lwcollection_construct_empty(COMPOUNDTYPE, srid, hasz, hasm);
 	return ret;

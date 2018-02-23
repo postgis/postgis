@@ -210,11 +210,11 @@ static uint8_t* integer_to_wkb_buf(const int ival, uint8_t *buf, uint8_t variant
 		for ( i = 0; i < WKB_INT_SIZE; i++ )
 		{
 			int j = (swap ? WKB_INT_SIZE - 1 - i : i);
-			uint8_t b = iptr[j];
+			uint8_t b = (uint8_t) iptr[j];
 			/* Top four bits to 0-F */
-			buf[2*i] = hexchr[b >> 4];
+			buf[2*i] = (uint8_t) hexchr[b >> 4];
 			/* Bottom four bits to 0-F */
-			buf[2*i+1] = hexchr[b & 0x0F];
+			buf[2*i+1] = (uint8_t) hexchr[b & 0x0F];
 		}
 		return buf + (2 * WKB_INT_SIZE);
 	}
@@ -225,7 +225,7 @@ static uint8_t* integer_to_wkb_buf(const int ival, uint8_t *buf, uint8_t variant
 		{
 			for ( i = 0; i < WKB_INT_SIZE; i++ )
 			{
-				buf[i] = iptr[WKB_INT_SIZE - 1 - i];
+				buf[i] = (uint8_t) iptr[WKB_INT_SIZE - 1 - i];
 			}
 		}
 		/* If machine arch and requested arch match, don't flip byte order */
@@ -257,11 +257,11 @@ static uint8_t* double_to_wkb_buf(const double d, uint8_t *buf, uint8_t variant)
 		for ( i = 0; i < WKB_DOUBLE_SIZE; i++ )
 		{
 			int j = (swap ? WKB_DOUBLE_SIZE - 1 - i : i);
-			uint8_t b = dptr[j];
+			uint8_t b = (uint8_t) dptr[j];
 			/* Top four bits to 0-F */
-			buf[2*i] = hexchr[b >> 4];
+			buf[2*i] = (uint8_t) hexchr[b >> 4];
 			/* Bottom four bits to 0-F */
-			buf[2*i+1] = hexchr[b & 0x0F];
+			buf[2*i+1] = (uint8_t) hexchr[b & 0x0F];
 		}
 		return buf + (2 * WKB_DOUBLE_SIZE);
 	}
@@ -272,7 +272,7 @@ static uint8_t* double_to_wkb_buf(const double d, uint8_t *buf, uint8_t variant)
 		{
 			for ( i = 0; i < WKB_DOUBLE_SIZE; i++ )
 			{
-				buf[i] = dptr[WKB_DOUBLE_SIZE - 1 - i];
+				buf[i] = (uint8_t) dptr[WKB_DOUBLE_SIZE - 1 - i];
 			}
 		}
 		/* If machine arch and requested arch match, don't flip byte order */
@@ -301,7 +301,7 @@ static size_t empty_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 	if ( geom->type == POINTTYPE )
 	{
 		const LWPOINT *pt = (LWPOINT*)geom;
-		size += WKB_DOUBLE_SIZE * FLAGS_NDIMS(pt->point->flags);
+		size += WKB_DOUBLE_SIZE * (size_t) FLAGS_NDIMS(pt->point->flags);
 	}
 	/* num-elements */
 	else
@@ -320,7 +320,7 @@ static uint8_t* empty_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t varia
 	buf = endian_to_wkb_buf(buf, variant);
 
 	/* Set the geometry type */
-	buf = integer_to_wkb_buf(wkb_type, buf, variant);
+	buf = integer_to_wkb_buf((int)wkb_type, buf, variant);
 
 	/* Set the SRID if necessary */
 	if ( lwgeom_wkb_needs_srid(geom, variant) )
@@ -352,11 +352,11 @@ static uint8_t* empty_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t varia
 */
 static size_t ptarray_to_wkb_size(const POINTARRAY *pa, uint8_t variant)
 {
-	int dims = 2;
+	size_t dims = 2;
 	size_t size = 0;
 
 	if ( variant & (WKB_ISO | WKB_EXTENDED) )
-		dims = FLAGS_NDIMS(pa->flags);
+		dims = (size_t) FLAGS_NDIMS(pa->flags);
 
 	/* Include the npoints if it's not a POINT type) */
 	if ( ! ( variant & WKB_NO_NPOINTS ) )
@@ -371,7 +371,7 @@ static size_t ptarray_to_wkb_size(const POINTARRAY *pa, uint8_t variant)
 static uint8_t* ptarray_to_wkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t variant)
 {
 	uint32_t dims = 2;
-	uint32_t pa_dims = FLAGS_NDIMS(pa->flags);
+	uint32_t pa_dims = (uint32_t) FLAGS_NDIMS(pa->flags);
 	uint32_t i, j;
 	double *dbl_ptr;
 
@@ -381,7 +381,7 @@ static uint8_t* ptarray_to_wkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t v
 
 	/* Set the number of points (if it's not a POINT type) */
 	if ( ! ( variant & WKB_NO_NPOINTS ) )
-		buf = integer_to_wkb_buf(pa->npoints, buf, variant);
+		buf = integer_to_wkb_buf((int)pa->npoints, buf, variant);
 
 	/* Bulk copy the coordinates when: dimensionality matches, output format */
 	/* is not hex, and output endian matches internal endian. */
@@ -441,7 +441,7 @@ static uint8_t* lwpoint_to_wkb_buf(const LWPOINT *pt, uint8_t *buf, uint8_t vari
 	buf = endian_to_wkb_buf(buf, variant);
 	LWDEBUGF(4, "Endian set, buf = %p", buf);
 	/* Set the geometry type */
-	buf = integer_to_wkb_buf(lwgeom_wkb_type((LWGEOM*)pt, variant), buf, variant);
+	buf = integer_to_wkb_buf((int)lwgeom_wkb_type((LWGEOM*)pt, variant), buf, variant);
 	LWDEBUGF(4, "Type set, buf = %p", buf);
 	/* Set the optional SRID for extended variant */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)pt, variant) )
@@ -485,7 +485,7 @@ static uint8_t* lwline_to_wkb_buf(const LWLINE *line, uint8_t *buf, uint8_t vari
 	/* Set the endian flag */
 	buf = endian_to_wkb_buf(buf, variant);
 	/* Set the geometry type */
-	buf = integer_to_wkb_buf(lwgeom_wkb_type((LWGEOM*)line, variant), buf, variant);
+	buf = integer_to_wkb_buf((int)lwgeom_wkb_type((LWGEOM*)line, variant), buf, variant);
 	/* Set the optional SRID for extended variant */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)line, variant) )
 		buf = integer_to_wkb_buf(line->srid, buf, variant);
@@ -526,7 +526,7 @@ static uint8_t* lwtriangle_to_wkb_buf(const LWTRIANGLE *tri, uint8_t *buf, uint8
 	buf = endian_to_wkb_buf(buf, variant);
 
 	/* Set the geometry type */
-	buf = integer_to_wkb_buf(lwgeom_wkb_type((LWGEOM*)tri, variant), buf, variant);
+	buf = integer_to_wkb_buf((int)lwgeom_wkb_type((LWGEOM*)tri, variant), buf, variant);
 
 	/* Set the optional SRID for extended variant */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)tri, variant) )
@@ -578,12 +578,12 @@ static uint8_t* lwpoly_to_wkb_buf(const LWPOLY *poly, uint8_t *buf, uint8_t vari
 	/* Set the endian flag */
 	buf = endian_to_wkb_buf(buf, variant);
 	/* Set the geometry type */
-	buf = integer_to_wkb_buf(lwgeom_wkb_type((LWGEOM*)poly, variant), buf, variant);
+	buf = integer_to_wkb_buf((int)lwgeom_wkb_type((LWGEOM*)poly, variant), buf, variant);
 	/* Set the optional SRID for extended variant */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)poly, variant) )
 		buf = integer_to_wkb_buf(poly->srid, buf, variant);
 	/* Set the number of rings */
-	buf = integer_to_wkb_buf(poly->nrings, buf, variant);
+	buf = integer_to_wkb_buf((int)poly->nrings, buf, variant);
 
 	for ( i = 0; i < poly->nrings; i++ )
 	{
@@ -625,12 +625,12 @@ static uint8_t* lwcollection_to_wkb_buf(const LWCOLLECTION *col, uint8_t *buf, u
 	/* Set the endian flag */
 	buf = endian_to_wkb_buf(buf, variant);
 	/* Set the geometry type */
-	buf = integer_to_wkb_buf(lwgeom_wkb_type((LWGEOM*)col, variant), buf, variant);
+	buf = integer_to_wkb_buf((int)lwgeom_wkb_type((LWGEOM*)col, variant), buf, variant);
 	/* Set the optional SRID for extended variant */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)col, variant) )
 		buf = integer_to_wkb_buf(col->srid, buf, variant);
 	/* Set the number of sub-geometries */
-	buf = integer_to_wkb_buf(col->ngeoms, buf, variant);
+	buf = integer_to_wkb_buf((int)col->ngeoms, buf, variant);
 
 	/* Write the sub-geometries. Sub-geometries do not get SRIDs, they
 	   inherit from their parents. */

@@ -87,10 +87,10 @@ static void DeletePJHashEntry(MemoryContext mcxt);
 
 /* Internal Cache API */
 /* static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfo fcinfo) ; */
-static bool IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
-static projPJ GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
-static void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid);
-static void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
+static bool IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int32_t srid);
+static projPJ GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int32_t srid);
+static void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int32_t srid, int other_srid);
+static void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int32_t srid);
 
 /* Search path for PROJ.4 library */
 static bool IsPROJ4LibPathSet = false;
@@ -280,7 +280,7 @@ static void DeletePJHashEntry(MemoryContext mcxt)
 }
 
 bool
-IsInPROJ4Cache(Proj4Cache PROJ4Cache, int srid) {
+IsInPROJ4Cache(Proj4Cache PROJ4Cache, int32_t srid) {
 	return IsInPROJ4SRSCache((PROJ4PortalCache *)PROJ4Cache, srid) ;
 }
 
@@ -289,7 +289,7 @@ IsInPROJ4Cache(Proj4Cache PROJ4Cache, int srid) {
  */
 
 static bool
-IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
+IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int32_t srid)
 {
 	/*
 	 * Return true/false depending upon whether the item
@@ -308,7 +308,7 @@ IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 	return 0;
 }
 
-projPJ GetProjectionFromPROJ4Cache(Proj4Cache cache, int srid)
+projPJ GetProjectionFromPROJ4Cache(Proj4Cache cache, int32_t srid)
 {
 	return GetProjectionFromPROJ4SRSCache((PROJ4PortalCache *)cache, srid) ;
 }
@@ -318,7 +318,7 @@ projPJ GetProjectionFromPROJ4Cache(Proj4Cache cache, int srid)
  * already have checked it exists using IsInPROJ4SRSCache first)
  */
 static projPJ
-GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
+GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int32_t srid)
 {
 	int i;
 
@@ -331,7 +331,7 @@ GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 	return NULL;
 }
 
-char* GetProj4StringSPI(int srid)
+char* GetProj4StringSPI(int32_t srid)
 {
 	static int maxproj4len = 512;
 	int spi_result;
@@ -405,7 +405,7 @@ char* GetProj4StringSPI(int srid)
  *  (WGS84 UTM N/S, Polar Stereographic N/S - see SRID_* macros),
  *  return the proj4text for those.
  */
-static char* GetProj4String(int srid)
+static char* GetProj4String(int32_t srid)
 {
 	static int maxproj4len = 512;
 
@@ -490,7 +490,7 @@ static char* GetProj4String(int srid)
 	}
 }
 
-void AddToPROJ4Cache(Proj4Cache cache, int srid, int other_srid) {
+void AddToPROJ4Cache(Proj4Cache cache, int32_t srid, int other_srid) {
 	AddToPROJ4SRSCache((PROJ4PortalCache *)cache, srid, other_srid) ;
 }
 
@@ -501,7 +501,7 @@ void AddToPROJ4Cache(Proj4Cache cache, int srid, int other_srid) {
  * which is the definition for the other half of the transformation.
  */
 static void
-AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
+AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int32_t srid, int other_srid)
 {
 	MemoryContext PJMemoryContext;
 	projPJ projection = NULL;
@@ -600,12 +600,12 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 
 }
 
-void DeleteFromPROJ4Cache(Proj4Cache cache, int srid) {
+void DeleteFromPROJ4Cache(Proj4Cache cache, int32_t srid) {
 	DeleteFromPROJ4SRSCache((PROJ4PortalCache *)cache, srid) ;
 }
 
 
-static void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
+static void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int32_t srid)
 {
 	/*
 	 * Delete the SRID entry from the cache
@@ -702,7 +702,7 @@ SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
 }
 
 int
-GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ *pj1, projPJ *pj2)
+GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid1, int32_t srid2, projPJ *pj1, projPJ *pj2)
 {
 	Proj4Cache *proj_cache = NULL;
 
@@ -733,7 +733,7 @@ GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ 
 }
 
 int
-spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
+spheroid_init_from_srid(FunctionCallInfo fcinfo, int32_t srid, SPHEROID *s)
 {
 	projPJ pj1, pj2;
 #if POSTGIS_PROJ_VERSION >= 48
@@ -761,7 +761,7 @@ spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
 	return LW_SUCCESS;
 }
 
-void srid_is_latlong(FunctionCallInfo fcinfo, int srid)
+void srid_is_latlong(FunctionCallInfo fcinfo, int32_t srid)
 {
 	projPJ pj1;
 	projPJ pj2;
@@ -781,7 +781,7 @@ void srid_is_latlong(FunctionCallInfo fcinfo, int srid)
 }
 
 
-srs_precision srid_axis_precision(FunctionCallInfo fcinfo, int srid, int precision)
+srs_precision srid_axis_precision(FunctionCallInfo fcinfo, int32_t srid, int precision)
 {
 	projPJ pj1;
 	projPJ pj2;

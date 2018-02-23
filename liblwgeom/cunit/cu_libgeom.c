@@ -21,7 +21,7 @@
 static void test_typmod_macros(void)
 {
 	int32_t typmod = 0;
-	int srid = 4326;
+	int32_t srid = 4326;
 	int type = 6;
 	int z = 1;
 	int rv;
@@ -1008,7 +1008,7 @@ static void test_lwline_from_lwmpoint(void)
 	LWMPOINT *mpoint;
 
 //	LWLINE *
-//	lwline_from_lwmpoint(int srid, LWMPOINT *mpoint)
+//	lwline_from_lwmpoint(int32_t srid, LWMPOINT *mpoint)
 
 	mpoint = (LWMPOINT*)lwgeom_from_wkt("MULTIPOINT(0 0, 0 1, 1 1, 1 2, 2 2)", LW_PARSER_CHECK_NONE);
 	line = lwline_from_lwmpoint(SRID_DEFAULT, mpoint);

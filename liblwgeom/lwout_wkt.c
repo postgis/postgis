@@ -89,7 +89,7 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 
 	/* ISO and extended formats include all dimensions */
 	if ( variant & ( WKT_ISO | WKT_EXTENDED ) )
-		dimensions = FLAGS_NDIMS(ptarray->flags);
+		dimensions = (uint32_t) FLAGS_NDIMS(ptarray->flags);
 
 	/* Opening paren? */
 	if ( ! (variant & WKT_NO_PARENS) )
@@ -327,7 +327,7 @@ static void lwcompound_to_wkt_sb(const LWCOMPOUND *comp, stringbuffer_t *sb, int
 	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are childre */
 	for ( i = 0; i < comp->ngeoms; i++ )
 	{
-		int type = comp->geoms[i]->type;
+		uint8_t type = comp->geoms[i]->type;
 		if ( i > 0 )
 			stringbuffer_append(sb, ",");
 		/* Linestring subgeoms don't get type identifiers */
@@ -371,7 +371,7 @@ static void lwcurvepoly_to_wkt_sb(const LWCURVEPOLY *cpoly, stringbuffer_t *sb, 
 	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are childre */
 	for ( i = 0; i < cpoly->nrings; i++ )
 	{
-		int type = cpoly->rings[i]->type;
+		uint8_t type = cpoly->rings[i]->type;
 		if ( i > 0 )
 			stringbuffer_append(sb, ",");
 		switch (type)
@@ -419,7 +419,7 @@ static void lwmcurve_to_wkt_sb(const LWMCURVE *mcurv, stringbuffer_t *sb, int pr
 	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are childre */
 	for ( i = 0; i < mcurv->ngeoms; i++ )
 	{
-		int type = mcurv->geoms[i]->type;
+		uint8_t type = mcurv->geoms[i]->type;
 		if ( i > 0 )
 			stringbuffer_append(sb, ",");
 		switch (type)
@@ -467,7 +467,7 @@ static void lwmsurface_to_wkt_sb(const LWMSURFACE *msurf, stringbuffer_t *sb, in
 	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are childre */
 	for ( i = 0; i < msurf->ngeoms; i++ )
 	{
-		int type = msurf->geoms[i]->type;
+		uint8_t type = msurf->geoms[i]->type;
 		if ( i > 0 )
 			stringbuffer_append(sb, ",");
 		switch (type)
@@ -672,7 +672,7 @@ static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precisi
  * @param size_out If supplied, will return the size of the returned string,
  * including the null terminator.
  */
-char* lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision, size_t *size_out)
+char* lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int32_t precision, size_t *size_out)
 {
 	stringbuffer_t *sb;
 	char *str = NULL;

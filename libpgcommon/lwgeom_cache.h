@@ -65,7 +65,7 @@ typedef struct {
 /* An entry in the PROJ4 SRS cache */
 typedef struct struct_PROJ4SRSCacheItem
 {
-	int srid;
+	int32_t srid;
 	projPJ projection;
 	MemoryContext projection_mcxt;
 }

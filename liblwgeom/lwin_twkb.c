@@ -41,7 +41,7 @@ typedef struct
 	const uint8_t *pos; /* Current read position */
 
 	uint32_t check; /* Simple validity checks on geometries */
-	uint32_t lwtype; /* Current type we are handling */
+	uint8_t lwtype; /* Current type we are handling */
 
 	uint8_t has_bbox;
 	uint8_t has_size;
@@ -60,7 +60,7 @@ typedef struct
 	/* Info about current geometry */
 	uint8_t magic_byte; /* the magic byte contain info about if twkb contain id, size info, bboxes and precision */
 
-	int ndims; /* Number of dimensions */
+	uint32_t ndims; /* Number of dimensions */
 
 	int64_t *coords; /* An array to keep delta values from 4 dimensions */
 
@@ -111,7 +111,7 @@ static inline double twkb_parse_state_double(twkb_parse_state *s, double factor)
 	size_t size;
 	int64_t val = varint_s64_decode(s->pos, s->twkb_end, &size);
 	twkb_parse_state_advance(s, size);
-	return val / factor;
+	return ((double)val) / factor;
 }
 
 static inline void twkb_parse_state_varint_skip(twkb_parse_state *s)
@@ -127,7 +127,7 @@ static inline void twkb_parse_state_varint_skip(twkb_parse_state *s)
 
 
 
-static uint32_t lwtype_from_twkb_type(uint8_t twkb_type)
+static uint8_t lwtype_from_twkb_type(uint8_t twkb_type)
 {
 	switch (twkb_type)
 	{
@@ -187,27 +187,27 @@ static POINTARRAY* ptarray_from_twkb_state(twkb_parse_state *s, uint32_t npoints
 	dlist = (double*)(pa->serialized_pointlist);
 	for( i = 0; i < npoints; i++ )
 	{
-		int j = 0;
+		uint32_t j = 0;
 		/* X */
 		s->coords[j] += twkb_parse_state_varint(s);
-		dlist[ndims*i + j] = s->coords[j] / s->factor;
+		dlist[ndims*i + j] = ((double)s->coords[j]) / s->factor;
 		j++;
 		/* Y */
 		s->coords[j] += twkb_parse_state_varint(s);
-		dlist[ndims*i + j] = s->coords[j] / s->factor;
+		dlist[ndims*i + j] = ((double)s->coords[j]) / s->factor;
 		j++;
 		/* Z */
 		if ( s->has_z )
 		{
 			s->coords[j] += twkb_parse_state_varint(s);
-			dlist[ndims*i + j] = s->coords[j] / s->factor_z;
+			dlist[ndims*i + j] = ((double)s->coords[j]) / s->factor_z;
 			j++;
 		}
 		/* M */
 		if ( s->has_m )
 		{
 			s->coords[j] += twkb_parse_state_varint(s);
-			dlist[ndims*i + j] = s->coords[j] / s->factor_m;
+			dlist[ndims*i + j] = ((double)s->coords[j]) / s->factor_m;
 			j++;
 		}
 	}
@@ -246,7 +246,7 @@ static LWLINE* lwline_from_twkb_state(twkb_parse_state *s)
 		return lwline_construct_empty(SRID_UNKNOWN, s->has_z, s->has_m);
 
 	/* Read number of points */
-	npoints = twkb_parse_state_uvarint(s);
+	npoints = (uint32_t) twkb_parse_state_uvarint(s);
 
 	if ( npoints == 0 )
 		return lwline_construct_empty(SRID_UNKNOWN, s->has_z, s->has_m);
@@ -281,12 +281,12 @@ static LWPOLY* lwpoly_from_twkb_state(twkb_parse_state *s)
 		return lwpoly_construct_empty(SRID_UNKNOWN, s->has_z, s->has_m);
 
 	/* Read number of rings */
-	nrings = twkb_parse_state_uvarint(s);
+	nrings = (uint32_t) twkb_parse_state_uvarint(s);
 
 	/* Start w/ empty polygon */
 	poly = lwpoly_construct_empty(SRID_UNKNOWN, s->has_z, s->has_m);
 
-	LWDEBUGF(4,"Polygon has %d rings", nrings);
+	LWDEBUGF(4,"Polygon has %u rings", nrings);
 
 	/* Empty polygon? */
 	if( nrings == 0 )
@@ -295,7 +295,7 @@ static LWPOLY* lwpoly_from_twkb_state(twkb_parse_state *s)
 	for( i = 0; i < nrings; i++ )
 	{
 		/* Ret number of points */
-		uint32_t npoints = twkb_parse_state_uvarint(s);
+		uint32_t npoints = (uint32_t) twkb_parse_state_uvarint(s);
 		POINTARRAY *pa = ptarray_from_twkb_state(s, npoints);
 
 		/* Skip empty rings */
@@ -335,7 +335,7 @@ static LWPOLY* lwpoly_from_twkb_state(twkb_parse_state *s)
 */
 static LWCOLLECTION* lwmultipoint_from_twkb_state(twkb_parse_state *s)
 {
-	int ngeoms, i;
+	uint32_t ngeoms, i;
 	LWGEOM *geom = NULL;
 	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype, SRID_UNKNOWN, s->has_z, s->has_m);
 
@@ -345,8 +345,8 @@ static LWCOLLECTION* lwmultipoint_from_twkb_state(twkb_parse_state *s)
 		return col;
 
 	/* Read number of geometries */
-	ngeoms = twkb_parse_state_uvarint(s);
-	LWDEBUGF(4,"Number of geometries %d", ngeoms);
+	ngeoms = (uint32_t) twkb_parse_state_uvarint(s);
+	LWDEBUGF(4,"Number of geometries %u", ngeoms);
 
 	/* It has an idlist, we need to skip that */
 	if ( s->has_idlist )
@@ -373,7 +373,7 @@ static LWCOLLECTION* lwmultipoint_from_twkb_state(twkb_parse_state *s)
 */
 static LWCOLLECTION* lwmultiline_from_twkb_state(twkb_parse_state *s)
 {
-	int ngeoms, i;
+	uint32_t ngeoms, i;
 	LWGEOM *geom = NULL;
 	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype, SRID_UNKNOWN, s->has_z, s->has_m);
 
@@ -383,9 +383,9 @@ static LWCOLLECTION* lwmultiline_from_twkb_state(twkb_parse_state *s)
 		return col;
 
 	/* Read number of geometries */
-	ngeoms = twkb_parse_state_uvarint(s);
+	ngeoms = (uint32_t) twkb_parse_state_uvarint(s);
 
-	LWDEBUGF(4,"Number of geometries %d",ngeoms);
+	LWDEBUGF(4,"Number of geometries %u", ngeoms);
 
 	/* It has an idlist, we need to skip that */
 	if ( s->has_idlist )
@@ -412,7 +412,7 @@ static LWCOLLECTION* lwmultiline_from_twkb_state(twkb_parse_state *s)
 */
 static LWCOLLECTION* lwmultipoly_from_twkb_state(twkb_parse_state *s)
 {
-	int ngeoms, i;
+	uint32_t ngeoms, i;
 	LWGEOM *geom = NULL;
 	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype, SRID_UNKNOWN, s->has_z, s->has_m);
 
@@ -422,8 +422,8 @@ static LWCOLLECTION* lwmultipoly_from_twkb_state(twkb_parse_state *s)
 		return col;
 
 	/* Read number of geometries */
-	ngeoms = twkb_parse_state_uvarint(s);
-	LWDEBUGF(4,"Number of geometries %d",ngeoms);
+	ngeoms = (uint32_t) twkb_parse_state_uvarint(s);
+	LWDEBUGF(4,"Number of geometries %u", ngeoms);
 
 	/* It has an idlist, we need to skip that */
 	if ( s->has_idlist )
@@ -451,7 +451,7 @@ static LWCOLLECTION* lwmultipoly_from_twkb_state(twkb_parse_state *s)
 **/
 static LWCOLLECTION* lwcollection_from_twkb_state(twkb_parse_state *s)
 {
-	int ngeoms, i;
+	uint32_t ngeoms, i;
 	LWGEOM *geom = NULL;
 	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype, SRID_UNKNOWN, s->has_z, s->has_m);
 
@@ -461,9 +461,9 @@ static LWCOLLECTION* lwcollection_from_twkb_state(twkb_parse_state *s)
 		return col;
 
 	/* Read number of geometries */
-	ngeoms = twkb_parse_state_uvarint(s);
+	ngeoms = (uint32_t) twkb_parse_state_uvarint(s);
 
-	LWDEBUGF(4,"Number of geometries %d",ngeoms);
+	LWDEBUGF(4,"Number of geometries %u",ngeoms);
 
 	/* It has an idlist, we need to skip that */
 	if ( s->has_idlist )
@@ -517,7 +517,7 @@ static void header_from_twkb_state(twkb_parse_state *s)
 	/* Flag for higher dims means read a third byte */
 	if ( extended_dims )
 	{
-		int8_t precision_z, precision_m;
+		uint8_t precision_z, precision_m;
 
 		extended_dims = byte_from_twkb_state(s);
 
@@ -546,7 +546,7 @@ static void header_from_twkb_state(twkb_parse_state *s)
 	}
 
 	/* Calculate the number of dimensions */
-	s->ndims = 2 + s->has_z + s->has_m;
+	s->ndims = (uint32_t) 2 + s->has_z + s->has_m;
 
 	return;
 }
@@ -653,7 +653,7 @@ LWGEOM* lwgeom_from_twkb_state(twkb_parse_state *s)
 * Check is a bitmask of: LW_PARSER_CHECK_MINPOINTS, LW_PARSER_CHECK_ODD,
 * LW_PARSER_CHECK_CLOSURE, LW_PARSER_CHECK_NONE, LW_PARSER_CHECK_ALL
 */
-LWGEOM* lwgeom_from_twkb(const uint8_t *twkb, size_t twkb_size, char check)
+LWGEOM* lwgeom_from_twkb(const uint8_t *twkb, size_t twkb_size, uint32_t check)
 {
 	int64_t coords[TWKB_IN_MAXCOORDS] = {0, 0, 0, 0};
 	twkb_parse_state s;

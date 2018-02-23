@@ -398,7 +398,7 @@ GBOX* gbox_from_string(const char *str)
 
 char* gbox_to_string(const GBOX *gbox)
 {
-	static int sz = 138;
+	static size_t sz = 138;
 	char *str = NULL;
 
 	if ( ! gbox )
@@ -443,12 +443,12 @@ void gbox_duplicate(const GBOX *original, GBOX *duplicate)
 	memcpy(duplicate, original, sizeof(GBOX));
 }
 
-size_t gbox_serialized_size(uint8_t flags)
+uint32_t gbox_serialized_size(uint8_t flags)
 {
 	if ( FLAGS_GET_GEODETIC(flags) )
 		return 6 * sizeof(float);
 	else
-		return 2 * FLAGS_NDIMS(flags) * sizeof(float);
+		return 2 * (uint32_t) FLAGS_NDIMS(flags) * (uint32_t) sizeof(float);
 }
 
 

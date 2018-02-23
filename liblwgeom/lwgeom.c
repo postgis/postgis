@@ -359,7 +359,7 @@ uint8_t MULTITYPE[NUMTYPES] =
 
 uint8_t lwtype_multitype(uint8_t type)
 {
-	if (type > 15 || type < 0) return 0;
+	if (type > 15) return 0;
 	return MULTITYPE[type];
 }
 
@@ -411,11 +411,6 @@ lwgeom_as_curve(const LWGEOM *lwgeom)
 {
 	LWGEOM *ogeom;
 	int type = lwgeom->type;
-	/*
-	int hasz = FLAGS_GET_Z(lwgeom->flags);
-	int hasm = FLAGS_GET_M(lwgeom->flags);
-	int srid = lwgeom->srid;
-	*/
 
 	switch(type)
 	{
@@ -1115,7 +1110,7 @@ lwtype_is_collection(uint8_t type)
 /**
 * Given an lwtype number, what homogeneous collection can hold it?
 */
-uint32_t
+uint8_t
 lwtype_get_collectiontype(uint8_t type)
 {
 	switch (type)
@@ -1233,7 +1228,7 @@ int lwgeom_needs_bbox(const LWGEOM *geom)
 */
 uint32_t lwgeom_count_vertices(const LWGEOM *geom)
 {
-	int result = 0;
+	uint32_t result = 0;
 
 	/* Null? Zero. */
 	if( ! geom ) return 0;
@@ -1343,7 +1338,7 @@ int lwgeom_dimension(const LWGEOM *geom)
 */
 uint32_t lwgeom_count_rings(const LWGEOM *geom)
 {
-	int result = 0;
+	uint32_t result = 0;
 
 	/* Null? Empty? Zero. */
 	if( ! geom || lwgeom_is_empty(geom) )
@@ -1627,7 +1622,7 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 			for (i = 0; i < g->nrings; i++)
 			{
 				POINTARRAY *pa = g->rings[i];
-				int minpoints = 4;
+				uint32_t minpoints = 4;
 				/* Skip zero'ed out rings */
 				if(!pa)
 					continue;
@@ -1787,7 +1782,7 @@ lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 			{
 				POINTARRAY *pa = g->rings[i];
 				/* Only stop collapse on first ring */
-				int minpoints = (preserve_collapsed && i == 0) ? 4 : 0;
+				uint32_t minpoints = (preserve_collapsed && i == 0) ? 4 : 0;
 				/* Skip zero'ed out rings */
 				if(!pa)
 					continue;
@@ -1967,7 +1962,7 @@ double lwgeom_length_2d(const LWGEOM *geom)
 void
 lwgeom_affine(LWGEOM *geom, const AFFINE *affine)
 {
-	int type = geom->type;
+	uint8_t type = geom->type;
 	uint32_t i;
 
 	switch(type)
@@ -2018,7 +2013,7 @@ lwgeom_affine(LWGEOM *geom, const AFFINE *affine)
 void
 lwgeom_scale(LWGEOM *geom, const POINT4D *factor)
 {
-	int type = geom->type;
+	uint8_t type = geom->type;
 	uint32_t i;
 
 	switch(type)
@@ -2256,7 +2251,8 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 {
 	const uint32_t maxdepth = 50;
 	uint32_t nvertices = 0;
-	uint32_t i, n = 0;
+	uint32_t i;
+	int n = 0;
 	double width = clip->xmax - clip->xmin;
 	double height = clip->ymax - clip->ymin;
 	GBOX subbox1, subbox2;

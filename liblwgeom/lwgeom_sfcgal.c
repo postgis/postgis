@@ -275,7 +275,7 @@ ptarray_to_SFCGAL(const POINTARRAY* pa, int type)
  * Throws an error on unsupported type
  */
 LWGEOM*
-SFCGAL2LWGEOM(const sfcgal_geometry_t* geom, int force3D, int srid)
+SFCGAL2LWGEOM(const sfcgal_geometry_t* geom, int force3D, int32_t srid)
 {
 	uint32_t ngeoms, nshells, nsolids;
 	uint32_t i, j, k;

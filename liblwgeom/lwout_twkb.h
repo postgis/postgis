@@ -50,27 +50,27 @@
 * Header true/false flags
 */
 
-#define FIRST_BYTE_SET_BBOXES(flag, bool)   ((flag) = ((bool) ? (flag) | 0x01 : (flag) & (~0x01)))
-#define FIRST_BYTE_SET_SIZES(flag, bool)    ((flag) = ((bool) ? (flag) | 0x02 : (flag) & (~0x02)))
-#define FIRST_BYTE_SET_IDLIST(flag, bool)   ((flag) = ((bool) ? (flag) | 0x04 : (flag) & (~0x04)))
-#define FIRST_BYTE_SET_EXTENDED(flag, bool) ((flag) = ((bool) ? (flag) | 0x08 : (flag) & (~0x08)))
-#define FIRST_BYTE_SET_EMPTY(flag, bool)    ((flag) = ((bool) ? (flag) | 0x10 : (flag) & (~0x10)))
+#define FIRST_BYTE_SET_BBOXES(flag, bool)   ((flag) = ((bool) ? (flag) | 0x01 : (flag) & (uint8_t) (~0x01)))
+#define FIRST_BYTE_SET_SIZES(flag, bool)    ((flag) = ((bool) ? (flag) | 0x02 : (flag) & (uint8_t) (~0x02)))
+#define FIRST_BYTE_SET_IDLIST(flag, bool)   ((flag) = ((bool) ? (flag) | 0x04 : (flag) & (uint8_t) (~0x04)))
+#define FIRST_BYTE_SET_EXTENDED(flag, bool) ((flag) = ((bool) ? (flag) | 0x08 : (flag) & (uint8_t) (~0x08)))
+#define FIRST_BYTE_SET_EMPTY(flag, bool)    ((flag) = ((bool) ? (flag) | 0x10 : (flag) & (uint8_t) (~0x10)))
 
 
 /**
-* Macros for manipulating the 'type_precision' int. An int8_t used as follows:
+* Macros for manipulating the 'type_precision' int. An uint8_t used as follows:
 * Type 4 bits
 * Precision 4 bits
 */
 
-#define TYPE_PREC_SET_TYPE(flag, type) ((flag) = ((flag) & 0xF0) | (((type) & 0x0F)))
-#define TYPE_PREC_SET_PREC(flag, prec) ((flag) = ((flag) & 0x0F) | (((prec) & 0x0F) << 4))
+#define TYPE_PREC_SET_TYPE(flag, type) ((flag) = (uint8_t) (((flag) & (uint8_t) 0xF0) | (((type) & 0x0F))))
+#define TYPE_PREC_SET_PREC(flag, prec) ((flag) = (uint8_t) (((flag) & (uint8_t) 0x0F) | (((prec) & 0x0F) << 4)))
 
-#define HIGHER_DIM_SET_HASZ(flag, bool) ((flag) = ((bool) ? (flag) | 0x01 : (flag) & (~0x01)))
-#define HIGHER_DIM_SET_HASM(flag, bool) ((flag) = ((bool) ? (flag) | 0x02 : (flag) & (~0x02)))
+#define HIGHER_DIM_SET_HASZ(flag, bool) ((flag) = ((bool) ? (flag) | 0x01 : (flag) & (uint8_t) (~0x01)))
+#define HIGHER_DIM_SET_HASM(flag, bool) ((flag) = ((bool) ? (flag) | 0x02 : (flag) & (uint8_t) (~0x02)))
 
-#define HIGHER_DIM_SET_PRECZ(flag, prec) ((flag) = ((flag) & 0xE3) | (((prec) & 0x07) << 2))
-#define HIGHER_DIM_SET_PRECM(flag, prec) ((flag) = ((flag) & 0x1F) | (((prec) & 0x07) << 5))
+#define HIGHER_DIM_SET_PRECZ(flag, prec) ((flag) = (uint8_t) (((flag) & 0xE3) | (((prec) & 0x07) << 2)))
+#define HIGHER_DIM_SET_PRECM(flag, prec) ((flag) = (uint8_t) (((flag) & 0x1F) | (((prec) & 0x07) << 5)))
 
 typedef struct
 {
@@ -79,7 +79,7 @@ typedef struct
 	int8_t prec_xy;
 	int8_t prec_z;
 	int8_t prec_m;
-	float factor[4]; /*What factor to multiply the coordiinates with to get the requested precision*/
+	double factor[4]; /*What factor to multiply the coordinates with to get the requested precision*/
 } TWKB_GLOBALS;
 
 typedef struct

@@ -63,8 +63,8 @@ PLANE3D;
 /*
 Geometry returning functions
 */
-LWGEOM * lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2,int srid,int mode);
-LWGEOM * lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2,int srid,int mode);
+LWGEOM * lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2,int32_t srid,int mode);
+LWGEOM * lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2,int32_t srid,int mode);
 
 /*
 Preprocessing functions

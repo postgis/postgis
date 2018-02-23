@@ -56,7 +56,7 @@ typedef struct
 typedef struct
 {
 	double themeasure;	/*a value calculated to compare distances*/
-	int pnr;	/*pointnumber. the ordernumber of the point*/
+	uint32_t pnr;		/*pointnumber. the ordernumber of the point*/
 } LISTSTRUCT;
 
 
@@ -121,7 +121,7 @@ double lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
 /*
 * Geometry returning functions
 */
-LWGEOM* lw_dist2d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode);
-LWGEOM* lw_dist2d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode);
+LWGEOM* lw_dist2d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int32_t srid, int mode);
+LWGEOM* lw_dist2d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int32_t srid, int mode);
 
 
