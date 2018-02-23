@@ -22,17 +22,16 @@
  *
  **********************************************************************/
 
-
 #include "postgres.h"
 #include "access/hash.h"
 
 #include "../postgis_config.h"
 
-#include "liblwgeom.h"         /* For standard geometry types. */
-#include "liblwgeom_internal.h"         /* For FP comparators. */
-#include "lwgeom_pg.h"       /* For debugging macros. */
+#include "liblwgeom.h"          /* For standard geometry types. */
+#include "liblwgeom_internal.h" /* For FP comparators. */
+#include "lwgeom_pg.h"          /* For debugging macros. */
 #include "gserialized_gist.h"
-#include "geography.h"	     /* For utility functions. */
+#include "geography.h" /* For utility functions. */
 
 Datum geography_lt(PG_FUNCTION_ARGS);
 Datum geography_le(PG_FUNCTION_ARGS);
@@ -48,8 +47,8 @@ Datum geography_cmp(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(geography_lt);
 Datum geography_lt(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	GSERIALIZED* g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED* g2 = PG_GETARG_GSERIALIZED_P(1);
 	int cmp = gserialized_cmp(g1, g2);
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
@@ -66,8 +65,8 @@ Datum geography_lt(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_le);
 Datum geography_le(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	GSERIALIZED* g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED* g2 = PG_GETARG_GSERIALIZED_P(1);
 	int cmp = gserialized_cmp(g1, g2);
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
@@ -84,8 +83,8 @@ Datum geography_le(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_gt);
 Datum geography_gt(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	GSERIALIZED* g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED* g2 = PG_GETARG_GSERIALIZED_P(1);
 	int cmp = gserialized_cmp(g1, g2);
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
@@ -102,8 +101,8 @@ Datum geography_gt(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_ge);
 Datum geography_ge(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	GSERIALIZED* g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED* g2 = PG_GETARG_GSERIALIZED_P(1);
 	int cmp = gserialized_cmp(g1, g2);
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
@@ -120,8 +119,8 @@ Datum geography_ge(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_eq);
 Datum geography_eq(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	GSERIALIZED* g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED* g2 = PG_GETARG_GSERIALIZED_P(1);
 	int cmp = gserialized_cmp(g1, g2);
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
@@ -138,8 +137,8 @@ Datum geography_eq(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_cmp);
 Datum geography_cmp(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	GSERIALIZED* g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED* g2 = PG_GETARG_GSERIALIZED_P(1);
 	int ret = gserialized_cmp(g1, g2);
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);

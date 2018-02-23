@@ -24,7 +24,9 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_raster_new() {
+static void
+test_raster_new()
+{
 	rt_raster raster = NULL;
 
 	raster = rt_raster_new(0, 0);
@@ -40,7 +42,9 @@ static void test_raster_new() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_empty() {
+static void
+test_raster_empty()
+{
 	rt_raster raster = NULL;
 
 	/* check that raster is empty */
@@ -59,7 +63,9 @@ static void test_raster_empty() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_metadata() {
+static void
+test_raster_metadata()
+{
 	rt_raster raster = NULL;
 
 	/* create raster */
@@ -96,7 +102,9 @@ static void test_raster_metadata() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_clone() {
+static void
+test_raster_clone()
+{
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band;
@@ -140,8 +148,10 @@ static void test_raster_clone() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_from_band() {
-	uint32_t bandNums[] = {1,3};
+static void
+test_raster_from_band()
+{
+	uint32_t bandNums[] = {1, 3};
 	int lenBandNums = 2;
 	rt_raster raster;
 	rt_raster rast;
@@ -153,7 +163,8 @@ static void test_raster_from_band() {
 	raster = rt_raster_new(xmax, ymax);
 	CU_ASSERT(raster != NULL);
 
-	for (x = 0; x < 5; x++) {
+	for (x = 0; x < 5; x++)
+	{
 		band = cu_add_band(raster, PT_32BUI, 0, 0);
 		CU_ASSERT(band != NULL);
 		rt_band_set_nodata(band, 0, NULL);
@@ -169,7 +180,9 @@ static void test_raster_from_band() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_replace_band() {
+static void
+test_raster_replace_band()
+{
 	rt_raster raster;
 	rt_band band;
 	rt_band rband;
@@ -206,7 +219,8 @@ static void test_raster_replace_band() {
 
 /* register tests */
 void raster_basics_suite_setup(void);
-void raster_basics_suite_setup(void)
+void
+raster_basics_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("raster_basics", NULL, NULL);
 	PG_ADD_TEST(suite, test_raster_new);
@@ -216,4 +230,3 @@ void raster_basics_suite_setup(void)
 	PG_ADD_TEST(suite, test_raster_from_band);
 	PG_ADD_TEST(suite, test_raster_replace_band);
 }
-

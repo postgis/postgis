@@ -23,7 +23,6 @@
  *
  **********************************************************************/
 
-
 #include "varint.h"
 #include "lwgeom_log.h"
 #include "liblwgeom.h"
@@ -31,11 +30,11 @@
 /* -------------------------------------------------------------------------------- */
 
 static size_t
-_varint_u64_encode_buf(uint64_t val, uint8_t *buf)
+_varint_u64_encode_buf(uint64_t val, uint8_t* buf)
 {
 	uint8_t grp;
 	uint64_t q = val;
-	uint8_t *ptr = buf;
+	uint8_t* ptr = buf;
 	while (1)
 	{
 		/* We put the 7 least significant bits in grp */
@@ -46,7 +45,7 @@ _varint_u64_encode_buf(uint64_t val, uint8_t *buf)
 		q = q >> 7;
 		/* Check if, after our rightshifting, we still have */
 		/* anything to read in our input value. */
-		if ( q > 0 )
+		if (q > 0)
 		{
 			/* In the next line quite a lot is happening. */
 			/* Since there is more to read in our input value */
@@ -71,50 +70,48 @@ _varint_u64_encode_buf(uint64_t val, uint8_t *buf)
 	return (size_t)0;
 }
 
-
 size_t
-varint_u64_encode_buf(uint64_t val, uint8_t *buf)
+varint_u64_encode_buf(uint64_t val, uint8_t* buf)
 {
 	return _varint_u64_encode_buf(val, buf);
 }
 
-
 size_t
-varint_u32_encode_buf(uint32_t val, uint8_t *buf)
+varint_u32_encode_buf(uint32_t val, uint8_t* buf)
 {
 	return _varint_u64_encode_buf((uint64_t)val, buf);
 }
 
 size_t
-varint_s64_encode_buf(int64_t val, uint8_t *buf)
+varint_s64_encode_buf(int64_t val, uint8_t* buf)
 {
 	return _varint_u64_encode_buf(zigzag64(val), buf);
 }
 
 size_t
-varint_s32_encode_buf(int32_t val, uint8_t *buf)
+varint_s32_encode_buf(int32_t val, uint8_t* buf)
 {
 	return _varint_u64_encode_buf((uint64_t)zigzag32(val), buf);
 }
 
 /* Read from signed 64bit varint */
 int64_t
-varint_s64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size)
+varint_s64_decode(const uint8_t* the_start, const uint8_t* the_end, size_t* size)
 {
 	return unzigzag64(varint_u64_decode(the_start, the_end, size));
 }
 
 /* Read from unsigned 64bit varint */
 uint64_t
-varint_u64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size)
+varint_u64_decode(const uint8_t* the_start, const uint8_t* the_end, size_t* size)
 {
 	uint64_t nVal = 0;
 	int nShift = 0;
 	uint8_t nByte;
-	const uint8_t *ptr = the_start;
+	const uint8_t* ptr = the_start;
 
 	/* Check so we don't read beyond the twkb */
-	while( ptr < the_end )
+	while (ptr < the_end)
 	{
 		nByte = *ptr;
 		/* Hibit is set, so this isn't the last byte */
@@ -144,18 +141,15 @@ varint_u64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size
 }
 
 size_t
-varint_size(const uint8_t *the_start, const uint8_t *the_end)
+varint_size(const uint8_t* the_start, const uint8_t* the_end)
 {
-	const uint8_t *ptr = the_start;
+	const uint8_t* ptr = the_start;
 
 	/* Check so we don't read beyond the twkb */
-	while( ptr < the_end )
+	while (ptr < the_end)
 	{
 		/* Hibit is set, this isn't the last byte */
-		if (*ptr & 0x80)
-		{
-			ptr++;
-		}
+		if (*ptr & 0x80) { ptr++; }
 		else
 		{
 			ptr++;
@@ -165,46 +159,38 @@ varint_size(const uint8_t *the_start, const uint8_t *the_end)
 	return 0;
 }
 
-uint64_t zigzag64(int64_t val)
+uint64_t
+zigzag64(int64_t val)
 {
-	return val >= 0 ?
-		((uint64_t)val) << 1 :
-		((((uint64_t)(-1 - val)) << 1) | 0x01);
+	return val >= 0 ? ((uint64_t)val) << 1 : ((((uint64_t)(-1 - val)) << 1) | 0x01);
 }
 
-uint32_t zigzag32(int32_t val)
+uint32_t
+zigzag32(int32_t val)
 {
-	return val >= 0 ?
-		((uint32_t)val) << 1 :
-		((((uint32_t)(-1 - val)) << 1) | 0x01);
+	return val >= 0 ? ((uint32_t)val) << 1 : ((((uint32_t)(-1 - val)) << 1) | 0x01);
 }
 
-uint8_t zigzag8(int8_t val)
+uint8_t
+zigzag8(int8_t val)
 {
-	return val >= 0 ?
-		((uint8_t)val) << 1 :
-		((((uint8_t)(-1 - val)) << 1) | 0x01);
+	return val >= 0 ? ((uint8_t)val) << 1 : ((((uint8_t)(-1 - val)) << 1) | 0x01);
 }
 
-int64_t unzigzag64(uint64_t val)
+int64_t
+unzigzag64(uint64_t val)
 {
-	return !(val & 0x01) ?
-		((int64_t)(val >> 1)) :
-		(-1 * (int64_t)((val+1) >> 1));
+	return !(val & 0x01) ? ((int64_t)(val >> 1)) : (-1 * (int64_t)((val + 1) >> 1));
 }
 
-int32_t unzigzag32(uint32_t val)
+int32_t
+unzigzag32(uint32_t val)
 {
-	return !(val & 0x01) ?
-		((int32_t)(val >> 1)) :
-		(-1 * (int32_t)((val+1) >> 1));
+	return !(val & 0x01) ? ((int32_t)(val >> 1)) : (-1 * (int32_t)((val + 1) >> 1));
 }
 
-int8_t unzigzag8(uint8_t val)
+int8_t
+unzigzag8(uint8_t val)
 {
-	return !(val & 0x01) ?
-		((int8_t)(val >> 1)) :
-		(-1 * (int8_t)((val+1) >> 1));
+	return !(val & 0x01) ? ((int8_t)(val >> 1)) : (-1 * (int8_t)((val + 1) >> 1));
 }
-
-

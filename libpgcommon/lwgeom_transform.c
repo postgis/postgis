@@ -10,7 +10,6 @@
  *
  **********************************************************************/
 
-
 /* PostgreSQL headers */
 #include "postgres.h"
 #include "fmgr.h"
@@ -33,19 +32,21 @@
 #include <stdio.h>
 #include <errno.h>
 
-
 /**
-* Global variable to hold cached information about what
-* schema functions are installed in. Currently used by
-* SetSpatialRefSysSchema and GetProj4StringSPI
-*/
-static char *spatialRefSysSchema = NULL;
-
-
+ * Global variable to hold cached information about what
+ * schema functions are installed in. Currently used by
+ * SetSpatialRefSysSchema and GetProj4StringSPI
+ */
+static char* spatialRefSysSchema = NULL;
 
 /* Expose an internal Proj function */
-int pj_transform_nodatum(projPJ srcdefn, projPJ dstdefn, long point_count, int point_offset, double *x, double *y, double *z );
-
+int pj_transform_nodatum(projPJ srcdefn,
+			 projPJ dstdefn,
+			 long point_count,
+			 int point_offset,
+			 double* x,
+			 double* y,
+			 double* z);
 
 /*
  * PROJ 4 backend hash table initial hash size
@@ -53,8 +54,7 @@ int pj_transform_nodatum(projPJ srcdefn, projPJ dstdefn, long point_count, int p
  * typically have 2 entries per portal
  * then we shall use a default size of 32)
  */
-#define PROJ4_BACKEND_HASH_SIZE	32
-
+#define PROJ4_BACKEND_HASH_SIZE 32
 
 /**
  * Backend projPJ hash table
@@ -67,42 +67,39 @@ int pj_transform_nodatum(projPJ srcdefn, projPJ dstdefn, long point_count, int p
  * lookup the projPJ object based upon the MemoryContext parameter and hence
  * pj_free() it.
  */
-static HTAB *PJHash = NULL;
+static HTAB* PJHash = NULL;
 
 typedef struct struct_PJHashEntry
 {
 	MemoryContext ProjectionContext;
 	projPJ projection;
-}
-PJHashEntry;
-
+} PJHashEntry;
 
 /* PJ Hash API */
-uint32 mcxt_ptr_hash(const void *key, Size keysize);
+uint32 mcxt_ptr_hash(const void* key, Size keysize);
 
-static HTAB *CreatePJHash(void);
+static HTAB* CreatePJHash(void);
 static void AddPJHashEntry(MemoryContext mcxt, projPJ projection);
 static projPJ GetPJHashEntry(MemoryContext mcxt);
 static void DeletePJHashEntry(MemoryContext mcxt);
 
 /* Internal Cache API */
 /* static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfo fcinfo) ; */
-static bool IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
-static projPJ GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
-static void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid);
-static void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
+static bool IsInPROJ4SRSCache(PROJ4PortalCache* PROJ4Cache, int srid);
+static projPJ GetProjectionFromPROJ4SRSCache(PROJ4PortalCache* PROJ4Cache, int srid);
+static void AddToPROJ4SRSCache(PROJ4PortalCache* PROJ4Cache, int srid, int other_srid);
+static void DeleteFromPROJ4SRSCache(PROJ4PortalCache* PROJ4Cache, int srid);
 
 /* Search path for PROJ.4 library */
 static bool IsPROJ4LibPathSet = false;
 void SetPROJ4LibPath(void);
-
 
 static void
 #if POSTGIS_PGSQL_VERSION < 96
 PROJ4SRSCacheDelete(MemoryContext context)
 {
 #else
-PROJ4SRSCacheDelete(void *ptr)
+PROJ4SRSCacheDelete(void* ptr)
 {
 	MemoryContext context = (MemoryContext)ptr;
 #endif
@@ -112,7 +109,9 @@ PROJ4SRSCacheDelete(void *ptr)
 	projection = GetPJHashEntry(context);
 
 	if (!projection)
-		elog(ERROR, "PROJ4SRSCacheDelete: Trying to delete non-existant projection object with MemoryContext key (%p)", (void *)context);
+		elog(ERROR,
+		     "PROJ4SRSCacheDelete: Trying to delete non-existant projection object with MemoryContext key (%p)",
+		     (void*)context);
 
 	POSTGIS_DEBUGF(3, "deleting projection object (%p) with MemoryContext key (%p)", projection, context);
 	/* Free it */
@@ -175,19 +174,18 @@ PROJ4SRSCacheCheck(MemoryContext context)
 #endif
 
 /* Memory context definition must match the current version of PostgreSQL */
-static MemoryContextMethods PROJ4SRSCacheContextMethods =
-{
-	NULL,
-	NULL,
-	NULL,
-	PROJ4SRSCacheInit,
-	PROJ4SRSCacheReset,
-	PROJ4SRSCacheDelete,
-	NULL,
-	PROJ4SRSCacheIsEmpty,
-	PROJ4SRSCacheStats
+static MemoryContextMethods PROJ4SRSCacheContextMethods = {NULL,
+							   NULL,
+							   NULL,
+							   PROJ4SRSCacheInit,
+							   PROJ4SRSCacheReset,
+							   PROJ4SRSCacheDelete,
+							   NULL,
+							   PROJ4SRSCacheIsEmpty,
+							   PROJ4SRSCacheStats
 #ifdef MEMORY_CONTEXT_CHECKING
-	,PROJ4SRSCacheCheck
+							   ,
+							   PROJ4SRSCacheCheck
 #endif
 };
 
@@ -197,13 +195,13 @@ static MemoryContextMethods PROJ4SRSCacheContextMethods =
  * PROJ4 projPJ Hash Table functions
  */
 
-
 /**
  * A version of tag_hash - we specify this here as the implementation
  * has changed over the years....
  */
 
-uint32 mcxt_ptr_hash(const void *key, Size keysize)
+uint32
+mcxt_ptr_hash(const void* key, Size keysize)
 {
 	uint32 hashval;
 
@@ -212,8 +210,8 @@ uint32 mcxt_ptr_hash(const void *key, Size keysize)
 	return hashval;
 }
 
-
-static HTAB *CreatePJHash(void)
+static HTAB*
+CreatePJHash(void)
 {
 	HASHCTL ctl;
 
@@ -221,19 +219,23 @@ static HTAB *CreatePJHash(void)
 	ctl.entrysize = sizeof(PJHashEntry);
 	ctl.hash = mcxt_ptr_hash;
 
-	return hash_create("PostGIS PROJ4 Backend projPJ MemoryContext Hash", PROJ4_BACKEND_HASH_SIZE, &ctl, (HASH_ELEM | HASH_FUNCTION));
+	return hash_create("PostGIS PROJ4 Backend projPJ MemoryContext Hash",
+			   PROJ4_BACKEND_HASH_SIZE,
+			   &ctl,
+			   (HASH_ELEM | HASH_FUNCTION));
 }
 
-static void AddPJHashEntry(MemoryContext mcxt, projPJ projection)
+static void
+AddPJHashEntry(MemoryContext mcxt, projPJ projection)
 {
 	bool found;
-	void **key;
-	PJHashEntry *he;
+	void** key;
+	PJHashEntry* he;
 
 	/* The hash key is the MemoryContext pointer */
-	key = (void *)&mcxt;
+	key = (void*)&mcxt;
 
-	he = (PJHashEntry *) hash_search(PJHash, key, HASH_ENTER, &found);
+	he = (PJHashEntry*)hash_search(PJHash, key, HASH_ENTER, &found);
 	if (!found)
 	{
 		/* Insert the entry into the new hash element */
@@ -242,46 +244,52 @@ static void AddPJHashEntry(MemoryContext mcxt, projPJ projection)
 	}
 	else
 	{
-		elog(ERROR, "AddPJHashEntry: PROJ4 projection object already exists for this MemoryContext (%p)",
-		     (void *)mcxt);
+		elog(ERROR,
+		     "AddPJHashEntry: PROJ4 projection object already exists for this MemoryContext (%p)",
+		     (void*)mcxt);
 	}
 }
 
-static projPJ GetPJHashEntry(MemoryContext mcxt)
+static projPJ
+GetPJHashEntry(MemoryContext mcxt)
 {
-	void **key;
-	PJHashEntry *he;
+	void** key;
+	PJHashEntry* he;
 
 	/* The hash key is the MemoryContext pointer */
-	key = (void *)&mcxt;
+	key = (void*)&mcxt;
 
 	/* Return the projection object from the hash */
-	he = (PJHashEntry *) hash_search(PJHash, key, HASH_FIND, NULL);
+	he = (PJHashEntry*)hash_search(PJHash, key, HASH_FIND, NULL);
 
 	return he->projection;
 }
 
-
-static void DeletePJHashEntry(MemoryContext mcxt)
+static void
+DeletePJHashEntry(MemoryContext mcxt)
 {
-	void **key;
-	PJHashEntry *he;
+	void** key;
+	PJHashEntry* he;
 
 	/* The hash key is the MemoryContext pointer */
-	key = (void *)&mcxt;
+	key = (void*)&mcxt;
 
 	/* Delete the projection object from the hash */
-	he = (PJHashEntry *) hash_search(PJHash, key, HASH_REMOVE, NULL);
+	he = (PJHashEntry*)hash_search(PJHash, key, HASH_REMOVE, NULL);
 
 	if (!he)
-		elog(ERROR, "DeletePJHashEntry: There was an error removing the PROJ4 projection object from this MemoryContext (%p)", (void *)mcxt);
+		elog(ERROR,
+		     "DeletePJHashEntry: There was an error removing the PROJ4 projection object from this "
+		     "MemoryContext (%p)",
+		     (void*)mcxt);
 	else
 		he->projection = NULL;
 }
 
 bool
-IsInPROJ4Cache(Proj4Cache PROJ4Cache, int srid) {
-	return IsInPROJ4SRSCache((PROJ4PortalCache *)PROJ4Cache, srid) ;
+IsInPROJ4Cache(Proj4Cache PROJ4Cache, int srid)
+{
+	return IsInPROJ4SRSCache((PROJ4PortalCache*)PROJ4Cache, srid);
 }
 
 /*
@@ -289,7 +297,7 @@ IsInPROJ4Cache(Proj4Cache PROJ4Cache, int srid) {
  */
 
 static bool
-IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
+IsInPROJ4SRSCache(PROJ4PortalCache* PROJ4Cache, int srid)
 {
 	/*
 	 * Return true/false depending upon whether the item
@@ -300,17 +308,17 @@ IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 
 	for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
 	{
-		if (PROJ4Cache->PROJ4SRSCache[i].srid == srid)
-			return 1;
+		if (PROJ4Cache->PROJ4SRSCache[i].srid == srid) return 1;
 	}
 
 	/* Otherwise not found */
 	return 0;
 }
 
-projPJ GetProjectionFromPROJ4Cache(Proj4Cache cache, int srid)
+projPJ
+GetProjectionFromPROJ4Cache(Proj4Cache cache, int srid)
 {
-	return GetProjectionFromPROJ4SRSCache((PROJ4PortalCache *)cache, srid) ;
+	return GetProjectionFromPROJ4SRSCache((PROJ4PortalCache*)cache, srid);
 }
 
 /**
@@ -318,48 +326,45 @@ projPJ GetProjectionFromPROJ4Cache(Proj4Cache cache, int srid)
  * already have checked it exists using IsInPROJ4SRSCache first)
  */
 static projPJ
-GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
+GetProjectionFromPROJ4SRSCache(PROJ4PortalCache* PROJ4Cache, int srid)
 {
 	int i;
 
 	for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
 	{
-		if (PROJ4Cache->PROJ4SRSCache[i].srid == srid)
-			return PROJ4Cache->PROJ4SRSCache[i].projection;
+		if (PROJ4Cache->PROJ4SRSCache[i].srid == srid) return PROJ4Cache->PROJ4SRSCache[i].projection;
 	}
 
 	return NULL;
 }
 
-char* GetProj4StringSPI(int srid)
+char*
+GetProj4StringSPI(int srid)
 {
 	static int maxproj4len = 512;
 	int spi_result;
-	char *proj_str = palloc(maxproj4len);
+	char* proj_str = palloc(maxproj4len);
 	char proj4_spi_buffer[256];
 
 	/* Connect */
 	spi_result = SPI_connect();
-	if (spi_result != SPI_OK_CONNECT)
-	{
-		elog(ERROR, "GetProj4StringSPI: Could not connect to database using SPI");
-	}
+	if (spi_result != SPI_OK_CONNECT) { elog(ERROR, "GetProj4StringSPI: Could not connect to database using SPI"); }
 
 	/*
-	* This global is allocated in CacheMemoryContext (lifespan of this backend)
-	* and is set by SetSpatialRefSysSchema the first time
-	* that GetProjectionsUsingFCInfo is called.
-	*/
+	 * This global is allocated in CacheMemoryContext (lifespan of this backend)
+	 * and is set by SetSpatialRefSysSchema the first time
+	 * that GetProjectionsUsingFCInfo is called.
+	 */
 	if (spatialRefSysSchema)
 	{
 		/* Format the lookup query */
-		static char *proj_str_tmpl = "SELECT proj4text FROM %s.spatial_ref_sys WHERE srid = %d LIMIT 1";
+		static char* proj_str_tmpl = "SELECT proj4text FROM %s.spatial_ref_sys WHERE srid = %d LIMIT 1";
 		snprintf(proj4_spi_buffer, 255, proj_str_tmpl, spatialRefSysSchema, srid);
 	}
 	else
 	{
 		/* Format the lookup query */
-		static char *proj_str_tmpl = "SELECT proj4text FROM spatial_ref_sys WHERE srid = %d LIMIT 1";
+		static char* proj_str_tmpl = "SELECT proj4text FROM spatial_ref_sys WHERE srid = %d LIMIT 1";
 		snprintf(proj4_spi_buffer, 255, proj_str_tmpl, srid);
 	}
 	/* Execute the query, noting the readonly status of this SQL */
@@ -370,11 +375,11 @@ char* GetProj4StringSPI(int srid)
 	{
 		/* Select the first (and only tuple) */
 		TupleDesc tupdesc = SPI_tuptable->tupdesc;
-		SPITupleTable *tuptable = SPI_tuptable;
+		SPITupleTable* tuptable = SPI_tuptable;
 		HeapTuple tuple = tuptable->vals[0];
-		char *proj4text = SPI_getvalue(tuple, tupdesc, 1);
+		char* proj4text = SPI_getvalue(tuple, tupdesc, 1);
 
-		if ( proj4text )
+		if (proj4text)
 		{
 			/* Make a projection object out of it */
 			strncpy(proj_str, proj4text, maxproj4len - 1);
@@ -391,13 +396,10 @@ char* GetProj4StringSPI(int srid)
 
 	spi_result = SPI_finish();
 	if (spi_result != SPI_OK_FINISH)
-	{
-		elog(ERROR, "GetProj4StringSPI: Could not disconnect from database using SPI");
-	}
+	{ elog(ERROR, "GetProj4StringSPI: Could not disconnect from database using SPI"); }
 
 	return proj_str;
 }
-
 
 /**
  *  Given an SRID, return the proj4 text.
@@ -405,36 +407,40 @@ char* GetProj4StringSPI(int srid)
  *  (WGS84 UTM N/S, Polar Stereographic N/S - see SRID_* macros),
  *  return the proj4text for those.
  */
-static char* GetProj4String(int srid)
+static char*
+GetProj4String(int srid)
 {
 	static int maxproj4len = 512;
 
 	/* SRIDs in SPATIAL_REF_SYS */
-	if ( srid < SRID_RESERVE_OFFSET )
-	{
-		return GetProj4StringSPI(srid);
-	}
+	if (srid < SRID_RESERVE_OFFSET) { return GetProj4StringSPI(srid); }
 	/* Automagic SRIDs */
 	else
 	{
-		char *proj_str = palloc(maxproj4len);
+		char* proj_str = palloc(maxproj4len);
 		int id = srid;
 		/* UTM North */
-		if ( id >= SRID_NORTH_UTM_START && id <= SRID_NORTH_UTM_END )
+		if (id >= SRID_NORTH_UTM_START && id <= SRID_NORTH_UTM_END)
 		{
-			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - SRID_NORTH_UTM_START + 1);
+			snprintf(proj_str,
+				 maxproj4len,
+				 "+proj=utm +zone=%d +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+				 id - SRID_NORTH_UTM_START + 1);
 		}
 		/* UTM South */
-		else if ( id >= SRID_SOUTH_UTM_START && id <= SRID_SOUTH_UTM_END )
+		else if (id >= SRID_SOUTH_UTM_START && id <= SRID_SOUTH_UTM_END)
 		{
-			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - SRID_SOUTH_UTM_START + 1);
+			snprintf(proj_str,
+				 maxproj4len,
+				 "+proj=utm +zone=%d +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+				 id - SRID_SOUTH_UTM_START + 1);
 		}
 		/* Lambert zones (about 30x30, larger in higher latitudes) */
 		/* There are three latitude zones, divided at -90,-60,-30,0,30,60,90. */
 		/* In yzones 2,3 (equator) zones, the longitudinal zones are divided every 30 degrees (12 of them) */
 		/* In yzones 1,4 (temperate) zones, the longitudinal zones are every 45 degrees (8 of them) */
 		/* In yzones 0,5 (polar) zones, the longitudinal zones are ever 90 degrees (4 of them) */
-		else if ( id >= SRID_LAEA_START && id <= SRID_LAEA_END )
+		else if (id >= SRID_LAEA_START && id <= SRID_LAEA_END)
 		{
 			int zone = id - SRID_LAEA_START;
 			int xzone = zone % 20;
@@ -443,41 +449,59 @@ static char* GetProj4String(int srid)
 			double lon_0 = 0.0;
 
 			/* The number of xzones is variable depending on yzone */
-			if  ( yzone == 2 || yzone == 3 )
+			if (yzone == 2 || yzone == 3)
 				lon_0 = 30.0 * (xzone - 6) + 15.0;
-			else if ( yzone == 1 || yzone == 4 )
+			else if (yzone == 1 || yzone == 4)
 				lon_0 = 45.0 * (xzone - 4) + 22.5;
-			else if ( yzone == 0 || yzone == 5 )
+			else if (yzone == 0 || yzone == 5)
 				lon_0 = 90.0 * (xzone - 2) + 45.0;
 			else
 				lwerror("Unknown yzone encountered!");
 
-			snprintf(proj_str, maxproj4len, "+proj=laea +ellps=WGS84 +datum=WGS84 +lat_0=%g +lon_0=%g +units=m +no_defs", lat_0, lon_0);
+			snprintf(proj_str,
+				 maxproj4len,
+				 "+proj=laea +ellps=WGS84 +datum=WGS84 +lat_0=%g +lon_0=%g +units=m +no_defs",
+				 lat_0,
+				 lon_0);
 		}
 		/* Lambert Azimuthal Equal Area South Pole */
-		else if ( id == SRID_SOUTH_LAMBERT )
+		else if (id == SRID_SOUTH_LAMBERT)
 		{
-			strncpy(proj_str, "+proj=laea +lat_0=-90 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
+			strncpy(
+			    proj_str,
+			    "+proj=laea +lat_0=-90 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+			    maxproj4len);
 		}
 		/* Polar Sterographic South */
-		else if ( id == SRID_SOUTH_STEREO )
+		else if (id == SRID_SOUTH_STEREO)
 		{
-			strncpy(proj_str, "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len);
+			strncpy(proj_str,
+				"+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 "
+				"+datum=WGS84 +units=m +no_defs",
+				maxproj4len);
 		}
 		/* Lambert Azimuthal Equal Area North Pole */
-		else if ( id == SRID_NORTH_LAMBERT )
+		else if (id == SRID_NORTH_LAMBERT)
 		{
-			strncpy(proj_str, "+proj=laea +lat_0=90 +lon_0=-40 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
+			strncpy(
+			    proj_str,
+			    "+proj=laea +lat_0=90 +lon_0=-40 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+			    maxproj4len);
 		}
 		/* Polar Stereographic North */
-		else if ( id == SRID_NORTH_STEREO )
+		else if (id == SRID_NORTH_STEREO)
 		{
-			strncpy(proj_str, "+proj=stere +lat_0=90 +lat_ts=71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
+			strncpy(proj_str,
+				"+proj=stere +lat_0=90 +lat_ts=71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 "
+				"+datum=WGS84 +units=m +no_defs",
+				maxproj4len);
 		}
 		/* World Mercator */
-		else if ( id == SRID_WORLD_MERCATOR )
+		else if (id == SRID_WORLD_MERCATOR)
 		{
-			strncpy(proj_str, "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
+			strncpy(proj_str,
+				"+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+				maxproj4len);
 		}
 		else
 		{
@@ -490,10 +514,11 @@ static char* GetProj4String(int srid)
 	}
 }
 
-void AddToPROJ4Cache(Proj4Cache cache, int srid, int other_srid) {
-	AddToPROJ4SRSCache((PROJ4PortalCache *)cache, srid, other_srid) ;
+void
+AddToPROJ4Cache(Proj4Cache cache, int srid, int other_srid)
+{
+	AddToPROJ4SRSCache((PROJ4PortalCache*)cache, srid, other_srid);
 }
-
 
 /**
  * Add an entry to the local PROJ4 SRS cache. If we need to wrap around then
@@ -501,32 +526,26 @@ void AddToPROJ4Cache(Proj4Cache cache, int srid, int other_srid) {
  * which is the definition for the other half of the transformation.
  */
 static void
-AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
+AddToPROJ4SRSCache(PROJ4PortalCache* PROJ4Cache, int srid, int other_srid)
 {
 	MemoryContext PJMemoryContext;
 	projPJ projection = NULL;
-	char *proj_str = NULL;
+	char* proj_str = NULL;
 
 	/*
 	** Turn the SRID number into a proj4 string, by reading from spatial_ref_sys
 	** or instantiating a magical value from a negative srid.
 	*/
 	proj_str = GetProj4String(srid);
-	if ( ! proj_str )
-	{
-		elog(ERROR, "GetProj4String returned NULL for SRID (%d)", srid);
-	}
+	if (!proj_str) { elog(ERROR, "GetProj4String returned NULL for SRID (%d)", srid); }
 
 	projection = lwproj_from_string(proj_str);
-	if ( projection == NULL )
+	if (projection == NULL)
 	{
-		char *pj_errstr = pj_strerrno(*pj_get_errno_ref());
-		if ( ! pj_errstr )
-			pj_errstr = "";
+		char* pj_errstr = pj_strerrno(*pj_get_errno_ref());
+		if (!pj_errstr) pj_errstr = "";
 
-		elog(ERROR,
-		    "AddToPROJ4SRSCache: could not parse proj4 string '%s' %s",
-		    proj_str, pj_errstr);
+		elog(ERROR, "AddToPROJ4SRSCache: could not parse proj4 string '%s' %s", proj_str, pj_errstr);
 	}
 
 	/*
@@ -543,7 +562,10 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 		{
 			if (PROJ4Cache->PROJ4SRSCache[i].srid != other_srid && found == false)
 			{
-				POSTGIS_DEBUGF(3, "choosing to remove item from query cache with SRID %d and index %d", PROJ4Cache->PROJ4SRSCache[i].srid, i);
+				POSTGIS_DEBUGF(3,
+					       "choosing to remove item from query cache with SRID %d and index %d",
+					       PROJ4Cache->PROJ4SRSCache[i].srid,
+					       i);
 
 				DeleteFromPROJ4SRSCache(PROJ4Cache, PROJ4Cache->PROJ4SRSCache[i].srid);
 				PROJ4Cache->PROJ4SRSCacheCount = i;
@@ -557,36 +579,40 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	 * Now create a memory context for this projection and
 	 * store it in the backend hash
 	 */
-	POSTGIS_DEBUGF(3, "adding SRID %d with proj4text \"%s\" to query cache at index %d", srid, proj_str, PROJ4Cache->PROJ4SRSCacheCount);
+	POSTGIS_DEBUGF(3,
+		       "adding SRID %d with proj4text \"%s\" to query cache at index %d",
+		       srid,
+		       proj_str,
+		       PROJ4Cache->PROJ4SRSCacheCount);
 
 #if POSTGIS_PGSQL_VERSION < 96
-	PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
-	                                      &PROJ4SRSCacheContextMethods,
-	                                      PROJ4Cache->PROJ4SRSCacheContext,
-	                                      "PostGIS PROJ4 PJ Memory Context");
+	PJMemoryContext = MemoryContextCreate(T_AllocSetContext,
+					      8192,
+					      &PROJ4SRSCacheContextMethods,
+					      PROJ4Cache->PROJ4SRSCacheContext,
+					      "PostGIS PROJ4 PJ Memory Context");
 #else
-	PJMemoryContext = AllocSetContextCreate(PROJ4Cache->PROJ4SRSCacheContext,
-	                                        "PostGIS PROJ4 PJ Memory Context",
-	                                        ALLOCSET_SMALL_SIZES);
+	PJMemoryContext = AllocSetContextCreate(
+	    PROJ4Cache->PROJ4SRSCacheContext, "PostGIS PROJ4 PJ Memory Context", ALLOCSET_SMALL_SIZES);
 
 	/* PgSQL comments suggest allocating callback in the context */
 	/* being managed, so that the callback object gets cleaned along with */
 	/* the context */
-	MemoryContextCallback *callback = MemoryContextAlloc(PJMemoryContext, sizeof(MemoryContextCallback));
+	MemoryContextCallback* callback = MemoryContextAlloc(PJMemoryContext, sizeof(MemoryContextCallback));
 	callback->arg = (void*)PJMemoryContext;
 	callback->func = PROJ4SRSCacheDelete;
 	MemoryContextRegisterResetCallback(PJMemoryContext, callback);
 #endif
 
- 	/* Create the backend hash if it doesn't already exist */
-	if (!PJHash)
-		PJHash = CreatePJHash();
+	/* Create the backend hash if it doesn't already exist */
+	if (!PJHash) PJHash = CreatePJHash();
 
 	/*
 	 * Add the MemoryContext to the backend hash so we can
 	 * clean up upon portal shutdown
 	 */
-	POSTGIS_DEBUGF(3, "adding projection object (%p) to hash table with MemoryContext key (%p)", projection, PJMemoryContext);
+	POSTGIS_DEBUGF(
+	    3, "adding projection object (%p) to hash table with MemoryContext key (%p)", projection, PJMemoryContext);
 
 	AddPJHashEntry(PJMemoryContext, projection);
 
@@ -597,15 +623,16 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 
 	/* Free the projection string */
 	pfree(proj_str);
-
 }
 
-void DeleteFromPROJ4Cache(Proj4Cache cache, int srid) {
-	DeleteFromPROJ4SRSCache((PROJ4PortalCache *)cache, srid) ;
+void
+DeleteFromPROJ4Cache(Proj4Cache cache, int srid)
+{
+	DeleteFromPROJ4SRSCache((PROJ4PortalCache*)cache, srid);
 }
 
-
-static void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
+static void
+DeleteFromPROJ4SRSCache(PROJ4PortalCache* PROJ4Cache, int srid)
 {
 	/*
 	 * Delete the SRID entry from the cache
@@ -631,7 +658,6 @@ static void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 	}
 }
 
-
 /**
  * Specify an alternate directory for the PROJ.4 grid files
  * (this should augment the PROJ.4 compile-time path)
@@ -644,19 +670,21 @@ static void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
  * since the method of determining the current installation
  * path are different on older PostgreSQL versions.
  */
-void SetPROJ4LibPath(void)
+void
+SetPROJ4LibPath(void)
 {
-	char *path;
-	char *share_path;
-	const char **proj_lib_path;
+	char* path;
+	char* share_path;
+	const char** proj_lib_path;
 
-	if (!IsPROJ4LibPathSet) {
+	if (!IsPROJ4LibPathSet)
+	{
 
 		/*
 		 * Get the sharepath and append /contrib/postgis/proj to form a suitable
 		 * directory in which to store the grid shift files
 		 */
-		proj_lib_path = palloc(sizeof(char *));
+		proj_lib_path = palloc(sizeof(char*));
 
 		share_path = palloc(MAXPGPATH);
 		get_share_path(my_exec_path, share_path);
@@ -664,7 +692,12 @@ void SetPROJ4LibPath(void)
 		path = palloc(MAXPGPATH);
 		*proj_lib_path = path;
 
-		snprintf(path, MAXPGPATH - 1, "%s/contrib/postgis-%s.%s/proj", share_path, POSTGIS_MAJOR_VERSION, POSTGIS_MINOR_VERSION);
+		snprintf(path,
+			 MAXPGPATH - 1,
+			 "%s/contrib/postgis-%s.%s/proj",
+			 share_path,
+			 POSTGIS_MAJOR_VERSION,
+			 POSTGIS_MINOR_VERSION);
 
 		/* Set the search path for PROJ.4 */
 		pj_set_searchpath(1, proj_lib_path);
@@ -674,20 +707,21 @@ void SetPROJ4LibPath(void)
 	}
 }
 
-Proj4Cache GetPROJ4Cache(FunctionCallInfo fcinfo) {
+Proj4Cache
+GetPROJ4Cache(FunctionCallInfo fcinfo)
+{
 	return (Proj4Cache)GetPROJ4SRSCache(fcinfo);
 }
 
-
 /*
-* Given a function call context, figure out what namespace the
-* function is being called from, and copy that into a global
-* for use by GetProj4StringSPI
-*/
+ * Given a function call context, figure out what namespace the
+ * function is being called from, and copy that into a global
+ * for use by GetProj4StringSPI
+ */
 static void
 SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
 {
-	char *nsp_name;
+	char* nsp_name;
 
 	/* Schema info is already cached, we're done here */
 	if (spatialRefSysSchema) return;
@@ -697,14 +731,15 @@ SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
 
 	nsp_name = get_namespace_name(get_func_namespace(fcinfo->flinfo->fn_oid));
 	elog(DEBUG4, "%s located %s in namespace %s", __func__, get_func_name(fcinfo->flinfo->fn_oid), nsp_name);
-	spatialRefSysSchema = MemoryContextStrdup(CacheMemoryContext, nsp_name);;
+	spatialRefSysSchema = MemoryContextStrdup(CacheMemoryContext, nsp_name);
+	;
 	return;
 }
 
 int
-GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ *pj1, projPJ *pj2)
+GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ* pj1, projPJ* pj2)
 {
-	Proj4Cache *proj_cache = NULL;
+	Proj4Cache* proj_cache = NULL;
 
 	/* Set the search path if we haven't already */
 	SetPROJ4LibPath();
@@ -714,16 +749,13 @@ GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ 
 
 	/* get or initialize the cache for this round */
 	proj_cache = GetPROJ4Cache(fcinfo);
-	if ( !proj_cache )
-		return LW_FAILURE;
+	if (!proj_cache) return LW_FAILURE;
 
 	/* Add the output srid to the cache if it's not already there */
-	if (!IsInPROJ4Cache(proj_cache, srid1))
-		AddToPROJ4Cache(proj_cache, srid1, srid2);
+	if (!IsInPROJ4Cache(proj_cache, srid1)) AddToPROJ4Cache(proj_cache, srid1, srid2);
 
 	/* Add the input srid to the cache if it's not already there */
-	if (!IsInPROJ4Cache(proj_cache, srid2))
-		AddToPROJ4Cache(proj_cache, srid2, srid1);
+	if (!IsInPROJ4Cache(proj_cache, srid2)) AddToPROJ4Cache(proj_cache, srid2, srid1);
 
 	/* Get the projections */
 	*pj1 = GetProjectionFromPROJ4Cache(proj_cache, srid1);
@@ -733,24 +765,22 @@ GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ 
 }
 
 int
-spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
+spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID* s)
 {
 	projPJ pj1, pj2;
 #if POSTGIS_PROJ_VERSION >= 48
 	double major_axis, minor_axis, eccentricity_squared;
 #endif
 
-	if ( GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE)
-		return LW_FAILURE;
+	if (GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE) return LW_FAILURE;
 
-	if ( ! pj_is_latlong(pj1) )
-		return LW_FAILURE;
+	if (!pj_is_latlong(pj1)) return LW_FAILURE;
 
 #if POSTGIS_PROJ_VERSION >= 48
 	/* For newer versions of Proj we can pull the spheroid paramaeters and initialize */
 	/* using them */
 	pj_get_spheroid_defn(pj1, &major_axis, &eccentricity_squared);
-	minor_axis = major_axis * sqrt(1-eccentricity_squared);
+	minor_axis = major_axis * sqrt(1 - eccentricity_squared);
 	spheroid_init(s, major_axis, minor_axis);
 #else
 	/* For old versions of Proj we cannot lookup the spheroid parameters from the API */
@@ -761,27 +791,25 @@ spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
 	return LW_SUCCESS;
 }
 
-void srid_is_latlong(FunctionCallInfo fcinfo, int srid)
+void
+srid_is_latlong(FunctionCallInfo fcinfo, int srid)
 {
 	projPJ pj1;
 	projPJ pj2;
 
-	if ( srid == SRID_DEFAULT || srid == SRID_UNKNOWN )
-		return;
+	if (srid == SRID_DEFAULT || srid == SRID_UNKNOWN) return;
 
-	if ( GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE)
-		return;
+	if (GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE) return;
 
-	if ( pj_is_latlong(pj1) )
-		return;
+	if (pj_is_latlong(pj1)) return;
 
-	ereport(ERROR, (
-	            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-	            errmsg("Only lon/lat coordinate systems are supported in geography.")));
+	ereport(ERROR,
+		(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+		 errmsg("Only lon/lat coordinate systems are supported in geography.")));
 }
 
-
-srs_precision srid_axis_precision(FunctionCallInfo fcinfo, int srid, int precision)
+srs_precision
+srid_axis_precision(FunctionCallInfo fcinfo, int srid, int precision)
 {
 	projPJ pj1;
 	projPJ pj2;
@@ -792,13 +820,11 @@ srs_precision srid_axis_precision(FunctionCallInfo fcinfo, int srid, int precisi
 	sp.precision_z = precision;
 	sp.precision_m = precision;
 
-	if ( srid == SRID_UNKNOWN )
-		return sp;
+	if (srid == SRID_UNKNOWN) return sp;
 
-	if ( GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE)
-		return sp;
+	if (GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE) return sp;
 
-	if ( pj_is_latlong(pj1) )
+	if (pj_is_latlong(pj1))
 	{
 		sp.precision_xy += 5;
 		return sp;

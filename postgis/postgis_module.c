@@ -22,7 +22,6 @@
  *
  **********************************************************************/
 
-
 #include "postgres.h"
 #include "fmgr.h"
 #include "utils/elog.h"
@@ -45,9 +44,10 @@ static pqsigfunc coreIntHandler = 0;
 static void handleInterrupt(int sig);
 
 #ifdef WIN32
-static void interruptCallback() {
-  if (UNBLOCKED_SIGNAL_QUEUE())
-    pgwin32_dispatch_queued_signals();
+static void
+interruptCallback()
+{
+	if (UNBLOCKED_SIGNAL_QUEUE()) pgwin32_dispatch_queued_signals();
 }
 #endif
 
@@ -59,13 +59,13 @@ void
 _PG_init(void)
 {
 
-  coreIntHandler = pqsignal(SIGINT, handleInterrupt);
+	coreIntHandler = pqsignal(SIGINT, handleInterrupt);
 
 #ifdef WIN32
 #if POSTGIS_GEOS_VERSION >= 34
-  GEOS_interruptRegisterCallback(interruptCallback);
+	GEOS_interruptRegisterCallback(interruptCallback);
 #endif
-  lwgeom_register_interrupt_callback(interruptCallback);
+	lwgeom_register_interrupt_callback(interruptCallback);
 #endif
 
 #if 0
@@ -101,11 +101,11 @@ _PG_init(void)
    );
 #endif
 
-    /* install PostgreSQL handlers */
-    pg_install_lwgeom_handlers();
+	/* install PostgreSQL handlers */
+	pg_install_lwgeom_handlers();
 
-    /* initialize geometry backend */
-    lwgeom_init_backend();
+	/* initialize geometry backend */
+	lwgeom_init_backend();
 }
 
 /*
@@ -115,29 +115,26 @@ void _PG_fini(void);
 void
 _PG_fini(void)
 {
-  elog(NOTICE, "Goodbye from PostGIS %s", POSTGIS_VERSION);
-  pqsignal(SIGINT, coreIntHandler);
+	elog(NOTICE, "Goodbye from PostGIS %s", POSTGIS_VERSION);
+	pqsignal(SIGINT, coreIntHandler);
 }
-
 
 static void
 handleInterrupt(int sig)
 {
-  /* NOTE: printf here would be dangerous, see
-   * https://trac.osgeo.org/postgis/ticket/3644
-   *
-   * TODO: block interrupts during execution, to fix the problem
-   */
-  /* printf("Interrupt requested\n"); fflush(stdout); */
+	/* NOTE: printf here would be dangerous, see
+	 * https://trac.osgeo.org/postgis/ticket/3644
+	 *
+	 * TODO: block interrupts during execution, to fix the problem
+	 */
+	/* printf("Interrupt requested\n"); fflush(stdout); */
 
 #if POSTGIS_GEOS_VERSION >= 34
-  GEOS_interruptRequest();
+	GEOS_interruptRequest();
 #endif
 
-  /* request interruption of liblwgeom as well */
-  lwgeom_request_interrupt();
+	/* request interruption of liblwgeom as well */
+	lwgeom_request_interrupt();
 
-  if ( coreIntHandler ) {
-    (*coreIntHandler)(sig);
-  }
+	if (coreIntHandler) { (*coreIntHandler)(sig); }
 }

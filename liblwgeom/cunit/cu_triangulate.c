@@ -16,7 +16,8 @@
 
 #include "liblwgeom_internal.h"
 
-static void test_lwgeom_delaunay_triangulation(void)
+static void
+test_lwgeom_delaunay_triangulation(void)
 {
 #if POSTGIS_GEOS_VERSION >= 34
 	LWGEOM *in, *tmp, *out;
@@ -32,21 +33,19 @@ static void test_lwgeom_delaunay_triangulation(void)
 	out = lwgeom_normalize(tmp);
 	lwgeom_free(tmp);
 
-        wkt = lwgeom_to_ewkt(out);
+	wkt = lwgeom_to_ewkt(out);
 	lwgeom_free(out);
 
 	exp_wkt = "GEOMETRYCOLLECTION(POLYGON((5 5,20 0,10 0,5 5)))";
-        if ( strcmp(wkt, exp_wkt) )
-	{
-                fprintf(stderr, "\nExp:  %s\nObt:  %s\n", exp_wkt, wkt);
-	}
+	if (strcmp(wkt, exp_wkt)) { fprintf(stderr, "\nExp:  %s\nObt:  %s\n", exp_wkt, wkt); }
 	CU_ASSERT_STRING_EQUAL(wkt, exp_wkt);
 	lwfree(wkt);
 
 #endif /* POSTGIS_GEOS_VERSION >= 34 */
 }
 
-static void test_lwgeom_voronoi_diagram(void)
+static void
+test_lwgeom_voronoi_diagram(void)
 {
 #if POSTGIS_GEOS_VERSION >= 35
 	LWGEOM* in = lwgeom_from_wkt("MULTIPOINT(4 4, 5 5, 6 6)", LW_PARSER_CHECK_NONE);
@@ -57,7 +56,7 @@ static void test_lwgeom_voronoi_diagram(void)
 	/* For boundaries we get a generic LWCOLLECTION */
 	CU_ASSERT_EQUAL(COLLECTIONTYPE, lwgeom_get_type(out_boundaries));
 	/* For lines we get a MULTILINETYPE */
-	CU_ASSERT_EQUAL(MULTILINETYPE,  lwgeom_get_type(out_lines));
+	CU_ASSERT_EQUAL(MULTILINETYPE, lwgeom_get_type(out_lines));
 
 	lwgeom_free(in);
 	lwgeom_free(out_boundaries);
@@ -65,10 +64,11 @@ static void test_lwgeom_voronoi_diagram(void)
 #endif /* POSTGIS_GEOS_VERSION >= 35 */
 }
 
-static void test_lwgeom_voronoi_diagram_custom_envelope(void)
+static void
+test_lwgeom_voronoi_diagram_custom_envelope(void)
 {
 #if POSTGIS_GEOS_VERSION >= 35
-	LWGEOM* in  = lwgeom_from_wkt("MULTIPOINT(4 4, 5 5, 6 6)", LW_PARSER_CHECK_NONE);
+	LWGEOM* in = lwgeom_from_wkt("MULTIPOINT(4 4, 5 5, 6 6)", LW_PARSER_CHECK_NONE);
 	LWGEOM* for_extent = lwgeom_from_wkt("LINESTRING (-10 -10, 10 10)", LW_PARSER_CHECK_NONE);
 	const GBOX* clipping_extent = lwgeom_get_bbox(for_extent);
 
@@ -84,7 +84,8 @@ static void test_lwgeom_voronoi_diagram_custom_envelope(void)
 }
 
 #if POSTGIS_GEOS_VERSION >= 35
-static void assert_empty_diagram(char* wkt, double tolerance)
+static void
+assert_empty_diagram(char* wkt, double tolerance)
 {
 	LWGEOM* in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	LWGEOM* out = lwgeom_voronoi_diagram(in, NULL, tolerance, 0);
@@ -97,7 +98,8 @@ static void assert_empty_diagram(char* wkt, double tolerance)
 }
 #endif /* POSTGIS_GEOS_VERSION >= 35 */
 
-static void test_lwgeom_voronoi_diagram_expected_empty(void)
+static void
+test_lwgeom_voronoi_diagram_expected_empty(void)
 {
 #if POSTGIS_GEOS_VERSION >= 35
 	assert_empty_diagram("POLYGON EMPTY", 0);
@@ -113,7 +115,8 @@ static void test_lwgeom_voronoi_diagram_expected_empty(void)
 ** Used by test harness to register the tests in this file.
 */
 void triangulate_suite_setup(void);
-void triangulate_suite_setup(void)
+void
+triangulate_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("triangulate", NULL, NULL);
 	PG_ADD_TEST(suite, test_lwgeom_delaunay_triangulation);

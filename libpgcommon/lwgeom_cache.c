@@ -17,40 +17,42 @@
 #include "lwgeom_cache.h"
 
 /*
-* Generic statement caching infrastructure. We cache
-* the following kinds of objects:
-*
-*   geometries-with-trees
-*      PreparedGeometry, RTree, CIRC_TREE, RECT_TREE
-*   srids-with-projections
-*      projPJ
-*
-* Each GenericCache* has a type, and after that
-* some data. Similar to generic LWGEOM*. Test that
-* the type number is what you expect before casting
-* and de-referencing struct members.
-*/
-typedef struct {
+ * Generic statement caching infrastructure. We cache
+ * the following kinds of objects:
+ *
+ *   geometries-with-trees
+ *      PreparedGeometry, RTree, CIRC_TREE, RECT_TREE
+ *   srids-with-projections
+ *      projPJ
+ *
+ * Each GenericCache* has a type, and after that
+ * some data. Similar to generic LWGEOM*. Test that
+ * the type number is what you expect before casting
+ * and de-referencing struct members.
+ */
+typedef struct
+{
 	int type;
 	char data[1];
 } GenericCache;
 
 /*
-* Although there are only two basic kinds of
-* cache entries, the actual trees stored in the
-* geometries-with-trees pattern are quite diverse,
-* and they might be used in combination, so we have
-* one slot for each tree type as well as a slot for
-* projections.
-*/
-typedef struct {
+ * Although there are only two basic kinds of
+ * cache entries, the actual trees stored in the
+ * geometries-with-trees pattern are quite diverse,
+ * and they might be used in combination, so we have
+ * one slot for each tree type as well as a slot for
+ * projections.
+ */
+typedef struct
+{
 	GenericCache* entry[NUM_CACHE_ENTRIES];
 } GenericCacheCollection;
 
 /**
-* Utility function to read the upper memory context off a function call
-* info data.
-*/
+ * Utility function to read the upper memory context off a function call
+ * info data.
+ */
 static MemoryContext
 FIContext(FunctionCallInfoData* fcinfo)
 {
@@ -58,15 +60,15 @@ FIContext(FunctionCallInfoData* fcinfo)
 }
 
 /**
-* Get the generic collection off the statement, allocate a
-* new one if we don't have one already.
-*/
+ * Get the generic collection off the statement, allocate a
+ * new one if we don't have one already.
+ */
 static GenericCacheCollection*
 GetGenericCacheCollection(FunctionCallInfoData* fcinfo)
 {
 	GenericCacheCollection* cache = fcinfo->flinfo->fn_extra;
 
-	if ( ! cache )
+	if (!cache)
 	{
 		cache = MemoryContextAlloc(FIContext(fcinfo), sizeof(GenericCacheCollection));
 		memset(cache, 0, sizeof(GenericCacheCollection));
@@ -75,18 +77,17 @@ GetGenericCacheCollection(FunctionCallInfoData* fcinfo)
 	return cache;
 }
 
-
 /**
-* Get the Proj4 entry from the generic cache if one exists.
-* If it doesn't exist, make a new empty one and return it.
-*/
+ * Get the Proj4 entry from the generic cache if one exists.
+ * If it doesn't exist, make a new empty one and return it.
+ */
 PROJ4PortalCache*
 GetPROJ4SRSCache(FunctionCallInfoData* fcinfo)
 {
 	GenericCacheCollection* generic_cache = GetGenericCacheCollection(fcinfo);
 	PROJ4PortalCache* cache = (PROJ4PortalCache*)(generic_cache->entry[PROJ_CACHE_ENTRY]);
 
-	if ( ! cache )
+	if (!cache)
 	{
 		/* Allocate in the upper context */
 		cache = MemoryContextAlloc(FIContext(fcinfo), sizeof(PROJ4PortalCache));
@@ -95,7 +96,8 @@ GetPROJ4SRSCache(FunctionCallInfoData* fcinfo)
 		{
 			int i;
 
-			POSTGIS_DEBUGF(3, "Allocating PROJ4Cache for portal with transform() MemoryContext %p", FIContext(fcinfo));
+			POSTGIS_DEBUGF(
+			    3, "Allocating PROJ4Cache for portal with transform() MemoryContext %p", FIContext(fcinfo));
 			/* Put in any required defaults */
 			for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
 			{
@@ -115,18 +117,21 @@ GetPROJ4SRSCache(FunctionCallInfoData* fcinfo)
 }
 
 /**
-* Get an appropriate (based on the entry type number)
-* GeomCache entry from the generic cache if one exists.
-* Returns a cache pointer if there is a cache hit and we have an
-* index built and ready to use. Returns NULL otherwise.
-*/
+ * Get an appropriate (based on the entry type number)
+ * GeomCache entry from the generic cache if one exists.
+ * Returns a cache pointer if there is a cache hit and we have an
+ * index built and ready to use. Returns NULL otherwise.
+ */
 GeomCache*
-GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods, const GSERIALIZED* g1, const GSERIALIZED* g2)
+GetGeomCache(FunctionCallInfoData* fcinfo,
+	     const GeomCacheMethods* cache_methods,
+	     const GSERIALIZED* g1,
+	     const GSERIALIZED* g2)
 {
 	GeomCache* cache;
 	int cache_hit = 0;
 	MemoryContext old_context;
-	const GSERIALIZED *geom;
+	const GSERIALIZED* geom;
 	GenericCacheCollection* generic_cache = GetGenericCacheCollection(fcinfo);
 	int entry_number = cache_methods->entry_number;
 
@@ -135,7 +140,7 @@ GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods
 
 	cache = (GeomCache*)(generic_cache->entry[entry_number]);
 
-	if ( ! cache )
+	if (!cache)
 	{
 		old_context = MemoryContextSwitchTo(FIContext(fcinfo));
 		/* Allocate in the upper context */
@@ -147,20 +152,15 @@ GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods
 	}
 
 	/* Cache hit on the first argument */
-	if ( g1 &&
-	     cache->argnum != 2 &&
-	     cache->geom1_size == VARSIZE(g1) &&
-	     memcmp(cache->geom1, g1, cache->geom1_size) == 0 )
+	if (g1 && cache->argnum != 2 && cache->geom1_size == VARSIZE(g1) &&
+	    memcmp(cache->geom1, g1, cache->geom1_size) == 0)
 	{
 		cache_hit = 1;
 		geom = cache->geom1;
-
 	}
 	/* Cache hit on second argument */
-	else if ( g2 &&
-	          cache->argnum != 1 &&
-	          cache->geom2_size == VARSIZE(g2) &&
-	          memcmp(cache->geom2, g2, cache->geom2_size) == 0 )
+	else if (g2 && cache->argnum != 1 && cache->geom2_size == VARSIZE(g2) &&
+		 memcmp(cache->geom2, g2, cache->geom2_size) == 0)
 	{
 		cache_hit = 2;
 		geom = cache->geom2;
@@ -169,17 +169,17 @@ GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods
 	else
 	{
 		cache_hit = 0;
-		if ( cache->argnum )
+		if (cache->argnum)
 		{
 			cache_methods->GeomIndexFreer(cache);
 			cache->argnum = 0;
 		}
-		if ( cache->lwgeom1 )
+		if (cache->lwgeom1)
 		{
 			lwgeom_free(cache->lwgeom1);
 			cache->lwgeom1 = 0;
 		}
-		if ( cache->lwgeom2 )
+		if (cache->lwgeom2)
 		{
 			lwgeom_free(cache->lwgeom2);
 			cache->lwgeom2 = 0;
@@ -187,10 +187,10 @@ GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods
 	}
 
 	/* Cache hit, but no tree built yet, build it! */
-	if ( cache_hit && ! cache->argnum )
+	if (cache_hit && !cache->argnum)
 	{
 		int rv;
-		LWGEOM *lwgeom;
+		LWGEOM* lwgeom;
 
 		/* Save the tree and supporting geometry in the cache */
 		/* memory context */
@@ -208,29 +208,27 @@ GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods
 		MemoryContextSwitchTo(old_context);
 
 		/* Something went awry in the tree build phase */
-		if ( ! rv )
-			return NULL;
+		if (!rv) return NULL;
 
 		/* Only set an argnum if everything completely successfully */
 		cache->argnum = cache_hit;
 	}
 
 	/* We have a hit and a calculated tree, we're done */
-	if ( cache_hit && cache->argnum )
-		return cache;
+	if (cache_hit && cache->argnum) return cache;
 
 	/* Argument one didn't match, so copy the new value in. */
-	if ( g1 && cache_hit != 1 )
+	if (g1 && cache_hit != 1)
 	{
-		if ( cache->geom1 ) pfree(cache->geom1);
+		if (cache->geom1) pfree(cache->geom1);
 		cache->geom1_size = VARSIZE(g1);
 		cache->geom1 = MemoryContextAlloc(FIContext(fcinfo), cache->geom1_size);
 		memcpy(cache->geom1, g1, cache->geom1_size);
 	}
 	/* Argument two didn't match, so copy the new value in. */
-	if ( g2 && cache_hit != 2 )
+	if (g2 && cache_hit != 2)
 	{
-		if ( cache->geom2 ) pfree(cache->geom2);
+		if (cache->geom2) pfree(cache->geom2);
 		cache->geom2_size = VARSIZE(g2);
 		cache->geom2 = MemoryContextAlloc(FIContext(fcinfo), cache->geom2_size);
 		memcpy(cache->geom2, g2, cache->geom2_size);
@@ -238,5 +236,3 @@ GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods
 
 	return NULL;
 }
-
-

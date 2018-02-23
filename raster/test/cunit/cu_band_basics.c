@@ -25,15 +25,17 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_band_metadata() {
+static void
+test_band_metadata()
+{
 	rt_raster rast = NULL;
-	uint8_t *data = NULL;
+	uint8_t* data = NULL;
 	rt_band band = NULL;
 	int width = 5;
 	int height = 5;
 	int temp = 0;
 	double val = 0;
-	char *path = "../regress/loader/testraster.tif";
+	char* path = "../regress/loader/testraster.tif";
 	uint8_t extband = 0;
 	int x;
 	int y;
@@ -43,12 +45,7 @@ static void test_band_metadata() {
 	CU_ASSERT(data != NULL);
 	memset(data, 0, sizeof(uint8_t) * width * height);
 
-	band = rt_band_new_inline(
-		width, height,
-		PT_8BUI,
-		0, 0,
-		data
-	);
+	band = rt_band_new_inline(width, height, PT_8BUI, 0, 0, data);
 	CU_ASSERT(band != NULL);
 
 	/* isoffline */
@@ -99,12 +96,7 @@ static void test_band_metadata() {
 	/* offline band */
 	width = 10;
 	height = 10;
-	band = rt_band_new_offline(
-		width, height,
-		PT_8BUI,
-		0, 0,
-		2, path
-	);
+	band = rt_band_new_offline(width, height, PT_8BUI, 0, 0, 2, path);
 	CU_ASSERT(band != NULL);
 
 	rast = rt_raster_new(width, height);
@@ -126,8 +118,10 @@ static void test_band_metadata() {
 	CU_ASSERT_EQUAL(rt_band_load_offline_data(band), ES_NONE);
 	CU_ASSERT(rt_band_get_data(band) != NULL);
 
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
 			CU_ASSERT_EQUAL(rt_band_get_pixel(band, x, y, &val, NULL), ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 0, 1.);
 		}
@@ -141,9 +135,11 @@ static void test_band_metadata() {
 	cu_free_raster(rast);
 }
 
-static void test_band_pixtype_1BB() {
+static void
+test_band_pixtype_1BB()
+{
 	rt_pixtype pixtype = PT_1BB;
-	uint8_t *data = NULL;
+	uint8_t* data = NULL;
 	rt_band band = NULL;
 	int width = 5;
 	int height = 5;
@@ -158,12 +154,7 @@ static void test_band_pixtype_1BB() {
 	CU_ASSERT(data != NULL);
 	memset(data, 0, rt_pixtype_size(pixtype) * width * height);
 
-	band = rt_band_new_inline(
-		width, height,
-		pixtype,
-		0, 0,
-		data
-	);
+	band = rt_band_new_inline(width, height, pixtype, 0, 0, data);
 	CU_ASSERT(band != NULL);
 	rt_band_set_ownsdata_flag(band, 1);
 	CU_ASSERT(rt_band_get_ownsdata_flag(band));
@@ -196,8 +187,10 @@ static void test_band_pixtype_1BB() {
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(clamped);
 
-	for (x = 0; x < rt_band_get_width(band); ++x) {
-		for ( y = 0; y < rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
@@ -215,9 +208,11 @@ static void test_band_pixtype_1BB() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_2BUI() {
+static void
+test_band_pixtype_2BUI()
+{
 	rt_pixtype pixtype = PT_2BUI;
-	uint8_t *data = NULL;
+	uint8_t* data = NULL;
 	rt_band band = NULL;
 	int width = 5;
 	int height = 5;
@@ -232,12 +227,7 @@ static void test_band_pixtype_2BUI() {
 	CU_ASSERT(data != NULL);
 	memset(data, 0, rt_pixtype_size(pixtype) * width * height);
 
-	band = rt_band_new_inline(
-		width, height,
-		pixtype,
-		0, 0,
-		data
-	);
+	band = rt_band_new_inline(width, height, pixtype, 0, 0, data);
 	CU_ASSERT(band != NULL);
 	rt_band_set_ownsdata_flag(band, 1);
 	CU_ASSERT(rt_band_get_ownsdata_flag(band));
@@ -282,8 +272,10 @@ static void test_band_pixtype_2BUI() {
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(clamped);
 
-	for (x=0; x<rt_band_get_width(band); ++x) {
-		for (y=0; y<rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
@@ -307,9 +299,11 @@ static void test_band_pixtype_2BUI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_4BUI() {
+static void
+test_band_pixtype_4BUI()
+{
 	rt_pixtype pixtype = PT_4BUI;
-	uint8_t *data = NULL;
+	uint8_t* data = NULL;
 	rt_band band = NULL;
 	int width = 5;
 	int height = 5;
@@ -324,12 +318,7 @@ static void test_band_pixtype_4BUI() {
 	CU_ASSERT(data != NULL);
 	memset(data, 0, rt_pixtype_size(pixtype) * width * height);
 
-	band = rt_band_new_inline(
-		width, height,
-		pixtype,
-		0, 0,
-		data
-	);
+	band = rt_band_new_inline(width, height, pixtype, 0, 0, data);
 	CU_ASSERT(band != NULL);
 	rt_band_set_ownsdata_flag(band, 1);
 	CU_ASSERT(rt_band_get_ownsdata_flag(band));
@@ -370,11 +359,11 @@ static void test_band_pixtype_4BUI() {
 	rt_band_get_nodata(band, &val);
 	CU_ASSERT_DOUBLE_EQUAL(val, 15, DBL_EPSILON);
 
-	err = rt_band_set_nodata(band, 16, &clamped);  /* out of value range */
+	err = rt_band_set_nodata(band, 16, &clamped); /* out of value range */
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(clamped);
 
-	err = rt_band_set_nodata(band, 17, &clamped);  /* out of value range */
+	err = rt_band_set_nodata(band, 17, &clamped); /* out of value range */
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(clamped);
 
@@ -382,30 +371,32 @@ static void test_band_pixtype_4BUI() {
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(clamped);
 
-	for (x=0; x<rt_band_get_width(band); ++x) {
-		for (y=0; y<rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 1, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 3, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 3, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 7, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 7, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 15, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 15, DBL_EPSILON);
 		}
 	}
@@ -413,9 +404,11 @@ static void test_band_pixtype_4BUI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_8BUI() {
+static void
+test_band_pixtype_8BUI()
+{
 	rt_pixtype pixtype = PT_8BUI;
-	uint8_t *data = NULL;
+	uint8_t* data = NULL;
 	rt_band band = NULL;
 	int width = 5;
 	int height = 5;
@@ -430,12 +423,7 @@ static void test_band_pixtype_8BUI() {
 	CU_ASSERT(data != NULL);
 	memset(data, 0, rt_pixtype_size(pixtype) * width * height);
 
-	band = rt_band_new_inline(
-		width, height,
-		pixtype,
-		0, 0,
-		data
-	);
+	band = rt_band_new_inline(width, height, pixtype, 0, 0, data);
 	CU_ASSERT(band != NULL);
 	rt_band_set_ownsdata_flag(band, 1);
 	CU_ASSERT(rt_band_get_ownsdata_flag(band));
@@ -496,24 +484,26 @@ static void test_band_pixtype_8BUI() {
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(clamped);
 
-	for (x=0; x<rt_band_get_width(band); ++x) {
-		for (y=0; y<rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 31, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 31, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 255, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 255, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 1, DBL_EPSILON);
 		}
 	}
@@ -521,9 +511,11 @@ static void test_band_pixtype_8BUI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_8BSI() {
+static void
+test_band_pixtype_8BSI()
+{
 	rt_pixtype pixtype = PT_8BSI;
-	uint8_t *data = NULL;
+	uint8_t* data = NULL;
 	rt_band band = NULL;
 	int width = 5;
 	int height = 5;
@@ -538,12 +530,7 @@ static void test_band_pixtype_8BSI() {
 	CU_ASSERT(data != NULL);
 	memset(data, 0, rt_pixtype_size(pixtype) * width * height);
 
-	band = rt_band_new_inline(
-		width, height,
-		pixtype,
-		0, 0,
-		data
-	);
+	band = rt_band_new_inline(width, height, pixtype, 0, 0, data);
 	CU_ASSERT(band != NULL);
 	rt_band_set_ownsdata_flag(band, 1);
 	CU_ASSERT(rt_band_get_ownsdata_flag(band));
@@ -622,30 +609,32 @@ static void test_band_pixtype_8BSI() {
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(clamped);
 
-	for (x=0; x<rt_band_get_width(band); ++x) {
-		for (y=0; y<rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 31, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 31, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 1, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, -127, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, -127, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 127, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 127, DBL_EPSILON);
 		}
 	}
@@ -653,9 +642,11 @@ static void test_band_pixtype_8BSI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_16BUI() {
+static void
+test_band_pixtype_16BUI()
+{
 	rt_pixtype pixtype = PT_16BUI;
-	uint8_t *data = NULL;
+	uint8_t* data = NULL;
 	rt_band band = NULL;
 	int width = 5;
 	int height = 5;
@@ -670,12 +661,7 @@ static void test_band_pixtype_16BUI() {
 	CU_ASSERT(data != NULL);
 	memset(data, 0, rt_pixtype_size(pixtype) * width * height);
 
-	band = rt_band_new_inline(
-		width, height,
-		pixtype,
-		0, 0,
-		data
-	);
+	band = rt_band_new_inline(width, height, pixtype, 0, 0, data);
 	CU_ASSERT(band != NULL);
 	rt_band_set_ownsdata_flag(band, 1);
 	CU_ASSERT(rt_band_get_ownsdata_flag(band));
@@ -723,18 +709,20 @@ static void test_band_pixtype_16BUI() {
 	err = rt_band_set_pixel(band, rt_band_get_width(band), 0, 0, &clamped);
 	CU_ASSERT((err != ES_NONE));
 
-	for (x=0; x<rt_band_get_width(band); ++x) {
-		for (y=0; y<rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 255, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 255, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 65535, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 65535, DBL_EPSILON);
 		}
 	}
@@ -742,9 +730,11 @@ static void test_band_pixtype_16BUI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_16BSI() {
+static void
+test_band_pixtype_16BSI()
+{
 	rt_pixtype pixtype = PT_16BSI;
-	uint8_t *data = NULL;
+	uint8_t* data = NULL;
 	rt_band band = NULL;
 	int width = 5;
 	int height = 5;
@@ -759,12 +749,7 @@ static void test_band_pixtype_16BSI() {
 	CU_ASSERT(data != NULL);
 	memset(data, 0, rt_pixtype_size(pixtype) * width * height);
 
-	band = rt_band_new_inline(
-		width, height,
-		pixtype,
-		0, 0,
-		data
-	);
+	band = rt_band_new_inline(width, height, pixtype, 0, 0, data);
 	CU_ASSERT(band != NULL);
 	rt_band_set_ownsdata_flag(band, 1);
 	CU_ASSERT(rt_band_get_ownsdata_flag(band));
@@ -829,24 +814,26 @@ static void test_band_pixtype_16BSI() {
 	err = rt_band_set_pixel(band, rt_band_get_width(band), 0, 0, NULL);
 	CU_ASSERT((err != ES_NONE));
 
-	for (x=0; x<rt_band_get_width(band); ++x) {
-		for (y=0; y<rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 255, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 255, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, -32767, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, -32767, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 32767, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 32767, DBL_EPSILON);
 		}
 	}
@@ -854,9 +841,11 @@ static void test_band_pixtype_16BSI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_32BUI() {
+static void
+test_band_pixtype_32BUI()
+{
 	rt_pixtype pixtype = PT_32BUI;
-	uint8_t *data = NULL;
+	uint8_t* data = NULL;
 	rt_band band = NULL;
 	int width = 5;
 	int height = 5;
@@ -871,12 +860,7 @@ static void test_band_pixtype_32BUI() {
 	CU_ASSERT(data != NULL);
 	memset(data, 0, rt_pixtype_size(pixtype) * width * height);
 
-	band = rt_band_new_inline(
-		width, height,
-		pixtype,
-		0, 0,
-		data
-	);
+	band = rt_band_new_inline(width, height, pixtype, 0, 0, data);
 	CU_ASSERT(band != NULL);
 	rt_band_set_ownsdata_flag(band, 1);
 	CU_ASSERT(rt_band_get_ownsdata_flag(band));
@@ -919,30 +903,32 @@ static void test_band_pixtype_32BUI() {
 	err = rt_band_set_pixel(band, rt_band_get_width(band), 0, 4294967296ULL, NULL);
 	CU_ASSERT((err != ES_NONE));
 
-	for (x=0; x<rt_band_get_width(band); ++x) {
-		for (y=0; y<rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 1, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 0, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 0, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 65535, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 65535, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 4294967295UL, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 4294967295UL, DBL_EPSILON);
 		}
 	}
@@ -950,9 +936,11 @@ static void test_band_pixtype_32BUI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_32BSI() {
+static void
+test_band_pixtype_32BSI()
+{
 	rt_pixtype pixtype = PT_32BSI;
-	uint8_t *data = NULL;
+	uint8_t* data = NULL;
 	rt_band band = NULL;
 	int width = 5;
 	int height = 5;
@@ -967,12 +955,7 @@ static void test_band_pixtype_32BSI() {
 	CU_ASSERT(data != NULL);
 	memset(data, 0, rt_pixtype_size(pixtype) * width * height);
 
-	band = rt_band_new_inline(
-		width, height,
-		pixtype,
-		0, 0,
-		data
-	);
+	band = rt_band_new_inline(width, height, pixtype, 0, 0, data);
 	CU_ASSERT(band != NULL);
 	rt_band_set_ownsdata_flag(band, 1);
 	CU_ASSERT(rt_band_get_ownsdata_flag(band));
@@ -1016,30 +999,32 @@ static void test_band_pixtype_32BSI() {
 	err = rt_band_set_pixel(band, rt_band_get_width(band), 0, 0, NULL);
 	CU_ASSERT((err != ES_NONE));
 
-	for (x=0; x<rt_band_get_width(band); ++x) {
-		for (y=0; y<rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 1, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 0, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 0, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 65535, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 65535, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 2147483647, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 2147483647, DBL_EPSILON);
 		}
 	}
@@ -1047,9 +1032,11 @@ static void test_band_pixtype_32BSI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_32BF() {
+static void
+test_band_pixtype_32BF()
+{
 	rt_pixtype pixtype = PT_32BF;
-	uint8_t *data = NULL;
+	uint8_t* data = NULL;
 	rt_band band = NULL;
 	int width = 5;
 	int height = 5;
@@ -1064,12 +1051,7 @@ static void test_band_pixtype_32BF() {
 	CU_ASSERT(data != NULL);
 	memset(data, 0, rt_pixtype_size(pixtype) * width * height);
 
-	band = rt_band_new_inline(
-		width, height,
-		pixtype,
-		0, 0,
-		data
-	);
+	band = rt_band_new_inline(width, height, pixtype, 0, 0, data);
 	CU_ASSERT(band != NULL);
 	rt_band_set_ownsdata_flag(band, 1);
 	CU_ASSERT(rt_band_get_ownsdata_flag(band));
@@ -1098,30 +1080,32 @@ static void test_band_pixtype_32BF() {
 	rt_band_get_nodata(band, &val);
 	CU_ASSERT_DOUBLE_EQUAL(val, 0.0060000000521540, DBL_EPSILON);
 
-	for (x=0; x<rt_band_get_width(band); ++x) {
-		for (y=0; y<rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 1, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 0, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 0, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 65535.5, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 65535.5, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 0.006, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 0.0060000000521540, DBL_EPSILON);
 		}
 	}
@@ -1129,9 +1113,11 @@ static void test_band_pixtype_32BF() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_64BF() {
+static void
+test_band_pixtype_64BF()
+{
 	rt_pixtype pixtype = PT_64BF;
-	uint8_t *data = NULL;
+	uint8_t* data = NULL;
 	rt_band band = NULL;
 	int width = 5;
 	int height = 5;
@@ -1146,12 +1132,7 @@ static void test_band_pixtype_64BF() {
 	CU_ASSERT(data != NULL);
 	memset(data, 0, rt_pixtype_size(pixtype) * width * height);
 
-	band = rt_band_new_inline(
-		width, height,
-		pixtype,
-		0, 0,
-		data
-	);
+	band = rt_band_new_inline(width, height, pixtype, 0, 0, data);
 	CU_ASSERT(band != NULL);
 	rt_band_set_ownsdata_flag(band, 1);
 	CU_ASSERT(rt_band_get_ownsdata_flag(band));
@@ -1180,30 +1161,32 @@ static void test_band_pixtype_64BF() {
 	rt_band_get_nodata(band, &val);
 	CU_ASSERT_DOUBLE_EQUAL(val, 0.006, DBL_EPSILON);
 
-	for (x=0; x<rt_band_get_width(band); ++x) {
-		for (y=0; y<rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 1, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 0, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 0, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 65535.56, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 65535.56, DBL_EPSILON);
 
 			err = rt_band_set_pixel(band, x, y, 0.006, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
-		 	CU_ASSERT_EQUAL(err, ES_NONE);
+			CU_ASSERT_EQUAL(err, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 0.006, DBL_EPSILON);
 		}
 	}
@@ -1211,14 +1194,16 @@ static void test_band_pixtype_64BF() {
 	rt_band_destroy(band);
 }
 
-static void test_band_get_pixel_line() {
+static void
+test_band_get_pixel_line()
+{
 	rt_raster rast;
 	rt_band band;
 	int maxX = 5;
 	int maxY = 5;
 	int x = 0;
 	int y = 0;
-	void *vals = NULL;
+	void* vals = NULL;
 	uint16_t nvals = 0;
 	int err = 0;
 
@@ -1230,7 +1215,8 @@ static void test_band_get_pixel_line() {
 	band = cu_add_band(rast, PT_8BSI, 0, 0);
 	CU_ASSERT(band != NULL);
 
-	for (y = 0; y < maxY; y++) {
+	for (y = 0; y < maxY; y++)
+	{
 		for (x = 0; x < maxX; x++)
 			rt_band_set_pixel(band, x, y, x + (y * maxX), NULL);
 	}
@@ -1238,13 +1224,13 @@ static void test_band_get_pixel_line() {
 	err = rt_band_get_pixel_line(band, 0, 0, maxX, &vals, &nvals);
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT_EQUAL(nvals, maxX);
-	CU_ASSERT_EQUAL(((int8_t *) vals)[3], 3);
+	CU_ASSERT_EQUAL(((int8_t*)vals)[3], 3);
 	rtdealloc(vals);
 
 	err = rt_band_get_pixel_line(band, 4, 4, maxX, &vals, &nvals);
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT_EQUAL(nvals, 1);
-	CU_ASSERT_EQUAL(((int8_t *) vals)[0], 24);
+	CU_ASSERT_EQUAL(((int8_t*)vals)[0], 24);
 	rtdealloc(vals);
 
 	err = rt_band_get_pixel_line(band, maxX, maxY, maxX, &vals, &nvals);
@@ -1253,20 +1239,17 @@ static void test_band_get_pixel_line() {
 	cu_free_raster(rast);
 }
 
-static void test_band_new_offline_from_path() {
+static void
+test_band_new_offline_from_path()
+{
 	rt_band band = NULL;
 	int width = 10;
 	int height = 10;
-	char *path = "../regress/loader/testraster.tif";
+	char* path = "../regress/loader/testraster.tif";
 	uint8_t extband = 0;
 
 	/* offline band */
-	band = rt_band_new_offline_from_path(
-		width, height,
-		0, 0,
-		2, path,
-		FALSE
-	);
+	band = rt_band_new_offline_from_path(width, height, 0, 0, 2, path, FALSE);
 	CU_ASSERT(band != NULL);
 
 	/* isoffline */
@@ -1291,7 +1274,8 @@ static void test_band_new_offline_from_path() {
 
 /* register tests */
 void band_basics_suite_setup(void);
-void band_basics_suite_setup(void)
+void
+band_basics_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("band_basics", NULL, NULL);
 	PG_ADD_TEST(suite, test_band_metadata);
@@ -1309,4 +1293,3 @@ void band_basics_suite_setup(void)
 	PG_ADD_TEST(suite, test_band_get_pixel_line);
 	PG_ADD_TEST(suite, test_band_new_offline_from_path);
 }
-
