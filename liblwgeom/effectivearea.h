@@ -22,13 +22,11 @@
  *
  **********************************************************************/
 
- #ifndef _EFFECTIVEAREA_H
+#ifndef _EFFECTIVEAREA_H
 #define _EFFECTIVEAREA_H 1
 
-
- #include "liblwgeom_internal.h"
- #include "lwgeom_log.h"
-
+#include "liblwgeom_internal.h"
+#include "lwgeom_log.h"
 
 /**
 
@@ -43,7 +41,6 @@ typedef struct
 	int next;
 } areanode;
 
-
 /**
 
 This structure holds a minheap tree that is used to keep track of what points that has the smallest effective area.
@@ -53,9 +50,8 @@ typedef struct
 {
 	int maxSize;
 	int usedSize;
-	areanode **key_array;
+	areanode** key_array;
 } MINHEAP;
-
 
 /**
 
@@ -63,16 +59,15 @@ Structure to hold pointarray and it's arealist
 */
 typedef struct
 {
-	const POINTARRAY *inpts;
-	areanode *initial_arealist;
-	double *res_arealist;
+	const POINTARRAY* inpts;
+	areanode* initial_arealist;
+	double* res_arealist;
 } EFFECTIVE_AREAS;
 
+EFFECTIVE_AREAS* initiate_effectivearea(const POINTARRAY* inpts);
 
-EFFECTIVE_AREAS* initiate_effectivearea(const POINTARRAY *inpts);
+void destroy_effectivearea(EFFECTIVE_AREAS* ea);
 
-void destroy_effectivearea(EFFECTIVE_AREAS *ea);
-
-void ptarray_calc_areas(EFFECTIVE_AREAS *ea,int avoid_collaps, int set_area, double trshld);
+void ptarray_calc_areas(EFFECTIVE_AREAS* ea, int avoid_collaps, int set_area, double trshld);
 
 #endif /* _EFFECTIVEAREA_H */

@@ -20,8 +20,8 @@
 /*
 ** Global variable to hold TWKB strings
 */
-char *hex_a;
-char *hex_b;
+char* hex_a;
+char* hex_b;
 uint8_t precision = 0;
 uint8_t variant = 0;
 
@@ -29,7 +29,8 @@ uint8_t variant = 0;
 ** The suite initialization function.
 ** Create any re-used objects.
 */
-static int init_twkb_in_suite(void)
+static int
+init_twkb_in_suite(void)
 {
 	hex_a = NULL;
 	hex_b = NULL;
@@ -40,7 +41,8 @@ static int init_twkb_in_suite(void)
 ** The suite cleanup function.
 ** Frees any global objects.
 */
-static int clean_twkb_in_suite(void)
+static int
+clean_twkb_in_suite(void)
 {
 	if (hex_a) free(hex_a);
 	if (hex_b) free(hex_b);
@@ -49,8 +51,8 @@ static int clean_twkb_in_suite(void)
 	return 0;
 }
 
-
-static void cu_twkb_in(char *wkt)
+static void
+cu_twkb_in(char* wkt)
 {
 	LWGEOM_PARSER_RESULT pr;
 	LWGEOM *g_a, *g_b;
@@ -60,7 +62,7 @@ static void cu_twkb_in(char *wkt)
 
 	/* Turn WKT into geom */
 	lwgeom_parse_wkt(&pr, wkt, LW_PARSER_CHECK_NONE);
-	if ( pr.errcode )
+	if (pr.errcode)
 	{
 		printf("ERROR: %s\n", pr.message);
 		printf("POSITION: %d\n", pr.errlocation);
@@ -84,8 +86,8 @@ static void cu_twkb_in(char *wkt)
 	twkb_b = lwgeom_to_twkb(g_b, variant, precision, precision, precision, &twkb_size_b);
 
 	/* Turn TWKB into hex for comparisons */
-	if ( hex_a ) lwfree(hex_a);
-	if ( hex_b ) lwfree(hex_b);
+	if (hex_a) lwfree(hex_a);
+	if (hex_b) lwfree(hex_b);
 	hex_a = hexbytes_from_bytes(twkb_a, twkb_size_a);
 	hex_b = hexbytes_from_bytes(twkb_b, twkb_size_b);
 
@@ -96,10 +98,11 @@ static void cu_twkb_in(char *wkt)
 	lwgeom_free(g_b);
 }
 
-static void test_twkb_in_point(void)
+static void
+test_twkb_in_point(void)
 {
 	cu_twkb_in("POINT(0 0 0 0)");
-//	printf("old: %s\nnew: %s\n",hex_a, hex_b);
+	//	printf("old: %s\nnew: %s\n",hex_a, hex_b);
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("POINT(1 1)");
@@ -109,7 +112,8 @@ static void test_twkb_in_point(void)
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_twkb_in_linestring(void)
+static void
+test_twkb_in_linestring(void)
 {
 	cu_twkb_in("LINESTRING(0 0,1 1)");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
@@ -121,7 +125,8 @@ static void test_twkb_in_linestring(void)
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_twkb_in_polygon(void)
+static void
+test_twkb_in_polygon(void)
 {
 	cu_twkb_in("POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
@@ -136,7 +141,8 @@ static void test_twkb_in_polygon(void)
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_twkb_in_multipoint(void)
+static void
+test_twkb_in_multipoint(void)
 {
 	cu_twkb_in("MULTIPOINT Z EMPTY");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
@@ -152,7 +158,8 @@ static void test_twkb_in_multipoint(void)
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_twkb_in_multilinestring(void)
+static void
+test_twkb_in_multilinestring(void)
 {
 	cu_twkb_in("MULTILINESTRING((0 0,0 1),(1 1, 10 10))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
@@ -168,20 +175,26 @@ static void test_twkb_in_multilinestring(void)
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_twkb_in_multipolygon(void)
+static void
+test_twkb_in_multipolygon(void)
 {
-	cu_twkb_in("MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((-1 -1 0,-1 2 0,2 2 0,2 -1 0,-1 -1 0),(0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)))");
+	cu_twkb_in(
+	    "MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((-1 -1 0,-1 2 0,2 2 0,2 -1 0,-1 -1 0),(0 0 0,0 1 0,1 1 "
+	    "0,1 0 0,0 0 0)))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
-	//printf("old: %s\nnew: %s\n",hex_a, hex_b);
+	// printf("old: %s\nnew: %s\n",hex_a, hex_b);
 
 	cu_twkb_in("MULTIPOLYGON EMPTY");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
-	//printf("old: %s\nnew: %s\n",hex_a, hex_b);
+	// printf("old: %s\nnew: %s\n",hex_a, hex_b);
 }
 
-static void test_twkb_in_collection(void)
+static void
+test_twkb_in_collection(void)
 {
-	cu_twkb_in("GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))),POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),POINT(1 1 1),LINESTRING(0 0 0, 1 1 1))");
+	cu_twkb_in(
+	    "GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))),POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 "
+	    "0)),POINT(1 1 1),LINESTRING(0 0 0, 1 1 1))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("GEOMETRYCOLLECTION(POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),POINT(1 1 1))");
@@ -201,15 +214,18 @@ static void test_twkb_in_collection(void)
 ** PRECISION TESTS HERE: We ALTER THE 'precision' GLOBAL
 */
 
-static void test_twkb_in_precision(void)
+static void
+test_twkb_in_precision(void)
 {
 	/* Try these cases at several different precisions */
-	for ( precision = 1; precision <= 6; precision++ )
+	for (precision = 1; precision <= 6; precision++)
 	{
 		cu_twkb_in("MULTILINESTRING((0 0,0 1),EMPTY,(1 1, 10 10))");
 		CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
-		cu_twkb_in("MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((-1 -1 0,-1 2 0,2 2 0,2 -1 0,-1 -1 0),(0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)))");
+		cu_twkb_in(
+		    "MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((-1 -1 0,-1 2 0,2 2 0,2 -1 0,-1 -1 0),(0 0 0,0 1 "
+		    "0,1 1 0,1 0 0,0 0 0)))");
 		CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 		cu_twkb_in("GEOMETRYCOLLECTION(POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),POINT(1 1 1))");
@@ -224,13 +240,12 @@ static void test_twkb_in_precision(void)
 	precision = 0;
 }
 
-
-
 /*
 ** Used by test harness to register the tests in this file.
 */
 void twkb_in_suite_setup(void);
-void twkb_in_suite_setup(void)
+void
+twkb_in_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("twkb_input", init_twkb_in_suite, clean_twkb_in_suite);
 	PG_ADD_TEST(suite, test_twkb_in_point);

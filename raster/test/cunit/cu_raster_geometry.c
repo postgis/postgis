@@ -24,7 +24,9 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_raster_envelope() {
+static void
+test_raster_envelope()
+{
 	rt_raster raster = NULL;
 	rt_envelope rtenv;
 
@@ -85,11 +87,13 @@ static void test_raster_envelope() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_envelope_geom() {
+static void
+test_raster_envelope_geom()
+{
 	rt_raster raster = NULL;
-	LWGEOM *env = NULL;
-	LWPOLY *poly = NULL;
-	POINTARRAY *ring = NULL;
+	LWGEOM* env = NULL;
+	LWPOLY* poly = NULL;
+	POINTARRAY* ring = NULL;
 	POINT4D pt;
 
 	/* NULL raster */
@@ -163,11 +167,13 @@ static void test_raster_envelope_geom() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_convex_hull() {
+static void
+test_raster_convex_hull()
+{
 	rt_raster raster = NULL;
-	LWGEOM *hull = NULL;
-	LWPOLY *poly = NULL;
-	POINTARRAY *ring = NULL;
+	LWGEOM* hull = NULL;
+	LWPOLY* poly = NULL;
+	POINTARRAY* ring = NULL;
 	POINT4D pt;
 
 	/* NULL raster */
@@ -242,9 +248,10 @@ static void test_raster_convex_hull() {
 	cu_free_raster(raster);
 }
 
-static char *
-lwgeom_to_text(const LWGEOM *lwgeom) {
-	char *wkt;
+static char*
+lwgeom_to_text(const LWGEOM* lwgeom)
+{
+	char* wkt;
 	size_t wkt_size;
 
 	wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, &wkt_size);
@@ -252,14 +259,16 @@ lwgeom_to_text(const LWGEOM *lwgeom) {
 	return wkt;
 }
 
-static void test_raster_surface() {
+static void
+test_raster_surface()
+{
 	rt_raster rast;
 	rt_band band;
 	const int maxX = 5;
 	const int maxY = 5;
 	int x, y;
-	char *wkt = NULL;
-	LWMPOLY *mpoly = NULL;
+	char* wkt = NULL;
+	LWMPOLY* mpoly = NULL;
 	int err;
 
 	rast = rt_raster_new(maxX, maxY);
@@ -271,8 +280,10 @@ static void test_raster_surface() {
 	band = cu_add_band(rast, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (y = 0; y < maxY; y++) {
-		for (x = 0; x < maxX; x++) {
+	for (y = 0; y < maxY; y++)
+	{
+		for (x = 0; x < maxX; x++)
+		{
 			rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
@@ -305,7 +316,8 @@ static void test_raster_surface() {
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(mpoly != NULL);
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
-	CU_ASSERT_STRING_EQUAL(wkt, "MULTIPOLYGON(((1 0,1 -1,0 -1,0 -5,4 -5,5 -5,5 0,1 0),(1 -1,1 -2,2 -2,2 -1,1 -1)))");
+	CU_ASSERT_STRING_EQUAL(wkt,
+			       "MULTIPOLYGON(((1 0,1 -1,0 -1,0 -5,4 -5,5 -5,5 0,1 0),(1 -1,1 -2,2 -2,2 -1,1 -1)))");
 	rtdealloc(wkt);
 	lwmpoly_free(mpoly);
 	mpoly = NULL;
@@ -318,7 +330,9 @@ static void test_raster_surface() {
 	CU_ASSERT(mpoly != NULL);
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 
-	CU_ASSERT_STRING_EQUAL(wkt, "MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2)))");
+	CU_ASSERT_STRING_EQUAL(wkt,
+			       "MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 "
+			       "-2,2 -3,3 -3,3 -2,2 -2)))");
 
 	rtdealloc(wkt);
 	lwmpoly_free(mpoly);
@@ -332,7 +346,9 @@ static void test_raster_surface() {
 	CU_ASSERT(mpoly != NULL);
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 
-	CU_ASSERT_STRING_EQUAL(wkt, "MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2),(3 -3,3 -4,4 -4,4 -3,3 -3)))");
+	CU_ASSERT_STRING_EQUAL(wkt,
+			       "MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 "
+			       "-2,2 -3,3 -3,3 -2,2 -2),(3 -3,3 -4,4 -4,4 -3,3 -3)))");
 
 	rtdealloc(wkt);
 	lwmpoly_free(mpoly);
@@ -345,7 +361,9 @@ static void test_raster_surface() {
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(mpoly != NULL);
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
-	CU_ASSERT_STRING_EQUAL(wkt, "MULTIPOLYGON(((4 -4,4 -5,0 -5,0 -1,1 -1,1 -2,2 -2,2 -3,3 -3,3 -4,4 -4)),((1 -1,1 0,5 0,5 -4,4 -4,4 -3,3 -3,3 -2,2 -2,2 -1,1 -1)))");
+	CU_ASSERT_STRING_EQUAL(wkt,
+			       "MULTIPOLYGON(((4 -4,4 -5,0 -5,0 -1,1 -1,1 -2,2 -2,2 -3,3 -3,3 -4,4 -4)),((1 -1,1 0,5 "
+			       "0,5 -4,4 -4,4 -3,3 -3,3 -2,2 -2,2 -1,1 -1)))");
 	rtdealloc(wkt);
 	lwmpoly_free(mpoly);
 	mpoly = NULL;
@@ -360,7 +378,10 @@ static void test_raster_surface() {
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(mpoly != NULL);
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
-	CU_ASSERT_STRING_EQUAL(wkt, "MULTIPOLYGON(((1 -4,2 -4,2 -3,3 -3,3 -4,4 -4,4 -5,3 -5,1 -5,1 -4)),((1 -4,0 -4,0 -1,1 -1,1 -2,2 -2,2 -3,1 -3,1 -4)),((3 -2,4 -2,4 -1,5 -1,5 -4,4 -4,4 -3,3 -3,3 -2)),((3 -2,2 -2,2 -1,1 -1,1 0,4 0,4 -1,3 -1,3 -2)))");
+	CU_ASSERT_STRING_EQUAL(wkt,
+			       "MULTIPOLYGON(((1 -4,2 -4,2 -3,3 -3,3 -4,4 -4,4 -5,3 -5,1 -5,1 -4)),((1 -4,0 -4,0 -1,1 "
+			       "-1,1 -2,2 -2,2 -3,1 -3,1 -4)),((3 -2,4 -2,4 -1,5 -1,5 -4,4 -4,4 -3,3 -3,3 -2)),((3 "
+			       "-2,2 -2,2 -1,1 -1,1 0,4 0,4 -1,3 -1,3 -2)))");
 	rtdealloc(wkt);
 	lwmpoly_free(mpoly);
 	mpoly = NULL;
@@ -368,14 +389,16 @@ static void test_raster_surface() {
 	cu_free_raster(rast);
 }
 
-static void test_raster_perimeter() {
+static void
+test_raster_perimeter()
+{
 	rt_raster rast;
 	rt_band band;
 	const int maxX = 5;
 	const int maxY = 5;
 	int x, y;
-	char *wkt = NULL;
-	LWGEOM *geom = NULL;
+	char* wkt = NULL;
+	LWGEOM* geom = NULL;
 	int err;
 
 	rast = rt_raster_new(maxX, maxY);
@@ -387,8 +410,10 @@ static void test_raster_perimeter() {
 	band = cu_add_band(rast, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (y = 0; y < maxY; y++) {
-		for (x = 0; x < maxX; x++) {
+	for (y = 0; y < maxY; y++)
+	{
+		for (x = 0; x < maxX; x++)
+		{
 			rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
@@ -504,8 +529,10 @@ static void test_raster_perimeter() {
 	band = cu_add_band(rast, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (y = 0; y < maxY; y++) {
-		for (x = 0; x < maxX; x++) {
+	for (y = 0; y < maxY; y++)
+	{
+		for (x = 0; x < maxX; x++)
+		{
 			rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
@@ -522,13 +549,15 @@ static void test_raster_perimeter() {
 	cu_free_raster(rast);
 }
 
-static void test_raster_pixel_as_polygon() {
+static void
+test_raster_pixel_as_polygon()
+{
 	rt_raster rast;
 	rt_band band;
 	uint32_t x, y;
 	const int maxX = 10;
 	const int maxY = 10;
-	LWPOLY *poly = NULL;
+	LWPOLY* poly = NULL;
 
 	rast = rt_raster_new(maxX, maxY);
 	CU_ASSERT(rast != NULL);
@@ -536,8 +565,10 @@ static void test_raster_pixel_as_polygon() {
 	band = cu_add_band(rast, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (x = 0; x < maxX; x++) {
-		for (y = 0; y < maxY; y++) {
+	for (x = 0; x < maxX; x++)
+	{
+		for (y = 0; y < maxY; y++)
+		{
 			rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
@@ -569,7 +600,8 @@ static void test_raster_pixel_as_polygon() {
 
 /* register tests */
 void raster_geometry_suite_setup(void);
-void raster_geometry_suite_setup(void)
+void
+raster_geometry_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("raster_geometry", NULL, NULL);
 	PG_ADD_TEST(suite, test_raster_envelope);
@@ -579,4 +611,3 @@ void raster_geometry_suite_setup(void)
 	PG_ADD_TEST(suite, test_raster_perimeter);
 	PG_ADD_TEST(suite, test_raster_pixel_as_polygon);
 }
-

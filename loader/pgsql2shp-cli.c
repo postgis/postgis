@@ -19,51 +19,51 @@
 #include "pgsql2shp-core.h"
 #include "../postgis_config.h"
 
-
 static void
 usage(int status)
 {
-  /* TODO: if status != 0 print all to stderr */
+	/* TODO: if status != 0 print all to stderr */
 
-	printf(_( "RELEASE: %s (r%d)\n" ), POSTGIS_LIB_VERSION, POSTGIS_SVN_REVISION);
-	printf(_("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n"
-	         "       pgsql2shp [<options>] <database> <query>\n"
-	         "\n"
-	         "OPTIONS:\n" ));
-	printf(_("  -f <filename>  Use this option to specify the name of the file to create.\n" ));
-	printf(_("  -h <host>  Allows you to specify connection to a database on a\n"
-	         "     machine other than the default.\n" ));
-	printf(_("  -p <port>  Allows you to specify a database port other than the default.\n" ));
-	printf(_("  -P <password>  Connect to the database with the specified password.\n" ));
-	printf(_("  -u <user>  Connect to the database as the specified user.\n" ));
-	printf(_("  -g <geometry_column> Specify the geometry column to be exported.\n" ));
-	printf(_("  -b Use a binary cursor.\n" ));
-	printf(_("  -r Raw mode. Do not assume table has been created by the loader. This would\n"
-	         "     not unescape attribute names and will not skip the 'gid' attribute.\n" ));
-	printf(_("  -k Keep PostgreSQL identifiers case.\n" ));
-	printf(_("  -m <filename>  Specify a file containing a set of mappings of (long) column\n"
-	         "     names to 10 character DBF column names. The content of the file is one or\n"
-	         "     more lines of two names separated by white space and no trailing or\n"
-	         "     leading space. For example:\n"
-	         "         COLUMNNAME DBFFIELD1\n"
-	         "         AVERYLONGCOLUMNNAME DBFFIELD2\n" ));
-	printf(_("  -? Display this help screen.\n\n" ));
+	printf(_("RELEASE: %s (r%d)\n"), POSTGIS_LIB_VERSION, POSTGIS_SVN_REVISION);
+	printf(
+	    _("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n"
+	      "       pgsql2shp [<options>] <database> <query>\n"
+	      "\n"
+	      "OPTIONS:\n"));
+	printf(_("  -f <filename>  Use this option to specify the name of the file to create.\n"));
+	printf(
+	    _("  -h <host>  Allows you to specify connection to a database on a\n"
+	      "     machine other than the default.\n"));
+	printf(_("  -p <port>  Allows you to specify a database port other than the default.\n"));
+	printf(_("  -P <password>  Connect to the database with the specified password.\n"));
+	printf(_("  -u <user>  Connect to the database as the specified user.\n"));
+	printf(_("  -g <geometry_column> Specify the geometry column to be exported.\n"));
+	printf(_("  -b Use a binary cursor.\n"));
+	printf(
+	    _("  -r Raw mode. Do not assume table has been created by the loader. This would\n"
+	      "     not unescape attribute names and will not skip the 'gid' attribute.\n"));
+	printf(_("  -k Keep PostgreSQL identifiers case.\n"));
+	printf(
+	    _("  -m <filename>  Specify a file containing a set of mappings of (long) column\n"
+	      "     names to 10 character DBF column names. The content of the file is one or\n"
+	      "     more lines of two names separated by white space and no trailing or\n"
+	      "     leading space. For example:\n"
+	      "         COLUMNNAME DBFFIELD1\n"
+	      "         AVERYLONGCOLUMNNAME DBFFIELD2\n"));
+	printf(_("  -? Display this help screen.\n\n"));
 	exit(status);
 }
 
 int
-main(int argc, char **argv)
+main(int argc, char** argv)
 {
-	SHPDUMPERCONFIG *config;
-	SHPDUMPERSTATE *state;
+	SHPDUMPERCONFIG* config;
+	SHPDUMPERSTATE* state;
 
 	int ret, c, i;
 
 	/* If no options are specified, display usage */
-	if (argc == 1)
-	{
-		usage(0); /* TODO: should this exit with error ? */
-	}
+	if (argc == 1) { usage(0); /* TODO: should this exit with error ? */ }
 
 	/* Parse command line options and set configuration */
 	config = malloc(sizeof(SHPDUMPERCONFIG));
@@ -112,7 +112,6 @@ main(int argc, char **argv)
 		}
 	}
 
-
 	/* Determine the database name from the next argument, if no database, exit. */
 	if (pgis_optind < argc)
 	{
@@ -124,42 +123,38 @@ main(int argc, char **argv)
 		usage(1);
 	}
 
-
 	/* Determine the table and schema names from the next argument if supplied, otherwise if
 	   it's a user-defined query then set that instead */
 	if (pgis_optind < argc)
 	{
 		/* User-defined queries begin with SELECT */
-		if (!strncmp(argv[pgis_optind], "SELECT ", 7) ||
-			!strncmp(argv[pgis_optind], "select ", 7))
-		{
-			config->usrquery = argv[pgis_optind];
-		}
+		if (!strncmp(argv[pgis_optind], "SELECT ", 7) || !strncmp(argv[pgis_optind], "select ", 7))
+		{ config->usrquery = argv[pgis_optind]; }
 		else
 		{
 			/* Schema qualified table name */
-			char *strptr = argv[pgis_optind];
-			char *chrptr = strchr(strptr, '.');
+			char* strptr = argv[pgis_optind];
+			char* chrptr = strchr(strptr, '.');
 
-				/* OK, this is a schema-qualified table name... */
-      if (chrptr)
-      {
-        if ( chrptr == strptr )
-        {
-          /* table is ".something" display help  */
-          usage(0);
-          exit(0);
-        }
-        /* Null terminate at the '.' */
-        *chrptr = '\0';
-        /* Copy in the parts */
-        config->schema = strdup(strptr);
-        config->table = strdup(chrptr+1);
-      }
-      else
-      {
-        config->table = strdup(strptr);
-      }
+			/* OK, this is a schema-qualified table name... */
+			if (chrptr)
+			{
+				if (chrptr == strptr)
+				{
+					/* table is ".something" display help  */
+					usage(0);
+					exit(0);
+				}
+				/* Null terminate at the '.' */
+				*chrptr = '\0';
+				/* Copy in the parts */
+				config->schema = strdup(strptr);
+				config->table = strdup(chrptr + 1);
+			}
+			else
+			{
+				config->table = strdup(strptr);
+			}
 		}
 	}
 	else
@@ -194,8 +189,7 @@ main(int argc, char **argv)
 		fprintf(stderr, "%s\n", state->message);
 		fflush(stderr);
 
-		if (ret == SHPDUMPERERR)
-			exit(1);
+		if (ret == SHPDUMPERERR) exit(1);
 	}
 
 	fprintf(stdout, _("Done (postgis major version: %d).\n"), state->pgis_major_version);
@@ -218,8 +212,7 @@ main(int argc, char **argv)
 			fprintf(stderr, "%s\n", state->message);
 			fflush(stderr);
 
-			if (ret == SHPDUMPERERR)
-				exit(1);
+			if (ret == SHPDUMPERERR) exit(1);
 		}
 	}
 
@@ -232,8 +225,7 @@ main(int argc, char **argv)
 		fprintf(stderr, "%s\n", state->message);
 		fflush(stderr);
 
-		if (ret == SHPDUMPERERR)
-			exit(1);
+		if (ret == SHPDUMPERERR) exit(1);
 	}
 
 	ShpDumperDestroy(state);

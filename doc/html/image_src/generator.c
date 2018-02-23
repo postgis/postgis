@@ -44,17 +44,16 @@
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 2) /* +2 for dot and sign */
 
 // Some global styling variables
-char *imageSize = "200x200";
+char* imageSize = "200x200";
 
-int getStyleName(char **styleName, char* line);
+int getStyleName(char** styleName, char* line);
 
 static void
 checked_system(const char* cmd)
 {
-  int ret = system(cmd);
-	if ( WEXITSTATUS(ret) != 0 ) {
-		fprintf(stderr, "Failure return code (%d) from command: %s", WEXITSTATUS(ret), cmd);
-	}
+	int ret = system(cmd);
+	if (WEXITSTATUS(ret) != 0)
+	{ fprintf(stderr, "Failure return code (%d) from command: %s", WEXITSTATUS(ret), cmd); }
 }
 
 /**
@@ -67,14 +66,14 @@ checked_system(const char* cmd)
  * @return the numbers of character written to *output
  */
 static size_t
-pointarrayToString(char *output, POINTARRAY *pa)
+pointarrayToString(char* output, POINTARRAY* pa)
 {
 	char x[OUT_DOUBLE_BUFFER_SIZE];
 	char y[OUT_DOUBLE_BUFFER_SIZE];
 	int i;
-	char *ptr = output;
+	char* ptr = output;
 
-	for ( i=0; i < pa->npoints; i++ )
+	for (i = 0; i < pa->npoints; i++)
 	{
 		POINT2D pt;
 		getPoint2d_p(pa, i, &pt);
@@ -82,7 +81,7 @@ pointarrayToString(char *output, POINTARRAY *pa)
 		lwprint_double(pt.x, 10, x, OUT_DOUBLE_BUFFER_SIZE);
 		lwprint_double(pt.y, 10, y, OUT_DOUBLE_BUFFER_SIZE);
 
-		if ( i ) ptr += sprintf(ptr, " ");
+		if (i) ptr += sprintf(ptr, " ");
 		ptr += sprintf(ptr, "%s,%s", x, y);
 	}
 
@@ -99,18 +98,18 @@ pointarrayToString(char *output, POINTARRAY *pa)
  * @return the numbers of character written to *output
  */
 static size_t
-drawPoint(char *output, LWPOINT *lwp, LAYERSTYLE *styles)
+drawPoint(char* output, LWPOINT* lwp, LAYERSTYLE* styles)
 {
 	char x[OUT_DOUBLE_BUFFER_SIZE];
 	char y1[OUT_DOUBLE_BUFFER_SIZE];
 	char y2[OUT_DOUBLE_BUFFER_SIZE];
-	char *ptr = output;
-	POINTARRAY *pa = lwp->point;
+	char* ptr = output;
+	POINTARRAY* pa = lwp->point;
 	POINT2D p;
 	getPoint2d_p(pa, 0, &p);
 
 	LWDEBUGF(4, "%s", "drawPoint called");
-	LWDEBUGF( 4, "point = %s", lwgeom_to_ewkt((LWGEOM*)lwp) );
+	LWDEBUGF(4, "point = %s", lwgeom_to_ewkt((LWGEOM*)lwp));
 
 	lwprint_double(p.x, 10, x, OUT_DOUBLE_BUFFER_SIZE);
 	lwprint_double(p.y, 10, y1, OUT_DOUBLE_BUFFER_SIZE);
@@ -133,16 +132,16 @@ drawPoint(char *output, LWPOINT *lwp, LAYERSTYLE *styles)
  * @return the numbers of character written to *output
  */
 static size_t
-drawLineString(char *output, LWLINE *lwl, LAYERSTYLE *style)
+drawLineString(char* output, LWLINE* lwl, LAYERSTYLE* style)
 {
-	char *ptr = output;
+	char* ptr = output;
 
 	LWDEBUGF(4, "%s", "drawLineString called");
-	LWDEBUGF( 4, "line = %s", lwgeom_to_ewkt((LWGEOM*)lwl) );
+	LWDEBUGF(4, "line = %s", lwgeom_to_ewkt((LWGEOM*)lwl));
 
 	ptr += sprintf(ptr, "-fill none -stroke %s -strokewidth %d ", style->lineColor, style->lineWidth);
 	ptr += sprintf(ptr, "-draw \"stroke-linecap round stroke-linejoin round path 'M ");
-	ptr += pointarrayToString(ptr, lwl->points );
+	ptr += pointarrayToString(ptr, lwl->points);
 	ptr += sprintf(ptr, "'\" ");
 
 	return (ptr - output);
@@ -158,20 +157,24 @@ drawLineString(char *output, LWLINE *lwl, LAYERSTYLE *style)
  * @return the numbers of character written to *output
  */
 static size_t
-drawPolygon(char *output, LWPOLY *lwp, LAYERSTYLE *style)
+drawPolygon(char* output, LWPOLY* lwp, LAYERSTYLE* style)
 {
-	char *ptr = output;
+	char* ptr = output;
 	int i;
 
 	LWDEBUGF(4, "%s", "drawPolygon called");
-	LWDEBUGF( 4, "poly = %s", lwgeom_to_ewkt((LWGEOM*)lwp) );
+	LWDEBUGF(4, "poly = %s", lwgeom_to_ewkt((LWGEOM*)lwp));
 
-	ptr += sprintf(ptr, "-fill %s -stroke %s -strokewidth %d ", style->polygonFillColor, style->polygonStrokeColor, style->polygonStrokeWidth );
+	ptr += sprintf(ptr,
+		       "-fill %s -stroke %s -strokewidth %d ",
+		       style->polygonFillColor,
+		       style->polygonStrokeColor,
+		       style->polygonStrokeWidth);
 	ptr += sprintf(ptr, "-draw \"path '");
-	for (i=0; i<lwp->nrings; i++)
+	for (i = 0; i < lwp->nrings; i++)
 	{
 		ptr += sprintf(ptr, "M ");
-		ptr += pointarrayToString(ptr, lwp->rings[i] );
+		ptr += pointarrayToString(ptr, lwp->rings[i]);
 		ptr += sprintf(ptr, " ");
 	}
 	ptr += sprintf(ptr, "'\" ");
@@ -189,30 +192,30 @@ drawPolygon(char *output, LWPOLY *lwp, LAYERSTYLE *style)
  * @return the numbers of character written to *output
  */
 static size_t
-drawGeometry(char *output, LWGEOM *lwgeom, LAYERSTYLE *styles )
+drawGeometry(char* output, LWGEOM* lwgeom, LAYERSTYLE* styles)
 {
-	char *ptr = output;
+	char* ptr = output;
 	int i;
 	int type = lwgeom->type;
 
 	switch (type)
 	{
 	case POINTTYPE:
-		ptr += drawPoint(ptr, (LWPOINT*)lwgeom, styles );
+		ptr += drawPoint(ptr, (LWPOINT*)lwgeom, styles);
 		break;
 	case LINETYPE:
-		ptr += drawLineString(ptr, (LWLINE*)lwgeom, styles );
+		ptr += drawLineString(ptr, (LWLINE*)lwgeom, styles);
 		break;
 	case POLYGONTYPE:
-		ptr += drawPolygon(ptr, (LWPOLY*)lwgeom, styles );
+		ptr += drawPolygon(ptr, (LWPOLY*)lwgeom, styles);
 		break;
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
-		for (i=0; i<((LWCOLLECTION*)lwgeom)->ngeoms; i++)
+		for (i = 0; i < ((LWCOLLECTION*)lwgeom)->ngeoms; i++)
 		{
-			ptr += drawGeometry( ptr, lwcollection_getsubgeom ((LWCOLLECTION*)lwgeom, i), styles );
+			ptr += drawGeometry(ptr, lwcollection_getsubgeom((LWCOLLECTION*)lwgeom, i), styles);
 		}
 		break;
 	}
@@ -231,10 +234,11 @@ addDropShadow(int layerNumber)
 {
 	// TODO: change to properly sized string
 	char str[512];
-	sprintf(
-	    str,
-	    "convert tmp%d.png -gravity center \"(\" +clone -background navy -shadow 100x3+4+4 \")\" +swap -background none -flatten tmp%d.png",
-	    layerNumber, layerNumber);
+	sprintf(str,
+		"convert tmp%d.png -gravity center \"(\" +clone -background navy -shadow 100x3+4+4 \")\" +swap "
+		"-background none -flatten tmp%d.png",
+		layerNumber,
+		layerNumber);
 	LWDEBUGF(4, "%s", str);
 	checked_system(str);
 }
@@ -250,10 +254,12 @@ addHighlight(int layerNumber)
 {
 	// TODO: change to properly sized string
 	char str[512];
-	sprintf(
-	    str,
-	    "convert tmp%d.png \"(\" +clone -channel A -separate +channel -negate -background black -virtual-pixel background -blur 0x3 -shade 120x55 -contrast-stretch 0%% +sigmoidal-contrast 7x50%% -fill grey50 -colorize 10%% +clone +swap -compose overlay -composite \")\" -compose In -composite tmp%d.png",
-	    layerNumber, layerNumber);
+	sprintf(str,
+		"convert tmp%d.png \"(\" +clone -channel A -separate +channel -negate -background black -virtual-pixel "
+		"background -blur 0x3 -shade 120x55 -contrast-stretch 0%% +sigmoidal-contrast 7x50%% -fill grey50 "
+		"-colorize 10%% +clone +swap -compose overlay -composite \")\" -compose In -composite tmp%d.png",
+		layerNumber,
+		layerNumber);
 	LWDEBUGF(4, "%s", str);
 	checked_system(str);
 }
@@ -267,8 +273,8 @@ addHighlight(int layerNumber)
 static void
 optimizeImage(char* filename)
 {
-	char *str;
-	str = malloc( (18 + (2*strlen(filename)) + 1) * sizeof(char) );
+	char* str;
+	str = malloc((18 + (2 * strlen(filename)) + 1) * sizeof(char));
 	sprintf(str, "convert %s -depth 8 %s", filename, filename);
 	LWDEBUGF(4, "%s", str);
 	checked_system(str);
@@ -281,7 +287,7 @@ optimizeImage(char* filename)
 static void
 flattenLayers(char* filename)
 {
-	char *str = malloc( (48 + strlen(filename) + 1) * sizeof(char) );
+	char* str = malloc((48 + strlen(filename) + 1) * sizeof(char));
 	sprintf(str, "convert tmp[0-9].png -background white -flatten %s", filename);
 
 	LWDEBUGF(4, "%s", str);
@@ -300,105 +306,105 @@ flattenLayers(char* filename)
 	free(str);
 }
 
-
 // TODO: comments
 int
-getStyleName(char **styleName, char* line)
+getStyleName(char** styleName, char* line)
 {
-	char *ptr = strrchr(line, ';');
+	char* ptr = strrchr(line, ';');
 	if (ptr == NULL)
 	{
-		*styleName = malloc( 8 );
+		*styleName = malloc(8);
 		strncpy(*styleName, "Default", 7);
 		(*styleName)[7] = '\0';
 		return 1;
 	}
 	else
 	{
-		*styleName = malloc( ptr - line + 1);
+		*styleName = malloc(ptr - line + 1);
 		strncpy(*styleName, line, ptr - line);
 		(*styleName)[ptr - line] = '\0';
-		LWDEBUGF( 4, "%s", *styleName );
+		LWDEBUGF(4, "%s", *styleName);
 		return 0;
 	}
 }
-
 
 /**
  * Main Application.  Currently, drawing styles are hardcoded in this method.
  * Future work may entail reading the styles from a .properties file.
  */
-int main( int argc, const char* argv[] )
+int
+main(int argc, const char* argv[])
 {
-	FILE *pfile;
-	LWGEOM *lwgeom;
-	char line [2048];
-	char *filename;
+	FILE* pfile;
+	LWGEOM* lwgeom;
+	char line[2048];
+	char* filename;
 	int layerCount;
-	LAYERSTYLE *styles;
-	char *image_path = "../images/";
+	LAYERSTYLE* styles;
+	char* image_path = "../images/";
 
 	getStyles(&styles);
 
-	if ( argc != 2 || strlen(argv[1]) < 3)
+	if (argc != 2 || strlen(argv[1]) < 3)
 	{
 		lwerror("You must specify a wkt filename to convert, and it must be 3 or more characters long.\n");
 		return -1;
 	}
 
-	if ( (pfile = fopen(argv[1], "r")) == NULL)
+	if ((pfile = fopen(argv[1], "r")) == NULL)
 	{
-		perror ( argv[1] );
+		perror(argv[1]);
 		return -1;
 	}
 
-	filename = malloc( strlen(argv[1]) + strlen(image_path) + 1 );
-	strcpy( filename, image_path );
-	strncat( filename, argv[1], strlen(argv[1])-3 );
-	strncat( filename, "png", 3 );
+	filename = malloc(strlen(argv[1]) + strlen(image_path) + 1);
+	strcpy(filename, image_path);
+	strncat(filename, argv[1], strlen(argv[1]) - 3);
+	strncat(filename, "png", 3);
 
-	printf( "generating %s\n", filename );
+	printf("generating %s\n", filename);
 
 	layerCount = 0;
-	while ( fgets ( line, sizeof line, pfile ) != NULL && !isspace(*line) )
+	while (fgets(line, sizeof line, pfile) != NULL && !isspace(*line))
 	{
 
 		char output[32768];
-		char *ptr = output;
-		char *styleName;
-		LAYERSTYLE *style;
+		char* ptr = output;
+		char* styleName;
+		LAYERSTYLE* style;
 		int useDefaultStyle;
 
-		ptr += sprintf( ptr, "convert -size %s xc:none ", imageSize );
+		ptr += sprintf(ptr, "convert -size %s xc:none ", imageSize);
 
 		useDefaultStyle = getStyleName(&styleName, line);
-		LWDEBUGF( 4, "%s", styleName );
+		LWDEBUGF(4, "%s", styleName);
 
 		if (useDefaultStyle)
 		{
 			printf("   Warning: using Default style for layer %d\n", layerCount);
-			lwgeom = lwgeom_from_wkt( line, LW_PARSER_CHECK_NONE );
+			lwgeom = lwgeom_from_wkt(line, LW_PARSER_CHECK_NONE);
 		}
 		else
-			lwgeom = lwgeom_from_wkt( line+strlen(styleName)+1, LW_PARSER_CHECK_NONE );
-		LWDEBUGF( 4, "geom = %s", lwgeom_to_ewkt((LWGEOM*)lwgeom) );
+			lwgeom = lwgeom_from_wkt(line + strlen(styleName) + 1, LW_PARSER_CHECK_NONE);
+		LWDEBUGF(4, "geom = %s", lwgeom_to_ewkt((LWGEOM*)lwgeom));
 
 		style = getStyle(styles, styleName);
-		if ( ! style ) {
-		  lwerror("Could not find style named %s", styleName);
-		  return -1;
+		if (!style)
+		{
+			lwerror("Could not find style named %s", styleName);
+			return -1;
 		}
-		ptr += drawGeometry( ptr, lwgeom, style );
+		ptr += drawGeometry(ptr, lwgeom, style);
 
-		ptr += sprintf( ptr, "-flip tmp%d.png", layerCount );
+		ptr += sprintf(ptr, "-flip tmp%d.png", layerCount);
 
-		lwfree( lwgeom );
+		lwfree(lwgeom);
 
-		LWDEBUGF( 4, "%s", output );
+		LWDEBUGF(4, "%s", output);
 		checked_system(output);
 
-		addHighlight( layerCount );
-		addDropShadow( layerCount );
+		addHighlight(layerCount);
+		addDropShadow(layerCount);
 		layerCount++;
 		free(styleName);
 	}

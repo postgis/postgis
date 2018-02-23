@@ -22,7 +22,6 @@
  *
  **********************************************************************/
 
-
 #include "liblwgeom.h"
 #include "lwgeom_log.h"
 
@@ -70,8 +69,7 @@ pop_node(LISTNODE* i)
 static int
 add_lwgeom_to_stack(LWPOINTITERATOR* s, LWGEOM* g)
 {
-	if (lwgeom_is_empty(g))
-		return LW_FAILURE;
+	if (lwgeom_is_empty(g)) return LW_FAILURE;
 
 	s->geoms = prepend_node(g, s->geoms);
 	return LW_SUCCESS;
@@ -83,7 +81,7 @@ add_lwgeom_to_stack(LWPOINTITERATOR* s, LWGEOM* g)
 static LISTNODE*
 extract_pointarrays_from_lwgeom(LWGEOM* g)
 {
-	switch(lwgeom_get_type(g))
+	switch (lwgeom_get_type(g))
 	{
 	case POINTTYPE:
 		return prepend_node(lwgeom_as_lwpoint(g)->point, NULL);
@@ -122,12 +120,9 @@ unroll_collection(LWPOINTITERATOR* s)
 	int i;
 	LWCOLLECTION* c;
 
-	if (!s->geoms)
-	{
-		return;
-	}
+	if (!s->geoms) { return; }
 
-	c = (LWCOLLECTION*) s->geoms->item;
+	c = (LWCOLLECTION*)s->geoms->item;
 	s->geoms = pop_node(s->geoms);
 
 	for (i = c->ngeoms - 1; i >= 0; i--)
@@ -144,7 +139,7 @@ unroll_collection(LWPOINTITERATOR* s)
 static void
 unroll_collections(LWPOINTITERATOR* s)
 {
-	while(s->geoms && lwgeom_is_collection(s->geoms->item))
+	while (s->geoms && lwgeom_is_collection(s->geoms->item))
 	{
 		unroll_collection(s);
 	}
@@ -157,7 +152,7 @@ lwpointiterator_advance(LWPOINTITERATOR* s)
 
 	/* We've reached the end of our current POINTARRAY.  Try to see if there
 	 * are any more POINTARRAYS on the stack. */
-	if (s->pointarrays && s->i >= ((POINTARRAY*) s->pointarrays->item)->npoints)
+	if (s->pointarrays && s->i >= ((POINTARRAY*)s->pointarrays->item)->npoints)
 	{
 		s->pointarrays = pop_node(s->pointarrays);
 		s->i = 0;
@@ -170,10 +165,7 @@ lwpointiterator_advance(LWPOINTITERATOR* s)
 		LWGEOM* g;
 		unroll_collections(s);
 
-		if (!s->geoms)
-		{
-			return LW_FAILURE;
-		}
+		if (!s->geoms) { return LW_FAILURE; }
 
 		s->i = 0;
 		g = s->geoms->item;
@@ -182,10 +174,7 @@ lwpointiterator_advance(LWPOINTITERATOR* s)
 		s->geoms = pop_node(s->geoms);
 	}
 
-	if (!s->pointarrays)
-	{
-		return LW_FAILURE;
-	}
+	if (!s->pointarrays) { return LW_FAILURE; }
 	return LW_SUCCESS;
 }
 
@@ -194,8 +183,7 @@ lwpointiterator_advance(LWPOINTITERATOR* s)
 int
 lwpointiterator_peek(LWPOINTITERATOR* s, POINT4D* p)
 {
-	if (!lwpointiterator_has_next(s))
-		return LW_FAILURE;
+	if (!lwpointiterator_has_next(s)) return LW_FAILURE;
 
 	return getPoint4d_p(s->pointarrays->item, s->i, p);
 }
@@ -203,20 +191,17 @@ lwpointiterator_peek(LWPOINTITERATOR* s, POINT4D* p)
 int
 lwpointiterator_has_next(LWPOINTITERATOR* s)
 {
-	if (s->pointarrays && s->i < ((POINTARRAY*) s->pointarrays->item)->npoints)
-		return LW_TRUE;
+	if (s->pointarrays && s->i < ((POINTARRAY*)s->pointarrays->item)->npoints) return LW_TRUE;
 	return LW_FALSE;
 }
 
 int
 lwpointiterator_next(LWPOINTITERATOR* s, POINT4D* p)
 {
-	if (!lwpointiterator_has_next(s))
-		return LW_FAILURE;
+	if (!lwpointiterator_has_next(s)) return LW_FAILURE;
 
 	/* If p is NULL, just advance without reading */
-	if (p && !lwpointiterator_peek(s, p))
-		return LW_FAILURE;
+	if (p && !lwpointiterator_peek(s, p)) return LW_FAILURE;
 
 	lwpointiterator_advance(s);
 	return LW_SUCCESS;
@@ -225,8 +210,7 @@ lwpointiterator_next(LWPOINTITERATOR* s, POINT4D* p)
 int
 lwpointiterator_modify_next(LWPOINTITERATOR* s, const POINT4D* p)
 {
-	if (!lwpointiterator_has_next(s))
-		return LW_FAILURE;
+	if (!lwpointiterator_has_next(s)) return LW_FAILURE;
 
 	if (!s->allow_modification)
 	{
@@ -243,7 +227,7 @@ lwpointiterator_modify_next(LWPOINTITERATOR* s, const POINT4D* p)
 LWPOINTITERATOR*
 lwpointiterator_create(const LWGEOM* g)
 {
-	LWPOINTITERATOR* it = lwpointiterator_create_rw((LWGEOM*) g);
+	LWPOINTITERATOR* it = lwpointiterator_create_rw((LWGEOM*)g);
 	it->allow_modification = LW_FALSE;
 
 	return it;

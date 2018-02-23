@@ -57,7 +57,7 @@ update_r(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, uint32_t 
 		}
 
 		/* Store the nearest cluster this object is in */
-		clusters[i] = (int) curr_cluster;
+		clusters[i] = (int)curr_cluster;
 	}
 }
 
@@ -118,8 +118,7 @@ kmeans(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, uint32_t k)
 
 	lwfree(clusters_last);
 	lwfree(weights);
-	if (!converged)
-		lwerror("%s did not converge after %d iterations", __func__, i);
+	if (!converged) lwerror("%s did not converge after %d iterations", __func__, i);
 	return converged;
 }
 
@@ -151,8 +150,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 	assert(n > 0);
 	assert(geoms);
 
-	if (n < k)
-		lwerror("%s: number of geometries is less than the number of clusters requested", __func__);
+	if (n < k) lwerror("%s: number of geometries is less than the number of clusters requested", __func__);
 
 	/* We'll hold the temporary centroid objects here */
 	centroids = lwalloc(sizeof(LWGEOM*) * n);
@@ -224,10 +222,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 		}
 	}
 
-	if (max_norm == -DBL_MAX)
-	{
-		lwerror("unable to calculate any cluster seed point, too many NULLs or empties?");
-	}
+	if (max_norm == -DBL_MAX) { lwerror("unable to calculate any cluster seed point, too many NULLs or empties?"); }
 
 	/* start with point on boundary */
 	distances[boundary_point_idx] = -1;
@@ -245,8 +240,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 		for (j = 0; j < n; j++)
 		{
 			/* empty objs and accepted clusters are already marked with distance = -1 */
-			if (distances[j] < 0)
-				continue;
+			if (distances[j] < 0) continue;
 
 			/* update distance to closest cluster */
 			curr_distance = distance2d_sqr_pt_pt(objs[j], centers[i - 1]);
@@ -261,8 +255,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 		}
 
 		/* something is wrong with data, cannot find a candidate */
-		if (max_distance < 0)
-			lwerror("unable to calculate cluster seed points, too many NULLs or empties?");
+		if (max_distance < 0) lwerror("unable to calculate cluster seed points, too many NULLs or empties?");
 
 		/* accept candidtate to centers */
 		distances[candidate_center] = -1;
@@ -282,8 +275,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 	lwfree(distances);
 
 	/* Good result */
-	if (result)
-		return clusters;
+	if (result) return clusters;
 
 	/* Bad result, not going to need the answer */
 	lwfree(clusters);

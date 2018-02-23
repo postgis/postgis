@@ -46,50 +46,49 @@
  **/
 
 /******************************************************************************
-* Some rules for *.(c|h) files in rt_core
-*
-* All functions in rt_core that receive a band index parameter
-*   must be 0-based
-*
-* Variables and functions internal for a public function should be prefixed
-*   with _rti_, e.g. _rti_iterator_arg.
-******************************************************************************/
+ * Some rules for *.(c|h) files in rt_core
+ *
+ * All functions in rt_core that receive a band index parameter
+ *   must be 0-based
+ *
+ * Variables and functions internal for a public function should be prefixed
+ *   with _rti_, e.g. _rti_iterator_arg.
+ ******************************************************************************/
 
 #ifndef LIBRTCORE_H_INCLUDED
 #define LIBRTCORE_H_INCLUDED
 
 /* define the systems */
-#if defined(__linux__)  /* (predefined) */
+#if defined(__linux__) /* (predefined) */
 #if !defined(LINUX)
 #define LINUX
 #endif
 #if !defined(UNIX)
-#define UNIX        /* make sure this is defined */
+#define UNIX /* make sure this is defined */
 #endif
 #endif
 
-
-#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__OpenBSD__)    /* seems to work like Linux... */
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__OpenBSD__) /* seems to work like Linux... */
 #if !defined(LINUX)
 #define LINUX
 #endif
 #if !defined(UNIX)
-#define UNIX        /* make sure this is defined */
+#define UNIX /* make sure this is defined */
 #endif
 #endif
 
-#if defined(__GNU__)    /* GNU/Hurd is also like Linux */
+#if defined(__GNU__) /* GNU/Hurd is also like Linux */
 #if !defined(LINUX)
 #define LINUX
 #endif
 #if !defined(UNIX)
-#define UNIX        /* make sure this is defined */
+#define UNIX /* make sure this is defined */
 #endif
 #endif
 
 #if defined(__MSDOS__)
 #if !defined(MSDOS)
-#define MSDOS       /* make sure this is defined */
+#define MSDOS /* make sure this is defined */
 #endif
 #endif
 
@@ -98,7 +97,7 @@
 #define WIN32
 #endif
 #if defined(__BORLANDC__) && defined(MSDOS) /* Borland always defines MSDOS */
-#undef  MSDOS
+#undef MSDOS
 #endif
 #endif
 
@@ -114,11 +113,11 @@
 #endif
 #endif
 
-#include <stdio.h> /* for printf, sprintf */
+#include <stdio.h>  /* for printf, sprintf */
 #include <stdlib.h> /* For size_t, srand and rand */
 #include <stdint.h> /* For C99 int types */
 #include <string.h> /* for memcpy, strlen, etc */
-#include <float.h> /* for FLT_EPSILON, DBL_EPSILON and float type limits */
+#include <float.h>  /* for FLT_EPSILON, DBL_EPSILON and float type limits */
 #include <limits.h> /* for integer type limits */
 
 #include "liblwgeom.h"
@@ -136,7 +135,7 @@
 #include "../raster_config.h"
 
 #ifndef __GNUC__
-# define __attribute__ (x)
+#define __attribute__(x)
 #endif
 
 /**
@@ -161,7 +160,8 @@ typedef struct rt_colormap_entry_t* rt_colormap_entry;
 typedef struct rt_colormap_t* rt_colormap;
 
 /* envelope information */
-typedef struct {
+typedef struct
+{
 	double MinX;
 	double MaxX;
 	double MinY;
@@ -176,28 +176,31 @@ typedef struct {
  */
 
 /* function return error states */
-typedef enum {
+typedef enum
+{
 	ES_NONE = 0, /* no error */
 	ES_ERROR = 1 /* generic error */
 } rt_errorstate;
 
 /* Pixel types */
-typedef enum {
-    PT_1BB=0,     /* 1-bit boolean            */
-    PT_2BUI=1,    /* 2-bit unsigned integer   */
-    PT_4BUI=2,    /* 4-bit unsigned integer   */
-    PT_8BSI=3,    /* 8-bit signed integer     */
-    PT_8BUI=4,    /* 8-bit unsigned integer   */
-    PT_16BSI=5,   /* 16-bit signed integer    */
-    PT_16BUI=6,   /* 16-bit unsigned integer  */
-    PT_32BSI=7,   /* 32-bit signed integer    */
-    PT_32BUI=8,   /* 32-bit unsigned integer  */
-    PT_32BF=10,   /* 32-bit float             */
-    PT_64BF=11,   /* 64-bit float             */
-    PT_END=13
+typedef enum
+{
+	PT_1BB = 0,   /* 1-bit boolean            */
+	PT_2BUI = 1,  /* 2-bit unsigned integer   */
+	PT_4BUI = 2,  /* 4-bit unsigned integer   */
+	PT_8BSI = 3,  /* 8-bit signed integer     */
+	PT_8BUI = 4,  /* 8-bit unsigned integer   */
+	PT_16BSI = 5, /* 16-bit signed integer    */
+	PT_16BUI = 6, /* 16-bit unsigned integer  */
+	PT_32BSI = 7, /* 32-bit signed integer    */
+	PT_32BUI = 8, /* 32-bit unsigned integer  */
+	PT_32BF = 10, /* 32-bit float             */
+	PT_64BF = 11, /* 64-bit float             */
+	PT_END = 13
 } rt_pixtype;
 
-typedef enum {
+typedef enum
+{
 	ET_INTERSECTION = 0,
 	ET_UNION,
 	ET_FIRST,
@@ -214,7 +217,8 @@ typedef enum {
  *   crosses
  *   disjoint
  */
-typedef enum {
+typedef enum
+{
 	GSR_OVERLAPS = 0,
 	GSR_TOUCHES,
 	GSR_CONTAINS,
@@ -224,13 +228,12 @@ typedef enum {
 } rt_geos_spatial_test;
 
 /**
-* Global functions for memory/logging handlers.
-*/
+ * Global functions for memory/logging handlers.
+ */
 typedef void* (*rt_allocator)(size_t size);
-typedef void* (*rt_reallocator)(void *mem, size_t size);
-typedef void  (*rt_deallocator)(void *mem);
-typedef void  (*rt_message_handler)(const char* string, va_list ap)
-  __attribute__ (( format(printf,1,0) ));
+typedef void* (*rt_reallocator)(void* mem, size_t size);
+typedef void (*rt_deallocator)(void* mem);
+typedef void (*rt_message_handler)(const char* string, va_list ap) __attribute__((format(printf, 1, 0)));
 
 /*******************************************************************
  * Functions that may be used by the raster core function's caller
@@ -240,7 +243,6 @@ typedef void  (*rt_message_handler)(const char* string, va_list ap)
  * Apply the default memory management (malloc() and free()) and error handlers.
  */
 extern void rt_install_default_allocators(void);
-
 
 /**
  * Wrappers used for managing memory. They simply call the functions defined by
@@ -252,62 +254,59 @@ extern void rtdealloc(void* mem);
 
 /******************************************************************/
 
-
 /**
  * Wrappers used for reporting errors and info.
  **/
-void rterror(const char *fmt, ...);
-void rtinfo(const char *fmt, ...);
-void rtwarn(const char *fmt, ...);
-
+void rterror(const char* fmt, ...);
+void rtinfo(const char* fmt, ...);
+void rtwarn(const char* fmt, ...);
 
 /**
-* The default memory/logging handlers installed by lwgeom_install_default_allocators()
-*/
-void * default_rt_allocator(size_t size);
-void * default_rt_reallocator(void * mem, size_t size);
-void default_rt_deallocator(void * mem);
-void default_rt_error_handler(const char * fmt, va_list ap);
-void default_rt_warning_handler(const char * fmt, va_list ap);
-void default_rt_info_handler(const char * fmt, va_list ap);
-
+ * The default memory/logging handlers installed by lwgeom_install_default_allocators()
+ */
+void* default_rt_allocator(size_t size);
+void* default_rt_reallocator(void* mem, size_t size);
+void default_rt_deallocator(void* mem);
+void default_rt_error_handler(const char* fmt, va_list ap);
+void default_rt_warning_handler(const char* fmt, va_list ap);
+void default_rt_info_handler(const char* fmt, va_list ap);
 
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0
 
 /* Display a simple message at NOTICE level */
 #define RASTER_DEBUG(level, msg) \
-    do { \
-        if (POSTGIS_DEBUG_LEVEL >= level) \
-            rtinfo("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__); \
-    } while (0);
+	do \
+	{ \
+		if (POSTGIS_DEBUG_LEVEL >= level) rtinfo("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__); \
+	} while (0);
 
 /* Display a formatted message at NOTICE level (like printf, with variadic arguments) */
 #define RASTER_DEBUGF(level, msg, ...) \
-    do { \
-        if (POSTGIS_DEBUG_LEVEL >= level) \
-            rtinfo("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__); \
-    } while (0);
+	do \
+	{ \
+		if (POSTGIS_DEBUG_LEVEL >= level) \
+			rtinfo("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__); \
+	} while (0);
 
 #else
 
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
-#define RASTER_DEBUG(level, msg) \
-    ((void) 0)
+#define RASTER_DEBUG(level, msg) ((void)0)
 
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
-#define RASTER_DEBUGF(level, msg, ...) \
-    ((void) 0)
+#define RASTER_DEBUGF(level, msg, ...) ((void)0)
 
 #endif
 
 /*- memory context -------------------------------------------------------*/
 
-void rt_set_handlers(rt_allocator allocator, rt_reallocator reallocator,
-        rt_deallocator deallocator, rt_message_handler error_handler,
-        rt_message_handler info_handler, rt_message_handler warning_handler);
-
-
+void rt_set_handlers(rt_allocator allocator,
+		     rt_reallocator reallocator,
+		     rt_deallocator deallocator,
+		     rt_message_handler error_handler,
+		     rt_message_handler info_handler,
+		     rt_message_handler warning_handler);
 
 /*- rt_pixtype --------------------------------------------------------*/
 
@@ -356,11 +355,7 @@ double rt_pixtype_get_min_value(rt_pixtype pixtype);
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate rt_pixtype_compare_clamped_values(
-	rt_pixtype pixtype,
-	double val, double refval,
-	int *isequal
-);
+rt_errorstate rt_pixtype_compare_clamped_values(rt_pixtype pixtype, double val, double refval, int* isequal);
 
 /*- rt_pixel ----------------------------------------------------------*/
 
@@ -385,15 +380,17 @@ rt_errorstate rt_pixtype_compare_clamped_values(
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate rt_pixel_set_to_array(
-	rt_pixel npixel,uint32_t count,
-	rt_mask mask,
-	int x, int y,
-	uint16_t distancex, uint16_t distancey,
-	double ***value,
-	int ***nodata,
-	int *dimx, int *dimy
-);
+rt_errorstate rt_pixel_set_to_array(rt_pixel npixel,
+				    uint32_t count,
+				    rt_mask mask,
+				    int x,
+				    int y,
+				    uint16_t distancex,
+				    uint16_t distancey,
+				    double*** value,
+				    int*** nodata,
+				    int* dimx,
+				    int* dimy);
 
 /*- rt_band ----------------------------------------------------------*/
 
@@ -417,12 +414,12 @@ rt_errorstate rt_pixel_set_to_array(
  *
  * @return an rt_band or NULL on failure
  */
-rt_band rt_band_new_inline(
-	uint16_t width, uint16_t height,
-	rt_pixtype pixtype,
-	uint32_t hasnodata, double nodataval,
-	uint8_t* data
-);
+rt_band rt_band_new_inline(uint16_t width,
+			   uint16_t height,
+			   rt_pixtype pixtype,
+			   uint32_t hasnodata,
+			   double nodataval,
+			   uint8_t* data);
 
 /**
  * Create an out-db rt_band
@@ -443,12 +440,13 @@ rt_band rt_band_new_inline(
  *
  * @return an rt_band or NULL on failure
  */
-rt_band rt_band_new_offline(
-	uint16_t width, uint16_t height,
-	rt_pixtype pixtype,
-	uint32_t hasnodata, double nodataval,
-	uint8_t bandNum, const char* path
-);
+rt_band rt_band_new_offline(uint16_t width,
+			    uint16_t height,
+			    rt_pixtype pixtype,
+			    uint32_t hasnodata,
+			    double nodataval,
+			    uint8_t bandNum,
+			    const char* path);
 
 /**
  * Create an out-db rt_band from path
@@ -468,16 +466,13 @@ rt_band rt_band_new_offline(
  *
  * @return an rt_band, or 0 on failure
  */
-rt_band
-rt_band_new_offline_from_path(
-	uint16_t width,
-	uint16_t height,
-	int hasnodata,
-	double nodataval,
-	uint8_t bandNum,
-	const char* path,
-	int force
-);
+rt_band rt_band_new_offline_from_path(uint16_t width,
+				      uint16_t height,
+				      int hasnodata,
+				      double nodataval,
+				      uint8_t bandNum,
+				      const char* path,
+				      int force);
 
 /**
  * Create a new band duplicated from source band.  Memory is allocated
@@ -521,7 +516,7 @@ const char* rt_band_get_ext_path(rt_band band);
  *
  * @return ES_NONE or ES_ERROR if band is NOT out-db
  */
-rt_errorstate rt_band_get_ext_band_num(rt_band band, uint8_t *bandnum);
+rt_errorstate rt_band_get_ext_band_num(rt_band band, uint8_t* bandnum);
 
 /**
  * Return pixeltype of this band
@@ -565,23 +560,23 @@ int rt_band_get_ownsdata_flag(rt_band band);
 void rt_band_set_ownsdata_flag(rt_band band, int flag);
 
 /**
-	* Get pointer to raster band data
-	*
-	* @param band : the band who's data to get
-	*
-	* @return pointer to band data or NULL if error
-	*/
+ * Get pointer to raster band data
+ *
+ * @param band : the band who's data to get
+ *
+ * @return pointer to band data or NULL if error
+ */
 void* rt_band_get_data(rt_band band);
 
 /**
-	* Load offline band's data.  Loaded data is internally owned
-	* and should not be released by the caller.  Data will be
-	* released when band is destroyed with rt_band_destroy().
-	*
-	* @param band : the band who's data to get
-	*
-	* @return ES_NONE if success, ES_ERROR if failure
-	*/
+ * Load offline band's data.  Loaded data is internally owned
+ * and should not be released by the caller.  Data will be
+ * released when band is destroyed with rt_band_destroy().
+ *
+ * @param band : the band who's data to get
+ *
+ * @return ES_NONE if success, ES_ERROR if failure
+ */
 rt_errorstate rt_band_load_offline_data(rt_band band);
 
 /**
@@ -636,7 +631,7 @@ int rt_band_get_isnodata_flag(rt_band band);
  *
  * @return ES_NONE or ES_ERROR
  */
-rt_errorstate rt_band_set_nodata(rt_band band, double val, int *converted);
+rt_errorstate rt_band_set_nodata(rt_band band, double val, int* converted);
 
 /**
  * Get NODATA value
@@ -646,7 +641,7 @@ rt_errorstate rt_band_set_nodata(rt_band band, double val, int *converted);
  *
  * @return ES_NONE or ES_ERROR
  */
-rt_errorstate rt_band_get_nodata(rt_band band, double *nodata);
+rt_errorstate rt_band_get_nodata(rt_band band, double* nodata);
 
 /**
  * Set values of multiple pixels.  Unlike rt_band_set_pixel,
@@ -667,11 +662,7 @@ rt_errorstate rt_band_get_nodata(rt_band band, double *nodata);
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate rt_band_set_pixel_line(
-	rt_band band,
-	int x, int y,
-	void *vals, uint32_t len
-);
+rt_errorstate rt_band_set_pixel_line(rt_band band, int x, int y, void* vals, uint32_t len);
 
 /**
  * Set single pixel's value
@@ -684,12 +675,7 @@ rt_errorstate rt_band_set_pixel_line(
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate rt_band_set_pixel(
-	rt_band band,
-	int x, int y,
-	double val,
-	int *converted
-);
+rt_errorstate rt_band_set_pixel(rt_band band, int x, int y, double val, int* converted);
 
 /**
  * Get values of multiple pixels.  Unlike rt_band_get_pixel,
@@ -711,12 +697,7 @@ rt_errorstate rt_band_set_pixel(
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate rt_band_get_pixel_line(
-	rt_band band,
-	int x, int y,
-	uint16_t len,
-	void **vals, uint16_t *nvals
-);
+rt_errorstate rt_band_get_pixel_line(rt_band band, int x, int y, uint16_t len, void** vals, uint16_t* nvals);
 
 /**
  * Get pixel value. If band's isnodata flag is TRUE, value returned
@@ -730,12 +711,7 @@ rt_errorstate rt_band_get_pixel_line(
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate rt_band_get_pixel(
-	rt_band band,
-	int x, int y,
-	double *value,
-	int *nodata
-);
+rt_errorstate rt_band_get_pixel(rt_band band, int x, int y, double* value, int* nodata);
 
 /**
  * Get nearest pixel(s) with value (not NODATA) to specified pixel
@@ -754,13 +730,13 @@ rt_errorstate rt_band_get_pixel(
  * @return -1 on error, otherwise the number of rt_pixel objects
  * in npixels
  */
-uint32_t rt_band_get_nearest_pixel(
-	rt_band band,
-	int x, int y,
-	uint16_t distancex, uint16_t distancey,
-	int exclude_nodata_value,
-	rt_pixel *npixels
-);
+uint32_t rt_band_get_nearest_pixel(rt_band band,
+				   int x,
+				   int y,
+				   uint16_t distancex,
+				   uint16_t distancey,
+				   int exclude_nodata_value,
+				   rt_pixel* npixels);
 
 /**
  * Search band for pixel(s) with search values
@@ -773,11 +749,11 @@ uint32_t rt_band_get_nearest_pixel(
  *
  * @return -1 on error, otherwise number of pixels
  */
-int rt_band_get_pixel_of_value(
-	rt_band band, int exclude_nodata_value,
-	double *searchset, int searchcount,
-	rt_pixel *pixels
-);
+int rt_band_get_pixel_of_value(rt_band band,
+			       int exclude_nodata_value,
+			       double* searchset,
+			       int searchcount,
+			       rt_pixel* pixels);
 
 /**
  * Returns the minimal possible value for the band according to the pixel type.
@@ -821,12 +797,7 @@ int rt_band_clamped_value_is_nodata(rt_band band, double val);
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate
-rt_band_corrected_clamped_value(
-	rt_band band,
-	double val,
-	double *newval, int *corrected
-);
+rt_errorstate rt_band_corrected_clamped_value(rt_band band, double val, double* newval, int* corrected);
 
 /**
  * Compute summary statistics for a band
@@ -841,11 +812,13 @@ rt_band_corrected_clamped_value(
  *
  * @return the summary statistics for a band or NULL
  */
-rt_bandstats rt_band_get_summary_stats(
-	rt_band band,
-	int exclude_nodata_value, double sample, int inc_vals,
-	uint64_t *cK, double *cM, double *cQ
-);
+rt_bandstats rt_band_get_summary_stats(rt_band band,
+				       int exclude_nodata_value,
+				       double sample,
+				       int inc_vals,
+				       uint64_t* cK,
+				       double* cM,
+				       double* cQ);
 
 /**
  * Count the distribution of data
@@ -865,12 +838,14 @@ rt_bandstats rt_band_get_summary_stats(
  *
  * @return the histogram of the data or NULL
  */
-rt_histogram rt_band_get_histogram(
-	rt_bandstats stats,
-	uint32_t bin_count, double *bin_widths, uint32_t bin_widths_count,
-	int right, double min, double max,
-	uint32_t *rtn_count
-);
+rt_histogram rt_band_get_histogram(rt_bandstats stats,
+				   uint32_t bin_count,
+				   double* bin_widths,
+				   uint32_t bin_widths_count,
+				   int right,
+				   double min,
+				   double max,
+				   uint32_t* rtn_count);
 
 /**
  * Compute the default set of or requested quantiles for a set of data
@@ -883,14 +858,10 @@ rt_histogram rt_band_get_histogram(
  *
  * @return the default set of or requested quantiles for a band or NULL
  */
-rt_quantile rt_band_get_quantiles(rt_bandstats stats,
-	double *quantiles, int quantiles_count, uint32_t *rtn_count);
+rt_quantile rt_band_get_quantiles(rt_bandstats stats, double* quantiles, int quantiles_count, uint32_t* rtn_count);
 
 struct quantile_llist;
-int quantile_llist_destroy(
-	struct quantile_llist **list,
-	uint32_t list_count
-);
+int quantile_llist_destroy(struct quantile_llist** list, uint32_t list_count);
 
 /**
  * Compute the default set of or requested quantiles for a coverage
@@ -919,14 +890,15 @@ int quantile_llist_destroy(
  *
  * @return the default set of or requested quantiles for a band or NULL
  */
-rt_quantile rt_band_get_quantiles_stream(
-	rt_band band,
-	int exclude_nodata_value, double sample,
-	uint64_t cov_count,
-	struct quantile_llist **qlls, uint32_t *qlls_count,
-	double *quantiles, uint32_t quantiles_count,
-	uint32_t *rtn_count
-);
+rt_quantile rt_band_get_quantiles_stream(rt_band band,
+					 int exclude_nodata_value,
+					 double sample,
+					 uint64_t cov_count,
+					 struct quantile_llist** qlls,
+					 uint32_t* qlls_count,
+					 double* quantiles,
+					 uint32_t quantiles_count,
+					 uint32_t* rtn_count);
 
 /**
  * Count the number of times provided value(s) occur in
@@ -942,11 +914,13 @@ rt_quantile rt_band_get_quantiles_stream(
  *
  * @return the number of times the provide value(s) occur or NULL
  */
-rt_valuecount rt_band_get_value_count(
-	rt_band band, int exclude_nodata_value,
-	double *search_values, uint32_t search_values_count, double roundto,
-	uint32_t *rtn_total, uint32_t *rtn_count
-);
+rt_valuecount rt_band_get_value_count(rt_band band,
+				      int exclude_nodata_value,
+				      double* search_values,
+				      uint32_t search_values_count,
+				      double roundto,
+				      uint32_t* rtn_total,
+				      uint32_t* rtn_count);
 
 /**
  * Returns new band with values reclassified
@@ -960,11 +934,12 @@ rt_valuecount rt_band_get_value_count(
  *
  * @return a new rt_band or NULL on error
  */
-rt_band rt_band_reclass(
-	rt_band srcband, rt_pixtype pixtype,
-	uint32_t hasnodata, double nodataval,
-	rt_reclassexpr *exprset, int exprcount
-);
+rt_band rt_band_reclass(rt_band srcband,
+			rt_pixtype pixtype,
+			uint32_t hasnodata,
+			double nodataval,
+			rt_reclassexpr* exprset,
+			int exprcount);
 
 /*- rt_raster --------------------------------------------------------*/
 
@@ -1014,7 +989,7 @@ rt_raster rt_raster_from_hexwkb(const char* hexwkb, uint32_t hexwkbsize);
  *
  * @return WKB of raster or NULL on error
  */
-uint8_t *rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize);
+uint8_t* rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t* wkbsize);
 
 /**
  * Return this raster in HEXWKB form (null-terminated hex)
@@ -1026,7 +1001,7 @@ uint8_t *rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize);
  *
  * @return HEXWKB of raster or NULL on error
  */
-char *rt_raster_to_hexwkb(rt_raster raster, int outasin, uint32_t *hexwkbsize);
+char* rt_raster_to_hexwkb(rt_raster raster, int outasin, uint32_t* hexwkbsize);
 
 /**
  * Release memory associated to a raster
@@ -1083,13 +1058,12 @@ int rt_raster_add_band(rt_raster raster, rt_band band, int index);
  *
  * @return identifier (position) for the just-added raster, or -1 on error
  */
-int rt_raster_generate_new_band(
-	rt_raster raster,
-	rt_pixtype pixtype,
-	double initialvalue,
-	uint32_t hasnodata, double nodatavalue,
-	int index
-);
+int rt_raster_generate_new_band(rt_raster raster,
+				rt_pixtype pixtype,
+				double initialvalue,
+				uint32_t hasnodata,
+				double nodatavalue,
+				int index);
 
 /**
  * Set scale in projection units
@@ -1100,8 +1074,7 @@ int rt_raster_generate_new_band(
  *
  * NOTE: doesn't recompute offsets
  */
-void rt_raster_set_scale(rt_raster raster,
-                               double scaleX, double scaleY);
+void rt_raster_set_scale(rt_raster raster, double scaleX, double scaleY);
 
 /**
  * Get scale X in projection units
@@ -1130,8 +1103,7 @@ double rt_raster_get_y_scale(rt_raster raster);
  * @param y : y ordinate of the upper-left corner of upper-left pixel,
  *            in projection units
  */
-void rt_raster_set_offsets(rt_raster raster,
-                           double x, double y);
+void rt_raster_set_offsets(rt_raster raster, double x, double y);
 
 /**
  * Get raster x offset, in projection units
@@ -1160,8 +1132,7 @@ double rt_raster_get_y_offset(rt_raster raster);
  * @param skewX : skew about the x axis
  * @param skewY : skew about the y axis
  */
-void rt_raster_set_skews(rt_raster raster,
-                             double skewX, double skewY);
+void rt_raster_set_skews(rt_raster raster, double skewX, double skewY);
 
 /**
  * Get skew about the X axis
@@ -1180,78 +1151,84 @@ double rt_raster_get_x_skew(rt_raster raster);
 double rt_raster_get_y_skew(rt_raster raster);
 
 /**
-* Calculates and returns the physically significant descriptors embodied
-* in the geotransform attached to the provided raster.
-*
-* @param rast the raster containing the geotransform of interest
-* @param i_mag size of a pixel along the transformed i axis
-* @param j_mag size of a pixel along the transformed j axis
-* @param theta_i angle by which the raster is rotated (radians positive clockwise)
-* @param theta_ij angle from transformed i axis to transformed j axis
-* (radians positive counterclockwise)
-*
-*/
-void rt_raster_get_phys_params(rt_raster rast,
-        double *i_mag, double *j_mag, double *theta_i, double *theta_ij) ;
+ * Calculates and returns the physically significant descriptors embodied
+ * in the geotransform attached to the provided raster.
+ *
+ * @param rast the raster containing the geotransform of interest
+ * @param i_mag size of a pixel along the transformed i axis
+ * @param j_mag size of a pixel along the transformed j axis
+ * @param theta_i angle by which the raster is rotated (radians positive clockwise)
+ * @param theta_ij angle from transformed i axis to transformed j axis
+ * (radians positive counterclockwise)
+ *
+ */
+void rt_raster_get_phys_params(rt_raster rast, double* i_mag, double* j_mag, double* theta_i, double* theta_ij);
 
 /**
-* Calculates the geotransform coefficients and applies them to the
-* supplied raster. The coefficients will not be applied if there was an
-* error during the calculation.
-*
-* This method affects only the scale and skew coefficients. The offset
-* parameters are not changed.
-*
-* @param rast the raster in which the geotransform will be stored.
-* @param i_mag size of a pixel along the transformed i axis
-* @param j_mag size of a pixel along the transformed j axis
-* @param theta_i angle by which the raster is rotated (radians positive clockwise)
-* @param theta_ij angle from transformed i axis to transformed j axis
-* (radians positive counterclockwise)
-*/
-void rt_raster_set_phys_params(rt_raster rast,
-        double i_mag, double j_mag, double theta_i, double theta_ij) ;
-
+ * Calculates the geotransform coefficients and applies them to the
+ * supplied raster. The coefficients will not be applied if there was an
+ * error during the calculation.
+ *
+ * This method affects only the scale and skew coefficients. The offset
+ * parameters are not changed.
+ *
+ * @param rast the raster in which the geotransform will be stored.
+ * @param i_mag size of a pixel along the transformed i axis
+ * @param j_mag size of a pixel along the transformed j axis
+ * @param theta_i angle by which the raster is rotated (radians positive clockwise)
+ * @param theta_ij angle from transformed i axis to transformed j axis
+ * (radians positive counterclockwise)
+ */
+void rt_raster_set_phys_params(rt_raster rast, double i_mag, double j_mag, double theta_i, double theta_ij);
 
 /**
-* Calculates the physically significant descriptors embodied in an
-* arbitrary geotransform. Always succeeds unless one or more of the
-* output pointers is set to NULL.
-*
-* @param xscale geotransform coefficient o_11
-* @param xskew geotransform coefficient o_12
-* @param yskew geotransform coefficient o_21
-* @param yscale geotransform coefficient o_22
-* @param i_mag size of a pixel along the transformed i axis
-* @param j_mag size of a pixel along the transformed j axis
-* @param theta_i angle by which the raster is rotated (radians positive clockwise)
-* @param theta_ij angle from transformed i axis to transformed j axis
-* (radians positive counterclockwise)
-*/
+ * Calculates the physically significant descriptors embodied in an
+ * arbitrary geotransform. Always succeeds unless one or more of the
+ * output pointers is set to NULL.
+ *
+ * @param xscale geotransform coefficient o_11
+ * @param xskew geotransform coefficient o_12
+ * @param yskew geotransform coefficient o_21
+ * @param yscale geotransform coefficient o_22
+ * @param i_mag size of a pixel along the transformed i axis
+ * @param j_mag size of a pixel along the transformed j axis
+ * @param theta_i angle by which the raster is rotated (radians positive clockwise)
+ * @param theta_ij angle from transformed i axis to transformed j axis
+ * (radians positive counterclockwise)
+ */
 void rt_raster_calc_phys_params(double xscale,
-        double xskew, double yskew, double yscale,
-        double *i_mag, double *j_mag, double *theta_i, double *theta_ij) ;
-
+				double xskew,
+				double yskew,
+				double yscale,
+				double* i_mag,
+				double* j_mag,
+				double* theta_i,
+				double* theta_ij);
 
 /**
-* Calculates the coefficients of a geotransform given the physically
-* significant parameters describing the transform. Will fail if any of the
-* result pointers is NULL, or if theta_ij has an illegal value (0 or PI).
-*
-* @param i_mag size of a pixel along the transformed i axis
-* @param j_mag size of a pixel along the transformed j axis
-* @param theta_i angle by which the raster is rotated (radians positive clockwise)
-* @param theta_ij angle from transformed i axis to transformed j axis
-* (radians positive counterclockwise)
-* @param xscale geotransform coefficient o_11
-* @param xskew geotransform coefficient o_12
-* @param yskew geotransform coefficient o_21
-* @param yscale geotransform coefficient o_22
-* @return 1 if the calculation succeeded, 0 if error.
-*/
+ * Calculates the coefficients of a geotransform given the physically
+ * significant parameters describing the transform. Will fail if any of the
+ * result pointers is NULL, or if theta_ij has an illegal value (0 or PI).
+ *
+ * @param i_mag size of a pixel along the transformed i axis
+ * @param j_mag size of a pixel along the transformed j axis
+ * @param theta_i angle by which the raster is rotated (radians positive clockwise)
+ * @param theta_ij angle from transformed i axis to transformed j axis
+ * (radians positive counterclockwise)
+ * @param xscale geotransform coefficient o_11
+ * @param xskew geotransform coefficient o_12
+ * @param yskew geotransform coefficient o_21
+ * @param yscale geotransform coefficient o_22
+ * @return 1 if the calculation succeeded, 0 if error.
+ */
 int rt_raster_calc_gt_coeff(double i_mag,
-        double j_mag, double theta_i, double theta_ij,
-        double *xscale, double *xskew, double *yskew, double *yscale) ;
+			    double j_mag,
+			    double theta_i,
+			    double theta_ij,
+			    double* xscale,
+			    double* xskew,
+			    double* yskew,
+			    double* yscale);
 
 /**
  * Set raster's SRID
@@ -1278,10 +1255,7 @@ int32_t rt_raster_get_srid(rt_raster raster);
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_get_inverse_geotransform_matrix(
-	rt_raster raster,
-	double *gt, double *igt
-);
+rt_errorstate rt_raster_get_inverse_geotransform_matrix(rt_raster raster, double* gt, double* igt);
 
 /**
  * Get 6-element array of raster geotransform matrix
@@ -1289,8 +1263,7 @@ rt_errorstate rt_raster_get_inverse_geotransform_matrix(
  * @param raster : the raster to get matrix of
  * @param gt : output parameter, 6-element geotransform matrix
  */
-void rt_raster_get_geotransform_matrix(rt_raster raster,
-	double *gt);
+void rt_raster_get_geotransform_matrix(rt_raster raster, double* gt);
 
 /**
  * Set raster's geotransform using 6-element array
@@ -1299,8 +1272,7 @@ void rt_raster_get_geotransform_matrix(rt_raster raster,
  * @param gt : intput parameter, 6-element geotransform matrix
  *
  */
-void rt_raster_set_geotransform_matrix(rt_raster raster,
-	double *gt);
+void rt_raster_set_geotransform_matrix(rt_raster raster, double* gt);
 
 /**
  * Convert an xr, yr raster point to an xw, yw point on map
@@ -1314,12 +1286,7 @@ void rt_raster_set_geotransform_matrix(rt_raster raster,
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_cell_to_geopoint(
-	rt_raster raster,
-	double xr, double yr,
-	double* xw, double* yw,
-	double *gt
-);
+rt_errorstate rt_raster_cell_to_geopoint(rt_raster raster, double xr, double yr, double* xw, double* yw, double* gt);
 
 /**
  * Convert an xw, yw map point to a xr, yr raster point
@@ -1333,12 +1300,7 @@ rt_errorstate rt_raster_cell_to_geopoint(
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_geopoint_to_cell(
-	rt_raster raster,
-	double xw, double yw,
-	double *xr, double *yr,
-	double *igt
-);
+rt_errorstate rt_raster_geopoint_to_cell(rt_raster raster, double xw, double yw, double* xr, double* yr, double* igt);
 
 /**
  * Get raster's convex hull.
@@ -1352,7 +1314,7 @@ rt_errorstate rt_raster_geopoint_to_cell(
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull);
+rt_errorstate rt_raster_get_convex_hull(rt_raster raster, LWGEOM** hull);
 
 /**
  * Get raster's envelope.
@@ -1364,7 +1326,7 @@ rt_errorstate rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull);
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_get_envelope(rt_raster raster, rt_envelope *env);
+rt_errorstate rt_raster_get_envelope(rt_raster raster, rt_envelope* env);
 
 /**
  * Get raster's envelope as a geometry
@@ -1374,7 +1336,7 @@ rt_errorstate rt_raster_get_envelope(rt_raster raster, rt_envelope *env);
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env);
+rt_errorstate rt_raster_get_envelope_geom(rt_raster raster, LWGEOM** env);
 
 /**
  * Get raster perimeter
@@ -1389,10 +1351,7 @@ rt_errorstate rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env);
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_get_perimeter(
-	rt_raster raster, int nband,
-	LWGEOM **perimeter
-);
+rt_errorstate rt_raster_get_perimeter(rt_raster raster, int nband, LWGEOM** perimeter);
 
 /*
  * Compute skewed extent that covers unskewed extent.
@@ -1406,13 +1365,7 @@ rt_errorstate rt_raster_get_perimeter(
  *
  * @return skewed raster who's extent covers unskewed extent, NULL on error
  */
-rt_raster
-rt_raster_compute_skewed_raster(
-	rt_envelope extent,
-	double *skew,
-	double *scale,
-	double tolerance
-);
+rt_raster rt_raster_compute_skewed_raster(rt_envelope extent, double* skew, double* scale, double tolerance);
 
 /**
  * Get a raster pixel as a polygon.
@@ -1443,7 +1396,7 @@ LWPOLY* rt_raster_pixel_as_polygon(rt_raster raster, int x, int y);
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface);
+rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY** surface);
 
 /**
  * Returns a set of "geomval" value, one for each group of pixel
@@ -1462,12 +1415,7 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface);
  * sharing the same value for the provided band. The returned values are
  * LWPOLY geometries.
  */
-rt_geomval
-rt_raster_gdal_polygonize(
-	rt_raster raster, int nband,
-	int exclude_nodata_value,
-	int * pnElements
-);
+rt_geomval rt_raster_gdal_polygonize(rt_raster raster, int nband, int exclude_nodata_value, int* pnElements);
 
 /**
  * Return this raster in serialized form.
@@ -1520,10 +1468,7 @@ int rt_raster_has_band(rt_raster raster, int nband);
  * @return The band index of the second raster where the new band is copied.
  *   -1 if error
  */
-int rt_raster_copy_band(
-	rt_raster torast, rt_raster fromrast,
-	int fromindex, int toindex
-);
+int rt_raster_copy_band(rt_raster torast, rt_raster fromrast, int fromindex, int toindex);
 
 /**
  * Construct a new rt_raster from an existing rt_raster and an array
@@ -1536,8 +1481,7 @@ int rt_raster_copy_band(
  *
  * @return a new rt_raster or NULL on error
  */
-rt_raster rt_raster_from_band(rt_raster raster, uint32_t *bandNums,
-	int count);
+rt_raster rt_raster_from_band(rt_raster raster, uint32_t* bandNums, int count);
 
 /**
  * Replace band at provided index with new band
@@ -1548,8 +1492,7 @@ rt_raster rt_raster_from_band(rt_raster raster, uint32_t *bandNums,
  *
  * @return NULL on error or replaced band
  */
-rt_band rt_raster_replace_band(rt_raster raster, rt_band band,
-	int index);
+rt_band rt_raster_replace_band(rt_raster raster, rt_band band, int index);
 
 /**
  * Clone an existing raster
@@ -1573,8 +1516,7 @@ rt_raster rt_raster_clone(rt_raster raster, uint8_t deep);
  * @return formatted GDAL raster.  the calling function is responsible
  *   for freeing the returned data using CPLFree()
  */
-uint8_t *rt_raster_to_gdal(rt_raster raster, const char *srs,
-	char *format, char **options, uint64_t *gdalsize);
+uint8_t* rt_raster_to_gdal(rt_raster raster, const char* srs, char* format, char** options, uint64_t* gdalsize);
 
 /**
  * Returns a set of available GDAL drivers
@@ -1585,7 +1527,7 @@ uint8_t *rt_raster_to_gdal(rt_raster raster, const char *srs,
  *
  * @return set of "gdaldriver" values of available GDAL drivers
  */
-rt_gdaldriver rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc);
+rt_gdaldriver rt_raster_gdal_drivers(uint32_t* drv_count, uint8_t cancc);
 
 /**
  * Return GDAL dataset using GDAL MEM driver from raster
@@ -1603,14 +1545,13 @@ rt_gdaldriver rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc);
  *
  * @return GDAL dataset using GDAL MEM driver
  */
-GDALDatasetH rt_raster_to_gdal_mem(
-	rt_raster raster,
-	const char *srs,
-	uint32_t *bandNums,
-	int *excludeNodataValues,
-	int count,
-	GDALDriverH *rtn_drv, int *destroy_rtn_drv
-);
+GDALDatasetH rt_raster_to_gdal_mem(rt_raster raster,
+				   const char* srs,
+				   uint32_t* bandNums,
+				   int* excludeNodataValues,
+				   int count,
+				   GDALDriverH* rtn_drv,
+				   int* destroy_rtn_drv);
 
 /**
  * Return a raster from a GDAL dataset
@@ -1651,15 +1592,21 @@ rt_raster rt_raster_from_gdal_dataset(GDALDatasetH ds);
  *
  * @return the warped raster or NULL
  */
-rt_raster rt_raster_gdal_warp(
-	rt_raster raster,
-	const char *src_srs, const char *dst_srs,
-	double *scale_x, double *scale_y,
-	int *width, int *height,
-	double *ul_xw, double *ul_yw,
-	double *grid_xw, double *grid_yw,
-	double *skew_x, double *skew_y,
-	GDALResampleAlg resample_alg, double max_err);
+rt_raster rt_raster_gdal_warp(rt_raster raster,
+			      const char* src_srs,
+			      const char* dst_srs,
+			      double* scale_x,
+			      double* scale_y,
+			      int* width,
+			      int* height,
+			      double* ul_xw,
+			      double* ul_yw,
+			      double* grid_xw,
+			      double* grid_yw,
+			      double* skew_x,
+			      double* skew_y,
+			      GDALResampleAlg resample_alg,
+			      double max_err);
 
 /**
  * Return a raster of the provided geometry
@@ -1687,18 +1634,26 @@ rt_raster rt_raster_gdal_warp(
  *
  * @return the raster of the provided geometry or NULL
  */
-rt_raster rt_raster_gdal_rasterize(const unsigned char *wkb,
-	uint32_t wkb_len, const char *srs,
-	uint32_t num_bands, rt_pixtype *pixtype,
-	double *init, double *value,
-	double *nodata, uint8_t *hasnodata,
-	int *width, int *height,
-	double *scale_x, double *scale_y,
-	double *ul_xw, double *ul_yw,
-	double *grid_xw, double *grid_yw,
-	double *skew_x, double *skew_y,
-	char **options
-);
+rt_raster rt_raster_gdal_rasterize(const unsigned char* wkb,
+				   uint32_t wkb_len,
+				   const char* srs,
+				   uint32_t num_bands,
+				   rt_pixtype* pixtype,
+				   double* init,
+				   double* value,
+				   double* nodata,
+				   uint8_t* hasnodata,
+				   int* width,
+				   int* height,
+				   double* scale_x,
+				   double* scale_y,
+				   double* ul_xw,
+				   double* ul_yw,
+				   double* grid_xw,
+				   double* grid_yw,
+				   double* skew_x,
+				   double* skew_y,
+				   char** options);
 
 /**
  * Return ES_ERROR if error occurred in function.
@@ -1716,11 +1671,7 @@ rt_raster rt_raster_gdal_rasterize(const unsigned char *wkb,
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_intersects(
-	rt_raster rast1, int nband1,
-	rt_raster rast2, int nband2,
-	int *intersects
-);
+rt_errorstate rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, int* intersects);
 
 /**
  * Return ES_ERROR if error occurred in function.
@@ -1738,11 +1689,7 @@ rt_errorstate rt_raster_intersects(
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_overlaps(
-	rt_raster rast1, int nband1,
-	rt_raster rast2, int nband2,
-	int *overlaps
-);
+rt_errorstate rt_raster_overlaps(rt_raster rast1, int nband1, rt_raster rast2, int nband2, int* overlaps);
 
 /**
  * Return ES_ERROR if error occurred in function.
@@ -1760,11 +1707,7 @@ rt_errorstate rt_raster_overlaps(
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_contains(
-	rt_raster rast1, int nband1,
-	rt_raster rast2, int nband2,
-	int *contains
-);
+rt_errorstate rt_raster_contains(rt_raster rast1, int nband1, rt_raster rast2, int nband2, int* contains);
 
 /**
  * Return ES_ERROR if error occurred in function.
@@ -1782,11 +1725,7 @@ rt_errorstate rt_raster_contains(
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_contains_properly(
-	rt_raster rast1, int nband1,
-	rt_raster rast2, int nband2,
-	int *contains
-);
+rt_errorstate rt_raster_contains_properly(rt_raster rast1, int nband1, rt_raster rast2, int nband2, int* contains);
 
 /**
  * Return ES_ERROR if error occurred in function.
@@ -1804,11 +1743,7 @@ rt_errorstate rt_raster_contains_properly(
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_touches(
-	rt_raster rast1, int nband1,
-	rt_raster rast2, int nband2,
-	int *touches
-);
+rt_errorstate rt_raster_touches(rt_raster rast1, int nband1, rt_raster rast2, int nband2, int* touches);
 
 /**
  * Return ES_ERROR if error occurred in function.
@@ -1826,11 +1761,7 @@ rt_errorstate rt_raster_touches(
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_covers(
-	rt_raster rast1, int nband1,
-	rt_raster rast2, int nband2,
-	int *covers
-);
+rt_errorstate rt_raster_covers(rt_raster rast1, int nband1, rt_raster rast2, int nband2, int* covers);
 
 /**
  * Return ES_ERROR if error occurred in function.
@@ -1848,11 +1779,7 @@ rt_errorstate rt_raster_covers(
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_coveredby(
-	rt_raster rast1, int nband1,
-	rt_raster rast2, int nband2,
-	int *coveredby
-);
+rt_errorstate rt_raster_coveredby(rt_raster rast1, int nband1, rt_raster rast2, int nband2, int* coveredby);
 
 /**
  * Return ES_ERROR if error occurred in function.
@@ -1872,12 +1799,8 @@ rt_errorstate rt_raster_coveredby(
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_within_distance(
-	rt_raster rast1, int nband1,
-	rt_raster rast2, int nband2,
-	double distance,
-	int *dwithin
-);
+rt_errorstate
+rt_raster_within_distance(rt_raster rast1, int nband1, rt_raster rast2, int nband2, double distance, int* dwithin);
 
 /**
  * Return ES_ERROR if error occurred in function.
@@ -1897,12 +1820,12 @@ rt_errorstate rt_raster_within_distance(
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_fully_within_distance(
-	rt_raster rast1, int nband1,
-	rt_raster rast2, int nband2,
-	double distance,
-	int *dfwithin
-);
+rt_errorstate rt_raster_fully_within_distance(rt_raster rast1,
+					      int nband1,
+					      rt_raster rast2,
+					      int nband2,
+					      double distance,
+					      int* dfwithin);
 
 /*
  * Return ES_ERROR if error occurred in function.
@@ -1915,11 +1838,7 @@ rt_errorstate rt_raster_fully_within_distance(
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_same_alignment(
-	rt_raster rast1,
-	rt_raster rast2,
-	int *aligned, char **reason
-);
+rt_errorstate rt_raster_same_alignment(rt_raster rast1, rt_raster rast2, int* aligned, char** reason);
 
 /*
  * Return raster of computed extent specified extenttype applied
@@ -1935,12 +1854,11 @@ rt_errorstate rt_raster_same_alignment(
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate
-rt_raster_from_two_rasters(
-	rt_raster rast1, rt_raster rast2,
-	rt_extenttype extenttype,
-	rt_raster *rtnraster, double *offset
-);
+rt_errorstate rt_raster_from_two_rasters(rt_raster rast1,
+					 rt_raster rast2,
+					 rt_extenttype extenttype,
+					 rt_raster* rtnraster,
+					 double* offset);
 
 /**
  * n-raster iterator.  Returns a raster with one band.
@@ -1978,23 +1896,19 @@ rt_raster_from_two_rasters(
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate
-rt_raster_iterator(
-	rt_iterator itrset, uint16_t itrcount,
-	rt_extenttype extenttype, rt_raster customextent,
-	rt_pixtype pixtype,
-	uint8_t hasnodata, double nodataval,
-	uint16_t distancex, uint16_t distancey,
-	rt_mask mask,
-	void *userarg,
-	int (*callback)(
-		rt_iterator_arg arg,
-		void *userarg,
-		double *value,
-		int *nodata
-	),
-	rt_raster *rtnraster
-);
+rt_errorstate rt_raster_iterator(rt_iterator itrset,
+				 uint16_t itrcount,
+				 rt_extenttype extenttype,
+				 rt_raster customextent,
+				 rt_pixtype pixtype,
+				 uint8_t hasnodata,
+				 double nodataval,
+				 uint16_t distancex,
+				 uint16_t distancey,
+				 rt_mask mask,
+				 void* userarg,
+				 int (*callback)(rt_iterator_arg arg, void* userarg, double* value, int* nodata),
+				 rt_raster* rtnraster);
 
 /**
  * Returns a new raster with up to four 8BUI bands (RGBA) from
@@ -2007,19 +1921,16 @@ rt_raster_iterator(
  *
  * @return new raster or NULL on error
  */
-rt_raster rt_raster_colormap(
-	rt_raster raster, int nband,
-	rt_colormap colormap
-);
+rt_raster rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap);
 
 /*- utilities -------------------------------------------------------*/
 
 /*
  * rt_core memory functions
  */
-extern void *rtalloc(size_t size);
-extern void *rtrealloc(void *mem, size_t size);
-extern void rtdealloc(void *mem);
+extern void* rtalloc(size_t size);
+extern void* rtrealloc(void* mem, size_t size);
+extern void rtdealloc(void* mem);
 
 /*
  * GDAL driver flags
@@ -2041,43 +1952,32 @@ extern void rtdealloc(void *mem);
 #define POSTGIS_RT_2BUIMAX 3
 #define POSTGIS_RT_4BUIMAX 15
 
-uint8_t
-rt_util_clamp_to_1BB(double value);
+uint8_t rt_util_clamp_to_1BB(double value);
 
-uint8_t
-rt_util_clamp_to_2BUI(double value);
+uint8_t rt_util_clamp_to_2BUI(double value);
 
-uint8_t
-rt_util_clamp_to_4BUI(double value);
+uint8_t rt_util_clamp_to_4BUI(double value);
 
-int8_t
-rt_util_clamp_to_8BSI(double value);
+int8_t rt_util_clamp_to_8BSI(double value);
 
-uint8_t
-rt_util_clamp_to_8BUI(double value);
+uint8_t rt_util_clamp_to_8BUI(double value);
 
-int16_t
-rt_util_clamp_to_16BSI(double value);
+int16_t rt_util_clamp_to_16BSI(double value);
 
-uint16_t
-rt_util_clamp_to_16BUI(double value);
+uint16_t rt_util_clamp_to_16BUI(double value);
 
-int32_t
-rt_util_clamp_to_32BSI(double value);
+int32_t rt_util_clamp_to_32BSI(double value);
 
-uint32_t
-rt_util_clamp_to_32BUI(double value);
+uint32_t rt_util_clamp_to_32BUI(double value);
 
-float
-rt_util_clamp_to_32F(double value);
+float rt_util_clamp_to_32F(double value);
 
-int
-rt_util_dbl_trunc_warning(
-	double initialvalue,
-	int32_t checkvalint, uint32_t checkvaluint,
-	float checkvalfloat, double checkvaldouble,
-	rt_pixtype pixtype
-);
+int rt_util_dbl_trunc_warning(double initialvalue,
+			      int32_t checkvalint,
+			      uint32_t checkvaluint,
+			      float checkvalfloat,
+			      double checkvaldouble,
+			      rt_pixtype pixtype);
 
 /**
  * Convert cstring name to GDAL Resample Algorithm
@@ -2086,8 +1986,7 @@ rt_util_dbl_trunc_warning(
  *
  * @return valid GDAL resampling algorithm
  */
-GDALResampleAlg
-rt_util_gdal_resample_alg(const char *algname);
+GDALResampleAlg rt_util_gdal_resample_alg(const char* algname);
 
 /**
  * Convert rt_pixtype to GDALDataType
@@ -2096,8 +1995,7 @@ rt_util_gdal_resample_alg(const char *algname);
  *
  * @return valid GDALDataType
  */
-GDALDataType
-rt_util_pixtype_to_gdal_datatype(rt_pixtype pt);
+GDALDataType rt_util_pixtype_to_gdal_datatype(rt_pixtype pt);
 
 /**
  * Convert GDALDataType to rt_pixtype
@@ -2106,32 +2004,27 @@ rt_util_pixtype_to_gdal_datatype(rt_pixtype pt);
  *
  * @return valid rt_pixtype
  */
-rt_pixtype
-rt_util_gdal_datatype_to_pixtype(GDALDataType gdt);
+rt_pixtype rt_util_gdal_datatype_to_pixtype(GDALDataType gdt);
 
 /*
 	get GDAL runtime version information
 */
-const char*
-rt_util_gdal_version(const char *request);
+const char* rt_util_gdal_version(const char* request);
 
 /*
 	computed extent type from c string
 */
-rt_extenttype
-rt_util_extent_type(const char *name);
+rt_extenttype rt_util_extent_type(const char* name);
 
 /*
 	convert the spatial reference string from a GDAL recognized format to either WKT or Proj4
 */
-char*
-rt_util_gdal_convert_sr(const char *srs, int proj4);
+char* rt_util_gdal_convert_sr(const char* srs, int proj4);
 
 /*
 	is the spatial reference string supported by GDAL
 */
-int
-rt_util_gdal_supported_sr(const char *srs);
+int rt_util_gdal_supported_sr(const char* srs);
 
 /**
  * Get auth name and code
@@ -2143,69 +2036,41 @@ rt_util_gdal_supported_sr(const char *srs);
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate
-rt_util_gdal_sr_auth_info(GDALDatasetH hds, char **authname, char **authcode);
+rt_errorstate rt_util_gdal_sr_auth_info(GDALDatasetH hds, char** authname, char** authcode);
 
 /*
 	is GDAL configured correctly?
 */
-int
-rt_util_gdal_configured(void);
+int rt_util_gdal_configured(void);
 
 /*
 	register all GDAL drivers
 */
-int
-rt_util_gdal_register_all(int force_register_all);
+int rt_util_gdal_register_all(int force_register_all);
 
 /*
 	is the driver registered?
 */
-int
-rt_util_gdal_driver_registered(const char *drv);
+int rt_util_gdal_driver_registered(const char* drv);
 
 /*
 	wrapper for GDALOpen and GDALOpenShared
 */
-GDALDatasetH
-rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared);
+GDALDatasetH rt_util_gdal_open(const char* fn, GDALAccess fn_access, int shared);
 
-void
-rt_util_from_ogr_envelope(
-	OGREnvelope	env,
-	rt_envelope *ext
-);
+void rt_util_from_ogr_envelope(OGREnvelope env, rt_envelope* ext);
 
-void
-rt_util_to_ogr_envelope(
-	rt_envelope ext,
-	OGREnvelope	*env
-);
+void rt_util_to_ogr_envelope(rt_envelope ext, OGREnvelope* env);
 
-LWPOLY *
-rt_util_envelope_to_lwpoly(
-	rt_envelope ext
-);
+LWPOLY* rt_util_envelope_to_lwpoly(rt_envelope ext);
 
-int
-rt_util_same_geotransform_matrix(
-	double *gt1,
-	double *gt2
-);
+int rt_util_same_geotransform_matrix(double* gt1, double* gt2);
 
 /* coordinates in RGB and HSV are floating point values between 0 and 1 */
-rt_errorstate
-rt_util_rgb_to_hsv(
-	double rgb[3],
-	double hsv[3]
-);
+rt_errorstate rt_util_rgb_to_hsv(double rgb[3], double hsv[3]);
 
 /* coordinates in RGB and HSV are floating point values between 0 and 1 */
-rt_errorstate
-rt_util_hsv_to_rgb(
-	double hsv[3],
-	double rgb[3]
-);
+rt_errorstate rt_util_hsv_to_rgb(double hsv[3], double rgb[3]);
 
 /*
 	helper macros for consistent floating point equality checks
@@ -2227,115 +2092,121 @@ rt_util_hsv_to_rgb(
  * including rt_pg/rt_pg.c and reduce duplicative declarations
  *
  */
-struct rt_raster_serialized_t {
-    /*---[ 8 byte boundary ]---{ */
-    uint32_t size; /* required by postgresql: 4 bytes */
-    uint16_t version; /* format version (this is version 0): 2 bytes */
-    uint16_t numBands; /* Number of bands: 2 bytes */
+struct rt_raster_serialized_t
+{
+	/*---[ 8 byte boundary ]---{ */
+	uint32_t size;     /* required by postgresql: 4 bytes */
+	uint16_t version;  /* format version (this is version 0): 2 bytes */
+	uint16_t numBands; /* Number of bands: 2 bytes */
 
-    /* }---[ 8 byte boundary ]---{ */
-    double scaleX; /* pixel width: 8 bytes */
+	/* }---[ 8 byte boundary ]---{ */
+	double scaleX; /* pixel width: 8 bytes */
 
-    /* }---[ 8 byte boundary ]---{ */
-    double scaleY; /* pixel height: 8 bytes */
+	/* }---[ 8 byte boundary ]---{ */
+	double scaleY; /* pixel height: 8 bytes */
 
-    /* }---[ 8 byte boundary ]---{ */
-    double ipX; /* insertion point X: 8 bytes */
+	/* }---[ 8 byte boundary ]---{ */
+	double ipX; /* insertion point X: 8 bytes */
 
-    /* }---[ 8 byte boundary ]---{ */
-    double ipY; /* insertion point Y: 8 bytes */
+	/* }---[ 8 byte boundary ]---{ */
+	double ipY; /* insertion point Y: 8 bytes */
 
-    /* }---[ 8 byte boundary ]---{ */
-    double skewX; /* skew about the X axis: 8 bytes */
+	/* }---[ 8 byte boundary ]---{ */
+	double skewX; /* skew about the X axis: 8 bytes */
 
-    /* }---[ 8 byte boundary ]---{ */
-    double skewY; /* skew about the Y axis: 8 bytes */
+	/* }---[ 8 byte boundary ]---{ */
+	double skewY; /* skew about the Y axis: 8 bytes */
 
-    /* }---[ 8 byte boundary ]--- */
-    int32_t srid; /* Spatial reference id: 4 bytes */
-    uint16_t width; /* pixel columns: 2 bytes */
-    uint16_t height; /* pixel rows: 2 bytes */
+	/* }---[ 8 byte boundary ]--- */
+	int32_t srid;    /* Spatial reference id: 4 bytes */
+	uint16_t width;  /* pixel columns: 2 bytes */
+	uint16_t height; /* pixel rows: 2 bytes */
 };
 
 /* NOTE: the initial part of this structure matches the layout
  *       of data in the serialized form version 0, starting
  *       from the numBands element
  */
-struct rt_raster_t {
-    uint32_t size;
-    uint16_t version;
+struct rt_raster_t
+{
+	uint32_t size;
+	uint16_t version;
 
-    /* Number of bands, all share the same dimension
-     * and georeference */
-    uint16_t numBands;
+	/* Number of bands, all share the same dimension
+	 * and georeference */
+	uint16_t numBands;
 
-    /* Georeference (in projection units) */
-    double scaleX; /* pixel width */
-    double scaleY; /* pixel height */
-    double ipX; /* geo x ordinate of the corner of upper-left pixel */
-    double ipY; /* geo y ordinate of the corner of bottom-right pixel */
-    double skewX; /* skew about the X axis*/
-    double skewY; /* skew about the Y axis */
+	/* Georeference (in projection units) */
+	double scaleX; /* pixel width */
+	double scaleY; /* pixel height */
+	double ipX;    /* geo x ordinate of the corner of upper-left pixel */
+	double ipY;    /* geo y ordinate of the corner of bottom-right pixel */
+	double skewX;  /* skew about the X axis*/
+	double skewY;  /* skew about the Y axis */
 
-    int32_t srid; /* spatial reference id */
-    uint16_t width; /* pixel columns - max 65535 */
-    uint16_t height; /* pixel rows - max 65535 */
-    rt_band *bands; /* actual bands */
-
+	int32_t srid;    /* spatial reference id */
+	uint16_t width;  /* pixel columns - max 65535 */
+	uint16_t height; /* pixel rows - max 65535 */
+	rt_band* bands;  /* actual bands */
 };
 
-struct rt_extband_t {
-    uint8_t bandNum; /* 0-based */
-    char* path; /* internally owned */
-		void *mem; /* loaded external band data, internally owned */
+struct rt_extband_t
+{
+	uint8_t bandNum; /* 0-based */
+	char* path;      /* internally owned */
+	void* mem;       /* loaded external band data, internally owned */
 };
 
-struct rt_band_t {
-    rt_pixtype pixtype;
-    int32_t offline;
-    uint16_t width;
-    uint16_t height;
-    int32_t hasnodata; /* a flag indicating if this band contains nodata values */
-    int32_t isnodata;   /* a flag indicating if this band is filled only with
-                           nodata values. flag CANNOT be TRUE if hasnodata is FALSE */
-    double nodataval; /* int will be converted ... */
-    int8_t ownsdata; /* 0, externally owned. 1, internally owned. only applies to data.mem */
+struct rt_band_t
+{
+	rt_pixtype pixtype;
+	int32_t offline;
+	uint16_t width;
+	uint16_t height;
+	int32_t hasnodata; /* a flag indicating if this band contains nodata values */
+	int32_t isnodata;  /* a flag indicating if this band is filled only with
+			      nodata values. flag CANNOT be TRUE if hasnodata is FALSE */
+	double nodataval;  /* int will be converted ... */
+	int8_t ownsdata;   /* 0, externally owned. 1, internally owned. only applies to data.mem */
 
-		rt_raster raster; /* reference to parent raster */
+	rt_raster raster; /* reference to parent raster */
 
-    union {
-        void* mem; /* actual data, externally owned */
-        struct rt_extband_t offline;
-    } data;
-
+	union {
+		void* mem; /* actual data, externally owned */
+		struct rt_extband_t offline;
+	} data;
 };
 
-struct rt_pixel_t {
+struct rt_pixel_t
+{
 	int x; /* column */
 	int y; /* line */
 
 	uint8_t nodata;
 	double value;
 
-	LWGEOM *geom;
+	LWGEOM* geom;
 };
 
-struct rt_mask_t {
-  uint16_t dimx;
-  uint16_t dimy;
-  double **values;
-  int **nodata;
-  int weighted; /* 0 if not weighted values 1 if weighted values */
+struct rt_mask_t
+{
+	uint16_t dimx;
+	uint16_t dimy;
+	double** values;
+	int** nodata;
+	int weighted; /* 0 if not weighted values 1 if weighted values */
 };
 
 /* polygon as LWPOLY with associated value */
-struct rt_geomval_t {
-	LWPOLY *geom;
+struct rt_geomval_t
+{
+	LWPOLY* geom;
 	double val;
 };
 
 /* summary stats of specified band */
-struct rt_bandstats_t {
+struct rt_bandstats_t
+{
 	double sample;
 	uint32_t count;
 
@@ -2345,12 +2216,13 @@ struct rt_bandstats_t {
 	double mean;
 	double stddev;
 
-	double *values;
+	double* values;
 	int sorted; /* flag indicating that values is sorted ascending by value */
 };
 
 /* histogram bin(s) of specified band */
-struct rt_histogram_t {
+struct rt_histogram_t
+{
 	uint32_t count;
 	double percent;
 
@@ -2362,53 +2234,60 @@ struct rt_histogram_t {
 };
 
 /* quantile(s) of the specified band */
-struct rt_quantile_t {
+struct rt_quantile_t
+{
 	double quantile;
 	double value;
 	uint32_t has_value;
 };
 
 /* listed-list structures for rt_band_get_quantiles_stream */
-struct quantile_llist {
+struct quantile_llist
+{
 	uint8_t algeq; /* AL-GEQ (1) or AL-GT (0) */
 	double quantile;
 	uint64_t tau; /* position in sequence */
 
-	struct quantile_llist_element *head; /* H index 0 */
-	struct quantile_llist_element *tail; /* H index last */
-	uint32_t count; /* # of elements in H */
+	struct quantile_llist_element* head; /* H index 0 */
+	struct quantile_llist_element* tail; /* H index last */
+	uint32_t count;                      /* # of elements in H */
 
 	/* faster access to elements at specific intervals */
-	struct quantile_llist_index *index;
+	struct quantile_llist_index* index;
 	uint32_t index_max; /* max # of elements in index */
 
 	uint64_t sum1; /* N1H */
 	uint64_t sum2; /* N2H */
 };
 
-struct quantile_llist_element {
+struct quantile_llist_element
+{
 	double value;
 	uint32_t count;
 
-	struct quantile_llist_element *prev;
-	struct quantile_llist_element *next;
+	struct quantile_llist_element* prev;
+	struct quantile_llist_element* next;
 };
 
-struct quantile_llist_index {
-	struct quantile_llist_element *element;
+struct quantile_llist_index
+{
+	struct quantile_llist_element* element;
 	uint32_t index;
 };
 
 /* number of times a value occurs */
-struct rt_valuecount_t {
+struct rt_valuecount_t
+{
 	double value;
 	uint32_t count;
 	double percent;
 };
 
 /* reclassification expression */
-struct rt_reclassexpr_t {
-	struct rt_reclassrange {
+struct rt_reclassexpr_t
+{
+	struct rt_reclassrange
+	{
 		double min;
 		double max;
 		int inc_min; /* include min */
@@ -2419,14 +2298,16 @@ struct rt_reclassexpr_t {
 };
 
 /* raster iterator */
-struct rt_iterator_t {
+struct rt_iterator_t
+{
 	rt_raster raster;
-	uint16_t nband; /* 0-based */
+	uint16_t nband;   /* 0-based */
 	uint8_t nbnodata; /* no band = treat as NODATA  */
 };
 
 /* callback argument from raster iterator */
-struct rt_iterator_arg_t {
+struct rt_iterator_arg_t
+{
 	/* # of rasters, Z-axis */
 	uint16_t rasters;
 	/* # of rows, Y-axis */
@@ -2436,36 +2317,40 @@ struct rt_iterator_arg_t {
 
 	/* axis order: Z,X,Y */
 	/* individual pixel values */
-	double ***values;
+	double*** values;
 	/* 0,1 value of nodata flag */
-	int ***nodata;
+	int*** nodata;
 
 	/* X,Y of pixel from each input raster */
-	int **src_pixel;
+	int** src_pixel;
 
 	/* X,Y of pixel from output raster */
 	int dst_pixel[2];
 };
 
 /* gdal driver information */
-struct rt_gdaldriver_t {
+struct rt_gdaldriver_t
+{
 	int idx;
-	char *short_name;
-	char *long_name;
-	char *create_options;
+	char* short_name;
+	char* long_name;
+	char* create_options;
 	uint8_t can_read;
 	uint8_t can_write;
 };
 
 /* raster colormap entry */
-struct rt_colormap_entry_t {
+struct rt_colormap_entry_t
+{
 	int isnodata;
 	double value;
 	uint8_t color[4]; /* RGBA */
 };
 
-struct rt_colormap_t {
-	enum {
+struct rt_colormap_t
+{
+	enum
+	{
 		CM_INTERPOLATE,
 		CM_EXACT,
 		CM_NEAREST
