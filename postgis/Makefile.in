@@ -85,6 +85,7 @@ PG_OBJS= \
 	lwgeom_dumppoints.o \
 	lwgeom_functions_lrs.o \
 	lwgeom_functions_temporal.o \
+	lwgeom_rectree.o \
 	long_xact.o \
 	lwgeom_sqlmm.o \
 	lwgeom_rtree.o \

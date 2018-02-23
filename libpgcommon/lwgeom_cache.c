@@ -174,30 +174,45 @@ GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods
 			cache_methods->GeomIndexFreer(cache);
 			cache->argnum = 0;
 		}
+		if ( cache->lwgeom1 )
+		{
+			lwgeom_free(cache->lwgeom1);
+			cache->lwgeom1 = 0;
+		}
+		if ( cache->lwgeom2 )
+		{
+			lwgeom_free(cache->lwgeom2);
+			cache->lwgeom2 = 0;
+		}
 	}
 
 	/* Cache hit, but no tree built yet, build it! */
 	if ( cache_hit && ! cache->argnum )
 	{
 		int rv;
-		LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+		LWGEOM *lwgeom;
+
+		/* Save the tree and supporting geometry in the cache */
+		/* memory context */
+		old_context = MemoryContextSwitchTo(FIContext(fcinfo));
+		lwgeom = lwgeom_from_gserialized(geom);
+		cache->argnum = 0;
 
 		/* Can't build a tree on a NULL or empty */
-		if ( (!lwgeom) || lwgeom_is_empty(lwgeom) )
+		if ((!lwgeom) || lwgeom_is_empty(lwgeom))
+		{
+			MemoryContextSwitchTo(old_context);
 			return NULL;
-
-		old_context = MemoryContextSwitchTo(FIContext(fcinfo));
+		}
 		rv = cache_methods->GeomIndexBuilder(lwgeom, cache);
 		MemoryContextSwitchTo(old_context);
-		cache->argnum = cache_hit;
 
 		/* Something went awry in the tree build phase */
 		if ( ! rv )
-		{
-			cache->argnum = 0;
 			return NULL;
-		}
 
+		/* Only set an argnum if everything completely successfully */
+		cache->argnum = cache_hit;
 	}
 
 	/* We have a hit and a calculated tree, we're done */
