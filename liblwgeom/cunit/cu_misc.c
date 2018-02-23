@@ -149,7 +149,7 @@ static void do_grid_test(const char *wkt_in, const char *wkt_out, double size)
 	grid.xsize = grid.ysize = grid.zsize = grid.msize = size;
 	lwgeom_grid_in_place(g, &grid);
 	wkt_result = lwgeom_to_ewkt(g);
-    // printf("%s ==%ld==> %s == %s\n", wkt_in, lround(size), wkt_result, wkt_out);
+	// printf("%s ==%ld==> %s == %s\n", wkt_in, lround(size), wkt_result, wkt_out);
 	CU_ASSERT_STRING_EQUAL(wkt_result, wkt_norm);
 	lwfree(wkt_result);
 	lwfree(wkt_norm);
@@ -160,45 +160,45 @@ static void do_grid_test(const char *wkt_in, const char *wkt_out, double size)
 static void test_grid_in_place(void)
 {
 	do_grid_test(
-		"POINT ZM (5.1423999999 5.1423999999 5.1423999999 5.1423999999)",
-		"POINT(5.1424 5.1424 5.1424 5.1424)",
-		0.0001
+	    "POINT ZM (5.1423999999 5.1423999999 5.1423999999 5.1423999999)",
+	    "POINT(5.1424 5.1424 5.1424 5.1424)",
+	    0.0001
 	);
 	do_grid_test(
-		"MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0)))",
-		"MULTIPOLYGON EMPTY",
-		20
+	    "MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0)))",
+	    "MULTIPOLYGON EMPTY",
+	    20
 	);
 	do_grid_test(
-		"MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0)))",
-		"MULTIPOLYGON(((0 0,10 0,10 10, 0 10,0 0)))",
-		1
+	    "MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0)))",
+	    "MULTIPOLYGON(((0 0,10 0,10 10, 0 10,0 0)))",
+	    1
 	);
 	do_grid_test(
-		"LINESTRING(0 0,1 1, 2 2, 3 3, 4 4, 5 5)",
-		"LINESTRING(0 0,2 2,4 4)",
-		2
+	    "LINESTRING(0 0,1 1, 2 2, 3 3, 4 4, 5 5)",
+	    "LINESTRING(0 0,2 2,4 4)",
+	    2
 	);
 	do_grid_test(
-		"MULTIPOINT(0 0,1 1, 2 2, 3 3, 4 4, 5 5)",
-		/* This preserves current behaviour, but is probably not right */
-		"MULTIPOINT(0 0,0 0,2 2,4 4,4 4,4 4)",
-		2
+	    "MULTIPOINT(0 0,1 1, 2 2, 3 3, 4 4, 5 5)",
+	    /* This preserves current behaviour, but is probably not right */
+	    "MULTIPOINT(0 0,0 0,2 2,4 4,4 4,4 4)",
+	    2
 	);
 	do_grid_test(
-		"MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0),(4 4, 4 5, 5 5, 5 4, 4 4)))",
-		"MULTIPOLYGON(((0 0,10 0,10 10, 0 10,0 0)))",
-		2
+	    "MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0),(4 4, 4 5, 5 5, 5 4, 4 4)))",
+	    "MULTIPOLYGON(((0 0,10 0,10 10, 0 10,0 0)))",
+	    2
 	);
 	do_grid_test(
-		"MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0),(4 4, 4 5, 5 5, 5 4, 4 4)))",
-		"MULTIPOLYGON EMPTY",
-		20
+	    "MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0),(4 4, 4 5, 5 5, 5 4, 4 4)))",
+	    "MULTIPOLYGON EMPTY",
+	    20
 	);
 	do_grid_test(
-		"POINT Z (5 5 5)",
-		"POINT(0 0 0)",
-		20
+	    "POINT Z (5 5 5)",
+	    "POINT(0 0 0)",
+	    20
 	);
 }
 

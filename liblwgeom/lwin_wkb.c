@@ -58,30 +58,31 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s);
 /**********************************************************************/
 
 /* Our static character->number map. Anything > 15 is invalid */
-static uint8_t hex2char[256] = {
-    /* not Hex characters */
-    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
-    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
-    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
-    /* 0-9 */
-    0,1,2,3,4,5,6,7,8,9,20,20,20,20,20,20,
-    /* A-F */
-    20,10,11,12,13,14,15,20,20,20,20,20,20,20,20,20,
-    /* not Hex characters */
-    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+static uint8_t hex2char[256] =
+{
+	/* not Hex characters */
+	20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+	20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+	20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+	/* 0-9 */
+	0,1,2,3,4,5,6,7,8,9,20,20,20,20,20,20,
+	/* A-F */
+	20,10,11,12,13,14,15,20,20,20,20,20,20,20,20,20,
+	/* not Hex characters */
+	20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
 	/* a-f */
-    20,10,11,12,13,14,15,20,20,20,20,20,20,20,20,20,
-    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
-    /* not Hex characters (upper 128 characters) */
-    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
-    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
-    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
-    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
-    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
-    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
-    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
-    20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20
-    };
+	20,10,11,12,13,14,15,20,20,20,20,20,20,20,20,20,
+	20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+	/* not Hex characters (upper 128 characters) */
+	20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+	20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+	20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+	20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+	20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+	20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+	20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+	20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20
+};
 
 
 uint8_t* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
@@ -178,66 +179,66 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 
 	switch (wkb_simple_type)
 	{
-		case WKB_POINT_TYPE:
-			s->lwtype = POINTTYPE;
-			break;
-		case WKB_LINESTRING_TYPE:
-			s->lwtype = LINETYPE;
-			break;
-		case WKB_POLYGON_TYPE:
-			s->lwtype = POLYGONTYPE;
-			break;
-		case WKB_MULTIPOINT_TYPE:
-			s->lwtype = MULTIPOINTTYPE;
-			break;
-		case WKB_MULTILINESTRING_TYPE:
-			s->lwtype = MULTILINETYPE;
-			break;
-		case WKB_MULTIPOLYGON_TYPE:
-			s->lwtype = MULTIPOLYGONTYPE;
-			break;
-		case WKB_GEOMETRYCOLLECTION_TYPE:
-			s->lwtype = COLLECTIONTYPE;
-			break;
-		case WKB_CIRCULARSTRING_TYPE:
-			s->lwtype = CIRCSTRINGTYPE;
-			break;
-		case WKB_COMPOUNDCURVE_TYPE:
-			s->lwtype = COMPOUNDTYPE;
-			break;
-		case WKB_CURVEPOLYGON_TYPE:
-			s->lwtype = CURVEPOLYTYPE;
-			break;
-		case WKB_MULTICURVE_TYPE:
-			s->lwtype = MULTICURVETYPE;
-			break;
-		case WKB_MULTISURFACE_TYPE:
-			s->lwtype = MULTISURFACETYPE;
-			break;
-		case WKB_POLYHEDRALSURFACE_TYPE:
-			s->lwtype = POLYHEDRALSURFACETYPE;
-			break;
-		case WKB_TIN_TYPE:
-			s->lwtype = TINTYPE;
-			break;
-		case WKB_TRIANGLE_TYPE:
-			s->lwtype = TRIANGLETYPE;
-			break;
+	case WKB_POINT_TYPE:
+		s->lwtype = POINTTYPE;
+		break;
+	case WKB_LINESTRING_TYPE:
+		s->lwtype = LINETYPE;
+		break;
+	case WKB_POLYGON_TYPE:
+		s->lwtype = POLYGONTYPE;
+		break;
+	case WKB_MULTIPOINT_TYPE:
+		s->lwtype = MULTIPOINTTYPE;
+		break;
+	case WKB_MULTILINESTRING_TYPE:
+		s->lwtype = MULTILINETYPE;
+		break;
+	case WKB_MULTIPOLYGON_TYPE:
+		s->lwtype = MULTIPOLYGONTYPE;
+		break;
+	case WKB_GEOMETRYCOLLECTION_TYPE:
+		s->lwtype = COLLECTIONTYPE;
+		break;
+	case WKB_CIRCULARSTRING_TYPE:
+		s->lwtype = CIRCSTRINGTYPE;
+		break;
+	case WKB_COMPOUNDCURVE_TYPE:
+		s->lwtype = COMPOUNDTYPE;
+		break;
+	case WKB_CURVEPOLYGON_TYPE:
+		s->lwtype = CURVEPOLYTYPE;
+		break;
+	case WKB_MULTICURVE_TYPE:
+		s->lwtype = MULTICURVETYPE;
+		break;
+	case WKB_MULTISURFACE_TYPE:
+		s->lwtype = MULTISURFACETYPE;
+		break;
+	case WKB_POLYHEDRALSURFACE_TYPE:
+		s->lwtype = POLYHEDRALSURFACETYPE;
+		break;
+	case WKB_TIN_TYPE:
+		s->lwtype = TINTYPE;
+		break;
+	case WKB_TRIANGLE_TYPE:
+		s->lwtype = TRIANGLETYPE;
+		break;
 
-		/* PostGIS 1.5 emits 13, 14 for CurvePolygon, MultiCurve */
-		/* These numbers aren't SQL/MM (numbers currently only */
-		/* go up to 12. We can handle the old data here (for now??) */
-		/* converting them into the lwtypes that are intended. */
-		case WKB_CURVE_TYPE:
-			s->lwtype = CURVEPOLYTYPE;
-			break;
-		case WKB_SURFACE_TYPE:
-			s->lwtype = MULTICURVETYPE;
-			break;
+	/* PostGIS 1.5 emits 13, 14 for CurvePolygon, MultiCurve */
+	/* These numbers aren't SQL/MM (numbers currently only */
+	/* go up to 12. We can handle the old data here (for now??) */
+	/* converting them into the lwtypes that are intended. */
+	case WKB_CURVE_TYPE:
+		s->lwtype = CURVEPOLYTYPE;
+		break;
+	case WKB_SURFACE_TYPE:
+		s->lwtype = MULTICURVETYPE;
+		break;
 
-		default: /* Error! */
-			lwerror("Unknown WKB type (%d)! Full WKB type number was (%d).", wkb_simple_type, wkb_type);
-			break;
+	default: /* Error! */
+		lwerror("Unknown WKB type (%d)! Full WKB type number was (%d).", wkb_simple_type, wkb_type);
+		break;
 	}
 
 	LWDEBUGF(4,"Got lwtype %s (%u)", lwtype_name(s->lwtype), s->lwtype);
@@ -716,39 +717,39 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 	/* Do the right thing */
 	switch( s->lwtype )
 	{
-		case POINTTYPE:
-			return (LWGEOM*)lwpoint_from_wkb_state(s);
-			break;
-		case LINETYPE:
-			return (LWGEOM*)lwline_from_wkb_state(s);
-			break;
-		case CIRCSTRINGTYPE:
-			return (LWGEOM*)lwcircstring_from_wkb_state(s);
-			break;
-		case POLYGONTYPE:
-			return (LWGEOM*)lwpoly_from_wkb_state(s);
-			break;
-		case TRIANGLETYPE:
-			return (LWGEOM*)lwtriangle_from_wkb_state(s);
-			break;
-		case CURVEPOLYTYPE:
-			return (LWGEOM*)lwcurvepoly_from_wkb_state(s);
-			break;
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COMPOUNDTYPE:
-		case MULTICURVETYPE:
-		case MULTISURFACETYPE:
-		case POLYHEDRALSURFACETYPE:
-		case TINTYPE:
-		case COLLECTIONTYPE:
-			return (LWGEOM*)lwcollection_from_wkb_state(s);
-			break;
+	case POINTTYPE:
+		return (LWGEOM*)lwpoint_from_wkb_state(s);
+		break;
+	case LINETYPE:
+		return (LWGEOM*)lwline_from_wkb_state(s);
+		break;
+	case CIRCSTRINGTYPE:
+		return (LWGEOM*)lwcircstring_from_wkb_state(s);
+		break;
+	case POLYGONTYPE:
+		return (LWGEOM*)lwpoly_from_wkb_state(s);
+		break;
+	case TRIANGLETYPE:
+		return (LWGEOM*)lwtriangle_from_wkb_state(s);
+		break;
+	case CURVEPOLYTYPE:
+		return (LWGEOM*)lwcurvepoly_from_wkb_state(s);
+		break;
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COMPOUNDTYPE:
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
+	case COLLECTIONTYPE:
+		return (LWGEOM*)lwcollection_from_wkb_state(s);
+		break;
 
-		/* Unknown type! */
-		default:
-			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(s->lwtype), s->lwtype);
+	/* Unknown type! */
+	default:
+		lwerror("Unsupported geometry type: %s [%d]", lwtype_name(s->lwtype), s->lwtype);
 	}
 
 	/* Return value to keep compiler happy. */

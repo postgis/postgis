@@ -391,11 +391,11 @@ typedef struct seg
 /* -- storage structure for standardization candidates -- */
 typedef struct stz
 {
-    DS_Score_t score ; /* -- standardization score -- */
-    DS_Score_t raw_score ;
-    KW *build_key ; /* -- use to collect statistics -- */
-    DEF *definitions[MAXLEX] ; /* -- lexical or input definitions -- */
-    SYMB output[MAXLEX] ; /* -- output tokens -- */
+	DS_Score_t score ; /* -- standardization score -- */
+	DS_Score_t raw_score ;
+	KW *build_key ; /* -- use to collect statistics -- */
+	DEF *definitions[MAXLEX] ; /* -- lexical or input definitions -- */
+	SYMB output[MAXLEX] ; /* -- output tokens -- */
 } STZ ;
 
 /* 2006-11-02 */
@@ -715,8 +715,8 @@ typedef struct pagc_context
 	char **street_words ;
 	char **landmark_words ; /* 2009-09-17 */
 	CANDIDATE **cand_list ;
-/*   int numb_x_cands ;  2010-06-26, no longer needed */
-/*   X_CAND *x_cand_list ;  2010-06-26, no longer needed */
+	/*   int numb_x_cands ;  2010-06-26, no longer needed */
+	/*   X_CAND *x_cand_list ;  2010-06-26, no longer needed */
 	STAND_PARAM *standard_p ;
 	STAND_PARAM *standard_p_B ;
 	double seg_length[DS_MAX_VERTICES] ;
@@ -729,11 +729,11 @@ typedef struct pagc_context
 	RECORD_READ **rec_hash_tab ; /* -- allocated memory -- */
 	DS_Byte_t *shape_buf ;
 	char transfer_buf[MAX_TRANSFER_BUF_SIZE] ;
-/*   PAIR_READ *pair_buf ;  2010-06-26, no longer needed */
+	/*   PAIR_READ *pair_buf ;  2010-06-26, no longer needed */
 	BOX_CELL **overlap_buf ; /* -- allocated memory -- */
 	BOX_CELL *box_root ;
-/*   BOX_CELL *box_cell_array ;   2010-06-26, no longer needed */
-/*   int num_box_cells ;  2010-06-26, no longer needed */
+	/*   BOX_CELL *box_cell_array ;   2010-06-26, no longer needed */
+	/*   int num_box_cells ;  2010-06-26, no longer needed */
 } PAGC_CONTEXT ;
 
 
@@ -792,10 +792,10 @@ typedef struct check_macro
 
 /* -- approx.c -- */
 /*-- <revision date='2012-04-26'>Divert approx functions to TRIE_ARRAY</revision> --*/
-RECOGNIZER_HANDLE _new_recognizer_(DS_Handle, DS_Index_Link , int, int, const char *, int, ERR_PARAM *);
+RECOGNIZER_HANDLE _new_recognizer_(DS_Handle, DS_Index_Link, int, int, const char *, int, ERR_PARAM *);
 void _free_recognizer_(RECOGNIZER_HANDLE);
 int _insert_recognizer_key_(RECOGNIZER_HANDLE, char *, char *) ;
-int _recognize_approx_(RECOGNIZER_HANDLE, PAGC_CONTEXT *, char *, char *, int, char **, int , int , CAND_SCORE_PARAMS *) ;
+int _recognize_approx_(RECOGNIZER_HANDLE, PAGC_CONTEXT *, char *, char *, int, char **, int, int, CAND_SCORE_PARAMS *) ;
 
 #endif
 
@@ -925,16 +925,16 @@ DS_Score_t max_context_score(PAGC_CONTEXT *) ;
 
 /* -- make_sch.c -- */
 void get_weight_pair(SCHEMA *, ATTRIBUTE *) ;
-int build_ref_schema(SCHEMA * , DS_Handle, ERR_PARAM *, DS_Handle, const char *,  PAGC_FLAG_T) ;
+int build_ref_schema(SCHEMA *, DS_Handle, ERR_PARAM *, DS_Handle, const char *,  PAGC_FLAG_T) ;
 ATTRIBUTE *get_att_by_symbol(SCHEMA *, SYMB) ;
 int is_official(SCHEMA *, SYMB) ; /* 2009-11-23 : new function */
 
 /* -- restore.c -- */
 int restore_build_state(PAGC_GLOBAL *, SCHEMA *, const char *, int) ;
-int save_build_state(SCHEMA * , const char *, ERR_PARAM *, DS_Handle) ;
+int save_build_state(SCHEMA *, const char *, ERR_PARAM *, DS_Handle) ;
 
 /* -- shapeset.c -- */
-int open_alpha_for_build(DS_Handle *, DS_Handle *, DS_Handle *,  DS_Handle , const char *, const char *, char **, ERR_PARAM *) ;
+int open_alpha_for_build(DS_Handle *, DS_Handle *, DS_Handle *,  DS_Handle, const char *, const char *, char **, ERR_PARAM *) ;
 void close_alpha(DS_Handle *, DS_Handle *, DS_Handle *, ERR_PARAM *) ;
 int open_positioning(SCHEMA *, DS_Handle *, char *, DS_Handle, ERR_PARAM *) ;
 void set_feature_shape_type(SCHEMA *) ;
@@ -975,7 +975,7 @@ int extract_house(const char *, int) ;
 /* 2008-07-30 : add unstandard_mac_alternate arg and flag for alternate city names
    2009-11-23 : add arrays for official name fields */
 /*-- <revision date='2012-08-30'> Use check_macro </revision> --*/
-int read_unstandardized(SCHEMA *, DS_Handle, DS_Entity_t, int *, int *, int *, char *, CHECK_MACRO* , char *, char **, DS_Field_t *, int *, ERR_PARAM *) ;
+int read_unstandardized(SCHEMA *, DS_Handle, DS_Entity_t, int *, int *, int *, char *, CHECK_MACRO*, char *, char **, DS_Field_t *, int *, ERR_PARAM *) ;
 
 /* -- makebeta.c -- */
 int init_standardized_table(SCHEMA *, ERR_PARAM *) ;
@@ -990,7 +990,7 @@ int write_occupancy_only(SCHEMA *, DS_Handle, char **, DS_Entity_t) ;
 #ifdef WITH_ALT_LEFT_RIGHT
 int write_alt_macro_only(SCHEMA *, DS_Handle, char **, int, DS_Entity_t) ;
 #else
-int write_alt_macro_only(SCHEMA *, DS_Handle , char **, DS_Entity_t) ;
+int write_alt_macro_only(SCHEMA *, DS_Handle, char **, DS_Entity_t) ;
 #endif
 /* 2009-07-22 : new routines to standardize and write landmark names */
 int write_landmark_name_only(SCHEMA *, BDB_BUILD_PARAM *, char **, char **, char **,  DS_Entity_t, ERR_PARAM *) ;

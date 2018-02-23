@@ -54,8 +54,9 @@ static char* cu_wkt_in(char *wkt, uint8_t variant)
 	char *s = 0;
 
 	rv = lwgeom_parse_wkt(&p, wkt, 0);
-	if( p.errcode ) {
-	  CU_ASSERT_EQUAL( rv, LW_FAILURE );
+	if( p.errcode )
+	{
+		CU_ASSERT_EQUAL( rv, LW_FAILURE );
 		return strdup(p.message);
 	}
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
@@ -215,32 +216,32 @@ static void test_wkt_in_collection(void)
 {
 	s = "SRID=5;GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(1 0,0 0),CIRCULARSTRING(0 0,0 1,1 1,0 1,2 2))";
 	r = cu_wkt_in(s, WKT_EXTENDED);
- 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	CU_ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "GEOMETRYCOLLECTION(POINT(0 0),POINT EMPTY,LINESTRING(1 0,0 0),POLYGON EMPTY,CIRCULARSTRING(0 0,0 1,1 1,0 1,2 2))";
 	r = cu_wkt_in(s, WKT_SFSQL);
- 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	CU_ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "GEOMETRYCOLLECTION Z (POINT Z (0 0 0))";
 	r = cu_wkt_in(s, WKT_ISO);
- 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	CU_ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "GEOMETRYCOLLECTION M (MULTILINESTRING M ((0 0 5,2 0 5),(1 1 5,2 2 5)))";
 	r = cu_wkt_in(s, WKT_ISO);
- 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	CU_ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	/* See http://trac.osgeo.org/postgis/ticket/1455#comment:3 */
 	s = "GEOMETRYCOLLECTION Z (MULTILINESTRING Z ((0 0 5,2 0 5),(1 1 5,2 2 5)))";
 	r = cu_wkt_in(s, WKT_ISO);
- 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	CU_ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 }

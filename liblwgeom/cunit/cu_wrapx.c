@@ -22,8 +22,8 @@ static void test_lwgeom_wrapx(void)
 	char *exp_wkt, *obt_wkt;
 
 	geom = lwgeom_from_wkt(
-		"POLYGON EMPTY",
-		LW_PARSER_CHECK_NONE);
+	           "POLYGON EMPTY",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
 	ret = lwgeom_wrapx(geom, 0, 20);
 	CU_ASSERT_FATAL(ret != NULL);
@@ -35,8 +35,8 @@ static void test_lwgeom_wrapx(void)
 	lwgeom_free(geom);
 
 	geom = lwgeom_from_wkt(
-		"POINT(0 0)",
-		LW_PARSER_CHECK_NONE);
+	           "POINT(0 0)",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
 	ret = lwgeom_wrapx(geom, 2, 10);
 	CU_ASSERT_FATAL(ret != NULL);
@@ -48,8 +48,8 @@ static void test_lwgeom_wrapx(void)
 	lwgeom_free(geom);
 
 	geom = lwgeom_from_wkt(
-		"POINT(0 0)",
-		LW_PARSER_CHECK_NONE);
+	           "POINT(0 0)",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
 	ret = lwgeom_wrapx(geom, 0, 20);
 	CU_ASSERT_FATAL(ret != NULL);
@@ -61,8 +61,8 @@ static void test_lwgeom_wrapx(void)
 	lwgeom_free(geom);
 
 	geom = lwgeom_from_wkt(
-		"POINT(0 0)",
-		LW_PARSER_CHECK_NONE);
+	           "POINT(0 0)",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
 	ret = lwgeom_wrapx(geom, 0, -20);
 	CU_ASSERT_FATAL(ret != NULL);
@@ -74,8 +74,8 @@ static void test_lwgeom_wrapx(void)
 	lwgeom_free(geom);
 
 	geom = lwgeom_from_wkt(
-		"LINESTRING(0 0,10 0)",
-		LW_PARSER_CHECK_NONE);
+	           "LINESTRING(0 0,10 0)",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
 	ret = lwgeom_wrapx(geom, 8, -10);
 	CU_ASSERT_FATAL(ret != NULL);
@@ -87,8 +87,8 @@ static void test_lwgeom_wrapx(void)
 	lwgeom_free(geom);
 
 	geom = lwgeom_from_wkt(
-		"MULTILINESTRING((-5 -2,0 0),(0 0,10 10))",
-		LW_PARSER_CHECK_NONE);
+	           "MULTILINESTRING((-5 -2,0 0),(0 0,10 10))",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
 	ret = lwgeom_wrapx(geom, 0, 20);
 	CU_ASSERT_FATAL(ret != NULL);
@@ -100,46 +100,46 @@ static void test_lwgeom_wrapx(void)
 	lwgeom_free(geom);
 
 	geom = lwgeom_from_wkt(
-		"MULTIPOLYGON("
-		" ((0 0,10 0,10 10,0 10,0 0),(2 2,4 2,4 4,2 4,2 2)),"
-		" ((0 11,10 11,10 21,0 21,0 11),(2 13,4 13,4 15,2 15,2 13))"
-		")",
-		LW_PARSER_CHECK_NONE);
+	           "MULTIPOLYGON("
+	           " ((0 0,10 0,10 10,0 10,0 0),(2 2,4 2,4 4,2 4,2 2)),"
+	           " ((0 11,10 11,10 21,0 21,0 11),(2 13,4 13,4 15,2 15,2 13))"
+	           ")",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
 	ret = lwgeom_wrapx(geom, 2, 20);
 	CU_ASSERT_FATAL(ret != NULL);
 	obt_wkt = lwgeom_to_ewkt(ret);
 	exp_wkt = "GEOMETRYCOLLECTION("
-						"MULTIPOLYGON("
-						"((22 0,20 0,20 10,22 10,22 4,22 2,22 0)),"
-						"((2 10,10 10,10 0,2 0,2 2,4 2,4 4,2 4,2 10))"
-						"),"
-						"MULTIPOLYGON("
-						"((22 11,20 11,20 21,22 21,22 15,22 13,22 11)),"
-						"((2 21,10 21,10 11,2 11,2 13,4 13,4 15,2 15,2 21))"
-						")"
-						")";
+	          "MULTIPOLYGON("
+	          "((22 0,20 0,20 10,22 10,22 4,22 2,22 0)),"
+	          "((2 10,10 10,10 0,2 0,2 2,4 2,4 4,2 4,2 10))"
+	          "),"
+	          "MULTIPOLYGON("
+	          "((22 11,20 11,20 21,22 21,22 15,22 13,22 11)),"
+	          "((2 21,10 21,10 11,2 11,2 13,4 13,4 15,2 15,2 21))"
+	          ")"
+	          ")";
 	ASSERT_STRING_EQUAL(obt_wkt, exp_wkt);
 	lwfree(obt_wkt);
 	lwgeom_free(ret);
 	lwgeom_free(geom);
 
 	geom = lwgeom_from_wkt(
-		"GEOMETRYCOLLECTION("
-		" MULTILINESTRING((-5 -2,0 0),(0 0,10 10)),"
-		" POINT(-5 0),"
-		" POLYGON EMPTY"
-		")",
-		LW_PARSER_CHECK_NONE);
+	           "GEOMETRYCOLLECTION("
+	           " MULTILINESTRING((-5 -2,0 0),(0 0,10 10)),"
+	           " POINT(-5 0),"
+	           " POLYGON EMPTY"
+	           ")",
+	           LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
 	ret = lwgeom_wrapx(geom, 0, 20);
 	CU_ASSERT_FATAL(ret != NULL);
 	obt_wkt = lwgeom_to_ewkt(ret);
 	exp_wkt = "GEOMETRYCOLLECTION("
-						"MULTILINESTRING((15 -2,20 0),(0 0,10 10)),"
-						"POINT(15 0),"
-						"POLYGON EMPTY"
-						")";
+	          "MULTILINESTRING((15 -2,20 0),(0 0,10 10)),"
+	          "POINT(15 0),"
+	          "POLYGON EMPTY"
+	          ")";
 	ASSERT_STRING_EQUAL(obt_wkt, exp_wkt);
 	lwfree(obt_wkt);
 	lwgeom_free(ret);

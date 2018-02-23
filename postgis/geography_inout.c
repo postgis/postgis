@@ -101,8 +101,8 @@ GSERIALIZED* gserialized_geography_from_lwgeom(LWGEOM *lwgeom, int32 geog_typmod
 	if ( lwgeom_force_geodetic(lwgeom) == LW_TRUE )
 	{
 		ereport(NOTICE, (
-		        errmsg_internal("Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY" ))
-		);
+		            errmsg_internal("Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY" ))
+		       );
 	}
 
 	/* Force default SRID to the default */
@@ -143,7 +143,8 @@ Datum geography_in(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = NULL;
 	GSERIALIZED *g_ser = NULL;
 
-	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) ) {
+	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) )
+	{
 		geog_typmod = PG_GETARG_INT32(2);
 	}
 
@@ -328,7 +329,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	else
 		gml = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix, id);
 
-    lwgeom_free(lwgeom);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 1);
 
 	/* Return null on null */
@@ -409,7 +410,7 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 
 	kml = lwgeom_to_kml2(lwgeom, precision, prefix);
 
-    lwgeom_free(lwgeom);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 1);
 
 	if ( ! kml )
@@ -457,7 +458,7 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 
 	svg = lwgeom_to_svg(lwgeom, precision, relative);
 
-    lwgeom_free(lwgeom);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 0);
 
 	result = cstring_to_text(svg);
@@ -533,7 +534,7 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	if (option & 1) has_bbox = 1;
 
 	geojson = lwgeom_to_geojson(lwgeom, srs, precision, has_bbox);
-    lwgeom_free(lwgeom);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 1);
 	if (srs) pfree(srs);
 
@@ -625,8 +626,8 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	if ( lwgeom_force_geodetic(lwgeom) == LW_TRUE )
 	{
 		ereport(NOTICE, (
-		        errmsg_internal("Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY" ))
-		);
+		            errmsg_internal("Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY" ))
+		       );
 	}
 
 	/* force recalculate of box by dropping */
@@ -675,7 +676,8 @@ Datum geography_recv(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = NULL;
 	GSERIALIZED *g_ser = NULL;
 
-	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) ) {
+	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) )
+	{
 		geog_typmod = PG_GETARG_INT32(2);
 	}
 

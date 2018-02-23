@@ -803,7 +803,7 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 
 	/* Return if we aren't going to offset the result */
 	if (FP_IS_ZERO(offset) ||
-	    lwgeom_is_empty(lwcollection_as_lwgeom(out_col)))
+	        lwgeom_is_empty(lwcollection_as_lwgeom(out_col)))
 		return out_col;
 
 	/* Construct a collection to hold our outputs. */
@@ -1366,7 +1366,7 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 #if POSTGIS_DEBUG_LEVEL >= 1
 		t =
 #endif
-		segments_tcpa(&p0, &p1, &q0, &q1, t0, t1);
+		    segments_tcpa(&p0, &p1, &q0, &q1, t0, t1);
 
 		/*
 		lwnotice("Closest points: %g,%g,%g and %g,%g,%g at time %g",

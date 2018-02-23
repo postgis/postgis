@@ -255,7 +255,8 @@ static void multipoint_test(void)
 	perform_cluster_intersecting_test(wkt_inputs_pt, 2, expected_outputs_pt, 1);
 }
 
-struct dbscan_test_info {
+struct dbscan_test_info
+{
 	double eps;
 	uint32_t min_points;
 	uint32_t num_geoms;
@@ -296,8 +297,9 @@ static void dbscan_test(void)
 {
 	struct dbscan_test_info test;
 	char* wkt_inputs[] = { "POINT (0 0)", "POINT (-1 0)", "POINT (-1 -0.1)", "POINT (-1 0.1)",
-		                   "POINT (1 0)",
-						   "POINT (2 0)", "POINT (3  0)", "POINT ( 3 -0.1)", "POINT ( 3 0.1)" };
+	                       "POINT (1 0)",
+	                       "POINT (2 0)", "POINT (3  0)", "POINT ( 3 -0.1)", "POINT ( 3 0.1)"
+	                     };
 	/* Although POINT (1 0) and POINT (2 0) are within eps distance of each other,
 	 * they do not connect the two clusters because POINT (1 0) is not a core point.
 	 * See #3572
@@ -352,7 +354,8 @@ static void dbscan_test_3612c(void)
 {
 	struct dbscan_test_info test;
 	char* wkt_inputs[] = { "POLYGONM((-71.1319 42.2503 1,-71.132 42.2502 3,-71.1323 42.2504 -2,-71.1322 42.2505 1,-71.1319 42.2503 0))",
-						   "POLYGONM((-71.1319 42.2512 0,-71.1318 42.2511 20,-71.1317 42.2511 -20,-71.1317 42.251 5,-71.1317 42.2509 4,-71.132 42.2511 6,-71.1319 42.2512 30))" };
+	                       "POLYGONM((-71.1319 42.2512 0,-71.1318 42.2511 20,-71.1317 42.2511 -20,-71.1317 42.251 5,-71.1317 42.2509 4,-71.132 42.2511 6,-71.1319 42.2512 30))"
+	                     };
 	test.eps = 20.1;
 	test.min_points = 5;
 	uint32_t expected_ids[]   = { rand(), rand() };

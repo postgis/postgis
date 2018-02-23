@@ -42,7 +42,7 @@ static void do_type_test(char * in, int type)
 	h = lwgeom_force_sfs(g, 110);
 	if(h->type != type)
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nExp:  %s\n",
-			in, lwtype_name(h->type), lwtype_name(type));
+		        in, lwtype_name(h->type), lwtype_name(type));
 	CU_ASSERT_EQUAL(h->type, type);
 	lwgeom_free(h);
 	lwgeom_free(g);
@@ -52,25 +52,25 @@ static void do_type_test(char * in, int type)
 static void test_sqlmm(void)
 {
 	do_type_test("CIRCULARSTRING(-1 0,0 1,0 -1)",
-		     LINETYPE);
+	             LINETYPE);
 
-        do_type_test("COMPOUNDCURVE(CIRCULARSTRING(-1 0,0 1,0 -1),(0 -1,-1 -1))",
-		     LINETYPE);
+	do_type_test("COMPOUNDCURVE(CIRCULARSTRING(-1 0,0 1,0 -1),(0 -1,-1 -1))",
+	             LINETYPE);
 
-        do_type_test("COMPOUNDCURVE((-3 -3,-1 0),CIRCULARSTRING(-1 0,0 1,0 -1),(0 -1,0 -1.5,0 -2),CIRCULARSTRING(0 -2,-1 -3,1 -3),(1 -3,5 5))",
-		     LINETYPE);
+	do_type_test("COMPOUNDCURVE((-3 -3,-1 0),CIRCULARSTRING(-1 0,0 1,0 -1),(0 -1,0 -1.5,0 -2),CIRCULARSTRING(0 -2,-1 -3,1 -3),(1 -3,5 5))",
+	             LINETYPE);
 
-        do_type_test("COMPOUNDCURVE(CIRCULARSTRING(-1 0,0 1,0 -1),CIRCULARSTRING(0 -1,-1 -2,1 -2))",
-		     LINETYPE);
+	do_type_test("COMPOUNDCURVE(CIRCULARSTRING(-1 0,0 1,0 -1),CIRCULARSTRING(0 -1,-1 -2,1 -2))",
+	             LINETYPE);
 
 	do_type_test("CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING (0 0 2,1 1 2,1 0 2),(1 0 2,0 1 2),(0 1 2, 0 0 2)))",
-		     POLYGONTYPE);
+	             POLYGONTYPE);
 
 	do_type_test("CURVEPOLYGON (COMPOUNDCURVE (CIRCULARSTRING (0 0 2 5,1 1 2 6,1 0 2 5), (1 0 2 3,0 1 2 2), (0 1 2 2,30 1 2 2), CIRCULARSTRING (30 1 2 2,12 1 2 6,1 10 2 5, 1 10 3 5, 0 0 2 5)))",
-		     POLYGONTYPE);
+	             POLYGONTYPE);
 
 	do_type_test("MULTISURFACE (CURVEPOLYGON (CIRCULARSTRING (-2 0, -1 -1, 0 0, 1 -1, 2 0, 0 2, -2 0), (-1 0, 0 0.5, 1 0, 0 1, -1 0)), ((7 8, 10 10, 6 14, 4 11, 7 8)))",
-		     MULTIPOLYGONTYPE);
+	             MULTIPOLYGONTYPE);
 
 }
 
@@ -148,8 +148,8 @@ static void test_sfs_11(void)
 
 
 	/* 3D and 4D */
-        /* SFS 1.2 is only 2D but we choose here to keep 3D and 4D,
-           and let the user use force_2d if he want/need it */
+	/* SFS 1.2 is only 2D but we choose here to keep 3D and 4D,
+	   and let the user use force_2d if he want/need it */
 	do_geom_test("POINT(1 2 3)",
 	             "POINT(1 2 3)");
 

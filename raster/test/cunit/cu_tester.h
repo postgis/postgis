@@ -28,9 +28,9 @@ void cu_free_raster(rt_raster raster);
 
 /* helper to add bands to raster */
 rt_band cu_add_band(
-	rt_raster raster,
-	rt_pixtype pixtype,
-	int hasnodata, double nodataval
+    rt_raster raster,
+    rt_pixtype pixtype,
+    int hasnodata, double nodataval
 );
 
 /* Our internal callback to register Suites with the main tester */

@@ -51,8 +51,9 @@ int getStyleName(char **styleName, char* line);
 static void
 checked_system(const char* cmd)
 {
-  int ret = system(cmd);
-	if ( WEXITSTATUS(ret) != 0 ) {
+	int ret = system(cmd);
+	if ( WEXITSTATUS(ret) != 0 )
+	{
 		fprintf(stderr, "Failure return code (%d) from command: %s", WEXITSTATUS(ret), cmd);
 	}
 }
@@ -384,9 +385,10 @@ int main( int argc, const char* argv[] )
 		LWDEBUGF( 4, "geom = %s", lwgeom_to_ewkt((LWGEOM*)lwgeom) );
 
 		style = getStyle(styles, styleName);
-		if ( ! style ) {
-		  lwerror("Could not find style named %s", styleName);
-		  return -1;
+		if ( ! style )
+		{
+			lwerror("Could not find style named %s", styleName);
+			return -1;
 		}
 		ptr += drawGeometry( ptr, lwgeom, style );
 

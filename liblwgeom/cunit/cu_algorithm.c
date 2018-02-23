@@ -93,7 +93,7 @@ static void test_lw_segment_side(void)
 
 static void test_lw_arc_center(void)
 {
-/* double lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *result); */
+	/* double lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *result); */
 	POINT2D c1;
 	double d1;
 	POINT2D p1, p2, p3;
@@ -497,8 +497,8 @@ static void test_lwline_interpolate_points(void)
 	ASSERT_POINT4D_EQUAL(pta, ptb, eps);
 	ptarray_free(rpa);
 
-    /* Interpolate a single point */
-    /* First vertex is at 10% */
+	/* Interpolate a single point */
+	/* First vertex is at 10% */
 	rpa = lwline_interpolate_points(line, 0.1, LW_FALSE);
 	ASSERT_INT_EQUAL(rpa->npoints, 1);
 	pta = getPoint4d(line->points, 1);
@@ -517,7 +517,7 @@ static void test_lwline_interpolate_points(void)
 	ASSERT_POINT4D_EQUAL(pta, ptb, eps);
 	ptarray_free(rpa);
 
-    /* Now repeat points */
+	/* Now repeat points */
 	rpa = lwline_interpolate_points(line, 0.4, LW_TRUE);
 	ASSERT_INT_EQUAL(rpa->npoints, 2);
 	pta.x = 4;
@@ -990,15 +990,18 @@ static void test_geohash_point_as_int(void)
 	POINT2D p;
 	unsigned long long rs;
 
-	p.x = 50; p.y = 35;
+	p.x = 50;
+	p.y = 35;
 	gh = geohash_point_as_int(&p);
 	rs = 3440103613;
 	CU_ASSERT_EQUAL(gh, rs);
-	p.x = 140; p.y = 45;
+	p.x = 140;
+	p.y = 45;
 	gh = geohash_point_as_int(&p);
 	rs = 3982480893;
 	CU_ASSERT_EQUAL(gh, rs);
-	p.x = 140; p.y = 55;
+	p.x = 140;
+	p.y = 55;
 	gh = geohash_point_as_int(&p);
 	rs = 4166944232;
 	CU_ASSERT_EQUAL(gh, rs);
@@ -1187,9 +1190,9 @@ static void do_median_test(char* input, char* expected, int fail_if_not_converge
 		if (!passed)
 		{
 			printf("median_test input %s (parsed %s) expected %s got %s\n",
-				input, lwgeom_to_ewkt(g),
-				lwgeom_to_ewkt((LWGEOM*) expected_result),
-				lwgeom_to_ewkt((LWGEOM*) result));
+			       input, lwgeom_to_ewkt(g),
+			       lwgeom_to_ewkt((LWGEOM*) expected_result),
+			       lwgeom_to_ewkt((LWGEOM*) result));
 		}
 
 	}
@@ -1234,7 +1237,7 @@ static void test_median_robustness(void)
 
 	/* Cube */
 	do_median_test("MULTIPOINT ((10 10 10), (10 20 10), (20 10 10), (20 20 10), (10 10 20), (10 20 20), (20 10 20), (20 20 20))",
-				   "POINT (15 15 15)", LW_TRUE, 1000);
+	               "POINT (15 15 15)", LW_TRUE, 1000);
 
 	/* Some edge cases */
 	do_median_test("POINT (7 6)", "POINT (7 6)", LW_TRUE, 1000);
@@ -1274,43 +1277,43 @@ static void test_median_robustness(void)
 
 	/* Median point is included */
 	do_median_test("MULTIPOINT ZM ("
-		"(1480 0 200 100),"
-		"(620 0  200 100),"
-		"(1000 0 -200 100),"
-		"(1000 0 -590 100),"
-		"(1025 0  65 100),"
-		"(1025 0 -65 100)"
-		")",
-	"POINT (1025 0 -65)", LW_TRUE, 10000);
+	               "(1480 0 200 100),"
+	               "(620 0  200 100),"
+	               "(1000 0 -200 100),"
+	               "(1000 0 -590 100),"
+	               "(1025 0  65 100),"
+	               "(1025 0 -65 100)"
+	               ")",
+	               "POINT (1025 0 -65)", LW_TRUE, 10000);
 
 #if 0
 	/* Leads to invalid result (0 0 0) with 80bit (fmulp + faddp) precision. ok with 64 bit float ops */
 	do_median_test("MULTIPOINT ZM ("
-		"(0 0 20000 0.5),"
-		"(0 0 59000 0.5),"
-		"(0 -3000 -3472.22222222222262644208967685699462890625 1),"
-		"(0  3000  3472.22222222222262644208967685699462890625 1),"
-		"(0 0 -1644.736842105263121993630193173885345458984375 1),"
-		"(0 0  1644.736842105263121993630193173885345458984375 1),"
-		"(0  48000 -20000 1.3),"
-		"(0 -48000 -20000 1.3)"
-		")",
-	"POINT (0 0 0)", LW_TRUE, 10000);
+	               "(0 0 20000 0.5),"
+	               "(0 0 59000 0.5),"
+	               "(0 -3000 -3472.22222222222262644208967685699462890625 1),"
+	               "(0  3000  3472.22222222222262644208967685699462890625 1),"
+	               "(0 0 -1644.736842105263121993630193173885345458984375 1),"
+	               "(0 0  1644.736842105263121993630193173885345458984375 1),"
+	               "(0  48000 -20000 1.3),"
+	               "(0 -48000 -20000 1.3)"
+	               ")",
+	               "POINT (0 0 0)", LW_TRUE, 10000);
 #endif
 
 #if 0
 	/* Leads to invalid result (0 0 0) with 64bit (vfmadd231sd) precision. Ok with 80 bit float ops */
 	do_median_test("MULTIPOINT ZM ("
-		"(0 0 20000 0.5),"
-		"(0 0 59000 0.5),"
-		"(0 -3000 -3472.22222222222262644208967685699462890625 1),"
-		"(0  3000  3472.22222222222262644208967685699462890625 1),"
-		"(0 -0.00000000000028047739569477638384522295466033823196 -1644.736842105263121993630193173885345458984375 1),"
-		"(0  0.00000000000028047739569477638384522295466033823196  1644.736842105263121993630193173885345458984375 1),"
-		"(0  48000 -20000 1.3),"
-		"(0 -48000 -20000 1.3)"
-		")",
-	"POINT (0 0 0)", LW_TRUE, 10000);
+	               "(0 0 20000 0.5),"
+	               "(0 0 59000 0.5),"
+	               "(0 -3000 -3472.22222222222262644208967685699462890625 1),"
+	               "(0  3000  3472.22222222222262644208967685699462890625 1),"
+	               "(0 -0.00000000000028047739569477638384522295466033823196 -1644.736842105263121993630193173885345458984375 1),"
+	               "(0  0.00000000000028047739569477638384522295466033823196  1644.736842105263121993630193173885345458984375 1),"
+	               "(0  48000 -20000 1.3),"
+	               "(0 -48000 -20000 1.3)"
+	               ")",
+	               "POINT (0 0 0)", LW_TRUE, 10000);
 #endif
 }
 
@@ -1405,7 +1408,8 @@ static void test_kmeans(void)
 
 	geoms = lwalloc(sizeof(LWGEOM*) * N);
 
-	for (j = 0; j < num_clusters; j++) {
+	for (j = 0; j < num_clusters; j++)
+	{
 		for (i = 0; i < cluster_size; i++)
 		{
 			double u1 = 1.0 * rand() / RAND_MAX;

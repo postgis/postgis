@@ -71,7 +71,8 @@ typedef struct rect_node
 	double ymin;
 	double ymax;
 	double d;
-	union {
+	union
+	{
 		RECT_NODE_INTERNAL i;
 		RECT_NODE_LEAF l;
 	};

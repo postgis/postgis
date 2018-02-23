@@ -26,7 +26,8 @@
 #include <string.h>
 #include "liblwgeom_internal.h"
 
-typedef struct {
+typedef struct
+{
 	const POINT2D* p1;
 	const POINT2D* p2;
 	const POINT2D* p3;
@@ -69,13 +70,17 @@ add_supporting_point(SUPPORTING_POINTS* support, const POINT2D* p)
 {
 	switch(num_supporting_points(support))
 	{
-		case 0: support->p1 = p;
-				break;
-		case 1: support->p2 = p;
-				break;
-		case 2: support->p3 = p;
-				break;
-		default: return LW_FAILURE;
+	case 0:
+		support->p1 = p;
+		break;
+	case 1:
+		support->p2 = p;
+		break;
+	case 2:
+		support->p3 = p;
+		break;
+	default:
+		return LW_FAILURE;
 	}
 
 	return LW_SUCCESS;
@@ -157,14 +162,19 @@ calculate_mbc_from_support(SUPPORTING_POINTS* support, LWBOUNDINGCIRCLE* mbc)
 {
 	switch(num_supporting_points(support))
 	{
-		case 0: break;
-		case 1: calculate_mbc_1(support, mbc);
-				break;
-		case 2: calculate_mbc_2(support, mbc);
-				break;
-		case 3: calculate_mbc_3(support, mbc);
-				break;
-		default: return LW_FAILURE;
+	case 0:
+		break;
+	case 1:
+		calculate_mbc_1(support, mbc);
+		break;
+	case 2:
+		calculate_mbc_2(support, mbc);
+		break;
+	case 3:
+		calculate_mbc_3(support, mbc);
+		break;
+	default:
+		return LW_FAILURE;
 	}
 
 	return LW_SUCCESS;

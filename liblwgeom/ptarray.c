@@ -172,8 +172,8 @@ ptarray_append_point(POINTARRAY *pa, const POINT4D *pt, int repeated_points)
 
 		/* Return LW_SUCCESS and do nothing else if previous point in list is equal to this one */
 		if ( (pt->x == tmp.x) && (pt->y == tmp.y) &&
-		     (FLAGS_GET_Z(pa->flags) ? pt->z == tmp.z : 1) &&
-		     (FLAGS_GET_M(pa->flags) ? pt->m == tmp.m : 1) )
+		        (FLAGS_GET_Z(pa->flags) ? pt->z == tmp.z : 1) &&
+		        (FLAGS_GET_M(pa->flags) ? pt->m == tmp.m : 1) )
 		{
 			return LW_SUCCESS;
 		}
@@ -224,12 +224,13 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 		getPoint2d_p(pa2, 0, &tmp2);
 
 		/* If the end point and start point are the same, then don't copy start point */
-		if (p2d_same(&tmp1, &tmp2)) {
+		if (p2d_same(&tmp1, &tmp2))
+		{
 			poff = 1;
 			--npoints;
 		}
 		else if ( gap_tolerance == 0 || ( gap_tolerance > 0 &&
-		           distance2d_pt_pt(&tmp1, &tmp2) > gap_tolerance ) )
+		                                  distance2d_pt_pt(&tmp1, &tmp2) > gap_tolerance ) )
 		{
 			lwerror("Second line start point too far from first line end point");
 			return LW_FAILURE;
@@ -277,8 +278,8 @@ ptarray_remove_point(POINTARRAY *pa, uint32_t where)
 	/* If the point is any but the last, we need to copy the data back one point */
 	if (where < pa->npoints - 1)
 		memmove(getPoint_internal(pa, where),
-			getPoint_internal(pa, where + 1),
-			ptarray_point_size(pa) * (pa->npoints - where - 1));
+		        getPoint_internal(pa, where + 1),
+		        ptarray_point_size(pa) * (pa->npoints - where - 1));
 
 	/* We have one less point */
 	pa->npoints--;
@@ -390,8 +391,8 @@ ptarray_swap_ordinates(POINTARRAY *pa, LWORD o1, LWORD o2)
 	double d, *dp1, *dp2;
 	POINT4D p;
 
-  dp1 = ((double*)&p)+(unsigned)o1;
-  dp2 = ((double*)&p)+(unsigned)o2;
+	dp1 = ((double*)&p)+(unsigned)o1;
+	dp2 = ((double*)&p)+(unsigned)o2;
 	for (i=0 ; i < pa->npoints ; i++)
 	{
 		getPoint4d_p(pa, i, &p);
@@ -915,7 +916,7 @@ ptarrayarc_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int c
 
 		/* Outside of horizontal range, and not between end points we also skip */
 		if ( (pt->x > gbox.xmax || pt->x < gbox.xmin) &&
-			 (pt->y > FP_MAX(seg1->y, seg3->y) || pt->y < FP_MIN(seg1->y, seg3->y)) )
+		        (pt->y > FP_MAX(seg1->y, seg3->y) || pt->y < FP_MIN(seg1->y, seg3->y)) )
 		{
 			seg1 = seg3;
 			continue;
@@ -1092,7 +1093,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 		getPoint4d_p(ipa, i+1, &p2);
 
 
-		LWDEBUGF(3 ,"Segment %d: (%g,%g,%g,%g)-(%g,%g,%g,%g)",
+		LWDEBUGF(3,"Segment %d: (%g,%g,%g,%g)-(%g,%g,%g,%g)",
 		         i, p1.x, p1.y, p1.z, p1.m, p2.x, p2.y, p2.z, p2.m);
 
 
@@ -1755,7 +1756,7 @@ getPoint_internal(const POINTARRAY *pa, uint32_t n)
 	LWDEBUGF(5, "(n=%d, pa.npoints=%d, pa.maxpoints=%d)",n,pa->npoints,pa->maxpoints);
 
 	if ( ( n > pa->npoints ) ||
-	     ( n >= pa->maxpoints ) )
+	        ( n >= pa->maxpoints ) )
 	{
 		lwerror("%s [%d] called outside of ptarray range (n=%d, pa.npoints=%d, pa.maxpoints=%d)", __FILE__, __LINE__, n, pa->npoints, pa->maxpoints);
 		return NULL; /*error */
@@ -1915,8 +1916,8 @@ ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
 
 		/* Skip duplicates */
 		if ( p_out && FP_EQUALS(p_out->x, p->x) && FP_EQUALS(p_out->y, p->y)
-		   && (ndims > 2 ? FP_EQUALS(p_out->z, p->z) : 1)
-		   && (ndims > 3 ? FP_EQUALS(p_out->m, p->m) : 1) )
+		        && (ndims > 2 ? FP_EQUALS(p_out->z, p->z) : 1)
+		        && (ndims > 3 ? FP_EQUALS(p_out->m, p->m) : 1) )
 		{
 			continue;
 		}

@@ -81,7 +81,7 @@ LWGEOM* create_v_line(const LWGEOM *lwgeom,double x, double y, int srid)
 	lwpoints[0] = lwpoint_make3dz(srid, x, y, gbox.zmin);
 	lwpoints[1] = lwpoint_make3dz(srid, x, y, gbox.zmax);
 
-	 return (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);
+	return (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);
 }
 
 LWGEOM *
@@ -791,10 +791,10 @@ lw_dist3d_pt_seg(POINT3DZ *p, POINT3DZ *A, POINT3DZ *B, DISTPTS3D *dl)
 double
 distance3d_pt_pt(const POINT3D *p1, const POINT3D *p2)
 {
-  double dx = p2->x - p1->x;
-  double dy = p2->y - p1->y;
-  double dz = p2->z - p1->z;
-  return sqrt ( dx*dx + dy*dy + dz*dz);
+	double dx = p2->x - p1->x;
+	double dy = p2->y - p1->y;
+	double dz = p2->z - p1->z;
+	return sqrt ( dx*dx + dy*dy + dz*dz);
 }
 
 
@@ -911,11 +911,11 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 		return lw_dist3d_pt_seg(s2p1,s1p1,s1p2,dl);
 	}
 
-/*
-	Here we use algorithm from softsurfer.com
-	that can be found here
-	http://softsurfer.com/Archive/algorithm_0106/algorithm_0106.htm
-*/
+	/*
+		Here we use algorithm from softsurfer.com
+		that can be found here
+		http://softsurfer.com/Archive/algorithm_0106/algorithm_0106.htm
+	*/
 
 	if (!get_3dvector_from_points(s1p1, s1p2, &v1))
 		return LW_FALSE;
@@ -935,7 +935,8 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 
 
 	if (D <0.000000001)
-	{        /* the lines are almost parallel*/
+	{
+		/* the lines are almost parallel*/
 		s1k = 0.0; /*If the lines are paralell we try by using the startpoint of first segment. If that gives a projected point on the second line outside segment 2 it wil be found that s2k is >1 or <0.*/
 		if(b>c)   /* use the largest denominator*/
 		{
@@ -989,7 +990,8 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 		}
 	}
 	else
-	{/*Find the closest point on the edges of both segments*/
+	{
+		/*Find the closest point on the edges of both segments*/
 		p1.x=s1p1->x+s1k*(s1p2->x-s1p1->x);
 		p1.y=s1p1->y+s1k*(s1p2->y-s1p1->y);
 		p1.z=s1p1->z+s1k*(s1p2->z-s1p1->z);
@@ -1062,7 +1064,7 @@ int lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly,PLANE3D *plane, DISTPTS3
 	s1=project_point_on_plane(&p1, plane, &projp1); /*the sign of s1 tells us on which side of the plane the point is. */
 	lw_dist3d_pt_poly(&p1, poly, plane,&projp1, dl);
 
-	for (i=1;i<pa->npoints;i++)
+	for (i=1; i<pa->npoints; i++)
 	{
 		int intersects;
 		getPoint3dz_p(pa, i, &p2);
@@ -1085,7 +1087,7 @@ int lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly,PLANE3D *plane, DISTPTS3
 
 			if(pt_in_ring_3d(&intersectionp, poly->rings[0], plane)) /*Inside outer ring*/
 			{
-				for (k=1;k<poly->nrings; k++)
+				for (k=1; k<poly->nrings; k++)
 				{
 					/* Inside a hole, so no intersection with the polygon*/
 					if ( pt_in_ring_3d(&intersectionp, poly->rings[k], plane ))
@@ -1116,12 +1118,12 @@ int lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly,PLANE3D *plane, DISTPTS3
 	}
 
 	/*check or pointarray against boundary and inner boundaries of the polygon*/
-	for (j=0;j<poly->nrings;j++)
+	for (j=0; j<poly->nrings; j++)
 	{
 		lw_dist3d_ptarray_ptarray(pa, poly->rings[j], dl);
 	}
 
-return LW_TRUE;
+	return LW_TRUE;
 }
 
 
@@ -1153,7 +1155,7 @@ define_plane(POINTARRAY *pa, PLANE3D *pl)
 	}
 
 	/*find the avg point*/
-	for (i=0;i<(pa->npoints-1);i++)
+	for (i=0; i<(pa->npoints-1); i++)
 	{
 		getPoint3dz_p(pa, i, &p);
 		sumx+=p.x;
@@ -1170,7 +1172,7 @@ define_plane(POINTARRAY *pa, PLANE3D *pl)
 	numberofvectors= floor((pa->npoints-1)/pointsinslice); /*the number of vectors we try can be 3, 4 or 5*/
 
 	getPoint3dz_p(pa, 0, &p1);
-	for (j=pointsinslice;j<pa->npoints;j+=pointsinslice)
+	for (j=pointsinslice; j<pa->npoints; j+=pointsinslice)
 	{
 		getPoint3dz_p(pa, j, &p2);
 
@@ -1199,16 +1201,16 @@ Finds a point on a plane from where the original point is perpendicular to the p
 double
 project_point_on_plane(POINT3DZ *p,  PLANE3D *pl, POINT3DZ *p0)
 {
-/*In our plane definition we have a point on the plane and a normal vektor (pl.pv), perpendicular to the plane
-this vector will be paralell to the line between our inputted point above the plane and the point we are searching for on the plane.
-So, we already have a direction from p to find p0, but we don't know the distance.
-*/
+	/*In our plane definition we have a point on the plane and a normal vektor (pl.pv), perpendicular to the plane
+	this vector will be paralell to the line between our inputted point above the plane and the point we are searching for on the plane.
+	So, we already have a direction from p to find p0, but we don't know the distance.
+	*/
 
 	VECTOR3D v1;
 	double f;
 
 	if (!get_3dvector_from_points(&(pl->pop), p, &v1))
-	return LW_FALSE;
+		return LW_FALSE;
 
 	f=-(DOT(pl->pv,v1)/DOT(pl->pv,pl->pv));
 
@@ -1292,60 +1294,60 @@ pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring,PLANE3D *plane)
 	else if(fabs(plane->pv.y)>=fabs(plane->pv.x)&&fabs(plane->pv.y)>=fabs(plane->pv.z))	/*If the y vector of the normal vector to the plane is larger than x and z vector we project the ring to the xz-plane*/
 	{
 		for (i=0; i<ring->npoints-1; i++)
+		{
+			double vt;
+			getPoint3dz_p(ring, i+1, &v2);
+
+			/* edge from vertex i to vertex i+1 */
+			if
+			(
+			    /* an upward crossing */
+			    ((v1.z <= p->z) && (v2.z > p->z))
+			    /* a downward crossing */
+			    || ((v1.z > p->z) && (v2.z <= p->z))
+			)
 			{
-				double vt;
-				getPoint3dz_p(ring, i+1, &v2);
 
-				/* edge from vertex i to vertex i+1 */
-				if
-				(
-				    /* an upward crossing */
-				    ((v1.z <= p->z) && (v2.z > p->z))
-				    /* a downward crossing */
-				    || ((v1.z > p->z) && (v2.z <= p->z))
-				)
+				vt = (double)(p->z - v1.z) / (v2.z - v1.z);
+
+				/* P.x <intersect */
+				if (p->x < v1.x + vt * (v2.x - v1.x))
 				{
-
-					vt = (double)(p->z - v1.z) / (v2.z - v1.z);
-
-					/* P.x <intersect */
-					if (p->x < v1.x + vt * (v2.x - v1.x))
-					{
-						/* a valid crossing of y=p.y right of p.x */
-						++cn;
-					}
+					/* a valid crossing of y=p.y right of p.x */
+					++cn;
 				}
-				v1 = v2;
 			}
+			v1 = v2;
+		}
 	}
 	else	/*Hopefully we only have the cases where x part of the normal vector is largest left*/
 	{
 		for (i=0; i<ring->npoints-1; i++)
+		{
+			double vt;
+			getPoint3dz_p(ring, i+1, &v2);
+
+			/* edge from vertex i to vertex i+1 */
+			if
+			(
+			    /* an upward crossing */
+			    ((v1.z <= p->z) && (v2.z > p->z))
+			    /* a downward crossing */
+			    || ((v1.z > p->z) && (v2.z <= p->z))
+			)
 			{
-				double vt;
-				getPoint3dz_p(ring, i+1, &v2);
 
-				/* edge from vertex i to vertex i+1 */
-				if
-				(
-				    /* an upward crossing */
-				    ((v1.z <= p->z) && (v2.z > p->z))
-				    /* a downward crossing */
-				    || ((v1.z > p->z) && (v2.z <= p->z))
-				)
+				vt = (double)(p->z - v1.z) / (v2.z - v1.z);
+
+				/* P.x <intersect */
+				if (p->y < v1.y + vt * (v2.y - v1.y))
 				{
-
-					vt = (double)(p->z - v1.z) / (v2.z - v1.z);
-
-					/* P.x <intersect */
-					if (p->y < v1.y + vt * (v2.y - v1.y))
-					{
-						/* a valid crossing of y=p.y right of p.x */
-						++cn;
-					}
+					/* a valid crossing of y=p.y right of p.x */
+					++cn;
 				}
-				v1 = v2;
 			}
+			v1 = v2;
+		}
 	}
 	LWDEBUGF(3, "pt_in_ring_3d returning %d", cn&1);
 

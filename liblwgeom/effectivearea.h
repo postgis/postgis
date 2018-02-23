@@ -22,12 +22,12 @@
  *
  **********************************************************************/
 
- #ifndef _EFFECTIVEAREA_H
+#ifndef _EFFECTIVEAREA_H
 #define _EFFECTIVEAREA_H 1
 
 
- #include "liblwgeom_internal.h"
- #include "lwgeom_log.h"
+#include "liblwgeom_internal.h"
+#include "lwgeom_log.h"
 
 
 /**

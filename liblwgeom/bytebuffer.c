@@ -144,7 +144,7 @@ bytebuffer_makeroom(bytebuffer_t *s, size_t size_to_add)
 	size_t capacity = s->capacity;
 	size_t required_size = current_write_size + size_to_add;
 
-	LWDEBUGF(2,"capacity = %d and required size = %d",capacity ,required_size);
+	LWDEBUGF(2,"capacity = %d and required size = %d",capacity,required_size);
 	while (capacity < required_size)
 		capacity *= 2;
 

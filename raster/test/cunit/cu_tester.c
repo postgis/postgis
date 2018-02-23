@@ -73,12 +73,12 @@ int main(int argc, char *argv[])
 	lwgeom_set_handlers(0, 0, 0, cu_error_reporter, 0);
 
 	rt_set_handlers(
-		default_rt_allocator,
-		default_rt_reallocator,
-		default_rt_deallocator,
-		cu_error_reporter,
-		default_rt_info_handler,
-		default_rt_warning_handler
+	    default_rt_allocator,
+	    default_rt_reallocator,
+	    default_rt_deallocator,
+	    cu_error_reporter,
+	    default_rt_info_handler,
+	    default_rt_warning_handler
 	);
 
 	/* initialize the CUnit test registry */
@@ -197,20 +197,24 @@ int main(int argc, char *argv[])
  *
  * CAUTION: Not stop execution on rterror case !!!
  */
-static void cu_error_reporter(const char *fmt, va_list ap) {
-  vsnprintf (cu_error_msg, MAX_CUNIT_MSG_LENGTH, fmt, ap);
-  cu_error_msg[MAX_CUNIT_MSG_LENGTH]='\0';
+static void cu_error_reporter(const char *fmt, va_list ap)
+{
+	vsnprintf (cu_error_msg, MAX_CUNIT_MSG_LENGTH, fmt, ap);
+	cu_error_msg[MAX_CUNIT_MSG_LENGTH]='\0';
 }
 
-void cu_error_msg_reset() {
+void cu_error_msg_reset()
+{
 	memset(cu_error_msg, '\0', MAX_CUNIT_MSG_LENGTH);
 }
 
-void cu_free_raster(rt_raster raster) {
+void cu_free_raster(rt_raster raster)
+{
 	uint16_t i;
 	uint16_t nbands = rt_raster_get_num_bands(raster);
 
-	for (i = 0; i < nbands; ++i) {
+	for (i = 0; i < nbands; ++i)
+	{
 		rt_band band = rt_raster_get_band(raster, i);
 		rt_band_destroy(band);
 	}
@@ -219,7 +223,8 @@ void cu_free_raster(rt_raster raster) {
 	raster = NULL;
 }
 
-rt_band cu_add_band(rt_raster raster, rt_pixtype pixtype, int hasnodata, double nodataval) {
+rt_band cu_add_band(rt_raster raster, rt_pixtype pixtype, int hasnodata, double nodataval)
+{
 	void* mem = NULL;
 	int32_t bandNum = 0;
 	size_t datasize = 0;

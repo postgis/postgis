@@ -60,7 +60,7 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 
 	default:
 		lwpgerror("ST_MakeValid: unsupported geometry type %s",
-		        lwtype_name(lwgeom_in->type));
+		          lwtype_name(lwgeom_in->type));
 		PG_RETURN_NULL();
 		break;
 	}
@@ -94,7 +94,7 @@ lwgeom_clean(LWGEOM* lwgeom_in)
 	if ( lwgeom_dimensionality(lwgeom_in) != lwgeom_dimensionality(lwgeom_out) )
 	{
 		lwpgnotice("lwgeom_clean: dimensional collapse (%d to %d)",
-		         lwgeom_dimensionality(lwgeom_in), lwgeom_dimensionality(lwgeom_out));
+		           lwgeom_dimensionality(lwgeom_in), lwgeom_dimensionality(lwgeom_out));
 
 		return NULL;
 	}
@@ -104,9 +104,9 @@ lwgeom_clean(LWGEOM* lwgeom_in)
 	        lwgeom_in->type != COLLECTIONTYPE )
 	{
 		lwpgnotice("lwgeom_clean: mixed-type output (%s) "
-		         "from single-type input (%s)",
-		         lwtype_name(lwgeom_out->type),
-		         lwtype_name(lwgeom_in->type));
+		           "from single-type input (%s)",
+		           lwtype_name(lwgeom_out->type),
+		           lwtype_name(lwgeom_in->type));
 		return NULL;
 	}
 

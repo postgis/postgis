@@ -23,7 +23,7 @@
 static void
 usage(int status)
 {
-  /* TODO: if status != 0 print all to stderr */
+	/* TODO: if status != 0 print all to stderr */
 
 	printf(_( "RELEASE: %s (r%d)\n" ), POSTGIS_LIB_VERSION, POSTGIS_SVN_REVISION);
 	printf(_("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n"
@@ -131,7 +131,7 @@ main(int argc, char **argv)
 	{
 		/* User-defined queries begin with SELECT */
 		if (!strncmp(argv[pgis_optind], "SELECT ", 7) ||
-			!strncmp(argv[pgis_optind], "select ", 7))
+		        !strncmp(argv[pgis_optind], "select ", 7))
 		{
 			config->usrquery = argv[pgis_optind];
 		}
@@ -141,25 +141,25 @@ main(int argc, char **argv)
 			char *strptr = argv[pgis_optind];
 			char *chrptr = strchr(strptr, '.');
 
-				/* OK, this is a schema-qualified table name... */
-      if (chrptr)
-      {
-        if ( chrptr == strptr )
-        {
-          /* table is ".something" display help  */
-          usage(0);
-          exit(0);
-        }
-        /* Null terminate at the '.' */
-        *chrptr = '\0';
-        /* Copy in the parts */
-        config->schema = strdup(strptr);
-        config->table = strdup(chrptr+1);
-      }
-      else
-      {
-        config->table = strdup(strptr);
-      }
+			/* OK, this is a schema-qualified table name... */
+			if (chrptr)
+			{
+				if ( chrptr == strptr )
+				{
+					/* table is ".something" display help  */
+					usage(0);
+					exit(0);
+				}
+				/* Null terminate at the '.' */
+				*chrptr = '\0';
+				/* Copy in the parts */
+				config->schema = strdup(strptr);
+				config->table = strdup(chrptr+1);
+			}
+			else
+			{
+				config->table = strdup(strptr);
+			}
 		}
 	}
 	else

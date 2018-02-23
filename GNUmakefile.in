@@ -138,7 +138,7 @@ raster-sql:
 	$(MAKE) -C raster rtpostgis.sql
 
 astyle:
-	./astyle.sh
+	PATH=utils/external/astyle:$$PATH ./astyle.sh
 
 commit:
 	$(MAKE) astyle && $(MAKE) clean && $(MAKE) check && svn commit

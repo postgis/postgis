@@ -155,8 +155,8 @@ lwgeom_make_geos_friendly(LWGEOM* geom)
 	case MULTICURVETYPE:
 	default:
 		lwerror("lwgeom_make_geos_friendly: unsupported input geometry type: %s (%d)",
-			lwtype_name(geom->type),
-			geom->type);
+		        lwtype_name(geom->type),
+		        geom->type);
 		break;
 	}
 	return 0;
@@ -262,9 +262,9 @@ lwline_make_geos_friendly(LWLINE* line)
 #if 1
 		/* Duplicate point */
 		line->points = ptarray_addPoint(line->points,
-						getPoint_internal(line->points, 0),
-						FLAGS_NDIMS(line->points->flags),
-						line->points->npoints);
+		                                getPoint_internal(line->points, 0),
+		                                FLAGS_NDIMS(line->points->flags),
+		                                line->points->npoints);
 		ret = (LWGEOM*)line;
 #else
 		/* Turn into a point */
@@ -345,9 +345,9 @@ LWGEOM_GEOS_nodeLines(const GEOSGeometry* lines)
 	GEOSGeom_destroy(point);
 
 	LWDEBUGF(3,
-		 "LWGEOM_GEOS_nodeLines: in[%s] out[%s]",
-		 lwgeom_to_ewkt(GEOS2LWGEOM(lines, 0)),
-		 lwgeom_to_ewkt(GEOS2LWGEOM(noded, 0)));
+	         "LWGEOM_GEOS_nodeLines: in[%s] out[%s]",
+	         lwgeom_to_ewkt(GEOS2LWGEOM(lines, 0)),
+	         lwgeom_to_ewkt(GEOS2LWGEOM(noded, 0)));
 
 	return noded;
 }
@@ -501,7 +501,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 
 #ifdef LWGEOM_PROFILE_MAKEVALID
 		lwnotice("ST_MakeValid: ring built with %d cut edges, saving boundaries",
-			 GEOSGetNumGeometries(geos_cut_edges));
+		         GEOSGetNumGeometries(geos_cut_edges));
 #endif
 
 		/*
@@ -514,8 +514,8 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 			/* We did check for empty area already so
 			 * this must be some other error */
 			lwnotice("GEOSBoundary('%s') threw an error: %s",
-				 lwgeom_to_ewkt(GEOS2LWGEOM(new_area, 0)),
-				 lwgeom_geos_errmsg);
+			         lwgeom_to_ewkt(GEOS2LWGEOM(new_area, 0)),
+			         lwgeom_geos_errmsg);
 			GEOSGeom_destroy(new_area);
 			GEOSGeom_destroy(geos_area);
 			return NULL;
@@ -796,9 +796,9 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 	}
 
 	LWDEBUGF(3,
-		 "Geometry [%s] is still not valid: %s. Will try to clean up further.",
-		 lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0)),
-		 lwgeom_geos_errmsg);
+	         "Geometry [%s] is still not valid: %s. Will try to clean up further.",
+	         lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0)),
+	         lwgeom_geos_errmsg);
 
 	/*
 	 * Step 3 : make what we got valid
@@ -923,9 +923,9 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	if (!geosgeom)
 	{
 		LWDEBUGF(4,
-			 "Original geom can't be converted to GEOS (%s)"
-			 " - will try cleaning that up first",
-			 lwgeom_geos_errmsg);
+		         "Original geom can't be converted to GEOS (%s)"
+		         " - will try cleaning that up first",
+		         lwgeom_geos_errmsg);
 
 		lwgeom_out = lwgeom_make_geos_friendly(lwgeom_out);
 		if (!lwgeom_out) lwerror("Could not make a valid geometry out of input");
@@ -962,7 +962,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 		assert(lwgeom_in != lwgeom_out);
 		ogeoms[0] = lwgeom_out;
 		ogeom = (LWGEOM*)lwcollection_construct(
-		    MULTITYPE[lwgeom_out->type], lwgeom_out->srid, lwgeom_out->bbox, 1, ogeoms);
+		            MULTITYPE[lwgeom_out->type], lwgeom_out->srid, lwgeom_out->bbox, 1, ogeoms);
 		lwgeom_out->bbox = NULL;
 		lwgeom_out = ogeom;
 	}

@@ -315,14 +315,14 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 		PrepGeomHashEntry pghe;
 #if POSTGIS_PGSQL_VERSION < 96
 		prepcache->context_callback = MemoryContextCreate(T_AllocSetContext, 8192,
-		                             &PreparedCacheContextMethods,
-		                             prepcache->context_statement,
-		                             "PostGIS Prepared Geometry Context");
+		                              &PreparedCacheContextMethods,
+		                              prepcache->context_statement,
+		                              "PostGIS Prepared Geometry Context");
 
 #else
 		prepcache->context_callback = AllocSetContextCreate(prepcache->context_statement,
-	                                   "PostGIS Prepared Geometry Context",
-	                                   ALLOCSET_SMALL_SIZES);
+		                              "PostGIS Prepared Geometry Context",
+		                              ALLOCSET_SMALL_SIZES);
 
 		/* PgSQL comments suggest allocating callback in the context */
 		/* being managed, so that the callback object gets cleaned along with */
@@ -347,7 +347,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	{
 		lwpgerror("PrepGeomCacheBuilder asked to build new prepcache where one already exists.");
 		return LW_FAILURE;
-    }
+	}
 
 	/*
 	 * Avoid creating a PreparedPoint around a Point or a MultiPoint.
@@ -359,7 +359,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	if (lwgeom_get_type(lwgeom) == POINTTYPE || lwgeom_get_type(lwgeom) == MULTIPOINTTYPE)
 		return LW_FAILURE;
 
-	prepcache->geom = LWGEOM2GEOS( lwgeom , 0);
+	prepcache->geom = LWGEOM2GEOS( lwgeom, 0);
 	if ( ! prepcache->geom ) return LW_FAILURE;
 	prepcache->prepared_geom = GEOSPrepare( prepcache->geom );
 	if ( ! prepcache->prepared_geom ) return LW_FAILURE;

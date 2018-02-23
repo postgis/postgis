@@ -92,14 +92,16 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 	GSERIALIZED *ret;
 	int srid = 0;
 
-	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) ) {
+	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) )
+	{
 		geom_typmod = PG_GETARG_INT32(2);
 	}
 
 	lwgeom_parser_result_init(&lwg_parser_result);
 
 	/* Empty string. */
-	if ( str[0] == '\0' ) {
+	if ( str[0] == '\0' )
+	{
 		ereport(ERROR,(errmsg("parse error - invalid geometry")));
 		PG_RETURN_NULL();
 	}
@@ -218,42 +220,45 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 	/* Convert to LWGEOM type */
 	lwgeom = lwgeom_from_gserialized(pg_lwgeom);
 
-  if (format_text == NULL) {
-    lwpgerror("ST_AsLatLonText: invalid format string (null");
-    PG_RETURN_NULL();
-  }
+	if (format_text == NULL)
+	{
+		lwpgerror("ST_AsLatLonText: invalid format string (null");
+		PG_RETURN_NULL();
+	}
 
 	format_str = text_to_cstring(format_text);
-  assert(format_str != NULL);
+	assert(format_str != NULL);
 
-  /* The input string supposedly will be in the database encoding,
-     so convert to UTF-8. */
-  tmp = (char *)pg_do_encoding_conversion(
-    (uint8_t *)format_str, strlen(format_str), GetDatabaseEncoding(), PG_UTF8);
-  assert(tmp != NULL);
-  if ( tmp != format_str ) {
-    pfree(format_str);
-    format_str = tmp;
-  }
+	/* The input string supposedly will be in the database encoding,
+	   so convert to UTF-8. */
+	tmp = (char *)pg_do_encoding_conversion(
+	          (uint8_t *)format_str, strlen(format_str), GetDatabaseEncoding(), PG_UTF8);
+	assert(tmp != NULL);
+	if ( tmp != format_str )
+	{
+		pfree(format_str);
+		format_str = tmp;
+	}
 
 	/* Produce the formatted string. */
 	formatted_str = lwpoint_to_latlon((LWPOINT *)lwgeom, format_str);
-  assert(formatted_str != NULL);
-  pfree(format_str);
+	assert(formatted_str != NULL);
+	pfree(format_str);
 
-  /* Convert the formatted string from UTF-8 back to database encoding. */
-  tmp = (char *)pg_do_encoding_conversion(
-    (uint8_t *)formatted_str, strlen(formatted_str),
-    PG_UTF8, GetDatabaseEncoding());
-  assert(tmp != NULL);
-  if ( tmp != formatted_str) {
-    pfree(formatted_str);
-    formatted_str = tmp;
-  }
+	/* Convert the formatted string from UTF-8 back to database encoding. */
+	tmp = (char *)pg_do_encoding_conversion(
+	          (uint8_t *)formatted_str, strlen(formatted_str),
+	          PG_UTF8, GetDatabaseEncoding());
+	assert(tmp != NULL);
+	if ( tmp != formatted_str)
+	{
+		pfree(formatted_str);
+		formatted_str = tmp;
+	}
 
 	/* Convert to the postgres output string type. */
 	formatted_text = cstring_to_text(formatted_str);
-  pfree(formatted_str);
+	pfree(formatted_str);
 
 	PG_RETURN_POINTER(formatted_text);
 }
@@ -301,7 +306,7 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 		type = PG_GETARG_TEXT_P(1);
 
 		if  ( ! strncmp(VARDATA(type), "xdr", 3) ||
-		      ! strncmp(VARDATA(type), "XDR", 3) )
+		        ! strncmp(VARDATA(type), "XDR", 3) )
 		{
 			variant = variant | WKB_XDR;
 		}
@@ -427,7 +432,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	uint8_t *wkb;
 	size_t wkb_size;
 	uint8_t variant = 0;
- 	bytea *result;
+	bytea *result;
 	text *type;
 	/* If user specified endianness, respect it */
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
@@ -435,7 +440,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 		type = PG_GETARG_TEXT_P(1);
 
 		if  ( ! strncmp(VARDATA(type), "xdr", 3) ||
-		      ! strncmp(VARDATA(type), "XDR", 3) )
+		        ! strncmp(VARDATA(type), "XDR", 3) )
 		{
 			variant = variant | WKB_XDR;
 		}
@@ -448,7 +453,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	/* Create WKB hex string */
 	lwgeom = lwgeom_from_gserialized(geom);
 
-	wkb = lwgeom_to_wkb(lwgeom, variant | WKB_EXTENDED , &wkb_size);
+	wkb = lwgeom_to_wkb(lwgeom, variant | WKB_EXTENDED, &wkb_size);
 	lwgeom_free(lwgeom);
 
 	/* Prepare the PgSQL text return type */
@@ -470,7 +475,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 	uint8_t *twkb;
 	size_t twkb_size;
 	uint8_t variant = 0;
- 	bytea *result;
+	bytea *result;
 	srs_precision sp;
 
 	/*check for null input since we cannot have the sql-function as strict.
@@ -540,7 +545,7 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 	srs_precision sp;
 	uint8_t *twkb;
 	size_t twkb_size;
- 	bytea *result;
+	bytea *result;
 
 	/* The first two arguments are required */
 	if ( PG_NARGS() < 2 || PG_ARGISNULL(0) || PG_ARGISNULL(1) )
@@ -570,7 +575,7 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 #endif
 
 	while( array_iterate(iter_geoms, &val_geom, &null_geom) &&
-	       array_iterate(iter_ids, &val_id, &null_id) )
+	        array_iterate(iter_ids, &val_id, &null_id) )
 	{
 		LWGEOM *geom;
 		int32_t uid;
@@ -760,7 +765,8 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
 
-	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) ) {
+	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) )
+	{
 		geom_typmod = PG_GETARG_INT32(2);
 	}
 
@@ -797,11 +803,11 @@ Datum LWGEOM_send(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_send called");
 
 	PG_RETURN_POINTER(
-	  DatumGetPointer(
-	    DirectFunctionCall1(
-	      WKBFromLWGEOM,
-	      PG_GETARG_DATUM(0)
-	    )));
+	    DatumGetPointer(
+	        DirectFunctionCall1(
+	            WKBFromLWGEOM,
+	            PG_GETARG_DATUM(0)
+	        )));
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_to_bytea);
@@ -810,11 +816,11 @@ Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_to_bytea called");
 
 	PG_RETURN_POINTER(
-	  DatumGetPointer(
-	    DirectFunctionCall1(
-	      WKBFromLWGEOM,
-	      PG_GETARG_DATUM(0)
-	    )));
+	    DatumGetPointer(
+	        DirectFunctionCall1(
+	            WKBFromLWGEOM,
+	            PG_GETARG_DATUM(0)
+	        )));
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_from_bytea);
@@ -825,7 +831,7 @@ Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_from_bytea start");
 
 	result = (GSERIALIZED *)DatumGetPointer(DirectFunctionCall1(
-	                                          LWGEOMFromEWKB, PG_GETARG_DATUM(0)));
+	        LWGEOMFromEWKB, PG_GETARG_DATUM(0)));
 
 	PG_RETURN_POINTER(result);
 }

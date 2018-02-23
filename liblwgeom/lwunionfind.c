@@ -61,11 +61,13 @@ uint32_t
 UF_find (UNIONFIND* uf, uint32_t i)
 {
 	uint32_t base = i;
-	while (uf->clusters[base] != base) {
+	while (uf->clusters[base] != base)
+	{
 		base = uf->clusters[base];
 	}
 
-	while (i != base) {
+	while (i != base)
+	{
 		uint32_t next = uf->clusters[i];
 		uf->clusters[i] = base;
 		i = next;
@@ -77,7 +79,7 @@ UF_find (UNIONFIND* uf, uint32_t i)
 uint32_t
 UF_size (UNIONFIND* uf, uint32_t i)
 {
-    return uf->cluster_sizes[UF_find(uf, i)];
+	return uf->cluster_sizes[UF_find(uf, i)];
 }
 
 void
@@ -149,7 +151,8 @@ UF_get_collapsed_cluster_ids(UNIONFIND* uf, const char* is_in_cluster)
 	uint32_t last_old_id, current_new_id, i;
 	char encountered_cluster = LW_FALSE;
 
-	current_new_id = 0; last_old_id = 0;
+	current_new_id = 0;
+	last_old_id = 0;
 	for (i = 0; i < uf->N; i++)
 	{
 		uint32_t j = ordered_components[i];

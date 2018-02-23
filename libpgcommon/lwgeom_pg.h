@@ -129,7 +129,7 @@ int gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox);
  * new value of STATRELATTINH
  */
 #if POSTGIS_PGSQL_VERSION >= 85
-	#define STATRELATT STATRELATTINH
+#define STATRELATT STATRELATTINH
 #endif
 
 /* PG-exposed */

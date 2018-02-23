@@ -350,9 +350,9 @@ RTreeBuilder(const LWGEOM* lwgeom, GeomCache* cache)
 		currentCache->ringIndices = lwalloc(sizeof(RTREE_NODE *) * nrings);
 		/*
 		** Load the array in geometry order, each outer ring followed by the inner rings
-                ** associated with that outer ring
+		        ** associated with that outer ring
 		*/
-                i = 0;
+		i = 0;
 		for ( p = 0; p < mpoly->ngeoms; p++ )
 		{
 			for ( r = 0; r < mpoly->geoms[p]->nrings; r++ )

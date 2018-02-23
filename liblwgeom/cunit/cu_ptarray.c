@@ -232,12 +232,14 @@ static void test_ptarray_locate_point(void)
 	CU_ASSERT_EQUAL(loc, 1);
 	CU_ASSERT_EQUAL(dist, 0.0);
 
-	p.x = 21; p.y = 4;
+	p.x = 21;
+	p.y = 4;
 	loc = ptarray_locate_point(line->points, &p, &dist, NULL);
 	CU_ASSERT_EQUAL(loc, 1);
 	CU_ASSERT_EQUAL(dist, 1.0);
 
-	p.x = 0; p.y = 2;
+	p.x = 0;
+	p.y = 2;
 	loc = ptarray_locate_point(line->points, &p, &dist, &l);
 	CU_ASSERT_EQUAL(loc, 0);
 	CU_ASSERT_EQUAL(dist, 1.0);
@@ -245,7 +247,8 @@ static void test_ptarray_locate_point(void)
 	lwline_free(line);
 	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,20 0,40 0)"));
 
-	p.x = 20; p.y = 0;
+	p.x = 20;
+	p.y = 0;
 	loc = ptarray_locate_point(line->points, &p, &dist, &l);
 	CU_ASSERT_EQUAL(loc, 0.5);
 	CU_ASSERT_EQUAL(dist, 0.0);
@@ -253,7 +256,8 @@ static void test_ptarray_locate_point(void)
 	lwline_free(line);
 	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-40 0,0 0,20 0,40 0)"));
 
-	p.x = 20; p.y = 0;
+	p.x = 20;
+	p.y = 0;
 	loc = ptarray_locate_point(line->points, &p, &dist, &l);
 	CU_ASSERT_EQUAL(loc, 0.75);
 	CU_ASSERT_EQUAL(dist, 0.0);
@@ -261,7 +265,8 @@ static void test_ptarray_locate_point(void)
 	lwline_free(line);
 	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING M (0 0 0, 10 0 20)"));
 
-	p.x = 5; p.y = 0;
+	p.x = 5;
+	p.y = 0;
 	loc = ptarray_locate_point(line->points, &p, &dist, &l);
 	CU_ASSERT_EQUAL(loc, 0.5);
 	CU_ASSERT_EQUAL(dist, 0.0);
@@ -342,7 +347,7 @@ static void test_ptarray_signed_area()
 
 static void test_ptarray_contains_point()
 {
-/* int ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt, int *winding_number) */
+	/* int ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt, int *winding_number) */
 
 	LWLINE *lwline;
 	POINTARRAY *pa;
@@ -569,51 +574,57 @@ static void test_ptarrayarc_contains_point()
 
 static void test_ptarray_scale()
 {
-  LWLINE *line;
-  POINTARRAY *pa;
-  POINT4D factor;
-  const char *wkt;
-  char *wktout;
+	LWLINE *line;
+	POINTARRAY *pa;
+	POINT4D factor;
+	const char *wkt;
+	char *wktout;
 
-  wkt = "LINESTRING ZM (0 1 2 3,1 2 3 0,-2 -3 0 -1,-3 0 -1 -2)";
-  line = lwgeom_as_lwline(lwgeom_from_text(wkt));
-  pa = line->points;
+	wkt = "LINESTRING ZM (0 1 2 3,1 2 3 0,-2 -3 0 -1,-3 0 -1 -2)";
+	line = lwgeom_as_lwline(lwgeom_from_text(wkt));
+	pa = line->points;
 
-  factor.x = factor.y = factor.z = factor.m = 1;
-  ptarray_scale(pa, &factor);
-  wktout = lwgeom_to_text(lwline_as_lwgeom(line));
-  ASSERT_STRING_EQUAL(wktout, wkt);
-  lwfree(wktout);
+	factor.x = factor.y = factor.z = factor.m = 1;
+	ptarray_scale(pa, &factor);
+	wktout = lwgeom_to_text(lwline_as_lwgeom(line));
+	ASSERT_STRING_EQUAL(wktout, wkt);
+	lwfree(wktout);
 
-  factor.x = 2;
-  wkt = "LINESTRING ZM (0 1 2 3,2 2 3 0,-4 -3 0 -1,-6 0 -1 -2)";
-  ptarray_scale(pa, &factor);
-  wktout = lwgeom_to_text(lwline_as_lwgeom(line));
-  ASSERT_STRING_EQUAL(wktout, wkt);
-  lwfree(wktout);
+	factor.x = 2;
+	wkt = "LINESTRING ZM (0 1 2 3,2 2 3 0,-4 -3 0 -1,-6 0 -1 -2)";
+	ptarray_scale(pa, &factor);
+	wktout = lwgeom_to_text(lwline_as_lwgeom(line));
+	ASSERT_STRING_EQUAL(wktout, wkt);
+	lwfree(wktout);
 
-  factor.x = 1; factor.y = 3;
-  wkt = "LINESTRING ZM (0 3 2 3,2 6 3 0,-4 -9 0 -1,-6 0 -1 -2)";
-  ptarray_scale(pa, &factor);
-  wktout = lwgeom_to_text(lwline_as_lwgeom(line));
-  ASSERT_STRING_EQUAL(wktout, wkt);
-  lwfree(wktout);
+	factor.x = 1;
+	factor.y = 3;
+	wkt = "LINESTRING ZM (0 3 2 3,2 6 3 0,-4 -9 0 -1,-6 0 -1 -2)";
+	ptarray_scale(pa, &factor);
+	wktout = lwgeom_to_text(lwline_as_lwgeom(line));
+	ASSERT_STRING_EQUAL(wktout, wkt);
+	lwfree(wktout);
 
-  factor.x = 1; factor.y = 1; factor.z = -2;
-  wkt = "LINESTRING ZM (0 3 -4 3,2 6 -6 0,-4 -9 0 -1,-6 0 2 -2)";
-  ptarray_scale(pa, &factor);
-  wktout = lwgeom_to_text(lwline_as_lwgeom(line));
-  ASSERT_STRING_EQUAL(wktout, wkt);
-  lwfree(wktout);
+	factor.x = 1;
+	factor.y = 1;
+	factor.z = -2;
+	wkt = "LINESTRING ZM (0 3 -4 3,2 6 -6 0,-4 -9 0 -1,-6 0 2 -2)";
+	ptarray_scale(pa, &factor);
+	wktout = lwgeom_to_text(lwline_as_lwgeom(line));
+	ASSERT_STRING_EQUAL(wktout, wkt);
+	lwfree(wktout);
 
-  factor.x = 1; factor.y = 1; factor.z = 1; factor.m = 2;
-  wkt = "LINESTRING ZM (0 3 -4 6,2 6 -6 0,-4 -9 0 -2,-6 0 2 -4)";
-  ptarray_scale(pa, &factor);
-  wktout = lwgeom_to_text(lwline_as_lwgeom(line));
-  ASSERT_STRING_EQUAL(wktout, wkt);
-  lwfree(wktout);
+	factor.x = 1;
+	factor.y = 1;
+	factor.z = 1;
+	factor.m = 2;
+	wkt = "LINESTRING ZM (0 3 -4 6,2 6 -6 0,-4 -9 0 -2,-6 0 2 -4)";
+	ptarray_scale(pa, &factor);
+	wktout = lwgeom_to_text(lwline_as_lwgeom(line));
+	ASSERT_STRING_EQUAL(wktout, wkt);
+	lwfree(wktout);
 
-  lwline_free(line);
+	lwline_free(line);
 }
 
 

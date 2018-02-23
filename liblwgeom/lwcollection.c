@@ -176,7 +176,11 @@ void lwcollection_reserve(LWCOLLECTION *col, uint32_t ngeoms)
 	if ( ngeoms <= col->maxgeoms ) return;
 
 	/* Allocate more space if we need it */
-	do { col->maxgeoms *= 2; } while ( col->maxgeoms < ngeoms );
+	do
+	{
+		col->maxgeoms *= 2;
+	}
+	while ( col->maxgeoms < ngeoms );
 	col->geoms = lwrealloc(col->geoms, sizeof(LWGEOM*) * col->maxgeoms);
 }
 
@@ -188,13 +192,15 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 {
 	if ( col == NULL || geom == NULL ) return NULL;
 
-	if ( col->geoms == NULL && (col->ngeoms || col->maxgeoms) ) {
+	if ( col->geoms == NULL && (col->ngeoms || col->maxgeoms) )
+	{
 		lwerror("Collection is in inconsistent state. Null memory but non-zero collection counts.");
 		return NULL;
 	}
 
 	/* Check type compatibility */
-	if ( ! lwcollection_allows_subtype(col->type, geom->type) ) {
+	if ( ! lwcollection_allows_subtype(col->type, geom->type) )
+	{
 		lwerror("%s cannot contain %s element", lwtype_name(col->type), lwtype_name(geom->type));
 		return NULL;
 	}
@@ -214,16 +220,16 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 	/* See http://trac.osgeo.org/postgis/ticket/2933 */
 	/* Make sure we don't already have a reference to this geom */
 	{
-	int i = 0;
-	for ( i = 0; i < col->ngeoms; i++ )
-	{
-		if ( col->geoms[i] == geom )
+		int i = 0;
+		for ( i = 0; i < col->ngeoms; i++ )
 		{
-            lwerror("%s [%d] found duplicate geometry in collection %p == %p", __FILE__, __LINE__, col->geoms[i], geom);
-			LWDEBUGF(4, "Found duplicate geometry in collection %p == %p", col->geoms[i], geom);
-			return col;
+			if ( col->geoms[i] == geom )
+			{
+				lwerror("%s [%d] found duplicate geometry in collection %p == %p", __FILE__, __LINE__, col->geoms[i], geom);
+				LWDEBUGF(4, "Found duplicate geometry in collection %p == %p", col->geoms[i], geom);
+				return col;
+			}
 		}
-	}
 	}
 #endif
 
@@ -254,7 +260,7 @@ lwcollection_segmentize2d(const LWCOLLECTION* col, double dist)
 	}
 
 	return lwcollection_construct(
-	    col->type, col->srid, NULL, col->ngeoms, newgeoms);
+	           col->type, col->srid, NULL, col->ngeoms, newgeoms);
 }
 
 /** @brief check for same geometry composition
@@ -416,7 +422,7 @@ lwcollection_extract(LWCOLLECTION* col, int type)
 			{
 				geomlistsize *= 2;
 				geomlist = lwrealloc(
-				    geomlist, sizeof(LWGEOM*) * geomlistsize);
+				               geomlist, sizeof(LWGEOM*) * geomlistsize);
 			}
 			geomlist[geomlistlen] = lwgeom_clone(col->geoms[i]);
 			geomlistlen++;
@@ -426,7 +432,7 @@ lwcollection_extract(LWCOLLECTION* col, int type)
 		{
 			uint32_t j = 0;
 			LWCOLLECTION* tmpcol = lwcollection_extract(
-			    (LWCOLLECTION*)col->geoms[i], type);
+			                           (LWCOLLECTION*)col->geoms[i], type);
 			for (j = 0; j < tmpcol->ngeoms; j++)
 			{
 				/* We've over-run our buffer, double the memory
@@ -435,8 +441,8 @@ lwcollection_extract(LWCOLLECTION* col, int type)
 				{
 					geomlistsize *= 2;
 					geomlist = lwrealloc(geomlist,
-							     sizeof(LWGEOM*) *
-								 geomlistsize);
+					                     sizeof(LWGEOM*) *
+					                     geomlistsize);
 				}
 				geomlist[geomlistlen] = tmpcol->geoms[j];
 				geomlistlen++;
@@ -451,7 +457,7 @@ lwcollection_extract(LWCOLLECTION* col, int type)
 	{
 		GBOX gbox;
 		outcol = lwcollection_construct(
-		    outtype, col->srid, NULL, geomlistlen, geomlist);
+		             outtype, col->srid, NULL, geomlistlen, geomlist);
 		lwgeom_calculate_gbox((LWGEOM*)outcol, &gbox);
 		outcol->bbox = gbox_copy(&gbox);
 	}
@@ -459,9 +465,9 @@ lwcollection_extract(LWCOLLECTION* col, int type)
 	{
 		lwfree(geomlist);
 		outcol = lwcollection_construct_empty(outtype,
-						      col->srid,
-						      FLAGS_GET_Z(col->flags),
-						      FLAGS_GET_M(col->flags));
+		                                      col->srid,
+		                                      FLAGS_GET_Z(col->flags),
+		                                      FLAGS_GET_M(col->flags));
 	}
 
 	return outcol;

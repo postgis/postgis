@@ -151,26 +151,28 @@ static bool is_kml_namespace(xmlNodePtr xnode, bool is_strict)
 	 */
 	if (ns == NULL) return !is_strict;
 
-        for (p=ns ; *p ; p++)
-        {
-                if ((*p)->href == NULL || (*p)->prefix == NULL ||
-                     xnode->ns == NULL || xnode->ns->prefix == NULL) continue;
+	for (p=ns ; *p ; p++)
+	{
+		if ((*p)->href == NULL || (*p)->prefix == NULL ||
+		        xnode->ns == NULL || xnode->ns->prefix == NULL) continue;
 
-                if (!xmlStrcmp(xnode->ns->prefix, (*p)->prefix))
-                {
-                        if (!strcmp((char *) (*p)->href, KML_NS))
-                        {
-                                xmlFree(ns);
-                                return true;
-                        } else {
-                                xmlFree(ns);
-                                return false;
-                        }
-                }
-        }
+		if (!xmlStrcmp(xnode->ns->prefix, (*p)->prefix))
+		{
+			if (!strcmp((char *) (*p)->href, KML_NS))
+			{
+				xmlFree(ns);
+				return true;
+			}
+			else
+			{
+				xmlFree(ns);
+				return false;
+			}
+		}
+	}
 
-        xmlFree(ns);
-        return !is_strict; /* Same reason here to not return false */;
+	xmlFree(ns);
+	return !is_strict; /* Same reason here to not return false */;
 }
 
 
@@ -229,7 +231,7 @@ static double parse_kml_double(char *d, bool space_before, bool space_after)
 	for (st = INIT, p = d ; *p ; p++)
 	{
 
-lwpgnotice("State: %d, *p=%c", st, *p);
+		lwpgnotice("State: %d, *p=%c", st, *p);
 
 		if (isdigit(*p))
 		{
@@ -286,7 +288,7 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
 	int kml_dims;
 	char *p, *q;
 	POINT4D pt;
-  double d;
+	double d;
 
 	if (xnode == NULL) lwpgerror("invalid KML representation");
 
@@ -313,48 +315,57 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
 	/* HasZ, !HasM, 1pt */
 	dpa = ptarray_construct_empty(1, 0, 1);
 
-  while (*p && isspace(*p)) ++p;
+	while (*p && isspace(*p)) ++p;
 	for (kml_dims=0; *p ; p++)
 	{
 //lwpgnotice("*p:%c, kml_dims:%d", *p, kml_dims);
-    if ( isdigit(*p) || *p == '+' || *p == '-' || *p == '.' ) {
-			  kml_dims++;
-        errno = 0; d = strtod(p, &q);
-        if ( errno != 0 ) {
-          // TODO: destroy dpa, return NULL
-          lwpgerror("invalid KML representation"); /*: %s", strerror(errno));*/
-        }
-        if      (kml_dims == 1) pt.x = d;
-        else if (kml_dims == 2) pt.y = d;
-        else if (kml_dims == 3) pt.z = d;
-        else {
-          lwpgerror("invalid KML representation"); /* (more than 3 dimensions)"); */
-          // TODO: destroy dpa, return NULL
-        }
+		if ( isdigit(*p) || *p == '+' || *p == '-' || *p == '.' )
+		{
+			kml_dims++;
+			errno = 0;
+			d = strtod(p, &q);
+			if ( errno != 0 )
+			{
+				// TODO: destroy dpa, return NULL
+				lwpgerror("invalid KML representation"); /*: %s", strerror(errno));*/
+			}
+			if      (kml_dims == 1) pt.x = d;
+			else if (kml_dims == 2) pt.y = d;
+			else if (kml_dims == 3) pt.z = d;
+			else
+			{
+				lwpgerror("invalid KML representation"); /* (more than 3 dimensions)"); */
+				// TODO: destroy dpa, return NULL
+			}
 
 //lwpgnotice("after strtod d:%f, *q:%c, kml_dims:%d", d, *q, kml_dims);
 
-        if ( *q && ! isspace(*q) && *q != ',' ) {
-          lwpgerror("invalid KML representation"); /* (invalid character %c follows ordinate value)", *q); */
-        }
+			if ( *q && ! isspace(*q) && *q != ',' )
+			{
+				lwpgerror("invalid KML representation"); /* (invalid character %c follows ordinate value)", *q); */
+			}
 
-        /* Look-ahead to see if we're done reading */
-        while (*q && isspace(*q)) ++q;
-        if ( isdigit(*q) || *q == '+' || *q == '-' || *q == '.' || ! *q ) {
-          if ( kml_dims < 2 ) lwpgerror("invalid KML representation"); /* (not enough ordinates)"); */
-          else if ( kml_dims < 3 ) *hasz = false;
-          if ( ! seen_kml_dims ) seen_kml_dims = kml_dims;
-          else if ( seen_kml_dims != kml_dims ) {
-            lwpgerror("invalid KML representation: mixed coordinates dimension");
-          }
-          ptarray_append_point(dpa, &pt, LW_TRUE);
-          kml_dims = 0;
-        }
-        p = q-1; /* will be incrementedon next iteration */
+			/* Look-ahead to see if we're done reading */
+			while (*q && isspace(*q)) ++q;
+			if ( isdigit(*q) || *q == '+' || *q == '-' || *q == '.' || ! *q )
+			{
+				if ( kml_dims < 2 ) lwpgerror("invalid KML representation"); /* (not enough ordinates)"); */
+				else if ( kml_dims < 3 ) *hasz = false;
+				if ( ! seen_kml_dims ) seen_kml_dims = kml_dims;
+				else if ( seen_kml_dims != kml_dims )
+				{
+					lwpgerror("invalid KML representation: mixed coordinates dimension");
+				}
+				ptarray_append_point(dpa, &pt, LW_TRUE);
+				kml_dims = 0;
+			}
+			p = q-1; /* will be incrementedon next iteration */
 //lwpgnotice("after look-ahead *p:%c, kml_dims:%d", *p, kml_dims);
-    } else if ( *p != ',' && ! isspace(*p) ) {
-          lwpgerror("invalid KML representation"); /* (unexpected character %c)", *p); */
-    }
+		}
+		else if ( *p != ',' && ! isspace(*p) )
+		{
+			lwpgerror("invalid KML representation"); /* (unexpected character %c)", *p); */
+		}
 	}
 
 	xmlFree(kml_coord);
@@ -426,7 +437,7 @@ static LWGEOM* parse_kml_polygon(xmlNodePtr xnode, bool *hasz)
 				lwpgerror("invalid KML representation");
 
 			if ((!*hasz && !ptarray_is_closed_2d(ppa[0])) ||
-			    ( *hasz && !ptarray_is_closed_3d(ppa[0])))
+			        ( *hasz && !ptarray_is_closed_3d(ppa[0])))
 			{
 				POINT4D pt;
 				getPoint4d_p(ppa[0], 0, &pt);
@@ -462,7 +473,7 @@ static LWGEOM* parse_kml_polygon(xmlNodePtr xnode, bool *hasz)
 				lwpgerror("invalid KML representation");
 
 			if ((!*hasz && !ptarray_is_closed_2d(ppa[ring])) ||
-			    ( *hasz && !ptarray_is_closed_3d(ppa[ring])))
+			        ( *hasz && !ptarray_is_closed_3d(ppa[ring])))
 			{
 				POINT4D pt;
 				getPoint4d_p(ppa[ring], 0, &pt);
@@ -498,9 +509,9 @@ static LWGEOM* parse_kml_multi(xmlNodePtr xnode, bool *hasz)
 		if (!is_kml_namespace(xa, false)) continue;
 
 		if (	   !strcmp((char *) xa->name, "Point")
-		        || !strcmp((char *) xa->name, "LineString")
-		        || !strcmp((char *) xa->name, "Polygon")
-		        || !strcmp((char *) xa->name, "MultiGeometry"))
+		           || !strcmp((char *) xa->name, "LineString")
+		           || !strcmp((char *) xa->name, "Polygon")
+		           || !strcmp((char *) xa->name, "MultiGeometry"))
 		{
 
 			if (xa->children == NULL) break;

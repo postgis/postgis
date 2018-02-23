@@ -129,10 +129,10 @@ int getSRIDbySRS(const char* srs)
 		return 0;
 	}
 	sprintf(query,
-		"SELECT srid "
-		"FROM spatial_ref_sys, "
-		"regexp_matches('%s', E'([a-z]+):([0-9]+)', 'gi') AS re "
-		"WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid", srs);
+	        "SELECT srid "
+	        "FROM spatial_ref_sys, "
+	        "regexp_matches('%s', E'([a-z]+):([0-9]+)', 'gi') AS re "
+	        "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid", srs);
 
 	err = SPI_exec(query, 1);
 	if ( err < 0 )
@@ -146,10 +146,10 @@ int getSRIDbySRS(const char* srs)
 	if (SPI_processed <= 0)
 	{
 		sprintf(query,
-			"SELECT srid "
-			"FROM spatial_ref_sys, "
-			"regexp_matches('%s', E'urn:ogc:def:crs:([a-z]+):.*:([0-9]+)', 'gi') AS re "
-			"WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid", srs);
+		        "SELECT srid "
+		        "FROM spatial_ref_sys, "
+		        "regexp_matches('%s', E'urn:ogc:def:crs:([a-z]+):.*:([0-9]+)', 'gi') AS re "
+		        "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid", srs);
 
 		err = SPI_exec(query, 1);
 		if ( err < 0 )
@@ -159,7 +159,8 @@ int getSRIDbySRS(const char* srs)
 			return 0;
 		}
 
-		if (SPI_processed <= 0) {
+		if (SPI_processed <= 0)
+		{
 			SPI_finish();
 			return 0;
 		}
@@ -284,7 +285,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	{
 		if (lwopts & LW_GML_EXTENT)
 			gml = lwgeom_extent_to_gml2(
-			    lwgeom, srs, precision, prefix);
+			          lwgeom, srs, precision, prefix);
 		else
 			gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
 	}
@@ -292,10 +293,10 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	{
 		if (lwopts & LW_GML_EXTENT)
 			gml = lwgeom_extent_to_gml3(
-			    lwgeom, srs, precision, lwopts, prefix);
+			          lwgeom, srs, precision, lwopts, prefix);
 		else
 			gml = lwgeom_to_gml3(
-			    lwgeom, srs, precision, lwopts, prefix, gml_id);
+			          lwgeom, srs, precision, lwopts, prefix, gml_id);
 	}
 
 	lwgeom_free(lwgeom);
@@ -464,8 +465,8 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 				if ( !srs )
 				{
 					elog(ERROR,
-					      "SRID %i unknown in spatial_ref_sys table",
-					      srid);
+					     "SRID %i unknown in spatial_ref_sys table",
+					     srid);
 					PG_RETURN_NULL();
 				}
 			}
@@ -604,8 +605,10 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	else if (option & 1) srs = getSRSbySRID(srid, false);
 	else                 srs = getSRSbySRID(srid, true);
 
-	if (option & LW_X3D_USE_GEOCOORDS) {
-		if (srid != 4326) {
+	if (option & LW_X3D_USE_GEOCOORDS)
+	{
+		if (srid != 4326)
+		{
 			PG_FREE_IF_COPY(geom, 0);
 			/** TODO: we need to support UTM and other coordinate systems supported by X3D eventually
 			http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata.html#t-earthgeoids **/
@@ -641,7 +644,8 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
-	if (gserialized_get_srid(geom) != 4326) {
+	if (gserialized_get_srid(geom) != 4326)
+	{
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR, "Only SRID 4326 is supported.");
 		PG_RETURN_NULL();

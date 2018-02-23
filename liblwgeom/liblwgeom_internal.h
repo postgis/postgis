@@ -207,14 +207,15 @@ void ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, uint32_t minpts);
 /*
 * The possible ways a pair of segments can interact. Returned by lw_segment_intersects
 */
-enum CG_SEGMENT_INTERSECTION_TYPE {
-    SEG_ERROR = -1,
-    SEG_NO_INTERSECTION = 0,
-    SEG_COLINEAR = 1,
-    SEG_CROSS_LEFT = 2,
-    SEG_CROSS_RIGHT = 3,
-    SEG_TOUCH_LEFT = 4,
-    SEG_TOUCH_RIGHT = 5
+enum CG_SEGMENT_INTERSECTION_TYPE
+{
+	SEG_ERROR = -1,
+	SEG_NO_INTERSECTION = 0,
+	SEG_COLINEAR = 1,
+	SEG_CROSS_LEFT = 2,
+	SEG_CROSS_RIGHT = 3,
+	SEG_TOUCH_LEFT = 4,
+	SEG_TOUCH_RIGHT = 5
 };
 
 /*

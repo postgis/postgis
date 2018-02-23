@@ -131,24 +131,24 @@ static uint32_t lwtype_from_twkb_type(uint8_t twkb_type)
 {
 	switch (twkb_type)
 	{
-		case 1:
-			return POINTTYPE;
-		case 2:
-			return LINETYPE;
-		case 3:
-			return POLYGONTYPE;
-		case 4:
-			return MULTIPOINTTYPE;
-		case 5:
-			return MULTILINETYPE;
-		case 6:
-			return MULTIPOLYGONTYPE;
-		case 7:
-			return COLLECTIONTYPE;
+	case 1:
+		return POINTTYPE;
+	case 2:
+		return LINETYPE;
+	case 3:
+		return POLYGONTYPE;
+	case 4:
+		return MULTIPOINTTYPE;
+	case 5:
+		return MULTILINETYPE;
+	case 6:
+		return MULTIPOLYGONTYPE;
+	case 7:
+		return COLLECTIONTYPE;
 
-		default: /* Error! */
-			lwerror("Unknown WKB type");
-			return 0;
+	default: /* Error! */
+		lwerror("Unknown WKB type");
+		return 0;
 	}
 	return 0;
 }
@@ -608,31 +608,31 @@ LWGEOM* lwgeom_from_twkb_state(twkb_parse_state *s)
 	/* Switch to code for the particular type we're dealing with */
 	switch( s->lwtype )
 	{
-		case POINTTYPE:
-			geom = lwpoint_as_lwgeom(lwpoint_from_twkb_state(s));
-			break;
-		case LINETYPE:
-			geom = lwline_as_lwgeom(lwline_from_twkb_state(s));
-			break;
-		case POLYGONTYPE:
-			geom = lwpoly_as_lwgeom(lwpoly_from_twkb_state(s));
-			break;
-		case MULTIPOINTTYPE:
-			geom = lwcollection_as_lwgeom(lwmultipoint_from_twkb_state(s));
-			break;
-		case MULTILINETYPE:
-			geom = lwcollection_as_lwgeom(lwmultiline_from_twkb_state(s));
-			break;
-		case MULTIPOLYGONTYPE:
-			geom = lwcollection_as_lwgeom(lwmultipoly_from_twkb_state(s));
-			break;
-		case COLLECTIONTYPE:
-			geom = lwcollection_as_lwgeom(lwcollection_from_twkb_state(s));
-			break;
-		/* Unknown type! */
-		default:
-			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(s->lwtype), s->lwtype);
-			break;
+	case POINTTYPE:
+		geom = lwpoint_as_lwgeom(lwpoint_from_twkb_state(s));
+		break;
+	case LINETYPE:
+		geom = lwline_as_lwgeom(lwline_from_twkb_state(s));
+		break;
+	case POLYGONTYPE:
+		geom = lwpoly_as_lwgeom(lwpoly_from_twkb_state(s));
+		break;
+	case MULTIPOINTTYPE:
+		geom = lwcollection_as_lwgeom(lwmultipoint_from_twkb_state(s));
+		break;
+	case MULTILINETYPE:
+		geom = lwcollection_as_lwgeom(lwmultiline_from_twkb_state(s));
+		break;
+	case MULTIPOLYGONTYPE:
+		geom = lwcollection_as_lwgeom(lwmultipoly_from_twkb_state(s));
+		break;
+	case COLLECTIONTYPE:
+		geom = lwcollection_as_lwgeom(lwcollection_from_twkb_state(s));
+		break;
+	/* Unknown type! */
+	default:
+		lwerror("Unsupported geometry type: %s [%d]", lwtype_name(s->lwtype), s->lwtype);
+		break;
 	}
 
 	if ( has_bbox )

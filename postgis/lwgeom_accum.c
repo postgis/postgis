@@ -190,7 +190,7 @@ pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, __attribute__((__unused__)) 
 	Assert(fcinfo->context &&
 	       (IsA(fcinfo->context, AggState) ||
 	        IsA(fcinfo->context, WindowAggState))
-	       );
+	      );
 
 	state = p->a;
 	dims[0] = state->nelems;

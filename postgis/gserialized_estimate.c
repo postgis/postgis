@@ -103,7 +103,7 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 #include "../postgis_config.h"
 
 #if POSTGIS_PGSQL_VERSION >= 93
-	#include "access/htup_details.h"
+#include "access/htup_details.h"
 #endif
 
 #include "stringbuffer.h"
@@ -803,7 +803,7 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 
 			/* Skip boxes that our outside our working range */
 			if ( minoffset < 0 || minoffset > swidth ||
-			     maxoffset < 0 || maxoffset > swidth )
+			        maxoffset < 0 || maxoffset > swidth )
 			{
 				continue;
 			}
@@ -880,18 +880,19 @@ pg_nd_stats_from_tuple(HeapTuple stats_tuple, int mode)
 	/* If we're in 2D mode, set the kind appropriately */
 	if ( mode == 2 ) stats_kind = STATISTIC_KIND_2D;
 
-    /* Then read the geom status histogram from that */
+	/* Then read the geom status histogram from that */
 
 #if POSTGIS_PGSQL_VERSION < 100
 	float4 *floatptr;
 	int nvalues;
 
 	rv = get_attstatsslot(stats_tuple, 0, 0, stats_kind, InvalidOid,
-						NULL, NULL, NULL, &floatptr, &nvalues);
+	                      NULL, NULL, NULL, &floatptr, &nvalues);
 
-	if ( ! rv ) {
+	if ( ! rv )
+	{
 		POSTGIS_DEBUGF(2,
-				"no slot of kind %d in stats tuple", stats_kind);
+		               "no slot of kind %d in stats tuple", stats_kind);
 		return NULL;
 	}
 
@@ -904,10 +905,11 @@ pg_nd_stats_from_tuple(HeapTuple stats_tuple, int mode)
 #else /* PostgreSQL 10 or higher */
 	AttStatsSlot sslot;
 	rv = get_attstatsslot(&sslot, stats_tuple, stats_kind, InvalidOid,
-						 ATTSTATSSLOT_NUMBERS);
-	if ( ! rv ) {
+	                      ATTSTATSSLOT_NUMBERS);
+	if ( ! rv )
+	{
 		POSTGIS_DEBUGF(2,
-				"no slot of kind %d in stats tuple", stats_kind);
+		               "no slot of kind %d in stats tuple", stats_kind);
 		return NULL;
 	}
 
@@ -958,8 +960,8 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode, bool only_par
 	if ( ! nd_stats )
 	{
 		POSTGIS_DEBUGF(2,
-			"histogram for attribute %d of table \"%s\" does not exist?",
-			att_num, get_rel_name(table_oid));
+		               "histogram for attribute %d of table \"%s\" does not exist?",
+		               att_num, get_rel_name(table_oid));
 	}
 
 	return nd_stats;
@@ -984,7 +986,8 @@ pg_get_nd_stats_by_name(const Oid table_oid, const text *att_text, int mode, boo
 	{
 		/* Get the attribute number */
 		att_num = get_attnum(table_oid, att_name);
-		if  ( ! att_num ) {
+		if  ( ! att_num )
+		{
 			elog(ERROR, "attribute \"%s\" does not exist", att_name);
 			return NULL;
 		}
@@ -1220,11 +1223,11 @@ PG_FUNCTION_INFO_V1(gserialized_gist_joinsel_nd);
 Datum gserialized_gist_joinsel_nd(PG_FUNCTION_ARGS)
 {
 	PG_RETURN_DATUM(DirectFunctionCall5(
-	   gserialized_gist_joinsel,
-	   PG_GETARG_DATUM(0), PG_GETARG_DATUM(1),
-	   PG_GETARG_DATUM(2), PG_GETARG_DATUM(3),
-	   Int32GetDatum(0) /* ND mode */
-	));
+	                    gserialized_gist_joinsel,
+	                    PG_GETARG_DATUM(0), PG_GETARG_DATUM(1),
+	                    PG_GETARG_DATUM(2), PG_GETARG_DATUM(3),
+	                    Int32GetDatum(0) /* ND mode */
+	                ));
 }
 
 /**
@@ -1235,11 +1238,11 @@ PG_FUNCTION_INFO_V1(gserialized_gist_joinsel_2d);
 Datum gserialized_gist_joinsel_2d(PG_FUNCTION_ARGS)
 {
 	PG_RETURN_DATUM(DirectFunctionCall5(
-	   gserialized_gist_joinsel,
-	   PG_GETARG_DATUM(0), PG_GETARG_DATUM(1),
-	   PG_GETARG_DATUM(2), PG_GETARG_DATUM(3),
-	   Int32GetDatum(2) /* 2D mode */
-	));
+	                    gserialized_gist_joinsel,
+	                    PG_GETARG_DATUM(0), PG_GETARG_DATUM(1),
+	                    PG_GETARG_DATUM(2), PG_GETARG_DATUM(3),
+	                    Int32GetDatum(2) /* 2D mode */
+	                ));
 }
 
 /**
@@ -1292,7 +1295,7 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 	relid2 = getrelid(var2->varno, root->parse->rtable);
 
 	POSTGIS_DEBUGF(3, "using relations \"%s\" Oid(%d), \"%s\" Oid(%d)",
-	                 get_rel_name(relid1) ? get_rel_name(relid1) : "NULL", relid1, get_rel_name(relid2) ? get_rel_name(relid2) : "NULL", relid2);
+	               get_rel_name(relid1) ? get_rel_name(relid1) : "NULL", relid1, get_rel_name(relid2) ? get_rel_name(relid2) : "NULL", relid2);
 
 	/* Pull the stats from the stats system. */
 	stats1 = pg_get_nd_stats(relid1, var1->varattno, mode, false);
@@ -1301,7 +1304,7 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 	/* If we can't get stats, we have to stop here! */
 	if ( ! stats1 )
 	{
-		POSTGIS_DEBUGF(3, "unable to retrieve stats for \"%s\" Oid(%d)", get_rel_name(relid1) ? get_rel_name(relid1) : "NULL" , relid1);
+		POSTGIS_DEBUGF(3, "unable to retrieve stats for \"%s\" Oid(%d)", get_rel_name(relid1) ? get_rel_name(relid1) : "NULL", relid1);
 		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
 	}
 	else if ( ! stats2 )
@@ -1341,7 +1344,7 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
  */
 static void
 compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
-                          int sample_rows, double total_rows, int mode)
+                               int sample_rows, double total_rows, int mode)
 {
 	MemoryContext old_context;
 	int d, i;                          /* Counters */
@@ -1708,8 +1711,8 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		memset(at, 0, sizeof(int)*ND_DIMS);
 
 		POSTGIS_DEBUGF(3, " feature %d: ibox (%d, %d, %d, %d) (%d, %d, %d, %d)", i,
-		  nd_ibox.min[0], nd_ibox.min[1], nd_ibox.min[2], nd_ibox.min[3],
-		  nd_ibox.max[0], nd_ibox.max[1], nd_ibox.max[2], nd_ibox.max[3]);
+		               nd_ibox.min[0], nd_ibox.min[1], nd_ibox.min[2], nd_ibox.min[3],
+		               nd_ibox.max[0], nd_ibox.max[1], nd_ibox.max[2], nd_ibox.max[3]);
 
 		for ( d = 0; d < nd_stats->ndims; d++ )
 		{
@@ -2153,11 +2156,11 @@ PG_FUNCTION_INFO_V1(gserialized_gist_sel_2d);
 Datum gserialized_gist_sel_2d(PG_FUNCTION_ARGS)
 {
 	PG_RETURN_DATUM(DirectFunctionCall5(
-	   gserialized_gist_sel,
-	   PG_GETARG_DATUM(0), PG_GETARG_DATUM(1),
-	   PG_GETARG_DATUM(2), PG_GETARG_DATUM(3),
-	   Int32GetDatum(2) /* 2-D mode */
-	));
+	                    gserialized_gist_sel,
+	                    PG_GETARG_DATUM(0), PG_GETARG_DATUM(1),
+	                    PG_GETARG_DATUM(2), PG_GETARG_DATUM(3),
+	                    Int32GetDatum(2) /* 2-D mode */
+	                ));
 }
 
 /**
@@ -2168,11 +2171,11 @@ PG_FUNCTION_INFO_V1(gserialized_gist_sel_nd);
 Datum gserialized_gist_sel_nd(PG_FUNCTION_ARGS)
 {
 	PG_RETURN_DATUM(DirectFunctionCall5(
-	   gserialized_gist_sel,
-	   PG_GETARG_DATUM(0), PG_GETARG_DATUM(1),
-	   PG_GETARG_DATUM(2), PG_GETARG_DATUM(3),
-	   Int32GetDatum(0) /* N-D mode */
-	));
+	                    gserialized_gist_sel,
+	                    PG_GETARG_DATUM(0), PG_GETARG_DATUM(1),
+	                    PG_GETARG_DATUM(2), PG_GETARG_DATUM(3),
+	                    Int32GetDatum(0) /* N-D mode */
+	                ));
 }
 
 /**
@@ -2251,7 +2254,8 @@ Datum gserialized_gist_sel(PG_FUNCTION_ARGS)
 
 	/* Get pg_statistic row */
 	examine_variable(root, (Node*)self, 0, &vardata);
-	if ( vardata.statsTuple ) {
+	if ( vardata.statsTuple )
+	{
 		nd_stats = pg_nd_stats_from_tuple(vardata.statsTuple, mode);
 	}
 	ReleaseVariableStats(vardata);
@@ -2343,7 +2347,8 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 		nd_stats = pg_get_nd_stats_by_name(tbl_oid, col, 2, only_parent);
 
 		/* Error out on no stats */
-		if ( ! nd_stats ) {
+		if ( ! nd_stats )
+		{
 			elog(WARNING, "stats for \"%s.%s\" do not exist", tbl, text_to_cstring(col));
 			PG_RETURN_NULL();
 		}
@@ -2374,18 +2379,18 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 {
 	if ( PG_NARGS() == 3 )
 	{
-	    PG_RETURN_DATUM(
-	    DirectFunctionCall3(gserialized_estimated_extent,
-	    PG_GETARG_DATUM(0),
-	    PG_GETARG_DATUM(1),
-        PG_GETARG_DATUM(2)));
+		PG_RETURN_DATUM(
+		    DirectFunctionCall3(gserialized_estimated_extent,
+		                        PG_GETARG_DATUM(0),
+		                        PG_GETARG_DATUM(1),
+		                        PG_GETARG_DATUM(2)));
 	}
 	else if ( PG_NARGS() == 2 )
 	{
-	    PG_RETURN_DATUM(
-	    DirectFunctionCall2(gserialized_estimated_extent,
-	    PG_GETARG_DATUM(0),
-	    PG_GETARG_DATUM(1)));
+		PG_RETURN_DATUM(
+		    DirectFunctionCall2(gserialized_estimated_extent,
+		                        PG_GETARG_DATUM(0),
+		                        PG_GETARG_DATUM(1)));
 	}
 
 	elog(ERROR, "geometry_estimated_extent() called with wrong number of arguments");
@@ -2397,8 +2402,8 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 static Oid
 typname_to_oid(const char *typname)
 {
-    Oid typoid = TypenameGetTypid(typname);
-    if (OidIsValid(typoid) && get_typisdefined(typoid))
+	Oid typoid = TypenameGetTypid(typname);
+	if (OidIsValid(typoid) && get_typisdefined(typoid))
 		return typoid;
 	else
 		return InvalidOid;

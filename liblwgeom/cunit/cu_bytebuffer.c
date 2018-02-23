@@ -51,7 +51,7 @@ void bytebuffer_suite_setup(void);
 void bytebuffer_suite_setup(void)
 {
 	PG_TEST(test_bytebuffer_append),
-	CU_TEST_INFO_NULL
+	        CU_TEST_INFO_NULL
 };
 CU_SuiteInfo bytebuffer_suite = {"bytebuffer", NULL, NULL, bytebuffer_tests };
 

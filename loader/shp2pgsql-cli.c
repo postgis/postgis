@@ -25,7 +25,7 @@ usage()
 	          "OPTIONS:\n" ));
 	printf(_( "  -s [<from>:]<srid> Set the SRID field. Defaults to %d.\n"
 	          "      Optionally reprojects from given SRID (cannot be used with -D).\n"),
-	          SRID_UNKNOWN);
+	       SRID_UNKNOWN);
 	printf(_( " (-d|a|c|p) These are mutually exclusive options:\n"
 	          "     -d  Drops the table, then recreates it and populates\n"
 	          "         it with current shape file data.\n"
@@ -59,11 +59,11 @@ usage()
 	printf(_( "  -N <policy> NULL geometries handling policy (insert*,skip,abort).\n" ));
 	printf(_( "  -n  Only import DBF file.\n" ));
 	printf(_( "  -T <tablespace> Specify the tablespace for the new table.\n"
-                  "      Note that indexes will still use the default tablespace unless the\n"
-                  "      -X flag is also used.\n"));
+	          "      Note that indexes will still use the default tablespace unless the\n"
+	          "      -X flag is also used.\n"));
 	printf(_( "  -X <tablespace> Specify the tablespace for the table's indexes.\n"
-                  "      This applies to the primary key, and the spatial index if\n"
-                  "      the -I flag is used.\n" ));
+	          "      This applies to the primary key, and the spatial index if\n"
+	          "      the -I flag is used.\n" ));
 	printf(_( "  -?  Display this help screen.\n" ));
 	printf( "\n" );
 	printf(_( "  An argument of `--' disables further option processing.\n" ));

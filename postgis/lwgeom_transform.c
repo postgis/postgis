@@ -147,8 +147,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		pfree(geom);
 
 		elog(ERROR,
-		    "transform_geom: could not parse proj4 string '%s' %s",
-		    input_proj4, pj_errstr);
+		     "transform_geom: could not parse proj4 string '%s' %s",
+		     input_proj4, pj_errstr);
 		PG_RETURN_NULL();
 	}
 	pfree(input_proj4);
@@ -166,8 +166,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		pfree(geom);
 
 		elog(ERROR,
-			"transform_geom: couldn't parse proj4 output string: '%s': %s",
-			output_proj4, pj_errstr);
+		     "transform_geom: couldn't parse proj4 output string: '%s': %s",
+		     output_proj4, pj_errstr);
 		PG_RETURN_NULL();
 	}
 	pfree(output_proj4);

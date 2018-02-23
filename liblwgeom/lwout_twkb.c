@@ -36,30 +36,30 @@ static uint8_t lwgeom_twkb_type(const LWGEOM *geom)
 
 	switch ( geom->type )
 	{
-		case POINTTYPE:
-			twkb_type = WKB_POINT_TYPE;
-			break;
-		case LINETYPE:
-			twkb_type = WKB_LINESTRING_TYPE;
-			break;
-		case POLYGONTYPE:
-			twkb_type = WKB_POLYGON_TYPE;
-			break;
-		case MULTIPOINTTYPE:
-			twkb_type = WKB_MULTIPOINT_TYPE;
-			break;
-		case MULTILINETYPE:
-			twkb_type = WKB_MULTILINESTRING_TYPE;
-			break;
-		case MULTIPOLYGONTYPE:
-			twkb_type = WKB_MULTIPOLYGON_TYPE;
-			break;
-		case COLLECTIONTYPE:
-			twkb_type = WKB_GEOMETRYCOLLECTION_TYPE;
-			break;
-		default:
-			lwerror("Unsupported geometry type: %s [%d]",
-				lwtype_name(geom->type), geom->type);
+	case POINTTYPE:
+		twkb_type = WKB_POINT_TYPE;
+		break;
+	case LINETYPE:
+		twkb_type = WKB_LINESTRING_TYPE;
+		break;
+	case POLYGONTYPE:
+		twkb_type = WKB_POLYGON_TYPE;
+		break;
+	case MULTIPOINTTYPE:
+		twkb_type = WKB_MULTIPOINT_TYPE;
+		break;
+	case MULTILINETYPE:
+		twkb_type = WKB_MULTILINESTRING_TYPE;
+		break;
+	case MULTIPOLYGONTYPE:
+		twkb_type = WKB_MULTIPOLYGON_TYPE;
+		break;
+	case COLLECTIONTYPE:
+		twkb_type = WKB_GEOMETRYCOLLECTION_TYPE;
+		break;
+	default:
+		lwerror("Unsupported geometry type: %s [%d]",
+		        lwtype_name(geom->type), geom->type);
 	}
 	return twkb_type;
 }
@@ -365,39 +365,39 @@ static int lwgeom_to_twkb_buf(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_ST
 
 	switch ( geom->type )
 	{
-		case POINTTYPE:
-		{
-			LWDEBUGF(4,"Type found is Point, %d", geom->type);
-			return lwpoint_to_twkb_buf((LWPOINT*) geom, globals, ts);
-		}
-		case LINETYPE:
-		{
-			LWDEBUGF(4,"Type found is Linestring, %d", geom->type);
-			return lwline_to_twkb_buf((LWLINE*) geom, globals, ts);
-		}
-		/* Polygon has 'nrings' and 'rings' elements */
-		case POLYGONTYPE:
-		{
-			LWDEBUGF(4,"Type found is Polygon, %d", geom->type);
-			return lwpoly_to_twkb_buf((LWPOLY*)geom, globals, ts);
-		}
+	case POINTTYPE:
+	{
+		LWDEBUGF(4,"Type found is Point, %d", geom->type);
+		return lwpoint_to_twkb_buf((LWPOINT*) geom, globals, ts);
+	}
+	case LINETYPE:
+	{
+		LWDEBUGF(4,"Type found is Linestring, %d", geom->type);
+		return lwline_to_twkb_buf((LWLINE*) geom, globals, ts);
+	}
+	/* Polygon has 'nrings' and 'rings' elements */
+	case POLYGONTYPE:
+	{
+		LWDEBUGF(4,"Type found is Polygon, %d", geom->type);
+		return lwpoly_to_twkb_buf((LWPOLY*)geom, globals, ts);
+	}
 
-		/* All these Collection types have 'ngeoms' and 'geoms' elements */
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		{
-			LWDEBUGF(4,"Type found is Multi, %d", geom->type);
-			return lwmulti_to_twkb_buf((LWCOLLECTION*)geom, globals, ts);
-		}
-		case COLLECTIONTYPE:
-		{
-			LWDEBUGF(4,"Type found is collection, %d", geom->type);
-			return lwcollection_to_twkb_buf((LWCOLLECTION*) geom, globals, ts);
-		}
-		/* Unknown type! */
-		default:
-			lwerror("Unsupported geometry type: %s [%d]", lwtype_name((geom)->type), (geom)->type);
+	/* All these Collection types have 'ngeoms' and 'geoms' elements */
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	{
+		LWDEBUGF(4,"Type found is Multi, %d", geom->type);
+		return lwmulti_to_twkb_buf((LWCOLLECTION*)geom, globals, ts);
+	}
+	case COLLECTIONTYPE:
+	{
+		LWDEBUGF(4,"Type found is collection, %d", geom->type);
+		return lwcollection_to_twkb_buf((LWCOLLECTION*) geom, globals, ts);
+	}
+	/* Unknown type! */
+	default:
+		lwerror("Unsupported geometry type: %s [%d]", lwtype_name((geom)->type), (geom)->type);
 	}
 
 	return 0;
@@ -565,8 +565,8 @@ static int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWK
 */
 uint8_t*
 lwgeom_to_twkb_with_idlist(const LWGEOM *geom, int64_t *idlist, uint8_t variant,
-               int8_t precision_xy, int8_t precision_z, int8_t precision_m,
-               size_t *twkb_size)
+                           int8_t precision_xy, int8_t precision_z, int8_t precision_m,
+                           size_t *twkb_size)
 {
 	LWDEBUGF(2, "Entered %s", __func__);
 	LWDEBUGF(2, "variant value %x", variant);

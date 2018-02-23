@@ -130,12 +130,12 @@ int lwgeom_contains_point(const LWGEOM *geom, const POINT2D *pt)
 {
 	switch( geom->type )
 	{
-		case LINETYPE:
-			return ptarray_contains_point(((LWLINE*)geom)->points, pt);
-		case CIRCSTRINGTYPE:
-			return ptarrayarc_contains_point(((LWCIRCSTRING*)geom)->points, pt);
-		case COMPOUNDTYPE:
-			return lwcompound_contains_point((LWCOMPOUND*)geom, pt);
+	case LINETYPE:
+		return ptarray_contains_point(((LWLINE*)geom)->points, pt);
+	case CIRCSTRINGTYPE:
+		return ptarrayarc_contains_point(((LWCIRCSTRING*)geom)->points, pt);
+	case COMPOUNDTYPE:
+		return lwcompound_contains_point((LWCOMPOUND*)geom, pt);
 	}
 	lwerror("lwgeom_contains_point failed");
 	return LW_FAILURE;
@@ -170,7 +170,8 @@ lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt)
 		else
 		{
 			lwcirc = lwgeom_as_lwcircstring(lwgeom);
-			if ( ! lwcirc ) {
+			if ( ! lwcirc )
+			{
 				lwerror("Unexpected component of type %s in compound curve", lwtype_name(lwgeom->type));
 				return 0;
 			}
@@ -203,10 +204,10 @@ lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt)
 LWCOMPOUND *
 lwcompound_construct_from_lwline(const LWLINE *lwline)
 {
-  LWCOMPOUND* ogeom = lwcompound_construct_empty(lwline->srid, FLAGS_GET_Z(lwline->flags), FLAGS_GET_M(lwline->flags));
-  lwcompound_add_lwgeom(ogeom, lwgeom_clone((LWGEOM*)lwline));
+	LWCOMPOUND* ogeom = lwcompound_construct_empty(lwline->srid, FLAGS_GET_Z(lwline->flags), FLAGS_GET_M(lwline->flags));
+	lwcompound_add_lwgeom(ogeom, lwgeom_clone((LWGEOM*)lwline));
 	/* ogeom->bbox = lwline->bbox; */
-  return ogeom;
+	return ogeom;
 }
 
 LWPOINT*

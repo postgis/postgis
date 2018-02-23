@@ -24,7 +24,8 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_raster_geos_overlaps() {
+static void test_raster_geos_overlaps()
+{
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -61,10 +62,10 @@ static void test_raster_geos_overlaps() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast1, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -95,18 +96,18 @@ static void test_raster_geos_overlaps() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
 	rtn = rt_raster_overlaps(
-		rast1, -1,
-		rast2, -1,
-		&result
-	);
+	          rast1, -1,
+	          rast2, -1,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -124,10 +125,10 @@ static void test_raster_geos_overlaps() {
 	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -146,10 +147,10 @@ static void test_raster_geos_overlaps() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -169,10 +170,10 @@ static void test_raster_geos_overlaps() {
 	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -193,10 +194,10 @@ static void test_raster_geos_overlaps() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -219,10 +220,10 @@ static void test_raster_geos_overlaps() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -246,10 +247,10 @@ static void test_raster_geos_overlaps() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -267,10 +268,10 @@ static void test_raster_geos_overlaps() {
 	rt_raster_set_offsets(rast2, -0.1, 0.1);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -310,10 +311,10 @@ static void test_raster_geos_overlaps() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -343,10 +344,10 @@ static void test_raster_geos_overlaps() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -374,10 +375,10 @@ static void test_raster_geos_overlaps() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -405,10 +406,10 @@ static void test_raster_geos_overlaps() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -436,10 +437,10 @@ static void test_raster_geos_overlaps() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -466,10 +467,10 @@ static void test_raster_geos_overlaps() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -477,10 +478,10 @@ static void test_raster_geos_overlaps() {
 	rt_raster_set_skews(rast2, -1, 1);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -488,10 +489,10 @@ static void test_raster_geos_overlaps() {
 	rt_raster_set_skews(rast2, 1, -1);
 
 	rtn = rt_raster_overlaps(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -499,7 +500,8 @@ static void test_raster_geos_overlaps() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_geos_touches() {
+static void test_raster_geos_touches()
+{
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -536,10 +538,10 @@ static void test_raster_geos_touches() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast1, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -570,18 +572,18 @@ static void test_raster_geos_touches() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
 	rtn = rt_raster_touches(
-		rast1, -1,
-		rast2, -1,
-		&result
-	);
+	          rast1, -1,
+	          rast2, -1,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -599,10 +601,10 @@ static void test_raster_geos_touches() {
 	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -621,10 +623,10 @@ static void test_raster_geos_touches() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -644,10 +646,10 @@ static void test_raster_geos_touches() {
 	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -668,10 +670,10 @@ static void test_raster_geos_touches() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -694,10 +696,10 @@ static void test_raster_geos_touches() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -720,10 +722,10 @@ static void test_raster_geos_touches() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -746,10 +748,10 @@ static void test_raster_geos_touches() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -773,10 +775,10 @@ static void test_raster_geos_touches() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -794,10 +796,10 @@ static void test_raster_geos_touches() {
 	rt_raster_set_offsets(rast2, -0.1, 0.1);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -837,10 +839,10 @@ static void test_raster_geos_touches() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -870,10 +872,10 @@ static void test_raster_geos_touches() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -901,10 +903,10 @@ static void test_raster_geos_touches() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -932,10 +934,10 @@ static void test_raster_geos_touches() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -963,10 +965,10 @@ static void test_raster_geos_touches() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -993,10 +995,10 @@ static void test_raster_geos_touches() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1004,10 +1006,10 @@ static void test_raster_geos_touches() {
 	rt_raster_set_skews(rast2, -1, 1);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1015,10 +1017,10 @@ static void test_raster_geos_touches() {
 	rt_raster_set_skews(rast2, 1, -1);
 
 	rtn = rt_raster_touches(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1026,7 +1028,8 @@ static void test_raster_geos_touches() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_geos_contains() {
+static void test_raster_geos_contains()
+{
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -1063,10 +1066,10 @@ static void test_raster_geos_contains() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast1, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -1097,18 +1100,18 @@ static void test_raster_geos_contains() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
 	rtn = rt_raster_contains(
-		rast1, -1,
-		rast2, -1,
-		&result
-	);
+	          rast1, -1,
+	          rast2, -1,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1126,10 +1129,10 @@ static void test_raster_geos_contains() {
 	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1148,10 +1151,10 @@ static void test_raster_geos_contains() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1171,10 +1174,10 @@ static void test_raster_geos_contains() {
 	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1195,10 +1198,10 @@ static void test_raster_geos_contains() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1221,10 +1224,10 @@ static void test_raster_geos_contains() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1247,10 +1250,10 @@ static void test_raster_geos_contains() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1273,10 +1276,10 @@ static void test_raster_geos_contains() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1300,10 +1303,10 @@ static void test_raster_geos_contains() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -1321,10 +1324,10 @@ static void test_raster_geos_contains() {
 	rt_raster_set_offsets(rast2, -0.1, 0.1);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -1364,10 +1367,10 @@ static void test_raster_geos_contains() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1397,10 +1400,10 @@ static void test_raster_geos_contains() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1428,10 +1431,10 @@ static void test_raster_geos_contains() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1459,10 +1462,10 @@ static void test_raster_geos_contains() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1490,10 +1493,10 @@ static void test_raster_geos_contains() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1520,10 +1523,10 @@ static void test_raster_geos_contains() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1531,10 +1534,10 @@ static void test_raster_geos_contains() {
 	rt_raster_set_skews(rast2, -1, 1);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1542,10 +1545,10 @@ static void test_raster_geos_contains() {
 	rt_raster_set_skews(rast2, 1, -1);
 
 	rtn = rt_raster_contains(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1553,7 +1556,8 @@ static void test_raster_geos_contains() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_geos_contains_properly() {
+static void test_raster_geos_contains_properly()
+{
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -1590,10 +1594,10 @@ static void test_raster_geos_contains_properly() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast1, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1624,18 +1628,18 @@ static void test_raster_geos_contains_properly() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
 	rtn = rt_raster_contains_properly(
-		rast1, -1,
-		rast2, -1,
-		&result
-	);
+	          rast1, -1,
+	          rast2, -1,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1653,10 +1657,10 @@ static void test_raster_geos_contains_properly() {
 	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1675,10 +1679,10 @@ static void test_raster_geos_contains_properly() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1698,10 +1702,10 @@ static void test_raster_geos_contains_properly() {
 	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1722,10 +1726,10 @@ static void test_raster_geos_contains_properly() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1748,10 +1752,10 @@ static void test_raster_geos_contains_properly() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1774,10 +1778,10 @@ static void test_raster_geos_contains_properly() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1800,10 +1804,10 @@ static void test_raster_geos_contains_properly() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1827,10 +1831,10 @@ static void test_raster_geos_contains_properly() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -1848,10 +1852,10 @@ static void test_raster_geos_contains_properly() {
 	rt_raster_set_offsets(rast2, -0.1, 0.1);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -1891,10 +1895,10 @@ static void test_raster_geos_contains_properly() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1924,10 +1928,10 @@ static void test_raster_geos_contains_properly() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1955,10 +1959,10 @@ static void test_raster_geos_contains_properly() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -1986,10 +1990,10 @@ static void test_raster_geos_contains_properly() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2017,10 +2021,10 @@ static void test_raster_geos_contains_properly() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2047,10 +2051,10 @@ static void test_raster_geos_contains_properly() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2058,10 +2062,10 @@ static void test_raster_geos_contains_properly() {
 	rt_raster_set_skews(rast2, -1, 1);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2069,10 +2073,10 @@ static void test_raster_geos_contains_properly() {
 	rt_raster_set_skews(rast2, 1, -1);
 
 	rtn = rt_raster_contains_properly(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2080,7 +2084,8 @@ static void test_raster_geos_contains_properly() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_geos_covers() {
+static void test_raster_geos_covers()
+{
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -2117,10 +2122,10 @@ static void test_raster_geos_covers() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast1, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -2151,18 +2156,18 @@ static void test_raster_geos_covers() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
 	rtn = rt_raster_covers(
-		rast1, -1,
-		rast2, -1,
-		&result
-	);
+	          rast1, -1,
+	          rast2, -1,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2180,10 +2185,10 @@ static void test_raster_geos_covers() {
 	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2202,10 +2207,10 @@ static void test_raster_geos_covers() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2225,10 +2230,10 @@ static void test_raster_geos_covers() {
 	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2249,10 +2254,10 @@ static void test_raster_geos_covers() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2275,10 +2280,10 @@ static void test_raster_geos_covers() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2301,10 +2306,10 @@ static void test_raster_geos_covers() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2327,10 +2332,10 @@ static void test_raster_geos_covers() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2354,10 +2359,10 @@ static void test_raster_geos_covers() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -2375,10 +2380,10 @@ static void test_raster_geos_covers() {
 	rt_raster_set_offsets(rast2, -0.1, 0.1);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -2418,10 +2423,10 @@ static void test_raster_geos_covers() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2451,10 +2456,10 @@ static void test_raster_geos_covers() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2482,10 +2487,10 @@ static void test_raster_geos_covers() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2513,10 +2518,10 @@ static void test_raster_geos_covers() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2544,10 +2549,10 @@ static void test_raster_geos_covers() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2574,10 +2579,10 @@ static void test_raster_geos_covers() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2585,10 +2590,10 @@ static void test_raster_geos_covers() {
 	rt_raster_set_skews(rast2, -1, 1);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2596,10 +2601,10 @@ static void test_raster_geos_covers() {
 	rt_raster_set_skews(rast2, 1, -1);
 
 	rtn = rt_raster_covers(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2607,7 +2612,8 @@ static void test_raster_geos_covers() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_geos_covered_by() {
+static void test_raster_geos_covered_by()
+{
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -2644,10 +2650,10 @@ static void test_raster_geos_covered_by() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_coveredby(
-		rast1, 0,
-		rast1, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -2678,18 +2684,18 @@ static void test_raster_geos_covered_by() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
 	rtn = rt_raster_coveredby(
-		rast2, -1,
-		rast1, -1,
-		&result
-	);
+	          rast2, -1,
+	          rast1, -1,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2707,10 +2713,10 @@ static void test_raster_geos_covered_by() {
 	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2729,10 +2735,10 @@ static void test_raster_geos_covered_by() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2752,10 +2758,10 @@ static void test_raster_geos_covered_by() {
 	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2776,10 +2782,10 @@ static void test_raster_geos_covered_by() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2802,10 +2808,10 @@ static void test_raster_geos_covered_by() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2828,10 +2834,10 @@ static void test_raster_geos_covered_by() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2854,10 +2860,10 @@ static void test_raster_geos_covered_by() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2881,10 +2887,10 @@ static void test_raster_geos_covered_by() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -2902,10 +2908,10 @@ static void test_raster_geos_covered_by() {
 	rt_raster_set_offsets(rast2, -0.1, 0.1);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -2945,10 +2951,10 @@ static void test_raster_geos_covered_by() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -2978,10 +2984,10 @@ static void test_raster_geos_covered_by() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -3009,10 +3015,10 @@ static void test_raster_geos_covered_by() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -3040,10 +3046,10 @@ static void test_raster_geos_covered_by() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -3071,10 +3077,10 @@ static void test_raster_geos_covered_by() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -3101,10 +3107,10 @@ static void test_raster_geos_covered_by() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -3112,10 +3118,10 @@ static void test_raster_geos_covered_by() {
 	rt_raster_set_skews(rast2, -1, 1);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -3123,10 +3129,10 @@ static void test_raster_geos_covered_by() {
 	rt_raster_set_skews(rast2, 1, -1);
 
 	rtn = rt_raster_coveredby(
-		rast2, 0,
-		rast1, 0,
-		&result
-	);
+	          rast2, 0,
+	          rast1, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -3134,7 +3140,8 @@ static void test_raster_geos_covered_by() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_within_distance() {
+static void test_raster_within_distance()
+{
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -3171,20 +3178,20 @@ static void test_raster_within_distance() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast1, 0,
-		0.,
-		&result
-	);
+	          rast1, 0,
+	          rast1, 0,
+	          0.,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast1, 0,
-		-1.,
-		&result
-	);
+	          rast1, 0,
+	          rast1, 0,
+	          -1.,
+	          &result
+	      );
 	CU_ASSERT_NOT_EQUAL(rtn, ES_NONE);
 
 	/*
@@ -3214,29 +3221,29 @@ static void test_raster_within_distance() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0.,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0.,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		1.,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          1.,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
 	rtn = rt_raster_within_distance(
-		rast1, -1,
-		rast2, -1,
-		2.,
-		&result
-	);
+	          rast1, -1,
+	          rast2, -1,
+	          2.,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3254,11 +3261,11 @@ static void test_raster_within_distance() {
 	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0.,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0.,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3277,11 +3284,11 @@ static void test_raster_within_distance() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0.,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0.,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3301,11 +3308,11 @@ static void test_raster_within_distance() {
 	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3326,11 +3333,11 @@ static void test_raster_within_distance() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -3353,20 +3360,20 @@ static void test_raster_within_distance() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		1.1,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          1.1,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3390,11 +3397,11 @@ static void test_raster_within_distance() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3412,11 +3419,11 @@ static void test_raster_within_distance() {
 	rt_raster_set_offsets(rast2, -0.1, 0.1);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3456,11 +3463,11 @@ static void test_raster_within_distance() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3490,11 +3497,11 @@ static void test_raster_within_distance() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3522,11 +3529,11 @@ static void test_raster_within_distance() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3554,11 +3561,11 @@ static void test_raster_within_distance() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3586,11 +3593,11 @@ static void test_raster_within_distance() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3620,20 +3627,20 @@ static void test_raster_within_distance() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		5,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          5,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		6,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          6,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3660,11 +3667,11 @@ static void test_raster_within_distance() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3672,11 +3679,11 @@ static void test_raster_within_distance() {
 	rt_raster_set_skews(rast2, -1, 1);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3684,11 +3691,11 @@ static void test_raster_within_distance() {
 	rt_raster_set_skews(rast2, 1, -1);
 
 	rtn = rt_raster_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3696,7 +3703,8 @@ static void test_raster_within_distance() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_fully_within_distance() {
+static void test_raster_fully_within_distance()
+{
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -3733,20 +3741,20 @@ static void test_raster_fully_within_distance() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast1, 0,
-		0.,
-		&result
-	);
+	          rast1, 0,
+	          rast1, 0,
+	          0.,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast1, 0,
-		-1.,
-		&result
-	);
+	          rast1, 0,
+	          rast1, 0,
+	          -1.,
+	          &result
+	      );
 	CU_ASSERT_NOT_EQUAL(rtn, ES_NONE);
 
 	/*
@@ -3776,29 +3784,29 @@ static void test_raster_fully_within_distance() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0.,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0.,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		1.,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          1.,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, -1,
-		rast2, -1,
-		5.,
-		&result
-	);
+	          rast1, -1,
+	          rast2, -1,
+	          5.,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3816,11 +3824,11 @@ static void test_raster_fully_within_distance() {
 	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		2.,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          2.,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -3839,11 +3847,11 @@ static void test_raster_fully_within_distance() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		5.,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          5.,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3863,11 +3871,11 @@ static void test_raster_fully_within_distance() {
 	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		5,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          5,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3888,11 +3896,11 @@ static void test_raster_fully_within_distance() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		10,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          10,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -3915,20 +3923,20 @@ static void test_raster_fully_within_distance() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		5.9,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          5.9,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3952,11 +3960,11 @@ static void test_raster_fully_within_distance() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		3,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          3,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -3974,11 +3982,11 @@ static void test_raster_fully_within_distance() {
 	rt_raster_set_offsets(rast2, -0.1, 0.1);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		2,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          2,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -4018,11 +4026,11 @@ static void test_raster_fully_within_distance() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		6,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          6,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4052,11 +4060,11 @@ static void test_raster_fully_within_distance() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		4.25,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          4.25,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4084,11 +4092,11 @@ static void test_raster_fully_within_distance() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		3.5,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          3.5,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -4116,11 +4124,11 @@ static void test_raster_fully_within_distance() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		3.65,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          3.65,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4148,11 +4156,11 @@ static void test_raster_fully_within_distance() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		3.6,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          3.6,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -4182,20 +4190,20 @@ static void test_raster_fully_within_distance() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		5,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          5,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		11.5,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          11.5,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4222,11 +4230,11 @@ static void test_raster_fully_within_distance() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		6.1,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          6.1,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4234,11 +4242,11 @@ static void test_raster_fully_within_distance() {
 	rt_raster_set_skews(rast2, -1, 1);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		7.1,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          7.1,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4246,11 +4254,11 @@ static void test_raster_fully_within_distance() {
 	rt_raster_set_skews(rast2, 1, -1);
 
 	rtn = rt_raster_fully_within_distance(
-		rast1, 0,
-		rast2, 0,
-		8,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          8,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4258,7 +4266,8 @@ static void test_raster_fully_within_distance() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_intersects() {
+static void test_raster_intersects()
+{
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -4321,18 +4330,18 @@ static void test_raster_intersects() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
 	rtn = rt_raster_intersects(
-		rast1, -1,
-		rast2, -1,
-		&result
-	);
+	          rast1, -1,
+	          rast2, -1,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4350,10 +4359,10 @@ static void test_raster_intersects() {
 	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4372,10 +4381,10 @@ static void test_raster_intersects() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4395,10 +4404,10 @@ static void test_raster_intersects() {
 	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4419,10 +4428,10 @@ static void test_raster_intersects() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -4445,10 +4454,10 @@ static void test_raster_intersects() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_NOT_EQUAL(result, 1);
 
@@ -4472,10 +4481,10 @@ static void test_raster_intersects() {
 	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4493,10 +4502,10 @@ static void test_raster_intersects() {
 	rt_raster_set_offsets(rast2, -0.1, 0.1);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4536,10 +4545,10 @@ static void test_raster_intersects() {
 	CU_ASSERT_EQUAL(nodata, 0);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4569,10 +4578,10 @@ static void test_raster_intersects() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4600,10 +4609,10 @@ static void test_raster_intersects() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4631,10 +4640,10 @@ static void test_raster_intersects() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4662,10 +4671,10 @@ static void test_raster_intersects() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4692,10 +4701,10 @@ static void test_raster_intersects() {
 	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4703,10 +4712,10 @@ static void test_raster_intersects() {
 	rt_raster_set_skews(rast2, -1, 1);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4714,10 +4723,10 @@ static void test_raster_intersects() {
 	rt_raster_set_skews(rast2, 1, -1);
 
 	rtn = rt_raster_intersects(
-		rast1, 0,
-		rast2, 0,
-		&result
-	);
+	          rast1, 0,
+	          rast2, 0,
+	          &result
+	      );
 	CU_ASSERT_EQUAL(rtn, ES_NONE);
 	CU_ASSERT_EQUAL(result, 1);
 
@@ -4725,7 +4734,8 @@ static void test_raster_intersects() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_same_alignment() {
+static void test_raster_same_alignment()
+{
 	rt_raster rast1;
 	rt_raster rast2;
 	int rtn;

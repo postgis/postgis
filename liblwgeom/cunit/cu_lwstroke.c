@@ -121,9 +121,9 @@ static void test_lwcurve_linearize(void)
 #ifndef SKIP_TEST_RETAIN_ANGLE
 	/* 3 segment per quadrant - symmetric/retain_angle */
 	out = lwcurve_linearize(in, 3, toltype,
-		LW_LINEARIZE_FLAG_SYMMETRIC |
-		LW_LINEARIZE_FLAG_RETAIN_ANGLE
-	);
+	                        LW_LINEARIZE_FLAG_SYMMETRIC |
+	                        LW_LINEARIZE_FLAG_RETAIN_ANGLE
+	                       );
 	str = lwgeom_to_text(out, 2);
 	ASSERT_STRING_EQUAL(str, "LINESTRING(30 70,40 80,86 100,138 92,180 60,200 14,200 0)");
 	lwfree(str);
@@ -180,9 +180,9 @@ static void test_lwcurve_linearize(void)
 #ifndef SKIP_TEST_RETAIN_ANGLE
 	/* Maximum of 20 units of difference, symmetric/retain angle */
 	out = lwcurve_linearize(in, 20, toltype,
-		LW_LINEARIZE_FLAG_SYMMETRIC |
-		LW_LINEARIZE_FLAG_RETAIN_ANGLE
-	);
+	                        LW_LINEARIZE_FLAG_SYMMETRIC |
+	                        LW_LINEARIZE_FLAG_RETAIN_ANGLE
+	                       );
 	str = lwgeom_to_text(out, 2);
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,4 28,100 100,196 28,200 0)");
 	lwfree(str);
@@ -275,9 +275,9 @@ static void test_lwcurve_linearize(void)
 #ifndef SKIP_TEST_RETAIN_ANGLE
 	/* Maximum of 70 degrees, symmetric/retain angle */
 	out = lwcurve_linearize(in, 70 * M_PI / 180, toltype,
-		LW_LINEARIZE_FLAG_SYMMETRIC |
-		LW_LINEARIZE_FLAG_RETAIN_ANGLE
-	);
+	                        LW_LINEARIZE_FLAG_SYMMETRIC |
+	                        LW_LINEARIZE_FLAG_RETAIN_ANGLE
+	                       );
 	str = lwgeom_to_text(out, 2);
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,6 34,100 100,194 34,200 0)");
 	lwfree(str);
@@ -294,12 +294,12 @@ static void test_lwcurve_linearize(void)
 
 	in = lwgeom_from_text("CIRCULARSTRING(71.96 -65.64,22.2 -18.52,20 50)");
 	out = lwcurve_linearize(in, M_PI/4.0,
-			 LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE,
-			 LW_LINEARIZE_FLAG_SYMMETRIC);
+	                        LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE,
+	                        LW_LINEARIZE_FLAG_SYMMETRIC);
 	lwgeom_reverse_in_place(in);
 	out2 = lwcurve_linearize(in, M_PI/4.0,
-				 LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE,
-				 LW_LINEARIZE_FLAG_SYMMETRIC);
+	                         LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE,
+	                         LW_LINEARIZE_FLAG_SYMMETRIC);
 	lwgeom_reverse_in_place(out2);
 	if ( ! lwgeom_same(out, out2) )
 	{

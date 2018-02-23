@@ -112,7 +112,7 @@ lwgeom_to_x3d3_sb(const LWGEOM *geom, char *srs, int precision, int opts, const 
 
 static int
 asx3d3_point_sb(const LWPOINT *point, __attribute__((__unused__)) char *srs, int precision,
-		int opts, __attribute__((__unused__)) const char *defid, stringbuffer_t *sb)
+                int opts, __attribute__((__unused__)) const char *defid, stringbuffer_t *sb)
 {
 	/** for point we just output the coordinates **/
 	return ptarray_to_x3d3_sb(point->point, precision, opts, 0, sb);
@@ -217,7 +217,7 @@ asx3d3_mpoly_coordindex_sb(const LWMPOLY *psur, stringbuffer_t *sb)
 /** Return the linestring as an X3D LineSet */
 static int
 asx3d3_line_sb(const LWLINE *line, __attribute__((__unused__)) char *srs, int precision,
-	       int opts, __attribute__((__unused__)) const char *defid, stringbuffer_t *sb)
+               int opts, __attribute__((__unused__)) const char *defid, stringbuffer_t *sb)
 {
 
 	/* int dimension=2; */
@@ -244,7 +244,7 @@ asx3d3_line_sb(const LWLINE *line, __attribute__((__unused__)) char *srs, int pr
 /** Compute the X3D coordinates of the polygon and add to string buffer **/
 static int
 asx3d3_poly_sb(const LWPOLY *poly, __attribute__((__unused__))  char *srs, int precision,
-	       int opts, __attribute__((__unused__)) int is_patch, __attribute__((__unused__)) const char *defid, stringbuffer_t *sb)
+               int opts, __attribute__((__unused__)) int is_patch, __attribute__((__unused__)) const char *defid, stringbuffer_t *sb)
 {
 	uint32_t i;
 	for (i=0; i<poly->nrings; i++)
@@ -257,7 +257,7 @@ asx3d3_poly_sb(const LWPOLY *poly, __attribute__((__unused__))  char *srs, int p
 
 static int
 asx3d3_triangle_sb(const LWTRIANGLE *triangle, __attribute__((__unused__))  char *srs, int precision,
-		   int opts, __attribute__((__unused__))  const char *defid, stringbuffer_t *sb)
+                   int opts, __attribute__((__unused__))  const char *defid, stringbuffer_t *sb)
 {
 	return  ptarray_to_x3d3_sb(triangle->points, precision, opts, 1, sb);
 }
@@ -280,38 +280,41 @@ asx3d3_multi_sb(const LWCOLLECTION *col, __attribute__((__unused__)) char *srs, 
 
 	switch (col->type)
 	{
-        case MULTIPOINTTYPE:
-            x3dtype = "PointSet";
-            if ( dimension == 2 ){ /** Use Polypoint2D instead **/
-                x3dtype = "Polypoint2D";
-                stringbuffer_aprintf(sb, "<%s %s point='", x3dtype, defid);
-            }
-            else {
-                stringbuffer_aprintf(sb, "<%s %s>", x3dtype, defid);
-            }
-            break;
-        case MULTILINETYPE:
-            x3dtype = "IndexedLineSet";
-            stringbuffer_aprintf(sb, "<%s %s coordIndex='", x3dtype, defid);
-            asx3d3_mline_coordindex_sb((const LWMLINE *)col, sb);
-            stringbuffer_aprintf(sb, "'>");
-            break;
-        case MULTIPOLYGONTYPE:
-            x3dtype = "IndexedFaceSet";
-            stringbuffer_aprintf(sb, "<%s %s convex='false' coordIndex='", x3dtype, defid);
-            asx3d3_mpoly_coordindex_sb((const LWMPOLY *)col, sb);
-            stringbuffer_aprintf(sb, "'>");
-            break;
-        default:
-            lwerror("asx3d3_multi_buf: '%s' geometry type not supported", lwtype_name(col->type));
-            return 0;
-    }
-    if (dimension == 3){
+	case MULTIPOINTTYPE:
+		x3dtype = "PointSet";
+		if ( dimension == 2 )  /** Use Polypoint2D instead **/
+		{
+			x3dtype = "Polypoint2D";
+			stringbuffer_aprintf(sb, "<%s %s point='", x3dtype, defid);
+		}
+		else
+		{
+			stringbuffer_aprintf(sb, "<%s %s>", x3dtype, defid);
+		}
+		break;
+	case MULTILINETYPE:
+		x3dtype = "IndexedLineSet";
+		stringbuffer_aprintf(sb, "<%s %s coordIndex='", x3dtype, defid);
+		asx3d3_mline_coordindex_sb((const LWMLINE *)col, sb);
+		stringbuffer_aprintf(sb, "'>");
+		break;
+	case MULTIPOLYGONTYPE:
+		x3dtype = "IndexedFaceSet";
+		stringbuffer_aprintf(sb, "<%s %s convex='false' coordIndex='", x3dtype, defid);
+		asx3d3_mpoly_coordindex_sb((const LWMPOLY *)col, sb);
+		stringbuffer_aprintf(sb, "'>");
+		break;
+	default:
+		lwerror("asx3d3_multi_buf: '%s' geometry type not supported", lwtype_name(col->type));
+		return 0;
+	}
+	if (dimension == 3)
+	{
 		if ( X3D_USE_GEOCOORDS(opts) )
 			stringbuffer_aprintf(sb, "<GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ((opts & LW_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
 		else
-        	stringbuffer_aprintf(sb, "<Coordinate point='");
-    }
+			stringbuffer_aprintf(sb, "<Coordinate point='");
+	}
 
 	for (i=0; i<col->ngeoms; i++)
 	{
@@ -334,10 +337,14 @@ asx3d3_multi_sb(const LWCOLLECTION *col, __attribute__((__unused__)) char *srs, 
 	}
 
 	/* Close outmost tag */
-	if (dimension == 3){
+	if (dimension == 3)
+	{
 		stringbuffer_aprintf(sb, "' /></%s>", x3dtype);
 	}
-	else { stringbuffer_aprintf(sb, "' />"); }
+	else
+	{
+		stringbuffer_aprintf(sb, "' />");
+	}
 	return LW_SUCCESS;
 
 }
@@ -379,7 +386,7 @@ asx3d3_psurface_sb(const LWPSURFACE *psur, char *srs, int precision, int opts, c
 
 	if ( X3D_USE_GEOCOORDS(opts) )
 		stringbuffer_aprintf(sb, "'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='",
-			( (opts & LW_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
+		                     ( (opts & LW_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
 	else stringbuffer_aprintf(sb, "'><Coordinate point='");
 
 	for (i=0; i<psur->ngeoms; i++)
@@ -424,7 +431,7 @@ asx3d3_tin_sb(const LWTIN *tin, __attribute__((__unused__)) char *srs,  int prec
 	for (i=0; i<tin->ngeoms; i++)
 	{
 		asx3d3_triangle_sb(tin->geoms[i], 0, precision,
-		                           opts, defid, sb);
+		                   opts, defid, sb);
 		if (i < (tin->ngeoms - 1) )
 		{
 			stringbuffer_aprintf(sb, " ");

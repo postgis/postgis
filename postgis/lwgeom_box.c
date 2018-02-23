@@ -65,8 +65,9 @@ Datum BOX2D_in(PG_FUNCTION_ARGS)
 
 	gbox_init(&box);
 
-	for(i = 0; str[i]; i++) {
-	  str[i] = tolower(str[i]);
+	for(i = 0; str[i]; i++)
+	{
+		str[i] = tolower(str[i]);
 	}
 
 	nitems = sscanf(str,"box(%lf %lf,%lf %lf)", &box.xmin, &box.ymin, &box.xmax, &box.ymax);
@@ -508,14 +509,26 @@ Datum BOX2D_to_LWGEOM(PG_FUNCTION_ARGS)
 		LWPOLY *poly;
 
 		/* Initialize the 4 vertices of the polygon */
-		points[0] = (POINT4D) { box->xmin, box->ymin, 0.0, 0.0 };
-		points[1] = (POINT4D) { box->xmin, box->ymax, 0.0, 0.0 };
-		points[2] = (POINT4D) { box->xmax, box->ymax, 0.0, 0.0 };
-		points[3] = (POINT4D) { box->xmax, box->ymin, 0.0, 0.0 };
+		points[0] = (POINT4D)
+		{
+			box->xmin, box->ymin, 0.0, 0.0
+		};
+		points[1] = (POINT4D)
+		{
+			box->xmin, box->ymax, 0.0, 0.0
+		};
+		points[2] = (POINT4D)
+		{
+			box->xmax, box->ymax, 0.0, 0.0
+		};
+		points[3] = (POINT4D)
+		{
+			box->xmax, box->ymin, 0.0, 0.0
+		};
 
 		/* Construct polygon */
 		poly = lwpoly_construct_rectangle(LW_FALSE, LW_FALSE, &points[0], &points[1],
-				&points[2], &points[3]);
+		                                  &points[2], &points[3]);
 		result = geometry_serialize(lwpoly_as_lwgeom(poly));
 		lwpoly_free(poly);
 	}

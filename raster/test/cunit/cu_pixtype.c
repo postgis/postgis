@@ -24,7 +24,8 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_pixtype_size() {
+static void test_pixtype_size()
+{
 	CU_ASSERT_EQUAL(rt_pixtype_size(PT_1BB), 1);
 	CU_ASSERT_EQUAL(rt_pixtype_size(PT_2BUI), 1);
 	CU_ASSERT_EQUAL(rt_pixtype_size(PT_4BUI), 1);
@@ -40,11 +41,13 @@ static void test_pixtype_size() {
 	CU_ASSERT_EQUAL(rt_pixtype_size(PT_END), -1);
 }
 
-static void test_pixtype_alignment() {
+static void test_pixtype_alignment()
+{
 	/* rt_pixtype_alignment() just forwards to rt_pixtype_size() */
 }
 
-static void test_pixtype_name() {
+static void test_pixtype_name()
+{
 	CU_ASSERT_STRING_EQUAL(rt_pixtype_name(PT_1BB), "1BB");
 	CU_ASSERT_STRING_EQUAL(rt_pixtype_name(PT_2BUI), "2BUI");
 	CU_ASSERT_STRING_EQUAL(rt_pixtype_name(PT_4BUI), "4BUI");
@@ -60,7 +63,8 @@ static void test_pixtype_name() {
 	CU_ASSERT_STRING_EQUAL(rt_pixtype_name(PT_END), "Unknown");
 }
 
-static void test_pixtype_index_from_name() {
+static void test_pixtype_index_from_name()
+{
 	CU_ASSERT_EQUAL(rt_pixtype_index_from_name("1BB"), PT_1BB);
 	CU_ASSERT_EQUAL(rt_pixtype_index_from_name("2BUI"), PT_2BUI);
 	CU_ASSERT_EQUAL(rt_pixtype_index_from_name("4BUI"), PT_4BUI);
@@ -79,7 +83,8 @@ static void test_pixtype_index_from_name() {
 	CU_ASSERT_EQUAL(rt_pixtype_index_from_name("3BUI"), PT_END);
 }
 
-static void test_pixtype_get_min_value() {
+static void test_pixtype_get_min_value()
+{
 	CU_ASSERT_DOUBLE_EQUAL(rt_pixtype_get_min_value(PT_1BB), rt_util_clamp_to_1BB((double) CHAR_MIN), DBL_EPSILON);
 	CU_ASSERT_DOUBLE_EQUAL(rt_pixtype_get_min_value(PT_2BUI), rt_util_clamp_to_2BUI((double) CHAR_MIN), DBL_EPSILON);
 	CU_ASSERT_DOUBLE_EQUAL(rt_pixtype_get_min_value(PT_4BUI), rt_util_clamp_to_4BUI((double) CHAR_MIN), DBL_EPSILON);
@@ -95,7 +100,8 @@ static void test_pixtype_get_min_value() {
 	CU_ASSERT_DOUBLE_EQUAL(rt_pixtype_get_min_value(PT_END), rt_util_clamp_to_8BUI((double) CHAR_MIN), DBL_EPSILON);
 }
 
-static void test_pixtype_compare_clamped_values() {
+static void test_pixtype_compare_clamped_values()
+{
 	int isequal = 0;
 
 	/* 1BB */

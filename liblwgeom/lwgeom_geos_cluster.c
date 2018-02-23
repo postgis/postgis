@@ -63,10 +63,13 @@ geos_envelope_surrogate(const LWGEOM* g)
 	if (lwgeom_is_empty(g))
 		return GEOSGeom_createEmptyPolygon();
 
-	if (lwgeom_get_type(g) == POINTTYPE) {
+	if (lwgeom_get_type(g) == POINTTYPE)
+	{
 		const POINT2D* pt = getPoint2d_cp(lwgeom_as_lwpoint(g)->point, 0);
 		return make_geos_point(pt->x, pt->y);
-	} else {
+	}
+	else
+	{
 		const GBOX* box = lwgeom_get_bbox(g);
 		if (!box)
 			return NULL;
@@ -266,7 +269,9 @@ dbscan_update_context(GEOSSTRtree* tree, struct QueryContext* cxt, LWGEOM** geom
 	{
 		const POINT2D* pt = getPoint2d_cp(lwgeom_as_lwpoint(geoms[p])->point, 0);
 		query_envelope = make_geos_segment( pt->x - eps, pt->y - eps, pt->x + eps, pt->y + eps );
-	} else {
+	}
+	else
+	{
 		const GBOX* box = lwgeom_get_bbox(geoms[p]);
 		query_envelope = make_geos_segment( box->xmin - eps, box->ymin - eps, box->xmax + eps, box->ymax + eps );
 	}
@@ -293,10 +298,10 @@ union_if_available(UNIONFIND* uf, uint32_t p, uint32_t q, char* is_in_core, char
 		 * if both p and q are considered _core_ points of their respective
 		 * clusters.
 		 */
-		 if (is_in_core[q])
-		 {
-			 UF_union(uf, p, q);
-		 }
+		if (is_in_core[q])
+		{
+			UF_union(uf, p, q);
+		}
 	}
 	else
 	{
@@ -557,7 +562,8 @@ combine_geometries(UNIONFIND* uf, void** geoms, uint32_t num_geoms, void*** clus
 		if ((i == num_geoms - 1) ||
 		        (UF_find(uf, ordered_components[i]) != UF_find(uf, ordered_components[i+1])))
 		{
-			if (k >= uf->num_clusters) {
+			if (k >= uf->num_clusters)
+			{
 				/* Should not get here - it means that we have more clusters than uf->num_clusters thinks we should. */
 				return LW_FAILURE;
 			}

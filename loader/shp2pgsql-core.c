@@ -874,17 +874,17 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	/* User hasn't altered the default encoding preference... */
 	if ( strcmp(state->config->encoding, ENCODING_DEFAULT) == 0 )
 	{
-	    /* But the file has a code page entry... */
-	    if ( state->hDBFHandle->pszCodePage )
-	    {
-	        /* And we figured out what iconv encoding it maps to, so use it! */
-            char *newencoding = NULL;
-	        if ( (newencoding = codepage2encoding(state->hDBFHandle->pszCodePage)) )
-	        {
-                lwfree(state->config->encoding);
-                state->config->encoding = newencoding;
-            }
-        }
+		/* But the file has a code page entry... */
+		if ( state->hDBFHandle->pszCodePage )
+		{
+			/* And we figured out what iconv encoding it maps to, so use it! */
+			char *newencoding = NULL;
+			if ( (newencoding = codepage2encoding(state->hDBFHandle->pszCodePage)) )
+			{
+				lwfree(state->config->encoding);
+				state->config->encoding = newencoding;
+			}
+		}
 	}
 
 	/* If reading the whole shapefile (not just attributes)... */
@@ -1102,7 +1102,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		state->types[j] = type;
 		state->widths[j] = field_width;
 		state->precisions[j] = field_precision;
-/*		fprintf(stderr, "XXX %s width:%d prec:%d\n", name, field_width, field_precision); */
+		/*		fprintf(stderr, "XXX %s width:%d prec:%d\n", name, field_width, field_precision); */
 
 		if (state->config->encoding)
 		{
@@ -1132,11 +1132,11 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		/* If a column map file has been passed in, use this to create the postgresql field name from
 		   the dbf column name */
 		{
-		  const char *mapped = colmap_pg_by_dbf(&state->column_map, name);
-		  if (mapped)
-		  {
-			  strncpy(name, mapped, MAXFIELDNAMELEN);
-			  name[MAXFIELDNAMELEN-1] = '\0';
+			const char *mapped = colmap_pg_by_dbf(&state->column_map, name);
+			if (mapped)
+			{
+				strncpy(name, mapped, MAXFIELDNAMELEN);
+				name[MAXFIELDNAMELEN-1] = '\0';
 			}
 		}
 
@@ -1174,9 +1174,9 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			{
 				strncat(name, "__", MAXFIELDNAMELEN - 1);
 				snprintf(name + strlen(name),
-					 MAXFIELDNAMELEN - 1 - strlen(name),
-					 "%i",
-					 j);
+				         MAXFIELDNAMELEN - 1 - strlen(name),
+				         "%i",
+				         j);
 				break;
 			}
 		}
@@ -1217,7 +1217,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		case FTDouble:
 			/* Determine exact type based upon field width */
 			fprintf(stderr, "Field %s is an FTDouble with width %d and precision %d\n",
-					state->field_names[j], state->widths[j], state->precisions[j]);
+			        state->field_names[j], state->widths[j], state->precisions[j]);
 			if (state->widths[j] > 18)
 			{
 				state->pgfieldtypes[j] = strdup("numeric");
@@ -1393,14 +1393,14 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		stringbuffer_aprintf(sb, ";\n");
 
 		/* Create the primary key.  This is done separately because the index for the PK needs
-                 * to be in the correct tablespace. */
+		         * to be in the correct tablespace. */
 
 		/* TODO: Currently PostgreSQL does not allow specifying an index to use for a PK (so you get
-                 *       a default one called table_pkey) and it does not provide a way to create a PK index
-                 *       in a specific tablespace.  So as a hacky solution we create the PK, then move the
-                 *       index to the correct tablespace.  Eventually this should be:
+		         *       a default one called table_pkey) and it does not provide a way to create a PK index
+		         *       in a specific tablespace.  So as a hacky solution we create the PK, then move the
+		         *       index to the correct tablespace.  Eventually this should be:
 		 *           CREATE INDEX table_pkey on table(gid) TABLESPACE tblspc;
-                 *           ALTER TABLE table ADD PRIMARY KEY (gid) USING INDEX table_pkey;
+		         *           ALTER TABLE table ADD PRIMARY KEY (gid) USING INDEX table_pkey;
 		 *       A patch has apparently been submitted to PostgreSQL to enable this syntax, see this thread:
 		 *           http://archives.postgresql.org/pgsql-hackers/2011-01/msg01405.php */
 		stringbuffer_aprintf(sb, "ALTER TABLE ");
@@ -1426,7 +1426,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			 *          case of a name conflict, so you may need to edit the produced
 			 *          SQL in this rare case. */
 			stringbuffer_aprintf(sb, "\"%s_pkey\" SET TABLESPACE \"%s\";\n",
-						state->config->table, state->config->idxtablespace);
+			                     state->config->table, state->config->idxtablespace);
 		}
 
 		/* Create the geometry column with an addgeometry call */
@@ -1721,7 +1721,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			case SHPT_MULTIPOINTZ:
 				/* Force it to multi unless using -S */
 				res = GeneratePointGeometry(state, obj, &geometry,
-					state->config->simple_geometries ? 0 : 1);
+				                            state->config->simple_geometries ? 0 : 1);
 				break;
 
 			case SHPT_ARC:

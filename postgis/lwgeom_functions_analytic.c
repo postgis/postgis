@@ -111,7 +111,7 @@ Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS)
 		area = PG_GETARG_FLOAT8(1);
 
 	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) )
-	set_area = PG_GETARG_INT32(2);
+		set_area = PG_GETARG_INT32(2);
 
 	in = lwgeom_from_gserialized(geom);
 
@@ -172,7 +172,9 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	if (opa->npoints <= 1)
 	{
 		lwresult = lwpoint_as_lwgeom(lwpoint_construct(srid, NULL, opa));
-	} else {
+	}
+	else
+	{
 		lwresult = lwmpoint_as_lwgeom(lwmpoint_construct(srid, opa));
 	}
 
@@ -305,8 +307,8 @@ static void
 grid_print(const gridspec *grid)
 {
 	lwpgnotice("GRID(%g %g %g %g, %g %g %g %g)",
-	         grid->ipx, grid->ipy, grid->ipz, grid->ipm,
-	         grid->xsize, grid->ysize, grid->zsize, grid->msize);
+	           grid->ipx, grid->ipy, grid->ipz, grid->ipm,
+	           grid->xsize, grid->ysize, grid->zsize, grid->msize);
 }
 #endif
 
@@ -854,7 +856,7 @@ int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int *ringCount
 	getPoint2d_p(point->point, 0, &pt);
 	/* assume bbox short-circuit has already been attempted */
 
-        i = 0; /* the current index into the root array */
+	i = 0; /* the current index into the root array */
 
 	/* is the point inside any of the sub-polygons? */
 	for ( p = 0; p < polyCount; p++ )
@@ -865,38 +867,40 @@ int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int *ringCount
 		{
 			POSTGIS_DEBUG(3, "point_in_multipolygon_rtree: outside exterior ring.");
 		}
-         	else if ( in_ring == 0 ) /* on the boundary */
+		else if ( in_ring == 0 ) /* on the boundary */
 		{
 			POSTGIS_DEBUGF(3, "point_in_multipolygon_rtree: on edge of exterior ring %d", p);
-                        return 0;
-		} else {
-                	result = in_ring;
+			return 0;
+		}
+		else
+		{
+			result = in_ring;
 
-	                for(r=1; r<ringCounts[p]; r++)
-     	                {
-                        	in_ring = point_in_ring_rtree(root[i+r], &pt);
-		        	POSTGIS_DEBUGF(4, "point_in_multipolygon_rtree: interior ring (%d), point_in_ring returned %d", r, in_ring);
-                        	if (in_ring == 1) /* inside a hole => outside the polygon */
-                        	{
-                                	POSTGIS_DEBUGF(3, "point_in_multipolygon_rtree: within hole %d of exterior ring %d", r, p);
-                                	result = -1;
-                                	break;
-                        	}
-                        	if (in_ring == 0) /* on the edge of a hole */
-                        	{
-			        	POSTGIS_DEBUGF(3, "point_in_multipolygon_rtree: on edge of hole %d of exterior ring %d", r, p);
-                                	return 0;
-		        	}
-                	}
-                	/* if we have a positive result, we can short-circuit and return it */
-                	if ( result != -1)
-                	{
-                        	return result;
-                	}
-                }
-                /* increment the index by the total number of rings in the sub-poly */
-                /* we do this here in case we short-cutted out of the poly before looking at all the rings */
-                i += ringCounts[p];
+			for(r=1; r<ringCounts[p]; r++)
+			{
+				in_ring = point_in_ring_rtree(root[i+r], &pt);
+				POSTGIS_DEBUGF(4, "point_in_multipolygon_rtree: interior ring (%d), point_in_ring returned %d", r, in_ring);
+				if (in_ring == 1) /* inside a hole => outside the polygon */
+				{
+					POSTGIS_DEBUGF(3, "point_in_multipolygon_rtree: within hole %d of exterior ring %d", r, p);
+					result = -1;
+					break;
+				}
+				if (in_ring == 0) /* on the edge of a hole */
+				{
+					POSTGIS_DEBUGF(3, "point_in_multipolygon_rtree: on edge of hole %d of exterior ring %d", r, p);
+					return 0;
+				}
+			}
+			/* if we have a positive result, we can short-circuit and return it */
+			if ( result != -1)
+			{
+				return result;
+			}
+		}
+		/* increment the index by the total number of rings in the sub-poly */
+		/* we do this here in case we short-cutted out of the poly before looking at all the rings */
+		i += ringCounts[p];
 	}
 
 	return result; /* -1 = outside, 0 = boundary, 1 = inside */
@@ -1040,7 +1044,7 @@ Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS)
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
-    /* Empty geometry?  Return POINT EMPTY with zero radius */
+	/* Empty geometry?  Return POINT EMPTY with zero radius */
 	if (gserialized_is_empty(geom))
 	{
 		lwcenter = (LWGEOM*) lwpoint_construct_empty(gserialized_get_srid(geom), LW_FALSE, LW_FALSE);

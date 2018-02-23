@@ -1161,7 +1161,7 @@ asgml3_compound_buf(const LWCOMPOUND *col, const char *srs, char *output, int pr
 		}
 		else if( subgeom->type == CIRCSTRINGTYPE )
 		{
-			ptr += sprintf( ptr, "<%sArcString><%sposList" , prefix, prefix );
+			ptr += sprintf( ptr, "<%sArcString><%sposList", prefix, prefix );
 			if (IS_DIMS(opts))
 			{
 				ptr += sprintf(ptr, " srsDimension=\"%d\"", dimension);

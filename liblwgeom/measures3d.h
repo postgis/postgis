@@ -79,7 +79,7 @@ Brute force functions
 int lw_dist3d_pt_ptarray(POINT3DZ *p, POINTARRAY *pa, DISTPTS3D *dl);
 int lw_dist3d_point_point(LWPOINT *point1, LWPOINT *point2, DISTPTS3D *dl);
 int lw_dist3d_point_line(LWPOINT *point, LWLINE *line, DISTPTS3D *dl);
-int lw_dist3d_line_line(LWLINE *line1,LWLINE *line2 , DISTPTS3D *dl);
+int lw_dist3d_line_line(LWLINE *line1,LWLINE *line2, DISTPTS3D *dl);
 int lw_dist3d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS3D *dl);
 int lw_dist3d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS3D *dl);
 int lw_dist3d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS3D *dl);

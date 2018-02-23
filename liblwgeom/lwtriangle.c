@@ -82,7 +82,7 @@ void lwtriangle_free(LWTRIANGLE  *triangle)
 void printLWTRIANGLE(LWTRIANGLE *triangle)
 {
 	if (triangle->type != TRIANGLETYPE)
-                lwerror("printLWTRIANGLE called with something else than a Triangle");
+		lwerror("printLWTRIANGLE called with something else than a Triangle");
 
 	lwnotice("LWTRIANGLE {");
 	lwnotice("    ndims = %i", (int)FLAGS_NDIMS(triangle->flags));

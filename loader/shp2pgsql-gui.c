@@ -37,9 +37,9 @@ static void update_conn_ui_from_conn_config(void);
 
 /* If GTK+ version is < 2.14.0, define gtk_dialog_get_content_area() */
 #if !GTK_CHECK_VERSION(2, 14, 0)
-	#if !defined(gtk_dialog_get_content_area)
-		#define gtk_dialog_get_content_area(dialog) GTK_DIALOG(dialog)->vbox
-	#endif
+#if !defined(gtk_dialog_get_content_area)
+#define gtk_dialog_get_content_area(dialog) GTK_DIALOG(dialog)->vbox
+#endif
 #endif
 
 /*
@@ -720,8 +720,8 @@ update_table_chooser_from_database()
 
 				gtk_list_store_insert_before(dumper_geocol_combo_list, &geocol_iter, (GtkTreeIter *)TABLECHOOSER_GEOCOL_COMBO_TEXT);
 				gtk_list_store_set(dumper_geocol_combo_list, &geocol_iter,
-						TABLECHOOSER_GEOCOL_COMBO_TEXT, geocol_name,
-						-1);
+				                   TABLECHOOSER_GEOCOL_COMBO_TEXT, geocol_name,
+				                   -1);
 			}
 		}
 		else
@@ -731,8 +731,8 @@ update_table_chooser_from_database()
 
 			gtk_list_store_insert_before(dumper_geocol_combo_list, &geocol_iter, (GtkTreeIter *)TABLECHOOSER_GEOCOL_COMBO_TEXT);
 			gtk_list_store_set(dumper_geocol_combo_list, &geocol_iter,
-						TABLECHOOSER_GEOCOL_COMBO_TEXT, _("(None)"),
-						-1);
+			                   TABLECHOOSER_GEOCOL_COMBO_TEXT, _("(None)"),
+			                   -1);
 		}
 
 		/* Free the query result */
@@ -744,12 +744,12 @@ update_table_chooser_from_database()
 		/* Set the list store data */
 		hasgeo = atoi(PQgetvalue(result, i, PQfnumber(result, "hasgeo")));
 		gtk_list_store_set(chooser_table_list_store, &iter,
-			   TABLECHOOSER_SCHEMA_COLUMN, schema,
-	                   TABLECHOOSER_TABLE_COLUMN, table,
-		           TABLECHOOSER_GEO_LISTSTORE_COLUMN, dumper_geocol_combo_list,
-			   TABLECHOOSER_GEO_COLUMN, geocol_name,
-	                   TABLECHOOSER_HASGEO_COLUMN, hasgeo,
-	                   -1);
+		                   TABLECHOOSER_SCHEMA_COLUMN, schema,
+		                   TABLECHOOSER_TABLE_COLUMN, table,
+		                   TABLECHOOSER_GEO_LISTSTORE_COLUMN, dumper_geocol_combo_list,
+		                   TABLECHOOSER_GEO_COLUMN, geocol_name,
+		                   TABLECHOOSER_HASGEO_COLUMN, hasgeo,
+		                   -1);
 	}
 
 	/* Clear up the result set */
@@ -968,7 +968,7 @@ add_loader_file_config_to_list(SHPLOADERCONFIG *loader_file_config)
 
 	gtk_list_store_insert_before(import_file_list_store, &iter, NULL);
 	gtk_list_store_set(import_file_list_store, &iter,
-			   IMPORT_POINTER_COLUMN, loader_file_config,
+	                   IMPORT_POINTER_COLUMN, loader_file_config,
 	                   IMPORT_FILENAME_COLUMN, loader_file_config->shp_file,
 	                   IMPORT_SCHEMA_COLUMN, loader_file_config->schema,
 	                   IMPORT_TABLE_COLUMN, loader_file_config->table,
@@ -1028,11 +1028,11 @@ create_new_table_config(GtkTreeIter *iter)
 
 	/* Grab the values from the current iter */
 	gtk_tree_model_get(GTK_TREE_MODEL(chooser_filtered_table_list_store), iter,
-			   TABLECHOOSER_SCHEMA_COLUMN, &schema,
-			   TABLECHOOSER_TABLE_COLUMN, &table,
-			   TABLECHOOSER_GEO_COLUMN, &geocol,
-			   TABLECHOOSER_HASGEO_COLUMN, &hasgeo,
-			   -1);
+	                   TABLECHOOSER_SCHEMA_COLUMN, &schema,
+	                   TABLECHOOSER_TABLE_COLUMN, &table,
+	                   TABLECHOOSER_GEO_COLUMN, &geocol,
+	                   TABLECHOOSER_HASGEO_COLUMN, &hasgeo,
+	                   -1);
 
 	/* Set up the values in the SHPDUMPERCONFIG */
 	dumper_table_config->schema = strdup(schema);
@@ -1059,24 +1059,24 @@ add_dumper_table_config_to_list(SHPDUMPERCONFIG *dumper_table_config, GtkListSto
 
 	gtk_list_store_insert_before(export_table_list_store, &iter, NULL);
 	gtk_list_store_set(export_table_list_store, &iter,
-			   EXPORT_POINTER_COLUMN, dumper_table_config,
-			   EXPORT_SCHEMA_COLUMN, dumper_table_config->schema,
-			   EXPORT_TABLE_COLUMN, dumper_table_config->table,
-			   EXPORT_GEOMETRY_COLUMN, dumper_table_config->geo_col_name,
-			   EXPORT_FILENAME_COLUMN, dumper_table_config->shp_file,
-			   -1);
+	                   EXPORT_POINTER_COLUMN, dumper_table_config,
+	                   EXPORT_SCHEMA_COLUMN, dumper_table_config->schema,
+	                   EXPORT_TABLE_COLUMN, dumper_table_config->table,
+	                   EXPORT_GEOMETRY_COLUMN, dumper_table_config->geo_col_name,
+	                   EXPORT_FILENAME_COLUMN, dumper_table_config->shp_file,
+	                   -1);
 
 	/* If we have supplied the table_chooser store for additional information, use it */
 	if (chooser_liststore)
 	{
 		/* Let's add a multi-choice geometry column to the table */
 		gtk_tree_model_get(GTK_TREE_MODEL(chooser_liststore), chooser_iter,
-				   TABLECHOOSER_GEO_LISTSTORE_COLUMN, &geocol_liststore,
-				   -1);
+		                   TABLECHOOSER_GEO_LISTSTORE_COLUMN, &geocol_liststore,
+		                   -1);
 
 		gtk_list_store_set(export_table_list_store, &iter,
-				   EXPORT_GEOMETRY_LISTSTORE_COLUMN, geocol_liststore,
-				   -1);
+		                   EXPORT_GEOMETRY_LISTSTORE_COLUMN, geocol_liststore,
+		                   -1);
 	}
 
 	return;
@@ -1110,35 +1110,35 @@ validate_shape_column_against_pg_column(int dbf_fieldtype, char *pg_fieldtype)
 {
 	switch (dbf_fieldtype)
 	{
-		case FTString:
-			/* Only varchar */
-			if (!strcmp(pg_fieldtype, "varchar"))
-				return -1;
-			break;
+	case FTString:
+		/* Only varchar */
+		if (!strcmp(pg_fieldtype, "varchar"))
+			return -1;
+		break;
 
-		case FTDate:
-			/* Only date */
-			if (!strcmp(pg_fieldtype, "date"))
-				return -1;
-			break;
+	case FTDate:
+		/* Only date */
+		if (!strcmp(pg_fieldtype, "date"))
+			return -1;
+		break;
 
-		case FTInteger:
-			/* Tentatively allow int2, int4 and numeric */
-			if (!strcmp(pg_fieldtype, "int2") || !strcmp(pg_fieldtype, "int4") || !strcmp(pg_fieldtype, "numeric"))
-				return -1;
-			break;
+	case FTInteger:
+		/* Tentatively allow int2, int4 and numeric */
+		if (!strcmp(pg_fieldtype, "int2") || !strcmp(pg_fieldtype, "int4") || !strcmp(pg_fieldtype, "numeric"))
+			return -1;
+		break;
 
-		case FTDouble:
-			/* Only float8/numeric */
-			if (!strcmp(pg_fieldtype, "float8") || !strcmp(pg_fieldtype, "numeric"))
-				return -1;
-			break;
+	case FTDouble:
+		/* Only float8/numeric */
+		if (!strcmp(pg_fieldtype, "float8") || !strcmp(pg_fieldtype, "numeric"))
+			return -1;
+		break;
 
-		case FTLogical:
-			/* Only boolean */
-			if (!strcmp(pg_fieldtype, "boolean"))
-				return -1;
-			break;
+	case FTLogical:
+		/* Only boolean */
+		if (!strcmp(pg_fieldtype, "boolean"))
+			return -1;
+		break;
 	}
 
 	/* Otherwise we can't guarantee this (but this is just a warning anyway) */
@@ -1164,78 +1164,78 @@ validate_remote_loader_columns(SHPLOADERCONFIG *config, PGresult *result)
 
 		switch (config->opt)
 		{
-			case 'c':
-				/* If we have a row matching the table given in the config, then it already exists */
-				if (ntuples > 0)
+		case 'c':
+			/* If we have a row matching the table given in the config, then it already exists */
+			if (ntuples > 0)
+			{
+				pgui_seterr(_("ERROR: Create mode selected for existing table: %s.%s"), config->schema, config->table);
+				response = SHPLOADERERR;
+			}
+			break;
+
+		case 'p':
+			/* If we have a row matching the table given in the config, then it already exists */
+			if (ntuples > 0)
+			{
+				pgui_seterr(_("ERROR: Prepare mode selected for existing table: %s.%s"), config->schema, config->table);
+				response = SHPLOADERERR;
+			}
+			break;
+
+		case 'a':
+			/* If we are trying to append to a table but it doesn't exist, emit a warning */
+			if (ntuples == 0)
+			{
+				pgui_seterr(_("ERROR: Destination table %s.%s could not be found for appending"), config->schema, config->table);
+				response = SHPLOADERERR;
+			}
+			else
+			{
+				/* If we have a row then lets do some simple column validation... */
+				state = ShpLoaderCreate(config);
+				ret = ShpLoaderOpenShape(state);
+				if (ret != SHPLOADEROK)
 				{
-					pgui_seterr(_("ERROR: Create mode selected for existing table: %s.%s"), config->schema, config->table);
-					response = SHPLOADERERR;
-				}
-				break;
-
-			case 'p':
-				/* If we have a row matching the table given in the config, then it already exists */
-				if (ntuples > 0)
-				{
-					pgui_seterr(_("ERROR: Prepare mode selected for existing table: %s.%s"), config->schema, config->table);
-					response = SHPLOADERERR;
-				}
-				break;
-
-			case 'a':
-				/* If we are trying to append to a table but it doesn't exist, emit a warning */
-				if (ntuples == 0)
-				{
-					pgui_seterr(_("ERROR: Destination table %s.%s could not be found for appending"), config->schema, config->table);
-					response = SHPLOADERERR;
-				}
-				else
-				{
-					/* If we have a row then lets do some simple column validation... */
-					state = ShpLoaderCreate(config);
-					ret = ShpLoaderOpenShape(state);
-					if (ret != SHPLOADEROK)
-					{
-						pgui_logf(_("Warning: Could not load shapefile %s"), config->shp_file);
-						ShpLoaderDestroy(state);
-					}
-
-					/* Find each column based upon its name and then validate type separately... */
-					for (i = 0; i < state->num_fields; i++)
-					{
-						/* Make sure we find a column */
-						found = 0;
-						for (j = 0; j < ntuples; j++)
-						{
-							pg_fieldname = PQgetvalue(result, j, PQfnumber(result, "field"));
-							pg_fieldtype = PQgetvalue(result, j, PQfnumber(result, "type"));
-
-							if (!strcmp(state->field_names[i], pg_fieldname))
-							{
-								found = -1;
-
-								ret = validate_shape_column_against_pg_column(state->types[i], pg_fieldtype);
-								if (!ret)
-								{
-									pgui_logf(_("Warning: DBF Field '%s' is not compatible with PostgreSQL column '%s' in %s.%s"), state->field_names[i], pg_fieldname, config->schema, config->table);
-									response = SHPLOADERWARN;
-								}
-							}
-						}
-
-						/* Flag a warning if we can't find a match */
-						if (!found)
-						{
-							pgui_logf(_("Warning: DBF Field '%s' within file %s could not be matched to a column within table %s.%s"),
-								  state->field_names[i], config->shp_file, config->schema, config->table);
-							response = SHPLOADERWARN;
-						}
-					}
-
+					pgui_logf(_("Warning: Could not load shapefile %s"), config->shp_file);
 					ShpLoaderDestroy(state);
 				}
 
-				break;
+				/* Find each column based upon its name and then validate type separately... */
+				for (i = 0; i < state->num_fields; i++)
+				{
+					/* Make sure we find a column */
+					found = 0;
+					for (j = 0; j < ntuples; j++)
+					{
+						pg_fieldname = PQgetvalue(result, j, PQfnumber(result, "field"));
+						pg_fieldtype = PQgetvalue(result, j, PQfnumber(result, "type"));
+
+						if (!strcmp(state->field_names[i], pg_fieldname))
+						{
+							found = -1;
+
+							ret = validate_shape_column_against_pg_column(state->types[i], pg_fieldtype);
+							if (!ret)
+							{
+								pgui_logf(_("Warning: DBF Field '%s' is not compatible with PostgreSQL column '%s' in %s.%s"), state->field_names[i], pg_fieldname, config->schema, config->table);
+								response = SHPLOADERWARN;
+							}
+						}
+					}
+
+					/* Flag a warning if we can't find a match */
+					if (!found)
+					{
+						pgui_logf(_("Warning: DBF Field '%s' within file %s could not be matched to a column within table %s.%s"),
+						          state->field_names[i], config->shp_file, config->schema, config->table);
+						response = SHPLOADERWARN;
+					}
+				}
+
+				ShpLoaderDestroy(state);
+			}
+
+			break;
 		}
 	}
 	else
@@ -1392,8 +1392,8 @@ pgui_action_open_table_dialog(GtkWidget *widget, gpointer data)
  */
 static void
 pgui_action_handle_table_remove(GtkCellRendererToggle *renderer,
-                               gchar *path,
-                               gpointer user_data)
+                                gchar *path,
+                                gpointer user_data)
 {
 	GtkTreeIter iter;
 	SHPDUMPERCONFIG *dumper_table_config;
@@ -1420,7 +1420,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	gpointer gptr;
 	GtkTreeIter iter;
 	char *sql_form, *query, *connection_string, *progress_shapefile = NULL;
-  char progress_text[GUIMSG_LINE_MAXLEN+1];
+	char progress_text[GUIMSG_LINE_MAXLEN+1];
 	PGresult *result;
 
 	int ret, i = 0;
@@ -1537,7 +1537,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 
 		/* For progress display, only show the "core" filename */
 		for (i = strlen(loader_file_config->shp_file); i >= 0
-			&& loader_file_config->shp_file[i - 1] != '\\' && loader_file_config->shp_file[i - 1] != '/'; i--);
+		        && loader_file_config->shp_file[i - 1] != '\\' && loader_file_config->shp_file[i - 1] != '/'; i--);
 
 		progress_shapefile = malloc(strlen(loader_file_config->shp_file));
 		strcpy(progress_shapefile, &loader_file_config->shp_file[i]);
@@ -1577,11 +1577,11 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		/* If we are in prepare mode, we need to skip the actual load. */
 		if (state->config->opt != 'p')
 		{
-            int numrecords = ShpLoaderGetRecordCount(state);
-            int records_per_tick = (numrecords / 200) - 1;
+			int numrecords = ShpLoaderGetRecordCount(state);
+			int records_per_tick = (numrecords / 200) - 1;
 
-            if ( records_per_tick < 1 )
-                records_per_tick = 1;
+			if ( records_per_tick < 1 )
+				records_per_tick = 1;
 
 			/* If we are in COPY (dump format) mode, output the COPY statement and enter COPY mode */
 			if (state->config->dump_format)
@@ -1658,7 +1658,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 
 				/* Update the progress bar */
 				if ( i % records_per_tick == 0 )
-				    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), (float)i / numrecords);
+					gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), (float)i / numrecords);
 
 				/* Allow GTK events to get a look in */
 				while (gtk_events_pending())
@@ -1769,7 +1769,7 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 	gpointer gptr;
 	GtkTreeIter iter;
 	char *output_shapefile, *orig_shapefile;
-  char progress_text[GUIMSG_LINE_MAXLEN+1];
+	char progress_text[GUIMSG_LINE_MAXLEN+1];
 	gchar *folder_path;
 
 	int ret, success = FALSE, i = 0;
@@ -2014,11 +2014,11 @@ update_loader_file_config_from_listview_iter(GtkTreeIter *iter, SHPLOADERCONFIG 
 
 	/* Grab the main values for this file */
 	gtk_tree_model_get(GTK_TREE_MODEL(import_file_list_store), iter,
-		IMPORT_SCHEMA_COLUMN, &schema,
-		IMPORT_TABLE_COLUMN, &table,
-		IMPORT_GEOMETRY_COLUMN, &geo_col,
-		IMPORT_SRID_COLUMN, &srid,
-		-1);
+	                   IMPORT_SCHEMA_COLUMN, &schema,
+	                   IMPORT_TABLE_COLUMN, &table,
+	                   IMPORT_GEOMETRY_COLUMN, &geo_col,
+	                   IMPORT_SRID_COLUMN, &srid,
+	                   -1);
 
 	/* Update the schema */
 	if (loader_file_config->schema)
@@ -2131,25 +2131,25 @@ pgui_action_handle_tree_combo(GtkCellRendererCombo *combo,
 
 	switch (opt)
 	{
-		case 'a':
-			loader_file_config->opt = 'a';
+	case 'a':
+		loader_file_config->opt = 'a';
 
-			/* Other half of index creation hack */
-			loader_file_config->createindex = 0;
+		/* Other half of index creation hack */
+		loader_file_config->createindex = 0;
 
-			break;
+		break;
 
-		case 'd':
-			loader_file_config->opt = 'd';
-			break;
+	case 'd':
+		loader_file_config->opt = 'd';
+		break;
 
-		case 'p':
-			loader_file_config->opt = 'p';
-			break;
+	case 'p':
+		loader_file_config->opt = 'p';
+		break;
 
-		case 'c':
-			loader_file_config->opt = 'c';
-			break;
+	case 'c':
+		loader_file_config->opt = 'c';
+		break;
 	}
 
 	/* Update the selection in the listview with the text from the combo */
@@ -2168,9 +2168,9 @@ pgui_action_handle_tree_combo(GtkCellRendererCombo *combo,
  */
 static void
 pgui_action_handle_loader_edit(GtkCellRendererText *renderer,
-                             gchar *path,
-                             gchar *new_text,
-                             gpointer column)
+                               gchar *path,
+                               gchar *new_text,
+                               gpointer column)
 {
 	GtkTreeIter iter;
 	gpointer gptr;
@@ -2252,11 +2252,11 @@ update_dumper_table_config_from_listview_iter(GtkTreeIter *iter, SHPDUMPERCONFIG
 
 	/* Grab the main values for this file */
 	gtk_tree_model_get(GTK_TREE_MODEL(export_table_list_store), iter,
-		EXPORT_SCHEMA_COLUMN, &schema,
-		EXPORT_TABLE_COLUMN, &table,
-		EXPORT_GEOMETRY_COLUMN, &geo_col,
-		EXPORT_FILENAME_COLUMN, &filename,
-		-1);
+	                   EXPORT_SCHEMA_COLUMN, &schema,
+	                   EXPORT_TABLE_COLUMN, &table,
+	                   EXPORT_GEOMETRY_COLUMN, &geo_col,
+	                   EXPORT_FILENAME_COLUMN, &filename,
+	                   -1);
 
 	/* Update the schema */
 	if (dumper_table_config->schema)
@@ -2287,9 +2287,9 @@ update_dumper_table_config_from_listview_iter(GtkTreeIter *iter, SHPDUMPERCONFIG
 
 static void
 pgui_action_handle_table_geocol_combo(GtkCellRendererCombo *combo,
-                              gchar *path_string,
-                              GtkTreeIter *new_iter,
-                              gpointer user_data)
+                                      gchar *path_string,
+                                      GtkTreeIter *new_iter,
+                                      gpointer user_data)
 {
 	SHPDUMPERCONFIG *dumper_table_config;
 	gchar *geocol_name;
@@ -2300,10 +2300,10 @@ pgui_action_handle_table_geocol_combo(GtkCellRendererCombo *combo,
 	/* Get the existing geo column name */
 	gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(export_table_list_store), &iter, path_string);
 	gtk_tree_model_get(GTK_TREE_MODEL(export_table_list_store), &iter,
-			   EXPORT_POINTER_COLUMN, &gptr,
-			   EXPORT_GEOMETRY_COLUMN, &geocol_name,
-			   EXPORT_GEOMETRY_LISTSTORE_COLUMN, &model,
-			   -1);
+	                   EXPORT_POINTER_COLUMN, &gptr,
+	                   EXPORT_GEOMETRY_COLUMN, &geocol_name,
+	                   EXPORT_GEOMETRY_LISTSTORE_COLUMN, &model,
+	                   -1);
 
 	/* If the geocol_name is NULL then there was no geo column so exit */
 	if (!geocol_name)
@@ -2321,17 +2321,17 @@ pgui_action_handle_table_geocol_combo(GtkCellRendererCombo *combo,
 	}
 
 	gtk_list_store_set(export_table_list_store, &iter,
-			   EXPORT_GEOMETRY_COLUMN, geocol_name,
-			   -1);
+	                   EXPORT_GEOMETRY_COLUMN, geocol_name,
+	                   -1);
 
 	return;
 }
 
 static void
 pgui_action_handle_dumper_edit(GtkCellRendererText *renderer,
-                             gchar *path,
-                             gchar *new_text,
-                             gpointer column)
+                               gchar *path,
+                               gchar *new_text,
+                               gpointer column)
 {
 	GtkTreeIter iter;
 	gpointer gptr;
@@ -2571,7 +2571,7 @@ pgui_create_filechooser_dialog(void)
 
 	/* Create the dialog */
 	dialog_filechooser = gtk_file_chooser_dialog_new( _("Select a Shape File"), GTK_WINDOW (window_main),
-		GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CLOSE, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+	                     GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CLOSE, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 
 	/* Filter for .shp files */
 	file_filter_shape = gtk_file_filter_new();
@@ -2598,7 +2598,7 @@ pgui_create_folderchooser_dialog(void)
 
 	/* Create the dialog */
 	dialog_folderchooser = gtk_file_chooser_dialog_new( _("Select an output folder"), GTK_WINDOW (window_main),
-		GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, GTK_STOCK_CANCEL, GTK_RESPONSE_CLOSE, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+	                       GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, GTK_STOCK_CANCEL, GTK_RESPONSE_CLOSE, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 
 	/* Filter for .shp files */
 	file_filter_shape = gtk_file_filter_new();
@@ -2796,7 +2796,7 @@ pgui_create_tablechooser_dialog()
 
 	/* Create the main top level window with a 10px border */
 	dialog_tablechooser = gtk_dialog_new_with_buttons(_("Table selection"), GTK_WINDOW(window_main),
-				GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+	                      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 
 	gtk_container_set_border_width(GTK_CONTAINER(dialog_tablechooser), 10);
 	gtk_window_set_position(GTK_WINDOW(dialog_tablechooser), GTK_WIN_POS_CENTER);
@@ -2805,17 +2805,17 @@ pgui_create_tablechooser_dialog()
 
 	/* Setup a model */
 	chooser_table_list_store = gtk_list_store_new(TABLECHOOSER_N_COLUMNS,
-	                                 G_TYPE_STRING,
-	                                 G_TYPE_STRING,
-					 GTK_TYPE_TREE_MODEL,
-					 G_TYPE_STRING,
-	                                 G_TYPE_INT);
+	                           G_TYPE_STRING,
+	                           G_TYPE_STRING,
+	                           GTK_TYPE_TREE_MODEL,
+	                           G_TYPE_STRING,
+	                           G_TYPE_INT);
 
 	/* Because we want to do selective filtering on the treeview content, we now implement a GtkTreeModel
 	   filter on top of the original tree model */
 	chooser_filtered_table_list_store = (GtkListStore *)gtk_tree_model_filter_new(GTK_TREE_MODEL(chooser_table_list_store), NULL);
 	gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(chooser_filtered_table_list_store),
-					(GtkTreeModelFilterVisibleFunc)table_chooser_visibility_func, NULL, NULL);
+	                                       (GtkTreeModelFilterVisibleFunc)table_chooser_visibility_func, NULL, NULL);
 
 	/* Create the view and such */
 	chooser_tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(chooser_filtered_table_list_store));
@@ -2836,10 +2836,10 @@ pgui_create_tablechooser_dialog()
 	g_object_set(chooser_schema_renderer, "editable", TRUE, NULL);
 	g_signal_connect(G_OBJECT(chooser_schema_renderer), "edited", G_CALLBACK(pgui_action_handle_loader_edit), NULL);
 	chooser_schema_column = gtk_tree_view_column_new_with_attributes(_("Schema"),
-	                chooser_schema_renderer,
-	                "text",
-	                TABLECHOOSER_SCHEMA_COLUMN,
-	                NULL);
+	                        chooser_schema_renderer,
+	                        "text",
+	                        TABLECHOOSER_SCHEMA_COLUMN,
+	                        NULL);
 	g_object_set(chooser_schema_column, "resizable", TRUE, "sizing", GTK_TREE_VIEW_COLUMN_AUTOSIZE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(chooser_tree), chooser_schema_column);
 
@@ -2848,10 +2848,10 @@ pgui_create_tablechooser_dialog()
 	g_object_set(chooser_table_renderer, "editable", FALSE, NULL);
 	g_signal_connect(G_OBJECT(chooser_table_renderer), "edited", G_CALLBACK(pgui_action_handle_loader_edit), NULL);
 	chooser_table_column = gtk_tree_view_column_new_with_attributes(_("Table"),
-	               chooser_table_renderer,
-	               "text",
-	               TABLECHOOSER_TABLE_COLUMN,
-	               NULL);
+	                       chooser_table_renderer,
+	                       "text",
+	                       TABLECHOOSER_TABLE_COLUMN,
+	                       NULL);
 	g_object_set(chooser_table_column, "resizable", TRUE, "sizing", GTK_TREE_VIEW_COLUMN_AUTOSIZE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(chooser_tree), chooser_table_column);
 
@@ -2895,14 +2895,14 @@ pgui_create_import_file_table(GtkWidget *import_list_frame)
 
 	/* Setup a model */
 	import_file_list_store = gtk_list_store_new(IMPORT_N_COLUMNS,
-					 G_TYPE_POINTER,
-	                                 G_TYPE_STRING,
-	                                 G_TYPE_STRING,
-	                                 G_TYPE_STRING,
-	                                 G_TYPE_STRING,
-	                                 G_TYPE_STRING,
-	                                 G_TYPE_STRING,
-	                                 G_TYPE_BOOLEAN);
+	                         G_TYPE_POINTER,
+	                         G_TYPE_STRING,
+	                         G_TYPE_STRING,
+	                         G_TYPE_STRING,
+	                         G_TYPE_STRING,
+	                         G_TYPE_STRING,
+	                         G_TYPE_STRING,
+	                         G_TYPE_BOOLEAN);
 
 	/* Create the view and such */
 	import_tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(import_file_list_store));
@@ -2933,10 +2933,10 @@ pgui_create_import_file_table(GtkWidget *import_list_frame)
 	column_indexes[IMPORT_FILENAME_COLUMN] = IMPORT_FILENAME_COLUMN;
 	g_signal_connect(G_OBJECT(import_filename_renderer), "edited", G_CALLBACK(pgui_action_handle_loader_edit), &column_indexes[IMPORT_FILENAME_COLUMN]);
 	import_filename_column = gtk_tree_view_column_new_with_attributes(_("Shapefile"),
-	                  import_filename_renderer,
-	                  "text",
-	                  IMPORT_FILENAME_COLUMN,
-	                  NULL);
+	                         import_filename_renderer,
+	                         "text",
+	                         IMPORT_FILENAME_COLUMN,
+	                         NULL);
 	g_object_set(import_filename_column, "resizable", TRUE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(import_tree), import_filename_column);
 
@@ -2946,10 +2946,10 @@ pgui_create_import_file_table(GtkWidget *import_list_frame)
 	column_indexes[IMPORT_SCHEMA_COLUMN] = IMPORT_SCHEMA_COLUMN;
 	g_signal_connect(G_OBJECT(import_schema_renderer), "edited", G_CALLBACK(pgui_action_handle_loader_edit), &column_indexes[IMPORT_SCHEMA_COLUMN]);
 	import_schema_column = gtk_tree_view_column_new_with_attributes(_("Schema"),
-	                import_schema_renderer,
-	                "text",
-	                IMPORT_SCHEMA_COLUMN,
-	                NULL);
+	                       import_schema_renderer,
+	                       "text",
+	                       IMPORT_SCHEMA_COLUMN,
+	                       NULL);
 	g_object_set(import_schema_column, "resizable", TRUE, "expand", TRUE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(import_tree), import_schema_column);
 
@@ -2959,10 +2959,10 @@ pgui_create_import_file_table(GtkWidget *import_list_frame)
 	column_indexes[IMPORT_TABLE_COLUMN] = IMPORT_TABLE_COLUMN;
 	g_signal_connect(G_OBJECT(import_table_renderer), "edited", G_CALLBACK(pgui_action_handle_loader_edit), &column_indexes[IMPORT_TABLE_COLUMN]);
 	import_table_column = gtk_tree_view_column_new_with_attributes(_("Table"),
-	               import_table_renderer,
-	               "text",
-	               IMPORT_TABLE_COLUMN,
-	               NULL);
+	                      import_table_renderer,
+	                      "text",
+	                      IMPORT_TABLE_COLUMN,
+	                      NULL);
 	g_object_set(import_table_column, "resizable", TRUE, "expand", TRUE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(import_tree), import_table_column);
 
@@ -2972,10 +2972,10 @@ pgui_create_import_file_table(GtkWidget *import_list_frame)
 	column_indexes[IMPORT_GEOMETRY_COLUMN] = IMPORT_GEOMETRY_COLUMN;
 	g_signal_connect(G_OBJECT(import_geom_column_renderer), "edited", G_CALLBACK(pgui_action_handle_loader_edit), &column_indexes[IMPORT_GEOMETRY_COLUMN]);
 	import_geom_column = gtk_tree_view_column_new_with_attributes(_("Geo Column"),
-	              import_geom_column_renderer,
-	              "text",
-	              IMPORT_GEOMETRY_COLUMN,
-	              NULL);
+	                     import_geom_column_renderer,
+	                     "text",
+	                     IMPORT_GEOMETRY_COLUMN,
+	                     NULL);
 	g_object_set(import_geom_column, "resizable", TRUE, "expand", TRUE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(import_tree), import_geom_column);
 
@@ -2985,38 +2985,38 @@ pgui_create_import_file_table(GtkWidget *import_list_frame)
 	column_indexes[IMPORT_SRID_COLUMN] = IMPORT_SRID_COLUMN;
 	g_signal_connect(G_OBJECT(import_srid_renderer), "edited", G_CALLBACK(pgui_action_handle_loader_edit), &column_indexes[IMPORT_SRID_COLUMN]);
 	import_srid_column = gtk_tree_view_column_new_with_attributes("SRID",
-	              import_srid_renderer,
-	              "text",
-	              IMPORT_SRID_COLUMN,
-	              NULL);
+	                     import_srid_renderer,
+	                     "text",
+	                     IMPORT_SRID_COLUMN,
+	                     NULL);
 	g_object_set(import_srid_column, "resizable", TRUE, "expand", TRUE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(import_tree), import_srid_column);
 
 	/* Mode Combo Field */
 	loader_mode_combo_list = gtk_list_store_new(LOADER_MODE_COMBO_COLUMNS,
-					G_TYPE_STRING,
-					G_TYPE_CHAR);
+	                         G_TYPE_STRING,
+	                         G_TYPE_CHAR);
 
 	gtk_list_store_insert(loader_mode_combo_list, &iter, CREATE_MODE);
 	gtk_list_store_set(loader_mode_combo_list, &iter,
 	                   LOADER_MODE_COMBO_TEXT, _("Create"),
-			   LOADER_MODE_COMBO_OPTION_CHAR, 'c',
-			   -1);
+	                   LOADER_MODE_COMBO_OPTION_CHAR, 'c',
+	                   -1);
 	gtk_list_store_insert(loader_mode_combo_list, &iter, APPEND_MODE);
 	gtk_list_store_set(loader_mode_combo_list, &iter,
 	                   LOADER_MODE_COMBO_TEXT, _("Append"),
-			   LOADER_MODE_COMBO_OPTION_CHAR, 'a',
-			   -1);
+	                   LOADER_MODE_COMBO_OPTION_CHAR, 'a',
+	                   -1);
 	gtk_list_store_insert(loader_mode_combo_list, &iter, DELETE_MODE);
 	gtk_list_store_set(loader_mode_combo_list, &iter,
 	                   LOADER_MODE_COMBO_TEXT, _("Delete"),
-			   LOADER_MODE_COMBO_OPTION_CHAR, 'd',
-			   -1);
+	                   LOADER_MODE_COMBO_OPTION_CHAR, 'd',
+	                   -1);
 	gtk_list_store_insert(loader_mode_combo_list, &iter, PREPARE_MODE);
 	gtk_list_store_set(loader_mode_combo_list, &iter,
 	                   LOADER_MODE_COMBO_TEXT, _("Prepare"),
-			   LOADER_MODE_COMBO_OPTION_CHAR, 'p',
-			   -1);
+	                   LOADER_MODE_COMBO_OPTION_CHAR, 'p',
+	                   -1);
 	loader_mode_combo = gtk_combo_box_new_with_model(GTK_TREE_MODEL(loader_mode_combo_list));
 	import_mode_renderer = gtk_cell_renderer_combo_new();
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(loader_mode_combo),
@@ -3030,10 +3030,10 @@ pgui_create_import_file_table(GtkWidget *import_list_frame)
 	             "text-column", LOADER_MODE_COMBO_TEXT,
 	             NULL);
 	import_mode_column = gtk_tree_view_column_new_with_attributes(_("Mode"),
-	              import_mode_renderer,
-	              "text",
-	              IMPORT_MODE_COLUMN,
-	              NULL);
+	                     import_mode_renderer,
+	                     "text",
+	                     IMPORT_MODE_COLUMN,
+	                     NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(import_tree), import_mode_column);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(loader_mode_combo), 1);
 	g_object_set(import_mode_column, "resizable", TRUE, "expand", TRUE, "sizing", GTK_TREE_VIEW_COLUMN_AUTOSIZE, NULL);
@@ -3045,7 +3045,7 @@ pgui_create_import_file_table(GtkWidget *import_list_frame)
 	g_object_set(import_remove_renderer, "activatable", TRUE, NULL);
 	g_signal_connect(G_OBJECT(import_remove_renderer), "toggled", G_CALLBACK (pgui_action_handle_file_remove), NULL);
 	import_remove_column = gtk_tree_view_column_new_with_attributes("Rm",
-	                import_remove_renderer, NULL);
+	                       import_remove_renderer, NULL);
 	g_object_set(import_remove_column, "resizable", TRUE, "expand", FALSE, "fixed-width", 64, "sizing", GTK_TREE_VIEW_COLUMN_FIXED, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(import_tree), import_remove_column);
 
@@ -3085,13 +3085,13 @@ pgui_create_export_table_table(GtkWidget *export_list_frame)
 
 	/* Setup a model */
 	export_table_list_store = gtk_list_store_new(EXPORT_N_COLUMNS,
-					 G_TYPE_POINTER,
-	                                 G_TYPE_STRING,
-	                                 G_TYPE_STRING,
-	                                 G_TYPE_STRING,
-					 GTK_TYPE_TREE_MODEL,
-					 G_TYPE_STRING,
-	                                 G_TYPE_BOOLEAN);
+	                          G_TYPE_POINTER,
+	                          G_TYPE_STRING,
+	                          G_TYPE_STRING,
+	                          G_TYPE_STRING,
+	                          GTK_TYPE_TREE_MODEL,
+	                          G_TYPE_STRING,
+	                          G_TYPE_BOOLEAN);
 
 	/* Create the view and such */
 	export_tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(export_table_list_store));
@@ -3122,10 +3122,10 @@ pgui_create_export_table_table(GtkWidget *export_list_frame)
 	column_indexes[EXPORT_SCHEMA_COLUMN] = EXPORT_SCHEMA_COLUMN;
 	g_signal_connect(G_OBJECT(export_schema_renderer), "edited", G_CALLBACK(pgui_action_handle_loader_edit), &column_indexes[EXPORT_SCHEMA_COLUMN]);
 	export_schema_column = gtk_tree_view_column_new_with_attributes(_("Schema"),
-	                export_schema_renderer,
-	                "text",
-	                EXPORT_SCHEMA_COLUMN,
-	                NULL);
+	                       export_schema_renderer,
+	                       "text",
+	                       EXPORT_SCHEMA_COLUMN,
+	                       NULL);
 	g_object_set(export_schema_column, "resizable", TRUE, "expand", TRUE, "sizing", GTK_TREE_VIEW_COLUMN_AUTOSIZE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(export_tree), export_schema_column);
 
@@ -3135,10 +3135,10 @@ pgui_create_export_table_table(GtkWidget *export_list_frame)
 	column_indexes[EXPORT_TABLE_COLUMN] = EXPORT_TABLE_COLUMN;
 	g_signal_connect(G_OBJECT(export_table_renderer), "edited", G_CALLBACK(pgui_action_handle_loader_edit), &column_indexes[EXPORT_TABLE_COLUMN]);
 	export_table_column = gtk_tree_view_column_new_with_attributes(_("Table"),
-	               export_table_renderer,
-	               "text",
-	               EXPORT_TABLE_COLUMN,
-	               NULL);
+	                      export_table_renderer,
+	                      "text",
+	                      EXPORT_TABLE_COLUMN,
+	                      NULL);
 	g_object_set(export_table_column, "resizable", TRUE, "expand", TRUE, "sizing", GTK_TREE_VIEW_COLUMN_AUTOSIZE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(export_tree), export_table_column);
 
@@ -3148,17 +3148,17 @@ pgui_create_export_table_table(GtkWidget *export_list_frame)
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(export_geom_column_combo),
 	                           export_geom_column_renderer, TRUE);
 	g_object_set(export_geom_column_renderer,
-		     "editable", TRUE,
-		     "has-entry", FALSE,
+	             "editable", TRUE,
+	             "has-entry", FALSE,
 	             "text-column", TABLECHOOSER_GEOCOL_COMBO_TEXT,
-		     NULL);
+	             NULL);
 	export_geom_column = gtk_tree_view_column_new_with_attributes(_("Geo Column"),
-	               export_geom_column_renderer,
-		       "model",
-		       EXPORT_GEOMETRY_LISTSTORE_COLUMN,
-		       "text",
-		       EXPORT_GEOMETRY_COLUMN,
-	               NULL);
+	                     export_geom_column_renderer,
+	                     "model",
+	                     EXPORT_GEOMETRY_LISTSTORE_COLUMN,
+	                     "text",
+	                     EXPORT_GEOMETRY_COLUMN,
+	                     NULL);
 	g_object_set(export_geom_column, "resizable", TRUE, "sizing", GTK_TREE_VIEW_COLUMN_AUTOSIZE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(export_tree), export_geom_column);
 	g_signal_connect (G_OBJECT(export_geom_column_renderer), "changed", G_CALLBACK(pgui_action_handle_table_geocol_combo), NULL);
@@ -3169,10 +3169,10 @@ pgui_create_export_table_table(GtkWidget *export_list_frame)
 	column_indexes[EXPORT_FILENAME_COLUMN] = EXPORT_FILENAME_COLUMN;
 	g_signal_connect(G_OBJECT(export_filename_renderer), "edited", G_CALLBACK(pgui_action_handle_dumper_edit), &column_indexes[EXPORT_FILENAME_COLUMN]);
 	export_filename_column = gtk_tree_view_column_new_with_attributes(_("Filename"),
-	               export_filename_renderer,
-	               "text",
-	               EXPORT_FILENAME_COLUMN,
-	               NULL);
+	                         export_filename_renderer,
+	                         "text",
+	                         EXPORT_FILENAME_COLUMN,
+	                         NULL);
 	g_object_set(export_filename_column, "resizable", TRUE, "expand", TRUE, "sizing", GTK_TREE_VIEW_COLUMN_AUTOSIZE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(export_tree), export_filename_column);
 
@@ -3181,7 +3181,7 @@ pgui_create_export_table_table(GtkWidget *export_list_frame)
 	g_object_set(export_remove_renderer, "activatable", TRUE, NULL);
 	g_signal_connect(G_OBJECT(export_remove_renderer), "toggled", G_CALLBACK (pgui_action_handle_table_remove), NULL);
 	export_remove_column = gtk_tree_view_column_new_with_attributes("Rm",
-	                export_remove_renderer, NULL);
+	                       export_remove_renderer, NULL);
 	g_object_set(export_remove_column, "resizable", TRUE, "expand", FALSE, "fixed-width", 64, "sizing", GTK_TREE_VIEW_COLUMN_FIXED, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(export_tree), export_remove_column);
 

@@ -548,8 +548,8 @@ gserialized_datum_predicate(Datum gs1, Datum gs2, gidx_predicate predicate)
 	/* Must be able to build box for each arguement (ie, not empty geometry)
 	   and predicate function to return true. */
 	if ( (gserialized_datum_get_gidx_p(gs1, gidx1) == LW_SUCCESS) &&
-	     (gserialized_datum_get_gidx_p(gs2, gidx2) == LW_SUCCESS) &&
-	      predicate(gidx1, gidx2) )
+	        (gserialized_datum_get_gidx_p(gs2, gidx2) == LW_SUCCESS) &&
+	        predicate(gidx1, gidx2) )
 	{
 		POSTGIS_DEBUGF(3, "got boxes %s and %s", gidx_to_string(gidx1), gidx_to_string(gidx2));
 		return LW_TRUE;
@@ -561,41 +561,41 @@ gserialized_datum_predicate(Datum gs1, Datum gs2, gidx_predicate predicate)
 static int
 gserialized_datum_predicate_gidx_geom(GIDX *gidx1, Datum gs2, gidx_predicate predicate)
 {
-   /* Put aside some stack memory and use it for GIDX pointers. */
-   char boxmem2[GIDX_MAX_SIZE];
-   GIDX *gidx2 = (GIDX*)boxmem2;
+	/* Put aside some stack memory and use it for GIDX pointers. */
+	char boxmem2[GIDX_MAX_SIZE];
+	GIDX *gidx2 = (GIDX*)boxmem2;
 
-   POSTGIS_DEBUG(3, "entered function");
+	POSTGIS_DEBUG(3, "entered function");
 
-   /* Must be able to build box for gs2 arguement (ie, not empty geometry)
-      and predicate function to return true. */
-   if ( (gserialized_datum_get_gidx_p(gs2, gidx2) == LW_SUCCESS) &&
-         predicate(gidx1, gidx2) )
-   {
-       POSTGIS_DEBUGF(3, "got boxes %s and %s", gidx_to_string(gidx1), gidx_to_string(gidx2));
-       return LW_TRUE;
-   }
-   return LW_FALSE;
+	/* Must be able to build box for gs2 arguement (ie, not empty geometry)
+	   and predicate function to return true. */
+	if ( (gserialized_datum_get_gidx_p(gs2, gidx2) == LW_SUCCESS) &&
+	        predicate(gidx1, gidx2) )
+	{
+		POSTGIS_DEBUGF(3, "got boxes %s and %s", gidx_to_string(gidx1), gidx_to_string(gidx2));
+		return LW_TRUE;
+	}
+	return LW_FALSE;
 }
 
 static int
 gserialized_datum_predicate_geom_gidx(Datum gs1, GIDX *gidx2, gidx_predicate predicate)
 {
-   /* Put aside some stack memory and use it for GIDX pointers. */
-   char boxmem2[GIDX_MAX_SIZE];
-   GIDX *gidx1 = (GIDX*)boxmem2;
+	/* Put aside some stack memory and use it for GIDX pointers. */
+	char boxmem2[GIDX_MAX_SIZE];
+	GIDX *gidx1 = (GIDX*)boxmem2;
 
-   POSTGIS_DEBUG(3, "entered function");
+	POSTGIS_DEBUG(3, "entered function");
 
-   /* Must be able to build box for gs2 arguement (ie, not empty geometry)
-      and predicate function to return true. */
-   if ( (gserialized_datum_get_gidx_p(gs1, gidx1) == LW_SUCCESS) &&
-         predicate(gidx1, gidx2) )
-   {
-       POSTGIS_DEBUGF(3, "got boxes %s and %s", gidx_to_string(gidx1), gidx_to_string(gidx2));
-       return LW_TRUE;
-   }
-   return LW_FALSE;
+	/* Must be able to build box for gs2 arguement (ie, not empty geometry)
+	   and predicate function to return true. */
+	if ( (gserialized_datum_get_gidx_p(gs1, gidx1) == LW_SUCCESS) &&
+	        predicate(gidx1, gidx2) )
+	{
+		POSTGIS_DEBUGF(3, "got boxes %s and %s", gidx_to_string(gidx1), gidx_to_string(gidx2));
+		return LW_TRUE;
+	}
+	return LW_FALSE;
 }
 #endif
 
@@ -606,38 +606,38 @@ gserialized_datum_predicate_geom_gidx(Datum gs1, GIDX *gidx2, gidx_predicate pre
 #if POSTGIS_PGSQL_VERSION < 95
 static double gidx_distance_leaf_centroid(const GIDX *a, const GIDX *b)
 {
-  int ndims, i;
-  double sum = 0;
+	int ndims, i;
+	double sum = 0;
 
-  /* Base computation on least available dimensions */
-  ndims = Min(GIDX_NDIMS(b), GIDX_NDIMS(a));
-  for ( i = 0; i < ndims; ++i )
-  {
-    double ca, cb, d;
-    double amin = GIDX_GET_MIN(a,i);
-    double amax = GIDX_GET_MAX(a,i);
-    double bmin = GIDX_GET_MIN(b,i);
-    double bmax = GIDX_GET_MAX(b,i);
-    ca = amin + ( ( amax - amin ) / 2.0 );
-    cb = bmin + ( ( bmax - bmin ) / 2.0 );
-    d = ca - cb;
-    if ( ! isfinite(d) )
-    {
-      /* Can happen if a dimension was padded with FLT_MAX,
-       * effectively meaning "infinite range". In that case
-       * we take that dimension as adding 0 to the total
-       * distance.
-       */
-      continue;
-    }
-    sum += d * d;
-/*
-    POSTGIS_DEBUGF(3, " centroid of A for dimension %d is %g", i, ca);
-    POSTGIS_DEBUGF(3, " centroid of B for dimension %d is %g", i, cb);
-    POSTGIS_DEBUGF(3, " distance on dimension %d is %g, squared as %g, grows sum to %g", i, d, d*d, sum);
-*/
-  }
-  return sqrt(sum);
+	/* Base computation on least available dimensions */
+	ndims = Min(GIDX_NDIMS(b), GIDX_NDIMS(a));
+	for ( i = 0; i < ndims; ++i )
+	{
+		double ca, cb, d;
+		double amin = GIDX_GET_MIN(a,i);
+		double amax = GIDX_GET_MAX(a,i);
+		double bmin = GIDX_GET_MIN(b,i);
+		double bmax = GIDX_GET_MAX(b,i);
+		ca = amin + ( ( amax - amin ) / 2.0 );
+		cb = bmin + ( ( bmax - bmin ) / 2.0 );
+		d = ca - cb;
+		if ( ! isfinite(d) )
+		{
+			/* Can happen if a dimension was padded with FLT_MAX,
+			 * effectively meaning "infinite range". In that case
+			 * we take that dimension as adding 0 to the total
+			 * distance.
+			 */
+			continue;
+		}
+		sum += d * d;
+		/*
+		    POSTGIS_DEBUGF(3, " centroid of A for dimension %d is %g", i, ca);
+		    POSTGIS_DEBUGF(3, " centroid of B for dimension %d is %g", i, cb);
+		    POSTGIS_DEBUGF(3, " distance on dimension %d is %g, squared as %g, grows sum to %g", i, d, d*d, sum);
+		*/
+	}
+	return sqrt(sum);
 }
 #endif
 
@@ -646,50 +646,50 @@ static double gidx_distance_leaf_centroid(const GIDX *a, const GIDX *b)
 */
 static double gidx_distance(const GIDX *a, const GIDX *b, int m_is_time)
 {
-  int ndims, i;
-  double sum = 0;
+	int ndims, i;
+	double sum = 0;
 
-  /* Base computation on least available dimensions */
-  ndims = Min(GIDX_NDIMS(b), GIDX_NDIMS(a));
-  for ( i = 0; i < ndims; ++i )
-  {
-    double d;
-    double amin = GIDX_GET_MIN(a,i);
-    double amax = GIDX_GET_MAX(a,i);
-    double bmin = GIDX_GET_MIN(b,i);
-    double bmax = GIDX_GET_MAX(b,i);
-    POSTGIS_DEBUGF(3, "A %g - %g", amin, amax);
-    POSTGIS_DEBUGF(3, "B %g - %g", bmin, bmax);
+	/* Base computation on least available dimensions */
+	ndims = Min(GIDX_NDIMS(b), GIDX_NDIMS(a));
+	for ( i = 0; i < ndims; ++i )
+	{
+		double d;
+		double amin = GIDX_GET_MIN(a,i);
+		double amax = GIDX_GET_MAX(a,i);
+		double bmin = GIDX_GET_MIN(b,i);
+		double bmax = GIDX_GET_MAX(b,i);
+		POSTGIS_DEBUGF(3, "A %g - %g", amin, amax);
+		POSTGIS_DEBUGF(3, "B %g - %g", bmin, bmax);
 
-    if ( ( amin <= bmax && amax >= bmin ) )
-    {
-      /* overlaps */
-      d = 0;
-    }
-    else if ( i == 4 && m_is_time )
-    {
-      return FLT_MAX;
-    }
-    else if ( bmax < amin )
-    {
-      /* is "left" */
-      d = amin - bmax;
-    }
-    else
-    {
-      /* is "right" */
-      assert( bmin > amax );
-      d = bmin - amax;
-    }
-    if ( ! isfinite(d) )
-    {
-      /* Can happen if coordinates are corrupted/NaN */
-      continue;
-    }
-    sum += d * d;
-    POSTGIS_DEBUGF(3, "dist %g, squared %g, grows sum to %g", d, d*d, sum);
-  }
-  return sqrt(sum);
+		if ( ( amin <= bmax && amax >= bmin ) )
+		{
+			/* overlaps */
+			d = 0;
+		}
+		else if ( i == 4 && m_is_time )
+		{
+			return FLT_MAX;
+		}
+		else if ( bmax < amin )
+		{
+			/* is "left" */
+			d = amin - bmax;
+		}
+		else
+		{
+			/* is "right" */
+			assert( bmin > amax );
+			d = bmin - amax;
+		}
+		if ( ! isfinite(d) )
+		{
+			/* Can happen if coordinates are corrupted/NaN */
+			continue;
+		}
+		sum += d * d;
+		POSTGIS_DEBUGF(3, "dist %g, squared %g, grows sum to %g", d, d*d, sum);
+	}
+	return sqrt(sum);
 }
 
 #if POSTGIS_PGSQL_VERSION < 95
@@ -751,22 +751,22 @@ static double gidx_distance_m(const GIDX *a, const GIDX *b)
 	bmin = GIDX_GET_MIN(b,mdim_b);
 	bmax = GIDX_GET_MAX(b,mdim_b);
 
-    if ( ( amin <= bmax && amax >= bmin ) )
-    {
-      /* overlaps */
-      d = 0;
-    }
-    else if ( bmax < amin )
-    {
-      /* is "left" */
-      d = amin - bmax;
-    }
-    else
-    {
-      /* is "right" */
-      assert( bmin > amax );
-      d = bmin - amax;
-    }
+	if ( ( amin <= bmax && amax >= bmin ) )
+	{
+		/* overlaps */
+		d = 0;
+	}
+	else if ( bmax < amin )
+	{
+		/* is "left" */
+		d = amin - bmax;
+	}
+	else
+	{
+		/* is "right" */
+		assert( bmin > amax );
+		d = bmin - amax;
+	}
 
 	return d;
 }
@@ -820,7 +820,7 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 
 	/* Must be able to build box for each argument (ie, not empty geometry). */
 	if ( (gserialized_datum_get_gidx_p(gs1, b1) == LW_SUCCESS) &&
-	     (gserialized_datum_get_gidx_p(gs2, b2) == LW_SUCCESS) )
+	        (gserialized_datum_get_gidx_p(gs2, b2) == LW_SUCCESS) )
 	{
 		box_distance = gidx_distance_leaf_centroid(b1, b2);
 		POSTGIS_DEBUGF(3, "got boxes %s and %s", gidx_to_string(b1), gidx_to_string(b2));
@@ -938,12 +938,12 @@ Datum gserialized_within(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_gidx_geom_within);
 Datum gserialized_gidx_geom_within(PG_FUNCTION_ARGS)
 {
-   GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
+	GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
 
-   if ( gserialized_datum_predicate_geom_gidx(PG_GETARG_DATUM(1), gidx, gidx_contains) == LW_TRUE )
-       PG_RETURN_BOOL(true);
+	if ( gserialized_datum_predicate_geom_gidx(PG_GETARG_DATUM(1), gidx, gidx_contains) == LW_TRUE )
+		PG_RETURN_BOOL(true);
 
-   PG_RETURN_BOOL(false);
+	PG_RETURN_BOOL(false);
 }
 
 /*
@@ -953,10 +953,10 @@ Datum gserialized_gidx_geom_within(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_gidx_gidx_within);
 Datum gserialized_gidx_gidx_within(PG_FUNCTION_ARGS)
 {
-   if ( gidx_contains((GIDX *)PG_GETARG_POINTER(1), (GIDX *)PG_GETARG_POINTER(0)))
-       PG_RETURN_BOOL(true);
+	if ( gidx_contains((GIDX *)PG_GETARG_POINTER(1), (GIDX *)PG_GETARG_POINTER(0)))
+		PG_RETURN_BOOL(true);
 
-   PG_RETURN_BOOL(false);
+	PG_RETURN_BOOL(false);
 }
 #endif
 
@@ -983,12 +983,12 @@ Datum gserialized_contains(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_gidx_geom_contains);
 Datum gserialized_gidx_geom_contains(PG_FUNCTION_ARGS)
 {
-   GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
+	GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
 
-   if ( gserialized_datum_predicate_gidx_geom(gidx, PG_GETARG_DATUM(1), gidx_contains) == LW_TRUE )
-       PG_RETURN_BOOL(true);
+	if ( gserialized_datum_predicate_gidx_geom(gidx, PG_GETARG_DATUM(1), gidx_contains) == LW_TRUE )
+		PG_RETURN_BOOL(true);
 
-   PG_RETURN_BOOL(false);
+	PG_RETURN_BOOL(false);
 }
 
 /*
@@ -998,30 +998,30 @@ Datum gserialized_gidx_geom_contains(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_gidx_gidx_contains);
 Datum gserialized_gidx_gidx_contains(PG_FUNCTION_ARGS)
 {
-   if ( gidx_contains((GIDX *)PG_GETARG_POINTER(0), (GIDX *)PG_GETARG_POINTER(1)))
-       PG_RETURN_BOOL(true);
+	if ( gidx_contains((GIDX *)PG_GETARG_POINTER(0), (GIDX *)PG_GETARG_POINTER(1)))
+		PG_RETURN_BOOL(true);
 
-   PG_RETURN_BOOL(false);
+	PG_RETURN_BOOL(false);
 }
 
 PG_FUNCTION_INFO_V1(gserialized_gidx_geom_same);
 Datum gserialized_gidx_geom_same(PG_FUNCTION_ARGS)
 {
-   GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
+	GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
 
-   if ( gserialized_datum_predicate_gidx_geom(gidx, PG_GETARG_DATUM(1), gidx_equals) == LW_TRUE )
-       PG_RETURN_BOOL(true);
+	if ( gserialized_datum_predicate_gidx_geom(gidx, PG_GETARG_DATUM(1), gidx_equals) == LW_TRUE )
+		PG_RETURN_BOOL(true);
 
-   PG_RETURN_BOOL(false);
+	PG_RETURN_BOOL(false);
 }
 
 PG_FUNCTION_INFO_V1(gserialized_gidx_gidx_same);
 Datum gserialized_gidx_gidx_same(PG_FUNCTION_ARGS)
 {
-   if ( gidx_equals((GIDX *)PG_GETARG_POINTER(0), (GIDX *)PG_GETARG_POINTER(1)) )
-       PG_RETURN_BOOL(true);
+	if ( gidx_equals((GIDX *)PG_GETARG_POINTER(0), (GIDX *)PG_GETARG_POINTER(1)) )
+		PG_RETURN_BOOL(true);
 
-   PG_RETURN_BOOL(false);
+	PG_RETURN_BOOL(false);
 }
 #endif
 
@@ -1047,32 +1047,32 @@ Datum gserialized_overlaps(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_gidx_geog_overlaps);
 Datum gserialized_gidx_geog_overlaps(PG_FUNCTION_ARGS)
 {
-   GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
+	GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
 
-   if ( gserialized_datum_predicate_gidx_geom(gidx, PG_GETARG_DATUM(1), gidx_overlaps) == LW_TRUE )
-       PG_RETURN_BOOL(true);
+	if ( gserialized_datum_predicate_gidx_geom(gidx, PG_GETARG_DATUM(1), gidx_overlaps) == LW_TRUE )
+		PG_RETURN_BOOL(true);
 
-   PG_RETURN_BOOL(false);
+	PG_RETURN_BOOL(false);
 }
 
 PG_FUNCTION_INFO_V1(gserialized_gidx_geom_overlaps);
 Datum gserialized_gidx_geom_overlaps(PG_FUNCTION_ARGS)
 {
-   GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
+	GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
 
-   if ( gserialized_datum_predicate_gidx_geom(gidx, PG_GETARG_DATUM(1), gidx_overlaps) == LW_TRUE )
-       PG_RETURN_BOOL(true);
+	if ( gserialized_datum_predicate_gidx_geom(gidx, PG_GETARG_DATUM(1), gidx_overlaps) == LW_TRUE )
+		PG_RETURN_BOOL(true);
 
-   PG_RETURN_BOOL(false);
+	PG_RETURN_BOOL(false);
 }
 
 PG_FUNCTION_INFO_V1(gserialized_gidx_gidx_overlaps);
 Datum gserialized_gidx_gidx_overlaps(PG_FUNCTION_ARGS)
 {
-   if ( gidx_overlaps((GIDX *)PG_GETARG_POINTER(0), (GIDX *)PG_GETARG_POINTER(1)) )
-       PG_RETURN_BOOL(true);
+	if ( gidx_overlaps((GIDX *)PG_GETARG_POINTER(0), (GIDX *)PG_GETARG_POINTER(1)) )
+		PG_RETURN_BOOL(true);
 
-   PG_RETURN_BOOL(false);
+	PG_RETURN_BOOL(false);
 }
 #endif
 
@@ -1146,7 +1146,7 @@ Datum gserialized_gist_compress(PG_FUNCTION_ARGS)
 	for ( i = 0; i < GIDX_NDIMS(bbox_out); i++ )
 	{
 		if ( ! isfinite(GIDX_GET_MAX(bbox_out, i))
-		     || ! isfinite(GIDX_GET_MIN(bbox_out, i)) )
+		        || ! isfinite(GIDX_GET_MIN(bbox_out, i)) )
 		{
 			gidx_set_unknown(bbox_out);
 			gistentryinit(*entry_out,
@@ -1322,17 +1322,24 @@ Datum gserialized_gist_consistent(PG_FUNCTION_ARGS)
 */
 static float pack_float(const float value, const int realm)
 {
-  union {
-    float f;
-    struct { unsigned value:31, sign:1; } vbits;
-    struct { unsigned value:29, realm:2, sign:1; } rbits;
-  } a;
+	union
+	{
+		float f;
+		struct
+		{
+			unsigned value:31, sign:1;
+		} vbits;
+		struct
+		{
+			unsigned value:29, realm:2, sign:1;
+		} rbits;
+	} a;
 
-  a.f = value;
-  a.rbits.value = a.vbits.value >> 2;
-  a.rbits.realm = realm;
+	a.f = value;
+	a.rbits.value = a.vbits.value >> 2;
+	a.rbits.realm = realm;
 
-  return a.f;
+	return a.f;
 }
 
 /*
@@ -1367,12 +1374,12 @@ Datum gserialized_gist_penalty(PG_FUNCTION_ARGS)
 	*result = size_union - size_orig;
 
 	/* REALM 0: No extension is required, volume is zero, return edge */
- 	/* REALM 1: No extension is required, return nonzero area */
- 	/* REALM 2: Area extension is zero, return nonzero edge extension */
- 	/* REALM 3: Area extension is nonzero, return it */
+	/* REALM 1: No extension is required, return nonzero area */
+	/* REALM 2: Area extension is zero, return nonzero edge extension */
+	/* REALM 3: Area extension is nonzero, return it */
 
- 	if( *result == 0 )
- 	{
+	if( *result == 0 )
+	{
 		if (size_orig > 0)
 		{
 			*result = pack_float(size_orig, 1); /* REALM 1 */
@@ -1381,21 +1388,21 @@ Datum gserialized_gist_penalty(PG_FUNCTION_ARGS)
 		{
 			edge_union = gidx_union_edge(gbox_index_orig, gbox_index_new);
 			edge_orig = gidx_edge(gbox_index_orig);
- 			*result = edge_union - edge_orig;
- 			if( *result == 0 )
-	 		{
-	 			*result = pack_float(edge_orig, 0); /* REALM 0 */
- 			}
- 			else
- 			{
- 				*result = pack_float(*result, 2); /* REALM 2 */
- 			}
+			*result = edge_union - edge_orig;
+			if( *result == 0 )
+			{
+				*result = pack_float(edge_orig, 0); /* REALM 0 */
+			}
+			else
+			{
+				*result = pack_float(*result, 2); /* REALM 2 */
+			}
 		}
- 	}
- 	else
- 	{
- 		*result = pack_float(*result, 3); /* REALM 3 */
- 	}
+	}
+	else
+	{
+		*result = pack_float(*result, 3); /* REALM 3 */
+	}
 
 	POSTGIS_DEBUGF(4, "[GIST] union size (%.12f), original size (%.12f), penalty (%.12f)", size_union, size_orig, *result);
 
@@ -1542,7 +1549,8 @@ Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
 
 	/* Strategy 13 is <<->> */
 	/* Strategy 20 is |=| */
-	if ( strategy != 13 && strategy != 20 ) {
+	if ( strategy != 13 && strategy != 20 )
+	{
 		elog(ERROR, "unrecognized strategy number: %d", strategy);
 		PG_RETURN_FLOAT8(FLT_MAX);
 	}
@@ -1611,7 +1619,7 @@ static int gserialized_gist_picksplit_badratio(int x, int y)
 {
 	POSTGIS_DEBUGF(4, "[GIST] checking split ratio (%d, %d)", x, y);
 	if ( (y == 0) || (((float)x / (float)y) < LIMIT_RATIO) ||
-	     (x == 0) || (((float)y / (float)x) < LIMIT_RATIO) )
+	        (x == 0) || (((float)y / (float)x) < LIMIT_RATIO) )
 		return true;
 
 	return false;
@@ -1977,11 +1985,11 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "[GIST] 'picksplit' splitting on axis %d", direction);
 
 	gserialized_gist_picksplit_constructsplit(v, list[BELOW(direction)],
-	                                        pos[BELOW(direction)],
-	                                        &(box_union[BELOW(direction)]),
-	                                        list[ABOVE(direction)],
-	                                        pos[ABOVE(direction)],
-	                                        &(box_union[ABOVE(direction)]) );
+	        pos[BELOW(direction)],
+	        &(box_union[BELOW(direction)]),
+	        list[ABOVE(direction)],
+	        pos[ABOVE(direction)],
+	        &(box_union[ABOVE(direction)]) );
 
 	POSTGIS_DEBUGF(4, "[GIST] spl_ldatum: %s", gidx_to_string((GIDX*)v->spl_ldatum));
 	POSTGIS_DEBUGF(4, "[GIST] spl_rdatum: %s", gidx_to_string((GIDX*)v->spl_rdatum));
@@ -2011,7 +2019,7 @@ Datum gidx_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gidx_out);
 Datum gidx_out(PG_FUNCTION_ARGS)
 {
-  GIDX *box = (GIDX *) PG_GETARG_POINTER(0);
-  char *result = gidx_to_string(box);
-  PG_RETURN_CSTRING(result);
+	GIDX *box = (GIDX *) PG_GETARG_POINTER(0);
+	char *result = gidx_to_string(box);
+	PG_RETURN_CSTRING(result);
 }

@@ -36,15 +36,15 @@
 const char *
 lwgeom_version()
 {
-  static char *ptr = NULL;
-  static char buf[256];
-  if ( ! ptr )
-  {
-    ptr = buf;
-    snprintf(ptr, 256, LIBLWGEOM_VERSION" r%d", POSTGIS_SVN_REVISION);
-  }
+	static char *ptr = NULL;
+	static char buf[256];
+	if ( ! ptr )
+	{
+		ptr = buf;
+		snprintf(ptr, 256, LIBLWGEOM_VERSION" r%d", POSTGIS_SVN_REVISION);
+	}
 
-  return ptr;
+	return ptr;
 }
 
 
@@ -452,32 +452,32 @@ ptarray_copy_point(POINTARRAY *pa, uint32_t from, uint32_t to)
 	int ndims = FLAGS_NDIMS(pa->flags);
 	switch (ndims)
 	{
-		case 2:
-		{
-			POINT2D *p_from = (POINT2D*)(getPoint_internal(pa, from));
-			POINT2D *p_to = (POINT2D*)(getPoint_internal(pa, to));
-			*p_to = *p_from;
-			return;
-		}
-		case 3:
-		{
-			POINT3D *p_from = (POINT3D*)(getPoint_internal(pa, from));
-			POINT3D *p_to = (POINT3D*)(getPoint_internal(pa, to));
-			*p_to = *p_from;
-			return;
-		}
-		case 4:
-		{
-			POINT4D *p_from = (POINT4D*)(getPoint_internal(pa, from));
-			POINT4D *p_to = (POINT4D*)(getPoint_internal(pa, to));
-			*p_to = *p_from;
-			return;
-		}
-		default:
-		{
-			lwerror("%s: unsupported number of dimensions - %d", __func__, ndims);
-			return;
-		}
+	case 2:
+	{
+		POINT2D *p_from = (POINT2D*)(getPoint_internal(pa, from));
+		POINT2D *p_to = (POINT2D*)(getPoint_internal(pa, to));
+		*p_to = *p_from;
+		return;
+	}
+	case 3:
+	{
+		POINT3D *p_from = (POINT3D*)(getPoint_internal(pa, from));
+		POINT3D *p_to = (POINT3D*)(getPoint_internal(pa, to));
+		*p_to = *p_from;
+		return;
+	}
+	case 4:
+	{
+		POINT4D *p_from = (POINT4D*)(getPoint_internal(pa, from));
+		POINT4D *p_to = (POINT4D*)(getPoint_internal(pa, to));
+		*p_to = *p_from;
+		return;
+	}
+	default:
+	{
+		lwerror("%s: unsupported number of dimensions - %d", __func__, ndims);
+		return;
+	}
 	}
 	return;
 }
@@ -715,18 +715,21 @@ interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, double F)
 
 int _lwgeom_interrupt_requested = 0;
 void
-lwgeom_request_interrupt() {
-  _lwgeom_interrupt_requested = 1;
+lwgeom_request_interrupt()
+{
+	_lwgeom_interrupt_requested = 1;
 }
 void
-lwgeom_cancel_interrupt() {
-  _lwgeom_interrupt_requested = 0;
+lwgeom_cancel_interrupt()
+{
+	_lwgeom_interrupt_requested = 0;
 }
 
 lwinterrupt_callback *_lwgeom_interrupt_callback = 0;
 lwinterrupt_callback *
-lwgeom_register_interrupt_callback(lwinterrupt_callback *cb) {
-  lwinterrupt_callback *old = _lwgeom_interrupt_callback;
-  _lwgeom_interrupt_callback = cb;
-  return old;
+lwgeom_register_interrupt_callback(lwinterrupt_callback *cb)
+{
+	lwinterrupt_callback *old = _lwgeom_interrupt_callback;
+	_lwgeom_interrupt_callback = cb;
+	return old;
 }

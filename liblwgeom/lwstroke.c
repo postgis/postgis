@@ -133,9 +133,9 @@ static double interpolate_arc(double angle, double a1, double a2, double a3, dou
  */
 static int
 lwarc_linearize(POINTARRAY *to,
-                 const POINT4D *p1, const POINT4D *p2, const POINT4D *p3,
-                 double tol, LW_LINEARIZE_TOLERANCE_TYPE tolerance_type,
-                 int flags)
+                const POINT4D *p1, const POINT4D *p2, const POINT4D *p3,
+                double tol, LW_LINEARIZE_TOLERANCE_TYPE tolerance_type,
+                int flags)
 {
 	POINT2D center;
 	POINT2D *t1 = (POINT2D*)p1;
@@ -178,7 +178,7 @@ lwarc_linearize(POINTARRAY *to,
 
 	/* Negative radius signals straight line, p1/p2/p3 are colinear */
 	if ( (radius < 0.0 || p2_side == 0) && ! is_circle )
-	    return 0;
+		return 0;
 
 	/* The side of the p1/p3 line that p2 falls on dictates the sweep
 	   direction from p1 to p3. */
@@ -188,35 +188,39 @@ lwarc_linearize(POINTARRAY *to,
 		clockwise = LW_FALSE;
 
 	if ( tolerance_type == LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD )
-	{{
-		int perQuad = rint(tol);
-		// error out if tol != perQuad ? (not-round)
-		if ( perQuad != tol )
+	{
 		{
-			lwerror("lwarc_linearize: segments per quadrant must be an integer value, got %.15g", tol, perQuad);
-			return -1;
-		}
-		if ( perQuad < 1 )
-		{
-			lwerror("lwarc_linearize: segments per quadrant must be at least 1, got %d", perQuad);
-			return -1;
-		}
-		increment = fabs(M_PI_2 / perQuad);
-		LWDEBUGF(2, "lwarc_linearize: perQuad:%d, increment:%g (%g degrees)", perQuad, increment, increment*180/M_PI);
+			int perQuad = rint(tol);
+			// error out if tol != perQuad ? (not-round)
+			if ( perQuad != tol )
+			{
+				lwerror("lwarc_linearize: segments per quadrant must be an integer value, got %.15g", tol, perQuad);
+				return -1;
+			}
+			if ( perQuad < 1 )
+			{
+				lwerror("lwarc_linearize: segments per quadrant must be at least 1, got %d", perQuad);
+				return -1;
+			}
+			increment = fabs(M_PI_2 / perQuad);
+			LWDEBUGF(2, "lwarc_linearize: perQuad:%d, increment:%g (%g degrees)", perQuad, increment, increment*180/M_PI);
 
-	}}
-	else if ( tolerance_type == LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION )
-	{{
-		double halfAngle;
-		if ( tol <= 0 )
-		{
-			lwerror("lwarc_linearize: max deviation must be bigger than 0, got %.15g", tol);
-			return -1;
 		}
-		halfAngle = acos( -tol / radius + 1 );
-		increment = 2 * halfAngle;
-		LWDEBUGF(2, "lwarc_linearize: maxDiff:%g, radius:%g, halfAngle:%g, increment:%g (%g degrees)", tol, radius, halfAngle, increment, increment*180/M_PI);
-	}}
+	}
+	else if ( tolerance_type == LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION )
+	{
+		{
+			double halfAngle;
+			if ( tol <= 0 )
+			{
+				lwerror("lwarc_linearize: max deviation must be bigger than 0, got %.15g", tol);
+				return -1;
+			}
+			halfAngle = acos( -tol / radius + 1 );
+			increment = 2 * halfAngle;
+			LWDEBUGF(2, "lwarc_linearize: maxDiff:%g, radius:%g, halfAngle:%g, increment:%g (%g degrees)", tol, radius, halfAngle, increment, increment*180/M_PI);
+		}
+	}
 	else if ( tolerance_type == LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE )
 	{
 		increment = tol;
@@ -238,41 +242,47 @@ lwarc_linearize(POINTARRAY *to,
 	a3 = atan2(p3->y - center.y, p3->x - center.x);
 
 	LWDEBUGF(2, "lwarc_linearize A1:%g (%g) A2:%g (%g) A3:%g (%g)",
-		a1, a1*180/M_PI, a2, a2*180/M_PI, a3, a3*180/M_PI);
+	         a1, a1*180/M_PI, a2, a2*180/M_PI, a3, a3*180/M_PI);
 
 	if ( flags & LW_LINEARIZE_FLAG_SYMMETRIC )
-	{{
-		/* Calculate total arc angle, in radians */
-		double angle = clockwise ? a1 - a3 : a3 - a1;
-		if ( angle < 0 ) angle += M_PI * 2;
-		LWDEBUGF(2, "lwarc_linearize SYMMETRIC requested - total angle %g deg",
+	{
+		{
+			/* Calculate total arc angle, in radians */
+			double angle = clockwise ? a1 - a3 : a3 - a1;
+			if ( angle < 0 ) angle += M_PI * 2;
+			LWDEBUGF(2, "lwarc_linearize SYMMETRIC requested - total angle %g deg",
 			         angle * 180 / M_PI);
-		if ( flags & LW_LINEARIZE_FLAG_RETAIN_ANGLE )
-		{{
-			/* Number of steps */
-			int steps = trunc(angle / increment);
-			/* Angle reminder */
-			double angle_reminder = angle - ( increment * steps );
-			angle_shift = angle_reminder / 2.0;
+			if ( flags & LW_LINEARIZE_FLAG_RETAIN_ANGLE )
+			{
+				{
+					/* Number of steps */
+					int steps = trunc(angle / increment);
+					/* Angle reminder */
+					double angle_reminder = angle - ( increment * steps );
+					angle_shift = angle_reminder / 2.0;
 
-			LWDEBUGF(2, "lwarc_linearize RETAIN_ANGLE operation requested - "
-			         "total angle %g, steps %d, increment %g, reminder %g",
-			         angle * 180 / M_PI, steps, increment * 180 / M_PI,
-			         angle_reminder * 180 / M_PI);
-		}}
-		else
-		{{
-			/* Number of segments in output */
-			int segs = ceil(angle / increment);
-			/* Tweak increment to be regular for all the arc */
-			increment = angle/segs;
+					LWDEBUGF(2, "lwarc_linearize RETAIN_ANGLE operation requested - "
+					         "total angle %g, steps %d, increment %g, reminder %g",
+					         angle * 180 / M_PI, steps, increment * 180 / M_PI,
+					         angle_reminder * 180 / M_PI);
+				}
+			}
+			else
+			{
+				{
+					/* Number of segments in output */
+					int segs = ceil(angle / increment);
+					/* Tweak increment to be regular for all the arc */
+					increment = angle/segs;
 
-			LWDEBUGF(2, "lwarc_linearize SYMMETRIC operation requested - "
-							"total angle %g degrees - LINESTRING(%g %g,%g %g,%g %g) - S:%d -   I:%g",
-							angle*180/M_PI, p1->x, p1->y, center.x, center.y, p3->x, p3->y,
-							segs, increment*180/M_PI);
-		}}
-	}}
+					LWDEBUGF(2, "lwarc_linearize SYMMETRIC operation requested - "
+					         "total angle %g degrees - LINESTRING(%g %g,%g %g,%g %g) - S:%d -   I:%g",
+					         angle*180/M_PI, p1->x, p1->y, center.x, center.y, p3->x, p3->y,
+					         segs, increment*180/M_PI);
+				}
+			}
+		}
+	}
 
 	/* p2 on left side => clockwise sweep */
 	if ( clockwise )
@@ -307,12 +317,15 @@ lwarc_linearize(POINTARRAY *to,
 	}
 
 	LWDEBUGF(2, "lwarc_linearize angle_shift:%g, increment:%g",
-		angle_shift * 180/M_PI, increment * 180/M_PI);
+	         angle_shift * 180/M_PI, increment * 180/M_PI);
 
-	if ( reverse ) {{
-		const int capacity = 8; /* TODO: compute exactly ? */
-		pa = ptarray_construct_empty(ptarray_has_z(to), ptarray_has_m(to), capacity);
-	}}
+	if ( reverse )
+	{
+		{
+			const int capacity = 8; /* TODO: compute exactly ? */
+			pa = ptarray_construct_empty(ptarray_has_z(to), ptarray_has_m(to), capacity);
+		}
+	}
 
 	/* Sweep from a1 to a3 */
 	if ( ! reverse )
@@ -322,7 +335,7 @@ lwarc_linearize(POINTARRAY *to,
 	++points_added;
 	if ( angle_shift ) angle_shift -= increment;
 	LWDEBUGF(2, "a1:%g (%g deg), a3:%g (%g deg), inc:%g, shi:%g, cw:%d",
-		a1, a1 * 180 / M_PI, a3, a3 * 180 / M_PI, increment, angle_shift, clockwise);
+	         a1, a1 * 180 / M_PI, a3, a3 * 180 / M_PI, increment, angle_shift, clockwise);
 	for ( angle = a1 + increment + angle_shift; clockwise ? angle > a3 : angle < a3; angle += increment )
 	{
 		LWDEBUGF(2, " SA: %g ( %g deg )", angle, angle*180/M_PI);
@@ -335,15 +348,19 @@ lwarc_linearize(POINTARRAY *to,
 		angle_shift = 0;
 	}
 
-	if ( reverse ) {{
-		int i;
-		ptarray_append_point(to, p3, LW_FALSE);
-		for ( i=pa->npoints; i>0; i-- ) {
-			getPoint4d_p(pa, i-1, &pt);
-			ptarray_append_point(to, &pt, LW_FALSE);
+	if ( reverse )
+	{
+		{
+			int i;
+			ptarray_append_point(to, p3, LW_FALSE);
+			for ( i=pa->npoints; i>0; i-- )
+			{
+				getPoint4d_p(pa, i-1, &pt);
+				ptarray_append_point(to, &pt, LW_FALSE);
+			}
+			ptarray_free(pa);
 		}
-		ptarray_free(pa);
-	}}
+	}
 
 	return points_added;
 }
@@ -358,8 +375,8 @@ lwarc_linearize(POINTARRAY *to,
  */
 static LWLINE *
 lwcircstring_linearize(const LWCIRCSTRING *icurve, double tol,
-                        LW_LINEARIZE_TOLERANCE_TYPE tolerance_type,
-                        int flags)
+                       LW_LINEARIZE_TOLERANCE_TYPE tolerance_type,
+                       int flags)
 {
 	LWLINE *oline;
 	POINTARRAY *ptarray;
@@ -418,8 +435,8 @@ lwcircstring_linearize(const LWCIRCSTRING *icurve, double tol,
  */
 static LWLINE *
 lwcompound_linearize(const LWCOMPOUND *icompound, double tol,
-                      LW_LINEARIZE_TOLERANCE_TYPE tolerance_type,
-                      int flags)
+                     LW_LINEARIZE_TOLERANCE_TYPE tolerance_type,
+                     int flags)
 {
 	LWGEOM *geom;
 	POINTARRAY *ptarray = NULL, *ptarray_out = NULL;
@@ -469,7 +486,7 @@ lwcompound_linearize(const LWCOMPOUND *icompound, double tol,
 LWLINE *
 lwcompound_stroke(const LWCOMPOUND *icompound, uint32_t perQuad)
 {
-		return lwcompound_linearize(icompound, perQuad, LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD, 0);
+	return lwcompound_linearize(icompound, perQuad, LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD, 0);
 }
 
 
@@ -483,8 +500,8 @@ lwcompound_stroke(const LWCOMPOUND *icompound, uint32_t perQuad)
  */
 static LWPOLY *
 lwcurvepoly_linearize(const LWCURVEPOLY *curvepoly, double tol,
-                       LW_LINEARIZE_TOLERANCE_TYPE tolerance_type,
-                       int flags)
+                      LW_LINEARIZE_TOLERANCE_TYPE tolerance_type,
+                      int flags)
 {
 	LWPOLY *ogeom;
 	LWGEOM *tmp;
@@ -531,7 +548,7 @@ lwcurvepoly_linearize(const LWCURVEPOLY *curvepoly, double tol,
 LWPOLY *
 lwcurvepoly_stroke(const LWCURVEPOLY *curvepoly, uint32_t perQuad)
 {
-		return lwcurvepoly_linearize(curvepoly, perQuad, LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD, 0);
+	return lwcurvepoly_linearize(curvepoly, perQuad, LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD, 0);
 }
 
 
@@ -545,8 +562,8 @@ lwcurvepoly_stroke(const LWCURVEPOLY *curvepoly, uint32_t perQuad)
  */
 static LWMLINE *
 lwmcurve_linearize(const LWMCURVE *mcurve, double tol,
-                    LW_LINEARIZE_TOLERANCE_TYPE type,
-                    int flags)
+                   LW_LINEARIZE_TOLERANCE_TYPE type,
+                   int flags)
 {
 	LWMLINE *ogeom;
 	LWGEOM **lines;
@@ -592,8 +609,8 @@ lwmcurve_linearize(const LWMCURVE *mcurve, double tol,
  */
 static LWMPOLY *
 lwmsurface_linearize(const LWMSURFACE *msurface, double tol,
-                      LW_LINEARIZE_TOLERANCE_TYPE type,
-                      int flags)
+                     LW_LINEARIZE_TOLERANCE_TYPE type,
+                     int flags)
 {
 	LWMPOLY *ogeom;
 	LWGEOM *tmp;
@@ -638,8 +655,8 @@ lwmsurface_linearize(const LWMSURFACE *msurface, double tol,
  */
 static LWCOLLECTION *
 lwcollection_linearize(const LWCOLLECTION *collection, double tol,
-                    LW_LINEARIZE_TOLERANCE_TYPE type,
-                    int flags)
+                       LW_LINEARIZE_TOLERANCE_TYPE type,
+                       int flags)
 {
 	LWCOLLECTION *ocol;
 	LWGEOM *tmp;
@@ -724,20 +741,20 @@ lwgeom_stroke(const LWGEOM *geom, uint32_t perQuad)
 static double
 lw_arc_angle(const POINT2D *a, const POINT2D *b, const POINT2D *c)
 {
-  POINT2D ab, cb;
+	POINT2D ab, cb;
 
-  ab.x = b->x - a->x;
-  ab.y = b->y - a->y;
+	ab.x = b->x - a->x;
+	ab.y = b->y - a->y;
 
-  cb.x = b->x - c->x;
-  cb.y = b->y - c->y;
+	cb.x = b->x - c->x;
+	cb.y = b->y - c->y;
 
-  double dot = (ab.x * cb.x + ab.y * cb.y); /* dot product */
-  double cross = (ab.x * cb.y - ab.y * cb.x); /* cross product */
+	double dot = (ab.x * cb.x + ab.y * cb.y); /* dot product */
+	double cross = (ab.x * cb.y - ab.y * cb.x); /* cross product */
 
-  double alpha = atan2(cross, dot);
+	double alpha = atan2(cross, dot);
 
-  return alpha;
+	return alpha;
 }
 
 /**
@@ -873,7 +890,7 @@ pta_unstroke(const POINTARRAY *points, int srid)
 
 		found_arc = LW_FALSE;
 		/* Make candidate arc */
-		getPoint4d_p(points, i  , &a1);
+		getPoint4d_p(points, i, &a1);
 		getPoint4d_p(points, i+1, &a2);
 		getPoint4d_p(points, i+2, &a3);
 		memcpy(&first, &a1, sizeof(POINT4D));
@@ -912,22 +929,25 @@ pta_unstroke(const POINTARRAY *points, int srid)
 			 */
 			arc_edges = j - 1 - i;
 			LWDEBUGF(4, "arc defined by %d edges found", arc_edges);
-			if ( first.x == b.x && first.y == b.y ) {
+			if ( first.x == b.x && first.y == b.y )
+			{
 				LWDEBUG(4, "arc is a circle");
 				num_quadrants = 4;
 			}
-			else {
+			else
+			{
 				lw_arc_center((POINT2D*)&first, (POINT2D*)&b, (POINT2D*)&a1, (POINT2D*)&center);
 				angle = lw_arc_angle((POINT2D*)&first, (POINT2D*)&center, (POINT2D*)&b);
-        int p2_side = lw_segment_side((POINT2D*)&first, (POINT2D*)&a1, (POINT2D*)&b);
-        if ( p2_side >= 0 ) angle = -angle;
+				int p2_side = lw_segment_side((POINT2D*)&first, (POINT2D*)&a1, (POINT2D*)&b);
+				if ( p2_side >= 0 ) angle = -angle;
 
 				if ( angle < 0 ) angle = 2 * M_PI + angle;
 				num_quadrants = ( 4 * angle ) / ( 2 * M_PI );
 				LWDEBUGF(4, "arc angle (%g %g, %g %g, %g %g) is %g (side is %d), quandrants:%g", first.x, first.y, center.x, center.y, b.x, b.y, angle, p2_side, num_quadrants);
 			}
 			/* a1 is first point, b is last point */
-			if ( arc_edges < min_quad_edges * num_quadrants ) {
+			if ( arc_edges < min_quad_edges * num_quadrants )
+			{
 				LWDEBUGF(4, "Not enough edges for a %g quadrants arc, %g needed", num_quadrants, min_quad_edges * num_quadrants);
 				for ( k = j-1; k >= i; k-- )
 					edges_in_arcs[k] = 0;
@@ -982,7 +1002,8 @@ pta_unstroke(const POINTARRAY *points, int srid)
 	if ( outcol->ngeoms == 1 )
 	{
 		LWGEOM *outgeom = outcol->geoms[0];
-		outcol->ngeoms = 0; lwcollection_free(outcol);
+		outcol->ngeoms = 0;
+		lwcollection_free(outcol);
 		return outgeom;
 	}
 	return lwcollection_as_lwgeom(outcol);

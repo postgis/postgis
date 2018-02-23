@@ -50,7 +50,8 @@ static void test_geos_noop(void)
 		in_ewkt = ewkt[i];
 		geom_in = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
 		geom_out = lwgeom_geos_noop(geom_in);
-		if ( ! geom_out ) {
+		if ( ! geom_out )
+		{
 			// fprintf(stderr, "\nNull return from lwgeom_geos_noop with wkt:   %s\n", in_ewkt);
 			lwgeom_free(geom_in);
 			continue;

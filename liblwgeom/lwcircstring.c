@@ -290,7 +290,8 @@ double lwcircstring_length_2d(const LWCIRCSTRING *circ)
  * Returns freshly allocated #LWPOINT that corresponds to the index where.
  * Returns NULL if the geometry is empty or the index invalid.
  */
-LWPOINT* lwcircstring_get_lwpoint(const LWCIRCSTRING *circ, uint32_t where) {
+LWPOINT* lwcircstring_get_lwpoint(const LWCIRCSTRING *circ, uint32_t where)
+{
 	POINT4D pt;
 	LWPOINT *lwpoint;
 	POINTARRAY *pa;

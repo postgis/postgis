@@ -362,10 +362,10 @@ static void test_tree_circ_distance_threshold(void)
 			if (threshold > d && (d1 > threshold || d2 > threshold))
 			{
 				printf("polygon #%d\n"
-		       "threshold = %g\n"
-					"true distance = %g\n"
-		       "circ_tree_distance = %g\n"
-		       "lwgeom_distance_spheroid = %g\n", j, threshold, d, d1, d2);
+				       "threshold = %g\n"
+				       "true distance = %g\n"
+				       "circ_tree_distance = %g\n"
+				       "lwgeom_distance_spheroid = %g\n", j, threshold, d, d1, d2);
 				CU_FAIL_FATAL();
 			}
 		}

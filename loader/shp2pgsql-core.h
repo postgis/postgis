@@ -218,7 +218,7 @@ typedef struct shp_loader_state
 	char *geo_col;
 
 	/* Column map */
-  colmap column_map;
+	colmap column_map;
 
 } SHPLOADERSTATE;
 

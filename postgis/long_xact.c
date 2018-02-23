@@ -114,7 +114,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 
 	sprintf(query,"SELECT authid FROM \"%s\" WHERE expires >= now() AND toid = '%d' AND rid = '%s'", authtable, trigdata->tg_relation->rd_id, pk_id);
 
-	POSTGIS_DEBUGF(3 ,"about to execute :%s", query);
+	POSTGIS_DEBUGF(3,"about to execute :%s", query);
 
 	SPIcode = SPI_exec(query,0);
 	if (SPIcode !=SPI_OK_SELECT )

@@ -23,7 +23,7 @@
  **********************************************************************/
 
 
- #include "effectivearea.h"
+#include "effectivearea.h"
 
 
 EFFECTIVE_AREAS*
@@ -147,7 +147,7 @@ static void down(MINHEAP *tree,areanode *arealist,int parent)
 	}
 	if(swap>parent)
 	{
-	/*ok, we have to swap something*/
+		/*ok, we have to swap something*/
 		tmp=treearray[parent];
 		treearray[parent]=treearray[swap];
 		/*Update reference*/
@@ -215,7 +215,7 @@ static 	areanode* minheap_pop(MINHEAP *tree,areanode *arealist )
 
 The member of the minheap at index idx is changed. Update the tree and make restore the heap property
 */
-static void minheap_update(MINHEAP *tree,areanode *arealist , int idx)
+static void minheap_update(MINHEAP *tree,areanode *arealist, int idx)
 {
 	areanode **treearray=tree->key_array;
 	int 	parent=floor((idx-1)/2);
@@ -251,7 +251,7 @@ static void tune_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, dou
 
 
 	/*Add all keys (index in initial_arealist) into minheap array*/
-	for (i=0;i<npoints;i++)
+	for (i=0; i<npoints; i++)
 	{
 		tree.key_array[i]=ea->initial_arealist+i;
 		LWDEBUGF(2, "add nr %d, with area %lf, and %lf",i,ea->initial_arealist[i].area, tree.key_array[i]->area );
@@ -262,9 +262,9 @@ static void tune_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, dou
 	qsort(tree.key_array, npoints, sizeof(void*), cmpfunc);
 
 	/*We have to put references to our tree in our point-list*/
-	for (i=0;i<npoints;i++)
+	for (i=0; i<npoints; i++)
 	{
-		 ((areanode*) tree.key_array[i])->treeindex=i;
+		((areanode*) tree.key_array[i])->treeindex=i;
 		LWDEBUGF(4,"Check ordering qsort gives, area=%lf and belong to point %d",((areanode*) tree.key_array[i])->area, tree.key_array[i]-ea->initial_arealist);
 	}
 	/*Ok, now we have a minHeap, just need to keep it*/
@@ -368,7 +368,7 @@ void ptarray_calc_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
 	ea->initial_arealist[0].next=1;
 	ea->initial_arealist[0].prev=0;
 
-	for (i=1;i<(npoints)-1;i++)
+	for (i=1; i<(npoints)-1; i++)
 	{
 		ea->initial_arealist[i].next=i+1;
 		ea->initial_arealist[i].prev=i-1;
@@ -385,10 +385,10 @@ void ptarray_calc_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
 		P2=P3;
 
 	}
-		ea->initial_arealist[npoints-1].next=npoints-1;
-		ea->initial_arealist[npoints-1].prev=npoints-2;
+	ea->initial_arealist[npoints-1].next=npoints-1;
+	ea->initial_arealist[npoints-1].prev=npoints-2;
 
-	for (i=1;i<(npoints)-1;i++)
+	for (i=1; i<(npoints)-1; i++)
 	{
 		ea->res_arealist[i]=FLT_MAX;
 	}
@@ -420,7 +420,7 @@ static POINTARRAY * ptarray_set_effective_area(POINTARRAY *inpts,int avoid_colla
 	if(set_area)
 	{
 		/*Only return points with an effective area above the threashold*/
-		for (p=0;p<ea->inpts->npoints;p++)
+		for (p=0; p<ea->inpts->npoints; p++)
 		{
 			if(ea->res_arealist[p]>trshld)
 			{
@@ -433,7 +433,7 @@ static POINTARRAY * ptarray_set_effective_area(POINTARRAY *inpts,int avoid_colla
 	else
 	{
 		/*Only return points with an effective area above the threashold*/
-		for (p=0;p<ea->inpts->npoints;p++)
+		for (p=0; p<ea->inpts->npoints; p++)
 		{
 			if(ea->res_arealist[p]>trshld)
 			{
@@ -452,7 +452,7 @@ static LWLINE* lwline_set_effective_area(const LWLINE *iline,int set_area, doubl
 {
 	LWDEBUG(2, "Entered  lwline_set_effective_area");
 
-		/* Skip empty case or too small to simplify */
+	/* Skip empty case or too small to simplify */
 	if( lwline_is_empty(iline) || iline->points->npoints<3)
 		return lwline_clone(iline);
 

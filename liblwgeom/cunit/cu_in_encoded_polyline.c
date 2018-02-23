@@ -42,13 +42,13 @@ static void in_encoded_polyline_test_geoms(void)
 	do_encoded_polyline_test(
 	    "_p~iF~ps|U_ulLnnqC_mqNvxq`@",
 	    5,
-			"SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)");
+	    "SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)");
 }
 
 static void in_encoded_polyline_test_precision(void)
 {
 	do_encoded_polyline_test(
-			"o}~~|AdshNoSsBgd@eGoBlm@wKhj@~@?",
+	    "o}~~|AdshNoSsBgd@eGoBlm@wKhj@~@?",
 	    6,
 	    "SRID=4326;LINESTRING(-0.250691 49.283048,-0.250633 49.283376,-0.250502 49.283972,-0.251245 49.284028,-0.251938 49.284232,-0.251938 49.2842)");
 }

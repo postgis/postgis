@@ -131,8 +131,8 @@ Datum geometry_to_path(PG_FUNCTION_ARGS)
 	lwline = lwgeom_as_lwline(lwgeom);
 
 	pa = lwline->points;
-    size = offsetof(PATH, p[0]) + sizeof(path->p[0]) * pa->npoints;
-    path = (PATH*)palloc(size);
+	size = offsetof(PATH, p[0]) + sizeof(path->p[0]) * pa->npoints;
+	path = (PATH*)palloc(size);
 	SET_VARSIZE(path, size);
 	path->npts = pa->npoints;
 	path->closed = 0;

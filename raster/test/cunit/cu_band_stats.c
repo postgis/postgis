@@ -24,7 +24,8 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_band_stats() {
+static void test_band_stats()
+{
 	rt_bandstats stats = NULL;
 	rt_histogram histogram = NULL;
 	double bin_width[] = {100};
@@ -51,8 +52,10 @@ static void test_band_stats() {
 	band = cu_add_band(raster, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (x = 0; x < xmax; x++) {
-		for (y = 0; y < ymax; y++) {
+	for (x = 0; x < xmax; x++)
+	{
+		for (y = 0; y < ymax; y++)
+		{
 			rt_band_set_pixel(band, x, y, x + y, NULL);
 		}
 	}
@@ -147,8 +150,10 @@ static void test_band_stats() {
 	CU_ASSERT(band != NULL);
 	rt_band_set_nodata(band, 0, NULL);
 
-	for (x = 0; x < xmax; x++) {
-		for (y = 0; y < ymax; y++) {
+	for (x = 0; x < xmax; x++)
+	{
+		for (y = 0; y < ymax; y++)
+		{
 			rt_band_set_pixel(band, x, y, values[(x * ymax) + y], NULL);
 		}
 	}
@@ -157,10 +162,10 @@ static void test_band_stats() {
 	CU_ASSERT_DOUBLE_EQUAL(nodata, 0, DBL_EPSILON);
 
 	quantile = (rt_quantile) rt_band_get_quantiles_stream(
-		band, 1, 1, 15,
-		&qlls, &qlls_count,
-		quantiles2, 1,
-		&count);
+	               band, 1, 1, 15,
+	               &qlls, &qlls_count,
+	               quantiles2, 1,
+	               &count);
 	CU_ASSERT(quantile != NULL);
 	CU_ASSERT_NOT_EQUAL(count, 0);
 	CU_ASSERT_NOT_EQUAL(qlls_count, 0);
@@ -180,8 +185,10 @@ static void test_band_stats() {
 	CU_ASSERT(band != NULL);
 	rt_band_set_nodata(band, 0, NULL);
 
-	for (x = 0; x < xmax; x++) {
-		for (y = 0; y < ymax; y++) {
+	for (x = 0; x < xmax; x++)
+	{
+		for (y = 0; y < ymax; y++)
+		{
 			rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
 		}
 	}
@@ -190,12 +197,13 @@ static void test_band_stats() {
 	CU_ASSERT_DOUBLE_EQUAL(nodata, 0, DBL_EPSILON);
 
 	max_run = 5;
-	for (x = 0; x < max_run; x++) {
+	for (x = 0; x < max_run; x++)
+	{
 		quantile = (rt_quantile) rt_band_get_quantiles_stream(
-			band, 1, 1, xmax * ymax * max_run,
-			&qlls, &qlls_count,
-			quantiles2, 1,
-			&count);
+		               band, 1, 1, xmax * ymax * max_run,
+		               &qlls, &qlls_count,
+		               quantiles2, 1,
+		               &count);
 		CU_ASSERT(quantile != NULL);
 		CU_ASSERT_NOT_EQUAL(count, 0);
 		CU_ASSERT_NOT_EQUAL(qlls_count, 0);
@@ -209,7 +217,8 @@ static void test_band_stats() {
 	cu_free_raster(raster);
 }
 
-static void test_band_value_count() {
+static void test_band_value_count()
+{
 	rt_valuecount vcnts = NULL;
 
 	rt_raster raster;
@@ -228,8 +237,10 @@ static void test_band_value_count() {
 	CU_ASSERT(band != NULL);
 	rt_band_set_nodata(band, 0, NULL);
 
-	for (x = 0; x < xmax; x++) {
-		for (y = 0; y < ymax; y++) {
+	for (x = 0; x < xmax; x++)
+	{
+		for (y = 0; y < ymax; y++)
+		{
 			rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
 		}
 	}

@@ -40,7 +40,8 @@ lwgeom_split_wrapx(const LWGEOM* geom_in, double cutx, double amount)
 	POINTARRAY *bladepa;
 	POINT4D pt;
 	const GBOX *box_in;
-	AFFINE affine = {
+	AFFINE affine =
+	{
 		1, 0, 0,
 		0, 1, 0,
 		0, 0, 1,
@@ -50,7 +51,8 @@ lwgeom_split_wrapx(const LWGEOM* geom_in, double cutx, double amount)
 	/* Extract box */
 	/* TODO: check if the bbox should be force-recomputed */
 	box_in = lwgeom_get_bbox(geom_in);
-	if ( ! box_in ) {
+	if ( ! box_in )
+	{
 		/* must be empty */
 		return lwgeom_clone_deep(geom_in);
 	}
@@ -90,7 +92,8 @@ lwgeom_split_wrapx(const LWGEOM* geom_in, double cutx, double amount)
 	/* split by blade */
 	split = lwgeom_split(geom_in, blade);
 	lwgeom_free(blade);
-	if ( ! split ) {
+	if ( ! split )
+	{
 		lwerror("%s:%d - lwgeom_split_wrapx:  %s", __FILE__, __LINE__, lwgeom_geos_errmsg);
 		return NULL;
 	}
@@ -99,7 +102,8 @@ lwgeom_split_wrapx(const LWGEOM* geom_in, double cutx, double amount)
 
 	/* iterate over components, translate if needed */
 	const LWCOLLECTION *col = lwgeom_as_lwcollection(split);
-	if ( ! col ) {
+	if ( ! col )
+	{
 		/* not split, this is unexpected */
 		lwnotice("WARNING: unexpected lack of split in lwgeom_split_wrapx");
 		return lwgeom_clone_deep(geom_in);
@@ -137,7 +141,8 @@ lwcollection_wrapx(const LWCOLLECTION* lwcoll_in, double cutx, double amount)
 		LWDEBUGF(3, "Wrapping collection element %d", i);
 		wrap_geoms[i] = lwgeom_wrapx(lwcoll_in->geoms[i], cutx, amount);
 		/* an exception should prevent this from ever returning NULL */
-		if ( ! wrap_geoms[i] ) {
+		if ( ! wrap_geoms[i] )
+		{
 			uint32_t j;
 			lwnotice("Error wrapping geometry, cleaning up");
 			for (j = 0; j < i; j++)
@@ -149,7 +154,8 @@ lwcollection_wrapx(const LWCOLLECTION* lwcoll_in, double cutx, double amount)
 			lwnotice("cleanup complete");
 			return NULL;
 		}
-	  if ( outtype != COLLECTIONTYPE ) {
+		if ( outtype != COLLECTIONTYPE )
+		{
 			if ( MULTITYPE[wrap_geoms[i]->type] != outtype )
 			{
 				outtype = COLLECTIONTYPE;
@@ -211,8 +217,8 @@ lwgeom_wrapx(const LWGEOM* lwgeom_in, double cutx, double amount)
 	case COLLECTIONTYPE:
 		LWDEBUG(2, "collection-wrapping multi");
 		return lwcollection_as_lwgeom(
-						lwcollection_wrapx((const LWCOLLECTION*)lwgeom_in, cutx, amount)
-					 );
+		           lwcollection_wrapx((const LWCOLLECTION*)lwgeom_in, cutx, amount)
+		       );
 
 	default:
 		lwerror("Wrapping of %s geometries is unsupported",

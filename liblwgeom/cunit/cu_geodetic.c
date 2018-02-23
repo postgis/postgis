@@ -267,12 +267,12 @@ static void test_gbox_from_spherical_coordinates(void)
 		gbox_geocentric_slow = LW_FALSE;
 
 		if (
-			( fabs( gbox.xmin - gbox_slow.xmin ) > gtolerance ) ||
-			( fabs( gbox.xmax - gbox_slow.xmax ) > gtolerance ) ||
-			( fabs( gbox.ymin - gbox_slow.ymin ) > gtolerance ) ||
-			( fabs( gbox.ymax - gbox_slow.ymax ) > gtolerance ) ||
-			( fabs( gbox.zmin - gbox_slow.zmin ) > gtolerance ) ||
-			( fabs( gbox.zmax - gbox_slow.zmax ) > gtolerance ) )
+		    ( fabs( gbox.xmin - gbox_slow.xmin ) > gtolerance ) ||
+		    ( fabs( gbox.xmax - gbox_slow.xmax ) > gtolerance ) ||
+		    ( fabs( gbox.ymin - gbox_slow.ymin ) > gtolerance ) ||
+		    ( fabs( gbox.ymax - gbox_slow.ymax ) > gtolerance ) ||
+		    ( fabs( gbox.zmin - gbox_slow.zmin ) > gtolerance ) ||
+		    ( fabs( gbox.zmax - gbox_slow.zmax ) > gtolerance ) )
 		{
 			printf("\n-------\n");
 			printf("If you are seeing this, cut and paste it, it is a randomly generated test case!\n");
@@ -1571,7 +1571,8 @@ static void test_lwgeom_area_sphere(void)
 
 static void test_gbox_to_string_truncated(void)
 {
-	GBOX g = {
+	GBOX g =
+	{
 		.flags = 0,
 		.xmin = -DBL_MAX,
 		.xmax = -DBL_MAX,

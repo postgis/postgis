@@ -24,7 +24,8 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_rgb_to_hsv() {
+static void test_rgb_to_hsv()
+{
 	double rgb[3] = {0, 0, 0};
 	double hsv[3] = {0, 0, 0};
 
@@ -66,7 +67,8 @@ static void test_rgb_to_hsv() {
 	CU_ASSERT_DOUBLE_EQUAL(hsv[2], 0.4, DBL_EPSILON);
 }
 
-static void test_hsv_to_rgb() {
+static void test_hsv_to_rgb()
+{
 	double hsv[3] = {0, 0, 0};
 	double rgb[3] = {0, 0, 0};
 
@@ -108,7 +110,8 @@ static void test_hsv_to_rgb() {
 	CU_ASSERT_DOUBLE_EQUAL(rgb[2], 0.4, DBL_EPSILON);
 }
 
-static void test_util_gdal_open() {
+static void test_util_gdal_open()
+{
 	extern char *gdal_enabled_drivers;
 
 	GDALDatasetH ds;

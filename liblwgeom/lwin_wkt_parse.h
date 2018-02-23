@@ -66,32 +66,32 @@ extern int wkt_yydebug;
 /* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-  enum yytokentype
-  {
-    POINT_TOK = 258,
-    LINESTRING_TOK = 259,
-    POLYGON_TOK = 260,
-    MPOINT_TOK = 261,
-    MLINESTRING_TOK = 262,
-    MPOLYGON_TOK = 263,
-    MSURFACE_TOK = 264,
-    MCURVE_TOK = 265,
-    CURVEPOLYGON_TOK = 266,
-    COMPOUNDCURVE_TOK = 267,
-    CIRCULARSTRING_TOK = 268,
-    COLLECTION_TOK = 269,
-    RBRACKET_TOK = 270,
-    LBRACKET_TOK = 271,
-    COMMA_TOK = 272,
-    EMPTY_TOK = 273,
-    SEMICOLON_TOK = 274,
-    TRIANGLE_TOK = 275,
-    TIN_TOK = 276,
-    POLYHEDRALSURFACE_TOK = 277,
-    DOUBLE_TOK = 278,
-    DIMENSIONALITY_TOK = 279,
-    SRID_TOK = 280
-  };
+enum yytokentype
+{
+	POINT_TOK = 258,
+	LINESTRING_TOK = 259,
+	POLYGON_TOK = 260,
+	MPOINT_TOK = 261,
+	MLINESTRING_TOK = 262,
+	MPOLYGON_TOK = 263,
+	MSURFACE_TOK = 264,
+	MCURVE_TOK = 265,
+	CURVEPOLYGON_TOK = 266,
+	COMPOUNDCURVE_TOK = 267,
+	CIRCULARSTRING_TOK = 268,
+	COLLECTION_TOK = 269,
+	RBRACKET_TOK = 270,
+	LBRACKET_TOK = 271,
+	COMMA_TOK = 272,
+	EMPTY_TOK = 273,
+	SEMICOLON_TOK = 274,
+	TRIANGLE_TOK = 275,
+	TIN_TOK = 276,
+	POLYHEDRALSURFACE_TOK = 277,
+	DOUBLE_TOK = 278,
+	DIMENSIONALITY_TOK = 279,
+	SRID_TOK = 280
+};
 #endif
 /* Tokens.  */
 #define POINT_TOK 258
@@ -145,10 +145,10 @@ typedef union YYSTYPE YYSTYPE;
 typedef struct YYLTYPE YYLTYPE;
 struct YYLTYPE
 {
-  int first_line;
-  int first_column;
-  int last_line;
-  int last_column;
+	int first_line;
+	int first_column;
+	int last_line;
+	int last_column;
 };
 # define YYLTYPE_IS_DECLARED 1
 # define YYLTYPE_IS_TRIVIAL 1
