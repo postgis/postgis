@@ -1904,7 +1904,7 @@ SELECT ST_AsPNG(
 				<title>Description</title>
 
 				<para>Returns one or more bands of an existing raster as a new raster.  Useful for building new rasters from existing rasters or export of only selected
-				bands of a raster or rearranging the order of bands in a raster. If no band is specified, band 1 is assumed. Used as a helper function in various functions such as for deleting a band. </para>
+				bands of a raster or rearranging the order of bands in a raster. If no band is specified or any of specified bands does not exist in the raster, then all bands are returned. Used as a helper function in various functions such as for deleting a band. </para>
 				<warning><para>For the <code>nbands</code> as text variant of function, the default delimiter is <code>,</code> which means you can ask for <code>'1,2,3'</code> and if you wanted to use a different delimeter you would do <code>ST_Band(rast, '1@2@3', '@')</code>.  For asking for multiple bands, we strongly suggest you use the array form of this function e.g. <code>ST_Band(rast, '{1,2,3}'::int[]);</code> since the <code>text</code> list of bands form may be removed in future versions of PostGIS.</para></warning>
 
                  <para>Availability: 2.0.0</para>
@@ -8831,7 +8831,7 @@ FROM dummy_rast WHERE rid=2;
 		<refentry id="RT_ST_AsTIFF">
 			<refnamediv>
 				<refname>ST_AsTIFF</refname>
-				<refpurpose>Return the raster selected bands as a single TIFF image (byte array).  If no band is specified, then will try to use all bands.</refpurpose>
+				<refpurpose>Return the raster selected bands as a single TIFF image (byte array).  If no band is specified or any of specified bands does not exist in the raster, then will try to use all bands.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
