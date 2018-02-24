@@ -4310,11 +4310,13 @@ CREATE OR REPLACE FUNCTION ST_GeomFromGeoJson(json)
         AS 'SELECT @extschema@.ST_GeomFromGeoJson($1::text)'
         LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
+#if POSTGIS_PGSQL_VERSION >= 94
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_GeomFromGeoJson(jsonb)
         RETURNS geometry
         AS 'SELECT @extschema@.ST_GeomFromGeoJson($1::text)'
         LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+#endif
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION postgis_libjson_version()
