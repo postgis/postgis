@@ -7,6 +7,7 @@ PostGIS 2.3.7dev
   - #4003, lwpoly_construct_circle: Avoid division by zero (Raúl Marín Rodríguez)
   - #4020, Casting from box3d to geometry now returns correctly connected
            PolyhedralSurface (Matthias Bay)
+  - #4025, Incorrect answers for temporally "amost overlapping" ranges
 
 PostGIS 2.3.6
 2018/01/17
