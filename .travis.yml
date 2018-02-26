@@ -62,6 +62,7 @@ script:
   - sudo make install
   - logbt -- make installcheck "RUNTESTFLAGS=--verbose"
   - logbt -- make installcheck "RUNTESTFLAGS=--dumprestore --verbose"
+  - find . | grep gc
 
 notifications:
   email: false
