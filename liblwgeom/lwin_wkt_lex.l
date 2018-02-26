@@ -10,23 +10,6 @@
 
 static YY_BUFFER_STATE wkt_yy_buf_state; 
 
-
-/*
-* Set up the lexer!
-*/
-void wkt_lexer_init(char *src) 
-{ 
-	wkt_yy_buf_state = wkt_yy_scan_string(src); 
-} 
-
-/*
-* Clean up the lexer!
-*/
-void wkt_lexer_close() 
-{ 
-	wkt_yy_delete_buffer(wkt_yy_buf_state); 
-} 
-
 /*
 * Handle errors due to unexpected junk in WKT strings.
 */
@@ -37,7 +20,6 @@ static void wkt_lexer_unknown()
 	global_parser_result.message = parser_error_messages[PARSER_ERROR_OTHER];
 	global_parser_result.errlocation = wkt_yylloc.last_column;
 }
-
 
 /* 
 * This macro is magically run after a rule is found but before the main 
@@ -130,3 +112,20 @@ void wkt_yyfree (void * ptr )
 {
 	lwfree( (char *) ptr );	/* see wkt_yyrealloc() for (char *) cast */
 }
+
+/*
+* Set up the lexer!
+*/
+void wkt_lexer_init(char *src) 
+{ 
+	wkt_yy_buf_state = wkt_yy_scan_string(src); 
+} 
+
+/*
+* Clean up the lexer!
+*/
+void wkt_lexer_close() 
+{ 
+	wkt_yy_delete_buffer(wkt_yy_buf_state); 
+} 
+
