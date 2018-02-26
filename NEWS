@@ -5,6 +5,7 @@ PostGIS 2.2.7
   - #3965, ST_ClusterKMeans used to lose some clusters on initialization
            (Darafei Praliaskouski)
   - #3978, Fix KNN when upgrading from 2.1 or older (Sandro Santilli)
+  - #4017, lwgeom lexer memory corruption (Peter E)
 
 
 PostGIS 2.2.6
