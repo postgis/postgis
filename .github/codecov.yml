@@ -7,3 +7,5 @@ coverage:
             default:
                 threshold: 0.2%
 comment: false
+fixes:
+    "liblwgeom/.libs/::liblwgeom/"
