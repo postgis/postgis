@@ -1461,7 +1461,7 @@ static void test_trim_bits(void)
 	for (sigfigs = 1; sigfigs <= 15; sigfigs++)
 	{
 		LWLINE *line2 = (LWLINE*) lwgeom_clone_deep((LWGEOM*) line);
-		lwgeom_trim_bits_in_place((LWGEOM*) line2, sigfigs); 
+		lwgeom_trim_bits_in_place((LWGEOM*) line2, sigfigs);
 
 		for (i = 0; i < line->points->npoints; i++)
 		{

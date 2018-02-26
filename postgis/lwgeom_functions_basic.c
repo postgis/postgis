@@ -2991,7 +2991,7 @@ Datum postgis_optimize_geometry(PG_FUNCTION_ARGS)
 	GSERIALIZED* result;
 	LWGEOM* g;
 	int significant_digits;
-	
+
 	input = PG_GETARG_GSERIALIZED_P_COPY(0);
 	significant_digits = PG_GETARG_INT32(1);
 	g = lwgeom_from_gserialized(input);
@@ -3011,7 +3011,7 @@ Datum postgis_optimize_geometry(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom_trim_bits_in_place(g, significant_digits);
-	
+
 	result = geometry_serialize(g);
 	lwgeom_free(g);
 	PG_FREE_IF_COPY(input, 0);
