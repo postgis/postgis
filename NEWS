@@ -9,6 +9,7 @@ PostGIS 2.4.4dev
            PolyhedralSurface (Matthias Bay)
   - #3942, geojson: Do not include private header for json-c >= 0.13
            (Björn Esser)
+  - #4025, Incorrect answers for temporally "amost overlapping" ranges
 
  * Enhancements *
     - #3992, Use PKG_PROG_PKG_CONFIG macro from pkg.m4 to detect pkg-config
