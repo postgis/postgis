@@ -40,7 +40,7 @@ after_failure:
   - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash) -o .libs -o .
 
 language: c
 
@@ -62,7 +62,6 @@ script:
   - sudo make install
   - logbt -- make installcheck "RUNTESTFLAGS=--verbose"
   - logbt -- make installcheck "RUNTESTFLAGS=--dumprestore --verbose"
-  - find . | grep gc
 
 notifications:
   email: false
