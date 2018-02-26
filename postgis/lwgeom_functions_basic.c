@@ -2990,13 +2990,27 @@ Datum postgis_optimize_geometry(PG_FUNCTION_ARGS)
 	GSERIALIZED* input;
 	GSERIALIZED* result;
 	LWGEOM* g;
-	int digits_precision;
+	int significant_digits;
 	
 	input = PG_GETARG_GSERIALIZED_P_COPY(0);
-	digits_precision = PG_GETARG_INT32(1);
+	significant_digits = PG_GETARG_INT32(1);
 	g = lwgeom_from_gserialized(input);
-	
-	lwgeom_trim_bits_in_place(g, digits_precision);
+
+	if (significant_digits < 1)
+	{
+	  lwerror("Must have at least one significant digit");
+	  PG_FREE_IF_COPY(input, 0);
+	  PG_RETURN_NULL();
+	}
+
+	if (significant_digits > 15)
+	{
+	  lwerror("Can't request more than 15 significant digits");
+	  PG_FREE_IF_COPY(input, 0);
+	  PG_RETURN_NULL();
+	}
+
+	lwgeom_trim_bits_in_place(g, significant_digits);
 	
 	result = geometry_serialize(g);
 	lwgeom_free(g);

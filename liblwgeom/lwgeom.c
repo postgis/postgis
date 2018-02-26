@@ -2395,17 +2395,16 @@ lwgeom_is_trajectory(const LWGEOM *geom)
 	return lwline_is_trajectory((LWLINE*)geom);
 }
 
-static int
-bits_for_precision(int digits_precision)
+static uint8_t
+bits_for_precision(uint8_t significant_digits)
 {
-	if (digits_precision < 1)
-		lwerror("Must have at least one digit of precision");
+	if (significant_digits < 1)
+		lwerror("Must have at least one significant digit");
 	
-	if (digits_precision > 15) {
-		lwerror("Can't request more than 15 digits of precision");
-	}
+	if (significant_digits > 15)
+		lwerror("Can't request more than 15 significant digits");
 	
-	return (int) ceil(digits_precision / log10(2));
+	return (uint8_t) ceil(significant_digits / log10(2));
 }
 
 static inline
@@ -2418,14 +2417,15 @@ double mask_double(double d, int64_t mask)
 	return *((double*) double_bits);
 }
 
-void lwgeom_trim_bits_in_place(LWGEOM* geom, int digits_precision)
+void lwgeom_trim_bits_in_place(LWGEOM* geom, uint8_t significant_digits)
 {
 	LWPOINTITERATOR* it = lwpointiterator_create_rw(geom);
-	int bits_to_keep = bits_for_precision(digits_precision);
+	uint8_t bits_to_keep = bits_for_precision(significant_digits);
 	int64_t mask = 0xffffffffffffffff << (52 - bits_to_keep);
 	POINT4D p;
 	
-	while (lwpointiterator_has_next(it)) {
+	while (lwpointiterator_has_next(it))
+	{
 		lwpointiterator_peek(it, &p);
 		p.x = mask_double(p.x, mask);
 		p.y = mask_double(p.y, mask);
