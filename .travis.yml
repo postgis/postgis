@@ -40,6 +40,8 @@ after_failure:
   - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log
 
 after_success:
+  - find . -name "*.gcno" -exec sh -c 'touch -a "${1%.gcno}.gcda"' _ {} \;
+  - mv -f liblwgeom/.libs/* liblwgeom/
   - bash <(curl -s https://codecov.io/bash)
 
 language: c
