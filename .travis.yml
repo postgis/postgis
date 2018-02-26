@@ -40,7 +40,8 @@ after_failure:
   - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -a "-o .libs -o ."
+  - find . -name "*.gcno" -exec sh -c 'touch -a "${1%.gcno}.gcda"' _ {} \;
+  - bash <(curl -s https://codecov.io/bash)
 
 language: c
 
