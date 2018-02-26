@@ -8,6 +8,8 @@ PostGIS 2.3.7dev
   - #4020, Casting from box3d to geometry now returns correctly connected
            PolyhedralSurface (Matthias Bay)
   - #4025, Incorrect answers for temporally "amost overlapping" ranges
+  - #4017, lwgeom lexer memory corruption (Peter E)
+
 
 PostGIS 2.3.6
 2018/01/17
