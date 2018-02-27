@@ -2298,7 +2298,6 @@ LWGEOM* lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2);
  * @param mitreLimit (try 5.0)
  * @return derived geometry (linestring or multilinestring)
  *
- * Requires GEOS-3.2.0+
  */
 LWGEOM* lwgeom_offsetcurve(const LWGEOM *lwgeom, double size, int quadsegs, int joinStyle, double mitreLimit);
 
