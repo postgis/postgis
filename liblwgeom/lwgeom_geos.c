@@ -491,7 +491,11 @@ lwgeom_geos_version()
 inline static int32_t
 get_result_srid(const LWGEOM* geom1, const LWGEOM* geom2, const char* funcname)
 {
-	if (!geom1) lwerror("%s: First argument is null pointer", funcname);
+	if (!geom1)
+	{
+		lwerror("%s: First argument is null pointer", funcname);
+		return SRID_INVALID;
+	}
 	if (geom2 && (geom1->srid != geom2->srid))
 	{
 		lwerror("%s: Operation on mixed SRID geometries (%d != %d)", funcname, geom1->srid, geom2->srid);
@@ -1206,8 +1210,11 @@ lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2)
 	return result;
 }
 
-LWGEOM*
-lwgeom_offsetcurve(const LWLINE* lwline, double size, int quadsegs, int joinStyle, double mitreLimit)
+static LWGEOM*
+lwgeom_offsetcurve_line(const LWLINE* lwline, double size, int quadsegs, int joinStyle, double mitreLimit);
+
+static LWGEOM*
+lwgeom_offsetcurve_line(const LWLINE* lwline, double size, int quadsegs, int joinStyle, double mitreLimit)
 {
 	LWGEOM* result;
 	LWGEOM* geom = lwline_as_lwgeom(lwline);
@@ -1223,7 +1230,11 @@ lwgeom_offsetcurve(const LWLINE* lwline, double size, int quadsegs, int joinStyl
 
 	g3 = GEOSOffsetCurve(g1, size, quadsegs, joinStyle, mitreLimit);
 
-	if (!g3) return geos_clean_and_fail(g1, NULL, NULL, __func__);
+	if (!g3)
+	{
+		geos_clean(g1, NULL, NULL);
+		return NULL;
+	}
 
 	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
 		return geos_clean_and_fail(g1, NULL, g3, __func__);
@@ -1231,6 +1242,83 @@ lwgeom_offsetcurve(const LWLINE* lwline, double size, int quadsegs, int joinStyl
 	geos_clean(g1, NULL, g3);
 
 	return result;
+}
+
+static LWGEOM*
+lwgeom_offsetcurve_multilinestring(const LWGEOM* geom, double size, int quadsegs, int joinStyle, double mitreLimit)
+{
+	int32_t srid = get_result_srid(geom, NULL, __func__);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
+	if (srid == SRID_INVALID) return NULL;
+
+	if (!lwgeom_is_collection(geom))
+		return lwgeom_offsetcurve_line(lwgeom_as_lwline(geom), size, quadsegs, joinStyle, mitreLimit);
+	else
+	{
+		LWCOLLECTION* result;
+		LWGEOM* tmp;
+		const LWCOLLECTION* col = lwgeom_as_lwcollection(geom);
+		int i;
+		result = lwcollection_construct_empty(MULTILINETYPE, srid, is3d, LW_FALSE);
+		for (i = 0; i < col->ngeoms; i++)
+		{
+			tmp = lwgeom_offsetcurve_line(
+			    lwgeom_as_lwline(col->geoms[i]), size, quadsegs, joinStyle, mitreLimit);
+
+			if (!tmp)
+			{
+				lwcollection_free(result);
+				return NULL;
+			}
+
+			if (lwgeom_get_type(tmp) != LINETYPE && lwgeom_get_type(tmp) != MULTILINETYPE) return NULL;
+
+			if (!lwgeom_is_empty(tmp))
+			{
+				if (!lwgeom_is_collection(tmp))
+					lwcollection_add_lwgeom(result, tmp);
+				else
+				{
+					const LWCOLLECTION* c2 = lwgeom_as_lwcollection(tmp);
+					int j;
+					for (j = 0; j < c2->ngeoms; j++)
+						lwcollection_add_lwgeom(result, c2->geoms[j]);
+					lwgeom_release(tmp);
+				}
+			}
+		}
+		if (result->ngeoms == 1)
+		{
+			tmp = result->geoms[0];
+			lwcollection_release(result);
+			return tmp;
+		}
+		else
+			return lwcollection_as_lwgeom(result);
+	}
+}
+
+LWGEOM*
+lwgeom_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle, double mitreLimit)
+{
+	int32_t srid = get_result_srid(geom, NULL, __func__);
+	LWGEOM* result, *tmp;
+	if (srid == SRID_INVALID) return NULL;
+
+	result = lwgeom_offsetcurve_multilinestring(geom, size, quadsegs, joinStyle, mitreLimit);
+	if (!result)
+	{
+		LWGEOM* noded = lwgeom_node(geom);
+		if (noded)
+		{
+			result = lwgeom_offsetcurve_multilinestring(noded, size, quadsegs, joinStyle, mitreLimit);
+			lwfree(noded);
+			if (!result) lwerror("lwgeom_offsetcurve: noding input still does not let it be processed.");
+		}
+	}
+	tmp = lwgeom_make_valid(result);
+	lwgeom_free(result);
+	return tmp;
 }
 
 LWMPOINT*
