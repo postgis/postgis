@@ -324,19 +324,19 @@ LWGEOM_GEOS_nodeLines(const GEOSGeometry* lines)
 
 	/* first, try just to node the line */
 	noded = GEOSNode(lines);
-	if (!noded) return NULL;
+	if (!noded) noded = (GEOSGeometry*) lines;
 
-	/* if noding isn't enough, fall back to unary union */
+	/* GEOS3.7 UnaryUnion fails on regression tests, cannot be used here */
+
+	/* fall back to union of first point with geometry */
 	if (!GEOSisValid(noded))
 	{
-		GEOSGeometry* unioned;
-
-		unioned = GEOSUnaryUnion(noded);
-		GEOSGeom_destroy(noded);
-
-		assert(GEOSisValid(unioned));
-
-		return unioned;
+		GEOSGeometry* unioned, * point;
+		point = LWGEOM_GEOS_getPointN(lines, 0);
+		if (!point) return NULL;
+		unioned = GEOSUnion(noded, point);
+		if (!unioned) return NULL;
+		else {GEOSGeom_destroy(noded); return unioned;}
 	}
 	return noded;
 }

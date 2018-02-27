@@ -63,8 +63,6 @@ static void test_geos_noop(void)
 		lwgeom_free(geom_out);
 		lwgeom_free(geom_in);
 	}
-
-
 }
 
 static void test_geos_linemerge(void)
@@ -104,9 +102,7 @@ test_geos_offsetcurve(void)
 	ewkt = "MULTILINESTRING((-10 0, -10 100), (0 -5, 0 0))";
 	geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
 	geom2 = lwgeom_offsetcurve(geom1, 2, 10, 1, 1);
-	printf("%s\n", cu_error_msg);
 	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom2);
-	printf("%s\n", cu_error_msg);
 	ASSERT_STRING_EQUAL(out_ewkt, "MULTILINESTRING((-12 0,-12 100),(-2 -5,-2 0))");
 	lwfree(out_ewkt);
 	lwgeom_free(geom1);
