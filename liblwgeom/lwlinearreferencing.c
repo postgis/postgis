@@ -822,7 +822,7 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 		else if ( type == LINETYPE )
 		{
 			/* lwgeom_offsetcurve(line, offset, quadsegs, joinstyle (round), mitrelimit) */
-			LWGEOM *lwoff = lwgeom_offsetcurve(lwgeom_as_lwline(out_col->geoms[i]), offset, 8, 1, 5.0);
+			LWGEOM *lwoff = lwgeom_offsetcurve(out_col->geoms[i], offset, 8, 1, 5.0);
 			if ( ! lwoff )
 			{
 				lwerror("lwgeom_offsetcurve returned null");
