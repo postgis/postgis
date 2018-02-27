@@ -1876,7 +1876,7 @@ Datum contains(PG_FUNCTION_ARGS)
 
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
 
-	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
+	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1 )
 	{
 		g1 = POSTGIS2GEOS(geom2);
 		if (!g1)
@@ -1950,7 +1950,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
 
-	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
+	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1 )
 	{
 		GEOSGeometry *g = POSTGIS2GEOS(geom2);
 		if (!g)
@@ -2084,7 +2084,7 @@ Datum covers(PG_FUNCTION_ARGS)
 
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
 
-	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
+	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1 )
 	{
 		GEOSGeometry *g1 = POSTGIS2GEOS(geom2);
 		if (!g1)
@@ -2401,7 +2401,7 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 
 	if ( prep_cache && prep_cache->prepared_geom )
 	{
-		if ( prep_cache->argnum == 1 )
+		if ( prep_cache->gcache.argnum == 1 )
 		{
 			GEOSGeometry *g = POSTGIS2GEOS(geom2);
 			if (!g)

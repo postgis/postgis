@@ -343,7 +343,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	* Hum, we shouldn't be asked to build a new cache on top of
 	* an existing one. Error.
 	*/
-	if ( prepcache->argnum || prepcache->geom || prepcache->prepared_geom )
+	if ( prepcache->gcache.argnum || prepcache->geom || prepcache->prepared_geom )
 	{
 		lwpgerror("PrepGeomCacheBuilder asked to build new prepcache where one already exists.");
 		return LW_FAILURE;
@@ -363,7 +363,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	if ( ! prepcache->geom ) return LW_FAILURE;
 	prepcache->prepared_geom = GEOSPrepare( prepcache->geom );
 	if ( ! prepcache->prepared_geom ) return LW_FAILURE;
-	prepcache->argnum = cache->argnum;
+	prepcache->gcache.argnum = cache->argnum;
 
 	/*
 	* In order to find the objects we need to destroy, we keep
@@ -417,10 +417,10 @@ PrepGeomCacheCleaner(GeomCache *cache)
 	/*
 	* Free the GEOS objects and free the index tree
 	*/
-	POSTGIS_DEBUGF(3, "PrepGeomCacheFreeer: freeing %p argnum %d", prepcache, prepcache->argnum);
+	POSTGIS_DEBUGF(3, "PrepGeomCacheFreeer: freeing %p argnum %d", prepcache, prepcache->gcache.argnum);
 	GEOSPreparedGeom_destroy( prepcache->prepared_geom );
 	GEOSGeom_destroy( (GEOSGeometry *)prepcache->geom );
-	prepcache->argnum = 0;
+	prepcache->gcache.argnum = 0;
 	prepcache->prepared_geom = 0;
 	prepcache->geom	= 0;
 
@@ -433,7 +433,7 @@ PrepGeomCacheAllocator()
 	PrepGeomCache* prepcache = palloc(sizeof(PrepGeomCache));
 	memset(prepcache, 0, sizeof(PrepGeomCache));
 	prepcache->context_statement = CurrentMemoryContext;
-	prepcache->type = PREP_CACHE_ENTRY;
+	prepcache->gcache.type = PREP_CACHE_ENTRY;
 	return (GeomCache*)prepcache;
 }
 

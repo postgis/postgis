@@ -33,13 +33,8 @@
 * liblwgeom, where most of the circtree logic lives.
 */
 typedef struct {
-	int                     type;       // <GeomCache>
-	GSERIALIZED*                geom1;      //
-	GSERIALIZED*                geom2;      //
-	size_t                      geom1_size; //
-	size_t                      geom2_size; //
-	int32                       argnum;     // </GeomCache>
-	CIRC_NODE*                  index;
+	GeomCache    gcache;
+	CIRC_NODE*   index;
 } CircTreeGeomCache;
 
 
@@ -73,7 +68,7 @@ CircTreeFreer(GeomCache* cache)
 	{
 		circ_tree_free(circ_cache->index);
 		circ_cache->index = 0;
-		circ_cache->argnum = 0;
+		circ_cache->gcache.argnum = 0;
 	}
 	return LW_SUCCESS;
 }
@@ -176,7 +171,7 @@ geography_distance_cache_tolerance(FunctionCallInfoData* fcinfo, const GSERIALIZ
 
 	/* OK, we have an index at the ready! Use it for the one tree argument and */
 	/* fill in the other tree argument */
-	if ( tree_cache && tree_cache->argnum && tree_cache->index )
+	if ( tree_cache && tree_cache->gcache.argnum && tree_cache->index )
 	{
 		CIRC_NODE* circtree_cached = tree_cache->index;
 		CIRC_NODE* circtree = NULL;
@@ -188,14 +183,14 @@ geography_distance_cache_tolerance(FunctionCallInfoData* fcinfo, const GSERIALIZ
 		POINT4D p4d;
 
 		/* We need to dynamically build a tree for the uncached side of the function call */
-		if ( tree_cache->argnum == 1 )
+		if ( tree_cache->gcache.argnum == 1 )
 		{
 			g_cached = g1;
 			g = g2;
 			geomtype_cached = type1;
 			geomtype = type2;
 		}
-		else if ( tree_cache->argnum == 2 )
+		else if ( tree_cache->gcache.argnum == 2 )
 		{
 			g_cached = g2;
 			g = g1;
