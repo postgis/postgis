@@ -1249,7 +1249,7 @@ lwmline_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle
 
 	if (geom->type == LINETYPE)
 		return lwline_offsetcurve(lwgeom_as_lwline(geom), size, quadsegs, joinStyle, mitreLimit);
-	else if (geom->type == MULTILINETYPE)
+	else if (geom->type == MULTILINETYPE || geom->type == COLLECTIONTYPE)
 	{
 		LWCOLLECTION* result;
 		LWGEOM* tmp;
