@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2001-2006 Refractions Research Inc.
+ * Copyright (C) 2017-2018 Daniel Baston <dbaston@gmail.com>
  *
  **********************************************************************/
 
@@ -2417,22 +2418,28 @@ double mask_double(double d, int64_t mask)
 	return *((double*) double_bits);
 }
 
-void lwgeom_trim_bits_in_place(LWGEOM* geom, uint8_t significant_digits)
+void lwgeom_trim_bits_in_place(LWGEOM* geom, uint8_t sig_x, uint8_t sig_y, uint8_t sig_z, uint8_t sig_m)
 {
 	LWPOINTITERATOR* it = lwpointiterator_create_rw(geom);
-	uint8_t bits_to_keep = bits_for_precision(significant_digits);
-	int64_t mask = 0xffffffffffffffff << (52 - bits_to_keep);
 	POINT4D p;
+	uint8_t bits_x = bits_for_precision(sig_x);
+	uint8_t bits_y = bits_for_precision(sig_y);
+	uint8_t bits_z = lwgeom_has_z(geom) ? bits_for_precision(sig_z) : 52;
+	uint8_t bits_m = lwgeom_has_m(geom) ? bits_for_precision(sig_m) : 52;
+	int64_t mask_x = 0xffffffffffffffff << (52 - bits_x);
+	int64_t mask_y = 0xffffffffffffffff << (52 - bits_y);
+	int64_t mask_z = 0xffffffffffffffff << (52 - bits_z);
+	int64_t mask_m = 0xffffffffffffffff << (52 - bits_m);
 
 	while (lwpointiterator_has_next(it))
 	{
 		lwpointiterator_peek(it, &p);
-		p.x = mask_double(p.x, mask);
-		p.y = mask_double(p.y, mask);
+		p.x = mask_double(p.x, mask_x);
+		p.y = mask_double(p.y, mask_y);
 		if (lwgeom_has_z(geom))
-			p.z = mask_double(p.z, mask);
+			p.z = mask_double(p.z, mask_z);
 		if (lwgeom_has_m(geom))
-			p.m = mask_double(p.m, mask);
+			p.m = mask_double(p.m, mask_m);
 		lwpointiterator_modify_next(it, &p);
 	}
 

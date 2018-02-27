@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright 2001-2006 Refractions Research Inc.
+ * Copyright 2017-2018 Daniel Baston <dbaston@gmail.com>
  *
  **********************************************************************/
 
@@ -2990,27 +2991,42 @@ Datum postgis_optimize_geometry(PG_FUNCTION_ARGS)
 	GSERIALIZED* input;
 	GSERIALIZED* result;
 	LWGEOM* g;
-	int significant_digits;
+	int significant_digits_x = PG_ARGISNULL(1) ? -1 : PG_GETARG_INT32(1);
+	int significant_digits_y = PG_ARGISNULL(2) ? significant_digits_x : PG_GETARG_INT32(2);
+	int significant_digits_z = PG_ARGISNULL(3) ? significant_digits_x : PG_GETARG_INT32(3);
+	int significant_digits_m = PG_ARGISNULL(4) ? significant_digits_x : PG_GETARG_INT32(4);
 
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
 	input = PG_GETARG_GSERIALIZED_P_COPY(0);
-	significant_digits = PG_GETARG_INT32(1);
+
 	g = lwgeom_from_gserialized(input);
 
-	if (significant_digits < 1)
+	if (significant_digits_x < 1 ||
+		significant_digits_y < 1 ||
+		significant_digits_z < 1 ||
+		significant_digits_m < 1)
 	{
-	  lwerror("Must have at least one significant digit");
-	  PG_FREE_IF_COPY(input, 0);
-	  PG_RETURN_NULL();
+		lwpgerror("Must have at least one significant digit");
+		PG_FREE_IF_COPY(input, 0);
+		PG_RETURN_NULL();
 	}
 
-	if (significant_digits > 15)
+	if (significant_digits_x > 15 ||
+		significant_digits_y > 15 ||
+		significant_digits_z > 15 ||
+		significant_digits_m > 15)
 	{
-	  lwerror("Can't request more than 15 significant digits");
-	  PG_FREE_IF_COPY(input, 0);
-	  PG_RETURN_NULL();
+		lwpgerror("Can't request more than 15 significant digits");
+		PG_FREE_IF_COPY(input, 0);
+		PG_RETURN_NULL();
 	}
 
-	lwgeom_trim_bits_in_place(g, significant_digits);
+	lwgeom_trim_bits_in_place(g,
+		significant_digits_x,
+		significant_digits_y,
+		significant_digits_z,
+		significant_digits_m);
 
 	result = geometry_serialize(g);
 	lwgeom_free(g);
