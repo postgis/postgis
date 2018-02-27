@@ -1,8 +1,6 @@
 t1|t
-ERROR:  Must have at least one significant digit
-ERROR:  Must have at least one significant digit
-ERROR:  Can't request more than 15 significant digits
+ERROR:  Must specify precision
+t3|t
+t4|t
 t5|t
 t6|t
-t7|t
-t8|t

@@ -2396,50 +2396,57 @@ lwgeom_is_trajectory(const LWGEOM *geom)
 	return lwline_is_trajectory((LWLINE*)geom);
 }
 
-static uint8_t
-bits_for_precision(uint8_t significant_digits)
+static uint32_t
+bits_for_precision(int32_t significant_digits)
 {
-	if (significant_digits < 1)
-		lwerror("Must have at least one significant digit");
-
-	if (significant_digits > 15)
-		lwerror("Can't request more than 15 significant digits");
-
-	return (uint8_t) ceil(significant_digits / log10(2));
+	return (uint32_t) ceil(significant_digits / log10(2));
 }
 
 static inline
-double mask_double(double d, int64_t mask)
+double mask_double(double d, uint64_t mask)
 {
-	int64_t* double_bits = (int64_t*) (&d);
+	uint64_t* double_bits = (uint64_t*) (&d);
 
 	(*double_bits) &= mask;
 
 	return *((double*) double_bits);
 }
 
-void lwgeom_trim_bits_in_place(LWGEOM* geom, uint8_t sig_x, uint8_t sig_y, uint8_t sig_z, uint8_t sig_m)
+static double trim_preserve_decimal_digits(double d, int32_t decimal_digits)
+{
+	if (d==0)
+		return 0;
+
+	int digits_left_of_decimal = (int) (1 + log10(fabs(d)));
+	uint32_t bits_needed = bits_for_precision(abs(decimal_digits) + digits_left_of_decimal);
+
+	if (bits_needed > 52)
+	{
+		bits_needed = 52;
+	} else if (bits_needed < 1)
+	{
+		bits_needed = 1;
+	}
+
+	uint64_t mask = 0xffffffffffffffff << (52 - bits_needed);
+
+	return mask_double(d, mask);
+}
+
+void lwgeom_trim_bits_in_place(LWGEOM* geom, int32_t prec_x, int32_t prec_y, int32_t prec_z, int32_t prec_m)
 {
 	LWPOINTITERATOR* it = lwpointiterator_create_rw(geom);
 	POINT4D p;
-	uint8_t bits_x = bits_for_precision(sig_x);
-	uint8_t bits_y = bits_for_precision(sig_y);
-	uint8_t bits_z = lwgeom_has_z(geom) ? bits_for_precision(sig_z) : 52;
-	uint8_t bits_m = lwgeom_has_m(geom) ? bits_for_precision(sig_m) : 52;
-	int64_t mask_x = 0xffffffffffffffff << (52 - bits_x);
-	int64_t mask_y = 0xffffffffffffffff << (52 - bits_y);
-	int64_t mask_z = 0xffffffffffffffff << (52 - bits_z);
-	int64_t mask_m = 0xffffffffffffffff << (52 - bits_m);
 
 	while (lwpointiterator_has_next(it))
 	{
 		lwpointiterator_peek(it, &p);
-		p.x = mask_double(p.x, mask_x);
-		p.y = mask_double(p.y, mask_y);
+		p.x = trim_preserve_decimal_digits(p.x, prec_x);
+		p.y = trim_preserve_decimal_digits(p.y, prec_y);
 		if (lwgeom_has_z(geom))
-			p.z = mask_double(p.z, mask_z);
+			p.z = trim_preserve_decimal_digits(p.z, prec_z);
 		if (lwgeom_has_m(geom))
-			p.m = mask_double(p.m, mask_m);
+			p.m = trim_preserve_decimal_digits(p.m, prec_m);
 		lwpointiterator_modify_next(it, &p);
 	}
 

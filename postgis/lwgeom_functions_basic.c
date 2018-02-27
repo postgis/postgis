@@ -2991,42 +2991,31 @@ Datum postgis_optimize_geometry(PG_FUNCTION_ARGS)
 	GSERIALIZED* input;
 	GSERIALIZED* result;
 	LWGEOM* g;
-	int significant_digits_x = PG_ARGISNULL(1) ? -1 : PG_GETARG_INT32(1);
-	int significant_digits_y = PG_ARGISNULL(2) ? significant_digits_x : PG_GETARG_INT32(2);
-	int significant_digits_z = PG_ARGISNULL(3) ? significant_digits_x : PG_GETARG_INT32(3);
-	int significant_digits_m = PG_ARGISNULL(4) ? significant_digits_x : PG_GETARG_INT32(4);
+	int32_t prec_x;
+	int32_t prec_y;
+	int32_t prec_z;
+	int32_t prec_m;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
+	if (PG_ARGISNULL(1))
+	{
+		lwpgerror("Must specify precision");
+		PG_RETURN_NULL();
+	}
+	else
+	{
+		prec_x = PG_GETARG_INT32(1);
+	}
+	prec_y = PG_ARGISNULL(2) ? prec_x : PG_GETARG_INT32(2);
+	prec_z = PG_ARGISNULL(3) ? prec_x : PG_GETARG_INT32(3);
+	prec_m = PG_ARGISNULL(4) ? prec_x : PG_GETARG_INT32(4);
+
 	input = PG_GETARG_GSERIALIZED_P_COPY(0);
 
 	g = lwgeom_from_gserialized(input);
 
-	if (significant_digits_x < 1 ||
-		significant_digits_y < 1 ||
-		significant_digits_z < 1 ||
-		significant_digits_m < 1)
-	{
-		lwpgerror("Must have at least one significant digit");
-		PG_FREE_IF_COPY(input, 0);
-		PG_RETURN_NULL();
-	}
-
-	if (significant_digits_x > 15 ||
-		significant_digits_y > 15 ||
-		significant_digits_z > 15 ||
-		significant_digits_m > 15)
-	{
-		lwpgerror("Can't request more than 15 significant digits");
-		PG_FREE_IF_COPY(input, 0);
-		PG_RETURN_NULL();
-	}
-
-	lwgeom_trim_bits_in_place(g,
-		significant_digits_x,
-		significant_digits_y,
-		significant_digits_z,
-		significant_digits_m);
+	lwgeom_trim_bits_in_place(g, prec_x, prec_y, prec_z, prec_m);
 
 	result = geometry_serialize(g);
 	lwgeom_free(g);
