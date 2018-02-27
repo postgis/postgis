@@ -314,8 +314,6 @@ lwcollection_make_geos_friendly(LWCOLLECTION* g)
 	return (LWGEOM*)ret;
 }
 
-GEOSGeometry* LWGEOM_GEOS_makeValid(const GEOSGeometry*);
-
 /*
  * Fully node given linework
  */
