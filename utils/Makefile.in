@@ -78,3 +78,14 @@ distclean: clean
 
 # And there's nothing to check
 check:
+
+SUBDIRS = external/pg_bsd_indent
+
+all clean distclean:
+	for s in $(SUBDIRS); do \
+		echo "---- Making $@ in $${s}"; \
+		$(MAKE) -C $${s} $@ || exit 1; \
+	done;
+	@if test x"$@" = xall; then \
+		echo "PostGIS was built successfully. Ready to install."; \
+	fi

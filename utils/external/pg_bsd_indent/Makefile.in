@@ -29,3 +29,6 @@ pg_indent: $(OBJ)
 
 clean:
 	rm -f $(OBJ) pg_indent
+
+distclean: clean
+	rm -f Makefile
