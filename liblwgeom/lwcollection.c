@@ -186,9 +186,9 @@ void lwcollection_reserve(LWCOLLECTION *col, uint32_t ngeoms)
 */
 LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 {
-	if ( col == NULL || geom == NULL ) return NULL;
+	if ( !col || !geom ) return NULL;
 
-	if ( col->geoms == NULL && (col->ngeoms || col->maxgeoms) ) {
+	if ( ! col->geoms && (col->ngeoms || col->maxgeoms) ) {
 		lwerror("Collection is in inconsistent state. Null memory but non-zero collection counts.");
 		return NULL;
 	}
@@ -200,7 +200,7 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 	}
 
 	/* In case this is a truly empty, make some initial space  */
-	if ( col->geoms == NULL )
+	if (!col->geoms)
 	{
 		col->maxgeoms = 2;
 		col->ngeoms = 0;
@@ -214,22 +214,31 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 	/* See http://trac.osgeo.org/postgis/ticket/2933 */
 	/* Make sure we don't already have a reference to this geom */
 	{
-	int i = 0;
-	for ( i = 0; i < col->ngeoms; i++ )
-	{
-		if ( col->geoms[i] == geom )
+		int i = 0;
+		for ( i = 0; i < col->ngeoms; i++ )
 		{
-            lwerror("%s [%d] found duplicate geometry in collection %p == %p", __FILE__, __LINE__, col->geoms[i], geom);
-			LWDEBUGF(4, "Found duplicate geometry in collection %p == %p", col->geoms[i], geom);
-			return col;
+			if ( col->geoms[i] == geom )
+			{
+				lwerror("%s [%d] found duplicate geometry in collection %p == %p", __FILE__, __LINE__, col->geoms[i], geom);
+				LWDEBUGF(4, "Found duplicate geometry in collection %p == %p", col->geoms[i], geom);
+				return col;
+			}
 		}
-	}
 	}
 #endif
 
 	col->geoms[col->ngeoms] = (LWGEOM*)geom;
 	col->ngeoms++;
 	return col;
+}
+
+LWCOLLECTION*
+lwcollection_concat_in_place(LWCOLLECTION* col1, const LWCOLLECTION* col2)
+{
+	uint32_t i;
+	if (!col1 || !col2) return NULL;
+	for (i = 0; i < col2->ngeoms; i++) col1 = lwcollection_add_lwgeom(col1, col2->geoms[i]);
+	return col1;
 }
 
 LWCOLLECTION*

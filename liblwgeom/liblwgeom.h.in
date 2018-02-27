@@ -630,6 +630,7 @@ extern LWMPOLY* lwmpoly_add_lwpoly(LWMPOLY *mobj, const LWPOLY *obj);
 extern LWPSURFACE* lwpsurface_add_lwpoly(LWPSURFACE *mobj, const LWPOLY *obj);
 extern LWTIN* lwtin_add_lwtriangle(LWTIN *mobj, const LWTRIANGLE *obj);
 
+extern LWCOLLECTION* lwcollection_concat_in_place(LWCOLLECTION* col1, const LWCOLLECTION* col2);
 
 
 /***********************************************************************
