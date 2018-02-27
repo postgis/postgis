@@ -214,7 +214,7 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 	/* See http://trac.osgeo.org/postgis/ticket/2933 */
 	/* Make sure we don't already have a reference to this geom */
 	{
-		int i = 0;
+		uint32_t i = 0;
 		for ( i = 0; i < col->ngeoms; i++ )
 		{
 			if ( col->geoms[i] == geom )
