@@ -326,27 +326,13 @@ LWGEOM_GEOS_nodeLines(const GEOSGeometry* lines)
 	noded = GEOSNode(lines);
 	if (!noded) return NULL;
 
-	/* if noding isn't enough, fall back to self-union */
+	/* if noding isn't enough, fall back to unary union */
 	if (!GEOSisValid(noded))
 	{
-		GEOSGeometry* point;
 		GEOSGeometry* unioned;
 
-		/*
-		 * Union with first geometry point, obtaining full noding
-		 * and dissolving of duplicated repeated points
-		 */
-
-		point = LWGEOM_GEOS_getPointN(noded, 0);
-		if (!point)
-		{
-			GEOSGeom_destroy(noded);
-			return NULL;
-		}
-
-		unioned = GEOSUnion(noded, point);
+		unioned = GEOSUnaryUnion(noded);
 		GEOSGeom_destroy(noded);
-		GEOSGeom_destroy(point);
 
 		assert(GEOSisValid(unioned));
 
@@ -920,7 +906,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
 
 	lwgeom_out = lwgeom_in;
-	geosgeom = LWGEOM2GEOS(lwgeom_out, 0);
+	geosgeom = LWGEOM2GEOS(lwgeom_out, 1);
 	if (!geosgeom)
 	{
 		LWDEBUGF(4,

@@ -101,7 +101,7 @@ static void test_lwgeom_make_valid(void)
 /*	CU_ASSERT_STRING_EQUAL(ewkt,
 "GEOMETRYCOLLECTION(POINT(0 0),MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5))),LINESTRING(10 0,10 10))");*/
 	gexp = lwgeom_from_wkt(
-"GEOMETRYCOLLECTION(POINT(0 0),MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5))),LINESTRING(10 0,10 10))",
+"GEOMETRYCOLLECTION(MULTIPOLYGON(((5 5,10 10,10 0,5 5)),((0 0,0 10,5 5,0 0))),LINESTRING(10 0,10 10))",
 		LW_PARSER_CHECK_NONE);
 	check_geom_equal(gout, gexp);
 	lwfree(ewkt);
