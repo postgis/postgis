@@ -15,12 +15,12 @@ INCLUDES = err.h indent_codes.h indent_globs.h indent.h
 SRC = args.c err.c indent.c io.c lexi.c parse.c pr_comment.c
 
 PG_CONFIG = @PG_CONFIG@
-CFLAGS += $(PG_CONFIG) --includedir-server
+CFLAGS += -I$(shell $(PG_CONFIG) --includedir-server)
 
 %.o: %.cpp $(INCLUDES)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-OBJ = $(patsubst %.cpp,%.o,$(SRC))
+OBJ = $(patsubst %.c,%.o,$(SRC))
 
 all: pg_indent
 
