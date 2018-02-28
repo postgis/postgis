@@ -407,7 +407,7 @@ RTreeFreer(GeomCache* cache)
 		RTreeCacheClear(rtree_cache->index);
 		lwfree(rtree_cache->index);
 		rtree_cache->index = 0;
-		rtree_cache->argnum = 0;
+		rtree_cache->gcache.argnum = 0;
 	}
 	return LW_SUCCESS;
 }

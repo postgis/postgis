@@ -36,6 +36,7 @@
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 #include "lwgeom_geos.h"
+#include "lwgeom_cache.h"
 
 /*
 * Cache structure. We use GSERIALIZED as keys so no transformations
@@ -53,12 +54,7 @@
 * prepared geometry, circtrees, recttrees, and rtrees).
 */
 typedef struct {
-	int                         type;       // <GeomCache>
-	GSERIALIZED*                geom1;      //
-	GSERIALIZED*                geom2;      //
-	size_t                      geom1_size; //
-	size_t                      geom2_size; //
-	int32                       argnum;     // </GeomCache>
+	GeomCache                   gcache;
 	MemoryContext               context_statement;
 	MemoryContext               context_callback;
 	const GEOSPreparedGeometry* prepared_geom;

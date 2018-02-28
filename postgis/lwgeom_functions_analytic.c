@@ -46,7 +46,6 @@ Datum ST_MinimumBoundingCircle(PG_FUNCTION_ARGS);
 Datum ST_GeometricMedian(PG_FUNCTION_ARGS);
 Datum ST_IsPolygonCCW(PG_FUNCTION_ARGS);
 Datum ST_IsPolygonCW(PG_FUNCTION_ARGS);
-Datum ST_DistanceRectTree(PG_FUNCTION_ARGS);
 
 
 static double determineSide(const POINT2D *seg1, const POINT2D *seg2, const POINT2D *point);
@@ -1273,24 +1272,5 @@ Datum ST_IsPolygonCCW(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_BOOL(is_ccw);
-}
-
-/**********************************************************************
- * ST_DistanceRectTree
- **********************************************************************/
-
-#include "liblwgeom_internal.h"
-#include "lwtree.h"
-
-PG_FUNCTION_INFO_V1(ST_DistanceRectTree);
-Datum ST_DistanceRectTree(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
-	LWGEOM *lwg1 = lwgeom_from_gserialized(g1);
-	LWGEOM *lwg2 = lwgeom_from_gserialized(g2);
-	RECT_NODE *n1 = rect_tree_from_lwgeom(lwg1);
-	RECT_NODE *n2 = rect_tree_from_lwgeom(lwg2);
-	PG_RETURN_FLOAT8(rect_tree_distance_tree(n1, n2, 0.0));
 }
 

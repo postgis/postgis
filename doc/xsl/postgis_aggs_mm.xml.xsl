@@ -540,7 +540,7 @@
 							<xsl:for-each select="refsection">
 								<xsl:for-each select="para | */para">
 									<xsl:choose>
-										<xsl:when test="contains(.,'Enhanced: 2.4')">
+										<xsl:when test="contains(.,'Enhanced: 2.5')">
 											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /></simpara></listitem>
 										</xsl:when>
 									</xsl:choose>
@@ -573,7 +573,7 @@
 							<xsl:for-each select="refsection">
 								<xsl:for-each select="para | */para">
 									<xsl:choose>
-										<xsl:when test="contains(.,'Changed: 2.4')">
+										<xsl:when test="contains(.,'Changed: 2.5')">
 											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /></simpara></listitem>
 										</xsl:when>
 									</xsl:choose>

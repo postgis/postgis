@@ -42,6 +42,8 @@ typedef struct {
 	GSERIALIZED*                geom2;
 	size_t                      geom1_size;
 	size_t                      geom2_size;
+	LWGEOM*                     lwgeom1;
+	LWGEOM*                     lwgeom2;
 	int32                       argnum;
 } GeomCache;
 
