@@ -1434,6 +1434,52 @@ static void test_kmeans(void)
 	return;
 }
 
+static void test_trim_bits(void)
+{
+	POINTARRAY *pta = ptarray_construct_empty(LW_TRUE, LW_TRUE, 2);
+	POINT4D pt;
+	LWLINE *line;
+	uint8_t sigfigs;
+	uint32_t i;
+
+	pt.x = 1.2345678901234;
+	pt.y = 2.3456789012345;
+	pt.z = 3.4567890123456;
+	pt.m = 4.5678901234567;
+
+	ptarray_insert_point(pta, &pt, 0);
+
+	pt.x *= 3;
+	pt.y *= 3;
+	pt.y *= 3;
+	pt.z *= 3;
+
+	ptarray_insert_point(pta, &pt, 1);
+
+	line = lwline_construct(0, NULL, pta);
+
+	for (sigfigs = 1; sigfigs <= 15; sigfigs++)
+	{
+		LWLINE *line2 = (LWLINE*) lwgeom_clone_deep((LWGEOM*) line);
+		lwgeom_trim_bits_in_place((LWGEOM*) line2, sigfigs, sigfigs, sigfigs, sigfigs);
+
+		for (i = 0; i < line->points->npoints; i++)
+		{
+			POINT4D pt1 = getPoint4d(line->points, i);
+			POINT4D pt2 = getPoint4d(line2->points, i);
+
+			CU_ASSERT_DOUBLE_EQUAL(pt1.x, pt2.x, fabs(pt1.x*pow(10, -1*sigfigs)));
+			CU_ASSERT_DOUBLE_EQUAL(pt1.y, pt2.y, fabs(pt1.y*pow(10, -1*sigfigs)));
+			CU_ASSERT_DOUBLE_EQUAL(pt1.z, pt2.z, fabs(pt1.z*pow(10, -1*sigfigs)));
+			CU_ASSERT_DOUBLE_EQUAL(pt1.m, pt2.m, fabs(pt1.m*pow(10, -1*sigfigs)));
+		}
+
+		lwline_free(line2);
+	}
+
+	lwline_free(line);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -1465,5 +1511,6 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_median_handles_3d_correctly);
 	PG_ADD_TEST(suite,test_median_robustness);
 	PG_ADD_TEST(suite,test_lwpoly_construct_circle);
+	PG_ADD_TEST(suite,test_trim_bits);
 	PG_ADD_TEST(suite,test_lwgeom_remove_repeated_points);
 }

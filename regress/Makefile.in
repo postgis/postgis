@@ -103,6 +103,7 @@ TESTS = \
 	minimum_bounding_circle \
 	normalize \
 	operators \
+	optimize_geometry \
 	orientation \
 	out_geometry \
 	out_geography \

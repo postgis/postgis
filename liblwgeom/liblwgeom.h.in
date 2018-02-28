@@ -2169,6 +2169,19 @@ extern uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, int8_t preci
 
 extern uint8_t* lwgeom_to_twkb_with_idlist(const LWGEOM *geom, int64_t *idlist, uint8_t variant, int8_t precision_xy, int8_t precision_z, int8_t precision_m, size_t *twkb_size);
 
+/**
+ * Trim the bits of an LWGEOM in place, to optimize it for compression.
+ * Sets all bits to zero that are not required to maintain a specified
+ * number of significant digits.
+ *
+ * @param geom input geometry
+ * @param sig_x significant digits in x dimension
+ * @param sig_y significant digits in y dimension
+ * @param sig_z significant digits in z dimension
+ * @param sig_m significant digits in m dimension
+ */
+extern void lwgeom_trim_bits_in_place(LWGEOM *geom, uint8_t sig_x, uint8_t sig_y, uint8_t sig_z, uint8_t sig_m);
+
 /*******************************************************************************
  * SQLMM internal functions
  ******************************************************************************/
