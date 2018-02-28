@@ -5,6 +5,9 @@ env:
     - CFLAGS="-g -O3 -mtune=generic -fno-omit-frame-pointer -Werror -Wall"
     - CFLAGS="-g -O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage" CONFIGURE_FLAGS="--enable-debug"
 
+matrix:
+  fast_finish: true
+
 addons:
   postgresql: "9.6"
   apt:
@@ -28,13 +31,14 @@ before_install:
   - mkdir -p /home/travis/deb && touch /home/travis/deb/__ && sudo cp -n /home/travis/deb/* /var/cache/apt/archives || true
   - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev postgresql-server-dev-9.6 libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson0-dev libprotobuf-c0-dev libgdal-dev gdb libc6-dbg
   - sudo sh -c "echo deb http://archive.ubuntu.com/ubuntu/ artful main restricted universe multiverse >> /etc/apt/sources.list"
+  - sudo sh -c "echo deb http://apt.llvm.org/artful/ llvm-toolchain-artful main >> /etc/apt/sources.list"
   - sudo apt-get update -qq
-  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests binutils libproj-dev
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests binutils libproj-dev clang-format-7
   - cp -n /var/cache/apt/archives/* /home/travis/deb || true
   - ls -la /home/travis/deb/
   - cd /home/travis/build/postgis/postgis/
+  - sudo ln -sf /usr/bin/clang-format-7 /usr/bin/clang-format
   - sudo ldconfig
-  - ./autogen.sh
 
 after_failure:
   - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log
@@ -54,6 +58,8 @@ cache:
     - /home/travis/deb
 
 script:
+  - git-clang-format-7 --style=file --diff $TRAVIS_BRANCH HEAD 2> /dev/null | tee /tmp/clang-format.log; [ `cat /tmp/clang-format.log|wc -l` -eq 1 ]
+  - ./autogen.sh
   - ./configure CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS" $CONFIGURE_FLAGS || cat config.log
   - make -j
   - chmod 755 /home/travis

@@ -14,7 +14,7 @@ insert_final_newline = true
 trim_trailing_whitespace = false
 
 # C files want tab indentation
-[*.{c,h}]
+[*.{c,h,c.in,h.in}]
 indent_style = tab
 
 # Perl files want tab indentation
@@ -25,28 +25,12 @@ indent_style = tab
 [*.{sql,sql.in}]
 indent_style = tab
 
-# topology C files want space indentation
-[topology/*.{c,h}]
-indent_style = space
-indent_size = 2
-
-# topology C files want space indentation
-[liblwgeom/lwgeom_topo.{c,h}]
-indent_style = space
-
-[liblwgeom/lwgeom_log.h]
-indent_style = space
-
 # topology SQL files want space indentation
 [topology/**.{sql,sql.in}]
 indent_style = space
 
 # postgis/sfcgal.sql.in wants space indentation
 [postgis/sfcgal.sql.in]
-indent_style = space
-
-# .h.in files want space indentation
-[*.h.in]
 indent_style = space
 
 # Makefiles want tab indentation

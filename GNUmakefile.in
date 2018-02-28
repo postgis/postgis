@@ -137,11 +137,11 @@ raster-post-install-check:
 raster-sql:
 	$(MAKE) -C raster rtpostgis.sql
 
-astyle:
-	./astyle.sh
+clang-format:
+	clang-format-7 -i --style=file `find . -name '*.c' -o -name '*.h' -o -name '*.cpp' -o -name '*.hpp'`
 
 commit:
-	$(MAKE) astyle && $(MAKE) clean && $(MAKE) check && svn commit
+	$(MAKE) clang-format && $(MAKE) clean && $(MAKE) check && svn commit
 
 authors.git: authors.svn
 	sed -e 's/:/ = /' authors.svn > authors.git
