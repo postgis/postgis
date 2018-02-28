@@ -466,8 +466,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 					if (exclude_nodata_value && isnodata) {
 						arg1->nodata[z][i] = TRUE;
 						POSTGIS_RT_DEBUG(5, "nodata = 1");
-					}
-					else
+					} else
 						POSTGIS_RT_DEBUG(5, "nodata = 0");
 
 					i++;
@@ -592,16 +591,14 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
 		elog(NOTICE,
 		     "X coordinate can not be NULL when setting pixel value. Value not set. Returning original raster");
 		skipset = TRUE;
-	}
-	else
+	} else
 		x = PG_GETARG_INT32(2);
 
 	if (PG_ARGISNULL(3)) {
 		elog(NOTICE,
 		     "Y coordinate can not be NULL when setting pixel value. Value not set. Returning original raster");
 		skipset = TRUE;
-	}
-	else
+	} else
 		y = PG_GETARG_INT32(3);
 
 	POSTGIS_RT_DEBUGF(3, "Pixel coordinates (%d, %d)", x, y);
@@ -625,8 +622,7 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
 			     "pixel value. Value not set. Returning original raster",
 			     bandindex);
 			PG_RETURN_POINTER(pgraster);
-		}
-		else {
+		} else {
 			/* Set the pixel value */
 			if (PG_ARGISNULL(4)) {
 				if (!rt_band_get_hasnodata_flag(band)) {
@@ -635,13 +631,11 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
 					     "Set band nodata value first. Nodata value not set. "
 					     "Returning original raster");
 					PG_RETURN_POINTER(pgraster);
-				}
-				else {
+				} else {
 					rt_band_get_nodata(band, &pixvalue);
 					rt_band_set_pixel(band, x - 1, y - 1, pixvalue, NULL);
 				}
-			}
-			else {
+			} else {
 				pixvalue = PG_GETARG_FLOAT8(4);
 				rt_band_set_pixel(band, x - 1, y - 1, pixvalue, NULL);
 			}
@@ -1395,8 +1389,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 		if (isnull) {
 			elog(NOTICE, "Second argument (val) of geomval at index %d is NULL. Treating as NODATA", i);
 			arg->gv[arg->ngv].pixval.nodata = 1;
-		}
-		else
+		} else
 			arg->gv[arg->ngv].pixval.value = DatumGetFloat8(tupv);
 
 		(arg->ngv)++;
@@ -1705,8 +1698,7 @@ Datum RASTER_pixelOfValue(PG_FUNCTION_ARGS)
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
-		}
-		else if (nsearch < n)
+		} else if (nsearch < n)
 			search = repalloc(search, sizeof(double) * nsearch);
 
 		/* exclude_nodata_value flag */
@@ -1793,8 +1785,7 @@ Datum RASTER_pixelOfValue(PG_FUNCTION_ARGS)
 		result = HeapTupleGetDatum(tuple);
 
 		SRF_RETURN_NEXT(funcctx, result);
-	}
-	else {
+	} else {
 		pfree(pixels2);
 		SRF_RETURN_DONE(funcctx);
 	}
@@ -1975,8 +1966,7 @@ Datum RASTER_nearestValue(PG_FUNCTION_ARGS)
 
 			lwpoly_free(poly);
 		}
-	}
-	else {
+	} else {
 		value = npixels[0].value;
 		hasvalue = 1;
 	}

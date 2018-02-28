@@ -59,8 +59,7 @@ do_test_mindistance2d_tolerance(char *in1, char *in2, double expected_res, int l
 	if (fabs(distance - expected_res) > 0.00001) {
 		printf(msg1, distance, expected_res, line);
 		CU_FAIL();
-	}
-	else {
+	} else {
 		CU_PASS();
 	}
 }

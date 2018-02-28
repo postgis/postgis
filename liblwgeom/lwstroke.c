@@ -207,8 +207,7 @@ lwarc_linearize(POINTARRAY *to,
 				 increment,
 				 increment * 180 / M_PI);
 		}
-	}
-	else if (tolerance_type == LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION) {
+	} else if (tolerance_type == LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION) {
 		{
 			double halfAngle;
 			if (tol <= 0) {
@@ -225,15 +224,13 @@ lwarc_linearize(POINTARRAY *to,
 				 increment,
 				 increment * 180 / M_PI);
 		}
-	}
-	else if (tolerance_type == LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE) {
+	} else if (tolerance_type == LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE) {
 		increment = tol;
 		if (increment <= 0) {
 			lwerror("lwarc_linearize: max angle must be bigger than 0, got %.15g", tol);
 			return -1;
 		}
-	}
-	else {
+	} else {
 		lwerror("lwarc_linearize: unsupported tolerance type %d", tolerance_type);
 		return LW_FALSE;
 	}
@@ -274,8 +271,7 @@ lwarc_linearize(POINTARRAY *to,
 						 increment * 180 / M_PI,
 						 angle_reminder * 180 / M_PI);
 				}
-			}
-			else {
+			} else {
 				{
 					/* Number of segments in output */
 					int segs = ceil(angle / increment);
@@ -402,16 +398,16 @@ lwcircstring_linearize(const LWCIRCSTRING *icurve, double tol, LW_LINEARIZE_TOLE
 		getPoint4d_p(icurve->points, i, &p3);
 
 		ret = lwarc_linearize(ptarray, &p1, &p2, &p3, tol, tolerance_type, flags);
-		if (ret > 0) { LWDEBUGF(3, "lwcircstring_linearize: generated %d points", ptarray->npoints); }
-		else if (ret == 0) {
+		if (ret > 0) {
+			LWDEBUGF(3, "lwcircstring_linearize: generated %d points", ptarray->npoints);
+		} else if (ret == 0) {
 			LWDEBUG(3, "lwcircstring_linearize: points are colinear, returning curve points as line");
 
 			for (j = i - 2; j < i; j++) {
 				getPoint4d_p(icurve->points, j, &p4);
 				ptarray_append_point(ptarray, &p4, LW_TRUE);
 			}
-		}
-		else {
+		} else {
 			/* An error occurred, lwerror should have been called by now */
 			ptarray_free(ptarray);
 			return NULL;
@@ -454,15 +450,13 @@ lwcompound_linearize(const LWCOMPOUND *icompound, double tol, LW_LINEARIZE_TOLER
 				ptarray_append_point(ptarray, &p, LW_TRUE);
 			}
 			lwline_free(tmp);
-		}
-		else if (geom->type == LINETYPE) {
+		} else if (geom->type == LINETYPE) {
 			tmp = (LWLINE *)geom;
 			for (j = 0; j < tmp->points->npoints; j++) {
 				getPoint4d_p(tmp->points, j, &p);
 				ptarray_append_point(ptarray, &p, LW_TRUE);
 			}
-		}
-		else {
+		} else {
 			lwerror("Unsupported geometry type %d found.", geom->type, lwtype_name(geom->type));
 			return NULL;
 		}
@@ -506,17 +500,14 @@ lwcurvepoly_linearize(const LWCURVEPOLY *curvepoly, double tol, LW_LINEARIZE_TOL
 			line = lwcircstring_linearize((LWCIRCSTRING *)tmp, tol, tolerance_type, flags);
 			ptarray[i] = ptarray_clone_deep(line->points);
 			lwline_free(line);
-		}
-		else if (tmp->type == LINETYPE) {
+		} else if (tmp->type == LINETYPE) {
 			line = (LWLINE *)tmp;
 			ptarray[i] = ptarray_clone_deep(line->points);
-		}
-		else if (tmp->type == COMPOUNDTYPE) {
+		} else if (tmp->type == COMPOUNDTYPE) {
 			line = lwcompound_linearize((LWCOMPOUND *)tmp, tol, tolerance_type, flags);
 			ptarray[i] = ptarray_clone_deep(line->points);
 			lwline_free(line);
-		}
-		else {
+		} else {
 			lwerror("Invalid ring type found in CurvePoly.");
 			return NULL;
 		}
@@ -556,15 +547,12 @@ lwmcurve_linearize(const LWMCURVE *mcurve, double tol, LW_LINEARIZE_TOLERANCE_TY
 		const LWGEOM *tmp = mcurve->geoms[i];
 		if (tmp->type == CIRCSTRINGTYPE) {
 			lines[i] = (LWGEOM *)lwcircstring_linearize((LWCIRCSTRING *)tmp, tol, type, flags);
-		}
-		else if (tmp->type == LINETYPE) {
+		} else if (tmp->type == LINETYPE) {
 			lines[i] =
 			    (LWGEOM *)lwline_construct(mcurve->srid, NULL, ptarray_clone_deep(((LWLINE *)tmp)->points));
-		}
-		else if (tmp->type == COMPOUNDTYPE) {
+		} else if (tmp->type == COMPOUNDTYPE) {
 			lines[i] = (LWGEOM *)lwcompound_linearize((LWCOMPOUND *)tmp, tol, type, flags);
-		}
-		else {
+		} else {
 			lwerror("Unsupported geometry found in MultiCurve.");
 			return NULL;
 		}
@@ -600,8 +588,7 @@ lwmsurface_linearize(const LWMSURFACE *msurface, double tol, LW_LINEARIZE_TOLERA
 		tmp = msurface->geoms[i];
 		if (tmp->type == CURVEPOLYTYPE) {
 			polys[i] = (LWGEOM *)lwcurvepoly_linearize((LWCURVEPOLY *)tmp, tol, type, flags);
-		}
-		else if (tmp->type == POLYGONTYPE) {
+		} else if (tmp->type == POLYGONTYPE) {
 			poly = (LWPOLY *)tmp;
 			ptarray = lwalloc(sizeof(POINTARRAY *) * poly->nrings);
 			for (j = 0; j < poly->nrings; j++) {
@@ -857,8 +844,7 @@ pta_unstroke(const POINTARRAY *points, int srid)
 				found_arc = LW_TRUE;
 				for (k = j - 1; k > j - 4; k--)
 					edges_in_arcs[k] = current_arc;
-			}
-			else {
+			} else {
 				/* No. So we're done with this candidate arc */
 				LWDEBUG(4, "pt_continues_arc = false");
 				current_arc++;
@@ -880,8 +866,7 @@ pta_unstroke(const POINTARRAY *points, int srid)
 			if (first.x == b.x && first.y == b.y) {
 				LWDEBUG(4, "arc is a circle");
 				num_quadrants = 4;
-			}
-			else {
+			} else {
 				lw_arc_center((POINT2D *)&first, (POINT2D *)&b, (POINT2D *)&a1, (POINT2D *)&center);
 				angle = lw_arc_angle((POINT2D *)&first, (POINT2D *)&center, (POINT2D *)&b);
 				int p2_side = lw_segment_side((POINT2D *)&first, (POINT2D *)&a1, (POINT2D *)&b);
@@ -912,8 +897,7 @@ pta_unstroke(const POINTARRAY *points, int srid)
 			}
 
 			i = j - 1;
-		}
-		else {
+		} else {
 			/* Mark this edge as a linear edge */
 			edges_in_arcs[i] = 0;
 			i = i + 1;
@@ -1053,8 +1037,7 @@ lwcollection_unstroke(const LWCOLLECTION *c)
 			ret->geoms[i] = lwgeom_unstroke(c->geoms[i]);
 		}
 		if (c->bbox) { ret->bbox = gbox_copy(c->bbox); }
-	}
-	else {
+	} else {
 		ret->bbox = NULL;
 		ret->geoms = NULL;
 	}

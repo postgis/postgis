@@ -116,11 +116,9 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
-		}
-		else if (FLT_EQ(sample, 0.0))
+		} else if (FLT_EQ(sample, 0.0))
 			sample = 1;
-	}
-	else
+	} else
 		sample = 1;
 
 	/* get band */
@@ -161,8 +159,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 		values[3] = Float8GetDatum(stats->stddev);
 		values[4] = Float8GetDatum(stats->min);
 		values[5] = Float8GetDatum(stats->max);
-	}
-	else {
+	} else {
 		nulls[1] = TRUE;
 		nulls[2] = TRUE;
 		nulls[3] = TRUE;
@@ -258,11 +255,9 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 			elog(NOTICE, "Invalid sample percentage (must be between 0 and 1). Returning NULL");
 			rt_raster_destroy(raster);
 			PG_RETURN_NULL();
-		}
-		else if (FLT_EQ(sample, 0.0))
+		} else if (FLT_EQ(sample, 0.0))
 			sample = 1;
-	}
-	else
+	} else
 		sample = 1;
 
 	/* iterate through rasters of coverage */
@@ -307,8 +302,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 			if (NULL != rtn) pfree(rtn);
 			elog(ERROR, "RASTER_summaryStatsCoverage: Cannot get raster of coverage");
 			PG_RETURN_NULL();
-		}
-		else if (isNull) {
+		} else if (isNull) {
 			SPI_cursor_fetch(portal, TRUE, 1);
 			continue;
 		}
@@ -402,8 +396,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 
 				rtn->values = NULL;
 				rtn->sorted = 0;
-			}
-			else {
+			} else {
 				rtn->count += stats->count;
 				rtn->sum += stats->sum;
 
@@ -454,8 +447,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 		values[3] = Float8GetDatum(rtn->stddev);
 		values[4] = Float8GetDatum(rtn->min);
 		values[5] = Float8GetDatum(rtn->max);
-	}
-	else {
+	} else {
 		nulls[1] = TRUE;
 		nulls[2] = TRUE;
 		nulls[3] = TRUE;
@@ -578,8 +570,7 @@ Datum RASTER_summaryStats_transfn(PG_FUNCTION_ARGS)
 		}
 
 		skiparg = FALSE;
-	}
-	else {
+	} else {
 		POSTGIS_RT_DEBUG(3, "State variable already exists");
 		state = (rtpg_summarystats_arg)PG_GETARG_POINTER(0);
 		skiparg = TRUE;
@@ -666,8 +657,7 @@ Datum RASTER_summaryStats_transfn(PG_FUNCTION_ARGS)
 					     "Invalid sample percentage (must be between 0 and 1). Returning NULL");
 
 					PG_RETURN_NULL();
-				}
-				else if (FLT_EQ(state->sample, 0.0))
+				} else if (FLT_EQ(state->sample, 0.0))
 					state->sample = 1;
 			}
 			/* unknown arg */
@@ -744,8 +734,7 @@ Datum RASTER_summaryStats_transfn(PG_FUNCTION_ARGS)
 			state->stats->sum = stats->sum;
 			state->stats->mean = stats->mean;
 			state->stats->stddev = -1;
-		}
-		else {
+		} else {
 			state->stats->count += stats->count;
 			state->stats->sum += stats->sum;
 
@@ -825,8 +814,7 @@ Datum RASTER_summaryStats_finalfn(PG_FUNCTION_ARGS)
 		values[3] = Float8GetDatum(state->stats->stddev);
 		values[4] = Float8GetDatum(state->stats->min);
 		values[5] = Float8GetDatum(state->stats->max);
-	}
-	else {
+	} else {
 		nulls[1] = TRUE;
 		nulls[2] = TRUE;
 		nulls[3] = TRUE;
@@ -939,11 +927,9 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 				PG_FREE_IF_COPY(pgraster, 0);
 				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
-			}
-			else if (FLT_EQ(sample, 0.0))
+			} else if (FLT_EQ(sample, 0.0))
 				sample = 1;
-		}
-		else
+		} else
 			sample = 1;
 
 		/* bin_count */
@@ -1036,8 +1022,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 			elog(NOTICE, "Cannot compute summary statistics for band at index %d", bandindex);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
-		}
-		else if (stats->count < 1) {
+		} else if (stats->count < 1) {
 			elog(NOTICE,
 			     "Cannot compute histogram for band at index %d as the band has no values",
 			     bandindex);
@@ -1235,11 +1220,9 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				elog(NOTICE, "Invalid sample percentage (must be between 0 and 1). Returning NULL");
 				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
-			}
-			else if (FLT_EQ(sample, 0.0))
+			} else if (FLT_EQ(sample, 0.0))
 				sample = 1;
-		}
-		else
+		} else
 			sample = 1;
 
 		/* bin_count */
@@ -1434,8 +1417,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				MemoryContextSwitchTo(oldcontext);
 				elog(ERROR, "RASTER_histogramCoverage: Cannot get raster of coverage");
 				SRF_RETURN_DONE(funcctx);
-			}
-			else if (isNull) {
+			} else if (isNull) {
 				SPI_cursor_fetch(portal, TRUE, 1);
 				continue;
 			}
@@ -1562,8 +1544,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 						covhist[i].min = hist[i].min;
 						covhist[i].max = hist[i].max;
 					}
-				}
-				else {
+				} else {
 					for (i = 0; i < count; i++) {
 						sum += hist[i].count;
 						covhist[i].count += hist[i].count;
@@ -1739,11 +1720,9 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 				PG_FREE_IF_COPY(pgraster, 0);
 				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
-			}
-			else if (FLT_EQ(sample, 0.0))
+			} else if (FLT_EQ(sample, 0.0))
 				sample = 1;
-		}
-		else
+		} else
 			sample = 1;
 
 		/* quantiles */
@@ -1821,8 +1800,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 			elog(NOTICE, "Cannot retrieve summary statistics for band at index %d", bandindex);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
-		}
-		else if (stats->count < 1) {
+		} else if (stats->count < 1) {
 			elog(NOTICE,
 			     "Cannot compute quantiles for band at index %d as the band has no values",
 			     bandindex);
@@ -2013,11 +1991,9 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 				elog(NOTICE, "Invalid sample percentage (must be between 0 and 1). Returning NULL");
 				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
-			}
-			else if (FLT_EQ(sample, 0.0))
+			} else if (FLT_EQ(sample, 0.0))
 				sample = 1;
-		}
-		else
+		} else
 			sample = 1;
 
 		/* quantiles */
@@ -2175,8 +2151,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 				MemoryContextSwitchTo(oldcontext);
 				elog(ERROR, "RASTER_quantileCoverage: Cannot get raster of coverage");
 				SRF_RETURN_DONE(funcctx);
-			}
-			else if (isNull) {
+			} else if (isNull) {
 				SPI_cursor_fetch(portal, TRUE, 1);
 				continue;
 			}
@@ -2745,8 +2720,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS)
 				MemoryContextSwitchTo(oldcontext);
 				elog(ERROR, "RASTER_valueCountCoverage: Cannot get raster of coverage");
 				SRF_RETURN_DONE(funcctx);
-			}
-			else if (isNull) {
+			} else if (isNull) {
 				SPI_cursor_fetch(portal, TRUE, 1);
 				continue;
 			}
@@ -2854,8 +2828,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS)
 				}
 
 				covcount = count;
-			}
-			else {
+			} else {
 				for (i = 0; i < count; i++) {
 					exists = 0;
 
@@ -2866,8 +2839,9 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS)
 						}
 					}
 
-					if (exists) { covvcnts[j].count += vcnts[i].count; }
-					else {
+					if (exists) {
+						covvcnts[j].count += vcnts[i].count;
+					} else {
 						covcount++;
 						covvcnts =
 						    SPI_repalloc(covvcnts, sizeof(struct rt_valuecount_t) * covcount);

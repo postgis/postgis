@@ -193,8 +193,8 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS)
 					state->path[state->pathlen] = Int32GetDatum(state->ring + 1);
 					state->pathlen++;
 				}
-				if (state->ring == poly->nrings) {}
-				else {
+				if (state->ring == poly->nrings) {
+				} else {
 					/* TODO should be able to directly get the point
 					 * into the point array of a fixed lwpoint
 					 */
@@ -247,8 +247,7 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS)
 				if (--state->stacklen == 0) SRF_RETURN_DONE(funcctx);
 				state->pathlen--;
 				continue;
-			}
-			else {
+			} else {
 				/* write address of current geom/pt */
 				state->pt++;
 

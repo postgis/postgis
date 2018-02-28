@@ -126,21 +126,18 @@ parse_geojson_coord(json_object *poObj, int *hasz, POINTARRAY *pa)
 			pt.z = json_object_get_double(poObjCoord);
 			LWDEBUGF(3, "parse_geojson_coord pt.z = %f.", pt.z);
 			*hasz = LW_TRUE;
-		}
-		else if (nSize == 2) {
+		} else if (nSize == 2) {
 			*hasz = LW_FALSE;
 			/* Initialize Z coordinate, if required */
 			if (FLAGS_GET_Z(pa->flags)) pt.z = 0.0;
-		}
-		else {
+		} else {
 			/* TODO: should we account for nSize > 3 ? */
 			/* more than 3 coordinates, we're just dropping dimensions here... */
 		}
 
 		/* Initialize M coordinate, if required */
 		if (FLAGS_GET_M(pa->flags)) pt.m = 0.0;
-	}
-	else {
+	} else {
 		/* If it's not an array, just don't handle it */
 		return LW_FAILURE;
 	}
@@ -263,8 +260,9 @@ parse_geojson_multipoint(json_object *geojson, int *hasz, int root_srid)
 	int i = 0;
 	json_object *poObjPoints = NULL;
 
-	if (!root_srid) { geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOINTTYPE, root_srid, 1, 0); }
-	else {
+	if (!root_srid) {
+		geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOINTTYPE, root_srid, 1, 0);
+	} else {
 		geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOINTTYPE, -1, 1, 0);
 	}
 
@@ -299,8 +297,9 @@ parse_geojson_multilinestring(json_object *geojson, int *hasz, int root_srid)
 	int i, j;
 	json_object *poObjLines = NULL;
 
-	if (!root_srid) { geom = (LWGEOM *)lwcollection_construct_empty(MULTILINETYPE, root_srid, 1, 0); }
-	else {
+	if (!root_srid) {
+		geom = (LWGEOM *)lwcollection_construct_empty(MULTILINETYPE, root_srid, 1, 0);
+	} else {
 		geom = (LWGEOM *)lwcollection_construct_empty(MULTILINETYPE, -1, 1, 0);
 	}
 
@@ -342,8 +341,9 @@ parse_geojson_multipolygon(json_object *geojson, int *hasz, int root_srid)
 	int i, j, k;
 	json_object *poObjPolys = NULL;
 
-	if (!root_srid) { geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOLYGONTYPE, root_srid, 1, 0); }
-	else {
+	if (!root_srid) {
+		geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOLYGONTYPE, root_srid, 1, 0);
+	} else {
 		geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOLYGONTYPE, -1, 1, 0);
 	}
 
@@ -395,8 +395,9 @@ parse_geojson_geometrycollection(json_object *geojson, int *hasz, int root_srid)
 	int i;
 	json_object *poObjGeoms = NULL;
 
-	if (!root_srid) { geom = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, root_srid, 1, 0); }
-	else {
+	if (!root_srid) {
+		geom = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, root_srid, 1, 0);
+	} else {
 		geom = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, -1, 1, 0);
 	}
 

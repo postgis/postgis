@@ -614,15 +614,12 @@ gidx_distance(const GIDX *a, const GIDX *b, int m_is_time)
 		if ((amin <= bmax && amax >= bmin)) {
 			/* overlaps */
 			d = 0;
-		}
-		else if (i == 4 && m_is_time) {
+		} else if (i == 4 && m_is_time) {
 			return FLT_MAX;
-		}
-		else if (bmax < amin) {
+		} else if (bmax < amin) {
 			/* is "left" */
 			d = amin - bmax;
-		}
-		else {
+		} else {
 			/* is "right" */
 			assert(bmin > amax);
 			d = bmin - amax;
@@ -658,12 +655,10 @@ gidx_distance_node_centroid(const GIDX *node, const GIDX *query)
 		if ((ca <= bmax && ca >= bmin)) {
 			/* overlaps */
 			d = 0;
-		}
-		else if (bmax < ca) {
+		} else if (bmax < ca) {
 			/* is "left" */
 			d = ca - bmax;
-		}
-		else {
+		} else {
 			/* is "right" */
 			assert(bmin > ca);
 			d = bmin - ca;
@@ -696,12 +691,10 @@ gidx_distance_m(const GIDX *a, const GIDX *b)
 	if ((amin <= bmax && amax >= bmin)) {
 		/* overlaps */
 		d = 0;
-	}
-	else if (bmax < amin) {
+	} else if (bmax < amin) {
 		/* is "left" */
 		d = amin - bmax;
-	}
-	else {
+	} else {
 		/* is "right" */
 		assert(bmin > amax);
 		d = bmin - amax;
@@ -776,8 +769,7 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 	if (lwgeom_has_z(lw1) && lwgeom_has_z(lw2)) {
 		closest = lwgeom_closest_line_3d(lw1, lw2);
 		distance = lwgeom_length(closest);
-	}
-	else {
+	} else {
 		closest = lwgeom_closest_line(lw1, lw2);
 		distance = lwgeom_length_2d(closest);
 	}
@@ -794,13 +786,11 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 			POINT4D p;
 			lwpoint_getPoint4d_p((LWPOINT *)lw1, &p);
 			m1 = p.m;
-		}
-		else if (lwgeom_get_type(lw1) == LINETYPE) {
+		} else if (lwgeom_get_type(lw1) == LINETYPE) {
 			LWPOINT *lwp1 = lwline_get_lwpoint(lwgeom_as_lwline(closest), 0);
 			m1 = lwgeom_interpolate_point(lw1, lwp1);
 			lwpoint_free(lwp1);
-		}
-		else {
+		} else {
 			usebox = true;
 		}
 
@@ -808,13 +798,11 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 			POINT4D p;
 			lwpoint_getPoint4d_p((LWPOINT *)lw2, &p);
 			m2 = p.m;
-		}
-		else if (lwgeom_get_type(lw2) == LINETYPE) {
+		} else if (lwgeom_get_type(lw2) == LINETYPE) {
 			LWPOINT *lwp2 = lwline_get_lwpoint(lwgeom_as_lwline(closest), 1);
 			m2 = lwgeom_interpolate_point(lw2, lwp2);
 			lwpoint_free(lwp2);
-		}
-		else {
+		} else {
 			usebox = true;
 		}
 
@@ -824,8 +812,7 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 			gserialized_get_gidx_p(geom2, b2);
 			d = gidx_distance_m(b1, b2);
 			distance += d * d;
-		}
-		else {
+		} else {
 			distance += (m2 - m1) * (m2 - m1);
 		}
 	}
@@ -1208,8 +1195,7 @@ Datum gserialized_gist_consistent(PG_FUNCTION_ARGS)
 	if (GIST_LEAF(entry)) {
 		result =
 		    gserialized_gist_consistent_leaf((GIDX *)DatumGetPointer(entry->key), query_gbox_index, strategy);
-	}
-	else {
+	} else {
 		result = gserialized_gist_consistent_internal(
 		    (GIDX *)DatumGetPointer(entry->key), query_gbox_index, strategy);
 	}
@@ -1286,18 +1272,19 @@ Datum gserialized_gist_penalty(PG_FUNCTION_ARGS)
 	/* REALM 3: Area extension is nonzero, return it */
 
 	if (*result == 0) {
-		if (size_orig > 0) { *result = pack_float(size_orig, 1); /* REALM 1 */ }
-		else {
+		if (size_orig > 0) {
+			*result = pack_float(size_orig, 1); /* REALM 1 */
+		} else {
 			edge_union = gidx_union_edge(gbox_index_orig, gbox_index_new);
 			edge_orig = gidx_edge(gbox_index_orig);
 			*result = edge_union - edge_orig;
-			if (*result == 0) { *result = pack_float(edge_orig, 0); /* REALM 0 */ }
-			else {
+			if (*result == 0) {
+				*result = pack_float(edge_orig, 0); /* REALM 0 */
+			} else {
 				*result = pack_float(*result, 2); /* REALM 2 */
 			}
 		}
-	}
-	else {
+	} else {
 		*result = pack_float(*result, 3); /* REALM 3 */
 	}
 
@@ -1468,8 +1455,7 @@ Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
 	if (GIST_LEAF(entry)) {
 		/* Calculate distance to leaves */
 		distance = (double)gidx_distance_leaf_centroid(entry_box, query_box);
-	}
-	else {
+	} else {
 		/* Calculate distance for internal nodes */
 		distance = (double)gidx_distance_node_centroid(entry_box, query_box);
 	}
@@ -1542,16 +1528,17 @@ gserialized_gist_picksplit_fallback(GistEntryVector *entryvec, GIST_SPLITVEC *v)
 
 		if (i <= (maxoff - FirstOffsetNumber + 1) / 2) {
 			v->spl_left[v->spl_nleft] = i;
-			if (unionL == NULL) { unionL = gidx_copy(cur); }
-			else {
+			if (unionL == NULL) {
+				unionL = gidx_copy(cur);
+			} else {
 				gidx_merge(&unionL, cur);
 			}
 			v->spl_nleft++;
-		}
-		else {
+		} else {
 			v->spl_right[v->spl_nright] = i;
-			if (unionR == NULL) { unionR = gidx_copy(cur); }
-			else {
+			if (unionR == NULL) {
+				unionR = gidx_copy(cur);
+			} else {
 				gidx_merge(&unionR, cur);
 			}
 			v->spl_nright++;
@@ -1600,8 +1587,7 @@ gserialized_gist_picksplit_constructsplit(GIST_SPLITVEC *v,
 			POSTGIS_DEBUGF(4, "[GIST] sizeLR / sizeRL == %.12g / %.12g", sizeLR, sizeRL);
 
 			if (sizeLR > sizeRL) firstToLeft = false;
-		}
-		else {
+		} else {
 			float p1, p2;
 			GISTENTRY oldUnion, addon;
 
@@ -1640,8 +1626,7 @@ gserialized_gist_picksplit_constructsplit(GIST_SPLITVEC *v,
 		v->spl_ldatum = PointerGetDatum(*union1);
 		if (v->spl_rdatum_exists) gidx_merge(union2, (GIDX *)DatumGetPointer(v->spl_rdatum));
 		v->spl_rdatum = PointerGetDatum(*union2);
-	}
-	else {
+	} else {
 		v->spl_left = list2;
 		v->spl_right = list1;
 		v->spl_nleft = nlist2;
@@ -1745,8 +1730,7 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 			    GIDX_GET_MAX(box_pageunion, d) - GIDX_GET_MAX(box_current, d)) {
 				gserialized_gist_picksplit_addlist(
 				    list[BELOW(d)], &(box_union[BELOW(d)]), box_current, &(pos[BELOW(d)]), i);
-			}
-			else {
+			} else {
 				gserialized_gist_picksplit_addlist(
 				    list[ABOVE(d)], &(box_union[ABOVE(d)]), box_current, &(pos[ABOVE(d)]), i);
 			}

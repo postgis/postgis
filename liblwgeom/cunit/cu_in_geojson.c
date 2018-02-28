@@ -44,13 +44,11 @@ do_geojson_test(const char *exp, char *in, char *exp_srs)
 		if (!srs) {
 			fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: (null)\n", in, exp_srs);
 			CU_ASSERT_EQUAL(srs, exp_srs);
-		}
-		else if (strcmp(srs, exp_srs)) {
+		} else if (strcmp(srs, exp_srs)) {
 			fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp_srs, srs);
 			CU_ASSERT_STRING_EQUAL(srs, exp_srs);
 		}
-	}
-	else if (srs) {
+	} else if (srs) {
 		fprintf(stderr, "\nIn:   %s\nExp:  (null)\nObt: %s\n", in, srs);
 		CU_ASSERT_EQUAL(srs, exp_srs);
 	}

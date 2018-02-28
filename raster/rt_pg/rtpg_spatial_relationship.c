@@ -140,8 +140,7 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 			}
 			hasbandindex[i] = 1;
-		}
-		else
+		} else
 			hasbandindex[i] = 0;
 		POSTGIS_RT_DEBUGF(4, "hasbandindex[%d] = %d", i, hasbandindex[i]);
 		POSTGIS_RT_DEBUGF(4, "bandindex[%d] = %d", i, bandindex[i]);
@@ -258,8 +257,7 @@ Datum RASTER_overlaps(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 			}
 			hasbandindex[i] = 1;
-		}
-		else
+		} else
 			hasbandindex[i] = 0;
 		POSTGIS_RT_DEBUGF(4, "hasbandindex[%d] = %d", i, hasbandindex[i]);
 		POSTGIS_RT_DEBUGF(4, "bandindex[%d] = %d", i, bandindex[i]);
@@ -376,8 +374,7 @@ Datum RASTER_touches(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 			}
 			hasbandindex[i] = 1;
-		}
-		else
+		} else
 			hasbandindex[i] = 0;
 		POSTGIS_RT_DEBUGF(4, "hasbandindex[%d] = %d", i, hasbandindex[i]);
 		POSTGIS_RT_DEBUGF(4, "bandindex[%d] = %d", i, bandindex[i]);
@@ -494,8 +491,7 @@ Datum RASTER_contains(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 			}
 			hasbandindex[i] = 1;
-		}
-		else
+		} else
 			hasbandindex[i] = 0;
 		POSTGIS_RT_DEBUGF(4, "hasbandindex[%d] = %d", i, hasbandindex[i]);
 		POSTGIS_RT_DEBUGF(4, "bandindex[%d] = %d", i, bandindex[i]);
@@ -614,8 +610,7 @@ Datum RASTER_containsProperly(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 			}
 			hasbandindex[i] = 1;
-		}
-		else
+		} else
 			hasbandindex[i] = 0;
 		POSTGIS_RT_DEBUGF(4, "hasbandindex[%d] = %d", i, hasbandindex[i]);
 		POSTGIS_RT_DEBUGF(4, "bandindex[%d] = %d", i, bandindex[i]);
@@ -734,8 +729,7 @@ Datum RASTER_covers(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 			}
 			hasbandindex[i] = 1;
-		}
-		else
+		} else
 			hasbandindex[i] = 0;
 		POSTGIS_RT_DEBUGF(4, "hasbandindex[%d] = %d", i, hasbandindex[i]);
 		POSTGIS_RT_DEBUGF(4, "bandindex[%d] = %d", i, bandindex[i]);
@@ -853,8 +847,7 @@ Datum RASTER_coveredby(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 			}
 			hasbandindex[i] = 1;
-		}
-		else
+		} else
 			hasbandindex[i] = 0;
 		POSTGIS_RT_DEBUGF(4, "hasbandindex[%d] = %d", i, hasbandindex[i]);
 		POSTGIS_RT_DEBUGF(4, "bandindex[%d] = %d", i, bandindex[i]);
@@ -972,8 +965,7 @@ Datum RASTER_dwithin(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 			}
 			hasbandindex[i] = 1;
-		}
-		else
+		} else
 			hasbandindex[i] = 0;
 		POSTGIS_RT_DEBUGF(4, "hasbandindex[%d] = %d", i, hasbandindex[i]);
 		POSTGIS_RT_DEBUGF(4, "bandindex[%d] = %d", i, bandindex[i]);
@@ -1116,8 +1108,7 @@ Datum RASTER_dfullywithin(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 			}
 			hasbandindex[i] = 1;
-		}
-		else
+		} else
 			hasbandindex[i] = 0;
 		POSTGIS_RT_DEBUGF(4, "hasbandindex[%d] = %d", i, hasbandindex[i]);
 		POSTGIS_RT_DEBUGF(4, "bandindex[%d] = %d", i, bandindex[i]);

@@ -182,22 +182,19 @@ lwline_from_lwgeom_array(int srid, uint32_t ngeoms, LWGEOM **geoms)
 		if (g->type == POINTTYPE) {
 			lwpoint_getPoint4d_p((LWPOINT *)g, &pt);
 			ptarray_append_point(pa, &pt, LW_TRUE);
-		}
-		else if (g->type == LINETYPE) {
+		} else if (g->type == LINETYPE) {
 			/*
 			 * Append the new line points, de-duplicating against the previous points.
 			 * Duplicated points internal to the linestring are untouched.
 			 */
 			ptarray_append_ptarray(pa, ((LWLINE *)g)->points, -1);
-		}
-		else if (g->type == MULTIPOINTTYPE) {
+		} else if (g->type == MULTIPOINTTYPE) {
 			it = lwpointiterator_create(g);
 			while (lwpointiterator_next(it, &pt)) {
 				ptarray_append_point(pa, &pt, LW_TRUE);
 			}
 			lwpointiterator_destroy(it);
-		}
-		else {
+		} else {
 			ptarray_free(pa);
 			lwerror("lwline_from_ptarray: invalid input type: %s", lwtype_name(g->type));
 			return NULL;
@@ -456,8 +453,9 @@ lwline_force_dims(const LWLINE *line, int hasz, int hasm)
 	LWLINE *lineout;
 
 	/* Return 2D empty */
-	if (lwline_is_empty(line)) { lineout = lwline_construct_empty(line->srid, hasz, hasm); }
-	else {
+	if (lwline_is_empty(line)) {
+		lineout = lwline_construct_empty(line->srid, hasz, hasm);
+	} else {
 		pdims = ptarray_force_dims(line->points, hasz, hasm);
 		lineout = lwline_construct(line->srid, NULL, pdims);
 	}

@@ -131,8 +131,7 @@ encode_ptarray(__attribute__((__unused__)) mvt_agg_context *ctx,
 	if (type == MVT_POINT) {
 		/* point or multipoint, use actual number of point count */
 		buffer[0] = c_int(CMD_MOVE_TO, c);
-	}
-	else {
+	} else {
 		/* line or polygon, assume count 1 */
 		buffer[0] = c_int(CMD_MOVE_TO, 1);
 		/* line command with move point subtracted from count */
@@ -326,8 +325,7 @@ parse_column_keys(mvt_agg_context *ctx)
 				geom_found = true;
 				continue;
 			}
-		}
-		else {
+		} else {
 			if (!geom_found && strcmp(key, ctx->geom_name) == 0) {
 				ctx->geom_index = i;
 				geom_found = true;
@@ -426,8 +424,7 @@ encode_values(mvt_agg_context *ctx)
 		if (value >= 0) { \
 			uint64_t cvalue = value; \
 			MVT_PARSE_VALUE(cvalue, mvt_kv_uint_value, uint_values_hash, uint_value, sizeof(uint64_t)) \
-		} \
-		else { \
+		} else { \
 			int64_t cvalue = value; \
 			MVT_PARSE_VALUE(cvalue, mvt_kv_sint_value, sint_values_hash, sint_value, sizeof(int64_t)) \
 		} \
@@ -516,16 +513,14 @@ parse_jsonb(mvt_agg_context *ctx, Jsonb *jb, uint32_t *tags)
 				value[v.val.string.len] = '\0';
 				add_value_as_string(ctx, value, tags, k);
 				ctx->c++;
-			}
-			else if (v.type == jbvBool) {
+			} else if (v.type == jbvBool) {
 				MVT_PARSE_VALUE(v.val.boolean,
 						mvt_kv_bool_value,
 						bool_values_hash,
 						bool_value,
 						sizeof(protobuf_c_boolean));
 				ctx->c++;
-			}
-			else if (v.type == jbvNumeric) {
+			} else if (v.type == jbvNumeric) {
 				char *str;
 				str = DatumGetCString(DirectFunctionCall1(numeric_out, PointerGetDatum(v.val.numeric)));
 				double d = strtod(str, NULL);
@@ -533,8 +528,7 @@ parse_jsonb(mvt_agg_context *ctx, Jsonb *jb, uint32_t *tags)
 				if ((long)d != l) {
 					MVT_PARSE_VALUE(
 					    d, mvt_kv_double_value, double_values_hash, double_value, sizeof(double));
-				}
-				else {
+				} else {
 					MVT_PARSE_INT_VALUE(l);
 				}
 				ctx->c++;
@@ -1066,15 +1060,13 @@ mvt_ctx_combine(mvt_agg_context *ctx1, mvt_agg_context *ctx2)
 			memset(ctxnew, 0, sizeof(mvt_agg_context));
 			ctxnew->tile = vectortile_tile_combine(ctx1->tile, ctx2->tile);
 			return ctxnew;
-		}
-		else {
+		} else {
 			elog(DEBUG2, "ctx1->tile = %p", ctx1->tile);
 			elog(DEBUG2, "ctx2->tile = %p", ctx2->tile);
 			elog(ERROR, "%s: unable to combine contexts where tile attribute is null", __func__);
 			return NULL;
 		}
-	}
-	else {
+	} else {
 		return NULL;
 	}
 }

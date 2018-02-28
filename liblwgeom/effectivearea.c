@@ -417,8 +417,7 @@ ptarray_set_effective_area(POINTARRAY *inpts, int avoid_collaps, int set_area, d
 				ptarray_append_point(opts, &pt, LW_TRUE);
 			}
 		}
-	}
-	else {
+	} else {
 		/*Only return points with an effective area above the threashold*/
 		for (p = 0; p < ea->inpts->npoints; p++) {
 			if (ea->res_arealist[p] > trshld) {

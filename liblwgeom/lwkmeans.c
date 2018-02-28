@@ -191,8 +191,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 			}
 			centroids[num_centroids++] = centroid;
 			lwpoint = lwgeom_as_lwpoint(centroid);
-		}
-		else {
+		} else {
 			lwpoint = lwgeom_as_lwpoint(geom);
 		}
 

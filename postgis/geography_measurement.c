@@ -788,7 +788,9 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 		if (zone > 59) zone = 59;
 
 		/* Are these data below the equator? UTM South. */
-		if (center.y < 0.0) { PG_RETURN_INT32(SRID_SOUTH_UTM_START + zone); }
+		if (center.y < 0.0) {
+			PG_RETURN_INT32(SRID_SOUTH_UTM_START + zone);
+		}
 		/* Are these data above the equator? UTM North. */
 		else {
 			PG_RETURN_INT32(SRID_NORTH_UTM_START + zone);
@@ -806,7 +808,9 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 		int yzone = 3 + floor(center.y / 30.0); /* (range of 0-5) */
 
 		/* Equatorial band, 12 zones, 30 degrees wide */
-		if ((yzone == 2 || yzone == 3) && xwidth < 30.0) { xzone = 6 + floor(center.x / 30.0); }
+		if ((yzone == 2 || yzone == 3) && xwidth < 30.0) {
+			xzone = 6 + floor(center.x / 30.0);
+		}
 		/* Temperate band, 8 zones, 45 degrees wide */
 		else if ((yzone == 1 || yzone == 4) && xwidth < 45.0) {
 			xzone = 4 + floor(center.x / 45.0);

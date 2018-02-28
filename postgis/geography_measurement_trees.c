@@ -131,8 +131,7 @@ CircTreePIP(const CIRC_NODE *tree1, const GSERIALIZED *g1, const POINT4D *in_poi
 			POSTGIS_DEBUG(3, "calling circ_tree_contains_point for PiP test");
 			return circ_tree_contains_point(tree1, &pt2d_inside, &pt2d_outside, NULL);
 		}
-	}
-	else {
+	} else {
 		POSTGIS_DEBUG(3, "tree1 not polygonal, so CircTreePIP returning FALSE");
 		return LW_FALSE;
 	}
@@ -177,14 +176,12 @@ geography_distance_cache_tolerance(FunctionCallInfoData *fcinfo,
 			g = g2;
 			geomtype_cached = type1;
 			geomtype = type2;
-		}
-		else if (tree_cache->gcache.argnum == 2) {
+		} else if (tree_cache->gcache.argnum == 2) {
 			g_cached = g2;
 			g = g1;
 			geomtype_cached = type2;
 			geomtype = type1;
-		}
-		else {
+		} else {
 			lwpgerror("geography_distance_cache this cannot happen!");
 			return LW_FAILURE;
 		}
@@ -217,8 +214,7 @@ geography_distance_cache_tolerance(FunctionCallInfoData *fcinfo,
 		circ_tree_free(circtree);
 		lwgeom_free(lwgeom);
 		return LW_SUCCESS;
-	}
-	else {
+	} else {
 		return LW_FAILURE;
 	}
 }
@@ -275,8 +271,9 @@ geography_tree_distance(const GSERIALIZED *g1,
 	lwgeom_startpoint(lwgeom1, &pt1);
 	lwgeom_startpoint(lwgeom2, &pt2);
 
-	if (CircTreePIP(circ_tree1, g1, &pt2) || CircTreePIP(circ_tree2, g2, &pt1)) { *distance = 0.0; }
-	else {
+	if (CircTreePIP(circ_tree1, g1, &pt2) || CircTreePIP(circ_tree2, g2, &pt1)) {
+		*distance = 0.0;
+	} else {
 		/* Calculate tree/tree distance */
 		*distance = circ_tree_distance_tree(circ_tree1, circ_tree2, s, tolerance);
 	}

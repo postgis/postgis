@@ -105,16 +105,13 @@ array_range(int min, int max, int step, int **range, uint32_t *len)
 	if (min < max) {
 		for (i = min, j = 0; i <= max; i += step, j++)
 			(*range)[j] = i;
-	}
-	else if (max < min) {
+	} else if (max < min) {
 		if (step > 0) step *= -1;
 		for (i = min, j = 0; i >= max; i += step, j++)
 			(*range)[j] = i;
-	}
-	else if (min == max) {
+	} else if (min == max) {
 		(*range)[0] = min;
-	}
-	else {
+	} else {
 		*len = 0;
 		*range = NULL;
 		return 0;
@@ -160,8 +157,7 @@ strreplace(const char *str, const char *oldstr, const char *newstr, int *count)
 	if ((result = (char *)rtalloc(length + 1)) == NULL) {
 		rterror(_("strreplace: Not enough memory"));
 		found = -1;
-	}
-	else {
+	} else {
 		tmp = str;
 		limit = found; /* Countdown */
 		reslen = 0;    /* length of current result */
@@ -232,8 +228,9 @@ strsplit(const char *str, const char *delimiter, uint32_t *n)
 
 	token = strtok(tmp, delimiter);
 	while (token != NULL) {
-		if (*n < 1) { rtn = (char **)rtalloc(sizeof(char *)); }
-		else {
+		if (*n < 1) {
+			rtn = (char **)rtalloc(sizeof(char *));
+		} else {
 			rtn = (char **)rtrealloc(rtn, (*n + 1) * sizeof(char *));
 		}
 		if (NULL == rtn) {
@@ -440,8 +437,7 @@ calc_tile_size(int dimX, int dimY, int *tileX, int *tileY)
 		if (j < 1 && dimX <= max) {
 			*tileX = dimX;
 			continue;
-		}
-		else if (dimY <= max) {
+		} else if (dimY <= max) {
 			*tileY = dimY;
 			continue;
 		}
@@ -450,8 +446,7 @@ calc_tile_size(int dimX, int dimY, int *tileX, int *tileY)
 			if (j < 1) {
 				d = dimX / i;
 				r = (double)dimX / (double)i;
-			}
-			else {
+			} else {
 				d = dimY / i;
 				r = (double)dimY / (double)i;
 			}
@@ -1696,8 +1691,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 			if (config->hasnodata) {
 				info->hasnodata[i] = 1;
 				info->nodataval[i] = config->nodataval;
-			}
-			else
+			} else
 				info->nodataval[i] = 0;
 		}
 
@@ -2272,8 +2266,7 @@ main(int argc, char **argv)
 				*ptr++ = '\0';
 				sscanf(optarg, "%d", &config->srid);
 				sscanf(ptr, "%d", &config->out_srid);
-			}
-			else {
+			} else {
 				config->srid = atoi(optarg);
 			}
 		}
@@ -2311,8 +2304,7 @@ main(int argc, char **argv)
 						rtdealloc_config(config);
 						exit(1);
 					}
-				}
-				else {
+				} else {
 					p = 1;
 					range = rtalloc(sizeof(int));
 					if (range == NULL) {
@@ -2376,8 +2368,7 @@ main(int argc, char **argv)
 			if (CSEQUAL(argv[++argit], "auto")) {
 				config->tile_size[0] = -1;
 				config->tile_size[1] = -1;
-			}
-			else {
+			} else {
 				elements = strsplit(argv[argit], "x", &n);
 				if (n != 2) {
 					rterror(_("Could not process -t"));
@@ -2567,8 +2558,7 @@ main(int argc, char **argv)
 			rt_gdaldriver drv_set = rt_raster_gdal_drivers(&drv_count, 0);
 			if (drv_set == NULL || !drv_count) {
 				rterror(_("Could not get list of available GDAL raster formats"));
-			}
-			else {
+			} else {
 				printf(_("Supported GDAL raster formats:\n"));
 				for (j = 0; j < drv_count; j++) {
 					printf(_("  %s\n"), drv_set[j].long_name);
@@ -2588,8 +2578,7 @@ main(int argc, char **argv)
 			usage();
 			rtdealloc_config(config);
 			exit(0);
-		}
-		else {
+		} else {
 			config->rt_file_count++;
 			config->rt_file = (char **)rtrealloc(config->rt_file, sizeof(char *) * config->rt_file_count);
 			if (config->rt_file == NULL) {

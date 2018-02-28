@@ -145,8 +145,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 			outgeom = outcol->geoms[0];
 			outcol->ngeoms = 0;
 			lwcollection_free(outcol);
-		}
-		else {
+		} else {
 			outgeom = lwcollection_as_lwgeom(outcol);
 		}
 		outgeom->srid = col->srid;
@@ -164,8 +163,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 					lwcollection_add_lwgeom(outcol, bcol->geoms[0]);
 					bcol->ngeoms = 0;
 					lwcollection_free(bcol);
-				}
-				else {
+				} else {
 					lwcollection_add_lwgeom(outcol, lwcollection_as_lwgeom(bcol));
 				}
 			}

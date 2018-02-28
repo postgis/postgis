@@ -76,8 +76,7 @@ box3d_from_gbox(const GBOX *gbox)
 	if (FLAGS_GET_Z(gbox->flags)) {
 		b->zmin = gbox->zmin;
 		b->zmax = gbox->zmax;
-	}
-	else {
+	} else {
 		b->zmin = b->zmax = 0.0;
 	}
 
@@ -148,8 +147,7 @@ gbox_union(const GBOX *g1, const GBOX *g2, GBOX *gout)
 	else if (!g1) {
 		memcpy(gout, g2, sizeof(GBOX));
 		return LW_TRUE;
-	}
-	else if (!g2) {
+	} else if (!g2) {
 		memcpy(gout, g1, sizeof(GBOX));
 		return LW_TRUE;
 	}
@@ -665,8 +663,7 @@ lwcollection_calculate_gbox_cartesian(LWCOLLECTION *coll, GBOX *gbox)
 			if (first) {
 				gbox_duplicate(&subbox, gbox);
 				first = LW_FALSE;
-			}
-			else {
+			} else {
 				gbox_merge(&subbox, gbox);
 			}
 			result = LW_SUCCESS;

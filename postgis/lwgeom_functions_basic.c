@@ -178,8 +178,7 @@ Datum postgis_svn_version(PG_FUNCTION_ARGS)
 	if (rev > 0) {
 		snprintf(ver, 32, "%d", rev);
 		PG_RETURN_TEXT_P(cstring_to_text(ver));
-	}
-	else
+	} else
 		PG_RETURN_NULL();
 }
 
@@ -463,7 +462,9 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(geom);
 
 	/* alread a multi*, just make it a collection */
-	if (lwgeom_is_collection(lwgeom)) { lwgeom->type = COLLECTIONTYPE; }
+	if (lwgeom_is_collection(lwgeom)) {
+		lwgeom->type = COLLECTIONTYPE;
+	}
 
 	/* single geom, make it a collection */
 	else {
@@ -1229,15 +1230,15 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 
 			/* COMPUTE_BBOX WHEN_SIMPLE */
 			if (lwgeoms[count]->bbox) { box = gbox_copy(lwgeoms[count]->bbox); }
-		}
-		else {
+		} else {
 			/* Check SRID homogeneity */
 			error_if_srid_mismatch(lwgeoms[count]->srid, srid);
 
 			/* COMPUTE_BBOX WHEN_SIMPLE */
 			if (box) {
-				if (lwgeoms[count]->bbox) { gbox_merge(lwgeoms[count]->bbox, box); }
-				else {
+				if (lwgeoms[count]->bbox) {
+					gbox_merge(lwgeoms[count]->bbox, box);
+				} else {
 					pfree(box);
 					box = NULL;
 				}
@@ -1248,7 +1249,9 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 		lwgeom_drop_bbox(lwgeoms[count]);
 
 		/* Output type not initialized */
-		if (!outtype) { outtype = lwtype_get_collectiontype(intype); }
+		if (!outtype) {
+			outtype = lwtype_get_collectiontype(intype);
+		}
 		/* Input type not compatible with output */
 		/* make output type a collection */
 		else if (outtype != COLLECTIONTYPE && lwtype_get_collectiontype(intype) != outtype) {
@@ -1262,8 +1265,9 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "LWGEOM_collect_garray: outtype = %d", outtype);
 
 	/* If we have been passed a complete set of NULLs then return NULL */
-	if (!outtype) { PG_RETURN_NULL(); }
-	else {
+	if (!outtype) {
+		PG_RETURN_NULL();
+	} else {
 		outlwg = (LWGEOM *)lwcollection_construct(outtype, srid, box, count, lwgeoms);
 
 		result = geometry_serialize(outlwg);
@@ -1380,8 +1384,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 			/* Get first geometry SRID */
 			srid = geoms[ngeoms - 1]->srid;
 			/* TODO: also get ZMflags */
-		}
-		else {
+		} else {
 			error_if_srid_mismatch(geoms[ngeoms - 1]->srid, srid);
 		}
 
@@ -1535,8 +1538,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 		/* Expand the box the same amount in all directions */
 		double d = PG_GETARG_FLOAT8(1);
 		gbox_expand(&gbox, d);
-	}
-	else {
+	} else {
 		double dx = PG_GETARG_FLOAT8(1);
 		double dy = PG_GETARG_FLOAT8(2);
 		double dz = PG_GETARG_FLOAT8(3);
@@ -1640,8 +1642,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 		LWPOINT *point = lwpoint_make2d(srid, box.xmin, box.ymin);
 		result = geometry_serialize(lwpoint_as_lwgeom(point));
 		lwpoint_free(point);
-	}
-	else if ((box.xmin == box.xmax) || (box.ymin == box.ymax)) {
+	} else if ((box.xmin == box.xmax) || (box.ymin == box.ymax)) {
 		LWLINE *line;
 		/* Construct point array */
 		pa = ptarray_construct_empty(0, 0, 2);
@@ -1658,8 +1659,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 		line = lwline_construct(srid, NULL, pa);
 		result = geometry_serialize(lwline_as_lwgeom(line));
 		lwline_free(line);
-	}
-	else {
+	} else {
 		LWPOLY *poly;
 		POINTARRAY **ppa = lwalloc(sizeof(POINTARRAY *));
 		pa = ptarray_construct_empty(0, 0, 5);
@@ -2007,13 +2007,11 @@ Datum LWGEOM_makepoint(PG_FUNCTION_ARGS)
 	else if (PG_NARGS() == 3) {
 		z = PG_GETARG_FLOAT8(2);
 		point = lwpoint_make3dz(SRID_UNKNOWN, x, y, z);
-	}
-	else if (PG_NARGS() == 4) {
+	} else if (PG_NARGS() == 4) {
 		z = PG_GETARG_FLOAT8(2);
 		m = PG_GETARG_FLOAT8(3);
 		point = lwpoint_make4d(SRID_UNKNOWN, x, y, z, m);
-	}
-	else {
+	} else {
 		elog(ERROR, "LWGEOM_makepoint: unsupported number of args: %d", PG_NARGS());
 		PG_RETURN_NULL();
 	}
@@ -2067,8 +2065,9 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 
 	line = lwgeom_as_lwline(lwgeom_from_gserialized(pglwg1));
 
-	if (PG_NARGS() > 2) { where = PG_GETARG_INT32(2); }
-	else {
+	if (PG_NARGS() > 2) {
+		where = PG_GETARG_INT32(2);
+	} else {
 		where = line->points->npoints;
 	}
 
@@ -2309,18 +2308,17 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 	for (i = 0; i < n_args; i++) {
 		seri_geoms[i] = PG_GETARG_GSERIALIZED_P(i);
 		if (gserialized_is_empty(seri_geoms[i])) { /* empty geom */
-			if (i == 3) { n_args = 3; }
-			else {
+			if (i == 3) {
+				n_args = 3;
+			} else {
 				err_code = 1;
 				break;
 			}
-		}
-		else {
+		} else {
 			if (gserialized_get_type(seri_geoms[i]) != POINTTYPE) { /* geom type */
 				err_code = 2;
 				break;
-			}
-			else {
+			} else {
 				srids[i] = gserialized_get_srid(seri_geoms[i]);
 				if (srids[0] != srids[i]) { /* error on srid*/
 					err_code = 3;
@@ -2379,8 +2377,7 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 	if (n_args == 3) { /* we rely on azimuth to complain if points are identical */
 		if (!azimuth_pt_pt(&points[0], &points[1], &az1)) PG_RETURN_NULL();
 		if (!azimuth_pt_pt(&points[2], &points[1], &az2)) PG_RETURN_NULL();
-	}
-	else {
+	} else {
 		if (!azimuth_pt_pt(&points[0], &points[1], &az1)) PG_RETURN_NULL();
 		if (!azimuth_pt_pt(&points[2], &points[3], &az2)) PG_RETURN_NULL();
 	}
@@ -2534,8 +2531,7 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 			lwcol = lwgeom_construct_empty(
 			    type, lwgeom->srid, FLAGS_GET_Z(lwgeom->flags), FLAGS_GET_M(lwgeom->flags));
 		}
-	}
-	else {
+	} else {
 		lwcol = lwcollection_as_lwgeom(lwcollection_extract((LWCOLLECTION *)lwgeom, type));
 	}
 
@@ -2696,8 +2692,9 @@ Datum ST_BoundingDiagonal(PG_FUNCTION_ARGS)
 
 	gbox = lwgeom_get_bbox(lwgeom_in);
 
-	if (!gbox) { lwgeom_out = lwgeom_construct_empty(LINETYPE, srid, hasz, hasm); }
-	else {
+	if (!gbox) {
+		lwgeom_out = lwgeom_construct_empty(LINETYPE, srid, hasz, hasm);
+	} else {
 		pa = ptarray_construct_empty(hasz, hasm, 2);
 		pt.x = gbox->xmin;
 		pt.y = gbox->ymin;
@@ -2771,8 +2768,9 @@ Datum ST_Points(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_Points);
 Datum ST_Points(PG_FUNCTION_ARGS)
 {
-	if (PG_ARGISNULL(0)) { PG_RETURN_NULL(); }
-	else {
+	if (PG_ARGISNULL(0)) {
+		PG_RETURN_NULL();
+	} else {
 		GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 		GSERIALIZED *ret;
 		LWGEOM *lwgeom = lwgeom_from_gserialized(geom);

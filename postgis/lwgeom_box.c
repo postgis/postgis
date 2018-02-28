@@ -353,8 +353,7 @@ Datum BOX2D_expand(PG_FUNCTION_ARGS)
 	if (PG_NARGS() == 2) {
 		double d = PG_GETARG_FLOAT8(1);
 		gbox_expand(result, d);
-	}
-	else {
+	} else {
 		double dx = PG_GETARG_FLOAT8(1);
 		double dy = PG_GETARG_FLOAT8(2);
 
@@ -443,8 +442,7 @@ Datum BOX2D_to_LWGEOM(PG_FUNCTION_ARGS)
 		LWPOINT *point = lwpoint_make2d(SRID_UNKNOWN, box->xmin, box->ymin);
 		result = geometry_serialize(lwpoint_as_lwgeom(point));
 		lwpoint_free(point);
-	}
-	else if ((box->xmin == box->xmax) || (box->ymin == box->ymax)) {
+	} else if ((box->xmin == box->xmax) || (box->ymin == box->ymax)) {
 		LWLINE *line;
 
 		/* Assign coordinates to point array */
@@ -459,8 +457,7 @@ Datum BOX2D_to_LWGEOM(PG_FUNCTION_ARGS)
 		line = lwline_construct(SRID_UNKNOWN, NULL, pa);
 		result = geometry_serialize(lwline_as_lwgeom(line));
 		lwline_free(line);
-	}
-	else {
+	} else {
 		POINT4D points[4];
 		LWPOLY *poly;
 

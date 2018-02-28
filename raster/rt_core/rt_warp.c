@@ -251,8 +251,7 @@ rt_raster_gdal_warp(rt_raster raster,
 		else {
 			RASTER_DEBUG(4, "Warp operation does NOT include reprojection");
 		}
-	}
-	else if (dst_srs != NULL) {
+	} else if (dst_srs != NULL) {
 		/* dst_srs provided but not src_srs */
 		rterror("rt_raster_gdal_warp: SRS required for input raster if SRS provided for warped raster");
 		_rti_warp_arg_destroy(arg);
@@ -339,8 +338,7 @@ rt_raster_gdal_warp(rt_raster raster,
 			sprintf(arg->transform.option.item[i], "%s%s", lbl, srs ? srs : "");
 			RASTER_DEBUGF(4, "arg->transform.option.item[%d] = %s", i, arg->transform.option.item[i]);
 		}
-	}
-	else
+	} else
 		arg->transform.option.len = 0;
 
 	/* transformation object for building dst dataset */
@@ -421,8 +419,7 @@ rt_raster_gdal_warp(rt_raster raster,
 			_scale[0] /= 10;
 			_scale[1] /= 10;
 		}
-	}
-	else if (((NULL != scale_x) && (NULL == scale_y)) || ((NULL == scale_x) && (NULL != scale_y))) {
+	} else if (((NULL != scale_x) && (NULL == scale_y)) || ((NULL == scale_x) && (NULL != scale_y))) {
 		rterror("rt_raster_gdal_warp: Both X and Y scale values must be provided for scale");
 		_rti_warp_arg_destroy(arg);
 		return NULL;
@@ -512,8 +509,7 @@ rt_raster_gdal_warp(rt_raster raster,
 		rt_raster_set_offsets(rast, *ul_xw, *ul_yw);
 		extent.UpperLeftX = *ul_xw;
 		extent.UpperLeftY = *ul_yw;
-	}
-	else if (((NULL != ul_xw) && (NULL == ul_yw)) || ((NULL == ul_xw) && (NULL != ul_yw))) {
+	} else if (((NULL != ul_xw) && (NULL == ul_yw)) || ((NULL == ul_xw) && (NULL != ul_yw))) {
 		rterror("rt_raster_gdal_warp: Both X and Y upper-left corner values must be provided");
 		rt_raster_destroy(rast);
 		_rti_warp_arg_destroy(arg);
@@ -829,8 +825,7 @@ rt_raster_gdal_warp(rt_raster raster,
 					the problem is that there is a chance that this number is a legitimate value
 				*/
 				arg->wopts->padfSrcNoDataReal[i] = -123456.789;
-			}
-			else {
+			} else {
 				rt_band_get_nodata(band, &(arg->wopts->padfSrcNoDataReal[i]));
 			}
 

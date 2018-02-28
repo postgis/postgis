@@ -171,8 +171,7 @@ gserialized_is_empty_recurse(const uint8_t *p, int *isempty)
 		}
 		*isempty = LW_TRUE;
 		return lz;
-	}
-	else {
+	} else {
 		*isempty = (num == 0 ? LW_TRUE : LW_FALSE);
 		return 8;
 	}
@@ -276,8 +275,7 @@ gbox_get_sortable_hash(const GBOX *g)
 		cart2geog(&p, &gpt);
 		x.f = gpt.lon;
 		y.f = gpt.lat;
-	}
-	else {
+	} else {
 		/*
 		 * Here we'd like to get two ordinates from 4 in the box.
 		 * Since it's just a sortable bit representation we can omit division from (A+B)/2.
@@ -596,7 +594,9 @@ int
 gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *box)
 {
 	/* Try to just read the serialized box. */
-	if (gserialized_read_gbox_p(g, box) == LW_SUCCESS) { return LW_SUCCESS; }
+	if (gserialized_read_gbox_p(g, box) == LW_SUCCESS) {
+		return LW_SUCCESS;
+	}
 	/* No box? Try to peek into simpler geometries and */
 	/* derive a box without creating an lwgeom */
 	else if (gserialized_peek_gbox_p(g, box) == LW_SUCCESS) {
@@ -1283,8 +1283,7 @@ lwpoly_from_gserialized_buffer(uint8_t *data_ptr, uint8_t g_flags, size_t *g_siz
 		ordinate_ptr += nrings * 4; /* Move past all the npoints values. */
 		if (nrings % 2)             /* If there is padding, move past that too. */
 			ordinate_ptr += 4;
-	}
-	else /* Empty polygon */
+	} else /* Empty polygon */
 	{
 		poly->rings = NULL;
 		poly->maxrings = 0;
@@ -1402,8 +1401,7 @@ lwcollection_from_gserialized_buffer(uint8_t *data_ptr, uint8_t g_flags, size_t 
 	if (ngeoms > 0) {
 		collection->geoms = lwalloc(sizeof(LWGEOM *) * ngeoms);
 		collection->maxgeoms = ngeoms;
-	}
-	else {
+	} else {
 		collection->geoms = NULL;
 		collection->maxgeoms = 0;
 	}
@@ -1504,11 +1502,11 @@ lwgeom_from_gserialized(const GSERIALIZED *g)
 	lwgeom->type = g_type;
 	lwgeom->flags = g_flags;
 
-	if (gserialized_read_gbox_p(g, &bbox) == LW_SUCCESS) { lwgeom->bbox = gbox_copy(&bbox); }
-	else if (lwgeom_needs_bbox(lwgeom) && (lwgeom_calculate_gbox(lwgeom, &bbox) == LW_SUCCESS)) {
+	if (gserialized_read_gbox_p(g, &bbox) == LW_SUCCESS) {
 		lwgeom->bbox = gbox_copy(&bbox);
-	}
-	else {
+	} else if (lwgeom_needs_bbox(lwgeom) && (lwgeom_calculate_gbox(lwgeom, &bbox) == LW_SUCCESS)) {
+		lwgeom->bbox = gbox_copy(&bbox);
+	} else {
 		lwgeom->bbox = NULL;
 	}
 

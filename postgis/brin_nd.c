@@ -99,8 +99,7 @@ gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
 			}
 
 			PG_RETURN_BOOL(false);
-		}
-		else {
+		} else {
 			/*
 			 * in case the entry is not empty and it is not possible to
 			 * retrieve a box, raise an error

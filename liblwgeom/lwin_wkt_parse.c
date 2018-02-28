@@ -778,8 +778,7 @@ static const yytype_uint8 yyr2[] = {0, 2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			YYPOPSTACK(yylen); \
 			yystate = *yyssp; \
 			goto yybackup; \
-		} \
-		else { \
+		} else { \
 			yyerror(YY_("syntax error: cannot back up")); \
 			YYERROR; \
 		} \
@@ -801,8 +800,7 @@ static const yytype_uint8 yyr2[] = {0, 2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			(Current).first_column = YYRHSLOC(Rhs, 1).first_column; \
 			(Current).last_line = YYRHSLOC(Rhs, N).last_line; \
 			(Current).last_column = YYRHSLOC(Rhs, N).last_column; \
-		} \
-		else { \
+		} else { \
 			(Current).first_line = (Current).last_line = YYRHSLOC(Rhs, 0).last_line; \
 			(Current).first_column = (Current).last_column = YYRHSLOC(Rhs, 0).last_column; \
 		} \
@@ -847,8 +845,7 @@ yy_location_print_(FILE *yyo, YYLTYPE const *const yylocp)
 		if (yylocp->first_line < yylocp->last_line) {
 			res += YYFPRINTF(yyo, "-%d", yylocp->last_line);
 			if (0 <= end_col) res += YYFPRINTF(yyo, ".%d", end_col);
-		}
-		else if (0 <= end_col && yylocp->first_column < end_col)
+		} else if (0 <= end_col && yylocp->first_column < end_col)
 			res += YYFPRINTF(yyo, "-%d", end_col);
 	}
 	return res;
@@ -1169,8 +1166,7 @@ yysyntax_error(YYSIZE_T *yymsg_alloc, char **yymsg, yytype_int16 *yyssp, int yyt
 			if (*yyp == '%' && yyformat[1] == 's' && yyi < yycount) {
 				yyp += yytnamerr(yyp, yyarg[yyi++]);
 				yyformat += 2;
-			}
-			else {
+			} else {
 				yyp++;
 				yyformat++;
 			}
@@ -1677,8 +1673,7 @@ yybackup:
 	if (yychar <= YYEOF) {
 		yychar = yytoken = YYEOF;
 		YYDPRINTF((stderr, "Now at end of input.\n"));
-	}
-	else {
+	} else {
 		yytoken = YYTRANSLATE(yychar);
 		YY_SYMBOL_PRINT("Next token is", yytoken, &yylval, &yylloc);
 	}
@@ -3035,8 +3030,7 @@ yyerrlab:
 					yymsg = yymsgbuf;
 					yymsg_alloc = sizeof yymsgbuf;
 					yysyntax_error_status = 2;
-				}
-				else {
+				} else {
 					yysyntax_error_status = YYSYNTAX_ERROR;
 					yymsgp = yymsg;
 				}
@@ -3057,8 +3051,7 @@ yyerrlab:
 		if (yychar <= YYEOF) {
 			/* Return failure if at end of input.  */
 			if (yychar == YYEOF) YYABORT;
-		}
-		else {
+		} else {
 			yydestruct("Error: discarding", yytoken, &yylval, &yylloc);
 			yychar = YYEMPTY;
 		}

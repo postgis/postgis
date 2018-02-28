@@ -114,8 +114,7 @@ main(int argc, char **argv)
 	if (pgis_optind < argc) {
 		config->conn->database = argv[pgis_optind];
 		pgis_optind++;
-	}
-	else {
+	} else {
 		usage(1);
 	}
 
@@ -125,8 +124,7 @@ main(int argc, char **argv)
 		/* User-defined queries begin with SELECT */
 		if (!strncmp(argv[pgis_optind], "SELECT ", 7) || !strncmp(argv[pgis_optind], "select ", 7)) {
 			config->usrquery = argv[pgis_optind];
-		}
-		else {
+		} else {
 			/* Schema qualified table name */
 			char *strptr = argv[pgis_optind];
 			char *chrptr = strchr(strptr, '.');
@@ -143,13 +141,11 @@ main(int argc, char **argv)
 				/* Copy in the parts */
 				config->schema = strdup(strptr);
 				config->table = strdup(chrptr + 1);
-			}
-			else {
+			} else {
 				config->table = strdup(strptr);
 			}
 		}
-	}
-	else {
+	} else {
 		usage(1);
 	}
 

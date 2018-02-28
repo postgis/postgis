@@ -102,8 +102,7 @@ ptarray_to_kml2_sb(const POINTARRAY *pa, int precision, stringbuffer_t *sb)
 			if (j) stringbuffer_append(sb, ",");
 			if (fabs(d[j]) < OUT_MAX_DOUBLE) {
 				if (stringbuffer_aprintf(sb, "%.*f", precision, d[j]) < 0) return LW_FAILURE;
-			}
-			else {
+			} else {
 				if (stringbuffer_aprintf(sb, "%g", d[j]) < 0) return LW_FAILURE;
 			}
 			stringbuffer_trim_trailing_zeroes(sb);

@@ -174,8 +174,9 @@ get_input_line(char *buf, FILE *fp)
 	BLANK_STRING(buf);
 	if ((fgets(buf, MAXSTRLEN, fp)) == NULL) return FALSE;
 	for (i = strlen(buf); i > 0; i--) {
-		if (strchr("\n\r", buf[i - 1])) { buf[i - 1] = SENTINEL; }
-		else
+		if (strchr("\n\r", buf[i - 1])) {
+			buf[i - 1] = SENTINEL;
+		} else
 			break;
 	}
 	return TRUE;
@@ -353,8 +354,7 @@ establish_directory(char *c_w_d, char *p_s)
 		if (IS_COLON(c_w_d[1])) {
 			*p_s = c_w_d[2];
 			if ((*p_s != FORE_SLASH) && (*p_s != BACK_SLASH)) { return FALSE; }
-		}
-		else {
+		} else {
 			return FALSE;
 		}
 	}

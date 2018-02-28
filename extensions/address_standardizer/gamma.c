@@ -574,8 +574,9 @@ classify_link(RULE_PARAM *r_p,
 	k->Type = c;
 	k->Weight = w;
 	last_key = o_l[u][c]; /* -- 2006-11-02 : arg -- */
-	if (last_key == NULL) { o_l[u][c] = k; /* -- 2006-11-02 : arg -- */ }
-	else {
+	if (last_key == NULL) {
+		o_l[u][c] = k; /* -- 2006-11-02 : arg -- */
+	} else {
 		/* -- if the same input symbols are used... -- */
 		while ((penult = last_key->OutputNext) != NULL)
 			last_key = penult;
@@ -603,8 +604,9 @@ add_failure_linkage(KW ***o_l, NODE x, NODE u)
 		   appropriate chain -- */
 		fk = o_l[x][cl];
 		k = o_l[u][cl];
-		if (k == NULL) { o_l[u][cl] = fk; }
-		else {
+		if (k == NULL) {
+			o_l[u][cl] = fk;
+		} else {
 			/* -- since the chain will be already null-terminated, we only find
 			   the end of the chain if fk is non-null -- */
 			if (fk != NULL) {
@@ -665,8 +667,7 @@ precompute_gamma_function(ERR_PARAM *err_p, NODE **Trie, KW ***o_l, NODE n)
 			if (ua != FAIL) {
 				Gamma[u][a] = ua;
 				Failure[ua] = Gamma[x][a];
-			}
-			else {
+			} else {
 				Gamma[u][a] = Gamma[x][a];
 			}
 		}
@@ -722,25 +723,27 @@ output_rule_statistics(RULE_PARAM *r_p, ERR_PARAM *err_p, char *name, DS_Handle 
 		if (sts_file == NULL) {
 			printf("\nRule %d is of type %d (%s)\n: ", i, k->Type, rule_type_names[k->Type]);
 			printf("Input : ");
-		}
-		else {
+		} else {
 			fprintf(sts_file, "\nRule %d is of type %d (%s)\n: ", i, k->Type, rule_type_names[k->Type]);
 			fprintf(sts_file, "Input : ");
 		}
 		for (OL = k->Input; *OL != FAIL; OL++) {
-			if (sts_file == NULL) { printf("|%d (%s)|", *OL, in_symb_name(*OL)); }
-			else {
+			if (sts_file == NULL) {
+				printf("|%d (%s)|", *OL, in_symb_name(*OL));
+			} else {
 				fprintf(sts_file, "|%d (%s)|", *OL, in_symb_name(*OL));
 			}
 		}
-		if (sts_file == NULL) { printf("\nOutput: "); }
-		else {
+		if (sts_file == NULL) {
+			printf("\nOutput: ");
+		} else {
 			fprintf(sts_file, "\nOutput: ");
 		}
 		/* -- output the output symbols -- */
 		for (OL = k->Output; *OL != FAIL; OL++) {
-			if (sts_file == NULL) { printf("|%d (%s)|", *OL, out_symb_name(*OL)); }
-			else {
+			if (sts_file == NULL) {
+				printf("|%d (%s)|", *OL, out_symb_name(*OL));
+			} else {
 				fprintf(sts_file, "|%d (%s)|", *OL, out_symb_name(*OL));
 			}
 		}
@@ -750,8 +753,7 @@ output_rule_statistics(RULE_PARAM *r_p, ERR_PARAM *err_p, char *name, DS_Handle 
 			       load_value[k->Weight],
 			       k->hits,
 			       r_p->total_key_hits);
-		}
-		else {
+		} else {
 			hit_frequency = ((double)k->hits) / ((double)r_p->total_key_hits);
 			best_frequency = ((double)k->best) / ((double)r_p->total_best_keys);
 			fprintf(sts_file,
@@ -770,8 +772,9 @@ output_rule_statistics(RULE_PARAM *r_p, ERR_PARAM *err_p, char *name, DS_Handle 
 		k->hits = 0;
 		k->best = 0;
 	}
-	if (sts_file == NULL) { printf("Found %d rules hit\n", found_count); }
-	else {
+	if (sts_file == NULL) {
+		printf("Found %d rules hit\n", found_count);
+	} else {
 		fprintf(sts_file, "Found %d rules hit\n", found_count);
 	}
 	/* -- start over -- */
@@ -781,8 +784,7 @@ output_rule_statistics(RULE_PARAM *r_p, ERR_PARAM *err_p, char *name, DS_Handle 
 		fflush(sts_file);
 		fclose(sts_file);
 		FREE_AND_NULL(sts_name);
-	}
-	else {
+	} else {
 		fflush(stdout);
 	}
 	return TRUE;

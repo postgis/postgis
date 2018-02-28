@@ -136,13 +136,11 @@ main(int argc, char **argv)
 					*ptr++ = '\0';
 					sscanf(pgis_optarg, "%d", &config->shp_sr_id);
 					sscanf(ptr, "%d", &config->sr_id);
-				}
-				else {
+				} else {
 					/* Only TO_SRID specified */
 					sscanf(pgis_optarg, "%d", &config->sr_id);
 				}
-			}
-			else {
+			} else {
 				/* With -s, user must specify TO_SRID or FROM_SRID:TO_SRID */
 				fprintf(stderr, "The -s parameter must be specified in the form [FROM_SRID:]TO_SRID\n");
 				exit(1);
@@ -199,17 +197,15 @@ main(int argc, char **argv)
 			break;
 
 		case 't':
-			if (strcasecmp(pgis_optarg, "2D") == 0) { config->force_output = FORCE_OUTPUT_2D; }
-			else if (strcasecmp(pgis_optarg, "3DZ") == 0) {
+			if (strcasecmp(pgis_optarg, "2D") == 0) {
+				config->force_output = FORCE_OUTPUT_2D;
+			} else if (strcasecmp(pgis_optarg, "3DZ") == 0) {
 				config->force_output = FORCE_OUTPUT_3DZ;
-			}
-			else if (strcasecmp(pgis_optarg, "3DM") == 0) {
+			} else if (strcasecmp(pgis_optarg, "3DM") == 0) {
 				config->force_output = FORCE_OUTPUT_3DM;
-			}
-			else if (strcasecmp(pgis_optarg, "4D") == 0) {
+			} else if (strcasecmp(pgis_optarg, "4D") == 0) {
 				config->force_output = FORCE_OUTPUT_4D;
-			}
-			else {
+			} else {
 				fprintf(stderr,
 					"Unsupported output type: %s\nValid output types are 2D, 3DZ, 3DM and 4D\n",
 					pgis_optarg);
@@ -254,8 +250,7 @@ main(int argc, char **argv)
 	if (pgis_optind < argc) {
 		config->shp_file = argv[pgis_optind];
 		pgis_optind++;
-	}
-	else {
+	} else {
 		usage();
 		exit(0);
 	}
@@ -277,8 +272,7 @@ main(int argc, char **argv)
 			/* Copy in the parts */
 			config->schema = strdup(strptr);
 			config->table = strdup(chrptr + 1);
-		}
-		else {
+		} else {
 			config->table = strdup(strptr);
 		}
 	}

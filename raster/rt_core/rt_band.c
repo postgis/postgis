@@ -388,8 +388,7 @@ rt_band_get_data(rt_band band)
 			return NULL;
 		else
 			return band->data.offline.mem;
-	}
-	else
+	} else
 		return band->data.mem;
 }
 
@@ -426,8 +425,7 @@ rt_band_load_offline_data(rt_band band)
 	if (!band->offline) {
 		rterror("rt_band_load_offline_data: Band is not offline");
 		return ES_ERROR;
-	}
-	else if (!strlen(band->data.offline.path)) {
+	} else if (!strlen(band->data.offline.path)) {
 		rterror("rt_band_load_offline_data: Offline band does not a have a specified file");
 		return ES_ERROR;
 	}
@@ -485,8 +483,7 @@ rt_band_load_offline_data(rt_band band)
 		rterror("rt_band_load_offline_data: Could not test alignment of in-db representation of out-db raster");
 		GDALClose(hdsSrc);
 		return ES_ERROR;
-	}
-	else if (!aligned) {
+	} else if (!aligned) {
 		rtwarn("The in-db representation of the out-db raster is not aligned. Band data may be incorrect");
 	}
 
@@ -645,8 +642,7 @@ rt_band_set_isnodata_flag(rt_band band, int flag)
 			rterror("rt_band_set_isnodata_flag: Cannot set isnodata flag as band has no NODATA");
 			return ES_ERROR;
 		}
-	}
-	else
+	} else
 		band->isnodata = (flag) ? 1 : 0;
 
 	return ES_NONE;
@@ -1473,8 +1469,7 @@ rt_band_get_nearest_pixel(rt_band band,
 						    pixval);
 						inextent = 0;
 						isnodata = 1;
-					}
-					else {
+					} else {
 						if (rt_band_get_pixel(band, _x, _y, &pixval, &isnodata) != ES_NONE) {
 							rterror("rt_band_get_nearest_pixel: Could not get pixel value");
 							if (count) rtdealloc(*npixels);
@@ -1577,8 +1572,7 @@ rt_band_get_pixel_of_value(rt_band band, int exclude_nodata_value, double *searc
 			if (err != ES_NONE) {
 				rterror("rt_band_get_pixel_of_value: Cannot get band pixel");
 				return -1;
-			}
-			else if (exclude_nodata_value && isnodata)
+			} else if (exclude_nodata_value && isnodata)
 				continue;
 
 			for (i = 0; i < searchcount; i++) {
@@ -1669,8 +1663,7 @@ rt_band_check_is_nodata(rt_band band)
 			if (err != ES_NONE) {
 				rterror("rt_band_check_is_nodata: Cannot get band pixel");
 				return FALSE;
-			}
-			else if (!isnodata) {
+			} else if (!isnodata) {
 				band->isnodata = FALSE;
 				return FALSE;
 			}

@@ -219,8 +219,9 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	/* retrieve prefix */
 	if (PG_NARGS() > 4 && !PG_ARGISNULL(4)) {
 		prefix_text = PG_GETARG_TEXT_P(4);
-		if (VARSIZE(prefix_text) == VARHDRSZ) { prefix = ""; }
-		else {
+		if (VARSIZE(prefix_text) == VARHDRSZ) {
+			prefix = "";
+		} else {
 			len = VARSIZE(prefix_text) - VARHDRSZ;
 			prefix_buf = palloc(len + 2); /* +2 is one for the ':' and one for term null */
 			memcpy(prefix_buf, VARDATA(prefix_text), len);
@@ -233,8 +234,9 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 
 	if (PG_NARGS() > 5 && !PG_ARGISNULL(5)) {
 		gml_id_text = PG_GETARG_TEXT_P(5);
-		if (VARSIZE(gml_id_text) == VARHDRSZ) { gml_id = ""; }
-		else {
+		if (VARSIZE(gml_id_text) == VARHDRSZ) {
+			gml_id = "";
+		} else {
 			len = VARSIZE(gml_id_text) - VARHDRSZ;
 			gml_id_buf = palloc(len + 1);
 			memcpy(gml_id_buf, VARDATA(gml_id_text), len);
@@ -330,8 +332,9 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	/* retrieve prefix */
 	if (PG_NARGS() > 3 && !PG_ARGISNULL(3)) {
 		prefix_text = PG_GETARG_TEXT_P(3);
-		if (VARSIZE(prefix_text) - VARHDRSZ == 0) { prefix = ""; }
-		else {
+		if (VARSIZE(prefix_text) - VARHDRSZ == 0) {
+			prefix = "";
+		} else {
 			/* +2 is one for the ':' and one for term null */
 			prefixbuf = palloc(VARSIZE(prefix_text) - VARHDRSZ + 2);
 			memcpy(prefixbuf, VARDATA(prefix_text), VARSIZE(prefix_text) - VARHDRSZ);
@@ -531,8 +534,9 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	/* retrieve defid */
 	if (PG_NARGS() > 4 && !PG_ARGISNULL(4)) {
 		defid_text = PG_GETARG_TEXT_P(4);
-		if (VARSIZE(defid_text) - VARHDRSZ == 0) { defid = ""; }
-		else {
+		if (VARSIZE(defid_text) - VARHDRSZ == 0) {
+			defid = "";
+		} else {
 			/* +2 is one for the ':' and one for term null */
 			defidbuf = palloc(VARSIZE(defid_text) - VARHDRSZ + 2);
 			memcpy(defidbuf, VARDATA(defid_text), VARSIZE(defid_text) - VARHDRSZ);

@@ -55,8 +55,7 @@ pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result)
 			 errhint("\"%s\" <-- parse error at position %d within geometry",
 				 hintbuffer,
 				 lwg_parser_result->errlocation)));
-	}
-	else {
+	} else {
 		ereport(
 		    ERROR,
 		    (errmsg("%s", lwg_parser_result->message),

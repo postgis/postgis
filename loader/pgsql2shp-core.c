@@ -204,8 +204,7 @@ create_polygon(SHPDUMPERSTATE *state, LWPOLY *lwpolygon)
 					       &zpts[shpparts[i]],
 					       &mpts[shpparts[i]]);
 			}
-		}
-		else {
+		} else {
 			if (is_clockwise(lwpolygon->rings[i]->npoints, &xpts[shpparts[i]], &ypts[shpparts[i]], NULL)) {
 				LWDEBUGF(4, "Inner ring %d not counter-clockwise, forcing counter-clockwise\n", i);
 
@@ -308,8 +307,7 @@ create_multipolygon(SHPDUMPERSTATE *state, LWMPOLY *lwmultipolygon)
 						       &zpts[shpparts[shpring]],
 						       &mpts[shpparts[shpring]]);
 				}
-			}
-			else {
+			} else {
 				if (is_clockwise(lwmultipolygon->geoms[i]->rings[j]->npoints,
 						 &xpts[shpparts[shpring]],
 						 &ypts[shpparts[shpring]],
@@ -507,8 +505,7 @@ is_clockwise(int num_points, double *x, double *y, double *z)
 		free(x_new);
 		free(y_new);
 		return 0; /*counter-clockwise */
-	}
-	else {
+	} else {
 		free(x_new);
 		free(y_new);
 		return 1; /*clockwise */
@@ -532,8 +529,7 @@ getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname)
 	if (schema) {
 		query = (char *)malloc(strlen(fname) + strlen(table) + strlen(schema) + 46);
 		sprintf(query, "select max(octet_length(\"%s\"::text)) from \"%s\".\"%s\"", fname, schema, table);
-	}
-	else {
+	} else {
 		query = (char *)malloc(strlen(fname) + strlen(table) + 46);
 		sprintf(query, "select max(octet_length(\"%s\"::text)) from \"%s\"", fname, table);
 	}
@@ -561,8 +557,9 @@ is_bigendian(void)
 {
 	int test = 1;
 
-	if ((((char *)(&test))[0]) == 1) { return 0; /*NDR (little_endian) */ }
-	else {
+	if ((((char *)(&test))[0]) == 1) {
+		return 0; /*NDR (little_endian) */
+	} else {
 		return 1; /*XDR (big_endian) */
 	}
 }
@@ -749,8 +746,7 @@ projFileCreate(SHPDUMPERSTATE *state)
 		    table,
 		    geo_col_name);
 		free(esc_schema);
-	}
-	else {
+	} else {
 		sprintf(
 		    query,
 		    "SELECT COALESCE((SELECT sr.srtext "
@@ -789,8 +785,7 @@ projFileCreate(SHPDUMPERSTATE *state)
 			PQclear(res);
 			free(query);
 			return SHPDUMPERWARN;
-		}
-		else {
+		} else {
 			if (srtext[0] == ' ') {
 				snprintf(
 				    state->message,
@@ -799,8 +794,7 @@ projFileCreate(SHPDUMPERSTATE *state)
 				PQclear(res);
 				free(query);
 				return SHPDUMPERWARN;
-			}
-			else {
+			} else {
 				/* -------------------------------------------------------------------- */
 				/*	Compute the base (layer) name.  If there is any extension	*/
 				/*	on the passed in filename we will strip it off.			*/
@@ -825,8 +819,7 @@ projFileCreate(SHPDUMPERSTATE *state)
 					free(pszFullname);
 					free(query);
 					return 0;
-				}
-				else {
+				} else {
 					result = fputs(srtext, fp);
 					LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);
 					if (result == EOF) {
@@ -882,8 +875,7 @@ getTableInfo(SHPDUMPERSTATE *state)
 			    state->schema,
 			    state->table,
 			    state->geo_col_name);
-		}
-		else {
+		} else {
 			query = malloc(150 + 4 * strlen(state->geo_col_name) + strlen(state->table));
 
 			sprintf(
@@ -895,15 +887,13 @@ getTableInfo(SHPDUMPERSTATE *state)
 			    state->table,
 			    state->geo_col_name);
 		}
-	}
-	else {
+	} else {
 		/* Otherwise... just a row count will do */
 		if (state->schema) {
 			query = malloc(40 + strlen(state->schema) + strlen(state->table));
 
 			sprintf(query, "SELECT count(1) FROM \"%s\".\"%s\"", state->schema, state->table);
-		}
-		else {
+		} else {
 			query = malloc(40 + strlen(state->table));
 
 			sprintf(query, "SELECT count(1) FROM \"%s\"", state->table);
@@ -1092,8 +1082,7 @@ getTableInfo(SHPDUMPERSTATE *state)
 			}
 			break;
 		}
-	}
-	else {
+	} else {
 		/* Without a geo* column the total is simply the first (COUNT) column */
 		state->rowcount = atoi(PQgetvalue(res, 0, 0));
 	}
@@ -1263,8 +1252,7 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 	if (PQntuples(res) > 0) {
 		tmpvalue = PQgetvalue(res, 0, 0);
 		state->geom_oid = atoi(tmpvalue);
-	}
-	else {
+	} else {
 		snprintf(state->message, SHPDUMPERMSGLEN, _("Geometry type unknown (have you enabled postgis?)"));
 		PQclear(res);
 		free(connstring);
@@ -1335,8 +1323,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			PQclear(res);
 			return SHPDUMPERERR;
 		}
-	}
-	else {
+	} else {
 		/* Simply point the state to copies of the supplied schema and table */
 		state->table = strdup(state->config->table);
 		if (state->config->schema) state->schema = strdup(state->config->schema);
@@ -1356,8 +1343,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			"a.attnum > 0 AND c.relname = '%s'",
 			state->schema,
 			state->table);
-	}
-	else {
+	} else {
 		query = malloc(250 + strlen(state->table));
 
 		sprintf(query,
@@ -1401,8 +1387,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	if (getenv("PGCLIENTENCODING")) {
 		char *codepage = encoding2codepage(getenv("PGCLIENTENCODING"));
 		state->dbf = DBFCreateEx(state->shp_file, codepage);
-	}
-	else {
+	} else {
 		state->dbf = DBFCreateEx(state->shp_file, "UTF-8");
 	}
 
@@ -1626,7 +1611,9 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			 */
 
 			/* time */
-			if (pgfieldtype == 1083) { dbffieldsize = 8 + secondsize; }
+			if (pgfieldtype == 1083) {
+				dbffieldsize = 8 + secondsize;
+			}
 			/* timetz */
 			else if (pgfieldtype == 1266) {
 				dbffieldsize = 8 + secondsize + 9;
@@ -1748,8 +1735,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 				 state->table);
 
 			return SHPDUMPERERR;
-		}
-		else {
+		} else {
 			/* No geo* column specified so we can only create the DBF section -
 			   but let's issue a warning... */
 			snprintf(
@@ -1762,8 +1748,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 
 			ret = SHPDUMPERWARN;
 		}
-	}
-	else {
+	} else {
 		/* Since we have found a geo* column, open the shapefile */
 		state->shp = SHPCreate(state->shp_file, state->outshptype);
 		if (!state->shp) {
@@ -1810,21 +1795,18 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 				sprintf(buf,
 					"ST_asEWKB(ST_SetSRID(%s::geometry, 0), 'XDR') AS _geoX",
 					quote_identifier(state->geo_col_name));
-			}
-			else {
+			} else {
 				sprintf(buf,
 					"asbinary(%s::geometry, 'XDR') AS _geoX",
 					quote_identifier(state->geo_col_name));
 			}
-		}
-		else /* little_endian */
+		} else /* little_endian */
 		{
 			if (state->pgis_major_version > 0) {
 				sprintf(buf,
 					"ST_AsEWKB(ST_SetSRID(%s::geometry, 0), 'NDR') AS _geoX",
 					quote_identifier(state->geo_col_name));
-			}
-			else {
+			} else {
 				sprintf(buf,
 					"asbinary(%s::geometry, 'NDR') AS _geoX",
 					quote_identifier(state->geo_col_name));
@@ -1834,8 +1816,9 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		strcat(state->main_scan_query, buf);
 	}
 
-	if (state->schema) { sprintf(buf, " FROM \"%s\".\"%s\"", state->schema, state->table); }
-	else {
+	if (state->schema) {
+		sprintf(buf, " FROM \"%s\".\"%s\"", state->schema, state->table);
+	} else {
 		sprintf(buf, " FROM \"%s\"", state->table);
 	}
 
@@ -1944,8 +1927,9 @@ ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 		 * nulls unless paying the acquisition
 		 * of a bug in long integer values
 		 */
-		if (PQgetisnull(state->fetchres, state->curresrow, i)) { val = nullDBFValue(state->dbffieldtypes[i]); }
-		else {
+		if (PQgetisnull(state->fetchres, state->curresrow, i)) {
+			val = nullDBFValue(state->dbffieldtypes[i]);
+		} else {
 			val = PQgetvalue(state->fetchres, state->curresrow, i);
 			val = goodDBFValue(val, state->dbffieldtypes[i]);
 		}
@@ -1974,8 +1958,7 @@ ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 				return SHPDUMPERERR;
 			}
 			SHPDestroyObject(obj);
-		}
-		else {
+		} else {
 			/* Get the value from the result set */
 			val = PQgetvalue(state->fetchres, state->curresrow, geocolnum);
 
@@ -1987,8 +1970,7 @@ ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 					then converted to hexewkb string */
 					hexewkb_binary = PQunescapeBytea((unsigned char *)val, &hexewkb_len);
 					hexewkb = convert_bytes_to_hex(hexewkb_binary, hexewkb_len);
-				}
-				else {
+				} else {
 					LWDEBUG(4, "PostGIS < 1.0, non-binary cursor");
 
 					/* Input is already hexewkb string, so we can just
@@ -1997,8 +1979,7 @@ ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 					hexewkb = malloc(hexewkb_len + 1);
 					strncpy(hexewkb, val, hexewkb_len + 1);
 				}
-			}
-			else /* binary */
+			} else /* binary */
 			{
 				LWDEBUG(4, "PostGIS (any version) using binary cursor");
 

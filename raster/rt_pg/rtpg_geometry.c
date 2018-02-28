@@ -91,8 +91,7 @@ Datum RASTER_envelope(PG_FUNCTION_ARGS)
 	if (err != ES_NONE) {
 		elog(ERROR, "RASTER_envelope: Could not get raster's envelope");
 		PG_RETURN_NULL();
-	}
-	else if (geom == NULL) {
+	} else if (geom == NULL) {
 		elog(NOTICE, "Raster's envelope is NULL");
 		PG_RETURN_NULL();
 	}
@@ -131,8 +130,7 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 		pgraster =
 		    (rt_pgraster *)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 		raster = rt_raster_deserialize(pgraster, TRUE);
-	}
-	else {
+	} else {
 		pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 		raster = rt_raster_deserialize(pgraster, FALSE);
 	}
@@ -169,8 +167,7 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 	if (err != ES_NONE) {
 		elog(ERROR, "RASTER_convex_hull: Could not get raster's convex hull");
 		PG_RETURN_NULL();
-	}
-	else if (geom == NULL) {
+	} else if (geom == NULL) {
 		elog(NOTICE, "Raster's convex hull is NULL");
 		PG_RETURN_NULL();
 	}
@@ -549,8 +546,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 						pix[pixcount].nodata = isnodata;
 					else
 						pix[pixcount].nodata = FALSE;
-				}
-				else {
+				} else {
 					pix[pixcount].nodata = isnodata;
 				}
 
@@ -690,8 +686,7 @@ Datum RASTER_getPolygon(PG_FUNCTION_ARGS)
 	if (err != ES_NONE) {
 		elog(ERROR, "RASTER_getPolygon: Could not get raster band's surface");
 		PG_RETURN_NULL();
-	}
-	else if (surface == NULL) {
+	} else if (surface == NULL) {
 		elog(NOTICE, "Raster is empty or all pixels of band are NODATA. Returning NULL");
 		PG_RETURN_NULL();
 	}
@@ -901,8 +896,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 				/* trim allocation */
 				pixtypes = repalloc(pixtypes, j * sizeof(rt_pixtype));
 				pixtypes_len = j;
-			}
-			else {
+			} else {
 				pfree(pixtypes);
 				pixtypes = NULL;
 				pixtypes_len = 0;
@@ -963,8 +957,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 				/* trim allocation */
 				values = repalloc(values, j * sizeof(double));
 				values_len = j;
-			}
-			else {
+			} else {
 				pfree(values);
 				values = NULL;
 				values_len = 0;
@@ -1032,8 +1025,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 				nodatavals = repalloc(nodatavals, j * sizeof(double));
 				hasnodatas = repalloc(hasnodatas, j * sizeof(uint8_t));
 				nodatavals_len = j;
-			}
-			else {
+			} else {
 				pfree(nodatavals);
 				pfree(hasnodatas);
 				nodatavals = NULL;
@@ -1165,8 +1157,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		if (options_len < 1) {
 			options_len = 1;
 			options = (char **)palloc(sizeof(char *) * options_len);
-		}
-		else {
+		} else {
 			options_len++;
 			options = (char **)repalloc(options, sizeof(char *) * options_len);
 		}
@@ -1204,8 +1195,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: srs is %s", srs);
-	}
-	else
+	} else
 		srs = NULL;
 
 	/* determine number of bands */

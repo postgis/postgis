@@ -133,8 +133,7 @@ ptarray_to_twkb_buf(const POINTARRAY *pa,
 		/* into the stream once we know how many points we actually have */
 		bytebuffer_init_with_size(&b, 3 * ndims * pa->npoints);
 		b_p = &b;
-	}
-	else {
+	} else {
 		/* We give an alias to our ordinary buffer */
 		b_p = ts->geom_buf;
 		if (register_npoints) {
@@ -198,8 +197,7 @@ ptarray_to_twkb_buf(const POINTARRAY *pa,
 
 		/* Clear our temporary buffer */
 		bytebuffer_destroy_buffer(&b);
-	}
-	else {
+	} else {
 		/* If we didn't use a temp buffer, we just write that npoints value */
 		/* to where it belongs*/
 		if (register_npoints) varint_u64_encode_buf(npoints, b_p->buf_start + npoints_offset);

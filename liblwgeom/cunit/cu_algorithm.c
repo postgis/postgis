@@ -1188,8 +1188,7 @@ do_median_test(char *input, char *expected, int fail_if_not_converged, int iter_
 					   fabs(actual_pt.z - expected_pt.z) < tolerance);
 				passed &= (!lwgeom_has_m((LWGEOM *)expected_result) ||
 					   fabs(actual_pt.m - expected_pt.m) < tolerance);
-			}
-			else {
+			} else {
 				/* Check that the difference between the obtained geometric
 				median and the expected point is within tolerance */
 				uint32_t npoints = 1;
@@ -1214,20 +1213,17 @@ do_median_test(char *input, char *expected, int fail_if_not_converged, int iter_
 			       lwgeom_to_ewkt((LWGEOM *)expected_result),
 			       lwgeom_to_ewkt((LWGEOM *)result));
 		}
-	}
-	else if (result == NULL && expected == NULL) /* got nothing, expecting nothing */
+	} else if (result == NULL && expected == NULL) /* got nothing, expecting nothing */
 	{
 		passed = LW_TRUE;
-	}
-	else if (result != NULL && expected == NULL) /* got something, expecting nothing */
+	} else if (result != NULL && expected == NULL) /* got something, expecting nothing */
 	{
 		passed = LW_FALSE;
 		printf("median_test input %s (parsed %s) expected NULL got %s\n",
 		       input,
 		       lwgeom_to_ewkt(g),
 		       lwgeom_to_ewkt((LWGEOM *)result));
-	}
-	else if (result == NULL && expected != NULL) /* got nothing, expecting something */
+	} else if (result == NULL && expected != NULL) /* got nothing, expecting something */
 	{
 		passed = LW_FALSE;
 		printf("%s", cu_error_msg);

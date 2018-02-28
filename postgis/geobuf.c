@@ -74,8 +74,7 @@ encode_keys(struct geobuf_agg_context *ctx)
 				geom_found = 1;
 				continue;
 			}
-		}
-		else {
+		} else {
 			if (!geom_found && strcmp(key, ctx->geom_name) == 0) {
 				ctx->geom_index = i;
 				geom_found = 1;
@@ -96,8 +95,7 @@ set_int_value(Data__Value *value, int64 intval)
 	if (intval >= 0) {
 		value->value_type_case = DATA__VALUE__VALUE_TYPE_POS_INT_VALUE;
 		value->pos_int_value = (uint64_t)intval;
-	}
-	else {
+	} else {
 		value->value_type_case = DATA__VALUE__VALUE_TYPE_NEG_INT_VALUE;
 		value->neg_int_value = (uint64_t)labs(intval);
 	}
@@ -134,22 +132,19 @@ encode_properties(struct geobuf_agg_context *ctx, Data__Feature *feature)
 #else
 		Oid typoid = getBaseType(tupdesc->attrs[i].atttypid);
 #endif
-		if (strcmp(type, "int2") == 0) { set_int_value(value, DatumGetInt16(datum)); }
-		else if (strcmp(type, "int4") == 0) {
+		if (strcmp(type, "int2") == 0) {
+			set_int_value(value, DatumGetInt16(datum));
+		} else if (strcmp(type, "int4") == 0) {
 			set_int_value(value, DatumGetInt32(datum));
-		}
-		else if (strcmp(type, "int8") == 0) {
+		} else if (strcmp(type, "int8") == 0) {
 			set_int_value(value, DatumGetInt64(datum));
-		}
-		else if (strcmp(type, "float4") == 0) {
+		} else if (strcmp(type, "float4") == 0) {
 			value->value_type_case = DATA__VALUE__VALUE_TYPE_DOUBLE_VALUE;
 			value->double_value = DatumGetFloat4(datum);
-		}
-		else if (strcmp(type, "float8") == 0) {
+		} else if (strcmp(type, "float8") == 0) {
 			value->value_type_case = DATA__VALUE__VALUE_TYPE_DOUBLE_VALUE;
 			value->double_value = DatumGetFloat8(datum);
-		}
-		else {
+		} else {
 			Oid foutoid;
 			bool typisvarlena;
 			getTypeOutputInfo(typoid, &foutoid, &typisvarlena);

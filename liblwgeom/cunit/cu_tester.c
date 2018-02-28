@@ -159,8 +159,9 @@ main(int argc, char *argv[])
 
 	/* Run all tests using the CUnit Basic interface */
 	CU_basic_set_mode(CU_BRM_VERBOSE);
-	if (argc <= 1) { errCode = CU_basic_run_tests(); }
-	else {
+	if (argc <= 1) {
+		errCode = CU_basic_run_tests();
+	} else {
 		/* NOTE: The cunit functions used here (CU_get_registry, CU_get_suite_by_name, and CU_get_test_by_name)
 		 * are listed with the following warning: "Internal CUnit system functions.  Should not be routinely
 		 * called by users." However, there didn't seem to be any other way to get tests by name, so we're
@@ -187,8 +188,7 @@ main(int argc, char *argv[])
 			if (suite_to_run == NULL) {
 				printf("\n'%s' does not appear to be either a suite name or a test name.\n\n",
 				       suite_name);
-			}
-			else {
+			} else {
 				if (test_name != NULL && test_to_run != NULL) {
 					/* Run only this test. */
 					printf("\nRunning test '%s' in suite '%s'.\n", test_name, suite_name);
@@ -201,8 +201,7 @@ main(int argc, char *argv[])
 						printf(
 						    "    Error attempting to run tests: %d.  See CUError.h for error code list.\n",
 						    errCode);
-					}
-					else {
+					} else {
 						num_run = CU_get_number_of_asserts();
 						num_failed = CU_get_number_of_failures();
 						printf("\n    %s - asserts - %3d passed, %3d failed, %3d total.\n\n",
@@ -211,8 +210,7 @@ main(int argc, char *argv[])
 						       num_failed,
 						       num_run);
 					}
-				}
-				else {
+				} else {
 					/* Run all the tests in the suite. */
 					printf("\nRunning all tests in suite '%s'.\n", suite_name);
 					/* This should be CU_basic_run_suite, but that method is broken, see:
@@ -224,8 +222,7 @@ main(int argc, char *argv[])
 						printf(
 						    "    Error attempting to run tests: %d.  See CUError.h for error code list.\n",
 						    errCode);
-					}
-					else {
+					} else {
 						num_run = CU_get_number_of_tests_run();
 						num_failed = CU_get_number_of_tests_failed();
 						printf("\n    %s -   tests - %3d passed, %3d failed, %3d total.\n",

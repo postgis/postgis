@@ -124,8 +124,7 @@ lwline_split_by_line(const LWLINE *lwline_in, const LWGEOM *blade_in)
 		components = lwalloc(sizeof(LWGEOM *) * 1);
 		components[0] = diff;
 		out = lwcollection_construct(COLLECTIONTYPE, lwline_in->srid, NULL, 1, components);
-	}
-	else {
+	} else {
 		/* Set SRID */
 		lwgeom_set_srid((LWGEOM *)out, lwline_in->srid);
 		/* Force collection type */

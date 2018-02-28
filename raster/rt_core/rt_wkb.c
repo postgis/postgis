@@ -335,8 +335,9 @@ rt_raster_from_wkb(const uint8_t *wkb, uint32_t wkbsize)
 	/* Read all bands of raster */
 	if (!rast->numBands) {
 		/* Here ptr should have been left to right after last used byte */
-		if (ptr < wkbend) { rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr); }
-		else if (ptr > wkbend) {
+		if (ptr < wkbend) {
+			rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr);
+		} else if (ptr > wkbend) {
 			/* Easier to get a segfault before I guess */
 			rtwarn("We parsed %d bytes more then available!", ptr - wkbend);
 		}
@@ -374,8 +375,9 @@ rt_raster_from_wkb(const uint8_t *wkb, uint32_t wkbsize)
 	}
 
 	/* Here ptr should have been left to right after last used byte */
-	if (ptr < wkbend) { rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr); }
-	else if (ptr > wkbend) {
+	if (ptr < wkbend) {
+		rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr);
+	} else if (ptr > wkbend) {
 		/* Easier to get a segfault before I guess */
 		rtwarn("We parsed %d bytes more then available!", ptr - wkbend);
 	}
@@ -453,8 +455,7 @@ rt_raster_wkb_size(rt_raster raster, int outasin)
 
 			/* Add space for null-terminated path */
 			size += strlen(band->data.offline.path) + 1;
-		}
-		else {
+		} else {
 			/* Add space for actual data */
 			size += pixbytes * raster->width * raster->height;
 		}
@@ -619,8 +620,7 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize)
 			/* Write path */
 			strcpy((char *)ptr, band->data.offline.path);
 			ptr += strlen(band->data.offline.path) + 1;
-		}
-		else {
+		} else {
 			/* Write data */
 			uint32_t datasize = raster->width * raster->height * pixbytes;
 			RASTER_DEBUGF(4, "rt_raster_to_wkb: Copying %d bytes", datasize);

@@ -224,8 +224,9 @@ box2df_size(const BOX2DF *a)
 
 	if (a == NULL || box2df_is_empty(a)) return (float)0.0;
 
-	if ((a->xmax <= a->xmin) || (a->ymax <= a->ymin)) { result = (float)0.0; }
-	else {
+	if ((a->xmax <= a->xmin) || (a->ymax <= a->ymin)) {
+		result = (float)0.0;
+	} else {
 		result = (((double)a->xmax) - ((double)a->xmin)) * (((double)a->ymax) - ((double)a->ymin));
 	}
 
@@ -530,8 +531,7 @@ box2df_distance_node_centroid(const BOX2DF *node, const BOX2DF *query)
 		/* below/right of xmax/ymin */
 		else if (qx > node->xmin && qy < node->ymin) {
 			d = (node->xmax - qx) * (node->xmax - qx) + (node->ymin - qy) * (node->ymin - qy);
-		}
-		else {
+		} else {
 			/*ERROR*/
 			elog(ERROR, "%s: reached unreachable code", __func__);
 		}
@@ -624,15 +624,15 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 		POSTGIS_DEBUG(4, "copying box out of serialization");
 		memcpy(box2df, gpart->data, sizeof(BOX2DF));
 		result = LW_SUCCESS;
-	}
-	else {
+	} else {
 		/* No, we need to calculate it from the full object. */
 		GBOX gbox;
 		gbox_init(&gbox);
 
 		result = gserialized_get_gbox_p(gpart, &gbox);
-		if (result == LW_SUCCESS) { result = box2df_from_gbox_p(&gbox, box2df); }
-		else {
+		if (result == LW_SUCCESS) {
+			result = box2df_from_gbox_p(&gbox, box2df);
+		} else {
 			POSTGIS_DEBUG(4, "could not calculate bbox");
 		}
 	}
@@ -1176,8 +1176,7 @@ Datum gserialized_gist_consistent_2d(PG_FUNCTION_ARGS)
 	if (GIST_LEAF(entry)) {
 		result = gserialized_gist_consistent_leaf_2d(
 		    (BOX2DF *)DatumGetPointer(entry->key), &query_gbox_index, strategy);
-	}
-	else {
+	} else {
 		result = gserialized_gist_consistent_internal_2d(
 		    (BOX2DF *)DatumGetPointer(entry->key), &query_gbox_index, strategy);
 	}
@@ -1247,8 +1246,7 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 		distance = box2df_distance(entry_box, &query_box);
 
 		if (GIST_LEAF(entry)) *recheck = true;
-	}
-	else {
+	} else {
 		elog(ERROR, "%s: reached unreachable code", __func__);
 		PG_RETURN_NULL();
 	}
@@ -1263,8 +1261,7 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 	if (GIST_LEAF(entry)) {
 		/* Calculate distance to leaves */
 		distance = (double)box2df_distance_leaf_centroid(entry_box, &query_box);
-	}
-	else {
+	} else {
 		/* Calculate distance for internal nodes */
 		distance = (double)box2df_distance_node_centroid(entry_box, &query_box);
 	}
@@ -1342,18 +1339,19 @@ Datum gserialized_gist_penalty_2d(PG_FUNCTION_ARGS)
 	/* REALM 3: Area extension is nonzero, return it */
 
 	if (*result == 0) {
-		if (size_orig > 0) { *result = pack_float(size_orig, 1); /* REALM 1 */ }
-		else {
+		if (size_orig > 0) {
+			*result = pack_float(size_orig, 1); /* REALM 1 */
+		} else {
 			edge_union = box2df_union_edge(gbox_index_orig, gbox_index_new);
 			edge_orig = box2df_edge(gbox_index_orig);
 			*result = edge_union - edge_orig;
-			if (*result == 0) { *result = pack_float(edge_orig, 0); /* REALM 0 */ }
-			else {
+			if (*result == 0) {
+				*result = pack_float(edge_orig, 0); /* REALM 0 */
+			} else {
 				*result = pack_float(*result, 2); /* REALM 2 */
 			}
 		}
-	}
-	else {
+	} else {
 		*result = pack_float(*result, 3); /* REALM 3 */
 	}
 
@@ -1453,19 +1451,16 @@ fallbackSplit(GistEntryVector *entryvec, GIST_SPLITVEC *v)
 			if (unionL == NULL) {
 				unionL = (BOX2DF *)palloc(sizeof(BOX2DF));
 				*unionL = *cur;
-			}
-			else
+			} else
 				adjustBox(unionL, cur);
 
 			v->spl_nleft++;
-		}
-		else {
+		} else {
 			v->spl_right[v->spl_nright] = i;
 			if (unionR == NULL) {
 				unionR = (BOX2DF *)palloc(sizeof(BOX2DF));
 				*unionR = *cur;
-			}
-			else
+			} else
 				adjustBox(unionR, cur);
 
 			v->spl_nright++;
@@ -1534,11 +1529,9 @@ interval_cmp_lower(const void *i1, const void *i2)
 			return 0;
 		else
 			return 1;
-	}
-	else if (isnan(lower2)) {
+	} else if (isnan(lower2)) {
 		return -1;
-	}
-	else {
+	} else {
 		if (lower1 < lower2)
 			return -1;
 		else if (lower1 > lower2)
@@ -1561,11 +1554,9 @@ interval_cmp_upper(const void *i1, const void *i2)
 			return 0;
 		else
 			return -1;
-	}
-	else if (isnan(upper2)) {
+	} else if (isnan(upper2)) {
 		return 1;
-	}
-	else {
+	} else {
 		if (upper1 < upper2)
 			return -1;
 		else if (upper1 > upper2)
@@ -1615,8 +1606,9 @@ g_box_consider_split(ConsiderSplitContext *context,
 	 * Calculate entries distribution ratio assuming most uniform distribution
 	 * of common entries.
 	 */
-	if (minLeftCount >= (context->entriesCount + 1) / 2) { leftCount = minLeftCount; }
-	else {
+	if (minLeftCount >= (context->entriesCount + 1) / 2) {
+		leftCount = minLeftCount;
+	} else {
 		if (maxLeftCount <= context->entriesCount / 2)
 			leftCount = maxLeftCount;
 		else
@@ -1657,8 +1649,7 @@ g_box_consider_split(ConsiderSplitContext *context,
 			 */
 			if (overlap < context->overlap || (overlap == context->overlap && ratio > context->ratio))
 				selectthis = true;
-		}
-		else {
+		} else {
 			/*
 			 * Across dimensions, choose the new split if it has a smaller
 			 * *non-negative* overlap, or same *non-negative* overlap but
@@ -1801,8 +1792,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 			if (dim == 0) {
 				intervalsLower[i - FirstOffsetNumber].lower = box->xmin;
 				intervalsLower[i - FirstOffsetNumber].upper = box->xmax;
-			}
-			else {
+			} else {
 				intervalsLower[i - FirstOffsetNumber].lower = box->ymin;
 				intervalsLower[i - FirstOffsetNumber].upper = box->ymax;
 			}
@@ -1981,8 +1971,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		if (context.dim == 0) {
 			lower = box->xmin;
 			upper = box->xmax;
-		}
-		else {
+		} else {
 			lower = box->ymin;
 			upper = box->ymax;
 		}
@@ -1992,13 +1981,11 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 			if (lower >= context.rightLower || isnan(lower)) {
 				/* Fits also to the right group, so "common entry" */
 				commonEntries[commonEntriesCount++].index = i;
-			}
-			else {
+			} else {
 				/* Doesn't fit to the right group, so join to the left group */
 				PLACE_LEFT(box, i);
 			}
-		}
-		else {
+		} else {
 			/*
 			 * Each entry should fit on either left or right group. Since this
 			 * entry didn't fit on the left group, it better fit in the right
@@ -2158,8 +2145,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 				if (i <= (maxoff - FirstOffsetNumber + 1) / 2) {
 					v->spl_left[v->spl_nleft] = i;
 					v->spl_nleft++;
-				}
-				else {
+				} else {
 					v->spl_right[v->spl_nright] = i;
 					v->spl_nright++;
 				}
@@ -2183,8 +2169,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 			if (unionD->xmin > cur->xmin) unionD->xmin = cur->xmin; \
 			if (unionD->ymax < cur->ymax) unionD->ymax = cur->ymax; \
 			if (unionD->ymin > cur->ymin) unionD->ymin = cur->ymin; \
-		} \
-		else { \
+		} else { \
 			memcpy((void *)unionD, (void *)cur, sizeof(BOX2DF)); \
 		} \
 		list[pos] = num; \
@@ -2227,8 +2212,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 					ADDLIST(listR, unionR, posR, arr[i - 1].pos);
 				else
 					ADDLIST(listL, unionL, posL, arr[i - 1].pos);
-			}
-			else
+			} else
 				ADDLIST(listR, unionR, posR, arr[i - 1].pos);
 
 			if (cur->ymin - pageunion.ymin < pageunion.ymax - cur->ymax)
@@ -2238,8 +2222,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 					ADDLIST(listT, unionT, posT, arr[i - 1].pos);
 				else
 					ADDLIST(listB, unionB, posB, arr[i - 1].pos);
-			}
-			else
+			} else
 				ADDLIST(listT, unionT, posT, arr[i - 1].pos);
 		}
 		pfree(arr);
@@ -2284,8 +2267,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		v->spl_nright = posR;
 		v->spl_ldatum = PointerGetDatum(unionL);
 		v->spl_rdatum = PointerGetDatum(unionR);
-	}
-	else {
+	} else {
 		pfree(unionR);
 		pfree(listR);
 		pfree(unionL);

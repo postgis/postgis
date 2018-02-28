@@ -150,8 +150,7 @@ is_kml_namespace(xmlNodePtr xnode, bool is_strict)
 			if (!strcmp((char *)(*p)->href, KML_NS)) {
 				xmlFree(ns);
 				return true;
-			}
-			else {
+			} else {
 				xmlFree(ns);
 				return false;
 			}
@@ -348,8 +347,7 @@ parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
 			}
 			p = q - 1; /* will be incrementedon next iteration */
 				   // lwpgnotice("after look-ahead *p:%c, kml_dims:%d", *p, kml_dims);
-		}
-		else if (*p != ',' && !isspace(*p)) {
+		} else if (*p != ',' && !isspace(*p)) {
 			lwpgerror("invalid KML representation"); /* (unexpected character %c)", *p); */
 		}
 	}

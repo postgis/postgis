@@ -344,8 +344,7 @@ rt_pixel_set_to_array(rt_pixel npixel,
 					rtdealloc(values[j]);
 					rtdealloc(nodatas[j]);
 				}
-			}
-			else {
+			} else {
 				for (j = 0; j <= i; j++) {
 					rtdealloc(values[j]);
 					if (j < i) rtdealloc(nodatas[j]);

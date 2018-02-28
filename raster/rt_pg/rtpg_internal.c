@@ -70,8 +70,7 @@ rtpg_strreplace(const char *str, const char *oldstr, const char *newstr, int *co
 	if ((result = (char *)palloc(length + 1)) == NULL) {
 		fprintf(stderr, "Not enough memory\n");
 		found = -1;
-	}
-	else {
+	} else {
 		tmp = str;
 		limit = found; /* Countdown */
 		reslen = 0;    /* length of current result */
@@ -174,8 +173,9 @@ rtpg_strsplit(const char *str, const char *delimiter, uint32_t *n)
 
 	token = strtok(tmp, delimiter);
 	while (token != NULL) {
-		if (*n < 1) { rtn = (char **)palloc(sizeof(char *)); }
-		else {
+		if (*n < 1) {
+			rtn = (char **)palloc(sizeof(char *));
+		} else {
 			rtn = (char **)repalloc(rtn, (*n + 1) * sizeof(char *));
 		}
 		if (NULL == rtn) {

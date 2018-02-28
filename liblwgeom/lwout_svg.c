@@ -218,8 +218,7 @@ assvg_polygon_buf(const LWPOLY *poly, char *output, int relative, int precision)
 		if (relative) {
 			ptr += pointArray_svg_rel(poly->rings[i], ptr, 0, precision);
 			ptr += sprintf(ptr, " z"); /* SVG closepath */
-		}
-		else {
+		} else {
 			ptr += pointArray_svg_abs(poly->rings[i], ptr, 0, precision);
 			ptr += sprintf(ptr, " Z"); /* SVG closepath */
 		}

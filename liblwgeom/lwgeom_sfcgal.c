@@ -209,8 +209,7 @@ ptarray_to_SFCGAL(const POINTARRAY *pa, int type)
 			if (is_3d) {
 				sfcgal_linestring_add_point(line,
 							    sfcgal_point_create_from_xyz(point.x, point.y, point.z));
-			}
-			else {
+			} else {
 				sfcgal_linestring_add_point(line, sfcgal_point_create_from_xy(point.x, point.y));
 			}
 		}

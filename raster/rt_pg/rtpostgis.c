@@ -312,8 +312,7 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra)
 				disable_all = 1;
 			}
 		}
-	}
-	else if (strstr(enabled_drivers, GDAL_ENABLE_ALL) != NULL) {
+	} else if (strstr(enabled_drivers, GDAL_ENABLE_ALL) != NULL) {
 		for (i = 0; i < enabled_drivers_count; i++) {
 			if (strstr(enabled_drivers_array[i], GDAL_ENABLE_ALL) != NULL) {
 				enabled_drivers_found[i] = TRUE;
@@ -354,8 +353,7 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra)
 			if (gdal_skip == NULL) {
 				gdal_skip = palloc(sizeof(char) * (strlen(drv_set[i].short_name) + 1));
 				gdal_skip[0] = '\0';
-			}
-			else {
+			} else {
 				gdal_skip = repalloc(gdal_skip,
 						     sizeof(char) *
 							 (strlen(gdal_skip) + 1 + strlen(drv_set[i].short_name) + 1));
@@ -429,8 +427,7 @@ _PG_init(void)
 	if (env_postgis_gdal_enabled_drivers == NULL) {
 		boot_postgis_gdal_enabled_drivers = palloc(sizeof(char) * (strlen(GDAL_DISABLE_ALL) + 1));
 		sprintf(boot_postgis_gdal_enabled_drivers, "%s", GDAL_DISABLE_ALL);
-	}
-	else {
+	} else {
 		boot_postgis_gdal_enabled_drivers = rtpg_trim(env_postgis_gdal_enabled_drivers);
 	}
 	POSTGIS_RT_DEBUGF(4, "boot_postgis_gdal_enabled_drivers = %s", boot_postgis_gdal_enabled_drivers);
@@ -468,8 +465,7 @@ _PG_init(void)
 		/* the previously loaded library. Probably this is happening during an */
 		/* upgrade, so the old library is where the callback ties to. */
 		elog(WARNING, "'%s' is already set and cannot be changed until you reconnect", "postgis.gdal_datapath");
-	}
-	else {
+	} else {
 		DefineCustomStringVariable(
 		    "postgis.gdal_datapath",    /* name */
 		    "Path to GDAL data files.", /* short_desc */
@@ -492,8 +488,7 @@ _PG_init(void)
 		elog(WARNING,
 		     "'%s' is already set and cannot be changed until you reconnect",
 		     "postgis.gdal_enabled_drivers");
-	}
-	else {
+	} else {
 		DefineCustomStringVariable(
 		    "postgis.gdal_enabled_drivers", /* name */
 		    "Enabled GDAL drivers.",        /* short_desc */
@@ -515,8 +510,7 @@ _PG_init(void)
 		elog(WARNING,
 		     "'%s' is already set and cannot be changed until you reconnect",
 		     "postgis.enable_outdb_rasters");
-	}
-	else {
+	} else {
 		DefineCustomBoolVariable(
 		    "postgis.enable_outdb_rasters",                                  /* name */
 		    "Enable Out-DB raster bands",                                    /* short_desc */

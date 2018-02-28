@@ -931,8 +931,7 @@ pg_get_nd_stats_by_name(const Oid table_oid, const text *att_text, int mode, boo
 			elog(ERROR, "attribute \"%s\" does not exist", att_name);
 			return NULL;
 		}
-	}
-	else {
+	} else {
 		elog(ERROR, "attribute name is null");
 		return NULL;
 	}
@@ -1129,8 +1128,9 @@ estimate_join_selectivity(const ND_STATS *s1, const ND_STATS *s2)
 	selectivity = val / ntuples_max;
 
 	/* Guard against over-estimates and crazy numbers :) */
-	if (isnan(selectivity) || !isfinite(selectivity) || selectivity < 0.0) { selectivity = DEFAULT_ND_JOINSEL; }
-	else if (selectivity > 1.0) {
+	if (isnan(selectivity) || !isfinite(selectivity) || selectivity < 0.0) {
+		selectivity = DEFAULT_ND_JOINSEL;
+	} else if (selectivity > 1.0) {
 		selectivity = 1.0;
 	}
 
@@ -1234,8 +1234,7 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 			       get_rel_name(relid1) ? get_rel_name(relid1) : "NULL",
 			       relid1);
 		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
-	}
-	else if (!stats2) {
+	} else if (!stats2) {
 		POSTGIS_DEBUGF(3,
 			       "unable to retrieve stats for \"%s\" Oid(%d)",
 			       get_rel_name(relid2) ? get_rel_name(relid2) : "NULL",
@@ -1526,8 +1525,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 			histo_cells_new *= histo_size[d];
 		}
 		POSTGIS_DEBUGF(3, " histo_cells_new: %d", histo_cells_new);
-	}
-	else {
+	} else {
 		/*
 		 * We're going to express the amount of variability in each dimension
 		 * as a proportion of the total variability and allocate cells in that
@@ -1541,8 +1539,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 			if (sample_distribution[d] == 0) /* Uninteresting dimensions don't get any room */
 			{
 				histo_size[d] = 1;
-			}
-			else /* Interesting dimension */
+			} else /* Interesting dimension */
 			{
 				/* How does this dims variability compare to the total? */
 				float edge_ratio = (float)sample_distribution[d] / (float)total_distribution;
@@ -1695,8 +1692,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 	if (mode == 2) {
 		stats_slot = STATISTIC_SLOT_2D;
 		stats_kind = STATISTIC_KIND_2D;
-	}
-	else {
+	} else {
 		stats_slot = STATISTIC_SLOT_ND;
 		stats_kind = STATISTIC_KIND_ND;
 	}
@@ -2120,8 +2116,7 @@ Datum gserialized_gist_sel(PG_FUNCTION_ARGS)
 	if (!IsA(other, Const)) {
 		self = (Var *)other;
 		other = (Node *)lsecond(args);
-	}
-	else {
+	} else {
 		self = (Var *)lsecond(args);
 	}
 
@@ -2184,8 +2179,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 		sprintf(nsp_tbl, "\"%s\".\"%s\"", nsp, tbl);
 		tbl_oid = DatumGetObjectId(DirectFunctionCall1(regclassin, CStringGetDatum(nsp_tbl)));
 		pfree(nsp_tbl);
-	}
-	else if (PG_NARGS() == 3) {
+	} else if (PG_NARGS() == 3) {
 		nsp = text_to_cstring(PG_GETARG_TEXT_P(0));
 		tbl = text_to_cstring(PG_GETARG_TEXT_P(1));
 		col = PG_GETARG_TEXT_P(2);
@@ -2193,16 +2187,14 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 		sprintf(nsp_tbl, "\"%s\".\"%s\"", nsp, tbl);
 		tbl_oid = DatumGetObjectId(DirectFunctionCall1(regclassin, CStringGetDatum(nsp_tbl)));
 		pfree(nsp_tbl);
-	}
-	else if (PG_NARGS() == 2) {
+	} else if (PG_NARGS() == 2) {
 		tbl = text_to_cstring(PG_GETARG_TEXT_P(0));
 		col = PG_GETARG_TEXT_P(1);
 		nsp_tbl = palloc(strlen(tbl) + 3);
 		sprintf(nsp_tbl, "\"%s\"", tbl);
 		tbl_oid = DatumGetObjectId(DirectFunctionCall1(regclassin, CStringGetDatum(nsp_tbl)));
 		pfree(nsp_tbl);
-	}
-	else {
+	} else {
 		elog(ERROR, "estimated_extent() called with wrong number of arguments");
 		PG_RETURN_NULL();
 	}
@@ -2252,8 +2244,7 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 	if (PG_NARGS() == 3) {
 		PG_RETURN_DATUM(DirectFunctionCall3(
 		    gserialized_estimated_extent, PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PG_GETARG_DATUM(2)));
-	}
-	else if (PG_NARGS() == 2) {
+	} else if (PG_NARGS() == 2) {
 		PG_RETURN_DATUM(
 		    DirectFunctionCall2(gserialized_estimated_extent, PG_GETARG_DATUM(0), PG_GETARG_DATUM(1)));
 	}
@@ -2364,8 +2355,7 @@ spatial_index_read_extent(Oid idx_oid, int key_type)
 						box2df_merge(bounds_2df, b);
 					else
 						bounds_2df = box2df_copy(b);
-				}
-				else {
+				} else {
 					GIDX *b = (GIDX *)DatumGetPointer(idx_attr);
 					if (bounds_gidx)
 						gidx_merge(&bounds_gidx, b);
@@ -2384,13 +2374,11 @@ spatial_index_read_extent(Oid idx_oid, int key_type)
 		if (box2df_is_empty(bounds_2df)) return NULL;
 		gbox = gbox_new(0);
 		box2df_to_gbox_p(bounds_2df, gbox);
-	}
-	else if (key_type == STATISTIC_SLOT_ND && bounds_gidx) {
+	} else if (key_type == STATISTIC_SLOT_ND && bounds_gidx) {
 		if (gidx_is_unknown(bounds_gidx)) return NULL;
 		gbox = gbox_new(0);
 		gbox_from_gidx(bounds_gidx, gbox, 0);
-	}
-	else
+	} else
 		return NULL;
 
 	return gbox;

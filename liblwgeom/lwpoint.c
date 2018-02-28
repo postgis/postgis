@@ -261,8 +261,9 @@ lwpoint_force_dims(const LWPOINT *point, int hasz, int hasm)
 	LWPOINT *pointout;
 
 	/* Return 2D empty */
-	if (lwpoint_is_empty(point)) { pointout = lwpoint_construct_empty(point->srid, hasz, hasm); }
-	else {
+	if (lwpoint_is_empty(point)) {
+		pointout = lwpoint_construct_empty(point->srid, hasz, hasm);
+	} else {
 		/* Always we duplicate the ptarray and return */
 		pdims = ptarray_force_dims(point->point, hasz, hasm);
 		pointout = lwpoint_construct(point->srid, NULL, pdims);

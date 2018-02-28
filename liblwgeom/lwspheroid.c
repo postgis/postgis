@@ -520,8 +520,7 @@ ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *spheroid)
 	if (in_south) {
 		delta_lon_tolerance = (90.0 / (fabs(gbox2d.ymin) / 8.0) - 2.0) / 10000.0;
 		latitude_min = deg2rad(fabs(gbox2d.ymax));
-	}
-	else {
+	} else {
 		delta_lon_tolerance = (90.0 / (fabs(gbox2d.ymax) / 8.0) - 2.0) / 10000.0;
 		latitude_min = deg2rad(gbox2d.ymin);
 	}
@@ -578,8 +577,7 @@ ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *spheroid)
 				strip_area = spheroid_striparea(&a1, &b1, latitude_min, spheroid);
 				LWDEBUGF(4, "strip_area %.12g", strip_area);
 				area += strip_area;
-			}
-			else {
+			} else {
 				GEOGRAPHIC_POINT p, q;
 				double step = floor(delta_lon / delta_lon_tolerance);
 				double distance = spheroid_distance(&a1, &b1, spheroid);

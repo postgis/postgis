@@ -237,8 +237,7 @@ rt_util_gdal_convert_sr(const char *srs, int proj4)
 			OSRExportToProj4(hsrs, &rtn);
 		else
 			OSRExportToWkt(hsrs, &rtn);
-	}
-	else {
+	} else {
 		rterror("rt_util_gdal_convert_sr: Could not process the provided srs: %s", srs);
 		return NULL;
 	}
@@ -400,11 +399,9 @@ rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared)
 		if (strstr(gdal_enabled_drivers, GDAL_DISABLE_ALL) != NULL) {
 			rterror("rt_util_gdal_open: Cannot open file. All GDAL drivers disabled");
 			return NULL;
-		}
-		else if (strstr(gdal_enabled_drivers, GDAL_ENABLE_ALL) != NULL) {
+		} else if (strstr(gdal_enabled_drivers, GDAL_ENABLE_ALL) != NULL) {
 			/* do nothing */
-		}
-		else if ((strstr(fn, "/vsicurl") != NULL) && (strstr(gdal_enabled_drivers, GDAL_VSICURL) == NULL)) {
+		} else if ((strstr(fn, "/vsicurl") != NULL) && (strstr(gdal_enabled_drivers, GDAL_VSICURL) == NULL)) {
 			rterror("rt_util_gdal_open: Cannot open VSICURL file. VSICURL disabled");
 			return NULL;
 		}
@@ -656,8 +653,7 @@ rt_util_dbl_trunc_warning(double initialvalue,
 			       checkvalint);
 #endif
 			result = 1;
-		}
-		else if (FLT_NEQ(checkvalint, initialvalue)) {
+		} else if (FLT_NEQ(checkvalint, initialvalue)) {
 #if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
 			rtwarn("Value set for %s band got truncated from %f to %d",
 			       rt_pixtype_name(pixtype),
@@ -677,8 +673,7 @@ rt_util_dbl_trunc_warning(double initialvalue,
 			       checkvaluint);
 #endif
 			result = 1;
-		}
-		else if (FLT_NEQ(checkvaluint, initialvalue)) {
+		} else if (FLT_NEQ(checkvaluint, initialvalue)) {
 #if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
 			rtwarn("Value set for %s band got truncated from %f to %u",
 			       rt_pixtype_name(pixtype),

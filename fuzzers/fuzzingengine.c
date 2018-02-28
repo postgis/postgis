@@ -36,8 +36,9 @@ int
 main(int argc, char *argv[])
 {
 	LLVMFuzzerInitialize(&argc, &argv);
-	if (argc < 2) { return LLVMFuzzerTestOneInput(" ", 1); }
-	else {
+	if (argc < 2) {
+		return LLVMFuzzerTestOneInput(" ", 1);
+	} else {
 		int nRet = 0;
 		void *buf = NULL;
 		int nLen = 0;

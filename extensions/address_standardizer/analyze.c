@@ -272,8 +272,7 @@ get_next_stz(STAND_PARAM *__stand_param__, int request_stz_in)
 				;
 			if (__stz_info__->stz_list_size == request_stz) { return FALSE; }
 		}
-	}
-	else {
+	} else {
 		request_stz = FIRST_STZ;
 	}
 	/*-- Reload the best defs and output from the new stz --*/
@@ -448,8 +447,9 @@ evaluate_micro_l(STAND_PARAM *__stand_param__)
 			__stand_param__->comp_lex_sym[i][j] = __def__->Type;
 			__stand_param__->def_array[i][j] = __def__;
 			/* 2009-08-30 : filter out non-default non-desired */
-			if ((__def__->Type == desired_type) || (__def__->Protect)) { __def_marked__[i][j] = TRUE; }
-			else
+			if ((__def__->Type == desired_type) || (__def__->Protect)) {
+				__def_marked__[i][j] = TRUE;
+			} else
 				__def_marked__[i][j] = FALSE;
 		}
 		__num_defs__[i] = j;
@@ -799,8 +799,7 @@ scan_clause_tree(STAND_PARAM *__stand_param__, int start_state, int start_pos)
 		if (depth != START_DEPTH) {
 			sum -= __outer_seg__->Value;
 			pos = __outer_seg__->End + 1;
-		}
-		else {
+		} else {
 			sum = 0.00;
 			pos = start_pos;
 		}
@@ -989,8 +988,9 @@ copy_stz(STAND_PARAM *__stand_param__, double current_score)
 	 lesser score. Otherwise we put the pointer to the new stz in the
 	 present position -- */
 		STZ *__next_stz__ = __stz_list__[i - 1];
-		if (current_score > __next_stz__->raw_score) { __stz_list__[i] = __next_stz__; }
-		else {
+		if (current_score > __next_stz__->raw_score) {
+			__stz_list__[i] = __next_stz__;
+		} else {
 			if (current_score == __next_stz__->raw_score) {
 				/* -- 2008-03-14: first come, first served -- */
 				__cur_stz__->score = __next_stz__->score - DUP_DECREMENT;
@@ -1079,8 +1079,7 @@ copy_best(STAND_PARAM *__stand_param__, int *__sym_sel__, SYMB output_symb, int 
 		    (__stand_param__->comp_lex_sym[lex_pos][__sym_sel__[lex_pos]] == RIGHT_COMPRESS) &&
 		    (__best_output__[lex_pos - 1] == STREET)) {
 			__best_output__[lex_pos] = STREET;
-		}
-		else {
+		} else {
 			__best_output__[lex_pos] = output_symb;
 		}
 	}
@@ -1323,8 +1322,9 @@ output_raw_elements(STAND_PARAM *__stand_param__, ERR_PARAM *__err_param__)
 	STZ **__stz_list__;
 
 	STZ_PARAM *__stz_info__ = __stand_param__->stz_info;
-	if (__err_param__ == NULL) { printf("Input tokenization candidates:\n"); }
-	else {
+	if (__err_param__ == NULL) {
+		printf("Input tokenization candidates:\n");
+	} else {
 		LOG_MESS("Input tokenization candidates:", __err_param__);
 	}
 	for (lex_pos = FIRST_LEX_POS; lex_pos < __stand_param__->LexNum; lex_pos++) {
@@ -1336,8 +1336,7 @@ output_raw_elements(STAND_PARAM *__stand_param__, ERR_PARAM *__err_param__)
 							   : __def__->Standard),
 				       __def__->Type,
 				       in_symb_name(__def__->Type));
-			}
-			else {
+			} else {
 				sprintf(__err_param__->error_buf,
 					"\t(%d) std: %s, tok: %d (%s)\n",
 					lex_pos,
@@ -1355,8 +1354,7 @@ output_raw_elements(STAND_PARAM *__stand_param__, ERR_PARAM *__err_param__)
 		STZ *__cur_stz__ = __stz_list__[stz_no];
 		if (__err_param__ == NULL) {
 			printf("Raw standardization %d with score %f:\n", (stz_no), __cur_stz__->score);
-		}
-		else {
+		} else {
 			LOG_MESS2(
 			    "Raw standardization %d with score %f:\n", (stz_no), __cur_stz__->score, __err_param__);
 		}
@@ -1374,8 +1372,7 @@ output_raw_elements(STAND_PARAM *__stand_param__, ERR_PARAM *__err_param__)
 							   : __def__->Standard),
 				       k,
 				       ((k == FAIL) ? "NONE" : out_symb_name(k)));
-			}
-			else {
+			} else {
 				sprintf(__err_param__->error_buf,
 					"\t(%d) Input %d (%s) text %s mapped to output %d (%s)\n",
 					lex_pos,

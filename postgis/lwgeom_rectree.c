@@ -153,16 +153,15 @@ Datum ST_DistanceRectTreeCached(PG_FUNCTION_ARGS)
 		RECT_NODE *n;
 		RECT_NODE *n_cached = tree_cache->index;
 		;
-		if (tree_cache->gcache.argnum == 1) { n = rect_tree_from_lwgeom(lwg2); }
-		else if (tree_cache->gcache.argnum == 2) {
+		if (tree_cache->gcache.argnum == 1) {
+			n = rect_tree_from_lwgeom(lwg2);
+		} else if (tree_cache->gcache.argnum == 2) {
 			n = rect_tree_from_lwgeom(lwg1);
-		}
-		else {
+		} else {
 			elog(ERROR, "reached unreachable block in %s", __func__);
 		}
 		PG_RETURN_FLOAT8(rect_tree_distance_tree(n, n_cached, 0.0));
-	}
-	else {
+	} else {
 		PG_RETURN_FLOAT8(lwgeom_mindistance2d(lwg1, lwg2));
 	}
 

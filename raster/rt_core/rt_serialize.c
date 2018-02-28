@@ -238,8 +238,9 @@ read_uint16(const uint8_t **from, uint8_t littleEndian)
 
 	assert(NULL != from);
 
-	if (littleEndian) { ret = (*from)[0] | (*from)[1] << 8; }
-	else {
+	if (littleEndian) {
+		ret = (*from)[0] | (*from)[1] << 8;
+	} else {
 		/* big endian */
 		ret = (*from)[0] << 8 | (*from)[1];
 	}
@@ -255,8 +256,7 @@ write_uint16(uint8_t **to, uint8_t littleEndian, uint16_t v)
 	if (littleEndian) {
 		(*to)[0] = v & 0x00FF;
 		(*to)[1] = v >> 8;
-	}
-	else {
+	} else {
 		(*to)[1] = v & 0x00FF;
 		(*to)[0] = v >> 8;
 	}
@@ -300,8 +300,7 @@ read_uint32(const uint8_t **from, uint8_t littleEndian)
 	if (littleEndian) {
 		ret = (uint32_t)((*from)[0] & 0xff) | (uint32_t)((*from)[1] & 0xff) << 8 |
 		      (uint32_t)((*from)[2] & 0xff) << 16 | (uint32_t)((*from)[3] & 0xff) << 24;
-	}
-	else {
+	} else {
 		/* big endian */
 		ret = (uint32_t)((*from)[3] & 0xff) | (uint32_t)((*from)[2] & 0xff) << 8 |
 		      (uint32_t)((*from)[1] & 0xff) << 16 | (uint32_t)((*from)[0] & 0xff) << 24;
@@ -408,8 +407,7 @@ read_float64(const uint8_t **from, uint8_t littleEndian)
 			(uint64_t)((*from)[2] & 0xff) << 16 | (uint64_t)((*from)[3] & 0xff) << 24 |
 			(uint64_t)((*from)[4] & 0xff) << 32 | (uint64_t)((*from)[5] & 0xff) << 40 |
 			(uint64_t)((*from)[6] & 0xff) << 48 | (uint64_t)((*from)[7] & 0xff) << 56;
-	}
-	else {
+	} else {
 		/* big endian */
 		ret.i = (uint64_t)((*from)[7] & 0xff) | (uint64_t)((*from)[6] & 0xff) << 8 |
 			(uint64_t)((*from)[5] & 0xff) << 16 | (uint64_t)((*from)[4] & 0xff) << 24 |
@@ -491,8 +489,7 @@ rt_raster_serialized_size(rt_raster raster)
 
 			/* Add space for null-terminated path */
 			size += strlen(band->data.offline.path) + 1;
-		}
-		else {
+		} else {
 			/* Add space for raster band data */
 			size += pixbytes * raster->width * raster->height;
 		}
@@ -670,8 +667,7 @@ rt_raster_serialize(rt_raster raster)
 			/* Write path */
 			strcpy((char *)ptr, band->data.offline.path);
 			ptr += strlen(band->data.offline.path) + 1;
-		}
-		else {
+		} else {
 			/* Write data */
 			uint32_t datasize = raster->width * raster->height * pixbytes;
 			memcpy(ptr, band->data.mem, datasize);
@@ -881,8 +877,7 @@ rt_raster_deserialize(void *serialized, int header_only)
 			ptr += pathlen + 1;
 
 			band->data.offline.mem = NULL;
-		}
-		else {
+		} else {
 			/* Register data */
 			const uint32_t datasize = rast->width * rast->height * pixbytes;
 			band->data.mem = (uint8_t *)ptr;

@@ -53,8 +53,7 @@ _varint_u64_encode_buf(uint64_t val, uint8_t *buf)
 			/* forward one step */
 			*ptr = 0x80 | grp;
 			ptr++;
-		}
-		else {
+		} else {
 			/* The same as above, but since there is nothing more */
 			/* to read in our input value we leave the most significant bit unset */
 			*ptr = grp;
@@ -120,8 +119,7 @@ varint_u64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size
 			ptr++;
 			/* move the cursor in the resulting variable (7 bits) */
 			nShift += 7;
-		}
-		else {
+		} else {
 			/* move the "cursor" one step */
 			ptr++;
 			/* Move the last read byte to the most significant */
@@ -142,8 +140,9 @@ varint_size(const uint8_t *the_start, const uint8_t *the_end)
 	/* Check so we don't read beyond the twkb */
 	while (ptr < the_end) {
 		/* Hibit is set, this isn't the last byte */
-		if (*ptr & 0x80) { ptr++; }
-		else {
+		if (*ptr & 0x80) {
+			ptr++;
+		} else {
 			ptr++;
 			return ptr - the_start;
 		}

@@ -45,13 +45,11 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 		rettuple_ok = trigdata->tg_newtuple;
 		rettuple_fail = NULL;
 		op = "UPDATE";
-	}
-	else if (TRIGGER_FIRED_BY_DELETE(trigdata->tg_event)) {
+	} else if (TRIGGER_FIRED_BY_DELETE(trigdata->tg_event)) {
 		rettuple_ok = trigdata->tg_trigtuple;
 		rettuple_fail = NULL;
 		op = "DELETE";
-	}
-	else {
+	} else {
 		elog(ERROR, "check_authorization: not fired by update or delete");
 		PG_RETURN_NULL();
 	}

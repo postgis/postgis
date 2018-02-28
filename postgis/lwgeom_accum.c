@@ -137,8 +137,7 @@ Datum pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 
 			MemoryContextSwitchTo(old);
 		}
-	}
-	else {
+	} else {
 		p = (pgis_abs *)PG_GETARG_POINTER(0);
 	}
 	state = p->a;

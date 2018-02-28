@@ -401,8 +401,7 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 		if (raster != NULL) {
 			rt_raster_destroy(raster);
 			PG_RETURN_POINTER(pgraster);
-		}
-		else
+		} else
 			PG_RETURN_NULL();
 	}
 	POSTGIS_RT_DEBUGF(4, "srcnband = %d", srcnband);
@@ -418,12 +417,10 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 			if (raster != NULL) {
 				rt_raster_destroy(raster);
 				PG_RETURN_POINTER(pgraster);
-			}
-			else
+			} else
 				PG_RETURN_NULL();
 		}
-	}
-	else
+	} else
 		appendband = TRUE;
 
 	/* additional processing of dstnband */
@@ -433,8 +430,7 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 		if (dstnumbands < 1) {
 			appendband = TRUE;
 			dstnband = 1;
-		}
-		else if (appendband)
+		} else if (appendband)
 			dstnband = dstnumbands + 1;
 		else if (dstnband > dstnumbands) {
 			elog(
@@ -491,8 +487,7 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 			if (raster != NULL) {
 				rt_raster_destroy(raster);
 				PG_RETURN_POINTER(pgraster);
-			}
-			else
+			} else
 				PG_RETURN_NULL();
 		}
 
@@ -614,19 +609,16 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 		if (pgraster != NULL) {
 			rt_raster_destroy(raster);
 			PG_RETURN_POINTER(pgraster);
-		}
-		else
+		} else
 			PG_RETURN_NULL();
-	}
-	else {
+	} else {
 		outdbfile = text_to_cstring(PG_GETARG_TEXT_P(2));
 		if (!strlen(outdbfile)) {
 			elog(NOTICE, "Out-db raster file not provided. Returning original raster");
 			if (pgraster != NULL) {
 				rt_raster_destroy(raster);
 				PG_RETURN_POINTER(pgraster);
-			}
-			else
+			} else
 				PG_RETURN_NULL();
 		}
 	}
@@ -701,16 +693,14 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 
 			numsrcnband = j;
 		}
-	}
-	else
+	} else
 		allbands = TRUE;
 
 	/* nodataval (4) */
 	if (!PG_ARGISNULL(4)) {
 		hasnodata = TRUE;
 		nodataval = PG_GETARG_FLOAT8(4);
-	}
-	else
+	} else
 		hasnodata = FALSE;
 
 	/* validate input */
@@ -722,16 +712,14 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 			if (dstnband < 1) {
 				elog(NOTICE, "Invalid band index %d for adding bands. Using band index 1", dstnband);
 				dstnband = 1;
-			}
-			else if (numbands > 0 && dstnband > numbands) {
+			} else if (numbands > 0 && dstnband > numbands) {
 				elog(NOTICE,
 				     "Invalid band index %d for adding bands. Using band index %d",
 				     dstnband,
 				     numbands);
 				dstnband = numbands + 1;
 			}
-		}
-		else
+		} else
 			dstnband = numbands + 1;
 	}
 
@@ -769,14 +757,12 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 		if (rt_util_gdal_sr_auth_info(hdsOut, &authname, &authcode) == ES_NONE) {
 			if (authname != NULL && strcmp(authname, "EPSG") == 0 && authcode != NULL) {
 				rt_raster_set_srid(raster, atoi(authcode));
-			}
-			else
+			} else
 				elog(
 				    INFO,
 				    "Unknown SRS auth name and code from out-db file. Defaulting SRID of new raster to %d",
 				    SRID_UNKNOWN);
-		}
-		else
+		} else
 			elog(INFO,
 			     "Cannot get SRS auth name and code from out-db file. Defaulting SRID of new raster to %d",
 			     SRID_UNKNOWN);
@@ -799,8 +785,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 		if (pgraster != NULL) PG_FREE_IF_COPY(pgraster, 0);
 		elog(ERROR, "RASTER_addBandOutDB: Cannot test alignment of out-db file");
 		return ES_ERROR;
-	}
-	else if (!aligned)
+	} else if (!aligned)
 		elog(WARNING,
 		     "The in-db representation of the out-db raster is not aligned. Band data may be incorrect");
 
@@ -819,8 +804,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 
 		for (i = 0, j = 1; i < numsrcnband; i++, j++)
 			srcnband[i] = j;
-	}
-	else
+	} else
 		GDALClose(hdsOut);
 
 	/* add band */
@@ -1143,8 +1127,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					SRF_RETURN_DONE(funcctx);
 				}
 			}
-		}
-		else {
+		} else {
 			arg1->numbands = numbands;
 
 			if (numbands) {
@@ -1173,13 +1156,11 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			if (arg1->pad.pad && !PG_ARGISNULL(5)) {
 				arg1->pad.hasnodata = 1;
 				arg1->pad.nodataval = PG_GETARG_FLOAT8(5);
-			}
-			else {
+			} else {
 				arg1->pad.hasnodata = 0;
 				arg1->pad.nodataval = 0;
 			}
-		}
-		else {
+		} else {
 			arg1->pad.pad = 0;
 			arg1->pad.hasnodata = 0;
 			arg1->pad.nodataval = 0;
@@ -1320,8 +1301,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			else if (arg2->pad.pad && arg2->pad.hasnodata) {
 				hasnodata = 1;
 				nodataval = arg2->pad.nodataval;
-			}
-			else
+			} else
 				nodataval = rt_band_get_min_value(_band);
 
 			/* inline band */

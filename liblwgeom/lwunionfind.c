@@ -90,8 +90,7 @@ UF_union(UNIONFIND *uf, uint32_t i, uint32_t j)
 		uf->clusters[a] = uf->clusters[b];
 		uf->cluster_sizes[b] += uf->cluster_sizes[a];
 		uf->cluster_sizes[a] = 0;
-	}
-	else {
+	} else {
 		uf->clusters[b] = uf->clusters[a];
 		uf->cluster_sizes[a] += uf->cluster_sizes[b];
 		uf->cluster_sizes[b] = 0;
@@ -165,11 +164,11 @@ UF_get_collapsed_cluster_ids(UNIONFIND *uf, const char *is_in_cluster)
 static int
 cmp_int(const void *a, const void *b)
 {
-	if (*((uint32_t *)a) > *((uint32_t *)b)) { return 1; }
-	else if (*((uint32_t *)a) < *((uint32_t *)b)) {
+	if (*((uint32_t *)a) > *((uint32_t *)b)) {
+		return 1;
+	} else if (*((uint32_t *)a) < *((uint32_t *)b)) {
 		return -1;
-	}
-	else {
+	} else {
 		return 0;
 	}
 }

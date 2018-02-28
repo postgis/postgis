@@ -169,8 +169,7 @@ test_wkb_out_multipoint(void)
 
 static void
 test_wkb_out_multilinestring(void)
-{
-}
+{}
 
 static void
 test_wkb_out_multipolygon(void)
@@ -246,19 +245,17 @@ test_wkb_out_curvpolygon(void)
 
 static void
 test_wkb_out_multicurve(void)
-{
-}
+{}
 
 static void
 test_wkb_out_multisurface(void)
-{
-}
+{}
 
 static void
 test_wkb_out_polyhedralsurface(void)
 {
 	//	cu_wkb("POLYHEDRALSURFACE(((0 0 0 0,0 0 1 0,0 1 0 2,0 0 0 0)),((0 0 0 0,0 1 0 0,1 0 0 4,0 0 0 0)),((0 0
-	//0 0,1 0 0 0,0 0 1 6,0 0 0 0)),((1 0 0 0,0 1 0 0,0 0 1 0,1 0 0 0)))"); 	CU_ASSERT_STRING_EQUAL(s, t);
+	// 0 0,1 0 0 0,0 0 1 6,0 0 0 0)),((1 0 0 0,0 1 0 0,0 0 1 0,1 0 0 0)))"); 	CU_ASSERT_STRING_EQUAL(s, t);
 	//	printf("\nnew: %s\nold: %s\n",s,t);
 }
 

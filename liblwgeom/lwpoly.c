@@ -364,8 +364,9 @@ lwpoly_force_dims(const LWPOLY *poly, int hasz, int hasm)
 	LWPOLY *polyout;
 
 	/* Return 2D empty */
-	if (lwpoly_is_empty(poly)) { polyout = lwpoly_construct_empty(poly->srid, hasz, hasm); }
-	else {
+	if (lwpoly_is_empty(poly)) {
+		polyout = lwpoly_construct_empty(poly->srid, hasz, hasm);
+	} else {
 		POINTARRAY **rings = NULL;
 		uint32_t i;
 		rings = lwalloc(sizeof(POINTARRAY *) * poly->nrings);
@@ -471,8 +472,7 @@ lwpoly_is_closed(const LWPOLY *poly)
 	for (i = 0; i < poly->nrings; i++) {
 		if (FLAGS_GET_Z(poly->flags)) {
 			if (!ptarray_is_closed_3d(poly->rings[i])) return LW_FALSE;
-		}
-		else {
+		} else {
 			if (!ptarray_is_closed_2d(poly->rings[i])) return LW_FALSE;
 		}
 	}

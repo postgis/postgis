@@ -68,8 +68,7 @@ geos_envelope_surrogate(const LWGEOM *g)
 	if (lwgeom_get_type(g) == POINTTYPE) {
 		const POINT2D *pt = getPoint2d_cp(lwgeom_as_lwpoint(g)->point, 0);
 		return make_geos_point(pt->x, pt->y);
-	}
-	else {
+	} else {
 		const GBOX *box = lwgeom_get_bbox(g);
 		if (!box) return NULL;
 
@@ -96,8 +95,7 @@ make_strtree(void **geoms, uint32_t num_geoms, char is_lwgeom)
 			tree.envelopes[i] = geos_envelope_surrogate(geoms[i]);
 			GEOSSTRtree_insert(tree.tree, tree.envelopes[i], &(tree.geom_ids[i]));
 		}
-	}
-	else {
+	} else {
 		uint32_t i;
 		tree.envelopes = NULL;
 		for (i = 0; i < num_geoms; i++) {
@@ -181,15 +179,13 @@ union_intersecting_pairs(GEOSGeometry **geoms, uint32_t num_geoms, UNIONFIND *uf
 					/* Lazy initialize prepared geometry */
 					if (prep == NULL) { prep = GEOSPrepare(geoms[p]); }
 					geos_result = GEOSPreparedIntersects(prep, geoms[q]);
-				}
-				else {
+				} else {
 					geos_result = GEOSIntersects(geoms[p], geoms[q]);
 				}
 				if (geos_result > 1) {
 					success = LW_FAILURE;
 					break;
-				}
-				else if (geos_result) {
+				} else if (geos_result) {
 					UF_union(uf, p, q);
 				}
 			}
@@ -234,8 +230,7 @@ dbscan_update_context(GEOSSTRtree *tree, struct QueryContext *cxt, LWGEOM **geom
 	if (geoms[p]->type == POINTTYPE) {
 		const POINT2D *pt = getPoint2d_cp(lwgeom_as_lwpoint(geoms[p])->point, 0);
 		query_envelope = make_geos_segment(pt->x - eps, pt->y - eps, pt->x + eps, pt->y + eps);
-	}
-	else {
+	} else {
 		const GBOX *box = lwgeom_get_bbox(geoms[p]);
 		query_envelope = make_geos_segment(box->xmin - eps, box->ymin - eps, box->xmax + eps, box->ymax + eps);
 	}
@@ -261,8 +256,7 @@ union_if_available(UNIONFIND *uf, uint32_t p, uint32_t q, char *is_in_core, char
 		 * clusters.
 		 */
 		if (is_in_core[q]) { UF_union(uf, p, q); }
-	}
-	else {
+	} else {
 		UF_union(uf, p, q);
 		in_a_cluster[q] = LW_TRUE;
 	}
@@ -410,8 +404,7 @@ union_dbscan_general(LWGEOM **geoms,
 							    uf, p, neighbors[j], is_in_core, in_a_cluster);
 						}
 					}
-				}
-				else {
+				} else {
 					/* If we're above min_points, no need to store our neighbors, just go ahead
 					 * and union them now.  This may allow us to cut out some distance
 					 * computations.
@@ -509,8 +502,7 @@ combine_geometries(UNIONFIND *uf,
 				memcpy(components, geoms_in_cluster, j * sizeof(LWGEOM *));
 				(*clusterGeoms)[k++] = lwcollection_construct(
 				    COLLECTIONTYPE, components[0]->srid, NULL, j, (LWGEOM **)components);
-			}
-			else {
+			} else {
 				(*clusterGeoms)[k++] = GEOSGeom_createCollection(
 				    GEOS_GEOMETRYCOLLECTION, (GEOSGeometry **)geoms_in_cluster, j);
 			}

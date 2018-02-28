@@ -147,8 +147,7 @@ main(int argc, char *argv[])
 		option = strtol(argv[2], NULL, 10);
 		argc -= 2;
 		argv += 2;
-	}
-	else if (argc != 4)
+	} else if (argc != 4)
 		Usage();
 
 	std = std_init();
@@ -169,8 +168,7 @@ main(int argc, char *argv[])
 			/* add the record to the lexicon */
 			err = lex_add_entry(lex, seq, word, stdword, token);
 			if (err != 1) printf("lex: Failed: %d: %s", cnt, buf);
-		}
-		else {
+		} else {
 			printf("lex: Skipping: %d: %s", cnt, buf);
 		}
 	}
@@ -197,8 +195,7 @@ main(int argc, char *argv[])
 			/* add the record to the lexicon */
 			err = lex_add_entry(gaz, seq, word, stdword, token);
 			if (err != 1) printf("gaz: Failed: %d: %s", cnt, buf);
-		}
-		else {
+		} else {
 			printf("gaz: Skipping: %d: %s", cnt, buf);
 		}
 	}
@@ -294,8 +291,7 @@ standardize_command_line(STANDARDIZER *std, char *input_str, int option)
 				return FALSE; /* -- indicate no standardization -- */
 			}
 			convert_latin_one(unstandard_mic);
-		}
-		else {
+		} else {
 			strcpy(unstandard_mac_left, input_str);
 			if (*unstandard_mac_left != SENTINEL) {
 				have_user_macros = TRUE;

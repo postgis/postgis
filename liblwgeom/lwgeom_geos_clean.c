@@ -225,8 +225,7 @@ lwpoly_make_geos_friendly(LWPOLY *poly)
 			LWDEBUGF(
 			    3, "lwpoly_make_geos_friendly: ring %d cleaned, now has %d points", i, ring_out->npoints);
 			ptarray_free(ring_in);
-		}
-		else
+		} else
 			LWDEBUGF(3, "lwpoly_make_geos_friendly: ring %d untouched", i);
 
 		assert(ring_out);
@@ -260,8 +259,7 @@ lwline_make_geos_friendly(LWLINE *line)
 		ret = (LWGEOM *)lwpoint_construct(line->srid, 0, line->points);
 #endif
 		return ret;
-	}
-	else {
+	} else {
 		return (LWGEOM *)line;
 		/* return lwline_clone(line); */
 	}
@@ -573,8 +571,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry *gin)
 	if (1 == nvgeoms) {
 		/* Return cut edges */
 		gout = vgeoms[0];
-	}
-	else {
+	} else {
 		/* Collect areas and lines (if any line) */
 		gout = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, vgeoms, nvgeoms);
 		if (!gout) /* an exception again */
@@ -639,8 +636,7 @@ LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry *gin)
 				 *       taken by final collection */
 				lines[nlines++] = GEOSGeom_clone(gc);
 			}
-		}
-		else {
+		} else {
 			/* NOTE: return from GEOSGeomType will leak
 			 * but we really don't expect this to happen */
 			lwerror("unexpected geom type returned by LWGEOM_GEOS_makeValid: %s", GEOSGeomType(vg));
@@ -667,8 +663,7 @@ LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry *gin)
 		points[0] = mline_out;
 		points[1] = mpoint_out;
 		gout = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, points, 2);
-	}
-	else if (mline_out)
+	} else if (mline_out)
 		gout = mline_out;
 
 	else if (mpoint_out)
@@ -748,8 +743,7 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry *gin)
 		/* I don't think should ever happen */
 		lwerror("GEOSisValid(): %s", lwgeom_geos_errmsg);
 		return NULL;
-	}
-	else if (ret_char) {
+	} else if (ret_char) {
 		LWDEBUGF(3, "Geometry [%s] is valid. ", lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0)));
 
 		/* It's valid at this step, return what we have */
@@ -892,8 +886,7 @@ lwgeom_make_valid(LWGEOM *lwgeom_in)
 			lwerror("Couldn't convert POSTGIS geom to GEOS: %s", lwgeom_geos_errmsg);
 			return NULL;
 		}
-	}
-	else {
+	} else {
 		LWDEBUG(4, "original geom converted to GEOS");
 		lwgeom_out = lwgeom_in;
 	}

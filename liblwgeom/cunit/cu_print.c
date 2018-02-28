@@ -48,8 +48,7 @@ test_lwprint_assert_error(char *point_wkt, const char *format)
 	if (0 == strlen(cu_error_msg)) {
 		printf("\nAssert failed:\n\tFormat [%s] did not generate an error.\n", format);
 		CU_FAIL();
-	}
-	else {
+	} else {
 		cu_error_msg_reset();
 	}
 	lwpoint_free(test_point);

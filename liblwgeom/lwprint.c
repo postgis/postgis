@@ -125,8 +125,7 @@ lwdouble_to_dms(double val, const char *pos_dir_symbol, const char *neg_dir_symb
 		    "D\xC2\xB0"
 		    "M'S.SSS\"C";
 		format_length = strlen(format);
-	}
-	else if (format_length > WORK_SIZE) {
+	} else if (format_length > WORK_SIZE) {
 		/* Sanity check, we don't want to overwrite an entire piece of work and no one should need a 1K-sized
 		 * format string anyway. */
 		lwerror("Bad format, exceeds maximum length (%d).", WORK_SIZE);
@@ -139,8 +138,7 @@ lwdouble_to_dms(double val, const char *pos_dir_symbol, const char *neg_dir_symb
 			if (reading_deg) {
 				/* If we're reading degrees, add another digit. */
 				deg_has_decpoint ? deg_dec_digits++ : deg_digits++;
-			}
-			else {
+			} else {
 				/* If we're not reading degrees, we are now. */
 				current_piece++;
 				deg_piece = current_piece;
@@ -157,8 +155,7 @@ lwdouble_to_dms(double val, const char *pos_dir_symbol, const char *neg_dir_symb
 			if (reading_min) {
 				/* If we're reading minutes, add another digit. */
 				min_has_decpoint ? min_dec_digits++ : min_digits++;
-			}
-			else {
+			} else {
 				/* If we're not reading minutes, we are now. */
 				current_piece++;
 				min_piece = current_piece;
@@ -175,8 +172,7 @@ lwdouble_to_dms(double val, const char *pos_dir_symbol, const char *neg_dir_symb
 			if (reading_sec) {
 				/* If we're reading seconds, add another digit. */
 				sec_has_decpoint ? sec_dec_digits++ : sec_digits++;
-			}
-			else {
+			} else {
 				/* If we're not reading seconds, we are now. */
 				current_piece++;
 				sec_piece = current_piece;
@@ -208,14 +204,13 @@ lwdouble_to_dms(double val, const char *pos_dir_symbol, const char *neg_dir_symb
 			break;
 		case '.':
 			/* If we're reading deg, min, or sec, we want a decimal point for it. */
-			if (reading_deg) { deg_has_decpoint = 1; }
-			else if (reading_min) {
+			if (reading_deg) {
+				deg_has_decpoint = 1;
+			} else if (reading_min) {
 				min_has_decpoint = 1;
-			}
-			else if (reading_sec) {
+			} else if (reading_sec) {
 				sec_has_decpoint = 1;
-			}
-			else {
+			} else {
 				/* Not reading anything, just pass through the '.' */
 				strncat(pieces[current_piece], &next_char, 1);
 			}
@@ -235,14 +230,13 @@ lwdouble_to_dms(double val, const char *pos_dir_symbol, const char *neg_dir_symb
 			 * as well. */
 			multibyte_char_width = 1;
 			if (next_char & 0x80) {
-				if ((next_char & 0xF8) == 0xF0) { multibyte_char_width += 3; }
-				else if ((next_char & 0xF0) == 0xE0) {
+				if ((next_char & 0xF8) == 0xF0) {
+					multibyte_char_width += 3;
+				} else if ((next_char & 0xF0) == 0xE0) {
 					multibyte_char_width += 2;
-				}
-				else if ((next_char & 0xE0) == 0xC0) {
+				} else if ((next_char & 0xE0) == 0xC0) {
 					multibyte_char_width += 1;
-				}
-				else {
+				} else {
 					lwerror(
 					    "Bad format, invalid high-order byte found first, format string may not be UTF-8.");
 				}
@@ -301,8 +295,7 @@ lwdouble_to_dms(double val, const char *pos_dir_symbol, const char *neg_dir_symb
 	/* Handle the compass direction.  If not using compass dir, display degrees as a positive/negative number. */
 	if (compass_dir_piece >= 0) {
 		strcpy(pieces[compass_dir_piece], is_negative ? neg_dir_symbol : pos_dir_symbol);
-	}
-	else if (is_negative) {
+	} else if (is_negative) {
 		degrees *= -1;
 	}
 
@@ -442,8 +435,7 @@ lwprint_double(double d, int maxdd, char *buf, size_t bufsize)
 		ndd = ad < 1 ? 0 : floor(log10(ad)) + 1; /* non-decimal digits */
 		if (maxdd > (OUT_MAX_DOUBLE_PRECISION - ndd)) maxdd -= ndd;
 		length = snprintf(buf, bufsize, "%.*f", maxdd, d);
-	}
-	else {
+	} else {
 		length = snprintf(buf, bufsize, "%g", d);
 	}
 	assert(length < (int)bufsize);

@@ -68,8 +68,9 @@ init_errors(PAGC_GLOBAL *pagc_glo_p, const char *log_name)
 	/* -- set up first record -- */
 	RESET_ERR_P;
 	/* -- a null log_name means we don't log , but collect -- */
-	if (log_name == NULL) { err_p->stream = NULL; }
-	else {
+	if (log_name == NULL) {
+		err_p->stream = NULL;
+	} else {
 		err_p->stream = open_error_log(log_name, pagc_glo_p->_file_sys, err_p);
 		if (err_p->stream == NULL) {
 			FREE_AND_NULL(err_p);
@@ -102,8 +103,7 @@ close_errors(ERR_PARAM *err_p)
 		if (is_fatal_error) {
 #ifndef NO_STDERR_OUTPUT
 			PRINT_ERROR("ERROR: %s\n", err_out_buf);
-		}
-		else {
+		} else {
 			PRINT_ERROR("%s\n", err_out_buf);
 #endif
 		}
@@ -228,8 +228,7 @@ register_error(ERR_PARAM *err_p)
 			err_p->err_array[i].is_fatal = err_p->err_array[i + 1].is_fatal;
 			strcpy(err_p->err_array[i].content_buf, err_p->err_array[i + 1].content_buf);
 		}
-	}
-	else {
+	} else {
 		/* -- last_err points to the next one to fill -- */
 		err_p->last_err++;
 		err_mem = err_p->err_array + err_p->last_err;

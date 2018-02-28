@@ -271,15 +271,13 @@ lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int trunc
 		if (endpos - startpos < maxlength) {
 			outstart = str + startpos;
 			strncat(output, outstart, endpos - startpos + 1);
-		}
-		else {
+		} else {
 			if (maxlength >= 3) {
 				/* Add "..." prefix */
 				outstart = str + endpos + 1 - maxlength + 3;
 				strncat(output, "...", 3);
 				strncat(output, outstart, maxlength - 3);
-			}
-			else {
+			} else {
 				/* maxlength is too small; just output "..." */
 				strncat(output, "...", 3);
 			}
@@ -292,15 +290,13 @@ lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int trunc
 		if (endpos - startpos < maxlength) {
 			outstart = str + startpos;
 			strncat(output, outstart, endpos - startpos + 1);
-		}
-		else {
+		} else {
 			if (maxlength >= 3) {
 				/* Add "..." suffix */
 				outstart = str + startpos;
 				strncat(output, outstart, maxlength - 3);
 				strncat(output, "...", 3);
-			}
-			else {
+			} else {
 				/* maxlength is too small; just output "..." */
 				strncat(output, "...", 3);
 			}
@@ -336,8 +332,7 @@ clamp_srid(int srid)
 			newsrid = SRID_UNKNOWN;
 			lwnotice("SRID value %d converted to the officially unknown SRID value %d", srid, newsrid);
 		}
-	}
-	else if (srid > SRID_MAXIMUM) {
+	} else if (srid > SRID_MAXIMUM) {
 		newsrid = SRID_USER_MAXIMUM + 1 +
 			  /* -1 is to reduce likelyhood of clashes */
 			  /* NOTE: must match implementation in postgis_restore.pl */

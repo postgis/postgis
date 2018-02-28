@@ -136,8 +136,7 @@ lwgeom_wkb_type(const LWGEOM *geom, uint8_t variant)
 		if (FLAGS_GET_M(geom->flags)) wkb_type |= WKBMOFFSET;
 		/*		if ( geom->srid != SRID_UNKNOWN && ! (variant & WKB_NO_SRID) ) */
 		if (lwgeom_wkb_needs_srid(geom, variant)) wkb_type |= WKBSRIDFLAG;
-	}
-	else if (variant & WKB_ISO) {
+	} else if (variant & WKB_ISO) {
 		/* Z types are in the 1000 range */
 		if (FLAGS_GET_Z(geom->flags)) wkb_type += 1000;
 		/* M types are in the 2000 range */
@@ -157,8 +156,7 @@ endian_to_wkb_buf(uint8_t *buf, uint8_t variant)
 		buf[0] = '0';
 		buf[1] = ((variant & WKB_NDR) ? '1' : '0');
 		return buf + 2;
-	}
-	else {
+	} else {
 		buf[0] = ((variant & WKB_NDR) ? 1 : 0);
 		return buf + 1;
 	}
@@ -201,8 +199,7 @@ integer_to_wkb_buf(const int ival, uint8_t *buf, uint8_t variant)
 			buf[2 * i + 1] = hexchr[b & 0x0F];
 		}
 		return buf + (2 * WKB_INT_SIZE);
-	}
-	else {
+	} else {
 		/* Machine/request arch mismatch, so flip byte order */
 		if (wkb_swap_bytes(variant)) {
 			for (i = 0; i < WKB_INT_SIZE; i++) {
@@ -240,8 +237,7 @@ double_to_wkb_buf(const double d, uint8_t *buf, uint8_t variant)
 			buf[2 * i + 1] = hexchr[b & 0x0F];
 		}
 		return buf + (2 * WKB_DOUBLE_SIZE);
-	}
-	else {
+	} else {
 		/* Machine/request arch mismatch, so flip byte order */
 		if (wkb_swap_bytes(variant)) {
 			for (i = 0; i < WKB_DOUBLE_SIZE; i++) {

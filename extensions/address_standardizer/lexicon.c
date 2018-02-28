@@ -361,8 +361,7 @@ add_dict_entry(ERR_PARAM *err_p, ENTRY **hash_table, char *lookup_str, int def_n
 		E->Next = hash_table[hash_index]; /* -- collision chain -- */
 		hash_table[hash_index] = E;
 		if ((E->DefList = create_def(t, standard_str, def_num, FALSE, err_p)) == NULL) { return ERR_FAIL; }
-	}
-	else {
+	} else {
 		int err_stat;
 		if (E->DefList == NULL) { RET_ERR("add_dict_entry: Lexical entry lacks definition", err_p, ERR_FAIL); }
 		if ((err_stat = append_new_def(err_p, E, t, standard_str, def_num)) != TRUE) { return err_stat; }
@@ -388,8 +387,9 @@ append_new_def(ERR_PARAM *err_p, ENTRY *E, SYMB t, char *text, int def_num)
 		if (cd->Type == t) { return FALSE; }
 	}
 	if ((D = create_def(t, text, def_num, FALSE, err_p)) == NULL) { return ERR_FAIL; }
-	if (pd == NULL) { E->DefList = D; }
-	else {
+	if (pd == NULL) {
+		E->DefList = D;
+	} else {
 		D->Next = pd->Next;
 		pd->Next = D;
 	}
@@ -419,8 +419,7 @@ create_def(SYMB s, char *standard_str, int def_num, int PFlag, ERR_PARAM *err_p)
 	if (!PFlag) {
 		/* -- initialization-time allocation -- */
 		PAGC_STORE_STR(cur_def->Standard, standard_str, err_p, NULL);
-	}
-	else
+	} else
 		cur_def->Standard = NULL;
 	cur_def->Order = def_num;
 	cur_def->Next = NULL;

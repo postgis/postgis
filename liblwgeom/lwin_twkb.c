@@ -498,8 +498,7 @@ header_from_twkb_state(twkb_parse_state *s)
 		/* Convert the precision into factor */
 		s->factor_z = pow(10, (double)precision_z);
 		s->factor_m = pow(10, (double)precision_m);
-	}
-	else {
+	} else {
 		s->has_z = 0;
 		s->has_m = 0;
 		s->factor_z = 0;

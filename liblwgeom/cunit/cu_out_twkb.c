@@ -180,8 +180,7 @@ test_twkb_out_multipoint(void)
 
 static void
 test_twkb_out_multilinestring(void)
-{
-}
+{}
 
 static void
 test_twkb_out_multipolygon(void)

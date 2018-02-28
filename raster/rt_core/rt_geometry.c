@@ -213,8 +213,7 @@ rt_raster_get_perimeter(rt_raster raster, int nband, LWGEOM **perimeter)
 		}
 
 		numband = 1;
-	}
-	else
+	} else
 		nband = -1;
 
 	RASTER_DEBUGF(3, "rt_raster_get_perimeter: nband, numband = %d, %d", nband, numband);
@@ -228,8 +227,7 @@ rt_raster_get_perimeter(rt_raster raster, int nband, LWGEOM **perimeter)
 	if (nband < 0) {
 		for (i = 0; i < numband; i++)
 			_nband[i] = i;
-	}
-	else
+	} else
 		_nband[0] = nband;
 
 	for (i = 0; i < numband; i++) {
@@ -488,8 +486,7 @@ rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface)
 		} while (0);
 
 		GEOSGeom_destroy(gunion);
-	}
-	else {
+	} else {
 		mpoly = lwpoly_as_lwgeom(gv[0].geom);
 		rtdealloc(gv);
 
@@ -692,8 +689,7 @@ rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env)
 		}
 
 		return ES_NONE;
-	}
-	else {
+	} else {
 		rt_envelope rtenv;
 		int err = ES_NONE;
 		POINTARRAY **rings = NULL;
@@ -820,8 +816,7 @@ rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull)
 		}
 
 		return ES_NONE;
-	}
-	else {
+	} else {
 		POINTARRAY **rings = NULL;
 		LWPOLY *poly = NULL;
 
@@ -1035,8 +1030,7 @@ rt_raster_gdal_polygonize(rt_raster raster, int nband, int exclude_nodata_value,
 		rtwarn(
 		    "Couldn't create a field in OGR Layer. The polygons generated won't be able to store the pixel value");
 		iPixVal = -1;
-	}
-	else {
+	} else {
 		/* Index to the new field created in the layer */
 		iPixVal = 0;
 	}
@@ -1089,8 +1083,7 @@ rt_raster_gdal_polygonize(rt_raster raster, int nband, int exclude_nodata_value,
 		if (e != OGRERR_NONE) {
 			rtwarn("Error filtering NODATA values for band. All values will be treated as data values");
 		}
-	}
-	else {
+	} else {
 		pszQuery = NULL;
 	}
 

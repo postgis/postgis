@@ -169,8 +169,7 @@ test_wkb_in_multipoint(void)
 
 static void
 test_wkb_in_multilinestring(void)
-{
-}
+{}
 
 static void
 test_wkb_in_multipolygon(void)
@@ -226,13 +225,11 @@ test_wkb_in_curvpolygon(void)
 
 static void
 test_wkb_in_multicurve(void)
-{
-}
+{}
 
 static void
 test_wkb_in_multisurface(void)
-{
-}
+{}
 
 static void
 test_wkb_in_malformed(void)

@@ -148,8 +148,7 @@ wkt_parser_set_dims(LWGEOM *geom, uint8_t flags)
 			for (i = 0; i < col->ngeoms; i++)
 				wkt_parser_set_dims(col->geoms[i], flags);
 			return LW_SUCCESS;
-		}
-		else {
+		} else {
 			LWDEBUGF(2, "Unknown geometry type: %d", geom->type);
 			return LW_FAILURE;
 		}

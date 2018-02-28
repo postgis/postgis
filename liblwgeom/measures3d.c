@@ -161,8 +161,7 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 			}
 			lwfree(vertical_line);
 		}
-	}
-	else {
+	} else {
 		if (!lw_dist3d_recursive(lw1, lw2, &thedl)) {
 			/*should never get here. all cases ought to be error handled earlier*/
 			lwerror("Some unspecified error.");
@@ -173,8 +172,7 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 	if (thedl.distance == initdistance) {
 		LWDEBUG(3, "didn't find geometries to measure between, returning null");
 		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
-	}
-	else {
+	} else {
 		x1 = thedl.p1.x;
 		y1 = thedl.p1.y;
 		z1 = thedl.p1.z;
@@ -256,8 +254,7 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 			}
 			lwfree(vertical_line);
 		}
-	}
-	else {
+	} else {
 		if (!lw_dist3d_recursive(lw1, lw2, &thedl)) {
 			/*should never get here. all cases ought to be error handled earlier*/
 			lwerror("Some unspecified error.");
@@ -267,8 +264,7 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 	if (thedl.distance == initdistance) {
 		LWDEBUG(3, "didn't find geometries to measure between, returning null");
 		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
-	}
-	else {
+	} else {
 		x = thedl.p1.x;
 		y = thedl.p1.y;
 		z = thedl.p1.z;
@@ -385,8 +381,9 @@ lw_dist3d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D *dl)
 
 	for (i = 0; i < n1; i++) {
 
-		if (lwgeom_is_collection(lwg1)) { g1 = c1->geoms[i]; }
-		else {
+		if (lwgeom_is_collection(lwg1)) {
+			g1 = c1->geoms[i];
+		} else {
 			g1 = (LWGEOM *)lwg1;
 		}
 
@@ -398,8 +395,9 @@ lw_dist3d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D *dl)
 			continue;
 		}
 		for (j = 0; j < n2; j++) {
-			if (lwgeom_is_collection(lwg2)) { g2 = c2->geoms[j]; }
-			else {
+			if (lwgeom_is_collection(lwg2)) {
+				g2 = c2->geoms[j];
+			} else {
 				g2 = (LWGEOM *)lwg2;
 			}
 			if (lwgeom_is_collection(g2)) {
@@ -437,57 +435,45 @@ lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3
 		if (t2 == POINTTYPE) {
 			dl->twisted = 1;
 			return lw_dist3d_point_point((LWPOINT *)lwg1, (LWPOINT *)lwg2, dl);
-		}
-		else if (t2 == LINETYPE) {
+		} else if (t2 == LINETYPE) {
 			dl->twisted = 1;
 			return lw_dist3d_point_line((LWPOINT *)lwg1, (LWLINE *)lwg2, dl);
-		}
-		else if (t2 == POLYGONTYPE) {
+		} else if (t2 == POLYGONTYPE) {
 			dl->twisted = 1;
 			return lw_dist3d_point_poly((LWPOINT *)lwg1, (LWPOLY *)lwg2, dl);
-		}
-		else {
+		} else {
 			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
 			return LW_FALSE;
 		}
-	}
-	else if (t1 == LINETYPE) {
+	} else if (t1 == LINETYPE) {
 		if (t2 == POINTTYPE) {
 			dl->twisted = (-1);
 			return lw_dist3d_point_line((LWPOINT *)lwg2, (LWLINE *)lwg1, dl);
-		}
-		else if (t2 == LINETYPE) {
+		} else if (t2 == LINETYPE) {
 			dl->twisted = 1;
 			return lw_dist3d_line_line((LWLINE *)lwg1, (LWLINE *)lwg2, dl);
-		}
-		else if (t2 == POLYGONTYPE) {
+		} else if (t2 == POLYGONTYPE) {
 			dl->twisted = 1;
 			return lw_dist3d_line_poly((LWLINE *)lwg1, (LWPOLY *)lwg2, dl);
-		}
-		else {
+		} else {
 			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
 			return LW_FALSE;
 		}
-	}
-	else if (t1 == POLYGONTYPE) {
+	} else if (t1 == POLYGONTYPE) {
 		if (t2 == POLYGONTYPE) {
 			dl->twisted = 1;
 			return lw_dist3d_poly_poly((LWPOLY *)lwg1, (LWPOLY *)lwg2, dl);
-		}
-		else if (t2 == POINTTYPE) {
+		} else if (t2 == POINTTYPE) {
 			dl->twisted = -1;
 			return lw_dist3d_point_poly((LWPOINT *)lwg2, (LWPOLY *)lwg1, dl);
-		}
-		else if (t2 == LINETYPE) {
+		} else if (t2 == LINETYPE) {
 			dl->twisted = -1;
 			return lw_dist3d_line_poly((LWLINE *)lwg2, (LWPOLY *)lwg1, dl);
-		}
-		else {
+		} else {
 			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
 			return LW_FALSE;
 		}
-	}
-	else {
+	} else {
 		lwerror("Unsupported geometry type: %s", lwtype_name(t1));
 		return LW_FALSE;
 	}
@@ -738,8 +724,7 @@ lw_dist3d_pt_pt(POINT3DZ *thep1, POINT3DZ *thep2, DISTPTS3D *dl)
 		{
 			dl->p1 = *thep1;
 			dl->p2 = *thep2;
-		}
-		else {
+		} else {
 			dl->p1 = *thep2;
 			dl->p2 = *thep1;
 		}
@@ -775,8 +760,7 @@ lw_dist3d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2, DISTPTS3D *dl)
 				LWDEBUGF(3, " seg%d-seg%d dist: %f, mindist: %f", t, u, dl->distance, dl->tolerance);
 			}
 		}
-	}
-	else {
+	} else {
 		getPoint3dz_p(l1, 0, &start);
 		for (t = 1; t < l1->npoints; t++) /*for each segment in L1 */
 		{
@@ -849,12 +833,10 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 		if (b > c) /* use the largest denominator*/
 		{
 			s2k = d / b;
-		}
-		else {
+		} else {
 			s2k = e / c;
 		}
-	}
-	else {
+	} else {
 		s1k = (b * e - c * d) / D;
 		s2k = (a * e - b * d) / D;
 	}
@@ -878,8 +860,7 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 			dl->twisted = ((dl->twisted) * (-1));
 			if (!lw_dist3d_pt_seg(s2p2, s1p1, s1p2, dl)) { return LW_FALSE; }
 		}
-	}
-	else { /*Find the closest point on the edges of both segments*/
+	} else { /*Find the closest point on the edges of both segments*/
 		p1.x = s1p1->x + s1k * (s1p2->x - s1p1->x);
 		p1.y = s1p1->y + s1k * (s1p2->y - s1p1->y);
 		p1.z = s1p1->z + s1k * (s1p2->z - s1p1->z);
@@ -921,8 +902,7 @@ lw_dist3d_pt_poly(POINT3DZ *p, LWPOLY *poly, PLANE3D *plane, POINT3DZ *projp, DI
 
 		return lw_dist3d_pt_pt(p, projp, dl); /* If the projected point is inside the polygon the shortest
 							 distance is between that point and the inputed point*/
-	}
-	else {
+	} else {
 		return lw_dist3d_pt_ptarray(
 		    p, poly->rings[0], dl); /*If the projected point is outside the polygon we search for the closest
 					       distance against the boundarry instead*/
@@ -1028,8 +1008,7 @@ define_plane(POINTARRAY *pa, PLANE3D *pl)
 	if ((pa->npoints - 1) == 3) /*Triangle is special case*/
 	{
 		pointsinslice = 1;
-	}
-	else {
+	} else {
 		pointsinslice = (uint32_t)floor((pa->npoints - 1) / 4); /*divide the pointarray into 4 slices*/
 	}
 
@@ -1162,10 +1141,9 @@ pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring, PLANE3D *plane)
 			}
 			v1 = v2;
 		}
-	}
-	else if (fabs(plane->pv.y) >= fabs(plane->pv.x) &&
-		 fabs(plane->pv.y) >= fabs(plane->pv.z)) /*If the y vector of the normal vector to the plane is larger
-							    than x and z vector we project the ring to the xz-plane*/
+	} else if (fabs(plane->pv.y) >= fabs(plane->pv.x) &&
+		   fabs(plane->pv.y) >= fabs(plane->pv.z)) /*If the y vector of the normal vector to the plane is larger
+							      than x and z vector we project the ring to the xz-plane*/
 	{
 		for (i = 0; i < ring->npoints - 1; i++) {
 			double vt;
@@ -1188,8 +1166,7 @@ pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring, PLANE3D *plane)
 			}
 			v1 = v2;
 		}
-	}
-	else /*Hopefully we only have the cases where x part of the normal vector is largest left*/
+	} else /*Hopefully we only have the cases where x part of the normal vector is largest left*/
 	{
 		for (i = 0; i < ring->npoints - 1; i++) {
 			double vt;

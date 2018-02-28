@@ -312,8 +312,7 @@ getStyleName(char **styleName, char *line)
 		strncpy(*styleName, "Default", 7);
 		(*styleName)[7] = '\0';
 		return 1;
-	}
-	else {
+	} else {
 		*styleName = malloc(ptr - line + 1);
 		strncpy(*styleName, line, ptr - line);
 		(*styleName)[ptr - line] = '\0';
@@ -373,8 +372,7 @@ main(int argc, const char *argv[])
 		if (useDefaultStyle) {
 			printf("   Warning: using Default style for layer %d\n", layerCount);
 			lwgeom = lwgeom_from_wkt(line, LW_PARSER_CHECK_NONE);
-		}
-		else
+		} else
 			lwgeom = lwgeom_from_wkt(line + strlen(styleName) + 1, LW_PARSER_CHECK_NONE);
 		LWDEBUGF(4, "geom = %s", lwgeom_to_ewkt((LWGEOM *)lwgeom));
 

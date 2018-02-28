@@ -76,8 +76,7 @@ gidx_from_gbox_p(GBOX box, GIDX *a)
 	if (FLAGS_GET_GEODETIC(box.flags)) {
 		GIDX_SET_MIN(a, 2, next_float_down(box.zmin));
 		GIDX_SET_MAX(a, 2, next_float_up(box.zmax));
-	}
-	else {
+	} else {
 		/* Cartesian with Z implies Z is third dimension */
 		if (FLAGS_GET_Z(box.flags)) {
 			GIDX_SET_MIN(a, 2, next_float_down(box.zmin));
@@ -161,7 +160,9 @@ gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx)
 	if (g_ndims != box_ndims) { return NULL; }
 
 	/* Serialized already has room for a box. */
-	if (FLAGS_GET_BBOX(g->flags)) { g_out = g; }
+	if (FLAGS_GET_BBOX(g->flags)) {
+		g_out = g;
+	}
 	/* Serialized has no box. We need to allocate enough space for the old
 	   data plus the box, and leave a gap in the memory segment to write
 	   the new values into.
@@ -256,8 +257,7 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 			GIDX_SET_MAX(gidx, 2, FLT_MAX);
 		}
 		SET_VARSIZE(gidx, VARHDRSZ + size);
-	}
-	else {
+	} else {
 		/* No, we need to calculate it from the full object. */
 		GSERIALIZED *g = (GSERIALIZED *)PG_DETOAST_DATUM(gsdatum);
 		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
@@ -299,8 +299,7 @@ gserialized_get_gidx_p(const GSERIALIZED *g, GIDX *gidx)
 		POSTGIS_DEBUG(4, "copying box out of serialization");
 		memcpy(gidx->c, g->data, size);
 		SET_VARSIZE(gidx, VARHDRSZ + size);
-	}
-	else {
+	} else {
 		/* No, we need to calculate it from the full object. */
 		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
 		GBOX gbox;

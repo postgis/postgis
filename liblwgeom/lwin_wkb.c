@@ -389,11 +389,9 @@ lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 	if (wkb_type >= 3000 && wkb_type < 4000) {
 		s->has_z = LW_TRUE;
 		s->has_m = LW_TRUE;
-	}
-	else if (wkb_type >= 2000 && wkb_type < 3000) {
+	} else if (wkb_type >= 2000 && wkb_type < 3000) {
 		s->has_m = LW_TRUE;
-	}
-	else if (wkb_type >= 1000 && wkb_type < 2000) {
+	} else if (wkb_type >= 1000 && wkb_type < 2000) {
 		s->has_z = LW_TRUE;
 	}
 
@@ -642,8 +640,7 @@ lwpoint_from_wkb_state(wkb_parse_state *s)
 	if (isnan(pt->x) && isnan(pt->y)) {
 		ptarray_free(pa);
 		return lwpoint_construct_empty(s->srid, s->has_z, s->has_m);
-	}
-	else {
+	} else {
 		return lwpoint_construct(s->srid, NULL, pa);
 	}
 }
@@ -884,8 +881,7 @@ lwgeom_from_wkb_state(wkb_parse_state *s)
 	{
 		if (!wkb_little_endian) /* Data is big! */
 			s->swap_bytes = LW_TRUE;
-	}
-	else /* Machine arch is big */
+	} else /* Machine arch is big */
 	{
 		if (wkb_little_endian) /* Data is little! */
 			s->swap_bytes = LW_TRUE;

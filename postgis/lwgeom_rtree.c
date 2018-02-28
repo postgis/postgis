@@ -344,8 +344,7 @@ RTreeBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 			}
 		}
 		rtree_cache->index = currentCache;
-	}
-	else if (lwgeom->type == POLYGONTYPE) {
+	} else if (lwgeom->type == POLYGONTYPE) {
 		POSTGIS_DEBUG(2, "RTreeBuilder POLYGON");
 		poly = (LWPOLY *)lwgeom;
 		currentCache = RTreeCacheCreate();
@@ -360,8 +359,7 @@ RTreeBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 			currentCache->ringIndices[i] = RTreeCreate(poly->rings[i]);
 		}
 		rtree_cache->index = currentCache;
-	}
-	else {
+	} else {
 		/* Uh oh, shouldn't be here. */
 		lwpgerror("RTreeBuilder got asked to build index on non-polygon");
 		return LW_FAILURE;

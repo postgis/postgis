@@ -46,8 +46,7 @@ Datum geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 			}
 
 			PG_RETURN_BOOL(false);
-		}
-		else {
+		} else {
 			/*
 			 * in case the entry is not empty and it is not possible to
 			 * retrieve a box, raise an error

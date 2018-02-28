@@ -164,28 +164,23 @@ main()
 					printf("%s: TRUE\n", field_name);
 				else
 					printf("%s: FALSE\n", field_name);
-			}
-			else if (field_type == 23) // int4 (int)
+			} else if (field_type == 23) // int4 (int)
 			{
 				int_val = (int *)PQgetvalue(res, row, field);
 				printf("%s: %i\n", field_name, *int_val);
-			}
-			else if (field_type == 700) // float4 (float)
+			} else if (field_type == 700) // float4 (float)
 			{
 				float_val = (float *)PQgetvalue(res, row, field);
 				printf("%s: %g\n", field_name, *float_val);
-			}
-			else if (field_type == 701) // float8 (double)
+			} else if (field_type == 701) // float8 (double)
 			{
 				double_val = (double *)PQgetvalue(res, row, field);
 				printf("%s: %g\n", field_name, *double_val);
-			}
-			else if ((field_type == 1043) || (field_type == 25)) // varchar
+			} else if ((field_type == 1043) || (field_type == 25)) // varchar
 			{
 				char_val = (char *)PQgetvalue(res, row, field);
 				printf("%s: %s\n", field_name, char_val);
-			}
-			else if (field_type == WKB_OID) // wkb
+			} else if (field_type == WKB_OID) // wkb
 			{
 				char_val = (char *)PQgetvalue(res, row, field);
 				printf("%s: ", field_name);

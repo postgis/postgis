@@ -392,8 +392,7 @@ lwgeom_as_multi(const LWGEOM *lwgeom)
 	if (lwgeom_is_empty(lwgeom)) {
 		ogeom = (LWGEOM *)lwcollection_construct_empty(
 		    MULTITYPE[type], lwgeom->srid, FLAGS_GET_Z(lwgeom->flags), FLAGS_GET_M(lwgeom->flags));
-	}
-	else {
+	} else {
 		ogeoms = lwalloc(sizeof(LWGEOM *));
 		ogeoms[0] = lwgeom_clone(lwgeom);
 
@@ -684,8 +683,7 @@ lwgeom_add_bbox_deep(LWGEOM *lwgeom, GBOX *gbox)
 	if (!(gbox || lwgeom->bbox)) {
 		lwgeom->bbox = gbox_new(lwgeom->flags);
 		lwgeom_calculate_gbox(lwgeom, lwgeom->bbox);
-	}
-	else if (gbox && !lwgeom->bbox) {
+	} else if (gbox && !lwgeom->bbox) {
 		lwgeom->bbox = gbox_clone(gbox);
 	}
 
@@ -1142,26 +1140,24 @@ int
 lwgeom_needs_bbox(const LWGEOM *geom)
 {
 	assert(geom);
-	if (geom->type == POINTTYPE) { return LW_FALSE; }
-	else if (geom->type == LINETYPE) {
+	if (geom->type == POINTTYPE) {
+		return LW_FALSE;
+	} else if (geom->type == LINETYPE) {
 		if (lwgeom_count_vertices(geom) <= 2)
 			return LW_FALSE;
 		else
 			return LW_TRUE;
-	}
-	else if (geom->type == MULTIPOINTTYPE) {
+	} else if (geom->type == MULTIPOINTTYPE) {
 		if (((LWCOLLECTION *)geom)->ngeoms == 1)
 			return LW_FALSE;
 		else
 			return LW_TRUE;
-	}
-	else if (geom->type == MULTILINETYPE) {
+	} else if (geom->type == MULTILINETYPE) {
 		if (((LWCOLLECTION *)geom)->ngeoms == 1 && lwgeom_count_vertices(geom) <= 2)
 			return LW_FALSE;
 		else
 			return LW_TRUE;
-	}
-	else {
+	} else {
 		return LW_TRUE;
 	}
 }
@@ -1753,8 +1749,7 @@ lwgeom_area(const LWGEOM *geom)
 		for (i = 0; i < col->ngeoms; i++)
 			area += lwgeom_area(col->geoms[i]);
 		return area;
-	}
-	else
+	} else
 		return 0.0;
 }
 
@@ -1775,8 +1770,7 @@ lwgeom_perimeter(const LWGEOM *geom)
 		for (i = 0; i < col->ngeoms; i++)
 			perimeter += lwgeom_perimeter(col->geoms[i]);
 		return perimeter;
-	}
-	else
+	} else
 		return 0.0;
 }
 
@@ -1797,8 +1791,7 @@ lwgeom_perimeter_2d(const LWGEOM *geom)
 		for (i = 0; i < col->ngeoms; i++)
 			perimeter += lwgeom_perimeter_2d(col->geoms[i]);
 		return perimeter;
-	}
-	else
+	} else
 		return 0.0;
 }
 
@@ -1819,8 +1812,7 @@ lwgeom_length(const LWGEOM *geom)
 		for (i = 0; i < col->ngeoms; i++)
 			length += lwgeom_length(col->geoms[i]);
 		return length;
-	}
-	else
+	} else
 		return 0.0;
 }
 
@@ -1841,8 +1833,7 @@ lwgeom_length_2d(const LWGEOM *geom)
 		for (i = 0; i < col->ngeoms; i++)
 			length += lwgeom_length_2d(col->geoms[i]);
 		return length;
-	}
-	else
+	} else
 		return 0.0;
 }
 
@@ -1880,8 +1871,7 @@ lwgeom_affine(LWGEOM *geom, const AFFINE *affine)
 			for (i = 0; i < c->ngeoms; i++) {
 				lwgeom_affine(c->geoms[i], affine);
 			}
-		}
-		else {
+		} else {
 			lwerror("lwgeom_affine: unable to handle type '%s'", lwtype_name(type));
 		}
 	}
@@ -1922,8 +1912,7 @@ lwgeom_scale(LWGEOM *geom, const POINT4D *factor)
 			for (i = 0; i < c->ngeoms; i++) {
 				lwgeom_scale(c->geoms[i], factor);
 			}
-		}
-		else {
+		} else {
 			lwerror("lwgeom_scale: unable to handle type '%s'", lwtype_name(type));
 		}
 	}
@@ -2041,8 +2030,9 @@ lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
 			ptarray_grid_in_place(pa, grid);
 
 			/* Skip bad rings */
-			if (pa->npoints >= 4) { ply->rings[j++] = pa; }
-			else {
+			if (pa->npoints >= 4) {
+				ply->rings[j++] = pa;
+			} else {
 				ptarray_free(pa);
 			}
 		}
@@ -2117,8 +2107,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom,
 		if (geom->type == POINTTYPE) {
 			lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
 			return 1;
-		}
-		else {
+		} else {
 			return 0;
 		}
 	}
@@ -2152,8 +2141,9 @@ lwgeom_subdivide_recursive(const LWGEOM *geom,
 	}
 
 	subbox1 = subbox2 = *clip;
-	if (width > height) { subbox1.xmax = subbox2.xmin = (clip->xmin + clip->xmax) / 2; }
-	else {
+	if (width > height) {
+		subbox1.xmax = subbox2.xmin = (clip->xmin + clip->xmax) / 2;
+	} else {
 		subbox1.ymax = subbox2.ymin = (clip->ymin + clip->ymax) / 2;
 	}
 

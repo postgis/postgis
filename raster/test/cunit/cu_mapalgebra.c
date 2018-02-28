@@ -682,8 +682,7 @@ test_band_reclass()
 
 			exprset[i]->dst.min = 0;
 			exprset[i]->dst.max = 0;
-		}
-		else {
+		} else {
 			/* range */
 			exprset[i]->src.min = 0;
 			exprset[i]->src.inc_min = 0;

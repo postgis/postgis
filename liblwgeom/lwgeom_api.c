@@ -209,7 +209,9 @@ getPoint3dz_p(const POINTARRAY *pa, uint32_t n, POINT3DZ *op)
 	 * if input POINTARRAY has the Z, it is always
 	 * at third position so make a single copy
 	 */
-	if (FLAGS_GET_Z(pa->flags)) { memcpy(op, ptr, sizeof(POINT3DZ)); }
+	if (FLAGS_GET_Z(pa->flags)) {
+		memcpy(op, ptr, sizeof(POINT3DZ));
+	}
 
 	/*
 	 * Otherwise copy the 2d part and initialize
@@ -275,8 +277,7 @@ getPoint3dm_p(const POINTARRAY *pa, uint32_t n, POINT3DM *op)
 	if (zmflag == 3) {
 		ptr += sizeof(POINT3DZ);
 		memcpy(&(op->m), ptr, sizeof(double));
-	}
-	else {
+	} else {
 		op->m = NO_M_VALUE;
 	}
 

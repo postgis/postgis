@@ -48,8 +48,7 @@ bytebuffer_create_with_size(size_t size)
 	if (size < BYTEBUFFER_STATICSIZE) {
 		s->capacity = BYTEBUFFER_STATICSIZE;
 		s->buf_start = s->buf_static;
-	}
-	else {
+	} else {
 		s->buf_start = lwalloc(size);
 		s->capacity = size;
 	}
@@ -69,8 +68,7 @@ bytebuffer_init_with_size(bytebuffer_t *s, size_t size)
 	if (size < BYTEBUFFER_STATICSIZE) {
 		s->capacity = BYTEBUFFER_STATICSIZE;
 		s->buf_start = s->buf_static;
-	}
-	else {
+	} else {
 		s->buf_start = lwalloc(size);
 		s->capacity = size;
 	}
@@ -146,8 +144,7 @@ bytebuffer_makeroom(bytebuffer_t *s, size_t size_to_add)
 		if (s->buf_start == s->buf_static) {
 			s->buf_start = lwalloc(capacity);
 			memcpy(s->buf_start, s->buf_static, s->capacity);
-		}
-		else {
+		} else {
 			s->buf_start = lwrealloc(s->buf_start, capacity);
 		}
 		s->capacity = capacity;

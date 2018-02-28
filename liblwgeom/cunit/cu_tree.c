@@ -30,8 +30,9 @@ test_tree_circ_create(void)
 	c = circ_tree_new(g->points);
 	// circ_tree_print(c, 0);
 
-	if (CIRC_NODE_SIZE > 4) { CU_ASSERT(c->num_nodes == 4); }
-	else {
+	if (CIRC_NODE_SIZE > 4) {
+		CU_ASSERT(c->num_nodes == 4);
+	} else {
 		CU_ASSERT(c->num_nodes == (4 % CIRC_NODE_SIZE ? 1 : 0) + 4 / CIRC_NODE_SIZE);
 	}
 

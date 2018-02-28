@@ -517,8 +517,7 @@ update_loader_config_globals_from_options_ui(SHPLOADERCONFIG *config)
 		if (config->geo_col) free(config->geo_col);
 
 		config->geo_col = strdup(GEOGRAPHY_DEFAULT);
-	}
-	else {
+	} else {
 		config->geography = 0;
 
 		if (config->geo_col) free(config->geo_col);
@@ -557,8 +556,7 @@ update_loader_config_globals_from_options_ui(SHPLOADERCONFIG *config)
 
 		/* There will be no spatial column so don't create a spatial index */
 		config->createindex = 0;
-	}
-	else
+	} else
 		config->readshape = 1;
 
 	/* Use COPY rather than INSERT format */
@@ -694,8 +692,7 @@ update_table_chooser_from_database()
 						   geocol_name,
 						   -1);
 			}
-		}
-		else {
+		} else {
 			/* Add a "default" entry */
 			geocol_name = NULL;
 
@@ -1171,8 +1168,7 @@ validate_remote_loader_columns(SHPLOADERCONFIG *config, PGresult *result)
 					    config->schema,
 					    config->table);
 				response = SHPLOADERERR;
-			}
-			else {
+			} else {
 				/* If we have a row then lets do some simple column validation... */
 				state = ShpLoaderCreate(config);
 				ret = ShpLoaderOpenShape(state);
@@ -1223,8 +1219,7 @@ validate_remote_loader_columns(SHPLOADERCONFIG *config, PGresult *result)
 
 			break;
 		}
-	}
-	else {
+	} else {
 		pgui_seterr(_("ERROR: unable to process validation response from remote server"));
 		response = SHPLOADERERR;
 	}
@@ -2468,8 +2463,7 @@ pgui_action_connection_okay(GtkWidget *widget, gpointer data)
 		/* If the connection failed, display a warning before closing */
 		pgui_seterr(_("Unable to connect to the database - please check your connection settings"));
 		pgui_raise_error_dialogue();
-	}
-	else {
+	} else {
 		pgui_logf(_("Connection succeeded."));
 	}
 

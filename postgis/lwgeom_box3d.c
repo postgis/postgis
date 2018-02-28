@@ -370,8 +370,7 @@ Datum BOX3D_expand(PG_FUNCTION_ARGS)
 		/* Expand the box the same amount in all directions */
 		double d = PG_GETARG_FLOAT8(1);
 		expand_box3d(result, d);
-	}
-	else {
+	} else {
 		double dx = PG_GETARG_FLOAT8(1);
 		double dy = PG_GETARG_FLOAT8(2);
 		double dz = PG_GETARG_FLOAT8(3);
@@ -466,7 +465,9 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	int rv;
 
 	/* Can't do anything with null inputs */
-	if ((box == NULL) && (geom == NULL)) { PG_RETURN_NULL(); }
+	if ((box == NULL) && (geom == NULL)) {
+		PG_RETURN_NULL();
+	}
 	/* Null geometry but non-null box, return the box */
 	else if (geom == NULL) {
 		result = palloc(sizeof(BOX3D));

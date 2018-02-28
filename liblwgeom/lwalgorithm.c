@@ -157,8 +157,7 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 			angle = a1 - a3;
 		else
 			angle = 2 * M_PI + a1 - a3;
-	}
-	else {
+	} else {
 		if (a3 > a1)
 			angle = a3 - a1;
 		else
@@ -540,25 +539,23 @@ geohash_point(double longitude, double latitude, int precision)
 			if (longitude >= mid) {
 				ch |= bits[bit];
 				lon[0] = mid;
-			}
-			else {
+			} else {
 				lon[1] = mid;
 			}
-		}
-		else {
+		} else {
 			mid = (lat[0] + lat[1]) / 2;
 			if (latitude >= mid) {
 				ch |= bits[bit];
 				lat[0] = mid;
-			}
-			else {
+			} else {
 				lat[1] = mid;
 			}
 		}
 
 		is_even = !is_even;
-		if (bit < 4) { bit++; }
-		else {
+		if (bit < 4) {
+			bit++;
+		} else {
 			geohash[i++] = base32[ch];
 			bit = 0;
 			ch = 0;
@@ -595,18 +592,15 @@ geohash_point_as_int(POINT2D *pt)
 			if (longitude > mid) {
 				ch |= 0x0001u << bit;
 				lon[0] = mid;
-			}
-			else {
+			} else {
 				lon[1] = mid;
 			}
-		}
-		else {
+		} else {
 			mid = (lat[0] + lat[1]) / 2;
 			if (latitude > mid) {
 				ch |= 0x0001 << bit;
 				lat[0] = mid;
-			}
-			else {
+			} else {
 				lat[1] = mid;
 			}
 		}
@@ -645,8 +639,9 @@ decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision)
 
 		for (j = 0; j < 5; j++) {
 			mask = bits[j];
-			if (is_even) { lon[!(cd & mask)] = (lon[0] + lon[1]) / 2; }
-			else {
+			if (is_even) {
+				lon[!(cd & mask)] = (lon[0] + lon[1]) / 2;
+			} else {
 				lat[!(cd & mask)] = (lat[0] + lat[1]) / 2;
 			}
 			is_even = !is_even;
@@ -687,8 +682,9 @@ lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 		latwidth = latmax - latmin;
 		latmaxadjust = lonmaxadjust = latminadjust = lonminadjust = 0.0;
 
-		if (minx > lonmin + lonwidth / 2.0) { lonminadjust = lonwidth / 2.0; }
-		else if (maxx < lonmax - lonwidth / 2.0) {
+		if (minx > lonmin + lonwidth / 2.0) {
+			lonminadjust = lonwidth / 2.0;
+		} else if (maxx < lonmax - lonwidth / 2.0) {
 			lonmaxadjust = -1 * lonwidth / 2.0;
 		}
 		if (lonminadjust || lonmaxadjust) {
@@ -697,13 +693,13 @@ lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 			/* Each adjustment cycle corresponds to 2 bits of storage in the
 			** geohash.	*/
 			precision++;
-		}
-		else {
+		} else {
 			break;
 		}
 
-		if (miny > latmin + latwidth / 2.0) { latminadjust = latwidth / 2.0; }
-		else if (maxy < latmax - latwidth / 2.0) {
+		if (miny > latmin + latwidth / 2.0) {
+			latminadjust = latwidth / 2.0;
+		} else if (maxy < latmax - latwidth / 2.0) {
 			latmaxadjust = -1 * latwidth / 2.0;
 		}
 		/* Only adjust if adjustments are legal (we haven't crossed any edges). */
@@ -713,8 +709,7 @@ lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 			/* Each adjustment cycle corresponds to 2 bits of storage in the
 			** geohash.	*/
 			precision++;
-		}
-		else {
+		} else {
 			break;
 		}
 	}

@@ -269,8 +269,9 @@ stringbuffer_trim_trailing_white(stringbuffer_t *s)
 	/* Roll backwards until we hit a non-space. */
 	while (ptr > s->str_start) {
 		ptr--;
-		if ((*ptr == ' ') || (*ptr == '\t')) { continue; }
-		else {
+		if ((*ptr == ' ') || (*ptr == '\t')) {
+			continue;
+		} else {
 			ptr++;
 			dist = s->str_end - ptr;
 			*ptr = '\0';

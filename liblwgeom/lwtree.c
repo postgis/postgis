@@ -229,8 +229,7 @@ rect_leaf_node_segment_side(RECT_NODE_LEAF *node, const POINT2D *q, int *on_boun
 
 			/* Segment points down and point is on right */
 			if (p1->y > p3->y && seg_side == 1 && q->y != p3->y) { return 1; }
-		}
-		else {
+		} else {
 			/* Segment points up and point is on left */
 			if (p1->y < p3->y && seg_side == 1 && q->y != p3->y) { return 1; }
 
@@ -267,8 +266,9 @@ rect_tree_ring_contains_point(RECT_NODE *node, const POINT2D *pt, int *on_bounda
 	/* Only test nodes that straddle our stabline vertically */
 	/* and might be to the right horizontally */
 	if (node->ymin <= pt->y && pt->y <= node->ymax && pt->x <= node->xmax) {
-		if (rect_node_is_leaf(node)) { return rect_leaf_node_segment_side(&node->l, pt, on_boundary); }
-		else {
+		if (rect_node_is_leaf(node)) {
+			return rect_leaf_node_segment_side(&node->l, pt, on_boundary);
+		} else {
 			int i, r = 0;
 			for (i = 0; i < node->i.num_nodes; i++) {
 				r += rect_tree_ring_contains_point(node->i.nodes[i], pt, on_boundary);
@@ -307,8 +307,9 @@ rect_tree_area_contains_point(RECT_NODE *node, const POINT2D *pt)
 		/* External rings return positive containment, interior ones negative, */
 		/* so that a point-in-hole case nets out to zero (contained by both */
 		/* interior and exterior rings. */
-		if (node->i.ring_type == RECT_NODE_RING_INTERIOR) { return on_boundary ? 0 : -1 * contained; }
-		else {
+		if (node->i.ring_type == RECT_NODE_RING_INTERIOR) {
+			return on_boundary ? 0 : -1 * contained;
+		} else {
 			return contained || on_boundary;
 		}
 	}
@@ -583,8 +584,9 @@ LWGEOM *
 rect_tree_to_lwgeom(const RECT_NODE *node)
 {
 	LWGEOM *poly = (LWGEOM *)lwpoly_construct_envelope(0, node->xmin, node->ymin, node->xmax, node->ymax);
-	if (rect_node_is_leaf(node)) { return poly; }
-	else {
+	if (rect_node_is_leaf(node)) {
+		return poly;
+	} else {
 		int i;
 		LWCOLLECTION *col = lwcollection_construct_empty(COLLECTIONTYPE, 0, 0, 0);
 		lwcollection_add_lwgeom(col, poly);
@@ -614,8 +616,7 @@ rect_tree_printf(const RECT_NODE *node, int depth)
 	if (node->type == RECT_NODE_LEAF_TYPE) {
 		printf("%*sseg_type: %d\n", depth, "", node->l.seg_type);
 		printf("%*sseg_num: %d\n", depth, "", node->l.seg_num);
-	}
-	else {
+	} else {
 		int i;
 		for (i = 0; i < node->i.num_nodes; i++) {
 			rect_tree_printf(node->i.nodes[i], depth + 2);
@@ -789,8 +790,9 @@ rect_tree_get_point(const RECT_NODE *node)
 static inline int
 rect_node_intersects(const RECT_NODE *n1, const RECT_NODE *n2)
 {
-	if (n1->xmin > n2->xmax || n2->xmin > n1->xmax || n1->ymin > n2->ymax || n2->ymin > n1->ymax) { return 0; }
-	else {
+	if (n1->xmin > n2->xmax || n2->xmin > n1->xmax || n1->ymin > n2->ymax || n2->ymin > n1->ymax) {
+		return 0;
+	} else {
 		return 1;
 	}
 }
@@ -822,18 +824,15 @@ rect_tree_intersects_tree_recursive(RECT_NODE *n1, RECT_NODE *n2)
 			LWDEBUG(4, "  leaf node test");
 			/* Check for true intersection */
 			return rect_leaf_node_intersects(&n1->l, &n2->l);
-		}
-		else if (rect_node_is_leaf(n2) && !rect_node_is_leaf(n1)) {
+		} else if (rect_node_is_leaf(n2) && !rect_node_is_leaf(n1)) {
 			for (i = 0; i < n1->i.num_nodes; i++) {
 				if (rect_tree_intersects_tree_recursive(n1->i.nodes[i], n2)) return LW_TRUE;
 			}
-		}
-		else if (rect_node_is_leaf(n1) && !rect_node_is_leaf(n2)) {
+		} else if (rect_node_is_leaf(n1) && !rect_node_is_leaf(n2)) {
 			for (i = 0; i < n2->i.num_nodes; i++) {
 				if (rect_tree_intersects_tree_recursive(n2->i.nodes[i], n1)) return LW_TRUE;
 			}
-		}
-		else {
+		} else {
 			for (j = 0; j < n1->i.num_nodes; j++) {
 				for (i = 0; i < n2->i.num_nodes; i++) {
 					if (rect_tree_intersects_tree_recursive(n2->i.nodes[i], n1->i.nodes[j]))
@@ -1142,7 +1141,9 @@ rect_tree_distance_tree_recursive(RECT_NODE *n1, RECT_NODE *n2, RECT_TREE_DISTAN
 	if (max < state->max_dist) state->max_dist = max;
 
 	/* Both leaf nodes, do a real distance calculation */
-	if (rect_node_is_leaf(n1) && rect_node_is_leaf(n2)) { return rect_leaf_node_distance(&n1->l, &n2->l, state); }
+	if (rect_node_is_leaf(n1) && rect_node_is_leaf(n2)) {
+		return rect_leaf_node_distance(&n1->l, &n2->l, state);
+	}
 	/* Recurse into nodes */
 	else {
 		int i, j;
@@ -1153,14 +1154,12 @@ rect_tree_distance_tree_recursive(RECT_NODE *n1, RECT_NODE *n2, RECT_TREE_DISTAN
 				min = rect_tree_distance_tree_recursive(n1, n2->i.nodes[i], state);
 				d_min = FP_MIN(d_min, min);
 			}
-		}
-		else if (rect_node_is_leaf(n2) && !rect_node_is_leaf(n1)) {
+		} else if (rect_node_is_leaf(n2) && !rect_node_is_leaf(n1)) {
 			for (i = 0; i < n1->i.num_nodes; i++) {
 				min = rect_tree_distance_tree_recursive(n1->i.nodes[i], n2, state);
 				d_min = FP_MIN(d_min, min);
 			}
-		}
-		else {
+		} else {
 			for (i = 0; i < n1->i.num_nodes; i++) {
 				for (j = 0; j < n2->i.num_nodes; j++) {
 					min = rect_tree_distance_tree_recursive(n1->i.nodes[i], n2->i.nodes[j], state);

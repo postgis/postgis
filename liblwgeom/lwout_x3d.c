@@ -148,8 +148,7 @@ asx3d3_mline_coordindex_sb(const LWMLINE *mgeom, stringbuffer_t *sb)
 			if (!lwline_is_closed(geom) || k < (np - 1)) {
 				stringbuffer_aprintf(sb, "%u", j);
 				j += 1;
-			}
-			else {
+			} else {
 				stringbuffer_aprintf(sb, "%u", si);
 			}
 		}
@@ -283,8 +282,7 @@ asx3d3_multi_sb(const LWCOLLECTION *col,
 		if (dimension == 2) { /** Use Polypoint2D instead **/
 			x3dtype = "Polypoint2D";
 			stringbuffer_aprintf(sb, "<%s %s point='", x3dtype, defid);
-		}
-		else {
+		} else {
 			stringbuffer_aprintf(sb, "<%s %s>", x3dtype, defid);
 		}
 		break;
@@ -318,20 +316,19 @@ asx3d3_multi_sb(const LWCOLLECTION *col,
 		if (subgeom->type == POINTTYPE) {
 			asx3d3_point_sb((LWPOINT *)subgeom, 0, precision, opts, defid, sb);
 			stringbuffer_aprintf(sb, " ");
-		}
-		else if (subgeom->type == LINETYPE) {
+		} else if (subgeom->type == LINETYPE) {
 			asx3d3_line_coords_sb((LWLINE *)subgeom, precision, opts, sb);
 			stringbuffer_aprintf(sb, " ");
-		}
-		else if (subgeom->type == POLYGONTYPE) {
+		} else if (subgeom->type == POLYGONTYPE) {
 			asx3d3_poly_sb((LWPOLY *)subgeom, 0, precision, opts, 0, defid, sb);
 			stringbuffer_aprintf(sb, " ");
 		}
 	}
 
 	/* Close outmost tag */
-	if (dimension == 3) { stringbuffer_aprintf(sb, "' /></%s>", x3dtype); }
-	else {
+	if (dimension == 3) {
+		stringbuffer_aprintf(sb, "' /></%s>", x3dtype);
+	} else {
 		stringbuffer_aprintf(sb, "' />");
 	}
 	return LW_SUCCESS;
@@ -440,26 +437,22 @@ asx3d3_collection_sb(const LWCOLLECTION *col, char *srs, int precision, int opts
 	for (i = 0; i < col->ngeoms; i++) {
 		subgeom = col->geoms[i];
 		stringbuffer_aprintf(sb, "<Shape%s>", defid);
-		if (subgeom->type == POINTTYPE) { asx3d3_point_sb((LWPOINT *)subgeom, 0, precision, opts, defid, sb); }
-		else if (subgeom->type == LINETYPE) {
+		if (subgeom->type == POINTTYPE) {
+			asx3d3_point_sb((LWPOINT *)subgeom, 0, precision, opts, defid, sb);
+		} else if (subgeom->type == LINETYPE) {
 			asx3d3_line_sb((LWLINE *)subgeom, 0, precision, opts, defid, sb);
-		}
-		else if (subgeom->type == POLYGONTYPE) {
+		} else if (subgeom->type == POLYGONTYPE) {
 			asx3d3_poly_sb((LWPOLY *)subgeom, 0, precision, opts, 0, defid, sb);
-		}
-		else if (subgeom->type == TINTYPE) {
+		} else if (subgeom->type == TINTYPE) {
 			asx3d3_tin_sb((LWTIN *)subgeom, srs, precision, opts, defid, sb);
-		}
-		else if (subgeom->type == POLYHEDRALSURFACETYPE) {
+		} else if (subgeom->type == POLYHEDRALSURFACETYPE) {
 			asx3d3_psurface_sb((LWPSURFACE *)subgeom, srs, precision, opts, defid, sb);
-		}
-		else if (lwgeom_is_collection(subgeom)) {
+		} else if (lwgeom_is_collection(subgeom)) {
 			if (subgeom->type == COLLECTIONTYPE)
 				asx3d3_collection_sb((LWCOLLECTION *)subgeom, 0, precision, opts, defid, sb);
 			else
 				asx3d3_multi_sb((LWCOLLECTION *)subgeom, 0, precision, opts, defid, sb);
-		}
-		else
+		} else
 			lwerror("asx3d3_collection_buf: unknown geometry type");
 
 		stringbuffer_aprintf(sb, "</Shape>");
@@ -502,8 +495,7 @@ ptarray_to_x3d3_sb(POINTARRAY *pa, int precision, int opts, int is_closed, strin
 					stringbuffer_aprintf(sb, "%s %s", x, y);
 			}
 		}
-	}
-	else {
+	} else {
 		for (i = 0; i < pa->npoints; i++) {
 			/** Only output the point if it is not the last point of a closed object or it is a non-closed
 			 * type **/

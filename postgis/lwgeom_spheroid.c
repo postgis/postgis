@@ -261,8 +261,9 @@ distance_ellipse_calculation(double lat1, double long1, double lat2, double long
 		 * mathematical stability problem
 		 */
 		TEMP = cosSigma - (2.0 * sinU1 * sinU2) / (cos(azimuthEQ) * cos(azimuthEQ));
-		if (TEMP > 1) { TEMP = 1; }
-		else if (TEMP < -1) {
+		if (TEMP > 1) {
+			TEMP = 1;
+		} else if (TEMP < -1) {
 			TEMP = -1;
 		}
 		tsm = acos(TEMP);

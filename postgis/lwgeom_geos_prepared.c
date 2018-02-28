@@ -238,8 +238,7 @@ AddPrepGeomHashEntry(PrepGeomHashEntry pghe)
 		he->context = pghe.context;
 		he->geom = pghe.geom;
 		he->prepared_geom = pghe.prepared_geom;
-	}
-	else {
+	} else {
 		elog(ERROR, "AddPrepGeomHashEntry: This memory context is already in use! (%p)", (void *)pghe.context);
 	}
 }

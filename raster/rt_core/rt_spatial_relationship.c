@@ -64,8 +64,7 @@ rt_raster_same_alignment(rt_raster rast1, rt_raster rast2, int *aligned, char **
 	else if (FLT_NEQ(fabs(rast1->scaleX), fabs(rast2->scaleX))) {
 		if (reason != NULL) *reason = "The rasters have different scales on the X axis";
 		err = 1;
-	}
-	else if (FLT_NEQ(fabs(rast1->scaleY), fabs(rast2->scaleY))) {
+	} else if (FLT_NEQ(fabs(rast1->scaleY), fabs(rast2->scaleY))) {
 		if (reason != NULL) *reason = "The rasters have different scales on the Y axis";
 		err = 1;
 	}
@@ -73,8 +72,7 @@ rt_raster_same_alignment(rt_raster rast1, rt_raster rast2, int *aligned, char **
 	else if (FLT_NEQ(rast1->skewX, rast2->skewX)) {
 		if (reason != NULL) *reason = "The rasters have different skews on the X axis";
 		err = 1;
-	}
-	else if (FLT_NEQ(rast1->skewY, rast2->skewY)) {
+	} else if (FLT_NEQ(rast1->skewY, rast2->skewY)) {
 		if (reason != NULL) *reason = "The rasters have different skews on the Y axis";
 		err = 1;
 	}
@@ -146,8 +144,7 @@ rt_raster_geos_spatial_relationship(rt_raster rast1,
 	if (nband1 < 0 && nband2 < 0) {
 		nband1 = -1;
 		nband2 = -1;
-	}
-	else {
+	} else {
 		assert(nband1 >= 0 && nband1 < rt_raster_get_num_bands(rast1));
 		assert(nband2 >= 0 && nband2 < rt_raster_get_num_bands(rast2));
 	}
@@ -426,8 +423,7 @@ rt_raster_within_distance(rt_raster rast1, int nband1, rt_raster rast2, int nban
 	if (nband1 < 0 && nband2 < 0) {
 		nband1 = -1;
 		nband2 = -1;
-	}
-	else {
+	} else {
 		assert(nband1 >= 0 && nband1 < rt_raster_get_num_bands(rast1));
 		assert(nband2 >= 0 && nband2 < rt_raster_get_num_bands(rast2));
 	}
@@ -523,8 +519,7 @@ rt_raster_fully_within_distance(rt_raster rast1,
 	if (nband1 < 0 && nband2 < 0) {
 		nband1 = -1;
 		nband2 = -1;
-	}
-	else {
+	} else {
 		assert(nband1 >= 0 && nband1 < rt_raster_get_num_bands(rast1));
 		assert(nband2 >= 0 && nband2 < rt_raster_get_num_bands(rast2));
 	}
@@ -682,8 +677,7 @@ rt_raster_intersects_algorithm(rt_raster rast1,
 
 						rt_raster_cell_to_geopoint(
 						    rast2, width2, row, &(line2[X2]), &(line2[Y2]), gt2);
-					}
-					else {
+					} else {
 						rt_raster_cell_to_geopoint(
 						    rast2, row, 0, &(line2[X1]), &(line2[Y1]), gt2);
 
@@ -799,8 +793,7 @@ rt_raster_intersects_algorithm(rt_raster rast1,
 								 (Qr[pY] < 0 || Qr[pY] > height1 ||
 								  FLT_EQ(Qr[pY], height1))) {
 								noval1 = 1;
-							}
-							else if (hasnodata1 == FALSE)
+							} else if (hasnodata1 == FALSE)
 								val1 = 1;
 							/* unable to get value at cell */
 							else if (rt_band_get_pixel(
@@ -821,8 +814,7 @@ rt_raster_intersects_algorithm(rt_raster rast1,
 								 (Qr[pY] < 0 || Qr[pY] > height2 ||
 								  FLT_EQ(Qr[pY], height2))) {
 								noval2 = 1;
-							}
-							else if (hasnodata2 == FALSE)
+							} else if (hasnodata2 == FALSE)
 								val2 = 1;
 							/* unable to get value at cell */
 							else if (rt_band_get_pixel(
@@ -873,8 +865,7 @@ rt_raster_intersects_algorithm(rt_raster rast1,
 								return 1;
 							}
 						}
-					}
-					else {
+					} else {
 						RASTER_DEBUG(4, "outside of bounds");
 					}
 				}
@@ -959,8 +950,7 @@ rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, i
 	if (nband1 < 0 && nband2 < 0) {
 		nband1 = -1;
 		nband2 = -1;
-	}
-	else {
+	} else {
 		assert(nband1 >= 0 && nband1 < rt_raster_get_num_bands(rast1));
 		assert(nband2 >= 0 && nband2 < rt_raster_get_num_bands(rast2));
 	}
@@ -1030,8 +1020,7 @@ rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, i
 				*intersects = 1;
 				return ES_NONE;
 			}
-		}
-		else {
+		} else {
 			RASTER_DEBUG(4, "GEOSIntersects() returned a 2!!!!");
 		}
 	} while (0);
@@ -1058,8 +1047,7 @@ rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, i
 		nbandL = nband2;
 		widthL = &width2;
 		heightL = &height2;
-	}
-	else {
+	} else {
 		rastS = rast2;
 		nbandS = nband2;
 		widthS = &width2;

@@ -82,8 +82,7 @@ Datum RASTER_gdal_version(PG_FUNCTION_ARGS)
 			result = cstring_to_text(rtn);
 			pfree(rtn);
 		}
-	}
-	else
+	} else
 		result = cstring_to_text(ver);
 
 	PG_RETURN_POINTER(result);

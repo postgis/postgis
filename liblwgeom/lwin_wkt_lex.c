@@ -888,8 +888,7 @@ static int input(void);
 		if (c == '\n') buf[n++] = (char)c; \
 		if (c == EOF && ferror(yyin)) YY_FATAL_ERROR("input in flex scanner failed"); \
 		result = n; \
-	} \
-	else { \
+	} else { \
 		errno = 0; \
 		while ((result = (int)fread(buf, 1, (yy_size_t)max_size, yyin)) == 0 && ferror(yyin)) { \
 			if (errno != EINTR) { \
@@ -1413,8 +1412,7 @@ yy_get_next_buffer(void)
 				b->yy_ch_buf = (char *)
 				    /* Include room in for 2 EOB chars. */
 				    yyrealloc((void *)b->yy_ch_buf, (yy_size_t)(b->yy_buf_size + 2));
-			}
-			else
+			} else
 				/* Can't grow it, we don't own it. */
 				b->yy_ch_buf = NULL;
 

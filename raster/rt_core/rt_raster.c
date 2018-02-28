@@ -442,8 +442,7 @@ rt_raster_add_band(rt_raster raster, rt_band band, int index)
 		if (i == index) {
 			oldband = raster->bands[i];
 			raster->bands[i] = band;
-		}
-		else if (i > index) {
+		} else if (i > index) {
 			tmpband = raster->bands[i];
 			raster->bands[i] = oldband;
 			oldband = tmpband;
@@ -861,8 +860,7 @@ rt_raster_get_envelope(rt_raster raster, rt_envelope *env)
 			env->MaxX = _w[0];
 			env->MinY = _w[1];
 			env->MaxY = _w[1];
-		}
-		else {
+		} else {
 			if (_w[0] < env->MinX)
 				env->MinX = _w[0];
 			else if (_w[0] > env->MaxX)
@@ -921,8 +919,9 @@ rt_raster_compute_skewed_raster(rt_envelope extent, double *skew, double *scale,
 	GEOSGeometry *sgeom = NULL;
 	GEOSGeometry *ngeom = NULL;
 
-	if ((tolerance < 0.) || FLT_EQ(tolerance, 0.)) { tolerance = 0.1; }
-	else if (tolerance > 1.)
+	if ((tolerance < 0.) || FLT_EQ(tolerance, 0.)) {
+		tolerance = 0.1;
+	} else if (tolerance > 1.)
 		tolerance = 1;
 
 	dbl_run = tolerance;
@@ -1059,8 +1058,7 @@ rt_raster_compute_skewed_raster(rt_envelope extent, double *skew, double *scale,
 					if (_dlastpos != j) {
 						_dlast = (int)_r[i];
 						_dlastpos = j;
-					}
-					else if ((int)_r[i] < _dlast) {
+					} else if ((int)_r[i] < _dlast) {
 						RASTER_DEBUG(4, "Point going in wrong direction.  Reversing direction");
 						_d[i] *= -1;
 						_dlastpos = -1;
@@ -1308,12 +1306,10 @@ rt_raster_copy_band(rt_raster torast, rt_raster fromrast, int fromindex, int toi
 	if (fromrast->numBands < 1) {
 		rtwarn("rt_raster_copy_band: Second raster has no band");
 		return -1;
-	}
-	else if (fromindex < 0) {
+	} else if (fromindex < 0) {
 		rtwarn("rt_raster_copy_band: Band index for second raster < 0. Defaulted to 0");
 		fromindex = 0;
-	}
-	else if (fromindex >= fromrast->numBands) {
+	} else if (fromindex >= fromrast->numBands) {
 		rtwarn("rt_raster_copy_band: Band index for second raster > number of bands, truncated from %u to %u",
 		       fromindex,
 		       fromrast->numBands - 1);
@@ -1323,8 +1319,7 @@ rt_raster_copy_band(rt_raster torast, rt_raster fromrast, int fromindex, int toi
 	if (toindex < 0) {
 		rtwarn("rt_raster_copy_band: Band index for first raster < 0. Defaulted to 0");
 		toindex = 0;
-	}
-	else if (toindex > torast->numBands) {
+	} else if (toindex > torast->numBands) {
 		rtwarn("rt_raster_copy_band: Band index for first raster > number of bands, truncated from %u to %u",
 		       toindex,
 		       torast->numBands);
@@ -1844,8 +1839,7 @@ rt_raster_to_gdal_mem(rt_raster raster,
 				return 0;
 			}
 		}
-	}
-	else {
+	} else {
 		count = numBands;
 		bandNums = (uint32_t *)rtalloc(sizeof(uint32_t) * count);
 		if (NULL == bandNums) {
@@ -2300,8 +2294,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds)
 						      y,
 						      nXValid * nYValid);
 					rt_band_set_pixel_line(band, x, y, values, nXValid * nYValid);
-				}
-				else {
+				} else {
 					ptr = values;
 					x = nXBlockSize * iXBlock;
 					for (iY = 0; iY < nYValid; iY++) {
@@ -2495,8 +2488,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 		arg->value = (double *)rtalloc(sizeof(double));
 		arg->value[0] = 1;
-	}
-	else {
+	} else {
 		arg->noband = 0;
 		arg->numbands = num_bands;
 
@@ -2568,8 +2560,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			_scale[1] = fabs((extent.MaxY - extent.MinY) / _dim[1]);
 		else
 			_scale[1] = 1.;
-	}
-	else {
+	} else {
 		rterror("rt_raster_gdal_rasterize: Values must be provided for width and height or X and Y of scale");
 
 		OGR_G_DestroyGeometry(src_geom);
@@ -2676,8 +2667,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			    FLT_NEQ(*grid_xw, extent.MinX)) {
 				/* do nothing */
 				RASTER_DEBUG(3, "Skipping extent adjustment on X-axis due to upcoming alignment");
-			}
-			else {
+			} else {
 				RASTER_DEBUG(3, "Adjusting extent for GDAL > 1.8 by half the scale on X-axis");
 				extent.MinX -= (_scale[0] / 2.);
 				extent.MaxX += (_scale[0] / 2.);
@@ -2688,8 +2678,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			    FLT_NEQ(*grid_yw, extent.MaxY)) {
 				/* do nothing */
 				RASTER_DEBUG(3, "Skipping extent adjustment on Y-axis due to upcoming alignment");
-			}
-			else {
+			} else {
 				RASTER_DEBUG(3, "Adjusting extent for GDAL > 1.8 by half the scale on Y-axis");
 				extent.MinY -= (_scale[1] / 2.);
 				extent.MaxY += (_scale[1] / 2.);
@@ -2702,8 +2691,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			    FLT_NEQ(*grid_xw, extent.MinX)) {
 				/* do nothing */
 				RASTER_DEBUG(3, "Skipping extent adjustment on X-axis due to upcoming alignment");
-			}
-			else {
+			} else {
 				RASTER_DEBUG(3, "Adjusting extent for GDAL <= 1.8 by the scale on X-axis");
 				extent.MinX -= _scale[0];
 				extent.MaxX += _scale[0];
@@ -2714,8 +2702,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			    FLT_NEQ(*grid_yw, extent.MaxY)) {
 				/* do nothing */
 				RASTER_DEBUG(3, "Skipping extent adjustment on Y-axis due to upcoming alignment");
-			}
-			else {
+			} else {
 				RASTER_DEBUG(3, "Adjusting extent for GDAL <= 1.8 by the scale on Y-axis");
 				extent.MinY -= _scale[1];
 				extent.MaxY += _scale[1];
@@ -2792,8 +2779,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		rt_raster_set_offsets(rast, *ul_xw, *ul_yw);
 		extent.UpperLeftX = *ul_xw;
 		extent.UpperLeftY = *ul_yw;
-	}
-	else if (((NULL != ul_xw) && (NULL == ul_yw)) || ((NULL == ul_xw) && (NULL != ul_yw))) {
+	} else if (((NULL != ul_xw) && (NULL == ul_yw)) || ((NULL == ul_xw) && (NULL != ul_yw))) {
 		rterror("rt_raster_gdal_rasterize: Both X and Y upper-left corner values must be provided");
 
 		rt_raster_destroy(rast);

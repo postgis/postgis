@@ -49,8 +49,7 @@ pgis_getopt(int argc, char **argv, char *opts)
 		if (pgis_optind >= argc || argv[pgis_optind][0] != '-' /* && argv[pgis_optind][0] != '/' */ ||
 		    argv[pgis_optind][1] == '\0') {
 			return (EOF);
-		}
-		else if (strcmp(argv[pgis_optind], "--") == 0) {
+		} else if (strcmp(argv[pgis_optind], "--") == 0) {
 			pgis_optind++;
 			return (EOF);
 		}
@@ -71,12 +70,10 @@ pgis_getopt(int argc, char **argv, char *opts)
 			ERR(": option requires an argument -- ", c);
 			sp = 1;
 			return ('?');
-		}
-		else
+		} else
 			pgis_optarg = argv[pgis_optind++];
 		sp = 1;
-	}
-	else {
+	} else {
 		if (argv[pgis_optind][++sp] == '\0') {
 			sp = 1;
 			pgis_optind++;

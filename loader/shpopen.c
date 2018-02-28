@@ -1010,13 +1010,11 @@ SHPAPI_CALL1(*) SHPCreateObject(int nSHPType,
 	    nSHPType == SHPT_MULTIPOINTM) {
 		bHasM = TRUE;
 		bHasZ = FALSE;
-	}
-	else if (nSHPType == SHPT_ARCZ || nSHPType == SHPT_POINTZ || nSHPType == SHPT_POLYGONZ ||
-		 nSHPType == SHPT_MULTIPOINTZ || nSHPType == SHPT_MULTIPATCH) {
+	} else if (nSHPType == SHPT_ARCZ || nSHPType == SHPT_POINTZ || nSHPType == SHPT_POLYGONZ ||
+		   nSHPType == SHPT_MULTIPOINTZ || nSHPType == SHPT_MULTIPATCH) {
 		bHasM = TRUE;
 		bHasZ = TRUE;
-	}
-	else {
+	} else {
 		bHasM = FALSE;
 		bHasZ = FALSE;
 	}
@@ -1363,8 +1361,7 @@ SHPWriteObject(SHPHandle psSHP, int nShapeId, SHPObject *psObject)
 		psSHP->panRecOffset[nShapeId] = nRecordOffset = psSHP->nFileSize;
 		psSHP->panRecSize[nShapeId] = nRecordSize - 8;
 		psSHP->nFileSize += nRecordSize;
-	}
-	else {
+	} else {
 		nRecordOffset = psSHP->panRecOffset[nShapeId];
 		psSHP->panRecSize[nShapeId] = nRecordSize - 8;
 	}
@@ -1410,8 +1407,7 @@ SHPWriteObject(SHPHandle psSHP, int nShapeId, SHPObject *psObject)
 			psSHP->adBoundsMin[1] = psSHP->adBoundsMax[1] = 0.0;
 			psSHP->adBoundsMin[2] = psSHP->adBoundsMax[2] = 0.0;
 			psSHP->adBoundsMin[3] = psSHP->adBoundsMax[3] = 0.0;
-		}
-		else {
+		} else {
 			psSHP->adBoundsMin[0] = psSHP->adBoundsMax[0] = psObject->padfX[0];
 			psSHP->adBoundsMin[1] = psSHP->adBoundsMax[1] = psObject->padfY[0];
 			psSHP->adBoundsMin[2] = psSHP->adBoundsMax[2] = psObject->padfZ[0];

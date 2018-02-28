@@ -233,7 +233,9 @@ parseaddress(HHash *stH, char *s, int *reterr)
 #else
 		key = state;
 		val = (char *)hash_get(stH, key);
-		if (val) { ret->st = pstrdup(val); }
+		if (val) {
+			ret->st = pstrdup(val);
+		}
 #endif
 		else {
 			*reterr = 1002;
@@ -343,8 +345,7 @@ parseaddress(HHash *stH, char *s, int *reterr)
 		s[ovect[5]] = '\0';
 		clean_leading_punct(s + ovect[4]);
 		ret->street2 = pstrdup(s + ovect[4]);
-	}
-	else {
+	} else {
 
 		/* and the remainder must be the address components */
 		ret->address1 = pstrdup(clean_leading_punct(s));

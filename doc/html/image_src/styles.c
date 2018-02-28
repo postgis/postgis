@@ -59,14 +59,12 @@ getStyles(LAYERSTYLE **headRef)
 					else if (strncmp(line, "pointSize", 9) == 0) {
 						pointSize = atoi(ptr);
 						free(ptr);
-					}
-					else if (strncmp(line, "pointColor", 10) == 0)
+					} else if (strncmp(line, "pointColor", 10) == 0)
 						pointColor = ptr;
 					else if (strncmp(line, "lineWidth", 9) == 0) {
 						lineWidth = atoi(ptr);
 						free(ptr);
-					}
-					else if (strncmp(line, "lineColor", 9) == 0)
+					} else if (strncmp(line, "lineColor", 9) == 0)
 						lineColor = ptr;
 					else if (strncmp(line, "polygonFillColor", 16) == 0)
 						polygonFillColor = ptr;

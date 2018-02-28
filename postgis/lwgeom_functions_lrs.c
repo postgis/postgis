@@ -346,8 +346,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 			memcpy(p1, p2, sizeof(POINT4D));
 
 			POSTGIS_DEBUG(3, "Projected p1 on range (as copy of p2)");
-		}
-		else {
+		} else {
 			/* Otherwise interpolate coordinates */
 			p1->x += (dX * dM0);
 			p1->y += (dY * dM0);
@@ -376,8 +375,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 			memcpy(p2, p1, sizeof(POINT4D));
 
 			POSTGIS_DEBUG(3, "Projected p2 on range (as copy of p1)");
-		}
-		else {
+		} else {
 			/* Otherwise interpolate coordinates */
 			p2->x += (dX * dM1);
 			p2->y += (dY * dM1);
@@ -505,8 +503,7 @@ lwpoint_locate_between_m(LWPOINT *lwpoint, double m0, double m1)
 		POSTGIS_DEBUG(3, " lwpoint... returning a clone of input");
 
 		return lwgeom_clone((LWGEOM *)lwpoint);
-	}
-	else {
+	} else {
 		POSTGIS_DEBUG(3, " lwpoint... returning a clone of input");
 
 		return NULL;
@@ -573,8 +570,9 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 		}
 	}
 
-	if (ngeoms == 1) { return geoms[0]; }
-	else {
+	if (ngeoms == 1) {
+		return geoms[0];
+	} else {
 		/* Choose best type */
 		if (typeflag == 1)
 			outtype = MULTIPOINTTYPE;

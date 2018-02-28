@@ -140,8 +140,9 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 
 		result_ids = UF_get_collapsed_cluster_ids(uf, is_in_cluster);
 		for (i = 0; i < ngeoms; i++) {
-			if (minpoints > 1 && !is_in_cluster[i]) { context->cluster_assignments[i].is_null = LW_TRUE; }
-			else {
+			if (minpoints > 1 && !is_in_cluster[i]) {
+				context->cluster_assignments[i].is_null = LW_TRUE;
+			} else {
 				context->cluster_assignments[i].cluster_id = result_ids[i];
 			}
 		}

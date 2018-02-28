@@ -213,8 +213,7 @@ lwgeom_node(const LWGEOM *lwgeom_in)
 				tc->geoms[ln] = col->geoms[0];
 				tc->geoms[ln + 1] = col->geoms[1];
 				tc->ngeoms++;
-			}
-			else {
+			} else {
 				lwgeom_free(lines);
 				/* transfer ownership rather than cloning */
 				lines = (LWGEOM *)lwcollection_clone_deep(col);

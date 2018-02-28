@@ -144,8 +144,7 @@ static const double __ac_HASH_UPPER = 0.77;
 				if (i == last) return h->n_buckets; \
 			} \
 			return __ac_iseither(h->flags, i) ? h->n_buckets : i; \
-		} \
-		else \
+		} else \
 			return 0; \
 	} \
 	static inline void kh_resize_##name(kh_##name##_t *h, khint_t new_n_buckets) \
@@ -201,8 +200,7 @@ static const double __ac_HASH_UPPER = 0.77;
 								val = tmp; \
 							} \
 							__ac_set_isdel_true(h->flags, i); \
-						} \
-						else { \
+						} else { \
 							h->keys[i] = key; \
 							if (kh_is_map) h->vals[i] = val; \
 							break; \
@@ -266,14 +264,12 @@ static const double __ac_HASH_UPPER = 0.77;
 			++h->size; \
 			++h->n_occupied; \
 			*ret = 1; \
-		} \
-		else if (__ac_isdel(h->flags, x)) { \
+		} else if (__ac_isdel(h->flags, x)) { \
 			h->keys[x] = key; \
 			__ac_set_isboth_false(h->flags, x); \
 			++h->size; \
 			*ret = 2; \
-		} \
-		else \
+		} else \
 			*ret = 0; \
 		return x; \
 	} \

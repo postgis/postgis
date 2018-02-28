@@ -109,8 +109,7 @@ gserialized_geography_from_lwgeom(LWGEOM *lwgeom, int32 geog_typmod)
 	if (geog_typmod >= 0) {
 		g_ser = postgis_valid_typmod(g_ser, geog_typmod);
 		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
-	}
-	else {
+	} else {
 		POSTGIS_DEBUG(3, "typmod was -1");
 	}
 
@@ -235,8 +234,9 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	/* retrieve prefix */
 	if (PG_NARGS() > 4 && !PG_ARGISNULL(4)) {
 		prefix_text = PG_GETARG_TEXT_P(4);
-		if (VARSIZE(prefix_text) - VARHDRSZ == 0) { prefix = ""; }
-		else {
+		if (VARSIZE(prefix_text) - VARHDRSZ == 0) {
+			prefix = "";
+		} else {
 			/* +2 is one for the ':' and one for term null */
 			prefix_buf = palloc(VARSIZE(prefix_text) - VARHDRSZ + 2);
 			memcpy(prefix_buf, VARDATA(prefix_text), VARSIZE(prefix_text) - VARHDRSZ);
@@ -250,8 +250,9 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	/* retrieve id */
 	if (PG_NARGS() > 5 && !PG_ARGISNULL(5)) {
 		id_text = PG_GETARG_TEXT_P(5);
-		if (VARSIZE(id_text) - VARHDRSZ == 0) { id = ""; }
-		else {
+		if (VARSIZE(id_text) - VARHDRSZ == 0) {
+			id = "";
+		} else {
 			id_buf = palloc(VARSIZE(id_text) - VARHDRSZ + 1);
 			memcpy(id_buf, VARDATA(id_text), VARSIZE(id_text) - VARHDRSZ);
 			prefix_buf[VARSIZE(id_text) - VARHDRSZ + 1] = '\0';
@@ -348,8 +349,9 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	/* retrieve prefix */
 	if (PG_NARGS() > 3 && !PG_ARGISNULL(3)) {
 		prefix_text = PG_GETARG_TEXT_P(3);
-		if (VARSIZE(prefix_text) - VARHDRSZ == 0) { prefix = ""; }
-		else {
+		if (VARSIZE(prefix_text) - VARHDRSZ == 0) {
+			prefix = "";
+		} else {
 			/* +2 is one for the ':' and one for term null */
 			prefixbuf = palloc(VARSIZE(prefix_text) - VARHDRSZ + 2);
 			memcpy(prefixbuf, VARDATA(prefix_text), VARSIZE(prefix_text) - VARHDRSZ);

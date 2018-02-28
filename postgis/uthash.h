@@ -265,8 +265,7 @@ typedef unsigned char uint8_t;
 			(add)->hh.prev = NULL; \
 			(head) = (add); \
 			HASH_MAKE_TABLE(hh, head); \
-		} \
-		else { \
+		} else { \
 			void *_hs_iter = (head); \
 			(add)->hh.tbl = (head)->hh.tbl; \
 			HASH_AKBI_INNER_LOOP(hh, head, add, cmpfcn); \
@@ -274,13 +273,11 @@ typedef unsigned char uint8_t;
 				(add)->hh.next = _hs_iter; \
 				if (((add)->hh.prev = HH_FROM_ELMT((head)->hh.tbl, _hs_iter)->prev)) { \
 					HH_FROM_ELMT((head)->hh.tbl, (add)->hh.prev)->next = (add); \
-				} \
-				else { \
+				} else { \
 					(head) = (add); \
 				} \
 				HH_FROM_ELMT((head)->hh.tbl, _hs_iter)->prev = (add); \
-			} \
-			else { \
+			} else { \
 				HASH_APPEND_LIST(hh, head, add); \
 			} \
 		} \
@@ -316,8 +313,7 @@ typedef unsigned char uint8_t;
 			(add)->hh.prev = NULL; \
 			(head) = (add); \
 			HASH_MAKE_TABLE(hh, head); \
-		} \
-		else { \
+		} else { \
 			(add)->hh.tbl = (head)->hh.tbl; \
 			HASH_APPEND_LIST(hh, head, add); \
 		} \
@@ -367,8 +363,7 @@ typedef unsigned char uint8_t;
 			HASH_BLOOM_FREE((head)->hh.tbl); \
 			uthash_free((head)->hh.tbl, sizeof(UT_hash_table)); \
 			head = NULL; \
-		} \
-		else { \
+		} else { \
 			unsigned _hd_bkt; \
 			_hd_hh_del = &((delptr)->hh); \
 			if ((delptr) == ELMT_FROM_HH((head)->hh.tbl, (head)->hh.tbl->tail)) { \
@@ -378,8 +373,7 @@ typedef unsigned char uint8_t;
 			if ((delptr)->hh.prev != NULL) { \
 				((UT_hash_handle *)((ptrdiff_t)((delptr)->hh.prev) + (head)->hh.tbl->hho))->next = \
 				    (delptr)->hh.next; \
-			} \
-			else { \
+			} else { \
 				DECLTYPE_ASSIGN(head, (delptr)->hh.next); \
 			} \
 			if (_hd_hh_del->next != NULL) { \
@@ -756,16 +750,18 @@ typedef unsigned char uint8_t;
 /* iterate over items in a known bucket to find desired item */
 #define HASH_FIND_IN_BKT(tbl, hh, head, keyptr, keylen_in, hashval, out) \
 	do { \
-		if ((head).hh_head != NULL) { DECLTYPE_ASSIGN(out, ELMT_FROM_HH(tbl, (head).hh_head)); } \
-		else { \
+		if ((head).hh_head != NULL) { \
+			DECLTYPE_ASSIGN(out, ELMT_FROM_HH(tbl, (head).hh_head)); \
+		} else { \
 			(out) = NULL; \
 		} \
 		while ((out) != NULL) { \
 			if ((out)->hh.hashv == (hashval) && (out)->hh.keylen == (keylen_in)) { \
 				if (uthash_memcmp((out)->hh.key, keyptr, keylen_in) == 0) { break; } \
 			} \
-			if ((out)->hh.hh_next != NULL) { DECLTYPE_ASSIGN(out, ELMT_FROM_HH(tbl, (out)->hh.hh_next)); } \
-			else { \
+			if ((out)->hh.hh_next != NULL) { \
+				DECLTYPE_ASSIGN(out, ELMT_FROM_HH(tbl, (out)->hh.hh_next)); \
+			} else { \
 				(out) = NULL; \
 			} \
 		} \
@@ -903,8 +899,7 @@ typedef unsigned char uint8_t;
 											       (head)->hh.tbl->hho)) \
 										   : NULL); \
 							_hs_qsize--; \
-						} \
-						else if ((_hs_qsize == 0U) || (_hs_q == NULL)) { \
+						} else if ((_hs_qsize == 0U) || (_hs_q == NULL)) { \
 							_hs_e = _hs_p; \
 							if (_hs_p != NULL) { \
 								_hs_p = \
@@ -915,10 +910,10 @@ typedef unsigned char uint8_t;
 										: NULL); \
 							} \
 							_hs_psize--; \
-						} \
-						else if ((cmpfcn(DECLTYPE(head)(ELMT_FROM_HH((head)->hh.tbl, _hs_p)), \
-								 DECLTYPE(head)( \
-								     ELMT_FROM_HH((head)->hh.tbl, _hs_q)))) <= 0) { \
+						} else if ((cmpfcn( \
+							       DECLTYPE(head)(ELMT_FROM_HH((head)->hh.tbl, _hs_p)), \
+							       DECLTYPE(head)( \
+								   ELMT_FROM_HH((head)->hh.tbl, _hs_q)))) <= 0) { \
 							_hs_e = _hs_p; \
 							if (_hs_p != NULL) { \
 								_hs_p = \
@@ -929,8 +924,7 @@ typedef unsigned char uint8_t;
 										: NULL); \
 							} \
 							_hs_psize--; \
-						} \
-						else { \
+						} else { \
 							_hs_e = _hs_q; \
 							_hs_q = \
 							    (UT_hash_handle *)((_hs_q->next != NULL) \
@@ -943,8 +937,7 @@ typedef unsigned char uint8_t;
 							_hs_tail->next = \
 							    ((_hs_e != NULL) ? ELMT_FROM_HH((head)->hh.tbl, _hs_e) \
 									     : NULL); \
-						} \
-						else { \
+						} else { \
 							_hs_list = _hs_e; \
 						} \
 						if (_hs_e != NULL) { \
@@ -995,8 +988,7 @@ typedef unsigned char uint8_t;
 						if (dst == NULL) { \
 							DECLTYPE_ASSIGN(dst, _elt); \
 							HASH_MAKE_TABLE(hh_dst, dst); \
-						} \
-						else { \
+						} else { \
 							_dst_hh->tbl = (dst)->hh_dst.tbl; \
 						} \
 						HASH_TO_BKT(_dst_hh->hashv, _dst_hh->tbl->num_buckets, _dst_bkt); \

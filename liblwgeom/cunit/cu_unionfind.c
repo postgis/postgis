@@ -68,8 +68,9 @@ test_unionfind_ordered_by_cluster(void)
 	uint32_t i;
 	for (i = 0; i < uf.N; i++) {
 		uint32_t c = final_clusters[ids_by_cluster[i]];
-		if (!encountered_cluster[c]) { encountered_cluster[c] = 1; }
-		else {
+		if (!encountered_cluster[c]) {
+			encountered_cluster[c] = 1;
+		} else {
 			/* If we've seen an element of this cluster before, then the
 			 * current cluster must be the same as the previous cluster. */
 			uint32_t c_prev = final_clusters[ids_by_cluster[i - 1]];

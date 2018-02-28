@@ -105,7 +105,9 @@ standardize_field(STAND_PARAM *__stand_param__, char *__in_str__, int client_sta
 	/*-- <revision date='2009-08-13'> Support multiple lexicons </revision> --*/
 	/*-- <revision date='2012-06-01'> Add gaz_lexicon to be triggered on start_state= MACRO </revision> --*/
 	__stand_param__->lexicon = __stand_param__->address_lexicon;
-	if (client_start_state > EXTRA_STATE) { __stand_param__->lexicon = __stand_param__->poi_lexicon; }
+	if (client_start_state > EXTRA_STATE) {
+		__stand_param__->lexicon = __stand_param__->poi_lexicon;
+	}
 #ifdef GAZ_LEXICON
 	else {
 		if (client_start_state == MACRO) { __stand_param__->lexicon = __stand_param__->gaz_lexicon; }

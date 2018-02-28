@@ -239,8 +239,7 @@ AddPJHashEntry(MemoryContext mcxt, projPJ projection)
 		/* Insert the entry into the new hash element */
 		he->ProjectionContext = mcxt;
 		he->projection = projection;
-	}
-	else {
+	} else {
 		elog(ERROR,
 		     "AddPJHashEntry: PROJ4 projection object already exists for this MemoryContext (%p)",
 		     (void *)mcxt);
@@ -354,8 +353,7 @@ GetProj4StringSPI(int srid)
 		/* Format the lookup query */
 		static char *proj_str_tmpl = "SELECT proj4text FROM %s.spatial_ref_sys WHERE srid = %d LIMIT 1";
 		snprintf(proj4_spi_buffer, 255, proj_str_tmpl, spatialRefSysSchema, srid);
-	}
-	else {
+	} else {
 		/* Format the lookup query */
 		static char *proj_str_tmpl = "SELECT proj4text FROM spatial_ref_sys WHERE srid = %d LIMIT 1";
 		snprintf(proj4_spi_buffer, 255, proj_str_tmpl, srid);
@@ -374,12 +372,10 @@ GetProj4StringSPI(int srid)
 		if (proj4text) {
 			/* Make a projection object out of it */
 			strncpy(proj_str, proj4text, maxproj4len - 1);
-		}
-		else {
+		} else {
 			proj_str[0] = 0;
 		}
-	}
-	else {
+	} else {
 		elog(ERROR, "GetProj4StringSPI: Cannot find SRID (%d) in spatial_ref_sys", srid);
 	}
 
@@ -403,7 +399,9 @@ GetProj4String(int srid)
 	static int maxproj4len = 512;
 
 	/* SRIDs in SPATIAL_REF_SYS */
-	if (srid < SRID_RESERVE_OFFSET) { return GetProj4StringSPI(srid); }
+	if (srid < SRID_RESERVE_OFFSET) {
+		return GetProj4StringSPI(srid);
+	}
 	/* Automagic SRIDs */
 	else {
 		char *proj_str = palloc(maxproj4len);
@@ -483,8 +481,7 @@ GetProj4String(int srid)
 			strncpy(proj_str,
 				"+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
 				maxproj4len);
-		}
-		else {
+		} else {
 			elog(ERROR, "Invalid reserved SRID (%d)", srid);
 			return NULL;
 		}

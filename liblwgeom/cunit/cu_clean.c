@@ -36,8 +36,7 @@
 			lwgeom_free(ngobt); \
 			lwgeom_free(ngexp); \
 			CU_ASSERT(0); \
-		} \
-		else { \
+		} else { \
 			lwgeom_free(ngobt); \
 			lwgeom_free(ngexp); \
 			CU_ASSERT(1); \

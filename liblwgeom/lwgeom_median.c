@@ -66,8 +66,7 @@ iterate_4d(POINT3D *curr, const POINT4D *points, const uint32_t npoints, const u
 				next.y += points[i].y / distances[i];
 				next.z += points[i].z / distances[i];
 				denom += 1.0 / distances[i];
-			}
-			else {
+			} else {
 				hit = LW_TRUE;
 			}
 		}
@@ -121,8 +120,9 @@ iterate_4d(POINT3D *curr, const POINT4D *points, const uint32_t npoints, const u
 		/* Check movement with next point */
 		sum_next = calc_weighted_distances_3d(&next, points, npoints, distances);
 		delta = sum_curr - sum_next;
-		if (delta < tol) { break; }
-		else {
+		if (delta < tol) {
+			break;
+		} else {
 			curr->x = next.x;
 			curr->y = next.y;
 			curr->z = next.z;
@@ -202,8 +202,7 @@ lwmpoint_extract_points_4d(const LWMPOINT *g, uint32_t *npoints, int *input_empt
 
 				/* points with zero weight are not going to affect calculation, drop them early */
 				if (points[n].m > DBL_EPSILON) n++;
-			}
-			else {
+			} else {
 				points[n].m = 1.0;
 				n++;
 			}
@@ -236,8 +235,9 @@ lwmpoint_median(const LWMPOINT *g, double tol, uint32_t max_iter, char fail_if_n
 
 	if (npoints == 0) {
 		lwfree(points);
-		if (input_empty) { return lwpoint_construct_empty(g->srid, 0, 0); }
-		else {
+		if (input_empty) {
+			return lwpoint_construct_empty(g->srid, 0, 0);
+		} else {
 			lwerror("Median failed to find non-empty input points with positive weight.");
 			return NULL;
 		}
@@ -254,8 +254,9 @@ lwmpoint_median(const LWMPOINT *g, double tol, uint32_t max_iter, char fail_if_n
 		return NULL;
 	}
 
-	if (lwgeom_has_z((LWGEOM *)g)) { return lwpoint_make3dz(g->srid, median.x, median.y, median.z); }
-	else {
+	if (lwgeom_has_z((LWGEOM *)g)) {
+		return lwpoint_make3dz(g->srid, median.x, median.y, median.z);
+	} else {
 		return lwpoint_make2d(g->srid, median.x, median.y);
 	}
 }

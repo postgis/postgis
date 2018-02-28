@@ -241,8 +241,7 @@ gserialized_typmod_in(ArrayType *arr, int is_geography)
 				ereport(ERROR,
 					(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 					 errmsg("Invalid geometry type modifier: %s", s)));
-			}
-			else {
+			} else {
 				TYPMOD_SET_TYPE(typmod, type);
 				if (z) TYPMOD_SET_Z(typmod);
 				if (m) TYPMOD_SET_M(typmod);

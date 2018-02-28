@@ -189,8 +189,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
-	}
-	else {
+	} else {
 		formattext = PG_GETARG_TEXT_P(1);
 		format = text_to_cstring(formattext);
 	}
@@ -256,8 +255,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 
 				/* add NULL to end */
 				options[j] = NULL;
-			}
-			else {
+			} else {
 				pfree(options);
 				options = NULL;
 			}
@@ -286,8 +284,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 		POSTGIS_RT_DEBUGF(3, "RASTER_asGDALRaster: Arg 3 (srs) is %s", srs);
-	}
-	else
+	} else
 		srs = NULL;
 
 	POSTGIS_RT_DEBUG(3, "RASTER_asGDALRaster: Generating GDAL raster");
@@ -520,8 +517,7 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 			elog(ERROR, "RASTER_GDALWarp: %d is an invalid target SRID", dst_srid);
 			PG_RETURN_NULL();
 		}
-	}
-	else
+	} else
 		dst_srid = src_srid;
 	POSTGIS_RT_DEBUGF(4, "destination SRID: %d", dst_srid);
 

@@ -148,8 +148,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 	if (geom_typmod >= 0) {
 		ret = postgis_valid_typmod(ret, geom_typmod);
 		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
-	}
-	else {
+	} else {
 		POSTGIS_DEBUG(3, "typmod was -1");
 	}
 
@@ -285,8 +284,7 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 
 		if (!strncmp(VARDATA(type), "xdr", 3) || !strncmp(VARDATA(type), "XDR", 3)) {
 			variant = variant | WKB_XDR;
-		}
-		else {
+		} else {
 			variant = variant | WKB_NDR;
 		}
 	}
@@ -411,8 +409,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 		if (!strncmp(VARDATA(type), "xdr", 3) || !strncmp(VARDATA(type), "XDR", 3)) {
 			variant = variant | WKB_XDR;
-		}
-		else {
+		} else {
 			variant = variant | WKB_NDR;
 		}
 	}
@@ -566,8 +563,9 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 
 		/* Grab the geometry type and note if all geometries share it */
 		/* If so, we can make this a homogeneous collection and save some space */
-		if (lwgeom_get_type(geom) != subtype && subtype) { is_homogeneous = false; }
-		else {
+		if (lwgeom_get_type(geom) != subtype && subtype) {
+			is_homogeneous = false;
+		} else {
 			subtype = lwgeom_get_type(geom);
 		}
 	}
@@ -712,8 +710,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 	if (geom_typmod >= 0) {
 		geom = postgis_valid_typmod(geom, geom_typmod);
 		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
-	}
-	else {
+	} else {
 		POSTGIS_DEBUG(3, "typmod was -1");
 	}
 

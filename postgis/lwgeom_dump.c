@@ -379,8 +379,7 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 		GSERIALIZED *gpart = geometry_serialize(fctx->col->geoms[fctx->nextgeom]);
 		fctx->nextgeom++;
 		SRF_RETURN_NEXT(funcctx, PointerGetDatum(gpart));
-	}
-	else {
+	} else {
 		/* do when there is no more left */
 		SRF_RETURN_DONE(funcctx);
 	}

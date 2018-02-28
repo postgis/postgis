@@ -195,8 +195,7 @@ cb_loadTopologyByName(const LWT_BE_DATA *be, const char *name)
 	if (!SPI_processed) {
 		if (be->topoLoadFailMessageFlavor == 1) {
 			cberror(be, "No topology with name \"%s\" in topology.topology", name);
-		}
-		else {
+		} else {
 			cberror(be, "SQL/MM Spatial exception - invalid topology name");
 		}
 		return NULL;
@@ -238,8 +237,7 @@ cb_loadTopologyByName(const LWT_BE_DATA *be, const char *name)
 	if (isnull) {
 		lwnotice("Topology '%s' has null precision, taking as 0", name);
 		topo->precision = 0; /* TODO: should this be -1 instead ? */
-	}
-	else {
+	} else {
 		topo->precision = DatumGetFloat8(dat);
 	}
 
@@ -374,8 +372,7 @@ addEdgeValues(StringInfo str, const LWT_ISO_EDGE *edge, int fields, int fullEdge
 			hexewkb = lwgeom_to_hexwkb(lwline_as_lwgeom(edge->geom), WKB_EXTENDED, &hexewkb_size);
 			appendStringInfo(str, "%s'%s'::geometry", sep, hexewkb);
 			lwfree(hexewkb);
-		}
-		else {
+		} else {
 			appendStringInfo(str, "%snull", sep);
 		}
 	}
@@ -492,8 +489,9 @@ addNodeUpdate(StringInfo str, const LWT_ISO_NODE *node, int fields, int fullNode
 	}
 	if (fields & LWT_COL_NODE_CONTAINING_FACE) {
 		appendStringInfo(str, "%scontaining_face %s", sep, op);
-		if (node->containing_face != -1) { appendStringInfo(str, "%" LWTFMT_ELEMID, node->containing_face); }
-		else {
+		if (node->containing_face != -1) {
+			appendStringInfo(str, "%" LWTFMT_ELEMID, node->containing_face);
+		} else {
 			appendStringInfoString(str, "null::int");
 		}
 		sep = sep1;
@@ -567,8 +565,7 @@ addNodeValues(StringInfo str, const LWT_ISO_NODE *node, int fields)
 			hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(node->geom), WKB_EXTENDED, &hexewkb_size);
 			appendStringInfo(str, "%s'%s'::geometry", sep, hexewkb);
 			lwfree(hexewkb);
-		}
-		else {
+		} else {
 			appendStringInfo(str, "%snull::geometry", sep);
 		}
 	}
@@ -592,8 +589,7 @@ addFaceValues(StringInfo str, LWT_ISO_FACE *face, int srid)
 			appendStringInfo(str, ",ST_Envelope('%s'::geometry))", hexbox);
 			lwfree(hexbox);
 		}
-	}
-	else {
+	} else {
 		appendStringInfoString(str, ",null::geometry)");
 	}
 }
@@ -615,8 +611,7 @@ fillEdgeFields(LWT_ISO_EDGE *edge, HeapTuple row, TupleDesc rowdesc, int fields)
 		if (isnull) {
 			lwpgwarning("Found edge with NULL edge_id");
 			edge->edge_id = -1;
-		}
-		else {
+		} else {
 			val = DatumGetInt32(dat);
 			POSTGIS_DEBUGF(2,
 				       "fillEdgeFields: colno%d (edge_id)"
@@ -631,8 +626,7 @@ fillEdgeFields(LWT_ISO_EDGE *edge, HeapTuple row, TupleDesc rowdesc, int fields)
 		if (isnull) {
 			lwpgwarning("Found edge with NULL start_node");
 			edge->start_node = -1;
-		}
-		else {
+		} else {
 			val = DatumGetInt32(dat);
 			POSTGIS_DEBUGF(2,
 				       "fillEdgeFields: colno%d (start_node)"
@@ -647,8 +641,7 @@ fillEdgeFields(LWT_ISO_EDGE *edge, HeapTuple row, TupleDesc rowdesc, int fields)
 		if (isnull) {
 			lwpgwarning("Found edge with NULL end_node");
 			edge->end_node = -1;
-		}
-		else {
+		} else {
 			val = DatumGetInt32(dat);
 			POSTGIS_DEBUGF(2,
 				       "fillEdgeFields: colno%d (end_node)"
@@ -663,8 +656,7 @@ fillEdgeFields(LWT_ISO_EDGE *edge, HeapTuple row, TupleDesc rowdesc, int fields)
 		if (isnull) {
 			lwpgwarning("Found edge with NULL face_left");
 			edge->face_left = -1;
-		}
-		else {
+		} else {
 			val = DatumGetInt32(dat);
 			POSTGIS_DEBUGF(2,
 				       "fillEdgeFields: colno%d (face_left)"
@@ -679,8 +671,7 @@ fillEdgeFields(LWT_ISO_EDGE *edge, HeapTuple row, TupleDesc rowdesc, int fields)
 		if (isnull) {
 			lwpgwarning("Found edge with NULL face_right");
 			edge->face_right = -1;
-		}
-		else {
+		} else {
 			val = DatumGetInt32(dat);
 			POSTGIS_DEBUGF(2,
 				       "fillEdgeFields: colno%d (face_right)"
@@ -695,8 +686,7 @@ fillEdgeFields(LWT_ISO_EDGE *edge, HeapTuple row, TupleDesc rowdesc, int fields)
 		if (isnull) {
 			lwpgwarning("Found edge with NULL next_left");
 			edge->next_left = -1;
-		}
-		else {
+		} else {
 			val = DatumGetInt32(dat);
 			POSTGIS_DEBUGF(2,
 				       "fillEdgeFields: colno%d (next_left)"
@@ -711,8 +701,7 @@ fillEdgeFields(LWT_ISO_EDGE *edge, HeapTuple row, TupleDesc rowdesc, int fields)
 		if (isnull) {
 			lwpgwarning("Found edge with NULL next_right");
 			edge->next_right = -1;
-		}
-		else {
+		} else {
 			val = DatumGetInt32(dat);
 			POSTGIS_DEBUGF(2,
 				       "fillEdgeFields: colno%d (next_right)"
@@ -735,8 +724,7 @@ fillEdgeFields(LWT_ISO_EDGE *edge, HeapTuple row, TupleDesc rowdesc, int fields)
 				lwgeom_free(lwg);
 				if (DatumGetPointer(dat) != (Pointer)geom) pfree(geom); /* IF_COPY */
 			}
-		}
-		else {
+		} else {
 			lwpgwarning("Found edge with NULL geometry !");
 			edge->geom = NULL;
 		}
@@ -771,8 +759,7 @@ fillNodeFields(LWT_ISO_NODE *node, HeapTuple row, TupleDesc rowdesc, int fields)
 			node->geom = lwgeom_as_lwpoint(lwgeom_clone_deep(lwg));
 			lwgeom_free(lwg);
 			if (DatumGetPointer(dat) != (Pointer)geom) pfree(geom); /* IF_COPY */
-		}
-		else {
+		} else {
 			lwpgnotice("Found node with NULL geometry !");
 			node->geom = NULL;
 		}
@@ -800,15 +787,15 @@ fillFaceFields(LWT_ISO_FACE *face, HeapTuple row, TupleDesc rowdesc, int fields)
 			geom = (GSERIALIZED *)PG_DETOAST_DATUM(dat);
 			g = lwgeom_from_gserialized(geom);
 			box = lwgeom_get_bbox(g);
-			if (box) { face->mbr = gbox_clone(box); }
-			else {
+			if (box) {
+				face->mbr = gbox_clone(box);
+			} else {
 				lwpgnotice("Found face with EMPTY MBR !");
 				face->mbr = NULL;
 			}
 			lwgeom_free(g);
 			if (DatumGetPointer(dat) != (Pointer)geom) pfree(geom);
-		}
-		else {
+		} else {
 			/* NOTE: perfectly fine for universe face */
 			POSTGIS_DEBUG(1, "Found face with NULL MBR");
 			face->mbr = NULL;
@@ -1251,21 +1238,24 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
 	int i;
 
 	initStringInfo(sql);
-	if (elems_requested == -1) { appendStringInfoString(sql, "SELECT EXISTS ( SELECT 1"); }
-	else {
+	if (elems_requested == -1) {
+		appendStringInfoString(sql, "SELECT EXISTS ( SELECT 1");
+	} else {
 		appendStringInfoString(sql, "SELECT ");
 		addEdgeFields(sql, fields, 0);
 	}
 	appendStringInfo(sql, " FROM \"%s\".edge_data", topo->name);
 	// TODO: use binary cursor here ?
 	hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(pt), WKB_EXTENDED, &hexewkb_size);
-	if (dist) { appendStringInfo(sql, " WHERE ST_DWithin('%s'::geometry, geom, %g)", hexewkb, dist); }
-	else {
+	if (dist) {
+		appendStringInfo(sql, " WHERE ST_DWithin('%s'::geometry, geom, %g)", hexewkb, dist);
+	} else {
 		appendStringInfo(sql, " WHERE ST_Within('%s'::geometry, geom)", hexewkb);
 	}
 	lwfree(hexewkb);
-	if (elems_requested == -1) { appendStringInfoString(sql, ")"); }
-	else if (elems_requested > 0) {
+	if (elems_requested == -1) {
+		appendStringInfoString(sql, ")");
+	} else if (elems_requested > 0) {
 		appendStringInfo(sql, " LIMIT %d", elems_requested);
 	}
 	POSTGIS_DEBUGF(1, "cb_getEdgeWithinDistance2D: query is: %s", sql->data);
@@ -1333,8 +1323,9 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
 	int i;
 
 	initStringInfo(sql);
-	if (elems_requested == -1) { appendStringInfoString(sql, "SELECT EXISTS ( SELECT 1"); }
-	else {
+	if (elems_requested == -1) {
+		appendStringInfoString(sql, "SELECT EXISTS ( SELECT 1");
+	} else {
 		appendStringInfoString(sql, "SELECT ");
 		if (fields)
 			addNodeFields(sql, fields);
@@ -1349,13 +1340,15 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
 	appendStringInfo(sql, " FROM \"%s\".node", topo->name);
 	// TODO: use binary cursor here ?
 	hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(pt), WKB_EXTENDED, &hexewkb_size);
-	if (dist) { appendStringInfo(sql, " WHERE ST_DWithin(geom, '%s'::geometry, %g)", hexewkb, dist); }
-	else {
+	if (dist) {
+		appendStringInfo(sql, " WHERE ST_DWithin(geom, '%s'::geometry, %g)", hexewkb, dist);
+	} else {
 		appendStringInfo(sql, " WHERE ST_Equals(geom, '%s'::geometry)", hexewkb);
 	}
 	lwfree(hexewkb);
-	if (elems_requested == -1) { appendStringInfoString(sql, ")"); }
-	else if (elems_requested > 0) {
+	if (elems_requested == -1) {
+		appendStringInfoString(sql, ")");
+	} else if (elems_requested > 0) {
 		appendStringInfo(sql, " LIMIT %d", elems_requested);
 	}
 	spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, limit >= 0 ? limit : 0);
@@ -1391,8 +1384,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
 		SPI_freetuptable(SPI_tuptable);
 
 		return NULL;
-	}
-	else {
+	} else {
 		nodes = palloc(sizeof(LWT_ISO_EDGE) * SPI_processed);
 		for (i = 0; i < SPI_processed; ++i) {
 			HeapTuple row = SPI_tuptable->vals[i];
@@ -1918,8 +1910,9 @@ cb_updateTopoGeomEdgeSplit(const LWT_BE_TOPOLOGY *topo,
 	const char *proj = "r.element_id, r.topogeo_id, r.layer_id, r.element_type";
 
 	initStringInfo(sql);
-	if (new_edge2 == -1) { appendStringInfo(sql, "SELECT %s", proj); }
-	else {
+	if (new_edge2 == -1) {
+		appendStringInfo(sql, "SELECT %s", proj);
+	} else {
 		appendStringInfoString(sql, "DELETE");
 	}
 	appendStringInfo(sql,
@@ -2040,8 +2033,9 @@ cb_updateTopoGeomFaceSplit(const LWT_BE_TOPOLOGY *topo,
 		       new_face2);
 
 	initStringInfo(sql);
-	if (new_face2 == -1) { appendStringInfo(sql, "SELECT %s", proj); }
-	else {
+	if (new_face2 == -1) {
+		appendStringInfo(sql, "SELECT %s", proj);
+	} else {
 		appendStringInfoString(sql, "DELETE");
 	}
 	appendStringInfo(sql,
@@ -2384,8 +2378,7 @@ cb_updateTopoGeomFaceHeal(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face1, LWT_ELE
 			return 0;
 		}
 		if (SPI_processed) topo->be_data->data_changed = true;
-	}
-	else {
+	} else {
 		initStringInfo(sql);
 		/* delete face1 */
 		appendStringInfo(sql,
@@ -2473,8 +2466,7 @@ cb_updateTopoGeomEdgeHeal(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge1, LWT_ELE
 			return 0;
 		}
 		if (SPI_processed) topo->be_data->data_changed = true;
-	}
-	else {
+	} else {
 		initStringInfo(sql);
 		/* delete edge1 */
 		appendStringInfo(sql,
@@ -2662,16 +2654,18 @@ cb_getNodeWithinBox2D(const LWT_BE_TOPOLOGY *topo, const GBOX *box, int *numelem
 
 	initStringInfo(sql);
 
-	if (elems_requested == -1) { appendStringInfoString(sql, "SELECT EXISTS ( SELECT 1"); }
-	else {
+	if (elems_requested == -1) {
+		appendStringInfoString(sql, "SELECT EXISTS ( SELECT 1");
+	} else {
 		appendStringInfoString(sql, "SELECT ");
 		addNodeFields(sql, fields);
 	}
 	hexbox = _box2d_to_hexwkb(box, topo->srid);
 	appendStringInfo(sql, " FROM \"%s\".node WHERE geom && '%s'::geometry", topo->name, hexbox);
 	lwfree(hexbox);
-	if (elems_requested == -1) { appendStringInfoString(sql, ")"); }
-	else if (elems_requested > 0) {
+	if (elems_requested == -1) {
+		appendStringInfoString(sql, ")");
+	} else if (elems_requested > 0) {
 		appendStringInfo(sql, " LIMIT %d", elems_requested);
 	}
 	POSTGIS_DEBUGF(1, "cb_getNodeWithinBox2D: query is: %s", sql->data);
@@ -2732,8 +2726,9 @@ cb_getEdgeWithinBox2D(const LWT_BE_TOPOLOGY *topo, const GBOX *box, int *numelem
 
 	initStringInfo(sql);
 
-	if (elems_requested == -1) { appendStringInfoString(sql, "SELECT EXISTS ( SELECT 1"); }
-	else {
+	if (elems_requested == -1) {
+		appendStringInfoString(sql, "SELECT EXISTS ( SELECT 1");
+	} else {
 		appendStringInfoString(sql, "SELECT ");
 		addEdgeFields(sql, fields, 0);
 	}
@@ -2745,8 +2740,9 @@ cb_getEdgeWithinBox2D(const LWT_BE_TOPOLOGY *topo, const GBOX *box, int *numelem
 		lwfree(hexbox);
 	}
 
-	if (elems_requested == -1) { appendStringInfoString(sql, ")"); }
-	else if (elems_requested > 0) {
+	if (elems_requested == -1) {
+		appendStringInfoString(sql, ")");
+	} else if (elems_requested > 0) {
 		appendStringInfo(sql, " LIMIT %d", elems_requested);
 	}
 	POSTGIS_DEBUGF(1, "cb_getEdgeWithinBox2D: query is: %s", sql->data);
@@ -2807,16 +2803,18 @@ cb_getFaceWithinBox2D(const LWT_BE_TOPOLOGY *topo, const GBOX *box, int *numelem
 
 	initStringInfo(sql);
 
-	if (elems_requested == -1) { appendStringInfoString(sql, "SELECT EXISTS ( SELECT 1"); }
-	else {
+	if (elems_requested == -1) {
+		appendStringInfoString(sql, "SELECT EXISTS ( SELECT 1");
+	} else {
 		appendStringInfoString(sql, "SELECT ");
 		addFaceFields(sql, fields);
 	}
 	hexbox = _box2d_to_hexwkb(box, topo->srid);
 	appendStringInfo(sql, " FROM \"%s\".face WHERE mbr && '%s'::geometry", topo->name, hexbox);
 	lwfree(hexbox);
-	if (elems_requested == -1) { appendStringInfoString(sql, ")"); }
-	else if (elems_requested > 0) {
+	if (elems_requested == -1) {
+		appendStringInfoString(sql, ")");
+	} else if (elems_requested > 0) {
 		appendStringInfo(sql, " LIMIT %d", elems_requested);
 	}
 	POSTGIS_DEBUGF(1, "cb_getFaceWithinBox2D: query is: %s", sql->data);

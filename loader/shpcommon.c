@@ -280,8 +280,7 @@ codepage2encoding(const char *cpg)
 		if (cpglen > 5) {
 			cpg += 5;
 			is_ldid = 1;
-		}
-		else {
+		} else {
 			return NULL;
 		}
 	}
@@ -293,8 +292,7 @@ codepage2encoding(const char *cpg)
 	for (i = is_ldid; i < num_code_pages; i++) {
 		if (is_ldid) {
 			if (code_pages[i].ldid == num) return strdup(code_pages[i].iconv);
-		}
-		else {
+		} else {
 			if (code_pages[i].cpg == num) return strdup(code_pages[i].iconv);
 		}
 	}
@@ -315,8 +313,9 @@ encoding2codepage(const char *encoding)
 	int i;
 	for (i = 0; i < num_code_pages; i++) {
 		if (strcasecmp(encoding, code_pages[i].pg) == 0) {
-			if (code_pages[i].ldid == 0xFF) { return strdup("UTF-8"); }
-			else {
+			if (code_pages[i].ldid == 0xFF) {
+				return strdup("UTF-8");
+			} else {
 				char *codepage = NULL;
 				int ret = asprintf(&codepage, "LDID/%d", code_pages[i].ldid);
 				if (ret == -1) return NULL; /* return null on error */

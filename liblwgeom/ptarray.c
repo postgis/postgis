@@ -217,8 +217,8 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 		if (p2d_same(&tmp1, &tmp2)) {
 			poff = 1;
 			--npoints;
-		}
-		else if (gap_tolerance == 0 || (gap_tolerance > 0 && distance2d_pt_pt(&tmp1, &tmp2) > gap_tolerance)) {
+		} else if (gap_tolerance == 0 ||
+			   (gap_tolerance > 0 && distance2d_pt_pt(&tmp1, &tmp2) > gap_tolerance)) {
 			lwerror("Second line start point too far from first line end point");
 			return LW_FAILURE;
 		}
@@ -298,8 +298,7 @@ ptarray_construct_copy_data(char hasz, char hasm, uint32_t npoints, const uint8_
 	if (npoints > 0) {
 		pa->serialized_pointlist = lwalloc(ptarray_point_size(pa) * npoints);
 		memcpy(pa->serialized_pointlist, ptlist, ptarray_point_size(pa) * npoints);
-	}
-	else {
+	} else {
 		pa->serialized_pointlist = NULL;
 	}
 
@@ -430,8 +429,7 @@ ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 			if (hasm) pbuf.m = p1.m + (p2.m - p1.m) / segdist * dist;
 			ptarray_append_point(opa, &pbuf, LW_FALSE);
 			p1 = pbuf;
-		}
-		else /* copy second point */
+		} else /* copy second point */
 		{
 			ptarray_append_point(opa, &p2, (ipa->npoints == 2) ? LW_TRUE : LW_FALSE);
 			p1 = p2;
@@ -710,7 +708,9 @@ ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int chec
 		 * then the line is to the right of the point and
 		 * circling counter-clockwise, so incremement.
 		 */
-		if ((side < 0) && (seg1->y <= pt->y) && (pt->y < seg2->y)) { wn++; }
+		if ((side < 0) && (seg1->y <= pt->y) && (pt->y < seg2->y)) {
+			wn++;
+		}
 
 		/*
 		 * If the point is to the right of the line, and it's falling,
@@ -797,8 +797,7 @@ ptarrayarc_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int c
 			return LW_INSIDE; /* Inside circle */
 		else
 			return LW_OUTSIDE; /* Outside circle */
-	}
-	else if (p2d_same(seg1, pt) || p2d_same(seg3, pt)) {
+	} else if (p2d_same(seg1, pt) || p2d_same(seg3, pt)) {
 		return LW_BOUNDARY; /* Boundary case */
 	}
 
@@ -1334,8 +1333,7 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 				dsq = distance2d_sqr_pt_pt(last, pt);
 				/* Allow any point but the last one to be dropped */
 				if (!last_point && dsq <= tolsq) { continue; }
-			}
-			else {
+			} else {
 				/* At tolerance zero, only skip exact dupes */
 				if (memcmp((char *)pt, (char *)last, pt_size) == 0) continue;
 			}
@@ -1393,8 +1391,7 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, int p1, int p2, int *split,
 			}
 		}
 		*dist = d;
-	}
-	else {
+	} else {
 		LWDEBUG(3, "segment too short, no split/no dist");
 		*dist = -1;
 	}
@@ -1432,8 +1429,7 @@ ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, uint32_t minpts)
 	if (pa->npoints > stack_size) {
 		stack = lwalloc(sizeof(int) * pa->npoints);
 		outlist = lwalloc(sizeof(int) * pa->npoints);
-	}
-	else {
+	} else {
 		stack = stack_static;
 		outlist = outlist_static;
 	}
@@ -1446,8 +1442,9 @@ ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, uint32_t minpts)
 	do {
 		ptarray_dp_findsplit_in_place(pa, p1, stack[sp], &split, &dist);
 
-		if ((dist > eps_sqr) || ((outn + sp + 1 < minpts) && (dist >= 0))) { stack[++sp] = split; }
-		else {
+		if ((dist > eps_sqr) || ((outn + sp + 1 < minpts) && (dist >= 0))) {
+			stack[++sp] = split;
+		} else {
 			outlist[outn++] = stack[sp];
 			p1 = stack[sp--];
 		}
@@ -1593,11 +1590,11 @@ getPoint_internal(const POINTARRAY *pa, uint32_t n)
 	size = ptarray_point_size(pa);
 
 	ptr = pa->serialized_pointlist + size * n;
-	if (FLAGS_NDIMS(pa->flags) == 2) { LWDEBUGF(5, "point = %g %g", *((double *)(ptr)), *((double *)(ptr + 8))); }
-	else if (FLAGS_NDIMS(pa->flags) == 3) {
+	if (FLAGS_NDIMS(pa->flags) == 2) {
+		LWDEBUGF(5, "point = %g %g", *((double *)(ptr)), *((double *)(ptr + 8)));
+	} else if (FLAGS_NDIMS(pa->flags) == 3) {
 		LWDEBUGF(5, "point = %g %g %g", *((double *)(ptr)), *((double *)(ptr + 8)), *((double *)(ptr + 16)));
-	}
-	else if (FLAGS_NDIMS(pa->flags) == 4) {
+	} else if (FLAGS_NDIMS(pa->flags) == 4) {
 		LWDEBUGF(5,
 			 "point = %g %g %g %g",
 			 *((double *)(ptr)),
@@ -1636,8 +1633,7 @@ ptarray_affine(POINTARRAY *pa, const AFFINE *a)
 
 			LWDEBUGF(3, " POINT %g %g %g => %g %g %g", x, y, z, p4d.x, p4d.y, p4d.z);
 		}
-	}
-	else {
+	} else {
 		LWDEBUG(3, " doesn't have z");
 
 		for (i = 0; i < pa->npoints; i++) {

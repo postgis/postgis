@@ -460,8 +460,7 @@ reallocator(void *mem, size_t size)
 
 static void
 noticereporter(const char *, va_list)
-{
-}
+{}
 
 static void
 errorreporter(const char *, va_list)
@@ -477,8 +476,7 @@ errorreporter(const char *, va_list)
 
 static void
 debuglogger(int, const char *, va_list)
-{
-}
+{}
 }
 
 int

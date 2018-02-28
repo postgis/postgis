@@ -138,11 +138,11 @@ pip_short_circuit(RTREE_POLY_CACHE *poly_cache, LWPOINT *point, GSERIALIZED *gpo
 	if (poly_cache && poly_cache->ringIndices) {
 		result = point_in_multipolygon_rtree(
 		    poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
-	}
-	else {
+	} else {
 		LWGEOM *poly = lwgeom_from_gserialized(gpoly);
-		if (lwgeom_get_type(poly) == POLYGONTYPE) { result = point_in_polygon(lwgeom_as_lwpoly(poly), point); }
-		else {
+		if (lwgeom_get_type(poly) == POLYGONTYPE) {
+			result = point_in_polygon(lwgeom_as_lwpoly(poly), point);
+		} else {
 			result = point_in_multipolygon(lwgeom_as_lwmpoly(poly), point);
 		}
 		lwgeom_free(poly);
@@ -290,8 +290,9 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 	}
 
-	if (densifyFrac <= 0.0) { retcode = GEOSFrechetDistance(g1, g2, &result); }
-	else {
+	if (densifyFrac <= 0.0) {
+		retcode = GEOSFrechetDistance(g1, g2, &result);
+	} else {
 		retcode = GEOSFrechetDistanceDensify(g1, g2, densifyFrac, &result);
 	}
 
@@ -402,8 +403,9 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		gser_in = (GSERIALIZED *)DatumGetPointer(value);
 
 		/* Check for SRID mismatch in array elements */
-		if (gotsrid) { error_if_srid_mismatch(srid, gserialized_get_srid(gser_in)); }
-		else {
+		if (gotsrid) {
+			error_if_srid_mismatch(srid, gserialized_get_srid(gser_in));
+		} else {
 			/* Initialize SRID/dimensions info */
 			srid = gserialized_get_srid(gser_in);
 			is3d = gserialized_has_z(gser_in);
@@ -417,8 +419,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 				empty_type = gser_type;
 				POSTGIS_DEBUGF(4, "empty_type = %d  gser_type = %d", empty_type, gser_type);
 			}
-		}
-		else {
+		} else {
 			g = POSTGIS2GEOS(gser_in);
 
 			/* Uh oh! Exception thrown at construction... */
@@ -810,14 +811,13 @@ Datum buffer(PG_FUNCTION_ARGS)
 				/* Supported end cap styles:
 				 *   "round", "flat", "square"
 				 */
-				if (!strcmp(val, "round")) { endCapStyle = ENDCAP_ROUND; }
-				else if (!strcmp(val, "flat") || !strcmp(val, "butt")) {
+				if (!strcmp(val, "round")) {
+					endCapStyle = ENDCAP_ROUND;
+				} else if (!strcmp(val, "flat") || !strcmp(val, "butt")) {
 					endCapStyle = ENDCAP_FLAT;
-				}
-				else if (!strcmp(val, "square")) {
+				} else if (!strcmp(val, "square")) {
 					endCapStyle = ENDCAP_SQUARE;
-				}
-				else {
+				} else {
 					lwpgerror(
 					    "Invalid buffer end cap "
 					    "style: %s (accept: "
@@ -827,16 +827,14 @@ Datum buffer(PG_FUNCTION_ARGS)
 					    val);
 					break;
 				}
-			}
-			else if (!strcmp(key, "join")) {
-				if (!strcmp(val, "round")) { joinStyle = JOIN_ROUND; }
-				else if (!strcmp(val, "mitre") || !strcmp(val, "miter")) {
+			} else if (!strcmp(key, "join")) {
+				if (!strcmp(val, "round")) {
+					joinStyle = JOIN_ROUND;
+				} else if (!strcmp(val, "mitre") || !strcmp(val, "miter")) {
 					joinStyle = JOIN_MITRE;
-				}
-				else if (!strcmp(val, "bevel")) {
+				} else if (!strcmp(val, "bevel")) {
 					joinStyle = JOIN_BEVEL;
-				}
-				else {
+				} else {
 					lwpgerror(
 					    "Invalid buffer end cap "
 					    "style: %s (accept: "
@@ -846,25 +844,21 @@ Datum buffer(PG_FUNCTION_ARGS)
 					    val);
 					break;
 				}
-			}
-			else if (!strcmp(key, "mitre_limit") || !strcmp(key, "miter_limit")) {
+			} else if (!strcmp(key, "mitre_limit") || !strcmp(key, "miter_limit")) {
 				/* mitreLimit is a float */
 				mitreLimit = atof(val);
-			}
-			else if (!strcmp(key, "quad_segs")) {
+			} else if (!strcmp(key, "quad_segs")) {
 				/* quadrant segments is an int */
 				quadsegs = atoi(val);
-			}
-			else if (!strcmp(key, "side") || !strcmp(key, "side")) {
-				if (!strcmp(val, "both")) { singleside = 0; }
-				else if (!strcmp(val, "left")) {
+			} else if (!strcmp(key, "side") || !strcmp(key, "side")) {
+				if (!strcmp(val, "both")) {
+					singleside = 0;
+				} else if (!strcmp(val, "left")) {
 					singleside = 1;
-				}
-				else if (!strcmp(val, "right")) {
+				} else if (!strcmp(val, "right")) {
 					singleside = 1;
 					size *= -1;
-				}
-				else {
+				} else {
 					lwpgerror(
 					    "Invalid side "
 					    "parameter: %s (accept: "
@@ -873,8 +867,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 					    val);
 					break;
 				}
-			}
-			else {
+			} else {
 				lwpgerror(
 				    "Invalid buffer parameter: %s (accept: "
 				    "'endcap', 'join', 'mitre_limit', "
@@ -898,13 +891,11 @@ Datum buffer(PG_FUNCTION_ARGS)
 		    GEOSBufferParams_setQuadrantSegments(bufferparams, quadsegs) &&
 		    GEOSBufferParams_setSingleSided(bufferparams, singleside)) {
 			g3 = GEOSBufferWithParams(g1, bufferparams, size);
-		}
-		else {
+		} else {
 			lwpgerror("Error setting buffer parameters.");
 		}
 		GEOSBufferParams_destroy(bufferparams);
-	}
-	else {
+	} else {
 		lwpgerror("Error setting buffer parameters.");
 	}
 
@@ -1038,30 +1029,26 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 			POSTGIS_DEBUGF(3, "Param: %s : %s", key, val);
 
 			if (!strcmp(key, "join")) {
-				if (!strcmp(val, "round")) { joinStyle = JOIN_ROUND; }
-				else if (!(strcmp(val, "mitre") && strcmp(val, "miter"))) {
+				if (!strcmp(val, "round")) {
+					joinStyle = JOIN_ROUND;
+				} else if (!(strcmp(val, "mitre") && strcmp(val, "miter"))) {
 					joinStyle = JOIN_MITRE;
-				}
-				else if (!strcmp(val, "bevel")) {
+				} else if (!strcmp(val, "bevel")) {
 					joinStyle = JOIN_BEVEL;
-				}
-				else {
+				} else {
 					lwpgerror(
 					    "Invalid buffer end cap style: %s (accept: "
 					    "'round', 'mitre', 'miter' or 'bevel')",
 					    val);
 					break;
 				}
-			}
-			else if (!strcmp(key, "mitre_limit") || !strcmp(key, "miter_limit")) {
+			} else if (!strcmp(key, "mitre_limit") || !strcmp(key, "miter_limit")) {
 				/* mitreLimit is a float */
 				mitreLimit = atof(val);
-			}
-			else if (!strcmp(key, "quad_segs")) {
+			} else if (!strcmp(key, "quad_segs")) {
 				/* quadrant segments is an int */
 				quadsegs = atoi(val);
-			}
-			else {
+			} else {
 				lwpgerror(
 				    "Invalid buffer parameter: %s (accept: "
 				    "'join', 'mitre_limit', 'miter_limit and "
@@ -1361,8 +1348,7 @@ errorIfGeometryCollection(GSERIALIZED *g1, GSERIALIZED *g2)
 			 errhint("Change argument 1: '%s'", hintmsg)));
 		pfree(hintwkt);
 		pfree(hintmsg);
-	}
-	else if (t2 == COLLECTIONTYPE) {
+	} else if (t2 == COLLECTIONTYPE) {
 		lwgeom = lwgeom_from_gserialized(g2);
 		hintwkt = lwgeom_to_wkt(lwgeom, WKT_SFSQL, DBL_DIG, &hintsz);
 		hintmsg = lwmessage_truncate(hintwkt, 0, hintsz - 1, 80, 1);
@@ -1438,8 +1424,7 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 		if (!reason_str) HANDLE_GEOS_ERROR("GEOSisValidReason");
 		result = cstring_to_text(reason_str);
 		GEOSFree(reason_str);
-	}
-	else {
+	} else {
 		result = cstring_to_text(lwgeom_geos_errmsg);
 	}
 
@@ -1509,8 +1494,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 			lwpgerror("GEOS isvaliddetail() threw an exception!");
 			PG_RETURN_NULL(); /* never gets here */
 		}
-	}
-	else {
+	} else {
 		/* TODO: check lwgeom_geos_errmsg for validity error */
 		reason = pstrdup(lwgeom_geos_errmsg);
 	}
@@ -1635,8 +1619,7 @@ Datum contains(PG_FUNCTION_ARGS)
 			lwgeom_free(point);
 
 			retval = (pip_result == 1); /* completely inside */
-		}
-		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
+		} else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
 			LWMPOINT *mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));
 			uint32_t i;
 			int found_completely_inside = LW_FALSE;
@@ -1660,8 +1643,7 @@ Datum contains(PG_FUNCTION_ARGS)
 
 			retval = retval && found_completely_inside;
 			lwmpoint_free(mpoint);
-		}
-		else {
+		} else {
 			/* Never get here */
 			elog(ERROR, "Type isn't point or multipoint!");
 			PG_RETURN_NULL();
@@ -1670,8 +1652,7 @@ Datum contains(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(geom1, 0);
 		PG_FREE_IF_COPY(geom2, 1);
 		PG_RETURN_BOOL(retval);
-	}
-	else {
+	} else {
 		POSTGIS_DEBUGF(
 		    3, "Contains: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
 	}
@@ -1687,8 +1668,7 @@ Datum contains(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUG(4, "containsPrepared: cache is live, running preparedcontains");
 		result = GEOSPreparedContains(prep_cache->prepared_geom, g1);
 		GEOSGeom_destroy(g1);
-	}
-	else {
+	} else {
 		g1 = POSTGIS2GEOS(geom1);
 		if (!g1)
 			HANDLE_GEOS_ERROR(
@@ -1753,8 +1733,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 			    "GEOS");
 		result = GEOSPreparedContainsProperly(prep_cache->prepared_geom, g);
 		GEOSGeom_destroy(g);
-	}
-	else {
+	} else {
 		GEOSGeometry *g2;
 		GEOSGeometry *g1;
 
@@ -1829,8 +1808,7 @@ Datum covers(PG_FUNCTION_ARGS)
 			lwgeom_free(point);
 
 			retval = (pip_result != -1); /* not outside */
-		}
-		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
+		} else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
 			LWMPOINT *mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));
 			uint32_t i;
 
@@ -1844,8 +1822,7 @@ Datum covers(PG_FUNCTION_ARGS)
 			}
 
 			lwmpoint_free(mpoint);
-		}
-		else {
+		} else {
 			/* Never get here */
 			elog(ERROR, "Type isn't point or multipoint!");
 			PG_RETURN_NULL();
@@ -1854,8 +1831,7 @@ Datum covers(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(geom1, 0);
 		PG_FREE_IF_COPY(geom2, 1);
 		PG_RETURN_BOOL(retval);
-	}
-	else {
+	} else {
 		POSTGIS_DEBUGF(
 		    3, "Covers: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
 	}
@@ -1872,8 +1848,7 @@ Datum covers(PG_FUNCTION_ARGS)
 			    "GEOS");
 		result = GEOSPreparedCovers(prep_cache->prepared_geom, g1);
 		GEOSGeom_destroy(g1);
-	}
-	else {
+	} else {
 		GEOSGeometry *g1;
 		GEOSGeometry *g2;
 
@@ -1958,8 +1933,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 			lwgeom_free(point);
 
 			retval = (pip_result != -1); /* not outside */
-		}
-		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
+		} else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
 			LWMPOINT *mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));
 			uint32_t i;
 
@@ -1973,8 +1947,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 			}
 
 			lwmpoint_free(mpoint);
-		}
-		else {
+		} else {
 			/* Never get here */
 			elog(ERROR, "Type isn't point or multipoint!");
 			PG_RETURN_NULL();
@@ -1983,8 +1956,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(geom1, 0);
 		PG_FREE_IF_COPY(geom2, 1);
 		PG_RETURN_BOOL(retval);
-	}
-	else {
+	} else {
 		POSTGIS_DEBUGF(
 		    3, "CoveredBy: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
 	}
@@ -2108,8 +2080,7 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 			lwgeom_free(point);
 
 			retval = (pip_result != -1); /* not outside */
-		}
-		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
+		} else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
 			LWMPOINT *mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));
 			uint32_t i;
 
@@ -2124,8 +2095,7 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 			}
 
 			lwmpoint_free(mpoint);
-		}
-		else {
+		} else {
 			/* Never get here */
 			elog(ERROR, "Type isn't point or multipoint!");
 			PG_RETURN_NULL();
@@ -2145,15 +2115,13 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 			if (!g) HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
 			result = GEOSPreparedIntersects(prep_cache->prepared_geom, g);
 			GEOSGeom_destroy(g);
-		}
-		else {
+		} else {
 			GEOSGeometry *g = POSTGIS2GEOS(geom1);
 			if (!g) HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
 			result = GEOSPreparedIntersects(prep_cache->prepared_geom, g);
 			GEOSGeom_destroy(g);
 		}
-	}
-	else {
+	} else {
 		GEOSGeometry *g1;
 		GEOSGeometry *g2;
 		g1 = POSTGIS2GEOS(geom1);
@@ -2594,8 +2562,7 @@ ARRAY2LWGEOM(ArrayType *array, uint32_t nelems, int *is3d, int *srid)
 		if (!gotsrid) {
 			gotsrid = true;
 			*srid = gserialized_get_srid(geom);
-		}
-		else if (*srid != gserialized_get_srid(geom)) {
+		} else if (*srid != gserialized_get_srid(geom)) {
 			error_if_srid_mismatch(*srid, gserialized_get_srid(geom));
 			return NULL;
 		}
@@ -2645,8 +2612,7 @@ ARRAY2GEOS(ArrayType *array, uint32_t nelems, int *is3d, int *srid)
 		if (!gotsrid) {
 			*srid = gserialized_get_srid(geom);
 			gotsrid = true;
-		}
-		else if (*srid != gserialized_get_srid(geom)) {
+		} else if (*srid != gserialized_get_srid(geom)) {
 			uint32_t j;
 			error_if_srid_mismatch(*srid, gserialized_get_srid(geom));
 

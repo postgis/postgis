@@ -143,8 +143,7 @@ point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj)
 				orig_pt.z,
 				pj_strerrno(pj_errno_val),
 				pj_errno_val);
-		}
-		else {
+		} else {
 			lwerror("transform: couldn't project point (%g %g %g): %s (%d)",
 				orig_pt.x,
 				orig_pt.y,

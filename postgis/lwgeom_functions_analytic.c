@@ -158,8 +158,9 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	lwgeom_free(lwline_as_lwgeom(lwline));
 	PG_FREE_IF_COPY(gser, 0);
 
-	if (opa->npoints <= 1) { lwresult = lwpoint_as_lwgeom(lwpoint_construct(srid, NULL, opa)); }
-	else {
+	if (opa->npoints <= 1) {
+		lwresult = lwpoint_as_lwgeom(lwpoint_construct(srid, NULL, opa));
+	} else {
 		lwresult = lwmpoint_as_lwgeom(lwmpoint_construct(srid, opa));
 	}
 
@@ -439,8 +440,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 			olwgeom = (LWGEOM *)lwpoint_construct(iline->srid, NULL, opa);
 		else
 			olwgeom = (LWGEOM *)lwline_construct(iline->srid, NULL, opa);
-	}
-	else if (type == MULTILINETYPE) {
+	} else if (type == MULTILINETYPE) {
 		LWMLINE *iline;
 		uint32_t i = 0, g = 0;
 		int homogeneous = LW_TRUE;
@@ -494,8 +494,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 				{
 					geoms[g] = (LWGEOM *)lwpoint_construct(SRID_UNKNOWN, NULL, opa);
 					homogeneous = LW_FALSE;
-				}
-				else {
+				} else {
 					geoms[g] = (LWGEOM *)lwline_construct(SRID_UNKNOWN, NULL, opa);
 				}
 				g++;
@@ -505,8 +504,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 		if (!homogeneous) type = COLLECTIONTYPE;
 
 		olwgeom = (LWGEOM *)lwcollection_construct(type, iline->srid, NULL, g, geoms);
-	}
-	else {
+	} else {
 		elog(ERROR, "line_substring: 1st arg isn't a line");
 		PG_RETURN_NULL();
 	}
@@ -554,16 +552,14 @@ isOnSegment(const POINT2D *seg1, const POINT2D *seg2, const POINT2D *point)
 	if (seg1->x > seg2->x) {
 		maxX = seg1->x;
 		minX = seg2->x;
-	}
-	else {
+	} else {
 		maxX = seg2->x;
 		minX = seg1->x;
 	}
 	if (seg1->y > seg2->y) {
 		maxY = seg1->y;
 		minY = seg2->y;
-	}
-	else {
+	} else {
 		maxY = seg2->y;
 		minY = seg1->y;
 	}
@@ -574,8 +570,7 @@ isOnSegment(const POINT2D *seg1, const POINT2D *seg2, const POINT2D *point)
 		POSTGIS_DEBUGF(3, "X value %.8f falls outside the range %.8f-%.8f", point->x, minX, maxX);
 
 		return 0;
-	}
-	else if (maxY < point->y || minY > point->y) {
+	} else if (maxY < point->y || minY > point->y) {
 		POSTGIS_DEBUGF(3, "Y value %.8f falls outside the range %.8f-%.8f", point->y, minY, maxY);
 
 		return 0;
@@ -798,13 +793,11 @@ point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int *ringCounts, L
 		if (in_ring == -1) /* outside the exterior ring */
 		{
 			POSTGIS_DEBUG(3, "point_in_multipolygon_rtree: outside exterior ring.");
-		}
-		else if (in_ring == 0) /* on the boundary */
+		} else if (in_ring == 0) /* on the boundary */
 		{
 			POSTGIS_DEBUGF(3, "point_in_multipolygon_rtree: on edge of exterior ring %d", p);
 			return 0;
-		}
-		else {
+		} else {
 			result = in_ring;
 
 			for (r = 1; r < ringCounts[p]; r++) {
@@ -973,8 +966,7 @@ Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS)
 	/* Empty geometry?  Return POINT EMPTY with zero radius */
 	if (gserialized_is_empty(geom)) {
 		lwcenter = (LWGEOM *)lwpoint_construct_empty(gserialized_get_srid(geom), LW_FALSE, LW_FALSE);
-	}
-	else {
+	} else {
 		input = lwgeom_from_gserialized(geom);
 		mbc = lwgeom_calculate_mbc(input);
 
@@ -1033,8 +1025,7 @@ Datum ST_MinimumBoundingCircle(PG_FUNCTION_ARGS)
 	/* Empty geometry? Return POINT EMPTY */
 	if (gserialized_is_empty(geom)) {
 		lwcircle = (LWGEOM *)lwpoint_construct_empty(gserialized_get_srid(geom), LW_FALSE, LW_FALSE);
-	}
-	else {
+	} else {
 		input = lwgeom_from_gserialized(geom);
 		mbc = lwgeom_calculate_mbc(input);
 

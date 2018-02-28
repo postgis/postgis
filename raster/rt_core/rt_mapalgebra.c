@@ -96,7 +96,9 @@ rt_band_reclass(rt_band srcband,
 	}
 
 	/* initialize to zero */
-	if (!hasnodata) { memset(mem, 0, memsize); }
+	if (!hasnodata) {
+		memset(mem, 0, memsize);
+	}
 	/* initialize to nodataval */
 	else {
 		int32_t checkvalint = 0;
@@ -270,15 +272,16 @@ rt_band_reclass(rt_band srcband,
 			*/
 
 			/* NODATA */
-			if (hasnodata && isnodata) { nv = nodataval; }
+			if (hasnodata && isnodata) {
+				nv = nodataval;
+			}
 			/*
 				"src" min and max is the same, prevent division by zero
 				set nv to "dst" min, which should be the same as "dst" max
 			*/
 			else if (FLT_EQ(expr->src.max, expr->src.min)) {
 				nv = expr->dst.min;
-			}
-			else {
+			} else {
 				or = expr->src.max - expr->src.min;
 				nr = expr->dst.max - expr->dst.min;
 				nv = (((ov - expr->src.min) * nr) / or) + expr->dst.min;
@@ -546,8 +549,7 @@ _rti_iterator_arg_populate(_rti_iterator_arg _param,
 			(*allempty)++;
 
 			continue;
-		}
-		else if (rt_raster_is_empty(itrset[i].raster)) {
+		} else if (rt_raster_is_empty(itrset[i].raster)) {
 			_param->isempty[i] = 1;
 
 			(*allempty)++;
@@ -562,8 +564,7 @@ _rti_iterator_arg_populate(_rti_iterator_arg _param,
 				rterror(
 				    "_rti_iterator_arg_populate: Band %d not found for raster %d", itrset[i].nband, i);
 				return 0;
-			}
-			else {
+			} else {
 				RASTER_DEBUGF(4, "Band %d not found for raster %d. Using NODATA", itrset[i].nband, i);
 			}
 		}
@@ -985,8 +986,7 @@ rt_raster_iterator(rt_iterator itrset,
 				_rti_iterator_arg_destroy(_param);
 
 				return ES_ERROR;
-			}
-			else if (rt_raster_is_empty(rast)) {
+			} else if (rt_raster_is_empty(rast)) {
 				rtinfo("rt_raster_iterator: Computed raster for %s extent is empty",
 				       extenttype == ET_UNION ? "union" : "intersection");
 
@@ -1320,12 +1320,10 @@ rt_raster_iterator(rt_iterator itrset,
 			if (!nodata) {
 				status = rt_band_set_pixel(rtnband, _x, _y, value, NULL);
 				RASTER_DEBUGF(4, "burning pixel (%d, %d) with value: %f", _x, _y, value);
-			}
-			else if (!hasnodata) {
+			} else if (!hasnodata) {
 				status = rt_band_set_pixel(rtnband, _x, _y, minval, NULL);
 				RASTER_DEBUGF(4, "burning pixel (%d, %d) with minval: %f", _x, _y, minval);
-			}
-			else {
+			} else {
 				RASTER_DEBUGF(4, "NOT burning pixel (%d, %d)", _x, _y);
 			}
 			if (status != ES_NONE) {
@@ -1493,8 +1491,7 @@ rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap)
 		rterror("rt_raster_colormap: At least one color must be provided");
 		_rti_colormap_arg_destroy(arg);
 		return NULL;
-	}
-	else if (colormap->ncolor > 4) {
+	} else if (colormap->ncolor > 4) {
 		rtinfo("More than four colors indicated. Using only the first four colors");
 		colormap->ncolor = 4;
 	}
@@ -1630,8 +1627,7 @@ rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap)
 
 				arg->expr[k]->dst.inc_max = 1;
 				arg->expr[k]->dst.exc_max = 0;
-			}
-			else if (colormap->method == CM_NEAREST) {
+			} else if (colormap->method == CM_NEAREST) {
 
 				/* NOT last entry */
 				if (j != arg->npos - 1) {
@@ -1669,8 +1665,7 @@ rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap)
 				arg->expr[k]->dst.max = colormap->entry[arg->pos[j]].color[i];
 				arg->expr[k]->dst.inc_max = 1;
 				arg->expr[k]->dst.exc_max = 0;
-			}
-			else if (colormap->method == CM_EXACT) {
+			} else if (colormap->method == CM_EXACT) {
 				arg->expr[k]->src.min = colormap->entry[arg->pos[j]].value;
 				arg->expr[k]->src.inc_min = 1;
 				arg->expr[k]->src.exc_min = 0;

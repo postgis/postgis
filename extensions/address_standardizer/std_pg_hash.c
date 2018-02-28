@@ -227,8 +227,7 @@ AddStdHashEntry(MemoryContext mcxt, STANDARDIZER *std)
 		DBG("&he->std=%p", &he->std);
 		he->std = std;
 		DBG("Leaving AddStdHashEntry");
-	}
-	else {
+	} else {
 		elog(ERROR, "AddStdHashEntry: This memory context is already in use! (%p)", (void *)mcxt);
 	}
 }
@@ -468,8 +467,7 @@ GetStdPortalCache(FunctionCallInfo fcinfo)
 			/* Store the pointer in fcinfo->flinfo->fn_extra */
 			fcinfo->flinfo->fn_extra = STDCache;
 		}
-	}
-	else {
+	} else {
 		/* Use the existing cache */
 		STDCache = fcinfo->flinfo->fn_extra;
 	}
@@ -748,8 +746,7 @@ load_lex(LEXICON *lex, char *tab)
 			// DBG("calling SPI_freetuptable");
 			SPI_freetuptable(tuptable);
 			// DBG("back from SPI_freetuptable");
-		}
-		else
+		} else
 			moredata = FALSE;
 	}
 
@@ -872,8 +869,7 @@ load_rules(RULES *rules, char *tab)
 			// DBG("calling SPI_freetuptable");
 			SPI_freetuptable(tuptable);
 			// DBG("back from SPI_freetuptable");
-		}
-		else
+		} else
 			moredata = FALSE;
 
 		total_tuples += ntuples;

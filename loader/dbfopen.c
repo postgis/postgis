@@ -511,8 +511,7 @@ DBFOpenLL(const char *pszFilename, const char *pszAccess, SAHooks *psHooks)
 		if (pabyFInfo[11] == 'N' || pabyFInfo[11] == 'F') {
 			psDBF->panFieldSize[iField] = pabyFInfo[16];
 			psDBF->panFieldDecimals[iField] = pabyFInfo[17];
-		}
-		else {
+		} else {
 			psDBF->panFieldSize[iField] = pabyFInfo[16];
 			psDBF->panFieldDecimals[iField] = 0;
 
@@ -833,8 +832,7 @@ DBFAddNativeFieldType(DBFHandle psDBF, const char *pszFieldName, char chType, in
 	if (chType == 'C') {
 		pszFInfo[16] = (unsigned char)(nWidth % 256);
 		pszFInfo[17] = (unsigned char)(nWidth / 256);
-	}
-	else {
+	} else {
 		pszFInfo[16] = (unsigned char)nWidth;
 		pszFInfo[17] = (unsigned char)nDecimals;
 	}
@@ -1064,16 +1062,16 @@ DBFIsValueNULL(char chType, const char *pszValue)
 		if (pszValue[0] == '\0' || /* emtpy string */
 		    strncmp(pszValue, "00000000", 8) == 0 || strncmp(pszValue, "        ", 8) == 0) {
 			return 1;
-		}
-		else {
+		} else {
 			return 0;
 		}
 		/* return strncmp(pszValue,"00000000",8) == 0; */
 
 	case 'L':
 		/* NULL boolean fields have value "?" or empty */
-		if (pszValue[0] == '\0' || pszValue[0] == '?') { return 1; }
-		else {
+		if (pszValue[0] == '\0' || pszValue[0] == '?') {
+			return 1;
+		} else {
 			return 0;
 		}
 
@@ -1166,8 +1164,7 @@ DBFGetFieldInfo(DBFHandle psDBF, int iField, char *pszFieldName, int *pnWidth, i
 			return (FTDouble);
 		else
 			return (FTInteger);
-	}
-	else {
+	} else {
 		return (FTString);
 	}
 }
@@ -1249,8 +1246,7 @@ DBFWriteAttribute(DBFHandle psDBF, int hEntity, int iField, void *pValue)
 			}
 
 			strncpy((char *)(pabyRec + psDBF->panFieldOffset[iField]), szSField, strlen(szSField));
-		}
-		else {
+		} else {
 			int nWidth = psDBF->panFieldSize[iField];
 
 			if ((int)sizeof(szSField) - 2 < nWidth) nWidth = sizeof(szSField) - 2;
@@ -1274,8 +1270,7 @@ DBFWriteAttribute(DBFHandle psDBF, int hEntity, int iField, void *pValue)
 		if ((int)strlen((char *)pValue) > psDBF->panFieldSize[iField]) {
 			j = psDBF->panFieldSize[iField];
 			nRetResult = FALSE;
-		}
-		else {
+		} else {
 			memset(pabyRec + psDBF->panFieldOffset[iField], ' ', psDBF->panFieldSize[iField]);
 			j = strlen((char *)pValue);
 		}
@@ -1928,8 +1923,7 @@ DBFAlterFieldDefn(DBFHandle psDBF, int iField, const char *pszFieldName, char ch
 	if (chType == 'C') {
 		pszFInfo[16] = (unsigned char)(nWidth % 256);
 		pszFInfo[17] = (unsigned char)(nWidth / 256);
-	}
-	else {
+	} else {
 		pszFInfo[16] = (unsigned char)nWidth;
 		pszFInfo[17] = (unsigned char)nDecimals;
 	}
@@ -1993,8 +1987,7 @@ DBFAlterFieldDefn(DBFHandle psDBF, int iField, const char *pszFieldName, char ch
 
 		free(pszRecord);
 		free(pszOldField);
-	}
-	else if (nWidth > nOldWidth) {
+	} else if (nWidth > nOldWidth) {
 		char *pszRecord = (char *)malloc(sizeof(char) * psDBF->nRecordLength);
 		char *pszOldField = (char *)malloc(sizeof(char) * (nOldWidth + 1));
 
@@ -2018,15 +2011,15 @@ DBFAlterFieldDefn(DBFHandle psDBF, int iField, const char *pszFieldName, char ch
 			}
 
 			/* Convert null value to the appropriate value of the new type */
-			if (bIsNULL) { memset(pszRecord + nOffset, chFieldFill, nWidth); }
-			else {
+			if (bIsNULL) {
+				memset(pszRecord + nOffset, chFieldFill, nWidth);
+			} else {
 				if ((chOldType == 'N' || chOldType == 'F')) {
 					/* Add leading spaces when expanding a numeric field */
 					memmove(
 					    pszRecord + nOffset + nWidth - nOldWidth, pszRecord + nOffset, nOldWidth);
 					memset(pszRecord + nOffset, ' ', nWidth - nOldWidth);
-				}
-				else {
+				} else {
 					/* Add trailing spaces */
 					memset(pszRecord + nOffset + nOldWidth, ' ', nWidth - nOldWidth);
 				}

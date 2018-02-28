@@ -105,16 +105,14 @@ init_output_fields(STAND_PARAM *__stand_param__, int which_fields)
 		for (i = 0; i < MAXOUTSYM; i++) {
 			__standard_fields__[i][0] = SENTINEL;
 		}
-	}
-	else {
+	} else {
 		/*-- Clean only one set --*/
 		if (which_fields == RIGHT) {
 			/*-- Erase the macro fields only --*/
 			for (i = CITY; i < NEEDHEAD; i++) {
 				__standard_fields__[i][0] = SENTINEL;
 			}
-		}
-		else {
+		} else {
 			/*-- Erase the micro fields only --*/
 			for (i = BLDNG; i < CITY; i++) {
 				__standard_fields__[i][0] = SENTINEL;
@@ -190,8 +188,7 @@ send_fields_to_stream(char **__standard_fields__, FILE *__dest_file__, int opt, 
 			fprintf(__dest_file__,
 				"%s\n",
 				(is_landmark ? __landmark_record_start_tag__[opt] : __record_start_tag__[opt]));
-		}
-		else {
+		} else {
 			printf("%s\n", (is_landmark ? __landmark_record_start_tag__[opt] : __record_start_tag__[opt]));
 		}
 	}
@@ -219,8 +216,7 @@ send_fields_to_stream(char **__standard_fields__, FILE *__dest_file__, int opt, 
 					default:
 						__source_start_tag__ = (char *)__field_start_tag__[loc][opt];
 					}
-				}
-				else {
+				} else {
 					__source_start_tag__ = (char *)__field_start_tag__[loc][opt];
 				}
 				append_string_to_max(__line_buf__, __source_start_tag__, STREAM_BUF_SIZE);
@@ -242,14 +238,14 @@ send_fields_to_stream(char **__standard_fields__, FILE *__dest_file__, int opt, 
 					default:
 						__source_end_tag__ = (char *)__field_tag_end__[loc][opt];
 					}
-				}
-				else {
+				} else {
 					__source_end_tag__ = (char *)__field_tag_end__[loc][opt];
 				}
 				append_string_to_max(__line_buf__, __source_end_tag__, STREAM_BUF_SIZE);
 			}
-			if (__dest_file__ != NULL) { fprintf(__dest_file__, "%s", __line_buf__); }
-			else {
+			if (__dest_file__ != NULL) {
+				fprintf(__dest_file__, "%s", __line_buf__);
+			} else {
 				printf("%s", __line_buf__);
 			}
 		}
@@ -259,13 +255,13 @@ send_fields_to_stream(char **__standard_fields__, FILE *__dest_file__, int opt, 
 			fprintf(__dest_file__,
 				"%s\n",
 				(is_landmark ? __landmark_record_end_tag__[opt] : __record_end_tag__[opt]));
-		}
-		else {
+		} else {
 			printf("%s\n", (is_landmark ? __landmark_record_end_tag__[opt] : __record_end_tag__[opt]));
 		}
 	}
-	if (__dest_file__ != NULL) { fflush(__dest_file__); }
-	else {
+	if (__dest_file__ != NULL) {
+		fflush(__dest_file__);
+	} else {
 		fflush(stdout);
 	}
 }
@@ -364,8 +360,9 @@ _copy_standard_(STAND_PARAM *__stand_param__, SYMB output_sym, int fld, int lex_
 		/*-- Truncate without warning --*/
 		return;
 	}
-	if (*__dest_buf__ != SENTINEL) { SPACE_APPEND_WITH_LEN(__dest_buf__, __stan_str__, MAXFLDLEN); }
-	else if (output_sym == UNITT) {
+	if (*__dest_buf__ != SENTINEL) {
+		SPACE_APPEND_WITH_LEN(__dest_buf__, __stan_str__, MAXFLDLEN);
+	} else if (output_sym == UNITT) {
 		/*-- If the unit id type is missing, one needs to be provided.
 	 This might result in a mismatch, when the type is implicit
 	 in one of the compared addresses, and explicit in the
@@ -374,12 +371,10 @@ _copy_standard_(STAND_PARAM *__stand_param__, SYMB output_sym, int fld, int lex_
 
 		strcpy(__dest_buf__, "# "); /* -- reconsider this -- */
 		append_string_to_max(__dest_buf__, __stan_str__, MAXFLDLEN);
-	}
-	else if (output_sym == BOXT) {
+	} else if (output_sym == BOXT) {
 		strcpy(__dest_buf__, "BOX ");
 		append_string_to_max(__dest_buf__, __stan_str__, MAXFLDLEN);
-	}
-	else {
+	} else {
 		strcpy(__dest_buf__, __stan_str__);
 	}
 }

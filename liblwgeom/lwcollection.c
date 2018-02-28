@@ -124,8 +124,7 @@ lwcollection_clone(const LWCOLLECTION *g)
 			ret->geoms[i] = lwgeom_clone(g->geoms[i]);
 		}
 		if (g->bbox) ret->bbox = gbox_copy(g->bbox);
-	}
-	else {
+	} else {
 		ret->bbox = NULL; /* empty collection */
 		ret->geoms = NULL;
 	}
@@ -147,8 +146,7 @@ lwcollection_clone_deep(const LWCOLLECTION *g)
 			ret->geoms[i] = lwgeom_clone_deep(g->geoms[i]);
 		}
 		if (g->bbox) ret->bbox = gbox_copy(g->bbox);
-	}
-	else {
+	} else {
 		ret->bbox = NULL; /* empty collection */
 		ret->geoms = NULL;
 	}
@@ -417,8 +415,7 @@ lwcollection_extract(LWCOLLECTION *col, int type)
 		outcol = lwcollection_construct(outtype, col->srid, NULL, geomlistlen, geomlist);
 		lwgeom_calculate_gbox((LWGEOM *)outcol, &gbox);
 		outcol->bbox = gbox_copy(&gbox);
-	}
-	else {
+	} else {
 		lwfree(geomlist);
 		outcol =
 		    lwcollection_construct_empty(outtype, col->srid, FLAGS_GET_Z(col->flags), FLAGS_GET_M(col->flags));
@@ -433,8 +430,9 @@ lwcollection_force_dims(const LWCOLLECTION *col, int hasz, int hasm)
 	LWCOLLECTION *colout;
 
 	/* Return 2D empty */
-	if (lwcollection_is_empty(col)) { colout = lwcollection_construct_empty(col->type, col->srid, hasz, hasm); }
-	else {
+	if (lwcollection_is_empty(col)) {
+		colout = lwcollection_construct_empty(col->type, col->srid, hasz, hasm);
+	} else {
 		uint32_t i;
 		LWGEOM **geoms = NULL;
 		geoms = lwalloc(sizeof(LWGEOM *) * col->ngeoms);

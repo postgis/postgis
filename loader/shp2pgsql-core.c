@@ -244,14 +244,14 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, in
 	if ((obj->nVertices > 1) || force_multi) {
 		lwgeom = lwcollection_as_lwgeom(
 		    lwcollection_construct(MULTIPOINTTYPE, state->from_srid, NULL, obj->nVertices, lwmultipoints));
-	}
-	else {
+	} else {
 		lwgeom = lwmultipoints[0];
 		lwfree(lwmultipoints);
 	}
 
-	if (state->config->use_wkt) { mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, WKT_PRECISION, &mem_length); }
-	else {
+	if (state->config->use_wkt) {
+		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, WKT_PRECISION, &mem_length);
+	} else {
 		mem = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &mem_length);
 	}
 
@@ -332,8 +332,7 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	if (state->config->simple_geometries == 0) {
 		lwgeom = lwcollection_as_lwgeom(
 		    lwcollection_construct(MULTILINETYPE, state->from_srid, NULL, obj->nParts, lwmultilinestrings));
-	}
-	else {
+	} else {
 		lwgeom = lwmultilinestrings[0];
 		lwfree(lwmultilinestrings);
 	}
@@ -454,8 +453,7 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		if (area < 0.0 || obj->nParts == 1) {
 			Outer[out_index] = ring;
 			out_index++;
-		}
-		else {
+		} else {
 			/* Counterclockwise. It's an Inner Ring ! */
 			Inner[in_index] = ring;
 			in_index++;
@@ -500,8 +498,7 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 				outer = outer->next;
 
 			outer->next = inner;
-		}
-		else {
+		} else {
 			/* The ring wasn't within any outer rings, */
 			/* assume it is a new outer ring. */
 			LWDEBUGF(4, "FindPolygons[%d]: hole %d is orphan\n", call, pi);
@@ -632,8 +629,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	if (state->config->simple_geometries == 0) {
 		lwgeom = lwcollection_as_lwgeom(
 		    lwcollection_construct(MULTIPOLYGONTYPE, state->from_srid, NULL, polygon_total, lwpolygons));
-	}
-	else {
+	} else {
 		lwgeom = lwpolygons[0];
 		lwfree(lwpolygons);
 	}
@@ -733,8 +729,9 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 
 	/* If only one has a valid SRID, use it for both. */
 	if (state->to_srid == SRID_UNKNOWN) {
-		if (config->geography) { state->to_srid = 4326; }
-		else {
+		if (config->geography) {
+			state->to_srid = 4326;
+		} else {
 			state->to_srid = state->from_srid;
 		}
 	}
@@ -988,8 +985,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 				state->pgtype += 5;
 			}
 		}
-	}
-	else {
+	} else {
 		/* Otherwise just count the number of records in the DBF */
 		state->num_entities = DBFGetRecordCount(state->hDBFHandle);
 	}
@@ -1111,14 +1107,11 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			/* Determine exact type based upon field width */
 			if (state->config->forceint4 || (state->widths[j] >= 5 && state->widths[j] < 10)) {
 				state->pgfieldtypes[j] = strdup("int4");
-			}
-			else if (state->widths[j] >= 10 && state->widths[j] < 19) {
+			} else if (state->widths[j] >= 10 && state->widths[j] < 19) {
 				state->pgfieldtypes[j] = strdup("int8");
-			}
-			else if (state->widths[j] < 5) {
+			} else if (state->widths[j] < 5) {
 				state->pgfieldtypes[j] = strdup("int2");
-			}
-			else {
+			} else {
 				state->pgfieldtypes[j] = strdup("numeric");
 			}
 			break;
@@ -1130,8 +1123,9 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 				state->field_names[j],
 				state->widths[j],
 				state->precisions[j]);
-			if (state->widths[j] > 18) { state->pgfieldtypes[j] = strdup("numeric"); }
-			else {
+			if (state->widths[j] > 18) {
+				state->pgfieldtypes[j] = strdup("numeric");
+			} else {
 				state->pgfieldtypes[j] = strdup("float8");
 			}
 			break;
@@ -1151,8 +1145,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		if (state->config->readshape == 1 || j < (state->num_fields - 1)) {
 			/* Don't include last comma if its the last field and no geometry field will follow */
 			strcat(state->col_names, "\",");
-		}
-		else {
+		} else {
 			strcat(state->col_names, "\"");
 		}
 	}
@@ -1209,8 +1202,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 
 			stringbuffer_aprintf(
 			    sb, "DROP TABLE IF EXISTS \"%s\".\"%s\";\n", state->config->schema, state->config->table);
-		}
-		else {
+		} else {
 			if (state->config->readshape == 1 && (!state->config->geography)) {
 				stringbuffer_aprintf(sb,
 						     "SELECT DropGeometryColumn('','%s','%s');\n",
@@ -1234,8 +1226,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		if (state->config->schema) {
 			stringbuffer_aprintf(
 			    sb, "CREATE TABLE \"%s\".\"%s\" (gid serial", state->config->schema, state->config->table);
-		}
-		else {
+		} else {
 			stringbuffer_aprintf(sb, "CREATE TABLE \"%s\" (gid serial", state->config->table);
 		}
 
@@ -1328,8 +1319,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 						     state->config->table,
 						     state->geo_col,
 						     srid);
-			}
-			else {
+			} else {
 				stringbuffer_aprintf(sb,
 						     "SELECT AddGeometryColumn('','%s','%s','%d',",
 						     state->config->table,
@@ -1368,8 +1358,7 @@ ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader)
 				state->config->schema,
 				state->config->table,
 				state->col_names);
-		}
-		else {
+		} else {
 			copystr = malloc(strlen(state->config->table) + strlen(state->col_names) + 40);
 
 			sprintf(copystr, "COPY \"%s\" %s FROM stdin;\n", state->config->table, state->col_names);
@@ -1377,8 +1366,7 @@ ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader)
 
 		*strheader = copystr;
 		return SHPLOADEROK;
-	}
-	else {
+	} else {
 		/* Flag an error as something has gone horribly wrong */
 		snprintf(
 		    state->message,
@@ -1447,8 +1435,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 					     state->config->schema,
 					     state->config->table,
 					     state->col_names);
-		}
-		else {
+		} else {
 			stringbuffer_aprintf(
 			    sb, "INSERT INTO \"%s\" %s VALUES (", state->config->table, state->col_names);
 		}
@@ -1462,8 +1449,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 				stringbuffer_aprintf(sb, "\\N");
 			else
 				stringbuffer_aprintf(sb, "NULL");
-		}
-		else {
+		} else {
 			/* Attribute NOT NULL */
 			switch (state->types[i]) {
 			case FTInteger:
@@ -1555,8 +1541,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			if (state->config->dump_format) {
 				escval = escape_copy_string(val);
 				stringbuffer_aprintf(sb, "%s", escval);
-			}
-			else {
+			} else {
 				escval = escape_insert_string(val);
 				stringbuffer_aprintf(sb, "'%s'", escval);
 			}
@@ -1587,8 +1572,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 				stringbuffer_aprintf(sb, "\\N");
 			else
 				stringbuffer_aprintf(sb, "NULL");
-		}
-		else {
+		} else {
 			/* Handle all other shape attributes */
 			switch (obj->nSHPType) {
 			case SHPT_POLYGON:
@@ -1686,8 +1670,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 		stringbuffer_destroy(sbwarn);
 
 		return SHPLOADERWARN;
-	}
-	else {
+	} else {
 		/* Everything went okay */
 		stringbuffer_destroy(sbwarn);
 

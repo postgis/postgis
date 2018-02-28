@@ -306,8 +306,7 @@ lwcompound_to_wkt_sb(const LWCOMPOUND *comp, stringbuffer_t *sb, int precision, 
 		/* But circstring subgeoms *do* get type identifiers */
 		else if (type == CIRCSTRINGTYPE) {
 			lwcircstring_to_wkt_sb((LWCIRCSTRING *)comp->geoms[i], sb, precision, variant);
-		}
-		else {
+		} else {
 			lwerror("lwcompound_to_wkt_sb: Unknown type received %d - %s", type, lwtype_name(type));
 		}
 	}

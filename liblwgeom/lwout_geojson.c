@@ -119,8 +119,7 @@ asgeojson_bbox_size(int hasz, int precision)
 	if (!hasz) {
 		size = sizeof("\"bbox\":[,,,],");
 		size += 2 * 2 * (OUT_MAX_DIGS_DOUBLE + precision);
-	}
-	else {
+	} else {
 		size = sizeof("\"bbox\":[,,,,,],");
 		size += 2 * 3 * (OUT_MAX_DIGS_DOUBLE + precision);
 	}
@@ -675,8 +674,7 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 			if (i) ptr += sprintf(ptr, ",");
 			ptr += sprintf(ptr, "[%s,%s]", x, y);
 		}
-	}
-	else {
+	} else {
 		for (i = 0; i < pa->npoints; i++) {
 			const POINT3DZ *pt;
 			pt = getPoint3dz_cp(pa, i);

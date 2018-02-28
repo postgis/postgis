@@ -479,8 +479,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 			bandNums = repalloc(bandNums, sizeof(uint32_t) * j);
 			for (i = 0; i < j; i++)
 				bandNums[i] = i + 1;
-		}
-		else if (j < n)
+		} else if (j < n)
 			bandNums = repalloc(bandNums, sizeof(uint32_t) * j);
 
 		bmd = (struct bandmetadata *)palloc(sizeof(struct bandmetadata) * j);
@@ -522,8 +521,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 				charlen = strlen(chartmp) + 1;
 				bmd[i].bandpath = palloc(sizeof(char) * charlen);
 				strncpy(bmd[i].bandpath, chartmp, charlen);
-			}
-			else
+			} else
 				bmd[i].bandpath = NULL;
 
 			/* isoutdb */
@@ -590,8 +588,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		if (bmd2[call_cntr].bandpath && strlen(bmd2[call_cntr].bandpath)) {
 			values[4] = CStringGetTextDatum(bmd2[call_cntr].bandpath);
 			values[5] = UInt32GetDatum(bmd2[call_cntr].extbandnum);
-		}
-		else {
+		} else {
 			nulls[4] = TRUE;
 			nulls[5] = TRUE;
 		}
@@ -659,16 +656,14 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS)
 			    NOTICE,
 			    "Could not find raster band of index %d when setting pixel value. Nodata value not set. Returning original raster",
 			    bandindex);
-		}
-		else {
+		} else {
 			if (!PG_ARGISNULL(3)) forcechecking = PG_GETARG_BOOL(3);
 
 			if (PG_ARGISNULL(2)) {
 				/* Set the hasnodata flag to FALSE */
 				rt_band_set_hasnodata_flag(band, FALSE);
 				POSTGIS_RT_DEBUGF(3, "Raster band %d does not have a nodata value", bandindex);
-			}
-			else {
+			} else {
 				/* Get the nodata value */
 				nodata = PG_GETARG_FLOAT8(2);
 
@@ -793,8 +788,7 @@ Datum RASTER_setBandPath(PG_FUNCTION_ARGS)
 			elog(NOTICE, "Cannot find raster band of index %d. Returning original raster", bandindex);
 		else if (!rt_band_is_offline(band)) {
 			elog(NOTICE, "Band of index %d is not out-db. Returning original raster", bandindex);
-		}
-		else {
+		} else {
 			/* outdbpath */
 			if (!PG_ARGISNULL(2))
 				outdbpathchar = text_to_cstring(PG_GETARG_TEXT_P(2));

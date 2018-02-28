@@ -175,8 +175,7 @@ test_mixed_rw_access(void)
 			p.y = tmp;
 
 			lwpointiterator_modify_next(it1, &p);
-		}
-		else {
+		} else {
 			lwpointiterator_next(it1, NULL);
 		}
 		i++;

@@ -189,8 +189,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa, uint8_t fix_ring)
 		if (pa->npoints < 1) {
 			lwerror("ptarray_to_GEOSCoordSeq called with fix_ring and 0 vertices in ring, cannot fix");
 			return NULL;
-		}
-		else {
+		} else {
 			if (pa->npoints < 4) append_points = 4 - pa->npoints;
 			if (!ptarray_is_closed_2d(pa) && append_points == 0) append_points = 1;
 		}
@@ -206,8 +205,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa, uint8_t fix_ring)
 			p3d = getPoint3dz_cp(pa, i);
 			p2d = (const POINT2D *)p3d;
 			LWDEBUGF(4, "Point: %g,%g,%g", p3d->x, p3d->y, p3d->z);
-		}
-		else {
+		} else {
 			p2d = getPoint2d_cp(pa, i);
 			LWDEBUGF(4, "Point: %g,%g", p2d->x, p2d->y);
 		}
@@ -222,8 +220,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa, uint8_t fix_ring)
 		if (dims == 3) {
 			p3d = getPoint3dz_cp(pa, 0);
 			p2d = (const POINT2D *)p3d;
-		}
-		else
+		} else
 			p2d = getPoint2d_cp(pa, 0);
 		for (i = pa->npoints; i < pa->npoints + append_points; i++) {
 			GEOSCoordSeq_setX(sq, i, p2d->x);
@@ -1248,8 +1245,7 @@ lwpoly_to_points(const LWPOLY *lwpoly, uint32_t npoints)
 		sample_width = sample_sqrt;
 		sample_height = ceil((double)sample_npoints / (double)sample_width);
 		sample_cell_size = bbox_width / sample_width;
-	}
-	else {
+	} else {
 		sample_height = sample_sqrt;
 		sample_width = ceil((double)sample_npoints / (double)sample_height);
 		sample_cell_size = bbox_height / sample_height;
@@ -1500,8 +1496,7 @@ lwgeom_delaunay_triangulation(const LWGEOM *geom, double tolerance, int32_t outp
 			return NULL;
 		}
 		lwgeom_set_srid(result, srid);
-	}
-	else if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+	} else if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
 		return geos_clean_and_fail(g1, NULL, g3, __func__);
 
 	geos_clean(g1, NULL, g3);

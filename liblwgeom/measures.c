@@ -102,8 +102,7 @@ lw_dist2d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 	if (thedl.distance == initdistance) {
 		LWDEBUG(3, "didn't find geometries to measure between, returning null");
 		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
-	}
-	else {
+	} else {
 		x1 = thedl.p1.x;
 		y1 = thedl.p1.y;
 		x2 = thedl.p2.x;
@@ -142,8 +141,7 @@ lw_dist2d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 	if (thedl.distance == initdistance) {
 		LWDEBUG(3, "didn't find geometries to measure between, returning null");
 		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
-	}
-	else {
+	} else {
 		x = thedl.p1.x;
 		y = thedl.p1.y;
 		result = (LWGEOM *)lwpoint_make2d(srid, x, y);
@@ -281,8 +279,9 @@ lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 
 	for (i = 0; i < n1; i++) {
 
-		if (lw_dist2d_is_collection(lwg1)) { g1 = c1->geoms[i]; }
-		else {
+		if (lw_dist2d_is_collection(lwg1)) {
+			g1 = c1->geoms[i];
+		} else {
 			g1 = (LWGEOM *)lwg1;
 		}
 
@@ -294,8 +293,9 @@ lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 			continue;
 		}
 		for (j = 0; j < n2; j++) {
-			if (lw_dist2d_is_collection(lwg2)) { g2 = c2->geoms[j]; }
-			else {
+			if (lw_dist2d_is_collection(lwg2)) {
+				g2 = c2->geoms[j];
+			} else {
 				g2 = (LWGEOM *)lwg2;
 			}
 			if (lw_dist2d_is_collection(g2)) {
@@ -315,8 +315,7 @@ lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 			    (g1->type == LINETYPE || g1->type == POLYGONTYPE) &&
 			    (g2->type == LINETYPE || g2->type == POLYGONTYPE)) {
 				if (!lw_dist2d_distribute_fast(g1, g2, dl)) return LW_FALSE;
-			}
-			else {
+			} else {
 				if (!lw_dist2d_distribute_bruteforce(g1, g2, dl)) return LW_FALSE;
 				if (dl->distance <= dl->tolerance && dl->mode == DIST_MIN)
 					return LW_TRUE; /*just a check if  the answer is already given*/
@@ -1042,8 +1041,7 @@ lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2, DISTPTS *dl)
 				LWDEBUGF(3, " seg%d-seg%d dist: %f, mindist: %f", t, u, dl->distance, dl->tolerance);
 			}
 		}
-	}
-	else {
+	} else {
 		start = getPoint2d_cp(l1, 0);
 		for (t = 1; t < l1->npoints; t++) /*for each segment in L1 */
 		{
@@ -1091,8 +1089,7 @@ lw_dist2d_ptarray_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, DISTPTS
 	if (dl->mode == DIST_MAX) {
 		lwerror("lw_dist2d_ptarray_ptarrayarc does not currently support DIST_MAX mode");
 		return LW_FALSE;
-	}
-	else {
+	} else {
 		A1 = getPoint2d_cp(pa, 0);
 		for (t = 1; t < pa->npoints; t++) /* For each segment in pa */
 		{
@@ -1137,8 +1134,7 @@ lw_dist2d_ptarrayarc_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, DIST
 	if (dl->mode == DIST_MAX) {
 		lwerror("lw_dist2d_ptarrayarc_ptarrayarc does not currently support DIST_MAX mode");
 		return LW_FALSE;
-	}
-	else {
+	} else {
 		A1 = getPoint2d_cp(pa, 0);
 		for (t = 1; t < pa->npoints; t += 2) /* For each segment in pa */
 		{
@@ -1338,8 +1334,9 @@ lw_dist2d_pt_arc(const POINT2D *P, const POINT2D *A1, const POINT2D *A2, const P
 	X.y = C.y + (P->y - C.y) * radius_A / d;
 
 	/* Is crossing point inside the arc? Or arc is actually circle? */
-	if (p2d_same(A1, A3) || lw_pt_in_arc(&X, A1, A2, A3)) { lw_dist2d_pt_pt(P, &X, dl); }
-	else {
+	if (p2d_same(A1, A3) || lw_pt_in_arc(&X, A1, A2, A3)) {
+		lw_dist2d_pt_pt(P, &X, dl);
+	} else {
 		/* Distance is the minimum of the distances to the arc end points */
 		lw_dist2d_pt_pt(A1, P, dl);
 		lw_dist2d_pt_pt(A3, P, dl);
@@ -1501,8 +1498,7 @@ lw_dist2d_arc_arc(const POINT2D *A1,
 			dl->distance = 0.0;
 			return LW_TRUE;
 		}
-	}
-	else {
+	} else {
 		lwerror("lw_dist2d_arc_arc: arcs neither touch, intersect nor are disjoint! INCONCEIVABLE!");
 		return LW_FALSE;
 	}
@@ -1580,8 +1576,7 @@ lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 			dl->distance = 0;
 			return LW_TRUE;
 		}
-	}
-	else {
+	} else {
 		/* Check if any projection of B ends are in A*/
 		seg_size = lw_segment_side(A1, A3, A2);
 
@@ -1726,8 +1721,7 @@ lw_dist2d_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C, const PO
 								 we  notice by changing sign on dl->twisted*/
 			return ((lw_dist2d_pt_seg(C, A, B, dl)) &&
 				(lw_dist2d_pt_seg(D, A, B, dl))); /*if all is successful we return true*/
-		}
-		else {
+		} else {
 			return LW_FALSE; /* if any of the calls to lw_dist2d_pt_seg goes wrong we return false*/
 		}
 	}
@@ -1741,12 +1735,10 @@ lw_dist2d_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C, const PO
 								 we  notice by changing sign on dl->twisted*/
 			return ((lw_dist2d_pt_seg(C, A, B, dl)) &&
 				(lw_dist2d_pt_seg(D, A, B, dl))); /*if all is successful we return true*/
-		}
-		else {
+		} else {
 			return LW_FALSE; /* if any of the calls to lw_dist2d_pt_seg goes wrong we return false*/
 		}
-	}
-	else {
+	} else {
 		if (dl->mode == DIST_MIN) /*If there is intersection we identify the intersection point and return it
 					     but only if we are looking for mindistance*/
 		{
@@ -1755,12 +1747,10 @@ lw_dist2d_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C, const PO
 			if (((A->x == C->x) && (A->y == C->y)) || ((A->x == D->x) && (A->y == D->y))) {
 				theP.x = A->x;
 				theP.y = A->y;
-			}
-			else if (((B->x == C->x) && (B->y == C->y)) || ((B->x == D->x) && (B->y == D->y))) {
+			} else if (((B->x == C->x) && (B->y == C->y)) || ((B->x == D->x) && (B->y == D->y))) {
 				theP.x = B->x;
 				theP.y = B->y;
-			}
-			else {
+			} else {
 				theP.x = A->x + r * (B->x - A->x);
 				theP.y = A->y + r * (B->y - A->y);
 			}
@@ -1884,8 +1874,7 @@ lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2, DISTPTS *dl, GBOX
 			lwfree(list2);
 			return LW_FALSE;
 		}
-	}
-	else {
+	} else {
 		dl->twisted = ((dl->twisted) * (-1));
 		if (!lw_dist2d_pre_seg_seg(l2, l1, list2, list1, k, dl)) {
 			lwfree(list1);
@@ -1951,8 +1940,7 @@ lw_dist2d_pre_seg_seg(POINTARRAY *l1, POINTARRAY *l2, LISTSTRUCT *list1, LISTSTR
 				else
 					pnr2 = pnr1; /* if it is a line and the last and first point is not the same we
 							avoid the edge between start and end this way*/
-			}
-			else
+			} else
 				pnr2 = pnr1 + r;
 
 			p2 = getPoint2d_cp(l1, pnr2);
@@ -1967,8 +1955,7 @@ lw_dist2d_pre_seg_seg(POINTARRAY *l1, POINTARRAY *l2, LISTSTRUCT *list1, LISTSTR
 					else
 						pnr4 = pnr3; /* if it is a line and the last and first point is not the
 								same we avoid the edge between start and end this way*/
-				}
-				else
+				} else
 					pnr4 = pnr3 - 1;
 
 				p4 = getPoint2d_cp(l2, pnr4);
@@ -2035,8 +2022,7 @@ lw_dist2d_selected_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C,
 							 notice by changing sign on dl->twisted*/
 		return ((lw_dist2d_pt_seg(C, A, B, dl)) &&
 			(lw_dist2d_pt_seg(D, A, B, dl))); /*if all is successful we return true*/
-	}
-	else {
+	} else {
 		return LW_FALSE; /* if any of the calls to lw_dist2d_pt_seg goes wrong we return false*/
 	}
 }
@@ -2138,8 +2124,7 @@ lw_dist2d_pt_pt(const POINT2D *thep1, const POINT2D *thep2, DISTPTS *dl)
 		{
 			dl->p1 = *thep1;
 			dl->p2 = *thep2;
-		}
-		else {
+		} else {
 			dl->p1 = *thep2;
 			dl->p2 = *thep1;
 		}
@@ -2279,8 +2264,9 @@ azimuth_pt_pt(const POINT2D *A, const POINT2D *B, double *d)
 	}
 
 	if (A->x < B->x) {
-		if (A->y < B->y) { *d = atan(fabs(A->x - B->x) / fabs(A->y - B->y)); }
-		else /* ( A->y > B->y )  - equality case handled above */
+		if (A->y < B->y) {
+			*d = atan(fabs(A->x - B->x) / fabs(A->y - B->y));
+		} else /* ( A->y > B->y )  - equality case handled above */
 		{
 			*d = atan(fabs(A->y - B->y) / fabs(A->x - B->x)) + (M_PI / 2);
 		}
@@ -2288,8 +2274,9 @@ azimuth_pt_pt(const POINT2D *A, const POINT2D *B, double *d)
 
 	else /* ( A->x > B->x ) - equality case handled above */
 	{
-		if (A->y > B->y) { *d = atan(fabs(A->x - B->x) / fabs(A->y - B->y)) + M_PI; }
-		else /* ( A->y < B->y )  - equality case handled above */
+		if (A->y > B->y) {
+			*d = atan(fabs(A->x - B->x) / fabs(A->y - B->y)) + M_PI;
+		} else /* ( A->y < B->y )  - equality case handled above */
 		{
 			*d = atan(fabs(A->y - B->y) / fabs(A->x - B->x)) + (M_PI + (M_PI / 2));
 		}

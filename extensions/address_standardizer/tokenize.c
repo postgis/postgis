@@ -385,21 +385,20 @@ is_ordinal_suffix(LEXEME *cur_lex_p, LEXEME *prev_lex_p, struct morph *morph_p, 
 	prev_len = strlen(prev_lex_p->Text);
 	Ult = prev_lex_p->Text[prev_len - 1];
 	Penult = ((prev_len < 2) ? SENTINEL : prev_lex_p->Text[prev_len - 2]);
-	if ((!strcmp(LT, "ST")) && (Ult == '1') && (Penult != '1')) { return TRUE; }
-	else if ((!strcmp(LT, "ND")) && (Ult == '2') && (Penult != '1')) {
+	if ((!strcmp(LT, "ST")) && (Ult == '1') && (Penult != '1')) {
 		return TRUE;
-	}
-	else if ((!strcmp(LT, "RD")) && (Ult == '3') && (Penult != '1')) {
+	} else if ((!strcmp(LT, "ND")) && (Ult == '2') && (Penult != '1')) {
 		return TRUE;
-	}
-	else if ((!strcmp(LT, "TH")) && (isdigit(Ult))) {
+	} else if ((!strcmp(LT, "RD")) && (Ult == '3') && (Penult != '1')) {
+		return TRUE;
+	} else if ((!strcmp(LT, "TH")) && (isdigit(Ult))) {
 		if (Ult == '1' || Ult == '2' || Ult == '3') {
-			if (Penult == '1') { return TRUE; }
-			else {
+			if (Penult == '1') {
+				return TRUE;
+			} else {
 				return FALSE;
 			}
-		}
-		else {
+		} else {
 			return TRUE;
 		}
 	}
@@ -439,10 +438,12 @@ is_zip(STAND_PARAM *s_p, DEF **d_p, struct morph *morph_p)
 	/* -- Canadian postal codes -- */
 	if (s_p->LexNum < 2) { return FALSE; }
 	if (tl != 1) { return FALSE; }
-	if (isdigit(*cur_txt)) { alt_state = TRUE; }
-	else {
-		if (isalpha(*cur_txt)) { alt_state = FALSE; }
-		else {
+	if (isdigit(*cur_txt)) {
+		alt_state = TRUE;
+	} else {
+		if (isalpha(*cur_txt)) {
+			alt_state = FALSE;
+		} else {
 			return FALSE;
 		}
 	}
@@ -460,8 +461,7 @@ is_zip(STAND_PARAM *s_p, DEF **d_p, struct morph *morph_p)
 			   previous string must be number + letter -- */
 			if (!isdigit(*cur_txt)) { return FALSE; }
 			if (!isalpha(*(cur_txt + 1))) { return FALSE; }
-		}
-		else {
+		} else {
 			/* -- The FSA: if the current character is a letter,
 			   then the previous string must be letter + number -- */
 			if (!isalpha(*cur_txt)) { return FALSE; }
@@ -479,8 +479,7 @@ is_zip(STAND_PARAM *s_p, DEF **d_p, struct morph *morph_p)
 	   be a number, and vice versa -- */
 	if (alt_state) {
 		if (!isalpha(*cur_txt)) { return FALSE; }
-	}
-	else {
+	} else {
 		if (!isdigit(*cur_txt)) { return FALSE; }
 	}
 
@@ -494,8 +493,7 @@ is_zip(STAND_PARAM *s_p, DEF **d_p, struct morph *morph_p)
 	if (!no_space(cur_lex_p, morph_p)) { return FALSE; }
 	if (!alt_state) {
 		if (!isalpha(*cur_txt)) { return FALSE; }
-	}
-	else if (!isdigit(*cur_txt)) {
+	} else if (!isdigit(*cur_txt)) {
 		return FALSE;
 	}
 
