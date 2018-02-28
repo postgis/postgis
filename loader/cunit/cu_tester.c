@@ -15,11 +15,11 @@
 #include "cu_tester.h"
 
 /*
-** The main() function for setting up and running the tests.
-** Returns a CUE_SUCCESS on successful running, another
-** CUnit error code on failure.
-*/
-int main()
+ * * The main() function for setting up and running the tests. * Returns a
+ * CUE_SUCCESS on successful running, another * CUnit error code on failure.
+ */
+int
+main()
 {
 
 	/* initialize the CUnit test registry */
@@ -27,15 +27,13 @@ int main()
 		return CU_get_error();
 
 	/* Add the shp2pgsql test suite */
-	if (NULL == register_shp2pgsql_suite())
-	{
+	if (NULL == register_shp2pgsql_suite()) {
 		CU_cleanup_registry();
 		return CU_get_error();
 	}
 
 	/* Add the pgsql2shp test suite */
-	if (NULL == register_pgsql2shp_suite())
-	{
+	if (NULL == register_pgsql2shp_suite()) {
 		CU_cleanup_registry();
 		return CU_get_error();
 	}

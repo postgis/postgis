@@ -37,18 +37,18 @@
 
 /* #define POSTGIS_DEBUG_LEVEL 4 */
 
-Datum ST_MakeValid(PG_FUNCTION_ARGS);
+Datum		ST_MakeValid(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_MakeValid);
-Datum ST_MakeValid(PG_FUNCTION_ARGS)
+Datum
+ST_MakeValid(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in, *out;
-	LWGEOM *lwgeom_in, *lwgeom_out;
+	GSERIALIZED    *in, *out;
+	LWGEOM	       *lwgeom_in, *lwgeom_out;
 
 	in = PG_GETARG_GSERIALIZED_P(0);
 	lwgeom_in = lwgeom_from_gserialized(in);
 
-	switch ( lwgeom_in->type )
-	{
+	switch (lwgeom_in->type) {
 	case POINTTYPE:
 	case MULTIPOINTTYPE:
 	case LINETYPE:
@@ -60,14 +60,13 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 
 	default:
 		lwpgerror("ST_MakeValid: unsupported geometry type %s",
-		        lwtype_name(lwgeom_in->type));
+			  lwtype_name(lwgeom_in->type));
 		PG_RETURN_NULL();
 		break;
 	}
 
 	lwgeom_out = lwgeom_make_valid(lwgeom_in);
-	if ( ! lwgeom_out )
-	{
+	if (!lwgeom_out) {
 		PG_FREE_IF_COPY(in, 0);
 		PG_RETURN_NULL();
 	}
@@ -78,35 +77,31 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 }
 
 /* Uses GEOS internally */
-static LWGEOM* lwgeom_clean(LWGEOM* lwgeom_in);
-static LWGEOM*
-lwgeom_clean(LWGEOM* lwgeom_in)
-{
-	LWGEOM* lwgeom_out;
+static LWGEOM * lwgeom_clean(LWGEOM * lwgeom_in);
+static LWGEOM *
+lwgeom_clean(LWGEOM * lwgeom_in) {
+	LWGEOM	       *lwgeom_out;
 
 	lwgeom_out = lwgeom_make_valid(lwgeom_in);
-	if ( ! lwgeom_out )
-	{
+	if (!lwgeom_out) {
 		return NULL;
 	}
 
 	/* Check dimensionality is the same as input */
-	if ( lwgeom_dimensionality(lwgeom_in) != lwgeom_dimensionality(lwgeom_out) )
-	{
+	if (lwgeom_dimensionality(lwgeom_in) != lwgeom_dimensionality(lwgeom_out)) {
 		lwpgnotice("lwgeom_clean: dimensional collapse (%d to %d)",
-		         lwgeom_dimensionality(lwgeom_in), lwgeom_dimensionality(lwgeom_out));
+			   lwgeom_dimensionality(lwgeom_in), lwgeom_dimensionality(lwgeom_out));
 
 		return NULL;
 	}
 
 	/* Check that the output is not a collection if the input wasn't */
-	if ( lwgeom_out->type == COLLECTIONTYPE &&
-	        lwgeom_in->type != COLLECTIONTYPE )
-	{
+	if (lwgeom_out->type == COLLECTIONTYPE &&
+	    lwgeom_in->type != COLLECTIONTYPE) {
 		lwpgnotice("lwgeom_clean: mixed-type output (%s) "
-		         "from single-type input (%s)",
-		         lwtype_name(lwgeom_out->type),
-		         lwtype_name(lwgeom_in->type));
+			   "from single-type input (%s)",
+			   lwtype_name(lwgeom_out->type),
+			   lwtype_name(lwgeom_in->type));
 		return NULL;
 	}
 
@@ -120,20 +115,20 @@ lwgeom_clean(LWGEOM* lwgeom_in)
 }
 
 
-Datum ST_CleanGeometry(PG_FUNCTION_ARGS);
+Datum		ST_CleanGeometry(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_CleanGeometry);
-Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
+Datum
+ST_CleanGeometry(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in, *out;
-	LWGEOM *lwgeom_in, *lwgeom_out;
+	GSERIALIZED    *in, *out;
+	LWGEOM	       *lwgeom_in, *lwgeom_out;
 
 	in = PG_GETARG_GSERIALIZED_P(0);
 	lwgeom_in = lwgeom_from_gserialized(in);
 
 	/* Short-circuit: empty geometry are the cleanest ! */
 #if 0
-	if ( lwgeom_is_empty(lwgeom_in) )
-	{
+	if (lwgeom_is_empty(lwgeom_in)) {
 		out = geometry_serialize(lwgeom_in);
 		PG_FREE_IF_COPY(in, 0);
 		PG_RETURN_POINTER(out);
@@ -141,8 +136,7 @@ Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 #endif
 
 	lwgeom_out = lwgeom_clean(lwgeom_in);
-	if ( ! lwgeom_out )
-	{
+	if (!lwgeom_out) {
 		PG_FREE_IF_COPY(in, 0);
 		PG_RETURN_NULL();
 	}
@@ -150,4 +144,3 @@ Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 	out = geometry_serialize(lwgeom_out);
 	PG_RETURN_POINTER(out);
 }
-

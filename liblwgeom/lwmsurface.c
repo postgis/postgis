@@ -28,6 +28,3 @@
 #include <string.h>
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
-
-
-

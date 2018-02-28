@@ -30,36 +30,33 @@
 /**
 * Allocate a new bytebuffer_t. Use bytebuffer_destroy to free.
 */
-bytebuffer_t*
+bytebuffer_t   *
 bytebuffer_create(void)
 {
-	LWDEBUG(2,"Entered bytebuffer_create");
+	LWDEBUG(2, "Entered bytebuffer_create");
 	return bytebuffer_create_with_size(BYTEBUFFER_STARTSIZE);
 }
 
 /**
 * Allocate a new bytebuffer_t. Use bytebuffer_destroy to free.
 */
-bytebuffer_t*
+bytebuffer_t   *
 bytebuffer_create_with_size(size_t size)
 {
-	LWDEBUGF(2,"Entered bytebuffer_create_with_size %d", size);
-	bytebuffer_t *s;
+	LWDEBUGF(2, "Entered bytebuffer_create_with_size %d", size);
+	bytebuffer_t   *s;
 
 	s = lwalloc(sizeof(bytebuffer_t));
-	if ( size < BYTEBUFFER_STATICSIZE )
-	{
+	if (size < BYTEBUFFER_STATICSIZE) {
 		s->capacity = BYTEBUFFER_STATICSIZE;
 		s->buf_start = s->buf_static;
-	}
-	else
-	{
+	} else {
 		s->buf_start = lwalloc(size);
 		s->capacity = size;
 	}
 	s->readcursor = s->writecursor = s->buf_start;
-	memset(s->buf_start,0,s->capacity);
-	LWDEBUGF(4,"We create a buffer on %p of %d bytes", s->buf_start, s->capacity);
+	memset(s->buf_start, 0, s->capacity);
+	LWDEBUGF(4, "We create a buffer on %p of %d bytes", s->buf_start, s->capacity);
 	return s;
 }
 
@@ -68,15 +65,12 @@ bytebuffer_create_with_size(size_t size)
 * struct. Useful for allocating short-lived bytebuffers off the stack.
 */
 void
-bytebuffer_init_with_size(bytebuffer_t *s, size_t size)
+bytebuffer_init_with_size(bytebuffer_t * s, size_t size)
 {
-	if ( size < BYTEBUFFER_STATICSIZE )
-	{
+	if (size < BYTEBUFFER_STATICSIZE) {
 		s->capacity = BYTEBUFFER_STATICSIZE;
 		s->buf_start = s->buf_static;
-	}
-	else
-	{
+	} else {
 		s->buf_start = lwalloc(size);
 		s->capacity = size;
 	}
@@ -88,10 +82,10 @@ bytebuffer_init_with_size(bytebuffer_t *s, size_t size)
 * Free the bytebuffer_t and all memory managed within it.
 */
 void
-bytebuffer_destroy(bytebuffer_t *s)
+bytebuffer_destroy(bytebuffer_t * s)
 {
 	bytebuffer_destroy_buffer(s);
-	if ( s )
+	if (s)
 		lwfree(s);
 
 	return;
@@ -101,10 +95,9 @@ bytebuffer_destroy(bytebuffer_t *s)
 * Free the bytebuffer_t and all memory managed within it.
 */
 void
-bytebuffer_destroy_buffer(bytebuffer_t *s)
+bytebuffer_destroy_buffer(bytebuffer_t * s)
 {
-	if ( s->buf_start != s->buf_static )
-	{
+	if (s->buf_start != s->buf_static) {
 		lwfree(s->buf_start);
 		s->buf_start = NULL;
 	}
@@ -116,7 +109,7 @@ bytebuffer_destroy_buffer(bytebuffer_t *s)
 * Set the read cursor to the beginning
 */
 void
-bytebuffer_reset_reading(bytebuffer_t *s)
+bytebuffer_reset_reading(bytebuffer_t * s)
 {
 	s->readcursor = s->buf_start;
 }
@@ -127,7 +120,7 @@ bytebuffer_reset_reading(bytebuffer_t *s)
 * bytebuffer_t.
 */
 void
-bytebuffer_clear(bytebuffer_t *s)
+bytebuffer_clear(bytebuffer_t * s)
 {
 	s->readcursor = s->writecursor = s->buf_start;
 }
@@ -137,28 +130,24 @@ bytebuffer_clear(bytebuffer_t *s)
 * specified additional size.
 */
 static inline void
-bytebuffer_makeroom(bytebuffer_t *s, size_t size_to_add)
+bytebuffer_makeroom(bytebuffer_t * s, size_t size_to_add)
 {
-	LWDEBUGF(2,"Entered bytebuffer_makeroom with space need of %d", size_to_add);
-	size_t current_write_size = (s->writecursor - s->buf_start);
-	size_t capacity = s->capacity;
-	size_t required_size = current_write_size + size_to_add;
+	LWDEBUGF(2, "Entered bytebuffer_makeroom with space need of %d", size_to_add);
+	size_t		current_write_size = (s->writecursor - s->buf_start);
+	size_t		capacity = s->capacity;
+	size_t		required_size = current_write_size + size_to_add;
 
-	LWDEBUGF(2,"capacity = %d and required size = %d",capacity ,required_size);
+	LWDEBUGF(2, "capacity = %d and required size = %d", capacity, required_size);
 	while (capacity < required_size)
 		capacity *= 2;
 
-	if ( capacity > s->capacity )
-	{
-		size_t current_read_size = (s->readcursor - s->buf_start);
-		LWDEBUGF(4,"We need to realloc more memory. New capacity is %d", capacity);
-		if ( s->buf_start == s->buf_static )
-		{
+	if (capacity > s->capacity) {
+		size_t		current_read_size = (s->readcursor - s->buf_start);
+		LWDEBUGF(4, "We need to realloc more memory. New capacity is %d", capacity);
+		if (s->buf_start == s->buf_static) {
 			s->buf_start = lwalloc(capacity);
 			memcpy(s->buf_start, s->buf_static, s->capacity);
-		}
-		else
-		{
+		} else {
 			s->buf_start = lwrealloc(s->buf_start, capacity);
 		}
 		s->capacity = capacity;
@@ -169,22 +158,22 @@ bytebuffer_makeroom(bytebuffer_t *s, size_t size_to_add)
 }
 
 /** Returns a copy of the internal buffer */
-uint8_t*
-bytebuffer_get_buffer_copy(const bytebuffer_t *s, size_t *buffer_length)
+uint8_t	       *
+bytebuffer_get_buffer_copy(const bytebuffer_t * s, size_t * buffer_length)
 {
-	size_t bufsz = bytebuffer_getlength(s);
-	uint8_t *buf = lwalloc(bufsz);
+	size_t		bufsz = bytebuffer_getlength(s);
+	uint8_t	       *buf = lwalloc(bufsz);
 	memcpy(buf, s->buf_start, bufsz);
-	if ( buffer_length )
+	if (buffer_length)
 		*buffer_length = bufsz;
 	return buf;
 }
 
 /** Returns a read-only reference to the internal buffer */
-const uint8_t*
-bytebuffer_get_buffer(const bytebuffer_t *s, size_t *buffer_length)
+const		uint8_t *
+bytebuffer_get_buffer(const bytebuffer_t * s, size_t * buffer_length)
 {
-	if ( buffer_length )
+	if (buffer_length)
 		*buffer_length = bytebuffer_getlength(s);
 	return s->buf_start;
 }
@@ -194,11 +183,11 @@ bytebuffer_get_buffer(const bytebuffer_t *s, size_t *buffer_length)
 * Writes a uint8_t value to the buffer
 */
 void
-bytebuffer_append_byte(bytebuffer_t *s, const uint8_t val)
+bytebuffer_append_byte(bytebuffer_t * s, const uint8_t val)
 {
-	LWDEBUGF(2,"Entered bytebuffer_append_byte with value %d", val);
+	LWDEBUGF(2, "Entered bytebuffer_append_byte with value %d", val);
 	bytebuffer_makeroom(s, 1);
-	*(s->writecursor)=val;
+	*(s->writecursor) = val;
 	s->writecursor += 1;
 	return;
 }
@@ -208,9 +197,9 @@ bytebuffer_append_byte(bytebuffer_t *s, const uint8_t val)
 * Writes a uint8_t value to the buffer
 */
 void
-bytebuffer_append_bulk(bytebuffer_t *s, void * start, size_t size)
+bytebuffer_append_bulk(bytebuffer_t * s, void *start, size_t size)
 {
-	LWDEBUGF(2,"bytebuffer_append_bulk with size %d",size);
+	LWDEBUGF(2, "bytebuffer_append_bulk with size %d", size);
 	bytebuffer_makeroom(s, size);
 	memcpy(s->writecursor, start, size);
 	s->writecursor += size;
@@ -221,10 +210,10 @@ bytebuffer_append_bulk(bytebuffer_t *s, void * start, size_t size)
 * Writes a uint8_t value to the buffer
 */
 void
-bytebuffer_append_bytebuffer(bytebuffer_t *write_to,bytebuffer_t *write_from )
+bytebuffer_append_bytebuffer(bytebuffer_t * write_to, bytebuffer_t * write_from)
 {
-	LWDEBUG(2,"bytebuffer_append_bytebuffer");
-	size_t size = bytebuffer_getlength(write_from);
+	LWDEBUG(2, "bytebuffer_append_bytebuffer");
+	size_t		size = bytebuffer_getlength(write_from);
 	bytebuffer_makeroom(write_to, size);
 	memcpy(write_to->writecursor, write_from->buf_start, size);
 	write_to->writecursor += size;
@@ -236,7 +225,7 @@ bytebuffer_append_bytebuffer(bytebuffer_t *write_to,bytebuffer_t *write_from )
 * Writes a signed varInt to the buffer
 */
 void
-bytebuffer_append_varint(bytebuffer_t *b, const int64_t val)
+bytebuffer_append_varint(bytebuffer_t * b, const int64_t val)
 {
 	bytebuffer_makeroom(b, 16);
 	b->writecursor += varint_s64_encode_buf(val, b->writecursor);
@@ -247,7 +236,7 @@ bytebuffer_append_varint(bytebuffer_t *b, const int64_t val)
 * Writes a unsigned varInt to the buffer
 */
 void
-bytebuffer_append_uvarint(bytebuffer_t *b, const uint64_t val)
+bytebuffer_append_uvarint(bytebuffer_t * b, const uint64_t val)
 {
 	bytebuffer_makeroom(b, 16);
 	b->writecursor += varint_u64_encode_buf(val, b->writecursor);
@@ -256,42 +245,38 @@ bytebuffer_append_uvarint(bytebuffer_t *b, const uint64_t val)
 
 
 /*
-* Writes Integer to the buffer
-*/
+ * Writes Integer to the buffer
+ */
 void
-bytebuffer_append_int(bytebuffer_t *buf, const int val, int swap)
+bytebuffer_append_int(bytebuffer_t * buf, const int val, int swap)
 {
-	LWDEBUGF(2,"Entered bytebuffer_append_int with value %d, swap = %d", val, swap);
+	LWDEBUGF(2, "Entered bytebuffer_append_int with value %d, swap = %d", val, swap);
 
-	LWDEBUGF(4,"buf_start = %p and write_cursor=%p", buf->buf_start,buf->writecursor);
-	char *iptr = (char*)(&val);
-	int i = 0;
+	LWDEBUGF(4, "buf_start = %p and write_cursor=%p", buf->buf_start, buf->writecursor);
+	char	       *iptr = (char *)(&val);
+	int		i = 0;
 
-	if ( sizeof(int) != WKB_INT_SIZE )
-	{
+	if (sizeof(int) != WKB_INT_SIZE) {
 		lwerror("Machine int size is not %d bytes!", WKB_INT_SIZE);
 	}
 
 	bytebuffer_makeroom(buf, WKB_INT_SIZE);
 	/* Machine/request arch mismatch, so flip byte order */
-	if ( swap)
-	{
-		LWDEBUG(4,"Ok, let's do the swaping thing");
-		for ( i = 0; i < WKB_INT_SIZE; i++ )
-		{
+	if (swap) {
+		LWDEBUG(4, "Ok, let's do the swaping thing");
+		for (i = 0; i < WKB_INT_SIZE; i++) {
 			*(buf->writecursor) = iptr[WKB_INT_SIZE - 1 - i];
 			buf->writecursor += 1;
 		}
 	}
 	/* If machine arch and requested arch match, don't flip byte order */
-	else
-	{
-		LWDEBUG(4,"Ok, let's do the memcopying thing");
+	else {
+		LWDEBUG(4, "Ok, let's do the memcopying thing");
 		memcpy(buf->writecursor, iptr, WKB_INT_SIZE);
 		buf->writecursor += WKB_INT_SIZE;
 	}
 
-	LWDEBUGF(4,"buf_start = %p and write_cursor=%p", buf->buf_start,buf->writecursor);
+	LWDEBUGF(4, "buf_start = %p and write_cursor=%p", buf->buf_start, buf->writecursor);
 	return;
 
 }
@@ -304,40 +289,36 @@ bytebuffer_append_int(bytebuffer_t *buf, const int val, int swap)
 * Writes a float64 to the buffer
 */
 void
-bytebuffer_append_double(bytebuffer_t *buf, const double val, int swap)
+bytebuffer_append_double(bytebuffer_t * buf, const double val, int swap)
 {
-	LWDEBUGF(2,"Entered bytebuffer_append_double with value %lf swap = %d", val, swap);
+	LWDEBUGF(2, "Entered bytebuffer_append_double with value %lf swap = %d", val, swap);
 
-	LWDEBUGF(4,"buf_start = %p and write_cursor=%p", buf->buf_start,buf->writecursor);
-	char *dptr = (char*)(&val);
-	int i = 0;
+	LWDEBUGF(4, "buf_start = %p and write_cursor=%p", buf->buf_start, buf->writecursor);
+	char	       *dptr = (char *)(&val);
+	int		i = 0;
 
-	if ( sizeof(double) != WKB_DOUBLE_SIZE )
-	{
+	if (sizeof(double) != WKB_DOUBLE_SIZE) {
 		lwerror("Machine double size is not %d bytes!", WKB_DOUBLE_SIZE);
 	}
 
 	bytebuffer_makeroom(buf, WKB_DOUBLE_SIZE);
 
 	/* Machine/request arch mismatch, so flip byte order */
-	if ( swap )
-	{
-		LWDEBUG(4,"Ok, let's do the swapping thing");
-		for ( i = 0; i < WKB_DOUBLE_SIZE; i++ )
-		{
+	if (swap) {
+		LWDEBUG(4, "Ok, let's do the swapping thing");
+		for (i = 0; i < WKB_DOUBLE_SIZE; i++) {
 			*(buf->writecursor) = dptr[WKB_DOUBLE_SIZE - 1 - i];
 			buf->writecursor += 1;
 		}
 	}
 	/* If machine arch and requested arch match, don't flip byte order */
-	else
-	{
-		LWDEBUG(4,"Ok, let's do the memcopying thing");
+	else {
+		LWDEBUG(4, "Ok, let's do the memcopying thing");
 		memcpy(buf->writecursor, dptr, WKB_DOUBLE_SIZE);
 		buf->writecursor += WKB_DOUBLE_SIZE;
 	}
 
-	LWDEBUG(4,"Return from bytebuffer_append_double");
+	LWDEBUG(4, "Return from bytebuffer_append_double");
 	return;
 
 }
@@ -346,10 +327,9 @@ bytebuffer_append_double(bytebuffer_t *buf, const double val, int swap)
 * Reads a signed varInt from the buffer
 */
 int64_t
-bytebuffer_read_varint(bytebuffer_t *b)
-{
-	size_t size;
-	int64_t val = varint_s64_decode(b->readcursor, b->buf_start + b->capacity, &size);
+bytebuffer_read_varint(bytebuffer_t * b) {
+	size_t		size;
+	int64_t		val = varint_s64_decode(b->readcursor, b->buf_start + b->capacity, &size);
 	b->readcursor += size;
 	return val;
 }
@@ -358,10 +338,9 @@ bytebuffer_read_varint(bytebuffer_t *b)
 * Reads a unsigned varInt from the buffer
 */
 uint64_t
-bytebuffer_read_uvarint(bytebuffer_t *b)
-{
-	size_t size;
-	uint64_t val = varint_u64_decode(b->readcursor, b->buf_start + b->capacity, &size);
+bytebuffer_read_uvarint(bytebuffer_t * b) {
+	size_t		size;
+	uint64_t	val = varint_u64_decode(b->readcursor, b->buf_start + b->capacity, &size);
 	b->readcursor += size;
 	return val;
 }
@@ -370,8 +349,7 @@ bytebuffer_read_uvarint(bytebuffer_t *b)
 * Returns the length of the current buffer
 */
 size_t
-bytebuffer_getlength(const bytebuffer_t *s)
-{
+bytebuffer_getlength(const bytebuffer_t * s){
 	return (size_t) (s->writecursor - s->buf_start);
 }
 
@@ -380,26 +358,22 @@ bytebuffer_getlength(const bytebuffer_t *s)
 * Returns a new bytebuffer were both ingoing bytebuffers is merged.
 * Caller is responsible for freeing both incoming bytefyffers and resulting bytebuffer
 */
-bytebuffer_t*
-bytebuffer_merge(bytebuffer_t **buff_array, int nbuffers)
+bytebuffer_t   *
+bytebuffer_merge(bytebuffer_t * *buff_array, int nbuffers)
 {
-	size_t total_size = 0, current_size, acc_size = 0;
-	int i;
-	for ( i = 0; i < nbuffers; i++ )
-	{
+	size_t		total_size = 0, current_size, acc_size = 0;
+	int		i;
+	for (i = 0; i < nbuffers; i++) {
 		total_size += bytebuffer_getlength(buff_array[i]);
 	}
 
-	bytebuffer_t *res = bytebuffer_create_with_size(total_size);
-	for ( i = 0; i < nbuffers; i++)
-	{
+	bytebuffer_t   *res = bytebuffer_create_with_size(total_size);
+	for (i = 0; i < nbuffers; i++) {
 		current_size = bytebuffer_getlength(buff_array[i]);
-		memcpy(res->buf_start+acc_size, buff_array[i]->buf_start, current_size);
+		memcpy(res->buf_start + acc_size, buff_array[i]->buf_start, current_size);
 		acc_size += current_size;
 	}
 	res->writecursor = res->buf_start + total_size;
 	res->readcursor = res->buf_start;
 	return res;
 }
-
-

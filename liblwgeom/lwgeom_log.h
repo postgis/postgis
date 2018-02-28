@@ -43,8 +43,10 @@
               lwdebug(level, "[%s:%s:%d] " msg, __FILE__, __func__, __LINE__); \
         } while (0);
 
-/* Display a formatted notice at the given debug level
- * (like printf, with variadic arguments) */
+/*
+ * Display a formatted notice at the given debug level (like printf, with
+ * variadic arguments)
+ */
 #define LWDEBUGF(level, msg, ...) \
         do { \
             if (POSTGIS_DEBUG_LEVEL >= level) \
@@ -52,8 +54,10 @@
                 __FILE__, __func__, __LINE__, __VA_ARGS__); \
         } while (0);
 
-/* Display a notice and a WKT representation of a geometry
- * at the given debug level */
+/*
+ * Display a notice and a WKT representation of a geometry at the given debug
+ * level
+ */
 #define LWDEBUGG(level, geom, msg) \
   if (POSTGIS_DEBUG_LEVEL >= level) \
   do { \
@@ -64,8 +68,10 @@
     lwfree(wkt); \
   } while (0);
 
-/* Display a formatted notice and a WKT representation of a geometry
- * at the given debug level */
+/*
+ * Display a formatted notice and a WKT representation of a geometry at the
+ * given debug level
+ */
 #define LWDEBUGGF(level, geom, fmt, ...) \
   if (POSTGIS_DEBUG_LEVEL >= level) \
   do { \
@@ -78,23 +84,31 @@
 
 #else /* POSTGIS_DEBUG_LEVEL <= 0 */
 
-/* Empty prototype that can be optimised away by the compiler
- * for non-debug builds */
+/*
+ * Empty prototype that can be optimised away by the compiler for non-debug
+ * builds
+ */
 #define LWDEBUG(level, msg) \
         ((void) 0)
 
-/* Empty prototype that can be optimised away by the compiler
- * for non-debug builds */
+/*
+ * Empty prototype that can be optimised away by the compiler for non-debug
+ * builds
+ */
 #define LWDEBUGF(level, msg, ...) \
         ((void) 0)
 
-/* Empty prototype that can be optimised away by the compiler
- * for non-debug builds */
+/*
+ * Empty prototype that can be optimised away by the compiler for non-debug
+ * builds
+ */
 #define LWDEBUGG(level, geom, msg) \
         ((void) 0)
 
-/* Empty prototype that can be optimised away by the compiler
- * for non-debug builds */
+/*
+ * Empty prototype that can be optimised away by the compiler for non-debug
+ * builds
+ */
 #define LWDEBUGGF(level, geom, fmt, ...) \
         ((void) 0)
 
@@ -108,7 +122,7 @@
  * For debugging, use LWDEBUG() or LWDEBUGF().
  * @ingroup logging
  */
-void lwnotice(const char *fmt, ...);
+void		lwnotice(const char *fmt,...);
 
 /**
  * Write a notice out to the error handler.
@@ -118,7 +132,7 @@ void lwnotice(const char *fmt, ...);
  * For debugging, use LWDEBUG() or LWDEBUGF().
  * @ingroup logging
  */
-void lwerror(const char *fmt, ...);
+void		lwerror(const char *fmt,...);
 
 /**
  * Write a debug message out.
@@ -127,7 +141,7 @@ void lwerror(const char *fmt, ...);
  * efficiency.
  * @ingroup logging
  */
-void lwdebug(int level, const char *fmt, ...);
+void		lwdebug(int level, const char *fmt,...);
 
 
 

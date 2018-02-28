@@ -1,17 +1,18 @@
 
 //
-// hash.h
+//hash.h
 //
-// Copyright (c) 2012 TJ Holowaychuk <tj@vision-media.ca>
+//Copyright(c) 2012 TJ Holowaychuk < tj @ vision - media.ca >
 //
 
 #ifndef HASH
 #define HASH
 
-//#include <postgres.h>
+//
+#include <postgres.h>
 #include "khash.h"
 
-// pointer hash
+//pointer hash
 
 KHASH_MAP_INIT_STR(ptr, void *);
 
@@ -46,8 +47,7 @@ typedef khash_t(ptr) hash_t;
 #define hash_clear(self) kh_clear(ptr, self)
 
 /*
- * Iterate hash keys and ptrs, populating
- * `key` and `val`.
+ * Iterate hash keys and ptrs, populating `key` and `val`.
  */
 
 #define hash_each(self, block) { \
@@ -87,21 +87,20 @@ typedef khash_t(ptr) hash_t;
     } \
   }
 
-// protos
+//protos
 
 void
-hash_set(hash_t *self, char *key, void *val);
+		hash_set(hash_t * self, char *key, void *val);
 
-void *
-hash_get(hash_t *self, char *key);
+void	       *hash_get(hash_t * self, char *key);
 
 int
-hash_has(hash_t *self, char *key);
+		hash_has(hash_t * self, char *key);
 
 void
-hash_del(hash_t *self, char *key);
+		hash_del(hash_t * self, char *key);
 
 void
-hash_clear(hash_t *self);
+		hash_clear(hash_t * self);
 
 #endif /* HASH */

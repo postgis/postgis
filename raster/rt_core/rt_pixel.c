@@ -4,27 +4,26 @@
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
  * Copyright (C) 2011-2013 Regents of the University of California
- *   <bkpark@ucdavis.edu>
- * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
- * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
- * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
- * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * <bkpark@ucdavis.edu> Copyright (C) 2010-2011 Jorge Arevalo
+ * <jorge.arevalo@deimos-space.com> Copyright (C) 2010-2011 David Zwarg
+ * <dzwarg@azavea.com> Copyright (C) 2009-2011 Pierre Racine
+ * <pierre.racine@sbf.ulaval.ca> Copyright (C) 2009-2011 Mateusz Loskot
+ * <mateusz@loskot.net> Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2013  Nathaniel Hunter Clay <clay.nathaniel@gmail.com>
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
 
@@ -36,48 +35,50 @@
 ******************************************************************************/
 
 int
-rt_pixtype_size(rt_pixtype pixtype) {
-	int pixbytes = -1;
+rt_pixtype_size(rt_pixtype pixtype)
+{
+	int		pixbytes = -1;
 
 	switch (pixtype) {
-		case PT_1BB:
-		case PT_2BUI:
-		case PT_4BUI:
-		case PT_8BSI:
-		case PT_8BUI:
-			pixbytes = 1;
-			break;
-		case PT_16BSI:
-		case PT_16BUI:
-			pixbytes = 2;
-			break;
-		case PT_32BSI:
-		case PT_32BUI:
-		case PT_32BF:
-			pixbytes = 4;
-			break;
-		case PT_64BF:
-			pixbytes = 8;
-			break;
-		default:
-			rterror("rt_pixtype_size: Unknown pixeltype %d", pixtype);
-			pixbytes = -1;
-			break;
+	case PT_1BB:
+	case PT_2BUI:
+	case PT_4BUI:
+	case PT_8BSI:
+	case PT_8BUI:
+		pixbytes = 1;
+		break;
+	case PT_16BSI:
+	case PT_16BUI:
+		pixbytes = 2;
+		break;
+	case PT_32BSI:
+	case PT_32BUI:
+	case PT_32BF:
+		pixbytes = 4;
+		break;
+	case PT_64BF:
+		pixbytes = 8;
+		break;
+	default:
+		rterror("rt_pixtype_size: Unknown pixeltype %d", pixtype);
+		pixbytes = -1;
+		break;
 	}
 
 	RASTER_DEBUGF(3, "Pixel type = %s and size = %d bytes",
-		rt_pixtype_name(pixtype), pixbytes);
+		      rt_pixtype_name(pixtype), pixbytes);
 
 	return pixbytes;
 }
 
 int
-rt_pixtype_alignment(rt_pixtype pixtype) {
+rt_pixtype_alignment(rt_pixtype pixtype)
+{
 	return rt_pixtype_size(pixtype);
 }
 
 rt_pixtype
-rt_pixtype_index_from_name(const char* pixname) {
+rt_pixtype_index_from_name(const char *pixname){
 	assert(pixname && strlen(pixname) > 0);
 
 	if (strcmp(pixname, "1BB") == 0)
@@ -106,34 +107,35 @@ rt_pixtype_index_from_name(const char* pixname) {
 	return PT_END;
 }
 
-const char*
-rt_pixtype_name(rt_pixtype pixtype) {
+const char     *
+rt_pixtype_name(rt_pixtype pixtype)
+{
 	switch (pixtype) {
-		case PT_1BB:
-			return "1BB";
-		case PT_2BUI:
-			return "2BUI";
-		case PT_4BUI:
-			return "4BUI";
-		case PT_8BSI:
-			return "8BSI";
-		case PT_8BUI:
-			return "8BUI";
-		case PT_16BSI:
-			return "16BSI";
-		case PT_16BUI:
-			return "16BUI";
-		case PT_32BSI:
-			return "32BSI";
-		case PT_32BUI:
-			return "32BUI";
-		case PT_32BF:
-			return "32BF";
-		case PT_64BF:
-			return "64BF";
-		default:
-			rterror("rt_pixtype_name: Unknown pixeltype %d", pixtype);
-			return "Unknown";
+	case PT_1BB:
+		return "1BB";
+	case PT_2BUI:
+		return "2BUI";
+	case PT_4BUI:
+		return "4BUI";
+	case PT_8BSI:
+		return "8BSI";
+	case PT_8BUI:
+		return "8BUI";
+	case PT_16BSI:
+		return "16BSI";
+	case PT_16BUI:
+		return "16BUI";
+	case PT_32BSI:
+		return "32BSI";
+	case PT_32BUI:
+		return "32BUI";
+	case PT_32BF:
+		return "32BF";
+	case PT_64BF:
+		return "64BF";
+	default:
+		rterror("rt_pixtype_name: Unknown pixeltype %d", pixtype);
+		return "Unknown";
 	}
 }
 
@@ -145,44 +147,45 @@ rt_pixtype_name(rt_pixtype pixtype) {
  * @return the minimum possible value for the pixel type.
  */
 double
-rt_pixtype_get_min_value(rt_pixtype pixtype) {
+rt_pixtype_get_min_value(rt_pixtype pixtype)
+{
 	switch (pixtype) {
-		case PT_1BB: {
-			return (double) rt_util_clamp_to_1BB((double) CHAR_MIN);
+	case PT_1BB:{
+			return (double)rt_util_clamp_to_1BB((double)CHAR_MIN);
 		}
-		case PT_2BUI: {
-			return (double) rt_util_clamp_to_2BUI((double) CHAR_MIN);
+	case PT_2BUI:{
+			return (double)rt_util_clamp_to_2BUI((double)CHAR_MIN);
 		}
-		case PT_4BUI: {
-			return (double) rt_util_clamp_to_4BUI((double) CHAR_MIN);
+	case PT_4BUI:{
+			return (double)rt_util_clamp_to_4BUI((double)CHAR_MIN);
 		}
-		case PT_8BUI: {
-			return (double) rt_util_clamp_to_8BUI((double) CHAR_MIN);
+	case PT_8BUI:{
+			return (double)rt_util_clamp_to_8BUI((double)CHAR_MIN);
 		}
-		case PT_8BSI: {
-			return (double) rt_util_clamp_to_8BSI((double) SCHAR_MIN);
+	case PT_8BSI:{
+			return (double)rt_util_clamp_to_8BSI((double)SCHAR_MIN);
 		}
-		case PT_16BSI: {
-			return (double) rt_util_clamp_to_16BSI((double) SHRT_MIN);
+	case PT_16BSI:{
+			return (double)rt_util_clamp_to_16BSI((double)SHRT_MIN);
 		}
-		case PT_16BUI: {
-			return (double) rt_util_clamp_to_16BUI((double) SHRT_MIN);
+	case PT_16BUI:{
+			return (double)rt_util_clamp_to_16BUI((double)SHRT_MIN);
 		}
-		case PT_32BSI: {
-			return (double) rt_util_clamp_to_32BSI((double) INT_MIN);
+	case PT_32BSI:{
+			return (double)rt_util_clamp_to_32BSI((double)INT_MIN);
 		}
-		case PT_32BUI: {
-			return (double) rt_util_clamp_to_32BUI((double) INT_MIN);
+	case PT_32BUI:{
+			return (double)rt_util_clamp_to_32BUI((double)INT_MIN);
 		}
-		case PT_32BF: {
-			return (double) -FLT_MAX;
+	case PT_32BF:{
+			return (double)-FLT_MAX;
 		}
-		case PT_64BF: {
-			return (double) -DBL_MAX;
+	case PT_64BF:{
+			return (double)-DBL_MAX;
 		}
-		default: {
+	default:{
 			rterror("rt_pixtype_get_min_value: Unknown pixeltype %d", pixtype);
-			return (double) rt_util_clamp_to_8BUI((double) CHAR_MIN);
+			return (double)rt_util_clamp_to_8BUI((double)CHAR_MIN);
 		}
 	}
 }
@@ -197,62 +200,64 @@ rt_pixtype_get_min_value(rt_pixtype pixtype) {
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate rt_pixtype_compare_clamped_values(
-	rt_pixtype pixtype,
-	double val, double refval,
-	int *isequal
-) {
+rt_errorstate
+rt_pixtype_compare_clamped_values(
+				  rt_pixtype pixtype,
+				  double val, double refval,
+				  int *isequal
+)
+{
 	assert(isequal != NULL);
 	*isequal = 0;
 
 	switch (pixtype) {
-		case PT_1BB:
-			if (rt_util_clamp_to_1BB(val) == rt_util_clamp_to_1BB(refval))
-				*isequal = 1;
-			break;
-		case PT_2BUI:
-			if (rt_util_clamp_to_2BUI(val) == rt_util_clamp_to_2BUI(refval))
-				*isequal = 1;
-			break;
-		case PT_4BUI:
-			if (rt_util_clamp_to_4BUI(val) == rt_util_clamp_to_4BUI(refval))
-				*isequal = 1;
-			break;
-		case PT_8BSI:
-			if (rt_util_clamp_to_8BSI(val) == rt_util_clamp_to_8BSI(refval))
-				*isequal = 1;
-			break;
-		case PT_8BUI:
-			if (rt_util_clamp_to_8BUI(val) == rt_util_clamp_to_8BUI(refval))
-				*isequal = 1;
-			break;
-		case PT_16BSI:
-			if (rt_util_clamp_to_16BSI(val) == rt_util_clamp_to_16BSI(refval))
-				*isequal = 1;
-			break;
-		case PT_16BUI:
-			if (rt_util_clamp_to_16BUI(val) == rt_util_clamp_to_16BUI(refval))
-				*isequal = 1;
-			break;
-		case PT_32BSI:
-			if (rt_util_clamp_to_32BSI(val) == rt_util_clamp_to_32BSI(refval))
-				*isequal = 1;
-			break;
-		case PT_32BUI:
-			if (rt_util_clamp_to_32BUI(val) == rt_util_clamp_to_32BUI(refval))
-				*isequal = 1;
-			break;
-		case PT_32BF:
-			if (FLT_EQ(rt_util_clamp_to_32F(val), rt_util_clamp_to_32F(refval)))
-				*isequal = 1;
-			break;
-		case PT_64BF:
-			if (FLT_EQ(val, refval))
-				*isequal = 1;
-			break;
-		default:
-			rterror("rt_pixtype_compare_clamped_values: Unknown pixeltype %d", pixtype);
-			return ES_ERROR;
+	case PT_1BB:
+		if (rt_util_clamp_to_1BB(val) == rt_util_clamp_to_1BB(refval))
+			*isequal = 1;
+		break;
+	case PT_2BUI:
+		if (rt_util_clamp_to_2BUI(val) == rt_util_clamp_to_2BUI(refval))
+			*isequal = 1;
+		break;
+	case PT_4BUI:
+		if (rt_util_clamp_to_4BUI(val) == rt_util_clamp_to_4BUI(refval))
+			*isequal = 1;
+		break;
+	case PT_8BSI:
+		if (rt_util_clamp_to_8BSI(val) == rt_util_clamp_to_8BSI(refval))
+			*isequal = 1;
+		break;
+	case PT_8BUI:
+		if (rt_util_clamp_to_8BUI(val) == rt_util_clamp_to_8BUI(refval))
+			*isequal = 1;
+		break;
+	case PT_16BSI:
+		if (rt_util_clamp_to_16BSI(val) == rt_util_clamp_to_16BSI(refval))
+			*isequal = 1;
+		break;
+	case PT_16BUI:
+		if (rt_util_clamp_to_16BUI(val) == rt_util_clamp_to_16BUI(refval))
+			*isequal = 1;
+		break;
+	case PT_32BSI:
+		if (rt_util_clamp_to_32BSI(val) == rt_util_clamp_to_32BSI(refval))
+			*isequal = 1;
+		break;
+	case PT_32BUI:
+		if (rt_util_clamp_to_32BUI(val) == rt_util_clamp_to_32BUI(refval))
+			*isequal = 1;
+		break;
+	case PT_32BF:
+		if (FLT_EQ(rt_util_clamp_to_32F(val), rt_util_clamp_to_32F(refval)))
+			*isequal = 1;
+		break;
+	case PT_64BF:
+		if (FLT_EQ(val, refval))
+			*isequal = 1;
+		break;
+	default:
+		rterror("rt_pixtype_compare_clamped_values: Unknown pixeltype %d", pixtype);
+		return ES_ERROR;
 	}
 
 	return ES_NONE;
@@ -267,38 +272,36 @@ rt_errorstate rt_pixtype_compare_clamped_values(
  * The dimensions of the returned 2D array are [Y][X], going by row Y and
  * then column X.
  *
- * @param npixel : array of rt_pixel objects
- * @param count : number of elements in npixel
- * @param mask : mask to be respected when retruning array
- * @param x : the column of the center pixel (0-based)
- * @param y : the line of the center pixel (0-based)
- * @param distancex : the number of pixels around the specified pixel
- * along the X axis
- * @param distancey : the number of pixels around the specified pixel
- * along the Y axis
- * @param value : pointer to pointer for 2D value array
- * @param nodata : pointer to pointer for 2D NODATA array
- * @param dimx : size of value and nodata along the X axis
+ * @param npixel : array of rt_pixel objects @param count : number of
+ * elements in npixel @param mask : mask to be respected when retruning array
+ * @param x : the column of the center pixel (0-based) @param y : the line of
+ * the center pixel (0-based) @param distancex : the number of pixels around
+ * the specified pixel along the X axis @param distancey : the number of
+ * pixels around the specified pixel along the Y axis @param value : pointer
+ * to pointer for 2D value array @param nodata : pointer to pointer for 2D
+ * NODATA array @param dimx : size of value and nodata along the X axis
  * @param dimy : size of value and nodata along the Y axis
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate rt_pixel_set_to_array(
-	rt_pixel npixel, uint32_t count, rt_mask mask,
-	int x, int y,
-	uint16_t distancex, uint16_t distancey,
-	double ***value,
-	int ***nodata,
-	int *dimx, int *dimy
-) {
-	uint32_t i;
-	uint32_t j;
-	uint32_t dim[2] = {0};
-	double **values = NULL;
-	int **nodatas = NULL;
-	int zero[2] = {0};
-	int _x;
-	int _y;
+rt_errorstate
+rt_pixel_set_to_array(
+		      rt_pixel npixel, uint32_t count, rt_mask mask,
+		      int x, int y,
+		      uint16_t distancex, uint16_t distancey,
+		      double ***value,
+		      int ***nodata,
+		      int *dimx, int *dimy
+)
+{
+	uint32_t	i;
+	uint32_t	j;
+	uint32_t	dim[2] = {0};
+	double	      **values = NULL;
+	int	      **nodatas = NULL;
+	int		zero[2] = {0};
+	int		_x;
+	int		_y;
 
 	assert(npixel != NULL && count > 0);
 	assert(value != NULL);
@@ -311,15 +314,15 @@ rt_errorstate rt_pixel_set_to_array(
 
 	/* make sure that the dimx and dimy match mask */
 	if (mask != NULL) {
-	  if (dim[0] != mask->dimx || dim[1] != mask->dimy) {
-	    rterror("rt_pixel_set_array: mask dimensions %d x %d do not match given dims %d x %d", mask->dimx, mask->dimy,  dim[0],  dim[1]);
-	    return ES_ERROR;
-	  }
+		if (dim[0] != mask->dimx || dim[1] != mask->dimy) {
+			rterror("rt_pixel_set_array: mask dimensions %d x %d do not match given dims %d x %d", mask->dimx, mask->dimy, dim[0], dim[1]);
+			return ES_ERROR;
+		}
 
-	  if (mask->values == NULL || mask->nodata == NULL) {
-	    rterror("rt_pixel_set_array: Invalid mask");
-	    return ES_ERROR;
-	  }
+		if (mask->values == NULL || mask->nodata == NULL) {
+			rterror("rt_pixel_set_array: Invalid mask");
+			return ES_ERROR;
+		}
 
 	}
 
@@ -345,8 +348,7 @@ rt_errorstate rt_pixel_set_to_array(
 					rtdealloc(values[j]);
 					rtdealloc(nodatas[j]);
 				}
-			}
-			else {
+			} else {
 				for (j = 0; j <= i; j++) {
 					rtdealloc(values[j]);
 					if (j < i)
@@ -393,7 +395,7 @@ rt_errorstate rt_pixel_set_to_array(
 			/* unweighted (boolean) mask */
 			if (mask->weighted == 0) {
 				/* pixel is set to zero or nodata */
-				if (FLT_EQ(mask->values[_y][_x],0) || mask->nodata[_y][_x] == 1) {
+				if (FLT_EQ(mask->values[_y][_x], 0) || mask->nodata[_y][_x] == 1) {
 					values[_y][_x] = 0;
 					nodatas[_y][_x] = 1;
 				}
@@ -406,7 +408,7 @@ rt_errorstate rt_pixel_set_to_array(
 			/* weighted mask */
 			else {
 				/* nodata */
-				if(mask->nodata[_y][_x] == 1) {
+				if (mask->nodata[_y][_x] == 1) {
 					values[_y][_x] = 0;
 					nodatas[_y][_x] = 1;
 				}

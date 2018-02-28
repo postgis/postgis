@@ -20,94 +20,83 @@
 
 
 void
-getStyles( LAYERSTYLE **headRef )
+getStyles(LAYERSTYLE * *headRef)
 {
-	char line [128];
-	FILE* pFile;
-	char *getResults;
+	char		line[128];
+	FILE	       *pFile;
+	char	       *getResults;
 
 	*headRef = NULL;
 
-	if ((pFile = fopen("styles.conf", "r")) == NULL)
-	{
-		perror ( "styles.conf: No such file or directory" );
+	if ((pFile = fopen("styles.conf", "r")) == NULL) {
+		perror("styles.conf: No such file or directory");
 		return;
 	}
 
-	getResults = fgets ( line, sizeof line, pFile );
-	while ( getResults != NULL )
-	{
+	getResults = fgets(line, sizeof line, pFile);
+	while (getResults != NULL) {
 
-		// process defined styles
-		while ( (getResults != NULL) && strncmp(line, "[Style]", 7) == 0)
-		{
-			char *styleName = "DefaultStyle";
-			int pointSize = 5;
-			char *pointColor = "Grey";
-			int lineWidth = 5;
-			char *lineColor = "Grey";
-			char *polygonFillColor = "Grey";
-			char *polygonStrokeColor = "Grey";
-			int polygonStrokeWidth = 0;
+		//process defined styles
+			while ((getResults != NULL) && strncmp(line, "[Style]", 7) == 0) {
+			char	       *styleName = "DefaultStyle";
+			int		pointSize = 5;
+			char	       *pointColor = "Grey";
+			int		lineWidth = 5;
+			char	       *lineColor = "Grey";
+			char	       *polygonFillColor = "Grey";
+			char	       *polygonStrokeColor = "Grey";
+			int		polygonStrokeWidth = 0;
 
-			getResults = fgets ( line, sizeof line, pFile );
-			while ( (getResults != NULL) && (strncmp(line, "[Style]", 7) != 0) )
-			{
-				char *ptr;
+			getResults = fgets(line, sizeof line, pFile);
+			while ((getResults != NULL) && (strncmp(line, "[Style]", 7) != 0)) {
+				char	       *ptr;
 
-				// loop over all lines until [Style] is reached again
-				if ( (*line != '#') && (ptr = strchr(line, '=')) )
-				{
+				//loop over all lines until[Style] is reached again
+					if ((*line != '#') && (ptr = strchr(line, '='))) {
 					ptr = trim((++ptr));
 
 					if (strncmp(line, "styleName", 9) == 0)
 						styleName = ptr;
-					else if (strncmp(line, "pointSize", 9) == 0)
-					{
+					else if (strncmp(line, "pointSize", 9) == 0) {
 						pointSize = atoi(ptr);
 						free(ptr);
-					}
-					else if (strncmp(line, "pointColor", 10) == 0)
+					} else if (strncmp(line, "pointColor", 10) == 0)
 						pointColor = ptr;
-					else if (strncmp(line, "lineWidth", 9) == 0)
-					{
+					else if (strncmp(line, "lineWidth", 9) == 0) {
 						lineWidth = atoi(ptr);
 						free(ptr);
-					}
-					else if (strncmp(line, "lineColor", 9) == 0)
+					} else if (strncmp(line, "lineColor", 9) == 0)
 						lineColor = ptr;
 					else if (strncmp(line, "polygonFillColor", 16) == 0)
 						polygonFillColor = ptr;
 					else if (strncmp(line, "polygonStrokeColor", 18) == 0)
 						polygonStrokeColor = ptr;
-					else if (strncmp(line, "polygonStrokeWidth", 18) == 0)
-					{
+					else if (strncmp(line, "polygonStrokeWidth", 18) == 0) {
 						polygonStrokeWidth = atoi(ptr);
 						free(ptr);
 					}
 
 				}
-				getResults = fgets ( line, sizeof line, pFile );
+				getResults = fgets(line, sizeof line, pFile);
 			}
 
 			addStyle(headRef, styleName, pointSize, pointColor, lineWidth, lineColor, polygonFillColor, polygonStrokeColor, polygonStrokeWidth);
 		}
 
-		getResults = fgets ( line, sizeof line, pFile );
+		getResults = fgets(line, sizeof line, pFile);
 	}
 
-	fclose( pFile );
+	fclose(pFile);
 }
 
 
 void
-freeStyles( LAYERSTYLE **headRef )
+freeStyles(LAYERSTYLE * *headRef)
 {
-	LAYERSTYLE *curr = *headRef;
-	LAYERSTYLE *next;
+	LAYERSTYLE     *curr = *headRef;
+	LAYERSTYLE     *next;
 
-	while (curr != NULL)
-	{
+	while (curr != NULL) {
 		next = curr->next;
 		free(curr->styleName);
 		free(curr->pointColor);
@@ -124,13 +113,13 @@ freeStyles( LAYERSTYLE **headRef )
 
 void
 addStyle(
-    LAYERSTYLE **headRef,
-    char* styleName,
-    int pointSize, char* pointColor,
-    int lineWidth, char* lineColor,
-    char* polygonFillColor, char* polygonStrokeColor, int polygonStrokeWidth)
+	 LAYERSTYLE * *headRef,
+	 char *styleName,
+	 int pointSize, char *pointColor,
+	 int lineWidth, char *lineColor,
+   char *polygonFillColor, char *polygonStrokeColor, int polygonStrokeWidth)
 {
-	LAYERSTYLE *style = malloc( sizeof(LAYERSTYLE) );
+	LAYERSTYLE     *style = malloc(sizeof(LAYERSTYLE));
 
 	style->styleName = styleName;
 	style->pointSize = pointSize;
@@ -146,13 +135,12 @@ addStyle(
 
 
 int
-length( LAYERSTYLE *head )
+length(LAYERSTYLE * head)
 {
-	int count = 0;
-	LAYERSTYLE *curr = head;
+	int		count = 0;
+	LAYERSTYLE     *curr = head;
 
-	while (curr != NULL)
-	{
+	while (curr != NULL) {
 		count++;
 		curr = curr->next;
 	}
@@ -161,10 +149,10 @@ length( LAYERSTYLE *head )
 }
 
 
-LAYERSTYLE*
-getStyle( LAYERSTYLE *headRef, char* styleName )
+LAYERSTYLE     *
+getStyle(LAYERSTYLE * headRef, char *styleName)
 {
-	LAYERSTYLE *curr = headRef;
+	LAYERSTYLE     *curr = headRef;
 
 	while (curr != NULL && (strcmp(curr->styleName, styleName) != 0))
 		curr = curr->next;
@@ -173,17 +161,19 @@ getStyle( LAYERSTYLE *headRef, char* styleName )
 }
 
 
-char*
-trim(char* str)
+char	       *
+trim(char *str)
 {
-	int len;
-	char* result;
-	char* start = str;
-	char* end = strchr(start, '\0');
-	while (start<end && isspace(*start)) start++;
-	while (start<end && isspace(*(end-1))) end--;
-	len = end-start;
-	result = malloc( len+1 );
+	int		len;
+	char	       *result;
+	char	       *start = str;
+	char	       *end = strchr(start, '\0');
+	while (start < end && isspace(*start))
+		start++;
+	while (start < end && isspace(*(end - 1)))
+		end--;
+	len = end - start;
+	result = malloc(len + 1);
 	strncpy(result, start, len);
 	result[len] = '\0';
 	return result;

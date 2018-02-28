@@ -3,29 +3,31 @@
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
  * Copyright (C) 2012 Regents of the University of California
- *   <bkpark@ucdavis.edu>
+ * <bkpark@ucdavis.edu>
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
 
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_raster_new() {
-	rt_raster raster = NULL;
+static void
+test_raster_new()
+{
+	rt_raster	raster = NULL;
 
 	raster = rt_raster_new(0, 0);
 	CU_ASSERT(raster != NULL);
@@ -40,8 +42,10 @@ static void test_raster_new() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_empty() {
-	rt_raster raster = NULL;
+static void
+test_raster_empty()
+{
+	rt_raster	raster = NULL;
 
 	/* check that raster is empty */
 	raster = rt_raster_new(0, 0);
@@ -59,8 +63,10 @@ static void test_raster_empty() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_metadata() {
-	rt_raster raster = NULL;
+static void
+test_raster_metadata()
+{
+	rt_raster	raster = NULL;
 
 	/* create raster */
 	raster = rt_raster_new(5, 5);
@@ -96,14 +102,16 @@ static void test_raster_metadata() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_clone() {
-	rt_raster rast1;
-	rt_raster rast2;
-	rt_band band;
+static void
+test_raster_clone()
+{
+	rt_raster	rast1;
+	rt_raster	rast2;
+	rt_band		band;
 
-	int maxX = 5;
-	int maxY = 5;
-	double gt[6];
+	int		maxX = 5;
+	int		maxY = 5;
+	double		gt[6];
 
 	rast1 = rt_raster_new(maxX, maxY);
 	CU_ASSERT(rast1 != NULL);
@@ -140,15 +148,17 @@ static void test_raster_clone() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_from_band() {
-	uint32_t bandNums[] = {1,3};
-	int lenBandNums = 2;
-	rt_raster raster;
-	rt_raster rast;
-	rt_band band;
-	uint32_t xmax = 100;
-	uint32_t ymax = 100;
-	uint32_t x;
+static void
+test_raster_from_band()
+{
+	uint32_t	bandNums[] = {1, 3};
+	int		lenBandNums = 2;
+	rt_raster	raster;
+	rt_raster	rast;
+	rt_band		band;
+	uint32_t	xmax = 100;
+	uint32_t	ymax = 100;
+	uint32_t	x;
 
 	raster = rt_raster_new(xmax, ymax);
 	CU_ASSERT(raster != NULL);
@@ -169,18 +179,20 @@ static void test_raster_from_band() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_replace_band() {
-	rt_raster raster;
-	rt_band band;
-	rt_band rband;
-	void* mem;
-	size_t datasize;
-	uint16_t width;
-	uint16_t height;
-	double nodata;
+static void
+test_raster_replace_band()
+{
+	rt_raster	raster;
+	rt_band		band;
+	rt_band		rband;
+	void	       *mem;
+	size_t		datasize;
+	uint16_t	width;
+	uint16_t	height;
+	double		nodata;
 
 	raster = rt_raster_new(10, 10);
-	CU_ASSERT(raster != NULL); /* or we're out of virtual memory */
+	CU_ASSERT(raster != NULL);	/* or we're out of virtual memory */
 	band = cu_add_band(raster, PT_8BUI, 0, 0);
 	CU_ASSERT(band != NULL);
 	band = cu_add_band(raster, PT_8BUI, 1, 255);
@@ -205,10 +217,11 @@ static void test_raster_replace_band() {
 }
 
 /* register tests */
-void raster_basics_suite_setup(void);
-void raster_basics_suite_setup(void)
+void		raster_basics_suite_setup(void);
+void
+raster_basics_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("raster_basics", NULL, NULL);
+	CU_pSuite	suite = CU_add_suite("raster_basics", NULL, NULL);
 	PG_ADD_TEST(suite, test_raster_new);
 	PG_ADD_TEST(suite, test_raster_empty);
 	PG_ADD_TEST(suite, test_raster_metadata);
@@ -216,4 +229,3 @@ void raster_basics_suite_setup(void)
 	PG_ADD_TEST(suite, test_raster_from_band);
 	PG_ADD_TEST(suite, test_raster_replace_band);
 }
-

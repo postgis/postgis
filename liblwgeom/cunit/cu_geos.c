@@ -20,11 +20,12 @@
 
 #include "liblwgeom_internal.h"
 
-static void test_geos_noop(void)
+static void
+test_geos_noop(void)
 {
-	size_t i;
+	size_t		i;
 
-	char *ewkt[] =
+	char	       *ewkt[] =
 	{
 		"POINT(0 0.2)",
 		"LINESTRING(-1 -1,-1 2.5,2 2,2 -1)",
@@ -41,17 +42,16 @@ static void test_geos_noop(void)
 	};
 
 
-	for ( i = 0; i < (sizeof ewkt/sizeof(char *)); i++ )
-	{
-		LWGEOM *geom_in, *geom_out;
-		char *in_ewkt;
-		char *out_ewkt;
+	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++) {
+		LWGEOM	       *geom_in, *geom_out;
+		char	       *in_ewkt;
+		char	       *out_ewkt;
 
 		in_ewkt = ewkt[i];
 		geom_in = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
 		geom_out = lwgeom_geos_noop(geom_in);
-		if ( ! geom_out ) {
-			// fprintf(stderr, "\nNull return from lwgeom_geos_noop with wkt:   %s\n", in_ewkt);
+		if (!geom_out) {
+			//fprintf(stderr, "\nNull return from lwgeom_geos_noop with wkt:   %s\n", in_ewkt);
 			lwgeom_free(geom_in);
 			continue;
 		}
@@ -67,17 +67,18 @@ static void test_geos_noop(void)
 
 }
 
-static void test_geos_linemerge(void)
+static void
+test_geos_linemerge(void)
 {
-	char *ewkt;
-	char *out_ewkt;
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	char	       *ewkt;
+	char	       *out_ewkt;
+	LWGEOM	       *geom1;
+	LWGEOM	       *geom2;
 
 	ewkt = "MULTILINESTRING((0 0, 0 100),(0 -5, 0 0))";
 	geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
 	geom2 = lwgeom_linemerge(geom1);
-	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom2);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM *) geom2);
 	ASSERT_STRING_EQUAL(out_ewkt, "LINESTRING(0 -5,0 0,0 100)");
 	lwfree(out_ewkt);
 	lwgeom_free(geom1);
@@ -86,7 +87,7 @@ static void test_geos_linemerge(void)
 	ewkt = "MULTILINESTRING EMPTY";
 	geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
 	geom2 = lwgeom_linemerge(geom1);
-	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom2);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM *) geom2);
 	ASSERT_STRING_EQUAL(out_ewkt, "MULTILINESTRING EMPTY");
 	lwfree(out_ewkt);
 	lwgeom_free(geom1);
@@ -94,27 +95,28 @@ static void test_geos_linemerge(void)
 }
 
 
-static void test_geos_subdivide(void)
+static void
+test_geos_subdivide(void)
 {
 #if POSTGIS_GEOS_VERSION < 35
-	// printf("%d\n", POSTGIS_GEOS_VERSION);
+	//printf("%d\n", POSTGIS_GEOS_VERSION);
 	return;
 #else
-	char *ewkt = "MULTILINESTRING((0 0, 0 100))";
-	char *out_ewkt;
-	LWGEOM *geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
-	LWGEOM *geom2 = lwgeom_segmentize2d(geom1, 1.0);
+	char	       *ewkt = "MULTILINESTRING((0 0, 0 100))";
+	char	       *out_ewkt;
+	LWGEOM	       *geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
+	LWGEOM	       *geom2 = lwgeom_segmentize2d(geom1, 1.0);
 
-	LWCOLLECTION *geom3 = lwgeom_subdivide(geom2, 80);
-	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom3);
-	// printf("\n--------\n%s\n--------\n", out_ewkt);
+	LWCOLLECTION   *geom3 = lwgeom_subdivide(geom2, 80);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM *) geom3);
+	//printf("\n--------\n%s\n--------\n", out_ewkt);
 	CU_ASSERT_EQUAL(2, geom3->ngeoms);
 	lwfree(out_ewkt);
 	lwcollection_free(geom3);
 
 	geom3 = lwgeom_subdivide(geom2, 20);
-	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom3);
-	// printf("\n--------\n%s\n--------\n", out_ewkt);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM *) geom3);
+	//printf("\n--------\n%s\n--------\n", out_ewkt);
 	CU_ASSERT_EQUAL(8, geom3->ngeoms);
 	lwfree(out_ewkt);
 	lwcollection_free(geom3);
@@ -125,12 +127,13 @@ static void test_geos_subdivide(void)
 }
 
 /*
-** Used by test harness to register the tests in this file.
-*/
-void geos_suite_setup(void);
-void geos_suite_setup(void)
+ * * Used by test harness to register the tests in this file.
+ */
+void		geos_suite_setup(void);
+void
+geos_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("geos", NULL, NULL);
+	CU_pSuite	suite = CU_add_suite("geos", NULL, NULL);
 	PG_ADD_TEST(suite, test_geos_noop);
 	PG_ADD_TEST(suite, test_geos_subdivide);
 	PG_ADD_TEST(suite, test_geos_linemerge);

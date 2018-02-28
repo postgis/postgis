@@ -166,6 +166,8 @@ libpgcommon/Makefile
 libpgcommon/cunit/Makefile
 utils/Makefile
 utils/postgis_restore.pl
+utils/external/pg_bsd_indent/Makefile
+utils/external/pg_bsd_indent/pg_indent
 doc/sfcgal_comments.sql
 postgis/sfcgal.sql
 postgis/uninstall_sfcgal.sql

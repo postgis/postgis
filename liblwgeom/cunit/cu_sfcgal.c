@@ -17,13 +17,14 @@
 #include "cu_tester.h"
 #include "liblwgeom.h"
 
-extern LWGEOM* lwgeom_sfcgal_noop( const LWGEOM* geom_in );
+extern LWGEOM * lwgeom_sfcgal_noop(const LWGEOM * geom_in);
 
-static void test_sfcgal_noop(void)
+static void
+test_sfcgal_noop(void)
 {
-	int i;
+	int		i;
 
-	char *ewkt[] =
+	char	       *ewkt[] =
 	{
 		"POINT(0 0.2)",
 		"LINESTRING(-1 -1,-1 2.5,2 2,2 -1)",
@@ -43,7 +44,7 @@ static void test_sfcgal_noop(void)
 		"TIN(((0 0,0 -1,-1 1,0 0)),((0 0,1 0,0 -1,0 0)))",
 	};
 
-	char *expected_ewkt[] =
+	char	       *expected_ewkt[] =
 	{
 		"POINT(0 0.2)",
 		"LINESTRING(-1 -1,-1 2.5,2 2,2 -1)",
@@ -63,16 +64,15 @@ static void test_sfcgal_noop(void)
 		"TIN(((0 0,0 -1,-1 1,0 0)),((0 0,1 0,0 -1,0 0)))",
 	};
 
-	for ( i = 0; i < (sizeof ewkt/sizeof(char *)); i++ )
-	{
-		LWGEOM *geom_in, *geom_out;
-		char *in_ewkt;
-		char *out_ewkt;
+	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++) {
+		LWGEOM	       *geom_in, *geom_out;
+		char	       *in_ewkt;
+		char	       *out_ewkt;
 
 		in_ewkt = ewkt[i];
 		geom_in = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
 		geom_out = lwgeom_sfcgal_noop(geom_in);
-		if ( ! geom_out ) {
+		if (!geom_out) {
 			fprintf(stderr, "\nNull return from lwgeom_sfcgal_noop with wkt:   %s\n", in_ewkt);
 			lwgeom_free(geom_in);
 			continue;
@@ -89,11 +89,12 @@ static void test_sfcgal_noop(void)
 
 
 /*
-** Used by test harness to register the tests in this file.
-*/
-void sfcgal_suite_setup(void);
-void sfcgal_suite_setup(void)
+ * * Used by test harness to register the tests in this file.
+ */
+void		sfcgal_suite_setup(void);
+void
+sfcgal_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("sfcgal", NULL, NULL);
+	CU_pSuite	suite = CU_add_suite("sfcgal", NULL, NULL);
 	PG_ADD_TEST(suite, test_sfcgal_noop);
 }

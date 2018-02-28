@@ -25,6 +25,6 @@
 #ifndef LWGEOM_BACKEND_API_H_
 #define LWGEOM_BACKEND_API_H_ 1
 
-void lwgeom_init_backend(void);
+void		lwgeom_init_backend(void);
 
 #endif

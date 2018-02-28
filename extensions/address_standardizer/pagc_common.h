@@ -31,12 +31,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 /* -- 2006-04-25 : structure added to index arc endpoints -- */
 typedef struct pagc_point {
-   double X ;
-   double Y ;
-} PAGC_POINT ;
+	double		X;
+	double		Y;
+}		PAGC_POINT;
 
 
-typedef int SYMB ;
+typedef int	SYMB;
 
 
 #define ERR_FAIL -2
@@ -72,11 +72,12 @@ response format types :
 #define XML 2
 
 /* -- build flags -- */
-#define STATISTICS 2 /* -- output statistics on rules used. FLSTATS in schema-- */
-#define PRINT_PROGRESS 128 /* output 10% completion points */
-#define LOG_COMPLETE 2048 /* log certain initializations when complete */
-#define ZERO_IS_BLANK 512 /* schema: FLZBLNK */
-#define RNF_PRETYPE_REDIRECT 4096 /* schema: FLRNFRE */
+#define STATISTICS 2		/* -- output statistics on rules used.
+				 * FLSTATS in schema-- */
+#define PRINT_PROGRESS 128	/* output 10% completion points */
+#define LOG_COMPLETE 2048	/* log certain initializations when complete */
+#define ZERO_IS_BLANK 512	/* schema: FLZBLNK */
+#define RNF_PRETYPE_REDIRECT 4096	/* schema: FLRNFRE */
 
 #define SENTINEL '\0'
 #define BLANK_STRING(STR) *STR = SENTINEL

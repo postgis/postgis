@@ -47,15 +47,15 @@
 #include "vector_tile.pb-c.h"
 
 typedef struct mvt_agg_context {
-	char *name;
-	uint32_t extent;
-	char *geom_name;
-	uint32_t geom_index;
-	HeapTupleHeader row;
+	char	       *name;
+	uint32_t	extent;
+	char	       *geom_name;
+	uint32_t	geom_index;
+	HeapTupleHeader	row;
 	VectorTile__Tile__Feature *feature;
 	VectorTile__Tile__Layer *layer;
 	VectorTile__Tile *tile;
-	size_t features_capacity;
+	size_t		features_capacity;
 	struct mvt_kv_key *keys_hash;
 	struct mvt_kv_string_value *string_values_hash;
 	struct mvt_kv_float_value *float_values_hash;
@@ -63,21 +63,21 @@ typedef struct mvt_agg_context {
 	struct mvt_kv_uint_value *uint_values_hash;
 	struct mvt_kv_sint_value *sint_values_hash;
 	struct mvt_kv_bool_value *bool_values_hash;
-	uint32_t values_hash_i;
-	uint32_t keys_hash_i;
-	uint32_t c;
-} mvt_agg_context;
+	uint32_t	values_hash_i;
+	uint32_t	keys_hash_i;
+	uint32_t	c;
+}		mvt_agg_context;
 
 /* Prototypes */
-LWGEOM *mvt_geom(LWGEOM *geom, const GBOX *bounds, uint32_t extent, uint32_t buffer, bool clip_geom);
-void mvt_agg_init_context(mvt_agg_context *ctx);
-void mvt_agg_transfn(mvt_agg_context *ctx);
-bytea *mvt_agg_finalfn(mvt_agg_context *ctx);
-bytea *mvt_ctx_serialize(mvt_agg_context *ctx);
-mvt_agg_context * mvt_ctx_deserialize(const bytea *ba);
-mvt_agg_context * mvt_ctx_combine(mvt_agg_context *ctx1, mvt_agg_context *ctx2);
+LWGEOM	       *mvt_geom(LWGEOM * geom, const GBOX * bounds, uint32_t extent, uint32_t buffer, bool clip_geom);
+void		mvt_agg_init_context(mvt_agg_context * ctx);
+void		mvt_agg_transfn(mvt_agg_context * ctx);
+bytea	       *mvt_agg_finalfn(mvt_agg_context * ctx);
+bytea	       *mvt_ctx_serialize(mvt_agg_context * ctx);
+mvt_agg_context *mvt_ctx_deserialize(const bytea * ba);
+mvt_agg_context *mvt_ctx_combine(mvt_agg_context * ctx1, mvt_agg_context * ctx2);
 
 
-#endif  /* HAVE_LIBPROTOBUF */
+#endif /* HAVE_LIBPROTOBUF */
 
 #endif

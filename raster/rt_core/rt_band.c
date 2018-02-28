@@ -3,28 +3,27 @@
  * WKTRaster - Raster Types for PostGIS
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
- * Copyright (C) 2018 Bborie Park <dustymugs@gmail.com>
- * Copyright (C) 2011-2013 Regents of the University of California
- *   <bkpark@ucdavis.edu>
+ * Copyright (C) 2018 Bborie Park <dustymugs@gmail.com> Copyright (C)
+ * 2011-2013 Regents of the University of California <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
- * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
- * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
- * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com> Copyright (C)
+ * 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca> Copyright (C)
+ * 2009-2011 Mateusz Loskot <mateusz@loskot.net> Copyright (C) 2008-2009
+ * Sandro Santilli <strk@kbt.io>
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
 
@@ -57,12 +56,12 @@
  */
 rt_band
 rt_band_new_inline(
-	uint16_t width, uint16_t height,
-	rt_pixtype pixtype,
-	uint32_t hasnodata, double nodataval,
-	uint8_t* data
-) {
-	rt_band band = NULL;
+		   uint16_t width, uint16_t height,
+		   rt_pixtype pixtype,
+		   uint32_t hasnodata, double nodataval,
+		   uint8_t * data
+){
+	rt_band		band = NULL;
 
 	assert(NULL != data);
 
@@ -79,15 +78,19 @@ rt_band_new_inline(
 	band->width = width;
 	band->height = height;
 	band->hasnodata = hasnodata ? 1 : 0;
-	band->isnodata = FALSE; /* we don't know what is in data, so must be FALSE */
+	band->isnodata = FALSE;	/* we don't know what is in data, so must be
+				 * FALSE */
 	band->nodataval = 0;
 	band->data.mem = data;
-	band->ownsdata = 0; /* we do NOT own this data!!! */
+	band->ownsdata = 0;	/* we do NOT own this data!!! */
 	band->raster = NULL;
 
 	RASTER_DEBUGF(3, "Created rt_band with dimensions %d x %d", band->width, band->height);
 
-	/* properly set nodataval as it may need to be constrained to the data type */
+	/*
+	 * properly set nodataval as it may need to be constrained to the
+	 * data type
+	 */
 	if (hasnodata && rt_band_set_nodata(band, nodataval, NULL) != ES_NONE) {
 		rterror("rt_band_new_inline: Could not set NODATA value");
 		rt_band_destroy(band);
@@ -118,13 +121,13 @@ rt_band_new_inline(
  */
 rt_band
 rt_band_new_offline(
-	uint16_t width, uint16_t height,
-	rt_pixtype pixtype,
-	uint32_t hasnodata, double nodataval,
-	uint8_t bandNum, const char* path
-) {
-	rt_band band = NULL;
-	int pathlen = 0;
+		    uint16_t width, uint16_t height,
+		    rt_pixtype pixtype,
+		    uint32_t hasnodata, double nodataval,
+		    uint8_t bandNum, const char *path
+){
+	rt_band		band = NULL;
+	int		pathlen = 0;
 
 	assert(NULL != path);
 
@@ -135,8 +138,8 @@ rt_band_new_offline(
 	}
 
 	RASTER_DEBUGF(3, "Created rt_band @ %p with pixtype %s",
-		band, rt_pixtype_name(pixtype)
-	);
+		      band, rt_pixtype_name(pixtype)
+		);
 
 	band->pixtype = pixtype;
 	band->offline = 1;
@@ -144,11 +147,16 @@ rt_band_new_offline(
 	band->height = height;
 	band->hasnodata = hasnodata ? 1 : 0;
 	band->nodataval = 0;
-	band->isnodata = FALSE; /* we don't know if the offline band is NODATA */
-	band->ownsdata = 0; /* offline, flag is useless as all offline data cache is owned internally */
+	band->isnodata = FALSE;	/* we don't know if the offline band is
+				 * NODATA */
+	band->ownsdata = 0;	/* offline, flag is useless as all offline
+				 * data cache is owned internally */
 	band->raster = NULL;
 
-	/* properly set nodataval as it may need to be constrained to the data type */
+	/*
+	 * properly set nodataval as it may need to be constrained to the
+	 * data type
+	 */
 	if (hasnodata && rt_band_set_nodata(band, nodataval, NULL) != ES_NONE) {
 		rterror("rt_band_new_offline: Could not set NODATA value");
 		rt_band_destroy(band);
@@ -193,20 +201,20 @@ rt_band_new_offline(
  */
 rt_band
 rt_band_new_offline_from_path(
-	uint16_t width,
-	uint16_t height,
-	int hasnodata,
-	double nodataval,
-	uint8_t bandNum,
-	const char* path,
-	int force
-) {
-	GDALDatasetH hdsSrc = NULL;
-	int nband = 0;
-	GDALRasterBandH hbandSrc = NULL;
+			      uint16_t width,
+			      uint16_t height,
+			      int hasnodata,
+			      double nodataval,
+			      uint8_t bandNum,
+			      const char *path,
+			      int force
+){
+	GDALDatasetH	hdsSrc = NULL;
+	int		nband = 0;
+	GDALRasterBandH	hbandSrc = NULL;
 
-	GDALDataType gdpixtype;
-	rt_pixtype pt = PT_END;
+	GDALDataType	gdpixtype;
+	rt_pixtype	pt = PT_END;
 
 	/* open outdb raster file */
 	rt_util_gdal_register_all(0);
@@ -228,7 +236,7 @@ rt_band_new_offline_from_path(
 			"rt_band_new_offline_from_path: Specified band %d not found in offline raster: %s",
 			bandNum,
 			path
-		);
+			);
 		GDALClose(hdsSrc);
 		return NULL;
 	}
@@ -238,7 +246,7 @@ rt_band_new_offline_from_path(
 		rterror(
 			"rt_band_new_offline_from_path: Cannot get band %d from GDAL dataset",
 			bandNum
-		);
+			);
 		GDALClose(hdsSrc);
 		return NULL;
 	}
@@ -250,7 +258,7 @@ rt_band_new_offline_from_path(
 			"rt_band_new_offline_from_path: Unsupported pixel type %s of band %d from GDAL dataset",
 			GDALGetDataTypeName(gdpixtype),
 			bandNum
-		);
+			);
 		GDALClose(hdsSrc);
 		return NULL;
 	}
@@ -262,11 +270,11 @@ rt_band_new_offline_from_path(
 	GDALClose(hdsSrc);
 
 	return rt_band_new_offline(
-		width, height,
-		pt,
-		hasnodata, nodataval,
-		bandNum - 1, path
-	);
+				   width, height,
+				   pt,
+				   hasnodata, nodataval,
+				   bandNum - 1, path
+		);
 }
 
 /**
@@ -281,22 +289,22 @@ rt_band_new_offline_from_path(
  */
 rt_band
 rt_band_duplicate(rt_band band) {
-	rt_band rtn = NULL;
+	rt_band		rtn = NULL;
 
 	assert(band != NULL);
 
 	/* offline */
 	if (band->offline) {
 		rtn = rt_band_new_offline(
-			band->width, band->height,
-			band->pixtype,
-			band->hasnodata, band->nodataval,
-			band->data.offline.bandNum, (const char *) band->data.offline.path
-		);
+					  band->width, band->height,
+					  band->pixtype,
+					  band->hasnodata, band->nodataval,
+					  band->data.offline.bandNum, (const char *)band->data.offline.path
+			);
 	}
 	/* online */
 	else {
-		uint8_t *data = NULL;
+		uint8_t	       *data = NULL;
 		data = rtalloc(rt_pixtype_size(band->pixtype) * band->width * band->height);
 		if (data == NULL) {
 			rterror("rt_band_duplicate: Out of memory allocating online band data");
@@ -305,12 +313,13 @@ rt_band_duplicate(rt_band band) {
 		memcpy(data, band->data.mem, rt_pixtype_size(band->pixtype) * band->width * band->height);
 
 		rtn = rt_band_new_inline(
-			band->width, band->height,
-			band->pixtype,
-			band->hasnodata, band->nodataval,
-			data
-		);
-		rt_band_set_ownsdata_flag(rtn, 1); /* we DO own this data!!! */
+					 band->width, band->height,
+					 band->pixtype,
+					 band->hasnodata, band->nodataval,
+					 data
+			);
+		rt_band_set_ownsdata_flag(rtn, 1);	/* we DO own this
+							 * data!!! */
 	}
 
 	if (rtn == NULL) {
@@ -322,8 +331,9 @@ rt_band_duplicate(rt_band band) {
 }
 
 int
-rt_band_is_offline(rt_band band) {
-  assert(NULL != band);
+rt_band_is_offline(rt_band band)
+{
+	assert(NULL != band);
 	return band->offline ? 1 : 0;
 }
 
@@ -333,7 +343,8 @@ rt_band_is_offline(rt_band band) {
  * @param band : the band to destroy
  */
 void
-rt_band_destroy(rt_band band) {
+rt_band_destroy(rt_band band)
+{
 	if (band == NULL)
 		return;
 
@@ -355,21 +366,22 @@ rt_band_destroy(rt_band band) {
 	rtdealloc(band);
 }
 
-const char*
-rt_band_get_ext_path(rt_band band) {
+const char     *
+rt_band_get_ext_path(rt_band band)
+{
 
-    assert(NULL != band);
+	assert(NULL != band);
 
 
-    if (!band->offline) {
-        RASTER_DEBUG(3, "rt_band_get_ext_path: Band is not offline");
-        return NULL;
-    }
-    return band->data.offline.path;
+	if (!band->offline) {
+		RASTER_DEBUG(3, "rt_band_get_ext_path: Band is not offline");
+		return NULL;
+	}
+	return band->data.offline.path;
 }
 
 rt_errorstate
-rt_band_get_ext_band_num(rt_band band, uint8_t *bandnum) {
+rt_band_get_ext_band_num(rt_band band, uint8_t * bandnum) {
 	assert(NULL != band);
 	assert(NULL != bandnum);
 
@@ -392,8 +404,9 @@ rt_band_get_ext_band_num(rt_band band, uint8_t *bandnum) {
 	*
 	* @return pointer to band data or NULL if error
 	*/
-void *
-rt_band_get_data(rt_band band) {
+void	       *
+rt_band_get_data(rt_band band)
+{
 	assert(NULL != band);
 
 	if (band->offline) {
@@ -404,13 +417,12 @@ rt_band_get_data(rt_band band) {
 			return NULL;
 		else
 			return band->data.offline.mem;
-	}
-	else
+	} else
 		return band->data.mem;
 }
 
 /* variable for PostgreSQL GUC: postgis.enable_outdb_rasters */
-char enable_outdb_rasters = 1;
+char		enable_outdb_rasters = 1;
 
 /**
 	* Load offline band's data.  Loaded data is internally owned
@@ -423,17 +435,17 @@ char enable_outdb_rasters = 1;
 	*/
 rt_errorstate
 rt_band_load_offline_data(rt_band band) {
-	GDALDatasetH hdsSrc = NULL;
-	int nband = 0;
-	VRTDatasetH hdsDst = NULL;
+	GDALDatasetH	hdsSrc = NULL;
+	int		nband = 0;
+	VRTDatasetH	hdsDst = NULL;
 	VRTSourcedRasterBandH hbandDst = NULL;
-	double ogt[6] = {0};
-	double offset[2] = {0};
+	double		ogt[6] = {0};
+	double		offset[2] = {0};
 
 	rt_raster _rast = NULL;
 	rt_band _band = NULL;
-	int aligned = 0;
-	int err = ES_NONE;
+	int		aligned = 0;
+	int		err = ES_NONE;
 
 	assert(band != NULL);
 	assert(band->raster != NULL);
@@ -441,8 +453,7 @@ rt_band_load_offline_data(rt_band band) {
 	if (!band->offline) {
 		rterror("rt_band_load_offline_data: Band is not offline");
 		return ES_ERROR;
-	}
-	else if (!strlen(band->data.offline.path)) {
+	} else if (!strlen(band->data.offline.path)) {
 		rterror("rt_band_load_offline_data: Offline band does not a have a specified file");
 		return ES_ERROR;
 	}
@@ -485,7 +496,7 @@ rt_band_load_offline_data(rt_band band) {
 		ogt[5] = -1;
 	}
 	RASTER_DEBUGF(3, "Offline geotransform (%f, %f, %f, %f, %f, %f)",
-		ogt[0], ogt[1], ogt[2], ogt[3], ogt[4], ogt[5]);
+		      ogt[0], ogt[1], ogt[2], ogt[3], ogt[4], ogt[5]);
 
 	/* are rasters aligned? */
 	_rast = rt_raster_new(1, 1);
@@ -498,18 +509,17 @@ rt_band_load_offline_data(rt_band band) {
 		rterror("rt_band_load_offline_data: Could not test alignment of in-db representation of out-db raster");
 		GDALClose(hdsSrc);
 		return ES_ERROR;
-	}
-	else if (!aligned) {
+	} else if (!aligned) {
 		rtwarn("The in-db representation of the out-db raster is not aligned. Band data may be incorrect");
 	}
 
 	/* get offsets */
 	rt_raster_geopoint_to_cell(
-		band->raster,
-		ogt[0], ogt[3],
-		&(offset[0]), &(offset[1]),
-		NULL
-	);
+				   band->raster,
+				   ogt[0], ogt[3],
+				   &(offset[0]), &(offset[1]),
+				   NULL
+		);
 
 	RASTER_DEBUGF(4, "offsets: (%f, %f)", offset[0], offset[1]);
 
@@ -517,8 +527,8 @@ rt_band_load_offline_data(rt_band band) {
 	hdsDst = VRTCreate(band->width, band->height);
 	GDALSetGeoTransform(hdsDst, ogt);
 	/*
-	GDALSetDescription(hdsDst, "/tmp/offline.vrt");
-	*/
+	 * GDALSetDescription(hdsDst, "/tmp/offline.vrt");
+	 */
 
 	/* add band as simple sources */
 	GDALAddBand(hdsDst, rt_util_pixtype_to_gdal_datatype(band->pixtype), NULL);
@@ -528,13 +538,13 @@ rt_band_load_offline_data(rt_band band) {
 		GDALSetRasterNoDataValue(hbandDst, band->nodataval);
 
 	VRTAddSimpleSource(
-		hbandDst, GDALGetRasterBand(hdsSrc, band->data.offline.bandNum + 1),
-		fabs(offset[0]), fabs(offset[1]),
-		band->width, band->height,
-		0, 0,
-		band->width, band->height,
-		"near", VRT_NODATA_UNSET
-	);
+	hbandDst, GDALGetRasterBand(hdsSrc, band->data.offline.bandNum + 1),
+			   fabs(offset[0]), fabs(offset[1]),
+			   band->width, band->height,
+			   0, 0,
+			   band->width, band->height,
+			   "near", VRT_NODATA_UNSET
+		);
 
 	/* make sure VRT reflects all changes */
 	VRTFlushCache(hdsDst);
@@ -545,13 +555,9 @@ rt_band_load_offline_data(rt_band band) {
 	GDALClose(hdsDst);
 	GDALClose(hdsSrc);
 	/*
-	{
-		FILE *fp;
-		fp = fopen("/tmp/gdal_open_files.log", "w");
-		GDALDumpOpenDatasets(fp);
-		fclose(fp);
-	}
-	*/
+	 * { FILE *fp; fp = fopen("/tmp/gdal_open_files.log", "w");
+	 * GDALDumpOpenDatasets(fp); fclose(fp); }
+	 */
 
 	if (_rast == NULL) {
 		rterror("rt_band_load_offline_data: Cannot load data from offline raster: %s", band->data.offline.path);
@@ -573,7 +579,7 @@ rt_band_load_offline_data(rt_band band) {
 
 	band->data.offline.mem = _band->data.mem;
 
-	rtdealloc(_band); /* cannot use rt_band_destroy */
+	rtdealloc(_band);	/* cannot use rt_band_destroy */
 	rt_raster_destroy(_rast);
 
 	return ES_NONE;
@@ -582,33 +588,34 @@ rt_band_load_offline_data(rt_band band) {
 rt_pixtype
 rt_band_get_pixtype(rt_band band) {
 
-    assert(NULL != band);
+	assert(NULL != band);
 
 
-    return band->pixtype;
+	return band->pixtype;
 }
 
 uint16_t
 rt_band_get_width(rt_band band) {
 
-    assert(NULL != band);
+	assert(NULL != band);
 
 
-    return band->width;
+	return band->width;
 }
 
 uint16_t
 rt_band_get_height(rt_band band) {
 
-    assert(NULL != band);
+	assert(NULL != band);
 
 
-    return band->height;
+	return band->height;
 }
 
 /* Get ownsdata flag */
 int
-rt_band_get_ownsdata_flag(rt_band band) {
+rt_band_get_ownsdata_flag(rt_band band)
+{
 	assert(NULL != band);
 
 	return band->ownsdata ? 1 : 0;
@@ -616,35 +623,38 @@ rt_band_get_ownsdata_flag(rt_band band) {
 
 /* set ownsdata flag */
 void
-rt_band_set_ownsdata_flag(rt_band band, int flag) {
+rt_band_set_ownsdata_flag(rt_band band, int flag)
+{
 	assert(NULL != band);
 
 	band->ownsdata = flag ? 1 : 0;
 }
 
 int
-rt_band_get_hasnodata_flag(rt_band band) {
+rt_band_get_hasnodata_flag(rt_band band)
+{
 	assert(NULL != band);
 
 	return band->hasnodata ? 1 : 0;
 }
 
 void
-rt_band_set_hasnodata_flag(rt_band band, int flag) {
+rt_band_set_hasnodata_flag(rt_band band, int flag)
+{
 
-    assert(NULL != band);
+	assert(NULL != band);
 
-    band->hasnodata = (flag) ? 1 : 0;
+	band->hasnodata = (flag) ? 1 : 0;
 
-		/* isnodata depends on hasnodata */
-		if (!band->hasnodata && band->isnodata) {
-			RASTER_DEBUG(3, "Setting isnodata to FALSE as band no longer has NODATA");
-			band->isnodata = 0;
-		}
+	/* isnodata depends on hasnodata */
+	if (!band->hasnodata && band->isnodata) {
+		RASTER_DEBUG(3, "Setting isnodata to FALSE as band no longer has NODATA");
+		band->isnodata = 0;
+	}
 }
 
 rt_errorstate
-rt_band_set_isnodata_flag(rt_band band, int flag) {
+rt_band_set_isnodata_flag(rt_band band, int flag){
 	assert(NULL != band);
 
 	if (!band->hasnodata) {
@@ -655,15 +665,15 @@ rt_band_set_isnodata_flag(rt_band band, int flag) {
 			rterror("rt_band_set_isnodata_flag: Cannot set isnodata flag as band has no NODATA");
 			return ES_ERROR;
 		}
-	}
-	else
+	} else
 		band->isnodata = (flag) ? 1 : 0;
 
 	return ES_NONE;
 }
 
 int
-rt_band_get_isnodata_flag(rt_band band) {
+rt_band_get_isnodata_flag(rt_band band)
+{
 	assert(NULL != band);
 
 	if (band->hasnodata)
@@ -682,12 +692,12 @@ rt_band_get_isnodata_flag(rt_band band) {
  * @return ES_NONE or ES_ERROR
  */
 rt_errorstate
-rt_band_set_nodata(rt_band band, double val, int *converted) {
-	rt_pixtype pixtype = PT_END;
-	int32_t checkvalint = 0;
-	uint32_t checkvaluint = 0;
-	float checkvalfloat = 0;
-	double checkvaldouble = 0;
+rt_band_set_nodata(rt_band band, double val, int *converted){
+	rt_pixtype	pixtype = PT_END;
+	int32_t		checkvalint = 0;
+	uint32_t	checkvaluint = 0;
+	float		checkvalfloat = 0;
+	double		checkvaldouble = 0;
 
 	assert(NULL != band);
 
@@ -700,62 +710,62 @@ rt_band_set_nodata(rt_band band, double val, int *converted) {
 
 	/* return -1 on out of range */
 	switch (pixtype) {
-		case PT_1BB: {
+	case PT_1BB:{
 			band->nodataval = rt_util_clamp_to_1BB(val);
 			checkvalint = band->nodataval;
 			break;
 		}
-		case PT_2BUI: {
+	case PT_2BUI:{
 			band->nodataval = rt_util_clamp_to_2BUI(val);
 			checkvalint = band->nodataval;
 			break;
 		}
-		case PT_4BUI: {
+	case PT_4BUI:{
 			band->nodataval = rt_util_clamp_to_4BUI(val);
 			checkvalint = band->nodataval;
 			break;
 		}
-		case PT_8BSI: {
+	case PT_8BSI:{
 			band->nodataval = rt_util_clamp_to_8BSI(val);
 			checkvalint = band->nodataval;
 			break;
 		}
-		case PT_8BUI: {
+	case PT_8BUI:{
 			band->nodataval = rt_util_clamp_to_8BUI(val);
 			checkvalint = band->nodataval;
 			break;
 		}
-		case PT_16BSI: {
+	case PT_16BSI:{
 			band->nodataval = rt_util_clamp_to_16BSI(val);
 			checkvalint = band->nodataval;
 			break;
 		}
-		case PT_16BUI: {
+	case PT_16BUI:{
 			band->nodataval = rt_util_clamp_to_16BUI(val);
 			checkvalint = band->nodataval;
 			break;
 		}
-		case PT_32BSI: {
+	case PT_32BSI:{
 			band->nodataval = rt_util_clamp_to_32BSI(val);
 			checkvalint = band->nodataval;
 			break;
 		}
-		case PT_32BUI: {
+	case PT_32BUI:{
 			band->nodataval = rt_util_clamp_to_32BUI(val);
 			checkvaluint = band->nodataval;
 			break;
 		}
-		case PT_32BF: {
+	case PT_32BF:{
 			band->nodataval = rt_util_clamp_to_32F(val);
 			checkvalfloat = band->nodataval;
 			break;
 		}
-		case PT_64BF: {
+	case PT_64BF:{
 			band->nodataval = val;
 			checkvaldouble = band->nodataval;
 			break;
 		}
-		default: {
+	default:{
 			rterror("rt_band_set_nodata: Unknown pixeltype %d", pixtype);
 			band->hasnodata = 0;
 			return ES_ERROR;
@@ -771,11 +781,11 @@ rt_band_set_nodata(rt_band band, double val, int *converted) {
 	band->isnodata = 0;
 
 	if (rt_util_dbl_trunc_warning(
-		val,
-		checkvalint, checkvaluint,
-		checkvalfloat, checkvaldouble,
-		pixtype
-	) && converted != NULL) {
+				      val,
+				      checkvalint, checkvaluint,
+				      checkvalfloat, checkvaldouble,
+				      pixtype
+				      ) && converted != NULL) {
 		*converted = 1;
 	}
 
@@ -803,14 +813,14 @@ rt_band_set_nodata(rt_band band, double val, int *converted) {
  */
 rt_errorstate
 rt_band_set_pixel_line(
-	rt_band band,
-	int x, int y,
-	void *vals, uint32_t len
-) {
-	rt_pixtype pixtype = PT_END;
-	int size = 0;
-	uint8_t *data = NULL;
-	uint32_t offset = 0;
+		       rt_band band,
+		       int x, int y,
+		       void *vals, uint32_t len
+){
+	rt_pixtype	pixtype = PT_END;
+	int		size = 0;
+	uint8_t	       *data = NULL;
+	uint32_t	offset = 0;
 
 	assert(NULL != band);
 	assert(vals != NULL && len > 0);
@@ -826,9 +836,9 @@ rt_band_set_pixel_line(
 	size = rt_pixtype_size(pixtype);
 
 	if (
-		x < 0 || x >= band->width ||
-		y < 0 || y >= band->height
-	) {
+	    x < 0 || x >= band->width ||
+	    y < 0 || y >= band->height
+		) {
 		rterror("rt_band_set_pixel_line: Coordinates out of range (%d, %d) vs (%d, %d)", x, y, band->width, band->height);
 		return ES_ERROR;
 	}
@@ -844,53 +854,53 @@ rt_band_set_pixel_line(
 	}
 
 	switch (pixtype) {
-		case PT_1BB:
-		case PT_2BUI:
-		case PT_4BUI:
-		case PT_8BUI:
-		case PT_8BSI: {
-			uint8_t *ptr = data;
+	case PT_1BB:
+	case PT_2BUI:
+	case PT_4BUI:
+	case PT_8BUI:
+	case PT_8BSI:{
+			uint8_t	       *ptr = data;
 			ptr += offset;
 			memcpy(ptr, vals, size * len);
 			break;
 		}
-		case PT_16BUI: {
-			uint16_t *ptr = (uint16_t *) data;
+	case PT_16BUI:{
+			uint16_t       *ptr = (uint16_t *) data;
 			ptr += offset;
 			memcpy(ptr, vals, size * len);
 			break;
 		}
-		case PT_16BSI: {
-			int16_t *ptr = (int16_t *) data;
+	case PT_16BSI:{
+			int16_t	       *ptr = (int16_t *) data;
 			ptr += offset;
 			memcpy(ptr, vals, size * len);
 			break;
 		}
-		case PT_32BUI: {
-			uint32_t *ptr = (uint32_t *) data;
+	case PT_32BUI:{
+			uint32_t       *ptr = (uint32_t *) data;
 			ptr += offset;
 			memcpy(ptr, vals, size * len);
 			break;
 		}
-		case PT_32BSI: {
-			int32_t *ptr = (int32_t *) data;
+	case PT_32BSI:{
+			int32_t	       *ptr = (int32_t *) data;
 			ptr += offset;
 			memcpy(ptr, vals, size * len);
 			break;
 		}
-		case PT_32BF: {
-			float *ptr = (float *) data;
+	case PT_32BF:{
+			float	       *ptr = (float *)data;
 			ptr += offset;
 			memcpy(ptr, vals, size * len);
 			break;
 		}
-		case PT_64BF: {
-			double *ptr = (double *) data;
+	case PT_64BF:{
+			double	       *ptr = (double *)data;
 			ptr += offset;
 			memcpy(ptr, vals, size * len);
 			break;
 		}
-		default: {
+	default:{
 			rterror("rt_band_set_pixel_line: Unknown pixeltype %d", pixtype);
 			return ES_ERROR;
 		}
@@ -898,7 +908,7 @@ rt_band_set_pixel_line(
 
 #if POSTGIS_DEBUG_LEVEL > 0
 	{
-		double value;
+		double		value;
 		rt_band_get_pixel(band, x, y, &value, NULL);
 		RASTER_DEBUGF(4, "pixel at (%d, %d) = %f", x, y, value);
 	}
@@ -924,19 +934,19 @@ rt_band_set_pixel_line(
  */
 rt_errorstate
 rt_band_set_pixel(
-	rt_band band,
-	int x, int y,
-	double val,
-	int *converted
-) {
-	rt_pixtype pixtype = PT_END;
-	unsigned char* data = NULL;
-	uint32_t offset = 0;
+		  rt_band band,
+		  int x, int y,
+		  double val,
+		  int *converted
+){
+	rt_pixtype	pixtype = PT_END;
+	unsigned char  *data = NULL;
+	uint32_t	offset = 0;
 
-	int32_t checkvalint = 0;
-	uint32_t checkvaluint = 0;
-	float checkvalfloat = 0;
-	double checkvaldouble = 0;
+	int32_t		checkvalint = 0;
+	uint32_t	checkvaluint = 0;
+	float		checkvalfloat = 0;
+	double		checkvaldouble = 0;
 
 	assert(NULL != band);
 
@@ -951,17 +961,17 @@ rt_band_set_pixel(
 	pixtype = band->pixtype;
 
 	if (
-		x < 0 || x >= band->width ||
-		y < 0 || y >= band->height
-	) {
+	    x < 0 || x >= band->width ||
+	    y < 0 || y >= band->height
+		) {
 		rterror("rt_band_set_pixel: Coordinates out of range");
 		return ES_ERROR;
 	}
 
 	/* check that clamped value isn't clamped NODATA */
 	if (band->hasnodata && pixtype != PT_64BF) {
-		double newval;
-		int corrected;
+		double		newval;
+		int		corrected;
 
 		rt_band_corrected_clamped_value(band, val, &newval, &corrected);
 
@@ -980,68 +990,74 @@ rt_band_set_pixel(
 	offset = x + (y * band->width);
 
 	switch (pixtype) {
-		case PT_1BB: {
+	case PT_1BB:{
 			data[offset] = rt_util_clamp_to_1BB(val);
 			checkvalint = data[offset];
 			break;
 		}
-		case PT_2BUI: {
+	case PT_2BUI:{
 			data[offset] = rt_util_clamp_to_2BUI(val);
 			checkvalint = data[offset];
 			break;
 		}
-		case PT_4BUI: {
+	case PT_4BUI:{
 			data[offset] = rt_util_clamp_to_4BUI(val);
 			checkvalint = data[offset];
 			break;
 		}
-		case PT_8BSI: {
+	case PT_8BSI:{
 			data[offset] = rt_util_clamp_to_8BSI(val);
 			checkvalint = (int8_t) data[offset];
 			break;
 		}
-		case PT_8BUI: {
+	case PT_8BUI:{
 			data[offset] = rt_util_clamp_to_8BUI(val);
 			checkvalint = data[offset];
 			break;
 		}
-		case PT_16BSI: {
-			int16_t *ptr = (int16_t*) data; /* we assume correct alignment */
+	case PT_16BSI:{
+			int16_t	       *ptr = (int16_t *) data;	/* we assume correct
+								 * alignment */
 			ptr[offset] = rt_util_clamp_to_16BSI(val);
 			checkvalint = (int16_t) ptr[offset];
 			break;
 		}
-		case PT_16BUI: {
-			uint16_t *ptr = (uint16_t*) data; /* we assume correct alignment */
+	case PT_16BUI:{
+			uint16_t       *ptr = (uint16_t *) data;	/* we assume correct
+									 * alignment */
 			ptr[offset] = rt_util_clamp_to_16BUI(val);
 			checkvalint = ptr[offset];
 			break;
 		}
-		case PT_32BSI: {
-			int32_t *ptr = (int32_t*) data; /* we assume correct alignment */
+	case PT_32BSI:{
+			int32_t	       *ptr = (int32_t *) data;	/* we assume correct
+								 * alignment */
 			ptr[offset] = rt_util_clamp_to_32BSI(val);
 			checkvalint = (int32_t) ptr[offset];
 			break;
 		}
-		case PT_32BUI: {
-			uint32_t *ptr = (uint32_t*) data; /* we assume correct alignment */
+	case PT_32BUI:{
+			uint32_t       *ptr = (uint32_t *) data;	/* we assume correct
+									 * alignment */
 			ptr[offset] = rt_util_clamp_to_32BUI(val);
 			checkvaluint = ptr[offset];
 			break;
 		}
-		case PT_32BF: {
-			float *ptr = (float*) data; /* we assume correct alignment */
+	case PT_32BF:{
+			float	       *ptr = (float *)data;	/* we assume correct
+								 * alignment */
 			ptr[offset] = rt_util_clamp_to_32F(val);
 			checkvalfloat = ptr[offset];
 			break;
 		}
-		case PT_64BF: {
-			double *ptr = (double*) data; /* we assume correct alignment */
+	case PT_64BF:{
+			double	       *ptr = (double *)data;	/* we assume correct
+								 * alignment */
 			ptr[offset] = val;
 			checkvaldouble = ptr[offset];
 			break;
 		}
-		default: {
+	default:{
 			rterror("rt_band_set_pixel: Unknown pixeltype %d", pixtype);
 			return ES_ERROR;
 		}
@@ -1055,11 +1071,11 @@ rt_band_set_pixel(
 
 	/* Overflow checking */
 	if (rt_util_dbl_trunc_warning(
-		val,
-		checkvalint, checkvaluint,
-		checkvalfloat, checkvaldouble,
-		pixtype
-	) && converted != NULL) {
+				      val,
+				      checkvalint, checkvaluint,
+				      checkvalfloat, checkvaldouble,
+				      pixtype
+				      ) && converted != NULL) {
 		*converted = 1;
 	}
 
@@ -1086,19 +1102,21 @@ rt_band_set_pixel(
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate rt_band_get_pixel_line(
-	rt_band band,
-	int x, int y,
-	uint16_t len,
-	void **vals, uint16_t *nvals
-) {
-	uint8_t *_vals = NULL;
-	int pixsize = 0;
-	uint8_t *data = NULL;
-	uint32_t offset = 0;
+rt_errorstate
+rt_band_get_pixel_line(
+		       rt_band band,
+		       int x, int y,
+		       uint16_t len,
+		       void **vals, uint16_t * nvals
+)
+{
+	uint8_t	       *_vals = NULL;
+	int		pixsize = 0;
+	uint8_t	       *data = NULL;
+	uint32_t	offset = 0;
 	uint16_t _nvals = 0;
-	int maxlen = 0;
-	uint8_t *ptr = NULL;
+	int		maxlen = 0;
+	uint8_t	       *ptr = NULL;
 
 	assert(NULL != band);
 	assert(vals != NULL && nvals != NULL);
@@ -1107,9 +1125,9 @@ rt_errorstate rt_band_get_pixel_line(
 	*nvals = 0;
 
 	if (
-		x < 0 || x >= band->width ||
-		y < 0 || y >= band->height
-	) {
+	    x < 0 || x >= band->width ||
+	    y < 0 || y >= band->height
+		) {
 		rtwarn("Attempting to get pixel values with out of range raster coordinates: (%d, %d)", x, y);
 		return ES_ERROR;
 	}
@@ -1134,7 +1152,7 @@ rt_errorstate rt_band_get_pixel_line(
 	_nvals = len;
 	maxlen = band->width * band->height;
 
-	if (((int) (offset + _nvals)) > maxlen) {
+	if (((int)(offset + _nvals)) > maxlen) {
 		_nvals = maxlen - offset;
 		rtwarn("Limiting returning number values to %d", _nvals);
 	}
@@ -1171,14 +1189,14 @@ rt_errorstate rt_band_get_pixel_line(
  */
 rt_errorstate
 rt_band_get_pixel(
-	rt_band band,
-	int x, int y,
-	double *value,
-	int *nodata
-) {
-	rt_pixtype pixtype = PT_END;
-	uint8_t* data = NULL;
-	uint32_t offset = 0;
+		  rt_band band,
+		  int x, int y,
+		  double *value,
+		  int *nodata
+){
+	rt_pixtype	pixtype = PT_END;
+	uint8_t	       *data = NULL;
+	uint32_t	offset = 0;
 
 	assert(NULL != band);
 	assert(NULL != value);
@@ -1188,9 +1206,9 @@ rt_band_get_pixel(
 		*nodata = 0;
 
 	if (
-		x < 0 || x >= band->width ||
-		y < 0 || y >= band->height
-	) {
+	    x < 0 || x >= band->width ||
+	    y < 0 || y >= band->height
+		) {
 		rtwarn("Attempting to get pixel value with out of range raster coordinates: (%d, %d)", x, y);
 		return ES_ERROR;
 	}
@@ -1199,7 +1217,8 @@ rt_band_get_pixel(
 	if (band->isnodata) {
 		RASTER_DEBUG(3, "Band's isnodata flag is TRUE. Returning NODATA value");
 		*value = band->nodataval;
-		if (nodata != NULL) *nodata = 1;
+		if (nodata != NULL)
+			*nodata = 1;
 		return ES_NONE;
 	}
 
@@ -1215,83 +1234,89 @@ rt_band_get_pixel(
 	pixtype = band->pixtype;
 
 	switch (pixtype) {
-		case PT_1BB:
+	case PT_1BB:
 #ifdef OPTIMIZE_SPACE
-			{
-				int byteOffset = offset / 8;
-				int bitOffset = offset % 8;
-				data += byteOffset;
+		{
+			int		byteOffset = offset / 8;
+			int		bitOffset = offset % 8;
+			data += byteOffset;
 
-				/* Bit to set is bitOffset into data */
-				*value = getBits(data, val, 1, bitOffset);
-				break;
-			}
+			/* Bit to set is bitOffset into data */
+			*value = getBits(data, val, 1, bitOffset);
+			break;
+		}
 #endif
-		case PT_2BUI:
+	case PT_2BUI:
 #ifdef OPTIMIZE_SPACE
-			{
-				int byteOffset = offset / 4;
-				int bitOffset = offset % 4;
-				data += byteOffset;
+		{
+			int		byteOffset = offset / 4;
+			int		bitOffset = offset % 4;
+			data += byteOffset;
 
-				/* Bits to set start at bitOffset into data */
-				*value = getBits(data, val, 2, bitOffset);
-				break;
-			}
+			/* Bits to set start at bitOffset into data */
+			*value = getBits(data, val, 2, bitOffset);
+			break;
+		}
 #endif
-		case PT_4BUI:
+	case PT_4BUI:
 #ifdef OPTIMIZE_SPACE
-			{
-				int byteOffset = offset / 2;
-				int bitOffset = offset % 2;
-				data += byteOffset;
+		{
+			int		byteOffset = offset / 2;
+			int		bitOffset = offset % 2;
+			data += byteOffset;
 
-				/* Bits to set start at bitOffset into data */
-				*value = getBits(data, val, 2, bitOffset);
-				break;
-			}
+			/* Bits to set start at bitOffset into data */
+			*value = getBits(data, val, 2, bitOffset);
+			break;
+		}
 #endif
-		case PT_8BSI: {
-			int8_t val = data[offset];
+	case PT_8BSI:{
+			int8_t		val = data[offset];
 			*value = val;
 			break;
 		}
-		case PT_8BUI: {
-			uint8_t val = data[offset];
+	case PT_8BUI:{
+			uint8_t		val = data[offset];
 			*value = val;
 			break;
 		}
-		case PT_16BSI: {
-			int16_t *ptr = (int16_t*) data; /* we assume correct alignment */
+	case PT_16BSI:{
+			int16_t	       *ptr = (int16_t *) data;	/* we assume correct
+								 * alignment */
 			*value = ptr[offset];
 			break;
 		}
-		case PT_16BUI: {
-			uint16_t *ptr = (uint16_t*) data; /* we assume correct alignment */
+	case PT_16BUI:{
+			uint16_t       *ptr = (uint16_t *) data;	/* we assume correct
+									 * alignment */
 			*value = ptr[offset];
 			break;
 		}
-		case PT_32BSI: {
-			int32_t *ptr = (int32_t*) data; /* we assume correct alignment */
+	case PT_32BSI:{
+			int32_t	       *ptr = (int32_t *) data;	/* we assume correct
+								 * alignment */
 			*value = ptr[offset];
 			break;
 		}
-		case PT_32BUI: {
-			uint32_t *ptr = (uint32_t*) data; /* we assume correct alignment */
+	case PT_32BUI:{
+			uint32_t       *ptr = (uint32_t *) data;	/* we assume correct
+									 * alignment */
 			*value = ptr[offset];
 			break;
 		}
-		case PT_32BF: {
-			float *ptr = (float*) data; /* we assume correct alignment */
+	case PT_32BF:{
+			float	       *ptr = (float *)data;	/* we assume correct
+								 * alignment */
 			*value = ptr[offset];
 			break;
 		}
-		case PT_64BF: {
-			double *ptr = (double*) data; /* we assume correct alignment */
+	case PT_64BF:{
+			double	       *ptr = (double *)data;	/* we assume correct
+								 * alignment */
 			*value = ptr[offset];
 			break;
 		}
-		default: {
+	default:{
 			rterror("rt_band_get_pixel: Unknown pixeltype %d", pixtype);
 			return ES_ERROR;
 		}
@@ -1323,32 +1348,36 @@ rt_band_get_pixel(
  * @return -1 on error, otherwise the number of rt_pixel objects
  * in npixels
  */
-uint32_t rt_band_get_nearest_pixel(
-	rt_band band,
-	int x, int y,
-	uint16_t distancex, uint16_t distancey,
-	int exclude_nodata_value,
-	rt_pixel *npixels
-) {
-	rt_pixel npixel = NULL;
-	int extent[4] = {0};
-	int max_extent[4] = {0};
-	int d0 = 0;
-	uint32_t distance[2] = {0};
-	uint32_t _d[2] = {0};
-	uint32_t i = 0;
-	uint32_t j = 0;
-	uint32_t k = 0;
-	int _max = 0;
-	int _x = 0;
-	int _y = 0;
-	int *_min = NULL;
-	double pixval = 0;
-	double minval = 0;
-	uint32_t count = 0;
-	int isnodata = 0;
+uint32_t
+rt_band_get_nearest_pixel(
+			  rt_band band,
+			  int x, int y,
+			  uint16_t distancex, uint16_t distancey,
+			  int exclude_nodata_value,
+			  rt_pixel * npixels
+)
+{
+	rt_pixel	npixel = NULL;
+	int		extent[4] = {0};
+	int		max_extent[4] = {0};
+	int		d0 = 0;
+	uint32_t	distance[2] = {0};
+	uint32_t _d[2] = {
+		0
+	};
+	uint32_t	i = 0;
+	uint32_t	j = 0;
+	uint32_t	k = 0;
+	int		_max = 0;
+	int		_x = 0;
+	int		_y = 0;
+	int	       *_min = NULL;
+	double		pixval = 0;
+	double		minval = 0;
+	uint32_t	count = 0;
+	int		isnodata = 0;
 
-	int inextent = 0;
+	int		inextent = 0;
 
 	assert(NULL != band);
 	assert(NULL != npixels);
@@ -1368,11 +1397,11 @@ uint32_t rt_band_get_nearest_pixel(
 
 	/* shortcuts if outside band extent */
 	if (
-		exclude_nodata_value && (
-			(x < 0 || x > band->width) ||
-			(y < 0 || y > band->height)
-		)
-	) {
+	    exclude_nodata_value && (
+				     (x < 0 || x > band->width) ||
+				     (y < 0 || y > band->height)
+				     )
+		) {
 		/* no distances specified, jump to pixel close to extent */
 		if (d0) {
 			if (x < 0)
@@ -1388,13 +1417,13 @@ uint32_t rt_band_get_nearest_pixel(
 			RASTER_DEBUGF(4, "Moved selected pixel: %d x %d", x, y);
 		}
 		/*
-			distances specified
-			if distances won't capture extent of band, return 0
-		*/
+		 * distances specified if distances won't capture extent of
+		 * band, return 0
+		 */
 		else if (
-			((x < 0 && (uint32_t) abs(x) > distance[0]) || (x - band->width >= (int)distance[0])) ||
-			((y < 0 && (uint32_t) abs(y) > distance[1]) || (y - band->height >= (int)distance[1]))
-		) {
+			 ((x < 0 && (uint32_t) abs(x) > distance[0]) || (x - band->width >= (int)distance[0])) ||
+			 ((y < 0 && (uint32_t) abs(y) > distance[1]) || (y - band->height >= (int)distance[1]))
+			) {
 			RASTER_DEBUG(4, "No nearest pixels possible for provided pixel and distances");
 			return 0;
 		}
@@ -1411,7 +1440,7 @@ uint32_t rt_band_get_nearest_pixel(
 
 	/* determine the maximum distance to prevent an infinite loop */
 	if (d0) {
-		int a, b;
+		int		a, b;
 
 		/* X axis */
 		a = abs(x);
@@ -1443,10 +1472,10 @@ uint32_t rt_band_get_nearest_pixel(
 	*npixels = NULL;
 
 	/* maximum extent */
-	max_extent[0] = x - distance[0]; /* min X */
-	max_extent[1] = y - distance[1]; /* min Y */
-	max_extent[2] = x + distance[0]; /* max X */
-	max_extent[3] = y + distance[1]; /* max Y */
+	max_extent[0] = x - distance[0];	/* min X */
+	max_extent[1] = y - distance[1];	/* min Y */
+	max_extent[2] = x + distance[0];	/* max X */
+	max_extent[3] = y + distance[1];	/* max Y */
 	RASTER_DEBUGF(4, "Maximum Extent: (%d, %d, %d, %d)",
 		max_extent[0], max_extent[1], max_extent[2], max_extent[3]);
 
@@ -1456,14 +1485,14 @@ uint32_t rt_band_get_nearest_pixel(
 		_d[0]++;
 		_d[1]++;
 
-		extent[0] = x - _d[0]; /* min x */
-		extent[1] = y - _d[1]; /* min y */
-		extent[2] = x + _d[0]; /* max x */
-		extent[3] = y + _d[1]; /* max y */
+		extent[0] = x - _d[0];	/* min x */
+		extent[1] = y - _d[1];	/* min y */
+		extent[2] = x + _d[0];	/* max x */
+		extent[3] = y + _d[1];	/* max y */
 
 		RASTER_DEBUGF(4, "Processing distances: %d x %d", _d[0], _d[1]);
 		RASTER_DEBUGF(4, "Extent: (%d, %d, %d, %d)",
-			extent[0], extent[1], extent[2], extent[3]);
+			      extent[0], extent[1], extent[2], extent[3]);
 
 		for (i = 0; i < 2; i++) {
 
@@ -1505,21 +1534,27 @@ uint32_t rt_band_get_nearest_pixel(
 
 				RASTER_DEBUGF(4, "_min, _max: %d, %d", *_min, _max);
 				for (k = 0; k < (uint32_t) _max; k++) {
-					/* check that _x and _y are not outside max extent */
+					/*
+					 * check that _x and _y are not
+					 * outside max extent
+					 */
 					if (
-						_x < max_extent[0] || _x > max_extent[2] ||
-						_y < max_extent[1] || _y > max_extent[3]
-					) {
+					    _x < max_extent[0] || _x > max_extent[2] ||
+					    _y < max_extent[1] || _y > max_extent[3]
+						) {
 						(*_min)++;
 						continue;
 					}
 
 					/* outside band extent, set to NODATA */
 					if (
-						(_x < 0 || _x >= band->width) ||
-						(_y < 0 || _y >= band->height)
-					) {
-						/* no NODATA, set to minimum possible value */
+					    (_x < 0 || _x >= band->width) ||
+					    (_y < 0 || _y >= band->height)
+						) {
+						/*
+						 * no NODATA, set to minimum
+						 * possible value
+						 */
 						if (!band->hasnodata)
 							pixval = minval;
 						/* has NODATA, use NODATA */
@@ -1528,16 +1563,16 @@ uint32_t rt_band_get_nearest_pixel(
 						RASTER_DEBUGF(4, "NODATA pixel outside band extent: (x, y, val) = (%d, %d, %f)", _x, _y, pixval);
 						inextent = 0;
 						isnodata = 1;
-					}
-					else {
+					} else {
 						if (rt_band_get_pixel(
-							band,
-							_x, _y,
-							&pixval,
-							&isnodata
-						) != ES_NONE) {
+								      band,
+								      _x, _y,
+								    &pixval,
+								   &isnodata
+							     ) != ES_NONE) {
 							rterror("rt_band_get_nearest_pixel: Could not get pixel value");
-							if (count) rtdealloc(*npixels);
+							if (count)
+								rtdealloc(*npixels);
 							return -1;
 						}
 						RASTER_DEBUGF(4, "Pixel: (x, y, val) = (%d, %d, %f)", _x, _y, pixval);
@@ -1564,7 +1599,10 @@ uint32_t rt_band_get_nearest_pixel(
 						npixel->y = _y;
 						npixel->value = pixval;
 
-						/* special case for when outside band extent */
+						/*
+						 * special case for when
+						 * outside band extent
+						 */
 						if (!inextent && !band->hasnodata)
 							npixel->nodata = 1;
 						else
@@ -1602,20 +1640,21 @@ uint32_t rt_band_get_nearest_pixel(
  */
 int
 rt_band_get_pixel_of_value(
-	rt_band band, int exclude_nodata_value,
-	double *searchset, int searchcount,
-	rt_pixel *pixels
-) {
-	int x;
-	int y;
-	int i;
-	double pixval;
-	int err;
-	int count = 0;
-	int isnodata = 0;
-	int isequal = 0;
+			   rt_band band, int exclude_nodata_value,
+			   double *searchset, int searchcount,
+			   rt_pixel * pixels
+)
+{
+	int		x;
+	int		y;
+	int		i;
+	double		pixval;
+	int		err;
+	int		count = 0;
+	int		isnodata = 0;
+	int		isequal = 0;
 
-	rt_pixel pixel = NULL;
+	rt_pixel	pixel = NULL;
 
 	assert(NULL != band);
 	assert(NULL != pixels);
@@ -1635,8 +1674,7 @@ rt_band_get_pixel_of_value(
 			if (err != ES_NONE) {
 				rterror("rt_band_get_pixel_of_value: Cannot get band pixel");
 				return -1;
-			}
-			else if (exclude_nodata_value && isnodata)
+			} else if (exclude_nodata_value && isnodata)
 				continue;
 
 			for (i = 0; i < searchcount; i++) {
@@ -1679,7 +1717,7 @@ rt_band_get_pixel_of_value(
  * @return ES_NONE or ES_ERROR
  */
 rt_errorstate
-rt_band_get_nodata(rt_band band, double *nodata) {
+rt_band_get_nodata(rt_band band, double *nodata){
 	assert(NULL != band);
 	assert(NULL != nodata);
 
@@ -1694,17 +1732,19 @@ rt_band_get_nodata(rt_band band, double *nodata) {
 }
 
 double
-rt_band_get_min_value(rt_band band) {
+rt_band_get_min_value(rt_band band)
+{
 	assert(NULL != band);
 
 	return rt_pixtype_get_min_value(band->pixtype);
 }
 
 int
-rt_band_check_is_nodata(rt_band band) {
-	int i, j, err;
-	double pxValue;
-	int isnodata = 0;
+rt_band_check_is_nodata(rt_band band)
+{
+	int		i, j, err;
+	double		pxValue;
+	int		isnodata = 0;
 
 	assert(NULL != band);
 
@@ -1724,8 +1764,7 @@ rt_band_check_is_nodata(rt_band band) {
 			if (err != ES_NONE) {
 				rterror("rt_band_check_is_nodata: Cannot get band pixel");
 				return FALSE;
-			}
-			else if (!isnodata) {
+			} else if (!isnodata) {
 				band->isnodata = FALSE;
 				return FALSE;
 			}
@@ -1747,8 +1786,9 @@ rt_band_check_is_nodata(rt_band band) {
  *         0 if clamped value is NOT clamped NODATA
  */
 int
-rt_band_clamped_value_is_nodata(rt_band band, double val) {
-	int isequal = 0;
+rt_band_clamped_value_is_nodata(rt_band band, double val)
+{
+	int		isequal = 0;
 
 	assert(NULL != band);
 
@@ -1762,10 +1802,10 @@ rt_band_clamped_value_is_nodata(rt_band band, double val) {
 
 	/* ignore error from rt_pixtype_compare_clamped_values */
 	rt_pixtype_compare_clamped_values(
-		band->pixtype,
-		val, band->nodataval,
-		&isequal
-	);
+					  band->pixtype,
+					  val, band->nodataval,
+					  &isequal
+		);
 
 	return isequal ? 1 : 0;
 }
@@ -1784,11 +1824,11 @@ rt_band_clamped_value_is_nodata(rt_band band, double val) {
  */
 rt_errorstate
 rt_band_corrected_clamped_value(
-	rt_band band,
-	double val,
-	double *newval, int *corrected
-) {
-	double minval = 0.;
+				rt_band band,
+				double val,
+				double *newval, int *corrected
+){
+	double		minval = 0.;
 
 	assert(NULL != band);
 	assert(NULL != newval);
@@ -1806,68 +1846,68 @@ rt_band_corrected_clamped_value(
 	*newval = val;
 
 	switch (band->pixtype) {
-		case PT_1BB:
-			*newval = !band->nodataval;
-			break;
-		case PT_2BUI:
-			if (rt_util_clamp_to_2BUI(val) == rt_util_clamp_to_2BUI(minval))
-				(*newval)++;
-			else
-				(*newval)--;
-			break;
-		case PT_4BUI:
-			if (rt_util_clamp_to_4BUI(val) == rt_util_clamp_to_4BUI(minval))
-				(*newval)++;
-			else
-				(*newval)--;
-			break;
-		case PT_8BSI:
-			if (rt_util_clamp_to_8BSI(val) == rt_util_clamp_to_8BSI(minval))
-				(*newval)++;
-			else
-				(*newval)--;
-			break;
-		case PT_8BUI:
-			if (rt_util_clamp_to_8BUI(val) == rt_util_clamp_to_8BUI(minval))
-				(*newval)++;
-			else
-				(*newval)--;
-			break;
-		case PT_16BSI:
-			if (rt_util_clamp_to_16BSI(val) == rt_util_clamp_to_16BSI(minval))
-				(*newval)++;
-			else
-				(*newval)--;
-			break;
-		case PT_16BUI:
-			if (rt_util_clamp_to_16BUI(val) == rt_util_clamp_to_16BUI(minval))
-				(*newval)++;
-			else
-				(*newval)--;
-			break;
-		case PT_32BSI:
-			if (rt_util_clamp_to_32BSI(val) == rt_util_clamp_to_32BSI(minval))
-				(*newval)++;
-			else
-				(*newval)--;
-			break;
-		case PT_32BUI:
-			if (rt_util_clamp_to_32BUI(val) == rt_util_clamp_to_32BUI(minval))
-				(*newval)++;
-			else
-				(*newval)--;
-			break;
-		case PT_32BF:
-			if (FLT_EQ(rt_util_clamp_to_32F(val), rt_util_clamp_to_32F(minval)))
-				*newval += FLT_EPSILON;
-			else
-				*newval -= FLT_EPSILON;
-			break;
-		case PT_64BF:
-			break;
-		default:
-			rterror("rt_band_corrected_clamped_value: Unknown pixeltype %d", band->pixtype);
-			return ES_ERROR;
+	case PT_1BB:
+		*newval = !band->nodataval;
+		break;
+	case PT_2BUI:
+		if (rt_util_clamp_to_2BUI(val) == rt_util_clamp_to_2BUI(minval))
+			(*newval)++;
+		else
+			(*newval)--;
+		break;
+	case PT_4BUI:
+		if (rt_util_clamp_to_4BUI(val) == rt_util_clamp_to_4BUI(minval))
+			(*newval)++;
+		else
+			(*newval)--;
+		break;
+	case PT_8BSI:
+		if (rt_util_clamp_to_8BSI(val) == rt_util_clamp_to_8BSI(minval))
+			(*newval)++;
+		else
+			(*newval)--;
+		break;
+	case PT_8BUI:
+		if (rt_util_clamp_to_8BUI(val) == rt_util_clamp_to_8BUI(minval))
+			(*newval)++;
+		else
+			(*newval)--;
+		break;
+	case PT_16BSI:
+		if (rt_util_clamp_to_16BSI(val) == rt_util_clamp_to_16BSI(minval))
+			(*newval)++;
+		else
+			(*newval)--;
+		break;
+	case PT_16BUI:
+		if (rt_util_clamp_to_16BUI(val) == rt_util_clamp_to_16BUI(minval))
+			(*newval)++;
+		else
+			(*newval)--;
+		break;
+	case PT_32BSI:
+		if (rt_util_clamp_to_32BSI(val) == rt_util_clamp_to_32BSI(minval))
+			(*newval)++;
+		else
+			(*newval)--;
+		break;
+	case PT_32BUI:
+		if (rt_util_clamp_to_32BUI(val) == rt_util_clamp_to_32BUI(minval))
+			(*newval)++;
+		else
+			(*newval)--;
+		break;
+	case PT_32BF:
+		if (FLT_EQ(rt_util_clamp_to_32F(val), rt_util_clamp_to_32F(minval)))
+			*newval += FLT_EPSILON;
+		else
+			*newval -= FLT_EPSILON;
+		break;
+	case PT_64BF:
+		break;
+	default:
+		rterror("rt_band_corrected_clamped_value: Unknown pixeltype %d", band->pixtype);
+		return ES_ERROR;
 	}
 
 	if (corrected != NULL)
@@ -1875,4 +1915,3 @@ rt_band_corrected_clamped_value(
 
 	return ES_NONE;
 }
-

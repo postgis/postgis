@@ -16,27 +16,27 @@
 
 typedef struct layerStyle LAYERSTYLE;
 
-struct layerStyle
-{
-	char *styleName; // A unique name
+struct layerStyle {
+	char	       *styleName;
+		      //A unique name
 
-	int	  pointSize;
-	char *pointColor;
+	int		pointSize;
+	char	       *pointColor;
 
-	int   lineWidth;
-	char *lineColor;
+	int		lineWidth;
+	char	       *lineColor;
 
-	char *polygonFillColor;
-	char *polygonStrokeColor;
-	int   polygonStrokeWidth;
+	char	       *polygonFillColor;
+	char	       *polygonStrokeColor;
+	int		polygonStrokeWidth;
 
-	LAYERSTYLE *next;
+	LAYERSTYLE     *next;
 };
 
-void getStyles( LAYERSTYLE **headRef );
-void freeStyles( LAYERSTYLE **headRef );
-void addStyle( LAYERSTYLE **headRef, char* styleName, int pointSize, char* pointColor, int lineWidth, char* lineColor, char* polygonFillColor, char* polygonStrokeColor, int polygonStrokeWidth );
+void		getStyles(LAYERSTYLE * *headRef);
+void		freeStyles(LAYERSTYLE * *headRef);
+void		addStyle(LAYERSTYLE * *headRef, char *styleName, int pointSize, char *pointColor, int lineWidth, char *lineColor, char *polygonFillColor, char *polygonStrokeColor, int polygonStrokeWidth);
 
-int length( LAYERSTYLE *headRef );
-LAYERSTYLE* getStyle( LAYERSTYLE *headRef, char* styleName );
-char* trim(char* str);
+int		length(LAYERSTYLE * headRef);
+LAYERSTYLE     *getStyle(LAYERSTYLE * headRef, char *styleName);
+char	       *trim(char *str);

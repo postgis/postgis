@@ -27,7 +27,3 @@
 #include <stdlib.h>
 #include <string.h>
 #include "liblwgeom_internal.h"
-
-
-
-

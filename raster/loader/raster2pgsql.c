@@ -1,27 +1,25 @@
 /*
  *
- * PostGIS raster loader
- * http://trac.osgeo.org/postgis/wiki/WKTRaster
+ * PostGIS raster loader http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
- * Copyright 2001-2003 Refractions Research Inc.
- * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
- * Copyright (C) 2011 Regents of the University of California
- *   <bkpark@ucdavis.edu>
+ * Copyright 2001-2003 Refractions Research Inc. Copyright 2009 Paul Ramsey
+ * <pramsey@cleverelephant.ca> Copyright 2009 Mark Cave-Ayland
+ * <mark.cave-ayland@siriusit.co.uk> Copyright (C) 2011 Regents of the
+ * University of California <bkpark@ucdavis.edu>
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
 
@@ -31,9 +29,10 @@
 #include <assert.h>
 
 static void
-loader_rt_error_handler(const char *fmt, va_list ap) {
+loader_rt_error_handler(const char *fmt, va_list ap)
+{
 	static const char *label = "ERROR: ";
-	char newfmt[1024] = {0};
+	char		newfmt[1024] = {0};
 	snprintf(newfmt, 1024, "%s%s\n", label, fmt);
 	newfmt[1023] = '\0';
 	vfprintf(stderr, newfmt, ap);
@@ -41,9 +40,10 @@ loader_rt_error_handler(const char *fmt, va_list ap) {
 }
 
 static void
-loader_rt_warning_handler(const char *fmt, va_list ap) {
+loader_rt_warning_handler(const char *fmt, va_list ap)
+{
 	static const char *label = "WARNING: ";
-	char newfmt[1024] = {0};
+	char		newfmt[1024] = {0};
 	snprintf(newfmt, 1024, "%s%s\n", label, fmt);
 	newfmt[1023] = '\0';
 	vfprintf(stderr, newfmt, ap);
@@ -51,9 +51,10 @@ loader_rt_warning_handler(const char *fmt, va_list ap) {
 }
 
 static void
-loader_rt_info_handler(const char *fmt, va_list ap) {
+loader_rt_info_handler(const char *fmt, va_list ap)
+{
 	static const char *label = "INFO: ";
-	char newfmt[1024] = {0};
+	char		newfmt[1024] = {0};
 	snprintf(newfmt, 1024, "%s%s\n", label, fmt);
 	newfmt[1023] = '\0';
 	vfprintf(stderr, newfmt, ap);
@@ -61,28 +62,32 @@ loader_rt_info_handler(const char *fmt, va_list ap) {
 }
 
 static void
-rt_init_allocators(void) {
+rt_init_allocators(void)
+{
 	rt_set_handlers(
-		default_rt_allocator,
-		default_rt_reallocator,
-		default_rt_deallocator,
-		loader_rt_error_handler,
-		loader_rt_info_handler,
-		loader_rt_warning_handler
-	);
+			default_rt_allocator,
+			default_rt_reallocator,
+			default_rt_deallocator,
+			loader_rt_error_handler,
+			loader_rt_info_handler,
+			loader_rt_warning_handler
+		);
 }
 
 static void
-raster_destroy(rt_raster raster) {
-	uint16_t i;
-	uint16_t nbands = rt_raster_get_num_bands(raster);
+raster_destroy(rt_raster raster)
+{
+	uint16_t	i;
+	uint16_t	nbands = rt_raster_get_num_bands(raster);
 	for (i = 0; i < nbands; i++) {
-		rt_band band = rt_raster_get_band(raster, i);
-		if (band == NULL) continue;
+		rt_band		band = rt_raster_get_band(raster, i);
+		if (band == NULL)
+			continue;
 
 		if (!rt_band_is_offline(band) && !rt_band_get_ownsdata_flag(band)) {
-			void* mem = rt_band_get_data(band);
-			if (mem) rtdealloc(mem);
+			void	       *mem = rt_band_get_data(band);
+			if (mem)
+				rtdealloc(mem);
 		}
 		rt_band_destroy(band);
 	}
@@ -90,9 +95,10 @@ raster_destroy(rt_raster raster) {
 }
 
 static int
-array_range(int min, int max, int step, int **range, uint32_t *len) {
-	int i = 0;
-	int j = 0;
+array_range(int min, int max, int step, int **range, uint32_t * len)
+{
+	int		i = 0;
+	int		j = 0;
 
 	step = abs(step);
 	*len = (uint32_t) ((abs(max - min) + 1 + (step / 2)) / step);
@@ -101,16 +107,14 @@ array_range(int min, int max, int step, int **range, uint32_t *len) {
 	if (min < max) {
 		for (i = min, j = 0; i <= max; i += step, j++)
 			(*range)[j] = i;
-	}
-	else if (max < min) {
-		if (step > 0) step *= -1;
+	} else if (max < min) {
+		if (step > 0)
+			step *= -1;
 		for (i = min, j = 0; i >= max; i += step, j++)
 			(*range)[j] = i;
-	}
-	else if (min == max) {
+	} else if (min == max) {
 		(*range)[0] = min;
-	}
-	else {
+	} else {
 		*len = 0;
 		*range = NULL;
 		return 0;
@@ -119,72 +123,75 @@ array_range(int min, int max, int step, int **range, uint32_t *len) {
 	return 1;
 }
 
-/* string replacement function taken from
+/*
+ * string replacement function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
  */
-/* ---------------------------------------------------------------------------
-  Name       : replace - Search & replace a substring by another one.
-  Creation   : Thierry Husson, Sept 2010
-  Parameters :
-      str    : Big string where we search
-      oldstr : Substring we are looking for
-      newstr : Substring we want to replace with
-      count  : Optional pointer to int (input / output value). NULL to ignore.
-               Input:  Maximum replacements to be done. NULL or < 1 to do all.
-               Output: Number of replacements done or -1 if not enough memory.
-  Returns    : Pointer to the new string or NULL if error.
-  Notes      :
-     - Case sensitive - Otherwise, replace functions "strstr" by "strcasestr"
-     - Always allocates memory for the result.
---------------------------------------------------------------------------- */
-static char*
+/*
+ * ---------------------------------------------------------------------------
+ * Name       : replace - Search & replace a substring by another one.
+ * Creation   : Thierry Husson, Sept 2010 Parameters : str    : Big string
+ * where we search oldstr : Substring we are looking for newstr : Substring
+ * we want to replace with count  : Optional pointer to int (input / output
+ * value). NULL to ignore. Input:  Maximum replacements to be done. NULL or <
+ * 1 to do all. Output: Number of replacements done or -1 if not enough
+ * memory. Returns    : Pointer to the new string or NULL if error. Notes
+ * : - Case sensitive - Otherwise, replace functions "strstr" by "strcasestr"
+ * - Always allocates memory for the result.
+ * ---------------------------------------------------------------------------
+ */
+static char    *
 strreplace(
-	const char *str,
-	const char *oldstr, const char *newstr,
-	int *count
-) {
-	const char *tmp = str;
-	char *result;
-	int found = 0;
-	int length, reslen;
-	int oldlen = strlen(oldstr);
-	int newlen = strlen(newstr);
-	int limit = (count != NULL && *count > 0) ? *count : -1;
+	   const char *str,
+	   const char *oldstr, const char *newstr,
+	   int *count
+)
+{
+	const char     *tmp = str;
+	char	       *result;
+	int		found = 0;
+	int		length, reslen;
+	int		oldlen = strlen(oldstr);
+	int		newlen = strlen(newstr);
+	int		limit = (count != NULL && *count > 0) ? *count : -1;
 
 	tmp = str;
 	while ((tmp = strstr(tmp, oldstr)) != NULL && found != limit)
 		found++, tmp += oldlen;
 
 	length = strlen(str) + found * (newlen - oldlen);
-	if ((result = (char *) rtalloc(length + 1)) == NULL) {
+	if ((result = (char *)rtalloc(length + 1)) == NULL) {
 		rterror(_("strreplace: Not enough memory"));
 		found = -1;
-	}
-	else {
+	} else {
 		tmp = str;
-		limit = found; /* Countdown */
-		reslen = 0; /* length of current result */
+		limit = found;	/* Countdown */
+		reslen = 0;	/* length of current result */
 
 		/* Replace each old string found with new string  */
 		while ((limit-- > 0) && (tmp = strstr(tmp, oldstr)) != NULL) {
-			length = (tmp - str); /* Number of chars to keep intouched */
-			strncpy(result + reslen, str, length); /* Original part keeped */
-			strcpy(result + (reslen += length), newstr); /* Insert new string */
+			length = (tmp - str);	/* Number of chars to keep
+						 * intouched */
+			strncpy(result + reslen, str, length);	/* Original part keeped */
+			strcpy(result + (reslen += length), newstr);	/* Insert new string */
 
 			reslen += newlen;
 			tmp += oldlen;
 			str = tmp;
 		}
-		strcpy(result + reslen, str); /* Copies last part and ending null char */
+		strcpy(result + reslen, str);	/* Copies last part and
+						 * ending null char */
 	}
 
-	if (count != NULL) *count = found;
+	if (count != NULL)
+		*count = found;
 	return result;
 }
 
-static char *
-strtolower(char * str) {
-	int j;
+static char    *
+strtolower(char *str)
+{
+	int		j;
 
 	for (j = strlen(str) - 1; j >= 0; j--)
 		str[j] = tolower(str[j]);
@@ -193,11 +200,12 @@ strtolower(char * str) {
 }
 
 /* split a string based on a delimiter */
-static char**
-strsplit(const char *str, const char *delimiter, uint32_t *n) {
-	char *tmp = NULL;
-	char **rtn = NULL;
-	char *token = NULL;
+static char   **
+strsplit(const char *str, const char *delimiter, uint32_t * n)
+{
+	char	       *tmp = NULL;
+	char	      **rtn = NULL;
+	char	       *token = NULL;
 
 	*n = 0;
 	if (!str)
@@ -213,12 +221,12 @@ strsplit(const char *str, const char *delimiter, uint32_t *n) {
 
 	if (!strlen(tmp) || !delimiter || !strlen(delimiter)) {
 		*n = 1;
-		rtn = (char **) rtalloc(*n * sizeof(char *));
+		rtn = (char **)rtalloc(*n * sizeof(char *));
 		if (NULL == rtn) {
 			rterror(_("strsplit: Not enough memory"));
 			return NULL;
 		}
-		rtn[0] = (char *) rtalloc(sizeof(char) * (strlen(tmp) + 1));
+		rtn[0] = (char *)rtalloc(sizeof(char) * (strlen(tmp) + 1));
 		if (NULL == rtn[0]) {
 			rterror(_("strsplit: Not enough memory"));
 			return NULL;
@@ -231,10 +239,9 @@ strsplit(const char *str, const char *delimiter, uint32_t *n) {
 	token = strtok(tmp, delimiter);
 	while (token != NULL) {
 		if (*n < 1) {
-			rtn = (char **) rtalloc(sizeof(char *));
-		}
-		else {
-			rtn = (char **) rtrealloc(rtn, (*n + 1) * sizeof(char *));
+			rtn = (char **)rtalloc(sizeof(char *));
+		} else {
+			rtn = (char **)rtrealloc(rtn, (*n + 1) * sizeof(char *));
 		}
 		if (NULL == rtn) {
 			rterror(_("strsplit: Not enough memory"));
@@ -242,7 +249,7 @@ strsplit(const char *str, const char *delimiter, uint32_t *n) {
 		}
 
 		rtn[*n] = NULL;
-		rtn[*n] = (char *) rtalloc(sizeof(char) * (strlen(token) + 1));
+		rtn[*n] = (char *)rtalloc(sizeof(char) * (strlen(token) + 1));
 		if (NULL == rtn[*n]) {
 			rterror(_("strsplit: Not enough memory"));
 			return NULL;
@@ -258,23 +265,24 @@ strsplit(const char *str, const char *delimiter, uint32_t *n) {
 	return rtn;
 }
 
-static char*
-trim(const char *input) {
-	char *rtn;
-	char *ptr;
-	uint32_t offset = 0;
+static char    *
+trim(const char *input)
+{
+	char	       *rtn;
+	char	       *ptr;
+	uint32_t	offset = 0;
 
 	if (!input)
 		return NULL;
 	else if (!*input)
-		return (char *) input;
+		return (char *)input;
 
 	/* trim left */
 	while (isspace(*input))
 		input++;
 
 	/* trim right */
-	ptr = ((char *) input) + strlen(input);
+	ptr = ((char *)input) + strlen(input);
 	while (isspace(*--ptr))
 		offset++;
 
@@ -289,23 +297,24 @@ trim(const char *input) {
 	return rtn;
 }
 
-static char*
-chartrim(const char *input, char *remove) {
-	char *rtn = NULL;
-	char *ptr = NULL;
-	uint32_t offset = 0;
+static char    *
+chartrim(const char *input, char *remove)
+{
+	char	       *rtn = NULL;
+	char	       *ptr = NULL;
+	uint32_t	offset = 0;
 
 	if (!input)
 		return NULL;
 	else if (!*input)
-		return (char *) input;
+		return (char *)input;
 
 	/* trim left */
 	while (strchr(remove, *input) != NULL)
 		input++;
 
 	/* trim right */
-	ptr = ((char *) input) + strlen(input);
+	ptr = ((char *)input) + strlen(input);
 	while (strchr(remove, *--ptr) != NULL)
 		offset++;
 
@@ -321,158 +330,159 @@ chartrim(const char *input, char *remove) {
 }
 
 static void
-usage() {
+usage()
+{
 	printf(_("RELEASE: %s GDAL_VERSION=%d (r%d)\n"), POSTGIS_LIB_VERSION, POSTGIS_GDAL_VERSION, POSTGIS_SVN_REVISION);
 	printf(_(
-		"USAGE: raster2pgsql [<options>] <raster>[ <raster>[ ...]] [[<schema>.]<table>]\n"
-		"  Multiple rasters can also be specified using wildcards (*,?).\n"
-		"\n"
-		"OPTIONS:\n"
-	));
+		 "USAGE: raster2pgsql [<options>] <raster>[ <raster>[ ...]] [[<schema>.]<table>]\n"
+	 "  Multiple rasters can also be specified using wildcards (*,?).\n"
+		 "\n"
+		 "OPTIONS:\n"
+		 ));
 	/*
+	 * printf(_( "  -s [<from>:]<srid> Set the SRID field. Defaults to
+	 * %d.\n" "     Optionally reprojects from given SRID (cannot be used
+	 * with -Y).\n" "     Raster's metadata will be checked to determine
+	 * an appropriate SRID.\n" "     If a srid of %d is provided (either
+	 * as from or as target).\n" ), SRID_UNKNOWN, SRID_UNKNOWN);
+	 */
 	printf(_(
-		"  -s [<from>:]<srid> Set the SRID field. Defaults to %d.\n"
-		"     Optionally reprojects from given SRID (cannot be used with -Y).\n"
-		"     Raster's metadata will be checked to determine an appropriate SRID.\n"
-		"     If a srid of %d is provided (either as from or as target).\n"
-	), SRID_UNKNOWN, SRID_UNKNOWN);
-	*/
+	     "  -s <srid> Set the SRID field. Defaults to %d. If SRID not\n"
+	    "     provided or is %d, raster's metadata will be checked to\n"
+		 "     determine an appropriate SRID.\n"
+		 ), SRID_UNKNOWN, SRID_UNKNOWN);
 	printf(_(
-		"  -s <srid> Set the SRID field. Defaults to %d. If SRID not\n"
-		"     provided or is %d, raster's metadata will be checked to\n"
-		"     determine an appropriate SRID.\n"
-	), SRID_UNKNOWN, SRID_UNKNOWN);
+		 "  -b <band> Index (1-based) of band to extract from raster. For more\n"
+	"      than one band index, separate with comma (,). Ranges can be\n"
+		 "      defined by separating with dash (-). If unspecified, all bands\n"
+		 "      of raster will be extracted.\n"
+		 ));
 	printf(_(
-		"  -b <band> Index (1-based) of band to extract from raster. For more\n"
-		"      than one band index, separate with comma (,). Ranges can be\n"
-		"      defined by separating with dash (-). If unspecified, all bands\n"
-		"      of raster will be extracted.\n"
-	));
+	   "  -t <tile size> Cut raster into tiles to be inserted one per\n"
+	      "      table row. <tile size> is expressed as WIDTHxHEIGHT.\n"
+		 "      <tile size> can also be \"auto\" to allow the loader to compute\n"
+		 "      an appropriate tile size using the first raster and applied to\n"
+		 "      all rasters.\n"
+		 ));
 	printf(_(
-		"  -t <tile size> Cut raster into tiles to be inserted one per\n"
-		"      table row. <tile size> is expressed as WIDTHxHEIGHT.\n"
-		"      <tile size> can also be \"auto\" to allow the loader to compute\n"
-		"      an appropriate tile size using the first raster and applied to\n"
-		"      all rasters.\n"
-	));
+		 "  -P Pad right-most and bottom-most tiles to guarantee that all tiles\n"
+		 "     have the same width and height.\n"
+		 ));
 	printf(_(
-		"  -P Pad right-most and bottom-most tiles to guarantee that all tiles\n"
-		"     have the same width and height.\n"
-	));
+		 "  -R  Register the raster as an out-of-db (filesystem) raster. Provided\n"
+		 "      raster should have absolute path to the file\n"
+		 ));
 	printf(_(
-		"  -R  Register the raster as an out-of-db (filesystem) raster. Provided\n"
-		"      raster should have absolute path to the file\n"
-	));
+		 " (-d|a|c|p) These are mutually exclusive options:\n"
+	       "     -d  Drops the table, then recreates it and populates\n"
+		 "         it with current raster data.\n"
+		 "     -a  Appends raster into current table, must be\n"
+		 "         exactly the same table schema.\n"
+	      "     -c  Creates a new table and populates it, this is the\n"
+		 "         default if you do not specify any options.\n"
+		 "     -p  Prepare mode, only creates the table.\n"
+		 ));
 	printf(_(
-		" (-d|a|c|p) These are mutually exclusive options:\n"
-		"     -d  Drops the table, then recreates it and populates\n"
-		"         it with current raster data.\n"
-		"     -a  Appends raster into current table, must be\n"
-		"         exactly the same table schema.\n"
-		"     -c  Creates a new table and populates it, this is the\n"
-		"         default if you do not specify any options.\n"
-		"     -p  Prepare mode, only creates the table.\n"
-	));
+		 "  -f <column> Specify the name of the raster column\n"
+		 ));
 	printf(_(
-		"  -f <column> Specify the name of the raster column\n"
-	));
+		 "  -F  Add a column with the filename of the raster.\n"
+		 ));
 	printf(_(
-		"  -F  Add a column with the filename of the raster.\n"
-	));
+		 "  -n <column> Specify the name of the filename column. Implies -F.\n"
+		 ));
 	printf(_(
-		"  -n <column> Specify the name of the filename column. Implies -F.\n"
-	));
+		 "  -l <overview factor> Create overview of the raster. For more than\n"
+		 "      one factor, separate with comma(,). Overview table name follows\n"
+		 "      the pattern o_<overview factor>_<table>. Created overview is\n"
+		 "      stored in the database and is not affected by -R.\n"
+		 ));
 	printf(_(
-		"  -l <overview factor> Create overview of the raster. For more than\n"
-		"      one factor, separate with comma(,). Overview table name follows\n"
-		"      the pattern o_<overview factor>_<table>. Created overview is\n"
-		"      stored in the database and is not affected by -R.\n"
-	));
+		 "  -q  Wrap PostgreSQL identifiers in quotes.\n"
+		 ));
 	printf(_(
-		"  -q  Wrap PostgreSQL identifiers in quotes.\n"
-	));
+		 "  -I  Create a GIST spatial index on the raster column. The ANALYZE\n"
+	"      command will automatically be issued for the created index.\n"
+		 ));
 	printf(_(
-		"  -I  Create a GIST spatial index on the raster column. The ANALYZE\n"
-		"      command will automatically be issued for the created index.\n"
-	));
+	"  -M  Run VACUUM ANALYZE on the table of the raster column. Most\n"
+	   "      useful when appending raster to existing table with -a.\n"
+		 ));
 	printf(_(
-		"  -M  Run VACUUM ANALYZE on the table of the raster column. Most\n"
-		"      useful when appending raster to existing table with -a.\n"
-	));
+		 "  -C  Set the standard set of constraints on the raster\n"
+		 "      column after the rasters are loaded. Some constraints may fail\n"
+		 "      if one or more rasters violate the constraint.\n"
+	"  -x  Disable setting the max extent constraint. Only applied if\n"
+		 "      -C flag is also used.\n"
+		 "  -r  Set the constraints (spatially unique and coverage tile) for\n"
+	   "      regular blocking. Only applied if -C flag is also used.\n"
+		 ));
 	printf(_(
-		"  -C  Set the standard set of constraints on the raster\n"
-		"      column after the rasters are loaded. Some constraints may fail\n"
-		"      if one or more rasters violate the constraint.\n"
-		"  -x  Disable setting the max extent constraint. Only applied if\n"
-		"      -C flag is also used.\n"
-		"  -r  Set the constraints (spatially unique and coverage tile) for\n"
-		"      regular blocking. Only applied if -C flag is also used.\n"
-	));
+	     "  -T <tablespace> Specify the tablespace for the new table.\n"
+		 "      Note that indices (including the primary key) will still use\n"
+	   "      the default tablespace unless the -X flag is also used.\n"
+		 ));
 	printf(_(
-		"  -T <tablespace> Specify the tablespace for the new table.\n"
-		"      Note that indices (including the primary key) will still use\n"
-		"      the default tablespace unless the -X flag is also used.\n"
-	));
+		 "  -X <tablespace> Specify the tablespace for the table's new index.\n"
+	  "      This applies to the primary key and the spatial index if\n"
+		 "      the -I flag is used.\n"
+		 ));
 	printf(_(
-		"  -X <tablespace> Specify the tablespace for the table's new index.\n"
-		"      This applies to the primary key and the spatial index if\n"
-		"      the -I flag is used.\n"
-	));
+		 "  -N <nodata> NODATA value to use on bands without a NODATA value.\n"
+		 ));
 	printf(_(
-		"  -N <nodata> NODATA value to use on bands without a NODATA value.\n"
-	));
+		 "  -k  Skip NODATA value checks for each raster band.\n"
+		 ));
 	printf(_(
-		"  -k  Skip NODATA value checks for each raster band.\n"
-	));
+	  "  -E <endian> Control endianness of generated binary output of\n"
+	   "      raster. Use 0 for XDR and 1 for NDR (default). Only NDR\n"
+		 "      is supported at this time.\n"
+		 ));
 	printf(_(
-		"  -E <endian> Control endianness of generated binary output of\n"
-		"      raster. Use 0 for XDR and 1 for NDR (default). Only NDR\n"
-		"      is supported at this time.\n"
-	));
+	    "  -V <version> Specify version of output WKB format. Default\n"
+		 "      is 0. Only 0 is supported at this time.\n"
+		 ));
 	printf(_(
-		"  -V <version> Specify version of output WKB format. Default\n"
-		"      is 0. Only 0 is supported at this time.\n"
-	));
+		 "  -e  Execute each statement individually, do not use a transaction.\n"
+		 ));
 	printf(_(
-		"  -e  Execute each statement individually, do not use a transaction.\n"
-	));
+		 "  -Y  Use COPY statements instead of INSERT statements.\n"
+		 ));
 	printf(_(
-		"  -Y  Use COPY statements instead of INSERT statements.\n"
-	));
+		 "  -G  Print the supported GDAL raster formats.\n"
+		 ));
 	printf(_(
-		"  -G  Print the supported GDAL raster formats.\n"
-	));
-	printf(_(
-		"  -?  Display this help screen.\n"
-	));
+		 "  -?  Display this help screen.\n"
+		 ));
 }
 
-static void calc_tile_size(
-	int dimX, int dimY,
-	int *tileX, int *tileY
-) {
-	int i = 0;
-	int j = 0;
-	int min = 30;
-	int max = 100;
+static void
+calc_tile_size(
+	       int dimX, int dimY,
+	       int *tileX, int *tileY
+)
+{
+	int		i = 0;
+	int		j = 0;
+	int		min = 30;
+	int		max = 100;
 
-	int d = 0;
-	double r = 0;
-	/*int _d = 0;*/
-	double _r = -1;
-	int _i = 0;
+	int		d = 0;
+	double		r = 0;
+	/* int _d = 0; */
+	double		_r = -1;
+	int		_i = 0;
 
 	/* j = 0, X */
 	for (j = 0; j < 2; j++) {
 		_i = 0;
-		/*_d = 0;*/
+		/* _d = 0; */
 		_r = -1;
 
 		if (j < 1 && dimX <= max) {
 			*tileX = dimX;
 			continue;
-		}
-		else if (dimY <= max) {
+		} else if (dimY <= max) {
 			*tileY = dimY;
 			continue;
 		}
@@ -480,21 +490,20 @@ static void calc_tile_size(
 		for (i = max; i >= min; i--) {
 			if (j < 1) {
 				d = dimX / i;
-				r = (double) dimX / (double) i;
+				r = (double)dimX / (double)i;
 
-			}
-			else {
+			} else {
 				d = dimY / i;
-				r = (double) dimY / (double) i;
+				r = (double)dimY / (double)i;
 			}
-			r = r - (double) d;
+			r = r - (double)d;
 
 			if (
-				FLT_EQ(_r, -1) ||
-				(r < _r) ||
-				FLT_EQ(r, _r)
-			) {
-				/*_d = d;*/
+			    FLT_EQ(_r, -1) ||
+			    (r < _r) ||
+			    FLT_EQ(r, _r)
+				) {
+				/* _d = d; */
 				_r = r;
 				_i = i;
 			}
@@ -508,7 +517,8 @@ static void calc_tile_size(
 }
 
 static void
-init_rastinfo(RASTERINFO *info) {
+init_rastinfo(RASTERINFO * info)
+{
 	info->srid = SRID_UNKNOWN;
 	info->srs = NULL;
 	memset(info->dim, 0, sizeof(uint32_t) * 2);
@@ -523,7 +533,8 @@ init_rastinfo(RASTERINFO *info) {
 }
 
 static void
-rtdealloc_rastinfo(RASTERINFO *info) {
+rtdealloc_rastinfo(RASTERINFO * info)
+{
 	if (info->srs != NULL)
 		rtdealloc(info->srs);
 	if (info->nband_count > 0 && info->nband != NULL)
@@ -539,7 +550,8 @@ rtdealloc_rastinfo(RASTERINFO *info) {
 }
 
 static int
-copy_rastinfo(RASTERINFO *dst, RASTERINFO *src) {
+copy_rastinfo(RASTERINFO * dst, RASTERINFO * src)
+{
 	if (src->srs != NULL) {
 		dst->srs = rtalloc(sizeof(char) * (strlen(src->srs) + 1));
 		if (dst->srs == NULL) {
@@ -597,15 +609,18 @@ copy_rastinfo(RASTERINFO *dst, RASTERINFO *src) {
 }
 
 static void
-diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
-	static uint8_t msg[6] = {0};
-	uint32_t i = 0;
+diff_rastinfo(RASTERINFO * x, RASTERINFO * ref)
+{
+	static uint8_t msg[6] = {
+		0
+	};
+	uint32_t	i = 0;
 
 	/* # of bands */
 	if (
-		!msg[0] &&
-		x->nband_count != ref->nband_count
-	) {
+	    !msg[0] &&
+	    x->nband_count != ref->nband_count
+		) {
 		rtwarn(_("Different number of bands found in the set of rasters being converted to PostGIS raster"));
 		msg[0]++;
 	}
@@ -633,7 +648,8 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 	/* nodataval */
 	if (!msg[3]) {
 		for (i = 0; i < ref->nband_count; i++) {
-			if (!x->hasnodata[i] && !ref->hasnodata[i]) continue;
+			if (!x->hasnodata[i] && !ref->hasnodata[i])
+				continue;
 			if (x->hasnodata[i] != ref->hasnodata[i]) {
 				rtwarn(_("Different NODATA values found for band %d in the set of rasters being converted to PostGIS raster"), ref->nband[i]);
 				msg[3]++;
@@ -643,18 +659,20 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 
 	/* alignment */
 	if (!msg[4]) {
-		rt_raster rx = NULL;
-		rt_raster rref = NULL;
-		int err;
-		int aligned;
+		rt_raster	rx = NULL;
+		rt_raster	rref = NULL;
+		int		err;
+		int		aligned;
 
 		if (
-			(rx = rt_raster_new(1, 1)) == NULL ||
-			(rref = rt_raster_new(1, 1)) == NULL
-		) {
+		    (rx = rt_raster_new(1, 1)) == NULL ||
+		    (rref = rt_raster_new(1, 1)) == NULL
+			) {
 			rterror(_("diff_rastinfo: Could not allocate memory for raster alignment test"));
-			if (rx != NULL) rt_raster_destroy(rx);
-			if (rref != NULL) rt_raster_destroy(rref);
+			if (rx != NULL)
+				rt_raster_destroy(rx);
+			if (rref != NULL)
+				rt_raster_destroy(rref);
 			return;
 		}
 
@@ -688,7 +706,8 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 }
 
 static void
-init_config(RTLOADERCFG *config) {
+init_config(RTLOADERCFG * config)
+{
 	config->rt_file_count = 0;
 	config->rt_file = NULL;
 	config->rt_filename = NULL;
@@ -725,8 +744,9 @@ init_config(RTLOADERCFG *config) {
 }
 
 static void
-rtdealloc_config(RTLOADERCFG *config) {
-	int i = 0;
+rtdealloc_config(RTLOADERCFG * config)
+{
+	int		i = 0;
 	if (config->rt_file_count) {
 		for (i = config->rt_file_count - 1; i >= 0; i--) {
 			rtdealloc(config->rt_file[i]);
@@ -765,15 +785,17 @@ rtdealloc_config(RTLOADERCFG *config) {
 }
 
 static void
-init_stringbuffer(STRINGBUFFER *buffer) {
+init_stringbuffer(STRINGBUFFER * buffer)
+{
 	buffer->line = NULL;
 	buffer->length = 0;
 }
 
 static void
-rtdealloc_stringbuffer(STRINGBUFFER *buffer, int freebuffer) {
+rtdealloc_stringbuffer(STRINGBUFFER * buffer, int freebuffer)
+{
 	if (buffer->length) {
-		uint32_t i = 0;
+		uint32_t	i = 0;
 		for (i = 0; i < buffer->length; i++) {
 			if (buffer->line[i] != NULL)
 				rtdealloc(buffer->line[i]);
@@ -788,8 +810,9 @@ rtdealloc_stringbuffer(STRINGBUFFER *buffer, int freebuffer) {
 }
 
 static void
-dump_stringbuffer(STRINGBUFFER *buffer) {
-	uint32_t i = 0;
+dump_stringbuffer(STRINGBUFFER * buffer)
+{
+	uint32_t	i = 0;
 
 	for (i = 0; i < buffer->length; i++) {
 		printf("%s\n", buffer->line[i]);
@@ -797,14 +820,16 @@ dump_stringbuffer(STRINGBUFFER *buffer) {
 }
 
 static void
-flush_stringbuffer(STRINGBUFFER *buffer) {
+flush_stringbuffer(STRINGBUFFER * buffer)
+{
 	dump_stringbuffer(buffer);
 	rtdealloc_stringbuffer(buffer, 0);
 }
 
 /* Takes ownership of the passed string */
 static int
-append_stringbuffer(STRINGBUFFER *buffer, const char *str) {
+append_stringbuffer(STRINGBUFFER * buffer, const char *str)
+{
 	buffer->length++;
 
 	buffer->line = rtrealloc(buffer->line, sizeof(char *) * buffer->length);
@@ -813,13 +838,14 @@ append_stringbuffer(STRINGBUFFER *buffer, const char *str) {
 		return 0;
 	}
 
-	buffer->line[buffer->length - 1] = (char *) str;
+	buffer->line[buffer->length - 1] = (char *)str;
 
 	return 1;
 }
 
 static int
-append_sql_to_buffer(STRINGBUFFER *buffer, const char *str) {
+append_sql_to_buffer(STRINGBUFFER * buffer, const char *str)
+{
 	if (buffer->length > 9)
 		flush_stringbuffer(buffer);
 
@@ -828,11 +854,11 @@ append_sql_to_buffer(STRINGBUFFER *buffer, const char *str) {
 
 static int
 copy_from(const char *schema, const char *table, const char *column,
-          const char *filename, const char *file_column_name,
-          STRINGBUFFER *buffer)
+	  const char *filename, const char *file_column_name,
+	  STRINGBUFFER * buffer)
 {
-	char *sql = NULL;
-	uint32_t len = 0;
+	char	       *sql = NULL;
+	uint32_t	len = 0;
 
 	assert(table != NULL);
 	assert(column != NULL);
@@ -856,7 +882,7 @@ copy_from(const char *schema, const char *table, const char *column,
 		column,
 		(filename != NULL ? "," : ""),
 		(filename != NULL ? file_column_name : "")
-	);
+		);
 
 	append_sql_to_buffer(buffer, sql);
 	sql = NULL;
@@ -865,7 +891,7 @@ copy_from(const char *schema, const char *table, const char *column,
 }
 
 static int
-copy_from_end(STRINGBUFFER *buffer)
+copy_from_end(STRINGBUFFER * buffer)
 {
 	/* end of data */
 	append_sql_to_buffer(buffer, strdup("\\."));
@@ -875,15 +901,16 @@ copy_from_end(STRINGBUFFER *buffer)
 
 static int
 insert_records(
-	const char *schema, const char *table, const char *column,
-	const char *filename, const char *file_column_name,
-	int copy_statements, int out_srid,
-	STRINGBUFFER *tileset, STRINGBUFFER *buffer
-) {
-	char *fn = NULL;
-	uint32_t len = 0;
-	char *sql = NULL;
-	uint32_t x = 0;
+	       const char *schema, const char *table, const char *column,
+	       const char *filename, const char *file_column_name,
+	       int copy_statements, int out_srid,
+	       STRINGBUFFER * tileset, STRINGBUFFER * buffer
+)
+{
+	char	       *fn = NULL;
+	uint32_t	len = 0;
+	char	       *sql = NULL;
+	uint32_t	x = 0;
 
 	assert(table != NULL);
 	assert(column != NULL);
@@ -891,14 +918,14 @@ insert_records(
 	/* COPY statements */
 	if (copy_statements) {
 
-    if (!copy_from(
-      schema, table, column,
-      (file_column_name ? filename : NULL), file_column_name,
-      buffer
-    )) {
-      rterror(_("insert_records: Could not add COPY statement to string buffer"));
-      return 0;
-    }
+		if (!copy_from(
+			       schema, table, column,
+		     (file_column_name ? filename : NULL), file_column_name,
+			       buffer
+			       )) {
+			rterror(_("insert_records: Could not add COPY statement to string buffer"));
+			return 0;
+		}
 
 
 		/* escape tabs in filename */
@@ -921,16 +948,16 @@ insert_records(
 				tileset->line[x],
 				(filename != NULL ? "\t" : ""),
 				(filename != NULL ? fn : "")
-			);
+				);
 
 			append_sql_to_buffer(buffer, sql);
 			sql = NULL;
 		}
 
-    if (!copy_from_end(buffer)) {
-      rterror(_("process_rasters: Could not add COPY end statement to string buffer"));
-      return 0;
-    }
+		if (!copy_from_end(buffer)) {
+			rterror(_("process_rasters: Could not add COPY end statement to string buffer"));
+			return 0;
+		}
 
 	}
 	/* INSERT statements */
@@ -948,8 +975,8 @@ insert_records(
 			fn = strreplace(filename, "'", "''", NULL);
 
 		for (x = 0; x < tileset->length; x++) {
-			char *ptr;
-			int sqllen = len;
+			char	       *ptr;
+			int		sqllen = len;
 
 			sqllen += strlen(tileset->line[x]);
 			if (filename != NULL)
@@ -962,17 +989,17 @@ insert_records(
 			}
 			ptr = sql;
 			ptr += sprintf(sql, "INSERT INTO %s%s (%s%s%s) VALUES (",
-					(schema != NULL ? schema : ""),
-					table,
-					column,
-					(filename != NULL ? "," : ""),
-					(filename != NULL ? file_column_name : "")
+				       (schema != NULL ? schema : ""),
+				       table,
+				       column,
+				       (filename != NULL ? "," : ""),
+				  (filename != NULL ? file_column_name : "")
 				);
 			if (out_srid != SRID_UNKNOWN) {
 				ptr += sprintf(ptr, "ST_Transform(");
 			}
 			ptr += sprintf(ptr, "'%s'::raster",
-					tileset->line[x]
+				       tileset->line[x]
 				);
 			if (out_srid != SRID_UNKNOWN) {
 				ptr += sprintf(ptr, ", %d)", out_srid);
@@ -987,14 +1014,16 @@ insert_records(
 		}
 	}
 
-	if (fn != NULL) rtdealloc(fn);
+	if (fn != NULL)
+		rtdealloc(fn);
 	return 1;
 }
 
 static int
-drop_table(const char *schema, const char *table, STRINGBUFFER *buffer) {
-	char *sql = NULL;
-	uint32_t len = 0;
+drop_table(const char *schema, const char *table, STRINGBUFFER * buffer)
+{
+	char	       *sql = NULL;
+	uint32_t	len = 0;
 
 	len = strlen("DROP TABLE IF EXISTS ;") + 1;
 	if (schema != NULL)
@@ -1009,7 +1038,7 @@ drop_table(const char *schema, const char *table, STRINGBUFFER *buffer) {
 	sprintf(sql, "DROP TABLE IF EXISTS %s%s;",
 		(schema != NULL ? schema : ""),
 		table
-	);
+		);
 
 	append_sql_to_buffer(buffer, sql);
 
@@ -1018,13 +1047,14 @@ drop_table(const char *schema, const char *table, STRINGBUFFER *buffer) {
 
 static int
 create_table(
-	const char *schema, const char *table, const char *column,
-	const int file_column, const char *file_column_name,
-	const char *tablespace, const char *idx_tablespace,
-	STRINGBUFFER *buffer
-) {
-	char *sql = NULL;
-	uint32_t len = 0;
+	     const char *schema, const char *table, const char *column,
+	     const int file_column, const char *file_column_name,
+	     const char *tablespace, const char *idx_tablespace,
+	     STRINGBUFFER * buffer
+)
+{
+	char	       *sql = NULL;
+	uint32_t	len = 0;
 
 	assert(table != NULL);
 	assert(column != NULL);
@@ -1057,7 +1087,7 @@ create_table(
 		(file_column ? " text" : ""),
 		(tablespace != NULL ? " TABLESPACE " : ""),
 		(tablespace != NULL ? tablespace : "")
-	);
+		);
 
 	append_sql_to_buffer(buffer, sql);
 
@@ -1066,14 +1096,15 @@ create_table(
 
 static int
 create_index(
-	const char *schema, const char *table, const char *column,
-	const char *tablespace,
-	STRINGBUFFER *buffer
-) {
-	char *sql = NULL;
-	uint32_t len = 0;
-	char *_table = NULL;
-	char *_column = NULL;
+	     const char *schema, const char *table, const char *column,
+	     const char *tablespace,
+	     STRINGBUFFER * buffer
+)
+{
+	char	       *sql = NULL;
+	uint32_t	len = 0;
+	char	       *_table = NULL;
+	char	       *_column = NULL;
 
 	assert(table != NULL);
 	assert(column != NULL);
@@ -1105,7 +1136,7 @@ create_index(
 		column,
 		(tablespace != NULL ? " TABLESPACE " : ""),
 		(tablespace != NULL ? tablespace : "")
-	);
+		);
 	rtdealloc(_table);
 	rtdealloc(_column);
 
@@ -1116,11 +1147,12 @@ create_index(
 
 static int
 analyze_table(
-	const char *schema, const char *table,
-	STRINGBUFFER *buffer
-) {
-	char *sql = NULL;
-	uint32_t len = 0;
+	      const char *schema, const char *table,
+	      STRINGBUFFER * buffer
+)
+{
+	char	       *sql = NULL;
+	uint32_t	len = 0;
 
 	assert(table != NULL);
 
@@ -1137,7 +1169,7 @@ analyze_table(
 	sprintf(sql, "ANALYZE %s%s;",
 		(schema != NULL ? schema : ""),
 		table
-	);
+		);
 
 	append_sql_to_buffer(buffer, sql);
 
@@ -1146,11 +1178,12 @@ analyze_table(
 
 static int
 vacuum_table(
-	const char *schema, const char *table,
-	STRINGBUFFER *buffer
-) {
-	char *sql = NULL;
-	uint32_t len = 0;
+	     const char *schema, const char *table,
+	     STRINGBUFFER * buffer
+)
+{
+	char	       *sql = NULL;
+	uint32_t	len = 0;
 
 	assert(table != NULL);
 
@@ -1167,7 +1200,7 @@ vacuum_table(
 	sprintf(sql, "VACUUM ANALYZE %s%s;",
 		(schema != NULL ? schema : ""),
 		table
-	);
+		);
 
 	append_sql_to_buffer(buffer, sql);
 
@@ -1176,17 +1209,18 @@ vacuum_table(
 
 static int
 add_raster_constraints(
-	const char *schema, const char *table, const char *column,
-	int regular_blocking, int max_extent,
-	STRINGBUFFER *buffer
-) {
-	char *sql = NULL;
-	uint32_t len = 0;
+		  const char *schema, const char *table, const char *column,
+		       int regular_blocking, int max_extent,
+		       STRINGBUFFER * buffer
+)
+{
+	char	       *sql = NULL;
+	uint32_t	len = 0;
 
-	char *_tmp = NULL;
-	char *_schema = NULL;
-	char *_table = NULL;
-	char *_column = NULL;
+	char	       *_tmp = NULL;
+	char	       *_schema = NULL;
+	char	       *_table = NULL;
+	char	       *_column = NULL;
 
 	assert(table != NULL);
 	assert(column != NULL);
@@ -1228,7 +1262,7 @@ add_raster_constraints(
 		_column,
 		(regular_blocking ? "TRUE" : "FALSE"),
 		(max_extent ? "TRUE" : "FALSE")
-	);
+		);
 
 	if (_schema != NULL)
 		rtdealloc(_schema);
@@ -1242,23 +1276,24 @@ add_raster_constraints(
 
 static int
 add_overview_constraints(
-	const char *ovschema, const char *ovtable, const char *ovcolumn,
-	const char *schema, const char *table, const char *column,
-	const int factor,
-	STRINGBUFFER *buffer
-) {
-	char *sql = NULL;
-	uint32_t len = 0;
+	    const char *ovschema, const char *ovtable, const char *ovcolumn,
+		  const char *schema, const char *table, const char *column,
+			 const int factor,
+			 STRINGBUFFER * buffer
+)
+{
+	char	       *sql = NULL;
+	uint32_t	len = 0;
 
-	char *_tmp = NULL;
+	char	       *_tmp = NULL;
 
-	char *_ovschema = NULL;
-	char *_ovtable = NULL;
-	char *_ovcolumn = NULL;
+	char	       *_ovschema = NULL;
+	char	       *_ovtable = NULL;
+	char	       *_ovcolumn = NULL;
 
-	char *_schema = NULL;
-	char *_table = NULL;
-	char *_column = NULL;
+	char	       *_schema = NULL;
+	char	       *_table = NULL;
+	char	       *_column = NULL;
 
 	assert(ovtable != NULL);
 	assert(ovcolumn != NULL);
@@ -1281,7 +1316,7 @@ add_overview_constraints(
 	_ovtable = strreplace(_tmp, "'", "''", NULL);
 	rtdealloc(_tmp);
 
-	/* overview column*/
+	/* overview column */
 	_tmp = chartrim(ovcolumn, "\"");
 	_ovcolumn = strreplace(_tmp, "'", "''", NULL);
 	rtdealloc(_tmp);
@@ -1329,7 +1364,7 @@ add_overview_constraints(
 		_table,
 		_column,
 		factor
-	);
+		);
 
 	if (_ovschema != NULL)
 		rtdealloc(_ovschema);
@@ -1347,29 +1382,30 @@ add_overview_constraints(
 }
 
 static int
-build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STRINGBUFFER *tileset, STRINGBUFFER *buffer) {
-	GDALDatasetH hdsSrc;
-	VRTDatasetH hdsOv;
+build_overview(int idx, RTLOADERCFG * config, RASTERINFO * info, uint32_t ovx, STRINGBUFFER * tileset, STRINGBUFFER * buffer)
+{
+	GDALDatasetH	hdsSrc;
+	VRTDatasetH	hdsOv;
 	VRTSourcedRasterBandH hbandOv;
-	double gtOv[6] = {0.};
-	int dimOv[2] = {0};
+	double		gtOv[6] = {0.};
+	int		dimOv[2] = {0};
 
-	uint32_t j = 0;
-	int factor;
-	const char *ovtable = NULL;
+	uint32_t	j = 0;
+	int		factor;
+	const char     *ovtable = NULL;
 
-	VRTDatasetH hdsDst;
+	VRTDatasetH	hdsDst;
 	VRTSourcedRasterBandH hbandDst;
-	int tile_size[2] = {0};
-	int _tile_size[2] = {0};
-	int ntiles[2] = {1, 1};
-	int xtile = 0;
-	int ytile = 0;
-	double gt[6] = {0.};
+	int		tile_size[2] = {0};
+	int		_tile_size[2] = {0};
+	int		ntiles[2] = {1, 1};
+	int		xtile = 0;
+	int		ytile = 0;
+	double		gt[6] = {0.};
 
-	rt_raster rast = NULL;
-	char *hex;
-	uint32_t hexlen = 0;
+	rt_raster	rast = NULL;
+	char	       *hex;
+	uint32_t	hexlen = 0;
 
 	hdsSrc = GDALOpenShared(config->rt_file[idx], GA_ReadOnly);
 	if (hdsSrc == NULL) {
@@ -1385,7 +1421,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 		return 0;
 	}
 	factor = config->overview[ovx];
-	ovtable = (const char *) config->overview_table[ovx];
+	ovtable = (const char *)config->overview_table[ovx];
 
 	/* factor must be within valid range */
 	if (factor < MINOVFACTOR || factor > MAXOVFACTOR) {
@@ -1393,14 +1429,14 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 		return 0;
 	}
 
-	dimOv[0] = (int) (info->dim[0] + (factor / 2)) / factor;
-	dimOv[1] = (int) (info->dim[1] + (factor / 2)) / factor;
+	dimOv[0] = (int)(info->dim[0] + (factor / 2)) / factor;
+	dimOv[1] = (int)(info->dim[1] + (factor / 2)) / factor;
 
 	/* create VRT dataset */
 	hdsOv = VRTCreate(dimOv[0], dimOv[1]);
 	/*
-	GDALSetDescription(hdsOv, "/tmp/ov.vrt");
-	*/
+	 * GDALSetDescription(hdsOv, "/tmp/ov.vrt");
+	 */
 	GDALSetProjection(hdsOv, info->srs);
 
 	/* adjust scale */
@@ -1418,13 +1454,13 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 			GDALSetRasterNoDataValue(hbandOv, info->nodataval[j]);
 
 		VRTAddSimpleSource(
-			hbandOv, GDALGetRasterBand(hdsSrc, info->nband[j]),
-			0, 0,
-			info->dim[0], info->dim[1],
-			0, 0,
-			dimOv[0], dimOv[1],
-			"near", VRT_NODATA_UNSET
-		);
+			 hbandOv, GDALGetRasterBand(hdsSrc, info->nband[j]),
+				   0, 0,
+				   info->dim[0], info->dim[1],
+				   0, 0,
+				   dimOv[0], dimOv[1],
+				   "near", VRT_NODATA_UNSET
+			);
 	}
 
 	/* make sure VRT reflects all changes */
@@ -1442,18 +1478,21 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 
 	/* number of tiles */
 	if (
-		tile_size[0] != dimOv[0] &&
-		tile_size[1] != dimOv[1]
-	) {
-		ntiles[0] = (dimOv[0] + tile_size[0] -  1) / tile_size[0];
-		ntiles[1] = (dimOv[1] + tile_size[1]  - 1) / tile_size[1];
+	    tile_size[0] != dimOv[0] &&
+	    tile_size[1] != dimOv[1]
+		) {
+		ntiles[0] = (dimOv[0] + tile_size[0] - 1) / tile_size[0];
+		ntiles[1] = (dimOv[1] + tile_size[1] - 1) / tile_size[1];
 	}
 
 	/* working copy of geotransform matrix */
 	memcpy(gt, gtOv, sizeof(double) * 6);
 
 	/* tile overview */
-	/* each tile is a VRT with constraints set for just the data required for the tile */
+	/*
+	 * each tile is a VRT with constraints set for just the data required
+	 * for the tile
+	 */
 	for (ytile = 0; ytile < ntiles[1]; ytile++) {
 
 		/* edge y tile */
@@ -1464,9 +1503,9 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 
 		for (xtile = 0; xtile < ntiles[0]; xtile++) {
 			/*
-			char fn[100];
-			sprintf(fn, "/tmp/ovtile%d.vrt", (ytile * ntiles[0]) + xtile);
-			*/
+			 * char fn[100]; sprintf(fn, "/tmp/ovtile%d.vrt",
+			 * (ytile * ntiles[0]) + xtile);
+			 */
 
 			/* edge x tile */
 			if (!config->pad_tile && ntiles[0] > 1 && (xtile + 1) == ntiles[0])
@@ -1476,16 +1515,16 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 
 			/* compute tile's upper-left corner */
 			GDALApplyGeoTransform(
-				gtOv,
-				xtile * tile_size[0], ytile * tile_size[1],
-				&(gt[0]), &(gt[3])
-			);
+					      gtOv,
+				 xtile * tile_size[0], ytile * tile_size[1],
+					      &(gt[0]), &(gt[3])
+				);
 
 			/* create VRT dataset */
 			hdsDst = VRTCreate(_tile_size[0], _tile_size[1]);
 			/*
-			GDALSetDescription(hdsDst, fn);
-			*/
+			 * GDALSetDescription(hdsDst, fn);
+			 */
 			GDALSetProjection(hdsDst, info->srs);
 			GDALSetGeoTransform(hdsDst, gt);
 
@@ -1498,13 +1537,13 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 					GDALSetRasterNoDataValue(hbandDst, info->nodataval[j]);
 
 				VRTAddSimpleSource(
-					hbandDst, GDALGetRasterBand(hdsOv, j + 1),
-					xtile * tile_size[0], ytile * tile_size[1],
-					_tile_size[0], _tile_size[1],
-					0, 0,
-					_tile_size[0], _tile_size[1],
-					"near", VRT_NODATA_UNSET
-				);
+				  hbandDst, GDALGetRasterBand(hdsOv, j + 1),
+				 xtile * tile_size[0], ytile * tile_size[1],
+					       _tile_size[0], _tile_size[1],
+						   0, 0,
+					       _tile_size[0], _tile_size[1],
+						   "near", VRT_NODATA_UNSET
+					);
 			}
 
 			/* make sure VRT reflects all changes */
@@ -1539,11 +1578,11 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 			/* flush if tileset gets too big */
 			if (tileset->length > 10) {
 				if (!insert_records(
-					config->schema, ovtable, config->raster_column,
-					(config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
-					config->copy_statements, config->out_srid,
-					tileset, buffer
-				)) {
+						    config->schema, ovtable, config->raster_column,
+						    (config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
+				  config->copy_statements, config->out_srid,
+						    tileset, buffer
+						    )) {
 					rterror(_("build_overview: Could not convert raster tiles into INSERT or COPY statements"));
 					GDALClose(hdsSrc);
 					return 0;
@@ -1560,24 +1599,25 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 }
 
 static int
-convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *tileset, STRINGBUFFER *buffer) {
-	GDALDatasetH hdsSrc;
-	GDALRasterBandH hbandSrc;
-	int nband = 0;
-	uint32_t i = 0;
-	int ntiles[2] = {1, 1};
-	int _tile_size[2] = {0, 0};
-	int xtile = 0;
-	int ytile = 0;
-	double gt[6] = {0.};
-	const char* pszProjectionRef = NULL;
-	int tilesize = 0;
+convert_raster(int idx, RTLOADERCFG * config, RASTERINFO * info, STRINGBUFFER * tileset, STRINGBUFFER * buffer)
+{
+	GDALDatasetH	hdsSrc;
+	GDALRasterBandH	hbandSrc;
+	int		nband = 0;
+	uint32_t	i = 0;
+	int		ntiles[2] = {1, 1};
+	int		_tile_size[2] = {0, 0};
+	int		xtile = 0;
+	int		ytile = 0;
+	double		gt[6] = {0.};
+	const char     *pszProjectionRef = NULL;
+	int		tilesize = 0;
 
-	rt_raster rast = NULL;
-	uint32_t numbands = 0;
-	rt_band band = NULL;
-	char *hex;
-	uint32_t hexlen = 0;
+	rt_raster	rast = NULL;
+	uint32_t	numbands = 0;
+	rt_band		band = NULL;
+	char	       *hex;
+	uint32_t	hexlen = 0;
 
 	info->srid = config->srid;
 
@@ -1617,13 +1657,13 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		if (info->srid == SRID_UNKNOWN) {
 			OGRSpatialReferenceH hSRS = OSRNewSpatialReference(NULL);
 			if (OSRSetFromUserInput(hSRS, pszProjectionRef) == OGRERR_NONE) {
-				const char* pszAuthorityName = OSRGetAuthorityName(hSRS, NULL);
-				const char* pszAuthorityCode = OSRGetAuthorityCode(hSRS, NULL);
+				const char     *pszAuthorityName = OSRGetAuthorityName(hSRS, NULL);
+				const char     *pszAuthorityCode = OSRGetAuthorityCode(hSRS, NULL);
 				if (
-					pszAuthorityName != NULL &&
-					strcmp(pszAuthorityName, "EPSG") == 0 &&
-					pszAuthorityCode != NULL
-				) {
+				    pszAuthorityName != NULL &&
+				    strcmp(pszAuthorityName, "EPSG") == 0 &&
+				    pszAuthorityCode != NULL
+					) {
 					info->srid = atoi(pszAuthorityCode);
 				}
 			}
@@ -1631,10 +1671,10 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		}
 	}
 
-	if ( info->srid == SRID_UNKNOWN && config->out_srid != SRID_UNKNOWN ) {
-		  rterror(_("convert_raster: could not determine source srid, cannot transform to target srid %d"), config->out_srid);
-		  GDALClose(hdsSrc);
-		  return 0;
+	if (info->srid == SRID_UNKNOWN && config->out_srid != SRID_UNKNOWN) {
+		rterror(_("convert_raster: could not determine source srid, cannot transform to target srid %d"), config->out_srid);
+		GDALClose(hdsSrc);
+		return 0;
 	}
 
 	/* record geotransform matrix */
@@ -1710,13 +1750,13 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 	/* tile size is "auto" */
 	if (
-		config->tile_size[0] == -1 &&
-		config->tile_size[1] == -1
-	) {
+	    config->tile_size[0] == -1 &&
+	    config->tile_size[1] == -1
+		) {
 		calc_tile_size(
-			info->dim[0], info->dim[1],
-			&(config->tile_size[0]), &(config->tile_size[1])
-		);
+			       info->dim[0], info->dim[1],
+			    &(config->tile_size[0]), &(config->tile_size[1])
+			);
 
 		rtinfo(_("Using computed tile size: %dx%d"), config->tile_size[0], config->tile_size[1]);
 	}
@@ -1732,10 +1772,10 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		info->tile_size[1] = config->tile_size[1];
 
 	/* number of tiles */
-	if ((uint32_t)info->tile_size[0] != info->dim[0])
-		ntiles[0] = (info->dim[0] + info->tile_size[0]  - 1) / info->tile_size[0];
-	if ((uint32_t)info->tile_size[1] != info->dim[1])
-		ntiles[1] = (info->dim[1] + info->tile_size[1]  - 1) / info->tile_size[1];
+	if ((uint32_t) info->tile_size[0] != info->dim[0])
+		ntiles[0] = (info->dim[0] + info->tile_size[0] - 1) / info->tile_size[0];
+	if ((uint32_t) info->tile_size[1] != info->dim[1])
+		ntiles[1] = (info->dim[1] + info->tile_size[1] - 1) / info->tile_size[1];
 
 	/* estimate size of 1 tile */
 	tilesize = info->tile_size[0] * info->tile_size[1];
@@ -1764,8 +1804,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 			if (config->hasnodata) {
 				info->hasnodata[i] = 1;
 				info->nodataval[i] = config->nodataval;
-			}
-			else
+			} else
 				info->nodataval[i] = 0;
 		}
 
@@ -1800,10 +1839,10 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 				/* compute tile's upper-left corner */
 				GDALApplyGeoTransform(
-					info->gt,
-					xtile * info->tile_size[0], ytile * info->tile_size[1],
-					&(gt[0]), &(gt[3])
-				);
+						      info->gt,
+						      xtile * info->tile_size[0], ytile * info->tile_size[1],
+						      &(gt[0]), &(gt[3])
+					);
 
 				/* create raster object */
 				rast = rt_raster_new(_tile_size[0], _tile_size[1]);
@@ -1819,12 +1858,12 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				/* add bands */
 				for (i = 0; i < info->nband_count; i++) {
 					band = rt_band_new_offline(
-						_tile_size[0], _tile_size[1],
-						info->bandtype[i],
-						info->hasnodata[i], info->nodataval[i],
-						info->nband[i] - 1,
-						config->rt_file[idx]
-					);
+					       _tile_size[0], _tile_size[1],
+							  info->bandtype[i],
+								   info->hasnodata[i], info->nodataval[i],
+							 info->nband[i] - 1,
+							config->rt_file[idx]
+						);
 					if (band == NULL) {
 						rterror(_("convert_raster: Could not create offline band"));
 						raster_destroy(rast);
@@ -1839,7 +1878,10 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 						return 0;
 					}
 
-					/* inspect each band of raster where band is NODATA */
+					/*
+					 * inspect each band of raster where
+					 * band is NODATA
+					 */
 					if (!config->skip_nodataval_check)
 						rt_band_check_is_nodata(band);
 				}
@@ -1859,11 +1901,11 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				/* flush if tileset gets too big */
 				if (tileset->length > 10) {
 					if (!insert_records(
-						config->schema, config->table, config->raster_column,
-						(config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
-						config->copy_statements, config->out_srid,
-						tileset, buffer
-					)) {
+							    config->schema, config->table, config->raster_column,
+							    (config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
+							    config->copy_statements, config->out_srid,
+							    tileset, buffer
+							    )) {
 						rterror(_("convert_raster: Could not convert raster tiles into INSERT or COPY statements"));
 						return 0;
 					}
@@ -1875,10 +1917,13 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	}
 	/* in-db raster */
 	else {
-		VRTDatasetH hdsDst;
+		VRTDatasetH	hdsDst;
 		VRTSourcedRasterBandH hbandDst;
 
-		/* each tile is a VRT with constraints set for just the data required for the tile */
+		/*
+		 * each tile is a VRT with constraints set for just the data
+		 * required for the tile
+		 */
 		for (ytile = 0; ytile < ntiles[1]; ytile++) {
 
 			/* edge y tile */
@@ -1889,9 +1934,10 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 			for (xtile = 0; xtile < ntiles[0]; xtile++) {
 				/*
-				char fn[100];
-				sprintf(fn, "/tmp/tile%d.vrt", (ytile * ntiles[0]) + xtile);
-				*/
+				 * char fn[100]; sprintf(fn,
+				 * "/tmp/tile%d.vrt", (ytile * ntiles[0]) +
+				 * xtile);
+				 */
 
 				/* edge x tile */
 				if (!config->pad_tile && ntiles[0] > 1 && (xtile + 1) == ntiles[0])
@@ -1901,22 +1947,21 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 				/* compute tile's upper-left corner */
 				GDALApplyGeoTransform(
-					info->gt,
-					xtile * info->tile_size[0], ytile * info->tile_size[1],
-					&(gt[0]), &(gt[3])
-				);
+						      info->gt,
+						      xtile * info->tile_size[0], ytile * info->tile_size[1],
+						      &(gt[0]), &(gt[3])
+					);
 				/*
-				rtinfo(_("tile (%d, %d) gt = (%f, %f, %f, %f, %f, %f)"),
-					xtile, ytile,
-					gt[0], gt[1], gt[2], gt[3], gt[4], gt[5]
-				);
-				*/
+				 * rtinfo(_("tile (%d, %d) gt = (%f, %f, %f,
+				 * %f, %f, %f)"), xtile, ytile, gt[0], gt[1],
+				 * gt[2], gt[3], gt[4], gt[5] );
+				 */
 
 				/* create VRT dataset */
 				hdsDst = VRTCreate(_tile_size[0], _tile_size[1]);
 				/*
-  	 		GDALSetDescription(hdsDst, fn);
-				*/
+				 * GDALSetDescription(hdsDst, fn);
+				 */
 				GDALSetProjection(hdsDst, info->srs);
 				GDALSetGeoTransform(hdsDst, gt);
 
@@ -1929,13 +1974,13 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 						GDALSetRasterNoDataValue(hbandDst, info->nodataval[i]);
 
 					VRTAddSimpleSource(
-						hbandDst, GDALGetRasterBand(hdsSrc, info->nband[i]),
-						xtile * info->tile_size[0], ytile * info->tile_size[1],
-						_tile_size[0], _tile_size[1],
-						0, 0,
-						_tile_size[0], _tile_size[1],
-						"near", VRT_NODATA_UNSET
-					);
+							   hbandDst, GDALGetRasterBand(hdsSrc, info->nband[i]),
+							   xtile * info->tile_size[0], ytile * info->tile_size[1],
+					       _tile_size[0], _tile_size[1],
+							   0, 0,
+					       _tile_size[0], _tile_size[1],
+						    "near", VRT_NODATA_UNSET
+						);
 				}
 
 				/* make sure VRT reflects all changes */
@@ -1952,7 +1997,10 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				/* set srid if provided */
 				rt_raster_set_srid(rast, info->srid);
 
-				/* inspect each band of raster where band is NODATA */
+				/*
+				 * inspect each band of raster where band is
+				 * NODATA
+				 */
 				numbands = rt_raster_get_num_bands(rast);
 				for (i = 0; i < numbands; i++) {
 					band = rt_raster_get_band(rast, i);
@@ -1978,11 +2026,11 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				/* flush if tileset gets too big */
 				if (tileset->length > 10) {
 					if (!insert_records(
-						config->schema, config->table, config->raster_column,
-						(config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
-						config->copy_statements, config->out_srid,
-						tileset, buffer
-					)) {
+							    config->schema, config->table, config->raster_column,
+							    (config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
+							    config->copy_statements, config->out_srid,
+							    tileset, buffer
+							    )) {
 						rterror(_("convert_raster: Could not convert raster tiles into INSERT or COPY statements"));
 						GDALClose(hdsSrc);
 						return 0;
@@ -2000,8 +2048,9 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 }
 
 static int
-process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
-	uint32_t i = 0;
+process_rasters(RTLOADERCFG * config, STRINGBUFFER * buffer)
+{
+	uint32_t	i = 0;
 
 	assert(config != NULL);
 	assert(config->table != NULL);
@@ -2034,11 +2083,11 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	/* create table */
 	if (config->opt != 'a') {
 		if (!create_table(
-			config->schema, config->table, config->raster_column,
-			config->file_column, config->file_column_name,
-			config->tablespace, config->idx_tablespace,
-			buffer
-		)) {
+		       config->schema, config->table, config->raster_column,
+			      config->file_column, config->file_column_name,
+				  config->tablespace, config->idx_tablespace,
+				  buffer
+				  )) {
 			rterror(_("process_rasters: Could not add CREATE TABLE statement to string buffer"));
 			return 0;
 		}
@@ -2046,11 +2095,11 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 		if (config->overview_count) {
 			for (i = 0; i < config->overview_count; i++) {
 				if (!create_table(
-					config->schema, config->overview_table[i], config->raster_column,
-					config->file_column, config->file_column_name,
-					config->tablespace, config->idx_tablespace,
-					buffer
-				)) {
+						  config->schema, config->overview_table[i], config->raster_column,
+						  config->file_column, config->file_column_name,
+				 config->tablespace, config->idx_tablespace,
+						  buffer
+						  )) {
 					rterror(_("process_rasters: Could not add an overview's CREATE TABLE statement to string buffer"));
 					return 0;
 				}
@@ -2060,13 +2109,13 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 	/* no need to run if opt is 'p' */
 	if (config->opt != 'p') {
-		RASTERINFO refinfo;
+		RASTERINFO	refinfo;
 		init_rastinfo(&refinfo);
 
 		/* process each raster */
 		for (i = 0; i < config->rt_file_count; i++) {
-			RASTERINFO rastinfo;
-			STRINGBUFFER tileset;
+			RASTERINFO	rastinfo;
+			STRINGBUFFER	tileset;
 
 			fprintf(stderr, _("Processing %d/%d: %s\n"), i + 1, config->rt_file_count, config->rt_file[i]);
 
@@ -2081,14 +2130,17 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 				return 0;
 			}
 
-			/* process raster tiles into COPY or INSERT statements */
+			/*
+			 * process raster tiles into COPY or INSERT
+			 * statements
+			 */
 			if (tileset.length && !insert_records(
-				config->schema, config->table, config->raster_column,
-				(config->file_column ? config->rt_filename[i] : NULL),
-        config->file_column_name,
-				config->copy_statements, config->out_srid,
-				&tileset, buffer
-			)) {
+			config->schema, config->table, config->raster_column,
+							      (config->file_column ? config->rt_filename[i] : NULL),
+						   config->file_column_name,
+				  config->copy_statements, config->out_srid,
+							    &tileset, buffer
+							      )) {
 				rterror(_("process_rasters: Could not convert raster tiles into INSERT or COPY statements"));
 				rtdealloc_rastinfo(&rastinfo);
 				rtdealloc_stringbuffer(&tileset, 0);
@@ -2102,7 +2154,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 			/* overviews */
 			if (config->overview_count) {
-				uint32_t j = 0;
+				uint32_t	j = 0;
 
 				for (j = 0; j < config->overview_count; j++) {
 
@@ -2114,11 +2166,11 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 					}
 
 					if (tileset.length && !insert_records(
-						config->schema, config->overview_table[j], config->raster_column,
-						(config->file_column ? config->rt_filename[i] : NULL), config->file_column_name,
-						config->copy_statements, config->out_srid,
-						&tileset, buffer
-					)) {
+									      config->schema, config->overview_table[j], config->raster_column,
+									      (config->file_column ? config->rt_filename[i] : NULL), config->file_column_name,
+									      config->copy_statements, config->out_srid,
+							    &tileset, buffer
+									)) {
 						rterror(_("process_rasters: Could not convert overview tiles into INSERT or COPY statements"));
 						rtdealloc_rastinfo(&rastinfo);
 						rtdealloc_stringbuffer(&tileset, 0);
@@ -2150,10 +2202,10 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	if (config->idx) {
 		/* create index */
 		if (!create_index(
-			config->schema, config->table, config->raster_column,
-			config->idx_tablespace,
-			buffer
-		)) {
+		       config->schema, config->table, config->raster_column,
+				  config->idx_tablespace,
+				  buffer
+				  )) {
 			rterror(_("process_rasters: Could not add CREATE INDEX statement to string buffer"));
 			return 0;
 		}
@@ -2161,9 +2213,9 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 		/* analyze */
 		if (config->opt != 'p') {
 			if (!analyze_table(
-				config->schema, config->table,
-				buffer
-			)) {
+					   config->schema, config->table,
+					   buffer
+					   )) {
 				rterror(_("process_rasters: Could not add ANALYZE statement to string buffer"));
 				return 0;
 			}
@@ -2173,10 +2225,10 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			for (i = 0; i < config->overview_count; i++) {
 				/* create index */
 				if (!create_index(
-					config->schema, config->overview_table[i], config->raster_column,
-					config->idx_tablespace,
-					buffer
-				)) {
+						  config->schema, config->overview_table[i], config->raster_column,
+						  config->idx_tablespace,
+						  buffer
+						  )) {
 					rterror(_("process_rasters: Could not add an overview's CREATE INDEX statement to string buffer"));
 					return 0;
 				}
@@ -2184,9 +2236,9 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 				/* analyze */
 				if (config->opt != 'p') {
 					if (!analyze_table(
-						config->schema, config->overview_table[i],
-						buffer
-					)) {
+							   config->schema, config->overview_table[i],
+							   buffer
+							   )) {
 						rterror(_("process_rasters: Could not add an overview's ANALYZE statement to string buffer"));
 						return 0;
 					}
@@ -2198,10 +2250,10 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	/* add constraints */
 	if (config->constraints) {
 		if (!add_raster_constraints(
-			config->schema, config->table, config->raster_column,
-			config->regular_blocking, config->max_extent,
-			buffer
-		)) {
+		       config->schema, config->table, config->raster_column,
+			       config->regular_blocking, config->max_extent,
+					    buffer
+					    )) {
 			rterror(_("process:rasters: Could not add AddRasterConstraints statement to string buffer"));
 			return 0;
 		}
@@ -2209,10 +2261,10 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 		if (config->overview_count) {
 			for (i = 0; i < config->overview_count; i++) {
 				if (!add_raster_constraints(
-					config->schema, config->overview_table[i], config->raster_column,
-					config->regular_blocking, config->max_extent,
-					buffer
-				)) {
+							    config->schema, config->overview_table[i], config->raster_column,
+				config->regular_blocking, config->max_extent,
+							    buffer
+							    )) {
 					rterror(_("process_rasters: Could not add an overview's AddRasterConstraints statement to string buffer"));
 					return 0;
 				}
@@ -2224,11 +2276,11 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	if (config->overview_count) {
 		for (i = 0; i < config->overview_count; i++) {
 			if (!add_overview_constraints(
-				config->schema, config->overview_table[i], config->raster_column,
-				config->schema, config->table, config->raster_column,
-				config->overview[i],
-				buffer
-			)) {
+						      config->schema, config->overview_table[i], config->raster_column,
+			config->schema, config->table, config->raster_column,
+						      config->overview[i],
+						      buffer
+						      )) {
 				rterror(_("process_rasters: Could not add an overview's AddOverviewConstraints statement to string buffer"));
 				return 0;
 			}
@@ -2245,9 +2297,9 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	/* maintenance */
 	if (config->opt != 'p' && config->maintenance) {
 		if (!vacuum_table(
-			config->schema, config->table,
-			buffer
-		)) {
+				  config->schema, config->table,
+				  buffer
+				  )) {
 			rterror(_("process_rasters: Could not add VACUUM statement to string buffer"));
 			return 0;
 		}
@@ -2255,9 +2307,9 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 		if (config->overview_count) {
 			for (i = 0; i < config->overview_count; i++) {
 				if (!vacuum_table(
-					config->schema, config->overview_table[i],
-					buffer
-				)) {
+				  config->schema, config->overview_table[i],
+						  buffer
+						  )) {
 					rterror(_("process_rasters: Could not add an overview's VACUUM statement to string buffer"));
 					return 0;
 				}
@@ -2270,23 +2322,24 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 }
 
 int
-main(int argc, char **argv) {
-	RTLOADERCFG *config = NULL;
-	STRINGBUFFER *buffer = NULL;
-	uint32_t i = 0;
-	uint32_t j = 0;
-	char **elements = NULL;
-	uint32_t n = 0;
-	GDALDriverH drv = NULL;
-	char *tmp = NULL;
-	int argit = 0;
+main(int argc, char **argv)
+{
+	RTLOADERCFG    *config = NULL;
+	STRINGBUFFER   *buffer = NULL;
+	uint32_t	i = 0;
+	uint32_t	j = 0;
+	char	      **elements = NULL;
+	uint32_t	n = 0;
+	GDALDriverH	drv = NULL;
+	char	       *tmp = NULL;
+	int		argit = 0;
 
 	rt_init_allocators();
 
 #ifdef USE_NLS
-	setlocale (LC_ALL, "");
-	bindtextdomain (PACKAGE, LOCALEDIR);
-	textdomain (PACKAGE);
+	setlocale(LC_ALL, "");
+	bindtextdomain(PACKAGE, LOCALEDIR);
+	textdomain(PACKAGE);
 #endif
 
 	/* no args, show usage */
@@ -2308,7 +2361,7 @@ main(int argc, char **argv) {
 	****************************************************************************/
 
 	for (argit = 1; argit < argc; argit++) {
-		char *optarg, *ptr;
+		char	       *optarg, *ptr;
 		/* srid */
 
 		if (CSEQUAL(argv[argit], "-s") && argit < argc - 1) {
@@ -2333,13 +2386,13 @@ main(int argc, char **argv) {
 
 			config->nband_count = 0;
 			for (j = 0; j < n; j++) {
-				char *t = trim(elements[j]);
-				char **minmax = NULL;
-				int *range = NULL;
-				uint32_t p = 0;
-				uint32_t l = 0;
-				int m = 0;
-				uint32_t o = 0;
+				char	       *t = trim(elements[j]);
+				char	      **minmax = NULL;
+				int	       *range = NULL;
+				uint32_t	p = 0;
+				uint32_t	l = 0;
+				int		m = 0;
+				uint32_t	o = 0;
 
 				/* is t a range? */
 				minmax = strsplit(t, "-", &o);
@@ -2356,8 +2409,7 @@ main(int argc, char **argv) {
 						rtdealloc_config(config);
 						exit(1);
 					}
-				}
-				else {
+				} else {
 					p = 1;
 					range = rtalloc(sizeof(int));
 					if (range == NULL) {
@@ -2421,8 +2473,7 @@ main(int argc, char **argv) {
 			if (CSEQUAL(argv[++argit], "auto")) {
 				config->tile_size[0] = -1;
 				config->tile_size[1] = -1;
-			}
-			else {
+			} else {
 				elements = strsplit(argv[argit], "x", &n);
 				if (n != 2) {
 					rterror(_("Could not process -t"));
@@ -2431,7 +2482,7 @@ main(int argc, char **argv) {
 				}
 
 				for (j = 0; j < n; j++) {
-					char *t = trim(elements[j]);
+					char	       *t = trim(elements[j]);
 					config->tile_size[j] = atoi(t);
 					rtdealloc(t);
 					rtdealloc(elements[j]);
@@ -2515,7 +2566,7 @@ main(int argc, char **argv) {
 				exit(1);
 			}
 			for (j = 0; j < n; j++) {
-				char *t = trim(elements[j]);
+				char	       *t = trim(elements[j]);
 				config->overview[j] = atoi(t);
 				rtdealloc(t);
 				rtdealloc(elements[j]);
@@ -2524,7 +2575,7 @@ main(int argc, char **argv) {
 			elements = NULL;
 			n = 0;
 
-			for (j = 0; j < (uint32_t)config->overview_count; j++) {
+			for (j = 0; j < (uint32_t) config->overview_count; j++) {
 				if (config->overview[j] < MINOVFACTOR || config->overview[j] > MAXOVFACTOR) {
 					rterror(_("Overview factor %d is not between %d and %d"), config->overview[j], MINOVFACTOR, MAXOVFACTOR);
 					rtdealloc_config(config);
@@ -2605,12 +2656,11 @@ main(int argc, char **argv) {
 		}
 		/* GDAL formats */
 		else if (CSEQUAL(argv[argit], "-G")) {
-			uint32_t drv_count = 0;
-			rt_gdaldriver drv_set = rt_raster_gdal_drivers(&drv_count, 0);
+			uint32_t	drv_count = 0;
+			rt_gdaldriver	drv_set = rt_raster_gdal_drivers(&drv_count, 0);
 			if (drv_set == NULL || !drv_count) {
 				rterror(_("Could not get list of available GDAL raster formats"));
-			}
-			else {
+			} else {
 				printf(_("Supported GDAL raster formats:\n"));
 				for (j = 0; j < drv_count; j++) {
 					printf(_("  %s\n"), drv_set[j].long_name);
@@ -2630,10 +2680,9 @@ main(int argc, char **argv) {
 			usage();
 			rtdealloc_config(config);
 			exit(0);
-		}
-		else {
+		} else {
 			config->rt_file_count++;
-			config->rt_file = (char **) rtrealloc(config->rt_file, sizeof(char *) * config->rt_file_count);
+			config->rt_file = (char **)rtrealloc(config->rt_file, sizeof(char *) * config->rt_file_count);
 			if (config->rt_file == NULL) {
 				rterror(_("Could not allocate memory for storing raster files"));
 				rtdealloc_config(config);
@@ -2667,14 +2716,14 @@ main(int argc, char **argv) {
 		exit(1);
 	}
 	/*
-		at least two files, see if last is table
-		last isn't recognized by GDAL
-	*/
+	 * at least two files, see if last is table last isn't recognized by
+	 * GDAL
+	 */
 	else if (config->rt_file_count > 1) {
 		drv = GDALIdentifyDriver(config->rt_file[config->rt_file_count - 1], NULL);
 
 		if (drv == NULL) {
-			char *ptr;
+			char	       *ptr;
 			ptr = strchr(config->rt_file[config->rt_file_count - 1], '.');
 
 			/* schema.table */
@@ -2709,7 +2758,7 @@ main(int argc, char **argv) {
 			}
 
 			rtdealloc(config->rt_file[--(config->rt_file_count)]);
-			config->rt_file = (char **) rtrealloc(config->rt_file, sizeof(char *) * config->rt_file_count);
+			config->rt_file = (char **)rtrealloc(config->rt_file, sizeof(char *) * config->rt_file_count);
 			if (config->rt_file == NULL) {
 				rterror(_("Could not reallocate the memory holding raster names"));
 				rtdealloc_config(config);
@@ -2734,15 +2783,15 @@ main(int argc, char **argv) {
 	}
 
 	/* process each file for just the filename */
-	config->rt_filename = (char **) rtalloc(sizeof(char *) * config->rt_file_count);
+	config->rt_filename = (char **)rtalloc(sizeof(char *) * config->rt_file_count);
 	if (config->rt_filename == NULL) {
 		rterror(_("Could not allocate memory for cleaned raster filenames"));
 		rtdealloc_config(config);
 		exit(1);
 	}
 	for (i = 0; i < config->rt_file_count; i++) {
-		char *file;
-		char *ptr;
+		char	       *file;
+		char	       *ptr;
 
 		file = rtalloc(sizeof(char) * (strlen(config->rt_file[i]) + 1));
 		if (file == NULL) {
@@ -2775,8 +2824,8 @@ main(int argc, char **argv) {
 
 	/* first file as proxy table name */
 	if (config->table == NULL) {
-		char *file;
-		char *ptr;
+		char	       *file;
+		char	       *ptr;
 
 		file = rtalloc(sizeof(char) * (strlen(config->rt_filename[0]) + 1));
 		if (file == NULL) {
@@ -2850,7 +2899,7 @@ main(int argc, char **argv) {
 	****************************************************************************/
 
 	if (config->overview_count) {
-		char factor[4];
+		char		factor[4];
 		config->overview_table = rtalloc(sizeof(char *) * config->overview_count);
 		if (config->overview_table == NULL) {
 			rterror(_("Could not allocate memory for overview table names"));
@@ -2877,47 +2926,47 @@ main(int argc, char **argv) {
 
 	if (config->schema != NULL && strlen(config->schema) > MAXNAMELEN) {
 		rtwarn(_("The schema name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
-			config->schema,
-			MAXNAMELEN
-		);
+		       config->schema,
+		       MAXNAMELEN
+			);
 	}
 	if (config->table != NULL && strlen(config->table) > MAXNAMELEN) {
 		rtwarn(_("The table name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
-			config->table,
-			MAXNAMELEN
-		);
+		       config->table,
+		       MAXNAMELEN
+			);
 	}
 	if (config->raster_column != NULL && strlen(config->raster_column) > MAXNAMELEN) {
 		rtwarn(_("The column name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
-			config->raster_column,
-			MAXNAMELEN
-		);
+		       config->raster_column,
+		       MAXNAMELEN
+			);
 	}
 	if (config->file_column_name != NULL && strlen(config->file_column_name) > MAXNAMELEN) {
 		rtwarn(_("The column name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
-			config->file_column_name,
-			MAXNAMELEN
-		);
+		       config->file_column_name,
+		       MAXNAMELEN
+			);
 	}
 	if (config->tablespace != NULL && strlen(config->tablespace) > MAXNAMELEN) {
 		rtwarn(_("The tablespace name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
-			config->tablespace,
-			MAXNAMELEN
-		);
+		       config->tablespace,
+		       MAXNAMELEN
+			);
 	}
 	if (config->idx_tablespace != NULL && strlen(config->idx_tablespace) > MAXNAMELEN) {
 		rtwarn(_("The index tablespace name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
-			config->idx_tablespace,
-			MAXNAMELEN
-		);
+		       config->idx_tablespace,
+		       MAXNAMELEN
+			);
 	}
 	if (config->overview_count) {
 		for (i = 0; i < config->overview_count; i++) {
 			if (strlen(config->overview_table[i]) > MAXNAMELEN) {
 				rtwarn(_("The overview table name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
-					config->overview_table[i],
-					MAXNAMELEN
-				);
+				       config->overview_table[i],
+				       MAXNAMELEN
+					);
 			}
 		}
 	}

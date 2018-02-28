@@ -1,0 +1,34 @@
+# **********************************************************************
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.net
+# *
+# * Copyright (C) 2018  Sandro Santilli <strk@kbt.io>
+# *
+# * This is free software; you can redistribute and/or modify it under
+# * the terms of the GNU General Public Licence. See the COPYING file.
+# *
+# **********************************************************************
+
+INCLUDES = err.h indent_codes.h indent_globs.h indent.h
+
+SRC = args.c err.c indent.c io.c lexi.c parse.c pr_comment.c
+
+PG_CONFIG = @PG_CONFIG@
+CFLAGS += -I$(shell $(PG_CONFIG) --includedir-server)
+
+%.o: %.cpp $(INCLUDES)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+OBJ = $(patsubst %.c,%.o,$(SRC))
+
+all: pg_indent
+
+pg_indent: $(OBJ)
+	$(CC) $(LDFLAGS) -o $@ $^
+
+clean:
+	rm -f $(OBJ) pg_indent
+
+distclean: clean
+	rm -f Makefile

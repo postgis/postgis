@@ -4,26 +4,25 @@
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
  * Copyright (C) 2011-2013 Regents of the University of California
- *   <bkpark@ucdavis.edu>
- * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
- * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
- * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
- * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * <bkpark@ucdavis.edu> Copyright (C) 2010-2011 Jorge Arevalo
+ * <jorge.arevalo@deimos-space.com> Copyright (C) 2010-2011 David Zwarg
+ * <dzwarg@azavea.com> Copyright (C) 2009-2011 Pierre Racine
+ * <pierre.racine@sbf.ulaval.ca> Copyright (C) 2009-2011 Mateusz Loskot
+ * <mateusz@loskot.net> Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
 
@@ -37,8 +36,10 @@
 #define SWAP(x, y) { double t; t = x; x = y; y = t; }
 #define ORDER(x, y) if (x > y) SWAP(x, y)
 
-static double pivot(double *left, double *right) {
-	double l, m, r, *p;
+static double
+pivot(double *left, double *right)
+{
+	double		l, m, r, *p;
 
 	l = *left;
 	m = *(left + (right - left) / 2);
@@ -50,8 +51,10 @@ static double pivot(double *left, double *right) {
 	ORDER(m, r);
 
 	/* pivot is higher of two values */
-	if (l < m) return m;
-	if (m < r) return r;
+	if (l < m)
+		return m;
+	if (m < r)
+		return r;
 
 	/* find pivot that isn't left */
 	for (p = left + 1; p <= right; ++p) {
@@ -63,10 +66,14 @@ static double pivot(double *left, double *right) {
 	return -1;
 }
 
-static double *partition(double *left, double *right, double pivot) {
+static double  *
+partition(double *left, double *right, double pivot)
+{
 	while (left <= right) {
-		while (*left < pivot) ++left;
-		while (*right >= pivot) --right;
+		while (*left < pivot)
+			++left;
+		while (*right >= pivot)
+			--right;
 
 		if (left < right) {
 			SWAP(*left, *right);
@@ -78,9 +85,11 @@ static double *partition(double *left, double *right, double pivot) {
 	return left;
 }
 
-static void quicksort(double *left, double *right) {
-	double p = pivot(left, right);
-	double *pos;
+static void
+quicksort(double *left, double *right)
+{
+	double		p = pivot(left, right);
+	double	       *pos;
 
 	if (p != -1) {
 		pos = partition(left, right, p);
@@ -108,37 +117,37 @@ static void quicksort(double *left, double *right) {
  */
 rt_bandstats
 rt_band_get_summary_stats(
-	rt_band band,
-	int exclude_nodata_value, double sample, int inc_vals,
-	uint64_t *cK, double *cM, double *cQ
-) {
-	uint32_t x = 0;
-	uint32_t y = 0;
-	uint32_t z = 0;
-	uint32_t offset = 0;
-	uint32_t diff = 0;
-	int rtn;
-	int hasnodata = FALSE;
-	double nodata = 0;
-	double *values = NULL;
-	double value;
-	int isnodata = 0;
-	rt_bandstats stats = NULL;
+			  rt_band band,
+		      int exclude_nodata_value, double sample, int inc_vals,
+			  uint64_t * cK, double *cM, double *cQ
+){
+	uint32_t	x = 0;
+	uint32_t	y = 0;
+	uint32_t	z = 0;
+	uint32_t	offset = 0;
+	uint32_t	diff = 0;
+	int		rtn;
+	int		hasnodata = FALSE;
+	double		nodata = 0;
+	double	       *values = NULL;
+	double		value;
+	int		isnodata = 0;
+	rt_bandstats	stats = NULL;
 
-	uint32_t do_sample = 0;
-	uint32_t sample_size = 0;
-	uint32_t sample_per = 0;
-	uint32_t sample_int = 0;
-	uint32_t i = 0;
-	uint32_t j = 0;
-	double sum = 0;
-	uint32_t k = 0;
-	double M = 0;
-	double Q = 0;
+	uint32_t	do_sample = 0;
+	uint32_t	sample_size = 0;
+	uint32_t	sample_per = 0;
+	uint32_t	sample_int = 0;
+	uint32_t	i = 0;
+	uint32_t	j = 0;
+	double		sum = 0;
+	uint32_t	k = 0;
+	double		M = 0;
+	double		Q = 0;
 
 #if POSTGIS_DEBUG_LEVEL > 0
-	clock_t start, stop;
-	double elapsed = 0;
+	clock_t		start, stop;
+	double		elapsed = 0;
 #endif
 
 	RASTER_DEBUG(3, "starting");
@@ -200,8 +209,7 @@ rt_band_get_summary_stats(
 			stats->sum = 0;
 			stats->mean = 0;
 			stats->stddev = -1;
-		}
-		else {
+		} else {
 			stats->count = band->width * band->height;
 			stats->min = stats->max = nodata;
 			stats->sum = stats->count * nodata;
@@ -214,13 +222,12 @@ rt_band_get_summary_stats(
 
 	/* clamp percentage */
 	if (
-		(sample < 0 || FLT_EQ(sample, 0.0)) ||
-		(sample > 1 || FLT_EQ(sample, 1.0))
-	) {
+	    (sample < 0 || FLT_EQ(sample, 0.0)) ||
+	    (sample > 1 || FLT_EQ(sample, 1.0))
+		) {
 		do_sample = 0;
 		sample = 1;
-	}
-	else
+	} else
 		do_sample = 1;
 	RASTER_DEBUGF(3, "do_sample = %d", do_sample);
 
@@ -230,10 +237,9 @@ rt_band_get_summary_stats(
 		sample_per = band->height;
 	}
 	/*
-	 randomly sample a percentage of available pixels
-	 sampling method is known as
-	 	"systematic random sample without replacement"
-	*/
+	 * randomly sample a percentage of available pixels sampling method
+	 * is known as "systematic random sample without replacement"
+	 */
 	else {
 		sample_size = round((band->width * band->height) * sample);
 		sample_per = round(sample_size / band->width);
@@ -244,7 +250,7 @@ rt_band_get_summary_stats(
 	}
 
 	RASTER_DEBUGF(3, "sampling %d of %d available pixels w/ %d per set"
-		, sample_size, (band->width * band->height), sample_per);
+		    ,sample_size, (band->width * band->height), sample_per);
 
 	if (inc_vals) {
 		values = rtalloc(sizeof(double) * sample_size);
@@ -282,7 +288,8 @@ rt_band_get_summary_stats(
 				diff = sample_int - offset;
 			}
 			RASTER_DEBUGF(5, "(x, y, z) = (%d, %d, %d)", x, y, z);
-			if (y >= band->height || z > sample_per) break;
+			if (y >= band->height || z > sample_per)
+				break;
 
 			rtn = rt_band_get_pixel(band, x, y, &value, &isnodata);
 
@@ -290,23 +297,23 @@ rt_band_get_summary_stats(
 			if (rtn == ES_NONE && (!exclude_nodata_value || (exclude_nodata_value && !isnodata))) {
 
 				/* inc_vals set, collect pixel values */
-				if (inc_vals) values[k] = value;
+				if (inc_vals)
+					values[k] = value;
 
 				/* average */
 				k++;
 				sum += value;
 
 				/*
-					one-pass standard deviation
-					http://www.eecs.berkeley.edu/~mhoemmen/cs194/Tutorials/variance.pdf
-				*/
+				 * one-pass standard deviation
+				 * http://www.eecs.berkeley.edu/~mhoemmen/cs194/Tutorials/variance.pdf
+				 */
 				if (k == 1) {
 					Q = 0;
 					M = value;
-				}
-				else {
-					Q += (((k  - 1) * pow(value - M, 2)) / k);
-					M += ((value - M ) / k);
+				} else {
+					Q += (((k - 1) * pow(value - M, 2)) / k);
+					M += ((value - M) / k);
 				}
 
 				/* coverage one-pass standard deviation */
@@ -315,10 +322,9 @@ rt_band_get_summary_stats(
 					if (*cK == 1) {
 						*cQ = 0;
 						*cM = value;
-					}
-					else {
-						*cQ += (((*cK  - 1) * pow(value - *cM, 2)) / *cK);
-						*cM += ((value - *cM ) / *cK);
+					} else {
+						*cQ += (((*cK - 1) * pow(value - *cM, 2)) / *cK);
+						*cM += ((value - *cM) / *cK);
 					}
 				}
 
@@ -326,8 +332,7 @@ rt_band_get_summary_stats(
 				if (stats->count < 1) {
 					stats->count = 1;
 					stats->min = stats->max = value;
-				}
-				else {
+				} else {
 					if (value < stats->min)
 						stats->min = value;
 					if (value > stats->max)
@@ -377,9 +382,9 @@ rt_band_get_summary_stats(
 
 #if POSTGIS_DEBUG_LEVEL > 0
 	stop = clock();
-	elapsed = ((double) (stop - start)) / CLOCKS_PER_SEC;
+	elapsed = ((double)(stop - start)) / CLOCKS_PER_SEC;
 	RASTER_DEBUGF(3, "(time, count, mean, stddev, min, max) = (%0.4f, %d, %f, %f, %f, %f)",
-		elapsed, stats->count, stats->mean, stats->stddev, stats->min, stats->max);
+		      elapsed, stats->count, stats->mean, stats->stddev, stats->min, stats->max);
 #endif
 
 	RASTER_DEBUG(3, "done");
@@ -410,24 +415,24 @@ rt_band_get_summary_stats(
  */
 rt_histogram
 rt_band_get_histogram(
-	rt_bandstats stats,
-	uint32_t bin_count, double *bin_width, uint32_t bin_width_count,
-	int right, double min, double max,
-	uint32_t *rtn_count
-) {
-	rt_histogram bins = NULL;
-	int init_width = 0;
-	uint32_t i;
-	uint32_t j;
-	double tmp;
-	double value;
-	int sum = 0;
-	double qmin;
-	double qmax;
+		      rt_bandstats stats,
+	    uint32_t bin_count, double *bin_width, uint32_t bin_width_count,
+		      int right, double min, double max,
+		      uint32_t * rtn_count
+){
+	rt_histogram	bins = NULL;
+	int		init_width = 0;
+	uint32_t	i;
+	uint32_t	j;
+	double		tmp;
+	double		value;
+	int		sum = 0;
+	double		qmin;
+	double		qmax;
 
 #if POSTGIS_DEBUG_LEVEL > 0
-	clock_t start, stop;
-	double elapsed = 0;
+	clock_t		start, stop;
+	double		elapsed = 0;
 #endif
 
 	RASTER_DEBUG(3, "starting");
@@ -457,8 +462,7 @@ rt_band_get_histogram(
 	if (FLT_EQ(max, min)) {
 		qmin = stats->min;
 		qmax = stats->max;
-	}
-	else {
+	} else {
 		qmin = min;
 		qmax = max;
 		if (qmin > qmax) {
@@ -470,17 +474,16 @@ rt_band_get_histogram(
 	/* # of bins not provided */
 	if (bin_count <= 0) {
 		/*
-			determine # of bins
-			http://en.wikipedia.org/wiki/Histogram
-
-			all computed bins are assumed to have equal width
-		*/
+		 * determine # of bins http://en.wikipedia.org/wiki/Histogram
+		 *
+		 * all computed bins are assumed to have equal width
+		 */
 		/* Square-root choice for stats->count < 30 */
 		if (stats->count < 30)
 			bin_count = ceil(sqrt(stats->count));
 		/* Sturges' formula for stats->count >= 30 */
 		else
-			bin_count = ceil(log2((double) stats->count) + 1.);
+			bin_count = ceil(log2((double)stats->count) + 1.);
 
 		/* bin_width_count provided and bin_width has value */
 		if (bin_width_count > 0 && NULL != bin_width) {
@@ -489,10 +492,10 @@ rt_band_get_histogram(
 				bin_count = bin_width_count;
 			else if (bin_width_count > 1) {
 				tmp = 0;
-				for (i = 0; i < bin_width_count; i++) tmp += bin_width[i];
+				for (i = 0; i < bin_width_count; i++)
+					tmp += bin_width[i];
 				bin_count = ceil((qmax - qmin) / tmp) * bin_width_count;
-			}
-			else
+			} else
 				bin_count = ceil((qmax - qmin) / bin_width[0]);
 		}
 		/* set bin width count to zero so that one can be calculated */
@@ -502,7 +505,8 @@ rt_band_get_histogram(
 	}
 
 	/* min and max the same */
-	if (FLT_EQ(qmax, qmin)) bin_count = 1;
+	if (FLT_EQ(qmax, qmin))
+		bin_count = 1;
 
 	RASTER_DEBUGF(3, "bin_count = %d", bin_count);
 
@@ -545,7 +549,8 @@ rt_band_get_histogram(
 	bins = rtalloc(bin_count * sizeof(struct rt_histogram_t));
 	if (NULL == bins) {
 		rterror("rt_util_get_histogram: Could not allocate memory for histogram");
-		if (init_width) rtdealloc(bin_width);
+		if (init_width)
+			rtdealloc(bin_width);
 		return NULL;
 	}
 	if (!right)
@@ -564,8 +569,7 @@ rt_band_get_histogram(
 
 				bins[i].inc_min = 1;
 				bins[i].inc_max = 0;
-			}
-			else {
+			} else {
 				bins[i].max = tmp;
 				tmp -= bin_width[j];
 				bins[i].min = tmp;
@@ -583,8 +587,7 @@ rt_band_get_histogram(
 		/* align last bin to the max value */
 		if (bins[bin_count - 1].max < qmax)
 			bins[bin_count - 1].max = qmax;
-	}
-	else {
+	} else {
 		bins[bin_count - 1].inc_min = 1;
 
 		/* align first bin to the min value */
@@ -600,13 +603,13 @@ rt_band_get_histogram(
 		if (!right) {
 			for (j = 0; j < bin_count; j++) {
 				if (
-					(!bins[j].inc_max && value < bins[j].max) || (
-						bins[j].inc_max && (
-							(value < bins[j].max) ||
-							FLT_EQ(value, bins[j].max)
-						)
-					)
-				) {
+				    (!bins[j].inc_max && value < bins[j].max) || (
+							bins[j].inc_max && (
+						    (value < bins[j].max) ||
+						  FLT_EQ(value, bins[j].max)
+									    )
+									   )
+					) {
 					bins[j].count++;
 					sum++;
 					break;
@@ -617,13 +620,13 @@ rt_band_get_histogram(
 		else {
 			for (j = 0; j < bin_count; j++) {
 				if (
-					(!bins[j].inc_min && value > bins[j].min) || (
-						bins[j].inc_min && (
-							(value > bins[j].min) ||
-							FLT_EQ(value, bins[j].min)
-						)
-					)
-				) {
+				    (!bins[j].inc_min && value > bins[j].min) || (
+							bins[j].inc_min && (
+						    (value > bins[j].min) ||
+						  FLT_EQ(value, bins[j].min)
+									    )
+									   )
+					) {
 					bins[j].count++;
 					sum++;
 					break;
@@ -633,21 +636,22 @@ rt_band_get_histogram(
 	}
 
 	for (i = 0; i < bin_count; i++) {
-		bins[i].percent = ((double) bins[i].count) / sum;
+		bins[i].percent = ((double)bins[i].count) / sum;
 	}
 
 #if POSTGIS_DEBUG_LEVEL > 0
 	stop = clock();
-	elapsed = ((double) (stop - start)) / CLOCKS_PER_SEC;
+	elapsed = ((double)(stop - start)) / CLOCKS_PER_SEC;
 	RASTER_DEBUGF(3, "elapsed time = %0.4f", elapsed);
 
 	for (j = 0; j < bin_count; j++) {
 		RASTER_DEBUGF(5, "(min, max, inc_min, inc_max, count, sum, percent) = (%f, %f, %d, %d, %d, %d, %f)",
-			bins[j].min, bins[j].max, bins[j].inc_min, bins[j].inc_max, bins[j].count, sum, bins[j].percent);
+			      bins[j].min, bins[j].max, bins[j].inc_min, bins[j].inc_max, bins[j].count, sum, bins[j].percent);
 	}
 #endif
 
-	if (init_width) rtdealloc(bin_width);
+	if (init_width)
+		rtdealloc(bin_width);
 	*rtn_count = bin_count;
 	RASTER_DEBUG(3, "done");
 	return bins;
@@ -670,19 +674,19 @@ rt_band_get_histogram(
  */
 rt_quantile
 rt_band_get_quantiles(
-	rt_bandstats stats,
-	double *quantiles, int quantiles_count,
-	uint32_t *rtn_count
-) {
-	rt_quantile rtn;
-	int init_quantiles = 0;
-	int i = 0;
-	double h;
-	int hl;
+		      rt_bandstats stats,
+		      double *quantiles, int quantiles_count,
+		      uint32_t * rtn_count
+){
+	rt_quantile	rtn;
+	int		init_quantiles = 0;
+	int		i = 0;
+	double		h;
+	int		hl;
 
 #if POSTGIS_DEBUG_LEVEL > 0
-	clock_t start, stop;
-	double elapsed = 0;
+	clock_t		start, stop;
+	double		elapsed = 0;
 #endif
 
 	RASTER_DEBUG(3, "starting");
@@ -713,7 +717,7 @@ rt_band_get_quantiles(
 
 		quantiles_count--;
 		for (i = 0; i <= quantiles_count; i++)
-			quantiles[i] = ((double) i) / quantiles_count;
+			quantiles[i] = ((double)i) / quantiles_count;
 		quantiles_count++;
 	}
 
@@ -721,7 +725,8 @@ rt_band_get_quantiles(
 	for (i = 0; i < quantiles_count; i++) {
 		if (quantiles[i] < 0. || quantiles[i] > 1.) {
 			rterror("rt_band_get_quantiles: Quantile value not between 0 and 1");
-			if (init_quantiles) rtdealloc(quantiles);
+			if (init_quantiles)
+				rtdealloc(quantiles);
 			return NULL;
 		}
 	}
@@ -731,7 +736,8 @@ rt_band_get_quantiles(
 	rtn = rtalloc(sizeof(struct rt_quantile_t) * quantiles_count);
 	if (NULL == rtn) {
 		rterror("rt_band_get_quantiles: Could not allocate memory for quantile output");
-		if (init_quantiles) rtdealloc(quantiles);
+		if (init_quantiles)
+			rtdealloc(quantiles);
 		return NULL;
 	}
 
@@ -742,11 +748,11 @@ rt_band_get_quantiles(
 	}
 
 	/*
-		make quantiles
-
-		formula is that used in R (method 7) and Excel from
-			http://en.wikipedia.org/wiki/Quantile
-	*/
+	 * make quantiles
+	 *
+	 * formula is that used in R (method 7) and Excel from
+	 * http://en.wikipedia.org/wiki/Quantile
+	 */
 	for (i = 0; i < quantiles_count; i++) {
 		rtn[i].quantile = quantiles[i];
 
@@ -763,12 +769,13 @@ rt_band_get_quantiles(
 
 #if POSTGIS_DEBUG_LEVEL > 0
 	stop = clock();
-	elapsed = ((double) (stop - start)) / CLOCKS_PER_SEC;
+	elapsed = ((double)(stop - start)) / CLOCKS_PER_SEC;
 	RASTER_DEBUGF(3, "elapsed time = %0.4f", elapsed);
 #endif
 
 	*rtn_count = quantiles_count;
-	if (init_quantiles) rtdealloc(quantiles);
+	if (init_quantiles)
+		rtdealloc(quantiles);
 	RASTER_DEBUG(3, "done");
 	return rtn;
 }
@@ -777,10 +784,12 @@ rt_band_get_quantiles(
 * rt_band_get_quantiles_stream()
 ******************************************************************************/
 
-static struct quantile_llist_element *quantile_llist_search(
-	struct quantile_llist_element *element,
-	double needle
-) {
+static struct quantile_llist_element *
+quantile_llist_search(
+		      struct quantile_llist_element *element,
+		      double needle
+)
+{
 	if (NULL == element)
 		return NULL;
 	else if (FLT_NEQ(needle, element->value)) {
@@ -788,22 +797,24 @@ static struct quantile_llist_element *quantile_llist_search(
 			return quantile_llist_search(element->next, needle);
 		else
 			return NULL;
-	}
-	else
+	} else
 		return element;
 }
 
-static struct quantile_llist_element *quantile_llist_insert(
-	struct quantile_llist_element *element,
-	double value,
-	uint32_t *idx
-) {
+static struct quantile_llist_element *
+quantile_llist_insert(
+		      struct quantile_llist_element *element,
+		      double value,
+		      uint32_t * idx
+)
+{
 	struct quantile_llist_element *qle = NULL;
 
 	if (NULL == element) {
 		qle = rtalloc(sizeof(struct quantile_llist_element));
 		RASTER_DEBUGF(4, "qle @ %p is only element in list", qle);
-		if (NULL == qle) return NULL;
+		if (NULL == qle)
+			return NULL;
 
 		qle->value = value;
 		qle->count = 1;
@@ -811,18 +822,20 @@ static struct quantile_llist_element *quantile_llist_insert(
 		qle->prev = NULL;
 		qle->next = NULL;
 
-		if (NULL != idx) *idx = 0;
+		if (NULL != idx)
+			*idx = 0;
 		return qle;
-	}
-	else if (value > element->value) {
-		if (NULL != idx) *idx += 1;
+	} else if (value > element->value) {
+		if (NULL != idx)
+			*idx += 1;
 		if (NULL != element->next)
 			return quantile_llist_insert(element->next, value, idx);
 		/* insert as last element in list */
 		else {
 			qle = rtalloc(sizeof(struct quantile_llist_element));
 			RASTER_DEBUGF(4, "insert qle @ %p as last element", qle);
-			if (NULL == qle) return NULL;
+			if (NULL == qle)
+				return NULL;
 
 			qle->value = value;
 			qle->count = 1;
@@ -838,12 +851,14 @@ static struct quantile_llist_element *quantile_llist_insert(
 	else {
 		qle = rtalloc(sizeof(struct quantile_llist_element));
 		RASTER_DEBUGF(4, "insert qle @ %p before current element", qle);
-		if (NULL == qle) return NULL;
+		if (NULL == qle)
+			return NULL;
 
 		qle->value = value;
 		qle->count = 1;
 
-		if (NULL != element->prev) element->prev->next = qle;
+		if (NULL != element->prev)
+			element->prev->next = qle;
 		qle->next = element;
 		qle->prev = element->prev;
 		element->prev = qle;
@@ -852,8 +867,11 @@ static struct quantile_llist_element *quantile_llist_insert(
 	}
 }
 
-static int quantile_llist_delete(struct quantile_llist_element *element) {
-	if (NULL == element) return 0;
+static int
+quantile_llist_delete(struct quantile_llist_element *element)
+{
+	if (NULL == element)
+		return 0;
 
 	/* beginning of list */
 	if (NULL == element->prev && NULL != element->next) {
@@ -875,11 +893,14 @@ static int quantile_llist_delete(struct quantile_llist_element *element) {
 	return 1;
 }
 
-int quantile_llist_destroy(struct quantile_llist **list, uint32_t list_count) {
+int
+quantile_llist_destroy(struct quantile_llist **list, uint32_t list_count)
+{
 	struct quantile_llist_element *element = NULL;
-	uint32_t i;
+	uint32_t	i;
 
-	if (NULL == *list) return 0;
+	if (NULL == *list)
+		return 0;
 
 	for (i = 0; i < list_count; i++) {
 		element = (*list)[i].head;
@@ -895,17 +916,20 @@ int quantile_llist_destroy(struct quantile_llist **list, uint32_t list_count) {
 	return 1;
 }
 
-static void quantile_llist_index_update(struct quantile_llist *qll, struct quantile_llist_element *qle, uint32_t idx) {
-	uint32_t anchor = (uint32_t) floor(idx / 100);
+static void
+quantile_llist_index_update(struct quantile_llist *qll, struct quantile_llist_element *qle, uint32_t idx)
+{
+	uint32_t	anchor = (uint32_t) floor(idx / 100);
 
-	if (qll->tail == qle) return;
+	if (qll->tail == qle)
+		return;
 
 	if (
-		(anchor != 0) && (
-			NULL == qll->index[anchor].element ||
-			idx <= qll->index[anchor].index
-		)
-	) {
+	    (anchor != 0) && (
+			      NULL == qll->index[anchor].element ||
+			      idx <= qll->index[anchor].index
+			      )
+		) {
 		qll->index[anchor].index = idx;
 		qll->index[anchor].element = qle;
 	}
@@ -916,14 +940,16 @@ static void quantile_llist_index_update(struct quantile_llist *qll, struct quant
 	}
 }
 
-static void quantile_llist_index_delete(struct quantile_llist *qll, struct quantile_llist_element *qle) {
-	uint32_t i = 0;
+static void
+quantile_llist_index_delete(struct quantile_llist *qll, struct quantile_llist_element *qle)
+{
+	uint32_t	i = 0;
 
 	for (i = 0; i < qll->index_max; i++) {
 		if (
-			NULL == qll->index[i].element ||
-			(qll->index[i].element) != qle
-		) {
+		    NULL == qll->index[i].element ||
+		    (qll->index[i].element) != qle
+			) {
 			continue;
 		}
 
@@ -933,27 +959,30 @@ static void quantile_llist_index_delete(struct quantile_llist *qll, struct quant
 	}
 }
 
-static struct quantile_llist_element *quantile_llist_index_search(
-	struct quantile_llist *qll,
-	double value,
-	uint32_t *index
-) {
-	uint32_t i = 0, j = 0;
+static struct quantile_llist_element *
+quantile_llist_index_search(
+			    struct quantile_llist *qll,
+			    double value,
+			    uint32_t * index
+)
+{
+	uint32_t	i = 0, j = 0;
 	RASTER_DEBUGF(5, "searching index for value %f", value);
 
 	for (i = 0; i < qll->index_max; i++) {
 		if (NULL == qll->index[i].element) {
-			if (i < 1) break;
+			if (i < 1)
+				break;
 			continue;
 		}
-		if (value > (qll->index[i]).element->value) continue;
+		if (value > (qll->index[i]).element->value)
+			continue;
 
 		if (FLT_EQ(value, qll->index[i].element->value)) {
 			RASTER_DEBUGF(5, "using index value at %d = %f", i, qll->index[i].element->value);
 			*index = i * 100;
 			return qll->index[i].element;
-		}
-		else if (i > 0) {
+		} else if (i > 0) {
 			for (j = 1; j < i; j++) {
 				if (NULL != qll->index[i - j].element) {
 					RASTER_DEBUGF(5, "using index value at %d = %f", i - j, qll->index[i - j].element->value);
@@ -968,8 +997,10 @@ static struct quantile_llist_element *quantile_llist_index_search(
 	return qll->head;
 }
 
-static void quantile_llist_index_reset(struct quantile_llist *qll) {
-	uint32_t i = 0;
+static void
+quantile_llist_index_reset(struct quantile_llist *qll)
+{
+	uint32_t	i = 0;
 
 	RASTER_DEBUG(5, "resetting index");
 	for (i = 0; i < qll->index_max; i++) {
@@ -1008,42 +1039,42 @@ static void quantile_llist_index_reset(struct quantile_llist *qll) {
  */
 rt_quantile
 rt_band_get_quantiles_stream(
-	rt_band band,
-	int exclude_nodata_value, double sample,
-	uint64_t cov_count,
-	struct quantile_llist **qlls, uint32_t *qlls_count,
-	double *quantiles, uint32_t quantiles_count,
-	uint32_t *rtn_count
-) {
-	rt_quantile rtn = NULL;
-	int init_quantiles = 0;
+			     rt_band band,
+			     int exclude_nodata_value, double sample,
+			     uint64_t cov_count,
+			struct quantile_llist **qlls, uint32_t * qlls_count,
+			     double *quantiles, uint32_t quantiles_count,
+			     uint32_t * rtn_count
+){
+	rt_quantile	rtn = NULL;
+	int		init_quantiles = 0;
 
 	struct quantile_llist *qll = NULL;
 	struct quantile_llist_element *qle = NULL;
 	struct quantile_llist_element *qls = NULL;
-	const uint32_t MAX_VALUES = 750;
+	const		uint32_t MAX_VALUES = 750;
 
-	uint8_t *data = NULL;
-	double value;
-	int isnodata = 0;
+	uint8_t	       *data = NULL;
+	double		value;
+	int		isnodata = 0;
 
-	uint32_t a = 0;
-	uint32_t i = 0;
-	uint32_t j = 0;
-	uint32_t k = 0;
-	uint32_t x = 0;
-	uint32_t y = 0;
-	uint32_t z = 0;
-	uint32_t idx = 0;
-	uint32_t offset = 0;
-	uint32_t diff = 0;
-	uint8_t exists = 0;
+	uint32_t	a = 0;
+	uint32_t	i = 0;
+	uint32_t	j = 0;
+	uint32_t	k = 0;
+	uint32_t	x = 0;
+	uint32_t	y = 0;
+	uint32_t	z = 0;
+	uint32_t	idx = 0;
+	uint32_t	offset = 0;
+	uint32_t	diff = 0;
+	uint8_t		exists = 0;
 
-	uint32_t do_sample = 0;
-	uint32_t sample_size = 0;
-	uint32_t sample_per = 0;
-	uint32_t sample_int = 0;
-	int status;
+	uint32_t	do_sample = 0;
+	uint32_t	sample_size = 0;
+	uint32_t	sample_per = 0;
+	uint32_t	sample_int = 0;
+	int		status;
 
 	RASTER_DEBUG(3, "starting");
 
@@ -1079,7 +1110,7 @@ rt_band_get_quantiles_stream(
 
 			quantiles_count--;
 			for (i = 0; i <= quantiles_count; i++)
-				quantiles[i] = ((double) i) / quantiles_count;
+				quantiles[i] = ((double)i) / quantiles_count;
 			quantiles_count++;
 		}
 
@@ -1087,7 +1118,8 @@ rt_band_get_quantiles_stream(
 		for (i = 0; i < quantiles_count; i++) {
 			if (quantiles[i] < 0. || quantiles[i] > 1.) {
 				rterror("rt_band_get_quantiles_stream: Quantile value not between 0 and 1");
-				if (init_quantiles) rtdealloc(quantiles);
+				if (init_quantiles)
+					rtdealloc(quantiles);
 				return NULL;
 			}
 		}
@@ -1099,7 +1131,8 @@ rt_band_get_quantiles_stream(
 		*qlls = rtalloc(sizeof(struct quantile_llist) * *qlls_count);
 		if (NULL == *qlls) {
 			rterror("rt_band_get_quantiles_stream: Could not allocate memory for quantile output");
-			if (init_quantiles) rtdealloc(quantiles);
+			if (init_quantiles)
+				rtdealloc(quantiles);
 			return NULL;
 		}
 
@@ -1117,7 +1150,8 @@ rt_band_get_quantiles_stream(
 			qll->index = rtalloc(sizeof(struct quantile_llist_index) * j);
 			if (NULL == qll->index) {
 				rterror("rt_band_get_quantiles_stream: Could not allocate memory for quantile output");
-				if (init_quantiles) rtdealloc(quantiles);
+				if (init_quantiles)
+					rtdealloc(quantiles);
 				return NULL;
 			}
 			qll->index_max = j;
@@ -1127,7 +1161,8 @@ rt_band_get_quantiles_stream(
 			if (!(i % 2)) {
 				qll->algeq = 1;
 				qll->tau = (uint64_t) ROUND(cov_count - (cov_count * qll->quantile), 0);
-				if (qll->tau < 1) qll->tau = 1;
+				if (qll->tau < 1)
+					qll->tau = 1;
 			}
 			/* AL-GT */
 			else {
@@ -1136,22 +1171,22 @@ rt_band_get_quantiles_stream(
 			}
 
 			RASTER_DEBUGF(4, "qll init: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
-				qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
+				      qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
 			RASTER_DEBUGF(4, "qll init: (head, tail) = (%p, %p)", qll->head, qll->tail);
 		}
 
-		if (init_quantiles) rtdealloc(quantiles);
+		if (init_quantiles)
+			rtdealloc(quantiles);
 	}
 
 	/* clamp percentage */
 	if (
-		(sample < 0 || FLT_EQ(sample, 0.0)) ||
-		(sample > 1 || FLT_EQ(sample, 1.0))
-	) {
+	    (sample < 0 || FLT_EQ(sample, 0.0)) ||
+	    (sample > 1 || FLT_EQ(sample, 1.0))
+		) {
 		do_sample = 0;
 		sample = 1;
-	}
-	else
+	} else
 		do_sample = 1;
 	RASTER_DEBUGF(3, "do_sample = %d", do_sample);
 
@@ -1161,10 +1196,9 @@ rt_band_get_quantiles_stream(
 		sample_per = band->height;
 	}
 	/*
-	 randomly sample a percentage of available pixels
-	 sampling method is known as
-	 	"systematic random sample without replacement"
-	*/
+	 * randomly sample a percentage of available pixels sampling method
+	 * is known as "systematic random sample without replacement"
+	 */
 	else {
 		sample_size = round((band->width * band->height) * sample);
 		sample_per = round(sample_size / band->width);
@@ -1172,7 +1206,7 @@ rt_band_get_quantiles_stream(
 		srand(time(NULL));
 	}
 	RASTER_DEBUGF(3, "sampling %d of %d available pixels w/ %d per set"
-		, sample_size, (band->width * band->height), sample_per);
+		    ,sample_size, (band->width * band->height), sample_per);
 
 	for (x = 0, j = 0, k = 0; x < band->width; x++) {
 		y = -1;
@@ -1193,7 +1227,8 @@ rt_band_get_quantiles_stream(
 				diff = sample_int - offset;
 			}
 			RASTER_DEBUGF(5, "(x, y, z) = (%d, %d, %d)", x, y, z);
-			if (y >= band->height || z > sample_per) break;
+			if (y >= band->height || z > sample_per)
+				break;
 
 			status = rt_band_get_pixel(band, x, y, &value, &isnodata);
 
@@ -1206,16 +1241,18 @@ rt_band_get_quantiles_stream(
 					qls = NULL;
 					RASTER_DEBUGF(4, "%d of %d (%f)", a + 1, *qlls_count, qll->quantile);
 					RASTER_DEBUGF(5, "qll before: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
-						qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
+						      qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
 					RASTER_DEBUGF(5, "qll before: (head, tail) = (%p, %p)", qll->head, qll->tail);
 
-					/* OPTIMIZATION: shortcuts for quantiles of zero or one */
+					/*
+					 * OPTIMIZATION: shortcuts for
+					 * quantiles of zero or one
+					 */
 					if (FLT_EQ(qll->quantile, 0.)) {
 						if (NULL != qll->head) {
 							if (value < qll->head->value)
 								qll->head->value = value;
-						}
-						else {
+						} else {
 							qle = quantile_llist_insert(qll->head, value, NULL);
 							qll->head = qle;
 							qll->tail = qle;
@@ -1224,13 +1261,11 @@ rt_band_get_quantiles_stream(
 
 						RASTER_DEBUGF(4, "quantile shortcut for %f\n\n", qll->quantile);
 						continue;
-					}
-					else if (FLT_EQ(qll->quantile, 1.)) {
+					} else if (FLT_EQ(qll->quantile, 1.)) {
 						if (NULL != qll->head) {
 							if (value > qll->head->value)
 								qll->head->value = value;
-						}
-						else {
+						} else {
 							qle = quantile_llist_insert(qll->head, value, NULL);
 							qll->head = qle;
 							qll->tail = qle;
@@ -1242,13 +1277,22 @@ rt_band_get_quantiles_stream(
 					}
 
 					/* value exists in list */
-					/* OPTIMIZATION: check to see if value exceeds last value */
+					/*
+					 * OPTIMIZATION: check to see if
+					 * value exceeds last value
+					 */
 					if (NULL != qll->tail && value > qll->tail->value)
 						qle = NULL;
-					/* OPTIMIZATION: check to see if value equals last value */
+					/*
+					 * OPTIMIZATION: check to see if
+					 * value equals last value
+					 */
 					else if (NULL != qll->tail && FLT_EQ(value, qll->tail->value))
 						qle = qll->tail;
-					/* OPTIMIZATION: use index if possible */
+					/*
+					 * OPTIMIZATION: use index if
+					 * possible
+					 */
 					else {
 						qls = quantile_llist_index_search(qll, value, &idx);
 						qle = quantile_llist_search(qls, value);
@@ -1274,15 +1318,23 @@ rt_band_get_quantiles_stream(
 						RASTER_DEBUGF(4, "Adding %f to list", value);
 
 						/* insert */
-						/* OPTIMIZATION: check to see if value exceeds last value */
+						/*
+						 * OPTIMIZATION: check to see
+						 * if value exceeds last
+						 * value
+						 */
 						if (NULL != qll->tail && (value > qll->tail->value || FLT_EQ(value, qll->tail->value))) {
 							idx = qll->count;
 							qle = quantile_llist_insert(qll->tail, value, &idx);
 						}
-						/* OPTIMIZATION: use index if possible */
+						/*
+						 * OPTIMIZATION: use index if
+						 * possible
+						 */
 						else
 							qle = quantile_llist_insert(qls, value, &idx);
-						if (NULL == qle) return NULL;
+						if (NULL == qle)
+							return NULL;
 						RASTER_DEBUGF(5, "value added at index: %d => %f", idx, value);
 						qll->count++;
 						qll->sum1++;
@@ -1299,7 +1351,11 @@ rt_band_get_quantiles_stream(
 						else
 							qll->sum2 = qll->sum1 - qll->tail->count;
 
-						/* index is only needed if there are at least 100 values */
+						/*
+						 * index is only needed if
+						 * there are at least 100
+						 * values
+						 */
 						quantile_llist_index_update(qll, qle, idx);
 
 						RASTER_DEBUGF(5, "qle, prev, next, head, tail = %p, %p, %p, %p, %p", qle, qle->prev, qle->next, qll->head, qll->tail);
@@ -1309,13 +1365,19 @@ rt_band_get_quantiles_stream(
 						RASTER_DEBUGF(4, "value, head->value = %f, %f", value, qll->head->value);
 
 						if (value < qll->head->value) {
-							/* ignore value if test isn't true */
+							/*
+							 * ignore value if
+							 * test isn't true
+							 */
 							if (qll->sum1 >= qll->tau) {
 								RASTER_DEBUGF(4, "skipping %f", value);
-							}
-							else {
+							} else {
 
-								/* delete last element */
+								/*
+								 * delete
+								 * last
+								 * element
+								 */
 								RASTER_DEBUGF(4, "deleting %f from list", qll->tail->value);
 								qle = qll->tail->prev;
 								RASTER_DEBUGF(5, "to-be tail is %f with count %d", qle->value, qle->count);
@@ -1326,27 +1388,49 @@ rt_band_get_quantiles_stream(
 								qll->count--;
 								RASTER_DEBUGF(5, "tail is %f with count %d", qll->tail->value, qll->tail->count);
 
-								/* insert value */
+								/*
+								 * insert
+								 * value
+								 */
 								RASTER_DEBUGF(4, "adding %f to list", value);
-								/* OPTIMIZATION: check to see if value exceeds last value */
+								/*
+								 * OPTIMIZATION:
+								 * check to
+								 * see if
+								 * value
+								 * exceeds
+								 * last value
+								 */
 								if (NULL != qll->tail && (value > qll->tail->value || FLT_EQ(value, qll->tail->value))) {
 									idx = qll->count;
 									qle = quantile_llist_insert(qll->tail, value, &idx);
 								}
-								/* OPTIMIZATION: use index if possible */
+								/*
+								 * OPTIMIZATION:
+								 * use index
+								 * if
+								 * possible
+								 */
 								else {
 									qls = quantile_llist_index_search(qll, value, &idx);
 									qle = quantile_llist_insert(qls, value, &idx);
 								}
-								if (NULL == qle) return NULL;
+								if (NULL == qle)
+									return NULL;
 								RASTER_DEBUGF(5, "value added at index: %d => %f", idx, value);
 								qll->count++;
 								qll->sum1++;
 
-								/* first element */
+								/*
+								 * first
+								 * element
+								 */
 								if (NULL == qle->prev)
 									qll->head = qle;
-								/* last element */
+								/*
+								 * last
+								 * element
+								 */
 								if (NULL == qle->next)
 									qll->tail = qle;
 
@@ -1357,8 +1441,7 @@ rt_band_get_quantiles_stream(
 								RASTER_DEBUGF(5, "qle, head, tail = %p, %p, %p", qle, qll->head, qll->tail);
 
 							}
-						}
-						else {
+						} else {
 							qle = qll->tail;
 							while (NULL != qle) {
 								if (qle->value < value) {
@@ -1378,13 +1461,19 @@ rt_band_get_quantiles_stream(
 						RASTER_DEBUGF(4, "value, tail->value = %f, %f", value, qll->tail->value);
 
 						if (value > qll->tail->value) {
-							/* ignore value if test isn't true */
+							/*
+							 * ignore value if
+							 * test isn't true
+							 */
 							if (qll->sum1 >= qll->tau) {
 								RASTER_DEBUGF(4, "skipping %f", value);
-							}
-							else {
+							} else {
 
-								/* delete last element */
+								/*
+								 * delete
+								 * last
+								 * element
+								 */
 								RASTER_DEBUGF(4, "deleting %f from list", qll->head->value);
 								qle = qll->head->next;
 								RASTER_DEBUGF(5, "to-be tail is %f with count %d", qle->value, qle->count);
@@ -1396,27 +1485,49 @@ rt_band_get_quantiles_stream(
 								quantile_llist_index_update(qll, NULL, 0);
 								RASTER_DEBUGF(5, "tail is %f with count %d", qll->head->value, qll->head->count);
 
-								/* insert value */
+								/*
+								 * insert
+								 * value
+								 */
 								RASTER_DEBUGF(4, "adding %f to list", value);
-								/* OPTIMIZATION: check to see if value exceeds last value */
+								/*
+								 * OPTIMIZATION:
+								 * check to
+								 * see if
+								 * value
+								 * exceeds
+								 * last value
+								 */
 								if (NULL != qll->tail && (value > qll->tail->value || FLT_EQ(value, qll->tail->value))) {
 									idx = qll->count;
 									qle = quantile_llist_insert(qll->tail, value, &idx);
 								}
-								/* OPTIMIZATION: use index if possible */
+								/*
+								 * OPTIMIZATION:
+								 * use index
+								 * if
+								 * possible
+								 */
 								else {
 									qls = quantile_llist_index_search(qll, value, &idx);
 									qle = quantile_llist_insert(qls, value, &idx);
 								}
-								if (NULL == qle) return NULL;
+								if (NULL == qle)
+									return NULL;
 								RASTER_DEBUGF(5, "value added at index: %d => %f", idx, value);
 								qll->count++;
 								qll->sum1++;
 
-								/* first element */
+								/*
+								 * first
+								 * element
+								 */
 								if (NULL == qle->prev)
 									qll->head = qle;
-								/* last element */
+								/*
+								 * last
+								 * element
+								 */
 								if (NULL == qle->next)
 									qll->tail = qle;
 
@@ -1427,8 +1538,7 @@ rt_band_get_quantiles_stream(
 								RASTER_DEBUGF(5, "qle, head, tail = %p, %p, %p", qle, qll->head, qll->tail);
 
 							}
-						}
-						else {
+						} else {
 							qle = qll->head;
 							while (NULL != qle) {
 								if (qle->value > value) {
@@ -1460,8 +1570,7 @@ rt_band_get_quantiles_stream(
 								qll->count--;
 
 								quantile_llist_index_update(qll, NULL, 0);
-							}
-							else {
+							} else {
 								quantile_llist_delete(qll->head);
 								qll->head = NULL;
 								qll->tail = NULL;
@@ -1484,8 +1593,7 @@ rt_band_get_quantiles_stream(
 								quantile_llist_delete(qll->tail);
 								qll->tail = qle;
 								qll->count--;
-							}
-							else {
+							} else {
 								quantile_llist_delete(qll->tail);
 								qll->head = NULL;
 								qll->tail = NULL;
@@ -1499,12 +1607,11 @@ rt_band_get_quantiles_stream(
 					}
 
 					RASTER_DEBUGF(5, "qll after: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
-						qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
+						      qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
 					RASTER_DEBUGF(5, "qll after: (head, tail) = (%p, %p)\n\n", qll->head, qll->tail);
 				}
 
-			}
-			else {
+			} else {
 				RASTER_DEBUGF(5, "skipping value at (x, y) = (%d, %d)", x, y);
 			}
 
@@ -1515,7 +1622,8 @@ rt_band_get_quantiles_stream(
 	/* process quantiles */
 	*rtn_count = *qlls_count / 2;
 	rtn = rtalloc(sizeof(struct rt_quantile_t) * *rtn_count);
-	if (NULL == rtn) return NULL;
+	if (NULL == rtn)
+		return NULL;
 
 	RASTER_DEBUGF(3, "returning %d quantiles", *rtn_count);
 	for (i = 0, k = 0; i < *qlls_count; i++) {
@@ -1528,10 +1636,11 @@ rt_band_get_quantiles_stream(
 				break;
 			}
 		}
-		if (exists) continue;
+		if (exists)
+			continue;
 
 		RASTER_DEBUGF(5, "qll: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
-			qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
+			      qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
 		RASTER_DEBUGF(5, "qll: (head, tail) = (%p, %p)", qll->head, qll->tail);
 
 		rtn[k].quantile = qll->quantile;
@@ -1553,7 +1662,7 @@ rt_band_get_quantiles_stream(
 			if (FLT_EQ((*qlls)[j].quantile, qll->quantile)) {
 
 				RASTER_DEBUGF(5, "qlls[%d]: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
-					j, (*qlls)[j].algeq, (*qlls)[j].quantile, (*qlls)[j].count, (*qlls)[j].tau, (*qlls)[j].sum1, (*qlls)[j].sum2);
+					      j, (*qlls)[j].algeq, (*qlls)[j].quantile, (*qlls)[j].count, (*qlls)[j].tau, (*qlls)[j].sum1, (*qlls)[j].sum2);
 				RASTER_DEBUGF(5, "qlls[%d]: (head, tail) = (%p, %p)", j, (*qlls)[j].head, (*qlls)[j].tail);
 
 				exists = 1;
@@ -1566,8 +1675,7 @@ rt_band_get_quantiles_stream(
 			if ((*qlls)[j].algeq) {
 				rtn[k].value = ((qle->value * qle->count) + ((*qlls)[j].head->value * (*qlls)[j].head->count)) / (qle->count + (*qlls)[j].head->count);
 				RASTER_DEBUGF(5, "qlls[%d].head: (value, count) = (%f, %d)", j, (*qlls)[j].head->value, (*qlls)[j].head->count);
-			}
-			else {
+			} else {
 				rtn[k].value = ((qle->value * qle->count) + ((*qlls)[j].tail->value * (*qlls)[j].tail->count)) / (qle->count + (*qlls)[j].tail->count);
 				RASTER_DEBUGF(5, "qlls[%d].tail: (value, count) = (%f, %d)", j, (*qlls)[j].tail->value, (*qlls)[j].tail->count);
 			}
@@ -1606,33 +1714,33 @@ rt_band_get_quantiles_stream(
  */
 rt_valuecount
 rt_band_get_value_count(
-	rt_band band, int exclude_nodata_value,
+			rt_band band, int exclude_nodata_value,
 	double *search_values, uint32_t search_values_count, double roundto,
-	uint32_t *rtn_total, uint32_t *rtn_count
-) {
-	rt_valuecount vcnts = NULL;
-	rt_pixtype pixtype = PT_END;
-	uint8_t *data = NULL;
-	double nodata = 0;
+			uint32_t * rtn_total, uint32_t * rtn_count
+){
+	rt_valuecount	vcnts = NULL;
+	rt_pixtype	pixtype = PT_END;
+	uint8_t	       *data = NULL;
+	double		nodata = 0;
 
-	int scale = 0;
-	int doround = 0;
-	double tmpd = 0;
-	uint32_t i = 0;
+	int		scale = 0;
+	int		doround = 0;
+	double		tmpd = 0;
+	uint32_t	i = 0;
 
-	uint32_t x = 0;
-	uint32_t y = 0;
-	int rtn;
-	double pxlval;
-	int isnodata = 0;
-	double rpxlval;
-	uint32_t total = 0;
-	uint32_t vcnts_count = 0;
-	uint32_t new_valuecount = 0;
+	uint32_t	x = 0;
+	uint32_t	y = 0;
+	int		rtn;
+	double		pxlval;
+	int		isnodata = 0;
+	double		rpxlval;
+	uint32_t	total = 0;
+	uint32_t	vcnts_count = 0;
+	uint32_t	new_valuecount = 0;
 
 #if POSTGIS_DEBUG_LEVEL > 0
-	clock_t start, stop;
-	double elapsed = 0;
+	clock_t		start, stop;
+	double		elapsed = 0;
 #endif
 
 	RASTER_DEBUG(3, "starting");
@@ -1654,8 +1762,7 @@ rt_band_get_value_count(
 	if (rt_band_get_hasnodata_flag(band)) {
 		rt_band_get_nodata(band, &nodata);
 		RASTER_DEBUGF(3, "hasnodata, nodataval = 1, %f", nodata);
-	}
-	else {
+	} else {
 		exclude_nodata_value = 0;
 		RASTER_DEBUG(3, "hasnodata, nodataval = 0, 0");
 	}
@@ -1669,29 +1776,33 @@ rt_band_get_value_count(
 	}
 	/* tenths, hundredths, thousandths, etc */
 	else if (roundto < 1) {
-	switch (pixtype) {
-			/* integer band types don't have digits after the decimal place */
-			case PT_1BB:
-			case PT_2BUI:
-			case PT_4BUI:
-			case PT_8BSI:
-			case PT_8BUI:
-			case PT_16BSI:
-			case PT_16BUI:
-			case PT_32BSI:
-			case PT_32BUI:
-				roundto = 0;
-				break;
+		switch (pixtype) {
+			/*
+			 * integer band types don't have digits after the
+			 * decimal place
+			 */
+		case PT_1BB:
+		case PT_2BUI:
+		case PT_4BUI:
+		case PT_8BSI:
+		case PT_8BUI:
+		case PT_16BSI:
+		case PT_16BUI:
+		case PT_32BSI:
+		case PT_32BUI:
+			roundto = 0;
+			break;
 			/* floating points, check the rounding */
-			case PT_32BF:
-			case PT_64BF:
-				for (scale = 0; scale <= 20; scale++) {
-					tmpd = roundto * pow(10, scale);
-					if (FLT_EQ((tmpd - ((int) tmpd)), 0.0)) break;
-				}
-				break;
-			case PT_END:
-				break;
+		case PT_32BF:
+		case PT_64BF:
+			for (scale = 0; scale <= 20; scale++) {
+				tmpd = roundto * pow(10, scale);
+				if (FLT_EQ((tmpd - ((int)tmpd)), 0.0))
+					break;
+			}
+			break;
+		case PT_END:
+			break;
 		}
 	}
 	/* ones, tens, hundreds, etc */
@@ -1699,7 +1810,8 @@ rt_band_get_value_count(
 		for (scale = 0; scale >= -20; scale--) {
 			tmpd = roundto * pow(10, scale);
 			if (tmpd < 1 || FLT_EQ(tmpd, 1.0)) {
-				if (scale == 0) doround = 1;
+				if (scale == 0)
+					doround = 1;
 				break;
 			}
 		}
@@ -1730,8 +1842,7 @@ rt_band_get_value_count(
 				vcnts[i].value = ROUND(search_values[i], scale);
 		}
 		vcnts_count = i;
-	}
-	else
+	} else
 		search_values_count = 0;
 	RASTER_DEBUGF(3, "search_values_count = %d", search_values_count);
 
@@ -1740,8 +1851,7 @@ rt_band_get_value_count(
 		if (exclude_nodata_value) {
 			rtwarn("All pixels of band have the NODATA value");
 			return NULL;
-		}
-		else {
+		} else {
 			if (search_values_count > 0) {
 				/* check for nodata match */
 				for (i = 0; i < search_values_count; i++) {
@@ -1754,7 +1864,8 @@ rt_band_get_value_count(
 						continue;
 
 					vcnts[i].count = band->width * band->height;
-					if (NULL != rtn_total) *rtn_total = vcnts[i].count;
+					if (NULL != rtn_total)
+						*rtn_total = vcnts[i].count;
 					vcnts->percent = 1.0;
 				}
 
@@ -1771,7 +1882,8 @@ rt_band_get_value_count(
 
 				vcnts->value = nodata;
 				vcnts->count = band->width * band->height;
-				if (NULL != rtn_total) *rtn_total = vcnts[i].count;
+				if (NULL != rtn_total)
+					*rtn_total = vcnts[i].count;
 				vcnts->percent = 1.0;
 
 				*rtn_count = 1;
@@ -1793,8 +1905,7 @@ rt_band_get_value_count(
 				total++;
 				if (doround) {
 					rpxlval = ROUND(pxlval, scale);
-				}
-				else
+				} else
 					rpxlval = pxlval;
 				RASTER_DEBUGF(5, "(pxlval, rpxlval) => (%0.6f, %0.6f)", pxlval, rpxlval);
 
@@ -1811,11 +1922,12 @@ rt_band_get_value_count(
 				}
 
 				/*
-					don't add new valuecount either because
-						- no need for new one
-						- user-defined search values
-				*/
-				if (!new_valuecount || search_values_count > 0) continue;
+				 * don't add new valuecount either because -
+				 * no need for new one - user-defined search
+				 * values
+				 */
+				if (!new_valuecount || search_values_count > 0)
+					continue;
 
 				/* add new valuecount */
 				vcnts = rtrealloc(vcnts, sizeof(struct rt_valuecount_t) * (vcnts_count + 1));
@@ -1836,17 +1948,18 @@ rt_band_get_value_count(
 
 #if POSTGIS_DEBUG_LEVEL > 0
 	stop = clock();
-	elapsed = ((double) (stop - start)) / CLOCKS_PER_SEC;
+	elapsed = ((double)(stop - start)) / CLOCKS_PER_SEC;
 	RASTER_DEBUGF(3, "elapsed time = %0.4f", elapsed);
 #endif
 
 	for (i = 0; i < vcnts_count; i++) {
-		vcnts[i].percent = (double) vcnts[i].count / total;
+		vcnts[i].percent = (double)vcnts[i].count / total;
 		RASTER_DEBUGF(5, "(value, count) => (%0.6f, %d)", vcnts[i].value, vcnts[i].count);
 	}
 
 	RASTER_DEBUG(3, "done");
-	if (NULL != rtn_total) *rtn_total = total;
+	if (NULL != rtn_total)
+		*rtn_total = total;
 	*rtn_count = vcnts_count;
 	return vcnts;
 }

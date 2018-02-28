@@ -1471,6 +1471,7 @@ AC_OUTPUT([GNUmakefile
    doc/Makefile.comments
    doc/html/image_src/Makefile
    utils/Makefile
+   utils/external/pg_bsd_indent/Makefile
    $RT_MAKEFILE_LIST])
 
 dnl ===========================================================================
