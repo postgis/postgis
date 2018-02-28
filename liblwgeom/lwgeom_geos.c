@@ -1247,9 +1247,12 @@ lwmline_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	if (srid == SRID_INVALID) return NULL;
 
-	if (geom->type == LINETYPE)
+	switch (geom->type)
+	{
+	case LINETYPE:
 		return lwline_offsetcurve(lwgeom_as_lwline(geom), size, quadsegs, joinStyle, mitreLimit);
-	else if (geom->type == MULTILINETYPE || geom->type == COLLECTIONTYPE)
+	case COLLECTIONTYPE:
+	case MULTILINETYPE:
 	{
 		LWCOLLECTION* result;
 		LWGEOM* tmp;
@@ -1273,7 +1276,8 @@ lwmline_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle
 				else
 					result = lwcollection_add_lwgeom(result, tmp);
 
-				if (!result) {
+				if (!result)
+				{
 					lwgeom_free(tmp);
 					return NULL;
 				}
@@ -1289,9 +1293,10 @@ lwmline_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle
 		else
 			return lwcollection_as_lwgeom(result);
 	}
-	else
+	default:
 		lwerror("%s: unsupported geometry type: %s", __func__, lwtype_name(geom->type));
-	return NULL;
+		return NULL;
+	}
 }
 
 LWGEOM*
@@ -1435,7 +1440,6 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints)
 			memcpy((char*)cells + i * stride, tmp, size);
 		}
 	}
-
 
 	/* Start testing points */
 	while (npoints_generated < npoints)
