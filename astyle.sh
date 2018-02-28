@@ -40,4 +40,4 @@ CFILES_SPACE="liblwgeom/*.c topology/*.c"
 
 # Run the standard format on the files, and do not
 # leave .orig files around for altered files.
-astyle --style=ansi --indent=space --suffix=none $CFILES_SPACE
+astyle --style=ansi --indent=spaces=2 --suffix=none $CFILES_SPACE
