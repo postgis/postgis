@@ -137,11 +137,12 @@ raster-post-install-check:
 raster-sql:
 	$(MAKE) -C raster rtpostgis.sql
 
-astyle:
+.PHONY: fmt
+fmt:
 	./astyle.sh
 
 commit:
-	$(MAKE) astyle && $(MAKE) clean && $(MAKE) check && svn commit
+	$(MAKE) fmt && $(MAKE) clean && $(MAKE) check && svn commit
 
 authors.git: authors.svn
 	sed -e 's/:/ = /' authors.svn > authors.git
