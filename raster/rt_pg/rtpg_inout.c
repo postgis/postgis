@@ -53,15 +53,13 @@ Datum RASTER_in(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUG(3, "Starting");
 
 	raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
-	if (raster == NULL)
-		PG_RETURN_NULL();
+	if (raster == NULL) PG_RETURN_NULL();
 
 	result = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
-	if (result == NULL)
-		PG_RETURN_NULL();
+	if (result == NULL) PG_RETURN_NULL();
 
-	SET_VARSIZE(result, ((rt_pgraster*)result)->size);
+	SET_VARSIZE(result, ((rt_pgraster *)result)->size);
 	PG_RETURN_POINTER(result);
 }
 
@@ -80,7 +78,7 @@ Datum RASTER_out(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUG(3, "Starting");
 
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
@@ -119,7 +117,7 @@ Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
 	int result_size = 0;
 
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* Get raster object */
 	raster = rt_raster_deserialize(pgraster, FALSE);
@@ -160,7 +158,7 @@ Datum RASTER_noop(PG_FUNCTION_ARGS)
 {
 	rt_raster raster;
 	rt_pgraster *pgraster, *result;
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
 		PG_FREE_IF_COPY(pgraster, 0);
@@ -169,10 +167,8 @@ Datum RASTER_noop(PG_FUNCTION_ARGS)
 	}
 	result = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
-	if (result == NULL)
-		PG_RETURN_NULL();
+	if (result == NULL) PG_RETURN_NULL();
 
 	SET_VARSIZE(result, raster->size);
 	PG_RETURN_POINTER(result);
 }
-

@@ -5,17 +5,14 @@
 #include <errno.h>
 #include <endian.h>
 
-
 #include <libpq-fe.h>
 
-typedef signed int int32;               /* == 32 bits */
-typedef unsigned int uint32;    /* == 32 bits */
+typedef signed int int32;    /* == 32 bits */
+typedef unsigned int uint32; /* == 32 bits */
 typedef char bool;
 
 #define TRUE 1
 #define FALSE 0
-
-
 
 // This is modified from the postgres documentation for client programs (example programs)
 

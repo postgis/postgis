@@ -45,7 +45,7 @@
 #include "../../postgis_config.h"
 #include "../raster_config.h"
 
-#define CSEQUAL(a,b) (strcmp(a,b)==0)
+#define CSEQUAL(a, b) (strcmp(a, b) == 0)
 
 /*
 	max length of of "name" data type in PostgreSQL as

@@ -74,10 +74,9 @@ void mvt_agg_init_context(mvt_agg_context *ctx);
 void mvt_agg_transfn(mvt_agg_context *ctx);
 bytea *mvt_agg_finalfn(mvt_agg_context *ctx);
 bytea *mvt_ctx_serialize(mvt_agg_context *ctx);
-mvt_agg_context * mvt_ctx_deserialize(const bytea *ba);
-mvt_agg_context * mvt_ctx_combine(mvt_agg_context *ctx1, mvt_agg_context *ctx2);
+mvt_agg_context *mvt_ctx_deserialize(const bytea *ba);
+mvt_agg_context *mvt_ctx_combine(mvt_agg_context *ctx1, mvt_agg_context *ctx2);
 
-
-#endif  /* HAVE_LIBPROTOBUF */
+#endif /* HAVE_LIBPROTOBUF */
 
 #endif

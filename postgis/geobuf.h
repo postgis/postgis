@@ -51,20 +51,20 @@ struct geobuf_agg_context {
 	uint32_t geom_index;
 	HeapTupleHeader row;
 	LWGEOM **lwgeoms;
-        Data *data;
-        Data__Feature *feature;
+	Data *data;
+	Data__Feature *feature;
 	size_t features_capacity;
-        uint32_t e;
-        protobuf_c_boolean has_precision;
-        uint32_t precision;
-        protobuf_c_boolean has_dimensions;
-        uint32_t dimensions;
+	uint32_t e;
+	protobuf_c_boolean has_precision;
+	uint32_t precision;
+	protobuf_c_boolean has_dimensions;
+	uint32_t dimensions;
 };
 
 void geobuf_agg_init_context(struct geobuf_agg_context *ctx);
 void geobuf_agg_transfn(struct geobuf_agg_context *ctx);
 uint8_t *geobuf_agg_finalfn(struct geobuf_agg_context *ctx);
 
-#endif  /* HAVE_LIBPROTOBUF */
+#endif /* HAVE_LIBPROTOBUF */
 
 #endif

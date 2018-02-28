@@ -28,8 +28,8 @@
  *
  */
 
-#include <postgres.h> /* for palloc */
-#include <fmgr.h> /* for PG_*, Datum*  */
+#include <postgres.h>       /* for palloc */
+#include <fmgr.h>           /* for PG_*, Datum*  */
 #include <utils/builtins.h> /*  for cstring_to_text */
 
 #include "rtpostgis.h"
@@ -55,7 +55,7 @@ Datum RASTER_asWKB(PG_FUNCTION_ARGS)
 	int outasin = FALSE;
 
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* Get raster object */
 	raster = rt_raster_deserialize(pgraster, FALSE);
@@ -65,8 +65,7 @@ Datum RASTER_asWKB(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (!PG_ARGISNULL(1))
-		outasin = PG_GETARG_BOOL(1);
+	if (!PG_ARGISNULL(1)) outasin = PG_GETARG_BOOL(1);
 
 	/* Parse raster to wkb object */
 	wkb = rt_raster_to_wkb(raster, outasin, &wkb_size);
@@ -107,7 +106,7 @@ Datum RASTER_asHexWKB(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUG(3, "Starting");
 
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
@@ -116,8 +115,7 @@ Datum RASTER_asHexWKB(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (!PG_ARGISNULL(1))
-		outasin = PG_GETARG_BOOL(1);
+	if (!PG_ARGISNULL(1)) outasin = PG_GETARG_BOOL(1);
 
 	hexwkb = rt_raster_to_hexwkb(raster, outasin, &hexwkbsize);
 	if (!hexwkb) {
@@ -151,21 +149,19 @@ Datum RASTER_fromWKB(PG_FUNCTION_ARGS)
 
 	POSTGIS_RT_DEBUG(3, "Starting");
 
-	bytea_data = (bytea *) PG_GETARG_BYTEA_P(0);
-	data = (uint8_t *) VARDATA(bytea_data);
+	bytea_data = (bytea *)PG_GETARG_BYTEA_P(0);
+	data = (uint8_t *)VARDATA(bytea_data);
 	data_len = VARSIZE(bytea_data) - VARHDRSZ;
 
 	raster = rt_raster_from_wkb(data, data_len);
 	PG_FREE_IF_COPY(bytea_data, 0);
-	if (raster == NULL)
-		PG_RETURN_NULL();
+	if (raster == NULL) PG_RETURN_NULL();
 
 	result = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
-	if (result == NULL)
-		PG_RETURN_NULL();
+	if (result == NULL) PG_RETURN_NULL();
 
-	SET_VARSIZE(result, ((rt_pgraster*)result)->size);
+	SET_VARSIZE(result, ((rt_pgraster *)result)->size);
 	PG_RETURN_POINTER(result);
 }
 
@@ -187,14 +183,12 @@ Datum RASTER_fromHexWKB(PG_FUNCTION_ARGS)
 
 	raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
 	PG_FREE_IF_COPY(hexwkb_text, 0);
-	if (raster == NULL)
-		PG_RETURN_NULL();
+	if (raster == NULL) PG_RETURN_NULL();
 
 	result = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
-	if (result == NULL)
-		PG_RETURN_NULL();
+	if (result == NULL) PG_RETURN_NULL();
 
-	SET_VARSIZE(result, ((rt_pgraster*)result)->size);
+	SET_VARSIZE(result, ((rt_pgraster *)result)->size);
 	PG_RETURN_POINTER(result);
 }

@@ -27,7 +27,8 @@ char *hex_b;
 ** The suite initialization function.
 ** Create any re-used objects.
 */
-static int init_wkb_in_suite(void)
+static int
+init_wkb_in_suite(void)
 {
 	hex_a = NULL;
 	hex_b = NULL;
@@ -38,7 +39,8 @@ static int init_wkb_in_suite(void)
 ** The suite cleanup function.
 ** Frees any global objects.
 */
-static int clean_wkb_in_suite(void)
+static int
+clean_wkb_in_suite(void)
 {
 	if (hex_a) free(hex_a);
 	if (hex_b) free(hex_b);
@@ -47,19 +49,21 @@ static int clean_wkb_in_suite(void)
 	return 0;
 }
 
-static void cu_wkb_malformed_in(char *hex)
+static void
+cu_wkb_malformed_in(char *hex)
 {
 	LWGEOM_PARSER_RESULT p;
 	int rv = 0;
 
 	rv = lwgeom_parse_wkt(&p, hex, 0);
-	CU_ASSERT( LW_FAILURE == rv );
-	CU_ASSERT( p.errcode );
-	CU_ASSERT( ! p.geom );
+	CU_ASSERT(LW_FAILURE == rv);
+	CU_ASSERT(p.errcode);
+	CU_ASSERT(!p.geom);
 	lwgeom_parser_result_free(&p);
 }
 
-static void cu_wkb_in(char *wkt)
+static void
+cu_wkb_in(char *wkt)
 {
 	LWGEOM_PARSER_RESULT pr;
 	LWGEOM *g_a, *g_b;
@@ -67,13 +71,12 @@ static void cu_wkb_in(char *wkt)
 	size_t wkb_size_a, wkb_size_b;
 	/* int i; char *hex; */
 
-	if ( hex_a ) free(hex_a);
-	if ( hex_b ) free(hex_b);
+	if (hex_a) free(hex_a);
+	if (hex_b) free(hex_b);
 
 	/* Turn WKT into geom */
 	lwgeom_parse_wkt(&pr, wkt, LW_PARSER_CHECK_NONE);
-	if ( pr.errcode )
-	{
+	if (pr.errcode) {
 		printf("ERROR: %s\n", pr.message);
 		printf("POSITION: %d\n", pr.errlocation);
 		exit(0);
@@ -102,10 +105,11 @@ static void cu_wkb_in(char *wkt)
 	lwgeom_free(g_b);
 }
 
-static void test_wkb_in_point(void)
+static void
+test_wkb_in_point(void)
 {
 	cu_wkb_in("POINT(0 0 0 0)");
-//	printf("old: %s\nnew: %s\n",hex_a, hex_b);
+	//	printf("old: %s\nnew: %s\n",hex_a, hex_b);
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_wkb_in("SRID=4;POINTM(1 1 1)");
@@ -125,10 +129,10 @@ static void test_wkb_in_point(void)
 
 	cu_wkb_in("POINT ZM EMPTY");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
-
 }
 
-static void test_wkb_in_linestring(void)
+static void
+test_wkb_in_linestring(void)
 {
 	cu_wkb_in("LINESTRING(0 0,1 1)");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
@@ -137,7 +141,8 @@ static void test_wkb_in_linestring(void)
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_wkb_in_polygon(void)
+static void
+test_wkb_in_polygon(void)
 {
 	cu_wkb_in("SRID=4;POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
@@ -152,7 +157,8 @@ static void test_wkb_in_polygon(void)
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_wkb_in_multipoint(void)
+static void
+test_wkb_in_multipoint(void)
 {
 	cu_wkb_in("SRID=4;MULTIPOINT(0 0 0,0 1 0,1 1 0,1 0 0,0 0 1)");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
@@ -161,16 +167,22 @@ static void test_wkb_in_multipoint(void)
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_wkb_in_multilinestring(void) {}
-
-static void test_wkb_in_multipolygon(void)
+static void
+test_wkb_in_multilinestring(void)
 {
-	cu_wkb_in("SRID=14;MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((-1 -1 0,-1 2 0,2 2 0,2 -1 0,-1 -1 0),(0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)))");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
-	//printf("old: %s\nnew: %s\n",hex_a, hex_b);
 }
 
-static void test_wkb_in_collection(void)
+static void
+test_wkb_in_multipolygon(void)
+{
+	cu_wkb_in(
+	    "SRID=14;MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((-1 -1 0,-1 2 0,2 2 0,2 -1 0,-1 -1 0),(0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)))");
+	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	// printf("old: %s\nnew: %s\n",hex_a, hex_b);
+}
+
+static void
+test_wkb_in_collection(void)
 {
 	cu_wkb_in("SRID=14;GEOMETRYCOLLECTION(POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),POINT(1 1 1))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
@@ -178,12 +190,13 @@ static void test_wkb_in_collection(void)
 	cu_wkb_in("GEOMETRYCOLLECTION EMPTY");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
-	cu_wkb_in("SRID=14;GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))),POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),POINT(1 1 1),LINESTRING(0 0 0, 1 1 1))");
+	cu_wkb_in(
+	    "SRID=14;GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))),POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),POINT(1 1 1),LINESTRING(0 0 0, 1 1 1))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
-
 }
 
-static void test_wkb_in_circularstring(void)
+static void
+test_wkb_in_circularstring(void)
 {
 	cu_wkb_in("CIRCULARSTRING(0 -2,-2 0,0 2,2 0,0 -2)");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
@@ -195,44 +208,60 @@ static void test_wkb_in_circularstring(void)
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_wkb_in_compoundcurve(void)
+static void
+test_wkb_in_compoundcurve(void)
 {
-	cu_wkb_in("COMPOUNDCURVE(CIRCULARSTRING(0 0 0, 0.26794919243112270647255365849413 1 3, 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1),(0.5857864376269049511983112757903 1.4142135623730950488016887242097 1,2 0 0,0 0 0))");
+	cu_wkb_in(
+	    "COMPOUNDCURVE(CIRCULARSTRING(0 0 0, 0.26794919243112270647255365849413 1 3, 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1),(0.5857864376269049511983112757903 1.4142135623730950488016887242097 1,2 0 0,0 0 0))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_wkb_in_curvpolygon(void)
+static void
+test_wkb_in_curvpolygon(void)
 {
-	cu_wkb_in("CURVEPOLYGON(CIRCULARSTRING(-2 0 0 0,-1 -1 1 2,0 0 2 4,1 -1 3 6,2 0 4 8,0 2 2 4,-2 0 0 0),(-1 0 1 2,0 0.5 2 4,1 0 3 6,0 1 3 4,-1 0 1 2))");
+	cu_wkb_in(
+	    "CURVEPOLYGON(CIRCULARSTRING(-2 0 0 0,-1 -1 1 2,0 0 2 4,1 -1 3 6,2 0 4 8,0 2 2 4,-2 0 0 0),(-1 0 1 2,0 0.5 2 4,1 0 3 6,0 1 3 4,-1 0 1 2))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_wkb_in_multicurve(void) {}
+static void
+test_wkb_in_multicurve(void)
+{
+}
 
-static void test_wkb_in_multisurface(void) {}
+static void
+test_wkb_in_multisurface(void)
+{
+}
 
-static void test_wkb_in_malformed(void)
+static void
+test_wkb_in_malformed(void)
 {
 
 	/* OSSFUXX */
 	cu_wkb_malformed_in("0000000008200000002020202020202020");
 
 	/* See http://trac.osgeo.org/postgis/ticket/1445 */
-	cu_wkb_malformed_in("01060000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F");
-	cu_wkb_malformed_in("01050000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F");
-	cu_wkb_malformed_in("01040000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F");
-	cu_wkb_malformed_in("01030000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F");
+	cu_wkb_malformed_in(
+	    "01060000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F");
+	cu_wkb_malformed_in(
+	    "01050000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F");
+	cu_wkb_malformed_in(
+	    "01040000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F");
+	cu_wkb_malformed_in(
+	    "01030000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F");
 
 	/* See http://trac.osgeo.org/postgis/ticket/168 */
-	cu_wkb_malformed_in("01060000C00100000001030000C00100000003000000E3D9107E234F5041A3DB66BC97A30F4122ACEF440DAF9440FFFFFFFFFFFFEFFFE3D9107E234F5041A3DB66BC97A30F4122ACEF440DAF9440FFFFFFFFFFFFEFFFE3D9107E234F5041A3DB66BC97A30F4122ACEF440DAF9440FFFFFFFFFFFFEFFF");
+	cu_wkb_malformed_in(
+	    "01060000C00100000001030000C00100000003000000E3D9107E234F5041A3DB66BC97A30F4122ACEF440DAF9440FFFFFFFFFFFFEFFFE3D9107E234F5041A3DB66BC97A30F4122ACEF440DAF9440FFFFFFFFFFFFEFFFE3D9107E234F5041A3DB66BC97A30F4122ACEF440DAF9440FFFFFFFFFFFFEFFF");
 }
-
 
 /*
 ** Used by test harness to register the tests in this file.
 */
 void wkb_in_suite_setup(void);
-void wkb_in_suite_setup(void)
+void
+wkb_in_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("wkb_input", init_wkb_in_suite, clean_wkb_in_suite);
 	PG_ADD_TEST(suite, test_wkb_in_point);

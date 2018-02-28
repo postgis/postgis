@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#define PGC_ERRMSG_MAXLEN 2048 //256
+#define PGC_ERRMSG_MAXLEN 2048 // 256
 
 /*
  * Error message parsing functions
@@ -44,25 +44,23 @@ pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result)
 
 	/* Only display the parser position if the location is > 0; this provides a nicer output when the first token
 	   within the input stream cannot be matched */
-	if (lwg_parser_result->errlocation > 0)
-	{
+	if (lwg_parser_result->errlocation > 0) {
 		/* Return a copy of the input string start truncated
 		 * at the error location */
 		hintbuffer = lwmessage_truncate(
-			(char *)lwg_parser_result->wkinput, 0,
-			lwg_parser_result->errlocation - 1, 40, 0);
+		    (char *)lwg_parser_result->wkinput, 0, lwg_parser_result->errlocation - 1, 40, 0);
 
 		ereport(ERROR,
-		        (errmsg("%s", lwg_parser_result->message),
-		         errhint("\"%s\" <-- parse error at position %d within geometry", hintbuffer, lwg_parser_result->errlocation))
-		       );
+			(errmsg("%s", lwg_parser_result->message),
+			 errhint("\"%s\" <-- parse error at position %d within geometry",
+				 hintbuffer,
+				 lwg_parser_result->errlocation)));
 	}
-	else
-	{
-		ereport(ERROR,
-		        (errmsg("%s", lwg_parser_result->message),
-		         errhint("You must specify a valid OGC WKT geometry type such as POINT, LINESTRING or POLYGON"))
-		       );
+	else {
+		ereport(
+		    ERROR,
+		    (errmsg("%s", lwg_parser_result->message),
+		     errhint("You must specify a valid OGC WKT geometry type such as POINT, LINESTRING or POLYGON")));
 	}
 }
 
@@ -73,11 +71,10 @@ pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result)
 	elog(ERROR, "%s", lwg_unparser_result->message);
 }
 
-
 static void *
 pg_alloc(size_t size)
 {
-	void * result;
+	void *result;
 
 	CHECK_FOR_INTERRUPTS(); /* give interrupter a chance */
 
@@ -87,8 +84,7 @@ pg_alloc(size_t size)
 
 	POSTGIS_DEBUGF(5, "  pg_alloc(%d) returning %p", (int)size, result);
 
-	if ( ! result )
-	{
+	if (!result) {
 		ereport(ERROR, (errmsg_internal("Out of virtual memory")));
 		return NULL;
 	}
@@ -98,7 +94,7 @@ pg_alloc(size_t size)
 static void *
 pg_realloc(void *mem, size_t size)
 {
-	void * result;
+	void *result;
 
 	CHECK_FOR_INTERRUPTS(); /* give interrupter a chance */
 
@@ -120,45 +116,45 @@ pg_free(void *ptr)
 static void
 pg_error(const char *fmt, va_list ap)
 {
-	char errmsg[PGC_ERRMSG_MAXLEN+1];
+	char errmsg[PGC_ERRMSG_MAXLEN + 1];
 
-	vsnprintf (errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
+	vsnprintf(errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
 
-	errmsg[PGC_ERRMSG_MAXLEN]='\0';
+	errmsg[PGC_ERRMSG_MAXLEN] = '\0';
 	ereport(ERROR, (errmsg_internal("%s", errmsg)));
 }
 
 static void
 pg_warning(const char *fmt, va_list ap)
 {
-	char errmsg[PGC_ERRMSG_MAXLEN+1];
+	char errmsg[PGC_ERRMSG_MAXLEN + 1];
 
-	vsnprintf (errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
+	vsnprintf(errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
 
-	errmsg[PGC_ERRMSG_MAXLEN]='\0';
+	errmsg[PGC_ERRMSG_MAXLEN] = '\0';
 	ereport(WARNING, (errmsg_internal("%s", errmsg)));
 }
 
 static void
 pg_notice(const char *fmt, va_list ap)
 {
-	char errmsg[PGC_ERRMSG_MAXLEN+1];
+	char errmsg[PGC_ERRMSG_MAXLEN + 1];
 
-	vsnprintf (errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
+	vsnprintf(errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
 
-	errmsg[PGC_ERRMSG_MAXLEN]='\0';
+	errmsg[PGC_ERRMSG_MAXLEN] = '\0';
 	ereport(NOTICE, (errmsg_internal("%s", errmsg)));
 }
 
 static void
 pg_debug(int level, const char *fmt, va_list ap)
 {
-	char errmsg[PGC_ERRMSG_MAXLEN+1];
-	vsnprintf (errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
-	errmsg[PGC_ERRMSG_MAXLEN]='\0';
+	char errmsg[PGC_ERRMSG_MAXLEN + 1];
+	vsnprintf(errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
+	errmsg[PGC_ERRMSG_MAXLEN] = '\0';
 	int pglevel[6] = {NOTICE, DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5};
 
-	if ( level >= 0 && level <= 5 )
+	if (level >= 0 && level <= 5)
 		ereport(pglevel[level], (errmsg_internal("%s", errmsg)));
 	else
 		ereport(DEBUG5, (errmsg_internal("%s", errmsg)));
@@ -173,39 +169,40 @@ pg_install_lwgeom_handlers(void)
 }
 
 /**
-* Utility method to call the serialization and then set the
-* PgSQL varsize header appropriately with the serialized size.
-*/
+ * Utility method to call the serialization and then set the
+ * PgSQL varsize header appropriately with the serialized size.
+ */
 
 /**
-* Utility method to call the serialization and then set the
-* PgSQL varsize header appropriately with the serialized size.
-*/
-GSERIALIZED* geography_serialize(LWGEOM *lwgeom)
+ * Utility method to call the serialization and then set the
+ * PgSQL varsize header appropriately with the serialized size.
+ */
+GSERIALIZED *
+geography_serialize(LWGEOM *lwgeom)
 {
 	size_t ret_size = 0;
 	GSERIALIZED *g = NULL;
 	/** force to geodetic in case it's not **/
 	lwgeom_set_geodetic(lwgeom, true);
 
-	g = gserialized_from_lwgeom(lwgeom,  &ret_size);
-	if ( ! g ) lwpgerror("Unable to serialize lwgeom.");
+	g = gserialized_from_lwgeom(lwgeom, &ret_size);
+	if (!g) lwpgerror("Unable to serialize lwgeom.");
 	SET_VARSIZE(g, ret_size);
 	return g;
 }
 
-
 /**
-* Utility method to call the serialization and then set the
-* PgSQL varsize header appropriately with the serialized size.
-*/
-GSERIALIZED* geometry_serialize(LWGEOM *lwgeom)
+ * Utility method to call the serialization and then set the
+ * PgSQL varsize header appropriately with the serialized size.
+ */
+GSERIALIZED *
+geometry_serialize(LWGEOM *lwgeom)
 {
 	size_t ret_size = 0;
 	GSERIALIZED *g = NULL;
 
 	g = gserialized_from_lwgeom(lwgeom, &ret_size);
-	if ( ! g ) lwpgerror("Unable to serialize lwgeom.");
+	if (!g) lwpgerror("Unable to serialize lwgeom.");
 	SET_VARSIZE(g, ret_size);
 	return g;
 }
@@ -217,7 +214,7 @@ lwpgnotice(const char *fmt, ...)
 
 	va_start(ap, fmt);
 
-  pg_notice(fmt, ap);
+	pg_notice(fmt, ap);
 
 	va_end(ap);
 }
@@ -229,7 +226,7 @@ lwpgwarning(const char *fmt, ...)
 
 	va_start(ap, fmt);
 
-  pg_warning(fmt, ap);
+	pg_warning(fmt, ap);
 
 	va_end(ap);
 }
@@ -241,11 +238,10 @@ lwpgerror(const char *fmt, ...)
 
 	va_start(ap, fmt);
 
-  pg_error(fmt, ap);
+	pg_error(fmt, ap);
 
 	va_end(ap);
 }
-
 
 /*
  * the bare comparison function for GUC names
@@ -258,22 +254,16 @@ postgis_guc_name_compare(const char *namea, const char *nameb)
 	 * array ordering has to remain stable across setlocale() calls. So, build
 	 * our own with a simple ASCII-only downcasing.
 	 */
-	while (*namea && *nameb)
-	{
-		char		cha = *namea++;
-		char		chb = *nameb++;
+	while (*namea && *nameb) {
+		char cha = *namea++;
+		char chb = *nameb++;
 
-		if (cha >= 'A' && cha <= 'Z')
-			cha += 'a' - 'A';
-		if (chb >= 'A' && chb <= 'Z')
-			chb += 'a' - 'A';
-		if (cha != chb)
-			return cha - chb;
+		if (cha >= 'A' && cha <= 'Z') cha += 'a' - 'A';
+		if (chb >= 'A' && chb <= 'Z') chb += 'a' - 'A';
+		if (cha != chb) return cha - chb;
 	}
-	if (*namea)
-		return 1;				/* a is longer */
-	if (*nameb)
-		return -1;				/* b is longer */
+	if (*namea) return 1;  /* a is longer */
+	if (*nameb) return -1; /* b is longer */
 	return 0;
 }
 
@@ -283,19 +273,19 @@ postgis_guc_name_compare(const char *namea, const char *nameb)
 int
 postgis_guc_var_compare(const void *a, const void *b)
 {
-	const struct config_generic *confa = *(struct config_generic * const *) a;
-	const struct config_generic *confb = *(struct config_generic * const *) b;
+	const struct config_generic *confa = *(struct config_generic *const *)a;
+	const struct config_generic *confb = *(struct config_generic *const *)b;
 
 	return postgis_guc_name_compare(confa->name, confb->name);
 }
 
 /*
-* This is copied from the top half of the find_option function
-* in postgresql's guc.c. We search the guc_variables for our option.
-* Then we make sure it's not a placeholder. Only then are we sure
-* we have a potential conflict, of the sort experienced during an
-* extension upgrade.
-*/
+ * This is copied from the top half of the find_option function
+ * in postgresql's guc.c. We search the guc_variables for our option.
+ * Then we make sure it's not a placeholder. Only then are we sure
+ * we have a potential conflict, of the sort experienced during an
+ * extension upgrade.
+ */
 int
 postgis_guc_find_option(const char *name)
 {
@@ -306,20 +296,18 @@ postgis_guc_find_option(const char *name)
 	 * By equating const char ** with struct config_generic *, we are assuming
 	 * the name field is first in config_generic.
 	 */
-	res = (struct config_generic **) bsearch((void *) &key,
-		 (void *) get_guc_variables(),
-		 GetNumConfigOptions(),
-		 sizeof(struct config_generic *),
-		 postgis_guc_var_compare);
+	res = (struct config_generic **)bsearch((void *)&key,
+						(void *)get_guc_variables(),
+						GetNumConfigOptions(),
+						sizeof(struct config_generic *),
+						postgis_guc_var_compare);
 
 	/* Found nothing? Good */
-	if ( ! res ) return 0;
+	if (!res) return 0;
 
 	/* Hm, you found something, but maybe it's just a placeholder? */
 	/* We'll consider a placehold a "not found" */
-	if ( (*res)->flags & GUC_CUSTOM_PLACEHOLDER )
-		return 0;
+	if ((*res)->flags & GUC_CUSTOM_PLACEHOLDER) return 0;
 
 	return 1;
 }
-

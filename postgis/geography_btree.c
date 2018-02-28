@@ -22,17 +22,16 @@
  *
  **********************************************************************/
 
-
 #include "postgres.h"
 #include "access/hash.h"
 
 #include "../postgis_config.h"
 
-#include "liblwgeom.h"         /* For standard geometry types. */
-#include "liblwgeom_internal.h"         /* For FP comparators. */
-#include "lwgeom_pg.h"       /* For debugging macros. */
+#include "liblwgeom.h"          /* For standard geometry types. */
+#include "liblwgeom_internal.h" /* For FP comparators. */
+#include "lwgeom_pg.h"          /* For debugging macros. */
 #include "gserialized_gist.h"
-#include "geography.h"	     /* For utility functions. */
+#include "geography.h" /* For utility functions. */
 
 Datum geography_lt(PG_FUNCTION_ARGS);
 Datum geography_le(PG_FUNCTION_ARGS);

@@ -38,32 +38,20 @@
  * functions.
  ****************************************************************/
 
-char
-*rtpg_strreplace(
-	const char *str,
-	const char *oldstr, const char *newstr,
-	int *count
-);
+char *rtpg_strreplace(const char *str, const char *oldstr, const char *newstr, int *count);
 
-char *
-rtpg_strtoupper(char *str);
+char *rtpg_strtoupper(char *str);
 
-char *
-rtpg_chartrim(const char* input, char *remove);
+char *rtpg_chartrim(const char *input, char *remove);
 
-char **
-rtpg_strsplit(const char *str, const char *delimiter, uint32_t *n);
+char **rtpg_strsplit(const char *str, const char *delimiter, uint32_t *n);
 
-char *
-rtpg_removespaces(char *str);
+char *rtpg_removespaces(char *str);
 
-char *
-rtpg_trim(const char* input);
+char *rtpg_trim(const char *input);
 
-char *
-rtpg_strrstr(const char *s1, const char *s2);
+char *rtpg_strrstr(const char *s1, const char *s2);
 
-char *
-rtpg_getSR(int srid);
+char *rtpg_getSR(int srid);
 
 #endif /* RTPG_INTERNAL_H_INCLUDED */

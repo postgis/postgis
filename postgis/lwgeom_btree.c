@@ -24,7 +24,6 @@
  *
  **********************************************************************/
 
-
 #include "postgres.h"
 #include "fmgr.h"
 #include "access/hash.h"
@@ -134,7 +133,7 @@ Datum lwgeom_hash(PG_FUNCTION_ARGS)
 	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
 	/* Point to just the type/coordinate part of buffer */
 	size_t hsz1 = gserialized_header_size(g1);
-	uint8_t *b1 = (uint8_t*)g1 + hsz1;
+	uint8_t *b1 = (uint8_t *)g1 + hsz1;
 	/* Calculate size of type/coordinate buffer */
 	size_t sz1 = VARSIZE(g1);
 	size_t bsz1 = sz1 - hsz1;
@@ -145,13 +144,10 @@ Datum lwgeom_hash(PG_FUNCTION_ARGS)
 	/* Copy srid into front of combined buffer */
 	memcpy(b2, &srid, sizeof(int));
 	/* Copy type/coordinates into rest of combined buffer */
-	memcpy(b2+sizeof(int), b1, bsz1);
+	memcpy(b2 + sizeof(int), b1, bsz1);
 	/* Hash combined buffer */
 	Datum hval = hash_any(b2, bsz2);
 	pfree(b2);
 	PG_FREE_IF_COPY(g1, 0);
 	PG_RETURN_DATUM(hval);
 }
-
-
-

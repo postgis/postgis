@@ -22,22 +22,21 @@
  *
  **********************************************************************/
 
-
 #ifndef LWGEOM_GEOS_H_
 #define LWGEOM_GEOS_H_ 1
 
 #include "../liblwgeom/lwgeom_geos.h" /* for GEOSGeom */
-#include "liblwgeom.h" /* for GSERIALIZED */
-#include "utils/array.h" /* for ArrayType */
+#include "liblwgeom.h"                /* for GSERIALIZED */
+#include "utils/array.h"              /* for ArrayType */
 
 /*
 ** Public prototypes for GEOS utility functions.
 */
 
 GSERIALIZED *GEOS2POSTGIS(GEOSGeom geom, char want3d);
-GEOSGeometry * POSTGIS2GEOS(GSERIALIZED *g);
-GEOSGeometry** ARRAY2GEOS(ArrayType* array, uint32_t nelems, int* is3d, int* srid);
-LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems, int* is3d, int* srid);
+GEOSGeometry *POSTGIS2GEOS(GSERIALIZED *g);
+GEOSGeometry **ARRAY2GEOS(ArrayType *array, uint32_t nelems, int *is3d, int *srid);
+LWGEOM **ARRAY2LWGEOM(ArrayType *array, uint32_t nelems, int *is3d, int *srid);
 
 Datum geos_intersects(PG_FUNCTION_ARGS);
 Datum geos_intersection(PG_FUNCTION_ARGS);
@@ -48,6 +47,6 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS);
 
 void errorIfGeometryCollection(GSERIALIZED *g1, GSERIALIZED *g2);
-uint32_t array_nelems_not_null(ArrayType* array);
+uint32_t array_nelems_not_null(ArrayType *array);
 
 #endif /* LWGEOM_GEOS_H_ */

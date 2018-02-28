@@ -23,7 +23,6 @@
  *
  **********************************************************************/
 
-
 #include "varint.h"
 #include "lwgeom_log.h"
 #include "liblwgeom.h"
@@ -36,8 +35,7 @@ _varint_u64_encode_buf(uint64_t val, uint8_t *buf)
 	uint8_t grp;
 	uint64_t q = val;
 	uint8_t *ptr = buf;
-	while (1)
-	{
+	while (1) {
 		/* We put the 7 least significant bits in grp */
 		grp = 0x7f & q;
 		/* We rightshift our input value 7 bits */
@@ -46,8 +44,7 @@ _varint_u64_encode_buf(uint64_t val, uint8_t *buf)
 		q = q >> 7;
 		/* Check if, after our rightshifting, we still have */
 		/* anything to read in our input value. */
-		if ( q > 0 )
-		{
+		if (q > 0) {
 			/* In the next line quite a lot is happening. */
 			/* Since there is more to read in our input value */
 			/* we signal that by setting the most siginicant bit */
@@ -57,8 +54,7 @@ _varint_u64_encode_buf(uint64_t val, uint8_t *buf)
 			*ptr = 0x80 | grp;
 			ptr++;
 		}
-		else
-		{
+		else {
 			/* The same as above, but since there is nothing more */
 			/* to read in our input value we leave the most significant bit unset */
 			*ptr = grp;
@@ -71,13 +67,11 @@ _varint_u64_encode_buf(uint64_t val, uint8_t *buf)
 	return (size_t)0;
 }
 
-
 size_t
 varint_u64_encode_buf(uint64_t val, uint8_t *buf)
 {
 	return _varint_u64_encode_buf(val, buf);
 }
-
 
 size_t
 varint_u32_encode_buf(uint32_t val, uint8_t *buf)
@@ -114,12 +108,10 @@ varint_u64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size
 	const uint8_t *ptr = the_start;
 
 	/* Check so we don't read beyond the twkb */
-	while( ptr < the_end )
-	{
+	while (ptr < the_end) {
 		nByte = *ptr;
 		/* Hibit is set, so this isn't the last byte */
-		if (nByte & 0x80)
-		{
+		if (nByte & 0x80) {
 			/* We get here when there is more to read in the input varInt */
 			/* Here we take the least significant 7 bits of the read */
 			/* byte and put it in the most significant place in the result variable. */
@@ -129,8 +121,7 @@ varint_u64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size
 			/* move the cursor in the resulting variable (7 bits) */
 			nShift += 7;
 		}
-		else
-		{
+		else {
 			/* move the "cursor" one step */
 			ptr++;
 			/* Move the last read byte to the most significant */
@@ -149,15 +140,10 @@ varint_size(const uint8_t *the_start, const uint8_t *the_end)
 	const uint8_t *ptr = the_start;
 
 	/* Check so we don't read beyond the twkb */
-	while( ptr < the_end )
-	{
+	while (ptr < the_end) {
 		/* Hibit is set, this isn't the last byte */
-		if (*ptr & 0x80)
-		{
-			ptr++;
-		}
-		else
-		{
+		if (*ptr & 0x80) { ptr++; }
+		else {
 			ptr++;
 			return ptr - the_start;
 		}
@@ -165,46 +151,38 @@ varint_size(const uint8_t *the_start, const uint8_t *the_end)
 	return 0;
 }
 
-uint64_t zigzag64(int64_t val)
+uint64_t
+zigzag64(int64_t val)
 {
-	return val >= 0 ?
-		((uint64_t)val) << 1 :
-		((((uint64_t)(-1 - val)) << 1) | 0x01);
+	return val >= 0 ? ((uint64_t)val) << 1 : ((((uint64_t)(-1 - val)) << 1) | 0x01);
 }
 
-uint32_t zigzag32(int32_t val)
+uint32_t
+zigzag32(int32_t val)
 {
-	return val >= 0 ?
-		((uint32_t)val) << 1 :
-		((((uint32_t)(-1 - val)) << 1) | 0x01);
+	return val >= 0 ? ((uint32_t)val) << 1 : ((((uint32_t)(-1 - val)) << 1) | 0x01);
 }
 
-uint8_t zigzag8(int8_t val)
+uint8_t
+zigzag8(int8_t val)
 {
-	return val >= 0 ?
-		((uint8_t)val) << 1 :
-		((((uint8_t)(-1 - val)) << 1) | 0x01);
+	return val >= 0 ? ((uint8_t)val) << 1 : ((((uint8_t)(-1 - val)) << 1) | 0x01);
 }
 
-int64_t unzigzag64(uint64_t val)
+int64_t
+unzigzag64(uint64_t val)
 {
-	return !(val & 0x01) ?
-		((int64_t)(val >> 1)) :
-		(-1 * (int64_t)((val+1) >> 1));
+	return !(val & 0x01) ? ((int64_t)(val >> 1)) : (-1 * (int64_t)((val + 1) >> 1));
 }
 
-int32_t unzigzag32(uint32_t val)
+int32_t
+unzigzag32(uint32_t val)
 {
-	return !(val & 0x01) ?
-		((int32_t)(val >> 1)) :
-		(-1 * (int32_t)((val+1) >> 1));
+	return !(val & 0x01) ? ((int32_t)(val >> 1)) : (-1 * (int32_t)((val + 1) >> 1));
 }
 
-int8_t unzigzag8(uint8_t val)
+int8_t
+unzigzag8(uint8_t val)
 {
-	return !(val & 0x01) ?
-		((int8_t)(val >> 1)) :
-		(-1 * (int8_t)((val+1) >> 1));
+	return !(val & 0x01) ? ((int8_t)(val >> 1)) : (-1 * (int8_t)((val + 1) >> 1));
 }
-
-

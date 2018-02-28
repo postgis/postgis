@@ -22,7 +22,6 @@
  *
  **********************************************************************/
 
-
 #include <assert.h>
 
 #include "postgres.h"
@@ -33,31 +32,31 @@
 #include "lwgeom_export.h"
 
 #ifdef HAVE_LIBJSON
-# ifdef HAVE_LIBJSON_C
-#  include <json-c/json.h>
-# else
-#  include <json/json.h>
-# endif
+#ifdef HAVE_LIBJSON_C
+#include <json-c/json.h>
+#else
+#include <json/json.h>
+#endif
 
 /* We don't include <utils/builtins.h> to avoid collisions with json-c/json.h */
-static text*
+static text *
 cstring2text(const char *cstring)
 {
 	size_t len = strlen(cstring);
-	text *result = (text *) palloc(len + VARHDRSZ);
+	text *result = (text *)palloc(len + VARHDRSZ);
 	SET_VARSIZE(result, len + VARHDRSZ);
 	memcpy(VARDATA(result), cstring, len);
 
 	return result;
 }
 
-static char*
+static char *
 text2cstring(const text *textptr)
 {
 	size_t size = VARSIZE(textptr) - VARHDRSZ;
-	char *str = lwalloc(size+1);
+	char *str = lwalloc(size + 1);
 	memcpy(str, VARDATA(textptr), size);
-	str[size]='\0';
+	str[size] = '\0';
 	return str;
 }
 #endif
@@ -71,11 +70,11 @@ Datum postgis_libjson_version(PG_FUNCTION_ARGS)
 #ifndef HAVE_LIBJSON
 	PG_RETURN_NULL();
 #else /* HAVE_LIBJSON  */
-# ifdef JSON_C_VERSION
+#ifdef JSON_C_VERSION
 	const char *ver = json_c_version();
-# else
+#else
 	const char *ver = "UNKNOWN";
-# endif
+#endif
 	text *result = cstring2text(ver);
 	PG_RETURN_POINTER(result);
 #endif
@@ -96,22 +95,19 @@ Datum geom_from_geojson(PG_FUNCTION_ARGS)
 	char *srs = NULL;
 
 	/* Get the geojson stream */
-	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 
 	geojson_input = PG_GETARG_TEXT_P(0);
 	geojson = text2cstring(geojson_input);
 
 	lwgeom = lwgeom_from_geojson(geojson, &srs);
-	if ( ! lwgeom )
-	{
+	if (!lwgeom) {
 		/* Shouldn't get here */
 		elog(ERROR, "lwgeom_from_geojson returned NULL");
 		PG_RETURN_NULL();
 	}
 
-	if ( srs )
-	{
+	if (srs) {
 		lwgeom_set_srid(lwgeom, getSRIDbySRS(srs));
 		lwfree(srs);
 	}
@@ -122,4 +118,3 @@ Datum geom_from_geojson(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(geom);
 #endif
 }
-
