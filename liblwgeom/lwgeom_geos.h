@@ -40,19 +40,9 @@ GEOSGeometry* LWGEOM_GEOS_makeValid(const GEOSGeometry*);
 GEOSGeometry* make_geos_point(double x, double y);
 GEOSGeometry* make_geos_segment(double x1, double y1, double x2, double y2);
 
-int
-cluster_intersecting(GEOSGeometry** geoms, uint32_t num_geoms, GEOSGeometry*** clusterGeoms, uint32_t* num_clusters);
-int cluster_within_distance(LWGEOM** geoms,
-			    uint32_t num_geoms,
-			    double tolerance,
-			    LWGEOM*** clusterGeoms,
-			    uint32_t* num_clusters);
-int union_dbscan(LWGEOM** geoms,
-		 uint32_t num_geoms,
-		 UNIONFIND* uf,
-		 double eps,
-		 uint32_t min_points,
-		 char** is_in_cluster_ret);
+int cluster_intersecting(GEOSGeometry** geoms, uint32_t num_geoms, GEOSGeometry*** clusterGeoms, uint32_t* num_clusters);
+int cluster_within_distance(LWGEOM** geoms, uint32_t num_geoms, double tolerance, LWGEOM*** clusterGeoms, uint32_t* num_clusters);
+int union_dbscan(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint32_t min_points, char** is_in_cluster_ret);
 
 POINTARRAY* ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d);
 
