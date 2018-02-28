@@ -39,26 +39,26 @@
 #include "lwgeom_transform.h"
 
 /* Local prototypes */
-Datum PGISDirectFunctionCall1(PGFunction func, Datum arg1);
-Datum PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2);
-Datum pgis_geometry_accum_transfn(PG_FUNCTION_ARGS);
-Datum pgis_geometry_accum_finalfn(PG_FUNCTION_ARGS);
-Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS);
-Datum pgis_geometry_collect_finalfn(PG_FUNCTION_ARGS);
-Datum pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS);
-Datum pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS);
-Datum pgis_geometry_clusterintersecting_finalfn(PG_FUNCTION_ARGS);
-Datum pgis_geometry_clusterwithin_finalfn(PG_FUNCTION_ARGS);
-Datum pgis_abs_in(PG_FUNCTION_ARGS);
-Datum pgis_abs_out(PG_FUNCTION_ARGS);
+Datum		PGISDirectFunctionCall1(PGFunction func, Datum arg1);
+Datum		PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2);
+Datum		pgis_geometry_accum_transfn(PG_FUNCTION_ARGS);
+Datum		pgis_geometry_accum_finalfn(PG_FUNCTION_ARGS);
+Datum		pgis_geometry_union_finalfn(PG_FUNCTION_ARGS);
+Datum		pgis_geometry_collect_finalfn(PG_FUNCTION_ARGS);
+Datum		pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS);
+Datum		pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS);
+Datum		pgis_geometry_clusterintersecting_finalfn(PG_FUNCTION_ARGS);
+Datum		pgis_geometry_clusterwithin_finalfn(PG_FUNCTION_ARGS);
+Datum		pgis_abs_in(PG_FUNCTION_ARGS);
+Datum		pgis_abs_out(PG_FUNCTION_ARGS);
 
 /* External prototypes */
-Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
-Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS);
-Datum polygonize_garray(PG_FUNCTION_ARGS);
-Datum clusterintersecting_garray(PG_FUNCTION_ARGS);
-Datum cluster_within_distance_garray(PG_FUNCTION_ARGS);
-Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
+Datum		pgis_union_geometry_array(PG_FUNCTION_ARGS);
+Datum		LWGEOM_collect_garray(PG_FUNCTION_ARGS);
+Datum		polygonize_garray(PG_FUNCTION_ARGS);
+Datum		clusterintersecting_garray(PG_FUNCTION_ARGS);
+Datum		cluster_within_distance_garray(PG_FUNCTION_ARGS);
+Datum		LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 
 
 /** @file
@@ -80,12 +80,11 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 ** be used to pass an additional constant argument to a finalizer function.
 */
 
-typedef struct
-{
+typedef struct {
 	ArrayBuildState *a;
-	Datum data;
+	Datum		data;
 }
-pgis_abs;
+		pgis_abs;
 
 
 
@@ -95,18 +94,16 @@ pgis_abs;
 */
 PG_FUNCTION_INFO_V1(pgis_abs_in);
 Datum
-pgis_abs_in(PG_FUNCTION_ARGS)
-{
-	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-	               errmsg("function %s not implemented", __func__)));
+pgis_abs_in(PG_FUNCTION_ARGS) {
+	ereport(ERROR, (errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+			errmsg("function %s not implemented", __func__)));
 	PG_RETURN_POINTER(NULL);
 }
 PG_FUNCTION_INFO_V1(pgis_abs_out);
 Datum
-pgis_abs_out(PG_FUNCTION_ARGS)
-{
-	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-	               errmsg("function %s not implemented", __func__)));
+pgis_abs_out(PG_FUNCTION_ARGS) {
+	ereport(ERROR, (errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+			errmsg("function %s not implemented", __func__)));
 	PG_RETURN_POINTER(NULL);
 }
 
@@ -117,54 +114,48 @@ pgis_abs_out(PG_FUNCTION_ARGS)
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_accum_transfn);
 Datum
-pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
-{
-	Oid arg1_typeid = get_fn_expr_argtype(fcinfo->flinfo, 1);
-	MemoryContext aggcontext;
+pgis_geometry_accum_transfn(PG_FUNCTION_ARGS) {
+	Oid		arg1_typeid = get_fn_expr_argtype(fcinfo->flinfo, 1);
+	MemoryContext	aggcontext;
 	ArrayBuildState *state;
-	pgis_abs *p;
-	Datum elem;
+	pgis_abs       *p;
+	Datum		elem;
 
 	if (arg1_typeid == InvalidOid)
 		ereport(ERROR,
-		        (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-		         errmsg("could not determine input data type")));
+			(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+			 errmsg("could not determine input data type")));
 
-	if ( ! AggCheckCallContext(fcinfo, &aggcontext) )
-	{
+	if (!AggCheckCallContext(fcinfo, &aggcontext)) {
 		/* cannot be called directly because of dummy-type argument */
 		elog(ERROR, "%s called in non-aggregate context", __func__);
-		aggcontext = NULL;  /* keep compiler quiet */
+		aggcontext = NULL;	/* keep compiler quiet */
 	}
 
-	if ( PG_ARGISNULL(0) )
-	{
-		p = (pgis_abs*) palloc(sizeof(pgis_abs));
+	if (PG_ARGISNULL(0)) {
+		p = (pgis_abs *) palloc(sizeof(pgis_abs));
 		p->a = NULL;
 		p->data = (Datum) NULL;
 
-		if (PG_NARGS() == 3)
-		{
-			Datum argument = PG_GETARG_DATUM(2);
-			Oid dataOid = get_fn_expr_argtype(fcinfo->flinfo, 2);
-			MemoryContext old = MemoryContextSwitchTo(aggcontext);
+		if (PG_NARGS() == 3) {
+			Datum		argument = PG_GETARG_DATUM(2);
+			Oid		dataOid = get_fn_expr_argtype(fcinfo->flinfo, 2);
+			MemoryContext	old = MemoryContextSwitchTo(aggcontext);
 
 			p->data = datumCopy(argument, get_typbyval(dataOid), get_typlen(dataOid));
 
 			MemoryContextSwitchTo(old);
 		}
-	}
-	else
-	{
-		p = (pgis_abs*) PG_GETARG_POINTER(0);
+	} else {
+		p = (pgis_abs *) PG_GETARG_POINTER(0);
 	}
 	state = p->a;
 	elem = PG_ARGISNULL(1) ? (Datum) 0 : PG_GETARG_DATUM(1);
 	state = accumArrayResult(state,
-	                         elem,
-	                         PG_ARGISNULL(1),
-	                         arg1_typeid,
-	                         aggcontext);
+				 elem,
+				 PG_ARGISNULL(1),
+				 arg1_typeid,
+				 aggcontext);
 	p->a = state;
 
 	PG_RETURN_POINTER(p);
@@ -172,25 +163,24 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 
 
 
-Datum pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, FunctionCallInfo fcinfo);
+Datum		pgis_accum_finalfn(pgis_abs * p, MemoryContext mctx, FunctionCallInfo fcinfo);
 
 /**
 ** The final function rescues the built array from the side memory context
 ** using the PostgreSQL built-in function makeMdArrayResult
 */
 Datum
-pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, __attribute__((__unused__)) FunctionCallInfo fcinfo)
-{
-	int dims[1];
-	int lbs[1];
+pgis_accum_finalfn(pgis_abs * p, MemoryContext mctx, __attribute__((__unused__)) FunctionCallInfo fcinfo) {
+	int		dims[1];
+	int		lbs[1];
 	ArrayBuildState *state;
-	Datum result;
+	Datum		result;
 
 	/* cannot be called directly because of internal-type argument */
 	Assert(fcinfo->context &&
 	       (IsA(fcinfo->context, AggState) ||
-	        IsA(fcinfo->context, WindowAggState))
-	       );
+		IsA(fcinfo->context, WindowAggState))
+		);
 
 	state = p->a;
 	dims[0] = state->nelems;
@@ -204,15 +194,14 @@ pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, __attribute__((__unused__)) 
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_accum_finalfn);
 Datum
-pgis_geometry_accum_finalfn(PG_FUNCTION_ARGS)
-{
-	pgis_abs *p;
-	Datum result = 0;
+pgis_geometry_accum_finalfn(PG_FUNCTION_ARGS) {
+	pgis_abs       *p;
+	Datum		result = 0;
 
 	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();   /* returns null iff no input values */
+		PG_RETURN_NULL();	/* returns null iff no input values */
 
-	p = (pgis_abs*) PG_GETARG_POINTER(0);
+	p = (pgis_abs *) PG_GETARG_POINTER(0);
 
 	result = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
 
@@ -226,19 +215,18 @@ pgis_geometry_accum_finalfn(PG_FUNCTION_ARGS)
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_union_finalfn);
 Datum
-pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
-{
-	pgis_abs *p;
-	Datum result = 0;
-	Datum geometry_array = 0;
+pgis_geometry_union_finalfn(PG_FUNCTION_ARGS) {
+	pgis_abs       *p;
+	Datum		result = 0;
+	Datum		geometry_array = 0;
 
 	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();   /* returns null iff no input values */
+		PG_RETURN_NULL();	/* returns null iff no input values */
 
-	p = (pgis_abs*) PG_GETARG_POINTER(0);
+	p = (pgis_abs *) PG_GETARG_POINTER(0);
 
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-	result = PGISDirectFunctionCall1( pgis_union_geometry_array, geometry_array );
+	result = PGISDirectFunctionCall1(pgis_union_geometry_array, geometry_array);
 	if (!result)
 		PG_RETURN_NULL();
 
@@ -251,19 +239,18 @@ pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_collect_finalfn);
 Datum
-pgis_geometry_collect_finalfn(PG_FUNCTION_ARGS)
-{
-	pgis_abs *p;
-	Datum result = 0;
-	Datum geometry_array = 0;
+pgis_geometry_collect_finalfn(PG_FUNCTION_ARGS) {
+	pgis_abs       *p;
+	Datum		result = 0;
+	Datum		geometry_array = 0;
 
 	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();   /* returns null iff no input values */
+		PG_RETURN_NULL();	/* returns null iff no input values */
 
-	p = (pgis_abs*) PG_GETARG_POINTER(0);
+	p = (pgis_abs *) PG_GETARG_POINTER(0);
 
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-	result = PGISDirectFunctionCall1( LWGEOM_collect_garray, geometry_array );
+	result = PGISDirectFunctionCall1(LWGEOM_collect_garray, geometry_array);
 	if (!result)
 		PG_RETURN_NULL();
 
@@ -277,19 +264,18 @@ pgis_geometry_collect_finalfn(PG_FUNCTION_ARGS)
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_polygonize_finalfn);
 Datum
-pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS)
-{
-	pgis_abs *p;
-	Datum result = 0;
-	Datum geometry_array = 0;
+pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS) {
+	pgis_abs       *p;
+	Datum		result = 0;
+	Datum		geometry_array = 0;
 
 	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();   /* returns null iff no input values */
+		PG_RETURN_NULL();	/* returns null iff no input values */
 
-	p = (pgis_abs*) PG_GETARG_POINTER(0);
+	p = (pgis_abs *) PG_GETARG_POINTER(0);
 
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-	result = PGISDirectFunctionCall1( polygonize_garray, geometry_array );
+	result = PGISDirectFunctionCall1(polygonize_garray, geometry_array);
 	if (!result)
 		PG_RETURN_NULL();
 
@@ -302,19 +288,18 @@ pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS)
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_makeline_finalfn);
 Datum
-pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS)
-{
-	pgis_abs *p;
-	Datum result = 0;
-	Datum geometry_array = 0;
+pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS) {
+	pgis_abs       *p;
+	Datum		result = 0;
+	Datum		geometry_array = 0;
 
 	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();   /* returns null iff no input values */
+		PG_RETURN_NULL();	/* returns null iff no input values */
 
-	p = (pgis_abs*) PG_GETARG_POINTER(0);
+	p = (pgis_abs *) PG_GETARG_POINTER(0);
 
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-	result = PGISDirectFunctionCall1( LWGEOM_makeline_garray, geometry_array );
+	result = PGISDirectFunctionCall1(LWGEOM_makeline_garray, geometry_array);
 	if (!result)
 		PG_RETURN_NULL();
 
@@ -327,18 +312,17 @@ pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS)
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_clusterintersecting_finalfn);
 Datum
-pgis_geometry_clusterintersecting_finalfn(PG_FUNCTION_ARGS)
-{
-	pgis_abs *p;
-	Datum result = 0;
-	Datum geometry_array = 0;
+pgis_geometry_clusterintersecting_finalfn(PG_FUNCTION_ARGS) {
+	pgis_abs       *p;
+	Datum		result = 0;
+	Datum		geometry_array = 0;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
 
-	p = (pgis_abs*) PG_GETARG_POINTER(0);
+	p = (pgis_abs *) PG_GETARG_POINTER(0);
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-	result = PGISDirectFunctionCall1( clusterintersecting_garray, geometry_array );
+	result = PGISDirectFunctionCall1(clusterintersecting_garray, geometry_array);
 	if (!result)
 		PG_RETURN_NULL();
 
@@ -351,25 +335,23 @@ pgis_geometry_clusterintersecting_finalfn(PG_FUNCTION_ARGS)
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_clusterwithin_finalfn);
 Datum
-pgis_geometry_clusterwithin_finalfn(PG_FUNCTION_ARGS)
-{
-	pgis_abs *p;
-	Datum result = 0;
-	Datum geometry_array = 0;
+pgis_geometry_clusterwithin_finalfn(PG_FUNCTION_ARGS) {
+	pgis_abs       *p;
+	Datum		result = 0;
+	Datum		geometry_array = 0;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
 
-	p = (pgis_abs*) PG_GETARG_POINTER(0);
+	p = (pgis_abs *) PG_GETARG_POINTER(0);
 
-	if (!p->data)
-	{
+	if (!p->data) {
 		elog(ERROR, "Tolerance not defined");
 		PG_RETURN_NULL();
 	}
 
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-	result = PGISDirectFunctionCall2( cluster_within_distance_garray, geometry_array, p->data);
+	result = PGISDirectFunctionCall2(cluster_within_distance_garray, geometry_array, p->data);
 	if (!result)
 		PG_RETURN_NULL();
 
@@ -381,10 +363,9 @@ pgis_geometry_clusterwithin_finalfn(PG_FUNCTION_ARGS)
 * is required for aggregates that return NULL.
 */
 Datum
-PGISDirectFunctionCall1(PGFunction func, Datum arg1)
-{
+PGISDirectFunctionCall1(PGFunction func, Datum arg1) {
 	FunctionCallInfoData fcinfo;
-	Datum           result;
+	Datum		result;
 
 
 	InitFunctionCallInfoData(fcinfo, NULL, 1, InvalidOid, NULL, NULL);
@@ -407,10 +388,9 @@ PGISDirectFunctionCall1(PGFunction func, Datum arg1)
 * is required for aggregates that return NULL.
 */
 Datum
-PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2)
-{
+PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2) {
 	FunctionCallInfoData fcinfo;
-	Datum           result;
+	Datum		result;
 
 #if POSTGIS_PGSQL_VERSION > 90
 

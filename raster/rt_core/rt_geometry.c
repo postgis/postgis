@@ -4,26 +4,25 @@
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
  * Copyright (C) 2011-2013 Regents of the University of California
- *   <bkpark@ucdavis.edu>
- * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
- * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
- * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
- * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * <bkpark@ucdavis.edu> Copyright (C) 2010-2011 Jorge Arevalo
+ * <jorge.arevalo@deimos-space.com> Copyright (C) 2010-2011 David Zwarg
+ * <dzwarg@azavea.com> Copyright (C) 2009-2011 Pierre Racine
+ * <pierre.racine@sbf.ulaval.ca> Copyright (C) 2009-2011 Mateusz Loskot
+ * <mateusz@loskot.net> Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
 
@@ -36,15 +35,15 @@
 ******************************************************************************/
 
 static rt_errorstate
-_rti_raster_get_band_perimeter(rt_band band, uint16_t *trim) {
-	uint16_t width = 0;
-	uint16_t height = 0;
-	int x = 0;
-	int y = 0;
-	int offset = 0;
-	int done[4] = {0};
-	double value = 0;
-	int nodata = 0;
+_rti_raster_get_band_perimeter(rt_band band, uint16_t * trim) {
+	uint16_t	width = 0;
+	uint16_t	height = 0;
+	int		x = 0;
+	int		y = 0;
+	int		offset = 0;
+	int		done[4] = {0};
+	double		value = 0;
+	int		nodata = 0;
 
 	assert(band != NULL);
 	assert(band->raster != NULL);
@@ -160,7 +159,7 @@ _rti_raster_get_band_perimeter(rt_band band, uint16_t *trim) {
 	}
 
 	RASTER_DEBUGF(4, "trim = (%d, %d, %d, %d)",
-		trim[0], trim[1], trim[2], trim[3]);
+		      trim[0], trim[1], trim[2], trim[3]);
 
 	return ES_NONE;
 }
@@ -179,25 +178,29 @@ _rti_raster_get_band_perimeter(rt_band band, uint16_t *trim) {
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_get_perimeter(
-	rt_raster raster, int nband,
-	LWGEOM **perimeter
-) {
-	rt_band band = NULL;
-	int numband = 0;
-	uint16_t *_nband = NULL;
-	int i = 0;
-	int j = 0;
-	uint16_t _trim[4] = {0};
-	uint16_t trim[4] = {0}; /* top, right, bottom, left */
-	int isset[4] = {0};
-	double gt[6] = {0.0};
-	int srid = SRID_UNKNOWN;
+rt_errorstate
+rt_raster_get_perimeter(
+			rt_raster raster, int nband,
+			LWGEOM * *perimeter
+)
+{
+	rt_band		band = NULL;
+	int		numband = 0;
+	uint16_t       *_nband = NULL;
+	int		i = 0;
+	int		j = 0;
+	uint16_t _trim[4] = {
+		0
+	};
+	uint16_t	trim[4] = {0};	/* top, right, bottom, left */
+	int		isset[4] = {0};
+	double		gt[6] = {0.0};
+	int		srid = SRID_UNKNOWN;
 
-	POINTARRAY *pts = NULL;
-	POINT4D p4d;
-	POINTARRAY **rings = NULL;
-	LWPOLY* poly = NULL;
+	POINTARRAY     *pts = NULL;
+	POINT4D		p4d;
+	POINTARRAY    **rings = NULL;
+	LWPOLY	       *poly = NULL;
 
 	assert(perimeter != NULL);
 
@@ -222,8 +225,7 @@ rt_errorstate rt_raster_get_perimeter(
 		}
 
 		numband = 1;
-	}
-	else
+	} else
 		nband = -1;
 
 	RASTER_DEBUGF(3, "rt_raster_get_perimeter: nband, numband = %d, %d", nband, numband);
@@ -237,8 +239,7 @@ rt_errorstate rt_raster_get_perimeter(
 	if (nband < 0) {
 		for (i = 0; i < numband; i++)
 			_nband[i] = i;
-	}
-	else
+	} else
 		_nband[0] = nband;
 
 	for (i = 0; i < numband; i++) {
@@ -277,10 +278,10 @@ rt_errorstate rt_raster_get_perimeter(
 	}
 
 	RASTER_DEBUGF(4, "trim = (%d, %d, %d, %d)",
-		trim[0], trim[1], trim[2], trim[3]);
+		      trim[0], trim[1], trim[2], trim[3]);
 
 	/* only one ring */
-	rings = (POINTARRAY **) rtalloc(sizeof (POINTARRAY*));
+	rings = (POINTARRAY * *) rtalloc(sizeof(POINTARRAY *));
 	if (!rings) {
 		rterror("rt_raster_get_perimeter: Could not allocate memory for polygon ring");
 		return ES_ERROR;
@@ -294,39 +295,39 @@ rt_errorstate rt_raster_get_perimeter(
 
 	/* Upper-left corner (first and last points) */
 	rt_raster_cell_to_geopoint(
-		raster,
-		_trim[3], _trim[0],
-		&p4d.x, &p4d.y,
-		gt
-	);
+				   raster,
+				   _trim[3], _trim[0],
+				   &p4d.x, &p4d.y,
+				   gt
+		);
 	ptarray_set_point4d(pts, 0, &p4d);
 	ptarray_set_point4d(pts, 4, &p4d);
 
 	/* Upper-right corner (we go clockwise) */
 	rt_raster_cell_to_geopoint(
-		raster,
-		raster->width - _trim[1], _trim[0],
-		&p4d.x, &p4d.y,
-		gt
-	);
+				   raster,
+				   raster->width - _trim[1], _trim[0],
+				   &p4d.x, &p4d.y,
+				   gt
+		);
 	ptarray_set_point4d(pts, 1, &p4d);
 
 	/* Lower-right corner */
 	rt_raster_cell_to_geopoint(
-		raster,
-		raster->width - _trim[1], raster->height - _trim[2],
-		&p4d.x, &p4d.y,
-		gt
-	);
+				   raster,
+			raster->width - _trim[1], raster->height - _trim[2],
+				   &p4d.x, &p4d.y,
+				   gt
+		);
 	ptarray_set_point4d(pts, 2, &p4d);
 
 	/* Lower-left corner */
 	rt_raster_cell_to_geopoint(
-		raster,
-		_trim[3], raster->height - _trim[2],
-		&p4d.x, &p4d.y,
-		gt
-	);
+				   raster,
+				   _trim[3], raster->height - _trim[2],
+				   &p4d.x, &p4d.y,
+				   gt
+		);
 	ptarray_set_point4d(pts, 3, &p4d);
 
 	poly = lwpoly_construct(srid, 0, 1, rings);
@@ -352,18 +353,20 @@ rt_errorstate rt_raster_get_perimeter(
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) {
-	rt_band band = NULL;
-	LWGEOM *mpoly = NULL;
-	LWGEOM *tmp = NULL;
-	LWGEOM *clone = NULL;
-	rt_geomval gv = NULL;
-	int gvcount = 0;
-	GEOSGeometry *gc = NULL;
-	GEOSGeometry *gunion = NULL;
-	GEOSGeometry **geoms = NULL;
-	int geomscount = 0;
-	int i = 0;
+rt_errorstate
+rt_raster_surface(rt_raster raster, int nband, LWMPOLY * *surface)
+{
+	rt_band		band = NULL;
+	LWGEOM	       *mpoly = NULL;
+	LWGEOM	       *tmp = NULL;
+	LWGEOM	       *clone = NULL;
+	rt_geomval	gv = NULL;
+	int		gvcount = 0;
+	GEOSGeometry   *gc = NULL;
+	GEOSGeometry   *gunion = NULL;
+	GEOSGeometry  **geoms = NULL;
+	int		geomscount = 0;
+	int		i = 0;
 
 	assert(surface != NULL);
 
@@ -377,11 +380,11 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 	/* if nband < 0, return the convex hull as a multipolygon */
 	if (nband < 0) {
 		/*
-			lwgeom_as_multi() only does a shallow clone internally
-			so input and output geometries may share memory
-			hence the deep clone of the output geometry for returning
-			is the only way to guarentee the memory isn't shared
-		*/
+		 * lwgeom_as_multi() only does a shallow clone internally so
+		 * input and output geometries may share memory hence the
+		 * deep clone of the output geometry for returning is the
+		 * only way to guarentee the memory isn't shared
+		 */
 		if (rt_raster_get_convex_hull(raster, &tmp) != ES_NONE) {
 			rterror("rt_raster_surface: Could not get convex hull of raster");
 			return ES_ERROR;
@@ -410,11 +413,11 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 	/* band does not have a NODATA flag, return convex hull */
 	if (!rt_band_get_hasnodata_flag(band)) {
 		/*
-			lwgeom_as_multi() only does a shallow clone internally
-			so input and output geometries may share memory
-			hence the deep clone of the output geometry for returning
-			is the only way to guarentee the memory isn't shared
-		*/
+		 * lwgeom_as_multi() only does a shallow clone internally so
+		 * input and output geometries may share memory hence the
+		 * deep clone of the output geometry for returning is the
+		 * only way to guarentee the memory isn't shared
+		 */
 		if (rt_raster_get_convex_hull(raster, &tmp) != ES_NONE) {
 			rterror("rt_raster_surface: Could not get convex hull of raster");
 			return ES_ERROR;
@@ -441,7 +444,8 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 	/* no polygons returned */
 	if (gvcount < 1) {
 		RASTER_DEBUG(3, "All pixels of band are NODATA.  Returning NULL");
-		if (gv != NULL) rtdealloc(gv);
+		if (gv != NULL)
+			rtdealloc(gv);
 		return ES_NONE;
 	}
 	/* more than 1 polygon */
@@ -451,14 +455,15 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 		geoms = rtalloc(sizeof(GEOSGeometry *) * geomscount);
 		if (geoms == NULL) {
 			rterror("rt_raster_surface: Could not allocate memory for pixel polygons as GEOSGeometry");
-			for (i = 0; i < gvcount; i++) lwpoly_free(gv[i].geom);
+			for (i = 0; i < gvcount; i++)
+				lwpoly_free(gv[i].geom);
 			rtdealloc(gv);
 			return ES_ERROR;
 		}
 		for (i = 0; i < gvcount; i++) {
 #if POSTGIS_DEBUG_LEVEL > 3
 			{
-				char *wkt = lwgeom_to_wkt(lwpoly_as_lwgeom(gv[i].geom), WKT_ISO, DBL_DIG, NULL);
+				char	       *wkt = lwgeom_to_wkt(lwpoly_as_lwgeom(gv[i].geom), WKT_ISO, DBL_DIG, NULL);
 				RASTER_DEBUGF(4, "geom %d = %s", i, wkt);
 				rtdealloc(wkt);
 			}
@@ -496,11 +501,10 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 		mpoly = GEOS2LWGEOM(gunion, 0);
 
 		/*
-			is geometry valid?
-			if not, try to make valid
-		*/
+		 * is geometry valid? if not, try to make valid
+		 */
 		do {
-			LWGEOM *mpolyValid = NULL;
+			LWGEOM	       *mpolyValid = NULL;
 
 			if (GEOSisValid(gunion))
 				break;
@@ -518,17 +522,16 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 		while (0);
 
 		GEOSGeom_destroy(gunion);
-	}
-	else {
+	} else {
 		mpoly = lwpoly_as_lwgeom(gv[0].geom);
 		rtdealloc(gv);
 
 #if POSTGIS_DEBUG_LEVEL > 3
-			{
-				char *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
-				RASTER_DEBUGF(4, "geom 0 = %s", wkt);
-				rtdealloc(wkt);
-			}
+		{
+			char	       *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
+			RASTER_DEBUGF(4, "geom 0 = %s", wkt);
+			rtdealloc(wkt);
+		}
 #endif
 	}
 
@@ -542,7 +545,7 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 
 #if POSTGIS_DEBUG_LEVEL > 3
 			{
-				char *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
+				char	       *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
 				RASTER_DEBUGF(4, "before multi = %s", wkt);
 				rtdealloc(wkt);
 			}
@@ -551,11 +554,12 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 			RASTER_DEBUGF(4, "mpoly @ %p", mpoly);
 
 			/*
-				lwgeom_as_multi() only does a shallow clone internally
-				so input and output geometries may share memory
-				hence the deep clone of the output geometry for returning
-				is the only way to guarentee the memory isn't shared
-			*/
+			 * lwgeom_as_multi() only does a shallow clone
+			 * internally so input and output geometries may
+			 * share memory hence the deep clone of the output
+			 * geometry for returning is the only way to
+			 * guarentee the memory isn't shared
+			 */
 			mpoly = lwgeom_as_multi(tmp);
 			clone = lwgeom_clone_deep(mpoly);
 			lwgeom_free(tmp);
@@ -566,7 +570,7 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 
 #if POSTGIS_DEBUG_LEVEL > 3
 			{
-				char *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
+				char	       *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
 				RASTER_DEBUGF(4, "after multi = %s", wkt);
 				rtdealloc(wkt);
 			}
@@ -575,7 +579,7 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 
 #if POSTGIS_DEBUG_LEVEL > 3
 		{
-			char *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
+			char	       *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
 			RASTER_DEBUGF(4, "returning geometry = %s", wkt);
 			rtdealloc(wkt);
 		}
@@ -606,52 +610,52 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
  * @return the pixel polygon, or NULL on error.
  *
  */
-LWPOLY*
+LWPOLY	       *
 rt_raster_pixel_as_polygon(rt_raster rast, int x, int y)
 {
-    double scale_x, scale_y;
-    double skew_x, skew_y;
-    double ul_x, ul_y;
-    int srid;
-    POINTARRAY **points;
-    POINT4D p, p0;
-    LWPOLY *poly;
+	double		scale_x, scale_y;
+	double		skew_x, skew_y;
+	double		ul_x, ul_y;
+	int		srid;
+	POINTARRAY    **points;
+	POINT4D		p, p0;
+	LWPOLY	       *poly;
 
-		assert(rast != NULL);
+	assert(rast != NULL);
 
-    scale_x = rt_raster_get_x_scale(rast);
-    scale_y = rt_raster_get_y_scale(rast);
-    skew_x = rt_raster_get_x_skew(rast);
-    skew_y = rt_raster_get_y_skew(rast);
-    ul_x = rt_raster_get_x_offset(rast);
-    ul_y = rt_raster_get_y_offset(rast);
-    srid = rt_raster_get_srid(rast);
+	scale_x = rt_raster_get_x_scale(rast);
+	scale_y = rt_raster_get_y_scale(rast);
+	skew_x = rt_raster_get_x_skew(rast);
+	skew_y = rt_raster_get_y_skew(rast);
+	ul_x = rt_raster_get_x_offset(rast);
+	ul_y = rt_raster_get_y_offset(rast);
+	srid = rt_raster_get_srid(rast);
 
-    points = rtalloc(sizeof(POINTARRAY *)*1);
-    points[0] = ptarray_construct(0, 0, 5);
+	points = rtalloc(sizeof(POINTARRAY *) * 1);
+	points[0] = ptarray_construct(0, 0, 5);
 
-    p0.x = scale_x * x + skew_x * y + ul_x;
-    p0.y = scale_y * y + skew_y * x + ul_y;
-    ptarray_set_point4d(points[0], 0, &p0);
+	p0.x = scale_x * x + skew_x * y + ul_x;
+	p0.y = scale_y * y + skew_y * x + ul_y;
+	ptarray_set_point4d(points[0], 0, &p0);
 
-    p.x = p0.x + scale_x;
-    p.y = p0.y + skew_y;
-    ptarray_set_point4d(points[0], 1, &p);
+	p.x = p0.x + scale_x;
+	p.y = p0.y + skew_y;
+	ptarray_set_point4d(points[0], 1, &p);
 
-    p.x = p0.x + scale_x + skew_x;
-    p.y = p0.y + scale_y + skew_y;
-    ptarray_set_point4d(points[0], 2, &p);
+	p.x = p0.x + scale_x + skew_x;
+	p.y = p0.y + scale_y + skew_y;
+	ptarray_set_point4d(points[0], 2, &p);
 
-    p.x = p0.x + skew_x;
-    p.y = p0.y + scale_y;
-    ptarray_set_point4d(points[0], 3, &p);
+	p.x = p0.x + skew_x;
+	p.y = p0.y + scale_y;
+	ptarray_set_point4d(points[0], 3, &p);
 
-    /* close it */
-    ptarray_set_point4d(points[0], 4, &p0);
+	/* close it */
+	ptarray_set_point4d(points[0], 4, &p0);
 
-    poly = lwpoly_construct(srid, NULL, 1, points);
+	poly = lwpoly_construct(srid, NULL, 1, points);
 
-    return poly;
+	return poly;
 }
 
 /******************************************************************************
@@ -667,12 +671,12 @@ rt_raster_pixel_as_polygon(rt_raster rast, int x, int y)
  * @return ES_NONE if success, ES_ERROR if error
  */
 rt_errorstate
-rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env) {
-	double gt[6] = {0.0};
-	int srid = SRID_UNKNOWN;
+rt_raster_get_envelope_geom(rt_raster raster, LWGEOM * *env) {
+	double		gt[6] = {0.0};
+	int		srid = SRID_UNKNOWN;
 
-	POINTARRAY *pts = NULL;
-	POINT4D p4d;
+	POINTARRAY     *pts = NULL;
+	POINT4D		p4d;
 
 	assert(env != NULL);
 	*env = NULL;
@@ -686,11 +690,11 @@ rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env) {
 	rt_raster_get_geotransform_matrix(raster, gt);
 
 	RASTER_DEBUGF(
-		3,
-		"rt_raster_get_envelope: raster is %dx%d",
-		raster->width,
-		raster->height
-	);
+		      3,
+		      "rt_raster_get_envelope: raster is %dx%d",
+		      raster->width,
+		      raster->height
+		);
 
 	/* return point or line since at least one of the two dimensions is 0 */
 	if ((!raster->width) || (!raster->height)) {
@@ -699,12 +703,12 @@ rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env) {
 
 		/* return point */
 		if (!raster->width && !raster->height) {
-			LWPOINT *point = lwpoint_make2d(srid, p4d.x, p4d.y);
+			LWPOINT	       *point = lwpoint_make2d(srid, p4d.x, p4d.y);
 			*env = lwpoint_as_lwgeom(point);
 		}
 		/* return linestring */
 		else {
-			LWLINE *line = NULL;
+			LWLINE	       *line = NULL;
 			pts = ptarray_construct_empty(0, 0, 2);
 
 			/* first point of line */
@@ -712,11 +716,11 @@ rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env) {
 
 			/* second point of line */
 			if (rt_raster_cell_to_geopoint(
-				raster,
-				rt_raster_get_width(raster), rt_raster_get_height(raster),
-				&p4d.x, &p4d.y,
-				gt
-			) != ES_NONE) {
+						       raster,
+						       rt_raster_get_width(raster), rt_raster_get_height(raster),
+						       &p4d.x, &p4d.y,
+						       gt
+						       ) != ES_NONE) {
 				rterror("rt_raster_get_envelope: Could not get second point for linestring");
 				return ES_ERROR;
 			}
@@ -727,15 +731,14 @@ rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env) {
 		}
 
 		return ES_NONE;
-	}
-	else {
-		rt_envelope rtenv;
-		int err = ES_NONE;
-		POINTARRAY **rings = NULL;
-		LWPOLY* poly = NULL;
+	} else {
+		rt_envelope	rtenv;
+		int		err = ES_NONE;
+		POINTARRAY    **rings = NULL;
+		LWPOLY	       *poly = NULL;
 
 		/* only one ring */
-		rings = (POINTARRAY **) rtalloc(sizeof (POINTARRAY*));
+		rings = (POINTARRAY * *) rtalloc(sizeof(POINTARRAY *));
 		if (!rings) {
 			rterror("rt_raster_get_envelope_geom: Could not allocate memory for polygon ring");
 			return ES_ERROR;
@@ -800,12 +803,12 @@ rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env) {
  * @return ES_NONE if success, ES_ERROR if error
  */
 rt_errorstate
-rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull) {
-	double gt[6] = {0.0};
-	int srid = SRID_UNKNOWN;
+rt_raster_get_convex_hull(rt_raster raster, LWGEOM * *hull) {
+	double		gt[6] = {0.0};
+	int		srid = SRID_UNKNOWN;
 
-	POINTARRAY *pts = NULL;
-	POINT4D p4d;
+	POINTARRAY     *pts = NULL;
+	POINT4D		p4d;
 
 	assert(hull != NULL);
 	*hull = NULL;
@@ -827,12 +830,12 @@ rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull) {
 
 		/* return point */
 		if (!raster->width && !raster->height) {
-			LWPOINT *point = lwpoint_make2d(srid, p4d.x, p4d.y);
+			LWPOINT	       *point = lwpoint_make2d(srid, p4d.x, p4d.y);
 			*hull = lwpoint_as_lwgeom(point);
 		}
 		/* return linestring */
 		else {
-			LWLINE *line = NULL;
+			LWLINE	       *line = NULL;
 			pts = ptarray_construct_empty(0, 0, 2);
 
 			/* first point of line */
@@ -840,11 +843,11 @@ rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull) {
 
 			/* second point of line */
 			if (rt_raster_cell_to_geopoint(
-				raster,
-				rt_raster_get_width(raster), rt_raster_get_height(raster),
-				&p4d.x, &p4d.y,
-				gt
-			) != ES_NONE) {
+						       raster,
+						       rt_raster_get_width(raster), rt_raster_get_height(raster),
+						       &p4d.x, &p4d.y,
+						       gt
+						       ) != ES_NONE) {
 				rterror("rt_raster_get_convex_hull: Could not get second point for linestring");
 				return ES_ERROR;
 			}
@@ -855,20 +858,22 @@ rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull) {
 		}
 
 		return ES_NONE;
-	}
-	else {
-		POINTARRAY **rings = NULL;
-		LWPOLY* poly = NULL;
+	} else {
+		POINTARRAY    **rings = NULL;
+		LWPOLY	       *poly = NULL;
 
 		/* only one ring */
-		rings = (POINTARRAY **) rtalloc(sizeof (POINTARRAY*));
+		rings = (POINTARRAY * *) rtalloc(sizeof(POINTARRAY *));
 		if (!rings) {
 			rterror("rt_raster_get_convex_hull: Could not allocate memory for polygon ring");
 			return ES_ERROR;
 		}
 		rings[0] = ptarray_construct(0, 0, 5);
 		/* TODO: handle error on ptarray construction */
-		/* XXX jorgearevalo: the error conditions aren't managed in ptarray_construct */
+		/*
+		 * XXX jorgearevalo: the error conditions aren't managed in
+		 * ptarray_construct
+		 */
 		if (!rings[0]) {
 			rterror("rt_raster_get_convex_hull: Could not construct point array");
 			return ES_ERROR;
@@ -883,29 +888,29 @@ rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull) {
 
 		/* Upper-right corner (we go clockwise) */
 		rt_raster_cell_to_geopoint(
-			raster,
-			raster->width, 0,
-			&p4d.x, &p4d.y,
-			gt
-		);
+					   raster,
+					   raster->width, 0,
+					   &p4d.x, &p4d.y,
+					   gt
+			);
 		ptarray_set_point4d(pts, 1, &p4d);
 
 		/* Lower-right corner */
 		rt_raster_cell_to_geopoint(
-			raster,
-			raster->width, raster->height,
-			&p4d.x, &p4d.y,
-			gt
-		);
+					   raster,
+					   raster->width, raster->height,
+					   &p4d.x, &p4d.y,
+					   gt
+			);
 		ptarray_set_point4d(pts, 2, &p4d);
 
 		/* Lower-left corner */
 		rt_raster_cell_to_geopoint(
-			raster,
-			0, raster->height,
-			&p4d.x, &p4d.y,
-			gt
-		);
+					   raster,
+					   0, raster->height,
+					   &p4d.x, &p4d.y,
+					   gt
+			);
 		ptarray_set_point4d(pts, 3, &p4d);
 
 		poly = lwpoly_construct(srid, 0, 1, rings);
@@ -938,41 +943,41 @@ rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull) {
  */
 rt_geomval
 rt_raster_gdal_polygonize(
-	rt_raster raster, int nband,
-	int exclude_nodata_value,
-	int *pnElements
-) {
-	CPLErr cplerr = CE_None;
-	char *pszQuery;
-	long j;
-	OGRSFDriverH ogr_drv = NULL;
-	GDALDriverH gdal_drv = NULL;
-	int destroy_gdal_drv = 0;
-	GDALDatasetH memdataset = NULL;
-	GDALRasterBandH gdal_band = NULL;
-	OGRDataSourceH memdatasource = NULL;
-	rt_geomval pols = NULL;
-	OGRLayerH hLayer = NULL;
-	OGRFeatureH hFeature = NULL;
-	OGRGeometryH hGeom = NULL;
-	OGRFieldDefnH hFldDfn = NULL;
-	unsigned char *wkb = NULL;
-	int wkbsize = 0;
-	LWGEOM *lwgeom = NULL;
-	int nFeatureCount = 0;
-	rt_band band = NULL;
-	int iPixVal = -1;
-	double dValue = 0.0;
-	int iBandHasNodataValue = FALSE;
-	double dBandNoData = 0.0;
+			  rt_raster raster, int nband,
+			  int exclude_nodata_value,
+			  int *pnElements
+){
+	CPLErr		cplerr = CE_None;
+	char	       *pszQuery;
+	long		j;
+	OGRSFDriverH	ogr_drv = NULL;
+	GDALDriverH	gdal_drv = NULL;
+	int		destroy_gdal_drv = 0;
+	GDALDatasetH	memdataset = NULL;
+	GDALRasterBandH	gdal_band = NULL;
+	OGRDataSourceH	memdatasource = NULL;
+	rt_geomval	pols = NULL;
+	OGRLayerH	hLayer = NULL;
+	OGRFeatureH	hFeature = NULL;
+	OGRGeometryH	hGeom = NULL;
+	OGRFieldDefnH	hFldDfn = NULL;
+	unsigned char  *wkb = NULL;
+	int		wkbsize = 0;
+	LWGEOM	       *lwgeom = NULL;
+	int		nFeatureCount = 0;
+	rt_band		band = NULL;
+	int		iPixVal = -1;
+	double		dValue = 0.0;
+	int		iBandHasNodataValue = FALSE;
+	double		dBandNoData = 0.0;
 
 	/* for checking that a geometry is valid */
-	GEOSGeometry *ggeom = NULL;
-	int isValid;
-	LWGEOM *lwgeomValid = NULL;
+	GEOSGeometry   *ggeom = NULL;
+	int		isValid;
+	LWGEOM	       *lwgeomValid = NULL;
 
-	uint32_t bandNums[1] = {nband};
-	int excludeNodataValues[1] = {exclude_nodata_value};
+	uint32_t	bandNums[1] = {nband};
+	int		excludeNodataValues[1] = {exclude_nodata_value};
 
 	/* checks */
 	assert(NULL != raster);
@@ -1036,7 +1041,8 @@ rt_raster_gdal_polygonize(
 	if (NULL == memdatasource) {
 		rterror("rt_raster_gdal_polygonize: Couldn't create a OGR Datasource to store pols");
 		GDALClose(memdataset);
-		if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
+		if (destroy_gdal_drv)
+			GDALDestroyDriver(gdal_drv);
 		return NULL;
 	}
 
@@ -1046,7 +1052,8 @@ rt_raster_gdal_polygonize(
 
 		/* xxx jorgearevalo: what should we do now? */
 		GDALClose(memdataset);
-		if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
+		if (destroy_gdal_drv)
+			GDALDestroyDriver(gdal_drv);
 		OGRReleaseDataSource(memdatasource);
 
 		return NULL;
@@ -1069,7 +1076,8 @@ rt_raster_gdal_polygonize(
 		rterror("rt_raster_gdal_polygonize: Couldn't create layer to store polygons");
 
 		GDALClose(memdataset);
-		if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
+		if (destroy_gdal_drv)
+			GDALDestroyDriver(gdal_drv);
 		OGRReleaseDataSource(memdatasource);
 
 		return NULL;
@@ -1086,8 +1094,7 @@ rt_raster_gdal_polygonize(
 	if (OGR_L_CreateField(hLayer, hFldDfn, TRUE) != OGRERR_NONE) {
 		rtwarn("Couldn't create a field in OGR Layer. The polygons generated won't be able to store the pixel value");
 		iPixVal = -1;
-	}
-	else {
+	} else {
 		/* Index to the new field created in the layer */
 		iPixVal = 0;
 	}
@@ -1098,7 +1105,8 @@ rt_raster_gdal_polygonize(
 		rterror("rt_raster_gdal_polygonize: Couldn't get GDAL band to polygonize");
 
 		GDALClose(memdataset);
-		if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
+		if (destroy_gdal_drv)
+			GDALDestroyDriver(gdal_drv);
 		OGR_Fld_Destroy(hFldDfn);
 		OGR_DS_DeleteLayer(memdatasource, 0);
 		OGRReleaseDataSource(memdatasource);
@@ -1119,7 +1127,8 @@ rt_raster_gdal_polygonize(
 		rterror("rt_raster_gdal_polygonize: Could not polygonize GDAL band");
 
 		GDALClose(memdataset);
-		if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
+		if (destroy_gdal_drv)
+			GDALDestroyDriver(gdal_drv);
 		OGR_Fld_Destroy(hFldDfn);
 		OGR_DS_DeleteLayer(memdatasource, 0);
 		OGRReleaseDataSource(memdatasource);
@@ -1134,14 +1143,13 @@ rt_raster_gdal_polygonize(
 	 * Thanks to David Zwarg.
 	 **/
 	if (iBandHasNodataValue) {
-		pszQuery = (char *) rtalloc(50 * sizeof (char));
-		sprintf(pszQuery, "PixelValue != %f", dBandNoData );
-		OGRErr e = OGR_L_SetAttributeFilter(hLayer, pszQuery);
+		pszQuery = (char *)rtalloc(50 * sizeof(char));
+		sprintf(pszQuery, "PixelValue != %f", dBandNoData);
+		OGRErr		e = OGR_L_SetAttributeFilter(hLayer, pszQuery);
 		if (e != OGRERR_NONE) {
 			rtwarn("Error filtering NODATA values for band. All values will be treated as data values");
 		}
-	}
-	else {
+	} else {
 		pszQuery = NULL;
 	}
 
@@ -1160,7 +1168,8 @@ rt_raster_gdal_polygonize(
 		rterror("rt_raster_gdal_polygonize: Could not allocate memory for geomval set");
 
 		GDALClose(memdataset);
-		if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
+		if (destroy_gdal_drv)
+			GDALDestroyDriver(gdal_drv);
 		OGR_Fld_Destroy(hFldDfn);
 		OGR_DS_DeleteLayer(memdatasource, 0);
 		if (NULL != pszQuery)
@@ -1192,7 +1201,8 @@ rt_raster_gdal_polygonize(
 
 			OGR_F_Destroy(hFeature);
 			GDALClose(memdataset);
-			if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
+			if (destroy_gdal_drv)
+				GDALDestroyDriver(gdal_drv);
 			OGR_Fld_Destroy(hFldDfn);
 			OGR_DS_DeleteLayer(memdatasource, 0);
 			if (NULL != pszQuery)
@@ -1210,7 +1220,7 @@ rt_raster_gdal_polygonize(
 
 #if POSTGIS_DEBUG_LEVEL > 3
 		{
-			char *wkt = NULL;
+			char	       *wkt = NULL;
 			OGR_G_ExportToWkt(hGeom, &wkt);
 			RASTER_DEBUGF(4, "GDAL wkt = %s", wkt);
 			CPLFree(wkt);
@@ -1230,9 +1240,8 @@ rt_raster_gdal_polygonize(
 		lwgeom_set_srid(lwgeom, rt_raster_get_srid(raster));
 
 		/*
-			is geometry valid?
-			if not, try to make valid
-		*/
+		 * is geometry valid? if not, try to make valid
+		 */
 		do {
 			ggeom = (GEOSGeometry *) LWGEOM2GEOS(lwgeom, 0);
 			if (ggeom == NULL) {
@@ -1268,12 +1277,12 @@ rt_raster_gdal_polygonize(
 
 #if POSTGIS_DEBUG_LEVEL > 3
 		{
-			char *wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, NULL);
+			char	       *wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, NULL);
 			RASTER_DEBUGF(4, "LWGEOM wkt = %s", wkt);
 			rtdealloc(wkt);
 
-			size_t lwwkbsize = 0;
-			uint8_t *lwwkb = lwgeom_to_wkb(lwgeom, WKB_ISO | WKB_NDR, &lwwkbsize);
+			size_t		lwwkbsize = 0;
+			uint8_t	       *lwwkb = lwgeom_to_wkb(lwgeom, WKB_ISO | WKB_NDR, &lwwkbsize);
 			if (lwwkbsize) {
 				d_print_binary_hex("LWGEOM wkb", lwwkb, lwwkbsize);
 				rtdealloc(lwwkb);
@@ -1289,14 +1298,15 @@ rt_raster_gdal_polygonize(
 
 	RASTER_DEBUG(3, "destroying GDAL MEM raster");
 	GDALClose(memdataset);
-	if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
+	if (destroy_gdal_drv)
+		GDALDestroyDriver(gdal_drv);
 
 	RASTER_DEBUG(3, "destroying OGR MEM vector");
 	OGR_Fld_Destroy(hFldDfn);
 	OGR_DS_DeleteLayer(memdatasource, 0);
-	if (NULL != pszQuery) rtdealloc(pszQuery);
+	if (NULL != pszQuery)
+		rtdealloc(pszQuery);
 	OGRReleaseDataSource(memdatasource);
 
 	return pols;
 }
-

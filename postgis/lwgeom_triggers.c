@@ -24,14 +24,14 @@
 
 
 #include "postgres.h"
-#include "executor/spi.h"       /* this is what you need to work with SPI */
-#include "commands/trigger.h"   /* ... and triggers */
+#include "executor/spi.h"	/* this is what you need to work with SPI */
+#include "commands/trigger.h"	/* ... and triggers */
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
 #include "utils/rel.h"
 
-Datum cache_bbox(PG_FUNCTION_ARGS);
+Datum		cache_bbox(PG_FUNCTION_ARGS);
 
 /** @file
  * 	The intended use for this trigger function is making
@@ -43,25 +43,26 @@ Datum cache_bbox(PG_FUNCTION_ARGS);
  *
  */
 PG_FUNCTION_INFO_V1(cache_bbox);
-Datum cache_bbox(PG_FUNCTION_ARGS)
+Datum
+cache_bbox(PG_FUNCTION_ARGS)
 {
-	TriggerData *trigdata = (TriggerData *) fcinfo->context;
-	Trigger *trigger;
-	TupleDesc   tupdesc;
-	HeapTuple   rettuple;
-	bool        isnull;
-	Datum in, out;
-	int attno, ret;
+	TriggerData    *trigdata = (TriggerData *) fcinfo->context;
+	Trigger	       *trigger;
+	TupleDesc	tupdesc;
+	HeapTuple	rettuple;
+	bool		isnull;
+	Datum		in, out;
+	int		attno, ret;
 
 	/* make sure it's called as a trigger at all */
 	if (!CALLED_AS_TRIGGER(fcinfo))
 		elog(ERROR, "cache_bbox: not called by trigger manager");
 
 	/*
-	 * make sure it's called with at least one argument
-	 * (the geometry fields)
+	 * make sure it's called with at least one argument (the geometry
+	 * fields)
 	 */
-	if ( trigdata->tg_trigger->tgnargs != 1 )
+	if (trigdata->tg_trigger->tgnargs != 1)
 		elog(ERROR, "trigger 'cache_bbox' must be called with one argument");
 
 	trigger = trigdata->tg_trigger;
@@ -73,18 +74,15 @@ Datum cache_bbox(PG_FUNCTION_ARGS)
 		rettuple = trigdata->tg_trigtuple;
 
 	/* Do nothing when fired by delete, after or for statement */
-	if (TRIGGER_FIRED_BY_DELETE(trigdata->tg_event))
-	{
+	if (TRIGGER_FIRED_BY_DELETE(trigdata->tg_event)) {
 		elog(NOTICE, "Useless cache_box trigger fired by DELETE");
 		return PointerGetDatum(rettuple);
 	}
-	if (TRIGGER_FIRED_AFTER(trigdata->tg_event))
-	{
+	if (TRIGGER_FIRED_AFTER(trigdata->tg_event)) {
 		elog(NOTICE, "Useless cache_box trigger fired AFTER");
 		return PointerGetDatum(rettuple);
 	}
-	if (TRIGGER_FIRED_FOR_STATEMENT(trigdata->tg_event))
-	{
+	if (TRIGGER_FIRED_FOR_STATEMENT(trigdata->tg_event)) {
 		elog(NOTICE, "Useless cache_box trigger fired for STATEMENT");
 		return PointerGetDatum(rettuple);
 	}
@@ -97,23 +95,22 @@ Datum cache_bbox(PG_FUNCTION_ARGS)
 
 	/* Find number of requested argument */
 	attno = SPI_fnumber(tupdesc, trigger->tgargs[0]);
-	if ( attno == SPI_ERROR_NOATTRIBUTE )
+	if (attno == SPI_ERROR_NOATTRIBUTE)
 		elog(ERROR, "trigger %s can't find attribute %s",
 		     trigger->tgname, trigger->tgargs[0]);
 
 	/* Find number of requested argument */
-	if ( strcmp(SPI_gettype(tupdesc, attno), "geometry") )
+	if (strcmp(SPI_gettype(tupdesc, attno), "geometry"))
 		elog(ERROR, "trigger %s requested to apply to a non-geometry field (%s)", trigger->tgname, trigger->tgargs[0]);
 
 	/* Get input lwgeom */
 	in = SPI_getbinval(rettuple, tupdesc, attno, &isnull);
 
-	if ( ! isnull )
-	{
+	if (!isnull) {
 		out = PointerGetDatum(DirectFunctionCall1(LWGEOM_addBBOX, in));
 
 		rettuple = SPI_modifytuple(trigdata->tg_relation, rettuple,
-		                           1, &attno, &out, NULL);
+					   1, &attno, &out, NULL);
 	}
 
 	/* Disconnect from SPI */

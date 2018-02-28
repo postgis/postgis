@@ -11,13 +11,15 @@
 
 #include "cu_surface.h"
 
-void triangle_parse(void)
+void
+triangle_parse(void)
 {
-	LWGEOM *geom;
-	GSERIALIZED *g;
-	char *tmp;
+	LWGEOM	       *geom;
+	GSERIALIZED    *g;
+	char	       *tmp;
 
-	cu_error_msg_reset();	/* Because i don't trust that much prior tests...  ;) */
+	cu_error_msg_reset();	/* Because i don't trust that much prior
+				 * tests...  ;) */
 
 	/* 2 dims */
 	geom = lwgeom_from_wkt("TRIANGLE((0 1,2 3,4 5,0 1))", LW_PARSER_CHECK_NONE);
@@ -106,13 +108,15 @@ void triangle_parse(void)
 }
 
 
-void tin_parse(void)
+void
+tin_parse(void)
 {
-	LWGEOM *geom;
-	GSERIALIZED *g;
-	char *tmp;
+	LWGEOM	       *geom;
+	GSERIALIZED    *g;
+	char	       *tmp;
 
-	cu_error_msg_reset();	/* Because i don't trust that much prior tests...  ;) */
+	cu_error_msg_reset();	/* Because i don't trust that much prior
+				 * tests...  ;) */
 
 	/* empty */
 	geom = lwgeom_from_wkt("TIN EMPTY", LW_PARSER_CHECK_NONE);
@@ -232,13 +236,15 @@ void tin_parse(void)
 }
 
 
-void polyhedralsurface_parse(void)
+void
+polyhedralsurface_parse(void)
 {
-	LWGEOM *geom;
-	GSERIALIZED *g;
-	char *tmp;
+	LWGEOM	       *geom;
+	GSERIALIZED    *g;
+	char	       *tmp;
 
-	cu_error_msg_reset();	/* Because i don't trust that much prior tests...  ;) */
+	cu_error_msg_reset();	/* Because i don't trust that much prior
+				 * tests...  ;) */
 
 	/* 2 dims */
 	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)))", LW_PARSER_CHECK_NONE);
@@ -372,7 +378,7 @@ void polyhedralsurface_parse(void)
 static void
 check_dimension(char *ewkt, int dim)
 {
-	LWGEOM *geom;
+	LWGEOM	       *geom;
 
 	geom = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
@@ -398,12 +404,13 @@ surface_dimension(void)
 
 
 /*
-** Used by test harness to register the tests in this file.
-*/
-void surface_suite_setup(void);
-void surface_suite_setup(void)
+ * * Used by test harness to register the tests in this file.
+ */
+void		surface_suite_setup(void);
+void
+surface_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("surface", NULL,  NULL);
+	CU_pSuite	suite = CU_add_suite("surface", NULL, NULL);
 	PG_ADD_TEST(suite, triangle_parse);
 	PG_ADD_TEST(suite, tin_parse);
 	PG_ADD_TEST(suite, polyhedralsurface_parse);

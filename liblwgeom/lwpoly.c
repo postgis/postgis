@@ -36,37 +36,39 @@
 
 #define CHECK_POLY_RINGS_ZM 1
 
-/* construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
- * use SRID=SRID_UNKNOWN for unknown SRID (will have 8bit type's S = 0)
+/*
+ * construct a new LWPOLY.  arrays (points/points per ring) will NOT be
+ * copied use SRID=SRID_UNKNOWN for unknown SRID (will have 8bit type's S =
+ * 0)
  */
-LWPOLY*
-lwpoly_construct(int srid, GBOX *bbox, uint32_t nrings, POINTARRAY **points)
+LWPOLY	       *
+lwpoly_construct(int srid, GBOX * bbox, uint32_t nrings, POINTARRAY * *points)
 {
-	LWPOLY *result;
-	int hasz, hasm;
+	LWPOLY	       *result;
+	int		hasz, hasm;
 #ifdef CHECK_POLY_RINGS_ZM
-	char zm;
-	uint32_t i;
+	char		zm;
+	uint32_t	i;
 #endif
 
-	if ( nrings < 1 ) lwerror("lwpoly_construct: need at least 1 ring");
+	if (nrings < 1)
+		lwerror("lwpoly_construct: need at least 1 ring");
 
 	hasz = FLAGS_GET_Z(points[0]->flags);
 	hasm = FLAGS_GET_M(points[0]->flags);
 
 #ifdef CHECK_POLY_RINGS_ZM
 	zm = FLAGS_GET_ZM(points[0]->flags);
-	for (i=1; i<nrings; i++)
-	{
-		if ( zm != FLAGS_GET_ZM(points[i]->flags) )
+	for (i = 1; i < nrings; i++) {
+		if (zm != FLAGS_GET_ZM(points[i]->flags))
 			lwerror("lwpoly_construct: mixed dimensioned rings");
 	}
 #endif
 
-	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
+	result = (LWPOLY *) lwalloc(sizeof(LWPOLY));
 	result->type = POLYGONTYPE;
 	result->flags = gflags(hasz, hasm, 0);
-	FLAGS_SET_BBOX(result->flags, bbox?1:0);
+	FLAGS_SET_BBOX(result->flags, bbox ? 1 : 0);
 	result->srid = srid;
 	result->nrings = nrings;
 	result->maxrings = nrings;
@@ -76,12 +78,12 @@ lwpoly_construct(int srid, GBOX *bbox, uint32_t nrings, POINTARRAY **points)
 	return result;
 }
 
-LWPOLY*
-lwpoly_construct_rectangle(char hasz, char hasm, POINT4D *p1, POINT4D *p2,
-		POINT4D *p3, POINT4D *p4)
+LWPOLY	       *
+lwpoly_construct_rectangle(char hasz, char hasm, POINT4D * p1, POINT4D * p2,
+			   POINT4D * p3, POINT4D * p4)
 {
-	POINTARRAY *pa = ptarray_construct_empty(hasz, hasm, 5);
-	LWPOLY *lwpoly = lwpoly_construct_empty(SRID_UNKNOWN, hasz, hasm);
+	POINTARRAY     *pa = ptarray_construct_empty(hasz, hasm, 5);
+	LWPOLY	       *lwpoly = lwpoly_construct_empty(SRID_UNKNOWN, hasz, hasm);
 
 	ptarray_append_point(pa, p1, LW_TRUE);
 	ptarray_append_point(pa, p2, LW_TRUE);
@@ -94,11 +96,11 @@ lwpoly_construct_rectangle(char hasz, char hasm, POINT4D *p1, POINT4D *p2,
 	return lwpoly;
 }
 
-LWPOLY *
+LWPOLY	       *
 lwpoly_construct_envelope(int srid, double x1, double y1, double x2, double y2)
 {
-	POINT4D p1, p2, p3, p4;
-	LWPOLY *poly;
+	POINT4D		p1, p2, p3, p4;
+	LWPOLY	       *poly;
 
 	p1.x = x1;
 	p1.y = y1;
@@ -116,40 +118,37 @@ lwpoly_construct_envelope(int srid, double x1, double y1, double x2, double y2)
 	return poly;
 }
 
-LWPOLY*
+LWPOLY	       *
 lwpoly_construct_circle(int srid, double x, double y, double radius, uint32_t segments_per_quarter, char exterior)
 {
-	const uint32_t segments = 4*segments_per_quarter;
-	double theta;
-	LWPOLY *lwpoly;
-	POINTARRAY *pa;
-	POINT4D pt;
-	uint32_t i;
+	const		uint32_t segments = 4 * segments_per_quarter;
+	double		theta;
+	LWPOLY	       *lwpoly;
+	POINTARRAY     *pa;
+	POINT4D		pt;
+	uint32_t	i;
 
-	if (segments_per_quarter == 0)
-	{
+	if (segments_per_quarter == 0) {
 		lwerror("Need at least one segment per quarter-circle.");
 		return NULL;
 	}
 
-	if (radius < 0)
-	{
+	if (radius < 0) {
 		lwerror("Radius must be positive.");
 		return NULL;
 	}
 
-	theta = 2*M_PI / segments;
+	theta = 2 * M_PI / segments;
 
 	lwpoly = lwpoly_construct_empty(srid, LW_FALSE, LW_FALSE);
 	pa = ptarray_construct_empty(LW_FALSE, LW_FALSE, segments + 1);
 
 	if (exterior)
-		radius *= sqrt(1 + pow(tan(theta/2), 2));
+		radius *= sqrt(1 + pow(tan(theta / 2), 2));
 
-	for (i = 0; i <= segments; i++)
-	{
-		pt.x = x + radius*sin(i * theta);
-		pt.y = y + radius*cos(i * theta);
+	for (i = 0; i <= segments; i++) {
+		pt.x = x + radius * sin(i * theta);
+		pt.y = y + radius * cos(i * theta);
 		ptarray_append_point(pa, &pt, LW_TRUE);
 	}
 
@@ -157,86 +156,90 @@ lwpoly_construct_circle(int srid, double x, double y, double radius, uint32_t se
 	return lwpoly;
 }
 
-LWPOLY*
+LWPOLY	       *
 lwpoly_construct_empty(int srid, char hasz, char hasm)
 {
-	LWPOLY *result = lwalloc(sizeof(LWPOLY));
+	LWPOLY	       *result = lwalloc(sizeof(LWPOLY));
 	result->type = POLYGONTYPE;
-	result->flags = gflags(hasz,hasm,0);
+	result->flags = gflags(hasz, hasm, 0);
 	result->srid = srid;
 	result->nrings = 0;
-	result->maxrings = 1; /* Allocate room for ring, just in case. */
-	result->rings = lwalloc(result->maxrings * sizeof(POINTARRAY*));
+	result->maxrings = 1;	/* Allocate room for ring, just in case. */
+	result->rings = lwalloc(result->maxrings * sizeof(POINTARRAY *));
 	result->bbox = NULL;
 	return result;
 }
 
 void
-lwpoly_free(LWPOLY* poly)
+lwpoly_free(LWPOLY * poly)
 {
-	uint32_t t;
+	uint32_t	t;
 
-	if (!poly) return;
+	if (!poly)
+		return;
 
-	if (poly->bbox) lwfree(poly->bbox);
+	if (poly->bbox)
+		lwfree(poly->bbox);
 
-	if ( poly->rings )
-	{
+	if (poly->rings) {
 		for (t = 0; t < poly->nrings; t++)
-			if (poly->rings[t]) ptarray_free(poly->rings[t]);
+			if (poly->rings[t])
+				ptarray_free(poly->rings[t]);
 		lwfree(poly->rings);
 	}
 
 	lwfree(poly);
 }
 
-void printLWPOLY(LWPOLY *poly)
+void
+printLWPOLY(LWPOLY * poly)
 {
-	uint32_t t;
+	uint32_t	t;
 	lwnotice("LWPOLY {");
 	lwnotice("    ndims = %i", (int)FLAGS_NDIMS(poly->flags));
 	lwnotice("    SRID = %i", (int)poly->srid);
 	lwnotice("    nrings = %i", (int)poly->nrings);
-	for (t=0; t<poly->nrings; t++)
-	{
-		lwnotice("    RING # %i :",t);
+	for (t = 0; t < poly->nrings; t++) {
+		lwnotice("    RING # %i :", t);
 		printPA(poly->rings[t]);
 	}
 	lwnotice("}");
 }
 
-/* @brief Clone LWLINE object. Serialized point lists are not copied.
+/*
+ * @brief Clone LWLINE object. Serialized point lists are not copied.
  *
  * @see ptarray_clone
  */
-LWPOLY *
-lwpoly_clone(const LWPOLY *g)
+LWPOLY	       *
+lwpoly_clone(const LWPOLY * g)
 {
-	uint32_t i;
-	LWPOLY *ret = lwalloc(sizeof(LWPOLY));
+	uint32_t	i;
+	LWPOLY	       *ret = lwalloc(sizeof(LWPOLY));
 	memcpy(ret, g, sizeof(LWPOLY));
-	ret->rings = lwalloc(sizeof(POINTARRAY *)*g->nrings);
-	for ( i = 0; i < g->nrings; i++ ) {
+	ret->rings = lwalloc(sizeof(POINTARRAY *) * g->nrings);
+	for (i = 0; i < g->nrings; i++) {
 		ret->rings[i] = ptarray_clone(g->rings[i]);
 	}
-	if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);
+	if (g->bbox)
+		ret->bbox = gbox_copy(g->bbox);
 	return ret;
 }
 
 /* Deep clone LWPOLY object. POINTARRAY are copied, as is ring array */
-LWPOLY *
-lwpoly_clone_deep(const LWPOLY *g)
+LWPOLY	       *
+lwpoly_clone_deep(const LWPOLY * g)
 {
-	uint32_t i;
-	LWPOLY *ret = lwalloc(sizeof(LWPOLY));
+	uint32_t	i;
+	LWPOLY	       *ret = lwalloc(sizeof(LWPOLY));
 	memcpy(ret, g, sizeof(LWPOLY));
-	if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);
-	ret->rings = lwalloc(sizeof(POINTARRAY *)*g->nrings);
-	for ( i = 0; i < ret->nrings; i++ )
-	{
+	if (g->bbox)
+		ret->bbox = gbox_copy(g->bbox);
+	ret->rings = lwalloc(sizeof(POINTARRAY *) * g->nrings);
+	for (i = 0; i < ret->nrings; i++) {
 		ret->rings[i] = ptarray_clone_deep(g->rings[i]);
 	}
-	FLAGS_SET_READONLY(ret->flags,0);
+	FLAGS_SET_READONLY(ret->flags, 0);
 	return ret;
 }
 
@@ -244,16 +247,15 @@ lwpoly_clone_deep(const LWPOLY *g)
 * Add a ring to a polygon. Point array will be referenced, not copied.
 */
 int
-lwpoly_add_ring(LWPOLY *poly, POINTARRAY *pa)
+lwpoly_add_ring(LWPOLY * poly, POINTARRAY * pa)
 {
-	if( ! poly || ! pa )
+	if (!poly || !pa)
 		return LW_FAILURE;
 
 	/* We have used up our storage, add some more. */
-	if( poly->nrings >= poly->maxrings )
-	{
-		int new_maxrings = 2 * (poly->nrings + 1);
-		poly->rings = lwrealloc(poly->rings, new_maxrings * sizeof(POINTARRAY*));
+	if (poly->nrings >= poly->maxrings) {
+		int		new_maxrings = 2 * (poly->nrings + 1);
+		poly->rings = lwrealloc(poly->rings, new_maxrings * sizeof(POINTARRAY *));
 		poly->maxrings = new_maxrings;
 	}
 
@@ -265,62 +267,60 @@ lwpoly_add_ring(LWPOLY *poly, POINTARRAY *pa)
 }
 
 void
-lwpoly_force_clockwise(LWPOLY *poly)
+lwpoly_force_clockwise(LWPOLY * poly)
 {
-	uint32_t i;
+	uint32_t	i;
 
 	/* No-op empties */
-	if ( lwpoly_is_empty(poly) )
+	if (lwpoly_is_empty(poly))
 		return;
 
 	/* External ring */
-	if ( ptarray_isccw(poly->rings[0]) )
+	if (ptarray_isccw(poly->rings[0]))
 		ptarray_reverse_in_place(poly->rings[0]);
 
 	/* Internal rings */
-	for (i=1; i<poly->nrings; i++)
-		if ( ! ptarray_isccw(poly->rings[i]) )
+	for (i = 1; i < poly->nrings; i++)
+		if (!ptarray_isccw(poly->rings[i]))
 			ptarray_reverse_in_place(poly->rings[i]);
 
 }
 
 int
-lwpoly_is_clockwise(LWPOLY *poly)
+lwpoly_is_clockwise(LWPOLY * poly)
 {
-	uint32_t i;
+	uint32_t	i;
 
-	if ( lwpoly_is_empty(poly) )
+	if (lwpoly_is_empty(poly))
 		return LW_TRUE;
 
-	if ( ptarray_isccw(poly->rings[0]) )
+	if (ptarray_isccw(poly->rings[0]))
 		return LW_FALSE;
 
-	for ( i = 1; i < poly->nrings; i++)
-		if ( !ptarray_isccw(poly->rings[i]) )
+	for (i = 1; i < poly->nrings; i++)
+		if (!ptarray_isccw(poly->rings[i]))
 			return LW_FALSE;
 
 	return LW_TRUE;
 }
 
 void
-lwpoly_release(LWPOLY *lwpoly)
+lwpoly_release(LWPOLY * lwpoly)
 {
 	lwgeom_release(lwpoly_as_lwgeom(lwpoly));
 }
 
-LWPOLY *
-lwpoly_segmentize2d(const LWPOLY *poly, double dist)
+LWPOLY	       *
+lwpoly_segmentize2d(const LWPOLY * poly, double dist)
 {
-	POINTARRAY **newrings;
-	uint32_t i;
+	POINTARRAY    **newrings;
+	uint32_t	i;
 
-	newrings = lwalloc(sizeof(POINTARRAY *)*poly->nrings);
-	for (i=0; i<poly->nrings; i++)
-	{
+	newrings = lwalloc(sizeof(POINTARRAY *) * poly->nrings);
+	for (i = 0; i < poly->nrings; i++) {
 		newrings[i] = ptarray_segmentize2d(poly->rings[i], dist);
-		if ( ! newrings[i] )
-		{
-			uint32_t j = 0;
+		if (!newrings[i]) {
+			uint32_t	j = 0;
 			for (j = 0; j < i; j++)
 				ptarray_free(newrings[j]);
 			lwfree(newrings);
@@ -328,59 +328,56 @@ lwpoly_segmentize2d(const LWPOLY *poly, double dist)
 		}
 	}
 	return lwpoly_construct(poly->srid, NULL,
-	                        poly->nrings, newrings);
+				poly->nrings, newrings);
 }
 
 /*
- * check coordinate equality
- * ring and coordinate order is considered
+ * check coordinate equality ring and coordinate order is considered
  */
 char
-lwpoly_same(const LWPOLY *p1, const LWPOLY *p2)
+lwpoly_same(const LWPOLY * p1, const LWPOLY * p2)
 {
-	uint32_t i;
+	uint32_t	i;
 
-	if ( p1->nrings != p2->nrings ) return 0;
-	for (i=0; i<p1->nrings; i++)
-	{
-		if ( ! ptarray_same(p1->rings[i], p2->rings[i]) )
+	if (p1->nrings != p2->nrings)
+		return 0;
+	for (i = 0; i < p1->nrings; i++) {
+		if (!ptarray_same(p1->rings[i], p2->rings[i]))
 			return 0;
 	}
 	return 1;
 }
 
 /*
- * Construct a polygon from a LWLINE being
- * the shell and an array of LWLINE (possibly NULL) being holes.
- * Pointarrays from intput geoms are cloned.
- * SRID must be the same for each input line.
- * Input lines must have at least 4 points, and be closed.
+ * Construct a polygon from a LWLINE being the shell and an array of LWLINE
+ * (possibly NULL) being holes. Pointarrays from intput geoms are cloned.
+ * SRID must be the same for each input line. Input lines must have at least
+ * 4 points, and be closed.
  */
-LWPOLY *
-lwpoly_from_lwlines(const LWLINE *shell,
-                    uint32_t nholes, const LWLINE **holes)
+LWPOLY	       *
+lwpoly_from_lwlines(const LWLINE * shell,
+		    uint32_t nholes, const LWLINE * *holes)
 {
-	uint32_t nrings;
-	POINTARRAY **rings = lwalloc((nholes+1)*sizeof(POINTARRAY *));
-	int srid = shell->srid;
-	LWPOLY *ret;
+	uint32_t	nrings;
+	POINTARRAY    **rings = lwalloc((nholes + 1) * sizeof(POINTARRAY *));
+	int		srid = shell->srid;
+	LWPOLY	       *ret;
 
-	if ( shell->points->npoints < 4 )
+	if (shell->points->npoints < 4)
 		lwerror("lwpoly_from_lwlines: shell must have at least 4 points");
-	if ( ! ptarray_is_closed_2d(shell->points) )
+	if (!ptarray_is_closed_2d(shell->points))
 		lwerror("lwpoly_from_lwlines: shell must be closed");
 	rings[0] = ptarray_clone_deep(shell->points);
 
-	for (nrings=1; nrings<=nholes; nrings++)
-	{
-		const LWLINE *hole = holes[nrings-1];
+	for (nrings = 1; nrings <= nholes; nrings++) {
+		const		LWLINE *hole = holes[nrings - 1];
 
-		if ( hole->srid != srid )
+		if (hole->srid != srid)
 			lwerror("lwpoly_from_lwlines: mixed SRIDs in input lines");
 
-		if ( hole->points->npoints < 4 )
+		if (hole->points->npoints < 4)
 			lwerror("lwpoly_from_lwlines: holes must have at least 4 points");
-		if ( ! ptarray_is_closed_2d(hole->points) )
+		if (!ptarray_is_closed_2d(hole->points))
 			lwerror("lwpoly_from_lwlines: holes must be closed");
 
 		rings[nrings] = ptarray_clone_deep(hole->points);
@@ -390,23 +387,19 @@ lwpoly_from_lwlines(const LWLINE *shell,
 	return ret;
 }
 
-LWPOLY*
-lwpoly_force_dims(const LWPOLY *poly, int hasz, int hasm)
+LWPOLY	       *
+lwpoly_force_dims(const LWPOLY * poly, int hasz, int hasm)
 {
-	LWPOLY *polyout;
+	LWPOLY	       *polyout;
 
 	/* Return 2D empty */
-	if( lwpoly_is_empty(poly) )
-	{
+	if (lwpoly_is_empty(poly)) {
 		polyout = lwpoly_construct_empty(poly->srid, hasz, hasm);
-	}
-	else
-	{
-		POINTARRAY **rings = NULL;
-		uint32_t i;
-		rings = lwalloc(sizeof(POINTARRAY*) * poly->nrings);
-		for( i = 0; i < poly->nrings; i++ )
-		{
+	} else {
+		POINTARRAY    **rings = NULL;
+		uint32_t	i;
+		rings = lwalloc(sizeof(POINTARRAY *) * poly->nrings);
+		for (i = 0; i < poly->nrings; i++) {
 			rings[i] = ptarray_force_dims(poly->rings[i], hasz, hasm);
 		}
 		polyout = lwpoly_construct(poly->srid, NULL, poly->nrings, rings);
@@ -415,20 +408,21 @@ lwpoly_force_dims(const LWPOLY *poly, int hasz, int hasm)
 	return polyout;
 }
 
-int lwpoly_is_empty(const LWPOLY *poly)
+int
+lwpoly_is_empty(const LWPOLY * poly)
 {
-	if ( (poly->nrings < 1) || (!poly->rings) || (!poly->rings[0]) || (poly->rings[0]->npoints < 1) )
+	if ((poly->nrings < 1) || (!poly->rings) || (!poly->rings[0]) || (poly->rings[0]->npoints < 1))
 		return LW_TRUE;
 	return LW_FALSE;
 }
 
-uint32_t lwpoly_count_vertices(LWPOLY *poly)
+uint32_t
+lwpoly_count_vertices(LWPOLY * poly)
 {
-	uint32_t i = 0;
-	uint32_t v = 0; /* vertices */
+	uint32_t	i = 0;
+	uint32_t	v = 0;	/* vertices */
 	assert(poly);
-	for ( i = 0; i < poly->nrings; i ++ )
-	{
+	for (i = 0; i < poly->nrings; i++) {
 		v += poly->rings[i]->npoints;
 	}
 	return v;
@@ -438,27 +432,26 @@ uint32_t lwpoly_count_vertices(LWPOLY *poly)
 * Find the area of the outer ring - sum (area of inner rings).
 */
 double
-lwpoly_area(const LWPOLY *poly)
+lwpoly_area(const LWPOLY * poly)
 {
-	double poly_area = 0.0;
-	uint32_t i;
+	double		poly_area = 0.0;
+	uint32_t	i;
 
-	if ( ! poly )
+	if (!poly)
 		lwerror("lwpoly_area called with null polygon pointer!");
 
-	for ( i=0; i < poly->nrings; i++ )
-	{
-		POINTARRAY *ring = poly->rings[i];
-		double ringarea = 0.0;
+	for (i = 0; i < poly->nrings; i++) {
+		POINTARRAY     *ring = poly->rings[i];
+		double		ringarea = 0.0;
 
 		/* Empty or messed-up ring. */
-		if ( ring->npoints < 3 )
+		if (ring->npoints < 3)
 			continue;
 
 		ringarea = fabs(ptarray_signed_area(ring));
-		if ( i == 0 ) /* Outer ring, positive area! */
+		if (i == 0)	/* Outer ring, positive area! */
 			poly_area += ringarea;
-		else /* Inner ring, negative area! */
+		else		/* Inner ring, negative area! */
 			poly_area -= ringarea;
 	}
 
@@ -471,14 +464,14 @@ lwpoly_area(const LWPOLY *poly)
  * Could use a more numerically stable calculator...
  */
 double
-lwpoly_perimeter(const LWPOLY *poly)
+lwpoly_perimeter(const LWPOLY * poly)
 {
-	double result=0.0;
-	uint32_t i;
+	double		result = 0.0;
+	uint32_t	i;
 
 	LWDEBUGF(2, "in lwgeom_polygon_perimeter (%d rings)", poly->nrings);
 
-	for (i=0; i<poly->nrings; i++)
+	for (i = 0; i < poly->nrings; i++)
 		result += ptarray_length(poly->rings[i]);
 
 	return result;
@@ -489,37 +482,33 @@ lwpoly_perimeter(const LWPOLY *poly)
  * Could use a more numerically stable calculator...
  */
 double
-lwpoly_perimeter_2d(const LWPOLY *poly)
+lwpoly_perimeter_2d(const LWPOLY * poly)
 {
-	double result=0.0;
-	uint32_t i;
+	double		result = 0.0;
+	uint32_t	i;
 
 	LWDEBUGF(2, "in lwgeom_polygon_perimeter (%d rings)", poly->nrings);
 
-	for (i=0; i<poly->nrings; i++)
+	for (i = 0; i < poly->nrings; i++)
 		result += ptarray_length_2d(poly->rings[i]);
 
 	return result;
 }
 
 int
-lwpoly_is_closed(const LWPOLY *poly)
+lwpoly_is_closed(const LWPOLY * poly)
 {
-	uint32_t i = 0;
+	uint32_t	i = 0;
 
-	if ( poly->nrings == 0 )
+	if (poly->nrings == 0)
 		return LW_TRUE;
 
-	for ( i = 0; i < poly->nrings; i++ )
-	{
-		if (FLAGS_GET_Z(poly->flags))
-		{
-			if ( ! ptarray_is_closed_3d(poly->rings[i]) )
+	for (i = 0; i < poly->nrings; i++) {
+		if (FLAGS_GET_Z(poly->flags)) {
+			if (!ptarray_is_closed_3d(poly->rings[i]))
 				return LW_FALSE;
-		}
-		else
-		{
-			if ( ! ptarray_is_closed_2d(poly->rings[i]) )
+		} else {
+			if (!ptarray_is_closed_2d(poly->rings[i]))
 				return LW_FALSE;
 		}
 	}
@@ -528,30 +517,27 @@ lwpoly_is_closed(const LWPOLY *poly)
 }
 
 int
-lwpoly_startpoint(const LWPOLY* poly, POINT4D* pt)
+lwpoly_startpoint(const LWPOLY * poly, POINT4D * pt)
 {
-	if ( poly->nrings < 1 )
+	if (poly->nrings < 1)
 		return LW_FAILURE;
 	return ptarray_startpoint(poly->rings[0], pt);
 }
 
 int
-lwpoly_contains_point(const LWPOLY *poly, const POINT2D *pt)
+lwpoly_contains_point(const LWPOLY * poly, const POINT2D * pt)
 {
-	uint32_t i;
+	uint32_t	i;
 
-	if ( lwpoly_is_empty(poly) )
+	if (lwpoly_is_empty(poly))
 		return LW_FALSE;
 
-	if ( ptarray_contains_point(poly->rings[0], pt) == LW_OUTSIDE )
+	if (ptarray_contains_point(poly->rings[0], pt) == LW_OUTSIDE)
 		return LW_FALSE;
 
-	for ( i = 1; i < poly->nrings; i++ )
-	{
-		if ( ptarray_contains_point(poly->rings[i], pt) == LW_INSIDE )
+	for (i = 1; i < poly->nrings; i++) {
+		if (ptarray_contains_point(poly->rings[i], pt) == LW_INSIDE)
 			return LW_FALSE;
 	}
 	return LW_TRUE;
 }
-
-

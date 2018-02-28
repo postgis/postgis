@@ -40,10 +40,10 @@
 #include <string.h>
 
 void
-err(int eval, const char *fmt, ...)
+err(int eval, const char *fmt,...)
 {
-	int code = errno;
-	va_list ap;
+	int		code = errno;
+	va_list		ap;
 	va_start(ap, fmt);
 	if (fmt != NULL) {
 		vfprintf(stderr, fmt, ap);
@@ -55,9 +55,9 @@ err(int eval, const char *fmt, ...)
 }
 
 void
-errx(int eval, const char *fmt, ...)
+errx(int eval, const char *fmt,...)
 {
-	va_list ap;
+	va_list		ap;
 	va_start(ap, fmt);
 	if (fmt != NULL)
 		vfprintf(stderr, fmt, ap);

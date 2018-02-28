@@ -22,7 +22,7 @@
 */
 
 /* Admin functions */
-int init_shp2pgsql_suite(void);
-int clean_shp2pgsql_suite(void);
+int		init_shp2pgsql_suite(void);
+int		clean_shp2pgsql_suite(void);
 
 #endif /* __cu_shp2pgsql_h__ */

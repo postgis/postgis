@@ -37,9 +37,11 @@
  * This is cut down to just the minimum that we need to build indent.
  */
 
-void	err(int, const char *, ...)
-  pg_attribute_noreturn() pg_attribute_printf(2, 3);
-void	errx(int, const char *, ...)
-  pg_attribute_noreturn() pg_attribute_printf(2, 3);
+void
+err(int, const char *,...)
+pg_attribute_noreturn() pg_attribute_printf(2, 3);
+void
+errx(int, const char *,...)
+pg_attribute_noreturn() pg_attribute_printf(2, 3);
 
 #endif /* !_ERR_H_ */

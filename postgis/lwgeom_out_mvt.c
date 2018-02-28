@@ -33,23 +33,24 @@
 
 #ifdef HAVE_LIBPROTOBUF
 #include "vector_tile.pb-c.h"
-#endif  /* HAVE_LIBPROTOBUF */
+#endif /* HAVE_LIBPROTOBUF */
 
 /**
  * Process input parameters to mvt_geom and returned serialized geometry
  */
 PG_FUNCTION_INFO_V1(ST_AsMVTGeom);
-Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
+Datum
+ST_AsMVTGeom(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
 	elog(ERROR, "Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
-	LWGEOM *lwgeom_in, *lwgeom_out;
-	GSERIALIZED *geom_in, *geom_out;
-	GBOX *bounds;
-	int extent, buffer;
-	bool clip_geom;
+	LWGEOM	       *lwgeom_in, *lwgeom_out;
+	GSERIALIZED    *geom_in, *geom_out;
+	GBOX	       *bounds;
+	int		extent, buffer;
+	bool		clip_geom;
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
 	geom_in = PG_GETARG_GSERIALIZED_P_COPY(0);
@@ -60,9 +61,10 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 	extent = PG_ARGISNULL(2) ? 4096 : PG_GETARG_INT32(2);
 	buffer = PG_ARGISNULL(3) ? 256 : PG_GETARG_INT32(3);
 	clip_geom = PG_ARGISNULL(4) ? true : PG_GETARG_BOOL(4);
-	// NOTE: can both return in clone and in place modification so
-	// not known if lwgeom_in can be freed
-	lwgeom_out = mvt_geom(lwgeom_in, bounds, extent, buffer, clip_geom);
+//NOTE:	can both return in clone and in place modification so
+		// not known if lwgeom_in
+		can be freed
+			lwgeom_out = mvt_geom(lwgeom_in, bounds, extent, buffer, clip_geom);
 	if (lwgeom_out == NULL)
 		PG_RETURN_NULL();
 	geom_out = geometry_serialize(lwgeom_out);
@@ -76,13 +78,14 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
  * Process input parameters and row data into state
  */
 PG_FUNCTION_INFO_V1(pgis_asmvt_transfn);
-Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
+Datum
+pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
 	elog(ERROR, "Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
-	MemoryContext aggcontext;
+	MemoryContext	aggcontext;
 	mvt_agg_context *ctx;
 
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
@@ -119,21 +122,21 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
  * Encode final state to Mapbox Vector Tile
  */
 PG_FUNCTION_INFO_V1(pgis_asmvt_finalfn);
-Datum pgis_asmvt_finalfn(PG_FUNCTION_ARGS)
+Datum
+pgis_asmvt_finalfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
 	elog(ERROR, "Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
 	mvt_agg_context *ctx;
-	bytea *buf;
+	bytea	       *buf;
 	elog(DEBUG2, "%s called", __func__);
 	if (!AggCheckCallContext(fcinfo, NULL))
 		elog(ERROR, "%s called in non-aggregate context", __func__);
 
-	if (PG_ARGISNULL(0))
-	{
-		bytea *emptybuf = palloc(VARHDRSZ);
+	if (PG_ARGISNULL(0)) {
+		bytea	       *emptybuf = palloc(VARHDRSZ);
 		SET_VARSIZE(emptybuf, VARHDRSZ);
 		PG_RETURN_BYTEA_P(emptybuf);
 	}
@@ -145,7 +148,8 @@ Datum pgis_asmvt_finalfn(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(pgis_asmvt_serialfn);
-Datum pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
+Datum
+pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
 	elog(ERROR, "Missing libprotobuf-c");
@@ -156,9 +160,8 @@ Datum pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
 	if (!AggCheckCallContext(fcinfo, NULL))
 		elog(ERROR, "%s called in non-aggregate context", __func__);
 
-	if (PG_ARGISNULL(0))
-	{
-		bytea *emptybuf = palloc(VARHDRSZ);
+	if (PG_ARGISNULL(0)) {
+		bytea	       *emptybuf = palloc(VARHDRSZ);
 		SET_VARSIZE(emptybuf, VARHDRSZ);
 		PG_RETURN_BYTEA_P(emptybuf);
 	}
@@ -170,13 +173,14 @@ Datum pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
 
 
 PG_FUNCTION_INFO_V1(pgis_asmvt_deserialfn);
-Datum pgis_asmvt_deserialfn(PG_FUNCTION_ARGS)
+Datum
+pgis_asmvt_deserialfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
 	elog(ERROR, "Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
-	MemoryContext aggcontext, oldcontext;
+	MemoryContext	aggcontext, oldcontext;
 	elog(DEBUG2, "%s called", __func__);
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "%s called in non-aggregate context", __func__);
@@ -190,24 +194,24 @@ Datum pgis_asmvt_deserialfn(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(pgis_asmvt_combinefn);
-Datum pgis_asmvt_combinefn(PG_FUNCTION_ARGS)
+Datum
+pgis_asmvt_combinefn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
 	elog(ERROR, "Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
-	MemoryContext aggcontext, oldcontext;
+	MemoryContext	aggcontext, oldcontext;
 	elog(DEBUG2, "%s called", __func__);
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "%s called in non-aggregate context", __func__);
 
 	mvt_agg_context *ctx, *ctx1, *ctx2;
-	ctx1 = (mvt_agg_context*)PG_GETARG_POINTER(0);
-	ctx2 = (mvt_agg_context*)PG_GETARG_POINTER(1);
+	ctx1 = (mvt_agg_context *) PG_GETARG_POINTER(0);
+	ctx2 = (mvt_agg_context *) PG_GETARG_POINTER(1);
 	oldcontext = MemoryContextSwitchTo(aggcontext);
 	ctx = mvt_ctx_combine(ctx1, ctx2);
 	MemoryContextSwitchTo(oldcontext);
 	PG_RETURN_POINTER(ctx);
 #endif
 }
-

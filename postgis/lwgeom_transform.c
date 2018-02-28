@@ -32,9 +32,9 @@
 #include "lwgeom_transform.h"
 
 
-Datum transform(PG_FUNCTION_ARGS);
-Datum transform_geom(PG_FUNCTION_ARGS);
-Datum postgis_proj_version(PG_FUNCTION_ARGS);
+Datum		transform(PG_FUNCTION_ARGS);
+Datum		transform_geom(PG_FUNCTION_ARGS);
+Datum		postgis_proj_version(PG_FUNCTION_ARGS);
 
 
 
@@ -45,17 +45,17 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS);
  * are in an indeterminate state after the -38 error is thrown.
  */
 PG_FUNCTION_INFO_V1(transform);
-Datum transform(PG_FUNCTION_ARGS)
+Datum
+transform(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom;
-	GSERIALIZED *result=NULL;
-	LWGEOM *lwgeom;
-	projPJ input_pj, output_pj;
-	int32 output_srid, input_srid;
+	GSERIALIZED    *geom;
+	GSERIALIZED    *result = NULL;
+	LWGEOM	       *lwgeom;
+	projPJ		input_pj, output_pj;
+	int32		output_srid, input_srid;
 
 	output_srid = PG_GETARG_INT32(1);
-	if (output_srid == SRID_UNKNOWN)
-	{
+	if (output_srid == SRID_UNKNOWN) {
 		elog(ERROR, "%d is an invalid target SRID", SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
@@ -63,19 +63,17 @@ Datum transform(PG_FUNCTION_ARGS)
 	geom = PG_GETARG_GSERIALIZED_P_COPY(0);
 	input_srid = gserialized_get_srid(geom);
 
-	if ( input_srid == SRID_UNKNOWN )
-	{
+	if (input_srid == SRID_UNKNOWN) {
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR, "Input geometry has unknown (%d) SRID", SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
 
 	/* Input SRID and output SRID are equal, noop */
-	if ( input_srid == output_srid )
+	if (input_srid == output_srid)
 		PG_RETURN_POINTER(geom);
 
-	if ( GetProjectionsUsingFCInfo(fcinfo, input_srid, output_srid, &input_pj, &output_pj) == LW_FAILURE )
-	{
+	if (GetProjectionsUsingFCInfo(fcinfo, input_srid, output_srid, &input_pj, &output_pj) == LW_FAILURE) {
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR, "Failure reading projections from spatial_ref_sys.");
 		PG_RETURN_NULL();
@@ -87,8 +85,7 @@ Datum transform(PG_FUNCTION_ARGS)
 	lwgeom->srid = output_srid;
 
 	/* Re-compute bbox if input had one (COMPUTE_BBOX TAINTING) */
-	if ( lwgeom->bbox )
-	{
+	if (lwgeom->bbox) {
 		lwgeom_refresh_bbox(lwgeom);
 	}
 
@@ -96,7 +93,7 @@ Datum transform(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 
-	PG_RETURN_POINTER(result); /* new geometry */
+	PG_RETURN_POINTER(result);	/* new geometry */
 }
 
 /**
@@ -108,17 +105,18 @@ Datum transform(PG_FUNCTION_ARGS)
  * are in an indeterminate state after the -38 error is thrown.
  */
 PG_FUNCTION_INFO_V1(transform_geom);
-Datum transform_geom(PG_FUNCTION_ARGS)
+Datum
+transform_geom(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom;
-	GSERIALIZED *result=NULL;
-	LWGEOM *lwgeom;
-	projPJ input_pj, output_pj;
-	char *input_proj4, *output_proj4;
-	text *input_proj4_text;
-	text *output_proj4_text;
-	int32 result_srid ;
-	char *pj_errstr;
+	GSERIALIZED    *geom;
+	GSERIALIZED    *result = NULL;
+	LWGEOM	       *lwgeom;
+	projPJ		input_pj, output_pj;
+	char	       *input_proj4, *output_proj4;
+	text	       *input_proj4_text;
+	text	       *output_proj4_text;
+	int32		result_srid;
+	char	       *pj_errstr;
 
 	result_srid = PG_GETARG_INT32(3);
 	geom = PG_GETARG_GSERIALIZED_P_COPY(0);
@@ -127,7 +125,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	SetPROJ4LibPath();
 
 	/* Read the arguments */
-	input_proj4_text  = (PG_GETARG_TEXT_P(1));
+	input_proj4_text = (PG_GETARG_TEXT_P(1));
 	output_proj4_text = (PG_GETARG_TEXT_P(2));
 
 	/* Convert from text to cstring for libproj */
@@ -136,10 +134,10 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 	/* make input and output projection objects */
 	input_pj = lwproj_from_string(input_proj4);
-	if ( input_pj == NULL )
-	{
+	if (input_pj == NULL) {
 		pj_errstr = pj_strerrno(*pj_get_errno_ref());
-		if ( ! pj_errstr ) pj_errstr = "";
+		if (!pj_errstr)
+			pj_errstr = "";
 
 		/* we need this for error reporting */
 		/* pfree(input_proj4); */
@@ -147,18 +145,18 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		pfree(geom);
 
 		elog(ERROR,
-		    "transform_geom: could not parse proj4 string '%s' %s",
-		    input_proj4, pj_errstr);
+		     "transform_geom: could not parse proj4 string '%s' %s",
+		     input_proj4, pj_errstr);
 		PG_RETURN_NULL();
 	}
 	pfree(input_proj4);
 
 	output_pj = lwproj_from_string(output_proj4);
 
-	if ( output_pj == NULL )
-	{
+	if (output_pj == NULL) {
 		pj_errstr = pj_strerrno(*pj_get_errno_ref());
-		if ( ! pj_errstr ) pj_errstr = "";
+		if (!pj_errstr)
+			pj_errstr = "";
 
 		/* we need this for error reporting */
 		/* pfree(output_proj4); */
@@ -166,8 +164,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		pfree(geom);
 
 		elog(ERROR,
-			"transform_geom: couldn't parse proj4 output string: '%s': %s",
-			output_proj4, pj_errstr);
+		     "transform_geom: couldn't parse proj4 output string: '%s': %s",
+		     output_proj4, pj_errstr);
 		PG_RETURN_NULL();
 	}
 	pfree(output_proj4);
@@ -182,8 +180,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	pj_free(output_pj);
 
 	/* Re-compute bbox if input had one (COMPUTE_BBOX TAINTING) */
-	if ( lwgeom->bbox )
-	{
+	if (lwgeom->bbox) {
 		lwgeom_refresh_bbox(lwgeom);
 	}
 
@@ -192,14 +189,15 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 
-	PG_RETURN_POINTER(result); /* new geometry */
+	PG_RETURN_POINTER(result);	/* new geometry */
 }
 
 
 PG_FUNCTION_INFO_V1(postgis_proj_version);
-Datum postgis_proj_version(PG_FUNCTION_ARGS)
+Datum
+postgis_proj_version(PG_FUNCTION_ARGS)
 {
-	const char *ver = pj_get_release();
-	text *result = cstring_to_text(ver);
+	const char     *ver = pj_get_release();
+	text	       *result = cstring_to_text(ver);
 	PG_RETURN_POINTER(result);
 }

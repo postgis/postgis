@@ -21,18 +21,19 @@
 
 #if 0
 
-static void test_bytebuffer_append(void)
+static void
+test_bytebuffer_append(void)
 {
-	bytebuffer_t *bb1;
-	int64_t res;
+	bytebuffer_t   *bb1;
+	int64_t		res;
 	bb1 = bytebuffer_create_with_size(2);
 
-	bytebuffer_append_varint(bb1,(int64_t) -12345);
+	bytebuffer_append_varint(bb1, (int64_t) - 12345);
 
 
 	bytebuffer_reset_reading(bb1);
 
-	res= bytebuffer_read_varint(bb1);
+	res = bytebuffer_read_varint(bb1);
 
 	CU_ASSERT_EQUAL(res, -12345);
 
@@ -45,14 +46,15 @@ static void test_bytebuffer_append(void)
 
 
 /*
-** Used by the test harness to register the tests in this file.
-*/
-void bytebuffer_suite_setup(void);
-void bytebuffer_suite_setup(void)
+ * * Used by the test harness to register the tests in this file.
+ */
+void		bytebuffer_suite_setup(void);
+void
+bytebuffer_suite_setup(void)
 {
 	PG_TEST(test_bytebuffer_append),
-	CU_TEST_INFO_NULL
+		CU_TEST_INFO_NULL
 };
-CU_SuiteInfo bytebuffer_suite = {"bytebuffer", NULL, NULL, bytebuffer_tests };
+CU_SuiteInfo	bytebuffer_suite = {"bytebuffer", NULL, NULL, bytebuffer_tests};
 
 #endif

@@ -31,12 +31,13 @@
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
-#include "liblwgeom_internal.h"/* for decode_geohash_bbox */
+#include "liblwgeom_internal.h"	/* for decode_geohash_bbox */
 
-Datum box2d_from_geohash(PG_FUNCTION_ARGS);
-Datum point_from_geohash(PG_FUNCTION_ARGS);
+Datum		box2d_from_geohash(PG_FUNCTION_ARGS);
+Datum		point_from_geohash(PG_FUNCTION_ARGS);
 
-static void geohash_lwpgerror(char *msg, __attribute__((__unused__)) int error_code)
+static void
+geohash_lwpgerror(char *msg, __attribute__((__unused__)) int error_code)
 {
 	POSTGIS_DEBUGF(3, "ST_Box2dFromGeoHash ERROR %i", error_code);
 	lwpgerror("%s", msg);
@@ -44,16 +45,14 @@ static void geohash_lwpgerror(char *msg, __attribute__((__unused__)) int error_c
 
 #include "lwgeom_export.h"
 
-static GBOX*
-parse_geohash(char *geohash, int precision)
-{
-	GBOX *box = NULL;
-	double lat[2], lon[2];
+static GBOX *
+parse_geohash(char *geohash, int precision){
+	GBOX	       *box = NULL;
+	double		lat[2], lon[2];
 
 	POSTGIS_DEBUG(2, "parse_geohash called.");
 
-	if (NULL == geohash)
-	{
+	if (NULL == geohash) {
 		geohash_lwpgerror("invalid GeoHash representation", 2);
 	}
 
@@ -75,20 +74,19 @@ parse_geohash(char *geohash, int precision)
 }
 
 PG_FUNCTION_INFO_V1(box2d_from_geohash);
-Datum box2d_from_geohash(PG_FUNCTION_ARGS)
+Datum
+box2d_from_geohash(PG_FUNCTION_ARGS)
 {
-	GBOX *box = NULL;
-	text *geohash_input = NULL;
-	char *geohash = NULL;
-	int precision = -1;
+	GBOX	       *box = NULL;
+	text	       *geohash_input = NULL;
+	char	       *geohash = NULL;
+	int		precision = -1;
 
-	if (PG_ARGISNULL(0))
-	{
+	if (PG_ARGISNULL(0)) {
 		PG_RETURN_NULL();
 	}
 
-	if (!PG_ARGISNULL(1))
-	{
+	if (!PG_ARGISNULL(1)) {
 		precision = PG_GETARG_INT32(1);
 	}
 
@@ -101,23 +99,22 @@ Datum box2d_from_geohash(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(point_from_geohash);
-Datum point_from_geohash(PG_FUNCTION_ARGS)
+Datum
+point_from_geohash(PG_FUNCTION_ARGS)
 {
-	GBOX *box = NULL;
-	LWPOINT *point = NULL;
-	GSERIALIZED *result = NULL;
-	text *geohash_input = NULL;
-	char *geohash = NULL;
-	double lon, lat;
-	int precision = -1;
+	GBOX	       *box = NULL;
+	LWPOINT	       *point = NULL;
+	GSERIALIZED    *result = NULL;
+	text	       *geohash_input = NULL;
+	char	       *geohash = NULL;
+	double		lon, lat;
+	int		precision = -1;
 
-	if (PG_ARGISNULL(0))
-	{
+	if (PG_ARGISNULL(0)) {
 		PG_RETURN_NULL();
 	}
 
-	if (!PG_ARGISNULL(1))
-	{
+	if (!PG_ARGISNULL(1)) {
 		precision = PG_GETARG_INT32(1);
 	}
 

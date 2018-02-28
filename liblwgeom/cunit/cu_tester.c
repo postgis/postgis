@@ -18,64 +18,64 @@
 
 /* Internal funcs */
 static void
-cu_errorreporter(const char *fmt, va_list ap);
+		cu_errorreporter(const char *fmt, va_list ap);
 
 static void
-cu_noticereporter(const char *fmt, va_list ap);
+		cu_noticereporter(const char *fmt, va_list ap);
 
 static void
-cu_debuglogger(int level, const char *fmt, va_list ap);
+		cu_debuglogger(int level, const char *fmt, va_list ap);
 
 
 /* ADD YOUR SUITE SETUP FUNCTION HERE (1 of 2) */
-extern void print_suite_setup();
-extern void algorithms_suite_setup();
-extern void buildarea_suite_setup();
-extern void clean_suite_setup();
-extern void clip_by_rect_suite_setup();
-extern void force_sfs_suite_setup(void);
-extern void geodetic_suite_setup(void);
-extern void geos_suite_setup(void);
-extern void geos_cluster_suite_setup(void);
-extern void unionfind_suite_setup(void);
-extern void homogenize_suite_setup(void);
-extern void in_encoded_polyline_suite_setup(void);
-extern void in_geojson_suite_setup(void);
-extern void iterator_suite_setup(void);
-extern void twkb_in_suite_setup(void);
-extern void libgeom_suite_setup(void);
-extern void lwstroke_suite_setup(void);
-extern void measures_suite_setup(void);
-extern void effectivearea_suite_setup(void);
-extern void minimum_bounding_circle_suite_setup(void);
-extern void misc_suite_setup(void);
-extern void node_suite_setup(void);
-extern void out_encoded_polyline_suite_setup(void);
-extern void out_geojson_suite_setup(void);
-extern void out_gml_suite_setup(void);
-extern void out_kml_suite_setup(void);
-extern void out_svg_suite_setup(void);
-extern void twkb_out_suite_setup(void);
-extern void out_x3d_suite_setup(void);
-extern void ptarray_suite_setup(void);
+extern void	print_suite_setup();
+extern void	algorithms_suite_setup();
+extern void	buildarea_suite_setup();
+extern void	clean_suite_setup();
+extern void	clip_by_rect_suite_setup();
+extern void	force_sfs_suite_setup(void);
+extern void	geodetic_suite_setup(void);
+extern void	geos_suite_setup(void);
+extern void	geos_cluster_suite_setup(void);
+extern void	unionfind_suite_setup(void);
+extern void	homogenize_suite_setup(void);
+extern void	in_encoded_polyline_suite_setup(void);
+extern void	in_geojson_suite_setup(void);
+extern void	iterator_suite_setup(void);
+extern void	twkb_in_suite_setup(void);
+extern void	libgeom_suite_setup(void);
+extern void	lwstroke_suite_setup(void);
+extern void	measures_suite_setup(void);
+extern void	effectivearea_suite_setup(void);
+extern void	minimum_bounding_circle_suite_setup(void);
+extern void	misc_suite_setup(void);
+extern void	node_suite_setup(void);
+extern void	out_encoded_polyline_suite_setup(void);
+extern void	out_geojson_suite_setup(void);
+extern void	out_gml_suite_setup(void);
+extern void	out_kml_suite_setup(void);
+extern void	out_svg_suite_setup(void);
+extern void	twkb_out_suite_setup(void);
+extern void	out_x3d_suite_setup(void);
+extern void	ptarray_suite_setup(void);
 #if HAVE_SFCGAL
-extern void sfcgal_suite_setup(void);
+extern void	sfcgal_suite_setup(void);
 #endif
-extern void split_suite_setup(void);
-extern void stringbuffer_suite_setup(void);
-extern void tree_suite_setup(void);
-extern void triangulate_suite_setup(void);
-extern void varint_suite_setup(void);
-extern void wkt_out_suite_setup(void);
-extern void wkb_out_suite_setup(void);
-extern void surface_suite_setup(void);
-extern void wkb_in_suite_setup(void);
-extern void wkt_in_suite_setup(void);
-extern void wrapx_suite_setup(void);
+extern void	split_suite_setup(void);
+extern void	stringbuffer_suite_setup(void);
+extern void	tree_suite_setup(void);
+extern void	triangulate_suite_setup(void);
+extern void	varint_suite_setup(void);
+extern void	wkt_out_suite_setup(void);
+extern void	wkb_out_suite_setup(void);
+extern void	surface_suite_setup(void);
+extern void	wkb_in_suite_setup(void);
+extern void	wkt_in_suite_setup(void);
+extern void	wrapx_suite_setup(void);
 
 
 /* AND ADD YOUR SUITE SETUP FUNCTION HERE (2 of 2) */
-PG_SuiteSetup setupfuncs[] =
+PG_SuiteSetup	setupfuncs[] =
 {
 	algorithms_suite_setup,
 	buildarea_suite_setup,
@@ -91,7 +91,7 @@ PG_SuiteSetup setupfuncs[] =
 #if HAVE_LIBJSON
 	in_geojson_suite_setup,
 #endif
-    iterator_suite_setup,
+	iterator_suite_setup,
 	twkb_in_suite_setup,
 	libgeom_suite_setup,
 	lwstroke_suite_setup,
@@ -130,68 +130,67 @@ PG_SuiteSetup setupfuncs[] =
 #define MAX_CUNIT_MSG_LENGTH 256
 
 /*
-** The main() function for setting up and running the tests.
-** Returns a CUE_SUCCESS on successful running, another
-** CUnit error code on failure.
-*/
-int main(int argc, char *argv[])
+ * * The main() function for setting up and running the tests. * Returns a
+ * CUE_SUCCESS on successful running, another * CUnit error code on failure.
+ */
+int
+main(int argc, char *argv[])
 {
-	int index;
-	char *suite_name;
-	CU_pSuite suite_to_run;
-	char *test_name;
-	CU_pTest test_to_run = NULL;
-	CU_ErrorCode errCode = 0;
+	int		index;
+	char	       *suite_name;
+	CU_pSuite	suite_to_run;
+	char	       *test_name;
+	CU_pTest	test_to_run = NULL;
+	CU_ErrorCode	errCode = 0;
 	CU_pTestRegistry registry;
-	int num_run;
-	int num_failed;
-	PG_SuiteSetup *setupfunc = setupfuncs;
+	int		num_run;
+	int		num_failed;
+	PG_SuiteSetup  *setupfunc = setupfuncs;
 
 	/* Install the custom error handler */
 	lwgeom_set_handlers(0, 0, 0, cu_errorreporter, cu_noticereporter);
 	lwgeom_set_debuglogger(cu_debuglogger);
 
 	/* Initialize the CUnit test registry */
-	if (CUE_SUCCESS != CU_initialize_registry())
-	{
+	if (CUE_SUCCESS != CU_initialize_registry()) {
 		errCode = CU_get_error();
 		printf("    Error attempting to initialize registry: %d.  See CUError.h for error code list.\n", errCode);
 		return errCode;
 	}
 
 	/* Register all the test suites. */
-	while ( *setupfunc )
-	{
-		(*setupfunc)();
+	while (*setupfunc) {
+		(*setupfunc) ();
 		setupfunc++;
 	}
 
 	/* Run all tests using the CUnit Basic interface */
 	CU_basic_set_mode(CU_BRM_VERBOSE);
-	if (argc <= 1)
-	{
+	if (argc <= 1) {
 		errCode = CU_basic_run_tests();
-	}
-	else
-	{
-		/* NOTE: The cunit functions used here (CU_get_registry, CU_get_suite_by_name, and CU_get_test_by_name) are
-		 *       listed with the following warning: "Internal CUnit system functions.  Should not be routinely called by users."
-		 *       However, there didn't seem to be any other way to get tests by name, so we're calling them. */
+	} else {
+		/*
+		 * NOTE: The cunit functions used here (CU_get_registry,
+		 * CU_get_suite_by_name, and CU_get_test_by_name) are listed
+		 * with the following warning: "Internal CUnit system
+		 * functions.  Should not be routinely called by users."
+		 * However, there didn't seem to be any other way to get
+		 * tests by name, so we're calling them.
+		 */
 		registry = CU_get_registry();
-		for (index = 1; index < argc; index++)
-		{
+		for (index = 1; index < argc; index++) {
 			suite_name = argv[index];
 			test_name = NULL;
 			suite_to_run = CU_get_suite_by_name(suite_name, registry);
-			if (NULL == suite_to_run)
-			{
-				/* See if it's a test name instead of a suite name. */
+			if (NULL == suite_to_run) {
+				/*
+				 * See if it's a test name instead of a suite
+				 * name.
+				 */
 				suite_to_run = registry->pSuite;
-				while (suite_to_run != NULL)
-				{
+				while (suite_to_run != NULL) {
 					test_to_run = CU_get_test_by_name(suite_name, suite_to_run);
-					if (test_to_run != NULL)
-					{
+					if (test_to_run != NULL) {
 						/* It was a test name. */
 						test_name = suite_name;
 						suite_name = suite_to_run->pName;
@@ -200,46 +199,44 @@ int main(int argc, char *argv[])
 					suite_to_run = suite_to_run->pNext;
 				}
 			}
-			if (suite_to_run == NULL)
-			{
+			if (suite_to_run == NULL) {
 				printf("\n'%s' does not appear to be either a suite name or a test name.\n\n", suite_name);
-			}
-			else
-			{
-				if (test_name != NULL && test_to_run != NULL)
-				{
+			} else {
+				if (test_name != NULL && test_to_run != NULL) {
 					/* Run only this test. */
 					printf("\nRunning test '%s' in suite '%s'.\n", test_name, suite_name);
-					/* This should be CU_basic_run_test, but that method is broken, see:
-					 *     https://sourceforge.net/tracker/?func=detail&aid=2851925&group_id=32992&atid=407088
-					 * This one doesn't output anything for success, so we have to do it manually. */
+					/*
+					 * This should be CU_basic_run_test,
+					 * but that method is broken, see:
+					 * https://sourceforge.net/tracker/?func=detail&aid=2851925&group_id=32992&atid=407088
+					 * This one doesn't output anything
+					 * for success, so we have to do it
+					 * manually.
+					 */
 					errCode = CU_run_test(suite_to_run, test_to_run);
-					if (errCode != CUE_SUCCESS)
-					{
+					if (errCode != CUE_SUCCESS) {
 						printf("    Error attempting to run tests: %d.  See CUError.h for error code list.\n", errCode);
-					}
-					else
-					{
+					} else {
 						num_run = CU_get_number_of_asserts();
 						num_failed = CU_get_number_of_failures();
 						printf("\n    %s - asserts - %3d passed, %3d failed, %3d total.\n\n",
 						       (0 == num_failed ? "PASSED" : "FAILED"), (num_run - num_failed), num_failed, num_run);
 					}
-				}
-				else
-				{
+				} else {
 					/* Run all the tests in the suite. */
 					printf("\nRunning all tests in suite '%s'.\n", suite_name);
-					/* This should be CU_basic_run_suite, but that method is broken, see:
-					 *     https://sourceforge.net/tracker/?func=detail&aid=2851925&group_id=32992&atid=407088
-					 * This one doesn't output anything for success, so we have to do it manually. */
+					/*
+					 * This should be CU_basic_run_suite,
+					 * but that method is broken, see:
+					 * https://sourceforge.net/tracker/?func=detail&aid=2851925&group_id=32992&atid=407088
+					 * This one doesn't output anything
+					 * for success, so we have to do it
+					 * manually.
+					 */
 					errCode = CU_run_suite(suite_to_run);
-					if (errCode != CUE_SUCCESS)
-					{
+					if (errCode != CUE_SUCCESS) {
 						printf("    Error attempting to run tests: %d.  See CUError.h for error code list.\n", errCode);
-					}
-					else
-					{
+					} else {
 						num_run = CU_get_number_of_tests_run();
 						num_failed = CU_get_number_of_tests_failed();
 						printf("\n    %s -   tests - %3d passed, %3d failed, %3d total.\n",
@@ -252,9 +249,13 @@ int main(int argc, char *argv[])
 				}
 			}
 		}
-		/* Presumably if the CU_basic_run_[test|suite] functions worked, we wouldn't have to do this. */
+		/*
+		 * Presumably if the CU_basic_run_[test|suite] functions
+		 * worked, we wouldn't have to do this.
+		 */
 		CU_basic_show_failures(CU_get_failure_list());
-		printf("\n\n"); /* basic_show_failures leaves off line breaks. */
+		printf("\n\n");	/* basic_show_failures leaves off line
+				 * breaks. */
 	}
 	num_failed = CU_get_number_of_failures();
 	CU_cleanup_registry();
@@ -269,27 +270,27 @@ int main(int argc, char *argv[])
 static void
 cu_errorreporter(const char *fmt, va_list ap)
 {
-  vsnprintf (cu_error_msg, MAX_CUNIT_MSG_LENGTH, fmt, ap);
-  cu_error_msg[MAX_CUNIT_MSG_LENGTH]='\0';
-  /*fprintf(stderr, "ERROR: %s\n", cu_error_msg);*/
+	vsnprintf(cu_error_msg, MAX_CUNIT_MSG_LENGTH, fmt, ap);
+	cu_error_msg[MAX_CUNIT_MSG_LENGTH] = '\0';
+	/* fprintf(stderr, "ERROR: %s\n", cu_error_msg); */
 }
 
 static void
 cu_noticereporter(const char *fmt, va_list ap)
 {
-  char buf[MAX_CUNIT_MSG_LENGTH+1];
-  vsnprintf (buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
-  buf[MAX_CUNIT_MSG_LENGTH]='\0';
-  fprintf(stderr, "NOTICE: %s\n", buf);
+	char		buf[MAX_CUNIT_MSG_LENGTH + 1];
+	vsnprintf(buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
+	buf[MAX_CUNIT_MSG_LENGTH] = '\0';
+	fprintf(stderr, "NOTICE: %s\n", buf);
 }
 
 static void
 cu_debuglogger(int level, const char *fmt, va_list ap)
 {
-  char buf[MAX_CUNIT_MSG_LENGTH+1];
-  vsnprintf (buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
-  buf[MAX_CUNIT_MSG_LENGTH]='\0';
-  fprintf(stderr, "DEBUG%d: %s\n", level, buf);
+	char		buf[MAX_CUNIT_MSG_LENGTH + 1];
+	vsnprintf(buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
+	buf[MAX_CUNIT_MSG_LENGTH] = '\0';
+	fprintf(stderr, "DEBUG%d: %s\n", level, buf);
 }
 
 void
@@ -300,17 +301,15 @@ cu_error_msg_reset()
 
 /* Utility functions for testing */
 
-/* do_transformation_test
- * - reads input_wkt and expected_wkt
- * - asserts output of transfn(input) = expected
- * - cleans up
+/*
+ * do_transformation_test - reads input_wkt and expected_wkt - asserts output
+ * of transfn(input) = expected - cleans up
  */
 void
-do_fn_test(LWGEOM* (*transfn)(LWGEOM*), char *input_wkt, char *expected_wkt)
-{
-	LWGEOM* input = lwgeom_from_wkt(input_wkt, LW_PARSER_CHECK_NONE);
-	LWGEOM* expected = lwgeom_from_wkt(expected_wkt, LW_PARSER_CHECK_NONE);
-	LWGEOM* observed = transfn(input);
+		do_fn_test(LWGEOM * (*transfn) (LWGEOM *), char *input_wkt, char *expected_wkt){
+	LWGEOM	       *input = lwgeom_from_wkt(input_wkt, LW_PARSER_CHECK_NONE);
+	LWGEOM	       *expected = lwgeom_from_wkt(expected_wkt, LW_PARSER_CHECK_NONE);
+	LWGEOM	       *observed = transfn(input);
 
 	ASSERT_LWGEOM_EQUAL(observed, expected);
 
@@ -318,4 +317,3 @@ do_fn_test(LWGEOM* (*transfn)(LWGEOM*), char *input_wkt, char *expected_wkt)
 	lwgeom_free(expected);
 	lwgeom_free(observed);
 }
-

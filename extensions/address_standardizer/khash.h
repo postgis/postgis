@@ -1,78 +1,63 @@
-/* The MIT License
-
-   Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
-
-   Permission is hereby granted, free of charge, to any person obtaining
-   a copy of this software and associated documentation files (the
-   "Software"), to deal in the Software without restriction, including
-   without limitation the rights to use, copy, modify, merge, publish,
-   distribute, sublicense, and/or sell copies of the Software, and to
-   permit persons to whom the Software is furnished to do so, subject to
-   the following conditions:
-
-   The above copyright notice and this permission notice shall be
-   included in all copies or substantial portions of the Software.
-
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-   SOFTWARE.
-*/
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
 
 /*
-  An example:
-
-#include "khash.h"
-KHASH_MAP_INIT_INT(32, char)
-int main() {
-	int ret, is_missing;
-	khiter_t k;
-	khash_t(32) *h = kh_init(32);
-	k = kh_put(32, h, 5, &ret);
-	if (!ret) kh_del(32, h, k);
-	kh_value(h, k) = 10;
-	k = kh_get(32, h, 10);
-	is_missing = (k == kh_end(h));
-	k = kh_get(32, h, 5);
-	kh_del(32, h, k);
-	for (k = kh_begin(h); k != kh_end(h); ++k)
-		if (kh_exist(h, k)) kh_value(h, k) = 1;
-	kh_destroy(32, h);
-	return 0;
-}
-*/
+ * An example:
+ *
+ * #include "khash.h" KHASH_MAP_INIT_INT(32, char) int main() { int ret,
+ * is_missing; khiter_t k; khash_t(32) *h = kh_init(32); k = kh_put(32, h, 5,
+ * &ret); if (!ret) kh_del(32, h, k); kh_value(h, k) = 10; k = kh_get(32, h,
+ * 10); is_missing = (k == kh_end(h)); k = kh_get(32, h, 5); kh_del(32, h,
+ * k); for (k = kh_begin(h); k != kh_end(h); ++k) if (kh_exist(h, k))
+ * kh_value(h, k) = 1; kh_destroy(32, h); return 0; }
+ */
 
 /*
-  2008-09-19 (0.2.3):
-
-	* Corrected the example
-	* Improved interfaces
-
-  2008-09-11 (0.2.2):
-
-	* Improved speed a little in kh_put()
-
-  2008-09-10 (0.2.1):
-
-	* Added kh_clear()
-	* Fixed a compiling error
-
-  2008-09-02 (0.2.0):
-
-	* Changed to token concatenation which increases flexibility.
-
-  2008-08-31 (0.1.2):
-
-	* Fixed a bug in kh_get(), which has not been tested previously.
-
-  2008-08-31 (0.1.1):
-
-	* Added destructor
-*/
+ * 2008-09-19 (0.2.3):
+ *
+ * Corrected the example Improved interfaces
+ *
+ * 2008-09-11 (0.2.2):
+ *
+ * Improved speed a little in kh_put()
+ *
+ * 2008-09-10 (0.2.1):
+ *
+ * Added kh_clear() Fixed a compiling error
+ *
+ * 2008-09-02 (0.2.0):
+ *
+ * Changed to token concatenation which increases flexibility.
+ *
+ * 2008-08-31 (0.1.2):
+ *
+ * Fixed a bug in kh_get(), which has not been tested previously.
+ *
+ * 2008-08-31 (0.1.1):
+ *
+ * Added destructor
+ */
 
 
 #ifndef __AC_KHASH_H
@@ -88,15 +73,15 @@ typedef uint32_t khint_t;
 typedef khint_t khiter_t;
 
 #define __ac_HASH_PRIME_SIZE 32
-static const uint32_t __ac_prime_list[__ac_HASH_PRIME_SIZE] =
+static const	uint32_t __ac_prime_list[__ac_HASH_PRIME_SIZE] =
 {
-  0ul,          3ul,          11ul,         23ul,         53ul,
-  97ul,         193ul,        389ul,        769ul,        1543ul,
-  3079ul,       6151ul,       12289ul,      24593ul,      49157ul,
-  98317ul,      196613ul,     393241ul,     786433ul,     1572869ul,
-  3145739ul,    6291469ul,    12582917ul,   25165843ul,   50331653ul,
-  100663319ul,  201326611ul,  402653189ul,  805306457ul,  1610612741ul,
-  3221225473ul, 4294967291ul
+	0ul, 3ul, 11ul, 23ul, 53ul,
+	97ul, 193ul, 389ul, 769ul, 1543ul,
+	3079ul, 6151ul, 12289ul, 24593ul, 49157ul,
+	98317ul, 196613ul, 393241ul, 786433ul, 1572869ul,
+	3145739ul, 6291469ul, 12582917ul, 25165843ul, 50331653ul,
+	100663319ul, 201326611ul, 402653189ul, 805306457ul, 1610612741ul,
+	3221225473ul, 4294967291ul
 };
 
 #define __ac_isempty(flag, i) ((flag[i>>4]>>((i&0xfU)<<1))&2)
@@ -261,10 +246,11 @@ static const double __ac_HASH_UPPER = 0.77;
 #define kh_int_hash_equal(a, b) (a == b)
 #define kh_int64_hash_func(key) (uint32_t)((key)>>33^(key)^(key)<<11)
 #define kh_int64_hash_equal(a, b) (a == b)
-static inline khint_t __ac_X31_hash_string(const char *s)
-{
-	khint_t h = *s;
-	if (h) for (++s ; *s; ++s) h = (h << 5) - h + *s;
+static inline khint_t __ac_X31_hash_string(const char *s){
+	khint_t		h = *s;
+	if (h)
+		for (++s; *s; ++s)
+			h = (h << 5) - h + *s;
 	return h;
 }
 #define kh_str_hash_func(key) __ac_X31_hash_string(key)

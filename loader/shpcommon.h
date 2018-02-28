@@ -26,41 +26,40 @@
 
 
 
-typedef struct shp_connection_state
-{
+typedef struct shp_connection_state {
 	/* PgSQL username to log in with */
-	char *username;
+	char	       *username;
 
 	/* PgSQL password to log in with */
-	char *password;
+	char	       *password;
 
 	/* PgSQL database to connect to */
-	char *database;
+	char	       *database;
 
 	/* PgSQL port to connect to */
-	char *port;
+	char	       *port;
 
 	/* PgSQL server to connect to */
-	char *host;
+	char	       *host;
 
-} SHPCONNECTIONCONFIG;
+}		SHPCONNECTIONCONFIG;
 
 /* External shared functions */
-char *escape_connection_string(char *str);
+char	       *escape_connection_string(char *str);
 
 /* Column map between pgsql and dbf */
 typedef struct colmap_t {
 
 	/* Column map pgfieldnames */
-	char **pgfieldnames;
+	char	      **pgfieldnames;
 
 	/* Column map dbffieldnames */
-	char **dbffieldnames;
+	char	      **dbffieldnames;
 
 	/* Number of entries within column map */
-	int size;
+	int		size;
 
-} colmap;
+}		colmap;
 
 /**
  * Read the content of filename into a symbol map
@@ -92,17 +91,17 @@ typedef struct colmap_t {
  *
  * @return 1 on success, 0 on error (and errbuf would be filled)
  */
-int colmap_read(const char *fname, colmap *map, char *ebuf, size_t ebuflen);
+int		colmap_read(const char *fname, colmap * map, char *ebuf, size_t ebuflen);
 
-void colmap_init(colmap *map);
+void		colmap_init(colmap * map);
 
-void colmap_clean(colmap *map);
+void		colmap_clean(colmap * map);
 
-const char *colmap_dbf_by_pg(colmap *map, const char *pgname);
+const char     *colmap_dbf_by_pg(colmap * map, const char *pgname);
 
-const char *colmap_pg_by_dbf(colmap *map, const char *dbfname);
+const char     *colmap_pg_by_dbf(colmap * map, const char *dbfname);
 
-char *codepage2encoding(const char *cpg);
-char *encoding2codepage(const char *encoding);
+char	       *codepage2encoding(const char *cpg);
+char	       *encoding2codepage(const char *encoding);
 
 #endif

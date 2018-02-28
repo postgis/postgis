@@ -37,9 +37,9 @@
 #include "lwgeom_pg.h"
 
 
-Datum LWGEOM_has_arc(PG_FUNCTION_ARGS);
-Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS);
-Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS);
+Datum		LWGEOM_has_arc(PG_FUNCTION_ARGS);
+Datum		LWGEOM_curve_segmentize(PG_FUNCTION_ARGS);
+Datum		LWGEOM_line_desegmentize(PG_FUNCTION_ARGS);
 
 
 
@@ -48,11 +48,12 @@ Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS);
  ******************************************************************************/
 
 PG_FUNCTION_INFO_V1(LWGEOM_has_arc);
-Datum LWGEOM_has_arc(PG_FUNCTION_ARGS)
+Datum
+LWGEOM_has_arc(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	uint32 result = lwgeom_has_arc(lwgeom);
+	GSERIALIZED    *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM	       *lwgeom = lwgeom_from_gserialized(geom);
+	uint32		result = lwgeom_has_arc(lwgeom);
 	lwgeom_free(lwgeom);
 	PG_RETURN_BOOL(result == 1);
 }
@@ -66,17 +67,17 @@ Datum LWGEOM_has_arc(PG_FUNCTION_ARGS)
  * TODO: drop, use ST_CurveToLine instead
  */
 PG_FUNCTION_INFO_V1(LWGEOM_curve_segmentize);
-Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
+Datum
+LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	int32 perQuad = PG_GETARG_INT32(1);
-	GSERIALIZED *ret;
-	LWGEOM *igeom = NULL, *ogeom = NULL;
+	GSERIALIZED    *geom = PG_GETARG_GSERIALIZED_P(0);
+	int32		perQuad = PG_GETARG_INT32(1);
+	GSERIALIZED    *ret;
+	LWGEOM	       *igeom = NULL, *ogeom = NULL;
 
 	POSTGIS_DEBUG(2, "LWGEOM_curve_segmentize called.");
 
-	if (perQuad < 0)
-	{
+	if (perQuad < 0) {
 		elog(ERROR, "2nd argument must be positive.");
 		PG_RETURN_NULL();
 	}
@@ -97,14 +98,15 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(ST_CurveToLine);
-Datum ST_CurveToLine(PG_FUNCTION_ARGS)
+Datum
+ST_CurveToLine(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	double tol = PG_GETARG_FLOAT8(1);
-	int toltype = PG_GETARG_INT32(2);
-	int flags = PG_GETARG_INT32(3);
-	GSERIALIZED *ret;
-	LWGEOM *igeom = NULL, *ogeom = NULL;
+	GSERIALIZED    *geom = PG_GETARG_GSERIALIZED_P(0);
+	double		tol = PG_GETARG_FLOAT8(1);
+	int		toltype = PG_GETARG_INT32(2);
+	int		flags = PG_GETARG_INT32(3);
+	GSERIALIZED    *ret;
+	LWGEOM	       *igeom = NULL, *ogeom = NULL;
 
 	POSTGIS_DEBUG(2, "ST_CurveToLine called.");
 
@@ -124,11 +126,12 @@ Datum ST_CurveToLine(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_line_desegmentize);
-Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS)
+Datum
+LWGEOM_line_desegmentize(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *ret;
-	LWGEOM *igeom = NULL, *ogeom = NULL;
+	GSERIALIZED    *geom = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED    *ret;
+	LWGEOM	       *igeom = NULL, *ogeom = NULL;
 
 	POSTGIS_DEBUG(2, "LWGEOM_line_desegmentize.");
 
@@ -136,8 +139,7 @@ Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS)
 	ogeom = lwgeom_unstroke(igeom);
 	lwgeom_free(igeom);
 
-	if (ogeom == NULL)
-	{
+	if (ogeom == NULL) {
 		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}
