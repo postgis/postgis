@@ -43,27 +43,27 @@
 
 /* Display a simple message at NOTICE level */
 #define POSTGIS_RT_DEBUG(level, msg) \
-    do { \
-        if (POSTGIS_DEBUG_LEVEL >= level) \
-            ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__))); \
-    } while (0);
+	do { \
+		if (POSTGIS_DEBUG_LEVEL >= level) \
+			ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), \
+				(errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__))); \
+	} while (0);
 
 /* Display a formatted message at NOTICE level (like printf, with variadic arguments) */
 #define POSTGIS_RT_DEBUGF(level, msg, ...) \
-    do { \
-        if (POSTGIS_DEBUG_LEVEL >= level) \
-        ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__))); \
-    } while (0);
+	do { \
+		if (POSTGIS_DEBUG_LEVEL >= level) \
+			ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), \
+				(errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__))); \
+	} while (0);
 
 #else
 
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
-#define POSTGIS_RT_DEBUG(level, msg) \
-    ((void) 0)
+#define POSTGIS_RT_DEBUG(level, msg) ((void)0)
 
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
-#define POSTGIS_RT_DEBUGF(level, msg, ...) \
-    ((void) 0)
+#define POSTGIS_RT_DEBUGF(level, msg, ...) ((void)0)
 
 #endif
 

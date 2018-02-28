@@ -28,27 +28,23 @@
 #include "shpcommon.h"
 #include "getopt.h"
 
-
-
 #define P2S_RCSID "$Id$"
 
 /*
  * Error message handling
  */
 
-#define SHPDUMPERMSGLEN		1024
+#define SHPDUMPERMSGLEN 1024
 
-#define SHPDUMPEROK		-1
-#define SHPDUMPERERR		0
-#define SHPDUMPERWARN		1
-
+#define SHPDUMPEROK -1
+#define SHPDUMPERERR 0
+#define SHPDUMPERWARN 1
 
 /*
  * Structure to hold the dumper configuration options
  */
 
-typedef struct shp_dumper_config
-{
+typedef struct shp_dumper_config {
 	/* Parameters used to connect to the database */
 	SHPCONNECTIONCONFIG *conn;
 
@@ -70,7 +66,8 @@ typedef struct shp_dumper_config
 	/* TODO: rename? 0=switch not provided, 1=switch provided */
 	int dswitchprovided;
 
-	/* TODO: replace and combine with below 0=do not include gid column in shapefile, 1=include gid column in shapefile */
+	/* TODO: replace and combine with below 0=do not include gid column in shapefile, 1=include gid column in
+	 * shapefile */
 	int includegid;
 
 	/* TODO: 0=escape column names, 1=do not escape column names */
@@ -90,13 +87,11 @@ typedef struct shp_dumper_config
 
 } SHPDUMPERCONFIG;
 
-
 /*
  * Structure to holder the current dumper state
  */
 
-typedef struct shp_dumper_state
-{
+typedef struct shp_dumper_state {
 	/* Configuration for this state */
 	SHPDUMPERCONFIG *config;
 
@@ -185,10 +180,9 @@ typedef struct shp_dumper_state
 	char message[SHPDUMPERMSGLEN];
 
 	/* Column map */
-  colmap column_map;
+	colmap column_map;
 
 } SHPDUMPERSTATE;
-
 
 /* Externally accessible functions */
 void set_dumper_config_defaults(SHPDUMPERCONFIG *config);

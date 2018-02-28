@@ -22,13 +22,11 @@
  *
  **********************************************************************/
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
-
 
 void
 lwmpoly_release(LWMPOLY *lwmpoly)
@@ -39,31 +37,27 @@ lwmpoly_release(LWMPOLY *lwmpoly)
 LWMPOLY *
 lwmpoly_construct_empty(int srid, char hasz, char hasm)
 {
-	LWMPOLY *ret = (LWMPOLY*)lwcollection_construct_empty(MULTIPOLYGONTYPE, srid, hasz, hasm);
+	LWMPOLY *ret = (LWMPOLY *)lwcollection_construct_empty(MULTIPOLYGONTYPE, srid, hasz, hasm);
 	return ret;
 }
 
-
-LWMPOLY* lwmpoly_add_lwpoly(LWMPOLY *mobj, const LWPOLY *obj)
+LWMPOLY *
+lwmpoly_add_lwpoly(LWMPOLY *mobj, const LWPOLY *obj)
 {
-	return (LWMPOLY*)lwcollection_add_lwgeom((LWCOLLECTION*)mobj, (LWGEOM*)obj);
+	return (LWMPOLY *)lwcollection_add_lwgeom((LWCOLLECTION *)mobj, (LWGEOM *)obj);
 }
 
-
-void lwmpoly_free(LWMPOLY *mpoly)
+void
+lwmpoly_free(LWMPOLY *mpoly)
 {
 	uint32_t i;
-	if ( ! mpoly ) return;
-	if ( mpoly->bbox )
-		lwfree(mpoly->bbox);
+	if (!mpoly) return;
+	if (mpoly->bbox) lwfree(mpoly->bbox);
 
-	for ( i = 0; i < mpoly->ngeoms; i++ )
-		if ( mpoly->geoms && mpoly->geoms[i] )
-			lwpoly_free(mpoly->geoms[i]);
+	for (i = 0; i < mpoly->ngeoms; i++)
+		if (mpoly->geoms && mpoly->geoms[i]) lwpoly_free(mpoly->geoms[i]);
 
-	if ( mpoly->geoms )
-		lwfree(mpoly->geoms);
+	if (mpoly->geoms) lwfree(mpoly->geoms);
 
 	lwfree(mpoly);
 }
-

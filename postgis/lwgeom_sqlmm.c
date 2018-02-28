@@ -22,7 +22,6 @@
  *
  **********************************************************************/
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -36,12 +35,9 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
-
 Datum LWGEOM_has_arc(PG_FUNCTION_ARGS);
 Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS);
 Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS);
-
-
 
 /*******************************************************************************
  * Begin PG_FUNCTIONs
@@ -75,8 +71,7 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "LWGEOM_curve_segmentize called.");
 
-	if (perQuad < 0)
-	{
+	if (perQuad < 0) {
 		elog(ERROR, "2nd argument must be positive.");
 		PG_RETURN_NULL();
 	}
@@ -87,8 +82,7 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 	ogeom = lwgeom_stroke(igeom, perQuad);
 	lwgeom_free(igeom);
 
-	if (ogeom == NULL)
-		PG_RETURN_NULL();
+	if (ogeom == NULL) PG_RETURN_NULL();
 
 	ret = geometry_serialize(ogeom);
 	lwgeom_free(ogeom);
@@ -114,8 +108,7 @@ Datum ST_CurveToLine(PG_FUNCTION_ARGS)
 	ogeom = lwcurve_linearize(igeom, tol, toltype, flags);
 	lwgeom_free(igeom);
 
-	if (ogeom == NULL)
-		PG_RETURN_NULL();
+	if (ogeom == NULL) PG_RETURN_NULL();
 
 	ret = geometry_serialize(ogeom);
 	lwgeom_free(ogeom);
@@ -136,8 +129,7 @@ Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS)
 	ogeom = lwgeom_unstroke(igeom);
 	lwgeom_free(igeom);
 
-	if (ogeom == NULL)
-	{
+	if (ogeom == NULL) {
 		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}

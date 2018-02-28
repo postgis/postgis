@@ -30,15 +30,13 @@
  * However, I am not about to post a copy of anything licensed by AT&T.
  */
 
-#define ERR(s, c)\
-  if(pgis_opterr){\
-    fprintf(stderr, "%s%s%c\n", argv[0], s, c);\
-  }
+#define ERR(s, c) \
+	if (pgis_opterr) { fprintf(stderr, "%s%s%c\n", argv[0], s, c); }
 
-int     pgis_opterr = 1;
-int     pgis_optind = 1;
-int     pgis_optopt;
-char    *pgis_optarg;
+int pgis_opterr = 1;
+int pgis_optind = 1;
+int pgis_optopt;
+char *pgis_optarg;
 
 int
 pgis_getopt(int argc, char **argv, char *opts)
@@ -47,54 +45,40 @@ pgis_getopt(int argc, char **argv, char *opts)
 	register int c;
 	register char *cp;
 
-	if (sp == 1)
-	{
-		if (pgis_optind >= argc ||
-		        argv[pgis_optind][0] != '-' /* && argv[pgis_optind][0] != '/' */ ||
-		        argv[pgis_optind][1] == '\0')
-		{
-			return(EOF);
-		}
-		else if (strcmp(argv[pgis_optind], "--") == 0)
-		{
+	if (sp == 1) {
+		if (pgis_optind >= argc || argv[pgis_optind][0] != '-' /* && argv[pgis_optind][0] != '/' */ ||
+		    argv[pgis_optind][1] == '\0') {
+			return (EOF);
+		} else if (strcmp(argv[pgis_optind], "--") == 0) {
 			pgis_optind++;
-			return(EOF);
+			return (EOF);
 		}
 	}
 	pgis_optopt = c = argv[pgis_optind][sp];
-	if (c == ':' || (cp=strchr(opts, c)) == 0)
-	{
+	if (c == ':' || (cp = strchr(opts, c)) == 0) {
 		ERR(": illegal option -- ", c);
-		if (argv[pgis_optind][++sp] == '\0')
-		{
+		if (argv[pgis_optind][++sp] == '\0') {
 			pgis_optind++;
 			sp = 1;
 		}
-		return('?');
+		return ('?');
 	}
-	if (*++cp == ':')
-	{
-		if (argv[pgis_optind][sp+1] != '\0')
-			pgis_optarg = &argv[pgis_optind++][sp+1];
-		else if (++pgis_optind >= argc)
-		{
+	if (*++cp == ':') {
+		if (argv[pgis_optind][sp + 1] != '\0')
+			pgis_optarg = &argv[pgis_optind++][sp + 1];
+		else if (++pgis_optind >= argc) {
 			ERR(": option requires an argument -- ", c);
 			sp = 1;
-			return('?');
-		}
-		else
+			return ('?');
+		} else
 			pgis_optarg = argv[pgis_optind++];
 		sp = 1;
-	}
-	else
-	{
-		if (argv[pgis_optind][++sp] == '\0')
-		{
+	} else {
+		if (argv[pgis_optind][++sp] == '\0') {
 			sp = 1;
 			pgis_optind++;
 		}
 		pgis_optarg = NULL;
 	}
-	return(c);
+	return (c);
 }
-

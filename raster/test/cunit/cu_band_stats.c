@@ -24,7 +24,9 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_band_stats() {
+static void
+test_band_stats()
+{
 	rt_bandstats stats = NULL;
 	rt_histogram histogram = NULL;
 	double bin_width[] = {100};
@@ -60,77 +62,77 @@ static void test_band_stats() {
 	rt_band_get_nodata(band, &nodata);
 	CU_ASSERT_DOUBLE_EQUAL(nodata, 0, DBL_EPSILON);
 
-	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0, 1, NULL, NULL, NULL);
+	stats = (rt_bandstats)rt_band_get_summary_stats(band, 1, 0, 1, NULL, NULL, NULL);
 	CU_ASSERT(stats != NULL);
 	CU_ASSERT_DOUBLE_EQUAL(stats->min, 1, DBL_EPSILON);
 	CU_ASSERT_DOUBLE_EQUAL(stats->max, 198, DBL_EPSILON);
 
-	quantile = (rt_quantile) rt_band_get_quantiles(stats, NULL, 0, &count);
+	quantile = (rt_quantile)rt_band_get_quantiles(stats, NULL, 0, &count);
 	CU_ASSERT(quantile != NULL);
 	rtdealloc(quantile);
 
-	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, NULL, 0, 0, 0, 0, &count);
+	histogram = (rt_histogram)rt_band_get_histogram(stats, 0, NULL, 0, 0, 0, 0, &count);
 	CU_ASSERT(histogram != NULL);
 	rtdealloc(histogram);
 
-	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, NULL, 0, 1, 0, 0, &count);
+	histogram = (rt_histogram)rt_band_get_histogram(stats, 0, NULL, 0, 1, 0, 0, &count);
 	CU_ASSERT(histogram != NULL);
 	rtdealloc(histogram);
 
-	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, bin_width, 1, 0, 0, 0, &count);
+	histogram = (rt_histogram)rt_band_get_histogram(stats, 0, bin_width, 1, 0, 0, 0, &count);
 	CU_ASSERT(histogram != NULL);
 	rtdealloc(histogram);
 
 	rtdealloc(stats->values);
 	rtdealloc(stats);
 
-	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0.1, 1, NULL, NULL, NULL);
+	stats = (rt_bandstats)rt_band_get_summary_stats(band, 1, 0.1, 1, NULL, NULL, NULL);
 	CU_ASSERT(stats != NULL);
 
-	quantile = (rt_quantile) rt_band_get_quantiles(stats, NULL, 0, &count);
+	quantile = (rt_quantile)rt_band_get_quantiles(stats, NULL, 0, &count);
 	CU_ASSERT(quantile != NULL);
 	rtdealloc(quantile);
 
-	quantile = (rt_quantile) rt_band_get_quantiles(stats, quantiles, 5, &count);
+	quantile = (rt_quantile)rt_band_get_quantiles(stats, quantiles, 5, &count);
 	CU_ASSERT(quantile != NULL);
 	CU_ASSERT_EQUAL(count, 5);
 	rtdealloc(quantile);
 
-	histogram = (rt_histogram) rt_band_get_histogram(stats, 0, NULL, 0, 0, 0, 0, &count);
+	histogram = (rt_histogram)rt_band_get_histogram(stats, 0, NULL, 0, 0, 0, 0, &count);
 	CU_ASSERT(histogram != NULL);
 	rtdealloc(histogram);
 
 	rtdealloc(stats->values);
 	rtdealloc(stats);
 
-	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0.15, 0, NULL, NULL, NULL);
+	stats = (rt_bandstats)rt_band_get_summary_stats(band, 1, 0.15, 0, NULL, NULL, NULL);
 	CU_ASSERT(stats != NULL);
 	rtdealloc(stats);
 
-	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0.2, 0, NULL, NULL, NULL);
+	stats = (rt_bandstats)rt_band_get_summary_stats(band, 1, 0.2, 0, NULL, NULL, NULL);
 	CU_ASSERT(stats != NULL);
 	rtdealloc(stats);
 
-	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0.25, 0, NULL, NULL, NULL);
+	stats = (rt_bandstats)rt_band_get_summary_stats(band, 1, 0.25, 0, NULL, NULL, NULL);
 	CU_ASSERT(stats != NULL);
 	rtdealloc(stats);
 
-	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0, 1, NULL, NULL, NULL);
+	stats = (rt_bandstats)rt_band_get_summary_stats(band, 0, 0, 1, NULL, NULL, NULL);
 	CU_ASSERT(stats != NULL);
 	CU_ASSERT_DOUBLE_EQUAL(stats->min, 0, DBL_EPSILON);
 	CU_ASSERT_DOUBLE_EQUAL(stats->max, 198, DBL_EPSILON);
 
-	quantile = (rt_quantile) rt_band_get_quantiles(stats, NULL, 0, &count);
+	quantile = (rt_quantile)rt_band_get_quantiles(stats, NULL, 0, &count);
 	CU_ASSERT(quantile != NULL);
 	rtdealloc(quantile);
 
 	rtdealloc(stats->values);
 	rtdealloc(stats);
 
-	stats = (rt_bandstats) rt_band_get_summary_stats(band, 0, 0.1, 1, NULL, NULL, NULL);
+	stats = (rt_bandstats)rt_band_get_summary_stats(band, 0, 0.1, 1, NULL, NULL, NULL);
 	CU_ASSERT(stats != NULL);
 
-	quantile = (rt_quantile) rt_band_get_quantiles(stats, NULL, 0, &count);
+	quantile = (rt_quantile)rt_band_get_quantiles(stats, NULL, 0, &count);
 	CU_ASSERT(quantile != NULL);
 	rtdealloc(quantile);
 
@@ -156,11 +158,7 @@ static void test_band_stats() {
 	rt_band_get_nodata(band, &nodata);
 	CU_ASSERT_DOUBLE_EQUAL(nodata, 0, DBL_EPSILON);
 
-	quantile = (rt_quantile) rt_band_get_quantiles_stream(
-		band, 1, 1, 15,
-		&qlls, &qlls_count,
-		quantiles2, 1,
-		&count);
+	quantile = (rt_quantile)rt_band_get_quantiles_stream(band, 1, 1, 15, &qlls, &qlls_count, quantiles2, 1, &count);
 	CU_ASSERT(quantile != NULL);
 	CU_ASSERT_NOT_EQUAL(count, 0);
 	CU_ASSERT_NOT_EQUAL(qlls_count, 0);
@@ -182,7 +180,7 @@ static void test_band_stats() {
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
+			rt_band_set_pixel(band, x, y, (((double)x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
 		}
 	}
 
@@ -191,11 +189,8 @@ static void test_band_stats() {
 
 	max_run = 5;
 	for (x = 0; x < max_run; x++) {
-		quantile = (rt_quantile) rt_band_get_quantiles_stream(
-			band, 1, 1, xmax * ymax * max_run,
-			&qlls, &qlls_count,
-			quantiles2, 1,
-			&count);
+		quantile = (rt_quantile)rt_band_get_quantiles_stream(
+		    band, 1, 1, xmax * ymax * max_run, &qlls, &qlls_count, quantiles2, 1, &count);
 		CU_ASSERT(quantile != NULL);
 		CU_ASSERT_NOT_EQUAL(count, 0);
 		CU_ASSERT_NOT_EQUAL(qlls_count, 0);
@@ -209,7 +204,9 @@ static void test_band_stats() {
 	cu_free_raster(raster);
 }
 
-static void test_band_value_count() {
+static void
+test_band_value_count()
+{
 	rt_valuecount vcnts = NULL;
 
 	rt_raster raster;
@@ -230,7 +227,7 @@ static void test_band_value_count() {
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
+			rt_band_set_pixel(band, x, y, (((double)x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
 		}
 	}
 	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 0, NULL, &rtn);
@@ -268,10 +265,10 @@ static void test_band_value_count() {
 
 /* register tests */
 void band_stats_suite_setup(void);
-void band_stats_suite_setup(void)
+void
+band_stats_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("band_stats", NULL, NULL);
 	PG_ADD_TEST(suite, test_band_stats);
 	PG_ADD_TEST(suite, test_band_value_count);
 }
-

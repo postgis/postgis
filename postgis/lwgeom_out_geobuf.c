@@ -60,11 +60,10 @@ Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 		ctx = palloc(sizeof(*ctx));
 
 		ctx->geom_name = NULL;
-		if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
-			ctx->geom_name = text_to_cstring(PG_GETARG_TEXT_P(2));
+		if (PG_NARGS() > 2 && !PG_ARGISNULL(2)) ctx->geom_name = text_to_cstring(PG_GETARG_TEXT_P(2));
 		geobuf_agg_init_context(ctx);
 	} else {
-		ctx = (struct geobuf_agg_context *) PG_GETARG_POINTER(0);
+		ctx = (struct geobuf_agg_context *)PG_GETARG_POINTER(0);
 	}
 
 	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 1)))
@@ -88,13 +87,11 @@ Datum pgis_asgeobuf_finalfn(PG_FUNCTION_ARGS)
 #else
 	uint8_t *buf;
 	struct geobuf_agg_context *ctx;
-	if (!AggCheckCallContext(fcinfo, NULL))
-		elog(ERROR, "pgis_asmvt_finalfn called in non-aggregate context");
+	if (!AggCheckCallContext(fcinfo, NULL)) elog(ERROR, "pgis_asmvt_finalfn called in non-aggregate context");
 
-	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 
-	ctx = (struct geobuf_agg_context *) PG_GETARG_POINTER(0);
+	ctx = (struct geobuf_agg_context *)PG_GETARG_POINTER(0);
 	buf = geobuf_agg_finalfn(ctx);
 	PG_RETURN_BYTEA_P(buf);
 #endif

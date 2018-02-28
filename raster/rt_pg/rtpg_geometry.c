@@ -31,9 +31,9 @@
 #include <fmgr.h>
 #include <funcapi.h>
 #include <utils/lsyscache.h> /* for get_typlenbyvalalign */
-#include <utils/array.h> /* for ArrayType */
+#include <utils/array.h>     /* for ArrayType */
 #include <catalog/pg_type.h> /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
-#include <utils/builtins.h> /* for text_to_cstring() */
+#include <utils/builtins.h>  /* for text_to_cstring() */
 
 #include "../../postgis_config.h"
 
@@ -68,18 +68,13 @@ Datum RASTER_envelope(PG_FUNCTION_ARGS)
 	rt_pgraster *pgraster;
 	rt_raster raster;
 	LWGEOM *geom = NULL;
-	GSERIALIZED* gser = NULL;
+	GSERIALIZED *gser = NULL;
 	size_t gser_size;
 	int err = ES_NONE;
 
-	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(
-		PG_GETARG_DATUM(0),
-		0,
-		sizeof(struct rt_raster_serialized_t)
-	);
+	pgraster = (rt_pgraster *)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 	raster = rt_raster_deserialize(pgraster, TRUE);
 
 	if (!raster) {
@@ -96,8 +91,7 @@ Datum RASTER_envelope(PG_FUNCTION_ARGS)
 	if (err != ES_NONE) {
 		elog(ERROR, "RASTER_envelope: Could not get raster's envelope");
 		PG_RETURN_NULL();
-	}
-	else if (geom == NULL) {
+	} else if (geom == NULL) {
 		elog(NOTICE, "Raster's envelope is NULL");
 		PG_RETURN_NULL();
 	}
@@ -121,25 +115,23 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 	rt_pgraster *pgraster;
 	rt_raster raster;
 	LWGEOM *geom = NULL;
-	GSERIALIZED* gser = NULL;
+	GSERIALIZED *gser = NULL;
 	size_t gser_size;
 	int err = ES_NONE;
 
 	bool minhull = FALSE;
 
-	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 
 	/* # of args */
-	if (PG_NARGS() > 1)
-		minhull = TRUE;
+	if (PG_NARGS() > 1) minhull = TRUE;
 
 	if (!minhull) {
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
+		pgraster =
+		    (rt_pgraster *)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 		raster = rt_raster_deserialize(pgraster, TRUE);
-	}
-	else {
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	} else {
+		pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 		raster = rt_raster_deserialize(pgraster, FALSE);
 	}
 
@@ -175,8 +167,7 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 	if (err != ES_NONE) {
 		elog(ERROR, "RASTER_convex_hull: Could not get raster's convex hull");
 		PG_RETURN_NULL();
-	}
-	else if (geom == NULL) {
+	} else if (geom == NULL) {
 		elog(NOTICE, "Raster's convex hull is NULL");
 		PG_RETURN_NULL();
 	}
@@ -189,7 +180,8 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(RASTER_dumpAsPolygons);
-Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
+Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS)
+{
 	FuncCallContext *funcctx;
 	TupleDesc tupdesc;
 	rt_geomval geomval;
@@ -224,10 +216,7 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 		raster = rt_raster_deserialize(pgraster, FALSE);
 		if (!raster) {
 			PG_FREE_IF_COPY(pgraster, 0);
-			ereport(ERROR, (
-				errcode(ERRCODE_OUT_OF_MEMORY),
-				errmsg("Could not deserialize raster")
-			));
+			ereport(ERROR, (errcode(ERRCODE_OUT_OF_MEMORY), errmsg("Could not deserialize raster")));
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -248,8 +237,7 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 			SRF_RETURN_DONE(funcctx);
 		}
 
-		if (!PG_ARGISNULL(2))
-			exclude_nodata_value = PG_GETARG_BOOL(2);
+		if (!PG_ARGISNULL(2)) exclude_nodata_value = PG_GETARG_BOOL(2);
 
 		/* see if band is NODATA */
 		if (rt_band_get_isnodata_flag(rt_raster_get_band(raster, nband - 1))) {
@@ -269,10 +257,7 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		if (NULL == geomval) {
-			ereport(ERROR, (
-				errcode(ERRCODE_NO_DATA_FOUND),
-				errmsg("Could not polygonize raster")
-			));
+			ereport(ERROR, (errcode(ERRCODE_NO_DATA_FOUND), errmsg("Could not polygonize raster")));
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -287,10 +272,9 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 
 		/* Build a tuple descriptor for our result type */
 		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
-			ereport(ERROR, (
-				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-				errmsg("function returning record called in context that cannot accept type record")
-			));
+			ereport(ERROR,
+				(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				 errmsg("function returning record called in context that cannot accept type record")));
 		}
 
 		BlessTupleDesc(tupdesc);
@@ -312,8 +296,8 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 		int values_length = 2;
 		Datum values[values_length];
 		bool nulls[values_length];
-		HeapTuple    tuple;
-		Datum        result;
+		HeapTuple tuple;
+		Datum result;
 
 		GSERIALIZED *gser = NULL;
 		size_t gser_size = 0;
@@ -391,7 +375,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 		/* band */
 		if (PG_ARGISNULL(1))
@@ -418,16 +402,12 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 		}
 
 		/* exclude NODATA */
-		if (!PG_ARGISNULL(4))
-			exclude_nodata_value = PG_GETARG_BOOL(4);
+		if (!PG_ARGISNULL(4)) exclude_nodata_value = PG_GETARG_BOOL(4);
 
 		raster = rt_raster_deserialize(pgraster, FALSE);
 		if (!raster) {
 			PG_FREE_IF_COPY(pgraster, 0);
-			ereport(ERROR, (
-				errcode(ERRCODE_OUT_OF_MEMORY),
-				errmsg("Could not deserialize raster")
-			));
+			ereport(ERROR, (errcode(ERRCODE_OUT_OF_MEMORY), errmsg("Could not deserialize raster")));
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -464,8 +444,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 				SRF_RETURN_DONE(funcctx);
 			}
 
-			if (!rt_band_get_hasnodata_flag(band))
-				exclude_nodata_value = FALSE;
+			if (!rt_band_get_hasnodata_flag(band)) exclude_nodata_value = FALSE;
 		}
 
 		/* set bounds if columnx, rowy not set */
@@ -477,8 +456,12 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 			bounds[2] = 1;
 			bounds[3] = rt_raster_get_height(raster);
 		}
-		POSTGIS_RT_DEBUGF(3, "bounds (min x, max x, min y, max y) = (%d, %d, %d, %d)",
-			bounds[0], bounds[1], bounds[2], bounds[3]);
+		POSTGIS_RT_DEBUGF(3,
+				  "bounds (min x, max x, min y, max y) = (%d, %d, %d, %d)",
+				  bounds[0],
+				  bounds[1],
+				  bounds[2],
+				  bounds[3]);
 
 		/* rowy */
 		pixcount = 0;
@@ -507,7 +490,8 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 
 					/* don't continue if pixel is NODATA and to exclude NODATA */
 					if (isnodata && exclude_nodata_value) {
-						POSTGIS_RT_DEBUG(5, "pixel value is NODATA and exclude_nodata_value = TRUE");
+						POSTGIS_RT_DEBUG(
+						    5, "pixel value is NODATA and exclude_nodata_value = TRUE");
 						continue;
 					}
 				}
@@ -540,10 +524,12 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 					PG_FREE_IF_COPY(pgraster, 0);
 
 					MemoryContextSwitchTo(oldcontext);
-					elog(ERROR, "RASTER_getPixelPolygons: Could not allocate memory for storing pixel polygons");
+					elog(
+					    ERROR,
+					    "RASTER_getPixelPolygons: Could not allocate memory for storing pixel polygons");
 					SRF_RETURN_DONE(funcctx);
 				}
-				pix[pixcount].geom = (LWGEOM *) poly;
+				pix[pixcount].geom = (LWGEOM *)poly;
 				POSTGIS_RT_DEBUGF(5, "poly @ %p", poly);
 				POSTGIS_RT_DEBUGF(5, "geom @ %p", pix[pixcount].geom);
 
@@ -560,8 +546,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 						pix[pixcount].nodata = isnodata;
 					else
 						pix[pixcount].nodata = FALSE;
-				}
-				else {
+				} else {
 					pix[pixcount].nodata = isnodata;
 				}
 
@@ -589,10 +574,9 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 
 		/* Build a tuple descriptor for our result type */
 		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
-			ereport(ERROR, (
-				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-				errmsg("function returning record called in context that cannot accept type record")
-			));
+			ereport(ERROR,
+				(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				 errmsg("function returning record called in context that cannot accept type record")));
 		}
 
 		BlessTupleDesc(tupdesc);
@@ -666,9 +650,8 @@ Datum RASTER_getPolygon(PG_FUNCTION_ARGS)
 	GSERIALIZED *rtn = NULL;
 
 	/* raster */
-	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
@@ -687,8 +670,7 @@ Datum RASTER_getPolygon(PG_FUNCTION_ARGS)
 	}
 
 	/* band index is 1-based */
-	if (!PG_ARGISNULL(1))
-		nband = PG_GETARG_INT32(1);
+	if (!PG_ARGISNULL(1)) nband = PG_GETARG_INT32(1);
 	if (nband < 1 || nband > num_bands) {
 		elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
 		rt_raster_destroy(raster);
@@ -704,8 +686,7 @@ Datum RASTER_getPolygon(PG_FUNCTION_ARGS)
 	if (err != ES_NONE) {
 		elog(ERROR, "RASTER_getPolygon: Could not get raster band's surface");
 		PG_RETURN_NULL();
-	}
-	else if (surface == NULL) {
+	} else if (surface == NULL) {
 		elog(NOTICE, "Raster is empty or all pixels of band are NODATA. Returning NULL");
 		PG_RETURN_NULL();
 	}
@@ -790,8 +771,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	/* based upon LWGEOM_asBinary function in postgis/lwgeom_ogc.c */
 
 	/* Get the geometry */
-	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 
 	gser = PG_GETARG_GSERIALIZED_P(0);
 	geom = lwgeom_from_gserialized(gser);
@@ -810,14 +790,12 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(gser, 0);
 
 		rast = rt_raster_new(0, 0);
-		if (rast == NULL)
-			PG_RETURN_NULL();
+		if (rast == NULL) PG_RETURN_NULL();
 
 		pgrast = rt_raster_serialize(rast);
 		rt_raster_destroy(rast);
 
-		if (NULL == pgrast)
-			PG_RETURN_NULL();
+		if (NULL == pgrast) PG_RETURN_NULL();
 
 		SET_VARSIZE(pgrast, pgrast->size);
 		PG_RETURN_POINTER(pgrast);
@@ -858,23 +836,22 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
 
 		switch (etype) {
-			case TEXTOID:
-				break;
-			default:
+		case TEXTOID:
+			break;
+		default:
 
-				lwgeom_free(geom);
-				PG_FREE_IF_COPY(gser, 0);
+			lwgeom_free(geom);
+			PG_FREE_IF_COPY(gser, 0);
 
-				elog(ERROR, "RASTER_asRaster: Invalid data type for pixeltype");
-				PG_RETURN_NULL();
-				break;
+			elog(ERROR, "RASTER_asRaster: Invalid data type for pixeltype");
+			PG_RETURN_NULL();
+			break;
 		}
 
-		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
-			&nulls, &n);
+		deconstruct_array(array, etype, typlen, typbyval, typalign, &e, &nulls, &n);
 
 		if (n) {
-			pixtypes = (rt_pixtype *) palloc(sizeof(rt_pixtype) * n);
+			pixtypes = (rt_pixtype *)palloc(sizeof(rt_pixtype) * n);
 			/* clean each pixeltype */
 			for (i = 0, j = 0; i < n; i++) {
 				if (nulls[i]) {
@@ -884,15 +861,15 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 
 				pixeltype = NULL;
 				switch (etype) {
-					case TEXTOID:
-						pixeltypetext = (text *) DatumGetPointer(e[i]);
-						if (NULL == pixeltypetext) break;
-						pixeltype = text_to_cstring(pixeltypetext);
+				case TEXTOID:
+					pixeltypetext = (text *)DatumGetPointer(e[i]);
+					if (NULL == pixeltypetext) break;
+					pixeltype = text_to_cstring(pixeltypetext);
 
-						/* trim string */
-						pixeltype = rtpg_trim(pixeltype);
-						POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: pixeltype is '%s'", pixeltype);
-						break;
+					/* trim string */
+					pixeltype = rtpg_trim(pixeltype);
+					POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: pixeltype is '%s'", pixeltype);
+					break;
 				}
 
 				if (strlen(pixeltype)) {
@@ -904,7 +881,9 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 						lwgeom_free(geom);
 						PG_FREE_IF_COPY(gser, 0);
 
-						elog(ERROR, "RASTER_asRaster: Invalid pixel type provided: %s", pixeltype);
+						elog(ERROR,
+						     "RASTER_asRaster: Invalid pixel type provided: %s",
+						     pixeltype);
 						PG_RETURN_NULL();
 					}
 
@@ -917,8 +896,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 				/* trim allocation */
 				pixtypes = repalloc(pixtypes, j * sizeof(rt_pixtype));
 				pixtypes_len = j;
-			}
-			else {
+			} else {
 				pfree(pixtypes);
 				pixtypes = NULL;
 				pixtypes_len = 0;
@@ -927,7 +905,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	}
 #if POSTGIS_DEBUG_LEVEL > 0
 	for (i = 0; i < pixtypes_len; i++)
-		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: pixtypes[%d] = %d", i, (int) pixtypes[i]);
+		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: pixtypes[%d] = %d", i, (int)pixtypes[i]);
 #endif
 
 	/* value */
@@ -937,26 +915,25 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
 
 		switch (etype) {
-			case FLOAT4OID:
-			case FLOAT8OID:
-				break;
-			default:
+		case FLOAT4OID:
+		case FLOAT8OID:
+			break;
+		default:
 
-				if (pixtypes_len) pfree(pixtypes);
+			if (pixtypes_len) pfree(pixtypes);
 
-				lwgeom_free(geom);
-				PG_FREE_IF_COPY(gser, 0);
+			lwgeom_free(geom);
+			PG_FREE_IF_COPY(gser, 0);
 
-				elog(ERROR, "RASTER_asRaster: Invalid data type for value");
-				PG_RETURN_NULL();
-				break;
+			elog(ERROR, "RASTER_asRaster: Invalid data type for value");
+			PG_RETURN_NULL();
+			break;
 		}
 
-		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
-			&nulls, &n);
+		deconstruct_array(array, etype, typlen, typbyval, typalign, &e, &nulls, &n);
 
 		if (n) {
-			values = (double *) palloc(sizeof(double) * n);
+			values = (double *)palloc(sizeof(double) * n);
 			for (i = 0, j = 0; i < n; i++) {
 				if (nulls[i]) {
 					values[j++] = 1;
@@ -964,12 +941,12 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 				}
 
 				switch (etype) {
-					case FLOAT4OID:
-						values[j] = (double) DatumGetFloat4(e[i]);
-						break;
-					case FLOAT8OID:
-						values[j] = (double) DatumGetFloat8(e[i]);
-						break;
+				case FLOAT4OID:
+					values[j] = (double)DatumGetFloat4(e[i]);
+					break;
+				case FLOAT8OID:
+					values[j] = (double)DatumGetFloat8(e[i]);
+					break;
 				}
 				POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: values[%d] = %f", j, values[j]);
 
@@ -980,8 +957,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 				/* trim allocation */
 				values = repalloc(values, j * sizeof(double));
 				values_len = j;
-			}
-			else {
+			} else {
 				pfree(values);
 				values = NULL;
 				values_len = 0;
@@ -1000,28 +976,27 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
 
 		switch (etype) {
-			case FLOAT4OID:
-			case FLOAT8OID:
-				break;
-			default:
+		case FLOAT4OID:
+		case FLOAT8OID:
+			break;
+		default:
 
-				if (pixtypes_len) pfree(pixtypes);
-				if (values_len) pfree(values);
+			if (pixtypes_len) pfree(pixtypes);
+			if (values_len) pfree(values);
 
-				lwgeom_free(geom);
-				PG_FREE_IF_COPY(gser, 0);
+			lwgeom_free(geom);
+			PG_FREE_IF_COPY(gser, 0);
 
-				elog(ERROR, "RASTER_asRaster: Invalid data type for nodataval");
-				PG_RETURN_NULL();
-				break;
+			elog(ERROR, "RASTER_asRaster: Invalid data type for nodataval");
+			PG_RETURN_NULL();
+			break;
 		}
 
-		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
-			&nulls, &n);
+		deconstruct_array(array, etype, typlen, typbyval, typalign, &e, &nulls, &n);
 
 		if (n) {
-			nodatavals = (double *) palloc(sizeof(double) * n);
-			hasnodatas = (uint8_t *) palloc(sizeof(uint8_t) * n);
+			nodatavals = (double *)palloc(sizeof(double) * n);
+			hasnodatas = (uint8_t *)palloc(sizeof(uint8_t) * n);
 			for (i = 0, j = 0; i < n; i++) {
 				if (nulls[i]) {
 					hasnodatas[j] = 0;
@@ -1032,12 +1007,12 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 
 				hasnodatas[j] = 1;
 				switch (etype) {
-					case FLOAT4OID:
-						nodatavals[j] = (double) DatumGetFloat4(e[i]);
-						break;
-					case FLOAT8OID:
-						nodatavals[j] = (double) DatumGetFloat8(e[i]);
-						break;
+				case FLOAT4OID:
+					nodatavals[j] = (double)DatumGetFloat4(e[i]);
+					break;
+				case FLOAT8OID:
+					nodatavals[j] = (double)DatumGetFloat8(e[i]);
+					break;
 				}
 				POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: hasnodatas[%d] = %d", j, hasnodatas[j]);
 				POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: nodatavals[%d] = %f", j, nodatavals[j]);
@@ -1050,8 +1025,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 				nodatavals = repalloc(nodatavals, j * sizeof(double));
 				hasnodatas = repalloc(hasnodatas, j * sizeof(uint8_t));
 				nodatavals_len = j;
-			}
-			else {
+			} else {
 				pfree(nodatavals);
 				pfree(hasnodatas);
 				nodatavals = NULL;
@@ -1097,78 +1071,59 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	haserr = 0;
 	do {
 		/* only part of scale provided */
-		if (
-			(scale_x == NULL && scale_y != NULL) ||
-			(scale_x != NULL && scale_y == NULL)
-		) {
+		if ((scale_x == NULL && scale_y != NULL) || (scale_x != NULL && scale_y == NULL)) {
 			elog(NOTICE, "Values must be provided for both X and Y of scale if one is specified");
 			haserr = 1;
 			break;
 		}
 
 		/* only part of dimension provided */
-		if (
-			(dim_x == NULL && dim_y != NULL) ||
-			(dim_x != NULL && dim_y == NULL)
-		) {
+		if ((dim_x == NULL && dim_y != NULL) || (dim_x != NULL && dim_y == NULL)) {
 			elog(NOTICE, "Values must be provided for both width and height if one is specified");
 			haserr = 1;
 			break;
 		}
 
 		/* scale and dimension provided */
-		if (
-			(scale_x != NULL && scale_y != NULL) &&
-			(dim_x != NULL && dim_y != NULL)
-		) {
-			elog(NOTICE, "Values provided for X and Y of scale and width and height.  Using the width and height");
+		if ((scale_x != NULL && scale_y != NULL) && (dim_x != NULL && dim_y != NULL)) {
+			elog(NOTICE,
+			     "Values provided for X and Y of scale and width and height.  Using the width and height");
 			scale_x = NULL;
 			scale_y = NULL;
 			break;
 		}
 
 		/* neither scale or dimension provided */
-		if (
-			(scale_x == NULL && scale_y == NULL) &&
-			(dim_x == NULL && dim_y == NULL)
-		) {
+		if ((scale_x == NULL && scale_y == NULL) && (dim_x == NULL && dim_y == NULL)) {
 			elog(NOTICE, "Values must be provided for X and Y of scale or width and height");
 			haserr = 1;
 			break;
 		}
 
 		/* only part of upper-left provided */
-		if (
-			(ul_xw == NULL && ul_yw != NULL) ||
-			(ul_xw != NULL && ul_yw == NULL)
-		) {
+		if ((ul_xw == NULL && ul_yw != NULL) || (ul_xw != NULL && ul_yw == NULL)) {
 			elog(NOTICE, "Values must be provided for both X and Y when specifying the upper-left corner");
 			haserr = 1;
 			break;
 		}
 
 		/* only part of alignment provided */
-		if (
-			(grid_xw == NULL && grid_yw != NULL) ||
-			(grid_xw != NULL && grid_yw == NULL)
-		) {
+		if ((grid_xw == NULL && grid_yw != NULL) || (grid_xw != NULL && grid_yw == NULL)) {
 			elog(NOTICE, "Values must be provided for both X and Y when specifying the alignment");
 			haserr = 1;
 			break;
 		}
 
 		/* upper-left and alignment provided */
-		if (
-			(ul_xw != NULL && ul_yw != NULL) &&
-			(grid_xw != NULL && grid_yw != NULL)
-		) {
-			elog(NOTICE, "Values provided for both X and Y of upper-left corner and alignment.  Using the values of upper-left corner");
+		if ((ul_xw != NULL && ul_yw != NULL) && (grid_xw != NULL && grid_yw != NULL)) {
+			elog(
+			    NOTICE,
+			    "Values provided for both X and Y of upper-left corner and alignment.  Using the values of upper-left corner");
 			grid_xw = NULL;
 			grid_yw = NULL;
 			break;
 		}
-	}
-	while (0);
+	} while (0);
 
 	if (haserr) {
 		if (pixtypes_len) pfree(pixtypes);
@@ -1201,20 +1156,19 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	if (!PG_ARGISNULL(14) && PG_GETARG_BOOL(14) == TRUE) {
 		if (options_len < 1) {
 			options_len = 1;
-			options = (char **) palloc(sizeof(char *) * options_len);
-		}
-		else {
+			options = (char **)palloc(sizeof(char *) * options_len);
+		} else {
 			options_len++;
-			options = (char **) repalloc(options, sizeof(char *) * options_len);
+			options = (char **)repalloc(options, sizeof(char *) * options_len);
 		}
 
-		options[options_len - 1] = palloc(sizeof(char*) * (strlen("ALL_TOUCHED=TRUE") + 1));
+		options[options_len - 1] = palloc(sizeof(char *) * (strlen("ALL_TOUCHED=TRUE") + 1));
 		options[options_len - 1] = "ALL_TOUCHED=TRUE";
 	}
 
 	if (options_len) {
 		options_len++;
-		options = (char **) repalloc(options, sizeof(char *) * options_len);
+		options = (char **)repalloc(options, sizeof(char *) * options_len);
 		options[options_len - 1] = NULL;
 	}
 
@@ -1241,8 +1195,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: srs is %s", srs);
-	}
-	else
+	} else
 		srs = NULL;
 
 	/* determine number of bands */
@@ -1255,18 +1208,14 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: num_bands = %d", num_bands);
 
 	/* warn of imbalanced number of band elements */
-	if (!(
-		(pixtypes_len == values_len) &&
-		(values_len == nodatavals_len)
-	)) {
+	if (!((pixtypes_len == values_len) && (values_len == nodatavals_len))) {
 		elog(
-			NOTICE,
-			"Imbalanced number of values provided for pixeltype (%d), value (%d) and nodataval (%d).  Using the first %d values of each parameter",
-			pixtypes_len,
-			values_len,
-			nodatavals_len,
-			num_bands
-		);
+		    NOTICE,
+		    "Imbalanced number of values provided for pixeltype (%d), value (%d) and nodataval (%d).  Using the first %d values of each parameter",
+		    pixtypes_len,
+		    values_len,
+		    nodatavals_len,
+		    num_bands);
 	}
 
 	/* get wkb of geometry */
@@ -1279,17 +1228,25 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUG(3, "RASTER_asRaster: rasterizing geometry");
 	/* use nodatavals for the init parameter */
 	rast = rt_raster_gdal_rasterize(wkb,
-		(uint32_t) wkb_len, srs,
-		num_bands, pixtypes,
-		nodatavals, values,
-		nodatavals, hasnodatas,
-		dim_x, dim_y,
-		scale_x, scale_y,
-		ul_xw, ul_yw,
-		grid_xw, grid_yw,
-		skew_x, skew_y,
-		options
-	);
+					(uint32_t)wkb_len,
+					srs,
+					num_bands,
+					pixtypes,
+					nodatavals,
+					values,
+					nodatavals,
+					hasnodatas,
+					dim_x,
+					dim_y,
+					scale_x,
+					scale_y,
+					ul_xw,
+					ul_yw,
+					grid_xw,
+					grid_yw,
+					skew_x,
+					skew_y,
+					options);
 
 	if (pixtypes_len) pfree(pixtypes);
 	if (values_len) pfree(values);

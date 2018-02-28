@@ -35,28 +35,28 @@
 #define WKT_PRECISION 15
 
 /* Loader policy constants */
-#define POLICY_NULL_ABORT 	0x0
-#define POLICY_NULL_INSERT 	0x1
-#define POLICY_NULL_SKIP	0x2
+#define POLICY_NULL_ABORT 0x0
+#define POLICY_NULL_INSERT 0x1
+#define POLICY_NULL_SKIP 0x2
 
 /* Forced dimensionality constants */
-#define FORCE_OUTPUT_DISABLE	0x0
-#define FORCE_OUTPUT_2D		0x1
-#define FORCE_OUTPUT_3DZ	0x2
-#define FORCE_OUTPUT_3DM	0x3
-#define FORCE_OUTPUT_4D		0x4
+#define FORCE_OUTPUT_DISABLE 0x0
+#define FORCE_OUTPUT_2D 0x1
+#define FORCE_OUTPUT_3DZ 0x2
+#define FORCE_OUTPUT_3DM 0x3
+#define FORCE_OUTPUT_4D 0x4
 
 /* Error message handling */
-#define SHPLOADERMSGLEN		1024
+#define SHPLOADERMSGLEN 1024
 
 /* Error status codes */
-#define SHPLOADEROK		-1
-#define SHPLOADERERR		0
-#define SHPLOADERWARN		1
+#define SHPLOADEROK -1
+#define SHPLOADERERR 0
+#define SHPLOADERWARN 1
 
 /* Record status codes */
-#define SHPLOADERRECDELETED	2
-#define SHPLOADERRECISNULL	3
+#define SHPLOADERRECDELETED 2
+#define SHPLOADERRECISNULL 3
 
 /*
  * Shapefile (dbf) field name are at most 10chars + 1 NULL.
@@ -79,8 +79,7 @@
 /*
  * Structure to hold the loader configuration options
  */
-typedef struct shp_loader_config
-{
+typedef struct shp_loader_config {
 	/* load mode: c = create, d = delete, a = append, p = prepare */
 	char opt;
 
@@ -149,12 +148,10 @@ typedef struct shp_loader_config
 
 } SHPLOADERCONFIG;
 
-
 /*
  * Structure to holder the current loader state
  */
-typedef struct shp_loader_state
-{
+typedef struct shp_loader_state {
 	/* Configuration for this state */
 	SHPLOADERCONFIG *config;
 
@@ -218,10 +215,9 @@ typedef struct shp_loader_state
 	char *geo_col;
 
 	/* Column map */
-  colmap column_map;
+	colmap column_map;
 
 } SHPLOADERSTATE;
-
 
 /* Externally accessible functions */
 void strtolower(char *s);

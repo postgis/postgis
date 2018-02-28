@@ -23,7 +23,6 @@
  *
  **********************************************************************/
 
-
 #ifndef _STRINGBUFFER_H
 #define _STRINGBUFFER_H 1
 
@@ -34,13 +33,11 @@
 
 #define STRINGBUFFER_STARTSIZE 128
 
-typedef struct
-{
+typedef struct {
 	size_t capacity;
 	char *str_end;
 	char *str_start;
-}
-stringbuffer_t;
+} stringbuffer_t;
 
 extern stringbuffer_t *stringbuffer_create_with_size(size_t size);
 extern stringbuffer_t *stringbuffer_create(void);

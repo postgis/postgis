@@ -22,7 +22,6 @@
  *
  **********************************************************************/
 
-
 #ifndef _BYTEBUFFER_H
 #define _BYTEBUFFER_H 1
 
@@ -35,15 +34,13 @@
 #define BYTEBUFFER_STARTSIZE 512
 #define BYTEBUFFER_STATICSIZE 1024
 
-typedef struct
-{
+typedef struct {
 	size_t capacity;
 	uint8_t *buf_start;
 	uint8_t *writecursor;
 	uint8_t *readcursor;
 	uint8_t buf_static[BYTEBUFFER_STATICSIZE];
-}
-bytebuffer_t;
+} bytebuffer_t;
 
 void bytebuffer_init_with_size(bytebuffer_t *b, size_t size);
 bytebuffer_t *bytebuffer_create_with_size(size_t size);
@@ -57,13 +54,13 @@ void bytebuffer_append_uvarint(bytebuffer_t *s, const uint64_t val);
 uint64_t bytebuffer_read_uvarint(bytebuffer_t *s);
 int64_t bytebuffer_read_varint(bytebuffer_t *s);
 size_t bytebuffer_getlength(const bytebuffer_t *s);
-bytebuffer_t* bytebuffer_merge(bytebuffer_t **buff_array, int nbuffers);
+bytebuffer_t *bytebuffer_merge(bytebuffer_t **buff_array, int nbuffers);
 void bytebuffer_reset_reading(bytebuffer_t *s);
-uint8_t* bytebuffer_get_buffer_copy(const bytebuffer_t *s, size_t *buffer_length);
-const uint8_t* bytebuffer_get_buffer(const bytebuffer_t *s, size_t *buffer_length);
+uint8_t *bytebuffer_get_buffer_copy(const bytebuffer_t *s, size_t *buffer_length);
+const uint8_t *bytebuffer_get_buffer(const bytebuffer_t *s, size_t *buffer_length);
 
-void bytebuffer_append_bytebuffer(bytebuffer_t *write_to,bytebuffer_t *write_from);
-void bytebuffer_append_bulk(bytebuffer_t *s, void * start, size_t size);
+void bytebuffer_append_bytebuffer(bytebuffer_t *write_to, bytebuffer_t *write_from);
+void bytebuffer_append_bulk(bytebuffer_t *s, void *start, size_t size);
 void bytebuffer_append_int(bytebuffer_t *buf, const int val, int swap);
 void bytebuffer_append_double(bytebuffer_t *buf, const double val, int swap);
 #endif /* _BYTEBUFFER_H */

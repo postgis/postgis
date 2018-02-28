@@ -22,16 +22,16 @@
 
 /* #define SKIP_TEST_RETAIN_ANGLE 1 */
 
-
-static LWGEOM* lwgeom_from_text(const char *str)
+static LWGEOM *
+lwgeom_from_text(const char *str)
 {
 	LWGEOM_PARSER_RESULT r;
-	if( LW_FAILURE == lwgeom_parse_wkt(&r, (char*)str, LW_PARSER_CHECK_NONE) )
-		return NULL;
+	if (LW_FAILURE == lwgeom_parse_wkt(&r, (char *)str, LW_PARSER_CHECK_NONE)) return NULL;
 	return r.geom;
 }
 
-static char* lwgeom_to_text(const LWGEOM *geom, int prec)
+static char *
+lwgeom_to_text(const LWGEOM *geom, int prec)
 {
 	gridspec grid;
 	LWGEOM *gridded;
@@ -47,7 +47,8 @@ static char* lwgeom_to_text(const LWGEOM *geom, int prec)
 	return wkt;
 }
 
-static void test_lwcurve_linearize(void)
+static void
+test_lwcurve_linearize(void)
 {
 	LWGEOM *in;
 	LWGEOM *out, *out2;
@@ -79,19 +80,19 @@ static void test_lwcurve_linearize(void)
 	/* 3.5 segment per quadrant (invalid) */
 	cu_error_msg_reset();
 	out = lwcurve_linearize(in, 3.5, toltype, 0);
-	CU_ASSERT( out == NULL );
+	CU_ASSERT(out == NULL);
 	ASSERT_STRING_EQUAL(cu_error_msg, "lwarc_linearize: segments per quadrant must be an integer value, got 3.5");
 	lwgeom_free(out);
 	/* -2 segment per quadrant (invalid) */
 	cu_error_msg_reset();
 	out = lwcurve_linearize(in, -2, toltype, 0);
-	CU_ASSERT( out == NULL );
+	CU_ASSERT(out == NULL);
 	ASSERT_STRING_EQUAL(cu_error_msg, "lwarc_linearize: segments per quadrant must be at least 1, got -2");
 	lwgeom_free(out);
 	/* 0 segment per quadrant (invalid) */
 	cu_error_msg_reset();
 	out = lwcurve_linearize(in, 0, toltype, 0);
-	CU_ASSERT( out == NULL );
+	CU_ASSERT(out == NULL);
 	ASSERT_STRING_EQUAL(cu_error_msg, "lwarc_linearize: segments per quadrant must be at least 1, got 0");
 	lwgeom_free(out);
 	lwgeom_free(in);
@@ -120,10 +121,7 @@ static void test_lwcurve_linearize(void)
 
 #ifndef SKIP_TEST_RETAIN_ANGLE
 	/* 3 segment per quadrant - symmetric/retain_angle */
-	out = lwcurve_linearize(in, 3, toltype,
-		LW_LINEARIZE_FLAG_SYMMETRIC |
-		LW_LINEARIZE_FLAG_RETAIN_ANGLE
-	);
+	out = lwcurve_linearize(in, 3, toltype, LW_LINEARIZE_FLAG_SYMMETRIC | LW_LINEARIZE_FLAG_RETAIN_ANGLE);
 	str = lwgeom_to_text(out, 2);
 	ASSERT_STRING_EQUAL(str, "LINESTRING(30 70,40 80,86 100,138 92,180 60,200 14,200 0)");
 	lwfree(str);
@@ -151,12 +149,12 @@ static void test_lwcurve_linearize(void)
 	/* Maximum of 0 units of difference (invalid) */
 	cu_error_msg_reset();
 	out = lwcurve_linearize(in, 0, toltype, 0);
-	CU_ASSERT( out == NULL );
+	CU_ASSERT(out == NULL);
 	ASSERT_STRING_EQUAL(cu_error_msg, "lwarc_linearize: max deviation must be bigger than 0, got 0");
 	/* Maximum of -2 units of difference (invalid) */
 	cu_error_msg_reset();
 	out = lwcurve_linearize(in, -2, toltype, 0);
-	CU_ASSERT( out == NULL );
+	CU_ASSERT(out == NULL);
 	ASSERT_STRING_EQUAL(cu_error_msg, "lwarc_linearize: max deviation must be bigger than 0, got -2");
 	/* Maximum of 10 units of difference, symmetric */
 	out = lwcurve_linearize(in, 10, toltype, LW_LINEARIZE_FLAG_SYMMETRIC);
@@ -179,10 +177,7 @@ static void test_lwcurve_linearize(void)
 
 #ifndef SKIP_TEST_RETAIN_ANGLE
 	/* Maximum of 20 units of difference, symmetric/retain angle */
-	out = lwcurve_linearize(in, 20, toltype,
-		LW_LINEARIZE_FLAG_SYMMETRIC |
-		LW_LINEARIZE_FLAG_RETAIN_ANGLE
-	);
+	out = lwcurve_linearize(in, 20, toltype, LW_LINEARIZE_FLAG_SYMMETRIC | LW_LINEARIZE_FLAG_RETAIN_ANGLE);
 	str = lwgeom_to_text(out, 2);
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,4 28,100 100,196 28,200 0)");
 	lwfree(str);
@@ -245,16 +240,16 @@ static void test_lwcurve_linearize(void)
 	/* Maximum of 0 degrees (invalid) */
 	cu_error_msg_reset();
 	out = lwcurve_linearize(in, 0, toltype, 0);
-	CU_ASSERT( out == NULL );
+	CU_ASSERT(out == NULL);
 	ASSERT_STRING_EQUAL(cu_error_msg, "lwarc_linearize: max angle must be bigger than 0, got 0");
 	/* Maximum of -2 degrees (invalid) */
 	cu_error_msg_reset();
 	out = lwcurve_linearize(in, -2, toltype, 0);
-	CU_ASSERT( out == NULL );
+	CU_ASSERT(out == NULL);
 	ASSERT_STRING_EQUAL(cu_error_msg, "lwarc_linearize: max angle must be bigger than 0, got -2");
 	/* Maximum of 360 degrees, just return endpoints... */
 	cu_error_msg_reset();
-	out = lwcurve_linearize(in, M_PI*4, toltype, 0);
+	out = lwcurve_linearize(in, M_PI * 4, toltype, 0);
 	str = lwgeom_to_text(out, 2);
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,200 0)");
 	lwfree(str);
@@ -274,10 +269,8 @@ static void test_lwcurve_linearize(void)
 
 #ifndef SKIP_TEST_RETAIN_ANGLE
 	/* Maximum of 70 degrees, symmetric/retain angle */
-	out = lwcurve_linearize(in, 70 * M_PI / 180, toltype,
-		LW_LINEARIZE_FLAG_SYMMETRIC |
-		LW_LINEARIZE_FLAG_RETAIN_ANGLE
-	);
+	out = lwcurve_linearize(
+	    in, 70 * M_PI / 180, toltype, LW_LINEARIZE_FLAG_SYMMETRIC | LW_LINEARIZE_FLAG_RETAIN_ANGLE);
 	str = lwgeom_to_text(out, 2);
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,6 34,100 100,194 34,200 0)");
 	lwfree(str);
@@ -293,16 +286,11 @@ static void test_lwcurve_linearize(void)
 	 ***********************************************************/
 
 	in = lwgeom_from_text("CIRCULARSTRING(71.96 -65.64,22.2 -18.52,20 50)");
-	out = lwcurve_linearize(in, M_PI/4.0,
-			 LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE,
-			 LW_LINEARIZE_FLAG_SYMMETRIC);
+	out = lwcurve_linearize(in, M_PI / 4.0, LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE, LW_LINEARIZE_FLAG_SYMMETRIC);
 	lwgeom_reverse_in_place(in);
-	out2 = lwcurve_linearize(in, M_PI/4.0,
-				 LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE,
-				 LW_LINEARIZE_FLAG_SYMMETRIC);
+	out2 = lwcurve_linearize(in, M_PI / 4.0, LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE, LW_LINEARIZE_FLAG_SYMMETRIC);
 	lwgeom_reverse_in_place(out2);
-	if ( ! lwgeom_same(out, out2) )
-	{
+	if (!lwgeom_same(out, out2)) {
 		fprintf(stderr, "linearization is not direction neutral:\n");
 		str = lwgeom_to_wkt(out, WKT_ISO, 18, NULL);
 		fprintf(stderr, "OUT1: %s\n", str);
@@ -311,13 +299,14 @@ static void test_lwcurve_linearize(void)
 		fprintf(stderr, "OUT2: %s\n", str);
 		lwfree(str);
 	}
-	CU_ASSERT( lwgeom_same(out, out2) );
+	CU_ASSERT(lwgeom_same(out, out2));
 	lwgeom_free(out2);
 	lwgeom_free(out);
 	lwgeom_free(in);
 }
 
-static void test_unstroke()
+static void
+test_unstroke()
 {
 	LWGEOM *in, *out;
 	char *str;
@@ -325,18 +314,20 @@ static void test_unstroke()
 	/* It would be nice if this example returned two arcs (it's the intersection of two circles)
 	   but it looks like the intersection itself is too sloppy in generating the derived point
 	   to accurately reconstruct the circles.
-	in = lwgeom_from_text("POLYGON((0.5 0,0.471177920604846 -0.292635483024192,0.38581929876693 -0.574025148547634,0.247204418453818 -0.833355349529403,0.0606601717798223 -1.06066017177982,-5.44089437167602e-17 -1.11044268820754,-0.0606601717798188 -1.06066017177982,-0.247204418453816 -0.833355349529406,-0.385819298766929 -0.574025148547639,-0.471177920604845 -0.292635483024197,-0.5 -4.84663372329776e-15,-0.471177920604847 0.292635483024187,-0.385819298766932 0.57402514854763,-0.247204418453821 0.833355349529398,-0.0606601717798256 1.06066017177982,3.45538806345173e-16 1.11044268820754,0.0606601717798183 1.06066017177982,0.247204418453816 0.833355349529407,0.385819298766929 0.574025148547638,0.471177920604845 0.292635483024196,0.5 0))");
-	out = lwgeom_unstroke(in);
-	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
-	printf("%s\n", str);
-	ASSERT_STRING_EQUAL(str, "CIRCULARSTRING(-1 0,0 1,0 -1)");
-	lwgeom_free(in);
-	lwgeom_free(out);
-	lwfree(str);
+	in = lwgeom_from_text("POLYGON((0.5 0,0.471177920604846 -0.292635483024192,0.38581929876693
+	-0.574025148547634,0.247204418453818 -0.833355349529403,0.0606601717798223
+	-1.06066017177982,-5.44089437167602e-17 -1.11044268820754,-0.0606601717798188
+	-1.06066017177982,-0.247204418453816 -0.833355349529406,-0.385819298766929 -0.574025148547639,-0.471177920604845
+	-0.292635483024197,-0.5 -4.84663372329776e-15,-0.471177920604847 0.292635483024187,-0.385819298766932
+	0.57402514854763,-0.247204418453821 0.833355349529398,-0.0606601717798256
+	1.06066017177982,3.45538806345173e-16 1.11044268820754,0.0606601717798183 1.06066017177982,0.247204418453816
+	0.833355349529407,0.385819298766929 0.574025148547638,0.471177920604845 0.292635483024196,0.5 0))"); out =
+	lwgeom_unstroke(in); str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL); printf("%s\n", str); ASSERT_STRING_EQUAL(str,
+	"CIRCULARSTRING(-1 0,0 1,0 -1)"); lwgeom_free(in); lwgeom_free(out); lwfree(str);
 	*/
 
 	in = lwgeom_from_text("CIRCULARSTRING(-1 0,0 1,0 -1)");
-	out = lwgeom_stroke(in,8);
+	out = lwgeom_stroke(in, 8);
 	lwgeom_free(in);
 	in = out;
 	out = lwgeom_unstroke(in);
@@ -348,7 +339,7 @@ static void test_unstroke()
 	lwfree(str);
 
 	in = lwgeom_from_text("COMPOUNDCURVE(CIRCULARSTRING(-1 0,0 1,0 -1),(0 -1,-1 -1))");
-	out = lwgeom_stroke(in,8);
+	out = lwgeom_stroke(in, 8);
 	lwgeom_free(in);
 	in = out;
 	out = lwgeom_unstroke(in);
@@ -359,39 +350,38 @@ static void test_unstroke()
 	lwgeom_free(out);
 	lwfree(str);
 
-	in = lwgeom_from_text("COMPOUNDCURVE((-3 -3,-1 0),CIRCULARSTRING(-1 0,0 1,0 -1),(0 -1,0 -1.5,0 -2),CIRCULARSTRING(0 -2,-1 -3,1 -3),(1 -3,5 5))");
-	out = lwgeom_stroke(in,8);
+	in = lwgeom_from_text(
+	    "COMPOUNDCURVE((-3 -3,-1 0),CIRCULARSTRING(-1 0,0 1,0 -1),(0 -1,0 -1.5,0 -2),CIRCULARSTRING(0 -2,-1 -3,1 -3),(1 -3,5 5))");
+	out = lwgeom_stroke(in, 8);
 	lwgeom_free(in);
 	in = out;
 	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	// printf("%s\n", str);
-	ASSERT_STRING_EQUAL(
-	    str,
-	    "COMPOUNDCURVE((-3 -3,-1 0),CIRCULARSTRING(-1 0,0.70710678 "
-	    "0.70710678,0 -1),(0 -1,0 -1.5,0 -2),CIRCULARSTRING(0 "
-	    "-2,-0.70710678 -3.70710678,1 -3),(1 -3,5 5))");
+	ASSERT_STRING_EQUAL(str,
+			    "COMPOUNDCURVE((-3 -3,-1 0),CIRCULARSTRING(-1 0,0.70710678 "
+			    "0.70710678,0 -1),(0 -1,0 -1.5,0 -2),CIRCULARSTRING(0 "
+			    "-2,-0.70710678 -3.70710678,1 -3),(1 -3,5 5))");
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);
 
 	in = lwgeom_from_text("COMPOUNDCURVE(CIRCULARSTRING(-1 0,0 1,0 -1),CIRCULARSTRING(0 -1,-1 -2,1 -2))");
-	out = lwgeom_stroke(in,8);
+	out = lwgeom_stroke(in, 8);
 	lwgeom_free(in);
 	in = out;
 	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	// printf("%s\n", str);
-	ASSERT_STRING_EQUAL(
-	    str,
-	    "COMPOUNDCURVE(CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 "
-	    "-1),CIRCULARSTRING(0 -1,-0.70710678 -2.70710678,1 -2))");
+	ASSERT_STRING_EQUAL(str,
+			    "COMPOUNDCURVE(CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 "
+			    "-1),CIRCULARSTRING(0 -1,-0.70710678 -2.70710678,1 -2))");
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);
 
 	in = lwgeom_from_text("COMPOUNDCURVE((0 0, 1 1), CIRCULARSTRING(1 1, 2 2, 3 1), (3 1, 4 4))");
-	out = lwgeom_stroke(in,8);
+	out = lwgeom_stroke(in, 8);
 	lwgeom_free(in);
 	in = out;
 	out = lwgeom_unstroke(in);
@@ -440,25 +430,29 @@ static void test_unstroke()
 	lwgeom_free(out);
 	lwfree(str);
 
-	in = lwgeom_from_text("GEOMETRYCOLLECTION(LINESTRING(10 10,10 11),LINESTRING(10 11,11 11),LINESTRING(11 11,10 10))");
-	out = lwgeom_stroke(in,8);
+	in = lwgeom_from_text(
+	    "GEOMETRYCOLLECTION(LINESTRING(10 10,10 11),LINESTRING(10 11,11 11),LINESTRING(11 11,10 10))");
+	out = lwgeom_stroke(in, 8);
 	lwgeom_free(in);
 	in = out;
 	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
-	ASSERT_STRING_EQUAL(str, "GEOMETRYCOLLECTION(LINESTRING(10 10,10 11),LINESTRING(10 11,11 11),LINESTRING(11 11,10 10))");
+	ASSERT_STRING_EQUAL(
+	    str, "GEOMETRYCOLLECTION(LINESTRING(10 10,10 11),LINESTRING(10 11,11 11),LINESTRING(11 11,10 10))");
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);
 
-	in = lwgeom_from_text("GEOMETRYCOLLECTION(LINESTRING(4 4,4 8),CIRCULARSTRING(4 8,6 10,8 8),LINESTRING(8 8,8 4))");
-	out = lwgeom_stroke(in,8);
+	in = lwgeom_from_text(
+	    "GEOMETRYCOLLECTION(LINESTRING(4 4,4 8),CIRCULARSTRING(4 8,6 10,8 8),LINESTRING(8 8,8 4))");
+	out = lwgeom_stroke(in, 8);
 	lwgeom_free(in);
 	in = out;
 	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	// printf("%s\n", str);
-	ASSERT_STRING_EQUAL(str, "GEOMETRYCOLLECTION(LINESTRING(4 4,4 8),CIRCULARSTRING(4 8,6 10,8 8),LINESTRING(8 8,8 4))");
+	ASSERT_STRING_EQUAL(str,
+			    "GEOMETRYCOLLECTION(LINESTRING(4 4,4 8),CIRCULARSTRING(4 8,6 10,8 8),LINESTRING(8 8,8 4))");
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);
@@ -468,7 +462,8 @@ static void test_unstroke()
 ** Used by the test harness to register the tests in this file.
 */
 void lwstroke_suite_setup(void);
-void lwstroke_suite_setup(void)
+void
+lwstroke_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("lwstroke", NULL, NULL);
 	PG_ADD_TEST(suite, test_lwcurve_linearize);

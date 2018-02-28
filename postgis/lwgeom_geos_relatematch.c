@@ -22,7 +22,6 @@
  *
  **********************************************************************/
 
-
 #include "postgres.h"
 #include "fmgr.h"
 #include "funcapi.h"
@@ -46,24 +45,24 @@ Datum ST_RelateMatch(PG_FUNCTION_ARGS)
 	int result;
 
 	/* Read the arguments */
-        mat_text = (PG_GETARG_TEXT_P(0));
-        pat_text = (PG_GETARG_TEXT_P(1));
+	mat_text = (PG_GETARG_TEXT_P(0));
+	pat_text = (PG_GETARG_TEXT_P(1));
 
-        /* Convert from text to cstring */
-        mat = text_to_cstring(mat_text);
-        pat = text_to_cstring(pat_text);
+	/* Convert from text to cstring */
+	mat = text_to_cstring(mat_text);
+	pat = text_to_cstring(pat_text);
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	result = GEOSRelatePatternMatch(mat, pat);
-	if (result == 2)
-	{
-		lwfree(mat); lwfree(pat);
+	if (result == 2) {
+		lwfree(mat);
+		lwfree(pat);
 		lwpgerror("GEOSRelatePatternMatch: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 
-	lwfree(mat); lwfree(pat);
+	lwfree(mat);
+	lwfree(pat);
 	PG_RETURN_BOOL(result);
 }
-

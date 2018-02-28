@@ -24,10 +24,7 @@
 #define _(String) String
 #endif
 
-
-
-typedef struct shp_connection_state
-{
+typedef struct shp_connection_state {
 	/* PgSQL username to log in with */
 	char *username;
 

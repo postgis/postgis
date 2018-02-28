@@ -18,8 +18,8 @@
 #include "stringbuffer.h"
 #include "cu_tester.h"
 
-
-static void test_stringbuffer_append(void)
+static void
+test_stringbuffer_append(void)
 {
 	stringbuffer_t *sb;
 	const char *str;
@@ -33,7 +33,8 @@ static void test_stringbuffer_append(void)
 	stringbuffer_destroy(sb);
 }
 
-static void test_stringbuffer_aprintf(void)
+static void
+test_stringbuffer_aprintf(void)
 {
 	stringbuffer_t *sb;
 	const char *str;
@@ -47,14 +48,14 @@ static void test_stringbuffer_aprintf(void)
 	stringbuffer_destroy(sb);
 }
 
-
 /* TODO: add more... */
 
 /*
 ** Used by the test harness to register the tests in this file.
 */
 void stringbuffer_suite_setup(void);
-void stringbuffer_suite_setup(void)
+void
+stringbuffer_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("stringbuffer", NULL, NULL);
 	PG_ADD_TEST(suite, test_stringbuffer_append);

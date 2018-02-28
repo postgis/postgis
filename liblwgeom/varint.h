@@ -23,13 +23,11 @@
  *
  **********************************************************************/
 
-
 #ifndef _LIBLWGEOM_VARINT_H
 #define _LIBLWGEOM_VARINT_H 1
 
 #include <stdint.h>
 #include <stdlib.h>
-
 
 /* NEW SIGNATURES */
 
@@ -52,4 +50,3 @@ int32_t unzigzag32(uint32_t val);
 int8_t unzigzag8(uint8_t val);
 
 #endif /* !defined _LIBLWGEOM_VARINT_H  */
-
