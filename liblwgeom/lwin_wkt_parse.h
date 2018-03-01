@@ -43,7 +43,8 @@ extern int wkt_yydebug;
 /* Token type.  */
 #ifndef YYTOKENTYPE
 #define YYTOKENTYPE
-enum yytokentype {
+enum yytokentype
+{
 	POINT_TOK = 258,
 	LINESTRING_TOK = 259,
 	POLYGON_TOK = 260,

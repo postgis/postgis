@@ -498,7 +498,15 @@ typedef struct
 
 typedef DBFInfo *DBFHandle;
 
-typedef enum { FTString, FTInteger, FTDouble, FTLogical, FTDate, FTInvalid } DBFFieldType;
+typedef enum
+{
+	FTString,
+	FTInteger,
+	FTDouble,
+	FTLogical,
+	FTDate,
+	FTInvalid
+} DBFFieldType;
 
 #define XBASE_FLDHDR_SZ 32
 

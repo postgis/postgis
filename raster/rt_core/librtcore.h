@@ -176,13 +176,15 @@ typedef struct
  */
 
 /* function return error states */
-typedef enum {
+typedef enum
+{
 	ES_NONE = 0, /* no error */
 	ES_ERROR = 1 /* generic error */
 } rt_errorstate;
 
 /* Pixel types */
-typedef enum {
+typedef enum
+{
 	PT_1BB = 0,   /* 1-bit boolean            */
 	PT_2BUI = 1,  /* 2-bit unsigned integer   */
 	PT_4BUI = 2,  /* 4-bit unsigned integer   */
@@ -197,7 +199,15 @@ typedef enum {
 	PT_END = 13
 } rt_pixtype;
 
-typedef enum { ET_INTERSECTION = 0, ET_UNION, ET_FIRST, ET_SECOND, ET_LAST, ET_CUSTOM } rt_extenttype;
+typedef enum
+{
+	ET_INTERSECTION = 0,
+	ET_UNION,
+	ET_FIRST,
+	ET_SECOND,
+	ET_LAST,
+	ET_CUSTOM
+} rt_extenttype;
 
 /**
  * GEOS spatial relationship tests available
@@ -207,7 +217,8 @@ typedef enum { ET_INTERSECTION = 0, ET_UNION, ET_FIRST, ET_SECOND, ET_LAST, ET_C
  *   crosses
  *   disjoint
  */
-typedef enum {
+typedef enum
+{
 	GSR_OVERLAPS = 0,
 	GSR_TOUCHES,
 	GSR_CONTAINS,
@@ -2338,7 +2349,12 @@ struct rt_colormap_entry_t
 
 struct rt_colormap_t
 {
-	enum { CM_INTERPOLATE, CM_EXACT, CM_NEAREST } method;
+	enum
+	{
+		CM_INTERPOLATE,
+		CM_EXACT,
+		CM_NEAREST
+	} method;
 
 	int ncolor;
 	uint16_t nentry;

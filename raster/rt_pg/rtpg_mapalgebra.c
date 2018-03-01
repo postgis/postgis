@@ -1786,7 +1786,17 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 /*  ST_Union aggregate functions                                    */
 /* ---------------------------------------------------------------- */
 
-typedef enum { UT_LAST = 0, UT_FIRST, UT_MIN, UT_MAX, UT_COUNT, UT_SUM, UT_MEAN, UT_RANGE } rtpg_union_type;
+typedef enum
+{
+	UT_LAST = 0,
+	UT_FIRST,
+	UT_MIN,
+	UT_MAX,
+	UT_COUNT,
+	UT_SUM,
+	UT_MEAN,
+	UT_RANGE
+} rtpg_union_type;
 
 /* internal function translating text of UNION type to enum */
 static rtpg_union_type
@@ -4776,7 +4786,12 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 	int skipcomputation = 0;
 	int len = 0;
 	const int argkwcount = 3;
-	enum KEYWORDS { kVAL = 0, kX = 1, kY = 2 };
+	enum KEYWORDS
+	{
+		kVAL = 0,
+		kX = 1,
+		kY = 2
+	};
 	char *argkw[] = {"[rast]", "[rast.x]", "[rast.y]"};
 	Oid argkwtypes[] = {FLOAT8OID, INT4OID, INT4OID};
 	int argcount = 0;

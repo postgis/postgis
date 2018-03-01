@@ -411,7 +411,12 @@ addEdgeValues(StringInfo str, const LWT_ISO_EDGE *edge, int fields, int fullEdge
 	appendStringInfoChar(str, ')');
 }
 
-enum UpdateType { updSet, updSel, updNot };
+enum UpdateType
+{
+	updSet,
+	updSel,
+	updNot
+};
 
 static void
 addEdgeUpdate(StringInfo str, const LWT_ISO_EDGE *edge, int fields, int fullEdgeData, enum UpdateType updType)

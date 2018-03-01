@@ -89,7 +89,13 @@ typedef struct
 #define LWT_COL_FACE_MBR 1 << 1
 #define LWT_COL_FACE_ALL (1 << 2) - 1
 
-typedef enum LWT_SPATIALTYPE_T { LWT_PUNTAL = 0, LWT_LINEAL = 1, LWT_AREAL = 2, LWT_COLLECTION = 3 } LWT_SPATIALTYPE;
+typedef enum LWT_SPATIALTYPE_T
+{
+	LWT_PUNTAL = 0,
+	LWT_LINEAL = 1,
+	LWT_AREAL = 2,
+	LWT_COLLECTION = 3
+} LWT_SPATIALTYPE;
 
 /*
  * Backend handling functions
@@ -810,7 +816,8 @@ void lwt_FreeBackendIface(LWT_BE_IFACE *iface);
 /**
  * Topology errors type
  */
-typedef enum LWT_TOPOERR_TYPE_T {
+typedef enum LWT_TOPOERR_TYPE_T
+{
 	LWT_TOPOERR_EDGE_CROSSES_NODE,
 	LWT_TOPOERR_EDGE_INVALID,
 	LWT_TOPOERR_EDGE_NOT_SIMPLE,

@@ -444,7 +444,8 @@ parse_gml_double(char *d, bool space_before, bool space_after)
 {
 	char *p;
 	int st;
-	enum states {
+	enum states
+	{
 		INIT = 0,
 		NEED_DIG = 1,
 		DIG = 2,

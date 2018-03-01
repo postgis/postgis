@@ -206,7 +206,8 @@ extern int wkt_yydebug;
 /* Token type.  */
 #ifndef YYTOKENTYPE
 #define YYTOKENTYPE
-enum yytokentype {
+enum yytokentype
+{
 	POINT_TOK = 258,
 	LINESTRING_TOK = 259,
 	POLYGON_TOK = 260,
@@ -1092,7 +1093,10 @@ yysyntax_error(YYSIZE_T *yymsg_alloc, char **yymsg, yytype_int16 *yyssp, int yyt
 {
 	YYSIZE_T yysize0 = yytnamerr(YY_NULLPTR, yytname[yytoken]);
 	YYSIZE_T yysize = yysize0;
-	enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
+	enum
+	{
+		YYERROR_VERBOSE_ARGS_MAXIMUM = 5
+	};
 	/* Internationalized format string. */
 	const char *yyformat = YY_NULLPTR;
 	/* Arguments of yyformat. */

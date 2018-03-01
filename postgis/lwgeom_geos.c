@@ -777,8 +777,18 @@ Datum buffer(PG_FUNCTION_ARGS)
 	int quadsegs = 8; /* the default */
 	int nargs;
 	int singleside = 0; /* the default */
-	enum { ENDCAP_ROUND = 1, ENDCAP_FLAT = 2, ENDCAP_SQUARE = 3 };
-	enum { JOIN_ROUND = 1, JOIN_MITRE = 2, JOIN_BEVEL = 3 };
+	enum
+	{
+		ENDCAP_ROUND = 1,
+		ENDCAP_FLAT = 2,
+		ENDCAP_SQUARE = 3
+	};
+	enum
+	{
+		JOIN_ROUND = 1,
+		JOIN_MITRE = 2,
+		JOIN_BEVEL = 3
+	};
 	static const double DEFAULT_MITRE_LIMIT = 5.0;
 	static const int DEFAULT_ENDCAP_STYLE = ENDCAP_ROUND;
 	static const int DEFAULT_JOIN_STYLE = JOIN_ROUND;
@@ -1028,7 +1038,12 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 	int quadsegs = 8; /* the default */
 	int nargs;
 
-	enum { JOIN_ROUND = 1, JOIN_MITRE = 2, JOIN_BEVEL = 3 };
+	enum
+	{
+		JOIN_ROUND = 1,
+		JOIN_MITRE = 2,
+		JOIN_BEVEL = 3
+	};
 
 	static const double DEFAULT_MITRE_LIMIT = 5.0;
 	static const int DEFAULT_JOIN_STYLE = JOIN_ROUND;

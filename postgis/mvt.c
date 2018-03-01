@@ -39,9 +39,19 @@
 
 #define FEATURES_CAPACITY_INITIAL 50
 
-enum mvt_cmd_id { CMD_MOVE_TO = 1, CMD_LINE_TO = 2, CMD_CLOSE_PATH = 7 };
+enum mvt_cmd_id
+{
+	CMD_MOVE_TO = 1,
+	CMD_LINE_TO = 2,
+	CMD_CLOSE_PATH = 7
+};
 
-enum mvt_type { MVT_POINT = 1, MVT_LINE = 2, MVT_RING = 3 };
+enum mvt_type
+{
+	MVT_POINT = 1,
+	MVT_LINE = 2,
+	MVT_RING = 3
+};
 
 struct mvt_kv_key
 {

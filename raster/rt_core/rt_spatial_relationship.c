@@ -638,8 +638,18 @@ rt_raster_intersects_algorithm(rt_raster rast1,
 	uint32_t col;
 	uint32_t coloffset;
 
-	enum line_points { X1, Y1, X2, Y2 };
-	enum point { pX, pY };
+	enum line_points
+	{
+		X1,
+		Y1,
+		X2,
+		Y2
+	};
+	enum point
+	{
+		pX,
+		pY
+	};
 	double line1[4] = {0.};
 	double line2[4] = {0.};
 	double P[2] = {0.};
@@ -989,8 +999,18 @@ rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, i
 	uint32_t col;
 	uint32_t coloffset;
 
-	enum line_points { X1, Y1, X2, Y2 };
-	enum point { pX, pY };
+	enum line_points
+	{
+		X1,
+		Y1,
+		X2,
+		Y2
+	};
+	enum point
+	{
+		pX,
+		pY
+	};
 	double lineS[4];
 	double Qr[2];
 	double valS;
