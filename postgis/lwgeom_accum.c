@@ -77,7 +77,8 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 ** be used to pass an additional constant argument to a finalizer function.
 */
 
-typedef struct {
+typedef struct
+{
 	ArrayBuildState *a;
 	Datum data;
 } pgis_abs;
@@ -117,18 +118,21 @@ Datum pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 		ereport(ERROR,
 			(errcode(ERRCODE_INVALID_PARAMETER_VALUE), errmsg("could not determine input data type")));
 
-	if (!AggCheckCallContext(fcinfo, &aggcontext)) {
+	if (!AggCheckCallContext(fcinfo, &aggcontext))
+	{
 		/* cannot be called directly because of dummy-type argument */
 		elog(ERROR, "%s called in non-aggregate context", __func__);
 		aggcontext = NULL; /* keep compiler quiet */
 	}
 
-	if (PG_ARGISNULL(0)) {
+	if (PG_ARGISNULL(0))
+	{
 		p = (pgis_abs *)palloc(sizeof(pgis_abs));
 		p->a = NULL;
 		p->data = (Datum)NULL;
 
-		if (PG_NARGS() == 3) {
+		if (PG_NARGS() == 3)
+		{
 			Datum argument = PG_GETARG_DATUM(2);
 			Oid dataOid = get_fn_expr_argtype(fcinfo->flinfo, 2);
 			MemoryContext old = MemoryContextSwitchTo(aggcontext);
@@ -137,7 +141,9 @@ Datum pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 
 			MemoryContextSwitchTo(old);
 		}
-	} else {
+	}
+	else
+	{
 		p = (pgis_abs *)PG_GETARG_POINTER(0);
 	}
 	state = p->a;
@@ -314,7 +320,8 @@ Datum pgis_geometry_clusterwithin_finalfn(PG_FUNCTION_ARGS)
 
 	p = (pgis_abs *)PG_GETARG_POINTER(0);
 
-	if (!p->data) {
+	if (!p->data)
+	{
 		elog(ERROR, "Tolerance not defined");
 		PG_RETURN_NULL();
 	}

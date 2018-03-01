@@ -81,14 +81,16 @@ Datum RASTER_out(PG_FUNCTION_ARGS)
 	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	raster = rt_raster_deserialize(pgraster, FALSE);
-	if (!raster) {
+	if (!raster)
+	{
 		PG_FREE_IF_COPY(pgraster, 0);
 		elog(ERROR, "RASTER_out: Cannot deserialize raster");
 		PG_RETURN_NULL();
 	}
 
 	hexwkb = rt_raster_to_hexwkb(raster, FALSE, &hexwkbsize);
-	if (!hexwkb) {
+	if (!hexwkb)
+	{
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		elog(ERROR, "RASTER_out: Cannot HEX-WKBize raster");
@@ -121,7 +123,8 @@ Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
 
 	/* Get raster object */
 	raster = rt_raster_deserialize(pgraster, FALSE);
-	if (!raster) {
+	if (!raster)
+	{
 		PG_FREE_IF_COPY(pgraster, 0);
 		elog(ERROR, "RASTER_to_bytea: Cannot deserialize raster");
 		PG_RETURN_NULL();
@@ -129,7 +132,8 @@ Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
 
 	/* Parse raster to wkb object */
 	wkb = rt_raster_to_wkb(raster, FALSE, &wkb_size);
-	if (!wkb) {
+	if (!wkb)
+	{
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		elog(ERROR, "RASTER_to_bytea: Cannot allocate and generate WKB data");
@@ -160,7 +164,8 @@ Datum RASTER_noop(PG_FUNCTION_ARGS)
 	rt_pgraster *pgraster, *result;
 	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	raster = rt_raster_deserialize(pgraster, FALSE);
-	if (!raster) {
+	if (!raster)
+	{
 		PG_FREE_IF_COPY(pgraster, 0);
 		elog(ERROR, "RASTER_noop: Cannot deserialize raster");
 		PG_RETURN_NULL();

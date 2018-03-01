@@ -231,7 +231,8 @@ Utf8ToWideChar(const char *pszFilename)
 	if (nWide == 0) { return NULL; }
 	pwszFileName = (wchar_t *)malloc(nWide * sizeof(wchar_t));
 	if (pwszFileName == NULL) { return NULL; }
-	if (MultiByteToWideChar(CP_UTF8, 0, pszFilename, nMulti, pwszFileName, nWide) == 0) {
+	if (MultiByteToWideChar(CP_UTF8, 0, pszFilename, nMulti, pwszFileName, nWide) == 0)
+	{
 		free(pwszFileName);
 		return NULL;
 	}

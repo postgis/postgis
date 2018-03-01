@@ -33,7 +33,8 @@
 
 #define STRINGBUFFER_STARTSIZE 128
 
-typedef struct {
+typedef struct
+{
 	size_t capacity;
 	char *str_end;
 	char *str_start;

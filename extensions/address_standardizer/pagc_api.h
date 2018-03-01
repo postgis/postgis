@@ -34,7 +34,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 #define DBG(format, arg...) elog(NOTICE, format, ##arg)
 #else
 #define DBG(format, arg...) \
-	do { \
+	do \
+	{ \
 		; \
 	} while (0)
 #endif
@@ -244,12 +245,14 @@ typedef unsigned int PAGC_FLAG_T;
 #endif
 /* -- error records -- */
 
-typedef struct err_rec {
+typedef struct err_rec
+{
 	int is_fatal;                /* -- is this a fatal error ? -- */
 	char content_buf[MAXSTRLEN]; /* -- storage for message -- */
 } ERR_REC;
 
-typedef struct err_param {
+typedef struct err_param
+{
 	int last_err;
 	int first_err;
 	int next_fatal;
@@ -328,7 +331,8 @@ typedef int DEFDEF;
 /* ================= standardization records ===================*/
 
 /* -- This structure stores a definition for a lexical entry -- */
-typedef struct def {
+typedef struct def
+{
 	int Order; /* -- the order in the list -- */
 	SYMB Type; /* -- the Input symbol -- */
 	int Protect;
@@ -337,14 +341,16 @@ typedef struct def {
 } DEF;
 
 /* -- This stores the data for a lexical entry -- */
-typedef struct entry {
+typedef struct entry
+{
 	char *Lookup; /* -- To match against the input word -- */
 	DEF *DefList; /* -- list of definitions and outputs for this word -- */
 	struct entry *Next;
 } ENTRY;
 
 /* -- storage for standardization rules -- */
-typedef struct keyword {
+typedef struct keyword
+{
 	SYMB *Input;  /* -- List of input symbols -- */
 	SYMB *Output; /* -- List of output symbols, 1-1 with input -- */
 	SYMB Type;    /* -- The classification of the rule -- */
@@ -355,7 +361,8 @@ typedef struct keyword {
 	struct keyword *OutputNext;
 } KW;
 
-typedef struct lexeme {
+typedef struct lexeme
+{
 	int StartMorph;
 	int EndMorph;
 	DEF *DefList;
@@ -363,7 +370,8 @@ typedef struct lexeme {
 } LEXEME;
 
 /* 2006-11-02 */
-typedef struct rule_param {
+typedef struct rule_param
+{
 	int num_nodes;
 	int rules_read;
 	int collect_statistics;
@@ -376,7 +384,8 @@ typedef struct rule_param {
 } RULE_PARAM;
 
 /* -- structure used to assemble composite output -- */
-typedef struct seg {
+typedef struct seg
+{
 	SYMB sub_sym;     /* -- Used in forced standardization -- */
 	int Start;        /* -- the start target position -- */
 	int End;          /* -- the end position -- */
@@ -387,7 +396,8 @@ typedef struct seg {
 } SEG;
 
 /* -- storage structure for standardization candidates -- */
-typedef struct stz {
+typedef struct stz
+{
 	DS_Score_t score; /* -- standardization score -- */
 	DS_Score_t raw_score;
 	KW *build_key;            /* -- use to collect statistics -- */
@@ -396,7 +406,8 @@ typedef struct stz {
 } STZ;
 
 /* 2006-11-02 */
-typedef struct stz_param {
+typedef struct stz_param
+{
 	int stz_list_size;
 	int last_stz_output;
 	double stz_list_cutoff;
@@ -405,14 +416,16 @@ typedef struct stz_param {
 } STZ_PARAM;
 
 /* 2006-11-14 */
-struct morph {
+struct morph
+{
 	int Term;
 	int TextLen;
 	char Text[MAXTEXT];
 	DEFDEF Sym;
 };
 
-typedef struct stand_param {
+typedef struct stand_param
+{
 	int cur_morph;
 	int base_morph;
 	int LexNum;
@@ -454,7 +467,8 @@ typedef struct stand_param {
 /* -- The attribute structure is used to coordinate the schema in the
    reference data with the postal attributes identified by the standardizer
    and which may be used in the user's addresses. -- */
-typedef struct attribute {
+typedef struct attribute
+{
 	SYMB symbol;
 	int comp_type; /* -- The comparision type used in matching -- */
 	int check_dir; /* -- TRUE if a non-blank reference field is read -- */
@@ -475,7 +489,8 @@ typedef struct attribute {
 This structure is used to store the information on each reference
 record with which we attempt to match the user record
 ---------------------------------------------------------------- */
-typedef struct candidate {
+typedef struct candidate
+{
 	int score_card;     /*2008-12-15*/
 	DS_Entity_t record; /* -- reference database record number -- */
 	int stz;            /* -- The standardization being used -- */
@@ -487,7 +502,8 @@ typedef struct candidate {
 		  betaref.c (ReadScoreStandardized) -- */
 } CANDIDATE;                      /* -- structure initialized in Index/CreateCandidate --*/
 
-typedef struct int_candidate {
+typedef struct int_candidate
+{
 	DS_Entity_t record_A;
 	DS_Entity_t record_B;
 	int edit_distance_A;
@@ -503,7 +519,8 @@ typedef struct int_candidate {
 
 /* ================== global record =================== */
 
-typedef struct pagc_global {
+typedef struct pagc_global
+{
 	int log_init;
 	RULE_PARAM *rules;
 	DEF **default_def;
@@ -523,7 +540,8 @@ typedef void *RECOGNIZER_HANDLE;
 
 /* ============================ main schema record ========================== */
 
-typedef struct schema {
+typedef struct schema
+{
 	DS_Score_t match_weight[MAXOUTSYM];   /* match weight for each token employed in the schema */
 	DS_Score_t unmatch_weight[MAXOUTSYM]; /* the non-match weight for each */
 	DS_Score_t max_score;                 /* the maximum score for address matching */
@@ -616,7 +634,8 @@ typedef struct schema {
 
 /* ===================== build database control record ============= */
 
-typedef struct bdb_build_param {
+typedef struct bdb_build_param
+{
 	ERR_PARAM *errors;
 	SCHEMA *schema;
 	DS_Handle _beta_attribute_interface;
@@ -626,7 +645,8 @@ typedef struct bdb_build_param {
 
 /* ============ structures for intersection search =========== */
 
-typedef struct x_cand {
+typedef struct x_cand
+{
 	DS_Entity_t beta_rec;
 	int reversed;
 	int strategy;
@@ -637,13 +657,15 @@ typedef struct x_cand {
 	struct x_cand *cluster;
 } X_CAND;
 
-typedef struct pair_read {
+typedef struct pair_read
+{
 	DS_Entity_t record_1;
 	DS_Entity_t record_2;
 	struct pair_read *next;
 } PAIR_READ;
 
-typedef struct box_cell {
+typedef struct box_cell
+{
 	X_CAND *splitter;
 	PAIR_READ *pair_list;
 	struct box_cell *cell_list[4];
@@ -651,14 +673,16 @@ typedef struct box_cell {
 
 /* ============== structure for recording beta records read ======== */
 
-typedef struct record_read {
+typedef struct record_read
+{
 	DS_Entity_t row_no;
 	int stz;
 	struct record_read *left;
 	struct record_read *right;
 } RECORD_READ;
 
-typedef struct r_r_mgr {
+typedef struct r_r_mgr
+{
 	int current_offset;
 	void *base; /* 2010-06-24 : change to void * for flexibility */
 	struct r_r_mgr *prev_block;
@@ -666,7 +690,8 @@ typedef struct r_r_mgr {
 } R_R_MGR;
 
 /* 2011-01-24 : keep schema linkages on hand until closure */
-typedef struct schema_db_linkage {
+typedef struct schema_db_linkage
+{
 	SCHEMA *linked_schema;
 	DS_Handle _linked_beta;
 	DS_Handle _linked_idx[MAX_INDICES];
@@ -674,7 +699,8 @@ typedef struct schema_db_linkage {
 
 /* ============ main matching context record ========== */
 
-typedef struct pagc_context {
+typedef struct pagc_context
+{
 	SCHEMA *schema;
 	ERR_PARAM *errors;
 	int num_backlinks;                                /* 2011-01-24 : keep schema linkages on hand until closure */
@@ -717,7 +743,8 @@ typedef struct pagc_context {
 
 /* =============== client interface record (not exposed) =========== */
 
-typedef struct client_handle {
+typedef struct client_handle
+{
 	int handle_check;
 	int num_contexts;
 	int num_schemas;
@@ -729,7 +756,8 @@ typedef struct client_handle {
 } CLIENT_HANDLE;
 
 /* 2009-07-27 : structure for landmark scoring */
-typedef struct cand_score_params {
+typedef struct cand_score_params
+{
 	int target_word_cnt;
 	int postal_idx; /* which requester field has the postal */
 	int city_idx;
@@ -742,7 +770,8 @@ typedef struct cand_score_params {
 } CAND_SCORE_PARAMS;
 
 /*-- <revision date='2012-08-20'> New definition </revision> --*/
-typedef struct check_macro {
+typedef struct check_macro
+{
 	int in_line_string;
 	SYMB last_checked;
 	int __primary_in_reference__[4]; // Each reference present marks this
@@ -1114,14 +1143,16 @@ int tokenize_landmark_words(char *, char **);
 		TYP **temp_ptr; \
 		int row_num; \
 		PAGC_CALLOC_STRUC(temp_ptr, TYP *, ROWS, WHERE, EXIT_TYPE); \
-		for (row_num = 0; row_num < ROWS; row_num++) { \
+		for (row_num = 0; row_num < ROWS; row_num++) \
+		{ \
 			PAGC_CALLOC_STRUC(temp_ptr[row_num], TYP, COLS, WHERE, EXIT_TYPE); \
 		} \
 		PTR = temp_ptr; \
 	}
 
 #define FREE_AND_NULL(PTR) \
-	if (PTR != NULL) { \
+	if (PTR != NULL) \
+	{ \
 		free(PTR); \
 		PTR = NULL; \
 	}
@@ -1130,7 +1161,8 @@ int tokenize_landmark_words(char *, char **);
 	{ \
 		int row_num; \
 		TYP *row_val; \
-		for (row_num = 0; row_num < ROWS; row_num++) { \
+		for (row_num = 0; row_num < ROWS; row_num++) \
+		{ \
 			if ((row_val = PTR[row_num]) != NULL) { FREE_AND_NULL(row_val); } \
 		} \
 		FREE_AND_NULL(PTR); \
@@ -1152,7 +1184,8 @@ int tokenize_landmark_words(char *, char **);
 
 #define MAKE_SOUNDEX_KEY(DEST, CNT, SW) \
 	BLANK_STRING(DEST); \
-	for (CNT = 0; CNT < MAXPHRASE; CNT++) { \
+	for (CNT = 0; CNT < MAXPHRASE; CNT++) \
+	{ \
 		if (SW[CNT][0] == SENTINEL) break; \
 		COMMA_APPEND_WITH_LEN(DEST, SW[CNT], MAXSTRLEN); \
 	}
@@ -1186,13 +1219,15 @@ macros for converting and verifying pagc_client args
 	if (NATIVE_PTR->handle_check != HANDLE_CHECK) return 0
 
 #define CHECK_BOUNDS(ARRAY_SIZE, ARRAY_IDX) \
-	if ((ARRAY_IDX > ARRAY_SIZE) || (ARRAY_IDX < 1)) { \
+	if ((ARRAY_IDX > ARRAY_SIZE) || (ARRAY_IDX < 1)) \
+	{ \
 		CLIENT_ERR(pagc_p->global_record->process_errors); \
 		RET_ERR1("No such entity such as %d", ARRAY_IDX, pagc_p->global_record->process_errors, 0); \
 	}
 
 #define CHECK_BOUNDS_ABSOLUTE(ARRAY_SIZE, ARRAY_IDX) \
-	if ((ARRAY_IDX >= ARRAY_SIZE) || (ARRAY_IDX < 0)) { \
+	if ((ARRAY_IDX >= ARRAY_SIZE) || (ARRAY_IDX < 0)) \
+	{ \
 		CLIENT_ERR(pagc_p->global_record->process_errors); \
 		RET_ERR1("No such entity such as %d", ARRAY_IDX, pagc_p->global_record->process_errors, 0); \
 	}

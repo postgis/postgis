@@ -293,9 +293,11 @@ pgui_exec(const char *sql)
 	PQclear(res);
 
 	/* Did something unexpected happen? */
-	if (!(status == PGRES_COMMAND_OK || status == PGRES_TUPLES_OK)) {
+	if (!(status == PGRES_COMMAND_OK || status == PGRES_TUPLES_OK))
+	{
 		/* Log notices and return success. */
-		if (status == PGRES_NONFATAL_ERROR) {
+		if (status == PGRES_NONFATAL_ERROR)
+		{
 			pgui_logf("%s", PQerrorMessage(pg_connection));
 			return 1;
 		}
@@ -329,7 +331,8 @@ pgui_copy_start(const char *sql)
 	PQclear(res);
 
 	/* Did something unexpected happen? */
-	if (status != PGRES_COPY_IN) {
+	if (status != PGRES_COPY_IN)
+	{
 		/* Log errors and return failure. */
 		snprintf(sql_trunc, 255, "%s", sql);
 		pgui_logf("Failed SQL begins: \"%s\"", sql_trunc);
@@ -353,7 +356,8 @@ pgui_copy_write(const char *line)
 	if (!line) return 0;
 
 	/* Did something unexpected happen? */
-	if (PQputCopyData(pg_connection, line, strlen(line)) < 0) {
+	if (PQputCopyData(pg_connection, line, strlen(line)) < 0)
+	{
 		/* Log errors and return failure. */
 		snprintf(line_trunc, 255, "%s", line);
 		pgui_logf("Failed row begins: \"%s\"", line_trunc);
@@ -381,7 +385,8 @@ pgui_copy_end(const int rollback)
 	if (rollback) errmsg = "Roll back the copy.";
 
 	/* Did something unexpected happen? */
-	if (PQputCopyEnd(pg_connection, errmsg) < 0) {
+	if (PQputCopyEnd(pg_connection, errmsg) < 0)
+	{
 		/* Log errors and return failure. */
 		pgui_logf("Failed in pgui_copy_end(): %s", PQerrorMessage(pg_connection));
 		return 0;
@@ -405,7 +410,8 @@ update_filename_field_width(void)
 	/* Loop through the list store to find the maximum length of an entry */
 	max_width = 0;
 	is_valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(import_file_list_store), &iter);
-	while (is_valid) {
+	while (is_valid)
+	{
 		/* Grab the length of the filename entry in characters */
 		gtk_tree_model_get(
 		    GTK_TREE_MODEL(import_file_list_store), &iter, IMPORT_FILENAME_COLUMN, &filename, -1);
@@ -436,7 +442,8 @@ connection_test(void)
 	char *connection_string = NULL;
 	char *connection_sanitized = NULL;
 
-	if (!(connection_string = ShpDumperGetConnectionStringFromConn(conn))) {
+	if (!(connection_string = ShpDumperGetConnectionStringFromConn(conn)))
+	{
 		pgui_raise_error_dialogue();
 		valid_connection = 0;
 		return 0;
@@ -448,7 +455,8 @@ connection_test(void)
 	free(connection_sanitized);
 
 	pg_connection = PQconnectdb(connection_string);
-	if (PQstatus(pg_connection) == CONNECTION_BAD) {
+	if (PQstatus(pg_connection) == CONNECTION_BAD)
+	{
 		pgui_logf(_("Database connection failed: %s"), PQerrorMessage(pg_connection));
 		free(connection_string);
 		PQfinish(pg_connection);
@@ -511,13 +519,16 @@ update_loader_config_globals_from_options_ui(SHPLOADERCONFIG *config)
 	gboolean geography = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_geography));
 	gboolean simplegeoms = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_simplegeoms));
 
-	if (geography) {
+	if (geography)
+	{
 		config->geography = 1;
 
 		if (config->geo_col) free(config->geo_col);
 
 		config->geo_col = strdup(GEOGRAPHY_DEFAULT);
-	} else {
+	}
+	else
+	{
 		config->geography = 0;
 
 		if (config->geo_col) free(config->geo_col);
@@ -526,7 +537,8 @@ update_loader_config_globals_from_options_ui(SHPLOADERCONFIG *config)
 	}
 
 	/* Encoding */
-	if (entry_encoding && strlen(entry_encoding) > 0) {
+	if (entry_encoding && strlen(entry_encoding) > 0)
+	{
 		if (config->encoding) free(config->encoding);
 
 		config->encoding = strdup(entry_encoding);
@@ -551,12 +563,14 @@ update_loader_config_globals_from_options_ui(SHPLOADERCONFIG *config)
 		config->createindex = 0;
 
 	/* Read the .shp file, don't ignore it */
-	if (dbfonly) {
+	if (dbfonly)
+	{
 		config->readshape = 0;
 
 		/* There will be no spatial column so don't create a spatial index */
 		config->createindex = 0;
-	} else
+	}
+	else
 		config->readshape = 1;
 
 	/* Use COPY rather than INSERT format */
@@ -612,7 +626,8 @@ pgui_set_loader_configs_from_options_ui()
 	/* Now also update the same settings for any existing files already added. We
 	   do this by looping through all entries and updating their config too. */
 	is_valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(import_file_list_store), &iter);
-	while (is_valid) {
+	while (is_valid)
+	{
 		/* Get the SHPLOADERCONFIG for this file entry */
 		gtk_tree_model_get(GTK_TREE_MODEL(import_file_list_store), &iter, IMPORT_POINTER_COLUMN, &gptr, -1);
 		loader_file_config = (SHPLOADERCONFIG *)gptr;
@@ -655,7 +670,8 @@ update_table_chooser_from_database()
 	gtk_list_store_clear(chooser_table_list_store);
 
 	/* Now insert one row for each query result */
-	for (i = 0; i < PQntuples(result); i++) {
+	for (i = 0; i < PQntuples(result); i++)
+	{
 		gtk_list_store_insert_before(chooser_table_list_store, &iter, NULL);
 
 		/* Look up the geo columns; if there are none then we set the field to (None). If we have just one
@@ -678,9 +694,11 @@ update_table_chooser_from_database()
 		   is to ensure that the export table list model can directly represent a SHPDUMPERCONFIG. */
 		dumper_geocol_combo_list = gtk_list_store_new(TABLECHOOSER_GEOCOL_COMBO_COLUMNS, G_TYPE_STRING);
 
-		if (PQntuples(geocol_result) > 0) {
+		if (PQntuples(geocol_result) > 0)
+		{
 			/* Load the columns into the list store */
-			for (j = 0; j < PQntuples(geocol_result); j++) {
+			for (j = 0; j < PQntuples(geocol_result); j++)
+			{
 				geocol_name = PQgetvalue(geocol_result, j, PQfnumber(geocol_result, "attname"));
 
 				gtk_list_store_insert_before(dumper_geocol_combo_list,
@@ -692,7 +710,9 @@ update_table_chooser_from_database()
 						   geocol_name,
 						   -1);
 			}
-		} else {
+		}
+		else
+		{
 			/* Add a "default" entry */
 			geocol_name = NULL;
 
@@ -746,7 +766,8 @@ table_chooser_visibility_func(GtkTreeModel *model, GtkTreeIter *iter, gpointer d
 	/* If unticked then we show all tables */
 	if (!geoonly)
 		return TRUE;
-	else {
+	else
+	{
 		/* Otherwise we only show the tables with geo columns */
 		gtk_tree_model_get(GTK_TREE_MODEL(model), iter, TABLECHOOSER_HASGEO_COLUMN, &hasgeo, -1);
 		if (hasgeo)
@@ -820,7 +841,8 @@ pgui_set_dumper_configs_from_options_ui()
 	/* Now also update the same settings for any existing tables already added. We
 	   do this by looping through all entries and updating their config too. */
 	is_valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(export_table_list_store), &iter);
-	while (is_valid) {
+	while (is_valid)
+	{
 		/* Get the SHPDUMPERCONFIG for this file entry */
 		gtk_tree_model_get(GTK_TREE_MODEL(export_table_list_store), &iter, EXPORT_POINTER_COLUMN, &gptr, -1);
 		dumper_table_config = (SHPDUMPERCONFIG *)gptr;
@@ -907,7 +929,8 @@ create_new_file_config(const char *filename)
 	loader_file_config->table[table_end - table_start] = '\0';
 
 	/* Force the table name to lower case */
-	for (i = 0; i < table_end - table_start; i++) {
+	for (i = 0; i < table_end - table_start; i++)
+	{
 		if (isupper(loader_file_config->table[i]) != 0)
 			loader_file_config->table[i] = tolower(loader_file_config->table[i]);
 	}
@@ -933,7 +956,8 @@ add_loader_file_config_to_list(SHPLOADERCONFIG *loader_file_config)
 	char srid[MAXLEN + 1];
 
 	/* Convert SRID into string */
-	if (MAXLEN + 1 <= snprintf(srid, MAXLEN + 1, "%d", loader_file_config->sr_id)) {
+	if (MAXLEN + 1 <= snprintf(srid, MAXLEN + 1, "%d", loader_file_config->sr_id))
+	{
 		pgui_logf("Invalid SRID requiring more than %d digits: %d", MAXLEN, loader_file_config->sr_id);
 		pgui_raise_error_dialogue();
 		srid[MAXLEN] = '\0';
@@ -1055,7 +1079,8 @@ add_dumper_table_config_to_list(SHPDUMPERCONFIG *dumper_table_config,
 			   -1);
 
 	/* If we have supplied the table_chooser store for additional information, use it */
-	if (chooser_liststore) {
+	if (chooser_liststore)
+	{
 		/* Let's add a multi-choice geometry column to the table */
 		gtk_tree_model_get(GTK_TREE_MODEL(chooser_liststore),
 				   chooser_iter,
@@ -1092,7 +1117,8 @@ free_dumper_config(SHPDUMPERCONFIG *config)
 static int
 validate_shape_column_against_pg_column(int dbf_fieldtype, char *pg_fieldtype)
 {
-	switch (dbf_fieldtype) {
+	switch (dbf_fieldtype)
+	{
 	case FTString:
 		/* Only varchar */
 		if (!strcmp(pg_fieldtype, "varchar")) return -1;
@@ -1137,13 +1163,16 @@ validate_remote_loader_columns(SHPLOADERCONFIG *config, PGresult *result)
 
 	/* Check the status of the result set */
 	status = PQresultStatus(result);
-	if (status == PGRES_TUPLES_OK) {
+	if (status == PGRES_TUPLES_OK)
+	{
 		ntuples = PQntuples(result);
 
-		switch (config->opt) {
+		switch (config->opt)
+		{
 		case 'c':
 			/* If we have a row matching the table given in the config, then it already exists */
-			if (ntuples > 0) {
+			if (ntuples > 0)
+			{
 				pgui_seterr(_("ERROR: Create mode selected for existing table: %s.%s"),
 					    config->schema,
 					    config->table);
@@ -1153,7 +1182,8 @@ validate_remote_loader_columns(SHPLOADERCONFIG *config, PGresult *result)
 
 		case 'p':
 			/* If we have a row matching the table given in the config, then it already exists */
-			if (ntuples > 0) {
+			if (ntuples > 0)
+			{
 				pgui_seterr(_("ERROR: Prepare mode selected for existing table: %s.%s"),
 					    config->schema,
 					    config->table);
@@ -1163,34 +1193,42 @@ validate_remote_loader_columns(SHPLOADERCONFIG *config, PGresult *result)
 
 		case 'a':
 			/* If we are trying to append to a table but it doesn't exist, emit a warning */
-			if (ntuples == 0) {
+			if (ntuples == 0)
+			{
 				pgui_seterr(_("ERROR: Destination table %s.%s could not be found for appending"),
 					    config->schema,
 					    config->table);
 				response = SHPLOADERERR;
-			} else {
+			}
+			else
+			{
 				/* If we have a row then lets do some simple column validation... */
 				state = ShpLoaderCreate(config);
 				ret = ShpLoaderOpenShape(state);
-				if (ret != SHPLOADEROK) {
+				if (ret != SHPLOADEROK)
+				{
 					pgui_logf(_("Warning: Could not load shapefile %s"), config->shp_file);
 					ShpLoaderDestroy(state);
 				}
 
 				/* Find each column based upon its name and then validate type separately... */
-				for (i = 0; i < state->num_fields; i++) {
+				for (i = 0; i < state->num_fields; i++)
+				{
 					/* Make sure we find a column */
 					found = 0;
-					for (j = 0; j < ntuples; j++) {
+					for (j = 0; j < ntuples; j++)
+					{
 						pg_fieldname = PQgetvalue(result, j, PQfnumber(result, "field"));
 						pg_fieldtype = PQgetvalue(result, j, PQfnumber(result, "type"));
 
-						if (!strcmp(state->field_names[i], pg_fieldname)) {
+						if (!strcmp(state->field_names[i], pg_fieldname))
+						{
 							found = -1;
 
 							ret = validate_shape_column_against_pg_column(state->types[i],
 												      pg_fieldtype);
-							if (!ret) {
+							if (!ret)
+							{
 								pgui_logf(
 								    _("Warning: DBF Field '%s' is not compatible with PostgreSQL column '%s' in %s.%s"),
 								    state->field_names[i],
@@ -1203,7 +1241,8 @@ validate_remote_loader_columns(SHPLOADERCONFIG *config, PGresult *result)
 					}
 
 					/* Flag a warning if we can't find a match */
-					if (!found) {
+					if (!found)
+					{
 						pgui_logf(
 						    _("Warning: DBF Field '%s' within file %s could not be matched to a column within table %s.%s"),
 						    state->field_names[i],
@@ -1219,7 +1258,9 @@ validate_remote_loader_columns(SHPLOADERCONFIG *config, PGresult *result)
 
 			break;
 		}
-	} else {
+	}
+	else
+	{
 		pgui_seterr(_("ERROR: unable to process validation response from remote server"));
 		response = SHPLOADERERR;
 	}
@@ -1282,12 +1323,14 @@ pgui_action_open_file_dialog(GtkWidget *widget, gpointer data)
 	gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(dialog_filechooser));
 
 	/* Run the dialog */
-	if (gtk_dialog_run(GTK_DIALOG(dialog_filechooser)) == GTK_RESPONSE_ACCEPT) {
+	if (gtk_dialog_run(GTK_DIALOG(dialog_filechooser)) == GTK_RESPONSE_ACCEPT)
+	{
 		/* Create the new file configuration based upon the each filename and add it to the listview */
 		filename_list = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog_filechooser));
 
 		filename_item = g_slist_nth(filename_list, 0);
-		while (filename_item) {
+		while (filename_item)
+		{
 			/* Add the configuration */
 			filename = g_slist_nth_data(filename_item, 0);
 
@@ -1316,7 +1359,8 @@ pgui_action_open_table_dialog(GtkWidget *widget, gpointer data)
 	GtkTreePath *tree_path;
 
 	/* Make sure we can connect to the database first */
-	if (!connection_test()) {
+	if (!connection_test())
+	{
 		pgui_seterr(_("Unable to connect to the database - please check your connection settings"));
 		pgui_raise_error_dialogue();
 
@@ -1333,13 +1377,15 @@ pgui_action_open_table_dialog(GtkWidget *widget, gpointer data)
 
 	/* Run the dialog */
 	gtk_widget_show_all(dialog_tablechooser);
-	if (gtk_dialog_run(GTK_DIALOG(dialog_tablechooser)) == GTK_RESPONSE_OK) {
+	if (gtk_dialog_run(GTK_DIALOG(dialog_tablechooser)) == GTK_RESPONSE_OK)
+	{
 		/* Create the new dumper configuration based upon the selected iters and add them to the listview */
 		chooser_selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(chooser_tree));
 
 		selected_rows_list = gtk_tree_selection_get_selected_rows(chooser_selection, &model);
 		selected_row = g_list_first(selected_rows_list);
-		while (selected_row) {
+		while (selected_row)
+		{
 			/* Get the tree iter */
 			tree_path = (GtkTreePath *)g_list_nth_data(selected_row, 0);
 			gtk_tree_model_get_iter(model, &iter, tree_path);
@@ -1400,7 +1446,8 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 
 	/* Get the first row of the import list */
 	is_valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(import_file_list_store), &iter);
-	if (!is_valid) {
+	if (!is_valid)
+	{
 		pgui_seterr(_("ERROR: You haven't specified any files to import"));
 		pgui_raise_error_dialogue();
 
@@ -1409,7 +1456,8 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 
 	/* Firstly make sure that we can connect to the database - if we can't then there isn't much
 	   point doing anything else... */
-	if (!connection_test()) {
+	if (!connection_test())
+	{
 		pgui_seterr(_("Unable to connect to the database - please check your connection settings"));
 		pgui_raise_error_dialogue();
 
@@ -1431,7 +1479,8 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	    "SELECT a.attnum, a.attname AS field, t.typname AS type, a.attlen AS length, a.atttypmod AS precision FROM pg_class c, pg_attribute a, pg_type t, pg_namespace n WHERE c.relname = '%s' AND n.nspname = '%s' AND a.attnum > 0 AND a.attrelid = c.oid AND a.atttypid = t.oid AND c.relnamespace = n.oid ORDER BY a.attnum";
 
 	/* Validation: we loop through each of the files in order to validate them as a separate pass */
-	while (is_valid) {
+	while (is_valid)
+	{
 		/* Grab the SHPLOADERCONFIG for this row */
 		gtk_tree_model_get(GTK_TREE_MODEL(import_file_list_store), &iter, IMPORT_POINTER_COLUMN, &gptr, -1);
 		loader_file_config = (SHPLOADERCONFIG *)gptr;
@@ -1445,7 +1494,8 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 
 		/* Call the validation function with the SHPLOADERCONFIG and the result set */
 		ret = validate_remote_loader_columns(loader_file_config, result);
-		if (ret == SHPLOADERERR) {
+		if (ret == SHPLOADERERR)
+		{
 			pgui_raise_error_dialogue();
 
 			PQclear(result);
@@ -1467,7 +1517,8 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 
 	/* Once we've done the validation pass, now let's load the shapefile */
 	is_valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(import_file_list_store), &iter);
-	while (is_valid) {
+	while (is_valid)
+	{
 		/* Grab the SHPLOADERCONFIG for this row */
 		gtk_tree_model_get(GTK_TREE_MODEL(import_file_list_store), &iter, IMPORT_POINTER_COLUMN, &gptr, -1);
 		loader_file_config = (SHPLOADERCONFIG *)gptr;
@@ -1507,7 +1558,8 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 
 		/* Open the shapefile */
 		ret = ShpLoaderOpenShape(state);
-		if (ret != SHPLOADEROK) {
+		if (ret != SHPLOADEROK)
+		{
 			pgui_logf("%s", state->message);
 
 			if (ret == SHPLOADERERR) goto import_cleanup;
@@ -1534,14 +1586,16 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		gtk_widget_show_all(dialog_progress);
 
 		/* If reading the whole shapefile, display its type */
-		if (state->config->readshape) {
+		if (state->config->readshape)
+		{
 			pgui_logf("Shapefile type: %s", SHPTypeName(state->shpfiletype));
 			pgui_logf("PostGIS type: %s[%d]", state->pgtype, state->pgdims);
 		}
 
 		/* Get the header */
 		ret = ShpLoaderGetSQLHeader(state, &header);
-		if (ret != SHPLOADEROK) {
+		if (ret != SHPLOADEROK)
+		{
 			pgui_logf("%s", state->message);
 
 			if (ret == SHPLOADERERR) goto import_cleanup;
@@ -1555,17 +1609,20 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		if (!ret) goto import_cleanup;
 
 		/* If we are in prepare mode, we need to skip the actual load. */
-		if (state->config->opt != 'p') {
+		if (state->config->opt != 'p')
+		{
 			int numrecords = ShpLoaderGetRecordCount(state);
 			int records_per_tick = (numrecords / 200) - 1;
 
 			if (records_per_tick < 1) records_per_tick = 1;
 
 			/* If we are in COPY (dump format) mode, output the COPY statement and enter COPY mode */
-			if (state->config->dump_format) {
+			if (state->config->dump_format)
+			{
 				ret = ShpLoaderGetSQLCopyStatement(state, &header);
 
-				if (ret != SHPLOADEROK) {
+				if (ret != SHPLOADEROK)
+				{
 					pgui_logf("%s", state->message);
 
 					if (ret == SHPLOADERERR) goto import_cleanup;
@@ -1579,10 +1636,12 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 			}
 
 			/* Main loop: iterate through all of the records and send them to stdout */
-			for (i = 0; i < numrecords && is_running; i++) {
+			for (i = 0; i < numrecords && is_running; i++)
+			{
 				ret = ShpLoaderGenerateSQLRowStatement(state, i, &record);
 
-				switch (ret) {
+				switch (ret)
+				{
 				case SHPLOADEROK:
 					/* Simply send the statement */
 					if (state->config->dump_format)
@@ -1637,11 +1696,13 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 			}
 
 			/* If we are in COPY (dump format) mode, leave COPY mode */
-			if (state->config->dump_format) {
+			if (state->config->dump_format)
+			{
 				if (!pgui_copy_end(0)) goto import_cleanup;
 
 				result = PQgetResult(pg_connection);
-				if (PQresultStatus(result) != PGRES_COMMAND_OK) {
+				if (PQresultStatus(result) != PGRES_COMMAND_OK)
+				{
 					pgui_logf(_("COPY failed with the following error: %s"),
 						  PQerrorMessage(pg_connection));
 					ret = SHPLOADERERR;
@@ -1651,17 +1712,20 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		} /* if (state->config->opt != 'p') */
 
 		/* Only continue if we didn't abort part way through */
-		if (is_running) {
+		if (is_running)
+		{
 			/* Get the footer */
 			ret = ShpLoaderGetSQLFooter(state, &footer);
-			if (ret != SHPLOADEROK) {
+			if (ret != SHPLOADEROK)
+			{
 				pgui_logf("%s\n", state->message);
 
 				if (ret == SHPLOADERERR) goto import_cleanup;
 			}
 
 			/* Just in case index creation takes a long time, update the progress text */
-			if (state->config->createindex) {
+			if (state->config->createindex)
+			{
 				gtk_label_set_text(GTK_LABEL(label_progress), _("Creating spatial index..."));
 
 				/* Allow GTK events to get a look in */
@@ -1739,7 +1803,8 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 
 	/* Get the first row of the import list */
 	is_valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(export_table_list_store), &iter);
-	if (!is_valid) {
+	if (!is_valid)
+	{
 		pgui_seterr(_("ERROR: You haven't specified any tables to export"));
 		pgui_raise_error_dialogue();
 
@@ -1748,7 +1813,8 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 
 	/* Firstly make sure that we can connect to the database - if we can't then there isn't much
 	   point doing anything else... */
-	if (!connection_test()) {
+	if (!connection_test())
+	{
 		pgui_seterr(_("Unable to connect to the database - please check your connection settings"));
 		pgui_raise_error_dialogue();
 
@@ -1761,7 +1827,8 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 
 	/* Now open the file selector dialog so the user can specify where they would like the output
 	   files to reside */
-	if (gtk_dialog_run(GTK_DIALOG(dialog_folderchooser)) != GTK_RESPONSE_ACCEPT) {
+	if (gtk_dialog_run(GTK_DIALOG(dialog_folderchooser)) != GTK_RESPONSE_ACCEPT)
+	{
 		gtk_widget_hide(dialog_folderchooser);
 
 		return;
@@ -1772,7 +1839,8 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 
 	/* Now everything is set up, let's extract the tables */
 	is_valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(export_table_list_store), &iter);
-	while (is_valid) {
+	while (is_valid)
+	{
 		/* Grab the SHPDUMPERCONFIG for this row */
 		gtk_tree_model_get(GTK_TREE_MODEL(export_table_list_store), &iter, EXPORT_POINTER_COLUMN, &gptr, -1);
 		dumper_table_config = (SHPDUMPERCONFIG *)gptr;
@@ -1809,7 +1877,8 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 
 		/* Connect to the database */
 		ret = ShpDumperConnectDatabase(state);
-		if (ret != SHPDUMPEROK) {
+		if (ret != SHPDUMPEROK)
+		{
 			pgui_seterr("%s", state->message);
 			pgui_raise_error_dialogue();
 
@@ -1822,10 +1891,12 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 		gtk_widget_show_all(dialog_progress);
 
 		ret = ShpDumperOpenTable(state);
-		if (ret != SHPDUMPEROK) {
+		if (ret != SHPDUMPEROK)
+		{
 			pgui_logf("%s", state->message);
 
-			if (ret == SHPDUMPERERR) {
+			if (ret == SHPDUMPERERR)
+			{
 				gtk_widget_hide(dialog_progress);
 
 				pgui_seterr("%s", state->message);
@@ -1851,12 +1922,15 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 		pgui_logf(_("Done (postgis major version: %d)"), state->pgis_major_version);
 		pgui_logf(_("Output shape: %s"), shapetypename(state->outshptype));
 
-		for (i = 0; i < ShpDumperGetRecordCount(state) && is_running == TRUE; i++) {
+		for (i = 0; i < ShpDumperGetRecordCount(state) && is_running == TRUE; i++)
+		{
 			ret = ShpLoaderGenerateShapeRow(state);
-			if (ret != SHPDUMPEROK) {
+			if (ret != SHPDUMPEROK)
+			{
 				pgui_logf("%s", state->message);
 
-				if (ret == SHPDUMPERERR) {
+				if (ret == SHPDUMPERERR)
+				{
 					gtk_widget_hide(dialog_progress);
 
 					pgui_seterr("%s", state->message);
@@ -1877,10 +1951,12 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 
 		/* Finish the dump */
 		ret = ShpDumperCloseTable(state);
-		if (ret != SHPDUMPEROK) {
+		if (ret != SHPDUMPEROK)
+		{
 			pgui_logf("%s", state->message);
 
-			if (ret == SHPDUMPERERR) {
+			if (ret == SHPDUMPERERR)
+			{
 				gtk_widget_hide(dialog_progress);
 
 				pgui_seterr("%s", state->message);
@@ -1938,7 +2014,8 @@ process_single_uri(char *uri)
 	char *hostname;
 	GError *error = NULL;
 
-	if (uri == NULL) {
+	if (uri == NULL)
+	{
 		pgui_logf(_("Unable to process drag URI."));
 		return;
 	}
@@ -1946,7 +2023,8 @@ process_single_uri(char *uri)
 	filename = g_filename_from_uri(uri, &hostname, &error);
 	g_free(uri);
 
-	if (filename == NULL) {
+	if (filename == NULL)
+	{
 		pgui_logf(_("Unable to process filename: %s\n"), error->message);
 		g_error_free(error);
 		return;
@@ -2018,15 +2096,18 @@ pgui_action_handle_file_drop(GtkWidget *widget,
 {
 	const gchar *p, *q;
 
-	if (selection_data->data == NULL) {
+	if (selection_data->data == NULL)
+	{
 		pgui_logf(_("Unable to process drag data."));
 		return;
 	}
 
 	p = (char *)selection_data->data;
-	while (p) {
+	while (p)
+	{
 		/* Only process non-comments */
-		if (*p != '#') {
+		if (*p != '#')
+		{
 			/* Trim leading whitespace */
 			while (g_ascii_isspace(*p))
 				p++;
@@ -2034,7 +2115,8 @@ pgui_action_handle_file_drop(GtkWidget *widget,
 			/* Scan to the end of the string (null or newline) */
 			while (*q && (*q != '\n') && (*q != '\r'))
 				q++;
-			if (q > p) {
+			if (q > p)
+			{
 				/* Ignore terminating character */
 				q--;
 				/* Trim trailing whitespace */
@@ -2078,7 +2160,8 @@ pgui_action_handle_tree_combo(GtkCellRendererCombo *combo,
 	   end up trying to generate the index again */
 	loader_file_config->createindex = global_loader_config->createindex;
 
-	switch (opt) {
+	switch (opt)
+	{
 	case 'a':
 		loader_file_config->opt = 'a';
 
@@ -2139,7 +2222,8 @@ pgui_action_handle_loader_edit(GtkCellRendererText *renderer, gchar *path, gchar
 	update_loader_file_config_from_listview_iter(&iter, loader_file_config);
 
 	/* Now refresh the listview UI row with the new configuration */
-	if (MAXLEN + 1 <= snprintf(srid, MAXLEN + 1, "%d", loader_file_config->sr_id)) {
+	if (MAXLEN + 1 <= snprintf(srid, MAXLEN + 1, "%d", loader_file_config->sr_id))
+	{
 		pgui_logf("Invalid SRID requiring more than %d digits: %d", MAXLEN, loader_file_config->sr_id);
 		pgui_raise_error_dialogue();
 		srid[MAXLEN] = '\0';
@@ -2261,7 +2345,8 @@ pgui_action_handle_table_geocol_combo(GtkCellRendererCombo *combo,
 	gtk_tree_model_get(GTK_TREE_MODEL(model), new_iter, TABLECHOOSER_GEOCOL_COMBO_TEXT, &geocol_name, -1);
 	dumper_table_config = (SHPDUMPERCONFIG *)gptr;
 
-	if (dumper_table_config->geo_col_name) {
+	if (dumper_table_config->geo_col_name)
+	{
 		free(dumper_table_config->geo_col_name);
 
 		dumper_table_config->geo_col_name = strdup(geocol_name);
@@ -2413,9 +2498,12 @@ pgui_validate_connection()
 {
 	int i;
 
-	if (conn->port && strlen(conn->port)) {
-		for (i = 0; i < strlen(conn->port); i++) {
-			if (!isdigit(conn->port[i])) {
+	if (conn->port && strlen(conn->port))
+	{
+		for (i = 0; i < strlen(conn->port); i++)
+		{
+			if (!isdigit(conn->port[i]))
+			{
 				pgui_seterr(_("The connection port must be numeric!"));
 				return 0;
 			}
@@ -2429,9 +2517,11 @@ static void
 pgui_sanitize_connection_string(char *connection_string)
 {
 	char *ptr = strstr(connection_string, "password");
-	if (ptr) {
+	if (ptr)
+	{
 		ptr += 10;
-		while (*ptr != '\'' && *ptr != '\0') {
+		while (*ptr != '\'' && *ptr != '\0')
+		{
 			/* If we find a \, hide both it and the next character */
 			if (*ptr == '\\') *ptr++ = '*';
 
@@ -2452,18 +2542,22 @@ pgui_action_connection_okay(GtkWidget *widget, gpointer data)
 	update_conn_config_from_conn_ui();
 
 	/* Make sure have a valid connection first */
-	if (!pgui_validate_connection()) {
+	if (!pgui_validate_connection())
+	{
 		pgui_raise_error_dialogue();
 		return;
 	}
 
-	if (!connection_test()) {
+	if (!connection_test())
+	{
 		pgui_logf(_("Connection failed."));
 
 		/* If the connection failed, display a warning before closing */
 		pgui_seterr(_("Unable to connect to the database - please check your connection settings"));
 		pgui_raise_error_dialogue();
-	} else {
+	}
+	else
+	{
 		pgui_logf(_("Connection succeeded."));
 	}
 
@@ -3453,8 +3547,10 @@ main(int argc, char *argv[])
 	conn->host = strdup("localhost");
 	conn->port = strdup("5432");
 
-	while ((c = pgis_getopt(argc, argv, "U:p:W:d:h:")) != -1) {
-		switch (c) {
+	while ((c = pgis_getopt(argc, argv, "U:p:W:d:h:")) != -1)
+	{
+		switch (c)
+		{
 		case 'U':
 			conn->username = strdup(pgis_optarg);
 			break;

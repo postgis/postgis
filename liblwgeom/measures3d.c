@@ -118,7 +118,8 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 	/*Check if we really have 3D geoemtries*/
 	/*If not, send it to 2D-calculations which will give the same result*/
 	/*as an infinite z-value at one or two of the geometries*/
-	if (!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2)) {
+	if (!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
+	{
 
 		lwnotice(
 		    "One or both of the geometries is missing z-value. The unknown z-value will be regarded as \"any value\"");
@@ -129,18 +130,21 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 		thedl2d.mode = mode;
 		thedl2d.distance = initdistance;
 		thedl2d.tolerance = 0.0;
-		if (!lw_dist2d_comp(lw1, lw2, &thedl2d)) {
+		if (!lw_dist2d_comp(lw1, lw2, &thedl2d))
+		{
 			/*should never get here. all cases ought to be error handled earlier*/
 			lwerror("Some unspecified error.");
 			result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 		}
 		LWGEOM *vertical_line;
-		if (!lwgeom_has_z(lw1)) {
+		if (!lwgeom_has_z(lw1))
+		{
 			x = thedl2d.p1.x;
 			y = thedl2d.p1.y;
 
 			vertical_line = create_v_line(lw2, x, y, srid);
-			if (!lw_dist3d_recursive(vertical_line, lw2, &thedl)) {
+			if (!lw_dist3d_recursive(vertical_line, lw2, &thedl))
+			{
 				/*should never get here. all cases ought to be error handled earlier*/
 				lwfree(vertical_line);
 				lwerror("Some unspecified error.");
@@ -148,12 +152,14 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 			}
 			lwfree(vertical_line);
 		}
-		if (!lwgeom_has_z(lw2)) {
+		if (!lwgeom_has_z(lw2))
+		{
 			x = thedl2d.p2.x;
 			y = thedl2d.p2.y;
 
 			vertical_line = create_v_line(lw1, x, y, srid);
-			if (!lw_dist3d_recursive(lw1, vertical_line, &thedl)) {
+			if (!lw_dist3d_recursive(lw1, vertical_line, &thedl))
+			{
 				/*should never get here. all cases ought to be error handled earlier*/
 				lwfree(vertical_line);
 				lwerror("Some unspecified error.");
@@ -161,18 +167,24 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 			}
 			lwfree(vertical_line);
 		}
-	} else {
-		if (!lw_dist3d_recursive(lw1, lw2, &thedl)) {
+	}
+	else
+	{
+		if (!lw_dist3d_recursive(lw1, lw2, &thedl))
+		{
 			/*should never get here. all cases ought to be error handled earlier*/
 			lwerror("Some unspecified error.");
 			result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 		}
 	}
 	/*if thedl.distance is unchanged there where only empty geometries input*/
-	if (thedl.distance == initdistance) {
+	if (thedl.distance == initdistance)
+	{
 		LWDEBUG(3, "didn't find geometries to measure between, returning null");
 		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
-	} else {
+	}
+	else
+	{
 		x1 = thedl.p1.x;
 		y1 = thedl.p1.y;
 		z1 = thedl.p1.z;
@@ -210,7 +222,8 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 	/*Check if we really have 3D geoemtries*/
 	/*If not, send it to 2D-calculations which will give the same result*/
 	/*as an infinite z-value at one or two of the geometries*/
-	if (!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2)) {
+	if (!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
+	{
 		lwnotice(
 		    "One or both of the geometries is missing z-value. The unknown z-value will be regarded as \"any value\"");
 
@@ -220,19 +233,22 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 		thedl2d.mode = mode;
 		thedl2d.distance = initdistance;
 		thedl2d.tolerance = 0.0;
-		if (!lw_dist2d_comp(lw1, lw2, &thedl2d)) {
+		if (!lw_dist2d_comp(lw1, lw2, &thedl2d))
+		{
 			/*should never get here. all cases ought to be error handled earlier*/
 			lwerror("Some unspecified error.");
 			return (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 		}
 
 		LWGEOM *vertical_line;
-		if (!lwgeom_has_z(lw1)) {
+		if (!lwgeom_has_z(lw1))
+		{
 			x = thedl2d.p1.x;
 			y = thedl2d.p1.y;
 
 			vertical_line = create_v_line(lw2, x, y, srid);
-			if (!lw_dist3d_recursive(vertical_line, lw2, &thedl)) {
+			if (!lw_dist3d_recursive(vertical_line, lw2, &thedl))
+			{
 				/*should never get here. all cases ought to be error handled earlier*/
 				lwfree(vertical_line);
 				lwerror("Some unspecified error.");
@@ -241,12 +257,14 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 			lwfree(vertical_line);
 		}
 
-		if (!lwgeom_has_z(lw2)) {
+		if (!lwgeom_has_z(lw2))
+		{
 			x = thedl2d.p2.x;
 			y = thedl2d.p2.y;
 
 			vertical_line = create_v_line(lw1, x, y, srid);
-			if (!lw_dist3d_recursive(lw1, vertical_line, &thedl)) {
+			if (!lw_dist3d_recursive(lw1, vertical_line, &thedl))
+			{
 				/*should never get here. all cases ought to be error handled earlier*/
 				lwfree(vertical_line);
 				lwerror("Some unspecified error.");
@@ -254,17 +272,23 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 			}
 			lwfree(vertical_line);
 		}
-	} else {
-		if (!lw_dist3d_recursive(lw1, lw2, &thedl)) {
+	}
+	else
+	{
+		if (!lw_dist3d_recursive(lw1, lw2, &thedl))
+		{
 			/*should never get here. all cases ought to be error handled earlier*/
 			lwerror("Some unspecified error.");
 			result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 		}
 	}
-	if (thedl.distance == initdistance) {
+	if (thedl.distance == initdistance)
+	{
 		LWDEBUG(3, "didn't find geometries to measure between, returning null");
 		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
-	} else {
+	}
+	else
+	{
 		x = thedl.p1.x;
 		y = thedl.p1.y;
 		z = thedl.p1.z;
@@ -292,7 +316,8 @@ The difference is just the tolerance.
 double
 lwgeom_maxdistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tolerance)
 {
-	if (!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2)) {
+	if (!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
+	{
 		lwnotice(
 		    "One or both of the geometries is missing z-value. The unknown z-value will be regarded as \"any value\"");
 		return lwgeom_maxdistance2d_tolerance(lw1, lw2, tolerance);
@@ -326,7 +351,8 @@ lwgeom_mindistance3d(const LWGEOM *lw1, const LWGEOM *lw2)
 double
 lwgeom_mindistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tolerance)
 {
-	if (!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2)) {
+	if (!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
+	{
 		lwnotice(
 		    "One or both of the geometries is missing z-value. The unknown z-value will be regarded as \"any value\"");
 
@@ -368,39 +394,45 @@ lw_dist3d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D *dl)
 
 	LWDEBUGF(2, "lw_dist3d_recursive is called with type1=%d, type2=%d", lwg1->type, lwg2->type);
 
-	if (lwgeom_is_collection(lwg1)) {
+	if (lwgeom_is_collection(lwg1))
+	{
 		LWDEBUG(3, "First geometry is collection");
 		c1 = lwgeom_as_lwcollection(lwg1);
 		n1 = c1->ngeoms;
 	}
-	if (lwgeom_is_collection(lwg2)) {
+	if (lwgeom_is_collection(lwg2))
+	{
 		LWDEBUG(3, "Second geometry is collection");
 		c2 = lwgeom_as_lwcollection(lwg2);
 		n2 = c2->ngeoms;
 	}
 
-	for (i = 0; i < n1; i++) {
+	for (i = 0; i < n1; i++)
+	{
 
-		if (lwgeom_is_collection(lwg1)) {
-			g1 = c1->geoms[i];
-		} else {
+		if (lwgeom_is_collection(lwg1)) { g1 = c1->geoms[i]; }
+		else
+		{
 			g1 = (LWGEOM *)lwg1;
 		}
 
 		if (lwgeom_is_empty(g1)) return LW_TRUE;
 
-		if (lwgeom_is_collection(g1)) {
+		if (lwgeom_is_collection(g1))
+		{
 			LWDEBUG(3, "Found collection inside first geometry collection, recursing");
 			if (!lw_dist3d_recursive(g1, lwg2, dl)) return LW_FALSE;
 			continue;
 		}
-		for (j = 0; j < n2; j++) {
-			if (lwgeom_is_collection(lwg2)) {
-				g2 = c2->geoms[j];
-			} else {
+		for (j = 0; j < n2; j++)
+		{
+			if (lwgeom_is_collection(lwg2)) { g2 = c2->geoms[j]; }
+			else
+			{
 				g2 = (LWGEOM *)lwg2;
 			}
-			if (lwgeom_is_collection(g2)) {
+			if (lwgeom_is_collection(g2))
+			{
 				LWDEBUG(3, "Found collection inside second geometry collection, recursing");
 				if (!lw_dist3d_recursive(g1, g2, dl)) return LW_FALSE;
 				continue;
@@ -431,49 +463,77 @@ lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3
 
 	LWDEBUGF(2, "lw_dist3d_distribute_bruteforce is called with typ1=%d, type2=%d", lwg1->type, lwg2->type);
 
-	if (t1 == POINTTYPE) {
-		if (t2 == POINTTYPE) {
+	if (t1 == POINTTYPE)
+	{
+		if (t2 == POINTTYPE)
+		{
 			dl->twisted = 1;
 			return lw_dist3d_point_point((LWPOINT *)lwg1, (LWPOINT *)lwg2, dl);
-		} else if (t2 == LINETYPE) {
+		}
+		else if (t2 == LINETYPE)
+		{
 			dl->twisted = 1;
 			return lw_dist3d_point_line((LWPOINT *)lwg1, (LWLINE *)lwg2, dl);
-		} else if (t2 == POLYGONTYPE) {
+		}
+		else if (t2 == POLYGONTYPE)
+		{
 			dl->twisted = 1;
 			return lw_dist3d_point_poly((LWPOINT *)lwg1, (LWPOLY *)lwg2, dl);
-		} else {
+		}
+		else
+		{
 			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
 			return LW_FALSE;
 		}
-	} else if (t1 == LINETYPE) {
-		if (t2 == POINTTYPE) {
+	}
+	else if (t1 == LINETYPE)
+	{
+		if (t2 == POINTTYPE)
+		{
 			dl->twisted = (-1);
 			return lw_dist3d_point_line((LWPOINT *)lwg2, (LWLINE *)lwg1, dl);
-		} else if (t2 == LINETYPE) {
+		}
+		else if (t2 == LINETYPE)
+		{
 			dl->twisted = 1;
 			return lw_dist3d_line_line((LWLINE *)lwg1, (LWLINE *)lwg2, dl);
-		} else if (t2 == POLYGONTYPE) {
+		}
+		else if (t2 == POLYGONTYPE)
+		{
 			dl->twisted = 1;
 			return lw_dist3d_line_poly((LWLINE *)lwg1, (LWPOLY *)lwg2, dl);
-		} else {
+		}
+		else
+		{
 			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
 			return LW_FALSE;
 		}
-	} else if (t1 == POLYGONTYPE) {
-		if (t2 == POLYGONTYPE) {
+	}
+	else if (t1 == POLYGONTYPE)
+	{
+		if (t2 == POLYGONTYPE)
+		{
 			dl->twisted = 1;
 			return lw_dist3d_poly_poly((LWPOLY *)lwg1, (LWPOLY *)lwg2, dl);
-		} else if (t2 == POINTTYPE) {
+		}
+		else if (t2 == POINTTYPE)
+		{
 			dl->twisted = -1;
 			return lw_dist3d_point_poly((LWPOINT *)lwg2, (LWPOLY *)lwg1, dl);
-		} else if (t2 == LINETYPE) {
+		}
+		else if (t2 == LINETYPE)
+		{
 			dl->twisted = -1;
 			return lw_dist3d_line_poly((LWLINE *)lwg2, (LWPOLY *)lwg1, dl);
-		} else {
+		}
+		else
+		{
 			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
 			return LW_FALSE;
 		}
-	} else {
+	}
+	else
+	{
 		lwerror("Unsupported geometry type: %s", lwtype_name(t1));
 		return LW_FALSE;
 	}
@@ -539,7 +599,8 @@ lw_dist3d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS3D *dl)
 	getPoint3dz_p(point->point, 0, &p);
 
 	/*If we are lookig for max distance, longestline or dfullywithin*/
-	if (dl->mode == DIST_MAX) {
+	if (dl->mode == DIST_MAX)
+	{
 		LWDEBUG(3, "looking for maxdistance");
 		return lw_dist3d_pt_ptarray(&p, poly->rings[0], dl);
 	}
@@ -626,7 +687,8 @@ lw_dist3d_pt_ptarray(POINT3DZ *p, POINTARRAY *pa, DISTPTS3D *dl)
 
 	getPoint3dz_p(pa, 0, &start);
 
-	for (t = 1; t < pa->npoints; t++) {
+	for (t = 1; t < pa->npoints; t++)
+	{
 		dl->twisted = twist;
 		getPoint3dz_p(pa, t, &end);
 		if (!lw_dist3d_pt_seg(p, &start, &end, dl)) return LW_FALSE;
@@ -659,19 +721,14 @@ lw_dist3d_pt_seg(POINT3DZ *p, POINT3DZ *A, POINT3DZ *B, DISTPTS3D *dl)
 	the maxdistance have to be between two vertexes,
 	compared to mindistance which can be between
 	tvo vertexes vertex.*/
-	if (dl->mode == DIST_MAX) {
+	if (dl->mode == DIST_MAX)
+	{
 		if (r >= 0.5) { return lw_dist3d_pt_pt(p, A, dl); }
 		if (r < 0.5) { return lw_dist3d_pt_pt(p, B, dl); }
 	}
 
-	if (r < 0) /*If the first vertex A is closest to the point p*/
-	{
-		return lw_dist3d_pt_pt(p, A, dl);
-	}
-	if (r > 1) /*If the second vertex B is closest to the point p*/
-	{
-		return lw_dist3d_pt_pt(p, B, dl);
-	}
+	if (r < 0) /*If the first vertex A is closest to the point p*/ { return lw_dist3d_pt_pt(p, A, dl); }
+	if (r > 1) /*If the second vertex B is closest to the point p*/ { return lw_dist3d_pt_pt(p, B, dl); }
 
 	/*else if the point p is closer to some point between a and b
 	then we find that point and send it to lw_dist3d_pt_pt*/
@@ -724,7 +781,9 @@ lw_dist3d_pt_pt(POINT3DZ *thep1, POINT3DZ *thep2, DISTPTS3D *dl)
 		{
 			dl->p1 = *thep1;
 			dl->p2 = *thep2;
-		} else {
+		}
+		else
+		{
 			dl->p1 = *thep2;
 			dl->p2 = *thep1;
 		}
@@ -760,7 +819,9 @@ lw_dist3d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2, DISTPTS3D *dl)
 				LWDEBUGF(3, " seg%d-seg%d dist: %f, mindist: %f", t, u, dl->distance, dl->tolerance);
 			}
 		}
-	} else {
+	}
+	else
+	{
 		getPoint3dz_p(l1, 0, &start);
 		for (t = 1; t < l1->npoints; t++) /*for each segment in L1 */
 		{
@@ -798,11 +859,11 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 	double a, b, c, d, e, D;
 
 	/*s1p1 and s1p2 are the same point */
-	if ((s1p1->x == s1p2->x) && (s1p1->y == s1p2->y) && (s1p1->z == s1p2->z)) {
-		return lw_dist3d_pt_seg(s1p1, s2p1, s2p2, dl);
-	}
+	if ((s1p1->x == s1p2->x) && (s1p1->y == s1p2->y) && (s1p1->z == s1p2->z))
+	{ return lw_dist3d_pt_seg(s1p1, s2p1, s2p2, dl); }
 	/*s2p1 and s2p2 are the same point */
-	if ((s2p1->x == s2p2->x) && (s2p1->y == s2p2->y) && (s2p1->z == s2p2->z)) {
+	if ((s2p1->x == s2p2->x) && (s2p1->y == s2p2->y) && (s2p1->z == s2p2->z))
+	{
 		dl->twisted = ((dl->twisted) * (-1));
 		return lw_dist3d_pt_seg(s2p1, s1p1, s1p2, dl);
 	}
@@ -826,41 +887,50 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 	e = DOT(v2, vl);
 	D = a * c - b * b;
 
-	if (D < 0.000000001) { /* the lines are almost parallel*/
+	if (D < 0.000000001)
+	{ /* the lines are almost parallel*/
 		s1k =
-		    0.0;   /*If the lines are paralell we try by using the startpoint of first segment. If that gives a
-			      projected point on the second line outside segment 2 it wil be found that s2k is >1 or <0.*/
-		if (b > c) /* use the largest denominator*/
+		    0.0; /*If the lines are paralell we try by using the startpoint of first segment. If that gives a
+			    projected point on the second line outside segment 2 it wil be found that s2k is >1 or <0.*/
+		if (b > c) /* use the largest denominator*/ { s2k = d / b; }
+		else
 		{
-			s2k = d / b;
-		} else {
 			s2k = e / c;
 		}
-	} else {
+	}
+	else
+	{
 		s1k = (b * e - c * d) / D;
 		s2k = (a * e - b * d) / D;
 	}
 
 	/* Now we check if the projected closest point on the infinite lines is outside our segments. If so the
 	 * combinations with start and end points will be tested*/
-	if (s1k < 0.0 || s1k > 1.0 || s2k < 0.0 || s2k > 1.0) {
-		if (s1k < 0.0) {
+	if (s1k < 0.0 || s1k > 1.0 || s2k < 0.0 || s2k > 1.0)
+	{
+		if (s1k < 0.0)
+		{
 
 			if (!lw_dist3d_pt_seg(s1p1, s2p1, s2p2, dl)) { return LW_FALSE; }
 		}
-		if (s1k > 1.0) {
+		if (s1k > 1.0)
+		{
 
 			if (!lw_dist3d_pt_seg(s1p2, s2p1, s2p2, dl)) { return LW_FALSE; }
 		}
-		if (s2k < 0.0) {
+		if (s2k < 0.0)
+		{
 			dl->twisted = ((dl->twisted) * (-1));
 			if (!lw_dist3d_pt_seg(s2p1, s1p1, s1p2, dl)) { return LW_FALSE; }
 		}
-		if (s2k > 1.0) {
+		if (s2k > 1.0)
+		{
 			dl->twisted = ((dl->twisted) * (-1));
 			if (!lw_dist3d_pt_seg(s2p2, s1p1, s1p2, dl)) { return LW_FALSE; }
 		}
-	} else { /*Find the closest point on the edges of both segments*/
+	}
+	else
+	{ /*Find the closest point on the edges of both segments*/
 		p1.x = s1p1->x + s1k * (s1p2->x - s1p1->x);
 		p1.y = s1p1->y + s1k * (s1p2->y - s1p1->y);
 		p1.z = s1p1->z + s1k * (s1p2->z - s1p1->z);
@@ -870,9 +940,7 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 		p2.z = s2p1->z + s2k * (s2p2->z - s2p1->z);
 
 		if (!lw_dist3d_pt_pt(&p1, &p2, dl)) /* Send the closest points to point-point calculation*/
-		{
-			return LW_FALSE;
-		}
+		{ return LW_FALSE; }
 	}
 	return LW_TRUE;
 }
@@ -891,10 +959,13 @@ lw_dist3d_pt_poly(POINT3DZ *p, LWPOLY *poly, PLANE3D *plane, POINT3DZ *projp, DI
 
 	LWDEBUG(2, "lw_dist3d_point_poly called");
 
-	if (pt_in_ring_3d(projp, poly->rings[0], plane)) {
-		for (i = 1; i < poly->nrings; i++) {
+	if (pt_in_ring_3d(projp, poly->rings[0], plane))
+	{
+		for (i = 1; i < poly->nrings; i++)
+		{
 			/* Inside a hole. Distance = pt -> ring */
-			if (pt_in_ring_3d(projp, poly->rings[i], plane)) {
+			if (pt_in_ring_3d(projp, poly->rings[i], plane))
+			{
 				LWDEBUG(3, " inside an hole");
 				return lw_dist3d_pt_ptarray(p, poly->rings[i], dl);
 			}
@@ -902,7 +973,9 @@ lw_dist3d_pt_poly(POINT3DZ *p, LWPOLY *poly, PLANE3D *plane, POINT3DZ *projp, DI
 
 		return lw_dist3d_pt_pt(p, projp, dl); /* If the projected point is inside the polygon the shortest
 							 distance is between that point and the inputed point*/
-	} else {
+	}
+	else
+	{
 		return lw_dist3d_pt_ptarray(
 		    p, poly->rings[0], dl); /*If the projected point is outside the polygon we search for the closest
 					       distance against the boundarry instead*/
@@ -930,7 +1003,8 @@ lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, PLANE3D *plane, DISTPTS3D *
 	    &p1, plane, &projp1); /*the sign of s1 tells us on which side of the plane the point is. */
 	lw_dist3d_pt_poly(&p1, poly, plane, &projp1, dl);
 
-	for (i = 1; i < pa->npoints; i++) {
+	for (i = 1; i < pa->npoints; i++)
+	{
 		int intersects;
 		getPoint3dz_p(pa, i, &p2);
 		s2 = project_point_on_plane(&p2, plane, &projp2);
@@ -938,7 +1012,8 @@ lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, PLANE3D *plane, DISTPTS3D *
 
 		/*If s1and s2 has different signs that means they are on different sides of the plane of the polygon.
 		That means that the edge between the points crosses the plane and might intersect with the polygon*/
-		if ((s1 * s2) <= 0) {
+		if ((s1 * s2) <= 0)
+		{
 			f = fabs(s1) /
 			    (fabs(s1) +
 			     fabs(s2)); /*The size of s1 and s2 is the distance from the point to the plane.*/
@@ -953,14 +1028,17 @@ lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, PLANE3D *plane, DISTPTS3D *
 
 			if (pt_in_ring_3d(&intersectionp, poly->rings[0], plane)) /*Inside outer ring*/
 			{
-				for (k = 1; k < poly->nrings; k++) {
+				for (k = 1; k < poly->nrings; k++)
+				{
 					/* Inside a hole, so no intersection with the polygon*/
-					if (pt_in_ring_3d(&intersectionp, poly->rings[k], plane)) {
+					if (pt_in_ring_3d(&intersectionp, poly->rings[k], plane))
+					{
 						intersects = LW_FALSE;
 						break;
 					}
 				}
-				if (intersects) {
+				if (intersects)
+				{
 					dl->distance = 0.0;
 					dl->p1.x = intersectionp.x;
 					dl->p1.y = intersectionp.y;
@@ -980,7 +1058,8 @@ lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, PLANE3D *plane, DISTPTS3D *
 	}
 
 	/*check or pointarray against boundary and inner boundaries of the polygon*/
-	for (j = 0; j < poly->nrings; j++) {
+	for (j = 0; j < poly->nrings; j++)
+	{
 		lw_dist3d_ptarray_ptarray(pa, poly->rings[j], dl);
 	}
 
@@ -1005,15 +1084,15 @@ define_plane(POINTARRAY *pa, PLANE3D *pl)
 
 	VECTOR3D v1, v2, v;
 
-	if ((pa->npoints - 1) == 3) /*Triangle is special case*/
+	if ((pa->npoints - 1) == 3) /*Triangle is special case*/ { pointsinslice = 1; }
+	else
 	{
-		pointsinslice = 1;
-	} else {
 		pointsinslice = (uint32_t)floor((pa->npoints - 1) / 4); /*divide the pointarray into 4 slices*/
 	}
 
 	/*find the avg point*/
-	for (i = 0; i < (pa->npoints - 1); i++) {
+	for (i = 0; i < (pa->npoints - 1); i++)
+	{
 		getPoint3dz_p(pa, i, &p);
 		sumx += p.x;
 		sumy += p.y;
@@ -1029,7 +1108,8 @@ define_plane(POINTARRAY *pa, PLANE3D *pl)
 	numberofvectors = floor((pa->npoints - 1) / pointsinslice); /*the number of vectors we try can be 3, 4 or 5*/
 
 	getPoint3dz_p(pa, 0, &p1);
-	for (j = pointsinslice; j < pa->npoints; j += pointsinslice) {
+	for (j = pointsinslice; j < pa->npoints; j += pointsinslice)
+	{
 		getPoint3dz_p(pa, j, &p2);
 
 		if (!get_3dvector_from_points(&(pl->pop), &p1, &v1) || !get_3dvector_from_points(&(pl->pop), &p2, &v2))
@@ -1099,7 +1179,8 @@ pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring, PLANE3D *plane)
 
 	getPoint3dz_p(ring, 0, &first);
 	getPoint3dz_p(ring, ring->npoints - 1, &last);
-	if (memcmp(&first, &last, sizeof(POINT3DZ))) {
+	if (memcmp(&first, &last, sizeof(POINT3DZ)))
+	{
 		lwerror("pt_in_ring_3d: V[n] != V[0] (%g %g %g!= %g %g %g)",
 			first.x,
 			first.y,
@@ -1120,7 +1201,8 @@ pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring, PLANE3D *plane)
 	    fabs(plane->pv.z) >= fabs(plane->pv.y)) /*If the z vector of the normal vector to the plane is larger than x
 						       and y vector we project the ring to the xy-plane*/
 	{
-		for (i = 0; i < ring->npoints - 1; i++) {
+		for (i = 0; i < ring->npoints - 1; i++)
+		{
 			double vt;
 			getPoint3dz_p(ring, i + 1, &v2);
 
@@ -1129,23 +1211,27 @@ pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring, PLANE3D *plane)
 			    /* an upward crossing */
 			    ((v1.y <= p->y) && (v2.y > p->y))
 			    /* a downward crossing */
-			    || ((v1.y > p->y) && (v2.y <= p->y))) {
+			    || ((v1.y > p->y) && (v2.y <= p->y)))
+			{
 
 				vt = (double)(p->y - v1.y) / (v2.y - v1.y);
 
 				/* P.x <intersect */
-				if (p->x < v1.x + vt * (v2.x - v1.x)) {
+				if (p->x < v1.x + vt * (v2.x - v1.x))
+				{
 					/* a valid crossing of y=p.y right of p.x */
 					++cn;
 				}
 			}
 			v1 = v2;
 		}
-	} else if (fabs(plane->pv.y) >= fabs(plane->pv.x) &&
-		   fabs(plane->pv.y) >= fabs(plane->pv.z)) /*If the y vector of the normal vector to the plane is larger
-							      than x and z vector we project the ring to the xz-plane*/
+	}
+	else if (fabs(plane->pv.y) >= fabs(plane->pv.x) &&
+		 fabs(plane->pv.y) >= fabs(plane->pv.z)) /*If the y vector of the normal vector to the plane is larger
+							    than x and z vector we project the ring to the xz-plane*/
 	{
-		for (i = 0; i < ring->npoints - 1; i++) {
+		for (i = 0; i < ring->npoints - 1; i++)
+		{
 			double vt;
 			getPoint3dz_p(ring, i + 1, &v2);
 
@@ -1154,21 +1240,25 @@ pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring, PLANE3D *plane)
 			    /* an upward crossing */
 			    ((v1.z <= p->z) && (v2.z > p->z))
 			    /* a downward crossing */
-			    || ((v1.z > p->z) && (v2.z <= p->z))) {
+			    || ((v1.z > p->z) && (v2.z <= p->z)))
+			{
 
 				vt = (double)(p->z - v1.z) / (v2.z - v1.z);
 
 				/* P.x <intersect */
-				if (p->x < v1.x + vt * (v2.x - v1.x)) {
+				if (p->x < v1.x + vt * (v2.x - v1.x))
+				{
 					/* a valid crossing of y=p.y right of p.x */
 					++cn;
 				}
 			}
 			v1 = v2;
 		}
-	} else /*Hopefully we only have the cases where x part of the normal vector is largest left*/
+	}
+	else /*Hopefully we only have the cases where x part of the normal vector is largest left*/
 	{
-		for (i = 0; i < ring->npoints - 1; i++) {
+		for (i = 0; i < ring->npoints - 1; i++)
+		{
 			double vt;
 			getPoint3dz_p(ring, i + 1, &v2);
 
@@ -1177,12 +1267,14 @@ pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring, PLANE3D *plane)
 			    /* an upward crossing */
 			    ((v1.z <= p->z) && (v2.z > p->z))
 			    /* a downward crossing */
-			    || ((v1.z > p->z) && (v2.z <= p->z))) {
+			    || ((v1.z > p->z) && (v2.z <= p->z)))
+			{
 
 				vt = (double)(p->z - v1.z) / (v2.z - v1.z);
 
 				/* P.x <intersect */
-				if (p->y < v1.y + vt * (v2.y - v1.y)) {
+				if (p->y < v1.y + vt * (v2.y - v1.y))
+				{
 					/* a valid crossing of y=p.y right of p.x */
 					++cn;
 				}

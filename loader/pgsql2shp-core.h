@@ -44,7 +44,8 @@
  * Structure to hold the dumper configuration options
  */
 
-typedef struct shp_dumper_config {
+typedef struct shp_dumper_config
+{
 	/* Parameters used to connect to the database */
 	SHPCONNECTIONCONFIG *conn;
 
@@ -91,7 +92,8 @@ typedef struct shp_dumper_config {
  * Structure to holder the current dumper state
  */
 
-typedef struct shp_dumper_state {
+typedef struct shp_dumper_state
+{
 	/* Configuration for this state */
 	SHPDUMPERCONFIG *config;
 

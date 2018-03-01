@@ -79,7 +79,8 @@
 /*
  * Structure to hold the loader configuration options
  */
-typedef struct shp_loader_config {
+typedef struct shp_loader_config
+{
 	/* load mode: c = create, d = delete, a = append, p = prepare */
 	char opt;
 
@@ -151,7 +152,8 @@ typedef struct shp_loader_config {
 /*
  * Structure to holder the current loader state
  */
-typedef struct shp_loader_state {
+typedef struct shp_loader_state
+{
 	/* Configuration for this state */
 	SHPLOADERCONFIG *config;
 

@@ -35,7 +35,8 @@ extern char *
 lwgeom_to_encoded_polyline(const LWGEOM *geom, int precision)
 {
 	int type = geom->type;
-	switch (type) {
+	switch (type)
+	{
 	case LINETYPE:
 		return lwline_to_encoded_polyline((LWLINE *)geom, precision);
 	case MULTIPOINTTYPE:
@@ -73,7 +74,8 @@ pointarray_to_encoded_polyline(const POINTARRAY *pa, int precision)
 	double scale = pow(10, precision);
 
 	/* Empty input is empty string */
-	if (pa->npoints == 0) {
+	if (pa->npoints == 0)
+	{
 		encoded_polyline = lwalloc(1 * sizeof(char));
 		encoded_polyline[0] = 0;
 		return encoded_polyline;
@@ -88,7 +90,8 @@ pointarray_to_encoded_polyline(const POINTARRAY *pa, int precision)
 	delta[1] = round(prevPoint->x * scale);
 
 	/* Points only include the offset from the previous point */
-	for (i = 1; i < pa->npoints; i++) {
+	for (i = 1; i < pa->npoints; i++)
+	{
 		const POINT2D *point = getPoint2d_cp(pa, i);
 		delta[2 * i] = round(point->y * scale) - round(prevPoint->y * scale);
 		delta[(2 * i) + 1] = round(point->x * scale) - round(prevPoint->x * scale);
@@ -97,7 +100,8 @@ pointarray_to_encoded_polyline(const POINTARRAY *pa, int precision)
 
 	/* value to binary: a negative value must be calculated using its two's
 	 * complement */
-	for (i = 0; i < pa->npoints * 2; i++) {
+	for (i = 0; i < pa->npoints * 2; i++)
+	{
 		/* Multiply by 2 for a signed left shift */
 		delta[i] *= 2;
 		/* if value is negative, invert this encoding */
@@ -105,10 +109,12 @@ pointarray_to_encoded_polyline(const POINTARRAY *pa, int precision)
 	}
 
 	sb = stringbuffer_create();
-	for (i = 0; i < pa->npoints * 2; i++) {
+	for (i = 0; i < pa->npoints * 2; i++)
+	{
 		int numberToEncode = delta[i];
 
-		while (numberToEncode >= 0x20) {
+		while (numberToEncode >= 0x20)
+		{
 			/* Place the 5-bit chunks into reverse order or
 			 each value with 0x20 if another bit chunk follows and add 63*/
 			int nextValue = (0x20 | (numberToEncode & 0x1f)) + 63;

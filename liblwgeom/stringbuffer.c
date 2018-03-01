@@ -105,7 +105,8 @@ stringbuffer_makeroom(stringbuffer_t *s, size_t size_to_add)
 	while (capacity < required_size)
 		capacity *= 2;
 
-	if (capacity > s->capacity) {
+	if (capacity > s->capacity)
+	{
 		s->str_start = lwrealloc(s->str_start, capacity);
 		s->capacity = capacity;
 		s->str_end = s->str_start + current_size;
@@ -221,7 +222,8 @@ stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 	/* We didn't have enough space! */
 	/* Either Unix vsnprint returned write length larger than our buffer */
 	/*     or Windows vsnprintf returned an error code. */
-	if (len >= maxlen) {
+	if (len >= maxlen)
+	{
 		stringbuffer_makeroom(s, len + 1);
 		maxlen = (s->capacity - (s->str_end - s->str_start));
 
@@ -267,11 +269,12 @@ stringbuffer_trim_trailing_white(stringbuffer_t *s)
 	int dist = 0;
 
 	/* Roll backwards until we hit a non-space. */
-	while (ptr > s->str_start) {
+	while (ptr > s->str_start)
+	{
 		ptr--;
-		if ((*ptr == ' ') || (*ptr == '\t')) {
-			continue;
-		} else {
+		if ((*ptr == ' ') || (*ptr == '\t')) { continue; }
+		else
+		{
 			ptr++;
 			dist = s->str_end - ptr;
 			*ptr = '\0';
@@ -302,9 +305,11 @@ stringbuffer_trim_trailing_zeroes(stringbuffer_t *s)
 	if (s->str_end - s->str_start < 2) return 0;
 
 	/* Roll backwards to find the decimal for this number */
-	while (ptr > s->str_start) {
+	while (ptr > s->str_start)
+	{
 		ptr--;
-		if (*ptr == '.') {
+		if (*ptr == '.')
+		{
 			decimal_ptr = ptr;
 			break;
 		}
@@ -320,7 +325,8 @@ stringbuffer_trim_trailing_zeroes(stringbuffer_t *s)
 	ptr = s->str_end;
 
 	/* Roll backwards again, with the decimal as stop point, trimming contiguous zeroes */
-	while (ptr >= decimal_ptr) {
+	while (ptr >= decimal_ptr)
+	{
 		ptr--;
 		if (*ptr == '0')
 			continue;

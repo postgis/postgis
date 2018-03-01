@@ -59,7 +59,8 @@ encode_keys(struct geobuf_agg_context *ctx)
 	char **keys = palloc(natts * sizeof(*keys));
 	uint32_t i, k = 0;
 	bool geom_found = false;
-	for (i = 0; i < natts; i++) {
+	for (i = 0; i < natts; i++)
+	{
 #if POSTGIS_PGSQL_VERSION < 110
 		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
 		char *tkey = tupdesc->attrs[i]->attname.data;
@@ -68,14 +69,19 @@ encode_keys(struct geobuf_agg_context *ctx)
 		char *tkey = tupdesc->attrs[i].attname.data;
 #endif
 		char *key = pstrdup(tkey);
-		if (ctx->geom_name == NULL) {
-			if (!geom_found && typoid == TypenameGetTypid("geometry")) {
+		if (ctx->geom_name == NULL)
+		{
+			if (!geom_found && typoid == TypenameGetTypid("geometry"))
+			{
 				ctx->geom_index = i;
 				geom_found = 1;
 				continue;
 			}
-		} else {
-			if (!geom_found && strcmp(key, ctx->geom_name) == 0) {
+		}
+		else
+		{
+			if (!geom_found && strcmp(key, ctx->geom_name) == 0)
+			{
 				ctx->geom_index = i;
 				geom_found = 1;
 				continue;
@@ -92,10 +98,13 @@ encode_keys(struct geobuf_agg_context *ctx)
 static void
 set_int_value(Data__Value *value, int64 intval)
 {
-	if (intval >= 0) {
+	if (intval >= 0)
+	{
 		value->value_type_case = DATA__VALUE__VALUE_TYPE_POS_INT_VALUE;
 		value->pos_int_value = (uint64_t)intval;
-	} else {
+	}
+	else
+	{
 		value->value_type_case = DATA__VALUE__VALUE_TYPE_NEG_INT_VALUE;
 		value->neg_int_value = (uint64_t)labs(intval);
 	}
@@ -112,7 +121,8 @@ encode_properties(struct geobuf_agg_context *ctx, Data__Feature *feature)
 	properties = palloc(sizeof(*properties) * (natts - 1) * 2);
 	values = palloc(sizeof(*values) * (natts - 1));
 
-	for (i = 0; i < natts; i++) {
+	for (i = 0; i < natts; i++)
+	{
 		Data__Value *value;
 		char *type, *string_value;
 		Datum datum;
@@ -132,19 +142,27 @@ encode_properties(struct geobuf_agg_context *ctx, Data__Feature *feature)
 #else
 		Oid typoid = getBaseType(tupdesc->attrs[i].atttypid);
 #endif
-		if (strcmp(type, "int2") == 0) {
-			set_int_value(value, DatumGetInt16(datum));
-		} else if (strcmp(type, "int4") == 0) {
+		if (strcmp(type, "int2") == 0) { set_int_value(value, DatumGetInt16(datum)); }
+		else if (strcmp(type, "int4") == 0)
+		{
 			set_int_value(value, DatumGetInt32(datum));
-		} else if (strcmp(type, "int8") == 0) {
+		}
+		else if (strcmp(type, "int8") == 0)
+		{
 			set_int_value(value, DatumGetInt64(datum));
-		} else if (strcmp(type, "float4") == 0) {
+		}
+		else if (strcmp(type, "float4") == 0)
+		{
 			value->value_type_case = DATA__VALUE__VALUE_TYPE_DOUBLE_VALUE;
 			value->double_value = DatumGetFloat4(datum);
-		} else if (strcmp(type, "float8") == 0) {
+		}
+		else if (strcmp(type, "float8") == 0)
+		{
 			value->value_type_case = DATA__VALUE__VALUE_TYPE_DOUBLE_VALUE;
 			value->double_value = DatumGetFloat8(datum);
-		} else {
+		}
+		else
+		{
 			Oid foutoid;
 			bool typisvarlena;
 			getTypeOutputInfo(typoid, &foutoid, &typisvarlena);
@@ -178,7 +196,8 @@ encode_coords(struct geobuf_agg_context *ctx, POINTARRAY *pa, int64_t *coords, i
 		coords = repalloc(coords, sizeof(int64_t) * ((len * ctx->dimensions) + offset));
 
 	c = offset;
-	for (i = 0; i < len; i++) {
+	for (i = 0; i < len; i++)
+	{
 		getPoint4d_p(pa, i, &pt);
 		sum[0] += coords[c++] = (int64_t)(ceil(pt.x * ctx->e) - sum[0]);
 		sum[1] += coords[c++] = (int64_t)(ceil(pt.y * ctx->e) - sum[1]);
@@ -225,7 +244,8 @@ encode_mpoint(struct geobuf_agg_context *ctx, LWMPOINT *lwmpoint)
 
 	pa = ptarray_construct_empty(0, 0, ngeoms);
 
-	for (i = 0; i < ngeoms; i++) {
+	for (i = 0; i < ngeoms; i++)
+	{
 		POINT4D pt;
 		getPoint4d_p(lwmpoint->geoms[i]->point, 0, &pt);
 		ptarray_append_point(pa, &pt, 0);
@@ -273,14 +293,16 @@ encode_mline(struct geobuf_agg_context *ctx, LWMLINE *lwmline)
 	lengths = palloc(sizeof(uint32_t) * ngeoms);
 
 	offset = 0;
-	for (i = 0; i < ngeoms; i++) {
+	for (i = 0; i < ngeoms; i++)
+	{
 		pa = lwmline->geoms[i]->points;
 		coords = encode_coords(ctx, pa, coords, pa->npoints, offset);
 		offset += pa->npoints * ctx->dimensions;
 		lengths[i] = pa->npoints;
 	}
 
-	if (ngeoms > 1) {
+	if (ngeoms > 1)
+	{
 		geometry->n_lengths = ngeoms;
 		geometry->lengths = lengths;
 	}
@@ -309,7 +331,8 @@ encode_poly(struct geobuf_agg_context *ctx, LWPOLY *lwpoly)
 	lengths = palloc(sizeof(uint32_t) * nrings);
 
 	offset = 0;
-	for (i = 0; i < nrings; i++) {
+	for (i = 0; i < nrings; i++)
+	{
 		pa = lwpoly->rings[i];
 		len = pa->npoints - 1;
 		coords = encode_coords(ctx, pa, coords, len, offset);
@@ -317,7 +340,8 @@ encode_poly(struct geobuf_agg_context *ctx, LWPOLY *lwpoly)
 		lengths[i] = len;
 	}
 
-	if (nrings > 1) {
+	if (nrings > 1)
+	{
 		geometry->n_lengths = nrings;
 		geometry->lengths = lengths;
 	}
@@ -344,7 +368,8 @@ encode_mpoly(struct geobuf_agg_context *ctx, LWMPOLY *lwmpoly)
 	if (ngeoms == 0) return geometry;
 
 	n_lengths = 1;
-	for (i = 0; i < ngeoms; i++) {
+	for (i = 0; i < ngeoms; i++)
+	{
 		nrings = lwmpoly->geoms[i]->nrings;
 		n_lengths++;
 		for (j = 0; j < nrings; j++)
@@ -356,10 +381,12 @@ encode_mpoly(struct geobuf_agg_context *ctx, LWMPOLY *lwmpoly)
 	c = 0;
 	offset = 0;
 	lengths[c++] = ngeoms;
-	for (i = 0; i < ngeoms; i++) {
+	for (i = 0; i < ngeoms; i++)
+	{
 		nrings = lwmpoly->geoms[i]->nrings;
 		lengths[c++] = nrings;
-		for (j = 0; j < nrings; j++) {
+		for (j = 0; j < nrings; j++)
+		{
 			pa = lwmpoly->geoms[i]->rings[j];
 			len = pa->npoints - 1;
 			coords = encode_coords(ctx, pa, coords, len, offset);
@@ -368,7 +395,8 @@ encode_mpoly(struct geobuf_agg_context *ctx, LWMPOLY *lwmpoly)
 		}
 	}
 
-	if (c > 1) {
+	if (c > 1)
+	{
 		geometry->n_lengths = n_lengths;
 		geometry->lengths = lengths;
 	}
@@ -392,7 +420,8 @@ encode_collection(struct geobuf_agg_context *ctx, LWCOLLECTION *lwcollection)
 	if (ngeoms == 0) return geometry;
 
 	geometries = palloc(sizeof(Data__Geometry *) * ngeoms);
-	for (i = 0; i < ngeoms; i++) {
+	for (i = 0; i < ngeoms; i++)
+	{
 		LWGEOM *lwgeom = lwcollection->geoms[i];
 		Data__Geometry *geom = encode_geometry(ctx, lwgeom);
 		geometries[i] = geom;
@@ -408,7 +437,8 @@ static Data__Geometry *
 encode_geometry(struct geobuf_agg_context *ctx, LWGEOM *lwgeom)
 {
 	int type = lwgeom->type;
-	switch (type) {
+	switch (type)
+	{
 	case POINTTYPE:
 		return encode_point(ctx, (LWPOINT *)lwgeom);
 	case LINETYPE:
@@ -440,7 +470,8 @@ analyze_pa(struct geobuf_agg_context *ctx, POINTARRAY *pa)
 {
 	uint32_t i;
 	POINT4D pt;
-	for (i = 0; i < pa->npoints; i++) {
+	for (i = 0; i < pa->npoints; i++)
+	{
 		getPoint4d_p(pa, i, &pt);
 		analyze_val(ctx, pt.x);
 		analyze_val(ctx, pt.y);
@@ -457,7 +488,8 @@ analyze_geometry(struct geobuf_agg_context *ctx, LWGEOM *lwgeom)
 	LWPOLY *lwpoly;
 	LWCOLLECTION *lwcollection;
 	type = lwgeom->type;
-	switch (type) {
+	switch (type)
+	{
 	case POINTTYPE:
 	case LINETYPE:
 		lwline = (LWLINE *)lwgeom;
@@ -484,7 +516,8 @@ analyze_geometry(struct geobuf_agg_context *ctx, LWGEOM *lwgeom)
 static void
 analyze_geometry_flags(struct geobuf_agg_context *ctx, LWGEOM *lwgeom)
 {
-	if (!ctx->has_dimensions) {
+	if (!ctx->has_dimensions)
+	{
 		if (FLAGS_GET_Z(lwgeom->flags) || FLAGS_GET_M(lwgeom->flags))
 			ctx->dimensions = 3;
 		else if (FLAGS_GET_ZM(lwgeom->flags))
@@ -556,7 +589,8 @@ geobuf_agg_transfn(struct geobuf_agg_context *ctx)
 	/*	Data__Feature **features = fc->features; */
 	Data__Feature *feature;
 	GSERIALIZED *gs;
-	if (fc->n_features >= ctx->features_capacity) {
+	if (fc->n_features >= ctx->features_capacity)
+	{
 		size_t new_capacity = ctx->features_capacity * 2;
 		fc->features = repalloc(fc->features, new_capacity * sizeof(*fc->features));
 		ctx->lwgeoms = repalloc(ctx->lwgeoms, new_capacity * sizeof(*ctx->lwgeoms));
@@ -599,7 +633,8 @@ geobuf_agg_finalfn(struct geobuf_agg_context *ctx)
 	fc = data->feature_collection;
 
 	/* check and set dimensions if not default */
-	if (ctx->dimensions != 2) {
+	if (ctx->dimensions != 2)
+	{
 		data->has_dimensions = ctx->has_dimensions;
 		data->dimensions = ctx->dimensions;
 	}
@@ -607,7 +642,8 @@ geobuf_agg_finalfn(struct geobuf_agg_context *ctx)
 	/* check and set precision if not default */
 	if (ctx->e > MAX_PRECISION) ctx->e = MAX_PRECISION;
 	ctx->precision = ceil(log(ctx->e) / log(10));
-	if (ctx->precision != 6) {
+	if (ctx->precision != 6)
+	{
 		data->has_precision = 1;
 		data->precision = ctx->precision;
 	}

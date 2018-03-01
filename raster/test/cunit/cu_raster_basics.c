@@ -163,7 +163,8 @@ test_raster_from_band()
 	raster = rt_raster_new(xmax, ymax);
 	CU_ASSERT(raster != NULL);
 
-	for (x = 0; x < 5; x++) {
+	for (x = 0; x < 5; x++)
+	{
 		band = cu_add_band(raster, PT_32BUI, 0, 0);
 		CU_ASSERT(band != NULL);
 		rt_band_set_nodata(band, 0, NULL);

@@ -128,7 +128,8 @@ rt_util_gdal_resample_alg(const char *algname)
 GDALDataType
 rt_util_pixtype_to_gdal_datatype(rt_pixtype pt)
 {
-	switch (pt) {
+	switch (pt)
+	{
 	case PT_1BB:
 	case PT_2BUI:
 	case PT_4BUI:
@@ -164,7 +165,8 @@ rt_util_pixtype_to_gdal_datatype(rt_pixtype pt)
 rt_pixtype
 rt_util_gdal_datatype_to_pixtype(GDALDataType gdt)
 {
-	switch (gdt) {
+	switch (gdt)
+	{
 	case GDT_Byte:
 		return PT_8BUI;
 	case GDT_UInt16:
@@ -232,18 +234,22 @@ rt_util_gdal_convert_sr(const char *srs, int proj4)
 	assert(srs != NULL);
 
 	hsrs = OSRNewSpatialReference(NULL);
-	if (OSRSetFromUserInput(hsrs, srs) == OGRERR_NONE) {
+	if (OSRSetFromUserInput(hsrs, srs) == OGRERR_NONE)
+	{
 		if (proj4)
 			OSRExportToProj4(hsrs, &rtn);
 		else
 			OSRExportToWkt(hsrs, &rtn);
-	} else {
+	}
+	else
+	{
 		rterror("rt_util_gdal_convert_sr: Could not process the provided srs: %s", srs);
 		return NULL;
 	}
 
 	OSRDestroySpatialReference(hsrs);
-	if (rtn == NULL) {
+	if (rtn == NULL)
+	{
 		rterror("rt_util_gdal_convert_sr: Could not process the provided srs: %s", srs);
 		return NULL;
 	}
@@ -294,18 +300,22 @@ rt_util_gdal_sr_auth_info(GDALDatasetH hds, char **authname, char **authcode)
 	*authcode = NULL;
 
 	srs = GDALGetProjectionRef(hds);
-	if (srs != NULL && srs[0] != '\0') {
+	if (srs != NULL && srs[0] != '\0')
+	{
 		OGRSpatialReferenceH hSRS = OSRNewSpatialReference(NULL);
 
-		if (OSRSetFromUserInput(hSRS, srs) == OGRERR_NONE) {
+		if (OSRSetFromUserInput(hSRS, srs) == OGRERR_NONE)
+		{
 			const char *pszAuthorityName = OSRGetAuthorityName(hSRS, NULL);
 			const char *pszAuthorityCode = OSRGetAuthorityCode(hSRS, NULL);
 
-			if (pszAuthorityName != NULL && pszAuthorityCode != NULL) {
+			if (pszAuthorityName != NULL && pszAuthorityCode != NULL)
+			{
 				*authname = rtalloc(sizeof(char) * (strlen(pszAuthorityName) + 1));
 				*authcode = rtalloc(sizeof(char) * (strlen(pszAuthorityCode) + 1));
 
-				if (*authname == NULL || *authcode == NULL) {
+				if (*authname == NULL || *authcode == NULL)
+				{
 					rterror(
 					    "rt_util_gdal_sr_auth_info: Could not allocate memory for auth name and code");
 					if (*authname != NULL) rtdealloc(*authname);
@@ -350,7 +360,8 @@ rt_util_gdal_register_all(int force_register_all)
 {
 	static int registered = 0;
 
-	if (registered && !force_register_all) {
+	if (registered && !force_register_all)
+	{
 		RASTER_DEBUG(3, "Already called once... not calling GDALAllRegister");
 		return 0;
 	}
@@ -374,7 +385,8 @@ rt_util_gdal_driver_registered(const char *drv)
 
 	if (drv == NULL || !strlen(drv) || count < 1) return 0;
 
-	for (i = 0; i < count; i++) {
+	for (i = 0; i < count; i++)
+	{
 		hdrv = GDALGetDriver(i);
 		if (hdrv == NULL) continue;
 
@@ -395,13 +407,19 @@ rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared)
 {
 	assert(NULL != fn);
 
-	if (gdal_enabled_drivers != NULL) {
-		if (strstr(gdal_enabled_drivers, GDAL_DISABLE_ALL) != NULL) {
+	if (gdal_enabled_drivers != NULL)
+	{
+		if (strstr(gdal_enabled_drivers, GDAL_DISABLE_ALL) != NULL)
+		{
 			rterror("rt_util_gdal_open: Cannot open file. All GDAL drivers disabled");
 			return NULL;
-		} else if (strstr(gdal_enabled_drivers, GDAL_ENABLE_ALL) != NULL) {
+		}
+		else if (strstr(gdal_enabled_drivers, GDAL_ENABLE_ALL) != NULL)
+		{
 			/* do nothing */
-		} else if ((strstr(fn, "/vsicurl") != NULL) && (strstr(gdal_enabled_drivers, GDAL_VSICURL) == NULL)) {
+		}
+		else if ((strstr(fn, "/vsicurl") != NULL) && (strstr(gdal_enabled_drivers, GDAL_VSICURL) == NULL))
+		{
 			rterror("rt_util_gdal_open: Cannot open VSICURL file. VSICURL disabled");
 			return NULL;
 		}
@@ -447,12 +465,14 @@ rt_util_envelope_to_lwpoly(rt_envelope env)
 	POINT4D p4d;
 
 	rings = (POINTARRAY **)rtalloc(sizeof(POINTARRAY *));
-	if (!rings) {
+	if (!rings)
+	{
 		rterror("rt_util_envelope_to_lwpoly: Out of memory building envelope's geometry");
 		return NULL;
 	}
 	rings[0] = ptarray_construct(0, 0, 5);
-	if (!rings[0]) {
+	if (!rings[0])
+	{
 		rterror("rt_util_envelope_to_lwpoly: Out of memory building envelope's geometry ring");
 		return NULL;
 	}
@@ -481,7 +501,8 @@ rt_util_envelope_to_lwpoly(rt_envelope env)
 	ptarray_set_point4d(pts, 3, &p4d);
 
 	npoly = lwpoly_construct(SRID_UNKNOWN, 0, 1, rings);
-	if (npoly == NULL) {
+	if (npoly == NULL)
+	{
 		rterror("rt_util_envelope_to_lwpoly: Could not build envelope's geometry");
 		return NULL;
 	}
@@ -496,7 +517,8 @@ rt_util_same_geotransform_matrix(double *gt1, double *gt2)
 
 	if (gt1 == NULL || gt2 == NULL) return FALSE;
 
-	for (k = 0; k < 6; k++) {
+	for (k = 0; k < 6; k++)
+	{
 		if (FLT_NEQ(gt1[k], gt2[k])) return FALSE;
 	}
 
@@ -520,13 +542,15 @@ rt_util_rgb_to_hsv(double rgb[3], double hsv[3])
 	maxc = rgb[0];
 
 	/* get min and max values from RGB */
-	for (i = 1; i < 3; i++) {
+	for (i = 1; i < 3; i++)
+	{
 		if (rgb[i] > maxc) maxc = rgb[i];
 		if (rgb[i] < minc) minc = rgb[i];
 	}
 	v = maxc;
 
-	if (maxc != minc) {
+	if (maxc != minc)
+	{
 		double diff = 0.;
 		double rc = 0.;
 		double gc = 0.;
@@ -567,7 +591,8 @@ rt_util_hsv_to_rgb(double hsv[3], double rgb[3])
 
 	if (DBL_EQ(hsv[1], 0.))
 		r = g = b = v;
-	else {
+	else
+	{
 		double i;
 		double f;
 		double p;
@@ -583,7 +608,8 @@ rt_util_hsv_to_rgb(double hsv[3], double rgb[3])
 		t = v * (1. - hsv[1] * (1. - f));
 
 		a = (int)i;
-		switch (a) {
+		switch (a)
+		{
 		case 1:
 			r = q;
 			g = v;
@@ -636,7 +662,8 @@ rt_util_dbl_trunc_warning(double initialvalue,
 {
 	int result = 0;
 
-	switch (pixtype) {
+	switch (pixtype)
+	{
 	case PT_1BB:
 	case PT_2BUI:
 	case PT_4BUI:
@@ -644,8 +671,10 @@ rt_util_dbl_trunc_warning(double initialvalue,
 	case PT_8BUI:
 	case PT_16BSI:
 	case PT_16BUI:
-	case PT_32BSI: {
-		if (fabs(checkvalint - initialvalue) >= 1) {
+	case PT_32BSI:
+	{
+		if (fabs(checkvalint - initialvalue) >= 1)
+		{
 #if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
 			rtwarn("Value set for %s band got clamped from %f to %d",
 			       rt_pixtype_name(pixtype),
@@ -653,7 +682,9 @@ rt_util_dbl_trunc_warning(double initialvalue,
 			       checkvalint);
 #endif
 			result = 1;
-		} else if (FLT_NEQ(checkvalint, initialvalue)) {
+		}
+		else if (FLT_NEQ(checkvalint, initialvalue))
+		{
 #if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
 			rtwarn("Value set for %s band got truncated from %f to %d",
 			       rt_pixtype_name(pixtype),
@@ -664,8 +695,10 @@ rt_util_dbl_trunc_warning(double initialvalue,
 		}
 		break;
 	}
-	case PT_32BUI: {
-		if (fabs(checkvaluint - initialvalue) >= 1) {
+	case PT_32BUI:
+	{
+		if (fabs(checkvaluint - initialvalue) >= 1)
+		{
 #if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
 			rtwarn("Value set for %s band got clamped from %f to %u",
 			       rt_pixtype_name(pixtype),
@@ -673,7 +706,9 @@ rt_util_dbl_trunc_warning(double initialvalue,
 			       checkvaluint);
 #endif
 			result = 1;
-		} else if (FLT_NEQ(checkvaluint, initialvalue)) {
+		}
+		else if (FLT_NEQ(checkvaluint, initialvalue))
+		{
 #if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
 			rtwarn("Value set for %s band got truncated from %f to %u",
 			       rt_pixtype_name(pixtype),
@@ -684,12 +719,14 @@ rt_util_dbl_trunc_warning(double initialvalue,
 		}
 		break;
 	}
-	case PT_32BF: {
+	case PT_32BF:
+	{
 		/*
 			For float, because the initial value is a double,
 			there is very often a difference between the desired value and the obtained one
 		*/
-		if (FLT_NEQ(checkvalfloat, initialvalue)) {
+		if (FLT_NEQ(checkvalfloat, initialvalue))
+		{
 #if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
 			rtwarn("Value set for %s band got converted from %f to %f",
 			       rt_pixtype_name(pixtype),
@@ -700,8 +737,10 @@ rt_util_dbl_trunc_warning(double initialvalue,
 		}
 		break;
 	}
-	case PT_64BF: {
-		if (FLT_NEQ(checkvaldouble, initialvalue)) {
+	case PT_64BF:
+	{
+		if (FLT_NEQ(checkvaldouble, initialvalue))
+		{
 #if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
 			rtwarn("Value set for %s band got converted from %f to %f",
 			       rt_pixtype_name(pixtype),

@@ -36,7 +36,8 @@
  *
  ************************************************************************/
 
-struct LWT_BE_IFACE_T {
+struct LWT_BE_IFACE_T
+{
 	const LWT_BE_DATA *data;
 	const LWT_BE_CALLBACKS *cb;
 };
@@ -82,7 +83,8 @@ lwt_be_updateTopoGeomEdgeSplit(LWT_TOPOLOGY *topo, LWT_ELEMID split_edge, LWT_EL
  *
  ************************************************************************/
 
-struct LWT_TOPOLOGY_T {
+struct LWT_TOPOLOGY_T
+{
 	const LWT_BE_IFACE *be_iface;
 	LWT_BE_TOPOLOGY *be_topo;
 	int srid;

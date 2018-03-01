@@ -46,10 +46,12 @@ convert_field(char *buf, char *inp)
 	*d = '\0';
 	/* -- space at the beginning of a line will stop the read -- */
 	if (isspace(*s)) return NULL;
-	while ((c = *s++) != '\0') {
+	while ((c = *s++) != '\0')
+	{
 		if (c == '\"' || c == '\r') continue; /* -- ignore quotes and carriage returns -- */
 		/* -- zero terminate field and record delimiters -- */
-		if (c == '\n' || c == ',') {
+		if (c == '\n' || c == ',')
+		{
 			*d = '\0';
 			return s;
 		}
@@ -93,7 +95,8 @@ parse_rule(char *buf, int *rule)
 	char *p = buf;
 	char *q;
 
-	while (1) {
+	while (1)
+	{
 		*r = strtol(p, &q, 10);
 		if (p == q) break;
 		p = q;
@@ -143,11 +146,13 @@ main(int argc, char *argv[])
 
 	FILE *in;
 
-	if (argc > 3 && !strcmp(argv[1], "-o")) {
+	if (argc > 3 && !strcmp(argv[1], "-o"))
+	{
 		option = strtol(argv[2], NULL, 10);
 		argc -= 2;
 		argv += 2;
-	} else if (argc != 4)
+	}
+	else if (argc != 4)
 		Usage();
 
 	std = std_init();
@@ -161,20 +166,25 @@ main(int argc, char *argv[])
 	assert(in);
 
 	cnt = 0;
-	while (!feof(in) && fgets(buf, 1024, in)) {
+	while (!feof(in) && fgets(buf, 1024, in))
+	{
 		cnt++;
 		/* parse into fields */
-		if (parse_csv(buf, &seq, word, stdword, &token)) {
+		if (parse_csv(buf, &seq, word, stdword, &token))
+		{
 			/* add the record to the lexicon */
 			err = lex_add_entry(lex, seq, word, stdword, token);
 			if (err != 1) printf("lex: Failed: %d: %s", cnt, buf);
-		} else {
+		}
+		else
+		{
 			printf("lex: Skipping: %d: %s", cnt, buf);
 		}
 	}
 	fclose(in);
 
-	if (option & 1) {
+	if (option & 1)
+	{
 		printf("------------ address lexicon --------------\n");
 		print_lexicon(lex->hash_table);
 		printf("\n");
@@ -188,20 +198,25 @@ main(int argc, char *argv[])
 	assert(in);
 
 	cnt = 0;
-	while (!feof(in) && fgets(buf, 1024, in)) {
+	while (!feof(in) && fgets(buf, 1024, in))
+	{
 		cnt++;
 		/* parse into fields */
-		if (parse_csv(buf, &seq, word, stdword, &token)) {
+		if (parse_csv(buf, &seq, word, stdword, &token))
+		{
 			/* add the record to the lexicon */
 			err = lex_add_entry(gaz, seq, word, stdword, token);
 			if (err != 1) printf("gaz: Failed: %d: %s", cnt, buf);
-		} else {
+		}
+		else
+		{
 			printf("gaz: Skipping: %d: %s", cnt, buf);
 		}
 	}
 	fclose(in);
 
-	if (option & 2) {
+	if (option & 2)
+	{
 		printf("------------ gazeteer lexicon --------------\n");
 		print_lexicon(gaz->hash_table);
 		printf("\n");
@@ -218,7 +233,8 @@ main(int argc, char *argv[])
 	assert(in);
 
 	cnt = 0;
-	while (!feof(in) && fgets(buf, 1024, in)) {
+	while (!feof(in) && fgets(buf, 1024, in))
+	{
 		cnt++;
 		/* parse into fields */
 		nr = parse_rule(buf, rule);
@@ -238,7 +254,8 @@ main(int argc, char *argv[])
 
 	printf("Standardization test. Type \"exit\" to quit:\n");
 	fflush(stdout);
-	while (TRUE) {
+	while (TRUE)
+	{
 		err = standardize_command_line(std, input_str, option);
 		if (err == FAIL) { break; }
 	}
@@ -269,7 +286,8 @@ standardize_command_line(STANDARDIZER *std, char *input_str, int option)
 	unstandard_mac_left[0] = SENTINEL;
 	;
 	have_user_macros = FALSE;
-	for (fld_num = 1; fld_num < num_prompts; fld_num++) {
+	for (fld_num = 1; fld_num < num_prompts; fld_num++)
+	{
 		/* -- print prompt -- */
 		if (fld_num == 1)
 			printf("MICRO:");
@@ -280,20 +298,24 @@ standardize_command_line(STANDARDIZER *std, char *input_str, int option)
 		input_str[0] = SENTINEL;
 		/* -- get user's input -- */
 		if ((!get_input_line(input_str, stdin)) || (strncmp(input_str, "exit", 4) == 0) ||
-		    (strncmp(input_str, "quit", 4) == 0) || (strncmp(input_str, "done", 4) == 0)) {
-			return FAIL; /* -- indicate exit -- */
-		}
+		    (strncmp(input_str, "quit", 4) == 0) || (strncmp(input_str, "done", 4) == 0))
+		{ return FAIL; /* -- indicate exit -- */ }
 		/* -- get input first, then standardize -- */
-		if (fld_num == 1) {
+		if (fld_num == 1)
+		{
 			strcpy(unstandard_mic, input_str);
-			if (*unstandard_mic == SENTINEL) {
+			if (*unstandard_mic == SENTINEL)
+			{
 				printf("No MICRO input\n");
 				return FALSE; /* -- indicate no standardization -- */
 			}
 			convert_latin_one(unstandard_mic);
-		} else {
+		}
+		else
+		{
 			strcpy(unstandard_mac_left, input_str);
-			if (*unstandard_mac_left != SENTINEL) {
+			if (*unstandard_mac_left != SENTINEL)
+			{
 				have_user_macros = TRUE;
 				convert_latin_one(unstandard_mac_left);
 			}

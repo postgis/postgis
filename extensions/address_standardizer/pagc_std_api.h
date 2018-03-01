@@ -4,12 +4,14 @@
 
 #define BUILD_API
 
-typedef struct LEXICON_s {
+typedef struct LEXICON_s
+{
 	ENTRY **hash_table;
 	ERR_PARAM *err_p;
 } LEXICON;
 
-typedef struct RULES_s {
+typedef struct RULES_s
+{
 	int ready;
 	int rule_number;
 	int last_node;
@@ -20,13 +22,15 @@ typedef struct RULES_s {
 	SYMB *r;
 } RULES;
 
-typedef struct STANDARDIZER_s {
+typedef struct STANDARDIZER_s
+{
 	PAGC_GLOBAL *pagc_p;
 	STAND_PARAM *misc_stand;
 	ERR_PARAM *err_p;
 } STANDARDIZER;
 
-typedef struct STDADDR_s { // define as required
+typedef struct STDADDR_s
+{ // define as required
 	char *building;
 	char *house_num;
 	char *predir;

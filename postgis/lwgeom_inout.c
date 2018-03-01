@@ -94,20 +94,23 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 	lwgeom_parser_result_init(&lwg_parser_result);
 
 	/* Empty string. */
-	if (str[0] == '\0') {
+	if (str[0] == '\0')
+	{
 		ereport(ERROR, (errmsg("parse error - invalid geometry")));
 		PG_RETURN_NULL();
 	}
 
 	/* Starts with "SRID=" */
-	if (strncasecmp(str, "SRID=", 5) == 0) {
+	if (strncasecmp(str, "SRID=", 5) == 0)
+	{
 		/* Roll forward to semi-colon */
 		char *tmp = str;
 		while (tmp && *tmp != ';')
 			tmp++;
 
 		/* Check next character to see if we have WKB  */
-		if (tmp && *(tmp + 1) == '0') {
+		if (tmp && *(tmp + 1) == '0')
+		{
 			/* Null terminate the SRID= string */
 			*tmp = '\0';
 			/* Set str to the start of the real WKB */
@@ -120,7 +123,8 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 	}
 
 	/* WKB? Let's find out. */
-	if (str[0] == '0') {
+	if (str[0] == '0')
+	{
 		size_t hexsize = strlen(str);
 		unsigned char *wkb = bytes_from_hexbytes(str, hexsize);
 		/* TODO: 20101206: No parser checks! This is inline with current 1.5 behavior, but needs discussion */
@@ -134,8 +138,10 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		lwgeom_free(lwgeom);
 	}
 	/* WKT then. */
-	else {
-		if (lwgeom_parse_wkt(&lwg_parser_result, str, LW_PARSER_CHECK_ALL) == LW_FAILURE) {
+	else
+	{
+		if (lwgeom_parse_wkt(&lwg_parser_result, str, LW_PARSER_CHECK_ALL) == LW_FAILURE)
+		{
 			PG_PARSER_ERROR(lwg_parser_result);
 			PG_RETURN_NULL();
 		}
@@ -145,10 +151,13 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		lwgeom_parser_result_free(&lwg_parser_result);
 	}
 
-	if (geom_typmod >= 0) {
+	if (geom_typmod >= 0)
+	{
 		ret = postgis_valid_typmod(ret, geom_typmod);
 		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
-	} else {
+	}
+	else
+	{
 		POSTGIS_DEBUG(3, "typmod was -1");
 	}
 
@@ -196,13 +205,13 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 
 	/* Only supports points. */
 	uint8_t geom_type = gserialized_get_type(pg_lwgeom);
-	if (POINTTYPE != geom_type) {
-		lwpgerror("Only points are supported, you tried type %s.", lwtype_name(geom_type));
-	}
+	if (POINTTYPE != geom_type)
+	{ lwpgerror("Only points are supported, you tried type %s.", lwtype_name(geom_type)); }
 	/* Convert to LWGEOM type */
 	lwgeom = lwgeom_from_gserialized(pg_lwgeom);
 
-	if (format_text == NULL) {
+	if (format_text == NULL)
+	{
 		lwpgerror("ST_AsLatLonText: invalid format string (null");
 		PG_RETURN_NULL();
 	}
@@ -215,7 +224,8 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 	tmp = (char *)pg_do_encoding_conversion(
 	    (uint8_t *)format_str, strlen(format_str), GetDatabaseEncoding(), PG_UTF8);
 	assert(tmp != NULL);
-	if (tmp != format_str) {
+	if (tmp != format_str)
+	{
 		pfree(format_str);
 		format_str = tmp;
 	}
@@ -229,7 +239,8 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 	tmp = (char *)pg_do_encoding_conversion(
 	    (uint8_t *)formatted_str, strlen(formatted_str), PG_UTF8, GetDatabaseEncoding());
 	assert(tmp != NULL);
-	if (tmp != formatted_str) {
+	if (tmp != formatted_str)
+	{
 		pfree(formatted_str);
 		formatted_str = tmp;
 	}
@@ -279,12 +290,14 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 	size_t text_size;
 
 	/* If user specified endianness, respect it */
-	if ((PG_NARGS() > 1) && (!PG_ARGISNULL(1))) {
+	if ((PG_NARGS() > 1) && (!PG_ARGISNULL(1)))
+	{
 		type = PG_GETARG_TEXT_P(1);
 
-		if (!strncmp(VARDATA(type), "xdr", 3) || !strncmp(VARDATA(type), "XDR", 3)) {
-			variant = variant | WKB_XDR;
-		} else {
+		if (!strncmp(VARDATA(type), "xdr", 3) || !strncmp(VARDATA(type), "XDR", 3))
+		{ variant = variant | WKB_XDR; }
+		else
+		{
 			variant = variant | WKB_NDR;
 		}
 	}
@@ -354,7 +367,8 @@ Datum LWGEOMFromEWKB(PG_FUNCTION_ARGS)
 
 	lwgeom = lwgeom_from_wkb(wkb, VARSIZE(bytea_wkb) - VARHDRSZ, LW_PARSER_CHECK_ALL);
 
-	if ((PG_NARGS() > 1) && (!PG_ARGISNULL(1))) {
+	if ((PG_NARGS() > 1) && (!PG_ARGISNULL(1)))
+	{
 		srid = PG_GETARG_INT32(1);
 		lwgeom_set_srid(lwgeom, srid);
 	}
@@ -404,12 +418,14 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	bytea *result;
 	text *type;
 	/* If user specified endianness, respect it */
-	if ((PG_NARGS() > 1) && (!PG_ARGISNULL(1))) {
+	if ((PG_NARGS() > 1) && (!PG_ARGISNULL(1)))
+	{
 		type = PG_GETARG_TEXT_P(1);
 
-		if (!strncmp(VARDATA(type), "xdr", 3) || !strncmp(VARDATA(type), "XDR", 3)) {
-			variant = variant | WKB_XDR;
-		} else {
+		if (!strncmp(VARDATA(type), "xdr", 3) || !strncmp(VARDATA(type), "XDR", 3))
+		{ variant = variant | WKB_XDR; }
+		else
+		{
 			variant = variant | WKB_NDR;
 		}
 	}
@@ -514,7 +530,8 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 	num_geoms = ArrayGetNItems(ARR_NDIM(arr_geoms), ARR_DIMS(arr_geoms));
 	num_ids = ArrayGetNItems(ARR_NDIM(arr_ids), ARR_DIMS(arr_ids));
 
-	if (num_geoms != num_ids) {
+	if (num_geoms != num_ids)
+	{
 		elog(ERROR, "size of geometry[] and integer[] arrays must match");
 		PG_RETURN_NULL();
 	}
@@ -530,11 +547,13 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 	iter_ids = array_create_iterator(arr_ids, 0);
 #endif
 
-	while (array_iterate(iter_geoms, &val_geom, &null_geom) && array_iterate(iter_ids, &val_id, &null_id)) {
+	while (array_iterate(iter_geoms, &val_geom, &null_geom) && array_iterate(iter_ids, &val_id, &null_id))
+	{
 		LWGEOM *geom;
 		int32_t uid;
 
-		if (null_geom || null_id) {
+		if (null_geom || null_id)
+		{
 			elog(NOTICE, "ST_AsTWKB skipping NULL entry at position %d", i);
 			continue;
 		}
@@ -543,7 +562,8 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 		uid = DatumGetInt64(val_id);
 
 		/* Construct collection/idlist first time through */
-		if (!col) {
+		if (!col)
+		{
 			has_z = lwgeom_has_z(geom);
 			has_m = lwgeom_has_m(geom);
 			col = lwcollection_construct_empty(COLLECTIONTYPE, lwgeom_get_srid(geom), has_z, has_m);
@@ -551,7 +571,8 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 		if (!idlist) idlist = palloc0(num_geoms * sizeof(int64_t));
 
 		/*Check if there is differences in dimmenstionality*/
-		if (lwgeom_has_z(geom) != has_z || lwgeom_has_m(geom) != has_m) {
+		if (lwgeom_has_z(geom) != has_z || lwgeom_has_m(geom) != has_m)
+		{
 			elog(ERROR, "Geometries have differenct dimensionality");
 			PG_FREE_IF_COPY(arr_geoms, 0);
 			PG_FREE_IF_COPY(arr_ids, 1);
@@ -563,16 +584,17 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 
 		/* Grab the geometry type and note if all geometries share it */
 		/* If so, we can make this a homogeneous collection and save some space */
-		if (lwgeom_get_type(geom) != subtype && subtype) {
-			is_homogeneous = false;
-		} else {
+		if (lwgeom_get_type(geom) != subtype && subtype) { is_homogeneous = false; }
+		else
+		{
 			subtype = lwgeom_get_type(geom);
 		}
 	}
 	array_free_iterator(iter_geoms);
 	array_free_iterator(iter_ids);
 
-	if (i == 0) {
+	if (i == 0)
+	{
 		elog(NOTICE, "No valid geometry - id pairs found");
 		PG_FREE_IF_COPY(arr_geoms, 0);
 		PG_FREE_IF_COPY(arr_ids, 1);
@@ -707,10 +729,13 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 	geom = geometry_serialize(lwgeom);
 	lwgeom_free(lwgeom);
 
-	if (geom_typmod >= 0) {
+	if (geom_typmod >= 0)
+	{
 		geom = postgis_valid_typmod(geom, geom_typmod);
 		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
-	} else {
+	}
+	else
+	{
 		POSTGIS_DEBUG(3, "typmod was -1");
 	}
 

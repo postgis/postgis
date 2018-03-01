@@ -56,34 +56,43 @@ rt_raster_same_alignment(rt_raster rast1, rt_raster rast2, int *aligned, char **
 
 	err = 0;
 	/* same srid */
-	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
+	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2))
+	{
 		if (reason != NULL) *reason = "The rasters have different SRIDs";
 		err = 1;
 	}
 	/* scales must match */
-	else if (FLT_NEQ(fabs(rast1->scaleX), fabs(rast2->scaleX))) {
+	else if (FLT_NEQ(fabs(rast1->scaleX), fabs(rast2->scaleX)))
+	{
 		if (reason != NULL) *reason = "The rasters have different scales on the X axis";
 		err = 1;
-	} else if (FLT_NEQ(fabs(rast1->scaleY), fabs(rast2->scaleY))) {
+	}
+	else if (FLT_NEQ(fabs(rast1->scaleY), fabs(rast2->scaleY)))
+	{
 		if (reason != NULL) *reason = "The rasters have different scales on the Y axis";
 		err = 1;
 	}
 	/* skews must match */
-	else if (FLT_NEQ(rast1->skewX, rast2->skewX)) {
+	else if (FLT_NEQ(rast1->skewX, rast2->skewX))
+	{
 		if (reason != NULL) *reason = "The rasters have different skews on the X axis";
 		err = 1;
-	} else if (FLT_NEQ(rast1->skewY, rast2->skewY)) {
+	}
+	else if (FLT_NEQ(rast1->skewY, rast2->skewY))
+	{
 		if (reason != NULL) *reason = "The rasters have different skews on the Y axis";
 		err = 1;
 	}
 
-	if (err) {
+	if (err)
+	{
 		*aligned = 0;
 		return ES_NONE;
 	}
 
 	/* raster coordinates in context of second raster of first raster's upper-left corner */
-	if (rt_raster_geopoint_to_cell(rast2, rast1->ipX, rast1->ipY, &xr, &yr, NULL) != ES_NONE) {
+	if (rt_raster_geopoint_to_cell(rast2, rast1->ipX, rast1->ipY, &xr, &yr, NULL) != ES_NONE)
+	{
 		rterror(
 		    "rt_raster_same_alignment: Could not get raster coordinates of second raster from first raster's spatial coordinates");
 		*aligned = 0;
@@ -91,7 +100,8 @@ rt_raster_same_alignment(rt_raster rast1, rt_raster rast2, int *aligned, char **
 	}
 
 	/* spatial coordinates of raster coordinates from above */
-	if (rt_raster_cell_to_geopoint(rast2, xr, yr, &xw, &yw, NULL) != ES_NONE) {
+	if (rt_raster_cell_to_geopoint(rast2, xr, yr, &xw, &yw, NULL) != ES_NONE)
+	{
 		rterror(
 		    "rt_raster_same_alignment: Could not get spatial coordinates of second raster from raster coordinates");
 		*aligned = 0;
@@ -103,7 +113,8 @@ rt_raster_same_alignment(rt_raster rast1, rt_raster rast2, int *aligned, char **
 	RASTER_DEBUGF(4, "rast2(xw, yw) = (%f, %f)", xw, yw);
 
 	/* spatial coordinates are identical to that of first raster's upper-left corner */
-	if (FLT_EQ(xw, rast1->ipX) && FLT_EQ(yw, rast1->ipY)) {
+	if (FLT_EQ(xw, rast1->ipX) && FLT_EQ(yw, rast1->ipY))
+	{
 		if (reason != NULL) *reason = "The rasters are aligned";
 		*aligned = 1;
 		return ES_NONE;
@@ -141,10 +152,13 @@ rt_raster_geos_spatial_relationship(rt_raster rast1,
 	assert(NULL != rast2);
 	assert(NULL != testresult);
 
-	if (nband1 < 0 && nband2 < 0) {
+	if (nband1 < 0 && nband2 < 0)
+	{
 		nband1 = -1;
 		nband2 = -1;
-	} else {
+	}
+	else
+	{
 		assert(nband1 >= 0 && nband1 < rt_raster_get_num_bands(rast1));
 		assert(nband2 >= 0 && nband2 < rt_raster_get_num_bands(rast2));
 	}
@@ -153,7 +167,8 @@ rt_raster_geos_spatial_relationship(rt_raster rast1,
 	*testresult = 0;
 
 	/* same srid */
-	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
+	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2))
+	{
 		rterror("rt_raster_geos_spatial_relationship: The two rasters provided have different SRIDs");
 		return ES_ERROR;
 	}
@@ -161,12 +176,14 @@ rt_raster_geos_spatial_relationship(rt_raster rast1,
 	initGEOS(rtinfo, lwgeom_geos_error);
 
 	/* get LWMPOLY of each band */
-	if (rt_raster_surface(rast1, nband1, &surface1) != ES_NONE) {
+	if (rt_raster_surface(rast1, nband1, &surface1) != ES_NONE)
+	{
 		rterror(
 		    "rt_raster_geos_spatial_relationship: Could not get surface of the specified band from the first raster");
 		return ES_ERROR;
 	}
-	if (rt_raster_surface(rast2, nband2, &surface2) != ES_NONE) {
+	if (rt_raster_surface(rast2, nband2, &surface2) != ES_NONE)
+	{
 		rterror(
 		    "rt_raster_geos_spatial_relationship: Could not get surface of the specified band from the second raster");
 		lwmpoly_free(surface1);
@@ -174,7 +191,8 @@ rt_raster_geos_spatial_relationship(rt_raster rast1,
 	}
 
 	/* either surface is NULL, spatial relationship test is false */
-	if (surface1 == NULL || surface2 == NULL) {
+	if (surface1 == NULL || surface2 == NULL)
+	{
 		if (surface1 != NULL) lwmpoly_free(surface1);
 		if (surface2 != NULL) lwmpoly_free(surface2);
 		return ES_NONE;
@@ -183,7 +201,8 @@ rt_raster_geos_spatial_relationship(rt_raster rast1,
 	/* convert LWMPOLY to GEOSGeometry */
 	geom1 = LWGEOM2GEOS(lwmpoly_as_lwgeom(surface1), 0);
 	lwmpoly_free(surface1);
-	if (geom1 == NULL) {
+	if (geom1 == NULL)
+	{
 		rterror(
 		    "rt_raster_geos_spatial_relationship: Could not convert surface of the specified band from the first raster to a GEOSGeometry");
 		lwmpoly_free(surface2);
@@ -192,14 +211,16 @@ rt_raster_geos_spatial_relationship(rt_raster rast1,
 
 	geom2 = LWGEOM2GEOS(lwmpoly_as_lwgeom(surface2), 0);
 	lwmpoly_free(surface2);
-	if (geom2 == NULL) {
+	if (geom2 == NULL)
+	{
 		rterror(
 		    "rt_raster_geos_spatial_relationship: Could not convert surface of the specified band from the second raster to a GEOSGeometry");
 		return ES_ERROR;
 	}
 
 	flag = 0;
-	switch (testtype) {
+	switch (testtype)
+	{
 	case GSR_OVERLAPS:
 		rtn = GEOSOverlaps(geom1, geom2);
 		break;
@@ -227,13 +248,15 @@ rt_raster_geos_spatial_relationship(rt_raster rast1,
 	GEOSGeom_destroy(geom2);
 
 	/* something happened in the spatial relationship test */
-	if (rtn == 2) {
+	if (rtn == 2)
+	{
 		rterror(
 		    "rt_raster_geos_spatial_relationship: Could not run the appropriate GEOS spatial relationship test");
 		flag = ES_ERROR;
 	}
 	/* spatial relationship test ran fine */
-	else if (flag >= 0) {
+	else if (flag >= 0)
+	{
 		if (rtn != 0) *testresult = 1;
 		flag = ES_NONE;
 	}
@@ -420,10 +443,13 @@ rt_raster_within_distance(rt_raster rast1, int nband1, rt_raster rast2, int nban
 	assert(NULL != rast2);
 	assert(NULL != dwithin);
 
-	if (nband1 < 0 && nband2 < 0) {
+	if (nband1 < 0 && nband2 < 0)
+	{
 		nband1 = -1;
 		nband2 = -1;
-	} else {
+	}
+	else
+	{
 		assert(nband1 >= 0 && nband1 < rt_raster_get_num_bands(rast1));
 		assert(nband2 >= 0 && nband2 < rt_raster_get_num_bands(rast2));
 	}
@@ -432,25 +458,29 @@ rt_raster_within_distance(rt_raster rast1, int nband1, rt_raster rast2, int nban
 	*dwithin = 0;
 
 	/* same srid */
-	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
+	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2))
+	{
 		rterror("rt_raster_distance_within: The two rasters provided have different SRIDs");
 		return ES_ERROR;
 	}
 
 	/* distance cannot be less than zero */
-	if (distance < 0) {
+	if (distance < 0)
+	{
 		rterror("rt_raster_distance_within: Distance cannot be less than zero");
 		return ES_ERROR;
 	}
 
 	/* get LWMPOLY of each band */
-	if (rt_raster_surface(rast1, nband1, &surface) != ES_NONE) {
+	if (rt_raster_surface(rast1, nband1, &surface) != ES_NONE)
+	{
 		rterror("rt_raster_distance_within: Could not get surface of the specified band from the first raster");
 		return ES_ERROR;
 	}
 	surface1 = lwmpoly_as_lwgeom(surface);
 
-	if (rt_raster_surface(rast2, nband2, &surface) != ES_NONE) {
+	if (rt_raster_surface(rast2, nband2, &surface) != ES_NONE)
+	{
 		rterror(
 		    "rt_raster_distance_within: Could not get surface of the specified band from the second raster");
 		lwgeom_free(surface1);
@@ -459,7 +489,8 @@ rt_raster_within_distance(rt_raster rast1, int nband1, rt_raster rast2, int nban
 	surface2 = lwmpoly_as_lwgeom(surface);
 
 	/* either surface is NULL, test is false */
-	if (surface1 == NULL || surface2 == NULL) {
+	if (surface1 == NULL || surface2 == NULL)
+	{
 		if (surface1 != NULL) lwgeom_free(surface1);
 		if (surface2 != NULL) lwgeom_free(surface2);
 		return ES_NONE;
@@ -516,10 +547,13 @@ rt_raster_fully_within_distance(rt_raster rast1,
 	assert(NULL != rast2);
 	assert(NULL != dfwithin);
 
-	if (nband1 < 0 && nband2 < 0) {
+	if (nband1 < 0 && nband2 < 0)
+	{
 		nband1 = -1;
 		nband2 = -1;
-	} else {
+	}
+	else
+	{
 		assert(nband1 >= 0 && nband1 < rt_raster_get_num_bands(rast1));
 		assert(nband2 >= 0 && nband2 < rt_raster_get_num_bands(rast2));
 	}
@@ -528,26 +562,30 @@ rt_raster_fully_within_distance(rt_raster rast1,
 	*dfwithin = 0;
 
 	/* same srid */
-	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
+	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2))
+	{
 		rterror("rt_raster_fully_within_distance: The two rasters provided have different SRIDs");
 		return ES_ERROR;
 	}
 
 	/* distance cannot be less than zero */
-	if (distance < 0) {
+	if (distance < 0)
+	{
 		rterror("rt_raster_fully_within_distance: Distance cannot be less than zero");
 		return ES_ERROR;
 	}
 
 	/* get LWMPOLY of each band */
-	if (rt_raster_surface(rast1, nband1, &surface) != ES_NONE) {
+	if (rt_raster_surface(rast1, nband1, &surface) != ES_NONE)
+	{
 		rterror(
 		    "rt_raster_fully_within_distance: Could not get surface of the specified band from the first raster");
 		return ES_ERROR;
 	}
 	surface1 = lwmpoly_as_lwgeom(surface);
 
-	if (rt_raster_surface(rast2, nband2, &surface) != ES_NONE) {
+	if (rt_raster_surface(rast2, nband2, &surface) != ES_NONE)
+	{
 		rterror(
 		    "rt_raster_fully_within_distance: Could not get surface of the specified band from the second raster");
 		lwgeom_free(surface1);
@@ -556,7 +594,8 @@ rt_raster_fully_within_distance(rt_raster rast1,
 	surface2 = lwmpoly_as_lwgeom(surface);
 
 	/* either surface is NULL, test is false */
-	if (surface1 == NULL || surface2 == NULL) {
+	if (surface1 == NULL || surface2 == NULL)
+	{
 		if (surface1 != NULL) lwgeom_free(surface1);
 		if (surface2 != NULL) lwgeom_free(surface2);
 		return ES_NONE;
@@ -659,25 +698,32 @@ rt_raster_intersects_algorithm(rt_raster rast1,
 	RASTER_DEBUGF(4, "byHeight: %d, dimValue: %d", byHeight, dimValue);
 
 	/* 3 x 3 search */
-	for (coloffset = 0; coloffset < 3; coloffset++) {
-		for (rowoffset = 0; rowoffset < 3; rowoffset++) {
+	for (coloffset = 0; coloffset < 3; coloffset++)
+	{
+		for (rowoffset = 0; rowoffset < 3; rowoffset++)
+		{
 			/* smaller raster */
-			for (col = coloffset; col <= width1; col += 3) {
+			for (col = coloffset; col <= width1; col += 3)
+			{
 
 				rt_raster_cell_to_geopoint(rast1, col, 0, &(line1[X1]), &(line1[Y1]), gt1);
 
 				rt_raster_cell_to_geopoint(rast1, col, height1, &(line1[X2]), &(line1[Y2]), gt1);
 
 				/* larger raster */
-				for (row = rowoffset; row <= dimValue; row += 3) {
+				for (row = rowoffset; row <= dimValue; row += 3)
+				{
 
-					if (byHeight) {
+					if (byHeight)
+					{
 						rt_raster_cell_to_geopoint(
 						    rast2, 0, row, &(line2[X1]), &(line2[Y1]), gt2);
 
 						rt_raster_cell_to_geopoint(
 						    rast2, width2, row, &(line2[X2]), &(line2[Y2]), gt2);
-					} else {
+					}
+					else
+					{
 						rt_raster_cell_to_geopoint(
 						    rast2, row, 0, &(line2[X1]), &(line2[Y1]), gt2);
 
@@ -732,15 +778,18 @@ rt_raster_intersects_algorithm(rt_raster rast1,
 					      (P[pX] < fmax(line2[X1], line2[X2])))) &&
 					    ((FLT_EQ(P[pY], line2[Y1]) || FLT_EQ(P[pY], line2[Y2])) ||
 					     (P[pY] > fmin(line2[Y1], line2[Y2]) &&
-					      (P[pY] < fmax(line2[Y1], line2[Y2]))))) {
+					      (P[pY] < fmax(line2[Y1], line2[Y2])))))
+					{
 						RASTER_DEBUG(4, "within bounds");
 
 						for (i = 0; i < 8; i++)
 							adjacent[i] = 0;
 
 						/* test points around intersection */
-						for (i = 0; i < 8; i++) {
-							switch (i) {
+						for (i = 0; i < 8; i++)
+						{
+							switch (i)
+							{
 							case 7:
 								Qw[pX] = P[pX] - xscale;
 								Qw[pY] = P[pY] + yscale;
@@ -784,16 +833,17 @@ rt_raster_intersects_algorithm(rt_raster rast1,
 							noval1 = 0;
 							if (rt_raster_geopoint_to_cell(
 								rast1, Qw[pX], Qw[pY], &(Qr[pX]), &(Qr[pY]), igt1) !=
-							    ES_NONE) {
-								noval1 = 1;
-							}
+							    ES_NONE)
+							{ noval1 = 1; }
 							/* cell is outside bounds of grid */
 							else if ((Qr[pX] < 0 || Qr[pX] > width1 ||
 								  FLT_EQ(Qr[pX], width1)) ||
 								 (Qr[pY] < 0 || Qr[pY] > height1 ||
-								  FLT_EQ(Qr[pY], height1))) {
+								  FLT_EQ(Qr[pY], height1)))
+							{
 								noval1 = 1;
-							} else if (hasnodata1 == FALSE)
+							}
+							else if (hasnodata1 == FALSE)
 								val1 = 1;
 							/* unable to get value at cell */
 							else if (rt_band_get_pixel(
@@ -805,16 +855,17 @@ rt_raster_intersects_algorithm(rt_raster rast1,
 							noval2 = 0;
 							if (rt_raster_geopoint_to_cell(
 								rast2, Qw[pX], Qw[pY], &(Qr[pX]), &(Qr[pY]), igt2) !=
-							    ES_NONE) {
-								noval2 = 1;
-							}
+							    ES_NONE)
+							{ noval2 = 1; }
 							/* cell is outside bounds of grid */
 							else if ((Qr[pX] < 0 || Qr[pX] > width2 ||
 								  FLT_EQ(Qr[pX], width2)) ||
 								 (Qr[pY] < 0 || Qr[pY] > height2 ||
-								  FLT_EQ(Qr[pY], height2))) {
+								  FLT_EQ(Qr[pY], height2)))
+							{
 								noval2 = 1;
-							} else if (hasnodata2 == FALSE)
+							}
+							else if (hasnodata2 == FALSE)
 								val2 = 1;
 							/* unable to get value at cell */
 							else if (rt_band_get_pixel(
@@ -826,15 +877,14 @@ rt_raster_intersects_algorithm(rt_raster rast1,
 							if (!noval2) { RASTER_DEBUGF(4, "val2 = %f", val2); }
 
 							/* pixels touch */
-							if (!noval1 && ((hasnodata1 == FALSE) || !isnodata1)) {
-								adjacent[i]++;
-							}
-							if (!noval2 && ((hasnodata2 == FALSE) || !isnodata2)) {
-								adjacent[i] += 3;
-							}
+							if (!noval1 && ((hasnodata1 == FALSE) || !isnodata1))
+							{ adjacent[i]++; }
+							if (!noval2 && ((hasnodata2 == FALSE) || !isnodata2))
+							{ adjacent[i] += 3; }
 
 							/* two pixel values not present */
-							if (noval1 || noval2) {
+							if (noval1 || noval2)
+							{
 								RASTER_DEBUGF(
 								    4, "noval1 = %d, noval2 = %d", noval1, noval2);
 								continue;
@@ -842,7 +892,8 @@ rt_raster_intersects_algorithm(rt_raster rast1,
 
 							/* pixels valid, so intersect */
 							if (((hasnodata1 == FALSE) || !isnodata1) &&
-							    ((hasnodata2 == FALSE) || !isnodata2)) {
+							    ((hasnodata2 == FALSE) || !isnodata2))
+							{
 								RASTER_DEBUG(3, "The two rasters do intersect");
 
 								return 1;
@@ -850,7 +901,8 @@ rt_raster_intersects_algorithm(rt_raster rast1,
 						}
 
 						/* pixels touch */
-						for (i = 0; i < 4; i++) {
+						for (i = 0; i < 4; i++)
+						{
 							RASTER_DEBUGF(4,
 								      "adjacent[%d] = %d, adjacent[%d] = %d",
 								      i,
@@ -859,13 +911,16 @@ rt_raster_intersects_algorithm(rt_raster rast1,
 								      adjacent[i + 4]);
 							if (adjacent[i] == 0) continue;
 
-							if (adjacent[i] + adjacent[i + 4] == 4) {
+							if (adjacent[i] + adjacent[i + 4] == 4)
+							{
 								RASTER_DEBUG(3, "The two rasters touch");
 
 								return 1;
 							}
 						}
-					} else {
+					}
+					else
+					{
 						RASTER_DEBUG(4, "outside of bounds");
 					}
 				}
@@ -947,32 +1002,40 @@ rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, i
 	assert(NULL != rast2);
 	assert(NULL != intersects);
 
-	if (nband1 < 0 && nband2 < 0) {
+	if (nband1 < 0 && nband2 < 0)
+	{
 		nband1 = -1;
 		nband2 = -1;
-	} else {
+	}
+	else
+	{
 		assert(nband1 >= 0 && nband1 < rt_raster_get_num_bands(rast1));
 		assert(nband2 >= 0 && nband2 < rt_raster_get_num_bands(rast2));
 	}
 
 	/* same srid */
-	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
+	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2))
+	{
 		rterror("rt_raster_intersects: The two rasters provided have different SRIDs");
 		*intersects = 0;
 		return ES_ERROR;
 	}
 
 	/* raster extents need to intersect */
-	do {
+	do
+	{
 		int rtn;
 
 		initGEOS(rtinfo, lwgeom_geos_error);
 
 		rtn = 1;
-		for (i = 0; i < 2; i++) {
+		for (i = 0; i < 2; i++)
+		{
 			if ((rt_raster_get_convex_hull(i < 1 ? rast1 : rast2, &(hull[i])) != ES_NONE) ||
-			    NULL == hull[i]) {
-				for (j = 0; j < i; j++) {
+			    NULL == hull[i])
+			{
+				for (j = 0; j < i; j++)
+				{
 					GEOSGeom_destroy(ghull[j]);
 					lwgeom_free(hull[j]);
 				}
@@ -980,8 +1043,10 @@ rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, i
 				break;
 			}
 			ghull[i] = (GEOSGeometry *)LWGEOM2GEOS(hull[i], 0);
-			if (NULL == ghull[i]) {
-				for (j = 0; j < i; j++) {
+			if (NULL == ghull[i])
+			{
+				for (j = 0; j < i; j++)
+				{
 					GEOSGeom_destroy(ghull[j]);
 					lwgeom_free(hull[j]);
 				}
@@ -1004,23 +1069,29 @@ rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, i
 		else
 			rtn = GEOSIntersects(ghull[0], ghull[1]);
 
-		for (i = 0; i < 2; i++) {
+		for (i = 0; i < 2; i++)
+		{
 			GEOSGeom_destroy(ghull[i]);
 			lwgeom_free(hull[i]);
 		}
 
-		if (rtn != 2) {
+		if (rtn != 2)
+		{
 			RASTER_DEBUGF(4, "convex hulls of rasters do %sintersect", rtn != 1 ? "NOT " : "");
-			if (rtn != 1) {
+			if (rtn != 1)
+			{
 				*intersects = 0;
 				return ES_NONE;
 			}
 			/* band isn't specified */
-			else if (nband1 < 0) {
+			else if (nband1 < 0)
+			{
 				*intersects = 1;
 				return ES_NONE;
 			}
-		} else {
+		}
+		else
+		{
 			RASTER_DEBUG(4, "GEOSIntersects() returned a 2!!!!");
 		}
 	} while (0);
@@ -1037,7 +1108,8 @@ rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, i
 	RASTER_DEBUGF(4, "pixarea1, pixarea2, area1, area2 = %f, %f, %f, %f", pixarea1, pixarea2, area1, area2);
 	if ((within <= 0) || (area1 < area2) || FLT_EQ(area1, area2) ||
 	    (area1 < pixarea2) || /* area of rast1 smaller than pixel area of rast2 */
-	    FLT_EQ(area1, pixarea2)) {
+	    FLT_EQ(area1, pixarea2))
+	{
 		rastS = rast1;
 		nbandS = nband1;
 		widthS = &width1;
@@ -1047,7 +1119,9 @@ rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, i
 		nbandL = nband2;
 		widthL = &width2;
 		heightL = &height2;
-	} else {
+	}
+	else
+	{
 		rastS = rast2;
 		nbandS = nband2;
 		widthS = &width2;
@@ -1060,7 +1134,8 @@ rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, i
 	}
 
 	/* no band to use, set band to zero */
-	if (nband1 < 0) {
+	if (nband1 < 0)
+	{
 		nbandS = 0;
 		nbandL = 0;
 	}
@@ -1072,7 +1147,8 @@ rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, i
 
 	/* load band of smaller raster */
 	bandS = rt_raster_get_band(rastS, nbandS);
-	if (NULL == bandS) {
+	if (NULL == bandS)
+	{
 		rterror("rt_raster_intersects: Could not get band %d of the first raster", nbandS);
 		*intersects = 0;
 		return ES_ERROR;
@@ -1083,7 +1159,8 @@ rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, i
 
 	/* load band of larger raster */
 	bandL = rt_raster_get_band(rastL, nbandL);
-	if (NULL == bandL) {
+	if (NULL == bandL)
+	{
 		rterror("rt_raster_intersects: Could not get band %d of the first raster", nbandL);
 		*intersects = 0;
 		return ES_ERROR;
@@ -1093,33 +1170,41 @@ rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, i
 	if (hasnodataL != FALSE) rt_band_get_nodata(bandL, &nodataL);
 
 	/* no band to use, ignore nodata */
-	if (nband1 < 0) {
+	if (nband1 < 0)
+	{
 		hasnodataS = FALSE;
 		hasnodataL = FALSE;
 	}
 
 	/* hasnodata(S|L) = TRUE and one of the two bands is isnodata */
-	if ((hasnodataS && rt_band_get_isnodata_flag(bandS)) || (hasnodataL && rt_band_get_isnodata_flag(bandL))) {
+	if ((hasnodataS && rt_band_get_isnodata_flag(bandS)) || (hasnodataL && rt_band_get_isnodata_flag(bandL)))
+	{
 		RASTER_DEBUG(3, "One of the two raster bands is NODATA. The two rasters do not intersect");
 		*intersects = 0;
 		return ES_NONE;
 	}
 
 	/* special case where a raster can fit inside another raster's pixel */
-	if (within != 0 && ((pixarea1 > area2) || (pixarea2 > area1))) {
+	if (within != 0 && ((pixarea1 > area2) || (pixarea2 > area1)))
+	{
 		RASTER_DEBUG(4, "Using special case of raster fitting into another raster's pixel");
 		/* 3 x 3 search */
-		for (coloffset = 0; coloffset < 3; coloffset++) {
-			for (rowoffset = 0; rowoffset < 3; rowoffset++) {
-				for (col = coloffset; col < *widthS; col += 3) {
-					for (row = rowoffset; row < *heightS; row += 3) {
+		for (coloffset = 0; coloffset < 3; coloffset++)
+		{
+			for (rowoffset = 0; rowoffset < 3; rowoffset++)
+			{
+				for (col = coloffset; col < *widthS; col += 3)
+				{
+					for (row = rowoffset; row < *heightS; row += 3)
+					{
 						if (hasnodataS == FALSE)
 							valS = 1;
 						else if (rt_band_get_pixel(bandS, col, row, &valS, &isnodataS) !=
 							 ES_NONE)
 							continue;
 
-						if ((hasnodataS == FALSE) || !isnodataS) {
+						if ((hasnodataS == FALSE) || !isnodataS)
+						{
 							rt_raster_cell_to_geopoint(
 							    rastS, col, row, &(lineS[X1]), &(lineS[Y1]), gtS);
 
@@ -1128,16 +1213,14 @@ rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, i
 										       lineS[Y1],
 										       &(Qr[pX]),
 										       &(Qr[pY]),
-										       igtL) != ES_NONE) {
-								continue;
-							}
+										       igtL) != ES_NONE)
+							{ continue; }
 
 							if ((Qr[pX] < 0 || Qr[pX] > *widthL ||
 							     FLT_EQ(Qr[pX], *widthL)) ||
 							    (Qr[pY] < 0 || Qr[pY] > *heightL ||
-							     FLT_EQ(Qr[pY], *heightL))) {
-								continue;
-							}
+							     FLT_EQ(Qr[pY], *heightL)))
+							{ continue; }
 
 							if (hasnodataS == FALSE)
 								valL = 1;
@@ -1146,7 +1229,8 @@ rt_raster_intersects(rt_raster rast1, int nband1, rt_raster rast2, int nband2, i
 								 ES_NONE)
 								continue;
 
-							if ((hasnodataL == FALSE) || !isnodataL) {
+							if ((hasnodataL == FALSE) || !isnodataL)
+							{
 								RASTER_DEBUG(3, "The two rasters do intersect");
 								*intersects = 1;
 								return ES_NONE;

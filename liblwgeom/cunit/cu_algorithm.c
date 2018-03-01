@@ -1148,7 +1148,8 @@ test_weighted_distance(const POINT4D *curr, const POINT4D *points, uint32_t npoi
 {
 	double distance = 0.0;
 	uint32_t i;
-	for (i = 0; i < npoints; i++) {
+	for (i = 0; i < npoints; i++)
+	{
 		distance += distance3d_pt_pt((POINT3D *)curr, (POINT3D *)&points[i]) * points[i].m;
 	}
 
@@ -1168,7 +1169,8 @@ do_median_test(char *input, char *expected, int fail_if_not_converged, int iter_
 	LWPOINT *result = lwgeom_median(g, tolerance, iter_count, fail_if_not_converged);
 	int passed = LW_FALSE;
 
-	if (expected != NULL) {
+	if (expected != NULL)
+	{
 		expected_result = lwgeom_as_lwpoint(lwgeom_from_wkt(expected, LW_PARSER_CHECK_NONE));
 		lwpoint_getPoint4d_p(expected_result, &expected_pt);
 	}
@@ -1180,15 +1182,19 @@ do_median_test(char *input, char *expected, int fail_if_not_converged, int iter_
 		passed = passed && lwgeom_is_empty((LWGEOM *)expected_result) == lwgeom_is_empty((LWGEOM *)result);
 		passed = passed && (lwgeom_has_z((LWGEOM *)expected_result) == lwgeom_has_z((LWGEOM *)result));
 
-		if (passed && !lwgeom_is_empty((LWGEOM *)result)) {
-			if (g->type == POINTTYPE) {
+		if (passed && !lwgeom_is_empty((LWGEOM *)result))
+		{
+			if (g->type == POINTTYPE)
+			{
 				passed &= fabs(actual_pt.x - expected_pt.x) < tolerance;
 				passed &= fabs(actual_pt.y - expected_pt.y) < tolerance;
 				passed &= (!lwgeom_has_z((LWGEOM *)expected_result) ||
 					   fabs(actual_pt.z - expected_pt.z) < tolerance);
 				passed &= (!lwgeom_has_m((LWGEOM *)expected_result) ||
 					   fabs(actual_pt.m - expected_pt.m) < tolerance);
-			} else {
+			}
+			else
+			{
 				/* Check that the difference between the obtained geometric
 				median and the expected point is within tolerance */
 				uint32_t npoints = 1;
@@ -1199,31 +1205,34 @@ do_median_test(char *input, char *expected, int fail_if_not_converged, int iter_
 				double distance_result = test_weighted_distance(&actual_pt, points, npoints);
 
 				passed = distance_result <= (1.0 + tolerance) * distance_expected;
-				if (!passed) {
-					printf("Diff: Got %.10f Expected %.10f\n", distance_result, distance_expected);
-				}
+				if (!passed)
+				{ printf("Diff: Got %.10f Expected %.10f\n", distance_result, distance_expected); }
 				lwfree(points);
 			}
 		}
 
-		if (!passed) {
+		if (!passed)
+		{
 			printf("median_test input %s (parsed %s) expected %s got %s\n",
 			       input,
 			       lwgeom_to_ewkt(g),
 			       lwgeom_to_ewkt((LWGEOM *)expected_result),
 			       lwgeom_to_ewkt((LWGEOM *)result));
 		}
-	} else if (result == NULL && expected == NULL) /* got nothing, expecting nothing */
+	}
+	else if (result == NULL && expected == NULL) /* got nothing, expecting nothing */
 	{
 		passed = LW_TRUE;
-	} else if (result != NULL && expected == NULL) /* got something, expecting nothing */
+	}
+	else if (result != NULL && expected == NULL) /* got something, expecting nothing */
 	{
 		passed = LW_FALSE;
 		printf("median_test input %s (parsed %s) expected NULL got %s\n",
 		       input,
 		       lwgeom_to_ewkt(g),
 		       lwgeom_to_ewkt((LWGEOM *)result));
-	} else if (result == NULL && expected != NULL) /* got nothing, expecting something */
+	}
+	else if (result == NULL && expected != NULL) /* got nothing, expecting something */
 	{
 		passed = LW_FALSE;
 		printf("%s", cu_error_msg);
@@ -1442,8 +1451,10 @@ test_kmeans(void)
 
 	geoms = lwalloc(sizeof(LWGEOM *) * N);
 
-	for (j = 0; j < num_clusters; j++) {
-		for (i = 0; i < cluster_size; i++) {
+	for (j = 0; j < num_clusters; j++)
+	{
+		for (i = 0; i < cluster_size; i++)
+		{
 			double u1 = 1.0 * rand() / RAND_MAX;
 			double u2 = 1.0 * rand() / RAND_MAX;
 			double z1 = spread * j + sqrt(-2 * log2(u1)) * cos(2 * M_PI * u2);

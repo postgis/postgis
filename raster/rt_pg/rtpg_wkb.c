@@ -59,7 +59,8 @@ Datum RASTER_asWKB(PG_FUNCTION_ARGS)
 
 	/* Get raster object */
 	raster = rt_raster_deserialize(pgraster, FALSE);
-	if (!raster) {
+	if (!raster)
+	{
 		PG_FREE_IF_COPY(pgraster, 0);
 		elog(ERROR, "RASTER_asWKB: Cannot deserialize raster");
 		PG_RETURN_NULL();
@@ -69,7 +70,8 @@ Datum RASTER_asWKB(PG_FUNCTION_ARGS)
 
 	/* Parse raster to wkb object */
 	wkb = rt_raster_to_wkb(raster, outasin, &wkb_size);
-	if (!wkb) {
+	if (!wkb)
+	{
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		elog(ERROR, "RASTER_asWKB: Cannot allocate and generate WKB data");
@@ -109,7 +111,8 @@ Datum RASTER_asHexWKB(PG_FUNCTION_ARGS)
 	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	raster = rt_raster_deserialize(pgraster, FALSE);
-	if (!raster) {
+	if (!raster)
+	{
 		PG_FREE_IF_COPY(pgraster, 0);
 		elog(ERROR, "RASTER_asHexWKB: Cannot deserialize raster");
 		PG_RETURN_NULL();
@@ -118,7 +121,8 @@ Datum RASTER_asHexWKB(PG_FUNCTION_ARGS)
 	if (!PG_ARGISNULL(1)) outasin = PG_GETARG_BOOL(1);
 
 	hexwkb = rt_raster_to_hexwkb(raster, outasin, &hexwkbsize);
-	if (!hexwkb) {
+	if (!hexwkb)
+	{
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		elog(ERROR, "RASTER_asHexWKB: Cannot allocate and generate Hex WKB data");

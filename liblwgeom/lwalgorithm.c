@@ -127,7 +127,8 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 	radius_A = lw_arc_center(A1, A2, A3, &C);
 
 	/* Co-linear! Return linear distance! */
-	if (radius_A < 0) {
+	if (radius_A < 0)
+	{
 		double dx = A1->x - A3->x;
 		double dy = A1->y - A3->y;
 		return sqrt(dx * dx + dy * dy);
@@ -152,12 +153,15 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 	a3 = atan2(A3->y - C.y, A3->x - C.x);
 
 	/* What's the sweep from A1 to A3? */
-	if (clockwise) {
+	if (clockwise)
+	{
 		if (a1 > a3)
 			angle = a1 - a3;
 		else
 			angle = 2 * M_PI + a1 - a3;
-	} else {
+	}
+	else
+	{
 		if (a3 > a1)
 			angle = a3 - a1;
 		else
@@ -226,7 +230,8 @@ lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *
 		 p3->y);
 
 	/* Closed circle */
-	if (fabs(p1->x - p3->x) < EPSILON_SQLMM && fabs(p1->y - p3->y) < EPSILON_SQLMM) {
+	if (fabs(p1->x - p3->x) < EPSILON_SQLMM && fabs(p1->y - p3->y) < EPSILON_SQLMM)
+	{
 		cx = p1->x + (p2->x - p1->x) / 2.0;
 		cy = p1->y + (p2->y - p1->y) / 2.0;
 		c.x = cx;
@@ -274,7 +279,8 @@ pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring)
 
 	first = getPoint2d_cp(ring, 0);
 	last = getPoint2d_cp(ring, ring->npoints - 1);
-	if (memcmp(first, last, sizeof(POINT2D))) {
+	if (memcmp(first, last, sizeof(POINT2D)))
+	{
 		lwerror("pt_in_ring_2d: V[n] != V[0] (%g %g != %g %g)", first->x, first->y, last->x, last->y);
 		return LW_FALSE;
 	}
@@ -284,7 +290,8 @@ pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring)
 
 	/* loop through all edges of the polygon */
 	v1 = getPoint2d_cp(ring, 0);
-	for (i = 0; i < ring->npoints - 1; i++) {
+	for (i = 0; i < ring->npoints - 1; i++)
+	{
 		double vt;
 		v2 = getPoint2d_cp(ring, i + 1);
 
@@ -293,12 +300,14 @@ pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring)
 		    /* an upward crossing */
 		    ((v1->y <= p->y) && (v2->y > p->y))
 		    /* a downward crossing */
-		    || ((v1->y > p->y) && (v2->y <= p->y))) {
+		    || ((v1->y > p->y) && (v2->y <= p->y)))
+		{
 
 			vt = (double)(p->y - v1->y) / (v2->y - v1->y);
 
 			/* P->x <intersect */
-			if (p->x < v1->x + vt * (v2->x - v1->x)) {
+			if (p->x < v1->x + vt * (v2->x - v1->x))
+			{
 				/* a valid crossing of y=p->y right of p->x */
 				++cn;
 			}
@@ -377,7 +386,8 @@ lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, c
 	if (pq2 == 0 || qp2 == 0) { return SEG_NO_INTERSECTION; }
 
 	/* First point of p touches, it's a "crossing". */
-	if (pq1 == 0) {
+	if (pq1 == 0)
+	{
 		if (pq2 > 0)
 			return SEG_CROSS_RIGHT;
 		else
@@ -385,7 +395,8 @@ lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, c
 	}
 
 	/* First point of q touches, it's a crossing. */
-	if (qp1 == 0) {
+	if (qp1 == 0)
+	{
 		if (pq1 < pq2)
 			return SEG_CROSS_RIGHT;
 		else
@@ -439,7 +450,8 @@ lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 	/* Initialize first point of q */
 	q1 = getPoint2d_cp(pa2, 0);
 
-	for (i = 1; i < pa2->npoints; i++) {
+	for (i = 1; i < pa2->npoints; i++)
+	{
 
 		/* Update second point of q to next value */
 		q2 = getPoint2d_cp(pa2, i);
@@ -447,7 +459,8 @@ lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 		/* Initialize first point of p */
 		p1 = getPoint2d_cp(pa1, 0);
 
-		for (j = 1; j < pa1->npoints; j++) {
+		for (j = 1; j < pa1->npoints; j++)
+		{
 
 			/* Update second point of p to next value */
 			p2 = getPoint2d_cp(pa1, j);
@@ -456,13 +469,15 @@ lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 
 			LWDEBUGF(4, "i=%d, j=%d (%.8g %.8g, %.8g %.8g)", this_cross, i, j, p1->x, p1->y, p2->x, p2->y);
 
-			if (this_cross == SEG_CROSS_LEFT) {
+			if (this_cross == SEG_CROSS_LEFT)
+			{
 				LWDEBUG(4, "this_cross == SEG_CROSS_LEFT");
 				cross_left++;
 				if (!first_cross) first_cross = SEG_CROSS_LEFT;
 			}
 
-			if (this_cross == SEG_CROSS_RIGHT) {
+			if (this_cross == SEG_CROSS_RIGHT)
+			{
 				LWDEBUG(4, "this_cross == SEG_CROSS_RIGHT");
 				cross_right++;
 				if (!first_cross) first_cross = SEG_CROSS_LEFT;
@@ -473,7 +488,8 @@ lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 			** segment to next vertext and seeing if the end points straddle
 			** the co-linear segment.
 			*/
-			if (this_cross == SEG_COLINEAR) {
+			if (this_cross == SEG_COLINEAR)
+			{
 				LWDEBUG(4, "this_cross == SEG_COLINEAR");
 				/* TODO: Add logic here and in segment_intersects()
 				continue;
@@ -533,29 +549,39 @@ geohash_point(double longitude, double latitude, int precision)
 	lon[0] = -180.0;
 	lon[1] = 180.0;
 
-	while (i < precision) {
-		if (is_even) {
+	while (i < precision)
+	{
+		if (is_even)
+		{
 			mid = (lon[0] + lon[1]) / 2;
-			if (longitude >= mid) {
+			if (longitude >= mid)
+			{
 				ch |= bits[bit];
 				lon[0] = mid;
-			} else {
+			}
+			else
+			{
 				lon[1] = mid;
 			}
-		} else {
+		}
+		else
+		{
 			mid = (lat[0] + lat[1]) / 2;
-			if (latitude >= mid) {
+			if (latitude >= mid)
+			{
 				ch |= bits[bit];
 				lat[0] = mid;
-			} else {
+			}
+			else
+			{
 				lat[1] = mid;
 			}
 		}
 
 		is_even = !is_even;
-		if (bit < 4) {
-			bit++;
-		} else {
+		if (bit < 4) { bit++; }
+		else
+		{
 			geohash[i++] = base32[ch];
 			bit = 0;
 			ch = 0;
@@ -586,21 +612,31 @@ geohash_point_as_int(POINT2D *pt)
 	lon[0] = -180.0;
 	lon[1] = 180.0;
 
-	while (--bit >= 0) {
-		if (is_even) {
+	while (--bit >= 0)
+	{
+		if (is_even)
+		{
 			mid = (lon[0] + lon[1]) / 2;
-			if (longitude > mid) {
+			if (longitude > mid)
+			{
 				ch |= 0x0001u << bit;
 				lon[0] = mid;
-			} else {
+			}
+			else
+			{
 				lon[1] = mid;
 			}
-		} else {
+		}
+		else
+		{
 			mid = (lat[0] + lat[1]) / 2;
-			if (latitude > mid) {
+			if (latitude > mid)
+			{
 				ch |= 0x0001 << bit;
 				lat[0] = mid;
-			} else {
+			}
+			else
+			{
 				lat[1] = mid;
 			}
 		}
@@ -633,15 +669,17 @@ decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision)
 
 	if (precision < 0 || precision > hashlen) { precision = hashlen; }
 
-	for (i = 0; i < precision; i++) {
+	for (i = 0; i < precision; i++)
+	{
 		c = tolower(geohash[i]);
 		cd = strchr(base32, c) - base32;
 
-		for (j = 0; j < 5; j++) {
+		for (j = 0; j < 5; j++)
+		{
 			mask = bits[j];
-			if (is_even) {
-				lon[!(cd & mask)] = (lon[0] + lon[1]) / 2;
-			} else {
+			if (is_even) { lon[!(cd & mask)] = (lon[0] + lon[1]) / 2; }
+			else
+			{
 				lat[!(cd & mask)] = (lat[0] + lat[1]) / 2;
 			}
 			is_even = !is_even;
@@ -664,7 +702,8 @@ lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 	maxx = bbox.xmax;
 	maxy = bbox.ymax;
 
-	if (minx == maxx && miny == maxy) {
+	if (minx == maxx && miny == maxy)
+	{
 		/* It's a point. Doubles have 51 bits of precision.
 		** 2 * 51 / 5 == 20 */
 		return 20;
@@ -677,39 +716,46 @@ lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 
 	/* Shrink a world bounding box until one of the edges interferes with the
 	** bounds of our rectangle. */
-	while (1) {
+	while (1)
+	{
 		lonwidth = lonmax - lonmin;
 		latwidth = latmax - latmin;
 		latmaxadjust = lonmaxadjust = latminadjust = lonminadjust = 0.0;
 
-		if (minx > lonmin + lonwidth / 2.0) {
-			lonminadjust = lonwidth / 2.0;
-		} else if (maxx < lonmax - lonwidth / 2.0) {
+		if (minx > lonmin + lonwidth / 2.0) { lonminadjust = lonwidth / 2.0; }
+		else if (maxx < lonmax - lonwidth / 2.0)
+		{
 			lonmaxadjust = -1 * lonwidth / 2.0;
 		}
-		if (lonminadjust || lonmaxadjust) {
+		if (lonminadjust || lonmaxadjust)
+		{
 			lonmin += lonminadjust;
 			lonmax += lonmaxadjust;
 			/* Each adjustment cycle corresponds to 2 bits of storage in the
 			** geohash.	*/
 			precision++;
-		} else {
+		}
+		else
+		{
 			break;
 		}
 
-		if (miny > latmin + latwidth / 2.0) {
-			latminadjust = latwidth / 2.0;
-		} else if (maxy < latmax - latwidth / 2.0) {
+		if (miny > latmin + latwidth / 2.0) { latminadjust = latwidth / 2.0; }
+		else if (maxy < latmax - latwidth / 2.0)
+		{
 			latmaxadjust = -1 * latwidth / 2.0;
 		}
 		/* Only adjust if adjustments are legal (we haven't crossed any edges). */
-		if (latminadjust || latmaxadjust) {
+		if (latminadjust || latmaxadjust)
+		{
 			latmin += latminadjust;
 			latmax += latmaxadjust;
 			/* Each adjustment cycle corresponds to 2 bits of storage in the
 			** geohash.	*/
 			precision++;
-		} else {
+		}
+		else
+		{
 			break;
 		}
 	}
@@ -746,7 +792,8 @@ lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 	if (result == LW_FAILURE) return NULL;
 
 	/* Return error if we are being fed something outside our working bounds */
-	if (gbox.xmin < -180 || gbox.ymin < -90 || gbox.xmax > 180 || gbox.ymax > 90) {
+	if (gbox.xmin < -180 || gbox.ymin < -90 || gbox.xmax > 180 || gbox.ymax > 90)
+	{
 		lwerror("Geohash requires inputs in decimal degrees, got (%g %g, %g %g).",
 			gbox.xmin,
 			gbox.ymin,

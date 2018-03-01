@@ -20,11 +20,13 @@
 #include "../liblwgeom/lwgeom_log.h" /* for LWDEBUG macros */
 
 /* Internal ring/point structures */
-typedef struct struct_point {
+typedef struct struct_point
+{
 	double x, y, z, m;
 } Point;
 
-typedef struct struct_ring {
+typedef struct struct_ring
+{
 	Point *list; /* list of points */
 	struct struct_ring *next;
 	int n;               /* number of points in list */
@@ -72,15 +74,18 @@ utf8(const char *fromcode, char *inputbuf, char **outputbuf)
 	outputptr = *outputbuf;
 
 	/* Does this string convert cleanly? */
-	if (iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == (size_t)-1) {
+	if (iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == (size_t)-1)
+	{
 #ifdef HAVE_ICONVCTL
 		int on = 1;
 		/* No. Try to convert it while transliterating. */
 		iconvctl(cd, ICONV_SET_TRANSLITERATE, &on);
-		if (iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1) {
+		if (iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1)
+		{
 			/* No. Try to convert it while discarding errors. */
 			iconvctl(cd, ICONV_SET_DISCARD_ILSEQ, &on);
-			if (iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1) {
+			if (iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft) == -1)
+			{
 				/* Still no. Throw away the buffer and return. */
 				free(*outputbuf);
 				iconv_close(cd);
@@ -124,7 +129,8 @@ escape_copy_string(char *str)
 	ptr = str;
 
 	/* Count how many characters we need to escape so we know the size of the string we need to return */
-	while (*ptr) {
+	while (*ptr)
+	{
 		if (*ptr == '\t' || *ptr == '\\' || *ptr == '\n' || *ptr == '\r') toescape++;
 
 		ptr++;
@@ -138,7 +144,8 @@ escape_copy_string(char *str)
 	optr = result;
 	ptr = str;
 
-	while (*ptr) {
+	while (*ptr)
+	{
 		if (*ptr == '\t' || *ptr == '\\' || *ptr == '\n' || *ptr == '\r') *optr++ = '\\';
 
 		*optr++ = *ptr++;
@@ -171,7 +178,8 @@ escape_insert_string(char *str)
 	ptr = str;
 
 	/* Count how many characters we need to escape so we know the size of the string we need to return */
-	while (*ptr) {
+	while (*ptr)
+	{
 		if (*ptr == '\'') toescape++;
 
 		ptr++;
@@ -185,7 +193,8 @@ escape_insert_string(char *str)
 	optr = result;
 	ptr = str;
 
-	while (*ptr) {
+	while (*ptr)
+	{
 		if (*ptr == '\'') *optr++ = '\'';
 
 		*optr++ = *ptr++;
@@ -221,7 +230,8 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, in
 	lwmultipoints = malloc(sizeof(LWPOINT *) * obj->nVertices);
 
 	/* We need an array of pointers to each of our sub-geometries */
-	for (u = 0; u < obj->nVertices; u++) {
+	for (u = 0; u < obj->nVertices; u++)
+	{
 		/* Create a ptarray containing a single point */
 		POINTARRAY *pa = ptarray_construct_empty(state->has_z, state->has_m, 1);
 
@@ -241,21 +251,25 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, in
 
 	/* If we have more than 1 vertex then we are working on a MULTIPOINT and so generate a MULTIPOINT
 	rather than a POINT */
-	if ((obj->nVertices > 1) || force_multi) {
+	if ((obj->nVertices > 1) || force_multi)
+	{
 		lwgeom = lwcollection_as_lwgeom(
 		    lwcollection_construct(MULTIPOINTTYPE, state->from_srid, NULL, obj->nVertices, lwmultipoints));
-	} else {
+	}
+	else
+	{
 		lwgeom = lwmultipoints[0];
 		lwfree(lwmultipoints);
 	}
 
-	if (state->config->use_wkt) {
-		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, WKT_PRECISION, &mem_length);
-	} else {
+	if (state->config->use_wkt) { mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, WKT_PRECISION, &mem_length); }
+	else
+	{
 		mem = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &mem_length);
 	}
 
-	if (!mem) {
+	if (!mem)
+	{
 		snprintf(state->message, SHPLOADERMSGLEN, "unable to write geometry");
 		return SHPLOADERERR;
 	}
@@ -287,7 +301,8 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	FLAGS_SET_Z(dims, state->has_z);
 	FLAGS_SET_M(dims, state->has_m);
 
-	if (state->config->simple_geometries == 1 && obj->nParts > 1) {
+	if (state->config->simple_geometries == 1 && obj->nParts > 1)
+	{
 		snprintf(state->message,
 			 SHPLOADERMSGLEN,
 			 _("We have a Multilinestring with %d parts, can't use -S switch!"),
@@ -300,7 +315,8 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	lwmultilinestrings = malloc(sizeof(LWPOINT *) * obj->nParts);
 
 	/* We need an array of pointers to each of our sub-geometries */
-	for (u = 0; u < obj->nParts; u++) {
+	for (u = 0; u < obj->nParts; u++)
+	{
 		/* Create a ptarray containing the line points */
 		POINTARRAY *pa = ptarray_construct_empty(state->has_z, state->has_m, obj->nParts);
 
@@ -313,7 +329,8 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 
 		start_vertex = obj->panPartStart[u];
 
-		for (v = start_vertex; v < end_vertex; v++) {
+		for (v = start_vertex; v < end_vertex; v++)
+		{
 			/* Generate the point */
 			point4d.x = obj->padfX[v];
 			point4d.y = obj->padfY[v];
@@ -329,10 +346,13 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	}
 
 	/* If using MULTILINESTRINGs then generate the serialized collection, otherwise just a single LINESTRING */
-	if (state->config->simple_geometries == 0) {
+	if (state->config->simple_geometries == 0)
+	{
 		lwgeom = lwcollection_as_lwgeom(
 		    lwcollection_construct(MULTILINETYPE, state->from_srid, NULL, obj->nParts, lwmultilinestrings));
-	} else {
+	}
+	else
+	{
 		lwgeom = lwmultilinestrings[0];
 		lwfree(lwmultilinestrings);
 	}
@@ -342,7 +362,8 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	else
 		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, WKT_PRECISION, &mem_length);
 
-	if (!mem) {
+	if (!mem)
+	{
 		snprintf(state->message, SHPLOADERMSGLEN, "unable to write geometry");
 		return SHPLOADERERR;
 	}
@@ -404,7 +425,8 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 	Inner = (Ring **)malloc(sizeof(Ring *) * obj->nParts);
 
 	/* Iterate over rings dividing in Outers and Inners */
-	for (pi = 0; pi < obj->nParts; pi++) {
+	for (pi = 0; pi < obj->nParts; pi++)
+	{
 		int vi; /* vertex index */
 		int vs; /* start index */
 		int ve; /* end index */
@@ -431,7 +453,8 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		ring->linked = 0;
 
 		/* Iterate over ring vertexes */
-		for (vi = vs; vi < ve; vi++) {
+		for (vi = vs; vi < ve; vi++)
+		{
 			int vn = vi + 1; /* next vertex for area */
 			if (vn == ve) vn = vs;
 
@@ -450,10 +473,13 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		/*ring->list[vi].m = obj->padfM[vs]; */
 
 		/* Clockwise (or single-part). It's an Outer Ring ! */
-		if (area < 0.0 || obj->nParts == 1) {
+		if (area < 0.0 || obj->nParts == 1)
+		{
 			Outer[out_index] = ring;
 			out_index++;
-		} else {
+		}
+		else
+		{
 			/* Counterclockwise. It's an Inner Ring ! */
 			Inner[in_index] = ring;
 			in_index++;
@@ -464,7 +490,8 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 
 	/* Put the inner rings into the list of the outer rings */
 	/* of which they are within */
-	for (pi = 0; pi < in_index; pi++) {
+	for (pi = 0; pi < in_index; pi++)
+	{
 		Point pt, pt2;
 		int i;
 		Ring *inner = Inner[pi], *outer = NULL;
@@ -482,23 +509,28 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		 * will assign the little polygon's hole to the little polygon
 		 * w/o a lot of extra fancy containment logic here
 		 */
-		for (i = out_index - 1; i >= 0; i--) {
+		for (i = out_index - 1; i >= 0; i--)
+		{
 			int in;
 
 			in = PIP(pt, Outer[i]->list, Outer[i]->n);
-			if (in || PIP(pt2, Outer[i]->list, Outer[i]->n)) {
+			if (in || PIP(pt2, Outer[i]->list, Outer[i]->n))
+			{
 				outer = Outer[i];
 				break;
 			}
 		}
 
-		if (outer) {
+		if (outer)
+		{
 			outer->linked++;
 			while (outer->next)
 				outer = outer->next;
 
 			outer->next = inner;
-		} else {
+		}
+		else
+		{
 			/* The ring wasn't within any outer rings, */
 			/* assume it is a new outer ring. */
 			LWDEBUGF(4, "FindPolygons[%d]: hole %d is orphan\n", call, pi);
@@ -524,10 +556,12 @@ ReleasePolygons(Ring **polys, int npolys)
 	int pi;
 
 	/* Release all memory */
-	for (pi = 0; pi < npolys; pi++) {
+	for (pi = 0; pi < npolys; pi++)
+	{
 		Ring *Poly, *temp;
 		Poly = polys[pi];
-		while (Poly != NULL) {
+		while (Poly != NULL)
+		{
 			temp = Poly;
 			Poly = Poly->next;
 			free(temp->list);
@@ -582,7 +616,8 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	lwpolygons = malloc(sizeof(LWPOLY *) * polygon_total);
 
 	/* Cycle through each individual polygon */
-	for (pi = 0; pi < polygon_total; pi++) {
+	for (pi = 0; pi < polygon_total; pi++)
+	{
 		LWPOLY *lwpoly = lwpoly_construct_empty(state->from_srid, state->has_z, state->has_m);
 
 		Ring *polyring;
@@ -591,7 +626,8 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 		/* Firstly count through the total number of rings in this polygon */
 		ring_total = 0;
 		polyring = Outer[pi];
-		while (polyring) {
+		while (polyring)
+		{
 			ring_total++;
 			polyring = polyring->next;
 		}
@@ -599,11 +635,13 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 		/* Cycle through each ring within the polygon, starting with the outer */
 		polyring = Outer[pi];
 
-		while (polyring) {
+		while (polyring)
+		{
 			/* Create a POINTARRAY containing the points making up the ring */
 			POINTARRAY *pa = ptarray_construct_empty(state->has_z, state->has_m, polyring->n);
 
-			for (vi = 0; vi < polyring->n; vi++) {
+			for (vi = 0; vi < polyring->n; vi++)
+			{
 				/* Build up a point array of all the points in this ring */
 				point4d.x = polyring->list[vi].x;
 				point4d.y = polyring->list[vi].y;
@@ -626,10 +664,13 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	}
 
 	/* If using MULTIPOLYGONS then generate the serialized collection, otherwise just a single POLYGON */
-	if (state->config->simple_geometries == 0) {
+	if (state->config->simple_geometries == 0)
+	{
 		lwgeom = lwcollection_as_lwgeom(
 		    lwcollection_construct(MULTIPOLYGONTYPE, state->from_srid, NULL, polygon_total, lwpolygons));
-	} else {
+	}
+	else
+	{
 		lwgeom = lwpolygons[0];
 		lwfree(lwpolygons);
 	}
@@ -639,7 +680,8 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	else
 		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, WKT_PRECISION, &mem_length);
 
-	if (!mem) {
+	if (!mem)
+	{
 		/* Free the linked list of rings */
 		ReleasePolygons(Outer, polygon_total);
 
@@ -728,10 +770,11 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 	state->to_srid = config->sr_id;
 
 	/* If only one has a valid SRID, use it for both. */
-	if (state->to_srid == SRID_UNKNOWN) {
-		if (config->geography) {
-			state->to_srid = 4326;
-		} else {
+	if (state->to_srid == SRID_UNKNOWN)
+	{
+		if (config->geography) { state->to_srid = 4326; }
+		else
+		{
 			state->to_srid = state->from_srid;
 		}
 	}
@@ -763,10 +806,12 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	char *utf8str;
 
 	/* If we are reading the entire shapefile, open it */
-	if (state->config->readshape == 1) {
+	if (state->config->readshape == 1)
+	{
 		state->hSHPHandle = SHPOpen(state->config->shp_file, "rb");
 
-		if (state->hSHPHandle == NULL) {
+		if (state->hSHPHandle == NULL)
+		{
 			snprintf(
 			    state->message,
 			    SHPLOADERMSGLEN,
@@ -780,7 +825,8 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 	/* Open the DBF (attributes) file */
 	state->hDBFHandle = DBFOpen(state->config->shp_file, "rb");
-	if ((state->hSHPHandle == NULL && state->config->readshape == 1) || state->hDBFHandle == NULL) {
+	if ((state->hSHPHandle == NULL && state->config->readshape == 1) || state->hDBFHandle == NULL)
+	{
 		snprintf(state->message,
 			 SHPLOADERMSGLEN,
 			 _("%s: dbf file (.dbf) can not be opened."),
@@ -790,19 +836,23 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	}
 
 	/* Open the column map if one was specified */
-	if (state->config->column_map_filename) {
+	if (state->config->column_map_filename)
+	{
 		ret = colmap_read(
 		    state->config->column_map_filename, &state->column_map, state->message, SHPLOADERMSGLEN);
 		if (!ret) return SHPLOADERERR;
 	}
 
 	/* User hasn't altered the default encoding preference... */
-	if (strcmp(state->config->encoding, ENCODING_DEFAULT) == 0) {
+	if (strcmp(state->config->encoding, ENCODING_DEFAULT) == 0)
+	{
 		/* But the file has a code page entry... */
-		if (state->hDBFHandle->pszCodePage) {
+		if (state->hDBFHandle->pszCodePage)
+		{
 			/* And we figured out what iconv encoding it maps to, so use it! */
 			char *newencoding = NULL;
-			if ((newencoding = codepage2encoding(state->hDBFHandle->pszCodePage))) {
+			if ((newencoding = codepage2encoding(state->hDBFHandle->pszCodePage)))
+			{
 				lwfree(state->config->encoding);
 				state->config->encoding = newencoding;
 			}
@@ -810,22 +860,27 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	}
 
 	/* If reading the whole shapefile (not just attributes)... */
-	if (state->config->readshape == 1) {
+	if (state->config->readshape == 1)
+	{
 		SHPGetInfo(state->hSHPHandle, &state->num_entities, &state->shpfiletype, NULL, NULL);
 
 		/* If null_policy is set to abort, check for NULLs */
-		if (state->config->null_policy == POLICY_NULL_ABORT) {
+		if (state->config->null_policy == POLICY_NULL_ABORT)
+		{
 			/* If we abort on null items, scan the entire file for NULLs */
-			for (j = 0; j < state->num_entities; j++) {
+			for (j = 0; j < state->num_entities; j++)
+			{
 				obj = SHPReadObject(state->hSHPHandle, j);
 
-				if (!obj) {
+				if (!obj)
+				{
 					snprintf(
 					    state->message, SHPLOADERMSGLEN, _("Error reading shape object %d"), j);
 					return SHPLOADERERR;
 				}
 
-				if (obj->nVertices == 0) {
+				if (obj->nVertices == 0)
+				{
 					snprintf(
 					    state->message, SHPLOADERMSGLEN, _("Empty geometries found, aborted.)"));
 					return SHPLOADERERR;
@@ -837,7 +892,8 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 		/* Check the shapefile type */
 		int geomtype = 0;
-		switch (state->shpfiletype) {
+		switch (state->shpfiletype)
+		{
 		case SHPT_POINT:
 			/* Point */
 			state->pgtype = "POINT";
@@ -948,7 +1004,8 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		}
 
 		/* Force Z/M-handling if configured to do so */
-		switch (state->config->force_output) {
+		switch (state->config->force_output)
+		{
 		case FORCE_OUTPUT_2D:
 			state->has_z = 0;
 			state->has_m = 0;
@@ -978,14 +1035,18 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		}
 
 		/* If in simple geometry mode, alter names for CREATE TABLE by skipping MULTI */
-		if (state->config->simple_geometries) {
+		if (state->config->simple_geometries)
+		{
 			if ((geomtype == MULTIPOLYGONTYPE) || (geomtype == MULTILINETYPE) ||
-			    (geomtype == MULTIPOINTTYPE)) {
+			    (geomtype == MULTIPOINTTYPE))
+			{
 				/* Chop off the "MULTI" from the string. */
 				state->pgtype += 5;
 			}
 		}
-	} else {
+	}
+	else
+	{
 		/* Otherwise just count the number of records in the DBF */
 		state->num_entities = DBFGetRecordCount(state->hDBFHandle);
 	}
@@ -1007,7 +1068,8 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	   insertion string */
 	strcpy(state->col_names, "(");
 
-	for (j = 0; j < state->num_fields; j++) {
+	for (j = 0; j < state->num_fields; j++)
+	{
 		type = DBFGetFieldInfo(state->hDBFHandle, j, name, &field_width, &field_precision);
 
 		state->types[j] = type;
@@ -1015,13 +1077,15 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		state->precisions[j] = field_precision;
 		/*		fprintf(stderr, "XXX %s width:%d prec:%d\n", name, field_width, field_precision); */
 
-		if (state->config->encoding) {
+		if (state->config->encoding)
+		{
 			char *encoding_msg = _(
 			    "Try \"LATIN1\" (Western European), or one of the values described at http://www.gnu.org/software/libiconv/.");
 
 			int rv = utf8(state->config->encoding, name, &utf8str);
 
-			if (rv != UTF8_GOOD_RESULT) {
+			if (rv != UTF8_GOOD_RESULT)
+			{
 				if (rv == UTF8_BAD_RESULT)
 					snprintf(
 					    state->message,
@@ -1056,7 +1120,8 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		   the dbf column name */
 		{
 			const char *mapped = colmap_pg_by_dbf(&state->column_map, name);
-			if (mapped) {
+			if (mapped)
+			{
 				strncpy(name, mapped, MAXFIELDNAMELEN);
 				name[MAXFIELDNAMELEN - 1] = '\0';
 			}
@@ -1075,7 +1140,8 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		 */
 		if (name[0] == '_' || !strcmp(name, "gid") || !strcmp(name, "tableoid") || !strcmp(name, "cmin") ||
 		    !strcmp(name, "cmax") || !strcmp(name, "xmin") || !strcmp(name, "xmax") ||
-		    !strcmp(name, "primary") || !strcmp(name, "oid") || !strcmp(name, "ctid")) {
+		    !strcmp(name, "primary") || !strcmp(name, "oid") || !strcmp(name, "ctid"))
+		{
 			strncpy(name2 + 2, name, MAXFIELDNAMELEN - 2);
 			name2[0] = '_';
 			name2[1] = '_';
@@ -1083,8 +1149,10 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		}
 
 		/* Avoid duplicating field names */
-		for (z = 0; z < j; z++) {
-			if (strcmp(state->field_names[z], name) == 0) {
+		for (z = 0; z < j; z++)
+		{
+			if (strcmp(state->field_names[z], name) == 0)
+			{
 				strncat(name, "__", MAXFIELDNAMELEN - 1);
 				snprintf(name + strlen(name), MAXFIELDNAMELEN - 1 - strlen(name), "%i", j);
 				break;
@@ -1094,7 +1162,8 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		state->field_names[j] = strdup(name);
 
 		/* Now generate the PostgreSQL type name string and width based upon the shapefile type */
-		switch (state->types[j]) {
+		switch (state->types[j])
+		{
 		case FTString:
 			state->pgfieldtypes[j] = strdup("varchar");
 			break;
@@ -1105,13 +1174,18 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 		case FTInteger:
 			/* Determine exact type based upon field width */
-			if (state->config->forceint4 || (state->widths[j] >= 5 && state->widths[j] < 10)) {
-				state->pgfieldtypes[j] = strdup("int4");
-			} else if (state->widths[j] >= 10 && state->widths[j] < 19) {
+			if (state->config->forceint4 || (state->widths[j] >= 5 && state->widths[j] < 10))
+			{ state->pgfieldtypes[j] = strdup("int4"); }
+			else if (state->widths[j] >= 10 && state->widths[j] < 19)
+			{
 				state->pgfieldtypes[j] = strdup("int8");
-			} else if (state->widths[j] < 5) {
+			}
+			else if (state->widths[j] < 5)
+			{
 				state->pgfieldtypes[j] = strdup("int2");
-			} else {
+			}
+			else
+			{
 				state->pgfieldtypes[j] = strdup("numeric");
 			}
 			break;
@@ -1123,9 +1197,9 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 				state->field_names[j],
 				state->widths[j],
 				state->precisions[j]);
-			if (state->widths[j] > 18) {
-				state->pgfieldtypes[j] = strdup("numeric");
-			} else {
+			if (state->widths[j] > 18) { state->pgfieldtypes[j] = strdup("numeric"); }
+			else
+			{
 				state->pgfieldtypes[j] = strdup("float8");
 			}
 			break;
@@ -1142,10 +1216,13 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		strcat(state->col_names, "\"");
 		strcat(state->col_names, name);
 
-		if (state->config->readshape == 1 || j < (state->num_fields - 1)) {
+		if (state->config->readshape == 1 || j < (state->num_fields - 1))
+		{
 			/* Don't include last comma if its the last field and no geometry field will follow */
 			strcat(state->col_names, "\",");
-		} else {
+		}
+		else
+		{
 			strcat(state->col_names, "\"");
 		}
 	}
@@ -1179,7 +1256,8 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 	stringbuffer_aprintf(sb, "SET STANDARD_CONFORMING_STRINGS TO ON;\n");
 
 	/* Drop table if requested */
-	if (state->config->opt == 'd') {
+	if (state->config->opt == 'd')
+	{
 		/**
 		 * TODO: if the table has more then one geometry column
 		 * 	the DROP TABLE call will leave spurious records in
@@ -1191,8 +1269,10 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		 *
 		 * The table to be dropped might not exist.
 		 */
-		if (state->config->schema) {
-			if (state->config->readshape == 1 && (!state->config->geography)) {
+		if (state->config->schema)
+		{
+			if (state->config->readshape == 1 && (!state->config->geography))
+			{
 				stringbuffer_aprintf(sb,
 						     "SELECT DropGeometryColumn('%s','%s','%s');\n",
 						     state->config->schema,
@@ -1202,8 +1282,11 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 
 			stringbuffer_aprintf(
 			    sb, "DROP TABLE IF EXISTS \"%s\".\"%s\";\n", state->config->schema, state->config->table);
-		} else {
-			if (state->config->readshape == 1 && (!state->config->geography)) {
+		}
+		else
+		{
+			if (state->config->readshape == 1 && (!state->config->geography))
+			{
 				stringbuffer_aprintf(sb,
 						     "SELECT DropGeometryColumn('','%s','%s');\n",
 						     state->config->table,
@@ -1218,20 +1301,25 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 	if (state->config->usetransaction) { stringbuffer_aprintf(sb, "BEGIN;\n"); }
 
 	/* If not in 'append' mode create the spatial table */
-	if (state->config->opt != 'a') {
+	if (state->config->opt != 'a')
+	{
 		/*
 		 * Create a table for inserting the shapes into with appropriate
 		 * columns and types
 		 */
-		if (state->config->schema) {
+		if (state->config->schema)
+		{
 			stringbuffer_aprintf(
 			    sb, "CREATE TABLE \"%s\".\"%s\" (gid serial", state->config->schema, state->config->table);
-		} else {
+		}
+		else
+		{
 			stringbuffer_aprintf(sb, "CREATE TABLE \"%s\" (gid serial", state->config->table);
 		}
 
 		/* Generate the field types based upon the shapefile information */
-		for (j = 0; j < state->num_fields; j++) {
+		for (j = 0; j < state->num_fields; j++)
+		{
 			stringbuffer_aprintf(sb, ",\n\"%s\" ", state->field_names[j]);
 
 			/* First output the raw field type string */
@@ -1241,7 +1329,8 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			if (!strcmp("varchar", state->pgfieldtypes[j]))
 				stringbuffer_aprintf(sb, "(%d)", state->widths[j]);
 
-			if (!strcmp("numeric", state->pgfieldtypes[j])) {
+			if (!strcmp("numeric", state->pgfieldtypes[j]))
+			{
 				/* Doubles we just allow PostgreSQL to auto-detect the size */
 				if (state->types[j] != FTDouble) stringbuffer_aprintf(sb, "(%d,0)", state->widths[j]);
 			}
@@ -1249,7 +1338,8 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 
 		/* Add the geography column directly to the table definition, we don't
 		   need to do an AddGeometryColumn() call. */
-		if (state->config->readshape == 1 && state->config->geography) {
+		if (state->config->readshape == 1 && state->config->geography)
+		{
 			char *dimschar;
 
 			if (state->pgdims == 4)
@@ -1257,7 +1347,8 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			else
 				dimschar = "";
 
-			if (state->to_srid != SRID_UNKNOWN && state->to_srid != 4326) {
+			if (state->to_srid != SRID_UNKNOWN && state->to_srid != 4326)
+			{
 				snprintf(state->message,
 					 SHPLOADERMSGLEN,
 					 _("Invalid SRID for geography type: %d"),
@@ -1271,9 +1362,8 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		stringbuffer_aprintf(sb, ")");
 
 		/* Tablespace is optional. */
-		if (state->config->tablespace != NULL) {
-			stringbuffer_aprintf(sb, " TABLESPACE \"%s\"", state->config->tablespace);
-		}
+		if (state->config->tablespace != NULL)
+		{ stringbuffer_aprintf(sb, " TABLESPACE \"%s\"", state->config->tablespace); }
 		stringbuffer_aprintf(sb, ";\n");
 
 		/* Create the primary key.  This is done separately because the index for the PK needs
@@ -1294,7 +1384,8 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		stringbuffer_aprintf(sb, "\"%s\" ADD PRIMARY KEY (gid);\n", state->config->table);
 
 		/* Tablespace is optional for the index. */
-		if (state->config->idxtablespace != NULL) {
+		if (state->config->idxtablespace != NULL)
+		{
 			stringbuffer_aprintf(sb, "ALTER INDEX ");
 			if (state->config->schema) { stringbuffer_aprintf(sb, "\"%s\".", state->config->schema); }
 
@@ -1309,17 +1400,21 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		}
 
 		/* Create the geometry column with an addgeometry call */
-		if (state->config->readshape == 1 && (!state->config->geography)) {
+		if (state->config->readshape == 1 && (!state->config->geography))
+		{
 			/* If they didn't specify a target SRID, see if they specified a source SRID. */
 			int srid = state->to_srid;
-			if (state->config->schema) {
+			if (state->config->schema)
+			{
 				stringbuffer_aprintf(sb,
 						     "SELECT AddGeometryColumn('%s','%s','%s','%d',",
 						     state->config->schema,
 						     state->config->table,
 						     state->geo_col,
 						     srid);
-			} else {
+			}
+			else
+			{
 				stringbuffer_aprintf(sb,
 						     "SELECT AddGeometryColumn('','%s','%s','%d',",
 						     state->config->table,
@@ -1348,8 +1443,10 @@ ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader)
 	char *copystr;
 
 	/* Allocate the string for the COPY statement */
-	if (state->config->dump_format) {
-		if (state->config->schema) {
+	if (state->config->dump_format)
+	{
+		if (state->config->schema)
+		{
 			copystr = malloc(strlen(state->config->schema) + strlen(state->config->table) +
 					 strlen(state->col_names) + 40);
 
@@ -1358,7 +1455,9 @@ ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader)
 				state->config->schema,
 				state->config->table,
 				state->col_names);
-		} else {
+		}
+		else
+		{
 			copystr = malloc(strlen(state->config->table) + strlen(state->col_names) + 40);
 
 			sprintf(copystr, "COPY \"%s\" %s FROM stdin;\n", state->config->table, state->col_names);
@@ -1366,7 +1465,9 @@ ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader)
 
 		*strheader = copystr;
 		return SHPLOADEROK;
-	} else {
+	}
+	else
+	{
 		/* Flag an error as something has gone horribly wrong */
 		snprintf(
 		    state->message,
@@ -1405,21 +1506,25 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	stringbuffer_clear(sb);
 
 	/* Skip deleted records */
-	if (state->hDBFHandle && DBFIsRecordDeleted(state->hDBFHandle, item)) {
+	if (state->hDBFHandle && DBFIsRecordDeleted(state->hDBFHandle, item))
+	{
 		*strrecord = NULL;
 		return SHPLOADERRECDELETED;
 	}
 
 	/* If we are reading the shapefile, open the specified record */
-	if (state->config->readshape == 1) {
+	if (state->config->readshape == 1)
+	{
 		obj = SHPReadObject(state->hSHPHandle, item);
-		if (!obj) {
+		if (!obj)
+		{
 			snprintf(state->message, SHPLOADERMSGLEN, _("Error reading shape object %d"), item);
 			return SHPLOADERERR;
 		}
 
 		/* If we are set to skip NULLs, return a NULL record status */
-		if (state->config->null_policy == POLICY_NULL_SKIP && obj->nVertices == 0) {
+		if (state->config->null_policy == POLICY_NULL_SKIP && obj->nVertices == 0)
+		{
 			SHPDestroyObject(obj);
 
 			*strrecord = NULL;
@@ -1428,41 +1533,52 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	}
 
 	/* If not in dump format, generate the INSERT string */
-	if (!state->config->dump_format) {
-		if (state->config->schema) {
+	if (!state->config->dump_format)
+	{
+		if (state->config->schema)
+		{
 			stringbuffer_aprintf(sb,
 					     "INSERT INTO \"%s\".\"%s\" %s VALUES (",
 					     state->config->schema,
 					     state->config->table,
 					     state->col_names);
-		} else {
+		}
+		else
+		{
 			stringbuffer_aprintf(
 			    sb, "INSERT INTO \"%s\" %s VALUES (", state->config->table, state->col_names);
 		}
 	}
 
 	/* Read all of the attributes from the DBF file for this item */
-	for (i = 0; i < DBFGetFieldCount(state->hDBFHandle); i++) {
+	for (i = 0; i < DBFGetFieldCount(state->hDBFHandle); i++)
+	{
 		/* Special case for NULL attributes */
-		if (DBFIsAttributeNULL(state->hDBFHandle, item, i)) {
+		if (DBFIsAttributeNULL(state->hDBFHandle, item, i))
+		{
 			if (state->config->dump_format)
 				stringbuffer_aprintf(sb, "\\N");
 			else
 				stringbuffer_aprintf(sb, "NULL");
-		} else {
+		}
+		else
+		{
 			/* Attribute NOT NULL */
-			switch (state->types[i]) {
+			switch (state->types[i])
+			{
 			case FTInteger:
 			case FTDouble:
 				rv = snprintf(
 				    val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i));
-				if (rv >= MAXVALUELEN || rv == -1) {
+				if (rv >= MAXVALUELEN || rv == -1)
+				{
 					stringbuffer_aprintf(sbwarn, "Warning: field %d name truncated\n", i);
 					val[MAXVALUELEN - 1] = '\0';
 				}
 
 				/* If the value is an empty string, change to 0 */
-				if (val[0] == '\0') {
+				if (val[0] == '\0')
+				{
 					val[0] = '0';
 					val[1] = '\0';
 				}
@@ -1476,7 +1592,8 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			case FTDate:
 				rv = snprintf(
 				    val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i));
-				if (rv >= MAXVALUELEN || rv == -1) {
+				if (rv >= MAXVALUELEN || rv == -1)
+				{
 					stringbuffer_aprintf(sbwarn, "Warning: field %d name truncated\n", i);
 					val[MAXVALUELEN - 1] = '\0';
 				}
@@ -1496,13 +1613,15 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 				return SHPLOADERERR;
 			}
 
-			if (state->config->encoding) {
+			if (state->config->encoding)
+			{
 				char *encoding_msg = _(
 				    "Try \"LATIN1\" (Western European), or one of the values described at http://www.postgresql.org/docs/current/static/multibyte.html.");
 
 				rv = utf8(state->config->encoding, val, &utf8str);
 
-				if (rv != UTF8_GOOD_RESULT) {
+				if (rv != UTF8_GOOD_RESULT)
+				{
 					if (rv == UTF8_BAD_RESULT)
 						snprintf(
 						    state->message,
@@ -1538,10 +1657,13 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			}
 
 			/* Escape attribute correctly according to dump format */
-			if (state->config->dump_format) {
+			if (state->config->dump_format)
+			{
 				escval = escape_copy_string(val);
 				stringbuffer_aprintf(sb, "%s", escval);
-			} else {
+			}
+			else
+			{
 				escval = escape_insert_string(val);
 				stringbuffer_aprintf(sb, "'%s'", escval);
 			}
@@ -1551,7 +1673,8 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 		}
 
 		/* Only put in delimeter if not last field or a shape will follow */
-		if (state->config->readshape == 1 || i < DBFGetFieldCount(state->hDBFHandle) - 1) {
+		if (state->config->readshape == 1 || i < DBFGetFieldCount(state->hDBFHandle) - 1)
+		{
 			if (state->config->dump_format)
 				stringbuffer_aprintf(sb, "\t");
 			else
@@ -1562,19 +1685,24 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	}
 
 	/* Add the shape attribute if we are reading it */
-	if (state->config->readshape == 1) {
+	if (state->config->readshape == 1)
+	{
 		/* Force the locale to C */
 		char *oldlocale = setlocale(LC_NUMERIC, "C");
 
 		/* Handle the case of a NULL shape */
-		if (obj->nVertices == 0) {
+		if (obj->nVertices == 0)
+		{
 			if (state->config->dump_format)
 				stringbuffer_aprintf(sb, "\\N");
 			else
 				stringbuffer_aprintf(sb, "NULL");
-		} else {
+		}
+		else
+		{
 			/* Handle all other shape attributes */
-			switch (obj->nSHPType) {
+			switch (obj->nSHPType)
+			{
 			case SHPT_POLYGON:
 			case SHPT_POLYGONM:
 			case SHPT_POLYGONZ:
@@ -1613,7 +1741,8 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 				return SHPLOADERERR;
 			}
 			/* The default returns out of the function, so res will always have been set. */
-			if (res != SHPLOADEROK) {
+			if (res != SHPLOADEROK)
+			{
 				/* Error message has already been set */
 				SHPDestroyObject(obj);
 				stringbuffer_destroy(sbwarn);
@@ -1623,18 +1752,21 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			}
 
 			/* Now generate the geometry string according to the current configuration */
-			if (!state->config->dump_format) {
+			if (!state->config->dump_format)
+			{
 				if (state->to_srid != state->from_srid) { stringbuffer_aprintf(sb, "ST_Transform("); }
 				stringbuffer_aprintf(sb, "'");
 			}
 
 			stringbuffer_aprintf(sb, "%s", geometry);
 
-			if (!state->config->dump_format) {
+			if (!state->config->dump_format)
+			{
 				stringbuffer_aprintf(sb, "'");
 
 				/* Close the ST_Transform if reprojecting. */
-				if (state->to_srid != state->from_srid) {
+				if (state->to_srid != state->from_srid)
+				{
 					/* We need to add an explicit cast to geography/geometry to ensure that
 					   PostgreSQL doesn't get confused with the ST_Transform() raster
 					   function. */
@@ -1665,12 +1797,15 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	*strrecord = ret;
 
 	/* If any warnings occurred, set the returned message string and warning status */
-	if (strlen((char *)stringbuffer_getstring(sbwarn)) > 0) {
+	if (strlen((char *)stringbuffer_getstring(sbwarn)) > 0)
+	{
 		snprintf(state->message, SHPLOADERMSGLEN, "%s", stringbuffer_getstring(sbwarn));
 		stringbuffer_destroy(sbwarn);
 
 		return SHPLOADERWARN;
-	} else {
+	}
+	else
+	{
 		/* Everything went okay */
 		stringbuffer_destroy(sbwarn);
 
@@ -1691,15 +1826,15 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	stringbuffer_clear(sb);
 
 	/* Create gist index if specified and not in "prepare" mode */
-	if (state->config->readshape && state->config->createindex) {
+	if (state->config->readshape && state->config->createindex)
+	{
 		stringbuffer_aprintf(sb, "CREATE INDEX ON ");
 		/* Schema is optional, include if present. */
 		if (state->config->schema) { stringbuffer_aprintf(sb, "\"%s\".", state->config->schema); }
 		stringbuffer_aprintf(sb, "\"%s\" USING GIST (\"%s\")", state->config->table, state->geo_col);
 		/* Tablespace is also optional. */
-		if (state->config->idxtablespace != NULL) {
-			stringbuffer_aprintf(sb, " TABLESPACE \"%s\"", state->config->idxtablespace);
-		}
+		if (state->config->idxtablespace != NULL)
+		{ stringbuffer_aprintf(sb, " TABLESPACE \"%s\"", state->config->idxtablespace); }
 		stringbuffer_aprintf(sb, ";\n");
 	}
 
@@ -1726,16 +1861,19 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 {
 	/* Destroy a state object created with ShpLoaderOpenShape */
 	int i;
-	if (state != NULL) {
+	if (state != NULL)
+	{
 		if (state->hSHPHandle) SHPClose(state->hSHPHandle);
 		if (state->hDBFHandle) DBFClose(state->hDBFHandle);
-		if (state->field_names) {
+		if (state->field_names)
+		{
 			for (i = 0; i < state->num_fields; i++)
 				free(state->field_names[i]);
 
 			free(state->field_names);
 		}
-		if (state->pgfieldtypes) {
+		if (state->pgfieldtypes)
+		{
 			for (i = 0; i < state->num_fields; i++)
 				free(state->pgfieldtypes[i]);
 

@@ -23,7 +23,8 @@ mbc_test(LWGEOM *g)
 
 	POINT2D p;
 	POINT4D p4;
-	while (lwpointiterator_next(it, &p4)) {
+	while (lwpointiterator_next(it, &p4))
+	{
 		p.x = p4.x;
 		p.y = p4.y;
 
@@ -52,7 +53,8 @@ basic_test(void)
 			  "POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0))",
 			  "LINESTRING (-48546889 37039202, -37039202 -48546889)"};
 
-	for (i = 0; i < sizeof(inputs) / sizeof(LWGEOM *); i++) {
+	for (i = 0; i < sizeof(inputs) / sizeof(LWGEOM *); i++)
+	{
 		LWGEOM *input = lwgeom_from_wkt(inputs[i], LW_PARSER_CHECK_NONE);
 		mbc_test(input);
 		lwgeom_free(input);

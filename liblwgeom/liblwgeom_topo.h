@@ -38,7 +38,8 @@ typedef LWT_INT64 LWT_ELEMID;
  */
 
 /** NODE */
-typedef struct {
+typedef struct
+{
 	LWT_ELEMID node_id;
 	LWT_ELEMID containing_face; /* -1 if not isolated */
 	LWPOINT *geom;
@@ -53,7 +54,8 @@ void lwt_iso_node_release(LWT_ISO_NODE *node);
 #define LWT_COL_NODE_ALL (1 << 3) - 1
 
 /** EDGE */
-typedef struct {
+typedef struct
+{
 	LWT_ELEMID edge_id;
 	LWT_ELEMID start_node;
 	LWT_ELEMID end_node;
@@ -76,7 +78,8 @@ typedef struct {
 #define LWT_COL_EDGE_ALL (1 << 8) - 1
 
 /** FACE */
-typedef struct {
+typedef struct
+{
 	LWT_ELEMID face_id;
 	GBOX *mbr;
 } LWT_ISO_FACE;
@@ -125,7 +128,8 @@ typedef struct LWT_BE_TOPOLOGY_T LWT_BE_TOPOLOGY;
  *
  * Used for registering into the backend iface
  */
-typedef struct LWT_BE_CALLBACKS_T {
+typedef struct LWT_BE_CALLBACKS_T
+{
 
 	/**
 	 * Read last error message from backend
@@ -820,7 +824,8 @@ typedef enum LWT_TOPOERR_TYPE_T {
 } LWT_TOPOERR_TYPE;
 
 /** Topology error */
-typedef struct LWT_TOPOERR_T {
+typedef struct LWT_TOPOERR_T
+{
 	/** Type of error */
 	LWT_TOPOERR_TYPE err;
 	/** Identifier of first affected element */

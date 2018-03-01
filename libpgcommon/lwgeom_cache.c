@@ -30,7 +30,8 @@
  * the type number is what you expect before casting
  * and de-referencing struct members.
  */
-typedef struct {
+typedef struct
+{
 	int type;
 	char data[1];
 } GenericCache;
@@ -43,7 +44,8 @@ typedef struct {
  * one slot for each tree type as well as a slot for
  * projections.
  */
-typedef struct {
+typedef struct
+{
 	GenericCache *entry[NUM_CACHE_ENTRIES];
 } GenericCacheCollection;
 
@@ -66,7 +68,8 @@ GetGenericCacheCollection(FunctionCallInfoData *fcinfo)
 {
 	GenericCacheCollection *cache = fcinfo->flinfo->fn_extra;
 
-	if (!cache) {
+	if (!cache)
+	{
 		cache = MemoryContextAlloc(FIContext(fcinfo), sizeof(GenericCacheCollection));
 		memset(cache, 0, sizeof(GenericCacheCollection));
 		fcinfo->flinfo->fn_extra = cache;
@@ -84,17 +87,20 @@ GetPROJ4SRSCache(FunctionCallInfoData *fcinfo)
 	GenericCacheCollection *generic_cache = GetGenericCacheCollection(fcinfo);
 	PROJ4PortalCache *cache = (PROJ4PortalCache *)(generic_cache->entry[PROJ_CACHE_ENTRY]);
 
-	if (!cache) {
+	if (!cache)
+	{
 		/* Allocate in the upper context */
 		cache = MemoryContextAlloc(FIContext(fcinfo), sizeof(PROJ4PortalCache));
 
-		if (cache) {
+		if (cache)
+		{
 			int i;
 
 			POSTGIS_DEBUGF(
 			    3, "Allocating PROJ4Cache for portal with transform() MemoryContext %p", FIContext(fcinfo));
 			/* Put in any required defaults */
-			for (i = 0; i < PROJ4_CACHE_ITEMS; i++) {
+			for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
+			{
 				cache->PROJ4SRSCache[i].srid = SRID_UNKNOWN;
 				cache->PROJ4SRSCache[i].projection = NULL;
 				cache->PROJ4SRSCache[i].projection_mcxt = NULL;
@@ -134,7 +140,8 @@ GetGeomCache(FunctionCallInfoData *fcinfo,
 
 	cache = (GeomCache *)(generic_cache->entry[entry_number]);
 
-	if (!cache) {
+	if (!cache)
+	{
 		old_context = MemoryContextSwitchTo(FIContext(fcinfo));
 		/* Allocate in the upper context */
 		cache = cache_methods->GeomCacheAllocator();
@@ -146,35 +153,42 @@ GetGeomCache(FunctionCallInfoData *fcinfo,
 
 	/* Cache hit on the first argument */
 	if (g1 && cache->argnum != 2 && cache->geom1_size == VARSIZE(g1) &&
-	    memcmp(cache->geom1, g1, cache->geom1_size) == 0) {
+	    memcmp(cache->geom1, g1, cache->geom1_size) == 0)
+	{
 		cache_hit = 1;
 		geom = cache->geom1;
 	}
 	/* Cache hit on second argument */
 	else if (g2 && cache->argnum != 1 && cache->geom2_size == VARSIZE(g2) &&
-		 memcmp(cache->geom2, g2, cache->geom2_size) == 0) {
+		 memcmp(cache->geom2, g2, cache->geom2_size) == 0)
+	{
 		cache_hit = 2;
 		geom = cache->geom2;
 	}
 	/* No cache hit. If we have a tree, free it. */
-	else {
+	else
+	{
 		cache_hit = 0;
-		if (cache->argnum) {
+		if (cache->argnum)
+		{
 			cache_methods->GeomIndexFreer(cache);
 			cache->argnum = 0;
 		}
-		if (cache->lwgeom1) {
+		if (cache->lwgeom1)
+		{
 			lwgeom_free(cache->lwgeom1);
 			cache->lwgeom1 = 0;
 		}
-		if (cache->lwgeom2) {
+		if (cache->lwgeom2)
+		{
 			lwgeom_free(cache->lwgeom2);
 			cache->lwgeom2 = 0;
 		}
 	}
 
 	/* Cache hit, but no tree built yet, build it! */
-	if (cache_hit && !cache->argnum) {
+	if (cache_hit && !cache->argnum)
+	{
 		int rv;
 		LWGEOM *lwgeom;
 
@@ -185,7 +199,8 @@ GetGeomCache(FunctionCallInfoData *fcinfo,
 		cache->argnum = 0;
 
 		/* Can't build a tree on a NULL or empty */
-		if ((!lwgeom) || lwgeom_is_empty(lwgeom)) {
+		if ((!lwgeom) || lwgeom_is_empty(lwgeom))
+		{
 			MemoryContextSwitchTo(old_context);
 			return NULL;
 		}
@@ -203,14 +218,16 @@ GetGeomCache(FunctionCallInfoData *fcinfo,
 	if (cache_hit && cache->argnum) return cache;
 
 	/* Argument one didn't match, so copy the new value in. */
-	if (g1 && cache_hit != 1) {
+	if (g1 && cache_hit != 1)
+	{
 		if (cache->geom1) pfree(cache->geom1);
 		cache->geom1_size = VARSIZE(g1);
 		cache->geom1 = MemoryContextAlloc(FIContext(fcinfo), cache->geom1_size);
 		memcpy(cache->geom1, g1, cache->geom1_size);
 	}
 	/* Argument two didn't match, so copy the new value in. */
-	if (g2 && cache_hit != 2) {
+	if (g2 && cache_hit != 2)
+	{
 		if (cache->geom2) pfree(cache->geom2);
 		cache->geom2_size = VARSIZE(g2);
 		cache->geom2 = MemoryContextAlloc(FIContext(fcinfo), cache->geom2_size);

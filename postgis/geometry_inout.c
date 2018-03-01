@@ -129,7 +129,8 @@ Datum geometry_to_path(PG_FUNCTION_ARGS)
 	path->closed = 0;
 	path->dummy = 0;
 
-	for (i = 0; i < pa->npoints; i++) {
+	for (i = 0; i < pa->npoints; i++)
+	{
 		pt = getPoint2d_cp(pa, i);
 		(path->p[i]).x = pt->x;
 		(path->p[i]).y = pt->y;
@@ -161,7 +162,8 @@ Datum path_to_geometry(PG_FUNCTION_ARGS)
 	if (!path) PG_RETURN_NULL();
 
 	pa = ptarray_construct_empty(0, 0, path->npts);
-	for (i = 0; i < path->npts; i++) {
+	for (i = 0; i < path->npts; i++)
+	{
 		p = path->p[i];
 		pt.x = p.x;
 		pt.y = p.y;
@@ -212,7 +214,8 @@ Datum geometry_to_polygon(PG_FUNCTION_ARGS)
 	polygon->boundbox.high.x = gbox.xmax;
 	polygon->boundbox.high.y = gbox.ymax;
 
-	for (i = 0; i < pa->npoints; i++) {
+	for (i = 0; i < pa->npoints; i++)
+	{
 		const POINT2D *pt = getPoint2d_cp(pa, i);
 		(polygon->p[i]).x = pt->x;
 		(polygon->p[i]).y = pt->y;
@@ -248,7 +251,8 @@ Datum polygon_to_geometry(PG_FUNCTION_ARGS)
 
 	pa = ptarray_construct_empty(0, 0, polygon->npts + unclosed);
 
-	for (i = 0; i < (polygon->npts + unclosed); i++) {
+	for (i = 0; i < (polygon->npts + unclosed); i++)
+	{
 		POINT4D pt;
 		p = polygon->p[i % polygon->npts];
 		pt.x = p.x;

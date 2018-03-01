@@ -34,7 +34,8 @@
  * and the argument number the cached index/tree is going
  * to refer to.
  */
-typedef struct {
+typedef struct
+{
 	int type;
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
@@ -61,7 +62,8 @@ typedef struct {
  */
 
 /* An entry in the PROJ4 SRS cache */
-typedef struct struct_PROJ4SRSCacheItem {
+typedef struct struct_PROJ4SRSCacheItem
+{
 	int srid;
 	projPJ projection;
 	MemoryContext projection_mcxt;
@@ -75,7 +77,8 @@ typedef struct struct_PROJ4SRSCacheItem {
  * entries. In normal usage we don't expect it to have
  * many entries, so we always linearly scan the list.
  */
-typedef struct struct_PROJ4PortalCache {
+typedef struct struct_PROJ4PortalCache
+{
 	int type;
 	PROJ4SRSCacheItem PROJ4SRSCache[PROJ4_CACHE_ITEMS];
 	int PROJ4SRSCacheCount;
@@ -86,7 +89,8 @@ typedef struct struct_PROJ4PortalCache {
  * Generic signature for functions to manage a geometry
  * cache structure.
  */
-typedef struct {
+typedef struct
+{
 	int entry_number; /* What kind of structure is this? */
 	int (*GeomIndexBuilder)(const LWGEOM *lwgeom,
 				GeomCache *cache); /* Build an index/tree and add it to your cache */

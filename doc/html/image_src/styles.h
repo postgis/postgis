@@ -16,7 +16,8 @@
 
 typedef struct layerStyle LAYERSTYLE;
 
-struct layerStyle {
+struct layerStyle
+{
 	char *styleName; // A unique name
 
 	int pointSize;

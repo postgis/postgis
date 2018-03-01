@@ -63,7 +63,8 @@ Datum geom_from_gml(PG_FUNCTION_ARGS);
 static LWGEOM *lwgeom_from_gml(const char *wkt);
 static LWGEOM *parse_gml(xmlNodePtr xnode, bool *hasz, int *root_srid);
 
-typedef struct struct_gmlSrs {
+typedef struct struct_gmlSrs
+{
 	int srid;
 	bool reverse_axis;
 } gmlSrs;
@@ -136,15 +137,20 @@ is_gml_namespace(xmlNodePtr xnode, bool is_strict)
 	 *  - http://www.opengis.net/gml      (GML 3.1.1 and priors)
 	 *  - http://www.opengis.net/gml/3.2  (GML 3.2.1)
 	 */
-	for (p = ns; *p; p++) {
+	for (p = ns; *p; p++)
+	{
 		if ((*p)->href == NULL || (*p)->prefix == NULL || xnode->ns == NULL || xnode->ns->prefix == NULL)
 			continue;
 
-		if (!xmlStrcmp(xnode->ns->prefix, (*p)->prefix)) {
-			if (!strcmp((char *)(*p)->href, GML_NS) || !strcmp((char *)(*p)->href, GML32_NS)) {
+		if (!xmlStrcmp(xnode->ns->prefix, (*p)->prefix))
+		{
+			if (!strcmp((char *)(*p)->href, GML_NS) || !strcmp((char *)(*p)->href, GML32_NS))
+			{
 				xmlFree(ns);
 				return true;
-			} else {
+			}
+			else
+			{
 				xmlFree(ns);
 				return false;
 			}
@@ -190,14 +196,16 @@ is_xlink(xmlNodePtr node)
 
 	prop = xmlGetNsProp(node, (xmlChar *)"type", (xmlChar *)XLINK_NS);
 	if (prop == NULL) return false;
-	if (strcmp((char *)prop, "simple")) {
+	if (strcmp((char *)prop, "simple"))
+	{
 		xmlFree(prop);
 		return false;
 	}
 
 	prop = xmlGetNsProp(node, (xmlChar *)"href", (xmlChar *)XLINK_NS);
 	if (prop == NULL) return false;
-	if (prop[0] != '#') {
+	if (prop[0] != '#')
+	{
 		xmlFree(prop);
 		return false;
 	}
@@ -234,7 +242,8 @@ get_xlink_node(xmlNodePtr xnode)
 		(char *)p);
 
 	ctx = xmlXPathNewContext(xnode->doc);
-	if (ctx == NULL) {
+	if (ctx == NULL)
+	{
 		xmlFree(href);
 		lwfree(id);
 		return NULL;
@@ -249,7 +258,8 @@ get_xlink_node(xmlNodePtr xnode)
 	/* Execute XPath expression */
 	xpath = xmlXPathEvalExpression((xmlChar *)id, ctx);
 	lwfree(id);
-	if (xpath == NULL || xpath->nodesetval == NULL || xpath->nodesetval->nodeNr != 1) {
+	if (xpath == NULL || xpath->nodesetval == NULL || xpath->nodesetval->nodeNr != 1)
+	{
 		xmlFree(href);
 		xmlXPathFreeObject(xpath);
 		xmlXPathFreeContext(ctx);
@@ -260,10 +270,12 @@ get_xlink_node(xmlNodePtr xnode)
 	xmlXPathFreeContext(ctx);
 
 	/* Protection against circular calls */
-	for (node = xnode; node != NULL; node = node->parent) {
+	for (node = xnode; node != NULL; node = node->parent)
+	{
 		if (node->type != XML_ELEMENT_NODE) continue;
 		node_id = gmlGetProp(node, (xmlChar *)"id");
-		if (node_id != NULL) {
+		if (node_id != NULL)
+		{
 			if (!xmlStrcmp(node_id, p)) gml_lwpgerror("invalid GML representation", 2);
 			xmlFree(node_id);
 		}
@@ -294,9 +306,8 @@ gml_reproject_pa(POINTARRAY *pa, int srid_in, int srid_out)
 	lwfree(text_in);
 	lwfree(text_out);
 
-	if (ptarray_transform(pa, in_pj, out_pj) == LW_FAILURE) {
-		elog(ERROR, "gml_reproject_pa: reprojection failed");
-	}
+	if (ptarray_transform(pa, in_pj, out_pj) == LW_FAILURE)
+	{ elog(ERROR, "gml_reproject_pa: reprojection failed"); }
 
 	pj_free(in_pj);
 	pj_free(out_pj);
@@ -327,7 +338,8 @@ gml_is_srid_planar(int srid)
 	if (err < 0) lwpgerror("gml_is_srid_planar: error executing query %d", err);
 
 	/* No entry in spatial_ref_sys */
-	if (SPI_processed <= 0) {
+	if (SPI_processed <= 0)
+	{
 		SPI_finish();
 		return -1;
 	}
@@ -355,14 +367,18 @@ parse_gml_srs(xmlNodePtr xnode, gmlSrs *srs)
 	node = xnode;
 	srsname = gmlGetProp(node, (xmlChar *)"srsName");
 	/*printf("srsname %s\n",srsname);*/
-	if (!srsname) {
-		if (node->parent == NULL) {
+	if (!srsname)
+	{
+		if (node->parent == NULL)
+		{
 			srs->srid = SRID_UNKNOWN;
 			srs->reverse_axis = false;
 			return;
 		}
 		parse_gml_srs(node->parent, srs);
-	} else {
+	}
+	else
+	{
 		/* Severals	srsName formats are available...
 		 *  cf WFS 1.1.0 -> 9.2 (p36)
 		 *  cf ISO 19142:2009 -> 7.9.2.4.4 (p34)
@@ -380,18 +396,24 @@ parse_gml_srs(xmlNodePtr xnode, gmlSrs *srs)
 					http://www.epsg.org/6.11.2/4326
 		*/
 
-		if (!strncmp((char *)srsname, "EPSG:", 5)) {
+		if (!strncmp((char *)srsname, "EPSG:", 5))
+		{
 			sep = ':';
 			latlon = false;
-		} else if (!strncmp((char *)srsname, "urn:ogc:def:crs:EPSG:", 21) ||
-			   !strncmp((char *)srsname, "urn:x-ogc:def:crs:EPSG:", 23) ||
-			   !strncmp((char *)srsname, "urn:EPSG:geographicCRS:", 23)) {
+		}
+		else if (!strncmp((char *)srsname, "urn:ogc:def:crs:EPSG:", 21) ||
+			 !strncmp((char *)srsname, "urn:x-ogc:def:crs:EPSG:", 23) ||
+			 !strncmp((char *)srsname, "urn:EPSG:geographicCRS:", 23))
+		{
 			sep = ':';
 			latlon = true;
-		} else if (!strncmp((char *)srsname, "http://www.opengis.net/gml/srs/epsg.xml#", 40)) {
+		}
+		else if (!strncmp((char *)srsname, "http://www.opengis.net/gml/srs/epsg.xml#", 40))
+		{
 			sep = '#';
 			latlon = false;
-		} else
+		}
+		else
 			gml_lwpgerror("unknown spatial reference system", 4);
 
 		/* retrieve the last ':' or '#' char */
@@ -444,9 +466,11 @@ parse_gml_double(char *d, bool space_before, bool space_after)
 	if (space_before)
 		while (isspace(*d))
 			d++;
-	for (st = INIT, p = d; *p; p++) {
+	for (st = INIT, p = d; *p; p++)
+	{
 
-		if (isdigit(*p)) {
+		if (isdigit(*p))
+		{
 			if (st == INIT || st == NEED_DIG)
 				st = DIG;
 			else if (st == NEED_DIG_DEC)
@@ -457,24 +481,32 @@ parse_gml_double(char *d, bool space_before, bool space_after)
 				;
 			else
 				gml_lwpgerror("invalid GML representation", 7);
-		} else if (*p == '.') {
+		}
+		else if (*p == '.')
+		{
 			if (st == DIG)
 				st = NEED_DIG_DEC;
 			else
 				gml_lwpgerror("invalid GML representation", 8);
-		} else if (*p == '-' || *p == '+') {
+		}
+		else if (*p == '-' || *p == '+')
+		{
 			if (st == INIT)
 				st = NEED_DIG;
 			else if (st == EXP)
 				st = NEED_DIG_EXP;
 			else
 				gml_lwpgerror("invalid GML representation", 9);
-		} else if (*p == 'e' || *p == 'E') {
+		}
+		else if (*p == 'e' || *p == 'E')
+		{
 			if (st == DIG || st == DIG_DEC)
 				st = EXP;
 			else
 				gml_lwpgerror("invalid GML representation", 10);
-		} else if (isspace(*p)) {
+		}
+		else if (isspace(*p))
+		{
 			if (!space_after) gml_lwpgerror("invalid GML representation", 11);
 			if (st == DIG || st == DIG_DEC || st == DIG_EXP)
 				st = END;
@@ -484,7 +516,8 @@ parse_gml_double(char *d, bool space_before, bool space_after)
 				;
 			else
 				gml_lwpgerror("invalid GML representation", 12);
-		} else
+		}
+		else
 			gml_lwpgerror("invalid GML representation", 13);
 	}
 
@@ -522,7 +555,8 @@ parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 	gml_ts = gmlGetProp(xnode, (xmlChar *)"ts");
 	if (gml_ts == NULL)
 		ts = ' ';
-	else {
+	else
+	{
 		if (xmlStrlen(gml_ts) > 1 || isdigit(gml_ts[0])) gml_lwpgerror("invalid GML representation", 15);
 		ts = gml_ts[0];
 		xmlFree(gml_ts);
@@ -532,7 +566,8 @@ parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 	gml_cs = gmlGetProp(xnode, (xmlChar *)"cs");
 	if (gml_cs == NULL)
 		cs = ',';
-	else {
+	else
+	{
 		if (xmlStrlen(gml_cs) > 1 || isdigit(gml_cs[0])) gml_lwpgerror("invalid GML representation", 16);
 		cs = gml_cs[0];
 		xmlFree(gml_cs);
@@ -542,7 +577,8 @@ parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 	gml_dec = gmlGetProp(xnode, (xmlChar *)"decimal");
 	if (gml_dec == NULL)
 		dec = '.';
-	else {
+	else
+	{
 		if (xmlStrlen(gml_dec) > 1 || isdigit(gml_dec[0])) gml_lwpgerror("invalid GML representation", 17);
 		dec = gml_dec[0];
 		xmlFree(gml_dec);
@@ -555,12 +591,14 @@ parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 
 	while (isspace(*p))
 		p++; /* Eat extra whitespaces if any */
-	for (q = p, gml_dims = 0, digit = false; *p; p++) {
+	for (q = p, gml_dims = 0, digit = false; *p; p++)
+	{
 
 		if (isdigit(*p)) digit = true; /* One state parser */
 
 		/* Coordinate Separator */
-		if (*p == cs) {
+		if (*p == cs)
+		{
 			*p = '\0';
 			gml_dims++;
 
@@ -574,7 +612,9 @@ parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 			q = p + 1;
 
 			/* Tuple Separator (or end string) */
-		} else if (digit && (*p == ts || *(p + 1) == '\0')) {
+		}
+		else if (digit && (*p == ts || *(p + 1) == '\0'))
+		{
 			if (*p == ts) *p = '\0';
 			gml_dims++;
 
@@ -582,7 +622,8 @@ parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 
 			if (gml_dims == 3)
 				pt.z = parse_gml_double(q, false, true);
-			else {
+			else
+			{
 				pt.y = parse_gml_double(q, false, true);
 				*hasz = false;
 			}
@@ -594,7 +635,8 @@ parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 			gml_dims = 0;
 
 			/* Need to put standard decimal separator to atof handle */
-		} else if (*p == dec && dec != '.')
+		}
+		else if (*p == dec && dec != '.')
 			*p = '.';
 	}
 
@@ -619,23 +661,29 @@ parse_gml_coord(xmlNodePtr xnode, bool *hasz)
 	dpa = ptarray_construct_empty(1, 0, 1);
 
 	x = y = z = false;
-	for (xyz = xnode->children; xyz != NULL; xyz = xyz->next) {
+	for (xyz = xnode->children; xyz != NULL; xyz = xyz->next)
+	{
 		if (xyz->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xyz, false)) continue;
 
-		if (!strcmp((char *)xyz->name, "X")) {
+		if (!strcmp((char *)xyz->name, "X"))
+		{
 			if (x) gml_lwpgerror("invalid GML representation", 21);
 			c = xmlNodeGetContent(xyz);
 			p.x = parse_gml_double((char *)c, true, true);
 			x = true;
 			xmlFree(c);
-		} else if (!strcmp((char *)xyz->name, "Y")) {
+		}
+		else if (!strcmp((char *)xyz->name, "Y"))
+		{
 			if (y) gml_lwpgerror("invalid GML representation", 22);
 			c = xmlNodeGetContent(xyz);
 			p.y = parse_gml_double((char *)c, true, true);
 			y = true;
 			xmlFree(c);
-		} else if (!strcmp((char *)xyz->name, "Z")) {
+		}
+		else if (!strcmp((char *)xyz->name, "Z"))
+		{
 			if (z) gml_lwpgerror("invalid GML representation", 23);
 			c = xmlNodeGetContent(xyz);
 			p.z = parse_gml_double((char *)c, true, true);
@@ -673,7 +721,8 @@ parse_gml_pos(xmlNodePtr xnode, bool *hasz)
 		dimension = gmlGetProp(xnode, (xmlChar *)"dimension");
 	if (dimension == NULL)
 		dim = 2; /* We assume that we are in 2D */
-	else {
+	else
+	{
 		dim = atoi((char *)dimension);
 		xmlFree(dimension);
 		if (dim < 2 || dim > 3) gml_lwpgerror("invalid GML representation", 25);
@@ -689,9 +738,11 @@ parse_gml_pos(xmlNodePtr xnode, bool *hasz)
 	/* gml:pos pattern: 	x1 y1
 	 * 			x1 y1 z1
 	 */
-	for (p = pos, gml_dim = 0, digit = false; *pos; pos++) {
+	for (p = pos, gml_dim = 0, digit = false; *pos; pos++)
+	{
 		if (isdigit(*pos)) digit = true;
-		if (digit && (*pos == ' ' || *(pos + 1) == '\0')) {
+		if (digit && (*pos == ' ' || *(pos + 1) == '\0'))
+		{
 			if (*pos == ' ') *pos = '\0';
 			gml_dim++;
 			if (gml_dim == 1)
@@ -735,7 +786,8 @@ parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 		dimension = gmlGetProp(xnode, (xmlChar *)"dimension");
 	if (dimension == NULL)
 		dim = 2; /* We assume that we are in common 2D */
-	else {
+	else
+	{
 		dim = atoi((char *)dimension);
 		xmlFree(dimension);
 		if (dim < 2 || dim > 3) gml_lwpgerror("invalid GML representation", 27);
@@ -754,9 +806,11 @@ parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 	 */
 	while (isspace(*poslist))
 		poslist++; /* Eat extra whitespaces if any */
-	for (p = poslist, gml_dim = 0, digit = false; *poslist; poslist++) {
+	for (p = poslist, gml_dim = 0, digit = false; *poslist; poslist++)
+	{
 		if (isdigit(*poslist)) digit = true;
-		if (digit && (*poslist == ' ' || *(poslist + 1) == '\0')) {
+		if (digit && (*poslist == ' ' || *(poslist + 1) == '\0'))
+		{
 			if (*poslist == ' ') *poslist = '\0';
 
 			gml_dim++;
@@ -767,10 +821,12 @@ parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 			else if (gml_dim == 3)
 				pt.z = parse_gml_double(p, true, true);
 
-			if (gml_dim == dim) {
+			if (gml_dim == dim)
+			{
 				ptarray_append_point(dpa, &pt, LW_FALSE);
 				gml_dim = 0;
-			} else if (*(poslist + 1) == '\0')
+			}
+			else if (*(poslist + 1) == '\0')
 				gml_lwpgerror("invalid GML representation", 28);
 
 			p = poslist + 1;
@@ -805,42 +861,54 @@ parse_gml_data(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	pa = NULL;
 
-	for (xa = xnode; xa != NULL; xa = xa->next) {
+	for (xa = xnode; xa != NULL; xa = xa->next)
+	{
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
 		if (xa->name == NULL) continue;
 
-		if (!strcmp((char *)xa->name, "pos")) {
+		if (!strcmp((char *)xa->name, "pos"))
+		{
 			tmp_pa = parse_gml_pos(xa, hasz);
 			if (pa == NULL)
 				pa = tmp_pa;
 			else
 				pa = ptarray_merge(pa, tmp_pa);
-		} else if (!strcmp((char *)xa->name, "posList")) {
+		}
+		else if (!strcmp((char *)xa->name, "posList"))
+		{
 			tmp_pa = parse_gml_poslist(xa, hasz);
 			if (pa == NULL)
 				pa = tmp_pa;
 			else
 				pa = ptarray_merge(pa, tmp_pa);
-		} else if (!strcmp((char *)xa->name, "coordinates")) {
+		}
+		else if (!strcmp((char *)xa->name, "coordinates"))
+		{
 			tmp_pa = parse_gml_coordinates(xa, hasz);
 			if (pa == NULL)
 				pa = tmp_pa;
 			else
 				pa = ptarray_merge(pa, tmp_pa);
-		} else if (!strcmp((char *)xa->name, "coord")) {
+		}
+		else if (!strcmp((char *)xa->name, "coord"))
+		{
 			tmp_pa = parse_gml_coord(xa, hasz);
 			if (pa == NULL)
 				pa = tmp_pa;
 			else
 				pa = ptarray_merge(pa, tmp_pa);
-		} else if (!strcmp((char *)xa->name, "pointRep") || !strcmp((char *)xa->name, "pointProperty")) {
+		}
+		else if (!strcmp((char *)xa->name, "pointRep") || !strcmp((char *)xa->name, "pointProperty"))
+		{
 
 			found = false;
-			for (xb = xa->children; xb != NULL; xb = xb->next) {
+			for (xb = xa->children; xb != NULL; xb = xb->next)
+			{
 				if (xb->type != XML_ELEMENT_NODE) continue;
 				if (!is_gml_namespace(xb, false)) continue;
-				if (!strcmp((char *)xb->name, "Point")) {
+				if (!strcmp((char *)xb->name, "Point"))
+				{
 					found = true;
 					break;
 				}
@@ -890,10 +958,13 @@ parse_gml_point(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	parse_gml_srs(xnode, &srs);
 	if (srs.reverse_axis) pa = ptarray_flip_coordinates(pa);
-	if (!*root_srid) {
+	if (!*root_srid)
+	{
 		*root_srid = srs.srid;
 		geom = (LWGEOM *)lwpoint_construct(*root_srid, NULL, pa);
-	} else {
+	}
+	else
+	{
 		if (srs.srid != *root_srid) gml_reproject_pa(pa, srs.srid, *root_srid);
 		geom = (LWGEOM *)lwpoint_construct(SRID_UNKNOWN, NULL, pa);
 	}
@@ -920,10 +991,13 @@ parse_gml_line(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	parse_gml_srs(xnode, &srs);
 	if (srs.reverse_axis) pa = ptarray_flip_coordinates(pa);
-	if (!*root_srid) {
+	if (!*root_srid)
+	{
 		*root_srid = srs.srid;
 		geom = (LWGEOM *)lwline_construct(*root_srid, NULL, pa);
-	} else {
+	}
+	else
+	{
 		if (srs.srid != *root_srid) gml_reproject_pa(pa, srs.srid, *root_srid);
 		geom = (LWGEOM *)lwline_construct(SRID_UNKNOWN, NULL, pa);
 	}
@@ -950,10 +1024,12 @@ parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
 	/* Looking for gml:segments */
-	for (xa = xnode->children; xa != NULL; xa = xa->next) {
+	for (xa = xnode->children; xa != NULL; xa = xa->next)
+	{
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
-		if (!strcmp((char *)xa->name, "segments")) {
+		if (!strcmp((char *)xa->name, "segments"))
+		{
 			found = true;
 			break;
 		}
@@ -963,14 +1039,16 @@ parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	ppa = (POINTARRAY **)lwalloc(sizeof(POINTARRAY *));
 
 	/* Processing each gml:LineStringSegment */
-	for (xa = xa->children, lss = 0; xa != NULL; xa = xa->next) {
+	for (xa = xa->children, lss = 0; xa != NULL; xa = xa->next)
+	{
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
 		if (strcmp((char *)xa->name, "LineStringSegment")) continue;
 
 		/* GML SF is resticted to linear interpolation  */
 		interpolation = gmlGetProp(xa, (xmlChar *)"interpolation");
-		if (interpolation != NULL) {
+		if (interpolation != NULL)
+		{
 			if (strcmp((char *)interpolation, "linear")) gml_lwpgerror("invalid GML representation", 38);
 			xmlFree(interpolation);
 		}
@@ -995,9 +1073,11 @@ parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	 * So we must aggregate all the segments into a single one and avoid
 	 * to copy the redundants points
 	 */
-	if (lss > 1) {
+	if (lss > 1)
+	{
 		pa = ptarray_construct(1, 0, npoints - (lss - 1));
-		for (last = npoints = i = 0; i < lss; i++) {
+		for (last = npoints = i = 0; i < lss; i++)
+		{
 			if (i + 1 == lss) last = 1;
 			/* Check if segments are not disjoints */
 			if (i > 0 && memcmp(getPoint_internal(pa, npoints),
@@ -1071,14 +1151,16 @@ parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	parse_gml_srs(xnode, &srs);
 
-	for (xa = xnode->children; xa != NULL; xa = xa->next) {
+	for (xa = xnode->children; xa != NULL; xa = xa->next)
+	{
 		/* Polygon/outerBoundaryIs -> GML 2.1.2 */
 		/* Polygon/exterior        -> GML 3.1.1 */
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
 		if (strcmp((char *)xa->name, "outerBoundaryIs") && strcmp((char *)xa->name, "exterior")) continue;
 
-		for (xb = xa->children; xb != NULL; xb = xb->next) {
+		for (xb = xa->children; xb != NULL; xb = xb->next)
+		{
 			if (xb->type != XML_ELEMENT_NODE) continue;
 			if (!is_gml_namespace(xb, false)) continue;
 			if (strcmp((char *)xb->name, "LinearRing")) continue;
@@ -1097,14 +1179,16 @@ parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	/* Found an <exterior> or <outerBoundaryIs> but no rings?!? We're outa here! */
 	if (!ppa) gml_lwpgerror("invalid GML representation", 43);
 
-	for (ring = 1, xa = xnode->children; xa != NULL; xa = xa->next) {
+	for (ring = 1, xa = xnode->children; xa != NULL; xa = xa->next)
+	{
 		/* Polygon/innerBoundaryIs -> GML 2.1.2 */
 		/* Polygon/interior        -> GML 3.1.1 */
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
 		if (strcmp((char *)xa->name, "innerBoundaryIs") && strcmp((char *)xa->name, "interior")) continue;
 
-		for (xb = xa->children; xb != NULL; xb = xb->next) {
+		for (xb = xa->children; xb != NULL; xb = xb->next)
+		{
 			if (xb->type != XML_ELEMENT_NODE) continue;
 			if (!is_gml_namespace(xb, false)) continue;
 			if (strcmp((char *)xb->name, "LinearRing")) continue;
@@ -1124,7 +1208,8 @@ parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	/* Exterior Ring is mandatory */
 	if (ppa == NULL || ppa[0] == NULL) gml_lwpgerror("invalid GML representation", 44);
 
-	if (srs.srid != *root_srid && *root_srid != SRID_UNKNOWN) {
+	if (srs.srid != *root_srid && *root_srid != SRID_UNKNOWN)
+	{
 		for (i = 0; i < ring; i++)
 			gml_reproject_pa(ppa[i], srs.srid, *root_srid);
 	}
@@ -1153,20 +1238,23 @@ parse_gml_triangle(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	       NOTA: I know Triangle is not part of SF, but
 	       we have to be consistent with other surfaces */
 	interpolation = gmlGetProp(xnode, (xmlChar *)"interpolation");
-	if (interpolation != NULL) {
+	if (interpolation != NULL)
+	{
 		if (strcmp((char *)interpolation, "planar")) gml_lwpgerror("invalid GML representation", 45);
 		xmlFree(interpolation);
 	}
 
 	parse_gml_srs(xnode, &srs);
 
-	for (xa = xnode->children; xa != NULL; xa = xa->next) {
+	for (xa = xnode->children; xa != NULL; xa = xa->next)
+	{
 		/* Triangle/exterior */
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
 		if (strcmp((char *)xa->name, "exterior")) continue;
 
-		for (xb = xa->children; xb != NULL; xb = xb->next) {
+		for (xb = xa->children; xb != NULL; xb = xb->next)
+		{
 			/* Triangle/exterior/LinearRing */
 			if (xb->type != XML_ELEMENT_NODE) continue;
 			if (!is_gml_namespace(xb, false)) continue;
@@ -1211,7 +1299,8 @@ parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	/* GML SF is resticted to planar interpolation  */
 	interpolation = gmlGetProp(xnode, (xmlChar *)"interpolation");
-	if (interpolation != NULL) {
+	if (interpolation != NULL)
+	{
 		if (strcmp((char *)interpolation, "planar")) gml_lwpgerror("invalid GML representation", 48);
 		xmlFree(interpolation);
 	}
@@ -1219,12 +1308,14 @@ parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	parse_gml_srs(xnode, &srs);
 
 	/* PolygonPatch/exterior */
-	for (xa = xnode->children; xa != NULL; xa = xa->next) {
+	for (xa = xnode->children; xa != NULL; xa = xa->next)
+	{
 		if (!is_gml_namespace(xa, false)) continue;
 		if (strcmp((char *)xa->name, "exterior")) continue;
 
 		/* PolygonPatch/exterior/LinearRing */
-		for (xb = xa->children; xb != NULL; xb = xb->next) {
+		for (xb = xa->children; xb != NULL; xb = xb->next)
+		{
 			if (xb->type != XML_ELEMENT_NODE) continue;
 			if (!is_gml_namespace(xb, false)) continue;
 			if (strcmp((char *)xb->name, "LinearRing")) continue;
@@ -1244,13 +1335,15 @@ parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (!ppa) gml_lwpgerror("invalid GML representation", 48);
 
 	/* PolygonPatch/interior */
-	for (ring = 1, xa = xnode->children; xa != NULL; xa = xa->next) {
+	for (ring = 1, xa = xnode->children; xa != NULL; xa = xa->next)
+	{
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
 		if (strcmp((char *)xa->name, "interior")) continue;
 
 		/* PolygonPatch/interior/LinearRing */
-		for (xb = xa->children; xb != NULL; xb = xb->next) {
+		for (xb = xa->children; xb != NULL; xb = xb->next)
+		{
 			if (xb->type != XML_ELEMENT_NODE) continue;
 			if (strcmp((char *)xb->name, "LinearRing")) continue;
 
@@ -1270,7 +1363,8 @@ parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	/* Exterior Ring is mandatory */
 	if (ppa == NULL || ppa[0] == NULL) gml_lwpgerror("invalid GML representation", 50);
 
-	if (srs.srid != *root_srid && *root_srid != SRID_UNKNOWN) {
+	if (srs.srid != *root_srid && *root_srid != SRID_UNKNOWN)
+	{
 		for (i = 0; i < ring; i++)
 			gml_reproject_pa(ppa[i], srs.srid, *root_srid);
 	}
@@ -1293,10 +1387,12 @@ parse_gml_surface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
 	/* Looking for gml:patches */
-	for (xa = xnode->children; xa != NULL; xa = xa->next) {
+	for (xa = xnode->children; xa != NULL; xa = xa->next)
+	{
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
-		if (!strcmp((char *)xa->name, "patches")) {
+		if (!strcmp((char *)xa->name, "patches"))
+		{
 			found = true;
 			break;
 		}
@@ -1304,7 +1400,8 @@ parse_gml_surface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (!found) gml_lwpgerror("invalid GML representation", 51);
 
 	/* Processing gml:PolygonPatch */
-	for (patch = 0, xa = xa->children; xa != NULL; xa = xa->next) {
+	for (patch = 0, xa = xa->children; xa != NULL; xa = xa->next)
+	{
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
 		if (strcmp((char *)xa->name, "PolygonPatch")) continue;
@@ -1349,10 +1446,12 @@ parse_gml_tin(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (xnode->children == NULL) return geom;
 
 	/* Looking for gml:patches or gml:trianglePatches */
-	for (xa = xnode->children; xa != NULL; xa = xa->next) {
+	for (xa = xnode->children; xa != NULL; xa = xa->next)
+	{
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
-		if (!strcmp((char *)xa->name, "patches") || !strcmp((char *)xa->name, "trianglePatches")) {
+		if (!strcmp((char *)xa->name, "patches") || !strcmp((char *)xa->name, "trianglePatches"))
+		{
 			found = true;
 			break;
 		}
@@ -1360,7 +1459,8 @@ parse_gml_tin(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (!found) return geom; /* empty one */
 
 	/* Processing each gml:Triangle */
-	for (xa = xa->children; xa != NULL; xa = xa->next) {
+	for (xa = xa->children; xa != NULL; xa = xa->next)
+	{
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
 		if (strcmp((char *)xa->name, "Triangle")) continue;
@@ -1392,16 +1492,21 @@ parse_gml_mpoint(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	if (xnode->children == NULL) return geom;
 
-	for (xa = xnode->children; xa != NULL; xa = xa->next) {
+	for (xa = xnode->children; xa != NULL; xa = xa->next)
+	{
 		/* MultiPoint/pointMember */
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
-		if (!strcmp((char *)xa->name, "pointMembers")) {
-			for (xb = xa->children; xb != NULL; xb = xb->next) {
+		if (!strcmp((char *)xa->name, "pointMembers"))
+		{
+			for (xb = xa->children; xb != NULL; xb = xb->next)
+			{
 				geom = (LWGEOM *)lwmpoint_add_lwpoint((LWMPOINT *)geom,
 								      (LWPOINT *)parse_gml(xb, hasz, root_srid));
 			}
-		} else if (!strcmp((char *)xa->name, "pointMember")) {
+		}
+		else if (!strcmp((char *)xa->name, "pointMember"))
+		{
 			if (xa->children != NULL)
 				geom = (LWGEOM *)lwmpoint_add_lwpoint(
 				    (LWMPOINT *)geom, (LWPOINT *)parse_gml(xa->children, hasz, root_srid));
@@ -1430,7 +1535,8 @@ parse_gml_mline(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	if (xnode->children == NULL) return geom;
 
-	for (xa = xnode->children; xa != NULL; xa = xa->next) {
+	for (xa = xnode->children; xa != NULL; xa = xa->next)
+	{
 		/* MultiLineString/lineStringMember */
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
@@ -1462,18 +1568,23 @@ parse_gml_mcurve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	if (xnode->children == NULL) return geom;
 
-	for (xa = xnode->children; xa != NULL; xa = xa->next) {
+	for (xa = xnode->children; xa != NULL; xa = xa->next)
+	{
 
 		/* MultiCurve/curveMember */
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
-		if (!strcmp((char *)xa->name, "curveMembers")) {
-			for (xb = xa->children; xb != NULL; xb = xb->next) {
+		if (!strcmp((char *)xa->name, "curveMembers"))
+		{
+			for (xb = xa->children; xb != NULL; xb = xb->next)
+			{
 				if (xb != NULL)
 					geom = (LWGEOM *)lwmline_add_lwline((LWMLINE *)geom,
 									    (LWLINE *)parse_gml(xb, hasz, root_srid));
 			}
-		} else if (!strcmp((char *)xa->name, "curveMember")) {
+		}
+		else if (!strcmp((char *)xa->name, "curveMember"))
+		{
 			if (xa->children != NULL)
 				geom = (LWGEOM *)lwmline_add_lwline((LWMLINE *)geom,
 								    (LWLINE *)parse_gml(xa->children, hasz, root_srid));
@@ -1502,7 +1613,8 @@ parse_gml_mpoly(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	if (xnode->children == NULL) return geom;
 
-	for (xa = xnode->children; xa != NULL; xa = xa->next) {
+	for (xa = xnode->children; xa != NULL; xa = xa->next)
+	{
 		/* MultiPolygon/polygonMember */
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
@@ -1534,17 +1646,22 @@ parse_gml_msurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	if (xnode->children == NULL) return geom;
 
-	for (xa = xnode->children; xa != NULL; xa = xa->next) {
+	for (xa = xnode->children; xa != NULL; xa = xa->next)
+	{
 		/* MultiSurface/surfaceMember */
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
-		if (!strcmp((char *)xa->name, "surfaceMembers")) {
-			for (xb = xa->children; xb != NULL; xb = xb->next) {
+		if (!strcmp((char *)xa->name, "surfaceMembers"))
+		{
+			for (xb = xa->children; xb != NULL; xb = xb->next)
+			{
 				if (xb != NULL)
 					geom = (LWGEOM *)lwmpoly_add_lwpoly((LWMPOLY *)geom,
 									    (LWPOLY *)parse_gml(xb, hasz, root_srid));
 			}
-		} else if (!strcmp((char *)xa->name, "surfaceMember")) {
+		}
+		else if (!strcmp((char *)xa->name, "surfaceMember"))
+		{
 			if (xa->children != NULL)
 				geom = (LWGEOM *)lwmpoly_add_lwpoly((LWMPOLY *)geom,
 								    (LWPOLY *)parse_gml(xa->children, hasz, root_srid));
@@ -1576,17 +1693,20 @@ parse_gml_psurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (xnode->children == NULL) return geom;
 
 	/* Looking for gml:polygonPatches */
-	for (xa = xnode->children; xa != NULL; xa = xa->next) {
+	for (xa = xnode->children; xa != NULL; xa = xa->next)
+	{
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
-		if (!strcmp((char *)xa->name, "polygonPatches")) {
+		if (!strcmp((char *)xa->name, "polygonPatches"))
+		{
 			found = true;
 			break;
 		}
 	}
 	if (!found) return geom;
 
-	for (xa = xa->children; xa != NULL; xa = xa->next) {
+	for (xa = xa->children; xa != NULL; xa = xa->next)
+	{
 		/* PolyhedralSurface/polygonPatches/PolygonPatch */
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
@@ -1618,7 +1738,8 @@ parse_gml_coll(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	if (xnode->children == NULL) return geom;
 
-	for (xa = xnode->children; xa != NULL; xa = xa->next) {
+	for (xa = xnode->children; xa != NULL; xa = xa->next)
+	{
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
 
@@ -1628,7 +1749,8 @@ parse_gml_coll(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		 * substitution group
 		 */
 		if (!strcmp((char *)xa->name, "pointMember") || !strcmp((char *)xa->name, "lineStringMember") ||
-		    !strcmp((char *)xa->name, "polygonMember") || !strcmp((char *)xa->name, "geometryMember")) {
+		    !strcmp((char *)xa->name, "polygonMember") || !strcmp((char *)xa->name, "geometryMember"))
+		{
 			if (xa->children == NULL) break;
 			geom = (LWGEOM *)lwcollection_add_lwgeom((LWCOLLECTION *)geom,
 								 parse_gml(xa->children, hasz, root_srid));
@@ -1654,7 +1776,8 @@ lwgeom_from_gml(const char *xml)
 	/* Begin to Parse XML doc */
 	xmlInitParser();
 	xmldoc = xmlReadMemory(xml, xml_size, NULL, NULL, XML_PARSE_SAX1);
-	if (!xmldoc || (xmlroot = xmlDocGetRootElement(xmldoc)) == NULL) {
+	if (!xmldoc || (xmlroot = xmlDocGetRootElement(xmldoc)) == NULL)
+	{
 		xmlFreeDoc(xmldoc);
 		xmlCleanupParser();
 		gml_lwpgerror("invalid GML representation", 1);
@@ -1678,7 +1801,8 @@ lwgeom_from_gml(const char *xml)
 	 * to false if we met once a missing Z dimension
 	 * In this case, we force recursive 2D.
 	 */
-	if (!hasz) {
+	if (!hasz)
+	{
 		LWGEOM *tmp = lwgeom_force_2d(lwgeom);
 		lwgeom_free(lwgeom);
 		lwgeom = tmp;

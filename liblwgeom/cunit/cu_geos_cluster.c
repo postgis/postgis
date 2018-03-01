@@ -22,9 +22,12 @@ assert_all_results_found(LWGEOM **results, size_t num_outputs, LWGEOM **expected
 	size_t i, j;
 
 	char found_equal = 0;
-	for (i = 0; i < num_outputs; i++) {
-		for (j = 0; j < num_expected_outputs; j++) {
-			if (lwgeom_same(results[i], expected[j])) {
+	for (i = 0; i < num_outputs; i++)
+	{
+		for (j = 0; j < num_expected_outputs; j++)
+		{
+			if (lwgeom_same(results[i], expected[j]))
+			{
 				found_equal = 1;
 				break;
 			}
@@ -40,7 +43,8 @@ LWGEOMARRAY2GEOS(LWGEOM **lw_array, size_t num_geoms)
 	size_t i;
 	GEOSGeometry **geos_geoms = lwalloc(num_geoms * sizeof(GEOSGeometry *));
 
-	for (i = 0; i < num_geoms; i++) {
+	for (i = 0; i < num_geoms; i++)
+	{
 		geos_geoms[i] = LWGEOM2GEOS(lw_array[i], 0);
 	}
 
@@ -53,7 +57,8 @@ GEOSARRAY2LWGEOM(GEOSGeometry **geos_array, size_t num_geoms)
 	size_t i;
 	LWGEOM **lw_geoms = lwalloc(num_geoms * sizeof(LWGEOM *));
 
-	for (i = 0; i < num_geoms; i++) {
+	for (i = 0; i < num_geoms; i++)
+	{
 		lw_geoms[i] = GEOS2LWGEOM(geos_array[i], 0);
 	}
 
@@ -67,7 +72,8 @@ WKTARRAY2LWGEOM(char **wkt_array, size_t num_geoms)
 
 	LWGEOM **lw_geoms = lwalloc(num_geoms * sizeof(LWGEOM *));
 
-	for (i = 0; i < num_geoms; i++) {
+	for (i = 0; i < num_geoms; i++)
+	{
 		lw_geoms[i] = lwgeom_from_wkt(wkt_array[i], LW_PARSER_CHECK_NONE);
 	}
 
@@ -94,20 +100,23 @@ perform_cluster_intersecting_test(char **wkt_inputs, uint32_t num_inputs, char *
 
 	/* Cleanup */
 	uint32_t i;
-	for (i = 0; i < num_clusters; i++) {
+	for (i = 0; i < num_clusters; i++)
+	{
 		GEOSGeom_destroy(geos_results[i]);
 	}
 	lwfree(geos_inputs);
 	lwfree(geos_results);
 
-	for (i = 0; i < num_outputs; i++) {
+	for (i = 0; i < num_outputs; i++)
+	{
 		lwgeom_free(expected_outputs[i]);
 		lwgeom_free(lw_results[i]);
 	}
 	lwfree(expected_outputs);
 	lwfree(lw_results);
 
-	for (i = 0; i < num_inputs; i++) {
+	for (i = 0; i < num_inputs; i++)
+	{
 		lwgeom_free(lw_inputs[i]);
 	}
 	lwfree(lw_inputs);
@@ -134,7 +143,8 @@ perform_cluster_within_distance_test(double tolerance,
 
 	/* Cleanup */
 	uint32_t i;
-	for (i = 0; i < num_outputs; i++) {
+	for (i = 0; i < num_outputs; i++)
+	{
 		lwgeom_free(expected_outputs[i]);
 		lwgeom_free(lw_results[i]);
 	}
@@ -261,7 +271,8 @@ multipoint_test(void)
 	perform_cluster_intersecting_test(wkt_inputs_pt, 2, expected_outputs_pt, 1);
 }
 
-struct dbscan_test_info {
+struct dbscan_test_info
+{
 	double eps;
 	uint32_t min_points;
 	uint32_t num_geoms;
@@ -282,13 +293,15 @@ do_dbscan_test(struct dbscan_test_info test)
 	union_dbscan(geoms, test.num_geoms, uf, test.eps, test.min_points, &in_a_cluster);
 	ids = UF_get_collapsed_cluster_ids(uf, in_a_cluster);
 
-	for (i = 0; i < test.num_geoms; i++) {
+	for (i = 0; i < test.num_geoms; i++)
+	{
 		ASSERT_INT_EQUAL(in_a_cluster[i], test.expected_in_cluster[i]);
 		if (in_a_cluster[i]) ASSERT_INT_EQUAL(ids[i], test.expected_ids[i]);
 	}
 
 	UF_destroy(uf);
-	for (i = 0; i < test.num_geoms; i++) {
+	for (i = 0; i < test.num_geoms; i++)
+	{
 		lwgeom_free(geoms[i]);
 	}
 	lwfree(geoms);

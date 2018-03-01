@@ -57,7 +57,8 @@ cu_wkt_in(char *wkt, uint8_t variant)
 	char *s = 0;
 
 	rv = lwgeom_parse_wkt(&p, wkt, 0);
-	if (p.errcode) {
+	if (p.errcode)
+	{
 		CU_ASSERT_EQUAL(rv, LW_FAILURE);
 		return strdup(p.message);
 	}

@@ -62,7 +62,8 @@ decode_wkb_collection(char *wkb, int *size)
 			flipbytes = 1;
 		else
 			flipbytes = 0;
-	} else // little
+	}
+	else // little
 	{
 		if (BYTE_ORDER == LITTLE_ENDIAN)
 			flipbytes = 0;
@@ -75,10 +76,11 @@ decode_wkb_collection(char *wkb, int *size)
 
 	printf("GEOMETRYCOLLECTION(\n");
 	offset = 9;
-	for (t = 0; t < numb_sub; t++) {
-		if (first_one) {
-			first_one = FALSE;
-		} else {
+	for (t = 0; t < numb_sub; t++)
+	{
+		if (first_one) { first_one = FALSE; }
+		else
+		{
 			printf(",");
 		}
 
@@ -118,7 +120,8 @@ decode_wkb(char *wkb, int *size)
 			flipbytes = 1;
 		else
 			flipbytes = 0;
-	} else // little
+	}
+	else // little
 	{
 		if (BYTE_ORDER == LITTLE_ENDIAN)
 			flipbytes = 0;
@@ -138,7 +141,8 @@ decode_wkb(char *wkb, int *size)
 
 	is3d = 0;
 
-	if (type & WKBZOFFSET) {
+	if (type & WKBZOFFSET)
+	{
 		is3d = 1;
 		type = type & (~WKBZOFFSET);
 	}
@@ -148,20 +152,25 @@ decode_wkb(char *wkb, int *size)
 	if (type == 1) // POINT()
 	{
 		printf("POINT(");
-		if (is3d) {
+		if (is3d)
+		{
 			memcpy(&x, &wkb[5], 8);
 			memcpy(&y, &wkb[5 + 8], 8);
 			memcpy(&z, &wkb[5 + 16], 8);
-			if (flipbytes) {
+			if (flipbytes)
+			{
 				flip_endian_double((char *)&x);
 				flip_endian_double((char *)&y);
 				flip_endian_double((char *)&z);
 			}
 			printf("%g %g %g)", x, y, z);
-		} else {
+		}
+		else
+		{
 			memcpy(&x, &wkb[5], 8);
 			memcpy(&y, &wkb[5 + 8], 8);
-			if (flipbytes) {
+			if (flipbytes)
+			{
 				flip_endian_double((char *)&x);
 				flip_endian_double((char *)&y);
 			}
@@ -174,32 +183,39 @@ decode_wkb(char *wkb, int *size)
 			*size = 21;
 		return;
 	}
-	if (type == 2) {
+	if (type == 2)
+	{
 		printf("LINESTRING(");
 		memcpy(&n1, &wkb[5], 4);
 		if (flipbytes) flip_endian_int32((char *)&n1);
 		//	printf("  --- has %i sub points\n",n1);
 		first_one = TRUE;
-		for (t = 0; t < n1; t++) {
-			if (first_one) {
-				first_one = FALSE;
-			} else {
+		for (t = 0; t < n1; t++)
+		{
+			if (first_one) { first_one = FALSE; }
+			else
+			{
 				printf(",");
 			}
-			if (is3d) {
+			if (is3d)
+			{
 				memcpy(&x, &wkb[9 + t * 24], 8);
 				memcpy(&y, &wkb[9 + t * 24 + 8], 8);
 				memcpy(&z, &wkb[9 + t * 24 + 16], 8);
-				if (flipbytes) {
+				if (flipbytes)
+				{
 					flip_endian_double((char *)&x);
 					flip_endian_double((char *)&y);
 					flip_endian_double((char *)&z);
 				}
 				printf("%g %g %g", x, y, z);
-			} else {
+			}
+			else
+			{
 				memcpy(&x, &wkb[9 + t * 16], 8);
 				memcpy(&y, &wkb[9 + t * 16 + 8], 8);
-				if (flipbytes) {
+				if (flipbytes)
+				{
 					flip_endian_double((char *)&x);
 					flip_endian_double((char *)&y);
 				}
@@ -214,7 +230,8 @@ decode_wkb(char *wkb, int *size)
 			*size = 9 + n1 * 16;
 		return;
 	}
-	if (type == 3) {
+	if (type == 3)
+	{
 		*size = 9;
 		printf("POLYGON(");
 		memcpy(&n1, &wkb[5], 4);
@@ -223,49 +240,59 @@ decode_wkb(char *wkb, int *size)
 		*size += 4 * n1;
 		offset = 9;
 		first_one = TRUE;
-		for (u = 0; u < n1; u++) {
+		for (u = 0; u < n1; u++)
+		{
 			memcpy(&n2, &wkb[offset], 4);
 			if (flipbytes) flip_endian_int32((char *)&n2);
 			//	printf(" ring %i: has %i points\n",u,n2);
 
-			if (first_one) {
-				first_one = FALSE;
-			} else {
+			if (first_one) { first_one = FALSE; }
+			else
+			{
 				printf(",");
 			}
 			printf("(");
 
 			first_one2 = TRUE;
-			for (v = 0; v < n2; v++) {
-				if (first_one2) {
-					first_one2 = FALSE;
-				} else {
+			for (v = 0; v < n2; v++)
+			{
+				if (first_one2) { first_one2 = FALSE; }
+				else
+				{
 					printf(",");
 				}
-				if (is3d) {
+				if (is3d)
+				{
 					memcpy(&x, &wkb[offset + 4 + v * 24], 8);
 					memcpy(&y, &wkb[offset + 4 + v * 24 + 8], 8);
 					memcpy(&z, &wkb[offset + 4 + v * 24 + 16], 8);
-					if (flipbytes) {
+					if (flipbytes)
+					{
 						flip_endian_double((char *)&x);
 						flip_endian_double((char *)&y);
 						flip_endian_double((char *)&z);
 					}
 					printf("%g %g %g", x, y, z);
-				} else {
+				}
+				else
+				{
 					memcpy(&x, &wkb[offset + 4 + v * 16], 8);
 					memcpy(&y, &wkb[offset + 4 + v * 16 + 8], 8);
-					if (flipbytes) {
+					if (flipbytes)
+					{
 						flip_endian_double((char *)&x);
 						flip_endian_double((char *)&y);
 					}
 					printf("%g %g", x, y);
 				}
 			}
-			if (is3d) {
+			if (is3d)
+			{
 				offset += 4 + 24 * n2;
 				*size += n2 * 24;
-			} else {
+			}
+			else
+			{
 				offset += 4 + 16 * n2;
 				*size += n2 * 16;
 			}
@@ -276,7 +303,8 @@ decode_wkb(char *wkb, int *size)
 
 		return;
 	}
-	if (type == 4) {
+	if (type == 4)
+	{
 		printf("MULTIPOINT(");
 		memcpy(&n1, &wkb[5], 4);
 		if (flipbytes) flip_endian_int32((char *)&n1);
@@ -286,26 +314,32 @@ decode_wkb(char *wkb, int *size)
 		else
 			*size = 9 + n1 * 21;
 		first_one = TRUE;
-		for (t = 0; t < n1; t++) {
-			if (first_one) {
-				first_one = FALSE;
-			} else {
+		for (t = 0; t < n1; t++)
+		{
+			if (first_one) { first_one = FALSE; }
+			else
+			{
 				printf(",");
 			}
-			if (is3d) {
+			if (is3d)
+			{
 				memcpy(&x, &wkb[9 + t * 29 + 5], 8);
 				memcpy(&y, &wkb[9 + t * 29 + 8 + 5], 8);
 				memcpy(&z, &wkb[9 + t * 29 + 16 + 5], 8);
-				if (flipbytes) {
+				if (flipbytes)
+				{
 					flip_endian_double((char *)&x);
 					flip_endian_double((char *)&y);
 					flip_endian_double((char *)&z);
 				}
 				printf("%g %g %g", x, y, z);
-			} else {
+			}
+			else
+			{
 				memcpy(&x, &wkb[9 + t * 21 + 5], 8);
 				memcpy(&y, &wkb[9 + t * 21 + 8 + 5], 8);
-				if (flipbytes) {
+				if (flipbytes)
+				{
 					flip_endian_double((char *)&x);
 					flip_endian_double((char *)&y);
 				}
@@ -315,7 +349,8 @@ decode_wkb(char *wkb, int *size)
 		printf(")\n");
 		return;
 	}
-	if (type == 5) {
+	if (type == 5)
+	{
 		*size = 9;
 		printf("MULTILINESTRING(");
 		memcpy(&n2, &wkb[5], 4);
@@ -324,10 +359,11 @@ decode_wkb(char *wkb, int *size)
 		*size += 9 * n2;
 		offset = 9;
 		first_one2 = TRUE;
-		for (u = 0; u < n2; u++) {
-			if (first_one2) {
-				first_one2 = FALSE;
-			} else {
+		for (u = 0; u < n2; u++)
+		{
+			if (first_one2) { first_one2 = FALSE; }
+			else
+			{
 				printf(",");
 			}
 			printf("(");
@@ -335,27 +371,33 @@ decode_wkb(char *wkb, int *size)
 			if (flipbytes) flip_endian_int32((char *)&n1);
 			//	printf("  --- has %i sub points\n",n1);
 			first_one = TRUE;
-			for (t = 0; t < n1; t++) {
-				if (first_one) {
-					first_one = FALSE;
-				} else {
+			for (t = 0; t < n1; t++)
+			{
+				if (first_one) { first_one = FALSE; }
+				else
+				{
 					printf(",");
 				}
 
-				if (is3d) {
+				if (is3d)
+				{
 					memcpy(&x, &wkb[offset + 9 + t * 24], 8);
 					memcpy(&y, &wkb[offset + 9 + t * 24 + 8], 8);
 					memcpy(&z, &wkb[offset + 9 + t * 24 + 16], 8);
-					if (flipbytes) {
+					if (flipbytes)
+					{
 						flip_endian_double((char *)&x);
 						flip_endian_double((char *)&y);
 						flip_endian_double((char *)&z);
 					}
 					printf("%g %g %g", x, y, z);
-				} else {
+				}
+				else
+				{
 					memcpy(&x, &wkb[offset + 9 + t * 16], 8);
 					memcpy(&y, &wkb[offset + 9 + t * 16 + 8], 8);
-					if (flipbytes) {
+					if (flipbytes)
+					{
 						flip_endian_double((char *)&x);
 						flip_endian_double((char *)&y);
 					}
@@ -363,10 +405,13 @@ decode_wkb(char *wkb, int *size)
 				}
 			}
 			printf(")");
-			if (is3d) {
+			if (is3d)
+			{
 				*size += (24 * n1);
 				offset += 9 + (24 * n1);
-			} else {
+			}
+			else
+			{
 				*size += (16 * n1);
 				offset += 9 + (16 * n1);
 			}
@@ -374,7 +419,8 @@ decode_wkb(char *wkb, int *size)
 		printf(")\n");
 		return;
 	}
-	if (type == 6) {
+	if (type == 6)
+	{
 		*size = 9;
 		printf("MULTIPOLYGON(");
 		memcpy(&n3, &wkb[5], 4);
@@ -385,9 +431,9 @@ decode_wkb(char *wkb, int *size)
 		first_one3 = TRUE;
 		for (t = 0; t < n3; t++) // for each polygon
 		{
-			if (first_one3) {
-				first_one3 = FALSE;
-			} else {
+			if (first_one3) { first_one3 = FALSE; }
+			else
+			{
 				printf(",");
 			}
 			printf("(");
@@ -401,9 +447,9 @@ decode_wkb(char *wkb, int *size)
 			first_one = TRUE;
 			for (u = 0; u < n1; u++) // for each ring
 			{
-				if (first_one) {
-					first_one = FALSE;
-				} else {
+				if (first_one) { first_one = FALSE; }
+				else
+				{
 					printf(",");
 				}
 				printf("(");
@@ -414,35 +460,43 @@ decode_wkb(char *wkb, int *size)
 				first_one2 = TRUE;
 				for (v = 0; v < n2; v++) // for each point
 				{
-					if (first_one2) {
-						first_one2 = FALSE;
-					} else {
+					if (first_one2) { first_one2 = FALSE; }
+					else
+					{
 						printf(",");
 					}
-					if (is3d) {
+					if (is3d)
+					{
 						memcpy(&x, &wkb[offset + 4 + v * 24], 8);
 						memcpy(&y, &wkb[offset + 4 + v * 24 + 8], 8);
 						memcpy(&z, &wkb[offset + 4 + v * 24 + 16], 8);
-						if (flipbytes) {
+						if (flipbytes)
+						{
 							flip_endian_double((char *)&x);
 							flip_endian_double((char *)&y);
 							flip_endian_double((char *)&z);
 						}
 						printf("%g %g %g", x, y, z);
-					} else {
+					}
+					else
+					{
 						memcpy(&x, &wkb[offset + 4 + v * 16], 8);
 						memcpy(&y, &wkb[offset + 4 + v * 16 + 8], 8);
-						if (flipbytes) {
+						if (flipbytes)
+						{
 							flip_endian_double((char *)&x);
 							flip_endian_double((char *)&y);
 						}
 						printf("%g %g", x, y);
 					}
 				}
-				if (is3d) {
+				if (is3d)
+				{
 					*size += 24 * n2;
 					offset += 4 + 24 * n2;
-				} else {
+				}
+				else
+				{
 					*size += 16 * n2;
 					offset += 4 + 16 * n2;
 				}

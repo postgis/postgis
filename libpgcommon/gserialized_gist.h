@@ -9,7 +9,8 @@
 **  The order of values in a GIDX is
 **  xmin,xmax,ymin,ymax,zmin,zmax...
 */
-typedef struct {
+typedef struct
+{
 	int32 varsize;
 	float c[1];
 } GIDX;
@@ -31,7 +32,8 @@ typedef struct {
  * for more details.
  */
 #define POSTGIS_FREE_IF_COPY_P(ptrsrc, ptrori) \
-	do { \
+	do \
+	{ \
 		if ((Pointer)(ptrsrc) != (Pointer)(ptrori)) pfree(ptrsrc); \
 	} while (0)
 
@@ -43,7 +45,8 @@ typedef struct {
 **  PostGIS
 */
 
-typedef struct {
+typedef struct
+{
 	float xmin, xmax, ymin, ymax;
 } BOX2DF;
 

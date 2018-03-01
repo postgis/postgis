@@ -31,7 +31,8 @@
 /**
  * Representation for the y-axis interval spanned by an edge.
  */
-typedef struct {
+typedef struct
+{
 	double min;
 	double max;
 } RTREE_INTERVAL;
@@ -41,7 +42,8 @@ typedef struct {
  * described at:
  *  http://lin-ear-th-inking.blogspot.com/2007/06/packed-1-dimensional-r-tree.html
  */
-typedef struct rtree_node {
+typedef struct rtree_node
+{
 	RTREE_INTERVAL *interval;
 	struct rtree_node *leftNode;
 	struct rtree_node *rightNode;
@@ -51,13 +53,15 @@ typedef struct rtree_node {
 /**
  * The tree structure used for fast P-i-P tests by point_in_multipolygon_rtree()
  */
-typedef struct {
+typedef struct
+{
 	RTREE_NODE **ringIndices;
 	int *ringCounts;
 	int polyCount;
 } RTREE_POLY_CACHE;
 
-typedef struct {
+typedef struct
+{
 	GeomCache gcache;
 	RTREE_POLY_CACHE *index;
 } RTreeGeomCache;

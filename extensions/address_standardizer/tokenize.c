@@ -124,8 +124,10 @@ remove_default_defs(PAGC_GLOBAL *glo_p)
 {
 	DEFDEF i;
 
-	if (glo_p->default_def != NULL) {
-		for (i = 0; i < DUNIT + 1; i++) {
+	if (glo_p->default_def != NULL)
+	{
+		for (i = 0; i < DUNIT + 1; i++)
+		{
 			destroy_def_list(glo_p->default_def[i]);
 		}
 	}
@@ -145,7 +147,8 @@ process_input(STAND_PARAM *s_p)
 	   -- called by scanner -- */
 
 	s_p->cur_morph--; /* -- back it down - no more morphs coming -- */
-	while (s_p->base_morph <= s_p->cur_morph) {
+	while (s_p->base_morph <= s_p->cur_morph)
+	{
 		s_p->base_morph = process_lexeme(s_p, s_p->cur_morph, s_p->base_morph);
 		if (s_p->base_morph == ERR_FAIL) { return FALSE; }
 		s_p->LexNum++;
@@ -173,7 +176,8 @@ new_morph(STAND_PARAM *s_p, DEFDEF t, const char *s, int length)
 	i = s_p->cur_morph;
 	j = s_p->base_morph;
 
-	if (length >= MAXTEXT) {
+	if (length >= MAXTEXT)
+	{
 		CLIENT_ERR(s_p->errors);
 		RET_ERR1("new_morph: %s is way too long", s, s_p->errors, FALSE);
 	}
@@ -186,7 +190,8 @@ new_morph(STAND_PARAM *s_p, DEFDEF t, const char *s, int length)
 
 	/* -- Is it time to look for a phrase? -- */
 
-	if (i == (j + MAXPHRASE - 1)) {
+	if (i == (j + MAXPHRASE - 1))
+	{
 		if ((s_p->base_morph = process_lexeme(s_p, i, j)) == ERR_FAIL) { return FALSE; }
 		s_p->LexNum++;
 	}
@@ -203,7 +208,8 @@ uses macros CLIENT_ERR, RET_ERR
 static int
 next_morph(STAND_PARAM *s_p)
 {
-	if (s_p->cur_morph++ > MAXMORPHS) {
+	if (s_p->cur_morph++ > MAXMORPHS)
+	{
 		CLIENT_ERR(s_p->errors);
 		RET_ERR("next_morph: Too many morphemes in input", s_p->errors, FALSE);
 	}
@@ -258,7 +264,8 @@ initialize_morphs(STAND_PARAM *s_p)
 	s_p->cur_morph = 0;
 	s_p->base_morph = 0;
 	s_p->LexNum = 0;
-	for (i = FIRST_LEX_POS; i < MAXLEX; i++) {
+	for (i = FIRST_LEX_POS; i < MAXLEX; i++)
+	{
 		reset_lexeme(s_p->lex_vector + i);
 	}
 }
@@ -287,22 +294,27 @@ process_lexeme(STAND_PARAM *s_p, int cur_m, int base_m)
 	morph_ptr = s_p->morph_array;
 	BLANK_STRING(LTarget);
 	cur_entry = NULL;
-	for (Ceiling = cur_m; Ceiling >= base_m; Ceiling--) {
+	for (Ceiling = cur_m; Ceiling >= base_m; Ceiling--)
+	{
 		/* -- Combine the morphs into a phrase from cur_morph to Ceiling -- */
 		Ceiling = phrase_from_morphs(morph_ptr, LTarget, base_m, Ceiling);
 
 		if ((cur_entry = find_entry(s_p->lexicon, /* 2007-11-20 hash table */
-					    LTarget)) != NULL) {
+					    LTarget)) != NULL)
+		{
 			/* -- Before accepting an entry from the lexicon, it may be
 			   necessary to establish that the entry does not subsume a
 			   more appropriate entry. -- */
 
 			lex_p = s_p->lex_vector + s_p->LexNum - 1;
-			if ((Ceiling > base_m) && (base_m > 0) && (!strncmp(LTarget, "ST ", 3))) {
+			if ((Ceiling > base_m) && (base_m > 0) && (!strncmp(LTarget, "ST ", 3)))
+			{
 				/* -- have we preempted street or saint by state? -- */
 				/* -- and what about at the end of the address? -- */
-				if (is_route(cur_entry)) {
-					if (find_def_type(lex_p->DefList, precedes_route_list)) {
+				if (is_route(cur_entry))
+				{
+					if (find_def_type(lex_p->DefList, precedes_route_list))
+					{
 						/* -- if the previous lexeme is any of the categories
 						   on precedes_route_list, we're okay -- */
 						break;
@@ -320,9 +332,8 @@ process_lexeme(STAND_PARAM *s_p, int cur_m, int base_m)
 	   add the new lexeme to the list -- */
 
 	/* -- pass LTarget to new_defs -- */
-	if (!set_lexeme(s_p, base_m, Ceiling, new_defs(morph_ptr, d_p, cur_entry, base_m, LTarget), LTarget)) {
-		return ERR_FAIL;
-	}
+	if (!set_lexeme(s_p, base_m, Ceiling, new_defs(morph_ptr, d_p, cur_entry, base_m, LTarget), LTarget))
+	{ return ERR_FAIL; }
 	/* -- Handle reactants and reunite broken alphanumeric strings -- */
 	reunite_mixed(s_p, d_p, morph_ptr, LTarget);
 
@@ -341,7 +352,8 @@ is_route(ENTRY *E)
 {
 	DEF *D;
 
-	for (D = E->DefList; D != NULL; D = D->Next) {
+	for (D = E->DefList; D != NULL; D = D->Next)
+	{
 		if (is_symb_on_list(D->Type, RouteL)) { return TRUE; }
 	}
 	return FALSE;
@@ -358,9 +370,11 @@ is_direction_letter(LEXEME *cur_lex_p, LEXEME *prev_lex_p, struct morph *morph_p
 {
 	char c;
 
-	if ((strlen(LT) == 1) && (no_space(prev_lex_p, morph_p))) {
+	if ((strlen(LT) == 1) && (no_space(prev_lex_p, morph_p)))
+	{
 		c = *LT;
-		switch (c) {
+		switch (c)
+		{
 		case 'N':
 		case 'S':
 		case 'W':
@@ -385,20 +399,27 @@ is_ordinal_suffix(LEXEME *cur_lex_p, LEXEME *prev_lex_p, struct morph *morph_p, 
 	prev_len = strlen(prev_lex_p->Text);
 	Ult = prev_lex_p->Text[prev_len - 1];
 	Penult = ((prev_len < 2) ? SENTINEL : prev_lex_p->Text[prev_len - 2]);
-	if ((!strcmp(LT, "ST")) && (Ult == '1') && (Penult != '1')) {
+	if ((!strcmp(LT, "ST")) && (Ult == '1') && (Penult != '1')) { return TRUE; }
+	else if ((!strcmp(LT, "ND")) && (Ult == '2') && (Penult != '1'))
+	{
 		return TRUE;
-	} else if ((!strcmp(LT, "ND")) && (Ult == '2') && (Penult != '1')) {
+	}
+	else if ((!strcmp(LT, "RD")) && (Ult == '3') && (Penult != '1'))
+	{
 		return TRUE;
-	} else if ((!strcmp(LT, "RD")) && (Ult == '3') && (Penult != '1')) {
-		return TRUE;
-	} else if ((!strcmp(LT, "TH")) && (isdigit(Ult))) {
-		if (Ult == '1' || Ult == '2' || Ult == '3') {
-			if (Penult == '1') {
-				return TRUE;
-			} else {
+	}
+	else if ((!strcmp(LT, "TH")) && (isdigit(Ult)))
+	{
+		if (Ult == '1' || Ult == '2' || Ult == '3')
+		{
+			if (Penult == '1') { return TRUE; }
+			else
+			{
 				return FALSE;
 			}
-		} else {
+		}
+		else
+		{
 			return TRUE;
 		}
 	}
@@ -426,7 +447,8 @@ is_zip(STAND_PARAM *s_p, DEF **d_p, struct morph *morph_p)
 	cur_lex_p = s_p->lex_vector + s_p->LexNum;
 	cur_txt = cur_lex_p->Text;
 	tl = strlen(cur_txt);
-	if ((find_def_type(cur_lex_p->DefList, NumberL)) && (tl > 3)) {
+	if ((find_def_type(cur_lex_p->DefList, NumberL)) && (tl > 3))
+	{
 		/* -- US Zip code -- */
 		if (tl > 6) { return FALSE; }
 		if (isalpha(*cur_txt)) { return FALSE; }
@@ -438,12 +460,12 @@ is_zip(STAND_PARAM *s_p, DEF **d_p, struct morph *morph_p)
 	/* -- Canadian postal codes -- */
 	if (s_p->LexNum < 2) { return FALSE; }
 	if (tl != 1) { return FALSE; }
-	if (isdigit(*cur_txt)) {
-		alt_state = TRUE;
-	} else {
-		if (isalpha(*cur_txt)) {
-			alt_state = FALSE;
-		} else {
+	if (isdigit(*cur_txt)) { alt_state = TRUE; }
+	else
+	{
+		if (isalpha(*cur_txt)) { alt_state = FALSE; }
+		else
+		{
 			return FALSE;
 		}
 	}
@@ -452,16 +474,20 @@ is_zip(STAND_PARAM *s_p, DEF **d_p, struct morph *morph_p)
 	if (!no_space(cur_lex_p, morph_p)) { return FALSE; }
 	/* -- First check if lexeme created for Mixed, with a
 	   length of 2 on the last pass -- */
-	if (find_def_type(cur_lex_p->DefList, MixedL)) {
+	if (find_def_type(cur_lex_p->DefList, MixedL))
+	{
 
 		if (strlen(cur_txt) != 2) { return FALSE; }
 		/* -- Will the pattern correspond? -- */
-		if (alt_state) {
+		if (alt_state)
+		{
 			/* -- if the current character is a number, then the
 			   previous string must be number + letter -- */
 			if (!isdigit(*cur_txt)) { return FALSE; }
 			if (!isalpha(*(cur_txt + 1))) { return FALSE; }
-		} else {
+		}
+		else
+		{
 			/* -- The FSA: if the current character is a letter,
 			   then the previous string must be letter + number -- */
 			if (!isalpha(*cur_txt)) { return FALSE; }
@@ -477,9 +503,12 @@ is_zip(STAND_PARAM *s_p, DEF **d_p, struct morph *morph_p)
 	if (strlen(cur_txt) != 1) { return FALSE; }
 	/* -- If the current character is a letter, then the previous one must
 	   be a number, and vice versa -- */
-	if (alt_state) {
+	if (alt_state)
+	{
 		if (!isalpha(*cur_txt)) { return FALSE; }
-	} else {
+	}
+	else
+	{
 		if (!isdigit(*cur_txt)) { return FALSE; }
 	}
 
@@ -491,9 +520,12 @@ is_zip(STAND_PARAM *s_p, DEF **d_p, struct morph *morph_p)
 	   current character is a letter. -- */
 	if (strlen(cur_txt) != 1) { return FALSE; }
 	if (!no_space(cur_lex_p, morph_p)) { return FALSE; }
-	if (!alt_state) {
+	if (!alt_state)
+	{
 		if (!isalpha(*cur_txt)) { return FALSE; }
-	} else if (!isdigit(*cur_txt)) {
+	}
+	else if (!isdigit(*cur_txt))
+	{
 		return FALSE;
 	}
 
@@ -528,7 +560,8 @@ fix_mixed(STAND_PARAM *s_p, DEF **d_p, struct morph *morph_p)
 	   preceding it. If the previous item was mixed and not a postal code,
 	   then we'll just merge this one in right away. -- */
 
-	if (find_def_type(prev_lex_p->DefList, MixedL) && !find_def_type(prev_lex_p->DefList, PostalL)) {
+	if (find_def_type(prev_lex_p->DefList, MixedL) && !find_def_type(prev_lex_p->DefList, PostalL))
+	{
 		/* -- if the previous item is mixed and not a postal code -- */
 
 		combine_lexemes(s_p, morph_p, d_p[DMIXED]);
@@ -583,12 +616,12 @@ mark_hyphen_unit(int n, LEXEME *lex_p, struct morph *morph_p, DEF **def_ptr)
 
 	cur_lex_p = lex_p + n;
 	if ((n != 1) || (!find_def_type((cur_lex_p)->DefList, NumberL)) ||
-	    (!find_def_type((cur_lex_p - 1)->DefList, NumberL))) {
-		return;
-	}
+	    (!find_def_type((cur_lex_p - 1)->DefList, NumberL)))
+	{ return; }
 
 	cur_lex_p--;
-	if ((morph_p + (cur_lex_p->EndMorph))->Term == 3) {
+	if ((morph_p + (cur_lex_p->EndMorph))->Term == 3)
+	{
 		/* -- overwrite the old deflist -- */
 		cur_lex_p->DefList = def_ptr[DUNIT];
 	}
@@ -615,7 +648,8 @@ numeric_tail(STAND_PARAM *s_p, DEF **d_p, struct morph *morph_p, char *LT)
 	if (is_direction_letter(cur_lex_p, prev_lex_p, morph_p, d_p, LT)) { return; }
 
 #ifdef COMBINE_FRACTS_WITH_NUMBS
-	if (find_def_type(cur_lex_p->DefList, FractL)) {
+	if (find_def_type(cur_lex_p->DefList, FractL))
+	{
 
 		combine_lexemes(s_p, morph_p, d_p[DNUMBER]);
 		return;
@@ -623,7 +657,8 @@ numeric_tail(STAND_PARAM *s_p, DEF **d_p, struct morph *morph_p, char *LT)
 #endif
 
 #ifdef EXPRESS_ORDINALS
-	if (is_ordinal_suffix(cur_lex_p, prev_lex_p, morph_p, d_p, LT)) {
+	if (is_ordinal_suffix(cur_lex_p, prev_lex_p, morph_p, d_p, LT))
+	{
 		combine_lexemes(s_p, morph_p, d_p[DORD]);
 		return;
 	}
@@ -653,7 +688,8 @@ new_defs(struct morph *morph_p, DEF **d_p, ENTRY *Cur, int pos, char *LTarget)
 	   the Target is copied into the lexeme -- */
 
 #ifndef EXPRESS_ORDINALS
-	if (s == DORD) {
+	if (s == DORD)
+	{
 		/* -- remove the suffix -- */
 		BLANK_STRING((LTarget + strlen(LTarget) - 2));
 	}
@@ -707,7 +743,8 @@ set_lexeme(STAND_PARAM *s_p, int Start, int End, DEF *start_def, char *text)
 	int n;
 
 	/* -- we need a limit -- */
-	if ((n = s_p->LexNum) >= MAXLEX) {
+	if ((n = s_p->LexNum) >= MAXLEX)
+	{
 		CLIENT_ERR(s_p->errors);
 		RET_ERR1("set_lexeme: %s is one too many lexemes", text, s_p->errors, FALSE);
 	}
@@ -732,7 +769,8 @@ reset_lexeme(LEXEME *lex_p)
 
 	lex_p->DefList = NULL;
 	s = lex_p->Text;
-	for (i = 0; i < MAXTEXT; i++) {
+	for (i = 0; i < MAXTEXT; i++)
+	{
 		*(s + i) = SENTINEL;
 	}
 }
@@ -774,7 +812,8 @@ phrase_from_morphs(struct morph *morph_vector, char *Dest, int beg, int end)
 
 	BLANK_STRING(Dest);
 	strcpy(Dest, morph_vector[beg].Text);
-	for (i = beg + 1; i <= end; i++) {
+	for (i = beg + 1; i <= end; i++)
+	{
 		/* -- No breaks in the middle of a phrase -- */
 
 		a = morph_vector[i - 1].Term;

@@ -123,7 +123,8 @@ static void
 default_debuglogger(int level, const char *fmt, va_list ap)
 {
 	char msg[LW_MSG_MAXLEN + 1];
-	if (POSTGIS_DEBUG_LEVEL >= level) {
+	if (POSTGIS_DEBUG_LEVEL >= level)
+	{
 		/* Space pad the debug output */
 		int i;
 		for (i = 0; i < level; i++)
@@ -215,7 +216,8 @@ lwdebug(int level, const char *fmt, ...)
 const char *
 lwtype_name(uint8_t type)
 {
-	if (type > 15) {
+	if (type > 15)
+	{
 		/* assert(0); */
 		return "Invalid type";
 	}
@@ -266,18 +268,25 @@ lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int trunc
 	output[0] = '\0';
 
 	/* Start truncation */
-	if (truncdirection == 0) {
+	if (truncdirection == 0)
+	{
 		/* Calculate the start position */
-		if (endpos - startpos < maxlength) {
+		if (endpos - startpos < maxlength)
+		{
 			outstart = str + startpos;
 			strncat(output, outstart, endpos - startpos + 1);
-		} else {
-			if (maxlength >= 3) {
+		}
+		else
+		{
+			if (maxlength >= 3)
+			{
 				/* Add "..." prefix */
 				outstart = str + endpos + 1 - maxlength + 3;
 				strncat(output, "...", 3);
 				strncat(output, outstart, maxlength - 3);
-			} else {
+			}
+			else
+			{
 				/* maxlength is too small; just output "..." */
 				strncat(output, "...", 3);
 			}
@@ -285,18 +294,25 @@ lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int trunc
 	}
 
 	/* End truncation */
-	if (truncdirection == 1) {
+	if (truncdirection == 1)
+	{
 		/* Calculate the end position */
-		if (endpos - startpos < maxlength) {
+		if (endpos - startpos < maxlength)
+		{
 			outstart = str + startpos;
 			strncat(output, outstart, endpos - startpos + 1);
-		} else {
-			if (maxlength >= 3) {
+		}
+		else
+		{
+			if (maxlength >= 3)
+			{
 				/* Add "..." suffix */
 				outstart = str + startpos;
 				strncat(output, outstart, maxlength - 3);
 				strncat(output, "...", 3);
-			} else {
+			}
+			else
+			{
 				/* maxlength is too small; just output "..." */
 				strncat(output, "...", 3);
 			}
@@ -327,12 +343,16 @@ clamp_srid(int srid)
 {
 	int newsrid = srid;
 
-	if (newsrid <= 0) {
-		if (newsrid != SRID_UNKNOWN) {
+	if (newsrid <= 0)
+	{
+		if (newsrid != SRID_UNKNOWN)
+		{
 			newsrid = SRID_UNKNOWN;
 			lwnotice("SRID value %d converted to the officially unknown SRID value %d", srid, newsrid);
 		}
-	} else if (srid > SRID_MAXIMUM) {
+	}
+	else if (srid > SRID_MAXIMUM)
+	{
 		newsrid = SRID_USER_MAXIMUM + 1 +
 			  /* -1 is to reduce likelyhood of clashes */
 			  /* NOTE: must match implementation in postgis_restore.pl */

@@ -32,7 +32,8 @@
 /**
  * Used for passing the parse state between the parsing functions.
  */
-typedef struct {
+typedef struct
+{
 	const uint8_t *wkb; /* Points to start of WKB */
 	size_t wkb_size;    /* Expected size of WKB */
 	int swap_bytes;     /* Do an endian flip? */
@@ -330,7 +331,8 @@ bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 
 	if (!buf) lwerror("Unable to allocate memory buffer.");
 
-	for (i = 0; i < hexsize / 2; i++) {
+	for (i = 0; i < hexsize / 2; i++)
+	{
 		h1 = hex2char[(int)hexbuf[2 * i]];
 		h2 = hex2char[(int)hexbuf[2 * i + 1]];
 		if (h1 > 15) lwerror("Invalid hex character (%c) encountered", hexbuf[2 * i]);
@@ -350,7 +352,8 @@ bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 static inline void
 wkb_parse_state_check(wkb_parse_state *s, size_t next)
 {
-	if ((s->pos + next) > (s->wkb + s->wkb_size)) {
+	if ((s->pos + next) > (s->wkb + s->wkb_size))
+	{
 		lwerror("WKB structure does not match expected size!");
 		return;
 	}
@@ -373,7 +376,8 @@ lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 	s->has_srid = LW_FALSE;
 
 	/* If any of the higher bits are set, this is probably an extended type. */
-	if (wkb_type & 0xF0000000) {
+	if (wkb_type & 0xF0000000)
+	{
 		if (wkb_type & WKBZOFFSET) s->has_z = LW_TRUE;
 		if (wkb_type & WKBMOFFSET) s->has_m = LW_TRUE;
 		if (wkb_type & WKBSRIDFLAG) s->has_srid = LW_TRUE;
@@ -386,16 +390,22 @@ lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 	wkb_simple_type = wkb_type % 1000;
 
 	/* Extract the Z/M information from ISO style numbers */
-	if (wkb_type >= 3000 && wkb_type < 4000) {
+	if (wkb_type >= 3000 && wkb_type < 4000)
+	{
 		s->has_z = LW_TRUE;
 		s->has_m = LW_TRUE;
-	} else if (wkb_type >= 2000 && wkb_type < 3000) {
+	}
+	else if (wkb_type >= 2000 && wkb_type < 3000)
+	{
 		s->has_m = LW_TRUE;
-	} else if (wkb_type >= 1000 && wkb_type < 2000) {
+	}
+	else if (wkb_type >= 1000 && wkb_type < 2000)
+	{
 		s->has_z = LW_TRUE;
 	}
 
-	switch (wkb_simple_type) {
+	switch (wkb_simple_type)
+	{
 	case WKB_POINT_TYPE:
 		s->lwtype = POINTTYPE;
 		break;
@@ -497,11 +507,13 @@ integer_from_wkb_state(wkb_parse_state *s)
 	memcpy(&i, s->pos, WKB_INT_SIZE);
 
 	/* Swap? Copy into a stack-allocated integer. */
-	if (s->swap_bytes) {
+	if (s->swap_bytes)
+	{
 		int j = 0;
 		uint8_t tmp;
 
-		for (j = 0; j < WKB_INT_SIZE / 2; j++) {
+		for (j = 0; j < WKB_INT_SIZE / 2; j++)
+		{
 			tmp = ((uint8_t *)(&i))[j];
 			((uint8_t *)(&i))[j] = ((uint8_t *)(&i))[WKB_INT_SIZE - j - 1];
 			((uint8_t *)(&i))[WKB_INT_SIZE - j - 1] = tmp;
@@ -526,11 +538,13 @@ double_from_wkb_state(wkb_parse_state *s)
 	memcpy(&d, s->pos, WKB_DOUBLE_SIZE);
 
 	/* Swap? Copy into a stack-allocated integer. */
-	if (s->swap_bytes) {
+	if (s->swap_bytes)
+	{
 		int i = 0;
 		uint8_t tmp;
 
-		for (i = 0; i < WKB_DOUBLE_SIZE / 2; i++) {
+		for (i = 0; i < WKB_DOUBLE_SIZE / 2; i++)
+		{
 			tmp = ((uint8_t *)(&d))[i];
 			((uint8_t *)(&d))[i] = ((uint8_t *)(&d))[WKB_DOUBLE_SIZE - i - 1];
 			((uint8_t *)(&d))[WKB_DOUBLE_SIZE - i - 1] = tmp;
@@ -557,7 +571,8 @@ ptarray_from_wkb_state(wkb_parse_state *s)
 
 	/* Calculate the size of this point array. */
 	npoints = integer_from_wkb_state(s);
-	if (npoints > maxpoints) {
+	if (npoints > maxpoints)
+	{
 		lwerror("Pointarray length (%d) is too large");
 		return NULL;
 	}
@@ -575,17 +590,20 @@ ptarray_from_wkb_state(wkb_parse_state *s)
 	wkb_parse_state_check(s, pa_size);
 
 	/* If we're in a native endianness, we can just copy the data directly! */
-	if (!s->swap_bytes) {
+	if (!s->swap_bytes)
+	{
 		pa = ptarray_construct_copy_data(s->has_z, s->has_m, npoints, (uint8_t *)s->pos);
 		s->pos += pa_size;
 	}
 	/* Otherwise we have to read each double, separately. */
-	else {
+	else
+	{
 		uint32_t i = 0;
 		double *dlist;
 		pa = ptarray_construct(s->has_z, s->has_m, npoints);
 		dlist = (double *)(pa->serialized_pointlist);
-		for (i = 0; i < npoints * ndims; i++) {
+		for (i = 0; i < npoints * ndims; i++)
+		{
 			dlist[i] = double_from_wkb_state(s);
 		}
 	}
@@ -620,27 +638,33 @@ lwpoint_from_wkb_state(wkb_parse_state *s)
 	wkb_parse_state_check(s, pa_size);
 
 	/* If we're in a native endianness, we can just copy the data directly! */
-	if (!s->swap_bytes) {
+	if (!s->swap_bytes)
+	{
 		pa = ptarray_construct_copy_data(s->has_z, s->has_m, npoints, (uint8_t *)s->pos);
 		s->pos += pa_size;
 	}
 	/* Otherwise we have to read each double, separately */
-	else {
+	else
+	{
 		uint32_t i = 0;
 		double *dlist;
 		pa = ptarray_construct(s->has_z, s->has_m, npoints);
 		dlist = (double *)(pa->serialized_pointlist);
-		for (i = 0; i < ndims; i++) {
+		for (i = 0; i < ndims; i++)
+		{
 			dlist[i] = double_from_wkb_state(s);
 		}
 	}
 
 	/* Check for POINT(NaN NaN) ==> POINT EMPTY */
 	pt = getPoint2d_cp(pa, 0);
-	if (isnan(pt->x) && isnan(pt->y)) {
+	if (isnan(pt->x) && isnan(pt->y))
+	{
 		ptarray_free(pa);
 		return lwpoint_construct_empty(s->srid, s->has_z, s->has_m);
-	} else {
+	}
+	else
+	{
 		return lwpoint_construct(s->srid, NULL, pa);
 	}
 }
@@ -658,12 +682,14 @@ lwline_from_wkb_state(wkb_parse_state *s)
 {
 	POINTARRAY *pa = ptarray_from_wkb_state(s);
 
-	if (pa == NULL || pa->npoints == 0) {
+	if (pa == NULL || pa->npoints == 0)
+	{
 		ptarray_free(pa);
 		return lwline_construct_empty(s->srid, s->has_z, s->has_m);
 	}
 
-	if (s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 2) {
+	if (s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 2)
+	{
 		lwerror("%s must have at least two points", lwtype_name(s->lwtype));
 		return NULL;
 	}
@@ -687,12 +713,14 @@ lwcircstring_from_wkb_state(wkb_parse_state *s)
 
 	if (pa == NULL || pa->npoints == 0) return lwcircstring_construct_empty(s->srid, s->has_z, s->has_m);
 
-	if (s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 3) {
+	if (s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 3)
+	{
 		lwerror("%s must have at least three points", lwtype_name(s->lwtype));
 		return NULL;
 	}
 
-	if (s->check & LW_PARSER_CHECK_ODD && !(pa->npoints % 2)) {
+	if (s->check & LW_PARSER_CHECK_ODD && !(pa->npoints % 2))
+	{
 		lwerror("%s must have an odd number of points", lwtype_name(s->lwtype));
 		return NULL;
 	}
@@ -720,26 +748,30 @@ lwpoly_from_wkb_state(wkb_parse_state *s)
 	/* Empty polygon? */
 	if (nrings == 0) return poly;
 
-	for (i = 0; i < nrings; i++) {
+	for (i = 0; i < nrings; i++)
+	{
 		POINTARRAY *pa = ptarray_from_wkb_state(s);
 		if (pa == NULL) continue;
 
 		/* Check for at least four points. */
-		if (s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 4) {
+		if (s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 4)
+		{
 			LWDEBUGF(2, "%s must have at least four points in each ring", lwtype_name(s->lwtype));
 			lwerror("%s must have at least four points in each ring", lwtype_name(s->lwtype));
 			return NULL;
 		}
 
 		/* Check that first and last points are the same. */
-		if (s->check & LW_PARSER_CHECK_CLOSURE && !ptarray_is_closed_2d(pa)) {
+		if (s->check & LW_PARSER_CHECK_CLOSURE && !ptarray_is_closed_2d(pa))
+		{
 			LWDEBUGF(2, "%s must have closed rings", lwtype_name(s->lwtype));
 			lwerror("%s must have closed rings", lwtype_name(s->lwtype));
 			return NULL;
 		}
 
 		/* Add ring to polygon */
-		if (lwpoly_add_ring(poly, pa) == LW_FAILURE) {
+		if (lwpoly_add_ring(poly, pa) == LW_FAILURE)
+		{
 			LWDEBUG(2, "Unable to add ring to polygon");
 			lwerror("Unable to add ring to polygon");
 		}
@@ -775,13 +807,15 @@ lwtriangle_from_wkb_state(wkb_parse_state *s)
 	if (pa == NULL) return tri;
 
 	/* Check for at least four points. */
-	if (s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 4) {
+	if (s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 4)
+	{
 		LWDEBUGF(2, "%s must have at least four points", lwtype_name(s->lwtype));
 		lwerror("%s must have at least four points", lwtype_name(s->lwtype));
 		return NULL;
 	}
 
-	if (s->check & LW_PARSER_CHECK_ZCLOSURE && !ptarray_is_closed_z(pa)) {
+	if (s->check & LW_PARSER_CHECK_ZCLOSURE && !ptarray_is_closed_z(pa))
+	{
 		lwerror("%s must have closed rings", lwtype_name(s->lwtype));
 		return NULL;
 	}
@@ -807,7 +841,8 @@ lwcurvepoly_from_wkb_state(wkb_parse_state *s)
 	/* Empty collection? */
 	if (ngeoms == 0) return cp;
 
-	for (i = 0; i < ngeoms; i++) {
+	for (i = 0; i < ngeoms; i++)
+	{
 		geom = lwgeom_from_wkb_state(s);
 		if (lwcurvepoly_add_ring(cp, geom) == LW_FAILURE)
 			lwerror("Unable to add geometry (%p) to curvepoly (%p)", geom, cp);
@@ -841,9 +876,11 @@ lwcollection_from_wkb_state(wkb_parse_state *s)
 	/* Be strict in polyhedral surface closures */
 	if (s->lwtype == POLYHEDRALSURFACETYPE) s->check |= LW_PARSER_CHECK_ZCLOSURE;
 
-	for (i = 0; i < ngeoms; i++) {
+	for (i = 0; i < ngeoms; i++)
+	{
 		geom = lwgeom_from_wkb_state(s);
-		if (lwcollection_add_lwgeom(col, geom) == NULL) {
+		if (lwcollection_add_lwgeom(col, geom) == NULL)
+		{
 			lwerror("Unable to add geometry (%p) to collection (%p)", geom, col);
 			return NULL;
 		}
@@ -869,7 +906,8 @@ lwgeom_from_wkb_state(wkb_parse_state *s)
 
 	/* Fail when handed incorrect starting byte */
 	wkb_little_endian = byte_from_wkb_state(s);
-	if (wkb_little_endian != 1 && wkb_little_endian != 0) {
+	if (wkb_little_endian != 1 && wkb_little_endian != 0)
+	{
 		LWDEBUG(4, "Leaving due to bad first byte!");
 		lwerror("Invalid endian flag value encountered.");
 		return NULL;
@@ -881,7 +919,8 @@ lwgeom_from_wkb_state(wkb_parse_state *s)
 	{
 		if (!wkb_little_endian) /* Data is big! */
 			s->swap_bytes = LW_TRUE;
-	} else /* Machine arch is big */
+	}
+	else /* Machine arch is big */
 	{
 		if (wkb_little_endian) /* Data is little! */
 			s->swap_bytes = LW_TRUE;
@@ -893,14 +932,16 @@ lwgeom_from_wkb_state(wkb_parse_state *s)
 	lwtype_from_wkb_state(s, wkb_type);
 
 	/* Read the SRID, if necessary */
-	if (s->has_srid) {
+	if (s->has_srid)
+	{
 		s->srid = clamp_srid(integer_from_wkb_state(s));
 		/* TODO: warn on explicit UNKNOWN srid ? */
 		LWDEBUGF(4, "Got SRID: %u", s->srid);
 	}
 
 	/* Do the right thing */
-	switch (s->lwtype) {
+	switch (s->lwtype)
+	{
 	case POINTTYPE:
 		return (LWGEOM *)lwpoint_from_wkb_state(s);
 		break;
@@ -978,7 +1019,8 @@ lwgeom_from_hexwkb(const char *hexwkb, const char check)
 	uint8_t *wkb;
 	LWGEOM *lwgeom;
 
-	if (!hexwkb) {
+	if (!hexwkb)
+	{
 		lwerror("lwgeom_from_hexwkb: null input");
 		return NULL;
 	}

@@ -41,13 +41,15 @@ lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
 
 	pa = ptarray_construct_empty(LW_FALSE, LW_FALSE, 1);
 
-	while (idx < length) {
+	while (idx < length)
+	{
 		POINT4D pt;
 		char byte = 0;
 
 		int res = 0;
 		char shift = 0;
-		do {
+		do
+		{
 			byte = encodedpolyline[idx++] - 63;
 			res |= (byte & 0x1F) << shift;
 			shift += 5;
@@ -57,7 +59,8 @@ lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
 
 		shift = 0;
 		res = 0;
-		do {
+		do
+		{
 			byte = encodedpolyline[idx++] - 63;
 			res |= (byte & 0x1F) << shift;
 			shift += 5;

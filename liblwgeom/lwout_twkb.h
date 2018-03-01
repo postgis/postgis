@@ -69,7 +69,8 @@
 #define HIGHER_DIM_SET_PRECZ(flag, prec) ((flag) = ((flag)&0xE3) | (((prec)&0x07) << 2))
 #define HIGHER_DIM_SET_PRECM(flag, prec) ((flag) = ((flag)&0x1F) | (((prec)&0x07) << 5))
 
-typedef struct {
+typedef struct
+{
 	/* Options defined at start */
 	uint8_t variant;
 	int8_t prec_xy;
@@ -78,7 +79,8 @@ typedef struct {
 	float factor[4]; /*What factor to multiply the coordiinates with to get the requested precision*/
 } TWKB_GLOBALS;
 
-typedef struct {
+typedef struct
+{
 	uint8_t variant; /*options that change at runtime*/
 	bytebuffer_t *header_buf;
 	bytebuffer_t *geom_buf;

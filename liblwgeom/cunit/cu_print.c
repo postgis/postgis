@@ -25,16 +25,16 @@ test_lwprint_assert_format(char *point_wkt, const char *format, const char *expe
 	char *actual;
 	cu_error_msg_reset();
 	actual = lwpoint_to_latlon(test_point, format);
-	if (0 != strlen(cu_error_msg)) {
+	if (0 != strlen(cu_error_msg))
+	{
 		printf("\nAssert failed:\n\tFormat [%s] generated an error: %s\n", format, cu_error_msg);
 		CU_FAIL();
 	}
 	num_old_failures = CU_get_number_of_failures();
 	CU_ASSERT_STRING_EQUAL(actual, expected);
 	num_new_failures = CU_get_number_of_failures();
-	if (num_new_failures > num_old_failures) {
-		printf("\nAssert failed:\n\t%s\t(actual)\n\t%s\t(expected)\n", actual, expected);
-	}
+	if (num_new_failures > num_old_failures)
+	{ printf("\nAssert failed:\n\t%s\t(actual)\n\t%s\t(expected)\n", actual, expected); }
 	lwfree(actual);
 	lwpoint_free(test_point);
 }
@@ -45,10 +45,13 @@ test_lwprint_assert_error(char *point_wkt, const char *format)
 	cu_error_msg_reset();
 	char *tmp = lwpoint_to_latlon(test_point, format);
 	lwfree(tmp);
-	if (0 == strlen(cu_error_msg)) {
+	if (0 == strlen(cu_error_msg))
+	{
 		printf("\nAssert failed:\n\tFormat [%s] did not generate an error.\n", format);
 		CU_FAIL();
-	} else {
+	}
+	else
+	{
 		cu_error_msg_reset();
 	}
 	lwpoint_free(test_point);

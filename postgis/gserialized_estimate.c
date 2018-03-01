@@ -213,7 +213,8 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
  * explicit axis conversions from GBOX in all calculations
  * at every step.
  */
-typedef struct ND_BOX_T {
+typedef struct ND_BOX_T
+{
 	float4 min[ND_DIMS];
 	float4 max[ND_DIMS];
 } ND_BOX;
@@ -221,7 +222,8 @@ typedef struct ND_BOX_T {
 /**
  * N-dimensional box index type
  */
-typedef struct ND_IBOX_T {
+typedef struct ND_IBOX_T
+{
 	int min[ND_DIMS];
 	int max[ND_DIMS];
 } ND_IBOX;
@@ -232,7 +234,8 @@ typedef struct ND_IBOX_T {
  * if necessary (really, we just want to get the 2,3,4-d cases
  * into one shared piece of code).
  */
-typedef struct ND_STATS_T {
+typedef struct ND_STATS_T
+{
 	/* Dimensionality of the histogram. */
 	float4 ndims;
 
@@ -378,7 +381,8 @@ stddev(const int *vals, int nvals)
 	double mean = avg(vals, nvals);
 
 	/* Calculate sigma2 */
-	for (i = 0; i < nvals; i++) {
+	for (i = 0; i < nvals; i++)
+	{
 		double v = (double)(vals[i]);
 		sigma2 += (mean - v) * (mean - v);
 	}
@@ -399,9 +403,11 @@ nd_stats_value_index(const ND_STATS *stats, int *indexes)
 	/* Calculate the index into the 1-d values array that the (i,j,k,l) */
 	/* n-d histogram coordinate implies. */
 	/* index = x + y * sizex + z * sizex * sizey + m * sizex * sizey * sizez */
-	for (d = 0; d < (int)(stats->ndims); d++) {
+	for (d = 0; d < (int)(stats->ndims); d++)
+	{
 		int size = (int)(stats->size[d]);
-		if (indexes[d] < 0 || indexes[d] >= size) {
+		if (indexes[d] < 0 || indexes[d] >= size)
+		{
 			POSTGIS_DEBUGF(3, " bad index at (%d, %d)", indexes[0], indexes[1]);
 			return -1;
 		}
@@ -422,12 +428,14 @@ nd_box_to_json(const ND_BOX *nd_box, int ndims)
 	stringbuffer_t *sb = stringbuffer_create();
 
 	stringbuffer_append(sb, "{\"min\":[");
-	for (i = 0; i < ndims; i++) {
+	for (i = 0; i < ndims; i++)
+	{
 		if (i) stringbuffer_append(sb, ",");
 		stringbuffer_aprintf(sb, "%.6g", nd_box->min[i]);
 	}
 	stringbuffer_append(sb, "],\"max\":[");
-	for (i = 0; i < ndims; i++) {
+	for (i = 0; i < ndims; i++)
+	{
 		if (i) stringbuffer_append(sb, ",");
 		stringbuffer_aprintf(sb, "%.6g", nd_box->max[i]);
 	}
@@ -455,7 +463,8 @@ nd_stats_to_json(const ND_STATS *nd_stats)
 
 	/* Size */
 	stringbuffer_append(sb, "\"size\":[");
-	for (d = 0; d < ndims; d++) {
+	for (d = 0; d < ndims; d++)
+	{
 		if (d) stringbuffer_append(sb, ",");
 		stringbuffer_aprintf(sb, "%d", (int)roundf(nd_stats->size[d]));
 	}
@@ -512,7 +521,8 @@ static int
 nd_box_merge(const ND_BOX *source, ND_BOX *target)
 {
 	int d;
-	for (d = 0; d < ND_DIMS; d++) {
+	for (d = 0; d < ND_DIMS; d++)
+	{
 		target->min[d] = Min(target->min[d], source->min[d]);
 		target->max[d] = Max(target->max[d], source->max[d]);
 	}
@@ -536,7 +546,8 @@ static int
 nd_box_init_bounds(ND_BOX *a)
 {
 	int d;
-	for (d = 0; d < ND_DIMS; d++) {
+	for (d = 0; d < ND_DIMS; d++)
+	{
 		a->min[d] = FLT_MAX;
 		a->max[d] = -1 * FLT_MAX;
 	}
@@ -557,17 +568,20 @@ nd_box_from_gbox(const GBOX *gbox, ND_BOX *nd_box)
 	nd_box->min[d] = gbox->ymin;
 	nd_box->max[d] = gbox->ymax;
 	d++;
-	if (FLAGS_GET_GEODETIC(gbox->flags)) {
+	if (FLAGS_GET_GEODETIC(gbox->flags))
+	{
 		nd_box->min[d] = gbox->zmin;
 		nd_box->max[d] = gbox->zmax;
 		return;
 	}
-	if (FLAGS_GET_Z(gbox->flags)) {
+	if (FLAGS_GET_Z(gbox->flags))
+	{
 		nd_box->min[d] = gbox->zmin;
 		nd_box->max[d] = gbox->zmax;
 		d++;
 	}
-	if (FLAGS_GET_M(gbox->flags)) {
+	if (FLAGS_GET_M(gbox->flags))
+	{
 		nd_box->min[d] = gbox->mmin;
 		nd_box->max[d] = gbox->mmax;
 		d++;
@@ -582,7 +596,8 @@ static int
 nd_box_intersects(const ND_BOX *a, const ND_BOX *b, int ndims)
 {
 	int d;
-	for (d = 0; d < ndims; d++) {
+	for (d = 0; d < ndims; d++)
+	{
 		if ((a->min[d] > b->max[d]) || (a->max[d] < b->min[d])) return false;
 	}
 	return true;
@@ -595,7 +610,8 @@ static int
 nd_box_contains(const ND_BOX *a, const ND_BOX *b, int ndims)
 {
 	int d;
-	for (d = 0; d < ndims; d++) {
+	for (d = 0; d < ndims; d++)
+	{
 		if (!((a->min[d] < b->min[d]) && (a->max[d] > b->max[d]))) return false;
 	}
 	return true;
@@ -610,7 +626,8 @@ nd_box_expand(ND_BOX *nd_box, double expansion_factor)
 {
 	int d;
 	double size;
-	for (d = 0; d < ND_DIMS; d++) {
+	for (d = 0; d < ND_DIMS; d++)
+	{
 		size = nd_box->max[d] - nd_box->min[d];
 		if (size <= 0) continue;
 		nd_box->min[d] -= size * expansion_factor / 2;
@@ -634,7 +651,8 @@ nd_box_overlap(const ND_STATS *nd_stats, const ND_BOX *nd_box, ND_IBOX *nd_ibox)
 	memset(nd_ibox, 0, sizeof(ND_IBOX));
 
 	/* In each dimension... */
-	for (d = 0; d < nd_stats->ndims; d++) {
+	for (d = 0; d < nd_stats->ndims; d++)
+	{
 		double smin = nd_stats->extent.min[d];
 		double smax = nd_stats->extent.max[d];
 		double width = smax - smin;
@@ -666,7 +684,8 @@ nd_box_ratio(const ND_BOX *b1, const ND_BOX *b2, int ndims)
 	double vol2 = 1.0;
 	double vol1 = 1.0;
 
-	for (d = 0; d < ndims; d++) {
+	for (d = 0; d < ndims; d++)
+	{
 		if (b1->max[d] <= b2->min[d] || b1->min[d] >= b2->max[d]) return 0.0; /* Disjoint */
 
 		if (b1->min[d] > b2->min[d] || b1->max[d] < b2->max[d]) covered = false;
@@ -674,7 +693,8 @@ nd_box_ratio(const ND_BOX *b1, const ND_BOX *b2, int ndims)
 
 	if (covered) return 1.0;
 
-	for (d = 0; d < ndims; d++) {
+	for (d = 0; d < ndims; d++)
+	{
 		double width1 = b1->max[d] - b1->min[d];
 		double width2 = b2->max[d] - b2->min[d];
 		double imin, imax, iwidth;
@@ -726,7 +746,8 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 	const ND_BOX *ndb;
 
 	/* For each dimension... */
-	for (d = 0; d < ndims; d++) {
+	for (d = 0; d < ndims; d++)
+	{
 		/* Initialize counts for this dimension */
 		memset(counts, 0, sizeof(int) * num_bins);
 
@@ -735,13 +756,15 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 		swidth = smax - smin;
 
 		/* Don't try and calculate distribution of overly narrow dimensions */
-		if (swidth < MIN_DIMENSION_WIDTH) {
+		if (swidth < MIN_DIMENSION_WIDTH)
+		{
 			distribution[d] = 0;
 			continue;
 		}
 
 		/* Sum up the overlaps of each feature with the dimensional bins */
-		for (i = 0; i < num_boxes; i++) {
+		for (i = 0; i < num_boxes; i++)
+		{
 			double minoffset, maxoffset;
 
 			/* Skip null entries */
@@ -762,7 +785,8 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 			POSTGIS_DEBUGF(4, " dimension %d, feature %d: bin %d to bin %d", d, i, bmin, bmax);
 
 			/* Increment the counts in all the bins this feature overlaps */
-			for (k = bmin; k <= bmax; k++) {
+			for (k = bmin; k <= bmax; k++)
+			{
 				counts[k] += 1;
 			}
 		}
@@ -797,8 +821,10 @@ nd_increment(ND_IBOX *ibox, int ndims, int *counter)
 {
 	int d = 0;
 
-	while (d < ndims) {
-		if (counter[d] < ibox->max[d]) {
+	while (d < ndims)
+	{
+		if (counter[d] < ibox->max[d])
+		{
 			counter[d] += 1;
 			break;
 		}
@@ -830,7 +856,8 @@ pg_nd_stats_from_tuple(HeapTuple stats_tuple, int mode)
 
 	rv = get_attstatsslot(stats_tuple, 0, 0, stats_kind, InvalidOid, NULL, NULL, NULL, &floatptr, &nvalues);
 
-	if (!rv) {
+	if (!rv)
+	{
 		POSTGIS_DEBUGF(2, "no slot of kind %d in stats tuple", stats_kind);
 		return NULL;
 	}
@@ -844,7 +871,8 @@ pg_nd_stats_from_tuple(HeapTuple stats_tuple, int mode)
 #else /* PostgreSQL 10 or higher */
 	AttStatsSlot sslot;
 	rv = get_attstatsslot(&sslot, stats_tuple, stats_kind, InvalidOid, ATTSTATSSLOT_NUMBERS);
-	if (!rv) {
+	if (!rv)
+	{
 		POSTGIS_DEBUGF(2, "no slot of kind %d in stats tuple", stats_kind);
 		return NULL;
 	}
@@ -870,7 +898,8 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode, bool only_par
 	ND_STATS *nd_stats;
 
 	/* First pull the stats tuple for the whole tree */
-	if (!only_parent) {
+	if (!only_parent)
+	{
 		POSTGIS_DEBUGF(2,
 			       "searching whole tree stats for \"%s\"",
 			       get_rel_name(table_oid) ? get_rel_name(table_oid) : "NULL");
@@ -882,7 +911,8 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode, bool only_par
 				       get_rel_name(table_oid) ? get_rel_name(table_oid) : "NULL");
 	}
 	/* Fall-back to main table stats only, if not found for whole tree or explicitly ignored */
-	if (only_parent || !stats_tuple) {
+	if (only_parent || !stats_tuple)
+	{
 		POSTGIS_DEBUGF(2,
 			       "searching parent table stats for \"%s\"",
 			       get_rel_name(table_oid) ? get_rel_name(table_oid) : "NULL");
@@ -893,7 +923,8 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode, bool only_par
 				       "found parent table stats for \"%s\"",
 				       get_rel_name(table_oid) ? get_rel_name(table_oid) : "NULL");
 	}
-	if (!stats_tuple) {
+	if (!stats_tuple)
+	{
 		POSTGIS_DEBUGF(
 		    2, "stats for \"%s\" do not exist", get_rel_name(table_oid) ? get_rel_name(table_oid) : "NULL");
 		return NULL;
@@ -901,7 +932,8 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode, bool only_par
 
 	nd_stats = pg_nd_stats_from_tuple(stats_tuple, mode);
 	ReleaseSysCache(stats_tuple);
-	if (!nd_stats) {
+	if (!nd_stats)
+	{
 		POSTGIS_DEBUGF(
 		    2, "histogram for attribute %d of table \"%s\" does not exist?", att_num, get_rel_name(table_oid));
 	}
@@ -924,14 +956,18 @@ pg_get_nd_stats_by_name(const Oid table_oid, const text *att_text, int mode, boo
 	AttrNumber att_num;
 
 	/* We know the name? Look up the num */
-	if (att_text) {
+	if (att_text)
+	{
 		/* Get the attribute number */
 		att_num = get_attnum(table_oid, att_name);
-		if (!att_num) {
+		if (!att_num)
+		{
 			elog(ERROR, "attribute \"%s\" does not exist", att_name);
 			return NULL;
 		}
-	} else {
+	}
+	else
+	{
 		elog(ERROR, "attribute name is null");
 		return NULL;
 	}
@@ -977,7 +1013,8 @@ estimate_join_selectivity(const ND_STATS *s1, const ND_STATS *s2)
 	float8 selectivity;
 
 	/* Drop out on null inputs */
-	if (!(s1 && s2)) {
+	if (!(s1 && s2))
+	{
 		elog(NOTICE, " estimate_join_selectivity called with null inputs");
 		return FALLBACK_ND_SEL;
 	}
@@ -987,7 +1024,8 @@ estimate_join_selectivity(const ND_STATS *s1, const ND_STATS *s2)
 	ncells2 = (int)roundf(s2->histogram_cells);
 
 	/* ...so that we can drive the summation loop with the smaller histogram. */
-	if (ncells1 > ncells2) {
+	if (ncells1 > ncells2)
+	{
 		const ND_STATS *stats_tmp = s1;
 		s1 = s2;
 		s2 = stats_tmp;
@@ -1016,7 +1054,8 @@ estimate_join_selectivity(const ND_STATS *s1, const ND_STATS *s2)
 	extent2 = s2->extent;
 
 	/* If relation stats do not intersect, join is very very selective. */
-	if (!nd_box_intersects(&extent1, &extent2, ndims)) {
+	if (!nd_box_intersects(&extent1, &extent2, ndims))
+	{
 		POSTGIS_DEBUG(3, "relation stats do not intersect, returning 0");
 		PG_RETURN_FLOAT8(0.0);
 	}
@@ -1025,13 +1064,15 @@ estimate_join_selectivity(const ND_STATS *s1, const ND_STATS *s2)
 	 * First find the index range of the part of the smaller
 	 * histogram that overlaps the larger one.
 	 */
-	if (!nd_box_overlap(s1, &extent2, &ibox1)) {
+	if (!nd_box_overlap(s1, &extent2, &ibox1))
+	{
 		POSTGIS_DEBUG(3, "could not calculate overlap of relations");
 		PG_RETURN_FLOAT8(FALLBACK_ND_JOINSEL);
 	}
 
 	/* Initialize counters / constants on s1 */
-	for (d = 0; d < ndims1; d++) {
+	for (d = 0; d < ndims1; d++)
+	{
 		at1[d] = ibox1.min[d];
 		min1[d] = s1->extent.min[d];
 		width1[d] = s1->extent.max[d] - s1->extent.min[d];
@@ -1040,7 +1081,8 @@ estimate_join_selectivity(const ND_STATS *s1, const ND_STATS *s2)
 	}
 
 	/* Initialize counters / constants on s2 */
-	for (d = 0; d < ndims2; d++) {
+	for (d = 0; d < ndims2; d++)
+	{
 		min2[d] = s2->extent.min[d];
 		width2[d] = s2->extent.max[d] - s2->extent.min[d];
 		size2[d] = (int)roundf(s2->size[d]);
@@ -1048,12 +1090,14 @@ estimate_join_selectivity(const ND_STATS *s1, const ND_STATS *s2)
 	}
 
 	/* For each affected cell of s1... */
-	do {
+	do
+	{
 		double val1;
 		/* Construct the bounds of this cell */
 		ND_BOX nd_cell1;
 		nd_box_init(&nd_cell1);
-		for (d = 0; d < ndims1; d++) {
+		for (d = 0; d < ndims1; d++)
+		{
 			nd_cell1.min[d] = min1[d] + (at1[d] + 0) * cellsize1[d];
 			nd_cell1.max[d] = min1[d] + (at1[d] + 1) * cellsize1[d];
 		}
@@ -1062,7 +1106,8 @@ estimate_join_selectivity(const ND_STATS *s1, const ND_STATS *s2)
 		nd_box_overlap(s2, &nd_cell1, &ibox2);
 
 		/* Initialize counter */
-		for (d = 0; d < ndims2; d++) {
+		for (d = 0; d < ndims2; d++)
+		{
 			at2[d] = ibox2.min[d];
 		}
 
@@ -1072,14 +1117,16 @@ estimate_join_selectivity(const ND_STATS *s1, const ND_STATS *s2)
 		val1 = s1->value[nd_stats_value_index(s1, at1)];
 
 		/* For each overlapped cell of s2... */
-		do {
+		do
+		{
 			double ratio2;
 			double val2;
 
 			/* Construct the bounds of this cell */
 			ND_BOX nd_cell2;
 			nd_box_init(&nd_cell2);
-			for (d = 0; d < ndims2; d++) {
+			for (d = 0; d < ndims2; d++)
+			{
 				nd_cell2.min[d] = min2[d] + (at2[d] + 0) * cellsize2[d];
 				nd_cell2.max[d] = min2[d] + (at2[d] + 1) * cellsize2[d];
 			}
@@ -1128,9 +1175,9 @@ estimate_join_selectivity(const ND_STATS *s1, const ND_STATS *s2)
 	selectivity = val / ntuples_max;
 
 	/* Guard against over-estimates and crazy numbers :) */
-	if (isnan(selectivity) || !isfinite(selectivity) || selectivity < 0.0) {
-		selectivity = DEFAULT_ND_JOINSEL;
-	} else if (selectivity > 1.0) {
+	if (isnan(selectivity) || !isfinite(selectivity) || selectivity < 0.0) { selectivity = DEFAULT_ND_JOINSEL; }
+	else if (selectivity > 1.0)
+	{
 		selectivity = 1.0;
 	}
 
@@ -1194,7 +1241,8 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 	float8 selectivity;
 
 	/* Only respond to an inner join/unknown context join */
-	if (jointype != JOIN_INNER) {
+	if (jointype != JOIN_INNER)
+	{
 		elog(DEBUG1, "%s: jointype %d not supported", __func__, jointype);
 		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
 	}
@@ -1207,7 +1255,8 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 
 	/* We only do column joins right now, no functional joins */
 	/* TODO: handle g1 && ST_Expand(g2) */
-	if (!IsA(arg1, Var) || !IsA(arg2, Var)) {
+	if (!IsA(arg1, Var) || !IsA(arg2, Var))
+	{
 		elog(DEBUG1, "%s called with arguments that are not column references", __func__);
 		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
 	}
@@ -1228,13 +1277,16 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 	stats2 = pg_get_nd_stats(relid2, var2->varattno, mode, false);
 
 	/* If we can't get stats, we have to stop here! */
-	if (!stats1) {
+	if (!stats1)
+	{
 		POSTGIS_DEBUGF(3,
 			       "unable to retrieve stats for \"%s\" Oid(%d)",
 			       get_rel_name(relid1) ? get_rel_name(relid1) : "NULL",
 			       relid1);
 		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
-	} else if (!stats2) {
+	}
+	else if (!stats2)
+	{
 		POSTGIS_DEBUGF(3,
 			       "unable to retrieve stats for \"%s\" Oid(%d)",
 			       get_rel_name(relid2) ? get_rel_name(relid2) : "NULL",
@@ -1339,7 +1391,8 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 	 *  o compute total features's box area (for avgFeatureArea)
 	 *  o sum features box coordinates (for standard deviation)
 	 */
-	for (i = 0; i < sample_rows; i++) {
+	for (i = 0; i < sample_rows; i++)
+	{
 		Datum datum;
 		GSERIALIZED *geom;
 		GBOX gbox;
@@ -1350,7 +1403,8 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 		datum = fetchfunc(stats, i, &is_null);
 
 		/* Skip all NULLs. */
-		if (is_null) {
+		if (is_null)
+		{
 			POSTGIS_DEBUGF(4, " skipped null geometry %d", i);
 			null_cnt++;
 			continue;
@@ -1359,7 +1413,8 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 		/* Read the bounds from the gserialized. */
 		geom = (GSERIALIZED *)PG_DETOAST_DATUM(datum);
 		is_copy = VARATT_IS_EXTENDED(datum);
-		if (LW_FAILURE == gserialized_get_gbox_p(geom, &gbox)) {
+		if (LW_FAILURE == gserialized_get_gbox_p(geom, &gbox))
+		{
 			/* Skip empties too. */
 			POSTGIS_DEBUGF(3, " skipped empty geometry %d", i);
 			continue;
@@ -1369,7 +1424,8 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 		if (mode == 2) gbox.zmin = gbox.zmax = gbox.mmin = gbox.mmax = 0.0;
 
 		/* Check bounds for validity (finite and not NaN) */
-		if (!gbox_is_valid(&gbox)) {
+		if (!gbox_is_valid(&gbox))
+		{
 			POSTGIS_DEBUGF(3, " skipped infinite/nan geometry %d", i);
 			continue;
 		}
@@ -1397,7 +1453,8 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 		total_width += VARSIZE(geom);
 
 		/* Add bounds coordinates to sums for stddev calculation */
-		for (d = 0; d < ndims; d++) {
+		for (d = 0; d < ndims; d++)
+		{
 			sum.min[d] += nd_box->min[d];
 			sum.max[d] += nd_box->max[d];
 		}
@@ -1427,7 +1484,8 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 	POSTGIS_DEBUGF(3, " target # of histogram cells: %d", histo_cells_target);
 
 	/* If there's no useful features, we can't work out stats */
-	if (!notnull_cnt) {
+	if (!notnull_cnt)
+	{
 		elog(NOTICE, "no non-null/empty features, unable to compute statistics");
 		stats->stats_valid = false;
 		return;
@@ -1439,13 +1497,15 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 	 * Second scan:
 	 *  o compute standard deviation
 	 */
-	for (d = 0; d < ndims; d++) {
+	for (d = 0; d < ndims; d++)
+	{
 		/* Calculate average bounds values */
 		avg.min[d] = sum.min[d] / notnull_cnt;
 		avg.max[d] = sum.max[d] / notnull_cnt;
 
 		/* Calculate standard deviation for this dimension bounds */
-		for (i = 0; i < notnull_cnt; i++) {
+		for (i = 0; i < notnull_cnt; i++)
+		{
 			const ND_BOX *ndb = sample_boxes[i];
 			stddev.min[d] += (ndb->min[d] - avg.min[d]) * (ndb->min[d] - avg.min[d]);
 			stddev.max[d] += (ndb->max[d] - avg.max[d]) * (ndb->max[d] - avg.max[d]);
@@ -1464,10 +1524,12 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 	 *   o compute new histogram box
 	 */
 	nd_box_init_bounds(&histo_extent_new);
-	for (i = 0; i < notnull_cnt; i++) {
+	for (i = 0; i < notnull_cnt; i++)
+	{
 		const ND_BOX *ndb = sample_boxes[i];
 		/* Skip any hard deviants (boxes entirely outside our histo_extent */
-		if (!nd_box_intersects(&histo_extent, ndb, ndims)) {
+		if (!nd_box_intersects(&histo_extent, ndb, ndims))
+		{
 			POSTGIS_DEBUGF(4, " feature %d is a hard deviant, skipped", i);
 			sample_boxes[i] = NULL;
 			continue;
@@ -1510,22 +1572,27 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 	 * that have some interesting differences in data distribution.
 	 * Here we count up the number of interesting dimensions
 	 */
-	for (d = 0; d < ndims; d++) {
+	for (d = 0; d < ndims; d++)
+	{
 		if (sample_distribution[d] > 0) histo_ndims++;
 	}
 
-	if (histo_ndims == 0) {
+	if (histo_ndims == 0)
+	{
 		/* Special case: all our dimensions had low variability! */
 		/* We just divide the cells up evenly */
 		POSTGIS_DEBUG(3, " special case: no axes have variability");
 		histo_cells_new = 1;
-		for (d = 0; d < ndims; d++) {
+		for (d = 0; d < ndims; d++)
+		{
 			histo_size[d] = 1 + (int)pow((double)histo_cells_target, 1 / (double)ndims);
 			POSTGIS_DEBUGF(3, "   histo_size[d]: %d", histo_size[d]);
 			histo_cells_new *= histo_size[d];
 		}
 		POSTGIS_DEBUGF(3, " histo_cells_new: %d", histo_cells_new);
-	} else {
+	}
+	else
+	{
 		/*
 		 * We're going to express the amount of variability in each dimension
 		 * as a proportion of the total variability and allocate cells in that
@@ -1535,11 +1602,11 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 		total_distribution = total_double(sample_distribution, ndims); /* First get the total */
 		POSTGIS_DEBUGF(3, " total_distribution: %.8g", total_distribution);
 		histo_cells_new = 1; /* For the number of cells in the final histogram */
-		for (d = 0; d < ndims; d++) {
+		for (d = 0; d < ndims; d++)
+		{
 			if (sample_distribution[d] == 0) /* Uninteresting dimensions don't get any room */
-			{
-				histo_size[d] = 1;
-			} else /* Interesting dimension */
+			{ histo_size[d] = 1; }
+			else /* Interesting dimension */
 			{
 				/* How does this dims variability compare to the total? */
 				float edge_ratio = (float)sample_distribution[d] / (float)total_distribution;
@@ -1594,7 +1661,8 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 	 * histogram feature count.
 	 *
 	 */
-	for (i = 0; i < notnull_cnt; i++) {
+	for (i = 0; i < notnull_cnt; i++)
+	{
 		const ND_BOX *nd_box;
 		ND_IBOX nd_ibox;
 		int at[ND_DIMS];
@@ -1627,7 +1695,8 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 			       nd_ibox.max[2],
 			       nd_ibox.max[3]);
 
-		for (d = 0; d < nd_stats->ndims; d++) {
+		for (d = 0; d < nd_stats->ndims; d++)
+		{
 			/* Initialize the starting values */
 			at[d] = nd_ibox.min[d];
 			min[d] = nd_stats->extent.min[d];
@@ -1645,11 +1714,13 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 		 * Move through all the overlaped histogram cells values and
 		 * add the box overlap proportion to them.
 		 */
-		do {
+		do
+		{
 			ND_BOX nd_cell = {{0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0}};
 			double ratio;
 			/* Create a box for this histogram cell */
-			for (d = 0; d < nd_stats->ndims; d++) {
+			for (d = 0; d < nd_stats->ndims; d++)
+			{
 				nd_cell.min[d] = min[d] + (at[d] + 0) * cellsize[d];
 				nd_cell.max[d] = min[d] + (at[d] + 1) * cellsize[d];
 			}
@@ -1677,7 +1748,8 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 	POSTGIS_DEBUGF(3, " table_rows: %.6g", total_rows);
 
 	/* Error out if we got no sample information */
-	if (!histogram_features) {
+	if (!histogram_features)
+	{
 		POSTGIS_DEBUG(3, " no stats have been gathered");
 		elog(NOTICE, " no features lie in the stats histogram, invalid stats");
 		stats->stats_valid = false;
@@ -1689,10 +1761,13 @@ compute_gserialized_stats_mode(VacAttrStats *stats,
 	nd_stats->cells_covered = total_cell_count;
 
 	/* Put this histogram data into the right slot/kind */
-	if (mode == 2) {
+	if (mode == 2)
+	{
 		stats_slot = STATISTIC_SLOT_2D;
 		stats_kind = STATISTIC_KIND_2D;
-	} else {
+	}
+	else
+	{
 		stats_slot = STATISTIC_SLOT_ND;
 		stats_kind = STATISTIC_KIND_ND;
 	}
@@ -1825,7 +1900,8 @@ estimate_selectivity(const GBOX *box, const ND_STATS *nd_stats, int mode)
 	int ndims_max;
 
 	/* Calculate the overlap of the box on the histogram */
-	if (!nd_stats) {
+	if (!nd_stats)
+	{
 		elog(NOTICE, " estimate_selectivity called with null input");
 		return FALLBACK_ND_SEL;
 	}
@@ -1841,7 +1917,8 @@ estimate_selectivity(const GBOX *box, const ND_STATS *nd_stats, int mode)
 	 * histogram.
 	 */
 	POSTGIS_DEBUGF(3, " mode: %d", mode);
-	if (mode == 2) {
+	if (mode == 2)
+	{
 		POSTGIS_DEBUG(3, " in 2d mode, stripping the computation down to 2d");
 		ndims_max = 2;
 	}
@@ -1856,25 +1933,29 @@ estimate_selectivity(const GBOX *box, const ND_STATS *nd_stats, int mode)
 	 * to short circuit in this case, as some of the tests below
 	 * will return junk results when run on non-intersecting inputs.
 	 */
-	if (!nd_box_intersects(&nd_box, &(nd_stats->extent), ndims_max)) {
+	if (!nd_box_intersects(&nd_box, &(nd_stats->extent), ndims_max))
+	{
 		POSTGIS_DEBUG(3, " search box does not overlap histogram, returning 0");
 		return 0.0;
 	}
 
 	/* Search box completely contains histogram extent! */
-	if (nd_box_contains(&nd_box, &(nd_stats->extent), ndims_max)) {
+	if (nd_box_contains(&nd_box, &(nd_stats->extent), ndims_max))
+	{
 		POSTGIS_DEBUG(3, " search box contains histogram, returning 1");
 		return 1.0;
 	}
 
 	/* Calculate the overlap of the box on the histogram */
-	if (!nd_box_overlap(nd_stats, &nd_box, &nd_ibox)) {
+	if (!nd_box_overlap(nd_stats, &nd_box, &nd_ibox))
+	{
 		POSTGIS_DEBUG(3, " search box overlap with stats histogram failed");
 		return FALLBACK_ND_SEL;
 	}
 
 	/* Work out some measurements of the histogram */
-	for (d = 0; d < nd_stats->ndims; d++) {
+	for (d = 0; d < nd_stats->ndims; d++)
+	{
 		/* Cell size in each dim */
 		min[d] = nd_stats->extent.min[d];
 		max[d] = nd_stats->extent.max[d];
@@ -1886,12 +1967,14 @@ estimate_selectivity(const GBOX *box, const ND_STATS *nd_stats, int mode)
 	}
 
 	/* Move through all the overlap values and sum them */
-	do {
+	do
+	{
 		float cell_count, ratio;
 		ND_BOX nd_cell = {{0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0}};
 
 		/* We have to pro-rate partially overlapped cells. */
-		for (d = 0; d < nd_stats->ndims; d++) {
+		for (d = 0; d < nd_stats->ndims; d++)
+		{
 			nd_cell.min[d] = min[d] + (at[d] + 0) * cell_size[d];
 			nd_cell.max[d] = min[d] + (at[d] + 1) * cell_size[d];
 		}
@@ -2018,7 +2101,8 @@ Datum _postgis_gserialized_joinsel(PG_FUNCTION_ARGS)
 		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid2), text_to_cstring(att_text2));
 
 	/* Check if we've been asked to not use 2d mode */
-	if (!PG_ARGISNULL(4)) {
+	if (!PG_ARGISNULL(4))
+	{
 		text *modetxt = PG_GETARG_TEXT_P(4);
 		char *modestr = text_to_cstring(modetxt);
 		if (modestr[0] == 'N') mode = 0;
@@ -2106,27 +2190,33 @@ Datum gserialized_gist_sel(PG_FUNCTION_ARGS)
 	 */
 
 	/* Fail if not a binary opclause (probably shouldn't happen) */
-	if (list_length(args) != 2) {
+	if (list_length(args) != 2)
+	{
 		POSTGIS_DEBUG(3, "gserialized_gist_sel: not a binary opclause");
 		PG_RETURN_FLOAT8(DEFAULT_ND_SEL);
 	}
 
 	/* Find the constant part */
 	other = (Node *)linitial(args);
-	if (!IsA(other, Const)) {
+	if (!IsA(other, Const))
+	{
 		self = (Var *)other;
 		other = (Node *)lsecond(args);
-	} else {
+	}
+	else
+	{
 		self = (Var *)lsecond(args);
 	}
 
-	if (!IsA(other, Const)) {
+	if (!IsA(other, Const))
+	{
 		POSTGIS_DEBUG(3, " no constant arguments - returning a default selectivity");
 		PG_RETURN_FLOAT8(DEFAULT_ND_SEL);
 	}
 
 	/* Convert the constant to a BOX */
-	if (!gserialized_datum_get_gbox_p(((Const *)other)->constvalue, &search_box)) {
+	if (!gserialized_datum_get_gbox_p(((Const *)other)->constvalue, &search_box))
+	{
 		POSTGIS_DEBUG(3, "search box is EMPTY");
 		PG_RETURN_FLOAT8(0.0);
 	}
@@ -2137,7 +2227,8 @@ Datum gserialized_gist_sel(PG_FUNCTION_ARGS)
 	if (vardata.statsTuple) { nd_stats = pg_nd_stats_from_tuple(vardata.statsTuple, mode); }
 	ReleaseVariableStats(vardata);
 
-	if (!nd_stats) {
+	if (!nd_stats)
+	{
 		POSTGIS_DEBUG(3, " unable to load stats from syscache, not analyzed yet?");
 		PG_RETURN_FLOAT8(FALLBACK_ND_SEL);
 	}
@@ -2170,7 +2261,8 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	bool only_parent = false;
 	int key_type;
 
-	if (PG_NARGS() == 4) {
+	if (PG_NARGS() == 4)
+	{
 		nsp = text_to_cstring(PG_GETARG_TEXT_P(0));
 		tbl = text_to_cstring(PG_GETARG_TEXT_P(1));
 		col = PG_GETARG_TEXT_P(2);
@@ -2179,7 +2271,9 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 		sprintf(nsp_tbl, "\"%s\".\"%s\"", nsp, tbl);
 		tbl_oid = DatumGetObjectId(DirectFunctionCall1(regclassin, CStringGetDatum(nsp_tbl)));
 		pfree(nsp_tbl);
-	} else if (PG_NARGS() == 3) {
+	}
+	else if (PG_NARGS() == 3)
+	{
 		nsp = text_to_cstring(PG_GETARG_TEXT_P(0));
 		tbl = text_to_cstring(PG_GETARG_TEXT_P(1));
 		col = PG_GETARG_TEXT_P(2);
@@ -2187,14 +2281,18 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 		sprintf(nsp_tbl, "\"%s\".\"%s\"", nsp, tbl);
 		tbl_oid = DatumGetObjectId(DirectFunctionCall1(regclassin, CStringGetDatum(nsp_tbl)));
 		pfree(nsp_tbl);
-	} else if (PG_NARGS() == 2) {
+	}
+	else if (PG_NARGS() == 2)
+	{
 		tbl = text_to_cstring(PG_GETARG_TEXT_P(0));
 		col = PG_GETARG_TEXT_P(1);
 		nsp_tbl = palloc(strlen(tbl) + 3);
 		sprintf(nsp_tbl, "\"%s\"", tbl);
 		tbl_oid = DatumGetObjectId(DirectFunctionCall1(regclassin, CStringGetDatum(nsp_tbl)));
 		pfree(nsp_tbl);
-	} else {
+	}
+	else
+	{
 		elog(ERROR, "estimated_extent() called with wrong number of arguments");
 		PG_RETURN_NULL();
 	}
@@ -2207,12 +2305,14 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 #endif
 
 	/* Fall back to reading the stats, if no index answer */
-	if (!gbox) {
+	if (!gbox)
+	{
 		/* Estimated extent only returns 2D bounds, so use mode 2 */
 		nd_stats = pg_get_nd_stats_by_name(tbl_oid, col, 2, only_parent);
 
 		/* Error out on no stats */
-		if (!nd_stats) {
+		if (!nd_stats)
+		{
 			elog(WARNING, "stats for \"%s.%s\" do not exist", tbl, text_to_cstring(col));
 			PG_RETURN_NULL();
 		}
@@ -2241,10 +2341,13 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geometry_estimated_extent);
 Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 {
-	if (PG_NARGS() == 3) {
+	if (PG_NARGS() == 3)
+	{
 		PG_RETURN_DATUM(DirectFunctionCall3(
 		    gserialized_estimated_extent, PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PG_GETARG_DATUM(2)));
-	} else if (PG_NARGS() == 2) {
+	}
+	else if (PG_NARGS() == 2)
+	{
 		PG_RETURN_DATUM(
 		    DirectFunctionCall2(gserialized_estimated_extent, PG_GETARG_DATUM(0), PG_GETARG_DATUM(1)));
 	}
@@ -2285,7 +2388,8 @@ table_get_spatial_index(Oid tbl_oid, text *col, int *key_type)
 	RelationClose(tbl_rel);
 
 	/* For each index associated with this table... */
-	foreach (lc, idx_list) {
+	foreach (lc, idx_list)
+	{
 		Form_pg_class idx_form;
 		HeapTuple idx_tup;
 		int idx_relam;
@@ -2299,7 +2403,8 @@ table_get_spatial_index(Oid tbl_oid, text *col, int *key_type)
 		ReleaseSysCache(idx_tup);
 
 		/* Does the index use a GIST access method? */
-		if (idx_relam == GIST_AM_OID) {
+		if (idx_relam == GIST_AM_OID)
+		{
 			Form_pg_attribute att;
 			Oid atttypid;
 			/* Is the index on the column name we are looking for? */
@@ -2312,7 +2417,8 @@ table_get_spatial_index(Oid tbl_oid, text *col, int *key_type)
 			ReleaseSysCache(att_tup);
 
 			/* Is the column actually spatial? */
-			if (b2d_oid == atttypid || gdx_oid == atttypid) {
+			if (b2d_oid == atttypid || gdx_oid == atttypid)
+			{
 				/* Save result, clean up, and break out */
 				result = idx_oid;
 				if (key_type) *key_type = (atttypid == b2d_oid ? STATISTIC_SLOT_2D : STATISTIC_SLOT_ND);
@@ -2337,25 +2443,32 @@ spatial_index_read_extent(Oid idx_oid, int key_type)
 	Page page = (Page)BufferGetPage(buffer);
 	OffsetNumber offset = FirstOffsetNumber;
 	unsigned long offset_max = PageGetMaxOffsetNumber(page);
-	while (offset <= offset_max) {
+	while (offset <= offset_max)
+	{
 		ItemId iid = PageGetItemId(page, offset);
-		if (!iid) {
+		if (!iid)
+		{
 			ReleaseBuffer(buffer);
 			index_close(idx_rel, AccessExclusiveLock);
 			return NULL;
 		}
 		IndexTuple ituple = (IndexTuple)PageGetItem(page, iid);
-		if (!GistTupleIsInvalid(ituple)) {
+		if (!GistTupleIsInvalid(ituple))
+		{
 			bool isnull;
 			Datum idx_attr = index_getattr(ituple, 1, idx_rel->rd_att, &isnull);
-			if (!isnull) {
-				if (key_type == STATISTIC_SLOT_2D) {
+			if (!isnull)
+			{
+				if (key_type == STATISTIC_SLOT_2D)
+				{
 					BOX2DF *b = (BOX2DF *)DatumGetPointer(idx_attr);
 					if (bounds_2df)
 						box2df_merge(bounds_2df, b);
 					else
 						bounds_2df = box2df_copy(b);
-				} else {
+				}
+				else
+				{
 					GIDX *b = (GIDX *)DatumGetPointer(idx_attr);
 					if (bounds_gidx)
 						gidx_merge(&bounds_gidx, b);
@@ -2370,15 +2483,19 @@ spatial_index_read_extent(Oid idx_oid, int key_type)
 	ReleaseBuffer(buffer);
 	index_close(idx_rel, AccessExclusiveLock);
 
-	if (key_type == STATISTIC_SLOT_2D && bounds_2df) {
+	if (key_type == STATISTIC_SLOT_2D && bounds_2df)
+	{
 		if (box2df_is_empty(bounds_2df)) return NULL;
 		gbox = gbox_new(0);
 		box2df_to_gbox_p(bounds_2df, gbox);
-	} else if (key_type == STATISTIC_SLOT_ND && bounds_gidx) {
+	}
+	else if (key_type == STATISTIC_SLOT_ND && bounds_gidx)
+	{
 		if (gidx_is_unknown(bounds_gidx)) return NULL;
 		gbox = gbox_new(0);
 		gbox_from_gidx(bounds_gidx, gbox, 0);
-	} else
+	}
+	else
 		return NULL;
 
 	return gbox;

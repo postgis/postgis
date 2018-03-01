@@ -78,7 +78,8 @@ Datum BOX3D_in(PG_FUNCTION_ARGS)
 
 	/*printf( "box3d_in gets '%s'\n",str); */
 
-	if (strstr(str, "BOX3D(") != str) {
+	if (strstr(str, "BOX3D(") != str)
+	{
 		pfree(box);
 		elog(ERROR, "BOX3D parser - doesn't start with BOX3D(");
 		PG_RETURN_NULL();
@@ -92,9 +93,11 @@ Datum BOX3D_in(PG_FUNCTION_ARGS)
 			&box->xmax,
 			&box->ymax,
 			&box->zmax);
-	if (nitems != 6) {
+	if (nitems != 6)
+	{
 		nitems = sscanf(str, "BOX3D(%le %le ,%le %le)", &box->xmin, &box->ymin, &box->xmax, &box->ymax);
-		if (nitems != 4) {
+		if (nitems != 4)
+		{
 			pfree(box);
 			elog(
 			    ERROR,
@@ -103,17 +106,20 @@ Datum BOX3D_in(PG_FUNCTION_ARGS)
 		}
 	}
 
-	if (box->xmin > box->xmax) {
+	if (box->xmin > box->xmax)
+	{
 		float tmp = box->xmin;
 		box->xmin = box->xmax;
 		box->xmax = tmp;
 	}
-	if (box->ymin > box->ymax) {
+	if (box->ymin > box->ymax)
+	{
 		float tmp = box->ymin;
 		box->ymin = box->ymax;
 		box->ymax = tmp;
 	}
-	if (box->zmin > box->zmax) {
+	if (box->zmin > box->zmax)
+	{
 		float tmp = box->zmin;
 		box->zmin = box->zmax;
 		box->zmax = tmp;
@@ -135,7 +141,8 @@ Datum BOX3D_out(PG_FUNCTION_ARGS)
 	int size;
 	char *result;
 
-	if (bbox == NULL) {
+	if (bbox == NULL)
+	{
 		result = palloc(5);
 		strcat(result, "NULL");
 		PG_RETURN_CSTRING(result);
@@ -212,7 +219,8 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	pa = ptarray_construct_empty(LW_TRUE, LW_FALSE, 5);
 
 	/* BOX3D is a point */
-	if ((box->xmin == box->xmax) && (box->ymin == box->ymax) && (box->zmin == box->zmax)) {
+	if ((box->xmin == box->xmax) && (box->ymin == box->ymax) && (box->zmin == box->zmax))
+	{
 		LWPOINT *lwpt = lwpoint_construct(SRID_UNKNOWN, NULL, pa);
 
 		pt.x = box->xmin;
@@ -226,7 +234,8 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	/* BOX3D is a line */
 	else if (((box->xmin == box->xmax || box->ymin == box->ymax) && box->zmin == box->zmax) ||
 		 ((box->xmin == box->xmax || box->zmin == box->zmax) && box->ymin == box->ymax) ||
-		 ((box->ymin == box->ymax || box->zmin == box->zmax) && box->xmin == box->xmax)) {
+		 ((box->ymin == box->ymax || box->zmin == box->zmax) && box->xmin == box->xmax))
+	{
 		LWLINE *lwline = lwline_construct(SRID_UNKNOWN, NULL, pa);
 
 		pt.x = box->xmin;
@@ -242,7 +251,8 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 		lwline_free(lwline);
 	}
 	/* BOX3D is a polygon in the X plane */
-	else if (box->xmin == box->xmax) {
+	else if (box->xmin == box->xmax)
+	{
 		POINT4D points[4];
 		LWPOLY *lwpoly;
 
@@ -257,7 +267,8 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 		lwpoly_free(lwpoly);
 	}
 	/* BOX3D is a polygon in the Y plane */
-	else if (box->ymin == box->ymax) {
+	else if (box->ymin == box->ymax)
+	{
 		POINT4D points[4];
 		LWPOLY *lwpoly;
 
@@ -272,7 +283,8 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 		lwpoly_free(lwpoly);
 	}
 	/* BOX3D is a polygon in the Z plane */
-	else if (box->zmin == box->zmax) {
+	else if (box->zmin == box->zmax)
+	{
 		POINT4D points[4];
 		LWPOLY *lwpoly;
 
@@ -287,7 +299,8 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 		lwpoly_free(lwpoly);
 	}
 	/* BOX3D is a polyhedron */
-	else {
+	else
+	{
 		POINT4D points[8];
 		static const int ngeoms = 6;
 		LWGEOM **geoms = (LWGEOM **)lwalloc(sizeof(LWGEOM *) * ngeoms);
@@ -366,11 +379,14 @@ Datum BOX3D_expand(PG_FUNCTION_ARGS)
 	BOX3D *result = (BOX3D *)palloc(sizeof(BOX3D));
 	memcpy(result, box, sizeof(BOX3D));
 
-	if (PG_NARGS() == 2) {
+	if (PG_NARGS() == 2)
+	{
 		/* Expand the box the same amount in all directions */
 		double d = PG_GETARG_FLOAT8(1);
 		expand_box3d(result, d);
-	} else {
+	}
+	else
+	{
 		double dx = PG_GETARG_FLOAT8(1);
 		double dy = PG_GETARG_FLOAT8(2);
 		double dz = PG_GETARG_FLOAT8(3);
@@ -465,11 +481,10 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	int rv;
 
 	/* Can't do anything with null inputs */
-	if ((box == NULL) && (geom == NULL)) {
-		PG_RETURN_NULL();
-	}
+	if ((box == NULL) && (geom == NULL)) { PG_RETURN_NULL(); }
 	/* Null geometry but non-null box, return the box */
-	else if (geom == NULL) {
+	else if (geom == NULL)
+	{
 		result = palloc(sizeof(BOX3D));
 		memcpy(result, box, sizeof(BOX3D));
 		PG_RETURN_POINTER(result);
@@ -483,7 +498,8 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 
 	/* If we couldn't calculate the box, return what we know */
-	if (rv == LW_FAILURE) {
+	if (rv == LW_FAILURE)
+	{
 		PG_FREE_IF_COPY(geom, 1);
 		/* No geom box, no input box, so null return */
 		if (box == NULL) PG_RETURN_NULL();
@@ -493,7 +509,8 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	}
 
 	/* Null box and non-null geometry, just return the geometry box */
-	if (box == NULL) {
+	if (box == NULL)
+	{
 		PG_FREE_IF_COPY(geom, 1);
 		result = box3d_from_gbox(&gbox);
 		result->srid = srid;
@@ -550,7 +567,8 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 	minpoint = lwgeom_from_gserialized(min);
 	maxpoint = lwgeom_from_gserialized(max);
 
-	if (minpoint->type != POINTTYPE || maxpoint->type != POINTTYPE) {
+	if (minpoint->type != POINTTYPE || maxpoint->type != POINTTYPE)
+	{
 		elog(ERROR, "BOX3D_construct: args must be points");
 		PG_RETURN_NULL();
 	}

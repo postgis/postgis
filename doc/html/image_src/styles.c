@@ -27,16 +27,19 @@ getStyles(LAYERSTYLE **headRef)
 
 	*headRef = NULL;
 
-	if ((pFile = fopen("styles.conf", "r")) == NULL) {
+	if ((pFile = fopen("styles.conf", "r")) == NULL)
+	{
 		perror("styles.conf: No such file or directory");
 		return;
 	}
 
 	getResults = fgets(line, sizeof line, pFile);
-	while (getResults != NULL) {
+	while (getResults != NULL)
+	{
 
 		// process defined styles
-		while ((getResults != NULL) && strncmp(line, "[Style]", 7) == 0) {
+		while ((getResults != NULL) && strncmp(line, "[Style]", 7) == 0)
+		{
 			char *styleName = "DefaultStyle";
 			int pointSize = 5;
 			char *pointColor = "Grey";
@@ -47,30 +50,37 @@ getStyles(LAYERSTYLE **headRef)
 			int polygonStrokeWidth = 0;
 
 			getResults = fgets(line, sizeof line, pFile);
-			while ((getResults != NULL) && (strncmp(line, "[Style]", 7) != 0)) {
+			while ((getResults != NULL) && (strncmp(line, "[Style]", 7) != 0))
+			{
 				char *ptr;
 
 				// loop over all lines until [Style] is reached again
-				if ((*line != '#') && (ptr = strchr(line, '='))) {
+				if ((*line != '#') && (ptr = strchr(line, '=')))
+				{
 					ptr = trim((++ptr));
 
 					if (strncmp(line, "styleName", 9) == 0)
 						styleName = ptr;
-					else if (strncmp(line, "pointSize", 9) == 0) {
+					else if (strncmp(line, "pointSize", 9) == 0)
+					{
 						pointSize = atoi(ptr);
 						free(ptr);
-					} else if (strncmp(line, "pointColor", 10) == 0)
+					}
+					else if (strncmp(line, "pointColor", 10) == 0)
 						pointColor = ptr;
-					else if (strncmp(line, "lineWidth", 9) == 0) {
+					else if (strncmp(line, "lineWidth", 9) == 0)
+					{
 						lineWidth = atoi(ptr);
 						free(ptr);
-					} else if (strncmp(line, "lineColor", 9) == 0)
+					}
+					else if (strncmp(line, "lineColor", 9) == 0)
 						lineColor = ptr;
 					else if (strncmp(line, "polygonFillColor", 16) == 0)
 						polygonFillColor = ptr;
 					else if (strncmp(line, "polygonStrokeColor", 18) == 0)
 						polygonStrokeColor = ptr;
-					else if (strncmp(line, "polygonStrokeWidth", 18) == 0) {
+					else if (strncmp(line, "polygonStrokeWidth", 18) == 0)
+					{
 						polygonStrokeWidth = atoi(ptr);
 						free(ptr);
 					}
@@ -101,7 +111,8 @@ freeStyles(LAYERSTYLE **headRef)
 	LAYERSTYLE *curr = *headRef;
 	LAYERSTYLE *next;
 
-	while (curr != NULL) {
+	while (curr != NULL)
+	{
 		next = curr->next;
 		free(curr->styleName);
 		free(curr->pointColor);
@@ -146,7 +157,8 @@ length(LAYERSTYLE *head)
 	int count = 0;
 	LAYERSTYLE *curr = head;
 
-	while (curr != NULL) {
+	while (curr != NULL)
+	{
 		count++;
 		curr = curr->next;
 	}

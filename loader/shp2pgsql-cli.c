@@ -95,7 +95,8 @@ main(int argc, char **argv)
 #endif
 
 	/* If no options are specified, display usage */
-	if (argc == 1) {
+	if (argc == 1)
+	{
 		usage();
 		exit(0);
 	}
@@ -105,11 +106,13 @@ main(int argc, char **argv)
 	set_loader_config_defaults(config);
 
 	/* Keep the flag list alphabetic so it's easy to see what's left. */
-	while ((c = pgis_getopt(argc, argv, "-acdeg:ikm:nps:t:wDGIN:ST:W:X:")) != EOF) {
+	while ((c = pgis_getopt(argc, argv, "-acdeg:ikm:nps:t:wDGIN:ST:W:X:")) != EOF)
+	{
 		// can not do this inside the switch case
 		if ('-' == c) break;
 
-		switch (c) {
+		switch (c)
+		{
 		case 'c':
 		case 'd':
 		case 'a':
@@ -130,17 +133,23 @@ main(int argc, char **argv)
 			break;
 
 		case 's':
-			if (pgis_optarg) {
+			if (pgis_optarg)
+			{
 				char *ptr = strchr(pgis_optarg, ':');
-				if (ptr) {
+				if (ptr)
+				{
 					*ptr++ = '\0';
 					sscanf(pgis_optarg, "%d", &config->shp_sr_id);
 					sscanf(ptr, "%d", &config->sr_id);
-				} else {
+				}
+				else
+				{
 					/* Only TO_SRID specified */
 					sscanf(pgis_optarg, "%d", &config->sr_id);
 				}
-			} else {
+			}
+			else
+			{
 				/* With -s, user must specify TO_SRID or FROM_SRID:TO_SRID */
 				fprintf(stderr, "The -s parameter must be specified in the form [FROM_SRID:]TO_SRID\n");
 				exit(1);
@@ -178,7 +187,8 @@ main(int argc, char **argv)
 			break;
 
 		case 'N':
-			switch (pgis_optarg[0]) {
+			switch (pgis_optarg[0])
+			{
 			case 'a':
 				config->null_policy = POLICY_NULL_ABORT;
 				break;
@@ -197,15 +207,21 @@ main(int argc, char **argv)
 			break;
 
 		case 't':
-			if (strcasecmp(pgis_optarg, "2D") == 0) {
-				config->force_output = FORCE_OUTPUT_2D;
-			} else if (strcasecmp(pgis_optarg, "3DZ") == 0) {
+			if (strcasecmp(pgis_optarg, "2D") == 0) { config->force_output = FORCE_OUTPUT_2D; }
+			else if (strcasecmp(pgis_optarg, "3DZ") == 0)
+			{
 				config->force_output = FORCE_OUTPUT_3DZ;
-			} else if (strcasecmp(pgis_optarg, "3DM") == 0) {
+			}
+			else if (strcasecmp(pgis_optarg, "3DM") == 0)
+			{
 				config->force_output = FORCE_OUTPUT_3DM;
-			} else if (strcasecmp(pgis_optarg, "4D") == 0) {
+			}
+			else if (strcasecmp(pgis_optarg, "4D") == 0)
+			{
 				config->force_output = FORCE_OUTPUT_4D;
-			} else {
+			}
+			else
+			{
 				fprintf(stderr,
 					"Unsupported output type: %s\nValid output types are 2D, 3DZ, 3DM and 4D\n",
 					pgis_optarg);
@@ -236,33 +252,41 @@ main(int argc, char **argv)
 	}
 
 	/* Once we have parsed the arguments, make sure certain combinations are valid */
-	if (config->dump_format && !config->usetransaction) {
+	if (config->dump_format && !config->usetransaction)
+	{
 		fprintf(stderr, "Invalid argument combination - cannot use both -D and -e\n");
 		exit(1);
 	}
 
-	if (config->dump_format && config->shp_sr_id != SRID_UNKNOWN) {
+	if (config->dump_format && config->shp_sr_id != SRID_UNKNOWN)
+	{
 		fprintf(stderr, "Invalid argument combination - cannot use -D with -s FROM_SRID:TO_SRID\n");
 		exit(1);
 	}
 
 	/* Determine the shapefile name from the next argument, if no shape file, exit. */
-	if (pgis_optind < argc) {
+	if (pgis_optind < argc)
+	{
 		config->shp_file = argv[pgis_optind];
 		pgis_optind++;
-	} else {
+	}
+	else
+	{
 		usage();
 		exit(0);
 	}
 
 	/* Determine the table and schema names from the next argument */
-	if (pgis_optind < argc) {
+	if (pgis_optind < argc)
+	{
 		char *strptr = argv[pgis_optind];
 		char *chrptr = strchr(strptr, '.');
 
 		/* OK, this is a schema-qualified table name... */
-		if (chrptr) {
-			if (chrptr == strptr) {
+		if (chrptr)
+		{
+			if (chrptr == strptr)
+			{
 				/* ".something" ??? */
 				usage();
 				exit(0);
@@ -272,28 +296,35 @@ main(int argc, char **argv)
 			/* Copy in the parts */
 			config->schema = strdup(strptr);
 			config->table = strdup(chrptr + 1);
-		} else {
+		}
+		else
+		{
 			config->table = strdup(strptr);
 		}
 	}
 
 	/* If the table parameter is not provided, use the shape file name as a proxy value.
 	   Strip out the .shp and the leading path information first. */
-	if (config->shp_file && config->table == NULL) {
+	if (config->shp_file && config->table == NULL)
+	{
 		char *shp_file = strdup(config->shp_file);
 		char *ptr;
 
 		/* Remove the extension, if present */
-		for (ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr--) {
-			if (*ptr == '.') {
+		for (ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr--)
+		{
+			if (*ptr == '.')
+			{
 				*ptr = '\0';
 				break;
 			}
 		}
 
 		/* The remaining non-path section is the table name */
-		for (ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr--) {
-			if (*ptr == '/' || *ptr == '\\') {
+		for (ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr--)
+		{
+			if (*ptr == '/' || *ptr == '\\')
+			{
 				ptr++;
 				break;
 			}
@@ -303,7 +334,8 @@ main(int argc, char **argv)
 	}
 
 	/* Transform table name to lower case if no quoting specified */
-	if (!config->quoteidentifiers) {
+	if (!config->quoteidentifiers)
+	{
 		if (config->table) strtolower(config->table);
 		if (config->schema) strtolower(config->schema);
 	}
@@ -313,21 +345,24 @@ main(int argc, char **argv)
 
 	/* Open the shapefile */
 	ret = ShpLoaderOpenShape(state);
-	if (ret != SHPLOADEROK) {
+	if (ret != SHPLOADEROK)
+	{
 		fprintf(stderr, "%s\n", state->message);
 
 		if (ret == SHPLOADERERR) exit(1);
 	}
 
 	/* If reading the whole shapefile, display its type */
-	if (state->config->readshape) {
+	if (state->config->readshape)
+	{
 		fprintf(stderr, "Shapefile type: %s\n", SHPTypeName(state->shpfiletype));
 		fprintf(stderr, "Postgis type: %s[%d]\n", state->pgtype, state->pgdims);
 	}
 
 	/* Print the header to stdout */
 	ret = ShpLoaderGetSQLHeader(state, &header);
-	if (ret != SHPLOADEROK) {
+	if (ret != SHPLOADEROK)
+	{
 		fprintf(stderr, "%s\n", state->message);
 
 		if (ret == SHPLOADERERR) exit(1);
@@ -337,12 +372,15 @@ main(int argc, char **argv)
 	free(header);
 
 	/* If we are not in "prepare" mode, go ahead and write out the data. */
-	if (state->config->opt != 'p') {
+	if (state->config->opt != 'p')
+	{
 
 		/* If in COPY mode, output the COPY statement */
-		if (state->config->dump_format) {
+		if (state->config->dump_format)
+		{
 			ret = ShpLoaderGetSQLCopyStatement(state, &header);
-			if (ret != SHPLOADEROK) {
+			if (ret != SHPLOADEROK)
+			{
 				fprintf(stderr, "%s\n", state->message);
 
 				if (ret == SHPLOADERERR) exit(1);
@@ -353,10 +391,12 @@ main(int argc, char **argv)
 		}
 
 		/* Main loop: iterate through all of the records and send them to stdout */
-		for (i = 0; i < ShpLoaderGetRecordCount(state); i++) {
+		for (i = 0; i < ShpLoaderGetRecordCount(state); i++)
+		{
 			ret = ShpLoaderGenerateSQLRowStatement(state, i, &record);
 
-			switch (ret) {
+			switch (ret)
+			{
 			case SHPLOADEROK:
 				/* Simply display the geometry */
 				printf("%s\n", record);
@@ -392,7 +432,8 @@ main(int argc, char **argv)
 
 	/* Print the footer to stdout */
 	ret = ShpLoaderGetSQLFooter(state, &footer);
-	if (ret != SHPLOADEROK) {
+	if (ret != SHPLOADEROK)
+	{
 		fprintf(stderr, "%s\n", state->message);
 
 		if (ret == SHPLOADERERR) exit(1);

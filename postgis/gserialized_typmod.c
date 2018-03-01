@@ -70,7 +70,8 @@ Datum postgis_typmod_out(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "Got typmod(srid = %d, type = %d, hasz = %d, hasm = %d)", srid, type, hasz, hasm);
 
 	/* No SRID or type or dimensionality? Then no typmod at all. Return empty string. */
-	if (!(srid || type || hasz || hasm) || typmod < 0) {
+	if (!(srid || type || hasz || hasm) || typmod < 0)
+	{
 		*str = '\0';
 		PG_RETURN_CSTRING(str);
 	}
@@ -133,7 +134,8 @@ postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 	 * In such a case, it makes sense to turn the MULTIPOINT EMPTY back into a
 	 * point EMPTY, rather than throwing an error.
 	 */
-	if (typmod_type == POINTTYPE && geom_type == MULTIPOINTTYPE && gserialized_is_empty(gser)) {
+	if (typmod_type == POINTTYPE && geom_type == MULTIPOINTTYPE && gserialized_is_empty(gser))
+	{
 		LWPOINT *empty_point = lwpoint_construct_empty(geom_srid, geom_z, geom_m);
 		geom_type = POINTTYPE;
 		pfree(gser);
@@ -144,7 +146,8 @@ postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 	}
 
 	/* Typmod has a preference for SRID? Geometry SRID had better match. */
-	if (typmod_srid > 0 && typmod_srid != geom_srid) {
+	if (typmod_srid > 0 && typmod_srid != geom_srid)
+	{
 		ereport(ERROR,
 			(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 			 errmsg("Geometry SRID (%d) does not match column SRID (%d)", geom_srid, typmod_srid)));
@@ -156,7 +159,8 @@ postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 	    ((typmod_type == COLLECTIONTYPE && !(geom_type == COLLECTIONTYPE || geom_type == MULTIPOLYGONTYPE ||
 						 geom_type == MULTIPOINTTYPE || geom_type == MULTILINETYPE)) ||
 	     /* Other types must be strictly equal. */
-	     (typmod_type != geom_type))) {
+	     (typmod_type != geom_type)))
+	{
 		ereport(ERROR,
 			(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 			 errmsg("Geometry type (%s) does not match column type (%s)",
@@ -165,28 +169,32 @@ postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 	}
 
 	/* Mismatched Z dimensionality. */
-	if (typmod_z && !geom_z) {
+	if (typmod_z && !geom_z)
+	{
 		ereport(
 		    ERROR,
 		    (errcode(ERRCODE_INVALID_PARAMETER_VALUE), errmsg("Column has Z dimension but geometry does not")));
 	}
 
 	/* Mismatched Z dimensionality (other way). */
-	if (geom_z && !typmod_z) {
+	if (geom_z && !typmod_z)
+	{
 		ereport(
 		    ERROR,
 		    (errcode(ERRCODE_INVALID_PARAMETER_VALUE), errmsg("Geometry has Z dimension but column does not")));
 	}
 
 	/* Mismatched M dimensionality. */
-	if (typmod_m && !geom_m) {
+	if (typmod_m && !geom_m)
+	{
 		ereport(
 		    ERROR,
 		    (errcode(ERRCODE_INVALID_PARAMETER_VALUE), errmsg("Column has M dimension but geometry does not")));
 	}
 
 	/* Mismatched M dimensionality (other way). */
-	if (geom_m && !typmod_m) {
+	if (geom_m && !typmod_m)
+	{
 		ereport(
 		    ERROR,
 		    (errcode(ERRCODE_INVALID_PARAMETER_VALUE), errmsg("Geometry has M dimension but column does not")));
@@ -229,7 +237,8 @@ gserialized_typmod_in(ArrayType *arr, int is_geography)
 	else
 		TYPMOD_SET_SRID(typmod, SRID_UNKNOWN);
 
-	for (i = 0; i < n; i++) {
+	for (i = 0; i < n; i++)
+	{
 		if (i == 0) /* TYPE */
 		{
 			char *s = DatumGetCString(elem_values[i]);
@@ -237,11 +246,14 @@ gserialized_typmod_in(ArrayType *arr, int is_geography)
 			int z = 0;
 			int m = 0;
 
-			if (geometry_type_from_string(s, &type, &z, &m) == LW_FAILURE) {
+			if (geometry_type_from_string(s, &type, &z, &m) == LW_FAILURE)
+			{
 				ereport(ERROR,
 					(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 					 errmsg("Invalid geometry type modifier: %s", s)));
-			} else {
+			}
+			else
+			{
 				TYPMOD_SET_TYPE(typmod, type);
 				if (z) TYPMOD_SET_Z(typmod);
 				if (m) TYPMOD_SET_M(typmod);

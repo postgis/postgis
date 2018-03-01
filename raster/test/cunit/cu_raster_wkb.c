@@ -630,7 +630,8 @@ test_raster_wkb()
 	/* Test case completes regress/bug_test_car5.sql          */
 	/* Test case repeated 4 times to mimic 4 tiles insertion  */
 	/* ------------------------------------------------------ */
-	for (i = 0; i < 5; ++i) {
+	for (i = 0; i < 5; ++i)
+	{
 
 		hexwkb =
 		    "01"               /* little endian (uint8 ndr) */

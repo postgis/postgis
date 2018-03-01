@@ -34,7 +34,8 @@ lwgeom_twkb_type(const LWGEOM *geom)
 
 	LWDEBUGF(2, "Entered  lwgeom_twkb_type", 0);
 
-	switch (geom->type) {
+	switch (geom->type)
+	{
 	case POINTTYPE:
 		twkb_type = WKB_POINT_TYPE;
 		break;
@@ -73,7 +74,8 @@ sizeof_bbox(TWKB_STATE *ts, int ndims)
 	uint8_t buf[16];
 	size_t size = 0;
 	LWDEBUGF(2, "Entered %s", __func__);
-	for (i = 0; i < ndims; i++) {
+	for (i = 0; i < ndims; i++)
+	{
 		size += varint_s64_encode_buf(ts->bbox_min[i], buf);
 		size += varint_s64_encode_buf((ts->bbox_max[i] - ts->bbox_min[i]), buf);
 	}
@@ -88,7 +90,8 @@ write_bbox(TWKB_STATE *ts, int ndims)
 {
 	int i;
 	LWDEBUGF(2, "Entered %s", __func__);
-	for (i = 0; i < ndims; i++) {
+	for (i = 0; i < ndims; i++)
+	{
 		bytebuffer_append_varint(ts->header_buf, ts->bbox_min[i]);
 		bytebuffer_append_varint(ts->header_buf, (ts->bbox_max[i] - ts->bbox_min[i]));
 	}
@@ -117,7 +120,8 @@ ptarray_to_twkb_buf(const POINTARRAY *pa,
 	LWDEBUGF(2, "Entered %s", __func__);
 
 	/* Dispense with the empty case right away */
-	if (pa->npoints == 0 && register_npoints) {
+	if (pa->npoints == 0 && register_npoints)
+	{
 		LWDEBUGF(4, "Register npoints:%d", pa->npoints);
 		bytebuffer_append_uvarint(ts->geom_buf, pa->npoints);
 		return 0;
@@ -128,15 +132,19 @@ ptarray_to_twkb_buf(const POINTARRAY *pa,
 	/* If noints is below 128 we know 1 byte will be needed */
 	/* Then we can make room for that 1 byte at once and write to */
 	/* ordinary buffer */
-	if (pa->npoints > 127) {
+	if (pa->npoints > 127)
+	{
 		/* Independent buffer to hold the coordinates, so we can put the npoints */
 		/* into the stream once we know how many points we actually have */
 		bytebuffer_init_with_size(&b, 3 * ndims * pa->npoints);
 		b_p = &b;
-	} else {
+	}
+	else
+	{
 		/* We give an alias to our ordinary buffer */
 		b_p = ts->geom_buf;
-		if (register_npoints) {
+		if (register_npoints)
+		{
 			/* We do not store a pointer to the place where we want the npoints value */
 			/* Instead we store how far from the beginning of the buffer we want the value */
 			/* That is because we otherwise will get in trouble if the buffer is reallocated */
@@ -149,12 +157,14 @@ ptarray_to_twkb_buf(const POINTARRAY *pa,
 		}
 	}
 
-	for (i = 0; i < pa->npoints; i++) {
+	for (i = 0; i < pa->npoints; i++)
+	{
 		double *dbl_ptr = (double *)getPoint_internal(pa, i);
 		int diff = 0;
 
 		/* Write this coordinate to the buffer as a varint */
-		for (j = 0; j < ndims; j++) {
+		for (j = 0; j < ndims; j++)
+		{
 			/* To get the relative coordinate we don't get the distance */
 			/* from the last point but instead the distance from our */
 			/* last accumulated point. This is important to not build up an */
@@ -173,14 +183,17 @@ ptarray_to_twkb_buf(const POINTARRAY *pa,
 		npoints++;
 
 		/* Write this vertex to the temporary buffer as varints */
-		for (j = 0; j < ndims; j++) {
+		for (j = 0; j < ndims; j++)
+		{
 			ts->accum_rels[j] += nextdelta[j];
 			bytebuffer_append_varint(b_p, nextdelta[j]);
 		}
 
 		/* See if this coordinate expands the bounding box */
-		if (globals->variant & TWKB_BBOX) {
-			for (j = 0; j < ndims; j++) {
+		if (globals->variant & TWKB_BBOX)
+		{
+			for (j = 0; j < ndims; j++)
+			{
 				if (ts->accum_rels[j] > ts->bbox_max[j]) ts->bbox_max[j] = ts->accum_rels[j];
 
 				if (ts->accum_rels[j] < ts->bbox_min[j]) ts->bbox_min[j] = ts->accum_rels[j];
@@ -188,7 +201,8 @@ ptarray_to_twkb_buf(const POINTARRAY *pa,
 		}
 	}
 
-	if (pa->npoints > 127) {
+	if (pa->npoints > 127)
+	{
 		/* Now write the temporary results into the main buffer */
 		/* First the npoints */
 		if (register_npoints) bytebuffer_append_uvarint(ts->geom_buf, npoints);
@@ -197,7 +211,9 @@ ptarray_to_twkb_buf(const POINTARRAY *pa,
 
 		/* Clear our temporary buffer */
 		bytebuffer_destroy_buffer(&b);
-	} else {
+	}
+	else
+	{
 		/* If we didn't use a temp buffer, we just write that npoints value */
 		/* to where it belongs*/
 		if (register_npoints) varint_u64_encode_buf(npoints, b_p->buf_start + npoints_offset);
@@ -246,7 +262,8 @@ lwpoly_to_twkb_buf(const LWPOLY *poly, TWKB_GLOBALS *globals, TWKB_STATE *ts)
 	/* Set the number of rings */
 	bytebuffer_append_uvarint(ts->geom_buf, (uint64_t)poly->nrings);
 
-	for (i = 0; i < poly->nrings; i++) {
+	for (i = 0; i < poly->nrings; i++)
+	{
 		/* Set the coordinates (do write npoints) */
 		ptarray_to_twkb_buf(poly->rings[i], globals, ts, 1, 4);
 	}
@@ -268,7 +285,8 @@ lwmulti_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, TWKB_STATE *
 	LWDEBUGF(4, "Number of geometries in multi is %d", col->ngeoms);
 
 	/* Deal with special case for MULTIPOINT: skip any empty points */
-	if (col->type == MULTIPOINTTYPE) {
+	if (col->type == MULTIPOINTTYPE)
+	{
 		for (i = 0; i < col->ngeoms; i++)
 			if (lwgeom_is_empty(col->geoms[i])) nempty++;
 	}
@@ -277,8 +295,10 @@ lwmulti_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, TWKB_STATE *
 	bytebuffer_append_uvarint(ts->geom_buf, (uint64_t)(col->ngeoms - nempty));
 
 	/* We've been handed an idlist, so write it in */
-	if (ts->idlist) {
-		for (i = 0; i < col->ngeoms; i++) {
+	if (ts->idlist)
+	{
+		for (i = 0; i < col->ngeoms; i++)
+		{
 			/* Skip empty points in multipoints, we can't represent them */
 			if (col->type == MULTIPOINTTYPE && lwgeom_is_empty(col->geoms[i])) continue;
 
@@ -289,7 +309,8 @@ lwmulti_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, TWKB_STATE *
 		ts->idlist = NULL;
 	}
 
-	for (i = 0; i < col->ngeoms; i++) {
+	for (i = 0; i < col->ngeoms; i++)
+	{
 		/* Skip empty points in multipoints, we can't represent them */
 		if (col->type == MULTIPOINTTYPE && lwgeom_is_empty(col->geoms[i])) continue;
 
@@ -314,7 +335,8 @@ lwcollection_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, TWKB_ST
 	bytebuffer_append_uvarint(ts->geom_buf, (uint64_t)col->ngeoms);
 
 	/* We've been handed an idlist, so write it in */
-	if (ts->idlist) {
+	if (ts->idlist)
+	{
 		for (i = 0; i < col->ngeoms; i++)
 			bytebuffer_append_varint(ts->geom_buf, ts->idlist[i]);
 
@@ -323,7 +345,8 @@ lwcollection_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, TWKB_ST
 	}
 
 	/* Write in the sub-geometries */
-	for (i = 0; i < col->ngeoms; i++) {
+	for (i = 0; i < col->ngeoms; i++)
+	{
 		lwgeom_write_to_buffer(col->geoms[i], globals, ts);
 	}
 	return 0;
@@ -338,17 +361,21 @@ lwgeom_to_twkb_buf(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_STATE *ts)
 {
 	LWDEBUGF(2, "Entered %s", __func__);
 
-	switch (geom->type) {
-	case POINTTYPE: {
+	switch (geom->type)
+	{
+	case POINTTYPE:
+	{
 		LWDEBUGF(4, "Type found is Point, %d", geom->type);
 		return lwpoint_to_twkb_buf((LWPOINT *)geom, globals, ts);
 	}
-	case LINETYPE: {
+	case LINETYPE:
+	{
 		LWDEBUGF(4, "Type found is Linestring, %d", geom->type);
 		return lwline_to_twkb_buf((LWLINE *)geom, globals, ts);
 	}
 	/* Polygon has 'nrings' and 'rings' elements */
-	case POLYGONTYPE: {
+	case POLYGONTYPE:
+	{
 		LWDEBUGF(4, "Type found is Polygon, %d", geom->type);
 		return lwpoly_to_twkb_buf((LWPOLY *)geom, globals, ts);
 	}
@@ -356,11 +383,13 @@ lwgeom_to_twkb_buf(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_STATE *ts)
 	/* All these Collection types have 'ngeoms' and 'geoms' elements */
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
-	case MULTIPOLYGONTYPE: {
+	case MULTIPOLYGONTYPE:
+	{
 		LWDEBUGF(4, "Type found is Multi, %d", geom->type);
 		return lwmulti_to_twkb_buf((LWCOLLECTION *)geom, globals, ts);
 	}
-	case COLLECTIONTYPE: {
+	case COLLECTIONTYPE:
+	{
 		LWDEBUGF(4, "Type found is collection, %d", geom->type);
 		return lwcollection_to_twkb_buf((LWCOLLECTION *)geom, globals, ts);
 	}
@@ -392,7 +421,8 @@ lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_STATE *pa
 	/* Read dimensionality from input */
 	ndims = lwgeom_ndims(geom);
 	is_empty = lwgeom_is_empty(geom);
-	if (ndims > 2) {
+	if (ndims > 2)
+	{
 		has_z = lwgeom_has_z(geom);
 		has_m = lwgeom_has_m(geom);
 	}
@@ -409,7 +439,8 @@ lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_STATE *pa
 	if (has_m) globals->factor[2 + has_z] = pow(10, globals->prec_m);
 
 	/* Reset stats */
-	for (i = 0; i < MAX_N_DIMS; i++) {
+	for (i = 0; i < MAX_N_DIMS; i++)
+	{
 		/* Reset bbox calculation */
 		child_state.bbox_max[i] = INT64_MIN;
 		child_state.bbox_min[i] = INT64_MAX;
@@ -443,7 +474,8 @@ lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_STATE *pa
 
 	/* EXTENDED PRECISION BYTE (OPTIONAL) */
 	/* If needed, write the extended dim byte */
-	if (optional_precision_byte) {
+	if (optional_precision_byte)
+	{
 		uint8_t flag = 0;
 
 		if (has_z && (globals->prec_z > 7 || globals->prec_z < 0))
@@ -460,7 +492,8 @@ lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_STATE *pa
 	}
 
 	/* It the geometry is empty, we're almost done */
-	if (is_empty) {
+	if (is_empty)
+	{
 		/* If this output is sized, write the size of */
 		/* all following content, which is zero because */
 		/* there is none */
@@ -478,9 +511,11 @@ lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_STATE *pa
 	/*If we have a header_buf, we know that this function is called inside a collection*/
 	/*and then we have to merge the bboxes of the included geometries*/
 	/*and put the result to the parent (the collection)*/
-	if ((globals->variant & TWKB_BBOX) && parent_state->header_buf) {
+	if ((globals->variant & TWKB_BBOX) && parent_state->header_buf)
+	{
 		LWDEBUG(4, "Merge bboxes");
-		for (i = 0; i < ndims; i++) {
+		for (i = 0; i < ndims; i++)
+		{
 			if (child_state.bbox_min[i] < parent_state->bbox_min[i])
 				parent_state->bbox_min[i] = child_state.bbox_min[i];
 			if (child_state.bbox_max[i] > parent_state->bbox_max[i])
@@ -490,13 +525,15 @@ lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_STATE *pa
 
 	/* Did we have a box? If so, how big? */
 	bbox_size = 0;
-	if (globals->variant & TWKB_BBOX) {
+	if (globals->variant & TWKB_BBOX)
+	{
 		LWDEBUG(4, "We want boxes and will calculate required size");
 		bbox_size = sizeof_bbox(&child_state, ndims);
 	}
 
 	/* Write the size if wanted */
-	if (globals->variant & TWKB_SIZE) {
+	if (globals->variant & TWKB_SIZE)
+	{
 		/* Here we have to add what we know will be written to header */
 		/* buffer after size value is written */
 		size_t size_to_register = bytebuffer_getlength(child_state.geom_buf);
@@ -544,12 +581,14 @@ lwgeom_to_twkb_with_idlist(const LWGEOM *geom,
 	tg.prec_z = precision_z;
 	tg.prec_m = precision_m;
 
-	if (idlist && !lwgeom_is_collection(geom)) {
+	if (idlist && !lwgeom_is_collection(geom))
+	{
 		lwerror("Only collections can support ID lists");
 		return NULL;
 	}
 
-	if (!geom) {
+	if (!geom)
+	{
 		LWDEBUG(4, "Cannot convert NULL into TWKB.");
 		lwerror("Cannot convert NULL into TWKB");
 		return NULL;

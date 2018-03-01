@@ -40,7 +40,8 @@ rt_pixtype_size(rt_pixtype pixtype)
 {
 	int pixbytes = -1;
 
-	switch (pixtype) {
+	switch (pixtype)
+	{
 	case PT_1BB:
 	case PT_2BUI:
 	case PT_4BUI:
@@ -111,7 +112,8 @@ rt_pixtype_index_from_name(const char *pixname)
 const char *
 rt_pixtype_name(rt_pixtype pixtype)
 {
-	switch (pixtype) {
+	switch (pixtype)
+	{
 	case PT_1BB:
 		return "1BB";
 	case PT_2BUI:
@@ -150,41 +152,54 @@ rt_pixtype_name(rt_pixtype pixtype)
 double
 rt_pixtype_get_min_value(rt_pixtype pixtype)
 {
-	switch (pixtype) {
-	case PT_1BB: {
+	switch (pixtype)
+	{
+	case PT_1BB:
+	{
 		return (double)rt_util_clamp_to_1BB((double)CHAR_MIN);
 	}
-	case PT_2BUI: {
+	case PT_2BUI:
+	{
 		return (double)rt_util_clamp_to_2BUI((double)CHAR_MIN);
 	}
-	case PT_4BUI: {
+	case PT_4BUI:
+	{
 		return (double)rt_util_clamp_to_4BUI((double)CHAR_MIN);
 	}
-	case PT_8BUI: {
+	case PT_8BUI:
+	{
 		return (double)rt_util_clamp_to_8BUI((double)CHAR_MIN);
 	}
-	case PT_8BSI: {
+	case PT_8BSI:
+	{
 		return (double)rt_util_clamp_to_8BSI((double)SCHAR_MIN);
 	}
-	case PT_16BSI: {
+	case PT_16BSI:
+	{
 		return (double)rt_util_clamp_to_16BSI((double)SHRT_MIN);
 	}
-	case PT_16BUI: {
+	case PT_16BUI:
+	{
 		return (double)rt_util_clamp_to_16BUI((double)SHRT_MIN);
 	}
-	case PT_32BSI: {
+	case PT_32BSI:
+	{
 		return (double)rt_util_clamp_to_32BSI((double)INT_MIN);
 	}
-	case PT_32BUI: {
+	case PT_32BUI:
+	{
 		return (double)rt_util_clamp_to_32BUI((double)INT_MIN);
 	}
-	case PT_32BF: {
+	case PT_32BF:
+	{
 		return (double)-FLT_MAX;
 	}
-	case PT_64BF: {
+	case PT_64BF:
+	{
 		return (double)-DBL_MAX;
 	}
-	default: {
+	default:
+	{
 		rterror("rt_pixtype_get_min_value: Unknown pixeltype %d", pixtype);
 		return (double)rt_util_clamp_to_8BUI((double)CHAR_MIN);
 	}
@@ -207,7 +222,8 @@ rt_pixtype_compare_clamped_values(rt_pixtype pixtype, double val, double refval,
 	assert(isequal != NULL);
 	*isequal = 0;
 
-	switch (pixtype) {
+	switch (pixtype)
+	{
 	case PT_1BB:
 		if (rt_util_clamp_to_1BB(val) == rt_util_clamp_to_1BB(refval)) *isequal = 1;
 		break;
@@ -306,8 +322,10 @@ rt_pixel_set_to_array(rt_pixel npixel,
 	RASTER_DEBUGF(4, "dimensions = %d x %d", dim[0], dim[1]);
 
 	/* make sure that the dimx and dimy match mask */
-	if (mask != NULL) {
-		if (dim[0] != mask->dimx || dim[1] != mask->dimy) {
+	if (mask != NULL)
+	{
+		if (dim[0] != mask->dimx || dim[1] != mask->dimy)
+		{
 			rterror("rt_pixel_set_array: mask dimensions %d x %d do not match given dims %d x %d",
 				mask->dimx,
 				mask->dimy,
@@ -316,7 +334,8 @@ rt_pixel_set_to_array(rt_pixel npixel,
 			return ES_ERROR;
 		}
 
-		if (mask->values == NULL || mask->nodata == NULL) {
+		if (mask->values == NULL || mask->nodata == NULL)
+		{
 			rterror("rt_pixel_set_array: Invalid mask");
 			return ES_ERROR;
 		}
@@ -326,26 +345,34 @@ rt_pixel_set_to_array(rt_pixel npixel,
 	values = rtalloc(sizeof(double *) * dim[1]);
 	nodatas = rtalloc(sizeof(int *) * dim[1]);
 
-	if (values == NULL || nodatas == NULL) {
+	if (values == NULL || nodatas == NULL)
+	{
 		rterror("rt_pixel_set_to_array: Could not allocate memory for 2D array");
 		return ES_ERROR;
 	}
 
 	/* initialize X axis */
-	for (i = 0; i < dim[1]; i++) {
+	for (i = 0; i < dim[1]; i++)
+	{
 		values[i] = rtalloc(sizeof(double) * dim[0]);
 		nodatas[i] = rtalloc(sizeof(int) * dim[0]);
 
-		if (values[i] == NULL || nodatas[i] == NULL) {
+		if (values[i] == NULL || nodatas[i] == NULL)
+		{
 			rterror("rt_pixel_set_to_array: Could not allocate memory for dimension of 2D array");
 
-			if (values[i] == NULL) {
-				for (j = 0; j < i; j++) {
+			if (values[i] == NULL)
+			{
+				for (j = 0; j < i; j++)
+				{
 					rtdealloc(values[j]);
 					rtdealloc(nodatas[j]);
 				}
-			} else {
-				for (j = 0; j <= i; j++) {
+			}
+			else
+			{
+				for (j = 0; j <= i; j++)
+				{
 					rtdealloc(values[j]);
 					if (j < i) rtdealloc(nodatas[j]);
 				}
@@ -370,7 +397,8 @@ rt_pixel_set_to_array(rt_pixel npixel,
 	zero[1] = y - distancey;
 
 	/* populate 2D arrays */
-	for (i = 0; i < count; i++) {
+	for (i = 0; i < count; i++)
+	{
 		if (npixel[i].nodata) continue;
 
 		_x = npixel[i].x - zero[0];
@@ -380,34 +408,42 @@ rt_pixel_set_to_array(rt_pixel npixel,
 		RASTER_DEBUGF(4, "relative x,y: %d x %d", _x, _y);
 
 		/* no mask */
-		if (mask == NULL) {
+		if (mask == NULL)
+		{
 			values[_y][_x] = npixel[i].value;
 			nodatas[_y][_x] = 0;
 		}
 		/* mask */
-		else {
+		else
+		{
 			/* unweighted (boolean) mask */
-			if (mask->weighted == 0) {
+			if (mask->weighted == 0)
+			{
 				/* pixel is set to zero or nodata */
-				if (FLT_EQ(mask->values[_y][_x], 0) || mask->nodata[_y][_x] == 1) {
+				if (FLT_EQ(mask->values[_y][_x], 0) || mask->nodata[_y][_x] == 1)
+				{
 					values[_y][_x] = 0;
 					nodatas[_y][_x] = 1;
 				}
 				/* use pixel */
-				else {
+				else
+				{
 					values[_y][_x] = npixel[i].value;
 					nodatas[_y][_x] = 0;
 				}
 			}
 			/* weighted mask */
-			else {
+			else
+			{
 				/* nodata */
-				if (mask->nodata[_y][_x] == 1) {
+				if (mask->nodata[_y][_x] == 1)
+				{
 					values[_y][_x] = 0;
 					nodatas[_y][_x] = 1;
 				}
 				/* apply weight to pixel value */
-				else {
+				else
+				{
 					values[_y][_x] = npixel[i].value * mask->values[_y][_x];
 					nodatas[_y][_x] = 0;
 				}

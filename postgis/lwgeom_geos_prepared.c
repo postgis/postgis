@@ -78,7 +78,8 @@ static HTAB *PrepGeomHash = NULL;
 
 #define PREPARED_BACKEND_HASH_SIZE 32
 
-typedef struct {
+typedef struct
+{
 	MemoryContext context;
 	const GEOSPreparedGeometry *prepared_geom;
 	const GEOSGeometry *geom;
@@ -233,12 +234,15 @@ AddPrepGeomHashEntry(PrepGeomHashEntry pghe)
 	key = (void *)&(pghe.context);
 
 	he = (PrepGeomHashEntry *)hash_search(PrepGeomHash, key, HASH_ENTER, &found);
-	if (!found) {
+	if (!found)
+	{
 		/* Insert the entry into the new hash element */
 		he->context = pghe.context;
 		he->geom = pghe.geom;
 		he->prepared_geom = pghe.prepared_geom;
-	} else {
+	}
+	else
+	{
 		elog(ERROR, "AddPrepGeomHashEntry: This memory context is already in use! (%p)", (void *)pghe.context);
 	}
 }
@@ -270,7 +274,8 @@ DeletePrepGeomHashEntry(MemoryContext mcxt)
 	/* Delete the projection object from the hash */
 	he = (PrepGeomHashEntry *)hash_search(PrepGeomHash, key, HASH_REMOVE, NULL);
 
-	if (!he) {
+	if (!he)
+	{
 		elog(
 		    ERROR,
 		    "DeletePrepGeomHashEntry: There was an error removing the geometry object from this MemoryContext (%p)",
@@ -307,7 +312,8 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	/*
 	 * No callback entry for this statement context yet? Set it up
 	 */
-	if (!prepcache->context_callback) {
+	if (!prepcache->context_callback)
+	{
 		PrepGeomHashEntry pghe;
 #if POSTGIS_PGSQL_VERSION < 96
 		prepcache->context_callback = MemoryContextCreate(T_AllocSetContext,
@@ -340,7 +346,8 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	 * Hum, we shouldn't be asked to build a new cache on top of
 	 * an existing one. Error.
 	 */
-	if (prepcache->gcache.argnum || prepcache->geom || prepcache->prepared_geom) {
+	if (prepcache->gcache.argnum || prepcache->geom || prepcache->prepared_geom)
+	{
 		lwpgerror("PrepGeomCacheBuilder asked to build new prepcache where one already exists.");
 		return LW_FAILURE;
 	}
@@ -365,7 +372,8 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	 * extra references in a global hash object.
 	 */
 	pghe = GetPrepGeomHashEntry(prepcache->context_callback);
-	if (!pghe) {
+	if (!pghe)
+	{
 		lwpgerror("PrepGeomCacheBuilder failed to find hash entry for context %p", prepcache->context_callback);
 		return LW_FAILURE;
 	}
@@ -399,7 +407,8 @@ PrepGeomCacheCleaner(GeomCache *cache)
 	 * from the callback hash entry
 	 */
 	pghe = GetPrepGeomHashEntry(prepcache->context_callback);
-	if (!pghe) {
+	if (!pghe)
+	{
 		lwpgerror("PrepGeomCacheCleaner failed to find hash entry for context %p", prepcache->context_callback);
 		return LW_FAILURE;
 	}

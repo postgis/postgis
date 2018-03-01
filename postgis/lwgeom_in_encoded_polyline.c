@@ -47,13 +47,15 @@ Datum line_from_encoded_polyline(PG_FUNCTION_ARGS)
 	encodedpolyline_input = PG_GETARG_TEXT_P(0);
 	encodedpolyline = text_to_cstring(encodedpolyline_input);
 
-	if (PG_NARGS() > 1 && !PG_ARGISNULL(1)) {
+	if (PG_NARGS() > 1 && !PG_ARGISNULL(1))
+	{
 		precision = PG_GETARG_INT32(1);
 		if (precision < 0) precision = 5;
 	}
 
 	lwgeom = lwgeom_from_encoded_polyline(encodedpolyline, precision);
-	if (!lwgeom) {
+	if (!lwgeom)
+	{
 		/* Shouldn't get here */
 		elog(ERROR, "lwgeom_from_encoded_polyline returned NULL");
 		PG_RETURN_NULL();

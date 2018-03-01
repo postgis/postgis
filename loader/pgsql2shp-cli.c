@@ -69,8 +69,10 @@ main(int argc, char **argv)
 	config = malloc(sizeof(SHPDUMPERCONFIG));
 	set_dumper_config_defaults(config);
 
-	while ((c = pgis_getopt(argc, argv, "bf:h:du:p:P:g:rkm:")) != EOF) {
-		switch (c) {
+	while ((c = pgis_getopt(argc, argv, "bf:h:du:p:P:g:rkm:")) != EOF)
+	{
+		switch (c)
+		{
 		case 'b':
 			config->binary = 1;
 			break;
@@ -111,27 +113,34 @@ main(int argc, char **argv)
 	}
 
 	/* Determine the database name from the next argument, if no database, exit. */
-	if (pgis_optind < argc) {
+	if (pgis_optind < argc)
+	{
 		config->conn->database = argv[pgis_optind];
 		pgis_optind++;
-	} else {
+	}
+	else
+	{
 		usage(1);
 	}
 
 	/* Determine the table and schema names from the next argument if supplied, otherwise if
 	   it's a user-defined query then set that instead */
-	if (pgis_optind < argc) {
+	if (pgis_optind < argc)
+	{
 		/* User-defined queries begin with SELECT */
-		if (!strncmp(argv[pgis_optind], "SELECT ", 7) || !strncmp(argv[pgis_optind], "select ", 7)) {
-			config->usrquery = argv[pgis_optind];
-		} else {
+		if (!strncmp(argv[pgis_optind], "SELECT ", 7) || !strncmp(argv[pgis_optind], "select ", 7))
+		{ config->usrquery = argv[pgis_optind]; }
+		else
+		{
 			/* Schema qualified table name */
 			char *strptr = argv[pgis_optind];
 			char *chrptr = strchr(strptr, '.');
 
 			/* OK, this is a schema-qualified table name... */
-			if (chrptr) {
-				if (chrptr == strptr) {
+			if (chrptr)
+			{
+				if (chrptr == strptr)
+				{
 					/* table is ".something" display help  */
 					usage(0);
 					exit(0);
@@ -141,25 +150,31 @@ main(int argc, char **argv)
 				/* Copy in the parts */
 				config->schema = strdup(strptr);
 				config->table = strdup(chrptr + 1);
-			} else {
+			}
+			else
+			{
 				config->table = strdup(strptr);
 			}
 		}
-	} else {
+	}
+	else
+	{
 		usage(1);
 	}
 
 	state = ShpDumperCreate(config);
 
 	ret = ShpDumperConnectDatabase(state);
-	if (ret != SHPDUMPEROK) {
+	if (ret != SHPDUMPEROK)
+	{
 		fprintf(stderr, "%s\n", state->message);
 		fflush(stderr);
 		exit(1);
 	}
 
 	/* Display a warning if the -d switch is used with PostGIS >= 1.0 */
-	if (state->pgis_major_version > 0 && state->config->dswitchprovided) {
+	if (state->pgis_major_version > 0 && state->config->dswitchprovided)
+	{
 		fprintf(stderr, _("WARNING: -d switch is useless when dumping from postgis-1.0.0+\n"));
 		fflush(stderr);
 	}
@@ -169,7 +184,8 @@ main(int argc, char **argv)
 	fflush(stdout);
 
 	ret = ShpDumperOpenTable(state);
-	if (ret != SHPDUMPEROK) {
+	if (ret != SHPDUMPEROK)
+	{
 		fprintf(stderr, "%s\n", state->message);
 		fflush(stderr);
 
@@ -181,15 +197,18 @@ main(int argc, char **argv)
 	fprintf(stdout, _("Dumping: "));
 	fflush(stdout);
 
-	for (i = 0; i < ShpDumperGetRecordCount(state); i++) {
+	for (i = 0; i < ShpDumperGetRecordCount(state); i++)
+	{
 		/* Mimic existing behaviour */
-		if (!(state->currow % state->config->fetchsize)) {
+		if (!(state->currow % state->config->fetchsize))
+		{
 			fprintf(stdout, "X");
 			fflush(stdout);
 		}
 
 		ret = ShpLoaderGenerateShapeRow(state);
-		if (ret != SHPDUMPEROK) {
+		if (ret != SHPDUMPEROK)
+		{
 			fprintf(stderr, "%s\n", state->message);
 			fflush(stderr);
 
@@ -201,7 +220,8 @@ main(int argc, char **argv)
 	fflush(stdout);
 
 	ret = ShpDumperCloseTable(state);
-	if (ret != SHPDUMPEROK) {
+	if (ret != SHPDUMPEROK)
+	{
 		fprintf(stderr, "%s\n", state->message);
 		fflush(stderr);
 

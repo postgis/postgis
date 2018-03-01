@@ -46,7 +46,8 @@
 
 #include "vector_tile.pb-c.h"
 
-typedef struct mvt_agg_context {
+typedef struct mvt_agg_context
+{
 	char *name;
 	uint32_t extent;
 	char *geom_name;

@@ -29,7 +29,8 @@ dump_bytes(char *a, int numb)
 {
 	int t;
 
-	for (t = 0; t < numb; t++) {
+	for (t = 0; t < numb; t++)
+	{
 		printf("	+ Byte #%i has value %i (%x)\n", t, a[t], a[t]);
 	}
 }
@@ -44,19 +45,22 @@ find_WKB_typeid(PGconn *conn)
 	PGresult *dbresult;
 	char *num;
 
-	if (PQstatus(conn) == CONNECTION_BAD) {
+	if (PQstatus(conn) == CONNECTION_BAD)
+	{
 		fprintf(stderr, "no connection to db\n");
 		exit_nicely(conn);
 	}
 
 	dbresult = PQexec(conn, "select OID from pg_type where typname = 'bytea';");
 
-	if (PQresultStatus(dbresult) != PGRES_TUPLES_OK) {
+	if (PQresultStatus(dbresult) != PGRES_TUPLES_OK)
+	{
 		fprintf(stderr, "couldnt execute query to find oid of geometry type");
 		exit_nicely(conn); // command failed
 	}
 
-	if (PQntuples(dbresult) != 1) {
+	if (PQntuples(dbresult) != 1)
+	{
 		fprintf(stderr, "query to find oid of geometry didnt return 1 row!");
 		exit_nicely(conn);
 	}
@@ -97,7 +101,8 @@ main()
 	/*
 	 * check to see that the backend connection was successfully made
 	 */
-	if (PQstatus(conn) == CONNECTION_BAD) {
+	if (PQstatus(conn) == CONNECTION_BAD)
+	{
 		fprintf(stderr, "%s", PQerrorMessage(conn));
 		exit_nicely(conn);
 	}
@@ -107,7 +112,8 @@ main()
 
 	/* start a transaction block */
 	res = PQexec(conn, "BEGIN");
-	if (!res || PQresultStatus(res) != PGRES_COMMAND_OK) {
+	if (!res || PQresultStatus(res) != PGRES_COMMAND_OK)
+	{
 		fprintf(stderr, "%s", PQerrorMessage(conn));
 		PQclear(res);
 		exit_nicely(conn);
@@ -132,7 +138,8 @@ main()
 
 	res = PQexec(conn, query_str);
 
-	if (!res || PQresultStatus(res) != PGRES_COMMAND_OK) {
+	if (!res || PQresultStatus(res) != PGRES_COMMAND_OK)
+	{
 		fprintf(stderr, "DECLARE CURSOR command failed\n");
 		fprintf(stderr, "%s", PQerrorMessage(conn));
 		PQclear(res);
@@ -141,17 +148,20 @@ main()
 	PQclear(res);
 
 	res = PQexec(conn, "FETCH ALL in mycursor");
-	if (!res || PQresultStatus(res) != PGRES_TUPLES_OK) {
+	if (!res || PQresultStatus(res) != PGRES_TUPLES_OK)
+	{
 		fprintf(stderr, "FETCH ALL command didn't return tuples properly\n");
 		fprintf(stderr, "%s", PQerrorMessage(conn));
 		PQclear(res);
 		exit_nicely(conn);
 	}
 
-	for (row = 0; row < PQntuples(res); row++) {
+	for (row = 0; row < PQntuples(res); row++)
+	{
 		printf("------------------------------row %i --------------------------\n", row);
 		// not so efficient, but...
-		for (field = 0; field < PQnfields(res); field++) {
+		for (field = 0; field < PQnfields(res); field++)
+		{
 			field_type = PQftype(res, field);
 			field_name = PQfname(res, field);
 
@@ -164,23 +174,28 @@ main()
 					printf("%s: TRUE\n", field_name);
 				else
 					printf("%s: FALSE\n", field_name);
-			} else if (field_type == 23) // int4 (int)
+			}
+			else if (field_type == 23) // int4 (int)
 			{
 				int_val = (int *)PQgetvalue(res, row, field);
 				printf("%s: %i\n", field_name, *int_val);
-			} else if (field_type == 700) // float4 (float)
+			}
+			else if (field_type == 700) // float4 (float)
 			{
 				float_val = (float *)PQgetvalue(res, row, field);
 				printf("%s: %g\n", field_name, *float_val);
-			} else if (field_type == 701) // float8 (double)
+			}
+			else if (field_type == 701) // float8 (double)
 			{
 				double_val = (double *)PQgetvalue(res, row, field);
 				printf("%s: %g\n", field_name, *double_val);
-			} else if ((field_type == 1043) || (field_type == 25)) // varchar
+			}
+			else if ((field_type == 1043) || (field_type == 25)) // varchar
 			{
 				char_val = (char *)PQgetvalue(res, row, field);
 				printf("%s: %s\n", field_name, char_val);
-			} else if (field_type == WKB_OID) // wkb
+			}
+			else if (field_type == WKB_OID) // wkb
 			{
 				char_val = (char *)PQgetvalue(res, row, field);
 				printf("%s: ", field_name);

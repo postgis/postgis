@@ -51,7 +51,8 @@ lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix)
 	sb = stringbuffer_create();
 	rv = lwgeom_to_kml2_sb(geom, precision, prefix, sb);
 
-	if (rv == LW_FAILURE) {
+	if (rv == LW_FAILURE)
+	{
 		stringbuffer_destroy(sb);
 		return NULL;
 	}
@@ -65,7 +66,8 @@ lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix)
 static int
 lwgeom_to_kml2_sb(const LWGEOM *geom, int precision, const char *prefix, stringbuffer_t *sb)
 {
-	switch (geom->type) {
+	switch (geom->type)
+	{
 	case POINTTYPE:
 		return lwpoint_to_kml2_sb((LWPOINT *)geom, precision, prefix, sb);
 
@@ -94,15 +96,20 @@ ptarray_to_kml2_sb(const POINTARRAY *pa, int precision, stringbuffer_t *sb)
 	POINT4D pt;
 	double *d;
 
-	for (i = 0; i < pa->npoints; i++) {
+	for (i = 0; i < pa->npoints; i++)
+	{
 		getPoint4d_p(pa, i, &pt);
 		d = (double *)(&pt);
 		if (i) stringbuffer_append(sb, " ");
-		for (j = 0; j < dims; j++) {
+		for (j = 0; j < dims; j++)
+		{
 			if (j) stringbuffer_append(sb, ",");
-			if (fabs(d[j]) < OUT_MAX_DOUBLE) {
+			if (fabs(d[j]) < OUT_MAX_DOUBLE)
+			{
 				if (stringbuffer_aprintf(sb, "%.*f", precision, d[j]) < 0) return LW_FAILURE;
-			} else {
+			}
+			else
+			{
 				if (stringbuffer_aprintf(sb, "%g", d[j]) < 0) return LW_FAILURE;
 			}
 			stringbuffer_trim_trailing_zeroes(sb);
@@ -144,7 +151,8 @@ lwpoly_to_kml2_sb(const LWPOLY *poly, int precision, const char *prefix, stringb
 
 	/* Open polygon */
 	if (stringbuffer_aprintf(sb, "<%sPolygon>", prefix) < 0) return LW_FAILURE;
-	for (i = 0; i < poly->nrings; i++) {
+	for (i = 0; i < poly->nrings; i++)
+	{
 		/* Inner or outer ring opening tags */
 		if (i)
 			rv = stringbuffer_aprintf(
@@ -180,7 +188,8 @@ lwcollection_to_kml2_sb(const LWCOLLECTION *col, int precision, const char *pref
 
 	/* Open geometry */
 	if (stringbuffer_aprintf(sb, "<%sMultiGeometry>", prefix) < 0) return LW_FAILURE;
-	for (i = 0; i < col->ngeoms; i++) {
+	for (i = 0; i < col->ngeoms; i++)
+	{
 		rv = lwgeom_to_kml2_sb(col->geoms[i], precision, prefix, sb);
 		if (rv == LW_FAILURE) return LW_FAILURE;
 	}

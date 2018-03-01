@@ -58,7 +58,8 @@ init_errors(PAGC_GLOBAL *pagc_glo_p, const char *log_name)
 	ERR_REC *err_mem;
 
 	err_p = (ERR_PARAM *)malloc(sizeof(ERR_PARAM));
-	if (err_p == NULL) {
+	if (err_p == NULL)
+	{
 #ifndef NO_STDERR_OUTPUT
 		PRINT_ERROR("%s\n", "FATAL ERROR : Could not allocate memory for pagc_init_errors");
 #endif
@@ -68,11 +69,12 @@ init_errors(PAGC_GLOBAL *pagc_glo_p, const char *log_name)
 	/* -- set up first record -- */
 	RESET_ERR_P;
 	/* -- a null log_name means we don't log , but collect -- */
-	if (log_name == NULL) {
-		err_p->stream = NULL;
-	} else {
+	if (log_name == NULL) { err_p->stream = NULL; }
+	else
+	{
 		err_p->stream = open_error_log(log_name, pagc_glo_p->_file_sys, err_p);
-		if (err_p->stream == NULL) {
+		if (err_p->stream == NULL)
+		{
 			FREE_AND_NULL(err_p);
 #ifndef NO_STDERR_OUTPUT
 			PRINT_ERROR("Could not create error log for pathname: %s\n", log_name);
@@ -99,11 +101,15 @@ close_errors(ERR_PARAM *err_p)
 
 	/* -- read each error into the buffer and then
 	   output it as a single line -- */
-	while (empty_errors(err_p, &is_fatal_error, err_out_buf)) {
-		if (is_fatal_error) {
+	while (empty_errors(err_p, &is_fatal_error, err_out_buf))
+	{
+		if (is_fatal_error)
+		{
 #ifndef NO_STDERR_OUTPUT
 			PRINT_ERROR("ERROR: %s\n", err_out_buf);
-		} else {
+		}
+		else
+		{
 			PRINT_ERROR("%s\n", err_out_buf);
 #endif
 		}
@@ -143,7 +149,8 @@ empty_errors(ERR_PARAM *err_p, int *is_fatal, char *err_dest)
 
 	if (err_p == NULL) { return FALSE; }
 
-	if (err_p->first_err >= err_p->last_err) {
+	if (err_p->first_err >= err_p->last_err)
+	{
 		/* -- reset the counters -- */
 		RESET_ERR_P;
 		return FALSE; /* -- indicate empty -- */
@@ -177,7 +184,8 @@ open_error_log(const char *client_log_name, DS_Handle _file_sys_p, ERR_PARAM *er
 	char *alloc_log_name;
 	FILE *error_file;
 
-	if (client_log_name != NULL) {
+	if (client_log_name != NULL)
+	{
 		/* -- will overwrite previous log in same location -- */
 		OPEN_ALLOCATED_NAME(
 		    alloc_log_name, "err", error_file, client_log_name, "wb+", _file_sys_p, err_p, NULL);
@@ -200,14 +208,16 @@ register_error(ERR_PARAM *err_p)
 
 	/* -- check if there is anything in the error_buf -- */
 	if (err_p->error_buf[0] == SENTINEL) { return; }
-	if (strlen(err_p->error_buf) > MAXSTRLEN) {
+	if (strlen(err_p->error_buf) > MAXSTRLEN)
+	{
 #ifndef NO_STDERR_OUTPUT
 		PRINT_ERROR("Error message %s is too long", err_p->error_buf);
 #endif
 		return;
 	}
 	/* -- print it out immediately, if we're logging -- */
-	if (err_p->stream != NULL) {
+	if (err_p->stream != NULL)
+	{
 		fprintf(err_p->stream, "%s\n", err_p->error_buf);
 		fflush(err_p->stream);
 		/* -- set up for next error -- */
@@ -218,17 +228,21 @@ register_error(ERR_PARAM *err_p)
 	err_mem = err_p->err_array + err_p->last_err;
 	err_mem->is_fatal = err_p->next_fatal;
 
-	if (err_p->last_err == (MAX_ERRORS - 1)) {
+	if (err_p->last_err == (MAX_ERRORS - 1))
+	{
 #ifndef NO_STDERR_OUTPUT
 		PRINT_ERROR("%s is too many errors - losing old ones", err_p->error_buf);
 #endif
 		/* -- move the whole array down a slot to make room for
 		   the next error. The first in the array disappears -- */
-		for (i = err_p->first_err; i < err_p->last_err; i++) {
+		for (i = err_p->first_err; i < err_p->last_err; i++)
+		{
 			err_p->err_array[i].is_fatal = err_p->err_array[i + 1].is_fatal;
 			strcpy(err_p->err_array[i].content_buf, err_p->err_array[i + 1].content_buf);
 		}
-	} else {
+	}
+	else
+	{
 		/* -- last_err points to the next one to fill -- */
 		err_p->last_err++;
 		err_mem = err_p->err_array + err_p->last_err;

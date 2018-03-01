@@ -44,7 +44,8 @@ pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result)
 
 	/* Only display the parser position if the location is > 0; this provides a nicer output when the first token
 	   within the input stream cannot be matched */
-	if (lwg_parser_result->errlocation > 0) {
+	if (lwg_parser_result->errlocation > 0)
+	{
 		/* Return a copy of the input string start truncated
 		 * at the error location */
 		hintbuffer = lwmessage_truncate(
@@ -55,7 +56,9 @@ pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result)
 			 errhint("\"%s\" <-- parse error at position %d within geometry",
 				 hintbuffer,
 				 lwg_parser_result->errlocation)));
-	} else {
+	}
+	else
+	{
 		ereport(
 		    ERROR,
 		    (errmsg("%s", lwg_parser_result->message),
@@ -83,7 +86,8 @@ pg_alloc(size_t size)
 
 	POSTGIS_DEBUGF(5, "  pg_alloc(%d) returning %p", (int)size, result);
 
-	if (!result) {
+	if (!result)
+	{
 		ereport(ERROR, (errmsg_internal("Out of virtual memory")));
 		return NULL;
 	}
@@ -253,7 +257,8 @@ postgis_guc_name_compare(const char *namea, const char *nameb)
 	 * array ordering has to remain stable across setlocale() calls. So, build
 	 * our own with a simple ASCII-only downcasing.
 	 */
-	while (*namea && *nameb) {
+	while (*namea && *nameb)
+	{
 		char cha = *namea++;
 		char chb = *nameb++;
 

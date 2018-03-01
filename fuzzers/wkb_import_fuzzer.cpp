@@ -466,7 +466,8 @@ static void
 errorreporter(const char *, va_list)
 {
 	// Cleanup any heap-allocated memory still active
-	for (std::set<void *>::iterator oIter = oSetPointers.begin(); oIter != oSetPointers.end(); ++oIter) {
+	for (std::set<void *>::iterator oIter = oSetPointers.begin(); oIter != oSetPointers.end(); ++oIter)
+	{
 		free(*oIter);
 	}
 	oSetPointers.clear();

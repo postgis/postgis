@@ -76,7 +76,8 @@ cu_wkb_in(char *wkt)
 
 	/* Turn WKT into geom */
 	lwgeom_parse_wkt(&pr, wkt, LW_PARSER_CHECK_NONE);
-	if (pr.errcode) {
+	if (pr.errcode)
+	{
 		printf("ERROR: %s\n", pr.message);
 		printf("POSITION: %d\n", pr.errlocation);
 		exit(0);

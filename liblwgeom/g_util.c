@@ -27,7 +27,8 @@
 #include "liblwgeom_internal.h"
 
 /* Structure for the type array */
-struct geomtype_struct {
+struct geomtype_struct
+{
 	char *typename;
 	int type;
 	int z;
@@ -174,16 +175,20 @@ geometry_type_from_string(const char *str, uint8_t *type, int *z, int *m)
 
 	/* Locate any leading/trailing spaces */
 	tmpstartpos = 0;
-	for (i = 0; i < strlen(str); i++) {
-		if (str[i] != ' ') {
+	for (i = 0; i < strlen(str); i++)
+	{
+		if (str[i] != ' ')
+		{
 			tmpstartpos = i;
 			break;
 		}
 	}
 
 	tmpendpos = strlen(str) - 1;
-	for (i = strlen(str) - 1; i != 0; i--) {
-		if (str[i] != ' ') {
+	for (i = strlen(str) - 1; i != 0; i--)
+	{
+		if (str[i] != ' ')
+		{
 			tmpendpos = i;
 			break;
 		}
@@ -198,8 +203,10 @@ geometry_type_from_string(const char *str, uint8_t *type, int *z, int *m)
 	tmpstr[i - tmpstartpos] = '\0';
 
 	/* Now check for the type */
-	for (i = 0; i < GEOMTYPE_STRUCT_ARRAY_LEN; i++) {
-		if (!strcmp(tmpstr, geomtype_struct_array[i].typename)) {
+	for (i = 0; i < GEOMTYPE_STRUCT_ARRAY_LEN; i++)
+	{
+		if (!strcmp(tmpstr, geomtype_struct_array[i].typename))
+		{
 			*type = geomtype_struct_array[i].type;
 			*z = geomtype_struct_array[i].z;
 			*m = geomtype_struct_array[i].m;

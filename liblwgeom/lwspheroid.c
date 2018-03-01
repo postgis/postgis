@@ -157,15 +157,15 @@ ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *spheroid)
 	POINT2D p;   /* long/lat units are degrees */
 
 	/* Pass points from point array; don't close the linearring */
-	for (i = 0; i < pa->npoints - 1; i++) {
+	for (i = 0; i < pa->npoints - 1; i++)
+	{
 		getPoint2d_p(pa, i, &p);
 		geod_polygon_addpoint(&gd, &poly, p.y, p.x);
 		LWDEBUGF(4, "geod_polygon_addpoint %d: %.12g %.12g", i, p.y, p.x);
 	}
 	i = geod_polygon_compute(&gd, &poly, 0, 1, &area, 0);
-	if (i != pa->npoints - 1) {
-		lwerror("ptarray_area_spheroid: different number of points %d vs %d", i, pa->npoints - 1);
-	}
+	if (i != pa->npoints - 1)
+	{ lwerror("ptarray_area_spheroid: different number of points %d vs %d", i, pa->npoints - 1); }
 	LWDEBUGF(4, "geod_polygon_compute area: %.12g", area);
 	return fabs(area);
 }
@@ -215,7 +215,8 @@ spheroid_distance(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const SP
 	sin_u2 = sin(u2);
 
 	omega = lambda;
-	do {
+	do
+	{
 		cos_lambda = cos(lambda);
 		sin_lambda = sin(lambda);
 		sqrsin_sigma = POW2(cos_u2 * sin_lambda) + POW2((cos_u1 * sin_u2 - sin_u1 * cos_u2 * cos_lambda));
@@ -258,7 +259,8 @@ spheroid_distance(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const SP
 	distance = spheroid->b * big_a * (sigma - delta_sigma);
 
 	/* Algorithm failure, distance == NaN, fallback to sphere */
-	if (distance != distance) {
+	if (distance != distance)
+	{
 		lwerror("spheroid_distance returned NaN: (%.20g %.20g) (%.20g %.20g) a = %.20g b = %.20g",
 			a->lat,
 			a->lon,
@@ -301,7 +303,8 @@ spheroid_direction(const GEOGRAPHIC_POINT *r, const GEOGRAPHIC_POINT *s, const S
 	double omega = lambda;
 	double alpha, sigma, sin_sigma, cos_sigma, cos2_sigma_m, sqr_sin_sigma, last_lambda;
 	double sin_alpha, cos_alphasq, C, alphaFD;
-	do {
+	do
+	{
 		sqr_sin_sigma = POW2(cos_u2 * sin(lambda)) + POW2((cos_u1 * sin_u2 - sin_u1 * cos_u2 * cos(lambda)));
 		sin_sigma = sqrt(sqr_sin_sigma);
 		cos_sigma = sin_u1 * sin_u2 + cos_u1 * cos_u2 * cos(lambda);
@@ -380,7 +383,8 @@ spheroid_project(const GEOGRAPHIC_POINT *r,
 	B = spheroid_big_b(u2);
 
 	sigma = (distance / (spheroid->b * A));
-	do {
+	do
+	{
 		two_sigma_m = 2.0 * sigma1 + sigma;
 		delta_sigma =
 		    B * sin(sigma) *
@@ -517,10 +521,13 @@ ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *spheroid)
 	LWDEBUGF(4, "gbox2d.ymax %.12g", gbox2d.ymax);
 
 	/* Tolerance for strip area calculation */
-	if (in_south) {
+	if (in_south)
+	{
 		delta_lon_tolerance = (90.0 / (fabs(gbox2d.ymin) / 8.0) - 2.0) / 10000.0;
 		latitude_min = deg2rad(fabs(gbox2d.ymax));
-	} else {
+	}
+	else
+	{
 		delta_lon_tolerance = (90.0 / (fabs(gbox2d.ymax) / 8.0) - 2.0) / 10000.0;
 		latitude_min = deg2rad(gbox2d.ymin);
 	}
@@ -529,7 +536,8 @@ ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *spheroid)
 	getPoint2d_p(pa, 0, &p);
 	geographic_point_init(p.x, p.y, &a);
 
-	for (i = 1; i < pa->npoints; i++) {
+	for (i = 1; i < pa->npoints; i++)
+	{
 		GEOGRAPHIC_POINT a1, b1;
 		double strip_area = 0.0;
 		double delta_lon = 0.0;
@@ -542,7 +550,8 @@ ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *spheroid)
 		b1 = b;
 
 		/* Flip into north if in south */
-		if (in_south) {
+		if (in_south)
+		{
 			a1.lat = -1.0 * a1.lat;
 			b1.lat = -1.0 * b1.lat;
 		}
@@ -551,7 +560,8 @@ ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *spheroid)
 
 		LWDEBUGF(4, "crosses_dateline(a, b) %d", crosses_dateline(&a, &b));
 
-		if (crosses_dateline(&a, &b)) {
+		if (crosses_dateline(&a, &b))
+		{
 			double shift;
 
 			if (a1.lon > 0.0)
@@ -572,12 +582,16 @@ ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *spheroid)
 		LWDEBUGF(4, "delta_lon %.18g", delta_lon);
 		LWDEBUGF(4, "delta_lon_tolerance %.18g", delta_lon_tolerance);
 
-		if (delta_lon > 0.0) {
-			if (delta_lon < delta_lon_tolerance) {
+		if (delta_lon > 0.0)
+		{
+			if (delta_lon < delta_lon_tolerance)
+			{
 				strip_area = spheroid_striparea(&a1, &b1, latitude_min, spheroid);
 				LWDEBUGF(4, "strip_area %.12g", strip_area);
 				area += strip_area;
-			} else {
+			}
+			else
+			{
 				GEOGRAPHIC_POINT p, q;
 				double step = floor(delta_lon / delta_lon_tolerance);
 				double distance = spheroid_distance(&a1, &b1, spheroid);
@@ -588,7 +602,8 @@ ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *spheroid)
 				step = distance / step;
 				LWDEBUGF(4, "step %.18g", step);
 				p = a1;
-				while (pDistance < (distance - step * 1.01)) {
+				while (pDistance < (distance - step * 1.01))
+				{
 					double azimuth = spheroid_direction(&p, &b1, spheroid);
 					j++;
 					LWDEBUGF(4, "  iteration %d", j);
@@ -639,7 +654,8 @@ lwgeom_area_spheroid(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 	if (!(type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE)) return 0.0;
 
 	/* Actually calculate area */
-	if (type == POLYGONTYPE) {
+	if (type == POLYGONTYPE)
+	{
 		LWPOLY *poly = (LWPOLY *)lwgeom;
 		uint32_t i;
 		double area = 0.0;
@@ -651,19 +667,22 @@ lwgeom_area_spheroid(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 		area += ptarray_area_spheroid(poly->rings[0], spheroid);
 
 		/* Subtract areas of inner rings */
-		for (i = 1; i < poly->nrings; i++) {
+		for (i = 1; i < poly->nrings; i++)
+		{
 			area -= ptarray_area_spheroid(poly->rings[i], spheroid);
 		}
 		return area;
 	}
 
 	/* Recurse into sub-geometries to get area */
-	if (type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE) {
+	if (type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE)
+	{
 		LWCOLLECTION *col = (LWCOLLECTION *)lwgeom;
 		uint32_t i;
 		double area = 0.0;
 
-		for (i = 0; i < col->ngeoms; i++) {
+		for (i = 0; i < col->ngeoms; i++)
+		{
 			area += lwgeom_area_spheroid(col->geoms[i], spheroid);
 		}
 		return area;

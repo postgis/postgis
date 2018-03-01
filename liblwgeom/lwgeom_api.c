@@ -36,7 +36,8 @@ lwgeom_version()
 {
 	static char *ptr = NULL;
 	static char buf[256];
-	if (!ptr) {
+	if (!ptr)
+	{
 		ptr = buf;
 		snprintf(ptr, 256, LIBLWGEOM_VERSION " r%d", POSTGIS_SVN_REVISION);
 	}
@@ -105,12 +106,14 @@ getPoint4d_p(const POINTARRAY *pa, uint32_t n, POINT4D *op)
 	uint8_t *ptr;
 	int zmflag;
 
-	if (!pa) {
+	if (!pa)
+	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
 		return 0;
 	}
 
-	if (n >= pa->npoints) {
+	if (n >= pa->npoints)
+	{
 		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
 	}
@@ -123,7 +126,8 @@ getPoint4d_p(const POINTARRAY *pa, uint32_t n, POINT4D *op)
 
 	LWDEBUGF(4, "ptr %p, zmflag %d", ptr, zmflag);
 
-	switch (zmflag) {
+	switch (zmflag)
+	{
 	case 0: /* 2d  */
 		memcpy(op, ptr, sizeof(POINT2D));
 		op->m = NO_M_VALUE;
@@ -190,12 +194,14 @@ getPoint3dz_p(const POINTARRAY *pa, uint32_t n, POINT3DZ *op)
 {
 	uint8_t *ptr;
 
-	if (!pa) {
+	if (!pa)
+	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
 		return 0;
 	}
 
-	if (n >= pa->npoints) {
+	if (n >= pa->npoints)
+	{
 		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
 	}
@@ -209,15 +215,14 @@ getPoint3dz_p(const POINTARRAY *pa, uint32_t n, POINT3DZ *op)
 	 * if input POINTARRAY has the Z, it is always
 	 * at third position so make a single copy
 	 */
-	if (FLAGS_GET_Z(pa->flags)) {
-		memcpy(op, ptr, sizeof(POINT3DZ));
-	}
+	if (FLAGS_GET_Z(pa->flags)) { memcpy(op, ptr, sizeof(POINT3DZ)); }
 
 	/*
 	 * Otherwise copy the 2d part and initialize
 	 * Z to NO_Z_VALUE
 	 */
-	else {
+	else
+	{
 		memcpy(op, ptr, sizeof(POINT2D));
 		op->z = NO_Z_VALUE;
 	}
@@ -237,12 +242,14 @@ getPoint3dm_p(const POINTARRAY *pa, uint32_t n, POINT3DM *op)
 	uint8_t *ptr;
 	int zmflag;
 
-	if (!pa) {
+	if (!pa)
+	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
 		return 0;
 	}
 
-	if (n >= pa->npoints) {
+	if (n >= pa->npoints)
+	{
 		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
 	}
@@ -258,7 +265,8 @@ getPoint3dm_p(const POINTARRAY *pa, uint32_t n, POINT3DM *op)
 	 * if input POINTARRAY has the M and NO Z,
 	 * we can issue a single memcpy
 	 */
-	if (zmflag == 1) {
+	if (zmflag == 1)
+	{
 		memcpy(op, ptr, sizeof(POINT3DM));
 		return 1;
 	}
@@ -274,10 +282,13 @@ getPoint3dm_p(const POINTARRAY *pa, uint32_t n, POINT3DM *op)
 	 * copy next double, otherwise initialize
 	 * M to NO_M_VALUE
 	 */
-	if (zmflag == 3) {
+	if (zmflag == 3)
+	{
 		ptr += sizeof(POINT3DZ);
 		memcpy(&(op->m), ptr, sizeof(double));
-	} else {
+	}
+	else
+	{
 		op->m = NO_M_VALUE;
 	}
 
@@ -307,12 +318,14 @@ getPoint2d(const POINTARRAY *pa, uint32_t n)
 int
 getPoint2d_p(const POINTARRAY *pa, uint32_t n, POINT2D *point)
 {
-	if (!pa) {
+	if (!pa)
+	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
 		return 0;
 	}
 
-	if (n >= pa->npoints) {
+	if (n >= pa->npoints)
+	{
 		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
 	}
@@ -333,7 +346,8 @@ getPoint2d_cp(const POINTARRAY *pa, uint32_t n)
 {
 	if (!pa) return 0;
 
-	if (n >= pa->npoints) {
+	if (n >= pa->npoints)
+	{
 		lwerror("getPoint2d_cp: point offset out of range");
 		return 0; /*error */
 	}
@@ -346,12 +360,14 @@ getPoint3dz_cp(const POINTARRAY *pa, uint32_t n)
 {
 	if (!pa) return 0;
 
-	if (!FLAGS_GET_Z(pa->flags)) {
+	if (!FLAGS_GET_Z(pa->flags))
+	{
 		lwerror("getPoint3dz_cp: no Z coordinates in point array");
 		return 0; /*error */
 	}
 
-	if (n >= pa->npoints) {
+	if (n >= pa->npoints)
+	{
 		lwerror("getPoint3dz_cp: point offset out of range");
 		return 0; /*error */
 	}
@@ -364,12 +380,14 @@ getPoint4d_cp(const POINTARRAY *pa, uint32_t n)
 {
 	if (!pa) return 0;
 
-	if (!(FLAGS_GET_Z(pa->flags) && FLAGS_GET_M(pa->flags))) {
+	if (!(FLAGS_GET_Z(pa->flags) && FLAGS_GET_M(pa->flags)))
+	{
 		lwerror("getPoint4d_cp: no Z and M coordinates in point array");
 		return 0; /*error */
 	}
 
-	if (n >= pa->npoints) {
+	if (n >= pa->npoints)
+	{
 		lwerror("getPoint4d_cp: point offset out of range");
 		return 0; /*error */
 	}
@@ -390,7 +408,8 @@ ptarray_set_point4d(POINTARRAY *pa, uint32_t n, const POINT4D *p4d)
 	uint8_t *ptr;
 	assert(n < pa->npoints);
 	ptr = getPoint_internal(pa, n);
-	switch (FLAGS_GET_ZM(pa->flags)) {
+	switch (FLAGS_GET_ZM(pa->flags))
+	{
 	case 3:
 		memcpy(ptr, p4d, sizeof(POINT4D));
 		break;
@@ -412,26 +431,31 @@ void
 ptarray_copy_point(POINTARRAY *pa, uint32_t from, uint32_t to)
 {
 	int ndims = FLAGS_NDIMS(pa->flags);
-	switch (ndims) {
-	case 2: {
+	switch (ndims)
+	{
+	case 2:
+	{
 		POINT2D *p_from = (POINT2D *)(getPoint_internal(pa, from));
 		POINT2D *p_to = (POINT2D *)(getPoint_internal(pa, to));
 		*p_to = *p_from;
 		return;
 	}
-	case 3: {
+	case 3:
+	{
 		POINT3D *p_from = (POINT3D *)(getPoint_internal(pa, from));
 		POINT3D *p_to = (POINT3D *)(getPoint_internal(pa, to));
 		*p_to = *p_from;
 		return;
 	}
-	case 4: {
+	case 4:
+	{
 		POINT4D *p_from = (POINT4D *)(getPoint_internal(pa, from));
 		POINT4D *p_to = (POINT4D *)(getPoint_internal(pa, to));
 		*p_to = *p_from;
 		return;
 	}
-	default: {
+	default:
+	{
 		lwerror("%s: unsupported number of dimensions - %d", __func__, ndims);
 		return;
 	}
@@ -465,15 +489,14 @@ printPA(POINTARRAY *pa)
 	lwnotice("                 ndims=%i,   ptsize=%i", FLAGS_NDIMS(pa->flags), ptarray_point_size(pa));
 	lwnotice("                 npoints = %i", pa->npoints);
 
-	for (t = 0; t < pa->npoints; t++) {
+	for (t = 0; t < pa->npoints; t++)
+	{
 		getPoint4d_p(pa, t, &pt);
 		if (FLAGS_NDIMS(pa->flags) == 2) { lwnotice("                    %i : %lf,%lf", t, pt.x, pt.y); }
-		if (FLAGS_NDIMS(pa->flags) == 3) {
-			lwnotice("                    %i : %lf,%lf,%lf", t, pt.x, pt.y, pt.z);
-		}
-		if (FLAGS_NDIMS(pa->flags) == 4) {
-			lwnotice("                    %i : %lf,%lf,%lf,%lf", t, pt.x, pt.y, pt.z, pt.m);
-		}
+		if (FLAGS_NDIMS(pa->flags) == 3)
+		{ lwnotice("                    %i : %lf,%lf,%lf", t, pt.x, pt.y, pt.z); }
+		if (FLAGS_NDIMS(pa->flags) == 4)
+		{ lwnotice("                    %i : %lf,%lf,%lf,%lf", t, pt.x, pt.y, pt.z, pt.m); }
 	}
 
 	lwnotice("      }");
@@ -491,7 +514,8 @@ parse_hex(char *str)
 	uint8_t result_high = 0;
 	uint8_t result_low = 0;
 
-	switch (str[0]) {
+	switch (str[0])
+	{
 	case '0':
 		result_high = 0;
 		break;
@@ -547,7 +571,8 @@ parse_hex(char *str)
 		result_high = 15;
 		break;
 	}
-	switch (str[1]) {
+	switch (str[1])
+	{
 	case '0':
 		result_low = 0;
 		break;

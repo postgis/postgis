@@ -131,15 +131,18 @@ down(MINHEAP *tree, areanode *arealist, int parent)
 
 	double parentarea = ((areanode *)treearray[parent])->area;
 
-	if (left < tree->usedSize) {
+	if (left < tree->usedSize)
+	{
 		leftarea = ((areanode *)treearray[left])->area;
 		if (parentarea > leftarea) swap = left;
 	}
-	if (right < tree->usedSize) {
+	if (right < tree->usedSize)
+	{
 		rightarea = ((areanode *)treearray[right])->area;
 		if (rightarea < parentarea && rightarea < leftarea) swap = right;
 	}
-	if (swap > parent) {
+	if (swap > parent)
+	{
 		/*ok, we have to swap something*/
 		tmp = treearray[parent];
 		treearray[parent] = treearray[swap];
@@ -167,7 +170,8 @@ up(MINHEAP *tree, __attribute__((__unused__)) areanode *e, int c)
 
 	int parent = floor((c - 1) / 2);
 
-	while (((areanode *)treearray[c])->area < ((areanode *)treearray[parent])->area) {
+	while (((areanode *)treearray[c])->area < ((areanode *)treearray[parent])->area)
+	{
 		/*ok, we have to swap*/
 		tmp = treearray[parent];
 		treearray[parent] = treearray[c];
@@ -242,7 +246,8 @@ tune_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld)
 	int is3d = FLAGS_GET_Z(ea->inpts->flags);
 
 	/*Add all keys (index in initial_arealist) into minheap array*/
-	for (i = 0; i < npoints; i++) {
+	for (i = 0; i < npoints; i++)
+	{
 		tree.key_array[i] = ea->initial_arealist + i;
 		LWDEBUGF(
 		    2, "add nr %d, with area %lf, and %lf", i, ea->initial_arealist[i].area, tree.key_array[i]->area);
@@ -253,7 +258,8 @@ tune_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld)
 	qsort(tree.key_array, npoints, sizeof(void *), cmpfunc);
 
 	/*We have to put references to our tree in our point-list*/
-	for (i = 0; i < npoints; i++) {
+	for (i = 0; i < npoints; i++)
+	{
 		((areanode *)tree.key_array[i])->treeindex = i;
 		LWDEBUGF(4,
 			 "Check ordering qsort gives, area=%lf and belong to point %d",
@@ -264,7 +270,8 @@ tune_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld)
 
 	/*for (i=0;i<npoints-1;i++)*/
 	i = 0;
-	while (go_on) {
+	while (go_on)
+	{
 		/*Get a reference to the point with the currently smallest effective area*/
 		current = minheap_pop(&tree, ea->initial_arealist) - ea->initial_arealist;
 
@@ -293,7 +300,8 @@ tune_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld)
 		P3 = (double *)getPoint_internal(ea->inpts, after_current);
 
 		/*Check if point before current point is the first in the point array. */
-		if (before_current > 0) {
+		if (before_current > 0)
+		{
 
 			P1 = (double *)getPoint_internal(ea->inpts, ea->initial_arealist[before_current].prev);
 			if (is3d)
@@ -363,7 +371,8 @@ ptarray_calc_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double 
 	ea->initial_arealist[0].next = 1;
 	ea->initial_arealist[0].prev = 0;
 
-	for (i = 1; i < (npoints)-1; i++) {
+	for (i = 1; i < (npoints)-1; i++)
+	{
 		ea->initial_arealist[i].next = i + 1;
 		ea->initial_arealist[i].prev = i - 1;
 		P3 = (double *)getPoint_internal(ea->inpts, i + 1);
@@ -381,7 +390,8 @@ ptarray_calc_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double 
 	ea->initial_arealist[npoints - 1].next = npoints - 1;
 	ea->initial_arealist[npoints - 1].prev = npoints - 2;
 
-	for (i = 1; i < (npoints)-1; i++) {
+	for (i = 1; i < (npoints)-1; i++)
+	{
 		ea->res_arealist[i] = FLT_MAX;
 	}
 
@@ -408,19 +418,26 @@ ptarray_set_effective_area(POINTARRAY *inpts, int avoid_collaps, int set_area, d
 
 	ptarray_calc_areas(ea, avoid_collaps, set_area, trshld);
 
-	if (set_area) {
+	if (set_area)
+	{
 		/*Only return points with an effective area above the threashold*/
-		for (p = 0; p < ea->inpts->npoints; p++) {
-			if (ea->res_arealist[p] > trshld) {
+		for (p = 0; p < ea->inpts->npoints; p++)
+		{
+			if (ea->res_arealist[p] > trshld)
+			{
 				pt = getPoint4d(ea->inpts, p);
 				pt.m = ea->res_arealist[p];
 				ptarray_append_point(opts, &pt, LW_TRUE);
 			}
 		}
-	} else {
+	}
+	else
+	{
 		/*Only return points with an effective area above the threashold*/
-		for (p = 0; p < ea->inpts->npoints; p++) {
-			if (ea->res_arealist[p] > trshld) {
+		for (p = 0; p < ea->inpts->npoints; p++)
+		{
+			if (ea->res_arealist[p] > trshld)
+			{
 				pt = getPoint4d(ea->inpts, p);
 				ptarray_append_point(opts, &pt, LW_TRUE);
 			}
@@ -468,10 +485,12 @@ lwpoly_set_effective_area(const LWPOLY *ipoly, int set_area, double trshld)
 
 	if (lwpoly_is_empty(ipoly)) return opoly; /* should we return NULL instead ? */
 
-	for (i = 0; i < ipoly->nrings; i++) {
+	for (i = 0; i < ipoly->nrings; i++)
+	{
 		POINTARRAY *pa = ptarray_set_effective_area(ipoly->rings[i], avoid_collapse, set_area, trshld);
 		/* Add ring to simplified polygon */
-		if (pa->npoints >= 4) {
+		if (pa->npoints >= 4)
+		{
 			if (lwpoly_add_ring(opoly, pa) == LW_FAILURE) return NULL;
 		}
 		/*Inner rings we allow to ocollapse and then we remove them*/
@@ -499,7 +518,8 @@ lwcollection_set_effective_area(const LWCOLLECTION *igeom, int set_area, double 
 
 	if (lwcollection_is_empty(igeom)) return out; /* should we return NULL instead ? */
 
-	for (i = 0; i < igeom->ngeoms; i++) {
+	for (i = 0; i < igeom->ngeoms; i++)
+	{
 		LWGEOM *ngeom = lwgeom_set_effective_area(igeom->geoms[i], set_area, trshld);
 		if (ngeom) out = lwcollection_add_lwgeom(out, ngeom);
 	}
@@ -511,7 +531,8 @@ LWGEOM *
 lwgeom_set_effective_area(const LWGEOM *igeom, int set_area, double trshld)
 {
 	LWDEBUG(2, "Entered  lwgeom_set_effective_area");
-	switch (igeom->type) {
+	switch (igeom->type)
+	{
 	case POINTTYPE:
 	case MULTIPOINTTYPE:
 		return lwgeom_clone(igeom);

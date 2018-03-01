@@ -53,7 +53,8 @@ ptarray_transform(POINTARRAY *pa, projPJ inpj, projPJ outpj)
 	uint32_t i;
 	POINT4D p;
 
-	for (i = 0; i < pa->npoints; i++) {
+	for (i = 0; i < pa->npoints; i++)
+	{
 		getPoint4d_p(pa, i, &p);
 		if (!point4d_transform(&p, inpj, outpj)) return LW_FAILURE;
 		ptarray_set_point4d(pa, i, &p);
@@ -74,18 +75,22 @@ lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 	/* No points to transform in an empty! */
 	if (lwgeom_is_empty(geom)) return LW_SUCCESS;
 
-	switch (geom->type) {
+	switch (geom->type)
+	{
 	case POINTTYPE:
 	case LINETYPE:
 	case CIRCSTRINGTYPE:
-	case TRIANGLETYPE: {
+	case TRIANGLETYPE:
+	{
 		LWLINE *g = (LWLINE *)geom;
 		if (!ptarray_transform(g->points, inpj, outpj)) return LW_FAILURE;
 		break;
 	}
-	case POLYGONTYPE: {
+	case POLYGONTYPE:
+	{
 		LWPOLY *g = (LWPOLY *)geom;
-		for (i = 0; i < g->nrings; i++) {
+		for (i = 0; i < g->nrings; i++)
+		{
 			if (!ptarray_transform(g->rings[i], inpj, outpj)) return LW_FAILURE;
 		}
 		break;
@@ -99,14 +104,17 @@ lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 	case MULTICURVETYPE:
 	case MULTISURFACETYPE:
 	case POLYHEDRALSURFACETYPE:
-	case TINTYPE: {
+	case TINTYPE:
+	{
 		LWCOLLECTION *g = (LWCOLLECTION *)geom;
-		for (i = 0; i < g->ngeoms; i++) {
+		for (i = 0; i < g->ngeoms; i++)
+		{
 			if (!lwgeom_transform(g->geoms[i], inpj, outpj)) return LW_FAILURE;
 		}
 		break;
 	}
-	default: {
+	default:
+	{
 		lwerror("lwgeom_transform: Cannot handle type '%s'", lwtype_name(geom->type));
 		return LW_FAILURE;
 	}
@@ -128,9 +136,11 @@ point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj)
 		 pj_get_def(srcpj, 0),
 		 pj_get_def(dstpj, 0));
 
-	if (pj_transform(srcpj, dstpj, 1, 0, &(pt->x), &(pt->y), &(pt->z)) != 0) {
+	if (pj_transform(srcpj, dstpj, 1, 0, &(pt->x), &(pt->y), &(pt->z)) != 0)
+	{
 		int pj_errno_val = *pj_get_errno_ref();
-		if (pj_errno_val == -38) {
+		if (pj_errno_val == -38)
+		{
 			lwnotice(
 			    "PostGIS was unable to transform the point because either no grid"
 			    " shift files were found, or the point does not lie within the "
@@ -143,7 +153,9 @@ point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj)
 				orig_pt.z,
 				pj_strerrno(pj_errno_val),
 				pj_errno_val);
-		} else {
+		}
+		else
+		{
 			lwerror("transform: couldn't project point (%g %g %g): %s (%d)",
 				orig_pt.x,
 				orig_pt.y,

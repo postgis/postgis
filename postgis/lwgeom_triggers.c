@@ -70,15 +70,18 @@ Datum cache_bbox(PG_FUNCTION_ARGS)
 		rettuple = trigdata->tg_trigtuple;
 
 	/* Do nothing when fired by delete, after or for statement */
-	if (TRIGGER_FIRED_BY_DELETE(trigdata->tg_event)) {
+	if (TRIGGER_FIRED_BY_DELETE(trigdata->tg_event))
+	{
 		elog(NOTICE, "Useless cache_box trigger fired by DELETE");
 		return PointerGetDatum(rettuple);
 	}
-	if (TRIGGER_FIRED_AFTER(trigdata->tg_event)) {
+	if (TRIGGER_FIRED_AFTER(trigdata->tg_event))
+	{
 		elog(NOTICE, "Useless cache_box trigger fired AFTER");
 		return PointerGetDatum(rettuple);
 	}
-	if (TRIGGER_FIRED_FOR_STATEMENT(trigdata->tg_event)) {
+	if (TRIGGER_FIRED_FOR_STATEMENT(trigdata->tg_event))
+	{
 		elog(NOTICE, "Useless cache_box trigger fired for STATEMENT");
 		return PointerGetDatum(rettuple);
 	}
@@ -103,7 +106,8 @@ Datum cache_bbox(PG_FUNCTION_ARGS)
 	/* Get input lwgeom */
 	in = SPI_getbinval(rettuple, tupdesc, attno, &isnull);
 
-	if (!isnull) {
+	if (!isnull)
+	{
 		out = PointerGetDatum(DirectFunctionCall1(LWGEOM_addBBOX, in));
 
 		rettuple = SPI_modifytuple(trigdata->tg_relation, rettuple, 1, &attno, &out, NULL);

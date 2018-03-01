@@ -28,13 +28,15 @@ register_shp2pgsql_suite(void)
 {
 	CU_pSuite pSuite;
 	pSuite = CU_add_suite("Shapefile Loader File shp2pgsql Test", init_shp2pgsql_suite, clean_shp2pgsql_suite);
-	if (NULL == pSuite) {
+	if (NULL == pSuite)
+	{
 		CU_cleanup_registry();
 		return NULL;
 	}
 
 	if ((NULL == CU_add_test(pSuite, "test_ShpLoaderCreate()", test_ShpLoaderCreate)) ||
-	    (NULL == CU_add_test(pSuite, "test_ShpLoaderDestroy()", test_ShpLoaderDestroy))) {
+	    (NULL == CU_add_test(pSuite, "test_ShpLoaderDestroy()", test_ShpLoaderDestroy)))
+	{
 		CU_cleanup_registry();
 		return NULL;
 	}

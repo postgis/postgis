@@ -34,23 +34,23 @@ lwcompound_is_closed(const LWCOMPOUND *compound)
 	size_t size;
 	int npoints = 0;
 
-	if (lwgeom_has_z((LWGEOM *)compound)) {
-		size = sizeof(POINT3D);
-	} else {
+	if (lwgeom_has_z((LWGEOM *)compound)) { size = sizeof(POINT3D); }
+	else
+	{
 		size = sizeof(POINT2D);
 	}
 
-	if (compound->geoms[compound->ngeoms - 1]->type == CIRCSTRINGTYPE) {
-		npoints = ((LWCIRCSTRING *)compound->geoms[compound->ngeoms - 1])->points->npoints;
-	} else if (compound->geoms[compound->ngeoms - 1]->type == LINETYPE) {
+	if (compound->geoms[compound->ngeoms - 1]->type == CIRCSTRINGTYPE)
+	{ npoints = ((LWCIRCSTRING *)compound->geoms[compound->ngeoms - 1])->points->npoints; }
+	else if (compound->geoms[compound->ngeoms - 1]->type == LINETYPE)
+	{
 		npoints = ((LWLINE *)compound->geoms[compound->ngeoms - 1])->points->npoints;
 	}
 
 	if (memcmp(getPoint_internal((POINTARRAY *)compound->geoms[0]->data, 0),
 		   getPoint_internal((POINTARRAY *)compound->geoms[compound->ngeoms - 1]->data, npoints - 1),
-		   size)) {
-		return LW_FALSE;
-	}
+		   size))
+	{ return LW_FALSE; }
 
 	return LW_TRUE;
 }
@@ -68,7 +68,8 @@ lwcompound_length_2d(const LWCOMPOUND *comp)
 	double length = 0.0;
 	if (lwgeom_is_empty((LWGEOM *)comp)) return 0.0;
 
-	for (i = 0; i < comp->ngeoms; i++) {
+	for (i = 0; i < comp->ngeoms; i++)
+	{
 		length += lwgeom_length_2d(comp->geoms[i]);
 	}
 	return length;
@@ -80,12 +81,14 @@ lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom)
 	LWCOLLECTION *col = (LWCOLLECTION *)comp;
 
 	/* Empty things can't continuously join up with other things */
-	if (lwgeom_is_empty(geom)) {
+	if (lwgeom_is_empty(geom))
+	{
 		LWDEBUG(4, "Got an empty component for a compound curve!");
 		return LW_FAILURE;
 	}
 
-	if (col->ngeoms > 0) {
+	if (col->ngeoms > 0)
+	{
 		POINT4D last, first;
 		/* First point of the component we are adding */
 		LWLINE *newline = (LWLINE *)geom;
@@ -95,7 +98,8 @@ lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom)
 		getPoint4d_p(newline->points, 0, &first);
 		getPoint4d_p(prevline->points, prevline->points->npoints - 1, &last);
 
-		if (!(FP_EQUALS(first.x, last.x) && FP_EQUALS(first.y, last.y))) {
+		if (!(FP_EQUALS(first.x, last.x) && FP_EQUALS(first.y, last.y)))
+		{
 			LWDEBUG(4, "Components don't join up end-to-end!");
 			LWDEBUGF(4,
 				 "first pt (%g %g %g %g) last pt (%g %g %g %g)",
@@ -125,7 +129,8 @@ lwcompound_construct_empty(int srid, char hasz, char hasm)
 int
 lwgeom_contains_point(const LWGEOM *geom, const POINT2D *pt)
 {
-	switch (geom->type) {
+	switch (geom->type)
+	{
 	case LINETYPE:
 		return ptarray_contains_point(((LWLINE *)geom)->points, pt);
 	case CIRCSTRINGTYPE:
@@ -147,25 +152,30 @@ lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt)
 	int winding_number = 0;
 	int result;
 
-	for (i = 0; i < comp->ngeoms; i++) {
+	for (i = 0; i < comp->ngeoms; i++)
+	{
 		LWGEOM *lwgeom = comp->geoms[i];
-		if (lwgeom->type == LINETYPE) {
+		if (lwgeom->type == LINETYPE)
+		{
 			lwline = lwgeom_as_lwline(lwgeom);
-			if (comp->ngeoms == 1) {
-				return ptarray_contains_point(lwline->points, pt);
-			} else {
+			if (comp->ngeoms == 1) { return ptarray_contains_point(lwline->points, pt); }
+			else
+			{
 				/* Don't check closure while doing p-i-p test */
 				result = ptarray_contains_point_partial(lwline->points, pt, LW_FALSE, &winding_number);
 			}
-		} else {
+		}
+		else
+		{
 			lwcirc = lwgeom_as_lwcircstring(lwgeom);
-			if (!lwcirc) {
+			if (!lwcirc)
+			{
 				lwerror("Unexpected component of type %s in compound curve", lwtype_name(lwgeom->type));
 				return 0;
 			}
-			if (comp->ngeoms == 1) {
-				return ptarrayarc_contains_point(lwcirc->points, pt);
-			} else {
+			if (comp->ngeoms == 1) { return ptarrayarc_contains_point(lwcirc->points, pt); }
+			else
+			{
 				/* Don't check closure while doing p-i-p test */
 				result =
 				    ptarrayarc_contains_point_partial(lwcirc->points, pt, LW_FALSE, &winding_number);
@@ -204,17 +214,20 @@ lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, uint32_t where)
 	if (lwgeom_is_empty((LWGEOM *)lwcmp)) return NULL;
 
 	npoints = lwgeom_count_vertices((LWGEOM *)lwcmp);
-	if (where >= npoints) {
+	if (where >= npoints)
+	{
 		lwerror("%s: index %d is not in range of number of vertices (%d) in input", __func__, where, npoints);
 		return NULL;
 	}
 
-	for (i = 0; i < lwcmp->ngeoms; i++) {
+	for (i = 0; i < lwcmp->ngeoms; i++)
+	{
 		LWGEOM *part = lwcmp->geoms[i];
 		uint32_t npoints_part = lwgeom_count_vertices(part);
-		if (where >= count && where < count + npoints_part) {
-			return lwline_get_lwpoint((LWLINE *)part, where - count);
-		} else {
+		if (where >= count && where < count + npoints_part)
+		{ return lwline_get_lwpoint((LWLINE *)part, where - count); }
+		else
+		{
 			count += npoints_part;
 		}
 	}

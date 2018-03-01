@@ -225,9 +225,9 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 	int32 ret = 1;
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	if (lwgeom_is_empty(lwgeom)) {
-		ret = 0;
-	} else if (lwgeom_is_collection(lwgeom)) {
+	if (lwgeom_is_empty(lwgeom)) { ret = 0; }
+	else if (lwgeom_is_collection(lwgeom))
+	{
 		LWCOLLECTION *col = lwgeom_as_lwcollection(lwgeom);
 		ret = col->ngeoms;
 	}
@@ -256,7 +256,8 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 
 	/* call is valid on multi* geoms only */
 	if (type == POINTTYPE || type == LINETYPE || type == CIRCSTRINGTYPE || type == COMPOUNDTYPE ||
-	    type == POLYGONTYPE || type == CURVEPOLYTYPE || type == TRIANGLETYPE) {
+	    type == POLYGONTYPE || type == CURVEPOLYTYPE || type == TRIANGLETYPE)
+	{
 		if (idx == 0) PG_RETURN_POINTER(geom);
 		PG_RETURN_NULL();
 	}
@@ -295,7 +296,8 @@ Datum LWGEOM_dimension(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 
-	if (dimension < 0) {
+	if (dimension < 0)
+	{
 		elog(NOTICE, "Could not compute geometry dimensions");
 		PG_RETURN_NULL();
 	}
@@ -325,10 +327,13 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 
 	lwgeom = lwgeom_from_gserialized(geom);
 
-	if (lwgeom_is_empty(lwgeom)) {
+	if (lwgeom_is_empty(lwgeom))
+	{
 		line = lwline_construct_empty(lwgeom->srid, lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom));
 		result = geometry_serialize(lwline_as_lwgeom(line));
-	} else if (type == POLYGONTYPE) {
+	}
+	else if (type == POLYGONTYPE)
+	{
 		LWPOLY *poly = lwgeom_as_lwpoly(lwgeom);
 
 		/* Ok, now we have a polygon. Here is its exterior ring. */
@@ -345,7 +350,9 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 		result = geometry_serialize((LWGEOM *)line);
 
 		lwgeom_release((LWGEOM *)line);
-	} else if (type == TRIANGLETYPE) {
+	}
+	else if (type == TRIANGLETYPE)
+	{
 		LWTRIANGLE *triangle = lwgeom_as_lwtriangle(lwgeom);
 
 		/*
@@ -359,7 +366,9 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 		result = geometry_serialize((LWGEOM *)line);
 
 		lwgeom_release((LWGEOM *)line);
-	} else {
+	}
+	else
+	{
 		LWCURVEPOLY *curvepoly = lwgeom_as_lwcurvepoly(lwgeom);
 		result = geometry_serialize(curvepoly->rings[0]);
 	}
@@ -386,9 +395,9 @@ Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 	if ((type != POLYGONTYPE) && (type != CURVEPOLYTYPE) && (type != TRIANGLETYPE)) { PG_RETURN_NULL(); }
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	if (lwgeom_is_empty(lwgeom)) {
-		result = 0;
-	} else {
+	if (lwgeom_is_empty(lwgeom)) { result = 0; }
+	else
+	{
 		const LWPOLY *poly = (LWPOLY *)lwgeom;
 		result = poly->nrings - 1;
 	}
@@ -429,23 +438,27 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	geom = PG_GETARG_GSERIALIZED_P(0);
 	type = gserialized_get_type(geom);
 
-	if ((type != POLYGONTYPE) && (type != CURVEPOLYTYPE)) {
+	if ((type != POLYGONTYPE) && (type != CURVEPOLYTYPE))
+	{
 		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	if (lwgeom_is_empty(lwgeom)) {
+	if (lwgeom_is_empty(lwgeom))
+	{
 		lwpoly_free(poly);
 		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}
 
-	if (type == POLYGONTYPE) {
+	if (type == POLYGONTYPE)
+	{
 		poly = lwgeom_as_lwpoly(lwgeom_from_gserialized(geom));
 
 		/* Ok, now we have a polygon. Let's see if it has enough holes */
-		if (wanted_index >= (int32)poly->nrings) {
+		if (wanted_index >= (int32)poly->nrings)
+		{
 			lwpoly_free(poly);
 			PG_FREE_IF_COPY(geom, 0);
 			PG_RETURN_NULL();
@@ -454,7 +467,8 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 		ring = poly->rings[wanted_index];
 
 		/* COMPUTE_BBOX==TAINTING */
-		if (poly->bbox) {
+		if (poly->bbox)
+		{
 			bbox = lwalloc(sizeof(GBOX));
 			ptarray_calculate_gbox_cartesian(ring, bbox);
 		}
@@ -465,10 +479,13 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 		result = geometry_serialize((LWGEOM *)line);
 		lwline_release(line);
 		lwpoly_free(poly);
-	} else {
+	}
+	else
+	{
 		curvepoly = lwgeom_as_lwcurvepoly(lwgeom_from_gserialized(geom));
 
-		if (wanted_index >= (int32)curvepoly->nrings) {
+		if (wanted_index >= (int32)curvepoly->nrings)
+		{
 			PG_FREE_IF_COPY(geom, 0);
 			lwgeom_release((LWGEOM *)curvepoly);
 			PG_RETURN_NULL();
@@ -497,11 +514,13 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	int type = lwgeom->type;
 
 	/* If index is negative, count backward */
-	if (where < 1) {
+	if (where < 1)
+	{
 		int count = -1;
 		if (type == LINETYPE || type == CIRCSTRINGTYPE || type == COMPOUNDTYPE)
 			count = lwgeom_count_vertices(lwgeom);
-		if (count > 0) {
+		if (count > 0)
+		{
 			/* only work if we found the total point number */
 			/* converting where to positive backward indexing, +1 because 1 indexing */
 			where = where + count + 1;
@@ -509,10 +528,13 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 		if (where < 1) PG_RETURN_NULL();
 	}
 
-	if (type == LINETYPE || type == CIRCSTRINGTYPE) {
+	if (type == LINETYPE || type == CIRCSTRINGTYPE)
+	{
 		/* OGC index starts at one, so we substract first. */
 		lwpoint = lwline_get_lwpoint((LWLINE *)lwgeom, where - 1);
-	} else if (type == COMPOUNDTYPE) {
+	}
+	else if (type == COMPOUNDTYPE)
+	{
 		lwpoint = lwcompound_get_lwpoint((LWCOMPOUND *)lwgeom, where - 1);
 	}
 
@@ -655,9 +677,9 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 	LWPOINT *lwpoint = NULL;
 	int type = lwgeom->type;
 
-	if (type == LINETYPE || type == CIRCSTRINGTYPE) {
-		lwpoint = lwline_get_lwpoint((LWLINE *)lwgeom, 0);
-	} else if (type == COMPOUNDTYPE) {
+	if (type == LINETYPE || type == CIRCSTRINGTYPE) { lwpoint = lwline_get_lwpoint((LWLINE *)lwgeom, 0); }
+	else if (type == COMPOUNDTYPE)
+	{
 		lwpoint = lwcompound_get_startpoint((LWCOMPOUND *)lwgeom);
 	}
 
@@ -681,10 +703,13 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 	LWPOINT *lwpoint = NULL;
 	int type = lwgeom->type;
 
-	if (type == LINETYPE || type == CIRCSTRINGTYPE) {
+	if (type == LINETYPE || type == CIRCSTRINGTYPE)
+	{
 		LWLINE *line = (LWLINE *)lwgeom;
 		if (line->points) lwpoint = lwline_get_lwpoint((LWLINE *)lwgeom, line->points->npoints - 1);
-	} else if (type == COMPOUNDTYPE) {
+	}
+	else if (type == COMPOUNDTYPE)
+	{
 		lwpoint = lwcompound_get_endpoint((LWCOMPOUND *)lwgeom);
 	}
 
@@ -720,9 +745,8 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 
 	lwgeom = lwg_parser_result.geom;
 
-	if (lwgeom->srid != SRID_UNKNOWN) {
-		elog(WARNING, "OGC WKT expected, EWKT provided - use GeomFromEWKT() for this");
-	}
+	if (lwgeom->srid != SRID_UNKNOWN)
+	{ elog(WARNING, "OGC WKT expected, EWKT provided - use GeomFromEWKT() for this"); }
 
 	/* read user-requested SRID if any */
 	if (PG_NARGS() > 1) lwgeom_set_srid(lwgeom, PG_GETARG_INT32(1));
@@ -759,11 +783,11 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(bytea_wkb, 0);
 
-	if (gserialized_get_srid(geom) != SRID_UNKNOWN) {
-		elog(WARNING, "OGC WKB expected, EWKB provided - use GeometryFromEWKB() for this");
-	}
+	if (gserialized_get_srid(geom) != SRID_UNKNOWN)
+	{ elog(WARNING, "OGC WKB expected, EWKB provided - use GeometryFromEWKB() for this"); }
 
-	if (PG_NARGS() > 1) {
+	if (PG_NARGS() > 1)
+	{
 		srid = PG_GETARG_INT32(1);
 		if (srid != gserialized_get_srid(geom)) gserialized_set_srid(geom, srid);
 	}
@@ -819,12 +843,14 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(geom);
 
 	/* If user specified endianness, respect it */
-	if ((PG_NARGS() > 1) && (!PG_ARGISNULL(1))) {
+	if ((PG_NARGS() > 1) && (!PG_ARGISNULL(1)))
+	{
 		text *wkb_endian = PG_GETARG_TEXT_P(1);
 
-		if (!strncmp(VARDATA(wkb_endian), "xdr", 3) || !strncmp(VARDATA(wkb_endian), "XDR", 3)) {
-			variant = variant | WKB_XDR;
-		} else {
+		if (!strncmp(VARDATA(wkb_endian), "xdr", 3) || !strncmp(VARDATA(wkb_endian), "XDR", 3))
+		{ variant = variant | WKB_XDR; }
+		else
+		{
 			variant = variant | WKB_NDR;
 		}
 	}

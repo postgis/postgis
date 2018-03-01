@@ -44,13 +44,15 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS);
 Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS);
 Datum ST_Subdivide(PG_FUNCTION_ARGS);
 
-typedef struct GEOMDUMPNODE_T {
+typedef struct GEOMDUMPNODE_T
+{
 	uint32_t idx;
 	LWGEOM *geom;
 } GEOMDUMPNODE;
 
 #define MAXDEPTH 32
-typedef struct GEOMDUMPSTATE {
+typedef struct GEOMDUMPSTATE
+{
 	int stacklen;
 	GEOMDUMPNODE *stack[MAXDEPTH];
 	LWGEOM *root;
@@ -79,7 +81,8 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	int i;
 	char *values[2];
 
-	if (SRF_IS_FIRSTCALL()) {
+	if (SRF_IS_FIRSTCALL())
+	{
 		funcctx = SRF_FIRSTCALL_INIT();
 		newcontext = funcctx->multi_call_memory_ctx;
 
@@ -93,7 +96,8 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		state->root = lwgeom;
 		state->stacklen = 0;
 
-		if (lwgeom_is_collection(lwgeom)) {
+		if (lwgeom_is_collection(lwgeom))
+		{
 			/*
 			 * Push a GEOMDUMPNODE on the state stack
 			 */
@@ -132,7 +136,8 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	if (!state->root) SRF_RETURN_DONE(funcctx);
 	/* Return nothing for empties */
 	if (lwgeom_is_empty(state->root)) SRF_RETURN_DONE(funcctx);
-	if (!lwgeom_is_collection(state->root)) {
+	if (!lwgeom_is_collection(state->root))
+	{
 		values[0] = "{}";
 		values[1] = lwgeom_to_hexwkb(state->root, WKB_EXTENDED, 0);
 		tuple = BuildTupleFromCStrings(funcctx->attinmeta, values);
@@ -142,17 +147,21 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		SRF_RETURN_NEXT(funcctx, result);
 	}
 
-	while (1) {
+	while (1)
+	{
 		node = LAST(state);
 		lwcoll = (LWCOLLECTION *)node->geom;
 
-		if (node->idx < lwcoll->ngeoms) {
+		if (node->idx < lwcoll->ngeoms)
+		{
 			lwgeom = lwcoll->geoms[node->idx];
-			if (!lwgeom_is_collection(lwgeom)) {
+			if (!lwgeom_is_collection(lwgeom))
+			{
 				/* write address of current geom */
 				ptr = address;
 				*ptr++ = '{';
-				for (i = 0; i < state->stacklen; i++) {
+				for (i = 0; i < state->stacklen; i++)
+				{
 					if (i) ptr += sprintf(ptr, ",");
 					ptr += sprintf(ptr, "%d", state->stack[i]->idx + 1);
 				}
@@ -194,7 +203,8 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	SRF_RETURN_NEXT(funcctx, result);
 }
 
-struct POLYDUMPSTATE {
+struct POLYDUMPSTATE
+{
 	uint32_t ringnum;
 	LWPOLY *poly;
 };
@@ -214,7 +224,8 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 	char address[256];
 	char *values[2];
 
-	if (SRF_IS_FIRSTCALL()) {
+	if (SRF_IS_FIRSTCALL())
+	{
 		funcctx = SRF_FIRSTCALL_INIT();
 		newcontext = funcctx->multi_call_memory_ctx;
 
@@ -257,7 +268,8 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 	state = funcctx->user_fctx;
 
 	/* Loop trough polygon rings */
-	while (state->ringnum < state->poly->nrings) {
+	while (state->ringnum < state->poly->nrings)
+	{
 		LWPOLY *poly = state->poly;
 		POINTARRAY *ring;
 		LWGEOM *ringgeom;
@@ -292,7 +304,8 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 	SRF_RETURN_DONE(funcctx);
 }
 
-struct FLATCOLLECTIONDUMPSTATE {
+struct FLATCOLLECTIONDUMPSTATE
+{
 	int geomnum;
 	LWCOLLECTION *col;
 };
@@ -315,7 +328,8 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 
 #else /* POSTGIS_GEOS_VERSION >= 35 */
 
-	typedef struct {
+	typedef struct
+	{
 		int nextgeom;
 		int numgeoms;
 		LWCOLLECTION *col;
@@ -326,7 +340,8 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 	MemoryContext oldcontext;
 
 	/* stuff done only on the first call of the function */
-	if (SRF_IS_FIRSTCALL()) {
+	if (SRF_IS_FIRSTCALL())
+	{
 		GSERIALIZED *gser;
 		LWGEOM *geom;
 		LWCOLLECTION *col;
@@ -375,11 +390,14 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 	funcctx = SRF_PERCALL_SETUP();
 	fctx = funcctx->user_fctx;
 
-	if (fctx->nextgeom < fctx->numgeoms) {
+	if (fctx->nextgeom < fctx->numgeoms)
+	{
 		GSERIALIZED *gpart = geometry_serialize(fctx->col->geoms[fctx->nextgeom]);
 		fctx->nextgeom++;
 		SRF_RETURN_NEXT(funcctx, PointerGetDatum(gpart));
-	} else {
+	}
+	else
+	{
 		/* do when there is no more left */
 		SRF_RETURN_DONE(funcctx);
 	}

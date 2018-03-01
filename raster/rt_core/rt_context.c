@@ -108,7 +108,8 @@ default_rt_info_handler(const char *fmt, va_list ap)
 /**
  * Struct definition here
  */
-struct rt_context_t {
+struct rt_context_t
+{
 	rt_allocator alloc;
 	rt_reallocator realloc;
 	rt_deallocator dealloc;

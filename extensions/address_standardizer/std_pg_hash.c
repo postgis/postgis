@@ -32,11 +32,13 @@
 	elapsed += (b.tv_usec - a.tv_usec) / 1000.0;
 #else
 #define SET_TIME(a) \
-	do { \
+	do \
+	{ \
 		; \
 	} while (0)
 #define ELAPSED_T(a, b) \
-	do { \
+	do \
+	{ \
 		; \
 	} while (0)
 #endif
@@ -49,7 +51,8 @@
 
 static HTAB *StdHash = NULL;
 
-typedef struct {
+typedef struct
+{
 	char *lextab;
 	char *gaztab;
 	char *rultab;
@@ -57,25 +60,29 @@ typedef struct {
 	MemoryContext std_mcxt;
 } StdCacheItem;
 
-typedef struct {
+typedef struct
+{
 	StdCacheItem StdCache[STD_CACHE_ITEMS];
 	int NextSlot;
 	MemoryContext StdCacheContext;
 } StdPortalCache;
 
-typedef struct {
+typedef struct
+{
 	MemoryContext context;
 	STANDARDIZER *std;
 } StdHashEntry;
 
-typedef struct lex_columns {
+typedef struct lex_columns
+{
 	int seq;
 	int word;
 	int stdword;
 	int token;
 } lex_columns_t;
 
-typedef struct rules_columns {
+typedef struct rules_columns
+{
 	int rule;
 } rules_columns_t;
 
@@ -221,13 +228,16 @@ AddStdHashEntry(MemoryContext mcxt, STANDARDIZER *std)
 
 	he = (StdHashEntry *)hash_search(StdHash, key, HASH_ENTER, &found);
 	DBG("AddStdHashEntry: he=%p, found=%d", he, found);
-	if (!found) {
+	if (!found)
+	{
 		DBG("&he->context=%p", &he->context);
 		he->context = mcxt;
 		DBG("&he->std=%p", &he->std);
 		he->std = std;
 		DBG("Leaving AddStdHashEntry");
-	} else {
+	}
+	else
+	{
 		elog(ERROR, "AddStdHashEntry: This memory context is already in use! (%p)", (void *)mcxt);
 	}
 }
@@ -274,7 +284,8 @@ IsInStdPortalCache(StdPortalCache *STDCache, char *lextab, char *gaztab, char *r
 	int i;
 
 	DBG("Enter: IsInStdPortalCache");
-	for (i = 0; i < STD_CACHE_ITEMS; i++) {
+	for (i = 0; i < STD_CACHE_ITEMS; i++)
+	{
 		StdCacheItem *ci = &STDCache->StdCache[i];
 		if (ci->lextab && !strcmp(ci->lextab, lextab) && ci->lextab && !strcmp(ci->gaztab, gaztab) &&
 		    ci->lextab && !strcmp(ci->rultab, rultab))
@@ -297,7 +308,8 @@ GetStdFromPortalCache(StdPortalCache *STDCache, char *lextab, char *gaztab, char
 	int i;
 
 	DBG("Enter: GetStdFromPortalCache");
-	for (i = 0; i < STD_CACHE_ITEMS; i++) {
+	for (i = 0; i < STD_CACHE_ITEMS; i++)
+	{
 		StdCacheItem *ci = &STDCache->StdCache[i];
 		if (ci->lextab && !strcmp(ci->lextab, lextab) && ci->lextab && !strcmp(ci->gaztab, gaztab) &&
 		    ci->lextab && !strcmp(ci->rultab, rultab))
@@ -313,7 +325,8 @@ DeleteNextSlotFromStdCache(StdPortalCache *STDCache)
 	MemoryContext old_context;
 
 	DBG("Enter: DeleteNextSlotFromStdCache");
-	if (STDCache->StdCache[STDCache->NextSlot].std != NULL) {
+	if (STDCache->StdCache[STDCache->NextSlot].std != NULL)
+	{
 		StdCacheItem *ce = &STDCache->StdCache[STDCache->NextSlot];
 		DBG("Removing STD cache entry ('%s', '%s', '%s') index %d",
 		    ce->lextab,
@@ -364,7 +377,8 @@ AddToStdPortalCache(StdPortalCache *STDCache, char *lextab, char *gaztab, char *
 		     rultab);
 
 	/* if the NextSlot in the cache is used, then delete it */
-	if (STDCache->StdCache[STDCache->NextSlot].std != NULL) {
+	if (STDCache->StdCache[STDCache->NextSlot].std != NULL)
+	{
 #ifdef DEBUG
 		StdCacheItem *ce = &STDCache->StdCache[STDCache->NextSlot];
 		DBG("Removing item from STD cache ('%s', '%s', '%s') index %d",
@@ -442,19 +456,22 @@ GetStdPortalCache(FunctionCallInfo fcinfo)
 
 	DBG("Enter: GetStdPortalCache");
 	/* create it if we don't already have one for this portal */
-	if (fcinfo->flinfo->fn_extra == NULL) {
+	if (fcinfo->flinfo->fn_extra == NULL)
+	{
 		MemoryContext old_context;
 
 		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 		STDCache = palloc(sizeof(StdPortalCache));
 		MemoryContextSwitchTo(old_context);
 
-		if (STDCache) {
+		if (STDCache)
+		{
 			int i;
 
 			DBG("Allocating STDCache for portal with STD MemoryContext (%p)", fcinfo->flinfo->fn_mcxt);
 			/* initial the cache items */
-			for (i = 0; i < STD_CACHE_ITEMS; i++) {
+			for (i = 0; i < STD_CACHE_ITEMS; i++)
+			{
 				STDCache->StdCache[i].lextab = NULL;
 				STDCache->StdCache[i].gaztab = NULL;
 				STDCache->StdCache[i].rultab = NULL;
@@ -467,7 +484,9 @@ GetStdPortalCache(FunctionCallInfo fcinfo)
 			/* Store the pointer in fcinfo->flinfo->fn_extra */
 			fcinfo->flinfo->fn_extra = STDCache;
 		}
-	} else {
+	}
+	else
+	{
 		/* Use the existing cache */
 		STDCache = fcinfo->flinfo->fn_extra;
 	}
@@ -487,7 +506,8 @@ GetStdUsingFCInfo(FunctionCallInfo fcinfo, char *lextab, char *gaztab, char *rul
 	if (!std_cache) return NULL;
 
 	DBG("GetStdUsingFCInfo: calling IsInStdCache(std_cache, lextab, gaztab, rultab)");
-	if (!IsInStdCache(std_cache, lextab, gaztab, rultab)) {
+	if (!IsInStdCache(std_cache, lextab, gaztab, rultab))
+	{
 		DBG("GetStdUsingFCInfo: calling AddToStdCache(std_cache, lextab, gaztab, rultab)");
 		AddToStdCache(std_cache, lextab, gaztab, rultab);
 	}
@@ -516,14 +536,16 @@ CreateStd(char *lextab, char *gaztab, char *rultab)
 	if (!std) elog(ERROR, "CreateStd: could not allocate memory (std)");
 
 	lex = lex_init(std->err_p);
-	if (!lex) {
+	if (!lex)
+	{
 		std_free(std);
 		SPI_finish();
 		elog(ERROR, "CreateStd: could not allocate memory (lex)");
 	}
 
 	err = load_lex(lex, lextab);
-	if (err == -1) {
+	if (err == -1)
+	{
 		lex_free(lex);
 		std_free(std);
 		SPI_finish();
@@ -531,7 +553,8 @@ CreateStd(char *lextab, char *gaztab, char *rultab)
 	}
 
 	gaz = lex_init(std->err_p);
-	if (!gaz) {
+	if (!gaz)
+	{
 		lex_free(lex);
 		std_free(std);
 		SPI_finish();
@@ -539,7 +562,8 @@ CreateStd(char *lextab, char *gaztab, char *rultab)
 	}
 
 	err = load_lex(gaz, gaztab);
-	if (err == -1) {
+	if (err == -1)
+	{
 		lex_free(gaz);
 		lex_free(lex);
 		std_free(std);
@@ -548,7 +572,8 @@ CreateStd(char *lextab, char *gaztab, char *rultab)
 	}
 
 	rules = rules_init(std->err_p);
-	if (!rules) {
+	if (!rules)
+	{
 		lex_free(gaz);
 		lex_free(lex);
 		std_free(std);
@@ -557,7 +582,8 @@ CreateStd(char *lextab, char *gaztab, char *rultab)
 	}
 
 	err = load_rules(rules, rultab);
-	if (err == -1) {
+	if (err == -1)
+	{
 		rules_free(rules);
 		lex_free(gaz);
 		lex_free(lex);
@@ -584,7 +610,8 @@ parse_rule(char *buf, int *rule)
 	char *p = buf;
 	char *q;
 
-	while (1) {
+	while (1)
+	{
 		*r = strtol(p, &q, 10);
 		if (p == q) break;
 		p = q;
@@ -601,14 +628,16 @@ parse_rule(char *buf, int *rule)
 	if (TRGT->NAME == SPI_ERROR_NOATTRIBUTE) err++;
 
 #define CHECK_TYP(TRGT, NAME, TYPE) \
-	if (SPI_gettypeid(SPI_tuptable->tupdesc, TRGT->NAME) != TYPE) { \
+	if (SPI_gettypeid(SPI_tuptable->tupdesc, TRGT->NAME) != TYPE) \
+	{ \
 		DBG("CHECK_TYP: expecting %d, got: %d", TYPE, SPI_gettypeid(SPI_tuptable->tupdesc, TRGT->NAME)); \
 		err++; \
 	}
 
 #define GET_INT_FROM_TUPLE(TRGT, WHICH, NULLMSG) \
 	binval = SPI_getbinval(tuple, tupdesc, WHICH, &isnull); \
-	if (isnull) { \
+	if (isnull) \
+	{ \
 		elog(NOTICE, NULLMSG); \
 		return -1; \
 	} \
@@ -624,7 +653,8 @@ fetch_lex_columns(SPITupleTable *tuptable, lex_columns_t *lex_cols)
 	FETCH_COL(lex_cols, word, "word");
 	FETCH_COL(lex_cols, stdword, "stdword");
 	FETCH_COL(lex_cols, token, "token");
-	if (err) {
+	if (err)
+	{
 		elog(NOTICE, "lexicon queries must return columns 'seq', 'word', 'stdword' and 'token'");
 		return -1;
 	}
@@ -632,7 +662,8 @@ fetch_lex_columns(SPITupleTable *tuptable, lex_columns_t *lex_cols)
 	CHECK_TYP(lex_cols, word, TEXTOID);
 	CHECK_TYP(lex_cols, stdword, TEXTOID);
 	CHECK_TYP(lex_cols, token, INT4OID);
-	if (err) {
+	if (err)
+	{
 		elog(NOTICE, "lexicon column types must be: 'seq' int4, 'word' text, 'stdword' text, and 'token' int4");
 		return -1;
 	}
@@ -644,7 +675,8 @@ fetch_lex_columns(SPITupleTable *tuptable, lex_columns_t *lex_cols)
 static int
 tableNameOk(char *t)
 {
-	while (*t != '\0') {
+	while (*t != '\0')
+	{
 		if (!(isalnum(*t) || *t == '_' || *t == '.' || *t == '"')) return 0;
 		t++;
 	}
@@ -677,11 +709,13 @@ load_lex(LEXICON *lex, char *tab)
 	DBG("start load_lex\n");
 	SET_TIME(t1);
 
-	if (!tab || !strlen(tab)) {
+	if (!tab || !strlen(tab))
+	{
 		elog(NOTICE, "load_lex: rules table is not usable");
 		return -1;
 	}
-	if (!tableNameOk(tab)) {
+	if (!tableNameOk(tab))
+	{
 		elog(NOTICE, "load_lex: lex and gaz table names may only be alphanum and '.\"_' characters (%s)", tab);
 		return -1;
 	}
@@ -692,33 +726,39 @@ load_lex(LEXICON *lex, char *tab)
 
 	/* get the sql for the lexicon records and prepare the query */
 	SPIplan = SPI_prepare(sql, 0, NULL);
-	if (SPIplan == NULL) {
+	if (SPIplan == NULL)
+	{
 		elog(NOTICE, "load_lex: couldn't create query plan for the lex data via SPI (%s)", sql);
 		return -1;
 	}
 
 	/* get the sql for the lexicon records and prepare the query */
 	SPIplan = SPI_prepare(sql, 0, NULL);
-	if (SPIplan == NULL) {
+	if (SPIplan == NULL)
+	{
 		elog(NOTICE, "load_lex: couldn't create query plan for the lexicon data via SPI");
 		return -1;
 	}
 
-	if ((SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL, true)) == NULL) {
+	if ((SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL, true)) == NULL)
+	{
 		elog(NOTICE, "load_lex: SPI_cursor_open('%s') returns NULL", sql);
 		return -1;
 	}
 
-	while (moredata == TRUE) {
+	while (moredata == TRUE)
+	{
 		// DBG("calling SPI_cursor_fetch");
 		SPI_cursor_fetch(SPIportal, TRUE, TUPLIMIT);
 
-		if (SPI_tuptable == NULL) {
+		if (SPI_tuptable == NULL)
+		{
 			elog(NOTICE, "load_lex: SPI_tuptable is NULL");
 			return -1;
 		}
 
-		if (lex_columns.seq == -1) {
+		if (lex_columns.seq == -1)
+		{
 			ret = fetch_lex_columns(SPI_tuptable, &lex_columns);
 			if (ret) return ret;
 		}
@@ -727,14 +767,16 @@ load_lex(LEXICON *lex, char *tab)
 		// DBG("Reading edges: %i - %i", total_tuples, total_tuples+ntuples);
 		total_tuples += ntuples;
 
-		if (ntuples > 0) {
+		if (ntuples > 0)
+		{
 			int t;
 			Datum binval;
 			bool isnull;
 			SPITupleTable *tuptable = SPI_tuptable;
 			TupleDesc tupdesc = SPI_tuptable->tupdesc;
 
-			for (t = 0; t < ntuples; t++) {
+			for (t = 0; t < ntuples; t++)
+			{
 				// if (t%100 == 0) { DBG("    t: %i", t); }
 				HeapTuple tuple = tuptable->vals[t];
 				GET_INT_FROM_TUPLE(seq, lex_columns.seq, "load_lex: seq contains a null value");
@@ -746,7 +788,8 @@ load_lex(LEXICON *lex, char *tab)
 			// DBG("calling SPI_freetuptable");
 			SPI_freetuptable(tuptable);
 			// DBG("back from SPI_freetuptable");
-		} else
+		}
+		else
 			moredata = FALSE;
 	}
 
@@ -762,12 +805,14 @@ fetch_rules_columns(SPITupleTable *tuptable, rules_columns_t *rules_cols)
 {
 	int err = 0;
 	FETCH_COL(rules_cols, rule, "rule");
-	if (err) {
+	if (err)
+	{
 		elog(NOTICE, "rules queries must return column 'rule'");
 		return -1;
 	}
 	CHECK_TYP(rules_cols, rule, TEXTOID);
-	if (err) {
+	if (err)
+	{
 		elog(NOTICE, "rules column type must be: 'rule' text");
 		return -1;
 	}
@@ -799,11 +844,13 @@ load_rules(RULES *rules, char *tab)
 	DBG("start load_rules\n");
 	SET_TIME(t1);
 
-	if (!tab || !strlen(tab)) {
+	if (!tab || !strlen(tab))
+	{
 		elog(NOTICE, "load_rules: rules table is not usable");
 		return -1;
 	}
-	if (!tableNameOk(tab)) {
+	if (!tableNameOk(tab))
+	{
 		elog(NOTICE, "load_rules: rules table name may only be alphanum and '.\"_' characters (%s)", tab);
 		return -1;
 	}
@@ -814,26 +861,31 @@ load_rules(RULES *rules, char *tab)
 
 	/* get the sql for the lexicon records and prepare the query */
 	SPIplan = SPI_prepare(sql, 0, NULL);
-	if (SPIplan == NULL) {
+	if (SPIplan == NULL)
+	{
 		elog(NOTICE, "load_rules: couldn't create query plan for the rule data via SPI (%s)", sql);
 		return -1;
 	}
 
-	if ((SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL, true)) == NULL) {
+	if ((SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL, true)) == NULL)
+	{
 		elog(NOTICE, "load_rules: SPI_cursor_open('%s') returns NULL", sql);
 		return -1;
 	}
 
-	while (moredata == TRUE) {
+	while (moredata == TRUE)
+	{
 		// DBG("calling SPI_cursor_fetch");
 		SPI_cursor_fetch(SPIportal, TRUE, TUPLIMIT);
 
-		if (SPI_tuptable == NULL) {
+		if (SPI_tuptable == NULL)
+		{
 			elog(NOTICE, "load_rules: SPI_tuptable is NULL");
 			return -1;
 		}
 
-		if (rules_columns.rule == -1) {
+		if (rules_columns.rule == -1)
+		{
 			ret = fetch_rules_columns(SPI_tuptable, &rules_columns);
 			if (ret) return ret;
 		}
@@ -841,23 +893,27 @@ load_rules(RULES *rules, char *tab)
 		ntuples = SPI_processed;
 		// DBG("Reading edges: %i - %i", total_tuples, total_tuples+ntuples);
 
-		if (ntuples > 0) {
+		if (ntuples > 0)
+		{
 			int t;
 			SPITupleTable *tuptable = SPI_tuptable;
 			TupleDesc tupdesc = SPI_tuptable->tupdesc;
 
-			for (t = 0; t < ntuples; t++) {
+			for (t = 0; t < ntuples; t++)
+			{
 				int nr;
 				// if (t%100 == 0) { DBG("    t: %i", t); }
 				HeapTuple tuple = tuptable->vals[t];
 				GET_TEXT_FROM_TUPLE(rule, rules_columns.rule);
 				nr = parse_rule(rule, rule_arr);
-				if (nr == -1) {
+				if (nr == -1)
+				{
 					elog(NOTICE, "load_roles: rule exceeds 128 terms");
 					return -1;
 				}
 				ret = rules_add_rule(rules, nr, rule_arr);
-				if (ret != 0) {
+				if (ret != 0)
+				{
 					elog(NOTICE,
 					     "load_roles: failed to add rule %d (%d): %s",
 					     total_tuples + t + 1,
@@ -869,14 +925,16 @@ load_rules(RULES *rules, char *tab)
 			// DBG("calling SPI_freetuptable");
 			SPI_freetuptable(tuptable);
 			// DBG("back from SPI_freetuptable");
-		} else
+		}
+		else
 			moredata = FALSE;
 
 		total_tuples += ntuples;
 	}
 
 	ret = rules_ready(rules);
-	if (ret != 0) {
+	if (ret != 0)
+	{
 		elog(NOTICE, "load_roles: failed to ready the rules: err: %d", ret);
 		return -1;
 	}

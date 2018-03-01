@@ -195,7 +195,8 @@ test_varint_roundtrip(void)
 	do_test_u64_roundtrip(0xFFFFFFFFFFFFFFFF);
 
 	int i;
-	for (i = 0; i < 1024; i += 63) {
+	for (i = 0; i < 1024; i += 63)
+	{
 		do_test_u64_roundtrip(i);
 		do_test_s64_roundtrip(i);
 		do_test_s64_roundtrip(-1 * i);
@@ -209,7 +210,8 @@ test_zigzag(void)
 	int32_t b;
 	int i;
 
-	for (i = 1; i < 1024; i += 31) {
+	for (i = 1; i < 1024; i += 31)
+	{
 		a = b = i;
 		CU_ASSERT_EQUAL(a, unzigzag64(zigzag64(a)));
 		CU_ASSERT_EQUAL(b, unzigzag32(zigzag32(b)));

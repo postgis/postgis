@@ -26,7 +26,8 @@ void cu_error_msg_reset(void);
 typedef void (*PG_SuiteSetup)(void);
 
 #define ASSERT_DOUBLE_EQUAL(o, e) \
-	do { \
+	do \
+	{ \
 		if (o != e) \
 			fprintf( \
 			    stderr, "[%s:%d]\n Expected: %g\n Obtained: %g\n", __FILE__, __LINE__, (double)(e), (o)); \
@@ -34,21 +35,25 @@ typedef void (*PG_SuiteSetup)(void);
 	} while (0);
 
 #define ASSERT_INT_EQUAL(o, e) \
-	do { \
+	do \
+	{ \
 		if (o != e) fprintf(stderr, "[%s:%d]\n Expected: %d\n Obtained: %d\n", __FILE__, __LINE__, (e), (o)); \
 		CU_ASSERT_EQUAL(o, e); \
 	} while (0);
 
 #define ASSERT_STRING_EQUAL(o, e) \
-	do { \
+	do \
+	{ \
 		if (strcmp(o, e) != 0) \
 			fprintf(stderr, "[%s:%d]\n Expected: %s\n Obtained: %s\n", __FILE__, __LINE__, (e), (o)); \
 		CU_ASSERT_STRING_EQUAL(o, e); \
 	} while (0);
 
 #define ASSERT_LWGEOM_EQUAL(o, e) \
-	do { \
-		if (!lwgeom_same(o, e)) { \
+	do \
+	{ \
+		if (!lwgeom_same(o, e)) \
+		{ \
 			char *wkt_o = lwgeom_to_ewkt(o); \
 			char *wkt_e = lwgeom_to_ewkt(e); \
 			fprintf( \
@@ -60,10 +65,13 @@ typedef void (*PG_SuiteSetup)(void);
 	} while (0);
 
 #define ASSERT_INTARRAY_EQUAL(o, e, n) \
-	do { \
+	do \
+	{ \
 		size_t i = 0; \
-		for (i = 0; i < n; i++) { \
-			if (o[i] != e[i]) { \
+		for (i = 0; i < n; i++) \
+		{ \
+			if (o[i] != e[i]) \
+			{ \
 				fprintf(stderr, "[%s:%d]", __FILE__, __LINE__); \
 				fprintf(stderr, "\nExpected: ["); \
 				for (i = 0; i < n; i++) \
@@ -80,13 +88,15 @@ typedef void (*PG_SuiteSetup)(void);
 	} while (0);
 
 #define ASSERT_POINT2D_EQUAL(o, e, eps) \
-	do { \
+	do \
+	{ \
 		CU_ASSERT_DOUBLE_EQUAL(o.x, e.x, eps); \
 		CU_ASSERT_DOUBLE_EQUAL(o.y, e.y, eps); \
 	} while (0);
 
 #define ASSERT_POINT4D_EQUAL(o, e, eps) \
-	do { \
+	do \
+	{ \
 		CU_ASSERT_DOUBLE_EQUAL(o.x, e.x, eps); \
 		CU_ASSERT_DOUBLE_EQUAL(o.y, e.y, eps); \
 		CU_ASSERT_DOUBLE_EQUAL(o.z, e.z, eps); \

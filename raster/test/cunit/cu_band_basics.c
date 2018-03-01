@@ -118,8 +118,10 @@ test_band_metadata()
 	CU_ASSERT_EQUAL(rt_band_load_offline_data(band), ES_NONE);
 	CU_ASSERT(rt_band_get_data(band) != NULL);
 
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
 			CU_ASSERT_EQUAL(rt_band_get_pixel(band, x, y, &val, NULL), ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(val, 0, 1.);
 		}
@@ -185,8 +187,10 @@ test_band_pixtype_1BB()
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(clamped);
 
-	for (x = 0; x < rt_band_get_width(band); ++x) {
-		for (y = 0; y < rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
@@ -268,8 +272,10 @@ test_band_pixtype_2BUI()
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(clamped);
 
-	for (x = 0; x < rt_band_get_width(band); ++x) {
-		for (y = 0; y < rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
@@ -365,8 +371,10 @@ test_band_pixtype_4BUI()
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(clamped);
 
-	for (x = 0; x < rt_band_get_width(band); ++x) {
-		for (y = 0; y < rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
@@ -476,8 +484,10 @@ test_band_pixtype_8BUI()
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(clamped);
 
-	for (x = 0; x < rt_band_get_width(band); ++x) {
-		for (y = 0; y < rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 31, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
@@ -599,8 +609,10 @@ test_band_pixtype_8BSI()
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(clamped);
 
-	for (x = 0; x < rt_band_get_width(band); ++x) {
-		for (y = 0; y < rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 31, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
@@ -697,8 +709,10 @@ test_band_pixtype_16BUI()
 	err = rt_band_set_pixel(band, rt_band_get_width(band), 0, 0, &clamped);
 	CU_ASSERT((err != ES_NONE));
 
-	for (x = 0; x < rt_band_get_width(band); ++x) {
-		for (y = 0; y < rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 255, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
@@ -800,8 +814,10 @@ test_band_pixtype_16BSI()
 	err = rt_band_set_pixel(band, rt_band_get_width(band), 0, 0, NULL);
 	CU_ASSERT((err != ES_NONE));
 
-	for (x = 0; x < rt_band_get_width(band); ++x) {
-		for (y = 0; y < rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 255, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
@@ -887,8 +903,10 @@ test_band_pixtype_32BUI()
 	err = rt_band_set_pixel(band, rt_band_get_width(band), 0, 4294967296ULL, NULL);
 	CU_ASSERT((err != ES_NONE));
 
-	for (x = 0; x < rt_band_get_width(band); ++x) {
-		for (y = 0; y < rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
@@ -981,8 +999,10 @@ test_band_pixtype_32BSI()
 	err = rt_band_set_pixel(band, rt_band_get_width(band), 0, 0, NULL);
 	CU_ASSERT((err != ES_NONE));
 
-	for (x = 0; x < rt_band_get_width(band); ++x) {
-		for (y = 0; y < rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
@@ -1060,8 +1080,10 @@ test_band_pixtype_32BF()
 	rt_band_get_nodata(band, &val);
 	CU_ASSERT_DOUBLE_EQUAL(val, 0.0060000000521540, DBL_EPSILON);
 
-	for (x = 0; x < rt_band_get_width(band); ++x) {
-		for (y = 0; y < rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
@@ -1139,8 +1161,10 @@ test_band_pixtype_64BF()
 	rt_band_get_nodata(band, &val);
 	CU_ASSERT_DOUBLE_EQUAL(val, 0.006, DBL_EPSILON);
 
-	for (x = 0; x < rt_band_get_width(band); ++x) {
-		for (y = 0; y < rt_band_get_height(band); ++y) {
+	for (x = 0; x < rt_band_get_width(band); ++x)
+	{
+		for (y = 0; y < rt_band_get_height(band); ++y)
+		{
 			err = rt_band_set_pixel(band, x, y, 1, NULL);
 			CU_ASSERT_EQUAL(err, ES_NONE);
 			err = rt_band_get_pixel(band, x, y, &val, NULL);
@@ -1191,7 +1215,8 @@ test_band_get_pixel_line()
 	band = cu_add_band(rast, PT_8BSI, 0, 0);
 	CU_ASSERT(band != NULL);
 
-	for (y = 0; y < maxY; y++) {
+	for (y = 0; y < maxY; y++)
+	{
 		for (x = 0; x < maxX; x++)
 			rt_band_set_pixel(band, x, y, x + (y * maxX), NULL);
 	}

@@ -50,7 +50,8 @@ Datum transform(PG_FUNCTION_ARGS)
 	int32 output_srid, input_srid;
 
 	output_srid = PG_GETARG_INT32(1);
-	if (output_srid == SRID_UNKNOWN) {
+	if (output_srid == SRID_UNKNOWN)
+	{
 		elog(ERROR, "%d is an invalid target SRID", SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
@@ -58,7 +59,8 @@ Datum transform(PG_FUNCTION_ARGS)
 	geom = PG_GETARG_GSERIALIZED_P_COPY(0);
 	input_srid = gserialized_get_srid(geom);
 
-	if (input_srid == SRID_UNKNOWN) {
+	if (input_srid == SRID_UNKNOWN)
+	{
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR, "Input geometry has unknown (%d) SRID", SRID_UNKNOWN);
 		PG_RETURN_NULL();
@@ -67,7 +69,8 @@ Datum transform(PG_FUNCTION_ARGS)
 	/* Input SRID and output SRID are equal, noop */
 	if (input_srid == output_srid) PG_RETURN_POINTER(geom);
 
-	if (GetProjectionsUsingFCInfo(fcinfo, input_srid, output_srid, &input_pj, &output_pj) == LW_FAILURE) {
+	if (GetProjectionsUsingFCInfo(fcinfo, input_srid, output_srid, &input_pj, &output_pj) == LW_FAILURE)
+	{
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR, "Failure reading projections from spatial_ref_sys.");
 		PG_RETURN_NULL();
@@ -125,7 +128,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 	/* make input and output projection objects */
 	input_pj = lwproj_from_string(input_proj4);
-	if (input_pj == NULL) {
+	if (input_pj == NULL)
+	{
 		pj_errstr = pj_strerrno(*pj_get_errno_ref());
 		if (!pj_errstr) pj_errstr = "";
 
@@ -141,7 +145,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 	output_pj = lwproj_from_string(output_proj4);
 
-	if (output_pj == NULL) {
+	if (output_pj == NULL)
+	{
 		pj_errstr = pj_strerrno(*pj_get_errno_ref());
 		if (!pj_errstr) pj_errstr = "";
 

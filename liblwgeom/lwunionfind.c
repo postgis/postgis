@@ -39,7 +39,8 @@ UF_create(uint32_t N)
 	uf->clusters = lwalloc(N * sizeof(uint32_t));
 	uf->cluster_sizes = lwalloc(N * sizeof(uint32_t));
 
-	for (i = 0; i < N; i++) {
+	for (i = 0; i < N; i++)
+	{
 		uf->clusters[i] = i;
 		uf->cluster_sizes[i] = 1;
 	}
@@ -59,11 +60,13 @@ uint32_t
 UF_find(UNIONFIND *uf, uint32_t i)
 {
 	uint32_t base = i;
-	while (uf->clusters[base] != base) {
+	while (uf->clusters[base] != base)
+	{
 		base = uf->clusters[base];
 	}
 
-	while (i != base) {
+	while (i != base)
+	{
 		uint32_t next = uf->clusters[i];
 		uf->clusters[i] = base;
 		i = next;
@@ -86,11 +89,14 @@ UF_union(UNIONFIND *uf, uint32_t i, uint32_t j)
 
 	if (a == b) { return; }
 
-	if (uf->cluster_sizes[a] < uf->cluster_sizes[b] || (uf->cluster_sizes[a] == uf->cluster_sizes[b] && a > b)) {
+	if (uf->cluster_sizes[a] < uf->cluster_sizes[b] || (uf->cluster_sizes[a] == uf->cluster_sizes[b] && a > b))
+	{
 		uf->clusters[a] = uf->clusters[b];
 		uf->cluster_sizes[b] += uf->cluster_sizes[a];
 		uf->cluster_sizes[a] = 0;
-	} else {
+	}
+	else
+	{
 		uf->clusters[b] = uf->clusters[a];
 		uf->cluster_sizes[a] += uf->cluster_sizes[b];
 		uf->cluster_sizes[b] = 0;
@@ -106,7 +112,8 @@ UF_ordered_by_cluster(UNIONFIND *uf)
 	uint32_t **cluster_id_ptr_by_elem_id = lwalloc(uf->N * sizeof(uint32_t *));
 	uint32_t *ordered_ids = lwalloc(uf->N * sizeof(uint32_t));
 
-	for (i = 0; i < uf->N; i++) {
+	for (i = 0; i < uf->N; i++)
+	{
 		/* Make sure each value in uf->clusters is pointing to the
 		 * root of the cluster.
 		 * */
@@ -122,7 +129,8 @@ UF_ordered_by_cluster(UNIONFIND *uf)
 	/* Recover the input element ids from the cluster id pointers, so
 	 * we can return element ids grouped by cluster id.
 	 * */
-	for (i = 0; i < uf->N; i++) {
+	for (i = 0; i < uf->N; i++)
+	{
 		ordered_ids[i] = (cluster_id_ptr_by_elem_id[i] - uf->clusters);
 	}
 
@@ -140,11 +148,14 @@ UF_get_collapsed_cluster_ids(UNIONFIND *uf, const char *is_in_cluster)
 
 	current_new_id = 0;
 	last_old_id = 0;
-	for (i = 0; i < uf->N; i++) {
+	for (i = 0; i < uf->N; i++)
+	{
 		uint32_t j = ordered_components[i];
-		if (!is_in_cluster || is_in_cluster[j]) {
+		if (!is_in_cluster || is_in_cluster[j])
+		{
 			uint32_t current_old_id = UF_find(uf, j);
-			if (!encountered_cluster) {
+			if (!encountered_cluster)
+			{
 				encountered_cluster = LW_TRUE;
 				last_old_id = current_old_id;
 			}
@@ -164,11 +175,13 @@ UF_get_collapsed_cluster_ids(UNIONFIND *uf, const char *is_in_cluster)
 static int
 cmp_int(const void *a, const void *b)
 {
-	if (*((uint32_t *)a) > *((uint32_t *)b)) {
-		return 1;
-	} else if (*((uint32_t *)a) < *((uint32_t *)b)) {
+	if (*((uint32_t *)a) > *((uint32_t *)b)) { return 1; }
+	else if (*((uint32_t *)a) < *((uint32_t *)b))
+	{
 		return -1;
-	} else {
+	}
+	else
+	{
 		return 0;
 	}
 }

@@ -30,11 +30,13 @@ update_r(POINT2D **objs, int *clusters, uint32_t n, POINT2D **centers, uint32_t 
 	double distance, curr_distance;
 	uint32_t cluster, curr_cluster;
 
-	for (i = 0; i < n; i++) {
+	for (i = 0; i < n; i++)
+	{
 		obj = objs[i];
 
 		/* Don't try to cluster NULL objects, just add them to the "unclusterable cluster" */
-		if (!obj) {
+		if (!obj)
+		{
 			clusters[i] = KMEANS_NULL_CLUSTER;
 			continue;
 		}
@@ -44,9 +46,11 @@ update_r(POINT2D **objs, int *clusters, uint32_t n, POINT2D **centers, uint32_t 
 		curr_cluster = 0;
 
 		/* Check all other cluster centers and find the nearest */
-		for (cluster = 1; cluster < k; cluster++) {
+		for (cluster = 1; cluster < k; cluster++)
+		{
 			distance = distance2d_sqr_pt_pt(obj, centers[cluster]);
-			if (distance < curr_distance) {
+			if (distance < curr_distance)
+			{
 				curr_distance = distance;
 				curr_cluster = cluster;
 			}
@@ -63,16 +67,19 @@ update_means(POINT2D **objs, int *clusters, uint32_t n, POINT2D **centers, uint3
 	uint32_t i;
 
 	memset(weights, 0, sizeof(int) * k);
-	for (i = 0; i < k; i++) {
+	for (i = 0; i < k; i++)
+	{
 		centers[i]->x = 0.0;
 		centers[i]->y = 0.0;
 	}
-	for (i = 0; i < n; i++) {
+	for (i = 0; i < n; i++)
+	{
 		centers[clusters[i]]->x += objs[i]->x;
 		centers[clusters[i]]->y += objs[i]->y;
 		weights[clusters[i]] += 1;
 	}
-	for (i = 0; i < k; i++) {
+	for (i = 0; i < k; i++)
+	{
 		centers[i]->x /= weights[i];
 		centers[i]->y /= weights[i];
 	}
@@ -95,7 +102,8 @@ kmeans(POINT2D **objs, int *clusters, uint32_t n, POINT2D **centers, uint32_t k)
 	 */
 	clusters_last = lwalloc(clusters_sz);
 
-	for (i = 0; i < KMEANS_MAX_ITERATIONS && !converged; i++) {
+	for (i = 0; i < KMEANS_MAX_ITERATIONS && !converged; i++)
+	{
 		LW_ON_INTERRUPT(break);
 
 		/* Store the previous state of the clustering */
@@ -167,12 +175,14 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 	distances = lwalloc(sizeof(double) * n);
 
 	/* Prepare the list of object pointers for K-means */
-	for (i = 0; i < n; i++) {
+	for (i = 0; i < n; i++)
+	{
 		const LWGEOM *geom = geoms[i];
 		LWPOINT *lwpoint;
 
 		/* Null/empty geometries get a NULL pointer */
-		if ((!geom) || lwgeom_is_empty(geom)) {
+		if ((!geom) || lwgeom_is_empty(geom))
+		{
 			objs[i] = NULL;
 			/* mark as unreachable */
 			distances[i] = -1;
@@ -183,15 +193,19 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 
 		/* If the input is a point, use its coordinates */
 		/* If its not a point, convert it to one via centroid */
-		if (lwgeom_get_type(geom) != POINTTYPE) {
+		if (lwgeom_get_type(geom) != POINTTYPE)
+		{
 			LWGEOM *centroid = lwgeom_centroid(geom);
-			if ((!centroid) || lwgeom_is_empty(centroid)) {
+			if ((!centroid) || lwgeom_is_empty(centroid))
+			{
 				objs[i] = NULL;
 				continue;
 			}
 			centroids[num_centroids++] = centroid;
 			lwpoint = lwgeom_as_lwpoint(centroid);
-		} else {
+		}
+		else
+		{
 			lwpoint = lwgeom_as_lwpoint(geom);
 		}
 
@@ -201,7 +215,8 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 
 		/* Find the point with largest Euclidean norm to use as seed */
 		curr_norm = (cp->x) * (cp->x) + (cp->y) * (cp->y);
-		if (curr_norm > max_norm) {
+		if (curr_norm > max_norm)
+		{
 			boundary_point_idx = i;
 			max_norm = curr_norm;
 		}
@@ -214,14 +229,16 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 	centers_raw[0] = *((POINT2D *)objs[boundary_point_idx]);
 	centers[0] = &(centers_raw[0]);
 	/* loop i on clusters, skip 0 as it's found already */
-	for (i = 1; i < k; i++) {
+	for (i = 1; i < k; i++)
+	{
 		uint32_t j;
 		double max_distance = -DBL_MAX;
 		double curr_distance;
 		uint32_t candidate_center = 0;
 
 		/* loop j on objs */
-		for (j = 0; j < n; j++) {
+		for (j = 0; j < n; j++)
+		{
 			/* empty objs and accepted clusters are already marked with distance = -1 */
 			if (distances[j] < 0) continue;
 
@@ -230,7 +247,8 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 			distances[j] = fmin(curr_distance, distances[j]);
 
 			/* greedily take a point that's farthest from any of accepted clusters */
-			if (distances[j] > max_distance) {
+			if (distances[j] > max_distance)
+			{
 				candidate_center = j;
 				max_distance = distances[j];
 			}

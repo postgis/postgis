@@ -28,13 +28,15 @@ register_pgsql2shp_suite(void)
 {
 	CU_pSuite pSuite;
 	pSuite = CU_add_suite("Shapefile Loader File pgsql2shp Test", init_pgsql2shp_suite, clean_pgsql2shp_suite);
-	if (NULL == pSuite) {
+	if (NULL == pSuite)
+	{
 		CU_cleanup_registry();
 		return NULL;
 	}
 
 	if ((NULL == CU_add_test(pSuite, "test_ShpDumperCreate()", test_ShpDumperCreate)) ||
-	    (NULL == CU_add_test(pSuite, "test_ShpDumperDestroy()", test_ShpDumperDestroy))) {
+	    (NULL == CU_add_test(pSuite, "test_ShpDumperDestroy()", test_ShpDumperDestroy)))
+	{
 		CU_cleanup_registry();
 		return NULL;
 	}

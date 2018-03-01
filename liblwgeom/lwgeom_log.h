@@ -37,14 +37,16 @@
 
 /* Display a notice at the given debug level */
 #define LWDEBUG(level, msg) \
-	do { \
+	do \
+	{ \
 		if (POSTGIS_DEBUG_LEVEL >= level) lwdebug(level, "[%s:%s:%d] " msg, __FILE__, __func__, __LINE__); \
 	} while (0);
 
 /* Display a formatted notice at the given debug level
  * (like printf, with variadic arguments) */
 #define LWDEBUGF(level, msg, ...) \
-	do { \
+	do \
+	{ \
 		if (POSTGIS_DEBUG_LEVEL >= level) \
 			lwdebug(level, "[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__); \
 	} while (0);
@@ -52,7 +54,8 @@
 /* Display a notice and a WKT representation of a geometry
  * at the given debug level */
 #define LWDEBUGG(level, geom, msg) \
-	if (POSTGIS_DEBUG_LEVEL >= level) do { \
+	if (POSTGIS_DEBUG_LEVEL >= level) do \
+		{ \
 			size_t sz; \
 			char *wkt = lwgeom_to_wkt(geom, WKT_EXTENDED, 15, &sz); \
 			/* char *wkt = lwgeom_to_hexwkb(geom, WKT_EXTENDED, &sz); */ \
@@ -63,7 +66,8 @@
 /* Display a formatted notice and a WKT representation of a geometry
  * at the given debug level */
 #define LWDEBUGGF(level, geom, fmt, ...) \
-	if (POSTGIS_DEBUG_LEVEL >= level) do { \
+	if (POSTGIS_DEBUG_LEVEL >= level) do \
+		{ \
 			size_t sz; \
 			char *wkt = lwgeom_to_wkt(geom, WKT_EXTENDED, 15, &sz); \
 			/* char *wkt = lwgeom_to_hexwkb(geom, WKT_EXTENDED, &sz); */ \

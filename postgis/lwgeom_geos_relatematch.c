@@ -55,7 +55,8 @@ Datum ST_RelateMatch(PG_FUNCTION_ARGS)
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	result = GEOSRelatePatternMatch(mat, pat);
-	if (result == 2) {
+	if (result == 2)
+	{
 		lwfree(mat);
 		lwfree(pat);
 		lwpgerror("GEOSRelatePatternMatch: %s", lwgeom_geos_errmsg);

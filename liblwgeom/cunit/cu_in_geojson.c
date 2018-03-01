@@ -27,7 +27,8 @@ do_geojson_test(const char *exp, char *in, char *exp_srs)
 	size_t size;
 
 	g = lwgeom_from_geojson(in, &srs);
-	if (!g) {
+	if (!g)
+	{
 		fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp, cu_error_msg);
 		CU_ASSERT(g != NULL);
 		return;
@@ -35,20 +36,27 @@ do_geojson_test(const char *exp, char *in, char *exp_srs)
 
 	h = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &size);
 
-	if (strcmp(h, exp)) {
+	if (strcmp(h, exp))
+	{
 		fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp, h);
 		CU_ASSERT_STRING_EQUAL(h, exp);
 	}
 
-	if (exp_srs) {
-		if (!srs) {
+	if (exp_srs)
+	{
+		if (!srs)
+		{
 			fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: (null)\n", in, exp_srs);
 			CU_ASSERT_EQUAL(srs, exp_srs);
-		} else if (strcmp(srs, exp_srs)) {
+		}
+		else if (strcmp(srs, exp_srs))
+		{
 			fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp_srs, srs);
 			CU_ASSERT_STRING_EQUAL(srs, exp_srs);
 		}
-	} else if (srs) {
+	}
+	else if (srs)
+	{
 		fprintf(stderr, "\nIn:   %s\nExp:  (null)\nObt: %s\n", in, srs);
 		CU_ASSERT_EQUAL(srs, exp_srs);
 	}

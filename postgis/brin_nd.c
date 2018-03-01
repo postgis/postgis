@@ -67,7 +67,8 @@ gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
 	 * If the new value is null, we record that we saw it if it's the first
 	 * one; otherwise, there's nothing to do.
 	 */
-	if (isnull) {
+	if (isnull)
+	{
 		if (column->bv_hasnulls) PG_RETURN_BOOL(false);
 
 		column->bv_hasnulls = true;
@@ -86,20 +87,25 @@ gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
 	/*
 	 * check other cases where it is not possible to retrieve a box
 	 */
-	if (gserialized_datum_get_gidx_p(newval, gidx_geom) == LW_FAILURE) {
+	if (gserialized_datum_get_gidx_p(newval, gidx_geom) == LW_FAILURE)
+	{
 		/*
 		 * Empty entries have to be supported in the opclass: test the passed
 		 * new value for emptiness; if it returns true, we need to set the
 		 * "contains empty" flag in the element (unless already set).
 		 */
-		if (is_gserialized_from_datum_empty(newval)) {
-			if (!DatumGetBool(column->bv_values[INCLUSION_CONTAINS_EMPTY])) {
+		if (is_gserialized_from_datum_empty(newval))
+		{
+			if (!DatumGetBool(column->bv_values[INCLUSION_CONTAINS_EMPTY]))
+			{
 				column->bv_values[INCLUSION_CONTAINS_EMPTY] = BoolGetDatum(true);
 				PG_RETURN_BOOL(true);
 			}
 
 			PG_RETURN_BOOL(false);
-		} else {
+		}
+		else
+		{
 			/*
 			 * in case the entry is not empty and it is not possible to
 			 * retrieve a box, raise an error
@@ -112,7 +118,8 @@ gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
 	dims_geom = GIDX_NDIMS(gidx_geom);
 
 	/* if the recorded value is null, we just need to store the GIDX */
-	if (column->bv_allnulls) {
+	if (column->bv_allnulls)
+	{
 		/*
 		 * It's not safe to summarize geometries of different number of
 		 * dimensions in the same range.  We therefore fix the number of
@@ -120,7 +127,8 @@ gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
 		 * geometry found as is, being careful not to store more dimension than
 		 * defined in the opclass.
 		 */
-		if (dims_geom > max_dims) {
+		if (dims_geom > max_dims)
+		{
 			/*
 			 * Diminush the varsize to only store the maximum number of
 			 * dimensions allowed by the opclass
@@ -143,7 +151,8 @@ gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
 	 * Mark the datum as unmergeable if its number of dimension is not the same
 	 * as the one stored in the key of the current range
 	 */
-	if (dims_key != dims_geom) {
+	if (dims_key != dims_geom)
+	{
 		column->bv_values[INCLUSION_UNMERGEABLE] = BoolGetDatum(true);
 		PG_RETURN_BOOL(true);
 	}
@@ -156,7 +165,8 @@ gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
 	 * current geometry.  As we store a GIDX with a fixed number of dimensions,
 	 * we just need adjust min and max
 	 */
-	for (i = 0; i < dims_key; i++) {
+	for (i = 0; i < dims_key; i++)
+	{
 		/* Adjust minimums */
 		GIDX_SET_MIN(gidx_key, i, Min(GIDX_GET_MIN(gidx_key, i), GIDX_GET_MIN(gidx_geom, i)));
 		/* Adjust maximums */

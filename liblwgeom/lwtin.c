@@ -63,7 +63,8 @@ printLWTIN(LWTIN *tin)
 	lwnotice("    SRID = %i", (int)tin->srid);
 	lwnotice("    ngeoms = %i", (int)tin->ngeoms);
 
-	for (i = 0; i < tin->ngeoms; i++) {
+	for (i = 0; i < tin->ngeoms; i++)
+	{
 		triangle = (LWTRIANGLE *)tin->geoms[i];
 		printPA(triangle->points);
 	}
@@ -74,7 +75,8 @@ printLWTIN(LWTIN *tin)
  * TODO rewrite all this stuff to be based on a truly topological model
  */
 
-struct struct_tin_arcs {
+struct struct_tin_arcs
+{
 	double ax, ay, az;
 	double bx, by, bz;
 	uint32_t cnt, face;
@@ -100,39 +102,46 @@ lwtin_is_closed(const LWTIN *tin)
 	narcs = 3 * tin->ngeoms;
 
 	arcs = lwalloc(sizeof(struct struct_tin_arcs) * narcs);
-	for (i = 0, carc = 0; i < tin->ngeoms; i++) {
+	for (i = 0, carc = 0; i < tin->ngeoms; i++)
+	{
 
 		patch = (LWTRIANGLE *)tin->geoms[i];
-		for (j = 0; j < 3; j++) {
+		for (j = 0; j < 3; j++)
+		{
 
 			getPoint4d_p(patch->points, j, &pa);
 			getPoint4d_p(patch->points, j + 1, &pb);
 
 			/* Make sure to order the 'lower' point first */
 			if ((pa.x > pb.x) || (pa.x == pb.x && pa.y > pb.y) ||
-			    (pa.x == pb.x && pa.y == pb.y && pa.z > pb.z)) {
+			    (pa.x == pb.x && pa.y == pb.y && pa.z > pb.z))
+			{
 				pa = pb;
 				getPoint4d_p(patch->points, j, &pb);
 			}
 
-			for (found = 0, k = 0; k < carc; k++) {
+			for (found = 0, k = 0; k < carc; k++)
+			{
 
 				if ((arcs[k].ax == pa.x && arcs[k].ay == pa.y && arcs[k].az == pa.z &&
 				     arcs[k].bx == pb.x && arcs[k].by == pb.y && arcs[k].bz == pb.z &&
-				     arcs[k].face != i)) {
+				     arcs[k].face != i))
+				{
 					arcs[k].cnt++;
 					found = 1;
 
 					/* Look like an invalid TIN
 					      anyway not a closed one */
-					if (arcs[k].cnt > 2) {
+					if (arcs[k].cnt > 2)
+					{
 						lwfree(arcs);
 						return 0;
 					}
 				}
 			}
 
-			if (!found) {
+			if (!found)
+			{
 				arcs[carc].cnt = 1;
 				arcs[carc].face = i;
 				arcs[carc].ax = pa.x;
@@ -145,7 +154,8 @@ lwtin_is_closed(const LWTIN *tin)
 
 				/* Look like an invalid TIN
 				      anyway not a closed one */
-				if (carc > narcs) {
+				if (carc > narcs)
+				{
 					lwfree(arcs);
 					return 0;
 				}
@@ -155,8 +165,10 @@ lwtin_is_closed(const LWTIN *tin)
 
 	/* A TIN is closed if each edge
 	       is shared by exactly 2 faces */
-	for (k = 0; k < carc; k++) {
-		if (arcs[k].cnt != 2) {
+	for (k = 0; k < carc; k++)
+	{
+		if (arcs[k].cnt != 2)
+		{
 			lwfree(arcs);
 			return 0;
 		}

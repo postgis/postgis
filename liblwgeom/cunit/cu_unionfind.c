@@ -66,11 +66,12 @@ test_unionfind_ordered_by_cluster(void)
 	char encountered_cluster[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 	uint32_t i;
-	for (i = 0; i < uf.N; i++) {
+	for (i = 0; i < uf.N; i++)
+	{
 		uint32_t c = final_clusters[ids_by_cluster[i]];
-		if (!encountered_cluster[c]) {
-			encountered_cluster[c] = 1;
-		} else {
+		if (!encountered_cluster[c]) { encountered_cluster[c] = 1; }
+		else
+		{
 			/* If we've seen an element of this cluster before, then the
 			 * current cluster must be the same as the previous cluster. */
 			uint32_t c_prev = final_clusters[ids_by_cluster[i - 1]];
@@ -94,7 +95,8 @@ test_unionfind_path_compression(void)
 	/* Calling "find" on a leaf should attach all nodes between the root and the
 	 * leaf directly to the root. */
 	uint32_t root = UF_find(uf, 4);
-	for (i = 0; i < uf->N; i++) {
+	for (i = 0; i < uf->N; i++)
+	{
 		/* Verify that all cluster references have been updated to point
 		 * directly to the root. */
 		CU_ASSERT_EQUAL(root, uf->clusters[i]);
@@ -146,7 +148,8 @@ test_unionfind_collapse_cluster_ids(void)
 
 	collapsed_ids = UF_get_collapsed_cluster_ids(uf, is_in_cluster);
 	uint32_t i;
-	for (i = 0; i < uf->N; i++) {
+	for (i = 0; i < uf->N; i++)
+	{
 		if (is_in_cluster[i]) ASSERT_INT_EQUAL(expected_collapsed_ids2[i], collapsed_ids[i]);
 	}
 

@@ -62,23 +62,28 @@ static char __spacer__[] = " \\-.)}>_";
 	__src__++
 
 #define COLLECT_WHILE(COND) \
-	do { \
+	do \
+	{ \
 		*__dest__++ = a; \
 		__src__++; \
 		a = *__src__; \
 	} while (COND)
 
 #define NO_COLLECT_WHILE(COND) \
-	do { \
+	do \
+	{ \
 		__dest__++; \
 		__src__++; \
 		a = *__src__; \
 	} while (COND)
 
 #define TEST_FOR_ORD_DIGIT(N, NEXT_LOW, NEXT_UP) \
-	if ((b == NEXT_LOW) || (b == NEXT_UP)) { \
-		if (last_digit == N) { \
-			if ((n < 2) || (*(__dest__ - 2) != '1')) { \
+	if ((b == NEXT_LOW) || (b == NEXT_UP)) \
+	{ \
+		if (last_digit == N) \
+		{ \
+			if ((n < 2) || (*(__dest__ - 2) != '1')) \
+			{ \
 				COLLECT_LOOKAHEAD; \
 				TERM_AND_LENGTH; \
 				RETURN_NEW_MORPH(DORD); \
@@ -105,11 +110,10 @@ standardize_field(STAND_PARAM *__stand_param__, char *__in_str__, int client_sta
 	/*-- <revision date='2009-08-13'> Support multiple lexicons </revision> --*/
 	/*-- <revision date='2012-06-01'> Add gaz_lexicon to be triggered on start_state= MACRO </revision> --*/
 	__stand_param__->lexicon = __stand_param__->address_lexicon;
-	if (client_start_state > EXTRA_STATE) {
-		__stand_param__->lexicon = __stand_param__->poi_lexicon;
-	}
+	if (client_start_state > EXTRA_STATE) { __stand_param__->lexicon = __stand_param__->poi_lexicon; }
 #ifdef GAZ_LEXICON
-	else {
+	else
+	{
 		if (client_start_state == MACRO) { __stand_param__->lexicon = __stand_param__->gaz_lexicon; }
 	}
 #endif
@@ -125,7 +129,8 @@ static int
 _Scan_String_(STAND_PARAM *__stand_param__, char *__in_str__)
 {
 	char *__src__ = __in_str__;
-	while (TRUE) {
+	while (TRUE)
+	{
 		char a = *__src__;
 		/*-- <remarks> If we're done, process the tokens: </remarks> --*/
 		if ((a == '\n') || (a == SENTINEL)) { return (process_input(__stand_param__)); }
@@ -151,7 +156,8 @@ _Scan_Next_(STAND_PARAM *__stand_param__, char *__in_ptr__)
 	*__dest__ = SENTINEL;
 
 	/*-- <remarks> Type one terminators </remarks> --*/
-	if ((a == ',') || (a == '\t') || (a == ';')) {
+	if ((a == ',') || (a == '\t') || (a == ';'))
+	{
 		*__dest__++ = a;
 		*__dest__ = SENTINEL;
 		set_term(__stand_param__, 1, __scan_buf__);
@@ -159,7 +165,8 @@ _Scan_Next_(STAND_PARAM *__stand_param__, char *__in_ptr__)
 		return (__src__ + 1);
 	}
 	/*-- <remarks> Numeric sequences : ordinals, fractions and numbers </remarks> --*/
-	if (isdigit(a)) {
+	if (isdigit(a))
+	{
 		char b;
 		char last_digit;
 
@@ -168,28 +175,34 @@ _Scan_Next_(STAND_PARAM *__stand_param__, char *__in_ptr__)
 		b = *(__src__ + 1);
 		last_digit = *(__dest__ - 1); /*-- last digit collected --*/
 		n = __dest__ - __scan_buf__;
-		switch (a) {
+		switch (a)
+		{
 			/*-- <remarks> Fractions </remarks> --*/
 		case '/':
 			/*-- <remarks> Collect the rest of the fraction </remarks> --*/
-			if (isdigit(b)) {
-				switch (b) {
+			if (isdigit(b))
+			{
+				switch (b)
+				{
 				case '2':
-					if (last_digit == '1') {
+					if (last_digit == '1')
+					{
 						COLLECT_LOOKAHEAD;
 						TERM_AND_LENGTH;
 						RETURN_NEW_MORPH(DFRACT);
 					}
 					break;
 				case '3':
-					if ((last_digit == '1') || (last_digit == '2')) {
+					if ((last_digit == '1') || (last_digit == '2'))
+					{
 						COLLECT_LOOKAHEAD;
 						TERM_AND_LENGTH;
 						RETURN_NEW_MORPH(DFRACT);
 					}
 					break;
 				case '4':
-					if ((last_digit == '1') || (last_digit == '3')) {
+					if ((last_digit == '1') || (last_digit == '3'))
+					{
 						COLLECT_LOOKAHEAD;
 						TERM_AND_LENGTH;
 						RETURN_NEW_MORPH(DFRACT);
@@ -216,13 +229,16 @@ _Scan_Next_(STAND_PARAM *__stand_param__, char *__in_ptr__)
 			TEST_FOR_ORD_DIGIT('2', 'd', 'D');
 		case 't':
 		case 'T':
-			if ((b == 'h') || (b == 'H')) {
-				switch (last_digit) {
+			if ((b == 'h') || (b == 'H'))
+			{
+				switch (last_digit)
+				{
 				case '1':
 				case '2':
 				case '3':
 					/*-- <remarks> 11th, 111th, 211th etc -- for 11-13 </remarks> --*/
-					if ((n > 1) && (*(__dest__ - 2) == '1')) {
+					if ((n > 1) && (*(__dest__ - 2) == '1'))
+					{
 						COLLECT_LOOKAHEAD;
 						TERM_AND_LENGTH;
 						/*-- <remarks> Point to next input char </remarks> --*/
@@ -245,17 +261,20 @@ _Scan_Next_(STAND_PARAM *__stand_param__, char *__in_ptr__)
 		RETURN_NEW_MORPH(DNUMBER);
 	}
 	/*-- <revision date='2009-08-15'> Fix ampersand : P&R --> P & R </remarks> --*/
-	if (a == '&') {
+	if (a == '&')
+	{
 		COLLECT_WHILE(a == '&');
 		TERM_AND_LENGTH;
 		RETURN_NEW_MORPH(DSINGLE);
 	}
 	/*-- <remarks> Alphabetic sequence </remarks> --*/
-	if ((isalpha(a)) || (a == '\'') || (a == '#')) {
+	if ((isalpha(a)) || (a == '\'') || (a == '#'))
+	{
 		COLLECT_WHILE((isalpha(a)) || (a == '\''));
 		TERM_AND_LENGTH;
 		/*-- <remarks> Retain position </remarks> --*/
-		switch (n) {
+		switch (n)
+		{
 		case 1:
 			RETURN_NEW_MORPH(DSINGLE);
 		case 2:
@@ -267,7 +286,8 @@ _Scan_Next_(STAND_PARAM *__stand_param__, char *__in_ptr__)
 		return __src__;
 	}
 	/*-- <remarks> Type 2 terminators ( spacing ) </remarks> --*/
-	if (strchr(__spacer__, a) != NULL) {
+	if (strchr(__spacer__, a) != NULL)
+	{
 		NO_COLLECT_WHILE(strchr(__spacer__, a) != NULL);
 		set_term(__stand_param__, 2, __scan_buf__);
 		/*-- <remarks> Retain position </remarks> --*/
@@ -312,7 +332,8 @@ std_init()
 	if (std == NULL) return NULL;
 
 	std->pagc_p = (PAGC_GLOBAL *)calloc(1, sizeof(PAGC_GLOBAL));
-	if (std->pagc_p == NULL) {
+	if (std->pagc_p == NULL)
+	{
 		free(std);
 		return NULL;
 	}
@@ -367,7 +388,8 @@ std_free(STANDARDIZER *std)
 	if (std == NULL) return;
 	DBG("Calling close_stand_process");
 	if (std->pagc_p != NULL) close_stand_process(std->pagc_p);
-	if (std->pagc_p->process_errors != NULL) {
+	if (std->pagc_p->process_errors != NULL)
+	{
 		DBG("Calling close_errors");
 		close_errors(std->pagc_p->process_errors);
 		DBG("Calling FREE_AND_NULL");
@@ -412,7 +434,8 @@ coalesce(char *a, char *b)
 void
 print_stdaddr(STDADDR *result)
 {
-	if (result) {
+	if (result)
+	{
 		printf("  building: %s\n", coalesce(result->building, ""));
 		printf(" house_num: %s\n", coalesce(result->house_num, ""));
 		printf("    predir: %s\n", coalesce(result->predir, ""));
@@ -449,16 +472,17 @@ std_standardize_mm(STANDARDIZER *std, char *micro, char *macro, int options)
 	stand_address = std->misc_stand;
 	if (stand_address == NULL) return NULL;
 
-	if (!micro || (IS_BLANK(micro))) {
-		RET_ERR("std_standardize_mm: micro attribute to standardize!", std->err_p, NULL);
-	}
+	if (!micro || (IS_BLANK(micro)))
+	{ RET_ERR("std_standardize_mm: micro attribute to standardize!", std->err_p, NULL); }
 
 	init_output_fields(stand_address, BOTH);
-	if (macro && macro[0] != '\0') {
+	if (macro && macro[0] != '\0')
+	{
 		err = standardize_field(stand_address, macro, MACRO);
 		if (!err) { RET_ERR1("std_standardize_mm: No standardization of %s!", macro, std->err_p, NULL); }
 
-		if (options & 1) {
+		if (options & 1)
+		{
 			printf("After standardize_field for macro:\n");
 			output_raw_elements(stand_address, NULL);
 			send_fields_to_stream(stand_address->standard_fields, NULL, 0, 0);
@@ -468,7 +492,8 @@ std_standardize_mm(STANDARDIZER *std, char *micro, char *macro, int options)
 	err = standardize_field(stand_address, micro, MICRO_M);
 	if (!err) { RET_ERR1("std_standardize_mm: No standardization of %s!", micro, std->err_p, NULL); }
 
-	if (options & 1) {
+	if (options & 1)
+	{
 		printf("After standardize_field for micro:\n");
 		send_fields_to_stream(stand_address->standard_fields, NULL, 0, 0);
 	}
@@ -523,17 +548,14 @@ init_stand_process(PAGC_GLOBAL *__pagc_global__,
 	if ((__pagc_global__->rules = create_rules(__rule_name__, __pagc_global__)) == NULL) { return FALSE; }
 	/*-- <revision date='2009-08-13'> Support multiple lexicons </revision> --*/
 	if ((__pagc_global__->addr_lexicon = create_lexicon(__pagc_global__, __lexicon_name__, __gazetteer_name__)) ==
-	    NULL) {
-		return FALSE;
-	}
-	if ((__pagc_global__->poi_lexicon = create_lexicon(__pagc_global__, __featword_name__, NULL)) == NULL) {
-		return FALSE;
-	}
+	    NULL)
+	{ return FALSE; }
+	if ((__pagc_global__->poi_lexicon = create_lexicon(__pagc_global__, __featword_name__, NULL)) == NULL)
+	{ return FALSE; }
 #ifdef GAZ_LEXICON
 	/*-- <revision date='2012-06-01'> Add gaz_lexicon to be triggered on _start_state_ = MACRO </revision> --*/
-	if ((__pagc_global__->gaz_lexicon = create_lexicon(__pagc_global__, __gazetteer_name__, NULL)) == NULL) {
-		return FALSE;
-	}
+	if ((__pagc_global__->gaz_lexicon = create_lexicon(__pagc_global__, __gazetteer_name__, NULL)) == NULL)
+	{ return FALSE; }
 #endif
 	if (!setup_default_defs(__pagc_global__)) { return FALSE; }
 	return (install_def_block_table(__pagc_global__->addr_lexicon, __pagc_global__->process_errors));
@@ -617,9 +639,8 @@ close_stand_context(STAND_PARAM *__stand_param__)
 {
 	if (__stand_param__ == NULL) { return; }
 	destroy_segments(__stand_param__->stz_info);
-	if (__stand_param__->standard_fields != NULL) {
-		PAGC_DESTROY_2D_ARRAY(__stand_param__->standard_fields, char, MAXOUTSYM);
-	}
+	if (__stand_param__->standard_fields != NULL)
+	{ PAGC_DESTROY_2D_ARRAY(__stand_param__->standard_fields, char, MAXOUTSYM); }
 	/*-- <remarks> Cleanup time memory release </remarks> --*/
 	FREE_AND_NULL(__stand_param__);
 }
@@ -638,7 +659,8 @@ static int
 _Close_Stand_Field_(STAND_PARAM *__stand_param__)
 {
 	/*-- <revision date='2012-07-22'> Keep track of start_state </revision> --*/
-	if (evaluator(__stand_param__)) {
+	if (evaluator(__stand_param__))
+	{
 		/*-- <remarks> Write the output into the fields. </remarks> --*/
 		stuff_fields(__stand_param__);
 		return TRUE;

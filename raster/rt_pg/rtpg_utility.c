@@ -72,17 +72,20 @@ Datum RASTER_gdal_version(PG_FUNCTION_ARGS)
 	text *result;
 
 	/* add indicator if GDAL isn't configured right */
-	if (!rt_util_gdal_configured()) {
+	if (!rt_util_gdal_configured())
+	{
 		char *rtn = NULL;
 		rtn = palloc(strlen(ver) + strlen(" GDAL_DATA not found") + 1);
 		if (!rtn)
 			result = cstring_to_text(ver);
-		else {
+		else
+		{
 			sprintf(rtn, "%s GDAL_DATA not found", ver);
 			result = cstring_to_text(rtn);
 			pfree(rtn);
 		}
-	} else
+	}
+	else
 		result = cstring_to_text(ver);
 
 	PG_RETURN_POINTER(result);
@@ -102,7 +105,8 @@ Datum RASTER_minPossibleValue(PG_FUNCTION_ARGS)
 	pixeltypechar = text_to_cstring(pixeltypetext);
 
 	pixtype = rt_pixtype_index_from_name(pixeltypechar);
-	if (pixtype == PT_END) {
+	if (pixtype == PT_END)
+	{
 		elog(ERROR, "RASTER_minPossibleValue: Invalid pixel type: %s", pixeltypechar);
 		PG_RETURN_NULL();
 	}
@@ -114,7 +118,8 @@ Datum RASTER_minPossibleValue(PG_FUNCTION_ARGS)
 		example: for PT_8BUI, the value is CHAR_MIN but if char is signed,
 			the value returned is -127 instead of 0.
 	*/
-	switch (pixtype) {
+	switch (pixtype)
+	{
 	case PT_1BB:
 	case PT_2BUI:
 	case PT_4BUI:

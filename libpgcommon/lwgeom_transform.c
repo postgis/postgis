@@ -69,7 +69,8 @@ int pj_transform_nodatum(projPJ srcdefn,
  */
 static HTAB *PJHash = NULL;
 
-typedef struct struct_PJHashEntry {
+typedef struct struct_PJHashEntry
+{
 	MemoryContext ProjectionContext;
 	projPJ projection;
 } PJHashEntry;
@@ -235,11 +236,14 @@ AddPJHashEntry(MemoryContext mcxt, projPJ projection)
 	key = (void *)&mcxt;
 
 	he = (PJHashEntry *)hash_search(PJHash, key, HASH_ENTER, &found);
-	if (!found) {
+	if (!found)
+	{
 		/* Insert the entry into the new hash element */
 		he->ProjectionContext = mcxt;
 		he->projection = projection;
-	} else {
+	}
+	else
+	{
 		elog(ERROR,
 		     "AddPJHashEntry: PROJ4 projection object already exists for this MemoryContext (%p)",
 		     (void *)mcxt);
@@ -302,7 +306,8 @@ IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 
 	int i;
 
-	for (i = 0; i < PROJ4_CACHE_ITEMS; i++) {
+	for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
+	{
 		if (PROJ4Cache->PROJ4SRSCache[i].srid == srid) return 1;
 	}
 
@@ -325,7 +330,8 @@ GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 {
 	int i;
 
-	for (i = 0; i < PROJ4_CACHE_ITEMS; i++) {
+	for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
+	{
 		if (PROJ4Cache->PROJ4SRSCache[i].srid == srid) return PROJ4Cache->PROJ4SRSCache[i].projection;
 	}
 
@@ -349,11 +355,14 @@ GetProj4StringSPI(int srid)
 	 * and is set by SetSpatialRefSysSchema the first time
 	 * that GetProjectionsUsingFCInfo is called.
 	 */
-	if (spatialRefSysSchema) {
+	if (spatialRefSysSchema)
+	{
 		/* Format the lookup query */
 		static char *proj_str_tmpl = "SELECT proj4text FROM %s.spatial_ref_sys WHERE srid = %d LIMIT 1";
 		snprintf(proj4_spi_buffer, 255, proj_str_tmpl, spatialRefSysSchema, srid);
-	} else {
+	}
+	else
+	{
 		/* Format the lookup query */
 		static char *proj_str_tmpl = "SELECT proj4text FROM spatial_ref_sys WHERE srid = %d LIMIT 1";
 		snprintf(proj4_spi_buffer, 255, proj_str_tmpl, srid);
@@ -362,27 +371,32 @@ GetProj4StringSPI(int srid)
 	spi_result = SPI_execute(proj4_spi_buffer, true, 1);
 
 	/* Read back the PROJ4 text */
-	if (spi_result == SPI_OK_SELECT && SPI_processed > 0) {
+	if (spi_result == SPI_OK_SELECT && SPI_processed > 0)
+	{
 		/* Select the first (and only tuple) */
 		TupleDesc tupdesc = SPI_tuptable->tupdesc;
 		SPITupleTable *tuptable = SPI_tuptable;
 		HeapTuple tuple = tuptable->vals[0];
 		char *proj4text = SPI_getvalue(tuple, tupdesc, 1);
 
-		if (proj4text) {
+		if (proj4text)
+		{
 			/* Make a projection object out of it */
 			strncpy(proj_str, proj4text, maxproj4len - 1);
-		} else {
+		}
+		else
+		{
 			proj_str[0] = 0;
 		}
-	} else {
+	}
+	else
+	{
 		elog(ERROR, "GetProj4StringSPI: Cannot find SRID (%d) in spatial_ref_sys", srid);
 	}
 
 	spi_result = SPI_finish();
-	if (spi_result != SPI_OK_FINISH) {
-		elog(ERROR, "GetProj4StringSPI: Could not disconnect from database using SPI");
-	}
+	if (spi_result != SPI_OK_FINISH)
+	{ elog(ERROR, "GetProj4StringSPI: Could not disconnect from database using SPI"); }
 
 	return proj_str;
 }
@@ -399,22 +413,23 @@ GetProj4String(int srid)
 	static int maxproj4len = 512;
 
 	/* SRIDs in SPATIAL_REF_SYS */
-	if (srid < SRID_RESERVE_OFFSET) {
-		return GetProj4StringSPI(srid);
-	}
+	if (srid < SRID_RESERVE_OFFSET) { return GetProj4StringSPI(srid); }
 	/* Automagic SRIDs */
-	else {
+	else
+	{
 		char *proj_str = palloc(maxproj4len);
 		int id = srid;
 		/* UTM North */
-		if (id >= SRID_NORTH_UTM_START && id <= SRID_NORTH_UTM_END) {
+		if (id >= SRID_NORTH_UTM_START && id <= SRID_NORTH_UTM_END)
+		{
 			snprintf(proj_str,
 				 maxproj4len,
 				 "+proj=utm +zone=%d +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
 				 id - SRID_NORTH_UTM_START + 1);
 		}
 		/* UTM South */
-		else if (id >= SRID_SOUTH_UTM_START && id <= SRID_SOUTH_UTM_END) {
+		else if (id >= SRID_SOUTH_UTM_START && id <= SRID_SOUTH_UTM_END)
+		{
 			snprintf(proj_str,
 				 maxproj4len,
 				 "+proj=utm +zone=%d +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
@@ -425,7 +440,8 @@ GetProj4String(int srid)
 		/* In yzones 2,3 (equator) zones, the longitudinal zones are divided every 30 degrees (12 of them) */
 		/* In yzones 1,4 (temperate) zones, the longitudinal zones are every 45 degrees (8 of them) */
 		/* In yzones 0,5 (polar) zones, the longitudinal zones are ever 90 degrees (4 of them) */
-		else if (id >= SRID_LAEA_START && id <= SRID_LAEA_END) {
+		else if (id >= SRID_LAEA_START && id <= SRID_LAEA_END)
+		{
 			int zone = id - SRID_LAEA_START;
 			int xzone = zone % 20;
 			int yzone = zone / 20;
@@ -449,39 +465,46 @@ GetProj4String(int srid)
 				 lon_0);
 		}
 		/* Lambert Azimuthal Equal Area South Pole */
-		else if (id == SRID_SOUTH_LAMBERT) {
+		else if (id == SRID_SOUTH_LAMBERT)
+		{
 			strncpy(
 			    proj_str,
 			    "+proj=laea +lat_0=-90 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
 			    maxproj4len);
 		}
 		/* Polar Sterographic South */
-		else if (id == SRID_SOUTH_STEREO) {
+		else if (id == SRID_SOUTH_STEREO)
+		{
 			strncpy(
 			    proj_str,
 			    "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
 			    maxproj4len);
 		}
 		/* Lambert Azimuthal Equal Area North Pole */
-		else if (id == SRID_NORTH_LAMBERT) {
+		else if (id == SRID_NORTH_LAMBERT)
+		{
 			strncpy(
 			    proj_str,
 			    "+proj=laea +lat_0=90 +lon_0=-40 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
 			    maxproj4len);
 		}
 		/* Polar Stereographic North */
-		else if (id == SRID_NORTH_STEREO) {
+		else if (id == SRID_NORTH_STEREO)
+		{
 			strncpy(
 			    proj_str,
 			    "+proj=stere +lat_0=90 +lat_ts=71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
 			    maxproj4len);
 		}
 		/* World Mercator */
-		else if (id == SRID_WORLD_MERCATOR) {
+		else if (id == SRID_WORLD_MERCATOR)
+		{
 			strncpy(proj_str,
 				"+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
 				maxproj4len);
-		} else {
+		}
+		else
+		{
 			elog(ERROR, "Invalid reserved SRID (%d)", srid);
 			return NULL;
 		}
@@ -517,7 +540,8 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	if (!proj_str) { elog(ERROR, "GetProj4String returned NULL for SRID (%d)", srid); }
 
 	projection = lwproj_from_string(proj_str);
-	if (projection == NULL) {
+	if (projection == NULL)
+	{
 		char *pj_errstr = pj_strerrno(*pj_get_errno_ref());
 		if (!pj_errstr) pj_errstr = "";
 
@@ -529,12 +553,15 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	 * that doesn't contain other_srid and use this as the
 	 * subsequent value of PROJ4SRSCacheCount
 	 */
-	if (PROJ4Cache->PROJ4SRSCacheCount == PROJ4_CACHE_ITEMS) {
+	if (PROJ4Cache->PROJ4SRSCacheCount == PROJ4_CACHE_ITEMS)
+	{
 		bool found = false;
 		int i;
 
-		for (i = 0; i < PROJ4_CACHE_ITEMS; i++) {
-			if (PROJ4Cache->PROJ4SRSCache[i].srid != other_srid && found == false) {
+		for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
+		{
+			if (PROJ4Cache->PROJ4SRSCache[i].srid != other_srid && found == false)
+			{
 				POSTGIS_DEBUGF(3,
 					       "choosing to remove item from query cache with SRID %d and index %d",
 					       PROJ4Cache->PROJ4SRSCache[i].srid,
@@ -613,8 +640,10 @@ DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 
 	int i;
 
-	for (i = 0; i < PROJ4_CACHE_ITEMS; i++) {
-		if (PROJ4Cache->PROJ4SRSCache[i].srid == srid) {
+	for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
+	{
+		if (PROJ4Cache->PROJ4SRSCache[i].srid == srid)
+		{
 			POSTGIS_DEBUGF(3, "removing query cache entry with SRID %d at index %d", srid, i);
 
 			/*
@@ -648,7 +677,8 @@ SetPROJ4LibPath(void)
 	char *share_path;
 	const char **proj_lib_path;
 
-	if (!IsPROJ4LibPathSet) {
+	if (!IsPROJ4LibPathSet)
+	{
 
 		/*
 		 * Get the sharepath and append /contrib/postgis/proj to form a suitable
@@ -794,7 +824,8 @@ srid_axis_precision(FunctionCallInfo fcinfo, int srid, int precision)
 
 	if (GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE) return sp;
 
-	if (pj_is_latlong(pj1)) {
+	if (pj_is_latlong(pj1))
+	{
 		sp.precision_xy += 5;
 		return sp;
 	}

@@ -17,7 +17,8 @@
 #define DBG(format, arg...) elog(NOTICE, format, ##arg)
 #else
 #define DBG(format, arg...) \
-	do { \
+	do \
+	{ \
 		; \
 	} while (0)
 #endif
@@ -53,7 +54,8 @@ Datum parse_address(PG_FUNCTION_ARGS)
 
 	DBG("str='%s'", str);
 
-	if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+	if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE)
+	{
 		elog(ERROR,
 		     "function returning record called in context"
 		     " that cannot accept type record");
@@ -65,7 +67,8 @@ Datum parse_address(PG_FUNCTION_ARGS)
 	DBG("Got tupdesc, allocating HHash");
 
 	stH = (HHash *)palloc0(sizeof(HHash));
-	if (!stH) {
+	if (!stH)
+	{
 		elog(ERROR, "parse_address: Failed to allocate memory for hash!");
 		return -1;
 	}
@@ -73,7 +76,8 @@ Datum parse_address(PG_FUNCTION_ARGS)
 	DBG("going to load_state_hash");
 
 	err = load_state_hash(stH);
-	if (err) {
+	if (err)
+	{
 		DBG("got err=%d from load_state_hash().", err);
 #ifdef USE_HSEARCH
 		DBG("calling hdestroy_r(stH).");
@@ -85,14 +89,16 @@ Datum parse_address(PG_FUNCTION_ARGS)
 
 	DBG("calling parseaddress()");
 	paddr = parseaddress(stH, str, &err);
-	if (!paddr) {
+	if (!paddr)
+	{
 		elog(ERROR, "parse_address: parseaddress() failed!");
 		return -1;
 	}
 
 	DBG("setup values array for natts=%d", tupdesc->natts);
 	values = (char **)palloc(9 * sizeof(char *));
-	if (!values) {
+	if (!values)
+	{
 		elog(ERROR, "parse_address: out of memory!");
 		return -1;
 	}

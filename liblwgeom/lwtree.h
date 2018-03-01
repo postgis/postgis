@@ -35,7 +35,8 @@ typedef enum {
 	RECT_NODE_SEG_CIRCULAR
 } RECT_NODE_SEG_TYPE;
 
-typedef struct {
+typedef struct
+{
 	const POINTARRAY *pa;
 	RECT_NODE_SEG_TYPE seg_type;
 	int seg_num;
@@ -43,14 +44,16 @@ typedef struct {
 
 struct rect_node;
 
-typedef struct {
+typedef struct
+{
 	int num_nodes;
 	RECT_NODE_RING_TYPE ring_type;
 	struct rect_node *nodes[RECT_NODE_SIZE];
 	int sorted;
 } RECT_NODE_INTERNAL;
 
-typedef struct rect_node {
+typedef struct rect_node
+{
 	RECT_NODE_TYPE type;
 	unsigned char geom_type;
 	double xmin;
@@ -64,7 +67,8 @@ typedef struct rect_node {
 	};
 } RECT_NODE;
 
-typedef struct rect_tree_distance_state {
+typedef struct rect_tree_distance_state
+{
 	double threshold;
 	double min_dist;
 	double max_dist;

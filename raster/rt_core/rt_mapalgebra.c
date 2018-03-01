@@ -90,24 +90,26 @@ rt_band_reclass(rt_band srcband,
 	numval = width * height;
 	memsize = rt_pixtype_size(pixtype) * numval;
 	mem = (int *)rtalloc(memsize);
-	if (!mem) {
+	if (!mem)
+	{
 		rterror("rt_band_reclass: Could not allocate memory for band");
 		return 0;
 	}
 
 	/* initialize to zero */
-	if (!hasnodata) {
-		memset(mem, 0, memsize);
-	}
+	if (!hasnodata) { memset(mem, 0, memsize); }
 	/* initialize to nodataval */
-	else {
+	else
+	{
 		int32_t checkvalint = 0;
 		uint32_t checkvaluint = 0;
 		double checkvaldouble = 0;
 		float checkvalfloat = 0;
 
-		switch (pixtype) {
-		case PT_1BB: {
+		switch (pixtype)
+		{
+		case PT_1BB:
+		{
 			uint8_t *ptr = mem;
 			uint8_t clamped_initval = rt_util_clamp_to_1BB(nodataval);
 			for (i = 0; i < numval; i++)
@@ -115,7 +117,8 @@ rt_band_reclass(rt_band srcband,
 			checkvalint = ptr[0];
 			break;
 		}
-		case PT_2BUI: {
+		case PT_2BUI:
+		{
 			uint8_t *ptr = mem;
 			uint8_t clamped_initval = rt_util_clamp_to_2BUI(nodataval);
 			for (i = 0; i < numval; i++)
@@ -123,7 +126,8 @@ rt_band_reclass(rt_band srcband,
 			checkvalint = ptr[0];
 			break;
 		}
-		case PT_4BUI: {
+		case PT_4BUI:
+		{
 			uint8_t *ptr = mem;
 			uint8_t clamped_initval = rt_util_clamp_to_4BUI(nodataval);
 			for (i = 0; i < numval; i++)
@@ -131,7 +135,8 @@ rt_band_reclass(rt_band srcband,
 			checkvalint = ptr[0];
 			break;
 		}
-		case PT_8BSI: {
+		case PT_8BSI:
+		{
 			int8_t *ptr = mem;
 			int8_t clamped_initval = rt_util_clamp_to_8BSI(nodataval);
 			for (i = 0; i < numval; i++)
@@ -139,7 +144,8 @@ rt_band_reclass(rt_band srcband,
 			checkvalint = ptr[0];
 			break;
 		}
-		case PT_8BUI: {
+		case PT_8BUI:
+		{
 			uint8_t *ptr = mem;
 			uint8_t clamped_initval = rt_util_clamp_to_8BUI(nodataval);
 			for (i = 0; i < numval; i++)
@@ -147,7 +153,8 @@ rt_band_reclass(rt_band srcband,
 			checkvalint = ptr[0];
 			break;
 		}
-		case PT_16BSI: {
+		case PT_16BSI:
+		{
 			int16_t *ptr = mem;
 			int16_t clamped_initval = rt_util_clamp_to_16BSI(nodataval);
 			for (i = 0; i < numval; i++)
@@ -155,7 +162,8 @@ rt_band_reclass(rt_band srcband,
 			checkvalint = ptr[0];
 			break;
 		}
-		case PT_16BUI: {
+		case PT_16BUI:
+		{
 			uint16_t *ptr = mem;
 			uint16_t clamped_initval = rt_util_clamp_to_16BUI(nodataval);
 			for (i = 0; i < numval; i++)
@@ -163,7 +171,8 @@ rt_band_reclass(rt_band srcband,
 			checkvalint = ptr[0];
 			break;
 		}
-		case PT_32BSI: {
+		case PT_32BSI:
+		{
 			int32_t *ptr = mem;
 			int32_t clamped_initval = rt_util_clamp_to_32BSI(nodataval);
 			for (i = 0; i < numval; i++)
@@ -171,7 +180,8 @@ rt_band_reclass(rt_band srcband,
 			checkvalint = ptr[0];
 			break;
 		}
-		case PT_32BUI: {
+		case PT_32BUI:
+		{
 			uint32_t *ptr = mem;
 			uint32_t clamped_initval = rt_util_clamp_to_32BUI(nodataval);
 			for (i = 0; i < numval; i++)
@@ -179,7 +189,8 @@ rt_band_reclass(rt_band srcband,
 			checkvaluint = ptr[0];
 			break;
 		}
-		case PT_32BF: {
+		case PT_32BF:
+		{
 			float *ptr = mem;
 			float clamped_initval = rt_util_clamp_to_32F(nodataval);
 			for (i = 0; i < numval; i++)
@@ -187,14 +198,16 @@ rt_band_reclass(rt_band srcband,
 			checkvalfloat = ptr[0];
 			break;
 		}
-		case PT_64BF: {
+		case PT_64BF:
+		{
 			double *ptr = mem;
 			for (i = 0; i < numval; i++)
 				ptr[i] = nodataval;
 			checkvaldouble = ptr[0];
 			break;
 		}
-		default: {
+		default:
+		{
 			rterror("rt_band_reclass: Unknown pixeltype %d", pixtype);
 			rtdealloc(mem);
 			return 0;
@@ -207,7 +220,8 @@ rt_band_reclass(rt_band srcband,
 	RASTER_DEBUGF(3, "rt_band_reclass: width = %d height = %d", width, height);
 
 	band = rt_band_new_inline(width, height, pixtype, hasnodata, nodataval, mem);
-	if (!band) {
+	if (!band)
+	{
 		rterror("rt_band_reclass: Could not create new band");
 		rtdealloc(mem);
 		return 0;
@@ -215,31 +229,38 @@ rt_band_reclass(rt_band srcband,
 	rt_band_set_ownsdata_flag(band, 1); /* we DO own this data!!! */
 	RASTER_DEBUGF(3, "rt_band_reclass: new band @ %p", band);
 
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
 			rtn = rt_band_get_pixel(srcband, x, y, &ov, &isnodata);
 
 			/* error getting value, skip */
-			if (rtn != ES_NONE) {
+			if (rtn != ES_NONE)
+			{
 				RASTER_DEBUGF(3, "Cannot get value at %d, %d", x, y);
 				continue;
 			}
 			RASTER_DEBUGF(4, "(x, y, ov, isnodata) = (%d, %d, %f, %d)", x, y, ov, isnodata);
 
-			do {
+			do
+			{
 				do_nv = 0;
 
 				/* no data*/
-				if (hasnodata && isnodata) {
+				if (hasnodata && isnodata)
+				{
 					do_nv = 1;
 					break;
 				}
 
-				for (i = 0; i < exprcount; i++) {
+				for (i = 0; i < exprcount; i++)
+				{
 					expr = exprset[i];
 
 					/* ov matches min and max*/
-					if (FLT_EQ(expr->src.min, ov) && FLT_EQ(expr->src.max, ov)) {
+					if (FLT_EQ(expr->src.min, ov) && FLT_EQ(expr->src.max, ov))
+					{
 						do_nv = 1;
 						break;
 					}
@@ -247,13 +268,15 @@ rt_band_reclass(rt_band srcband,
 					/* process min */
 					if ((expr->src.exc_min && (expr->src.min > ov || FLT_EQ(expr->src.min, ov))) ||
 					    (expr->src.inc_min && (expr->src.min < ov || FLT_EQ(expr->src.min, ov))) ||
-					    (expr->src.min < ov)) {
+					    (expr->src.min < ov))
+					{
 						/* process max */
 						if ((expr->src.exc_max &&
 						     (ov > expr->src.max || FLT_EQ(expr->src.max, ov))) ||
 						    (expr->src.inc_max &&
 						     (ov < expr->src.max || FLT_EQ(expr->src.max, ov))) ||
-						    (ov < expr->src.max)) {
+						    (ov < expr->src.max))
+						{
 							do_nv = 1;
 							break;
 						}
@@ -272,29 +295,32 @@ rt_band_reclass(rt_band srcband,
 			*/
 
 			/* NODATA */
-			if (hasnodata && isnodata) {
-				nv = nodataval;
-			}
+			if (hasnodata && isnodata) { nv = nodataval; }
 			/*
 				"src" min and max is the same, prevent division by zero
 				set nv to "dst" min, which should be the same as "dst" max
 			*/
-			else if (FLT_EQ(expr->src.max, expr->src.min)) {
+			else if (FLT_EQ(expr->src.max, expr->src.min))
+			{
 				nv = expr->dst.min;
-			} else {
+			}
+			else
+			{
 				or = expr->src.max - expr->src.min;
 				nr = expr->dst.max - expr->dst.min;
 				nv = (((ov - expr->src.min) * nr) / or) + expr->dst.min;
 
 				/* if dst range is from high to low */
-				if (expr->dst.min > expr->dst.max) {
+				if (expr->dst.min > expr->dst.max)
+				{
 					if (nv > expr->dst.min)
 						nv = expr->dst.min;
 					else if (nv < expr->dst.max)
 						nv = expr->dst.max;
 				}
 				/* if dst range is from low to high */
-				else {
+				else
+				{
 					if (nv < expr->dst.min)
 						nv = expr->dst.min;
 					else if (nv > expr->dst.max)
@@ -303,7 +329,8 @@ rt_band_reclass(rt_band srcband,
 			}
 
 			/* round the value for integers */
-			switch (pixtype) {
+			switch (pixtype)
+			{
 			case PT_1BB:
 			case PT_2BUI:
 			case PT_4BUI:
@@ -329,7 +356,8 @@ rt_band_reclass(rt_band srcband,
 				      (NULL != expr) ? expr->dst.min : 0,
 				      (NULL != expr) ? expr->dst.max : 0,
 				      nv);
-			if (rt_band_set_pixel(band, x, y, nv, NULL) != ES_NONE) {
+			if (rt_band_set_pixel(band, x, y, nv, NULL) != ES_NONE)
+			{
 				rterror("rt_band_reclass: Could not assign value to new band");
 				rt_band_destroy(band);
 				rtdealloc(mem);
@@ -348,7 +376,8 @@ rt_band_reclass(rt_band srcband,
  ******************************************************************************/
 
 typedef struct _rti_iterator_arg_t *_rti_iterator_arg;
-struct _rti_iterator_arg_t {
+struct _rti_iterator_arg_t
+{
 	uint32_t count;
 
 	rt_raster *raster;
@@ -357,7 +386,8 @@ struct _rti_iterator_arg_t {
 	int *width;
 	int *height;
 
-	struct {
+	struct
+	{
 		rt_band *rtband;
 		int *hasnodata;
 		int *isnodata;
@@ -365,17 +395,20 @@ struct _rti_iterator_arg_t {
 		double *minval;
 	} band;
 
-	struct {
+	struct
+	{
 		uint16_t x;
 		uint16_t y;
 	} distance;
 
-	struct {
+	struct
+	{
 		uint32_t rows;
 		uint32_t columns;
 	} dimension;
 
-	struct {
+	struct
+	{
 		double **values;
 		int **nodata;
 	} empty;
@@ -389,7 +422,8 @@ _rti_iterator_arg_init()
 	_rti_iterator_arg _param;
 
 	_param = rtalloc(sizeof(struct _rti_iterator_arg_t));
-	if (_param == NULL) {
+	if (_param == NULL)
+	{
 		rterror("_rti_iterator_arg_init: Could not allocate memory for _rti_iterator_arg");
 		return NULL;
 	}
@@ -438,34 +472,43 @@ _rti_iterator_arg_destroy(_rti_iterator_arg _param)
 	if (_param->band.nodataval != NULL) rtdealloc(_param->band.nodataval);
 	if (_param->band.minval != NULL) rtdealloc(_param->band.minval);
 
-	if (_param->offset != NULL) {
-		for (i = 0; i < _param->count; i++) {
+	if (_param->offset != NULL)
+	{
+		for (i = 0; i < _param->count; i++)
+		{
 			if (_param->offset[i] == NULL) continue;
 			rtdealloc(_param->offset[i]);
 		}
 		rtdealloc(_param->offset);
 	}
 
-	if (_param->empty.values != NULL) {
-		for (i = 0; i < _param->dimension.rows; i++) {
+	if (_param->empty.values != NULL)
+	{
+		for (i = 0; i < _param->dimension.rows; i++)
+		{
 			if (_param->empty.values[i] == NULL) continue;
 			rtdealloc(_param->empty.values[i]);
 		}
 		rtdealloc(_param->empty.values);
 	}
-	if (_param->empty.nodata != NULL) {
-		for (i = 0; i < _param->dimension.rows; i++) {
+	if (_param->empty.nodata != NULL)
+	{
+		for (i = 0; i < _param->dimension.rows; i++)
+		{
 			if (_param->empty.nodata[i] == NULL) continue;
 			rtdealloc(_param->empty.nodata[i]);
 		}
 		rtdealloc(_param->empty.nodata);
 	}
 
-	if (_param->arg != NULL) {
+	if (_param->arg != NULL)
+	{
 		if (_param->arg->values != NULL) rtdealloc(_param->arg->values);
 		if (_param->arg->nodata != NULL) rtdealloc(_param->arg->nodata);
-		if (_param->arg->src_pixel != NULL) {
-			for (i = 0; i < _param->count; i++) {
+		if (_param->arg->src_pixel != NULL)
+		{
+			for (i = 0; i < _param->count; i++)
+			{
 				if (_param->arg->src_pixel[i] == NULL) continue;
 				rtdealloc(_param->arg->src_pixel[i]);
 			}
@@ -513,7 +556,8 @@ _rti_iterator_arg_populate(_rti_iterator_arg _param,
 
 	if (_param->raster == NULL || _param->isempty == NULL || _param->width == NULL || _param->height == NULL ||
 	    _param->offset == NULL || _param->band.rtband == NULL || _param->band.hasnodata == NULL ||
-	    _param->band.isnodata == NULL || _param->band.nodataval == NULL || _param->band.minval == NULL) {
+	    _param->band.isnodata == NULL || _param->band.nodataval == NULL || _param->band.minval == NULL)
+	{
 		rterror("_rti_iterator_arg_populate: Could not allocate memory for children of _rti_iterator_arg");
 		return 0;
 	}
@@ -526,7 +570,8 @@ _rti_iterator_arg_populate(_rti_iterator_arg _param,
 			not empty, band # is valid
 			copy raster pointers and set flags
 	*/
-	for (i = 0; i < itrcount; i++) {
+	for (i = 0; i < itrcount; i++)
+	{
 		/* initialize elements */
 		_param->raster[i] = NULL;
 		_param->isempty[i] = 0;
@@ -542,14 +587,17 @@ _rti_iterator_arg_populate(_rti_iterator_arg _param,
 		_param->band.minval[i] = 0;
 
 		/* set isempty */
-		if (itrset[i].raster == NULL) {
+		if (itrset[i].raster == NULL)
+		{
 			_param->isempty[i] = 1;
 
 			(*allnull)++;
 			(*allempty)++;
 
 			continue;
-		} else if (rt_raster_is_empty(itrset[i].raster)) {
+		}
+		else if (rt_raster_is_empty(itrset[i].raster))
+		{
 			_param->isempty[i] = 1;
 
 			(*allempty)++;
@@ -559,20 +607,26 @@ _rti_iterator_arg_populate(_rti_iterator_arg _param,
 
 		/* check band number */
 		hasband = rt_raster_has_band(itrset[i].raster, itrset[i].nband);
-		if (!hasband) {
-			if (!itrset[i].nbnodata) {
+		if (!hasband)
+		{
+			if (!itrset[i].nbnodata)
+			{
 				rterror(
 				    "_rti_iterator_arg_populate: Band %d not found for raster %d", itrset[i].nband, i);
 				return 0;
-			} else {
+			}
+			else
+			{
 				RASTER_DEBUGF(4, "Band %d not found for raster %d. Using NODATA", itrset[i].nband, i);
 			}
 		}
 
 		_param->raster[i] = itrset[i].raster;
-		if (hasband) {
+		if (hasband)
+		{
 			_param->band.rtband[i] = rt_raster_get_band(itrset[i].raster, itrset[i].nband);
-			if (_param->band.rtband[i] == NULL) {
+			if (_param->band.rtband[i] == NULL)
+			{
 				rterror("_rti_iterator_arg_populate: Could not get band %d for raster %d",
 					itrset[i].nband,
 					i);
@@ -583,7 +637,8 @@ _rti_iterator_arg_populate(_rti_iterator_arg _param,
 			_param->band.hasnodata[i] = rt_band_get_hasnodata_flag(_param->band.rtband[i]);
 
 			/* hasnodata = TRUE */
-			if (_param->band.hasnodata[i]) {
+			if (_param->band.hasnodata[i])
+			{
 				/* nodataval */
 				rt_band_get_nodata(_param->band.rtband[i], &(_param->band.nodataval[i]));
 
@@ -591,7 +646,8 @@ _rti_iterator_arg_populate(_rti_iterator_arg _param,
 				_param->band.isnodata[i] = rt_band_get_isnodata_flag(_param->band.rtband[i]);
 			}
 			/* hasnodata = FALSE */
-			else {
+			else
+			{
 				/* minval */
 				_param->band.minval[i] = rt_band_get_min_value(_param->band.rtband[i]);
 			}
@@ -603,7 +659,8 @@ _rti_iterator_arg_populate(_rti_iterator_arg _param,
 
 		/* init offset */
 		_param->offset[i] = rtalloc(sizeof(double) * 2);
-		if (_param->offset[i] == NULL) {
+		if (_param->offset[i] == NULL)
+		{
 			rterror("_rti_iterator_arg_populate: Could not allocate memory for offsets");
 			return 0;
 		}
@@ -620,22 +677,26 @@ _rti_iterator_arg_empty_init(_rti_iterator_arg _param)
 
 	_param->empty.values = rtalloc(sizeof(double *) * _param->dimension.rows);
 	_param->empty.nodata = rtalloc(sizeof(int *) * _param->dimension.rows);
-	if (_param->empty.values == NULL || _param->empty.nodata == NULL) {
+	if (_param->empty.values == NULL || _param->empty.nodata == NULL)
+	{
 		rterror("_rti_iterator_arg_empty_init: Could not allocate memory for empty values and NODATA");
 		return 0;
 	}
 
-	for (y = 0; y < _param->dimension.rows; y++) {
+	for (y = 0; y < _param->dimension.rows; y++)
+	{
 		_param->empty.values[y] = rtalloc(sizeof(double) * _param->dimension.columns);
 		_param->empty.nodata[y] = rtalloc(sizeof(int) * _param->dimension.columns);
 
-		if (_param->empty.values[y] == NULL || _param->empty.nodata[y] == NULL) {
+		if (_param->empty.values[y] == NULL || _param->empty.nodata[y] == NULL)
+		{
 			rterror(
 			    "_rti_iterator_arg_empty_init: Could not allocate memory for elements of empty values and NODATA");
 			return 0;
 		}
 
-		for (x = 0; x < _param->dimension.columns; x++) {
+		for (x = 0; x < _param->dimension.columns; x++)
+		{
 			_param->empty.values[y][x] = 0;
 			_param->empty.nodata[y][x] = 1;
 		}
@@ -650,7 +711,8 @@ _rti_iterator_arg_callback_init(_rti_iterator_arg _param)
 	uint32_t i = 0;
 
 	_param->arg = rtalloc(sizeof(struct rt_iterator_arg_t));
-	if (_param->arg == NULL) {
+	if (_param->arg == NULL)
+	{
 		rterror("_rti_iterator_arg_callback_init: Could not allocate memory for rt_iterator_arg");
 		return 0;
 	}
@@ -663,7 +725,8 @@ _rti_iterator_arg_callback_init(_rti_iterator_arg _param)
 	_param->arg->values = rtalloc(sizeof(double **) * _param->count);
 	_param->arg->nodata = rtalloc(sizeof(int **) * _param->count);
 	_param->arg->src_pixel = rtalloc(sizeof(int *) * _param->count);
-	if (_param->arg->values == NULL || _param->arg->nodata == NULL || _param->arg->src_pixel == NULL) {
+	if (_param->arg->values == NULL || _param->arg->nodata == NULL || _param->arg->src_pixel == NULL)
+	{
 		rterror("_rti_iterator_arg_callback_init: Could not allocate memory for element of rt_iterator_arg");
 		return 0;
 	}
@@ -671,10 +734,12 @@ _rti_iterator_arg_callback_init(_rti_iterator_arg _param)
 	memset(_param->arg->nodata, 0, sizeof(int **) * _param->count);
 
 	/* initialize pos */
-	for (i = 0; i < _param->count; i++) {
+	for (i = 0; i < _param->count; i++)
+	{
 
 		_param->arg->src_pixel[i] = rtalloc(sizeof(int) * 2);
-		if (_param->arg->src_pixel[i] == NULL) {
+		if (_param->arg->src_pixel[i] == NULL)
+		{
 			rterror(
 			    "_rti_iterator_arg_callback_init: Could not allocate memory for position elements of rt_iterator_arg");
 			return 0;
@@ -698,18 +763,21 @@ _rti_iterator_arg_callback_clean(_rti_iterator_arg _param)
 	uint32_t i = 0;
 	uint32_t y = 0;
 
-	for (i = 0; i < _param->count; i++) {
+	for (i = 0; i < _param->count; i++)
+	{
 		RASTER_DEBUGF(5, "empty at @ %p", _param->empty.values);
 		RASTER_DEBUGF(5, "values at @ %p", _param->arg->values[i]);
 
-		if (_param->arg->values[i] == _param->empty.values) {
+		if (_param->arg->values[i] == _param->empty.values)
+		{
 			_param->arg->values[i] = NULL;
 			_param->arg->nodata[i] = NULL;
 
 			continue;
 		}
 
-		for (y = 0; y < _param->dimension.rows; y++) {
+		for (y = 0; y < _param->dimension.rows; y++)
+		{
 			rtdealloc(_param->arg->values[i][y]);
 			rtdealloc(_param->arg->nodata[i][y]);
 		}
@@ -814,38 +882,44 @@ rt_raster_iterator(rt_iterator itrset,
 	*rtnraster = NULL;
 
 	/* check that callback function is not NULL */
-	if (callback == NULL) {
+	if (callback == NULL)
+	{
 		rterror("rt_raster_iterator: Callback function not provided");
 		return ES_ERROR;
 	}
 
 	/* check that custom extent is provided if extenttype = ET_CUSTOM */
-	if (extenttype == ET_CUSTOM && rt_raster_is_empty(customextent)) {
+	if (extenttype == ET_CUSTOM && rt_raster_is_empty(customextent))
+	{
 		rterror("rt_raster_iterator: Custom extent cannot be empty if extent type is ET_CUSTOM");
 		return ES_ERROR;
 	}
 
 	/* check that pixtype != PT_END */
-	if (pixtype == PT_END) {
+	if (pixtype == PT_END)
+	{
 		rterror("rt_raster_iterator: Pixel type cannot be PT_END");
 		return ES_ERROR;
 	}
 
 	/* initialize _param */
-	if ((_param = _rti_iterator_arg_init()) == NULL) {
+	if ((_param = _rti_iterator_arg_init()) == NULL)
+	{
 		rterror("rt_raster_iterator: Could not initialize internal variables");
 		return ES_ERROR;
 	}
 
 	/* fill _param */
-	if (!_rti_iterator_arg_populate(_param, itrset, itrcount, distancex, distancey, &allnull, &allempty)) {
+	if (!_rti_iterator_arg_populate(_param, itrset, itrcount, distancex, distancey, &allnull, &allempty))
+	{
 		rterror("rt_raster_iterator: Could not populate for internal variables");
 		_rti_iterator_arg_destroy(_param);
 		return ES_ERROR;
 	}
 
 	/* shortcut if all null, return NULL */
-	if (allnull == itrcount) {
+	if (allnull == itrcount)
+	{
 		RASTER_DEBUG(3, "all rasters are NULL, returning NULL");
 
 		_rti_iterator_arg_destroy(_param);
@@ -853,13 +927,15 @@ rt_raster_iterator(rt_iterator itrset,
 		return ES_NONE;
 	}
 	/* shortcut if all empty, return empty raster */
-	else if (allempty == itrcount) {
+	else if (allempty == itrcount)
+	{
 		RASTER_DEBUG(3, "all rasters are empty, returning empty raster");
 
 		_rti_iterator_arg_destroy(_param);
 
 		rtnrast = rt_raster_new(0, 0);
-		if (rtnrast == NULL) {
+		if (rtnrast == NULL)
+		{
 			rterror("rt_raster_iterator: Could not create empty raster");
 			return ES_ERROR;
 		}
@@ -875,14 +951,18 @@ rt_raster_iterator(rt_iterator itrset,
 
 	/* find raster to use as reference */
 	/* use custom if provided */
-	if (extenttype == ET_CUSTOM) {
+	if (extenttype == ET_CUSTOM)
+	{
 		RASTER_DEBUG(4, "using custom extent as reference raster");
 		rast = customextent;
 	}
 	/* use first valid one in _param->raster */
-	else {
-		for (i = 0; i < itrcount; i++) {
-			if (!_param->isempty[i]) {
+	else
+	{
+		for (i = 0; i < itrcount; i++)
+		{
+			if (!_param->isempty[i])
+			{
 				RASTER_DEBUGF(4, "using raster at index %d as reference raster", i);
 				rast = _param->raster[i];
 				break;
@@ -891,7 +971,8 @@ rt_raster_iterator(rt_iterator itrset,
 	}
 
 	/* no rasters found, SHOULD NEVER BE HERE! */
-	if (rast == NULL) {
+	if (rast == NULL)
+	{
 		rterror("rt_raster_iterator: Could not find reference raster to use for alignment tests");
 
 		_rti_iterator_arg_destroy(_param);
@@ -899,12 +980,15 @@ rt_raster_iterator(rt_iterator itrset,
 		return ES_ERROR;
 	}
 
-	do {
+	do
+	{
 		aligned = 1;
 
 		/* check custom first if set. also skip if rasters are the same */
-		if (extenttype == ET_CUSTOM && rast != customextent) {
-			if (rt_raster_same_alignment(rast, customextent, &aligned, NULL) != ES_NONE) {
+		if (extenttype == ET_CUSTOM && rast != customextent)
+		{
+			if (rt_raster_same_alignment(rast, customextent, &aligned, NULL) != ES_NONE)
+			{
 				rterror(
 				    "rt_raster_iterator: Could not test for alignment between reference raster and custom extent");
 
@@ -917,11 +1001,13 @@ rt_raster_iterator(rt_iterator itrset,
 			if (!aligned) break;
 		}
 
-		for (i = 0; i < itrcount; i++) {
+		for (i = 0; i < itrcount; i++)
+		{
 			/* skip NULL rasters and if rasters are the same */
 			if (_param->isempty[i] || rast == _param->raster[i]) continue;
 
-			if (rt_raster_same_alignment(rast, _param->raster[i], &aligned, NULL) != ES_NONE) {
+			if (rt_raster_same_alignment(rast, _param->raster[i], &aligned, NULL) != ES_NONE)
+			{
 				rterror(
 				    "rt_raster_iterator: Could not test for alignment between reference raster and raster %d",
 				    i);
@@ -938,7 +1024,8 @@ rt_raster_iterator(rt_iterator itrset,
 	} while (0);
 
 	/* not aligned, error */
-	if (!aligned) {
+	if (!aligned)
+	{
 		rterror(
 		    "rt_raster_iterator: The set of rasters provided (custom extent included, if appropriate) do not have the same alignment");
 
@@ -949,12 +1036,14 @@ rt_raster_iterator(rt_iterator itrset,
 
 	/* use extenttype to build output raster (no bands though) */
 	i = -1;
-	switch (extenttype) {
+	switch (extenttype)
+	{
 	case ET_INTERSECTION:
 	case ET_UNION:
 		/* make copy of first "real" raster */
 		rtnrast = rtalloc(sizeof(struct rt_raster_t));
-		if (rtnrast == NULL) {
+		if (rtnrast == NULL)
+		{
 			rterror("rt_raster_iterator: Could not allocate memory for output raster");
 
 			_rti_iterator_arg_destroy(_param);
@@ -962,8 +1051,10 @@ rt_raster_iterator(rt_iterator itrset,
 			return ES_ERROR;
 		}
 
-		for (i = 0; i < itrcount; i++) {
-			if (!_param->isempty[i]) {
+		for (i = 0; i < itrcount; i++)
+		{
+			if (!_param->isempty[i])
+			{
 				memcpy(rtnrast, _param->raster[i], sizeof(struct rt_raster_serialized_t));
 				break;
 			}
@@ -973,20 +1064,24 @@ rt_raster_iterator(rt_iterator itrset,
 
 		/* get extent of output raster */
 		rast = NULL;
-		for (i = i + 1; i < itrcount; i++) {
+		for (i = i + 1; i < itrcount; i++)
+		{
 			if (_param->isempty[i]) continue;
 
 			status = rt_raster_from_two_rasters(rtnrast, _param->raster[i], extenttype, &rast, NULL);
 			rtdealloc(rtnrast);
 
-			if (rast == NULL || status != ES_NONE) {
+			if (rast == NULL || status != ES_NONE)
+			{
 				rterror("rt_raster_iterator: Could not compute %s extent of rasters",
 					extenttype == ET_UNION ? "union" : "intersection");
 
 				_rti_iterator_arg_destroy(_param);
 
 				return ES_ERROR;
-			} else if (rt_raster_is_empty(rast)) {
+			}
+			else if (rt_raster_is_empty(rast))
+			{
 				rtinfo("rt_raster_iterator: Computed raster for %s extent is empty",
 				       extenttype == ET_UNION ? "union" : "intersection");
 
@@ -1008,7 +1103,8 @@ rt_raster_iterator(rt_iterator itrset,
 	case ET_FIRST:
 		i = 0;
 	case ET_SECOND:
-		if (i < 0) {
+		if (i < 0)
+		{
 			if (itrcount < 2)
 				i = 0;
 			else
@@ -1018,7 +1114,8 @@ rt_raster_iterator(rt_iterator itrset,
 		if (i < 0) i = itrcount - 1;
 
 		/* input raster is null, return NULL */
-		if (_param->raster[i] == NULL) {
+		if (_param->raster[i] == NULL)
+		{
 			RASTER_DEBUGF(3,
 				      "returning NULL as %s raster is NULL and extent type is ET_%s",
 				      (i == 0 ? "first" : (i == 1 ? "second" : "last")),
@@ -1029,7 +1126,8 @@ rt_raster_iterator(rt_iterator itrset,
 			return ES_NONE;
 		}
 		/* input raster is empty, return empty raster */
-		else if (_param->isempty[i]) {
+		else if (_param->isempty[i])
+		{
 			RASTER_DEBUGF(3,
 				      "returning empty raster as %s raster is empty and extent type is ET_%s",
 				      (i == 0 ? "first" : (i == 1 ? "second" : "last")),
@@ -1038,7 +1136,8 @@ rt_raster_iterator(rt_iterator itrset,
 			_rti_iterator_arg_destroy(_param);
 
 			rtnrast = rt_raster_new(0, 0);
-			if (rtnrast == NULL) {
+			if (rtnrast == NULL)
+			{
 				rterror("rt_raster_iterator: Could not create empty raster");
 				return ES_ERROR;
 			}
@@ -1050,7 +1149,8 @@ rt_raster_iterator(rt_iterator itrset,
 	/* copy the custom extent raster */
 	case ET_CUSTOM:
 		rtnrast = rtalloc(sizeof(struct rt_raster_t));
-		if (rtnrast == NULL) {
+		if (rtnrast == NULL)
+		{
 			rterror("rt_raster_iterator: Could not allocate memory for output raster");
 
 			_rti_iterator_arg_destroy(_param);
@@ -1058,7 +1158,8 @@ rt_raster_iterator(rt_iterator itrset,
 			return ES_ERROR;
 		}
 
-		switch (extenttype) {
+		switch (extenttype)
+		{
 		case ET_CUSTOM:
 			memcpy(rtnrast, customextent, sizeof(struct rt_raster_serialized_t));
 			break;
@@ -1089,7 +1190,8 @@ rt_raster_iterator(rt_iterator itrset,
 	    rt_raster_get_srid(rtnrast));
 
 	/* init values and NODATA for use with empty rasters */
-	if (!_rti_iterator_arg_empty_init(_param)) {
+	if (!_rti_iterator_arg_empty_init(_param))
+	{
 		rterror("rt_raster_iterator: Could not initialize empty values and NODATA");
 
 		_rti_iterator_arg_destroy(_param);
@@ -1099,7 +1201,8 @@ rt_raster_iterator(rt_iterator itrset,
 	}
 
 	/* create output band */
-	if (rt_raster_generate_new_band(rtnrast, pixtype, nodataval, hasnodata, nodataval, 0) < 0) {
+	if (rt_raster_generate_new_band(rtnrast, pixtype, nodataval, hasnodata, nodataval, 0) < 0)
+	{
 		rterror("rt_raster_iterator: Could not add new band to output raster");
 
 		_rti_iterator_arg_destroy(_param);
@@ -1110,7 +1213,8 @@ rt_raster_iterator(rt_iterator itrset,
 
 	/* get output band */
 	rtnband = rt_raster_get_band(rtnrast, 0);
-	if (rtnband == NULL) {
+	if (rtnband == NULL)
+	{
 		rterror("rt_raster_iterator: Could not get new band from output raster");
 
 		_rti_iterator_arg_destroy(_param);
@@ -1123,7 +1227,8 @@ rt_raster_iterator(rt_iterator itrset,
 	minval = rt_band_get_min_value(rtnband);
 
 	/* initialize argument for callback function */
-	if (!_rti_iterator_arg_callback_init(_param)) {
+	if (!_rti_iterator_arg_callback_init(_param))
+	{
 		rterror("rt_raster_iterator: Could not initialize callback function argument");
 
 		_rti_iterator_arg_destroy(_param);
@@ -1134,12 +1239,14 @@ rt_raster_iterator(rt_iterator itrset,
 	}
 
 	/* fill _param->offset */
-	for (i = 0; i < itrcount; i++) {
+	for (i = 0; i < itrcount; i++)
+	{
 		if (_param->isempty[i]) continue;
 
 		status = rt_raster_from_two_rasters(rtnrast, _param->raster[i], ET_FIRST, &rast, offset);
 		rtdealloc(rast);
-		if (status != ES_NONE) {
+		if (status != ES_NONE)
+		{
 			rterror("rt_raster_iterator: Could not compute raster offsets");
 
 			_rti_iterator_arg_destroy(_param);
@@ -1157,14 +1264,17 @@ rt_raster_iterator(rt_iterator itrset,
 	/* loop over each pixel (POI) of output raster */
 	/* _x,_y are for output raster */
 	/* x,y are for input raster */
-	for (_y = 0; _y < _height; _y++) {
-		for (_x = 0; _x < _width; _x++) {
+	for (_y = 0; _y < _height; _y++)
+	{
+		for (_x = 0; _x < _width; _x++)
+		{
 			RASTER_DEBUGF(4, "iterating output pixel (x, y) = (%d, %d)", _x, _y);
 			_param->arg->dst_pixel[0] = _x;
 			_param->arg->dst_pixel[1] = _y;
 
 			/* loop through each input raster */
-			for (i = 0; i < itrcount; i++) {
+			for (i = 0; i < itrcount; i++)
+			{
 				RASTER_DEBUGF(4, "raster %d", i);
 
 				/*
@@ -1173,7 +1283,8 @@ rt_raster_iterator(rt_iterator itrset,
 					OR band is NODATA
 				*/
 				if (_param->isempty[i] || (_param->band.rtband[i] == NULL && itrset[i].nbnodata) ||
-				    _param->band.isnodata[i]) {
+				    _param->band.isnodata[i])
+				{
 					RASTER_DEBUG(
 					    4,
 					    "empty raster, band does not exist or band is NODATA. using empty values and NODATA");
@@ -1198,12 +1309,14 @@ rt_raster_iterator(rt_iterator itrset,
 				/* neighborhood */
 				npixels = NULL;
 				status = 0;
-				if (distancex > 0 && distancey > 0) {
+				if (distancex > 0 && distancey > 0)
+				{
 					RASTER_DEBUG(4, "getting neighborhood");
 
 					status = rt_band_get_nearest_pixel(
 					    _param->band.rtband[i], x, y, distancex, distancey, 1, &npixels);
-					if (status < 0) {
+					if (status < 0)
+					{
 						rterror("rt_raster_iterator: Could not get pixel neighborhood");
 
 						_rti_iterator_arg_destroy(_param);
@@ -1216,10 +1329,12 @@ rt_raster_iterator(rt_iterator itrset,
 
 				/* get value of POI */
 				/* get pixel's value */
-				if ((x >= 0 && x < _param->width[i]) && (y >= 0 && y < _param->height[i])) {
+				if ((x >= 0 && x < _param->width[i]) && (y >= 0 && y < _param->height[i]))
+				{
 					RASTER_DEBUG(4, "getting value of POI");
 					if (rt_band_get_pixel(_param->band.rtband[i], x, y, &value, &isnodata) !=
-					    ES_NONE) {
+					    ES_NONE)
+					{
 						rterror("rt_raster_iterator: Could not get the pixel value of band");
 
 						_rti_iterator_arg_destroy(_param);
@@ -1231,7 +1346,8 @@ rt_raster_iterator(rt_iterator itrset,
 					inextent = 1;
 				}
 				/* outside band extent, set to NODATA */
-				else {
+				else
+				{
 					RASTER_DEBUG(4, "Outside band extent, setting value to NODATA");
 					/* has NODATA, use NODATA */
 					if (_param->band.hasnodata[i]) value = _param->band.nodataval[i];
@@ -1250,7 +1366,8 @@ rt_raster_iterator(rt_iterator itrset,
 				else
 					npixels = (rt_pixel)rtalloc(sizeof(struct rt_pixel_t));
 
-				if (npixels == NULL) {
+				if (npixels == NULL)
+				{
 					rterror("rt_raster_iterator: Could not reallocate memory for neighborhood");
 
 					_rti_iterator_arg_destroy(_param);
@@ -1266,9 +1383,8 @@ rt_raster_iterator(rt_iterator itrset,
 				npixels[status - 1].value = value;
 
 				/* set nodata flag */
-				if ((!_param->band.hasnodata[i] && inextent) || !isnodata) {
-					npixels[status - 1].nodata = 0;
-				}
+				if ((!_param->band.hasnodata[i] && inextent) || !isnodata)
+				{ npixels[status - 1].nodata = 0; }
 				RASTER_DEBUGF(4, "value, nodata: %f, %d", value, npixels[status - 1].nodata);
 
 				/* convert set of rt_pixel to 2D array */
@@ -1284,7 +1400,8 @@ rt_raster_iterator(rt_iterator itrset,
 							       NULL,
 							       NULL);
 				rtdealloc(npixels);
-				if (status != ES_NONE) {
+				if (status != ES_NONE)
+				{
 					rterror("rt_raster_iterator: Could not create 2D array of neighborhood");
 
 					_rti_iterator_arg_destroy(_param);
@@ -1305,7 +1422,8 @@ rt_raster_iterator(rt_iterator itrset,
 			_rti_iterator_arg_callback_clean(_param);
 
 			/* handle callback status */
-			if (status == 0) {
+			if (status == 0)
+			{
 				rterror("rt_raster_iterator: Callback function returned an error");
 
 				_rti_iterator_arg_destroy(_param);
@@ -1317,16 +1435,22 @@ rt_raster_iterator(rt_iterator itrset,
 
 			/* burn value to pixel */
 			status = 0;
-			if (!nodata) {
+			if (!nodata)
+			{
 				status = rt_band_set_pixel(rtnband, _x, _y, value, NULL);
 				RASTER_DEBUGF(4, "burning pixel (%d, %d) with value: %f", _x, _y, value);
-			} else if (!hasnodata) {
+			}
+			else if (!hasnodata)
+			{
 				status = rt_band_set_pixel(rtnband, _x, _y, minval, NULL);
 				RASTER_DEBUGF(4, "burning pixel (%d, %d) with minval: %f", _x, _y, minval);
-			} else {
+			}
+			else
+			{
 				RASTER_DEBUGF(4, "NOT burning pixel (%d, %d)", _x, _y);
 			}
-			if (status != ES_NONE) {
+			if (status != ES_NONE)
+			{
 				rterror("rt_raster_iterator: Could not set pixel value");
 
 				_rti_iterator_arg_destroy(_param);
@@ -1350,7 +1474,8 @@ rt_raster_iterator(rt_iterator itrset,
  ******************************************************************************/
 
 typedef struct _rti_colormap_arg_t *_rti_colormap_arg;
-struct _rti_colormap_arg_t {
+struct _rti_colormap_arg_t
+{
 	rt_raster raster;
 	rt_band band;
 
@@ -1371,7 +1496,8 @@ _rti_colormap_arg_init(rt_raster raster)
 	_rti_colormap_arg arg = NULL;
 
 	arg = rtalloc(sizeof(struct _rti_colormap_arg_t));
-	if (arg == NULL) {
+	if (arg == NULL)
+	{
 		rterror("_rti_colormap_arg_init: Could not allocate memory for _rti_color_arg");
 		return NULL;
 	}
@@ -1383,9 +1509,11 @@ _rti_colormap_arg_init(rt_raster raster)
 
 	if (raster == NULL) arg->raster = NULL;
 	/* raster provided */
-	else {
+	else
+	{
 		arg->raster = rt_raster_clone(raster, 0);
-		if (arg->raster == NULL) {
+		if (arg->raster == NULL)
+		{
 			rterror("_rti_colormap_arg_init: Could not create output raster");
 			return NULL;
 		}
@@ -1405,10 +1533,12 @@ _rti_colormap_arg_destroy(_rti_colormap_arg arg)
 {
 	int i = 0;
 
-	if (arg->raster != NULL) {
+	if (arg->raster != NULL)
+	{
 		rt_band band = NULL;
 
-		for (i = rt_raster_get_num_bands(arg->raster) - 1; i >= 0; i--) {
+		for (i = rt_raster_get_num_bands(arg->raster) - 1; i >= 0; i--)
+		{
 			band = rt_raster_get_band(arg->raster, i);
 			if (band != NULL) rt_band_destroy(band);
 		}
@@ -1416,8 +1546,10 @@ _rti_colormap_arg_destroy(_rti_colormap_arg arg)
 		rt_raster_destroy(arg->raster);
 	}
 
-	if (arg->nexpr) {
-		for (i = 0; i < arg->nexpr; i++) {
+	if (arg->nexpr)
+	{
+		for (i = 0; i < arg->nexpr; i++)
+		{
 			if (arg->expr[i] != NULL) rtdealloc(arg->expr[i]);
 		}
 		rtdealloc(arg->expr);
@@ -1456,42 +1588,50 @@ rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap)
 	if (rt_raster_is_empty(raster)) return NULL;
 
 	/* no colormap entries */
-	if (colormap->nentry < 1) {
+	if (colormap->nentry < 1)
+	{
 		rterror("rt_raster_colormap: colormap must have at least one entry");
 		return NULL;
 	}
 
 	/* nband is valid */
-	if (!rt_raster_has_band(raster, nband)) {
+	if (!rt_raster_has_band(raster, nband))
+	{
 		rterror("rt_raster_colormap: raster has no band at index %d", nband);
 		return NULL;
 	}
 
 	band = rt_raster_get_band(raster, nband);
-	if (band == NULL) {
+	if (band == NULL)
+	{
 		rterror("rt_raster_colormap: Could not get band at index %d", nband);
 		return NULL;
 	}
 
 	/* init internal variables */
 	arg = _rti_colormap_arg_init(raster);
-	if (arg == NULL) {
+	if (arg == NULL)
+	{
 		rterror("rt_raster_colormap: Could not initialize internal variables");
 		return NULL;
 	}
 
 	/* handle NODATA */
-	if (rt_band_get_hasnodata_flag(band)) {
+	if (rt_band_get_hasnodata_flag(band))
+	{
 		arg->hasnodata = 1;
 		rt_band_get_nodata(band, &(arg->nodataval));
 	}
 
 	/* # of colors */
-	if (colormap->ncolor < 1) {
+	if (colormap->ncolor < 1)
+	{
 		rterror("rt_raster_colormap: At least one color must be provided");
 		_rti_colormap_arg_destroy(arg);
 		return NULL;
-	} else if (colormap->ncolor > 4) {
+	}
+	else if (colormap->ncolor > 4)
+	{
 		rtinfo("More than four colors indicated. Using only the first four colors");
 		colormap->ncolor = 4;
 	}
@@ -1499,14 +1639,17 @@ rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap)
 	/* find non-NODATA entries */
 	arg->npos = 0;
 	arg->pos = rtalloc(sizeof(uint16_t) * colormap->nentry);
-	if (arg->pos == NULL) {
+	if (arg->pos == NULL)
+	{
 		rterror("rt_raster_colormap: Could not allocate memory for valid entries");
 		_rti_colormap_arg_destroy(arg);
 		return NULL;
 	}
-	for (i = 0, j = 0; i < colormap->nentry; i++) {
+	for (i = 0, j = 0; i < colormap->nentry; i++)
+	{
 		/* special handling for NODATA entries */
-		if (colormap->entry[i].isnodata) {
+		if (colormap->entry[i].isnodata)
+		{
 			/* first NODATA entry found, use it */
 			if (arg->nodataentry == NULL)
 				arg->nodataentry = &(colormap->entry[i]);
@@ -1522,13 +1665,15 @@ rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap)
 	}
 
 	/* INTERPOLATE and only one non-NODATA entry */
-	if (colormap->method == CM_INTERPOLATE && arg->npos < 2) {
+	if (colormap->method == CM_INTERPOLATE && arg->npos < 2)
+	{
 		rtwarn("Method INTERPOLATE requires at least two non-NODATA colormap entries. Using NEAREST instead");
 		colormap->method = CM_NEAREST;
 	}
 
 	/* NODATA entry but band has no NODATA value */
-	if (!arg->hasnodata && arg->nodataentry != NULL) {
+	if (!arg->hasnodata && arg->nodataentry != NULL)
+	{
 		rtinfo("Band at index %d has no NODATA value. Ignoring NODATA entry", nband);
 		arg->nodataentry = NULL;
 	}
@@ -1545,7 +1690,8 @@ rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap)
 	/* NODATA entry exists, add expression */
 	if (arg->nodataentry != NULL) arg->nexpr += 1;
 	arg->expr = rtalloc(sizeof(rt_reclassexpr) * arg->nexpr);
-	if (arg->expr == NULL) {
+	if (arg->expr == NULL)
+	{
 		rterror("rt_raster_colormap: Could not allocate memory for reclass expressions");
 		_rti_colormap_arg_destroy(arg);
 		return NULL;
@@ -1553,9 +1699,11 @@ rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap)
 	RASTER_DEBUGF(4, "nexpr = %d", arg->nexpr);
 	RASTER_DEBUGF(4, "expr @ %p", arg->expr);
 
-	for (i = 0; i < arg->nexpr; i++) {
+	for (i = 0; i < arg->nexpr; i++)
+	{
 		arg->expr[i] = rtalloc(sizeof(struct rt_reclassexpr_t));
-		if (arg->expr[i] == NULL) {
+		if (arg->expr[i] == NULL)
+		{
 			rterror("rt_raster_colormap: Could not allocate memory for reclass expression");
 			_rti_colormap_arg_destroy(arg);
 			return NULL;
@@ -1564,11 +1712,13 @@ rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap)
 
 	/* reclassify bands */
 	/* by # of colors */
-	for (i = 0; i < colormap->ncolor; i++) {
+	for (i = 0; i < colormap->ncolor; i++)
+	{
 		k = 0;
 
 		/* handle NODATA entry first */
-		if (arg->nodataentry != NULL) {
+		if (arg->nodataentry != NULL)
+		{
 			arg->expr[k]->src.min = arg->nodataentry->value;
 			arg->expr[k]->src.max = arg->nodataentry->value;
 			arg->expr[k]->src.inc_min = 1;
@@ -1607,8 +1757,10 @@ rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap)
 		}
 
 		/* by non-NODATA entry */
-		for (j = 0; j < arg->npos; j++) {
-			if (colormap->method == CM_INTERPOLATE) {
+		for (j = 0; j < arg->npos; j++)
+		{
+			if (colormap->method == CM_INTERPOLATE)
+			{
 				if (j == arg->npos - 1) continue;
 
 				arg->expr[k]->src.min = colormap->entry[arg->pos[j + 1]].value;
@@ -1627,10 +1779,13 @@ rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap)
 
 				arg->expr[k]->dst.inc_max = 1;
 				arg->expr[k]->dst.exc_max = 0;
-			} else if (colormap->method == CM_NEAREST) {
+			}
+			else if (colormap->method == CM_NEAREST)
+			{
 
 				/* NOT last entry */
-				if (j != arg->npos - 1) {
+				if (j != arg->npos - 1)
+				{
 					arg->expr[k]->src.min = ((colormap->entry[arg->pos[j]].value -
 								  colormap->entry[arg->pos[j + 1]].value) /
 								 2.) +
@@ -1639,20 +1794,23 @@ rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap)
 					arg->expr[k]->src.exc_min = 0;
 				}
 				/* last entry */
-				else {
+				else
+				{
 					arg->expr[k]->src.min = colormap->entry[arg->pos[j]].value;
 					arg->expr[k]->src.inc_min = 1;
 					arg->expr[k]->src.exc_min = 1;
 				}
 
 				/* NOT first entry */
-				if (j > 0) {
+				if (j > 0)
+				{
 					arg->expr[k]->src.max = arg->expr[k - 1]->src.min;
 					arg->expr[k]->src.inc_max = 1;
 					arg->expr[k]->src.exc_max = 0;
 				}
 				/* first entry */
-				else {
+				else
+				{
 					arg->expr[k]->src.max = colormap->entry[arg->pos[j]].value;
 					arg->expr[k]->src.inc_max = 1;
 					arg->expr[k]->src.exc_max = 1;
@@ -1665,7 +1823,9 @@ rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap)
 				arg->expr[k]->dst.max = colormap->entry[arg->pos[j]].color[i];
 				arg->expr[k]->dst.inc_max = 1;
 				arg->expr[k]->dst.exc_max = 0;
-			} else if (colormap->method == CM_EXACT) {
+			}
+			else if (colormap->method == CM_EXACT)
+			{
 				arg->expr[k]->src.min = colormap->entry[arg->pos[j]].value;
 				arg->expr[k]->src.inc_min = 1;
 				arg->expr[k]->src.exc_min = 0;
@@ -1707,7 +1867,8 @@ rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap)
 		}
 
 		/* EXACT has one last expression for catching all uncaught values */
-		if (colormap->method == CM_EXACT) {
+		if (colormap->method == CM_EXACT)
+		{
 			arg->expr[k]->src.min = 0;
 			arg->expr[k]->src.inc_min = 1;
 			arg->expr[k]->src.exc_min = 1;
@@ -1749,14 +1910,16 @@ rt_raster_colormap(rt_raster raster, int nband, rt_colormap colormap)
 
 		/* call rt_band_reclass */
 		arg->band = rt_band_reclass(band, PT_8BUI, 0, 0, arg->expr, arg->nexpr);
-		if (arg->band == NULL) {
+		if (arg->band == NULL)
+		{
 			rterror("rt_raster_colormap: Could not reclassify band");
 			_rti_colormap_arg_destroy(arg);
 			return NULL;
 		}
 
 		/* add reclassified band to raster */
-		if (rt_raster_add_band(arg->raster, arg->band, rt_raster_get_num_bands(arg->raster)) < 0) {
+		if (rt_raster_add_band(arg->raster, arg->band, rt_raster_get_num_bands(arg->raster)) < 0)
+		{
 			rterror("rt_raster_colormap: Could not add reclassified band to output raster");
 			_rti_colormap_arg_destroy(arg);
 			return NULL;

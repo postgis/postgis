@@ -52,7 +52,8 @@
  * system to share code (the cache checking code is common between
  * prepared geometry, circtrees, recttrees, and rtrees).
  */
-typedef struct {
+typedef struct
+{
 	GeomCache gcache;
 	MemoryContext context_statement;
 	MemoryContext context_callback;

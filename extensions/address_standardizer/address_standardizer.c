@@ -87,9 +87,8 @@ Datum standardize_address(PG_FUNCTION_ARGS)
 	macro = text2char(PG_GETARG_TEXT_P(4));
 
 	DBG("calling RelationNameGetTupleDesc");
-	if (get_call_result_type(fcinfo, NULL, &tuple_desc) != TYPEFUNC_COMPOSITE) {
-		elog(ERROR, "standardize_address() was called in a way that cannot accept record as a result");
-	}
+	if (get_call_result_type(fcinfo, NULL, &tuple_desc) != TYPEFUNC_COMPOSITE)
+	{ elog(ERROR, "standardize_address() was called in a way that cannot accept record as a result"); }
 	BlessTupleDesc(tuple_desc);
 	attinmeta = TupleDescGetAttInMetadata(tuple_desc);
 
@@ -103,11 +102,13 @@ Datum standardize_address(PG_FUNCTION_ARGS)
 	DBG("back from fetch_stdaddr");
 
 	values = (char **)palloc(16 * sizeof(char *));
-	for (k = 0; k < 16; k++) {
+	for (k = 0; k < 16; k++)
+	{
 		values[k] = NULL;
 	}
 	DBG("setup values array for natts=%d", tuple_desc->natts);
-	if (stdaddr) {
+	if (stdaddr)
+	{
 		values[0] = stdaddr->building ? pstrdup(stdaddr->building) : NULL;
 		values[1] = stdaddr->house_num ? pstrdup(stdaddr->house_num) : NULL;
 		values[2] = stdaddr->predir ? pstrdup(stdaddr->predir) : NULL;
@@ -171,16 +172,16 @@ Datum standardize_address1(PG_FUNCTION_ARGS)
 	addr = text2char(PG_GETARG_TEXT_P(3));
 
 	DBG("calling RelationNameGetTupleDesc");
-	if (get_call_result_type(fcinfo, NULL, &tuple_desc) != TYPEFUNC_COMPOSITE) {
-		elog(ERROR, "standardize_address() was called in a way that cannot accept record as a result");
-	}
+	if (get_call_result_type(fcinfo, NULL, &tuple_desc) != TYPEFUNC_COMPOSITE)
+	{ elog(ERROR, "standardize_address() was called in a way that cannot accept record as a result"); }
 	BlessTupleDesc(tuple_desc);
 	attinmeta = TupleDescGetAttInMetadata(tuple_desc);
 
 	DBG("Got tupdesc, allocating HHash");
 
 	stH = (HHash *)palloc0(sizeof(HHash));
-	if (!stH) {
+	if (!stH)
+	{
 		elog(ERROR, "standardize_address: Failed to allocate memory for hash!");
 		return -1;
 	}
@@ -188,7 +189,8 @@ Datum standardize_address1(PG_FUNCTION_ARGS)
 	DBG("going to load_state_hash");
 
 	err = load_state_hash(stH);
-	if (err) {
+	if (err)
+	{
 		DBG("got err=%d from load_state_hash().", err);
 #ifdef USE_HSEARCH
 		DBG("calling hdestroy_r(stH).");
@@ -200,7 +202,8 @@ Datum standardize_address1(PG_FUNCTION_ARGS)
 
 	DBG("calling parseaddress()");
 	paddr = parseaddress(stH, addr, &err);
-	if (!paddr) {
+	if (!paddr)
+	{
 		elog(ERROR, "parse_address: parseaddress() failed!");
 		return -1;
 	}
@@ -220,19 +223,23 @@ Datum standardize_address1(PG_FUNCTION_ARGS)
 	macro = (char *)palloc(k * sizeof(char));
 
 	*macro = '\0';
-	if (paddr->city) {
+	if (paddr->city)
+	{
 		strcat(macro, paddr->city);
 		strcat(macro, ",");
 	}
-	if (paddr->st) {
+	if (paddr->st)
+	{
 		strcat(macro, paddr->st);
 		strcat(macro, ",");
 	}
-	if (paddr->zip) {
+	if (paddr->zip)
+	{
 		strcat(macro, paddr->zip);
 		strcat(macro, ",");
 	}
-	if (paddr->cc) {
+	if (paddr->cc)
+	{
 		strcat(macro, paddr->cc);
 		strcat(macro, ",");
 	}
@@ -247,11 +254,13 @@ Datum standardize_address1(PG_FUNCTION_ARGS)
 	DBG("back from fetch_stdaddr");
 
 	values = (char **)palloc(16 * sizeof(char *));
-	for (k = 0; k < 16; k++) {
+	for (k = 0; k < 16; k++)
+	{
 		values[k] = NULL;
 	}
 	DBG("setup values array for natts=%d", tuple_desc->natts);
-	if (stdaddr) {
+	if (stdaddr)
+	{
 		values[0] = stdaddr->building ? pstrdup(stdaddr->building) : NULL;
 		values[1] = stdaddr->house_num ? pstrdup(stdaddr->house_num) : NULL;
 		values[2] = stdaddr->predir ? pstrdup(stdaddr->predir) : NULL;

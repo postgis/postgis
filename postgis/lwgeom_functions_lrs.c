@@ -48,7 +48,8 @@ Datum ST_AddMeasure(PG_FUNCTION_ARGS)
 	int type = gserialized_get_type(gin);
 
 	/* Raise an error if input is not a linestring or multilinestring */
-	if (type != LINETYPE && type != MULTILINETYPE) {
+	if (type != LINETYPE && type != MULTILINETYPE)
+	{
 		lwpgerror("Only LINESTRING and MULTILINESTRING are supported");
 		PG_RETURN_NULL();
 	}
@@ -112,13 +113,15 @@ Datum ST_LocateBetween(PG_FUNCTION_ARGS)
 	LWGEOM *line_in = NULL;
 	static char ordinate = 'M'; /* M */
 
-	if (!gserialized_has_m(geom_in)) {
+	if (!gserialized_has_m(geom_in))
+	{
 		elog(ERROR, "This function only accepts geometries that have an M dimension.");
 		PG_RETURN_NULL();
 	}
 
 	/* This should be a call to ST_LocateAlong! */
-	if (to == from) {
+	if (to == from)
+	{
 		PG_RETURN_DATUM(
 		    DirectFunctionCall3(ST_LocateAlong, PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PG_GETARG_DATUM(3)));
 	}
@@ -128,7 +131,8 @@ Datum ST_LocateBetween(PG_FUNCTION_ARGS)
 	lwgeom_free(line_in);
 	PG_FREE_IF_COPY(geom_in, 0);
 
-	if (!geom_out) {
+	if (!geom_out)
+	{
 		elog(ERROR, "lwline_clip_to_ordinate_range returned null");
 		PG_RETURN_NULL();
 	}
@@ -151,7 +155,8 @@ Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
 	static char ordinate = 'Z'; /* Z */
 	static double offset = 0.0;
 
-	if (!gserialized_has_z(geom_in)) {
+	if (!gserialized_has_z(geom_in))
+	{
 		elog(ERROR, "This function only accepts LINESTRING or MULTILINESTRING with Z dimensions.");
 		PG_RETURN_NULL();
 	}
@@ -161,7 +166,8 @@ Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
 	lwgeom_free(line_in);
 	PG_FREE_IF_COPY(geom_in, 0);
 
-	if (!geom_out) {
+	if (!geom_out)
+	{
 		elog(ERROR, "lwline_clip_to_ordinate_range returned null");
 		PG_RETURN_NULL();
 	}
@@ -178,18 +184,21 @@ Datum ST_InterpolatePoint(PG_FUNCTION_ARGS)
 	LWGEOM *lwline;
 	LWPOINT *lwpoint;
 
-	if (gserialized_get_type(gser_line) != LINETYPE) {
+	if (gserialized_get_type(gser_line) != LINETYPE)
+	{
 		elog(ERROR, "ST_InterpolatePoint: 1st argument isn't a line");
 		PG_RETURN_NULL();
 	}
-	if (gserialized_get_type(gser_point) != POINTTYPE) {
+	if (gserialized_get_type(gser_point) != POINTTYPE)
+	{
 		elog(ERROR, "ST_InterpolatePoint: 2st argument isn't a point");
 		PG_RETURN_NULL();
 	}
 
 	error_if_srid_mismatch(gserialized_get_srid(gser_line), gserialized_get_srid(gser_point));
 
-	if (!gserialized_has_m(gser_line)) {
+	if (!gserialized_has_m(gser_line))
+	{
 		elog(ERROR, "ST_InterpolatePoint only accepts geometries that have an M dimension");
 		PG_RETURN_NULL();
 	}
@@ -212,11 +221,13 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
 	POINT4D p, p_proj;
 	double ret;
 
-	if (gserialized_get_type(geom1) != LINETYPE) {
+	if (gserialized_get_type(geom1) != LINETYPE)
+	{
 		elog(ERROR, "line_locate_point: 1st arg isn't a line");
 		PG_RETURN_NULL();
 	}
-	if (gserialized_get_type(geom2) != POINTTYPE) {
+	if (gserialized_get_type(geom2) != POINTTYPE)
+	{
 		elog(ERROR, "line_locate_point: 2st arg isn't a point");
 		PG_RETURN_NULL();
 	}
@@ -239,7 +250,8 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
  * Deprecated at PostGIS 2.0. To be removed.
  */
 
-typedef struct {
+typedef struct
+{
 	POINTARRAY **ptarrays;
 	uint32 nptarrays;
 } POINTARRAYSET;
@@ -283,7 +295,8 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	POSTGIS_DEBUGF(3, "m0: %g m1: %g", m0, m1);
 
 	/* Handle corner case of m values being the same */
-	if (p1->m == p2->m) {
+	if (p1->m == p2->m)
+	{
 		/* out of range, no clipping */
 		if (p1->m < m0 || p1->m > m1) return 0;
 
@@ -294,7 +307,8 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	/*
 	 * Order points so that p1 has the smaller M
 	 */
-	if (p1->m > p2->m) {
+	if (p1->m > p2->m)
+	{
 		tmp = p2;
 		p2 = p1;
 		p1 = tmp;
@@ -337,16 +351,20 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	 * First point out of range, project
 	 * it on the range
 	 */
-	if (p1->m < m0) {
+	if (p1->m < m0)
+	{
 		/*
 		 * To prevent rounding errors, then if m0==m1 and p2 lies within the range, copy
 		 * p1 as a direct copy of p2
 		 */
-		if (m0 == m1 && p2->m <= m1) {
+		if (m0 == m1 && p2->m <= m1)
+		{
 			memcpy(p1, p2, sizeof(POINT4D));
 
 			POSTGIS_DEBUG(3, "Projected p1 on range (as copy of p2)");
-		} else {
+		}
+		else
+		{
 			/* Otherwise interpolate coordinates */
 			p1->x += (dX * dM0);
 			p1->y += (dY * dM0);
@@ -366,16 +384,20 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	 * Second point out of range, project
 	 * it on the range
 	 */
-	if (p2->m > m1) {
+	if (p2->m > m1)
+	{
 		/*
 		 * To prevent rounding errors, then if m0==m1 and p1 lies within the range, copy
 		 * p2 as a direct copy of p1
 		 */
-		if (m0 == m1 && p1->m >= m0) {
+		if (m0 == m1 && p1->m >= m0)
+		{
 			memcpy(p2, p1, sizeof(POINT4D));
 
 			POSTGIS_DEBUG(3, "Projected p2 on range (as copy of p1)");
-		} else {
+		}
+		else
+		{
 			/* Otherwise interpolate coordinates */
 			p2->x += (dX * dM1);
 			p2->y += (dY * dM1);
@@ -415,7 +437,8 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 
 	POSTGIS_DEBUGF(2, "ptarray_locate...: called for pointarray %p, m0:%g, m1:%g", ipa, m0, m1);
 
-	for (i = 1; i < ipa->npoints; i++) {
+	for (i = 1; i < ipa->npoints; i++)
+	{
 		POINT4D p1, p2;
 		int clipval;
 
@@ -454,7 +477,8 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 
 		/* If no points have been accumulated so far, then if clipval != 0 the first point must be the
 		   start of the intersection */
-		if (dpa == NULL) {
+		if (dpa == NULL)
+		{
 			POSTGIS_DEBUGF(
 			    3, " 1 creating new POINTARRAY with first point %g,%g,%g,%g", p1.x, p1.y, p1.z, p1.m);
 
@@ -469,7 +493,8 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		/*
 		 * second point has been clipped
 		 */
-		if (clipval & 0x0100 || i == ipa->npoints - 1) {
+		if (clipval & 0x0100 || i == ipa->npoints - 1)
+		{
 			POSTGIS_DEBUGF(3, " closing pointarray %p with %d points", dpa, dpa->npoints);
 
 			ret.ptarrays[ret.nptarrays++] = dpa;
@@ -499,11 +524,14 @@ lwpoint_locate_between_m(LWPOINT *lwpoint, double m0, double m1)
 	POSTGIS_DEBUGF(2, "lwpoint_locate_between called for lwpoint %p", lwpoint);
 
 	lwpoint_getPoint3dm_p(lwpoint, &p3dm);
-	if (p3dm.m >= m0 && p3dm.m <= m1) {
+	if (p3dm.m >= m0 && p3dm.m <= m1)
+	{
 		POSTGIS_DEBUG(3, " lwpoint... returning a clone of input");
 
 		return lwgeom_clone((LWGEOM *)lwpoint);
-	} else {
+	}
+	else
+	{
 		POSTGIS_DEBUG(3, " lwpoint... returning a clone of input");
 
 		return NULL;
@@ -543,36 +571,40 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 	ngeoms = paset.nptarrays;
 	/* TODO: rework this to reduce used memory */
 	geoms = lwalloc(sizeof(LWGEOM *) * ngeoms);
-	for (i = 0; i < ngeoms; i++) {
+	for (i = 0; i < ngeoms; i++)
+	{
 		LWPOINT *lwpoint;
 		LWLINE *lwline;
 
 		POINTARRAY *pa = paset.ptarrays[i];
 
 		/* This is a point */
-		if (pa->npoints == 1) {
+		if (pa->npoints == 1)
+		{
 			lwpoint = lwpoint_construct(lwline_in->srid, NULL, pa);
 			geoms[i] = (LWGEOM *)lwpoint;
 			typeflag |= pointflag;
 		}
 
 		/* This is a line */
-		else if (pa->npoints > 1) {
+		else if (pa->npoints > 1)
+		{
 			lwline = lwline_construct(lwline_in->srid, NULL, pa);
 			geoms[i] = (LWGEOM *)lwline;
 			typeflag |= lineflag;
 		}
 
 		/* This is a bug */
-		else {
+		else
+		{
 			lwpgerror(
 			    "ptarray_locate_between_m returned a POINARRAY set containing POINTARRAY with 0 points");
 		}
 	}
 
-	if (ngeoms == 1) {
-		return geoms[0];
-	} else {
+	if (ngeoms == 1) { return geoms[0]; }
+	else
+	{
 		/* Choose best type */
 		if (typeflag == 1)
 			outtype = MULTIPOINTTYPE;
@@ -599,7 +631,8 @@ lwcollection_locate_between_m(LWCOLLECTION *lwcoll, double m0, double m1)
 	POSTGIS_DEBUGF(2, "lwcollection_locate_between_m called for lwcoll %p", lwcoll);
 
 	geoms = lwalloc(sizeof(LWGEOM *) * lwcoll->ngeoms);
-	for (i = 0; i < lwcoll->ngeoms; i++) {
+	for (i = 0; i < lwcoll->ngeoms; i++)
+	{
 		LWGEOM *sub = lwgeom_locate_between_m(lwcoll->geoms[i], m0, m1);
 		if (sub != NULL) geoms[ngeoms++] = sub;
 	}
@@ -623,7 +656,8 @@ lwgeom_locate_between_m(LWGEOM *lwin, double m0, double m1)
 {
 	POSTGIS_DEBUGF(2, "lwgeom_locate_between called for lwgeom %p", lwin);
 
-	switch (lwin->type) {
+	switch (lwin->type)
+	{
 	case POINTTYPE:
 		return lwpoint_locate_between_m((LWPOINT *)lwin, m0, m1);
 	case LINETYPE:
@@ -670,7 +704,8 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	    WARNING,
 	    "ST_Locate_Between_Measures and ST_Locate_Along_Measure were deprecated in 2.2.0. Please use ST_LocateAlong and ST_LocateBetween");
 
-	if (end_measure < start_measure) {
+	if (end_measure < start_measure)
+	{
 		lwpgerror("locate_between_m: 2nd arg must be bigger then 1st arg");
 		PG_RETURN_NULL();
 	}
@@ -678,7 +713,8 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	/*
 	 * Return error if input doesn't have a measure
 	 */
-	if (!hasm) {
+	if (!hasm)
+	{
 		lwpgerror("Geometry argument does not have an 'M' ordinate");
 		PG_RETURN_NULL();
 	}
@@ -689,7 +725,8 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	 */
 	type = gserialized_get_type(gin);
 
-	if (type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE) {
+	if (type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE)
+	{
 		lwpgerror("Areal or Collection types are not supported");
 		PG_RETURN_NULL();
 	}
@@ -700,9 +737,8 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 
 	lwgeom_free(lwin);
 
-	if (lwout == NULL) {
-		lwout = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, gserialized_get_srid(gin), hasz, hasm);
-	}
+	if (lwout == NULL)
+	{ lwout = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, gserialized_get_srid(gin), hasz, hasm); }
 
 	gout = geometry_serialize(lwout);
 	lwgeom_free(lwout);

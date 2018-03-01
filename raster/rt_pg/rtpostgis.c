@@ -305,23 +305,31 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra)
 	/* scan for keywords DISABLE_ALL and ENABLE_ALL */
 	disable_all = 0;
 	enable_all = 0;
-	if (strstr(enabled_drivers, GDAL_DISABLE_ALL) != NULL) {
-		for (i = 0; i < enabled_drivers_count; i++) {
-			if (strstr(enabled_drivers_array[i], GDAL_DISABLE_ALL) != NULL) {
+	if (strstr(enabled_drivers, GDAL_DISABLE_ALL) != NULL)
+	{
+		for (i = 0; i < enabled_drivers_count; i++)
+		{
+			if (strstr(enabled_drivers_array[i], GDAL_DISABLE_ALL) != NULL)
+			{
 				enabled_drivers_found[i] = TRUE;
 				disable_all = 1;
 			}
 		}
-	} else if (strstr(enabled_drivers, GDAL_ENABLE_ALL) != NULL) {
-		for (i = 0; i < enabled_drivers_count; i++) {
-			if (strstr(enabled_drivers_array[i], GDAL_ENABLE_ALL) != NULL) {
+	}
+	else if (strstr(enabled_drivers, GDAL_ENABLE_ALL) != NULL)
+	{
+		for (i = 0; i < enabled_drivers_count; i++)
+		{
+			if (strstr(enabled_drivers_array[i], GDAL_ENABLE_ALL) != NULL)
+			{
 				enabled_drivers_found[i] = TRUE;
 				enable_all = 1;
 			}
 		}
 	}
 
-	if (!enable_all) {
+	if (!enable_all)
+	{
 		int found = 0;
 		uint32_t drv_count = 0;
 		rt_gdaldriver drv_set = rt_raster_gdal_drivers(&drv_count, 0);
@@ -329,16 +337,21 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra)
 		POSTGIS_RT_DEBUGF(4, "driver count = %d", drv_count);
 
 		/* all other drivers than those in new drivers are added to GDAL_SKIP */
-		for (i = 0; i < drv_count; i++) {
+		for (i = 0; i < drv_count; i++)
+		{
 			found = 0;
 
-			if (!disable_all) {
+			if (!disable_all)
+			{
 				/* gdal driver found in enabled_drivers, continue to thorough search */
-				if (strstr(enabled_drivers, drv_set[i].short_name) != NULL) {
+				if (strstr(enabled_drivers, drv_set[i].short_name) != NULL)
+				{
 					/* thorough search of enabled_drivers */
-					for (j = 0; j < enabled_drivers_count; j++) {
+					for (j = 0; j < enabled_drivers_count; j++)
+					{
 						/* driver found */
-						if (strcmp(enabled_drivers_array[j], drv_set[i].short_name) == 0) {
+						if (strcmp(enabled_drivers_array[j], drv_set[i].short_name) == 0)
+						{
 							enabled_drivers_found[j] = TRUE;
 							found = 1;
 						}
@@ -350,10 +363,13 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra)
 			if (found) continue;
 
 			/* driver not found, add to gdal_skip */
-			if (gdal_skip == NULL) {
+			if (gdal_skip == NULL)
+			{
 				gdal_skip = palloc(sizeof(char) * (strlen(drv_set[i].short_name) + 1));
 				gdal_skip[0] = '\0';
-			} else {
+			}
+			else
+			{
 				gdal_skip = repalloc(gdal_skip,
 						     sizeof(char) *
 							 (strlen(gdal_skip) + 1 + strlen(drv_set[i].short_name) + 1));
@@ -362,7 +378,8 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra)
 			strcat(gdal_skip, drv_set[i].short_name);
 		}
 
-		for (i = 0; i < drv_count; i++) {
+		for (i = 0; i < drv_count; i++)
+		{
 			pfree(drv_set[i].short_name);
 			pfree(drv_set[i].long_name);
 			pfree(drv_set[i].create_options);
@@ -370,7 +387,8 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra)
 		if (drv_count) pfree(drv_set);
 	}
 
-	for (i = 0; i < enabled_drivers_count; i++) {
+	for (i = 0; i < enabled_drivers_count; i++)
+	{
 		if (enabled_drivers_found[i]) continue;
 
 		if (disable_all)
@@ -424,10 +442,13 @@ _PG_init(void)
 	 of GUC postgis.gdal_enabled_drivers
 	*/
 	env_postgis_gdal_enabled_drivers = getenv("POSTGIS_GDAL_ENABLED_DRIVERS");
-	if (env_postgis_gdal_enabled_drivers == NULL) {
+	if (env_postgis_gdal_enabled_drivers == NULL)
+	{
 		boot_postgis_gdal_enabled_drivers = palloc(sizeof(char) * (strlen(GDAL_DISABLE_ALL) + 1));
 		sprintf(boot_postgis_gdal_enabled_drivers, "%s", GDAL_DISABLE_ALL);
-	} else {
+	}
+	else
+	{
 		boot_postgis_gdal_enabled_drivers = rtpg_trim(env_postgis_gdal_enabled_drivers);
 	}
 	POSTGIS_RT_DEBUGF(4, "boot_postgis_gdal_enabled_drivers = %s", boot_postgis_gdal_enabled_drivers);
@@ -437,11 +458,13 @@ _PG_init(void)
 	 of GUC postgis.enable_outdb_rasters
 	*/
 	env_postgis_enable_outdb_rasters = getenv("POSTGIS_ENABLE_OUTDB_RASTERS");
-	if (env_postgis_enable_outdb_rasters != NULL) {
+	if (env_postgis_enable_outdb_rasters != NULL)
+	{
 		char *env = rtpg_trim(env_postgis_enable_outdb_rasters);
 
 		/* out of memory */
-		if (env == NULL) {
+		if (env == NULL)
+		{
 			elog(ERROR, "_PG_init: Cannot process environmental variable: POSTGIS_ENABLE_OUTDB_RASTERS");
 			return;
 		}
@@ -460,12 +483,15 @@ _PG_init(void)
 	rt_set_handlers(rt_pg_alloc, rt_pg_realloc, rt_pg_free, rt_pg_error, rt_pg_debug, rt_pg_notice);
 
 	/* Define custom GUC variables. */
-	if (postgis_guc_find_option("postgis.gdal_datapath")) {
+	if (postgis_guc_find_option("postgis.gdal_datapath"))
+	{
 		/* In this narrow case the previously installed GUC is tied to the callback in */
 		/* the previously loaded library. Probably this is happening during an */
 		/* upgrade, so the old library is where the callback ties to. */
 		elog(WARNING, "'%s' is already set and cannot be changed until you reconnect", "postgis.gdal_datapath");
-	} else {
+	}
+	else
+	{
 		DefineCustomStringVariable(
 		    "postgis.gdal_datapath",    /* name */
 		    "Path to GDAL data files.", /* short_desc */
@@ -481,14 +507,17 @@ _PG_init(void)
 		);
 	}
 
-	if (postgis_guc_find_option("postgis.gdal_enabled_drivers")) {
+	if (postgis_guc_find_option("postgis.gdal_enabled_drivers"))
+	{
 		/* In this narrow case the previously installed GUC is tied to the callback in */
 		/* the previously loaded library. Probably this is happening during an */
 		/* upgrade, so the old library is where the callback ties to. */
 		elog(WARNING,
 		     "'%s' is already set and cannot be changed until you reconnect",
 		     "postgis.gdal_enabled_drivers");
-	} else {
+	}
+	else
+	{
 		DefineCustomStringVariable(
 		    "postgis.gdal_enabled_drivers", /* name */
 		    "Enabled GDAL drivers.",        /* short_desc */
@@ -503,14 +532,17 @@ _PG_init(void)
 		);
 	}
 
-	if (postgis_guc_find_option("postgis.enable_outdb_rasters")) {
+	if (postgis_guc_find_option("postgis.enable_outdb_rasters"))
+	{
 		/* In this narrow case the previously installed GUC is tied to the callback in */
 		/* the previously loaded library. Probably this is happening during an */
 		/* upgrade, so the old library is where the callback ties to. */
 		elog(WARNING,
 		     "'%s' is already set and cannot be changed until you reconnect",
 		     "postgis.enable_outdb_rasters");
-	} else {
+	}
+	else
+	{
 		DefineCustomBoolVariable(
 		    "postgis.enable_outdb_rasters",                                  /* name */
 		    "Enable Out-DB raster bands",                                    /* short_desc */

@@ -65,22 +65,26 @@ lwline_split_by_line(const LWLINE *lwline_in, const LWGEOM *blade_in)
 	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
 
 	g1 = LWGEOM2GEOS((LWGEOM *)lwline_in, 0);
-	if (!g1) {
+	if (!g1)
+	{
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 	g2 = LWGEOM2GEOS(blade_in, 0);
-	if (!g2) {
+	if (!g2)
+	{
 		GEOSGeom_destroy(g1);
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 
 	/* If blade is a polygon, pick its boundary */
-	if (blade_in->type == POLYGONTYPE || blade_in->type == MULTIPOLYGONTYPE) {
+	if (blade_in->type == POLYGONTYPE || blade_in->type == MULTIPOLYGONTYPE)
+	{
 		gdiff = GEOSBoundary(g2);
 		GEOSGeom_destroy(g2);
-		if (!gdiff) {
+		if (!gdiff)
+		{
 			GEOSGeom_destroy(g1);
 			lwerror("GEOSBoundary: %s", lwgeom_geos_errmsg);
 			return NULL;
@@ -91,13 +95,15 @@ lwline_split_by_line(const LWLINE *lwline_in, const LWGEOM *blade_in)
 
 	/* If interior intersecton is linear we can't split */
 	ret = GEOSRelatePattern(g1, g2, "1********");
-	if (2 == ret) {
+	if (2 == ret)
+	{
 		lwerror("GEOSRelatePattern: %s", lwgeom_geos_errmsg);
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 		return NULL;
 	}
-	if (ret) {
+	if (ret)
+	{
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 		lwerror("Splitter line has linear intersection with input");
@@ -107,24 +113,29 @@ lwline_split_by_line(const LWLINE *lwline_in, const LWGEOM *blade_in)
 	gdiff = GEOSDifference(g1, g2);
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
-	if (gdiff == NULL) {
+	if (gdiff == NULL)
+	{
 		lwerror("GEOSDifference: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 
 	diff = GEOS2LWGEOM(gdiff, FLAGS_GET_Z(lwline_in->flags));
 	GEOSGeom_destroy(gdiff);
-	if (NULL == diff) {
+	if (NULL == diff)
+	{
 		lwerror("GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 
 	out = lwgeom_as_lwcollection(diff);
-	if (!out) {
+	if (!out)
+	{
 		components = lwalloc(sizeof(LWGEOM *) * 1);
 		components[0] = diff;
 		out = lwcollection_construct(COLLECTIONTYPE, lwline_in->srid, NULL, 1, components);
-	} else {
+	}
+	else
+	{
 		/* Set SRID */
 		lwgeom_set_srid((LWGEOM *)out, lwline_in->srid);
 		/* Force collection type */
@@ -140,9 +151,8 @@ lwline_split_by_point(const LWLINE *lwline_in, const LWPOINT *blade_in)
 	LWMLINE *out;
 
 	out = lwmline_construct_empty(lwline_in->srid, FLAGS_GET_Z(lwline_in->flags), FLAGS_GET_M(lwline_in->flags));
-	if (lwline_split_by_point_to(lwline_in, blade_in, out) < 2) {
-		lwmline_add_lwline(out, lwline_clone_deep(lwline_in));
-	}
+	if (lwline_split_by_point_to(lwline_in, blade_in, out) < 2)
+	{ lwmline_add_lwline(out, lwline_clone_deep(lwline_in)); }
 
 	/* Turn multiline into collection */
 	out->type = COLLECTIONTYPE;
@@ -159,12 +169,15 @@ lwline_split_by_mpoint(const LWLINE *lwline_in, const LWMPOINT *mp)
 	out = lwmline_construct_empty(lwline_in->srid, FLAGS_GET_Z(lwline_in->flags), FLAGS_GET_M(lwline_in->flags));
 	lwmline_add_lwline(out, lwline_clone_deep(lwline_in));
 
-	for (i = 0; i < mp->ngeoms; ++i) {
-		for (j = 0; j < out->ngeoms; ++j) {
+	for (i = 0; i < mp->ngeoms; ++i)
+	{
+		for (j = 0; j < out->ngeoms; ++j)
+		{
 			lwline_in = out->geoms[j];
 			LWPOINT *blade_in = mp->geoms[i];
 			int ret = lwline_split_by_point_to(lwline_in, blade_in, out);
-			if (2 == ret) {
+			if (2 == ret)
+			{
 				/* the point splits this line,
 				 * 2 splits were added to collection.
 				 * We'll move the latest added into
@@ -211,7 +224,8 @@ lwline_split_by_point_to(const LWLINE *lwline_in, const LWPOINT *blade_in, LWMLI
 	/* Find closest segment */
 	getPoint4d_p(ipa, 0, &p1);
 	nsegs = ipa->npoints - 1;
-	for (i = 0; i < nsegs; i++) {
+	for (i = 0; i < nsegs; i++)
+	{
 		getPoint4d_p(ipa, i + 1, &p2);
 		double dist;
 		dist = distance2d_pt_seg((POINT2D *)&pt, (POINT2D *)&p1, (POINT2D *)&p2);
@@ -224,7 +238,8 @@ lwline_split_by_point_to(const LWLINE *lwline_in, const LWPOINT *blade_in, LWMLI
 			 p2.x,
 			 p2.y,
 			 dist);
-		if (i == 0 || dist < mindist) {
+		if (i == 0 || dist < mindist)
+		{
 			mindist = dist;
 			seg = i;
 			if (mindist == 0.0) break; /* can't be closer than ON line */
@@ -267,15 +282,15 @@ lwline_split_by_point_to(const LWLINE *lwline_in, const LWPOINT *blade_in, LWMLI
 		 p2.y);
 
 	/* When closest point == an endpoint, this is a boundary intersection */
-	if (((seg == nsegs - 1) && p4d_same(&pt_projected, &p2)) || ((seg == 0) && p4d_same(&pt_projected, &p1))) {
-		return 1;
-	}
+	if (((seg == nsegs - 1) && p4d_same(&pt_projected, &p2)) || ((seg == 0) && p4d_same(&pt_projected, &p1)))
+	{ return 1; }
 
 	/* This is an internal intersection, let's build the two new pointarrays */
 
 	pa1 = ptarray_construct_empty(FLAGS_GET_Z(ipa->flags), FLAGS_GET_M(ipa->flags), seg + 2);
 	/* TODO: replace with a memcpy ? */
-	for (i = 0; i <= seg; ++i) {
+	for (i = 0; i <= seg; ++i)
+	{
 		getPoint4d_p(ipa, i, &p1);
 		ptarray_append_point(pa1, &p1, LW_FALSE);
 	}
@@ -284,13 +299,15 @@ lwline_split_by_point_to(const LWLINE *lwline_in, const LWPOINT *blade_in, LWMLI
 	pa2 = ptarray_construct_empty(FLAGS_GET_Z(ipa->flags), FLAGS_GET_M(ipa->flags), ipa->npoints - seg);
 	ptarray_append_point(pa2, &pt_projected, LW_FALSE);
 	/* TODO: replace with a memcpy (if so need to check for duplicated point) ? */
-	for (i = seg + 1; i < ipa->npoints; ++i) {
+	for (i = seg + 1; i < ipa->npoints; ++i)
+	{
 		getPoint4d_p(ipa, i, &p1);
 		ptarray_append_point(pa2, &p1, LW_FALSE);
 	}
 
 	/* NOTE: I've seen empty pointarrays with loc != 0 and loc != 1 */
-	if (pa1->npoints == 0 || pa2->npoints == 0) {
+	if (pa1->npoints == 0 || pa2->npoints == 0)
+	{
 		ptarray_free(pa1);
 		ptarray_free(pa2);
 		/* Intersection is on the boundary */
@@ -305,7 +322,8 @@ lwline_split_by_point_to(const LWLINE *lwline_in, const LWPOINT *blade_in, LWMLI
 static LWGEOM *
 lwline_split(const LWLINE *lwline_in, const LWGEOM *blade_in)
 {
-	switch (blade_in->type) {
+	switch (blade_in->type)
+	{
 	case POINTTYPE:
 		return lwline_split_by_point(lwline_in, (LWPOINT *)blade_in);
 	case MULTIPOINTTYPE:
@@ -348,19 +366,22 @@ lwpoly_split_by_line(const LWPOLY *lwpoly_in, const LWGEOM *blade_in)
 	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
 
 	g1 = LWGEOM2GEOS((LWGEOM *)lwpoly_in, 0);
-	if (NULL == g1) {
+	if (NULL == g1)
+	{
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 	g1_bounds = GEOSBoundary(g1);
-	if (NULL == g1_bounds) {
+	if (NULL == g1_bounds)
+	{
 		GEOSGeom_destroy(g1);
 		lwerror("GEOSBoundary: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 
 	g2 = LWGEOM2GEOS(blade_in, 0);
-	if (NULL == g2) {
+	if (NULL == g2)
+	{
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g1_bounds);
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
@@ -368,7 +389,8 @@ lwpoly_split_by_line(const LWPOLY *lwpoly_in, const LWGEOM *blade_in)
 	}
 
 	vgeoms[0] = GEOSUnion(g1_bounds, g2);
-	if (NULL == vgeoms[0]) {
+	if (NULL == vgeoms[0])
+	{
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 		GEOSGeom_destroy(g1_bounds);
@@ -377,7 +399,8 @@ lwpoly_split_by_line(const LWPOLY *lwpoly_in, const LWGEOM *blade_in)
 	}
 
 	polygons = GEOSPolygonize(vgeoms, 1);
-	if (NULL == polygons) {
+	if (NULL == polygons)
+	{
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 		GEOSGeom_destroy(g1_bounds);
@@ -387,7 +410,8 @@ lwpoly_split_by_line(const LWPOLY *lwpoly_in, const LWGEOM *blade_in)
 	}
 
 #if PARANOIA_LEVEL > 0
-	if (GEOSGeomTypeId(polygons) != COLLECTIONTYPE) {
+	if (GEOSGeomTypeId(polygons) != COLLECTIONTYPE)
+	{
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 		GEOSGeom_destroy(g1_bounds);
@@ -407,13 +431,15 @@ lwpoly_split_by_line(const LWPOLY *lwpoly_in, const LWGEOM *blade_in)
 	/* Allocate space for all polys */
 	out->geoms = lwrealloc(out->geoms, sizeof(LWGEOM *) * n);
 	assert(0 == out->ngeoms);
-	for (i = 0; i < n; ++i) {
+	for (i = 0; i < n; ++i)
+	{
 		GEOSGeometry *pos; /* point on surface */
 		const GEOSGeometry *p = GEOSGetGeometryN(polygons, i);
 		int contains;
 
 		pos = GEOSPointOnSurface(p);
-		if (!pos) {
+		if (!pos)
+		{
 			GEOSGeom_destroy(g1);
 			GEOSGeom_destroy(g2);
 			GEOSGeom_destroy(g1_bounds);
@@ -424,7 +450,8 @@ lwpoly_split_by_line(const LWPOLY *lwpoly_in, const LWGEOM *blade_in)
 		}
 
 		contains = GEOSContains(g1, pos);
-		if (2 == contains) {
+		if (2 == contains)
+		{
 			GEOSGeom_destroy(g1);
 			GEOSGeom_destroy(g2);
 			GEOSGeom_destroy(g1_bounds);
@@ -437,7 +464,8 @@ lwpoly_split_by_line(const LWPOLY *lwpoly_in, const LWGEOM *blade_in)
 
 		GEOSGeom_destroy(pos);
 
-		if (0 == contains) {
+		if (0 == contains)
+		{
 			/* Original geometry doesn't contain
 			 * a point in this ring, must be an hole
 			 */
@@ -467,12 +495,14 @@ lwcollection_split(const LWCOLLECTION *lwcoll_in, const LWGEOM *blade_in)
 
 	split_vector_capacity = 8;
 	split_vector = lwalloc(split_vector_capacity * sizeof(LWGEOM *));
-	if (!split_vector) {
+	if (!split_vector)
+	{
 		lwerror("Out of virtual memory");
 		return NULL;
 	}
 
-	for (i = 0; i < lwcoll_in->ngeoms; ++i) {
+	for (i = 0; i < lwcoll_in->ngeoms; ++i)
+	{
 		LWCOLLECTION *col;
 		LWGEOM *split = lwgeom_split(lwcoll_in->geoms[i], blade_in);
 		/* an exception should prevent this from ever returning NULL */
@@ -483,17 +513,20 @@ lwcollection_split(const LWCOLLECTION *lwcoll_in, const LWGEOM *blade_in)
 		assert(col);
 
 		/* Reallocate split_vector if needed */
-		if (split_vector_size + col->ngeoms > split_vector_capacity) {
+		if (split_vector_size + col->ngeoms > split_vector_capacity)
+		{
 			/* NOTE: we could be smarter on reallocations here */
 			split_vector_capacity += col->ngeoms;
 			split_vector = lwrealloc(split_vector, split_vector_capacity * sizeof(LWGEOM *));
-			if (!split_vector) {
+			if (!split_vector)
+			{
 				lwerror("Out of virtual memory");
 				return NULL;
 			}
 		}
 
-		for (j = 0; j < col->ngeoms; ++j) {
+		for (j = 0; j < col->ngeoms; ++j)
+		{
 			col->geoms[j]->srid = SRID_UNKNOWN; /* strip srid */
 			split_vector[split_vector_size++] = col->geoms[j];
 		}
@@ -510,7 +543,8 @@ lwcollection_split(const LWCOLLECTION *lwcoll_in, const LWGEOM *blade_in)
 static LWGEOM *
 lwpoly_split(const LWPOLY *lwpoly_in, const LWGEOM *blade_in)
 {
-	switch (blade_in->type) {
+	switch (blade_in->type)
+	{
 	case MULTILINETYPE:
 	case LINETYPE:
 		return lwpoly_split_by_line(lwpoly_in, blade_in);
@@ -525,7 +559,8 @@ lwpoly_split(const LWPOLY *lwpoly_in, const LWGEOM *blade_in)
 LWGEOM *
 lwgeom_split(const LWGEOM *lwgeom_in, const LWGEOM *blade_in)
 {
-	switch (lwgeom_in->type) {
+	switch (lwgeom_in->type)
+	{
 	case LINETYPE:
 		return lwline_split((const LWLINE *)lwgeom_in, blade_in);
 

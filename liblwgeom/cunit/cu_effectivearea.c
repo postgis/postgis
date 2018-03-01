@@ -29,7 +29,8 @@ do_test_lwgeom_effectivearea(POINTARRAY *pa, double *the_areas, int avoid_collap
 	ea = initiate_effectivearea(pa);
 	ptarray_calc_areas(ea, avoid_collaps, 1, 0);
 
-	for (i = 0; i < pa->npoints; i++) {
+	for (i = 0; i < pa->npoints; i++)
+	{
 		CU_ASSERT_EQUAL(ea->res_arealist[i], the_areas[i]);
 	}
 

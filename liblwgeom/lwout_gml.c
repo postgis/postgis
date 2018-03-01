@@ -127,7 +127,8 @@ gbox_to_gml2(const GBOX *bbox, const char *srs, int precision, const char *prefi
 	char *ptr, *output;
 	size_t prefixlen = strlen(prefix);
 
-	if (!bbox) {
+	if (!bbox)
+	{
 		size = (sizeof("<Box>/") + (prefixlen * 2)) * 2;
 		if (srs) size += strlen(srs) + sizeof(" srsName=..");
 
@@ -184,7 +185,8 @@ gbox_to_gml3(const GBOX *bbox, const char *srs, int precision, int opts, const c
 	size_t prefixlen = strlen(prefix);
 	int dimension = 2;
 
-	if (!bbox) {
+	if (!bbox)
+	{
 		size = (sizeof("<Envelope>/") + (prefixlen * 2)) * 2;
 		if (srs) size += strlen(srs) + sizeof(" srsName=..");
 
@@ -279,7 +281,8 @@ lwgeom_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *p
 	/* Return null for empty (#1377) */
 	if (lwgeom_is_empty(geom)) return NULL;
 
-	switch (type) {
+	switch (type)
+	{
 	case POINTTYPE:
 		return asgml2_point((LWPOINT *)geom, srs, precision, prefix);
 
@@ -328,7 +331,8 @@ asgml2_point_buf(const LWPOINT *point, const char *srs, char *output, int precis
 
 	ptr += sprintf(ptr, "<%sPoint", prefix);
 	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	if (lwpoint_is_empty(point)) {
+	if (lwpoint_is_empty(point))
+	{
 		ptr += sprintf(ptr, "/>");
 		return (ptr - output);
 	}
@@ -372,7 +376,8 @@ asgml2_line_buf(const LWLINE *line, const char *srs, char *output, int precision
 	ptr += sprintf(ptr, "<%sLineString", prefix);
 	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
 
-	if (lwline_is_empty(line)) {
+	if (lwline_is_empty(line))
+	{
 		ptr += sprintf(ptr, "/>");
 		return (ptr - output);
 	}
@@ -424,7 +429,8 @@ asgml2_poly_buf(const LWPOLY *poly, const char *srs, char *output, int precision
 
 	ptr += sprintf(ptr, "<%sPolygon", prefix);
 	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	if (lwpoly_is_empty(poly)) {
+	if (lwpoly_is_empty(poly))
+	{
 		ptr += sprintf(ptr, "/>");
 		return (ptr - output);
 	}
@@ -432,7 +438,8 @@ asgml2_poly_buf(const LWPOLY *poly, const char *srs, char *output, int precision
 	ptr += sprintf(ptr, "<%souterBoundaryIs><%sLinearRing><%scoordinates>", prefix, prefix, prefix);
 	ptr += pointArray_toGML2(poly->rings[0], ptr, precision);
 	ptr += sprintf(ptr, "</%scoordinates></%sLinearRing></%souterBoundaryIs>", prefix, prefix, prefix);
-	for (i = 1; i < poly->nrings; i++) {
+	for (i = 1; i < poly->nrings; i++)
+	{
 		ptr += sprintf(ptr, "<%sinnerBoundaryIs><%sLinearRing><%scoordinates>", prefix, prefix, prefix);
 		ptr += pointArray_toGML2(poly->rings[i], ptr, precision);
 		ptr += sprintf(ptr, "</%scoordinates></%sLinearRing></%sinnerBoundaryIs>", prefix, prefix, prefix);
@@ -473,15 +480,21 @@ asgml2_multi_size(const LWCOLLECTION *col, const char *srs, int precision, const
 
 	if (srs) size += strlen(srs) + sizeof(" srsName=..");
 
-	for (i = 0; i < col->ngeoms; i++) {
+	for (i = 0; i < col->ngeoms; i++)
+	{
 		subgeom = col->geoms[i];
-		if (subgeom->type == POINTTYPE) {
+		if (subgeom->type == POINTTYPE)
+		{
 			size += (sizeof("<pointMember>/") + prefixlen) * 2;
 			size += asgml2_point_size((LWPOINT *)subgeom, 0, precision, prefix);
-		} else if (subgeom->type == LINETYPE) {
+		}
+		else if (subgeom->type == LINETYPE)
+		{
 			size += (sizeof("<lineStringMember>/") + prefixlen) * 2;
 			size += asgml2_line_size((LWLINE *)subgeom, 0, precision, prefix);
-		} else if (subgeom->type == POLYGONTYPE) {
+		}
+		else if (subgeom->type == POLYGONTYPE)
+		{
 			size += (sizeof("<polygonMember>/") + prefixlen) * 2;
 			size += asgml2_poly_size((LWPOLY *)subgeom, 0, precision, prefix);
 		}
@@ -515,23 +528,30 @@ asgml2_multi_buf(const LWCOLLECTION *col, const char *srs, char *output, int pre
 	ptr += sprintf(ptr, "<%s%s", prefix, gmltype);
 	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
 
-	if (!col->ngeoms) {
+	if (!col->ngeoms)
+	{
 		ptr += sprintf(ptr, "/>");
 		return (ptr - output);
 	}
 	ptr += sprintf(ptr, ">");
 
-	for (i = 0; i < col->ngeoms; i++) {
+	for (i = 0; i < col->ngeoms; i++)
+	{
 		subgeom = col->geoms[i];
-		if (subgeom->type == POINTTYPE) {
+		if (subgeom->type == POINTTYPE)
+		{
 			ptr += sprintf(ptr, "<%spointMember>", prefix);
 			ptr += asgml2_point_buf((LWPOINT *)subgeom, 0, ptr, precision, prefix);
 			ptr += sprintf(ptr, "</%spointMember>", prefix);
-		} else if (subgeom->type == LINETYPE) {
+		}
+		else if (subgeom->type == LINETYPE)
+		{
 			ptr += sprintf(ptr, "<%slineStringMember>", prefix);
 			ptr += asgml2_line_buf((LWLINE *)subgeom, 0, ptr, precision, prefix);
 			ptr += sprintf(ptr, "</%slineStringMember>", prefix);
-		} else if (subgeom->type == POLYGONTYPE) {
+		}
+		else if (subgeom->type == POLYGONTYPE)
+		{
 			ptr += sprintf(ptr, "<%spolygonMember>", prefix);
 			ptr += asgml2_poly_buf((LWPOLY *)subgeom, 0, ptr, precision, prefix);
 			ptr += sprintf(ptr, "</%spolygonMember>", prefix);
@@ -575,19 +595,25 @@ asgml2_collection_size(const LWCOLLECTION *col, const char *srs, int precision, 
 
 	if (srs) size += strlen(srs) + sizeof(" srsName=..");
 
-	for (i = 0; i < col->ngeoms; i++) {
+	for (i = 0; i < col->ngeoms; i++)
+	{
 		subgeom = col->geoms[i];
 
 		size += (sizeof("<geometryMember>/") + prefixlen) * 2;
-		if (subgeom->type == POINTTYPE) {
-			size += asgml2_point_size((LWPOINT *)subgeom, 0, precision, prefix);
-		} else if (subgeom->type == LINETYPE) {
+		if (subgeom->type == POINTTYPE) { size += asgml2_point_size((LWPOINT *)subgeom, 0, precision, prefix); }
+		else if (subgeom->type == LINETYPE)
+		{
 			size += asgml2_line_size((LWLINE *)subgeom, 0, precision, prefix);
-		} else if (subgeom->type == POLYGONTYPE) {
+		}
+		else if (subgeom->type == POLYGONTYPE)
+		{
 			size += asgml2_poly_size((LWPOLY *)subgeom, 0, precision, prefix);
-		} else if (lwgeom_is_collection(subgeom)) {
+		}
+		else if (lwgeom_is_collection(subgeom))
+		{
 			size += asgml2_collection_size((LWCOLLECTION *)subgeom, 0, precision, prefix);
-		} else
+		}
+		else
 			lwerror("asgml2_collection_size: Unable to process geometry type!");
 	}
 
@@ -610,23 +636,30 @@ asgml2_collection_buf(const LWCOLLECTION *col, const char *srs, char *output, in
 	ptr += sprintf(ptr, "<%sMultiGeometry", prefix);
 	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
 
-	if (!col->ngeoms) {
+	if (!col->ngeoms)
+	{
 		ptr += sprintf(ptr, "/>");
 		return (ptr - output);
 	}
 	ptr += sprintf(ptr, ">");
 
-	for (i = 0; i < col->ngeoms; i++) {
+	for (i = 0; i < col->ngeoms; i++)
+	{
 		subgeom = col->geoms[i];
 
 		ptr += sprintf(ptr, "<%sgeometryMember>", prefix);
-		if (subgeom->type == POINTTYPE) {
-			ptr += asgml2_point_buf((LWPOINT *)subgeom, 0, ptr, precision, prefix);
-		} else if (subgeom->type == LINETYPE) {
+		if (subgeom->type == POINTTYPE)
+		{ ptr += asgml2_point_buf((LWPOINT *)subgeom, 0, ptr, precision, prefix); }
+		else if (subgeom->type == LINETYPE)
+		{
 			ptr += asgml2_line_buf((LWLINE *)subgeom, 0, ptr, precision, prefix);
-		} else if (subgeom->type == POLYGONTYPE) {
+		}
+		else if (subgeom->type == POLYGONTYPE)
+		{
 			ptr += asgml2_poly_buf((LWPOLY *)subgeom, 0, ptr, precision, prefix);
-		} else if (lwgeom_is_collection(subgeom)) {
+		}
+		else if (lwgeom_is_collection(subgeom))
+		{
 			if (subgeom->type == COLLECTIONTYPE)
 				ptr += asgml2_collection_buf((LWCOLLECTION *)subgeom, 0, ptr, precision, prefix);
 			else
@@ -667,8 +700,10 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 
 	ptr = output;
 
-	if (!FLAGS_GET_Z(pa->flags)) {
-		for (i = 0; i < pa->npoints; i++) {
+	if (!FLAGS_GET_Z(pa->flags))
+	{
+		for (i = 0; i < pa->npoints; i++)
+		{
 			const POINT2D *pt;
 			pt = getPoint2d_cp(pa, i);
 
@@ -678,8 +713,11 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 			if (i) ptr += sprintf(ptr, " ");
 			ptr += sprintf(ptr, "%s,%s", x, y);
 		}
-	} else {
-		for (i = 0; i < pa->npoints; i++) {
+	}
+	else
+	{
+		for (i = 0; i < pa->npoints; i++)
+		{
 			const POINT3DZ *pt;
 			pt = getPoint3dz_cp(pa, i);
 			lwprint_double(pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
@@ -707,7 +745,8 @@ lwgeom_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, con
 	/* Return null for empty (#1377) */
 	if (lwgeom_is_empty(geom)) return NULL;
 
-	switch (type) {
+	switch (type)
+	{
 	case POINTTYPE:
 		return asgml3_point((LWPOINT *)geom, srs, precision, opts, prefix, id);
 
@@ -786,7 +825,8 @@ asgml3_point_buf(const LWPOINT *point,
 	ptr += sprintf(ptr, "<%sPoint", prefix);
 	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
 	if (id) ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id);
-	if (lwpoint_is_empty(point)) {
+	if (lwpoint_is_empty(point))
+	{
 		ptr += sprintf(ptr, "/>");
 		return (ptr - output);
 	}
@@ -821,9 +861,9 @@ asgml3_line_size(const LWLINE *line, const char *srs, int precision, int opts, c
 	size_t prefixlen = strlen(prefix);
 
 	size = pointArray_GMLsize(line->points, precision);
-	if (opts & LW_GML_SHORTLINE) {
-		size += (sizeof("<LineString><posList>/") + (prefixlen * 2)) * 2;
-	} else {
+	if (opts & LW_GML_SHORTLINE) { size += (sizeof("<LineString><posList>/") + (prefixlen * 2)) * 2; }
+	else
+	{
 		size += (sizeof("<Curve><segments><LineStringSegment><posList>/") + (prefixlen * 4)) * 2;
 	}
 	if (srs) size += strlen(srs) + sizeof(" srsName=..");
@@ -847,29 +887,31 @@ asgml3_line_buf(const LWLINE *line,
 
 	if (FLAGS_GET_Z(line->flags)) dimension = 3;
 
-	if (shortline) {
-		ptr += sprintf(ptr, "<%sLineString", prefix);
-	} else {
+	if (shortline) { ptr += sprintf(ptr, "<%sLineString", prefix); }
+	else
+	{
 		ptr += sprintf(ptr, "<%sCurve", prefix);
 	}
 
 	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
 	if (id) ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id);
 
-	if (lwline_is_empty(line)) {
+	if (lwline_is_empty(line))
+	{
 		ptr += sprintf(ptr, "/>");
 		return (ptr - output);
 	}
 	ptr += sprintf(ptr, ">");
 
-	if (!shortline) {
+	if (!shortline)
+	{
 		ptr += sprintf(ptr, "<%ssegments>", prefix);
 		ptr += sprintf(ptr, "<%sLineStringSegment>", prefix);
 	}
 
-	if (IS_DIMS(opts)) {
-		ptr += sprintf(ptr, "<%sposList srsDimension=\"%d\">", prefix, dimension);
-	} else {
+	if (IS_DIMS(opts)) { ptr += sprintf(ptr, "<%sposList srsDimension=\"%d\">", prefix, dimension); }
+	else
+	{
 		ptr += sprintf(ptr, "<%sposList>", prefix);
 	}
 
@@ -877,9 +919,9 @@ asgml3_line_buf(const LWLINE *line,
 
 	ptr += sprintf(ptr, "</%sposList>", prefix);
 
-	if (shortline) {
-		ptr += sprintf(ptr, "</%sLineString>", prefix);
-	} else {
+	if (shortline) { ptr += sprintf(ptr, "</%sLineString>", prefix); }
+	else
+	{
 		ptr += sprintf(ptr, "</%sLineStringSegment>", prefix);
 		ptr += sprintf(ptr, "</%ssegments>", prefix);
 		ptr += sprintf(ptr, "</%sCurve>", prefix);
@@ -1003,16 +1045,17 @@ asgml3_poly_buf(const LWPOLY *poly,
 	int dimension = 2;
 
 	if (FLAGS_GET_Z(poly->flags)) dimension = 3;
-	if (is_patch) {
-		ptr += sprintf(ptr, "<%sPolygonPatch", prefix);
-	} else {
+	if (is_patch) { ptr += sprintf(ptr, "<%sPolygonPatch", prefix); }
+	else
+	{
 		ptr += sprintf(ptr, "<%sPolygon", prefix);
 	}
 
 	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
 	if (id) ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id);
 
-	if (lwpoly_is_empty(poly)) {
+	if (lwpoly_is_empty(poly))
+	{
 		ptr += sprintf(ptr, "/>");
 		return (ptr - output);
 	}
@@ -1026,7 +1069,8 @@ asgml3_poly_buf(const LWPOLY *poly,
 
 	ptr += pointArray_toGML3(poly->rings[0], ptr, precision, opts);
 	ptr += sprintf(ptr, "</%sposList></%sLinearRing></%sexterior>", prefix, prefix, prefix);
-	for (i = 1; i < poly->nrings; i++) {
+	for (i = 1; i < poly->nrings; i++)
+	{
 		ptr += sprintf(ptr, "<%sinterior><%sLinearRing>", prefix, prefix);
 		if (IS_DIMS(opts))
 			ptr += sprintf(ptr, "<%sposList srsDimension=\"%d\">", prefix, dimension);
@@ -1081,17 +1125,23 @@ asgml3_compound_size(const LWCOMPOUND *col,
 
 	size += (sizeof("<segments></segments>") + 2 * prefixlen);
 
-	for (i = 0; i < col->ngeoms; ++i) {
+	for (i = 0; i < col->ngeoms; ++i)
+	{
 		subgeom = col->geoms[i];
-		if (subgeom->type == LINETYPE) {
+		if (subgeom->type == LINETYPE)
+		{
 
 			size += sizeof("<LineStringSegment></LineStringSegment") + 2 * prefixlen;
 			size += sizeof("<posList></posList") + 2 * prefixlen;
 			size += pointArray_GMLsize(((LWLINE *)subgeom)->points, precision);
-		} else if (subgeom->type == CIRCSTRINGTYPE) {
+		}
+		else if (subgeom->type == CIRCSTRINGTYPE)
+		{
 			size += sizeof("<ArcString><posList></ArcString></posList>") + 4 * prefixlen;
 			size += pointArray_GMLsize(((LWCIRCSTRING *)subgeom)->points, precision);
-		} else {
+		}
+		else
+		{
 			continue;
 		}
 		if (IS_DIMS(opts)) { size += sizeof(" srsDimension='x'"); }
@@ -1121,17 +1171,21 @@ asgml3_compound_buf(const LWCOMPOUND *col,
 	ptr += sprintf(ptr, ">");
 	ptr += sprintf(ptr, "<%ssegments>", prefix);
 
-	for (i = 0; i < col->ngeoms; ++i) {
+	for (i = 0; i < col->ngeoms; ++i)
+	{
 		subgeom = col->geoms[i];
 		if (subgeom->type != LINETYPE && subgeom->type != CIRCSTRINGTYPE) { continue; }
 
-		if (subgeom->type == LINETYPE) {
+		if (subgeom->type == LINETYPE)
+		{
 			ptr += sprintf(ptr, "<%sLineStringSegment><%sposList", prefix, prefix);
 			if (IS_DIMS(opts)) { ptr += sprintf(ptr, " srsDimension=\"%d\"", dimension); }
 			ptr += sprintf(ptr, ">");
 			ptr += pointArray_toGML3(((LWCIRCSTRING *)subgeom)->points, ptr, precision, opts);
 			ptr += sprintf(ptr, "</%sposList></%sLineStringSegment>", prefix, prefix);
-		} else if (subgeom->type == CIRCSTRINGTYPE) {
+		}
+		else if (subgeom->type == CIRCSTRINGTYPE)
+		{
 			ptr += sprintf(ptr, "<%sArcString><%sposList", prefix, prefix);
 			if (IS_DIMS(opts)) { ptr += sprintf(ptr, " srsDimension=\"%d\"", dimension); }
 			ptr += sprintf(ptr, ">");
@@ -1172,24 +1226,30 @@ asgml3_curvepoly_size(const LWCURVEPOLY *poly,
 	if (id) size += strlen(id) + strlen(prefix) + sizeof(" id=..");
 	uint32_t i;
 
-	for (i = 0; i < poly->nrings; ++i) {
-		if (i == 0) {
-			size += sizeof("<exterior></exterior>") + 2 * prefixlen;
-		} else {
+	for (i = 0; i < poly->nrings; ++i)
+	{
+		if (i == 0) { size += sizeof("<exterior></exterior>") + 2 * prefixlen; }
+		else
+		{
 			size += sizeof("<interior></interior>") + 2 * prefixlen;
 		}
 		subgeom = poly->rings[i];
 
-		if (subgeom->type == LINETYPE) {
+		if (subgeom->type == LINETYPE)
+		{
 			size += sizeof("<LinearRing></LinearRing>") + 2 * prefixlen;
 			size += sizeof("<posList></posList") + 2 * prefixlen;
 			if (IS_DIMS(opts)) { size += sizeof(" srsDimension='x'"); }
 			size += pointArray_GMLsize(((LWLINE *)subgeom)->points, precision);
-		} else if (subgeom->type == CIRCSTRINGTYPE) {
+		}
+		else if (subgeom->type == CIRCSTRINGTYPE)
+		{
 			size += sizeof("<Ring></Ring>") + 2 * prefixlen;
 			size += sizeof("<CurveMember></CurveMember>") + 2 * prefixlen;
 			size += asgml3_circstring_size((LWCIRCSTRING *)subgeom, srs, precision, opts, prefix, id);
-		} else if (subgeom->type == COMPOUNDTYPE) {
+		}
+		else if (subgeom->type == COMPOUNDTYPE)
+		{
 			size += sizeof("<Ring></Ring>") + 2 * prefixlen;
 			size += sizeof("<curveMember></curveMember>") + 2 * prefixlen;
 			size += asgml3_compound_size((LWCOMPOUND *)subgeom, srs, precision, opts, prefix, id);
@@ -1219,15 +1279,17 @@ asgml3_curvepoly_buf(const LWCURVEPOLY *poly,
 	if (id) { ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id); }
 	ptr += sprintf(ptr, ">");
 
-	for (i = 0; i < poly->nrings; ++i) {
-		if (i == 0) {
-			ptr += sprintf(ptr, "<%sexterior>", prefix);
-		} else {
+	for (i = 0; i < poly->nrings; ++i)
+	{
+		if (i == 0) { ptr += sprintf(ptr, "<%sexterior>", prefix); }
+		else
+		{
 			ptr += sprintf(ptr, "<%sinterior>", prefix);
 		}
 
 		subgeom = poly->rings[i];
-		if (subgeom->type == LINETYPE) {
+		if (subgeom->type == LINETYPE)
+		{
 			ptr += sprintf(ptr, "<%sLinearRing>", prefix);
 			ptr += sprintf(ptr, "<%sposList", prefix);
 			if (IS_DIMS(opts)) { ptr += sprintf(ptr, " srsDimension=\"%d\"", dimension); }
@@ -1235,13 +1297,17 @@ asgml3_curvepoly_buf(const LWCURVEPOLY *poly,
 			ptr += pointArray_toGML3(((LWLINE *)subgeom)->points, ptr, precision, opts);
 			ptr += sprintf(ptr, "</%sposList>", prefix);
 			ptr += sprintf(ptr, "</%sLinearRing>", prefix);
-		} else if (subgeom->type == CIRCSTRINGTYPE) {
+		}
+		else if (subgeom->type == CIRCSTRINGTYPE)
+		{
 			ptr += sprintf(ptr, "<%sRing>", prefix);
 			ptr += sprintf(ptr, "<%scurveMember>", prefix);
 			ptr += asgml3_circstring_buf((LWCIRCSTRING *)subgeom, srs, ptr, precision, opts, prefix, id);
 			ptr += sprintf(ptr, "</%scurveMember>", prefix);
 			ptr += sprintf(ptr, "</%sRing>", prefix);
-		} else if (subgeom->type == COMPOUNDTYPE) {
+		}
+		else if (subgeom->type == COMPOUNDTYPE)
+		{
 			ptr += sprintf(ptr, "<%sRing>", prefix);
 			ptr += sprintf(ptr, "<%scurveMember>", prefix);
 			ptr += asgml3_compound_buf((LWCOMPOUND *)subgeom, srs, ptr, precision, opts, prefix, id);
@@ -1249,9 +1315,9 @@ asgml3_curvepoly_buf(const LWCURVEPOLY *poly,
 			ptr += sprintf(ptr, "</%sRing>", prefix);
 		}
 
-		if (i == 0) {
-			ptr += sprintf(ptr, "</%sexterior>", prefix);
-		} else {
+		if (i == 0) { ptr += sprintf(ptr, "</%sexterior>", prefix); }
+		else
+		{
 			ptr += sprintf(ptr, "</%sinterior>", prefix);
 		}
 	}
@@ -1362,15 +1428,21 @@ asgml3_multi_size(const LWCOLLECTION *col, const char *srs, int precision, int o
 	if (srs) size += strlen(srs) + sizeof(" srsName=..");
 	if (id) size += strlen(id) + strlen(prefix) + sizeof(" id=..");
 
-	for (i = 0; i < col->ngeoms; i++) {
+	for (i = 0; i < col->ngeoms; i++)
+	{
 		subgeom = col->geoms[i];
-		if (subgeom->type == POINTTYPE) {
+		if (subgeom->type == POINTTYPE)
+		{
 			size += (sizeof("<pointMember>/") + prefixlen) * 2;
 			size += asgml3_point_size((LWPOINT *)subgeom, 0, precision, opts, prefix, id);
-		} else if (subgeom->type == LINETYPE) {
+		}
+		else if (subgeom->type == LINETYPE)
+		{
 			size += (sizeof("<curveMember>/") + prefixlen) * 2;
 			size += asgml3_line_size((LWLINE *)subgeom, 0, precision, opts, prefix, id);
-		} else if (subgeom->type == POLYGONTYPE) {
+		}
+		else if (subgeom->type == POLYGONTYPE)
+		{
 			size += (sizeof("<surfaceMember>/") + prefixlen) * 2;
 			size += asgml3_poly_size((LWPOLY *)subgeom, 0, precision, opts, prefix, id);
 		}
@@ -1411,23 +1483,30 @@ asgml3_multi_buf(const LWCOLLECTION *col,
 	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
 	if (id) ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id);
 
-	if (!col->ngeoms) {
+	if (!col->ngeoms)
+	{
 		ptr += sprintf(ptr, "/>");
 		return (ptr - output);
 	}
 	ptr += sprintf(ptr, ">");
 
-	for (i = 0; i < col->ngeoms; i++) {
+	for (i = 0; i < col->ngeoms; i++)
+	{
 		subgeom = col->geoms[i];
-		if (subgeom->type == POINTTYPE) {
+		if (subgeom->type == POINTTYPE)
+		{
 			ptr += sprintf(ptr, "<%spointMember>", prefix);
 			ptr += asgml3_point_buf((LWPOINT *)subgeom, 0, ptr, precision, opts, prefix, id);
 			ptr += sprintf(ptr, "</%spointMember>", prefix);
-		} else if (subgeom->type == LINETYPE) {
+		}
+		else if (subgeom->type == LINETYPE)
+		{
 			ptr += sprintf(ptr, "<%scurveMember>", prefix);
 			ptr += asgml3_line_buf((LWLINE *)subgeom, 0, ptr, precision, opts, prefix, id);
 			ptr += sprintf(ptr, "</%scurveMember>", prefix);
-		} else if (subgeom->type == POLYGONTYPE) {
+		}
+		else if (subgeom->type == POLYGONTYPE)
+		{
 			ptr += sprintf(ptr, "<%ssurfaceMember>", prefix);
 			ptr += asgml3_poly_buf((LWPOLY *)subgeom, 0, ptr, precision, opts, 0, prefix, id);
 			ptr += sprintf(ptr, "</%ssurfaceMember>", prefix);
@@ -1471,7 +1550,8 @@ asgml3_psurface_size(const LWPSURFACE *psur,
 	if (srs) size += strlen(srs) + sizeof(" srsName=..");
 	if (id) size += strlen(id) + strlen(prefix) + sizeof(" id=..");
 
-	for (i = 0; i < psur->ngeoms; i++) {
+	for (i = 0; i < psur->ngeoms; i++)
+	{
 		size += asgml3_poly_size(psur->geoms[i], 0, precision, opts, prefix, id);
 	}
 
@@ -1501,7 +1581,8 @@ asgml3_psurface_buf(const LWPSURFACE *psur,
 	if (id) ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id);
 	ptr += sprintf(ptr, "><%spolygonPatches>", prefix);
 
-	for (i = 0; i < psur->ngeoms; i++) {
+	for (i = 0; i < psur->ngeoms; i++)
+	{
 		ptr += asgml3_poly_buf(psur->geoms[i], 0, ptr, precision, opts, 1, prefix, id);
 	}
 
@@ -1537,7 +1618,8 @@ asgml3_tin_size(const LWTIN *tin, const char *srs, int precision, int opts, cons
 	if (srs) size += strlen(srs) + sizeof(" srsName=..");
 	if (id) size += strlen(id) + strlen(prefix) + sizeof(" id=..");
 
-	for (i = 0; i < tin->ngeoms; i++) {
+	for (i = 0; i < tin->ngeoms; i++)
+	{
 		size += asgml3_triangle_size(tin->geoms[i], 0, precision, opts, prefix, id);
 	}
 
@@ -1569,7 +1651,8 @@ asgml3_tin_buf(const LWTIN *tin,
 	else
 		ptr += sprintf(ptr, "><%strianglePatches>", prefix);
 
-	for (i = 0; i < tin->ngeoms; i++) {
+	for (i = 0; i < tin->ngeoms; i++)
+	{
 		ptr += asgml3_triangle_buf(tin->geoms[i], 0, ptr, precision, opts, prefix, id);
 	}
 
@@ -1612,18 +1695,25 @@ asgml3_collection_size(const LWCOLLECTION *col,
 	if (srs) size += strlen(srs) + sizeof(" srsName=..");
 	if (id) size += strlen(id) + strlen(prefix) + sizeof(" id=..");
 
-	for (i = 0; i < col->ngeoms; i++) {
+	for (i = 0; i < col->ngeoms; i++)
+	{
 		subgeom = col->geoms[i];
 		size += (sizeof("<geometryMember>/") + prefixlen) * 2;
-		if (subgeom->type == POINTTYPE) {
-			size += asgml3_point_size((LWPOINT *)subgeom, 0, precision, opts, prefix, id);
-		} else if (subgeom->type == LINETYPE) {
+		if (subgeom->type == POINTTYPE)
+		{ size += asgml3_point_size((LWPOINT *)subgeom, 0, precision, opts, prefix, id); }
+		else if (subgeom->type == LINETYPE)
+		{
 			size += asgml3_line_size((LWLINE *)subgeom, 0, precision, opts, prefix, id);
-		} else if (subgeom->type == POLYGONTYPE) {
+		}
+		else if (subgeom->type == POLYGONTYPE)
+		{
 			size += asgml3_poly_size((LWPOLY *)subgeom, 0, precision, opts, prefix, id);
-		} else if (lwgeom_is_collection(subgeom)) {
+		}
+		else if (lwgeom_is_collection(subgeom))
+		{
 			size += asgml3_multi_size((LWCOLLECTION *)subgeom, 0, precision, opts, prefix, id);
-		} else
+		}
+		else
 			lwerror("asgml3_collection_size: unknown geometry type");
 	}
 
@@ -1650,28 +1740,36 @@ asgml3_collection_buf(const LWCOLLECTION *col,
 	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
 	if (id) ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id);
 
-	if (!col->ngeoms) {
+	if (!col->ngeoms)
+	{
 		ptr += sprintf(ptr, "/>");
 		return (ptr - output);
 	}
 	ptr += sprintf(ptr, ">");
 
-	for (i = 0; i < col->ngeoms; i++) {
+	for (i = 0; i < col->ngeoms; i++)
+	{
 		subgeom = col->geoms[i];
 		ptr += sprintf(ptr, "<%sgeometryMember>", prefix);
-		if (subgeom->type == POINTTYPE) {
-			ptr += asgml3_point_buf((LWPOINT *)subgeom, 0, ptr, precision, opts, prefix, id);
-		} else if (subgeom->type == LINETYPE) {
+		if (subgeom->type == POINTTYPE)
+		{ ptr += asgml3_point_buf((LWPOINT *)subgeom, 0, ptr, precision, opts, prefix, id); }
+		else if (subgeom->type == LINETYPE)
+		{
 			ptr += asgml3_line_buf((LWLINE *)subgeom, 0, ptr, precision, opts, prefix, id);
-		} else if (subgeom->type == POLYGONTYPE) {
+		}
+		else if (subgeom->type == POLYGONTYPE)
+		{
 			ptr += asgml3_poly_buf((LWPOLY *)subgeom, 0, ptr, precision, opts, 0, prefix, id);
-		} else if (lwgeom_is_collection(subgeom)) {
+		}
+		else if (lwgeom_is_collection(subgeom))
+		{
 			if (subgeom->type == COLLECTIONTYPE)
 				ptr +=
 				    asgml3_collection_buf((LWCOLLECTION *)subgeom, 0, ptr, precision, opts, prefix, id);
 			else
 				ptr += asgml3_multi_buf((LWCOLLECTION *)subgeom, 0, ptr, precision, opts, prefix, id);
-		} else
+		}
+		else
 			lwerror("asgml3_collection_buf: unknown geometry type");
 
 		ptr += sprintf(ptr, "</%sgeometryMember>", prefix);
@@ -1713,14 +1811,18 @@ asgml3_multicurve_size(const LWMCURVE *cur,
 	LWGEOM *subgeom;
 	uint32_t i;
 
-	for (i = 0; i < cur->ngeoms; ++i) {
+	for (i = 0; i < cur->ngeoms; ++i)
+	{
 		size += sizeof("<curveMember></curveMember>") + 2 * prefixlen;
 		subgeom = cur->geoms[i];
-		if (subgeom->type == LINETYPE) {
-			size += asgml3_line_size((LWLINE *)subgeom, srs, precision, opts, prefix, id);
-		} else if (subgeom->type == CIRCSTRINGTYPE) {
+		if (subgeom->type == LINETYPE)
+		{ size += asgml3_line_size((LWLINE *)subgeom, srs, precision, opts, prefix, id); }
+		else if (subgeom->type == CIRCSTRINGTYPE)
+		{
 			size += asgml3_circstring_size((LWCIRCSTRING *)subgeom, srs, precision, opts, prefix, id);
-		} else if (subgeom->type == COMPOUNDTYPE) {
+		}
+		else if (subgeom->type == COMPOUNDTYPE)
+		{
 			size += asgml3_compound_size((LWCOMPOUND *)subgeom, srs, precision, opts, prefix, id);
 		}
 	}
@@ -1745,14 +1847,18 @@ asgml3_multicurve_buf(const LWMCURVE *cur,
 	if (id) { ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id); }
 	ptr += sprintf(ptr, ">");
 
-	for (i = 0; i < cur->ngeoms; ++i) {
+	for (i = 0; i < cur->ngeoms; ++i)
+	{
 		ptr += sprintf(ptr, "<%scurveMember>", prefix);
 		subgeom = cur->geoms[i];
-		if (subgeom->type == LINETYPE) {
-			ptr += asgml3_line_buf((LWLINE *)subgeom, srs, ptr, precision, opts, prefix, id);
-		} else if (subgeom->type == CIRCSTRINGTYPE) {
+		if (subgeom->type == LINETYPE)
+		{ ptr += asgml3_line_buf((LWLINE *)subgeom, srs, ptr, precision, opts, prefix, id); }
+		else if (subgeom->type == CIRCSTRINGTYPE)
+		{
 			ptr += asgml3_circstring_buf((LWCIRCSTRING *)subgeom, srs, ptr, precision, opts, prefix, id);
-		} else if (subgeom->type == COMPOUNDTYPE) {
+		}
+		else if (subgeom->type == COMPOUNDTYPE)
+		{
 			ptr += asgml3_compound_buf((LWCOMPOUND *)subgeom, srs, ptr, precision, opts, prefix, id);
 		}
 		ptr += sprintf(ptr, "</%scurveMember>", prefix);
@@ -1786,11 +1892,13 @@ asgml3_multisurface_size(const LWMSURFACE *sur,
 	LWGEOM *subgeom;
 	uint32_t i;
 
-	for (i = 0; i < sur->ngeoms; ++i) {
+	for (i = 0; i < sur->ngeoms; ++i)
+	{
 		subgeom = sur->geoms[i];
-		if (subgeom->type == POLYGONTYPE) {
-			size += asgml3_poly_size((LWPOLY *)sur->geoms[i], srs, precision, opts, prefix, id);
-		} else if (subgeom->type == CURVEPOLYTYPE) {
+		if (subgeom->type == POLYGONTYPE)
+		{ size += asgml3_poly_size((LWPOLY *)sur->geoms[i], srs, precision, opts, prefix, id); }
+		else if (subgeom->type == CURVEPOLYTYPE)
+		{
 			size += asgml3_curvepoly_size((LWCURVEPOLY *)sur->geoms[i], srs, precision, opts, prefix, id);
 		}
 	}
@@ -1815,11 +1923,13 @@ asgml3_multisurface_buf(const LWMSURFACE *sur,
 	if (id) { ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id); }
 	ptr += sprintf(ptr, ">");
 
-	for (i = 0; i < sur->ngeoms; ++i) {
+	for (i = 0; i < sur->ngeoms; ++i)
+	{
 		subgeom = sur->geoms[i];
-		if (subgeom->type == POLYGONTYPE) {
-			ptr += asgml3_poly_buf((LWPOLY *)sur->geoms[i], srs, ptr, precision, opts, 0, prefix, id);
-		} else if (subgeom->type == CURVEPOLYTYPE) {
+		if (subgeom->type == POLYGONTYPE)
+		{ ptr += asgml3_poly_buf((LWPOLY *)sur->geoms[i], srs, ptr, precision, opts, 0, prefix, id); }
+		else if (subgeom->type == CURVEPOLYTYPE)
+		{
 			ptr +=
 			    asgml3_curvepoly_buf((LWCURVEPOLY *)sur->geoms[i], srs, ptr, precision, opts, prefix, id);
 		}
@@ -1852,8 +1962,10 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, int opts)
 
 	ptr = output;
 
-	if (!FLAGS_GET_Z(pa->flags)) {
-		for (i = 0; i < pa->npoints; i++) {
+	if (!FLAGS_GET_Z(pa->flags))
+	{
+		for (i = 0; i < pa->npoints; i++)
+		{
 			const POINT2D *pt;
 			pt = getPoint2d_cp(pa, i);
 			lwprint_double(pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
@@ -1865,8 +1977,11 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, int opts)
 			else
 				ptr += sprintf(ptr, "%s %s", x, y);
 		}
-	} else {
-		for (i = 0; i < pa->npoints; i++) {
+	}
+	else
+	{
+		for (i = 0; i < pa->npoints; i++)
+		{
 			const POINT3DZ *pt;
 			pt = getPoint3dz_cp(pa, i);
 

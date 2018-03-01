@@ -60,7 +60,8 @@ lwcurvepoly_construct_from_lwpoly(LWPOLY *lwpoly)
 	ret->maxrings = lwpoly->nrings; /* Allocate room for sub-members, just in case. */
 	ret->rings = lwalloc(ret->maxrings * sizeof(LWGEOM *));
 	ret->bbox = lwpoly->bbox ? gbox_clone(lwpoly->bbox) : NULL;
-	for (i = 0; i < ret->nrings; i++) {
+	for (i = 0; i < ret->nrings; i++)
+	{
 		ret->rings[i] =
 		    lwline_as_lwgeom(lwline_construct(ret->srid, NULL, ptarray_clone_deep(lwpoly->rings[i])));
 	}
@@ -73,39 +74,46 @@ lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 	uint32_t i;
 
 	/* Can't do anything with NULLs */
-	if (!poly || !ring) {
+	if (!poly || !ring)
+	{
 		LWDEBUG(4, "NULL inputs!!! quitting");
 		return LW_FAILURE;
 	}
 
 	/* Check that we're not working with garbage */
-	if (poly->rings == NULL && (poly->nrings || poly->maxrings)) {
+	if (poly->rings == NULL && (poly->nrings || poly->maxrings))
+	{
 		LWDEBUG(4, "mismatched nrings/maxrings");
 		lwerror("Curvepolygon is in inconsistent state. Null memory but non-zero collection counts.");
 	}
 
 	/* Check that we're adding an allowed ring type */
-	if (!(ring->type == LINETYPE || ring->type == CIRCSTRINGTYPE || ring->type == COMPOUNDTYPE)) {
+	if (!(ring->type == LINETYPE || ring->type == CIRCSTRINGTYPE || ring->type == COMPOUNDTYPE))
+	{
 		LWDEBUGF(4, "got incorrect ring type: %s", lwtype_name(ring->type));
 		return LW_FAILURE;
 	}
 
 	/* In case this is a truly empty, make some initial space  */
-	if (poly->rings == NULL) {
+	if (poly->rings == NULL)
+	{
 		poly->maxrings = 2;
 		poly->nrings = 0;
 		poly->rings = lwalloc(poly->maxrings * sizeof(LWGEOM *));
 	}
 
 	/* Allocate more space if we need it */
-	if (poly->nrings == poly->maxrings) {
+	if (poly->nrings == poly->maxrings)
+	{
 		poly->maxrings *= 2;
 		poly->rings = lwrealloc(poly->rings, sizeof(LWGEOM *) * poly->maxrings);
 	}
 
 	/* Make sure we don't already have a reference to this geom */
-	for (i = 0; i < poly->nrings; i++) {
-		if (poly->rings[i] == ring) {
+	for (i = 0; i < poly->nrings; i++)
+	{
+		if (poly->rings[i] == ring)
+		{
 			LWDEBUGF(4, "Found duplicate geometry in collection %p == %p", poly->rings[i], ring);
 			return LW_SUCCESS;
 		}

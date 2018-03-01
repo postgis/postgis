@@ -53,7 +53,8 @@ size_t d_binptr_to_pos(const uint8_t *const ptr, const uint8_t *const end, size_
 
 #define CHECK_BINPTR_POSITION(ptr, end, size, pos) \
 	{ \
-		if (pos != d_binptr_to_pos(ptr, end, size)) { \
+		if (pos != d_binptr_to_pos(ptr, end, size)) \
+		{ \
 			fprintf(stderr, "Check of binary stream pointer position failed on line %d\n", __LINE__); \
 			fprintf(stderr, \
 				"\tactual = %lu, expected = %lu\n", \

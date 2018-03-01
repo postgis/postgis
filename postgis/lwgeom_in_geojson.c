@@ -101,13 +101,15 @@ Datum geom_from_geojson(PG_FUNCTION_ARGS)
 	geojson = text2cstring(geojson_input);
 
 	lwgeom = lwgeom_from_geojson(geojson, &srs);
-	if (!lwgeom) {
+	if (!lwgeom)
+	{
 		/* Shouldn't get here */
 		elog(ERROR, "lwgeom_from_geojson returned NULL");
 		PG_RETURN_NULL();
 	}
 
-	if (srs) {
+	if (srs)
+	{
 		lwgeom_set_srid(lwgeom, getSRIDbySRS(srs));
 		lwfree(srs);
 	}

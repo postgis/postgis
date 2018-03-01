@@ -56,13 +56,16 @@ Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 		elog(ERROR, "pgis_asmvt_transfn: called in non-aggregate context");
 	MemoryContextSwitchTo(aggcontext);
 
-	if (PG_ARGISNULL(0)) {
+	if (PG_ARGISNULL(0))
+	{
 		ctx = palloc(sizeof(*ctx));
 
 		ctx->geom_name = NULL;
 		if (PG_NARGS() > 2 && !PG_ARGISNULL(2)) ctx->geom_name = text_to_cstring(PG_GETARG_TEXT_P(2));
 		geobuf_agg_init_context(ctx);
-	} else {
+	}
+	else
+	{
 		ctx = (struct geobuf_agg_context *)PG_GETARG_POINTER(0);
 	}
 

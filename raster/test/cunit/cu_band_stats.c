@@ -53,8 +53,10 @@ test_band_stats()
 	band = cu_add_band(raster, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (x = 0; x < xmax; x++) {
-		for (y = 0; y < ymax; y++) {
+	for (x = 0; x < xmax; x++)
+	{
+		for (y = 0; y < ymax; y++)
+		{
 			rt_band_set_pixel(band, x, y, x + y, NULL);
 		}
 	}
@@ -149,8 +151,10 @@ test_band_stats()
 	CU_ASSERT(band != NULL);
 	rt_band_set_nodata(band, 0, NULL);
 
-	for (x = 0; x < xmax; x++) {
-		for (y = 0; y < ymax; y++) {
+	for (x = 0; x < xmax; x++)
+	{
+		for (y = 0; y < ymax; y++)
+		{
 			rt_band_set_pixel(band, x, y, values[(x * ymax) + y], NULL);
 		}
 	}
@@ -178,8 +182,10 @@ test_band_stats()
 	CU_ASSERT(band != NULL);
 	rt_band_set_nodata(band, 0, NULL);
 
-	for (x = 0; x < xmax; x++) {
-		for (y = 0; y < ymax; y++) {
+	for (x = 0; x < xmax; x++)
+	{
+		for (y = 0; y < ymax; y++)
+		{
 			rt_band_set_pixel(band, x, y, (((double)x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
 		}
 	}
@@ -188,7 +194,8 @@ test_band_stats()
 	CU_ASSERT_DOUBLE_EQUAL(nodata, 0, DBL_EPSILON);
 
 	max_run = 5;
-	for (x = 0; x < max_run; x++) {
+	for (x = 0; x < max_run; x++)
+	{
 		quantile = (rt_quantile)rt_band_get_quantiles_stream(
 		    band, 1, 1, xmax * ymax * max_run, &qlls, &qlls_count, quantiles2, 1, &count);
 		CU_ASSERT(quantile != NULL);
@@ -225,8 +232,10 @@ test_band_value_count()
 	CU_ASSERT(band != NULL);
 	rt_band_set_nodata(band, 0, NULL);
 
-	for (x = 0; x < xmax; x++) {
-		for (y = 0; y < ymax; y++) {
+	for (x = 0; x < xmax; x++)
+	{
+		for (y = 0; y < ymax; y++)
+		{
 			rt_band_set_pixel(band, x, y, (((double)x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
 		}
 	}

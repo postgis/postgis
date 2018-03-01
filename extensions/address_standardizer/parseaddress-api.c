@@ -30,7 +30,8 @@
 #define DBG(format, arg...) elog(NOTICE, format, ##arg)
 #else
 #define DBG(format, arg...) \
-	do { \
+	do \
+	{ \
 		; \
 	} while (0)
 #endif
@@ -48,7 +49,8 @@ get_state_regex(char *st)
 
 	if (!st || strlen(st) != 2) return NULL;
 
-	for (i = 0; i < NUM_STATES; i++) {
+	for (i = 0; i < NUM_STATES; i++)
+	{
 		cmp = strcmp(states[i], st);
 		if (cmp == 0)
 			return stcities[i];
@@ -65,7 +67,8 @@ clean_trailing_punct(char *s)
 	int ret = 0;
 
 	i = strlen(s) - 1;
-	while (ispunct(s[i]) || isspace(s[i])) {
+	while (ispunct(s[i]) || isspace(s[i]))
+	{
 		if (s[i] == ',') ret = 1;
 		s[i--] = '\0';
 	}
@@ -115,7 +118,8 @@ match(char *pattern, char *s, int *ovect, int options)
 }
 
 #define RET_ERROR(a, e) \
-	if (!a) { \
+	if (!a) \
+	{ \
 		*reterr = e; \
 		return NULL; \
 	}
@@ -149,7 +153,8 @@ parseaddress(HHash *stH, char *s, int *reterr)
 
 	/* check if we were passed a lat lon */
 	rc = match("^\\s*([-+]?\\d+(\\.\\d*)?)[\\,\\s]+([-+]?\\d+(\\.\\d*)?)\\s*$", s, ovect, 0);
-	if (rc >= 3) {
+	if (rc >= 3)
+	{
 		*(s + ovect[3]) = '\0';
 		ret->lat = strtod(s + ovect[2], NULL);
 		ret->lon = strtod(s + ovect[6], NULL);
@@ -158,7 +163,8 @@ parseaddress(HHash *stH, char *s, int *reterr)
 
 	/* clean the string of multiple white spaces and . */
 
-	for (i = 0, j = 0; i < strlen(s); i++) {
+	for (i = 0, j = 0; i < strlen(s); i++)
+	{
 		c = s[i];
 		if (c == '.') c = s[i] = ' ';
 		if (j == 0 && isspace(c)) continue;
@@ -180,10 +186,12 @@ parseaddress(HHash *stH, char *s, int *reterr)
 	/* get US zipcode components */
 
 	rc = match("\\b(\\d{5})[-\\s]{0,1}?(\\d{0,4})?$", s, ovect, 0);
-	if (rc >= 2) {
+	if (rc >= 2)
+	{
 		ret->zip = (char *)palloc0((ovect[3] - ovect[2] + 1) * sizeof(char));
 		strncpy(ret->zip, s + ovect[2], ovect[3] - ovect[2]);
-		if (rc >= 3) {
+		if (rc >= 3)
+		{
 			ret->zipplus = (char *)palloc0((ovect[5] - ovect[4] + 1) * sizeof(char));
 			strncpy(ret->zipplus, s + ovect[4], ovect[5] - ovect[4]);
 		}
@@ -192,9 +200,11 @@ parseaddress(HHash *stH, char *s, int *reterr)
 		comma = 0;
 	}
 	/* get canada zipcode components */
-	else {
+	else
+	{
 		rc = match("\\b([a-z]\\d[a-z]\\s?\\d[a-z]\\d)$", s, ovect, PCRE_CASELESS);
-		if (rc >= 1) {
+		if (rc >= 1)
+		{
 			ret->zip = (char *)palloc0((ovect[1] - ovect[0] + 1) * sizeof(char));
 			strncpy(ret->zip, s + ovect[0], ovect[1] - ovect[0]);
 			strcpy(ret->cc, "CA");
@@ -214,7 +224,8 @@ parseaddress(HHash *stH, char *s, int *reterr)
 	    "\\b(?-xism:(?i:(?=[abcdfghiklmnopqrstuvwy])(?:a(?:l(?:a(?:bam|sk)a|berta)?|mer(?:ican)?\\ samoa|r(?:k(?:ansas)?|izona)?|[kszb])|s(?:a(?:moa|skatchewan)|outh\\ (?:carolin|dakot)a|\\ (?:carolin|dakot)a|[cdk])|c(?:a(?:lif(?:ornia)?)?|o(?:nn(?:ecticut)?|lorado)?|t)|d(?:e(?:la(?:ware)?)?|istrict\\ of\\ columbia|c)|f(?:l(?:(?:orid)?a)?|ederal\\ states\\ of\\ micronesia|m)|m(?:i(?:c(?:h(?:igan)?|ronesia)|nn(?:esota)?|ss(?:(?:issipp|our)i)?)?|a(?:r(?:shall(?:\\ is(?:l(?:and)?)?)?|yland)|ss(?:achusetts)?|ine|nitoba)?|o(?:nt(?:ana)?)?|[ehdnstpb])|g(?:u(?:am)?|(?:eorgi)?a)|h(?:awai)?i|i(?:d(?:aho)?|l(?:l(?:inois)?)?|n(?:d(?:iana)?)?|(?:ow)?a)|k(?:(?:ansa)?s|(?:entuck)?y)|l(?:a(?:bordor)?|ouisiana)|n(?:e(?:w(?:\\ (?:foundland(?:\\ and\\ labordor)?|hampshire|jersey|mexico|(?:yor|brunswic)k)|foundland)|(?:brask|vad)a)?|o(?:rth(?:\\ (?:mariana(?:\\ is(?:l(?:and)?)?)?|(?:carolin|dakot)a)|west\\ territor(?:ies|y))|va\\ scotia)|\\ (?:carolin|dakot)a|u(?:navut)?|[vhjmycdblsf]|w?t)|o(?:h(?:io)?|k(?:lahoma)?|r(?:egon)?|n(?:t(?:ario)?)?)|p(?:a(?:lau)?|e(?:nn(?:sylvania)?|i)?|r(?:ince\\ edward\\ island)?|w|uerto\\ rico)|r(?:hode\\ island|i)|t(?:e(?:nn(?:essee)?|xas)|[nx])|ut(?:ah)?|v(?:i(?:rgin(?:\\ islands|ia))?|(?:ermon)?t|a)|w(?:a(?:sh(?:ington)?)?|i(?:sc(?:onsin)?)?|y(?:oming)?|(?:est)?\\ virginia|v)|b(?:ritish\\ columbia|c)|q(?:uebe)?c|y(?:ukon|t))))$";
 
 	rc = match(stregx, s, ovect, PCRE_CASELESS);
-	if (rc > 0) {
+	if (rc > 0)
+	{
 		state = (char *)palloc0((ovect[1] - ovect[0] + 1) * sizeof(char));
 		strncpy(state, s + ovect[0], ovect[1] - ovect[0]);
 
@@ -226,25 +237,26 @@ parseaddress(HHash *stH, char *s, int *reterr)
 #ifdef USE_HSEARCH
 		e.key = state;
 		err = hsearch_r(e, FIND, &ep, stH);
-		if (err) {
+		if (err)
+		{
 			ret->st = (char *)palloc0(3 * sizeof(char));
 			strcpy(ret->st, ep->data);
 		}
 #else
 		key = state;
 		val = (char *)hash_get(stH, key);
-		if (val) {
-			ret->st = pstrdup(val);
-		}
+		if (val) { ret->st = pstrdup(val); }
 #endif
-		else {
+		else
+		{
 			*reterr = 1002;
 			return NULL;
 		}
 
 		/* check if it a Canadian Province */
 		rc = match(caregx, ret->st, ovect, PCRE_CASELESS);
-		if (rc > 0) {
+		if (rc > 0)
+		{
 			strcpy(ret->cc, "CA");
 			// if (ret->cc) printf("  CC: %s\n", ret->cc);
 		}
@@ -296,23 +308,27 @@ parseaddress(HHash *stH, char *s, int *reterr)
 
 	regx = "(?:,\\s*)([^,]+)$";
 	rc = match((char *)regx, s, ovect, 0);
-	if (rc <= 0) {
+	if (rc <= 0)
+	{
 		/* look for state specific regex */
 		mi++;
 		regx = (char *)get_state_regex(ret->st);
 		if (regx) rc = match((char *)regx, s, ovect, 0);
 	}
 	DBG("Checked for comma: %d", rc);
-	if (rc <= 0 && ret->st && strlen(ret->st)) {
+	if (rc <= 0 && ret->st && strlen(ret->st))
+	{
 		/* look for state specific regex */
 		mi++;
 		regx = (char *)get_state_regex(ret->st);
 		if (regx) rc = match((char *)regx, s, ovect, 0);
 	}
 	DBG("Checked for state-city: %d", rc);
-	if (rc <= 0) {
+	if (rc <= 0)
+	{
 		/* run through the regx's and see if we get a match */
-		for (i = 0; i < nreg; i++) {
+		for (i = 0; i < nreg; i++)
+		{
 			mi++;
 			rc = match((char *)t_regx[i], s, ovect, 0);
 			DBG("    rc=%d, i=%d", rc, i);
@@ -321,7 +337,8 @@ parseaddress(HHash *stH, char *s, int *reterr)
 		DBG("rc=%d, i=%d", rc, i);
 	}
 	DBG("Checked regexs: %d, %d, %d", rc, ovect[2], ovect[3]);
-	if (rc > 0 && ovect[3] > ovect[2]) {
+	if (rc > 0 && ovect[3] > ovect[2])
+	{
 		/* we have a match so process it */
 		ret->city = (char *)palloc0((ovect[3] - ovect[2] + 1) * sizeof(char));
 		strncpy(ret->city, s + ovect[2], ovect[3] - ovect[2]);
@@ -337,7 +354,8 @@ parseaddress(HHash *stH, char *s, int *reterr)
 	   ampersand is used in both street names and landmarks so it is highly
 	   ambiguous -- */
 	rc = match("^([^@]+)\\s*[@]\\s*([^@]+)$", s, ovect, 0);
-	if (rc > 0) {
+	if (rc > 0)
+	{
 		s[ovect[3]] = '\0';
 		clean_trailing_punct(s + ovect[2]);
 		ret->street = pstrdup(s + ovect[2]);
@@ -345,14 +363,17 @@ parseaddress(HHash *stH, char *s, int *reterr)
 		s[ovect[5]] = '\0';
 		clean_leading_punct(s + ovect[4]);
 		ret->street2 = pstrdup(s + ovect[4]);
-	} else {
+	}
+	else
+	{
 
 		/* and the remainder must be the address components */
 		ret->address1 = pstrdup(clean_leading_punct(s));
 
 		/* split the number off the street if it exists */
 		rc = match("^((?i)[nsew]?\\d+[-nsew]*\\d*[nsew]?\\b)", s, ovect, 0);
-		if (rc > 0) {
+		if (rc > 0)
+		{
 			ret->num = (char *)palloc0((ovect[1] - ovect[0] + 1) * sizeof(char));
 			strncpy(ret->num, s, ovect[1] - ovect[0]);
 			ret->street = pstrdup(clean_leading_punct(s + ovect[1]));
@@ -495,7 +516,8 @@ load_state_hash(HHash *stH)
 
 #ifdef USE_HSEARCH
 	if (!hcreate_r(cnt * 2, stH)) return 1001;
-	for (i = 0; i < cnt; i++) {
+	for (i = 0; i < cnt; i++)
+	{
 		e.key = words[i][0];
 		e.data = words[i][1];
 		err = hsearch_r(e, ENTER, &ep, stH);
@@ -509,7 +531,8 @@ load_state_hash(HHash *stH)
 	}
 #else
 	if (!stH) return 1001;
-	for (i = 0; i < cnt; i++) {
+	for (i = 0; i < cnt; i++)
+	{
 		// DBG("load_hash i=%d", i);
 		key = words[i][0];
 		val = words[i][1];

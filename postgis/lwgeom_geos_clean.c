@@ -46,7 +46,8 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	in = PG_GETARG_GSERIALIZED_P(0);
 	lwgeom_in = lwgeom_from_gserialized(in);
 
-	switch (lwgeom_in->type) {
+	switch (lwgeom_in->type)
+	{
 	case POINTTYPE:
 	case MULTIPOINTTYPE:
 	case LINETYPE:
@@ -63,7 +64,8 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom_out = lwgeom_make_valid(lwgeom_in);
-	if (!lwgeom_out) {
+	if (!lwgeom_out)
+	{
 		PG_FREE_IF_COPY(in, 0);
 		PG_RETURN_NULL();
 	}
@@ -84,7 +86,8 @@ lwgeom_clean(LWGEOM *lwgeom_in)
 	if (!lwgeom_out) { return NULL; }
 
 	/* Check dimensionality is the same as input */
-	if (lwgeom_dimensionality(lwgeom_in) != lwgeom_dimensionality(lwgeom_out)) {
+	if (lwgeom_dimensionality(lwgeom_in) != lwgeom_dimensionality(lwgeom_out))
+	{
 		lwpgnotice("lwgeom_clean: dimensional collapse (%d to %d)",
 			   lwgeom_dimensionality(lwgeom_in),
 			   lwgeom_dimensionality(lwgeom_out));
@@ -93,7 +96,8 @@ lwgeom_clean(LWGEOM *lwgeom_in)
 	}
 
 	/* Check that the output is not a collection if the input wasn't */
-	if (lwgeom_out->type == COLLECTIONTYPE && lwgeom_in->type != COLLECTIONTYPE) {
+	if (lwgeom_out->type == COLLECTIONTYPE && lwgeom_in->type != COLLECTIONTYPE)
+	{
 		lwpgnotice(
 		    "lwgeom_clean: mixed-type output (%s) "
 		    "from single-type input (%s)",
@@ -132,7 +136,8 @@ Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 #endif
 
 	lwgeom_out = lwgeom_clean(lwgeom_in);
-	if (!lwgeom_out) {
+	if (!lwgeom_out)
+	{
 		PG_FREE_IF_COPY(in, 0);
 		PG_RETURN_NULL();
 	}

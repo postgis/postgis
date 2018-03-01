@@ -46,7 +46,8 @@
 
 #include "geobuf.pb-c.h"
 
-struct geobuf_agg_context {
+struct geobuf_agg_context
+{
 	char *geom_name;
 	uint32_t geom_index;
 	HeapTupleHeader row;

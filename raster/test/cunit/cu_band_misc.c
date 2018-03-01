@@ -47,8 +47,10 @@ test_band_get_nearest_pixel()
 	band = cu_add_band(rast, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (x = 0; x < maxX; x++) {
-		for (y = 0; y < maxY; y++) {
+	for (x = 0; x < maxX; x++)
+	{
+		for (y = 0; y < maxY; y++)
+		{
 			rtn = rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
@@ -121,7 +123,8 @@ test_band_get_nearest_pixel()
 	CU_ASSERT_EQUAL(dimx, 3);
 	CU_ASSERT_EQUAL(dimy, 3);
 
-	for (x = 0; x < dimx; x++) {
+	for (x = 0; x < dimx; x++)
+	{
 		rtdealloc(nodata[x]);
 		rtdealloc(value[x]);
 	}
@@ -192,8 +195,10 @@ test_band_get_pixel_of_value()
 	band = cu_add_band(rast, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (x = 0; x < maxX; x++) {
-		for (y = 0; y < maxY; y++) {
+	for (x = 0; x < maxX; x++)
+	{
+		for (y = 0; y < maxY; y++)
+		{
 			rtn = rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
@@ -265,8 +270,10 @@ test_pixel_set_to_array()
 	band = cu_add_band(rast, PT_32BF, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (x = 0; x < maxX; x++) {
-		for (y = 0; y < maxY; y++) {
+	for (x = 0; x < maxX; x++)
+	{
+		for (y = 0; y < maxY; y++)
+		{
 			rtn = rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
@@ -282,7 +289,8 @@ test_pixel_set_to_array()
 	mask->values = rtalloc(sizeof(double *) * maskY);
 	mask->nodata = rtalloc(sizeof(int *) * maskY);
 
-	for (i = 0; i < maskY; i++) {
+	for (i = 0; i < maskY; i++)
+	{
 		mask->values[i] = rtalloc(sizeof(double) * maskX);
 		mask->nodata[i] = rtalloc(sizeof(int) * maskX);
 	}
@@ -292,8 +300,10 @@ test_pixel_set_to_array()
 
 	/* set mask to nodata */
 
-	for (y = 0; y < maskY; y++) {
-		for (x = 0; x < maskX; x++) {
+	for (y = 0; y < maskY; y++)
+	{
+		for (x = 0; x < maskX; x++)
+		{
 			mask->values[y][x] = 0;
 			mask->nodata[y][x] = 1;
 		}
@@ -315,7 +325,8 @@ test_pixel_set_to_array()
 	CU_ASSERT_EQUAL(dimy, 3);
 	CU_ASSERT_EQUAL(nodata[1][1], 1);
 
-	for (x = 0; x < dimx; x++) {
+	for (x = 0; x < dimx; x++)
+	{
 		rtdealloc(nodata[x]);
 		rtdealloc(value[x]);
 	}
@@ -325,8 +336,10 @@ test_pixel_set_to_array()
 
 	/* set mask to 1 */
 
-	for (y = 0; y < maskY; y++) {
-		for (x = 0; x < maskX; x++) {
+	for (y = 0; y < maskY; y++)
+	{
+		for (x = 0; x < maskX; x++)
+		{
 			mask->values[y][x] = 1;
 			mask->nodata[y][x] = 0;
 		}
@@ -349,7 +362,8 @@ test_pixel_set_to_array()
 	CU_ASSERT_NOT_EQUAL(nodata[0][0], 1);
 	CU_ASSERT_DOUBLE_EQUAL(value[0][0], 1, .01);
 
-	for (x = 0; x < dimx; x++) {
+	for (x = 0; x < dimx; x++)
+	{
 		rtdealloc(nodata[x]);
 		rtdealloc(value[x]);
 	}
@@ -359,8 +373,10 @@ test_pixel_set_to_array()
 
 	/* set mask to 0.5 */
 
-	for (y = 0; y < maskY; y++) {
-		for (x = 0; x < maskX; x++) {
+	for (y = 0; y < maskY; y++)
+	{
+		for (x = 0; x < maskX; x++)
+		{
 			mask->values[y][x] = 0.5;
 			mask->nodata[y][x] = 0;
 		}
@@ -383,7 +399,8 @@ test_pixel_set_to_array()
 	CU_ASSERT_NOT_EQUAL(nodata[0][0], 1);
 	CU_ASSERT_DOUBLE_EQUAL(value[0][0], 0.5, 0.1);
 
-	for (x = 0; x < dimx; x++) {
+	for (x = 0; x < dimx; x++)
+	{
 		rtdealloc(nodata[x]);
 		rtdealloc(value[x]);
 	}
@@ -391,7 +408,8 @@ test_pixel_set_to_array()
 	rtdealloc(nodata);
 	rtdealloc(value);
 
-	for (i = 0; i < maskY; i++) {
+	for (i = 0; i < maskY; i++)
+	{
 		rtdealloc(mask->values[i]);
 		rtdealloc(mask->nodata[i]);
 	}

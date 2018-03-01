@@ -41,15 +41,20 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 
 	if (!TRIGGER_FIRED_BEFORE(trigdata->tg_event)) { elog(ERROR, "check_authorization: not fired *before* event"); }
 
-	if (TRIGGER_FIRED_BY_UPDATE(trigdata->tg_event)) {
+	if (TRIGGER_FIRED_BY_UPDATE(trigdata->tg_event))
+	{
 		rettuple_ok = trigdata->tg_newtuple;
 		rettuple_fail = NULL;
 		op = "UPDATE";
-	} else if (TRIGGER_FIRED_BY_DELETE(trigdata->tg_event)) {
+	}
+	else if (TRIGGER_FIRED_BY_DELETE(trigdata->tg_event))
+	{
 		rettuple_ok = trigdata->tg_trigtuple;
 		rettuple_fail = NULL;
 		op = "DELETE";
-	} else {
+	}
+	else
+	{
 		elog(ERROR, "check_authorization: not fired by update or delete");
 		PG_RETURN_NULL();
 	}
@@ -59,7 +64,8 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 	/* Connect to SPI manager */
 	SPIcode = SPI_connect();
 
-	if (SPIcode != SPI_OK_CONNECT) {
+	if (SPIcode != SPI_OK_CONNECT)
+	{
 		elog(ERROR, "check_authorization: could not connect to SPI");
 		PG_RETURN_NULL();
 	}
@@ -84,7 +90,8 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 	SPIcode = SPI_exec(query, 0);
 	if (SPIcode != SPI_OK_SELECT) elog(ERROR, "couldnt execute to test for lock :%s", query);
 
-	if (!SPI_processed) {
+	if (!SPI_processed)
+	{
 #if PGIS_DEBUG
 		elog(NOTICE, "there is NO lock on row '%s'", pk_id);
 #endif
@@ -123,7 +130,8 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 	SPIcode = SPI_exec(query, 0);
 	if (SPIcode != SPI_OK_SELECT) elog(ERROR, "couldnt execute to test for lock acquire: %s", query);
 
-	if (SPI_processed > 0) {
+	if (SPI_processed > 0)
+	{
 #if PGIS_DEBUG
 		elog(NOTICE, "I own the lock - I can modify the row");
 #endif

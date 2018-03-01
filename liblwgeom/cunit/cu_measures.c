@@ -43,11 +43,13 @@ do_test_mindistance2d_tolerance(char *in1, char *in2, double expected_res, int l
 	lw1 = lwgeom_from_wkt(in1, LW_PARSER_CHECK_NONE);
 	lw2 = lwgeom_from_wkt(in2, LW_PARSER_CHECK_NONE);
 
-	if (!lw1) {
+	if (!lw1)
+	{
 		printf(msg2, in1);
 		exit(1);
 	}
-	if (!lw2) {
+	if (!lw2)
+	{
 		printf(msg2, in2);
 		exit(1);
 	}
@@ -56,10 +58,13 @@ do_test_mindistance2d_tolerance(char *in1, char *in2, double expected_res, int l
 	lwgeom_free(lw1);
 	lwgeom_free(lw2);
 
-	if (fabs(distance - expected_res) > 0.00001) {
+	if (fabs(distance - expected_res) > 0.00001)
+	{
 		printf(msg1, distance, expected_res, line);
 		CU_FAIL();
-	} else {
+	}
+	else
+	{
 		CU_PASS();
 	}
 }

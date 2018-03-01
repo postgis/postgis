@@ -40,7 +40,8 @@ test_gdal_drivers()
 	drv = (rt_gdaldriver)rt_raster_gdal_drivers(&size, 1);
 	CU_ASSERT(drv != NULL);
 
-	for (i = 0; i < size; i++) {
+	for (i = 0; i < size; i++)
+	{
 		CU_ASSERT(strlen(drv[i].short_name));
 		rtdealloc(drv[i].short_name);
 		rtdealloc(drv[i].long_name);
@@ -74,7 +75,8 @@ test_gdal_rasterize()
 	/* hex to byte */
 	wkb_len = (int)ceil(((double)strlen(wkb_hex)) / 2);
 	wkb = (unsigned char *)rtalloc(sizeof(unsigned char) * wkb_len);
-	for (i = 0; i < wkb_len; i++) {
+	for (i = 0; i < wkb_len; i++)
+	{
 		sscanf(pos, "%2hhx", &wkb[i]);
 		pos += 2;
 	}
@@ -470,8 +472,10 @@ test_raster_to_gdal()
 	rt_raster_set_offsets(raster, -500000, 600000);
 	rt_raster_set_scale(raster, 1000, -1000);
 
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
 			rt_band_set_pixel(band, x, y, (((double)x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
 		}
 	}
@@ -500,8 +504,10 @@ test_raster_to_gdal()
 	rt_raster_set_offsets(raster, -500000, 600000);
 	rt_raster_set_scale(raster, 1000, -1000);
 
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
 			rt_band_set_pixel(band, x, y, x, NULL);
 		}
 	}
@@ -548,8 +554,10 @@ test_gdal_to_raster()
 	band = cu_add_band(raster, pixtype, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
 			values[x][y] = (((double)x * y) + (x + y) + (x + y * x)) / (x + y + 1);
 			rt_band_set_pixel(band, x, y, values[x][y], NULL);
 		}
@@ -569,8 +577,10 @@ test_gdal_to_raster()
 	band = rt_raster_get_band(rast, 0);
 	CU_ASSERT(band != NULL);
 
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
 			rtn = rt_band_get_pixel(band, x, y, &value, NULL);
 			CU_ASSERT_EQUAL(rtn, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(value, values[x][y], DBL_EPSILON);
@@ -592,8 +602,10 @@ test_gdal_to_raster()
 	CU_ASSERT(band != NULL);
 
 	v = -127;
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
 			values[x][y] = v++;
 			rt_band_set_pixel(band, x, y, values[x][y], NULL);
 			if (v == 128) v = -127;
@@ -615,8 +627,10 @@ test_gdal_to_raster()
 	CU_ASSERT(band != NULL);
 	CU_ASSERT_EQUAL(rt_band_get_pixtype(band), PT_16BSI);
 
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
 			rtn = rt_band_get_pixel(band, x, y, &value, NULL);
 			CU_ASSERT_EQUAL(rtn, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(value, values[x][y], 1.);
@@ -660,8 +674,10 @@ test_gdal_warp()
 	rt_raster_set_offsets(raster, -500000, 600000);
 	rt_raster_set_scale(raster, 1000, -1000);
 
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
 			rt_band_set_pixel(band, x, y, (((double)x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
 		}
 	}

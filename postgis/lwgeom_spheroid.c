@@ -83,7 +83,8 @@ Datum ellipsoid_in(PG_FUNCTION_ARGS)
 
 	memset(sphere, 0, sizeof(SPHEROID));
 
-	if (strstr(str, "SPHEROID") != str) {
+	if (strstr(str, "SPHEROID") != str)
+	{
 		elog(ERROR, "SPHEROID parser - doesn't start with SPHEROID");
 		pfree(sphere);
 		PG_RETURN_NULL();
@@ -93,7 +94,8 @@ Datum ellipsoid_in(PG_FUNCTION_ARGS)
 
 	if (nitems == 0) nitems = sscanf(str, "SPHEROID(\"%19[^\"]\",%lf,%lf)", sphere->name, &sphere->a, &rf);
 
-	if (nitems != 3) {
+	if (nitems != 3)
+	{
 		elog(ERROR, "SPHEROID parser - couldnt parse the spheroid");
 		pfree(sphere);
 		PG_RETURN_NULL();
@@ -208,9 +210,7 @@ distance_ellipse(double lat1, double long1, double lat2, double long2, SPHEROID 
 	if (result != result) /* NaN check
 			       * (x==x for all x except NaN by IEEE definition)
 			       */
-	{
-		result = distance_sphere_method(lat1, long1, lat2, long2, sphere);
-	}
+	{ result = distance_sphere_method(lat1, long1, lat2, long2, sphere); }
 
 	return result;
 }
@@ -251,7 +251,8 @@ distance_ellipse_calculation(double lat1, double long1, double lat2, double long
 	cosdl1 = cos(dl);
 	sindl1 = sin(dl);
 	iterations = 0;
-	do {
+	do
+	{
 		cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosdl1;
 		sigma = acos(cosSigma);
 		azimuthEQ = asin((cosU1 * cosU2 * sindl1) / sin(sigma));
@@ -261,9 +262,9 @@ distance_ellipse_calculation(double lat1, double long1, double lat2, double long
 		 * mathematical stability problem
 		 */
 		TEMP = cosSigma - (2.0 * sinU1 * sinU2) / (cos(azimuthEQ) * cos(azimuthEQ));
-		if (TEMP > 1) {
-			TEMP = 1;
-		} else if (TEMP < -1) {
+		if (TEMP > 1) { TEMP = 1; }
+		else if (TEMP < -1)
+		{
 			TEMP = -1;
 		}
 		tsm = acos(TEMP);
@@ -330,7 +331,8 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 	double length = 0.0;
 
 	/* EMPTY things have no length */
-	if (lwgeom_is_empty(lwgeom)) {
+	if (lwgeom_is_empty(lwgeom))
+	{
 		lwgeom_free(lwgeom);
 		PG_RETURN_FLOAT8(0.0);
 	}
@@ -340,7 +342,8 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom, 0);
 
 	/* Something went wrong... */
-	if (length < 0.0) {
+	if (length < 0.0)
+	{
 		elog(ERROR, "lwgeom_length_spheroid returned length < 0.0");
 		PG_RETURN_NULL();
 	}
@@ -464,13 +467,15 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 	if (!use_spheroid) { sphere->a = sphere->b = sphere->radius; }
 
 	if (!(type1 == POINTTYPE || type1 == LINETYPE || type1 == POLYGONTYPE || type1 == MULTIPOINTTYPE ||
-	      type1 == MULTILINETYPE || type1 == MULTIPOLYGONTYPE)) {
+	      type1 == MULTILINETYPE || type1 == MULTIPOLYGONTYPE))
+	{
 		elog(ERROR, "geometry_distance_spheroid: Only point/line/polygon supported.\n");
 		PG_RETURN_NULL();
 	}
 
 	if (!(type2 == POINTTYPE || type2 == LINETYPE || type2 == POLYGONTYPE || type2 == MULTIPOINTTYPE ||
-	      type2 == MULTILINETYPE || type2 == MULTIPOLYGONTYPE)) {
+	      type2 == MULTILINETYPE || type2 == MULTIPOLYGONTYPE))
+	{
 		elog(ERROR, "geometry_distance_spheroid: Only point/line/polygon supported.\n");
 		PG_RETURN_NULL();
 	}

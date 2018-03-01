@@ -30,9 +30,9 @@ test_tree_circ_create(void)
 	c = circ_tree_new(g->points);
 	// circ_tree_print(c, 0);
 
-	if (CIRC_NODE_SIZE > 4) {
-		CU_ASSERT(c->num_nodes == 4);
-	} else {
+	if (CIRC_NODE_SIZE > 4) { CU_ASSERT(c->num_nodes == 4); }
+	else
+	{
 		CU_ASSERT(c->num_nodes == (4 % CIRC_NODE_SIZE ? 1 : 0) + 4 / CIRC_NODE_SIZE);
 	}
 
@@ -357,20 +357,23 @@ test_tree_circ_distance_threshold(void)
 	// spheroid_init(&s, WGS84_RADIUS, WGS84_RADIUS);
 	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
 
-	for (j = 0; j < npolys; j++) {
+	for (j = 0; j < npolys; j++)
+	{
 		LWGEOM *lwg1 = lwgeom_from_hexwkb(polys[j], LW_PARSER_CHECK_NONE);
 		LWGEOM *lwg2 = lwgeom_from_wkt("POINT(-69.83262 43.43636)", LW_PARSER_CHECK_NONE);
 
 		CIRC_NODE *c1 = lwgeom_calculate_circ_tree(lwg1);
 		CIRC_NODE *c2 = lwgeom_calculate_circ_tree(lwg2);
 
-		for (i = 50; i < 1500 / step; i++) {
+		for (i = 50; i < 1500 / step; i++)
+		{
 			double d1, d2;
 			double d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0);
 			double threshold = step * i;
 			d1 = circ_tree_distance_tree(c1, c2, &s, threshold);
 			d2 = lwgeom_distance_spheroid(lwg1, lwg2, &s, threshold);
-			if (threshold > d && (d1 > threshold || d2 > threshold)) {
+			if (threshold > d && (d1 > threshold || d2 > threshold))
+			{
 				printf(
 				    "polygon #%d\n"
 				    "threshold = %g\n"

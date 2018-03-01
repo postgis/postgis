@@ -62,7 +62,8 @@ cu_twkb_in(char *wkt)
 
 	/* Turn WKT into geom */
 	lwgeom_parse_wkt(&pr, wkt, LW_PARSER_CHECK_NONE);
-	if (pr.errcode) {
+	if (pr.errcode)
+	{
 		printf("ERROR: %s\n", pr.message);
 		printf("POSITION: %d\n", pr.errlocation);
 		exit(0);
@@ -215,7 +216,8 @@ static void
 test_twkb_in_precision(void)
 {
 	/* Try these cases at several different precisions */
-	for (precision = 1; precision <= 6; precision++) {
+	for (precision = 1; precision <= 6; precision++)
+	{
 		cu_twkb_in("MULTILINESTRING((0 0,0 1),EMPTY,(1 1, 10 10))");
 		CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 

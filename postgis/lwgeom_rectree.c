@@ -46,7 +46,8 @@ Datum ST_DistanceRectTreeCached(PG_FUNCTION_ARGS);
  * the PgSQL specific bits of the code (fcinfo) back into
  * liblwgeom/lwtree.c, where most of the rect_tree logic lives.
  */
-typedef struct {
+typedef struct
+{
 	GeomCache gcache;
 	RECT_NODE *index;
 } RectTreeGeomCache;
@@ -60,7 +61,8 @@ RectTreeBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	RectTreeGeomCache *rect_cache = (RectTreeGeomCache *)cache;
 	RECT_NODE *tree = rect_tree_from_lwgeom(lwgeom);
 
-	if (rect_cache->index) {
+	if (rect_cache->index)
+	{
 		rect_tree_free(rect_cache->index);
 		rect_cache->index = 0;
 	}
@@ -74,7 +76,8 @@ static int
 RectTreeFreer(GeomCache *cache)
 {
 	RectTreeGeomCache *rect_cache = (RectTreeGeomCache *)cache;
-	if (rect_cache->index) {
+	if (rect_cache->index)
+	{
 		rect_tree_free(rect_cache->index);
 		rect_cache->index = 0;
 		rect_cache->gcache.argnum = 0;
@@ -109,7 +112,8 @@ Datum ST_DistanceRectTree(PG_FUNCTION_ARGS)
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Return NULL on empty arguments. */
-	if (gserialized_is_empty(g1) || gserialized_is_empty(g2)) {
+	if (gserialized_is_empty(g1) || gserialized_is_empty(g2))
+	{
 		PG_FREE_IF_COPY(g1, 0);
 		PG_FREE_IF_COPY(g2, 1);
 		PG_RETURN_NULL();
@@ -134,7 +138,8 @@ Datum ST_DistanceRectTreeCached(PG_FUNCTION_ARGS)
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Return NULL on empty arguments. */
-	if (gserialized_is_empty(g1) || gserialized_is_empty(g2)) {
+	if (gserialized_is_empty(g1) || gserialized_is_empty(g2))
+	{
 		PG_FREE_IF_COPY(g1, 0);
 		PG_FREE_IF_COPY(g2, 1);
 		PG_RETURN_NULL();
@@ -149,19 +154,24 @@ Datum ST_DistanceRectTreeCached(PG_FUNCTION_ARGS)
 	/* Fetch/build our cache, if appropriate, etc... */
 	tree_cache = GetRectTreeGeomCache(fcinfo, g1, g2);
 
-	if (tree_cache && tree_cache->gcache.argnum) {
+	if (tree_cache && tree_cache->gcache.argnum)
+	{
 		RECT_NODE *n;
 		RECT_NODE *n_cached = tree_cache->index;
 		;
-		if (tree_cache->gcache.argnum == 1) {
-			n = rect_tree_from_lwgeom(lwg2);
-		} else if (tree_cache->gcache.argnum == 2) {
+		if (tree_cache->gcache.argnum == 1) { n = rect_tree_from_lwgeom(lwg2); }
+		else if (tree_cache->gcache.argnum == 2)
+		{
 			n = rect_tree_from_lwgeom(lwg1);
-		} else {
+		}
+		else
+		{
 			elog(ERROR, "reached unreachable block in %s", __func__);
 		}
 		PG_RETURN_FLOAT8(rect_tree_distance_tree(n, n_cached, 0.0));
-	} else {
+	}
+	else
+	{
 		PG_RETURN_FLOAT8(lwgeom_mindistance2d(lwg1, lwg2));
 	}
 

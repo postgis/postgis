@@ -184,7 +184,8 @@ lwtriangle_area(const LWTRIANGLE *triangle)
 
 	if (!triangle->points->npoints) return area; /* empty triangle */
 
-	for (i = 0; i < triangle->points->npoints - 1; i++) {
+	for (i = 0; i < triangle->points->npoints - 1; i++)
+	{
 		getPoint2d_p(triangle->points, i, &p1);
 		getPoint2d_p(triangle->points, i + 1, &p2);
 		area += (p1.x * p2.y) - (p1.y * p2.x);

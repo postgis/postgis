@@ -40,21 +40,24 @@
 extern Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS);
 extern Datum ST_ClusterKMeans(PG_FUNCTION_ARGS);
 
-typedef struct {
+typedef struct
+{
 	bool isdone;
 	bool isnull;
 	int result[1];
 	/* variable length */
 } kmeans_context;
 
-typedef struct {
+typedef struct
+{
 	uint32_t cluster_id;
 	char is_null; /* NULL may result from a NULL geometry input, or it may be used by
 						 algorithms such as DBSCAN that do not assign all inputs to a
 						 cluster. */
 } dbscan_cluster_result;
 
-typedef struct {
+typedef struct
+{
 	char is_error;
 	dbscan_cluster_result cluster_assignments[1];
 } dbscan_context;
@@ -65,7 +68,8 @@ read_lwgeom_from_partition(WindowObject win_obj, uint32_t i, bool *is_null)
 	GSERIALIZED *g;
 	Datum arg = WinGetFuncArgInPartition(win_obj, 0, i, WINDOW_SEEK_HEAD, false, is_null, NULL);
 
-	if (*is_null) {
+	if (*is_null)
+	{
 		/* So that the indexes in our clustering input array can match our partition positions,
 		 * toss an empty point into the clustering inputs, as a pass-through.
 		 * NOTE: this will cause gaps in the output cluster id sequence.
@@ -103,7 +107,8 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		context->is_error = LW_TRUE; /* until proven otherwise */
 
 		/* Validate input parameters */
-		if (tolerance_is_null || tolerance < 0) {
+		if (tolerance_is_null || tolerance < 0)
+		{
 			lwpgerror("Tolerance must be a positive number", tolerance);
 			PG_RETURN_NULL();
 		}
@@ -112,10 +117,12 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		initGEOS(lwnotice, lwgeom_geos_error);
 		geoms = lwalloc(ngeoms * sizeof(LWGEOM *));
 		uf = UF_create(ngeoms);
-		for (i = 0; i < ngeoms; i++) {
+		for (i = 0; i < ngeoms; i++)
+		{
 			geoms[i] = read_lwgeom_from_partition(win_obj, i, &(context->cluster_assignments[i].is_null));
 
-			if (!geoms[i]) {
+			if (!geoms[i])
+			{
 				/* TODO release memory ? */
 				lwpgerror("Error reading geometry.");
 				PG_RETURN_NULL();
@@ -126,12 +133,14 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		    LW_SUCCESS)
 			context->is_error = LW_FALSE;
 
-		for (i = 0; i < ngeoms; i++) {
+		for (i = 0; i < ngeoms; i++)
+		{
 			lwgeom_free(geoms[i]);
 		}
 		lwfree(geoms);
 
-		if (context->is_error) {
+		if (context->is_error)
+		{
 			UF_destroy(uf);
 			if (is_in_cluster) lwfree(is_in_cluster);
 			lwpgerror("Error during clustering");
@@ -139,10 +148,11 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		}
 
 		result_ids = UF_get_collapsed_cluster_ids(uf, is_in_cluster);
-		for (i = 0; i < ngeoms; i++) {
-			if (minpoints > 1 && !is_in_cluster[i]) {
-				context->cluster_assignments[i].is_null = LW_TRUE;
-			} else {
+		for (i = 0; i < ngeoms; i++)
+		{
+			if (minpoints > 1 && !is_in_cluster[i]) { context->cluster_assignments[i].is_null = LW_TRUE; }
+			else
+			{
 				context->cluster_assignments[i].cluster_id = result_ids[i];
 			}
 		}
@@ -166,7 +176,8 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 	rowcount = WinGetPartitionRowCount(winobj);
 	context = (kmeans_context *)WinGetPartitionLocalMemory(winobj, sizeof(kmeans_context) + sizeof(int) * rowcount);
 
-	if (!context->isdone) {
+	if (!context->isdone)
+	{
 		int i, k, N;
 		bool isnull, isout;
 		LWGEOM **geoms;
@@ -174,7 +185,8 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 
 		/* What is K? If it's NULL or invalid, we can't procede */
 		k = DatumGetInt32(WinGetFuncArgCurrent(winobj, 1, &isnull));
-		if (isnull || k <= 0) {
+		if (isnull || k <= 0)
+		{
 			context->isdone = true;
 			context->isnull = true;
 			PG_RETURN_NULL();
@@ -182,7 +194,8 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 
 		/* We also need a non-zero N */
 		N = (int)WinGetPartitionRowCount(winobj);
-		if (N <= 0) {
+		if (N <= 0)
+		{
 			context->isdone = true;
 			context->isnull = true;
 			PG_RETURN_NULL();
@@ -193,12 +206,14 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 
 		/* Read all the geometries from the partition window into a list */
 		geoms = palloc(sizeof(LWGEOM *) * N);
-		for (i = 0; i < N; i++) {
+		for (i = 0; i < N; i++)
+		{
 			GSERIALIZED *g;
 			Datum arg = WinGetFuncArgInPartition(winobj, 0, i, WINDOW_SEEK_HEAD, false, &isnull, &isout);
 
 			/* Null geometries are entered as NULL pointers */
-			if (isnull) {
+			if (isnull)
+			{
 				geoms[i] = NULL;
 				continue;
 			}
@@ -216,7 +231,8 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 
 		pfree(geoms);
 
-		if (!r) {
+		if (!r)
+		{
 			context->isdone = true;
 			context->isnull = true;
 			PG_RETURN_NULL();

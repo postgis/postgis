@@ -32,7 +32,8 @@
 /**
  * Note that p1 and p2 are pointers into an independent POINTARRAY, do not free them.
  */
-typedef struct circ_node {
+typedef struct circ_node
+{
 	GEOGRAPHIC_POINT center;
 	double radius;
 	uint32_t num_nodes;

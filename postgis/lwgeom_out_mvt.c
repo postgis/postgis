@@ -85,7 +85,8 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 	if (!AggCheckCallContext(fcinfo, &aggcontext)) elog(ERROR, "%s called in non-aggregate context", __func__);
 	MemoryContextSwitchTo(aggcontext);
 
-	if (PG_ARGISNULL(0)) {
+	if (PG_ARGISNULL(0))
+	{
 		ctx = palloc(sizeof(*ctx));
 		ctx->name = "default";
 		if (PG_NARGS() > 2 && !PG_ARGISNULL(2)) ctx->name = text_to_cstring(PG_GETARG_TEXT_P(2));
@@ -94,7 +95,9 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 		ctx->geom_name = NULL;
 		if (PG_NARGS() > 4 && !PG_ARGISNULL(4)) ctx->geom_name = text_to_cstring(PG_GETARG_TEXT_P(4));
 		mvt_agg_init_context(ctx);
-	} else {
+	}
+	else
+	{
 		ctx = (mvt_agg_context *)PG_GETARG_POINTER(0);
 	}
 
@@ -123,7 +126,8 @@ Datum pgis_asmvt_finalfn(PG_FUNCTION_ARGS)
 	elog(DEBUG2, "%s called", __func__);
 	if (!AggCheckCallContext(fcinfo, NULL)) elog(ERROR, "%s called in non-aggregate context", __func__);
 
-	if (PG_ARGISNULL(0)) {
+	if (PG_ARGISNULL(0))
+	{
 		bytea *emptybuf = palloc(VARHDRSZ);
 		SET_VARSIZE(emptybuf, VARHDRSZ);
 		PG_RETURN_BYTEA_P(emptybuf);
@@ -146,7 +150,8 @@ Datum pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
 	elog(DEBUG2, "%s called", __func__);
 	if (!AggCheckCallContext(fcinfo, NULL)) elog(ERROR, "%s called in non-aggregate context", __func__);
 
-	if (PG_ARGISNULL(0)) {
+	if (PG_ARGISNULL(0))
+	{
 		bytea *emptybuf = palloc(VARHDRSZ);
 		SET_VARSIZE(emptybuf, VARHDRSZ);
 		PG_RETURN_BYTEA_P(emptybuf);

@@ -34,7 +34,8 @@
 
 Structure used in distance-calculations
 */
-typedef struct {
+typedef struct
+{
 	double distance; /*the distance between p1 and p2*/
 	POINT3DZ p1;
 	POINT3DZ p2;
@@ -45,11 +46,13 @@ typedef struct {
 	double tolerance; /*the tolerance for 3ddwithin and 3ddfullywithin*/
 } DISTPTS3D;
 
-typedef struct {
+typedef struct
+{
 	double x, y, z;
 } VECTOR3D;
 
-typedef struct {
+typedef struct
+{
 	POINT3DZ pop; /*Point On Plane*/
 	VECTOR3D pv;  /*Perpendicular normal vector*/
 } PLANE3D;

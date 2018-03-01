@@ -25,7 +25,8 @@
 #include "liblwgeom.h"
 #include "lwgeom_log.h"
 
-struct LISTNODE {
+struct LISTNODE
+{
 	struct LISTNODE *next;
 	void *item;
 };
@@ -39,7 +40,8 @@ typedef struct LISTNODE LISTNODE;
  * When the pointarrays stack is depleted, we pull a geometry from the geometry
  * stack to replenish it.
  */
-struct LWPOINTITERATOR {
+struct LWPOINTITERATOR
+{
 	LISTNODE *geoms;
 	LISTNODE *pointarrays;
 	uint32_t i;
@@ -79,7 +81,8 @@ add_lwgeom_to_stack(LWPOINTITERATOR *s, LWGEOM *g)
 static LISTNODE *
 extract_pointarrays_from_lwgeom(LWGEOM *g)
 {
-	switch (lwgeom_get_type(g)) {
+	switch (lwgeom_get_type(g))
+	{
 	case POINTTYPE:
 		return prepend_node(lwgeom_as_lwpoint(g)->point, NULL);
 	case LINETYPE:
@@ -88,12 +91,14 @@ extract_pointarrays_from_lwgeom(LWGEOM *g)
 		return prepend_node(lwgeom_as_lwtriangle(g)->points, NULL);
 	case CIRCSTRINGTYPE:
 		return prepend_node(lwgeom_as_lwcircstring(g)->points, NULL);
-	case POLYGONTYPE: {
+	case POLYGONTYPE:
+	{
 		LISTNODE *n = NULL;
 
 		LWPOLY *p = lwgeom_as_lwpoly(g);
 		int i;
-		for (i = p->nrings - 1; i >= 0; i--) {
+		for (i = p->nrings - 1; i >= 0; i--)
+		{
 			n = prepend_node(p->rings[i], n);
 		}
 
@@ -120,7 +125,8 @@ unroll_collection(LWPOINTITERATOR *s)
 	c = (LWCOLLECTION *)s->geoms->item;
 	s->geoms = pop_node(s->geoms);
 
-	for (i = c->ngeoms - 1; i >= 0; i--) {
+	for (i = c->ngeoms - 1; i >= 0; i--)
+	{
 		LWGEOM *g = lwcollection_getsubgeom(c, i);
 
 		add_lwgeom_to_stack(s, g);
@@ -133,7 +139,8 @@ unroll_collection(LWPOINTITERATOR *s)
 static void
 unroll_collections(LWPOINTITERATOR *s)
 {
-	while (s->geoms && lwgeom_is_collection(s->geoms->item)) {
+	while (s->geoms && lwgeom_is_collection(s->geoms->item))
+	{
 		unroll_collection(s);
 	}
 }
@@ -145,14 +152,16 @@ lwpointiterator_advance(LWPOINTITERATOR *s)
 
 	/* We've reached the end of our current POINTARRAY.  Try to see if there
 	 * are any more POINTARRAYS on the stack. */
-	if (s->pointarrays && s->i >= ((POINTARRAY *)s->pointarrays->item)->npoints) {
+	if (s->pointarrays && s->i >= ((POINTARRAY *)s->pointarrays->item)->npoints)
+	{
 		s->pointarrays = pop_node(s->pointarrays);
 		s->i = 0;
 	}
 
 	/* We don't have a current POINTARRAY.  Pull a geometry from the stack, and
 	 * decompose it into its POINTARRARYs. */
-	if (!s->pointarrays) {
+	if (!s->pointarrays)
+	{
 		LWGEOM *g;
 		unroll_collections(s);
 
@@ -203,7 +212,8 @@ lwpointiterator_modify_next(LWPOINTITERATOR *s, const POINT4D *p)
 {
 	if (!lwpointiterator_has_next(s)) return LW_FAILURE;
 
-	if (!s->allow_modification) {
+	if (!s->allow_modification)
+	{
 		lwerror("Cannot write to read-only iterator");
 		return LW_FAILURE;
 	}
@@ -242,11 +252,13 @@ lwpointiterator_create_rw(LWGEOM *g)
 void
 lwpointiterator_destroy(LWPOINTITERATOR *s)
 {
-	while (s->geoms != NULL) {
+	while (s->geoms != NULL)
+	{
 		s->geoms = pop_node(s->geoms);
 	}
 
-	while (s->pointarrays != NULL) {
+	while (s->pointarrays != NULL)
+	{
 		s->pointarrays = pop_node(s->pointarrays);
 	}
 

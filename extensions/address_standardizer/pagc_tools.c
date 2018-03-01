@@ -75,14 +75,16 @@ convert_latin_one(char *inp)
 {
 	unsigned char *str;
 
-	for (str = (unsigned char *)inp; *str != SENTINEL; str++) {
+	for (str = (unsigned char *)inp; *str != SENTINEL; str++)
+	{
 		unsigned char ch;
 		ch = *str;
 		/* -------------------------------------------
 		   if bit 7 is set, reset bit 5 so both upper
 		   and lower case can be done together
 		--------------------------------------------- */
-		if (ch & 0x80) {
+		if (ch & 0x80)
+		{
 			ch &= 0xDF;
 			/* -----------------------------------------
 			   reduce letters with diacritical marks to
@@ -130,7 +132,8 @@ char_append(const char *div, char *dest, const char *src, int max_wid)
 {
 	if (*src == SENTINEL) return;
 	/* -- skip the delimitor if dest is empty -- */
-	if (*dest == SENTINEL) {
+	if (*dest == SENTINEL)
+	{
 		append_string_to_max(dest, (char *)src, max_wid);
 		return;
 	}
@@ -156,7 +159,8 @@ out_symb_value(const char *src)
 	int i;
 
 	/* -- linear search -- */
-	for (i = 0; i < MAXOUTSYM; i++) {
+	for (i = 0; i < MAXOUTSYM; i++)
+	{
 		if (strcmp(src, OutSymbNames[i]) == 0) return i;
 	}
 	return FAIL;
@@ -173,10 +177,10 @@ get_input_line(char *buf, FILE *fp)
 
 	BLANK_STRING(buf);
 	if ((fgets(buf, MAXSTRLEN, fp)) == NULL) return FALSE;
-	for (i = strlen(buf); i > 0; i--) {
-		if (strchr("\n\r", buf[i - 1])) {
-			buf[i - 1] = SENTINEL;
-		} else
+	for (i = strlen(buf); i > 0; i--)
+	{
+		if (strchr("\n\r", buf[i - 1])) { buf[i - 1] = SENTINEL; }
+		else
 			break;
 	}
 	return TRUE;
@@ -198,7 +202,8 @@ parse_file_name(const char *input_path_name, char global_path_separator, char *o
 	for (end_ptr = input_path_name; *end_ptr != SENTINEL; end_ptr++)
 		;
 	/* -- find the last directory delimitor -- */
-	while ((end_ptr > input_path_name) && NOT_PATH_DELIMITOR(*end_ptr)) {
+	while ((end_ptr > input_path_name) && NOT_PATH_DELIMITOR(*end_ptr))
+	{
 		end_ptr--;
 	}
 	/* ---------------------------------------------------------------
@@ -211,8 +216,10 @@ parse_file_name(const char *input_path_name, char global_path_separator, char *o
 	src = input_path_name;
 	/* if end_ptr points to a path delimitor, copy everything up but not
 	including it into the output_head (if output_head isn't NULL) */
-	if (IS_PATH_DELIMITOR(*end_ptr)) {
-		while (src < end_ptr) {
+	if (IS_PATH_DELIMITOR(*end_ptr))
+	{
+		while (src < end_ptr)
+		{
 			if (dest != NULL) { *dest++ = *src; }
 			src++;
 		}
@@ -222,8 +229,10 @@ parse_file_name(const char *input_path_name, char global_path_separator, char *o
 	if (dest != NULL) { BLANK_STRING(dest); }
 	/* copy everything after the delimitor up to the sentinel
 	into the output_tail */
-	if ((dest = output_tail) != NULL) {
-		while (TRUE) {
+	if ((dest = output_tail) != NULL)
+	{
+		while (TRUE)
+		{
 			if ((*dest++ = *src++) == SENTINEL) { break; }
 		}
 	}
@@ -242,7 +251,8 @@ combine_path_file(char global_path_separator, char *input_head, char *input_tail
 	combine_buf[0] = global_path_separator;
 	combine_buf[1] = SENTINEL;
 
-	if ((input_head != NULL) && (input_head[0] != SENTINEL)) {
+	if ((input_head != NULL) && (input_head[0] != SENTINEL))
+	{
 		append_string_to_max(output_path_name, input_head, PATHNAME_LEN);
 
 		char_append(combine_buf, output_path_name, input_tail, PATHNAME_LEN);
@@ -255,7 +265,8 @@ void
 upper_case(char *d, const char *s)
 {
 	/* -- make an uppercase copy in d of string in s -- */
-	for (; *s != SENTINEL; s++) {
+	for (; *s != SENTINEL; s++)
+	{
 		*d++ = (islower(*s) ? toupper(*s) : *s);
 	}
 	BLANK_STRING(d);
@@ -280,7 +291,8 @@ fast_reverse_endian(char *location_to_reverse, int bytes_to_reverse)
 
 	for (start_byte_ptr = location_to_reverse, end_byte_ptr = location_to_reverse + bytes_to_reverse - 1;
 	     start_byte_ptr < end_byte_ptr;
-	     start_byte_ptr++, end_byte_ptr--) {
+	     start_byte_ptr++, end_byte_ptr--)
+	{
 		char a = *start_byte_ptr;
 		*start_byte_ptr = *end_byte_ptr;
 		*end_byte_ptr = a;
@@ -299,12 +311,14 @@ append_string_to_max(char *dest_buf_start, char *src_str_start, int buf_size)
 
 	/* -- move to end of current contents of buffer -- */
 	d_ptr = dest_buf_start;
-	while ((a = *d_ptr) != SENTINEL) {
+	while ((a = *d_ptr) != SENTINEL)
+	{
 		d_ptr++;
 	}
 	buf_end = dest_buf_start + buf_size - 1;
 
-	if (d_ptr >= buf_end) {
+	if (d_ptr >= buf_end)
+	{
 #ifndef BUILD_API
 #ifndef NO_STDERR_OUTPUT
 		fprintf(stderr, "format_strncat: fatal buffer overflow of %s\n", dest_buf_start);
@@ -319,7 +333,8 @@ append_string_to_max(char *dest_buf_start, char *src_str_start, int buf_size)
 #endif
 	}
 	s_ptr = src_str_start;
-	while (((a = *s_ptr++) != SENTINEL) && (d_ptr != buf_end)) {
+	while (((a = *s_ptr++) != SENTINEL) && (d_ptr != buf_end))
+	{
 		*d_ptr++ = a;
 	}
 	*d_ptr = SENTINEL;
@@ -347,14 +362,18 @@ establish_directory(char *c_w_d, char *p_s)
 
 #endif
 
-	if (isalpha(c_w_d[0])) {
+	if (isalpha(c_w_d[0]))
+	{
 
 		/* ..... drive letter, colon, dir_sep ..... */
 
-		if (IS_COLON(c_w_d[1])) {
+		if (IS_COLON(c_w_d[1]))
+		{
 			*p_s = c_w_d[2];
 			if ((*p_s != FORE_SLASH) && (*p_s != BACK_SLASH)) { return FALSE; }
-		} else {
+		}
+		else
+		{
 			return FALSE;
 		}
 	}
@@ -375,7 +394,8 @@ conform_directory_separator(char *path_name)
 	int i, pn_len;
 
 	pn_len = strlen(path_name);
-	for (i = 0; i < pn_len; i++) {
+	for (i = 0; i < pn_len; i++)
+	{
 		if (path_name[i] == BACK_SLASH) { path_name[i] = FORE_SLASH; }
 	}
 }

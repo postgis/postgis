@@ -25,7 +25,8 @@
 #include <string.h>
 #include "liblwgeom_internal.h"
 
-typedef struct {
+typedef struct
+{
 	const POINT2D *p1;
 	const POINT2D *p2;
 	const POINT2D *p3;
@@ -63,7 +64,8 @@ num_supporting_points(SUPPORTING_POINTS *support)
 static int
 add_supporting_point(SUPPORTING_POINTS *support, const POINT2D *p)
 {
-	switch (num_supporting_points(support)) {
+	switch (num_supporting_points(support))
+	{
 	case 0:
 		support->p1 = p;
 		break;
@@ -152,7 +154,8 @@ calculate_mbc_3(const SUPPORTING_POINTS *support, LWBOUNDINGCIRCLE *mbc)
 static int
 calculate_mbc_from_support(SUPPORTING_POINTS *support, LWBOUNDINGCIRCLE *mbc)
 {
-	switch (num_supporting_points(support)) {
+	switch (num_supporting_points(support))
+	{
 	case 0:
 		break;
 	case 1:
@@ -178,7 +181,8 @@ calculate_mbc(const POINT2D **points, uint32_t max_n, SUPPORTING_POINTS *support
 
 	if (!calculate_mbc_from_support(support, mbc)) { return LW_FAILURE; }
 
-	if (num_supporting_points(support) == 3) {
+	if (num_supporting_points(support) == 3)
+	{
 		/* If we're entering the function with three supporting points already, our circle
 		 * is already fully constrained - we couldn't add another supporting point if we
 		 * needed to. So, there's no point in proceeding further.  Welzl (1991) provides
@@ -187,8 +191,10 @@ calculate_mbc(const POINT2D **points, uint32_t max_n, SUPPORTING_POINTS *support
 		return LW_SUCCESS;
 	}
 
-	for (i = 0; i < max_n; i++) {
-		if (!point_inside_circle(points[i], mbc)) {
+	for (i = 0; i < max_n; i++)
+	{
+		if (!point_inside_circle(points[i], mbc))
+		{
 			/* We've run into a point that isn't inside our circle.  To fix this, we'll
 			 * go back in time, and re-run the algorithm for each point we've seen so
 			 * far, with the constraint that the current point must be on the boundary
@@ -242,10 +248,13 @@ lwgeom_calculate_mbc(const LWGEOM *g)
 	num_points = lwgeom_count_vertices(g);
 	it = lwpointiterator_create(g);
 	points = lwalloc(num_points * sizeof(POINT2D *));
-	for (i = 0; i < num_points; i++) {
-		if (!lwpointiterator_next(it, &p)) {
+	for (i = 0; i < num_points; i++)
+	{
+		if (!lwpointiterator_next(it, &p))
+		{
 			uint32_t j;
-			for (j = 0; j < i; j++) {
+			for (j = 0; j < i; j++)
+			{
 				lwfree(points[j]);
 			}
 			lwpointiterator_destroy(it);
@@ -267,7 +276,8 @@ lwgeom_calculate_mbc(const LWGEOM *g)
 	 * */
 	success = calculate_mbc((const POINT2D **)points, num_points, support, result);
 
-	for (i = 0; i < num_points; i++) {
+	for (i = 0; i < num_points; i++)
+	{
 		lwfree(points[i]);
 	}
 	lwfree(points);

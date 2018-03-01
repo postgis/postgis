@@ -56,7 +56,8 @@ lwmpoint_construct(int srid, const POINTARRAY *pa)
 	int hasm = ptarray_has_m(pa);
 	LWMPOINT *ret = (LWMPOINT *)lwcollection_construct_empty(MULTIPOINTTYPE, srid, hasz, hasm);
 
-	for (i = 0; i < pa->npoints; i++) {
+	for (i = 0; i < pa->npoints; i++)
+	{
 		LWPOINT *lwp;
 		POINT4D p;
 		getPoint4d_p(pa, i, &p);
@@ -93,7 +94,8 @@ lwmpoint_from_lwgeom(const LWGEOM *g)
 	LWMPOINT *result = lwmpoint_construct_empty(g->srid, has_z, has_m);
 	POINT4D p;
 
-	while (lwpointiterator_next(it, &p)) {
+	while (lwpointiterator_next(it, &p))
+	{
 		LWPOINT *lwp = lwpoint_make(g->srid, has_z, has_m, &p);
 		lwmpoint_add_lwpoint(result, lwp);
 	}

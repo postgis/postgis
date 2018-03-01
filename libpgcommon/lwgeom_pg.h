@@ -38,7 +38,8 @@ void pg_install_lwgeom_handlers(void);
 /* Display a simple message at NOTICE level */
 /* from PgSQL utils/elog.h, LOG is 15, and DEBUG5 is 10 and everything else is in between */
 #define POSTGIS_DEBUG(level, msg) \
-	do { \
+	do \
+	{ \
 		if (POSTGIS_DEBUG_LEVEL >= level) \
 			ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), \
 				(errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__))); \
@@ -46,7 +47,8 @@ void pg_install_lwgeom_handlers(void);
 
 /* Display a formatted message at NOTICE level (like printf, with variadic arguments) */
 #define POSTGIS_DEBUGF(level, msg, ...) \
-	do { \
+	do \
+	{ \
 		if (POSTGIS_DEBUG_LEVEL >= level) \
 			ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), \
 				(errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__))); \
@@ -78,7 +80,8 @@ extern void pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result);
 extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
 
 #define PG_PARSER_ERROR(lwg_parser_result) \
-	do { \
+	do \
+	{ \
 		pg_parser_errhint(&lwg_parser_result); \
 	} while (0);
 
@@ -86,7 +89,8 @@ extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
  * Standard macro for reporting unparser errors to PostgreSQL
  */
 #define PG_UNPARSER_ERROR(lwg_unparser_result) \
-	do { \
+	do \
+	{ \
 		pg_unparser_errhint(&lwg_unparser_result); \
 	} while (0);
 

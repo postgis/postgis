@@ -253,7 +253,8 @@ test_gbox_from_spherical_coordinates(void)
 
 	srandomdev();
 
-	for (i = 0; i < loops; i++) {
+	for (i = 0; i < loops; i++)
+	{
 		rndlat = (int)(90.0 - 180.0 * (double)random() / pow(2.0, 31.0));
 		rndlon = (int)(180.0 - 360.0 * (double)random() / pow(2.0, 31.0));
 		ll[0] = (double)rndlon;
@@ -274,8 +275,8 @@ test_gbox_from_spherical_coordinates(void)
 		    (fabs(gbox.xmax - gbox_slow.xmax) > gtolerance) ||
 		    (fabs(gbox.ymin - gbox_slow.ymin) > gtolerance) ||
 		    (fabs(gbox.ymax - gbox_slow.ymax) > gtolerance) ||
-		    (fabs(gbox.zmin - gbox_slow.zmin) > gtolerance) ||
-		    (fabs(gbox.zmax - gbox_slow.zmax) > gtolerance)) {
+		    (fabs(gbox.zmin - gbox_slow.zmin) > gtolerance) || (fabs(gbox.zmax - gbox_slow.zmax) > gtolerance))
+		{
 			printf("\n-------\n");
 			printf("If you are seeing this, cut and paste it, it is a randomly generated test case!\n");
 			printf("LOOP: %d\n", i);
@@ -300,7 +301,8 @@ test_gserialized_get_gbox_geocentric(void)
 	GBOX gbox, gbox_slow;
 	int i;
 
-	for (i = 0; i < gbox_data_length; i++) {
+	for (i = 0; i < gbox_data_length; i++)
+	{
 #if 0
 //		if ( i != 0 ) continue; /* skip our bad case */
 		printf("\n\n------------\n");
@@ -568,7 +570,8 @@ line2pts(const char *wkt, POINT3D *A1, POINT3D *A2)
 	POINTARRAY *pa;
 	POINT2D p1, p2;
 	GEOGRAPHIC_POINT g1, g2;
-	if (!l) {
+	if (!l)
+	{
 		printf("BAD WKT FOUND in test_edge_intersects:\n  %s\n\n", wkt);
 		exit(0);
 	}
@@ -823,7 +826,8 @@ test_lwgeom_check_geodetic(void)
 	    "SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1111 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
 	};
 
-	for (i = 0; i < 6; i++) {
+	for (i = 0; i < 6; i++)
+	{
 		GSERIALIZED *g;
 		geom = lwgeom_over_gserialized(ewkt[i], &g);
 		CU_ASSERT_EQUAL(lwgeom_check_geodetic(geom), LW_TRUE);
@@ -831,7 +835,8 @@ test_lwgeom_check_geodetic(void)
 		lwfree(g);
 	}
 
-	for (i = 6; i < 12; i++) {
+	for (i = 6; i < 12; i++)
+	{
 		GSERIALIZED *g;
 		// char *out_ewkt;
 		geom = lwgeom_over_gserialized(ewkt[i], &g);

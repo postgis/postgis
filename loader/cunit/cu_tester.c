@@ -27,13 +27,15 @@ main()
 	if (CUE_SUCCESS != CU_initialize_registry()) return CU_get_error();
 
 	/* Add the shp2pgsql test suite */
-	if (NULL == register_shp2pgsql_suite()) {
+	if (NULL == register_shp2pgsql_suite())
+	{
 		CU_cleanup_registry();
 		return CU_get_error();
 	}
 
 	/* Add the pgsql2shp test suite */
-	if (NULL == register_pgsql2shp_suite()) {
+	if (NULL == register_pgsql2shp_suite())
+	{
 		CU_cleanup_registry();
 		return CU_get_error();
 	}

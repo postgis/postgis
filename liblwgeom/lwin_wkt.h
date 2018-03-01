@@ -29,7 +29,8 @@
  * Coordinate object to hold information about last coordinate temporarily.
  * We need to know how many dimensions there are at any given time.
  */
-typedef struct {
+typedef struct
+{
 	uint8_t flags;
 	double x;
 	double y;

@@ -46,7 +46,8 @@ typedef hash_t HHash;
 
 #endif
 
-typedef struct address_struct {
+typedef struct address_struct
+{
 	char *num;
 	char *street;
 	char *street2;

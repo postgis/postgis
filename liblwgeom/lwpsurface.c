@@ -63,9 +63,11 @@ printLWPSURFACE(LWPSURFACE *psurf)
 	lwnotice("    SRID = %i", (int)psurf->srid);
 	lwnotice("    ngeoms = %i", (int)psurf->ngeoms);
 
-	for (i = 0; i < psurf->ngeoms; i++) {
+	for (i = 0; i < psurf->ngeoms; i++)
+	{
 		patch = (LWPOLY *)psurf->geoms[i];
-		for (j = 0; j < patch->nrings; j++) {
+		for (j = 0; j < patch->nrings; j++)
+		{
 			lwnotice("    RING # %i :", j);
 			printPA(patch->rings[j]);
 		}
@@ -77,7 +79,8 @@ printLWPSURFACE(LWPSURFACE *psurf)
  * TODO rewrite all this stuff to be based on a truly topological model
  */
 
-struct struct_psurface_arcs {
+struct struct_psurface_arcs
+{
 	double ax, ay, az;
 	double bx, by, bz;
 	uint32_t cnt, face;
@@ -103,16 +106,19 @@ lwpsurface_is_closed(const LWPSURFACE *psurface)
 	if (psurface->ngeoms < 4) return 0;
 
 	/* Max theorical arcs number if no one is shared ... */
-	for (i = 0, narcs = 0; i < psurface->ngeoms; i++) {
+	for (i = 0, narcs = 0; i < psurface->ngeoms; i++)
+	{
 		patch = (LWPOLY *)psurface->geoms[i];
 		narcs += patch->rings[0]->npoints - 1;
 	}
 
 	arcs = lwalloc(sizeof(struct struct_psurface_arcs) * narcs);
-	for (i = 0, carc = 0; i < psurface->ngeoms; i++) {
+	for (i = 0, carc = 0; i < psurface->ngeoms; i++)
+	{
 
 		patch = (LWPOLY *)psurface->geoms[i];
-		for (j = 0; j < patch->rings[0]->npoints - 1; j++) {
+		for (j = 0; j < patch->rings[0]->npoints - 1; j++)
+		{
 
 			getPoint4d_p(patch->rings[0], j, &pa);
 			getPoint4d_p(patch->rings[0], j + 1, &pb);
@@ -122,29 +128,34 @@ lwpsurface_is_closed(const LWPSURFACE *psurface)
 
 			/* Make sure to order the 'lower' point first */
 			if ((pa.x > pb.x) || (pa.x == pb.x && pa.y > pb.y) ||
-			    (pa.x == pb.x && pa.y == pb.y && pa.z > pb.z)) {
+			    (pa.x == pb.x && pa.y == pb.y && pa.z > pb.z))
+			{
 				pa = pb;
 				getPoint4d_p(patch->rings[0], j, &pb);
 			}
 
-			for (found = 0, k = 0; k < carc; k++) {
+			for (found = 0, k = 0; k < carc; k++)
+			{
 
 				if ((arcs[k].ax == pa.x && arcs[k].ay == pa.y && arcs[k].az == pa.z &&
 				     arcs[k].bx == pb.x && arcs[k].by == pb.y && arcs[k].bz == pb.z &&
-				     arcs[k].face != i)) {
+				     arcs[k].face != i))
+				{
 					arcs[k].cnt++;
 					found = 1;
 
 					/* Look like an invalid PolyhedralSurface
 					      anyway not a closed one */
-					if (arcs[k].cnt > 2) {
+					if (arcs[k].cnt > 2)
+					{
 						lwfree(arcs);
 						return 0;
 					}
 				}
 			}
 
-			if (!found) {
+			if (!found)
+			{
 				arcs[carc].cnt = 1;
 				arcs[carc].face = i;
 				arcs[carc].ax = pa.x;
@@ -157,7 +168,8 @@ lwpsurface_is_closed(const LWPSURFACE *psurface)
 
 				/* Look like an invalid PolyhedralSurface
 				      anyway not a closed one */
-				if (carc > narcs) {
+				if (carc > narcs)
+				{
 					lwfree(arcs);
 					return 0;
 				}
@@ -167,8 +179,10 @@ lwpsurface_is_closed(const LWPSURFACE *psurface)
 
 	/* A polyhedron is closed if each edge
 	       is shared by exactly 2 faces */
-	for (k = 0; k < carc; k++) {
-		if (arcs[k].cnt != 2) {
+	for (k = 0; k < carc; k++)
+	{
+		if (arcs[k].cnt != 2)
+		{
 			lwfree(arcs);
 			return 0;
 		}

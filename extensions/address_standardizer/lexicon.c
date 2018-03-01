@@ -78,7 +78,8 @@ lex_init(ERR_PARAM *err_p)
 	PAGC_CALLOC_STRUC(lex, LEXICON, 1, err_p, NULL);
 
 	lex->hash_table = create_hash_table(err_p);
-	if (lex->hash_table == NULL) {
+	if (lex->hash_table == NULL)
+	{
 		lex_free(lex);
 		return NULL;
 	}
@@ -124,9 +125,11 @@ create_lexicon(PAGC_GLOBAL *glo_p, const char *lex_name, const char *gaz_name)
 
 	if ((hash_table = create_hash_table(glo_p->process_errors)) == NULL) { return NULL; }
 	/* 2009-08-13 : support multiple lexicons */
-	if (gaz_name != NULL) {
+	if (gaz_name != NULL)
+	{
 		if ((gaz_file = open_aux_file(glo_p, gaz_name)) == NULL) return NULL;
-		if (!read_lexicon(glo_p->process_errors, hash_table, gaz_file)) {
+		if (!read_lexicon(glo_p->process_errors, hash_table, gaz_file))
+		{
 			fclose(gaz_file);
 			return NULL;
 		}
@@ -134,7 +137,8 @@ create_lexicon(PAGC_GLOBAL *glo_p, const char *lex_name, const char *gaz_name)
 	}
 
 	if ((dict_file = open_aux_file(glo_p, lex_name)) == NULL) return NULL;
-	if (!read_lexicon(glo_p->process_errors, hash_table, dict_file)) {
+	if (!read_lexicon(glo_p->process_errors, hash_table, dict_file))
+	{
 		fclose(dict_file);
 		return NULL;
 	}
@@ -161,7 +165,8 @@ read_lexicon(ERR_PARAM *err_p, ENTRY **hash_table, FILE *CFile)
 	char standard_str[MAXTEXT];
 	char *next_str;
 
-	while (!feof(CFile)) {
+	while (!feof(CFile))
+	{
 		/* -- read in each line of the csv file and add to hash table -- */
 		BLANK_STRING(record_buffer);
 		fgets(record_buffer, MAXSTRLEN, CFile);
@@ -179,9 +184,8 @@ read_lexicon(ERR_PARAM *err_p, ENTRY **hash_table, FILE *CFile)
 		next_str = convert_field(num_str, next_str);
 		sscanf(num_str, "%d", &cur_token);
 		next_str = convert_field(standard_str, next_str);
-		if (add_dict_entry(err_p, hash_table, lookup_str, (num_def - 1), cur_token, standard_str) == ERR_FAIL) {
-			return FALSE;
-		}
+		if (add_dict_entry(err_p, hash_table, lookup_str, (num_def - 1), cur_token, standard_str) == ERR_FAIL)
+		{ return FALSE; }
 	}
 	return TRUE;
 }
@@ -202,10 +206,12 @@ convert_field(char *buf, char *inp)
 	BLANK_STRING(d);
 	/* -- space at the beginning of a line will stop the read -- */
 	if (isspace(*s)) return NULL;
-	while ((c = *s++) != SENTINEL) {
+	while ((c = *s++) != SENTINEL)
+	{
 		if (c == '\"' || c == '\r') continue; /* -- ignore quotes and carriage returns -- */
 		/* -- zero terminate field and record delimiters -- */
-		if (c == '\n' || c == ',') {
+		if (c == '\n' || c == ',')
+		{
 			BLANK_STRING(d);
 			return s;
 		}
@@ -229,8 +235,10 @@ destroy_lexicon(ENTRY **hash_table)
 	unsigned __i__;
 	ENTRY *__E__, *__F__;
 	if (hash_table == NULL) { return; }
-	for (__i__ = 0; __i__ < LEXICON_HTABSIZE; __i__++) {
-		for (__E__ = hash_table[__i__]; __E__ != NULL; __E__ = __F__) {
+	for (__i__ = 0; __i__ < LEXICON_HTABSIZE; __i__++)
+	{
+		for (__E__ = hash_table[__i__]; __E__ != NULL; __E__ = __F__)
+		{
 			destroy_def_list(__E__->DefList);
 			__F__ = __E__->Next;
 			FREE_AND_NULL(__E__->Lookup);
@@ -254,7 +262,8 @@ destroy_def_list(DEF *start_def)
 	DEF *cur_def;
 	DEF *next_def = NULL;
 
-	for (cur_def = start_def; cur_def != NULL; cur_def = next_def) {
+	for (cur_def = start_def; cur_def != NULL; cur_def = next_def)
+	{
 		next_def = cur_def->Next;
 		/* -- Default definitions have no associated text -- */
 		if (cur_def->Protect == 0) { FREE_AND_NULL(cur_def->Standard); }
@@ -276,7 +285,8 @@ find_entry(ENTRY **hash_table, char *lookup_str)
 	unsigned __hash_index__; /* -- 2006-11-20 : to return hash table pointer -- */
 
 	__hash_index__ = calc_hash(lookup_str);
-	for (__E__ = hash_table[__hash_index__]; __E__ != NULL; __E__ = __E__->Next) {
+	for (__E__ = hash_table[__hash_index__]; __E__ != NULL; __E__ = __E__->Next)
+	{
 		if (strcmp(lookup_str, __E__->Lookup) == 0) { return __E__; }
 	}
 	return __E__;
@@ -293,7 +303,8 @@ elf_hash(char *key_str)
 	unsigned h, g, c;
 
 	h = 0;
-	while ((c = (unsigned)*key_str) != '\0') {
+	while ((c = (unsigned)*key_str) != '\0')
+	{
 		h = (h << US) + c;
 		if ((g = h & (~((unsigned)(~0) >> US)))) h ^= g >> (US * 6);
 		h &= ~g;
@@ -330,7 +341,8 @@ create_hash_table(ERR_PARAM *err_p)
 	unsigned __i__;
 	ENTRY **__hash_table__;
 	PAGC_CALLOC_STRUC(__hash_table__, ENTRY *, LEXICON_HTABSIZE, err_p, NULL);
-	for (__i__ = 0; __i__ < LEXICON_HTABSIZE; __i__++) {
+	for (__i__ = 0; __i__ < LEXICON_HTABSIZE; __i__++)
+	{
 		__hash_table__[__i__] = NULL;
 	}
 	return __hash_table__;
@@ -349,7 +361,8 @@ add_dict_entry(ERR_PARAM *err_p, ENTRY **hash_table, char *lookup_str, int def_n
 	ENTRY *E;
 
 	E = find_entry(hash_table, lookup_str);
-	if (E == NULL) {
+	if (E == NULL)
+	{
 		unsigned hash_index;
 
 		PAGC_ALLOC_STRUC(E, ENTRY, err_p, ERR_FAIL);
@@ -361,7 +374,9 @@ add_dict_entry(ERR_PARAM *err_p, ENTRY **hash_table, char *lookup_str, int def_n
 		E->Next = hash_table[hash_index]; /* -- collision chain -- */
 		hash_table[hash_index] = E;
 		if ((E->DefList = create_def(t, standard_str, def_num, FALSE, err_p)) == NULL) { return ERR_FAIL; }
-	} else {
+	}
+	else
+	{
 		int err_stat;
 		if (E->DefList == NULL) { RET_ERR("add_dict_entry: Lexical entry lacks definition", err_p, ERR_FAIL); }
 		if ((err_stat = append_new_def(err_p, E, t, standard_str, def_num)) != TRUE) { return err_stat; }
@@ -381,15 +396,16 @@ append_new_def(ERR_PARAM *err_p, ENTRY *E, SYMB t, char *text, int def_num)
 {
 
 	DEF *D, *pd, *cd;
-	for (cd = E->DefList, pd = NULL; cd != NULL; cd = cd->Next) {
+	for (cd = E->DefList, pd = NULL; cd != NULL; cd = cd->Next)
+	{
 		pd = cd;
 		/* -- avoid duplication except for local entries -- */
 		if (cd->Type == t) { return FALSE; }
 	}
 	if ((D = create_def(t, text, def_num, FALSE, err_p)) == NULL) { return ERR_FAIL; }
-	if (pd == NULL) {
-		E->DefList = D;
-	} else {
+	if (pd == NULL) { E->DefList = D; }
+	else
+	{
 		D->Next = pd->Next;
 		pd->Next = D;
 	}
@@ -416,10 +432,12 @@ create_def(SYMB s, char *standard_str, int def_num, int PFlag, ERR_PARAM *err_p)
 	cur_def->Type = s;
 	cur_def->Protect = PFlag; /* -- False for definitions from lexicon
 				     true for default definitions -- */
-	if (!PFlag) {
+	if (!PFlag)
+	{
 		/* -- initialization-time allocation -- */
 		PAGC_STORE_STR(cur_def->Standard, standard_str, err_p, NULL);
-	} else
+	}
+	else
 		cur_def->Standard = NULL;
 	cur_def->Order = def_num;
 	cur_def->Next = NULL;
@@ -438,12 +456,15 @@ print_lexicon(ENTRY **hash_table)
 
 	if (!hash_table) return;
 
-	for (i = 0; i < LEXICON_HTABSIZE; i++) {
+	for (i = 0; i < LEXICON_HTABSIZE; i++)
+	{
 		E = hash_table[i];
-		while (E) {
+		while (E)
+		{
 			DEF *D = E->DefList;
 			printf("'%s'\n", E->Lookup);
-			while (D) {
+			while (D)
+			{
 				printf("    %d, %d, %d, '%s'\n", D->Order, D->Type, D->Protect, D->Standard);
 				D = D->Next;
 			}

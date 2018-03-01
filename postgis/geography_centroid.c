@@ -71,7 +71,8 @@ Datum geography_centroid(PG_FUNCTION_ARGS)
 	srid = lwgeom_get_srid(lwgeom);
 
 	/* on empty input, return empty output */
-	if (gserialized_is_empty(g)) {
+	if (gserialized_is_empty(g))
+	{
 		LWCOLLECTION *empty = lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 		lwgeom_out = lwcollection_as_lwgeom(empty);
 		lwgeom_set_geodetic(lwgeom_out, true);
@@ -88,15 +89,18 @@ Datum geography_centroid(PG_FUNCTION_ARGS)
 
 	type = gserialized_get_type(g);
 
-	switch (type) {
+	switch (type)
+	{
 
-	case POINTTYPE: {
+	case POINTTYPE:
+	{
 		/* centroid of a point is itself */
 		PG_RETURN_POINTER(g);
 		break;
 	}
 
-	case MULTIPOINTTYPE: {
+	case MULTIPOINTTYPE:
+	{
 		LWMPOINT *mpoints = lwgeom_as_lwmpoint(lwgeom);
 
 		/* average between all points */
@@ -104,7 +108,8 @@ Datum geography_centroid(PG_FUNCTION_ARGS)
 		POINT3DM points[size];
 
 		uint32_t i;
-		for (i = 0; i < size; i++) {
+		for (i = 0; i < size; i++)
+		{
 			points[i].x = lwpoint_get_x(mpoints->geoms[i]);
 			points[i].y = lwpoint_get_y(mpoints->geoms[i]);
 			points[i].m = 1;
@@ -114,7 +119,8 @@ Datum geography_centroid(PG_FUNCTION_ARGS)
 		break;
 	}
 
-	case LINETYPE: {
+	case LINETYPE:
+	{
 		LWLINE *line = lwgeom_as_lwline(lwgeom);
 
 		/* reuse mline function */
@@ -126,13 +132,15 @@ Datum geography_centroid(PG_FUNCTION_ARGS)
 		break;
 	}
 
-	case MULTILINETYPE: {
+	case MULTILINETYPE:
+	{
 		LWMLINE *mline = lwgeom_as_lwmline(lwgeom);
 		lwpoint_out = geography_centroid_from_mline(mline, &s);
 		break;
 	}
 
-	case POLYGONTYPE: {
+	case POLYGONTYPE:
+	{
 		LWPOLY *poly = lwgeom_as_lwpoly(lwgeom);
 
 		/* reuse mpoly function */
@@ -144,7 +152,8 @@ Datum geography_centroid(PG_FUNCTION_ARGS)
 		break;
 	}
 
-	case MULTIPOLYGONTYPE: {
+	case MULTIPOLYGONTYPE:
+	{
 		LWMPOLY *mpoly = lwgeom_as_lwmpoly(lwgeom);
 		lwpoint_out = geography_centroid_from_mpoly(mpoly, use_spheroid, &s);
 		break;
@@ -179,7 +188,8 @@ geography_centroid_from_wpoints(const uint32_t srid, const POINT3DM *points, con
 	POINT3D *point;
 
 	uint32_t i;
-	for (i = 0; i < size; i++) {
+	for (i = 0; i < size; i++)
+	{
 		point = lonlat_to_cart(points[i].x, points[i].y);
 		weight = points[i].m;
 
@@ -253,18 +263,21 @@ geography_centroid_from_mline(const LWMLINE *mline, SPHEROID *s)
 	uint32_t i, k;
 
 	/* get total number of points */
-	for (i = 0; i < mline->ngeoms; i++) {
+	for (i = 0; i < mline->ngeoms; i++)
+	{
 		size += (mline->geoms[i]->points->npoints - 1) * 2;
 	}
 
 	POINT3DM points[size];
 	uint32_t j = 0;
 
-	for (i = 0; i < mline->ngeoms; i++) {
+	for (i = 0; i < mline->ngeoms; i++)
+	{
 		LWLINE *line = mline->geoms[i];
 
 		/* add both points of line segment as weighted point */
-		for (k = 0; k < line->points->npoints - 1; k++) {
+		for (k = 0; k < line->points->npoints - 1; k++)
+		{
 			const POINT2D *p1 = getPoint2d_cp(line->points, k);
 			const POINT2D *p2 = getPoint2d_cp(line->points, k + 1);
 
@@ -306,8 +319,10 @@ geography_centroid_from_mpoly(const LWMPOLY *mpoly, bool use_spheroid, SPHEROID 
 {
 	uint32_t size = 0;
 	uint32_t i, ir, ip;
-	for (ip = 0; ip < mpoly->ngeoms; ip++) {
-		for (ir = 0; ir < mpoly->geoms[ip]->nrings; ir++) {
+	for (ip = 0; ip < mpoly->ngeoms; ip++)
+	{
+		for (ir = 0; ir < mpoly->geoms[ip]->nrings; ir++)
+		{
 			size += mpoly->geoms[ip]->rings[ir]->npoints - 1;
 		}
 	}
@@ -318,14 +333,17 @@ geography_centroid_from_mpoly(const LWMPOLY *mpoly, bool use_spheroid, SPHEROID 
 	/* use first point as reference to create triangles */
 	const POINT4D *reference_point = (const POINT4D *)getPoint2d_cp(mpoly->geoms[0]->rings[0], 0);
 
-	for (ip = 0; ip < mpoly->ngeoms; ip++) {
+	for (ip = 0; ip < mpoly->ngeoms; ip++)
+	{
 		LWPOLY *poly = mpoly->geoms[ip];
 
-		for (ir = 0; ir < poly->nrings; ir++) {
+		for (ir = 0; ir < poly->nrings; ir++)
+		{
 			POINTARRAY *ring = poly->rings[ir];
 
 			/* split into triangles (two points + reference point) */
-			for (i = 0; i < ring->npoints - 1; i++) {
+			for (i = 0; i < ring->npoints - 1; i++)
+			{
 				const POINT4D *p1 = (const POINT4D *)getPoint2d_cp(ring, i);
 				const POINT4D *p2 = (const POINT4D *)getPoint2d_cp(ring, i + 1);
 

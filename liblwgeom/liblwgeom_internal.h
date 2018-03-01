@@ -419,7 +419,8 @@ int lwtin_is_closed(const LWTIN *tin);
 /**
  * Snap-to-grid Support
  */
-typedef struct gridspec_t {
+typedef struct gridspec_t
+{
 	double ipx;
 	double ipy;
 	double ipz;
@@ -487,7 +488,8 @@ extern int _lwgeom_interrupt_requested;
 #define LW_ON_INTERRUPT(x) \
 	{ \
 		if (_lwgeom_interrupt_callback) { (*_lwgeom_interrupt_callback)(); } \
-		if (_lwgeom_interrupt_requested) { \
+		if (_lwgeom_interrupt_requested) \
+		{ \
 			_lwgeom_interrupt_requested = 0; \
 			lwnotice("liblwgeom code interrupted"); \
 			x; \

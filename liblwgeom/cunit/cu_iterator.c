@@ -47,7 +47,8 @@ count_points_using_iterator(LWGEOM *g)
 	uint32_t count = 0;
 	LWPOINTITERATOR *it = lwpointiterator_create(g);
 
-	while (lwpointiterator_has_next(it)) {
+	while (lwpointiterator_has_next(it))
+	{
 		CU_ASSERT_TRUE(lwpointiterator_next(it, &p));
 		count++;
 	}
@@ -64,7 +65,8 @@ test_point_count(void)
 	memset(types_visited, LW_FALSE, NUMTYPES * sizeof(char));
 
 	uint32_t i;
-	for (i = 0; i < sizeof(inputs) / sizeof(char *); i++) {
+	for (i = 0; i < sizeof(inputs) / sizeof(char *); i++)
+	{
 		LWGEOM *input = lwgeom_from_wkt(inputs[i], LW_PARSER_CHECK_NONE);
 		types_visited[lwgeom_get_type(input)] = LW_TRUE;
 
@@ -76,7 +78,8 @@ test_point_count(void)
 	}
 
 	/* Assert that every valid LWGEOM type has been tested */
-	for (i = 1; i < NUMTYPES; i++) {
+	for (i = 1; i < NUMTYPES; i++)
+	{
 		CU_ASSERT_TRUE(types_visited[i]);
 	}
 
@@ -105,13 +108,15 @@ test_modification(void)
 	uint32_t i;
 	uint32_t j = 0;
 
-	for (i = 0; i < sizeof(inputs) / sizeof(char *); i++) {
+	for (i = 0; i < sizeof(inputs) / sizeof(char *); i++)
+	{
 		LWGEOM *input = lwgeom_from_wkt(inputs[i], LW_PARSER_CHECK_NONE);
 		LWPOINTITERATOR *it1 = lwpointiterator_create_rw(input);
 		LWPOINTITERATOR *it2 = lwpointiterator_create(input);
 		;
 
-		while (lwpointiterator_has_next(it1)) {
+		while (lwpointiterator_has_next(it1))
+		{
 			/* Make up a coordinate, assign it to the next spot in it1,
 			 * read it from it2 to verify that it was assigned correctly. */
 			POINT4D p1, p2;
@@ -164,8 +169,10 @@ test_mixed_rw_access(void)
 	LWPOINTITERATOR *it2 = lwpointiterator_create(g);
 
 	/* Flip the coordinates of the 3rd point */
-	while (lwpointiterator_has_next(it1)) {
-		if (i == 2) {
+	while (lwpointiterator_has_next(it1))
+	{
+		if (i == 2)
+		{
 			POINT4D p;
 			double tmp;
 
@@ -175,7 +182,9 @@ test_mixed_rw_access(void)
 			p.y = tmp;
 
 			lwpointiterator_modify_next(it1, &p);
-		} else {
+		}
+		else
+		{
 			lwpointiterator_next(it1, NULL);
 		}
 		i++;
@@ -186,7 +195,8 @@ test_mixed_rw_access(void)
 	/* Verify that the points are as expected */
 	POINT2D points[] = {{.x = 3, .y = 7}, {.x = 2, .y = 8}, {.x = 3, .y = 4}, {.x = 2, .y = 8}, {.x = 17, .y = 3}};
 
-	for (i = 0; lwpointiterator_has_next(it2); i++) {
+	for (i = 0; lwpointiterator_has_next(it2); i++)
+	{
 		POINT4D p;
 
 		lwpointiterator_next(it2, &p);
@@ -223,7 +233,8 @@ test_ordering(void)
 	LWPOINTITERATOR *it = lwpointiterator_create(g);
 	POINT4D p;
 
-	for (i = 0; lwpointiterator_has_next(it); i++) {
+	for (i = 0; lwpointiterator_has_next(it); i++)
+	{
 		CU_ASSERT_EQUAL(LW_SUCCESS, lwpointiterator_next(it, &p));
 		CU_ASSERT_EQUAL(p.x, points[i].x);
 		CU_ASSERT_EQUAL(p.y, points[i].y);

@@ -23,7 +23,8 @@ Datum geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 	 * If the new value is null, we record that we saw it if it's the first
 	 * one; otherwise, there's nothing to do.
 	 */
-	if (isnull) {
+	if (isnull)
+	{
 		if (column->bv_hasnulls) PG_RETURN_BOOL(false);
 
 		column->bv_hasnulls = true;
@@ -33,20 +34,25 @@ Datum geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 	/*
 	 * check other cases where it is not possible to retrieve a box
 	 */
-	if (gserialized_datum_get_box2df_p(newval, &box_geom) == LW_FAILURE) {
+	if (gserialized_datum_get_box2df_p(newval, &box_geom) == LW_FAILURE)
+	{
 		/*
 		 * Empty entries have to be supported in the opclass: test the passed
 		 * new value for emptiness; if it returns true, we need to set the
 		 * "contains empty" flag in the element (unless already set).
 		 */
-		if (is_gserialized_from_datum_empty(newval)) {
-			if (!DatumGetBool(column->bv_values[INCLUSION_CONTAINS_EMPTY])) {
+		if (is_gserialized_from_datum_empty(newval))
+		{
+			if (!DatumGetBool(column->bv_values[INCLUSION_CONTAINS_EMPTY]))
+			{
 				column->bv_values[INCLUSION_CONTAINS_EMPTY] = BoolGetDatum(true);
 				PG_RETURN_BOOL(true);
 			}
 
 			PG_RETURN_BOOL(false);
-		} else {
+		}
+		else
+		{
 			/*
 			 * in case the entry is not empty and it is not possible to
 			 * retrieve a box, raise an error
@@ -56,7 +62,8 @@ Datum geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 	}
 
 	/* if the recorded value is null, we just need to store the box2df */
-	if (column->bv_allnulls) {
+	if (column->bv_allnulls)
+	{
 		column->bv_values[INCLUSION_UNION] = datumCopy((Datum)&box_geom, false, sizeof(BOX2DF));
 		column->bv_values[INCLUSION_UNMERGEABLE] = BoolGetDatum(false);
 		column->bv_values[INCLUSION_CONTAINS_EMPTY] = BoolGetDatum(false);

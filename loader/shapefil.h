@@ -252,7 +252,8 @@ typedef unsigned long SAOffset;
 #endif
 #endif
 
-typedef struct {
+typedef struct
+{
 	SAFile (*FOpen)(const char *filename, const char *access);
 	SAOffset (*FRead)(void *p, SAOffset size, SAOffset nmemb, SAFile file);
 	SAOffset (*FWrite)(void *p, SAOffset size, SAOffset nmemb, SAFile file);
@@ -274,7 +275,8 @@ void SHPAPI_CALL SASetupUtf8Hooks(SAHooks *psHooks);
 /************************************************************************/
 /*                             SHP Support.                             */
 /************************************************************************/
-typedef struct {
+typedef struct
+{
 	SAHooks sHooks;
 
 	SAFile fpSHP;
@@ -334,7 +336,8 @@ typedef SHPInfo *SHPHandle;
 /*      SHPObject - represents on shape (without attributes) read       */
 /*      from the .shp file.                                             */
 /* -------------------------------------------------------------------- */
-typedef struct {
+typedef struct
+{
 	int nSHPType;
 
 	int nShapeId; /* -1 is unknown/unassigned */
@@ -411,7 +414,8 @@ const char SHPAPI_CALL1(*) SHPPartTypeName(int nPartType);
 /* upper limit of tree levels for automatic estimation */
 #define MAX_DEFAULT_TREE_DEPTH 12
 
-typedef struct shape_tree_node {
+typedef struct shape_tree_node
+{
 	/* region covered by this node */
 	double adfBoundsMin[4];
 	double adfBoundsMax[4];
@@ -427,7 +431,8 @@ typedef struct shape_tree_node {
 
 } SHPTreeNode;
 
-typedef struct {
+typedef struct
+{
 	SHPHandle hSHP;
 
 	int nMaxDepth;
@@ -457,7 +462,8 @@ int SHPAPI_CALL1(*) SHPSearchDiskTree(FILE *fp, double *padfBoundsMin, double *p
 /************************************************************************/
 /*                             DBF Support.                             */
 /************************************************************************/
-typedef struct {
+typedef struct
+{
 	SAHooks sHooks;
 
 	SAFile fp;

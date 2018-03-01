@@ -280,8 +280,10 @@ test_raster_surface()
 	band = cu_add_band(rast, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (y = 0; y < maxY; y++) {
-		for (x = 0; x < maxX; x++) {
+	for (y = 0; y < maxY; y++)
+	{
+		for (x = 0; x < maxX; x++)
+		{
 			rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
@@ -407,8 +409,10 @@ test_raster_perimeter()
 	band = cu_add_band(rast, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (y = 0; y < maxY; y++) {
-		for (x = 0; x < maxX; x++) {
+	for (y = 0; y < maxY; y++)
+	{
+		for (x = 0; x < maxX; x++)
+		{
 			rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
@@ -524,8 +528,10 @@ test_raster_perimeter()
 	band = cu_add_band(rast, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (y = 0; y < maxY; y++) {
-		for (x = 0; x < maxX; x++) {
+	for (y = 0; y < maxY; y++)
+	{
+		for (x = 0; x < maxX; x++)
+		{
 			rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
@@ -558,8 +564,10 @@ test_raster_pixel_as_polygon()
 	band = cu_add_band(rast, PT_32BUI, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (x = 0; x < maxX; x++) {
-		for (y = 0; y < maxY; y++) {
+	for (x = 0; x < maxX; x++)
+	{
+		for (y = 0; y < maxY; y++)
+		{
 			rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}

@@ -45,10 +45,13 @@ bytebuffer_create_with_size(size_t size)
 	bytebuffer_t *s;
 
 	s = lwalloc(sizeof(bytebuffer_t));
-	if (size < BYTEBUFFER_STATICSIZE) {
+	if (size < BYTEBUFFER_STATICSIZE)
+	{
 		s->capacity = BYTEBUFFER_STATICSIZE;
 		s->buf_start = s->buf_static;
-	} else {
+	}
+	else
+	{
 		s->buf_start = lwalloc(size);
 		s->capacity = size;
 	}
@@ -65,10 +68,13 @@ bytebuffer_create_with_size(size_t size)
 void
 bytebuffer_init_with_size(bytebuffer_t *s, size_t size)
 {
-	if (size < BYTEBUFFER_STATICSIZE) {
+	if (size < BYTEBUFFER_STATICSIZE)
+	{
 		s->capacity = BYTEBUFFER_STATICSIZE;
 		s->buf_start = s->buf_static;
-	} else {
+	}
+	else
+	{
 		s->buf_start = lwalloc(size);
 		s->capacity = size;
 	}
@@ -94,7 +100,8 @@ bytebuffer_destroy(bytebuffer_t *s)
 void
 bytebuffer_destroy_buffer(bytebuffer_t *s)
 {
-	if (s->buf_start != s->buf_static) {
+	if (s->buf_start != s->buf_static)
+	{
 		lwfree(s->buf_start);
 		s->buf_start = NULL;
 	}
@@ -138,13 +145,17 @@ bytebuffer_makeroom(bytebuffer_t *s, size_t size_to_add)
 	while (capacity < required_size)
 		capacity *= 2;
 
-	if (capacity > s->capacity) {
+	if (capacity > s->capacity)
+	{
 		size_t current_read_size = (s->readcursor - s->buf_start);
 		LWDEBUGF(4, "We need to realloc more memory. New capacity is %d", capacity);
-		if (s->buf_start == s->buf_static) {
+		if (s->buf_start == s->buf_static)
+		{
 			s->buf_start = lwalloc(capacity);
 			memcpy(s->buf_start, s->buf_static, s->capacity);
-		} else {
+		}
+		else
+		{
 			s->buf_start = lwrealloc(s->buf_start, capacity);
 		}
 		s->capacity = capacity;
@@ -251,15 +262,18 @@ bytebuffer_append_int(bytebuffer_t *buf, const int val, int swap)
 
 	bytebuffer_makeroom(buf, WKB_INT_SIZE);
 	/* Machine/request arch mismatch, so flip byte order */
-	if (swap) {
+	if (swap)
+	{
 		LWDEBUG(4, "Ok, let's do the swaping thing");
-		for (i = 0; i < WKB_INT_SIZE; i++) {
+		for (i = 0; i < WKB_INT_SIZE; i++)
+		{
 			*(buf->writecursor) = iptr[WKB_INT_SIZE - 1 - i];
 			buf->writecursor += 1;
 		}
 	}
 	/* If machine arch and requested arch match, don't flip byte order */
-	else {
+	else
+	{
 		LWDEBUG(4, "Ok, let's do the memcopying thing");
 		memcpy(buf->writecursor, iptr, WKB_INT_SIZE);
 		buf->writecursor += WKB_INT_SIZE;
@@ -286,15 +300,18 @@ bytebuffer_append_double(bytebuffer_t *buf, const double val, int swap)
 	bytebuffer_makeroom(buf, WKB_DOUBLE_SIZE);
 
 	/* Machine/request arch mismatch, so flip byte order */
-	if (swap) {
+	if (swap)
+	{
 		LWDEBUG(4, "Ok, let's do the swapping thing");
-		for (i = 0; i < WKB_DOUBLE_SIZE; i++) {
+		for (i = 0; i < WKB_DOUBLE_SIZE; i++)
+		{
 			*(buf->writecursor) = dptr[WKB_DOUBLE_SIZE - 1 - i];
 			buf->writecursor += 1;
 		}
 	}
 	/* If machine arch and requested arch match, don't flip byte order */
-	else {
+	else
+	{
 		LWDEBUG(4, "Ok, let's do the memcopying thing");
 		memcpy(buf->writecursor, dptr, WKB_DOUBLE_SIZE);
 		buf->writecursor += WKB_DOUBLE_SIZE;
@@ -346,12 +363,14 @@ bytebuffer_merge(bytebuffer_t **buff_array, int nbuffers)
 {
 	size_t total_size = 0, current_size, acc_size = 0;
 	int i;
-	for (i = 0; i < nbuffers; i++) {
+	for (i = 0; i < nbuffers; i++)
+	{
 		total_size += bytebuffer_getlength(buff_array[i]);
 	}
 
 	bytebuffer_t *res = bytebuffer_create_with_size(total_size);
-	for (i = 0; i < nbuffers; i++) {
+	for (i = 0; i < nbuffers; i++)
+	{
 		current_size = bytebuffer_getlength(buff_array[i]);
 		memcpy(res->buf_start + acc_size, buff_array[i]->buf_start, current_size);
 		acc_size += current_size;

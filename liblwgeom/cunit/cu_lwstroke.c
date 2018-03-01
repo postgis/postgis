@@ -290,7 +290,8 @@ test_lwcurve_linearize(void)
 	lwgeom_reverse_in_place(in);
 	out2 = lwcurve_linearize(in, M_PI / 4.0, LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE, LW_LINEARIZE_FLAG_SYMMETRIC);
 	lwgeom_reverse_in_place(out2);
-	if (!lwgeom_same(out, out2)) {
+	if (!lwgeom_same(out, out2))
+	{
 		fprintf(stderr, "linearization is not direction neutral:\n");
 		str = lwgeom_to_wkt(out, WKT_ISO, 18, NULL);
 		fprintf(stderr, "OUT1: %s\n", str);

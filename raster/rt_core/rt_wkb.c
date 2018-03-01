@@ -45,20 +45,23 @@ rt_band_from_wkb(uint16_t width, uint16_t height, const uint8_t **ptr, const uin
 	assert(NULL != end);
 
 	band = rtalloc(sizeof(struct rt_band_t));
-	if (!band) {
+	if (!band)
+	{
 		rterror("rt_band_from_wkb: Out of memory allocating rt_band during WKB parsing");
 		return NULL;
 	}
 	band->ownsdata = 0; /* assume we don't own data */
 
-	if (end - *ptr < 1) {
+	if (end - *ptr < 1)
+	{
 		rterror("rt_band_from_wkb: Premature end of WKB on band reading (%s:%d)", __FILE__, __LINE__);
 		rt_band_destroy(band);
 		return NULL;
 	}
 	type = read_uint8(ptr);
 
-	if ((type & BANDTYPE_PIXTYPE_MASK) >= PT_END) {
+	if ((type & BANDTYPE_PIXTYPE_MASK) >= PT_END)
+	{
 		rterror("rt_band_from_wkb: Invalid pixtype %d", type & BANDTYPE_PIXTYPE_MASK);
 		rt_band_destroy(band);
 		return NULL;
@@ -79,59 +82,73 @@ rt_band_from_wkb(uint16_t width, uint16_t height, const uint8_t **ptr, const uin
 
 	/* Check there's enough bytes to read nodata value */
 	pixbytes = rt_pixtype_size(band->pixtype);
-	if (((*ptr) + pixbytes) >= end) {
+	if (((*ptr) + pixbytes) >= end)
+	{
 		rterror("rt_band_from_wkb: Premature end of WKB on band novalue reading");
 		rt_band_destroy(band);
 		return NULL;
 	}
 
 	/* Read nodata value */
-	switch (band->pixtype) {
-	case PT_1BB: {
+	switch (band->pixtype)
+	{
+	case PT_1BB:
+	{
 		band->nodataval = ((int)read_uint8(ptr)) & 0x01;
 		break;
 	}
-	case PT_2BUI: {
+	case PT_2BUI:
+	{
 		band->nodataval = ((int)read_uint8(ptr)) & 0x03;
 		break;
 	}
-	case PT_4BUI: {
+	case PT_4BUI:
+	{
 		band->nodataval = ((int)read_uint8(ptr)) & 0x0F;
 		break;
 	}
-	case PT_8BSI: {
+	case PT_8BSI:
+	{
 		band->nodataval = read_int8(ptr);
 		break;
 	}
-	case PT_8BUI: {
+	case PT_8BUI:
+	{
 		band->nodataval = read_uint8(ptr);
 		break;
 	}
-	case PT_16BSI: {
+	case PT_16BSI:
+	{
 		band->nodataval = read_int16(ptr, littleEndian);
 		break;
 	}
-	case PT_16BUI: {
+	case PT_16BUI:
+	{
 		band->nodataval = read_uint16(ptr, littleEndian);
 		break;
 	}
-	case PT_32BSI: {
+	case PT_32BSI:
+	{
 		band->nodataval = read_int32(ptr, littleEndian);
 		break;
 	}
-	case PT_32BUI: {
+	case PT_32BUI:
+	{
 		band->nodataval = read_uint32(ptr, littleEndian);
 		break;
 	}
-	case PT_32BF: {
+	case PT_32BF:
+	{
 		band->nodataval = read_float32(ptr, littleEndian);
 		break;
 	}
-	case PT_64BF: {
+	case PT_64BF:
+	{
 		band->nodataval = read_float64(ptr, littleEndian);
 		break;
 	}
-	default: {
+	default:
+	{
 		rterror("rt_band_from_wkb: Unknown pixeltype %d", band->pixtype);
 		rt_band_destroy(band);
 		return NULL;
@@ -140,8 +157,10 @@ rt_band_from_wkb(uint16_t width, uint16_t height, const uint8_t **ptr, const uin
 
 	RASTER_DEBUGF(3, " Nodata value: %g, pixbytes: %d, ptr @ %p, end @ %p", band->nodataval, pixbytes, *ptr, end);
 
-	if (band->offline) {
-		if (((*ptr) + 1) >= end) {
+	if (band->offline)
+	{
+		if (((*ptr) + 1) >= end)
+		{
 			rterror(
 			    "rt_band_from_wkb: Premature end of WKB on offline "
 			    "band data bandNum reading (%s:%d)",
@@ -159,7 +178,8 @@ rt_band_from_wkb(uint16_t width, uint16_t height, const uint8_t **ptr, const uin
 			sz = 0;
 			while ((*ptr)[sz] && &((*ptr)[sz]) < end)
 				++sz;
-			if (&((*ptr)[sz]) >= end) {
+			if (&((*ptr)[sz]) >= end)
+			{
 				rterror("rt_band_from_wkb: Premature end of WKB on band offline path reading");
 				rt_band_destroy(band);
 				return NULL;
@@ -169,7 +189,8 @@ rt_band_from_wkb(uint16_t width, uint16_t height, const uint8_t **ptr, const uin
 			band->ownsdata = 0;
 
 			band->data.offline.path = rtalloc(sz + 1);
-			if (band->data.offline.path == NULL) {
+			if (band->data.offline.path == NULL)
+			{
 				rterror("rt_band_from_wkb: Out of memory allocating for offline path of band");
 				rt_band_destroy(band);
 				return NULL;
@@ -192,14 +213,16 @@ rt_band_from_wkb(uint16_t width, uint16_t height, const uint8_t **ptr, const uin
 
 	/* This is an on-disk band */
 	sz = width * height * pixbytes;
-	if (((*ptr) + sz) > end) {
+	if (((*ptr) + sz) > end)
+	{
 		rterror("rt_band_from_wkb: Premature end of WKB on band data reading (%s:%d)", __FILE__, __LINE__);
 		rt_band_destroy(band);
 		return NULL;
 	}
 
 	band->data.mem = rtalloc(sz);
-	if (!band->data.mem) {
+	if (!band->data.mem)
+	{
 		rterror("rt_band_from_wkb: Out of memory during band creation in WKB parser");
 		rt_band_destroy(band);
 		return NULL;
@@ -211,8 +234,10 @@ rt_band_from_wkb(uint16_t width, uint16_t height, const uint8_t **ptr, const uin
 
 	/* Should now flip values if > 8bit and
 	 * littleEndian != isMachineLittleEndian */
-	if (pixbytes > 1) {
-		if (isMachineLittleEndian() != littleEndian) {
+	if (pixbytes > 1)
+	{
+		if (isMachineLittleEndian() != littleEndian)
+		{
 			void (*flipper)(uint8_t *) = 0;
 			uint8_t *flipme = NULL;
 
@@ -222,7 +247,8 @@ rt_band_from_wkb(uint16_t width, uint16_t height, const uint8_t **ptr, const uin
 				flipper = flip_endian_32;
 			else if (pixbytes == 8)
 				flipper = flip_endian_64;
-			else {
+			else
+			{
 				rterror("rt_band_from_wkb: Unexpected pix bytes %d", pixbytes);
 				rt_band_destroy(band);
 				return NULL;
@@ -230,21 +256,25 @@ rt_band_from_wkb(uint16_t width, uint16_t height, const uint8_t **ptr, const uin
 
 			flipme = band->data.mem;
 			sz = width * height;
-			for (v = 0; v < sz; ++v) {
+			for (v = 0; v < sz; ++v)
+			{
 				flipper(flipme);
 				flipme += pixbytes;
 			}
 		}
 	}
 	/* And should check for invalid values for < 8bit types */
-	else if (band->pixtype == PT_1BB || band->pixtype == PT_2BUI || band->pixtype == PT_4BUI) {
+	else if (band->pixtype == PT_1BB || band->pixtype == PT_2BUI || band->pixtype == PT_4BUI)
+	{
 		uint8_t maxVal = band->pixtype == PT_1BB ? 1 : (band->pixtype == PT_2BUI ? 3 : 15);
 		uint8_t val;
 
 		sz = width * height;
-		for (v = 0; v < sz; ++v) {
+		for (v = 0; v < sz; ++v)
+		{
 			val = ((uint8_t *)band->data.mem)[v];
-			if (val > maxVal) {
+			if (val > maxVal)
+			{
 				rterror("rt_band_from_wkb: Invalid value %d for pixel of type %s",
 					val,
 					rt_pixtype_name(band->pixtype));
@@ -278,7 +308,8 @@ rt_raster_from_wkb(const uint8_t *wkb, uint32_t wkbsize)
 	assert(NULL != ptr);
 
 	/* Check that wkbsize is >= sizeof(rt_raster_serialized) */
-	if (wkbsize < RT_WKB_HDR_SZ) {
+	if (wkbsize < RT_WKB_HDR_SZ)
+	{
 		rterror("rt_raster_from_wkb: wkb size (%d)  < min size (%d)", wkbsize, RT_WKB_HDR_SZ);
 		return NULL;
 	}
@@ -294,14 +325,16 @@ rt_raster_from_wkb(const uint8_t *wkb, uint32_t wkbsize)
 
 	/* Read version of protocol */
 	version = read_uint16(&ptr, endian);
-	if (version != 0) {
+	if (version != 0)
+	{
 		rterror("rt_raster_from_wkb: WKB version %d unsupported", version);
 		return NULL;
 	}
 
 	/* Read other components of raster header */
 	rast = (rt_raster)rtalloc(sizeof(struct rt_raster_t));
-	if (!rast) {
+	if (!rast)
+	{
 		rterror("rt_raster_from_wkb: Out of memory allocating raster for wkb input");
 		return NULL;
 	}
@@ -333,11 +366,12 @@ rt_raster_from_wkb(const uint8_t *wkb, uint32_t wkbsize)
 	CHECK_BINPTR_POSITION(ptr, wkbend, wkbsize, 61);
 
 	/* Read all bands of raster */
-	if (!rast->numBands) {
+	if (!rast->numBands)
+	{
 		/* Here ptr should have been left to right after last used byte */
-		if (ptr < wkbend) {
-			rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr);
-		} else if (ptr > wkbend) {
+		if (ptr < wkbend) { rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr); }
+		else if (ptr > wkbend)
+		{
 			/* Easier to get a segfault before I guess */
 			rtwarn("We parsed %d bytes more then available!", ptr - wkbend);
 		}
@@ -348,7 +382,8 @@ rt_raster_from_wkb(const uint8_t *wkb, uint32_t wkbsize)
 
 	/* Now read the bands */
 	rast->bands = (rt_band *)rtalloc(sizeof(rt_band) * rast->numBands);
-	if (!rast->bands) {
+	if (!rast->bands)
+	{
 		rterror("rt_raster_from_wkb: Out of memory allocating bands for WKB raster decoding");
 		rt_raster_destroy(rast);
 		return NULL;
@@ -358,11 +393,13 @@ rt_raster_from_wkb(const uint8_t *wkb, uint32_t wkbsize)
 	/* we should have checked this before */
 	assert(ptr <= wkbend);
 
-	for (i = 0; i < rast->numBands; ++i) {
+	for (i = 0; i < rast->numBands; ++i)
+	{
 		RASTER_DEBUGF(3, "Parsing band %d from wkb position %d", i, d_binptr_to_pos(ptr, wkbend, wkbsize));
 
 		rt_band band = rt_band_from_wkb(rast->width, rast->height, &ptr, wkbend, endian);
-		if (!band) {
+		if (!band)
+		{
 			rterror("rt_raster_from_wkb: Error reading WKB form of band %d", i);
 			for (j = 0; j < i; j++)
 				rt_band_destroy(rast->bands[j]);
@@ -375,9 +412,9 @@ rt_raster_from_wkb(const uint8_t *wkb, uint32_t wkbsize)
 	}
 
 	/* Here ptr should have been left to right after last used byte */
-	if (ptr < wkbend) {
-		rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr);
-	} else if (ptr > wkbend) {
+	if (ptr < wkbend) { rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr); }
+	else if (ptr > wkbend)
+	{
 		/* Easier to get a segfault before I guess */
 		rtwarn("We parsed %d bytes more then available!", ptr - wkbend);
 	}
@@ -398,20 +435,23 @@ rt_raster_from_hexwkb(const char *hexwkb, uint32_t hexwkbsize)
 	RASTER_DEBUGF(3, "input wkb: %s", hexwkb);
 	RASTER_DEBUGF(3, "input wkbsize: %d", hexwkbsize);
 
-	if (hexwkbsize % 2) {
+	if (hexwkbsize % 2)
+	{
 		rterror("rt_raster_from_hexwkb: Raster HEXWKB input must have an even number of characters");
 		return NULL;
 	}
 	wkbsize = hexwkbsize / 2;
 
 	wkb = rtalloc(wkbsize);
-	if (!wkb) {
+	if (!wkb)
+	{
 		rterror("rt_raster_from_hexwkb: Out of memory allocating memory for decoding HEXWKB");
 		return NULL;
 	}
 
 	/* parse full hex */
-	for (i = 0; i < wkbsize; ++i) {
+	for (i = 0; i < wkbsize; ++i)
+	{
 		wkb[i] = parse_hex((char *)&(hexwkb[i * 2]));
 	}
 
@@ -431,14 +471,16 @@ rt_raster_wkb_size(rt_raster raster, int outasin)
 
 	RASTER_DEBUGF(3, "rt_raster_wkb_size: computing size for %d bands", raster->numBands);
 
-	for (i = 0; i < raster->numBands; ++i) {
+	for (i = 0; i < raster->numBands; ++i)
+	{
 		rt_band band = raster->bands[i];
 		rt_pixtype pixtype = band->pixtype;
 		int pixbytes = rt_pixtype_size(pixtype);
 
 		RASTER_DEBUGF(3, "rt_raster_wkb_size: adding size of band %d", i);
 
-		if (pixbytes < 1) {
+		if (pixbytes < 1)
+		{
 			rterror("rt_raster_wkb_size: Corrupted band: unknown pixtype");
 			return 0;
 		}
@@ -449,13 +491,16 @@ rt_raster_wkb_size(rt_raster raster, int outasin)
 		/* Add space for nodata value */
 		size += pixbytes;
 
-		if (!outasin && band->offline) {
+		if (!outasin && band->offline)
+		{
 			/* Add space for band number */
 			size += 1;
 
 			/* Add space for null-terminated path */
 			size += strlen(band->data.offline.path) + 1;
-		} else {
+		}
+		else
+		{
 			/* Add space for actual data */
 			size += pixbytes * raster->width * raster->height;
 		}
@@ -495,7 +540,8 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize)
 	RASTER_DEBUGF(3, "rt_raster_to_wkb: found size: %d", *wkbsize);
 
 	wkb = (uint8_t *)rtalloc(*wkbsize);
-	if (!wkb) {
+	if (!wkb)
+	{
 		rterror("rt_raster_to_wkb: Out of memory allocating WKB for raster");
 		return NULL;
 	}
@@ -523,7 +569,8 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize)
 	    3, "Writing bands header to wkb position %d (expected 61)", d_binptr_to_pos(ptr, wkbend, *wkbsize));
 
 	/* Serialize bands now */
-	for (i = 0; i < raster->numBands; ++i) {
+	for (i = 0; i < raster->numBands; ++i)
+	{
 		rt_band band = raster->bands[i];
 		rt_pixtype pixtype = band->pixtype;
 		int pixbytes = rt_pixtype_size(pixtype);
@@ -531,7 +578,8 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize)
 		RASTER_DEBUGF(3, "Writing WKB for band %d", i);
 		RASTER_DEBUGF(3, "Writing band pixel type to wkb position %d", d_binptr_to_pos(ptr, wkbend, *wkbsize));
 
-		if (pixbytes < 1) {
+		if (pixbytes < 1)
+		{
 			rterror("rt_raster_to_wkb: Corrupted band: unknown pixtype");
 			rtdealloc(wkb);
 			return NULL;
@@ -558,43 +606,50 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize)
 		RASTER_DEBUGF(3, "Writing band nodata to wkb position %d", d_binptr_to_pos(ptr, wkbend, *wkbsize));
 
 		/* Add nodata value */
-		switch (pixtype) {
+		switch (pixtype)
+		{
 		case PT_1BB:
 		case PT_2BUI:
 		case PT_4BUI:
-		case PT_8BUI: {
+		case PT_8BUI:
+		{
 			uint8_t v = band->nodataval;
 			*ptr = v;
 			ptr += 1;
 			break;
 		}
-		case PT_8BSI: {
+		case PT_8BSI:
+		{
 			int8_t v = band->nodataval;
 			*ptr = v;
 			ptr += 1;
 			break;
 		}
 		case PT_16BSI:
-		case PT_16BUI: {
+		case PT_16BUI:
+		{
 			uint16_t v = band->nodataval;
 			memcpy(ptr, &v, 2);
 			ptr += 2;
 			break;
 		}
 		case PT_32BSI:
-		case PT_32BUI: {
+		case PT_32BUI:
+		{
 			uint32_t v = band->nodataval;
 			memcpy(ptr, &v, 4);
 			ptr += 4;
 			break;
 		}
-		case PT_32BF: {
+		case PT_32BF:
+		{
 			float v = band->nodataval;
 			memcpy(ptr, &v, 4);
 			ptr += 4;
 			break;
 		}
-		case PT_64BF: {
+		case PT_64BF:
+		{
 			memcpy(ptr, &band->nodataval, 8);
 			ptr += 8;
 			break;
@@ -612,7 +667,8 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize)
 		assert(!((uint64_t) ptr % pixbytes));
 #endif
 
-		if (!outasin && band->offline) {
+		if (!outasin && band->offline)
+		{
 			/* Write band number */
 			*ptr = band->data.offline.bandNum;
 			ptr += 1;
@@ -620,7 +676,9 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize)
 			/* Write path */
 			strcpy((char *)ptr, band->data.offline.path);
 			ptr += strlen(band->data.offline.path) + 1;
-		} else {
+		}
+		else
+		{
 			/* Write data */
 			uint32_t datasize = raster->width * raster->height * pixbytes;
 			RASTER_DEBUGF(4, "rt_raster_to_wkb: Copying %d bytes", datasize);
@@ -664,7 +722,8 @@ rt_raster_to_hexwkb(rt_raster raster, int outasin, uint32_t *hexwkbsize)
 
 	*hexwkbsize = wkbsize * 2; /* hex is 2 times bytes */
 	hexwkb = (char *)rtalloc((*hexwkbsize) + 1);
-	if (!hexwkb) {
+	if (!hexwkb)
+	{
 		rterror("rt_raster_to_hexwkb: Out of memory hexifying raster WKB");
 		rtdealloc(wkb);
 		return NULL;
@@ -673,7 +732,8 @@ rt_raster_to_hexwkb(rt_raster raster, int outasin, uint32_t *hexwkbsize)
 	char *optr = hexwkb;
 	uint8_t *iptr = wkb;
 	const char hexchar[] = "0123456789ABCDEF";
-	while (wkbsize--) {
+	while (wkbsize--)
+	{
 		uint8_t v = *iptr++;
 		*optr++ = hexchar[v >> 4];
 		*optr++ = hexchar[v & 0x0F];

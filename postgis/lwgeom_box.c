@@ -63,22 +63,26 @@ Datum BOX2D_in(PG_FUNCTION_ARGS)
 
 	gbox_init(&box);
 
-	for (i = 0; str[i]; i++) {
+	for (i = 0; str[i]; i++)
+	{
 		str[i] = tolower(str[i]);
 	}
 
 	nitems = sscanf(str, "box(%lf %lf,%lf %lf)", &box.xmin, &box.ymin, &box.xmax, &box.ymax);
-	if (nitems != 4) {
+	if (nitems != 4)
+	{
 		elog(ERROR, "box2d parser - couldnt parse.  It should look like: BOX(xmin ymin,xmax ymax)");
 		PG_RETURN_NULL();
 	}
 
-	if (box.xmin > box.xmax) {
+	if (box.xmin > box.xmax)
+	{
 		tmp = box.xmin;
 		box.xmin = box.xmax;
 		box.xmax = tmp;
 	}
-	if (box.ymin > box.ymax) {
+	if (box.ymin > box.ymax)
+	{
 		tmp = box.ymin;
 		box.ymin = box.ymax;
 		box.ymax = tmp;
@@ -319,7 +323,8 @@ Datum BOX2D_intersects(PG_FUNCTION_ARGS)
 	n->xmin = Max(a->xmin, b->xmin);
 	n->ymin = Max(a->ymin, b->ymin);
 
-	if (n->xmax < n->xmin || n->ymax < n->ymin) {
+	if (n->xmax < n->xmin || n->ymax < n->ymin)
+	{
 		pfree(n);
 		/* Indicate "no intersection" by returning NULL pointer */
 		n = NULL;
@@ -350,10 +355,13 @@ Datum BOX2D_expand(PG_FUNCTION_ARGS)
 	GBOX *result = (GBOX *)palloc(sizeof(GBOX));
 	memcpy(result, box, sizeof(GBOX));
 
-	if (PG_NARGS() == 2) {
+	if (PG_NARGS() == 2)
+	{
 		double d = PG_GETARG_FLOAT8(1);
 		gbox_expand(result, d);
-	} else {
+	}
+	else
+	{
 		double dx = PG_GETARG_FLOAT8(1);
 		double dy = PG_GETARG_FLOAT8(2);
 
@@ -384,7 +392,8 @@ Datum BOX2D_combine(PG_FUNCTION_ARGS)
 
 	result = (GBOX *)palloc(sizeof(GBOX));
 
-	if (box2d_ptr == NULL) {
+	if (box2d_ptr == NULL)
+	{
 		lwgeom = PG_GETARG_GSERIALIZED_P(1);
 		/* empty geom would make getbox2d_p return NULL */
 		if (!gserialized_get_gbox_p(lwgeom, &box)) PG_RETURN_NULL();
@@ -393,7 +402,8 @@ Datum BOX2D_combine(PG_FUNCTION_ARGS)
 	}
 
 	/* combine_bbox(BOX3D, null) => BOX3D */
-	if (geom_ptr == NULL) {
+	if (geom_ptr == NULL)
+	{
 		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(GBOX));
 		PG_RETURN_POINTER(result);
 	}
@@ -401,7 +411,8 @@ Datum BOX2D_combine(PG_FUNCTION_ARGS)
 	/*combine_bbox(BOX3D, geometry) => union(BOX3D, geometry->bvol) */
 
 	lwgeom = PG_GETARG_GSERIALIZED_P(1);
-	if (!gserialized_get_gbox_p(lwgeom, &box)) {
+	if (!gserialized_get_gbox_p(lwgeom, &box))
+	{
 		/* must be the empty geom */
 		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(GBOX));
 		PG_RETURN_POINTER(result);
@@ -437,12 +448,15 @@ Datum BOX2D_to_LWGEOM(PG_FUNCTION_ARGS)
 	 *     - Otherwise return a POLYGON
 	 */
 
-	if ((box->xmin == box->xmax) && (box->ymin == box->ymax)) {
+	if ((box->xmin == box->xmax) && (box->ymin == box->ymax))
+	{
 		/* Construct and serialize point */
 		LWPOINT *point = lwpoint_make2d(SRID_UNKNOWN, box->xmin, box->ymin);
 		result = geometry_serialize(lwpoint_as_lwgeom(point));
 		lwpoint_free(point);
-	} else if ((box->xmin == box->xmax) || (box->ymin == box->ymax)) {
+	}
+	else if ((box->xmin == box->xmax) || (box->ymin == box->ymax))
+	{
 		LWLINE *line;
 
 		/* Assign coordinates to point array */
@@ -457,7 +471,9 @@ Datum BOX2D_to_LWGEOM(PG_FUNCTION_ARGS)
 		line = lwline_construct(SRID_UNKNOWN, NULL, pa);
 		result = geometry_serialize(lwline_as_lwgeom(line));
 		lwline_free(line);
-	} else {
+	}
+	else
+	{
 		POINT4D points[4];
 		LWPOLY *poly;
 
@@ -488,7 +504,8 @@ Datum BOX2D_construct(PG_FUNCTION_ARGS)
 	minpoint = (LWPOINT *)lwgeom_from_gserialized(pgmin);
 	maxpoint = (LWPOINT *)lwgeom_from_gserialized(pgmax);
 
-	if ((minpoint->type != POINTTYPE) || (maxpoint->type != POINTTYPE)) {
+	if ((minpoint->type != POINTTYPE) || (maxpoint->type != POINTTYPE))
+	{
 		elog(ERROR, "GBOX_construct: arguments must be points");
 		PG_RETURN_NULL();
 	}
@@ -500,7 +517,8 @@ Datum BOX2D_construct(PG_FUNCTION_ARGS)
 	/* Process X min/max */
 	min = lwpoint_get_x(minpoint);
 	max = lwpoint_get_x(maxpoint);
-	if (min > max) {
+	if (min > max)
+	{
 		tmp = min;
 		min = max;
 		max = tmp;
@@ -511,7 +529,8 @@ Datum BOX2D_construct(PG_FUNCTION_ARGS)
 	/* Process Y min/max */
 	min = lwpoint_get_y(minpoint);
 	max = lwpoint_get_y(maxpoint);
-	if (min > max) {
+	if (min > max)
+	{
 		tmp = min;
 		min = max;
 		max = tmp;

@@ -61,7 +61,8 @@ double
 lwpoint_get_x(const LWPOINT *point)
 {
 	POINT4D pt;
-	if (lwpoint_is_empty(point)) {
+	if (lwpoint_is_empty(point))
+	{
 		lwerror("lwpoint_get_x called with empty geometry");
 		return 0;
 	}
@@ -73,7 +74,8 @@ double
 lwpoint_get_y(const LWPOINT *point)
 {
 	POINT4D pt;
-	if (lwpoint_is_empty(point)) {
+	if (lwpoint_is_empty(point))
+	{
 		lwerror("lwpoint_get_y called with empty geometry");
 		return 0;
 	}
@@ -85,11 +87,13 @@ double
 lwpoint_get_z(const LWPOINT *point)
 {
 	POINT4D pt;
-	if (lwpoint_is_empty(point)) {
+	if (lwpoint_is_empty(point))
+	{
 		lwerror("lwpoint_get_z called with empty geometry");
 		return 0;
 	}
-	if (!FLAGS_GET_Z(point->flags)) {
+	if (!FLAGS_GET_Z(point->flags))
+	{
 		lwerror("lwpoint_get_z called without z dimension");
 		return 0;
 	}
@@ -101,11 +105,13 @@ double
 lwpoint_get_m(const LWPOINT *point)
 {
 	POINT4D pt;
-	if (lwpoint_is_empty(point)) {
+	if (lwpoint_is_empty(point))
+	{
 		lwerror("lwpoint_get_m called with empty geometry");
 		return 0;
 	}
-	if (!FLAGS_GET_M(point->flags)) {
+	if (!FLAGS_GET_M(point->flags))
+	{
 		lwerror("lwpoint_get_m called without m dimension");
 		return 0;
 	}
@@ -261,9 +267,9 @@ lwpoint_force_dims(const LWPOINT *point, int hasz, int hasm)
 	LWPOINT *pointout;
 
 	/* Return 2D empty */
-	if (lwpoint_is_empty(point)) {
-		pointout = lwpoint_construct_empty(point->srid, hasz, hasm);
-	} else {
+	if (lwpoint_is_empty(point)) { pointout = lwpoint_construct_empty(point->srid, hasz, hasm); }
+	else
+	{
 		/* Always we duplicate the ptarray and return */
 		pdims = ptarray_force_dims(point->point, hasz, hasm);
 		pointout = lwpoint_construct(point->srid, NULL, pdims);

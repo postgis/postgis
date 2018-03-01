@@ -45,7 +45,8 @@
 
 Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS);
 
-struct dumpnode {
+struct dumpnode
+{
 	LWGEOM *geom;
 	uint32_t idx; /* which member geom we're working on */
 };
@@ -54,7 +55,8 @@ struct dumpnode {
  * to use the same here
  */
 #define MAXDEPTH 32
-struct dumpstate {
+struct dumpstate
+{
 	LWGEOM *root;
 	int stacklen; /* collections/geoms on stack */
 	int pathlen;  /* polygon rings and such need extra path info */
@@ -87,7 +89,8 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS)
 	bool isnull[2] = {0, 0}; /* needed to say neither value is null */
 	Datum result;            /* the actual composite return value */
 
-	if (SRF_IS_FIRSTCALL()) {
+	if (SRF_IS_FIRSTCALL())
+	{
 		funcctx = SRF_FIRSTCALL_INIT();
 
 		newcontext = funcctx->multi_call_memory_ctx;
@@ -98,7 +101,8 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS)
 		lwgeom = lwgeom_from_gserialized(pglwgeom);
 
 		/* return early if nothing to do */
-		if (!lwgeom || lwgeom_is_empty(lwgeom)) {
+		if (!lwgeom || lwgeom_is_empty(lwgeom))
+		{
 			MemoryContextSwitchTo(oldcontext);
 			funcctx = SRF_PERCALL_SETUP();
 			SRF_RETURN_DONE(funcctx);
@@ -125,7 +129,8 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS)
 		/*
 		 * get tuple description for return type
 		 */
-		if (get_call_result_type(fcinfo, 0, &funcctx->tuple_desc) != TYPEFUNC_COMPOSITE) {
+		if (get_call_result_type(fcinfo, 0, &funcctx->tuple_desc) != TYPEFUNC_COMPOSITE)
+		{
 			ereport(ERROR,
 				(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
 				 errmsg("set-valued function called in context that cannot accept a set")));
@@ -146,12 +151,14 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS)
 	/* get state */
 	state = funcctx->user_fctx;
 
-	while (1) {
+	while (1)
+	{
 		node = &state->stack[state->stacklen - 1];
 		lwgeom = node->geom;
 
 		/* need to return a point from this geometry */
-		if (!lwgeom_is_collection(lwgeom)) {
+		if (!lwgeom_is_collection(lwgeom))
+		{
 			/* either return a point, or pop the stack */
 			/* TODO use a union?  would save a tiny amount of stack space.
 			 * probably not worth the bother
@@ -168,11 +175,13 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS)
 			 * next point to return, or leave at NULL if there
 			 * are no more points in the geometry
 			 */
-			switch (lwgeom->type) {
+			switch (lwgeom->type)
+			{
 			case TRIANGLETYPE:
 				tri = lwgeom_as_lwtriangle(lwgeom);
 				if (state->pt == 0) { state->path[state->pathlen++] = Int32GetDatum(state->ring + 1); }
-				if (state->pt <= 3) {
+				if (state->pt <= 3)
+				{
 					getPoint4d_p(tri->points, state->pt, &pt);
 					lwpoint = lwpoint_make(tri->srid,
 							       FLAGS_GET_Z(tri->points->flags),
@@ -183,18 +192,21 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS)
 				break;
 			case POLYGONTYPE:
 				poly = lwgeom_as_lwpoly(lwgeom);
-				if (state->pt == poly->rings[state->ring]->npoints) {
+				if (state->pt == poly->rings[state->ring]->npoints)
+				{
 					state->pt = 0;
 					state->ring++;
 					state->pathlen--;
 				}
-				if (state->pt == 0 && state->ring < poly->nrings) {
+				if (state->pt == 0 && state->ring < poly->nrings)
+				{
 					/* handle new ring */
 					state->path[state->pathlen] = Int32GetDatum(state->ring + 1);
 					state->pathlen++;
 				}
-				if (state->ring == poly->nrings) {
-				} else {
+				if (state->ring == poly->nrings) {}
+				else
+				{
 					/* TODO should be able to directly get the point
 					 * into the point array of a fixed lwpoint
 					 */
@@ -217,15 +229,13 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS)
 				break;
 			case LINETYPE:
 				line = lwgeom_as_lwline(lwgeom);
-				if (line->points && state->pt <= line->points->npoints) {
-					lwpoint = lwline_get_lwpoint((LWLINE *)lwgeom, state->pt);
-				}
+				if (line->points && state->pt <= line->points->npoints)
+				{ lwpoint = lwline_get_lwpoint((LWLINE *)lwgeom, state->pt); }
 				break;
 			case CIRCSTRINGTYPE:
 				circ = lwgeom_as_lwcircstring(lwgeom);
-				if (circ->points && state->pt <= circ->points->npoints) {
-					lwpoint = lwcircstring_get_lwpoint((LWCIRCSTRING *)lwgeom, state->pt);
-				}
+				if (circ->points && state->pt <= circ->points->npoints)
+				{ lwpoint = lwcircstring_get_lwpoint((LWCIRCSTRING *)lwgeom, state->pt); }
 				break;
 			default:
 				ereport(ERROR,
@@ -242,12 +252,15 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS)
 			 * geometry itself
 			 */
 
-			if (!lwpoint) {
+			if (!lwpoint)
+			{
 				/* no point, so pop the geom and look for more */
 				if (--state->stacklen == 0) SRF_RETURN_DONE(funcctx);
 				state->pathlen--;
 				continue;
-			} else {
+			}
+			else
+			{
 				/* write address of current geom/pt */
 				state->pt++;
 
@@ -270,7 +283,8 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS)
 		lwcoll = (LWCOLLECTION *)node->geom;
 
 		/* if a collection and we have more geoms */
-		if (node->idx < lwcoll->ngeoms) {
+		if (node->idx < lwcoll->ngeoms)
+		{
 			/* push the next geom on the path and the stack */
 			lwgeom = lwcoll->geoms[node->idx++];
 			state->path[state->pathlen++] = Int32GetDatum(node->idx);

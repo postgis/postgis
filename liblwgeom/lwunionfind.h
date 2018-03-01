@@ -27,7 +27,8 @@
 
 #include "liblwgeom.h"
 
-typedef struct {
+typedef struct
+{
 	uint32_t *clusters;
 	uint32_t *cluster_sizes;
 	uint32_t num_clusters;

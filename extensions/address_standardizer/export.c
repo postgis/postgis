@@ -101,23 +101,33 @@ init_output_fields(STAND_PARAM *__stand_param__, int which_fields)
 	int i;
 	char **__standard_fields__ = __stand_param__->standard_fields;
 	/*-- Decide which set of fields to initialize --*/
-	if (which_fields == BOTH) {
-		for (i = 0; i < MAXOUTSYM; i++) {
+	if (which_fields == BOTH)
+	{
+		for (i = 0; i < MAXOUTSYM; i++)
+		{
 			__standard_fields__[i][0] = SENTINEL;
 		}
-	} else {
+	}
+	else
+	{
 		/*-- Clean only one set --*/
-		if (which_fields == RIGHT) {
+		if (which_fields == RIGHT)
+		{
 			/*-- Erase the macro fields only --*/
-			for (i = CITY; i < NEEDHEAD; i++) {
+			for (i = CITY; i < NEEDHEAD; i++)
+			{
 				__standard_fields__[i][0] = SENTINEL;
 			}
-		} else {
+		}
+		else
+		{
 			/*-- Erase the micro fields only --*/
-			for (i = BLDNG; i < CITY; i++) {
+			for (i = BLDNG; i < CITY; i++)
+			{
 				__standard_fields__[i][0] = SENTINEL;
 			}
-			for (i = NEEDHEAD; i < MAXOUTSYM; i++) {
+			for (i = NEEDHEAD; i < MAXOUTSYM; i++)
+			{
 				__standard_fields__[i][0] = SENTINEL;
 			}
 		}
@@ -160,7 +170,8 @@ stuff_fields(STAND_PARAM *__stand_param__)
 	int fld;
 	/*-- Translate the symbols and definitions of the standardization into
 		the __standard_fields__ for output --*/
-	for (fld = 0; fld < NEEDHEAD; fld++) {
+	for (fld = 0; fld < NEEDHEAD; fld++)
+	{
 		/*-- Fields that correspond one to one with the symbols --*/
 		_scan_target_(__stand_param__, fld, fld);
 	}
@@ -183,27 +194,36 @@ void
 send_fields_to_stream(char **__standard_fields__, FILE *__dest_file__, int opt, int is_landmark)
 {
 	int output_order;
-	if (opt < NO_FORMAT) {
-		if (__dest_file__ != NULL) {
+	if (opt < NO_FORMAT)
+	{
+		if (__dest_file__ != NULL)
+		{
 			fprintf(__dest_file__,
 				"%s\n",
 				(is_landmark ? __landmark_record_start_tag__[opt] : __record_start_tag__[opt]));
-		} else {
+		}
+		else
+		{
 			printf("%s\n", (is_landmark ? __landmark_record_start_tag__[opt] : __record_start_tag__[opt]));
 		}
 	}
 	/*-- We want to rearrange so that unit and box come first --*/
-	for (output_order = 0; output_order < (NEEDHEAD + ORDER_DISPLACEMENT); output_order++) {
+	for (output_order = 0; output_order < (NEEDHEAD + ORDER_DISPLACEMENT); output_order++)
+	{
 		char __line_buf__[STREAM_BUF_SIZE];
 		int loc = ((output_order < ORDER_DISPLACEMENT) ? (NEEDHEAD + output_order)
 							       : (output_order - ORDER_DISPLACEMENT));
 		char *__field_string__ = __standard_fields__[loc];
 		BLANK_STRING(__line_buf__);
-		if (*__field_string__ != SENTINEL) {
-			if (opt < NO_FORMAT) {
+		if (*__field_string__ != SENTINEL)
+		{
+			if (opt < NO_FORMAT)
+			{
 				char *__source_start_tag__;
-				if (is_landmark) {
-					switch (loc) {
+				if (is_landmark)
+				{
+					switch (loc)
+					{
 					case FEATNAME:
 						__source_start_tag__ = (char *)__land_field_start_tag__[0][opt];
 						break;
@@ -216,16 +236,21 @@ send_fields_to_stream(char **__standard_fields__, FILE *__dest_file__, int opt, 
 					default:
 						__source_start_tag__ = (char *)__field_start_tag__[loc][opt];
 					}
-				} else {
+				}
+				else
+				{
 					__source_start_tag__ = (char *)__field_start_tag__[loc][opt];
 				}
 				append_string_to_max(__line_buf__, __source_start_tag__, STREAM_BUF_SIZE);
 			}
 			append_string_to_max(__line_buf__, __field_string__, STREAM_BUF_SIZE);
-			if (opt < NO_FORMAT) {
+			if (opt < NO_FORMAT)
+			{
 				char *__source_end_tag__;
-				if (is_landmark) {
-					switch (loc) {
+				if (is_landmark)
+				{
+					switch (loc)
+					{
 					case FEATNAME:
 						__source_end_tag__ = (char *)__land_field_tag_end__[0][opt];
 						break;
@@ -238,30 +263,36 @@ send_fields_to_stream(char **__standard_fields__, FILE *__dest_file__, int opt, 
 					default:
 						__source_end_tag__ = (char *)__field_tag_end__[loc][opt];
 					}
-				} else {
+				}
+				else
+				{
 					__source_end_tag__ = (char *)__field_tag_end__[loc][opt];
 				}
 				append_string_to_max(__line_buf__, __source_end_tag__, STREAM_BUF_SIZE);
 			}
-			if (__dest_file__ != NULL) {
-				fprintf(__dest_file__, "%s", __line_buf__);
-			} else {
+			if (__dest_file__ != NULL) { fprintf(__dest_file__, "%s", __line_buf__); }
+			else
+			{
 				printf("%s", __line_buf__);
 			}
 		}
 	}
-	if (opt < NO_FORMAT) {
-		if (__dest_file__ != NULL) {
+	if (opt < NO_FORMAT)
+	{
+		if (__dest_file__ != NULL)
+		{
 			fprintf(__dest_file__,
 				"%s\n",
 				(is_landmark ? __landmark_record_end_tag__[opt] : __record_end_tag__[opt]));
-		} else {
+		}
+		else
+		{
 			printf("%s\n", (is_landmark ? __landmark_record_end_tag__[opt] : __record_end_tag__[opt]));
 		}
 	}
-	if (__dest_file__ != NULL) {
-		fflush(__dest_file__);
-	} else {
+	if (__dest_file__ != NULL) { fflush(__dest_file__); }
+	else
+	{
 		fflush(stdout);
 	}
 }
@@ -279,7 +310,8 @@ _get_standard_(STAND_PARAM *__stand_param__, int lex_pos, int output_sym)
 {
 	char *__selected_standardization__;
 	DEF *__best_DEF__ = __stand_param__->best_defs[lex_pos];
-	if ((output_sym == STREET) && (find_def_type(__best_DEF__, __ord_list__)) && (__best_DEF__->Type == WORD)) {
+	if ((output_sym == STREET) && (find_def_type(__best_DEF__, __ord_list__)) && (__best_DEF__->Type == WORD))
+	{
 		/*-- <remarks> If the best definition is a streetname typed as a word, but also
 			including an ordinal type, then substitute the ordinal
 			standardization - however, the lexicon should take care of most
@@ -288,11 +320,12 @@ _get_standard_(STAND_PARAM *__stand_param__, int lex_pos, int output_sym)
 		DEF *__scan_DEF__;
 
 		for (__scan_DEF__ = __stand_param__->lex_vector[lex_pos].DefList; __scan_DEF__ != NULL;
-		     __scan_DEF__ = __scan_DEF__->Next) {
-			if (__scan_DEF__->Type == ORD) {
-				if ((__selected_standardization__ = __scan_DEF__->Standard) != NULL) {
-					return (__selected_standardization__);
-				}
+		     __scan_DEF__ = __scan_DEF__->Next)
+		{
+			if (__scan_DEF__->Type == ORD)
+			{
+				if ((__selected_standardization__ = __scan_DEF__->Standard) != NULL)
+				{ return (__selected_standardization__); }
 				break;
 			}
 		}
@@ -302,7 +335,8 @@ _get_standard_(STAND_PARAM *__stand_param__, int lex_pos, int output_sym)
 		use the form that emerged from tokenization --*/
 
 	__selected_standardization__ = _get_definition_text_(__stand_param__, lex_pos);
-	if ((output_sym == HOUSE) && (*__selected_standardization__ == '0')) {
+	if ((output_sym == HOUSE) && (*__selected_standardization__ == '0'))
+	{
 		/*-- Remove leading zeroes to simplify match comparisons
 			on the house number that use strings rather than integers -
 			we won't do this on zip codes. There may arise some need to
@@ -337,7 +371,8 @@ _scan_target_(STAND_PARAM *__stand_param__, SYMB sym, int dest)
       the position of a matching symbol and send it to be copied to
       the output string fields. The order of the words in each field
       will therefore follow the order that they appear in the input </remarks> --*/
-	for (i = FIRST_LEX_POS; i < n; i++) {
+	for (i = FIRST_LEX_POS; i < n; i++)
+	{
 		if (__output_syms__[i] == sym) { _copy_standard_(__stand_param__, sym, dest, i); }
 	}
 }
@@ -356,13 +391,14 @@ _copy_standard_(STAND_PARAM *__stand_param__, SYMB output_sym, int fld, int lex_
 	/*-- Retrieve the standardized string --*/
 	char *__stan_str__ = _get_standard_(__stand_param__, lex_pos, output_sym);
 	char *__dest_buf__ = __stand_param__->standard_fields[fld];
-	if ((strlen(__stan_str__) + strlen(__dest_buf__)) > MAXFLDLEN) {
+	if ((strlen(__stan_str__) + strlen(__dest_buf__)) > MAXFLDLEN)
+	{
 		/*-- Truncate without warning --*/
 		return;
 	}
-	if (*__dest_buf__ != SENTINEL) {
-		SPACE_APPEND_WITH_LEN(__dest_buf__, __stan_str__, MAXFLDLEN);
-	} else if (output_sym == UNITT) {
+	if (*__dest_buf__ != SENTINEL) { SPACE_APPEND_WITH_LEN(__dest_buf__, __stan_str__, MAXFLDLEN); }
+	else if (output_sym == UNITT)
+	{
 		/*-- If the unit id type is missing, one needs to be provided.
 	 This might result in a mismatch, when the type is implicit
 	 in one of the compared addresses, and explicit in the
@@ -371,10 +407,14 @@ _copy_standard_(STAND_PARAM *__stand_param__, SYMB output_sym, int fld, int lex_
 
 		strcpy(__dest_buf__, "# "); /* -- reconsider this -- */
 		append_string_to_max(__dest_buf__, __stan_str__, MAXFLDLEN);
-	} else if (output_sym == BOXT) {
+	}
+	else if (output_sym == BOXT)
+	{
 		strcpy(__dest_buf__, "BOX ");
 		append_string_to_max(__dest_buf__, __stan_str__, MAXFLDLEN);
-	} else {
+	}
+	else
+	{
 		strcpy(__dest_buf__, __stan_str__);
 	}
 }

@@ -224,9 +224,9 @@ box2df_size(const BOX2DF *a)
 
 	if (a == NULL || box2df_is_empty(a)) return (float)0.0;
 
-	if ((a->xmax <= a->xmin) || (a->ymax <= a->ymin)) {
-		result = (float)0.0;
-	} else {
+	if ((a->xmax <= a->xmin) || (a->ymax <= a->ymin)) { result = (float)0.0; }
+	else
+	{
 		result = (((double)a->xmax) - ((double)a->xmin)) * (((double)a->ymax) - ((double)a->ymin));
 	}
 
@@ -248,7 +248,8 @@ box2df_union_size(const BOX2DF *a, const BOX2DF *b)
 
 	POSTGIS_DEBUG(5, "entered function");
 
-	if (a == NULL && b == NULL) {
+	if (a == NULL && b == NULL)
+	{
 		elog(ERROR, "box2df_union_size received two null arguments");
 		return 0.0;
 	}
@@ -272,7 +273,8 @@ box2df_union_edge(const BOX2DF *a, const BOX2DF *b)
 
 	POSTGIS_DEBUG(5, "entered function");
 
-	if (a == NULL && b == NULL) {
+	if (a == NULL && b == NULL)
+	{
 		elog(ERROR, "box2df_union_edge received two null arguments");
 		return 0.0;
 	}
@@ -324,12 +326,14 @@ box2df_validate(BOX2DF *b)
 
 	if (box2df_is_empty(b)) return;
 
-	if (b->xmax < b->xmin) {
+	if (b->xmax < b->xmin)
+	{
 		tmp = b->xmin;
 		b->xmin = b->xmax;
 		b->xmax = tmp;
 	}
-	if (b->ymax < b->ymin) {
+	if (b->ymax < b->ymin)
+	{
 		tmp = b->ymin;
 		b->ymin = b->ymax;
 		b->ymax = tmp;
@@ -499,7 +503,8 @@ box2df_distance_node_centroid(const BOX2DF *node, const BOX2DF *query)
 	if (box2df_overlaps(node, &q) == LW_TRUE) return 0.0;
 
 	/* Above or below */
-	if (qx >= node->xmin && qx <= node->xmax) {
+	if (qx >= node->xmin && qx <= node->xmax)
+	{
 		if (qy > node->ymax)
 			d = qy - node->ymax;
 		else if (qy < node->ymin)
@@ -507,7 +512,8 @@ box2df_distance_node_centroid(const BOX2DF *node, const BOX2DF *query)
 		return d;
 	}
 	/* Left or right */
-	else if (qy >= node->ymin && qy <= node->ymax) {
+	else if (qy >= node->ymin && qy <= node->ymax)
+	{
 		if (qx > node->xmax)
 			d = qx - node->xmax;
 		else if (qx < node->xmin)
@@ -515,23 +521,28 @@ box2df_distance_node_centroid(const BOX2DF *node, const BOX2DF *query)
 		return d;
 	}
 	/* Corner quadrants */
-	else {
+	else
+	{
 		/* below/left of xmin/ymin */
-		if (qx < node->xmin && qy < node->ymin) {
-			d = (node->xmin - qx) * (node->xmin - qx) + (node->ymin - qy) * (node->ymin - qy);
-		}
+		if (qx < node->xmin && qy < node->ymin)
+		{ d = (node->xmin - qx) * (node->xmin - qx) + (node->ymin - qy) * (node->ymin - qy); }
 		/* above/left of xmin/ymax */
-		else if (qx < node->xmin && qy > node->ymax) {
+		else if (qx < node->xmin && qy > node->ymax)
+		{
 			d = (node->xmin - qx) * (node->xmin - qx) + (node->ymax - qy) * (node->ymax - qy);
 		}
 		/* above/right of xmax/ymax */
-		else if (qx > node->xmax && qy > node->ymax) {
+		else if (qx > node->xmax && qy > node->ymax)
+		{
 			d = (node->xmax - qx) * (node->xmax - qx) + (node->ymax - qy) * (node->ymax - qy);
 		}
 		/* below/right of xmax/ymin */
-		else if (qx > node->xmin && qy < node->ymin) {
+		else if (qx > node->xmin && qy < node->ymin)
+		{
 			d = (node->xmax - qx) * (node->xmax - qx) + (node->ymin - qy) * (node->ymin - qy);
-		} else {
+		}
+		else
+		{
 			/*ERROR*/
 			elog(ERROR, "%s: reached unreachable code", __func__);
 		}
@@ -557,28 +568,32 @@ box2df_distance(const BOX2DF *a, const BOX2DF *b)
 	/* Check for overlap */
 	if (box2df_overlaps(a, b)) return 0.0;
 
-	if (box2df_left(a, b)) {
+	if (box2df_left(a, b))
+	{
 		if (box2df_above(a, b)) return pt_distance(a->xmax, a->ymin, b->xmin, b->ymax);
 		if (box2df_below(a, b))
 			return pt_distance(a->xmax, a->ymax, b->xmin, b->ymin);
 		else
 			return (double)b->xmin - (double)a->xmax;
 	}
-	if (box2df_right(a, b)) {
+	if (box2df_right(a, b))
+	{
 		if (box2df_above(a, b)) return pt_distance(a->xmin, a->ymin, b->xmax, b->ymax);
 		if (box2df_below(a, b))
 			return pt_distance(a->xmin, a->ymax, b->xmax, b->ymin);
 		else
 			return (double)a->xmin - (double)b->xmax;
 	}
-	if (box2df_above(a, b)) {
+	if (box2df_above(a, b))
+	{
 		if (box2df_left(a, b)) return pt_distance(a->xmax, a->ymin, b->xmin, b->ymax);
 		if (box2df_right(a, b))
 			return pt_distance(a->xmin, a->ymin, b->xmax, b->ymax);
 		else
 			return (double)a->ymin - (double)b->ymax;
 	}
-	if (box2df_below(a, b)) {
+	if (box2df_below(a, b))
+	{
 		if (box2df_left(a, b)) return pt_distance(a->xmax, a->ymax, b->xmin, b->ymin);
 		if (box2df_right(a, b))
 			return pt_distance(a->xmin, a->ymax, b->xmax, b->ymin);
@@ -619,20 +634,23 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);
 
 	/* Do we even have a serialized bounding box? */
-	if (FLAGS_GET_BBOX(flags)) {
+	if (FLAGS_GET_BBOX(flags))
+	{
 		/* Yes! Copy it out into the box! */
 		POSTGIS_DEBUG(4, "copying box out of serialization");
 		memcpy(box2df, gpart->data, sizeof(BOX2DF));
 		result = LW_SUCCESS;
-	} else {
+	}
+	else
+	{
 		/* No, we need to calculate it from the full object. */
 		GBOX gbox;
 		gbox_init(&gbox);
 
 		result = gserialized_get_gbox_p(gpart, &gbox);
-		if (result == LW_SUCCESS) {
-			result = box2df_from_gbox_p(&gbox, box2df);
-		} else {
+		if (result == LW_SUCCESS) { result = box2df_from_gbox_p(&gbox, box2df); }
+		else
+		{
 			POSTGIS_DEBUG(4, "could not calculate bbox");
 		}
 	}
@@ -657,7 +675,8 @@ gserialized_datum_predicate_2d(Datum gs1, Datum gs2, box2df_predicate predicate)
 	if (gserialized_datum_get_box2df_p(gs1, &b1) == LW_SUCCESS) br1 = &b1;
 	if (gserialized_datum_get_box2df_p(gs2, &b2) == LW_SUCCESS) br2 = &b2;
 
-	if (predicate(br1, br2)) {
+	if (predicate(br1, br2))
+	{
 		POSTGIS_DEBUGF(3,
 			       "got boxes %s and %s",
 			       br1 ? box2df_to_string(&b1) : "(null)",
@@ -676,7 +695,8 @@ gserialized_datum_predicate_box2df_geom_2d(const BOX2DF *br1, Datum gs2, box2df_
 
 	if (gserialized_datum_get_box2df_p(gs2, &b2) == LW_SUCCESS) br2 = &b2;
 
-	if (predicate(br1, br2)) {
+	if (predicate(br1, br2))
+	{
 		POSTGIS_DEBUGF(3, "got boxes %s", br2 ? box2df_to_string(&b2) : "(null)");
 		return LW_TRUE;
 	}
@@ -760,7 +780,8 @@ Datum gserialized_distance_centroid_2d(PG_FUNCTION_ARGS)
 
 	/* Must be able to build box for each argument (ie, not empty geometry). */
 	if ((gserialized_datum_get_box2df_p(gs1, &b1) == LW_SUCCESS) &&
-	    (gserialized_datum_get_box2df_p(gs2, &b2) == LW_SUCCESS)) {
+	    (gserialized_datum_get_box2df_p(gs2, &b2) == LW_SUCCESS))
+	{
 		double distance = box2df_distance_leaf_centroid(&b1, &b2);
 		POSTGIS_DEBUGF(3, "got boxes %s and %s", box2df_to_string(&b1), box2df_to_string(&b2));
 		PG_RETURN_FLOAT8(distance);
@@ -779,7 +800,8 @@ Datum gserialized_distance_box_2d(PG_FUNCTION_ARGS)
 
 	/* Must be able to build box for each argument (ie, not empty geometry). */
 	if ((gserialized_datum_get_box2df_p(gs1, &b1) == LW_SUCCESS) &&
-	    (gserialized_datum_get_box2df_p(gs2, &b2) == LW_SUCCESS)) {
+	    (gserialized_datum_get_box2df_p(gs2, &b2) == LW_SUCCESS))
+	{
 		double distance = box2df_distance(&b1, &b2);
 		POSTGIS_DEBUGF(3, "got boxes %s and %s", box2df_to_string(&b1), box2df_to_string(&b2));
 		PG_RETURN_FLOAT8(distance);
@@ -921,7 +943,8 @@ Datum gserialized_gist_compress_2d(PG_FUNCTION_ARGS)
 	** Not a leaf key? There's nothing to do.
 	** Return the input unchanged.
 	*/
-	if (!entry_in->leafkey) {
+	if (!entry_in->leafkey)
+	{
 		POSTGIS_DEBUG(4, "[GIST] non-leafkey entry, returning input unaltered");
 		PG_RETURN_POINTER(entry_in);
 	}
@@ -933,7 +956,8 @@ Datum gserialized_gist_compress_2d(PG_FUNCTION_ARGS)
 	** Null key? Make a copy of the input entry and
 	** return.
 	*/
-	if (DatumGetPointer(entry_in->key) == NULL) {
+	if (DatumGetPointer(entry_in->key) == NULL)
+	{
 		POSTGIS_DEBUG(4, "[GIST] leafkey is null");
 		gistentryinit(*entry_out, (Datum)0, entry_in->rel, entry_in->page, entry_in->offset, false);
 		POSTGIS_DEBUG(4, "[GIST] returning copy of input");
@@ -944,7 +968,8 @@ Datum gserialized_gist_compress_2d(PG_FUNCTION_ARGS)
 	result = gserialized_datum_get_box2df_p(entry_in->key, &bbox_out);
 
 	/* Is the bounding box valid (non-empty, non-infinite)? If not, return input uncompressed. */
-	if (result == LW_FAILURE) {
+	if (result == LW_FAILURE)
+	{
 		box2df_set_empty(&bbox_out);
 		gistentryinit(*entry_out,
 			      PointerGetDatum(box2df_copy(&bbox_out)),
@@ -961,7 +986,8 @@ Datum gserialized_gist_compress_2d(PG_FUNCTION_ARGS)
 
 	/* Check all the dimensions for finite values */
 	if (!isfinite(bbox_out.xmax) || !isfinite(bbox_out.xmin) || !isfinite(bbox_out.ymax) ||
-	    !isfinite(bbox_out.ymin)) {
+	    !isfinite(bbox_out.ymin))
+	{
 		box2df_set_finite(&bbox_out);
 		gistentryinit(*entry_out,
 			      PointerGetDatum(box2df_copy(&bbox_out)),
@@ -1012,7 +1038,8 @@ gserialized_gist_consistent_leaf_2d(BOX2DF *key, BOX2DF *query, StrategyNumber s
 
 	POSTGIS_DEBUGF(4, "[GIST] leaf consistent, strategy [%d], count[%i]", strategy, g2d_counter_leaf++);
 
-	switch (strategy) {
+	switch (strategy)
+	{
 
 	/* Basic overlaps */
 	case RTOverlapStrategyNumber:
@@ -1080,7 +1107,8 @@ gserialized_gist_consistent_internal_2d(BOX2DF *key, BOX2DF *query, StrategyNumb
 		       box2df_to_string(query),
 		       box2df_to_string(key));
 
-	switch (strategy) {
+	switch (strategy)
+	{
 
 	/* Basic overlaps */
 	case RTOverlapStrategyNumber:
@@ -1155,28 +1183,34 @@ Datum gserialized_gist_consistent_2d(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(4, "[GIST] 'consistent' function called");
 
 	/* Quick sanity check on query argument. */
-	if (DatumGetPointer(PG_GETARG_DATUM(1)) == NULL) {
+	if (DatumGetPointer(PG_GETARG_DATUM(1)) == NULL)
+	{
 		POSTGIS_DEBUG(4, "[GIST] null query pointer (!?!), returning false");
 		PG_RETURN_BOOL(false); /* NULL query! This is screwy! */
 	}
 
 	/* Quick sanity check on entry key. */
-	if (DatumGetPointer(entry->key) == NULL) {
+	if (DatumGetPointer(entry->key) == NULL)
+	{
 		POSTGIS_DEBUG(4, "[GIST] null index entry, returning false");
 		PG_RETURN_BOOL(false); /* NULL entry! */
 	}
 
 	/* Null box should never make this far. */
-	if (gserialized_datum_get_box2df_p(PG_GETARG_DATUM(1), &query_gbox_index) == LW_FAILURE) {
+	if (gserialized_datum_get_box2df_p(PG_GETARG_DATUM(1), &query_gbox_index) == LW_FAILURE)
+	{
 		POSTGIS_DEBUG(4, "[GIST] null query_gbox_index!");
 		PG_RETURN_BOOL(false);
 	}
 
 	/* Treat leaf node tests different from internal nodes */
-	if (GIST_LEAF(entry)) {
+	if (GIST_LEAF(entry))
+	{
 		result = gserialized_gist_consistent_leaf_2d(
 		    (BOX2DF *)DatumGetPointer(entry->key), &query_gbox_index, strategy);
-	} else {
+	}
+	else
+	{
 		result = gserialized_gist_consistent_internal_2d(
 		    (BOX2DF *)DatumGetPointer(entry->key), &query_gbox_index, strategy);
 	}
@@ -1216,13 +1250,15 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 
 	/* We are using '13' as the gist true-distance <-> strategy number
 	 *  and '14' as the gist distance-between-boxes <#> strategy number */
-	if (strategy != 13 && strategy != 14) {
+	if (strategy != 13 && strategy != 14)
+	{
 		elog(ERROR, "unrecognized strategy number: %d", strategy);
 		PG_RETURN_FLOAT8(FLT_MAX);
 	}
 
 	/* Null box should never make this far. */
-	if (gserialized_datum_get_box2df_p(PG_GETARG_DATUM(1), &query_box) == LW_FAILURE) {
+	if (gserialized_datum_get_box2df_p(PG_GETARG_DATUM(1), &query_box) == LW_FAILURE)
+	{
 		POSTGIS_DEBUG(4, "[GIST] null query_gbox_index!");
 		PG_RETURN_FLOAT8(FLT_MAX);
 	}
@@ -1233,10 +1269,7 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 #if POSTGIS_PGSQL_VERSION >= 95
 
 	/* Box-style distance test */
-	if (strategy == 14) /* operator <#> */
-	{
-		distance = box2df_distance(entry_box, &query_box);
-	}
+	if (strategy == 14) /* operator <#> */ { distance = box2df_distance(entry_box, &query_box); }
 	/* True distance test (formerly centroid distance) */
 	else if (strategy == 13) /* operator <-> */
 	{
@@ -1246,22 +1279,28 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 		distance = box2df_distance(entry_box, &query_box);
 
 		if (GIST_LEAF(entry)) *recheck = true;
-	} else {
+	}
+	else
+	{
 		elog(ERROR, "%s: reached unreachable code", __func__);
 		PG_RETURN_NULL();
 	}
 #else
 	/* Box-style distance test */
-	if (strategy == 14) {
+	if (strategy == 14)
+	{
 		distance = (double)box2df_distance(entry_box, &query_box);
 		PG_RETURN_FLOAT8(distance);
 	}
 
 	/* Treat leaf node tests different from internal nodes */
-	if (GIST_LEAF(entry)) {
+	if (GIST_LEAF(entry))
+	{
 		/* Calculate distance to leaves */
 		distance = (double)box2df_distance_leaf_centroid(entry_box, &query_box);
-	} else {
+	}
+	else
+	{
 		/* Calculate distance for internal nodes */
 		distance = (double)box2df_distance_node_centroid(entry_box, &query_box);
 	}
@@ -1288,10 +1327,12 @@ pack_float(const float value, const int realm)
 {
 	union {
 		float f;
-		struct {
+		struct
+		{
 			unsigned value : 31, sign : 1;
 		} vbits;
-		struct {
+		struct
+		{
 			unsigned value : 29, realm : 2, sign : 1;
 		} rbits;
 	} a;
@@ -1322,7 +1363,8 @@ Datum gserialized_gist_penalty_2d(PG_FUNCTION_ARGS)
 	gbox_index_new = (BOX2DF *)DatumGetPointer(newentry->key);
 
 	/* Drop out if we're dealing with null inputs. Shouldn't happen. */
-	if ((gbox_index_orig == NULL) && (gbox_index_new == NULL)) {
+	if ((gbox_index_orig == NULL) && (gbox_index_new == NULL))
+	{
 		POSTGIS_DEBUG(4, "[GIST] both inputs NULL! returning penalty of zero");
 		*result = 0.0;
 		PG_RETURN_FLOAT8(*result);
@@ -1338,20 +1380,23 @@ Datum gserialized_gist_penalty_2d(PG_FUNCTION_ARGS)
 	/* REALM 2: Area extension is zero, return nonzero edge extension */
 	/* REALM 3: Area extension is nonzero, return it */
 
-	if (*result == 0) {
-		if (size_orig > 0) {
-			*result = pack_float(size_orig, 1); /* REALM 1 */
-		} else {
+	if (*result == 0)
+	{
+		if (size_orig > 0) { *result = pack_float(size_orig, 1); /* REALM 1 */ }
+		else
+		{
 			edge_union = box2df_union_edge(gbox_index_orig, gbox_index_new);
 			edge_orig = box2df_edge(gbox_index_orig);
 			*result = edge_union - edge_orig;
-			if (*result == 0) {
-				*result = pack_float(edge_orig, 0); /* REALM 0 */
-			} else {
+			if (*result == 0) { *result = pack_float(edge_orig, 0); /* REALM 0 */ }
+			else
+			{
 				*result = pack_float(*result, 2); /* REALM 2 */
 			}
 		}
-	} else {
+	}
+	else
+	{
 		*result = pack_float(*result, 3); /* REALM 3 */
 	}
 
@@ -1383,7 +1428,8 @@ Datum gserialized_gist_union_2d(PG_FUNCTION_ARGS)
 
 	box_union = box2df_copy(box_cur);
 
-	for (i = 1; i < numranges; i++) {
+	for (i = 1; i < numranges; i++)
+	{
 		box_cur = (BOX2DF *)DatumGetPointer(entryvec->vector[i].key);
 		box2df_merge(box_union, box_cur);
 	}
@@ -1443,24 +1489,32 @@ fallbackSplit(GistEntryVector *entryvec, GIST_SPLITVEC *v)
 	v->spl_right = (OffsetNumber *)palloc(nbytes);
 	v->spl_nleft = v->spl_nright = 0;
 
-	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
+	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
+	{
 		BOX2DF *cur = (BOX2DF *)DatumGetPointer(entryvec->vector[i].key);
 
-		if (i <= (maxoff - FirstOffsetNumber + 1) / 2) {
+		if (i <= (maxoff - FirstOffsetNumber + 1) / 2)
+		{
 			v->spl_left[v->spl_nleft] = i;
-			if (unionL == NULL) {
+			if (unionL == NULL)
+			{
 				unionL = (BOX2DF *)palloc(sizeof(BOX2DF));
 				*unionL = *cur;
-			} else
+			}
+			else
 				adjustBox(unionL, cur);
 
 			v->spl_nleft++;
-		} else {
+		}
+		else
+		{
 			v->spl_right[v->spl_nright] = i;
-			if (unionR == NULL) {
+			if (unionR == NULL)
+			{
 				unionR = (BOX2DF *)palloc(sizeof(BOX2DF));
 				*unionR = *cur;
-			} else
+			}
+			else
 				adjustBox(unionR, cur);
 
 			v->spl_nright++;
@@ -1480,7 +1534,8 @@ fallbackSplit(GistEntryVector *entryvec, GIST_SPLITVEC *v)
  * Represents information about an entry that can be placed to either group
  * without affecting overlap over selected axis ("common entry").
  */
-typedef struct {
+typedef struct
+{
 	/* Index of entry in the initial array */
 	int index;
 	/* Delta between penalties of entry insertion into different groups */
@@ -1491,7 +1546,8 @@ typedef struct {
  * Context for g_box_consider_split. Contains information about currently
  * selected split and some general information.
  */
-typedef struct {
+typedef struct
+{
 	int entriesCount;   /* total number of entries being split */
 	BOX2DF boundingBox; /* minimum bounding box across all entries */
 
@@ -1512,7 +1568,8 @@ typedef struct {
 /*
  * Interval represents projection of box to axis.
  */
-typedef struct {
+typedef struct
+{
 	float lower, upper;
 } SplitInterval;
 
@@ -1524,14 +1581,19 @@ interval_cmp_lower(const void *i1, const void *i2)
 {
 	float lower1 = ((const SplitInterval *)i1)->lower, lower2 = ((const SplitInterval *)i2)->lower;
 
-	if (isnan(lower1)) {
+	if (isnan(lower1))
+	{
 		if (isnan(lower2))
 			return 0;
 		else
 			return 1;
-	} else if (isnan(lower2)) {
+	}
+	else if (isnan(lower2))
+	{
 		return -1;
-	} else {
+	}
+	else
+	{
 		if (lower1 < lower2)
 			return -1;
 		else if (lower1 > lower2)
@@ -1549,14 +1611,19 @@ interval_cmp_upper(const void *i1, const void *i2)
 {
 	float upper1 = ((const SplitInterval *)i1)->upper, upper2 = ((const SplitInterval *)i2)->upper;
 
-	if (isnan(upper1)) {
+	if (isnan(upper1))
+	{
 		if (isnan(upper2))
 			return 0;
 		else
 			return -1;
-	} else if (isnan(upper2)) {
+	}
+	else if (isnan(upper2))
+	{
 		return 1;
-	} else {
+	}
+	else
+	{
 		if (upper1 < upper2)
 			return -1;
 		else if (upper1 > upper2)
@@ -1606,9 +1673,9 @@ g_box_consider_split(ConsiderSplitContext *context,
 	 * Calculate entries distribution ratio assuming most uniform distribution
 	 * of common entries.
 	 */
-	if (minLeftCount >= (context->entriesCount + 1) / 2) {
-		leftCount = minLeftCount;
-	} else {
+	if (minLeftCount >= (context->entriesCount + 1) / 2) { leftCount = minLeftCount; }
+	else
+	{
 		if (maxLeftCount <= context->entriesCount / 2)
 			leftCount = maxLeftCount;
 		else
@@ -1622,7 +1689,8 @@ g_box_consider_split(ConsiderSplitContext *context,
 	 */
 	ratio = ((float4)Min(leftCount, rightCount)) / ((float4)context->entriesCount);
 
-	if (ratio > LIMIT_RATIO) {
+	if (ratio > LIMIT_RATIO)
+	{
 		bool selectthis = false;
 
 		/*
@@ -1642,14 +1710,17 @@ g_box_consider_split(ConsiderSplitContext *context,
 		/* If there is no previous selection, select this */
 		if (context->first)
 			selectthis = true;
-		else if (context->dim == dimNum) {
+		else if (context->dim == dimNum)
+		{
 			/*
 			 * Within the same dimension, choose the new split if it has a
 			 * smaller overlap, or same overlap but better ratio.
 			 */
 			if (overlap < context->overlap || (overlap == context->overlap && ratio > context->ratio))
 				selectthis = true;
-		} else {
+		}
+		else
+		{
 			/*
 			 * Across dimensions, choose the new split if it has a smaller
 			 * *non-negative* overlap, or same *non-negative* overlap but
@@ -1672,7 +1743,8 @@ g_box_consider_split(ConsiderSplitContext *context,
 				selectthis = true;
 		}
 
-		if (selectthis) {
+		if (selectthis)
+		{
 			/* save information about selected split */
 			context->first = false;
 			context->ratio = ratio;
@@ -1768,7 +1840,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 	/*
 	 * Calculate the overall minimum bounding box over all the entries.
 	 */
-	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
+	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
+	{
 		box = (BOX2DF *)DatumGetPointer(entryvec->vector[i].key);
 		if (i == FirstOffsetNumber)
 			context.boundingBox = *box;
@@ -1782,17 +1855,22 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 	 * Iterate over axes for optimal split searching.
 	 */
 	context.first = true; /* nothing selected yet */
-	for (dim = 0; dim < 2; dim++) {
+	for (dim = 0; dim < 2; dim++)
+	{
 		float leftUpper, rightLower;
 		int i1, i2;
 
 		/* Project each entry as an interval on the selected axis. */
-		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
+		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
+		{
 			box = (BOX2DF *)DatumGetPointer(entryvec->vector[i].key);
-			if (dim == 0) {
+			if (dim == 0)
+			{
 				intervalsLower[i - FirstOffsetNumber].lower = box->xmin;
 				intervalsLower[i - FirstOffsetNumber].upper = box->xmax;
-			} else {
+			}
+			else
+			{
 				intervalsLower[i - FirstOffsetNumber].lower = box->ymin;
 				intervalsLower[i - FirstOffsetNumber].upper = box->ymax;
 			}
@@ -1844,12 +1922,14 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		i2 = 0;
 		rightLower = intervalsLower[i1].lower;
 		leftUpper = intervalsUpper[i2].lower;
-		while (true) {
+		while (true)
+		{
 			/*
 			 * Find next lower bound of right group.
 			 */
 			while (i1 < nentries &&
-			       (rightLower == intervalsLower[i1].lower || isnan(intervalsLower[i1].lower))) {
+			       (rightLower == intervalsLower[i1].lower || isnan(intervalsLower[i1].lower)))
+			{
 				leftUpper = Max(leftUpper, intervalsLower[i1].upper);
 				i1++;
 			}
@@ -1877,11 +1957,13 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		i2 = nentries - 1;
 		rightLower = intervalsLower[i1].upper;
 		leftUpper = intervalsUpper[i2].upper;
-		while (true) {
+		while (true)
+		{
 			/*
 			 * Find next upper bound of left group.
 			 */
-			while (i2 >= 0 && (leftUpper == intervalsUpper[i2].upper || isnan(intervalsUpper[i2].upper))) {
+			while (i2 >= 0 && (leftUpper == intervalsUpper[i2].upper || isnan(intervalsUpper[i2].upper)))
+			{
 				rightLower = Min(rightLower, intervalsUpper[i2].lower);
 				i2--;
 			}
@@ -1905,7 +1987,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 	/*
 	 * If we failed to find any acceptable splits, use trivial split.
 	 */
-	if (context.first) {
+	if (context.first)
+	{
 		POSTGIS_DEBUG(4, "no acceptable splits,  trivial split");
 		fallbackSplit(entryvec, v);
 		PG_RETURN_POINTER(v);
@@ -1940,7 +2023,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 
 	/* Helper macros to place an entry in the left or right group */
 #define PLACE_LEFT(box, off) \
-	do { \
+	do \
+	{ \
 		if (v->spl_nleft > 0) \
 			adjustBox(leftBox, box); \
 		else \
@@ -1949,7 +2033,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 	} while (0)
 
 #define PLACE_RIGHT(box, off) \
-	do { \
+	do \
+	{ \
 		if (v->spl_nright > 0) \
 			adjustBox(rightBox, box); \
 		else \
@@ -1961,31 +2046,41 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 	 * Distribute entries which can be distributed unambiguously, and collect
 	 * common entries.
 	 */
-	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
+	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
+	{
 		float lower, upper;
 
 		/*
 		 * Get upper and lower bounds along selected axis.
 		 */
 		box = (BOX2DF *)DatumGetPointer(entryvec->vector[i].key);
-		if (context.dim == 0) {
+		if (context.dim == 0)
+		{
 			lower = box->xmin;
 			upper = box->xmax;
-		} else {
+		}
+		else
+		{
 			lower = box->ymin;
 			upper = box->ymax;
 		}
 
-		if (upper <= context.leftUpper || isnan(upper)) {
+		if (upper <= context.leftUpper || isnan(upper))
+		{
 			/* Fits to the left group */
-			if (lower >= context.rightLower || isnan(lower)) {
+			if (lower >= context.rightLower || isnan(lower))
+			{
 				/* Fits also to the right group, so "common entry" */
 				commonEntries[commonEntriesCount++].index = i;
-			} else {
+			}
+			else
+			{
 				/* Doesn't fit to the right group, so join to the left group */
 				PLACE_LEFT(box, i);
 			}
-		} else {
+		}
+		else
+		{
 			/*
 			 * Each entry should fit on either left or right group. Since this
 			 * entry didn't fit on the left group, it better fit in the right
@@ -2004,7 +2099,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 	/*
 	 * Distribute "common entries", if any.
 	 */
-	if (commonEntriesCount > 0) {
+	if (commonEntriesCount > 0)
+	{
 		/*
 		 * Calculate minimum number of entries that must be placed in both
 		 * groups, to reach LIMIT_RATIO.
@@ -2015,7 +2111,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		 * Calculate delta between penalties of join "common entries" to
 		 * different groups.
 		 */
-		for (i = 0; i < commonEntriesCount; i++) {
+		for (i = 0; i < commonEntriesCount; i++)
+		{
 			box = (BOX2DF *)DatumGetPointer(entryvec->vector[commonEntries[i].index].key);
 			commonEntries[i].delta = Abs(box_penalty(leftBox, box) - box_penalty(rightBox, box));
 		}
@@ -2029,7 +2126,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		/*
 		 * Distribute "common entries" between groups.
 		 */
-		for (i = 0; i < commonEntriesCount; i++) {
+		for (i = 0; i < commonEntriesCount; i++)
+		{
 			box = (BOX2DF *)DatumGetPointer(entryvec->vector[commonEntries[i].index].key);
 
 			/*
@@ -2040,7 +2138,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 				PLACE_LEFT(box, commonEntries[i].index);
 			else if (v->spl_nright + (commonEntriesCount - i) <= m)
 				PLACE_RIGHT(box, commonEntries[i].index);
-			else {
+			else
+			{
 				/* Otherwise select the group by minimal penalty */
 				if (box_penalty(leftBox, box) < box_penalty(rightBox, box))
 					PLACE_LEFT(box, commonEntries[i].index);
@@ -2059,7 +2158,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 
 #else /* !KOROTOV_SPLIT */
 
-typedef struct {
+typedef struct
+{
 	BOX2DF *key;
 	int pos;
 } KBsort;
@@ -2108,7 +2208,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 	memcpy((void *)&pageunion, (void *)cur, sizeof(BOX2DF));
 
 	/* find MBR */
-	for (i = OffsetNumberNext(FirstOffsetNumber); i <= maxoff; i = OffsetNumberNext(i)) {
+	for (i = OffsetNumberNext(FirstOffsetNumber); i <= maxoff; i = OffsetNumberNext(i))
+	{
 		cur = (BOX2DF *)DatumGetPointer(entryvec->vector[i].key);
 
 		if (allisequal == true && (pageunion.xmax != cur->xmax || pageunion.ymax != cur->ymax ||
@@ -2129,23 +2230,29 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 	unionL = (BOX2DF *)palloc(sizeof(BOX2DF));
 	unionR = (BOX2DF *)palloc(sizeof(BOX2DF));
 
-	if (allisequal) {
+	if (allisequal)
+	{
 		POSTGIS_DEBUG(4, " AllIsEqual!");
 
 		cur = (BOX2DF *)DatumGetPointer(entryvec->vector[OffsetNumberNext(FirstOffsetNumber)].key);
 
-		if (memcmp((void *)cur, (void *)&pageunion, sizeof(BOX2DF)) == 0) {
+		if (memcmp((void *)cur, (void *)&pageunion, sizeof(BOX2DF)) == 0)
+		{
 			v->spl_left = listL;
 			v->spl_right = listR;
 			v->spl_nleft = v->spl_nright = 0;
 			memcpy((void *)unionL, (void *)&pageunion, sizeof(BOX2DF));
 			memcpy((void *)unionR, (void *)&pageunion, sizeof(BOX2DF));
 
-			for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
-				if (i <= (maxoff - FirstOffsetNumber + 1) / 2) {
+			for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
+			{
+				if (i <= (maxoff - FirstOffsetNumber + 1) / 2)
+				{
 					v->spl_left[v->spl_nleft] = i;
 					v->spl_nleft++;
-				} else {
+				}
+				else
+				{
 					v->spl_right[v->spl_nright] = i;
 					v->spl_nright++;
 				}
@@ -2163,20 +2270,25 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 	unionT = (BOX2DF *)palloc(sizeof(BOX2DF));
 
 #define ADDLIST(list, unionD, pos, num) \
-	do { \
-		if (pos) { \
+	do \
+	{ \
+		if (pos) \
+		{ \
 			if (unionD->xmax < cur->xmax) unionD->xmax = cur->xmax; \
 			if (unionD->xmin > cur->xmin) unionD->xmin = cur->xmin; \
 			if (unionD->ymax < cur->ymax) unionD->ymax = cur->ymax; \
 			if (unionD->ymin > cur->ymin) unionD->ymin = cur->ymin; \
-		} else { \
+		} \
+		else \
+		{ \
 			memcpy((void *)unionD, (void *)cur, sizeof(BOX2DF)); \
 		} \
 		list[pos] = num; \
 		(pos)++; \
 	} while (0)
 
-	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
+	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
+	{
 		cur = (BOX2DF *)DatumGetPointer(entryvec->vector[i].key);
 
 		if (cur->xmin - pageunion.xmin < pageunion.xmax - cur->xmax)
@@ -2195,34 +2307,41 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(4, "unionB is %s", box2df_to_string(unionB));
 
 	/* bad disposition, sort by ascending and resplit */
-	if ((posR == 0 || posL == 0) && (posT == 0 || posB == 0)) {
+	if ((posR == 0 || posL == 0) && (posT == 0 || posB == 0))
+	{
 		KBsort *arr = (KBsort *)palloc(sizeof(KBsort) * maxoff);
 		posL = posR = posB = posT = 0;
-		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
+		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
+		{
 			arr[i - 1].key = (BOX2DF *)DatumGetPointer(entryvec->vector[i].key);
 			arr[i - 1].pos = i;
 		}
 		qsort(arr, maxoff, sizeof(KBsort), compare_KB);
-		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
+		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
+		{
 			cur = arr[i - 1].key;
 			if (cur->xmin - pageunion.xmin < pageunion.xmax - cur->xmax)
 				ADDLIST(listL, unionL, posL, arr[i - 1].pos);
-			else if (cur->xmin - pageunion.xmin == pageunion.xmax - cur->xmax) {
+			else if (cur->xmin - pageunion.xmin == pageunion.xmax - cur->xmax)
+			{
 				if (posL > posR)
 					ADDLIST(listR, unionR, posR, arr[i - 1].pos);
 				else
 					ADDLIST(listL, unionL, posL, arr[i - 1].pos);
-			} else
+			}
+			else
 				ADDLIST(listR, unionR, posR, arr[i - 1].pos);
 
 			if (cur->ymin - pageunion.ymin < pageunion.ymax - cur->ymax)
 				ADDLIST(listB, unionB, posB, arr[i - 1].pos);
-			else if (cur->ymin - pageunion.ymin == pageunion.ymax - cur->ymax) {
+			else if (cur->ymin - pageunion.ymin == pageunion.ymax - cur->ymax)
+			{
 				if (posB > posT)
 					ADDLIST(listT, unionT, posT, arr[i - 1].pos);
 				else
 					ADDLIST(listB, unionB, posB, arr[i - 1].pos);
-			} else
+			}
+			else
 				ADDLIST(listT, unionT, posT, arr[i - 1].pos);
 		}
 		pfree(arr);
@@ -2233,7 +2352,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		direction = 'x';
 	else if (Max(posL, posR) > Max(posB, posT))
 		direction = 'y';
-	else {
+	else
+	{
 		float sizeLR, sizeBT;
 		BOX2DF interLR, interBT;
 
@@ -2255,7 +2375,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(4, "split direction '%c'", direction);
 
-	if (direction == 'x') {
+	if (direction == 'x')
+	{
 		pfree(unionB);
 		pfree(listB);
 		pfree(unionT);
@@ -2267,7 +2388,9 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		v->spl_nright = posR;
 		v->spl_ldatum = PointerGetDatum(unionL);
 		v->spl_rdatum = PointerGetDatum(unionR);
-	} else {
+	}
+	else
+	{
 		pfree(unionR);
 		pfree(listR);
 		pfree(unionL);

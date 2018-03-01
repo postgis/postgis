@@ -21,12 +21,14 @@
  * (requires porting predicates to liblwgeom)
  */
 #define check_geom_equal(gobt, gexp) \
-	do { \
+	do \
+	{ \
 		char *obt, *exp; \
 		LWGEOM *ngobt, *ngexp; \
 		ngobt = lwgeom_normalize(gobt); \
 		ngexp = lwgeom_normalize(gexp); \
-		if (!lwgeom_same((ngobt), (ngexp))) { \
+		if (!lwgeom_same((ngobt), (ngexp))) \
+		{ \
 			obt = lwgeom_to_wkt((ngobt), WKT_ISO, 8, NULL); \
 			exp = lwgeom_to_wkt((ngexp), WKT_ISO, 8, NULL); \
 			printf(" Failure at %s:%d\n", __FILE__, __LINE__); \
@@ -37,7 +39,9 @@
 			lwgeom_free(ngobt); \
 			lwgeom_free(ngexp); \
 			CU_ASSERT(0); \
-		} else { \
+		} \
+		else \
+		{ \
 			lwgeom_free(ngobt); \
 			lwgeom_free(ngexp); \
 			CU_ASSERT(1); \

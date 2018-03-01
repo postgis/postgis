@@ -101,7 +101,8 @@ void
 wkt_yyerror(__attribute__((__unused__)) const char *str)
 {
 	/* If we haven't already set a message and location, let's set one now. */
-	if (!global_parser_result.message) {
+	if (!global_parser_result.message)
+	{
 		global_parser_result.message = parser_error_messages[PARSER_ERROR_OTHER];
 		global_parser_result.errcode = PARSER_ERROR_OTHER;
 		global_parser_result.errlocation = wkt_yylloc.last_column;
@@ -140,8 +141,10 @@ lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parser_c
 	wkt_lexer_close(); /* Clean up lexer */
 
 	/* A non-zero parser return is an error. */
-	if (parse_rv != 0) {
-		if (!global_parser_result.errcode) {
+	if (parse_rv != 0)
+	{
+		if (!global_parser_result.errcode)
+		{
 			global_parser_result.errcode = PARSER_ERROR_OTHER;
 			global_parser_result.message = parser_error_messages[PARSER_ERROR_OTHER];
 			global_parser_result.errlocation = wkt_yylloc.last_column;
@@ -278,7 +281,8 @@ typedef union YYSTYPE YYSTYPE;
 /* Location type.  */
 #if !defined YYLTYPE && !defined YYLTYPE_IS_DECLARED
 typedef struct YYLTYPE YYLTYPE;
-struct YYLTYPE {
+struct YYLTYPE
+{
 	int first_line;
 	int first_column;
 	int last_line;
@@ -433,7 +437,8 @@ typedef short int yytype_int16;
 #ifdef YYSTACK_ALLOC
 /* Pacify GCC's 'empty if-body' warning.  */
 #define YYSTACK_FREE(Ptr) \
-	do { /* empty */ \
+	do \
+	{ /* empty */ \
 		; \
 	} while (0)
 #ifndef YYSTACK_ALLOC_MAXIMUM
@@ -496,7 +501,8 @@ union yyalloc {
    stack.  Advance YYPTR to a properly aligned location for the next
    stack.  */
 #define YYSTACK_RELOCATE(Stack_alloc, Stack) \
-	do { \
+	do \
+	{ \
 		YYSIZE_T yynewbytes; \
 		YYCOPY(&yyptr->Stack_alloc, Stack, yysize); \
 		Stack = &yyptr->Stack_alloc; \
@@ -514,7 +520,8 @@ union yyalloc {
 #define YYCOPY(Dst, Src, Count) __builtin_memcpy(Dst, Src, (Count) * sizeof(*(Src)))
 #else
 #define YYCOPY(Dst, Src, Count) \
-	do { \
+	do \
+	{ \
 		YYSIZE_T yyi; \
 		for (yyi = 0; yyi < (Count); yyi++) \
 			(Dst)[yyi] = (Src)[yyi]; \
@@ -772,13 +779,16 @@ static const yytype_uint8 yyr2[] = {0, 2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 
 #define YYBACKUP(Token, Value) \
 	do \
-		if (yychar == YYEMPTY) { \
+		if (yychar == YYEMPTY) \
+		{ \
 			yychar = (Token); \
 			yylval = (Value); \
 			YYPOPSTACK(yylen); \
 			yystate = *yyssp; \
 			goto yybackup; \
-		} else { \
+		} \
+		else \
+		{ \
 			yyerror(YY_("syntax error: cannot back up")); \
 			YYERROR; \
 		} \
@@ -795,12 +805,15 @@ static const yytype_uint8 yyr2[] = {0, 2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 #ifndef YYLLOC_DEFAULT
 #define YYLLOC_DEFAULT(Current, Rhs, N) \
 	do \
-		if (N) { \
+		if (N) \
+		{ \
 			(Current).first_line = YYRHSLOC(Rhs, 1).first_line; \
 			(Current).first_column = YYRHSLOC(Rhs, 1).first_column; \
 			(Current).last_line = YYRHSLOC(Rhs, N).last_line; \
 			(Current).last_column = YYRHSLOC(Rhs, N).last_column; \
-		} else { \
+		} \
+		else \
+		{ \
 			(Current).first_line = (Current).last_line = YYRHSLOC(Rhs, 0).last_line; \
 			(Current).first_column = (Current).last_column = YYRHSLOC(Rhs, 0).last_column; \
 		} \
@@ -818,7 +831,8 @@ static const yytype_uint8 yyr2[] = {0, 2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 #endif
 
 #define YYDPRINTF(Args) \
-	do { \
+	do \
+	{ \
 		if (yydebug) YYFPRINTF Args; \
 	} while (0)
 
@@ -837,15 +851,19 @@ yy_location_print_(FILE *yyo, YYLTYPE const *const yylocp)
 {
 	unsigned res = 0;
 	int end_col = 0 != yylocp->last_column ? yylocp->last_column - 1 : 0;
-	if (0 <= yylocp->first_line) {
+	if (0 <= yylocp->first_line)
+	{
 		res += YYFPRINTF(yyo, "%d", yylocp->first_line);
 		if (0 <= yylocp->first_column) res += YYFPRINTF(yyo, ".%d", yylocp->first_column);
 	}
-	if (0 <= yylocp->last_line) {
-		if (yylocp->first_line < yylocp->last_line) {
+	if (0 <= yylocp->last_line)
+	{
+		if (yylocp->first_line < yylocp->last_line)
+		{
 			res += YYFPRINTF(yyo, "-%d", yylocp->last_line);
 			if (0 <= end_col) res += YYFPRINTF(yyo, ".%d", end_col);
-		} else if (0 <= end_col && yylocp->first_column < end_col)
+		}
+		else if (0 <= end_col && yylocp->first_column < end_col)
 			res += YYFPRINTF(yyo, "-%d", end_col);
 	}
 	return res;
@@ -859,8 +877,10 @@ yy_location_print_(FILE *yyo, YYLTYPE const *const yylocp)
 #endif
 
 #define YY_SYMBOL_PRINT(Title, Type, Value, Location) \
-	do { \
-		if (yydebug) { \
+	do \
+	{ \
+		if (yydebug) \
+		{ \
 			YYFPRINTF(stderr, "%s ", Title); \
 			yy_symbol_print(stderr, Type, Value, Location); \
 			YYFPRINTF(stderr, "\n"); \
@@ -908,7 +928,8 @@ static void
 yy_stack_print(yytype_int16 *yybottom, yytype_int16 *yytop)
 {
 	YYFPRINTF(stderr, "Stack now");
-	for (; yybottom <= yytop; yybottom++) {
+	for (; yybottom <= yytop; yybottom++)
+	{
 		int yybot = *yybottom;
 		YYFPRINTF(stderr, " %d", yybot);
 	}
@@ -916,7 +937,8 @@ yy_stack_print(yytype_int16 *yybottom, yytype_int16 *yytop)
 }
 
 #define YY_STACK_PRINT(Bottom, Top) \
-	do { \
+	do \
+	{ \
 		if (yydebug) yy_stack_print((Bottom), (Top)); \
 	} while (0)
 
@@ -932,7 +954,8 @@ yy_reduce_print(yytype_int16 *yyssp, YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule)
 	int yyi;
 	YYFPRINTF(stderr, "Reducing stack by rule %d (line %lu):\n", yyrule - 1, yylno);
 	/* The symbols being reduced.  */
-	for (yyi = 0; yyi < yynrhs; yyi++) {
+	for (yyi = 0; yyi < yynrhs; yyi++)
+	{
 		YYFPRINTF(stderr, "   $%d = ", yyi + 1);
 		yy_symbol_print(stderr,
 				yystos[yyssp[yyi + 1 - yynrhs]],
@@ -943,7 +966,8 @@ yy_reduce_print(yytype_int16 *yyssp, YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule)
 }
 
 #define YY_REDUCE_PRINT(Rule) \
-	do { \
+	do \
+	{ \
 		if (yydebug) yy_reduce_print(yyssp, yyvsp, yylsp, Rule); \
 	} while (0)
 
@@ -1022,12 +1046,14 @@ yystpcpy(char *yydest, const char *yysrc)
 static YYSIZE_T
 yytnamerr(char *yyres, const char *yystr)
 {
-	if (*yystr == '"') {
+	if (*yystr == '"')
+	{
 		YYSIZE_T yyn = 0;
 		char const *yyp = yystr;
 
 		for (;;)
-			switch (*++yyp) {
+			switch (*++yyp)
+			{
 			case '\'':
 			case ',':
 				goto do_not_strip_quotes;
@@ -1098,10 +1124,12 @@ yysyntax_error(YYSIZE_T *yymsg_alloc, char **yymsg, yytype_int16 *yyssp, int yyt
 	     one exception: it will still contain any token that will not be
 	     accepted due to an error action in a later state.
 	*/
-	if (yytoken != YYEMPTY) {
+	if (yytoken != YYEMPTY)
+	{
 		int yyn = yypact[*yyssp];
 		yyarg[yycount++] = yytname[yytoken];
-		if (!yypact_value_is_default(yyn)) {
+		if (!yypact_value_is_default(yyn))
+		{
 			/* Start YYX at -YYN if negative to avoid negative indexes in
 			   YYCHECK.  In other words, skip the first -YYN actions for
 			   this state because they are default actions.  */
@@ -1113,8 +1141,10 @@ yysyntax_error(YYSIZE_T *yymsg_alloc, char **yymsg, yytype_int16 *yyssp, int yyt
 
 			for (yyx = yyxbegin; yyx < yyxend; ++yyx)
 				if (yycheck[yyx + yyn] == yyx && yyx != YYTERROR &&
-				    !yytable_value_is_error(yytable[yyx + yyn])) {
-					if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM) {
+				    !yytable_value_is_error(yytable[yyx + yyn]))
+				{
+					if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
+					{
 						yycount = 1;
 						yysize = yysize0;
 						break;
@@ -1129,7 +1159,8 @@ yysyntax_error(YYSIZE_T *yymsg_alloc, char **yymsg, yytype_int16 *yyssp, int yyt
 		}
 	}
 
-	switch (yycount) {
+	switch (yycount)
+	{
 #define YYCASE_(N, S) \
 	case N: \
 		yyformat = S; \
@@ -1149,7 +1180,8 @@ yysyntax_error(YYSIZE_T *yymsg_alloc, char **yymsg, yytype_int16 *yyssp, int yyt
 		yysize = yysize1;
 	}
 
-	if (*yymsg_alloc < yysize) {
+	if (*yymsg_alloc < yysize)
+	{
 		*yymsg_alloc = 2 * yysize;
 		if (!(yysize <= *yymsg_alloc && *yymsg_alloc <= YYSTACK_ALLOC_MAXIMUM))
 			*yymsg_alloc = YYSTACK_ALLOC_MAXIMUM;
@@ -1163,10 +1195,13 @@ yysyntax_error(YYSIZE_T *yymsg_alloc, char **yymsg, yytype_int16 *yyssp, int yyt
 		char *yyp = *yymsg;
 		int yyi = 0;
 		while ((*yyp = *yyformat) != '\0')
-			if (*yyp == '%' && yyformat[1] == 's' && yyi < yycount) {
+			if (*yyp == '%' && yyformat[1] == 's' && yyi < yycount)
+			{
 				yyp += yytnamerr(yyp, yyarg[yyi++]);
 				yyformat += 2;
-			} else {
+			}
+			else
+			{
 				yyp++;
 				yyformat++;
 			}
@@ -1188,7 +1223,8 @@ yydestruct(const char *yymsg, int yytype, YYSTYPE *yyvaluep, YYLTYPE *yylocation
 	YY_SYMBOL_PRINT(yymsg, yytype, yyvaluep, yylocationp);
 
 	YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-	switch (yytype) {
+	switch (yytype)
+	{
 	case 28:             /* geometry_no_srid  */
 #line 189 "lwin_wkt_parse.y" /* yacc.c:1257  */
 	{
@@ -1583,7 +1619,8 @@ yynewstate:
 yysetstate:
 	*yyssp = yystate;
 
-	if (yyss + yystacksize - 1 <= yyssp) {
+	if (yyss + yystacksize - 1 <= yyssp)
+	{
 		/* Get the current used size of the three stacks, in elements.  */
 		YYSIZE_T yysize = yyssp - yyss + 1;
 
@@ -1665,15 +1702,19 @@ yybackup:
 	/* Not known => get a lookahead token if don't already have one.  */
 
 	/* YYCHAR is either YYEMPTY or YYEOF or a valid lookahead symbol.  */
-	if (yychar == YYEMPTY) {
+	if (yychar == YYEMPTY)
+	{
 		YYDPRINTF((stderr, "Reading a token: "));
 		yychar = yylex();
 	}
 
-	if (yychar <= YYEOF) {
+	if (yychar <= YYEOF)
+	{
 		yychar = yytoken = YYEOF;
 		YYDPRINTF((stderr, "Now at end of input.\n"));
-	} else {
+	}
+	else
+	{
 		yytoken = YYTRANSLATE(yychar);
 		YY_SYMBOL_PRINT("Next token is", yytoken, &yylval, &yylloc);
 	}
@@ -1683,7 +1724,8 @@ yybackup:
 	yyn += yytoken;
 	if (yyn < 0 || YYLAST < yyn || yycheck[yyn] != yytoken) goto yydefault;
 	yyn = yytable[yyn];
-	if (yyn <= 0) {
+	if (yyn <= 0)
+	{
 		if (yytable_value_is_error(yyn)) goto yyerrlab;
 		yyn = -yyn;
 		goto yyreduce;
@@ -1734,7 +1776,8 @@ yyreduce:
 	/* Default location.  */
 	YYLLOC_DEFAULT(yyloc, (yylsp - yylen), yylen);
 	YY_REDUCE_PRINT(yyn);
-	switch (yyn) {
+	switch (yyn)
+	{
 	case 2:
 #line 212 "lwin_wkt_parse.y" /* yacc.c:1646  */
 	{
@@ -3011,7 +3054,8 @@ yyerrlab:
 	yytoken = yychar == YYEMPTY ? YYEMPTY : YYTRANSLATE(yychar);
 
 	/* If not already recovering from an error, report this error.  */
-	if (!yyerrstatus) {
+	if (!yyerrstatus)
+	{
 		++yynerrs;
 #if !YYERROR_VERBOSE
 		yyerror(YY_("syntax error"));
@@ -3023,14 +3067,18 @@ yyerrlab:
 			yysyntax_error_status = YYSYNTAX_ERROR;
 			if (yysyntax_error_status == 0)
 				yymsgp = yymsg;
-			else if (yysyntax_error_status == 1) {
+			else if (yysyntax_error_status == 1)
+			{
 				if (yymsg != yymsgbuf) YYSTACK_FREE(yymsg);
 				yymsg = (char *)YYSTACK_ALLOC(yymsg_alloc);
-				if (!yymsg) {
+				if (!yymsg)
+				{
 					yymsg = yymsgbuf;
 					yymsg_alloc = sizeof yymsgbuf;
 					yysyntax_error_status = 2;
-				} else {
+				}
+				else
+				{
 					yysyntax_error_status = YYSYNTAX_ERROR;
 					yymsgp = yymsg;
 				}
@@ -3044,14 +3092,18 @@ yyerrlab:
 
 	yyerror_range[1] = yylloc;
 
-	if (yyerrstatus == 3) {
+	if (yyerrstatus == 3)
+	{
 		/* If just tried and failed to reuse lookahead token after an
 		   error, discard it.  */
 
-		if (yychar <= YYEOF) {
+		if (yychar <= YYEOF)
+		{
 			/* Return failure if at end of input.  */
 			if (yychar == YYEOF) YYABORT;
-		} else {
+		}
+		else
+		{
 			yydestruct("Error: discarding", yytoken, &yylval, &yylloc);
 			yychar = YYEMPTY;
 		}
@@ -3086,11 +3138,14 @@ yyerrorlab:
 yyerrlab1:
 	yyerrstatus = 3; /* Each real token shifted decrements this.  */
 
-	for (;;) {
+	for (;;)
+	{
 		yyn = yypact[yystate];
-		if (!yypact_value_is_default(yyn)) {
+		if (!yypact_value_is_default(yyn))
+		{
 			yyn += YYTERROR;
-			if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR) {
+			if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR)
+			{
 				yyn = yytable[yyn];
 				if (0 < yyn) break;
 			}
@@ -3147,7 +3202,8 @@ yyexhaustedlab:
 #endif
 
 yyreturn:
-	if (yychar != YYEMPTY) {
+	if (yychar != YYEMPTY)
+	{
 		/* Make sure we have latest lookahead translation.  See comments at
 		   user semantic actions for why this is necessary.  */
 		yytoken = YYTRANSLATE(yychar);
@@ -3157,7 +3213,8 @@ yyreturn:
 	   this YYABORT or YYACCEPT.  */
 	YYPOPSTACK(yylen);
 	YY_STACK_PRINT(yyss, yyssp);
-	while (yyssp != yyss) {
+	while (yyssp != yyss)
+	{
 		yydestruct("Cleanup: popping", yystos[*yyssp], yyvsp, yylsp);
 		YYPOPSTACK(1);
 	}

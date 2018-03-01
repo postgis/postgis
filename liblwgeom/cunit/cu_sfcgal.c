@@ -62,7 +62,8 @@ test_sfcgal_noop(void)
 	    "TIN(((0 0,0 -1,-1 1,0 0)),((0 0,1 0,0 -1,0 0)))",
 	};
 
-	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++) {
+	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++)
+	{
 		LWGEOM *geom_in, *geom_out;
 		char *in_ewkt;
 		char *out_ewkt;
@@ -70,7 +71,8 @@ test_sfcgal_noop(void)
 		in_ewkt = ewkt[i];
 		geom_in = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
 		geom_out = lwgeom_sfcgal_noop(geom_in);
-		if (!geom_out) {
+		if (!geom_out)
+		{
 			fprintf(stderr, "\nNull return from lwgeom_sfcgal_noop with wkt:   %s\n", in_ewkt);
 			lwgeom_free(geom_in);
 			continue;

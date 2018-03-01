@@ -73,18 +73,24 @@ gidx_from_gbox_p(GBOX box, GIDX *a)
 	GIDX_SET_MAX(a, 1, next_float_up(box.ymax));
 
 	/* Geodetic indexes are always 3d, geocentric x/y/z */
-	if (FLAGS_GET_GEODETIC(box.flags)) {
+	if (FLAGS_GET_GEODETIC(box.flags))
+	{
 		GIDX_SET_MIN(a, 2, next_float_down(box.zmin));
 		GIDX_SET_MAX(a, 2, next_float_up(box.zmax));
-	} else {
+	}
+	else
+	{
 		/* Cartesian with Z implies Z is third dimension */
-		if (FLAGS_GET_Z(box.flags)) {
+		if (FLAGS_GET_Z(box.flags))
+		{
 			GIDX_SET_MIN(a, 2, next_float_down(box.zmin));
 			GIDX_SET_MAX(a, 2, next_float_up(box.zmax));
 		}
 		/* M is always fourth dimension, we pad if needed */
-		if (FLAGS_GET_M(box.flags)) {
-			if (!FLAGS_GET_Z(box.flags)) {
+		if (FLAGS_GET_M(box.flags))
+		{
+			if (!FLAGS_GET_Z(box.flags))
+			{
 				GIDX_SET_MIN(a, 2, -1 * FLT_MAX);
 				GIDX_SET_MAX(a, 2, FLT_MAX);
 			}
@@ -108,12 +114,14 @@ gbox_from_gidx(GIDX *a, GBOX *gbox, int flags)
 	gbox->ymin = (double)GIDX_GET_MIN(a, 1);
 	gbox->ymax = (double)GIDX_GET_MAX(a, 1);
 
-	if (FLAGS_GET_Z(flags)) {
+	if (FLAGS_GET_Z(flags))
+	{
 		gbox->zmin = (double)GIDX_GET_MIN(a, 2);
 		gbox->zmax = (double)GIDX_GET_MAX(a, 2);
 	}
 
-	if (FLAGS_GET_M(flags)) {
+	if (FLAGS_GET_M(flags))
+	{
 		gbox->mmin = (double)GIDX_GET_MIN(a, 3);
 		gbox->mmax = (double)GIDX_GET_MAX(a, 3);
 	}
@@ -160,14 +168,13 @@ gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx)
 	if (g_ndims != box_ndims) { return NULL; }
 
 	/* Serialized already has room for a box. */
-	if (FLAGS_GET_BBOX(g->flags)) {
-		g_out = g;
-	}
+	if (FLAGS_GET_BBOX(g->flags)) { g_out = g; }
 	/* Serialized has no box. We need to allocate enough space for the old
 	   data plus the box, and leave a gap in the memory segment to write
 	   the new values into.
 	*/
-	else {
+	else
+	{
 		size_t varsize_new = VARSIZE(g) + box_size;
 		uint8_t *ptr;
 		g_out = palloc(varsize_new);
@@ -200,7 +207,8 @@ gserialized_drop_gidx(GSERIALIZED *g)
 	GSERIALIZED *g_out = palloc(g_out_size);
 
 	/* Copy the contents while omitting the box */
-	if (FLAGS_GET_BBOX(g->flags)) {
+	if (FLAGS_GET_BBOX(g->flags))
+	{
 		uint8_t *outptr = (uint8_t *)g_out;
 		uint8_t *inptr = (uint8_t *)g;
 		/* Copy the header (size+type) of g into place */
@@ -213,7 +221,8 @@ gserialized_drop_gidx(GSERIALIZED *g)
 		SET_VARSIZE(g_out, g_out_size);
 	}
 	/* No box? Nothing to do but copy and return. */
-	else {
+	else
+	{
 		memcpy(g_out, g, g_out_size);
 	}
 
@@ -243,13 +252,15 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);
 
 	/* Do we even have a serialized bounding box? */
-	if (FLAGS_GET_BBOX(gpart->flags)) {
+	if (FLAGS_GET_BBOX(gpart->flags))
+	{
 		/* Yes! Copy it out into the GIDX! */
 		size_t size = gbox_serialized_size(gpart->flags);
 		POSTGIS_DEBUG(4, "copying box out of serialization");
 		memcpy(gidx->c, gpart->data, size);
 		/* if M is present but Z is not, pad Z and shift M */
-		if (FLAGS_GET_M(gpart->flags) && !FLAGS_GET_Z(gpart->flags)) {
+		if (FLAGS_GET_M(gpart->flags) && !FLAGS_GET_Z(gpart->flags))
+		{
 			size += 2 * sizeof(float);
 			GIDX_SET_MIN(gidx, 3, GIDX_GET_MIN(gidx, 2));
 			GIDX_SET_MAX(gidx, 3, GIDX_GET_MAX(gidx, 2));
@@ -257,12 +268,15 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 			GIDX_SET_MAX(gidx, 2, FLT_MAX);
 		}
 		SET_VARSIZE(gidx, VARHDRSZ + size);
-	} else {
+	}
+	else
+	{
 		/* No, we need to calculate it from the full object. */
 		GSERIALIZED *g = (GSERIALIZED *)PG_DETOAST_DATUM(gsdatum);
 		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
 		GBOX gbox;
-		if (lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE) {
+		if (lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE)
+		{
 			POSTGIS_DEBUG(4, "could not calculate bbox, returning failure");
 			lwgeom_free(lwgeom);
 			POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
@@ -293,17 +307,21 @@ gserialized_get_gidx_p(const GSERIALIZED *g, GIDX *gidx)
 	POSTGIS_DEBUG(4, "entered function");
 	POSTGIS_DEBUGF(4, "got flags %d", g->flags);
 
-	if (FLAGS_GET_BBOX(g->flags)) {
+	if (FLAGS_GET_BBOX(g->flags))
+	{
 		int ndims = FLAGS_NDIMS_GIDX(g->flags);
 		const size_t size = 2 * ndims * sizeof(float);
 		POSTGIS_DEBUG(4, "copying box out of serialization");
 		memcpy(gidx->c, g->data, size);
 		SET_VARSIZE(gidx, VARHDRSZ + size);
-	} else {
+	}
+	else
+	{
 		/* No, we need to calculate it from the full object. */
 		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
 		GBOX gbox;
-		if (lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE) {
+		if (lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE)
+		{
 			POSTGIS_DEBUG(4, "could not calculate bbox, returning failure");
 			lwgeom_free(lwgeom);
 			return LW_FAILURE;
@@ -328,7 +346,8 @@ gidx_expand(GIDX *a, float d)
 
 	if (a == NULL) return;
 
-	for (i = 0; i < GIDX_NDIMS(a); i++) {
+	for (i = 0; i < GIDX_NDIMS(a); i++)
+	{
 		GIDX_SET_MIN(a, i, GIDX_GET_MIN(a, i) - d);
 		GIDX_SET_MAX(a, i, GIDX_GET_MAX(a, i) + d);
 	}

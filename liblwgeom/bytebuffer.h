@@ -34,7 +34,8 @@
 #define BYTEBUFFER_STARTSIZE 512
 #define BYTEBUFFER_STATICSIZE 1024
 
-typedef struct {
+typedef struct
+{
 	size_t capacity;
 	uint8_t *buf_start;
 	uint8_t *writecursor;

@@ -289,7 +289,8 @@ test_lwgeom_from_gserialized(void)
 	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING EMPTY))",
 	};
 
-	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++) {
+	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++)
+	{
 		LWGEOM *geom2;
 
 		in_ewkt = ewkt[i];
@@ -321,7 +322,8 @@ static void
 test_gserialized_is_empty(void)
 {
 	int i = 0;
-	struct gserialized_empty_cases {
+	struct gserialized_empty_cases
+	{
 		const char *wkt;
 		int isempty;
 	};
@@ -345,7 +347,8 @@ test_gserialized_is_empty(void)
 	     1},
 	    {NULL, 0}};
 
-	while (cases[i].wkt) {
+	while (cases[i].wkt)
+	{
 		// i = 11;
 		LWGEOM *lw = lwgeom_from_wkt(cases[i].wkt, LW_PARSER_CHECK_NONE);
 		GSERIALIZED *g = gserialized_from_lwgeom(lw, 0);
@@ -528,14 +531,16 @@ do_lwgeom_swap_ordinates(char *in, char *out)
 	lwgeom_add_bbox(g);
 
 	testbox = (g->bbox != NULL);
-	if (testbox) {
+	if (testbox)
+	{
 		xmax = g->bbox->xmax;
 		ymax = g->bbox->ymax;
 	}
 
 	lwgeom_swap_ordinates(g, LWORD_X, LWORD_Y);
 
-	if (testbox) {
+	if (testbox)
+	{
 		CU_ASSERT_DOUBLE_EQUAL(g->bbox->xmax, ymax, 0.00001);
 		CU_ASSERT_DOUBLE_EQUAL(g->bbox->ymax, xmax, 0.00001);
 	}
@@ -669,7 +674,8 @@ test_lwgeom_clone(void)
 	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
 	    "TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))"};
 
-	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++) {
+	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++)
+	{
 		LWGEOM *geom, *cloned;
 		char *in_ewkt;
 		char *out_ewkt;
@@ -1061,7 +1067,8 @@ test_gserialized_peek_gbox_p_no_box_when_empty(void)
 			"MULTILINESTRING EMPTY",
 			"MULTILINESTRING (EMPTY)"};
 
-	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++) {
+	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++)
+	{
 		LWGEOM *geom = lwgeom_from_wkt(ewkt[i], LW_PARSER_CHECK_NONE);
 		GBOX box;
 		gbox_init(&box);
@@ -1096,7 +1103,8 @@ test_gserialized_peek_gbox_p_gets_correct_box(void)
 			"MULTILINESTRING ((2.2945672355 48.85822923236, -76.45402132523 44.225406213532))",
 			"MULTILINESTRING Z ((2.2945672355 48.85822923236 4, -76.45402132523 44.225406213532 3))"};
 
-	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++) {
+	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++)
+	{
 		LWGEOM *geom = lwgeom_from_wkt(ewkt[i], LW_PARSER_CHECK_NONE);
 		GBOX box_from_peek;
 		GBOX box_from_lwgeom;
@@ -1131,7 +1139,8 @@ test_gserialized_peek_gbox_p_fails_for_unsupported_cases(void)
 	    "MULTILINESTRING ((2.2945672355 48.85822923236, -76.45402132523 44.225406213532, -72 33))",
 	    "MULTILINESTRING ((2.2945672355 48.85822923236, -76.45402132523 44.225406213532), (-72 33, -71 32))"};
 
-	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++) {
+	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++)
+	{
 		LWGEOM *geom = lwgeom_from_wkt(ewkt[i], LW_PARSER_CHECK_NONE);
 		GBOX box;
 		gbox_init(&box);

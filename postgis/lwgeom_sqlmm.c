@@ -71,7 +71,8 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "LWGEOM_curve_segmentize called.");
 
-	if (perQuad < 0) {
+	if (perQuad < 0)
+	{
 		elog(ERROR, "2nd argument must be positive.");
 		PG_RETURN_NULL();
 	}
@@ -129,7 +130,8 @@ Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS)
 	ogeom = lwgeom_unstroke(igeom);
 	lwgeom_free(igeom);
 
-	if (ogeom == NULL) {
+	if (ogeom == NULL)
+	{
 		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}

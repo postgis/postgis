@@ -70,7 +70,8 @@ void
 geography_valid_type(uint8_t type)
 {
 	if (!(type == POINTTYPE || type == LINETYPE || type == POLYGONTYPE || type == MULTIPOINTTYPE ||
-	      type == MULTILINETYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE)) {
+	      type == MULTILINETYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE))
+	{
 		ereport(ERROR,
 			(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 			 errmsg("Geography type does not support %s", lwtype_name(type))));
@@ -90,7 +91,8 @@ gserialized_geography_from_lwgeom(LWGEOM *lwgeom, int32 geog_typmod)
 
 	/* Force the geometry to have valid geodetic coordinate range. */
 	lwgeom_nudge_geodetic(lwgeom);
-	if (lwgeom_force_geodetic(lwgeom) == LW_TRUE) {
+	if (lwgeom_force_geodetic(lwgeom) == LW_TRUE)
+	{
 		ereport(
 		    NOTICE,
 		    (errmsg_internal("Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY")));
@@ -106,10 +108,13 @@ gserialized_geography_from_lwgeom(LWGEOM *lwgeom, int32 geog_typmod)
 	g_ser = geography_serialize(lwgeom);
 
 	/* Check for typmod agreement */
-	if (geog_typmod >= 0) {
+	if (geog_typmod >= 0)
+	{
 		g_ser = postgis_valid_typmod(g_ser, geog_typmod);
 		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
-	} else {
+	}
+	else
+	{
 		POSTGIS_DEBUG(3, "typmod was -1");
 	}
 
@@ -137,14 +142,16 @@ Datum geography_in(PG_FUNCTION_ARGS)
 	if (str[0] == '\0') ereport(ERROR, (errmsg("parse error - invalid geometry")));
 
 	/* WKB? Let's find out. */
-	if (str[0] == '0') {
+	if (str[0] == '0')
+	{
 		/* TODO: 20101206: No parser checks! This is inline with current 1.5 behavior, but needs discussion */
 		lwgeom = lwgeom_from_hexwkb(str, LW_PARSER_CHECK_NONE);
 		/* Error out if something went sideways */
 		if (!lwgeom) ereport(ERROR, (errmsg("parse error - invalid geometry")));
 	}
 	/* WKT then. */
-	else {
+	else
+	{
 		if (lwgeom_parse_wkt(&lwg_parser_result, str, LW_PARSER_CHECK_ALL) == LW_FAILURE)
 			PG_PARSER_ERROR(lwg_parser_result);
 
@@ -206,7 +213,8 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 
 	/* Get the version */
 	version = PG_GETARG_INT32(0);
-	if (version != 2 && version != 3) {
+	if (version != 2 && version != 3)
+	{
 		elog(ERROR, "Only GML 2 and GML 3 are supported");
 		PG_RETURN_NULL();
 	}
@@ -219,7 +227,8 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(g);
 
 	/* Retrieve precision if any (default is max) */
-	if (PG_NARGS() > 2 && !PG_ARGISNULL(2)) {
+	if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
+	{
 		precision = PG_GETARG_INT32(2);
 		/* TODO: leave this to liblwgeom */
 		if (precision > DBL_DIG)
@@ -232,11 +241,12 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	if (PG_NARGS() > 3 && !PG_ARGISNULL(3)) option = PG_GETARG_INT32(3);
 
 	/* retrieve prefix */
-	if (PG_NARGS() > 4 && !PG_ARGISNULL(4)) {
+	if (PG_NARGS() > 4 && !PG_ARGISNULL(4))
+	{
 		prefix_text = PG_GETARG_TEXT_P(4);
-		if (VARSIZE(prefix_text) - VARHDRSZ == 0) {
-			prefix = "";
-		} else {
+		if (VARSIZE(prefix_text) - VARHDRSZ == 0) { prefix = ""; }
+		else
+		{
 			/* +2 is one for the ':' and one for term null */
 			prefix_buf = palloc(VARSIZE(prefix_text) - VARHDRSZ + 2);
 			memcpy(prefix_buf, VARDATA(prefix_text), VARSIZE(prefix_text) - VARHDRSZ);
@@ -248,11 +258,12 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	}
 
 	/* retrieve id */
-	if (PG_NARGS() > 5 && !PG_ARGISNULL(5)) {
+	if (PG_NARGS() > 5 && !PG_ARGISNULL(5))
+	{
 		id_text = PG_GETARG_TEXT_P(5);
-		if (VARSIZE(id_text) - VARHDRSZ == 0) {
-			id = "";
-		} else {
+		if (VARSIZE(id_text) - VARHDRSZ == 0) { id = ""; }
+		else
+		{
 			id_buf = palloc(VARSIZE(id_text) - VARHDRSZ + 1);
 			memcpy(id_buf, VARDATA(id_text), VARSIZE(id_text) - VARHDRSZ);
 			prefix_buf[VARSIZE(id_text) - VARHDRSZ + 1] = '\0';
@@ -264,7 +275,8 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 		srs = getSRSbySRID(srid, false);
 	else
 		srs = getSRSbySRID(srid, true);
-	if (!srs) {
+	if (!srs)
+	{
 		elog(ERROR, "SRID %d unknown in spatial_ref_sys table", SRID_DEFAULT);
 		PG_RETURN_NULL();
 	}
@@ -272,14 +284,16 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	/* Revert lat/lon only with long SRS */
 	if (option & 1) lwopts |= LW_GML_IS_DEGREE;
 	if (option & 2) lwopts &= ~LW_GML_IS_DIMS;
-	if (option & 8) {
+	if (option & 8)
+	{
 		elog(ERROR,
 		     "Options %d passed to ST_AsGML(geography) sets "
 		     "unsupported value 8",
 		     option);
 		PG_RETURN_NULL();
 	}
-	if ((option & 4) || (option & 16) || (option & 32)) {
+	if ((option & 4) || (option & 16) || (option & 32))
+	{
 		elog(ERROR,
 		     "Options %d passed to ST_AsGML(geography) but are only "
 		     "applicable to ST_AsGML(geometry)",
@@ -324,7 +338,8 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 
 	/* Get the version */
 	version = PG_GETARG_INT32(0);
-	if (version != 2) {
+	if (version != 2)
+	{
 		elog(ERROR, "Only KML 2 is supported");
 		PG_RETURN_NULL();
 	}
@@ -337,7 +352,8 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(g);
 
 	/* Retrieve precision if any (default is max) */
-	if (PG_NARGS() > 2 && !PG_ARGISNULL(2)) {
+	if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
+	{
 		precision = PG_GETARG_INT32(2);
 		/* TODO: leave this to liblwgeom */
 		if (precision > DBL_DIG)
@@ -347,11 +363,12 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	}
 
 	/* retrieve prefix */
-	if (PG_NARGS() > 3 && !PG_ARGISNULL(3)) {
+	if (PG_NARGS() > 3 && !PG_ARGISNULL(3))
+	{
 		prefix_text = PG_GETARG_TEXT_P(3);
-		if (VARSIZE(prefix_text) - VARHDRSZ == 0) {
-			prefix = "";
-		} else {
+		if (VARSIZE(prefix_text) - VARHDRSZ == 0) { prefix = ""; }
+		else
+		{
 			/* +2 is one for the ':' and one for term null */
 			prefixbuf = palloc(VARSIZE(prefix_text) - VARHDRSZ + 2);
 			memcpy(prefixbuf, VARDATA(prefix_text), VARSIZE(prefix_text) - VARHDRSZ);
@@ -398,7 +415,8 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 	/* check for relative path notation */
 	if (PG_NARGS() > 1 && !PG_ARGISNULL(1)) relative = PG_GETARG_INT32(1) ? 1 : 0;
 
-	if (PG_NARGS() > 2 && !PG_ARGISNULL(2)) {
+	if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
+	{
 		precision = PG_GETARG_INT32(2);
 		/* TODO: leave this to liblwgeom */
 		if (precision > DBL_DIG)
@@ -436,7 +454,8 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 
 	/* Get the version */
 	version = PG_GETARG_INT32(0);
-	if (version != 1) {
+	if (version != 1)
+	{
 		elog(ERROR, "Only GeoJSON 1 is supported");
 		PG_RETURN_NULL();
 	}
@@ -449,7 +468,8 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(g);
 
 	/* Retrieve precision if any (default is max) */
-	if (PG_NARGS() > 2 && !PG_ARGISNULL(2)) {
+	if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
+	{
 		precision = PG_GETARG_INT32(2);
 		/* TODO: leave this to liblwgeom */
 		if (precision > DBL_DIG)
@@ -466,12 +486,14 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	 */
 	if (PG_NARGS() > 3 && !PG_ARGISNULL(3)) option = PG_GETARG_INT32(3);
 
-	if (option & 2 || option & 4) {
+	if (option & 2 || option & 4)
+	{
 		/* Geography only handle srid SRID_DEFAULT */
 		if (option & 2) srs = getSRSbySRID(SRID_DEFAULT, true);
 		if (option & 4) srs = getSRSbySRID(SRID_DEFAULT, false);
 
-		if (!srs) {
+		if (!srs)
+		{
 			elog(ERROR, "SRID SRID_DEFAULT unknown in spatial_ref_sys table");
 			PG_RETURN_NULL();
 		}
@@ -563,7 +585,8 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 
 	/* Force the geometry to have valid geodetic coordinate range. */
 	lwgeom_nudge_geodetic(lwgeom);
-	if (lwgeom_force_geodetic(lwgeom) == LW_TRUE) {
+	if (lwgeom_force_geodetic(lwgeom) == LW_TRUE)
+	{
 		ereport(
 		    NOTICE,
 		    (errmsg_internal("Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY")));

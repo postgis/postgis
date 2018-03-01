@@ -57,13 +57,15 @@ lwgeom_to_svg(const LWGEOM *geom, int precision, int relative)
 	int type = geom->type;
 
 	/* Empty string for empties */
-	if (lwgeom_is_empty(geom)) {
+	if (lwgeom_is_empty(geom))
+	{
 		ret = lwalloc(1);
 		ret[0] = '\0';
 		return ret;
 	}
 
-	switch (type) {
+	switch (type)
+	{
 	case POINTTYPE:
 		ret = assvg_point((LWPOINT *)geom, relative, precision);
 		break;
@@ -211,14 +213,18 @@ assvg_polygon_buf(const LWPOLY *poly, char *output, int relative, int precision)
 	uint32_t i;
 	char *ptr = output;
 
-	for (i = 0; i < poly->nrings; i++) {
+	for (i = 0; i < poly->nrings; i++)
+	{
 		if (i) ptr += sprintf(ptr, " "); /* Space beetween each ring */
 		ptr += sprintf(ptr, "M ");       /* Start path with SVG MoveTo */
 
-		if (relative) {
+		if (relative)
+		{
 			ptr += pointArray_svg_rel(poly->rings[i], ptr, 0, precision);
 			ptr += sprintf(ptr, " z"); /* SVG closepath */
-		} else {
+		}
+		else
+		{
 			ptr += pointArray_svg_abs(poly->rings[i], ptr, 0, precision);
 			ptr += sprintf(ptr, " Z"); /* SVG closepath */
 		}
@@ -251,7 +257,8 @@ assvg_multipoint_size(const LWMPOINT *mpoint, int relative, int precision)
 	size_t size = 0;
 	uint32_t i;
 
-	for (i = 0; i < mpoint->ngeoms; i++) {
+	for (i = 0; i < mpoint->ngeoms; i++)
+	{
 		point = mpoint->geoms[i];
 		size += assvg_point_size(point, relative, precision);
 	}
@@ -267,7 +274,8 @@ assvg_multipoint_buf(const LWMPOINT *mpoint, char *output, int relative, int pre
 	uint32_t i;
 	char *ptr = output;
 
-	for (i = 0; i < mpoint->ngeoms; i++) {
+	for (i = 0; i < mpoint->ngeoms; i++)
+	{
 		if (i) ptr += sprintf(ptr, ","); /* Arbitrary comma separator */
 		point = mpoint->geoms[i];
 		ptr += assvg_point_buf(point, ptr, relative, precision);
@@ -300,7 +308,8 @@ assvg_multiline_size(const LWMLINE *mline, int relative, int precision)
 	size_t size = 0;
 	uint32_t i;
 
-	for (i = 0; i < mline->ngeoms; i++) {
+	for (i = 0; i < mline->ngeoms; i++)
+	{
 		line = mline->geoms[i];
 		size += assvg_line_size(line, relative, precision);
 	}
@@ -316,7 +325,8 @@ assvg_multiline_buf(const LWMLINE *mline, char *output, int relative, int precis
 	uint32_t i;
 	char *ptr = output;
 
-	for (i = 0; i < mline->ngeoms; i++) {
+	for (i = 0; i < mline->ngeoms; i++)
+	{
 		if (i) ptr += sprintf(ptr, " "); /* SVG whitespace Separator */
 		line = mline->geoms[i];
 		ptr += assvg_line_buf(line, ptr, relative, precision);
@@ -349,7 +359,8 @@ assvg_multipolygon_size(const LWMPOLY *mpoly, int relative, int precision)
 	size_t size = 0;
 	uint32_t i;
 
-	for (i = 0; i < mpoly->ngeoms; i++) {
+	for (i = 0; i < mpoly->ngeoms; i++)
+	{
 		poly = mpoly->geoms[i];
 		size += assvg_polygon_size(poly, relative, precision);
 	}
@@ -365,7 +376,8 @@ assvg_multipolygon_buf(const LWMPOLY *mpoly, char *output, int relative, int pre
 	uint32_t i;
 	char *ptr = output;
 
-	for (i = 0; i < mpoly->ngeoms; i++) {
+	for (i = 0; i < mpoly->ngeoms; i++)
+	{
 		if (i) ptr += sprintf(ptr, " "); /* SVG whitespace Separator */
 		poly = mpoly->geoms[i];
 		ptr += assvg_polygon_buf(poly, ptr, relative, precision);
@@ -398,7 +410,8 @@ assvg_collection_size(const LWCOLLECTION *col, int relative, int precision)
 	size_t size = 0;
 	const LWGEOM *subgeom;
 
-	for (i = 0; i < col->ngeoms; i++) {
+	for (i = 0; i < col->ngeoms; i++)
+	{
 		subgeom = col->geoms[i];
 		size += assvg_geom_size(subgeom, relative, precision);
 	}
@@ -421,7 +434,8 @@ assvg_collection_buf(const LWCOLLECTION *col, char *output, int relative, int pr
 	/* EMPTY GEOMETRYCOLLECTION */
 	if (col->ngeoms == 0) *ptr = '\0';
 
-	for (i = 0; i < col->ngeoms; i++) {
+	for (i = 0; i < col->ngeoms; i++)
+	{
 		if (i) ptr += sprintf(ptr, ";");
 		subgeom = col->geoms[i];
 		ptr += assvg_geom_buf(subgeom, ptr, relative, precision);
@@ -449,7 +463,8 @@ assvg_geom_buf(const LWGEOM *geom, char *output, int relative, int precision)
 	int type = geom->type;
 	char *ptr = output;
 
-	switch (type) {
+	switch (type)
+	{
 	case POINTTYPE:
 		ptr += assvg_point_buf((LWPOINT *)geom, ptr, relative, precision);
 		break;
@@ -487,7 +502,8 @@ assvg_geom_size(const LWGEOM *geom, int relative, int precision)
 	int type = geom->type;
 	size_t size = 0;
 
-	switch (type) {
+	switch (type)
+	{
 	case POINTTYPE:
 		size = assvg_point_size((LWPOINT *)geom, relative, precision);
 		break;
@@ -555,7 +571,8 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, int close_ring, int precision)
 	accum_y = y;
 
 	/* All the following ones */
-	for (i = 1; i < end; i++) {
+	for (i = 1; i < end; i++)
+	{
 		// lpt = pt;
 
 		pt = getPoint2d_cp(pa, i);
@@ -596,7 +613,8 @@ pointArray_svg_abs(POINTARRAY *pa, char *output, int close_ring, int precision)
 	else
 		end = pa->npoints - 1;
 
-	for (i = 0; i < end; i++) {
+	for (i = 0; i < end; i++)
+	{
 		getPoint2d_p(pa, i, &pt);
 
 		lwprint_double(pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);

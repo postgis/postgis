@@ -92,17 +92,21 @@ lw_dist2d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 
 	LWDEBUG(2, "lw_dist2d_distanceline is called");
 
-	if (!lw_dist2d_comp(lw1, lw2, &thedl)) {
+	if (!lw_dist2d_comp(lw1, lw2, &thedl))
+	{
 		/*should never get here. all cases ought to be error handled earlier*/
 		lwerror("Some unspecified error.");
 		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 	}
 
 	/*if thedl.distance is unchanged there where only empty geometries input*/
-	if (thedl.distance == initdistance) {
+	if (thedl.distance == initdistance)
+	{
 		LWDEBUG(3, "didn't find geometries to measure between, returning null");
 		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
-	} else {
+	}
+	else
+	{
 		x1 = thedl.p1.x;
 		y1 = thedl.p1.y;
 		x2 = thedl.p2.x;
@@ -133,15 +137,19 @@ lw_dist2d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 
 	LWDEBUG(2, "lw_dist2d_distancepoint is called");
 
-	if (!lw_dist2d_comp(lw1, lw2, &thedl)) {
+	if (!lw_dist2d_comp(lw1, lw2, &thedl))
+	{
 		/*should never get here. all cases ought to be error handled earlier*/
 		lwerror("Some unspecified error.");
 		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 	}
-	if (thedl.distance == initdistance) {
+	if (thedl.distance == initdistance)
+	{
 		LWDEBUG(3, "didn't find geometries to measure between, returning null");
 		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
-	} else {
+	}
+	else
+	{
 		x = thedl.p1.x;
 		y = thedl.p1.y;
 		result = (LWGEOM *)lwpoint_make2d(srid, x, y);
@@ -233,7 +241,8 @@ static int
 lw_dist2d_is_collection(const LWGEOM *g)
 {
 
-	switch (g->type) {
+	switch (g->type)
+	{
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
@@ -266,39 +275,45 @@ lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 
 	LWDEBUGF(2, "lw_dist2d_comp is called with type1=%d, type2=%d", lwg1->type, lwg2->type);
 
-	if (lw_dist2d_is_collection(lwg1)) {
+	if (lw_dist2d_is_collection(lwg1))
+	{
 		LWDEBUG(3, "First geometry is collection");
 		c1 = lwgeom_as_lwcollection(lwg1);
 		n1 = c1->ngeoms;
 	}
-	if (lw_dist2d_is_collection(lwg2)) {
+	if (lw_dist2d_is_collection(lwg2))
+	{
 		LWDEBUG(3, "Second geometry is collection");
 		c2 = lwgeom_as_lwcollection(lwg2);
 		n2 = c2->ngeoms;
 	}
 
-	for (i = 0; i < n1; i++) {
+	for (i = 0; i < n1; i++)
+	{
 
-		if (lw_dist2d_is_collection(lwg1)) {
-			g1 = c1->geoms[i];
-		} else {
+		if (lw_dist2d_is_collection(lwg1)) { g1 = c1->geoms[i]; }
+		else
+		{
 			g1 = (LWGEOM *)lwg1;
 		}
 
 		if (lwgeom_is_empty(g1)) return LW_TRUE;
 
-		if (lw_dist2d_is_collection(g1)) {
+		if (lw_dist2d_is_collection(g1))
+		{
 			LWDEBUG(3, "Found collection inside first geometry collection, recursing");
 			if (!lw_dist2d_recursive(g1, lwg2, dl)) return LW_FALSE;
 			continue;
 		}
-		for (j = 0; j < n2; j++) {
-			if (lw_dist2d_is_collection(lwg2)) {
-				g2 = c2->geoms[j];
-			} else {
+		for (j = 0; j < n2; j++)
+		{
+			if (lw_dist2d_is_collection(lwg2)) { g2 = c2->geoms[j]; }
+			else
+			{
 				g2 = (LWGEOM *)lwg2;
 			}
-			if (lw_dist2d_is_collection(g2)) {
+			if (lw_dist2d_is_collection(g2))
+			{
 				LWDEBUG(3, "Found collection inside second geometry collection, recursing");
 				if (!lw_dist2d_recursive(g1, g2, dl)) return LW_FALSE;
 				continue;
@@ -313,9 +328,12 @@ lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 
 			if ((dl->mode != DIST_MAX) && (!lw_dist2d_check_overlap(g1, g2)) &&
 			    (g1->type == LINETYPE || g1->type == POLYGONTYPE) &&
-			    (g2->type == LINETYPE || g2->type == POLYGONTYPE)) {
+			    (g2->type == LINETYPE || g2->type == POLYGONTYPE))
+			{
 				if (!lw_dist2d_distribute_fast(g1, g2, dl)) return LW_FALSE;
-			} else {
+			}
+			else
+			{
 				if (!lw_dist2d_distribute_bruteforce(g1, g2, dl)) return LW_FALSE;
 				if (dl->distance <= dl->tolerance && dl->mode == DIST_MIN)
 					return LW_TRUE; /*just a check if  the answer is already given*/
@@ -332,10 +350,13 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 	int t1 = lwg1->type;
 	int t2 = lwg2->type;
 
-	switch (t1) {
-	case POINTTYPE: {
+	switch (t1)
+	{
+	case POINTTYPE:
+	{
 		dl->twisted = 1;
-		switch (t2) {
+		switch (t2)
+		{
 		case POINTTYPE:
 			return lw_dist2d_point_point((LWPOINT *)lwg1, (LWPOINT *)lwg2, dl);
 		case LINETYPE:
@@ -351,9 +372,11 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 			return LW_FALSE;
 		}
 	}
-	case LINETYPE: {
+	case LINETYPE:
+	{
 		dl->twisted = 1;
-		switch (t2) {
+		switch (t2)
+		{
 		case POINTTYPE:
 			dl->twisted = (-1);
 			return lw_dist2d_point_line((LWPOINT *)lwg2, (LWLINE *)lwg1, dl);
@@ -370,9 +393,11 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 			return LW_FALSE;
 		}
 	}
-	case CIRCSTRINGTYPE: {
+	case CIRCSTRINGTYPE:
+	{
 		dl->twisted = 1;
-		switch (t2) {
+		switch (t2)
+		{
 		case POINTTYPE:
 			dl->twisted = -1;
 			return lw_dist2d_point_circstring((LWPOINT *)lwg2, (LWCIRCSTRING *)lwg1, dl);
@@ -390,9 +415,11 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 			return LW_FALSE;
 		}
 	}
-	case POLYGONTYPE: {
+	case POLYGONTYPE:
+	{
 		dl->twisted = -1;
-		switch (t2) {
+		switch (t2)
+		{
 		case POINTTYPE:
 			return lw_dist2d_point_poly((LWPOINT *)lwg2, (LWPOLY *)lwg1, dl);
 		case LINETYPE:
@@ -410,9 +437,11 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 			return LW_FALSE;
 		}
 	}
-	case CURVEPOLYTYPE: {
+	case CURVEPOLYTYPE:
+	{
 		dl->twisted = (-1);
-		switch (t2) {
+		switch (t2)
+		{
 		case POINTTYPE:
 			return lw_dist2d_point_curvepoly((LWPOINT *)lwg2, (LWCURVEPOLY *)lwg1, dl);
 		case LINETYPE:
@@ -429,7 +458,8 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 			return LW_FALSE;
 		}
 	}
-	default: {
+	default:
+	{
 		lwerror("Unsupported geometry type: %s", lwtype_name(t1));
 		return LW_FALSE;
 	}
@@ -452,7 +482,8 @@ lw_dist2d_check_overlap(LWGEOM *lwg1, LWGEOM *lwg2)
 	/*Check if the geometries intersect.
 	 */
 	if ((lwg1->bbox->xmax < lwg2->bbox->xmin || lwg1->bbox->xmin > lwg2->bbox->xmax ||
-	     lwg1->bbox->ymax < lwg2->bbox->ymin || lwg1->bbox->ymin > lwg2->bbox->ymax)) {
+	     lwg1->bbox->ymax < lwg2->bbox->ymin || lwg1->bbox->ymin > lwg2->bbox->ymax))
+	{
 		LWDEBUG(3, "geometries bboxes did not overlap");
 		return LW_FALSE;
 	}
@@ -473,7 +504,8 @@ lw_dist2d_distribute_fast(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
 
 	LWDEBUGF(2, "lw_dist2d_distribute_fast is called with typ1=%d, type2=%d", lwg1->type, lwg2->type);
 
-	switch (type1) {
+	switch (type1)
+	{
 	case LINETYPE:
 		pa1 = ((LWLINE *)lwg1)->points;
 		break;
@@ -484,7 +516,8 @@ lw_dist2d_distribute_fast(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
 		lwerror("Unsupported geometry1 type: %s", lwtype_name(type1));
 		return LW_FALSE;
 	}
-	switch (type2) {
+	switch (type2)
+	{
 	case LINETYPE:
 		pa2 = ((LWLINE *)lwg2)->points;
 		break;
@@ -560,12 +593,14 @@ lw_dist2d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS *dl)
 
 	p = getPoint2d_cp(point->point, 0);
 
-	if (dl->mode == DIST_MAX) {
+	if (dl->mode == DIST_MAX)
+	{
 		LWDEBUG(3, "looking for maxdistance");
 		return lw_dist2d_pt_ptarray(p, poly->rings[0], dl);
 	}
 	/* Return distance to outer ring if not inside it */
-	if (ptarray_contains_point(poly->rings[0], p) == LW_OUTSIDE) {
+	if (ptarray_contains_point(poly->rings[0], p) == LW_OUTSIDE)
+	{
 		LWDEBUG(3, "first point not inside outer-ring");
 		return lw_dist2d_pt_ptarray(p, poly->rings[0], dl);
 	}
@@ -576,16 +611,19 @@ lw_dist2d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS *dl)
 	 * see if its inside.  If not, distance==0.
 	 * Otherwise, distance = pt to ring distance
 	 */
-	for (i = 1; i < poly->nrings; i++) {
+	for (i = 1; i < poly->nrings; i++)
+	{
 		/* Inside a hole. Distance = pt -> ring */
-		if (ptarray_contains_point(poly->rings[i], p) != LW_OUTSIDE) {
+		if (ptarray_contains_point(poly->rings[i], p) != LW_OUTSIDE)
+		{
 			LWDEBUG(3, " inside an hole");
 			return lw_dist2d_pt_ptarray(p, poly->rings[i], dl);
 		}
 	}
 
 	LWDEBUG(3, " inside the polygon");
-	if (dl->mode == DIST_MIN) {
+	if (dl->mode == DIST_MIN)
+	{
 		dl->distance = 0.0;
 		dl->p1.x = dl->p2.x = p->x;
 		dl->p1.y = dl->p2.y = p->y;
@@ -604,9 +642,8 @@ lw_dist2d_point_curvepoly(LWPOINT *point, LWCURVEPOLY *poly, DISTPTS *dl)
 	if (dl->mode == DIST_MAX) lwerror("lw_dist2d_point_curvepoly cannot calculate max distance");
 
 	/* Return distance to outer ring if not inside it */
-	if (lwgeom_contains_point(poly->rings[0], p) == LW_OUTSIDE) {
-		return lw_dist2d_recursive((LWGEOM *)point, poly->rings[0], dl);
-	}
+	if (lwgeom_contains_point(poly->rings[0], p) == LW_OUTSIDE)
+	{ return lw_dist2d_recursive((LWGEOM *)point, poly->rings[0], dl); }
 
 	/*
 	 * Inside the outer ring.
@@ -614,16 +651,19 @@ lw_dist2d_point_curvepoly(LWPOINT *point, LWCURVEPOLY *poly, DISTPTS *dl)
 	 * see if its inside.  If not, distance==0.
 	 * Otherwise, distance = pt to ring distance
 	 */
-	for (i = 1; i < poly->nrings; i++) {
+	for (i = 1; i < poly->nrings; i++)
+	{
 		/* Inside a hole. Distance = pt -> ring */
-		if (lwgeom_contains_point(poly->rings[i], p) != LW_OUTSIDE) {
+		if (lwgeom_contains_point(poly->rings[i], p) != LW_OUTSIDE)
+		{
 			LWDEBUG(3, " inside a hole");
 			return lw_dist2d_recursive((LWGEOM *)point, poly->rings[i], dl);
 		}
 	}
 
 	LWDEBUG(3, " inside the polygon");
-	if (dl->mode == DIST_MIN) {
+	if (dl->mode == DIST_MIN)
+	{
 		dl->distance = 0.0;
 		dl->p1.x = dl->p2.x = p->x;
 		dl->p1.y = dl->p2.y = p->y;
@@ -671,11 +711,11 @@ lw_dist2d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS *dl)
 	LWDEBUGF(2, "lw_dist2d_line_poly called (%d rings)", poly->nrings);
 
 	pt = getPoint2d_cp(line->points, 0);
-	if (ptarray_contains_point(poly->rings[0], pt) == LW_OUTSIDE) {
-		return lw_dist2d_ptarray_ptarray(line->points, poly->rings[0], dl);
-	}
+	if (ptarray_contains_point(poly->rings[0], pt) == LW_OUTSIDE)
+	{ return lw_dist2d_ptarray_ptarray(line->points, poly->rings[0], dl); }
 
-	for (i = 1; i < poly->nrings; i++) {
+	for (i = 1; i < poly->nrings; i++)
+	{
 		if (!lw_dist2d_ptarray_ptarray(line->points, poly->rings[i], dl)) return LW_FALSE;
 
 		LWDEBUGF(3, " distance from ring %d: %f, mindist: %f", i, dl->distance, dl->tolerance);
@@ -702,8 +742,10 @@ lw_dist2d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS *dl)
 	 * Its in the outer ring.
 	 * Have to check if its inside a hole
 	 */
-	for (i = 1; i < poly->nrings; i++) {
-		if (ptarray_contains_point(poly->rings[i], pt) != LW_OUTSIDE) {
+	for (i = 1; i < poly->nrings; i++)
+	{
+		if (ptarray_contains_point(poly->rings[i], pt) != LW_OUTSIDE)
+		{
 			/*
 			 * Its inside a hole, then the actual
 			 * distance is the min ring distance
@@ -711,7 +753,8 @@ lw_dist2d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS *dl)
 			return LW_TRUE;
 		}
 	}
-	if (dl->mode == DIST_MIN) {
+	if (dl->mode == DIST_MIN)
+	{
 		dl->distance = 0.0;
 		dl->p1.x = dl->p2.x = pt->x;
 		dl->p1.y = dl->p2.y = pt->y;
@@ -725,24 +768,27 @@ lw_dist2d_line_curvepoly(LWLINE *line, LWCURVEPOLY *poly, DISTPTS *dl)
 	const POINT2D *pt = getPoint2d_cp(line->points, 0);
 	uint32_t i;
 
-	if (lwgeom_contains_point(poly->rings[0], pt) == LW_OUTSIDE) {
-		return lw_dist2d_recursive((LWGEOM *)line, poly->rings[0], dl);
-	}
+	if (lwgeom_contains_point(poly->rings[0], pt) == LW_OUTSIDE)
+	{ return lw_dist2d_recursive((LWGEOM *)line, poly->rings[0], dl); }
 
-	for (i = 1; i < poly->nrings; i++) {
+	for (i = 1; i < poly->nrings; i++)
+	{
 		if (!lw_dist2d_recursive((LWGEOM *)line, poly->rings[i], dl)) return LW_FALSE;
 
 		if (dl->distance <= dl->tolerance && dl->mode == DIST_MIN) return LW_TRUE;
 	}
 
-	for (i = 1; i < poly->nrings; i++) {
-		if (lwgeom_contains_point(poly->rings[i], pt) != LW_OUTSIDE) {
+	for (i = 1; i < poly->nrings; i++)
+	{
+		if (lwgeom_contains_point(poly->rings[i], pt) != LW_OUTSIDE)
+		{
 			/* Its inside a hole, then the actual */
 			return LW_TRUE;
 		}
 	}
 
-	if (dl->mode == DIST_MIN) {
+	if (dl->mode == DIST_MIN)
+	{
 		dl->distance = 0.0;
 		dl->p1.x = dl->p2.x = pt->x;
 		dl->p1.y = dl->p2.y = pt->y;
@@ -776,37 +822,38 @@ lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
 	here it would be possible to handle the information about wich one is inside wich one and only search for the
 	smaller ones in the bigger ones holes.*/
 	pt = getPoint2d_cp(poly1->rings[0], 0);
-	if (ptarray_contains_point(poly2->rings[0], pt) == LW_OUTSIDE) {
+	if (ptarray_contains_point(poly2->rings[0], pt) == LW_OUTSIDE)
+	{
 		pt = getPoint2d_cp(poly2->rings[0], 0);
-		if (ptarray_contains_point(poly1->rings[0], pt) == LW_OUTSIDE) {
-			return lw_dist2d_ptarray_ptarray(poly1->rings[0], poly2->rings[0], dl);
-		}
+		if (ptarray_contains_point(poly1->rings[0], pt) == LW_OUTSIDE)
+		{ return lw_dist2d_ptarray_ptarray(poly1->rings[0], poly2->rings[0], dl); }
 	}
 
 	/*3	check if first point of poly2 is in a hole of poly1. If so check outer ring of poly2 against that hole
 	 * of poly1*/
 	pt = getPoint2d_cp(poly2->rings[0], 0);
-	for (i = 1; i < poly1->nrings; i++) {
+	for (i = 1; i < poly1->nrings; i++)
+	{
 		/* Inside a hole */
-		if (ptarray_contains_point(poly1->rings[i], pt) != LW_OUTSIDE) {
-			return lw_dist2d_ptarray_ptarray(poly1->rings[i], poly2->rings[0], dl);
-		}
+		if (ptarray_contains_point(poly1->rings[i], pt) != LW_OUTSIDE)
+		{ return lw_dist2d_ptarray_ptarray(poly1->rings[i], poly2->rings[0], dl); }
 	}
 
 	/*4	check if first point of poly1 is in a hole of poly2. If so check outer ring of poly1 against that hole
 	 * of poly2*/
 	pt = getPoint2d_cp(poly1->rings[0], 0);
-	for (i = 1; i < poly2->nrings; i++) {
+	for (i = 1; i < poly2->nrings; i++)
+	{
 		/* Inside a hole */
-		if (ptarray_contains_point(poly2->rings[i], pt) != LW_OUTSIDE) {
-			return lw_dist2d_ptarray_ptarray(poly1->rings[0], poly2->rings[i], dl);
-		}
+		if (ptarray_contains_point(poly2->rings[i], pt) != LW_OUTSIDE)
+		{ return lw_dist2d_ptarray_ptarray(poly1->rings[0], poly2->rings[i], dl); }
 	}
 
 	/*5	If we have come all the way here we know that the first point of one of them is inside the other ones
 	 * outer ring and not in holes so we check wich one is inside.*/
 	pt = getPoint2d_cp(poly1->rings[0], 0);
-	if (ptarray_contains_point(poly2->rings[0], pt) != LW_OUTSIDE) {
+	if (ptarray_contains_point(poly2->rings[0], pt) != LW_OUTSIDE)
+	{
 		dl->distance = 0.0;
 		dl->p1.x = dl->p2.x = pt->x;
 		dl->p1.y = dl->p2.y = pt->y;
@@ -814,7 +861,8 @@ lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
 	}
 
 	pt = getPoint2d_cp(poly2->rings[0], 0);
-	if (ptarray_contains_point(poly1->rings[0], pt) != LW_OUTSIDE) {
+	if (ptarray_contains_point(poly1->rings[0], pt) != LW_OUTSIDE)
+	{
 		dl->distance = 0.0;
 		dl->p1.x = dl->p2.x = pt->x;
 		dl->p1.y = dl->p2.y = pt->y;
@@ -858,12 +906,14 @@ lw_dist2d_circstring_circstring(LWCIRCSTRING *line1, LWCIRCSTRING *line2, DISTPT
 static const POINT2D *
 lw_curvering_getfirstpoint2d_cp(LWGEOM *geom)
 {
-	switch (geom->type) {
+	switch (geom->type)
+	{
 	case LINETYPE:
 		return getPoint2d_cp(((LWLINE *)geom)->points, 0);
 	case CIRCSTRINGTYPE:
 		return getPoint2d_cp(((LWCIRCSTRING *)geom)->points, 0);
-	case COMPOUNDTYPE: {
+	case COMPOUNDTYPE:
+	{
 		LWCOMPOUND *comp = (LWCOMPOUND *)geom;
 		LWLINE *line = (LWLINE *)(comp->geoms[0]);
 		return getPoint2d_cp(line->points, 0);
@@ -889,37 +939,38 @@ lw_dist2d_curvepoly_curvepoly(LWCURVEPOLY *poly1, LWCURVEPOLY *poly2, DISTPTS *d
 	here it would be possible to handle the information about wich one is inside wich one and only search for the
 	smaller ones in the bigger ones holes.*/
 	pt = lw_curvering_getfirstpoint2d_cp(poly1->rings[0]);
-	if (lwgeom_contains_point(poly2->rings[0], pt) == LW_OUTSIDE) {
+	if (lwgeom_contains_point(poly2->rings[0], pt) == LW_OUTSIDE)
+	{
 		pt = lw_curvering_getfirstpoint2d_cp(poly2->rings[0]);
-		if (lwgeom_contains_point(poly1->rings[0], pt) == LW_OUTSIDE) {
-			return lw_dist2d_recursive(poly1->rings[0], poly2->rings[0], dl);
-		}
+		if (lwgeom_contains_point(poly1->rings[0], pt) == LW_OUTSIDE)
+		{ return lw_dist2d_recursive(poly1->rings[0], poly2->rings[0], dl); }
 	}
 
 	/*3	check if first point of poly2 is in a hole of poly1. If so check outer ring of poly2 against that hole
 	 * of poly1*/
 	pt = lw_curvering_getfirstpoint2d_cp(poly2->rings[0]);
-	for (i = 1; i < poly1->nrings; i++) {
+	for (i = 1; i < poly1->nrings; i++)
+	{
 		/* Inside a hole */
-		if (lwgeom_contains_point(poly1->rings[i], pt) != LW_OUTSIDE) {
-			return lw_dist2d_recursive(poly1->rings[i], poly2->rings[0], dl);
-		}
+		if (lwgeom_contains_point(poly1->rings[i], pt) != LW_OUTSIDE)
+		{ return lw_dist2d_recursive(poly1->rings[i], poly2->rings[0], dl); }
 	}
 
 	/*4	check if first point of poly1 is in a hole of poly2. If so check outer ring of poly1 against that hole
 	 * of poly2*/
 	pt = lw_curvering_getfirstpoint2d_cp(poly1->rings[0]);
-	for (i = 1; i < poly2->nrings; i++) {
+	for (i = 1; i < poly2->nrings; i++)
+	{
 		/* Inside a hole */
-		if (lwgeom_contains_point(poly2->rings[i], pt) != LW_OUTSIDE) {
-			return lw_dist2d_recursive(poly1->rings[0], poly2->rings[i], dl);
-		}
+		if (lwgeom_contains_point(poly2->rings[i], pt) != LW_OUTSIDE)
+		{ return lw_dist2d_recursive(poly1->rings[0], poly2->rings[i], dl); }
 	}
 
 	/*5	If we have come all the way here we know that the first point of one of them is inside the other ones
 	 * outer ring and not in holes so we check wich one is inside.*/
 	pt = lw_curvering_getfirstpoint2d_cp(poly1->rings[0]);
-	if (lwgeom_contains_point(poly2->rings[0], pt) != LW_OUTSIDE) {
+	if (lwgeom_contains_point(poly2->rings[0], pt) != LW_OUTSIDE)
+	{
 		dl->distance = 0.0;
 		dl->p1.x = dl->p2.x = pt->x;
 		dl->p1.y = dl->p2.y = pt->y;
@@ -927,7 +978,8 @@ lw_dist2d_curvepoly_curvepoly(LWCURVEPOLY *poly1, LWCURVEPOLY *poly2, DISTPTS *d
 	}
 
 	pt = lw_curvering_getfirstpoint2d_cp(poly2->rings[0]);
-	if (lwgeom_contains_point(poly1->rings[0], pt) != LW_OUTSIDE) {
+	if (lwgeom_contains_point(poly1->rings[0], pt) != LW_OUTSIDE)
+	{
 		dl->distance = 0.0;
 		dl->p1.x = dl->p2.x = pt->x;
 		dl->p1.y = dl->p2.y = pt->y;
@@ -955,7 +1007,8 @@ lw_dist2d_pt_ptarray(const POINT2D *p, POINTARRAY *pa, DISTPTS *dl)
 
 	if (!lw_dist2d_pt_pt(p, start, dl)) return LW_FALSE;
 
-	for (t = 1; t < pa->npoints; t++) {
+	for (t = 1; t < pa->npoints; t++)
+	{
 		dl->twisted = twist;
 		end = getPoint2d_cp(pa, t);
 		if (!lw_dist2d_pt_seg(p, start, end, dl)) return LW_FALSE;
@@ -983,12 +1036,14 @@ lw_dist2d_pt_ptarrayarc(const POINT2D *p, const POINTARRAY *pa, DISTPTS *dl)
 
 	LWDEBUG(2, "lw_dist2d_pt_ptarrayarc is called");
 
-	if (pa->npoints % 2 == 0 || pa->npoints < 3) {
+	if (pa->npoints % 2 == 0 || pa->npoints < 3)
+	{
 		lwerror("lw_dist2d_pt_ptarrayarc called with non-arc input");
 		return LW_FALSE;
 	}
 
-	if (dl->mode == DIST_MAX) {
+	if (dl->mode == DIST_MAX)
+	{
 		lwerror("lw_dist2d_pt_ptarrayarc does not currently support DIST_MAX mode");
 		return LW_FALSE;
 	}
@@ -997,7 +1052,8 @@ lw_dist2d_pt_ptarrayarc(const POINT2D *p, const POINTARRAY *pa, DISTPTS *dl)
 
 	if (!lw_dist2d_pt_pt(p, A1, dl)) return LW_FALSE;
 
-	for (t = 1; t < pa->npoints; t += 2) {
+	for (t = 1; t < pa->npoints; t += 2)
+	{
 		dl->twisted = twist;
 		A2 = getPoint2d_cp(pa, t);
 		A3 = getPoint2d_cp(pa, t + 1);
@@ -1041,7 +1097,9 @@ lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2, DISTPTS *dl)
 				LWDEBUGF(3, " seg%d-seg%d dist: %f, mindist: %f", t, u, dl->distance, dl->tolerance);
 			}
 		}
-	} else {
+	}
+	else
+	{
 		start = getPoint2d_cp(l1, 0);
 		for (t = 1; t < l1->npoints; t++) /*for each segment in L1 */
 		{
@@ -1081,15 +1139,19 @@ lw_dist2d_ptarray_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, DISTPTS
 
 	LWDEBUGF(2, "lw_dist2d_ptarray_ptarrayarc called (points: %d-%d)", pa->npoints, pb->npoints);
 
-	if (pb->npoints % 2 == 0 || pb->npoints < 3) {
+	if (pb->npoints % 2 == 0 || pb->npoints < 3)
+	{
 		lwerror("lw_dist2d_ptarray_ptarrayarc called with non-arc input");
 		return LW_FALSE;
 	}
 
-	if (dl->mode == DIST_MAX) {
+	if (dl->mode == DIST_MAX)
+	{
 		lwerror("lw_dist2d_ptarray_ptarrayarc does not currently support DIST_MAX mode");
 		return LW_FALSE;
-	} else {
+	}
+	else
+	{
 		A1 = getPoint2d_cp(pa, 0);
 		for (t = 1; t < pa->npoints; t++) /* For each segment in pa */
 		{
@@ -1131,10 +1193,13 @@ lw_dist2d_ptarrayarc_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, DIST
 
 	LWDEBUGF(2, "lw_dist2d_ptarrayarc_ptarrayarc called (points: %d-%d)", pa->npoints, pb->npoints);
 
-	if (dl->mode == DIST_MAX) {
+	if (dl->mode == DIST_MAX)
+	{
 		lwerror("lw_dist2d_ptarrayarc_ptarrayarc does not currently support DIST_MAX mode");
 		return LW_FALSE;
-	} else {
+	}
+	else
+	{
 		A1 = getPoint2d_cp(pa, 0);
 		for (t = 1; t < pa->npoints; t += 2) /* For each segment in pa */
 		{
@@ -1201,7 +1266,8 @@ lw_dist2d_seg_arc(const POINT2D *A1,
 	/* Line intersects circle, maybe arc intersects edge? */
 	/* If so, that's the closest point. */
 	/* If not, the closest point is one of the end points of A */
-	if (dist_C_D < radius_C) {
+	if (dist_C_D < radius_C)
+	{
 		double length_A;  /* length of the segment A */
 		POINT2D E, F;     /* points of interection of edge A and circle(B) */
 		double dist_D_EF; /* distance from D to E or F (same distance both ways) */
@@ -1220,7 +1286,8 @@ lw_dist2d_seg_arc(const POINT2D *A1,
 		pt_in_arc = lw_pt_in_arc(&E, B1, B2, B3);
 		pt_in_seg = lw_pt_in_seg(&E, A1, A2);
 
-		if (pt_in_arc && pt_in_seg) {
+		if (pt_in_arc && pt_in_seg)
+		{
 			dl->distance = 0.0;
 			dl->p1 = E;
 			dl->p2 = E;
@@ -1231,7 +1298,8 @@ lw_dist2d_seg_arc(const POINT2D *A1,
 		pt_in_arc = lw_pt_in_arc(&F, B1, B2, B3);
 		pt_in_seg = lw_pt_in_seg(&F, A1, A2);
 
-		if (pt_in_arc && pt_in_seg) {
+		if (pt_in_arc && pt_in_seg)
+		{
 			dl->distance = 0.0;
 			dl->p1 = F;
 			dl->p2 = F;
@@ -1242,13 +1310,15 @@ lw_dist2d_seg_arc(const POINT2D *A1,
 	/* Line grazes circle, maybe arc intersects edge? */
 	/* If so, grazing point is the closest point. */
 	/* If not, the closest point is one of the end points of A */
-	else if (dist_C_D == radius_C) {
+	else if (dist_C_D == radius_C)
+	{
 		/* Closest point D is also the point of grazing */
 		pt_in_arc = lw_pt_in_arc(&D, B1, B2, B3);
 		pt_in_seg = lw_pt_in_seg(&D, A1, A2);
 
 		/* Is D contained in both A and B? */
-		if (pt_in_arc && pt_in_seg) {
+		if (pt_in_arc && pt_in_seg)
+		{
 			dl->distance = 0.0;
 			dl->p1 = D;
 			dl->p2 = D;
@@ -1258,7 +1328,8 @@ lw_dist2d_seg_arc(const POINT2D *A1,
 	/* Line misses circle. */
 	/* If closest point to A on circle is within B, then that's the closest */
 	/* Otherwise, the closest point will be an end point of A */
-	else {
+	else
+	{
 		POINT2D G; /* Point on circle closest to A */
 		G.x = C.x + (D.x - C.x) * radius_C / dist_C_D;
 		G.y = C.y + (D.y - C.y) * radius_C / dist_C_D;
@@ -1277,19 +1348,22 @@ lw_dist2d_seg_arc(const POINT2D *A1,
 
 	/* Closest point is in the arc, but not in the segment, so */
 	/* one of the segment end points must be the closest. */
-	if (pt_in_arc && !pt_in_seg) {
+	if (pt_in_arc && !pt_in_seg)
+	{
 		lw_dist2d_pt_arc(A1, B1, B2, B3, dl);
 		lw_dist2d_pt_arc(A2, B1, B2, B3, dl);
 		return LW_TRUE;
 	}
 	/* or, one of the arc end points is the closest */
-	else if (pt_in_seg && !pt_in_arc) {
+	else if (pt_in_seg && !pt_in_arc)
+	{
 		lw_dist2d_pt_seg(B1, A1, A2, dl);
 		lw_dist2d_pt_seg(B3, A1, A2, dl);
 		return LW_TRUE;
 	}
 	/* Finally, one of the end-point to end-point combos is the closest. */
-	else {
+	else
+	{
 		lw_dist2d_pt_pt(A1, B1, dl);
 		lw_dist2d_pt_pt(A1, B3, dl);
 		lw_dist2d_pt_pt(A2, B1, dl);
@@ -1322,7 +1396,8 @@ lw_dist2d_pt_arc(const POINT2D *P, const POINT2D *A1, const POINT2D *A2, const P
 	d = distance2d_pt_pt(&C, P);
 
 	/* P is the center of the circle */
-	if (FP_EQUALS(d, 0.0)) {
+	if (FP_EQUALS(d, 0.0))
+	{
 		dl->distance = radius_A;
 		dl->p1 = *A1;
 		dl->p2 = *P;
@@ -1334,9 +1409,9 @@ lw_dist2d_pt_arc(const POINT2D *P, const POINT2D *A1, const POINT2D *A2, const P
 	X.y = C.y + (P->y - C.y) * radius_A / d;
 
 	/* Is crossing point inside the arc? Or arc is actually circle? */
-	if (p2d_same(A1, A3) || lw_pt_in_arc(&X, A1, A2, A3)) {
-		lw_dist2d_pt_pt(P, &X, dl);
-	} else {
+	if (p2d_same(A1, A3) || lw_pt_in_arc(&X, A1, A2, A3)) { lw_dist2d_pt_pt(P, &X, dl); }
+	else
+	{
 		/* Distance is the minimum of the distances to the arc end points */
 		lw_dist2d_pt_pt(A1, P, dl);
 		lw_dist2d_pt_pt(A3, P, dl);
@@ -1403,7 +1478,8 @@ lw_dist2d_arc_arc(const POINT2D *A1,
 	if (FP_EQUALS(d, 0.0)) return lw_dist2d_arc_arc_concentric(A1, A2, A3, radius_A, B1, B2, B3, radius_B, &CA, dl);
 
 	/* Make sure that arc "A" has the bigger radius */
-	if (radius_B > radius_A) {
+	if (radius_B > radius_A)
+	{
 		const POINT2D *tmp;
 		tmp = B1;
 		B1 = A1;
@@ -1423,7 +1499,8 @@ lw_dist2d_arc_arc(const POINT2D *A1,
 	}
 
 	/* Circles touch at a point. Is that point within the arcs? */
-	if (d == (radius_A + radius_B)) {
+	if (d == (radius_A + radius_B))
+	{
 		D.x = CA.x + (CB.x - CA.x) * radius_A / d;
 		D.y = CA.y + (CB.y - CA.y) * radius_A / d;
 
@@ -1431,7 +1508,8 @@ lw_dist2d_arc_arc(const POINT2D *A1,
 		pt_in_arc_B = lw_pt_in_arc(&D, B1, B2, B3);
 
 		/* Arcs do touch at D, return it */
-		if (pt_in_arc_A && pt_in_arc_B) {
+		if (pt_in_arc_A && pt_in_arc_B)
+		{
 			dl->distance = 0.0;
 			dl->p1 = D;
 			dl->p2 = D;
@@ -1440,7 +1518,8 @@ lw_dist2d_arc_arc(const POINT2D *A1,
 	}
 	/* Disjoint or contained circles don't intersect. Closest point may be on */
 	/* the line joining CA to CB. */
-	else if (d > (radius_A + radius_B) /* Disjoint */ || d < (radius_A - radius_B) /* Contained */) {
+	else if (d > (radius_A + radius_B) /* Disjoint */ || d < (radius_A - radius_B) /* Contained */)
+	{
 		POINT2D XA, XB; /* Points where the line from CA to CB cross their circle bounds */
 
 		/* Calculate hypothetical nearest points, the places on the */
@@ -1460,7 +1539,8 @@ lw_dist2d_arc_arc(const POINT2D *A1,
 	}
 	/* Circles cross at two points, are either of those points in both arcs? */
 	/* http://paulbourke.net/geometry/2circle/ */
-	else if (d < (radius_A + radius_B)) {
+	else if (d < (radius_A + radius_B))
+	{
 		POINT2D E, F; /* Points where circle(A) and circle(B) cross */
 		/* Distance from CA to D */
 		double a = (radius_A * radius_A - radius_B * radius_B + d * d) / (2 * d);
@@ -1479,7 +1559,8 @@ lw_dist2d_arc_arc(const POINT2D *A1,
 		pt_in_arc_A = lw_pt_in_arc(&E, A1, A2, A3);
 		pt_in_arc_B = lw_pt_in_arc(&E, B1, B2, B3);
 
-		if (pt_in_arc_A && pt_in_arc_B) {
+		if (pt_in_arc_A && pt_in_arc_B)
+		{
 			dl->p1 = dl->p2 = E;
 			dl->distance = 0.0;
 			return LW_TRUE;
@@ -1493,32 +1574,38 @@ lw_dist2d_arc_arc(const POINT2D *A1,
 		pt_in_arc_A = lw_pt_in_arc(&F, A1, A2, A3);
 		pt_in_arc_B = lw_pt_in_arc(&F, B1, B2, B3);
 
-		if (pt_in_arc_A && pt_in_arc_B) {
+		if (pt_in_arc_A && pt_in_arc_B)
+		{
 			dl->p1 = dl->p2 = F;
 			dl->distance = 0.0;
 			return LW_TRUE;
 		}
-	} else {
+	}
+	else
+	{
 		lwerror("lw_dist2d_arc_arc: arcs neither touch, intersect nor are disjoint! INCONCEIVABLE!");
 		return LW_FALSE;
 	}
 
 	/* Closest point is in the arc A, but not in the arc B, so */
 	/* one of the B end points must be the closest. */
-	if (pt_in_arc_A && !pt_in_arc_B) {
+	if (pt_in_arc_A && !pt_in_arc_B)
+	{
 		lw_dist2d_pt_arc(B1, A1, A2, A3, dl);
 		lw_dist2d_pt_arc(B3, A1, A2, A3, dl);
 		return LW_TRUE;
 	}
 	/* Closest point is in the arc B, but not in the arc A, so */
 	/* one of the A end points must be the closest. */
-	else if (pt_in_arc_B && !pt_in_arc_A) {
+	else if (pt_in_arc_B && !pt_in_arc_A)
+	{
 		lw_dist2d_pt_arc(A1, B1, B2, B3, dl);
 		lw_dist2d_pt_arc(A3, B1, B2, B3, dl);
 		return LW_TRUE;
 	}
 	/* Finally, one of the end-point to end-point combos is the closest. */
-	else {
+	else
+	{
 		lw_dist2d_pt_pt(A1, B1, dl);
 		lw_dist2d_pt_pt(A1, B3, dl);
 		lw_dist2d_pt_pt(A2, B1, dl);
@@ -1547,16 +1634,19 @@ lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 	const POINT2D *P2;
 	POINT2D proj;
 
-	if (radius_A == radius_B) {
+	if (radius_A == radius_B)
+	{
 		/* Check if B1 or B3 are in the same side as A2 in the A1-A3 arc */
 		seg_size = lw_segment_side(A1, A3, A2);
-		if (seg_size == lw_segment_side(A1, A3, B1)) {
+		if (seg_size == lw_segment_side(A1, A3, B1))
+		{
 			dl->p1 = *B1;
 			dl->p2 = *B1;
 			dl->distance = 0;
 			return LW_TRUE;
 		}
-		if (seg_size == lw_segment_side(A1, A3, B3)) {
+		if (seg_size == lw_segment_side(A1, A3, B3))
+		{
 			dl->p1 = *B3;
 			dl->p2 = *B3;
 			dl->distance = 0;
@@ -1564,19 +1654,23 @@ lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 		}
 		/* Check if A1 or A3 are in the same side as B2 in the B1-B3 arc */
 		seg_size = lw_segment_side(B1, B3, B2);
-		if (seg_size == lw_segment_side(B1, B3, A1)) {
+		if (seg_size == lw_segment_side(B1, B3, A1))
+		{
 			dl->p1 = *A1;
 			dl->p2 = *A1;
 			dl->distance = 0;
 			return LW_TRUE;
 		}
-		if (seg_size == lw_segment_side(B1, B3, A3)) {
+		if (seg_size == lw_segment_side(B1, B3, A3))
+		{
 			dl->p1 = *A3;
 			dl->p2 = *A3;
 			dl->distance = 0;
 			return LW_TRUE;
 		}
-	} else {
+	}
+	else
+	{
 		/* Check if any projection of B ends are in A*/
 		seg_size = lw_segment_side(A1, A3, A2);
 
@@ -1584,7 +1678,8 @@ lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 		proj.x = CENTER->x + (B1->x - CENTER->x) * radius_A / radius_B;
 		proj.y = CENTER->y + (B1->y - CENTER->y) * radius_A / radius_B;
 
-		if (seg_size == lw_segment_side(A1, A3, &proj)) {
+		if (seg_size == lw_segment_side(A1, A3, &proj))
+		{
 			dl->p1 = proj;
 			dl->p2 = *B1;
 			dl->distance = fabs(radius_A - radius_B);
@@ -1593,7 +1688,8 @@ lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 		/* B3 */
 		proj.x = CENTER->x + (B3->x - CENTER->x) * radius_A / radius_B;
 		proj.y = CENTER->y + (B3->y - CENTER->y) * radius_A / radius_B;
-		if (seg_size == lw_segment_side(A1, A3, &proj)) {
+		if (seg_size == lw_segment_side(A1, A3, &proj))
+		{
 			dl->p1 = proj;
 			dl->p2 = *B3;
 			dl->distance = fabs(radius_A - radius_B);
@@ -1606,7 +1702,8 @@ lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 		/* A1 */
 		proj.x = CENTER->x + (A1->x - CENTER->x) * radius_B / radius_A;
 		proj.y = CENTER->y + (A1->y - CENTER->y) * radius_B / radius_A;
-		if (seg_size == lw_segment_side(B1, B3, &proj)) {
+		if (seg_size == lw_segment_side(B1, B3, &proj))
+		{
 			dl->p1 = proj;
 			dl->p2 = *A1;
 			dl->distance = fabs(radius_A - radius_B);
@@ -1616,7 +1713,8 @@ lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 		/* A3 */
 		proj.x = CENTER->x + (A3->x - CENTER->x) * radius_B / radius_A;
 		proj.y = CENTER->y + (A3->y - CENTER->y) * radius_B / radius_A;
-		if (seg_size == lw_segment_side(B1, B3, &proj)) {
+		if (seg_size == lw_segment_side(B1, B3, &proj))
+		{
 			dl->p1 = proj;
 			dl->p2 = *A3;
 			dl->distance = fabs(radius_A - radius_B);
@@ -1630,21 +1728,24 @@ lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 	P2 = B1;
 
 	dist_sqr = distance2d_sqr_pt_pt(A1, B3);
-	if (dist_sqr < shortest_sqr) {
+	if (dist_sqr < shortest_sqr)
+	{
 		shortest_sqr = dist_sqr;
 		P1 = A1;
 		P2 = B3;
 	}
 
 	dist_sqr = distance2d_sqr_pt_pt(A3, B1);
-	if (dist_sqr < shortest_sqr) {
+	if (dist_sqr < shortest_sqr)
+	{
 		shortest_sqr = dist_sqr;
 		P1 = A3;
 		P2 = B1;
 	}
 
 	dist_sqr = distance2d_sqr_pt_pt(A3, B3);
-	if (dist_sqr < shortest_sqr) {
+	if (dist_sqr < shortest_sqr)
+	{
 		shortest_sqr = dist_sqr;
 		P1 = A3;
 		P2 = B3;
@@ -1683,7 +1784,8 @@ lw_dist2d_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C, const PO
 	if ((A->x == B->x) && (A->y == B->y)) { return lw_dist2d_pt_seg(A, C, D, dl); }
 	/*U and V are the same point */
 
-	if ((C->x == D->x) && (C->y == D->y)) {
+	if ((C->x == D->x) && (C->y == D->y))
+	{
 		dl->twisted = ((dl->twisted) * (-1));
 		return lw_dist2d_pt_seg(D, A, B, dl);
 	}
@@ -1715,13 +1817,17 @@ lw_dist2d_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C, const PO
 	s_top = (A->y - C->y) * (B->x - A->x) - (A->x - C->x) * (B->y - A->y);
 	s_bot = (B->x - A->x) * (D->y - C->y) - (B->y - A->y) * (D->x - C->x);
 
-	if ((r_bot == 0) || (s_bot == 0)) {
-		if ((lw_dist2d_pt_seg(A, C, D, dl)) && (lw_dist2d_pt_seg(B, C, D, dl))) {
+	if ((r_bot == 0) || (s_bot == 0))
+	{
+		if ((lw_dist2d_pt_seg(A, C, D, dl)) && (lw_dist2d_pt_seg(B, C, D, dl)))
+		{
 			dl->twisted = ((dl->twisted) * (-1)); /*here we change the order of inputted geometrys and that
 								 we  notice by changing sign on dl->twisted*/
 			return ((lw_dist2d_pt_seg(C, A, B, dl)) &&
 				(lw_dist2d_pt_seg(D, A, B, dl))); /*if all is successful we return true*/
-		} else {
+		}
+		else
+		{
 			return LW_FALSE; /* if any of the calls to lw_dist2d_pt_seg goes wrong we return false*/
 		}
 	}
@@ -1729,28 +1835,39 @@ lw_dist2d_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C, const PO
 	s = s_top / s_bot;
 	r = r_top / r_bot;
 
-	if (((r < 0) || (r > 1) || (s < 0) || (s > 1)) || (dl->mode == DIST_MAX)) {
-		if ((lw_dist2d_pt_seg(A, C, D, dl)) && (lw_dist2d_pt_seg(B, C, D, dl))) {
+	if (((r < 0) || (r > 1) || (s < 0) || (s > 1)) || (dl->mode == DIST_MAX))
+	{
+		if ((lw_dist2d_pt_seg(A, C, D, dl)) && (lw_dist2d_pt_seg(B, C, D, dl)))
+		{
 			dl->twisted = ((dl->twisted) * (-1)); /*here we change the order of inputted geometrys and that
 								 we  notice by changing sign on dl->twisted*/
 			return ((lw_dist2d_pt_seg(C, A, B, dl)) &&
 				(lw_dist2d_pt_seg(D, A, B, dl))); /*if all is successful we return true*/
-		} else {
+		}
+		else
+		{
 			return LW_FALSE; /* if any of the calls to lw_dist2d_pt_seg goes wrong we return false*/
 		}
-	} else {
+	}
+	else
+	{
 		if (dl->mode == DIST_MIN) /*If there is intersection we identify the intersection point and return it
 					     but only if we are looking for mindistance*/
 		{
 			POINT2D theP;
 
-			if (((A->x == C->x) && (A->y == C->y)) || ((A->x == D->x) && (A->y == D->y))) {
+			if (((A->x == C->x) && (A->y == C->y)) || ((A->x == D->x) && (A->y == D->y)))
+			{
 				theP.x = A->x;
 				theP.y = A->y;
-			} else if (((B->x == C->x) && (B->y == C->y)) || ((B->x == D->x) && (B->y == D->y))) {
+			}
+			else if (((B->x == C->x) && (B->y == C->y)) || ((B->x == D->x) && (B->y == D->y)))
+			{
 				theP.x = B->x;
 				theP.y = B->y;
-			} else {
+			}
+			else
+			{
 				theP.x = A->x + r * (B->x - A->x);
 				theP.y = A->y + r * (B->y - A->y);
 			}
@@ -1868,15 +1985,20 @@ lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2, DISTPTS *dl, GBOX
 	qsort(list1, n1, sizeof(LISTSTRUCT), struct_cmp_by_measure);
 	qsort(list2, n2, sizeof(LISTSTRUCT), struct_cmp_by_measure);
 
-	if (c1m < c2m) {
-		if (!lw_dist2d_pre_seg_seg(l1, l2, list1, list2, k, dl)) {
+	if (c1m < c2m)
+	{
+		if (!lw_dist2d_pre_seg_seg(l1, l2, list1, list2, k, dl))
+		{
 			lwfree(list1);
 			lwfree(list2);
 			return LW_FALSE;
 		}
-	} else {
+	}
+	else
+	{
 		dl->twisted = ((dl->twisted) * (-1));
-		if (!lw_dist2d_pre_seg_seg(l2, l1, list2, list1, k, dl)) {
+		if (!lw_dist2d_pre_seg_seg(l2, l1, list2, list1, k, dl))
+		{
 			lwfree(list1);
 			lwfree(list2);
 			return LW_FALSE;
@@ -1914,7 +2036,8 @@ lw_dist2d_pre_seg_seg(POINTARRAY *l1, POINTARRAY *l2, LISTSTRUCT *list1, LISTSTR
 	lw_dist2d_pt_pt(p1, p3, dl);
 	maxmeasure = sqrt(dl->distance * dl->distance + (dl->distance * dl->distance * k * k));
 	twist = dl->twisted; /*to keep the incomming order between iterations*/
-	for (i = (n1 - 1); i >= 0; --i) {
+	for (i = (n1 - 1); i >= 0; --i)
+	{
 		/*we break this iteration when we have checked every
 		point closer to our perpendicular "checkline" than
 		our shortest found distance*/
@@ -1924,7 +2047,8 @@ lw_dist2d_pre_seg_seg(POINTARRAY *l1, POINTARRAY *l2, LISTSTRUCT *list1, LISTSTR
 		{
 			pnr1 = list1[i].pnr;
 			p1 = getPoint2d_cp(l1, pnr1);
-			if (pnr1 + r < 0) {
+			if (pnr1 + r < 0)
+			{
 				p01 = getPoint2d_cp(l1, (n1 - 1));
 				if ((p1->x == p01->x) && (p1->y == p01->y))
 					pnr2 = (n1 - 1);
@@ -1933,36 +2057,42 @@ lw_dist2d_pre_seg_seg(POINTARRAY *l1, POINTARRAY *l2, LISTSTRUCT *list1, LISTSTR
 							avoid the edge between start and end this way*/
 			}
 
-			else if (pnr1 + r > (n1 - 1)) {
+			else if (pnr1 + r > (n1 - 1))
+			{
 				p01 = getPoint2d_cp(l1, 0);
 				if ((p1->x == p01->x) && (p1->y == p01->y))
 					pnr2 = 0;
 				else
 					pnr2 = pnr1; /* if it is a line and the last and first point is not the same we
 							avoid the edge between start and end this way*/
-			} else
+			}
+			else
 				pnr2 = pnr1 + r;
 
 			p2 = getPoint2d_cp(l1, pnr2);
-			for (u = 0; u < n2; ++u) {
+			for (u = 0; u < n2; ++u)
+			{
 				if (((list2[u].themeasure - list1[i].themeasure)) >= maxmeasure) break;
 				pnr3 = list2[u].pnr;
 				p3 = getPoint2d_cp(l2, pnr3);
-				if (pnr3 == 0) {
+				if (pnr3 == 0)
+				{
 					p02 = getPoint2d_cp(l2, (n2 - 1));
 					if ((p3->x == p02->x) && (p3->y == p02->y))
 						pnr4 = (n2 - 1);
 					else
 						pnr4 = pnr3; /* if it is a line and the last and first point is not the
 								same we avoid the edge between start and end this way*/
-				} else
+				}
+				else
 					pnr4 = pnr3 - 1;
 
 				p4 = getPoint2d_cp(l2, pnr4);
 				dl->twisted = twist;
 				if (!lw_dist2d_selected_seg_seg(p1, p2, p3, p4, dl)) return LW_FALSE;
 
-				if (pnr3 >= (n2 - 1)) {
+				if (pnr3 >= (n2 - 1))
+				{
 					p02 = getPoint2d_cp(l2, 0);
 					if ((p3->x == p02->x) && (p3->y == p02->y))
 						pnr4 = 0;
@@ -2012,17 +2142,21 @@ lw_dist2d_selected_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C,
 	if ((A->x == B->x) && (A->y == B->y)) { return lw_dist2d_pt_seg(A, C, D, dl); }
 	/*U and V are the same point */
 
-	if ((C->x == D->x) && (C->y == D->y)) {
+	if ((C->x == D->x) && (C->y == D->y))
+	{
 		dl->twisted = ((dl->twisted) * (-1));
 		return lw_dist2d_pt_seg(D, A, B, dl);
 	}
 
-	if ((lw_dist2d_pt_seg(A, C, D, dl)) && (lw_dist2d_pt_seg(B, C, D, dl))) {
+	if ((lw_dist2d_pt_seg(A, C, D, dl)) && (lw_dist2d_pt_seg(B, C, D, dl)))
+	{
 		dl->twisted = ((dl->twisted) * (-1)); /*here we change the order of inputted geometrys and that we
 							 notice by changing sign on dl->twisted*/
 		return ((lw_dist2d_pt_seg(C, A, B, dl)) &&
 			(lw_dist2d_pt_seg(D, A, B, dl))); /*if all is successful we return true*/
-	} else {
+	}
+	else
+	{
 		return LW_FALSE; /* if any of the calls to lw_dist2d_pt_seg goes wrong we return false*/
 	}
 }
@@ -2071,22 +2205,19 @@ lw_dist2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B, DISTPTS *
 	the maxdistance have to be between two vertexes,
 	compared to mindistance which can be between
 	tvo vertexes vertex.*/
-	if (dl->mode == DIST_MAX) {
+	if (dl->mode == DIST_MAX)
+	{
 		if (r >= 0.5) { return lw_dist2d_pt_pt(p, A, dl); }
 		if (r < 0.5) { return lw_dist2d_pt_pt(p, B, dl); }
 	}
 
-	if (r < 0) /*If p projected on the line is outside point A*/
-	{
-		return lw_dist2d_pt_pt(p, A, dl);
-	}
+	if (r < 0) /*If p projected on the line is outside point A*/ { return lw_dist2d_pt_pt(p, A, dl); }
 	if (r >= 1) /*If p projected on the line is outside point B or on point B*/
-	{
-		return lw_dist2d_pt_pt(p, B, dl);
-	}
+	{ return lw_dist2d_pt_pt(p, B, dl); }
 
 	/*If the point p is on the segment this is a more robust way to find out that*/
-	if ((((A->y - p->y) * (B->x - A->x) == (A->x - p->x) * (B->y - A->y))) && (dl->mode == DIST_MIN)) {
+	if ((((A->y - p->y) * (B->x - A->x) == (A->x - p->x) * (B->y - A->y))) && (dl->mode == DIST_MIN))
+	{
 		dl->distance = 0.0;
 		dl->p1 = *p;
 		dl->p2 = *p;
@@ -2124,7 +2255,9 @@ lw_dist2d_pt_pt(const POINT2D *thep1, const POINT2D *thep2, DISTPTS *dl)
 		{
 			dl->p1 = *thep1;
 			dl->p2 = *thep2;
-		} else {
+		}
+		else
+		{
 			dl->p1 = *thep2;
 			dl->p2 = *thep1;
 		}
@@ -2243,7 +2376,8 @@ distance2d_sqr_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
 int
 azimuth_pt_pt(const POINT2D *A, const POINT2D *B, double *d)
 {
-	if (A->x == B->x) {
+	if (A->x == B->x)
+	{
 		if (A->y < B->y)
 			*d = 0.0;
 		else if (A->y > B->y)
@@ -2253,7 +2387,8 @@ azimuth_pt_pt(const POINT2D *A, const POINT2D *B, double *d)
 		return 1;
 	}
 
-	if (A->y == B->y) {
+	if (A->y == B->y)
+	{
 		if (A->x < B->x)
 			*d = M_PI / 2;
 		else if (A->x > B->x)
@@ -2263,10 +2398,10 @@ azimuth_pt_pt(const POINT2D *A, const POINT2D *B, double *d)
 		return 1;
 	}
 
-	if (A->x < B->x) {
-		if (A->y < B->y) {
-			*d = atan(fabs(A->x - B->x) / fabs(A->y - B->y));
-		} else /* ( A->y > B->y )  - equality case handled above */
+	if (A->x < B->x)
+	{
+		if (A->y < B->y) { *d = atan(fabs(A->x - B->x) / fabs(A->y - B->y)); }
+		else /* ( A->y > B->y )  - equality case handled above */
 		{
 			*d = atan(fabs(A->y - B->y) / fabs(A->x - B->x)) + (M_PI / 2);
 		}
@@ -2274,9 +2409,8 @@ azimuth_pt_pt(const POINT2D *A, const POINT2D *B, double *d)
 
 	else /* ( A->x > B->x ) - equality case handled above */
 	{
-		if (A->y > B->y) {
-			*d = atan(fabs(A->x - B->x) / fabs(A->y - B->y)) + M_PI;
-		} else /* ( A->y < B->y )  - equality case handled above */
+		if (A->y > B->y) { *d = atan(fabs(A->x - B->x) / fabs(A->y - B->y)) + M_PI; }
+		else /* ( A->y < B->y )  - equality case handled above */
 		{
 			*d = atan(fabs(A->y - B->y) / fabs(A->x - B->x)) + (M_PI + (M_PI / 2));
 		}

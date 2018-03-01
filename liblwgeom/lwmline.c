@@ -59,7 +59,8 @@ lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_e
 	double m_range = m_end - m_start;
 	LWGEOM **geoms = NULL;
 
-	if (lwmline->type != MULTILINETYPE) {
+	if (lwmline->type != MULTILINETYPE)
+	{
 		lwerror("lwmline_measured_from_lmwline: only multiline types supported");
 		return NULL;
 	}
@@ -68,18 +69,19 @@ lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_e
 	hasm = 1;
 
 	/* Calculate the total length of the mline */
-	for (i = 0; i < lwmline->ngeoms; i++) {
+	for (i = 0; i < lwmline->ngeoms; i++)
+	{
 		LWLINE *lwline = (LWLINE *)lwmline->geoms[i];
 		if (lwline->points && lwline->points->npoints > 1) { length += ptarray_length_2d(lwline->points); }
 	}
 
-	if (lwgeom_is_empty((LWGEOM *)lwmline)) {
-		return (LWMLINE *)lwcollection_construct_empty(MULTILINETYPE, lwmline->srid, hasz, hasm);
-	}
+	if (lwgeom_is_empty((LWGEOM *)lwmline))
+	{ return (LWMLINE *)lwcollection_construct_empty(MULTILINETYPE, lwmline->srid, hasz, hasm); }
 
 	geoms = lwalloc(sizeof(LWGEOM *) * lwmline->ngeoms);
 
-	for (i = 0; i < lwmline->ngeoms; i++) {
+	for (i = 0; i < lwmline->ngeoms; i++)
+	{
 		double sub_m_start, sub_m_end;
 		double sub_length = 0.0;
 		LWLINE *lwline = (LWLINE *)lwmline->geoms[i];

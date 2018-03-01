@@ -47,7 +47,8 @@ Datum distance3d(PG_FUNCTION_ARGS);
 
 Datum intersects3d_dwithin(PG_FUNCTION_ARGS);
 
-struct lwgeom_backend_definition {
+struct lwgeom_backend_definition
+{
 	const char *name;
 	Datum (*intersects_fn)(PG_FUNCTION_ARGS);
 	Datum (*intersects3d_fn)(PG_FUNCTION_ARGS);
@@ -98,8 +99,10 @@ lwgeom_backend_switch(const char *newvalue, __attribute__((__unused__)) void *ex
 
 	if (!newvalue) { return; }
 
-	for (i = 0; i < LWGEOM_NUM_BACKENDS; ++i) {
-		if (!strcmp(lwgeom_backends[i].name, newvalue)) {
+	for (i = 0; i < LWGEOM_NUM_BACKENDS; ++i)
+	{
+		if (!strcmp(lwgeom_backends[i].name, newvalue))
+		{
 			lwgeom_backend = &lwgeom_backends[i];
 			return;
 		}
@@ -123,7 +126,8 @@ lwgeom_init_backend()
 	/* callback to change which backend is in use by flipping a global variable */
 	/* over. This saves the overhead of looking up the engine every time, at */
 	/* the expense of the extra complexity. */
-	if (postgis_guc_find_option(guc_name)) {
+	if (postgis_guc_find_option(guc_name))
+	{
 		/* In this narrow case the previously installed GUC is tied to the callback in */
 		/* the previously loaded library. Probably this is happening during an */
 		/* upgrade, so the old library is where the callback ties to. */

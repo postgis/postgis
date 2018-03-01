@@ -42,7 +42,8 @@
 /**
  * Structure used in distance-calculations
  */
-typedef struct {
+typedef struct
+{
 	double distance; /*the distance between p1 and p2*/
 	POINT2D p1;
 	POINT2D p2;
@@ -53,7 +54,8 @@ typedef struct {
 	double tolerance; /*the tolerance for dwithin and dfullywithin*/
 } DISTPTS;
 
-typedef struct {
+typedef struct
+{
 	double themeasure; /*a value calculated to compare distances*/
 	int pnr;           /*pointnumber. the ordernumber of the point*/
 } LISTSTRUCT;

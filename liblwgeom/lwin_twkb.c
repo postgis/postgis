@@ -32,7 +32,8 @@
 /**
  * Used for passing the parse state between the parsing functions.
  */
-typedef struct {
+typedef struct
+{
 	/* Pointers to the bytes */
 	const uint8_t *twkb;     /* Points to start of TWKB */
 	const uint8_t *twkb_end; /* Points to end of TWKB */
@@ -78,7 +79,8 @@ LWGEOM *lwgeom_from_twkb_state(twkb_parse_state *s);
 static inline void
 twkb_parse_state_advance(twkb_parse_state *s, size_t next)
 {
-	if ((s->pos + next) > s->twkb_end) {
+	if ((s->pos + next) > s->twkb_end)
+	{
 		lwerror("%s: TWKB structure does not match expected size!", __func__);
 		// lwnotice("TWKB structure does not match expected size!");
 	}
@@ -127,7 +129,8 @@ twkb_parse_state_varint_skip(twkb_parse_state *s)
 static uint32_t
 lwtype_from_twkb_type(uint8_t twkb_type)
 {
-	switch (twkb_type) {
+	switch (twkb_type)
+	{
 	case 1:
 		return POINTTYPE;
 	case 2:
@@ -182,7 +185,8 @@ ptarray_from_twkb_state(twkb_parse_state *s, uint32_t npoints)
 
 	pa = ptarray_construct(s->has_z, s->has_m, npoints);
 	dlist = (double *)(pa->serialized_pointlist);
-	for (i = 0; i < npoints; i++) {
+	for (i = 0; i < npoints; i++)
+	{
 		int j = 0;
 		/* X */
 		s->coords[j] += twkb_parse_state_varint(s);
@@ -193,13 +197,15 @@ ptarray_from_twkb_state(twkb_parse_state *s, uint32_t npoints)
 		dlist[ndims * i + j] = s->coords[j] / s->factor;
 		j++;
 		/* Z */
-		if (s->has_z) {
+		if (s->has_z)
+		{
 			s->coords[j] += twkb_parse_state_varint(s);
 			dlist[ndims * i + j] = s->coords[j] / s->factor_z;
 			j++;
 		}
 		/* M */
-		if (s->has_m) {
+		if (s->has_m)
+		{
 			s->coords[j] += twkb_parse_state_varint(s);
 			dlist[ndims * i + j] = s->coords[j] / s->factor_m;
 			j++;
@@ -249,7 +255,8 @@ lwline_from_twkb_state(twkb_parse_state *s)
 
 	if (pa == NULL) return lwline_construct_empty(SRID_UNKNOWN, s->has_z, s->has_m);
 
-	if (s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 2) {
+	if (s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 2)
+	{
 		lwerror("%s must have at least two points", lwtype_name(s->lwtype));
 		return NULL;
 	}
@@ -282,7 +289,8 @@ lwpoly_from_twkb_state(twkb_parse_state *s)
 	/* Empty polygon? */
 	if (nrings == 0) return poly;
 
-	for (i = 0; i < nrings; i++) {
+	for (i = 0; i < nrings; i++)
+	{
 		/* Ret number of points */
 		uint32_t npoints = twkb_parse_state_uvarint(s);
 		POINTARRAY *pa = ptarray_from_twkb_state(s, npoints);
@@ -291,21 +299,24 @@ lwpoly_from_twkb_state(twkb_parse_state *s)
 		if (pa == NULL) continue;
 
 		/* Force first and last points to be the same. */
-		if (!ptarray_is_closed_2d(pa)) {
+		if (!ptarray_is_closed_2d(pa))
+		{
 			POINT4D pt;
 			getPoint4d_p(pa, 0, &pt);
 			ptarray_append_point(pa, &pt, LW_FALSE);
 		}
 
 		/* Check for at least four points. */
-		if (s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 4) {
+		if (s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 4)
+		{
 			LWDEBUGF(2, "%s must have at least four points in each ring", lwtype_name(s->lwtype));
 			lwerror("%s must have at least four points in each ring", lwtype_name(s->lwtype));
 			return NULL;
 		}
 
 		/* Add ring to polygon */
-		if (lwpoly_add_ring(poly, pa) == LW_FAILURE) {
+		if (lwpoly_add_ring(poly, pa) == LW_FAILURE)
+		{
 			LWDEBUG(2, "Unable to add ring to polygon");
 			lwerror("Unable to add ring to polygon");
 		}
@@ -332,14 +343,17 @@ lwmultipoint_from_twkb_state(twkb_parse_state *s)
 	LWDEBUGF(4, "Number of geometries %d", ngeoms);
 
 	/* It has an idlist, we need to skip that */
-	if (s->has_idlist) {
+	if (s->has_idlist)
+	{
 		for (i = 0; i < ngeoms; i++)
 			twkb_parse_state_varint_skip(s);
 	}
 
-	for (i = 0; i < ngeoms; i++) {
+	for (i = 0; i < ngeoms; i++)
+	{
 		geom = lwpoint_as_lwgeom(lwpoint_from_twkb_state(s));
-		if (lwcollection_add_lwgeom(col, geom) == NULL) {
+		if (lwcollection_add_lwgeom(col, geom) == NULL)
+		{
 			lwerror("Unable to add geometry (%p) to collection (%p)", geom, col);
 			return NULL;
 		}
@@ -368,14 +382,17 @@ lwmultiline_from_twkb_state(twkb_parse_state *s)
 	LWDEBUGF(4, "Number of geometries %d", ngeoms);
 
 	/* It has an idlist, we need to skip that */
-	if (s->has_idlist) {
+	if (s->has_idlist)
+	{
 		for (i = 0; i < ngeoms; i++)
 			twkb_parse_state_varint_skip(s);
 	}
 
-	for (i = 0; i < ngeoms; i++) {
+	for (i = 0; i < ngeoms; i++)
+	{
 		geom = lwline_as_lwgeom(lwline_from_twkb_state(s));
-		if (lwcollection_add_lwgeom(col, geom) == NULL) {
+		if (lwcollection_add_lwgeom(col, geom) == NULL)
+		{
 			lwerror("Unable to add geometry (%p) to collection (%p)", geom, col);
 			return NULL;
 		}
@@ -403,14 +420,17 @@ lwmultipoly_from_twkb_state(twkb_parse_state *s)
 	LWDEBUGF(4, "Number of geometries %d", ngeoms);
 
 	/* It has an idlist, we need to skip that */
-	if (s->has_idlist) {
+	if (s->has_idlist)
+	{
 		for (i = 0; i < ngeoms; i++)
 			twkb_parse_state_varint_skip(s);
 	}
 
-	for (i = 0; i < ngeoms; i++) {
+	for (i = 0; i < ngeoms; i++)
+	{
 		geom = lwpoly_as_lwgeom(lwpoly_from_twkb_state(s));
-		if (lwcollection_add_lwgeom(col, geom) == NULL) {
+		if (lwcollection_add_lwgeom(col, geom) == NULL)
+		{
 			lwerror("Unable to add geometry (%p) to collection (%p)", geom, col);
 			return NULL;
 		}
@@ -439,14 +459,17 @@ lwcollection_from_twkb_state(twkb_parse_state *s)
 	LWDEBUGF(4, "Number of geometries %d", ngeoms);
 
 	/* It has an idlist, we need to skip that */
-	if (s->has_idlist) {
+	if (s->has_idlist)
+	{
 		for (i = 0; i < ngeoms; i++)
 			twkb_parse_state_varint_skip(s);
 	}
 
-	for (i = 0; i < ngeoms; i++) {
+	for (i = 0; i < ngeoms; i++)
+	{
 		geom = lwgeom_from_twkb_state(s);
-		if (lwcollection_add_lwgeom(col, geom) == NULL) {
+		if (lwcollection_add_lwgeom(col, geom) == NULL)
+		{
 			lwerror("Unable to add geometry (%p) to collection (%p)", geom, col);
 			return NULL;
 		}
@@ -484,7 +507,8 @@ header_from_twkb_state(twkb_parse_state *s)
 	s->is_empty = (metadata & 0x10) >> 4;
 
 	/* Flag for higher dims means read a third byte */
-	if (extended_dims) {
+	if (extended_dims)
+	{
 		int8_t precision_z, precision_m;
 
 		extended_dims = byte_from_twkb_state(s);
@@ -498,7 +522,9 @@ header_from_twkb_state(twkb_parse_state *s)
 		/* Convert the precision into factor */
 		s->factor_z = pow(10, (double)precision_z);
 		s->factor_m = pow(10, (double)precision_m);
-	} else {
+	}
+	else
+	{
 		s->has_z = 0;
 		s->has_m = 0;
 		s->factor_z = 0;
@@ -534,12 +560,14 @@ lwgeom_from_twkb_state(twkb_parse_state *s)
 
 	/* Just experienced a geometry header, so now we */
 	/* need to reset our coordinate deltas */
-	for (i = 0; i < TWKB_IN_MAXCOORDS; i++) {
+	for (i = 0; i < TWKB_IN_MAXCOORDS; i++)
+	{
 		s->coords[i] = 0.0;
 	}
 
 	/* Read the bounding box, is there is one */
-	if (s->has_bbox) {
+	if (s->has_bbox)
+	{
 		/* Initialize */
 		has_bbox = s->has_bbox;
 		memset(&bbox, 0, sizeof(GBOX));
@@ -552,19 +580,22 @@ lwgeom_from_twkb_state(twkb_parse_state *s)
 		bbox.ymin = twkb_parse_state_double(s, s->factor);
 		bbox.ymax = bbox.ymin + twkb_parse_state_double(s, s->factor);
 		/* Z */
-		if (s->has_z) {
+		if (s->has_z)
+		{
 			bbox.zmin = twkb_parse_state_double(s, s->factor_z);
 			bbox.zmax = bbox.zmin + twkb_parse_state_double(s, s->factor_z);
 		}
 		/* M */
-		if (s->has_z) {
+		if (s->has_z)
+		{
 			bbox.mmin = twkb_parse_state_double(s, s->factor_m);
 			bbox.mmax = bbox.mmin + twkb_parse_state_double(s, s->factor_m);
 		}
 	}
 
 	/* Switch to code for the particular type we're dealing with */
-	switch (s->lwtype) {
+	switch (s->lwtype)
+	{
 	case POINTTYPE:
 		geom = lwpoint_as_lwgeom(lwpoint_from_twkb_state(s));
 		break;

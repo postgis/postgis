@@ -52,9 +52,8 @@ static void
 checked_system(const char *cmd)
 {
 	int ret = system(cmd);
-	if (WEXITSTATUS(ret) != 0) {
-		fprintf(stderr, "Failure return code (%d) from command: %s", WEXITSTATUS(ret), cmd);
-	}
+	if (WEXITSTATUS(ret) != 0)
+	{ fprintf(stderr, "Failure return code (%d) from command: %s", WEXITSTATUS(ret), cmd); }
 }
 
 /**
@@ -74,7 +73,8 @@ pointarrayToString(char *output, POINTARRAY *pa)
 	int i;
 	char *ptr = output;
 
-	for (i = 0; i < pa->npoints; i++) {
+	for (i = 0; i < pa->npoints; i++)
+	{
 		POINT2D pt;
 		getPoint2d_p(pa, i, &pt);
 
@@ -171,7 +171,8 @@ drawPolygon(char *output, LWPOLY *lwp, LAYERSTYLE *style)
 		       style->polygonStrokeColor,
 		       style->polygonStrokeWidth);
 	ptr += sprintf(ptr, "-draw \"path '");
-	for (i = 0; i < lwp->nrings; i++) {
+	for (i = 0; i < lwp->nrings; i++)
+	{
 		ptr += sprintf(ptr, "M ");
 		ptr += pointarrayToString(ptr, lwp->rings[i]);
 		ptr += sprintf(ptr, " ");
@@ -197,7 +198,8 @@ drawGeometry(char *output, LWGEOM *lwgeom, LAYERSTYLE *styles)
 	int i;
 	int type = lwgeom->type;
 
-	switch (type) {
+	switch (type)
+	{
 	case POINTTYPE:
 		ptr += drawPoint(ptr, (LWPOINT *)lwgeom, styles);
 		break;
@@ -211,7 +213,8 @@ drawGeometry(char *output, LWGEOM *lwgeom, LAYERSTYLE *styles)
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
-		for (i = 0; i < ((LWCOLLECTION *)lwgeom)->ngeoms; i++) {
+		for (i = 0; i < ((LWCOLLECTION *)lwgeom)->ngeoms; i++)
+		{
 			ptr += drawGeometry(ptr, lwcollection_getsubgeom((LWCOLLECTION *)lwgeom, i), styles);
 		}
 		break;
@@ -307,12 +310,15 @@ int
 getStyleName(char **styleName, char *line)
 {
 	char *ptr = strrchr(line, ';');
-	if (ptr == NULL) {
+	if (ptr == NULL)
+	{
 		*styleName = malloc(8);
 		strncpy(*styleName, "Default", 7);
 		(*styleName)[7] = '\0';
 		return 1;
-	} else {
+	}
+	else
+	{
 		*styleName = malloc(ptr - line + 1);
 		strncpy(*styleName, line, ptr - line);
 		(*styleName)[ptr - line] = '\0';
@@ -338,12 +344,14 @@ main(int argc, const char *argv[])
 
 	getStyles(&styles);
 
-	if (argc != 2 || strlen(argv[1]) < 3) {
+	if (argc != 2 || strlen(argv[1]) < 3)
+	{
 		lwerror("You must specify a wkt filename to convert, and it must be 3 or more characters long.\n");
 		return -1;
 	}
 
-	if ((pfile = fopen(argv[1], "r")) == NULL) {
+	if ((pfile = fopen(argv[1], "r")) == NULL)
+	{
 		perror(argv[1]);
 		return -1;
 	}
@@ -356,7 +364,8 @@ main(int argc, const char *argv[])
 	printf("generating %s\n", filename);
 
 	layerCount = 0;
-	while (fgets(line, sizeof line, pfile) != NULL && !isspace(*line)) {
+	while (fgets(line, sizeof line, pfile) != NULL && !isspace(*line))
+	{
 
 		char output[32768];
 		char *ptr = output;
@@ -369,15 +378,18 @@ main(int argc, const char *argv[])
 		useDefaultStyle = getStyleName(&styleName, line);
 		LWDEBUGF(4, "%s", styleName);
 
-		if (useDefaultStyle) {
+		if (useDefaultStyle)
+		{
 			printf("   Warning: using Default style for layer %d\n", layerCount);
 			lwgeom = lwgeom_from_wkt(line, LW_PARSER_CHECK_NONE);
-		} else
+		}
+		else
 			lwgeom = lwgeom_from_wkt(line + strlen(styleName) + 1, LW_PARSER_CHECK_NONE);
 		LWDEBUGF(4, "geom = %s", lwgeom_to_ewkt((LWGEOM *)lwgeom));
 
 		style = getStyle(styles, styleName);
-		if (!style) {
+		if (!style)
+		{
 			lwerror("Could not find style named %s", styleName);
 			return -1;
 		}

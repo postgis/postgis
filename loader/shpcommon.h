@@ -24,7 +24,8 @@
 #define _(String) String
 #endif
 
-typedef struct shp_connection_state {
+typedef struct shp_connection_state
+{
 	/* PgSQL username to log in with */
 	char *username;
 
@@ -46,7 +47,8 @@ typedef struct shp_connection_state {
 char *escape_connection_string(char *str);
 
 /* Column map between pgsql and dbf */
-typedef struct colmap_t {
+typedef struct colmap_t
+{
 
 	/* Column map pgfieldnames */
 	char **pgfieldnames;

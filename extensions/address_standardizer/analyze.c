@@ -43,7 +43,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 A lookup string with a particular standardization is prevented
    from becoming associated with a particular output symbol
 ------------------------------------------------------------- */
-typedef struct def_blocker {
+typedef struct def_blocker
+{
 	char *lookup;
 	char *standard;
 	SYMB output_symbol;
@@ -139,23 +140,26 @@ int
 install_def_block_table(ENTRY **__hash_table__, ERR_PARAM *__err_param__)
 {
 	int i;
-	for (i = 0; i < NUM_DEF_BLOCKERS; i++) {
+	for (i = 0; i < NUM_DEF_BLOCKERS; i++)
+	{
 		DEF *__standard_def__;
 		ENTRY *__lookup_entry__ = find_entry(__hash_table__, __def_block_table__[i].lookup);
-		if (__lookup_entry__ == NULL) {
+		if (__lookup_entry__ == NULL)
+		{
 			RET_ERR1("install_def_block_table: Could not find def_block for %s\n",
 				 __def_block_table__[i].lookup,
 				 __err_param__,
 				 FALSE);
 		}
 		for (__standard_def__ = __lookup_entry__->DefList; __standard_def__ != NULL;
-		     __standard_def__ = __standard_def__->Next) {
-			if (strcmp(__standard_def__->Standard, __def_block_table__[i].standard) == 0) {
-				__def_block_table__[i].definition = __standard_def__;
-			}
+		     __standard_def__ = __standard_def__->Next)
+		{
+			if (strcmp(__standard_def__->Standard, __def_block_table__[i].standard) == 0)
+			{ __def_block_table__[i].definition = __standard_def__; }
 			break;
 		}
-		if (__def_block_table__[i].definition == NULL) {
+		if (__def_block_table__[i].definition == NULL)
+		{
 			RET_ERR1("install_def_block_table: Could not find def_block definition for %s\n",
 				 __def_block_table__[i].standard,
 				 __err_param__,
@@ -179,7 +183,8 @@ create_segments(ERR_PARAM *__err_param__)
 	/* -- we're going to be re-sorting these pointers -- */
 	PAGC_ALLOC_STRUC(__stz_info__, STZ_PARAM, __err_param__, NULL);
 	PAGC_CALLOC_STRUC(__stz_info__->stz_array, STZ *, MAX_STZ, __err_param__, NULL);
-	for (i = FIRST_STZ; i < MAX_STZ; i++) {
+	for (i = FIRST_STZ; i < MAX_STZ; i++)
+	{
 		PAGC_ALLOC_STRUC(__stz_info__->stz_array[i], STZ, __err_param__, NULL);
 	}
 	PAGC_CALLOC_STRUC(__stz_info__->segs, SEG, MAXLEX, __err_param__, NULL);
@@ -249,9 +254,10 @@ get_next_stz(STAND_PARAM *__stand_param__, int request_stz_in)
 	int n = __stand_param__->LexNum;
 	int request_stz = request_stz_in;
 	STZ *__cur_stz__;
-	if (request_stz_in != FAIL) {
-		if (((__stz_info__->stz_list_size - 1) < request_stz) ||
-		    (__stz_info__->last_stz_output == request_stz)) {
+	if (request_stz_in != FAIL)
+	{
+		if (((__stz_info__->stz_list_size - 1) < request_stz) || (__stz_info__->last_stz_output == request_stz))
+		{
 			/*-- Indicate that this is the last one : don't call
 				get_next_stz with 0 unless you want a FALSE --*/
 			return FALSE;
@@ -266,18 +272,22 @@ get_next_stz(STAND_PARAM *__stand_param__, int request_stz_in)
 			combining an ARC_C and CIVIC_C pair. We want only the first one in any
 			situation where we ask for lower scoring candidates </remarks>
 		------------------------------------------------------------------------ */
-		if (request_stz > FIRST_STZ) {
+		if (request_stz > FIRST_STZ)
+		{
 			while ((delete_duplicate_stz(__stz_info__, request_stz)) &&
 			       (__stz_info__->stz_list_size > request_stz))
 				;
 			if (__stz_info__->stz_list_size == request_stz) { return FALSE; }
 		}
-	} else {
+	}
+	else
+	{
 		request_stz = FIRST_STZ;
 	}
 	/*-- Reload the best defs and output from the new stz --*/
 	__cur_stz__ = __stz_info__->stz_array[request_stz];
-	for (i = FIRST_LEX_POS; i < n; i++) {
+	for (i = FIRST_LEX_POS; i < n; i++)
+	{
 		__best_defs__[i] = __cur_stz__->definitions[i];
 		__best_output__[i] = __cur_stz__->output[i];
 	}
@@ -287,7 +297,8 @@ get_next_stz(STAND_PARAM *__stand_param__, int request_stz_in)
 		Because this function is called with values greater than 0 only to
 		redo a MICRO
 	-------------------------------------------------------------------- */
-	if (request_stz > FIRST_STZ || request_stz_in == FAIL) {
+	if (request_stz > FIRST_STZ || request_stz_in == FAIL)
+	{
 		/*-- LEFT : just MICRO here --*/
 		init_output_fields(__stand_param__, LEFT);
 		stuff_fields(__stand_param__);
@@ -309,10 +320,14 @@ check_def_block(STAND_PARAM *__stand_param__, int request_stz)
 	SYMB *__cur_sym_ptr__ = __stz_info__->stz_array[request_stz]->output;
 	DEF **__stz_definitions__ = __stz_info__->stz_array[request_stz]->definitions;
 	int n = __stand_param__->LexNum;
-	for (i = FIRST_LEX_POS; i < n; i++) {
-		for (j = 0; j < NUM_DEF_BLOCKERS; j++) {
-			if (__cur_sym_ptr__[i] == __def_block_table__[j].output_symbol) {
-				if (__stz_definitions__[i] == __def_block_table__[j].definition) {
+	for (i = FIRST_LEX_POS; i < n; i++)
+	{
+		for (j = 0; j < NUM_DEF_BLOCKERS; j++)
+		{
+			if (__cur_sym_ptr__[i] == __def_block_table__[j].output_symbol)
+			{
+				if (__stz_definitions__[i] == __def_block_table__[j].definition)
+				{
 					delete_stz(__stz_info__, request_stz);
 					return TRUE;
 				}
@@ -354,7 +369,8 @@ delete_stz(STZ_PARAM *__stz_info__, int request_stz)
 		 0       req       n-1  n  inactive  MAX_STZ - 1
 		[ ] [ ] [ ] ...   [ ] [ ] [ ] ...   [ ]
 	----------------------------------------------------------- */
-	for (i = request_stz; i < n; i++) {
+	for (i = request_stz; i < n; i++)
+	{
 		__stz_list__[i] = __stz_list__[i + 1];
 	}
 	/* -- save the pointer, now inactive, for reuse -- */
@@ -378,21 +394,24 @@ delete_duplicate_stz(STZ_PARAM *__stz_info__, int request_stz)
 
 	int i;
 	STZ **__stz_list__ = __stz_info__->stz_array;
-	for (i = FIRST_STZ; i < request_stz; i++) {
+	for (i = FIRST_STZ; i < request_stz; i++)
+	{
 		SYMB a;
 		SYMB *__cur_sym_ptr__ = __stz_list__[request_stz]->output;
 		DEF **__stz_definitions__ = __stz_list__[request_stz]->definitions;
 		SYMB *__prev_sym_ptr__ = __stz_list__[i]->output;
 		DEF **__prev_stz_definitions__ = __stz_list__[i]->definitions;
 
-		while ((a = *__prev_sym_ptr__++) == *__cur_sym_ptr__++) {
+		while ((a = *__prev_sym_ptr__++) == *__cur_sym_ptr__++)
+		{
 			/* -------------------------------------------------------------
 				A differing definition, even if the output token is the same
 			could lead to a different result
 			-------------------------------------------------------------- */
 			if (*__prev_stz_definitions__++ != *__stz_definitions__++) { return FALSE; }
 			/*-- FAIL terminates output , so they're identical --*/
-			if (a == FAIL) {
+			if (a == FAIL)
+			{
 				delete_stz(__stz_info__, request_stz);
 				return TRUE;
 			}
@@ -419,7 +438,8 @@ evaluate_micro_l(STAND_PARAM *__stand_param__)
 	LEXEME *__lexeme__ = __stand_param__->lex_vector;
 	int n = __stand_param__->LexNum;
 	/* 2009-08-15 : use lexicon types */
-	switch (__stand_param__->start_state) {
+	switch (__stand_param__->start_state)
+	{
 	case FEAT_L:
 		desired_type = 1;
 		output_field = FEATNAME;
@@ -436,32 +456,36 @@ evaluate_micro_l(STAND_PARAM *__stand_param__)
 		return FALSE;
 	}
 	/* -- read the symbols from the definitions into the lex_sym array -- */
-	for (i = FIRST_LEX_POS; i < n; i++) {
+	for (i = FIRST_LEX_POS; i < n; i++)
+	{
 		int j;
 		DEF *__def__;
 		__orig_pos__[i] = i; /* we won't use compression here */
 		__sym_sel__[i] = 0;  /* -- start at 0 for each Lexeme -- */
 		/* -- walk the def chain, counting the symbs and putting them
 		into the array -- */
-		for (j = 0, __def__ = __lexeme__[i].DefList; __def__ != NULL; __def__ = __def__->Next, j++) {
+		for (j = 0, __def__ = __lexeme__[i].DefList; __def__ != NULL; __def__ = __def__->Next, j++)
+		{
 			__stand_param__->comp_lex_sym[i][j] = __def__->Type;
 			__stand_param__->def_array[i][j] = __def__;
 			/* 2009-08-30 : filter out non-default non-desired */
-			if ((__def__->Type == desired_type) || (__def__->Protect)) {
-				__def_marked__[i][j] = TRUE;
-			} else
+			if ((__def__->Type == desired_type) || (__def__->Protect)) { __def_marked__[i][j] = TRUE; }
+			else
 				__def_marked__[i][j] = FALSE;
 		}
 		__num_defs__[i] = j;
 	}
 	/*-- Now go through all the compositions, looking for those consisting
 		only of unduplicated defs --*/
-	do {
+	do
+	{
 		int marked;
 		double seg_score;
 		/* one duplicated def disqualifies this composition */
-		for (i = n - 1, marked = TRUE; i >= FIRST_LEX_POS; i--) {
-			if (!__def_marked__[i][__sym_sel__[i]]) {
+		for (i = n - 1, marked = TRUE; i >= FIRST_LEX_POS; i--)
+		{
+			if (!__def_marked__[i][__sym_sel__[i]])
+			{
 				marked = FALSE;
 				break;
 			}
@@ -502,10 +526,12 @@ evaluator(STAND_PARAM *__stand_param__)
 
 	/*-- <revision date='2009-08-09'> Special evaluation for landmarks </revision> --*/
 	if (state > EXTRA_STATE) { return (evaluate_micro_l(__stand_param__)); }
-	while (TRUE) {
+	while (TRUE)
+	{
 		first_composition(__stand_param__); /* 2007-08-09 */
 		/* -- cycle through all the possible compositions -- */
-		do {
+		do
+		{
 			int target_len;
 			if ((target_len = prepare_target_pattern(__stand_param__)) == TARG_START) { continue; }
 			/* --------------------------------------------------------------
@@ -513,7 +539,8 @@ evaluator(STAND_PARAM *__stand_param__)
 	    MICRO_B and MACRO start states since we only want one
 	    segment.
 			----------------------------------------------------------------*/
-			switch (state) {
+			switch (state)
+			{
 			case MACRO:
 				shallow_clause_scan(__stand_param__, MACRO_C, target_len);
 				break;
@@ -533,21 +560,21 @@ evaluator(STAND_PARAM *__stand_param__)
 	    found
 			----------------------------------------------------------------- */
 			if ((__stz_info__->stz_list_size > FIRST_STZ) && (!__stand_param__->analyze_complete) &&
-			    (__stz_info__->stz_array[FIRST_STZ]->score >= __load_value__[EXCELLENT])) {
-				break;
-			}
+			    (__stz_info__->stz_array[FIRST_STZ]->score >= __load_value__[EXCELLENT]))
+			{ break; }
 		} while (select_next_composition(__stand_param__));
 		if ((__stz_info__->stz_list_size > FIRST_STZ) &&
-		    (__stz_info__->stz_array[FIRST_STZ]->score >= __load_value__[1])) {
-			break;
-		}
+		    (__stz_info__->stz_array[FIRST_STZ]->score >= __load_value__[1]))
+		{ break; }
 		/* -- force a segment -- */
-		if (state == MICRO_B) {
+		if (state == MICRO_B)
+		{
 			force_arc_clause(__stand_param__);
 			break;
 		}
 #ifdef USE_FORCE_MACRO
-		if (state == MACRO) {
+		if (state == MACRO)
+		{
 			_force_macro_clause_(__stand_param__);
 			break;
 		}
@@ -578,13 +605,15 @@ first_composition(STAND_PARAM *__stand_param__)
 	LEXEME *__lexemes__ = __stand_param__->lex_vector;
 	int n = __stand_param__->LexNum;
 	/*-- <remarks> Read the symbols from the definitions into the lex_sym array </remarks> --*/
-	for (i = FIRST_LEX_POS; i < n; i++) {
+	for (i = FIRST_LEX_POS; i < n; i++)
+	{
 		int j;
 		DEF *__def__;
 		__sym_sel__[i] = 0; /* -- start at 0 for each Lexeme -- */
 		/*-- <remarks> Walk the def chain, counting the symbs and putting them
 			into the array </remarks> --*/
-		for (j = 0, __def__ = __lexemes__[i].DefList; __def__ != NULL; __def__ = __def__->Next, j++) {
+		for (j = 0, __def__ = __lexemes__[i].DefList; __def__ != NULL; __def__ = __def__->Next, j++)
+		{
 			__stand_param__->comp_lex_sym[i][j] = __def__->Type;
 			__stand_param__->def_array[i][j] = __def__;
 		}
@@ -607,14 +636,16 @@ prepare_target_pattern(STAND_PARAM *__stand_param__)
 	int *__orig_pos__ = __stand_param__->orig_str_pos;
 	int n = __stand_param__->LexNum;
 	NODE **__g_function__ = __stand_param__->rules->gamma_matrix;
-	for (lex_pos = FIRST_LEX_POS, target_pos = TARG_START; lex_pos < n; lex_pos++) {
+	for (lex_pos = FIRST_LEX_POS, target_pos = TARG_START; lex_pos < n; lex_pos++)
+	{
 		SYMB in_symb = __stand_param__->comp_lex_sym[lex_pos][__sym_sel__[lex_pos]];
 		/* ------------------------------------------------------------
 			compress multiple words and stopwords - the idea is that
 			any combination of LEFT and RIGHT compression tokens (words
 			and stopwords, compress as a single word
 		------------------------------------------------------------- */
-		if (!need_compression(__stand_param__, in_symb, lex_pos, target_pos)) {
+		if (!need_compression(__stand_param__, in_symb, lex_pos, target_pos))
+		{
 			/* ---------------------------------------------------------
 	    If no compression, associate this lex_pos with the
 	    target_pos, put the symbol into the target and increment
@@ -628,7 +659,8 @@ prepare_target_pattern(STAND_PARAM *__stand_param__)
 	/*-- Terminate symb lists --*/
 	__p_target__[target_pos] = FAIL;
 	/*-- But suppose we only have one symbol, and it is a stopword --*/
-	if (target_pos > TARG_START) {
+	if (target_pos > TARG_START)
+	{
 		/*-- Set up the Aho-Corasick registry of output links --*/
 		refresh_transducer(__stand_param__->registry, __p_target__, __g_function__);
 	}
@@ -659,7 +691,8 @@ do_left_combine(STAND_PARAM *__stand_param__, int lex_pos, int target_pos)
 {
 	/*-- A LEFT_COMPRESS left compresses only if a LEFT_COMPRESS there to
 		combine with --*/
-	if ((target_pos == TARG_START) || (__stand_param__->target[target_pos - 1] != LEFT_COMPRESS)) {
+	if ((target_pos == TARG_START) || (__stand_param__->target[target_pos - 1] != LEFT_COMPRESS))
+	{
 		/*-- A RIGHT_COMPRESS also returns FALSE if it is at the start or
 			if the previous token isn't a LEFT_COMPRESS. need_compression will
 			deal with this --*/
@@ -684,9 +717,11 @@ static int
 need_compression(STAND_PARAM *__stand_param__, SYMB a, int lex_pos, int target_pos)
 {
 	/*-- No stopwords are accepted, no matter what --*/
-	if (a == RIGHT_COMPRESS) {
+	if (a == RIGHT_COMPRESS)
+	{
 		/*-- Does it combine with the last target symbol or the next? --*/
-		if (!do_left_combine(__stand_param__, lex_pos, target_pos)) {
+		if (!do_left_combine(__stand_param__, lex_pos, target_pos))
+		{
 			/* ---------------------------------------------------------------
 	    do a right combine by giving it the next position. Note that
 	    this allows the possibility of a STOPWORD with combining with
@@ -731,33 +766,38 @@ scan_clause_tree(STAND_PARAM *__stand_param__, int start_state, int start_pos)
 	int cl = 0;
 	KW *__keyw__ = NULL;
 
-	while (TRUE) {
+	while (TRUE)
+	{
 		SEG *__outer_seg__;
-		while (TRUE) {
+		while (TRUE)
+		{
 			SEG *__inner_seg__;
-			if (__keyw__ == NULL) {
+			if (__keyw__ == NULL)
+			{
 				/*-- when we're out of keys for this class, get next class --*/
-				if (++cl == MAX_CL) {
+				if (++cl == MAX_CL)
+				{
 					/* -- no more states to transition to, so go up clause tree
 					- unless there's nowhere to go -- */
 					if (depth == START_DEPTH) return; /* -- the exit -- */
 					depth--;
 					break;
 				}
-				if ((next_state = __tran_table__[state][cl]) == FAIL) {
+				if ((next_state = __tran_table__[state][cl]) == FAIL)
+				{
 					/*-- no transition, try next clause --*/
 					continue;
 				}
 				/*-- recall that the registry is shifted right one node to
 				account for the node that corresponds to total failure --*/
 				/*-- <revision date='2006-11-02'> Substitute for GetOutputLink </revision> --*/
-				if ((__keyw__ = __output_link__[__stand_param__->registry[pos]][cl]) == NULL) {
-					continue;
-				}
+				if ((__keyw__ = __output_link__[__stand_param__->registry[pos]][cl]) == NULL)
+				{ continue; }
 			} /* end of if keyword is NULL */
 
 			/* -- skip pointless rules -- */
-			if ((__keyw__->Length == pos) && (next_state != EXIT)) {
+			if ((__keyw__->Length == pos) && (next_state != EXIT))
+			{
 				__keyw__ = __keyw__->OutputNext; /* -- the next key to check -- */
 				continue;
 			}
@@ -768,14 +808,16 @@ scan_clause_tree(STAND_PARAM *__stand_param__, int start_state, int start_pos)
 			__inner_seg__->Key = __keyw__;
 			__inner_seg__->State = state;
 			__inner_seg__->Output = __keyw__->Output;
-			if (__rules__->collect_statistics) {
+			if (__rules__->collect_statistics)
+			{
 				__keyw__->hits++;
 				__rules__->total_key_hits++;
 			}
 			/* -- running total in sum, segment total in Segment -- */
 			sum += (__inner_seg__->Value =
 				    __load_value__[__keyw__->Weight] * __weight_table__[__keyw__->Type]);
-			if ((__inner_seg__->Start = pos - (__keyw__->Length)) == 0) {
+			if ((__inner_seg__->Start = pos - (__keyw__->Length)) == 0)
+			{
 				/* -- all definitions have been matched: if this is a valid
 				state, save the standardization , then head back up
 				the tree -- */
@@ -796,10 +838,13 @@ scan_clause_tree(STAND_PARAM *__stand_param__, int start_state, int start_pos)
 		/* -- restore the previous state from the seg before overwrite -- */
 		__outer_seg__ = __segments__ + depth;
 		state = __outer_seg__->State;
-		if (depth != START_DEPTH) {
+		if (depth != START_DEPTH)
+		{
 			sum -= __outer_seg__->Value;
 			pos = __outer_seg__->End + 1;
-		} else {
+		}
+		else
+		{
 			sum = 0.00;
 			pos = start_pos;
 		}
@@ -829,29 +874,33 @@ shallow_clause_scan(STAND_PARAM *__stand_param__, int cl, int pos)
 	__seg__->End = pos - 1;
 	__seg__->Start = 0;
 	/*-- <revision date='2006-11-02'> Substitute for GetOutputLink </revision> --*/
-	for (__kw__ = __output_link__[__stand_param__->registry[pos]][cl]; __kw__ != NULL;
-	     __kw__ = __kw__->OutputNext) {
+	for (__kw__ = __output_link__[__stand_param__->registry[pos]][cl]; __kw__ != NULL; __kw__ = __kw__->OutputNext)
+	{
 		/*-- once we get a short keyword, depart --*/
 		if (__kw__->Length < pos) return;
 		/*-- fill in the rest of this definition for output if it forms part
 	 of a completed stz --*/
 		__seg__->Output = __kw__->Output;
-		if (__rules__->collect_statistics) {
+		if (__rules__->collect_statistics)
+		{
 			__seg__->Key = __kw__;
 			__kw__->hits++;
 			__rules__->total_key_hits++;
 		}
 #ifdef OCCUPANCY_DEBUG
-		if (cl == EXTRA_C) {
+		if (cl == EXTRA_C)
+		{
 			SYMB *__ol__;
 			printf("\nRule is type %d (%s)\n: ", __kw__->Type, __rule_type_names__[__kw__->Type]);
 			printf("Input : ");
-			for (__ol__ = __kw__->Input; *__ol__ != FAIL; __ol__++) {
+			for (__ol__ = __kw__->Input; *__ol__ != FAIL; __ol__++)
+			{
 				printf("|%d (%s)|", *__ol__, in_symb_name(*__ol__));
 			}
 			printf("\nOutput: ");
 			/*-- output the output symbols --*/
-			for (__ol__ = __kw__->Output; *__ol__ != FAIL; __ol__++) {
+			for (__ol__ = __kw__->Output; *__ol__ != FAIL; __ol__++)
+			{
 				printf("|%d (%s)|", *__ol__, out_symb_name(*__ol__));
 			}
 			printf("\nrank %d ( %f)\n", __kw__->Weight, __load_value__[__kw__->Weight]);
@@ -874,9 +923,11 @@ select_next_composition(STAND_PARAM *__stand_param__)
 	int *__sym_sel__ = __stand_param__->cur_sym_sel;
 	int *__num_defs__ = __stand_param__->def_cnt;
 
-	for (pos = __stand_param__->LexNum - 1; pos >= FIRST_LEX_POS; pos--) {
+	for (pos = __stand_param__->LexNum - 1; pos >= FIRST_LEX_POS; pos--)
+	{
 		__sym_sel__[pos]++; /*-- Increase selector --*/
-		if (__sym_sel__[pos] < __num_defs__[pos]) {
+		if (__sym_sel__[pos] < __num_defs__[pos])
+		{
 			/*-- Not ready yet for turnover --*/
 			return TRUE;
 		}
@@ -932,7 +983,8 @@ deposit_stz(STAND_PARAM *__stand_param__, double sum, int depth)
 	__cur_stz__ = copy_stz(__stand_param__, cur_score);
 
 	/*-- Then add the content, once we have a pointer -- */
-	if ((__stand_param__->rules->collect_statistics) && (depth == START_DEPTH)) {
+	if ((__stand_param__->rules->collect_statistics) && (depth == START_DEPTH))
+	{
 		SEG *__seg__ = __stz_info__->segs + START_DEPTH;
 		if (__seg__->Key != NULL) { __cur_stz__->build_key = __seg__->Key; }
 	}
@@ -975,7 +1027,8 @@ copy_stz(STAND_PARAM *__stand_param__, double current_score)
 	__cur_stz__->raw_score = current_score;
 
 	/*-- Initialize the output vector - but is this necessary ? --*/
-	for (i = FIRST_LEX_POS; i <= __stand_param__->LexNum; i++) {
+	for (i = FIRST_LEX_POS; i <= __stand_param__->LexNum; i++)
+	{
 		__cur_stz__->output[i] = FAIL;
 	}
 	/* -- boundary condition : last-1   last
@@ -983,15 +1036,17 @@ copy_stz(STAND_PARAM *__stand_param__, double current_score)
       suppose the last - 1 has a score less than the current score - then
 	it isn't copied into last, so __cur_stz__ goes back into the slot
 	from which it was just removed - nothing moves  -- */
-	for (i = last_on_list; i > FIRST_STZ; i--) {
+	for (i = last_on_list; i > FIRST_STZ; i--)
+	{
 		/* -- Get the next pointer on the list and move it back if it has a
 	 lesser score. Otherwise we put the pointer to the new stz in the
 	 present position -- */
 		STZ *__next_stz__ = __stz_list__[i - 1];
-		if (current_score > __next_stz__->raw_score) {
-			__stz_list__[i] = __next_stz__;
-		} else {
-			if (current_score == __next_stz__->raw_score) {
+		if (current_score > __next_stz__->raw_score) { __stz_list__[i] = __next_stz__; }
+		else
+		{
+			if (current_score == __next_stz__->raw_score)
+			{
 				/* -- 2008-03-14: first come, first served -- */
 				__cur_stz__->score = __next_stz__->score - DUP_DECREMENT;
 			}
@@ -999,9 +1054,8 @@ copy_stz(STAND_PARAM *__stand_param__, double current_score)
 		}
 	}
 	__stz_list__[i] = __cur_stz__;
-	if (__stz_info__->stz_list_size == MAX_STZ) {
-		__stz_info__->stz_list_cutoff = __stz_list__[last_on_list]->score;
-	}
+	if (__stz_info__->stz_list_size == MAX_STZ)
+	{ __stz_info__->stz_list_cutoff = __stz_list__[last_on_list]->score; }
 	return __cur_stz__; /* -- tell the caller where we put it -- */
 }
 
@@ -1032,7 +1086,8 @@ save_current_composition(STAND_PARAM *__stand_param__,
 		as W if a SINGLE or WEST if a DIRECT </remarks> --*/
 
 	/* -- use the whole target -- */
-	for (lex_pos = FIRST_LEX_POS; lex_pos < __stand_param__->LexNum; lex_pos++) {
+	for (lex_pos = FIRST_LEX_POS; lex_pos < __stand_param__->LexNum; lex_pos++)
+	{
 		__best_defs__[lex_pos] = __stand_param__->def_array[lex_pos][__sym_sel__[lex_pos]];
 	}
 	__best_defs__[lex_pos] = NULL;
@@ -1040,13 +1095,16 @@ save_current_composition(STAND_PARAM *__stand_param__,
 	/*-- <remarks> Segments go backwards (right to left) , but the content for
       each segment goes left to right </remarks> --*/
 
-	for (__seg__ = __segments__ + depth, lex_pos = FIRST_LEX_POS; __seg__ >= __segments__; __seg__--) {
+	for (__seg__ = __segments__ + depth, lex_pos = FIRST_LEX_POS; __seg__ >= __segments__; __seg__--)
+	{
 		SYMB *__sym_ptr__;
-		if ((__sym_ptr__ = __seg__->Output) == NULL) {
+		if ((__sym_ptr__ = __seg__->Output) == NULL)
+		{
 			lex_pos = copy_best(__stand_param__, __sym_sel__, __seg__->sub_sym, lex_pos, __best_output__);
 			continue;
 		}
-		for (; *__sym_ptr__ != FAIL; __sym_ptr__++) {
+		for (; *__sym_ptr__ != FAIL; __sym_ptr__++)
+		{
 			lex_pos = copy_best(__stand_param__, __sym_sel__, *__sym_ptr__, lex_pos, __best_output__);
 		}
 	}
@@ -1069,7 +1127,8 @@ copy_best(STAND_PARAM *__stand_param__, int *__sym_sel__, SYMB output_symb, int 
       the positions </remarks> --*/
 
 	int next_target_pos = __orig_pos__[beg] + 1;
-	for (lex_pos = beg; __orig_pos__[lex_pos] < next_target_pos; lex_pos++) {
+	for (lex_pos = beg; __orig_pos__[lex_pos] < next_target_pos; lex_pos++)
+	{
 		if (lex_pos == __stand_param__->LexNum) break;
 
 		/*-- <remarks> Check for errant RIGHT_COMPRESS - put it back into STREET
@@ -1077,9 +1136,10 @@ copy_best(STAND_PARAM *__stand_param__, int *__sym_sel__, SYMB output_symb, int 
 
 		if ((lex_pos > FIRST_LEX_POS) && (output_symb != STREET) &&
 		    (__stand_param__->comp_lex_sym[lex_pos][__sym_sel__[lex_pos]] == RIGHT_COMPRESS) &&
-		    (__best_output__[lex_pos - 1] == STREET)) {
-			__best_output__[lex_pos] = STREET;
-		} else {
+		    (__best_output__[lex_pos - 1] == STREET))
+		{ __best_output__[lex_pos] = STREET; }
+		else
+		{
 			__best_output__[lex_pos] = output_symb;
 		}
 	}
@@ -1097,7 +1157,8 @@ lex_has_def(STAND_PARAM *__stand_param__, int i, SYMB sym)
 {
 	int j;
 	int *__num_defs__ = __stand_param__->def_cnt;
-	for (j = 0; j < __num_defs__[i]; j++) {
+	for (j = 0; j < __num_defs__[i]; j++)
+	{
 		if (__stand_param__->comp_lex_sym[i][j] == sym) { return j; }
 	}
 	return FAIL;
@@ -1110,7 +1171,8 @@ called by analyze.c (schema_modify_position)
 static int
 have_schema_symbol(int *__check_dir__, SYMB sym)
 {
-	if (__check_dir__ != NULL) {
+	if (__check_dir__ != NULL)
+	{
 		if (__check_dir__[sym]) { return TRUE; }
 	}
 	return FALSE;
@@ -1135,8 +1197,10 @@ static void
 default_seg_val(int *__sym_sel__, int num_lexes, SEG *__segments__, int use_default_sym, SYMB sym, double score)
 {
 	int depth;
-	for (depth = FIRST_LEX_POS; depth < num_lexes; depth++) {
-		if (use_default_sym) {
+	for (depth = FIRST_LEX_POS; depth < num_lexes; depth++)
+	{
+		if (use_default_sym)
+		{
 			/*-- <revision date='2009-08-09'> Set default only if told to do so </revision> --*/
 			__sym_sel__[DEPTH_POS] = 0; /* -- default value -- */
 		}
@@ -1156,7 +1220,8 @@ static int
 _modify_position_(STAND_PARAM *__stand_param__, SEG *__seg__, int depth, int pos, SYMB in_sym, SYMB out_sym)
 {
 	int sel;
-	if ((sel = lex_has_def(__stand_param__, pos, in_sym)) != FAIL) {
+	if ((sel = lex_has_def(__stand_param__, pos, in_sym)) != FAIL)
+	{
 		__seg__[depth].sub_sym = out_sym;
 		__stand_param__->cur_sym_sel[pos] = sel;
 		return TRUE;
@@ -1180,9 +1245,8 @@ schema_modify_position(STAND_PARAM *__stand_param__,
 	/* -- note: this requires that attributes are present. It
 	only works if we're working within a particular
 	reference dataset. -- */
-	if (have_schema_symbol(__stand_param__->have_ref_att, out_sym)) {
-		return (_modify_position_(__stand_param__, __segments__, depth, lex_pos, in_sym, out_sym));
-	}
+	if (have_schema_symbol(__stand_param__->have_ref_att, out_sym))
+	{ return (_modify_position_(__stand_param__, __segments__, depth, lex_pos, in_sym, out_sym)); }
 	return FALSE;
 }
 
@@ -1205,37 +1269,40 @@ force_arc_clause(STAND_PARAM *__stand_param__)
 	depth = lex_start = 0;
 	lex_end = num_lexes - 1;
 	/*-- look for a SUFDIR in the last position --*/
-	if (lex_start < lex_end - 1) {
-		if (schema_modify_position(__stand_param__, __stz_info__->segs, depth, lex_end, DIRECT, SUFDIR)) {
+	if (lex_start < lex_end - 1)
+	{
+		if (schema_modify_position(__stand_param__, __stz_info__->segs, depth, lex_end, DIRECT, SUFDIR))
+		{
 			lex_end--;
 			depth++;
 		}
 	}
 	/*-- look for a SUFTYP --*/
-	if (lex_start < (lex_end - 1)) {
-		if (schema_modify_position(__stand_param__, __stz_info__->segs, depth, lex_end, TYPE, SUFTYP)) {
-			lex_end--;
-		}
+	if (lex_start < (lex_end - 1))
+	{
+		if (schema_modify_position(__stand_param__, __stz_info__->segs, depth, lex_end, TYPE, SUFTYP))
+		{ lex_end--; }
 	}
 	depth = num_lexes - 1;
-	if (lex_start < (lex_end - 1)) {
-		if (schema_modify_position(__stand_param__, __stz_info__->segs, depth, lex_start, DIRECT, PREDIR)) {
+	if (lex_start < (lex_end - 1))
+	{
+		if (schema_modify_position(__stand_param__, __stz_info__->segs, depth, lex_start, DIRECT, PREDIR))
+		{
 			lex_start++;
 			depth--;
 		}
 	}
-	if (lex_start < (lex_end - 1)) {
-		if (schema_modify_position(__stand_param__, __stz_info__->segs, depth, lex_start, TYPE, PRETYP)) {
-			lex_start++;
-		}
+	if (lex_start < (lex_end - 1))
+	{
+		if (schema_modify_position(__stand_param__, __stz_info__->segs, depth, lex_start, TYPE, PRETYP))
+		{ lex_start++; }
 	}
 	_force_deposit_(__stand_param__, (__stand_param__->LexNum - 1));
 }
 
 #define MODIFY_SEG_POS(_IN_SYM_VAL_, _OUT_SYM_VAL_) \
-	if (_modify_position_(__stand_param__, __segments__, depth, lex_sym_pos, _IN_SYM_VAL_, _OUT_SYM_VAL_)) { \
-		continue; \
-	}
+	if (_modify_position_(__stand_param__, __segments__, depth, lex_sym_pos, _IN_SYM_VAL_, _OUT_SYM_VAL_)) \
+	{ continue; }
 
 /* ====================================================================
 <summary>
@@ -1254,7 +1321,8 @@ _force_macro_clause_(STAND_PARAM *__stand_param__)
 	SEG *__segments__ = __stand_param__->stz_info->segs;
 
 	default_seg_val(__stand_param__->cur_sym_sel, n, __segments__, MACRO_C, POSTAL, VERY_LOW_WEIGHT);
-	for (lex_sym_pos = 0, depth = end; lex_sym_pos <= end; lex_sym_pos++, depth--) {
+	for (lex_sym_pos = 0, depth = end; lex_sym_pos <= end; lex_sym_pos++, depth--)
+	{
 		MODIFY_SEG_POS(PCH, POSTAL);
 		MODIFY_SEG_POS(PCT, POSTAL);
 		MODIFY_SEG_POS(QUINT, POSTAL);
@@ -1284,7 +1352,8 @@ _force_deposit_(STAND_PARAM *__stand_param__, int depth)
 	double sum = 0.00;
 	SEG *__seg__;
 	SEG *__segments__ = __stand_param__->stz_info->segs;
-	for (__seg__ = __segments__ + depth; __seg__ >= __segments__; __seg__--) {
+	for (__seg__ = __segments__ + depth; __seg__ >= __segments__; __seg__--)
+	{
 		sum += __seg__->Value;
 	}
 	deposit_stz(__stand_param__, sum, depth);
@@ -1301,7 +1370,8 @@ non_geocode_address(STAND_PARAM *__stand_param__)
 	/* -- scan through each position looking for an RR or BOXH token. -- */
 	int lex_sym_pos;
 	int n = __stand_param__->LexNum;
-	for (lex_sym_pos = FIRST_LEX_POS; lex_sym_pos < n; lex_sym_pos++) {
+	for (lex_sym_pos = FIRST_LEX_POS; lex_sym_pos < n; lex_sym_pos++)
+	{
 		int result = lex_has_def(__stand_param__, lex_sym_pos, RR);
 		if (result != FAIL) { return TRUE; }
 		if ((result = lex_has_def(__stand_param__, lex_sym_pos, BOXH)) != FAIL) { return TRUE; }
@@ -1322,21 +1392,26 @@ output_raw_elements(STAND_PARAM *__stand_param__, ERR_PARAM *__err_param__)
 	STZ **__stz_list__;
 
 	STZ_PARAM *__stz_info__ = __stand_param__->stz_info;
-	if (__err_param__ == NULL) {
-		printf("Input tokenization candidates:\n");
-	} else {
+	if (__err_param__ == NULL) { printf("Input tokenization candidates:\n"); }
+	else
+	{
 		LOG_MESS("Input tokenization candidates:", __err_param__);
 	}
-	for (lex_pos = FIRST_LEX_POS; lex_pos < __stand_param__->LexNum; lex_pos++) {
-		for (__def__ = __stand_param__->lex_vector[lex_pos].DefList; __def__ != NULL; __def__ = __def__->Next) {
-			if (__err_param__ == NULL) {
+	for (lex_pos = FIRST_LEX_POS; lex_pos < __stand_param__->LexNum; lex_pos++)
+	{
+		for (__def__ = __stand_param__->lex_vector[lex_pos].DefList; __def__ != NULL; __def__ = __def__->Next)
+		{
+			if (__err_param__ == NULL)
+			{
 				printf("\t(%d) std: %s, tok: %d (%s)\n",
 				       lex_pos,
 				       ((__def__->Protect) ? __stand_param__->lex_vector[lex_pos].Text
 							   : __def__->Standard),
 				       __def__->Type,
 				       in_symb_name(__def__->Type));
-			} else {
+			}
+			else
+			{
 				sprintf(__err_param__->error_buf,
 					"\t(%d) std: %s, tok: %d (%s)\n",
 					lex_pos,
@@ -1350,20 +1425,24 @@ output_raw_elements(STAND_PARAM *__stand_param__, ERR_PARAM *__err_param__)
 	}
 	n = __stz_info__->stz_list_size;
 	__stz_list__ = __stz_info__->stz_array;
-	for (stz_no = FIRST_STZ; stz_no < n; stz_no++) {
+	for (stz_no = FIRST_STZ; stz_no < n; stz_no++)
+	{
 		STZ *__cur_stz__ = __stz_list__[stz_no];
-		if (__err_param__ == NULL) {
-			printf("Raw standardization %d with score %f:\n", (stz_no), __cur_stz__->score);
-		} else {
+		if (__err_param__ == NULL)
+		{ printf("Raw standardization %d with score %f:\n", (stz_no), __cur_stz__->score); }
+		else
+		{
 			LOG_MESS2(
 			    "Raw standardization %d with score %f:\n", (stz_no), __cur_stz__->score, __err_param__);
 		}
-		for (lex_pos = FIRST_LEX_POS; lex_pos < __stand_param__->LexNum; lex_pos++) {
+		for (lex_pos = FIRST_LEX_POS; lex_pos < __stand_param__->LexNum; lex_pos++)
+		{
 			SYMB k;
 			__def__ = __cur_stz__->definitions[lex_pos];
 			/*-- 2010-11-18 : handle end STOPWORD --*/
 			k = __cur_stz__->output[lex_pos];
-			if (__err_param__ == NULL) {
+			if (__err_param__ == NULL)
+			{
 				printf("\t(%d) Input %d (%s) text %s mapped to output %d (%s)\n",
 				       lex_pos,
 				       __def__->Type,
@@ -1372,7 +1451,9 @@ output_raw_elements(STAND_PARAM *__stand_param__, ERR_PARAM *__err_param__)
 							   : __def__->Standard),
 				       k,
 				       ((k == FAIL) ? "NONE" : out_symb_name(k)));
-			} else {
+			}
+			else
+			{
 				sprintf(__err_param__->error_buf,
 					"\t(%d) Input %d (%s) text %s mapped to output %d (%s)\n",
 					lex_pos,

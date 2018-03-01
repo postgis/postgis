@@ -53,9 +53,8 @@ lwcircstring_construct(int srid, GBOX *bbox, POINTARRAY *points)
 	 * arc requires two more points.  Thus the minimum point count
 	 * is three, and the count must be odd.
 	 */
-	if (points->npoints % 2 != 1 || points->npoints < 3) {
-		lwnotice("lwcircstring_construct: invalid point count %d", points->npoints);
-	}
+	if (points->npoints % 2 != 1 || points->npoints < 3)
+	{ lwnotice("lwcircstring_construct: invalid point count %d", points->npoints); }
 
 	result = (LWCIRCSTRING *)lwalloc(sizeof(LWCIRCSTRING));
 
@@ -142,8 +141,10 @@ lwcircstring_from_lwpointarray(int srid, uint32_t npoints, LWPOINT **points)
 	/*
 	 * Find output dimensions, check integrity
 	 */
-	for (i = 0; i < npoints; i++) {
-		if (points[i]->type != POINTTYPE) {
+	for (i = 0; i < npoints; i++)
+	{
+		if (points[i]->type != POINTTYPE)
+		{
 			lwerror("lwcurve_from_lwpointarray: invalid input type: %s", lwtype_name(points[i]->type));
 			return NULL;
 		}
@@ -167,7 +168,8 @@ lwcircstring_from_lwpointarray(int srid, uint32_t npoints, LWPOINT **points)
 	memset(newpoints, 0, size);
 
 	ptr = newpoints;
-	for (i = 0; i < npoints; i++) {
+	for (i = 0; i < npoints; i++)
+	{
 		size = ptarray_point_size(points[i]->point);
 		memcpy(ptr, getPoint_internal(points[i]->point, 0), size);
 		ptr += ptsize;
@@ -202,7 +204,8 @@ lwcircstring_from_lwmpoint(int srid, LWMPOINT *mpoint)
 	memset(newpoints, 0, size);
 
 	ptr = newpoints;
-	for (i = 0; i < mpoint->ngeoms; i++) {
+	for (i = 0; i < mpoint->ngeoms; i++)
+	{
 		memcpy(ptr, getPoint_internal(mpoint->geoms[i]->point, 0), ptsize);
 		ptr += ptsize;
 	}

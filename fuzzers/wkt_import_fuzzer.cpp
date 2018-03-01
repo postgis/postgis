@@ -466,7 +466,8 @@ static void
 errorreporter(const char *, va_list)
 {
 	// Cleanup any heap-allocated memory still active
-	for (std::set<void *>::iterator oIter = oSetPointers.begin(); oIter != oSetPointers.end(); ++oIter) {
+	for (std::set<void *>::iterator oIter = oSetPointers.begin(); oIter != oSetPointers.end(); ++oIter)
+	{
 		free(*oIter);
 	}
 	oSetPointers.clear();
@@ -495,7 +496,8 @@ LLVMFuzzerTestOneInput(const uint8_t *buf, size_t len)
 	char *pszWKT = static_cast<char *>(malloc(len + 1));
 	memcpy(pszWKT, buf, len);
 	pszWKT[len] = '\0';
-	if (!setjmp(jmpBuf)) {
+	if (!setjmp(jmpBuf))
+	{
 		LWGEOM *lwgeom = lwgeom_from_wkt(pszWKT, LW_PARSER_CHECK_NONE);
 		lwgeom_free(lwgeom);
 		// assert( oSetPointers.empty() );

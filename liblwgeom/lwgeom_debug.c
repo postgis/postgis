@@ -94,7 +94,8 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 
 	sprintf(result, "%*.s%s[%s] with %d elements\n", offset, pad, lwtype_name(col->type), zmflags, col->ngeoms);
 
-	for (i = 0; i < col->ngeoms; i++) {
+	for (i = 0; i < col->ngeoms; i++)
+	{
 		tmp = lwgeom_summary(col->geoms[i], offset + 2);
 		size += strlen(tmp) + 1;
 		result = lwrealloc(result, size);
@@ -128,7 +129,8 @@ lwpoly_summary(LWPOLY *poly, int offset)
 
 	sprintf(result, "%*.s%s[%s] with %i rings\n", offset, pad, lwtype_name(poly->type), zmflags, poly->nrings);
 
-	for (i = 0; i < poly->nrings; i++) {
+	for (i = 0; i < poly->nrings; i++)
+	{
 		sprintf(tmp, "%s   ring %i has %i points", pad, i, poly->rings[i]->npoints);
 		if (i > 0) strcat(result, nl);
 		strcat(result, tmp);
@@ -144,7 +146,8 @@ lwgeom_summary(const LWGEOM *lwgeom, int offset)
 {
 	char *result;
 
-	switch (lwgeom->type) {
+	switch (lwgeom->type)
+	{
 	case POINTTYPE:
 		return lwpoint_summary((LWPOINT *)lwgeom, offset);
 

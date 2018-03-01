@@ -13,7 +13,8 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
-typedef struct srs_precision {
+typedef struct srs_precision
+{
 	int precision_xy;
 	int precision_z;
 	int precision_m;
