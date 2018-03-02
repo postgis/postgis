@@ -941,7 +941,7 @@ then
   if [ "$ft_gcov" = "1" ];
   then
     say "${e}==>${x} Running gcov in $proj_root ${e}(disable via -X gcov)${x}"
-    bash -c "find $proj_root -type f -name '*.gcno' $gcov_include $gcov_ignore -exec $gcov_exe -pb $gcov_arg {} +" || true
+    bash -c "find $proj_root -type f -name '*.gcno' $gcov_include $gcov_ignore -exec $gcov_exe -p -b $gcov_arg {} +" || true
   else
     say "${e}==>${x} gcov disabled"
   fi
