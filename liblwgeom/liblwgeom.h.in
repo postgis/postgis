@@ -284,7 +284,7 @@ BOX3D;
 
 /******************************************************************
 * GBOX structure.
-* We include the flags (information about dimensinality),
+* We include the flags (information about dimensionality),
 * so we don't have to constantly pass them
 * into functions that use the GBOX.
 */
@@ -364,7 +364,7 @@ POINT4D;
 */
 typedef struct
 {
-	/* Array of POINT 2D, 3D or 4D, possibly missaligned. */
+	/* Array of POINT 2D, 3D or 4D, possibly misaligned. */
 	uint8_t *serialized_pointlist;
 
 	/* Use FLAGS_* macros to handle */

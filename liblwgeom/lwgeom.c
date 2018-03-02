@@ -739,7 +739,7 @@ lwgeom_get_bbox(const LWGEOM *lwg)
 
 
 /**
-* Calculate the gbox for this goemetry, a cartesian box or
+* Calculate the gbox for this geometry, a cartesian box or
 * geodetic box, depending on how it is flagged.
 */
 int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox)

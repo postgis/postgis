@@ -685,7 +685,7 @@ lwgeom_locate_between_m(LWGEOM *lwin, double m0, double m1)
 		return NULL;
 	}
 
-	lwpgerror("Unkonwn geometry type (%s:%d)", __FILE__, __LINE__);
+	lwpgerror("Unknown geometry type (%s:%d)", __FILE__, __LINE__);
 	return NULL;
 }
 

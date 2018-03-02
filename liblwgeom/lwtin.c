@@ -102,7 +102,7 @@ int lwtin_is_closed(const LWTIN *tin)
 	/* If surface is not 3D, it's can't be closed */
 	if (!FLAGS_GET_Z(tin->flags)) return 0;
 
-	/* Max theorical arcs number if no one is shared ... */
+	/* Max theoretical arcs number if no one is shared ... */
 	narcs = 3 * tin->ngeoms;
 
 	arcs = lwalloc(sizeof(struct struct_tin_arcs) * narcs);

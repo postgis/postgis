@@ -50,7 +50,7 @@ _varint_u64_encode_buf(uint64_t val, uint8_t *buf)
 		{
 			/* In the next line quite a lot is happening. */
 			/* Since there is more to read in our input value */
-			/* we signal that by setting the most siginicant bit */
+			/* we signal that by setting the most significant bit */
 			/* in our byte to 1. */
 			/* Then we put that byte in our buffer and move the pointer */
 			/* forward one step */

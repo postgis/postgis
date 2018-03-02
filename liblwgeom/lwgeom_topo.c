@@ -2440,7 +2440,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
   LWDEBUGF(1, "edge's end node is %g,%g", p2.x, p2.y);
 
   /*
-   * Check endpoints existance, match with Curve geometry
+   * Check endpoints existence, match with Curve geometry
    * and get face information (if any)
    */
 
@@ -3629,7 +3629,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   /*
   -- Update faces MBR of left and right faces
   -- TODO: think about ways to optimize this part, like see if
-  --       the old edge geometry partecipated in the definition
+  --       the old edge geometry participated in the definition
   --       of the current MBR (for shrinking) or the new edge MBR
   --       would be larger than the old face MBR...
   --

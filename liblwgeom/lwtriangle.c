@@ -146,7 +146,7 @@ lwtriangle_is_repeated_points(LWTRIANGLE *triangle)
 /*
  * Construct a triangle from a LWLINE being
  * the shell
- * Pointarray from intput geom are cloned.
+ * Pointarray from input geom is cloned.
  * Input line must have 4 points, and be closed.
  */
 LWTRIANGLE *

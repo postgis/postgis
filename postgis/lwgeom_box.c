@@ -72,7 +72,7 @@ Datum BOX2D_in(PG_FUNCTION_ARGS)
 	nitems = sscanf(str,"box(%lf %lf,%lf %lf)", &box.xmin, &box.ymin, &box.xmax, &box.ymax);
 	if (nitems != 4)
 	{
-		elog(ERROR,"box2d parser - couldnt parse.  It should look like: BOX(xmin ymin,xmax ymax)");
+		elog(ERROR,"box2d parser - couldn't parse.  It should look like: BOX(xmin ymin,xmax ymax)");
 		PG_RETURN_NULL();
 	}
 
