@@ -1273,7 +1273,7 @@ CREATE OR REPLACE FUNCTION makeline_garray (geometry[])
 CREATE AGGREGATE makeline (
 	BASETYPE = geometry,
 	SFUNC = pgis_geometry_accum_transfn,
-	STYPE = pgis_abs,
+	STYPE = internal,
 	FINALFUNC = pgis_geometry_makeline_finalfn
 	);
 
@@ -1904,7 +1904,7 @@ CREATE OR REPLACE FUNCTION zmflag(geometry)
 CREATE AGGREGATE accum (
 	sfunc = pgis_geometry_accum_transfn,
 	basetype = geometry,
-	stype = pgis_abs,
+	stype = internal,
 	finalfunc = pgis_geometry_accum_finalfn
 	);
 -- Deprecation in 1.2.3

@@ -3839,85 +3839,63 @@ CREATE AGGREGATE ST_MemUnion(geometry) (
 	stype = geometry
 	);
 
---
--- pgis_abs
--- Container type to hold the ArrayBuildState pointer as it passes through
--- the geometry array accumulation aggregate.
---
-CREATE OR REPLACE FUNCTION pgis_abs_in(cstring)
-	RETURNS pgis_abs
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
-
-CREATE OR REPLACE FUNCTION pgis_abs_out(pgis_abs)
-	RETURNS cstring
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.4.0
-CREATE TYPE pgis_abs (
-	internallength = 16,
-	input = pgis_abs_in,
-	output = pgis_abs_out,
-	alignment = double
-);
-
--- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry)
-	RETURNS pgis_abs
+CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(internal, geometry)
+	RETURNS internal
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.2
-CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry, float8)
-	RETURNS pgis_abs
+CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(internal, geometry, float8)
+	RETURNS internal
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.3
-CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry, float8, int)
-	RETURNS pgis_abs
+CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(internal, geometry, float8, int)
+	RETURNS internal
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION pgis_geometry_accum_finalfn(pgis_abs)
+CREATE OR REPLACE FUNCTION pgis_geometry_accum_finalfn(internal)
 	RETURNS geometry[]
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION pgis_geometry_union_finalfn(pgis_abs)
+CREATE OR REPLACE FUNCTION pgis_geometry_union_finalfn(internal)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION pgis_geometry_collect_finalfn(pgis_abs)
+CREATE OR REPLACE FUNCTION pgis_geometry_collect_finalfn(internal)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION pgis_geometry_polygonize_finalfn(pgis_abs)
+CREATE OR REPLACE FUNCTION pgis_geometry_polygonize_finalfn(internal)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.2
-CREATE OR REPLACE FUNCTION pgis_geometry_clusterintersecting_finalfn(pgis_abs)
+CREATE OR REPLACE FUNCTION pgis_geometry_clusterintersecting_finalfn(internal)
 	RETURNS geometry[]
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.2
-CREATE OR REPLACE FUNCTION pgis_geometry_clusterwithin_finalfn(pgis_abs)
+CREATE OR REPLACE FUNCTION pgis_geometry_clusterwithin_finalfn(internal)
 	RETURNS geometry[]
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
+CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(internal)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
@@ -3926,7 +3904,7 @@ CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
 -- Changed: 2.4.0 marked parallel safe
 CREATE AGGREGATE ST_Accum (geometry) (
 	sfunc = pgis_geometry_accum_transfn,
-	stype = pgis_abs,
+	stype = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
 #endif
@@ -3945,7 +3923,7 @@ CREATE OR REPLACE FUNCTION ST_Union (geometry[])
 -- parallel handling dealt with in postgis_drop_after.sql
 CREATE AGGREGATE ST_Union (geometry) (
 	sfunc = pgis_geometry_accum_transfn,
-	stype = pgis_abs,
+	stype = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
 #endif
@@ -3956,7 +3934,7 @@ CREATE AGGREGATE ST_Union (geometry) (
 -- Changed: 2.4.0: marked parallel safe
 CREATE AGGREGATE ST_Collect (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
-	STYPE = pgis_abs,
+	STYPE = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
 #endif
@@ -3967,7 +3945,7 @@ CREATE AGGREGATE ST_Collect (geometry) (
 -- Changed: 2.4.0: marked parallel safe
 CREATE AGGREGATE ST_ClusterIntersecting (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
-	STYPE = pgis_abs,
+	STYPE = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
 #endif
@@ -3978,7 +3956,7 @@ CREATE AGGREGATE ST_ClusterIntersecting (geometry) (
 -- Changed: 2.4.0 marked parallel safe
 CREATE AGGREGATE ST_ClusterWithin (geometry, float8) (
 	SFUNC = pgis_geometry_accum_transfn,
-	STYPE = pgis_abs,
+	STYPE = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
 #endif
@@ -3989,7 +3967,7 @@ CREATE AGGREGATE ST_ClusterWithin (geometry, float8) (
 -- Changed: 2.4.0 marked parallel safe
 CREATE AGGREGATE ST_Polygonize (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
-	STYPE = pgis_abs,
+	STYPE = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
 #endif
@@ -4000,7 +3978,7 @@ CREATE AGGREGATE ST_Polygonize (geometry) (
 -- Changed: 2.4.0 marked parallel safe
 CREATE AGGREGATE ST_MakeLine (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
-	STYPE = pgis_abs,
+	STYPE = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
 #endif
