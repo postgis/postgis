@@ -630,6 +630,7 @@ extern LWMPOLY* lwmpoly_add_lwpoly(LWMPOLY *mobj, const LWPOLY *obj);
 extern LWPSURFACE* lwpsurface_add_lwpoly(LWPSURFACE *mobj, const LWPOLY *obj);
 extern LWTIN* lwtin_add_lwtriangle(LWTIN *mobj, const LWTRIANGLE *obj);
 
+extern LWCOLLECTION* lwcollection_concat_in_place(LWCOLLECTION* col1, const LWCOLLECTION* col2);
 
 
 /***********************************************************************
@@ -2290,16 +2291,15 @@ LWGEOM* lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2);
 /*
  * An offset curve against the input line.
  *
- * @param lwline a lineal geometry
+ * @param geom a lineal geometry or collection of them
  * @param size offset distance. Offset left if negative and right if positive
  * @param quadsegs number of quadrature segments in curves (try 8)
  * @param joinStyle (1 = round, 2 = mitre, 3 = bevel)
  * @param mitreLimit (try 5.0)
  * @return derived geometry (linestring or multilinestring)
  *
- * Requires GEOS-3.2.0+
  */
-LWGEOM* lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyle, double mitreLimit);
+LWGEOM* lwgeom_offsetcurve(const LWGEOM *geom, double size, int quadsegs, int joinStyle, double mitreLimit);
 
 /*
  * Return true if the input geometry is "simple" as per OGC defn.

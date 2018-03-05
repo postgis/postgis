@@ -321,34 +321,28 @@ static GEOSGeometry*
 LWGEOM_GEOS_nodeLines(const GEOSGeometry* lines)
 {
 	GEOSGeometry* noded;
-	GEOSGeometry* point;
 
-	/*
-	 * Union with first geometry point, obtaining full noding
-	 * and dissolving of duplicated repeated points
-	 *
-	 * TODO: substitute this with UnaryUnion?
-	 */
+	/* first, try just to node the line */
+	noded = GEOSNode(lines);
+	if (!noded) noded = (GEOSGeometry *)lines;
 
-	point = LWGEOM_GEOS_getPointN(lines, 0);
-	if (!point) return NULL;
+	/* GEOS3.7 UnaryUnion fails on regression tests, cannot be used here */
 
-	LWDEBUGF(3, "Boundary point: %s", lwgeom_to_ewkt(GEOS2LWGEOM(point, 0)));
-
-	noded = GEOSUnion(lines, point);
-	if (NULL == noded)
+	/* fall back to union of first point with geometry */
+	if (!GEOSisValid(noded))
 	{
-		GEOSGeom_destroy(point);
-		return NULL;
+		GEOSGeometry *unioned, *point;
+		point = LWGEOM_GEOS_getPointN(lines, 0);
+		if (!point) return NULL;
+		unioned = GEOSUnion(noded, point);
+		if (!unioned)
+			return NULL;
+		else
+		{
+			GEOSGeom_destroy(noded);
+			return unioned;
+		}
 	}
-
-	GEOSGeom_destroy(point);
-
-	LWDEBUGF(3,
-		 "LWGEOM_GEOS_nodeLines: in[%s] out[%s]",
-		 lwgeom_to_ewkt(GEOS2LWGEOM(lines, 0)),
-		 lwgeom_to_ewkt(GEOS2LWGEOM(noded, 0)));
-
 	return noded;
 }
 
@@ -712,8 +706,6 @@ LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry* gin)
 	return gout;
 }
 
-static GEOSGeometry* LWGEOM_GEOS_makeValid(const GEOSGeometry*);
-
 /*
  * We expect initGEOS being called already.
  * Will return NULL on error (expect error handler being called by then)
@@ -770,7 +762,7 @@ LWGEOM_GEOS_makeValidCollection(const GEOSGeometry* gin)
 	return gout;
 }
 
-static GEOSGeometry*
+GEOSGeometry*
 LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 {
 	GEOSGeometry* gout;
@@ -919,7 +911,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
 
 	lwgeom_out = lwgeom_in;
-	geosgeom = LWGEOM2GEOS(lwgeom_out, 0);
+	geosgeom = LWGEOM2GEOS(lwgeom_out, 1);
 	if (!geosgeom)
 	{
 		LWDEBUGF(4,

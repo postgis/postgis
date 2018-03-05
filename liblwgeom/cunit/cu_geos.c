@@ -63,8 +63,6 @@ static void test_geos_noop(void)
 		lwgeom_free(geom_out);
 		lwgeom_free(geom_in);
 	}
-
-
 }
 
 static void test_geos_linemerge(void)
@@ -93,6 +91,23 @@ static void test_geos_linemerge(void)
 	lwgeom_free(geom2);
 }
 
+static void
+test_geos_offsetcurve(void)
+{
+	char* ewkt;
+	char* out_ewkt;
+	LWGEOM* geom1;
+	LWGEOM* geom2;
+
+	ewkt = "MULTILINESTRING((-10 0, -10 100), (0 -5, 0 0))";
+	geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_offsetcurve(geom1, 2, 10, 1, 1);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom2);
+	ASSERT_STRING_EQUAL(out_ewkt, "MULTILINESTRING((-12 0,-12 100),(-2 -5,-2 0))");
+	lwfree(out_ewkt);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+}
 
 static void test_geos_subdivide(void)
 {
@@ -134,4 +149,5 @@ void geos_suite_setup(void)
 	PG_ADD_TEST(suite, test_geos_noop);
 	PG_ADD_TEST(suite, test_geos_subdivide);
 	PG_ADD_TEST(suite, test_geos_linemerge);
+	PG_ADD_TEST(suite, test_geos_offsetcurve);
 }
