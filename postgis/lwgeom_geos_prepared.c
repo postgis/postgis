@@ -111,7 +111,7 @@ PreparedCacheDelete(void *ptr)
 	pghe = GetPrepGeomHashEntry(context);
 
 	if (!pghe)
-		elog(ERROR, "PreparedCacheDelete: Trying to delete non-existant hash entry object with MemoryContext key (%p)", (void *)context);
+		elog(ERROR, "PreparedCacheDelete: Trying to delete non-existent hash entry object with MemoryContext key (%p)", (void *)context);
 
 	POSTGIS_DEBUGF(3, "deleting geom object (%p) and prepared geom object (%p) with MemoryContext key (%p)", pghe->geom, pghe->prepared_geom, context);
 

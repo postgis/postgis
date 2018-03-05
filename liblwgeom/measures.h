@@ -49,7 +49,7 @@ typedef struct
 	POINT2D p1;
 	POINT2D p2;
 	int mode;	/*the direction of looking, if thedir = -1 then we look for maxdistance and if it is 1 then we look for mindistance*/
-	int twisted; /*To preserve the order of incoming points to match the first and secon point in shortest and longest line*/
+	int twisted; /*To preserve the order of incoming points to match the first and second point in shortest and longest line*/
 	double tolerance; /*the tolerance for dwithin and dfullywithin*/
 } DISTPTS;
 

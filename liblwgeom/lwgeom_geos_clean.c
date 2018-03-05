@@ -37,7 +37,7 @@
 
 /*
  * Return Nth vertex in GEOSGeometry as a POINT.
- * May return NULL if the geometry has NO vertexex.
+ * May return NULL if the geometry has NO vertex.
  */
 GEOSGeometry* LWGEOM_GEOS_getPointN(const GEOSGeometry*, uint32_t);
 GEOSGeometry*
@@ -382,7 +382,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 	}
 
 	/* NOTE: the noding process may drop lines collapsing to points.
-	 *       We want to retrive any of those */
+	 *       We want to retrieve any of those */
 	{
 		GEOSGeometry* pi;
 		GEOSGeometry* po;

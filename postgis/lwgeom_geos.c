@@ -3349,7 +3349,7 @@ Datum ST_Snap(PG_FUNCTION_ARGS)
  * Returns at most components as a collection.
  * First element of the collection is always the part which
  * remains after the cut, while the second element is the
- * part which has been cut out. We arbitrarely take the part
+ * part which has been cut out. We arbitrarily take the part
  * on the *right* of cut lines as the part which has been cut out.
  * For a line cut by a point the part which remains is the one
  * from start of the line to the cut point.

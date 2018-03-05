@@ -100,15 +100,15 @@ static double triarea3d(const double *P1, const double *P2, const double *P3)
 
 /**
 
-We create the minheap by ordering the minheap array by the areas in the areanode structs that the minheap keys refere to
+We create the minheap by ordering the minheap array by the areas in the areanode structs that the minheap keys refer to
 */
 static int cmpfunc (const void * a, const void * b)
 {
 	double v1 =  (*(areanode**)a)->area;
 	double v2 = (*(areanode**)b)->area;
-	/*qsort gives unpredictable results when comaping identical values.
-	If two values is the same we force returning the last point in hte point array.
-	That way we get the same ordering on diffreent machines and pllatforms*/
+	/*qsort gives unpredictable results when comparing identical values.
+	If two values is the same we force returning the last point in the point array.
+	That way we get the same ordering on different machines and platforms*/
 	if (v1==v2)
 		return (*(areanode**)a)-(*(areanode**)b);
 	else
@@ -287,7 +287,7 @@ static void tune_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, dou
 
 		check_order_min_area=ea->res_arealist[current];
 
-		/*The found smallest area point is now regarded as elimnated and we have to recalculate the area the adjacent (ignoring earlier elimnated points) points gives*/
+		/*The found smallest area point is now regarded as eliminated and we have to recalculate the area the adjacent (ignoring earlier eliminated points) points gives*/
 
 		/*FInd point before and after*/
 		before_current=ea->initial_arealist[current].prev;
@@ -331,7 +331,7 @@ static void tune_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, dou
 		ea->initial_arealist[before_current].next = ea->initial_arealist[current].next;
 		ea->initial_arealist[after_current].prev = ea->initial_arealist[current].prev;
 
-		/*Check if we are finnished*/
+		/*Check if we are finished*/
 		if((!set_area && ea->res_arealist[current]>trshld) || (ea->initial_arealist[0].next==(npoints-1)))
 			go_on=0;
 
@@ -419,7 +419,7 @@ static POINTARRAY * ptarray_set_effective_area(POINTARRAY *inpts,int avoid_colla
 
 	if(set_area)
 	{
-		/*Only return points with an effective area above the threashold*/
+		/*Only return points with an effective area above the threshold*/
 		for (p=0;p<ea->inpts->npoints;p++)
 		{
 			if(ea->res_arealist[p]>trshld)
@@ -432,7 +432,7 @@ static POINTARRAY * ptarray_set_effective_area(POINTARRAY *inpts,int avoid_colla
 	}
 	else
 	{
-		/*Only return points with an effective area above the threashold*/
+		/*Only return points with an effective area above the threshold*/
 		for (p=0;p<ea->inpts->npoints;p++)
 		{
 			if(ea->res_arealist[p]>trshld)
@@ -498,7 +498,7 @@ static LWPOLY* lwpoly_set_effective_area(const LWPOLY *ipoly,int set_area, doubl
 			if( lwpoly_add_ring(opoly,pa ) == LW_FAILURE )
 				return NULL;
 		}
-		/*Inner rings we allow to ocollapse and then we remove them*/
+		/*Inner rings we allow to collapse and then we remove them*/
 		avoid_collapse=0;
 	}
 

@@ -70,6 +70,7 @@ from the input geometry.
 					fits the bounding box of the geography object (favoring UTM, Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario) and then buffers in that planar spatial ref and retransforms back to WGS84 geography.</para></note>
 			<para><inlinegraphic fileref="images/warning.png" />
 			For geography this may not behave as expected if object is sufficiently large that it falls between two UTM zones or crosses the dateline</para>
+				<para>Enhanced: 2.5.0 - ST_Buffer geometry support was enhanced to allow for side buffering specification <code>side=both|left|right</code>.</para>
 				<para>Availability: 1.5 - ST_Buffer was enhanced to support different endcaps and join types. These are useful for example to convert road linestrings
 					into polygon roads with flat or square edges instead of rounded edges. Thin wrapper for geography was added. - requires GEOS &gt;= 3.2 to take advantage of advanced geometry functionality.
 				</para>

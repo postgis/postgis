@@ -322,7 +322,7 @@ circ_node_internal_new(CIRC_NODE** c, uint32_t num_nodes)
 			LWDEBUGF(3,"    offset1 is %g", offset1);
 
 			/* Sometimes the sphere_direction function fails... this causes the center calculation */
-			/* to fail too. In that case, we're going to fall back ot a cartesian calculation, which */
+			/* to fail too. In that case, we're going to fall back to a cartesian calculation, which */
 			/* is less exact, so we also have to pad the radius by (hack alert) an arbitrary amount */
 			/* which is hopefully always big enough to contain the input edges */
 			if ( circ_center_spherical(&c1, &(c[i]->center), dist, offset1, &new_center) == LW_FAILURE )
@@ -935,7 +935,7 @@ lwpoly_calculate_circ_tree(const LWPOLY* lwpoly)
 		lwfree(nodes);
 	}
 
-	/* Metatdata about polygons, we need this to apply P-i-P tests */
+	/* Metadata about polygons, we need this to apply P-i-P tests */
 	/* selectively when doing distance calculations */
 	node->geom_type = lwgeom_get_type((LWGEOM*)lwpoly);
 	lwpoly_pt_outside(lwpoly, &(node->pt_outside));

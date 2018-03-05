@@ -4,7 +4,7 @@
 #include "legacy_minimal.sql.in"
 --- start functions that in theory should never have been used or internal like stuff deprecated
 
--- these were superceded by PostGIS_AddBBOX , PostGIS_DropBBOX, PostGIS_HasBBOX in 1.5 --
+-- these were superseded by PostGIS_AddBBOX , PostGIS_DropBBOX, PostGIS_HasBBOX in 1.5 --
 CREATE OR REPLACE FUNCTION addbbox(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_addBBOX'

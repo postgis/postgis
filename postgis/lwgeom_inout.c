@@ -595,10 +595,10 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 			idlist = palloc0(num_geoms * sizeof(int64_t));
 
 
-		/*Check if there is differences in dimmenstionality*/
+		/* Check if there is differences in dimensionality*/
 		if( lwgeom_has_z(geom)!=has_z || lwgeom_has_m(geom)!=has_m)
 		{
-			elog(ERROR, "Geometries have differenct dimensionality");
+			elog(ERROR, "Geometries have different dimensionality");
 			PG_FREE_IF_COPY(arr_geoms, 0);
 			PG_FREE_IF_COPY(arr_ids, 1);
 			PG_RETURN_NULL();

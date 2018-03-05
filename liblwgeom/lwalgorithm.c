@@ -219,9 +219,9 @@ int lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const P
 /**
 * Determines the center of the circle defined by the three given points.
 * In the event the circle is complete, the midpoint of the segment defined
-* by the first and second points is returned.  If the points are colinear,
+* by the first and second points is returned.  If the points are collinear,
 * as determined by equal slopes, then NULL is returned.  If the interior
-* point is coincident with either end point, they are taken as colinear.
+* point is coincident with either end point, they are taken as collinear.
 */
 double
 lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *result)
@@ -517,7 +517,7 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 
 			/*
 			** Crossing at a co-linearity can be turned handled by extending
-			** segment to next vertext and seeing if the end points straddle
+			** segment to next vertex and seeing if the end points straddle
 			** the co-linear segment.
 			*/
 			if ( this_cross == SEG_COLINEAR )

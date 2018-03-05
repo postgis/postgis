@@ -97,7 +97,7 @@ Datum BOX3D_in(PG_FUNCTION_ARGS)
 		if (nitems != 4)
 		{
 			pfree(box);
-			elog(ERROR,"BOX3D parser - couldnt parse.  It should look like: BOX3D(xmin ymin zmin,xmax ymax zmax) or BOX3D(xmin ymin,xmax ymax)");
+			elog(ERROR,"BOX3D parser - couldn't parse.  It should look like: BOX3D(xmin ymin zmin,xmax ymax zmax) or BOX3D(xmin ymin,xmax ymax)");
 			PG_RETURN_NULL();
 		}
 	}
