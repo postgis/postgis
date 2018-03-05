@@ -1283,9 +1283,9 @@ lwcollection_offsetcurve(const LWCOLLECTION *col, double size, int quadsegs, int
 		tmp = result->geoms[0];
 		lwcollection_release(result);
 		return tmp;
-		}
-		else
-			return lwcollection_as_lwgeom(result);
+	}
+	else
+		return lwcollection_as_lwgeom(result);
 }
 
 LWGEOM*
