@@ -491,7 +491,11 @@ lwgeom_geos_version()
 inline static int32_t
 get_result_srid(const LWGEOM* geom1, const LWGEOM* geom2, const char* funcname)
 {
-	if (!geom1) lwerror("%s: First argument is null pointer", funcname);
+	if (!geom1)
+	{
+		lwerror("%s: First argument is null pointer", funcname);
+		return SRID_INVALID;
+	}
 	if (geom2 && (geom1->srid != geom2->srid))
 	{
 		lwerror("%s: Operation on mixed SRID geometries (%d != %d)", funcname, geom1->srid, geom2->srid);
@@ -1206,8 +1210,8 @@ lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2)
 	return result;
 }
 
-LWGEOM*
-lwgeom_offsetcurve(const LWLINE* lwline, double size, int quadsegs, int joinStyle, double mitreLimit)
+static LWGEOM *
+lwline_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyle, double mitreLimit)
 {
 	LWGEOM* result;
 	LWGEOM* geom = lwline_as_lwgeom(lwline);
@@ -1223,13 +1227,116 @@ lwgeom_offsetcurve(const LWLINE* lwline, double size, int quadsegs, int joinStyl
 
 	g3 = GEOSOffsetCurve(g1, size, quadsegs, joinStyle, mitreLimit);
 
-	if (!g3) return geos_clean_and_fail(g1, NULL, NULL, __func__);
+	if (!g3)
+	{
+		geos_clean(g1, NULL, NULL);
+		return NULL;
+	}
 
 	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
 		return geos_clean_and_fail(g1, NULL, g3, __func__);
 
 	geos_clean(g1, NULL, g3);
+	return result;
+}
 
+static LWGEOM *
+lwcollection_offsetcurve(const LWCOLLECTION *col, double size, int quadsegs, int joinStyle, double mitreLimit)
+{
+	const LWGEOM *geom = lwcollection_as_lwgeom(col);
+	int32_t srid = get_result_srid(geom, NULL, __func__);
+	uint8_t is3d = FLAGS_GET_Z(col->flags);
+	LWCOLLECTION *result;
+	LWGEOM *tmp;
+	uint32_t i;
+	if (srid == SRID_INVALID) return NULL;
+
+	result = lwcollection_construct_empty(MULTILINETYPE, srid, is3d, LW_FALSE);
+
+	for (i = 0; i < col->ngeoms; i++)
+	{
+		tmp = lwgeom_offsetcurve(col->geoms[i], size, quadsegs, joinStyle, mitreLimit);
+
+		if (!tmp)
+		{
+			lwcollection_free(result);
+			return NULL;
+		}
+
+		if (!lwgeom_is_empty(tmp))
+		{
+			if (lwgeom_is_collection(tmp))
+				result = lwcollection_concat_in_place(result, lwgeom_as_lwcollection(tmp));
+			else
+				result = lwcollection_add_lwgeom(result, tmp);
+
+			if (!result)
+			{
+				lwgeom_free(tmp);
+				return NULL;
+			}
+		}
+	}
+
+	if (result->ngeoms == 1)
+	{
+		tmp = result->geoms[0];
+		lwcollection_release(result);
+		return tmp;
+	}
+	else
+		return lwcollection_as_lwgeom(result);
+}
+
+LWGEOM*
+lwgeom_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle, double mitreLimit)
+{
+	int32_t srid = get_result_srid(geom, NULL, __func__);
+	LWGEOM *result = NULL;
+	LWGEOM *noded = NULL;
+	if (srid == SRID_INVALID) return NULL;
+
+	if (lwgeom_dimension(geom) != 1)
+	{
+		lwerror("%s: input is not linear", __func__, lwtype_name(geom->type));
+		return NULL;
+	}
+
+	while (!result)
+	{
+		switch (geom->type)
+		{
+		case LINETYPE:
+			result = lwline_offsetcurve(lwgeom_as_lwline(geom), size, quadsegs, joinStyle, mitreLimit);
+			break;
+		case COLLECTIONTYPE:
+		case MULTILINETYPE:
+			result = lwcollection_offsetcurve(lwgeom_as_lwcollection(geom), size, quadsegs, joinStyle, mitreLimit);
+			break;
+		default:
+			lwerror("%s: unsupported geometry type: %s", __func__, lwtype_name(geom->type));
+			return NULL;
+		}
+
+		if (result)
+			return result;
+		else if (!noded)
+		{
+			noded = lwgeom_node(geom);
+			if (!noded)
+			{
+				lwfree(noded);
+				lwerror("lwgeom_offsetcurve: cannot node input");
+				return NULL;
+			}
+			geom = noded;
+		}
+		else
+		{
+			lwerror("lwgeom_offsetcurve: noded geometry cannot be offset");
+			return NULL;
+		}
+	}
 	return result;
 }
 
@@ -1334,19 +1441,17 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints)
 	}
 
 	/* shuffle */
+	n = sample_height * sample_width;
+	if (n > 1)
 	{
-		n = sample_height * sample_width;
-		if (n > 1)
+		for (i = 0; i < n - 1; ++i)
 		{
-			for (i = 0; i < n - 1; ++i)
-			{
-				size_t rnd = (size_t)rand();
-				size_t j = i + rnd / (RAND_MAX / (n - i) + 1);
+			size_t rnd = (size_t)rand();
+			size_t j = i + rnd / (RAND_MAX / (n - i) + 1);
 
-				memcpy(tmp, (char*)cells + j * stride, size);
-				memcpy((char*)cells + j * stride, (char*)cells + i * stride, size);
-				memcpy((char*)cells + i * stride, tmp, size);
-			}
+			memcpy(tmp, (char *)cells + j * stride, size);
+			memcpy((char *)cells + j * stride, (char *)cells + i * stride, size);
+			memcpy((char *)cells + i * stride, tmp, size);
 		}
 	}
 
