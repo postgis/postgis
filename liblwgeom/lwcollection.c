@@ -186,9 +186,10 @@ void lwcollection_reserve(LWCOLLECTION *col, uint32_t ngeoms)
 */
 LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 {
-	if ( !col || !geom ) return NULL;
+	if (!col || !geom) return NULL;
 
-	if ( ! col->geoms && (col->ngeoms || col->maxgeoms) ) {
+	if (!col->geoms && (col->ngeoms || col->maxgeoms))
+	{
 		lwerror("Collection is in inconsistent state. Null memory but non-zero collection counts.");
 		return NULL;
 	}
@@ -215,9 +216,9 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 	/* Make sure we don't already have a reference to this geom */
 	{
 		uint32_t i = 0;
-		for ( i = 0; i < col->ngeoms; i++ )
+		for (i = 0; i < col->ngeoms; i++)
 		{
-			if ( col->geoms[i] == geom )
+			if (col->geoms[i] == geom)
 			{
 				lwerror("%s [%d] found duplicate geometry in collection %p == %p", __FILE__, __LINE__, col->geoms[i], geom);
 				return col;
@@ -232,15 +233,16 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 }
 
 /**
-* Appends all geometries from col2 to col1 in place.
-* Caller is responsible to release col2.
-*/
-LWCOLLECTION*
-lwcollection_concat_in_place(LWCOLLECTION* col1, const LWCOLLECTION* col2)
+ * Appends all geometries from col2 to col1 in place.
+ * Caller is responsible to release col2.
+ */
+LWCOLLECTION *
+lwcollection_concat_in_place(LWCOLLECTION *col1, const LWCOLLECTION *col2)
 {
 	uint32_t i;
 	if (!col1 || !col2) return NULL;
-	for (i = 0; i < col2->ngeoms; i++) col1 = lwcollection_add_lwgeom(col1, col2->geoms[i]);
+	for (i = 0; i < col2->ngeoms; i++)
+		col1 = lwcollection_add_lwgeom(col1, col2->geoms[i]);
 	return col1;
 }
 
