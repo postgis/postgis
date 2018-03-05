@@ -231,6 +231,10 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 	return col;
 }
 
+/**
+* Appends all geometries from col2 to col1 in place.
+* Caller is responsible to release col2.
+*/
 LWCOLLECTION*
 lwcollection_concat_in_place(LWCOLLECTION* col1, const LWCOLLECTION* col2)
 {
