@@ -827,13 +827,13 @@ lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 	return result;
 }
 
-LWGEOM*
-lwgeom_clip_by_rect(const LWGEOM* geom1, double x1, double y1, double x2, double y2)
+LWGEOM *
+lwgeom_clip_by_rect(const LWGEOM *geom1, double x1, double y1, double x2, double y2)
 {
 	LWGEOM* result;
-	LWGEOM* tmp;
+	LWGEOM *tmp;
 
-	result = lwgeom_intersection(geom1, (LWGEOM*)lwpoly_construct_envelope(geom1->srid, x1, y1, x2, y2));
+	result = lwgeom_intersection(geom1, (LWGEOM *)lwpoly_construct_envelope(geom1->srid, x1, y1, x2, y2));
 
 	if (!result) return NULL;
 
@@ -844,8 +844,7 @@ lwgeom_clip_by_rect(const LWGEOM* geom1, double x1, double y1, double x2, double
 	    /* output may have different things inside */
 	    result->type == COLLECTIONTYPE)
 	{
-		tmp = lwcollection_as_lwgeom(
-		    lwcollection_extract(lwgeom_as_lwcollection(result), lwgeom_dimension(geom1) + 1));
+		tmp = lwcollection_as_lwgeom(lwcollection_extract(lwgeom_as_lwcollection(result), lwgeom_dimension(geom1) + 1));
 		lwfree(result);
 		result = tmp;
 		if (!result) return NULL;
@@ -856,7 +855,7 @@ lwgeom_clip_by_rect(const LWGEOM* geom1, double x1, double y1, double x2, double
 
 	return result;
 
-#if 0 /* POSTGIS_GEOS_VERSION >= 35, enable only after bugs in geos are fixed */
+#if 0  /* POSTGIS_GEOS_VERSION >= 35, enable only after bugs in geos are fixed */
 	int32_t srid = get_result_srid(geom, NULL, __func__);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry *g1, *g3;

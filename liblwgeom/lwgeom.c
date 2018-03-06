@@ -2248,13 +2248,13 @@ lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid)
 
 
 /* Prototype for recursion */
-static int lwgeom_subdivide_recursive(const LWGEOM* geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION* col);
+static int lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col);
 
 static int
-lwgeom_subdivide_recursive(const LWGEOM* geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION* col)
+lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col)
 {
 	const uint32_t maxdepth = 50;
-	GBOX* clip = gbox_copy(lwgeom_get_bbox(geom));
+	GBOX *clip = gbox_copy(lwgeom_get_bbox(geom));
 	uint32_t nvertices = 0;
 	uint32_t i, n = 0;
 	uint32_t split_ordinate;
@@ -2262,11 +2262,11 @@ lwgeom_subdivide_recursive(const LWGEOM* geom, uint32_t maxvertices, uint32_t de
 	double height;
 	double pivot = DBL_MAX;
 	double center = DBL_MAX;
-	LWPOLY* lwpoly = NULL;
+	LWPOLY *lwpoly = NULL;
 
-	GBOX* subbox1;
-	GBOX* subbox2;
-	LWGEOM* clipped;
+	GBOX *subbox1;
+	GBOX *subbox2;
+	LWGEOM *clipped;
 
 	if (!clip) return 0;
 
@@ -2344,9 +2344,9 @@ lwgeom_subdivide_recursive(const LWGEOM* geom, uint32_t maxvertices, uint32_t de
 		double ring_area = 0;
 		double pivot_eps = DBL_MAX;
 		double pt_eps = DBL_MAX;
-		POINTARRAY* pa;
+		POINTARRAY *pa;
 		pivot = DBL_MAX;
-		lwpoly = (LWPOLY*)geom;
+		lwpoly = (LWPOLY *)geom;
 
 		/* if there are more points in holes than in outer ring */
 		if (nvertices > 2 * lwpoly->rings[0]->npoints)
