@@ -350,7 +350,7 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
           ptarray_append_point(dpa, &pt, LW_TRUE);
           kml_dims = 0;
         }
-        p = q-1; /* will be incrementedon next iteration */
+        p = q-1; /* will be incremented on next iteration */
 //lwpgnotice("after look-ahead *p:%c, kml_dims:%d", *p, kml_dims);
     } else if ( *p != ',' && ! isspace(*p) ) {
           lwpgerror("invalid KML representation"); /* (unexpected character %c)", *p); */

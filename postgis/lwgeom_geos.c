@@ -1112,13 +1112,6 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 	gser_input = PG_GETARG_GSERIALIZED_P(0);
 	size = PG_GETARG_FLOAT8(1);
 
-	/* Check for a useable type */
-	if ( gserialized_get_type(gser_input) != LINETYPE )
-	{
-		lwpgerror("ST_OffsetCurve only works with LineStrings");
-		PG_RETURN_NULL();
-	}
-
 	/*
 	* For distance == 0, just return the input.
 	* Note that due to a bug, GEOS 3.3.0 would return EMPTY.
@@ -1207,7 +1200,7 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 		pfree(paramstr); /* alloc'ed in text_to_cstring */
 	}
 
-	lwgeom_result = lwgeom_offsetcurve(lwgeom_as_lwline(lwgeom_input), size, quadsegs, joinStyle, mitreLimit);
+	lwgeom_result = lwgeom_offsetcurve(lwgeom_input, size, quadsegs, joinStyle, mitreLimit);
 
 	if (!lwgeom_result)
 		lwpgerror("ST_OffsetCurve: lwgeom_offsetcurve returned NULL");
@@ -3356,7 +3349,7 @@ Datum ST_Snap(PG_FUNCTION_ARGS)
  * Returns at most components as a collection.
  * First element of the collection is always the part which
  * remains after the cut, while the second element is the
- * part which has been cut out. We arbitrarely take the part
+ * part which has been cut out. We arbitrarily take the part
  * on the *right* of cut lines as the part which has been cut out.
  * For a line cut by a point the part which remains is the one
  * from start of the line to the cut point.

@@ -696,7 +696,7 @@ static int point_in_ring_rtree(RTREE_NODE *root, const POINT2D *point)
 		/*
 		 * If the point is to the left of the line, and it's rising,
 		 * then the line is to the right of the point and
-		 * circling counter-clockwise, so incremement.
+		 * circling counter-clockwise, so increment.
 		 */
 		if (FP_CONTAINS_BOTTOM(seg1->y, point->y, seg2->y) && side>0)
 		{
@@ -775,7 +775,7 @@ static int point_in_ring(POINTARRAY *pts, const POINT2D *point)
 		/*
 		 * If the point is to the left of the line, and it's rising,
 		 * then the line is to the right of the point and
-		 * circling counter-clockwise, so incremement.
+		 * circling counter-clockwise, so increment.
 		 */
 		if (FP_CONTAINS_BOTTOM(seg1->y, point->y, seg2->y) && side>0)
 		{

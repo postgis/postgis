@@ -15,11 +15,16 @@ from time to time, we will eventually get there.
 
 :Formatting:
 
-All C code should use an ANSI standard formatting with tabs for block
+Most C code should use an ANSI standard formatting with tabs for block
 indenting. When not block indenting, use spaces. To convert a file
 to the standard format use:
 
   astyle --style=ansi --indent=tab
+
+Some files use space indenting instead (check .editorconfig for info).
+For them, you can use:
+
+  astyle --style=ansi --indent=spaces=2
 
 Do not get too happy with this command. If you want to re-format a file you
 are working on:
@@ -27,9 +32,8 @@ are working on:
  a) run astyle on it
  b) commit
  c) do your work
- d) commit
- e) if you are really finicky run astyle again
- f) commit
+ d) run astyle again
+ e) commit
 
 The idea is to avoid combining style-only commits and commits that change
 logic, so the logic commits are easier to read.

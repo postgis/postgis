@@ -2496,6 +2496,11 @@ Availability: 2.0 - requires GEOS &gt;= 3.2, improved with GEOS &gt;= 3.3
 				</para>
 
 				<para>
+Enhanced: 2.5 - added support for GEOMETRYCOLLECTION and MULTILINESTRING
+				</para>
+
+
+				<para>
 The optional third parameter allows specifying a list of blank-separated
 key=value pairs to tweak operations as follows:
 <itemizedlist>
@@ -2514,8 +2519,6 @@ key=value pairs to tweak operations as follows:
 				<para>
 Units of distance are measured in units of the spatial reference system.
 				</para>
-
-				<para>The inputs can only be LINESTRINGS.</para>
 
 				<para>Performed by the GEOS module.</para>
 

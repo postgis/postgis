@@ -255,7 +255,7 @@ lwfree(void *mem)
  * The caller should specify start or end truncation by setting the truncdirection
  * parameter as follows:
  *    0 - start truncation (i.e. characters are removed from the beginning)
- *    1 - end trunctation (i.e. characters are removed from the end)
+ *    1 - end truncation (i.e. characters are removed from the end)
  */
 
 char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int truncdirection)
@@ -326,7 +326,7 @@ char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int
 char
 getMachineEndian(void)
 {
-	static int endian_check_int = 1; /* dont modify this!!! */
+	static int endian_check_int = 1; /* don't modify this!!! */
 
 	return *((char *) &endian_check_int); /* 0 = big endian | xdr,
 	                                       * 1 = little endian | ndr

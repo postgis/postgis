@@ -924,7 +924,7 @@ pta_unstroke(const POINTARRAY *points, int srid)
 
 				if ( angle < 0 ) angle = 2 * M_PI + angle;
 				num_quadrants = ( 4 * angle ) / ( 2 * M_PI );
-				LWDEBUGF(4, "arc angle (%g %g, %g %g, %g %g) is %g (side is %d), quandrants:%g", first.x, first.y, center.x, center.y, b.x, b.y, angle, p2_side, num_quadrants);
+				LWDEBUGF(4, "arc angle (%g %g, %g %g, %g %g) is %g (side is %d), quadrants:%g", first.x, first.y, center.x, center.y, b.x, b.y, angle, p2_side, num_quadrants);
 			}
 			/* a1 is first point, b is last point */
 			if ( arc_edges < min_quad_edges * num_quadrants ) {

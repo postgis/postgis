@@ -200,7 +200,7 @@ uint32_t lwcollection_count_vertices(LWCOLLECTION *col);
 */
 
 /**
- * @param minpts minimun number of points to retain, if possible.
+ * @param minpts minimum number of points to retain, if possible.
  */
 void ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, uint32_t minpts);
 

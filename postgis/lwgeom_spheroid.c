@@ -401,7 +401,7 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
  *    Its radius is approximated by looking at the ellipse. Near the equator R = 'a' (earth's major axis)
  *    near the pole R = 'b' (earth's minor axis).
  *
- *    The second (S) is basically a (east-west) line of lattitude.
+ *    The second (S) is basically a (east-west) line of latitude.
  *    Its radius runs from 'a' (major axis) at the equator, and near 0 at the poles.
  *
  *
@@ -425,8 +425,8 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
  *   Angle A is lat1
  *   R is the distance from the centre of the earth to the lat1/long1 point on the surface
  *   of the Earth.
- *   S is the circle-of-lattitude.  Its calculated from the right triangle defined by
- *      the angle (90-A), and the hypothenus R.
+ *   S is the circle-of-latitude.  Its calculated from the right triangle defined by
+ *      the angle (90-A), and the hypotenuse R.
  *
  *
  *

@@ -49,8 +49,6 @@ Datum pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_clusterintersecting_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_clusterwithin_finalfn(PG_FUNCTION_ARGS);
-Datum pgis_abs_in(PG_FUNCTION_ARGS);
-Datum pgis_abs_out(PG_FUNCTION_ARGS);
 
 /* External prototypes */
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
@@ -88,28 +86,6 @@ typedef struct
 pgis_abs;
 
 
-
-/**
-** We're never going to use this type externally so the in/out
-** functions are dummies.
-*/
-PG_FUNCTION_INFO_V1(pgis_abs_in);
-Datum
-pgis_abs_in(PG_FUNCTION_ARGS)
-{
-	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-	               errmsg("function %s not implemented", __func__)));
-	PG_RETURN_POINTER(NULL);
-}
-PG_FUNCTION_INFO_V1(pgis_abs_out);
-Datum
-pgis_abs_out(PG_FUNCTION_ARGS)
-{
-	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-	               errmsg("function %s not implemented", __func__)));
-	PG_RETURN_POINTER(NULL);
-}
-
 /**
 ** The transfer function hooks into the PostgreSQL accumArrayResult()
 ** function (present since 8.0) to build an array in a side memory
@@ -139,6 +115,7 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 
 	if ( PG_ARGISNULL(0) )
 	{
+		MemoryContext old = MemoryContextSwitchTo(aggcontext);
 		p = (pgis_abs*) palloc(sizeof(pgis_abs));
 		p->a = NULL;
 		p->data = (Datum) NULL;
@@ -147,12 +124,11 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 		{
 			Datum argument = PG_GETARG_DATUM(2);
 			Oid dataOid = get_fn_expr_argtype(fcinfo->flinfo, 2);
-			MemoryContext old = MemoryContextSwitchTo(aggcontext);
 
 			p->data = datumCopy(argument, get_typbyval(dataOid), get_typlen(dataOid));
 
-			MemoryContextSwitchTo(old);
 		}
+		MemoryContextSwitchTo(old);
 	}
 	else
 	{

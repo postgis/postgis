@@ -169,7 +169,7 @@ static bool is_gml_namespace(xmlNodePtr xnode, bool is_strict)
 
 
 /**
- * Retrieve a GML propertie from a node or NULL otherwise
+ * Retrieve a GML property from a node or NULL otherwise
  * Respect namespaces if presents in the node element
  */
 static xmlChar *gmlGetProp(xmlNodePtr xnode, xmlChar *prop)
@@ -1027,7 +1027,7 @@ static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		if (!is_gml_namespace(xa, false)) continue;
 		if (strcmp((char *) xa->name, "LineStringSegment")) continue;
 
-		/* GML SF is resticted to linear interpolation  */
+		/* GML SF is restricted to linear interpolation  */
 		interpolation = gmlGetProp(xa, (xmlChar *) "interpolation");
 		if (interpolation != NULL)
 		{
@@ -1056,7 +1056,7 @@ static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	 *  segment"  from  ISO 19107:2003 -> 6.3.16.1 (p43)
 	 *
 	 * So we must aggregate all the segments into a single one and avoid
-	 * to copy the redundants points
+	 * to copy the redundant points
 	 */
 	if (lss > 1)
 	{
@@ -1231,7 +1231,7 @@ static LWGEOM* parse_gml_triangle(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (xnode->children == NULL)
 		return lwtriangle_as_lwgeom(lwtriangle_construct_empty(*root_srid, 0, 0));
 
-	/* GML SF is resticted to planar interpolation
+	/* GML SF is restricted to planar interpolation
 	       NOTA: I know Triangle is not part of SF, but
 	       we have to be consistent with other surfaces */
 	interpolation = gmlGetProp(xnode, (xmlChar *) "interpolation");
@@ -1298,7 +1298,7 @@ static LWGEOM* parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (strcmp((char *) xnode->name, "PolygonPatch"))
 		gml_lwpgerror("invalid GML representation", 48);
 
-	/* GML SF is resticted to planar interpolation  */
+	/* GML SF is restricted to planar interpolation  */
 	interpolation = gmlGetProp(xnode, (xmlChar *) "interpolation");
 	if (interpolation != NULL)
 	{

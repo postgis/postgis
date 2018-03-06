@@ -163,7 +163,7 @@ lw_dist2d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2,int srid,int mode)
 
 
 /**
-Function initialazing max distance calculation
+Function initializing max distance calculation
 */
 double
 lwgeom_maxdistance2d(const LWGEOM *lw1, const LWGEOM *lw2)
@@ -174,7 +174,7 @@ lwgeom_maxdistance2d(const LWGEOM *lw1, const LWGEOM *lw2)
 }
 
 /**
-Function handling max distance calculations and dfyllywithin calculations.
+Function handling max distance calculations and dfullywithin calculations.
 The difference is just the tolerance.
 */
 double
@@ -196,7 +196,7 @@ lwgeom_maxdistance2d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tole
 }
 
 /**
-	Function initialazing min distance calculation
+	Function initializing min distance calculation
 */
 double
 lwgeom_mindistance2d(const LWGEOM *lw1, const LWGEOM *lw2)
@@ -272,7 +272,7 @@ lw_dist2d_is_collection(const LWGEOM *g)
 }
 
 /**
-This is a recursive function delivering every possible combinatin of subgeometries
+This is a recursive function delivering every possible combination of subgeometries
 */
 int lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 {
@@ -345,7 +345,7 @@ int lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 				lwgeom_add_bbox(g2);
 			}
 
-			/*If one of geometries is empty, return. True here only means continue searching. False would have stoped the process*/
+			/*If one of geometries is empty, return. True here only means continue searching. False would have stopped the process*/
 			if (lwgeom_is_empty(g1)||lwgeom_is_empty(g2)) return LW_TRUE;
 
 			if ( (dl->mode != DIST_MAX) &&
@@ -841,7 +841,7 @@ Function handling polygon to polygon calculation
 2	check if poly1 has first point outside poly2 and vice versa, if so, just check outer rings
 3	check if first point of poly2 is in a hole of poly1. If so check outer ring of poly2 against that hole of poly1
 4	check if first point of poly1 is in a hole of poly2. If so check outer ring of poly1 against that hole of poly2
-5	If we have come all the way here we know that the first point of one of them is inside the other ones outer ring and not in holes so we check wich one is inside.
+5	If we have come all the way here we know that the first point of one of them is inside the other ones outer ring and not in holes so we check which one is inside.
  */
 int
 lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
@@ -860,7 +860,7 @@ lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
 
 
 	/* 2	check if poly1 has first point outside poly2 and vice versa, if so, just check outer rings
-	here it would be possible to handle the information about wich one is inside wich one and only search for the smaller ones in the bigger ones holes.*/
+	here it would be possible to handle the information about which one is inside which one and only search for the smaller ones in the bigger ones holes.*/
 	pt = getPoint2d_cp(poly1->rings[0], 0);
 	if ( ptarray_contains_point(poly2->rings[0], pt) == LW_OUTSIDE )
 	{
@@ -986,7 +986,7 @@ lw_dist2d_curvepoly_curvepoly(LWCURVEPOLY *poly1, LWCURVEPOLY *poly2, DISTPTS *d
 
 
 	/* 2	check if poly1 has first point outside poly2 and vice versa, if so, just check outer rings
-	here it would be possible to handle the information about wich one is inside wich one and only search for the smaller ones in the bigger ones holes.*/
+	here it would be possible to handle the information about which one is inside which one and only search for the smaller ones in the bigger ones holes.*/
 	pt = lw_curvering_getfirstpoint2d_cp(poly1->rings[0]);
 	if ( lwgeom_contains_point(poly2->rings[0], pt) == LW_OUTSIDE )
 	{
@@ -1020,7 +1020,7 @@ lw_dist2d_curvepoly_curvepoly(LWCURVEPOLY *poly1, LWCURVEPOLY *poly2, DISTPTS *d
 	}
 
 
-	/*5	If we have come all the way here we know that the first point of one of them is inside the other ones outer ring and not in holes so we check wich one is inside.*/
+	/*5	If we have come all the way here we know that the first point of one of them is inside the other ones outer ring and not in holes so we check which one is inside.*/
 	pt = lw_curvering_getfirstpoint2d_cp(poly1->rings[0]);
 	if ( lwgeom_contains_point(poly2->rings[0], pt) != LW_OUTSIDE )
 	{
@@ -1309,7 +1309,7 @@ lw_dist2d_seg_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *B1, const
 	/* Calculate center and radius of the circle. */
 	radius_C = lw_arc_center(B1, B2, B3, &C);
 
-	/* This "arc" is actually a line (B2 is colinear with B1,B3) */
+	/* This "arc" is actually a line (B2 is collinear with B1,B3) */
 	if ( radius_C < 0.0 )
 		return lw_dist2d_seg_seg(A1, A2, B1, B3, dl);
 
@@ -1327,7 +1327,7 @@ lw_dist2d_seg_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *B1, const
 	if ( dist_C_D < radius_C )
 	{
 		double length_A; /* length of the segment A */
-		POINT2D E, F; /* points of interection of edge A and circle(B) */
+		POINT2D E, F; /* points of intersection of edge A and circle(B) */
 		double dist_D_EF; /* distance from D to E or F (same distance both ways) */
 
 		dist_D_EF = sqrt(radius_C*radius_C - dist_C_D*dist_C_D);
@@ -1341,7 +1341,7 @@ lw_dist2d_seg_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *B1, const
 		F.y = D.y + (A2->y-A1->y) * dist_D_EF / length_A;
 
 
-		/* If E is within A and within B then it's an interesction point */
+		/* If E is within A and within B then it's an intersection point */
 		pt_in_arc = lw_pt_in_arc(&E, B1, B2, B3);
 		pt_in_seg = lw_pt_in_seg(&E, A1, A2);
 
@@ -1353,7 +1353,7 @@ lw_dist2d_seg_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *B1, const
 			return LW_TRUE;
 		}
 
-		/* If F is within A and within B then it's an interesction point */
+		/* If F is within A and within B then it's an intersection point */
 		pt_in_arc = lw_pt_in_arc(&F, B1, B2, B3);
 		pt_in_seg = lw_pt_in_seg(&F, A1, A2);
 
@@ -1813,7 +1813,7 @@ lw_dist2d_arc_arc_concentric(	const POINT2D *A1, const POINT2D *A2,
 
 /**
 Finds the shortest distance between two segments.
-This function is changed so it is not doing any comparasion of distance
+This function is changed so it is not doing any comparison of distance
 but just sending every possible combination further to lw_dist2d_pt_seg
 */
 int
@@ -1869,7 +1869,7 @@ lw_dist2d_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C, const PO
 	{
 		if ((lw_dist2d_pt_seg(A,C,D,dl)) && (lw_dist2d_pt_seg(B,C,D,dl)))
 		{
-			dl->twisted= ((dl->twisted) * (-1));  /*here we change the order of inputted geometrys and that we  notice by changing sign on dl->twisted*/
+			dl->twisted= ((dl->twisted) * (-1));  /*here we change the order of inputted geometries and that we  notice by changing sign on dl->twisted*/
 			return ((lw_dist2d_pt_seg(C,A,B,dl)) && (lw_dist2d_pt_seg(D,A,B,dl))); /*if all is successful we return true*/
 		}
 		else
@@ -1885,7 +1885,7 @@ lw_dist2d_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C, const PO
 	{
 		if ((lw_dist2d_pt_seg(A,C,D,dl)) && (lw_dist2d_pt_seg(B,C,D,dl)))
 		{
-			dl->twisted= ((dl->twisted) * (-1));  /*here we change the order of inputted geometrys and that we  notice by changing sign on dl->twisted*/
+			dl->twisted= ((dl->twisted) * (-1));  /*here we change the order of inputted geometries and that we  notice by changing sign on dl->twisted*/
 			return ((lw_dist2d_pt_seg(C,A,B,dl)) && (lw_dist2d_pt_seg(D,A,B,dl))); /*if all is successful we return true*/
 		}
 		else
@@ -2003,7 +2003,7 @@ lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl, GBOX 
 	}
 
 
-	/*if the center-center line is horizontal the perpendicular line will be vertical. To eliminate problems with deviding by zero we are here mirroring the coordinate-system
+	/*if the center-center line is horizontal the perpendicular line will be vertical. To eliminate problems with dividing by zero we are here mirroring the coordinate-system
 	 and we find it's crossing the X-axes with z = x-(1/k)y */
 	else        /*West or East*/
 	{
@@ -2082,14 +2082,14 @@ lw_dist2d_pre_seg_seg(POINTARRAY *l1, POINTARRAY *l2,LISTSTRUCT *list1, LISTSTRU
 	p3 = getPoint2d_cp(l2, list2[0].pnr);
 	lw_dist2d_pt_pt(p1, p3, dl);
 	maxmeasure = sqrt(dl->distance*dl->distance + (dl->distance*dl->distance*k*k));
-	twist = dl->twisted; /*to keep the incomming order between iterations*/
+	twist = dl->twisted; /*to keep the incoming order between iterations*/
 	for (i =(n1-1); i>=0; --i)
 	{
 		/*we break this iteration when we have checked every
 		point closer to our perpendicular "checkline" than
 		our shortest found distance*/
 		if (((list2[0].themeasure-list1[i].themeasure)) > maxmeasure) break;
-		for (r=-1; r<=1; r +=2) /*because we are not iterating in the original pointorder we have to check the segment before and after every point*/
+		for (r=-1; r<=1; r +=2) /*because we are not iterating in the original point order we have to check the segment before and after every point*/
 		{
 			pnr1 = list1[i].pnr;
 			p1 = getPoint2d_cp(l1, pnr1);
@@ -2195,10 +2195,10 @@ Functions in common for Brute force and new calculation
 
 /**
 lw_dist2d_comp from p to line A->B
-This one is now sending every occation to lw_dist2d_pt_pt
-Before it was handling occations where r was between 0 and 1 internally
+This one is now sending every occasion to lw_dist2d_pt_pt
+Before it was handling occasions where r was between 0 and 1 internally
 and just returning the distance without identifying the points.
-To get this points it was nessecary to change and it also showed to be about 10%faster.
+To get this points it was necessary to change and it also showed to be about 10%faster.
 */
 int
 lw_dist2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B, DISTPTS *dl)
@@ -2230,7 +2230,7 @@ lw_dist2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B, DISTPTS *
 	/*This is for finding the maxdistance.
 	the maxdistance have to be between two vertexes,
 	compared to mindistance which can be between
-	tvo vertexes vertex.*/
+	two vertexes vertex.*/
 	if (dl->mode == DIST_MAX)
 	{
 		if (r>=0.5)
@@ -2271,7 +2271,7 @@ lw_dist2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B, DISTPTS *
 
 /**
 
-Compares incomming points and
+Compares incoming points and
 stores the points closest to each other
 or most far away from each other
 depending on dl->mode (max or min)
@@ -2310,7 +2310,7 @@ End of Functions in common for Brute force and new calculation
 
 
 /**
-The old function nessecary for ptarray_segmentize2d in ptarray.c
+The old function necessary for ptarray_segmentize2d in ptarray.c
 */
 double
 distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2)
@@ -2335,7 +2335,7 @@ distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2)
 
 /**
 
-The old function nessecary for ptarray_segmentize2d in ptarray.c
+The old function necessary for ptarray_segmentize2d in ptarray.c
 */
 double
 distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)

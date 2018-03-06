@@ -33,7 +33,7 @@
 /**
 
 This structure is placed in an array with one member per point.
-It has links into the minheap rtee and kepps track of eliminated points
+It has links into the minheap rtee and keeps track of eliminated points
 */
 typedef struct
 {
@@ -47,7 +47,7 @@ typedef struct
 /**
 
 This structure holds a minheap tree that is used to keep track of what points that has the smallest effective area.
-When elliminating points the neighbor points has its effective area affected and the minheap helps to resort efficient.
+When eliminating points the neighbor points has its effective area affected and the minheap helps to resort efficient.
 */
 typedef struct
 {
@@ -59,7 +59,7 @@ typedef struct
 
 /**
 
-Structure to hold pointarray and it's arealist
+Structure to hold pointarray and its arealist
 */
 typedef struct
 {

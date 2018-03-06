@@ -281,7 +281,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param fields fields to be filled in the returned structure, see
    *               LWT_COL_EDGE_* macros
    * @param limit max number of edges to return, 0 for no limit, -1
-   *              to only check for existance if a matching row.
+   *              to only check for existence if a matching row.
    *
    * @return an array of edges or null in the following cases:
    *         - limit=-1 ("numelems" is set to 1 if found, 0 otherwise)
@@ -439,7 +439,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param fields fields to be filled in the returned structure, see
    *               LWT_COL_NODE_* macros
    * @param limit max number of nodes to return, 0 for no limit, -1
-   *              to only check for existance if a matching row.
+   *              to only check for existence if a matching row.
    *
    * @return an array of nodes or null in the following cases:
    *         - limit=-1 ("numelems" is set to 1 if found, 0 otherwise)
@@ -464,7 +464,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param fields fields to be filled in the returned structure, see
    *               LWT_COL_EDGE_* macros
    * @param limit max number of edges to return, 0 for no limit, -1
-   *              to only check for existance if a matching row.
+   *              to only check for existence if a matching row.
    *
    * @return an array of edges or null in the following cases:
    *         - limit=-1 ("numelems" is set to 1 if found, 0 otherwise)
@@ -512,7 +512,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param upd_fields fields to be updated for the selected nodes,
    *                   see LWT_COL_NODE_* macros
    * @param exc_node an LWT_ISO_NODE object with exclusion fields set,
-   *                 can be NULL if no exlusion condition exists.
+   *                 can be NULL if no exclusion condition exists.
    * @param exc_fields fields used for excluding nodes from the update,
    *                   see LWT_COL_NODE_* macros
    *
@@ -604,7 +604,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    *
    * @return an array of signed edge identifiers (positive edges being
    *         walked in their direction, negative ones in opposite) or
-   *         NULL on error (@see lastErroMessage)
+   *         NULL on error (@see lastErrorMessage)
    */
   LWT_ELEMID* (*getRingEdges) (
       const LWT_BE_TOPOLOGY* topo,
@@ -622,7 +622,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    *                   see LWT_COL_EDGE_* macros
    *
    * @return number of edges being updated or -1 on error
-   *         (@see lastErroMessage)
+   *         (@see lastErrorMessage)
    */
   int (*updateEdgesById) (
       const LWT_BE_TOPOLOGY* topo,
@@ -691,7 +691,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    *                   see LWT_COL_NODE_* macros
    *
    * @return number of nodes being updated or -1 on error
-   *         (@see lastErroMessage)
+   *         (@see lastErrorMessage)
    */
   int (*updateNodesById) (
       const LWT_BE_TOPOLOGY* topo,
@@ -707,7 +707,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param numelems number of face identifiers in the ids array
    *
    * @return number of faces being deleted or -1 on error
-   *         (@see lastErroMessage)
+   *         (@see lastErrorMessage)
    */
   int (*deleteFacesById) (
       const LWT_BE_TOPOLOGY* topo,
@@ -746,7 +746,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param numelems number of node identifiers in the ids array
    *
    * @return number of nodes being deleted or -1 on error
-   *         (@see lastErroMessage)
+   *         (@see lastErrorMessage)
    */
   int (*deleteNodesById) (
       const LWT_BE_TOPOLOGY* topo,
@@ -1158,7 +1158,7 @@ void lwt_CreateTopoGeo(LWT_TOPOLOGY* topo, LWGEOM *geom);
  * @param pt the node position
  * @param skipChecks if non-zero skips consistency checks
  *                   (coincident nodes, crossing edges,
- *                    actual face containement)
+ *                    actual face containment)
  *
  * @return ID of the newly added node, or -1 on error
  *         (liblwgeom error handler will be invoked with error message)
@@ -1230,7 +1230,7 @@ LWT_ELEMID lwt_AddIsoEdge(LWT_TOPOLOGY* topo,
  *
  * For ST_AddEdgeModFace
  *
- * If the new edge splits a face, the face is shrinked and a new one
+ * If the new edge splits a face, the face is shrunk and a new one
  * is created. Unless the face being split is the Universal Face, the
  * new face will be on the right side of the newly added edge.
  *
@@ -1240,7 +1240,7 @@ LWT_ELEMID lwt_AddIsoEdge(LWT_TOPOLOGY* topo,
  * @param geom the edge geometry
  * @param skipChecks if non-zero skips consistency checks
  *                   (curve being simple and valid, start/end nodes
- *                    consistency actual face containement)
+ *                    consistency actual face containment)
  *
  * @return ID of the newly added edge or null on error
  *         (liblwgeom error handler will be invoked with error message)
@@ -1263,7 +1263,7 @@ LWT_ELEMID lwt_AddEdgeModFace(LWT_TOPOLOGY* topo,
  * @param geom the edge geometry
  * @param skipChecks if non-zero skips consistency checks
  *                   (curve being simple and valid, start/end nodes
- *                    consistency actual face containement)
+ *                    consistency actual face containment)
  * @return ID of the newly added edge
  *
  */

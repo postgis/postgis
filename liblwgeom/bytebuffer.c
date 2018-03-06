@@ -378,7 +378,7 @@ bytebuffer_getlength(const bytebuffer_t *s)
 
 /**
 * Returns a new bytebuffer were both ingoing bytebuffers is merged.
-* Caller is responsible for freeing both incoming bytefyffers and resulting bytebuffer
+* Caller is responsible for freeing both incoming bytebuffers and resulting bytebuffer
 */
 bytebuffer_t*
 bytebuffer_merge(bytebuffer_t **buff_array, int nbuffers)

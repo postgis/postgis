@@ -65,7 +65,7 @@ get_3dcross_product(VECTOR3D *v1,VECTOR3D *v2, VECTOR3D *v)
 /**
 This function is used to create a vertical line used for cases where one if the
 geometries lacks z-values. The vertical line crosses the 2d point that is closest
-and the z-range is from maxz to minz in the geoemtrie that has z values.
+and the z-range is from maxz to minz in the geometry that has z values.
 */
 static
 LWGEOM* create_v_line(const LWGEOM *lwgeom,double x, double y, int srid)
@@ -120,7 +120,7 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 	thedl.distance = initdistance;
 	thedl.tolerance = 0.0;
 
-	/*Check if we really have 3D geoemtries*/
+	/*Check if we really have 3D geometries*/
 	/*If not, send it to 2D-calculations which will give the same result*/
 	/*as an infinite z-value at one or two of the geometries*/
 	if(!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
@@ -225,7 +225,7 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 
 	LWDEBUG(2, "lw_dist3d_distancepoint is called");
 
-	/*Check if we really have 3D geoemtries*/
+	/*Check if we really have 3D geometries*/
 	/*If not, send it to 2D-calculations which will give the same result*/
 	/*as an infinite z-value at one or two of the geometries*/
 	if(!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
@@ -459,7 +459,7 @@ int lw_dist3d_recursive(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS3D *dl)
 			}
 
 
-			/*If one of geometries is empty, return. True here only means continue searching. False would have stoped the process*/
+			/*If one of geometries is empty, return. True here only means continue searching. False would have stopped the process*/
 			if (lwgeom_is_empty(g1)||lwgeom_is_empty(g2)) return LW_TRUE;
 
 
@@ -623,7 +623,7 @@ lw_dist3d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS3D *dl)
 	LWDEBUG(2, "lw_dist3d_point_poly is called");
 	getPoint3dz_p(point->point, 0, &p);
 
-	/*If we are lookig for max distance, longestline or dfullywithin*/
+	/*If we are looking for max distance, longestline or dfullywithin*/
 	if (dl->mode == DIST_MAX)
 	{
 		LWDEBUG(3, "looking for maxdistance");
@@ -691,8 +691,8 @@ int lw_dist3d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS3D *dl)
 	if(!define_plane(poly2->rings[0], &plane))
 		return LW_FALSE;
 
-	/*What we do here is to compare the bondary of one polygon with the other polygon
-	and then take the second boudary comparing with the first polygon*/
+	/*What we do here is to compare the boundary of one polygon with the other polygon
+	and then take the second boundary comparing with the first polygon*/
 	dl->twisted=1;
 	if(!lw_dist3d_ptarray_poly(poly1->rings[0], poly2,&plane, dl))
 		return LW_FALSE;
@@ -701,7 +701,7 @@ int lw_dist3d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS3D *dl)
 
 	if(!define_plane(poly1->rings[0], &plane))
 		return LW_FALSE;
-	dl->twisted=-1; /*because we swithc the order of geometries we swithch "twisted" to -1 which will give the right order of points in shortest line.*/
+	dl->twisted=-1; /*because we switch the order of geometries we switch "twisted" to -1 which will give the right order of points in shortest line.*/
 	return lw_dist3d_ptarray_poly(poly2->rings[0], poly1,&plane, dl);
 }
 
@@ -757,7 +757,7 @@ lw_dist3d_pt_seg(POINT3DZ *p, POINT3DZ *A, POINT3DZ *B, DISTPTS3D *dl)
 	/*This is for finding the 3Dmaxdistance.
 	the maxdistance have to be between two vertexes,
 	compared to mindistance which can be between
-	tvo vertexes vertex.*/
+	two vertexes vertex.*/
 	if (dl->mode == DIST_MAX)
 	{
 		if (r>=0.5)
@@ -800,7 +800,7 @@ distance3d_pt_pt(const POINT3D *p1, const POINT3D *p2)
 
 /**
 
-Compares incomming points and
+Compares incoming points and
 stores the points closest to each other
 or most far away from each other
 depending on dl->mode (max or min)
@@ -835,7 +835,7 @@ lw_dist3d_pt_pt(POINT3DZ *thep1, POINT3DZ *thep2,DISTPTS3D *dl)
 
 /**
 
-Finds all combinationes of segments between two pointarrays
+Finds all combinations of segments between two pointarrays
 */
 int
 lw_dist3d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS3D *dl)
@@ -936,7 +936,7 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 
 	if (D <0.000000001)
 	{        /* the lines are almost parallel*/
-		s1k = 0.0; /*If the lines are paralell we try by using the startpoint of first segment. If that gives a projected point on the second line outside segment 2 it wil be found that s2k is >1 or <0.*/
+		s1k = 0.0; /*If the lines are parallel we try by using the startpoint of first segment. If that gives a projected point on the second line outside segment 2 it wil be found that s2k is >1 or <0.*/
 		if(b>c)   /* use the largest denominator*/
 		{
 			s2k=d/b;
@@ -1010,8 +1010,8 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 
 Checking if the point projected on the plane of the polygon actually is inside that polygon.
 If so the mindistance is between that projected point and our original point.
-If not we check from original point to the bounadary.
-If the projected point is inside a hole of the polygon we check the distance to the boudary of that hole.
+If not we check from original point to the boundary.
+If the projected point is inside a hole of the polygon we check the distance to the boundary of that hole.
 */
 int
 lw_dist3d_pt_poly(POINT3DZ *p, LWPOLY *poly, PLANE3D *plane,POINT3DZ *projp, DISTPTS3D *dl)
@@ -1037,7 +1037,7 @@ lw_dist3d_pt_poly(POINT3DZ *p, LWPOLY *poly, PLANE3D *plane,POINT3DZ *projp, DIS
 	}
 	else
 	{
-		return lw_dist3d_pt_ptarray(p, poly->rings[0], dl); /*If the projected point is outside the polygon we search for the closest distance against the boundarry instead*/
+		return lw_dist3d_pt_ptarray(p, poly->rings[0], dl); /*If the projected point is outside the polygon we search for the closest distance against the boundary instead*/
 	}
 
 	return LW_TRUE;
@@ -1128,7 +1128,7 @@ return LW_TRUE;
 /**
 
 Here we define the plane of a polygon (boundary pointarray of a polygon)
-the plane is stored as a pont in plane (plane.pop) and a normal vector (plane.pv)
+the plane is stored as a point in plane (plane.pop) and a normal vector (plane.pv)
 */
 int
 define_plane(POINTARRAY *pa, PLANE3D *pl)
@@ -1199,8 +1199,8 @@ Finds a point on a plane from where the original point is perpendicular to the p
 double
 project_point_on_plane(POINT3DZ *p,  PLANE3D *pl, POINT3DZ *p0)
 {
-/*In our plane definition we have a point on the plane and a normal vektor (pl.pv), perpendicular to the plane
-this vector will be paralell to the line between our inputted point above the plane and the point we are searching for on the plane.
+/*In our plane definition we have a point on the plane and a normal vector (pl.pv), perpendicular to the plane
+this vector will be parallel to the line between our inputted point above the plane and the point we are searching for on the plane.
 So, we already have a direction from p to find p0, but we don't know the distance.
 */
 
