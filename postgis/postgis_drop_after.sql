@@ -155,6 +155,11 @@ DROP FUNCTION IF EXISTS geography_gist_join_selectivity(internal, oid, internal,
 DROP FUNCTION IF EXISTS ST_AsBinary(text); -- deprecated in 2.0
 DROP FUNCTION IF EXISTS postgis_uses_stats(); -- deprecated in 2.0
 
+-- Old accum aggregate support type, removed in 2.5.0
+DROP FUNCTION IF EXISTS pgis_abs_in(cstring);
+DROP FUNCTION IF EXISTS pgis_abs_out(pgis_abs);
+DROP TYPE IF EXISTS pgis_abs;
+
 DROP FUNCTION IF EXISTS st_astwkb(geometry,integer,bigint,bool,bool); -- temporarely introduced before 2.2.0 final
 DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal,geometry,integer); -- temporarely introduced before 2.2.0 final
 DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal,geometry,integer,bigint); -- temporarely introduced before 2.2.0 final
