@@ -24,6 +24,7 @@
  **********************************************************************/
 
 #include "geos_c.h"
+
 #include "liblwgeom.h"
 #include "lwunionfind.h"
 

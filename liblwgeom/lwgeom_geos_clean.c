@@ -705,6 +705,7 @@ LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry* gin)
 
 	return gout;
 }
+
 /*
  * We expect initGEOS being called already.
  * Will return NULL on error (expect error handler being called by then)
