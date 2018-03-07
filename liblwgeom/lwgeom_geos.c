@@ -603,13 +603,22 @@ lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	g3 = GEOSIntersection(g1, g2);
 
-	if (!g3 && (!GEOSisValid(g1) || !GEOSisValid(g2)))
+	if (!g3)
 	{
-		GEOSGeometry *g1v = LWGEOM_GEOS_makeValid(g1);
-		GEOSGeometry *g2v = LWGEOM_GEOS_makeValid(g2);
-		lwnotice("%s: invalid input geometry failed in GEOS, retrying with makeValid", __func__);
-		g3 = GEOSIntersection(g1v, g2v);
-		geos_clean(g1v, g2v, NULL);
+		GEOSGeometry *g1v, *g2v;
+		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
+
+		if (!GEOSisValid(g1) || !GEOSisValid(g2))
+		{
+			lwnotice(
+			    "Your geometry dataset is not valid per OGC Specification. "
+			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
+			    "Retrying GEOS operation with ST_MakeValid of your input.");
+			g1v = LWGEOM_GEOS_makeValid(g1);
+			g2v = LWGEOM_GEOS_makeValid(g2);
+			g3 = GEOSIntersection(g1v, g2v);
+			geos_clean(g1v, g2v, NULL);
+		}
 	}
 
 	if (!g3) return geos_clean_and_fail(g1, g2, NULL, __func__);
@@ -704,13 +713,22 @@ lwgeom_difference(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	g3 = GEOSDifference(g1, g2);
 
-	if (!g3 && (!GEOSisValid(g1) || !GEOSisValid(g2)))
+	if (!g3)
 	{
-		GEOSGeometry *g1v = LWGEOM_GEOS_makeValid(g1);
-		GEOSGeometry *g2v = LWGEOM_GEOS_makeValid(g2);
-		lwnotice("%s: invalid input geometry failed in GEOS, retrying with makeValid", __func__);
-		g3 = GEOSDifference(g1v, g2v);
-		geos_clean(g1v, g2v, NULL);
+		GEOSGeometry *g1v, *g2v;
+		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
+
+		if (!GEOSisValid(g1) || !GEOSisValid(g2))
+		{
+			lwnotice(
+			    "Your geometry dataset is not valid per OGC Specification. "
+			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
+			    "Retrying GEOS operation with ST_MakeValid of your input.");
+			g1v = LWGEOM_GEOS_makeValid(g1);
+			g2v = LWGEOM_GEOS_makeValid(g2);
+			g3 = GEOSDifference(g1v, g2v);
+			geos_clean(g1v, g2v, NULL);
+		}
 	}
 
 	if (!g3) return geos_clean_and_fail(g1, g2, NULL, __func__);
@@ -745,13 +763,22 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	g3 = GEOSSymDifference(g1, g2);
 
-	if (!g3 && (!GEOSisValid(g1) || !GEOSisValid(g2)))
+	if (!g3)
 	{
-		GEOSGeometry *g1v = LWGEOM_GEOS_makeValid(g1);
-		GEOSGeometry *g2v = LWGEOM_GEOS_makeValid(g2);
-		lwnotice("%s: invalid input geometry failed in GEOS, retrying with makeValid", __func__);
-		g3 = GEOSSymDifference(g1v, g2v);
-		geos_clean(g1v, g2v, NULL);
+		GEOSGeometry *g1v, *g2v;
+		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
+
+		if (!GEOSisValid(g1) || !GEOSisValid(g2))
+		{
+			lwnotice(
+			    "Your geometry dataset is not valid per OGC Specification. "
+			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
+			    "Retrying GEOS operation with ST_MakeValid of your input.");
+			g1v = LWGEOM_GEOS_makeValid(g1);
+			g2v = LWGEOM_GEOS_makeValid(g2);
+			g3 = GEOSSymDifference(g1v, g2v);
+			geos_clean(g1v, g2v, NULL);
+		}
 	}
 
 	if (!g3) return geos_clean_and_fail(g1, g2, NULL, __func__);
@@ -818,13 +845,22 @@ lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	g3 = GEOSUnion(g1, g2);
 
-	if (!g3 && (!GEOSisValid(g1) || !GEOSisValid(g2)))
+	if (!g3)
 	{
-		GEOSGeometry *g1v = LWGEOM_GEOS_makeValid(g1);
-		GEOSGeometry *g2v = LWGEOM_GEOS_makeValid(g2);
-		lwnotice("%s: invalid input geometry failed in GEOS, retrying with makeValid", __func__);
-		g3 = GEOSUnion(g1v, g2v);
-		geos_clean(g1v, g2v, NULL);
+		GEOSGeometry *g1v, *g2v;
+		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
+
+		if (!GEOSisValid(g1) || !GEOSisValid(g2))
+		{
+			lwnotice(
+			    "Your geometry dataset is not valid per OGC Specification. "
+			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
+			    "Retrying GEOS operation with ST_MakeValid of your input.");
+			g1v = LWGEOM_GEOS_makeValid(g1);
+			g2v = LWGEOM_GEOS_makeValid(g2);
+			g3 = GEOSUnion(g1v, g2v);
+			geos_clean(g1v, g2v, NULL);
+		}
 	}
 
 	if (!g3) return geos_clean_and_fail(g1, g2, NULL, __func__);
