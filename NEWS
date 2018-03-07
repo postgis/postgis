@@ -46,6 +46,9 @@ PostGIS 2.5.0
   - #4037, Invalid input geometry is fixed with MakeValid for GEOS exceptions in
            ST_Intersection, ST_Union, ST_Difference, ST_SymDifference (Darafei
            Praliaskouski)
+  - #4038, ST_Subdivide now selects pivot for geometry split that reuses input
+           vertices. ST_ClipByBox2D is stubbed with ST_Intersection because of
+           robustness issues. (Darafei Praliaskouski)
 
 PostGIS 2.4.0
 2017/09/30

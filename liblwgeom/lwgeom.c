@@ -2248,24 +2248,33 @@ lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid)
 
 
 /* Prototype for recursion */
-static int
-lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col, const GBOX *clip);
+static int lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col);
 
 static int
-lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col, const GBOX *clip)
+lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col)
 {
 	const uint32_t maxdepth = 50;
+	GBOX *clip = gbox_copy(lwgeom_get_bbox(geom));
 	uint32_t nvertices = 0;
 	uint32_t i, n = 0;
-	double width = clip->xmax - clip->xmin;
-	double height = clip->ymax - clip->ymin;
-	GBOX subbox1, subbox2;
-	LWGEOM *clipped1, *clipped2;
+	uint32_t split_ordinate;
+	double width;
+	double height;
+	double pivot = DBL_MAX;
+	double center = DBL_MAX;
+	LWPOLY *lwpoly = NULL;
+
+	GBOX *subbox1;
+	GBOX *subbox2;
+	LWGEOM *clipped;
+
+	if (!clip) return 0;
+
+	width = clip->xmax - clip->xmin;
+	height = clip->ymax - clip->ymin;
 
 	if ( geom->type == POLYHEDRALSURFACETYPE || geom->type == TINTYPE )
-	{
 		lwerror("%s: unsupported geometry type '%s'", __func__, lwtype_name(geom->type));
-	}
 
 	if ( width == 0.0 && height == 0.0 )
 	{
@@ -2275,9 +2284,20 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 			return 1;
 		}
 		else
-		{
 			return 0;
-		}
+	}
+
+	if (width == 0.0)
+	{
+		clip->xmax += FP_TOLERANCE;
+		clip->xmin -= FP_TOLERANCE;
+		width = 2 * FP_TOLERANCE;
+	}
+	if (height == 0.0)
+	{
+		clip->ymax += FP_TOLERANCE;
+		clip->ymin -= FP_TOLERANCE;
+		height = 2 * FP_TOLERANCE;
 	}
 
 	/* Always just recurse into collections */
@@ -2285,11 +2305,10 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 	{
 		LWCOLLECTION *incol = (LWCOLLECTION*)geom;
 		int n = 0;
+		/* Don't increment depth yet, since we aren't actually
+		 * subdividing geomtries yet */
 		for ( i = 0; i < incol->ngeoms; i++ )
-		{
-			/* Don't increment depth yet, since we aren't actually subdividing geomtries yet */
-			n += lwgeom_subdivide_recursive(incol->geoms[i], maxvertices, depth, col, clip);
-		}
+			n += lwgeom_subdivide_recursive(incol->geoms[i], maxvertices, depth, col);
 		return n;
 	}
 
@@ -2302,73 +2321,102 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 	}
 
 	nvertices = lwgeom_count_vertices(geom);
+
 	/* Skip empties entirely */
-	if ( nvertices == 0 )
-	{
-		return 0;
-	}
+	if (nvertices == 0) return 0;
 
 	/* If it is under the vertex tolerance, just add it, we're done */
-	if ( nvertices < maxvertices )
+	if (nvertices <= maxvertices)
 	{
 		lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
 		return 1;
 	}
 
-	subbox1 = subbox2 = *clip;
-	if ( width > height )
-	{
-		subbox1.xmax = subbox2.xmin = (clip->xmin + clip->xmax)/2;
-	}
+	split_ordinate = (width > height) ? 0 : 1;
+	if (split_ordinate == 0)
+		center = (clip->xmin + clip->xmax) / 2;
 	else
+		center = (clip->ymin + clip->ymax) / 2;
+
+	if (geom->type == POLYGONTYPE)
 	{
-		subbox1.ymax = subbox2.ymin = (clip->ymin + clip->ymax)/2;
+		uint32_t ring_to_trim = 0;
+		double ring_area = 0;
+		double pivot_eps = DBL_MAX;
+		double pt_eps = DBL_MAX;
+		POINTARRAY *pa;
+		pivot = DBL_MAX;
+		lwpoly = (LWPOLY *)geom;
+
+		/* if there are more points in holes than in outer ring */
+		if (nvertices > 2 * lwpoly->rings[0]->npoints)
+		{
+			/* trim holes starting from biggest */
+			for (i = 1; i < lwpoly->nrings; i++)
+			{
+				double current_ring_area = fabs(ptarray_signed_area(lwpoly->rings[i]));
+				if (current_ring_area >= ring_area)
+				{
+					ring_area = current_ring_area;
+					ring_to_trim = i;
+				}
+			}
+		}
+
+		pa = lwpoly->rings[ring_to_trim];
+
+		/* find most central point in chosen ring */
+		for (i = 0; i < pa->npoints; i++)
+		{
+			double pt;
+			if (split_ordinate == 0)
+				pt = getPoint2d_cp(pa, i)->x;
+			else
+				pt = getPoint2d_cp(pa, i)->y;
+			pt_eps = fabs(pt - center);
+			if (pivot_eps > pt_eps)
+			{
+				pivot = pt;
+				pivot_eps = pt_eps;
+			}
+		}
 	}
 
-	if ( height == 0 )
-	{
-		subbox1.ymax += FP_TOLERANCE;
-		subbox2.ymax += FP_TOLERANCE;
-		subbox1.ymin -= FP_TOLERANCE;
-		subbox2.ymin -= FP_TOLERANCE;
-	}
+	subbox1 = gbox_copy(clip);
+	subbox2 = gbox_copy(clip);
 
-	if ( width == 0 )
-	{
-		subbox1.xmax += FP_TOLERANCE;
-		subbox2.xmax += FP_TOLERANCE;
-		subbox1.xmin -= FP_TOLERANCE;
-		subbox2.xmin -= FP_TOLERANCE;
-	}
+	if (pivot == DBL_MAX) pivot = center;
 
-	clipped1 = lwgeom_clip_by_rect(geom, subbox1.xmin, subbox1.ymin, subbox1.xmax, subbox1.ymax);
-	clipped2 = lwgeom_clip_by_rect(geom, subbox2.xmin, subbox2.ymin, subbox2.xmax, subbox2.ymax);
+	if (split_ordinate == 0)
+		subbox1->xmax = subbox2->xmin = pivot;
+	else
+		subbox1->ymax = subbox2->ymin = pivot;
 
 	++depth;
 
-	if ( clipped1 )
+	clipped = lwgeom_clip_by_rect(geom, subbox1->xmin, subbox1->ymin, subbox1->xmax, subbox1->ymax);
+	if (clipped)
 	{
-		n += lwgeom_subdivide_recursive(clipped1, maxvertices, depth, col, &subbox1);
-		lwgeom_free(clipped1);
+		n += lwgeom_subdivide_recursive(clipped, maxvertices, depth, col);
+		lwgeom_free(clipped);
 	}
 
-	if ( clipped2 )
+	clipped = lwgeom_clip_by_rect(geom, subbox2->xmin, subbox2->ymin, subbox2->xmax, subbox2->ymax);
+	if (clipped)
 	{
-		n += lwgeom_subdivide_recursive(clipped2, maxvertices, depth, col, &subbox2);
-		lwgeom_free(clipped2);
+		n += lwgeom_subdivide_recursive(clipped, maxvertices, depth, col);
+		lwgeom_free(clipped);
 	}
 
 	return n;
-
 }
 
 LWCOLLECTION *
 lwgeom_subdivide(const LWGEOM *geom, uint32_t maxvertices)
 {
 	static uint32_t startdepth = 0;
-	static uint32_t minmaxvertices = 8;
+	static uint32_t minmaxvertices = 5;
 	LWCOLLECTION *col;
-	GBOX clip;
 
 	col = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
 
@@ -2381,8 +2429,7 @@ lwgeom_subdivide(const LWGEOM *geom, uint32_t maxvertices)
 		lwerror("%s: cannot subdivide to fewer than %d vertices per output", __func__, minmaxvertices);
 	}
 
-	clip = *(lwgeom_get_bbox(geom));
-	lwgeom_subdivide_recursive(geom, maxvertices, startdepth, col, &clip);
+	lwgeom_subdivide_recursive(geom, maxvertices, startdepth, col);
 	lwgeom_set_srid((LWGEOM*)col, geom->srid);
 	return col;
 }
