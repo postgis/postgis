@@ -14,6 +14,7 @@ PostGIS 2.5.0
   - #3885, version number removed from address_standardize lib file
   - #3893, raster support functions can only be loaded in the same schema
            with core PostGIS functions.
+  - #4035, remove dummy pgis_abs type from aggregate/collect routines.
 
 * Enhancements and Fixes*
   - #3944, Update to EPSG register v9.2 (Even Rouault)
@@ -42,6 +43,9 @@ PostGIS 2.5.0
   - #4020, Casting from box3d to geometry now returns correctly connected
            PolyhedralSurface (Matthias Bay)
   - #2508, ST_OffsetCurve now works with collections (Darafei Praliaskouski)
+  - #4037, Invalid input geometry is fixed with MakeValid for GEOS exceptions in
+           ST_Intersection, ST_Union, ST_Difference, ST_SymDifference (Darafei
+           Praliaskouski)
 
 PostGIS 2.4.0
 2017/09/30
