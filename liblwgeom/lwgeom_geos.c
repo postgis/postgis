@@ -315,6 +315,13 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 	char* wkt;
 #endif
 
+	if (autofix)
+	{
+		/* cross fingers and try without autofix, maybe it'll work? */
+		g = LWGEOM2GEOS(lwgeom, LW_FALSE);
+		if (g) return g;
+	}
+
 	LWDEBUGF(4, "LWGEOM2GEOS got a %s", lwtype_name(lwgeom->type));
 
 	if (lwgeom_has_arc(lwgeom))
@@ -872,17 +879,35 @@ lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 	return result;
 }
 
-LWGEOM*
-lwgeom_clip_by_rect(const LWGEOM* geom, double x0, double y0, double x1, double y1)
+LWGEOM *
+lwgeom_clip_by_rect(const LWGEOM *geom1, double x1, double y1, double x2, double y2)
 {
-#if POSTGIS_GEOS_VERSION < 35
-	lwerror(
-	    "The GEOS version this postgis binary was compiled against (%d) doesn't support 'GEOSClipByRect' function "
-	    "(3.5.0+ required)",
-	    POSTGIS_GEOS_VERSION);
-	return NULL;
-#else  /* POSTGIS_GEOS_VERSION >= 35 */
 	LWGEOM* result;
+	LWGEOM *tmp;
+
+	result = lwgeom_intersection(geom1, (LWGEOM *)lwpoly_construct_envelope(geom1->srid, x1, y1, x2, y2));
+
+	if (!result) return NULL;
+
+	/* clipping should not produce lower dimension objects */
+	if (
+	    /* input has exact dimensionality, isn't a generic collection */
+	    geom1->type != COLLECTIONTYPE &&
+	    /* output may have different things inside */
+	    result->type == COLLECTIONTYPE)
+	{
+		tmp = lwcollection_as_lwgeom(lwcollection_extract(lwgeom_as_lwcollection(result), lwgeom_dimension(geom1) + 1));
+		lwfree(result);
+		result = tmp;
+		if (!result) return NULL;
+	}
+
+	/* clean up stray points on geometry boundary */
+	lwgeom_simplify_in_place(result, 0.0, LW_TRUE);
+
+	return result;
+
+#if 0  /* POSTGIS_GEOS_VERSION >= 35, enable only after bugs in geos are fixed */
 	int32_t srid = get_result_srid(geom, NULL, __func__);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry *g1, *g3;
@@ -896,7 +921,7 @@ lwgeom_clip_by_rect(const LWGEOM* geom, double x0, double y0, double x1, double 
 
 	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
 
-	g3 = GEOSClipByRect(g1, x0, y0, x1, y1);
+	g3 = GEOSClipByRect(g1, x1, y1, x2, y2);
 
 	if (!g3) return geos_clean_and_fail(g1, NULL, NULL, __func__);
 
