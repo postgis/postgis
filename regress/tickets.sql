@@ -1079,7 +1079,7 @@ select '#4025', ST_DistanceCPA (
 SELECT '#4037.1', ST_AsText(ST_Intersection('POLYGON((0 0, 10 10, 0 10, 10 0, 0 0))', ST_MakeEnvelope(2,2,8,8)));
 SELECT '#4037.2', ST_AsText(ST_Difference('POLYGON((0 0, 10 10, 0 10, 10 0, 0 0))', ST_MakeEnvelope(2,2,8,8)));
 SELECT '#4037.3', ST_AsText(ST_SymDifference('POLYGON((0 0, 10 10, 0 10, 10 0, 0 0))', ST_MakeEnvelope(2,2,8,8)));
-SELECT '#4037.3', ST_AsText(ST_Union('POLYGON((0 0, 10 10, 0 10, 10 0, 0 0))', ST_MakeEnvelope(2,2,8,8)));
+SELECT '#4037.4', ST_AsText(ST_Union('POLYGON((0 0, 10 10, 0 10, 10 0, 0 0))', ST_MakeEnvelope(2,2,8,8)));
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
