@@ -335,6 +335,7 @@ LWGEOM_GEOS_nodeLines(const GEOSGeometry* lines)
 		point = LWGEOM_GEOS_getPointN(lines, 0);
 		if (!point) return NULL;
 		unioned = GEOSUnion(noded, point);
+		GEOSGeom_destroy(point);
 		if (!unioned)
 			return NULL;
 		else
