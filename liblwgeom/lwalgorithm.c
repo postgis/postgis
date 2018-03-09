@@ -466,6 +466,9 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 	int cross_right = 0;
 	int first_cross = 0;
 	int this_cross = 0;
+#if POSTGIS_DEBUG_LEVEL >= 4
+	char *geom_ewkt;
+#endif
 
 	pa1 = (POINTARRAY*)l1->points;
 	pa2 = (POINTARRAY*)l2->points;
@@ -474,8 +477,14 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 	if ( pa1->npoints < 2 || pa2->npoints < 2 )
 		return LINE_NO_CROSS;
 
-	LWDEBUGF(4, "l1 = %s", lwgeom_to_ewkt((LWGEOM*)l1));
-	LWDEBUGF(4, "l2 = %s", lwgeom_to_ewkt((LWGEOM*)l2));
+#if POSTGIS_DEBUG_LEVEL >= 4
+	geom_ewkt = lwgeom_to_ewkt((LWGEOM*)l1);
+	LWDEBUGF(4, "l1 = %s", geom_ewkt);
+	lwfree(geom_ewkt);
+	geom_ewkt = lwgeom_to_ewkt((LWGEOM*)l2);
+	LWDEBUGF(4, "l2 = %s", geom_ewkt);
+	lwfree(geom_ewkt);
+#endif
 
 	/* Initialize first point of q */
 	q1 = getPoint2d_cp(pa2, 0);

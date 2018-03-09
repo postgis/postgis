@@ -930,7 +930,13 @@ static int
 rect_tree_intersects_tree_recursive(RECT_NODE *n1, RECT_NODE *n2)
 {
 	int i, j;
-	LWDEBUGF(4,"n1 %s  n2 %s", rect_node_to_str(n1), rect_node_to_str(n2));
+#if POSTGIS_DEBUG_LEVEL >= 4
+	char *n1_str = rect_node_to_str(n1);
+	char *n2_str = rect_node_to_str(n2);
+	LWDEBUGF(4,"n1 %s  n2 %s", n1, n2);
+	lwfree(n1_str);
+	lwfree(n2_str);
+#endif
 	/* There can only be an edge intersection if the rectangles overlap */
 	if (rect_node_intersects(n1, n2))
 	{

@@ -557,6 +557,9 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 	double ordinate_value_p = 0.0, ordinate_value_q = 0.0;
 	char hasz, hasm;
 	char dims;
+#if POSTGIS_DEBUG_LEVEL >= 4
+	char *geom_ewkt;
+#endif
 
 	/* Null input, nothing we can do. */
 	if ( ! line )
@@ -576,8 +579,12 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 		to = t;
 	}
 
+#if POSTGIS_DEBUG_LEVEL >= 4
 	LWDEBUGF(4, "from = %g, to = %g, ordinate = %c", from, to, ordinate);
-	LWDEBUGF(4, "%s", lwgeom_to_ewkt((LWGEOM*)line));
+	geom_ewkt = lwgeom_to_ewkt((LWGEOM*)line);
+	LWDEBUGF(4, "%s", geom_ewkt);
+	lwfree(geom_ewkt);
+#endif
 
 	/* Asking for an ordinate we don't have. Error. */
 	if ( (ordinate == 'Z' && ! hasz) || (ordinate == 'M' && ! hasm) )

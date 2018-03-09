@@ -307,8 +307,12 @@ gbox_centroid(const GBOX* gbox, POINT2D* out)
 static int gbox_check_poles(GBOX *gbox)
 {
 	int rv = LW_FALSE;
+#if POSTGIS_DEBUG_LEVEL >= 4
+	char *gbox_str = gbox_to_string(gbox);
 	LWDEBUG(4, "checking poles");
-	LWDEBUGF(4, "gbox %s", gbox_to_string(gbox));
+	LWDEBUGF(4, "gbox %s", gbox_str);
+	lwfree(gbox_str);
+#endif
 	/* Z axis */
 	if ( gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
 	     gbox->ymin < 0.0 && gbox->ymax > 0.0 )
@@ -2432,6 +2436,9 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test)
 	GEOGRAPHIC_POINT gpt_to_test;
 	POINT2D pt_outside;
 	GBOX gbox;
+#if POSTGIS_DEBUG_LEVEL >= 4
+	char *geom_ewkt;
+#endif
 	gbox.flags = 0;
 
 	/* Nulls and empties don't contain anything! */
@@ -2461,8 +2468,14 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test)
 
 	LWDEBUGF(4, "pt_outside POINT(%.18g %.18g)", pt_outside.x, pt_outside.y);
 	LWDEBUGF(4, "pt_to_test POINT(%.18g %.18g)", pt_to_test->x, pt_to_test->y);
-	LWDEBUGF(4, "polygon %s", lwgeom_to_ewkt((LWGEOM*)poly));
-	LWDEBUGF(4, "gbox %s", gbox_to_string(&gbox));
+#if POSTGIS_DEBUG_LEVEL >= 4
+	geom_ewkt = lwgeom_to_ewkt((LWGEOM*)poly);
+	LWDEBUGF(4, "polygon %s", geom_ewkt);
+	lwfree(geom_ewkt);
+	geom_ewkt = gbox_to_string(&gbox);
+	LWDEBUGF(4, "gbox %s", geom_ewkt);
+	lwfree(geom_ewkt);
+#endif
 
 	/* Not in outer ring? We're done! */
 	if ( ! ptarray_contains_point_sphere(poly->rings[0], &pt_outside, pt_to_test) )

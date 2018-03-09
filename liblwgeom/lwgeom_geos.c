@@ -882,10 +882,12 @@ lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 LWGEOM *
 lwgeom_clip_by_rect(const LWGEOM *geom1, double x1, double y1, double x2, double y2)
 {
-	LWGEOM* result;
+	LWGEOM *result;
 	LWGEOM *tmp;
+	LWGEOM *envelope = (LWGEOM*)lwpoly_construct_envelope(geom1->srid, x1, y1, x2, y2);
 
-	result = lwgeom_intersection(geom1, (LWGEOM *)lwpoly_construct_envelope(geom1->srid, x1, y1, x2, y2));
+	result = lwgeom_intersection(geom1, envelope);
+	lwgeom_free(envelope);
 
 	if (!result) return NULL;
 
@@ -1063,6 +1065,10 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 	uint32_t i, ngeoms;
 	int srid = GEOSGetSRID(geom_in);
 	Face** geoms;
+#if POSTGIS_DEBUG_LEVEL >= 3
+	LWGEOM *geos_geom;
+	char *geom_ewkt;
+#endif
 
 	vgeoms[0] = geom_in;
 	geos_result = GEOSPolygonize(vgeoms, 1);
@@ -1084,8 +1090,14 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 
 	ngeoms = GEOSGetNumGeometries(geos_result);
 
+#if POSTGIS_DEBUG_LEVEL >= 3
 	LWDEBUGF(3, "GEOSpolygonize: ngeoms in polygonize output: %d", ngeoms);
-	LWDEBUGF(3, "GEOSpolygonize: polygonized:%s", lwgeom_to_ewkt(GEOS2LWGEOM(geos_result, 0)));
+	geos_geom = GEOS2LWGEOM(geos_result, 0);
+	geom_ewkt = lwgeom_to_ewkt(geos_geom);
+	LWDEBUGF(3, "GEOSpolygonize: polygonized:%s", geom_ewkt);
+	lwgeom_free(geos_geom);
+	lwfree(geom_ewkt);
+#endif
 
 	/* No geometries in collection, early out */
 	if (ngeoms == 0)
