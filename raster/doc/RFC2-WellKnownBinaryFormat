@@ -94,8 +94,8 @@ input/output.
  |               |              | 6: 16-bit unsigned signed integer |
  |               |              | 7: 32-bit signed integer          |
  |               |              | 8: 32-bit unsigned signed integer |
- |               |              | 9: 32-bit float                  |
- |               |              | 10: 64-bit float                  |
+ |               |              | 10: 32-bit float                  |
+ |               |              | 11: 64-bit float                  |
  +---------------+--------------+-----------------------------------+
  | nodata        | 1 to 8 bytes | Nodata value                      |
  |               | depending on |                                   |
