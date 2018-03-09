@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2001-2006 Refractions Research Inc.
+ * Copyright (C) 2017-2018 Daniel Baston <dbaston@gmail.com>
  *
  **********************************************************************/
 
@@ -2444,3 +2445,63 @@ lwgeom_is_trajectory(const LWGEOM *geom)
 	return lwline_is_trajectory((LWLINE*)geom);
 }
 
+static uint8_t
+bits_for_precision(int32_t significant_digits)
+{
+	int32_t bits_needed = ceil(significant_digits / log10(2));
+
+	if (bits_needed > 52)
+	{
+		return 52;
+	}
+	else if (bits_needed < 1)
+	{
+		return 1;
+	}
+
+	return bits_needed;
+}
+
+static inline
+double mask_double(double d, uint64_t mask)
+{
+	uint64_t* double_bits = (uint64_t*) (&d);
+
+	(*double_bits) &= mask;
+
+	return *((double*) double_bits);
+}
+
+static double trim_preserve_decimal_digits(double d, int32_t decimal_digits)
+{
+	if (d==0)
+		return 0;
+
+	int digits_left_of_decimal = (int) (1 + log10(fabs(d)));
+	uint8_t bits_needed = bits_for_precision(decimal_digits + digits_left_of_decimal);
+
+
+	uint64_t mask = 0xffffffffffffffff << (52 - bits_needed);
+
+	return mask_double(d, mask);
+}
+
+void lwgeom_trim_bits_in_place(LWGEOM* geom, int32_t prec_x, int32_t prec_y, int32_t prec_z, int32_t prec_m)
+{
+	LWPOINTITERATOR* it = lwpointiterator_create_rw(geom);
+	POINT4D p;
+
+	while (lwpointiterator_has_next(it))
+	{
+		lwpointiterator_peek(it, &p);
+		p.x = trim_preserve_decimal_digits(p.x, prec_x);
+		p.y = trim_preserve_decimal_digits(p.y, prec_y);
+		if (lwgeom_has_z(geom))
+			p.z = trim_preserve_decimal_digits(p.z, prec_z);
+		if (lwgeom_has_m(geom))
+			p.m = trim_preserve_decimal_digits(p.m, prec_m);
+		lwpointiterator_modify_next(it, &p);
+	}
+
+	lwpointiterator_destroy(it);
+}

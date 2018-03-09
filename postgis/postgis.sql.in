@@ -1099,6 +1099,13 @@ CREATE OR REPLACE FUNCTION postgis_hasbbox(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_hasBBOX'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_QuantizeCoordinates(g geometry, prec_x int, prec_y int DEFAULT NULL, prec_z int DEFAULT NULL, prec_m int DEFAULT NULL)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_QuantizeCoordinates'
+	LANGUAGE 'c' IMMUTABLE _PARALLEL
+	COST 10;
+
 ------------------------------------------------------------------------
 -- DEBUG
 ------------------------------------------------------------------------
