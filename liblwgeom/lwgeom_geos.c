@@ -882,10 +882,12 @@ lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 LWGEOM *
 lwgeom_clip_by_rect(const LWGEOM *geom1, double x1, double y1, double x2, double y2)
 {
-	LWGEOM* result;
+	LWGEOM *result;
 	LWGEOM *tmp;
+	LWGEOM *envelope = (LWGEOM*)lwpoly_construct_envelope(geom1->srid, x1, y1, x2, y2);
 
-	result = lwgeom_intersection(geom1, (LWGEOM *)lwpoly_construct_envelope(geom1->srid, x1, y1, x2, y2));
+	result = lwgeom_intersection(geom1, envelope);
+	lwgeom_free(envelope);
 
 	if (!result) return NULL;
 

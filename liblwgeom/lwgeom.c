@@ -2254,7 +2254,7 @@ static int
 lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col)
 {
 	const uint32_t maxdepth = 50;
-	GBOX *clip = gbox_copy(lwgeom_get_bbox(geom));
+	GBOX clip, subbox1, subbox2;
 	uint32_t nvertices = 0;
 	uint32_t i, n = 0;
 	uint32_t split_ordinate;
@@ -2263,15 +2263,11 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 	double pivot = DBL_MAX;
 	double center = DBL_MAX;
 	LWPOLY *lwpoly = NULL;
-
-	GBOX *subbox1;
-	GBOX *subbox2;
 	LWGEOM *clipped;
 
-	if (!clip) return 0;
-
-	width = clip->xmax - clip->xmin;
-	height = clip->ymax - clip->ymin;
+	gbox_duplicate(lwgeom_get_bbox(geom), &clip);
+	width = clip.xmax - clip.xmin;
+	height = clip.ymax - clip.ymin;
 
 	if ( geom->type == POLYHEDRALSURFACETYPE || geom->type == TINTYPE )
 		lwerror("%s: unsupported geometry type '%s'", __func__, lwtype_name(geom->type));
@@ -2289,14 +2285,14 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 
 	if (width == 0.0)
 	{
-		clip->xmax += FP_TOLERANCE;
-		clip->xmin -= FP_TOLERANCE;
+		clip.xmax += FP_TOLERANCE;
+		clip.xmin -= FP_TOLERANCE;
 		width = 2 * FP_TOLERANCE;
 	}
 	if (height == 0.0)
 	{
-		clip->ymax += FP_TOLERANCE;
-		clip->ymin -= FP_TOLERANCE;
+		clip.ymax += FP_TOLERANCE;
+		clip.ymin -= FP_TOLERANCE;
 		height = 2 * FP_TOLERANCE;
 	}
 
@@ -2334,9 +2330,9 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 
 	split_ordinate = (width > height) ? 0 : 1;
 	if (split_ordinate == 0)
-		center = (clip->xmin + clip->xmax) / 2;
+		center = (clip.xmin + clip.xmax) / 2;
 	else
-		center = (clip->ymin + clip->ymax) / 2;
+		center = (clip.ymin + clip.ymax) / 2;
 
 	if (geom->type == POLYGONTYPE)
 	{
@@ -2382,26 +2378,26 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 		}
 	}
 
-	subbox1 = gbox_copy(clip);
-	subbox2 = gbox_copy(clip);
+	gbox_duplicate(&clip, &subbox1);
+	gbox_duplicate(&clip, &subbox2);
 
 	if (pivot == DBL_MAX) pivot = center;
 
 	if (split_ordinate == 0)
-		subbox1->xmax = subbox2->xmin = pivot;
+		subbox1.xmax = subbox2.xmin = pivot;
 	else
-		subbox1->ymax = subbox2->ymin = pivot;
+		subbox1.ymax = subbox2.ymin = pivot;
 
 	++depth;
 
-	clipped = lwgeom_clip_by_rect(geom, subbox1->xmin, subbox1->ymin, subbox1->xmax, subbox1->ymax);
+	clipped = lwgeom_clip_by_rect(geom, subbox1.xmin, subbox1.ymin, subbox1.xmax, subbox1.ymax);
 	if (clipped)
 	{
 		n += lwgeom_subdivide_recursive(clipped, maxvertices, depth, col);
 		lwgeom_free(clipped);
 	}
 
-	clipped = lwgeom_clip_by_rect(geom, subbox2->xmin, subbox2->ymin, subbox2->xmax, subbox2->ymax);
+	clipped = lwgeom_clip_by_rect(geom, subbox2.xmin, subbox2.ymin, subbox2.xmax, subbox2.ymax);
 	if (clipped)
 	{
 		n += lwgeom_subdivide_recursive(clipped, maxvertices, depth, col);
