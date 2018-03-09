@@ -103,13 +103,13 @@ TESTS = \
 	minimum_bounding_circle \
 	normalize \
 	operators \
-	optimize_geometry \
 	orientation \
 	out_geometry \
 	out_geography \
 	polygonize \
 	polyhedralsurface \
 	postgis_type_name \
+	quantize_coordinates \
 	regress \
 	regress_bdpoly \
 	regress_index \
