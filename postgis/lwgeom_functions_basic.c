@@ -2985,8 +2985,8 @@ Datum ST_Points(PG_FUNCTION_ARGS)
 	}
 }
 
-PG_FUNCTION_INFO_V1(postgis_optimize_geometry);
-Datum postgis_optimize_geometry(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_QuantizeCoordinates);
+Datum ST_QuantizeCoordinates(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED* input;
 	GSERIALIZED* result;

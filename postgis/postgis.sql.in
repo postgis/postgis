@@ -1100,9 +1100,9 @@ CREATE OR REPLACE FUNCTION postgis_hasbbox(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.5.0
-CREATE OR REPLACE FUNCTION postgis_optimize_geometry(g geometry, prec_x int, prec_y int DEFAULT NULL, prec_z int DEFAULT NULL, prec_m int DEFAULT NULL)
+CREATE OR REPLACE FUNCTION ST_QuantizeCoordinates(g geometry, prec_x int, prec_y int DEFAULT NULL, prec_z int DEFAULT NULL, prec_m int DEFAULT NULL)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'postgis_optimize_geometry'
+	AS 'MODULE_PATHNAME', 'ST_QuantizeCoordinates'
 	LANGUAGE 'c' IMMUTABLE _PARALLEL
 	COST 10;
 
