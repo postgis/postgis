@@ -2396,10 +2396,21 @@ lwgeom_is_trajectory(const LWGEOM *geom)
 	return lwline_is_trajectory((LWLINE*)geom);
 }
 
-static uint32_t
+static uint8_t
 bits_for_precision(int32_t significant_digits)
 {
-	return (uint32_t) ceil(significant_digits / log10(2));
+	int32_t bits_needed = ceil(significant_digits / log10(2));
+
+	if (bits_needed > 52)
+	{
+		return 52;
+	}
+	else if (bits_needed < 1)
+	{
+		return 1;
+	}
+
+	return bits_needed;
 }
 
 static inline
@@ -2418,15 +2429,8 @@ static double trim_preserve_decimal_digits(double d, int32_t decimal_digits)
 		return 0;
 
 	int digits_left_of_decimal = (int) (1 + log10(fabs(d)));
-	uint32_t bits_needed = bits_for_precision(abs(decimal_digits) + digits_left_of_decimal);
+	uint8_t bits_needed = bits_for_precision(decimal_digits + digits_left_of_decimal);
 
-	if (bits_needed > 52)
-	{
-		bits_needed = 52;
-	} else if (bits_needed < 1)
-	{
-		bits_needed = 1;
-	}
 
 	uint64_t mask = 0xffffffffffffffff << (52 - bits_needed);
 
