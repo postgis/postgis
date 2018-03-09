@@ -795,10 +795,12 @@ fulltable_size geomsize  pergeom
 			</para>
 
 			<note>
-				Only the on-disk size of the geometry is potentially affected by
-				<code>ST_QuantizeCoordinates</code>.  <xref linkend="ST_MemSize"></xref>,
-				which reports the in-memory usage of the geometry, will return the
-				the same value regardless of the disk space used by a geometry.
+				<para>
+					Only the on-disk size of the geometry is potentially affected by
+					<code>ST_QuantizeCoordinates</code>.  <xref linkend="ST_MemSize"></xref>,
+					which reports the in-memory usage of the geometry, will return the
+					the same value regardless of the disk space used by a geometry.
+				</para>
 			</note>
 		</refsection>
 
