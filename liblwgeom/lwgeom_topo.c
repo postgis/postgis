@@ -607,18 +607,12 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
   LWT_ISO_NODE *nodes;
   const GBOX *edgebox;
   GEOSGeometry *edgegg;
-  const GEOSPreparedGeometry* prepared_edge;
 
   initGEOS(lwnotice, lwgeom_geos_error);
 
   edgegg = LWGEOM2GEOS( lwline_as_lwgeom(geom), 0);
   if ( ! edgegg ) {
     lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
-    return -1;
-  }
-  prepared_edge = GEOSPrepare( edgegg );
-  if ( ! prepared_edge ) {
-    lwerror("Could not prepare edge geometry: %s", lwgeom_geos_errmsg);
     return -1;
   }
   edgebox = lwgeom_get_bbox( lwline_as_lwgeom(geom) );
@@ -628,34 +622,20 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
                                             LWT_COL_NODE_ALL, 0 );
   LWDEBUGF(1, "lwt_be_getNodeWithinBox2D returned %d nodes", num_nodes);
   if ( num_nodes == -1 ) {
-    GEOSPreparedGeom_destroy(prepared_edge);
-    GEOSGeom_destroy(edgegg);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
   for ( i=0; i<num_nodes; ++i )
   {
     LWT_ISO_NODE* node = &(nodes[i]);
-    GEOSGeometry *nodegg;
-    int contains;
     if ( node->node_id == start_node ) continue;
     if ( node->node_id == end_node ) continue;
     /* check if the edge contains this node (not on boundary) */
-    nodegg = LWGEOM2GEOS( lwpoint_as_lwgeom(node->geom) , 0);
     /* ST_RelateMatch(rec.relate, 'T********') */
-    contains = GEOSPreparedContains( prepared_edge, nodegg );
-    GEOSGeom_destroy(nodegg);
-    if (contains == 2)
-    {
-      GEOSPreparedGeom_destroy(prepared_edge);
-      GEOSGeom_destroy(edgegg);
-      _lwt_release_nodes(nodes, num_nodes);
-      lwerror("GEOS exception on PreparedContains: %s", lwgeom_geos_errmsg);
-      return -1;
-    }
+    const POINT2D *pt = getPoint2d_cp(node->geom->point, 0);
+    int contains = ptarray_contains_point_partial(geom->points, pt, LW_FALSE, NULL) == LW_BOUNDARY;
     if ( contains )
     {
-      GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
       _lwt_release_nodes(nodes, num_nodes);
       lwerror("SQL/MM Spatial exception - geometry crosses a node");
@@ -669,7 +649,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
   edges = lwt_be_getEdgeWithinBox2D( topo, edgebox, &num_edges, LWT_COL_EDGE_ALL, 0 );
   LWDEBUGF(1, "lwt_be_getEdgeWithinBox2D returned %d edges", num_edges);
   if ( num_edges == -1 ) {
-    GEOSPreparedGeom_destroy(prepared_edge);
     GEOSGeom_destroy(edgegg);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -692,7 +671,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
 
     eegg = LWGEOM2GEOS( lwline_as_lwgeom(edge->geom), 0 );
     if ( ! eegg ) {
-      GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
       _lwt_release_edges(edges, num_edges);
       lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
@@ -706,7 +684,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     relate = GEOSRelateBoundaryNodeRule(eegg, edgegg, 2);
     if ( ! relate ) {
       GEOSGeom_destroy(eegg);
-      GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
       _lwt_release_edges(edges, num_edges);
       lwerror("GEOSRelateBoundaryNodeRule error: %s", lwgeom_geos_errmsg);
@@ -722,7 +699,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
       GEOSFree(relate);
       if ( match == 2 ) {
         _lwt_release_edges(edges, num_edges);
-        GEOSPreparedGeom_destroy(prepared_edge);
         GEOSGeom_destroy(edgegg);
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
         return -1;
@@ -733,7 +709,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     match = GEOSRelatePatternMatch(relate, "1FFF*FFF2");
     if ( match ) {
       _lwt_release_edges(edges, num_edges);
-      GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
       GEOSGeom_destroy(eegg);
       GEOSFree(relate);
@@ -749,7 +724,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     match = GEOSRelatePatternMatch(relate, "1********");
     if ( match ) {
       _lwt_release_edges(edges, num_edges);
-      GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
       GEOSGeom_destroy(eegg);
       GEOSFree(relate);
@@ -765,7 +739,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     match = GEOSRelatePatternMatch(relate, "T********");
     if ( match ) {
       _lwt_release_edges(edges, num_edges);
-      GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
       GEOSGeom_destroy(eegg);
       GEOSFree(relate);
@@ -786,7 +759,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
   if ( edges ) _lwt_release_edges(edges, num_edges);
               /* would be NULL if num_edges was 0 */
 
-  GEOSPreparedGeom_destroy(prepared_edge);
   GEOSGeom_destroy(edgegg);
 
   return 0;
