@@ -7,4 +7,5 @@ SELECT count(*) FROM (
       generate_series(-15,15,5) y
   ) foo
 ) bar;
+\timing
 SELECT topology.DropTopology('topoperf');
