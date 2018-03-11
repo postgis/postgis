@@ -3166,62 +3166,6 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
   return nseid;
 }
 
-static GEOSGeometry *
-_lwt_EdgeMotionArea(LWLINE *geom, int isclosed)
-{
-  GEOSGeometry *gg;
-  POINT4D p4d;
-  POINTARRAY *pa;
-  POINTARRAY **pas;
-  LWPOLY *poly;
-  LWGEOM *g;
-
-  pas = lwalloc(sizeof(POINTARRAY*));
-
-  initGEOS(lwnotice, lwgeom_geos_error);
-
-  if ( isclosed )
-  {
-    pas[0] = ptarray_clone_deep( geom->points );
-    poly = lwpoly_construct(0, 0, 1, pas);
-    gg = LWGEOM2GEOS( lwpoly_as_lwgeom(poly), 0 );
-    lwpoly_free(poly); /* should also delete the pointarrays */
-  }
-  else
-  {
-    pa = geom->points;
-    getPoint4d_p(pa, 0, &p4d);
-    pas[0] = ptarray_clone_deep( pa );
-    /* don't bother dup check */
-    if ( LW_FAILURE == ptarray_append_point(pas[0], &p4d, LW_TRUE) )
-    {
-      ptarray_free(pas[0]);
-      lwfree(pas);
-      lwerror("Could not append point to pointarray");
-      return NULL;
-    }
-    poly = lwpoly_construct(0, NULL, 1, pas);
-    /* make valid, in case the edge self-intersects on its first-last
-     * vertex segment */
-    g = lwgeom_make_valid(lwpoly_as_lwgeom(poly));
-    lwpoly_free(poly); /* should also delete the pointarrays */
-    if ( ! g )
-    {
-      lwerror("Could not make edge motion area valid");
-      return NULL;
-    }
-    gg = LWGEOM2GEOS(g, 0);
-    lwgeom_free(g);
-  }
-  if ( ! gg )
-  {
-    lwerror("Could not convert old edge area geometry to GEOS: %s",
-            lwgeom_geos_errmsg);
-    return NULL;
-  }
-  return gg;
-}
-
 int
 lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
 {
@@ -3369,71 +3313,25 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   // 3. if any node beside endnodes are found:
   if ( numnodes > ( 1 + isclosed ? 0 : 1 ) )
   {{
-    GEOSGeometry *oarea, *narea;
-    const GEOSPreparedGeometry *oareap, *nareap;
-
-    initGEOS(lwnotice, lwgeom_geos_error);
-
-    oarea = _lwt_EdgeMotionArea(oldedge->geom, isclosed);
-    if ( ! oarea )
-    {
-      _lwt_release_edges(oldedge, 1);
-      lwerror("Could not compute edge motion area for old edge");
-      return -1;
-    }
-
-    narea = _lwt_EdgeMotionArea(geom, isclosed);
-    if ( ! narea )
-    {
-      GEOSGeom_destroy(oarea);
-      _lwt_release_edges(oldedge, 1);
-      lwerror("Could not compute edge motion area for new edge");
-      return -1;
-    }
-
     //   3.2. bail out if any node is in one and not the other
-    oareap = GEOSPrepare( oarea );
-    nareap = GEOSPrepare( narea );
     for (i=0; i<numnodes; ++i)
     {
       LWT_ISO_NODE *n = &(nodes[i]);
-      GEOSGeometry *ngg;
-      int ocont, ncont;
-      size_t sz;
-      char *wkt;
       if ( n->node_id == oldedge->start_node ) continue;
       if ( n->node_id == oldedge->end_node ) continue;
-      ngg = LWGEOM2GEOS( lwpoint_as_lwgeom(n->geom) , 0);
-      ocont = GEOSPreparedContains( oareap, ngg );
-      ncont = GEOSPreparedContains( nareap, ngg );
-      GEOSGeom_destroy(ngg);
-      if (ocont == 2 || ncont == 2)
-      {
-        _lwt_release_nodes(nodes, numnodes);
-        GEOSPreparedGeom_destroy(oareap);
-        GEOSGeom_destroy(oarea);
-        GEOSPreparedGeom_destroy(nareap);
-        GEOSGeom_destroy(narea);
-        lwerror("GEOS exception on PreparedContains: %s", lwgeom_geos_errmsg);
-        return -1;
-      }
+      const POINT2D *pt = getPoint2d_cp(n->geom->point, 0);
+      int ocont = ptarray_contains_point_partial(oldedge->geom->points, pt, isclosed, NULL) == LW_INSIDE;
+      int ncont = ptarray_contains_point_partial(geom->points, pt, isclosed, NULL) == LW_INSIDE;
       if (ocont != ncont)
       {
-        GEOSPreparedGeom_destroy(oareap);
-        GEOSGeom_destroy(oarea);
-        GEOSPreparedGeom_destroy(nareap);
-        GEOSGeom_destroy(narea);
-        wkt = lwgeom_to_wkt(lwpoint_as_lwgeom(n->geom), WKT_ISO, 15, &sz);
+        size_t sz;
+        char *wkt = lwgeom_to_wkt(lwpoint_as_lwgeom(n->geom), WKT_ISO, 15, &sz);
         _lwt_release_nodes(nodes, numnodes);
         lwerror("Edge motion collision at %s", wkt);
         lwfree(wkt); /* would not necessarely reach this point */
         return -1;
       }
     }
-    GEOSPreparedGeom_destroy(oareap);
-    GEOSGeom_destroy(oarea);
-    GEOSPreparedGeom_destroy(nareap);
-    GEOSGeom_destroy(narea);
   }}
   if ( numnodes ) _lwt_release_nodes(nodes, numnodes);
 
