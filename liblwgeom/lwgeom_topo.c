@@ -5015,7 +5015,6 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
     LWGEOM *g = lwline_as_lwgeom(e->geom);
     LWGEOM *prj;
     int contains;
-    GEOSGeometry *prjg, *gg;
     LWT_ELEMID edge_id = e->edge_id;
 
     LWDEBUGF(1, "Splitting edge %" LWTFMT_ELEMID, edge_id);
@@ -5044,31 +5043,8 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
       lwgeom_free(prj);
       prj = tmp;
     }}
-    prjg = LWGEOM2GEOS(prj, 0);
-    if ( ! prjg ) {
-      lwgeom_free(prj);
-      _lwt_release_edges(edges, num);
-      lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
-      return -1;
-    }
-    gg = LWGEOM2GEOS(g, 0);
-    if ( ! gg ) {
-      lwgeom_free(prj);
-      _lwt_release_edges(edges, num);
-      GEOSGeom_destroy(prjg);
-      lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
-      return -1;
-    }
-    contains = GEOSContains(gg, prjg);
-    GEOSGeom_destroy(prjg);
-    GEOSGeom_destroy(gg);
-    if ( contains == 2 )
-    {
-      lwgeom_free(prj);
-      _lwt_release_edges(edges, num);
-      lwerror("GEOS exception on Contains: %s", lwgeom_geos_errmsg);
-      return -1;
-    }
+    const POINT2D *pt = getPoint2d_cp(lwgeom_as_lwpoint(prj)->point, 0);
+    contains = ptarray_contains_point_partial(e->geom->points, pt, 0, NULL) == LW_BOUNDARY;
     if ( ! contains )
     {{
       double snaptol;
