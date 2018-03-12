@@ -59,7 +59,6 @@ Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS);
-Datum postgis_optimize_geometry(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
@@ -114,6 +113,7 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS);
 Datum ST_CollectionExtract(PG_FUNCTION_ARGS);
 Datum ST_CollectionHomogenize(PG_FUNCTION_ARGS);
 Datum ST_IsCollection(PG_FUNCTION_ARGS);
+Datum ST_QuantizeCoordinates(PG_FUNCTION_ARGS);
 Datum ST_WrapX(PG_FUNCTION_ARGS);
 
 
