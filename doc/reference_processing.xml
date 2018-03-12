@@ -3479,29 +3479,39 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
 				<paramdef><type>integer</type> <parameter>max_vertices=256</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-	  </refsynopsisdiv>
+	</refsynopsisdiv>
 
 	  <refsection>
 		<title>Description</title>
 
-    <para>
-Turns a single geometry into a set in which each element has fewer than
-the maximum allowed number of vertices. Useful for converting excessively
-large polygons and other objects into small portions that fit within the
-database page size. Uses the same envelope clipping as ST_ClipByBox2D does,
-recursively subdividing the input geometry until all portions have less than the
-maximum vertex count. Minimum vertice count allowed is 8 and if you try to specify lower than 8, it will throw an error.
-    </para>
-
-		<para>Clipping performed by the GEOS module.</para>
-		<note><para>Requires GEOS 3.5.0+</para></note>
+		<para>
+			Divides geometry into parts until a part can be represented using no more than <code>max_vertices</code>.
+			Point-in-polygon and other overlay operations are normally faster for indexed subdivided dataset:
+			"miss" cases are faster to check as boxes for all parts typically cover smaller area than original geometry box,
+			"hit" cases are faster because recheck operates on less points.
+			Uses the same envelope clipping as <code>ST_ClipByBox2D</code>.
+			<code>max_vertices</code> must be 5 or more, as 5 points are needed to represent a closed box.
+		</para>
 
 		<para>Availability: 2.2.0 requires GEOS &gt;= 3.5.0.</para>
-
+		<para>Enhanced: 2.5.0 reuses existing points on polygon split, vertex count is lowered from 8 to 5.</para>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
+			<programlisting>-- Subdivide complex geometries in table, in place
+with complex_areas_to_subdivide as (
+    delete from polygons_table
+    where ST_NPoints(geom) > 255
+    returning id, column1, column2, column3, geom
+)
+insert into polygons_table (fid, column1, column2, column3, geom)
+    select
+        fid, column1, column2, column3,
+        ST_Subdivide(geom, 255) as geom
+    from complex_areas_to_subdivide;
+ </programlisting>
+
 			<programlisting>-- Create a new subdivided table suitable for joining to the original
 CREATE TABLE subdivided_geoms AS
 SELECT pkey, ST_Subdivide(geom) AS geom
@@ -3524,19 +3534,13 @@ FROM original_geoms;
 FROM ( SELECT ST_SubDivide('POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56,22 64,32 110,40 119,36 150,
 57 158,75 171,92 182,114 184,132 186,146 178,176 184,179 162,184 141,190 122,
 190 100,185 79,186 56,186 52,178 34,168 18,147 13,132 10))'::geometry,10))  As f(geom);</programlisting>
-<screen>rn |                          wkt
----+---------------------------------------------------------------------------
- 1 | POLYGON((22 64,29.3913043478263 98.000000000001,106.000000000001 98.00000000001,
-        106.000000000001 27.5882352941173,85 35,68 29,66 28,49 42,32 56,22 64))
- 2 | POLYGON((29.3913043478263 98.000000000001,32 110,40 119,36 150,57 158,
-        75 11,92 182,106.000000000001 183.272727272727,106.000000000001 98.000000000001,
-        29.913043478263 98.000000000001))
- 3 | POLYGON((106.000000000001 27.5882352941173,106.000000000001 98.00000000000,
- 189.52380952381 98.000000000001,185 79,186 56,186 52,178 34,168 18,147 13,
- 132 0,119 23,106.000000000001 27.5882352941173))
- 4 | POLYGON((106.000000000001 98.000000000001,106.000000000001 183.27272727272,
-    114 184,132 186,146 178,176 184,179 162,184 141,190 122,190 100,189.5238095238
- 98.000000000001,106.000000000001 98.000000000001))</screen>
+<screen> rn │                                                      wkt
+────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  1 │ POLYGON((119 23,85 35,68 29,66 28,32 56,22 64,29.8260869565217 100,119 100,119 23))
+  2 │ POLYGON((132 10,119 23,119 56,186 56,186 52,178 34,168 18,147 13,132 10))
+  3 │ POLYGON((119 56,119 100,190 100,185 79,186 56,119 56))
+  4 │ POLYGON((29.8260869565217 100,32 110,40 119,36 150,57 158,75 171,92 182,114 184,114 100,29.8260869565217 100))
+  5 │ POLYGON((114 184,132 186,146 178,176 184,179 162,184 141,190 122,190 100,114 100,114 184))</screen>
 						  </para></entry>
 					  </row>
 					  <row>
@@ -3545,14 +3549,17 @@ FROM ( SELECT ST_SubDivide('POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56
 							  <imageobject>
 								<imagedata fileref="images/st_subdivide02.png" />
 							  </imageobject>
-							  <caption><para>Useful in conjunction with ST_Segmentize to create additional vertices that can then be used for splitting</para></caption>
+							  <caption><para>Useful in conjunction with ST_Segmentize(geography) to create additional vertices that can then be used for splitting.</para></caption>
 							</mediaobject>
 						  </informalfigure>
-				<programlisting>SELECT ST_AsText(ST_SubDivide(ST_Segmentize('LINESTRING(0 0, 100 100, 150 150)'::geometry,10),8));</programlisting>
-<screen>LINESTRING(0 0,7.07106781186547 7.07106781186547,14.1421356237309 14.1421356237309,21.2132034355964 21.2132034355964,28.2842712474619 28.2842712474619,35.3553390593274 35.3553390593274,37.499999999998 37.499999999998)
-LINESTRING(37.499999999998 37.499999999998,42.4264068711929 42.4264068711929,49.4974746830583 49.4974746830583,56.5685424949238 56.5685424949238,63.6396103067893 63.6396103067893,70.7106781186548 70.7106781186548,74.999999999998 74.999999999998)
-LINESTRING(74.999999999998 74.999999999998,77.7817459305202 77.7817459305202,84.8528137423857 84.8528137423857,91.9238815542512 91.9238815542512,98.9949493661167 98.9949493661167,100 100,107.071067811865 107.071067811865,112.499999999998 112.499999999998)
-LINESTRING(112.499999999998 112.499999999998,114.142135623731 114.142135623731,121.213203435596 121.213203435596,128.284271247462 128.284271247462,135.355339059327 135.355339059327,142.426406871193 142.426406871193,149.497474683058 149.497474683058,149.999999999998 149.999999999998)</screen>
+				<programlisting>SELECT ST_AsText(ST_Subdivide(ST_Segmentize('LINESTRING(0 0, 85 85)'::geography,1200000)::geometry,8));</programlisting>
+				<screen>
+LINESTRING(0 0,0.487578359029357 5.57659056746196,0.984542144675897 11.1527721155093,1.50101059639722 16.7281035483571,1.94532113630331 21.25)
+LINESTRING(1.94532113630331 21.25,2.04869538062779 22.3020741387339,2.64204641967673 27.8740533545155,3.29994062412787 33.443216802941,4.04836719489742 39.0084282520239,4.59890468420694 42.5)
+LINESTRING(4.59890468420694 42.5,4.92498503922732 44.5680389206321,5.98737409390639 50.1195229244701,7.3290919767674 55.6587646879025,8.79638749938413 60.1969505994924)
+LINESTRING(8.79638749938413 60.1969505994924,9.11375579533779 61.1785363177625,11.6558166691368 66.6648504160202,15.642041247655 72.0867690601745,22.8716627200212 77.3609628116894,24.6991785131552 77.8939011989848)
+LINESTRING(24.6991785131552 77.8939011989848,39.4046096622744 82.1822848017636,44.7994523421035 82.5156766227011)
+LINESTRING(44.7994523421035 82.5156766227011,85 85)</screen>
 						  </para></entry>
 					  </row>
 				</tbody></tgroup></informaltable>
@@ -3563,7 +3570,8 @@ LINESTRING(112.499999999998 112.499999999998,114.142135623731 114.142135623731,1
 <xref linkend="ST_AsText" />,
 <xref linkend="ST_ClipByBox2D" />,
 <xref linkend="ST_Segmentize" />,
-<xref linkend="ST_Split" />
+<xref linkend="ST_Split" />,
+<xref linkend="ST_NPoints" />
     </para>
 	  </refsection>
 	</refentry>
