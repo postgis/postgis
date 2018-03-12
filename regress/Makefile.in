@@ -109,6 +109,7 @@ TESTS = \
 	polygonize \
 	polyhedralsurface \
 	postgis_type_name \
+	quantize_coordinates \
 	regress \
 	regress_bdpoly \
 	regress_index \

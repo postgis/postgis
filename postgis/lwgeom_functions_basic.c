@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright 2001-2006 Refractions Research Inc.
+ * Copyright 2017-2018 Daniel Baston <dbaston@gmail.com>
  *
  **********************************************************************/
 
@@ -58,6 +59,7 @@ Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS);
+Datum postgis_optimize_geometry(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
@@ -2982,4 +2984,42 @@ Datum ST_Points(PG_FUNCTION_ARGS)
 		lwmpoint_free(result);
 		PG_RETURN_POINTER(ret);
 	}
+}
+
+PG_FUNCTION_INFO_V1(ST_QuantizeCoordinates);
+Datum ST_QuantizeCoordinates(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED* input;
+	GSERIALIZED* result;
+	LWGEOM* g;
+	int32_t prec_x;
+	int32_t prec_y;
+	int32_t prec_z;
+	int32_t prec_m;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+	if (PG_ARGISNULL(1))
+	{
+		lwpgerror("Must specify precision");
+		PG_RETURN_NULL();
+	}
+	else
+	{
+		prec_x = PG_GETARG_INT32(1);
+	}
+	prec_y = PG_ARGISNULL(2) ? prec_x : PG_GETARG_INT32(2);
+	prec_z = PG_ARGISNULL(3) ? prec_x : PG_GETARG_INT32(3);
+	prec_m = PG_ARGISNULL(4) ? prec_x : PG_GETARG_INT32(4);
+
+	input = PG_GETARG_GSERIALIZED_P_COPY(0);
+
+	g = lwgeom_from_gserialized(input);
+
+	lwgeom_trim_bits_in_place(g, prec_x, prec_y, prec_z, prec_m);
+
+	result = geometry_serialize(g);
+	lwgeom_free(g);
+	PG_FREE_IF_COPY(input, 0);
+	PG_RETURN_POINTER(result);
 }
