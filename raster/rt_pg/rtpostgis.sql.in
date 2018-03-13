@@ -5864,7 +5864,7 @@ CREATE OR REPLACE FUNCTION st_rastfromhexwkb(text)
 -- Availability: 2.5.0
 -- expects output to be WKB
 -- ST_AsWKB() is functionally identitical to bytea()
--- kept separate as bytea(raster) is for casting 
+-- kept separate as bytea(raster) is for casting
 CREATE OR REPLACE FUNCTION st_aswkb(raster, outasin boolean DEFAULT FALSE)
     RETURNS bytea
     AS 'MODULE_PATHNAME', 'RASTER_asWKB'
@@ -6833,11 +6833,13 @@ CREATE TYPE unionarg AS (
 	uniontype text
 );
 
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION _st_union_finalfn(internal)
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_union_finalfn'
 	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, unionarg[])
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
@@ -6854,6 +6856,7 @@ CREATE AGGREGATE st_union(raster, unionarg[]) (
 	FINALFUNC = _st_union_finalfn
 );
 
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, integer, text)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
@@ -6871,6 +6874,7 @@ CREATE AGGREGATE st_union(raster, integer, text) (
 	FINALFUNC = _st_union_finalfn
 );
 
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, integer)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
@@ -6888,6 +6892,7 @@ CREATE AGGREGATE st_union(raster, integer) (
 	FINALFUNC = _st_union_finalfn
 );
 
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
@@ -6905,6 +6910,7 @@ CREATE AGGREGATE st_union(raster) (
 	FINALFUNC = _st_union_finalfn
 );
 
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, text)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
@@ -6926,6 +6932,7 @@ CREATE AGGREGATE st_union(raster, text) (
 -- ST_Clip
 -----------------------------------------------------------------------
 
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION _st_clip(
 	rast raster, nband integer[],
 	geom geometry,
@@ -6935,6 +6942,8 @@ CREATE OR REPLACE FUNCTION _st_clip(
 	AS 'MODULE_PATHNAME', 'RASTER_clip'
 	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
+-- Availability: 2.0.0
+-- Changed: 2.1.0
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster, nband integer[],
 	geom geometry,
@@ -6944,7 +6953,7 @@ CREATE OR REPLACE FUNCTION st_clip(
  	AS $$
 	BEGIN
 		-- short-cut if geometry's extent fully contains raster's extent
-		IF (nodataval IS NULL OR array_length(nodataval, 1) < 1) AND geom ~ ST_Envelope(rast) THEN
+		IF (nodataval IS NULL OR array_length(nodataval, 1) < 1) AND geom ~ @extschema@.ST_Envelope(rast) THEN
 			RETURN rast;
 		END IF;
 
@@ -6952,49 +6961,54 @@ CREATE OR REPLACE FUNCTION st_clip(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster, nband integer,
 	geom geometry,
 	nodataval double precision, crop boolean DEFAULT TRUE
 )
 	RETURNS raster AS
-	$$ SELECT ST_Clip($1, ARRAY[$2]::integer[], $3, ARRAY[$4]::double precision[], $5) $$
+	$$ SELECT @extschema@.ST_Clip($1, ARRAY[$2]::integer[], $3, ARRAY[$4]::double precision[], $5) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster, nband integer,
 	geom geometry,
 	crop boolean
 )
 	RETURNS raster AS
-	$$ SELECT ST_Clip($1, ARRAY[$2]::integer[], $3, null::double precision[], $4) $$
+	$$ SELECT @extschema@.ST_Clip($1, ARRAY[$2]::integer[], $3, null::double precision[], $4) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster,
 	geom geometry,
 	nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE
 )
 	RETURNS raster AS
-	$$ SELECT ST_Clip($1, NULL, $2, $3, $4) $$
+	$$ SELECT @extschema@.ST_Clip($1, NULL, $2, $3, $4) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster,
 	geom geometry,
 	nodataval double precision, crop boolean DEFAULT TRUE
 )
 	RETURNS raster AS
-	$$ SELECT ST_Clip($1, NULL, $2, ARRAY[$3]::double precision[], $4) $$
+	$$ SELECT @extschema@.ST_Clip($1, NULL, $2, ARRAY[$3]::double precision[], $4) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster,
 	geom geometry,
 	crop boolean
 )
 	RETURNS raster AS
-	$$ SELECT ST_Clip($1, NULL, $2, null::double precision[], $3) $$
+	$$ SELECT @extschema@.ST_Clip($1, NULL, $2, null::double precision[], $3) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
