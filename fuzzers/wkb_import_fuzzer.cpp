@@ -110,6 +110,7 @@ void GEOSCoordSeq_getZ() { assert(0); }
 void GEOSGeom_createLinearRing() { assert(0); }
 void GEOSGeomType() { assert(0); }
 void GEOSDelaunayTriangulation() { assert(0); }
+void GEOSNode() { assert(0); }
 
 void geod_init() { assert(0); }
 void geod_inverse() { assert(0); }
