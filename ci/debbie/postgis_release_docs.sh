@@ -46,14 +46,14 @@ cd doc
 #sed -e "s:</title>:</title><subtitle><subscript>SVN Revision (<emphasis>${POSTGIS_SVN_REVISION}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
 
 echo "Micro: $POSTGIS_MICRO_VERSION"
+cp postgis.xml postgis.xml.orig #we for dev will inject stuff into file, so backup original
 #inject a development time stamp if we are in development branch
 if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
-  cp postgis.xml postgis.xml.orig
   export GIT_TIMESTAMP=`git log -1 --pretty=format:%ct`
   export GIT_TIMESTAMP="`date -d @$GIT_TIMESTAMP`" #convert to UTC date
   echo "GIT_TIMESTAMP: ${GIT_TIMESTAMP}"
   export part_old="</title>"
-  export part_new="</title><subtitle><subscript>DEV (<emphasis>$GIT_TIMESTAMP r$VREV</emphasis>)</subscript></subtitle>"
+  export part_new="</title><subtitle><subscript>DEV (<emphasis>$GIT_TIMESTAMP r${VREV}</emphasis>)</subscript></subtitle>"
   sed -i 's,'"$part_old"','"$part_new"',' postgis.xml
 fi
 
@@ -81,7 +81,7 @@ tar -czf "$package" --exclude='.svn' --exclude='.git' --exclude='image_src' "$ou
 
 
 
-#mv postgis.xml.orig postgis.xml
+cp postgis.xml.orig postgis.xml
 mkdir -p /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 mkdir -p /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}/images
 cp -R html/*.*  /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
