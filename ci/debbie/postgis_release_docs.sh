@@ -40,15 +40,16 @@ make clean
 cd doc
 
 
-mv postgis.xml postgis.xml.orig
+
 #sed -e "s:</title>:</title><subtitle><subscript>SVN Revision (<emphasis>${POSTGIS_SVN_REVISION}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
 
 echo "Micro: $POSTGIS_MICRO_VERSION"
 #inject a development time stamp if we are in development branch
 if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
-  export GIT_TIMESTAMP=`git log -1 --pretty=format:%ct`
-  export VREV=`cat ./postgis_svn_revision.h | awk '{print $3}'`
-  sed -e "s:</title>:</title><subtitle><subscript>REV: $VREV DEV TIMESTAMP (<emphasis>${GIT_TIMESTAMP}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
+  mv postgis.xml postgis.xml.orig
+  #export GIT_TIMESTAMP=`git log -1 --pretty=format:%ct`
+  #export VREV=`cat ./postgis_svn_revision.h | awk '{print $3}'`
+  #sed -e "s:</title>:</title><subtitle><subscript>REV: $VREV DEV TIMESTAMP (<emphasis>${GIT_TIMESTAMP}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
 fi
 
 make pdf
