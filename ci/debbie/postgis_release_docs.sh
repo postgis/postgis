@@ -53,7 +53,7 @@ if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
   export GIT_TIMESTAMP="`date -d @$GIT_TIMESTAMP`" #convert to UTC date
   echo "GIT_TIMESTAMP: ${GIT_TIMESTAMP}"
   export part_old="</title>"
-  export part_new="</title><subtitle><subscript>DEV (<emphasis>$GIT_TIMESTAMP r$VREV</emphasis>)</subscript></subtitle>"
+  export part_new="</title><subtitle><subscript>DEV (<emphasis>$GIT_TIMESTAMP r${VREV}</emphasis>)</subscript></subtitle>"
   sed -i 's,'"$part_old"','"$part_new"',' postgis.xml
 fi
 
