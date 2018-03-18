@@ -48,7 +48,7 @@ cd doc
 echo "Micro: $POSTGIS_MICRO_VERSION"
 #inject a development time stamp if we are in development branch
 if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
-  #mv postgis.xml postgis.xml.orig
+  cp postgis.xml postgis.xml.orig
   export GIT_TIMESTAMP=`git log -1 --pretty=format:%ct`
   export GIT_TIMESTAMP="`date -d @$GIT_TIMESTAMP`" #convert to UTC date
   echo "GIT_TIMESTAMP: ${GIT_TIMESTAMP}"
@@ -72,7 +72,7 @@ if [[ "$reference" == *"trunk"* ]]; then  #only do this for trunk because only t
   make -C po/de/ local-html
   #make -C po/ko_KR/ local-html
   #make pdf-localized
-#fi
+fi
 
 package="doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz"
 
@@ -81,7 +81,7 @@ tar -czf "$package" --exclude='.svn' --exclude='.git' --exclude='image_src' "$ou
 
 
 
-mv postgis.xml.orig postgis.xml
+#mv postgis.xml.orig postgis.xml
 mkdir -p /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 mkdir -p /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}/images
 cp -R html/*.*  /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
