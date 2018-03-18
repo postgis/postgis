@@ -47,9 +47,10 @@ echo "Micro: $POSTGIS_MICRO_VERSION"
 #inject a development time stamp if we are in development branch
 if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
   mv postgis.xml postgis.xml.orig
-  #export GIT_TIMESTAMP=`git log -1 --pretty=format:%ct`
+  export GIT_TIMESTAMP=`git log -1 --pretty=format:%ct`
   #export VREV=`cat ./postgis_svn_revision.h | awk '{print $3}'`
-  #sed -e "s:</title>:</title><subtitle><subscript>REV: $VREV DEV TIMESTAMP (<emphasis>${GIT_TIMESTAMP}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
+  export VREV= '?'
+  sed -e "s:</title>:</title><subtitle><subscript>REV: ${VREV} DEV TIMESTAMP (<emphasis>${GIT_TIMESTAMP}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
 fi
 
 make pdf
@@ -60,7 +61,7 @@ make epub
 make -e chunked-html 2>&1 | tee -a doc-errors.log
 
 if [[ "$reference" == *"trunk"* ]]; then  #only do this for trunk because only trunk follows transifex
-	#make update-po
+	make update-po
   # make -C po/it_IT/ local-html
   # make -C po/pt_BR/ local-html
   # make -C po/ja/ local-html
