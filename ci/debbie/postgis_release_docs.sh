@@ -48,9 +48,13 @@ cd doc
 echo "Micro: $POSTGIS_MICRO_VERSION"
 #inject a development time stamp if we are in development branch
 if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
-  mv postgis.xml postgis.xml.orig
+  #mv postgis.xml postgis.xml.orig
   export GIT_TIMESTAMP=`git log -1 --pretty=format:%ct`
-  sed -e "s:</title>:</title><subtitle><subscript>REV: ${VREV} DEV TIMESTAMP (<emphasis>${GIT_TIMESTAMP}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
+  export GIT_TIMESTAMP="`date -d @$GIT_TIMESTAMP`" #convert to UTC date
+  echo "GIT_TIMESTAMP: ${GIT_TIMESTAMP}"
+  export part_old="</title>"
+  export part_new="</title><subtitle><subscript>DEV (<emphasis>$GIT_TIMESTAMP r$VREV</emphasis>)</subscript></subtitle>"
+  sed -i 's,'"$part_old"','"$part_new"',' postgis.xml
 fi
 
 make pdf
@@ -60,14 +64,13 @@ cp html/images/* images
 make epub
 make -e chunked-html 2>&1 | tee -a doc-errors.log
 
-#if [[ "$reference" == *"trunk"* ]]; then  #only do this for trunk because only trunk follows transifex
-	#make update-po
-  # make -C po/it_IT/ local-html
-  # make -C po/pt_BR/ local-html
-  # make -C po/ja/ local-html
-  # make -C po/de/ local-html
-  # make -C po/pt_BR/ local-html
-  # make -C po/ko_KR/ local-html
+if [[ "$reference" == *"trunk"* ]]; then  #only do this for trunk because only trunk follows transifex
+  #make update-po
+  #make -C po/it_IT/ local-html
+  make -C po/pt_BR/ local-html
+  #make -C po/ja/ local-html
+  make -C po/de/ local-html
+  #make -C po/ko_KR/ local-html
   #make pdf-localized
 #fi
 
@@ -93,4 +96,3 @@ if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then #rename the files without the
   mv /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.pdf
   mv /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.epub /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.epub
 fi
-
