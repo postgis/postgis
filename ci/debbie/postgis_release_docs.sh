@@ -37,6 +37,8 @@ LDFLAGS="-L${PGPATH}/lib"  ./configure \
   --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/geos-config \
   --without-raster
 make clean
+export VREV=`cat postgis_svn_revision.h | awk '{print $3}'`
+echo "SVN is ${VREV}"
 cd doc
 
 
@@ -48,8 +50,6 @@ echo "Micro: $POSTGIS_MICRO_VERSION"
 if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
   mv postgis.xml postgis.xml.orig
   export GIT_TIMESTAMP=`git log -1 --pretty=format:%ct`
-  #export VREV=`cat ./postgis_svn_revision.h | awk '{print $3}'`
-  export VREV= '?'
   sed -e "s:</title>:</title><subtitle><subscript>REV: ${VREV} DEV TIMESTAMP (<emphasis>${GIT_TIMESTAMP}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
 fi
 
@@ -60,8 +60,8 @@ cp html/images/* images
 make epub
 make -e chunked-html 2>&1 | tee -a doc-errors.log
 
-if [[ "$reference" == *"trunk"* ]]; then  #only do this for trunk because only trunk follows transifex
-	make update-po
+#if [[ "$reference" == *"trunk"* ]]; then  #only do this for trunk because only trunk follows transifex
+	#make update-po
   # make -C po/it_IT/ local-html
   # make -C po/pt_BR/ local-html
   # make -C po/ja/ local-html
@@ -69,7 +69,7 @@ if [[ "$reference" == *"trunk"* ]]; then  #only do this for trunk because only t
   # make -C po/pt_BR/ local-html
   # make -C po/ko_KR/ local-html
   #make pdf-localized
-fi
+#fi
 
 package="doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz"
 
