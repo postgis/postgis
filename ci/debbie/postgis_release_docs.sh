@@ -37,17 +37,24 @@ LDFLAGS="-L${PGPATH}/lib"  ./configure \
   --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/geos-config \
   --without-raster
 make clean
+export VREV=`cat postgis_svn_revision.h | awk '{print $3}'`
+echo "SVN is ${VREV}"
 cd doc
 
 
-mv postgis.xml postgis.xml.orig
+
 #sed -e "s:</title>:</title><subtitle><subscript>SVN Revision (<emphasis>${POSTGIS_SVN_REVISION}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
 
 echo "Micro: $POSTGIS_MICRO_VERSION"
+cp postgis.xml postgis.xml.orig #we for dev will inject stuff into file, so backup original
 #inject a development time stamp if we are in development branch
 if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
   export GIT_TIMESTAMP=`git log -1 --pretty=format:%ct`
-  sed -e "s:</title>:</title><subtitle><subscript>DEV TIMESTAMP (<emphasis>${GIT_TIMESTAMP}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
+  export GIT_TIMESTAMP="`date -d @$GIT_TIMESTAMP`" #convert to UTC date
+  echo "GIT_TIMESTAMP: ${GIT_TIMESTAMP}"
+  export part_old="</title>"
+  export part_new="</title><subtitle><subscript>DEV (<emphasis>$GIT_TIMESTAMP r$VREV</emphasis>)</subscript></subtitle>"
+  sed -i 's,'"$part_old"','"$part_new"',' postgis.xml
 fi
 
 make pdf
@@ -58,23 +65,23 @@ make epub
 make -e chunked-html 2>&1 | tee -a doc-errors.log
 
 if [[ "$reference" == *"trunk"* ]]; then  #only do this for trunk because only trunk follows transifex
-	make update-po
-  make -C po/it_IT/ local-html
+  #make update-po
+  #make -C po/it_IT/ local-html
   make -C po/pt_BR/ local-html
-  make -C po/ja/ local-html
+  #make -C po/ja/ local-html
   make -C po/de/ local-html
-  make -C po/pt_BR/ local-html
-  make -C po/ko_KR/ local-html
+  #make -C po/ko_KR/ local-html
   #make pdf-localized
 fi
 
 package="doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz"
+
 export outdir=html
 tar -czf "$package" --exclude='.svn' --exclude='.git' --exclude='image_src' "$outdir"
 
 
 
-mv postgis.xml.orig postgis.xml
+cp postgis.xml.orig postgis.xml
 mkdir -p /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 mkdir -p /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}/images
 cp -R html/*.*  /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
@@ -83,3 +90,9 @@ chmod -R 755 /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MIN
 cp -R *.pdf /var/www/postgis_stuff/
 cp -R *.epub /var/www/postgis_stuff/
 cp -R $package /var/www/postgis_stuff/
+
+if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then #rename the files without the micro if it's a development branch
+  mv /var/www/postgis_stuff/doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz /var/www/postgis_stuff/doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.tar.gz
+  mv /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.pdf
+  mv /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.epub /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.epub
+fi
