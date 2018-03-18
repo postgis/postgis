@@ -37,7 +37,13 @@ LDFLAGS="-L${PGPATH}/lib"  ./configure \
   --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/geos-config \
   --without-raster
 make clean
-export VREV=`cat postgis_svn_revision.h | awk '{print $3}'`
+
+# generating postgis_svn_revision.h in case hasn't been generated
+if test -f utils/svn_repo_revision.pl; then
+	echo "Generating postgis_svn_revision.h"
+	perl utils/svn_repo_revision.pl
+fi
+export VREV="`cat postgis_svn_revision.h | awk '{print $3}'`"
 echo "SVN is ${VREV}"
 cd doc
 
