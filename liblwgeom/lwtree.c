@@ -86,7 +86,7 @@ rect_leaf_node_intersects(RECT_NODE_LEAF *n1, RECT_NODE_LEAF *n2)
 {
 	const POINT2D *p1, *p2, *p3, *q1, *q2, *q3;
 	DISTPTS dl;
-
+    lw_dist2d_distpts_init(&dl, 1);
 	switch (n1->seg_type)
 	{
 		case RECT_NODE_SEG_POINT:
