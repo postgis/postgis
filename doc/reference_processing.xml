@@ -3081,7 +3081,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 		  </refsection>
 	</refentry>
 
-<refentry id="ST_SimplifyVW">
+    <refentry id="ST_SimplifyVW">
 	  <refnamediv>
 		<refname>ST_SimplifyVW</refname>
 		<refpurpose>Returns a "simplified" version of the given geometry using the Visvalingam-Whyatt algorithm</refpurpose>
@@ -3129,7 +3129,63 @@ LINESTRING(5 2,7 25,10 10)
 			<para><xref linkend="ST_SetEffectiveArea" />, <xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyPreserveTopology" />, Topology <xref linkend="TP_ST_Simplify"/></para>
 		  </refsection>
 	</refentry>
-		<refentry id="ST_SetEffectiveArea">
+
+    <refentry id="ST_ChaikinSmoothing">
+	  <refnamediv>
+		<refname>ST_ChaikinSmoothing</refname>
+		<refpurpose>Returns a "smoothed" version of the given geometry using the Chaikin algorithm</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ChaikinSmoothing</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>integer</type> <parameter>nIterations</parameter></paramdef>
+			<paramdef><type>boolean</type> <parameter>preserveEndPoints</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para> Returns a "smoothed" version of the given geometry using the Chaikin algorithm.
+        See <ulink url="http://www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm.html">Chaikins-Algorithm</ulink> for an explanation of the process.
+		For each iteration the number of vertex points will double. 
+        The function puts new vertex points at 1/4 of the line before and after each point and removes the original point.
+        To reduce the number of points use one of the simplification functions on the result. 
+        The new points gets interpolated values for all included dimensions, also z and m.</para>
+
+		<note><para>Note that returned geometry will get more points than the original.
+                To reduce the number of points again use one of the simplification functions on the result.
+                (see <xref linkend="ST_Simplify" /> and <xref linkend="ST_SimplifyVW" />)</para></note>
+		<note><para>Second argument, number of iterations is limited to max 5 iterations</para></note>
+		<note><para>Note third argument is only valid for polygons, and will be ignored for linestrings</para></note>
+		<note><para>This function handles 3D and the third dimension will affect the result.</para></note>
+		<para>Availability: 2.5.0</para>
+	  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+			<para>A triangle is smoothed</para>
+				<programlisting>
+
+select ST_AsText(ST_ChaikinSmoothing(geom)) smoothed
+FROM (SELECT  'LINESTRING(0 0, 8 8, 0 16)'::geometry geom) As foo;
+-result
+ smoothed
+-----------+-------------------+
+LINESTRING(0 0,6 6,6 10,0 16)
+
+				</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyVW" /></para>
+		  </refsection>
+	</refentry>
+    
+    <refentry id="ST_SetEffectiveArea">
 	  <refnamediv>
 		<refname>ST_SetEffectiveArea</refname>
 		<refpurpose>

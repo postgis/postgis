@@ -127,6 +127,50 @@ Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+PG_FUNCTION_INFO_V1(LWGEOM_ChaikinSmoothing);
+Datum LWGEOM_ChaikinSmoothing(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *result;
+	int type = gserialized_get_type(geom);
+	LWGEOM *in;
+	LWGEOM *out;
+	int preserve_endpoints=1;
+	int n_iterations=1;
+
+	if ( type == POINTTYPE || type == MULTIPOINTTYPE )
+		PG_RETURN_POINTER(geom);
+
+	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
+		n_iterations = PG_GETARG_INT32(1);
+
+	if (n_iterations>5)
+		elog(ERROR,"Not more than 5 iterations please");
+	if (n_iterations< 1)
+		elog(ERROR,"Number of iterations must be between 1 and 5");
+
+	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) )
+	{
+		if(PG_GETARG_BOOL(2))
+			preserve_endpoints = 1;
+		else
+			preserve_endpoints = 0;
+	}
+
+	in = lwgeom_from_gserialized(geom);
+
+	out = lwgeom_chaikin(in, n_iterations, preserve_endpoints);
+	if ( ! out ) PG_RETURN_NULL();
+
+	/* COMPUTE_BBOX TAINTING */
+	if ( in->bbox ) lwgeom_add_bbox(out);
+
+	result = geometry_serialize(out);
+	lwgeom_free(out);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(result);
+}
+
 
 /***********************************************************************
  * --strk@kbt.io;

@@ -2,6 +2,7 @@ PostGIS 2.5.0
 2018/xx/xx
 
 * New Features *
+  - #4050, ST_ChaikinSmoothing (Nicklas Avén)
   - #3989, ST_Buffer single sided option (Stephen Knox)
   - #3876, ST_Angle function (Rémi Cura)
   - #3564, ST_LineInterpolatePoints (Dan Baston)

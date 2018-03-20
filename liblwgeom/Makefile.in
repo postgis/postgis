@@ -114,6 +114,7 @@ SA_OBJS = \
 	lwgeom_wrapx.o \
 	lwunionfind.o \
 	effectivearea.o \
+	lwchaikins.o \
 	lwkmeans.o \
 	varint.o
 

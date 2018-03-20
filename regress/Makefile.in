@@ -80,6 +80,7 @@ TESTS = \
 	bestsrid \
 	binary \
 	boundary \
+	chaikin \
 	cluster \
 	concave_hull\
 	ctors \

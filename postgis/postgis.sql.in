@@ -3144,7 +3144,14 @@ CREATE OR REPLACE FUNCTION ST_SetEffectiveArea(geometry,  float8 default -1, int
 	AS 'MODULE_PATHNAME', 'LWGEOM_SetEffectiveArea'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
-
+	
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_ChaikinSmoothing(geometry, integer default 1, boolean default true)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_ChaikinSmoothing'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 1; -- reset cost, see #3675
+	
 -- ST_SnapToGrid(input, xoff, yoff, xsize, ysize)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, float8, float8, float8, float8)
