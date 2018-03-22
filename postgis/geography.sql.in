@@ -23,7 +23,7 @@ CREATE OR REPLACE FUNCTION geography_typmod_out(integer)
 	RETURNS cstring
 	AS 'MODULE_PATHNAME','postgis_typmod_out'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
-	
+
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_in(cstring, oid, integer)
 	RETURNS geography
@@ -75,7 +75,7 @@ CREATE TYPE geography (
 CREATE OR REPLACE FUNCTION geography(geography, integer, boolean)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_enforce_typmod'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL; 
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE CAST (geography AS geography) WITH FUNCTION geography(geography, integer, boolean) AS IMPLICIT;
@@ -103,11 +103,11 @@ CREATE OR REPLACE FUNCTION ST_AsText(geography)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asText'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
-	
+
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_AsText(text)
 	RETURNS text AS
-	$$ SELECT ST_AsText($1::@extschema@.geometry);  $$
+	$$ SELECT @extschema@.ST_AsText($1::@extschema@.geometry);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0
@@ -149,17 +149,17 @@ CREATE OR REPLACE FUNCTION postgis_typmod_type(integer)
 -- Availability: 1.5.0
 CREATE OR REPLACE VIEW geography_columns AS
 	SELECT
-		current_database() AS f_table_catalog, 
-		n.nspname AS f_table_schema, 
-		c.relname AS f_table_name, 
+		current_database() AS f_table_catalog,
+		n.nspname AS f_table_schema,
+		c.relname AS f_table_name,
 		a.attname AS f_geography_column,
 		postgis_typmod_dims(a.atttypmod) AS coord_dimension,
 		postgis_typmod_srid(a.atttypmod) AS srid,
 		postgis_typmod_type(a.atttypmod) AS type
-	FROM 
-		pg_class c, 
-		pg_attribute a, 
-		pg_type t, 
+	FROM
+		pg_class c,
+		pg_attribute a,
+		pg_type t,
 		pg_namespace n
 	WHERE t.typname = 'geography'
         AND a.attisdropped = false
@@ -192,50 +192,50 @@ CREATE CAST (geography AS geometry) WITH FUNCTION geometry(geography) ;
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION geography_gist_consistent(internal,geography,int4) 
-	RETURNS bool 
+CREATE OR REPLACE FUNCTION geography_gist_consistent(internal,geography,int4)
+	RETURNS bool
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_consistent'
 	LANGUAGE 'c';
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION geography_gist_compress(internal) 
-	RETURNS internal 
+CREATE OR REPLACE FUNCTION geography_gist_compress(internal)
+	RETURNS internal
 	AS 'MODULE_PATHNAME','gserialized_gist_compress'
 	LANGUAGE 'c';
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION geography_gist_penalty(internal,internal,internal) 
-	RETURNS internal 
+CREATE OR REPLACE FUNCTION geography_gist_penalty(internal,internal,internal)
+	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_penalty'
 	LANGUAGE 'c';
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION geography_gist_picksplit(internal, internal) 
-	RETURNS internal 
+CREATE OR REPLACE FUNCTION geography_gist_picksplit(internal, internal)
+	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_picksplit'
 	LANGUAGE 'c';
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION geography_gist_union(bytea, internal) 
-	RETURNS internal 
+CREATE OR REPLACE FUNCTION geography_gist_union(bytea, internal)
+	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_union'
 	LANGUAGE 'c';
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION geography_gist_same(box2d, box2d, internal) 
-	RETURNS internal 
+CREATE OR REPLACE FUNCTION geography_gist_same(box2d, box2d, internal)
+	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_same'
 	LANGUAGE 'c';
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION geography_gist_decompress(internal) 
-	RETURNS internal 
+CREATE OR REPLACE FUNCTION geography_gist_decompress(internal)
+	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress'
 	LANGUAGE 'c';
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION geography_overlaps(geography, geography) 
-	RETURNS boolean 
+CREATE OR REPLACE FUNCTION geography_overlaps(geography, geography)
+	RETURNS boolean
 	AS 'MODULE_PATHNAME' ,'gserialized_overlaps'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
@@ -244,7 +244,7 @@ CREATE OPERATOR && (
 	LEFTARG = geography, RIGHTARG = geography, PROCEDURE = geography_overlaps,
 	COMMUTATOR = '&&',
 	RESTRICT = gserialized_gist_sel_nd,
-	JOIN = gserialized_gist_joinsel_nd	
+	JOIN = gserialized_gist_joinsel_nd
 );
 
 -- Availability: 2.2.0
@@ -261,8 +261,8 @@ CREATE OPERATOR <-> (
 );
 
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION geography_gist_distance(internal, geography, int4) 
-	RETURNS float8 
+CREATE OR REPLACE FUNCTION geography_gist_distance(internal, geography, int4)
+	RETURNS float8
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_geog_distance'
 	LANGUAGE 'c';
 
@@ -313,19 +313,19 @@ CREATE OR REPLACE FUNCTION geography_gt(geography, geography)
 	AS 'MODULE_PATHNAME', 'geography_gt'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 1.5.0	
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_ge(geography, geography)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'geography_ge'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 1.5.0	
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_eq(geography, geography)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'geography_eq'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 1.5.0	
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_cmp(geography, geography)
 	RETURNS integer
 	AS 'MODULE_PATHNAME', 'geography_cmp'
@@ -396,11 +396,11 @@ CREATE OR REPLACE FUNCTION ST_AsSVG(geog geography,rel int4 DEFAULT 0,maxdecimal
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_svg'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
-	
+
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_AsSVG(text)
 	RETURNS text AS
-	$$ SELECT ST_AsSVG($1::@extschema@.geometry,0,15);  $$
+	$$ SELECT @extschema@.ST_AsSVG($1::@extschema@.geometry,0,15);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 --
@@ -532,11 +532,11 @@ CREATE OR REPLACE FUNCTION ST_Distance(geography, geography)
 	RETURNS float8
 	AS 'SELECT @extschema@._ST_Distance($1, $2, 0.0, true)'
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-	
+
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Distance(text, text)
 	RETURNS float8 AS
-	$$ SELECT ST_Distance($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
+	$$ SELECT @extschema@.ST_Distance($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Only expands the bounding box, the actual geometry will remain unchanged, use with care.
@@ -563,7 +563,7 @@ CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8)
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_DWithin(text, text, float8)
 	RETURNS boolean AS
-	$$ SELECT ST_DWithin($1::@extschema@.geometry, $2::@extschema@.geometry, $3);  $$
+	$$ SELECT @extschema@.ST_DWithin($1::@extschema@.geometry, $2::@extschema@.geometry, $3);  $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 
@@ -578,7 +578,7 @@ CREATE OR REPLACE FUNCTION _ST_DistanceUnCached(geography, geography, float8, bo
 	AS 'MODULE_PATHNAME','geography_distance_uncached'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
-	
+
 -- Calculate the distance in geographics *without* using the caching code line or tree code
 CREATE OR REPLACE FUNCTION _ST_DistanceUnCached(geography, geography, boolean)
 	RETURNS float8
@@ -591,7 +591,7 @@ CREATE OR REPLACE FUNCTION _ST_DistanceUnCached(geography, geography)
 	AS 'SELECT @extschema@._ST_DistanceUnCached($1, $2, 0.0, true)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
--- Calculate the distance in geographics using the circular tree code, but 
+-- Calculate the distance in geographics using the circular tree code, but
 -- *without* using the caching code line
 CREATE OR REPLACE FUNCTION _ST_DistanceTree(geography, geography, float8, boolean)
 	RETURNS float8
@@ -599,7 +599,7 @@ CREATE OR REPLACE FUNCTION _ST_DistanceTree(geography, geography, float8, boolea
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
 
--- Calculate the distance in geographics using the circular tree code, but 
+-- Calculate the distance in geographics using the circular tree code, but
 -- *without* using the caching code line
 CREATE OR REPLACE FUNCTION _ST_DistanceTree(geography, geography)
 	RETURNS float8
@@ -618,7 +618,7 @@ CREATE OR REPLACE FUNCTION _ST_DWithinUnCached(geography, geography, float8)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@._ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@._ST_Expand($1,$3) AND @extschema@._ST_DWithinUnCached($1, $2, $3, true)'
 	LANGUAGE 'sql' IMMUTABLE;
-	
+
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- Availability: 1.5.0
@@ -631,7 +631,7 @@ CREATE OR REPLACE FUNCTION ST_Area(geog geography, use_spheroid boolean DEFAULT 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Area(text)
 	RETURNS float8 AS
-	$$ SELECT ST_Area($1::@extschema@.geometry);  $$
+	$$ SELECT @extschema@.ST_Area($1::@extschema@.geometry);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0
@@ -644,7 +644,7 @@ CREATE OR REPLACE FUNCTION ST_Length(geog geography, use_spheroid boolean DEFAUL
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Length(text)
 	RETURNS float8 AS
-	$$ SELECT ST_Length($1::@extschema@.geometry);  $$
+	$$ SELECT @extschema@.ST_Length($1::@extschema@.geometry);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
@@ -692,7 +692,7 @@ CREATE OR REPLACE FUNCTION ST_Covers(geography, geography)
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Covers(text, text)
 	RETURNS boolean AS
-	$$ SELECT ST_Covers($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
+	$$ SELECT @extschema@.ST_Covers($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Only implemented for polygon-over-point
@@ -705,7 +705,7 @@ CREATE OR REPLACE FUNCTION ST_CoveredBy(geography, geography)
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_CoveredBy(text, text)
 	RETURNS boolean AS
-	$$ SELECT ST_CoveredBy($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
+	$$ SELECT @extschema@.ST_CoveredBy($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.1.0
@@ -724,7 +724,7 @@ CREATE OR REPLACE FUNCTION ST_Intersects(geography, geography)
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Intersects(text, text)
 	RETURNS boolean AS
-	$$ SELECT ST_Intersects($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
+	$$ SELECT @extschema@.ST_Intersects($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Availability: 1.5.0
@@ -742,43 +742,43 @@ CREATE OR REPLACE FUNCTION _ST_BestSRID(geography)
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8)
 	RETURNS geography
-	AS 'SELECT geography(ST_Transform(ST_Buffer(ST_Transform(geometry($1), @extschema@._ST_BestSRID($1)), $2), 4326))'
+	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Buffer(@extschema@.ST_Transform(geometry($1), @extschema@._ST_BestSRID($1)), $2), 4326))'
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.3.x
 CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8, integer)
 	RETURNS geography
-	AS 'SELECT geography(ST_Transform(ST_Buffer(ST_Transform(geometry($1), @extschema@._ST_BestSRID($1)), $2, $3), 4326))'
+	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Buffer(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1)), $2, $3), 4326))'
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.3.x
 CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8, text)
 	RETURNS geography
-	AS 'SELECT geography(ST_Transform(ST_Buffer(ST_Transform(geometry($1), @extschema@._ST_BestSRID($1)), $2, $3), 4326))'
+	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Buffer(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1)), $2, $3), 4326))'
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Buffer(text, float8)
 	RETURNS geometry AS
-	$$ SELECT ST_Buffer($1::@extschema@.geometry, $2);  $$
+	$$ SELECT @extschema@.ST_Buffer($1::@extschema@.geometry, $2);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.3.x
 CREATE OR REPLACE FUNCTION ST_Buffer(text, float8, integer)
 	RETURNS geometry AS
-	$$ SELECT ST_Buffer($1::@extschema@.geometry, $2, $3);  $$
+	$$ SELECT @extschema@.ST_Buffer($1::@extschema@.geometry, $2, $3);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.3.x
 CREATE OR REPLACE FUNCTION ST_Buffer(text, float8, text)
 	RETURNS geometry AS
-	$$ SELECT ST_Buffer($1::@extschema@.geometry, $2, $3);  $$
+	$$ SELECT @extschema@.ST_Buffer($1::@extschema@.geometry, $2, $3);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Intersection(geography, geography)
 	RETURNS geography
-	AS 'SELECT geography(ST_Transform(ST_Intersection(ST_Transform(geometry($1), @extschema@._ST_BestSRID($1, $2)), ST_Transform(geometry($2), @extschema@._ST_BestSRID($1, $2))), 4326))'
+	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Intersection(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1, $2)), @extschema@.ST_Transform(@extschema@.geometry($2), @extschema@._ST_BestSRID($1, $2))), 4326))'
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
@@ -834,13 +834,13 @@ CREATE OR REPLACE FUNCTION ST_SRID(geog geography)
 	RETURNS int4
 	AS 'MODULE_PATHNAME', 'LWGEOM_get_srid'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
-	
+
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_SetSRID(geog geography, srid int4)
 	RETURNS geography
 	AS 'MODULE_PATHNAME', 'LWGEOM_set_srid'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
-  
+
 -----------------------------------------------------------------------------
 
 

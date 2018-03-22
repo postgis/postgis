@@ -9,6 +9,7 @@ PostGIS 2.3.7dev
            PolyhedralSurface (Matthias Bay)
   - #4025, Incorrect answers for temporally "amost overlapping" ranges
   - #4017, lwgeom lexer memory corruption (Peter E)
+  - #4052, schema qualify several functions in geography
 
 
 PostGIS 2.3.6
