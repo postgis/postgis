@@ -3119,7 +3119,7 @@ select ST_AsText(ST_SimplifyVW(geom,30)) simplified
 FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) As foo;
 -result
  simplified
------------+-------------------+
+------------------------------
 LINESTRING(5 2,7 25,10 10)
 
 				</programlisting>
@@ -3130,7 +3130,7 @@ LINESTRING(5 2,7 25,10 10)
 		  </refsection>
 	</refentry>
 
-    <refentry id="ST_ChaikinSmoothing">
+	<refentry id="ST_ChaikinSmoothing">
 	  <refnamediv>
 		<refname>ST_ChaikinSmoothing</refname>
 		<refpurpose>Returns a "smoothed" version of the given geometry using the Chaikin algorithm</refpurpose>
@@ -3174,7 +3174,7 @@ select ST_AsText(ST_ChaikinSmoothing(geom)) smoothed
 FROM (SELECT  'LINESTRING(0 0, 8 8, 0 16)'::geometry geom) As foo;
 -result
  smoothed
------------+-------------------+
+------------------------------
 LINESTRING(0 0,6 6,6 10,0 16)
 
 				</programlisting>
@@ -3184,7 +3184,64 @@ LINESTRING(0 0,6 6,6 10,0 16)
 			<para><xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyVW" /></para>
 		  </refsection>
 	</refentry>
-    
+
+	<refentry id="ST_FilterByM">
+	  <refnamediv>
+		<refname>ST_FilterByM</refname>
+		<refpurpose>Filters vertex points based on their m-value</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_FilterByM</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>double precision</type> <parameter>min</parameter></paramdef>
+			<paramdef><type>double precision</type> <parameter>max = null</parameter></paramdef>
+			<paramdef><type>boolean</type> <parameter>returnM = false</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Filters away vertex points based on their m-value. Returns a geometry with only 
+			vertex points that have a m-value larger or equal to the min value and smaller or equal to
+			the max value. If max-value argument is left out only min value is considered. If fourth argument is left out the m-value 
+			will not be in the resulting geoemtry. If resulting geometry have too few vertex points left for its geometry type an empty 
+			geoemtry will be returned. In a geometry collection 
+			geometries without enough points will just be left out silently. If </para>
+		<para>This function is mainly intended to be used in conjunction with ST_SetEffectiveArea. ST_EffectiveArea sets the effective area 
+			of a vertex in it's m-value. With ST_FilterByM it then is possible to get a simplified version of the geoemtry without any calculations, just by filtering</para>
+		
+		<note><para>There is a difference in what ST_SimplifyVW returns when not enough points meets the creterias compared to ST_FilterByM.
+				ST_SimplifyVW returns the geometry with enough points while ST_FilterByM returns an empty geometry</para></note>
+		<note><para>Note that the retuned geometry might be invalid</para></note>
+		<note><para>This function returns all dimensions, also the z and m-value</para></note>
+		<para>Availability: 2.5.0</para>
+	  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+			<para>A linestring is filtered</para>
+				<programlisting>
+
+
+SELECT ST_AsText(ST_FilterByM(geom,30)) simplified
+FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry) geom) As foo;
+-result
+         simplified
+----------------------------
+ LINESTRING(5 2,7 25,10 10)
+
+				</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_SetEffectiveArea" />, <xref linkend="ST_SimplifyVW" /></para>
+		  </refsection>
+	</refentry>
+
     <refentry id="ST_SetEffectiveArea">
 	  <refnamediv>
 		<refname>ST_SetEffectiveArea</refname>

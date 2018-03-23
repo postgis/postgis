@@ -81,6 +81,7 @@ TESTS = \
 	binary \
 	boundary \
 	chaikin \
+	filterm \
 	cluster \
 	concave_hull\
 	ctors \

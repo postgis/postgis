@@ -991,6 +991,7 @@ extern LWGEOM* lwgeom_force_4d(const LWGEOM *geom);
 
 extern LWGEOM* lwgeom_set_effective_area(const LWGEOM *igeom, int set_area, double area);
 extern LWGEOM* lwgeom_chaikin(const LWGEOM *igeom, int n_iterations, int preserve_endpoint);
+extern LWGEOM* lwgeom_filter_m(LWGEOM *geom, double min, double max, int returnm);
 
 /*
  * Force to use SFS 1.1 geometry type

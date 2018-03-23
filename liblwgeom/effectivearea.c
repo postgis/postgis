@@ -332,7 +332,7 @@ static void tune_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, dou
 		ea->initial_arealist[after_current].prev = ea->initial_arealist[current].prev;
 
 		/*Check if we are finished*/
-		if((!set_area && ea->res_arealist[current]>trshld) || (ea->initial_arealist[0].next==(npoints-1)))
+		if((!set_area && ea->res_arealist[current]>=trshld) || (ea->initial_arealist[0].next==(npoints-1)))
 			go_on=0;
 
 		i++;
@@ -422,7 +422,7 @@ static POINTARRAY * ptarray_set_effective_area(POINTARRAY *inpts,int avoid_colla
 		/*Only return points with an effective area above the threshold*/
 		for (p=0;p<ea->inpts->npoints;p++)
 		{
-			if(ea->res_arealist[p]>trshld)
+			if(ea->res_arealist[p]>=trshld)
 			{
 				pt=getPoint4d(ea->inpts, p);
 				pt.m=ea->res_arealist[p];
@@ -435,7 +435,7 @@ static POINTARRAY * ptarray_set_effective_area(POINTARRAY *inpts,int avoid_colla
 		/*Only return points with an effective area above the threshold*/
 		for (p=0;p<ea->inpts->npoints;p++)
 		{
-			if(ea->res_arealist[p]>trshld)
+			if(ea->res_arealist[p]>=trshld)
 			{
 				pt=getPoint4d(ea->inpts, p);
 				ptarray_append_point(opts, &pt, LW_TRUE);
@@ -505,7 +505,7 @@ static LWPOLY* lwpoly_set_effective_area(const LWPOLY *ipoly,int set_area, doubl
 
 	opoly->type = ipoly->type;
 
-	if( lwpoly_is_empty(opoly) )
+	if( lwpoly_is_empty(opoly))
 		return NULL;
 
 	return opoly;

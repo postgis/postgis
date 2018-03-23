@@ -115,6 +115,7 @@ SA_OBJS = \
 	lwunionfind.o \
 	effectivearea.o \
 	lwchaikins.o \
+	lwmval.o \
 	lwkmeans.o \
 	varint.o
 

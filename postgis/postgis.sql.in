@@ -3146,6 +3146,13 @@ CREATE OR REPLACE FUNCTION ST_SetEffectiveArea(geometry,  float8 default -1, int
 	COST 1; -- reset cost, see #3675
 	
 -- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_FilterByM(geometry, double precision, double precision default null, boolean default false)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_FilterByM'
+	LANGUAGE 'c' IMMUTABLE _PARALLEL
+	COST 1; -- reset cost, see #3675
+	
+-- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_ChaikinSmoothing(geometry, integer default 1, boolean default true)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_ChaikinSmoothing'

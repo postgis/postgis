@@ -115,7 +115,7 @@ Datum ST_CollectionHomogenize(PG_FUNCTION_ARGS);
 Datum ST_IsCollection(PG_FUNCTION_ARGS);
 Datum ST_QuantizeCoordinates(PG_FUNCTION_ARGS);
 Datum ST_WrapX(PG_FUNCTION_ARGS);
-
+Datum LWGEOM_FilterByM(PG_FUNCTION_ARGS);
 
 /*------------------------------------------------------------------*/
 
@@ -3022,4 +3022,69 @@ Datum ST_QuantizeCoordinates(PG_FUNCTION_ARGS)
 	lwgeom_free(g);
 	PG_FREE_IF_COPY(input, 0);
 	PG_RETURN_POINTER(result);
+}
+
+
+/*
+ * ST_FilterByM(in geometry, val double precision)
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_FilterByM);
+Datum LWGEOM_FilterByM(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom_in;
+	GSERIALIZED *geom_out;
+	LWGEOM *lwgeom_in;
+	LWGEOM *lwgeom_out;
+	double min, max;
+	int returnm;
+	if ( PG_NARGS() > 0 && ! PG_ARGISNULL(0))
+	{
+		geom_in = PG_GETARG_GSERIALIZED_P(0);
+	}
+	else
+	{
+		PG_RETURN_NULL();
+	}
+
+	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1))
+		min = PG_GETARG_FLOAT8(1);
+	else
+	{
+		min = DBL_MIN;
+	}
+	if ( PG_NARGS() > 2  && ! PG_ARGISNULL(2))
+		max = PG_GETARG_FLOAT8(2);
+	else
+	{
+		max = DBL_MAX;
+	}
+	if ( PG_NARGS() > 3  && ! PG_ARGISNULL(3) && PG_GETARG_BOOL(3))
+		returnm = 1;
+	else
+	{
+		returnm=0;
+	}
+
+	if(min>max)
+	{
+		elog(ERROR,"Min-value cannot be larger than Max value\n");
+		PG_RETURN_NULL();
+	}
+
+	lwgeom_in = lwgeom_from_gserialized(geom_in);
+
+	int hasm = FLAGS_GET_M(lwgeom_in->flags);
+
+	if(!hasm)
+	{
+		elog(NOTICE,"No M-value, No vertex removed\n");
+		PG_RETURN_POINTER(geom_in);
+	}
+
+	lwgeom_out = lwgeom_filter_m(lwgeom_in, min, max,returnm);
+
+	geom_out = geometry_serialize(lwgeom_out);
+	lwgeom_free(lwgeom_out);
+	PG_RETURN_POINTER(geom_out);
+
 }

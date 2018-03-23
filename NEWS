@@ -2,6 +2,7 @@ PostGIS 2.5.0
 2018/xx/xx
 
 * New Features *
+  - #4056, ST_FilterByM (Nicklas Avén)
   - #4050, ST_ChaikinSmoothing (Nicklas Avén)
   - #3989, ST_Buffer single sided option (Stephen Knox)
   - #3876, ST_Angle function (Rémi Cura)
@@ -13,6 +14,7 @@ PostGIS 2.5.0
   - #4029, Add ST_QuantizeCoordinates (Dan Baston)
 
 * Breaking Changes *
+  - #4054, ST_SimplifyVW changed from > tolerance to >= tolerance
   - #3885, version number removed from address_standardize lib file
   - #3893, raster support functions can only be loaded in the same schema
            with core PostGIS functions.
