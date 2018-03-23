@@ -102,12 +102,11 @@ static LWLINE* lwline_chaikin(const LWLINE *iline, int n_iterations)
 {
 	POINTARRAY *pa, *pa_new;
 	int j;
+	LWLINE *oline;
 
 	if( lwline_is_empty(iline))
 		return lwline_clone(iline);
 
-
-	LWLINE *oline = lwline_construct_empty(iline->srid, FLAGS_GET_Z(iline->flags), FLAGS_GET_M(iline->flags));
 	pa = iline->points;
 	for (j=0;j<n_iterations;j++)
 	{
