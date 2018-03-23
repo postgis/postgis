@@ -1081,5 +1081,8 @@ SELECT '#4037.2', ST_AsText(ST_Difference('POLYGON((0 0, 10 10, 0 10, 10 0, 0 0)
 SELECT '#4037.3', ST_AsText(ST_SymDifference('POLYGON((0 0, 10 10, 0 10, 10 0, 0 0))', ST_MakeEnvelope(2,2,8,8)));
 SELECT '#4037.4', ST_AsText(ST_Union('POLYGON((0 0, 10 10, 0 10, 10 0, 0 0))', ST_MakeEnvelope(2,2,8,8)));
 
+-- #4055
+SELECT '#4055', ST_SRID(unnest(ST_ClusterWithin(ARRAY['SRID=4326;POINT (3 7)'::geometry, 'SRID=4326;LINESTRING (3 0, 3 9)'], 0)));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

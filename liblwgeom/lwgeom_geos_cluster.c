@@ -570,7 +570,9 @@ combine_geometries(UNIONFIND* uf, void** geoms, uint32_t num_geoms, void*** clus
 			}
 			else
 			{
-				(*clusterGeoms)[k++] = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, (GEOSGeometry**) geoms_in_cluster, j);
+				GEOSGeometry* combined = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, (GEOSGeometry**) geoms_in_cluster, j);
+				GEOSSetSRID(combined, GEOSGetSRID(((GEOSGeometry**) geoms_in_cluster)[0]));
+				(*clusterGeoms)[k++] = combined;
 			}
 			j = 0;
 		}
