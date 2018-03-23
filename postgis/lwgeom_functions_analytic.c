@@ -144,10 +144,8 @@ Datum LWGEOM_ChaikinSmoothing(PG_FUNCTION_ARGS)
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
 		n_iterations = PG_GETARG_INT32(1);
 
-	if (n_iterations>5)
-		elog(ERROR,"Not more than 5 iterations please");
-	if (n_iterations< 1)
-		elog(ERROR,"Number of iterations must be between 1 and 5");
+	if (n_iterations< 1 || n_iterations>5)
+		elog(ERROR,"Number of iterations must be between 1 and 5 : %s", __func__);
 
 	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) )
 	{
