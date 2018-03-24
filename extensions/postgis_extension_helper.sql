@@ -28,33 +28,56 @@ DECLARE
 	var_class text := '';
 	var_is_aggregate boolean := false;
 	var_sql_list text := '';
+	var_pgsql_version integer := CASE WHEN split_part(s,'.',1)::integer > 9 THEN split_part(s,'.',1) || '0' ELSE split_part(s,'.', 1) || split_part(s,'.', 2) END AS v
+	FROM substring(version(), 'PostgreSQL ([0-9\.]+)') AS s;
 BEGIN
 		var_class := CASE WHEN lower(param_type) = 'function' OR lower(param_type) = 'aggregate' THEN 'pg_proc' ELSE '' END;
 		var_is_aggregate := CASE WHEN lower(param_type) = 'aggregate' THEN true ELSE false END;
-		var_sql_list := 'SELECT ''ALTER EXTENSION '' || e.extname || '' DROP '' || $3 || '' '' || COALESCE(proc.proname || ''('' || oidvectortypes(proc.proargtypes) || '')'',typ.typname, cd.relname, op.oprname,
-				cs.typname || '' AS '' || ct.typname || '') '', opcname, opfname) || '';'' AS remove_command
-		FROM pg_depend As d INNER JOIN pg_extension As e
-			ON d.refobjid = e.oid INNER JOIN pg_class As c ON
-				c.oid = d.classid
-				LEFT JOIN pg_proc AS proc ON proc.oid = d.objid
-				LEFT JOIN pg_type AS typ ON typ.oid = d.objid
-				LEFT JOIN pg_class As cd ON cd.oid = d.objid
-				LEFT JOIN pg_operator As op ON op.oid = d.objid
-				LEFT JOIN pg_cast AS ca ON ca.oid = d.objid
-				LEFT JOIN pg_type AS cs ON ca.castsource = cs.oid
-				LEFT JOIN pg_type AS ct ON ca.casttarget = ct.oid
-				LEFT JOIN pg_opclass As oc ON oc.oid = d.objid
-				LEFT JOIN pg_opfamily As ofa ON ofa.oid = d.objid
-		WHERE d.deptype = ''e'' and e.extname = $1 and c.relname = $2 AND COALESCE(proc.proisagg, false) = $4;';
+
+		IF var_pgsql_version < 110 THEN
+			var_sql_list := $sql$SELECT 'ALTER EXTENSION ' || e.extname || ' DROP ' || $3 || ' ' || COALESCE(proc.proname || '(' || oidvectortypes(proc.proargtypes) || ')' ,typ.typname, cd.relname, op.oprname,
+					cs.typname || ' AS ' || ct.typname || ') ', opcname, opfname) || ';' AS remove_command
+			FROM pg_depend As d INNER JOIN pg_extension As e
+				ON d.refobjid = e.oid INNER JOIN pg_class As c ON
+					c.oid = d.classid
+					LEFT JOIN pg_proc AS proc ON proc.oid = d.objid
+					LEFT JOIN pg_type AS typ ON typ.oid = d.objid
+					LEFT JOIN pg_class As cd ON cd.oid = d.objid
+					LEFT JOIN pg_operator As op ON op.oid = d.objid
+					LEFT JOIN pg_cast AS ca ON ca.oid = d.objid
+					LEFT JOIN pg_type AS cs ON ca.castsource = cs.oid
+					LEFT JOIN pg_type AS ct ON ca.casttarget = ct.oid
+					LEFT JOIN pg_opclass As oc ON oc.oid = d.objid
+					LEFT JOIN pg_opfamily As ofa ON ofa.oid = d.objid
+			WHERE d.deptype = 'e' and e.extname = $1 and c.relname = $2 AND COALESCE(proc.proisagg, false) = $4;$sql$;
+		ELSE -- for PostgreSQL 11 and above, they removed proc.proisagg among others and replaced with some func type thing
+			var_sql_list := $sql$SELECT 'ALTER EXTENSION ' || e.extname || ' DROP ' || $3 || ' ' || COALESCE(proc.proname || '(' || oidvectortypes(proc.proargtypes) || ')' ,typ.typname, cd.relname, op.oprname,
+					cs.typname || ' AS ' || ct.typname || ') ', opcname, opfname) || ';' AS remove_command
+			FROM pg_depend As d INNER JOIN pg_extension As e
+				ON d.refobjid = e.oid INNER JOIN pg_class As c ON
+					c.oid = d.classid
+					LEFT JOIN pg_proc AS proc ON proc.oid = d.objid
+					LEFT JOIN pg_type AS typ ON typ.oid = d.objid
+					LEFT JOIN pg_class As cd ON cd.oid = d.objid
+					LEFT JOIN pg_operator As op ON op.oid = d.objid
+					LEFT JOIN pg_cast AS ca ON ca.oid = d.objid
+					LEFT JOIN pg_type AS cs ON ca.castsource = cs.oid
+					LEFT JOIN pg_type AS ct ON ca.casttarget = ct.oid
+					LEFT JOIN pg_opclass As oc ON oc.oid = d.objid
+					LEFT JOIN pg_opfamily As ofa ON ofa.oid = d.objid
+			WHERE d.deptype = 'e' and e.extname = $1 and c.relname = $2 AND (proc.prokind = 'a')  = $4;$sql$;
+		END IF;
+
 		FOR var_r IN EXECUTE var_sql_list  USING param_extension, var_class, param_type, var_is_aggregate
-        LOOP
-            var_sql := var_sql || var_r.remove_command || ';';
-        END LOOP;
-        IF var_sql > '' THEN
-            EXECUTE var_sql;
-            var_result := true;
-        END IF;
-        RETURN var_result;
+		LOOP
+			var_sql := var_sql || var_r.remove_command || ';';
+		END LOOP;
+		IF var_sql > '' THEN
+			EXECUTE var_sql;
+			var_result := true;
+		END IF;
+
+		RETURN var_result;
 END;
 $$
 LANGUAGE plpgsql VOLATILE;
