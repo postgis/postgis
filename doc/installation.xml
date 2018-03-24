@@ -1400,7 +1400,9 @@ All 2 tests passed.
 
 	<para>If you plan to restore an old backup from prior versions in this new db, run:</para>
 	<para><command>psql -d [yourdatabase] -f legacy.sql</command></para>
-
+	<note><para>If you need legacy functions, you'll need to reinstall the legacy.sql script whenever you upgrade the minor version of PostGIS.
+	E.g. if you upgraded from 2.4.3 to 2.5.0, then you need to reinstall the legacy.sql packaged with 2.5.0.  This is because some of the functions make reference to the library
+	and the library is named with the minor in it.</para></note>
 	<para>You can later run <filename>uninstall_legacy.sql</filename> to get rid of the deprecated functions after you are done with restoring and cleanup.</para>
   </sect1>
 
