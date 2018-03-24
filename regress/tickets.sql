@@ -1025,5 +1025,9 @@ select '#3709', ST_SnapToGrid(ST_Project('SRID=4326;POINT(1 1)'::geography, 1000
 -- #3774
 select '#3774', abs(pi() + 2 - st_length('COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 1, 2 0), (2 0, 4 0))'::geometry)) < 0.000000001;
 
+-- #4055
+SELECT '#4055a', ST_SRID(unnest(ST_ClusterWithin(ARRAY['SRID=4326;POINT (3 7)'::geometry, 'SRID=4326;LINESTRING (3 0, 3 9)'], 0)));
+SELECT '#4055b', ST_SRID(unnest(ST_ClusterIntersecting(ARRAY['SRID=4326;POINT (3 7)'::geometry, 'SRID=4326;LINESTRING (3 0, 3 9)'])));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
