@@ -2,21 +2,24 @@ PostGIS 2.4.4dev
 2018/MM/DD
 
  * Bug fixes *
-  - #3978, Fix KNN when upgrading from 2.1 or older (Sandro Santilli)
-  - #4004, Avoid memory exhaustion when building a btree index (Edmund Horner)
-  - #4003, lwpoly_construct_circle: Avoid division by zero (Raúl Marín Rodríguez)
-  - #4020, Casting from box3d to geometry now returns correctly connected
-           PolyhedralSurface (Matthias Bay)
   - #3942, geojson: Do not include private header for json-c >= 0.13
            (Björn Esser)
-  - #4025, Incorrect answers for temporally "amost overlapping" ranges
+  - #3952, ST_Transform fails in parallel mode (Paul Ramsey)
+  - #3978, Fix KNN when upgrading from 2.1 or older (Sandro Santilli)
+  - #4003, lwpoly_construct_circle: Avoid division by zero (Raúl Marín Rodríguez)
+  - #4004, Avoid memory exhaustion when building a btree index (Edmund Horner)
+  - #4016, proj 5.0.0 support (Raúl Marín Rodríguez)
   - #4017, lwgeom lexer memory corruption (Peter E)
-  - #4052, schema qualify several functions in geography
-  
+  - #4020, Casting from box3d to geometry now returns correctly connected
+           PolyhedralSurface (Matthias Bay)
+  - #4025, Incorrect answers for temporally "almost overlapping" ranges
+  - #4052, schema qualify several functions in geography (Regina Obe)
+  - #4055, ST_ClusterIntersecting drops SRID (Daniel Baston)
+
  * Enhancements *
+    - #3946, Compile support for PgSQL 11 (Paul Ramsey)
     - #3992, Use PKG_PROG_PKG_CONFIG macro from pkg.m4 to detect pkg-config
              (Bas Couwenberg)
-    - #3946, Support for PgSQL 11 (Paul Ramsey)
 
 
 PostGIS 2.4.3
