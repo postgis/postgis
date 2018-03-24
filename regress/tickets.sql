@@ -1015,5 +1015,9 @@ SELECT '#3627b', ST_Equals(geom, ST_LineFromEncodedPolyline(ST_AsEncodedPolyline
 -- #3704
 SELECT '#3704', ST_AsX3D('LINESTRING EMPTY') = '';
 
+-- #4055
+SELECT '#4055a', ST_SRID(unnest(ST_ClusterWithin(ARRAY['SRID=4326;POINT (3 7)'::geometry, 'SRID=4326;LINESTRING (3 0, 3 9)'], 0)));
+SELECT '#4055b', ST_SRID(unnest(ST_ClusterIntersecting(ARRAY['SRID=4326;POINT (3 7)'::geometry, 'SRID=4326;LINESTRING (3 0, 3 9)'])));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
