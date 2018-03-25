@@ -20,6 +20,7 @@ PostGIS 2.4.4dev
     - #3946, Compile support for PgSQL 11 (Paul Ramsey)
     - #3992, Use PKG_PROG_PKG_CONFIG macro from pkg.m4 to detect pkg-config
              (Bas Couwenberg)
+    - #4044, Upgrade support for PgSQL 11 (Regina Obe)
 
 
 PostGIS 2.4.3
