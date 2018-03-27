@@ -13,6 +13,7 @@ set -e
 # export GDAL_VER=2.0
 # export MAKE_GARDEN=1
 # export MAKE_EXTENSION=0
+# export DUMP_RESTORE=1
 
 ## end variables passed in by jenkins
 
@@ -53,7 +54,9 @@ fi
 ./configure \
     --with-pgconfig=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}/bin/pg_config \
     --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/geos-config \
-    --with-gdalconfig=${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/bin/gdal-config --with-sfcgal=/usr/bin/sfcgal-config --without-interrupt-tests
+    --with-gdalconfig=${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/bin/gdal-config --with-sfcgal=/usr/bin/sfcgal-config \
+    --without-interrupt-tests \
+    --prefix=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}
 make clean
 ## install so we can later test extension upgrade
 make 
@@ -68,6 +71,15 @@ if [ "$MAKE_EXTENSION" = "1" ]; then
  echo "Running extension testing"
  make install
  make check RUNTESTFLAGS=--extension
+ if [ "$?" != "0" ]; then
+  exit $?
+ fi
+fi
+
+if [ "$DUMP_RESTORE" = "1" ]; then
+ echo "Dum restore test"
+ make install
+ make check RUNTESTFLAGS="-v --dumprestore"
  if [ "$?" != "0" ]; then
   exit $?
  fi
