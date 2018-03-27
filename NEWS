@@ -53,6 +53,9 @@ PostGIS 2.5.0
   - #4038, ST_Subdivide now selects pivot for geometry split that reuses input
            vertices. ST_ClipByBox2D is stubbed with ST_Intersection because of
            robustness issues. (Darafei Praliaskouski)
+  - #4025, #4032 Fixed precision issue in ST_ClosestPointOfApproach, 
+           ST_DistanceCPA, and ST_CPAWithin (Paul Ramsey, Darafei Praliaskouski)
+
 
 PostGIS 2.4.0
 2017/09/30
