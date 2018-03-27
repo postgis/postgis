@@ -23,7 +23,6 @@
  *
  **********************************************************************/
 
-
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include "measures3d.h"
@@ -1245,7 +1244,7 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 {
 	LWLINE *l1, *l2;
 	int i;
-	GBOX *gbox1, *gbox2;
+	GBOX gbox1, gbox2;
 	double tmin, tmax;
 	double *mvals;
 	int nmvals = 0;
