@@ -1279,7 +1279,7 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
  	/* we compare the ranges for overlap below */
  	lwgeom_calculate_gbox(g1, &gbox1);
  	lwgeom_calculate_gbox(g2, &gbox2);
-	
+
 	/*
 	 * Find overlapping M range
 	 * WARNING: may be larger than the real one
@@ -1293,8 +1293,6 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 		LWDEBUG(1, "Inputs never exist at the same time");
 		return LW_FALSE;
 	}
-
-	// lwnotice("Min:%g, Max:%g", tmin, tmax);
 
 	/*
 	 * Collect M values in common time range from inputs
