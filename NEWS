@@ -12,16 +12,16 @@ PostGIS 2.4.4dev
   - #4017, lwgeom lexer memory corruption (Peter E)
   - #4020, Casting from box3d to geometry now returns correctly connected
            PolyhedralSurface (Matthias Bay)
-  - #4025, Incorrect answers for temporally "almost overlapping" ranges
+  - #4025, #4032 Incorrect answers for temporally "almost overlapping" ranges
+           (Paul Ramsey, Darafei Praliaskouski)
   - #4052, schema qualify several functions in geography (Regina Obe)
   - #4055, ST_ClusterIntersecting drops SRID (Daniel Baston)
 
  * Enhancements *
-    - #3946, Compile support for PgSQL 11 (Paul Ramsey)
-    - #3992, Use PKG_PROG_PKG_CONFIG macro from pkg.m4 to detect pkg-config
-             (Bas Couwenberg)
-    - #4044, Upgrade support for PgSQL 11 (Regina Obe)
-
+  - #3946, Compile support for PgSQL 11 (Paul Ramsey)
+  - #3992, Use PKG_PROG_PKG_CONFIG macro from pkg.m4 to detect pkg-config
+           (Bas Couwenberg)
+  - #4044, Upgrade support for PgSQL 11 (Regina Obe)
 
 PostGIS 2.4.3
 2018/01/17

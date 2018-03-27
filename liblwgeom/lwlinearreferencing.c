@@ -23,7 +23,6 @@
  *
  **********************************************************************/
 
-
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include "measures3d.h"
@@ -1239,7 +1238,7 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 {
 	LWLINE *l1, *l2;
 	int i;
-	const GBOX *gbox1, *gbox2;
+	GBOX gbox1, gbox2;
 	double tmin, tmax;
 	double *mvals;
 	int nmvals = 0;
@@ -1268,28 +1267,25 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 		return LW_FALSE;
 	}
 
-	/* WARNING: these ranges may be wider than real ones */
-	gbox1 = lwgeom_get_bbox(g1);
-	gbox2 = lwgeom_get_bbox(g2);
-
-	assert(gbox1); /* or the npoints check above would have failed */
-	assert(gbox2); /* or the npoints check above would have failed */
+	/* We use lwgeom_calculate_gbox() instead of lwgeom_get_gbox() */
+ 	/* because we cannot afford the float rounding inaccuracy when */
+ 	/* we compare the ranges for overlap below */
+ 	lwgeom_calculate_gbox(g1, &gbox1);
+ 	lwgeom_calculate_gbox(g2, &gbox2);
 
 	/*
 	 * Find overlapping M range
 	 * WARNING: may be larger than the real one
 	 */
 
-	tmin = FP_MAX(gbox1->mmin, gbox2->mmin);
-	tmax = FP_MIN(gbox1->mmax, gbox2->mmax);
+	tmin = FP_MAX(gbox1.mmin, gbox2.mmin);
+	tmax = FP_MIN(gbox1.mmax, gbox2.mmax);
 
 	if ( tmax < tmin )
 	{
 		LWDEBUG(1, "Inputs never exist at the same time");
 		return LW_FALSE;
 	}
-
-	// lwnotice("Min:%g, Max:%g", tmin, tmax);
 
 	/*
 	 * Collect M values in common time range from inputs
