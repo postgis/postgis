@@ -7,7 +7,8 @@ PostGIS 2.3.7dev
   - #4003, lwpoly_construct_circle: Avoid division by zero (Raúl Marín Rodríguez)
   - #4020, Casting from box3d to geometry now returns correctly connected
            PolyhedralSurface (Matthias Bay)
-  - #4025, Incorrect answers for temporally "amost overlapping" ranges
+  - #4025, #4032 Incorrect answers for temporally "almost overlapping" ranges
+           (Paul Ramsey, Darafei Praliaskouski)
   - #4017, lwgeom lexer memory corruption (Peter E)
   - #4052, schema qualify several functions in geography
 
