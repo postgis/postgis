@@ -1,7 +1,9 @@
 PostGIS 2.4.4dev
-2018/MM/DD
+2018/04/DD
 
  * Bug fixes *
+  - #3055, [raster] ST_Clip() on a raster without band crashes the server
+          (Regina Obe)
   - #3942, geojson: Do not include private header for json-c >= 0.13
            (Björn Esser)
   - #3952, ST_Transform fails in parallel mode (Paul Ramsey)

@@ -112,3 +112,8 @@ DROP TABLE IF EXISTS test_raster_scale_big;
 DROP TABLE IF EXISTS test_raster_scale_small;
 
 SET client_min_messages TO DEFAULT;
+
+/******************************************************************************
+ #3055 ST_Clip() on a raster without band crashes the server
+******************************************************************************/
+SELECT ST_SummaryStats(ST_Clip(ST_MakeEmptyRaster(42, 42, 0, 0, 1.0, 1.0, 0, 0, 4269), ST_MakeEnvelope(0, 0, 20, 20, 4269)));

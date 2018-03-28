@@ -1817,7 +1817,7 @@ FROM ST_BandMetadata(
 						  </informalfigure></para>
                 <programlisting>
 -- this will output a black circle taking up 150 x 150 pixels --
-SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150, '2BUI'));</programlisting>
+SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150));</programlisting>
 
  <para><informalfigure>
 							<mediaobject>
