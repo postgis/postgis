@@ -1132,7 +1132,7 @@ SELECT short_name, long_name, can_write
 FROM st_gdaldrivers()
 ORDER BY short_name;
 
-   short_name    |                          long_name                          | can_write 
+   short_name    |                          long_name                          | can_write
 -----------------+-------------------------------------------------------------+-----------
  AAIGrid         | Arc/Info ASCII Grid                                         | t
  ACE2            | ACE2                                                        | f
@@ -1845,7 +1845,7 @@ FROM ST_BandMetadata(
 						  </informalfigure></para>
                 <programlisting>
 -- this will output a black circle taking up 150 x 150 pixels --
-SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150, '2BUI'));</programlisting>
+SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150));</programlisting>
 
  <para><informalfigure>
 							<mediaobject>
@@ -3795,7 +3795,7 @@ FROM ST_BandMetadata(
  	ARRAY[1,3,2]::int[]
 );
 
- bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                      | outdbbandnum 
+ bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                      | outdbbandnum
 ---------+-----------+-------------+---------+--------------------------------------------------------------------------------+--------------
        1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            1
        3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            3
@@ -7204,7 +7204,7 @@ FROM ST_BandMetadata(
 )
 ORDER BY 1, 2;
 
- query | bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                       | outdbbandnum 
+ query | bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                       | outdbbandnum
 -------+---------+-----------+-------------+---------+---------------------------------------------------------------------------------+--------------
      1 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
      1 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            2
@@ -7295,7 +7295,7 @@ FROM ST_BandMetadata(
 )
 ORDER BY 1, 2;
 
- query | bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                       | outdbbandnum 
+ query | bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                       | outdbbandnum
 -------+---------+-----------+-------------+---------+---------------------------------------------------------------------------------+--------------
      1 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
      1 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            2
@@ -8337,7 +8337,7 @@ SELECT (ST_Metadata(
 	)
 )).* AS metadata;
 
- upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands 
+ upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 ------------+------------+-------+--------+--------+--------+-------+-------+------+----------
         0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |     0 |   10 |        0
 				</programlisting>
@@ -8347,9 +8347,9 @@ SELECT (ST_Metadata(
 			<refsection>
 				<title>See Also</title>
 				<para>
-					<xref linkend="RT_ST_MetaData" />, 
-					<xref linkend="RT_ST_RastFromHexWKB" />, 
-					<xref linkend="RT_ST_AsBinary" />, 
+					<xref linkend="RT_ST_MetaData" />,
+					<xref linkend="RT_ST_RastFromHexWKB" />,
+					<xref linkend="RT_ST_AsBinary" />,
 					<xref linkend="RT_ST_AsHexWKB" />
 				</para>
 			</refsection>
@@ -8390,7 +8390,7 @@ SELECT (ST_Metadata(
 	)
 )).* AS metadata;
 
- upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands 
+ upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 ------------+------------+-------+--------+--------+--------+-------+-------+------+----------
         0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |     0 |   10 |        0
 				</programlisting>
@@ -8400,9 +8400,9 @@ SELECT (ST_Metadata(
 			<refsection>
 				<title>See Also</title>
 				<para>
-					<xref linkend="RT_ST_MetaData" />, 
-					<xref linkend="RT_ST_RastFromWKB" />, 
-					<xref linkend="RT_ST_AsBinary" />, 
+					<xref linkend="RT_ST_MetaData" />,
+					<xref linkend="RT_ST_RastFromWKB" />,
+					<xref linkend="RT_ST_AsBinary" />,
 					<xref linkend="RT_ST_AsHexWKB" />
 				</para>
 			</refsection>
@@ -8471,7 +8471,7 @@ SELECT ST_AsBinary(rast) As rastbin FROM dummy_rast WHERE rid=1;
 			<refsection>
 				<title>See Also</title>
 				<para>
-					<xref linkend="RT_ST_RastFromWKB" />, 
+					<xref linkend="RT_ST_RastFromWKB" />,
 					<xref linkend="RT_ST_AsHexWKB" />
 				</para>
 			</refsection>
@@ -8515,7 +8515,7 @@ SELECT ST_AsBinary(rast) As rastbin FROM dummy_rast WHERE rid=1;
 					<programlisting>
 SELECT ST_AsHexWKB(rast) As rastbin FROM dummy_rast WHERE rid=1;
 
-                                                        st_ashexwkb                                                         
+                                                        st_ashexwkb
 ----------------------------------------------------------------------------------------------------------------------------
  010000000000000000000000400000000000000840000000000000E03F000000000000E03F000000000000000000000000000000000A0000000A001400
 				</programlisting>
@@ -8525,7 +8525,7 @@ SELECT ST_AsHexWKB(rast) As rastbin FROM dummy_rast WHERE rid=1;
 			<refsection>
 				<title>See Also</title>
 				<para>
-					<xref linkend="RT_ST_RastFromHexWKB" />, 
+					<xref linkend="RT_ST_RastFromHexWKB" />,
 					<xref linkend="RT_ST_AsBinary" />
 				</para>
 			</refsection>
@@ -15578,30 +15578,30 @@ fs.file-max = 6145324
 					<programlisting>
 $ ps aux | grep postgres
 postgres 31713  0.0  0.4 179012 17564 pts/0    S    Dec26   0:03 /home/dustymugs/devel/postgresql/sandbox/10/usr/local/bin/postgres -D /home/dustymugs/devel/postgresql/sandbox/10/pgdata
-postgres 31716  0.0  0.8 179776 33632 ?        Ss   Dec26   0:01 postgres: checkpointer process   
-postgres 31717  0.0  0.2 179144  9416 ?        Ss   Dec26   0:05 postgres: writer process   
-postgres 31718  0.0  0.2 179012  8708 ?        Ss   Dec26   0:06 postgres: wal writer process   
-postgres 31719  0.0  0.1 179568  7252 ?        Ss   Dec26   0:03 postgres: autovacuum launcher process   
-postgres 31720  0.0  0.1  34228  4124 ?        Ss   Dec26   0:09 postgres: stats collector process   
-postgres 31721  0.0  0.1 179308  6052 ?        Ss   Dec26   0:00 postgres: bgworker: logical replication launcher   
+postgres 31716  0.0  0.8 179776 33632 ?        Ss   Dec26   0:01 postgres: checkpointer process
+postgres 31717  0.0  0.2 179144  9416 ?        Ss   Dec26   0:05 postgres: writer process
+postgres 31718  0.0  0.2 179012  8708 ?        Ss   Dec26   0:06 postgres: wal writer process
+postgres 31719  0.0  0.1 179568  7252 ?        Ss   Dec26   0:03 postgres: autovacuum launcher process
+postgres 31720  0.0  0.1  34228  4124 ?        Ss   Dec26   0:09 postgres: stats collector process
+postgres 31721  0.0  0.1 179308  6052 ?        Ss   Dec26   0:00 postgres: bgworker: logical replication launcher
 
 $ cat /proc/31718/limits
-Limit                     Soft Limit           Hard Limit           Units     
-Max cpu time              unlimited            unlimited            seconds   
-Max file size             unlimited            unlimited            bytes     
-Max data size             unlimited            unlimited            bytes     
-Max stack size            8388608              unlimited            bytes     
-Max core file size        0                    unlimited            bytes     
-Max resident set          unlimited            unlimited            bytes     
-Max processes             15738                15738                processes 
+Limit                     Soft Limit           Hard Limit           Units
+Max cpu time              unlimited            unlimited            seconds
+Max file size             unlimited            unlimited            bytes
+Max data size             unlimited            unlimited            bytes
+Max stack size            8388608              unlimited            bytes
+Max core file size        0                    unlimited            bytes
+Max resident set          unlimited            unlimited            bytes
+Max processes             15738                15738                processes
 <emphasis role="strong">Max open files            1024                 4096                 files</emphasis>
-Max locked memory         65536                65536                bytes     
-Max address space         unlimited            unlimited            bytes     
-Max file locks            unlimited            unlimited            locks     
-Max pending signals       15738                15738                signals   
-Max msgqueue size         819200               819200               bytes     
-Max nice priority         0                    0                    
-Max realtime priority     0                    0                    
+Max locked memory         65536                65536                bytes
+Max address space         unlimited            unlimited            bytes
+Max file locks            unlimited            unlimited            locks
+Max pending signals       15738                15738                signals
+Max msgqueue size         819200               819200               bytes
+Max nice priority         0                    0
+Max realtime priority     0                    0
 Max realtime timeout      unlimited            unlimited            us
 					</programlisting>
 
