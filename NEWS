@@ -2,11 +2,13 @@ PostGIS 2.2.7
 2018/xx/xx
 
  * Bug Fixes *
+  - #3055, [raster] ST_Clip() on a raster without band crashes the server
+          (Regina Obe)
   - #3965, ST_ClusterKMeans used to lose some clusters on initialization
            (Darafei Praliaskouski)
   - #3978, Fix KNN when upgrading from 2.1 or older (Sandro Santilli)
-  - #4055, ST_ClusterIntersecting dropping SRID (Daniel Baston)
   - #4017, lwgeom lexer memory corruption (Peter E)
+  - #4055, ST_ClusterIntersecting dropping SRID (Daniel Baston)
 
 
 PostGIS 2.2.6

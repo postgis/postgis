@@ -12,3 +12,5 @@ ERROR:  new row for relation "test_raster_scale_big" violates check constraint "
 t
 test_raster_scale_small|rast||1
 ERROR:  new row for relation "test_raster_scale_small" violates check constraint "enforce_scaley_rast"
+NOTICE:  Input raster is empty or has no bands. Returning empty raster
+NOTICE:  Invalid band index (must use 1-based). Returning NULL
