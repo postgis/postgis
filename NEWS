@@ -3,13 +3,15 @@ PostGIS 2.3.7dev
 
   * Bug Fixes and Enhancements
 
+  - #3055, [raster] ST_Clip() on a raster without band crashes the server
+          (Regina Obe)
   - #3978, Fix KNN when upgrading from 2.1 or older (Sandro Santilli)
   - #4003, lwpoly_construct_circle: Avoid division by zero (Raúl Marín Rodríguez)
+  - #4017, lwgeom lexer memory corruption (Peter E)
   - #4020, Casting from box3d to geometry now returns correctly connected
            PolyhedralSurface (Matthias Bay)
   - #4025, #4032 Incorrect answers for temporally "almost overlapping" ranges
            (Paul Ramsey, Darafei Praliaskouski)
-  - #4017, lwgeom lexer memory corruption (Peter E)
   - #4052, schema qualify several functions in geography
 
 

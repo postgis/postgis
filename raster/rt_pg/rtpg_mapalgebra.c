@@ -3025,8 +3025,8 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 	}
 
 	/* raster is empty, return empty raster */
-	if (rt_raster_is_empty(arg->raster)) {
-		elog(NOTICE, "Input raster is empty. Returning empty raster");
+	if (rt_raster_is_empty(arg->raster) || rt_raster_get_num_bands(arg->raster) == 0) {
+		elog(NOTICE, "Input raster is empty or has no bands. Returning empty raster");
 
 		rtpg_clip_arg_destroy(arg);
 		PG_FREE_IF_COPY(pgraster, 0);
