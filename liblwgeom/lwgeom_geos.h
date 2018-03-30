@@ -19,16 +19,11 @@
  **********************************************************************
  *
  * Copyright 2011 Sandro Santilli <strk@kbt.io>
+ * Copyright 2018 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
-
-/* Workaround for GEOS 2.2 compatibility: old geos_c.h does not contain
-   header guards to protect from multiple inclusion */
-#ifndef GEOS_C_INCLUDED
-#define GEOS_C_INCLUDED
 #include "geos_c.h"
-#endif
 
 #include "liblwgeom.h"
 #include "lwunionfind.h"
@@ -36,21 +31,20 @@
 /*
 ** Public prototypes for GEOS utility functions.
 */
-LWGEOM *GEOS2LWGEOM(const GEOSGeometry *geom, char want3d);
-GEOSGeometry * LWGEOM2GEOS(const LWGEOM *g, int autofix);
-GEOSGeometry * GBOX2GEOS(const GBOX *g);
-GEOSGeometry * LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
+LWGEOM* GEOS2LWGEOM(const GEOSGeometry* geom, uint8_t want3d);
+GEOSGeometry* LWGEOM2GEOS(const LWGEOM* g, uint8_t autofix);
+GEOSGeometry* GBOX2GEOS(const GBOX* g);
+GEOSGeometry* LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
+GEOSGeometry* LWGEOM_GEOS_makeValid(const GEOSGeometry*);
 
-GEOSGeometry * make_geos_point(double x, double y);
-GEOSGeometry * make_geos_segment(double x1, double y1, double x2, double y2);
+GEOSGeometry* make_geos_point(double x, double y);
+GEOSGeometry* make_geos_segment(double x1, double y1, double x2, double y2);
 
-int cluster_intersecting(GEOSGeometry** geoms, uint32_t num_geoms, GEOSGeometry*** clusterGeoms, uint32_t* num_clusters);
-int cluster_within_distance(LWGEOM** geoms, uint32_t num_geoms, double tolerance, LWGEOM*** clusterGeoms, uint32_t* num_clusters);
-int union_dbscan(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint32_t min_points, char** is_in_cluster_ret);
+int cluster_intersecting(GEOSGeometry **geoms, uint32_t num_geoms, GEOSGeometry ***clusterGeoms, uint32_t *num_clusters);
+int cluster_within_distance(LWGEOM **geoms, uint32_t num_geoms, double tolerance, LWGEOM ***clusterGeoms, uint32_t *num_clusters);
+int union_dbscan(LWGEOM **geoms, uint32_t num_geoms, UNIONFIND *uf, double eps, uint32_t min_points, char **is_in_cluster_ret);
 
-POINTARRAY *ptarray_from_GEOSCoordSeq(const GEOSCoordSequence *cs, char want3d);
-
+POINTARRAY* ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d);
 
 extern char lwgeom_geos_errmsg[];
-extern void lwgeom_geos_error(const char *fmt, ...);
-
+extern void lwgeom_geos_error(const char* fmt, ...);

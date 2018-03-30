@@ -111,7 +111,8 @@ lwgeom_to_x3d3_sb(const LWGEOM *geom, char *srs, int precision, int opts, const 
 }
 
 static int
-asx3d3_point_sb(const LWPOINT *point, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
+asx3d3_point_sb(const LWPOINT *point, __attribute__((__unused__)) char *srs, int precision,
+		int opts, __attribute__((__unused__)) const char *defid, stringbuffer_t *sb)
 {
 	/** for point we just output the coordinates **/
 	return ptarray_to_x3d3_sb(point->point, precision, opts, 0, sb);
@@ -195,7 +196,7 @@ asx3d3_mpoly_coordindex_sb(const LWMPOLY *psur, stringbuffer_t *sb)
 			if (l < (patch->nrings - 1) )
 			{
 				/** @todo TODO: Decide the best way to render holes
-				*  Evidentally according to my X3D expert the X3D consortium doesn't really
+				*  Evidently according to my X3D expert the X3D consortium doesn't really
 				*  support holes and it's an issue of argument among many that feel it should. He thinks CAD x3d extensions to spec might.
 				*  What he has done and others developing X3D exports to simulate a hole is to cut around it.
 				*  So if you have a donut, you would cut it into half and have 2 solid polygons.  Not really sure the best way to handle this.
@@ -215,7 +216,8 @@ asx3d3_mpoly_coordindex_sb(const LWMPOLY *psur, stringbuffer_t *sb)
 
 /** Return the linestring as an X3D LineSet */
 static int
-asx3d3_line_sb(const LWLINE *line, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
+asx3d3_line_sb(const LWLINE *line, __attribute__((__unused__)) char *srs, int precision,
+	       int opts, __attribute__((__unused__)) const char *defid, stringbuffer_t *sb)
 {
 
 	/* int dimension=2; */
@@ -241,7 +243,8 @@ asx3d3_line_sb(const LWLINE *line, char *srs, int precision, int opts, const cha
 
 /** Compute the X3D coordinates of the polygon and add to string buffer **/
 static int
-asx3d3_poly_sb(const LWPOLY *poly, char *srs, int precision, int opts, int is_patch, const char *defid, stringbuffer_t *sb)
+asx3d3_poly_sb(const LWPOLY *poly, __attribute__((__unused__))  char *srs, int precision,
+	       int opts, __attribute__((__unused__)) int is_patch, __attribute__((__unused__)) const char *defid, stringbuffer_t *sb)
 {
 	uint32_t i;
 	for (i=0; i<poly->nrings; i++)
@@ -253,7 +256,8 @@ asx3d3_poly_sb(const LWPOLY *poly, char *srs, int precision, int opts, int is_pa
 }
 
 static int
-asx3d3_triangle_sb(const LWTRIANGLE *triangle, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
+asx3d3_triangle_sb(const LWTRIANGLE *triangle, __attribute__((__unused__))  char *srs, int precision,
+		   int opts, __attribute__((__unused__))  const char *defid, stringbuffer_t *sb)
 {
 	return  ptarray_to_x3d3_sb(triangle->points, precision, opts, 1, sb);
 }
@@ -263,7 +267,7 @@ asx3d3_triangle_sb(const LWTRIANGLE *triangle, char *srs, int precision, int opt
  * Don't call this with single-geoms inspected!
  */
 static int
-asx3d3_multi_sb(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
+asx3d3_multi_sb(const LWCOLLECTION *col, __attribute__((__unused__)) char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
 {
 	char *x3dtype;
 	uint32_t i;
@@ -395,7 +399,7 @@ asx3d3_psurface_sb(const LWPSURFACE *psur, char *srs, int precision, int opts, c
  * Computes X3D representation of TIN (as IndexedTriangleSet and adds to string buffer)
  */
 static int
-asx3d3_tin_sb(const LWTIN *tin, char *srs,  int precision, int opts, const char *defid, stringbuffer_t *sb)
+asx3d3_tin_sb(const LWTIN *tin, __attribute__((__unused__)) char *srs,  int precision, int opts, const char *defid, stringbuffer_t *sb)
 {
 	uint32_t i;
 	uint32_t k;

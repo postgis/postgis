@@ -26,6 +26,7 @@
 #include <assert.h>
 
 #include "postgres.h"
+#include "utils/builtins.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
@@ -35,7 +36,7 @@
 Datum box2d_from_geohash(PG_FUNCTION_ARGS);
 Datum point_from_geohash(PG_FUNCTION_ARGS);
 
-static void geohash_lwpgerror(char *msg, int error_code)
+static void geohash_lwpgerror(char *msg, __attribute__((__unused__)) int error_code)
 {
 	POSTGIS_DEBUGF(3, "ST_Box2dFromGeoHash ERROR %i", error_code);
 	lwpgerror("%s", msg);
@@ -92,7 +93,7 @@ Datum box2d_from_geohash(PG_FUNCTION_ARGS)
 	}
 
 	geohash_input = PG_GETARG_TEXT_P(0);
-	geohash = text2cstring(geohash_input);
+	geohash = text_to_cstring(geohash_input);
 
 	box = parse_geohash(geohash, precision);
 
@@ -121,7 +122,7 @@ Datum point_from_geohash(PG_FUNCTION_ARGS)
 	}
 
 	geohash_input = PG_GETARG_TEXT_P(0);
-	geohash = text2cstring(geohash_input);
+	geohash = text_to_cstring(geohash_input);
 
 	box = parse_geohash(geohash, precision);
 

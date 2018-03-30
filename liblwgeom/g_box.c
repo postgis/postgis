@@ -467,7 +467,7 @@ int lw_arc_calculate_gbox_cartesian_2d(const POINT2D *A1, const POINT2D *A2, con
 
 	radius_A = lw_arc_center(A1, A2, A3, &C);
 
-	/* Negative radius signals straight line, p1/p2/p3 are colinear */
+	/* Negative radius signals straight line, p1/p2/p3 are collinear */
 	if (radius_A < 0.0)
 	{
         gbox->xmin = FP_MIN(A1->x, A3->x);

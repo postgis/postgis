@@ -197,7 +197,7 @@ char* gserialized_to_string(const GSERIALIZED *g)
 /* Unfortunately including advanced instructions is something that
 only helps a small sliver of users who can build their own
 knowing the target system they will be running on. Packagers
-have to aim for the lowest common demoninator. So this is
+have to aim for the lowest common denominator. So this is
 dead code for the forseeable future. */
 #define HAVE_PDEP 0
 #if HAVE_PDEP

@@ -379,7 +379,7 @@ Datum postgis_typmod_type(PG_FUNCTION_ARGS)
 	if ( typmod >= 0 && TYPMOD_GET_M(typmod) )
 		ptr += sprintf(ptr, "%s", "M");
 
-	stext = cstring2text(s);
+	stext = cstring_to_text(s);
 	pfree(s);
 	PG_RETURN_TEXT_P(stext);
 }

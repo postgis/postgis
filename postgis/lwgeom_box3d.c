@@ -97,7 +97,7 @@ Datum BOX3D_in(PG_FUNCTION_ARGS)
 		if (nitems != 4)
 		{
 			pfree(box);
-			elog(ERROR,"BOX3D parser - couldnt parse.  It should look like: BOX3D(xmin ymin zmin,xmax ymax zmax) or BOX3D(xmin ymin,xmax ymax)");
+			elog(ERROR,"BOX3D parser - couldn't parse.  It should look like: BOX3D(xmin ymin zmin,xmax ymax zmax) or BOX3D(xmin ymin,xmax ymax)");
 			PG_RETURN_NULL();
 		}
 	}
@@ -326,10 +326,10 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 				   	&points[0], &points[1], &points[2], &points[3]));
 		/* add top polygon */
 		geoms[1] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
-				   	&points[4], &points[5], &points[6], &points[7]));
+				   	&points[4], &points[7], &points[6], &points[5]));
 		/* add left polygon */
 		geoms[2] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
-				   	&points[0], &points[1], &points[5], &points[4]));
+				   	&points[0], &points[4], &points[5], &points[1]));
 		/* add right polygon */
 		geoms[3] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
 				   	&points[3], &points[2], &points[6], &points[7]));
@@ -338,7 +338,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 				   	&points[0], &points[3], &points[7], &points[4]));
 		/* add front polygon */
 		geoms[5] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
-				   	&points[1], &points[2], &points[6], &points[5]));
+				   	&points[1], &points[5], &points[6], &points[2]));
 
 		geom = (LWGEOM *) lwcollection_construct(POLYHEDRALSURFACETYPE,
 				SRID_UNKNOWN, NULL, ngeoms, geoms);

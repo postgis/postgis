@@ -187,6 +187,9 @@ typedef enum LWORD_T {
 #define SRID_UNKNOWN 0
 #define SRID_IS_UNKNOWN(x) ((int)x<=0)
 
+/* Invalid SRID value, for internal use */
+#define SRID_INVALID (@SRID_MAX@ + 2)
+
 /*
 ** EPSG WGS84 geographics, OGC standard default SRS, better be in
 ** the SPATIAL_REF_SYS table!
@@ -281,7 +284,7 @@ BOX3D;
 
 /******************************************************************
 * GBOX structure.
-* We include the flags (information about dimensinality),
+* We include the flags (information about dimensionality),
 * so we don't have to constantly pass them
 * into functions that use the GBOX.
 */
@@ -361,7 +364,7 @@ POINT4D;
 */
 typedef struct
 {
-	/* Array of POINT 2D, 3D or 4D, possibly missaligned. */
+	/* Array of POINT 2D, 3D or 4D, possibly misaligned. */
 	uint8_t *serialized_pointlist;
 
 	/* Use FLAGS_* macros to handle */
@@ -627,6 +630,7 @@ extern LWMPOLY* lwmpoly_add_lwpoly(LWMPOLY *mobj, const LWPOLY *obj);
 extern LWPSURFACE* lwpsurface_add_lwpoly(LWPSURFACE *mobj, const LWPOLY *obj);
 extern LWTIN* lwtin_add_lwtriangle(LWTIN *mobj, const LWTRIANGLE *obj);
 
+extern LWCOLLECTION* lwcollection_concat_in_place(LWCOLLECTION* col1, const LWCOLLECTION* col2);
 
 
 /***********************************************************************
@@ -775,7 +779,7 @@ extern uint32_t lwtype_get_collectiontype(uint8_t type);
 * (e.g. Point, LineString, Polygon)
 */
 extern const char *lwtype_name(uint8_t type);
-
+extern uint8_t lwtype_multitype(uint8_t type);
 
 /******************************************************************/
 
@@ -986,6 +990,8 @@ extern LWGEOM* lwgeom_force_3dm(const LWGEOM *geom);
 extern LWGEOM* lwgeom_force_4d(const LWGEOM *geom);
 
 extern LWGEOM* lwgeom_set_effective_area(const LWGEOM *igeom, int set_area, double area);
+extern LWGEOM* lwgeom_chaikin(const LWGEOM *igeom, int n_iterations, int preserve_endpoint);
+extern LWGEOM* lwgeom_filter_m(LWGEOM *geom, double min, double max, int returnm);
 
 /*
  * Force to use SFS 1.1 geometry type
@@ -2166,6 +2172,20 @@ extern uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, int8_t preci
 
 extern uint8_t* lwgeom_to_twkb_with_idlist(const LWGEOM *geom, int64_t *idlist, uint8_t variant, int8_t precision_xy, int8_t precision_z, int8_t precision_m, size_t *twkb_size);
 
+/**
+ * Trim the bits of an LWGEOM in place, to optimize it for compression.
+ * Sets all bits to zero that are not required to maintain a specified
+ * number of digits after the decimal point. Negative precision values
+ * indicate digits before the decimal point do not need to be preserved.
+ *
+ * @param geom input geometry
+ * @param prec_x precision (digits after decimal point) in x dimension
+ * @param prec_y precision (digits after decimal point) in y dimension
+ * @param prec_z precision (digits after decimal point) in z dimension
+ * @param prec_m precision (digits after decimal point) in m dimension
+ */
+extern void lwgeom_trim_bits_in_place(LWGEOM *geom, int32_t prec_x, int32_t prec_y, int32_t prec_z, int32_t prec_m);
+
 /*******************************************************************************
  * SQLMM internal functions
  ******************************************************************************/
@@ -2287,16 +2307,15 @@ LWGEOM* lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2);
 /*
  * An offset curve against the input line.
  *
- * @param lwline a lineal geometry
+ * @param geom a lineal geometry or collection of them
  * @param size offset distance. Offset left if negative and right if positive
  * @param quadsegs number of quadrature segments in curves (try 8)
  * @param joinStyle (1 = round, 2 = mitre, 3 = bevel)
  * @param mitreLimit (try 5.0)
  * @return derived geometry (linestring or multilinestring)
  *
- * Requires GEOS-3.2.0+
  */
-LWGEOM* lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyle, double mitreLimit);
+LWGEOM* lwgeom_offsetcurve(const LWGEOM *geom, double size, int quadsegs, int joinStyle, double mitreLimit);
 
 /*
  * Return true if the input geometry is "simple" as per OGC defn.
@@ -2376,7 +2395,7 @@ LWGEOM* lwgeom_node(const LWGEOM* lwgeom_in);
  * @param edgeOnly if non-zero the result will be a MULTILINESTRING,
  *                 otherwise it'll be a COLLECTION of polygons.
  */
-LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *geom, double tolerance, int edgeOnly);
+LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *geom, double tolerance, int32_t edgeOnly);
 
 /**
  * Take vertices of a geometry and build the Voronoi diagram

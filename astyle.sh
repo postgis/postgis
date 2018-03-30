@@ -20,8 +20,24 @@ fi
 # Find all "pure" C files in the codebase
 #   - not .in.c used for .sql generation
 #   - not lex.yy.c or wktparse.tab.c as these are generated files
-CFILES=`find . -name '*.c' -not \( -name '*_parse.c' -o -name '*_lex.c' \)`
+#   - not topology/* files
+CFILES_TAB=`find . -name '*.c' -not \( \
+  -name '*_parse.c' -o \
+  -name '*_lex.c' -o \
+  -name './topology/*' -o \
+  -name './liblwgeom/liblwgeom_topo.*' \
+\)`
 
 # Run the standard format on the files, and do not
 # leave .orig files around for altered files.
-astyle --style=ansi --indent=tab --suffix=none $CFILES
+astyle --style=ansi --indent=tab --suffix=none $CFILES_TAB
+
+# Find all "pure" C files in the codebase
+#   - not .in.c used for .sql generation
+#   - not lex.yy.c or wktparse.tab.c as these are generated files
+#   - not topology/* files
+CFILES_SPACE="liblwgeom/*.c topology/*.c"
+
+# Run the standard format on the files, and do not
+# leave .orig files around for altered files.
+astyle --style=ansi --indent=spaces=2 --suffix=none $CFILES_SPACE

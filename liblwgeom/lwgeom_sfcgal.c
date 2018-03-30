@@ -113,7 +113,7 @@ SFCGAL_type_to_lwgeom_type(sfcgal_geometry_type_t type)
  * Return a PostGIS pointarray from a simple SFCGAL geometry:
  * POINT, LINESTRING or TRIANGLE
  *
- * Trought an error on others types
+ * Throw an error on others types
  */
 static POINTARRAY*
 ptarray_from_SFCGAL(const sfcgal_geometry_t* geom, int want3d)

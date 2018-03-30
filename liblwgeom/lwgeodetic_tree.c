@@ -322,7 +322,7 @@ circ_node_internal_new(CIRC_NODE** c, uint32_t num_nodes)
 			LWDEBUGF(3,"    offset1 is %g", offset1);
 
 			/* Sometimes the sphere_direction function fails... this causes the center calculation */
-			/* to fail too. In that case, we're going to fall back ot a cartesian calculation, which */
+			/* to fail too. In that case, we're going to fall back to a cartesian calculation, which */
 			/* is less exact, so we also have to pad the radius by (hack alert) an arbitrary amount */
 			/* which is hopefully always big enough to contain the input edges */
 			if ( circ_center_spherical(&c1, &(c[i]->center), dist, offset1, &new_center) == LW_FAILURE )
@@ -601,6 +601,51 @@ circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, const SPHEROID
 	}
 }
 
+
+/***********************************************************************
+* Internal node sorting routine to make distance calculations faster?
+*/
+
+struct sort_node {
+	CIRC_NODE *node;
+	double d;
+};
+
+static int
+circ_nodes_sort_cmp(const void *a, const void *b)
+{
+	struct sort_node *node_a = (struct sort_node *)(a);
+	struct sort_node *node_b = (struct sort_node *)(b);
+	if (node_a->d < node_b->d) return -1;
+	else if (node_a->d > node_b->d) return 1;
+	else return 0;
+}
+
+static void
+circ_internal_nodes_sort(CIRC_NODE **nodes, uint32_t num_nodes, const CIRC_NODE *target_node)
+{
+	uint32_t i;
+	struct sort_node sort_nodes[CIRC_NODE_SIZE];
+
+	/* Copy incoming nodes into sorting array and calculate */
+	/* distance to the target node */
+	for (i = 0; i < num_nodes; i++)
+	{
+		sort_nodes[i].node = nodes[i];
+		sort_nodes[i].d = sphere_distance(&(nodes[i]->center), &(target_node->center));
+	}
+
+	/* Sort the nodes and copy the result back into the input array */
+	qsort(sort_nodes, num_nodes, sizeof(struct sort_node), circ_nodes_sort_cmp);
+	for (i = 0; i < num_nodes; i++)
+	{
+		nodes[i] = sort_nodes[i].node;
+	}
+	return;
+}
+
+/***********************************************************************/
+
 static double
 circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, double threshold, double* min_dist, double* max_dist, GEOGRAPHIC_POINT* closest1, GEOGRAPHIC_POINT* closest2)
 {
@@ -746,6 +791,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 		/* tests above. */
 		if ( n1->geom_type && lwtype_is_collection(n1->geom_type) )
 		{
+			circ_internal_nodes_sort(n1->nodes, n1->num_nodes, n2);
 			for ( i = 0; i < n1->num_nodes; i++ )
 			{
 				d = circ_tree_distance_tree_internal(n1->nodes[i], n2, threshold, min_dist, max_dist, closest1, closest2);
@@ -754,6 +800,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 		}
 		else if ( n2->geom_type && lwtype_is_collection(n2->geom_type) )
 		{
+			circ_internal_nodes_sort(n2->nodes, n2->num_nodes, n1);
 			for ( i = 0; i < n2->num_nodes; i++ )
 			{
 				d = circ_tree_distance_tree_internal(n1, n2->nodes[i], threshold, min_dist, max_dist, closest1, closest2);
@@ -762,6 +809,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 		}
 		else if ( ! circ_node_is_leaf(n1) )
 		{
+			circ_internal_nodes_sort(n1->nodes, n1->num_nodes, n2);
 			for ( i = 0; i < n1->num_nodes; i++ )
 			{
 				d = circ_tree_distance_tree_internal(n1->nodes[i], n2, threshold, min_dist, max_dist, closest1, closest2);
@@ -770,6 +818,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 		}
 		else if ( ! circ_node_is_leaf(n2) )
 		{
+			circ_internal_nodes_sort(n2->nodes, n2->num_nodes, n1);
 			for ( i = 0; i < n2->num_nodes; i++ )
 			{
 				d = circ_tree_distance_tree_internal(n1, n2->nodes[i], threshold, min_dist, max_dist, closest1, closest2);
@@ -886,7 +935,7 @@ lwpoly_calculate_circ_tree(const LWPOLY* lwpoly)
 		lwfree(nodes);
 	}
 
-	/* Metatdata about polygons, we need this to apply P-i-P tests */
+	/* Metadata about polygons, we need this to apply P-i-P tests */
 	/* selectively when doing distance calculations */
 	node->geom_type = lwgeom_get_type((LWGEOM*)lwpoly);
 	lwpoly_pt_outside(lwpoly, &(node->pt_outside));

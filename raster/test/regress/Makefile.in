@@ -57,6 +57,7 @@ TEST_IO = \
 
 TEST_BASIC_FUNC = \
 	rt_bytea \
+	rt_wkb \
 	box3d \
 	rt_addband \
 	rt_band \
@@ -96,7 +97,8 @@ TEST_BANDPROPS = \
 	rt_neighborhood \
 	rt_nearestvalue \
 	rt_pixelofvalue \
-	rt_polygon
+	rt_polygon \
+	rt_setbandpath
 
 TEST_UTILITY = \
 	rt_utility \

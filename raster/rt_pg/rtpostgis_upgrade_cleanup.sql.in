@@ -599,3 +599,7 @@ BEGIN
 	END IF;
 END;
 $$;
+
+-- 2.5.0 signature changed
+DROP FUNCTION IF EXISTS st_bandmetadata(raster, int[]);
+DROP FUNCTION IF EXISTS st_bandmetadata(raster, int);

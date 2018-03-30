@@ -104,9 +104,11 @@ lwcollection_build_buffer(const LWCOLLECTION *col, HomogenizeBuffer *buffer)
 				/* Increment count for this singleton type */
 				buffer->cnt[geom->type] = buffer->cnt[geom->type] + 1;
 			}
+			/* FALLTHROUGH */
 			default:
 			{
 				lwcollection_build_buffer(lwgeom_as_lwcollection(geom), buffer);
+				break;
 			}
 		}
 	}

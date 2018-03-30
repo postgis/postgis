@@ -61,7 +61,7 @@ next_float_down(double d)
 }
 
 /*
- * Returns the float thats very close to the input, but >=.
+ * Returns the float that's very close to the input, but >=.
  * handles the funny differences in float4 and float8 reps.
  */
 inline float

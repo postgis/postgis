@@ -1099,6 +1099,13 @@ CREATE OR REPLACE FUNCTION postgis_hasbbox(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_hasBBOX'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_QuantizeCoordinates(g geometry, prec_x int, prec_y int DEFAULT NULL, prec_z int DEFAULT NULL, prec_m int DEFAULT NULL)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_QuantizeCoordinates'
+	LANGUAGE 'c' IMMUTABLE _PARALLEL
+	COST 10;
+
 ------------------------------------------------------------------------
 -- DEBUG
 ------------------------------------------------------------------------
@@ -1307,7 +1314,18 @@ CREATE OR REPLACE FUNCTION ST_azimuth(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Angle(pt1 geometry, pt2 geometry, pt3 geometry, pt4 geometry default 'POINT EMPTY'::geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_angle'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION _ST_DistanceRectTree(g1 geometry, g2 geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'ST_DistanceRectTree'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+CREATE OR REPLACE FUNCTION _ST_DistanceRectTreeCached(g1 geometry, g2 geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'ST_DistanceRectTreeCached'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 ------------------------------------------------------------------------
 -- MISC
@@ -3126,7 +3144,21 @@ CREATE OR REPLACE FUNCTION ST_SetEffectiveArea(geometry,  float8 default -1, int
 	AS 'MODULE_PATHNAME', 'LWGEOM_SetEffectiveArea'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
-
+	
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_FilterByM(geometry, double precision, double precision default null, boolean default false)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_FilterByM'
+	LANGUAGE 'c' IMMUTABLE _PARALLEL
+	COST 1; -- reset cost, see #3675
+	
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_ChaikinSmoothing(geometry, integer default 1, boolean default true)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_ChaikinSmoothing'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 1; -- reset cost, see #3675
+	
 -- ST_SnapToGrid(input, xoff, yoff, xsize, ysize)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, float8, float8, float8, float8)
@@ -3322,6 +3354,12 @@ CREATE OR REPLACE FUNCTION ST_MinimumBoundingRadius(geometry, OUT center geometr
 CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(inputgeom geometry, segs_per_quarter integer DEFAULT 48)
     RETURNS geometry
     AS 'MODULE_PATHNAME', 'ST_MinimumBoundingCircle'
+    LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_OrientedEnvelope(geometry)
+    RETURNS geometry
+    AS 'MODULE_PATHNAME', 'ST_OrientedEnvelope'
     LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0 - requires GEOS-3.2 or higher
@@ -3822,94 +3860,83 @@ CREATE AGGREGATE ST_MemUnion(geometry) (
 	stype = geometry
 	);
 
---
--- pgis_abs
--- Container type to hold the ArrayBuildState pointer as it passes through
--- the geometry array accumulation aggregate.
---
-CREATE OR REPLACE FUNCTION pgis_abs_in(cstring)
-	RETURNS pgis_abs
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
-
-CREATE OR REPLACE FUNCTION pgis_abs_out(pgis_abs)
-	RETURNS cstring
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.4.0
-CREATE TYPE pgis_abs (
-	internallength = 16,
-	input = pgis_abs_in,
-	output = pgis_abs_out,
-	alignment = double
-);
-
--- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry)
-	RETURNS pgis_abs
+-- Changed: 2.5.0 use 'internal' transfer type
+CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(internal, geometry)
+	RETURNS internal
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.2
-CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry, float8)
-	RETURNS pgis_abs
+-- Changed: 2.5.0 use 'internal' transfer type
+CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(internal, geometry, float8)
+	RETURNS internal
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.3
-CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry, float8, int)
-	RETURNS pgis_abs
+-- Changed: 2.5.0 use 'internal' transfer type
+CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(internal, geometry, float8, int)
+	RETURNS internal
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION pgis_geometry_accum_finalfn(pgis_abs)
+-- Changed: 2.5.0 use 'internal' transfer type
+CREATE OR REPLACE FUNCTION pgis_geometry_accum_finalfn(internal)
 	RETURNS geometry[]
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION pgis_geometry_union_finalfn(pgis_abs)
+-- Changed: 2.5.0 use 'internal' transfer type
+CREATE OR REPLACE FUNCTION pgis_geometry_union_finalfn(internal)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION pgis_geometry_collect_finalfn(pgis_abs)
+-- Changed: 2.5.0 use 'internal' transfer type
+CREATE OR REPLACE FUNCTION pgis_geometry_collect_finalfn(internal)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION pgis_geometry_polygonize_finalfn(pgis_abs)
+-- Changed: 2.5.0 use 'internal' transfer type
+CREATE OR REPLACE FUNCTION pgis_geometry_polygonize_finalfn(internal)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.2
-CREATE OR REPLACE FUNCTION pgis_geometry_clusterintersecting_finalfn(pgis_abs)
+-- Changed: 2.5.0 use 'internal' transfer type
+CREATE OR REPLACE FUNCTION pgis_geometry_clusterintersecting_finalfn(internal)
 	RETURNS geometry[]
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.2
-CREATE OR REPLACE FUNCTION pgis_geometry_clusterwithin_finalfn(pgis_abs)
+-- Changed: 2.5.0 use 'internal' transfer type
+CREATE OR REPLACE FUNCTION pgis_geometry_clusterwithin_finalfn(internal)
 	RETURNS geometry[]
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
+-- Changed: 2.5.0 use 'internal' transfer type
+CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(internal)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.2.2
 -- Changed: 2.4.0 marked parallel safe
+-- Changed: 2.5.0 use 'internal' stype
 CREATE AGGREGATE ST_Accum (geometry) (
 	sfunc = pgis_geometry_accum_transfn,
-	stype = pgis_abs,
+	stype = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
 #endif
@@ -3926,9 +3953,10 @@ CREATE OR REPLACE FUNCTION ST_Union (geometry[])
 -- Changed but upgrader helper no touch: 2.4.0 marked parallel safe
 -- we don't want to force drop of this agg since its often used in views
 -- parallel handling dealt with in postgis_drop_after.sql
+-- Changed: 2.5.0 use 'internal' stype
 CREATE AGGREGATE ST_Union (geometry) (
 	sfunc = pgis_geometry_accum_transfn,
-	stype = pgis_abs,
+	stype = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
 #endif
@@ -3937,9 +3965,10 @@ CREATE AGGREGATE ST_Union (geometry) (
 
 -- Availability: 1.2.2
 -- Changed: 2.4.0: marked parallel safe
+-- Changed: 2.5.0 use 'internal' stype
 CREATE AGGREGATE ST_Collect (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
-	STYPE = pgis_abs,
+	STYPE = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
 #endif
@@ -3948,9 +3977,10 @@ CREATE AGGREGATE ST_Collect (geometry) (
 
 -- Availability: 2.2
 -- Changed: 2.4.0: marked parallel safe
+-- Changed: 2.5.0 use 'internal' stype
 CREATE AGGREGATE ST_ClusterIntersecting (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
-	STYPE = pgis_abs,
+	STYPE = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
 #endif
@@ -3959,9 +3989,10 @@ CREATE AGGREGATE ST_ClusterIntersecting (geometry) (
 
 -- Availability: 2.2
 -- Changed: 2.4.0 marked parallel safe
+-- Changed: 2.5.0 use 'internal' stype
 CREATE AGGREGATE ST_ClusterWithin (geometry, float8) (
 	SFUNC = pgis_geometry_accum_transfn,
-	STYPE = pgis_abs,
+	STYPE = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
 #endif
@@ -3970,9 +4001,10 @@ CREATE AGGREGATE ST_ClusterWithin (geometry, float8) (
 
 -- Availability: 1.2.2
 -- Changed: 2.4.0 marked parallel safe
+-- Changed: 2.5.0 use 'internal' stype
 CREATE AGGREGATE ST_Polygonize (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
-	STYPE = pgis_abs,
+	STYPE = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
 #endif
@@ -3981,9 +4013,10 @@ CREATE AGGREGATE ST_Polygonize (geometry) (
 
 -- Availability: 1.2.2
 -- Changed: 2.4.0 marked parallel safe
+-- Changed: 2.5.0 use 'internal' stype
 CREATE AGGREGATE ST_MakeLine (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
-	STYPE = pgis_abs,
+	STYPE = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
 #endif
@@ -4286,6 +4319,20 @@ CREATE OR REPLACE FUNCTION ST_GeomFromGeoJson(text)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','geom_from_geojson'
 	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_GeomFromGeoJson(json)
+        RETURNS geometry
+        AS 'SELECT @extschema@.ST_GeomFromGeoJson($1::text)'
+        LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+
+#if POSTGIS_PGSQL_VERSION >= 94
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_GeomFromGeoJson(jsonb)
+        RETURNS geometry
+        AS 'SELECT @extschema@.ST_GeomFromGeoJson($1::text)'
+        LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+#endif
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION postgis_libjson_version()

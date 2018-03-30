@@ -23,7 +23,6 @@
  *
  **********************************************************************/
 
-
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include "measures3d.h"
@@ -180,7 +179,7 @@ lwmline_locate_along(const LWMLINE *lwmline, double m, double offset)
 }
 
 static LWMPOINT*
-lwpoint_locate_along(const LWPOINT *lwpoint, double m, double offset)
+lwpoint_locate_along(const LWPOINT *lwpoint, double m, __attribute__((__unused__)) double offset)
 {
 	double point_m = lwpoint_get_m(lwpoint);
 	LWGEOM *lwg = lwpoint_as_lwgeom(lwpoint);
@@ -193,7 +192,7 @@ lwpoint_locate_along(const LWPOINT *lwpoint, double m, double offset)
 }
 
 static LWMPOINT*
-lwmpoint_locate_along(const LWMPOINT *lwin, double m, double offset)
+lwmpoint_locate_along(const LWMPOINT *lwin, double m, __attribute__((__unused__)) double offset)
 {
 	LWGEOM *lwg = lwmpoint_as_lwgeom(lwin);
 	LWMPOINT *lwout = NULL;
@@ -557,6 +556,9 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 	double ordinate_value_p = 0.0, ordinate_value_q = 0.0;
 	char hasz, hasm;
 	char dims;
+#if POSTGIS_DEBUG_LEVEL >= 4
+	char *geom_ewkt;
+#endif
 
 	/* Null input, nothing we can do. */
 	if ( ! line )
@@ -576,8 +578,12 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 		to = t;
 	}
 
+#if POSTGIS_DEBUG_LEVEL >= 4
 	LWDEBUGF(4, "from = %g, to = %g, ordinate = %c", from, to, ordinate);
-	LWDEBUGF(4, "%s", lwgeom_to_ewkt((LWGEOM*)line));
+	geom_ewkt = lwgeom_to_ewkt((LWGEOM*)line);
+	LWDEBUGF(4, "%s", geom_ewkt);
+	lwfree(geom_ewkt);
+#endif
 
 	/* Asking for an ordinate we don't have. Error. */
 	if ( (ordinate == 'Z' && ! hasz) || (ordinate == 'M' && ! hasm) )
@@ -822,7 +828,7 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 		else if ( type == LINETYPE )
 		{
 			/* lwgeom_offsetcurve(line, offset, quadsegs, joinstyle (round), mitrelimit) */
-			LWGEOM *lwoff = lwgeom_offsetcurve(lwgeom_as_lwline(out_col->geoms[i]), offset, 8, 1, 5.0);
+			LWGEOM *lwoff = lwgeom_offsetcurve(out_col->geoms[i], offset, 8, 1, 5.0);
 			if ( ! lwoff )
 			{
 				lwerror("lwgeom_offsetcurve returned null");
@@ -1072,7 +1078,7 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 {
 	LWLINE *l1, *l2;
 	int i;
-	const GBOX *gbox1, *gbox2;
+	GBOX gbox1, gbox2;
 	double tmin, tmax;
 	double *mvals;
 	int nmvals = 0;
@@ -1100,20 +1106,19 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 		return -1;
 	}
 
-	/* WARNING: these ranges may be wider than real ones */
-	gbox1 = lwgeom_get_bbox(g1);
-	gbox2 = lwgeom_get_bbox(g2);
-
-	assert(gbox1); /* or the npoints check above would have failed */
-	assert(gbox2); /* or the npoints check above would have failed */
+	/* We use lwgeom_calculate_gbox() instead of lwgeom_get_gbox() */
+	/* because we cannot afford the float rounding inaccuracy when */
+	/* we compare the ranges for overlap below */
+	lwgeom_calculate_gbox(g1, &gbox1);
+	lwgeom_calculate_gbox(g2, &gbox2);
 
 	/*
 	 * Find overlapping M range
 	 * WARNING: may be larger than the real one
 	 */
 
-	tmin = FP_MAX(gbox1->mmin, gbox2->mmin);
-	tmax = FP_MIN(gbox1->mmax, gbox2->mmax);
+	tmin = FP_MAX(gbox1.mmin, gbox2.mmin);
+	tmax = FP_MIN(gbox1.mmax, gbox2.mmax);
 
 	if ( tmax < tmin )
 	{
@@ -1239,7 +1244,7 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 {
 	LWLINE *l1, *l2;
 	int i;
-	const GBOX *gbox1, *gbox2;
+	GBOX gbox1, gbox2;
 	double tmin, tmax;
 	double *mvals;
 	int nmvals = 0;
@@ -1268,28 +1273,25 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 		return LW_FALSE;
 	}
 
-	/* WARNING: these ranges may be wider than real ones */
-	gbox1 = lwgeom_get_bbox(g1);
-	gbox2 = lwgeom_get_bbox(g2);
-
-	assert(gbox1); /* or the npoints check above would have failed */
-	assert(gbox2); /* or the npoints check above would have failed */
+	/* We use lwgeom_calculate_gbox() instead of lwgeom_get_gbox() */
+ 	/* because we cannot afford the float rounding inaccuracy when */
+ 	/* we compare the ranges for overlap below */
+ 	lwgeom_calculate_gbox(g1, &gbox1);
+ 	lwgeom_calculate_gbox(g2, &gbox2);
 
 	/*
 	 * Find overlapping M range
 	 * WARNING: may be larger than the real one
 	 */
 
-	tmin = FP_MAX(gbox1->mmin, gbox2->mmin);
-	tmax = FP_MIN(gbox1->mmax, gbox2->mmax);
+	tmin = FP_MAX(gbox1.mmin, gbox2.mmin);
+	tmax = FP_MIN(gbox1.mmax, gbox2.mmax);
 
 	if ( tmax < tmin )
 	{
 		LWDEBUG(1, "Inputs never exist at the same time");
 		return LW_FALSE;
 	}
-
-	// lwnotice("Min:%g, Max:%g", tmin, tmax);
 
 	/*
 	 * Collect M values in common time range from inputs

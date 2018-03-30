@@ -2,16 +2,23 @@ PostGIS 2.5.0
 2018/xx/xx
 
 * New Features *
+  - #4056, ST_FilterByM (Nicklas Avén)
+  - #4050, ST_ChaikinSmoothing (Nicklas Avén)
+  - #3989, ST_Buffer single sided option (Stephen Knox)
   - #3876, ST_Angle function (Rémi Cura)
   - #3564, ST_LineInterpolatePoints (Dan Baston)
   - #3896, PostGIS_Extensions_Upgrade()
   - #3913, Upgrade when creating extension from unpackaged (Sandro Santilli)
   - #2256, _postgis_index_extent() for extent from index (Paul Ramsey)
+  - #3176, Add ST_OrientedEnvelope (Dan Baston)
+  - #4029, Add ST_QuantizeCoordinates (Dan Baston)
 
 * Breaking Changes *
+  - #4054, ST_SimplifyVW changed from > tolerance to >= tolerance
   - #3885, version number removed from address_standardize lib file
   - #3893, raster support functions can only be loaded in the same schema
            with core PostGIS functions.
+  - #4035, remove dummy pgis_abs type from aggregate/collect routines.
 
 * Enhancements and Fixes*
   - #3944, Update to EPSG register v9.2 (Even Rouault)
@@ -35,8 +42,20 @@ PostGIS 2.5.0
   - #3977, ST_ClusterKMeans is now faster and simpler (Darafei Praliaskouski)
   - #3982, ST_AsEncodedPolyline supports LINESTRING EMPTY and MULTIPOINT EMPTY
            (Darafei Praliaskouski)
-  - #3986, ST_AsText now has second argument to limit decimal digits 
+  - #3986, ST_AsText now has second argument to limit decimal digits
            (Marc Ducobu, Darafei Praliaskouski)
+  - #4020, Casting from box3d to geometry now returns correctly connected
+           PolyhedralSurface (Matthias Bay)
+  - #2508, ST_OffsetCurve now works with collections (Darafei Praliaskouski)
+  - #4037, Invalid input geometry is fixed with MakeValid for GEOS exceptions in
+           ST_Intersection, ST_Union, ST_Difference, ST_SymDifference (Darafei
+           Praliaskouski)
+  - #4038, ST_Subdivide now selects pivot for geometry split that reuses input
+           vertices. ST_ClipByBox2D is stubbed with ST_Intersection because of
+           robustness issues. (Darafei Praliaskouski)
+  - #4025, #4032 Fixed precision issue in ST_ClosestPointOfApproach, 
+           ST_DistanceCPA, and ST_CPAWithin (Paul Ramsey, Darafei Praliaskouski)
+
 
 PostGIS 2.4.0
 2017/09/30

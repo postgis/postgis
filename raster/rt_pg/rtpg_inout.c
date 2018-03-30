@@ -34,14 +34,14 @@
 
 Datum RASTER_in(PG_FUNCTION_ARGS);
 Datum RASTER_out(PG_FUNCTION_ARGS);
-Datum RASTER_noop(PG_FUNCTION_ARGS);
 
 Datum RASTER_to_bytea(PG_FUNCTION_ARGS);
-Datum RASTER_to_binary(PG_FUNCTION_ARGS);
+
+Datum RASTER_noop(PG_FUNCTION_ARGS);
 
 /**
- * Input is a string with hex chars in it.
- * Convert to binary and put in the result
+ * Input is Hex WKB
+ * Used as the input function of the raster type
  */
 PG_FUNCTION_INFO_V1(RASTER_in);
 Datum RASTER_in(PG_FUNCTION_ARGS)
@@ -66,7 +66,8 @@ Datum RASTER_in(PG_FUNCTION_ARGS)
 }
 
 /**
- * Given a RASTER structure, convert it to Hex and put it in a string
+ * Output is Hex WKB
+ * Used as the output function of the raster type
  */
 PG_FUNCTION_INFO_V1(RASTER_out);
 Datum RASTER_out(PG_FUNCTION_ARGS)
@@ -84,7 +85,7 @@ Datum RASTER_out(PG_FUNCTION_ARGS)
 	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
 		PG_FREE_IF_COPY(pgraster, 0);
-		elog(ERROR, "RASTER_out: Could not deserialize raster");
+		elog(ERROR, "RASTER_out: Cannot deserialize raster");
 		PG_RETURN_NULL();
 	}
 
@@ -92,7 +93,7 @@ Datum RASTER_out(PG_FUNCTION_ARGS)
 	if (!hexwkb) {
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
-		elog(ERROR, "RASTER_out: Could not HEX-WKBize raster");
+		elog(ERROR, "RASTER_out: Cannot HEX-WKBize raster");
 		PG_RETURN_NULL();
 	}
 
@@ -104,7 +105,8 @@ Datum RASTER_out(PG_FUNCTION_ARGS)
 }
 
 /**
- * Return bytea object with raster in Well-Known-Binary form.
+ * Output is WKB
+ * Used to cast a raster to a bytea
  */
 PG_FUNCTION_INFO_V1(RASTER_to_bytea);
 Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
@@ -123,7 +125,7 @@ Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
 	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
 		PG_FREE_IF_COPY(pgraster, 0);
-		elog(ERROR, "RASTER_to_bytea: Could not deserialize raster");
+		elog(ERROR, "RASTER_to_bytea: Cannot deserialize raster");
 		PG_RETURN_NULL();
 	}
 
@@ -132,7 +134,7 @@ Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
 	if (!wkb) {
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
-		elog(ERROR, "RASTER_to_bytea: Could not allocate and generate WKB data");
+		elog(ERROR, "RASTER_to_bytea: Cannot allocate and generate WKB data");
 		PG_RETURN_NULL();
 	}
 
@@ -151,56 +153,8 @@ Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
 }
 
 /**
- * Return bytea object with raster in Well-Known-Binary form requested using ST_AsBinary function.
+ * Deserialize and then immediately serialize. Debugging function
  */
-PG_FUNCTION_INFO_V1(RASTER_to_binary);
-Datum RASTER_to_binary(PG_FUNCTION_ARGS)
-{
-	rt_pgraster *pgraster = NULL;
-	rt_raster raster = NULL;
-	uint8_t *wkb = NULL;
-	uint32_t wkb_size = 0;
-	char *result = NULL;
-	int result_size = 0;
-	int outasin = FALSE;
-
-	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-
-	/* Get raster object */
-	raster = rt_raster_deserialize(pgraster, FALSE);
-	if (!raster) {
-		PG_FREE_IF_COPY(pgraster, 0);
-		elog(ERROR, "RASTER_to_binary: Could not deserialize raster");
-		PG_RETURN_NULL();
-	}
-
-	if (!PG_ARGISNULL(1))
-		outasin = PG_GETARG_BOOL(1);
-
-	/* Parse raster to wkb object */
-	wkb = rt_raster_to_wkb(raster, outasin, &wkb_size);
-	if (!wkb) {
-		rt_raster_destroy(raster);
-		PG_FREE_IF_COPY(pgraster, 0);
-		elog(ERROR, "RASTER_to_binary: Could not allocate and generate WKB data");
-		PG_RETURN_NULL();
-	}
-
-	/* Create varlena object */
-	result_size = wkb_size + VARHDRSZ;
-	result = (char *)palloc(result_size);
-	SET_VARSIZE(result, result_size);
-	memcpy(VARDATA(result), wkb, VARSIZE(result) - VARHDRSZ);
-
-	/* Free raster objects used */
-	rt_raster_destroy(raster);
-	pfree(wkb);
-	PG_FREE_IF_COPY(pgraster, 0);
-
-	PG_RETURN_POINTER(result);
-}
-
 PG_FUNCTION_INFO_V1(RASTER_noop);
 Datum RASTER_noop(PG_FUNCTION_ARGS)
 {
@@ -210,7 +164,7 @@ Datum RASTER_noop(PG_FUNCTION_ARGS)
 	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
 		PG_FREE_IF_COPY(pgraster, 0);
-		elog(ERROR, "RASTER_noop: Could not deserialize raster");
+		elog(ERROR, "RASTER_noop: Cannot deserialize raster");
 		PG_RETURN_NULL();
 	}
 	result = rt_raster_serialize(raster);

@@ -45,6 +45,7 @@
 #include <string.h>
 
 #include "postgres.h"
+#include "utils/builtins.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
@@ -86,7 +87,7 @@ Datum geom_from_kml(PG_FUNCTION_ARGS)
 	/* Get the KML stream */
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 	xml_input = PG_GETARG_TEXT_P(0);
-	xml = text2cstring(xml_input);
+	xml = text_to_cstring(xml_input);
 	xml_size = VARSIZE(xml_input) - VARHDRSZ;
 
 	/* Begin to Parse XML doc */
@@ -349,7 +350,7 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
           ptarray_append_point(dpa, &pt, LW_TRUE);
           kml_dims = 0;
         }
-        p = q-1; /* will be incrementedon next iteration */
+        p = q-1; /* will be incremented on next iteration */
 //lwpgnotice("after look-ahead *p:%c, kml_dims:%d", *p, kml_dims);
     } else if ( *p != ',' && ! isspace(*p) ) {
           lwpgerror("invalid KML representation"); /* (unexpected character %c)", *p); */

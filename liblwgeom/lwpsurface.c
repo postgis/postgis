@@ -111,7 +111,7 @@ int lwpsurface_is_closed(const LWPSURFACE *psurface)
 	/* If surface is less than 4 faces hard to be closed too */
 	if (psurface->ngeoms < 4) return 0;
 
-	/* Max theorical arcs number if no one is shared ... */
+	/* Max theoretical arcs number if no one is shared ... */
 	for (i=0, narcs=0 ; i < psurface->ngeoms ; i++)
 	{
 		patch = (LWPOLY *) psurface->geoms[i];

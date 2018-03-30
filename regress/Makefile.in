@@ -80,6 +80,8 @@ TESTS = \
 	bestsrid \
 	binary \
 	boundary \
+	chaikin \
+	filterm \
 	cluster \
 	concave_hull\
 	ctors \
@@ -109,6 +111,7 @@ TESTS = \
 	polygonize \
 	polyhedralsurface \
 	postgis_type_name \
+	quantize_coordinates \
 	regress \
 	regress_bdpoly \
 	regress_index \
@@ -229,7 +232,8 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 36),1)
 	# GEOS-3.6 adds:
 	# ST_MinimumClearance
 	TESTS += \
-		minimum_clearance
+		minimum_clearance \
+		oriented_envelope
 endif
 
 ifeq ($(HAVE_JSON),yes)

@@ -4,7 +4,7 @@
 #include "legacy_minimal.sql.in"
 --- start functions that in theory should never have been used or internal like stuff deprecated
 
--- these were superceded by PostGIS_AddBBOX , PostGIS_DropBBOX, PostGIS_HasBBOX in 1.5 --
+-- these were superseded by PostGIS_AddBBOX , PostGIS_DropBBOX, PostGIS_HasBBOX in 1.5 --
 CREATE OR REPLACE FUNCTION addbbox(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_addBBOX'
@@ -1270,10 +1270,11 @@ CREATE OR REPLACE FUNCTION makeline_garray (geometry[])
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
+-- Changed: 2.5.0 use 'internal' stype
 CREATE AGGREGATE makeline (
 	BASETYPE = geometry,
 	SFUNC = pgis_geometry_accum_transfn,
-	STYPE = pgis_abs,
+	STYPE = internal,
 	FINALFUNC = pgis_geometry_makeline_finalfn
 	);
 
@@ -1901,10 +1902,11 @@ CREATE OR REPLACE FUNCTION zmflag(geometry)
 
 --- Start Aggregates and supporting functions --
 -- Deprecation in: 1.2.3
+-- Changed: 2.5.0 use 'internal' stype
 CREATE AGGREGATE accum (
 	sfunc = pgis_geometry_accum_transfn,
 	basetype = geometry,
-	stype = pgis_abs,
+	stype = internal,
 	finalfunc = pgis_geometry_accum_finalfn
 	);
 -- Deprecation in 1.2.3

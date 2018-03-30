@@ -94,7 +94,7 @@ stringbuffer_clear(stringbuffer_t *s)
 }
 
 /**
-* If necessary, expand the stringbuffer_t internal buffer to accomodate the
+* If necessary, expand the stringbuffer_t internal buffer to accommodate the
 * specified additional size.
 */
 static inline void

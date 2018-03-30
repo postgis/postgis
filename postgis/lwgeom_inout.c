@@ -39,8 +39,9 @@
 #include "fmgr.h"
 #include "utils/elog.h"
 #include "mb/pg_wchar.h"
-# include "lib/stringinfo.h" /* for binary input */
+#include "lib/stringinfo.h" /* for binary input */
 #include "utils/array.h"
+#include "utils/builtins.h"
 #include "utils/lsyscache.h"
 #include "funcapi.h"
 
@@ -222,7 +223,7 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
     PG_RETURN_NULL();
   }
 
-	format_str = text2cstring(format_text);
+	format_str = text_to_cstring(format_text);
   assert(format_str != NULL);
 
   /* The input string supposedly will be in the database encoding,
@@ -251,7 +252,7 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
   }
 
 	/* Convert to the postgres output string type. */
-	formatted_text = cstring2text(formatted_str);
+	formatted_text = cstring_to_text(formatted_str);
   pfree(formatted_str);
 
 	PG_RETURN_POINTER(formatted_text);
@@ -350,7 +351,7 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 
 	/* Copy into text obect */
-	result = cstring2text(hexwkb);
+	result = cstring_to_text(hexwkb);
 	pfree(hexwkb);
 
 	/* Clean up and return */
@@ -594,10 +595,10 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 			idlist = palloc0(num_geoms * sizeof(int64_t));
 
 
-		/*Check if there is differences in dimmenstionality*/
+		/* Check if there is differences in dimensionality*/
 		if( lwgeom_has_z(geom)!=has_z || lwgeom_has_m(geom)!=has_m)
 		{
-			elog(ERROR, "Geometries have differenct dimensionality");
+			elog(ERROR, "Geometries have different dimensionality");
 			PG_FREE_IF_COPY(arr_geoms, 0);
 			PG_FREE_IF_COPY(arr_ids, 1);
 			PG_RETURN_NULL();
@@ -731,7 +732,7 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 	Datum result;
 
 	/* Unwrap the PgSQL text type into a cstring */
-	wkt = text2cstring(wkt_text);
+	wkt = text_to_cstring(wkt_text);
 
 	/* Now we call over to the geometry_in function */
 	result = DirectFunctionCall1(LWGEOM_in, CStringGetDatum(wkt));

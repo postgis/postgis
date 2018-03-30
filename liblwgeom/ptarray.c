@@ -72,7 +72,7 @@ ptarray_construct_empty(char hasz, char hasm, uint32_t maxpoints)
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
 	pa->serialized_pointlist = NULL;
 
-	/* Set our dimsionality info on the bitmap */
+	/* Set our dimensionality info on the bitmap */
 	pa->flags = gflags(hasz, hasm, 0);
 
 	/* We will be allocating a bit of room */
@@ -123,7 +123,7 @@ ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, uint32_t where)
 	/* Error out if we have a bad situation */
 	if ( pa->npoints > pa->maxpoints )
 	{
-		lwerror("npoints (%d) is greated than maxpoints (%d)", pa->npoints, pa->maxpoints);
+		lwerror("npoints (%d) is greater than maxpoints (%d)", pa->npoints, pa->maxpoints);
 		return LW_FAILURE;
 	}
 
@@ -653,7 +653,7 @@ ptarray_clone(const POINTARRAY *in)
 {
 	POINTARRAY *out = lwalloc(sizeof(POINTARRAY));
 
-	LWDEBUG(3, "ptarray_clone_deep called.");
+	LWDEBUG(3, "ptarray_clone called.");
 
 	out->flags = in->flags;
 	out->npoints = in->npoints;
@@ -779,7 +779,7 @@ ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int chec
 		/*
 		* If the point is to the left of the line, and it's rising,
 		* then the line is to the right of the point and
-		* circling counter-clockwise, so incremement.
+		* circling counter-clockwise, so increment.
 		*/
 		if ( (side < 0) && (seg1->y <= pt->y) && (pt->y < seg2->y) )
 		{

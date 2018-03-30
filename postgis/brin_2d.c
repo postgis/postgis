@@ -74,7 +74,7 @@ geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 
 	box_key = (BOX2DF *) column->bv_values[INCLUSION_UNION];
 
-	/* Check if the stored bouding box already contains the geometry's one */
+	/* Check if the stored bounding box already contains the geometry's one */
 	if (box2df_contains(box_key, &box_geom))
 			PG_RETURN_BOOL(false);
 

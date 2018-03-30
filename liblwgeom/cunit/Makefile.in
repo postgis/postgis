@@ -36,6 +36,8 @@ OBJS=	\
 	cu_tree.o \
 	cu_measures.o \
 	cu_effectivearea.o \
+	cu_chaikin.o \
+	cu_filterm.o \
 	cu_node.o \
 	cu_clip_by_rect.o \
 	cu_libgeom.o \

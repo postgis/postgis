@@ -1,4 +1,3 @@
-SELECT topology.DropTopology('topoperf');
 SELECT topology.CreateTopology('topoperf');
 \timing
 SELECT count(*) FROM (
@@ -8,3 +7,4 @@ SELECT count(*) FROM (
       generate_series(-15,15,5) y
   ) foo
 ) bar;
+SELECT topology.DropTopology('topoperf');

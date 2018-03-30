@@ -63,8 +63,6 @@ static void test_geos_noop(void)
 		lwgeom_free(geom_out);
 		lwgeom_free(geom_in);
 	}
-
-
 }
 
 static void test_geos_linemerge(void)
@@ -87,23 +85,40 @@ static void test_geos_linemerge(void)
 	geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
 	geom2 = lwgeom_linemerge(geom1);
 	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom2);
-	ASSERT_STRING_EQUAL(out_ewkt, "GEOMETRYCOLLECTION EMPTY");
+	ASSERT_STRING_EQUAL(out_ewkt, "MULTILINESTRING EMPTY");
 	lwfree(out_ewkt);
 	lwgeom_free(geom1);
 	lwgeom_free(geom2);
 }
 
+static void
+test_geos_offsetcurve(void)
+{
+	char* ewkt;
+	char* out_ewkt;
+	LWGEOM* geom1;
+	LWGEOM* geom2;
+
+	ewkt = "MULTILINESTRING((-10 0, -10 100), (0 -5, 0 0))";
+	geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_offsetcurve(geom1, 2, 10, 1, 1);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom2);
+	ASSERT_STRING_EQUAL(out_ewkt, "MULTILINESTRING((-12 0,-12 100),(-2 -5,-2 0))");
+	lwfree(out_ewkt);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+}
 
 static void test_geos_subdivide(void)
 {
 #if POSTGIS_GEOS_VERSION < 35
-	// printf("%d\n", POSTGIS_GEOS_VERSION);
 	return;
 #else
-	char *ewkt = "MULTILINESTRING((0 0, 0 100))";
+	char *ewkt = "LINESTRING(0 0, 10 10)";
 	char *out_ewkt;
 	LWGEOM *geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
-	LWGEOM *geom2 = lwgeom_segmentize2d(geom1, 1.0);
+	/* segmentize as geography to generate a non-simple curve */
+	LWGEOM *geom2 = lwgeom_segmentize_sphere(geom1, 0.002);
 
 	LWCOLLECTION *geom3 = lwgeom_subdivide(geom2, 80);
 	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom3);
@@ -134,4 +149,5 @@ void geos_suite_setup(void)
 	PG_ADD_TEST(suite, test_geos_noop);
 	PG_ADD_TEST(suite, test_geos_subdivide);
 	PG_ADD_TEST(suite, test_geos_linemerge);
+	PG_ADD_TEST(suite, test_geos_offsetcurve);
 }

@@ -35,6 +35,7 @@
 #include "access/itup.h"
 
 #include "fmgr.h"
+#include "utils/builtins.h"
 #include "utils/elog.h"
 
 #include "../postgis_config.h"
@@ -191,7 +192,7 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 	strncat(type_str, lwtype_name(gserialized_get_type(gser)), type_str_len - 3);
 
 	/* Build a text type to store things in */
-	type_text = cstring2text(type_str);
+	type_text = cstring_to_text(type_str);
 
 	PG_FREE_IF_COPY(gser, 0);
 	PG_RETURN_TEXT_P(type_text);
@@ -784,7 +785,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_from_text);
 Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 {
 	text *wkttext = PG_GETARG_TEXT_P(0);
-	char *wkt = text2cstring(wkttext);
+	char *wkt = text_to_cstring(wkttext);
 	LWGEOM_PARSER_RESULT lwg_parser_result;
 	GSERIALIZED *geom_result = NULL;
 	LWGEOM *lwgeom;
@@ -878,7 +879,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "WKT size = %u, WKT length = %u", (unsigned int)wkt_size, (unsigned int)strlen(wkt));
 
 	/* Write to text and free the WKT */
-	result = cstring2text(wkt);
+	result = cstring_to_text(wkt);
 	pfree(wkt);
 
 	/* Return the text */

@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2001-2006 Refractions Research Inc.
+ * Copyright (C) 2017-2018 Daniel Baston <dbaston@gmail.com>
  *
  **********************************************************************/
 
@@ -356,6 +357,12 @@ uint8_t MULTITYPE[NUMTYPES] =
 	TINTYPE,               /* 14 */
 	0
 };
+
+uint8_t lwtype_multitype(uint8_t type)
+{
+	if (type > 15 || type < 0) return 0;
+	return MULTITYPE[type];
+}
 
 /**
 * Create a new LWGEOM of the appropriate MULTI* type.
@@ -733,7 +740,7 @@ lwgeom_get_bbox(const LWGEOM *lwg)
 
 
 /**
-* Calculate the gbox for this goemetry, a cartesian box or
+* Calculate the gbox for this geometry, a cartesian box or
 * geodetic box, depending on how it is flagged.
 */
 int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox)
@@ -2242,24 +2249,29 @@ lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid)
 
 
 /* Prototype for recursion */
-static int
-lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col, const GBOX *clip);
+static int lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col);
 
 static int
-lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col, const GBOX *clip)
+lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col)
 {
 	const uint32_t maxdepth = 50;
+	GBOX clip, subbox1, subbox2;
 	uint32_t nvertices = 0;
 	uint32_t i, n = 0;
-	double width = clip->xmax - clip->xmin;
-	double height = clip->ymax - clip->ymin;
-	GBOX subbox1, subbox2;
-	LWGEOM *clipped1, *clipped2;
+	uint32_t split_ordinate;
+	double width;
+	double height;
+	double pivot = DBL_MAX;
+	double center = DBL_MAX;
+	LWPOLY *lwpoly = NULL;
+	LWGEOM *clipped;
+
+	gbox_duplicate(lwgeom_get_bbox(geom), &clip);
+	width = clip.xmax - clip.xmin;
+	height = clip.ymax - clip.ymin;
 
 	if ( geom->type == POLYHEDRALSURFACETYPE || geom->type == TINTYPE )
-	{
 		lwerror("%s: unsupported geometry type '%s'", __func__, lwtype_name(geom->type));
-	}
 
 	if ( width == 0.0 && height == 0.0 )
 	{
@@ -2269,9 +2281,20 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 			return 1;
 		}
 		else
-		{
 			return 0;
-		}
+	}
+
+	if (width == 0.0)
+	{
+		clip.xmax += FP_TOLERANCE;
+		clip.xmin -= FP_TOLERANCE;
+		width = 2 * FP_TOLERANCE;
+	}
+	if (height == 0.0)
+	{
+		clip.ymax += FP_TOLERANCE;
+		clip.ymin -= FP_TOLERANCE;
+		height = 2 * FP_TOLERANCE;
 	}
 
 	/* Always just recurse into collections */
@@ -2279,11 +2302,10 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 	{
 		LWCOLLECTION *incol = (LWCOLLECTION*)geom;
 		int n = 0;
+		/* Don't increment depth yet, since we aren't actually
+		 * subdividing geomtries yet */
 		for ( i = 0; i < incol->ngeoms; i++ )
-		{
-			/* Don't increment depth yet, since we aren't actually subdividing geomtries yet */
-			n += lwgeom_subdivide_recursive(incol->geoms[i], maxvertices, depth, col, clip);
-		}
+			n += lwgeom_subdivide_recursive(incol->geoms[i], maxvertices, depth, col);
 		return n;
 	}
 
@@ -2296,73 +2318,102 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint32_t maxvertices, uint32_t de
 	}
 
 	nvertices = lwgeom_count_vertices(geom);
+
 	/* Skip empties entirely */
-	if ( nvertices == 0 )
-	{
-		return 0;
-	}
+	if (nvertices == 0) return 0;
 
 	/* If it is under the vertex tolerance, just add it, we're done */
-	if ( nvertices < maxvertices )
+	if (nvertices <= maxvertices)
 	{
 		lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
 		return 1;
 	}
 
-	subbox1 = subbox2 = *clip;
-	if ( width > height )
-	{
-		subbox1.xmax = subbox2.xmin = (clip->xmin + clip->xmax)/2;
-	}
+	split_ordinate = (width > height) ? 0 : 1;
+	if (split_ordinate == 0)
+		center = (clip.xmin + clip.xmax) / 2;
 	else
+		center = (clip.ymin + clip.ymax) / 2;
+
+	if (geom->type == POLYGONTYPE)
 	{
-		subbox1.ymax = subbox2.ymin = (clip->ymin + clip->ymax)/2;
+		uint32_t ring_to_trim = 0;
+		double ring_area = 0;
+		double pivot_eps = DBL_MAX;
+		double pt_eps = DBL_MAX;
+		POINTARRAY *pa;
+		pivot = DBL_MAX;
+		lwpoly = (LWPOLY *)geom;
+
+		/* if there are more points in holes than in outer ring */
+		if (nvertices > 2 * lwpoly->rings[0]->npoints)
+		{
+			/* trim holes starting from biggest */
+			for (i = 1; i < lwpoly->nrings; i++)
+			{
+				double current_ring_area = fabs(ptarray_signed_area(lwpoly->rings[i]));
+				if (current_ring_area >= ring_area)
+				{
+					ring_area = current_ring_area;
+					ring_to_trim = i;
+				}
+			}
+		}
+
+		pa = lwpoly->rings[ring_to_trim];
+
+		/* find most central point in chosen ring */
+		for (i = 0; i < pa->npoints; i++)
+		{
+			double pt;
+			if (split_ordinate == 0)
+				pt = getPoint2d_cp(pa, i)->x;
+			else
+				pt = getPoint2d_cp(pa, i)->y;
+			pt_eps = fabs(pt - center);
+			if (pivot_eps > pt_eps)
+			{
+				pivot = pt;
+				pivot_eps = pt_eps;
+			}
+		}
 	}
 
-	if ( height == 0 )
-	{
-		subbox1.ymax += FP_TOLERANCE;
-		subbox2.ymax += FP_TOLERANCE;
-		subbox1.ymin -= FP_TOLERANCE;
-		subbox2.ymin -= FP_TOLERANCE;
-	}
+	gbox_duplicate(&clip, &subbox1);
+	gbox_duplicate(&clip, &subbox2);
 
-	if ( width == 0 )
-	{
-		subbox1.xmax += FP_TOLERANCE;
-		subbox2.xmax += FP_TOLERANCE;
-		subbox1.xmin -= FP_TOLERANCE;
-		subbox2.xmin -= FP_TOLERANCE;
-	}
+	if (pivot == DBL_MAX) pivot = center;
 
-	clipped1 = lwgeom_clip_by_rect(geom, subbox1.xmin, subbox1.ymin, subbox1.xmax, subbox1.ymax);
-	clipped2 = lwgeom_clip_by_rect(geom, subbox2.xmin, subbox2.ymin, subbox2.xmax, subbox2.ymax);
+	if (split_ordinate == 0)
+		subbox1.xmax = subbox2.xmin = pivot;
+	else
+		subbox1.ymax = subbox2.ymin = pivot;
 
 	++depth;
 
-	if ( clipped1 )
+	clipped = lwgeom_clip_by_rect(geom, subbox1.xmin, subbox1.ymin, subbox1.xmax, subbox1.ymax);
+	if (clipped)
 	{
-		n += lwgeom_subdivide_recursive(clipped1, maxvertices, depth, col, &subbox1);
-		lwgeom_free(clipped1);
+		n += lwgeom_subdivide_recursive(clipped, maxvertices, depth, col);
+		lwgeom_free(clipped);
 	}
 
-	if ( clipped2 )
+	clipped = lwgeom_clip_by_rect(geom, subbox2.xmin, subbox2.ymin, subbox2.xmax, subbox2.ymax);
+	if (clipped)
 	{
-		n += lwgeom_subdivide_recursive(clipped2, maxvertices, depth, col, &subbox2);
-		lwgeom_free(clipped2);
+		n += lwgeom_subdivide_recursive(clipped, maxvertices, depth, col);
+		lwgeom_free(clipped);
 	}
 
 	return n;
-
 }
 
 LWCOLLECTION *
 lwgeom_subdivide(const LWGEOM *geom, uint32_t maxvertices)
 {
 	static uint32_t startdepth = 0;
-	static uint32_t minmaxvertices = 8;
+	static uint32_t minmaxvertices = 5;
 	LWCOLLECTION *col;
-	GBOX clip;
 
 	col = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
 
@@ -2375,8 +2426,7 @@ lwgeom_subdivide(const LWGEOM *geom, uint32_t maxvertices)
 		lwerror("%s: cannot subdivide to fewer than %d vertices per output", __func__, minmaxvertices);
 	}
 
-	clip = *(lwgeom_get_bbox(geom));
-	lwgeom_subdivide_recursive(geom, maxvertices, startdepth, col, &clip);
+	lwgeom_subdivide_recursive(geom, maxvertices, startdepth, col);
 	lwgeom_set_srid((LWGEOM*)col, geom->srid);
 	return col;
 }
@@ -2395,3 +2445,63 @@ lwgeom_is_trajectory(const LWGEOM *geom)
 	return lwline_is_trajectory((LWLINE*)geom);
 }
 
+static uint8_t
+bits_for_precision(int32_t significant_digits)
+{
+	int32_t bits_needed = ceil(significant_digits / log10(2));
+
+	if (bits_needed > 52)
+	{
+		return 52;
+	}
+	else if (bits_needed < 1)
+	{
+		return 1;
+	}
+
+	return bits_needed;
+}
+
+static inline
+double mask_double(double d, uint64_t mask)
+{
+	uint64_t* double_bits = (uint64_t*) (&d);
+
+	(*double_bits) &= mask;
+
+	return *((double*) double_bits);
+}
+
+static double trim_preserve_decimal_digits(double d, int32_t decimal_digits)
+{
+	if (d==0)
+		return 0;
+
+	int digits_left_of_decimal = (int) (1 + log10(fabs(d)));
+	uint8_t bits_needed = bits_for_precision(decimal_digits + digits_left_of_decimal);
+
+
+	uint64_t mask = 0xffffffffffffffff << (52 - bits_needed);
+
+	return mask_double(d, mask);
+}
+
+void lwgeom_trim_bits_in_place(LWGEOM* geom, int32_t prec_x, int32_t prec_y, int32_t prec_z, int32_t prec_m)
+{
+	LWPOINTITERATOR* it = lwpointiterator_create_rw(geom);
+	POINT4D p;
+
+	while (lwpointiterator_has_next(it))
+	{
+		lwpointiterator_peek(it, &p);
+		p.x = trim_preserve_decimal_digits(p.x, prec_x);
+		p.y = trim_preserve_decimal_digits(p.y, prec_y);
+		if (lwgeom_has_z(geom))
+			p.z = trim_preserve_decimal_digits(p.z, prec_z);
+		if (lwgeom_has_m(geom))
+			p.m = trim_preserve_decimal_digits(p.m, prec_m);
+		lwpointiterator_modify_next(it, &p);
+	}
+
+	lwpointiterator_destroy(it);
+}

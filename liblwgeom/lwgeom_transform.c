@@ -130,93 +130,48 @@ lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 int
 point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj)
 {
-	int* pj_errno_ref;
-	POINT4D orig_pt;
-
-	/* Make a copy of the input point so we can report the original should an error occur */
-	orig_pt.x = pt->x;
-	orig_pt.y = pt->y;
-	orig_pt.z = pt->z;
+	POINT3D orig_pt = {pt->x, pt->y, pt->z}; /* Copy for error report*/
 
 	if (pj_is_latlong(srcpj)) to_rad(pt) ;
 
-	LWDEBUGF(4, "transforming POINT(%f %f) from '%s' to '%s'", orig_pt.x, orig_pt.y, pj_get_def(srcpj,0), pj_get_def(dstpj,0));
+	LWDEBUGF(4, "transforming POINT(%f %f) from '%s' to '%s'",
+		 orig_pt.x, orig_pt.y, pj_get_def(srcpj,0), pj_get_def(dstpj,0));
 
-	/* Perform the transform */
-	pj_transform(srcpj, dstpj, 1, 0, &(pt->x), &(pt->y), &(pt->z));
-
-	/* For NAD grid-shift errors, display an error message with an additional hint */
-	pj_errno_ref = pj_get_errno_ref();
-
-	if (*pj_errno_ref != 0)
+	if (pj_transform(srcpj, dstpj, 1, 0, &(pt->x), &(pt->y), &(pt->z)) != 0)
 	{
-		if (*pj_errno_ref == -38)
+		int pj_errno_val = *pj_get_errno_ref();
+		if (pj_errno_val == -38)
 		{
-			lwnotice("PostGIS was unable to transform the point because either no grid shift files were found, or the point does not lie within the range for which the grid shift is defined. Refer to the ST_Transform() section of the PostGIS manual for details on how to configure PostGIS to alter this behaviour.");
+			lwnotice("PostGIS was unable to transform the point because either no grid"
+				 " shift files were found, or the point does not lie within the "
+				 "range for which the grid shift is defined. Refer to the "
+				 "ST_Transform() section of the PostGIS manual for details on how "
+				 "to configure PostGIS to alter this behaviour.");
 			lwerror("transform: couldn't project point (%g %g %g): %s (%d)",
-			        orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(*pj_errno_ref), *pj_errno_ref);
-			return 0;
+				orig_pt.x, orig_pt.y, orig_pt.z,
+				pj_strerrno(pj_errno_val), pj_errno_val);
 		}
 		else
 		{
 			lwerror("transform: couldn't project point (%g %g %g): %s (%d)",
-			        orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(*pj_errno_ref), *pj_errno_ref);
-			return 0;
+				orig_pt.x, orig_pt.y, orig_pt.z,
+				pj_strerrno(pj_errno_val), pj_errno_val);
 		}
+		return LW_FAILURE;
 	}
 
 	if (pj_is_latlong(dstpj)) to_dec(pt);
-	return 1;
+	return LW_SUCCESS;
 }
 
 projPJ
 lwproj_from_string(const char *str1)
 {
-	int t;
-	char *params[1024];  /* one for each parameter */
-	char *loc;
-	char *str;
-	size_t slen;
-	projPJ result;
-
-
-	if (str1 == NULL) return NULL;
-
-	slen = strlen(str1);
-
-	if (slen == 0) return NULL;
-
-	str = lwalloc(slen+1);
-	strcpy(str, str1);
-
-	/*
-	 * first we split the string into a bunch of smaller strings,
-	 * based on the " " separator
-	 */
-
-	params[0] = str; /* 1st param, we'll null terminate at the " " soon */
-
-	loc = str;
-	t = 1;
-	while  ((loc != NULL) && (*loc != 0) )
+	if (!str1 || str1[0] == '\0')
 	{
-		loc = strchr(loc, ' ');
-		if (loc != NULL)
-		{
-			*loc = 0; /* null terminate */
-			params[t] = loc+1;
-			loc++; /* next char */
-			t++; /*next param */
-		}
-	}
-
-	if (!(result=pj_init(t, params)))
-	{
-		lwfree(str);
 		return NULL;
 	}
-	lwfree(str);
-	return result;
+	return pj_init_plus(str1);
 }
 
 

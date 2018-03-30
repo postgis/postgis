@@ -306,8 +306,12 @@ gbox_centroid(const GBOX* gbox, POINT2D* out)
 static int gbox_check_poles(GBOX *gbox)
 {
 	int rv = LW_FALSE;
+#if POSTGIS_DEBUG_LEVEL >= 4
+	char *gbox_str = gbox_to_string(gbox);
 	LWDEBUG(4, "checking poles");
-	LWDEBUGF(4, "gbox %s", gbox_to_string(gbox));
+	LWDEBUGF(4, "gbox %s", gbox_str);
+	lwfree(gbox_str);
+#endif
 	/* Z axis */
 	if ( gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
 	     gbox->ymin < 0.0 && gbox->ymax > 0.0 )
@@ -363,7 +367,7 @@ static int gbox_check_poles(GBOX *gbox)
 }
 
 /**
-* Convert spherical coordinates to cartesion coordinates on unit sphere
+* Convert spherical coordinates to cartesian coordinates on unit sphere
 */
 void geog2cart(const GEOGRAPHIC_POINT *g, POINT3D *p)
 {
@@ -373,7 +377,7 @@ void geog2cart(const GEOGRAPHIC_POINT *g, POINT3D *p)
 }
 
 /**
-* Convert cartesion coordinates on unit sphere to spherical coordinates
+* Convert cartesian coordinates on unit sphere to spherical coordinates
 */
 void cart2geog(const POINT3D *p, GEOGRAPHIC_POINT *g)
 {
@@ -382,7 +386,7 @@ void cart2geog(const POINT3D *p, GEOGRAPHIC_POINT *g)
 }
 
 /**
-* Convert lon/lat coordinates to cartesion coordinates on unit sphere
+* Convert lon/lat coordinates to cartesian coordinates on unit sphere
 */
 void ll2cart(const POINT2D *g, POINT3D *p)
 {
@@ -395,7 +399,7 @@ void ll2cart(const POINT2D *g, POINT3D *p)
 }
 
 /**
-* Convert cartesion coordinates on unit sphere to lon/lat coordinates
+* Convert cartesian coordinates on unit sphere to lon/lat coordinates
 static void cart2ll(const POINT3D *p, POINT2D *g)
 {
 	g->x = longitude_degrees_normalize(180.0 * atan2(p->y, p->x) / M_PI);
@@ -967,7 +971,7 @@ double sphere_direction(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e, do
 #if 0 /* unused */
 /**
 * Computes the spherical excess of a spherical triangle defined by
-* the three vectices A, B, C. Computes on the unit sphere (i.e., divides
+* the three vertices A, B, C. Computes on the unit sphere (i.e., divides
 * edge lengths by the radius, even if the radius is 1.0). The excess is
 * signed based on the sign of the delta longitude of A and B.
 *
@@ -1034,7 +1038,7 @@ double z_to_latitude(double z, int top)
 
 /**
 * Computes the pole of the great circle disk which is the intersection of
-* the great circle with the line of maximum/minimum gradiant that lies on
+* the great circle with the line of maximum/minimum gradient that lies on
 * the great circle plane.
 */
 int clairaut_cartesian(const POINT3D *start, const POINT3D *end, GEOGRAPHIC_POINT *g_top, GEOGRAPHIC_POINT *g_bottom)
@@ -1059,7 +1063,7 @@ int clairaut_cartesian(const POINT3D *start, const POINT3D *end, GEOGRAPHIC_POIN
 
 /**
 * Computes the pole of the great circle disk which is the intersection of
-* the great circle with the line of maximum/minimum gradiant that lies on
+* the great circle with the line of maximum/minimum gradient that lies on
 * the great circle plane.
 */
 int clairaut_geographic(const GEOGRAPHIC_POINT *start, const GEOGRAPHIC_POINT *end, GEOGRAPHIC_POINT *g_top, GEOGRAPHIC_POINT *g_bottom)
@@ -1130,7 +1134,7 @@ int edge_intersection(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e2, GEOG
 		LWDEBUGF(4, "parallel edges found! dot_product = %.12g", dot_product(&ea, &eb));
 		/* Parallel (maybe equal) edges! */
 		/* Hack alert, only returning ONE end of the edge right now, most do better later. */
-		/* Hack alart #2, returning a value of 2 to indicate a co-linear crossing event. */
+		/* Hack alert #2, returning a value of 2 to indicate a co-linear crossing event. */
 		if ( edge_contains_point(e1, &(e2->start)) )
 		{
 			*g = e2->start;
@@ -1539,7 +1543,7 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 
 
 static int ptarray_segmentize_sphere_edge_recursive (
-	const POINT3D *p1, const POINT3D *p2, /* 3-space points we are interpolating beween */
+	const POINT3D *p1, const POINT3D *p2, /* 3-space points we are interpolating between */
 	const POINT4D *v1, const POINT4D *v2, /* real values and z/m values */
 	double d, double max_seg_length, /* current segment length and segment limit */
 	POINTARRAY *pa) /* write out results here */
@@ -2088,7 +2092,7 @@ double lwgeom_azumith_spheroid(const LWPOINT *r, const LWPOINT *s, const SPHEROI
 
 /**
 * Calculate the distance between two LWGEOMs, using the coordinates are
-* longitude and latitude. Return immediately when the calulated distance drops
+* longitude and latitude. Return immediately when the calculated distance drops
 * below the tolerance (useful for dwithin calculations).
 * Return a negative distance for incalculable cases.
 */
@@ -2431,6 +2435,9 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test)
 	GEOGRAPHIC_POINT gpt_to_test;
 	POINT2D pt_outside;
 	GBOX gbox;
+#if POSTGIS_DEBUG_LEVEL >= 4
+	char *geom_ewkt;
+#endif
 	gbox.flags = 0;
 
 	/* Nulls and empties don't contain anything! */
@@ -2460,8 +2467,14 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test)
 
 	LWDEBUGF(4, "pt_outside POINT(%.18g %.18g)", pt_outside.x, pt_outside.y);
 	LWDEBUGF(4, "pt_to_test POINT(%.18g %.18g)", pt_to_test->x, pt_to_test->y);
-	LWDEBUGF(4, "polygon %s", lwgeom_to_ewkt((LWGEOM*)poly));
-	LWDEBUGF(4, "gbox %s", gbox_to_string(&gbox));
+#if POSTGIS_DEBUG_LEVEL >= 4
+	geom_ewkt = lwgeom_to_ewkt((LWGEOM*)poly);
+	LWDEBUGF(4, "polygon %s", geom_ewkt);
+	lwfree(geom_ewkt);
+	geom_ewkt = gbox_to_string(&gbox);
+	LWDEBUGF(4, "gbox %s", geom_ewkt);
+	lwfree(geom_ewkt);
+#endif
 
 	/* Not in outer ring? We're done! */
 	if ( ! ptarray_contains_point_sphere(poly->rings[0], &pt_outside, pt_to_test) )
@@ -2585,7 +2598,7 @@ int lwpoly_covers_lwline(const LWPOLY *poly, const LWLINE *line)
 	   return LW_FALSE;
    }
 
-   /* no abort condition found, so the poly2 should be completly inside poly1 */
+   /* no abort condition found, so the poly2 should be completely inside poly1 */
    return LW_TRUE;
 }
 
@@ -2609,7 +2622,7 @@ int lwpoly_covers_pointarray(const LWPOLY* lwpoly, const POINTARRAY* pta)
 
 /**
  * Checks if any edges of lwpoly intersect with the line formed by the pointarray
- * return LW_TRUE if any intersection beetween the given polygon and the line
+ * return LW_TRUE if any intersection between the given polygon and the line
  */
 int lwpoly_intersects_line(const LWPOLY* lwpoly, const POINTARRAY* line)
 {

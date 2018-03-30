@@ -115,6 +115,8 @@ SA_OBJS = \
 	lwgeom_wrapx.o \
 	lwunionfind.o \
 	effectivearea.o \
+	lwchaikins.o \
+	lwmval.o \
 	lwkmeans.o \
 	varint.o
 
@@ -211,7 +213,7 @@ $(LT_NM_OBJS): %.lo: %.c
 	$(LIBTOOL) --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
 
 lwin_wkt_parse.c lwin_wkt_parse.h: lwin_wkt_parse.y
-	$(YACC) -o'lwin_wkt_parse.c' -d lwin_wkt_parse.y
+	$(YACC) -p wkt_yy -o'lwin_wkt_parse.c' -d lwin_wkt_parse.y
 
 lwin_wkt_lex.c: lwin_wkt_lex.l
 	$(LEX) -i lwin_wkt_lex.l

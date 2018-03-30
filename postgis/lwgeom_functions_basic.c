@@ -19,14 +19,16 @@
  **********************************************************************
  *
  * Copyright 2001-2006 Refractions Research Inc.
+ * Copyright 2017-2018 Daniel Baston <dbaston@gmail.com>
  *
  **********************************************************************/
 
 
 #include "postgres.h"
 #include "fmgr.h"
-#include "utils/elog.h"
 #include "utils/array.h"
+#include "utils/builtins.h"
+#include "utils/elog.h"
 #include "utils/geo_decls.h"
 
 #include "../postgis_config.h"
@@ -111,8 +113,9 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS);
 Datum ST_CollectionExtract(PG_FUNCTION_ARGS);
 Datum ST_CollectionHomogenize(PG_FUNCTION_ARGS);
 Datum ST_IsCollection(PG_FUNCTION_ARGS);
+Datum ST_QuantizeCoordinates(PG_FUNCTION_ARGS);
 Datum ST_WrapX(PG_FUNCTION_ARGS);
-
+Datum LWGEOM_FilterByM(PG_FUNCTION_ARGS);
 
 /*------------------------------------------------------------------*/
 
@@ -140,7 +143,7 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 
 	/* create a text obj to return */
-	mytext = cstring2text(result);
+	mytext = cstring_to_text(result);
 	pfree(result);
 
 	PG_FREE_IF_COPY(geom,0);
@@ -151,7 +154,7 @@ PG_FUNCTION_INFO_V1(postgis_version);
 Datum postgis_version(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_VERSION;
-	text *result = cstring2text(ver);
+	text *result = cstring_to_text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -159,7 +162,7 @@ PG_FUNCTION_INFO_V1(postgis_liblwgeom_version);
 Datum postgis_liblwgeom_version(PG_FUNCTION_ARGS)
 {
 	const char *ver = lwgeom_version();
-	text *result = cstring2text(ver);
+	text *result = cstring_to_text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -167,7 +170,7 @@ PG_FUNCTION_INFO_V1(postgis_lib_version);
 Datum postgis_lib_version(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_LIB_VERSION;
-	text *result = cstring2text(ver);
+	text *result = cstring_to_text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -179,7 +182,7 @@ Datum postgis_svn_version(PG_FUNCTION_ARGS)
 	if ( rev > 0 )
 	{
 		snprintf(ver, 32, "%d", rev);
-		PG_RETURN_TEXT_P(cstring2text(ver));
+		PG_RETURN_TEXT_P(cstring_to_text(ver));
 	}
 	else
 		PG_RETURN_NULL();
@@ -189,7 +192,7 @@ PG_FUNCTION_INFO_V1(postgis_lib_build_date);
 Datum postgis_lib_build_date(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_BUILD_DATE;
-	text *result = cstring2text(ver);
+	text *result = cstring_to_text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -202,7 +205,7 @@ Datum postgis_scripts_released(PG_FUNCTION_ARGS)
 	snprintf(ver, 64, "%s r%d", POSTGIS_LIB_VERSION, POSTGIS_SVN_REVISION);
 	ver[63] = '\0';
 
-	result = cstring2text(ver);
+	result = cstring_to_text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -227,7 +230,7 @@ PG_FUNCTION_INFO_V1(postgis_libxml_version);
 Datum postgis_libxml_version(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_LIBXML2_VERSION;
-	text *result = cstring2text(ver);
+	text *result = cstring_to_text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -2345,7 +2348,7 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 
 	/* Write to text and free the WKT */
-	result = cstring2text(wkt);
+	result = cstring_to_text(wkt);
 	pfree(wkt);
 
 	/* Return the text */
@@ -2486,7 +2489,7 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 			default: /*always executed*/
 			for (j=0;j<=i;j++)
 				PG_FREE_IF_COPY(seri_geoms[j], j);
-
+			/*FALLTHROUGH*/
 			case 1:
 			lwpgerror("Empty geometry");
 			PG_RETURN_NULL() ;
@@ -2676,7 +2679,7 @@ Datum ST_GeoHash(PG_FUNCTION_ARGS)
 	if ( ! geohash )
 		PG_RETURN_NULL();
 
-	result = cstring2text(geohash);
+	result = cstring_to_text(geohash);
 	pfree(geohash);
 
 	PG_RETURN_TEXT_P(result);
@@ -2981,4 +2984,107 @@ Datum ST_Points(PG_FUNCTION_ARGS)
 		lwmpoint_free(result);
 		PG_RETURN_POINTER(ret);
 	}
+}
+
+PG_FUNCTION_INFO_V1(ST_QuantizeCoordinates);
+Datum ST_QuantizeCoordinates(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED* input;
+	GSERIALIZED* result;
+	LWGEOM* g;
+	int32_t prec_x;
+	int32_t prec_y;
+	int32_t prec_z;
+	int32_t prec_m;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+	if (PG_ARGISNULL(1))
+	{
+		lwpgerror("Must specify precision");
+		PG_RETURN_NULL();
+	}
+	else
+	{
+		prec_x = PG_GETARG_INT32(1);
+	}
+	prec_y = PG_ARGISNULL(2) ? prec_x : PG_GETARG_INT32(2);
+	prec_z = PG_ARGISNULL(3) ? prec_x : PG_GETARG_INT32(3);
+	prec_m = PG_ARGISNULL(4) ? prec_x : PG_GETARG_INT32(4);
+
+	input = PG_GETARG_GSERIALIZED_P_COPY(0);
+
+	g = lwgeom_from_gserialized(input);
+
+	lwgeom_trim_bits_in_place(g, prec_x, prec_y, prec_z, prec_m);
+
+	result = geometry_serialize(g);
+	lwgeom_free(g);
+	PG_FREE_IF_COPY(input, 0);
+	PG_RETURN_POINTER(result);
+}
+
+
+/*
+ * ST_FilterByM(in geometry, val double precision)
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_FilterByM);
+Datum LWGEOM_FilterByM(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom_in;
+	GSERIALIZED *geom_out;
+	LWGEOM *lwgeom_in;
+	LWGEOM *lwgeom_out;
+	double min, max;
+	int returnm;
+	if ( PG_NARGS() > 0 && ! PG_ARGISNULL(0))
+	{
+		geom_in = PG_GETARG_GSERIALIZED_P(0);
+	}
+	else
+	{
+		PG_RETURN_NULL();
+	}
+
+	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1))
+		min = PG_GETARG_FLOAT8(1);
+	else
+	{
+		min = DBL_MIN;
+	}
+	if ( PG_NARGS() > 2  && ! PG_ARGISNULL(2))
+		max = PG_GETARG_FLOAT8(2);
+	else
+	{
+		max = DBL_MAX;
+	}
+	if ( PG_NARGS() > 3  && ! PG_ARGISNULL(3) && PG_GETARG_BOOL(3))
+		returnm = 1;
+	else
+	{
+		returnm=0;
+	}
+
+	if(min>max)
+	{
+		elog(ERROR,"Min-value cannot be larger than Max value\n");
+		PG_RETURN_NULL();
+	}
+
+	lwgeom_in = lwgeom_from_gserialized(geom_in);
+
+	int hasm = FLAGS_GET_M(lwgeom_in->flags);
+
+	if(!hasm)
+	{
+		elog(NOTICE,"No M-value, No vertex removed\n");
+		PG_RETURN_POINTER(geom_in);
+	}
+
+	lwgeom_out = lwgeom_filter_m(lwgeom_in, min, max,returnm);
+
+	geom_out = geometry_serialize(lwgeom_out);
+	lwgeom_free(lwgeom_out);
+	PG_RETURN_POINTER(geom_out);
+
 }

@@ -1115,6 +1115,19 @@ static void test_median_handles_3d_correctly(void)
 	do_median_dims_check("MULTIPOINT ZM ((1 3 4 5), (4 7 8 6), (2 9 1 7), (0 4 4 8), (2 2 3 9))", 3);
 }
 
+static double
+test_weighted_distance(const POINT4D* curr, const POINT4D* points, uint32_t npoints)
+{
+	double distance = 0.0;
+	uint32_t i;
+	for (i = 0; i < npoints; i++)
+	{
+		distance += distance3d_pt_pt((POINT3D*)curr, (POINT3D*)&points[i]) * points[i].m;
+	}
+
+	return distance;
+}
+
 static void do_median_test(char* input, char* expected, int fail_if_not_converged, int iter_count)
 {
 	cu_error_msg_reset();
@@ -1122,8 +1135,9 @@ static void do_median_test(char* input, char* expected, int fail_if_not_converge
 	LWPOINT* expected_result = NULL;
 	POINT4D actual_pt;
 	POINT4D expected_pt;
+	const double tolerance = FP_TOLERANCE / 10.0;
 
-	LWPOINT* result = lwgeom_median(g, FP_TOLERANCE / 10.0, iter_count, fail_if_not_converged);
+	LWPOINT* result = lwgeom_median(g, tolerance, iter_count, fail_if_not_converged);
 	int passed = LW_FALSE;
 
 	if (expected != NULL)
@@ -1141,15 +1155,43 @@ static void do_median_test(char* input, char* expected, int fail_if_not_converge
 		passed = LW_TRUE;
 		passed = passed && lwgeom_is_empty((LWGEOM*) expected_result) == lwgeom_is_empty((LWGEOM*) result);
 		passed = passed && (lwgeom_has_z((LWGEOM*) expected_result) == lwgeom_has_z((LWGEOM*) result));
-		if (!lwgeom_is_empty((LWGEOM*) result))
+
+		if (passed && !lwgeom_is_empty((LWGEOM*) result))
 		{
-			passed = passed && FP_EQUALS(actual_pt.x, expected_pt.x);
-			passed = passed && FP_EQUALS(actual_pt.y, expected_pt.y);
-			passed = passed && (!lwgeom_has_z((LWGEOM*) expected_result) || FP_EQUALS(actual_pt.z, expected_pt.z));
-			passed = passed && (!lwgeom_has_m((LWGEOM*) expected_result) || FP_EQUALS(actual_pt.m, expected_pt.m));
+			if (g->type == POINTTYPE)
+			{
+				passed &= fabs(actual_pt.x - expected_pt.x) < tolerance;
+				passed &= fabs(actual_pt.y - expected_pt.y) < tolerance;
+				passed &= (!lwgeom_has_z((LWGEOM*) expected_result) || fabs(actual_pt.z - expected_pt.z) < tolerance);
+				passed &= (!lwgeom_has_m((LWGEOM*) expected_result) || fabs(actual_pt.m - expected_pt.m) < tolerance);
+			}
+			else
+			{
+				/* Check that the difference between the obtained geometric
+				median and the expected point is within tolerance */
+				uint32_t npoints = 1;
+				int input_empty = LW_TRUE;
+				POINT4D* points = lwmpoint_extract_points_4d(lwgeom_as_lwmpoint(g), &npoints, &input_empty);
+				double distance_expected = test_weighted_distance(&expected_pt, points, npoints);
+				double distance_result = test_weighted_distance(&actual_pt, points, npoints);
+
+				passed = distance_result <= (1.0 + tolerance) * distance_expected;
+				if (!passed)
+				{
+					printf("Diff: Got %.10f Expected %.10f\n", distance_result, distance_expected);
+				}
+				lwfree(points);
+			}
 		}
+
 		if (!passed)
-			printf("median_test input %s (parsed %s) expected %s got %s\n", input, lwgeom_to_ewkt(g), lwgeom_to_ewkt((LWGEOM*) expected_result), lwgeom_to_ewkt((LWGEOM*) result));
+		{
+			printf("median_test input %s (parsed %s) expected %s got %s\n",
+				input, lwgeom_to_ewkt(g),
+				lwgeom_to_ewkt((LWGEOM*) expected_result),
+				lwgeom_to_ewkt((LWGEOM*) result));
+		}
+
 	}
 	else if (result == NULL && expected == NULL) /* got nothing, expecting nothing */
 	{
@@ -1229,6 +1271,47 @@ static void test_median_robustness(void)
 	/* Unsupported geometry type */
 	do_median_test("POLYGON((1 0,0 1,1 2,2 1,1 0))", NULL, LW_TRUE, 1000);
 	do_median_test("POLYGON((1 0,0 1,1 2,2 1,1 0))", NULL, LW_FALSE, 1000);
+
+	/* Median point is included */
+	do_median_test("MULTIPOINT ZM ("
+		"(1480 0 200 100),"
+		"(620 0  200 100),"
+		"(1000 0 -200 100),"
+		"(1000 0 -590 100),"
+		"(1025 0  65 100),"
+		"(1025 0 -65 100)"
+		")",
+	"POINT (1025 0 -65)", LW_TRUE, 10000);
+
+#if 0
+	/* Leads to invalid result (0 0 0) with 80bit (fmulp + faddp) precision. ok with 64 bit float ops */
+	do_median_test("MULTIPOINT ZM ("
+		"(0 0 20000 0.5),"
+		"(0 0 59000 0.5),"
+		"(0 -3000 -3472.22222222222262644208967685699462890625 1),"
+		"(0  3000  3472.22222222222262644208967685699462890625 1),"
+		"(0 0 -1644.736842105263121993630193173885345458984375 1),"
+		"(0 0  1644.736842105263121993630193173885345458984375 1),"
+		"(0  48000 -20000 1.3),"
+		"(0 -48000 -20000 1.3)"
+		")",
+	"POINT (0 0 0)", LW_TRUE, 10000);
+#endif
+
+#if 0
+	/* Leads to invalid result (0 0 0) with 64bit (vfmadd231sd) precision. Ok with 80 bit float ops */
+	do_median_test("MULTIPOINT ZM ("
+		"(0 0 20000 0.5),"
+		"(0 0 59000 0.5),"
+		"(0 -3000 -3472.22222222222262644208967685699462890625 1),"
+		"(0  3000  3472.22222222222262644208967685699462890625 1),"
+		"(0 -0.00000000000028047739569477638384522295466033823196 -1644.736842105263121993630193173885345458984375 1),"
+		"(0  0.00000000000028047739569477638384522295466033823196  1644.736842105263121993630193173885345458984375 1),"
+		"(0  48000 -20000 1.3),"
+		"(0 -48000 -20000 1.3)"
+		")",
+	"POINT (0 0 0)", LW_TRUE, 10000);
+#endif
 }
 
 static void test_point_density(void)
@@ -1351,6 +1434,52 @@ static void test_kmeans(void)
 	return;
 }
 
+static void test_trim_bits(void)
+{
+	POINTARRAY *pta = ptarray_construct_empty(LW_TRUE, LW_TRUE, 2);
+	POINT4D pt;
+	LWLINE *line;
+	int precision;
+	uint32_t i;
+
+	pt.x = 1.2345678901234;
+	pt.y = 2.3456789012345;
+	pt.z = 3.4567890123456;
+	pt.m = 4.5678901234567;
+
+	ptarray_insert_point(pta, &pt, 0);
+
+	pt.x *= 3;
+	pt.y *= 3;
+	pt.y *= 3;
+	pt.z *= 3;
+
+	ptarray_insert_point(pta, &pt, 1);
+
+	line = lwline_construct(0, NULL, pta);
+
+	for (precision = -15; precision <= 15; precision++)
+	{
+		LWLINE *line2 = (LWLINE*) lwgeom_clone_deep((LWGEOM*) line);
+		lwgeom_trim_bits_in_place((LWGEOM*) line2, precision, precision, precision, precision);
+
+		for (i = 0; i < line->points->npoints; i++)
+		{
+			POINT4D pt1 = getPoint4d(line->points, i);
+			POINT4D pt2 = getPoint4d(line2->points, i);
+
+			CU_ASSERT_DOUBLE_EQUAL(pt1.x, pt2.x, pow(10, -1*precision));
+			CU_ASSERT_DOUBLE_EQUAL(pt1.y, pt2.y, pow(10, -1*precision));
+			CU_ASSERT_DOUBLE_EQUAL(pt1.z, pt2.z, pow(10, -1*precision));
+			CU_ASSERT_DOUBLE_EQUAL(pt1.m, pt2.m, pow(10, -1*precision));
+		}
+
+		lwline_free(line2);
+	}
+
+	lwline_free(line);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -1382,5 +1511,6 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_median_handles_3d_correctly);
 	PG_ADD_TEST(suite,test_median_robustness);
 	PG_ADD_TEST(suite,test_lwpoly_construct_circle);
+	PG_ADD_TEST(suite,test_trim_bits);
 	PG_ADD_TEST(suite,test_lwgeom_remove_repeated_points);
 }

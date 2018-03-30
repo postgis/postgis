@@ -269,7 +269,7 @@ ERROR:  invalid GML representation
 #2788|f|Self-intersection|POINT(1 1)
 #2870|Point[GS]
 #2956|t
-#2965|LINESTRING(20.9511664253809 52.3984560730436)
+#2985|LINESTRING(20.9511664253809 52.3984560730436)
 #2996|t
 #3119a|121
 #3119b|291
@@ -315,3 +315,36 @@ ERROR:  invalid KML representation
 #1014d|SRID=1;POINT(0 1)
 #1014d|SRID=2;POINT(0 1)
 #3930|62065
+NOTICE:  Too few points in geometry component at or near point 0 0
+#4011|ST_LineString|LINESTRING(0 0,1 1)|f|t
+#4011|ST_LineString|MULTILINESTRING((0 0,1 1),(1 1,2 2))|f|t
+#4011|ST_LineString|MULTILINESTRING((0 0,1 1),EMPTY)|f|t
+#4011|ST_MultiLineString|MULTILINESTRING(EMPTY,EMPTY)|t|t
+#4011||||
+#4011|ST_GeometryCollection|POLYGON((0 0,1 0,1 1,0 0))|f|t
+#4011|ST_LineString|GEOMETRYCOLLECTION(LINESTRING(0 0,1 1))|f|t
+#4011|ST_MultiLineString|MULTILINESTRING EMPTY|t|t
+#4011|ST_GeometryCollection|MULTILINESTRING((0 0,0 0))|f|f
+#4025|
+NOTICE:  lwgeom_intersection: GEOS Error: TopologyException: Input geom 0 is invalid: Self-intersection
+NOTICE:  Self-intersection
+NOTICE:  Your geometry dataset is not valid per OGC Specification. Please fix it with manual review of entries that are not ST_IsValid(geom). Retrying GEOS operation with ST_MakeValid of your input.
+NOTICE:  Self-intersection
+#4037.1|MULTIPOLYGON(((2 2,5 5,8 2,2 2)),((5 5,2 8,8 8,5 5)))
+NOTICE:  lwgeom_difference: GEOS Error: TopologyException: Input geom 0 is invalid: Self-intersection
+NOTICE:  Self-intersection
+NOTICE:  Your geometry dataset is not valid per OGC Specification. Please fix it with manual review of entries that are not ST_IsValid(geom). Retrying GEOS operation with ST_MakeValid of your input.
+NOTICE:  Self-intersection
+#4037.2|MULTIPOLYGON(((0 0,2 2,8 2,10 0,0 0)),((2 8,0 10,10 10,8 8,2 8)))
+NOTICE:  lwgeom_symdifference: GEOS Error: TopologyException: Input geom 0 is invalid: Self-intersection
+NOTICE:  Self-intersection
+NOTICE:  Your geometry dataset is not valid per OGC Specification. Please fix it with manual review of entries that are not ST_IsValid(geom). Retrying GEOS operation with ST_MakeValid of your input.
+NOTICE:  Self-intersection
+#4037.3|MULTIPOLYGON(((0 0,2 2,8 2,10 0,0 0)),((5 5,2 2,2 8,5 5)),((8 2,5 5,8 8,8 2)),((2 8,0 10,10 10,8 8,2 8)))
+NOTICE:  lwgeom_union: GEOS Error: TopologyException: Input geom 0 is invalid: Self-intersection
+NOTICE:  Self-intersection
+NOTICE:  Your geometry dataset is not valid per OGC Specification. Please fix it with manual review of entries that are not ST_IsValid(geom). Retrying GEOS operation with ST_MakeValid of your input.
+NOTICE:  Self-intersection
+#4037.4|POLYGON((0 0,2 2,2 8,0 10,10 10,8 8,8 2,10 0,0 0))
+#4055a|4326
+#4055b|4326

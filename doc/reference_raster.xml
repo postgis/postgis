@@ -1132,7 +1132,7 @@ SELECT short_name, long_name, can_write
 FROM st_gdaldrivers()
 ORDER BY short_name;
 
-   short_name    |                          long_name                          | can_write 
+   short_name    |                          long_name                          | can_write
 -----------------+-------------------------------------------------------------+-----------
  AAIGrid         | Arc/Info ASCII Grid                                         | t
  ACE2            | ACE2                                                        | f
@@ -1845,7 +1845,7 @@ FROM ST_BandMetadata(
 						  </informalfigure></para>
                 <programlisting>
 -- this will output a black circle taking up 150 x 150 pixels --
-SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150, '2BUI'));</programlisting>
+SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150));</programlisting>
 
  <para><informalfigure>
 							<mediaobject>
@@ -1904,7 +1904,7 @@ SELECT ST_AsPNG(
 				<title>Description</title>
 
 				<para>Returns one or more bands of an existing raster as a new raster.  Useful for building new rasters from existing rasters or export of only selected
-				bands of a raster or rearranging the order of bands in a raster. If no band is specified, band 1 is assumed. Used as a helper function in various functions such as for deleting a band. </para>
+				bands of a raster or rearranging the order of bands in a raster. If no band is specified or any of specified bands does not exist in the raster, then all bands are returned. Used as a helper function in various functions such as for deleting a band. </para>
 				<warning><para>For the <code>nbands</code> as text variant of function, the default delimiter is <code>,</code> which means you can ask for <code>'1,2,3'</code> and if you wanted to use a different delimeter you would do <code>ST_Band(rast, '1@2@3', '@')</code>.  For asking for multiple bands, we strongly suggest you use the array form of this function e.g. <code>ST_Band(rast, '{1,2,3}'::int[]);</code> since the <code>text</code> list of bands form may be removed in future versions of PostGIS.</para></warning>
 
                  <para>Availability: 2.0.0</para>
@@ -3745,9 +3745,14 @@ FROM dummy_rast;
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>record <function>ST_BandMetaData</function></funcdef>
-					<paramdef><type>raster </type><parameter>rast</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type><parameter>bandnum=1</parameter></paramdef>
+						<funcdef>(1) record <function>ST_BandMetaData</function></funcdef>
+						<paramdef><type>raster </type><parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type><parameter>band=1</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+						<funcdef>(2) record <function>ST_BandMetaData</function></funcdef>
+						<paramdef><type>raster </type><parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>integer[] </type><parameter>band</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3755,32 +3760,70 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 
-				<para>Returns basic meta data about a raster band. Columns returned
-					 pixeltype | nodatavalue | isoutdb | path.
+				<para>Returns basic meta data about a raster band. Columns returned: pixeltype, nodatavalue, isoutdb, path, outdbbandnum.
 				</para>
 				<note>
-                                  <para>
-					If raster contains no bands then an error is thrown.
-                                  </para>
+					<para>
+						If raster contains no bands then an error is thrown.
+					</para>
+				</note>
+
+				<note>
+					<para>
+						If band has no NODATA value, nodatavalue are NULL.
+					</para>
 				</note>
 				<note>
-                                  <para>
-					If band has no NODATA value, nodatavalue will be NULL.
-                                  </para>
+					<para>
+						If isoutdb is False, path and outdbbandnum are NULL.
+					</para>
 				</note>
 			</refsection>
 
 			<refsection>
-				<title>Examples</title>
+				<title>Examples: Variant 1</title>
 
-				<programlisting>SELECT rid, (foo.md).*
- FROM (SELECT rid, ST_BandMetaData(rast,1) As md
-FROM dummy_rast WHERE rid=2) As foo;
+				<programlisting>
+WITH foo AS (
+	SELECT
+		ST_AddBand(NULL::raster, '/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif', NULL::int[]) AS rast
+)
+SELECT
+	*
+FROM ST_BandMetadata(
+	(SELECT rast FROM foo),
+ 	ARRAY[1,3,2]::int[]
+);
 
- rid | pixeltype | nodatavalue | isoutdb | path
------+-----------+----------------+-------------+---------+------
-   2 | 8BUI      |           0 | f       |
+ bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                      | outdbbandnum
+---------+-----------+-------------+---------+--------------------------------------------------------------------------------+--------------
+       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            1
+       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            3
+       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            2
 				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples: Variant 2</title>
+
+				<programlisting>
+SELECT
+	rid,
+	(foo.md).*
+FROM (
+	SELECT
+		rid,
+		ST_BandMetaData(rast, 1) AS md
+	FROM dummy_rast
+	WHERE rid=2
+) As foo;
+
+ rid | pixeltype | nodatavalue | isoutdb | path | outdbbandnum
+-----+-----------+---- --------+---------+------+--------------
+   2 | 8BUI      |           0 | f       |      |
+				</programlisting>
+
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
@@ -7088,6 +7131,191 @@ select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
                 linkend="RT_ST_BandIsNoData"/></para>
 			</refsection>
 		</refentry>
+
+		<refentry id="RT_ST_SetBandPath">
+			<refnamediv>
+				<refname>ST_SetBandPath</refname>
+				<refpurpose>Update the external path and band number of an out-db band</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>raster <function>ST_SetBandPath</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>outdbpath</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>outdbindex</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>force=false</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>Updates an out-db band's external raster file path and external band number.</para>
+
+				<note>
+					<para>
+						If <varname>force</varname> is set to true, no tests are done to ensure compatibility (e.g. alignment, pixel support) between the external raster file and the PostGIS raster. This mode is intended for file system changes where the external raster resides.
+					</para>
+				</note>
+
+				<note>
+					<para>
+						Internally, this method replaces the PostGIS raster's band at index <varname>band</varname> with a new band instead of updating the existing path information.
+					</para>
+				</note>
+
+				<para>Availability: 2.5.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+WITH foo AS (
+	SELECT
+		ST_AddBand(NULL::raster, '/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif', NULL::int[]) AS rast
+)
+SELECT
+	1 AS query,
+	*
+FROM ST_BandMetadata(
+	(SELECT rast FROM foo),
+ 	ARRAY[1,3,2]::int[]
+)
+UNION ALL
+SELECT
+	2,
+	*
+FROM ST_BandMetadata(
+	(
+		SELECT
+			<emphasis role="strong">ST_SetBandPath(
+				rast,
+				2,
+				'/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected2.tif',
+				1
+			)</emphasis> AS rast
+	 	FROM foo
+	),
+ 	ARRAY[1,3,2]::int[]
+)
+ORDER BY 1, 2;
+
+ query | bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                       | outdbbandnum
+-------+---------+-----------+-------------+---------+---------------------------------------------------------------------------------+--------------
+     1 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
+     1 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            2
+     1 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3
+     2 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
+<emphasis role="strong">     2 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected2.tif      |            1</emphasis>
+     2 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_BandMetaData" />,
+					<xref linkend="RT_ST_SetBandIndex" />
+				</para>
+			</refsection>
+
+		</refentry>
+
+		<refentry id="RT_ST_SetBandIndex">
+			<refnamediv>
+				<refname>ST_SetBandIndex</refname>
+				<refpurpose>Update the external band number of an out-db band</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>raster <function>ST_SetBandIndex</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>outdbindex</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>force=false</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>Updates an out-db band's external band number. This does not touch the external raster file associated with the out-db band</para>
+
+				<note>
+					<para>
+						If <varname>force</varname> is set to true, no tests are done to ensure compatibility (e.g. alignment, pixel support) between the external raster file and the PostGIS raster. This mode is intended for where bands are moved around in the external raster file.
+					</para>
+				</note>
+
+				<note>
+					<para>
+						Internally, this method replaces the PostGIS raster's band at index <varname>band</varname> with a new band instead of updating the existing path information.
+					</para>
+				</note>
+
+				<para>Availability: 2.5.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+WITH foo AS (
+	SELECT
+		ST_AddBand(NULL::raster, '/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif', NULL::int[]) AS rast
+)
+SELECT
+	1 AS query,
+	*
+FROM ST_BandMetadata(
+	(SELECT rast FROM foo),
+ 	ARRAY[1,3,2]::int[]
+)
+UNION ALL
+SELECT
+	2,
+	*
+FROM ST_BandMetadata(
+	(
+		SELECT
+			<emphasis role="strong">ST_SetBandIndex(
+				rast,
+				2,
+				1
+			)</emphasis> AS rast
+	 	FROM foo
+	),
+ 	ARRAY[1,3,2]::int[]
+)
+ORDER BY 1, 2;
+
+ query | bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                       | outdbbandnum
+-------+---------+-----------+-------------+---------+---------------------------------------------------------------------------------+--------------
+     1 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
+     1 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            2
+     1 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3
+     2 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
+<emphasis role="strong">     2 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1</emphasis>
+     2 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_BandMetaData" />,
+					<xref linkend="RT_ST_SetBandPath" />
+				</para>
+			</refsection>
+
+		</refentry>
+
 	</sect1>
 
 	<sect1 id="RasterBand_Stats">
@@ -8072,11 +8300,122 @@ SELECT rid, ST_ValueCount(rast,2,100) As count
 		</refentry>
 	</sect1>
 
+	<sect1 id="Raster_Inputs">
+		<title>Raster Inputs</title>
+		<refentry id="RT_ST_RastFromWKB">
+			<refnamediv>
+				<refname>ST_RastFromWKB</refname>
+				<refpurpose>Return a raster value from a Well-Known Binary (WKB) raster.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>raster <function>ST_RastFromWKB</function></funcdef>
+						<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Given a Well-Known Binary (WKB) raster, return a raster.
+				</para>
+
+				<para>Availability: 2.5.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+
+				<programlisting>
+SELECT (ST_Metadata(
+	ST_RastFromWKB(
+		'\001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000'::bytea
+	)
+)).* AS metadata;
+
+ upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
+------------+------------+-------+--------+--------+--------+-------+-------+------+----------
+        0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |     0 |   10 |        0
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MetaData" />,
+					<xref linkend="RT_ST_RastFromHexWKB" />,
+					<xref linkend="RT_ST_AsBinary" />,
+					<xref linkend="RT_ST_AsHexWKB" />
+				</para>
+			</refsection>
+		</refentry>
+
+		<refentry id="RT_ST_RastFromHexWKB">
+			<refnamediv>
+				<refname>ST_RastFromHexWKB</refname>
+				<refpurpose>Return a raster value from a Hex representation of Well-Known Binary (WKB) raster.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>raster <function>ST_RastFromHexWKB</function></funcdef>
+						<paramdef><type>text </type> <parameter>wkb</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Given a Well-Known Binary (WKB) raster in Hex representation, return a raster.
+				</para>
+
+				<para>Availability: 2.5.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+
+				<programlisting>
+SELECT (ST_Metadata(
+	ST_RastFromHexWKB(
+		'010000000000000000000000400000000000000840000000000000E03F000000000000E03F000000000000000000000000000000000A0000000A001400'
+	)
+)).* AS metadata;
+
+ upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
+------------+------------+-------+--------+--------+--------+-------+-------+------+----------
+        0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |     0 |   10 |        0
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MetaData" />,
+					<xref linkend="RT_ST_RastFromWKB" />,
+					<xref linkend="RT_ST_AsBinary" />,
+					<xref linkend="RT_ST_AsHexWKB" />
+				</para>
+			</refsection>
+		</refentry>
+
+	</sect1>
+
 	<sect1 id="Raster_Outputs">
 		<title>Raster Outputs</title>
+
 		<refentry id="RT_ST_AsBinary">
 			<refnamediv>
-				<refname>ST_AsBinary</refname>
+				<refname>ST_AsBinary/ST_AsWKB</refname>
 				<refpurpose>Return the Well-Known Binary (WKB) representation of the raster.</refpurpose>
 			</refnamediv>
 
@@ -8084,6 +8423,11 @@ SELECT rid, ST_ValueCount(rast,2,100) As count
 				<funcsynopsis>
 				  <funcprototype>
 						<funcdef>bytea <function>ST_AsBinary</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>outasin=FALSE</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+						<funcdef>bytea <function>ST_AsWKB</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef choice="opt"><type>boolean </type> <parameter>outasin=FALSE</parameter></paramdef>
 				  </funcprototype>
@@ -8108,6 +8452,7 @@ SELECT rid, ST_ValueCount(rast,2,100) As count
 				</note>
 
 				<para>Enhanced: 2.1.0 Addition of <varname>outasin</varname></para>
+				<para>Enhanced: 2.5.0 Addition of <varname>ST_AsWKB</varname></para>
 			</refsection>
 
 				<refsection>
@@ -8118,12 +8463,73 @@ SELECT ST_AsBinary(rast) As rastbin FROM dummy_rast WHERE rid=1;
 
 					 rastbin
 ---------------------------------------------------------------------------------
-\001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\
-000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\00
-0\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000
+\001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000
 				</programlisting>
 
 			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_RastFromWKB" />,
+					<xref linkend="RT_ST_AsHexWKB" />
+				</para>
+			</refsection>
+		</refentry>
+
+		<refentry id="RT_ST_AsHexWKB">
+			<refnamediv>
+				<refname>ST_AsHexWKB</refname>
+				<refpurpose>Return the Well-Known Binary (WKB) in Hex representation of the raster.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>bytea <function>ST_AsHexWKB</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>outasin=FALSE</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Returns the Binary representation in Hex representation of the raster. If <varname>outasin</varname> is TRUE, out-db bands are treated as in-db.
+					Refer to raster/doc/RFC2-WellKnownBinaryFormat located in the PostGIS source folder for details of the representation.
+				</para>
+
+				<note>
+					<para>
+						By default, Hex WKB output contains the external file path for out-db bands. If the client does not have access to the raster file underlying an out-db band, set <varname>outasin</varname> to TRUE.</para>
+				</note>
+
+				<para>Availability: 2.5.0 </para>
+			</refsection>
+
+				<refsection>
+					<title>Examples</title>
+
+					<programlisting>
+SELECT ST_AsHexWKB(rast) As rastbin FROM dummy_rast WHERE rid=1;
+
+                                                        st_ashexwkb
+----------------------------------------------------------------------------------------------------------------------------
+ 010000000000000000000000400000000000000840000000000000E03F000000000000E03F000000000000000000000000000000000A0000000A001400
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_RastFromHexWKB" />,
+					<xref linkend="RT_ST_AsBinary" />
+				</para>
+			</refsection>
+
 		</refentry>
 
 		<refentry id="RT_ST_AsGDALRaster">
@@ -8425,7 +8831,7 @@ FROM dummy_rast WHERE rid=2;
 		<refentry id="RT_ST_AsTIFF">
 			<refnamediv>
 				<refname>ST_AsTIFF</refname>
-				<refpurpose>Return the raster selected bands as a single TIFF image (byte array).  If no band is specified, then will try to use all bands.</refpurpose>
+				<refpurpose>Return the raster selected bands as a single TIFF image (byte array).  If no band is specified or any of specified bands does not exist in the raster, then will try to use all bands.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -15172,30 +15578,30 @@ fs.file-max = 6145324
 					<programlisting>
 $ ps aux | grep postgres
 postgres 31713  0.0  0.4 179012 17564 pts/0    S    Dec26   0:03 /home/dustymugs/devel/postgresql/sandbox/10/usr/local/bin/postgres -D /home/dustymugs/devel/postgresql/sandbox/10/pgdata
-postgres 31716  0.0  0.8 179776 33632 ?        Ss   Dec26   0:01 postgres: checkpointer process   
-postgres 31717  0.0  0.2 179144  9416 ?        Ss   Dec26   0:05 postgres: writer process   
-postgres 31718  0.0  0.2 179012  8708 ?        Ss   Dec26   0:06 postgres: wal writer process   
-postgres 31719  0.0  0.1 179568  7252 ?        Ss   Dec26   0:03 postgres: autovacuum launcher process   
-postgres 31720  0.0  0.1  34228  4124 ?        Ss   Dec26   0:09 postgres: stats collector process   
-postgres 31721  0.0  0.1 179308  6052 ?        Ss   Dec26   0:00 postgres: bgworker: logical replication launcher   
+postgres 31716  0.0  0.8 179776 33632 ?        Ss   Dec26   0:01 postgres: checkpointer process
+postgres 31717  0.0  0.2 179144  9416 ?        Ss   Dec26   0:05 postgres: writer process
+postgres 31718  0.0  0.2 179012  8708 ?        Ss   Dec26   0:06 postgres: wal writer process
+postgres 31719  0.0  0.1 179568  7252 ?        Ss   Dec26   0:03 postgres: autovacuum launcher process
+postgres 31720  0.0  0.1  34228  4124 ?        Ss   Dec26   0:09 postgres: stats collector process
+postgres 31721  0.0  0.1 179308  6052 ?        Ss   Dec26   0:00 postgres: bgworker: logical replication launcher
 
 $ cat /proc/31718/limits
-Limit                     Soft Limit           Hard Limit           Units     
-Max cpu time              unlimited            unlimited            seconds   
-Max file size             unlimited            unlimited            bytes     
-Max data size             unlimited            unlimited            bytes     
-Max stack size            8388608              unlimited            bytes     
-Max core file size        0                    unlimited            bytes     
-Max resident set          unlimited            unlimited            bytes     
-Max processes             15738                15738                processes 
+Limit                     Soft Limit           Hard Limit           Units
+Max cpu time              unlimited            unlimited            seconds
+Max file size             unlimited            unlimited            bytes
+Max data size             unlimited            unlimited            bytes
+Max stack size            8388608              unlimited            bytes
+Max core file size        0                    unlimited            bytes
+Max resident set          unlimited            unlimited            bytes
+Max processes             15738                15738                processes
 <emphasis role="strong">Max open files            1024                 4096                 files</emphasis>
-Max locked memory         65536                65536                bytes     
-Max address space         unlimited            unlimited            bytes     
-Max file locks            unlimited            unlimited            locks     
-Max pending signals       15738                15738                signals   
-Max msgqueue size         819200               819200               bytes     
-Max nice priority         0                    0                    
-Max realtime priority     0                    0                    
+Max locked memory         65536                65536                bytes
+Max address space         unlimited            unlimited            bytes
+Max file locks            unlimited            unlimited            locks
+Max pending signals       15738                15738                signals
+Max msgqueue size         819200               819200               bytes
+Max nice priority         0                    0
+Max realtime priority     0                    0
 Max realtime timeout      unlimited            unlimited            us
 					</programlisting>
 
@@ -15208,7 +15614,11 @@ Max realtime timeout      unlimited            unlimited            us
 					</para>
 
 					<para>
-						In Ubuntu (and assuming you are using PostgreSQL's packages for Ubuntu), the easiest way to change the <emphasis>Soft Limit</emphasis> and <emphasis>Hard Limit</emphasis> is to edit <emphasis role="strong">/etc/init.d/postgresql</emphasis>. In the example, we add <emphasis role="strong">ulimit -H -n 262144</emphasis> and <emphasis role="strong">ulimit -n 131072</emphasis>.
+						In Ubuntu (and assuming you are using PostgreSQL's packages for Ubuntu), the easiest way to change the <emphasis>Soft Limit</emphasis> and <emphasis>Hard Limit</emphasis> is to edit <emphasis role="strong">/etc/init.d/postgresql</emphasis> (SysV) or <emphasis role="strong">/lib/systemd/system/postgresql*.service</emphasis> (systemd).
+					</para>
+
+					<para>
+						Let's first address the SysV Ubuntu case where we add <emphasis role="strong">ulimit -H -n 262144</emphasis> and <emphasis role="strong">ulimit -n 131072</emphasis> to <emphasis role="strong">/etc/init.d/postgresql</emphasis>.
 					</para>
 
 					<programlisting>
@@ -15233,6 +15643,31 @@ case "$1" in
         ;;
     status)
 ...
+</programlisting>
+
+					<para>
+						Now to address the systemd Ubuntu case. We will add <emphasis role="strong">LimitNOFILE=131072</emphasis> to every <emphasis role="strong">/lib/systemd/system/postgresql*.service</emphasis> file in the <emphasis role="strong">[Service]</emphasis> section.
+					</para>
+
+					<programlisting>
+...
+[Service]
+<emphasis role="strong">
+LimitNOFILE=131072
+</emphasis>
+...
+
+[Install]
+WantedBy=multi-user.target
+...
+</programlisting>
+
+					<para>
+						After making the necessary systemd changes, make sure to reload the daemon
+					</para>
+
+					<programlisting>
+systemctl daemon-reload
 </programlisting>
 
 				</sect4>

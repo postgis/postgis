@@ -488,7 +488,7 @@ int
 lwprint_double(double d, int maxdd, char* buf, size_t bufsize)
 {
 	double ad = fabs(d);
-	int ndd = ad < 1 ? 0 : floor(log10(ad)) + 1; /* non-decimal digits */
+	int ndd;
 	int length = 0;
 	if (ad <= FP_TOLERANCE)
 	{
@@ -497,6 +497,7 @@ lwprint_double(double d, int maxdd, char* buf, size_t bufsize)
 	}
 	if (ad < OUT_MAX_DOUBLE)
 	{
+		ndd = ad < 1 ? 0 : floor(log10(ad)) + 1; /* non-decimal digits */
 		if (maxdd > (OUT_MAX_DOUBLE_PRECISION - ndd)) maxdd -= ndd;
 		length = snprintf(buf, bufsize, "%.*f", maxdd, d);
 	}
@@ -504,7 +505,7 @@ lwprint_double(double d, int maxdd, char* buf, size_t bufsize)
 	{
 		length = snprintf(buf, bufsize, "%g", d);
 	}
-	assert(length < bufsize);
+	assert(length < (int) bufsize);
 	trim_trailing_zeros(buf);
 	return length;
 }
