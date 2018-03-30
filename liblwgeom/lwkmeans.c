@@ -137,8 +137,6 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 
 	for (i = 0; i < n; i++)
 	{
-
-		distances[i] = DBL_MAX;
 		/* Find the point with largest Euclidean norm to use as seed */
 		curr_norm = (objs[i]->x) * (objs[i]->x) + (objs[i]->y) * (objs[i]->y);
 		if (curr_norm > max_norm)
