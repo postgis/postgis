@@ -104,7 +104,7 @@ kmeans(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, uint32_t k)
 
 	for (i = 0; i < KMEANS_MAX_ITERATIONS && !converged; i++)
 	{
-		(break);
+		LW_ON_INTERRUPT(break);
 
 		/* Store the previous state of the clustering */
 		memcpy(clusters_last, clusters, clusters_sz);
@@ -128,6 +128,7 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 {
 	double* distances;
 	uint32_t boundary_point_idx = 0;
+	uint32_t i;
 	double max_norm = -DBL_MAX;
 	double curr_norm;
 
@@ -142,7 +143,7 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 		}
 		distances[i] = DBL_MAX;
 		/* Find the point with largest Euclidean norm to use as seed */
-		curr_norm = (cp->x) * (cp->x) + (cp->y) * (cp->y);
+		curr_norm = (objs[i]->x) * (objs[i]->x) + (objs[i]->y) * (objs[i]->y);
 		if (curr_norm > max_norm)
 		{
 			boundary_point_idx = i;
@@ -150,9 +151,7 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 		}
 	}
 	if (max_norm == -DBL_MAX)
-	{
 		lwerror("unable to calculate any cluster seed point, too many NULLs or empties?");
-	}
 
 	/* start with point on boundary */
 	distances[boundary_point_idx] = -1;
@@ -196,9 +195,7 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 		centers_raw[i] = *((POINT2D*)objs[candidate_center]);
 		centers[i] = &(centers_raw[i]);
 	}
-
 	lwfree(distances);
-
 }
 
 int*
@@ -273,16 +270,15 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 			centroids[num_centroids++] = centroid;
 			lwpoint = lwgeom_as_lwpoint(centroid);
 		}
-		elseW
+		else
 			lwpoint = lwgeom_as_lwpoint(geom);
-
 
 		/* Store a pointer to the POINT2D we are interested in */
 		cp = getPoint2d_cp(lwpoint->point, 0);
 		objs[i] = (POINT2D*)cp;
 	}
 
-
+	kmeans_init(objs, clusters, n, centers, centers_raw, k);
 
 	result = kmeans(objs, clusters, n, centers, k);
 
