@@ -96,10 +96,7 @@ kmeans(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, uint32_t k)
 
 	weights = lwalloc(sizeof(int) * k);
 
-	/*
-	 * Previous cluster state array. At this time, r doesn't mean anything
-	 * but it's ok
-	 */
+	/* Previous cluster state array. At this time, r doesn't mean anything but it's ok */
 	clusters_last = lwalloc(clusters_sz);
 
 	for (i = 0; i < KMEANS_MAX_ITERATIONS && !converged; i++)
@@ -132,15 +129,15 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 	double max_norm = -DBL_MAX;
 	double curr_norm;
 
+	/* k = 1: mark clusterable and uncluserable, exit */
+
+	/* k = 2: skip distance allocation
+
 	/* Array of sums of distances to a point from accepted cluster centers */
-	distances = lwalloc(sizeof(double) * n);
+
 	for (i = 0; i < n; i++)
 	{
-		if (!objs[i])
-		{
-			distances[i] = -1;
-			continue;
-		}
+
 		distances[i] = DBL_MAX;
 		/* Find the point with largest Euclidean norm to use as seed */
 		curr_norm = (objs[i]->x) * (objs[i]->x) + (objs[i]->y) * (objs[i]->y);
@@ -157,13 +154,15 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 	distances[boundary_point_idx] = -1;
 	centers_raw[0] = *((POINT2D*)objs[boundary_point_idx]);
 	centers[0] = &(centers_raw[0]);
+
+	distances = lwalloc(sizeof(double) * n);
 	/* loop i on clusters, skip 0 as it's found already */
 	for (i = 1; i < k; i++)
 	{
 		uint32_t j;
+		uint32_t candidate_center = 0;
 		double max_distance = -DBL_MAX;
 		double curr_distance;
-		uint32_t candidate_center = 0;
 
 		/* loop j on objs */
 		for (j = 0; j < n; j++)
@@ -171,6 +170,12 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 			/* empty objs and accepted clusters are already marked with distance = -1 */
 			if (distances[j] < 0)
 				continue;
+
+			if (!objs[j])
+			{
+				distances[j] = -1;
+				continue;
+			}
 
 			/* update distance to closest cluster */
 			curr_distance = distance2d_sqr_pt_pt(objs[j], centers[i - 1]);
@@ -184,9 +189,9 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 			}
 		}
 
-		/* something is wrong with data, cannot find a candidate */
-		if (max_distance < 0)
-			lwerror("unable to calculate cluster seed points, too many NULLs or empties?");
+		/* Something is wrong with data, cannot find a candidate.
+		 * Checked earlier by counting entries on input */
+		assert(max_distance >= 0);
 
 		/* accept candidate to centers */
 		distances[candidate_center] = -1;
@@ -203,6 +208,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 {
 	uint32_t i;
 	uint32_t num_centroids = 0;
+	uint32_t num_non_empty = 0;
 	LWGEOM** centroids;
 	POINT2D* centers_raw;
 	const POINT2D* cp;
@@ -223,7 +229,10 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 	assert(geoms);
 
 	if (n < k)
+	{
 		lwerror("%s: number of geometries is less than the number of clusters requested", __func__);
+		return NULL;
+	}
 
 	/* We'll hold the temporary centroid objects here */
 	centroids = lwalloc(sizeof(LWGEOM*) * n);
@@ -276,6 +285,13 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 		/* Store a pointer to the POINT2D we are interested in */
 		cp = getPoint2d_cp(lwpoint->point, 0);
 		objs[i] = (POINT2D*)cp;
+		num_non_empty++;
+	}
+
+	if (num_non_empty < k)
+	{
+		lwerror("%s: number of clusterable geometries is less than the number of clusters requested", __func__);
+		return NULL;
 	}
 
 	kmeans_init(objs, clusters, n, centers, centers_raw, k);
