@@ -109,6 +109,25 @@ test_geos_offsetcurve(void)
 	lwgeom_free(geom2);
 }
 
+static void
+test_geos_makevalid(void)
+{
+	char* ewkt;
+	char* out_ewkt;
+	LWGEOM* geom1;
+	LWGEOM* geom2;
+
+	ewkt = "\001\003\000\000\000\001\000\000\000\011\000\000\000b\020X9 }\366@7\211A\340\235I\034A\316\326t18}\366@\306g\347\323\230I\034Ay\351&18}\366@\331\316\367\323\230I\034A\372~j\274\370}\366@\315\314\314LpI\034A\343\245\233\304R}\366@R\270\036\005?I\034A\315\314\314\314Z~\366@\343\245\233\304\007I\034A\004V\016-\242}\366@\252\361\322M\323H\034A\351&1\010\306{\366@H\341z\0247I\034Ab\020X9 }\366@7\211A\340\235I\034A";
+	geom1 = lwgeom_from_wkb(ewkt, 157, LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_make_valid(geom1);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom2);
+	ASSERT_STRING_EQUAL(out_ewkt, "GEOMETRYCOLLECTION(POLYGON((92114.014 463463.469,92115.5120743 463462.206937,92115.512 463462.207,92127.546 463452.075,92117.173 463439.755,92133.675 463425.942,92122.136 463412.826,92092.377 463437.77,92114.014 463463.469)),MULTIPOINT(92115.5120743 463462.206937,92122.136 463412.826))");
+	lwfree(out_ewkt);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+}
+
+
 static void test_geos_subdivide(void)
 {
 #if POSTGIS_GEOS_VERSION < 35
@@ -150,4 +169,5 @@ void geos_suite_setup(void)
 	PG_ADD_TEST(suite, test_geos_subdivide);
 	PG_ADD_TEST(suite, test_geos_linemerge);
 	PG_ADD_TEST(suite, test_geos_offsetcurve);
+	PG_ADD_TEST(suite, test_geos_makevalid);
 }
