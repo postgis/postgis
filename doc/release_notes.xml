@@ -7,6 +7,38 @@
       <title>Release 2.4.3</title>
       <para>Release date: 2018/01/17</para>
       <para>This is a bug fix and performance improvement release.</para>
+      <simplesect><title>Bug Fixes</title>
+        <para>#3055, [raster] ST_Clip() on a raster without band crashes the server
+                  (Regina Obe)</para>
+        <para>#3942, geojson: Do not include private header for json-c >= 0.13
+                  (Björn Esser)</para>
+        <para>#3952, ST_Transform fails in parallel mode (Paul Ramsey)</para>
+        <para>#3978, Fix KNN when upgrading from 2.1 or older (Sandro Santilli)</para>
+        <para>#4003, lwpoly_construct_circle: Avoid division by zero (Raúl Marín Rodríguez)</para>
+        <para>#4004, Avoid memory exhaustion when building a btree index (Edmund Horner)</para>
+        <para>#4016, proj 5.0.0 support (Raúl Marín Rodríguez)</para>
+        <para>#4017, lwgeom lexer memory corruption (Peter E)</para>
+        <para>#4020, Casting from box3d to geometry now returns correctly connected
+                  PolyhedralSurface (Matthias Bay)</para>
+        <para>#4025, #4032 Incorrect answers for temporally "almost overlapping" ranges
+                  (Paul Ramsey, Darafei Praliaskouski)</para>
+        <para>#4052, schema qualify several functions in geography (Regina Obe)</para>
+        <para>#4055, ST_ClusterIntersecting drops SRID (Daniel Baston)</para>
+      </simplesect>
+
+      <simplesect><title>Enhancements</title>
+        <para>#3946, Compile support for PgSQL 11 (Paul Ramsey)</para>
+        <para>#3992, Use PKG_PROG_PKG_CONFIG macro from pkg.m4 to detect pkg-config
+                  (Bas Couwenberg)</para>
+        <para>#4044, Upgrade support for PgSQL 11 (Regina Obe)</para>
+      </simplesect>
+    </sect1>
+
+
+    <sect1>
+      <title>Release 2.4.3</title>
+      <para>Release date: 2018/01/17</para>
+      <para>This is a bug fix and performance improvement release.</para>
       <simplesect>
         <title>Bug Fixes and Enhancements</title>
         <para>#3713, Support encodings that happen to output a '\' character</para>

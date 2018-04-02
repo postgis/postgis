@@ -1,3 +1,257 @@
+2018-03-28 08:53  Regina Obe <lr@pcorp.us>
+
+	* [r16504] NEWS, doc/reference_raster.xml,
+	  raster/rt_pg/rtpg_mapalgebra.c, raster/test/regress/tickets.sql,
+	  raster/test/regress/tickets_expected: Fix crasher in raster when
+	  fed an empty raster (note was tempted to change the def of empty
+	  raster to include raster with no bands but not sure where else
+	  that is used, so just revised the clip check to not try to clip
+	  if no bands).
+	  References #3055 for PostGIS 2.4.4,
+	  also minor doc fix references #2925 for PostGIS 2.4.4
+
+2018-03-27 17:36  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16500] NEWS, liblwgeom/lwlinearreferencing.c: ST_CPAWithin
+	  precision fix
+	  
+	  Closes #4032
+
+2018-03-25 03:33  Regina Obe <lr@pcorp.us>
+
+	* [r16498] NEWS, extensions/postgis_extension_helper.sql: upgrade
+	  support for PostgreSQL 11
+	  closes #4044 for PostGIS 2.4.4
+
+2018-03-24 03:01  Regina Obe <lr@pcorp.us>
+
+	* [r16496] NEWS: change sorting of tickets to be nuermic by ticket
+	  number. Add in missing tickets
+
+2018-03-24 02:17  Regina Obe <lr@pcorp.us>
+
+	* [r16495] doc/installation.xml: note in docs about soft upgrade
+	  that legacy.sql must be rerun for each minor.
+	  Closes #2960 for PostGIS 2.4.4
+
+2018-03-24 00:00  Daniel Baston <dbaston@gmail.com>
+
+	* [r16491] liblwgeom/lwgeom_geos_cluster.c, regress/tickets.sql,
+	  regress/tickets_expected: Avoid dropping SRID in
+	  ST_ClusterIntersecting
+	  
+	  References #4055
+
+2018-03-23 06:35  Regina Obe <lr@pcorp.us>
+
+	* [r16484] ci/winnie/build_postgis.sh,
+	  ci/winnie/package_postgis.sh, ci/winnie/regress_postgis.sh:
+	  change to use GDAL 2.2.4, 3.6.2 (for packaging) but keep 3.7.0dev
+	  for regress testing
+
+2018-03-23 00:09  Regina Obe <lr@pcorp.us>
+
+	* [r16482] NEWS, postgis/geography.sql.in: schema qualify geography
+	  functions (including ST_Buffer)
+	  References #4052 for PostGIS 2.4.4
+
+2018-03-18 22:43  Regina Obe <lr@pcorp.us>
+
+	* [r16477] ci/debbie/postgis_release_docs.sh: Seems sometimes the
+	  postgis_svn_revision.h gets wiped out, so end up with no svn
+	  number.
+	  Explicitly call svn_repo_revision.pl to ensure we have an svn
+	  number to read
+	  References #4047 for PostGIS 2.4
+
+2018-03-18 09:10  Regina Obe <lr@pcorp.us>
+
+	* [r16474] ci/debbie/postgis_release_docs.sh: this for sure will
+	  fix revision # this time I tested before hand
+	  References #4047 for PostGIS 2.4
+
+2018-03-18 05:16  Regina Obe <lr@pcorp.us>
+
+	* [r16472] ci/debbie/postgis_release_docs.sh: variable typo
+	  References #4047 for PostGIS 2.4
+
+2018-03-18 05:12  Regina Obe <lr@pcorp.us>
+
+	* [r16470] ci/debbie/postgis_release_docs.sh: Add logic to show git
+	  log timestamp in UTC instead of Unix timestamp and put in svn
+	  revision number
+	  References #4047 for PostGIS 2.4
+
+2018-02-26 20:04  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16425] liblwgeom/lwin_wkt_lex.c: Update lexer generated file
+	  References #4017
+
+2018-02-26 20:03  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16424] NEWS, liblwgeom/lwin_wkt_lex.l: Fix memory corruption in
+	  case where lexer is interrupted mid-process
+	  References #4017
+	  For 2.4 branch
+
+2018-02-26 18:25  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16420] NEWS, liblwgeom/lwlinearreferencing.c: Use more precise
+	  bounds when testing overlap of temporal ranges.
+	  For 2.4, references #4025
+
+2018-02-25 14:54  Sandro Santilli <strk@kbt.io>
+
+	* [r16417] NEWS, liblwgeom/lwin_geojson.c: Do not include private
+	  header for json-c >= 0.13
+	  
+	  Patch by Björn Esser
+	  
+	  Closes #3942 for 2.4 branch
+	  
+	  (also fixes NEWS section corrupted by recent commit)
+
+2018-02-22 11:13  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16406] NEWS, postgis/lwgeom_box3d.c, regress/regress_expected,
+	  regress/sfcgal/regress_expected: Fix cast from box3d to geometry
+	  
+	  Patch by Matthias Bay
+	  
+	  Closes https://github.com/postgis/postgis/pull/214
+	  Closes #4020
+
+2018-02-21 14:31  Sandro Santilli <strk@kbt.io>
+
+	* [r16401] .gitlab-ci.yml: [gitlab-ci] Switch to PostgreSQL 9.6 and
+	  libjson-c-dev
+	  
+	  Fixes gitlab-ci build for 2.4, references #4023
+
+2018-02-21 09:05  Sandro Santilli <strk@kbt.io>
+
+	* [r16399] authors.git, authors.svn: Lowercase Algunenano
+	  
+	  All LDAP account names are lowercase
+
+2018-02-20 22:38  Regina Obe <lr@pcorp.us>
+
+	* [r16398] authors.git, authors.svn: Add Raúl Marín Rodríguez to
+	  developers list
+
+2018-02-20 22:35  Regina Obe <lr@pcorp.us>
+
+	* [r16397] ci/winnie/build_postgis.sh,
+	  ci/winnie/package_postgis.sh, ci/winnie/regress_postgis.sh:
+	  backport regress changes from 2.5
+
+2018-01-26 14:55  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16362] NEWS, liblwgeom/lwpoly.c: lwpoly_construct_circle: Avoid
+	  division by zero (Raúl Marín Rodríguez)
+	  References #4003
+
+2018-01-26 12:47  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16361] NEWS, postgis/geography_btree.c: Avoid memory exhaustion
+	  when building a btree index (references #4004)
+	  From Edmund Horner
+
+2018-01-22 14:15  Sandro Santilli <strk@kbt.io>
+
+	* [r16358] NEWS, postgis/geography.sql.in: Set availability of
+	  support function for KNN index
+	  
+	  Fixes upgrade from 2.1 to 2.2+
+	  Closes #3978 in 2.4 branch (2.4.4)
+
+2018-01-22 12:35  Sandro Santilli <strk@kbt.io>
+
+	* [r16353] .drone.yml: [drone] Use trisquel2 image, test all pgsql
+	  versions and upgrades
+	  
+	  The new docker image also uses newer GEOS (3.6.2).
+	  References #3813 for 2.4 branch
+	  NOTE: could not use -Werror in this branch as it would fail
+
+2018-01-22 11:30  Sandro Santilli <strk@kbt.io>
+
+	* [r16350] regress/run_test.pl: backport run_test.pl fixes from
+	  trunk
+
+2018-01-21 07:12  Regina Obe <lr@pcorp.us>
+
+	* [r16347] ci/winnie/build_postgis.sh,
+	  ci/winnie/package_postgis.sh, ci/winnie/regress_postgis.sh:
+	  change scripts back to versions of things to compile against
+	  (GDAL, PROJ, SCGAL, GEOS) being set at job level until we have
+	  the stop and start postgres in repo as well.
+
+2018-01-20 12:58  Sandro Santilli <strk@kbt.io>
+
+	* [r16346] ci/debbie/postgis_regress.sh: Have Debbie test all
+	  available upgrades
+	  
+	  References #2676 for 2.4 branch
+
+2018-01-18 21:46  Sandro Santilli <strk@kbt.io>
+
+	* [r16336] macros/pkg.m4: Forgot to add pkg.m4 macro in r16324
+	  
+	  See #3992
+
+2018-01-17 23:23  Regina Obe <lr@pcorp.us>
+
+	* [r16328] NEWS: Move PgSQL 11 support note to 2.4.4
+	  It was put in after 2.4.3 was already tagged and tarred.
+
+2018-01-16 20:54  Sandro Santilli <strk@kbt.io>
+
+	* [r16325] NEWS, configure.ac: Use PKG_PROG_PKG_CONFIG macro from
+	  pkg.m4 to detect pkg-config
+	  
+	  Patch by Bas Couwenberg
+	  Closes #3992 in 2.4 branch (for 2.4.4)
+
+2018-01-16 14:47  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16321] NEWS: Updates news re pg11 support
+
+2018-01-16 14:46  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16320] libpgcommon/lwgeom_pg.h, libpgcommon/lwgeom_transform.c,
+	  postgis/lwgeom_geos_prepared.c: Backport support for Pg11 to 2.4
+	  branch. Closes #3946
+
+2018-01-16 07:06  Regina Obe <lr@pcorp.us>
+
+	* [r16315] Version.config, ci/debbie/postgis_doc_translations.sh,
+	  ci/debbie/postgis_make_dist.sh,
+	  ci/debbie/postgis_release_docs.sh,
+	  extensions/upgradeable_versions.mk: flip version to 2.4.4dev, add
+	  2.4.3 to upgrade versions
+	  add timestamp to dev docs
+	  closes #3991 for PostGIS 2.4.4dev
+
+2018-01-15 21:38  Regina Obe <lr@pcorp.us>
+
+	* [r16305] ci/debbie/postgis_release_docs.sh: Get rid of SVN number
+	  and revise to not build local html except for trunk
+
+2018-01-15 20:47  Regina Obe <lr@pcorp.us>
+
+	* [r16301] HOWTO_RELEASE, Version.config: more clearifying notes on
+	  HOWTO_RELEASE
+	  change version to 2.4.3 in prep for tagging tomorrow or
+	  Wednesday.
+
+2018-01-15 00:50  Regina Obe <lr@pcorp.us>
+
+	* [r16299] ChangeLog, Version.config,
+	  ci/debbie/postgis_make_dist.sh: update ChangeLog
+	  flip Version.config to rc2
+	  revise make dist to output branch reading from
+
 2018-01-15 00:24  Regina Obe <lr@pcorp.us>
 
 	* [r16298] NEWS, configure.ac, doc/release_notes.xml:

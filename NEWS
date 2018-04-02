@@ -1,5 +1,5 @@
-PostGIS 2.4.4dev
-2018/04/DD
+PostGIS 2.4.4
+2018/04/08
 
  * Bug fixes *
   - #3055, [raster] ST_Clip() on a raster without band crashes the server
