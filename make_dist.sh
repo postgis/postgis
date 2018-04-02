@@ -6,7 +6,7 @@
 # -- postgis-x.y.0dev-r#####.tar.gz
 # sh make_dist.sh
 #
-# -- postgis-1.1.0.tar.gz 
+# -- postgis-1.1.0.tar.gz
 # sh make_dist.sh 1.1.0
 #
 # -- postgis-2.2.tar.gz  (from a branch)
@@ -18,7 +18,8 @@
 #
 #   CONFIGURE_ARGS    passed to ./configure call
 #   MAKE              useed for builds (defaults to "make")
-#
+#   newoutdir  this variable can be overriden to control the outdir and package name.
+#              package name will be set to {newoutdir}.tar.gz if this variabe is overridden
 #
 
 version=dev
@@ -82,8 +83,7 @@ else
   #cd -
 fi
 
-echo "Removing ignore files, make_dist.sh and HOWTO_RELEASE"
-find "$outdir" -name .\*ignore -exec rm -v {} \;
+echo "Removing make_dist.sh and HOWTO_RELEASE"
 rm -fv "$outdir"/make_dist.sh "$outdir"/HOWTO_RELEASE
 
 # generating configure script and configuring
@@ -92,8 +92,8 @@ owd="$PWD"
 cd "$outdir"
 ./autogen.sh
 ./configure ${CONFIGURE_ARGS}
-# generating postgis_svn_revision.h for >= 2.0.0 tags 
-if test -f utils/svn_repo_revision.pl; then 
+# generating postgis_svn_revision.h for >= 2.0.0 tags
+if test -f utils/svn_repo_revision.pl; then
 	echo "Generating postgis_svn_revision.h"
 	perl utils/svn_repo_revision.pl $svnurl
 fi
@@ -131,16 +131,23 @@ if test "$version" = "dev"; then
   VMIC=`grep ^POSTGIS_MICRO_VERSION "$outdir"/Version.config | cut -d= -f2`
   VREV=`cat "$outdir"/postgis_svn_revision.h | awk '{print $3}'`
   version="${VMAJ}.${VMIN}.${VMIC}-r${VREV}"
-  newoutdir=postgis-${version}
+  #if newoutdir is not already set, then set it
+  if test "x$newoutdir" = "x"; then
+      newoutdir=postgis-${version}
+  else
+      package=${newoutdir}.tar.gz
+  fi
   rm -rf ${newoutdir}
   mv -v "$outdir" "$newoutdir"
   outdir=${newoutdir}
 fi
 
-package="postgis-$version.tar.gz"
+#if package name is not already set then set it
+if test "x$package" = "x"; then
+    package="postgis-$version.tar.gz"
+fi
 echo "Generating $package file"
 tar czf "$package" "$outdir"
 
 #echo "Cleaning up"
 #rm -Rf "$outdir"
-
