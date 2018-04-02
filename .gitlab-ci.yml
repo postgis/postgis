@@ -1,7 +1,7 @@
 test:
   script:
     - apt-get update -qq && apt-get install -y
-        postgresql-9.4 postgresql-server-dev-9.4
+        postgresql-9.5 postgresql-server-dev-9.5
         build-essential autoconf libtool libcunit1-dev
         xsltproc docbook-xsl docbook-mathml dblatex
         libproj-dev libgdal-dev libgeos-dev libjson0-dev
