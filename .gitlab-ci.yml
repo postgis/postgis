@@ -1,10 +1,10 @@
 test:
   script:
     - apt-get update -qq && apt-get install -y
-        postgresql-9.5 postgresql-server-dev-9.5
+        postgresql-9.6 postgresql-server-dev-9.6
         build-essential autoconf libtool libcunit1-dev
         xsltproc docbook-xsl docbook-mathml dblatex
-        libproj-dev libgdal-dev libgeos-dev libjson0-dev
+        libproj-dev libgdal-dev libgeos-dev libjson-c-dev
     - lsb_release -a
     - uname -a
     - service postgresql start
@@ -13,5 +13,7 @@ test:
     - ./configure
     - make
     - make check RUNTESTFLAGS=-v
+    - make check RUNTESTFLAGS="-v --dumprestore"
     - make install
     - make installcheck RUNTESTFLAGS=-v
+    - make installcheck RUNTESTFLAGS="-v --dumprestore"
