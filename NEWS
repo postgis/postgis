@@ -1,5 +1,5 @@
-PostGIS 2.3.7dev
-2018/MM/DD
+PostGIS 2.3.7
+2018/04/06
 
   * Bug Fixes and Enhancements
 
@@ -11,8 +11,9 @@ PostGIS 2.3.7dev
   - #4020, Casting from box3d to geometry now returns correctly connected
            PolyhedralSurface (Matthias Bay)
   - #4025, #4032 Incorrect answers for temporally "almost overlapping" ranges
+           in ST_ClosestPointOfApproach and ST_CPAWithin
            (Paul Ramsey, Darafei Praliaskouski)
-  - #4052, schema qualify several functions in geography
+  - #4052, schema qualify several functions in geography (Regina Obe)
 
 
 PostGIS 2.3.6

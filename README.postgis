@@ -1,8 +1,8 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 2.3.5
-:Date: 2017-11-15
+:Version: 2.3.7
+:Date: 2018-04-08
 :Website: http://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -31,7 +31,7 @@ Directory structure::
 REQUIREMENTS
 ------------
 
-PostGIS 2.3.3 is compatible with PostgreSQL 9.2-9.6.
+PostGIS 2.3 is compatible with PostgreSQL 9.2-9.6.
 
 You *must* have the full PostgreSQL - including server headers - installed for
 this to work.
@@ -75,7 +75,7 @@ this to work.
 
     apt-get install libjson0-dev
 
-* GDAL (Optional, Version 1.8.0 or higher 1.9+ is strongly recommended)
+* GDAL (Optional, Version 1.8.0 or higher 2.0+ is strongly recommended)
 
   GDAL (http://gdal.org) is *required* if you want to compile PostGIS
   with raster or extension support. To compile without raster support you

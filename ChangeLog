@@ -1,3 +1,137 @@
+2018-03-28 09:02  Regina Obe <lr@pcorp.us>
+
+	* [r16505] NEWS, doc/reference_raster.xml,
+	  raster/rt_pg/rtpg_mapalgebra.c, raster/test/regress/tickets.sql,
+	  raster/test/regress/tickets_expected: Fix crasher in raster when
+	  fed an empty raster (note was tempted to change the def of empty
+	  raster to include raster with no bands but not sure where else
+	  that is used, so just revised the clip check to not try to clip
+	  if no bands).
+	  References #3055 for PostGIS 2.3.7,
+	  also minor doc fix references #2925 for PostGIS 2.3.7
+	  reorder NEWS tickets numerically
+
+2018-03-27 17:38  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16501] NEWS, liblwgeom/lwlinearreferencing.c: ST_CPAWithin
+	  precision fix
+	  
+	  Closes #4032
+
+2018-03-24 00:01  Daniel Baston <dbaston@gmail.com>
+
+	* [r16492] liblwgeom/lwgeom_geos_cluster.c, regress/tickets.sql,
+	  regress/tickets_expected: Avoid dropping SRID in
+	  ST_ClusterIntersecting
+	  
+	  References #4055
+
+2018-03-22 15:45  Regina Obe <lr@pcorp.us>
+
+	* [r16481] NEWS, postgis/geography.sql.in: schema qualify geography
+	  functions (including ST_Buffer)
+	  References #4052 for PostGIS 2.3.7
+
+2018-02-26 20:14  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16427] liblwgeom/lwin_wkt_lex.c: Add generated lexer (for 2.3)
+
+2018-02-26 20:14  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16426] NEWS, liblwgeom/lwin_wkt_lex.l: Fix memory corruption in
+	  case where lexer is interrupted mid-process
+	  References #4017
+	  For 2.3
+
+2018-02-26 18:27  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16421] NEWS, liblwgeom/lwlinearreferencing.c: Use more precise
+	  bounds when testing overlap of temporal ranges.
+	  For 2.3, references #4025
+
+2018-02-23 19:54  Regina Obe <lr@pcorp.us>
+
+	* [r16414] authors.git, authors.svn: Add Raúl Marín Rodríguez to
+	  svn and git authors lists
+
+2018-02-22 22:22  Regina Obe <lr@pcorp.us>
+
+	* [r16411] ci/winnie/build_postgis.sh,
+	  ci/winnie/package_postgis.sh, ci/winnie/regress_postgis.sh:
+	  Backport ci changes to 2.3
+
+2018-02-22 13:42  Sandro Santilli <strk@kbt.io>
+
+	* [r16408] .gitlab-ci.yml: [gitlab-ci] Switch to PostgreSQL 9.6 and
+	  libjson-c-dev
+	  
+	  Fixes gitlab-ci build for 2.3, references #4023
+
+2018-02-22 11:16  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16407] NEWS, postgis/lwgeom_box3d.c, regress/regress_expected,
+	  regress/sfcgal/regress_expected: Fix cast from box3d to geometry
+	  
+	  Patch by Matthias Bay
+	  
+	  Closes https://github.com/postgis/postgis/pull/214
+	  Closes #4020
+
+2018-01-26 14:56  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16363] NEWS, liblwgeom/lwpoly.c: lwpoly_construct_circle: Avoid
+	  division by zero (Raúl Marín Rodríguez)
+	  References #4003
+
+2018-01-22 14:13  Sandro Santilli <strk@kbt.io>
+
+	* [r16357] NEWS, postgis/geography.sql.in: Set availability of
+	  support function for KNN index
+	  
+	  Fixes upgrade from 2.1 to 2.2+
+	  References #3978 in 2.3 branch (2.3.7)
+
+2018-01-22 12:37  Sandro Santilli <strk@kbt.io>
+
+	* [r16354] .drone.yml: [drone] Use trisquel2 image, test all pgsql
+	  versions and upgrades
+	  
+	  The new docker image also uses newer GEOS (3.6.2).
+	  References #3813 for 2.3 branch
+	  NOTE: -Werror is not used in this branch
+
+2018-01-22 11:31  Sandro Santilli <strk@kbt.io>
+
+	* [r16351] regress/run_test.pl: Backport run_test.pl fixes from
+	  trunk
+
+2018-01-16 06:33  Regina Obe <lr@pcorp.us>
+
+	* [r16314] Version.config, ci/debbie/postgis_make_dist.sh,
+	  ci/debbie/postgis_release_docs.sh,
+	  extensions/upgradeable_versions.mk: flip version to 2.3.7dev, add
+	  in 2.3.6 to upgrade path
+	  backport changes to stamp timestamp
+	  References #3991 for PostGIS 2.3.7dev
+
+2018-01-15 21:01  Regina Obe <lr@pcorp.us>
+
+	* [r16303] ci/debbie/postgis_release_docs.sh: Get rid of sed
+	  fiddling with SVN revision
+
+2018-01-15 20:58  Regina Obe <lr@pcorp.us>
+
+	* [r16302] HOWTO_RELEASE, Version.config: more clearifying notes on
+	  HOWTO_RELEASE
+	  change version to 2.3.6 in prep for tagging tomorrow or
+	  Wednesday.
+
+2018-01-15 02:19  Regina Obe <lr@pcorp.us>
+
+	* [r16300] ChangeLog, HOWTO_RELEASE,
+	  ci/debbie/postgis_make_dist.sh: update change log, echo branch
+	  reference, minor correction to HOWTO_RELEASE
+
 2018-01-14 16:05  Regina Obe <lr@pcorp.us>
 
 	* [r16295] HOWTO_RELEASE, Version.config, doc/release_notes.xml,
