@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2017-01-30
+Date: 2018-04-01
 
 Versioning Scheme
 -----------------
@@ -25,7 +25,7 @@ to work or rather *HIGHLY RECOMMENDED* to get new functionalities.
 
 All POSTGIS_MICRO_VERSION that are in branch or trunk should end in dev.
 So for example if you just release 2.1.1, then the 2.1 branch should have
-POSTGIS_MICRO_VERSION set to 2dev so that the full version is 2.2.5dev.
+POSTGIS_MICRO_VERSION set to 2dev so that the full version is 2.1.2dev.
 
 *Liblwgeom*
 
@@ -39,11 +39,11 @@ within a PostGIS minor version.
 Requirements
 ------------
 
-In order to build a release, you will need to build PostGIS and the 
+In order to build a release, you will need to build PostGIS and the
 documentation -- that means having the required software:
 
 * For PostGIS:
-  - PostgreSQL 
+  - PostgreSQL
   - GEOS
   - Proj4
   - GDAL (for raster)
@@ -63,37 +63,51 @@ Release procedure
 - Edit README.postgis and set release date and version.
 - Add release notes in doc/release_notes.xml
 - Update Version.config to drop the "dev" suffix
-- Ensure all the previous released micro versions are listed in 
-  in extensions/upgradeable_versions.mk
+- Add the "dev" suffixed version in extensions/upgradeable_versions.mk
+  and ensure all the previous released minor versions are listed in it
+- Update the README.md to reflect new to be created buildbot badges
+	(this should only be needed for trunk release)
 - Commit all changes
-- Tag branch:  
-   $ base=https://svn.osgeo.org/postgis/
-   $ rev=2.2.x
-   $ svn copy -m "Tagged release $rev" $base/branches/2.2 $base/tags/$rev
-- Run: sh make_dist.sh $rev (or use debbie for this)
-- Build and test generated tarball (including extension upgrade)
-- Update jenkins jobs to latest micro dev.
-- Copy tarball to web site and edit downloads page
-- Announce on e-mail 
+- If this is a minor or major release (no branch exists):
+	   $ base=http://svn.osgeo.org/postgis/
+	   $ rev=x.x
+	   $ svn copy -m "Branch $rev" $base/trunk $base/branches/$rev
+
+	   Go to: https://debbie.postgis.net and copy last branch version and make new job
+	   a) Replace PostGIS_* string params with new version
+	   b) Replace repository url with new branch repo url
+	   c) Update the PostGIS_trunk by updating the PostGIS_* string params
+
+	   Go to: ​https://trac.osgeo.org/postgis/ edit the matrix to reflect new branch
+
+- Tag branch:  (replace x.x and x.x.x with minor and micro version e.g 2.3, 2.3.1
+   $ base=http://svn.osgeo.org/postgis/
+   $ brev=x.x
+   $ rev=x.x.x
+   $ svn copy -m "Tagged release $rev" $base/branches/$brev $base/tags/$rev
+- Run: sh make_dist.sh $rev (note, debbie should have already done this,
+      and the file will be waiting in postgis.net/stuff.  You might need to wait a few minutes to see it.)
+      If impatient check status of job - https://debbie.postgis.net/job/PostGIS_Make_Dist/
+- Documentation should also have been built and should be in postgis.net/stuff
+  (this sometimes takes sometime so wait 15 minutes)
+- Test generated tarball (including extension upgrade)
+- Copy tarball, pdf, doc-html.. to http://download.osgeo.org/postgis/ web site and edit postgis.net/source page
+- Announce on e-mail
     - postgis-users
     - postgis-devel
-    - pgsql-announce
+    - pgsql-announce (send note to david at fetter dot org to be included in Weekly news)
     - osgeo-discuss
 - Update web sites
     - PostGIS News
-    - https://svn.osgeo.org/postgis/web/_content/posts
+      - https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/posts
        a) create a new Post for current year making sure the page name starts with mm-dd
-       b) Update links on https://svn.osgeo.org/postgis/web/_content/pages/source.html
+       b) Update links on https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/pages/source.html
        c) commit and wait 5 minutes to see changes on website
     - PostGIS doc release versioned doc - http://postgis.net/documentation/
-     (For building pdf, debbie has tagged jobs 
-       -- http://debbie.postgis.net:8080 (log in)
-       Create new job copy last tag e.g. PostGIS_2.0_tagged_docs to PostGIS_2.1_tagged_docs
-       and make appropriate edits and then just run.
-       Or just be lazy and bug Regina Obe to do this.
-    - Freshmeat
+     Verify the documentation is up to date (might need to change the apach config)
     - Wikipedia
-    - Twitter (we all love twitter don't we)
+    - Twitter
+       This should automatically happen as a result of posting to PostGIS website since Planet PostGIS autotweets.
 - Update Trac and make old Milestone as completed
 - Push the revision number forward (see Versioning Scheme)
 - Remove the "dev" suffixed version from extensions/upgradeable_versions.mk

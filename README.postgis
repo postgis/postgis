@@ -2,7 +2,7 @@ PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
 :Version: 2.2.7
-:Date: 2018-xx-xx
+:Date: 2018-04-06
 :Website: http://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -187,7 +187,7 @@ UPGRADING EXISTING SPATIAL DATABASES
 
 Upgrade PostGIS using the "ALTER EXTENSION" facility.
 
-  ALTER EXTENSION postgis UPDATE TO '2.2.0';
+  ALTER EXTENSION postgis UPDATE;
   
 
 USAGE
