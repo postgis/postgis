@@ -5,7 +5,7 @@
 
     <sect1>
       <title>Release 2.4.4</title>
-      <para>Release date: 2018/01/17</para>
+      <para>Release date: 2018/04/08</para>
       <para>This is a bug fix and performance improvement release.</para>
       <simplesect><title>Bug Fixes</title>
         <para>#3055, [raster] ST_Clip() on a raster without band crashes the server
