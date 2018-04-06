@@ -7,6 +7,7 @@ ST_ScaleBOX|f
 ST_ScaleM1|POINT(40 40 40 3)
 ST_ScaleM2|POINT(4 -3 3 8)
 ST_ScaleM3|POINT(-30 40 5 9)
+ST_ScaleOrigin|LINESTRING(1 1,3 3)
 ST_Rotate|POINT(29 11)
 ST_Rotate|POINT(-2 0)
 ST_Rotate|POINT(19 1)

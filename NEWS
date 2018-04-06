@@ -12,6 +12,7 @@ PostGIS 2.5.0
   - #2256, _postgis_index_extent() for extent from index (Paul Ramsey)
   - #3176, Add ST_OrientedEnvelope (Dan Baston)
   - #4029, Add ST_QuantizeCoordinates (Dan Baston)
+  - #4063, Optional false origin point for ST_Scale (Paul Ramsey)
 
 * Breaking Changes *
   - #4054, ST_SimplifyVW changed from > tolerance to >= tolerance

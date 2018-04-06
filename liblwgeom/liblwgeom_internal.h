@@ -307,6 +307,7 @@ LWPOLY *lwcurvepoly_stroke(const LWCURVEPOLY *curvepoly, uint32_t perQuad);
 * Affine
 */
 void ptarray_affine(POINTARRAY *pa, const AFFINE *affine);
+void affine_invert(AFFINE *affine);
 
 /*
 * Scale

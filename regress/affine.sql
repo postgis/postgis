@@ -13,6 +13,7 @@ SELECT 'ST_ScaleBOX', p && ST_Scale(p,ST_MakePoint(-10,1)) FROM (
 select 'ST_ScaleM1', ST_asewkt(ST_Scale('POINT(10 20 -5 3)'::geometry, ST_MakePoint(4, 2, -8)));
 select 'ST_ScaleM2', ST_asewkt(ST_Scale('POINT(-2 -1 3 2)'::geometry, ST_MakePointM(-2, 3, 4)));
 select 'ST_ScaleM3', ST_asewkt(ST_Scale('POINT(10 20 -5 3)'::geometry, ST_MakePoint(-3, 2, -1, 3)));
+select 'ST_ScaleOrigin', st_astext(st_scale('LINESTRING(1 1, 2 2)'::geometry, 'POINT(2 2)'::geometry, 'POINT(1 1)'::geometry));
 
 -- ST_Rotate
 select 'ST_Rotate', ST_asewkt(ST_SnapToGrid(ST_Rotate('POINT(1 1)'::geometry, pi()/2, 10.0, 20.0), 0.1));

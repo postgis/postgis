@@ -2919,48 +2919,95 @@ Datum ST_Scale(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_Scale);
 Datum ST_Scale(PG_FUNCTION_ARGS)
 {
-  GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P_COPY(0); /* will be modified */
-  GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
-  GSERIALIZED *ret;
-  LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
-  LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
-  LWPOINT *lwpoint;
-  POINT4D factors;
+	GSERIALIZED *geom;
+	GSERIALIZED *geom_scale = PG_GETARG_GSERIALIZED_P(1);
+	GSERIALIZED *geom_origin = NULL;
+	LWGEOM *lwg, *lwg_scale, *lwg_origin;
+	LWPOINT *lwpt_scale, *lwpt_origin;
+	POINT4D origin;
+	POINT4D factors;
+	bool translate = false;
+	GSERIALIZED *ret;
+	AFFINE aff;
 
-  lwpoint = lwgeom_as_lwpoint(lwgeom2);
-  if ( lwpoint == NULL )
-  {
-    lwgeom_free(lwgeom1);
-    lwgeom_free(lwgeom2);
-    PG_FREE_IF_COPY(geom1, 0);
-    PG_FREE_IF_COPY(geom2, 1);
-    lwpgerror("Scale factor geometry parameter must be a point");
-    PG_RETURN_NULL();
-  }
-  if ( ! lwpoint->point->npoints )
-  {
-    /* empty point, return input untouched */
-    lwgeom_free(lwgeom1);
-    lwgeom_free(lwgeom2);
-    PG_FREE_IF_COPY(geom2, 1);
-    PG_RETURN_POINTER(geom1);
-  }
-  getPoint4d_p(lwpoint->point, 0, &factors);
-  if ( ! FLAGS_GET_Z(lwpoint->flags ) ) factors.z = 1;
-  if ( ! FLAGS_GET_M(lwpoint->flags ) ) factors.m = 1;
+	/* Make sure we have a valid scale input */
+	lwg_scale = lwgeom_from_gserialized(geom_scale);
+	lwpt_scale = lwgeom_as_lwpoint(lwg_scale);
+	if (!lwpt_scale)
+	{
+		lwgeom_free(lwg_scale);
+		PG_FREE_IF_COPY(geom_scale, 1);
+		lwpgerror("Scale factor geometry parameter must be a point");
+		PG_RETURN_NULL();
+	}
 
-  lwgeom_scale(lwgeom1, &factors);
+	/* Geom Will be modified in place, so take a copy */
+	geom = PG_GETARG_GSERIALIZED_P_COPY(0);
+	lwg = lwgeom_from_gserialized(geom);
 
-  /* Construct GSERIALIZED */
-  ret = geometry_serialize(lwgeom1);
+	/* Empty point, return input untouched */
+	if (lwgeom_is_empty(lwg))
+	{
+		lwgeom_free(lwg_scale);
+		lwgeom_free(lwg);
+		PG_FREE_IF_COPY(geom_scale, 1);
+		PG_RETURN_POINTER(geom);
+	}
 
-  /* Cleanup */
-  lwgeom_free(lwgeom1);
-  lwgeom_free(lwgeom2);
-  PG_FREE_IF_COPY(geom1, 0);
-  PG_FREE_IF_COPY(geom2, 1);
+	/* Once we read the scale data into local static point, we can */
+	/* free the lwgeom */
+	lwpoint_getPoint4d_p(lwpt_scale, &factors);
+	if (!lwgeom_has_z(lwg_scale)) factors.z = 1.0;
+	if (!lwgeom_has_m(lwg_scale)) factors.m = 1.0;
+	lwgeom_free(lwg_scale);
 
-  PG_RETURN_POINTER(ret);
+	/* Do we have the optional false origin? */
+	if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
+	{
+		geom_origin = PG_GETARG_GSERIALIZED_P(2);
+		lwg_origin = lwgeom_from_gserialized(geom_origin);
+		lwpt_origin = lwgeom_as_lwpoint(lwg_origin);
+		if (lwpt_origin)
+		{
+			lwpoint_getPoint4d_p(lwpt_origin, &origin);
+			translate = true;
+		}
+		/* Free the false origin inputs */
+		lwgeom_free(lwg_origin);
+		PG_FREE_IF_COPY(geom_origin, 2);
+	}
+
+	/* If we have false origin, translate to it before scaling */
+	if (translate)
+	{
+		/* Initialize affine */
+		memset(&aff, 0, sizeof(AFFINE));
+		/* Set rotation/scale/sheer matrix to no-op */
+		aff.afac = aff.efac = aff.ifac = 1.0;
+		/* Strip false origin from all coordinates */
+		aff.xoff = -1 * origin.x;
+		aff.yoff = -1 * origin.y;
+		aff.zoff = -1 * origin.z;
+		lwgeom_affine(lwg, &aff);
+	}
+
+	lwgeom_scale(lwg, &factors);
+
+	/* Return to original origin after scaling */
+	if (translate)
+	{
+		aff.xoff *= -1;
+		aff.yoff *= -1;
+		aff.zoff *= -1;
+		lwgeom_affine(lwg, &aff);
+	}
+
+	/* Cleanup and return */
+	ret = geometry_serialize(lwg);
+	lwgeom_free(lwg);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_FREE_IF_COPY(geom_scale, 1);
+	PG_RETURN_POINTER(ret);
 }
 
 Datum ST_Points(PG_FUNCTION_ARGS);
