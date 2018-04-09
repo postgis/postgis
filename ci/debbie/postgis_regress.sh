@@ -15,6 +15,7 @@ set -e
 export MAKE_GARDEN=0
 export MAKE_EXTENSION=1
 export DUMP_RESTORE=1
+export SFCGAL_VER=1.3
 
 ## end variables passed in by jenkins
 
@@ -55,7 +56,8 @@ fi
 ./configure \
     --with-pgconfig=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}/bin/pg_config \
     --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/geos-config \
-    --with-gdalconfig=${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/bin/gdal-config --with-sfcgal=/usr/bin/sfcgal-config \
+    --with-gdalconfig=${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/bin/gdal-config \
+    --with-sfcgal=${PROJECTS}/sfcgal/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}/bin/sfcgal-config \
     --without-interrupt-tests \
     --prefix=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}
 make clean
