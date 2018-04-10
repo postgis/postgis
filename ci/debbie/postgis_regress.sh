@@ -57,9 +57,9 @@ fi
     --with-pgconfig=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}/bin/pg_config \
     --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/geos-config \
     --with-gdalconfig=${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/bin/gdal-config \
-    --with-sfcgal=${PROJECTS}/sfcgal/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}/bin/sfcgal-config \
     --without-interrupt-tests \
     --prefix=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}
+
 make clean
 ## install so we can later test extension upgrade
 make
