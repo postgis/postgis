@@ -14,7 +14,7 @@
 #export GCC_TYPE=
 export SFCGAL_VER=1.3.2
 export GEOS_VER=3.7.0dev
-export GDAL_VER=2.2.3
+export GDAL_VER=2.2.4
 export PROJ_VER=4.9.3
 export SFCGAL_VER=1.3.2
 export PCRE_VER=8.33
@@ -60,6 +60,10 @@ else
 	export POSTGIS_SRC=${PROJECTS}/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}
 	export svnurl="https://svn.osgeo.org/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}"
 fi;
+
+if [ -n "$SOURCE_FOLDER" ]; then
+  export POSTGIS_SRC=${PROJECTS}/postgis/$SOURCE_FOLDER
+fi
 
 if [[ "$reference"  == *trunk* ]] ; then
 	export svnurl="https://svn.osgeo.org/postgis/trunk"

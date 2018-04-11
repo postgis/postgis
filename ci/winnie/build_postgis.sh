@@ -14,7 +14,7 @@ set -e
 #export GCC_TYPE=gcc48  #for pre-4.8.0 compiles this is blank
 export SFCGAL_VER=1.3.2
 export GEOS_VER=3.7.0dev
-export GDAL_VER=2.2.3
+export GDAL_VER=2.2.4
 export PROJ_VER=4.9.3
 export SFCGAL_VER=1.3.2
 export PCRE_VER=8.33
@@ -58,11 +58,16 @@ export POSTGIS_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 
 export POSTGIS_MICRO_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}
 echo POSTGIS_MICRO_VERSION: $POSTGIS_VER
-if [[ "$POSTGIS_MICRO_VERSION"  == *SVN* || "$POSTGIS_MICRO_VERSION"  == *dev* ]] ; then
-	export POSTGIS_SRC=${PROJECTS}/postgis/branches/${POSTGIS_VER}
+
+if [ -n "$SOURCE_FOLDER" ]; then
+  export POSTGIS_SRC=${PROJECTS}/postgis/$SOURCE_FOLDER
 else
-	#tagged version -- official release
-	export POSTGIS_SRC=${PROJECTS}/postgis/tags/${POSTGIS_VER}.${POSTGIS_MICRO_VERSION}
+  if [[ "$POSTGIS_MICRO_VERSION"  == *SVN* || "$POSTGIS_MICRO_VERSION"  == *dev* ]] ; then
+    export POSTGIS_SRC=${PROJECTS}/postgis/branches/${POSTGIS_VER}
+  else
+    #tagged version -- official release
+    export POSTGIS_SRC=${PROJECTS}/postgis/tags/${POSTGIS_VER}.${POSTGIS_MICRO_VERSION}
+  fi;
 fi;
 
 #export POSTGIS_SRC=${PROJECTS}/postgis/trunk
