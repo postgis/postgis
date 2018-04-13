@@ -862,4 +862,51 @@ CREATE OR REPLACE FUNCTION ST_Centroid(text)
 	$$ SELECT @extschema@.ST_Centroid($1::@extschema@.geometry);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
------------------------------------------------------------------------------
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_Union(geography, geography)
+	RETURNS geography
+	AS 'MODULE_PATHNAME','geography_union'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_Union(text, text)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_Union($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_Difference(geography, geography)
+	RETURNS geography
+	AS 'MODULE_PATHNAME','geography_difference'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_Difference(text, text)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_Difference($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_SymDifference(geography, geography)
+	RETURNS geography
+	AS 'MODULE_PATHNAME','geography_symdifference'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_SymDifference(text, text)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_SymDifference($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 1.5.0
+-- Updated: 2.5.0 peforms on spheroid instead of transforming to geometry
+CREATE OR REPLACE FUNCTION ST_Intersection(geography, geography)
+	RETURNS geography
+	AS 'MODULE_PATHNAME','geography_intersection'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_Intersection(text, text)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_Intersection($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;

@@ -99,6 +99,7 @@ PG_OBJS= \
 	geography_inout.o \
 	geography_btree.o \
 	geography_centroid.o \
+	geography_overlay.o \
 	geography_measurement.o \
 	geography_measurement_trees.o \
 	geometry_inout.o \

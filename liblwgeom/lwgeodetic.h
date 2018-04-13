@@ -32,6 +32,7 @@
 #endif
 
 #include <math.h>
+#include "liblwgeom_internal.h"
 
 #ifndef NAN
 #define NAN 0.0/0.0

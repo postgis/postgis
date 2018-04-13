@@ -318,9 +318,20 @@ LWPOINT* geography_centroid_from_mpoly(const LWMPOLY* mpoly, bool use_spheroid, 
 
     POINT3DM* points = palloc(size*sizeof(POINT3DM));
     uint32_t j = 0;
+    POINT2D pt_outside;
 
-    /* use first point as reference to create triangles */
-    const POINT4D* reference_point = (const POINT4D*) getPoint2d_cp(mpoly->geoms[0]->rings[0], 0);
+    if (mpoly->bbox) { gbox_centroid(mpoly->bbox, &pt_outside); }
+    else
+    {
+	    GBOX gbox;
+	    lwgeom_calculate_gbox_geodetic((LWGEOM*)mpoly, &gbox);
+	    gbox_centroid(&gbox, &pt_outside);
+    }
+
+    /* guess a new point (gbox_pt_outside segfaults) */
+    POINT4D* reference_point = lwalloc(sizeof(POINT4D));
+    reference_point->x = pt_outside.x;
+    reference_point->y = pt_outside.y;
 
     for (ip = 0; ip < mpoly->ngeoms; ip++) {
         LWPOLY* poly = mpoly->geoms[ip];
@@ -334,12 +345,12 @@ LWPOINT* geography_centroid_from_mpoly(const LWMPOLY* mpoly, bool use_spheroid, 
                 const POINT4D* p2 = (const POINT4D*) getPoint2d_cp(ring, i+1);
 
                 POINTARRAY* pa = ptarray_construct_empty(0, 0, 4);
-                ptarray_insert_point(pa, p1, 0);
-                ptarray_insert_point(pa, p2, 1);
-                ptarray_insert_point(pa, reference_point, 2);
-                ptarray_insert_point(pa, p1, 3);
+		ptarray_insert_point(pa, reference_point, 0);
+		ptarray_insert_point(pa, p1, 1);
+		ptarray_insert_point(pa, p2, 2);
+		ptarray_insert_point(pa, reference_point, 3);
 
-                LWPOLY* poly_tri = lwpoly_construct_empty(mpoly->srid, 0, 0);
+		LWPOLY* poly_tri = lwpoly_construct_empty(mpoly->srid, 0, 0);
                 lwpoly_add_ring(poly_tri, pa);
 
                 LWGEOM* geom_tri = lwpoly_as_lwgeom(poly_tri);
@@ -382,6 +393,7 @@ LWPOINT* geography_centroid_from_mpoly(const LWMPOLY* mpoly, bool use_spheroid, 
             }
         }
     }
+	lwfree(reference_point);
     LWPOINT* result = geography_centroid_from_wpoints(mpoly->srid, points, size);
     pfree(points);
     return result;

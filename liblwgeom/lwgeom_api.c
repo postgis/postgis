@@ -387,7 +387,7 @@ getPoint3dz_cp(const POINTARRAY *pa, uint32_t n)
 
 	if ( n>=pa->npoints )
 	{
-		lwerror("getPoint3dz_cp: point offset out of range");
+		lwerror("getPoint3dz_cp: point offset (%d) out of range", n);
 		return 0; /*error */
 	}
 
@@ -407,7 +407,7 @@ getPoint4d_cp(const POINTARRAY* pa, uint32_t n)
 
 	if (n >= pa->npoints)
 	{
-		lwerror("getPoint4d_cp: point offset out of range");
+		lwerror("getPoint4d_cp: point offset (%d) out of range", n);
 		return 0; /*error */
 	}
 
