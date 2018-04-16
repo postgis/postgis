@@ -18,6 +18,7 @@ PostGIS 2.4.4
            (Paul Ramsey, Darafei Praliaskouski)
   - #4052, schema qualify several functions in geography (Regina Obe)
   - #4055, ST_ClusterIntersecting drops SRID (Daniel Baston)
+  - #4067, Guard lookup of namespace in internal call case
 
  * Enhancements *
   - #3946, Compile support for PgSQL 11 (Paul Ramsey)
