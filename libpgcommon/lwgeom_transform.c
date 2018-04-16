@@ -696,6 +696,9 @@ SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
 	if (!fcinfo || !fcinfo->flinfo) return;
 
 	nsp_name = get_namespace_name(get_func_namespace(fcinfo->flinfo->fn_oid));
+	/* early exit if we cannot lookup nsp_name, cf #4067 */
+	if (!nsp_name) return;
+
 	elog(DEBUG4, "%s located %s in namespace %s", __func__, get_func_name(fcinfo->flinfo->fn_oid), nsp_name);
 	spatialRefSysSchema = MemoryContextStrdup(CacheMemoryContext, nsp_name);;
 	return;
