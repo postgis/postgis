@@ -73,7 +73,7 @@ psql -d yourdatabase -f sfcgal_comments.sql
 	<note><para>If you are on windows, do not quote the driver list</para></note>
 
 	<para>Setting environment variables varies depending on OS.  For PostgreSQL installed on Ubuntu or Debian via apt-postgresql, the preferred way is to
-	edit <filename>/etc/postgresql/<replaceable>9.3</replaceable>/<replaceable>main</replaceable>/environment</filename> where 9.3 refers to version of PostgreSQL and main refers to the cluster.</para>
+	edit <filename>/etc/postgresql/<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</filename> where 9.3 refers to version of PostgreSQL and main refers to the cluster.</para>
 
 	<para>On windows, if you are running as a service, you can set via System variables which for Windows 7 you can get to by right-clicking on Computer-&gt;Properties Advanced System Settings or in explorer navigating to <varname>Control Panel\All Control Panel Items\System</varname>.
 	Then clicking <emphasis>Advanced System Settings -&gt;Advanced->Environment Variables</emphasis> and adding new system variables.</para>
@@ -127,7 +127,7 @@ psql -d yourdatabase -f sfcgal_comments.sql
 
 	  <listitem>
 		<para>
-		  Proj4 reprojection library, version 4.6.0 or greater. Proj4 4.9 or above is needed to take advantage of improved geodetic.
+		  Proj4 reprojection library, version 4.9.0 or greater. Proj4 4.9 or above is needed to take advantage of improved geodetic.
 			The Proj4 library is used to provide coordinate reprojection support within
 		  PostGIS. Proj4 is available for download from
 		  <ulink url="http://trac.osgeo.org/proj/">
@@ -139,7 +139,7 @@ psql -d yourdatabase -f sfcgal_comments.sql
 
 	  <listitem>
 		<para>
-		  GEOS geometry library, version 3.4 or greater, but GEOS 3.7+ is recommended to take full advantage of all the new functions and features.  You should have at least GEOS 3.5,
+		  GEOS geometry library, version 3.5 or greater, but GEOS 3.7+ is recommended to take full advantage of all the new functions and features.  You should have at least GEOS 3.5,
 			without which you will be missing some major enhancements such as <xref linkend="ST_ClipByBox2D" /> and <xref linkend="ST_Subdivide" />. GEOS is available for download from
 		  <ulink url="http://trac.osgeo.org/geos/">
 			http://trac.osgeo.org/geos/

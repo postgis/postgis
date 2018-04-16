@@ -20,6 +20,7 @@ PostGIS 2.5.0
   - #3893, raster support functions can only be loaded in the same schema
            with core PostGIS functions.
   - #4035, remove dummy pgis_abs type from aggregate/collect routines.
+  - #4069, drop support for GEOS < 3.5 and PostgreSQL < 9.4
 
 * Enhancements and Fixes*
   - #3944, Update to EPSG register v9.2 (Even Rouault)
@@ -54,7 +55,7 @@ PostGIS 2.5.0
   - #4038, ST_Subdivide now selects pivot for geometry split that reuses input
            vertices. ST_ClipByBox2D is stubbed with ST_Intersection because of
            robustness issues. (Darafei Praliaskouski)
-  - #4025, #4032 Fixed precision issue in ST_ClosestPointOfApproach, 
+  - #4025, #4032 Fixed precision issue in ST_ClosestPointOfApproach,
            ST_DistanceCPA, and ST_CPAWithin (Paul Ramsey, Darafei Praliaskouski)
 
 

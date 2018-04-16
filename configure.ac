@@ -457,15 +457,12 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   PGSQL_SHAREDIR=`"$PG_CONFIG" --sharedir`
 
   AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
-  dnl Ensure that we are using PostgreSQL >= 9.3
-  if test $POSTGIS_PGSQL_VERSION -lt 93; then
-    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.3])
+  dnl Ensure that we are using PostgreSQL >= 9.4
+  if test $POSTGIS_PGSQL_VERSION -lt 94; then
+    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.4])
   fi
 
-  HAVE_BRIN=no
-  if test $POSTGIS_PGSQL_VERSION -gt 94; then
-    HAVE_BRIN=yes
-  fi
+  HAVE_BRIN=yes
 
   dnl Note: We don't need the server-side LDFLAGS or CPPFLAGS because we get these from PGXS
 
@@ -680,10 +677,10 @@ GEOS_NUMERIC_PATCH_VERSION=`printf "%02d" $GEOS_PATCH_VERSION`
 GEOS_NUMERIC_MINOR_VERSION=`printf "%02d" $GEOS_MINOR_VERSION`
 GEOS_NUMERIC_VERSION="$GEOS_MAJOR_VERSION$GEOS_NUMERIC_MINOR_VERSION$GEOS_NUMERIC_PATCH_VERSION"
 
-dnl Ensure that we are using GEOS >= 3.4.0
+dnl Ensure that we are using GEOS >= 3.5.0
 AC_MSG_RESULT([checking GEOS version... $GEOS_FULL_VERSION])
-if test ! "$GEOS_NUMERIC_VERSION" -ge 30400; then
-	AC_MSG_ERROR([PostGIS requires GEOS >= 3.4.0])
+if test ! "$GEOS_NUMERIC_VERSION" -ge 30500; then
+	AC_MSG_ERROR([PostGIS requires GEOS >= 3.5.0])
 fi
 
 dnl Extract the linker and include flags
