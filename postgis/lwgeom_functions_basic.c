@@ -3084,6 +3084,8 @@ Datum LWGEOM_FilterByM(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom_out;
 	double min, max;
 	int returnm;
+	int hasm;
+
 	if ( PG_NARGS() > 0 && ! PG_ARGISNULL(0))
 	{
 		geom_in = PG_GETARG_GSERIALIZED_P(0);
@@ -3120,7 +3122,7 @@ Datum LWGEOM_FilterByM(PG_FUNCTION_ARGS)
 
 	lwgeom_in = lwgeom_from_gserialized(geom_in);
 
-	int hasm = FLAGS_GET_M(lwgeom_in->flags);
+	hasm = FLAGS_GET_M(lwgeom_in->flags);
 
 	if(!hasm)
 	{
