@@ -760,6 +760,17 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 			<funcdef>geometry <function>ST_GeomFromGeoJSON</function></funcdef>
 			<paramdef><type>text </type> <parameter>geomjson</parameter></paramdef>
 		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromGeoJSON</function></funcdef>
+			<paramdef><type>json </type> <parameter>geomjson</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromGeoJSON</function></funcdef>
+			<paramdef><type>jsonb </type> <parameter>geomjson</parameter></paramdef>
+		  </funcprototype>
+
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -768,6 +779,7 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<para>Constructs a PostGIS geometry object from the GeoJSON representation.</para>
 		<para>ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an error if you try to use it on a whole JSON document.</para>
 
+		<para>Enhanced: 2.5.0 can now accept json and jsonb as inputs.</para>
 		<para>Availability: 2.0.0 requires - JSON-C &gt;= 0.9</para>
 		<note><para>If you do not have JSON-C enabled, support you will get an error notice instead of seeing an output.
 			To enable JSON-C, run configure --with-jsondir=/path/to/json-c.  See <xref linkend="installation_configuration" /> for details.</para></note>
