@@ -172,3 +172,7 @@ postgis/uninstall_sfcgal.sql
 *.pdf
 .idea/*
 .syntastic_c_config
+
+# LLVM JIT
+*.bc
+*.ll
