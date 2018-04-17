@@ -504,7 +504,6 @@ static void
 AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 {
 	MemoryContext PJMemoryContext;
-	MemoryContextCallback *callback;
 	projPJ projection = NULL;
 	char *proj_str = NULL;
 
@@ -573,10 +572,12 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	/* PgSQL comments suggest allocating callback in the context */
 	/* being managed, so that the callback object gets cleaned along with */
 	/* the context */
-	callback = MemoryContextAlloc(PJMemoryContext, sizeof(MemoryContextCallback));
-	callback->arg = (void*)PJMemoryContext;
-	callback->func = PROJ4SRSCacheDelete;
-	MemoryContextRegisterResetCallback(PJMemoryContext, callback);
+	{
+		MemoryContextCallback *callback = MemoryContextAlloc(PJMemoryContext, sizeof(MemoryContextCallback));
+		callback->arg = (void*)PJMemoryContext;
+		callback->func = PROJ4SRSCacheDelete;
+		MemoryContextRegisterResetCallback(PJMemoryContext, callback);
+	}
 #endif
 
  	/* Create the backend hash if it doesn't already exist */

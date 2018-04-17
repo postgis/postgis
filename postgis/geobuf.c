@@ -114,6 +114,7 @@ static void encode_properties(struct geobuf_agg_context *ctx,
 		char *type, *string_value;
 		Datum datum;
 		bool isnull;
+		Oid typoid;
 
 		if (i == ctx->geom_index)
 			continue;
@@ -127,9 +128,9 @@ static void encode_properties(struct geobuf_agg_context *ctx,
 		if (isnull)
 			continue;
 #if POSTGIS_PGSQL_VERSION < 110
-		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
+		typoid = getBaseType(tupdesc->attrs[i]->atttypid);
 #else
-		Oid typoid = getBaseType(tupdesc->attrs[i].atttypid);
+		typoid = getBaseType(tupdesc->attrs[i].atttypid);
 #endif
 		if (strcmp(type, "int2") == 0) {
 			set_int_value(value, DatumGetInt16(datum));
@@ -605,9 +606,10 @@ void geobuf_agg_transfn(struct geobuf_agg_context *ctx)
  */
 uint8_t *geobuf_agg_finalfn(struct geobuf_agg_context *ctx)
 {
-	size_t i;
+	size_t i, len;
 	Data *data;
 	Data__FeatureCollection *fc;
+	uint8_t *buf;
 
 	data = ctx->data;
 	fc = data->feature_collection;
@@ -630,8 +632,8 @@ uint8_t *geobuf_agg_finalfn(struct geobuf_agg_context *ctx)
 	for (i = 0; i < fc->n_features; i++)
 		fc->features[i]->geometry = encode_geometry(ctx, ctx->lwgeoms[i]);
 
-	size_t len = data__get_packed_size(data);
-	uint8_t *buf = palloc(sizeof(*buf) * (len + VARHDRSZ));
+	len = data__get_packed_size(data);
+	buf = palloc(sizeof(*buf) * (len + VARHDRSZ));
 	data__pack(data, buf + VARHDRSZ);
 
 	SET_VARSIZE(buf, VARHDRSZ + len);

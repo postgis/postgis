@@ -177,12 +177,13 @@ Datum pgis_asmvt_deserialfn(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 #else
 	MemoryContext aggcontext, oldcontext;
+	mvt_agg_context *ctx;
 	elog(DEBUG2, "%s called", __func__);
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "%s called in non-aggregate context", __func__);
 
 	oldcontext = MemoryContextSwitchTo(aggcontext);
-	mvt_agg_context *ctx = mvt_ctx_deserialize(PG_GETARG_BYTEA_P(0));
+	ctx = mvt_ctx_deserialize(PG_GETARG_BYTEA_P(0));
 	MemoryContextSwitchTo(oldcontext);
 
 	PG_RETURN_POINTER(ctx);
@@ -197,11 +198,11 @@ Datum pgis_asmvt_combinefn(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 #else
 	MemoryContext aggcontext, oldcontext;
+	mvt_agg_context *ctx, *ctx1, *ctx2;
 	elog(DEBUG2, "%s called", __func__);
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "%s called in non-aggregate context", __func__);
 
-	mvt_agg_context *ctx, *ctx1, *ctx2;
 	ctx1 = (mvt_agg_context*)PG_GETARG_POINTER(0);
 	ctx2 = (mvt_agg_context*)PG_GETARG_POINTER(1);
 	oldcontext = MemoryContextSwitchTo(aggcontext);

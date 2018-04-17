@@ -110,6 +110,7 @@ static uint32_t encode_ptarray(__attribute__((__unused__)) mvt_agg_context *ctx,
 	uint32_t offset = 0;
 	uint32_t i, c = 0;
 	int32_t dx, dy, x, y;
+	const POINT2D *p;
 
 	/* loop points and add to buffer */
 	for (i = 0; i < pa->npoints; i++) {
@@ -119,7 +120,7 @@ static uint32_t encode_ptarray(__attribute__((__unused__)) mvt_agg_context *ctx,
 		/* skip closing point for rings */
 		if (type == MVT_RING && i == pa->npoints - 1)
 			break;
-		const POINT2D *p = getPoint2d_cp(pa, i);
+		p = getPoint2d_cp(pa, i);
 		x = p->x;
 		y = p->y;
 		dx = x - *px;
@@ -366,21 +367,25 @@ static VectorTile__Tile__Value *create_value()
 #define MVT_CREATE_VALUES(kvtype, hash, hasfield, valuefield) \
 { \
 	POSTGIS_DEBUG(2, "MVT_CREATE_VALUES called"); \
-	struct kvtype *kv; \
-	for (kv = ctx->hash; kv != NULL; kv=kv->hh.next) { \
-		VectorTile__Tile__Value *value = create_value(); \
-		value->hasfield = 1; \
-		value->valuefield = kv->valuefield; \
-		values[kv->id] = value; \
+	{ \
+		struct kvtype *kv; \
+		for (kv = ctx->hash; kv != NULL; kv=kv->hh.next) { \
+			VectorTile__Tile__Value *value = create_value(); \
+			value->hasfield = 1; \
+			value->valuefield = kv->valuefield; \
+			values[kv->id] = value; \
+		} \
 	} \
 }
 
 static void encode_values(mvt_agg_context *ctx)
 {
-	POSTGIS_DEBUG(2, "encode_values called");
 	VectorTile__Tile__Value **values;
-	values = palloc(ctx->values_hash_i * sizeof(*values));
 	struct mvt_kv_string_value *kv;
+
+	POSTGIS_DEBUG(2, "encode_values called");
+
+	values = palloc(ctx->values_hash_i * sizeof(*values));
 	for (kv = ctx->string_values_hash; kv != NULL; kv=kv->hh.next) {
 		VectorTile__Tile__Value *value = create_value();
 		value->string_value = kv->string_value;
@@ -412,19 +417,21 @@ static void encode_values(mvt_agg_context *ctx)
 #define MVT_PARSE_VALUE(value, kvtype, hash, valuefield, size) \
 { \
 	POSTGIS_DEBUG(2, "MVT_PARSE_VALUE called"); \
-	struct kvtype *kv; \
-	HASH_FIND(hh, ctx->hash, &value, size, kv); \
-	if (!kv) { \
-		POSTGIS_DEBUG(4, "MVT_PARSE_VALUE value not found"); \
-		kv = palloc(sizeof(*kv)); \
-		POSTGIS_DEBUGF(4, "MVT_PARSE_VALUE new hash key: %d", \
-			ctx->values_hash_i); \
-		kv->id = ctx->values_hash_i++; \
-		kv->valuefield = value; \
-		HASH_ADD(hh, ctx->hash, valuefield, size, kv); \
+	{ \
+		struct kvtype *kv; \
+		HASH_FIND(hh, ctx->hash, &value, size, kv); \
+		if (!kv) { \
+			POSTGIS_DEBUG(4, "MVT_PARSE_VALUE value not found"); \
+			kv = palloc(sizeof(*kv)); \
+			POSTGIS_DEBUGF(4, "MVT_PARSE_VALUE new hash key: %d", \
+				ctx->values_hash_i); \
+			kv->id = ctx->values_hash_i++; \
+			kv->valuefield = value; \
+			HASH_ADD(hh, ctx->hash, valuefield, size, kv); \
+		} \
+		tags[ctx->c*2] = k; \
+		tags[ctx->c*2+1] = kv->id; \
 	} \
-	tags[ctx->c*2] = k; \
-	tags[ctx->c*2+1] = kv->id; \
 }
 
 #define MVT_PARSE_INT_VALUE(value) \
@@ -534,10 +541,12 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 				ctx->c++;
 			} else if (v.type == jbvNumeric) {
 				char *str;
+				double d;
+				long l;
 				str = DatumGetCString(DirectFunctionCall1(numeric_out,
 					PointerGetDatum(v.val.numeric)));
-				double d = strtod(str, NULL);
-				long l = strtol(str, NULL, 10);
+				d = strtod(str, NULL);
+				l = strtol(str, NULL, 10);
 				if ((long) d != l) {
 					MVT_PARSE_VALUE(d, mvt_kv_double_value, double_values_hash,
 						double_value, sizeof(double));
@@ -555,7 +564,6 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 
 static void parse_values(mvt_agg_context *ctx)
 {
-	POSTGIS_DEBUG(2, "parse_values called");
 	uint32_t n_keys = ctx->keys_hash_i;
 	uint32_t *tags = palloc(n_keys * 2 * sizeof(*tags));
 	bool isnull;
@@ -563,6 +571,7 @@ static void parse_values(mvt_agg_context *ctx)
 	TupleDesc tupdesc = get_tuple_desc(ctx);
 	uint32_t natts = (uint32_t) tupdesc->natts;
 	ctx->c = 0;
+	POSTGIS_DEBUG(2, "parse_values called");
 
 	POSTGIS_DEBUGF(3, "parse_values natts: %d", natts);
 
@@ -655,6 +664,7 @@ lwgeom_to_basic_type(LWGEOM *geom)
 		/* by finding the largest basic type available and */
 		/* using that as the basis of a typed collection. */
 		LWCOLLECTION *g = (LWCOLLECTION*)geom;
+		LWCOLLECTION *gc;
 		uint32_t i, maxtype = 0;
 		for (i = 0; i < g->ngeoms; i++)
 		{
@@ -665,7 +675,7 @@ lwgeom_to_basic_type(LWGEOM *geom)
 		if (maxtype > 3) maxtype -= 3;
 		/* Force the working geometry to be a simpler version */
 		/* of itself */
-		LWCOLLECTION *gc = lwcollection_extract(g, maxtype);
+		gc = lwcollection_extract(g, maxtype);
 		*g = *gc;
 	}
 	return;
@@ -715,8 +725,9 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 
 	if (clip_geom)
 	{
+		GBOX bgbox;
 		const GBOX *lwgeom_gbox = lwgeom_get_bbox(lwgeom);;
-		GBOX bgbox = *gbox;
+		bgbox = *gbox;
 		gbox_expand(&bgbox, buffer_map_xunits);
 		if (!gbox_overlaps_2d(lwgeom_gbox, &bgbox))
 		{
@@ -875,11 +886,12 @@ void mvt_agg_transfn(mvt_agg_context *ctx)
 
 static VectorTile__Tile * mvt_ctx_to_tile(mvt_agg_context *ctx)
 {
+	int n_layers = 1;
+	VectorTile__Tile *tile;
 	encode_keys(ctx);
 	encode_values(ctx);
 
-	int n_layers = 1;
-	VectorTile__Tile *tile = palloc(sizeof(VectorTile__Tile));
+	tile = palloc(sizeof(VectorTile__Tile));
 	vector_tile__tile__init(tile);
 	tile->layers = palloc(sizeof(VectorTile__Tile__Layer*) * n_layers);
 	tile->layers[0] = ctx->layer;
@@ -893,6 +905,8 @@ static bytea *mvt_ctx_to_bytea(mvt_agg_context *ctx)
 	/* We should only have a filled slow when all the work of building */
 	/* out the data is complete, so after a serialize/deserialize cycle */
 	/* or after a context combine */
+	size_t len;
+	bytea *ba;
 
 	if (!ctx->tile)
 	{
@@ -908,8 +922,8 @@ static bytea *mvt_ctx_to_bytea(mvt_agg_context *ctx)
 	}
 
 	/* Serialize the Tile */
-	size_t len = VARHDRSZ + vector_tile__tile__get_packed_size(ctx->tile);
-	bytea *ba = palloc(len);
+	len = VARHDRSZ + vector_tile__tile__get_packed_size(ctx->tile);
+	ba = palloc(len);
 	vector_tile__tile__pack(ctx->tile, (uint8_t*)VARDATA(ba));
 	SET_VARSIZE(ba, len);
 	return ba;
@@ -961,12 +975,13 @@ static VectorTile__Tile__Feature *
 tile_feature_copy(const VectorTile__Tile__Feature *feature, int key_offset, int value_offset)
 {
 	uint32_t i;
+	VectorTile__Tile__Feature *nfeature;
 
 	/* Null in => Null out */
 	if (!feature) return NULL;
 
 	/* Init object */
-	VectorTile__Tile__Feature *nfeature = palloc(sizeof(VectorTile__Tile__Feature));
+	nfeature = palloc(sizeof(VectorTile__Tile__Feature));
 	vector_tile__tile__feature__init(nfeature);
 
 	/* Copy settings straight over */
@@ -1054,6 +1069,7 @@ static VectorTile__Tile *
 vectortile_tile_combine(VectorTile__Tile *tile1, VectorTile__Tile *tile2)
 {
 	uint32_t i, j;
+	VectorTile__Tile *tile;
 
 	/* Hopelessly messing up memory ownership here */
 	if (tile1->n_layers == 0 && tile2->n_layers == 0)
@@ -1063,7 +1079,7 @@ vectortile_tile_combine(VectorTile__Tile *tile1, VectorTile__Tile *tile2)
 	else if (tile2->n_layers == 0)
 		return tile1;
 
-	VectorTile__Tile *tile = palloc(sizeof(VectorTile__Tile));
+	tile = palloc(sizeof(VectorTile__Tile));
 	vector_tile__tile__init(tile);
 	tile->layers = palloc(sizeof(void*));
 	tile->n_layers = 0;
