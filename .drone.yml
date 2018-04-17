@@ -5,7 +5,6 @@ test-image: &test-image docker.kbt.io/postgis/build-test:trisquel2
 
 matrix:
   PGVER:
-    - 9.3
     - 9.4
     - 9.5
     - 9.6
