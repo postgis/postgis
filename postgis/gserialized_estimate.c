@@ -307,9 +307,10 @@ static int
 text_p_get_mode(const text *txt)
 {
 	int mode = 2;
+	char *modestr;
 	if (VARSIZE(txt) - VARHDRSZ <= 0)
 		return mode;
-	char *modestr = (char*)VARDATA(txt);
+	modestr = (char*)VARDATA(txt);
 	if ( modestr[0] == 'N' )
 		mode = 0;
 	return mode;
@@ -883,39 +884,41 @@ pg_nd_stats_from_tuple(HeapTuple stats_tuple, int mode)
     /* Then read the geom status histogram from that */
 
 #if POSTGIS_PGSQL_VERSION < 100
-	float4 *floatptr;
-	int nvalues;
+	{
+		float4 *floatptr;
+		int nvalues;
 
-	rv = get_attstatsslot(stats_tuple, 0, 0, stats_kind, InvalidOid,
-						NULL, NULL, NULL, &floatptr, &nvalues);
+		rv = get_attstatsslot(stats_tuple, 0, 0, stats_kind, InvalidOid,
+							NULL, NULL, NULL, &floatptr, &nvalues);
 
-	if ( ! rv ) {
-		POSTGIS_DEBUGF(2,
-				"no slot of kind %d in stats tuple", stats_kind);
-		return NULL;
+		if ( ! rv ) {
+			POSTGIS_DEBUGF(2, "no slot of kind %d in stats tuple", stats_kind);
+			return NULL;
+		}
+
+		/* Clone the stats here so we can release the attstatsslot immediately */
+		nd_stats = palloc(sizeof(float) * nvalues);
+		memcpy(nd_stats, floatptr, sizeof(float) * nvalues);
+
+		/* Clean up */
+		free_attstatsslot(0, NULL, 0, floatptr, nvalues);
 	}
-
-	/* Clone the stats here so we can release the attstatsslot immediately */
-	nd_stats = palloc(sizeof(float) * nvalues);
-	memcpy(nd_stats, floatptr, sizeof(float) * nvalues);
-
-	/* Clean up */
-	free_attstatsslot(0, NULL, 0, floatptr, nvalues);
 #else /* PostgreSQL 10 or higher */
-	AttStatsSlot sslot;
-	rv = get_attstatsslot(&sslot, stats_tuple, stats_kind, InvalidOid,
-						 ATTSTATSSLOT_NUMBERS);
-	if ( ! rv ) {
-		POSTGIS_DEBUGF(2,
-				"no slot of kind %d in stats tuple", stats_kind);
-		return NULL;
+	{
+		AttStatsSlot sslot;
+		rv = get_attstatsslot(&sslot, stats_tuple, stats_kind, InvalidOid,
+							 ATTSTATSSLOT_NUMBERS);
+		if ( ! rv ) {
+			POSTGIS_DEBUGF(2, "no slot of kind %d in stats tuple", stats_kind);
+			return NULL;
+		}
+
+		/* Clone the stats here so we can release the attstatsslot immediately */
+		nd_stats = palloc(sizeof(float4) * sslot.nnumbers);
+		memcpy(nd_stats, sslot.numbers, sizeof(float4) * sslot.nnumbers);
+
+		free_attstatsslot(&sslot);
 	}
-
-	/* Clone the stats here so we can release the attstatsslot immediately */
-	nd_stats = palloc(sizeof(float4) * sslot.nnumbers);
-	memcpy(nd_stats, sslot.numbers, sizeof(float4) * sslot.nnumbers);
-
-	free_attstatsslot(&sslot);
 #endif
 
 	return nd_stats;
@@ -2475,25 +2478,31 @@ spatial_index_read_extent(Oid idx_oid, int key_type)
 	BOX2DF *bounds_2df = NULL;
 	GIDX *bounds_gidx = NULL;
 	GBOX *gbox = NULL;
+	Relation idx_rel;
+	Buffer buffer;
+	Page page;
+	OffsetNumber offset;
+	unsigned long offset_max;
 
 	if (!idx_oid)
 		return NULL;
 
-	Relation idx_rel = index_open(idx_oid, AccessExclusiveLock);
-	Buffer buffer = ReadBuffer(idx_rel, GIST_ROOT_BLKNO);
-	Page page = (Page) BufferGetPage(buffer);
-	OffsetNumber offset = FirstOffsetNumber;
-	unsigned long offset_max = PageGetMaxOffsetNumber(page);
+	idx_rel = index_open(idx_oid, AccessExclusiveLock);
+	buffer = ReadBuffer(idx_rel, GIST_ROOT_BLKNO);
+	page = (Page) BufferGetPage(buffer);
+	offset = FirstOffsetNumber;
+	offset_max = PageGetMaxOffsetNumber(page);
 	while (offset <= offset_max)
 	{
 		ItemId iid = PageGetItemId(page, offset);
+		IndexTuple ituple;
 		if (!iid)
 		{
 			ReleaseBuffer(buffer);
 			index_close(idx_rel, AccessExclusiveLock);
 			return NULL;
 		}
-		IndexTuple ituple = (IndexTuple) PageGetItem(page, iid);
+		ituple = (IndexTuple) PageGetItem(page, iid);
 		if (!GistTupleIsInvalid(ituple))
 		{
 			bool isnull;

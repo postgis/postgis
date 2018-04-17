@@ -320,6 +320,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 		                             "PostGIS Prepared Geometry Context");
 
 #else
+		MemoryContextCallback *callback;
 		prepcache->context_callback = AllocSetContextCreate(prepcache->context_statement,
 	                                   "PostGIS Prepared Geometry Context",
 	                                   ALLOCSET_SMALL_SIZES);
@@ -327,7 +328,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 		/* PgSQL comments suggest allocating callback in the context */
 		/* being managed, so that the callback object gets cleaned along with */
 		/* the context */
-		MemoryContextCallback *callback = MemoryContextAlloc(prepcache->context_callback, sizeof(MemoryContextCallback));
+		callback = MemoryContextAlloc(prepcache->context_callback, sizeof(MemoryContextCallback));
 		callback->arg = (void*)(prepcache->context_callback);
 		callback->func = PreparedCacheDelete;
 		MemoryContextRegisterResetCallback(prepcache->context_callback, callback);
