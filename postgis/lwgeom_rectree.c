@@ -121,6 +121,8 @@ Datum ST_DistanceRectTree(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	LWGEOM *lwg1, *lwg2;
+	RECT_NODE *n1, *n2;
 
 	/* Return NULL on empty arguments. */
 	if (gserialized_is_empty(g1) || gserialized_is_empty(g2))
@@ -130,16 +132,16 @@ Datum ST_DistanceRectTree(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	LWGEOM *lwg1 = lwgeom_from_gserialized(g1);
-	LWGEOM *lwg2 = lwgeom_from_gserialized(g2);
+	lwg1 = lwgeom_from_gserialized(g1);
+	lwg2 = lwgeom_from_gserialized(g2);
 
 	/* Two points? Get outa here... */
 	if (lwg1->type == POINTTYPE && lwg2->type == POINTTYPE)
 		PG_RETURN_FLOAT8(lwgeom_mindistance2d(lwg1, lwg2));
 
 
-	RECT_NODE *n1 = rect_tree_from_lwgeom(lwg1);
-	RECT_NODE *n2 = rect_tree_from_lwgeom(lwg2);
+	n1 = rect_tree_from_lwgeom(lwg1);
+	n2 = rect_tree_from_lwgeom(lwg2);
 	PG_RETURN_FLOAT8(rect_tree_distance_tree(n1, n2, 0.0));
 }
 
@@ -149,6 +151,7 @@ Datum ST_DistanceRectTreeCached(PG_FUNCTION_ARGS)
 	RectTreeGeomCache *tree_cache = NULL;
 	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	LWGEOM *lwg1, *lwg2;
 
 	/* Return NULL on empty arguments. */
 	if (gserialized_is_empty(g1) || gserialized_is_empty(g2))
@@ -158,8 +161,8 @@ Datum ST_DistanceRectTreeCached(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	LWGEOM *lwg1 = lwgeom_from_gserialized(g1);
-	LWGEOM *lwg2 = lwgeom_from_gserialized(g2);
+	lwg1 = lwgeom_from_gserialized(g1);
+	lwg2 = lwgeom_from_gserialized(g2);
 
 	/* Two points? Get outa here... */
 	if (lwg1->type == POINTTYPE && lwg2->type == POINTTYPE)
