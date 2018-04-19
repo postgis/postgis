@@ -127,7 +127,7 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 	uint32_t p1 = 0, p2 = 0;
 	uint32_t i;
 	uint32_t j;
-	double max_dst = 0;
+	double max_dst = -1;
 	double dst_p1, dst_p2;
 
 	/* k = 1: first non-null is ok */
@@ -140,8 +140,7 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 			centers[0] = &(centers_raw[0]);
 			return;
 		}
-		lwerror("unable to calculate any cluster seed point, too many NULLs or empties?");
-		return;
+		assert(0);
 	}
 
 	/* k >= 2: find two distant points greedily */
@@ -171,7 +170,8 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 		}
 	}
 
-	if (!objs[p1] || !objs[p2]) lwerror("unable to calculate any cluster seed point, too many NULLs or empties?");
+	/* by now two points should be found and non-same */
+	assert(p1 != p2 && objs[p1] && objs[p2] && max_dst >= 0);
 
 	/* accept first two points */
 	centers_raw[0] = *((POINT2D *)objs[p1]);
@@ -210,12 +210,6 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 			{
 				/* empty objs and accepted clusters are already marked with distance = -1 */
 				if (distances[j] < 0) continue;
-
-				if (!objs[j])
-				{
-					distances[j] = -1;
-					continue;
-				}
 
 				/* update distance to closest cluster */
 				curr_distance = distance2d_sqr_pt_pt(objs[j], centers[i - 1]);

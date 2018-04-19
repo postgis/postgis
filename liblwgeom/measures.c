@@ -2308,35 +2308,24 @@ lw_dist2d_pt_pt(const POINT2D *thep1, const POINT2D *thep2, DISTPTS *dl)
 End of Functions in common for Brute force and new calculation
 --------------------------------------------------------------------------------------------------------------*/
 
-
-/**
-The old function necessary for ptarray_segmentize2d in ptarray.c
-*/
-double
+inline double
 distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2)
 {
 	double hside = p2->x - p1->x;
 	double vside = p2->y - p1->y;
 
-	return sqrt ( hside*hside + vside*vside );
-
+	return hypot(hside, vside);
 }
 
-double
+inline double
 distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2)
 {
 	double hside = p2->x - p1->x;
 	double vside = p2->y - p1->y;
 
-	return  hside*hside + vside*vside;
-
+	return hside * hside + vside * vside;
 }
 
-
-/**
-
-The old function necessary for ptarray_segmentize2d in ptarray.c
-*/
 double
 distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
 {
