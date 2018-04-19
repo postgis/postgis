@@ -124,81 +124,124 @@ static void
 kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2D* centers_raw, uint32_t k)
 {
 	double* distances;
-	uint32_t boundary_point_idx = 0;
+	uint32_t p1 = 0, p2 = 0;
 	uint32_t i;
-	double max_norm = -DBL_MAX;
-	double curr_norm;
+	uint32_t j;
+	double max_dst = 0;
+	double dst_p1, dst_p2;
 
-	/* k = 1: mark clusterable and uncluserable, exit */
+	/* k = 1: first non-null is ok */
+	if (k == 1)
+	{
+		for (i = 0; i < n; i++)
+		{
+			if (!objs[i]) continue;
+			centers_raw[0] = *((POINT2D *)objs[i]);
+			centers[0] = &(centers_raw[0]);
+			return;
+		}
+		lwerror("unable to calculate any cluster seed point, too many NULLs or empties?");
+		return;
+	}
 
-	/* k = 2: skip distance allocation
-
-	/* Array of sums of distances to a point from accepted cluster centers */
-
+	/* k >= 2: find two distant points greedily */
 	for (i = 0; i < n; i++)
 	{
-		/* Find the point with largest Euclidean norm to use as seed */
-		curr_norm = (objs[i]->x) * (objs[i]->x) + (objs[i]->y) * (objs[i]->y);
-		if (curr_norm > max_norm)
+		/* skip null */
+		if (!objs[i]) continue;
+
+		/* reinit if first element happened to be null */
+		if (!objs[p1] && !objs[p2])
 		{
-			boundary_point_idx = i;
-			max_norm = curr_norm;
+			p1 = i;
+			p2 = i;
+			continue;
+		}
+
+		/* if we found a larger distance, replace our choice */
+		dst_p1 = distance2d_sqr_pt_pt(objs[i], objs[p1]);
+		dst_p2 = distance2d_sqr_pt_pt(objs[i], objs[p2]);
+		if ((dst_p1 > max_dst) || (dst_p2 > max_dst))
+		{
+			max_dst = fmax(dst_p1, dst_p2);
+			if (dst_p1 > dst_p2)
+				p2 = i;
+			else
+				p1 = i;
 		}
 	}
-	if (max_norm == -DBL_MAX)
-		lwerror("unable to calculate any cluster seed point, too many NULLs or empties?");
 
-	/* start with point on boundary */
-	distances[boundary_point_idx] = -1;
-	centers_raw[0] = *((POINT2D*)objs[boundary_point_idx]);
+	if (!objs[p1] || !objs[p2]) lwerror("unable to calculate any cluster seed point, too many NULLs or empties?");
+
+	/* accept first two points */
+	centers_raw[0] = *((POINT2D *)objs[p1]);
 	centers[0] = &(centers_raw[0]);
+	centers_raw[1] = *((POINT2D *)objs[p2]);
+	centers[1] = &(centers_raw[1]);
 
-	distances = lwalloc(sizeof(double) * n);
-	/* loop i on clusters, skip 0 as it's found already */
-	for (i = 1; i < k; i++)
+	if (k > 2)
 	{
-		uint32_t j;
-		uint32_t candidate_center = 0;
-		double max_distance = -DBL_MAX;
-		double curr_distance;
-
-		/* loop j on objs */
+		/* array of minimum distance to a point from accepted cluster centers */
+		distances = lwalloc(sizeof(double) * n);
+		distances[p1] = -1;
+		distances[p2] = -1;
 		for (j = 0; j < n; j++)
 		{
-			/* empty objs and accepted clusters are already marked with distance = -1 */
 			if (distances[j] < 0)
 				continue;
-
 			if (!objs[j])
 			{
 				distances[j] = -1;
 				continue;
 			}
-
-			/* update distance to closest cluster */
-			curr_distance = distance2d_sqr_pt_pt(objs[j], centers[i - 1]);
-			distances[j] = fmin(curr_distance, distances[j]);
-
-			/* greedily take a point that's farthest from any of accepted clusters */
-			if (distances[j] > max_distance)
-			{
-				candidate_center = j;
-				max_distance = distances[j];
-			}
+			distances[j] = distance2d_sqr_pt_pt(objs[j], centers[0]);
 		}
 
-		/* Something is wrong with data, cannot find a candidate.
-		 * Checked earlier by counting entries on input */
-		assert(max_distance >= 0);
+		/* loop i on clusters, skip 0 and 1 as it's found already */
+		for (i = 2; i < k; i++)
+		{
 
-		/* accept candidate to centers */
-		distances[candidate_center] = -1;
-		/* Copy the point coordinates into the initial centers array
-		 * This is ugly, but the centers array is an array of pointers to points, not an array of points */
-		centers_raw[i] = *((POINT2D*)objs[candidate_center]);
-		centers[i] = &(centers_raw[i]);
+			uint32_t candidate_center = 0;
+			double max_distance = -DBL_MAX;
+			double curr_distance;
+
+			/* loop j on objs */
+			for (j = 0; j < n; j++)
+			{
+				/* empty objs and accepted clusters are already marked with distance = -1 */
+				if (distances[j] < 0) continue;
+
+				if (!objs[j])
+				{
+					distances[j] = -1;
+					continue;
+				}
+
+				/* update distance to closest cluster */
+				curr_distance = distance2d_sqr_pt_pt(objs[j], centers[i - 1]);
+				distances[j] = fmin(curr_distance, distances[j]);
+
+				/* greedily take a point that's farthest from any of accepted clusters */
+				if (distances[j] > max_distance)
+				{
+					candidate_center = j;
+					max_distance = distances[j];
+				}
+			}
+
+			/* Something is wrong with data, cannot find a candidate.
+			 * Checked earlier by counting entries on input */
+			assert(max_distance >= 0);
+
+			/* accept candidate to centers */
+			distances[candidate_center] = -1;
+			/* Copy the point coordinates into the initial centers array
+			 * This is ugly, but the centers array is an array of pointers to points, not an array of points */
+			centers_raw[i] = *((POINT2D *)objs[candidate_center]);
+			centers[i] = &(centers_raw[i]);
+		}
+		lwfree(distances);
 	}
-	lwfree(distances);
 }
 
 int*
