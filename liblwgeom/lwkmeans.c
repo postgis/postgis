@@ -76,7 +76,7 @@ update_means(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, uint3
 	for (i = 0; i < n; i++)
 	{
 		cluster = clusters[i];
-		if (clusters == KMEANS_NULL_CLUSTER) continue;
+		if (cluster == KMEANS_NULL_CLUSTER) continue;
 		centers[cluster]->x += objs[i]->x;
 		centers[cluster]->y += objs[i]->y;
 		weights[cluster] += 1;
