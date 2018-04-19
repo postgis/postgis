@@ -65,8 +65,9 @@ static void
 update_means(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, uint32_t* weights, uint32_t k)
 {
 	uint32_t i;
+	int cluster;
 
-	memset(weights, 0, sizeof(int) * k);
+	memset(weights, 0, sizeof(uint32_t) * k);
 	for (i = 0; i < k; i++)
 	{
 		centers[i]->x = 0.0;
@@ -74,9 +75,11 @@ update_means(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, uint3
 	}
 	for (i = 0; i < n; i++)
 	{
-		centers[clusters[i]]->x += objs[i]->x;
-		centers[clusters[i]]->y += objs[i]->y;
-		weights[clusters[i]] += 1;
+		cluster = clusters[i];
+		if (clusters == KMEANS_NULL_CLUSTER) continue;
+		centers[cluster]->x += objs[i]->x;
+		centers[cluster]->y += objs[i]->y;
+		weights[cluster] += 1;
 	}
 	for (i = 0; i < k; i++)
 	{
