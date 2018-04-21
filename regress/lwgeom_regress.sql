@@ -135,3 +135,11 @@ SELECT 'BoundingDiagonal5', ST_AsEwkt(ST_BoundingDiagonal(
 SELECT 'BoundingDiagonal6', ST_AsEwkt(ST_BoundingDiagonal(
     'SRID=3857;POLYGON M EMPTY'::geometry
 ));
+
+-- check that null and empty is handled in the clustering
+select '#4071', count(distinct a), count(distinct b), count(distinct c)  from
+(select
+	ST_ClusterKMeans(geom, 1) over () a,
+	ST_ClusterKMeans(geom, 2) over () b,
+	ST_ClusterKMeans(geom, 3) over () c
+from (values (null::geometry), ('POINT(1 1)'), ('POINT EMPTY'), ('POINT(0 0)'), ('POINT(4 4)')) as g (geom)) z;
