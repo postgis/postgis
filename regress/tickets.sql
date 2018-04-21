@@ -878,7 +878,7 @@ DROP TABLE test_analyze_crash;
 WITH
   input AS (SELECT 'SRID=4326;POLYGON((26426 65078,26531 65242,26075 65136,26096 65427,26426 65078))'::geometry AS geom),
   mbc   AS (SELECT (mb).center, (mb).radius FROM (SELECT ST_MinimumBoundingRadius(geom) mb FROM input) sq)
-SELECT '#2996', radius = ST_Length(ST_LongestLine(geom, center)) FROM input, mbc;
+SELECT '#2996', radius::numeric(8,2), ST_Length(ST_LongestLine(geom, center))::numeric(8,2) FROM input, mbc;
 
 -- #3119 --
 SELECT '#3119a', floor(ST_LengthSpheroid('SRID=4326;LINESTRING (-72.640965 42.11867, -72.6395 42.1187)', 'SPHEROID["GRS_1980",6378137,298.257222101]'));
