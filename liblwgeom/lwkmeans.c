@@ -101,14 +101,14 @@ kmeans(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, uint32_t k)
 
 	weights = lwalloc(sizeof(int) * k);
 
-	/* Previous cluster state array. At this time, r doesn't mean anything but it's ok */
+	/* previous cluster state array */
 	clusters_last = lwalloc(clusters_sz);
 
 	for (i = 0; i < KMEANS_MAX_ITERATIONS && !converged; i++)
 	{
 		LW_ON_INTERRUPT(break);
 
-		/* Store the previous state of the clustering */
+		/* store the previous state of the clustering */
 		memcpy(clusters_last, clusters, clusters_sz);
 
 		update_r(objs, clusters, n, centers, k);
@@ -265,8 +265,8 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 
 	if (n < k)
 	{
-		lwerror("%s: number of geometries is less than the number of clusters requested", __func__);
-		return NULL;
+		lwerror("%s: number of geometries is less than the number of clusters requested, not all clusters will get data", __func__);
+		k = n;
 	}
 
 	/* We'll hold the temporary centroid objects here */
@@ -322,8 +322,8 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 
 	if (num_non_empty < k)
 	{
-		lwerror("%s: number of clusterable geometries is less than the number of clusters requested", __func__);
-		return NULL;
+		lwnotice("%s: number of non-empty geometries is less than the number of clusters requested, not all clusters will get data", __func__);
+		k = num_non_empty;
 	}
 
 	kmeans_init(objs, clusters, n, centers, centers_raw, k);
