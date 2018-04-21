@@ -11,7 +11,7 @@
 #include "liblwgeom_internal.h"
 
 /*
- * When clustering lists with NULL elements, they will get this as
+ * When clustering lists with NULL or EMPTY elements, they will get this as
  * their cluster number. (All the other clusters will be non-negative)
  */
 #define KMEANS_NULL_CLUSTER -1
@@ -76,10 +76,12 @@ update_means(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, uint3
 	for (i = 0; i < n; i++)
 	{
 		cluster = clusters[i];
-		if (cluster == KMEANS_NULL_CLUSTER) continue;
-		centers[cluster]->x += objs[i]->x;
-		centers[cluster]->y += objs[i]->y;
-		weights[cluster] += 1;
+		if (cluster != KMEANS_NULL_CLUSTER)
+		{
+			centers[cluster]->x += objs[i]->x;
+			centers[cluster]->y += objs[i]->y;
+			weights[cluster] += 1;
+		}
 	}
 	for (i = 0; i < k; i++)
 	{
@@ -128,12 +130,13 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 {
 	double* distances;
 	uint32_t p1 = 0, p2 = 0;
-	uint32_t i;
-	uint32_t j;
+	uint32_t i, j;
 	double max_dst = -1;
 	double dst_p1, dst_p2;
 
-	/* k = 1: first non-null is ok */
+	assert(k > 0);
+
+	/* k = 1: first non-null is ok, and input check guarantees there's one */
 	if (k == 1)
 	{
 		for (i = 0; i < n; i++)
@@ -176,7 +179,7 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 	/* by now two points should be found and non-same */
 	assert(p1 != p2 && objs[p1] && objs[p2] && max_dst >= 0);
 
-	/* accept first two points */
+	/* accept these two points */
 	centers_raw[0] = *((POINT2D *)objs[p1]);
 	centers[0] = &(centers_raw[0]);
 	centers_raw[1] = *((POINT2D *)objs[p2]);
@@ -186,27 +189,23 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 	{
 		/* array of minimum distance to a point from accepted cluster centers */
 		distances = lwalloc(sizeof(double) * n);
-		distances[p1] = -1;
-		distances[p2] = -1;
+
+		/* initialize array with distance to first object */
 		for (j = 0; j < n; j++)
 		{
-			if (distances[j] < 0)
-				continue;
-			if (!objs[j])
-			{
+			if (objs[j])
+				distances[j] = distance2d_sqr_pt_pt(objs[j], centers[0]);
+			else
 				distances[j] = -1;
-				continue;
-			}
-			distances[j] = distance2d_sqr_pt_pt(objs[j], centers[0]);
 		}
+		distances[p1] = -1;
+		distances[p2] = -1;
 
-		/* loop i on clusters, skip 0 and 1 as it's found already */
+		/* loop i on clusters, skip 0 and 1 as found already */
 		for (i = 2; i < k; i++)
 		{
-
 			uint32_t candidate_center = 0;
 			double max_distance = -DBL_MAX;
-			double curr_distance;
 
 			/* loop j on objs */
 			for (j = 0; j < n; j++)
@@ -214,9 +213,8 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 				/* empty objs and accepted clusters are already marked with distance = -1 */
 				if (distances[j] < 0) continue;
 
-				/* update distance to closest cluster */
-				curr_distance = distance2d_sqr_pt_pt(objs[j], centers[i - 1]);
-				distances[j] = fmin(curr_distance, distances[j]);
+				/* update minimal distance with previosuly accepted cluster */
+				distances[j] = fmin(distance2d_sqr_pt_pt(objs[j], centers[i - 1]), distances[j]);
 
 				/* greedily take a point that's farthest from any of accepted clusters */
 				if (distances[j] > max_distance)
@@ -226,14 +224,13 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 				}
 			}
 
-			/* Something is wrong with data, cannot find a candidate.
-			 * Checked earlier by counting entries on input */
+			/* Checked earlier by counting entries on input, just in case */
 			assert(max_distance >= 0);
 
 			/* accept candidate to centers */
 			distances[candidate_center] = -1;
 			/* Copy the point coordinates into the initial centers array
-			 * This is ugly, but the centers array is an array of pointers to points, not an array of points */
+			 * Centers array is an array of pointers to points, not an array of points */
 			centers_raw[i] = *((POINT2D *)objs[candidate_center]);
 			centers[i] = &(centers_raw[i]);
 		}
@@ -297,21 +294,18 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 		const LWGEOM* geom = geoms[i];
 		LWPOINT* lwpoint;
 
-		/* Null/empty geometries get a NULL pointer */
-		if ((!geom) || lwgeom_is_empty(geom))
-		{
-			objs[i] = NULL;
-			continue;
-		}
+		/* Null/empty geometries get a NULL pointer, set earlier with memset */
+		if ((!geom) || lwgeom_is_empty(geom)) continue;
 
 		/* If the input is a point, use its coordinates */
 		/* If its not a point, convert it to one via centroid */
 		if (lwgeom_get_type(geom) != POINTTYPE)
 		{
 			LWGEOM* centroid = lwgeom_centroid(geom);
-			if ((!centroid) || lwgeom_is_empty(centroid))
+			if ((!centroid)) continue;
+			if (lwgeom_is_empty(centroid))
 			{
-				objs[i] = NULL;
+				lwgeom_free(centroid);
 				continue;
 			}
 			centroids[num_centroids++] = centroid;
@@ -343,8 +337,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 	lwfree(centroids);
 
 	/* Good result */
-	if (result)
-		return clusters;
+	if (result) return clusters;
 
 	/* Bad result, not going to need the answer */
 	lwfree(clusters);
