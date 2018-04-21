@@ -373,11 +373,11 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 		}
 
 		for (i = 0; i < drv_count; i++) {
-			pfree(drv_set[i].short_name);
-			pfree(drv_set[i].long_name);
-			pfree(drv_set[i].create_options);
+			rtdealloc(drv_set[i].short_name);
+			rtdealloc(drv_set[i].long_name);
+			rtdealloc(drv_set[i].create_options);
 		}
-		if (drv_count) pfree(drv_set);
+		if (drv_count) rtdealloc(drv_set);
 
 	}
 
