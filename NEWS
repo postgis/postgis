@@ -4,7 +4,7 @@ PostGIS 2.3.8
   * Bug Fixes and Enchantments
 
   - #4071, ST_ClusterKMeans crash on NULL/EMPTY fixed (Darafei Praliaskouski)
-
+  - #4074, Disable interrupt tests by default (Regina Obe)
 
 PostGIS 2.3.7
 2018/04/06

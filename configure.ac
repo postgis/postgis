@@ -434,7 +434,7 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   PGSQL_MAJOR_VERSION=`echo $PGSQL_FULL_VERSION | sed 's/[[^0-9]]*\([[0-9]]*\).*/\1/'`
   PGSQL_MINOR_VERSION=`echo $PGSQL_FULL_VERSION | sed 's/[[^\.]]*\.\([[0-9]]*\).*/\1/'`
   PGSQL_MINOR_VERSION=`echo $PGSQL_MINOR_VERSION | sed 's/.*devel.*/0/'`
-  
+
   if test $PGSQL_MAJOR_VERSION -gt 9; then
   	dnl ==================================================================
   	dnl Starting with PostgreSQL 10, major is the new minor
@@ -442,7 +442,7 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   	dnl===================================================================
   	PGSQL_MINOR_VERSION=0
   fi
-  
+
   POSTGIS_PGSQL_VERSION="$PGSQL_MAJOR_VERSION$PGSQL_MINOR_VERSION"
 
   PGSQL_PKGLIBDIR=`$PG_CONFIG --pkglibdir`
@@ -1092,11 +1092,17 @@ AC_ARG_WITH([interrupt-tests],
                     [Disable the interrupt tests (for CI servers)])],
     [], [])
 
-if test "x$with_interrupt_tests" != "xno"; then
-    INTERRUPTTESTS="yes"
+AC_ARG_WITH([interrupt-tests],
+    [AS_HELP_STRING([--with-interrupt-tests],
+                    [Enable interrupt tests])],
+    [INTERRUPTTESTS="yes"], [])
+
+if test "x$with_interrupt_tests" = "xno"; then
+    INTERRUPTTESTS="no"
 fi
 
 AC_SUBST([INTERRUPTTESTS])
+
 
 
 
