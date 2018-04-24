@@ -207,13 +207,45 @@ lwarc_linearize(POINTARRAY *to,
 	}}
 	else if ( tolerance_type == LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION )
 	{{
-		double halfAngle;
+		double halfAngle, maxErr;
 		if ( tol <= 0 )
 		{
 			lwerror("lwarc_linearize: max deviation must be bigger than 0, got %.15g", tol);
 			return -1;
 		}
-		halfAngle = acos( -tol / radius + 1 );
+
+		/*
+		 * Ref: https://en.wikipedia.org/wiki/Sagitta_(geometry)
+		 *
+		 * An arc "sagitta" (distance between middle point of arc and
+		 * middle point of corresponding chord) is defined as:
+		 *
+		 *   sagitta = radius * ( 1 - cos( angle ) );
+		 *
+		 * We want our sagitta to be at most "tolerance" long,
+		 * and we want to find out angle, so we use the inverse
+		 * formula:
+		 *
+		 *   tol = radius * ( 1 - cos( angle ) );
+		 *   1 - cos( angle ) =  tol/radius
+		 *   - cos( angle ) =  tol/radius - 1
+		 *   cos( angle ) =  - tol/radius + 1
+		 *   angle = acos( 1 - tol/radius )
+		 *
+		 * Constraints: 1.0 - tol/radius must be between -1 and 1
+		 * which means tol/radius must be between 0 and 2 times
+		 * the radius, which makes sense as you cannot have a
+		 * sagitta bigger than twice the radius!
+		 *
+		 */
+		maxErr = tol;
+		if ( maxErr > radius * 2 )
+		{
+			maxErr = radius * 2;
+			LWDEBUGF(2, "lwarc_linearize: tolerance %g is too big, "
+			            "using arc-max 2 * radius == %g", tol, maxErr);
+		}
+		halfAngle = acos( 1.0 - maxErr / radius );
 		increment = 2 * halfAngle;
 		LWDEBUGF(2, "lwarc_linearize: maxDiff:%g, radius:%g, halfAngle:%g, increment:%g (%g degrees)", tol, radius, halfAngle, increment, increment*180/M_PI);
 	}}
