@@ -884,8 +884,14 @@ lwgeom_clip_by_rect(const LWGEOM *geom1, double x1, double y1, double x2, double
 {
 	LWGEOM *result;
 	LWGEOM *tmp;
-	LWGEOM *envelope = (LWGEOM*)lwpoly_construct_envelope(geom1->srid, x1, y1, x2, y2);
 
+	/* This lwgeom_intersection should be a call to GEOSClipByRect:
+	 * g3 = GEOSClipByRect(g1, x1, y1, x2, y2);
+	 * Unfortunately as of GEOS 3.7 it chokes on practical inputs.
+	 * GEOS ticket: https://trac.osgeo.org/geos/ticket/865
+	 */
+
+	LWGEOM *envelope = (LWGEOM *)lwpoly_construct_envelope(geom1->srid, x1, y1, x2, y2);
 	result = lwgeom_intersection(geom1, envelope);
 	lwgeom_free(envelope);
 
@@ -908,32 +914,6 @@ lwgeom_clip_by_rect(const LWGEOM *geom1, double x1, double y1, double x2, double
 	lwgeom_simplify_in_place(result, 0.0, LW_TRUE);
 
 	return result;
-
-#if 0  /* POSTGIS_GEOS_VERSION >= 35, enable only after bugs in geos are fixed */
-	int32_t srid = get_result_srid(geom, NULL, __func__);
-	uint8_t is3d = FLAGS_GET_Z(geom->flags);
-	GEOSGeometry *g1, *g3;
-
-	if (srid == SRID_INVALID) return NULL;
-
-	/* A.Intersection(Empty) == Empty */
-	if (lwgeom_is_empty(geom)) return lwgeom_clone_deep(geom);
-
-	initGEOS(lwnotice, lwgeom_geos_error);
-
-	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
-
-	g3 = GEOSClipByRect(g1, x1, y1, x2, y2);
-
-	if (!g3) return geos_clean_and_fail(g1, NULL, NULL, __func__);
-
-	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
-		return geos_clean_and_fail(g1, NULL, g3, __func__);
-
-	geos_clean(g1, NULL, g3);
-
-	return result;
-#endif /* POSTGIS_GEOS_VERSION >= 35 */
 }
 
 /* ------------ BuildArea stuff ---------------------------------------------------------------------{ */

@@ -490,16 +490,16 @@ FROM (SELECT ST_Buffer(
 		<title>Description</title>
 
     <para>
-Clips a geometry by a 2D box in a fast but possibly dirty way. The output
-geometry is not guaranteed to be valid (self-intersections for a polygon
-may be introduced). Topologically invalid input geometries do not result
-in exceptions being thrown.
+Clips a geometry by a 2D box. The output geometry is not guaranteed to be valid
+(self-intersections for a polygon may be introduced).
+Topologically invalid input geometries do not result in exceptions being thrown.
     </para>
 
 		<para>Performed by the GEOS module.</para>
 		<note><para>Requires GEOS 3.5.0+</para></note>
 
 		<para>Availability: 2.2.0 - requires GEOS &gt;= 3.5.0.</para>
+		<para>Changed: 2.5.0 - wrapper around ST_Intersection to work around GEOS bugs. </para>
 
 	  </refsection>
 
@@ -3151,9 +3151,9 @@ LINESTRING(5 2,7 25,10 10)
 		<title>Description</title>
 		<para> Returns a "smoothed" version of the given geometry using the Chaikin algorithm.
         See <ulink url="http://www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm.html">Chaikins-Algorithm</ulink> for an explanation of the process.
-		For each iteration the number of vertex points will double. 
+		For each iteration the number of vertex points will double.
         The function puts new vertex points at 1/4 of the line before and after each point and removes the original point.
-        To reduce the number of points use one of the simplification functions on the result. 
+        To reduce the number of points use one of the simplification functions on the result.
         The new points gets interpolated values for all included dimensions, also z and m.</para>
 
 		<note><para>Note that returned geometry will get more points than the original.
@@ -3205,15 +3205,15 @@ LINESTRING(0 0,6 6,6 10,0 16)
 
 	  <refsection>
 		<title>Description</title>
-		<para>Filters away vertex points based on their m-value. Returns a geometry with only 
+		<para>Filters away vertex points based on their m-value. Returns a geometry with only
 			vertex points that have a m-value larger or equal to the min value and smaller or equal to
-			the max value. If max-value argument is left out only min value is considered. If fourth argument is left out the m-value 
-			will not be in the resulting geoemtry. If resulting geometry have too few vertex points left for its geometry type an empty 
-			geoemtry will be returned. In a geometry collection 
+			the max value. If max-value argument is left out only min value is considered. If fourth argument is left out the m-value
+			will not be in the resulting geoemtry. If resulting geometry have too few vertex points left for its geometry type an empty
+			geoemtry will be returned. In a geometry collection
 			geometries without enough points will just be left out silently. If </para>
-		<para>This function is mainly intended to be used in conjunction with ST_SetEffectiveArea. ST_EffectiveArea sets the effective area 
+		<para>This function is mainly intended to be used in conjunction with ST_SetEffectiveArea. ST_EffectiveArea sets the effective area
 			of a vertex in it's m-value. With ST_FilterByM it then is possible to get a simplified version of the geoemtry without any calculations, just by filtering</para>
-		
+
 		<note><para>There is a difference in what ST_SimplifyVW returns when not enough points meets the creterias compared to ST_FilterByM.
 				ST_SimplifyVW returns the geometry with enough points while ST_FilterByM returns an empty geometry</para></note>
 		<note><para>Note that the retuned geometry might be invalid</para></note>
