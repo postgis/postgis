@@ -747,8 +747,8 @@ fulltable_size geomsize  pergeom
 				but will have improved compressiblity. This can result in a
 				significant disk usage reduction provided that the geometry column
 				is using a <ulink
-					url="https://www.postgresql.org/docs/current/static/storage-toast.html#STORAGE-TOAST-ONDISK">
-					compressible storage type</ulink>. The function allows
+				url="https://www.postgresql.org/docs/current/static/storage-toast.html#STORAGE-TOAST-ONDISK">
+				compressible storage type</ulink>. The function allows
 				specification of a different number of digits after the decimal
 				point in each dimension; unspecified dimensions are assumed to have
 				the precsion of the <code>x</code> dimension. Negative digits are
@@ -761,8 +761,8 @@ fulltable_size geomsize  pergeom
 				independent of the geometry that contains those coordinates and the
 				relative position of those coordinates within the geometry. As a result,
 				existing topological relationships between geometries are unaffected
-				by use of this function. The function will not produce invalid geometry
-				unless it is called with a number of digits lower than the intrinsic
+				by use of this function. The function may produce invalid geometry
+				when it is called with a number of digits lower than the intrinsic
 				precision of the geometry.
 			</para>
 			<para>Availability: 2.5.0</para>
@@ -790,10 +790,11 @@ fulltable_size geomsize  pergeom
 				point numbers closest to 100.123456000000, 100.123456000001, and
 				100.123456432199. All are equally valid, in that
 				<code>ST_AsText(geom, 6)</code> will return the same result with 
-				any of these inputs. Because we can set these bits to whatever we
-				like, <code>ST_QuantizeCoordinates</code> sets the 22 insignificant
-				bits to zero because a block of 22 zeros is easily (and automatically)
-				compressed by PostgreSQL's built-in compression algorithm.
+				any of these inputs. As we can set these bits to any value,
+				<code>ST_QuantizeCoordinates</code> sets the 22 insignificant
+				bits to zero. For a long coordinate sequence this creates a 
+				pattern of blocks of consecutive zeros that is compressed 
+				by PostgreSQL more effeciently.
 			</para>
 
 			<note>
