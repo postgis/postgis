@@ -627,12 +627,13 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
   }
   for ( i=0; i<num_nodes; ++i )
   {
+    const POINT2D *pt;
     LWT_ISO_NODE* node = &(nodes[i]);
     if ( node->node_id == start_node ) continue;
     if ( node->node_id == end_node ) continue;
     /* check if the edge contains this node (not on boundary) */
     /* ST_RelateMatch(rec.relate, 'T********') */
-    const POINT2D *pt = getPoint2d_cp(node->geom->point, 0);
+    pt = getPoint2d_cp(node->geom->point, 0);
     int contains = ptarray_contains_point_partial(geom->points, pt, LW_FALSE, NULL) == LW_BOUNDARY;
     if ( contains )
     {
