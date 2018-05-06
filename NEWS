@@ -60,7 +60,7 @@ PostGIS 2.5.0
   - #4025, #4032 Fixed precision issue in ST_ClosestPointOfApproach,
            ST_DistanceCPA, and ST_CPAWithin (Paul Ramsey, Darafei Praliaskouski)
   - #4071, ST_ClusterKMeans crash on NULL/EMPTY fixed (Darafei Praliaskouski)
-
+  - #4076, Reduce use of GEOS in topology implementation (Björn Harrtell)
 
 PostGIS 2.4.0
 2017/09/30

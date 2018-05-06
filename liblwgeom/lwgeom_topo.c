@@ -607,18 +607,12 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
   LWT_ISO_NODE *nodes;
   const GBOX *edgebox;
   GEOSGeometry *edgegg;
-  const GEOSPreparedGeometry* prepared_edge;
 
   initGEOS(lwnotice, lwgeom_geos_error);
 
   edgegg = LWGEOM2GEOS( lwline_as_lwgeom(geom), 0);
   if ( ! edgegg ) {
     lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
-    return -1;
-  }
-  prepared_edge = GEOSPrepare( edgegg );
-  if ( ! prepared_edge ) {
-    lwerror("Could not prepare edge geometry: %s", lwgeom_geos_errmsg);
     return -1;
   }
   edgebox = lwgeom_get_bbox( lwline_as_lwgeom(geom) );
@@ -628,34 +622,20 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
                                             LWT_COL_NODE_ALL, 0 );
   LWDEBUGF(1, "lwt_be_getNodeWithinBox2D returned %d nodes", num_nodes);
   if ( num_nodes == -1 ) {
-    GEOSPreparedGeom_destroy(prepared_edge);
-    GEOSGeom_destroy(edgegg);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
   for ( i=0; i<num_nodes; ++i )
   {
     LWT_ISO_NODE* node = &(nodes[i]);
-    GEOSGeometry *nodegg;
-    int contains;
     if ( node->node_id == start_node ) continue;
     if ( node->node_id == end_node ) continue;
     /* check if the edge contains this node (not on boundary) */
-    nodegg = LWGEOM2GEOS( lwpoint_as_lwgeom(node->geom) , 0);
     /* ST_RelateMatch(rec.relate, 'T********') */
-    contains = GEOSPreparedContains( prepared_edge, nodegg );
-    GEOSGeom_destroy(nodegg);
-    if (contains == 2)
-    {
-      GEOSPreparedGeom_destroy(prepared_edge);
-      GEOSGeom_destroy(edgegg);
-      _lwt_release_nodes(nodes, num_nodes);
-      lwerror("GEOS exception on PreparedContains: %s", lwgeom_geos_errmsg);
-      return -1;
-    }
+    const POINT2D *pt = getPoint2d_cp(node->geom->point, 0);
+    int contains = ptarray_contains_point_partial(geom->points, pt, LW_FALSE, NULL) == LW_BOUNDARY;
     if ( contains )
     {
-      GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
       _lwt_release_nodes(nodes, num_nodes);
       lwerror("SQL/MM Spatial exception - geometry crosses a node");
@@ -669,7 +649,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
   edges = lwt_be_getEdgeWithinBox2D( topo, edgebox, &num_edges, LWT_COL_EDGE_ALL, 0 );
   LWDEBUGF(1, "lwt_be_getEdgeWithinBox2D returned %d edges", num_edges);
   if ( num_edges == -1 ) {
-    GEOSPreparedGeom_destroy(prepared_edge);
     GEOSGeom_destroy(edgegg);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -692,7 +671,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
 
     eegg = LWGEOM2GEOS( lwline_as_lwgeom(edge->geom), 0 );
     if ( ! eegg ) {
-      GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
       _lwt_release_edges(edges, num_edges);
       lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
@@ -706,7 +684,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     relate = GEOSRelateBoundaryNodeRule(eegg, edgegg, 2);
     if ( ! relate ) {
       GEOSGeom_destroy(eegg);
-      GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
       _lwt_release_edges(edges, num_edges);
       lwerror("GEOSRelateBoundaryNodeRule error: %s", lwgeom_geos_errmsg);
@@ -722,7 +699,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
       GEOSFree(relate);
       if ( match == 2 ) {
         _lwt_release_edges(edges, num_edges);
-        GEOSPreparedGeom_destroy(prepared_edge);
         GEOSGeom_destroy(edgegg);
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
         return -1;
@@ -733,7 +709,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     match = GEOSRelatePatternMatch(relate, "1FFF*FFF2");
     if ( match ) {
       _lwt_release_edges(edges, num_edges);
-      GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
       GEOSGeom_destroy(eegg);
       GEOSFree(relate);
@@ -749,7 +724,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     match = GEOSRelatePatternMatch(relate, "1********");
     if ( match ) {
       _lwt_release_edges(edges, num_edges);
-      GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
       GEOSGeom_destroy(eegg);
       GEOSFree(relate);
@@ -765,7 +739,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     match = GEOSRelatePatternMatch(relate, "T********");
     if ( match ) {
       _lwt_release_edges(edges, num_edges);
-      GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
       GEOSGeom_destroy(eegg);
       GEOSFree(relate);
@@ -786,7 +759,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
   if ( edges ) _lwt_release_edges(edges, num_edges);
               /* would be NULL if num_edges was 0 */
 
-  GEOSPreparedGeom_destroy(prepared_edge);
   GEOSGeom_destroy(edgegg);
 
   return 0;
@@ -2055,25 +2027,6 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     return -2;
   }
   LWDEBUGF(1, "lwt_be_getEdgeByFace returned %d edges", numfaceedges);
-  GEOSGeometry *shellgg = 0;
-  const GEOSPreparedGeometry* prepshell = 0;
-  shellgg = LWGEOM2GEOS( lwpoly_as_lwgeom(shell), 0);
-  if ( ! shellgg ) {
-    lwpoly_free(shell);
-    lwfree(signed_edge_ids);
-    _lwt_release_edges(edges, numfaceedges);
-    lwerror("Could not convert shell geometry to GEOS: %s", lwgeom_geos_errmsg);
-    return -2;
-  }
-  prepshell = GEOSPrepare( shellgg );
-  if ( ! prepshell ) {
-    GEOSGeom_destroy(shellgg);
-    lwpoly_free(shell);
-    lwfree(signed_edge_ids);
-    _lwt_release_edges(edges, numfaceedges);
-    lwerror("Could not prepare shell geometry: %s", lwgeom_geos_errmsg);
-    return -2;
-  }
 
   if ( numfaceedges )
   {
@@ -2088,8 +2041,6 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       LWT_ISO_EDGE *e = &(edges[i]);
       int found = 0;
       int contains;
-      GEOSGeometry *egg;
-      LWPOINT *epgeom;
       POINT2D ep;
 
       /* (2.1) skip edges whose ID is in the list of boundary edges ? */
@@ -2124,8 +2075,6 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
        */
       if ( ! _lwt_GetInteriorEdgePoint(e->geom, &ep) )
       {
-        GEOSPreparedGeom_destroy(prepshell);
-        GEOSGeom_destroy(shellgg);
         lwfree(signed_edge_ids);
         lwpoly_free(shell);
         lwfree(forward_edges); /* contents owned by edges */
@@ -2136,39 +2085,10 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
         return -2;
       }
 
-      epgeom = lwpoint_make2d(0, ep.x, ep.y);
-      egg = LWGEOM2GEOS( lwpoint_as_lwgeom(epgeom) , 0);
-      lwpoint_free(epgeom);
-      if ( ! egg ) {
-        GEOSPreparedGeom_destroy(prepshell);
-        GEOSGeom_destroy(shellgg);
-        lwfree(signed_edge_ids);
-        lwpoly_free(shell);
-        lwfree(forward_edges); /* contents owned by edges */
-        lwfree(backward_edges); /* contents owned by edges */
-        _lwt_release_edges(edges, numfaceedges);
-        lwerror("Could not convert edge geometry to GEOS: %s",
-                lwgeom_geos_errmsg);
-        return -2;
-      }
-      /* IDEA: can be optimized by computing this on our side rather
-       *       than on GEOS (saves conversion of big edges) */
       /* IDEA: check that bounding box shortcut is taken, or use
        *       shellbox to do it here */
-      contains = GEOSPreparedContains( prepshell, egg );
-      GEOSGeom_destroy(egg);
+      contains = ptarray_contains_point(pa, &ep) == LW_INSIDE;
       if ( contains == 2 )
-      {
-        GEOSPreparedGeom_destroy(prepshell);
-        GEOSGeom_destroy(shellgg);
-        lwfree(signed_edge_ids);
-        lwpoly_free(shell);
-        lwfree(forward_edges); /* contents owned by edges */
-        lwfree(backward_edges); /* contents owned by edges */
-        _lwt_release_edges(edges, numfaceedges);
-        lwerror("GEOS exception on PreparedContains: %s", lwgeom_geos_errmsg);
-        return -2;
-      }
       LWDEBUGF(1, "Edge %d %scontained in new ring", e->edge_id,
                   (contains?"":"not "));
 
@@ -2274,31 +2194,8 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     for (i=0; i<numisonodes; ++i)
     {
       LWT_ISO_NODE *n = &(nodes[i]);
-      GEOSGeometry *ngg;
-      ngg = LWGEOM2GEOS( lwpoint_as_lwgeom(n->geom), 0 );
-      int contains;
-      if ( ! ngg ) {
-        _lwt_release_nodes(nodes, numisonodes);
-        if ( prepshell ) GEOSPreparedGeom_destroy(prepshell);
-        if ( shellgg ) GEOSGeom_destroy(shellgg);
-        lwfree(signed_edge_ids);
-        lwpoly_free(shell);
-        lwerror("Could not convert node geometry to GEOS: %s",
-                lwgeom_geos_errmsg);
-        return -2;
-      }
-      contains = GEOSPreparedContains( prepshell, ngg );
-      GEOSGeom_destroy(ngg);
-      if ( contains == 2 )
-      {
-        _lwt_release_nodes(nodes, numisonodes);
-        if ( prepshell ) GEOSPreparedGeom_destroy(prepshell);
-        if ( shellgg ) GEOSGeom_destroy(shellgg);
-        lwfree(signed_edge_ids);
-        lwpoly_free(shell);
-        lwerror("GEOS exception on PreparedContains: %s", lwgeom_geos_errmsg);
-        return -2;
-      }
+      const POINT2D *pt = getPoint2d_cp(n->geom->point, 0);
+      int contains = ptarray_contains_point(pa, pt) == LW_INSIDE;
       LWDEBUGF(1, "Node %d is %scontained in new ring, newface is %s",
                   n->node_id, contains ? "" : "not ",
                   newface_outside ? "outside" : "inside" );
@@ -2340,8 +2237,6 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     lwfree(updated_nodes);
   }
 
-  GEOSPreparedGeom_destroy(prepshell);
-  GEOSGeom_destroy(shellgg);
   lwfree(signed_edge_ids);
   lwpoly_free(shell);
 
@@ -3271,62 +3166,6 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
   return nseid;
 }
 
-static GEOSGeometry *
-_lwt_EdgeMotionArea(LWLINE *geom, int isclosed)
-{
-  GEOSGeometry *gg;
-  POINT4D p4d;
-  POINTARRAY *pa;
-  POINTARRAY **pas;
-  LWPOLY *poly;
-  LWGEOM *g;
-
-  pas = lwalloc(sizeof(POINTARRAY*));
-
-  initGEOS(lwnotice, lwgeom_geos_error);
-
-  if ( isclosed )
-  {
-    pas[0] = ptarray_clone_deep( geom->points );
-    poly = lwpoly_construct(0, 0, 1, pas);
-    gg = LWGEOM2GEOS( lwpoly_as_lwgeom(poly), 0 );
-    lwpoly_free(poly); /* should also delete the pointarrays */
-  }
-  else
-  {
-    pa = geom->points;
-    getPoint4d_p(pa, 0, &p4d);
-    pas[0] = ptarray_clone_deep( pa );
-    /* don't bother dup check */
-    if ( LW_FAILURE == ptarray_append_point(pas[0], &p4d, LW_TRUE) )
-    {
-      ptarray_free(pas[0]);
-      lwfree(pas);
-      lwerror("Could not append point to pointarray");
-      return NULL;
-    }
-    poly = lwpoly_construct(0, NULL, 1, pas);
-    /* make valid, in case the edge self-intersects on its first-last
-     * vertex segment */
-    g = lwgeom_make_valid(lwpoly_as_lwgeom(poly));
-    lwpoly_free(poly); /* should also delete the pointarrays */
-    if ( ! g )
-    {
-      lwerror("Could not make edge motion area valid");
-      return NULL;
-    }
-    gg = LWGEOM2GEOS(g, 0);
-    lwgeom_free(g);
-  }
-  if ( ! gg )
-  {
-    lwerror("Could not convert old edge area geometry to GEOS: %s",
-            lwgeom_geos_errmsg);
-    return NULL;
-  }
-  return gg;
-}
-
 int
 lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
 {
@@ -3474,71 +3313,25 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   // 3. if any node beside endnodes are found:
   if ( numnodes > ( 1 + isclosed ? 0 : 1 ) )
   {{
-    GEOSGeometry *oarea, *narea;
-    const GEOSPreparedGeometry *oareap, *nareap;
-
-    initGEOS(lwnotice, lwgeom_geos_error);
-
-    oarea = _lwt_EdgeMotionArea(oldedge->geom, isclosed);
-    if ( ! oarea )
-    {
-      _lwt_release_edges(oldedge, 1);
-      lwerror("Could not compute edge motion area for old edge");
-      return -1;
-    }
-
-    narea = _lwt_EdgeMotionArea(geom, isclosed);
-    if ( ! narea )
-    {
-      GEOSGeom_destroy(oarea);
-      _lwt_release_edges(oldedge, 1);
-      lwerror("Could not compute edge motion area for new edge");
-      return -1;
-    }
-
     //   3.2. bail out if any node is in one and not the other
-    oareap = GEOSPrepare( oarea );
-    nareap = GEOSPrepare( narea );
     for (i=0; i<numnodes; ++i)
     {
       LWT_ISO_NODE *n = &(nodes[i]);
-      GEOSGeometry *ngg;
-      int ocont, ncont;
-      size_t sz;
-      char *wkt;
       if ( n->node_id == oldedge->start_node ) continue;
       if ( n->node_id == oldedge->end_node ) continue;
-      ngg = LWGEOM2GEOS( lwpoint_as_lwgeom(n->geom) , 0);
-      ocont = GEOSPreparedContains( oareap, ngg );
-      ncont = GEOSPreparedContains( nareap, ngg );
-      GEOSGeom_destroy(ngg);
-      if (ocont == 2 || ncont == 2)
-      {
-        _lwt_release_nodes(nodes, numnodes);
-        GEOSPreparedGeom_destroy(oareap);
-        GEOSGeom_destroy(oarea);
-        GEOSPreparedGeom_destroy(nareap);
-        GEOSGeom_destroy(narea);
-        lwerror("GEOS exception on PreparedContains: %s", lwgeom_geos_errmsg);
-        return -1;
-      }
+      const POINT2D *pt = getPoint2d_cp(n->geom->point, 0);
+      int ocont = ptarray_contains_point_partial(oldedge->geom->points, pt, isclosed, NULL) == LW_INSIDE;
+      int ncont = ptarray_contains_point_partial(geom->points, pt, isclosed, NULL) == LW_INSIDE;
       if (ocont != ncont)
       {
-        GEOSPreparedGeom_destroy(oareap);
-        GEOSGeom_destroy(oarea);
-        GEOSPreparedGeom_destroy(nareap);
-        GEOSGeom_destroy(narea);
-        wkt = lwgeom_to_wkt(lwpoint_as_lwgeom(n->geom), WKT_ISO, 15, &sz);
+        size_t sz;
+        char *wkt = lwgeom_to_wkt(lwpoint_as_lwgeom(n->geom), WKT_ISO, 15, &sz);
         _lwt_release_nodes(nodes, numnodes);
         lwerror("Edge motion collision at %s", wkt);
         lwfree(wkt); /* would not necessarely reach this point */
         return -1;
       }
     }
-    GEOSPreparedGeom_destroy(oareap);
-    GEOSGeom_destroy(oarea);
-    GEOSPreparedGeom_destroy(nareap);
-    GEOSGeom_destroy(narea);
   }}
   if ( numnodes ) _lwt_release_nodes(nodes, numnodes);
 
@@ -5222,7 +5015,6 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
     LWGEOM *g = lwline_as_lwgeom(e->geom);
     LWGEOM *prj;
     int contains;
-    GEOSGeometry *prjg, *gg;
     LWT_ELEMID edge_id = e->edge_id;
 
     LWDEBUGF(1, "Splitting edge %" LWTFMT_ELEMID, edge_id);
@@ -5251,31 +5043,8 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
       lwgeom_free(prj);
       prj = tmp;
     }}
-    prjg = LWGEOM2GEOS(prj, 0);
-    if ( ! prjg ) {
-      lwgeom_free(prj);
-      _lwt_release_edges(edges, num);
-      lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
-      return -1;
-    }
-    gg = LWGEOM2GEOS(g, 0);
-    if ( ! gg ) {
-      lwgeom_free(prj);
-      _lwt_release_edges(edges, num);
-      GEOSGeom_destroy(prjg);
-      lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
-      return -1;
-    }
-    contains = GEOSContains(gg, prjg);
-    GEOSGeom_destroy(prjg);
-    GEOSGeom_destroy(gg);
-    if ( contains == 2 )
-    {
-      lwgeom_free(prj);
-      _lwt_release_edges(edges, num);
-      lwerror("GEOS exception on Contains: %s", lwgeom_geos_errmsg);
-      return -1;
-    }
+    const POINT2D *pt = getPoint2d_cp(lwgeom_as_lwpoint(prj)->point, 0);
+    contains = ptarray_contains_point_partial(e->geom->points, pt, 0, NULL) == LW_BOUNDARY;
     if ( ! contains )
     {{
       double snaptol;
