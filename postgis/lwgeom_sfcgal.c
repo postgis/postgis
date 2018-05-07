@@ -747,20 +747,19 @@ Datum sfcgal_is_solid(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(sfcgal_make_solid);
 Datum sfcgal_make_solid(PG_FUNCTION_ARGS)
 {
-        GSERIALIZED *output;
+	GSERIALIZED *output;
 	GSERIALIZED *input = PG_GETARG_GSERIALIZED_P(0);
-        LWGEOM *lwgeom = lwgeom_from_gserialized(input);
-	PG_FREE_IF_COPY(input, 0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(input);
 	if (! lwgeom)
 	{
 		elog(ERROR, "sfcgal_make_solid: Unable to deserialize input");
 	}
 
-        FLAGS_SET_SOLID( lwgeom->flags, 1);
+	FLAGS_SET_SOLID( lwgeom->flags, 1);
 
 	output = geometry_serialize( lwgeom );
 	lwgeom_free(lwgeom);
-
+	PG_FREE_IF_COPY(input, 0);
 	PG_RETURN_POINTER(output);
 }
 
