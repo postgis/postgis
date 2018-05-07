@@ -4,6 +4,7 @@ PostGIS 2.4.5
   * Bug Fixes and Enchantments
 
   - #4071, ST_ClusterKMeans crash on NULL/EMPTY fixed (Darafei Praliaskouski)
+  - #4079, ensure St_AsMVTGeom outputs CW oriented polygons (Paul Ramsey)
 
 
 PostGIS 2.4.4
