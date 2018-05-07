@@ -779,7 +779,10 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 		lwgeom->type == COLLECTIONTYPE)
 	{
 		lwgeom = lwgeom_make_valid(lwgeom);
+		/* In image coordinates CW actually comes out a CCW, so */
+		/* we also reverse. ¯\_(ツ)_/¯ */
 		lwgeom_force_clockwise(lwgeom);
+		lwgeom_reverse_in_place(lwgeom);
 	}
 
 	/* if geometry collection extract highest dimensional geometry type */
