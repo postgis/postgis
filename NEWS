@@ -6,6 +6,7 @@ PostGIS 2.4.5
   - #4071, ST_ClusterKMeans crash on NULL/EMPTY fixed (Darafei Praliaskouski)
   - #4079, ensure St_AsMVTGeom outputs CW oriented polygons (Paul Ramsey)
   - #4070, use standard interruption error code on GEOS interruptions (Paul Ramsey)
+  - #3980, delay freeing input until processing complete (lucasvr)
 
 
 PostGIS 2.4.4
