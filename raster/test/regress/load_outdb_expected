@@ -1,1 +1,7 @@
 4
+ERROR:  rt_band_get_file_size: Access to offline bands disabled
+ERROR:  rt_band_get_file_timestamp: Access to offline bands disabled
+NOTICE:  Band of index 1 is not out-db.
+13674
+NOTICE:  Band of index 1 is not out-db.
+t

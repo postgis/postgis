@@ -5006,6 +5006,20 @@ CREATE OR REPLACE FUNCTION ST_BandMetaData(
 	AS $$ SELECT pixeltype, nodatavalue, isoutdb, path, outdbbandnum FROM @extschema@.ST_BandMetaData($1, ARRAY[$2]::int[]) LIMIT 1 $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_BandFileSize(rast raster, band integer DEFAULT 1)
+    RETURNS bigint
+    AS 'MODULE_PATHNAME','RASTER_getBandFileSize'
+    LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION St_BandFileTimestamp(rast raster, band integer DEFAULT 1)
+    RETURNS bigint
+    AS 'MODULE_PATHNAME','RASTER_getBandFileTimestamp'
+    LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
 -----------------------------------------------------------------------
 -- Raster Pixel Accessors
 -----------------------------------------------------------------------
