@@ -27,6 +27,9 @@
  *
  */
 
+// For stat64()
+#define _LARGEFILE64_SOURCE 1
+
 #include <postgres.h>
 #include <fmgr.h>
 #include <funcapi.h>
@@ -42,6 +45,8 @@
 
 
 #include "rtpostgis.h"
+
+extern char enable_outdb_rasters;
 
 /* Get all the properties of a raster band */
 Datum RASTER_getBandPixelType(PG_FUNCTION_ARGS);
@@ -478,6 +483,8 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		bool isoutdb;
 		char *bandpath;
 		uint8_t extbandnum;
+                uint64_t filesize;
+                uint64_t timestamp;
 	};
 	struct bandmetadata *bmd = NULL;
 	struct bandmetadata *bmd2 = NULL;
@@ -654,6 +661,16 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 			else
 				bmd[i].extbandnum = 0;
 
+                        bmd[i].filesize = 0;
+                        bmd[i].timestamp = 0;
+                        if( bmd[i].bandpath && enable_outdb_rasters ) {
+                            VSIStatBufL sStat;
+                            if( VSIStatL(bmd[i].bandpath, &sStat) == 0 ) {
+                                bmd[i].filesize = sStat.st_size;
+                                bmd[i].timestamp = sStat.st_mtime;
+                            }
+                        }
+
 			rt_band_destroy(band);
 		}
 
@@ -694,7 +711,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 6;
+		int values_length = 8;
 		Datum values[values_length];
 		bool nulls[values_length];
 
@@ -717,6 +734,15 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 			nulls[4] = TRUE;
 			nulls[5] = TRUE;
 		}
+
+		if (bmd2[call_cntr].filesize) {
+                    values[6] = UInt64GetDatum(bmd2[call_cntr].filesize);
+                    values[7] = UInt64GetDatum(bmd2[call_cntr].timestamp);
+                }
+                else {
+                    nulls[6] = TRUE;
+                    nulls[7] = TRUE;
+                }
 
 		/* build a tuple */
 		tuple = heap_form_tuple(tupdesc, values, nulls);

@@ -4989,7 +4989,9 @@ CREATE OR REPLACE FUNCTION ST_BandMetaData(
 	OUT nodatavalue double precision,
 	OUT isoutdb boolean,
 	OUT path text,
-	OUT outdbbandnum integer
+	OUT outdbbandnum integer,
+	OUT filesize bigint,
+	OUT filetimestamp bigint
 )
 	AS 'MODULE_PATHNAME','RASTER_bandmetadata'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
@@ -5001,9 +5003,11 @@ CREATE OR REPLACE FUNCTION ST_BandMetaData(
 	OUT nodatavalue double precision,
 	OUT isoutdb boolean,
 	OUT path text,
-	OUT outdbbandnum integer
+	OUT outdbbandnum integer,
+	OUT filesize bigint,
+	OUT filetimestamp bigint
 )
-	AS $$ SELECT pixeltype, nodatavalue, isoutdb, path, outdbbandnum FROM @extschema@.ST_BandMetaData($1, ARRAY[$2]::int[]) LIMIT 1 $$
+	AS $$ SELECT pixeltype, nodatavalue, isoutdb, path, outdbbandnum, filesize, filetimestamp FROM @extschema@.ST_BandMetaData($1, ARRAY[$2]::int[]) LIMIT 1 $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 

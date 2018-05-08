@@ -3760,7 +3760,7 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 
-				<para>Returns basic meta data about a raster band. Columns returned: pixeltype, nodatavalue, isoutdb, path, outdbbandnum.
+				<para>Returns basic meta data about a raster band. Columns returned: pixeltype, nodatavalue, isoutdb, path, outdbbandnum, filesize, filetimestamp.
 				</para>
 				<note>
 					<para>
@@ -3775,7 +3775,7 @@ FROM dummy_rast;
 				</note>
 				<note>
 					<para>
-						If isoutdb is False, path and outdbbandnum are NULL.
+						If isoutdb is False, path, outdbbandnum, filesize and filetimestamp are NULL. If outdb access is disabled, filsize and filetimestamp will also be NULL.
 					</para>
 				</note>
 			</refsection>
@@ -3795,11 +3795,11 @@ FROM ST_BandMetadata(
  	ARRAY[1,3,2]::int[]
 );
 
- bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                      | outdbbandnum
----------+-----------+-------------+---------+--------------------------------------------------------------------------------+--------------
-       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            1
-       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            3
-       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            2
+ bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                      | outdbbandnum  | filesize | filetimestamp |
+---------+-----------+-------------+---------+--------------------------------------------------------------------------------+---------------+----------+---------------+-
+       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            1  |    12345 |    1521807257 |
+       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            3  |    12345 |    1521807257 |
+       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            2  |    12345 |    1521807257 |
 				</programlisting>
 
 			</refsection>
@@ -3819,9 +3819,9 @@ FROM (
 	WHERE rid=2
 ) As foo;
 
- rid | pixeltype | nodatavalue | isoutdb | path | outdbbandnum
------+-----------+---- --------+---------+------+--------------
-   2 | 8BUI      |           0 | f       |      |
+ rid | pixeltype | nodatavalue | isoutdb | path | outdbbandnum  | filesize | filetimestamp |
+-----+-----------+---- --------+---------+------+---------------+----------+---------------+-
+   2 | 8BUI      |           0 | f       |      |               |          |               |
 				</programlisting>
 
 			</refsection>
