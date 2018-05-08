@@ -27,6 +27,9 @@
  *
  */
 
+// For stat64()
+#define _LARGEFILE64_SOURCE 1
+
 #include <postgres.h>
 #include <fmgr.h>
 #include <funcapi.h>
@@ -42,6 +45,8 @@
 
 
 #include "rtpostgis.h"
+
+extern char enable_outdb_rasters;
 
 /* Get all the properties of a raster band */
 Datum RASTER_getBandPixelType(PG_FUNCTION_ARGS);
@@ -340,6 +345,125 @@ Datum RASTER_getBandPath(PG_FUNCTION_ARGS)
 	PG_RETURN_TEXT_P(result);
 }
 
+
+/**
+ * Return the file size of the raster.
+ */
+PG_FUNCTION_INFO_V1(RASTER_getBandFileSize);
+Datum RASTER_getBandFileSize(PG_FUNCTION_ARGS)
+{
+    rt_pgraster *pgraster;
+    rt_raster raster;
+    rt_band band = NULL;
+    int64_t fileSize;
+    int32_t bandindex;
+
+    /* Index is 1-based */
+    bandindex = PG_GETARG_INT32(1);
+    if ( bandindex < 1 ) {
+            elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+            PG_RETURN_NULL();
+    }
+
+    if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+    raster = rt_raster_deserialize(pgraster, FALSE);
+    if ( ! raster ) {
+        PG_FREE_IF_COPY(pgraster, 0);
+        elog(ERROR, "RASTER_getFileSize: Could not deserialize raster");
+        PG_RETURN_NULL();
+    }
+
+    /* Fetch requested band */
+    band = rt_raster_get_band(raster, bandindex - 1);
+    if (!band) {
+        elog(
+                NOTICE,
+                "Could not find raster band of index %d when getting band path. Returning NULL",
+                bandindex
+        );
+        rt_raster_destroy(raster);
+        PG_FREE_IF_COPY(pgraster, 0);
+        PG_RETURN_NULL();
+    }
+
+    if (!rt_band_is_offline(band)) {
+        elog(NOTICE, "Band of index %d is not out-db.", bandindex);
+        rt_band_destroy(band);
+        rt_raster_destroy(raster);
+        PG_FREE_IF_COPY(pgraster, 0);
+        PG_RETURN_NULL();
+    }
+
+    fileSize = rt_band_get_file_size(band);
+
+    rt_band_destroy(band);
+    rt_raster_destroy(raster);
+    PG_FREE_IF_COPY(pgraster, 0);
+
+    PG_RETURN_INT64(fileSize);
+}
+
+/**
+ * Return the file timestamp of the raster.
+ */
+PG_FUNCTION_INFO_V1(RASTER_getBandFileTimestamp);
+Datum RASTER_getBandFileTimestamp(PG_FUNCTION_ARGS)
+{
+    rt_pgraster *pgraster;
+    rt_raster raster;
+    rt_band band = NULL;
+    int64_t fileSize;
+    int32_t bandindex;
+
+    /* Index is 1-based */
+    bandindex = PG_GETARG_INT32(1);
+    if ( bandindex < 1 ) {
+            elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+            PG_RETURN_NULL();
+    }
+
+    if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+    raster = rt_raster_deserialize(pgraster, FALSE);
+    if ( ! raster ) {
+        PG_FREE_IF_COPY(pgraster, 0);
+        elog(ERROR, "RASTER_getBandFileTimestamp: Could not deserialize raster");
+        PG_RETURN_NULL();
+    }
+
+    /* Fetch requested band */
+    band = rt_raster_get_band(raster, bandindex - 1);
+    if (!band) {
+        elog(
+                NOTICE,
+                "Could not find raster band of index %d when getting band path. Returning NULL",
+                bandindex
+        );
+        rt_raster_destroy(raster);
+        PG_FREE_IF_COPY(pgraster, 0);
+        PG_RETURN_NULL();
+    }
+
+    if (!rt_band_is_offline(band)) {
+        elog(NOTICE, "Band of index %d is not out-db.", bandindex);
+        rt_band_destroy(band);
+        rt_raster_destroy(raster);
+        PG_FREE_IF_COPY(pgraster, 0);
+        PG_RETURN_NULL();
+    }
+
+    fileSize = rt_band_get_file_timestamp(band);
+
+    rt_band_destroy(band);
+    rt_raster_destroy(raster);
+    PG_FREE_IF_COPY(pgraster, 0);
+
+    PG_RETURN_INT64(fileSize);
+}
+
 /**
  * Get raster bands' meta data
  */
@@ -359,6 +483,8 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		bool isoutdb;
 		char *bandpath;
 		uint8_t extbandnum;
+                uint64_t filesize;
+                uint64_t timestamp;
 	};
 	struct bandmetadata *bmd = NULL;
 	struct bandmetadata *bmd2 = NULL;
@@ -535,6 +661,16 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 			else
 				bmd[i].extbandnum = 0;
 
+                        bmd[i].filesize = 0;
+                        bmd[i].timestamp = 0;
+                        if( bmd[i].bandpath && enable_outdb_rasters ) {
+                            VSIStatBufL sStat;
+                            if( VSIStatL(bmd[i].bandpath, &sStat) == 0 ) {
+                                bmd[i].filesize = sStat.st_size;
+                                bmd[i].timestamp = sStat.st_mtime;
+                            }
+                        }
+
 			rt_band_destroy(band);
 		}
 
@@ -575,7 +711,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 6;
+		int values_length = 8;
 		Datum values[values_length];
 		bool nulls[values_length];
 
@@ -598,6 +734,15 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 			nulls[4] = TRUE;
 			nulls[5] = TRUE;
 		}
+
+		if (bmd2[call_cntr].filesize) {
+                    values[6] = UInt64GetDatum(bmd2[call_cntr].filesize);
+                    values[7] = UInt64GetDatum(bmd2[call_cntr].timestamp);
+                }
+                else {
+                    nulls[6] = TRUE;
+                    nulls[7] = TRUE;
+                }
 
 		/* build a tuple */
 		tuple = heap_form_tuple(tupdesc, values, nulls);

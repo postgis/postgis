@@ -54,6 +54,9 @@ static void test_band_metadata() {
 	/* isoffline */
 	CU_ASSERT(!rt_band_is_offline(band));
 
+        CU_ASSERT_EQUAL(rt_band_get_file_size(band), 0);
+        CU_ASSERT_EQUAL(rt_band_get_file_timestamp(band), 0);
+
 	/* data */
 	CU_ASSERT(rt_band_get_data(band) != NULL);
 
@@ -117,6 +120,9 @@ static void test_band_metadata() {
 
 	/* ext path */
 	CU_ASSERT_STRING_EQUAL(rt_band_get_ext_path(band), path);
+
+        CU_ASSERT_EQUAL(rt_band_get_file_size(band), 13674);
+        CU_ASSERT_NOT_EQUAL(rt_band_get_file_timestamp(band), 0);
 
 	/* ext band number */
 	CU_ASSERT_EQUAL(rt_band_get_ext_band_num(band, &extband), ES_NONE);

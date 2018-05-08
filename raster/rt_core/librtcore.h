@@ -513,6 +513,26 @@ int rt_band_is_offline(rt_band band);
 const char* rt_band_get_ext_path(rt_band band);
 
 /**
+ * Return file size in bytes.
+ *
+ * Only for out-db rasters.
+ *
+ * @param band : the band
+ * @return file size in bytes or 0 in case of error.
+ */
+uint64_t rt_band_get_file_size(rt_band band);
+
+/**
+ * Return file timestamp.
+ *
+ * Only for out-db rasters.
+ *
+ * @param band : the band
+ * @return file timestamp (Unix time) or 0 in case of error.
+ */
+uint64_t rt_band_get_file_timestamp(rt_band band);
+
+/**
  * Return bands' external band number (only valid when
  * rt_band_is_offline returns non-zero).
  *

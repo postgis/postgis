@@ -28,11 +28,15 @@
  *
  */
 
+// For stat64()
+#define _LARGEFILE64_SOURCE 1
+
 #include <stdio.h>
 
 #include "librtcore.h"
 #include "librtcore_internal.h"
 
+#include "cpl_vsi.h"
 #include "gdal_vrt.h"
 
 /**
@@ -577,6 +581,50 @@ rt_band_load_offline_data(rt_band band) {
 	rt_raster_destroy(_rast);
 
 	return ES_NONE;
+}
+
+uint64_t rt_band_get_file_size(rt_band band) {
+    VSIStatBufL sStat;
+
+    assert(NULL != band);
+    if (!band->offline) {
+        rterror("rt_band_get_file_size: Band is not offline");
+        return 0;
+    }
+    /* offline_data is disabled */
+    if (!enable_outdb_rasters) {
+        rterror("rt_band_get_file_size: Access to offline bands disabled");
+        return 0;
+    }
+
+    if( VSIStatL(band->data.offline.path, &sStat) != 0 ) {
+        rterror("rt_band_get_file_size: Cannot access file");
+        return 0;
+    }
+
+    return sStat.st_size;
+}
+
+uint64_t rt_band_get_file_timestamp(rt_band band) {
+    VSIStatBufL sStat;
+
+    assert(NULL != band);
+    if (!band->offline) {
+        rterror("rt_band_get_file_timestamp: Band is not offline");
+        return 0;
+    }
+    /* offline_data is disabled */
+    if (!enable_outdb_rasters) {
+        rterror("rt_band_get_file_timestamp: Access to offline bands disabled");
+        return 0;
+    }
+
+    if( VSIStatL(band->data.offline.path, &sStat) != 0 ) {
+        rterror("rt_band_get_file_timestamp: Cannot access file");
+        return 0;
+    }
+
+    return sStat.st_mtime;
 }
 
 rt_pixtype
