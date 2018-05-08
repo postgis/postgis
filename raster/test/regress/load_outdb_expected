@@ -1,1 +1,15 @@
 4
+ERROR:  rt_band_get_file_size: Access to offline bands disabled
+ERROR:  rt_band_get_file_timestamp: Access to offline bands disabled
+NOTICE:  Band of index 1 is not out-db.
+13674
+NOTICE:  Band of index 1 is not out-db.
+t
+ERROR:  rt_raster_from_wkb: wkb size (0)  < min size (61) at character 24
+ERROR:  rt_raster_from_wkb: wkb size (0)  < min size (61) at character 29
+NOTICE:  Invalid band index (must use 1-based). Returning NULL
+NOTICE:  Invalid band index (must use 1-based). Returning NULL
+NOTICE:  Could not find raster band of index 10 when getting band path. Returning NULL
+NOTICE:  Could not find raster band of index 10 when getting band path. Returning NULL
+ERROR:  rt_band_get_file_size: Cannot access file
+ERROR:  rt_band_get_file_timestamp: Cannot access file

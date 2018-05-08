@@ -3760,7 +3760,7 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 
-				<para>Returns basic meta data about a raster band. Columns returned: pixeltype, nodatavalue, isoutdb, path, outdbbandnum.
+				<para>Returns basic meta data about a raster band. Columns returned: pixeltype, nodatavalue, isoutdb, path, outdbbandnum, filesize, filetimestamp.
 				</para>
 				<note>
 					<para>
@@ -3775,9 +3775,12 @@ FROM dummy_rast;
 				</note>
 				<note>
 					<para>
-						If isoutdb is False, path and outdbbandnum are NULL.
+						If isoutdb is False, path, outdbbandnum, filesize and filetimestamp are NULL. If outdb access is disabled, filesize and filetimestamp will also be NULL.
 					</para>
 				</note>
+
+				<para>Enhanced: 2.5.0 to include filesize and filetimestamp for outdb rasters.</para>
+
 			</refsection>
 
 			<refsection>
@@ -3795,11 +3798,11 @@ FROM ST_BandMetadata(
  	ARRAY[1,3,2]::int[]
 );
 
- bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                      | outdbbandnum
----------+-----------+-------------+---------+--------------------------------------------------------------------------------+--------------
-       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            1
-       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            3
-       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            2
+ bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                      | outdbbandnum  | filesize | filetimestamp |
+---------+-----------+-------------+---------+--------------------------------------------------------------------------------+---------------+----------+---------------+-
+       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            1  |    12345 |    1521807257 |
+       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            3  |    12345 |    1521807257 |
+       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            2  |    12345 |    1521807257 |
 				</programlisting>
 
 			</refsection>
@@ -3819,9 +3822,9 @@ FROM (
 	WHERE rid=2
 ) As foo;
 
- rid | pixeltype | nodatavalue | isoutdb | path | outdbbandnum
------+-----------+---- --------+---------+------+--------------
-   2 | 8BUI      |           0 | f       |      |
+ rid | pixeltype | nodatavalue | isoutdb | path | outdbbandnum  | filesize | filetimestamp |
+-----+-----------+---- --------+---------+------+---------------+----------+---------------+-
+   2 | 8BUI      |           0 | f       |      |               |          |               |
 				</programlisting>
 
 			</refsection>
@@ -4019,6 +4022,86 @@ select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
 			<refsection>
 				<title>See Also</title>
 				<para></para>
+			</refsection>
+		</refentry>
+
+		<refentry id="RT_ST_BandFileSize">
+			<refnamediv>
+				<refname>ST_BandFileSize</refname>
+				<refpurpose>Returns the file size of a band stored in file system. If no bandnum specified, 1 is assumed.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>bigint <function>ST_BandFileSize</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>bandnum=1</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>Returns the file size of a band stored in file system.  Throws an error if called with an in db band, or if outdb access is not enabled.</para>
+
+                                <para>This function is typically used in conjunction with ST_BandPath() and ST_BandFileTimestamp() so a client can determine if the filename of a outdb raster as seen by it is the same as the one seen by the server.</para>
+
+				<para>Availability: 2.5.0</para>
+
+			</refsection>
+
+                        <refsection>
+                                <title>Examples</title>
+
+                                <programlisting>SELECT ST_BandFileSize(rast,1) FROM dummy_rast WHERE rid = 1;
+
+ st_bandfilesize
+-----------------
+          240574
+				</programlisting>
+
+			</refsection>
+
+		</refentry>
+
+		<refentry id="RT_ST_BandFileTimestamp">
+			<refnamediv>
+				<refname>ST_BandFileTimestamp</refname>
+				<refpurpose>Returns the file timestamp of a band stored in file system. If no bandnum specified, 1 is assumed.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>bigint <function>ST_BandFileTimestamp</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>bandnum=1</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>Returns the file timestamp (number of seconds since Jan 1st 1970 00:00:00 UTC) of a band stored in file system.  Throws an error if called with an in db band, or if outdb access is not enabled.</para>
+
+                                <para>This function is typically used in conjunction with ST_BandPath() and ST_BandFileSize() so a client can determine if the filename of a outdb raster as seen by it is the same as the one seen by the server.</para>
+
+				<para>Availability: 2.5.0</para>
+			</refsection>
+
+                        <refsection>
+                                <title>Examples</title>
+
+                                <programlisting>SELECT ST_BandFileTimestamp(rast,1) FROM dummy_rast WHERE rid = 1;
+
+ st_bandfiletimestamp
+----------------------
+           1521807257
+				</programlisting>
+
 			</refsection>
 		</refentry>
 

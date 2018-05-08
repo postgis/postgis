@@ -13,6 +13,8 @@ PostGIS 2.5.0
   - #3176, Add ST_OrientedEnvelope (Dan Baston)
   - #4029, Add ST_QuantizeCoordinates (Dan Baston)
   - #4063, Optional false origin point for ST_Scale (Paul Ramsey)
+  - #4082, Add ST_BandFileSize and ST_BandFileTimestamp,
+           extend ST_BandMetadata (Even Rouault)
 
 * Breaking Changes *
   - #4054, ST_SimplifyVW changed from > tolerance to >= tolerance
