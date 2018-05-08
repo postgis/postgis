@@ -32,7 +32,6 @@ before_install:
   - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests binutils libproj-dev
   - cp -n /var/cache/apt/archives/* /home/travis/deb || true
   - ls -la /home/travis/deb/
-  - cd /home/travis/build/postgis/postgis/
   - sudo ldconfig
   - ./autogen.sh
 
