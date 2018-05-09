@@ -1,3 +1,4 @@
+SET postgis.enable_outdb_rasters = false;
 SELECT count(*) FROM raster_outdb_template;
 SELECT DISTINCT ST_BandFileSize(rast) FROM raster_outdb_template;
 SELECT DISTINCT ST_BandFileTimestamp(rast) FROM raster_outdb_template;
