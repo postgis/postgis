@@ -33,7 +33,7 @@ echo $PGPORT
 echo ${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 
 ## doesn't work for some reason - just hard-code to branches for now
-# if [[ $POSTGIS_MICRO_VERSION  == *SVN* || $POSTGIS_MICRO_VERSION  == *dev*  ]]  
+# if [[ $POSTGIS_MICRO_VERSION  == *SVN* || $POSTGIS_MICRO_VERSION  == *dev*  ]]
 # then
 # 	export POSTGIS_SRC=${PROJECTS}/postgis/branches/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 # else
@@ -54,12 +54,12 @@ fi
 ./configure \
     --with-pgconfig=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}/bin/pg_config \
     --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/geos-config \
-    --with-gdalconfig=${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/bin/gdal-config --with-sfcgal=/usr/bin/sfcgal-config \
+    --with-gdalconfig=${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/bin/gdal-config \ #--with-sfcgal=/usr/bin/sfcgal-config \
     --without-interrupt-tests \
     --prefix=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}
 make clean
 ## install so we can later test extension upgrade
-make 
+make
 
 if [ "$?" != "0" ]; then
   exit $?
