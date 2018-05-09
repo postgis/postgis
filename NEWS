@@ -15,6 +15,9 @@ PostGIS 2.5.0
   - #4063, Optional false origin point for ST_Scale (Paul Ramsey)
   - #4082, Add ST_BandFileSize and ST_BandFileTimestamp,
            extend ST_BandMetadata (Even Rouault)
+  - #2597, Add ST_Grayscale (Bborie Park)
+  - #4007, Add ST_SetBandPath (Bborie Park)
+  - #4008, Add ST_SetBandIndex (Bborie Park)
 
 * Breaking Changes *
   - #4054, ST_SimplifyVW changed from > tolerance to >= tolerance
@@ -63,6 +66,9 @@ PostGIS 2.5.0
            ST_DistanceCPA, and ST_CPAWithin (Paul Ramsey, Darafei Praliaskouski)
   - #4071, ST_ClusterKMeans crash on NULL/EMPTY fixed (Darafei Praliaskouski)
   - #4076, Reduce use of GEOS in topology implementation (Björn Harrtell)
+  - #4080, Add external raster band index to ST_BandMetaData
+  - Add Raster Tips section to Documentation for information about
+    Raster behavior (e.g. Out-DB performance, maximum open files)
 
 PostGIS 2.4.0
 2017/09/30

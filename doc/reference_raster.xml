@@ -3779,12 +3779,33 @@ FROM dummy_rast;
 					</para>
 				</note>
 
-				<para>Enhanced: 2.5.0 to include filesize and filetimestamp for outdb rasters.</para>
-
+				<para>Enhanced: 2.5.0 to include <emphasis>outdbbandnum</emphasis>, <emphasis>filesize</emphasis> and <emphasis>filetimestamp</emphasis> for outdb rasters.</para>
 			</refsection>
 
 			<refsection>
 				<title>Examples: Variant 1</title>
+
+				<programlisting>
+SELECT
+	rid,
+	(foo.md).*
+FROM (
+	SELECT
+		rid,
+		ST_BandMetaData(rast, 1) AS md
+	FROM dummy_rast
+	WHERE rid=2
+) As foo;
+
+ rid | pixeltype | nodatavalue | isoutdb | path | outdbbandnum
+-----+-----------+---- --------+---------+------+--------------
+   2 | 8BUI      |           0 | f       |      |
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples: Variant 2</title>
 
 				<programlisting>
 WITH foo AS (
@@ -3803,28 +3824,6 @@ FROM ST_BandMetadata(
        1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            1  |    12345 |    1521807257 |
        3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            3  |    12345 |    1521807257 |
        2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            2  |    12345 |    1521807257 |
-				</programlisting>
-
-			</refsection>
-
-			<refsection>
-				<title>Examples: Variant 2</title>
-
-				<programlisting>
-SELECT
-	rid,
-	(foo.md).*
-FROM (
-	SELECT
-		rid,
-		ST_BandMetaData(rast, 1) AS md
-	FROM dummy_rast
-	WHERE rid=2
-) As foo;
-
- rid | pixeltype | nodatavalue | isoutdb | path | outdbbandnum  | filesize | filetimestamp |
------+-----------+---- --------+---------+------+---------------+----------+---------------+-
-   2 | 8BUI      |           0 | f       |      |               |          |               |
 				</programlisting>
 
 			</refsection>
