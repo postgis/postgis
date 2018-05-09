@@ -333,10 +333,10 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 		/* add right polygon */
 		geoms[3] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
 				   	&points[3], &points[2], &points[6], &points[7]));
-		/* add back polygon */
+		/* add front polygon */
 		geoms[4] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
 				   	&points[0], &points[3], &points[7], &points[4]));
-		/* add front polygon */
+		/* add back polygon */
 		geoms[5] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
 				   	&points[1], &points[5], &points[6], &points[2]));
 
