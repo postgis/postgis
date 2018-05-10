@@ -69,6 +69,7 @@ PostGIS 2.5.0
   - #4080, Add external raster band index to ST_BandMetaData
   - Add Raster Tips section to Documentation for information about
     Raster behavior (e.g. Out-DB performance, maximum open files)
+  - #4084: Fixed wrong code-comment regarding front/back of BOX3D (Matthias Bay)
 
 PostGIS 2.4.0
 2017/09/30
