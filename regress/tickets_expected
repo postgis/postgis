@@ -300,3 +300,4 @@ ERROR:  Cannot set point values on EMPTY geometry, use ST_AddPoint to add points
 #3627b|t
 #4055a|4326
 #4055b|4326
+#4089|LINESTRING Z (1 1 1,3 3 1)

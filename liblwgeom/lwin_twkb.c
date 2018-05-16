@@ -584,7 +584,7 @@ LWGEOM* lwgeom_from_twkb_state(twkb_parse_state *s)
 			bbox.zmax = bbox.zmin + twkb_parse_state_double(s, s->factor_z);
 		}
 		/* M */
-		if ( s->has_z )
+		if ( s->has_m )
 		{
 			bbox.mmin = twkb_parse_state_double(s, s->factor_m);
 			bbox.mmax = bbox.mmin + twkb_parse_state_double(s, s->factor_m);
