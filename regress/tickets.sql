@@ -1085,5 +1085,8 @@ SELECT '#4037.4', ST_AsText(ST_Union('POLYGON((0 0, 10 10, 0 10, 10 0, 0 0))', S
 SELECT '#4055a', ST_SRID(unnest(ST_ClusterWithin(ARRAY['SRID=4326;POINT (3 7)'::geometry, 'SRID=4326;LINESTRING (3 0, 3 9)'], 0)));
 SELECT '#4055b', ST_SRID(unnest(ST_ClusterIntersecting(ARRAY['SRID=4326;POINT (3 7)'::geometry, 'SRID=4326;LINESTRING (3 0, 3 9)'])));
 
+--#4089
+select '#4089', st_astext(st_geomfromtwkb(st_AsTWKB(st_GeometryFromText('LINESTRING Z(1 1 1, 3 3 1)'), 1, 0, 0, false, true)));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
