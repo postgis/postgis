@@ -98,7 +98,7 @@ void SetPROJ4LibPath(void);
 
 
 static void
-#if POSTGIS_PGSQL_VERSION < 110
+#if POSTGIS_PGSQL_VERSION < 96
 PROJ4SRSCacheDelete(MemoryContext context)
 {
 #else
@@ -112,7 +112,7 @@ PROJ4SRSCacheDelete(void *ptr)
 	projection = GetPJHashEntry(context);
 
 	if (!projection)
-		elog(ERROR, "%s: Trying to delete non-existant projection object with MemoryContext key (%p)", __func__, (void *)context);
+		elog(ERROR, "PROJ4SRSCacheDelete: Trying to delete non-existant projection object with MemoryContext key (%p)", (void *)context);
 
 	POSTGIS_DEBUGF(3, "deleting projection object (%p) with MemoryContext key (%p)", projection, context);
 	/* Free it */
@@ -122,7 +122,7 @@ PROJ4SRSCacheDelete(void *ptr)
 	DeletePJHashEntry(context);
 }
 
-#if POSTGIS_PGSQL_VERSION < 110
+#if POSTGIS_PGSQL_VERSION < 96
 
 static void
 PROJ4SRSCacheInit(MemoryContext context)
@@ -153,11 +153,7 @@ PROJ4SRSCacheIsEmpty(MemoryContext context)
 }
 
 static void
-#if POSTGIS_PGSQL_VERSION >= 96
-PROJ4SRSCacheStats(MemoryContext context, int level, bool print, MemoryContextCounters *totals)
-#else
 PROJ4SRSCacheStats(MemoryContext context, int level)
-#endif
 {
 	/*
 	 * Simple stats display function - we must supply a function since this call is mandatory according to tgl
@@ -195,8 +191,7 @@ static MemoryContextMethods PROJ4SRSCacheContextMethods =
 #endif
 };
 
-#endif /* POSTGIS_PGSQL_VERSION < 110 */
-
+#endif /* POSTGIS_PGSQL_VERSION < 96 */
 
 /*
  * PROJ4 projPJ Hash Table functions
@@ -564,7 +559,7 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	 */
 	POSTGIS_DEBUGF(3, "adding SRID %d with proj4text \"%s\" to query cache at index %d", srid, proj_str, PROJ4Cache->PROJ4SRSCacheCount);
 
-#if POSTGIS_PGSQL_VERSION < 110
+#if POSTGIS_PGSQL_VERSION < 95
 	PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
 	                                      &PROJ4SRSCacheContextMethods,
 	                                      PROJ4Cache->PROJ4SRSCacheContext,
@@ -583,7 +578,7 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	MemoryContextRegisterResetCallback(PJMemoryContext, callback);
 #endif
 
-	/* Create the backend hash if it doesn't already exist */
+ 	/* Create the backend hash if it doesn't already exist */
 	if (!PJHash)
 		PJHash = CreatePJHash();
 
@@ -683,51 +678,6 @@ Proj4Cache GetPROJ4Cache(FunctionCallInfo fcinfo) {
 	return (Proj4Cache)GetPROJ4SRSCache(fcinfo);
 }
 
-#if 0
-static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfo fcinfo)
-{
-	PROJ4PortalCache *PROJ4Cache = (GetGeomCache(fcinfo))->proj;
-
-	/*
-	 * If we have not already created PROJ4 cache for this portal
-	 * then create it
-	 */
-	if (fcinfo->flinfo->fn_extra == NULL)
-	{
-		MemoryContext old_context;
-
-		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-		PROJ4Cache = palloc(sizeof(PROJ4PortalCache));
-		MemoryContextSwitchTo(old_context);
-
-		if (PROJ4Cache)
-		{
-			int i;
-
-			POSTGIS_DEBUGF(3, "Allocating PROJ4Cache for portal with transform() MemoryContext %p", fcinfo->flinfo->fn_mcxt);
-			/* Put in any required defaults */
-			for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
-			{
-				PROJ4Cache->PROJ4SRSCache[i].srid = SRID_UNKNOWN;
-				PROJ4Cache->PROJ4SRSCache[i].projection = NULL;
-				PROJ4Cache->PROJ4SRSCache[i].projection_mcxt = NULL;
-			}
-			PROJ4Cache->PROJ4SRSCacheCount = 0;
-			PROJ4Cache->PROJ4SRSCacheContext = fcinfo->flinfo->fn_mcxt;
-
-			/* Store the pointer in fcinfo->flinfo->fn_extra */
-			fcinfo->flinfo->fn_extra = PROJ4Cache;
-		}
-	}
-	else
-	{
-		/* Use the existing cache */
-		PROJ4Cache = fcinfo->flinfo->fn_extra;
-	}
-
-	return PROJ4Cache ;
-}
-#endif
 
 /*
 * Given a function call context, figure out what namespace the
