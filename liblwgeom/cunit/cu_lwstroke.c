@@ -224,6 +224,17 @@ static void test_lwcurve_linearize(void)
 	lwfree(str);
 	lwgeom_free(out);
 
+	/* max deviation bigger than twice the radius
+	 * we really only want to make sure NOT to enter
+	 * an infinite loop here.
+	 * See https://trac.osgeo.org/postgis/ticket/4031
+	 */
+	out = lwcurve_linearize(in, 500, toltype, LW_LINEARIZE_FLAG_SYMMETRIC);
+	str = lwgeom_to_text(out, 2);
+	ASSERT_STRING_EQUAL(str, "LINESTRING(20 50,72 -66)");
+	lwfree(str);
+	lwgeom_free(out);
+
 	lwgeom_free(in);
 
 	/***********************************************************
