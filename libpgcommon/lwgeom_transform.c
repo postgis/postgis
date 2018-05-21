@@ -559,7 +559,7 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	 */
 	POSTGIS_DEBUGF(3, "adding SRID %d with proj4text \"%s\" to query cache at index %d", srid, proj_str, PROJ4Cache->PROJ4SRSCacheCount);
 
-#if POSTGIS_PGSQL_VERSION < 95
+#if POSTGIS_PGSQL_VERSION < 96
 	PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
 	                                      &PROJ4SRSCacheContextMethods,
 	                                      PROJ4Cache->PROJ4SRSCacheContext,

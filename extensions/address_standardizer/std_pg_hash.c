@@ -113,7 +113,7 @@ static int load_rules(RULES *rules, char *tabname);
 
 
 static void
-#if POSTGIS_PGSQL_VERSION < 95
+#if POSTGIS_PGSQL_VERSION < 96
 
 StdCacheDelete(MemoryContext context)
 {
@@ -140,7 +140,7 @@ StdCacheDelete(void *ptr)
     DeleteStdHashEntry(context);
 }
 
-#if POSTGIS_PGSQL_VERSION < 95
+#if POSTGIS_PGSQL_VERSION < 96
 
 static void
 StdCacheInit(MemoryContext context)
@@ -194,7 +194,7 @@ static MemoryContextMethods StdCacheContextMethods =
 #endif
 };
 
-#endif /* POSTGIS_PGSQL_VERSION < 95 */
+#endif /* POSTGIS_PGSQL_VERSION < 96 */
 
 
 uint32
@@ -383,7 +383,7 @@ AddToStdPortalCache(StdPortalCache *STDCache, char *lextab, char *gaztab, char *
     DBG("Adding item to STD cache ('%s', '%s', '%s') index %d", lextab, gaztab, rultab, STDCache->NextSlot);
 
 
-#if POSTGIS_PGSQL_VERSION < 95
+#if POSTGIS_PGSQL_VERSION < 96
     STDMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
                                            &StdCacheContextMethods,
                                            STDCache->StdCacheContext,

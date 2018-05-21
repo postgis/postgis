@@ -10,6 +10,7 @@ PostGIS 2.4.5
   - #4070, use standard interruption error code on GEOS interruptions
            (Paul Ramsey)
   - #3980, delay freeing input until processing complete (lucasvr)
+  - #4090, PG 11 support (Paul Ramsey, Raúl Marín)
 
 
 PostGIS 2.4.4
