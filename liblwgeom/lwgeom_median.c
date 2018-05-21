@@ -85,25 +85,28 @@ iterate_3d(POINT3D* curr, const POINT3D* points, uint32_t npoints, double* dista
 		double dx = 0;
 		double dy = 0;
 		double dz = 0;
-		double r_inv;
-		POINT3D alt;
+		double d_sqr;
+
 		for (i = 0; i < npoints; i++)
 		{
 			if (distances[i] > 0)
 			{
 				dx += (points[i].x - curr->x) / distances[i];
 				dy += (points[i].y - curr->y) / distances[i];
-				dz += (points[i].y - curr->z) / distances[i];
+				dz += (points[i].z - curr->z) / distances[i];
 			}
 		}
 
-		r_inv = 1.0 / sqrt ( dx*dx + dy*dy + dz*dz );
+		d_sqr = sqrt (dx*dx + dy*dy + dz*dz);
 
-		alt.x = FP_MAX(0, 1.0 - r_inv)*next.x + FP_MIN(1.0, r_inv)*curr->x;
-		alt.y = FP_MAX(0, 1.0 - r_inv)*next.y + FP_MIN(1.0, r_inv)*curr->y;
-		alt.z = FP_MAX(0, 1.0 - r_inv)*next.z + FP_MIN(1.0, r_inv)*curr->z;
+		if (d_sqr > DBL_EPSILON)
+		{
+			double r_inv = 1.0 / d_sqr;
 
-		next = alt;
+			next.x = FP_MAX(0, 1.0 - r_inv)*next.x + FP_MIN(1.0, r_inv)*curr->x;
+			next.y = FP_MAX(0, 1.0 - r_inv)*next.y + FP_MIN(1.0, r_inv)*curr->y;
+			next.z = FP_MAX(0, 1.0 - r_inv)*next.z + FP_MIN(1.0, r_inv)*curr->z;
+		}
 	}
 
 	delta = distance3d_pt_pt(curr, &next);
