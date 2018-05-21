@@ -263,6 +263,7 @@ trim(const char *input) {
 	char *rtn;
 	char *ptr;
 	uint32_t offset = 0;
+	size_t len = 0;
 
 	if (!input)
 		return NULL;
@@ -278,13 +279,13 @@ trim(const char *input) {
 	while (isspace(*--ptr))
 		offset++;
 
-	rtn = rtalloc(sizeof(char) * (strlen(input) - offset + 1));
+	len = strlen(input) - offset + 1;
+	rtn = rtalloc(sizeof(char) * len);
 	if (NULL == rtn) {
 		rterror(_("trim: Not enough memory"));
 		return NULL;
 	}
-	strncpy(rtn, input, strlen(input) - offset);
-	rtn[strlen(input) - offset] = '\0';
+	strncpy(rtn, input, len);
 
 	return rtn;
 }
@@ -294,6 +295,7 @@ chartrim(const char *input, char *remove) {
 	char *rtn = NULL;
 	char *ptr = NULL;
 	uint32_t offset = 0;
+	size_t len = 0;
 
 	if (!input)
 		return NULL;
@@ -309,12 +311,13 @@ chartrim(const char *input, char *remove) {
 	while (strchr(remove, *--ptr) != NULL)
 		offset++;
 
-	rtn = rtalloc(sizeof(char) * (strlen(input) - offset + 1));
+	len = strlen(input) - offset + 1;
+	rtn = rtalloc(sizeof(char) * len);
 	if (NULL == rtn) {
 		rterror(_("chartrim: Not enough memory"));
 		return NULL;
 	}
-	strncpy(rtn, input, strlen(input) - offset);
+	strncpy(rtn, input, len);
 	rtn[strlen(input) - offset] = '\0';
 
 	return rtn;
@@ -2475,13 +2478,14 @@ main(int argc, char **argv) {
 		}
 		/* raster column name */
 		else if (CSEQUAL(argv[argit], "-f") && argit < argc - 1) {
-			config->raster_column = rtalloc(sizeof(char) * (strlen(argv[++argit]) + 1));
+			const size_t len = (strlen(argv[++argit]) + 1);
+			config->raster_column = rtalloc(sizeof(char) * len);
 			if (config->raster_column == NULL) {
 				rterror(_("Could not allocate memory for storing raster column name"));
 				rtdealloc_config(config);
 				exit(1);
 			}
-			strncpy(config->raster_column, argv[argit], strlen(argv[argit]) + 1);
+			strncpy(config->raster_column, argv[argit], len);
 		}
 		/* filename column */
 		else if (CSEQUAL(argv[argit], "-F")) {
@@ -2489,13 +2493,14 @@ main(int argc, char **argv) {
 		}
 		/* filename column name */
 		else if (CSEQUAL(argv[argit], "-n") && argit < argc - 1) {
-			config->file_column_name = rtalloc(sizeof(char) * (strlen(argv[++argit]) + 1));
+			const size_t len = (strlen(argv[++argit]) + 1);
+			config->file_column_name = rtalloc(sizeof(char) * len);
 			if (config->file_column_name == NULL) {
 				rterror(_("Could not allocate memory for storing filename column name"));
 				rtdealloc_config(config);
 				exit(1);
 			}
-			strncpy(config->file_column_name, argv[argit], strlen(argv[argit]) + 1);
+			strncpy(config->file_column_name, argv[argit], len);
 			config->file_column = 1;
 		}
 		/* overview factors */
@@ -2558,23 +2563,25 @@ main(int argc, char **argv) {
 		}
 		/* tablespace of new table */
 		else if (CSEQUAL(argv[argit], "-T") && argit < argc - 1) {
-			config->tablespace = rtalloc(sizeof(char) * (strlen(argv[++argit]) + 1));
+			const size_t len = (strlen(argv[++argit]) + 1);
+			config->tablespace = rtalloc(len);
 			if (config->tablespace == NULL) {
 				rterror(_("Could not allocate memory for storing tablespace of new table"));
 				rtdealloc_config(config);
 				exit(1);
 			}
-			strncpy(config->tablespace, argv[argit], strlen(argv[argit]) + 1);
+			strncpy(config->tablespace, argv[argit], len);
 		}
 		/* tablespace of new index */
 		else if (CSEQUAL(argv[argit], "-X") && argit < argc - 1) {
-			config->idx_tablespace = rtalloc(sizeof(char) * (strlen(argv[++argit]) + 1));
+			const size_t len = (strlen(argv[++argit]) + 1);
+			config->idx_tablespace = rtalloc(len);
 			if (config->idx_tablespace == NULL) {
 				rterror(_("Could not allocate memory for storing tablespace of new indices"));
 				rtdealloc_config(config);
 				exit(1);
 			}
-			strncpy(config->idx_tablespace, argv[argit], strlen(argv[argit]) + 1);
+			strncpy(config->idx_tablespace, argv[argit], len);
 		}
 		/* nodata value */
 		else if (CSEQUAL(argv[argit], "-N") && argit < argc - 1) {
@@ -2632,6 +2639,7 @@ main(int argc, char **argv) {
 			exit(0);
 		}
 		else {
+			size_t len;
 			config->rt_file_count++;
 			config->rt_file = (char **) rtrealloc(config->rt_file, sizeof(char *) * config->rt_file_count);
 			if (config->rt_file == NULL) {
@@ -2640,13 +2648,14 @@ main(int argc, char **argv) {
 				exit(1);
 			}
 
-			config->rt_file[config->rt_file_count - 1] = rtalloc(sizeof(char) * (strlen(argv[argit]) + 1));
+			len = strlen(argv[argit]) + 1;
+			config->rt_file[config->rt_file_count - 1] = rtalloc(sizeof(char) * len);
 			if (config->rt_file[config->rt_file_count - 1] == NULL) {
 				rterror(_("Could not allocate memory for storing raster filename"));
 				rtdealloc_config(config);
 				exit(1);
 			}
-			strncpy(config->rt_file[config->rt_file_count - 1], argv[argit], strlen(argv[argit]) + 1);
+			strncpy(config->rt_file[config->rt_file_count - 1], argv[argit], len);
 		}
 	}
 
@@ -2699,13 +2708,14 @@ main(int argc, char **argv) {
 			}
 			/* table */
 			else {
-				config->table = rtalloc(sizeof(char) * strlen(config->rt_file[config->rt_file_count - 1]) + 1);
+				const size_t len = strlen(config->rt_file[config->rt_file_count - 1]) + 1;
+				config->table = rtalloc(sizeof(char) * len);
 				if (config->table == NULL) {
 					rterror(_("Could not allocate memory for storing table name"));
 					rtdealloc_config(config);
 					exit(1);
 				}
-				strncpy(config->table, config->rt_file[config->rt_file_count - 1], strlen(config->rt_file[config->rt_file_count - 1]) + 1);
+				strncpy(config->table, config->rt_file[config->rt_file_count - 1], len);
 			}
 
 			rtdealloc(config->rt_file[--(config->rt_file_count)]);

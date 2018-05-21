@@ -21,7 +21,7 @@ extern LWGEOM* lwgeom_sfcgal_noop( const LWGEOM* geom_in );
 
 static void test_sfcgal_noop(void)
 {
-	int i;
+	size_t i;
 
 	char *ewkt[] =
 	{

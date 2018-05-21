@@ -690,7 +690,7 @@ static int load_lex(LEXICON *lex, char *tab)
     int ntuples;
     int total_tuples = 0;
 
-    lex_columns_t lex_columns = {seq: -1, word: -1, stdword: -1, token: -1};
+    lex_columns_t lex_columns = {.seq = -1, .word = -1, .stdword = -1, .token = -1};
 
     int seq;
     char *word;
@@ -816,7 +816,7 @@ static int load_rules(RULES *rules, char *tab)
     int ntuples;
     int total_tuples = 0;
 
-    rules_columns_t rules_columns = {rule: -1};
+    rules_columns_t rules_columns = {.rule = -1};
 
     char *rule;
 

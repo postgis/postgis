@@ -1126,6 +1126,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			}
 
 			strncpy(name, utf8str, MAXFIELDNAMELEN);
+			name[MAXFIELDNAMELEN-1] = '\0';
 			free(utf8str);
 		}
 
@@ -1161,7 +1162,12 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		        ! strcmp(name, "primary") ||
 		        ! strcmp(name, "oid") || ! strcmp(name, "ctid"))
 		{
-			strncpy(name2 + 2, name, MAXFIELDNAMELEN - 2);
+			size_t len = strlen(name);
+			if (len > (MAXFIELDNAMELEN - 2))
+				len = MAXFIELDNAMELEN - 2;
+			strncpy(name2 + 2, name, len);
+			name2[MAXFIELDNAMELEN-1] = '\0';
+			name2[len + 2] = '\0';
 			name2[0] = '_';
 			name2[1] = '_';
 			strcpy(name, name2);
@@ -1651,6 +1657,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 					return SHPLOADERERR;
 				}
 				strncpy(val, utf8str, MAXVALUELEN);
+				val[MAXVALUELEN-1] = '\0';
 				free(utf8str);
 
 			}

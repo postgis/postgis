@@ -360,7 +360,7 @@ uint8_t MULTITYPE[NUMTYPES] =
 
 uint8_t lwtype_multitype(uint8_t type)
 {
-	if (type > 15 || type < 0) return 0;
+	if (type > 15) return 0;
 	return MULTITYPE[type];
 }
 

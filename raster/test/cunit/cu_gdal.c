@@ -513,8 +513,8 @@ static void test_gdal_to_raster() {
 	CU_ASSERT(gddrv != NULL);
 	CU_ASSERT_EQUAL(destroy, 0);
 	CU_ASSERT(gdds != NULL);
-	CU_ASSERT_EQUAL(GDALGetRasterXSize(gdds), width);
-	CU_ASSERT_EQUAL(GDALGetRasterYSize(gdds), height);
+	CU_ASSERT_EQUAL((uint32_t)GDALGetRasterXSize(gdds), width);
+	CU_ASSERT_EQUAL((uint32_t)GDALGetRasterYSize(gdds), height);
 
 	rast = rt_raster_from_gdal_dataset(gdds);
 	CU_ASSERT(rast != NULL);
@@ -559,8 +559,8 @@ static void test_gdal_to_raster() {
 	CU_ASSERT(gddrv != NULL);
 	CU_ASSERT_EQUAL(destroy, 0);
 	CU_ASSERT(gdds != NULL);
-	CU_ASSERT_EQUAL(GDALGetRasterXSize(gdds), width);
-	CU_ASSERT_EQUAL(GDALGetRasterYSize(gdds), height);
+	CU_ASSERT_EQUAL((uint32_t)GDALGetRasterXSize(gdds), width);
+	CU_ASSERT_EQUAL((uint32_t)GDALGetRasterYSize(gdds), height);
 
 	rast = rt_raster_from_gdal_dataset(gdds);
 	CU_ASSERT(rast != NULL);

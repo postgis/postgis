@@ -285,8 +285,10 @@ rt_util_gdal_sr_auth_info(GDALDatasetH hds, char **authname, char **authcode) {
 			const char* pszAuthorityCode = OSRGetAuthorityCode(hSRS, NULL);
 
 			if (pszAuthorityName != NULL && pszAuthorityCode != NULL) {
-				*authname = rtalloc(sizeof(char) * (strlen(pszAuthorityName) + 1));
-				*authcode = rtalloc(sizeof(char) * (strlen(pszAuthorityCode) + 1));
+				size_t authorityName_len = strlen(pszAuthorityName) +1;
+				size_t authorityCode_len = strlen(pszAuthorityCode) + 1;
+				*authname = rtalloc(sizeof(char) * authorityName_len);
+				*authcode = rtalloc(sizeof(char) * authorityCode_len);
 
 				if (*authname == NULL || *authcode == NULL) {
 					rterror("rt_util_gdal_sr_auth_info: Could not allocate memory for auth name and code");
@@ -296,8 +298,8 @@ rt_util_gdal_sr_auth_info(GDALDatasetH hds, char **authname, char **authcode) {
 					return ES_ERROR;
 				}
 
-				strncpy(*authname, pszAuthorityName, strlen(pszAuthorityName) + 1);
-				strncpy(*authcode, pszAuthorityCode, strlen(pszAuthorityCode) + 1);
+				strncpy(*authname, pszAuthorityName, authorityName_len);
+				strncpy(*authcode, pszAuthorityCode, authorityCode_len);
 			}
 		}
 
