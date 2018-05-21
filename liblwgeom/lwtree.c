@@ -117,6 +117,8 @@ rect_leaf_node_intersects(RECT_NODE_LEAF *n1, RECT_NODE_LEAF *n2)
 					lwerror("%s: unsupported segment type", __func__);
 					break;
 			}
+
+			break;
 		}
 
 		case RECT_NODE_SEG_LINEAR:
@@ -147,6 +149,8 @@ rect_leaf_node_intersects(RECT_NODE_LEAF *n1, RECT_NODE_LEAF *n2)
 					lwerror("%s: unsupported segment type", __func__);
 					break;
 			}
+
+			break;
 		}
 		case RECT_NODE_SEG_CIRCULAR:
 		{
@@ -178,6 +182,8 @@ rect_leaf_node_intersects(RECT_NODE_LEAF *n1, RECT_NODE_LEAF *n2)
 					lwerror("%s: unsupported segment type", __func__);
 					break;
 			}
+
+			break;
 		}
 		default:
 			return LW_FALSE;
