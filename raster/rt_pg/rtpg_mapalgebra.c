@@ -1137,7 +1137,7 @@ static int rtpg_nmapalgebraexpr_callback(
 	/* run prepared plan */
 	if (plan != NULL) {
 		Datum values[12];
-		bool nulls[12];
+		char nulls[12];
 		int err = 0;
 
 		TupleDesc tupdesc;
@@ -1150,7 +1150,7 @@ static int rtpg_nmapalgebraexpr_callback(
 
 		/* init values and nulls */
 		memset(values, (Datum) NULL, sizeof(Datum) * callback->kw.count);
-		memset(nulls, FALSE, sizeof(bool) * callback->kw.count);
+		memset(nulls, FALSE, sizeof(char) * callback->kw.count);
 
 		if (callback->expr[id].spi_argcount) {
 			int idx = 0;
@@ -6122,7 +6122,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	uint8_t argpos[3][8] = {{0}};
 	char *argkw[] = {"[rast1.x]", "[rast1.y]", "[rast1.val]", "[rast1]", "[rast2.x]", "[rast2.y]", "[rast2.val]", "[rast2]"};
 	Datum values[argkwcount];
-	bool nulls[argkwcount];
+	char nulls[argkwcount];
 	TupleDesc tupdesc;
 	SPITupleTable *tuptable = NULL;
 	HeapTuple tuple;
@@ -7009,7 +7009,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 								/* reset values to (Datum) NULL */
 								memset(values, (Datum) NULL, sizeof(Datum) * argkwcount);
 								/* reset nulls to FALSE */
-								memset(nulls, FALSE, sizeof(bool) * argkwcount);
+								memset(nulls, FALSE, sizeof(char) * argkwcount);
 
 								/* set values and nulls */
 								for (j = 0; j < argkwcount; j++) {

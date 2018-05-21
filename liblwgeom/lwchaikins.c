@@ -35,7 +35,7 @@ static POINTARRAY * ptarray_chaikin(POINTARRAY *inpts, int preserve_endpoint, in
 	POINTARRAY *opts;
 	double *dlist;
 	double deltaval, quarter_delta, val1, val2;
-	int ndims = 2 + ptarray_has_z(inpts) + ptarray_has_m(inpts);
+	uint32_t ndims = 2 + ptarray_has_z(inpts) + ptarray_has_m(inpts);
 	int new_npoints = inpts->npoints * 2;
 	opts = ptarray_construct_empty(FLAGS_GET_Z(inpts->flags), FLAGS_GET_M(inpts->flags), new_npoints);
 
@@ -125,7 +125,8 @@ static LWLINE* lwline_chaikin(const LWLINE *iline, int n_iterations)
 
 static LWPOLY* lwpoly_chaikin(const LWPOLY *ipoly, int n_iterations, int preserve_endpoint)
 {
-	uint32_t i, j;
+	uint32_t i;
+	int j;
 	POINTARRAY *pa, *pa_new;
 	LWPOLY *opoly = lwpoly_construct_empty(ipoly->srid, FLAGS_GET_Z(ipoly->flags), FLAGS_GET_M(ipoly->flags));
 

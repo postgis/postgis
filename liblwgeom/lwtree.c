@@ -587,7 +587,7 @@ rect_node_internal_new(const RECT_NODE *seed)
 * spatially coherent structure.
 */
 static RECT_NODE *
-rect_nodes_merge(RECT_NODE ** nodes, int num_nodes)
+rect_nodes_merge(RECT_NODE ** nodes, uint32_t num_nodes)
 {
 	if (num_nodes < 1)
 	{
@@ -596,7 +596,7 @@ rect_nodes_merge(RECT_NODE ** nodes, int num_nodes)
 
 	while (num_nodes > 1)
 	{
-		int i, k = 0;
+		uint32_t i, k = 0;
 		RECT_NODE *node = NULL;
 		for (i = 0; i < num_nodes; i++)
 		{
@@ -740,7 +740,7 @@ rect_tree_from_lwpoly(const LWGEOM *lwgeom)
 {
 	RECT_NODE **nodes;
 	RECT_NODE *tree;
-	int i, j = 0;
+	uint32_t i, j = 0;
 	const LWPOLY *lwpoly = (const LWPOLY*)lwgeom;
 
 	if (lwpoly->nrings < 1)
@@ -767,7 +767,7 @@ rect_tree_from_lwcurvepoly(const LWGEOM *lwgeom)
 {
 	RECT_NODE **nodes;
 	RECT_NODE *tree;
-	int i, j = 0;
+	uint32_t i, j = 0;
 	const LWCURVEPOLY *lwcol = (const LWCURVEPOLY*)lwgeom;
 
 	if (lwcol->nrings < 1)
@@ -813,7 +813,7 @@ rect_tree_from_lwcollection(const LWGEOM *lwgeom)
 {
 	RECT_NODE **nodes;
 	RECT_NODE *tree;
-	int i, j = 0;
+	uint32_t i, j = 0;
 	const LWCOLLECTION *lwcol = (const LWCOLLECTION*)lwgeom;
 
 	if (lwcol->ngeoms < 1)

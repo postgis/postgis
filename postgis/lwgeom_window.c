@@ -119,7 +119,7 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		uf = UF_create(ngeoms);
 		for (i = 0; i < ngeoms; i++)
 		{
-			geoms[i] = read_lwgeom_from_partition(win_obj, i, &(context->cluster_assignments[i].is_null));
+			geoms[i] = read_lwgeom_from_partition(win_obj, i, (bool*)&(context->cluster_assignments[i].is_null));
 
 			if (!geoms[i]) {
 				/* TODO release memory ? */
