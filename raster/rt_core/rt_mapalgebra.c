@@ -1062,6 +1062,7 @@ rt_raster_iterator(
 		*/
 		case ET_FIRST:
 			i = 0;
+			/* FALLTHROUGH */
 		case ET_SECOND:
 			if (i < 0) {
 				if (itrcount < 2)
@@ -1069,6 +1070,7 @@ rt_raster_iterator(
 				else
 					i = 1;
 			}
+			/* FALLTHROUGH */
 		case ET_LAST:
 			if (i < 0) i = itrcount - 1;
 
@@ -1102,6 +1104,7 @@ rt_raster_iterator(
 				*rtnraster = rtnrast;
 				return ES_NONE;
 			}
+			/* FALLTHROUGH */
 		/* copy the custom extent raster */
 		case ET_CUSTOM:
 			rtnrast = rtalloc(sizeof(struct rt_raster_t));

@@ -56,7 +56,7 @@ static POINTARRAY* ptarray_filterm(POINTARRAY *pa,double min, double max, int re
 	//M-value will always be the last dimension
 	int m_pos = ndims-1;
 
-	int i, counter=0;
+	uint32_t i, counter=0;
 	for(i=0;i<pa->npoints;i++)
 	{
 		m_val = *((double*)pa->serialized_pointlist + i*ndims + m_pos);

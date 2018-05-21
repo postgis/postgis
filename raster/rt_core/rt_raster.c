@@ -3522,6 +3522,7 @@ rt_raster_from_two_rasters(
 			i = 0;
 			_offset[0][0] = 0.;
 			_offset[0][1] = 0.;
+			/* FALLTHROUGH */
 		case ET_LAST:
 		case ET_SECOND:
 			if (i < 0) {

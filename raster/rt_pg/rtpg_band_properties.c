@@ -46,7 +46,7 @@
 
 #include "rtpostgis.h"
 
-extern char enable_outdb_rasters;
+extern bool enable_outdb_rasters;
 
 /* Get all the properties of a raster band */
 Datum RASTER_getBandPixelType(PG_FUNCTION_ARGS);

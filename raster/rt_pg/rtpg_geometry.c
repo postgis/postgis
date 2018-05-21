@@ -756,14 +756,14 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	char *pixeltype = NULL;
 	rt_pixtype pixtype = PT_END;
 	rt_pixtype *pixtypes = NULL;
-	int pixtypes_len = 0;
+	uint32_t pixtypes_len = 0;
 
 	double *values = NULL;
-	int values_len = 0;
+	uint32_t values_len = 0;
 
 	uint8_t *hasnodatas = NULL;
 	double *nodatavals = NULL;
-	int nodatavals_len = 0;
+	uint32_t nodatavals_len = 0;
 
 	double ulw[2] = {0};
 	double *ul_xw = NULL;

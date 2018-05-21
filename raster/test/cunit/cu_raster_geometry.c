@@ -526,8 +526,8 @@ static void test_raster_pixel_as_polygon() {
 	rt_raster rast;
 	rt_band band;
 	uint32_t x, y;
-	const int maxX = 10;
-	const int maxY = 10;
+	const uint32_t maxX = 10;
+	const uint32_t maxY = 10;
 	LWPOLY *poly = NULL;
 
 	rast = rt_raster_new(maxX, maxY);
