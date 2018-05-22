@@ -112,7 +112,7 @@ static int cmpfunc (const void * a, const void * b)
 	if (v1==v2)
 		return (*(areanode**)a)-(*(areanode**)b);
 	else
-		return  (v1>v2 ) ? 1 : -1;
+		return  (v1 > v2) ? 1 : ((v1 < v2) ? -1 : 0);
 }
 
 
