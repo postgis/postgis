@@ -6,6 +6,8 @@ PostGIS 2.3.8
   - #4071, ST_ClusterKMeans crash on NULL/EMPTY fixed (Darafei Praliaskouski)
   - #4074, Disable interrupt tests by default (Regina Obe)
   - #3997, fix bug in lwgeom_median and avoid division by zero (Raúl Marín)
+  - #4093, Inconsistent results from qsort callback (yugr)
+
 
 PostGIS 2.3.7
 2018/04/06
