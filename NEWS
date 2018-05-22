@@ -12,6 +12,7 @@ PostGIS 2.4.5
   - #3980, delay freeing input until processing complete (lucasvr)
   - #4090, PG 11 support (Paul Ramsey, Raúl Marín)
   - #3997, fix bug in lwgeom_median and avoid division by zero (Raúl Marín)
+  - #4093, Inconsistent results from qsort callback (yugr)
 
 
 PostGIS 2.4.4
