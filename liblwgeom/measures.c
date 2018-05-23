@@ -2060,7 +2060,7 @@ struct_cmp_by_measure(const void *a, const void *b)
 {
 	LISTSTRUCT *ia = (LISTSTRUCT*)a;
 	LISTSTRUCT *ib = (LISTSTRUCT*)b;
-	return 
+	return
 		(ia->themeasure > ib->themeasure) ? 1 : ((ia->themeasure < ib->themeasure) ? -1 : 0);
 }
 
