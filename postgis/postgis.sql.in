@@ -6098,4 +6098,275 @@ GRANT SELECT ON TABLE geography_columns TO public;
 GRANT SELECT ON TABLE geometry_columns TO public;
 GRANT SELECT ON TABLE spatial_ref_sys TO public;
 
+-----------------------------------------------------------------------
+-- BOX3D spGist stuff, not sure where to put this
+-----------------------------------------------------------------------
+
+CREATE FUNCTION box3D_contains(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_contains'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION box3D_contained(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_contained'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION box3D_overlaps(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_overlaps'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION box3D_same(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_same'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION box3D_distance(box3D, box3D)
+	RETURNS float
+	AS 'MODULE_PATHNAME', 'BOX3D_distance'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+	
+-- Availability: 2.5.0
+CREATE OPERATOR @> (
+	PROCEDURE = box3D_contains,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	COMMUTATOR = <@,
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR <@ (
+	PROCEDURE = box3D_contained,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	COMMUTATOR = @>,
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR && (
+	PROCEDURE = box3D_overlaps,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	COMMUTATOR = &&,
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR ~= (
+	PROCEDURE = box3D_same,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	COMMUTATOR = ~=,
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR <-> (
+	PROCEDURE = box3D_distance,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	COMMUTATOR = <->
+);
+
+CREATE FUNCTION temporal_left(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_left'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION temporal_overleft(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_overleft'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION temporal_right(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_right'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION temporal_overright(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_overright'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION temporal_below(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_below'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION temporal_overbelow(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_overbelow'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION temporal_above(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_above'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION temporal_overabove(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_overabove'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION temporal_before(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_before'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION temporal_overbefore(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_overbefore'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION temporal_after(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_after'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION temporal_overafter(box3D, box3D)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'BOX3D_overafter'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OPERATOR << (
+	PROCEDURE = temporal_left,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	COMMUTATOR = '>>',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR &< (
+	PROCEDURE = temporal_overleft,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR >> (
+	LEFTARG = box3D, RIGHTARG = box3D,
+	PROCEDURE = temporal_right,
+	COMMUTATOR = '<<',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR &> (
+	PROCEDURE = temporal_overright,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR <<| (
+	PROCEDURE = temporal_below,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	COMMUTATOR = '|>>',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR &<| (
+	PROCEDURE = temporal_overbelow,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR |>> (
+	PROCEDURE = temporal_above,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	COMMUTATOR = '<<|',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR |&> (
+	PROCEDURE = temporal_overabove,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR <</ (
+	PROCEDURE = temporal_before,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	COMMUTATOR = '/>>',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR &</ (
+	PROCEDURE = temporal_overbefore,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	COMMUTATOR = '/&>',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR />> (
+	PROCEDURE = temporal_after,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	COMMUTATOR = '<</',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR /&> (
+	PROCEDURE = temporal_overafter,
+	LEFTARG = box3D, RIGHTARG = box3D,
+	COMMUTATOR = '&</',
+	RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE FUNCTION spgist_box3D_octree_config(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME', 'spgist_box3D_octree_config'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION spgist_box3D_octree_choose(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME', 'spgist_box3D_octree_choose'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION spgist_box3D_octree_picksplit(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME', 'spgist_box3D_octree_picksplit'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION spgist_box3D_octree_inner_consistent(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME', 'spgist_box3D_octree_inner_consistent'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+CREATE FUNCTION spgist_box3D_octree_leaf_consistent(internal, internal)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'spgist_box3D_octree_leaf_consistent'
+	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OPERATOR CLASS spgist_box3D_octree_ops
+	DEFAULT FOR TYPE BOX3D USING SPGiST
+	AS
+	-- strictly left
+	OPERATOR	1	<<,
+	-- overlaps or left
+	OPERATOR	2	&<,
+	-- overlaps 
+	OPERATOR	3	&&,
+	-- overlaps or right
+	OPERATOR	4	&>,
+	-- strictly right
+	OPERATOR	5	>>,
+	-- same
+	OPERATOR	6	~=,
+	-- contains
+	OPERATOR	7	@>,
+	-- contained by
+	OPERATOR	8	<@,
+	-- overlaps or below
+	OPERATOR	9	&<|,
+	-- strictly below
+	OPERATOR	10	<<|,
+	-- strictly above
+	OPERATOR	11	|>>,
+	-- overlaps or above
+	OPERATOR	12	|&>,
+	-- overlaps or before
+	OPERATOR	28	&</,
+	-- strictly before
+	OPERATOR	29	<</,
+	-- strictly after
+	OPERATOR	30	/>>,
+	-- overlaps or after
+	OPERATOR	31	/&>,
+	-- functions
+	FUNCTION	1	spgist_box3D_octree_config(internal, internal),
+	FUNCTION	2	spgist_box3D_octree_choose(internal, internal),
+	FUNCTION	3	spgist_box3D_octree_picksplit(internal, internal),
+	FUNCTION	4	spgist_box3D_octree_inner_consistent(internal, internal),
+	FUNCTION	5	spgist_box3D_octree_leaf_consistent(internal, internal);
+	
+
+
 COMMIT;
