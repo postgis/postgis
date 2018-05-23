@@ -6162,58 +6162,58 @@ CREATE OPERATOR <-> (
 	COMMUTATOR = <->
 );
 
-CREATE FUNCTION temporal_left(box3D, box3D)
+CREATE FUNCTION BOX3D_left(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_left'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION temporal_overleft(box3D, box3D)
+CREATE FUNCTION BOX3D_overleft(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_overleft'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION temporal_right(box3D, box3D)
+CREATE FUNCTION BOX3D_right(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_right'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION temporal_overright(box3D, box3D)
+CREATE FUNCTION BOX3D_overright(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_overright'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION temporal_below(box3D, box3D)
+CREATE FUNCTION BOX3D_below(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_below'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION temporal_overbelow(box3D, box3D)
+CREATE FUNCTION BOX3D_overbelow(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_overbelow'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION temporal_above(box3D, box3D)
+CREATE FUNCTION BOX3D_above(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_above'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION temporal_overabove(box3D, box3D)
+CREATE FUNCTION BOX3D_overabove(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_overabove'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION temporal_before(box3D, box3D)
+CREATE FUNCTION BOX3D_before(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_before'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION temporal_overbefore(box3D, box3D)
+CREATE FUNCTION BOX3D_overbefore(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_overbefore'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION temporal_after(box3D, box3D)
+CREATE FUNCTION BOX3D_after(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_after'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION temporal_overafter(box3D, box3D)
+CREATE FUNCTION BOX3D_overafter(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_overafter'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.5.0
 CREATE OPERATOR << (
-	PROCEDURE = temporal_left,
+	PROCEDURE = BOX3D_left,
 	LEFTARG = box3D, RIGHTARG = box3D,
 	COMMUTATOR = '>>',
 	RESTRICT = positionsel, JOIN = positionjoinsel
@@ -6221,7 +6221,7 @@ CREATE OPERATOR << (
 
 -- Availability: 2.5.0
 CREATE OPERATOR &< (
-	PROCEDURE = temporal_overleft,
+	PROCEDURE = BOX3D_overleft,
 	LEFTARG = box3D, RIGHTARG = box3D,
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
@@ -6229,21 +6229,21 @@ CREATE OPERATOR &< (
 -- Availability: 2.5.0
 CREATE OPERATOR >> (
 	LEFTARG = box3D, RIGHTARG = box3D,
-	PROCEDURE = temporal_right,
+	PROCEDURE = BOX3D_right,
 	COMMUTATOR = '<<',
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 -- Availability: 2.5.0
 CREATE OPERATOR &> (
-	PROCEDURE = temporal_overright,
+	PROCEDURE = BOX3D_overright,
 	LEFTARG = box3D, RIGHTARG = box3D,
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 -- Availability: 2.5.0
 CREATE OPERATOR <<| (
-	PROCEDURE = temporal_below,
+	PROCEDURE = BOX3D_below,
 	LEFTARG = box3D, RIGHTARG = box3D,
 	COMMUTATOR = '|>>',
 	RESTRICT = positionsel, JOIN = positionjoinsel
@@ -6251,14 +6251,14 @@ CREATE OPERATOR <<| (
 
 -- Availability: 2.5.0
 CREATE OPERATOR &<| (
-	PROCEDURE = temporal_overbelow,
+	PROCEDURE = BOX3D_overbelow,
 	LEFTARG = box3D, RIGHTARG = box3D,
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 -- Availability: 2.5.0
 CREATE OPERATOR |>> (
-	PROCEDURE = temporal_above,
+	PROCEDURE = BOX3D_above,
 	LEFTARG = box3D, RIGHTARG = box3D,
 	COMMUTATOR = '<<|',
 	RESTRICT = positionsel, JOIN = positionjoinsel
@@ -6266,14 +6266,14 @@ CREATE OPERATOR |>> (
 
 -- Availability: 2.5.0
 CREATE OPERATOR |&> (
-	PROCEDURE = temporal_overabove,
+	PROCEDURE = BOX3D_overabove,
 	LEFTARG = box3D, RIGHTARG = box3D,
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 -- Availability: 2.5.0
 CREATE OPERATOR <</ (
-	PROCEDURE = temporal_before,
+	PROCEDURE = BOX3D_before,
 	LEFTARG = box3D, RIGHTARG = box3D,
 	COMMUTATOR = '/>>',
 	RESTRICT = positionsel, JOIN = positionjoinsel
@@ -6281,7 +6281,7 @@ CREATE OPERATOR <</ (
 
 -- Availability: 2.5.0
 CREATE OPERATOR &</ (
-	PROCEDURE = temporal_overbefore,
+	PROCEDURE = BOX3D_overbefore,
 	LEFTARG = box3D, RIGHTARG = box3D,
 	COMMUTATOR = '/&>',
 	RESTRICT = positionsel, JOIN = positionjoinsel
@@ -6289,7 +6289,7 @@ CREATE OPERATOR &</ (
 
 -- Availability: 2.5.0
 CREATE OPERATOR />> (
-	PROCEDURE = temporal_after,
+	PROCEDURE = BOX3D_after,
 	LEFTARG = box3D, RIGHTARG = box3D,
 	COMMUTATOR = '<</',
 	RESTRICT = positionsel, JOIN = positionjoinsel
@@ -6297,7 +6297,7 @@ CREATE OPERATOR />> (
 
 -- Availability: 2.5.0
 CREATE OPERATOR /&> (
-	PROCEDURE = temporal_overafter,
+	PROCEDURE = BOX3D_overafter,
 	LEFTARG = box3D, RIGHTARG = box3D,
 	COMMUTATOR = '&</',
 	RESTRICT = positionsel, JOIN = positionjoinsel
