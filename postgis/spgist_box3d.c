@@ -234,18 +234,6 @@ contain6D(CubeBox3D *cube_box, BOX3D *query)
 			FPle(cube_box->left.zmin, query->zmin));
 }
 
-/* Can any cube from cube_box be contained by query? */
-static bool
-contained6D(CubeBox3D *cube_box, BOX3D *query)
-{
-	return (FPle(cube_box->right.xmax, query->xmax) &&
-			FPge(cube_box->left.xmin, query->xmin) &&
-			FPle(cube_box->right.ymax, query->ymax) &&
-			FPge(cube_box->left.ymin, query->ymin) &&
-			FPle(cube_box->right.zmax, query->zmax) &&
-			FPge(cube_box->left.zmin, query->zmin));
-}
-
 /* Can any cube from cube_box be left of query? */
 static bool
 left6D(CubeBox3D *cube_box, BOX3D *query)
