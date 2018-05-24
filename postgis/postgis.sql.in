@@ -6102,23 +6102,23 @@ GRANT SELECT ON TABLE spatial_ref_sys TO public;
 -- BOX3D spGist stuff, not sure where to put this
 -----------------------------------------------------------------------
 
-CREATE FUNCTION box3D_contains(box3D, box3D)
+CREATE OR REPLACE FUNCTION box3D_contains(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_contains'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION box3D_contained(box3D, box3D)
+CREATE OR REPLACE FUNCTION box3D_contained(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_contained'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION box3D_overlaps(box3D, box3D)
+CREATE OR REPLACE FUNCTION box3D_overlaps(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_overlaps'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION box3D_same(box3D, box3D)
+CREATE OR REPLACE FUNCTION box3D_same(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_same'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION box3D_distance(box3D, box3D)
+CREATE OR REPLACE FUNCTION box3D_distance(box3D, box3D)
 	RETURNS float
 	AS 'MODULE_PATHNAME', 'BOX3D_distance'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
@@ -6162,51 +6162,51 @@ CREATE OPERATOR <-> (
 	COMMUTATOR = <->
 );
 
-CREATE FUNCTION BOX3D_left(box3D, box3D)
+CREATE OR REPLACE FUNCTION BOX3D_left(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_left'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION BOX3D_overleft(box3D, box3D)
+CREATE OR REPLACE FUNCTION BOX3D_overleft(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_overleft'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION BOX3D_right(box3D, box3D)
+CREATE OR REPLACE FUNCTION BOX3D_right(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_right'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION BOX3D_overright(box3D, box3D)
+CREATE OR REPLACE FUNCTION BOX3D_overright(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_overright'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION BOX3D_below(box3D, box3D)
+CREATE OR REPLACE FUNCTION BOX3D_below(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_below'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION BOX3D_overbelow(box3D, box3D)
+CREATE OR REPLACE FUNCTION BOX3D_overbelow(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_overbelow'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION BOX3D_above(box3D, box3D)
+CREATE OR REPLACE FUNCTION BOX3D_above(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_above'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION BOX3D_overabove(box3D, box3D)
+CREATE OR REPLACE FUNCTION BOX3D_overabove(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_overabove'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION BOX3D_before(box3D, box3D)
+CREATE OR REPLACE FUNCTION BOX3D_before(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_before'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION BOX3D_overbefore(box3D, box3D)
+CREATE OR REPLACE FUNCTION BOX3D_overbefore(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_overbefore'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION BOX3D_after(box3D, box3D)
+CREATE OR REPLACE FUNCTION BOX3D_after(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_after'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION BOX3D_overafter(box3D, box3D)
+CREATE OR REPLACE FUNCTION BOX3D_overafter(box3D, box3D)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'BOX3D_overafter'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
@@ -6303,23 +6303,23 @@ CREATE OPERATOR /&> (
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
-CREATE FUNCTION spgist_box3D_octree_config(internal, internal)
+CREATE OR REPLACE FUNCTION spgist_box3D_octree_config(internal, internal)
 	RETURNS void
 	AS 'MODULE_PATHNAME', 'spgist_box3D_octree_config'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION spgist_box3D_octree_choose(internal, internal)
+CREATE OR REPLACE FUNCTION spgist_box3D_octree_choose(internal, internal)
 	RETURNS void
 	AS 'MODULE_PATHNAME', 'spgist_box3D_octree_choose'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION spgist_box3D_octree_picksplit(internal, internal)
+CREATE OR REPLACE FUNCTION spgist_box3D_octree_picksplit(internal, internal)
 	RETURNS void
 	AS 'MODULE_PATHNAME', 'spgist_box3D_octree_picksplit'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION spgist_box3D_octree_inner_consistent(internal, internal)
+CREATE OR REPLACE FUNCTION spgist_box3D_octree_inner_consistent(internal, internal)
 	RETURNS void
 	AS 'MODULE_PATHNAME', 'spgist_box3D_octree_inner_consistent'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
-CREATE FUNCTION spgist_box3D_octree_leaf_consistent(internal, internal)
+CREATE OR REPLACE FUNCTION spgist_box3D_octree_leaf_consistent(internal, internal)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'spgist_box3D_octree_leaf_consistent'
 	LANGUAGE C IMMUTABLE STRICT _PARALLEL;
