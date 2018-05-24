@@ -34,14 +34,14 @@ set enable_bitmapscan = off;
 set enable_seqscan = on;
 
 SELECT 'scan_idx', qnodes('select * from test where the_geom && ST_MakePoint(0,0)');
- select num,ST_astext(the_geom) from test where the_geom && 'BOX3D(125 125,135 135)'::box3d order by num;
+ select num,ST_astext(the_geom) from test where the_geom::box3d && 'BOX3D(125 125,135 135)'::box3d order by num;
 
 set enable_indexscan = on;
 set enable_bitmapscan = off;
 set enable_seqscan = off;
 
 SELECT 'scan_seq', qnodes('select * from test where the_geom && ST_MakePoint(0,0)');
- select num,ST_astext(the_geom) from test where the_geom && 'BOX3D(125 125,135 135)'::box3d order by num;
+ select num,ST_astext(the_geom) from test where the_geom::box3d && 'BOX3D(125 125,135 135)'::box3d order by num;
 
 CREATE FUNCTION estimate_error(qry text, tol int)
 RETURNS text
