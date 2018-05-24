@@ -11,7 +11,7 @@
 #include <utils/geo_decls.h>
 
 /*****************************************************************************
- * Operator strategy numbers used in the GiST and SP-GiST temporal opclasses 
+ * Operator strategy numbers used in the GiST and SP-GiST temporal opclasses
  *****************************************************************************/
 
 #define RTOverBeforeStrategyNumber		28		/* for &</ */

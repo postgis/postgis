@@ -15,11 +15,11 @@
  * octants in 6D space.  It is easier to imagine it as splitting space
  * three times into 3:
  *
- *				|	   |						|	   |		
- *				|	   |						|	   |		
+ *				|	   |						|	   |
+ *				|	   |						|	   |
  *				| -----+-----					| -----+-----
- *				|	   |						|	   |		
- *				|	   |						|	   |		
+ *				|	   |						|	   |
+ *				|	   |						|	   |
  * -------------+------------- -+- -------------+-------------
  *				|								|
  *				|								|
@@ -63,7 +63,7 @@
  * except the root.  For the root node, we are setting the boundaries
  * that we don't yet have as infinity.
  *
- * Portions Copyright (c) 2018, Esteban Zimanyi, Arthur Lesuisse, 
+ * Portions Copyright (c) 2018, Esteban Zimanyi, Arthur Lesuisse,
  * 		Université Libre de Bruxelles
  * Portions Copyright (c) 1996-2016, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
@@ -101,7 +101,7 @@ typedef struct
  * Calculate the octant
  *
  * The octant is 8 bit unsigned integer with 6 least bits in use.
- * This function accepts 2 BOX3D as input. All 6 bits are set by comparing 
+ * This function accepts 2 BOX3D as input. All 6 bits are set by comparing
  * a corner of the box. This makes 64 octants in total.
  */
 static uint8
@@ -120,7 +120,7 @@ getOctant(BOX3D *centroid, BOX3D *inBox)
 
 	if (inBox->ymax > centroid->ymax)
 		octant |= 0x04;
-	
+
 	if (inBox->zmin > centroid->zmin)
 		octant |= 0x02;
 
@@ -208,7 +208,7 @@ nextCubeBox3D(CubeBox3D *cube_box, BOX3D *centroid, uint8 octant)
 		next_cube_box->right.zmax = centroid->zmax;
 
 	return next_cube_box;
-} 
+}
 
 /* Can any cube from cube_box overlap with query? */
 static bool
@@ -333,7 +333,7 @@ overAfter6D(CubeBox3D *cube_box, BOX3D *query)
 /*
  * SP-GiST config function
  */
- 
+
 PG_FUNCTION_INFO_V1(spgist_box3D_octree_config);
 
 PGDLLEXPORT Datum
@@ -352,7 +352,7 @@ spgist_box3D_octree_config(PG_FUNCTION_ARGS)
 /*
  * SP-GiST choose function
  */
- 
+
 PG_FUNCTION_INFO_V1(spgist_box3D_octree_choose);
 
 PGDLLEXPORT Datum
@@ -398,7 +398,7 @@ spgist_box3D_octree_picksplit(PG_FUNCTION_ARGS)
 
 	BOX3D		   *box = DatumGetBox3DP(in->datums[0]);
 	int32_t 		srid = box->srid;
-	
+
 	/* Calculate median of all 6D coordinates */
 	for (i = 0; i < in->nTuples; i++)
 	{
@@ -589,7 +589,7 @@ spgist_box3D_octree_inner_consistent(PG_FUNCTION_ARGS)
 
 				default:
 					elog(ERROR, "unrecognized strategy: %d", strategy);
-			}			
+			}
 
 			/* If any check is failed, we have found our answer. */
 			if (!flag)
