@@ -36,6 +36,52 @@
         <para>#4069, drop support for GEOS &lt; 3.5 and PostgreSQL &lt; 9.4 (Regina Obe)</para>
         <para>#4082, ST_BandMetaData extended to include filesize, timestamp (Even Rouault)</para>
       </simplesect>
+
+      <simplesect><title>Enhancements and Fixes</title>
+        <para>#3944, Update to EPSG register v9.2 (Even Rouault)</para>
+        <para>#3927, Parallel implementation of ST_AsMVT</para>
+        <para>#3925, Simplify geometry using map grid cell size before generating MVT</para>
+        <para>#3899, BTree sort order is now defined on collections of EMPTY and
+                  same-prefix geometries (Darafei Praliaskouski)</para>
+        <para>#3864, Performance improvement for sorting POINT geometries
+                  (Darafei Praliaskouski)</para>
+        <para>#3900, GCC warnings fixed, make -j is now working (Darafei Praliaskouski)</para>
+        <para>TopoGeo_addLinestring robustness improvements (Sandro Santilli)
+            #1855, #1946, #3718, #3838</para>
+        <para>#3234, Do not accept EMPTY points as topology nodes (Sandro Santilli)</para>
+        <para>#1014, Hashable geometry, allowing direct use in CTE signatures (Paul Ramsey)</para>
+        <para>#3097, Really allow MULTILINESTRING blades in ST_Split() (Paul Ramsey)</para>
+        <para>#3942, geojson: Do not include private header for json-c >= 0.13 (Björn Esser)</para>
+        <para>#3954, ST_GeometricMedian now supports point weights (Darafei Praliaskouski)</para>
+        <para>#3965, ST_ClusterKMeans used to lose some clusters on initialization
+                  (Darafei Praliaskouski)</para>
+        <para>#3971, ST_ClusterKMeans now uses better initial seed (Darafei Praliaskouski)</para>
+        <para>#3977, ST_ClusterKMeans is now faster and simpler (Darafei Praliaskouski)</para>
+        <para>#3982, ST_AsEncodedPolyline supports LINESTRING EMPTY and MULTIPOINT EMPTY
+                  (Darafei Praliaskouski)</para>
+        <para>#3986, ST_AsText now has second argument to limit decimal digits
+                  (Marc Ducobu, Darafei Praliaskouski)</para>
+        <para>#4020, Casting from box3d to geometry now returns correctly connected
+                  PolyhedralSurface (Matthias Bay)</para>
+        <para>#2508, ST_OffsetCurve now works with collections (Darafei Praliaskouski)</para>
+        <para>#4006, ST_GeomFromGeoJSON support for json and jsonb as input
+                  (Paul Ramsey, Regina Obe)</para>
+        <para>#4037, Invalid input geometry is fixed with MakeValid for GEOS exceptions in
+                  ST_Intersection, ST_Union, ST_Difference, ST_SymDifference (Darafei
+                  Praliaskouski)</para>
+        <para>#4038, ST_Subdivide now selects pivot for geometry split that reuses input
+                  vertices. ST_ClipByBox2D is stubbed with ST_Intersection because of
+                  robustness issues. (Darafei Praliaskouski)</para>
+        <para>#4025, #4032 Fixed precision issue in ST_ClosestPointOfApproach,
+                  ST_DistanceCPA, and ST_CPAWithin (Paul Ramsey, Darafei Praliaskouski)</para>
+        <para>#4071, ST_ClusterKMeans crash on NULL/EMPTY fixed (Darafei Praliaskouski)</para>
+        <para>#4076, Reduce use of GEOS in topology implementation (Björn Harrtell)</para>
+        <para>#4080, Add external raster band index to ST_BandMetaData</para>
+        <para>Add Raster Tips section to Documentation for information about
+            Raster behavior (e.g. Out-DB performance, maximum open files)</para>
+        <para>#4084: Fixed wrong code-comment regarding front/back of BOX3D (Matthias Bay)</para>
+        <para>#4060, #4094, PostgreSQL JIT support (Raúl Marín, Laurenz Albe)</para>
+      </simplesect>
     </sect1>
 
     <sect1>
