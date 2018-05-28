@@ -50,6 +50,32 @@ Datum pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_clusterintersecting_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_clusterwithin_finalfn(PG_FUNCTION_ARGS);
 
+/** Putting pgis_abs back for ABI compatibility with 2.4 and below
+ * TODO: Drop when 3.0 rolls around **/
+Datum pgis_abs_in(PG_FUNCTION_ARGS);
+Datum pgis_abs_out(PG_FUNCTION_ARGS);
+
+/**
+** Putting back pgis_* for ABI compatibility to smooth pg_upgrade
+** TODO: Drop when 3.0 rolls around
+*/
+PG_FUNCTION_INFO_V1(pgis_abs_in);
+Datum
+pgis_abs_in(PG_FUNCTION_ARGS)
+{
+	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+	               errmsg("function %s not implemented", __func__)));
+	PG_RETURN_POINTER(NULL);
+}
+PG_FUNCTION_INFO_V1(pgis_abs_out);
+Datum
+pgis_abs_out(PG_FUNCTION_ARGS)
+{
+	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+	               errmsg("function %s not implemented", __func__)));
+	PG_RETURN_POINTER(NULL);
+}
+
 /* External prototypes */
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS);
