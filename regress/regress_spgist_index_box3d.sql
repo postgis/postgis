@@ -234,3 +234,13 @@ set enable_seqscan = off;
 
 SELECT 'scan', qnodes('select count(*) from test where the_box::box3d /&> ''BOX3D(0 0 0, 0 0 0)''::box3d');
  select count(*) from test where the_box::box3d /&> 'BOX3D(800 800 800, 1200 1200 1200)'::box3d ;
+
+
+-- cleanup
+DROP INDEX quick_spgist;
+DROP TABLE test;
+DROP FUNCTION qnodes(text);
+
+set enable_indexscan = on;
+set enable_bitmapscan = on;
+set enable_seqscan = on;
