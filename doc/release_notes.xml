@@ -2,6 +2,94 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+    <sect1>
+      <title>Release 2.5.0alpha</title>
+      <para>Release date: 2018/05/28</para>
+      <simplesect>
+        <title>New Features</title>
+        <para>#4056, ST_FilterByM (Nicklas Avén)</para>
+        <para>#4050, ST_ChaikinSmoothing (Nicklas Avén)</para>
+        <para>#3989, ST_Buffer single sided option (Stephen Knox)</para>
+        <para>#3876, ST_Angle function (Rémi Cura)</para>
+        <para>#3564, ST_LineInterpolatePoints (Dan Baston)</para>
+        <para>#3896, PostGIS_Extensions_Upgrade() (Regina Obe)</para>
+        <para>#3913, Upgrade when creating extension from unpackaged (Sandro Santilli)</para>
+        <para>#2256, _postgis_index_extent() for extent from index (Paul Ramsey)</para>
+        <para>#3176, Add ST_OrientedEnvelope (Dan Baston)</para>
+        <para>#4029, Add ST_QuantizeCoordinates (Dan Baston)</para>
+        <para>#4063, Optional false origin point for ST_Scale (Paul Ramsey)</para>
+        <para>#4082, Add ST_BandFileSize and ST_BandFileTimestamp,
+                  extend ST_BandMetadata (Even Rouault)</para>
+        <para>#2597, Add ST_Grayscale (Bborie Park)</para>
+        <para>#4007, Add ST_SetBandPath (Bborie Park)</para>
+        <para>#4008, Add ST_SetBandIndex (Bborie Park)</para>
+      </simplesect>
+
+      <simplesect>
+        <title>Breaking Changes</title>
+        <para>#4054, ST_SimplifyVW changed from &gt; tolerance to &gt;= tolerance</para>
+        <para>#3885, version number removed from address_standardize lib file
+                  (Regina Obe)</para>
+        <para>#3893, raster support functions can only be loaded in the same schema
+                  with core PostGIS functions.</para>
+        <para>#4035, remove dummy pgis_abs type from aggregate/collect routines.</para>
+        <para>#4069, drop support for GEOS &lt; 3.5 and PostgreSQL &lt; 9.4 (Regina Obe)</para>
+        <para>#4082, ST_BandMetaData extended to include filesize, timestamp (Even Rouault)</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
+      <title>Release 2.4.4</title>
+      <para>Release date: 2018/04/08</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect><title>Bug Fixes</title>
+      <para>#3055, [raster] ST_Clip() on a raster without band crashes the server
+                (Regina Obe)</para>
+      <para>#3942, geojson: Do not include private header for json-c >= 0.13
+                (Björn Esser)</para>
+      <para>#3952, ST_Transform fails in parallel mode (Paul Ramsey)</para>
+      <para>#3978, Fix KNN when upgrading from 2.1 or older (Sandro Santilli)</para>
+      <para>#4003, lwpoly_construct_circle: Avoid division by zero (Raúl Marín Rodríguez)</para>
+      <para>#4004, Avoid memory exhaustion when building a btree index (Edmund Horner)</para>
+      <para>#4016, proj 5.0.0 support (Raúl Marín Rodríguez)</para>
+      <para>#4017, lwgeom lexer memory corruption (Peter E)</para>
+      <para>#4020, Casting from box3d to geometry now returns correctly connected
+                PolyhedralSurface (Matthias Bay)</para>
+      <para>#4025, #4032 Incorrect answers for temporally "almost overlapping" ranges
+                (Paul Ramsey, Darafei Praliaskouski)</para>
+      <para>#4052, schema qualify several functions in geography (Regina Obe)</para>
+      <para>#4055, ST_ClusterIntersecting drops SRID (Daniel Baston)</para>
+      </simplesect>
+
+      <simplesect><title>Enhancements</title>
+      <para>#3946, Compile support for PgSQL 11 (Paul Ramsey)</para>
+      <para>#3992, Use PKG_PROG_PKG_CONFIG macro from pkg.m4 to detect pkg-config
+                (Bas Couwenberg)</para>
+      <para>#4044, Upgrade support for PgSQL 11 (Regina Obe)</para>
+      </simplesect>
+    </sect1>
+
+
+    <sect1>
+      <title>Release 2.4.3</title>
+      <para>Release date: 2018/01/17</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+        <para>#3713, Support encodings that happen to output a '\' character</para>
+        <para>#3827, Set configure default to not do interrupt testing,
+                  was causing false negatives for many people. (Regina Obe)
+                 revised to be standards compliant in #3988 (Greg Troxel)</para>
+        <para>#3930, Minimum bounding circle issues on 32-bit platforms</para>
+        <para>#3965, ST_ClusterKMeans used to lose some clusters on initialization
+                  (Darafei Praliaskouski)</para>
+        <para>#3956, Brin opclass object does not upgrade properly (Sandro Santilli)</para>
+        <para>#3982, ST_AsEncodedPolyline supports LINESTRING EMPTY and MULTIPOINT EMPTY
+                  (Darafei Praliaskouski)</para>
+        <para>#3975, ST_Transform runs query on spatial_ref_sys without schema
+                  qualification. Was causing restore issues. (Paul Ramsey)</para>
+      </simplesect>
+    </sect1>
 
    <sect1>
       <title>Release 2.4.2</title>

@@ -1,3 +1,7 @@
+PostGIS 2.5.0alpha
+2018/05/28
+See PostGIS 2.5.0 section for details
+
 PostGIS 2.5.0
 2018/xx/xx
 
@@ -22,10 +26,12 @@ PostGIS 2.5.0
 * Breaking Changes *
   - #4054, ST_SimplifyVW changed from > tolerance to >= tolerance
   - #3885, version number removed from address_standardize lib file
+          (Regina Obe)
   - #3893, raster support functions can only be loaded in the same schema
            with core PostGIS functions.
   - #4035, remove dummy pgis_abs type from aggregate/collect routines.
   - #4069, drop support for GEOS < 3.5 and PostgreSQL < 9.4 (Regina Obe)
+  - #4082, ST_BandMetaData extended to include filesize, timestamp (Even Rouault)
 
 * Enhancements and Fixes*
   - #3944, Update to EPSG register v9.2 (Even Rouault)
@@ -71,6 +77,86 @@ PostGIS 2.5.0
     Raster behavior (e.g. Out-DB performance, maximum open files)
   - #4084: Fixed wrong code-comment regarding front/back of BOX3D (Matthias Bay)
   - #4060, #4094, PostgreSQL JIT support (Raúl Marín, Laurenz Albe)
+
+PostGIS 2.4.4
+2018/04/08
+
+ * Bug fixes *
+  - #3055, [raster] ST_Clip() on a raster without band crashes the server
+          (Regina Obe)
+  - #3942, geojson: Do not include private header for json-c >= 0.13
+           (Björn Esser)
+  - #3952, ST_Transform fails in parallel mode (Paul Ramsey)
+  - #3978, Fix KNN when upgrading from 2.1 or older (Sandro Santilli)
+  - #4003, lwpoly_construct_circle: Avoid division by zero (Raúl Marín Rodríguez)
+  - #4004, Avoid memory exhaustion when building a btree index (Edmund Horner)
+  - #4016, proj 5.0.0 support (Raúl Marín Rodríguez)
+  - #4017, lwgeom lexer memory corruption (Peter E)
+  - #4020, Casting from box3d to geometry now returns correctly connected
+           PolyhedralSurface (Matthias Bay)
+  - #4025, #4032 Incorrect answers for temporally "almost overlapping" ranges
+           (Paul Ramsey, Darafei Praliaskouski)
+  - #4052, schema qualify several functions in geography (Regina Obe)
+  - #4055, ST_ClusterIntersecting drops SRID (Daniel Baston)
+  - #4067, Guard lookup of namespace in internal call case
+
+ * Enhancements *
+  - #3946, Compile support for PgSQL 11 (Paul Ramsey)
+  - #3992, Use PKG_PROG_PKG_CONFIG macro from pkg.m4 to detect pkg-config
+           (Bas Couwenberg)
+  - #4044, Upgrade support for PgSQL 11 (Regina Obe)
+
+PostGIS 2.4.3
+2018/01/17
+
+ * Bug fixes *
+  - #3713, Support encodings that happen to output a '\' character
+  - #3827, Set configure default to not do interrupt testing,
+           was causing false negatives for many people (Regina Obe)
+           revised to be standards compliant in #3988 (Greg Troxel)
+  - #3930, Minimum bounding circle issues on 32-bit platforms
+  - #3965, ST_ClusterKMeans used to lose some clusters on initialization
+           (Darafei Praliaskouski)
+  - #3956, Brin opclass object does not upgrade properly (Sandro Santilli)
+  - #3982, ST_AsEncodedPolyline supports LINESTRING EMPTY and MULTIPOINT EMPTY
+           (Darafei Praliaskouski)
+  - #3975, ST_Transform runs query on spatial_ref_sys without schema
+           qualification. Was causing restore issues. (Paul Ramsey)
+
+ * Enhancements *
+  - #3944, Update to EPSG register v9.2 (Even Rouault)
+
+PostGIS 2.4.2
+2017/11/15
+
+ * Bug fixes *
+  - #3917, Fix zcta5 load
+  - #3667, Fix for bug in geography ST_Segmentize
+  - #3926, Add missing 2.2.6 and 2.3.4 upgrade paths (Muhammad Usama)
+
+
+PostGIS 2.4.1
+2017/10/18
+
+ * Bug fixes *
+  - #3864, Fix memory leaks in BTREE operators
+  - #3869, Fix build with "gold" linker
+  - #3845, Gracefully handle short-measure issue
+  - #3871, Performance tweak for geometry cmp function
+  - #3879, Division by zero in some arc cases
+  - #3878, Single defn of signum in header
+  - #3880, Undefined behaviour in TYPMOD_GET_SRID
+  - #3875, Fix undefined behaviour in shift operation
+  - #3864, Performance improvements for b-tree geometry sorts
+  - #3874, lw_dist2d_pt_arc division by zero
+  - #3882, undefined behaviour in zigzag with negative inputs
+  - #3891, undefined behaviour in pointarray_to_encoded_polyline
+  - #3895, throw error on malformed WKB input
+  - #3886, fix rare missing boxes in geometry subdivision
+  - #3907, Allocate enough space for all possible GBOX string outputs (Raúl Marín Rodríguez)
+
+ * Enhancements *
+  - #3815, Tiger 2017 data support and option to load zcta5
 
 PostGIS 2.4.0
 2017/09/30
