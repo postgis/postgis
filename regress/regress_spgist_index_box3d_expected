@@ -1,0 +1,64 @@
+scan|Seq Scan
+0
+scan|Index Only Scan
+0
+scan|Seq Scan
+3959
+scan|Index Only Scan
+3959
+scan|Seq Scan
+4009
+scan|Index Only Scan
+4009
+scan|Seq Scan
+0
+scan|Index Only Scan
+0
+scan|Seq Scan
+7966
+scan|Index Only Scan
+7966
+scan|Seq Scan
+11959
+scan|Index Only Scan
+11959
+scan|Seq Scan
+7992
+scan|Index Only Scan
+7992
+scan|Seq Scan
+11988
+scan|Index Only Scan
+11988
+scan|Seq Scan
+7964
+scan|Index Only Scan
+7964
+scan|Seq Scan
+11965
+scan|Index Only Scan
+11965
+scan|Seq Scan
+7992
+scan|Index Only Scan
+7992
+scan|Seq Scan
+11988
+scan|Index Only Scan
+11988
+scan|Seq Scan
+7965
+scan|Index Only Scan
+7965
+scan|Seq Scan
+11965
+scan|Index Only Scan
+11965
+scan|Seq Scan
+7992
+scan|Index Only Scan
+7992
+scan|Seq Scan
+11988
+scan|Index Only Scan
+11988
