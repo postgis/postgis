@@ -163,10 +163,10 @@ Datum BOX3D_below(PG_FUNCTION_ARGS);
 Datum BOX3D_overbelow(PG_FUNCTION_ARGS);
 Datum BOX3D_above(PG_FUNCTION_ARGS);
 Datum BOX3D_overabove(PG_FUNCTION_ARGS);
-Datum BOX3D_before(PG_FUNCTION_ARGS);
-Datum BOX3D_overbefore(PG_FUNCTION_ARGS);
-Datum BOX3D_after(PG_FUNCTION_ARGS);
-Datum BOX3D_overafter(PG_FUNCTION_ARGS);
+Datum BOX3D_front(PG_FUNCTION_ARGS);
+Datum BOX3D_overfront(PG_FUNCTION_ARGS);
+Datum BOX3D_back(PG_FUNCTION_ARGS);
+Datum BOX3D_overback(PG_FUNCTION_ARGS);
 Datum BOX3D_distance(PG_FUNCTION_ARGS);
 
 #define DatumGetBox3DP(X)    ((BOX3D *) DatumGetPointer(X))

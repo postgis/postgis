@@ -71,10 +71,10 @@ Datum BOX3D_below(PG_FUNCTION_ARGS);
 Datum BOX3D_overbelow(PG_FUNCTION_ARGS);
 Datum BOX3D_above(PG_FUNCTION_ARGS);
 Datum BOX3D_overabove(PG_FUNCTION_ARGS);
-Datum BOX3D_before(PG_FUNCTION_ARGS);
-Datum BOX3D_overbefore(PG_FUNCTION_ARGS);
-Datum BOX3D_after(PG_FUNCTION_ARGS);
-Datum BOX3D_overafter(PG_FUNCTION_ARGS);
+Datum BOX3D_front(PG_FUNCTION_ARGS);
+Datum BOX3D_overfront(PG_FUNCTION_ARGS);
+Datum BOX3D_back(PG_FUNCTION_ARGS);
+Datum BOX3D_overback(PG_FUNCTION_ARGS);
 Datum BOX3D_distance(PG_FUNCTION_ARGS);
 
 
@@ -872,76 +872,76 @@ BOX3D_overabove(PG_FUNCTION_ARGS)
 /* strictly in before of? */
 
 bool
-BOX3D_before_internal(BOX3D *box1, BOX3D *box2)
+BOX3D_front_internal(BOX3D *box1, BOX3D *box2)
 {
 	return FPlt(box1->zmax, box2->zmin);
 }
 
-PG_FUNCTION_INFO_V1(BOX3D_before);
+PG_FUNCTION_INFO_V1(BOX3D_front);
 
 PGDLLEXPORT Datum
-BOX3D_before(PG_FUNCTION_ARGS)
+BOX3D_front(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
-	bool result = BOX3D_before_internal(box1, box2);
+	bool result = BOX3D_front_internal(box1, box2);
 	PG_RETURN_BOOL(result);
 }
 
 /* does not extend to the after of? */
 
 bool
-BOX3D_overbefore_internal(BOX3D *box1, BOX3D *box2)
+BOX3D_overfront_internal(BOX3D *box1, BOX3D *box2)
 {
 	return FPle(box1->zmax, box2->zmax);
 }
 
-PG_FUNCTION_INFO_V1(BOX3D_overbefore);
+PG_FUNCTION_INFO_V1(BOX3D_overfront);
 
 PGDLLEXPORT Datum
-BOX3D_overbefore(PG_FUNCTION_ARGS)
+BOX3D_overfront(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
-	bool result = BOX3D_overbefore_internal(box1, box2);
+	bool result = BOX3D_overfront_internal(box1, box2);
 	PG_RETURN_BOOL(result);
 }
 
 /* strictly after of? */
 
 bool
-BOX3D_after_internal(BOX3D *box1, BOX3D *box2)
+BOX3D_back_internal(BOX3D *box1, BOX3D *box2)
 {
 	return FPgt(box1->zmin, box2->zmax);
 }
 
-PG_FUNCTION_INFO_V1(BOX3D_after);
+PG_FUNCTION_INFO_V1(BOX3D_back);
 
 PGDLLEXPORT Datum
-BOX3D_after(PG_FUNCTION_ARGS)
+BOX3D_back(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
-	bool result = BOX3D_after_internal(box1, box2);
+	bool result = BOX3D_back_internal(box1, box2);
 	PG_RETURN_BOOL(result);
 }
 
 /* does not extend to the before of? */
 
 bool
-BOX3D_overafter_internal(BOX3D *box1, BOX3D *box2)
+BOX3D_overback_internal(BOX3D *box1, BOX3D *box2)
 {
 	return FPge(box1->zmin, box2->zmin);
 }
 
-PG_FUNCTION_INFO_V1(BOX3D_overafter);
+PG_FUNCTION_INFO_V1(BOX3D_overback);
 
 PGDLLEXPORT Datum
-BOX3D_overafter(PG_FUNCTION_ARGS)
+BOX3D_overback(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
-	bool result = BOX3D_overafter_internal(box1, box2);
+	bool result = BOX3D_overback_internal(box1, box2);
 	PG_RETURN_BOOL(result);
 }
 

@@ -694,19 +694,19 @@ spgist_box3D_octree_leaf_consistent(PG_FUNCTION_ARGS)
 				break;
 
 			case RTAfterStrategyNumber:
-				flag = BOX3D_after_internal(leaf, query);
+				flag = BOX3D_back_internal(leaf, query);
 				break;
 
 			case RTOverAfterStrategyNumber:
-				flag = BOX3D_overafter_internal(leaf, query);
+				flag = BOX3D_overback_internal(leaf, query);
 				break;
 
 			case RTBeforeStrategyNumber:
-				flag = BOX3D_before_internal(leaf, query);
+				flag = BOX3D_front_internal(leaf, query);
 				break;
 
 			case RTOverBeforeStrategyNumber:
-				flag = BOX3D_overbefore_internal(leaf, query);
+				flag = BOX3D_overfront_internal(leaf, query);
 				break;
 
 			default:
