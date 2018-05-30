@@ -114,7 +114,7 @@ drawPoint(char *output, LWPOINT *lwp, LAYERSTYLE *styles)
 
 	lwprint_double(p.x, 10, x, OUT_DOUBLE_BUFFER_SIZE);
 	lwprint_double(p.y, 10, y1, OUT_DOUBLE_BUFFER_SIZE);
-	lwprint_double(p.y + styles->pointSize, 10, y1, OUT_DOUBLE_BUFFER_SIZE);
+	lwprint_double(p.y + styles->pointSize, 10, y2, OUT_DOUBLE_BUFFER_SIZE);
 
 	ptr += sprintf(ptr, "-fill %s -strokewidth 0 ", styles->pointColor);
 	ptr += sprintf(ptr, "-draw \"circle %s,%s %s,%s", x, y1, x, y2);
