@@ -517,61 +517,61 @@ spgist_box3D_octree_inner_consistent(PG_FUNCTION_ARGS)
 
 			switch (strategy)
 			{
-				case RTOverlapStrategyNumber:
-				case RTContainedByStrategyNumber:
+				case SPGOverlapStrategyNumber:
+				case SPGContainedByStrategyNumber:
 					flag = overlap6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTContainsStrategyNumber:
-				case RTSameStrategyNumber:
+				case SPGContainsStrategyNumber:
+				case SPGSameStrategyNumber:
 					flag = contain6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTLeftStrategyNumber:
+				case SPGLeftStrategyNumber:
 					flag = !overRight6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTOverLeftStrategyNumber:
+				case SPGOverLeftStrategyNumber:
 					flag = !right6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTRightStrategyNumber:
+				case SPGRightStrategyNumber:
 					flag = !overLeft6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTOverRightStrategyNumber:
+				case SPGOverRightStrategyNumber:
 					flag = !left6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTAboveStrategyNumber:
+				case SPGAboveStrategyNumber:
 					flag = !overBelow6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTOverAboveStrategyNumber:
+				case SPGOverAboveStrategyNumber:
 					flag = !below6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTBelowStrategyNumber:
+				case SPGBelowStrategyNumber:
 					flag = !overAbove6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTOverBelowStrategyNumber:
+				case SPGOverBelowStrategyNumber:
 					flag = !above6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTBackStrategyNumber:
+				case SPGBackStrategyNumber:
 					flag = !overFront6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTOverBackStrategyNumber:
+				case SPGOverBackStrategyNumber:
 					flag = !front6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTFrontStrategyNumber:
+				case SPGFrontStrategyNumber:
 					flag = !overBack6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTOverFrontStrategyNumber:
+				case SPGOverFrontStrategyNumber:
 					flag = !back6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
@@ -645,67 +645,67 @@ spgist_box3D_octree_leaf_consistent(PG_FUNCTION_ARGS)
 
 		switch (strategy)
 		{
-			case RTOverlapStrategyNumber:
+			case SPGOverlapStrategyNumber:
 				flag = BOX3D_overlaps_internal(leaf, query);
 				break;
 
-			case RTContainsStrategyNumber:
+			case SPGContainsStrategyNumber:
 				flag = BOX3D_contains_internal(leaf, query);
 				break;
 
-			case RTContainedByStrategyNumber:
+			case SPGContainedByStrategyNumber:
 				flag = BOX3D_contained_internal(leaf, query);
 				break;
 
-			case RTSameStrategyNumber:
+			case SPGSameStrategyNumber:
 				flag = BOX3D_same_internal(leaf, query);
 				break;
 
-			case RTLeftStrategyNumber:
+			case SPGLeftStrategyNumber:
 				flag = BOX3D_left_internal(leaf, query);
 				break;
 
-			case RTOverLeftStrategyNumber:
+			case SPGOverLeftStrategyNumber:
 				flag = BOX3D_overleft_internal(leaf, query);
 				break;
 
-			case RTRightStrategyNumber:
+			case SPGRightStrategyNumber:
 				flag = BOX3D_right_internal(leaf, query);
 				break;
 
-			case RTOverRightStrategyNumber:
+			case SPGOverRightStrategyNumber:
 				flag = BOX3D_overright_internal(leaf, query);
 				break;
 
-			case RTAboveStrategyNumber:
+			case SPGAboveStrategyNumber:
 				flag = BOX3D_above_internal(leaf, query);
 				break;
 
-			case RTOverAboveStrategyNumber:
+			case SPGOverAboveStrategyNumber:
 				flag = BOX3D_overabove_internal(leaf, query);
 				break;
 
-			case RTBelowStrategyNumber:
+			case SPGBelowStrategyNumber:
 				flag = BOX3D_below_internal(leaf, query);
 				break;
 
-			case RTOverBelowStrategyNumber:
+			case SPGOverBelowStrategyNumber:
 				flag = BOX3D_overbelow_internal(leaf, query);
 				break;
 
-			case RTBackStrategyNumber:
+			case SPGBackStrategyNumber:
 				flag = BOX3D_back_internal(leaf, query);
 				break;
 
-			case RTOverBackStrategyNumber:
+			case SPGOverBackStrategyNumber:
 				flag = BOX3D_overback_internal(leaf, query);
 				break;
 
-			case RTFrontStrategyNumber:
+			case SPGFrontStrategyNumber:
 				flag = BOX3D_front_internal(leaf, query);
 				break;
 
-			case RTOverFrontStrategyNumber:
+			case SPGOverFrontStrategyNumber:
 				flag = BOX3D_overfront_internal(leaf, query);
 				break;
 
