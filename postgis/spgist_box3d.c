@@ -292,28 +292,28 @@ overAbove6D(CubeBox3D *cube_box, BOX3D *query)
 
 /* Can any cube from cube_box be before of query? */
 static bool
-before6D(CubeBox3D *cube_box, BOX3D *query)
+front6D(CubeBox3D *cube_box, BOX3D *query)
 {
 	return FPle(cube_box->right.zmax, query->zmin);
 }
 
 /* Can any cube from cube_box does not extend the after of query? */
 static bool
-overBefore6D(CubeBox3D *cube_box, BOX3D *query)
+overFront6D(CubeBox3D *cube_box, BOX3D *query)
 {
 	return FPle(cube_box->right.zmax, query->zmax);
 }
 
 /* Can any cube from cube_box be after of query? */
 static bool
-after6D(CubeBox3D *cube_box, BOX3D *query)
+back6D(CubeBox3D *cube_box, BOX3D *query)
 {
 	return FPge(cube_box->left.zmin, query->zmax);
 }
 
 /* Can any cube from cube_box does not extend the before of query? */
 static bool
-overAfter6D(CubeBox3D *cube_box, BOX3D *query)
+overBack6D(CubeBox3D *cube_box, BOX3D *query)
 {
 	return FPge(cube_box->left.zmin, query->zmin);
 }
@@ -559,20 +559,20 @@ spgist_box3D_octree_inner_consistent(PG_FUNCTION_ARGS)
 					flag = !above6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTAfterStrategyNumber:
-					flag = !overBefore6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+				case RTBackStrategyNumber:
+					flag = !overFront6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTOverAfterStrategyNumber:
-					flag = !before6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+				case RTOverBackStrategyNumber:
+					flag = !front6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTBeforeStrategyNumber:
-					flag = !overAfter6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+				case RTFrontStrategyNumber:
+					flag = !overBack6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
-				case RTOverBeforeStrategyNumber:
-					flag = !after6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+				case RTOverFrontStrategyNumber:
+					flag = !back6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
 					break;
 
 				default:
@@ -693,19 +693,19 @@ spgist_box3D_octree_leaf_consistent(PG_FUNCTION_ARGS)
 				flag = BOX3D_overbelow_internal(leaf, query);
 				break;
 
-			case RTAfterStrategyNumber:
+			case RTBackStrategyNumber:
 				flag = BOX3D_back_internal(leaf, query);
 				break;
 
-			case RTOverAfterStrategyNumber:
+			case RTOverBackStrategyNumber:
 				flag = BOX3D_overback_internal(leaf, query);
 				break;
 
-			case RTBeforeStrategyNumber:
+			case RTFrontStrategyNumber:
 				flag = BOX3D_front_internal(leaf, query);
 				break;
 
-			case RTOverBeforeStrategyNumber:
+			case RTOverFrontStrategyNumber:
 				flag = BOX3D_overfront_internal(leaf, query);
 				break;
 

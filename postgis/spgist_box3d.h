@@ -14,10 +14,10 @@
  * Operator strategy numbers used in the GiST and SP-GiST box3d opclasses
  *****************************************************************************/
 
-#define RTOverBeforeStrategyNumber		28		/* for &</ */
-#define RTBeforeStrategyNumber			29		/* for <</ */
-#define RTAfterStrategyNumber			30		/* for />> */
-#define RTOverAfterStrategyNumber		31		/* for /&> */
+#define RTOverFrontStrategyNumber		28		/* for &</ */
+#define RTFrontStrategyNumber			29		/* for <</ */
+#define RTBackStrategyNumber			30		/* for />> */
+#define RTOverBackStrategyNumber		31		/* for /&> */
 
 /*****************************************************************************
  * BOX3D operators
