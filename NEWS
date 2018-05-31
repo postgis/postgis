@@ -34,6 +34,8 @@ PostGIS 2.5.0
   - #4082, ST_BandMetaData extended to include filesize, timestamp (Even Rouault)
 
 * Enhancements and Fixes*
+  - Upgrade scripts from multiple old versions are now all symlinks
+    to a single upgrade script (Sandro Santilli)
   - #3944, Update to EPSG register v9.2 (Even Rouault)
   - #3927, Parallel implementation of ST_AsMVT
   - #3925, Simplify geometry using map grid cell size before generating MVT
