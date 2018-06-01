@@ -702,11 +702,11 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 
 	  <para>Creating a table with spatial data, can be done in one step. As shown in the following example
 	  which creates a roads table with a 2D linestring geometry column in WGS84 long lat</para>
-	  <programlisting>CREATE TABLE ROADS ( ID int4
-		, ROAD_NAME varchar(25), geom geometry(LINESTRING,4326) );</programlisting>
+	  <programlisting>CREATE TABLE ROADS (ID serial, ROAD_NAME text, geom geometry(LINESTRING,4326) );</programlisting>
 
 	  <para>We can add additional columns using standard ALTER TABLE command as we do in this next example where we add a 3-D linestring.</para>
 	  <programlisting>ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ,4326);</programlisting>
+	</sect2>
 
 	  <sect2 id="Manual_Register_Spatial_Column">
 		<title>Manually Registering Geometry Columns in geometry_columns</title>
@@ -2202,7 +2202,6 @@ WHERE
 		  normal B-Tree indexes. Once you have run your query, you should
 		  consider setting <varname>ENABLE_SEQSCAN</varname> back on, so that
 		  other queries will utilize the planner as normal.</para>
-		  </note>
 		</listitem>
 
 		<listitem>
