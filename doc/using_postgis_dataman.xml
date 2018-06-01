@@ -152,8 +152,7 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 		</listitem>
 	  </itemizedlist>
 
-	  <para>Conversion between these formats are available using the following
-	  interfaces:</para>
+	  <para>Conversion between these formats is available using the following interfaces:</para>
 
 	  <programlisting>bytea EWKB = ST_AsEWKB(geometry);
 text EWKT = ST_AsEWKT(geometry);
@@ -169,7 +168,8 @@ geometry = ST_GeomFromEWKT(text EWKT);</programlisting>
 	  <para>The "canonical forms" of a PostgreSQL type are the representations
 	  you get with a simple query (without any function call) and the one
 	  which is guaranteed to be accepted with a simple insert, update or copy.
-	  For the postgis 'geometry' type these are: <programlisting>- Output
+	  For the PostGIS 'geometry' type these are:
+		<programlisting>- Output
   - binary: EWKB
 	ascii: HEXEWKB (EWKB in hex form)
 - Input
@@ -275,7 +275,7 @@ geometry
 
 	  <para>Prior to PostGIS 2.2, the geography type only supported WGS 84 long lat (SRID:4326).
 		For PostGIS 2.2 and above, any long/lat based spatial reference system defined in the <varname>spatial_ref_sys</varname> table can be used.
-		You can even add your own custom spheroidal spatial refence system as described in <ulink url="http://www.bostongis.com/blog/index.php?/archives/266-geography-type-is-not-limited-to-earth.html">geography type is not limited to earth</ulink>.</para>
+		You can even add your own custom spheroidal spatial reference system as described in <ulink url="http://www.bostongis.com/blog/index.php?/archives/266-geography-type-is-not-limited-to-earth.html">geography type is not limited to earth</ulink>.</para>
 
 		<para>Regardless which spatial reference system you use, the units returned by the measurement (<xref linkend="ST_Distance" />, <xref linkend="ST_Length" />, <xref linkend="ST_Perimeter" />, <xref linkend="ST_Area" />) and for input of <xref linkend="ST_DWithin" /> are in meters.</para>
 
@@ -333,7 +333,7 @@ CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog geography(POLYGON,4267) );<
   );</programlisting>
 		</para>
 
-		<para>Note that the location column has type GEOGRAPHY and that geography type supports two optional modifier: a type modifier that restricts the kind of shapes and dimensions allowed in the column; an SRID modifier that restricts the coordinate reference identifier to a particular number.</para>
+		<para>Note that the location column has type GEOGRAPHY and that geography type supports two optional modifiers: a type modifier that restricts the kind of shapes and dimensions allowed in the column; an SRID modifier that restricts the coordinate reference identifier to a particular number.</para>
 		<para>Allowable values for the type modifier are: POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON. The modifier also supports dimensionality restrictions through suffixes: Z, M and ZM. So, for example a modifier of 'LINESTRINGM' would only allow line strings with three dimensions in, and would treat the third dimension as a measure.
 		Similarly, 'POINTZM' would expect four dimensional data.</para>
 		<para>If you do not specify an SRID, the SRID will default to 4326 WGS 84 long/lat will be used, and all calculations will proceed using WGS84.</para>
@@ -739,12 +739,12 @@ SELECT poi.gid, poi.geom, citybounds.city_name
 INTO myschema.my_special_pois
 FROM poi INNER JOIN citybounds ON ST_Intersects(citybounds.geom, poi.geom);
 
--- Create 2d index on new table
+-- Create 2D index on new table
 CREATE INDEX idx_myschema_myspecialpois_geom_gist
   ON myschema.my_special_pois USING gist(geom);
 
 -- If your points are 3D points or 3M points,
--- then you might want to create an nd index instead of a 2d index
+-- then you might want to create an nd index instead of a 2D index
 CREATE INDEX my_special_pois_geom_gist_nd
 	ON my_special_pois USING gist(geom gist_geometry_ops_nd);
 
@@ -2050,9 +2050,9 @@ WHERE
 	<itemizedlist>
 	  <listitem>
 		<para>B-Trees are used for data which can be sorted along one axis;
-		for example, numbers, letters, dates. GIS data cannot be rationally
-		sorted along one axis (which is greater, (0,0) or (0,1) or (1,0)?) so
-		B-Tree indexing is of no use for us.</para>
+		for example, numbers, letters, dates. Spatial data can be sorted along
+		a space-filling curve, Z-order curve or Hilbert curve. This representation
+		however does not allow speeding up common operations. </para>
 	  </listitem>
 
 	  <listitem>
@@ -2139,9 +2139,9 @@ WHERE
 	  follows:</para>
 
 	  <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geometryfield] ); </programlisting></para>
-	  <para>The above syntax will always build a 2D-index.  To get a 3d-dimensional index, you can create one using this syntax</para>
+	  <para>The above syntax will always build a 2D-index.  To get a 3D-dimensional index, you can create one using this syntax</para>
 	  <programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ([geometryfield] brin_geometry_inclusion_ops_3d);</programlisting>
-      <para>You can also get a 4d-dimensional index using the 4d operator class</para>
+      <para>You can also get a 4D-dimensional index using the 4D operator class</para>
 	  <programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ([geometryfield] brin_geometry_inclusion_ops_4d);</programlisting>
       <para>These above syntaxes will use the default number or block in a range, which is 128. To specify the number of blocks you want to summarise in a range, you can create one using this syntax</para>
       <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geometryfield] ) WITH (pages_per_range = [number]); </programlisting></para>
@@ -2173,9 +2173,9 @@ WHERE
 	  <para>Ordinarily, indexes invisibly speed up data access: once the index
 	  is built, the query planner transparently decides when to use index
 	  information to speed up a query plan. Unfortunately, the PostgreSQL
-	  query planner does not currently optimize the use of GiST indexes well, so
-	  sometimes searches which should use a spatial index instead default to a
-	  sequence scan of the whole table.</para>
+	  query planner sometimes does not optimize the use of GiST indexes well, so
+	  sometimes searches which should use a spatial index instead may perform a
+	  sequential scan of the whole table.</para>
 
 	  <para>If you find your spatial indexes are not being used (or your
 	  attribute indexes, for that matter) there are a couple things you can
@@ -2183,34 +2183,51 @@ WHERE
 
 	  <itemizedlist>
 		<listitem>
-		  <para>Firstly, make sure statistics are gathered about the number
+		  <para>Firstly, read query plan and check your query actually tries to compute the
+			thing you need. A runaway JOIN condition, either forgotten or to the wrong table,
+			can unexpectedly bring you all of your table multiple times. To get query plan,
+			add EXPLAIN keyword in front of your query.</para>
+		</listitem>
+
+		<listitem>
+		  <para>Second, make sure statistics are gathered about the number
 		  and distributions of values in a table, to provide the query planner
 		  with better information to make decisions around index usage.
-			<command>VACUUM ANALYZE</command> will compute both spatial distribution and number of values.
+			<command>VACUUM ANALYZE</command> will compute both.</para>
 
-			You should regularly vacuum your databases anyways
-		  -- many PostgreSQL DBAs have <command>VACUUM</command> run as an
-		  off-peak cron job on a regular basis.</para>
+			<para>You should regularly vacuum your databases anyways - many PostgreSQL DBAs have
+			<command>VACUUM</command> run as an off-peak cron job on a regular basis.</para>
 		</listitem>
 
 		<listitem>
-		  <para>If vacuuming does not work, you can force the planner to use
-		  the index information by using the <command>SET
-		  ENABLE_SEQSCAN=OFF;</command> command. You should only use this
-		  command sparingly, and only on spatially indexed queries: generally
+		  <para>If vacuuming does not help, you can temporarily force the planner to use
+		  the index information by using the <command>set enable_seqscan to off;</command>
+			command. This way you can check whether planner is at all capable to generate
+			an index accelerated query plan for your query.
+			You should only use this command only for debug: generally
 		  speaking, the planner knows better than you do about when to use
-		  normal B-Tree indexes. Once you have run your query, you should
-		  consider setting <varname>ENABLE_SEQSCAN</varname> back on, so that
-		  other queries will utilize the planner as normal.</para>
+		  indexes. Once you have run your query, do not forget to set
+			<varname>ENABLE_SEQSCAN</varname> back on, so that other queries will utilize
+			the planner as normal.</para>
 		</listitem>
 
 		<listitem>
-		  <para>If you find the planner wrong about the cost of sequential vs
-		  index scans try reducing the value of random_page_cost in
-		  postgresql.conf or using SET random_page_cost=#. Default value for
+		  <para>If <command>set enable_seqscan to off;</command> helps your query to run,
+			your Postgres is likely not tuned for your hardware.
+			If you find the planner wrong about the cost of sequential vs
+		  index scans try reducing the value of <varname>random_page_cost</varname> in
+		  postgresql.conf or using <command>set random_page_cost to 1.1;</command>. Default value for
 		  the parameter is 4, try setting it to 1 (on SSD) or 2 (on fast magnetic disks).
-			Decrementing the value makes the planner more inclined of using Index scans.</para>
+			Decreasing the value makes the planner more inclined of using Index scans.</para>
 		</listitem>
+
+		<listitem>
+		  <para>If <command>set enable_seqscan to off;</command> does not help your query,
+			it may happen you use a construction Postgres is not yet able to untangle.
+			A subquery with inline select is one example - you need to rewrite it to the form
+			planner can optimize, say, a LATERAL JOIN.
+		</listitem>
+
 	  </itemizedlist>
 	</sect2>
   </sect1>
