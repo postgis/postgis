@@ -2225,7 +2225,7 @@ WHERE
 		  <para>If <command>set enable_seqscan to off;</command> does not help your query,
 			it may happen you use a construction Postgres is not yet able to untangle.
 			A subquery with inline select is one example - you need to rewrite it to the form
-			planner can optimize, say, a LATERAL JOIN.
+			planner can optimize, say, a LATERAL JOIN.</para>
 		</listitem>
 
 	  </itemizedlist>
