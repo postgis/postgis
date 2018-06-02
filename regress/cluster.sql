@@ -36,8 +36,17 @@ SELECT 't102', id, ST_ClusterDBSCAN(geom, eps := 0.8, minpoints := 4) OVER () fr
 SELECT 't103', id, ST_ClusterDBSCAN(geom, eps := 0.6, minpoints := 3) OVER () from dbscan_inputs;
 
 -- #3612
-SELECT 't3612a', ST_ClusterDBSCAN(foo1.the_geom, 20.1, 5)OVER()  As result
+SELECT '#3612a', ST_ClusterDBSCAN(foo1.the_geom, 20.1, 5)OVER()  As result
 							FROM ((SELECT geom  As the_geom
 									FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;POLYGONM((-71.1319 42.2503 1,-71.132 42.2502 3,-71.1323 42.2504 -2,-71.1322 42.2505 1,-71.1319 42.2503 0))') ),
 											( ST_GeomFromEWKT('SRID=4326;POLYGONM((-71.1319 42.2512 0,-71.1318 42.2511 20,-71.1317 42.2511 -20,-71.1317 42.251 5,-71.1317 42.2509 4,-71.132 42.2511 6,-71.1319 42.2512 30))') ) ) As g(geom))) As foo1 LIMIT 3;
-SELECT 't3612b', ST_ClusterDBSCAN( ST_Point(1,1), 20.1, 5) OVER();
+SELECT '#3612b', ST_ClusterDBSCAN(ST_Point(1,1), 20.1, 5) OVER();
+
+
+-- ST_ClusterKMeans
+select '#4100a', count(distinct result) from (SELECT ST_ClusterKMeans(foo1.the_geom, 3)OVER()  As result
+  FROM ((SELECT ST_Collect(geom)  As the_geom
+		FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.0822 42.3036 2,-71.082 42.3038 2,-71.0819 42.3037 2,-71.0821 42.3036 2)))') ),
+	( ST_GeomFromEWKT('SRID=4326;POLYGON((-71.1261 42.2703 1,-71.1257 42.2703 1,-71.1257 42.2701 1,-71.126 42.2701 1,-71.1261 42.2702 1,-71.1261 42.2703 1))') ) ) As g(geom) CROSS JOIN generate_series(1,3) As i GROUP BY i )) As foo1 LIMIT 10) kmeans;
+
+select '#4100b', count(distinct cid) from (select ST_ClusterKMeans(geom,2) over () as cid from (values ('POINT(0 0)'::geometry), ('POINT(0 0)')) g(geom)) kmeans;

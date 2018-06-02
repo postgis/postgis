@@ -131,6 +131,7 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 	double* distances;
 	uint32_t p1 = 0, p2 = 0;
 	uint32_t i, j;
+	uint32_t duplicate_count = 1; /* a point is a duplicate of itself */
 	double max_dst = -1;
 	double dst_p1, dst_p2;
 
@@ -150,7 +151,7 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 	}
 
 	/* k >= 2: find two distant points greedily */
-	for (i = 0; i < n; i++)
+	for (i = 1; i < n; i++)
 	{
 		/* skip null */
 		if (!objs[i]) continue;
@@ -174,7 +175,13 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 			else
 				p1 = i;
 		}
+		if ((dst_p1 == 0) || (dst_p2 == 0)) duplicate_count++;
 	}
+	if (duplicate_count > 1)
+		lwnotice(
+		    "%s: there are at least %u duplicate inputs, number of output clusters may be less than you requested",
+		    __func__,
+		    duplicate_count);
 
 	/* by now two points should be found and non-same */
 	assert(p1 != p2 && objs[p1] && objs[p2] && max_dst >= 0);
