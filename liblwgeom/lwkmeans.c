@@ -135,20 +135,8 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 	double max_dst = -1;
 	double dst_p1, dst_p2;
 
-	assert(k > 0);
-
-	/* k = 1: first non-null is ok, and input check guarantees there's one */
-	if (k == 1)
-	{
-		for (i = 0; i < n; i++)
-		{
-			if (!objs[i]) continue;
-			centers_raw[0] = *((POINT2D *)objs[i]);
-			centers[0] = &(centers_raw[0]);
-			return;
-		}
-		assert(0);
-	}
+	/* k=0, k=1: "clustering" is just input validation */
+	assert(k > 1);
 
 	/* k >= 2: find two distant points greedily */
 	for (i = 1; i < n; i++)
@@ -333,9 +321,24 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 		k = num_non_empty;
 	}
 
-	kmeans_init(objs, clusters, n, centers, centers_raw, k);
-
-	result = kmeans(objs, clusters, n, centers, k);
+	if (k > 1)
+	{
+		kmeans_init(objs, clusters, n, centers, centers_raw, k);
+		result = kmeans(objs, clusters, n, centers, k);
+	}
+	else
+	{
+		/* k=0: everythong is unclusterable
+		 * k=1: mark up NULL and non-NULL */
+		for (i = 0; i < n; i++)
+		{
+			if (k == 0 || !objs[i])
+				clusters[i] = KMEANS_NULL_CLUSTER;
+			else
+				clusters[i] = 0;
+		}
+		result = LW_TRUE;
+	}
 
 	/* Before error handling, might as well clean up all the inputs */
 	lwfree(objs);
