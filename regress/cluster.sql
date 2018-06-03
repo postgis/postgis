@@ -50,3 +50,13 @@ select '#4100a', count(distinct result) from (SELECT ST_ClusterKMeans(foo1.the_g
 	( ST_GeomFromEWKT('SRID=4326;POLYGON((-71.1261 42.2703 1,-71.1257 42.2703 1,-71.1257 42.2701 1,-71.126 42.2701 1,-71.1261 42.2702 1,-71.1261 42.2703 1))') ) ) As g(geom) CROSS JOIN generate_series(1,3) As i GROUP BY i )) As foo1 LIMIT 10) kmeans;
 
 select '#4100b', count(distinct cid) from (select ST_ClusterKMeans(geom,2) over () as cid from (values ('POINT(0 0)'::geometry), ('POINT(0 0)')) g(geom)) kmeans;
+
+
+select '#4101a', count(distinct result) from (SELECT ST_ClusterKMeans(foo1.the_geom, 3) OVER()  As result
+							FROM ((SELECT ST_GeomFromText('POINT EMPTY',4326) As the_geom
+			UNION ALL SELECT ST_GeomFromText('MULTIPOINT EMPTY',4326) As the_geom
+			UNION ALL SELECT ST_GeomFromText('MULTIPOLYGON EMPTY',4326) As the_geom
+			UNION ALL SELECT ST_GeomFromText('LINESTRING EMPTY',4326) As the_geom
+			UNION ALL SELECT ST_GeomFromText('MULTILINESTRING EMPTY',4326) As the_geom ) ) As foo1 LIMIT 10) kmeans;
+
+select '#4101b', count(distinct cid) from (select ST_ClusterKMeans(geom,2) over () as cid from (values ('POINT EMPTY'::geometry), ('POINT EMPTY')) g(geom)) kmeans;
