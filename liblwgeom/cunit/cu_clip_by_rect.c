@@ -18,7 +18,6 @@
 
 static void test_lwgeom_clip_by_rect(void)
 {
-#if POSTGIS_GEOS_VERSION >= 35
 	LWGEOM *in, *out;
 	const char *wkt;
 	char *tmp;
@@ -65,8 +64,6 @@ static void test_lwgeom_clip_by_rect(void)
 	//tmp = lwgeom_to_ewkt(out); printf("%s\n", tmp); lwfree(tmp);
 	CU_ASSERT(lwgeom_is_empty(out));
 	lwgeom_free(out); lwgeom_free(in);
-
-#endif /* POSTGIS_GEOS_VERSION >= 35 */
 }
 
 /*

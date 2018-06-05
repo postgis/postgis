@@ -2360,12 +2360,8 @@ int ptarray_transform(POINTARRAY *pa, projPJ inpj, projPJ outpj);
  */
 LWGEOM* lwgeom_buildarea(const LWGEOM *geom) ;
 
-
 /**
  * Attempts to make an invalid geometries valid w/out losing points.
- *
- * NOTE: this is only available when liblwgeom is built against
- *       GEOS 3.3.0 or higher
  */
 LWGEOM* lwgeom_make_valid(LWGEOM* geom);
 
@@ -2381,8 +2377,6 @@ LWGEOM* lwgeom_split(const LWGEOM* lwgeom_in, const LWGEOM* blade_in);
 /*
  * Fully node a set of linestrings, using the least nodes preserving
  * all the input ones.
- *
- * Requires GEOS-3.3.0 or higher
  */
 LWGEOM* lwgeom_node(const LWGEOM* lwgeom_in);
 
@@ -2405,8 +2399,6 @@ LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *geom, double tolerance, int3
  * @param tolerance an optional snapping tolerance for improved robustness
  * @param output_edges if non-zero the result will be a MULTILINESTRING,
  *                 otherwise it'll be a COLLECTION of polygons.
- *
- * Requires GEOS-3.5.0 or higher
  */
 LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double tolerance, int output_edges);
 
@@ -2419,7 +2411,6 @@ LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double toleranc
 * @param k the number of clusters to calculate
 */
 int * lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, uint32_t ngeoms, uint32_t k);
-
 
 #endif /* !defined _LIBLWGEOM_H  */
 

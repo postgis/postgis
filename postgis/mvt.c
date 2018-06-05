@@ -740,13 +740,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 			double y0 = bgbox.ymin;
 			double x1 = bgbox.xmax;
 			double y1 = bgbox.ymax;
-#if POSTGIS_GEOS_VERSION < 35
-			LWPOLY *lwenv = lwpoly_construct_envelope(0, x0, y0, x1, y1);
-			lwgeom = lwgeom_intersection(lwgeom, lwpoly_as_lwgeom(lwenv));
-			lwpoly_free(lwenv);
-#else
 			lwgeom = lwgeom_clip_by_rect(lwgeom, x0, y0, x1, y1);
-#endif
 			POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
 			if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 				return NULL;
