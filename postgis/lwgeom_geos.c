@@ -1306,69 +1306,19 @@ PG_FUNCTION_INFO_V1(centroid);
 Datum centroid(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom, *result;
-	GEOSGeometry *geosgeom, *geosresult;
-	LWGEOM *igeom = NULL, *linear_geom = NULL;
-	int32 perQuad= 16;
-	int type = 0;
+	LWGEOM *lwgeom, *lwresult;
+
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
-	/* Empty.Centroid() == Point Empty */
-	if ( gserialized_is_empty(geom) )
-	{
-		LWPOINT *lwp = lwpoint_construct_empty(
-		                   gserialized_get_srid(geom),
-		                   gserialized_has_z(geom),
-		                   gserialized_has_m(geom));
-		result = geometry_serialize(lwpoint_as_lwgeom(lwp));
-		lwpoint_free(lwp);
-		PG_RETURN_POINTER(result);
-	}
-
-	type = gserialized_get_type(geom) ;
-	/* Converting curve geometry to linestring if necessary*/
-	if(type == CIRCSTRINGTYPE || type == COMPOUNDTYPE )
-	{/* curve geometry?*/
-		igeom = lwgeom_from_gserialized(geom);
-		PG_FREE_IF_COPY(geom, 0); /*free memory, we already have a lwgeom geometry copy*/
-		linear_geom = lwgeom_stroke(igeom, perQuad);
-		lwgeom_free(igeom);
-		if (!linear_geom) PG_RETURN_NULL();
-
-		geom = geometry_serialize(linear_geom);
-		lwgeom_free(linear_geom);
-	}
-
-	initGEOS(lwpgnotice, lwgeom_geos_error);
-
-	geosgeom = POSTGIS2GEOS(geom);
-
-	if (!geosgeom)
-		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
-
-	geosresult = GEOSGetCentroid(geosgeom);
-
-	if (!geosresult)
-	{
-		GEOSGeom_destroy(geosgeom);
-		HANDLE_GEOS_ERROR("GEOSGetCentroid");
-	}
-
-	GEOSSetSRID(geosresult, gserialized_get_srid(geom));
-
-	result = GEOS2POSTGIS(geosresult, gserialized_has_z(geom));
-
-	if (!result)
-	{
-		GEOSGeom_destroy(geosgeom);
-		GEOSGeom_destroy(geosresult);
-		elog(ERROR,"Error in GEOS-PGIS conversion");
-		PG_RETURN_NULL();
-	}
-	GEOSGeom_destroy(geosgeom);
-	GEOSGeom_destroy(geosresult);
-
+	lwgeom = lwgeom_from_gserialized(geom);
+	lwresult = lwgeom_centroid(lwgeom);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 
+	if (!lwresult) PG_RETURN_NULL();
+
+	result = geometry_serialize(lwresult);
+	lwgeom_free(lwresult);
 	PG_RETURN_POINTER(result);
 }
 
