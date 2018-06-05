@@ -851,6 +851,23 @@ lwgeom_pointonsurface(const LWGEOM *geom)
 
 	g3 = GEOSPointOnSurface(g1);
 
+	if (!g3)
+	{
+		GEOSGeometry *g1v;
+		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
+
+		if (!GEOSisValid(g1))
+		{
+			lwnotice(
+			    "Your geometry dataset is not valid per OGC Specification. "
+			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
+			    "Retrying GEOS operation with ST_MakeValid of your input.");
+			g1v = LWGEOM_GEOS_makeValid(g1);
+			g3 = GEOSPointOnSurface(g1);
+			geos_clean(g1v, NULL, NULL);
+		}
+	}
+
 	if (!g3) return geos_clean_and_fail(g1, NULL, NULL, __func__);
 
 	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
