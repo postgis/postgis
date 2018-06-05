@@ -543,7 +543,7 @@ output_geos_as_lwgeom(GEOSGeometry** g, LWGEOM** geom, const int32_t srid, const
 	return LW_TRUE;
 }
 
-/* Output encoder and sanity checker for GEOS wrappers */
+/* Clean up and return NULL */
 inline static LWGEOM*
 geos_clean_and_fail(GEOSGeometry* g1, GEOSGeometry* g2, GEOSGeometry* g3, const char* funcname)
 {
@@ -554,7 +554,7 @@ geos_clean_and_fail(GEOSGeometry* g1, GEOSGeometry* g2, GEOSGeometry* g3, const 
 	return NULL;
 }
 
-/* Output encoder and sanity checker for GEOS wrappers */
+/* Clean up */
 inline static void
 geos_clean(GEOSGeometry* g1, GEOSGeometry* g2, GEOSGeometry* g3)
 {
@@ -863,7 +863,7 @@ lwgeom_pointonsurface(const LWGEOM *geom)
 			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
 			    "Retrying GEOS operation with ST_MakeValid of your input.");
 			g1v = LWGEOM_GEOS_makeValid(g1);
-			g3 = GEOSPointOnSurface(g1);
+			g3 = GEOSPointOnSurface(g1v);
 			geos_clean(g1v, NULL, NULL);
 		}
 	}
