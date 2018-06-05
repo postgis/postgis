@@ -3710,7 +3710,6 @@ CREATE OR REPLACE FUNCTION ST_Node(g geometry)
 --
 --
 -- Availability: 2.1.0
--- Requires GEOS >= 3.4.0
 --
 CREATE OR REPLACE FUNCTION ST_DelaunayTriangles(g1 geometry, tolerance float8 DEFAULT 0.0, flags int4 DEFAULT 0)
        RETURNS geometry
