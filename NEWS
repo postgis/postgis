@@ -51,10 +51,8 @@ PostGIS 2.5.0
   - #3097, Really allow MULTILINESTRING blades in ST_Split() (Paul Ramsey)
   - #3942, geojson: Do not include private header for json-c >= 0.13 (Björn Esser)
   - #3954, ST_GeometricMedian now supports point weights (Darafei Praliaskouski)
-  - #3965, ST_ClusterKMeans used to lose some clusters on initialization
-           (Darafei Praliaskouski)
-  - #3971, ST_ClusterKMeans now uses better initial seed (Darafei Praliaskouski)
-  - #3977, ST_ClusterKMeans is now faster and simpler (Darafei Praliaskouski)
+  - #3965, #3971, #3977, #4071 ST_ClusterKMeans rewritten: better initialization,
+           faster convergence, K=2 even faster (Darafei Praliaskouski)
   - #3982, ST_AsEncodedPolyline supports LINESTRING EMPTY and MULTIPOINT EMPTY
            (Darafei Praliaskouski)
   - #3986, ST_AsText now has second argument to limit decimal digits
@@ -72,13 +70,13 @@ PostGIS 2.5.0
            robustness issues. (Darafei Praliaskouski)
   - #4025, #4032 Fixed precision issue in ST_ClosestPointOfApproach,
            ST_DistanceCPA, and ST_CPAWithin (Paul Ramsey, Darafei Praliaskouski)
-  - #4071, ST_ClusterKMeans crash on NULL/EMPTY fixed (Darafei Praliaskouski)
   - #4076, Reduce use of GEOS in topology implementation (Björn Harrtell)
   - #4080, Add external raster band index to ST_BandMetaData
   - Add Raster Tips section to Documentation for information about
     Raster behavior (e.g. Out-DB performance, maximum open files)
   - #4084: Fixed wrong code-comment regarding front/back of BOX3D (Matthias Bay)
   - #4060, #4094, PostgreSQL JIT support (Raúl Marín, Laurenz Albe)
+  - #3960, ST_Centroid now uses lwgeom_centroid (Darafei Praliaskouski)
 
 PostGIS 2.4.4
 2018/04/08
