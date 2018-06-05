@@ -829,6 +829,38 @@ lwgeom_centroid(const LWGEOM* geom)
 	return result;
 }
 
+LWGEOM *
+lwgeom_pointonsurface(const LWGEOM *geom)
+{
+	LWGEOM *result;
+	int32_t srid = get_result_srid(geom, NULL, __func__);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
+	GEOSGeometry *g1, *g3;
+
+	if (srid == SRID_INVALID) return NULL;
+
+	if (lwgeom_is_empty(geom))
+	{
+		LWPOINT *lwp = lwpoint_construct_empty(srid, is3d, lwgeom_has_m(geom));
+		return lwpoint_as_lwgeom(lwp);
+	}
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
+
+	g3 = GEOSPointOnSurface(g1);
+
+	if (!g3) return geos_clean_and_fail(g1, NULL, NULL, __func__);
+
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(g1, NULL, g3, __func__);
+
+	geos_clean(g1, NULL, g3);
+
+	return result;
+}
+
 LWGEOM*
 lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 {
