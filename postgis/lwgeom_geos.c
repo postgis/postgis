@@ -53,13 +53,15 @@
  * Prints error message only if it was not for interruption, in which
  * case we let PostgreSQL deal with the error.
  */
-#define HANDLE_GEOS_ERROR(label) { \
-  if (strstr(lwgeom_geos_errmsg, "InterruptedException")) \
-    ereport(ERROR, (errcode(ERRCODE_QUERY_CANCELED), errmsg("canceling statement due to user request"))); \
-  else \
-    lwpgerror(label ": %s", lwgeom_geos_errmsg); \
-  PG_RETURN_NULL(); \
-}
+#define HANDLE_GEOS_ERROR(label) \
+	{ \
+		if (strstr(lwgeom_geos_errmsg, "InterruptedException")) \
+			ereport(ERROR, \
+				(errcode(ERRCODE_QUERY_CANCELED), errmsg("canceling statement due to user request"))); \
+		else \
+			lwpgerror((label) ": %s", lwgeom_geos_errmsg); \
+		PG_RETURN_NULL(); \
+	}
 
 /*
 ** Prototypes for SQL-bound functions
