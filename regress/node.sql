@@ -9,7 +9,6 @@ select 't2', st_asewkt(st_node(
 ));
 
 -- Node a self-intersecting line
--- NOTE: requires GEOS 3.3.2
 -- See http://trac.osgeo.org/geos/ticket/482
 select 't3', st_asewkt(st_node(
 'SRID=10;LINESTRING(0 0, 10 10, 0 10, 10 0)'

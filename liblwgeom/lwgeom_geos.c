@@ -1730,10 +1730,6 @@ lwtin_from_geos(const GEOSGeometry* geom, uint8_t want3d)
 LWGEOM*
 lwgeom_delaunay_triangulation(const LWGEOM* geom, double tolerance, int32_t output)
 {
-#if POSTGIS_GEOS_VERSION < 34
-	lwerror("lwgeom_delaunay_triangulation: GEOS 3.4 or higher required");
-	return NULL;
-#else
 	LWGEOM* result;
 	int32_t srid = get_result_srid(geom, NULL, __func__);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
@@ -1772,17 +1768,8 @@ lwgeom_delaunay_triangulation(const LWGEOM* geom, double tolerance, int32_t outp
 
 	geos_clean(g1, NULL, g3);
 	return result;
-#endif /* POSTGIS_GEOS_VERSION < 34 */
 }
 
-#if POSTGIS_GEOS_VERSION < 35
-LWGEOM*
-lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double tolerance, int output_edges)
-{
-	lwerror("lwgeom_voronoi_diagram: GEOS 3.5 or higher required");
-	return NULL;
-}
-#else  /* POSTGIS_GEOS_VERSION >= 35 */
 static GEOSCoordSequence*
 lwgeom_get_geos_coordseq_2d(const LWGEOM* g, uint32_t num_points)
 {
@@ -1873,4 +1860,3 @@ lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double tolerance, int o
 
 	return lwgeom_result;
 }
-#endif /* POSTGIS_GEOS_VERSION >= 35 */
