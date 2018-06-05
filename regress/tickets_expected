@@ -349,3 +349,8 @@ NOTICE:  Self-intersection
 #4055a|4326
 #4055b|4326
 #4089|LINESTRING Z (1 1 1,3 3 1)
+NOTICE:  lwgeom_pointonsurface: GEOS Error: TopologyException: Input geom 1 is invalid: Self-intersection
+NOTICE:  Self-intersection
+NOTICE:  Your geometry dataset is not valid per OGC Specification. Please fix it with manual review of entries that are not ST_IsValid(geom). Retrying GEOS operation with ST_MakeValid of your input.
+NOTICE:  Self-intersection
+#4103|t
