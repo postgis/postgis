@@ -59,7 +59,7 @@
 			ereport(ERROR, \
 				(errcode(ERRCODE_QUERY_CANCELED), errmsg("canceling statement due to user request"))); \
 		else \
-			lwpgerror((label) ": %s", lwgeom_geos_errmsg); \
+			lwpgerror("%s: %s", (label), lwgeom_geos_errmsg); \
 		PG_RETURN_NULL(); \
 	}
 
