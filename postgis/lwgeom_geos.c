@@ -1250,55 +1250,20 @@ Datum geos_difference(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(pointonsurface);
 Datum pointonsurface(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom;
-	GEOSGeometry *g1, *g3;
-	GSERIALIZED *result;
+	GSERIALIZED *geom, *result;
+	LWGEOM *lwgeom, *lwresult;
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
-	/* Empty.PointOnSurface == Point Empty */
-	if ( gserialized_is_empty(geom) )
-	{
-		LWPOINT *lwp = lwpoint_construct_empty(
-		                   gserialized_get_srid(geom),
-		                   gserialized_has_z(geom),
-		                   gserialized_has_m(geom));
-		result = geometry_serialize(lwpoint_as_lwgeom(lwp));
-		lwpoint_free(lwp);
-		PG_RETURN_POINTER(result);
-	}
-
-	initGEOS(lwpgnotice, lwgeom_geos_error);
-
-	g1 = POSTGIS2GEOS(geom);
-
-	if (!g1) HANDLE_GEOS_ERROR(__func__);
-
-	g3 = GEOSPointOnSurface(g1);
-
-	if (!g3)
-	{
-		GEOSGeom_destroy(g1);
-		HANDLE_GEOS_ERROR("GEOSPointOnSurface");
-	}
-
-	GEOSSetSRID(g3, gserialized_get_srid(geom));
-
-	result = GEOS2POSTGIS(g3, gserialized_has_z(geom));
-
-	if (!result)
-	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g3);
-		elog(ERROR,"GEOS pointonsurface() threw an error (result postgis geometry formation)!");
-		PG_RETURN_NULL(); /* never get here */
-	}
-
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g3);
-
+	lwgeom = lwgeom_from_gserialized(geom);
+	lwresult = lwgeom_pointonsurface(lwgeom);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 
+	if (!lwresult) PG_RETURN_NULL();
+
+	result = geometry_serialize(lwresult);
+	lwgeom_free(lwresult);
 	PG_RETURN_POINTER(result);
 }
 

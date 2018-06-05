@@ -543,7 +543,7 @@ output_geos_as_lwgeom(GEOSGeometry** g, LWGEOM** geom, const int32_t srid, const
 	return LW_TRUE;
 }
 
-/* Output encoder and sanity checker for GEOS wrappers */
+/* Clean up and return NULL */
 inline static LWGEOM*
 geos_clean_and_fail(GEOSGeometry* g1, GEOSGeometry* g2, GEOSGeometry* g3, const char* funcname)
 {
@@ -554,7 +554,7 @@ geos_clean_and_fail(GEOSGeometry* g1, GEOSGeometry* g2, GEOSGeometry* g3, const 
 	return NULL;
 }
 
-/* Output encoder and sanity checker for GEOS wrappers */
+/* Clean up */
 inline static void
 geos_clean(GEOSGeometry* g1, GEOSGeometry* g2, GEOSGeometry* g3)
 {
@@ -818,6 +818,55 @@ lwgeom_centroid(const LWGEOM* geom)
 	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
 
 	g3 = GEOSGetCentroid(g1);
+
+	if (!g3) return geos_clean_and_fail(g1, NULL, NULL, __func__);
+
+	if (!output_geos_as_lwgeom(&g3, &result, srid, is3d, __func__))
+		return geos_clean_and_fail(g1, NULL, g3, __func__);
+
+	geos_clean(g1, NULL, g3);
+
+	return result;
+}
+
+LWGEOM *
+lwgeom_pointonsurface(const LWGEOM *geom)
+{
+	LWGEOM *result;
+	int32_t srid = get_result_srid(geom, NULL, __func__);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
+	GEOSGeometry *g1, *g3;
+
+	if (srid == SRID_INVALID) return NULL;
+
+	if (lwgeom_is_empty(geom))
+	{
+		LWPOINT *lwp = lwpoint_construct_empty(srid, is3d, lwgeom_has_m(geom));
+		return lwpoint_as_lwgeom(lwp);
+	}
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
+
+	g3 = GEOSPointOnSurface(g1);
+
+	if (!g3)
+	{
+		GEOSGeometry *g1v;
+		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
+
+		if (!GEOSisValid(g1))
+		{
+			lwnotice(
+			    "Your geometry dataset is not valid per OGC Specification. "
+			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
+			    "Retrying GEOS operation with ST_MakeValid of your input.");
+			g1v = LWGEOM_GEOS_makeValid(g1);
+			g3 = GEOSPointOnSurface(g1v);
+			geos_clean(g1v, NULL, NULL);
+		}
+	}
 
 	if (!g3) return geos_clean_and_fail(g1, NULL, NULL, __func__);
 
