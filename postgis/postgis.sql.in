@@ -651,7 +651,6 @@ CREATE OR REPLACE FUNCTION geometry_overleft(geom1 geometry, geom2 geometry)
 -- Availability: 0.1.0
 CREATE OPERATOR &< (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overleft,
-	COMMUTATOR = '&>',
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
@@ -677,7 +676,6 @@ CREATE OR REPLACE FUNCTION geometry_overbelow(geom1 geometry, geom2 geometry)
 -- Availability: 0.1.0
 CREATE OPERATOR &<| (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overbelow,
-	COMMUTATOR = '|&>',
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
@@ -690,7 +688,6 @@ CREATE OR REPLACE FUNCTION geometry_overright(geom1 geometry, geom2 geometry)
 -- Availability: 0.1.0
 CREATE OPERATOR &> (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overright,
-	COMMUTATOR = '&<',
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
@@ -716,7 +713,6 @@ CREATE OR REPLACE FUNCTION geometry_overabove(geom1 geometry, geom2 geometry)
 -- Availability: 0.1.0
 CREATE OPERATOR |&> (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overabove,
-	COMMUTATOR = '&<|',
 	RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
