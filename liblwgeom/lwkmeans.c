@@ -131,26 +131,15 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 	double* distances;
 	uint32_t p1 = 0, p2 = 0;
 	uint32_t i, j;
+	uint32_t duplicate_count = 1; /* a point is a duplicate of itself */
 	double max_dst = -1;
 	double dst_p1, dst_p2;
 
-	assert(k > 0);
-
-	/* k = 1: first non-null is ok, and input check guarantees there's one */
-	if (k == 1)
-	{
-		for (i = 0; i < n; i++)
-		{
-			if (!objs[i]) continue;
-			centers_raw[0] = *((POINT2D *)objs[i]);
-			centers[0] = &(centers_raw[0]);
-			return;
-		}
-		assert(0);
-	}
+	/* k=0, k=1: "clustering" is just input validation */
+	assert(k > 1);
 
 	/* k >= 2: find two distant points greedily */
-	for (i = 0; i < n; i++)
+	for (i = 1; i < n; i++)
 	{
 		/* skip null */
 		if (!objs[i]) continue;
@@ -174,7 +163,13 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 			else
 				p1 = i;
 		}
+		if ((dst_p1 == 0) || (dst_p2 == 0)) duplicate_count++;
 	}
+	if (duplicate_count > 1)
+		lwnotice(
+		    "%s: there are at least %u duplicate inputs, number of output clusters may be less than you requested",
+		    __func__,
+		    duplicate_count);
 
 	/* by now two points should be found and non-same */
 	assert(p1 != p2 && objs[p1] && objs[p2] && max_dst >= 0);
@@ -326,9 +321,24 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 		k = num_non_empty;
 	}
 
-	kmeans_init(objs, clusters, n, centers, centers_raw, k);
-
-	result = kmeans(objs, clusters, n, centers, k);
+	if (k > 1)
+	{
+		kmeans_init(objs, clusters, n, centers, centers_raw, k);
+		result = kmeans(objs, clusters, n, centers, k);
+	}
+	else
+	{
+		/* k=0: everythong is unclusterable
+		 * k=1: mark up NULL and non-NULL */
+		for (i = 0; i < n; i++)
+		{
+			if (k == 0 || !objs[i])
+				clusters[i] = KMEANS_NULL_CLUSTER;
+			else
+				clusters[i] = 0;
+		}
+		result = LW_TRUE;
+	}
 
 	/* Before error handling, might as well clean up all the inputs */
 	lwfree(objs);

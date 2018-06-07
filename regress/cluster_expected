@@ -27,6 +27,14 @@ t103|3|
 t103|4|0
 t103|5|0
 t103|6|0
-t3612a|
-t3612a|
-t3612b|
+#3612a|
+#3612a|
+#3612b|
+NOTICE:  kmeans_init: there are at least 3 duplicate inputs, number of output clusters may be less than you requested
+#4100a|1
+NOTICE:  kmeans_init: there are at least 2 duplicate inputs, number of output clusters may be less than you requested
+#4100b|1
+NOTICE:  lwgeom_cluster_2d_kmeans: number of non-empty geometries is less than the number of clusters requested, not all clusters will get data
+#4101a|1
+NOTICE:  lwgeom_cluster_2d_kmeans: number of non-empty geometries is less than the number of clusters requested, not all clusters will get data
+#4101b|1

@@ -53,13 +53,15 @@
  * Prints error message only if it was not for interruption, in which
  * case we let PostgreSQL deal with the error.
  */
-#define HANDLE_GEOS_ERROR(label) { \
-  if (strstr(lwgeom_geos_errmsg, "InterruptedException")) \
-    ereport(ERROR, (errcode(ERRCODE_QUERY_CANCELED), errmsg("canceling statement due to user request"))); \
-  else \
-    lwpgerror(label ": %s", lwgeom_geos_errmsg); \
-  PG_RETURN_NULL(); \
-}
+#define HANDLE_GEOS_ERROR(label) \
+	{ \
+		if (strstr(lwgeom_geos_errmsg, "InterruptedException")) \
+			ereport(ERROR, \
+				(errcode(ERRCODE_QUERY_CANCELED), errmsg("canceling statement due to user request"))); \
+		else \
+			lwpgerror("%s: %s", (label), lwgeom_geos_errmsg); \
+		PG_RETURN_NULL(); \
+	}
 
 /*
 ** Prototypes for SQL-bound functions
@@ -133,8 +135,8 @@ is_point(const GSERIALIZED* g)
 	return type == POINTTYPE || type == MULTIPOINTTYPE;
 }
 
-/* utility function that checks a LWPOINT and a GSERIALIZED poly against
- * a cache.  Serialized poly may be a multipart.
+/* Utility function that checks a LWPOINT and a GSERIALIZED poly against a cache.
+ * Serialized poly may be a multipart.
  */
 static int
 pip_short_circuit(RTREE_POLY_CACHE* poly_cache, LWPOINT* point, GSERIALIZED* gpoly)
@@ -164,7 +166,7 @@ pip_short_circuit(RTREE_POLY_CACHE* poly_cache, LWPOINT* point, GSERIALIZED* gpo
 
 /**
  *  @brief Compute the Hausdorff distance thanks to the corresponding GEOS function
- *  @example hausdorffdistance {@link #hausdorffdistance} - SELECT st_hausdorffdistance(
+ *  @example ST_HausdorffDistance {@link #hausdorffdistance} - SELECT ST_HausdorffDistance(
  *      'POLYGON((0 0, 0 2, 1 2, 2 2, 2 0, 0 0))'::geometry,
  *      'POLYGON((0.5 0.5, 0.5 2.5, 1.5 2.5, 2.5 2.5, 2.5 0.5, 0.5 0.5))'::geometry);
  */
@@ -178,8 +180,6 @@ Datum hausdorffdistance(PG_FUNCTION_ARGS)
 	GEOSGeometry *g2;
 	double result;
 	int retcode;
-
-	POSTGIS_DEBUG(2, "hausdorff_distance called");
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
@@ -197,8 +197,7 @@ Datum hausdorffdistance(PG_FUNCTION_ARGS)
 	if (!g2)
 	{
 		GEOSGeom_destroy(g1);
-		HANDLE_GEOS_ERROR(
-		    "Second argument geometry could not be converted to GEOS");
+		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 	}
 
 	retcode = GEOSHausdorffDistance(g1, g2, &result);
@@ -215,9 +214,10 @@ Datum hausdorffdistance(PG_FUNCTION_ARGS)
 
 /**
  *  @brief Compute the Hausdorff distance with densification thanks to the corresponding GEOS function
- *  @example hausdorffdistancedensify {@link #hausdorffdistancedensify} - SELECT st_hausdorffdistancedensify(
+ *  @example hausdorffdistancedensify {@link #hausdorffdistancedensify} - SELECT ST_HausdorffDistance(
  *      'POLYGON((0 0, 0 2, 1 2, 2 2, 2 0, 0 0))'::geometry,
- *      'POLYGON((0.5 0.5, 0.5 2.5, 1.5 2.5, 2.5 2.5, 2.5 0.5, 0.5 0.5))'::geometry, 0.5);
+ *      'POLYGON((0.5 0.5, 0.5 2.5, 1.5 2.5, 2.5 2.5, 2.5 0.5, 0.5 0.5))'::geometry,
+ *       0.5);
  */
 
 PG_FUNCTION_INFO_V1(hausdorffdistancedensify);
@@ -230,7 +230,6 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 	double densifyFrac;
 	double result;
 	int retcode;
-
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
@@ -249,8 +248,7 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 	if (!g2)
 	{
 		GEOSGeom_destroy(g1);
-		HANDLE_GEOS_ERROR(
-		    "Second argument geometry could not be converted to GEOS");
+		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 	}
 
 	retcode = GEOSHausdorffDistanceDensify(g1, g2, densifyFrac, &result);
@@ -309,8 +307,7 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 	if (!g2)
 	{
 		GEOSGeom_destroy(g1);
-		HANDLE_GEOS_ERROR(
-		    "Second argument geometry could not be converted to GEOS");
+		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 	}
 
 	if (densifyFrac <= 0.0)
@@ -345,10 +342,6 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(pgis_union_geometry_array);
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 {
-	/*
-	** For GEOS >= 3.3, use the new UnaryUnion functionality to merge the
-	** terminal collection from the ST_Union aggregate
-	*/
 	ArrayType *array;
 
 	ArrayIterator iterator;
@@ -387,9 +380,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	while( array_iterate(iterator, &value, &isnull) )
 	{
 		/* Skip null array items */
-		if ( isnull )
-			continue;
-
+		if (isnull) continue;
 		count++;
 	}
 	array_free_iterator(iterator);
@@ -431,9 +422,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		GSERIALIZED *gser_in;
 
 		/* Skip null array items */
-		if ( isnull )
-			continue;
-
+		if (isnull) continue;
 		gser_in = (GSERIALIZED *)DatumGetPointer(value);
 
 		/* Check for SRID mismatch in array elements */
@@ -492,10 +481,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	if (curgeom > 0)
 	{
 		g = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, geoms, curgeom);
-		if (!g)
-			HANDLE_GEOS_ERROR(
-			    "Could not create GEOS COLLECTION from geometry "
-			    "array");
+		if (!g) HANDLE_GEOS_ERROR("Could not create GEOS COLLECTION from geometry array");
 
 		g_union = GEOSUnaryUnion(g);
 		GEOSGeom_destroy(g);
@@ -544,7 +530,6 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS)
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 
-
 	lwgeom1 = lwgeom_from_gserialized(geom1) ;
 
 	lwresult = lwgeom_unaryunion(lwgeom1);
@@ -558,9 +543,8 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-
 /**
- * @example geomunion {@link #geomunion} SELECT geomunion(
+ * @example geomunion {@link #geomunion} SELECT ST_Union(
  *      'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))',
  *      'POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))'
  * );
@@ -593,9 +577,8 @@ Datum geos_geomunion(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-
 /**
- *  @example symdifference {@link #symdifference} - SELECT symdifference(
+ *  @example symdifference {@link #symdifference} - SELECT ST_SymDifference(
  *      'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))',
  *      'POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
  */
@@ -635,7 +618,6 @@ Datum boundary(PG_FUNCTION_ARGS)
 	GSERIALIZED *result;
 	LWGEOM *lwgeom;
 	int srid;
-
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 
@@ -880,8 +862,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 			val = strchr(key, '=');
 			if (!val || *(val + 1) == '\0')
 			{
-				lwpgerror("Missing value for buffer "
-				        "parameter %s", key);
+				lwpgerror("Missing value for buffer parameter %s", key);
 				break;
 			}
 			*val = '\0';
@@ -972,19 +953,15 @@ Datum buffer(PG_FUNCTION_ARGS)
 				}
 				else
 				{
-					lwpgerror("Invalid side "
-					        "parameter: %s (accept: "
-					        "'right', 'left', 'both' "
-					        ")", val);
+					lwpgerror("Invalid side parameter: %s (accept: 'right', 'left', 'both')", val);
 					break;
 				}
 			}
 			else
 			{
-				lwpgerror("Invalid buffer parameter: %s (accept: "
-				        "'endcap', 'join', 'mitre_limit', "
-				        "'miter_limit', 'quad_segs' and "
-				        "'side')", key);
+				lwpgerror(
+				    "Invalid buffer parameter: %s (accept: 'endcap', 'join', 'mitre_limit', 'miter_limit', 'quad_segs' and 'side')",
+				    key);
 				break;
 			}
 		}
@@ -1039,8 +1016,6 @@ Datum buffer(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-
-
 /*
 * Generate a field of random points within the area of a
 * polygon or multipolygon. Throws an error for other geometry
@@ -1059,7 +1034,6 @@ Datum ST_GeneratePoints(PG_FUNCTION_ARGS)
 	gser_input = PG_GETARG_GSERIALIZED_P(0);
 	npoints = DatumGetInt32(DirectFunctionCall1(numeric_int4, PG_GETARG_DATUM(1)));
 
-	/* Smartasses get nothing back */
 	if (npoints < 0)
 		PG_RETURN_NULL();
 
@@ -1114,13 +1088,8 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 	gser_input = PG_GETARG_GSERIALIZED_P(0);
 	size = PG_GETARG_FLOAT8(1);
 
-	/*
-	* For distance == 0, just return the input.
-	* Note that due to a bug, GEOS 3.3.0 would return EMPTY.
-	* See http://trac.osgeo.org/geos/ticket/454
-	*/
-	if ( size == 0 )
-		PG_RETURN_POINTER(gser_input);
+	/* For distance == 0, just return the input. */
+	if (size == 0) PG_RETURN_POINTER(gser_input);
 
 	/* Read the lwgeom, check for errors */
 	lwgeom_input = lwgeom_from_gserialized(gser_input);
@@ -1174,8 +1143,9 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 				}
 				else
 				{
-					lwpgerror("Invalid buffer end cap style: %s (accept: "
-					        "'round', 'mitre', 'miter' or 'bevel')", val);
+					lwpgerror(
+					    "Invalid buffer end cap style: %s (accept: 'round', 'mitre', 'miter' or 'bevel')",
+					    val);
 					break;
 				}
 			}
@@ -1192,9 +1162,9 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 			}
 			else
 			{
-				lwpgerror("Invalid buffer parameter: %s (accept: "
-				        "'join', 'mitre_limit', 'miter_limit and "
-				        "'quad_segs')", key);
+				lwpgerror(
+				    "Invalid buffer parameter: %s (accept: 'join', 'mitre_limit', 'miter_limit and 'quad_segs')",
+				    key);
 				break;
 			}
 		}
@@ -1242,7 +1212,7 @@ Datum geos_intersection(PG_FUNCTION_ARGS)
 }
 
 /**
- * @example difference {@link #difference} - SELECT difference(
+ * @example difference {@link #difference} - SELECT ST_Difference(
  *      'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))',
  *	'POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
  */
@@ -1273,70 +1243,27 @@ Datum geos_difference(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-
 /**
-	@example pointonsurface - {@link #pointonsurface} SELECT pointonsurface('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))');
+	@example pointonsurface - {@link #pointonsurface} SELECT ST_PointOnSurface('POLYGON((0 0, 10 0, 10 10, 0 10, 0
+   0))');
 */
 PG_FUNCTION_INFO_V1(pointonsurface);
 Datum pointonsurface(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom;
-	GEOSGeometry *g1, *g3;
-	GSERIALIZED *result;
+	GSERIALIZED *geom, *result;
+	LWGEOM *lwgeom, *lwresult;
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
-	/* Empty.PointOnSurface == Point Empty */
-	if ( gserialized_is_empty(geom) )
-	{
-		LWPOINT *lwp = lwpoint_construct_empty(
-		                   gserialized_get_srid(geom),
-		                   gserialized_has_z(geom),
-		                   gserialized_has_m(geom));
-		result = geometry_serialize(lwpoint_as_lwgeom(lwp));
-		lwpoint_free(lwp);
-		PG_RETURN_POINTER(result);
-	}
-
-	initGEOS(lwpgnotice, lwgeom_geos_error);
-
-	g1 = POSTGIS2GEOS(geom);
-
-	if (!g1)
-	{
-		/* Why is this a WARNING rather than an error ? */
-		/* TODO: use HANDLE_GEOS_ERROR instead */
-		elog(WARNING, "GEOSPointOnSurface(): %s", lwgeom_geos_errmsg);
-		PG_RETURN_NULL();
-	}
-
-	g3 = GEOSPointOnSurface(g1);
-
-	if (!g3)
-	{
-		GEOSGeom_destroy(g1);
-		HANDLE_GEOS_ERROR("GEOSPointOnSurface");
-	}
-
-	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3) ) ;
-
-	GEOSSetSRID(g3, gserialized_get_srid(geom));
-
-	result = GEOS2POSTGIS(g3, gserialized_has_z(geom));
-
-	if (!result)
-	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g3);
-		elog(ERROR,"GEOS pointonsurface() threw an error (result postgis geometry formation)!");
-		PG_RETURN_NULL(); /* never get here */
-	}
-
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g3);
-
+	lwgeom = lwgeom_from_gserialized(geom);
+	lwresult = lwgeom_pointonsurface(lwgeom);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 
+	if (!lwresult) PG_RETURN_NULL();
+
+	result = geometry_serialize(lwresult);
+	lwgeom_free(lwresult);
 	PG_RETURN_POINTER(result);
 }
 
@@ -1344,69 +1271,19 @@ PG_FUNCTION_INFO_V1(centroid);
 Datum centroid(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom, *result;
-	GEOSGeometry *geosgeom, *geosresult;
-	LWGEOM *igeom = NULL, *linear_geom = NULL;
-	int32 perQuad= 16;
-	int type = 0;
+	LWGEOM *lwgeom, *lwresult;
+
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
-	/* Empty.Centroid() == Point Empty */
-	if ( gserialized_is_empty(geom) )
-	{
-		LWPOINT *lwp = lwpoint_construct_empty(
-		                   gserialized_get_srid(geom),
-		                   gserialized_has_z(geom),
-		                   gserialized_has_m(geom));
-		result = geometry_serialize(lwpoint_as_lwgeom(lwp));
-		lwpoint_free(lwp);
-		PG_RETURN_POINTER(result);
-	}
-
-	type = gserialized_get_type(geom) ;
-	/* Converting curve geometry to linestring if necessary*/
-	if(type == CIRCSTRINGTYPE || type == COMPOUNDTYPE )
-	{/* curve geometry?*/
-		igeom = lwgeom_from_gserialized(geom);
-		PG_FREE_IF_COPY(geom, 0); /*free memory, we already have a lwgeom geometry copy*/
-		linear_geom = lwgeom_stroke(igeom, perQuad);
-		lwgeom_free(igeom);
-		if (!linear_geom) PG_RETURN_NULL();
-
-		geom = geometry_serialize(linear_geom);
-		lwgeom_free(linear_geom);
-	}
-
-	initGEOS(lwpgnotice, lwgeom_geos_error);
-
-	geosgeom = POSTGIS2GEOS(geom);
-
-	if (!geosgeom)
-		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
-
-	geosresult = GEOSGetCentroid(geosgeom);
-
-	if (!geosresult)
-	{
-		GEOSGeom_destroy(geosgeom);
-		HANDLE_GEOS_ERROR("GEOSGetCentroid");
-	}
-
-	GEOSSetSRID(geosresult, gserialized_get_srid(geom));
-
-	result = GEOS2POSTGIS(geosresult, gserialized_has_z(geom));
-
-	if (!result)
-	{
-		GEOSGeom_destroy(geosgeom);
-		GEOSGeom_destroy(geosresult);
-		elog(ERROR,"Error in GEOS-PGIS conversion");
-		PG_RETURN_NULL();
-	}
-	GEOSGeom_destroy(geosgeom);
-	GEOSGeom_destroy(geosresult);
-
+	lwgeom = lwgeom_from_gserialized(geom);
+	lwresult = lwgeom_centroid(lwgeom);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 
+	if (!lwresult) PG_RETURN_NULL();
+
+	result = geometry_serialize(lwresult);
+	lwgeom_free(lwresult);
 	PG_RETURN_POINTER(result);
 }
 
@@ -1414,16 +1291,6 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_ClipByBox2d);
 Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 35
-
-	lwpgerror("The GEOS version this PostGIS binary "
-					"was compiled against (%d) doesn't support "
-					"'GEOSClipByRect' function (3.5.0+ required)",
-					POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL();
-
-#else /* POSTGIS_GEOS_VERSION >= 35 */
-
 	GSERIALIZED *geom1;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwresult ;
@@ -1474,14 +1341,10 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	result = geometry_serialize(lwresult) ;
 	lwgeom_free(lwresult) ;
 	PG_RETURN_POINTER(result);
-
-#endif /* POSTGIS_GEOS_VERSION >= 35 */
 }
 
 
-
 /*---------------------------------------------*/
-
 
 /**
  * @brief Throws an ereport ERROR if either geometry is a COLLECTIONTYPE.  Additionally
@@ -1573,10 +1436,6 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-/*
-** IsValidReason is only available in the GEOS
-** C API > version 3.0
-*/
 PG_FUNCTION_INFO_V1(isvalidreason);
 Datum isvalidreason(PG_FUNCTION_ARGS)
 {
@@ -1607,10 +1466,6 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/*
-** IsValidDetail is only available in the GEOS
-** C API >= version 3.3
-*/
 PG_FUNCTION_INFO_V1(isvaliddetail);
 Datum isvaliddetail(PG_FUNCTION_ARGS)
 {
@@ -1658,8 +1513,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 
 	if ( g1 )
 	{
-		valid = GEOSisValidDetail(g1, flags,
-		                          &geos_reason, &geos_location);
+		valid = GEOSisValidDetail(g1, flags, &geos_reason, &geos_location);
 		GEOSGeom_destroy((GEOSGeometry *)g1);
 		if ( geos_reason )
 		{
@@ -1730,7 +1584,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
-	 * geom1 bounding box we can prematurely return FALSE.
+	 * geom1 bounding box we can return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
@@ -1792,15 +1646,12 @@ Datum contains(PG_FUNCTION_ARGS)
 
 	/*
 	** short-circuit 1: if geom2 bounding box is not completely inside
-	** geom1 bounding box we can prematurely return FALSE.
+	** geom1 bounding box we can return FALSE.
 	*/
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
 	{
-		if ( ! gbox_contains_2d(&box1, &box2) )
-		{
-			PG_RETURN_BOOL(false);
-		}
+		if (!gbox_contains_2d(&box1, &box2)) PG_RETURN_BOOL(false);
 	}
 
 	/*
@@ -1884,16 +1735,11 @@ Datum contains(PG_FUNCTION_ARGS)
 	else
 	{
 		g1 = POSTGIS2GEOS(geom1);
-		if (!g1)
-			HANDLE_GEOS_ERROR(
-			    "First argument geometry could not be converted to "
-			    "GEOS");
+		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		g2 = POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
-			HANDLE_GEOS_ERROR(
-			    "Second argument geometry could not be converted "
-			    "to GEOS");
+			HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 			GEOSGeom_destroy(g1);
 		}
 		POSTGIS_DEBUG(4, "containsPrepared: cache is not ready, running standard contains");
@@ -1931,9 +1777,9 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false);
 
 	/*
-	* short-circuit: if geom2 bounding box is not completely inside
-	* geom1 bounding box we can prematurely return FALSE.
-	*/
+	 * short-circuit: if geom2 bounding box is not completely inside
+	 * geom1 bounding box we can return FALSE.
+	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
 	{
@@ -1948,10 +1794,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1 )
 	{
 		GEOSGeometry *g = POSTGIS2GEOS(geom2);
-		if (!g)
-			HANDLE_GEOS_ERROR(
-			    "First argument geometry could not be converted to "
-			    "GEOS");
+		if (!g) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		result = GEOSPreparedContainsProperly( prep_cache->prepared_geom, g);
 		GEOSGeom_destroy(g);
 	}
@@ -1961,17 +1804,12 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 		GEOSGeometry *g1;
 
 		g1 = POSTGIS2GEOS(geom1);
-		if (!g1)
-			HANDLE_GEOS_ERROR(
-			    "First argument geometry could not be converted to "
-			    "GEOS");
+		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		g2 = POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
 			GEOSGeom_destroy(g1);
-			HANDLE_GEOS_ERROR(
-			    "Second argument geometry could not be converted "
-			    "to GEOS");
+			HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 		}
 		result = GEOSRelatePattern( g1, g2, "T**FF*FF*" );
 		GEOSGeom_destroy(g1);
@@ -2011,7 +1849,7 @@ Datum covers(PG_FUNCTION_ARGS)
 
 	/*
 	 * short-circuit 1: if geom2 bounding box is not completely inside
-	 * geom1 bounding box we can prematurely return FALSE.
+	 * geom1 bounding box we can return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
@@ -2082,10 +1920,7 @@ Datum covers(PG_FUNCTION_ARGS)
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1 )
 	{
 		GEOSGeometry *g1 = POSTGIS2GEOS(geom2);
-		if (!g1)
-			HANDLE_GEOS_ERROR(
-			    "First argument geometry could not be converted to "
-			    "GEOS");
+		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		result = GEOSPreparedCovers( prep_cache->prepared_geom, g1);
 		GEOSGeom_destroy(g1);
 	}
@@ -2095,17 +1930,12 @@ Datum covers(PG_FUNCTION_ARGS)
 		GEOSGeometry *g2;
 
 		g1 = POSTGIS2GEOS(geom1);
-		if (!g1)
-			HANDLE_GEOS_ERROR(
-			    "First argument geometry could not be converted to "
-			    "GEOS");
+		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		g2 = POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
 			GEOSGeom_destroy(g1);
-			HANDLE_GEOS_ERROR(
-			    "Second argument geometry could not be converted "
-			    "to GEOS");
+			HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 		}
 		result = GEOSRelatePattern( g1, g2, "******FF*" );
 		GEOSGeom_destroy(g1);
@@ -2155,7 +1985,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 
 	/*
 	 * short-circuit 1: if geom1 bounding box is not completely inside
-	 * geom2 bounding box we can prematurely return FALSE.
+	 * geom2 bounding box we can return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
@@ -2233,8 +2063,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	if (!g2)
 	{
 		GEOSGeom_destroy(g1);
-		HANDLE_GEOS_ERROR(
-		    "Second argument geometry could not be converted to GEOS");
+		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 	}
 
 	result = GEOSRelatePattern(g1,g2,patt);
@@ -2271,7 +2100,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
-	 * geom1 bounding box we can prematurely return FALSE.
+	 * geom1 bounding box we can return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
@@ -2292,8 +2121,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	if (!g2)
 	{
 		GEOSGeom_destroy(g1);
-		HANDLE_GEOS_ERROR(
-		    "Second argument geometry could not be converted to GEOS");
+		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 	}
 
 	result = GEOSCrosses(g1,g2);
@@ -2330,7 +2158,7 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
-	 * geom1 bounding box we can prematurely return FALSE.
+	 * geom1 bounding box we can return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
@@ -2399,8 +2227,7 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 		if ( prep_cache->gcache.argnum == 1 )
 		{
 			GEOSGeometry *g = POSTGIS2GEOS(geom2);
-			if (!g)
-				HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+			if (!g) HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
 			result = GEOSPreparedIntersects( prep_cache->prepared_geom, g);
 			GEOSGeom_destroy(g);
 		}
@@ -2418,17 +2245,12 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 		GEOSGeometry *g1;
 		GEOSGeometry *g2;
 		g1 = POSTGIS2GEOS(geom1);
-		if (!g1)
-			HANDLE_GEOS_ERROR(
-			    "First argument geometry could not be converted to "
-			    "GEOS");
+		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		g2 = POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
 			GEOSGeom_destroy(g1);
-			HANDLE_GEOS_ERROR(
-			    "Second argument geometry could not be converted "
-			    "to GEOS");
+			HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 		}
 		result = GEOSIntersects( g1, g2);
 		GEOSGeom_destroy(g1);
@@ -2465,7 +2287,7 @@ Datum touches(PG_FUNCTION_ARGS)
 
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
-	 * geom1 bounding box we can prematurely return FALSE.
+	 * geom1 bounding box we can return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 			gserialized_get_gbox_p(geom2, &box2) )
@@ -2486,8 +2308,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	if (!g2)
 	{
 		GEOSGeom_destroy(g1);
-		HANDLE_GEOS_ERROR(
-		    "Second argument geometry could not be converted to GEOS");
+		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 	}
 
 	result = GEOSTouches(g1,g2);
@@ -2525,7 +2346,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
-	 * geom1 bounding box we can prematurely return TRUE.
+	 * geom1 bounding box we can return TRUE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
@@ -2546,8 +2367,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	if (!g2)
 	{
 		GEOSGeom_destroy(g1);
-		HANDLE_GEOS_ERROR(
-		    "Second argument geometry could not be converted to GEOS");
+		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 	}
 
 	result = GEOSDisjoint(g1,g2);
@@ -2591,8 +2411,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	if (!g2)
 	{
 		GEOSGeom_destroy(g1);
-		HANDLE_GEOS_ERROR(
-		    "Second argument geometry could not be converted to GEOS");
+		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 	}
 
 	patt =  DatumGetCString(DirectFunctionCall1(textout,
@@ -2656,8 +2475,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	if (!g2)
 	{
 		GEOSGeom_destroy(g1);
-		HANDLE_GEOS_ERROR(
-		    "Second argument geometry could not be converted to GEOS");
+		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 	}
 
 	POSTGIS_DEBUG(3, "constructed geometries ");
@@ -2734,8 +2552,7 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 	if (!g2)
 	{
 		GEOSGeom_destroy(g1);
-		HANDLE_GEOS_ERROR(
-		    "Second argument geometry could not be converted to GEOS");
+		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 	}
 
 	result = GEOSEquals(g1,g2);
@@ -2811,10 +2628,6 @@ Datum isring(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-
-
-
-
 GSERIALIZED *
 GEOS2POSTGIS(GEOSGeom geom, char want3d)
 {
@@ -2830,10 +2643,7 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 
 	POSTGIS_DEBUGF(4, "%s: GEOS2LWGEOM returned a %s", __func__, lwgeom_summary(lwgeom, 0));
 
-	if ( lwgeom_needs_bbox(lwgeom) == LW_TRUE )
-	{
-		lwgeom_add_bbox(lwgeom);
-	}
+	if (lwgeom_needs_bbox(lwgeom)) lwgeom_add_bbox(lwgeom);
 
 	result = geometry_serialize(lwgeom);
 	lwgeom_free(lwgeom);
@@ -2856,11 +2666,7 @@ POSTGIS2GEOS(GSERIALIZED *pglwgeom)
 	}
 	ret = LWGEOM2GEOS(lwgeom, 0);
 	lwgeom_free(lwgeom);
-	if ( ! ret )
-	{
-		/* lwpgerror("POSTGIS2GEOS conversion failed"); */
-		return NULL;
-	}
+
 	return ret;
 }
 
@@ -3497,13 +3303,6 @@ Datum ST_Voronoi(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_Voronoi);
 Datum ST_Voronoi(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 35
-	lwpgerror("The GEOS version this PostGIS binary "
-	        "was compiled against (%d) doesn't support "
-	        "'ST_Voronoi' function (3.5.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL();
-#else /* POSTGIS_GEOS_VERSION >= 35 */
 	GSERIALIZED* input;
 	GSERIALIZED* clip;
 	GSERIALIZED* result;
@@ -3581,8 +3380,6 @@ Datum ST_Voronoi(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(input, 0);
 	PG_RETURN_POINTER(result);
-
-#endif /* POSTGIS_GEOS_VERSION >= 35 */
 }
 
 /******************************************

@@ -130,9 +130,6 @@ test_geos_makevalid(void)
 
 static void test_geos_subdivide(void)
 {
-#if POSTGIS_GEOS_VERSION < 35
-	return;
-#else
 	char *ewkt = "LINESTRING(0 0, 10 10)";
 	char *out_ewkt;
 	LWGEOM *geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
@@ -155,7 +152,6 @@ static void test_geos_subdivide(void)
 
 	lwgeom_free(geom2);
 	lwgeom_free(geom1);
-#endif
 }
 
 /*
