@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Box3DSpgist.c
+ * gserialized_spgist_3d.c
  *	  SP-GiST implementation of 6-dimensional oct-tree over 3D boxes
  *
  * This module provides SP-GiST implementation for boxes using oct tree
@@ -70,8 +70,66 @@
  *
  *****************************************************************************/
 
-#include "spgist_box3d.h"
+#include "gserialized_spgist_3d.h"
 #include "lwgeom_pg.h"
+
+static char* box3d_to_string(const BOX3D *a)
+{
+	char *rv = NULL;
+
+	if ( a == NULL )
+		return pstrdup("<NULLPTR>");
+
+	rv = palloc(128);
+	sprintf(rv, "BOX3D(%.12g %.12g %.12g, %.12g %.12g %.12g)",
+		a->xmin, a->ymin, a->zmin, a->xmax, a->ymax, a->zmax);
+	return rv;
+}
+
+
+PG_FUNCTION_INFO_V1(gserialized_overlaps_3d);
+Datum gserialized_overlaps_3d(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
+	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
+	bool resut = BOX3D_overlaps_internal(box1, box2);
+	pfree(box1); pfree(box2);
+
+	PG_RETURN_BOOL(resut);
+}
+
+PG_FUNCTION_INFO_V1(gserialized_contains_3d);
+Datum gserialized_contains_3d(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
+	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
+	bool resut = BOX3D_contains_internal(box1, box2);
+	pfree(box1); pfree(box2);
+
+	PG_RETURN_BOOL(resut);
+}
+
+PG_FUNCTION_INFO_V1(gserialized_contained_3d);
+Datum gserialized_contained_3d(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
+	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
+	bool resut = BOX3D_contained_internal(box1, box2);
+	pfree(box1); pfree(box2);
+
+	PG_RETURN_BOOL(resut);
+}
+
+PG_FUNCTION_INFO_V1(gserialized_same_3d);
+Datum gserialized_same_3d(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
+	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
+	bool resut = BOX3D_same_internal(box1, box2);
+	pfree(box1); pfree(box2);
+
+	PG_RETURN_BOOL(resut);
+}
 
 /*
  * Comparator for qsort
@@ -322,16 +380,18 @@ overBack6D(CubeBox3D *cube_box, BOX3D *query)
  * SP-GiST config function
  */
 
-PG_FUNCTION_INFO_V1(spgist_box3D_octree_config);
+PG_FUNCTION_INFO_V1(gserialized_spgist_config_3d);
 
 PGDLLEXPORT Datum
-spgist_box3D_octree_config(PG_FUNCTION_ARGS)
+gserialized_spgist_config_3d(PG_FUNCTION_ARGS)
 {
 	spgConfigOut *cfg = (spgConfigOut *) PG_GETARG_POINTER(1);
 
-	cfg->prefixType = TypenameGetTypid("box3d");
+	Oid boxoid = TypenameGetTypid("box3d");
+	cfg->prefixType = boxoid;
 	cfg->labelType = VOIDOID;	/* We don't need node labels. */
-	cfg->canReturnData = true;
+	cfg->leafType = boxoid;
+	cfg->canReturnData = false;
 	cfg->longValuesOK = false;
 
 	PG_RETURN_VOID();
@@ -341,15 +401,15 @@ spgist_box3D_octree_config(PG_FUNCTION_ARGS)
  * SP-GiST choose function
  */
 
-PG_FUNCTION_INFO_V1(spgist_box3D_octree_choose);
+PG_FUNCTION_INFO_V1(gserialized_spgist_choose_3d);
 
 PGDLLEXPORT Datum
-spgist_box3D_octree_choose(PG_FUNCTION_ARGS)
+gserialized_spgist_choose_3d(PG_FUNCTION_ARGS)
 {
 	spgChooseIn *in = (spgChooseIn *) PG_GETARG_POINTER(0);
 	spgChooseOut *out = (spgChooseOut *) PG_GETARG_POINTER(1);
 	BOX3D	   *centroid = DatumGetBox3DP(in->prefixDatum),
-			   *box = DatumGetBox3DP(in->datum);
+			   *box = DatumGetBox3DP(in->leafDatum);
 
 	out->resultType = spgMatchNode;
 	out->result.matchNode.restDatum = Box3DPGetDatum(box);
@@ -367,10 +427,10 @@ spgist_box3D_octree_choose(PG_FUNCTION_ARGS)
  * It splits a list of boxes into octants by choosing a central 6D
  * point as the median of the coordinates of the boxes.
  */
-PG_FUNCTION_INFO_V1(spgist_box3D_octree_picksplit);
+PG_FUNCTION_INFO_V1(gserialized_spgist_picksplit_3d);
 
 PGDLLEXPORT Datum
-spgist_box3D_octree_picksplit(PG_FUNCTION_ARGS)
+gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 {
 	spgPickSplitIn *in = (spgPickSplitIn *) PG_GETARG_POINTER(0);
 	spgPickSplitOut *out = (spgPickSplitOut *) PG_GETARG_POINTER(1);
@@ -455,10 +515,10 @@ spgist_box3D_octree_picksplit(PG_FUNCTION_ARGS)
 /*
  * SP-GiST inner consistent function
  */
-PG_FUNCTION_INFO_V1(spgist_box3D_octree_inner_consistent);
+PG_FUNCTION_INFO_V1(gserialized_spgist_inner_consistent_3d);
 
 PGDLLEXPORT Datum
-spgist_box3D_octree_inner_consistent(PG_FUNCTION_ARGS)
+gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
 {
 	spgInnerConsistentIn *in = (spgInnerConsistentIn *) PG_GETARG_POINTER(0);
 	spgInnerConsistentOut *out = (spgInnerConsistentOut *) PG_GETARG_POINTER(1);
@@ -514,65 +574,67 @@ spgist_box3D_octree_inner_consistent(PG_FUNCTION_ARGS)
 		for (i = 0; i < in->nkeys; i++)
 		{
 			StrategyNumber strategy = in->scankeys[i].sk_strategy;
+			Datum		query = in->scankeys[i].sk_argument;
+			BOX3D	   *box = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, query));
 
 			switch (strategy)
 			{
 				case SPGOverlapStrategyNumber:
 				case SPGContainedByStrategyNumber:
-					flag = overlap6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+					flag = overlap6D(next_cube_box, box);
 					break;
 
 				case SPGContainsStrategyNumber:
 				case SPGSameStrategyNumber:
-					flag = contain6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+					flag = contain6D(next_cube_box, box);
 					break;
 
 				case SPGLeftStrategyNumber:
-					flag = !overRight6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+					flag = !overRight6D(next_cube_box, box);
 					break;
 
 				case SPGOverLeftStrategyNumber:
-					flag = !right6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+					flag = !right6D(next_cube_box, box);
 					break;
 
 				case SPGRightStrategyNumber:
-					flag = !overLeft6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+					flag = !overLeft6D(next_cube_box, box);
 					break;
 
 				case SPGOverRightStrategyNumber:
-					flag = !left6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+					flag = !left6D(next_cube_box, box);
 					break;
 
 				case SPGAboveStrategyNumber:
-					flag = !overBelow6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+					flag = !overBelow6D(next_cube_box, box);
 					break;
 
 				case SPGOverAboveStrategyNumber:
-					flag = !below6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+					flag = !below6D(next_cube_box, box);
 					break;
 
 				case SPGBelowStrategyNumber:
-					flag = !overAbove6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+					flag = !overAbove6D(next_cube_box, box);
 					break;
 
 				case SPGOverBelowStrategyNumber:
-					flag = !above6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+					flag = !above6D(next_cube_box, box);
 					break;
 
 				case SPGBackStrategyNumber:
-					flag = !overFront6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+					flag = !overFront6D(next_cube_box, box);
 					break;
 
 				case SPGOverBackStrategyNumber:
-					flag = !front6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+					flag = !front6D(next_cube_box, box);
 					break;
 
 				case SPGFrontStrategyNumber:
-					flag = !overBack6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+					flag = !overBack6D(next_cube_box, box);
 					break;
 
 				case SPGOverFrontStrategyNumber:
-					flag = !back6D(next_cube_box, DatumGetBox3DP(in->scankeys[i].sk_argument));
+					flag = !back6D(next_cube_box, box);
 					break;
 
 				default:
@@ -620,10 +682,10 @@ spgist_box3D_octree_inner_consistent(PG_FUNCTION_ARGS)
 /*
  * SP-GiST inner consistent function
  */
-PG_FUNCTION_INFO_V1(spgist_box3D_octree_leaf_consistent);
+PG_FUNCTION_INFO_V1(gserialized_spgist_leaf_consistent_3d);
 
 PGDLLEXPORT Datum
-spgist_box3D_octree_leaf_consistent(PG_FUNCTION_ARGS)
+gserialized_spgist_leaf_consistent_3d(PG_FUNCTION_ARGS)
 {
 	spgLeafConsistentIn *in = (spgLeafConsistentIn *) PG_GETARG_POINTER(0);
 	spgLeafConsistentOut *out = (spgLeafConsistentOut *) PG_GETARG_POINTER(1);
@@ -641,72 +703,73 @@ spgist_box3D_octree_leaf_consistent(PG_FUNCTION_ARGS)
 	for (i = 0; i < in->nkeys; i++)
 	{
 		StrategyNumber strategy = in->scankeys[i].sk_strategy;
-		BOX3D		*query = DatumGetBox3DP(in->scankeys[i].sk_argument);
+		Datum		query = in->scankeys[i].sk_argument;
+		BOX3D	   *box = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, query));
 
 		switch (strategy)
 		{
 			case SPGOverlapStrategyNumber:
-				flag = BOX3D_overlaps_internal(leaf, query);
+				flag = BOX3D_overlaps_internal(leaf, box);
 				break;
 
 			case SPGContainsStrategyNumber:
-				flag = BOX3D_contains_internal(leaf, query);
+				flag = BOX3D_contains_internal(leaf, box);
 				break;
 
 			case SPGContainedByStrategyNumber:
-				flag = BOX3D_contained_internal(leaf, query);
+				flag = BOX3D_contained_internal(leaf, box);
 				break;
 
 			case SPGSameStrategyNumber:
-				flag = BOX3D_same_internal(leaf, query);
+				flag = BOX3D_same_internal(leaf, box);
 				break;
 
 			case SPGLeftStrategyNumber:
-				flag = BOX3D_left_internal(leaf, query);
+				flag = BOX3D_left_internal(leaf, box);
 				break;
 
 			case SPGOverLeftStrategyNumber:
-				flag = BOX3D_overleft_internal(leaf, query);
+				flag = BOX3D_overleft_internal(leaf, box);
 				break;
 
 			case SPGRightStrategyNumber:
-				flag = BOX3D_right_internal(leaf, query);
+				flag = BOX3D_right_internal(leaf, box);
 				break;
 
 			case SPGOverRightStrategyNumber:
-				flag = BOX3D_overright_internal(leaf, query);
+				flag = BOX3D_overright_internal(leaf, box);
 				break;
 
 			case SPGAboveStrategyNumber:
-				flag = BOX3D_above_internal(leaf, query);
+				flag = BOX3D_above_internal(leaf, box);
 				break;
 
 			case SPGOverAboveStrategyNumber:
-				flag = BOX3D_overabove_internal(leaf, query);
+				flag = BOX3D_overabove_internal(leaf, box);
 				break;
 
 			case SPGBelowStrategyNumber:
-				flag = BOX3D_below_internal(leaf, query);
+				flag = BOX3D_below_internal(leaf, box);
 				break;
 
 			case SPGOverBelowStrategyNumber:
-				flag = BOX3D_overbelow_internal(leaf, query);
+				flag = BOX3D_overbelow_internal(leaf, box);
 				break;
 
 			case SPGBackStrategyNumber:
-				flag = BOX3D_back_internal(leaf, query);
+				flag = BOX3D_back_internal(leaf, box);
 				break;
 
 			case SPGOverBackStrategyNumber:
-				flag = BOX3D_overback_internal(leaf, query);
+				flag = BOX3D_overback_internal(leaf, box);
 				break;
 
 			case SPGFrontStrategyNumber:
-				flag = BOX3D_front_internal(leaf, query);
+				flag = BOX3D_front_internal(leaf, box);
 				break;
 
 			case SPGOverFrontStrategyNumber:
-				flag = BOX3D_overfront_internal(leaf, query);
+				flag = BOX3D_overfront_internal(leaf, box);
 				break;
 
 			default:
@@ -719,6 +782,29 @@ spgist_box3D_octree_leaf_consistent(PG_FUNCTION_ARGS)
 	}
 
 	PG_RETURN_BOOL(flag);
+}
+
+PG_FUNCTION_INFO_V1(gserialized_spgist_compress_3d);
+
+PGDLLEXPORT Datum
+gserialized_spgist_compress_3d(PG_FUNCTION_ARGS)
+{
+	POSTGIS_DEBUG(4, "[SPGIST] 'compress' function called");
+
+	BOX3D	   *result = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
+
+	/* Is the bounding box is null */
+	if ( result == LW_FAILURE )
+	{
+		POSTGIS_DEBUG(4, "[SPGIST] empty box3D!");
+		PG_RETURN_NULL();
+	}
+
+	POSTGIS_DEBUGF(4, "[SPGIST] got box: %s", box3d_to_string(result));
+
+	/* Return BOX3D. */
+	POSTGIS_DEBUG(4, "[SPGIST] 'compress' function complete");
+	PG_RETURN_POINTER(result);
 }
 
 /*****************************************************************************/

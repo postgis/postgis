@@ -1,0 +1,13 @@
+<< |8982|Seq Scan|8982|Index Scan
+&< |45150|Seq Scan|45150|Index Scan
+&& |65422|Seq Scan|65422|Index Scan
+&> |45150|Seq Scan|45150|Index Scan
+>> |8982|Seq Scan|8982|Index Scan
+~= |300|Seq Scan|300|Index Scan
+~  |15890|Seq Scan|15890|Index Scan
+@  |15890|Seq Scan|15890|Index Scan
+&<||45150|Seq Scan|45150|Index Scan
+<<||8521|Seq Scan|8521|Index Scan
+|>>|8521|Seq Scan|8521|Index Scan
+|&>|45150|Seq Scan|45150|Index Scan
+NOTICE:  drop cascades to 17 other objects

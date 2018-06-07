@@ -27,7 +27,7 @@
 #include "fmgr.h"
 #include "utils/elog.h"
 #include "utils/geo_decls.h"
-#include "spgist_box3d.h"
+#include "gserialized_spgist_3d.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
@@ -631,12 +631,12 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 bool
 BOX3D_contains_internal(BOX3D *box1, BOX3D *box2)
 {
-	return (FPge(box1->xmax, box2->xmax) &&
-			FPle(box1->xmin, box2->xmin) &&
-			FPge(box1->ymax, box2->ymax) &&
-			FPle(box1->ymin, box2->ymin) &&
-			FPge(box1->zmax, box2->zmax) &&
-			FPle(box1->zmin, box2->zmin));
+	return (box1->xmax >= box2->xmax &&
+			box1->xmin <= box2->xmin &&
+			box1->ymax >= box2->ymax &&
+			box1->ymin <= box2->ymin &&
+			box1->zmax >= box2->zmax &&
+			box1->zmin <= box2->zmin);
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_contains);
@@ -674,12 +674,12 @@ BOX3D_contained(PG_FUNCTION_ARGS)
 bool
 BOX3D_overlaps_internal(BOX3D *box1, BOX3D *box2)
 {
-	return (FPle(box1->xmin, box2->xmax) &&
-			FPle(box2->xmin, box1->xmax) &&
-			FPle(box1->ymin, box2->ymax) &&
-			FPle(box2->ymin, box1->ymax) &&
-			FPle(box1->zmin, box2->zmax) &&
-			FPle(box2->zmin, box1->zmax));
+	return (box1->xmin <= box2->xmax &&
+			box2->xmin <= box1->xmax &&
+			box1->ymin <= box2->ymax &&
+			box2->ymin <= box1->ymax &&
+			box1->zmin <= box2->zmax &&
+			box2->zmin <= box1->zmax);
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_overlaps);
@@ -722,7 +722,7 @@ BOX3D_same(PG_FUNCTION_ARGS)
 bool
 BOX3D_left_internal(BOX3D *box1, BOX3D *box2)
 {
-	return FPlt(box1->xmax, box2->xmin);
+	return box1->xmax < box2->xmin;
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_left);
@@ -741,7 +741,7 @@ BOX3D_left(PG_FUNCTION_ARGS)
 bool
 BOX3D_overleft_internal(BOX3D *box1, BOX3D *box2)
 {
-	return FPle(box1->xmax, box2->xmax);
+	return box1->xmax <= box2->xmax;
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_overleft);
@@ -760,7 +760,7 @@ BOX3D_overleft(PG_FUNCTION_ARGS)
 bool
 BOX3D_right_internal(BOX3D *box1, BOX3D *box2)
 {
-	return FPgt(box1->xmin, box2->xmax);
+	return box1->xmin > box2->xmax;
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_right);
@@ -779,7 +779,7 @@ BOX3D_right(PG_FUNCTION_ARGS)
 bool
 BOX3D_overright_internal(BOX3D *box1, BOX3D *box2)
 {
-	return FPge(box1->xmin, box2->xmin);
+	return box1->xmin >= box2->xmin;
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_overright);
@@ -798,7 +798,7 @@ BOX3D_overright(PG_FUNCTION_ARGS)
 bool
 BOX3D_below_internal(BOX3D *box1, BOX3D *box2)
 {
-	return FPlt(box1->ymax, box2->ymin);
+	return box1->ymax < box2->ymin;
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_below);
@@ -817,7 +817,7 @@ BOX3D_below(PG_FUNCTION_ARGS)
 bool
 BOX3D_overbelow_internal(BOX3D *box1, BOX3D *box2)
 {
-	return FPle(box1->ymax, box2->ymax);
+	return box1->ymax <= box2->ymax;
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_overbelow);
@@ -836,7 +836,7 @@ BOX3D_overbelow(PG_FUNCTION_ARGS)
 bool
 BOX3D_above_internal(BOX3D *box1, BOX3D *box2)
 {
-	return FPgt(box1->ymin, box2->ymax);
+	return box1->ymin > box2->ymax;
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_above);
@@ -855,7 +855,7 @@ BOX3D_above(PG_FUNCTION_ARGS)
 bool
 BOX3D_overabove_internal(BOX3D *box1, BOX3D *box2)
 {
-	return FPge(box1->ymin, box2->ymin);
+	return box1->ymin >= box2->ymin;
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_overabove);
@@ -874,7 +874,7 @@ BOX3D_overabove(PG_FUNCTION_ARGS)
 bool
 BOX3D_front_internal(BOX3D *box1, BOX3D *box2)
 {
-	return FPlt(box1->zmax, box2->zmin);
+	return box1->zmax < box2->zmin;
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_front);
@@ -893,7 +893,7 @@ BOX3D_front(PG_FUNCTION_ARGS)
 bool
 BOX3D_overfront_internal(BOX3D *box1, BOX3D *box2)
 {
-	return FPle(box1->zmax, box2->zmax);
+	return box1->zmax <= box2->zmax;
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_overfront);
@@ -912,7 +912,7 @@ BOX3D_overfront(PG_FUNCTION_ARGS)
 bool
 BOX3D_back_internal(BOX3D *box1, BOX3D *box2)
 {
-	return FPgt(box1->zmin, box2->zmax);
+	return box1->zmin > box2->zmax;
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_back);
@@ -931,7 +931,7 @@ BOX3D_back(PG_FUNCTION_ARGS)
 bool
 BOX3D_overback_internal(BOX3D *box1, BOX3D *box2)
 {
-	return FPge(box1->zmin, box2->zmin);
+	return box1->zmin >= box2->zmin;
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_overback);
