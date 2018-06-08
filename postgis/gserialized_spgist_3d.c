@@ -775,21 +775,15 @@ PG_FUNCTION_INFO_V1(gserialized_spgist_compress_3d);
 PGDLLEXPORT Datum
 gserialized_spgist_compress_3d(PG_FUNCTION_ARGS)
 {
-	POSTGIS_DEBUG(4, "[SPGIST] 'compress' function called");
-
 	BOX3D	   *result = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
 
 	/* Is the bounding box is null */
 	if ( result == LW_FAILURE )
 	{
-		POSTGIS_DEBUG(4, "[SPGIST] empty box3D!");
 		PG_RETURN_NULL();
 	}
 
-//	POSTGIS_DEBUGF(4, "[SPGIST] got box: %s", box3d_to_string(result));
-
 	/* Return BOX3D. */
-	POSTGIS_DEBUG(4, "[SPGIST] 'compress' function complete");
 	PG_RETURN_POINTER(result);
 }
 
