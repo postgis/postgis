@@ -73,20 +73,6 @@
 #include "gserialized_spgist_3d.h"
 #include "lwgeom_pg.h"
 
-static char* box3d_to_string(const BOX3D *a)
-{
-	char *rv = NULL;
-
-	if ( a == NULL )
-		return pstrdup("<NULLPTR>");
-
-	rv = palloc(128);
-	sprintf(rv, "BOX3D(%.12g %.12g %.12g, %.12g %.12g %.12g)",
-		a->xmin, a->ymin, a->zmin, a->xmax, a->ymax, a->zmax);
-	return rv;
-}
-
-
 PG_FUNCTION_INFO_V1(gserialized_overlaps_3d);
 Datum gserialized_overlaps_3d(PG_FUNCTION_ARGS)
 {
@@ -800,7 +786,7 @@ gserialized_spgist_compress_3d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	POSTGIS_DEBUGF(4, "[SPGIST] got box: %s", box3d_to_string(result));
+//	POSTGIS_DEBUGF(4, "[SPGIST] got box: %s", box3d_to_string(result));
 
 	/* Return BOX3D. */
 	POSTGIS_DEBUG(4, "[SPGIST] 'compress' function complete");
