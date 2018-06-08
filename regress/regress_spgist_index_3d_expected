@@ -1,5 +1,4 @@
-&/&|62010|Seq Scan|62010|Index Scan
-@>>|10998|Seq Scan|10998|Index Scan
-<<@|10998|Seq Scan|10998|Index Scan
-~==|300|Seq Scan|300|Index Scan
-NOTICE:  drop cascades to 17 other objects
+&/&|26619|Seq Scan|26619|Index Scan
+@>>|4677|Seq Scan|4677|Index Scan
+<<@|4677|Seq Scan|4677|Index Scan
+~==|199|Seq Scan|199|Index Scan
