@@ -952,6 +952,8 @@ GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size)
 	*/
 	if ( geom->bbox )
 		FLAGS_SET_BBOX(geom->flags, 1);
+	else
+		FLAGS_SET_BBOX(geom->flags, 0);
 
 	/* Set up the uint8_t buffer into which we are going to write the serialized geometry. */
 	expected_size = gserialized_from_lwgeom_size(geom);
