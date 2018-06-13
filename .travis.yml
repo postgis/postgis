@@ -32,6 +32,7 @@ before_install:
   - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests binutils libproj-dev
   - cp -n /var/cache/apt/archives/* /home/travis/deb || true
   - ls -la /home/travis/deb/
+  - sudo echo -e "prefix=/usr \nexec_prefix=${prefix}\nlibdir=${prefix}/lib/x86_64-linux-gnu\nincludedir=${prefix}/include\nbindir=${exec_prefix}/bin\n\nName: libprotobuf-c\nDescription: Protocol Buffers C library\nVersion: 1.2.1\nLibs: -L${libdir} -lprotobuf-c\nLibs.private:\nCflags: -I${includedir}\n" > /usr/lib/x86_64-linux-gnu/pkgconfig/libprotobuf-c.pc
   - sudo ldconfig
   - ./autogen.sh
 
