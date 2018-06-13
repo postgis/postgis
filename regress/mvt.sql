@@ -140,120 +140,120 @@ SELECT 'PG25', ST_AsText(ST_AsMVTGeom(
 
 -- geometry encoding tests
 SELECT 'TG1', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 SELECT 'TG2', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('MULTIPOINT(25 17, 26 18)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('MULTIPOINT(25 17, 26 18)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 SELECT 'TG3', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('LINESTRING(0 0, 1000 1000)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('LINESTRING(0 0, 1000 1000)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 SELECT 'TG4', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('LINESTRING(0 0, 500 500, 1000 1000)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('LINESTRING(0 0, 500 500, 1000 1000)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 SELECT 'TG5', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('MULTILINESTRING((1 1, 501 501, 1001 1001),(2 2, 502 502, 1002 1002))'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('MULTILINESTRING((1 1, 501 501, 1001 1001),(2 2, 502 502, 1002 1002))'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 SELECT 'TG6', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 SELECT 'TG7', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20)))'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20)))'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 SELECT 'TG8', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 SELECT 'TG9', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('MULTIPOINT(25 17, -26 -18)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('MULTIPOINT(25 17, -26 -18)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 
 -- attribute encoding tests
 SELECT 'TA1', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1, 'abcd'::text AS c2,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 SELECT 'TA2', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1.1::double precision AS c1,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 SELECT 'TA3', encode(ST_AsMVT(q, 'test',  4096, 'geom'), 'base64') FROM (SELECT NULL::integer AS c1,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 SELECT 'TA4', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (
-    SELECT 1 AS c1, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom
-    UNION
-    SELECT 2 AS c1, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom ORDER BY c1) AS q;
+	SELECT 1 AS c1, ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+	UNION
+	SELECT 2 AS c1, ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom ORDER BY c1) AS q;
 SELECT 'TA5', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom, 1 AS c1, 'abcd'::text AS c2) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom, 1 AS c1, 'abcd'::text AS c2) AS q;
 SELECT 'TA6', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1, -1 AS c2,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 SELECT 'TA7', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (
-    SELECT 'test' AS c1, 1 AS c2, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom
-    UNION
-    SELECT 'test' AS c1, 2 AS c2, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom
-    UNION
-    SELECT 'othertest' AS c1, 3 AS c2, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom ORDER BY c2) AS q;
+	SELECT 'test' AS c1, 1 AS c2, ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+	UNION
+	SELECT 'test' AS c1, 2 AS c2, ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+	UNION
+	SELECT 'othertest' AS c1, 3 AS c2, ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom ORDER BY c2) AS q;
 SELECT 'TA8', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (
-    SELECT 1::int AS c1, 1 AS c2, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom
-    UNION
-    SELECT 1::int AS c1, 2 AS c2, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom
-    UNION
-    SELECT 2::int AS c1, 3 AS c2, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom ORDER BY c2) AS q;
+	SELECT 1::int AS c1, 1 AS c2, ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+	UNION
+	SELECT 1::int AS c1, 2 AS c2, ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+	UNION
+	SELECT 2::int AS c1, 3 AS c2, ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom ORDER BY c2) AS q;
 SELECT 'TA9', length(ST_AsMVT(q))
 FROM (
 	SELECT 1 AS c1, -1 AS c2,
-    ST_Normalize(ST_AsMVTGeom(
+	ST_AsMVTGeom(
 		'POINT(25 17)'::geometry,
 		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4, 4))
-	)) AS geom
+	) AS geom
 ) AS q;
 SELECT 'TA10', length(ST_AsMVT(q))
 FROM (
 	SELECT 1 AS c1, -1 AS c2,
-    ST_Normalize(ST_AsMVTGeom(
+	ST_AsMVTGeom(
 		'POINT(25 17)'::geometry,
 		ST_MakeBox2D(ST_Point(0, 0), ST_Point(48, 48))
-	)) AS geom
+	) AS geom
 ) AS q;
 
 -- default values tests
 SELECT 'D1', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1, 'abcd'::text AS c2,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 SELECT 'D2', encode(ST_AsMVT(q, 'test', 4096), 'base64') FROM (SELECT 1 AS c1, 'abcd'::text AS c2,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 SELECT 'D3', encode(ST_AsMVT(q, 'test'), 'base64') FROM (SELECT 1 AS c1, 'abcd'::text AS c2,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 SELECT 'D4', encode(ST_AsMVT(q), 'base64') FROM (SELECT 1 AS c1, 'abcd'::text AS c2,
-    ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
-select 'D5', ST_AsText(ST_Normalize(ST_AsMVTGeom(
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
+select 'D5', ST_AsText(ST_AsMVTGeom(
 	ST_Point(1, 2),
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
-	4096, 0)));
-select 'D6', ST_AsText(ST_Normalize(ST_AsMVTGeom(
+	4096, 0));
+select 'D6', ST_AsText(ST_AsMVTGeom(
 	ST_Point(1, 2),
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
-	4096)));
-select 'D7', ST_AsText(ST_Normalize(ST_AsMVTGeom(
+	4096));
+select 'D7', ST_AsText(ST_AsMVTGeom(
 	ST_Point(1, 2),
-	ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)))));
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096))));
 
 -- unsupported input
 SELECT 'TU2';
 SELECT encode(ST_AsMVT(1, 'test', 4096, 'geom'), 'base64');
 SELECT 'TU3', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64')
-    FROM (SELECT NULL::integer AS c1, NULL AS geom) AS q;
+	FROM (SELECT NULL::integer AS c1, NULL AS geom) AS q;
 
 -- Ticket #3922
 SELECT '#3922', length(bytea(ST_AsMVTGeom(
