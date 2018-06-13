@@ -13,7 +13,10 @@ before_install:
       postgresql-9.6 postgresql-server-dev-9.6
       libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex
       libproj-dev libgdal-dev libgeos-dev libjson0-dev
-      libsfcgal1 libsfcgal-dev libprotobuf-c0-dev libgdal-dev 
+      libsfcgal1 libsfcgal-dev libgdal-dev
+  - sudo sh -c "echo deb http://archive.ubuntu.com/ubuntu/ artful main restricted universe multiverse >> /etc/apt/sources.list"
+  - sudo apt-get update -qq
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests binutils libprotobuf-c-dev protobuf-c-compiler
   - dpkg -l | grep postgresql
   - ./autogen.sh
 
