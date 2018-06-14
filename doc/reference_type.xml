@@ -77,7 +77,8 @@
 
 		<refsection>
 			<title>Description</title>
-			<para>geometry is a fundamental postgis spatial data type used to represent a feature in the Euclidean coordinate system.</para>
+			<para>geometry is a fundamental PostGIS spatial data type used to represent a feature in the Euclidean coordinate system.</para>
+			<para>All spatial operations on geometry are using units of the Spatial Reference System the geomtry is in.</para>
 		</refsection>
 
 		<refsection>
