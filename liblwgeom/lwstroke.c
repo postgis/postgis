@@ -155,7 +155,12 @@ lwarc_linearize(POINTARRAY *to,
 
 	LWDEBUG(2, "lwarc_linearize called.");
 
+	LWDEBUGF(2, " curve is CIRCULARSTRING(%.15g %.15f, %.15f %.15f, %.15f %15f)",
+		t1->x, t1->y, t2->x, t2->y, t3->x, t3->y);
+
 	p2_side = lw_segment_side(t1, t3, t2);
+
+	LWDEBUGF(2, " p2 side is %d", p2_side);
 
 	/* Force counterclockwise scan if SYMMETRIC operation is requsested */
 	if ( p2_side == -1 && flags & LW_LINEARIZE_FLAG_SYMMETRIC )
@@ -233,7 +238,7 @@ lwarc_linearize(POINTARRAY *to,
 		 *   angle = acos( 1 - tol/radius )
 		 *
 		 * Constraints: 1.0 - tol/radius must be between -1 and 1
-		 * which means tol/radius must be between 0 and 2 times
+		 * which means tol must be between 0 and 2 times
 		 * the radius, which makes sense as you cannot have a
 		 * sagitta bigger than twice the radius!
 		 *
@@ -245,7 +250,15 @@ lwarc_linearize(POINTARRAY *to,
 			LWDEBUGF(2, "lwarc_linearize: tolerance %g is too big, "
 			            "using arc-max 2 * radius == %g", tol, maxErr);
 		}
-		halfAngle = acos( 1.0 - maxErr / radius );
+		do {
+			halfAngle = acos( 1.0 - maxErr / radius );
+			/* TODO: avoid a loop here, going rather straight to
+			 *       a minimum angle value */
+			if ( halfAngle != 0 ) break;
+			LWDEBUGF(2, "lwarc_linearize: tolerance %g is too small for this arc"
+									" to compute approximation angle, doubling it", maxErr);
+			maxErr *= 2;
+		} while(1);
 		increment = 2 * halfAngle;
 		LWDEBUGF(2, "lwarc_linearize: maxDiff:%g, radius:%g, halfAngle:%g, increment:%g (%g degrees)", tol, radius, halfAngle, increment, increment*180/M_PI);
 	}}
