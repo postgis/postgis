@@ -258,108 +258,108 @@ nextCubeBox3D(CubeBox3D *cube_box, BOX3D *centroid, uint8 octant)
 static bool
 overlap6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return (FPle(cube_box->left.xmin, query->xmax) &&
-			FPge(cube_box->right.xmax, query->xmin) &&
-			FPle(cube_box->left.ymin, query->ymax) &&
-			FPge(cube_box->right.ymax, query->ymin) &&
-			FPle(cube_box->left.zmin, query->zmax) &&
-			FPge(cube_box->right.zmax, query->zmin));
+	return 	(cube_box->left.xmin <= query->xmax) &&
+			(cube_box->right.xmax >= query->xmin) &&
+			(cube_box->left.ymin <= query->ymax) &&
+			(cube_box->right.ymax >= query->ymin) &&
+			(cube_box->left.zmin <= query->zmax) &&
+			(cube_box->right.zmax >= query->zmin);
 }
 
 /* Can any cube from cube_box contain query? */
 static bool
 contain6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return (FPge(cube_box->right.xmax, query->xmax) &&
-			FPle(cube_box->left.xmin, query->xmin) &&
-			FPge(cube_box->right.ymax, query->ymax) &&
-			FPle(cube_box->left.ymin, query->ymin) &&
-			FPge(cube_box->right.zmax, query->zmax) &&
-			FPle(cube_box->left.zmin, query->zmin));
+	return 	(cube_box->right.xmax >= query->xmax) &&
+			(cube_box->left.xmin <= query->xmin) &&
+			(cube_box->right.ymax >= query->ymax) &&
+			(cube_box->left.ymin <= query->ymin) &&
+			(cube_box->right.zmax >= query->zmax) &&
+			(cube_box->left.zmin <= query->zmin);
 }
 
 /* Can any cube from cube_box be left of query? */
 static bool
 left6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return FPle(cube_box->right.xmax, query->xmin);
+	return (cube_box->right.xmax < query->xmin);
 }
 
 /* Can any cube from cube_box does not extend the right of query? */
 static bool
 overLeft6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return FPle(cube_box->right.xmax, query->xmax);
+	return (cube_box->right.xmax <= query->xmax);
 }
 
 /* Can any cube from cube_box be right of query? */
 static bool
 right6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return FPge(cube_box->left.xmin, query->xmax);
+	return (cube_box->left.xmin > query->xmax);
 }
 
 /* Can any cube from cube_box does not extend the left of query? */
 static bool
 overRight6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return FPge(cube_box->left.xmin, query->xmin);
+	return (cube_box->left.xmin >= query->xmin);
 }
 
 /* Can any cube from cube_box be below of query? */
 static bool
 below6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return FPle(cube_box->right.ymax, query->ymin);
+	return (cube_box->right.ymax < query->ymin);
 }
 
 /* Can any cube from cube_box does not extend above query? */
 static bool
 overBelow6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return FPle(cube_box->right.ymax, query->ymax);
+	return (cube_box->right.ymax <= query->ymax);
 }
 
 /* Can any cube from cube_box be above of query? */
 static bool
 above6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return FPge(cube_box->left.ymin, query->ymax);
+	return (cube_box->left.ymin > query->ymax);
 }
 
 /* Can any cube from cube_box does not extend below of query? */
 static bool
 overAbove6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return FPge(cube_box->left.ymin, query->ymin);
+	return (cube_box->left.ymin >= query->ymin);
 }
 
 /* Can any cube from cube_box be before of query? */
 static bool
 front6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return FPle(cube_box->right.zmax, query->zmin);
+	return (cube_box->right.zmax < query->zmin);
 }
 
 /* Can any cube from cube_box does not extend the after of query? */
 static bool
 overFront6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return FPle(cube_box->right.zmax, query->zmax);
+	return (cube_box->right.zmax <= query->zmax);
 }
 
 /* Can any cube from cube_box be after of query? */
 static bool
 back6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return FPge(cube_box->left.zmin, query->zmax);
+	return (cube_box->left.zmin > query->zmax);
 }
 
 /* Can any cube from cube_box does not extend the before of query? */
 static bool
 overBack6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return FPge(cube_box->left.zmin, query->zmin);
+	return (cube_box->left.zmin >= query->zmin);
 }
 
 /*
@@ -429,14 +429,13 @@ gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 	double	   *highYs = palloc(sizeof(double) * in->nTuples);
 	double	   *lowZs = palloc(sizeof(double) * in->nTuples);
 	double	   *highZs = palloc(sizeof(double) * in->nTuples);
-
-	BOX3D		   *box = DatumGetBox3DP(in->datums[0]);
-	int32_t 		srid = box->srid;
+	BOX3D	   *box = DatumGetBox3DP(in->datums[0]);
+	int32_t		srid = box->srid;
 
 	/* Calculate median of all 6D coordinates */
 	for (i = 0; i < in->nTuples; i++)
 	{
-		BOX3D		   *box = DatumGetBox3DP(in->datums[i]);
+		BOX3D	   *box = DatumGetBox3DP(in->datums[i]);
 
 		lowXs[i] = box->xmin;
 		highXs[i] = box->xmax;
@@ -540,8 +539,6 @@ gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
 
 	/* Allocate enough memory for nodes */
 	out->nNodes = 0;
-	// out->nodeNumbers = (int *) palloc(sizeof(int) * in->nNodes);
-	// out->traversalValues = (void **) palloc(sizeof(void *) * in->nNodes);
 	nodeNumbers = (int *) palloc(sizeof(int) * in->nNodes);
 	traversalValues = (void **) palloc(sizeof(void *) * in->nNodes);
 
