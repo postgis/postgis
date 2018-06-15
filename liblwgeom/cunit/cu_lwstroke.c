@@ -237,6 +237,39 @@ static void test_lwcurve_linearize(void)
 
 	lwgeom_free(in);
 
+	/*
+	 * ROBUSTNESS: big radius, small tolerance
+	 * See https://trac.osgeo.org/postgis/ticket/4058
+	 * NOTE: we are really only interested in not enterying
+	 *       an infinite loop here
+	 */
+	toltype = LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION;
+	in = lwgeom_from_text("CIRCULARSTRING("
+			"2696000.553 1125699.831999999936670, "
+			"2695950.552000000141561 1125749.833000000100583, "
+			"2695865.195999999996275 1125835.189000)");
+	out = lwcurve_linearize(in, 0.0001, toltype, 0);
+	str = lwgeom_to_text(out, 2);
+	ASSERT_STRING_EQUAL(str, "LINESTRING(2696000 1125700,2695866 1125836)");
+	lwfree(str);
+	lwgeom_free(out);
+	out = lwcurve_linearize(in, 0.0001, toltype, LW_LINEARIZE_FLAG_SYMMETRIC);
+	str = lwgeom_to_text(out, 2);
+	ASSERT_STRING_EQUAL(str, "LINESTRING(2696000 1125700,2695866 1125836)");
+	lwfree(str);
+	lwgeom_free(out);
+#ifndef SKIP_TEST_RETAIN_ANGLE
+	out = lwcurve_linearize(in, 0.0001, toltype,
+		LW_LINEARIZE_FLAG_SYMMETRIC |
+		LW_LINEARIZE_FLAG_RETAIN_ANGLE
+	);
+	str = lwgeom_to_text(out, 2);
+	ASSERT_STRING_EQUAL(str, "LINESTRING(2696000 1125700,2695932 1125768,2695866 1125836)");
+	lwfree(str);
+	lwgeom_free(out);
+#endif /* SKIP_TEST_RETAIN_ANGLE */
+	lwgeom_free(in);
+
 	/***********************************************************
 	 *
 	 *  Maximum angle tolerance type

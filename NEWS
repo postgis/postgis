@@ -5,6 +5,8 @@ PostGIS 2.4.5
 
   - #4031, Survive to big MaxError tolerances passed to ST_CurveToLine
            (Sandro Santilli)
+  - #4058, Fix infinite loop in linearization of a big radius small arc
+           (Sandro Santilli)
   - #4071, ST_ClusterKMeans crash on NULL/EMPTY fixed (Darafei Praliaskouski)
   - #4079, ensure St_AsMVTGeom outputs CW oriented polygons (Paul Ramsey)
   - #4070, use standard interruption error code on GEOS interruptions
