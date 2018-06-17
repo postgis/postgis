@@ -70,6 +70,7 @@ IMAGES= \
 	../images/st_delaunaytriangles04.png \
 	../images/st_difference01.png \
 	../images/st_dumppoints01.png \
+	../images/st_envelope01.png \
 	../images/st_extrude01.png \
 	../images/st_extrude03.png \
 	../images/st_generatepoints01.png \
@@ -112,6 +113,7 @@ IMAGES= \
 	../images/st_offsetcurve04.png \
 	../images/st_offsetcurve05.png \
 	../images/st_offsetcurve06.png \
+	../images/st_orientedenvelope01.png \
 	../images/st_overlaps01.png \
 	../images/st_overlaps02.png \
 	../images/st_overlaps03.png \
@@ -159,7 +161,7 @@ IMAGES_RESIZED= \
 	../images/de9im10.png \
 	../images/de9im11.png \
 	../images/de9im12.png \
-	../images/de9im13.png 
+	../images/de9im13.png
 
 OBJS=styles.o generator.o
 

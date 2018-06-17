@@ -452,6 +452,23 @@ SELECT Box3D(geom), Box2D(geom), ST_AsText(ST_Envelope(geom)) As envelopewkt
 
 <!-- TODO: Fix examples to reflect new behavior -->
 	</programlisting>
+		<informalfigure>
+	  <mediaobject>
+		<imageobject>
+		  <imagedata fileref="images/st_envelope01.png" />
+		</imageobject>
+		<caption><para>Envelope of a point and linestring.</para></caption>
+	  </mediaobject>
+	</informalfigure>
+<programlisting>
+SELECT ST_AsText(ST_Envelope(
+		ST_Collect(
+			ST_GeomFromText('LINESTRING(55 75,125 150)'),
+				ST_Point(20, 80))
+				)) As wktenv;
+wktenv
+-----------
+POLYGON((20 75,20 150,125 150,125 75,20 75))</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
