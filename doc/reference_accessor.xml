@@ -473,7 +473,7 @@ POLYGON((20 75,20 150,125 150,125 75,20 75))</programlisting>
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="Box2D" />, <xref linkend="Box3D" /></para>
+		<para><xref linkend="Box2D" />, <xref linkend="Box3D" />, <xref linkend="ST_OrientedEnvelope" /></para>
 	  </refsection>
 	</refentry>
 
