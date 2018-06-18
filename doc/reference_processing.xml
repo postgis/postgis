@@ -2286,7 +2286,7 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
 				May return a Point or LineString in the case of degenerate inputs.
 			</para>
 			<para>
-				Availability - 2.5.0
+				Availability: 2.5.0
 			</para>
 		</refsection>
 
