@@ -2269,7 +2269,7 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
 		<refsynopsisdiv>
 			<funcsynopsis>
 				<funcprototype>
-					<funcdef>geometry<function>ST_OrientedEnvelope</function></funcdef>
+					<funcdef>geometry <function>ST_OrientedEnvelope</function></funcdef>
 					<paramdef>
 						<type>geometry</type>
 						<parameter>geom</parameter>
