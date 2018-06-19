@@ -18,8 +18,10 @@ addons:
       - postgresql-server-dev-11
       - postgresql-11-dbg
       - clang-3.9
+      - libgcc1-dbg
       - libc++-dev
       - libc++abi-dev
+      - lib64stdc++6-4.8-dbg
 
 before_install:
   - eval "${MATRIX_EVAL}"
