@@ -16,7 +16,7 @@ addons:
       - eatmydata
       - postgresql-11
       - postgresql-server-dev-11
-      - postgresql-11-dbgsym
+      - postgresql-11-dbg
       - clang-3.9
       - libc++-dev
       - libc++abi-dev
