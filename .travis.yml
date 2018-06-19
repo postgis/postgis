@@ -1,6 +1,6 @@
 env:
   matrix:
-    - CFLAGS="-g -O1" MATRIX_EVAL="touch check-no-trailing-blanks" CC="gcc" PGPORT="5433" CC="/usr/bin/clang-3.9"
+    - CFLAGS="-g -O1" MATRIX_EVAL="touch check-no-trailing-blanks" PGPORT="5433" CC="/usr/bin/clang-3.9"
     - CFLAGS="-g -O2 -fstack-protector -Wformat -Werror=format-security" LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro" PGPORT="5433" CC="/usr/bin/clang-3.9"
     - CFLAGS="-g -O3 -mtune=generic -fno-omit-frame-pointer -Werror -Wall -Wextra -Wno-unused-parameter" PGPORT="5433" CC="/usr/bin/clang-3.9"
     - CFLAGS="-g -O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage" CONFIGURE_FLAGS="--enable-debug" PGPORT="5433" CC="/usr/bin/clang-3.9"
@@ -24,6 +24,7 @@ before_install:
   - eval "${MATRIX_EVAL}"
   - echo "postgres               soft    core            unlimited" | sudo tee -a /etc/security/limits.conf
   - echo "postgres               hard    core            unlimited" | sudo tee -a /etc/security/limits.conf
+  - echo "pg_ctl_options = '-c'" | sudo tee /etc/postgresql/11/main/pg_ctl.conf
   - sudo sh -c "echo /usr/lib/libeatmydata/libeatmydata.so >> /etc/ld.so.preload"
   - curl -sSfL https://github.com/mapbox/logbt/archive/v2.0.3.tar.gz | sudo tar --gunzip --extract --strip-components=1 --exclude="*md" --exclude="test*" --directory=/usr/local
   - curl -sSfL https://raw.githubusercontent.com/mapbox/logbt/30c554dd37b6c96c23fc424f75910fc6d6696f00/bin/logbt | sudo tee /usr/local/bin/logbt > /dev/null
