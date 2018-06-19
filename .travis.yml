@@ -11,10 +11,14 @@ addons:
     sources:
       - sourceline: 'deb https://apt.postgresql.org/pub/repos/apt trusty-pgdg main 11'
         key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
+      - llvm-toolchain-trusty-3.9
     packages:
       - eatmydata
       - postgresql-11
       - postgresql-server-dev-11
+      - clang-3.9
+      - libc++-dev
+      - libc++abi-dev
 
 before_install:
   - eval "${MATRIX_EVAL}"
@@ -52,7 +56,7 @@ after_success:
 
 language: c
 
-compiler: gcc
+compiler: clang
 
 dist: trusty
 
