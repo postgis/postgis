@@ -1507,7 +1507,7 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 -- For pre-PostgreSQL 9.0 - this usually works,
 -- but the planner may on occasion choose not to respect the order of the subquery
 SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom
-	FROM (SELECT gps_track,gps_time, the_geom
+	FROM (SELECT gps_track, gps_time, the_geom
 			FROM gps_points ORDER BY gps_track, gps_time) As gps
 	GROUP BY gps.gps_track;</programlisting>
 
@@ -1748,7 +1748,7 @@ FROM
 		<refnamediv>
 		<refname>ST_MakePoint</refname>
 
-		<refpurpose>Creates a 2D,3DZ or 4D point geometry.</refpurpose>
+		<refpurpose>Creates a 2D, 3DZ or 4D point geometry.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -1781,14 +1781,14 @@ FROM
 		<refsection>
 			<title>Description</title>
 
-			<para>Creates a 2D,3DZ or 4D point geometry (geometry with measure).
+			<para>Creates a 2D, 3DZ or 4D point geometry (geometry with measure).
 			<varname>ST_MakePoint</varname> while not being OGC compliant is
 			generally faster and more precise than <xref linkend="ST_GeomFromText" />
 			and <xref linkend="ST_PointFromText" />.  It is also easier to use if
 			you have raw coordinates rather than WKT.</para>
 
 			<note><para>Note x is longitude and y is latitude</para></note>
-			<note><para>Use <xref linkend="ST_MakePointM" /> if you need to make a point with x,y,m.</para></note>
+			<note><para>Use <xref linkend="ST_MakePointM" /> if you need to make a point with x, y and m.</para></note>
 			<para>&Z_support;</para>
 
 		</refsection>
