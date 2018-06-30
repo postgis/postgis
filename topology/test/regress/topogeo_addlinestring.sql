@@ -272,9 +272,10 @@ SELECT 't3280', 'L1' || topology.TopoGeo_AddLinestring('bug3280',
 SELECT 't3280', 'L2' || topology.TopoGeo_AddLinestring('bug3280',
  '010200000003000000EC51B89E320F3841333333B3A9C852415649EE1F280F384164E065F493C85241A4703D8A230F38410AD7A37094C85241'
  ::geometry);
-SELECT 't3280', 'L1b' || topology.TopoGeo_AddLinestring('bug3280', geom)
- FROM bug3280.edge where edge_id = 1
- ORDER BY 1;
+SELECT 't3280', 'L1b' || l
+ FROM (SELECT * FROM bug3280.edge where edge_id = 1) AS e
+    CROSS JOIN LATERAL topology.TopoGeo_AddLinestring('bug3280', geom) AS l
+ ORDER BY 2;
 SELECT 't3280.end', topology.DropTopology('bug3280');
 
 -- See http://trac.osgeo.org/postgis/ticket/3380
