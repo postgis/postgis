@@ -1,0 +1,12 @@
+<< |3880|Seq Scan|3880|Index Scan
+&< |21321|Seq Scan|21321|Index Scan
+&& |31766|Seq Scan|31766|Index Scan
+&> |21321|Seq Scan|21321|Index Scan
+>> |3880|Seq Scan|3880|Index Scan
+~= |206|Seq Scan|206|Index Scan
+~  |7568|Seq Scan|7568|Index Scan
+@  |7568|Seq Scan|7568|Index Scan
+&<||21321|Seq Scan|21321|Index Scan
+<<||3661|Seq Scan|3661|Index Scan
+|>>|3661|Seq Scan|3661|Index Scan
+|&>|21321|Seq Scan|21321|Index Scan

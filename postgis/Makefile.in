@@ -94,6 +94,8 @@ PG_OBJS= \
 	gserialized_typmod.o \
 	gserialized_gist_2d.o \
 	gserialized_gist_nd.o \
+	gserialized_spgist_2d.o \
+	gserialized_spgist_3d.o \
 	$(BRIN_OBJ) \
 	gserialized_estimate.o \
 	geography_inout.o \

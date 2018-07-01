@@ -149,7 +149,32 @@ Datum BOX2D_intersects(PG_FUNCTION_ARGS);
 Datum BOX2D_union(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_same(PG_FUNCTION_ARGS);
+Datum LWGEOM_to_BOX2DF(PG_FUNCTION_ARGS);
+Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS);
 Datum BOX3D_construct(PG_FUNCTION_ARGS);
+
+Datum BOX3D_contains(PG_FUNCTION_ARGS);
+Datum BOX3D_contained(PG_FUNCTION_ARGS);
+Datum BOX3D_overlaps(PG_FUNCTION_ARGS);
+Datum BOX3D_same(PG_FUNCTION_ARGS);
+Datum BOX3D_left(PG_FUNCTION_ARGS);
+Datum BOX3D_overleft(PG_FUNCTION_ARGS);
+Datum BOX3D_right(PG_FUNCTION_ARGS)    ;
+Datum BOX3D_overright(PG_FUNCTION_ARGS);
+Datum BOX3D_below(PG_FUNCTION_ARGS);
+Datum BOX3D_overbelow(PG_FUNCTION_ARGS);
+Datum BOX3D_above(PG_FUNCTION_ARGS);
+Datum BOX3D_overabove(PG_FUNCTION_ARGS);
+Datum BOX3D_front(PG_FUNCTION_ARGS);
+Datum BOX3D_overfront(PG_FUNCTION_ARGS);
+Datum BOX3D_back(PG_FUNCTION_ARGS);
+Datum BOX3D_overback(PG_FUNCTION_ARGS);
+Datum BOX3D_distance(PG_FUNCTION_ARGS);
+
+#define DatumGetBox3DP(X)    ((BOX3D *) DatumGetPointer(X))
+#define Box3DPGetDatum(X)    PointerGetDatum(X)
+#define PG_GETARG_BOX3D_P(n) DatumGetBox3DP(PG_GETARG_DATUM(n))
+#define PG_RETURN_BOX3D_P(x) return Box3DPGetDatum(x)
 
 Datum LWGEOM_force_2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS);

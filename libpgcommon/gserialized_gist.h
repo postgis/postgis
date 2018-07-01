@@ -129,8 +129,21 @@ GSERIALIZED* gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx);
 /* Remove the box from a disk serialization */
 GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
 
+void box2df_set_empty(BOX2DF *a);
+void box2df_set_finite(BOX2DF *a);
+void box2df_validate(BOX2DF *b);
 bool box2df_contains(const BOX2DF *a, const BOX2DF *b);
+bool box2df_overlaps(const BOX2DF *a, const BOX2DF *b);
+bool box2df_overleft(const BOX2DF *a, const BOX2DF *b);
+bool box2df_equals(const BOX2DF *a, const BOX2DF *b);
+bool box2df_left(const BOX2DF *a, const BOX2DF *b);
+bool box2df_right(const BOX2DF *a, const BOX2DF *b);
+bool box2df_overright(const BOX2DF *a, const BOX2DF *b);
+bool box2df_overbelow(const BOX2DF *a, const BOX2DF *b);
+bool box2df_below(const BOX2DF *a, const BOX2DF *b);
+bool box2df_above(const BOX2DF *a, const BOX2DF *b);
+bool box2df_overabove(const BOX2DF *a, const BOX2DF *b);
+
 bool gidx_contains(GIDX *a, GIDX *b);
 int gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df);
-
 

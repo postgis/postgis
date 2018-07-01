@@ -27,6 +27,7 @@
 #include "fmgr.h"
 #include "utils/elog.h"
 #include "utils/geo_decls.h"
+#include "gserialized_spgist_3d.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
@@ -57,6 +58,25 @@ Datum BOX3D_ymax(PG_FUNCTION_ARGS);
 Datum BOX3D_zmax(PG_FUNCTION_ARGS);
 Datum BOX3D_combine(PG_FUNCTION_ARGS);
 Datum BOX3D_combine_BOX3D(PG_FUNCTION_ARGS);
+
+Datum BOX3D_contains(PG_FUNCTION_ARGS);
+Datum BOX3D_contained(PG_FUNCTION_ARGS);
+Datum BOX3D_overlaps(PG_FUNCTION_ARGS);
+Datum BOX3D_same(PG_FUNCTION_ARGS);
+Datum BOX3D_left(PG_FUNCTION_ARGS);
+Datum BOX3D_overleft(PG_FUNCTION_ARGS);
+Datum BOX3D_right(PG_FUNCTION_ARGS)    ;
+Datum BOX3D_overright(PG_FUNCTION_ARGS);
+Datum BOX3D_below(PG_FUNCTION_ARGS);
+Datum BOX3D_overbelow(PG_FUNCTION_ARGS);
+Datum BOX3D_above(PG_FUNCTION_ARGS);
+Datum BOX3D_overabove(PG_FUNCTION_ARGS);
+Datum BOX3D_front(PG_FUNCTION_ARGS);
+Datum BOX3D_overfront(PG_FUNCTION_ARGS);
+Datum BOX3D_back(PG_FUNCTION_ARGS);
+Datum BOX3D_overback(PG_FUNCTION_ARGS);
+Datum BOX3D_distance(PG_FUNCTION_ARGS);
+
 
 /**
  *  BOX3D_in - takes a string rep of BOX3D and returns internal rep
@@ -600,4 +620,385 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 	result->srid = minpoint->srid;
 
 	PG_RETURN_POINTER(result);
+}
+
+/*****************************************************************************
+ * BOX3D functions
+ *****************************************************************************/
+
+/* contains? */
+
+bool
+BOX3D_contains_internal(BOX3D *box1, BOX3D *box2)
+{
+	return (box1->xmax >= box2->xmax &&
+			box1->xmin <= box2->xmin &&
+			box1->ymax >= box2->ymax &&
+			box1->ymin <= box2->ymin &&
+			box1->zmax >= box2->zmax &&
+			box1->zmin <= box2->zmin);
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_contains);
+
+PGDLLEXPORT Datum
+BOX3D_contains(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_contains_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* contained by? */
+
+bool
+BOX3D_contained_internal(BOX3D *box1, BOX3D *box2)
+{
+	return BOX3D_contains_internal(box2, box1);
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_contained);
+
+PGDLLEXPORT Datum
+BOX3D_contained(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_contained_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* overlaps? */
+
+bool
+BOX3D_overlaps_internal(BOX3D *box1, BOX3D *box2)
+{
+	return (box1->xmin <= box2->xmax &&
+			box2->xmin <= box1->xmax &&
+			box1->ymin <= box2->ymax &&
+			box2->ymin <= box1->ymax &&
+			box1->zmin <= box2->zmax &&
+			box2->zmin <= box1->zmax);
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_overlaps);
+
+PGDLLEXPORT Datum
+BOX3D_overlaps(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_overlaps_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* same? */
+
+bool
+BOX3D_same_internal(BOX3D *box1, BOX3D *box2)
+{
+	return (FPeq(box1->xmax, box2->xmax) &&
+			FPeq(box1->xmin, box2->xmin) &&
+			FPeq(box1->ymax, box2->ymax) &&
+			FPeq(box1->ymin, box2->ymin) &&
+			FPeq(box1->zmax, box2->zmax) &&
+			FPeq(box1->zmin, box2->zmin));
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_same);
+
+PGDLLEXPORT Datum
+BOX3D_same(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_same_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* strictly left of? */
+
+bool
+BOX3D_left_internal(BOX3D *box1, BOX3D *box2)
+{
+	return box1->xmax < box2->xmin;
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_left);
+
+PGDLLEXPORT Datum
+BOX3D_left(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_left_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* does not extend to right of? */
+
+bool
+BOX3D_overleft_internal(BOX3D *box1, BOX3D *box2)
+{
+	return box1->xmax <= box2->xmax;
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_overleft);
+
+PGDLLEXPORT Datum
+BOX3D_overleft(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_overleft_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* strictly right of? */
+
+bool
+BOX3D_right_internal(BOX3D *box1, BOX3D *box2)
+{
+	return box1->xmin > box2->xmax;
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_right);
+
+PGDLLEXPORT Datum
+BOX3D_right(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_right_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* does not extend to left of? */
+
+bool
+BOX3D_overright_internal(BOX3D *box1, BOX3D *box2)
+{
+	return box1->xmin >= box2->xmin;
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_overright);
+
+PGDLLEXPORT Datum
+BOX3D_overright(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_overright_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* strictly below of? */
+
+bool
+BOX3D_below_internal(BOX3D *box1, BOX3D *box2)
+{
+	return box1->ymax < box2->ymin;
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_below);
+
+PGDLLEXPORT Datum
+BOX3D_below(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_below_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* does not extend above of? */
+
+bool
+BOX3D_overbelow_internal(BOX3D *box1, BOX3D *box2)
+{
+	return box1->ymax <= box2->ymax;
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_overbelow);
+
+PGDLLEXPORT Datum
+BOX3D_overbelow(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_overbelow_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* strictly above of? */
+
+bool
+BOX3D_above_internal(BOX3D *box1, BOX3D *box2)
+{
+	return box1->ymin > box2->ymax;
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_above);
+
+PGDLLEXPORT Datum
+BOX3D_above(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_above_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* does not extend below of? */
+
+bool
+BOX3D_overabove_internal(BOX3D *box1, BOX3D *box2)
+{
+	return box1->ymin >= box2->ymin;
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_overabove);
+
+PGDLLEXPORT Datum
+BOX3D_overabove(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_overabove_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* strictly in before of? */
+
+bool
+BOX3D_front_internal(BOX3D *box1, BOX3D *box2)
+{
+	return box1->zmax < box2->zmin;
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_front);
+
+PGDLLEXPORT Datum
+BOX3D_front(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_front_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* does not extend to the after of? */
+
+bool
+BOX3D_overfront_internal(BOX3D *box1, BOX3D *box2)
+{
+	return box1->zmax <= box2->zmax;
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_overfront);
+
+PGDLLEXPORT Datum
+BOX3D_overfront(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_overfront_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* strictly after of? */
+
+bool
+BOX3D_back_internal(BOX3D *box1, BOX3D *box2)
+{
+	return box1->zmin > box2->zmax;
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_back);
+
+PGDLLEXPORT Datum
+BOX3D_back(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_back_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* does not extend to the before of? */
+
+bool
+BOX3D_overback_internal(BOX3D *box1, BOX3D *box2)
+{
+	return box1->zmin >= box2->zmin;
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_overback);
+
+PGDLLEXPORT Datum
+BOX3D_overback(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+	bool result = BOX3D_overback_internal(box1, box2);
+	PG_RETURN_BOOL(result);
+}
+
+/* Minimum distance between 2 bounding boxes */
+
+double
+BOX3D_distance_internal(BOX3D *box1, BOX3D *box2)
+{
+    double      sqrDist = 0;
+    double      d;
+
+    if (BOX3D_overlaps_internal(box1, box2))
+        return 0.0;
+
+    /* X axis */
+    if (box1->xmax < box2->xmin)
+    {
+        d = box1->xmax - box2->xmin;
+        sqrDist += d * d;
+    }
+    else if (box1->xmin > box2->xmax)
+    {
+        d = box1->xmin - box2->xmax;
+        sqrDist += d * d;
+    }
+    /* Y axis */
+    if (box1->ymax < box2->ymin)
+    {
+        d = box1->ymax - box2->ymin;
+        sqrDist += d * d;
+    }
+    else if (box1->ymin > box2->ymax)
+    {
+        d = box1->ymin - box2->ymax;
+        sqrDist += d * d;
+    }
+    /* Z axis */
+    if (box1->zmax < box2->zmin)
+    {
+        d = box1->zmax - box2->zmin;
+        sqrDist += d * d;
+    }
+    else if (box1->zmin > box2->zmax)
+    {
+        d = box1->zmin - box2->zmax;
+        sqrDist += d * d;
+    }
+
+    return sqrt(sqrDist);
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_distance);
+
+PGDLLEXPORT Datum
+BOX3D_distance(PG_FUNCTION_ARGS)
+{
+    BOX3D *box1 = PG_GETARG_BOX3D_P(0);
+    BOX3D *box2 = PG_GETARG_BOX3D_P(1);
+    PG_RETURN_FLOAT8(BOX3D_distance_internal(box1, box2));
 }
