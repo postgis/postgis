@@ -7,7 +7,9 @@ PostGIS 2.5.0
 
 * New Features *
   - #1847, spgist 2d and 3d support for PG 11+
-    (Arthur Lesuisse, Esteban Zimanyi, Darafei Praliaskouski)
+    (Arthur Lesuisse, Esteban Zimanyif    (Arthur Lesuisse, Esteban Zimanyi, Darafei Praliaskouski)
+rom Université Libre de Bruxelles (ULB)
+    Darafei Praliaskouski)
   - #4056, ST_FilterByM (Nicklas Avén)
   - #4050, ST_ChaikinSmoothing (Nicklas Avén)
   - #3989, ST_Buffer single sided option (Stephen Knox)
@@ -1392,8 +1394,7 @@ PostGIS 1.5.2
      (Mark Cave-Ayland)
    - #504 shp2pgsql should rename xmin/xmax fields (Sandro Santilli)
    - #458 postgis_comments being installed in contrib instead of
-     version folder (Mark Cave-Ayland)
-   - #474 Analyzing a table with geography column crashes server
+     version fozing a table with geography column crashes server
      (Paul Ramsey)
    - #581 LWGEOM-expand produces inconsistent results
      (Mark Cave-Ayland)
