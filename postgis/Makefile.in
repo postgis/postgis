@@ -50,6 +50,10 @@ ifeq (@HAVE_BRIN@,yes)
 BRIN_OBJ= brin_2d.o brin_nd.o brin_common.o
 endif
 
+ifeq (@HAVE_SPGIST@,yes)
+SPGIST_OBJ= gserialized_spgist_2d.o gserialized_spgist_3d.o
+endif
+
 ifeq (@HAVE_PROTOBUF@,yes)
 PROTOBUF_OBJ=vector_tile.pb-c.o geobuf.pb-c.o
 endif
@@ -94,6 +98,7 @@ PG_OBJS= \
 	gserialized_typmod.o \
 	gserialized_gist_2d.o \
 	gserialized_gist_nd.o \
+	$(SPGIST_OBJ) \
 	$(BRIN_OBJ) \
 	gserialized_estimate.o \
 	geography_inout.o \

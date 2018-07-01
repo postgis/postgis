@@ -25,6 +25,7 @@ HAVE_JSON=@HAVE_JSON@
 HAVE_PROTOBUF=@HAVE_PROTOBUF@
 HAVE_SFCGAL=@HAVE_SFCGAL@
 HAVE_BRIN=@HAVE_BRIN@
+HAVE_SPGIST=@HAVE_SPGIST@
 MINGWBUILD=@MINGWBUILD@
 INTERRUPTTESTS=@INTERRUPTTESTS@
 
@@ -248,6 +249,12 @@ ifeq ($(HAVE_BRIN),yes)
 		regress_brin_index \
 		regress_brin_index_3d \
 		regress_brin_index_geography
+endif
+
+ifeq ($(HAVE_SPGIST),yes)
+	TESTS += \
+	regress_spgist_index_2d \
+	regress_spgist_index_3d
 endif
 
 ifeq ($(HAVE_PROTOBUF),yes)

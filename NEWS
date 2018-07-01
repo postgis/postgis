@@ -6,6 +6,8 @@ PostGIS 2.5.0
 2018/xx/xx
 
 * New Features *
+  - #1847, spgist 2d and 3d support for PG 11+
+    (Arthur Lesuisse, Esteban Zimanyi, Darafei Praliaskouski)
   - #4056, ST_FilterByM (Nicklas Avén)
   - #4050, ST_ChaikinSmoothing (Nicklas Avén)
   - #3989, ST_Buffer single sided option (Stephen Knox)

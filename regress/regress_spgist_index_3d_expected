@@ -1,0 +1,4 @@
+&/&|26619|Seq Scan|26619|Index Scan
+@>>|4677|Seq Scan|4677|Index Scan
+<<@|4677|Seq Scan|4677|Index Scan
+~==|199|Seq Scan|199|Index Scan

@@ -161,13 +161,13 @@ inline bool box2df_is_empty(const BOX2DF *a)
 		return false;
 }
 
-static inline void box2df_set_empty(BOX2DF *a)
+inline void box2df_set_empty(BOX2DF *a)
 {
 	a->xmin = a->xmax = a->ymin = a->ymax = NAN;
 	return;
 }
 
-static inline void box2df_set_finite(BOX2DF *a)
+inline void box2df_set_finite(BOX2DF *a)
 {
 	if ( ! isfinite(a->xmax) )
 		a->xmax = FLT_MAX;
@@ -329,7 +329,7 @@ int box2df_to_gbox_p(BOX2DF *a, GBOX *box)
 */
 
 /* Ensure all minimums are below maximums. */
-static inline void box2df_validate(BOX2DF *b)
+inline void box2df_validate(BOX2DF *b)
 {
 	float tmp;
 	POSTGIS_DEBUGF(5,"validating box2df (%s)", box2df_to_string(b));
@@ -352,7 +352,7 @@ static inline void box2df_validate(BOX2DF *b)
 	return;
 }
 
-static bool box2df_overlaps(const BOX2DF *a, const BOX2DF *b)
+bool box2df_overlaps(const BOX2DF *a, const BOX2DF *b)
 {
 	if ( !a || !b || box2df_is_empty(a) || box2df_is_empty(b) )
 		return false;
@@ -397,7 +397,7 @@ static bool box2df_within(const BOX2DF *a, const BOX2DF *b)
 	return box2df_contains(b,a);
 }
 
-static bool box2df_equals(const BOX2DF *a, const BOX2DF *b)
+bool box2df_equals(const BOX2DF *a, const BOX2DF *b)
 {
 	if ( !a && !b )
 		return true;
@@ -413,7 +413,7 @@ static bool box2df_equals(const BOX2DF *a, const BOX2DF *b)
 		return false;
 }
 
-static bool box2df_overleft(const BOX2DF *a, const BOX2DF *b)
+bool box2df_overleft(const BOX2DF *a, const BOX2DF *b)
 {
 	if ( !a || !b || box2df_is_empty(a) || box2df_is_empty(b) )
 		return false;
@@ -422,7 +422,7 @@ static bool box2df_overleft(const BOX2DF *a, const BOX2DF *b)
 	return a->xmax <= b->xmax;
 }
 
-static bool box2df_left(const BOX2DF *a, const BOX2DF *b)
+bool box2df_left(const BOX2DF *a, const BOX2DF *b)
 {
 	if ( !a || !b || box2df_is_empty(a) || box2df_is_empty(b) )
 		return false;
@@ -431,7 +431,7 @@ static bool box2df_left(const BOX2DF *a, const BOX2DF *b)
 	return a->xmax < b->xmin;
 }
 
-static bool box2df_right(const BOX2DF *a, const BOX2DF *b)
+bool box2df_right(const BOX2DF *a, const BOX2DF *b)
 {
 	if ( !a || !b || box2df_is_empty(a) || box2df_is_empty(b) )
 		return false;
@@ -440,7 +440,7 @@ static bool box2df_right(const BOX2DF *a, const BOX2DF *b)
 	return a->xmin > b->xmax;
 }
 
-static bool box2df_overright(const BOX2DF *a, const BOX2DF *b)
+bool box2df_overright(const BOX2DF *a, const BOX2DF *b)
 {
 	if ( !a || !b || box2df_is_empty(a) || box2df_is_empty(b) )
 		return false;
@@ -449,7 +449,7 @@ static bool box2df_overright(const BOX2DF *a, const BOX2DF *b)
 	return a->xmin >= b->xmin;
 }
 
-static bool box2df_overbelow(const BOX2DF *a, const BOX2DF *b)
+bool box2df_overbelow(const BOX2DF *a, const BOX2DF *b)
 {
 	if ( !a || !b || box2df_is_empty(a) || box2df_is_empty(b) )
 		return false;
@@ -458,7 +458,7 @@ static bool box2df_overbelow(const BOX2DF *a, const BOX2DF *b)
 	return a->ymax <= b->ymax;
 }
 
-static bool box2df_below(const BOX2DF *a, const BOX2DF *b)
+bool box2df_below(const BOX2DF *a, const BOX2DF *b)
 {
 	if ( !a || !b || box2df_is_empty(a) || box2df_is_empty(b) )
 		return false;
@@ -467,7 +467,7 @@ static bool box2df_below(const BOX2DF *a, const BOX2DF *b)
 	return a->ymax < b->ymin;
 }
 
-static bool box2df_above(const BOX2DF *a, const BOX2DF *b)
+bool box2df_above(const BOX2DF *a, const BOX2DF *b)
 {
 	if ( !a || !b || box2df_is_empty(a) || box2df_is_empty(b) )
 		return false;
@@ -476,7 +476,7 @@ static bool box2df_above(const BOX2DF *a, const BOX2DF *b)
 	return a->ymin > b->ymax;
 }
 
-static bool box2df_overabove(const BOX2DF *a, const BOX2DF *b)
+bool box2df_overabove(const BOX2DF *a, const BOX2DF *b)
 {
 	if ( !a || !b || box2df_is_empty(a) || box2df_is_empty(b) )
 		return false;

@@ -1,0 +1,166 @@
+#include "sqldefines.h"
+#if POSTGIS_PGSQL_VERSION > 100
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- SP-GiST 2D Support Functions
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_config_2d(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_config_2d'
+	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_choose_2d(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_choose_2d'
+	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_picksplit_2d(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_picksplit_2d'
+	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_inner_consistent_2d(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_inner_consistent_2d'
+	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_leaf_consistent_2d(internal, internal)
+	RETURNS bool
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_leaf_consistent_2d'
+	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_compress_2d(internal)
+	RETURNS internal
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_compress_2d'
+	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OPERATOR CLASS spgist_geometry_ops_2d
+	DEFAULT FOR TYPE geometry USING SPGIST AS
+	OPERATOR        1        <<  ,
+	OPERATOR        2        &<	 ,
+	OPERATOR        3        &&  ,
+	OPERATOR        4        &>	 ,
+	OPERATOR        5        >>	 ,
+	OPERATOR        6        ~=	 ,
+	OPERATOR        7        ~	 ,
+	OPERATOR        8        @	 ,
+	OPERATOR        9        &<| ,
+	OPERATOR        10       <<| ,
+	OPERATOR        11       |>> ,
+	OPERATOR        12       |&> ,
+	FUNCTION		1		geometry_spgist_config_2d(internal, internal),
+	FUNCTION		2		geometry_spgist_choose_2d(internal, internal),
+	FUNCTION		3		geometry_spgist_picksplit_2d(internal, internal),
+	FUNCTION		4		geometry_spgist_inner_consistent_2d(internal, internal),
+	FUNCTION		5		geometry_spgist_leaf_consistent_2d(internal, internal),
+	FUNCTION		6		geometry_spgist_compress_2d(internal);
+
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- 3-D GEOMETRY Operators
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_overlaps_3d(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME' ,'gserialized_overlaps_3d'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_contains_3d(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME' ,'gserialized_contains_3d'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_contained_3d(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME' ,'gserialized_contained_3d'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_same_3d(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME' ,'gserialized_same_3d'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OPERATOR &/& (
+	PROCEDURE = geometry_overlaps_3d,
+	LEFTARG = geometry, RIGHTARG = geometry,
+	COMMUTATOR = &/&,
+	RESTRICT = gserialized_gist_sel_nd, JOIN = gserialized_gist_joinsel_nd
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR @>> (
+	PROCEDURE = geometry_contains_3d,
+	LEFTARG = geometry, RIGHTARG = geometry,
+	COMMUTATOR = <<@,
+	RESTRICT = gserialized_gist_sel_nd, JOIN = gserialized_gist_joinsel_nd
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR <<@ (
+	PROCEDURE = geometry_contained_3d,
+	LEFTARG = geometry, RIGHTARG = geometry,
+	COMMUTATOR = @>>,
+	RESTRICT = gserialized_gist_sel_nd, JOIN = gserialized_gist_joinsel_nd
+);
+
+-- Availability: 2.5.0
+CREATE OPERATOR ~== (
+	PROCEDURE = geometry_same_3d,
+	LEFTARG = geometry, RIGHTARG = geometry,
+	COMMUTATOR = ~==,
+	RESTRICT = gserialized_gist_sel_nd, JOIN = gserialized_gist_joinsel_nd
+);
+
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- SP-GiST 3D Support Functions
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_config_3d(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME', 'gserialized_spgist_config_3d'
+	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_choose_3d(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME', 'gserialized_spgist_choose_3d'
+	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_picksplit_3d(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME', 'gserialized_spgist_picksplit_3d'
+	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_inner_consistent_3d(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME', 'gserialized_spgist_inner_consistent_3d'
+	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_leaf_consistent_3d(internal, internal)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'gserialized_spgist_leaf_consistent_3d'
+	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_compress_3d(internal)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'gserialized_spgist_compress_3d'
+	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OPERATOR CLASS spgist_geometry_ops_3d
+	FOR TYPE geometry USING SPGIST AS
+	OPERATOR        3        &/&	,
+	OPERATOR        6        ~==	,
+	OPERATOR        7        @>>	,
+	OPERATOR        8        <<@	,
+	FUNCTION	1	geometry_spgist_config_3d(internal, internal),
+	FUNCTION	2	geometry_spgist_choose_3d(internal, internal),
+	FUNCTION	3	geometry_spgist_picksplit_3d(internal, internal),
+	FUNCTION	4	geometry_spgist_inner_consistent_3d(internal, internal),
+	FUNCTION	5	geometry_spgist_leaf_consistent_3d(internal, internal),
+	FUNCTION	6	geometry_spgist_compress_3d(internal);
+#endif
