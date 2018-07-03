@@ -1054,7 +1054,6 @@ vectortile_layer_combine(const VectorTile__Tile__Layer *layer1, const VectorTile
 	j = 0;
 	for (i = 0; i < layer1->n_features; i++)
 		layer->features[j++] = tile_feature_copy(layer1->features[i], 0, 0);
-	value2_offset = j;
 	for (i = 0; i < layer2->n_features; i++)
 		layer->features[j++] = tile_feature_copy(layer2->features[i], key2_offset, value2_offset);
 
