@@ -3,10 +3,13 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
-      <title>Release 2.5.0alpha</title>
-      <para>Release date: 2018/05/28</para>
+      <title>Release 2.5.0beta1</title>
+      <para>Release date: 2018/07/03</para>
       <simplesect>
         <title>New Features</title>
+        <para>#1847, spgist 2d and 3d support for PG 11+
+    (Esteban Zimányi and Arthur Lesuisse from Université Libre de Bruxelles (ULB),
+      Darafei Praliaskouski)</para>
         <para>#4056, ST_FilterByM (Nicklas Avén)</para>
         <para>#4050, ST_ChaikinSmoothing (Nicklas Avén)</para>
         <para>#3989, ST_Buffer single sided option (Stephen Knox)</para>
