@@ -1,3 +1,238 @@
+2018-07-01 16:30  Regina Obe <lr@pcorp.us>
+
+	* [r16629] libpgcommon/gserialized_gist.h: Get rid of the ifdefs
+	  around the functions, these have always existed but were static
+	  before.
+	  Closes #4114
+
+2018-07-01 15:42  Regina Obe <lr@pcorp.us>
+
+	* [r16628] NEWS: fix typos in last credits
+
+2018-07-01 15:39  Regina Obe <lr@pcorp.us>
+
+	* [r16627] NEWS: Minor update to the credits
+
+2018-07-01 15:34  Regina Obe <lr@pcorp.us>
+
+	* [r16626] NEWS, configure.ac, libpgcommon/gserialized_gist.h,
+	  libpgcommon/lwgeom_pg.h, postgis/Makefile.in,
+	  postgis/gserialized_gist_2d.c, postgis/gserialized_spgist_2d.c,
+	  postgis/gserialized_spgist_3d.c, postgis/gserialized_spgist_3d.h,
+	  postgis/lwgeom_box3d.c, postgis/postgis.sql.in,
+	  postgis/postgis_spgist.sql.in, regress/Makefile.in,
+	  regress/regress_spgist_index_2d.data,
+	  regress/regress_spgist_index_2d.sql,
+	  regress/regress_spgist_index_2d_expected,
+	  regress/regress_spgist_index_3d.data,
+	  regress/regress_spgist_index_3d.sql,
+	  regress/regress_spgist_index_3d_expected: spgist 2d and 3d
+	  support for PG 11+
+	  references #1847
+	  Credits: Arthur Lesuisse, Esteban Zimanyi from Université Libre
+	  de Bruxelles (ULB) and Darafei Praliaskouski
+	  also added logic to exclude PG < 11 from including this
+	  functionality
+	  Closes https://github.com/postgis/postgis/pull/258
+
+2018-06-30 21:59  Regina Obe <lr@pcorp.us>
+
+	* [r16625] topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected: Make test
+	  sort order deterministic by using lateral.
+	  Closes #4111
+	  (Note they are going to fix the issue upstream that made this
+	  fail on stable 10, but I wanted to change this test anyway)
+
+2018-06-26 14:55  Daniel Baston <dbaston@gmail.com>
+
+	* [r16624] doc/reference_constructor.xml: Add spaces in
+	  documentation
+	  
+	  Patch from hannes
+	  Closes https://gitlab.com/postgis/postgis/merge_requests/10
+
+2018-06-18 21:47  Regina Obe <lr@pcorp.us>
+
+	* [r16623] doc/reference_processing.xml: fix spacing
+
+2018-06-18 21:46  Regina Obe <lr@pcorp.us>
+
+	* [r16622] doc/reference_processing.xml: Fix availability note of
+	  ST_OrientedEnvelope so it shows in new functions section
+
+2018-06-17 09:33  Regina Obe <lr@pcorp.us>
+
+	* [r16621] doc/reference_accessor.xml: Link to ST_OrientedEnvelope
+	  from ST_Envelope
+
+2018-06-17 08:41  Regina Obe <lr@pcorp.us>
+
+	* [r16620] doc/html/image_src/Makefile.in,
+	  doc/html/image_src/st_envelope01.wkt,
+	  doc/html/image_src/st_orientedenvelope01.wkt,
+	  doc/reference_accessor.xml, doc/reference_processing.xml: Add
+	  graphical examples for ST_Envelope and ST_OrientedEnvelope
+
+2018-06-15 22:16  Sandro Santilli <strk@kbt.io>
+
+	* [r16618] liblwgeom/cunit/cu_lwstroke.c, liblwgeom/lwstroke.c: Fix
+	  infinite loop in linearization of a big radius small arc
+	  
+	  Ref #4058 for trunk (2.5.0dev)
+	  Includes unit test
+
+2018-06-13 14:19  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16616] regress/mvt.sql, regress/mvt_expected: MVT tests: Remove
+	  ST_Normalize calls
+	  
+	  References #4106
+
+2018-06-13 14:16  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16615] .travis.yml: Travis: Install all required dependencies
+	  for MVT tests
+	  
+	  References #4106
+
+2018-06-12 01:38  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16612] liblwgeom/g_serialized.c: Fix flags in case where a
+	  boxless geom comes in with a "has box" set of flags.
+	  References #4707
+
+2018-06-06 18:01  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16611] postgis/postgis.sql.in: Remove erroneous commutator
+	  definitions for over(left/right/above/below)
+	  operators. Closes #4088
+
+2018-06-06 09:29  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16610] regress/tickets.sql: Debbie / Postgres 9.4 calls
+	  function twice.
+	  
+	  References #4103
+
+2018-06-05 17:11  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16609] NEWS, liblwgeom/liblwgeom.h.in, liblwgeom/lwgeom_geos.c,
+	  postgis/lwgeom_geos.c, regress/tickets.sql,
+	  regress/tickets_expected: ST_PointOnSurface handling of invalid.
+	  
+	  Prints a loud notice and passes input through MakeValid.
+	  
+	  Closes #4103
+	  Closes https://github.com/postgis/postgis/pull/257
+
+2018-06-05 14:40  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16608] NEWS, postgis/lwgeom_geos.c, postgis/postgis.sql.in:
+	  Unify geometry centroid functions
+	  
+	  Make ST_Centroid call lwgeom_centroid.
+	  
+	  Closes #3960
+	  Closes https://github.com/postgis/postgis/pull/256
+
+2018-06-05 12:28  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16607] liblwgeom/cunit/cu_clip_by_rect.c,
+	  liblwgeom/cunit/cu_geos.c, liblwgeom/liblwgeom.h.in,
+	  liblwgeom/lwgeom_geos.c, postgis/lwgeom_dump.c,
+	  postgis/lwgeom_geos.c, postgis/mvt.c, postgis/postgis_module.c,
+	  regress/node.sql: Remove mentions of GEOS <= 3.5.0.
+	  
+	  PostGIS requires 3.5.0 already.
+	  
+	  Closes https://github.com/postgis/postgis/pull/255
+
+2018-06-03 09:11  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16605] liblwgeom/lwkmeans.c, regress/cluster.sql,
+	  regress/cluster_expected: ST_ClusterKMeans: handle effective K=0
+	  when all the inputs are EMPTY
+	  
+	  Closes #4101
+	  Closes https://github.com/postgis/postgis/pull/254
+
+2018-06-02 12:09  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16604] liblwgeom/lwkmeans.c, regress/cluster.sql,
+	  regress/cluster_expected: Let KMeans init even if there are only
+	  duplicates in input
+	  
+	  Added reporting of duplicates noticed on init pass.
+	  
+	  Closes #4100
+	  Closes https://github.com/postgis/postgis/pull/253
+
+2018-06-02 05:39  Regina Obe <lr@pcorp.us>
+
+	* [r16603] doc/xsl/postgis_gardentest.sql.xsl,
+	  doc/xsl/raster_gardentest.sql.xsl: change to version 2.5.0 and
+	  have table generated be 25
+
+2018-06-01 13:38  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16602] doc/using_postgis_dataman.xml: [doc] fix invalid xml
+	  
+	  make check skips it for me locally for some reason.
+
+2018-06-01 13:29  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16601] doc/using_postgis_dataman.xml: [doc] Update index usage
+	  troubleshooting section
+	  
+	  Contains typo fixes reported by Yaroslav Schekin in
+	  https://t.me/pgsql
+
+2018-06-01 11:20  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16600] doc/using_postgis_dataman.xml: [doc] fix xml structure
+
+2018-06-01 11:00  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16599] doc/using_postgis_dataman.xml: [doc] dbmanagement manual
+	  pass
+	  
+	  Removed some dust, references to PostGIS 1 and Postgres 7.
+
+2018-05-31 10:20  Sandro Santilli <strk@kbt.io>
+
+	* [r16598] NEWS: Add entry about upgrade script symlinks
+
+2018-05-30 18:32  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16597] doc/html/image_src/generator.c: Fix typo in drawPoint()
+	  in doc images generator.
+	  
+	  Issue introduced in r16296
+	  
+	  Closes #4098
+	  Closes https://github.com/postgis/postgis/pull/252
+
+2018-05-29 08:06  Sandro Santilli <strk@kbt.io>
+
+	* [r16596] liblwgeom/lwalgorithm.c: Fix function comment for
+	  lw_arc_center
+
+2018-05-28 23:45  Regina Obe <lr@pcorp.us>
+
+	* [r16595] Version.config, extensions/upgradeable_versions.mk: Flip
+	  to 2.5.0beta1dev
+
+2018-05-28 23:21  Regina Obe <lr@pcorp.us>
+
+	* [r16593] doc/release_notes.xml: Add in Enhancements and Fixes
+	  section for PostGIS 2.5.0alpha
+
+2018-05-28 23:02  Regina Obe <lr@pcorp.us>
+
+	* [r16592] ChangeLog, NEWS, Version.config, doc/release_notes.xml:
+	  In prep for PostGIS 2.5.0alpha release
+
 2018-05-28 22:49  Regina Obe <lr@pcorp.us>
 
 	* [r16591] postgis/lwgeom_accum.c: put back pgis_abs_in and

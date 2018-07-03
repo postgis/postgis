@@ -1,3 +1,14 @@
+PostGIS 2.5.0beta1
+2018/07/03
+New since PostGIS 2.5.0alpha
+  - #1847, spgist 2d and 3d support for PG 11+
+    (Esteban Zimányi and Arthur Lesuisse from Université Libre de Bruxelles (ULB),
+      Darafei Praliaskouski)
+
+  - Numerous packaging fixes
+  See PostGIS 2.5.0 section for full details
+
+
 PostGIS 2.5.0alpha
 2018/05/28
 See PostGIS 2.5.0 section for details
