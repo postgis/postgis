@@ -34,6 +34,7 @@
 
 LWTIN* lwtin_from_geos(const GEOSGeometry* geom, uint8_t want3d);
 
+#define AUTOFIX LW_TRUE
 #define LWGEOM_GEOS_ERRMSG_MAXSIZE 256
 char lwgeom_geos_errmsg[LWGEOM_GEOS_ERRMSG_MAXSIZE];
 
@@ -56,12 +57,18 @@ do { \
 	geos_destroy((sizeof((void*[]){__VA_ARGS__})/sizeof(void*)), __VA_ARGS__); \
 } while (0)
 
+#define GEOS_FAIL() \
+do { \
+	lwerror("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg); \
+	return NULL; \
+} while (0)
+
 /* Destroy any non-null GEOSGeometry* pointers passed as arguments,
  * then pass the latest GEOS error to lwerror. */
 #define GEOS_CLEAN_AND_FAIL(...) \
 do { \
 	GEOS_CLEAN(__VA_ARGS__); \
-	lwerror("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg); \
+	GEOS_FAIL(); \
 } while (0)
 
 /* Destroy any non-null GEOSGeometry* pointers passed as arguments *
@@ -544,19 +551,6 @@ get_result_srid(const LWGEOM* geom1, const LWGEOM* geom2, const char* funcname)
 	return geom1->srid;
 }
 
-/* Input decoder and sanity checker for GEOS wrappers */
-inline static uint8_t
-input_lwgeom_to_geos(GEOSGeometry** g, const LWGEOM* geom, const char* funcname)
-{
-	*g = LWGEOM2GEOS(geom, 1);
-	if (!*g)
-	{
-		lwerror("%s: argument geometry could not be converted to GEOS: %s", funcname, lwgeom_geos_errmsg);
-		return LW_FALSE;
-	}
-	return LW_TRUE;
-}
-
 /* Output encoder and sanity checker for GEOS wrappers */
 inline static uint8_t
 output_geos_as_lwgeom(GEOSGeometry** g, LWGEOM** geom, const int32_t srid, const uint8_t is3d, const char* funcname)
@@ -583,7 +577,7 @@ lwgeom_normalize(const LWGEOM* geom)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g, geom, __func__)) return NULL;
+	if (!(g = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
 	if (GEOSNormalize(g) == -1) GEOS_CLEAN_AND_FAIL(g);
 
@@ -612,8 +606,8 @@ lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g1, geom1, __func__)) return NULL;
-	if (!input_lwgeom_to_geos(&g2, geom2, __func__)) GEOS_CLEAN_AND_FAIL(g1);
+	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
+	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_CLEAN_AND_FAIL(g1);
 
 	g3 = GEOSIntersection(g1, g2);
 
@@ -660,7 +654,7 @@ lwgeom_linemerge(const LWGEOM* geom)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
+	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
 	g3 = GEOSLineMerge(g1);
 
@@ -690,7 +684,7 @@ lwgeom_unaryunion(const LWGEOM* geom)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
+	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
 	g3 = GEOSUnaryUnion(g1);
 
@@ -722,8 +716,8 @@ lwgeom_difference(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g1, geom1, __func__)) return NULL;
-	if (!input_lwgeom_to_geos(&g2, geom2, __func__)) GEOS_CLEAN_AND_FAIL(g1);
+	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
+	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_CLEAN_AND_FAIL(g1);
 
 	g3 = GEOSDifference(g1, g2);
 
@@ -772,8 +766,8 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g1, geom1, __func__)) return NULL;
-	if (!input_lwgeom_to_geos(&g2, geom2, __func__)) GEOS_CLEAN_AND_FAIL(g1);
+	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
+	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_CLEAN_AND_FAIL(g1);
 
 	g3 = GEOSSymDifference(g1, g2);
 
@@ -822,7 +816,7 @@ lwgeom_centroid(const LWGEOM* geom)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
+	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
 	g3 = GEOSGetCentroid(g1);
 
@@ -854,7 +848,7 @@ lwgeom_pointonsurface(const LWGEOM *geom)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
+	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
 	g3 = GEOSPointOnSurface(g1);
 
@@ -903,8 +897,8 @@ lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g1, geom1, __func__)) return NULL;
-	if (!input_lwgeom_to_geos(&g2, geom2, __func__)) GEOS_CLEAN_AND_FAIL(g1);
+	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
+	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_CLEAN_AND_FAIL(g1);
 
 	g3 = GEOSUnion(g1, g2);
 
@@ -1235,7 +1229,7 @@ lwgeom_buildarea(const LWGEOM* geom)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
+	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
 	g3 = LWGEOM_GEOS_buildArea(g1);
 
@@ -1265,7 +1259,7 @@ lwgeom_is_simple(const LWGEOM* geom)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g, geom, __func__)) return -1;
+	if (!(g = LWGEOM2GEOS(geom, AUTOFIX))) return -1;
 
 	simple = GEOSisSimple(g);
 	GEOSGeom_destroy(g);
@@ -1291,7 +1285,7 @@ lwgeom_geos_noop(const LWGEOM* geom)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g, geom, __func__)) return NULL;
+	if (!(g = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
 	if (!g) GEOS_CLEAN_AND_FAIL(g);
 
@@ -1315,8 +1309,8 @@ lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g1, geom1, __func__)) return NULL;
-	if (!input_lwgeom_to_geos(&g2, geom2, __func__)) GEOS_CLEAN_AND_FAIL(g1);
+	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
+	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_CLEAN_AND_FAIL(g1);
 
 	g3 = GEOSSnap(g1, g2, tolerance);
 
@@ -1341,8 +1335,8 @@ lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g1, geom1, __func__)) return NULL;
-	if (!input_lwgeom_to_geos(&g2, geom2, __func__)) GEOS_CLEAN_AND_FAIL(g1);
+	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
+	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_CLEAN_AND_FAIL(g1);
 
 	g3 = GEOSSharedPaths(g1, g2);
 
@@ -1368,7 +1362,7 @@ lwline_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
+	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
 	g3 = GEOSOffsetCurve(g1, size, quadsegs, joinStyle, mitreLimit);
 
@@ -1801,7 +1795,7 @@ lwgeom_delaunay_triangulation(const LWGEOM* geom, double tolerance, int32_t outp
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!input_lwgeom_to_geos(&g1, geom, __func__)) return NULL;
+	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
 	/* if output != 1 we want polys */
 	g3 = GEOSDelaunayTriangulation(g1, tolerance, output == 1);
