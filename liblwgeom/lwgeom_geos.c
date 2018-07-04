@@ -71,6 +71,9 @@ do { \
 	GEOS_FAIL(); \
 } while (0)
 
+#define RESULT_SRID(...) \
+	(get_result_srid((sizeof((const void*[]){__VA_ARGS__})/sizeof(void*)), __func__,  __VA_ARGS__))
+
 /* Destroy any non-null GEOSGeometry* pointers passed as arguments *
  * Called by GEOS_CLEAN, which populates 'count' */
 static void geos_destroy(int count, ...) {
@@ -530,25 +533,31 @@ lwgeom_geos_version()
 	return ver;
 }
 
-inline static int32_t
-get_result_srid(const LWGEOM* geom1, const LWGEOM* geom2, const char* funcname)
+/* Return the consistent SRID of all inputs, or issue an
+ * error in case of SRID mismatch. Intended to be called
+ * from RESULT_SRID macro */
+static int32_t
+get_result_srid(int count, const char* funcname, ...)
 {
-	if (!geom1)
-	{
-		lwerror("%s: First argument is null pointer", funcname);
-		return SRID_INVALID;
+	va_list ap;
+	va_start(ap, funcname);
+	int32_t srid = SRID_INVALID;
+	for(int i = 0; i < count; i++) {
+		LWGEOM* g = va_arg(ap, LWGEOM*);
+		if (!g) {
+			lwerror("%s: Geometry is null", funcname);
+			return SRID_INVALID;
+		}
+		if (i == 0) {
+			srid = g->srid;
+		} else {
+			if (g->srid != srid) {
+				lwerror("%s: Operation on mixed SRID geometries (%d != %d)", funcname, srid, g->srid);
+				return SRID_INVALID;
+			}
+		}
 	}
-	if (geom2 && (geom1->srid != geom2->srid))
-	{
-		lwerror("%s: Operation on mixed SRID geometries (%d != %d)", funcname, geom1->srid, geom2->srid);
-		return SRID_INVALID;
-	}
-	if (geom1->srid > SRID_MAXIMUM)
-	{
-		lwerror("%s: SRID is more than maximum (%d > %d)", funcname, geom1->srid, SRID_USER_MAXIMUM);
-		return SRID_INVALID;
-	}
-	return geom1->srid;
+	return srid;
 }
 
 /* Output encoder and sanity checker for GEOS wrappers */
@@ -569,7 +578,7 @@ LWGEOM*
 lwgeom_normalize(const LWGEOM* geom)
 {
 	LWGEOM* result;
-	int32_t srid = get_result_srid(geom, NULL, __func__);
+	int32_t srid = RESULT_SRID(geom);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry* g;
 
@@ -590,7 +599,7 @@ LWGEOM*
 lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 {
 	LWGEOM* result;
-	int32_t srid = get_result_srid(geom1, geom2, __func__);
+	int32_t srid = RESULT_SRID(geom1, geom2);
 	uint8_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
 	GEOSGeometry* g1;
 	GEOSGeometry* g2;
@@ -642,7 +651,7 @@ LWGEOM*
 lwgeom_linemerge(const LWGEOM* geom)
 {
 	LWGEOM* result;
-	int32_t srid = get_result_srid(geom, NULL, __func__);
+	int32_t srid = RESULT_SRID(geom);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry* g1;
 	GEOSGeometry* g3;
@@ -672,7 +681,7 @@ LWGEOM*
 lwgeom_unaryunion(const LWGEOM* geom)
 {
 	LWGEOM* result;
-	int32_t srid = get_result_srid(geom, NULL, __func__);
+	int32_t srid = RESULT_SRID(geom);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry* g1;
 	GEOSGeometry* g3;
@@ -702,7 +711,7 @@ LWGEOM*
 lwgeom_difference(const LWGEOM* geom1, const LWGEOM* geom2)
 {
 	LWGEOM* result;
-	int32_t srid = get_result_srid(geom1, geom2, __func__);
+	int32_t srid = RESULT_SRID(geom1, geom2);
 	uint8_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
 	GEOSGeometry *g1, *g2, *g3;
 
@@ -752,7 +761,7 @@ LWGEOM*
 lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 {
 	LWGEOM* result;
-	int32_t srid = get_result_srid(geom1, geom2, __func__);
+	int32_t srid = RESULT_SRID(geom1, geom2);
 	uint8_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
 	GEOSGeometry *g1, *g2, *g3;
 
@@ -802,7 +811,7 @@ LWGEOM*
 lwgeom_centroid(const LWGEOM* geom)
 {
 	LWGEOM* result;
-	int32_t srid = get_result_srid(geom, NULL, __func__);
+	int32_t srid = RESULT_SRID(geom);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry *g1, *g3;
 
@@ -834,7 +843,7 @@ LWGEOM *
 lwgeom_pointonsurface(const LWGEOM *geom)
 {
 	LWGEOM *result;
-	int32_t srid = get_result_srid(geom, NULL, __func__);
+	int32_t srid = RESULT_SRID(geom);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry *g1, *g3;
 
@@ -883,7 +892,7 @@ LWGEOM*
 lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 {
 	LWGEOM* result;
-	int32_t srid = get_result_srid(geom1, geom2, __func__);
+	int32_t srid = RESULT_SRID(geom1, geom2);
 	uint8_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
 	GEOSGeometry *g1, *g2, *g3;
 
@@ -1218,7 +1227,7 @@ LWGEOM*
 lwgeom_buildarea(const LWGEOM* geom)
 {
 	LWGEOM* result;
-	int32_t srid = get_result_srid(geom, NULL, __func__);
+	int32_t srid = RESULT_SRID(geom);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry *g1, *g3;
 
@@ -1277,7 +1286,7 @@ LWGEOM*
 lwgeom_geos_noop(const LWGEOM* geom)
 {
 	LWGEOM* result;
-	int32_t srid = get_result_srid(geom, NULL, __func__);
+	int32_t srid = RESULT_SRID(geom);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry* g;
 
@@ -1301,7 +1310,7 @@ LWGEOM*
 lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance)
 {
 	LWGEOM* result;
-	int32_t srid = get_result_srid(geom1, geom2, __func__);
+	int32_t srid = RESULT_SRID(geom1, geom2);
 	uint8_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
 	GEOSGeometry *g1, *g2, *g3;
 
@@ -1327,7 +1336,7 @@ LWGEOM*
 lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2)
 {
 	LWGEOM* result;
-	int32_t srid = get_result_srid(geom1, geom2, __func__);
+	int32_t srid = RESULT_SRID(geom1, geom2);
 	uint8_t is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags));
 	GEOSGeometry *g1, *g2, *g3;
 
@@ -1354,7 +1363,7 @@ lwline_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 {
 	LWGEOM* result;
 	LWGEOM* geom = lwline_as_lwgeom(lwline);
-	int32_t srid = get_result_srid(geom, NULL, __func__);
+	int32_t srid = RESULT_SRID(geom);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry *g1, *g3;
 
@@ -1383,7 +1392,7 @@ static LWGEOM *
 lwcollection_offsetcurve(const LWCOLLECTION *col, double size, int quadsegs, int joinStyle, double mitreLimit)
 {
 	const LWGEOM *geom = lwcollection_as_lwgeom(col);
-	int32_t srid = get_result_srid(geom, NULL, __func__);
+	int32_t srid = RESULT_SRID(geom);
 	uint8_t is3d = FLAGS_GET_Z(col->flags);
 	LWCOLLECTION *result;
 	LWGEOM *tmp;
@@ -1430,7 +1439,7 @@ lwcollection_offsetcurve(const LWCOLLECTION *col, double size, int quadsegs, int
 LWGEOM*
 lwgeom_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle, double mitreLimit)
 {
-	int32_t srid = get_result_srid(geom, NULL, __func__);
+	int32_t srid = RESULT_SRID(geom);
 	LWGEOM *result = NULL;
 	LWGEOM *noded = NULL;
 	if (srid == SRID_INVALID) return NULL;
@@ -1781,7 +1790,7 @@ LWGEOM*
 lwgeom_delaunay_triangulation(const LWGEOM* geom, double tolerance, int32_t output)
 {
 	LWGEOM* result;
-	int32_t srid = get_result_srid(geom, NULL, __func__);
+	int32_t srid = RESULT_SRID(geom);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry *g1, *g3;
 
