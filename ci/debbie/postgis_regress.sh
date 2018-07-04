@@ -62,7 +62,7 @@ fi
     --with-pgconfig=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}/bin/pg_config \
     --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/geos-config \
     --with-gdalconfig=${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/bin/gdal-config \
-    --without-interrupt-tests \
+    --with-sfcgal=/usr/bin/sfcgal-config --without-interrupt-tests \
     --prefix=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}
 make clean
 make
