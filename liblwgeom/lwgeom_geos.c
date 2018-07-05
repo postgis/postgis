@@ -544,7 +544,8 @@ get_result_srid(int count, const char* funcname, ...)
 	va_list ap;
 	va_start(ap, funcname);
 	int32_t srid = SRID_INVALID;
-	for(int i = 0; i < count; i++)
+	int i;
+	for(i = 0; i < count; i++)
 	{
 		LWGEOM* g = va_arg(ap, LWGEOM*);
 		if (!g)
