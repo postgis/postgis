@@ -62,9 +62,9 @@ POINTARRAY*
 ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d)
 {
 	uint32_t dims = 2;
-	uint32_t size, i;
+	uint32_t size = 0, i;
 	POINTARRAY* pa;
-	POINT4D point;
+	POINT4D point = { 0.0, 0.0, 0.0, 0.0 };
 
 	LWDEBUG(2, "ptarray_fromGEOSCoordSeq called");
 

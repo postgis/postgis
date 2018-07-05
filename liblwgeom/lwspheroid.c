@@ -84,7 +84,7 @@ double spheroid_distance(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, c
 	double lon1 = a->lon * 180.0 / M_PI;
 	double lat2 = b->lat * 180.0 / M_PI;
 	double lon2 = b->lon * 180.0 / M_PI;
-	double s12; /* return distance */
+	double s12 = 0.0; /* return distance */
 	geod_inverse(&gd, lat1, lon1, lat2, lon2, &s12, 0, 0);
 	return s12;
 }
