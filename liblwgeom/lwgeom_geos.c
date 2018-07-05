@@ -52,7 +52,7 @@ lwgeom_geos_error(const char* fmt, ...)
 }
 
 /* Destroy any non-null GEOSGeometry* pointers passed as arguments */
-#define GEOS_CLEAN(...) \
+#define GEOS_FREE(...) \
 do { \
 	geos_destroy((sizeof((void*[]){__VA_ARGS__})/sizeof(void*)), __VA_ARGS__); \
 } while (0)
@@ -65,9 +65,9 @@ do { \
 
 /* Destroy any non-null GEOSGeometry* pointers passed as arguments,
  * then pass the latest GEOS error to lwerror. */
-#define GEOS_CLEAN_AND_FAIL(...) \
+#define GEOS_FREE_AND_FAIL(...) \
 do { \
-	GEOS_CLEAN(__VA_ARGS__); \
+	GEOS_FREE(__VA_ARGS__); \
 	GEOS_FAIL(); \
 } while (0)
 
@@ -75,7 +75,7 @@ do { \
 	(get_result_srid((sizeof((const void*[]){__VA_ARGS__})/sizeof(void*)), __func__,  __VA_ARGS__))
 
 /* Destroy any non-null GEOSGeometry* pointers passed as arguments *
- * Called by GEOS_CLEAN, which populates 'count' */
+ * Called by GEOS_FREE, which populates 'count' */
 static void geos_destroy(int count, ...) {
 	va_list ap;
 	va_start(ap, count);
@@ -574,10 +574,10 @@ lwgeom_normalize(const LWGEOM* geom)
 
 	if (!(g = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
-	if (GEOSNormalize(g) == -1) GEOS_CLEAN_AND_FAIL(g);
+	if (GEOSNormalize(g) == -1) GEOS_FREE_AND_FAIL(g);
 	GEOSSetSRID(g, srid);
 
-	if (!(result = GEOS2LWGEOM(g, is3d))) GEOS_CLEAN_AND_FAIL(g);
+	if (!(result = GEOS2LWGEOM(g, is3d))) GEOS_FREE_AND_FAIL(g);
 
 	GEOSGeom_destroy(g);
 	return result;
@@ -604,7 +604,7 @@ lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
-	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_CLEAN_AND_FAIL(g1);
+	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
 	g3 = GEOSIntersection(g1, g2);
 
@@ -622,16 +622,16 @@ lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 			g1v = LWGEOM_GEOS_makeValid(g1);
 			g2v = LWGEOM_GEOS_makeValid(g2);
 			g3 = GEOSIntersection(g1v, g2v);
-			GEOS_CLEAN(g1v, g2v);
+			GEOS_FREE(g1v, g2v);
 		}
 	}
 
-	if (!g3) GEOS_CLEAN_AND_FAIL(g1);
+	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);
 
-	if (!(result = GEOS2LWGEOM(g3, is3d))) GEOS_CLEAN_AND_FAIL(g1, g2, g3);
+	if (!(result = GEOS2LWGEOM(g3, is3d))) GEOS_FREE_AND_FAIL(g1, g2, g3);
 
-	GEOS_CLEAN(g1, g2, g3);
+	GEOS_FREE(g1, g2, g3);
 	return result;
 }
 
@@ -655,13 +655,13 @@ lwgeom_linemerge(const LWGEOM* geom)
 
 	g3 = GEOSLineMerge(g1);
 
-	if (!g3) GEOS_CLEAN_AND_FAIL(g1);
+	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);
 
 	if (!(result = GEOS2LWGEOM(g3, is3d)))
-		GEOS_CLEAN_AND_FAIL(g1, g3);
+		GEOS_FREE_AND_FAIL(g1, g3);
 
-	GEOS_CLEAN(g1, g3);
+	GEOS_FREE(g1, g3);
 
 	return result;
 }
@@ -686,13 +686,13 @@ lwgeom_unaryunion(const LWGEOM* geom)
 
 	g3 = GEOSUnaryUnion(g1);
 
-	if (!g3) GEOS_CLEAN_AND_FAIL(g1);
+	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);
 
 	if (!(result = GEOS2LWGEOM(g3, is3d)))
-		GEOS_CLEAN_AND_FAIL(g1, g3);
+		GEOS_FREE_AND_FAIL(g1, g3);
 
-	GEOS_CLEAN(g1, g3);
+	GEOS_FREE(g1, g3);
 
 	return result;
 }
@@ -716,7 +716,7 @@ lwgeom_difference(const LWGEOM* geom1, const LWGEOM* geom2)
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
-	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_CLEAN_AND_FAIL(g1);
+	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
 	g3 = GEOSDifference(g1, g2);
 
@@ -734,17 +734,17 @@ lwgeom_difference(const LWGEOM* geom1, const LWGEOM* geom2)
 			g1v = LWGEOM_GEOS_makeValid(g1);
 			g2v = LWGEOM_GEOS_makeValid(g2);
 			g3 = GEOSDifference(g1v, g2v);
-			GEOS_CLEAN(g1v, g2v);
+			GEOS_FREE(g1v, g2v);
 		}
 	}
 
-	if (!g3) GEOS_CLEAN_AND_FAIL(g1, g2);
+	if (!g3) GEOS_FREE_AND_FAIL(g1, g2);
 	GEOSSetSRID(g3, srid);
 
 	if (!(result = GEOS2LWGEOM(g3, is3d)))
-		GEOS_CLEAN_AND_FAIL(g1, g2, g3);
+		GEOS_FREE_AND_FAIL(g1, g2, g3);
 
-	GEOS_CLEAN(g1, g2, g3);
+	GEOS_FREE(g1, g2, g3);
 	return result;
 }
 
@@ -767,7 +767,7 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
-	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_CLEAN_AND_FAIL(g1);
+	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
 	g3 = GEOSSymDifference(g1, g2);
 
@@ -785,17 +785,17 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 			g1v = LWGEOM_GEOS_makeValid(g1);
 			g2v = LWGEOM_GEOS_makeValid(g2);
 			g3 = GEOSSymDifference(g1v, g2v);
-			GEOS_CLEAN(g1v, g2v);
+			GEOS_FREE(g1v, g2v);
 		}
 	}
 
-	if (!g3) GEOS_CLEAN_AND_FAIL(g1, g2);
+	if (!g3) GEOS_FREE_AND_FAIL(g1, g2);
 	GEOSSetSRID(g3, srid);
 
 	if (!(result = GEOS2LWGEOM(g3, is3d)))
-		GEOS_CLEAN_AND_FAIL(g1, g2, g3);
+		GEOS_FREE_AND_FAIL(g1, g2, g3);
 
-	GEOS_CLEAN(g1, g2, g3);
+	GEOS_FREE(g1, g2, g3);
 	return result;
 }
 
@@ -821,13 +821,13 @@ lwgeom_centroid(const LWGEOM* geom)
 
 	g3 = GEOSGetCentroid(g1);
 
-	if (!g3) GEOS_CLEAN_AND_FAIL(g1);
+	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);
 
 	if (!(result = GEOS2LWGEOM(g3, is3d)))
-		GEOS_CLEAN_AND_FAIL(g1);
+		GEOS_FREE_AND_FAIL(g1);
 
-	GEOS_CLEAN(g1, g3);
+	GEOS_FREE(g1, g3);
 
 	return result;
 }
@@ -867,17 +867,17 @@ lwgeom_pointonsurface(const LWGEOM *geom)
 			    "Retrying GEOS operation with ST_MakeValid of your input.");
 			g1v = LWGEOM_GEOS_makeValid(g1);
 			g3 = GEOSPointOnSurface(g1v);
-			GEOS_CLEAN(g1v);
+			GEOS_FREE(g1v);
 		}
 	}
 
-	if (!g3) GEOS_CLEAN_AND_FAIL(g1);
+	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);
 
 	if (!(result = GEOS2LWGEOM(g3, is3d)))
-		GEOS_CLEAN_AND_FAIL(g1, g3);
+		GEOS_FREE_AND_FAIL(g1, g3);
 
-	GEOS_CLEAN(g1, g3);
+	GEOS_FREE(g1, g3);
 
 	return result;
 }
@@ -901,7 +901,7 @@ lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
-	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_CLEAN_AND_FAIL(g1);
+	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
 	g3 = GEOSUnion(g1, g2);
 
@@ -919,17 +919,17 @@ lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 			g1v = LWGEOM_GEOS_makeValid(g1);
 			g2v = LWGEOM_GEOS_makeValid(g2);
 			g3 = GEOSUnion(g1v, g2v);
-			GEOS_CLEAN(g1v, g2v);
+			GEOS_FREE(g1v, g2v);
 		}
 	}
 
-	if (!g3) GEOS_CLEAN_AND_FAIL(g1, g2);
+	if (!g3) GEOS_FREE_AND_FAIL(g1, g2);
 	GEOSSetSRID(g3, srid);
 
 	if (!(result = GEOS2LWGEOM(g3, is3d)))
-		GEOS_CLEAN_AND_FAIL(g1, g2, g3);
+		GEOS_FREE_AND_FAIL(g1, g2, g3);
 
-	GEOS_CLEAN(g1, g2, g3);
+	GEOS_FREE(g1, g2, g3);
 	return result;
 }
 
@@ -1237,20 +1237,20 @@ lwgeom_buildarea(const LWGEOM* geom)
 
 	g3 = LWGEOM_GEOS_buildArea(g1);
 
-	if (!g3) GEOS_CLEAN_AND_FAIL(g1);
+	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);
 
 	/* If no geometries are in result collection, return NULL */
 	if (GEOSGetNumGeometries(g3) == 0)
 	{
-		GEOS_CLEAN(g1);
+		GEOS_FREE(g1);
 		return NULL;
 	}
 
 	if (!(result = GEOS2LWGEOM(g3, is3d)))
-		GEOS_CLEAN_AND_FAIL(g1, g3);
+		GEOS_FREE_AND_FAIL(g1, g3);
 
-	GEOS_CLEAN(g1, g3);
+	GEOS_FREE(g1, g3);
 
 	return result;
 }
@@ -1296,13 +1296,13 @@ lwgeom_geos_noop(const LWGEOM* geom)
 
 	if (!(g = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
-	if (!g) GEOS_CLEAN_AND_FAIL(g);
+	if (!g) GEOS_FREE_AND_FAIL(g);
 	GEOSSetSRID(g, srid);
 
 	if (!(result = GEOS2LWGEOM(g, is3d)))
-		GEOS_CLEAN_AND_FAIL(g);
+		GEOS_FREE_AND_FAIL(g);
 
-	GEOS_CLEAN(g);
+	GEOS_FREE(g);
 
 	return result;
 }
@@ -1320,17 +1320,17 @@ lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance)
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
-	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_CLEAN_AND_FAIL(g1);
+	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
 	g3 = GEOSSnap(g1, g2, tolerance);
 
-	if (!g3) GEOS_CLEAN_AND_FAIL(g1, g2);
+	if (!g3) GEOS_FREE_AND_FAIL(g1, g2);
 	GEOSSetSRID(g3, srid);
 
 	if (!(result = GEOS2LWGEOM(g3, is3d)))
-		GEOS_CLEAN_AND_FAIL(g1, g2, g3);
+		GEOS_FREE_AND_FAIL(g1, g2, g3);
 
-	GEOS_CLEAN(g1, g2, g3);
+	GEOS_FREE(g1, g2, g3);
 	return result;
 }
 
@@ -1347,17 +1347,17 @@ lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2)
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
-	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_CLEAN_AND_FAIL(g1);
+	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
 	g3 = GEOSSharedPaths(g1, g2);
 
-	if (!g3) GEOS_CLEAN_AND_FAIL(g1, g2);
+	if (!g3) GEOS_FREE_AND_FAIL(g1, g2);
 	GEOSSetSRID(g3, srid);
 
 	if (!(result = GEOS2LWGEOM(g3, is3d)))
-		GEOS_CLEAN_AND_FAIL(g1, g2, g3);
+		GEOS_FREE_AND_FAIL(g1, g2, g3);
 
-	GEOS_CLEAN(g1, g2, g3);
+	GEOS_FREE(g1, g2, g3);
 	return result;
 }
 
@@ -1380,16 +1380,16 @@ lwline_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 
 	if (!g3)
 	{
-		GEOS_CLEAN(g1);
+		GEOS_FREE(g1);
 		return NULL;
 	}
 
 	GEOSSetSRID(g3, srid);
 
 	if (!(result = GEOS2LWGEOM(g3, is3d)))
-		GEOS_CLEAN_AND_FAIL(g1, g3);
+		GEOS_FREE_AND_FAIL(g1, g3);
 
-	GEOS_CLEAN(g1, g3);
+	GEOS_FREE(g1, g3);
 	return result;
 }
 
@@ -1814,7 +1814,7 @@ lwgeom_delaunay_triangulation(const LWGEOM* geom, double tolerance, int32_t outp
 	/* if output != 1 we want polys */
 	g3 = GEOSDelaunayTriangulation(g1, tolerance, output == 1);
 
-	if (!g3) GEOS_CLEAN_AND_FAIL(g1);
+	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);
 
 	if (output == 2)
@@ -1822,16 +1822,16 @@ lwgeom_delaunay_triangulation(const LWGEOM* geom, double tolerance, int32_t outp
 		result = (LWGEOM*)lwtin_from_geos(g3, is3d);
 		if (!result)
 		{
-			GEOS_CLEAN(g1, g3);
+			GEOS_FREE(g1, g3);
 			lwerror("%s: cannot convert output geometry", __func__);
 			return NULL;
 		}
 		lwgeom_set_srid(result, srid);
 	}
 	else if (!(result = GEOS2LWGEOM(g3, is3d)))
-		GEOS_CLEAN_AND_FAIL(g1, g3);
+		GEOS_FREE_AND_FAIL(g1, g3);
 
-	GEOS_CLEAN(g1, g3);
+	GEOS_FREE(g1, g3);
 	return result;
 }
 
