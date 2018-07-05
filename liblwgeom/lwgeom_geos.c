@@ -79,9 +79,11 @@ do { \
 static void geos_destroy(int count, ...) {
 	va_list ap;
 	va_start(ap, count);
-	while (count--) {
+	while (count--)
+	{
 		GEOSGeometry* g = va_arg(ap, GEOSGeometry*);
-		if (g) {
+		if (g)
+		{
 			GEOSGeom_destroy(g);
 		}
 	}
@@ -542,16 +544,22 @@ get_result_srid(int count, const char* funcname, ...)
 	va_list ap;
 	va_start(ap, funcname);
 	int32_t srid = SRID_INVALID;
-	for(int i = 0; i < count; i++) {
+	for(int i = 0; i < count; i++)
+	{
 		LWGEOM* g = va_arg(ap, LWGEOM*);
-		if (!g) {
+		if (!g)
+		{
 			lwerror("%s: Geometry is null", funcname);
 			return SRID_INVALID;
 		}
-		if (i == 0) {
+		if (i == 0)
+		{
 			srid = g->srid;
-		} else {
-			if (g->srid != srid) {
+		}
+		else
+		{
+			if (g->srid != srid)
+			{
 				lwerror("%s: Operation on mixed SRID geometries (%d != %d)", funcname, srid, g->srid);
 				return SRID_INVALID;
 			}
