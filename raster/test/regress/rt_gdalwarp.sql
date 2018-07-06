@@ -847,6 +847,7 @@ SELECT -- ticket #2188
 		)
 		, 0.5, 0.5
 	) AS rast
+ORDER BY rid -- Force order to get consistent results with parallel plans
 ), bar AS (
 	SELECT rid, ST_Metadata(rast) AS meta, ST_SummaryStats(rast) AS stats FROM foo
 )

@@ -135,6 +135,20 @@ BEGIN
 END
 $$ language 'plpgsql';
 
+-- Runs a query and returns whether an error was launched
+-- Useful when the error message depends on the execution plan taken (parallelism)
+CREATE OR REPLACE FUNCTION catch_error(query text)
+RETURNS bool
+AS $$
+BEGIN
+    EXECUTE query;
+    RETURN FALSE;
+EXCEPTION
+    WHEN OTHERS THEN
+        RETURN TRUE;
+END
+$$ LANGUAGE 'plpgsql';
+
 -- }
 
 -- Save current state
@@ -376,7 +390,7 @@ SELECT '*RM(5)', topology.ST_RemEdgeModFace('city_data', 5);
 -- Two land_parcels (P2 and P3) are defined by either face
 -- 5 but not face 4 or by face 4 but not face 5, so we can't heal
 -- the faces by dropping edge 17
-SELECT '*RM(17)', topology.ST_RemEdgeModFace('city_data', 17);
+SELECT '*RM(17)', catch_error($$SELECT topology.ST_RemEdgeModFace('city_data', 17)$$);
 
 -- Dropping edge 11 is fine as it heals faces 5 and 8, which
 -- only serve definition of land_parcel P3 which contains both
@@ -409,5 +423,6 @@ DROP FUNCTION save_faces();
 DROP FUNCTION check_faces(text);
 DROP FUNCTION save_nodes();
 DROP FUNCTION check_nodes(text);
+DROP FUNCTION catch_error(text);
 DELETE FROM spatial_ref_sys where srid = 4326;
 
