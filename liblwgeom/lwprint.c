@@ -378,6 +378,8 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 
 	/* Allocate space for the result.  Leave plenty of room for excess digits, negative sign, etc.*/
 	result = (char*)lwalloc(format_length + WORK_SIZE);
+	memset(result, 0, format_length + WORK_SIZE);
+
 	/* Append all the pieces together. There may be less than 9, but in that case the rest will be blank. */
 	strcpy(result, pieces[0]);
 	for (index = 1; index < NUM_PIECES; index++)

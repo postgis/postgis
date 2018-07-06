@@ -43,11 +43,11 @@ GEOSGeometry* LWGEOM_GEOS_getPointN(const GEOSGeometry*, uint32_t);
 GEOSGeometry*
 LWGEOM_GEOS_getPointN(const GEOSGeometry* g_in, uint32_t n)
 {
-	uint32_t dims;
+	uint32_t dims = 0;
 	const GEOSCoordSequence* seq_in;
 	GEOSCoordSeq seq_out;
 	double val;
-	uint32_t sz;
+	uint32_t sz = 0;
 	int gn;
 	GEOSGeometry* ret;
 

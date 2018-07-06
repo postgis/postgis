@@ -62,9 +62,9 @@ POINTARRAY*
 ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d)
 {
 	uint32_t dims = 2;
-	uint32_t size, i;
+	uint32_t size = 0, i;
 	POINTARRAY* pa;
-	POINT4D point;
+	POINT4D point = { 0.0, 0.0, 0.0, 0.0 };
 
 	LWDEBUG(2, "ptarray_fromGEOSCoordSeq called");
 
@@ -377,7 +377,7 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 			shell = ptarray_to_GEOSLinearRing(lwpoly->rings[0], autofix);
 			if (!shell) return NULL;
 			ngeoms = lwpoly->nrings - 1;
-			if (ngeoms > 0) geoms = malloc(sizeof(GEOSGeom) * ngeoms);
+			if (ngeoms > 0) geoms = lwalloc(sizeof(GEOSGeom) * ngeoms);
 
 			for (i = 1; i < lwpoly->nrings; i++)
 			{
@@ -387,13 +387,13 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 					uint32_t k;
 					for (k = 0; k < i - 1; k++)
 						GEOSGeom_destroy(geoms[k]);
-					free(geoms);
+					lwfree(geoms);
 					GEOSGeom_destroy(shell);
 					return NULL;
 				}
 			}
 			g = GEOSGeom_createPolygon(shell, geoms, ngeoms);
-			if (geoms) free(geoms);
+			if (geoms) lwfree(geoms);
 		}
 		if (!g) return NULL;
 		break;
@@ -413,7 +413,7 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 		lwc = (LWCOLLECTION*)lwgeom;
 
 		ngeoms = lwc->ngeoms;
-		if (ngeoms > 0) geoms = malloc(sizeof(GEOSGeom) * ngeoms);
+		if (ngeoms > 0) geoms = lwalloc(sizeof(GEOSGeom) * ngeoms);
 
 		j = 0;
 		for (i = 0; i < ngeoms; ++i)
@@ -428,13 +428,13 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 				uint32_t k;
 				for (k = 0; k < j; k++)
 					GEOSGeom_destroy(geoms[k]);
-				free(geoms);
+				lwfree(geoms);
 				return NULL;
 			}
 			geoms[j++] = g;
 		}
 		g = GEOSGeom_createCollection(geostype, geoms, j);
-		if (ngeoms > 0) free(geoms);
+		if (ngeoms > 0) lwfree(geoms);
 		if (!g) return NULL;
 		break;
 
