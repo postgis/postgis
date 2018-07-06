@@ -1,3 +1,12 @@
+PostGIS 2.5.0beta2
+2018/XX/XX
+New since PostGIS 2.5.0beta1
+  - #4115, Fix a bug that created MVTs with incorrect property values under
+    parallel plans (Raúl Marín).
+
+  See PostGIS 2.5.0 section for full details
+
+
 PostGIS 2.5.0beta1
 2018/07/03
 New since PostGIS 2.5.0alpha
