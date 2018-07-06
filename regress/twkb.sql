@@ -48,6 +48,7 @@ select st_astext(st_collect(g::geometry)), encode(ST_AsTWKB(ST_Collect(g::geomet
 select 'POINT(1 1)'::text g
 union all
 select 'LINESTRING(2 2, 3 3)'::text g
+order by g desc -- Force order to get consistent results with parallel plans
 ) foo;
 
 select st_astext(st_collect(g::geometry)), encode(ST_AsTWKB(ST_Collect(g::geometry),0),'hex') from
@@ -57,6 +58,7 @@ union all
 select 'POINT(78 -78)'::text g
 union all
 select 'POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))'::text g
+order by g -- Force order to get consistent results with parallel plans
 ) foo;
 
 --GEOMETRYCOLLECTION with bounding box ref #3187
