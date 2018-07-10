@@ -101,6 +101,8 @@ PostGIS 2.5.0
   - #4060, #4094, PostgreSQL JIT support (Raúl Marín, Laurenz Albe)
   - #3960, ST_Centroid now uses lwgeom_centroid (Darafei Praliaskouski)
   - #4103, ST_PointOnSurface can handle invalid (Darafei Praliaskouski)
+  - #4027, Remove duplicated code in lwgeom_geos (Darafei Praliaskouski,
+           Daniel Baston)
 
 PostGIS 2.4.4
 2018/04/08
