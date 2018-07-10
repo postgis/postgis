@@ -701,7 +701,6 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	double res = (resx < resy ? resx : resy)/2;
 	double fx = extent / width;
 	double fy = -(extent / height);
-	double buffer_map_xunits = resx * buffer;
 	int preserve_collapsed = LW_TRUE;
 	POSTGIS_DEBUG(2, "mvt_geom called");
 
@@ -725,6 +724,10 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 
 	if (clip_geom)
 	{
+		// We need to add an extra half pixel to include the points that
+		// fall into the bbox only after the coordinate transformation
+		double buffer_map_xunits = !buffer ?
+			0.0 : nextafterf(resx * (buffer + 0.5), 0.0);
 		GBOX bgbox;
 		const GBOX *lwgeom_gbox = lwgeom_get_bbox(lwgeom);;
 		bgbox = *gbox;

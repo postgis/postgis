@@ -3,6 +3,7 @@ PostGIS 2.5.0beta2
 New since PostGIS 2.5.0beta1
   - #4115, Fix a bug that created MVTs with incorrect property values under
     parallel plans (Raúl Marín).
+  - #4120, ST_AsMVTGeom: Clip using tile coordinates (Raúl Marín).
 
   See PostGIS 2.5.0 section for full details
 
@@ -103,6 +104,9 @@ PostGIS 2.5.0
   - #4103, ST_PointOnSurface can handle invalid (Darafei Praliaskouski)
   - #4027, Remove duplicated code in lwgeom_geos (Darafei Praliaskouski,
            Daniel Baston)
+  - #4115, Fix a bug that created MVTs with incorrect property values under
+    parallel plans (Raúl Marín).
+  - #4120, ST_AsMVTGeom: Clip using tile coordinates (Raúl Marín).
 
 PostGIS 2.4.4
 2018/04/08
