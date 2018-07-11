@@ -61,8 +61,6 @@ Datum BOX3D_in(PG_FUNCTION_ARGS)
 	box->zmin = 0;
 	box->zmax = 0;
 
-	/*printf( "box3d_in gets '%s'\n",str); */
-
 	if (strstr(str, "BOX3D(") != str)
 	{
 		pfree(box);
@@ -133,7 +131,7 @@ Datum BOX3D_out(PG_FUNCTION_ARGS)
 		PG_RETURN_CSTRING(result);
 	}
 
-	/*double digits+ "BOX3D"+ "()" + commas +null */
+	/* double digits + "BOX3D"+ "()" + commas + null */
 	size = MAX_DIGS_DOUBLE * 6 + 5 + 2 + 4 + 5 + 1;
 
 	result = (char *)palloc(size);
@@ -161,7 +159,8 @@ Datum BOX3D_to_BOX2D(PG_FUNCTION_ARGS)
 static void
 box3d_to_box_p(BOX3D *box, BOX *out)
 {
-	if (!box) return;
+	if (!box)
+		return;
 
 	out->low.x = box->xmin;
 	out->low.y = box->ymin;
@@ -384,8 +383,7 @@ Datum BOX3D_expand(PG_FUNCTION_ARGS)
 /**
  * convert a GSERIALIZED to BOX3D
  *
- * NOTE: the bounding box is *always* recomputed as the cache
- * is a box2d, not a box3d...
+ * NOTE: the bounding box is always recomputed as the cache is a BOX2D, not a BOX3D.
  *
  */
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX3D);
@@ -397,7 +395,8 @@ Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS)
 	BOX3D *result;
 	int rv = lwgeom_calculate_gbox(lwgeom, &gbox);
 
-	if (rv == LW_FAILURE) PG_RETURN_NULL();
+	if (rv == LW_FAILURE)
+		PG_RETURN_NULL();
 
 	result = box3d_from_gbox(&gbox);
 	result->srid = lwgeom->srid;
@@ -465,17 +464,22 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	int rv;
 
 	/* Can't do anything with null inputs */
-	if ((box == NULL) && (geom == NULL)) { PG_RETURN_NULL(); }
+	if (!box && !geom)
+	{
+		PG_RETURN_NULL();
+	}
 	/* Null geometry but non-null box, return the box */
-	else if (geom == NULL)
+	else if (!geom)
 	{
 		result = palloc(sizeof(BOX3D));
 		memcpy(result, box, sizeof(BOX3D));
 		PG_RETURN_POINTER(result);
 	}
 
-	/* Deserialize geometry and *calculate* the box */
-	/* We can't use the cached box because it's float, we *must* calculate */
+	/*
+	 * Deserialize geometry and *calculate* the box
+	 * We can't use the cached box because it's float, we *must* calculate
+	 */
 	lwgeom = lwgeom_from_gserialized(geom);
 	srid = lwgeom->srid;
 	rv = lwgeom_calculate_gbox(lwgeom, &gbox);
@@ -486,14 +490,15 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	{
 		PG_FREE_IF_COPY(geom, 1);
 		/* No geom box, no input box, so null return */
-		if (box == NULL) PG_RETURN_NULL();
+		if (!box)
+			PG_RETURN_NULL();
 		result = palloc(sizeof(BOX3D));
 		memcpy(result, box, sizeof(BOX3D));
 		PG_RETURN_POINTER(result);
 	}
 
 	/* Null box and non-null geometry, just return the geometry box */
-	if (box == NULL)
+	if (!box)
 	{
 		PG_FREE_IF_COPY(geom, 1);
 		result = box3d_from_gbox(&gbox);
@@ -521,11 +526,14 @@ Datum BOX3D_combine_BOX3D(PG_FUNCTION_ARGS)
 	BOX3D *box1 = (BOX3D *)(PG_ARGISNULL(1) ? NULL : PG_GETARG_POINTER(1));
 	BOX3D *result;
 
-	if (box0 && !box1) PG_RETURN_POINTER(box0);
+	if (box0 && !box1)
+		PG_RETURN_POINTER(box0);
 
-	if (box1 && !box0) PG_RETURN_POINTER(box1);
+	if (box1 && !box0)
+		PG_RETURN_POINTER(box1);
 
-	if (!box1 && !box0) PG_RETURN_NULL();
+	if (!box1 && !box0)
+		PG_RETURN_NULL();
 
 	result = palloc(sizeof(BOX3D));
 	result->xmax = Max(box0->xmax, box1->xmax);
@@ -582,12 +590,12 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
  *****************************************************************************/
 
 /* contains? */
-
 bool
 BOX3D_contains_internal(BOX3D *box1, BOX3D *box2)
 {
-	return (box1->xmax >= box2->xmax && box1->xmin <= box2->xmin && box1->ymax >= box2->ymax &&
-		box1->ymin <= box2->ymin && box1->zmax >= box2->zmax && box1->zmin <= box2->zmin);
+	return (box1->xmax >= box2->xmax && box1->xmin <= box2->xmin) &&
+	       (box1->ymax >= box2->ymax && box1->ymin <= box2->ymin) &&
+	       (box1->zmax >= box2->zmax && box1->zmin <= box2->zmin);
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_contains);
@@ -601,7 +609,6 @@ PGDLLEXPORT Datum BOX3D_contains(PG_FUNCTION_ARGS)
 }
 
 /* contained by? */
-
 bool
 BOX3D_contained_internal(BOX3D *box1, BOX3D *box2)
 {
@@ -619,12 +626,12 @@ PGDLLEXPORT Datum BOX3D_contained(PG_FUNCTION_ARGS)
 }
 
 /* overlaps? */
-
 bool
 BOX3D_overlaps_internal(BOX3D *box1, BOX3D *box2)
 {
-	return (box1->xmin <= box2->xmax && box2->xmin <= box1->xmax && box1->ymin <= box2->ymax &&
-		box2->ymin <= box1->ymax && box1->zmin <= box2->zmax && box2->zmin <= box1->zmax);
+	return (box1->xmin <= box2->xmax && box2->xmin <= box1->xmax) &&
+	       (box1->ymin <= box2->ymax && box2->ymin <= box1->ymax) &&
+	       (box1->zmin <= box2->zmax && box2->zmin <= box1->zmax);
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_overlaps);
@@ -638,12 +645,12 @@ PGDLLEXPORT Datum BOX3D_overlaps(PG_FUNCTION_ARGS)
 }
 
 /* same? */
-
 bool
 BOX3D_same_internal(BOX3D *box1, BOX3D *box2)
 {
-	return (FPeq(box1->xmax, box2->xmax) && FPeq(box1->xmin, box2->xmin) && FPeq(box1->ymax, box2->ymax) &&
-		FPeq(box1->ymin, box2->ymin) && FPeq(box1->zmax, box2->zmax) && FPeq(box1->zmin, box2->zmin));
+	return (FPeq(box1->xmax, box2->xmax) && FPeq(box1->xmin, box2->xmin)) &&
+	       (FPeq(box1->ymax, box2->ymax) && FPeq(box1->ymin, box2->ymin)) &&
+	       (FPeq(box1->zmax, box2->zmax) && FPeq(box1->zmin, box2->zmin));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_same);
@@ -657,7 +664,6 @@ PGDLLEXPORT Datum BOX3D_same(PG_FUNCTION_ARGS)
 }
 
 /* strictly left of? */
-
 bool
 BOX3D_left_internal(BOX3D *box1, BOX3D *box2)
 {
@@ -675,7 +681,6 @@ PGDLLEXPORT Datum BOX3D_left(PG_FUNCTION_ARGS)
 }
 
 /* does not extend to right of? */
-
 bool
 BOX3D_overleft_internal(BOX3D *box1, BOX3D *box2)
 {
@@ -693,7 +698,6 @@ PGDLLEXPORT Datum BOX3D_overleft(PG_FUNCTION_ARGS)
 }
 
 /* strictly right of? */
-
 bool
 BOX3D_right_internal(BOX3D *box1, BOX3D *box2)
 {
@@ -711,7 +715,6 @@ PGDLLEXPORT Datum BOX3D_right(PG_FUNCTION_ARGS)
 }
 
 /* does not extend to left of? */
-
 bool
 BOX3D_overright_internal(BOX3D *box1, BOX3D *box2)
 {
@@ -729,7 +732,6 @@ PGDLLEXPORT Datum BOX3D_overright(PG_FUNCTION_ARGS)
 }
 
 /* strictly below of? */
-
 bool
 BOX3D_below_internal(BOX3D *box1, BOX3D *box2)
 {
@@ -747,7 +749,6 @@ PGDLLEXPORT Datum BOX3D_below(PG_FUNCTION_ARGS)
 }
 
 /* does not extend above of? */
-
 bool
 BOX3D_overbelow_internal(BOX3D *box1, BOX3D *box2)
 {
@@ -765,7 +766,6 @@ PGDLLEXPORT Datum BOX3D_overbelow(PG_FUNCTION_ARGS)
 }
 
 /* strictly above of? */
-
 bool
 BOX3D_above_internal(BOX3D *box1, BOX3D *box2)
 {
@@ -783,7 +783,6 @@ PGDLLEXPORT Datum BOX3D_above(PG_FUNCTION_ARGS)
 }
 
 /* does not extend below of? */
-
 bool
 BOX3D_overabove_internal(BOX3D *box1, BOX3D *box2)
 {
@@ -801,7 +800,6 @@ PGDLLEXPORT Datum BOX3D_overabove(PG_FUNCTION_ARGS)
 }
 
 /* strictly in before of? */
-
 bool
 BOX3D_front_internal(BOX3D *box1, BOX3D *box2)
 {
@@ -819,7 +817,6 @@ PGDLLEXPORT Datum BOX3D_front(PG_FUNCTION_ARGS)
 }
 
 /* does not extend to the after of? */
-
 bool
 BOX3D_overfront_internal(BOX3D *box1, BOX3D *box2)
 {
@@ -837,7 +834,6 @@ PGDLLEXPORT Datum BOX3D_overfront(PG_FUNCTION_ARGS)
 }
 
 /* strictly after of? */
-
 bool
 BOX3D_back_internal(BOX3D *box1, BOX3D *box2)
 {
@@ -855,7 +851,6 @@ PGDLLEXPORT Datum BOX3D_back(PG_FUNCTION_ARGS)
 }
 
 /* does not extend to the before of? */
-
 bool
 BOX3D_overback_internal(BOX3D *box1, BOX3D *box2)
 {
@@ -873,14 +868,14 @@ PGDLLEXPORT Datum BOX3D_overback(PG_FUNCTION_ARGS)
 }
 
 /* Minimum distance between 2 bounding boxes */
-
 double
 BOX3D_distance_internal(BOX3D *box1, BOX3D *box2)
 {
 	double sqrDist = 0;
 	double d;
 
-	if (BOX3D_overlaps_internal(box1, box2)) return 0.0;
+	if (BOX3D_overlaps_internal(box1, box2))
+		return 0.0;
 
 	/* X axis */
 	if (box1->xmax < box2->xmin)

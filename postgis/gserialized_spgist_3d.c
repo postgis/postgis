@@ -74,14 +74,14 @@
 #include "lwgeom_box3d.h"
 #include "lwgeom_pg.h"
 
-
 PG_FUNCTION_INFO_V1(gserialized_overlaps_3d);
 Datum gserialized_overlaps_3d(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
 	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
 	bool resut = BOX3D_overlaps_internal(box1, box2);
-	pfree(box1); pfree(box2);
+	pfree(box1);
+	pfree(box2);
 
 	PG_RETURN_BOOL(resut);
 }
@@ -92,7 +92,8 @@ Datum gserialized_contains_3d(PG_FUNCTION_ARGS)
 	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
 	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
 	bool resut = BOX3D_contains_internal(box1, box2);
-	pfree(box1); pfree(box2);
+	pfree(box1);
+	pfree(box2);
 
 	PG_RETURN_BOOL(resut);
 }
@@ -103,7 +104,8 @@ Datum gserialized_contained_3d(PG_FUNCTION_ARGS)
 	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
 	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
 	bool resut = BOX3D_contained_internal(box1, box2);
-	pfree(box1); pfree(box2);
+	pfree(box1);
+	pfree(box2);
 
 	PG_RETURN_BOOL(resut);
 }
@@ -114,7 +116,8 @@ Datum gserialized_same_3d(PG_FUNCTION_ARGS)
 	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
 	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
 	bool resut = BOX3D_same_internal(box1, box2);
-	pfree(box1); pfree(box2);
+	pfree(box1);
+	pfree(box2);
 
 	PG_RETURN_BOOL(resut);
 }
@@ -129,8 +132,8 @@ Datum gserialized_same_3d(PG_FUNCTION_ARGS)
 static int
 compareDoubles(const void *a, const void *b)
 {
-	double		x = *(double *) a;
-	double		y = *(double *) b;
+	double x = *(double *)a;
+	double y = *(double *)b;
 
 	if (x == y)
 		return 0;
@@ -139,8 +142,8 @@ compareDoubles(const void *a, const void *b)
 
 typedef struct
 {
-	BOX3D	left;
-	BOX3D	right;
+	BOX3D left;
+	BOX3D right;
 } CubeBox3D;
 
 /*
@@ -153,7 +156,7 @@ typedef struct
 static uint8
 getOctant(BOX3D *centroid, BOX3D *inBox)
 {
-	uint8		octant = 0;
+	uint8 octant = 0;
 
 	if (inBox->xmin > centroid->xmin)
 		octant |= 0x20;
@@ -185,8 +188,8 @@ getOctant(BOX3D *centroid, BOX3D *inBox)
 static CubeBox3D *
 initCubeBox(void)
 {
-	CubeBox3D  *cube_box = (CubeBox3D *) palloc(sizeof(CubeBox3D));
-	double		infinity = get_float8_infinity();
+	CubeBox3D *cube_box = (CubeBox3D *)palloc(sizeof(CubeBox3D));
+	double infinity = get_float8_infinity();
 
 	cube_box->left.xmin = -infinity;
 	cube_box->left.xmax = infinity;
@@ -212,14 +215,14 @@ initCubeBox(void)
 /*
  * Calculate the next traversal value
  *
- * All centroids are bounded by CubeBox3D, but SP-GiST only keeps
- * boxes.  When we are traversing the tree, we must calculate CubeBox3D,
+ * All centroids are bounded by CubeBox3D, but SP-GiST only keeps boxes.
+ * When we are traversing the tree, we must calculate CubeBox3D,
  * using centroid and octant.
  */
 static CubeBox3D *
 nextCubeBox3D(CubeBox3D *cube_box, BOX3D *centroid, uint8 octant)
 {
-	CubeBox3D    *next_cube_box = (CubeBox3D *) palloc(sizeof(CubeBox3D));
+	CubeBox3D *next_cube_box = (CubeBox3D *)palloc(sizeof(CubeBox3D));
 
 	memcpy(next_cube_box, cube_box, sizeof(CubeBox3D));
 
@@ -260,24 +263,18 @@ nextCubeBox3D(CubeBox3D *cube_box, BOX3D *centroid, uint8 octant)
 static bool
 overlap6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return 	(cube_box->left.xmin <= query->xmax) &&
-			(cube_box->right.xmax >= query->xmin) &&
-			(cube_box->left.ymin <= query->ymax) &&
-			(cube_box->right.ymax >= query->ymin) &&
-			(cube_box->left.zmin <= query->zmax) &&
-			(cube_box->right.zmax >= query->zmin);
+	return (cube_box->left.xmin <= query->xmax) && (cube_box->right.xmax >= query->xmin) &&
+	       (cube_box->left.ymin <= query->ymax) && (cube_box->right.ymax >= query->ymin) &&
+	       (cube_box->left.zmin <= query->zmax) && (cube_box->right.zmax >= query->zmin);
 }
 
 /* Can any cube from cube_box contain query? */
 static bool
 contain6D(CubeBox3D *cube_box, BOX3D *query)
 {
-	return 	(cube_box->right.xmax >= query->xmax) &&
-			(cube_box->left.xmin <= query->xmin) &&
-			(cube_box->right.ymax >= query->ymax) &&
-			(cube_box->left.ymin <= query->ymin) &&
-			(cube_box->right.zmax >= query->zmax) &&
-			(cube_box->left.zmin <= query->zmin);
+	return (cube_box->right.xmax >= query->xmax) && (cube_box->left.xmin <= query->xmin) &&
+	       (cube_box->right.ymax >= query->ymax) && (cube_box->left.ymin <= query->ymin) &&
+	       (cube_box->right.zmax >= query->zmax) && (cube_box->left.zmin <= query->zmin);
 }
 
 /* Can any cube from cube_box be left of query? */
@@ -370,14 +367,13 @@ overBack6D(CubeBox3D *cube_box, BOX3D *query)
 
 PG_FUNCTION_INFO_V1(gserialized_spgist_config_3d);
 
-PGDLLEXPORT Datum
-gserialized_spgist_config_3d(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_config_3d(PG_FUNCTION_ARGS)
 {
-	spgConfigOut *cfg = (spgConfigOut *) PG_GETARG_POINTER(1);
+	spgConfigOut *cfg = (spgConfigOut *)PG_GETARG_POINTER(1);
 
 	Oid boxoid = TypenameGetTypid("box3d");
 	cfg->prefixType = boxoid;
-	cfg->labelType = VOIDOID;	/* We don't need node labels. */
+	cfg->labelType = VOIDOID; /* We don't need node labels. */
 	cfg->leafType = boxoid;
 	cfg->canReturnData = false;
 	cfg->longValuesOK = false;
@@ -391,13 +387,12 @@ gserialized_spgist_config_3d(PG_FUNCTION_ARGS)
 
 PG_FUNCTION_INFO_V1(gserialized_spgist_choose_3d);
 
-PGDLLEXPORT Datum
-gserialized_spgist_choose_3d(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_choose_3d(PG_FUNCTION_ARGS)
 {
-	spgChooseIn *in = (spgChooseIn *) PG_GETARG_POINTER(0);
-	spgChooseOut *out = (spgChooseOut *) PG_GETARG_POINTER(1);
-	BOX3D	   *centroid = DatumGetBox3DP(in->prefixDatum),
-			   *box = DatumGetBox3DP(in->leafDatum);
+	spgChooseIn *in = (spgChooseIn *)PG_GETARG_POINTER(0);
+	spgChooseOut *out = (spgChooseOut *)PG_GETARG_POINTER(1);
+	BOX3D *centroid = DatumGetBox3DP(in->prefixDatum);
+	BOX3D *box = DatumGetBox3DP(in->leafDatum);
 
 	out->resultType = spgMatchNode;
 	out->result.matchNode.restDatum = Box3DPGetDatum(box);
@@ -417,27 +412,25 @@ gserialized_spgist_choose_3d(PG_FUNCTION_ARGS)
  */
 PG_FUNCTION_INFO_V1(gserialized_spgist_picksplit_3d);
 
-PGDLLEXPORT Datum
-gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 {
-	spgPickSplitIn *in = (spgPickSplitIn *) PG_GETARG_POINTER(0);
-	spgPickSplitOut *out = (spgPickSplitOut *) PG_GETARG_POINTER(1);
-	BOX3D	   *centroid;
-	int			median,
-				i;
-	double	   *lowXs = palloc(sizeof(double) * in->nTuples);
-	double	   *highXs = palloc(sizeof(double) * in->nTuples);
-	double	   *lowYs = palloc(sizeof(double) * in->nTuples);
-	double	   *highYs = palloc(sizeof(double) * in->nTuples);
-	double	   *lowZs = palloc(sizeof(double) * in->nTuples);
-	double	   *highZs = palloc(sizeof(double) * in->nTuples);
-	BOX3D	   *box = DatumGetBox3DP(in->datums[0]);
-	int32_t		srid = box->srid;
+	spgPickSplitIn *in = (spgPickSplitIn *)PG_GETARG_POINTER(0);
+	spgPickSplitOut *out = (spgPickSplitOut *)PG_GETARG_POINTER(1);
+	BOX3D *centroid;
+	int median, i;
+	double *lowXs = palloc(sizeof(double) * in->nTuples);
+	double *highXs = palloc(sizeof(double) * in->nTuples);
+	double *lowYs = palloc(sizeof(double) * in->nTuples);
+	double *highYs = palloc(sizeof(double) * in->nTuples);
+	double *lowZs = palloc(sizeof(double) * in->nTuples);
+	double *highZs = palloc(sizeof(double) * in->nTuples);
+	BOX3D *box = DatumGetBox3DP(in->datums[0]);
+	int32_t srid = box->srid;
 
 	/* Calculate median of all 6D coordinates */
 	for (i = 0; i < in->nTuples; i++)
 	{
-		BOX3D	   *box = DatumGetBox3DP(in->datums[i]);
+		BOX3D *box = DatumGetBox3DP(in->datums[i]);
 
 		lowXs[i] = box->xmin;
 		highXs[i] = box->xmax;
@@ -471,7 +464,7 @@ gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 	out->prefixDatum = Box3DPGetDatum(centroid);
 
 	out->nNodes = 64;
-	out->nodeLabels = NULL;		/* We don't need node labels. */
+	out->nodeLabels = NULL; /* We don't need node labels. */
 
 	out->mapTuplesToNodes = palloc(sizeof(int) * in->nTuples);
 	out->leafTupleDatums = palloc(sizeof(Datum) * in->nTuples);
@@ -482,8 +475,8 @@ gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 	 */
 	for (i = 0; i < in->nTuples; i++)
 	{
-		BOX3D	   *box = DatumGetBox3DP(in->datums[i]);
-		uint8		octant = getOctant(centroid, box);
+		BOX3D *box = DatumGetBox3DP(in->datums[i]);
+		uint8 octant = getOctant(centroid, box);
 
 		out->leafTupleDatums[i] = Box3DPGetDatum(box);
 		out->mapTuplesToNodes[i] = octant;
@@ -504,24 +497,23 @@ gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
  */
 PG_FUNCTION_INFO_V1(gserialized_spgist_inner_consistent_3d);
 
-PGDLLEXPORT Datum
-gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
 {
-	spgInnerConsistentIn *in = (spgInnerConsistentIn *) PG_GETARG_POINTER(0);
-	spgInnerConsistentOut *out = (spgInnerConsistentOut *) PG_GETARG_POINTER(1);
-	int			i;
+	spgInnerConsistentIn *in = (spgInnerConsistentIn *)PG_GETARG_POINTER(0);
+	spgInnerConsistentOut *out = (spgInnerConsistentOut *)PG_GETARG_POINTER(1);
+	int i;
 	MemoryContext old_ctx;
-	CubeBox3D   *cube_box;
-	uint8		octant;
-	BOX3D	   *centroid;
-	int		   *nodeNumbers;
-	void	  **traversalValues;
+	CubeBox3D *cube_box;
+	uint8 octant;
+	BOX3D *centroid;
+	int *nodeNumbers;
+	void **traversalValues;
 
 	if (in->allTheSame)
 	{
 		/* Report that all nodes should be visited */
 		out->nNodes = in->nNodes;
-		out->nodeNumbers = (int *) palloc(sizeof(int) * in->nNodes);
+		out->nodeNumbers = (int *)palloc(sizeof(int) * in->nNodes);
 		for (i = 0; i < in->nNodes; i++)
 			out->nodeNumbers[i] = i;
 
@@ -541,8 +533,8 @@ gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
 
 	/* Allocate enough memory for nodes */
 	out->nNodes = 0;
-	nodeNumbers = (int *) palloc(sizeof(int) * in->nNodes);
-	traversalValues = (void **) palloc(sizeof(void *) * in->nNodes);
+	nodeNumbers = (int *)palloc(sizeof(int) * in->nNodes);
+	traversalValues = (void **)palloc(sizeof(void *) * in->nNodes);
 
 	/*
 	 * We switch memory context, because we want to allocate memory for new
@@ -553,77 +545,77 @@ gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
 
 	for (octant = 0; octant < in->nNodes; octant++)
 	{
-		CubeBox3D  *next_cube_box = nextCubeBox3D(cube_box, centroid, octant);
-		bool		flag = true;
+		CubeBox3D *next_cube_box = nextCubeBox3D(cube_box, centroid, octant);
+		bool flag = true;
 
 		for (i = 0; i < in->nkeys; i++)
 		{
 			StrategyNumber strategy = in->scankeys[i].sk_strategy;
-			Datum		query = in->scankeys[i].sk_argument;
-			BOX3D	   *box = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, query));
+			Datum query = in->scankeys[i].sk_argument;
+			BOX3D *box = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, query));
 
 			switch (strategy)
 			{
-				case SPGOverlapStrategyNumber:
-				case SPGContainedByStrategyNumber:
-					flag = overlap6D(next_cube_box, box);
-					break;
+			case SPGOverlapStrategyNumber:
+			case SPGContainedByStrategyNumber:
+				flag = overlap6D(next_cube_box, box);
+				break;
 
-				case SPGContainsStrategyNumber:
-				case SPGSameStrategyNumber:
-					flag = contain6D(next_cube_box, box);
-					break;
+			case SPGContainsStrategyNumber:
+			case SPGSameStrategyNumber:
+				flag = contain6D(next_cube_box, box);
+				break;
 
-				case SPGLeftStrategyNumber:
-					flag = !overRight6D(next_cube_box, box);
-					break;
+			case SPGLeftStrategyNumber:
+				flag = !overRight6D(next_cube_box, box);
+				break;
 
-				case SPGOverLeftStrategyNumber:
-					flag = !right6D(next_cube_box, box);
-					break;
+			case SPGOverLeftStrategyNumber:
+				flag = !right6D(next_cube_box, box);
+				break;
 
-				case SPGRightStrategyNumber:
-					flag = !overLeft6D(next_cube_box, box);
-					break;
+			case SPGRightStrategyNumber:
+				flag = !overLeft6D(next_cube_box, box);
+				break;
 
-				case SPGOverRightStrategyNumber:
-					flag = !left6D(next_cube_box, box);
-					break;
+			case SPGOverRightStrategyNumber:
+				flag = !left6D(next_cube_box, box);
+				break;
 
-				case SPGAboveStrategyNumber:
-					flag = !overBelow6D(next_cube_box, box);
-					break;
+			case SPGAboveStrategyNumber:
+				flag = !overBelow6D(next_cube_box, box);
+				break;
 
-				case SPGOverAboveStrategyNumber:
-					flag = !below6D(next_cube_box, box);
-					break;
+			case SPGOverAboveStrategyNumber:
+				flag = !below6D(next_cube_box, box);
+				break;
 
-				case SPGBelowStrategyNumber:
-					flag = !overAbove6D(next_cube_box, box);
-					break;
+			case SPGBelowStrategyNumber:
+				flag = !overAbove6D(next_cube_box, box);
+				break;
 
-				case SPGOverBelowStrategyNumber:
-					flag = !above6D(next_cube_box, box);
-					break;
+			case SPGOverBelowStrategyNumber:
+				flag = !above6D(next_cube_box, box);
+				break;
 
-				case SPGBackStrategyNumber:
-					flag = !overFront6D(next_cube_box, box);
-					break;
+			case SPGBackStrategyNumber:
+				flag = !overFront6D(next_cube_box, box);
+				break;
 
-				case SPGOverBackStrategyNumber:
-					flag = !front6D(next_cube_box, box);
-					break;
+			case SPGOverBackStrategyNumber:
+				flag = !front6D(next_cube_box, box);
+				break;
 
-				case SPGFrontStrategyNumber:
-					flag = !overBack6D(next_cube_box, box);
-					break;
+			case SPGFrontStrategyNumber:
+				flag = !overBack6D(next_cube_box, box);
+				break;
 
-				case SPGOverFrontStrategyNumber:
-					flag = !back6D(next_cube_box, box);
-					break;
+			case SPGOverFrontStrategyNumber:
+				flag = !back6D(next_cube_box, box);
+				break;
 
-				default:
-					elog(ERROR, "unrecognized strategy: %d", strategy);
+			default:
+				elog(ERROR, "unrecognized strategy: %d", strategy);
 			}
 
 			/* If any check is failed, we have found our answer. */
@@ -648,8 +640,8 @@ gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
 	}
 
 	/* Pass to the next level only the values that need to be traversed */
-	out->nodeNumbers = (int *) palloc(sizeof(int) * out->nNodes);
-	out->traversalValues = (void **) palloc(sizeof(void *) * out->nNodes);
+	out->nodeNumbers = (int *)palloc(sizeof(int) * out->nNodes);
+	out->traversalValues = (void **)palloc(sizeof(void *) * out->nNodes);
 	for (i = 0; i < out->nNodes; i++)
 	{
 		out->nodeNumbers[i] = nodeNumbers[i];
@@ -669,14 +661,13 @@ gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
  */
 PG_FUNCTION_INFO_V1(gserialized_spgist_leaf_consistent_3d);
 
-PGDLLEXPORT Datum
-gserialized_spgist_leaf_consistent_3d(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_3d(PG_FUNCTION_ARGS)
 {
-	spgLeafConsistentIn *in = (spgLeafConsistentIn *) PG_GETARG_POINTER(0);
-	spgLeafConsistentOut *out = (spgLeafConsistentOut *) PG_GETARG_POINTER(1);
-	BOX3D		*leaf = DatumGetBox3DP(in->leafDatum);
-	bool		flag = true;
-	int			i;
+	spgLeafConsistentIn *in = (spgLeafConsistentIn *)PG_GETARG_POINTER(0);
+	spgLeafConsistentOut *out = (spgLeafConsistentOut *)PG_GETARG_POINTER(1);
+	BOX3D *leaf = DatumGetBox3DP(in->leafDatum);
+	bool flag = true;
+	int i;
 
 	/* All tests are exact. */
 	out->recheck = false;
@@ -688,77 +679,77 @@ gserialized_spgist_leaf_consistent_3d(PG_FUNCTION_ARGS)
 	for (i = 0; i < in->nkeys; i++)
 	{
 		StrategyNumber strategy = in->scankeys[i].sk_strategy;
-		Datum		query = in->scankeys[i].sk_argument;
-		BOX3D	   *box = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, query));
+		Datum query = in->scankeys[i].sk_argument;
+		BOX3D *box = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, query));
 
 		switch (strategy)
 		{
-			case SPGOverlapStrategyNumber:
-				flag = BOX3D_overlaps_internal(leaf, box);
-				break;
+		case SPGOverlapStrategyNumber:
+			flag = BOX3D_overlaps_internal(leaf, box);
+			break;
 
-			case SPGContainsStrategyNumber:
-				flag = BOX3D_contains_internal(leaf, box);
-				break;
+		case SPGContainsStrategyNumber:
+			flag = BOX3D_contains_internal(leaf, box);
+			break;
 
-			case SPGContainedByStrategyNumber:
-				flag = BOX3D_contained_internal(leaf, box);
-				break;
+		case SPGContainedByStrategyNumber:
+			flag = BOX3D_contained_internal(leaf, box);
+			break;
 
-			case SPGSameStrategyNumber:
-				flag = BOX3D_same_internal(leaf, box);
-				break;
+		case SPGSameStrategyNumber:
+			flag = BOX3D_same_internal(leaf, box);
+			break;
 
-			case SPGLeftStrategyNumber:
-				flag = BOX3D_left_internal(leaf, box);
-				break;
+		case SPGLeftStrategyNumber:
+			flag = BOX3D_left_internal(leaf, box);
+			break;
 
-			case SPGOverLeftStrategyNumber:
-				flag = BOX3D_overleft_internal(leaf, box);
-				break;
+		case SPGOverLeftStrategyNumber:
+			flag = BOX3D_overleft_internal(leaf, box);
+			break;
 
-			case SPGRightStrategyNumber:
-				flag = BOX3D_right_internal(leaf, box);
-				break;
+		case SPGRightStrategyNumber:
+			flag = BOX3D_right_internal(leaf, box);
+			break;
 
-			case SPGOverRightStrategyNumber:
-				flag = BOX3D_overright_internal(leaf, box);
-				break;
+		case SPGOverRightStrategyNumber:
+			flag = BOX3D_overright_internal(leaf, box);
+			break;
 
-			case SPGAboveStrategyNumber:
-				flag = BOX3D_above_internal(leaf, box);
-				break;
+		case SPGAboveStrategyNumber:
+			flag = BOX3D_above_internal(leaf, box);
+			break;
 
-			case SPGOverAboveStrategyNumber:
-				flag = BOX3D_overabove_internal(leaf, box);
-				break;
+		case SPGOverAboveStrategyNumber:
+			flag = BOX3D_overabove_internal(leaf, box);
+			break;
 
-			case SPGBelowStrategyNumber:
-				flag = BOX3D_below_internal(leaf, box);
-				break;
+		case SPGBelowStrategyNumber:
+			flag = BOX3D_below_internal(leaf, box);
+			break;
 
-			case SPGOverBelowStrategyNumber:
-				flag = BOX3D_overbelow_internal(leaf, box);
-				break;
+		case SPGOverBelowStrategyNumber:
+			flag = BOX3D_overbelow_internal(leaf, box);
+			break;
 
-			case SPGBackStrategyNumber:
-				flag = BOX3D_back_internal(leaf, box);
-				break;
+		case SPGBackStrategyNumber:
+			flag = BOX3D_back_internal(leaf, box);
+			break;
 
-			case SPGOverBackStrategyNumber:
-				flag = BOX3D_overback_internal(leaf, box);
-				break;
+		case SPGOverBackStrategyNumber:
+			flag = BOX3D_overback_internal(leaf, box);
+			break;
 
-			case SPGFrontStrategyNumber:
-				flag = BOX3D_front_internal(leaf, box);
-				break;
+		case SPGFrontStrategyNumber:
+			flag = BOX3D_front_internal(leaf, box);
+			break;
 
-			case SPGOverFrontStrategyNumber:
-				flag = BOX3D_overfront_internal(leaf, box);
-				break;
+		case SPGOverFrontStrategyNumber:
+			flag = BOX3D_overfront_internal(leaf, box);
+			break;
 
-			default:
-				elog(ERROR, "unrecognized strategy: %d", strategy);
+		default:
+			elog(ERROR, "unrecognized strategy: %d", strategy);
 		}
 
 		/* If any check is failed, we have found our answer. */
@@ -771,13 +762,12 @@ gserialized_spgist_leaf_consistent_3d(PG_FUNCTION_ARGS)
 
 PG_FUNCTION_INFO_V1(gserialized_spgist_compress_3d);
 
-PGDLLEXPORT Datum
-gserialized_spgist_compress_3d(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_compress_3d(PG_FUNCTION_ARGS)
 {
-	BOX3D	   *result = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
+	BOX3D *result = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
 
 	/* Is the bounding box is null */
-	if ( result == LW_FAILURE )
+	if (result == LW_FAILURE)
 	{
 		PG_RETURN_NULL();
 	}
