@@ -41,30 +41,7 @@
 #define SPGSubEqualStrategyNumber        25  /* for inet <<= */
 #define SPGSuperStrategyNumber           26  /* for inet << */
 #define SPGSuperEqualStrategyNumber      27  /* for inet >>= */
-#define SPGOverFrontStrategyNumber		28		/* for &</ */
-#define SPGFrontStrategyNumber			29		/* for <</ */
-#define SPGBackStrategyNumber			30		/* for />> */
-#define SPGOverBackStrategyNumber		31		/* for /&> */
-
-/*****************************************************************************
- * BOX3D operators
- *****************************************************************************/
-
-
-bool BOX3D_contains_internal(BOX3D *box1, BOX3D *box2);
-bool BOX3D_contained_internal(BOX3D *box1, BOX3D *box2);
-bool BOX3D_overlaps_internal(BOX3D *box1, BOX3D *box2);
-bool BOX3D_same_internal(BOX3D *box1, BOX3D *box2);
-bool BOX3D_left_internal(BOX3D *box1, BOX3D *box2);
-bool BOX3D_overleft_internal(BOX3D *box1, BOX3D *box2);
-bool BOX3D_right_internal(BOX3D *box1, BOX3D *box2);
-bool BOX3D_overright_internal(BOX3D *box1, BOX3D *box2);
-bool BOX3D_below_internal(BOX3D *box1, BOX3D *box2);
-bool BOX3D_overbelow_internal(BOX3D *box1, BOX3D *box2);
-bool BOX3D_above_internal(BOX3D *box1, BOX3D *box2);
-bool BOX3D_overabove_internal(BOX3D *box1, BOX3D *box2);
-bool BOX3D_front_internal(BOX3D *box1, BOX3D *box2);
-bool BOX3D_overfront_internal(BOX3D *box1, BOX3D *box2);
-bool BOX3D_back_internal(BOX3D *box1, BOX3D *box2);
-bool BOX3D_overback_internal(BOX3D *box1, BOX3D *box2);
-double BOX3D_distance_internal(BOX3D *box1, BOX3D *box2);
+#define SPGOverFrontStrategyNumber	     28  /* for &</ */
+#define SPGFrontStrategyNumber           29  /* for <</ */
+#define SPGBackStrategyNumber            30  /* for />> */
+#define SPGOverBackStrategyNumber        31  /* for /&> */

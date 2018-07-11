@@ -71,7 +71,9 @@
  *****************************************************************************/
 
 #include "gserialized_spgist_3d.h"
+#include "lwgeom_box3d.h"
 #include "lwgeom_pg.h"
+
 
 PG_FUNCTION_INFO_V1(gserialized_overlaps_3d);
 Datum gserialized_overlaps_3d(PG_FUNCTION_ARGS)
