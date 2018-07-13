@@ -1459,7 +1459,6 @@ AC_OUTPUT([GNUmakefile
    extensions/postgis_sfcgal/Makefile
    extensions/postgis_topology/Makefile
    extensions/postgis_tiger_geocoder/Makefile
-   extensions/postgis_tiger_geocoder/postgis_tiger_geocoder.control
    extensions/address_standardizer/Makefile
    liblwgeom/Makefile
    liblwgeom/cunit/Makefile
