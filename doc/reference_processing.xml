@@ -490,16 +490,14 @@ FROM (SELECT ST_Buffer(
 		<title>Description</title>
 
     <para>
-Clips a geometry by a 2D box. The output geometry is not guaranteed to be valid
-(self-intersections for a polygon may be introduced).
-Topologically invalid input geometries do not result in exceptions being thrown.
-    </para>
+Clips a geometry by a 2D box.</para>
 
 		<para>Performed by the GEOS module.</para>
 		<note><para>Requires GEOS 3.5.0+</para></note>
 
 		<para>Availability: 2.2.0 - requires GEOS &gt;= 3.5.0.</para>
-		<para>Changed: 2.5.0 - wrapper around ST_Intersection to work around GEOS bugs. </para>
+                <para>Changed: 2.5.0 - wrapper around ST_Intersection to work around GEOS bugs.
+                      No longer supports invalid input geometry.</para>
 
 	  </refsection>
 
