@@ -64,24 +64,24 @@
  * that we don't yet have as infinity.
  *
  * Portions Copyright (c) 2018, Esteban Zimanyi, Arthur Lesuisse,
- * 		Université Libre de Bruxelles
+ * 		UniversitÃ© Libre de Bruxelles
  * Portions Copyright (c) 1996-2016, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *****************************************************************************/
 
 #include <postgres.h>
-#include <utils/builtins.h>			/* For float manipulation */
-#include "access/spgist.h"			/* For SP-GiST */
-#include "catalog/namespace.h"		/* For TypenameGetTypid */
-#include "catalog/pg_type_d.h"		/* For VOIDOID */
+#include <utils/builtins.h>    /* For float manipulation */
+#include "access/spgist.h"     /* For SP-GiST */
+#include "catalog/namespace.h" /* For TypenameGetTypid */
+#include "catalog/pg_type_d.h" /* For VOIDOID */
 
 #include "../postgis_config.h"
 
-#include "liblwgeom.h"         /* For standard geometry types. */
-#include "lwgeom_pg.h"       /* For debugging macros. */
-#include <gserialized_gist.h>	     /* For utility functions. */
-#include <lwgeom_pg.h>				/* For debugging macros. */
+#include "liblwgeom.h"        /* For standard geometry types. */
+#include "lwgeom_pg.h"        /* For debugging macros. */
+#include <gserialized_gist.h> /* For utility functions. */
+#include <lwgeom_pg.h>        /* For debugging macros. */
 
 /*
 ** SP-GiST 2D index function prototypes
@@ -104,8 +104,8 @@ Datum gserialized_spgist_compress_2d(PG_FUNCTION_ARGS);
 static int
 compareDoubles(const void *a, const void *b)
 {
-	double		x = *(double *) a;
-	double		y = *(double *) b;
+	double x = *(double *)a;
+	double y = *(double *)b;
 
 	if (x == y)
 		return 0;
@@ -114,8 +114,8 @@ compareDoubles(const void *a, const void *b)
 
 typedef struct
 {
-	BOX2DF	left;
-	BOX2DF	right;
+	BOX2DF left;
+	BOX2DF right;
 } RectBox;
 
 /*
@@ -128,7 +128,7 @@ typedef struct
 static uint8
 getQuadrant4D(BOX2DF *centroid, BOX2DF *inBox)
 {
-	uint8		quadrant = 0;
+	uint8 quadrant = 0;
 
 	if (inBox->xmin > centroid->xmin)
 		quadrant |= 0x8;
@@ -154,8 +154,8 @@ getQuadrant4D(BOX2DF *centroid, BOX2DF *inBox)
 static RectBox *
 initRectBox(void)
 {
-	RectBox	   *rect_box = (RectBox *) palloc(sizeof(RectBox));
-	float		infinity = get_float4_infinity();
+	RectBox *rect_box = (RectBox *)palloc(sizeof(RectBox));
+	float infinity = get_float4_infinity();
 
 	rect_box->left.xmin = -infinity;
 	rect_box->left.xmax = infinity;
@@ -182,7 +182,7 @@ initRectBox(void)
 static RectBox *
 nextRectBox(RectBox *rect_box, BOX2DF *centroid, uint8 quadrant)
 {
-	RectBox    *next_rect_box = (RectBox *) palloc(sizeof(RectBox));
+	RectBox *next_rect_box = (RectBox *)palloc(sizeof(RectBox));
 
 	memcpy(next_rect_box, rect_box, sizeof(RectBox));
 
@@ -213,20 +213,16 @@ nextRectBox(RectBox *rect_box, BOX2DF *centroid, uint8 quadrant)
 static bool
 overlap4D(RectBox *rect_box, BOX2DF *query)
 {
-	return (rect_box->left.xmin <= query->xmax &&
-			rect_box->right.xmax >= query->xmin &&
-			rect_box->left.ymin <= query->ymax &&
-			rect_box->right.ymax >= query->ymin);
+	return (rect_box->left.xmin <= query->xmax && rect_box->right.xmax >= query->xmin) &&
+	       (rect_box->left.ymin <= query->ymax && rect_box->right.ymax >= query->ymin);
 }
 
 /* Can any cube from rect_box contain query? */
 static bool
 contain4D(RectBox *rect_box, BOX2DF *query)
 {
-	return (rect_box->right.xmax >= query->xmax &&
-			rect_box->left.xmin <= query->xmin &&
-			rect_box->right.ymax >= query->ymax &&
-			rect_box->left.ymin <= query->ymin);
+	return (rect_box->right.xmax >= query->xmax && rect_box->left.xmin <= query->xmin) &&
+	       (rect_box->right.ymax >= query->ymax && rect_box->left.ymin <= query->ymin);
 }
 
 /* Can any cube from rect_box be left of query? */
@@ -291,14 +287,13 @@ overAbove4D(RectBox *rect_box, BOX2DF *query)
 
 PG_FUNCTION_INFO_V1(gserialized_spgist_config_2d);
 
-PGDLLEXPORT Datum
-gserialized_spgist_config_2d(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_config_2d(PG_FUNCTION_ARGS)
 {
-	spgConfigOut *cfg = (spgConfigOut *) PG_GETARG_POINTER(1);
+	spgConfigOut *cfg = (spgConfigOut *)PG_GETARG_POINTER(1);
 
 	Oid boxoid = TypenameGetTypid("box2df");
 	cfg->prefixType = boxoid;
-	cfg->labelType = VOIDOID;	/* We don't need node labels. */
+	cfg->labelType = VOIDOID; /* We don't need node labels. */
 	cfg->leafType = boxoid;
 	cfg->canReturnData = false;
 	cfg->longValuesOK = false;
@@ -312,13 +307,11 @@ gserialized_spgist_config_2d(PG_FUNCTION_ARGS)
 
 PG_FUNCTION_INFO_V1(gserialized_spgist_choose_2d);
 
-PGDLLEXPORT Datum
-gserialized_spgist_choose_2d(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_choose_2d(PG_FUNCTION_ARGS)
 {
-	spgChooseIn *in = (spgChooseIn *) PG_GETARG_POINTER(0);
-	spgChooseOut *out = (spgChooseOut *) PG_GETARG_POINTER(1);
-	BOX2DF	   *centroid = (BOX2DF *) DatumGetPointer(in->prefixDatum),
-			   *box = (BOX2DF *) DatumGetPointer(in->leafDatum);
+	spgChooseIn *in = (spgChooseIn *)PG_GETARG_POINTER(0);
+	spgChooseOut *out = (spgChooseOut *)PG_GETARG_POINTER(1);
+	BOX2DF *centroid = (BOX2DF *)DatumGetPointer(in->prefixDatum), *box = (BOX2DF *)DatumGetPointer(in->leafDatum);
 
 	out->resultType = spgMatchNode;
 	out->result.matchNode.restDatum = PointerGetDatum(box);
@@ -338,28 +331,26 @@ gserialized_spgist_choose_2d(PG_FUNCTION_ARGS)
  */
 PG_FUNCTION_INFO_V1(gserialized_spgist_picksplit_2d);
 
-PGDLLEXPORT Datum
-gserialized_spgist_picksplit_2d(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_picksplit_2d(PG_FUNCTION_ARGS)
 {
-	spgPickSplitIn *in = (spgPickSplitIn *) PG_GETARG_POINTER(0);
-	spgPickSplitOut *out = (spgPickSplitOut *) PG_GETARG_POINTER(1);
-	BOX2DF	   *centroid;
-	int			median,
-				i;
-	double	   *lowXs = palloc(sizeof(double) * in->nTuples);
-	double	   *highXs = palloc(sizeof(double) * in->nTuples);
-	double	   *lowYs = palloc(sizeof(double) * in->nTuples);
-	double	   *highYs = palloc(sizeof(double) * in->nTuples);
+	spgPickSplitIn *in = (spgPickSplitIn *)PG_GETARG_POINTER(0);
+	spgPickSplitOut *out = (spgPickSplitOut *)PG_GETARG_POINTER(1);
+	BOX2DF *centroid;
+	int median, i;
+	double *lowXs = palloc(sizeof(double) * in->nTuples);
+	double *highXs = palloc(sizeof(double) * in->nTuples);
+	double *lowYs = palloc(sizeof(double) * in->nTuples);
+	double *highYs = palloc(sizeof(double) * in->nTuples);
 
 	/* Calculate median of all 4D coordinates */
 	for (i = 0; i < in->nTuples; i++)
 	{
-		BOX2DF		   *box = (BOX2DF *) DatumGetPointer(in->datums[i]);
+		BOX2DF *box = (BOX2DF *)DatumGetPointer(in->datums[i]);
 
-		lowXs[i] = (double) box->xmin;
-		highXs[i] = (double) box->xmax;
-		lowYs[i] = (double) box->ymin;
-		highYs[i] = (double) box->ymax;
+		lowXs[i] = (double)box->xmin;
+		highXs[i] = (double)box->xmax;
+		lowYs[i] = (double)box->ymin;
+		highYs[i] = (double)box->ymax;
 	}
 
 	qsort(lowXs, in->nTuples, sizeof(double), compareDoubles);
@@ -371,29 +362,28 @@ gserialized_spgist_picksplit_2d(PG_FUNCTION_ARGS)
 
 	centroid = palloc(sizeof(BOX2DF));
 
-	centroid->xmin = (float) lowXs[median];
-	centroid->xmax = (float) highXs[median];
-	centroid->ymin = (float) lowYs[median];
-	centroid->ymax = (float) highYs[median];
+	centroid->xmin = (float)lowXs[median];
+	centroid->xmax = (float)highXs[median];
+	centroid->ymin = (float)lowYs[median];
+	centroid->ymax = (float)highYs[median];
 
 	/* Fill the output */
 	out->hasPrefix = true;
 	out->prefixDatum = BoxPGetDatum(centroid);
 
 	out->nNodes = 16;
-	out->nodeLabels = NULL;		/* We don't need node labels. */
+	out->nodeLabels = NULL; /* We don't need node labels. */
 
 	out->mapTuplesToNodes = palloc(sizeof(int) * in->nTuples);
 	out->leafTupleDatums = palloc(sizeof(Datum) * in->nTuples);
 
 	/*
-	 * Assign ranges to corresponding nodes according to quadrants relative to
-	 * the "centroid" range
+	 * Assign ranges to corresponding nodes according to quadrants relative to the "centroid" range
 	 */
 	for (i = 0; i < in->nTuples; i++)
 	{
-		BOX2DF	   *box = (BOX2DF *) DatumGetPointer(in->datums[i]);
-		uint8		quadrant = getQuadrant4D(centroid, box);
+		BOX2DF *box = (BOX2DF *)DatumGetPointer(in->datums[i]);
+		uint8 quadrant = getQuadrant4D(centroid, box);
 
 		out->leafTupleDatums[i] = PointerGetDatum(box);
 		out->mapTuplesToNodes[i] = quadrant;
@@ -412,22 +402,21 @@ gserialized_spgist_picksplit_2d(PG_FUNCTION_ARGS)
  */
 PG_FUNCTION_INFO_V1(gserialized_spgist_inner_consistent_2d);
 
-PGDLLEXPORT Datum
-gserialized_spgist_inner_consistent_2d(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_inner_consistent_2d(PG_FUNCTION_ARGS)
 {
-	spgInnerConsistentIn *in = (spgInnerConsistentIn *) PG_GETARG_POINTER(0);
-	spgInnerConsistentOut *out = (spgInnerConsistentOut *) PG_GETARG_POINTER(1);
-	int			i;
+	spgInnerConsistentIn *in = (spgInnerConsistentIn *)PG_GETARG_POINTER(0);
+	spgInnerConsistentOut *out = (spgInnerConsistentOut *)PG_GETARG_POINTER(1);
+	int i;
 	MemoryContext old_ctx;
-	RectBox    *rect_box;
-	uint8		quadrant;
-	BOX2DF	   *centroid;
+	RectBox *rect_box;
+	uint8 quadrant;
+	BOX2DF *centroid;
 
 	if (in->allTheSame)
 	{
 		/* Report that all nodes should be visited */
 		out->nNodes = in->nNodes;
-		out->nodeNumbers = (int *) palloc(sizeof(int) * in->nNodes);
+		out->nodeNumbers = (int *)palloc(sizeof(int) * in->nNodes);
 		for (i = 0; i < in->nNodes; i++)
 			out->nodeNumbers[i] = i;
 
@@ -443,12 +432,12 @@ gserialized_spgist_inner_consistent_2d(PG_FUNCTION_ARGS)
 	else
 		rect_box = initRectBox();
 
-	centroid = (BOX2DF *) DatumGetPointer(in->prefixDatum);
+	centroid = (BOX2DF *)DatumGetPointer(in->prefixDatum);
 
 	/* Allocate enough memory for nodes */
 	out->nNodes = 0;
-	out->nodeNumbers = (int *) palloc(sizeof(int) * in->nNodes);
-	out->traversalValues = (void **) palloc(sizeof(void *) * in->nNodes);
+	out->nodeNumbers = (int *)palloc(sizeof(int) * in->nNodes);
+	out->traversalValues = (void **)palloc(sizeof(void *) * in->nNodes);
 
 	/*
 	 * We switch memory context, because we want to allocate memory for new
@@ -459,24 +448,24 @@ gserialized_spgist_inner_consistent_2d(PG_FUNCTION_ARGS)
 
 	for (quadrant = 0; quadrant < in->nNodes; quadrant++)
 	{
-		RectBox    *next_rect_box = nextRectBox(rect_box, centroid, quadrant);
-		bool		flag = true;
+		RectBox *next_rect_box = nextRectBox(rect_box, centroid, quadrant);
+		bool flag = true;
 
 		for (i = 0; i < in->nkeys; i++)
 		{
 			StrategyNumber strategy = in->scankeys[i].sk_strategy;
 
-			Datum		query = in->scankeys[i].sk_argument;
-			BOX2DF 		query_gbox_index;
+			Datum query = in->scankeys[i].sk_argument;
+			BOX2DF query_gbox_index;
 
 			/* Quick sanity check on query argument. */
-			if ( DatumGetPointer(query) == NULL )
+			if (DatumGetPointer(query) == NULL)
 			{
 				POSTGIS_DEBUG(4, "[SPGIST] null query pointer (!?!), returning false");
 				PG_RETURN_BOOL(false); /* NULL query! This is screwy! */
 			}
 
-			if ( gserialized_datum_get_box2df_p(query, &query_gbox_index) == LW_FAILURE )
+			if (gserialized_datum_get_box2df_p(query, &query_gbox_index) == LW_FAILURE)
 			{
 				POSTGIS_DEBUG(4, "[SPGIST] null query_gbox_index!");
 				PG_RETURN_BOOL(false);
@@ -484,51 +473,51 @@ gserialized_spgist_inner_consistent_2d(PG_FUNCTION_ARGS)
 
 			switch (strategy)
 			{
-				case RTOverlapStrategyNumber:
-				case RTContainedByStrategyNumber:
-				case RTOldContainedByStrategyNumber:
-					flag = overlap4D(next_rect_box, &query_gbox_index);
-					break;
+			case RTOverlapStrategyNumber:
+			case RTContainedByStrategyNumber:
+			case RTOldContainedByStrategyNumber:
+				flag = overlap4D(next_rect_box, &query_gbox_index);
+				break;
 
-				case RTContainsStrategyNumber:
-				case RTSameStrategyNumber:
-					flag = contain4D(next_rect_box, &query_gbox_index);
-					break;
+			case RTContainsStrategyNumber:
+			case RTSameStrategyNumber:
+				flag = contain4D(next_rect_box, &query_gbox_index);
+				break;
 
-				case RTLeftStrategyNumber:
-					flag = !overRight4D(next_rect_box, &query_gbox_index);
-					break;
+			case RTLeftStrategyNumber:
+				flag = !overRight4D(next_rect_box, &query_gbox_index);
+				break;
 
-				case RTOverLeftStrategyNumber:
-					flag = !right4D(next_rect_box, &query_gbox_index);
-					break;
+			case RTOverLeftStrategyNumber:
+				flag = !right4D(next_rect_box, &query_gbox_index);
+				break;
 
-				case RTRightStrategyNumber:
-					flag = !overLeft4D(next_rect_box, &query_gbox_index);
-					break;
+			case RTRightStrategyNumber:
+				flag = !overLeft4D(next_rect_box, &query_gbox_index);
+				break;
 
-				case RTOverRightStrategyNumber:
-					flag = !left4D(next_rect_box, &query_gbox_index);
-					break;
+			case RTOverRightStrategyNumber:
+				flag = !left4D(next_rect_box, &query_gbox_index);
+				break;
 
-				case RTAboveStrategyNumber:
-					flag = !overBelow4D(next_rect_box, &query_gbox_index);
-					break;
+			case RTAboveStrategyNumber:
+				flag = !overBelow4D(next_rect_box, &query_gbox_index);
+				break;
 
-				case RTOverAboveStrategyNumber:
-					flag = !below4D(next_rect_box, &query_gbox_index);
-					break;
+			case RTOverAboveStrategyNumber:
+				flag = !below4D(next_rect_box, &query_gbox_index);
+				break;
 
-				case RTBelowStrategyNumber:
-					flag = !overAbove4D(next_rect_box, &query_gbox_index);
-					break;
+			case RTBelowStrategyNumber:
+				flag = !overAbove4D(next_rect_box, &query_gbox_index);
+				break;
 
-				case RTOverBelowStrategyNumber:
-					flag = !above4D(next_rect_box, &query_gbox_index);
-					break;
+			case RTOverBelowStrategyNumber:
+				flag = !above4D(next_rect_box, &query_gbox_index);
+				break;
 
-				default:
-					elog(ERROR, "unrecognized strategy: %d", strategy);
+			default:
+				elog(ERROR, "unrecognized strategy: %d", strategy);
 			}
 
 			/* If any check is failed, we have found our answer. */
@@ -563,17 +552,16 @@ gserialized_spgist_inner_consistent_2d(PG_FUNCTION_ARGS)
  */
 PG_FUNCTION_INFO_V1(gserialized_spgist_leaf_consistent_2d);
 
-PGDLLEXPORT Datum
-gserialized_spgist_leaf_consistent_2d(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_2d(PG_FUNCTION_ARGS)
 {
-	spgLeafConsistentIn *in = (spgLeafConsistentIn *) PG_GETARG_POINTER(0);
-	spgLeafConsistentOut *out = (spgLeafConsistentOut *) PG_GETARG_POINTER(1);
-	BOX2DF	   *key = (BOX2DF *) DatumGetPointer(in->leafDatum);
-	bool		flag = true;
-	int			i;
+	spgLeafConsistentIn *in = (spgLeafConsistentIn *)PG_GETARG_POINTER(0);
+	spgLeafConsistentOut *out = (spgLeafConsistentOut *)PG_GETARG_POINTER(1);
+	BOX2DF *key = (BOX2DF *)DatumGetPointer(in->leafDatum);
+	bool flag = true;
+	int i;
 
 	/* Quick sanity check on entry key. */
-	if ( DatumGetPointer(key) == NULL )
+	if (DatumGetPointer(key) == NULL)
 	{
 		POSTGIS_DEBUG(4, "[SPGIST] null index entry, returning false");
 		PG_RETURN_BOOL(false); /* NULL entry! */
@@ -589,17 +577,17 @@ gserialized_spgist_leaf_consistent_2d(PG_FUNCTION_ARGS)
 	for (i = 0; i < in->nkeys; i++)
 	{
 		StrategyNumber strategy = in->scankeys[i].sk_strategy;
-		Datum		query = in->scankeys[i].sk_argument;
-		BOX2DF 		query_gbox_index;
+		Datum query = in->scankeys[i].sk_argument;
+		BOX2DF query_gbox_index;
 
 		/* Quick sanity check on query argument. */
-		if ( DatumGetPointer(query) == NULL )
+		if (DatumGetPointer(query) == NULL)
 		{
 			POSTGIS_DEBUG(4, "[SPGIST] null query pointer (!?!), returning false");
 			PG_RETURN_BOOL(false); /* NULL query! This is screwy! */
 		}
 
-		if ( gserialized_datum_get_box2df_p(query, &query_gbox_index) == LW_FAILURE )
+		if (gserialized_datum_get_box2df_p(query, &query_gbox_index) == LW_FAILURE)
 		{
 			POSTGIS_DEBUG(4, "[SPGIST] null query_gbox_index!");
 			PG_RETURN_BOOL(false);
@@ -607,58 +595,58 @@ gserialized_spgist_leaf_consistent_2d(PG_FUNCTION_ARGS)
 
 		switch (strategy)
 		{
-			case RTOverlapStrategyNumber:
-				flag = box2df_overlaps(key, &query_gbox_index);
-				break;
+		case RTOverlapStrategyNumber:
+			flag = box2df_overlaps(key, &query_gbox_index);
+			break;
 
-			case RTContainsStrategyNumber:
-			case RTOldContainsStrategyNumber:
-				flag = box2df_contains(key, &query_gbox_index);
-				break;
+		case RTContainsStrategyNumber:
+		case RTOldContainsStrategyNumber:
+			flag = box2df_contains(key, &query_gbox_index);
+			break;
 
-			case RTContainedByStrategyNumber:
-			case RTOldContainedByStrategyNumber:
-				flag = box2df_contains(&query_gbox_index, key);
-				break;
+		case RTContainedByStrategyNumber:
+		case RTOldContainedByStrategyNumber:
+			flag = box2df_contains(&query_gbox_index, key);
+			break;
 
-			case RTSameStrategyNumber:
-				flag = box2df_equals(key, &query_gbox_index);
-				break;
+		case RTSameStrategyNumber:
+			flag = box2df_equals(key, &query_gbox_index);
+			break;
 
-			case RTLeftStrategyNumber:
-				flag = box2df_left(key, &query_gbox_index);
-				break;
+		case RTLeftStrategyNumber:
+			flag = box2df_left(key, &query_gbox_index);
+			break;
 
-			case RTOverLeftStrategyNumber:
-				flag = box2df_overleft(key, &query_gbox_index);
-				break;
+		case RTOverLeftStrategyNumber:
+			flag = box2df_overleft(key, &query_gbox_index);
+			break;
 
-			case RTRightStrategyNumber:
-				flag = box2df_right(key, &query_gbox_index);
-				break;
+		case RTRightStrategyNumber:
+			flag = box2df_right(key, &query_gbox_index);
+			break;
 
-			case RTOverRightStrategyNumber:
-				flag = box2df_overright(key, &query_gbox_index);
-				break;
+		case RTOverRightStrategyNumber:
+			flag = box2df_overright(key, &query_gbox_index);
+			break;
 
-			case RTAboveStrategyNumber:
-				flag = box2df_above(key, &query_gbox_index);
-				break;
+		case RTAboveStrategyNumber:
+			flag = box2df_above(key, &query_gbox_index);
+			break;
 
-			case RTOverAboveStrategyNumber:
-				flag = box2df_overabove(key, &query_gbox_index);
-				break;
+		case RTOverAboveStrategyNumber:
+			flag = box2df_overabove(key, &query_gbox_index);
+			break;
 
-			case RTBelowStrategyNumber:
-				flag = box2df_below(key, &query_gbox_index);
-				break;
+		case RTBelowStrategyNumber:
+			flag = box2df_below(key, &query_gbox_index);
+			break;
 
-			case RTOverBelowStrategyNumber:
-				flag = box2df_overbelow(key, &query_gbox_index);
-				break;
+		case RTOverBelowStrategyNumber:
+			flag = box2df_overbelow(key, &query_gbox_index);
+			break;
 
-			default:
-				elog(ERROR, "unrecognized strategy: %d", strategy);
+		default:
+			elog(ERROR, "unrecognized strategy: %d", strategy);
 		}
 
 		/* If any check is failed, we have found our answer. */
@@ -669,20 +657,12 @@ gserialized_spgist_leaf_consistent_2d(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(flag);
 }
 
-/*
-** RTiST support function. Given a geography, return a "compressed"
-** version. In this case, we convert the geography into a geocentric
-** bounding box. If the geography already has the box embedded in it
-** we pull that out and hand it back.
-*/
-
 PG_FUNCTION_INFO_V1(gserialized_spgist_compress_2d);
 
-PGDLLEXPORT Datum
-gserialized_spgist_compress_2d(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_compress_2d(PG_FUNCTION_ARGS)
 {
-	Datum		gsdatum = PG_GETARG_DATUM(0);
-	BOX2DF	   *bbox_out = palloc(sizeof(BOX2DF));
+	Datum gsdatum = PG_GETARG_DATUM(0);
+	BOX2DF *bbox_out = palloc(sizeof(BOX2DF));
 	int result = LW_SUCCESS;
 
 	POSTGIS_DEBUG(4, "[SPGIST] 'compress' function called");
@@ -691,7 +671,7 @@ gserialized_spgist_compress_2d(PG_FUNCTION_ARGS)
 	result = gserialized_datum_get_box2df_p(gsdatum, bbox_out);
 
 	/* Is the bounding box valid (non-empty, non-infinite)? If not, return input uncompressed. */
-	if ( result == LW_FAILURE )
+	if (result == LW_FAILURE)
 	{
 		box2df_set_empty(bbox_out);
 
@@ -702,8 +682,8 @@ gserialized_spgist_compress_2d(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(4, "[SPGIST] got box: %s", box2df_to_string(bbox_out));
 
 	/* Check all the dimensions for finite values */
-	if ( ! isfinite(bbox_out->xmax) || ! isfinite(bbox_out->xmin) ||
-	     ! isfinite(bbox_out->ymax) || ! isfinite(bbox_out->ymin) )
+	if ((!isfinite(bbox_out->xmax) || !isfinite(bbox_out->xmin)) ||
+	    (!isfinite(bbox_out->ymax) || !isfinite(bbox_out->ymin)))
 	{
 		box2df_set_finite(bbox_out);
 
