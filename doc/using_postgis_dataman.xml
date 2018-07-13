@@ -2167,6 +2167,53 @@ WHERE
           for kNN searches at the moment.</para>
 	</sect2>
 
+	<sect2 id="spgist_indexes">
+	 	<title>SP-GiST Indexes</title>
+
+		<para>SP-GiST stands for "Space-Partitioned Generalized Search Tree" and is
+		a generic form of indexing that supports partitioned search trees, such as 
+		quad-trees, k-d trees, and radix trees (tries). The common feature of these
+		data structures is that they repeatedly divide the search space into 
+		partitions that need not be of equal size. In addition to GIS indexing, 
+		SP-GiST is used to speed up searches on many kinds of data, such as phone 
+		routing, ip routing, substring search, etc. </para>
+
+    <para>As it is the case for GiST indexes, SP-GiST indexes are lossy, in the
+		sense that they store the bounding box englobing the spatial objects. 
+		SP-GiST indexes can be considered as an alternative to GiST indexes. The 
+		performance tests reveal that SP-GiST indexes are especially beneficial 
+		when there are many overlapping objects, that is, with so-called 
+		“spaghetti data”.</para>
+
+		<para>Once a GIS data table exceeds a few thousand rows, an SP-GiST index 
+		may be used to speed up spatial searches of the data. The syntax for 
+		building an SP-GiST index on a "geometry" column is as follows:</para>
+
+		<para><programlisting>CREATE INDEX [indexname] ON [tablename] USING SPGIST ( [geometryfield] ); </programlisting></para>
+
+		<para>The above syntax will build a 2-dimensional index. A 3-dimensional 
+		index for the geometry type can be created using the 3D operator class:</para>
+
+		<para><programlisting>CREATE INDEX [indexname] ON [tablename] USING SPGIST ([geometryfield] spgist_geometry_ops_3d);</programlisting></para>
+
+		<para>Building a spatial index is a computationally intensive operation. 
+		It also blocks write access to your table for the time it creates, so on a 
+		production system you may want to do in in a slower CONCURRENTLY-aware way:</para>
+
+	  <para><programlisting>CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING SPGIST ( [geometryfield] ); </programlisting></para>
+
+		<para>After building an index, it is sometimes helpful to force PostgreSQL to
+		collect table statistics, which are used to optimize query plans:</para>
+
+		<para><programlisting>VACUUM ANALYZE [table_name] [(column_name)];</programlisting></para>
+
+		<para>An SP-GiST index can accelerate queries involving the following operators:</para>
+		<itemizedlist>
+			<listitem><para>&lt;&lt;, &amp;&lt;, &amp;&gt;, &gt;&gt;, &lt;&lt;|, &amp;&lt;|, |&amp;&gt;, |&gt;&gt;, &amp;&amp;, @&gt;, &lt;@, and ~=, for 2-dimensional indexes,</para></listitem>
+			<listitem><para> &amp;/&amp;, ~==, @&gt;&gt;, and &lt;&lt;@, for 3-dimensional indexes.</para></listitem>
+		</itemizedlist>
+		<para>There is no support for kNN searches at the moment.</para>
+	</sect2>
 	<sect2>
 	  <title>Using Indexes</title>
 
