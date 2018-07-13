@@ -156,8 +156,7 @@ SELECT MAX(ST_NPoints(geom)) FROM sometable;</programlisting>
 		For geometry: Connect to your database with
         <filename>psql</filename> and try the following SQL:</para>
 
-        <programlisting>CREATE TABLE gtest ( gid serial primary key, name varchar(20)
-        , geom geometry(LINESTRING) );</programlisting>
+        <programlisting>CREATE TABLE gtest (id serial primary key, name varchar(20), geom geometry(LINESTRING));</programlisting>
 
         <para>If the geometry column definition fails, you probably have not
         loaded the PostGIS functions and objects into this database or are using a pre-2.0 version of PostGIS. See the
