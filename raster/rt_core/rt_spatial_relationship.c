@@ -995,7 +995,6 @@ rt_raster_intersects(
 	int *intersects
 ) {
 	int i;
-	int j;
 	int within = 0;
 
 	LWGEOM *hull[2] = {NULL};
@@ -1069,27 +1068,28 @@ rt_raster_intersects(
 		initGEOS(rtinfo, lwgeom_geos_error);
 
 		rtn = 1;
-		for (i = 0; i < 2; i++) {
-			if ((rt_raster_get_convex_hull(i < 1 ? rast1 : rast2, &(hull[i])) != ES_NONE) || NULL == hull[i]) {
-				for (j = 0; j < i; j++) {
-					GEOSGeom_destroy(ghull[j]);
-					lwgeom_free(hull[j]);
-				}
-				rtn = 0;
-				break;
-			}
-			ghull[i] = (GEOSGeometry *) LWGEOM2GEOS(hull[i], 0);
-			if (NULL == ghull[i]) {
-				for (j = 0; j < i; j++) {
-					GEOSGeom_destroy(ghull[j]);
-					lwgeom_free(hull[j]);
-				}
-				lwgeom_free(hull[i]);
-				rtn = 0;
-				break;
-			}
+
+		if ((rt_raster_get_convex_hull(rast1, &(hull[0])) != ES_NONE) || !hull[0]) {
+			break;
 		}
-		if (!rtn) break;
+		ghull[0] = (GEOSGeometry *) LWGEOM2GEOS(hull[0], 0);
+		if (!ghull[0]) {
+			lwgeom_free(hull[0]);
+			break;
+		}
+
+		if ((rt_raster_get_convex_hull(rast2, &(hull[1])) != ES_NONE) || !hull[1]) {
+			GEOSGeom_destroy(ghull[0]);
+			lwgeom_free(hull[0]);
+			break;
+		}
+		ghull[1] = (GEOSGeometry *) LWGEOM2GEOS(hull[1], 0);
+		if (!ghull[0]) {
+			GEOSGeom_destroy(ghull[0]);
+			lwgeom_free(hull[1]);
+			lwgeom_free(hull[0]);
+			break;
+		}
 
 		/* test to see if raster within the other */
 		within = 0;
