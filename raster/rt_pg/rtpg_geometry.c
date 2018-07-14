@@ -1199,7 +1199,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 
 	/* all touched */
 	if (!PG_ARGISNULL(14) && PG_GETARG_BOOL(14) == TRUE) {
-		if (options_len < 1) {
+		if (options_len == 0) {
 			options_len = 1;
 			options = (char **) palloc(sizeof(char *) * options_len);
 		}
@@ -1209,7 +1209,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		}
 
 		options[options_len - 1] = palloc(sizeof(char*) * (strlen("ALL_TOUCHED=TRUE") + 1));
-		options[options_len - 1] = "ALL_TOUCHED=TRUE";
+		strcpy(options[options_len - 1], "ALL_TOUCHED=TRUE");
 	}
 
 	if (options_len) {

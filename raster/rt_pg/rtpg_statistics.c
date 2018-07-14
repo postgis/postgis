@@ -309,13 +309,11 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 	SPI_cursor_fetch(portal, TRUE, 1);
 	while (SPI_processed == 1 && SPI_tuptable != NULL) {
 		tupdesc = SPI_tuptable->tupdesc;
-		tuptable = SPI_tuptable;
-		tuple = tuptable->vals[0];
+		tuple = SPI_tuptable->vals[0];
 
 		datum = SPI_getbinval(tuple, tupdesc, 1, &isNull);
 		if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
-
-			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			SPI_freetuptable(SPI_tuptable);
 			SPI_cursor_close(portal);
 			SPI_finish();
 
@@ -332,8 +330,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 
 		raster = rt_raster_deserialize(pgraster, FALSE);
 		if (!raster) {
-
-			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			SPI_freetuptable(SPI_tuptable);
 			SPI_cursor_close(portal);
 			SPI_finish();
 
@@ -349,7 +346,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 
 			rt_raster_destroy(raster);
 
-			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			SPI_freetuptable(SPI_tuptable);
 			SPI_cursor_close(portal);
 			SPI_finish();
 
@@ -364,7 +361,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 
 			rt_raster_destroy(raster);
 
-			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			SPI_freetuptable(SPI_tuptable);
 			SPI_cursor_close(portal);
 			SPI_finish();
 
@@ -381,7 +378,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 		if (NULL == stats) {
 			elog(NOTICE, "Cannot compute summary statistics for band at index %d. Returning NULL", bandindex);
 
-			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			SPI_freetuptable(SPI_tuptable);
 			SPI_cursor_close(portal);
 			SPI_finish();
 
@@ -394,8 +391,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 			if (NULL == rtn) {
 				rtn = (rt_bandstats) SPI_palloc(sizeof(struct rt_bandstats_t));
 				if (NULL == rtn) {
-
-					if (SPI_tuptable) SPI_freetuptable(tuptable);
+					SPI_freetuptable(SPI_tuptable);
 					SPI_cursor_close(portal);
 					SPI_finish();
 
@@ -431,7 +427,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 		SPI_cursor_fetch(portal, TRUE, 1);
 	}
 
-	if (SPI_tuptable) SPI_freetuptable(tuptable);
+	if (SPI_tuptable) SPI_freetuptable(SPI_tuptable);
 	SPI_cursor_close(portal);
 	SPI_finish();
 
@@ -1229,7 +1225,6 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		double max = 0;
 		int spi_result;
 		Portal portal;
-		SPITupleTable *tuptable = NULL;
 		HeapTuple tuple;
 		Datum datum;
 		bool isNull = FALSE;
@@ -1391,7 +1386,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		sql = (char *) palloc(len);
 		if (NULL == sql) {
 
-			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			if (SPI_tuptable) SPI_freetuptable(SPI_tuptable);
 			SPI_finish();
 
 			if (bin_width_count) pfree(bin_width);
@@ -1408,7 +1403,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		pfree(sql);
 		if (spi_result != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
 
-			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			if (SPI_tuptable) SPI_freetuptable(SPI_tuptable);
 			SPI_finish();
 
 			if (bin_width_count) pfree(bin_width);
@@ -1419,13 +1414,12 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		}
 
 		tupdesc = SPI_tuptable->tupdesc;
-		tuptable = SPI_tuptable;
-		tuple = tuptable->vals[0];
+		tuple = SPI_tuptable->vals[0];
 
 		tmp = SPI_getvalue(tuple, tupdesc, 1);
 		if (NULL == tmp || !strlen(tmp)) {
 
-			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			SPI_freetuptable(SPI_tuptable);
 			SPI_finish();
 
 			if (bin_width_count) pfree(bin_width);
@@ -1441,7 +1435,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		tmp = SPI_getvalue(tuple, tupdesc, 2);
 		if (NULL == tmp || !strlen(tmp)) {
 
-			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			if (SPI_tuptable) SPI_freetuptable(SPI_tuptable);
 			SPI_finish();
 
 			if (bin_width_count) pfree(bin_width);
@@ -1460,7 +1454,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		sql = (char *) palloc(len);
 		if (NULL == sql) {
 
-			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			if (SPI_tuptable) SPI_freetuptable(SPI_tuptable);
 			SPI_finish();
 
 			if (bin_width_count) pfree(bin_width);
@@ -1486,13 +1480,11 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		SPI_cursor_fetch(portal, TRUE, 1);
 		while (SPI_processed == 1 && SPI_tuptable != NULL) {
 			tupdesc = SPI_tuptable->tupdesc;
-			tuptable = SPI_tuptable;
-			tuple = tuptable->vals[0];
+			tuple = SPI_tuptable->vals[0];
 
 			datum = SPI_getbinval(tuple, tupdesc, 1, &isNull);
 			if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
-
-				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_freetuptable(SPI_tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
 
@@ -1513,7 +1505,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 			raster = rt_raster_deserialize(pgraster, FALSE);
 			if (!raster) {
 
-				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				if (SPI_tuptable) SPI_freetuptable(SPI_tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
 
@@ -1532,7 +1524,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 
 				rt_raster_destroy(raster);
 
-				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				if (SPI_tuptable) SPI_freetuptable(SPI_tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
 
@@ -1550,7 +1542,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 
 				rt_raster_destroy(raster);
 
-				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				if (SPI_tuptable) SPI_freetuptable(SPI_tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
 
@@ -1570,7 +1562,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 			if (NULL == stats) {
 				elog(NOTICE, "Cannot compute summary statistics for band at index %d. Returning NULL", bandindex);
 
-				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				if (SPI_tuptable) SPI_freetuptable(SPI_tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
 
@@ -1588,7 +1580,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				if (NULL == hist || !count) {
 					elog(NOTICE, "Cannot compute histogram for band at index %d", bandindex);
 
-					if (SPI_tuptable) SPI_freetuptable(tuptable);
+					if (SPI_tuptable) SPI_freetuptable(SPI_tuptable);
 					SPI_cursor_close(portal);
 					SPI_finish();
 
@@ -1607,7 +1599,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 					if (NULL == covhist) {
 
 						pfree(hist);
-						if (SPI_tuptable) SPI_freetuptable(tuptable);
+						if (SPI_tuptable) SPI_freetuptable(SPI_tuptable);
 						SPI_cursor_close(portal);
 						SPI_finish();
 
@@ -1643,7 +1635,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 			SPI_cursor_fetch(portal, TRUE, 1);
 		}
 
-		if (SPI_tuptable) SPI_freetuptable(tuptable);
+		if (SPI_tuptable) SPI_freetuptable(SPI_tuptable);
 		SPI_cursor_close(portal);
 		SPI_finish();
 
@@ -2228,13 +2220,11 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 			if (NULL != covquant) pfree(covquant);
 
 			tupdesc = SPI_tuptable->tupdesc;
-			tuptable = SPI_tuptable;
-			tuple = tuptable->vals[0];
+			tuple = SPI_tuptable->vals[0];
 
 			datum = SPI_getbinval(tuple, tupdesc, 1, &isNull);
 			if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
-
-				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_freetuptable(SPI_tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
 
@@ -2252,7 +2242,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 			raster = rt_raster_deserialize(pgraster, FALSE);
 			if (!raster) {
 
-				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_freetuptable(SPI_tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
 
@@ -2268,7 +2258,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 
 				rt_raster_destroy(raster);
 
-				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_freetuptable(SPI_tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
 
@@ -2283,7 +2273,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 
 				rt_raster_destroy(raster);
 
-				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_freetuptable(SPI_tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
 
@@ -2302,10 +2292,10 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 			rt_band_destroy(band);
 			rt_raster_destroy(raster);
 
-			if (NULL == covquant || !count) {
+			if (!covquant || !count) {
 				elog(NOTICE, "Cannot compute quantiles for band at index %d", bandindex);
 
-				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_freetuptable(SPI_tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
 
@@ -2325,10 +2315,10 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 				covquant2[i].value = covquant[i].value;
 		}
 
-		if (NULL != covquant) pfree(covquant);
+		pfree(covquant);
 		quantile_llist_destroy(&qlls, qlls_count);
 
-		if (SPI_tuptable) SPI_freetuptable(tuptable);
+		if (SPI_tuptable) SPI_freetuptable(SPI_tuptable);
 		SPI_cursor_close(portal);
 		SPI_finish();
 
@@ -2646,7 +2636,6 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 		char *sql = NULL;
 		int spi_result;
 		Portal portal;
-		SPITupleTable *tuptable = NULL;
 		HeapTuple tuple;
 		Datum datum;
 		bool isNull = FALSE;
@@ -2781,7 +2770,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 		sql = (char *) palloc(len);
 		if (NULL == sql) {
 
-			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			if (SPI_tuptable) SPI_freetuptable(SPI_tuptable);
 			SPI_finish();
 
 			if (search_values_count) pfree(search_values);
@@ -2807,13 +2796,12 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 		SPI_cursor_fetch(portal, TRUE, 1);
 		while (SPI_processed == 1 && SPI_tuptable != NULL) {
 			tupdesc = SPI_tuptable->tupdesc;
-			tuptable = SPI_tuptable;
-			tuple = tuptable->vals[0];
+			tuple = SPI_tuptable->vals[0];
 
 			datum = SPI_getbinval(tuple, tupdesc, 1, &isNull);
 			if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
 
-				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_freetuptable(SPI_tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
 
@@ -2834,7 +2822,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 			raster = rt_raster_deserialize(pgraster, FALSE);
 			if (!raster) {
 
-				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_freetuptable(SPI_tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
 
@@ -2853,7 +2841,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 
 				rt_raster_destroy(raster);
 
-				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_freetuptable(SPI_tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
 
@@ -2871,7 +2859,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 
 				rt_raster_destroy(raster);
 
-				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_freetuptable(SPI_tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
 
@@ -2889,7 +2877,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 			if (NULL == vcnts || !count) {
 				elog(NOTICE, "Cannot count the values for band at index %d", bandindex);
 
-				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_freetuptable(SPI_tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
 
@@ -2906,7 +2894,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 				covvcnts = (rt_valuecount) SPI_palloc(sizeof(struct rt_valuecount_t) * count);
 				if (NULL == covvcnts) {
 
-					if (SPI_tuptable) SPI_freetuptable(tuptable);
+					SPI_freetuptable(SPI_tuptable);
 					SPI_cursor_close(portal);
 					SPI_finish();
 
@@ -2942,14 +2930,12 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 					else {
 						covcount++;
 						covvcnts = SPI_repalloc(covvcnts, sizeof(struct rt_valuecount_t) * covcount);
-						if (NULL == covvcnts) {
-
-							if (SPI_tuptable) SPI_freetuptable(tuptable);
+						if (!covvcnts) {
+							SPI_freetuptable(SPI_tuptable);
 							SPI_cursor_close(portal);
 							SPI_finish();
 
 							if (search_values_count) pfree(search_values);
-							if (NULL != covvcnts) free(covvcnts);
 
 							MemoryContextSwitchTo(oldcontext);
 							elog(ERROR, "RASTER_valueCountCoverage: Cannot change allocated memory for value counts of coverage");
@@ -2971,7 +2957,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 			SPI_cursor_fetch(portal, TRUE, 1);
 		}
 
-		if (SPI_tuptable) SPI_freetuptable(tuptable);
+		if (SPI_tuptable) SPI_freetuptable(SPI_tuptable);
 		SPI_cursor_close(portal);
 		SPI_finish();
 

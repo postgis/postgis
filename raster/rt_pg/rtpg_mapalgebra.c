@@ -1050,7 +1050,7 @@ static int rtpg_nmapalgebraexpr_callback(
 	rtpg_nmapalgebraexpr_callback_arg *callback = (rtpg_nmapalgebraexpr_callback_arg *) userarg;
 	SPIPlanPtr plan = NULL;
 	int i = 0;
-	int id = -1;
+	uint8_t id = 0;
 
 	if (arg == NULL)
 		return 0;
@@ -4715,8 +4715,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         POSTGIS_RT_DEBUGF(4, "RASTER_mapAlgebraExpr: New raster now has %d bands",
                 rt_raster_get_num_bands(newrast));
 
-        if (initexpr)
-            pfree(initexpr);
+        pfree(initexpr);
         rt_raster_destroy(raster);
         PG_FREE_IF_COPY(pgraster, 0);
 
@@ -7004,13 +7003,13 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						else if (spi_plan[i] != NULL) {
 							POSTGIS_RT_DEBUGF(4, "Using prepared plan: %d", i);
 
+							/* reset values to (Datum) NULL */
+							memset(values, (Datum) NULL, sizeof(Datum) * argkwcount);
+							/* reset nulls to FALSE */
+							memset(nulls, FALSE, sizeof(char) * argkwcount);
+
 							/* expression has argument(s) */
 							if (spi_argcount[i]) {
-								/* reset values to (Datum) NULL */
-								memset(values, (Datum) NULL, sizeof(Datum) * argkwcount);
-								/* reset nulls to FALSE */
-								memset(nulls, FALSE, sizeof(char) * argkwcount);
-
 								/* set values and nulls */
 								for (j = 0; j < argkwcount; j++) {
 									idx = argpos[i][j];

@@ -1262,11 +1262,11 @@ rt_raster_compute_skewed_raster(
 			return NULL;
 		}
 
-		if (covers)
-			break;
-
-		raster->width++;
-		raster->height++;
+		if (!covers)
+		{
+			raster->width++;
+			raster->height++;
+		}
 	}
 	while (!covers);
 
@@ -1309,17 +1309,13 @@ rt_raster_compute_skewed_raster(
 				rt_raster_destroy(raster);
 				return NULL;
 			}
+		} while (covers);
 
-			if (!covers) {
-				if (i < 1)
-					raster->width++;
-				else
-					raster->height++;
+		if (i < 1)
+			raster->width++;
+		else
+			raster->height++;
 
-				break;
-			}
-		}
-		while (covers);
 	}
 
 	GEOSGeom_destroy(ngeom);
@@ -1336,7 +1332,7 @@ rt_raster_compute_skewed_raster(
  */
 int
 rt_raster_is_empty(rt_raster raster) {
-	return (NULL == raster || raster->height <= 0 || raster->width <= 0);
+	return (!raster || raster->height == 0 || raster->width == 0);
 }
 
 /**
@@ -2783,7 +2779,7 @@ rt_raster_gdal_rasterize(
 			/* check alignment flag: grid_xw */
 			if (
 				(NULL == ul_xw && NULL == ul_yw) &&
-				(NULL != grid_xw && NULL != grid_xw) &&
+				(NULL != grid_xw && NULL != grid_yw) &&
 				FLT_NEQ(*grid_xw, extent.MinX)
 			) {
 				/* do nothing */
@@ -2798,7 +2794,7 @@ rt_raster_gdal_rasterize(
 			/* check alignment flag: grid_yw */
 			if (
 				(NULL == ul_xw && NULL == ul_yw) &&
-				(NULL != grid_xw && NULL != grid_xw) &&
+				(NULL != grid_xw && NULL != grid_yw) &&
 				FLT_NEQ(*grid_yw, extent.MaxY)
 			) {
 				/* do nothing */
@@ -2815,7 +2811,7 @@ rt_raster_gdal_rasterize(
 			/* check alignment flag: grid_xw */
 			if (
 				(NULL == ul_xw && NULL == ul_yw) &&
-				(NULL != grid_xw && NULL != grid_xw) &&
+				(NULL != grid_xw && NULL != grid_yw) &&
 				FLT_NEQ(*grid_xw, extent.MinX)
 			) {
 				/* do nothing */
@@ -2831,7 +2827,7 @@ rt_raster_gdal_rasterize(
 			/* check alignment flag: grid_yw */
 			if (
 				(NULL == ul_xw && NULL == ul_yw) &&
-				(NULL != grid_xw && NULL != grid_xw) &&
+				(NULL != grid_xw && NULL != grid_yw) &&
 				FLT_NEQ(*grid_yw, extent.MaxY)
 			) {
 				/* do nothing */
