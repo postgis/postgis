@@ -1015,7 +1015,7 @@ rt_raster_iterator(
 
 			for (i = 0; i < itrcount; i++) {
 				if (!_param->isempty[i]) {
-					memcpy(rtnrast, _param->raster[i], sizeof(struct rt_raster_serialized_t));
+					memcpy(rtnrast, _param->raster[i], sizeof(struct rt_raster_t));
 					break;
 				}
 			}
@@ -1118,11 +1118,11 @@ rt_raster_iterator(
 
 			switch (extenttype) {
 				case ET_CUSTOM:
-					memcpy(rtnrast, customextent, sizeof(struct rt_raster_serialized_t));
+					memcpy(rtnrast, customextent, sizeof(struct rt_raster_t));
 					break;
 				/* first, second, last */
 				default:
-					memcpy(rtnrast, _param->raster[i], sizeof(struct rt_raster_serialized_t));
+					memcpy(rtnrast, _param->raster[i], sizeof(struct rt_raster_t));
 					break;
 			}
 			rtnrast->numBands = 0;

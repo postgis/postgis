@@ -1312,7 +1312,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				int nband = arg2->nbands[i] + 1;
 				rt_raster_destroy(tile);
 				rt_raster_destroy(arg2->raster.raster);
-				if (arg2->numbands) pfree(arg2->nbands);
+				pfree(arg2->nbands);
 				pfree(arg2);
 				elog(ERROR, "RASTER_tile: Could not get band %d from source raster", nband);
 				SRF_RETURN_DONE(funcctx);
@@ -1343,7 +1343,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				if (band == NULL) {
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
-					if (arg2->numbands) pfree(arg2->nbands);
+					pfree(arg2->nbands);
 					pfree(arg2);
 					elog(ERROR, "RASTER_tile: Could not get newly added band from output tile");
 					SRF_RETURN_DONE(funcctx);
@@ -1368,7 +1368,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					if (rt_band_get_pixel_line(_band, rx, k, len, &vals, &nvals) != ES_NONE) {
 						rt_raster_destroy(tile);
 						rt_raster_destroy(arg2->raster.raster);
-						if (arg2->numbands) pfree(arg2->nbands);
+						pfree(arg2->nbands);
 						pfree(arg2);
 						elog(ERROR, "RASTER_tile: Could not get pixel line from source raster");
 						SRF_RETURN_DONE(funcctx);
@@ -1377,7 +1377,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					if (nvals && rt_band_set_pixel_line(band, 0, j, vals, nvals) != ES_NONE) {
 						rt_raster_destroy(tile);
 						rt_raster_destroy(arg2->raster.raster);
-						if (arg2->numbands) pfree(arg2->nbands);
+						pfree(arg2->nbands);
 						pfree(arg2);
 						elog(ERROR, "RASTER_tile: Could not set pixel line of output tile");
 						SRF_RETURN_DONE(funcctx);
@@ -1399,7 +1399,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				if (band == NULL) {
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
-					if (arg2->numbands) pfree(arg2->nbands);
+					pfree(arg2->nbands);
 					pfree(arg2);
 					elog(ERROR, "RASTER_tile: Could not create new offline band for output tile");
 					SRF_RETURN_DONE(funcctx);
@@ -1409,7 +1409,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					rt_band_destroy(band);
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
-					if (arg2->numbands) pfree(arg2->nbands);
+					pfree(arg2->nbands);
 					pfree(arg2);
 					elog(ERROR, "RASTER_tile: Could not add new offline band to output tile");
 					SRF_RETURN_DONE(funcctx);
@@ -1482,9 +1482,7 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 		elog(NOTICE, "Band number(s) not provided.  Returning original raster");
 		skip = TRUE;
 	}
-	do {
-		if (skip) break;
-
+	if (!skip) {
 		numBands = rt_raster_get_num_bands(raster);
 
 		array = PG_GETARG_ARRAYTYPE_P(1);
@@ -1521,7 +1519,7 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 
 			POSTGIS_RT_DEBUGF(3, "band idx (before): %d", idx);
 			if (idx > numBands || idx < 1) {
-        elog(NOTICE, "Invalid band index (must use 1-based). Returning original raster");
+        		elog(NOTICE, "Invalid band index (must use 1-based). Returning original raster");
 				skip = TRUE;
 				break;
 			}
@@ -1536,7 +1534,6 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 			skip = TRUE;
 		}
 	}
-	while (0);
 
 	if (!skip) {
 		rast = rt_raster_from_band(raster, bandNums, j);

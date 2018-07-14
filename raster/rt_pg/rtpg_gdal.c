@@ -250,7 +250,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 
 				if (strlen(option)) {
 					options[j] = (char *) palloc(sizeof(char) * (strlen(option) + 1));
-					options[j] = option;
+					strcpy(options[j], option);
 					j++;
 				}
 			}
@@ -323,15 +323,8 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 	SET_VARSIZE(result, result_size);
 	memcpy(VARDATA(result), gdal, VARSIZE(result) - VARHDRSZ);
 
-	/* for test output
-	FILE *fh = NULL;
-	fh = fopen("/tmp/out.dat", "w");
-	fwrite(gdal, sizeof(uint8_t), gdal_size, fh);
-	fclose(fh);
-	*/
-
 	/* free gdal mem buffer */
-	if (gdal) CPLFree(gdal);
+	CPLFree(gdal);
 
 	POSTGIS_RT_DEBUG(3, "RASTER_asGDALRaster: Returning pointer to GDAL raster");
 	PG_RETURN_POINTER(result);
@@ -649,7 +642,7 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 
 		dst_srs = rtpg_getSR(dst_srid);
 		if (NULL == dst_srs) {
-			if (!no_srid) pfree(src_srs);
+			pfree(src_srs);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			elog(ERROR, "RASTER_GDALWarp: Target SRID (%d) is unknown", dst_srid);
