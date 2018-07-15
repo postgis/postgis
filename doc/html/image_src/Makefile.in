@@ -205,3 +205,4 @@ distclean: clean
 images-clean:
 	rm -f $(IMAGES) $(IMAGES_RESIZED)
 
+.NOTPARALLEL:
