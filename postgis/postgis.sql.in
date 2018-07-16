@@ -5851,9 +5851,7 @@ $$
 	var_tempgeom geometry;
 	scale_factor float := 1;
 	i integer;
-
 	BEGIN
-
 		-- First compute the ConvexHull of the geometry
 		vexhull := @extschema@.ST_ConvexHull(param_inputgeom);
 		var_inputgeom := param_inputgeom;
@@ -5903,6 +5901,9 @@ $$
 		IF scale_factor > 1 THEN -- scale the result back
 			var_resultgeom := @extschema@.ST_Scale(var_resultgeom, 1/scale_factor, 1/scale_factor);
 		END IF;
+
+		-- make sure result covers original (#3638)
+		var_resultgeom := @extschema@.ST_Union(param_inputgeom, var_resultgeom);
 		RETURN var_resultgeom;
 
 	END;
@@ -5924,18 +5925,22 @@ $$
 		var_enline geometry;
 		var_resultgeom geometry;
 		var_atempgeoms geometry[];
-		var_buf float := 1; /**tolerance so that geometries that are right on the extent don't get accidentally clipped off **/
+		var_buf float := 1; /** tolerance so that geometries that are right on the extent don't get accidentally clipped off **/
 	BEGIN
 		-- We start with convex hull as our base
 		var_resultgeom := var_convhull;
 
 		IF param_pctconvex = 1 THEN
+			-- make sure result covers original (#3638)
+			var_resultgeom := @extschema@.ST_Union(param_geom, var_resultgeom);
 			return var_resultgeom;
 		ELSIF @extschema@.ST_GeometryType(var_param_geom) = 'ST_Polygon' THEN -- it is as concave as it is going to get
 			IF param_allow_holes THEN -- leave the holes
 				RETURN var_param_geom;
 			ELSE -- remove the holes
 				var_resultgeom := @extschema@.ST_MakePolygon(@extschema@.ST_ExteriorRing(var_param_geom));
+				-- make sure result covers original (#3638)
+				var_resultgeom := @extschema@.ST_Union(param_geom, var_resultgeom);
 				RETURN var_resultgeom;
 			END IF;
 		END IF;
@@ -5980,6 +5985,8 @@ $$
 					ELSE
 						var_param_geom := @extschema@.ST_ConvexHull(var_param_geom);
 					END IF;
+					-- make sure result covers original (#3638)
+					var_param_geom := @extschema@.ST_Union(param_geom, var_param_geom);
 					return var_param_geom;
 				ELSIF @extschema@.ST_IsValid(var_tempgeom) THEN
 					var_param_geom := @extschema@.ST_ForceSFS(@extschema@.ST_Intersection(var_tempgeom, var_convhull));
@@ -5990,6 +5997,8 @@ $$
 				IF NOT param_allow_holes THEN
 					var_param_geom := @extschema@.ST_MakePolygon(@extschema@.ST_ExteriorRing(var_param_geom));
 				END IF;
+				-- make sure result covers original (#3638)
+				var_param_geom := @extschema@.ST_Union(param_geom, var_param_geom);
 				return var_param_geom;
 			END IF;
             var_cent := @extschema@.ST_Centroid(var_param_geom);
@@ -6058,6 +6067,9 @@ $$
                 -- dimensions are too small to cut
                 var_resultgeom := @extschema@._ST_ConcaveHull(var_param_geom);
             END IF;
+
+			-- make sure result covers original (#3638)
+			var_resultgeom := @extschema@.ST_Union(param_geom, var_resultgeom);
             RETURN var_resultgeom;
 	END;
 $$
