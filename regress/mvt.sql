@@ -204,6 +204,59 @@ SELECT 'PG38', ST_AsText(ST_AsMVTGeom(
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
 	4096, 256, true));
 
+SELECT 'PG39 - ON ', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON((0 100, 100 100, 100 90, 94 90, 94 96, 90 96, 90 80, 100 80, 100 0, 0 0, 0 100))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	10, 0, true));
+
+SELECT 'PG39 - OFF', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON((0 100, 100 100, 100 90, 94 90, 94 96, 90 96, 90 80, 100 80, 100 0, 0 0, 0 100))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	10, 0, false));
+
+-- Clipping isn't done since all points fall into the tile after grid
+SELECT 'PG40 - ON ', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('LINESTRING(0 0, 2 20, -2 40, -4 60, 4 80, 0 100)'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	10, 0, true));
+
+SELECT 'PG40 - OFF', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('LINESTRING(0 0, 2 20, -2 40, -4 60, 4 80, 0 100)'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	10, 0, false));
+
+-- Clipping isn't done since all points fall into the tile after grid
+SELECT 'PG41 - ON ', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('LINESTRING(0 0, 2 20, -2 40, -4 60, 4 80, 0 100, 10 100)'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	10, 0, true));
+
+SELECT 'PG41 - OFF', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('LINESTRING(0 0, 2 20, -2 40, -4 60, 4 80, 0 100, 10 100)'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	10, 0, false));
+
+SELECT 'PG42 - ON ', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('LINESTRING(0 0, 2 20, -2 40, -4 60, 4 80, 0 100, 11 100)'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	10, 0, true));
+
+SELECT 'PG42 - OFF', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('LINESTRING(0 0, 2 20, -2 40, -4 60, 4 80, 0 100, 11 100)'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	10, 0, false));
+
+-- Invalid polygon (intersection)
+SELECT 'PG43 - ON ', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON((-10 -10, 110 110, -10 110, 110 -10, -10 -10))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	10, 0, true));
+
+SELECT 'PG43 - OFF', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON((-10 -10, 110 110, -10 110, 110 -10, -10 -10))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	10, 0, false));
+
 -- geometry encoding tests
 SELECT 'TG1', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1,
 	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
