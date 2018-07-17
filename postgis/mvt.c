@@ -696,11 +696,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	gridspec grid;
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;
-	double resx = width / extent;
-	double resy = height / extent;
-	double res = (resx < resy ? resx : resy)/2;
-	double fx = extent / width;
-	double fy = -(extent / height);
+	double resx, resy, res, fx, fy;
 	int preserve_collapsed = LW_TRUE;
 	POSTGIS_DEBUG(2, "mvt_geom called");
 
@@ -714,6 +710,12 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	if (extent == 0)
 		elog(ERROR, "mvt_geom: extent cannot be 0");
 
+	resx = width / extent;
+	resy = height / extent;
+	res = (resx < resy ? resx : resy)/2;
+	fx = extent / width;
+	fy = -(extent / height);
+
 	/* Remove all non-essential points (under the output resolution) */
 	lwgeom_remove_repeated_points_in_place(lwgeom, res);
 	lwgeom_simplify_in_place(lwgeom, res, preserve_collapsed);
@@ -726,10 +728,9 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	{
 		// We need to add an extra half pixel to include the points that
 		// fall into the bbox only after the coordinate transformation
-		double buffer_map_xunits = !buffer ?
-			0.0 : nextafterf(resx * (buffer + 0.5), 0.0);
+		double buffer_map_xunits = nextafterf(res, 0.0) + resx * buffer;
 		GBOX bgbox;
-		const GBOX *lwgeom_gbox = lwgeom_get_bbox(lwgeom);;
+		const GBOX *lwgeom_gbox = lwgeom_get_bbox(lwgeom);
 		bgbox = *gbox;
 		gbox_expand(&bgbox, buffer_map_xunits);
 		if (!gbox_overlaps_2d(lwgeom_gbox, &bgbox))

@@ -36,6 +36,20 @@ PG35|POINT(4352 4352)
 PG36|
 PG37|
 PG38|
+PG39 - ON |POLYGON((0 0,10 0,9 2,10 2,10 10,0 10,0 0))
+PG39 - OFF|POLYGON((0 0,10 0,9 2,10 2,10 10,0 10,0 0))
+PG40 - ON |LINESTRING(0 10,0 0)
+PG40 - OFF|LINESTRING(0 10,0 0)
+PG41 - ON |LINESTRING(0 10,0 4,0 2,0 0,1 0)
+PG41 - OFF|LINESTRING(0 10,0 4,0 2,0 0,1 0)
+PG42 - ON |LINESTRING(0 10,0 0,1 0)
+PG42 - OFF|LINESTRING(0 10,0 0,1 0)
+NOTICE:  lwgeom_intersection: GEOS Error: TopologyException: Input geom 0 is invalid: Self-intersection
+NOTICE:  Self-intersection
+NOTICE:  Your geometry dataset is not valid per OGC Specification. Please fix it with manual review of entries that are not ST_IsValid(geom). Retrying GEOS operation with ST_MakeValid of your input.
+NOTICE:  Self-intersection
+PG43 - ON |MULTIPOLYGON(((0 10,5 5,10 10,0 10)),((5 5,0 0,10 0,5 5)))
+PG43 - OFF|MULTIPOLYGON(((5 5,-1 -1,11 -1,5 5)),((5 5,11 11,-1 11,5 5)))
 TG1|GiEKBHRlc3QSDBICAAAYASIECTLePxoCYzEiAigBKIAgeAI=
 TG2|GiMKBHRlc3QSDhICAAAYASIGETLePwIBGgJjMSICKAEogCB4Ag==
 TG3|GiYKBHRlc3QSERICAAAYAiIJCQCAQArQD88PGgJjMSICKAEogCB4Ag==
