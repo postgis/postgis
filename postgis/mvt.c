@@ -362,8 +362,6 @@ static void encode_feature_ids(mvt_agg_context *ctx)
 	uint32_t i, j, key_tag, value_tag;
 	VectorTile__Tile__Feature *feature;
 
-	POSTGIS_DEBUG(1, "encode_feature_ids called");
-
 	for (i = 0; i < ctx->layer->n_features; i++) {
 		feature = ctx->layer->features[i];
 		for (j = 0; j < feature->n_tags; j+=2) {
