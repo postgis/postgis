@@ -357,27 +357,6 @@ static void encode_keys(mvt_agg_context *ctx)
 	HASH_CLEAR(hh, ctx->keys_hash);
 }
 
-static void encode_feature_ids(mvt_agg_context *ctx)
-{
-	uint32_t i, j, key_tag, value_tag;
-	VectorTile__Tile__Feature *feature;
-
-	for (i = 0; i < ctx->layer->n_features; i++) {
-		feature = ctx->layer->features[i];
-		for (j = 0; j < feature->n_tags; j+=2) {
-			key_tag = feature->tags[j];
-			value_tag = feature->tags[j+1];
-			if (strcmp(ctx->layer->keys[key_tag], "id") == 0) {
-				if (ctx->layer->values[value_tag]->has_uint_value) {
-					feature->id = ctx->layer->values[value_tag]->uint_value;
-					feature->has_id = true;
-					break;
-				}
-			}
-		}
-	}
-}
-
 static VectorTile__Tile__Value *create_value()
 {
 	VectorTile__Tile__Value *value = palloc(sizeof(*value));
@@ -583,6 +562,15 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 }
 #endif
 
+static void set_feature_id(mvt_agg_context *ctx, char *key, Oid typoid, Datum datum)
+{
+	POSTGIS_DEBUG(2, "set_feature_id called");
+	if (strcmp(key, "id") == 0 && (typoid == INT2OID || typoid == INT4OID || typoid == INT8OID)) {
+		ctx->feature->id = datum;
+		ctx->feature->has_id = true;
+	}
+}
+
 static void parse_values(mvt_agg_context *ctx)
 {
 	uint32_t n_keys = ctx->keys_hash_i;
@@ -658,6 +646,8 @@ static void parse_values(mvt_agg_context *ctx)
 			parse_datum_as_string(ctx, typoid, datum, tags, k);
 			break;
 		}
+
+		set_feature_id(ctx, key, typoid, datum);
 		ctx->c++;
 	}
 
@@ -912,7 +902,6 @@ static VectorTile__Tile * mvt_ctx_to_tile(mvt_agg_context *ctx)
 	VectorTile__Tile *tile;
 	encode_keys(ctx);
 	encode_values(ctx);
-	encode_feature_ids(ctx);
 
 	tile = palloc(sizeof(VectorTile__Tile));
 	vector_tile__tile__init(tile);
