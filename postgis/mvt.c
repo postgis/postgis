@@ -564,8 +564,8 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 
 static void set_feature_id(mvt_agg_context *ctx, char *key, Oid typoid, Datum datum)
 {
-	POSTGIS_DEBUG(2, "set_feature_id called");
-	if (strcmp(key, "id") == 0 && (typoid == INT2OID || typoid == INT4OID || typoid == INT8OID)) {
+	if (strcmp(key, ctx->id_name) == 0 &&
+		(typoid == INT2OID || typoid == INT4OID || typoid == INT8OID)) {
 		ctx->feature->id = datum;
 		ctx->feature->has_id = true;
 	}
@@ -647,7 +647,10 @@ static void parse_values(mvt_agg_context *ctx)
 			break;
 		}
 
-		set_feature_id(ctx, key, typoid, datum);
+		if (ctx->id_name != NULL) {
+			set_feature_id(ctx, key, typoid, datum);
+		}
+
 		ctx->c++;
 	}
 

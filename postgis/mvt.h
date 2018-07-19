@@ -49,6 +49,7 @@
 typedef struct mvt_agg_context {
 	char *name;
 	uint32_t extent;
+	char *id_name;
 	char *geom_name;
 	uint32_t geom_index;
 	HeapTupleHeader row;

@@ -4491,6 +4491,12 @@ CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, int4, 
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
 	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, int4, text, text)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
+
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_finalfn(internal)
 	RETURNS bytea
@@ -4563,6 +4569,21 @@ CREATE AGGREGATE ST_AsMVT(anyelement, text, int4)
 -- Availability: 2.4.0
 -- Changed: 2.5.0
 CREATE AGGREGATE ST_AsMVT(anyelement, text, int4, text)
+(
+	sfunc = pgis_asmvt_transfn,
+	stype = internal,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+	serialfunc = pgis_asmvt_serialfn,
+	deserialfunc = pgis_asmvt_deserialfn,
+	combinefunc = pgis_asmvt_combinefn,
+#endif
+	finalfunc = pgis_asmvt_finalfn
+);
+
+-- Availability: 3.0.0
+-- Changed: 3.0.0
+CREATE AGGREGATE ST_AsMVT(anyelement, text, int4, text, text)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,
