@@ -688,11 +688,9 @@ rt_raster_serialize(rt_raster raster) {
 #endif
 
 		/* Pad up to 8-bytes boundary */
-		while ((uintptr_t) ptr % 8) {
+		while ((ptr-ret) % 8) {
 			*ptr = 0;
 			++ptr;
-
-			RASTER_DEBUGF(3, "PAD at %d", (uintptr_t) ptr % 8);
 		}
 
 		/* Consistency checking (ptr is pixbytes-aligned) */
