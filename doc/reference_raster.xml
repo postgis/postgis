@@ -9894,7 +9894,7 @@ FROM (
 
 			<refentry id="RT_ST_MapAlgebra">
 				<refnamediv>
-					<refname>ST_MapAlgebra</refname>
+					<refname>ST_MapAlgebra (callback function version)</refname>
 					<refpurpose>
 						Callback function version - Returns a one-band raster given one or more input rasters, band indexes and one user-specified callback function.
 					</refpurpose>
@@ -10419,7 +10419,7 @@ FROM foo;
 
 			<refentry id="RT_ST_MapAlgebra_expr">
 				<refnamediv>
-					<refname>ST_MapAlgebra</refname>
+					<refname>ST_MapAlgebra (expression version)</refname>
 					<refpurpose>
 						Expression version - Returns a one-band raster given one or two input rasters, band indexes and one or more user-specified SQL expressions.
 					</refpurpose>
