@@ -1071,6 +1071,8 @@ SELECT
     <title>Description</title>
 
     <para>Creates a LineString from an Encoded Polyline string.</para>
+		<para>Optional <varname>precision</varname> specifies how many decimal places will be preserved in Encoded Polyline. Value should be the same on encoding and decoding, or coordinates will be incorrect.</para>
+
     <para>See http://developers.google.com/maps/documentation/utilities/polylinealgorithm</para>
     <para>Availability: 2.2.0</para>
     </refsection>
@@ -1079,10 +1081,16 @@ SELECT
     <title>Examples</title>
 
     <programlisting>
---Create a line string from a polyline
+-- Create a line string from a polyline
 SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@'));
---result--
-LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)
+-- result --
+SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)
+
+-- Select different precision that was used for polyline encoding
+SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@',6));
+-- result --
+SRID=4326;LINESTRING(-12.02 3.85,-12.095 4.07,-12.6453 4.3252)
+
     </programlisting>
     </refsection>
 
