@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-09-11 22:04+0000\n"
+"POT-Creation-Date: 2018-07-21 17:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -50,21 +50,21 @@ msgstr ""
 #: reference_constructor.xml:258 reference_constructor.xml:303
 #: reference_constructor.xml:354 reference_constructor.xml:402
 #: reference_constructor.xml:445 reference_constructor.xml:474
-#: reference_constructor.xml:517 reference_constructor.xml:591
-#: reference_constructor.xml:630 reference_constructor.xml:681
-#: reference_constructor.xml:713 reference_constructor.xml:766
-#: reference_constructor.xml:814 reference_constructor.xml:852
-#: reference_constructor.xml:897 reference_constructor.xml:956
-#: reference_constructor.xml:1024 reference_constructor.xml:1084
-#: reference_constructor.xml:1123 reference_constructor.xml:1180
-#: reference_constructor.xml:1257 reference_constructor.xml:1302
-#: reference_constructor.xml:1384 reference_constructor.xml:1427
-#: reference_constructor.xml:1469 reference_constructor.xml:1530
-#: reference_constructor.xml:1591 reference_constructor.xml:1645
-#: reference_constructor.xml:1696 reference_constructor.xml:1739
-#: reference_constructor.xml:1795 reference_constructor.xml:1844
-#: reference_constructor.xml:1898 reference_constructor.xml:1941
-#: reference_constructor.xml:1964
+#: reference_constructor.xml:517 reference_constructor.xml:602
+#: reference_constructor.xml:642 reference_constructor.xml:693
+#: reference_constructor.xml:725 reference_constructor.xml:778
+#: reference_constructor.xml:826 reference_constructor.xml:866
+#: reference_constructor.xml:911 reference_constructor.xml:970
+#: reference_constructor.xml:1038 reference_constructor.xml:1098
+#: reference_constructor.xml:1137 reference_constructor.xml:1194
+#: reference_constructor.xml:1271 reference_constructor.xml:1316
+#: reference_constructor.xml:1398 reference_constructor.xml:1441
+#: reference_constructor.xml:1483 reference_constructor.xml:1544
+#: reference_constructor.xml:1605 reference_constructor.xml:1659
+#: reference_constructor.xml:1710 reference_constructor.xml:1753
+#: reference_constructor.xml:1809 reference_constructor.xml:1858
+#: reference_constructor.xml:1912 reference_constructor.xml:1955
+#: reference_constructor.xml:1978
 #, no-c-format
 msgid "Description"
 msgstr ""
@@ -88,10 +88,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:36 reference_constructor.xml:88
-#: reference_constructor.xml:317 reference_constructor.xml:913
-#: reference_constructor.xml:981 reference_constructor.xml:1047
-#: reference_constructor.xml:1485 reference_constructor.xml:1607
-#: reference_constructor.xml:1909
+#: reference_constructor.xml:317 reference_constructor.xml:927
+#: reference_constructor.xml:995 reference_constructor.xml:1061
+#: reference_constructor.xml:1499 reference_constructor.xml:1621
+#: reference_constructor.xml:1923
 #, no-c-format
 msgid "&sfs_compliant; s3.2.6.2"
 msgstr ""
@@ -108,16 +108,16 @@ msgstr ""
 #: reference_constructor.xml:230 reference_constructor.xml:267
 #: reference_constructor.xml:324 reference_constructor.xml:368
 #: reference_constructor.xml:416 reference_constructor.xml:486
-#: reference_constructor.xml:602 reference_constructor.xml:734
-#: reference_constructor.xml:782 reference_constructor.xml:822
-#: reference_constructor.xml:860 reference_constructor.xml:920
-#: reference_constructor.xml:988 reference_constructor.xml:1052
-#: reference_constructor.xml:1092 reference_constructor.xml:1139
-#: reference_constructor.xml:1399 reference_constructor.xml:1434
-#: reference_constructor.xml:1492 reference_constructor.xml:1553
-#: reference_constructor.xml:1614 reference_constructor.xml:1708
-#: reference_constructor.xml:1763 reference_constructor.xml:1813
-#: reference_constructor.xml:1862 reference_constructor.xml:1914
+#: reference_constructor.xml:614 reference_constructor.xml:746
+#: reference_constructor.xml:794 reference_constructor.xml:836
+#: reference_constructor.xml:874 reference_constructor.xml:934
+#: reference_constructor.xml:1002 reference_constructor.xml:1066
+#: reference_constructor.xml:1106 reference_constructor.xml:1153
+#: reference_constructor.xml:1413 reference_constructor.xml:1448
+#: reference_constructor.xml:1506 reference_constructor.xml:1567
+#: reference_constructor.xml:1628 reference_constructor.xml:1722
+#: reference_constructor.xml:1777 reference_constructor.xml:1827
+#: reference_constructor.xml:1876 reference_constructor.xml:1928
 #, no-c-format
 msgid "Examples"
 msgstr ""
@@ -135,21 +135,21 @@ msgstr ""
 #: reference_constructor.xml:272 reference_constructor.xml:331
 #: reference_constructor.xml:381 reference_constructor.xml:422
 #: reference_constructor.xml:450 reference_constructor.xml:490
-#: reference_constructor.xml:570 reference_constructor.xml:609
-#: reference_constructor.xml:657 reference_constructor.xml:688
-#: reference_constructor.xml:738 reference_constructor.xml:789
-#: reference_constructor.xml:829 reference_constructor.xml:867
-#: reference_constructor.xml:927 reference_constructor.xml:995
-#: reference_constructor.xml:1059 reference_constructor.xml:1099
-#: reference_constructor.xml:1146 reference_constructor.xml:1229
-#: reference_constructor.xml:1272 reference_constructor.xml:1336
-#: reference_constructor.xml:1403 reference_constructor.xml:1440
-#: reference_constructor.xml:1499 reference_constructor.xml:1560
-#: reference_constructor.xml:1621 reference_constructor.xml:1672
-#: reference_constructor.xml:1712 reference_constructor.xml:1767
-#: reference_constructor.xml:1820 reference_constructor.xml:1869
-#: reference_constructor.xml:1921 reference_constructor.xml:1945
-#: reference_constructor.xml:1968
+#: reference_constructor.xml:570 reference_constructor.xml:621
+#: reference_constructor.xml:669 reference_constructor.xml:700
+#: reference_constructor.xml:750 reference_constructor.xml:801
+#: reference_constructor.xml:843 reference_constructor.xml:881
+#: reference_constructor.xml:941 reference_constructor.xml:1009
+#: reference_constructor.xml:1073 reference_constructor.xml:1113
+#: reference_constructor.xml:1160 reference_constructor.xml:1243
+#: reference_constructor.xml:1286 reference_constructor.xml:1350
+#: reference_constructor.xml:1417 reference_constructor.xml:1454
+#: reference_constructor.xml:1513 reference_constructor.xml:1574
+#: reference_constructor.xml:1635 reference_constructor.xml:1686
+#: reference_constructor.xml:1726 reference_constructor.xml:1781
+#: reference_constructor.xml:1834 reference_constructor.xml:1883
+#: reference_constructor.xml:1935 reference_constructor.xml:1959
+#: reference_constructor.xml:1982
 #, no-c-format
 msgid "See Also"
 msgstr ""
@@ -255,7 +255,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:131 reference_constructor.xml:482
-#: reference_constructor.xml:1704
+#: reference_constructor.xml:1718
 #, no-c-format
 msgid "Availability: 2.1.0"
 msgstr ""
@@ -409,8 +409,8 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:224 reference_constructor.xml:362
-#: reference_constructor.xml:410 reference_constructor.xml:727
-#: reference_constructor.xml:777 reference_constructor.xml:1809
+#: reference_constructor.xml:410 reference_constructor.xml:739
+#: reference_constructor.xml:789 reference_constructor.xml:1823
 #, no-c-format
 msgid "&curve_support;"
 msgstr ""
@@ -529,9 +529,9 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:308 reference_constructor.xml:1474
-#: reference_constructor.xml:1535 reference_constructor.xml:1596
-#: reference_constructor.xml:1904
+#: reference_constructor.xml:308 reference_constructor.xml:1488
+#: reference_constructor.xml:1549 reference_constructor.xml:1610
+#: reference_constructor.xml:1918
 #, no-c-format
 msgid "OGC SPEC 3.2.6.2 - option SRID is from the conformance suite"
 msgstr ""
@@ -566,7 +566,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:333 reference_constructor.xml:1623
+#: reference_constructor.xml:333 reference_constructor.xml:1637
 #, no-c-format
 msgid ", <xref linkend=\"ST_SRID\"/>"
 msgstr ""
@@ -611,18 +611,18 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:360 reference_constructor.xml:408
-#: reference_constructor.xml:537 reference_constructor.xml:684
+#: reference_constructor.xml:537 reference_constructor.xml:696
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:361 reference_constructor.xml:409
-#: reference_constructor.xml:539 reference_constructor.xml:598
-#: reference_constructor.xml:644 reference_constructor.xml:855
-#: reference_constructor.xml:1194 reference_constructor.xml:1314
-#: reference_constructor.xml:1394 reference_constructor.xml:1808
-#: reference_constructor.xml:1856
+#: reference_constructor.xml:539 reference_constructor.xml:610
+#: reference_constructor.xml:656 reference_constructor.xml:869
+#: reference_constructor.xml:1208 reference_constructor.xml:1328
+#: reference_constructor.xml:1408 reference_constructor.xml:1822
+#: reference_constructor.xml:1870
 #, no-c-format
 msgid "&Z_support;"
 msgstr ""
@@ -816,7 +816,7 @@ msgid "ST_GeometryFromText"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:429 reference_constructor.xml:1953
+#: reference_constructor.xml:429 reference_constructor.xml:1967
 #, no-c-format
 msgid ""
 "Return a specified ST_Geometry value from Well-Known Text representation "
@@ -836,13 +836,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:446 reference_constructor.xml:1854
+#: reference_constructor.xml:446 reference_constructor.xml:1868
 #, no-c-format
 msgid "&sfs_compliant;"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:447 reference_constructor.xml:726
+#: reference_constructor.xml:447 reference_constructor.xml:738
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.40"
 msgstr ""
@@ -980,13 +980,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:536 reference_constructor.xml:683
+#: reference_constructor.xml:536 reference_constructor.xml:695
 #, no-c-format
 msgid "Availability: 1.5, requires libxml2 1.6+"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:538 reference_constructor.xml:685
+#: reference_constructor.xml:538 reference_constructor.xml:697
 #, no-c-format
 msgid "Enhanced: 2.0.0 default srid optional parameter added."
 msgstr ""
@@ -1026,7 +1026,7 @@ msgid "ST_GeomFromGML function not support SQL/MM curves geometries."
 msgstr ""
 
 #. Tag: title
-#: reference_constructor.xml:554 reference_constructor.xml:652
+#: reference_constructor.xml:554 reference_constructor.xml:664
 #, no-c-format
 msgid "Examples - A single geometry with srsName"
 msgstr ""
@@ -1152,22 +1152,28 @@ msgid ""
 "geometry object"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_constructor.xml:583
+#. Tag: funcsynopsis
+#: reference_constructor.xml:582
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_GeomFromGeoJSON</function></funcdef> "
-"<paramdef><type>text </type> <parameter>geomjson</parameter></paramdef>"
+"<funcprototype> <funcdef>geometry <function>ST_GeomFromGeoJSON</function></"
+"funcdef> <paramdef><type>text </type> <parameter>geomjson</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_GeomFromGeoJSON</function></funcdef> <paramdef><type>json </"
+"type> <parameter>geomjson</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>geometry <function>ST_GeomFromGeoJSON</function></"
+"funcdef> <paramdef><type>jsonb </type> <parameter>geomjson</parameter></"
+"paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:592
+#: reference_constructor.xml:603
 #, no-c-format
 msgid "Constructs a PostGIS geometry object from the GeoJSON representation."
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:593
+#: reference_constructor.xml:604
 #, no-c-format
 msgid ""
 "ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an "
@@ -1175,13 +1181,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:595
+#: reference_constructor.xml:606
+#, no-c-format
+msgid "Enhanced: 2.5.0 can now accept json and jsonb as inputs."
+msgstr ""
+
+#. Tag: para
+#: reference_constructor.xml:607
 #, no-c-format
 msgid "Availability: 2.0.0 requires - JSON-C &gt;= 0.9"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:596
+#: reference_constructor.xml:608
 #, no-c-format
 msgid ""
 "If you do not have JSON-C enabled, support you will get an error notice "
@@ -1191,7 +1203,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:603
+#: reference_constructor.xml:615
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_GeomFromGeoJSON('{\"type\":\"Point\",\"coordinates\":"
@@ -1202,7 +1214,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:604
+#: reference_constructor.xml:616
 #, no-c-format
 msgid ""
 "-- a 3D linestring\n"
@@ -1215,7 +1227,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:610
+#: reference_constructor.xml:622
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsGeoJSON\"/>, <xref linkend="
@@ -1223,13 +1235,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:616
+#: reference_constructor.xml:628
 #, no-c-format
 msgid "ST_GeomFromKML"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:617
+#: reference_constructor.xml:629
 #, no-c-format
 msgid ""
 "Takes as input KML representation of geometry and outputs a PostGIS geometry "
@@ -1237,7 +1249,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:622
+#: reference_constructor.xml:634
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_GeomFromKML</function></funcdef> "
@@ -1245,14 +1257,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:631
+#: reference_constructor.xml:643
 #, no-c-format
 msgid ""
 "Constructs a PostGIS ST_Geometry object from the OGC KML representation."
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:632
+#: reference_constructor.xml:644
 #, no-c-format
 msgid ""
 "ST_GeomFromKML works only for KML Geometry fragments. It throws an error if "
@@ -1260,7 +1272,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:633
+#: reference_constructor.xml:645
 #, no-c-format
 msgid ""
 "OGC KML versions supported: <itemizedlist> <listitem> <para>KML 2.2.0 "
@@ -1270,19 +1282,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:643
+#: reference_constructor.xml:655
 #, no-c-format
 msgid "Availability: 1.5,libxml2 2.6+"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:646
+#: reference_constructor.xml:658
 #, no-c-format
 msgid "ST_GeomFromKML function not support SQL/MM curves geometries."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:653
+#: reference_constructor.xml:665
 #, no-c-format
 msgid ""
 "SELECT ST_GeomFromKML('<![CDATA[\n"
@@ -1293,19 +1305,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:658
+#: reference_constructor.xml:670
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsKML\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:664
+#: reference_constructor.xml:676
 #, no-c-format
 msgid "ST_GMLToSQL"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:665
+#: reference_constructor.xml:677
 #, no-c-format
 msgid ""
 "Return a specified ST_Geometry value from GML representation. This is an "
@@ -1313,7 +1325,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:668
+#: reference_constructor.xml:680
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_GMLToSQL</function></funcdef> "
@@ -1325,25 +1337,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:682
+#: reference_constructor.xml:694
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support)."
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:689
+#: reference_constructor.xml:701
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromGML\"/>, <xref linkend=\"ST_AsGML\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:695
+#: reference_constructor.xml:707
 #, no-c-format
 msgid "ST_GeomFromText"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:696
+#: reference_constructor.xml:708
 #, no-c-format
 msgid ""
 "Return a specified ST_Geometry value from Well-Known Text representation "
@@ -1351,7 +1363,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:699
+#: reference_constructor.xml:711
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_GeomFromText</function></"
@@ -1363,7 +1375,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:715
+#: reference_constructor.xml:727
 #, no-c-format
 msgid ""
 "Constructs a PostGIS ST_Geometry object from the OGC Well-Known text "
@@ -1371,7 +1383,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:719
+#: reference_constructor.xml:731
 #, no-c-format
 msgid ""
 "There are two variants of ST_GeomFromText function. The first takes no SRID "
@@ -1381,13 +1393,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:725 reference_constructor.xml:1758
+#: reference_constructor.xml:737 reference_constructor.xml:1772
 #, no-c-format
 msgid "&sfs_compliant; s3.2.6.2 - option SRID is from the conformance suite."
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:728
+#: reference_constructor.xml:740
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 In prior versions of PostGIS "
@@ -1397,7 +1409,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:735
+#: reference_constructor.xml:747
 #, no-c-format
 msgid ""
 "SELECT ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 "
@@ -1445,19 +1457,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:739
+#: reference_constructor.xml:751
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromWKB\"/>, <xref linkend=\"ST_SRID\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:745
+#: reference_constructor.xml:757
 #, no-c-format
 msgid "ST_GeomFromWKB"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:746
+#: reference_constructor.xml:758
 #, no-c-format
 msgid ""
 "Creates a geometry instance from a Well-Known Binary geometry representation "
@@ -1465,7 +1477,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:751 reference_constructor.xml:1780
+#: reference_constructor.xml:763 reference_constructor.xml:1794
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_GeomFromWKB</function></"
@@ -1477,7 +1489,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:768
+#: reference_constructor.xml:780
 #, no-c-format
 msgid ""
 "The <varname>ST_GeomFromWKB</varname> function, takes a well-known binary "
@@ -1488,26 +1500,26 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:774
+#: reference_constructor.xml:786
 #, no-c-format
 msgid "If SRID is not specified, it defaults to 0 (Unknown)."
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:775
+#: reference_constructor.xml:787
 #, no-c-format
 msgid ""
 "&sfs_compliant; s3.2.7.2 - the optional SRID is from the conformance suite"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:776
+#: reference_constructor.xml:788
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.41"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:784
+#: reference_constructor.xml:796
 #, no-c-format
 msgid ""
 "--Although bytea rep contains single \\, these need to be escaped when "
@@ -1537,25 +1549,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:791
+#: reference_constructor.xml:803
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_GeomFromEWKB\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:798
+#: reference_constructor.xml:810
 #, no-c-format
 msgid "ST_LineFromEncodedPolyline"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:800
+#: reference_constructor.xml:812
 #, no-c-format
 msgid "Creates a LineString from an Encoded Polyline."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:805
+#: reference_constructor.xml:817
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineFromEncodedPolyline</function></funcdef> "
@@ -1565,13 +1577,22 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:816
+#: reference_constructor.xml:828
 #, no-c-format
 msgid "Creates a LineString from an Encoded Polyline string."
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:817
+#: reference_constructor.xml:829
+#, no-c-format
+msgid ""
+"Optional <varname>precision</varname> specifies how many decimal places will "
+"be preserved in Encoded Polyline. Value should be the same on encoding and "
+"decoding, or coordinates will be incorrect."
+msgstr ""
+
+#. Tag: para
+#: reference_constructor.xml:831
 #, no-c-format
 msgid ""
 "See http://developers.google.com/maps/documentation/utilities/"
@@ -1579,37 +1600,43 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:818
+#: reference_constructor.xml:832
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:824
+#: reference_constructor.xml:838
 #, no-c-format
 msgid ""
-"--Create a line string from a polyline\n"
+"-- Create a line string from a polyline\n"
 "SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|"
 "U_ulLnnqC_mqNvxq`@'));\n"
-"--result--\n"
-"LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)"
+"-- result --\n"
+"SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)\n"
+"\n"
+"-- Select different precision that was used for polyline encoding\n"
+"SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|"
+"U_ulLnnqC_mqNvxq`@',6));\n"
+"-- result --\n"
+"SRID=4326;LINESTRING(-12.02 3.85,-12.095 4.07,-12.6453 4.3252)"
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:837
+#: reference_constructor.xml:851
 #, no-c-format
 msgid "ST_LineFromMultiPoint"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:839
+#: reference_constructor.xml:853
 #, no-c-format
 msgid ""
 "<refpurpose>Creates a LineString from a MultiPoint geometry.</refpurpose>"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:844
+#: reference_constructor.xml:858
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineFromMultiPoint</function></funcdef> "
@@ -1618,13 +1645,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:854
+#: reference_constructor.xml:868
 #, no-c-format
 msgid "<para>Creates a LineString from a MultiPoint geometry.</para>"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:862
+#: reference_constructor.xml:876
 #, no-c-format
 msgid ""
 "--Create a 3d line string from a 3d multipoint\n"
@@ -1635,19 +1662,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:869
+#: reference_constructor.xml:883
 #, no-c-format
 msgid ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_MakeLine\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:875
+#: reference_constructor.xml:889
 #, no-c-format
 msgid "ST_LineFromText"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:877
+#: reference_constructor.xml:891
 #, no-c-format
 msgid ""
 "Makes a Geometry from WKT representation with the given SRID. If SRID is not "
@@ -1655,7 +1682,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:882
+#: reference_constructor.xml:896
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_LineFromText</function></"
@@ -1667,7 +1694,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:899
+#: reference_constructor.xml:913
 #, no-c-format
 msgid ""
 "Makes a Geometry from WKT with the given SRID. If SRID is not given, it "
@@ -1675,13 +1702,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:903 reference_constructor.xml:969
+#: reference_constructor.xml:917 reference_constructor.xml:983
 #, no-c-format
 msgid "OGC SPEC 3.2.6.2 - option SRID is from the conformance suite."
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:908
+#: reference_constructor.xml:922
 #, no-c-format
 msgid ""
 "If you know all your geometries are LINESTRINGS, its more efficient to just "
@@ -1690,13 +1717,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:914
+#: reference_constructor.xml:928
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.8"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:922
+#: reference_constructor.xml:936
 #, no-c-format
 msgid ""
 "SELECT ST_LineFromText('LINESTRING(1 2, 3 4)') AS aline, "
@@ -1707,19 +1734,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:935
+#: reference_constructor.xml:949
 #, no-c-format
 msgid "ST_LineFromWKB"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:937
+#: reference_constructor.xml:951
 #, no-c-format
 msgid "Makes a <varname>LINESTRING</varname> from WKB with the given SRID"
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:941
+#: reference_constructor.xml:955
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_LineFromWKB</function></"
@@ -1731,7 +1758,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:958
+#: reference_constructor.xml:972
 #, no-c-format
 msgid ""
 "The <varname>ST_LineFromWKB</varname> function, takes a well-known binary "
@@ -1742,7 +1769,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:964
+#: reference_constructor.xml:978
 #, no-c-format
 msgid ""
 "If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is "
@@ -1751,7 +1778,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:974
+#: reference_constructor.xml:988
 #, no-c-format
 msgid ""
 "If you know all your geometries are <varname>LINESTRING</varname>s, its more "
@@ -1761,13 +1788,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:982 reference_constructor.xml:1048
+#: reference_constructor.xml:996 reference_constructor.xml:1062
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.9"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:990
+#: reference_constructor.xml:1004
 #, no-c-format
 msgid ""
 "SELECT ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))) "
@@ -1780,25 +1807,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:997
+#: reference_constructor.xml:1011
 #, no-c-format
 msgid ", <xref linkend=\"ST_LinestringFromWKB\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1003
+#: reference_constructor.xml:1017
 #, no-c-format
 msgid "ST_LinestringFromWKB"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1005
+#: reference_constructor.xml:1019
 #, no-c-format
 msgid "Makes a geometry from WKB with the given SRID."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:1009
+#: reference_constructor.xml:1023
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_LinestringFromWKB</function></"
@@ -1810,7 +1837,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1026
+#: reference_constructor.xml:1040
 #, no-c-format
 msgid ""
 "The <varname>ST_LinestringFromWKB</varname> function, takes a well-known "
@@ -1821,7 +1848,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1032
+#: reference_constructor.xml:1046
 #, no-c-format
 msgid ""
 "If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is "
@@ -1831,13 +1858,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1037
+#: reference_constructor.xml:1051
 #, no-c-format
 msgid "OGC SPEC 3.2.6.2 - optional SRID is from the conformance suite."
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1041
+#: reference_constructor.xml:1055
 #, no-c-format
 msgid ""
 "If you know all your geometries are <varname>LINESTRING</varname>s, it's "
@@ -1847,7 +1874,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1054
+#: reference_constructor.xml:1068
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -1863,25 +1890,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1061 reference_constructor.xml:1822
+#: reference_constructor.xml:1075 reference_constructor.xml:1836
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineFromWKB\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1067
+#: reference_constructor.xml:1081
 #, no-c-format
 msgid "ST_MakeBox2D"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1069
+#: reference_constructor.xml:1083
 #, no-c-format
 msgid "Creates a BOX2D defined by the given point geometries."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1075
+#: reference_constructor.xml:1089
 #, no-c-format
 msgid ""
 "<funcdef>box2d <function>ST_MakeBox2D</function></funcdef> "
@@ -1891,7 +1918,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1086
+#: reference_constructor.xml:1100
 #, no-c-format
 msgid ""
 "Creates a BOX2D defined by the given point geometries. This is useful for "
@@ -1899,7 +1926,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1094
+#: reference_constructor.xml:1108
 #, no-c-format
 msgid ""
 "--Return all features that fall reside or partly reside in a US national "
@@ -1914,7 +1941,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1101
+#: reference_constructor.xml:1115
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
@@ -1922,19 +1949,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1107
+#: reference_constructor.xml:1121
 #, no-c-format
 msgid "ST_3DMakeBox"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1109
+#: reference_constructor.xml:1123
 #, no-c-format
 msgid "Creates a BOX3D defined by the given 3d point geometries."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1114
+#: reference_constructor.xml:1128
 #, no-c-format
 msgid ""
 "<funcdef>box3d <function>ST_3DMakeBox</function></funcdef> "
@@ -1944,25 +1971,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1125
+#: reference_constructor.xml:1139
 #, no-c-format
 msgid "Creates a BOX3D defined by the given 2 3D point geometries."
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1132
+#: reference_constructor.xml:1146
 #, no-c-format
 msgid "This function supports 3d and will not drop the z-index."
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1134
+#: reference_constructor.xml:1148
 #, no-c-format
 msgid "Changed: 2.0.0 In prior versions this used to be called ST_MakeBox3D"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1141
+#: reference_constructor.xml:1155
 #, no-c-format
 msgid ""
 "SELECT ST_3DMakeBox(ST_MakePoint(-989502.1875, 528439.5625, 10),\n"
@@ -1974,25 +2001,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1148
+#: reference_constructor.xml:1162
 #, no-c-format
 msgid ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1154
+#: reference_constructor.xml:1168
 #, no-c-format
 msgid "ST_MakeLine"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1156
+#: reference_constructor.xml:1170
 #, no-c-format
 msgid "Creates a Linestring from point, multipoint, or line geometries."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:1160
+#: reference_constructor.xml:1174
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></funcdef> "
@@ -2006,7 +2033,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1182
+#: reference_constructor.xml:1196
 #, no-c-format
 msgid ""
 "ST_MakeLine comes in 3 forms: a spatial aggregate that takes rows of point, "
@@ -2018,13 +2045,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1189
+#: reference_constructor.xml:1203
 #, no-c-format
 msgid "Inputs other than point, multipoint, or lines are ignored."
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1190
+#: reference_constructor.xml:1204
 #, no-c-format
 msgid ""
 "When adding line components common nodes at the beginning of lines are "
@@ -2033,21 +2060,21 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1196
+#: reference_constructor.xml:1210
 #, no-c-format
 msgid ""
 "Availability: 2.3.0 - Support for multipoint input elements was introduced"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1197
+#: reference_constructor.xml:1211
 #, no-c-format
 msgid ""
 "Availability: 2.0.0 - Support for linestring input elements was introduced"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1198
+#: reference_constructor.xml:1212
 #, no-c-format
 msgid ""
 "Availability: 1.4.0 - ST_MakeLine(geomarray) was introduced. ST_MakeLine "
@@ -2055,13 +2082,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_constructor.xml:1203
+#: reference_constructor.xml:1217
 #, no-c-format
 msgid "Examples: Spatial Aggregate version"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1204
+#: reference_constructor.xml:1218
 #, no-c-format
 msgid ""
 "This example takes a sequence of GPS points and creates one record for each "
@@ -2070,21 +2097,21 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1208
+#: reference_constructor.xml:1222
 #, no-c-format
 msgid ""
 "-- For pre-PostgreSQL 9.0 - this usually works,\n"
 "-- but the planner may on occasion choose not to respect the order of the "
 "subquery\n"
 "SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom\n"
-"        FROM (SELECT gps_track,gps_time, the_geom\n"
+"        FROM (SELECT gps_track, gps_time, the_geom\n"
 "                        FROM gps_points ORDER BY gps_track, gps_time) As "
 "gps\n"
 "        GROUP BY gps.gps_track;"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1210
+#: reference_constructor.xml:1224
 #, no-c-format
 msgid ""
 "-- If you are using PostgreSQL 9.0+\n"
@@ -2098,13 +2125,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_constructor.xml:1213
+#: reference_constructor.xml:1227
 #, no-c-format
 msgid "Examples: Non-Spatial Aggregate version"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1215
+#: reference_constructor.xml:1229
 #, no-c-format
 msgid ""
 "First example is a simple one off line string composed of 2 points. The "
@@ -2113,7 +2140,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1217
+#: reference_constructor.xml:1231
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_MakeLine(ST_MakePoint(1,2), ST_MakePoint(3,4)));\n"
@@ -2131,13 +2158,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_constructor.xml:1221
+#: reference_constructor.xml:1235
 #, no-c-format
 msgid "Examples: Using Array version"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1223
+#: reference_constructor.xml:1237
 #, no-c-format
 msgid ""
 "SELECT ST_MakeLine(ARRAY(SELECT ST_Centroid(the_geom) FROM visit_locations "
@@ -2153,7 +2180,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1230
+#: reference_constructor.xml:1244
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>, <xref "
@@ -2161,13 +2188,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1237
+#: reference_constructor.xml:1251
 #, no-c-format
 msgid "ST_MakeEnvelope"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1239
+#: reference_constructor.xml:1253
 #, no-c-format
 msgid ""
 "Creates a rectangular Polygon formed from the given minimums and maximums. "
@@ -2175,7 +2202,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1245
+#: reference_constructor.xml:1259
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakeEnvelope</function></funcdef> "
@@ -2188,7 +2215,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1259
+#: reference_constructor.xml:1273
 #, no-c-format
 msgid ""
 "Creates a rectangular Polygon formed from the minima and maxima. by the "
@@ -2197,13 +2224,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1262
+#: reference_constructor.xml:1276
 #, no-c-format
 msgid "Availability: 1.5"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1263
+#: reference_constructor.xml:1277
 #, no-c-format
 msgid ""
 "Enhanced: 2.0: Ability to specify an envelope without specifying an SRID was "
@@ -2211,13 +2238,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_constructor.xml:1268
+#: reference_constructor.xml:1282
 #, no-c-format
 msgid "Example: Building a bounding box polygon"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1269
+#: reference_constructor.xml:1283
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_MakeEnvelope(10, 10, 11, 11, 4326));\n"
@@ -2228,19 +2255,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1273
+#: reference_constructor.xml:1287
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1279
+#: reference_constructor.xml:1293
 #, no-c-format
 msgid "ST_MakePolygon"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1281
+#: reference_constructor.xml:1295
 #, no-c-format
 msgid ""
 "Creates a Polygon formed by the given shell. Input geometries must be closed "
@@ -2248,7 +2275,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1287
+#: reference_constructor.xml:1301
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakePolygon</function></funcdef> "
@@ -2256,7 +2283,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1293
+#: reference_constructor.xml:1307
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakePolygon</function></funcdef> "
@@ -2266,7 +2293,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1304
+#: reference_constructor.xml:1318
 #, no-c-format
 msgid ""
 "Creates a Polygon formed by the given shell. Input geometries must be closed "
@@ -2274,13 +2301,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1306
+#: reference_constructor.xml:1320
 #, no-c-format
 msgid "Variant 1: Takes one closed linestring."
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1307
+#: reference_constructor.xml:1321
 #, no-c-format
 msgid ""
 "Variant 2: Creates a Polygon formed by the given shell and array of holes. "
@@ -2289,7 +2316,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1311
+#: reference_constructor.xml:1325
 #, no-c-format
 msgid ""
 "This function will not accept a MULTILINESTRING. Use <xref linkend="
@@ -2297,13 +2324,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_constructor.xml:1318
+#: reference_constructor.xml:1332
 #, no-c-format
 msgid "Examples: Single closed LINESTRING"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1319
+#: reference_constructor.xml:1333
 #, no-c-format
 msgid ""
 "--2d line\n"
@@ -2335,19 +2362,19 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_constructor.xml:1322
+#: reference_constructor.xml:1336
 #, no-c-format
 msgid "Examples: Outer shell with inner shells"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1324
+#: reference_constructor.xml:1338
 #, no-c-format
 msgid "Build a donut with an ant hole"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1325
+#: reference_constructor.xml:1339
 #, no-c-format
 msgid ""
 "SELECT ST_MakePolygon(\n"
@@ -2362,7 +2389,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1326
+#: reference_constructor.xml:1340
 #, no-c-format
 msgid ""
 "Build province boundaries with holes representing lakes in the province from "
@@ -2371,7 +2398,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1330
+#: reference_constructor.xml:1344
 #, no-c-format
 msgid ""
 "The CASE construct is used because feeding a null array into ST_MakePolygon "
@@ -2379,7 +2406,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1332
+#: reference_constructor.xml:1346
 #, no-c-format
 msgid ""
 "A left join is used to guarantee we get all provinces back even if they have "
@@ -2387,7 +2414,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1333
+#: reference_constructor.xml:1347
 #, no-c-format
 msgid ""
 "SELECT p.gid, p.province_name,\n"
@@ -2422,7 +2449,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1337
+#: reference_constructor.xml:1351
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Accum\"/>, <xref linkend=\"ST_AddPoint\"/>, <xref "
@@ -2431,19 +2458,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1351
+#: reference_constructor.xml:1365
 #, no-c-format
 msgid "ST_MakePoint"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1353
+#: reference_constructor.xml:1367
 #, no-c-format
-msgid "Creates a 2D,3DZ or 4D point geometry."
+msgid "Creates a 2D, 3DZ or 4D point geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1358
+#: reference_constructor.xml:1372
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
@@ -2452,7 +2479,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1365
+#: reference_constructor.xml:1379
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
@@ -2462,7 +2489,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1373
+#: reference_constructor.xml:1387
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
@@ -2473,10 +2500,10 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1386
+#: reference_constructor.xml:1400
 #, no-c-format
 msgid ""
-"Creates a 2D,3DZ or 4D point geometry (geometry with measure). "
+"Creates a 2D, 3DZ or 4D point geometry (geometry with measure). "
 "<varname>ST_MakePoint</varname> while not being OGC compliant is generally "
 "faster and more precise than <xref linkend=\"ST_GeomFromText\"/> and <xref "
 "linkend=\"ST_PointFromText\"/>. It is also easier to use if you have raw "
@@ -2484,20 +2511,21 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1392
+#: reference_constructor.xml:1406
 #, no-c-format
 msgid "Note x is longitude and y is latitude"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1393
+#: reference_constructor.xml:1407
 #, no-c-format
 msgid ""
-"Use <xref linkend=\"ST_MakePointM\"/> if you need to make a point with x,y,m."
+"Use <xref linkend=\"ST_MakePointM\"/> if you need to make a point with x, y "
+"and m."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1400
+#: reference_constructor.xml:1414
 #, no-c-format
 msgid ""
 "--Return point with unknown SRID\n"
@@ -2517,7 +2545,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1404
+#: reference_constructor.xml:1418
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
@@ -2525,19 +2553,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1410
+#: reference_constructor.xml:1424
 #, no-c-format
 msgid "ST_MakePointM"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1412
+#: reference_constructor.xml:1426
 #, no-c-format
 msgid "Creates a point geometry with an x y and m coordinate."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1417
+#: reference_constructor.xml:1431
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakePointM</function></funcdef> "
@@ -2547,19 +2575,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1429
+#: reference_constructor.xml:1443
 #, no-c-format
 msgid "Creates a point with x, y and measure coordinates."
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1430
+#: reference_constructor.xml:1444
 #, no-c-format
 msgid "Note x is longitude and y is latitude."
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1435
+#: reference_constructor.xml:1449
 #, no-c-format
 msgid ""
 "We use ST_AsEWKT in these examples to show the text representation instead "
@@ -2567,7 +2595,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1437
+#: reference_constructor.xml:1451
 #, no-c-format
 msgid ""
 "--Return EWKT representation of point with unknown SRID\n"
@@ -2598,25 +2626,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1441
+#: reference_constructor.xml:1455
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1447
+#: reference_constructor.xml:1461
 #, no-c-format
 msgid "ST_MLineFromText"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1449
+#: reference_constructor.xml:1463
 #, no-c-format
 msgid "Return a specified ST_MultiLineString value from WKT representation."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:1453
+#: reference_constructor.xml:1467
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_MLineFromText</function></"
@@ -2628,7 +2656,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1471
+#: reference_constructor.xml:1485
 #, no-c-format
 msgid ""
 "Makes a Geometry from Well-Known-Text (WKT) with the given SRID. If SRID is "
@@ -2636,13 +2664,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1477
+#: reference_constructor.xml:1491
 #, no-c-format
 msgid "Returns null if the WKT is not a MULTILINESTRING"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1480 reference_constructor.xml:1541
+#: reference_constructor.xml:1494 reference_constructor.xml:1555
 #, no-c-format
 msgid ""
 "If you are absolutely sure all your WKT geometries are points, don't use "
@@ -2651,25 +2679,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1486
+#: reference_constructor.xml:1500
 #, no-c-format
 msgid "&sqlmm_compliant;SQL-MM 3: 9.4.4"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1494
+#: reference_constructor.xml:1508
 #, no-c-format
 msgid "SELECT ST_MLineFromText('MULTILINESTRING((1 2, 3 4), (4 5, 6 7))');"
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1507
+#: reference_constructor.xml:1521
 #, no-c-format
 msgid "ST_MPointFromText"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1509 reference_constructor.xml:1879
+#: reference_constructor.xml:1523 reference_constructor.xml:1893
 #, no-c-format
 msgid ""
 "<refpurpose>Makes a Geometry from WKT with the given SRID. If SRID is not "
@@ -2677,7 +2705,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:1514
+#: reference_constructor.xml:1528
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_MPointFromText</function></"
@@ -2689,7 +2717,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1532
+#: reference_constructor.xml:1546
 #, no-c-format
 msgid ""
 "<para>Makes a Geometry from WKT with the given SRID. If SRID is not given, "
@@ -2697,25 +2725,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1538
+#: reference_constructor.xml:1552
 #, no-c-format
 msgid "Returns null if the WKT is not a MULTIPOINT"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1546
+#: reference_constructor.xml:1560
 #, no-c-format
 msgid "&sfs_compliant; 3.2.6.2"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1547
+#: reference_constructor.xml:1561
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.2.4"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1555
+#: reference_constructor.xml:1569
 #, no-c-format
 msgid ""
 "SELECT ST_MPointFromText('MULTIPOINT(1 2, 3 4)');\n"
@@ -2724,13 +2752,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1568
+#: reference_constructor.xml:1582
 #, no-c-format
 msgid "ST_MPolyFromText"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1570
+#: reference_constructor.xml:1584
 #, no-c-format
 msgid ""
 "Makes a MultiPolygon Geometry from WKT with the given SRID. If SRID is not "
@@ -2738,7 +2766,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:1575
+#: reference_constructor.xml:1589
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_MPolyFromText</function></"
@@ -2750,7 +2778,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1593
+#: reference_constructor.xml:1607
 #, no-c-format
 msgid ""
 "Makes a MultiPolygon from WKT with the given SRID. If SRID is not given, it "
@@ -2758,13 +2786,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1599
+#: reference_constructor.xml:1613
 #, no-c-format
 msgid "Throws an error if the WKT is not a MULTIPOLYGON"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1602
+#: reference_constructor.xml:1616
 #, no-c-format
 msgid ""
 "If you are absolutely sure all your WKT geometries are multipolygons, don't "
@@ -2773,13 +2801,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1608
+#: reference_constructor.xml:1622
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.6.4"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1616
+#: reference_constructor.xml:1630
 #, no-c-format
 msgid ""
 "SELECT ST_MPolyFromText('MULTIPOLYGON(((0 0 1,20 0 1,20 20 1,0 20 1,0 0 1),"
@@ -2802,13 +2830,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1629
+#: reference_constructor.xml:1643
 #, no-c-format
 msgid "ST_Point"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1631
+#: reference_constructor.xml:1645
 #, no-c-format
 msgid ""
 "Returns an ST_Point with the given coordinate values. OGC alias for "
@@ -2816,7 +2844,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1636
+#: reference_constructor.xml:1650
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Point</function></funcdef> "
@@ -2825,7 +2853,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1647
+#: reference_constructor.xml:1661
 #, no-c-format
 msgid ""
 "Returns an ST_Point with the given coordinate values. MM compliant alias for "
@@ -2833,31 +2861,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1650
+#: reference_constructor.xml:1664
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.2"
 msgstr ""
 
 #. Tag: title
-#: reference_constructor.xml:1656
+#: reference_constructor.xml:1670
 #, no-c-format
 msgid "Examples: Geometry"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1658
+#: reference_constructor.xml:1672
 #, no-c-format
 msgid "SELECT ST_SetSRID(ST_Point(-71.1043443253471, 42.3150676015829),4326)"
 msgstr ""
 
 #. Tag: title
-#: reference_constructor.xml:1662
+#: reference_constructor.xml:1676
 #, no-c-format
 msgid "Examples: Geography"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1664
+#: reference_constructor.xml:1678
 #, no-c-format
 msgid ""
 "SELECT CAST(ST_SetSRID(ST_Point(-71.1043443253471, 42.3150676015829),4326) "
@@ -2865,7 +2893,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1665
+#: reference_constructor.xml:1679
 #, no-c-format
 msgid ""
 "-- the :: is PostgreSQL short-hand for casting.\n"
@@ -2874,7 +2902,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1667
+#: reference_constructor.xml:1681
 #, no-c-format
 msgid ""
 "--If your point coordinates are in a different spatial reference from WGS-84 "
@@ -2886,7 +2914,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1674
+#: reference_constructor.xml:1688
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
@@ -2894,19 +2922,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1680
+#: reference_constructor.xml:1694
 #, no-c-format
 msgid "ST_PointFromGeoHash"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1682
+#: reference_constructor.xml:1696
 #, no-c-format
 msgid "Return a point from a GeoHash string."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1687
+#: reference_constructor.xml:1701
 #, no-c-format
 msgid ""
 "<funcdef>point <function>ST_PointFromGeoHash</function></funcdef> "
@@ -2916,7 +2944,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1698
+#: reference_constructor.xml:1712
 #, no-c-format
 msgid ""
 "Return a point from a GeoHash string. The point represents the center point "
@@ -2924,7 +2952,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1700
+#: reference_constructor.xml:1714
 #, no-c-format
 msgid ""
 "If no <varname>precision</varname> is specified ST_PointFromGeoHash returns "
@@ -2932,7 +2960,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1702
+#: reference_constructor.xml:1716
 #, no-c-format
 msgid ""
 "If <varname>precision</varname> is specified ST_PointFromGeoHash will use "
@@ -2940,7 +2968,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1709
+#: reference_constructor.xml:1723
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));\n"
@@ -2961,7 +2989,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1714
+#: reference_constructor.xml:1728
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_GeomFromGeoHash"
@@ -2969,13 +2997,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1720
+#: reference_constructor.xml:1734
 #, no-c-format
 msgid "ST_PointFromText"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1721
+#: reference_constructor.xml:1735
 #, no-c-format
 msgid ""
 "Makes a point Geometry from WKT with the given SRID. If SRID is not given, "
@@ -2983,7 +3011,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:1725
+#: reference_constructor.xml:1739
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_PointFromText</function></"
@@ -2995,7 +3023,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1741
+#: reference_constructor.xml:1755
 #, no-c-format
 msgid ""
 "Constructs a PostGIS ST_Geometry point object from the OGC Well-Known text "
@@ -3005,7 +3033,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1747
+#: reference_constructor.xml:1761
 #, no-c-format
 msgid ""
 "There are 2 variants of ST_PointFromText function, the first takes no SRID "
@@ -3016,7 +3044,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1754
+#: reference_constructor.xml:1768
 #, no-c-format
 msgid ""
 "If you are absolutely sure all your WKT geometries are points, don't use "
@@ -3028,13 +3056,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1759
+#: reference_constructor.xml:1773
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.8"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1764
+#: reference_constructor.xml:1778
 #, no-c-format
 msgid ""
 "SELECT ST_PointFromText('POINT(-71.064544 42.28787)');\n"
@@ -3042,7 +3070,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1768
+#: reference_constructor.xml:1782
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_Point\"/>, <xref "
@@ -3050,19 +3078,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1774
+#: reference_constructor.xml:1788
 #, no-c-format
 msgid "ST_PointFromWKB"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1776
+#: reference_constructor.xml:1790
 #, no-c-format
 msgid "Makes a geometry from WKB with the given SRID"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1797
+#: reference_constructor.xml:1811
 #, no-c-format
 msgid ""
 "The <varname>ST_PointFromWKB</varname> function, takes a well-known binary "
@@ -3073,7 +3101,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1803
+#: reference_constructor.xml:1817
 #, no-c-format
 msgid ""
 "If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is "
@@ -3082,19 +3110,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1806
+#: reference_constructor.xml:1820
 #, no-c-format
 msgid "&sfs_compliant; s3.2.7.2"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1807
+#: reference_constructor.xml:1821
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.9"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1815
+#: reference_constructor.xml:1829
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -3121,13 +3149,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1828
+#: reference_constructor.xml:1842
 #, no-c-format
 msgid "ST_Polygon"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1830
+#: reference_constructor.xml:1844
 #, no-c-format
 msgid ""
 "<refpurpose>Returns a polygon built from the specified linestring and SRID.</"
@@ -3135,7 +3163,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1835
+#: reference_constructor.xml:1849
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Polygon</function></funcdef> "
@@ -3145,14 +3173,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1846
+#: reference_constructor.xml:1860
 #, no-c-format
 msgid ""
 "<para>Returns a polygon built from the specified linestring and SRID.</para>"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1850
+#: reference_constructor.xml:1864
 #, no-c-format
 msgid ""
 "ST_Polygon is similar to first version of ST_MakePolygon except it also sets "
@@ -3162,13 +3190,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1855
+#: reference_constructor.xml:1869
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.3.2"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1864
+#: reference_constructor.xml:1878
 #, no-c-format
 msgid ""
 "--a 2d polygon\n"
@@ -3187,7 +3215,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1871
+#: reference_constructor.xml:1885
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref "
@@ -3196,13 +3224,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1877
+#: reference_constructor.xml:1891
 #, no-c-format
 msgid "ST_PolygonFromText"
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:1884
+#: reference_constructor.xml:1898
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_PolygonFromText</function></"
@@ -3214,7 +3242,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1900
+#: reference_constructor.xml:1914
 #, no-c-format
 msgid ""
 "Makes a Geometry from WKT with the given SRID. If SRID is not given, it "
@@ -3222,7 +3250,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1907
+#: reference_constructor.xml:1921
 #, no-c-format
 msgid ""
 "If you are absolutely sure all your WKT geometries are polygons, don't use "
@@ -3231,13 +3259,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1910
+#: reference_constructor.xml:1924
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.3.6"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:1916
+#: reference_constructor.xml:1930
 #, no-c-format
 msgid ""
 "SELECT ST_PolygonFromText('POLYGON((-71.1776585052917 "
@@ -3257,13 +3285,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1929
+#: reference_constructor.xml:1943
 #, no-c-format
 msgid "ST_WKBToSQL"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1930
+#: reference_constructor.xml:1944
 #, no-c-format
 msgid ""
 "Return a specified ST_Geometry value from Well-Known Binary representation "
@@ -3271,7 +3299,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1934
+#: reference_constructor.xml:1948
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_WKBToSQL</function></funcdef> "
@@ -3279,19 +3307,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1942
+#: reference_constructor.xml:1956
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.36"
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:1952
+#: reference_constructor.xml:1966
 #, no-c-format
 msgid "ST_WKTToSQL"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1957
+#: reference_constructor.xml:1971
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_WKTToSQL</function></funcdef> "
@@ -3299,7 +3327,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:1965
+#: reference_constructor.xml:1979
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.34"
 msgstr ""
