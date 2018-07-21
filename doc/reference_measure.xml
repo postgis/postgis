@@ -1158,7 +1158,7 @@ SELECT ST_AsText(
 		  Returns cluster number for each input geometry, based on a 2D implementation of the
           <ulink url="https://en.wikipedia.org/wiki/DBSCAN">Density-based spatial clustering of applications with noise (DBSCAN)</ulink>
 		  algorithm.  Unlike <xref linkend="ST_ClusterKMeans" />, it does not require the number of clusters to be specified, but instead
-		  uses the desired distance (<varname>eps</varname>) and density(<varname>minpoints</varname>) parameters to construct each cluster.
+		  uses the desired <link linkend="ST_Distance">distance</link> (<varname>eps</varname>) and density (<varname>minpoints</varname>) parameters to construct each cluster.
 	  </para>
 
 	  <para>
@@ -1166,12 +1166,12 @@ SELECT ST_AsText(
 		  <itemizedlist>
               <listitem>
                   <para>
-                      A "core" geometry, that is within <varname>eps</varname> distance (Cartesian) of at least <varname>minpoints</varname> input geometries (including itself) or
+                      A "core" geometry, that is within <varname>eps</varname> <link linkend="ST_Distance">distance</link> of at least <varname>minpoints</varname> input geometries (including itself) or
                   </para>
 			  </listitem>
 			  <listitem>
                   <para>
-                      A "border" geometry, that is within <varname>eps</varname> distance of a core geometry.
+                      A "border" geometry, that is within <varname>eps</varname> <link linkend="ST_Distance">distance</link> of a core geometry.
                   </para>
 			  </listitem>
 		  </itemizedlist>
@@ -2385,7 +2385,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Intersects"/>ST_Intersects</para>
+			<para><xref linkend="ST_Intersects"/></para>
 		</refsection>
 	</refentry>
 
@@ -2393,8 +2393,9 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 	  <refnamediv>
 		<refname>ST_Distance</refname>
 
-		<refpurpose>For geometry type Returns the 2D Cartesian distance between two geometries in
-		projected units (based on spatial ref).  For geography type defaults to return minimum geodesic distance between two geographies in meters.</refpurpose>
+		<refpurpose>For geometry type returns the 2D Cartesian distance between two geometries in
+		projected units (based on spatial reference system).
+		For geography type defaults to return minimum geodesic distance between two geographies in meters.</refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
@@ -2435,8 +2436,8 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 	  <refsection>
 		<title>Description</title>
 
-		<para>For geometry type returns the minimum 2D Cartesian distance between two geometries in
-		projected units (spatial ref units). For geography type defaults to return the minimum geodesic distance between two geographies in meters.  If use_spheroid is
+		<para>For <xref linkend="geometry"/> type returns the minimum 2D Cartesian distance between two geometries in
+		projected units (spatial ref units). For <xref linkend="geography"/> type defaults to return the minimum geodesic distance between two geographies in meters.  If use_spheroid is
 		false, a faster sphere calculation is used instead of a spheroid.</para>
 
 		<para>&sfs_compliant;</para>
@@ -2456,17 +2457,37 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 		<programlisting>
 --Geometry example - units in planar degrees 4326 is WGS 84 long lat unit=degrees
 SELECT ST_Distance(
-		ST_GeomFromText('POINT(-72.1235 42.3521)',4326),
-		ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326)
+		'SRID=4326;POINT(-72.1235 42.3521)'::geometry,
+		'SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry
 	);
 st_distance
 -----------------
 0.00150567726382282
 
+-- Geometry example - units in meters (SRID: 3857, proportional to pixels on popular web maps)
+-- although the value is off, nearby ones can be compared correctly,
+-- which makes it a good choice for algorithms like KNN or KMeans.
+SELECT ST_Distance(
+			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 3857),
+			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 3857)
+		);
+st_distance
+-----------------
+167.441410065196
+
+-- Geometry example - units in meters (SRID: 3857 as above, but corrected by cos(lat) to account for distortion)
+SELECT ST_Distance(
+			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 3857),
+			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 3857)
+		) * cosd(42.3521);
+st_distance
+-----------------
+123.742351254151
+
 -- Geometry example - units in meters (SRID: 26986 Massachusetts state plane meters) (most accurate for Massachusetts)
 SELECT ST_Distance(
-			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),26986),
-			ST_Transform(ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326),26986)
+			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 26986),
+			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 26986)
 		);
 st_distance
 -----------------
@@ -2474,8 +2495,8 @@ st_distance
 
 -- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (least accurate)
 SELECT ST_Distance(
-			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),2163),
-			ST_Transform(ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326),2163)
+			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 2163),
+			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 2163)
 		);
 
 st_distance
@@ -2488,8 +2509,8 @@ st_distance
 <programlisting>-- same as geometry example but note units in meters - use sphere for slightly faster less accurate
 SELECT ST_Distance(gg1, gg2) As spheroid_dist, ST_Distance(gg1, gg2, false) As sphere_dist
 FROM (SELECT
-	ST_GeogFromText('SRID=4326;POINT(-72.1235 42.3521)') As gg1,
-	ST_GeogFromText('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)') As gg2
+	'SRID=4326;POINT(-72.1235 42.3521)'::geography as gg1,
+	'SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geography as gg2
 	) As foo  ;
 
   spheroid_dist   |   sphere_dist
