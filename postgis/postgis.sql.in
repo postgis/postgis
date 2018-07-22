@@ -5836,6 +5836,7 @@ CREATE OR REPLACE FUNCTION ST_InterpolatePoint(Line geometry, Point geometry)
 -----------------------------------------------------------------------
 -- Contributed by Regina Obe and Leo Hsu
 -- Availability: 2.0.0
+-- Changed: 2.5.0
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION _st_concavehull(param_inputgeom geometry)
   RETURNS geometry AS
@@ -5903,21 +5904,25 @@ $$
 		END IF;
 
 		-- make sure result covers original (#3638)
-		var_resultgeom := @extschema@.ST_Union(param_inputgeom, var_resultgeom);
+		-- Using ST_UnaryUnion since SFCGAL doesn't replace with its own implementation
+		-- and SFCGAL one chokes for some reason
+		var_resultgeom := @extschema@.ST_UnaryUnion(ST_Collect(param_inputgeom, var_resultgeom) );
 		RETURN var_resultgeom;
 
 	END;
 $$
   LANGUAGE plpgsql IMMUTABLE STRICT _PARALLEL;
 
+-- Availability: 2.0.0
+-- Changed: 2.5.0
 CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean DEFAULT false) RETURNS geometry AS
 $$
 	DECLARE
-		var_convhull geometry := @extschema@.ST_ConvexHull(param_geom);
-		var_param_geom geometry := param_geom;
+		var_convhull geometry := @extschema@.ST_ForceSFS(@extschema@.ST_ConvexHull(param_geom));
+		var_param_geom geometry := @extschema@.ST_ForceSFS(param_geom);
 		var_initarea float := @extschema@.ST_Area(var_convhull);
 		var_newarea float := var_initarea;
-		var_div integer := 6; /** this is the 1/var_div is the percent increase we will allow per triangle to keep speed decent **/
+		var_div integer := 6; /** this is the 1/var_div is the percent increase we will allow per geometry to keep speed decent **/
 		var_tempgeom geometry;
 		var_tempgeom2 geometry;
 		var_cent geometry;
@@ -5931,16 +5936,13 @@ $$
 		var_resultgeom := var_convhull;
 
 		IF param_pctconvex = 1 THEN
-			-- make sure result covers original (#3638)
-			var_resultgeom := @extschema@.ST_Union(param_geom, var_resultgeom);
+			-- this is the same as asking for the convex hull
 			return var_resultgeom;
 		ELSIF @extschema@.ST_GeometryType(var_param_geom) = 'ST_Polygon' THEN -- it is as concave as it is going to get
 			IF param_allow_holes THEN -- leave the holes
 				RETURN var_param_geom;
 			ELSE -- remove the holes
 				var_resultgeom := @extschema@.ST_MakePolygon(@extschema@.ST_ExteriorRing(var_param_geom));
-				-- make sure result covers original (#3638)
-				var_resultgeom := @extschema@.ST_Union(param_geom, var_resultgeom);
 				RETURN var_resultgeom;
 			END IF;
 		END IF;
@@ -5981,9 +5983,9 @@ $$
 					IF param_allow_holes THEN
 						var_param_geom := var_tempgeom;
 					ELSIF @extschema@.ST_GeometryType(var_tempgeom) = 'ST_Polygon' THEN
-						var_param_geom := @extschema@.ST_MakePolygon(@extschema@.ST_ExteriorRing(var_tempgeom));
+						var_param_geom := @extschema@.ST_ForceSFS(@extschema@.ST_MakePolygon(@extschema@.ST_ExteriorRing(var_tempgeom)));
 					ELSE
-						var_param_geom := @extschema@.ST_ConvexHull(var_param_geom);
+						var_param_geom := @extschema@.ST_ForceSFS(@extschema@.ST_ConvexHull(var_param_geom));
 					END IF;
 					-- make sure result covers original (#3638)
 					var_param_geom := @extschema@.ST_Union(param_geom, var_param_geom);
@@ -5995,10 +5997,10 @@ $$
 
 			IF @extschema@.ST_GeometryType(var_param_geom) = 'ST_Polygon' THEN
 				IF NOT param_allow_holes THEN
-					var_param_geom := @extschema@.ST_MakePolygon(@extschema@.ST_ExteriorRing(var_param_geom));
+					var_param_geom := @extschema@.ST_ForceSFS(@extschema@.ST_MakePolygon(@extschema@.ST_ExteriorRing(var_param_geom)));
 				END IF;
 				-- make sure result covers original (#3638)
-				var_param_geom := @extschema@.ST_Union(param_geom, var_param_geom);
+				--var_param_geom := @extschema@.ST_Union(param_geom, var_param_geom);
 				return var_param_geom;
 			END IF;
             var_cent := @extschema@.ST_Centroid(var_param_geom);
@@ -6068,8 +6070,6 @@ $$
                 var_resultgeom := @extschema@._ST_ConcaveHull(var_param_geom);
             END IF;
 
-			-- make sure result covers original (#3638)
-			var_resultgeom := @extschema@.ST_Union(param_geom, var_resultgeom);
             RETURN var_resultgeom;
 	END;
 $$

@@ -85,6 +85,7 @@ TESTS = \
 	filterm \
 	cluster \
 	concave_hull\
+	concave_hull_hard\
 	ctors \
 	curvetoline \
 	dump \
