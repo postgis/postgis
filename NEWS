@@ -4,6 +4,8 @@ New since PostGIS 2.5.0beta1
   - #4115, Fix a bug that created MVTs with incorrect property values under
     parallel plans (Raúl Marín).
   - #4120, ST_AsMVTGeom: Clip using tile coordinates (Raúl Marín).
+  - #4132, ST_Intersection on Raster now works without throwing TopologyException
+    (Vinícius A.B. Schmidt, Darafei Praliaskouski)
 
   See PostGIS 2.5.0 section for full details
 
