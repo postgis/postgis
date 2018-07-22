@@ -151,13 +151,13 @@ rt_pixtype_get_min_value(rt_pixtype pixtype) {
 			return (double) rt_util_clamp_to_1BB((double) CHAR_MIN);
 		}
 		case PT_2BUI: {
-			return (double) rt_util_clamp_to_2BUI((double) CHAR_MIN);
+			return 0;
 		}
 		case PT_4BUI: {
-			return (double) rt_util_clamp_to_4BUI((double) CHAR_MIN);
+			return 0;
 		}
 		case PT_8BUI: {
-			return (double) rt_util_clamp_to_8BUI((double) CHAR_MIN);
+			return 0;
 		}
 		case PT_8BSI: {
 			return (double) rt_util_clamp_to_8BSI((double) SCHAR_MIN);
@@ -166,13 +166,13 @@ rt_pixtype_get_min_value(rt_pixtype pixtype) {
 			return (double) rt_util_clamp_to_16BSI((double) SHRT_MIN);
 		}
 		case PT_16BUI: {
-			return (double) rt_util_clamp_to_16BUI((double) SHRT_MIN);
+			return 0;
 		}
 		case PT_32BSI: {
 			return (double) rt_util_clamp_to_32BSI((double) INT_MIN);
 		}
 		case PT_32BUI: {
-			return (double) rt_util_clamp_to_32BUI((double) INT_MIN);
+			return 0;
 		}
 		case PT_32BF: {
 			return (double) -FLT_MAX;

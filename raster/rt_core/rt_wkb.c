@@ -592,14 +592,24 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize) {
 				ptr += 1;
 				break;
 			}
-			case PT_16BSI:
+			case PT_16BSI: {
+				int16_t v = band->nodataval;
+				memcpy(ptr, &v, 2);
+				ptr += 2;
+				break;
+			}
 			case PT_16BUI: {
 				uint16_t v = band->nodataval;
 				memcpy(ptr, &v, 2);
 				ptr += 2;
 				break;
 			}
-			case PT_32BSI:
+			case PT_32BSI: {
+				int32_t v = band->nodataval;
+				memcpy(ptr, &v, 4);
+				ptr += 4;
+				break;
+			}
 			case PT_32BUI: {
 				uint32_t v = band->nodataval;
 				memcpy(ptr, &v, 4);
