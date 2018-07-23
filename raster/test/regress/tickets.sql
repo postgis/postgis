@@ -117,3 +117,7 @@ SET client_min_messages TO DEFAULT;
  #3055 ST_Clip() on a raster without band crashes the server
 ******************************************************************************/
 SELECT ST_SummaryStats(ST_Clip(ST_MakeEmptyRaster(42, 42, 0, 0, 1.0, 1.0, 0, 0, 4269), ST_MakeEnvelope(0, 0, 20, 20, 4269)));
+
+-- #4102 negative nodata values don't apply on Raspberry Pi
+SELECT '#4102.1', ST_BandNoDataValue(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BSI', 0, -10), 1) AS rast;
+SELECT '#4102.2', ST_BandNoDataValue(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '32BSI', 0, -10), 1) AS rast;
