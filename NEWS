@@ -6,6 +6,8 @@ New since PostGIS 2.5.0beta1
   - #4120, ST_AsMVTGeom: Clip using tile coordinates (Raúl Marín).
   - #4132, ST_Intersection on Raster now works without throwing TopologyException
     (Vinícius A.B. Schmidt, Darafei Praliaskouski)
+  - #4109, Fix WKT parser accepting and interpreting numbers numbers with
+    multiple dots (Raúl Marín, Paul Ramsey)
 
   See PostGIS 2.5.0 section for full details
 
