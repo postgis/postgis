@@ -1032,5 +1032,14 @@ SELECT '#4055b', ST_SRID(unnest(ST_ClusterIntersecting(ARRAY['SRID=4326;POINT (3
 --#4089
 select '#4089', st_astext(st_geomfromtwkb(st_AsTWKB(st_GeometryFromText('LINESTRING Z(1 1 1, 3 3 1)'), 1, 0, 0, false, true)));
 
+-- #4081
+select '#4081',
+ST_DWithin(a, b, 110575, true) as within_110575_true,
+ST_DWithin(a, b, 110576, true) as within_110576_true
+from (
+    select ST_GeogFromText('SRID=4326;POINT(1.0 2.0)') as a, ST_GeogFromText('SRID=4326;POINT(1.0 1.0)') as b
+) as points;
+
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
