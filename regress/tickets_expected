@@ -354,3 +354,4 @@ NOTICE:  Self-intersection
 NOTICE:  Your geometry dataset is not valid per OGC Specification. Please fix it with manual review of entries that are not ST_IsValid(geom). Retrying GEOS operation with ST_MakeValid of your input.
 NOTICE:  Self-intersection
 #4103|t
+#4081|f|t
