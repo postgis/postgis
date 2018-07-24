@@ -42,20 +42,24 @@ sql/$(EXTENSION).sql: extlock.sql sql_bits/topology.sql  sql_bits/mark_editable_
 	
 #this is a cludge to allow upgrading from same SVN to same SVN
 sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: extlock.sql ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade.sql sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql ../postgis_extension_helper_uninstall.sql
+	mkdir -p sql
 	cat $^ > $@
 sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql
+	mkdir -p sql
 	cat $^ > $@
 	
 #strip BEGIN/COMMIT since these are not allowed in extensions
 #strip CREATE SCHEMA since we force extension 
 # to create schema by setting schema to topology in control
 sql_bits/topology.sql: ../../topology/topology.sql
+	mkdir -p sql_bits
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
 	
 ../../doc/topology_comments.sql:
 	$(MAKE) -C ../../doc comments
 	
 sql_bits/topology_comments.sql: ../../doc/topology_comments.sql
+	mkdir -p sql_bits
 	cp $< $@
 	
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../../utils/create_unpackaged.pl

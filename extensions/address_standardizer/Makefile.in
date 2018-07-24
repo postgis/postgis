@@ -70,21 +70,26 @@ sql/%.sql: %.sql.in
 
 sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql: sql/address_standardizer_types.sql \
     sql/address_standardizer_functions.sql
+	mkdir -p sql
 	cat $^ > $@
 
 sql/address_standardizer.sql: sql/address_standardizer_types.sql \
     sql/address_standardizer_functions.sql
+	mkdir -p sql
 	cat $^ > $@
 
 sql/address_standardizer--1.0--$(EXTVERSION).sql:  sql/address_standardizer_functions.sql
+	mkdir -p sql
 	cat $^ > $@
 
 # upgrade logic for us data extension (to go to next cludge for dev upgrading)
 sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql/address_standardizer_functions.sql
+	mkdir -p sql
 	cat $^ > $@
 
 # upgrade logic for us data extension (to go to original round-robin yoyo cludge for dev upgrading)
 sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/address_standardizer_functions.sql
+	mkdir -p sql
 	cat $^ > $@
 
 # build us data extension
@@ -98,10 +103,12 @@ sql/$(EXTENSION)_data_us.sql: us_lex.sql us_gaz.sql us_rules.sql sql_bits/addres
 
 # upgrade logic for us data extension (to go to next cludge for dev upgrading)
 sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql
+	mkdir -p sql
 	cat $^ > $@
 
 # upgrade logic for us data extension (to go to original round-robin yoyo cludge for dev upgrading)
 sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql
+	mkdir -p sql
 	cat $^ > $@
 
 mk-st-regexp: mk-st-regexp.pl
