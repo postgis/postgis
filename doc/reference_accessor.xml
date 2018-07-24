@@ -284,7 +284,7 @@ MULTIPOINT(-1 1 1,1 1 0.75)
 			s2.1.1.1 - returns 0 for <varname>POINT</varname>, 1 for <varname>LINESTRING</varname>, 2 for <varname>POLYGON</varname>, and
 			the largest dimension of the components of a
 			<varname>GEOMETRYCOLLECTION</varname>.
-			If unknown (empty geometry) null is returned.
+			If the dimension is unknown (empty <varname>GEOMETRYCOLLECTION</varname>) 0 is returned.
 		</para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.2</para>
