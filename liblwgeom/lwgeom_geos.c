@@ -618,24 +618,6 @@ lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	g3 = GEOSIntersection(g1, g2);
 
-	if (!g3)
-	{
-		GEOSGeometry *g1v, *g2v;
-		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
-
-		if (!GEOSisValid(g1) || !GEOSisValid(g2))
-		{
-			lwnotice(
-			    "Your geometry dataset is not valid per OGC Specification. "
-			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
-			    "Retrying GEOS operation with ST_MakeValid of your input.");
-			g1v = LWGEOM_GEOS_makeValid(g1);
-			g2v = LWGEOM_GEOS_makeValid(g2);
-			g3 = GEOSIntersection(g1v, g2v);
-			GEOS_FREE(g1v, g2v);
-		}
-	}
-
 	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);
 
@@ -730,24 +712,6 @@ lwgeom_difference(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	g3 = GEOSDifference(g1, g2);
 
-	if (!g3)
-	{
-		GEOSGeometry *g1v, *g2v;
-		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
-
-		if (!GEOSisValid(g1) || !GEOSisValid(g2))
-		{
-			lwnotice(
-			    "Your geometry dataset is not valid per OGC Specification. "
-			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
-			    "Retrying GEOS operation with ST_MakeValid of your input.");
-			g1v = LWGEOM_GEOS_makeValid(g1);
-			g2v = LWGEOM_GEOS_makeValid(g2);
-			g3 = GEOSDifference(g1v, g2v);
-			GEOS_FREE(g1v, g2v);
-		}
-	}
-
 	if (!g3) GEOS_FREE_AND_FAIL(g1, g2);
 	GEOSSetSRID(g3, srid);
 
@@ -780,24 +744,6 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
 	g3 = GEOSSymDifference(g1, g2);
-
-	if (!g3)
-	{
-		GEOSGeometry *g1v, *g2v;
-		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
-
-		if (!GEOSisValid(g1) || !GEOSisValid(g2))
-		{
-			lwnotice(
-			    "Your geometry dataset is not valid per OGC Specification. "
-			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
-			    "Retrying GEOS operation with ST_MakeValid of your input.");
-			g1v = LWGEOM_GEOS_makeValid(g1);
-			g2v = LWGEOM_GEOS_makeValid(g2);
-			g3 = GEOSSymDifference(g1v, g2v);
-			GEOS_FREE(g1v, g2v);
-		}
-	}
 
 	if (!g3) GEOS_FREE_AND_FAIL(g1, g2);
 	GEOSSetSRID(g3, srid);
@@ -864,23 +810,6 @@ lwgeom_pointonsurface(const LWGEOM *geom)
 
 	g3 = GEOSPointOnSurface(g1);
 
-	if (!g3)
-	{
-		GEOSGeometry *g1v;
-		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
-
-		if (!GEOSisValid(g1))
-		{
-			lwnotice(
-			    "Your geometry dataset is not valid per OGC Specification. "
-			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
-			    "Retrying GEOS operation with ST_MakeValid of your input.");
-			g1v = LWGEOM_GEOS_makeValid(g1);
-			g3 = GEOSPointOnSurface(g1v);
-			GEOS_FREE(g1v);
-		}
-	}
-
 	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);
 
@@ -914,24 +843,6 @@ lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
 	g3 = GEOSUnion(g1, g2);
-
-	if (!g3)
-	{
-		GEOSGeometry *g1v, *g2v;
-		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
-
-		if (!GEOSisValid(g1) || !GEOSisValid(g2))
-		{
-			lwnotice(
-			    "Your geometry dataset is not valid per OGC Specification. "
-			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
-			    "Retrying GEOS operation with ST_MakeValid of your input.");
-			g1v = LWGEOM_GEOS_makeValid(g1);
-			g2v = LWGEOM_GEOS_makeValid(g2);
-			g3 = GEOSUnion(g1v, g2v);
-			GEOS_FREE(g1v, g2v);
-		}
-	}
 
 	if (!g3) GEOS_FREE_AND_FAIL(g1, g2);
 	GEOSSetSRID(g3, srid);

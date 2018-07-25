@@ -2,11 +2,7 @@
 2|BOX(5 5,8 8)
 3|BOX(2 2,8 8)
 4|MULTIPOINT(0 0,2 2)
-NOTICE:  lwgeom_intersection: GEOS Error: TopologyException: Input geom 0 is invalid: Self-intersection
-NOTICE:  Self-intersection
-NOTICE:  Your geometry dataset is not valid per OGC Specification. Please fix it with manual review of entries that are not ST_IsValid(geom). Retrying GEOS operation with ST_MakeValid of your input.
-NOTICE:  Self-intersection
-5|MULTIPOLYGON(((2 2,5 5,8 2,2 2)),((5 5,2 8,8 8,5 5)))
+ERROR:  lwgeom_intersection: GEOS Error: TopologyException: Input geom 0 is invalid: Self-intersection
 6|MULTIPOLYGON(((2.5 2,5 4,5 5,10 5,10 2,2.5 2)))
 7|POLYGON((2 2,2 5,5 5,5 2,2 2))
 8|SRID=3857;POLYGON EMPTY

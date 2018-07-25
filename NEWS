@@ -90,9 +90,6 @@ PostGIS 2.5.0
   - #2508, ST_OffsetCurve now works with collections (Darafei Praliaskouski)
   - #4006, ST_GeomFromGeoJSON support for json and jsonb as input
            (Paul Ramsey, Regina Obe)
-  - #4037, Invalid input geometry is fixed with MakeValid for GEOS exceptions in
-           ST_Intersection, ST_Union, ST_Difference, ST_SymDifference (Darafei
-           Praliaskouski)
   - #4038, ST_Subdivide now selects pivot for geometry split that reuses input
            vertices. ST_ClipByBox2D is stubbed with ST_Intersection because of
            robustness issues. (Darafei Praliaskouski)
@@ -105,7 +102,6 @@ PostGIS 2.5.0
   - #4084: Fixed wrong code-comment regarding front/back of BOX3D (Matthias Bay)
   - #4060, #4094, PostgreSQL JIT support (Raúl Marín, Laurenz Albe)
   - #3960, ST_Centroid now uses lwgeom_centroid (Darafei Praliaskouski)
-  - #4103, ST_PointOnSurface can handle invalid (Darafei Praliaskouski)
   - #4027, Remove duplicated code in lwgeom_geos (Darafei Praliaskouski,
            Daniel Baston)
   - #4115, Fix a bug that created MVTs with incorrect property values under
