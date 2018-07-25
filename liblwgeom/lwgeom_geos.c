@@ -1456,7 +1456,6 @@ lwgeom_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle,
 {
 	int32_t srid = RESULT_SRID(geom);
 	LWGEOM *result = NULL;
-	LWGEOM *noded = NULL;
 	if (srid == SRID_INVALID) return NULL;
 
 	if (lwgeom_dimension(geom) != 1)
@@ -1465,41 +1464,40 @@ lwgeom_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle,
 		return NULL;
 	}
 
-	while (!result)
+	switch (geom->type)
 	{
-		switch (geom->type)
+	case LINETYPE:
+		result = lwline_offsetcurve(lwgeom_as_lwline(geom), size, quadsegs, joinStyle, mitreLimit);
+		break;
+	case COLLECTIONTYPE:
+	case MULTILINETYPE:
+		result = lwcollection_offsetcurve(lwgeom_as_lwcollection(geom), size, quadsegs, joinStyle, mitreLimit);
+		break;
+	default:
+		lwerror("%s: unsupported geometry type: %s", __func__, lwtype_name(geom->type));
+		return NULL;
+	}
+
+	if (!result)
+	{
+		/* Node the input geometry and try again */
+		LWGEOM* noded = lwgeom_node(geom);
+		if (!noded)
 		{
-		case LINETYPE:
-			result = lwline_offsetcurve(lwgeom_as_lwline(geom), size, quadsegs, joinStyle, mitreLimit);
-			break;
-		case COLLECTIONTYPE:
-		case MULTILINETYPE:
-			result = lwcollection_offsetcurve(lwgeom_as_lwcollection(geom), size, quadsegs, joinStyle, mitreLimit);
-			break;
-		default:
-			lwerror("%s: unsupported geometry type: %s", __func__, lwtype_name(geom->type));
+			lwerror("%s: cannot node input", __func__);
 			return NULL;
 		}
 
-		if (result)
-			return result;
-		else if (!noded)
-		{
-			noded = lwgeom_node(geom);
-			if (!noded)
-			{
-				lwfree(noded);
-				lwerror("lwgeom_offsetcurve: cannot node input");
-				return NULL;
-			}
-			geom = noded;
-		}
-		else
-		{
-			lwerror("lwgeom_offsetcurve: noded geometry cannot be offset");
-			return NULL;
-		}
+		result = lwgeom_offsetcurve(noded, size, quadsegs, joinStyle, mitreLimit);
+		lwfree(noded);
 	}
+
+	if (!result)
+	{
+		lwerror("%s: noded geometry cannot be offset", __func__);
+		return NULL;
+	}
+
 	return result;
 }
 
