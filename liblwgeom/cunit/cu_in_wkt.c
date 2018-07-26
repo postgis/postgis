@@ -356,27 +356,30 @@ static void test_wkt_double(void)
 	lwgeom_parser_result_init(&p);
 	rv = lwgeom_parse_wkt(&p, wkt, LW_PARSER_CHECK_ALL);
 	CU_ASSERT_EQUAL( rv, LW_FAILURE );
+	lwgeom_parser_result_free(&p);
 
 	wkt = "LINESTRING(1.1 .1, 2.2 .2)";
 	lwgeom_parser_result_init(&p);
 	rv = lwgeom_parse_wkt(&p, wkt, LW_PARSER_CHECK_ALL);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	lwgeom_parser_result_free(&p);
 
 	wkt = "LINESTRING(    1.1    .1    ,    2.2   .2    )";
 	lwgeom_parser_result_init(&p);
 	rv = lwgeom_parse_wkt(&p, wkt, LW_PARSER_CHECK_ALL);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	lwgeom_parser_result_free(&p);
 
 	wkt = "LINESTRING(\n1.1\n.1,\n2.2\n.2\n)";
 	lwgeom_parser_result_init(&p);
 	rv = lwgeom_parse_wkt(&p, wkt, LW_PARSER_CHECK_ALL);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	lwgeom_parser_result_free(&p);
 
 	wkt = "LINESTRING(1.1\t.1\t,\t2.2\t.2\t)";
 	lwgeom_parser_result_init(&p);
 	rv = lwgeom_parse_wkt(&p, wkt, LW_PARSER_CHECK_ALL);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
-
 	lwgeom_parser_result_free(&p);
 }
 
