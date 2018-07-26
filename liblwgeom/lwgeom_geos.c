@@ -858,19 +858,52 @@ LWGEOM *
 lwgeom_clip_by_rect(const LWGEOM *geom1, double x1, double y1, double x2, double y2)
 {
 	LWGEOM *result;
-	LWGEOM *tmp;
+	GEOSGeometry *geos_orig, *geos_env, *geos_result;
 
 	/* This lwgeom_intersection should be a call to GEOSClipByRect:
 	 * g3 = GEOSClipByRect(g1, x1, y1, x2, y2);
 	 * Unfortunately as of GEOS 3.7 it chokes on practical inputs.
 	 * GEOS ticket: https://trac.osgeo.org/geos/ticket/865
-	 */
+	 * Instead we manually call GEOSIntersection and handle exceptions to guarantee
+	 * the function works with invalid inputs */
+
+	if (!geom1)
+		return NULL;
+	if (lwgeom_is_empty(geom1))
+		return lwgeom_clone_deep(geom1);
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	if (!(geos_orig = LWGEOM2GEOS(geom1, LW_TRUE)))
+		GEOS_FAIL();
 
 	LWGEOM *envelope = (LWGEOM *)lwpoly_construct_envelope(geom1->srid, x1, y1, x2, y2);
-	result = lwgeom_intersection(geom1, envelope);
+	geos_env = LWGEOM2GEOS(envelope, LW_TRUE);
 	lwgeom_free(envelope);
+	if (!geos_env)
+		GEOS_FREE_AND_FAIL(geos_orig);
 
-	if (!result) return NULL;
+	if (!(geos_result = GEOSIntersection(geos_orig, geos_env)))
+	{
+		// Handle invalid input
+		GEOSGeometry* geos_orig_fixed;
+		if ((geos_orig_fixed = LWGEOM_GEOS_makeValid(geos_orig)))
+		{
+			geos_result = GEOSIntersection(geos_orig_fixed, geos_env);
+			GEOSGeom_destroy(geos_orig_fixed);
+		}
+	}
+
+	GEOSGeom_destroy(geos_orig);
+	GEOSGeom_destroy(geos_env);
+
+	if (!geos_result)
+		return NULL;
+
+	if (!(result = GEOS2LWGEOM(geos_result, FLAGS_GET_Z(geom1->flags))))
+		GEOS_FREE_AND_FAIL(geos_result);
+	GEOS_FREE(geos_result);
+	result->srid = geom1->srid;
 
 	/* clipping should not produce lower dimension objects */
 	if (
@@ -879,7 +912,8 @@ lwgeom_clip_by_rect(const LWGEOM *geom1, double x1, double y1, double x2, double
 	    /* output may have different things inside */
 	    result->type == COLLECTIONTYPE)
 	{
-		tmp = lwcollection_as_lwgeom(lwcollection_extract(lwgeom_as_lwcollection(result), lwgeom_dimension(geom1) + 1));
+		LWGEOM *tmp = lwcollection_as_lwgeom(lwcollection_extract(lwgeom_as_lwcollection(result),
+																  lwgeom_dimension(geom1) + 1));
 		lwfree(result);
 		result = tmp;
 		if (!result) return NULL;
