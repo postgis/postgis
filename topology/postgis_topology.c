@@ -962,8 +962,8 @@ cb_getEdgeById(const LWT_BE_TOPOLOGY* topo,
     return NULL;
   }
 
-  edges = palloc( sizeof(LWT_ISO_EDGE) * SPI_processed );
-  for ( i=0; i<SPI_processed; ++i )
+  edges = palloc( sizeof(LWT_ISO_EDGE) * *numelems );
+  for ( i=0; i<*numelems; ++i )
   {
     HeapTuple row = SPI_tuptable->vals[i];
     fillEdgeFields(&edges[i], row, SPI_tuptable->tupdesc, fields);
@@ -1025,8 +1025,8 @@ cb_getEdgeByNode(const LWT_BE_TOPOLOGY* topo,
     return NULL;
   }
 
-  edges = palloc( sizeof(LWT_ISO_EDGE) * SPI_processed );
-  for ( i=0; i<SPI_processed; ++i )
+  edges = palloc( sizeof(LWT_ISO_EDGE) * *numelems );
+  for ( i=0; i<*numelems; ++i )
   {
     HeapTuple row = SPI_tuptable->vals[i];
     fillEdgeFields(&edges[i], row, SPI_tuptable->tupdesc, fields);
@@ -1106,8 +1106,8 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
     return NULL;
   }
 
-  edges = palloc( sizeof(LWT_ISO_EDGE) * SPI_processed );
-  for ( i=0; i<SPI_processed; ++i )
+  edges = palloc( sizeof(LWT_ISO_EDGE) * *numelems );
+  for ( i=0; i<*numelems; ++i )
   {
     HeapTuple row = SPI_tuptable->vals[i];
     fillEdgeFields(&edges[i], row, SPI_tuptable->tupdesc, fields);
@@ -1162,8 +1162,8 @@ cb_getFacesById(const LWT_BE_TOPOLOGY* topo,
     return NULL;
   }
 
-  faces = palloc( sizeof(LWT_ISO_EDGE) * SPI_processed );
-  for ( i=0; i<SPI_processed; ++i )
+  faces = palloc( sizeof(LWT_ISO_EDGE) * *numelems );
+  for ( i=0; i<*numelems; ++i )
   {
     HeapTuple row = SPI_tuptable->vals[i];
     fillFaceFields(&faces[i], row, SPI_tuptable->tupdesc, fields);
@@ -1223,16 +1223,16 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY* topo,
   {
     return NULL;
   }
-  if ( limit && SPI_processed == limit )
+  if ( limit && *numelems == limit )
   {
     cberror(topo->be_data, "Max traversing limit hit: %d", limit-1);
     *numelems = -1;
     return NULL;
   }
 
-  edges = palloc( sizeof(LWT_ELEMID) * SPI_processed );
+  edges = palloc( sizeof(LWT_ELEMID) * *numelems );
   rowdesc = SPI_tuptable->tupdesc;
-  for ( i=0; i<SPI_processed; ++i )
+  for ( i=0; i<*numelems; ++i )
   {
     HeapTuple row = SPI_tuptable->vals[i];
     bool isnull;
@@ -1299,8 +1299,8 @@ cb_getNodeById(const LWT_BE_TOPOLOGY* topo,
     return NULL;
   }
 
-  nodes = palloc( sizeof(LWT_ISO_NODE) * SPI_processed );
-  for ( i=0; i<SPI_processed; ++i )
+  nodes = palloc( sizeof(LWT_ISO_NODE) * *numelems );
+  for ( i=0; i<*numelems; ++i )
   {
     HeapTuple row = SPI_tuptable->vals[i];
     fillNodeFields(&nodes[i], row, SPI_tuptable->tupdesc, fields);
@@ -1361,8 +1361,8 @@ cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
     return NULL;
   }
 
-  nodes = palloc( sizeof(LWT_ISO_NODE) * SPI_processed );
-  for ( i=0; i<SPI_processed; ++i )
+  nodes = palloc( sizeof(LWT_ISO_NODE) * *numelems );
+  for ( i=0; i<*numelems; ++i )
   {
     HeapTuple row = SPI_tuptable->vals[i];
     fillNodeFields(&nodes[i], row, SPI_tuptable->tupdesc, fields);
@@ -1456,8 +1456,8 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
     return NULL;
   }
 
-  edges = palloc( sizeof(LWT_ISO_EDGE) * SPI_processed );
-  for ( i=0; i<SPI_processed; ++i )
+  edges = palloc( sizeof(LWT_ISO_EDGE) * *numelems );
+  for ( i=0; i<*numelems; ++i )
   {
     HeapTuple row = SPI_tuptable->vals[i];
     fillEdgeFields(&edges[i], row, SPI_tuptable->tupdesc, fields);
@@ -1559,13 +1559,13 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
   }
   else
   {
-    nodes = palloc( sizeof(LWT_ISO_EDGE) * SPI_processed );
-    for ( i=0; i<SPI_processed; ++i )
+    *numelems = SPI_processed;
+    nodes = palloc( sizeof(LWT_ISO_EDGE) * *numelems );
+    for ( i=0; i<*numelems; ++i )
     {
       HeapTuple row = SPI_tuptable->vals[i];
       fillNodeFields(&nodes[i], row, SPI_tuptable->tupdesc, fields);
     }
-    *numelems = SPI_processed;
 
     SPI_freetuptable(SPI_tuptable);
 
@@ -1610,7 +1610,8 @@ cb_insertNodes( const LWT_BE_TOPOLOGY* topo,
 
   if ( SPI_processed ) topo->be_data->data_changed = true;
 
-  if ( SPI_processed != numelems )
+  // TODO: Remove cast when numelems uses uint64 instead of int
+  if ( SPI_processed != (uint64) numelems )
   {
     cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected %d",
             (uint64)SPI_processed, numelems);
@@ -1619,7 +1620,7 @@ cb_insertNodes( const LWT_BE_TOPOLOGY* topo,
 
   /* Set node_id (could skip this if none had it set to -1) */
   /* TODO: check for -1 values in the first loop */
-  for ( i=0; i<SPI_processed; ++i )
+  for ( i=0; i<numelems; ++i )
   {
     if ( nodes[i].node_id != -1 ) continue;
     fillNodeFields(&nodes[i], SPI_tuptable->vals[i],
@@ -1669,7 +1670,7 @@ cb_insertEdges( const LWT_BE_TOPOLOGY* topo,
   pfree(sqldata.data);
   if ( SPI_processed ) topo->be_data->data_changed = true;
   POSTGIS_DEBUGF(1, "cb_insertEdges query processed %d rows", SPI_processed);
-  if ( SPI_processed != numelems )
+  if ( SPI_processed != (uint64) numelems )
   {
     cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected %d",
             (uint64)SPI_processed, numelems);
@@ -1679,7 +1680,7 @@ cb_insertEdges( const LWT_BE_TOPOLOGY* topo,
   if ( needsEdgeIdReturn )
   {
     /* Set node_id for items that need it */
-    for ( i=0; i<SPI_processed; ++i )
+    for ( i=0; i<(int)SPI_processed; ++i )
     {
       if ( edges[i].edge_id != -1 ) continue;
       fillEdgeFields(&edges[i], SPI_tuptable->vals[i],
@@ -1729,7 +1730,7 @@ cb_insertFaces( const LWT_BE_TOPOLOGY* topo,
   pfree(sqldata.data);
   if ( SPI_processed ) topo->be_data->data_changed = true;
   POSTGIS_DEBUGF(1, "cb_insertFaces query processed %d rows", SPI_processed);
-  if ( SPI_processed != numelems )
+  if ( SPI_processed != (uint64) numelems )
   {
     cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected %d",
             (uint64)SPI_processed, numelems);
@@ -1739,7 +1740,7 @@ cb_insertFaces( const LWT_BE_TOPOLOGY* topo,
   if ( needsFaceIdReturn )
   {
     /* Set node_id for items that need it */
-    for ( i=0; i<SPI_processed; ++i )
+    for ( i=0; i<numelems; ++i )
     {
       if ( faces[i].face_id != -1 ) continue;
       fillFaceFields(&faces[i], SPI_tuptable->vals[i],
@@ -2966,8 +2967,8 @@ cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
     return NULL;
   }
 
-  nodes = palloc( sizeof(LWT_ISO_EDGE) * SPI_processed );
-  for ( i=0; i<SPI_processed; ++i )
+  nodes = palloc( sizeof(LWT_ISO_EDGE) * *numelems );
+  for ( i=0; i<*numelems; ++i )
   {
     HeapTuple row = SPI_tuptable->vals[i];
     fillNodeFields(&nodes[i], row, SPI_tuptable->tupdesc, fields);
@@ -3055,8 +3056,8 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
     return NULL;
   }
 
-  edges = palloc( sizeof(LWT_ISO_EDGE) * SPI_processed );
-  for ( i=0; i<SPI_processed; ++i )
+  edges = palloc( sizeof(LWT_ISO_EDGE) * *numelems );
+  for ( i=0; i<*numelems; ++i )
   {
     HeapTuple row = SPI_tuptable->vals[i];
     fillEdgeFields(&edges[i], row, SPI_tuptable->tupdesc, fields);
@@ -3141,8 +3142,8 @@ cb_getFaceWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
     return NULL;
   }
 
-  faces = palloc( sizeof(LWT_ISO_EDGE) * SPI_processed );
-  for ( i=0; i<SPI_processed; ++i )
+  faces = palloc( sizeof(LWT_ISO_EDGE) * *numelems );
+  for ( i=0; i<*numelems; ++i )
   {
     HeapTuple row = SPI_tuptable->vals[i];
     fillFaceFields(&faces[i], row, SPI_tuptable->tupdesc, fields);
