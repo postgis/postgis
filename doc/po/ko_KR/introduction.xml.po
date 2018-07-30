@@ -1,21 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
-#
+# 
 # Translators:
 # BJ Jang <qgis.tr.kr@gmail.com>, 2013,2016
+# Kwon.Yongchan <ruvyn@naver.com>, 2016
 # Kwon.Yongchan <ruvyn@naver.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-03-29 06:29+0000\n"
-"PO-Revision-Date: 2016-07-22 08:23+0000\n"
-"Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
-"language/ko_KR/)\n"
-"Language: ko_KR\n"
+"POT-Creation-Date: 2018-07-21 17:36+0000\n"
+"PO-Revision-Date: 2018-07-22 02:48+0000\n"
+"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/language/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: title
@@ -28,35 +28,33 @@ msgstr "소개"
 #: introduction.xml:5
 #, no-c-format
 msgid ""
-"PostGIS was developed by Refractions Research Inc, as a spatial database "
-"technology research project. Refractions is a GIS and database consulting "
-"company in Victoria, British Columbia, Canada, specializing in data "
-"integration and custom software development. We plan on supporting and "
-"developing PostGIS to support a range of important GIS functionality, "
-"including full OpenGIS support, advanced topological constructs (coverages, "
-"surfaces, networks), desktop user interface tools for viewing and editing "
-"GIS data, and web-based access tools."
+"PostGIS is a spatial extender for the PostgreSQL relational database that "
+"was created by Refractions Research Inc, as a spatial database technology "
+"research project. Refractions is a GIS and database consulting company in "
+"Victoria, British Columbia, Canada, specializing in data integration and "
+"custom software development."
 msgstr ""
-"PostGIS는 리프랙션스 리서치(Refractions Research Inc.)가 개발한 공간 데이터베"
-"이스 기술연구 프로젝트입니다. 리프랙션스 리서치는 캐나다 브리티시컬럼비아 주 "
-"빅토리아 시에 위치한 GIS 및 데이터베이스 자문회사로 데이터 통합 및 고객 지향 "
-"소프트웨어 개발 전문 기업입니다. 우리는 완전한 OpenGIS 지원, 고급 위상 구조"
-"(커버리지, 표면, 네트워크), GIS 데이터의 열람 및 편집 작업을 위한 데스크톱 사"
-"용자 인터페이스 도구, 웹 기반 접근 도구를 포함하는 일련의 중요 GIS 기능을 지"
-"원하도록 PostGIS를 지원하고 개발할 계획입니다."
 
 #. Tag: para
-#: introduction.xml:15
+#: introduction.xml:11
 #, no-c-format
 msgid ""
-"PostGIS is an incubation project of the OSGeo Foundation. PostGIS is being "
-"continually improved and funded by many FOSS4G Developers as well as "
-"corporations all over the world that gain great benefit from its "
-"functionality and versatility."
+"PostGIS is now a project of the OSGeo Foundation and is developed and funded"
+" by many FOSS4G Developers as well as corporations all over the world that "
+"gain great benefit from its functionality and versatility."
 msgstr ""
-"PostGIS는 OSGeo 재단의 육성 프로젝트 중 하나입니다. 여러 FOSS4G 개발자들은 물"
-"론 PostGIS의 기능성 및 다목적성으로부터 막대한 이익을 얻고 있는 전세계의 많"
-"은 기업들이 PostGIS를 끊임없이 개선하고 후원하고 있습니다."
+
+#. Tag: para
+#: introduction.xml:13
+#, no-c-format
+msgid ""
+"The PostGIS project development group plans on supporting and enhancing "
+"PostGIS to better support a range of important GIS functionality in the "
+"areas of OpenGIS and SQL/MM spatial standards, advanced topological "
+"constructs (coverages, surfaces, networks), data source for desktop user "
+"interface tools for viewing and editing GIS data, and web-based access "
+"tools."
+msgstr ""
 
 #. Tag: title
 #: introduction.xml:21
@@ -74,12 +72,7 @@ msgid ""
 "and approves patches from the general PostGIS community and votes on "
 "miscellaneous issues involving PostGIS such as developer commit access, new "
 "PSC members or significant API changes."
-msgstr ""
-"PostGIS 프로젝트 운영 위원회(Project Steering Committee; PSC)는 PostGIS 프로"
-"젝트의 대략적인 방향, 발표 주기, 문서화 및 원조 활동을 조정합니다. PSC는 또"
-"한 일반 사용자 지원을 제공하고, PostGIS 커뮤니티 전반에서 개발하는 소프트웨"
-"어 패치를 받아들여 승인하며, 개발자 커밋 접근, PSC 신입회원 결정 또는 중요한 "
-"API 변경 등 PostGIS에 관한 여러 가지 사안에 대해 투표를 실시합니다."
+msgstr "PostGIS 프로젝트 운영 위원회(Project Steering Committee; PSC)는 PostGIS 프로젝트의 대략적인 방향, 발표 주기, 문서화 및 원조 활동을 조정합니다. PSC는 또한 일반 사용자 지원을 제공하고, PostGIS 커뮤니티 전반에서 개발하는 소프트웨어 패치를 받아들여 승인하며, 개발자 커밋 접근, PSC 신입회원 결정 또는 중요한 API 변경 등 PostGIS에 관한 여러 가지 사안에 대해 투표를 실시합니다."
 
 #. Tag: term
 #: introduction.xml:31
@@ -91,33 +84,27 @@ msgstr "마크 케이브-에일런드(Mark Cave-Ayland)"
 #: introduction.xml:33
 #, no-c-format
 msgid ""
-"Coordinates bug fixing and maintenance effort, alignment of PostGIS with "
-"PostgreSQL releases, spatial index selectivity and binding, loader/dumper, "
-"and Shapefile GUI Loader, integration of new and new function enhancements."
+"Coordinates bug fixing and maintenance effort, spatial index selectivity and"
+" binding, loader/dumper, and Shapefile GUI Loader, integration of new and "
+"new function enhancements."
 msgstr ""
-"버그 수정 및 유지보수 활동, PostGIS와 PostgreSQL의 출시 시기, 공간 인덱스 선"
-"택도 및 바인딩, 로더/덤퍼, shapefile GUI 로더, 새 기능과 새로운 기능 개선의 "
-"통합을 조정"
 
 #. Tag: term
-#: introduction.xml:40
+#: introduction.xml:39
 #, no-c-format
 msgid "Regina Obe"
 msgstr "레지나 오베(Regina Obe)"
 
 #. Tag: para
-#: introduction.xml:42
+#: introduction.xml:41
 #, no-c-format
 msgid ""
 "Buildbot Maintenance, windows production and experimental builds, "
-"Documentation, general user support on PostGIS newsgroup, X3D support, Tiger "
-"Geocoder Support, management functions, and smoke testing new functionality "
-"or major code changes."
+"Documentation, alignment of PostGIS with PostgreSQL releases, general user "
+"support on PostGIS newsgroup, X3D support, Tiger Geocoder Support, "
+"management functions, and smoke testing new functionality or major code "
+"changes."
 msgstr ""
-"빌드봇 유지보수, 윈도우 용 제품 생산 및 실험적인 버전 빌드, 문서화, PostGIS "
-"뉴스그룹에서 개괄적인 사용자 지원, X3D 지원, TIGER 지오코딩 도구(TIGER "
-"Geocoder) 지원, 관리 기능, 새로운 기능 또는 대대적인 코드 변경에 대한 스모크 "
-"테스트를 담당"
 
 #. Tag: term
 #: introduction.xml:49
@@ -130,10 +117,9 @@ msgstr "박 뽀리(Bborie Park)"
 #, no-c-format
 msgid ""
 "Raster development, integration with GDAL, raster loader, user support, "
-"general bug fixing, testing on various OS (Slackware, Mac, Windows, and more)"
-msgstr ""
-"래스터 개발, GDAL과의 통합, 래스터 로더, 사용자 지원, 개괄적인 버그 수정, 다"
-"양한 OS(슬랙웨어, 맥, 윈도우 등)에서의 테스트를 담당"
+"general bug fixing, testing on various OS (Slackware, Mac, Windows, and "
+"more)"
+msgstr "래스터 개발, GDAL과의 통합, 래스터 로더, 사용자 지원, 개괄적인 버그 수정, 다양한 OS(슬랙웨어, 맥, 윈도우 등)에서의 테스트를 담당"
 
 #. Tag: term
 #: introduction.xml:56
@@ -149,196 +135,208 @@ msgid ""
 "geography and geometry index support (2D, 3D, nD index and anything spatial "
 "index), underlying geometry internal structures, PointCloud (in "
 "development), GEOS functionality integration and alignment with GEOS "
-"releases, loader/dumper, and Shapefile GUI loader."
+"releases, alignment of PostGIS with PostgreSQL releases, loader/dumper, and "
+"Shapefile GUI loader."
 msgstr ""
-"PostGIS 프로젝트의 공동 창설자. 개괄적인 버그 수정, 지리학(geography) 지원, "
-"지형(geography) 및 도형(geometry) 인덱스 지원(2D, 3D, nD 인덱스와 모든 공간 "
-"인덱스), 도형 내부 구조의 근원, PointCloud(개발중), GEOS 출시 시기와 GEOS 기"
-"능성 통합의 조정, 로더/덤퍼, shapefile GUI 로더를 담당"
 
 #. Tag: term
-#: introduction.xml:64
+#: introduction.xml:65
 #, no-c-format
 msgid "Sandro Santilli"
 msgstr "산드로 산틸리(Sandro Santilli)"
 
 #. Tag: para
-#: introduction.xml:67
+#: introduction.xml:68
 #, no-c-format
 msgid ""
-"Bug fixes and maintenance and integration of new GEOS functionality and "
-"alignment with GEOS releases, Topology support, and Raster framework and low "
-"level api functions."
+"Bug fixes and maintenance, git mirrors management, integration of new GEOS "
+"functionality and alignment with GEOS releases, Topology support, and Raster"
+" framework and low level api functions."
 msgstr ""
-"버그 수정, 유지보수, GEOS 출시 시기와 GEOS 기능성 통합의 조정, 지형"
-"(topology) 지원, 래스터 프레임워크 및 저레벨 API 함수를 담당"
 
 #. Tag: title
-#: introduction.xml:74
+#: introduction.xml:75
 #, no-c-format
 msgid "Core Contributors Present"
 msgstr "핵심 공헌자 - 현재"
 
 #. Tag: term
-#: introduction.xml:77
+#: introduction.xml:78
 #, no-c-format
 msgid "Jorge Arévalo"
 msgstr "호르헤 아레발로(Jorge Arévalo)"
 
 #. Tag: para
-#: introduction.xml:79
+#: introduction.xml:80
 #, no-c-format
 msgid "Raster development, GDAL driver support, loader"
 msgstr "래스터 개발, GDAL 드라이버 지원, 로더를 담당"
 
 #. Tag: term
-#: introduction.xml:84
+#: introduction.xml:85
 #, no-c-format
 msgid "Nicklas Avén"
 msgstr "니클라스 아벤(Nicklas Avén)"
 
 #. Tag: para
-#: introduction.xml:87
+#: introduction.xml:88
 #, no-c-format
 msgid ""
 "Distance function enhancements (including 3D distance and relationship "
-"functions) and additions, Tiny WKB output format (TWKB) (in development) and "
-"general user support"
-msgstr ""
-"거리 함수 개선(3D 거리와 관계 함수 포함) 및 추가 작업, TWKB(Tiny WKB) 출력 포"
-"맷(개발중), 개괄적인 사용자 지원을 담당"
+"functions) and additions, Tiny WKB output format (TWKB) (in development) and"
+" general user support"
+msgstr "거리 함수 개선(3D 거리와 관계 함수 포함) 및 추가 작업, TWKB(Tiny WKB) 출력 포맷(개발중), 개괄적인 사용자 지원을 담당"
 
 #. Tag: term
-#: introduction.xml:92
+#: introduction.xml:93
 #, no-c-format
 msgid "Dan Baston"
 msgstr "댄 배스턴(Dan Baston)"
 
 #. Tag: para
-#: introduction.xml:95
+#: introduction.xml:96
 #, no-c-format
 msgid ""
 "Geometry clustering function additions, other geometry algorithm "
-"enhancements, and general user support"
+"enhancements, GEOS enhancements and general user support"
 msgstr ""
-"도형 클러스터 작업 함수 및 추가 작업, 기타 도형 알고리즘 개선, 개괄적인 사용"
-"자 지원을 담당"
 
 #. Tag: term
-#: introduction.xml:100
+#: introduction.xml:101
 #, no-c-format
 msgid "Olivier Courtin"
 msgstr "올리비에 쿠르텡(Olivier Courtin)"
 
 #. Tag: para
-#: introduction.xml:102
+#: introduction.xml:103
 #, no-c-format
-msgid "Input output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes."
+msgid ""
+"Input output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes."
 msgstr "XML(KML, GML)/GeoJSON 입출력 기능, 3D 지원 및 버그 수정을 담당"
 
 #. Tag: term
-#: introduction.xml:107
+#: introduction.xml:108
 #, no-c-format
 msgid "Björn Harrtell"
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:110
+#: introduction.xml:111
 #, no-c-format
-msgid "MapBox Vector Tile and GeoBuf functions. Gogs testing."
+msgid ""
+"MapBox Vector Tile and GeoBuf functions. Gogs testing and GitLab "
+"experimentation."
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:116
+#: introduction.xml:117
 #, no-c-format
 msgid "Mateusz Loskot"
 msgstr "마테우스 로스코트(Mateusz Loskot)"
 
 #. Tag: para
-#: introduction.xml:118
+#: introduction.xml:119
 #, no-c-format
 msgid ""
 "CMake support for PostGIS, built original raster loader in python and low "
 "level raster api functions"
-msgstr ""
-"PostGIS 용 CMake 지원, 파이썬 래스터 로더 원본 개발, 저레벨 래스터 API 함수 "
-"개발을 담당 "
+msgstr "PostGIS 용 CMake 지원, 파이썬 래스터 로더 원본 개발, 저레벨 래스터 API 함수 개발을 담당 "
 
 #. Tag: term
-#: introduction.xml:123
+#: introduction.xml:124
+#, no-c-format
+msgid "Raúl Marín Rodríguez"
+msgstr ""
+
+#. Tag: para
+#: introduction.xml:126
+#, no-c-format
+msgid "Bug fixing"
+msgstr ""
+
+#. Tag: term
+#: introduction.xml:131
+#, no-c-format
+msgid "Darafei Praliaskouski"
+msgstr ""
+
+#. Tag: para
+#: introduction.xml:134
+#, no-c-format
+msgid ""
+"Index improvements, bug fixing and geometry/geography function improvements,"
+" GitHub curator, and Travis bot maintenance."
+msgstr ""
+
+#. Tag: term
+#: introduction.xml:140
 #, no-c-format
 msgid "Pierre Racine"
 msgstr "피에르 라신(Pierre Racine)"
 
 #. Tag: para
-#: introduction.xml:125
+#: introduction.xml:142
 #, no-c-format
 msgid "Raster overall architecture, prototyping, programming support"
 msgstr "래스터의 전반적 아키텍처, 프로토타이핑, 프로그래밍 지원을 담당"
 
 #. Tag: title
-#: introduction.xml:131
+#: introduction.xml:148
 #, no-c-format
 msgid "Core Contributors Past"
 msgstr "핵심 공헌자 - 과거"
 
 #. Tag: term
-#: introduction.xml:135
+#: introduction.xml:152
 #, no-c-format
 msgid "Chris Hodgson"
 msgstr "크리스 호지슨(Chris Hodgson)"
 
 #. Tag: para
-#: introduction.xml:137
+#: introduction.xml:154
 #, no-c-format
 msgid ""
 "Prior PSC Member. General development, site and buildbot maintenance, OSGeo "
 "incubation management"
-msgstr ""
-"전 PSC 회원. 개괄적인 개발, 사이트 및 빌드봇 유지보수, OSGeo 육성 프로젝트 관"
-"리를 담당"
+msgstr "전 PSC 회원. 개괄적인 개발, 사이트 및 빌드봇 유지보수, OSGeo 육성 프로젝트 관리를 담당"
 
 #. Tag: term
-#: introduction.xml:142
+#: introduction.xml:159
 #, no-c-format
 msgid "Kevin Neufeld"
 msgstr "케빈 뉴펠드(Kevin Neufeld)"
 
 #. Tag: para
-#: introduction.xml:144
+#: introduction.xml:161
 #, no-c-format
 msgid ""
 "Prior PSC Member. Documentation and documentation support tools, buildbot "
 "maintenance, advanced user support on PostGIS newsgroup, and PostGIS "
 "maintenance function enhancements."
-msgstr ""
-"전 PSC 회원. 문서화 및 문서화 지원 도구, 빌드봇 유지보수, PostGIS 뉴스그룹에"
-"서 고급 사용자 지원, PostGIS 유지보수 기능 개선을 담당"
+msgstr "전 PSC 회원. 문서화 및 문서화 지원 도구, 빌드봇 유지보수, PostGIS 뉴스그룹에서 고급 사용자 지원, PostGIS 유지보수 기능 개선을 담당"
 
 #. Tag: term
-#: introduction.xml:150
+#: introduction.xml:167
 #, no-c-format
 msgid "Dave Blasby"
 msgstr "데이브 블래스비(Dave Blasby)"
 
 #. Tag: para
-#: introduction.xml:153
+#: introduction.xml:170
 #, no-c-format
 msgid ""
 "The original developer/Co-founder of PostGIS. Dave wrote the server side "
 "objects, index bindings, and many of the server side analytical functions."
-msgstr ""
-"PostGIS의 원 개발자이자 공동 창립자. 서버측 객체, 인덱스 바인딩 및 서버측의 "
-"여러 분석 기능들을 작업"
+msgstr "PostGIS의 원 개발자이자 공동 창립자. 서버측 객체, 인덱스 바인딩 및 서버측의 여러 분석 기능들을 작업"
 
 #. Tag: term
-#: introduction.xml:160
+#: introduction.xml:177
 #, no-c-format
 msgid "Jeff Lounsbury"
 msgstr "제프 라운스버리(Jeff Lounsbury)"
 
 #. Tag: para
-#: introduction.xml:162
+#: introduction.xml:179
 #, no-c-format
 msgid ""
 "Original development of the Shape file loader/dumper. Current PostGIS "
@@ -346,129 +344,101 @@ msgid ""
 msgstr "shapefile 로더/덤퍼 원본을 개발. 현재 PostGIS 프로젝트 소유자 대표"
 
 #. Tag: term
-#: introduction.xml:168
+#: introduction.xml:185
 #, no-c-format
 msgid "Mark Leslie"
 msgstr "마크 레슬리(Mark Leslie)"
 
 #. Tag: para
-#: introduction.xml:170
+#: introduction.xml:187
 #, no-c-format
 msgid ""
 "Ongoing maintenance and development of core functions. Enhanced curve "
 "support. Shapefile GUI loader."
-msgstr ""
-"진행중인 유지보수 및 핵심 기능 개발. 곡선 지원 개선, shapefile GUI 로더를 담"
-"당"
+msgstr "진행중인 유지보수 및 핵심 기능 개발. 곡선 지원 개선, shapefile GUI 로더를 담당"
 
 #. Tag: term
-#: introduction.xml:175
+#: introduction.xml:192
 #, no-c-format
 msgid "David Zwarg"
 msgstr "다피트 츠바르크(David Zwarg)"
 
 #. Tag: para
-#: introduction.xml:177
+#: introduction.xml:194
 #, no-c-format
 msgid "Raster development (mostly map algebra analytic functions)"
 msgstr "래스터 개발(대부분 맵 대수학 분석 기능들)을 담당"
 
 #. Tag: title
-#: introduction.xml:183
+#: introduction.xml:200
 #, no-c-format
 msgid "Other Contributors"
 msgstr "기타 공헌자"
 
 #. Tag: term
-#: introduction.xml:186
+#: introduction.xml:203
 #, no-c-format
 msgid "Individual Contributors"
 msgstr "개인 공헌자"
 
 #. Tag: para
-#: introduction.xml:189
+#: introduction.xml:206
 #, no-c-format
 msgid ""
 "In alphabetical order: Alex Bodnaru, Alex Mayrhofer, Andrea Peri, Andreas "
 "Forø Tollefsen, Andreas Neumann, Anne Ghisla, Barbara Phillipot, Ben Jubb, "
 "Bernhard Reiter, Brian Hamlin, Bruce Rindahl, Bruno Wolff III, Bryce L. "
-"Nordgren, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea, David "
-"Techer, Eduin Carrillo, Even Rouault, Frank Warmerdam, George Silva, Gerald "
-"Fenoy, Gino Lucrezi, Guillaume Lelarge, IIDA Tetsushi, Ingvild Nystuen, "
+"Nordgren, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea, David"
+" Techer, Eduin Carrillo, Even Rouault, Frank Warmerdam, George Silva, Gerald"
+" Fenoy, Gino Lucrezi, Guillaume Lelarge, IIDA Tetsushi, Ingvild Nystuen, "
 "Jason Smith, Jeff Adams, Jose Carlos Martinez Llari, Julien Rouhaud, Kashif "
 "Rasul, Klaus Foerster, Kris Jurka, Leo Hsu, Loic Dachary, Luca S. Percich, "
-"Maria Arias de Reyna, Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime "
-"van Noppen, Michael Fuhr, Mike Toews, Nathan Wagner, Nathaniel Clay, Nikita "
-"Shulga, Norman Vine, Rafal Magda, Ralph Mason, Rémi Cura, Richard Greenwood, "
-"Silvio Grosso, Steffen Macke, Stephen Frost, Tom van Tilburg, Vincent Mora, "
-"Vincent Picavet"
-msgstr ""
-"알파벳 순서: Alex Bodnaru, Alex Mayrhofer, Andrea Peri, Andreas Forø "
-"Tollefsen, Andreas Neumann, Anne Ghisla, Barbara Phillipot, Ben Jubb, "
-"Bernhard Reiter, Brian Hamlin, Bruce Rindahl, Bruno Wolff III, Bryce L. "
-"Nordgren, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea, David "
-"Techer, Eduin Carrillo, Even Rouault, Frank Warmerdam, George Silva, Gerald "
-"Fenoy, Gino Lucrezi, Guillaume Lelarge, IIDA Tetsushi, Ingvild Nystuen, "
-"Jason Smith, Jeff Adams, Jose Carlos Martinez Llari, Julien Rouhaud, Kashif "
-"Rasul, Klaus Foerster, Kris Jurka, Leo Hsu, Loic Dachary, Luca S. Percich, "
-"Maria Arias de Reyna, Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime "
-"van Noppen, Michael Fuhr, Mike Toews, Nathan Wagner, Nathaniel Clay, Nikita "
-"Shulga, Norman Vine, Rafal Magda, Ralph Mason, Rémi Cura, Richard Greenwood, "
-"Silvio Grosso, Steffen Macke, Stephen Frost, Tom van Tilburg, Vincent Mora, "
-"Vincent Picavet"
+"Maria Arias de Reyna, Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime"
+" van Noppen, Michael Fuhr, Mike Toews, Nathan Wagner, Nathaniel Clay, Nikita"
+" Shulga, Norman Vine, Rafal Magda, Ralph Mason, Rémi Cura, Richard "
+"Greenwood, Silvio Grosso, Steffen Macke, Stephen Frost, Tom van Tilburg, "
+"Vincent Mora, Vincent Picavet"
+msgstr "알파벳 순서: Alex Bodnaru, Alex Mayrhofer, Andrea Peri, Andreas Forø Tollefsen, Andreas Neumann, Anne Ghisla, Barbara Phillipot, Ben Jubb, Bernhard Reiter, Brian Hamlin, Bruce Rindahl, Bruno Wolff III, Bryce L. Nordgren, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea, David Techer, Eduin Carrillo, Even Rouault, Frank Warmerdam, George Silva, Gerald Fenoy, Gino Lucrezi, Guillaume Lelarge, IIDA Tetsushi, Ingvild Nystuen, Jason Smith, Jeff Adams, Jose Carlos Martinez Llari, Julien Rouhaud, Kashif Rasul, Klaus Foerster, Kris Jurka, Leo Hsu, Loic Dachary, Luca S. Percich, Maria Arias de Reyna, Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime van Noppen, Michael Fuhr, Mike Toews, Nathan Wagner, Nathaniel Clay, Nikita Shulga, Norman Vine, Rafal Magda, Ralph Mason, Rémi Cura, Richard Greenwood, Silvio Grosso, Steffen Macke, Stephen Frost, Tom van Tilburg, Vincent Mora, Vincent Picavet"
 
 #. Tag: term
-#: introduction.xml:253
+#: introduction.xml:270
 #, no-c-format
 msgid "Corporate Sponsors"
 msgstr "후원 기업"
 
 #. Tag: para
-#: introduction.xml:256
+#: introduction.xml:273
 #, no-c-format
 msgid ""
 "These are corporate entities that have contributed developer time, hosting, "
 "or direct monetary funding to the PostGIS project"
-msgstr ""
-"PostGIS 프로젝트에 직접적으로 금전을 후원하거나, 개발자 시간 및 호스팅에 기여"
-"를 한 기업들입니다."
+msgstr "PostGIS 프로젝트에 직접적으로 금전을 후원하거나, 개발자 시간 및 호스팅에 기여를 한 기업들입니다."
 
 #. Tag: para
-#: introduction.xml:257
+#: introduction.xml:274
 #, no-c-format
 msgid ""
 "In alphabetical order: Arrival 3D, Associazione Italiana per l'Informazione "
 "Geografica Libera (GFOSS.it), AusVet, Avencia, Azavea, Cadcorp, CampToCamp, "
-"CartoDB, City of Boston (DND), Clever Elephant Solutions, Cooperativa Alveo, "
-"Deimos Space, Faunalia, Geographic Data BC, Hunter Systems Group, Lidwala "
-"Consulting Engineers, LisaSoft, Logical Tracking &amp; Tracing International "
-"AG, Maponics, Michigan Tech Research Institute, Natural Resources Canada, "
-"Norwegian Forest and Landscape Institute, Boundless (former OpenGeo), OSGeo, "
-"Oslandia, Palantir Technologies, Paragon Corporation, R3 GIS, Refractions "
+"CartoDB, City of Boston (DND), Clever Elephant Solutions, Cooperativa Alveo,"
+" Deimos Space, Faunalia, Geographic Data BC, Hunter Systems Group, Lidwala "
+"Consulting Engineers, LisaSoft, Logical Tracking &amp; Tracing International"
+" AG, Maponics, Michigan Tech Research Institute, Natural Resources Canada, "
+"Norwegian Forest and Landscape Institute, Boundless (former OpenGeo), OSGeo,"
+" Oslandia, Palantir Technologies, Paragon Corporation, R3 GIS, Refractions "
 "Research, Regione Toscana - SITA, Safe Software, Sirius Corporation plc, "
 "Stadt Uster, UC Davis Center for Vectorborne Diseases, University of Laval, "
 "U.S Department of State (HIU), Zonar Systems"
-msgstr ""
-"알파벳 순서: Arrival 3D, Associazione Italiana per l'Informazione Geografica "
-"Libera (GFOSS.it), AusVet, Avencia, Azavea, Cadcorp, CampToCamp, CartoDB, "
-"City of Boston (DND), Clever Elephant Solutions, Cooperativa Alveo, Deimos "
-"Space, Faunalia, Geographic Data BC, Hunter Systems Group, Lidwala "
-"Consulting Engineers, LisaSoft, Logical Tracking &amp; Tracing International "
-"AG, Maponics, Michigan Tech Research Institute, Natural Resources Canada, "
-"Norwegian Forest and Landscape Institute, Boundless (former OpenGeo), OSGeo, "
-"Oslandia, Palantir Technologies, Paragon Corporation, R3 GIS, Refractions "
-"Research, Regione Toscana - SITA, Safe Software, Sirius Corporation plc, "
-"Stadt Uster, UC Davis Center for Vectorborne Diseases, University of Laval, "
-"U.S Department of State (HIU), Zonar Systems"
+msgstr "알파벳 순서: Arrival 3D, Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it), AusVet, Avencia, Azavea, Cadcorp, CampToCamp, CartoDB, City of Boston (DND), Clever Elephant Solutions, Cooperativa Alveo, Deimos Space, Faunalia, Geographic Data BC, Hunter Systems Group, Lidwala Consulting Engineers, LisaSoft, Logical Tracking &amp; Tracing International AG, Maponics, Michigan Tech Research Institute, Natural Resources Canada, Norwegian Forest and Landscape Institute, Boundless (former OpenGeo), OSGeo, Oslandia, Palantir Technologies, Paragon Corporation, R3 GIS, Refractions Research, Regione Toscana - SITA, Safe Software, Sirius Corporation plc, Stadt Uster, UC Davis Center for Vectorborne Diseases, University of Laval, U.S Department of State (HIU), Zonar Systems"
 
 #. Tag: term
-#: introduction.xml:299
+#: introduction.xml:316
 #, no-c-format
 msgid "Crowd Funding Campaigns"
 msgstr "크라우드 펀딩 캠페인 "
 
 #. Tag: para
-#: introduction.xml:302
+#: introduction.xml:319
 #, no-c-format
 msgid ""
 "Crowd funding campaigns are campaigns we run to get badly wanted features "
@@ -476,111 +446,79 @@ msgid ""
 "specifically focused on a particular feature or set of features. Each "
 "sponsor chips in a small fraction of the needed funding and with enough "
 "people/organizations contributing, we have the funds to pay for the work "
-"that will help many. If you have an idea for a feature you think many others "
-"would be willing to co-fund, please post to the <ulink url=\"https://lists."
-"osgeo.org/mailman/listinfo/postgis-users\">PostGIS newsgroup</ulink> your "
-"thoughts and together we can make it happen."
-msgstr ""
-"크라우드 펀딩 캠페인이란 수많은 사람들에게 서비스할 수 있는, 우리가 간절히 원"
-"하는 기능들을 후원받기 위해 진행하는 캠페인입니다. 각 캠페인은 특정 기능 또"
-"는 일련의 기능에 특화되어 있습니다. 각 후원자는 필요한 펀딩의 작은 일부분을 "
-"담당하며, 충분한 공헌자 또는 조직이 모일 경우 많은 사용자를 도울 수 있는 작업"
-"을 위한 비용을 충당할 수 있습니다. 여러분이 생각하기에 다른 사람들이 기꺼이 "
-"공동 펀딩에 참여할 만한 아이디어가 있다면, <ulink url=\"https://lists.osgeo."
-"org/mailman/listinfo/postgis-users\">PostGIS 뉴스그룹</ulink> 에 여러분의 생"
-"각을 포스팅해서 우리 모두가 함께 실현할 수 있습니다."
+"that will help many. If you have an idea for a feature you think many others"
+" would be willing to co-fund, please post to the <ulink "
+"url=\"https://lists.osgeo.org/mailman/listinfo/postgis-users\">PostGIS "
+"newsgroup</ulink> your thoughts and together we can make it happen."
+msgstr "크라우드 펀딩 캠페인이란 수많은 사람들에게 서비스할 수 있는, 우리가 간절히 원하는 기능들을 후원받기 위해 진행하는 캠페인입니다. 각 캠페인은 특정 기능 또는 일련의 기능에 특화되어 있습니다. 각 후원자는 필요한 펀딩의 작은 일부분을 담당하며, 충분한 공헌자 또는 조직이 모일 경우 많은 사용자를 도울 수 있는 작업을 위한 비용을 충당할 수 있습니다. 여러분이 생각하기에 다른 사람들이 기꺼이 공동 펀딩에 참여할 만한 아이디어가 있다면, <ulink url=\"https://lists.osgeo.org/mailman/listinfo/postgis-users\">PostGIS 뉴스그룹</ulink> 에 여러분의 생각을 포스팅해서 우리 모두가 함께 실현할 수 있습니다."
 
 #. Tag: para
-#: introduction.xml:303
+#: introduction.xml:320
 #, no-c-format
 msgid ""
 "PostGIS 2.0.0 was the first release we tried this strategy. We used <ulink "
 "url=\"http://www.pledgebank.com\">PledgeBank</ulink> and we got two "
 "successful campaigns out of it."
-msgstr ""
-"PostGIS 2.0.0은 이런 전략 아래 탄생한 첫 번째 출시작입니다. 우리는 <ulink "
-"url=\"http://www.pledgebank.com\">PledgBank</ulink> 를 이용했으며 이를 통해 "
-"캠페인을 두 번 성공적으로 진행했습니다."
+msgstr "PostGIS 2.0.0은 이런 전략 아래 탄생한 첫 번째 출시작입니다. 우리는 <ulink url=\"http://www.pledgebank.com\">PledgBank</ulink> 를 이용했으며 이를 통해 캠페인을 두 번 성공적으로 진행했습니다."
 
 #. Tag: para
-#: introduction.xml:304
+#: introduction.xml:321
 #, no-c-format
 msgid ""
-"<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis role="
-"\"bold\">postgistopology</emphasis></ulink> - 10 plus sponsors each "
+"<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis "
+"role=\"bold\">postgistopology</emphasis></ulink> - 10 plus sponsors each "
 "contributed $250 USD to build toTopoGeometry function and beef up topology "
 "support in 2.0.0. It happened."
-msgstr ""
-"<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis role="
-"\"bold\">postgistopology</emphasis></ulink> - 10명 이상의 후원자들이 2.0.0 버"
-"전에서 toTopGeometry 함수 빌드와 지형 지원 강화를 위해  250달러씩 후원했습니"
-"다."
+msgstr "<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis role=\"bold\">postgistopology</emphasis></ulink> - 10명 이상의 후원자들이 2.0.0 버전에서 toTopGeometry 함수 빌드와 지형 지원 강화를 위해  250달러씩 후원했습니다."
 
 #. Tag: para
-#: introduction.xml:305
+#: introduction.xml:322
 #, no-c-format
 msgid ""
-"<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis role="
-"\"bold\">postgis64windows</emphasis></ulink> - 20 someodd sponsors each "
-"contributed $100 USD to pay for the work needed to work out PostGIS 64-bit "
+"<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis "
+"role=\"bold\">postgis64windows</emphasis></ulink> - 20 someodd sponsors each"
+" contributed $100 USD to pay for the work needed to work out PostGIS 64-bit "
 "issues on windows. It happened. We now have a 64-bit release for PostGIS "
 "2.0.1 available on PostgreSQL stack builder."
-msgstr ""
-"<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis role="
-"\"bold\">postgis64windows</emphasis></ulink> - 후원자 20여 명이 윈도우 용 64"
-"비트 PostGIS의 문제점을 해결하기 위한 작업에 100달러씩 지원했고, 성공했습니"
-"다. 이제 PostgreSQL 스택 빌더에서 PostGIS 2.0.1  64비트 버전을 다운로드할 수 "
-"있습니다."
+msgstr "<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis role=\"bold\">postgis64windows</emphasis></ulink> - 후원자 20여 명이 윈도우 용 64비트 PostGIS의 문제점을 해결하기 위한 작업에 100달러씩 지원했고, 성공했습니다. 이제 PostgreSQL 스택 빌더에서 PostGIS 2.0.1  64비트 버전을 다운로드할 수 있습니다."
 
 #. Tag: term
-#: introduction.xml:310
+#: introduction.xml:327
 #, no-c-format
 msgid "Important Support Libraries"
 msgstr "주요 지원 라이브러리"
 
 #. Tag: para
-#: introduction.xml:313
+#: introduction.xml:330
 #, no-c-format
 msgid ""
 "The <ulink url=\"http://trac.osgeo.org/geos/\">GEOS</ulink> geometry "
 "operations library, and the algorithmic work of Martin Davis in making it "
-"all work, ongoing maintenance and support of Mateusz Loskot, Sandro Santilli "
-"(strk), Paul Ramsey and others."
-msgstr ""
-"<ulink url=\"http://trac.osgeo.org/geos/\">GEOS</ulink> 도형 작업 라이브러리 "
-"- 마틴 데이비스가 알고리즘 작업을 통해 모든 것을 작동하도록 만들었고, 마테우"
-"스 로스코트, 산드로 산틸리(strk), 폴 램지 외 다른 이들이 유지보수 및 지원 작"
-"업을 진행 중입니다."
+"all work, ongoing maintenance and support of Mateusz Loskot, Sandro Santilli"
+" (strk), Paul Ramsey and others."
+msgstr "<ulink url=\"http://trac.osgeo.org/geos/\">GEOS</ulink> 도형 작업 라이브러리 - 마틴 데이비스가 알고리즘 작업을 통해 모든 것을 작동하도록 만들었고, 마테우스 로스코트, 산드로 산틸리(strk), 폴 램지 외 다른 이들이 유지보수 및 지원 작업을 진행 중입니다."
 
 #. Tag: para
-#: introduction.xml:318
+#: introduction.xml:335
 #, no-c-format
 msgid ""
 "The <ulink url=\"http://trac.osgeo.org/gdal/\">GDAL</ulink> Geospatial Data "
 "Abstraction Library, by Frank Warmerdam and others is used to power much of "
 "the raster functionality introduced in PostGIS 2.0.0. In kind, improvements "
 "needed in GDAL to support PostGIS are contributed back to the GDAL project."
-msgstr ""
-"<ulink url=\"http://trac.osgeo.org/gdal/\">GDAL</ulink> 공간지리 데이터 추출 "
-"라이브러리 - 프랭크 바르메르담(Frank Warmerdam) 등이 만든 이 라이브러리는 "
-"PostGIS 2.0.0에 포함된 래스터 기능성 대부분을 강화하는 데 쓰입니다. 기브앤테"
-"이크처럼, PostGIS를 지원하기 위해 GDAL이 필요로 하는 개선은 역으로 GDAL 프로"
-"젝트에 공헌합니다."
+msgstr "<ulink url=\"http://trac.osgeo.org/gdal/\">GDAL</ulink> 공간지리 데이터 추출 라이브러리 - 프랭크 바르메르담(Frank Warmerdam) 등이 만든 이 라이브러리는 PostGIS 2.0.0에 포함된 래스터 기능성 대부분을 강화하는 데 쓰입니다. 기브앤테이크처럼, PostGIS를 지원하기 위해 GDAL이 필요로 하는 개선은 역으로 GDAL 프로젝트에 공헌합니다."
 
 #. Tag: para
-#: introduction.xml:323
+#: introduction.xml:340
 #, no-c-format
 msgid ""
 "The <ulink url=\"http://trac.osgeo.org/proj/\">Proj4</ulink> cartographic "
 "projection library, and the work of Gerald Evenden and Frank Warmerdam in "
 "creating and maintaining it."
-msgstr ""
-"<ulink url=\"http://trac.osgeo.org/proj/\">Proj4</ulink> 지도제작 투영 라이브"
-"러리 -  제럴드 에벤던(Gerald Evenden)과 프랭크 바르메르담이 이 라이브러리를 "
-"개발하고 유지보수하고 있습니다."
+msgstr "<ulink url=\"http://trac.osgeo.org/proj/\">Proj4</ulink> 지도제작 투영 라이브러리 -  제럴드 에벤던(Gerald Evenden)과 프랭크 바르메르담이 이 라이브러리를 개발하고 유지보수하고 있습니다."
 
 #. Tag: para
-#: introduction.xml:327
+#: introduction.xml:344
 #, no-c-format
 msgid ""
 "Last but not least, the <ulink url=\"http://www.postgresql.org\">PostgreSQL "
@@ -588,94 +526,72 @@ msgid ""
 "flexibility of PostGIS would not be possible without the extensibility, "
 "great query planner, GIST index, and plethora of SQL features provided by "
 "PostgreSQL."
-msgstr ""
-"마지막으로 그러나 역시 중요한, PostGIS의 기반이 된 <ulink url=\"http://www."
-"postgresql.org\">PostgreSQL DBMS</ulink> - PostGIS의 유동성과 속도의 대부분"
-"은 PostgreSQL가 제공하는 확장성, 강력한 쿼리 플래너, GiST 인덱스, 그리고 다양"
-"한 SQL 기능들 없이는 불가능했습니다."
+msgstr "마지막으로 그러나 역시 중요한, PostGIS의 기반이 된 <ulink url=\"http://www.postgresql.org\">PostgreSQL DBMS</ulink> - PostGIS의 유동성과 속도의 대부분은 PostgreSQL가 제공하는 확장성, 강력한 쿼리 플래너, GiST 인덱스, 그리고 다양한 SQL 기능들 없이는 불가능했습니다."
 
 #. Tag: title
-#: introduction.xml:336
+#: introduction.xml:353
 #, no-c-format
 msgid "More Information"
 msgstr "추가 정보"
 
 #. Tag: para
-#: introduction.xml:340
+#: introduction.xml:357
 #, no-c-format
 msgid ""
 "The latest software, documentation and news items are available at the "
-"PostGIS web site, <ulink url=\"http://postgis.net\">http://postgis.net</"
-"ulink>."
-msgstr ""
-"최신 PostGIS 소프트웨어, 문서 및 뉴스들을 다음 웹사이트 <ulink url=\"http://"
-"postgis.net\">http://postgis.net</ulink>에서 찾아볼 수 있습니다."
+"PostGIS web site, <ulink "
+"url=\"http://postgis.net\">http://postgis.net</ulink>."
+msgstr "최신 PostGIS 소프트웨어, 문서 및 뉴스들을 다음 웹사이트 <ulink url=\"http://postgis.net\">http://postgis.net</ulink>에서 찾아볼 수 있습니다."
 
 #. Tag: para
-#: introduction.xml:346
+#: introduction.xml:363
 #, no-c-format
 msgid ""
 "More information about the GEOS geometry operations library is available "
-"at<ulink url=\"http://trac.osgeo.org/geos/\"> http://trac.osgeo.org/geos/</"
-"ulink>."
-msgstr ""
-"GEOS 도형 작업 라이브러리에 대한 상세 정보는 <ulink url=\"http://trac.osgeo."
-"org/geos/\">http://trac.osgeo.org/geos/</ulink>에서 확인할 수 있습니다."
+"at<ulink url=\"http://trac.osgeo.org/geos/\"> "
+"http://trac.osgeo.org/geos/</ulink>."
+msgstr "GEOS 도형 작업 라이브러리에 대한 상세 정보는 <ulink url=\"http://trac.osgeo.org/geos/\">http://trac.osgeo.org/geos/</ulink>에서 확인할 수 있습니다."
 
 #. Tag: para
-#: introduction.xml:352
+#: introduction.xml:369
 #, no-c-format
 msgid ""
-"More information about the Proj4 reprojection library is available at <ulink "
-"url=\"http://trac.osgeo.org/proj/\">http://trac.osgeo.org/proj/</ulink>."
-msgstr ""
-"Proj4 재투영 라이브러리에 대한 상세 정보는 <ulink url=\"http://trac.osgeo."
-"org/proj/\">http://trac.osgeo.org/proj/</ulink>에서 확인할 수 있습니다."
+"More information about the Proj4 reprojection library is available at <ulink"
+" url=\"http://trac.osgeo.org/proj/\">http://trac.osgeo.org/proj/</ulink>."
+msgstr "Proj4 재투영 라이브러리에 대한 상세 정보는 <ulink url=\"http://trac.osgeo.org/proj/\">http://trac.osgeo.org/proj/</ulink>에서 확인할 수 있습니다."
 
 #. Tag: para
-#: introduction.xml:358
+#: introduction.xml:375
 #, no-c-format
 msgid ""
 "More information about the PostgreSQL database server is available at the "
-"PostgreSQL main site <ulink url=\"http://www.postgresql.org\">http://www."
-"postgresql.org</ulink>."
-msgstr ""
-"PostgreSQL 데이터베이스 서버에 대한 상세 정보는 PostgreSQL 사이트 <ulink url="
-"\"http://www.postgresql.org\">http://www.postgresql.org</ulink>에서 확인할 "
-"수 있습니다."
+"PostgreSQL main site <ulink "
+"url=\"http://www.postgresql.org\">http://www.postgresql.org</ulink>."
+msgstr "PostgreSQL 데이터베이스 서버에 대한 상세 정보는 PostgreSQL 사이트 <ulink url=\"http://www.postgresql.org\">http://www.postgresql.org</ulink>에서 확인할 수 있습니다."
 
 #. Tag: para
-#: introduction.xml:364
+#: introduction.xml:381
 #, no-c-format
 msgid ""
 "More information about GiST indexing is available at the PostgreSQL GiST "
-"development site, <ulink url=\"http://www.sai.msu.su/~megera/postgres/gist/"
-"\">http://www.sai.msu.su/~megera/postgres/gist/</ulink>."
-msgstr ""
-"GiST 인덱싱에 대한 상세 정보는 PostgreSQL GiST 개발 사이트 <ulink url="
-"\"http://www.sai.msu.su/~megera/postgres/gist/\">http://www.sai.msu.su/"
-"~megera/postgres/gist/</ulink>에서 확인할 수 있습니다."
+"development site, <ulink "
+"url=\"http://www.sai.msu.su/~megera/postgres/gist/\">http://www.sai.msu.su/~megera/postgres/gist/</ulink>."
+msgstr "GiST 인덱싱에 대한 상세 정보는 PostgreSQL GiST 개발 사이트 <ulink url=\"http://www.sai.msu.su/~megera/postgres/gist/\">http://www.sai.msu.su/~megera/postgres/gist/</ulink>에서 확인할 수 있습니다."
 
 #. Tag: para
-#: introduction.xml:370
+#: introduction.xml:387
 #, no-c-format
 msgid ""
 "More information about MapServer internet map server is available at <ulink "
 "url=\"http://mapserver.org/\">http://mapserver.org</ulink>."
-msgstr ""
-"인터넷 맵 서버인 MapServer에 대한 상세 정보는 <ulink url=\"http://mapserver."
-"org/\">http://mapserver.org</ulink>에서 확인할 수 있습니다."
+msgstr "인터넷 맵 서버인 MapServer에 대한 상세 정보는 <ulink url=\"http://mapserver.org/\">http://mapserver.org</ulink>에서 확인할 수 있습니다."
 
 #. Tag: para
-#: introduction.xml:376
+#: introduction.xml:393
 #, no-c-format
 msgid ""
 "The &quot;<ulink url=\"http://www.opengeospatial.org/standards/sfs\">Simple "
-"Features for Specification for SQL</ulink>&quot; is available at the OpenGIS "
-"Consortium web site: <ulink url=\"http://www.opengeospatial.org/\">http://"
-"www.opengeospatial.org/</ulink>."
-msgstr ""
-"\"<ulink url=\"http://www.opengeospatial.org/standards/sfs\">Simple Features "
-"for Specification for SQL</ulink>\"은 OpenGIS Consortium 웹 사이트 <ulink "
-"url=\"http://www.opengeospatial.org/\">http://www.opengeospatial.org/</"
-"ulink> 에서 확인할 수 있습니다."
+"Features for Specification for SQL</ulink>&quot; is available at the OpenGIS"
+" Consortium web site: <ulink "
+"url=\"http://www.opengeospatial.org/\">http://www.opengeospatial.org/</ulink>."
+msgstr "\"<ulink url=\"http://www.opengeospatial.org/standards/sfs\">Simple Features for Specification for SQL</ulink>\"은 OpenGIS Consortium 웹 사이트 <ulink url=\"http://www.opengeospatial.org/\">http://www.opengeospatial.org/</ulink> 에서 확인할 수 있습니다."

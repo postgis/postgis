@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 21:04+0000\n"
+"POT-Creation-Date: 2018-07-21 17:08+0000\n"
 "PO-Revision-Date: 2013-11-27 16:24+0000\n"
 "Last-Translator: Nicolas Ribot <nicolas.ribot@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/postgis-1/"
@@ -106,7 +106,7 @@ msgstr ""
 
 #. Tag: title
 #: reference_type.xml:29 reference_type.xml:40 reference_type.xml:79
-#: reference_type.xml:136 reference_type.xml:155
+#: reference_type.xml:137 reference_type.xml:156
 #, no-c-format
 msgid "Description"
 msgstr "Description"
@@ -152,13 +152,13 @@ msgstr ""
 "ST_3DExtent renvoie une box3d."
 
 #. Tag: title
-#: reference_type.xml:45 reference_type.xml:84 reference_type.xml:160
+#: reference_type.xml:45 reference_type.xml:85 reference_type.xml:161
 #, no-c-format
 msgid "Casting Behavior"
 msgstr "Comportement du transtypage"
 
 #. Tag: para
-#: reference_type.xml:46 reference_type.xml:85 reference_type.xml:161
+#: reference_type.xml:46 reference_type.xml:86 reference_type.xml:162
 #, no-c-format
 msgid ""
 "This section lists the automatic as well as explicit casts allowed for this "
@@ -168,39 +168,39 @@ msgstr ""
 "pour ce type de données"
 
 #. Tag: entry
-#: reference_type.xml:51 reference_type.xml:90 reference_type.xml:166
+#: reference_type.xml:51 reference_type.xml:91 reference_type.xml:167
 #, no-c-format
 msgid "Cast To"
 msgstr "Transtypage vers"
 
 #. Tag: entry
-#: reference_type.xml:52 reference_type.xml:91 reference_type.xml:167
+#: reference_type.xml:52 reference_type.xml:92 reference_type.xml:168
 #, no-c-format
 msgid "Behavior"
 msgstr "Comportement"
 
 #. Tag: entry
-#: reference_type.xml:55 reference_type.xml:94
+#: reference_type.xml:55 reference_type.xml:95
 #, no-c-format
 msgid "<entry>box</entry>"
 msgstr "<entry>box</entry>"
 
 #. Tag: entry
 #: reference_type.xml:56 reference_type.xml:60 reference_type.xml:64
-#: reference_type.xml:95 reference_type.xml:99 reference_type.xml:103
-#: reference_type.xml:107 reference_type.xml:111 reference_type.xml:115
+#: reference_type.xml:96 reference_type.xml:100 reference_type.xml:104
+#: reference_type.xml:108 reference_type.xml:112 reference_type.xml:116
 #, no-c-format
 msgid "automatic"
 msgstr "automatique"
 
 #. Tag: entry
-#: reference_type.xml:59 reference_type.xml:98
+#: reference_type.xml:59 reference_type.xml:99
 #, no-c-format
 msgid "<entry>box2d</entry>"
 msgstr "<entry>box2d</entry>"
 
 #. Tag: entry
-#: reference_type.xml:63 reference_type.xml:170
+#: reference_type.xml:63 reference_type.xml:171
 #, no-c-format
 msgid "<entry>geometry</entry>"
 msgstr "<entry>geometry</entry>"
@@ -219,52 +219,60 @@ msgstr "Type de données spatiales planaires"
 
 #. Tag: para
 #: reference_type.xml:80
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"geometry is a fundamental postgis spatial data type used to represent a "
+"geometry is a fundamental PostGIS spatial data type used to represent a "
 "feature in the Euclidean coordinate system."
 msgstr ""
 "Le type geometry est un type de données capital dans PostGIS, utilisé pour "
 "modéliser une entité dans un système de coordonées euclidien."
 
+#. Tag: para
+#: reference_type.xml:81
+#, no-c-format
+msgid ""
+"All spatial operations on geometry are using units of the Spatial Reference "
+"System the geomtry is in."
+msgstr ""
+
 #. Tag: entry
-#: reference_type.xml:102
+#: reference_type.xml:103
 #, no-c-format
 msgid "<entry>box3d</entry>"
 msgstr "<entry>box3d</entry>"
 
 #. Tag: entry
-#: reference_type.xml:106
+#: reference_type.xml:107
 #, no-c-format
 msgid "bytea"
 msgstr "bytea"
 
 #. Tag: entry
-#: reference_type.xml:110
+#: reference_type.xml:111
 #, no-c-format
 msgid "<entry>geography</entry>"
 msgstr "<entry>geography</entry>"
 
 #. Tag: entry
-#: reference_type.xml:114
+#: reference_type.xml:115
 #, no-c-format
 msgid "text"
 msgstr "text"
 
 #. Tag: title
-#: reference_type.xml:123 reference_type.xml:143 reference_type.xml:179
+#: reference_type.xml:124 reference_type.xml:144 reference_type.xml:180
 #, no-c-format
 msgid "See Also"
 msgstr "Voir aussi"
 
 #. Tag: refname
-#: reference_type.xml:130
+#: reference_type.xml:131
 #, no-c-format
 msgid "geometry_dump"
 msgstr "geometry_dump"
 
 #. Tag: refpurpose
-#: reference_type.xml:131
+#: reference_type.xml:132
 #, no-c-format
 msgid ""
 "A spatial datatype with two fields - geom (holding a geometry object) and "
@@ -276,7 +284,7 @@ msgstr ""
 "de la géométrie dans la collection.) "
 
 #. Tag: para
-#: reference_type.xml:137
+#: reference_type.xml:138
 #, no-c-format
 msgid ""
 "geometry_dump is a compound data type consisting of a geometry object "
@@ -295,19 +303,19 @@ msgstr ""
 "en ses parties élémentaires et les positions de ces parties."
 
 #. Tag: refname
-#: reference_type.xml:150
+#: reference_type.xml:151
 #, no-c-format
 msgid "<refname>geography</refname>"
 msgstr "<refname>geography</refname>"
 
 #. Tag: refpurpose
-#: reference_type.xml:151
+#: reference_type.xml:152
 #, no-c-format
 msgid "Ellipsoidal spatial data type."
 msgstr "Type spatial ellipsoïdal"
 
 #. Tag: para
-#: reference_type.xml:156
+#: reference_type.xml:157
 #, no-c-format
 msgid ""
 "geography is a spatial data type used to represent a feature in the round-"
@@ -317,13 +325,13 @@ msgstr ""
 "entité dans les coordonnées sphériques de la terre."
 
 #. Tag: entry
-#: reference_type.xml:171
+#: reference_type.xml:172
 #, no-c-format
 msgid "explicit"
 msgstr "explicite"
 
 #. Tag: para
-#: reference_type.xml:180
+#: reference_type.xml:181
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_Geography\"/>"
 msgstr ", <xref linkend=\"PostGIS_Geography\"/>"

@@ -1,20 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
-#
+# 
 # Translators:
+# Kwon.Yongchan <ruvyn@naver.com>, 2016
 # Kwon.Yongchan <ruvyn@naver.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
-"PO-Revision-Date: 2016-07-22 07:19+0000\n"
-"Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
-"language/ko_KR/)\n"
-"Language: ko_KR\n"
+"POT-Creation-Date: 2018-07-21 17:36+0000\n"
+"PO-Revision-Date: 2018-07-23 18:01+0000\n"
+"Last-Translator: Regina Obe\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/language/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: title
@@ -36,29 +36,22 @@ msgid ""
 "Returns a point interpolated along a line. Second argument is a float8 "
 "between 0 and 1 representing fraction of total length of linestring the "
 "point has to be located."
-msgstr ""
-"라인을 따라 보간된 포인트를 반환합니다. 두 번째 인수는 0과 1 사이의 Float8 데"
-"이터형으로 라인스트링의 전체 길이에서 포인트가 위치해야 하는 비율을 의미합니"
-"다."
+msgstr "라인을 따라 보간된 포인트를 반환합니다. 두 번째 인수는 0과 1 사이의 Float8 데이터형으로 라인스트링의 전체 길이에서 포인트가 위치해야 하는 비율을 의미합니다."
 
 #. Tag: funcprototype
 #: reference_lrs.xml:15
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>a_fraction</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>a_fraction</parameter></"
-"paramdef>"
+"<paramdef><type>geometry </type> "
+"<parameter>a_linestring</parameter></paramdef> <paramdef><type>float8 "
+"</type> <parameter>a_fraction</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef> <paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef> <paramdef><type>float8 </type> <parameter>a_fraction</parameter></paramdef>"
 
 #. Tag: title
-#: reference_lrs.xml:24 reference_lrs.xml:86 reference_lrs.xml:138
-#: reference_lrs.xml:205 reference_lrs.xml:263 reference_lrs.xml:314
-#: reference_lrs.xml:359 reference_lrs.xml:403
+#: reference_lrs.xml:24 reference_lrs.xml:93 reference_lrs.xml:156
+#: reference_lrs.xml:208 reference_lrs.xml:275 reference_lrs.xml:333
+#: reference_lrs.xml:387 reference_lrs.xml:432 reference_lrs.xml:476
 #, no-c-format
 msgid "Description"
 msgstr "설명"
@@ -70,20 +63,15 @@ msgid ""
 "Returns a point interpolated along a line. First argument must be a "
 "LINESTRING. Second argument is a float8 between 0 and 1 representing "
 "fraction of total linestring length the point has to be located."
-msgstr ""
-"라인을 따라 보간된 포인트를 반환합니다. 첫 번째 인수는 라인스트링이어야 합니"
-"다. 두 번째 인수는 0과 1 사이의 Float8 데이터형으로 라인스트링의 전체 길이에"
-"서 포인트가 위치해야 하는 비율을 의미합니다."
+msgstr "라인을 따라 보간된 포인트를 반환합니다. 첫 번째 인수는 라인스트링이어야 합니다. 두 번째 인수는 0과 1 사이의 Float8 데이터형으로 라인스트링의 전체 길이에서 포인트가 위치해야 하는 비율을 의미합니다."
 
 #. Tag: para
-#: reference_lrs.xml:30 reference_lrs.xml:149
+#: reference_lrs.xml:30 reference_lrs.xml:219
 #, no-c-format
 msgid ""
 "See <xref linkend=\"ST_LineLocatePoint\"/> for computing the line location "
 "nearest to a Point."
-msgstr ""
-"포인트에 가장 가까운 라인의 위치를 계산하는 방법에 대해서는 <xref linkend="
-"\"ST_LineLocatePoint\"/> 를 참조하십시오."
+msgstr "포인트에 가장 가까운 라인의 위치를 계산하는 방법에 대해서는 <xref linkend=\"ST_LineLocatePoint\"/> 를 참조하십시오."
 
 #. Tag: para
 #: reference_lrs.xml:34
@@ -91,36 +79,31 @@ msgstr ""
 msgid ""
 "Since release 1.1.1 this function also interpolates M and Z values (when "
 "present), while prior releases set them to 0.0."
-msgstr ""
-"1.1.1 배포판부터 이 함수는 M 및 Z값(이 있을 경우)도 보간합니다. 이전 배포판에"
-"서는 두 값을 0.0으로 고정시켰습니다."
+msgstr "1.1.1 배포판부터 이 함수는 M 및 Z값(이 있을 경우)도 보간합니다. 이전 배포판에서는 두 값을 0.0으로 고정시켰습니다."
 
 #. Tag: para
 #: reference_lrs.xml:38
 #, no-c-format
 msgid "Availability: 0.8.2, Z and M supported added in 1.1.1"
-msgstr ""
-"0.8.2 버전부터 사용할 수 있습니다. 1.1.1 버전에서 Z과 M 좌표를 지원합니다."
+msgstr "0.8.2 버전부터 사용할 수 있습니다. 1.1.1 버전에서 Z과 M 좌표를 지원합니다."
 
 #. Tag: para
 #: reference_lrs.xml:39
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Interpolate_Point."
-msgstr ""
-"변경 사항: 2.1.0 미만 버전, 즉 2.0.x 버전까지 이 함수의 명칭은 "
-"ST_Line_Interpolate_Point였습니다."
+msgstr "변경 사항: 2.1.0 미만 버전, 즉 2.0.x 버전까지 이 함수의 명칭은 ST_Line_Interpolate_Point였습니다."
 
 #. Tag: para
-#: reference_lrs.xml:40 reference_lrs.xml:160 reference_lrs.xml:322
-#: reference_lrs.xml:365 reference_lrs.xml:409
+#: reference_lrs.xml:40 reference_lrs.xml:109 reference_lrs.xml:230
+#: reference_lrs.xml:395 reference_lrs.xml:438 reference_lrs.xml:482
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: title
-#: reference_lrs.xml:45 reference_lrs.xml:103 reference_lrs.xml:164
-#: reference_lrs.xml:228 reference_lrs.xml:279 reference_lrs.xml:326
-#: reference_lrs.xml:369 reference_lrs.xml:413
+#: reference_lrs.xml:45 reference_lrs.xml:114 reference_lrs.xml:173
+#: reference_lrs.xml:234 reference_lrs.xml:298 reference_lrs.xml:352
+#: reference_lrs.xml:399 reference_lrs.xml:442 reference_lrs.xml:486
 #, no-c-format
 msgid "Examples"
 msgstr "예시"
@@ -137,19 +120,11 @@ msgstr "20% 위치 (0.20)에 있는 보간된 포인트를 가진 라인스트�
 msgid ""
 "--Return point 20% along 2d line\n"
 "SELECT ST_AsEWKT(ST_LineInterpolatePoint(the_line, 0.20))\n"
-"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(25 50, 100 125, 150 190)') "
-"as the_line) As foo;\n"
+"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(25 50, 100 125, 150 190)') as the_line) As foo;\n"
 "   st_asewkt\n"
 "----------------\n"
 " POINT(51.5974135047432 76.5974135047432)"
-msgstr ""
-"-- 2차원 라인을 따라 20% 위치에 있는 포인트를 반환합니다.\n"
-"SELECT ST_AsEWKT(ST_LineInterpolatePoint(the_line, 0.20))\n"
-"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(25 50, 100 125, 150 190)') "
-"as the_line) As foo;\n"
-"   st_asewkt\n"
-"----------------\n"
-" POINT(51.5974135047432 76.5974135047432)"
+msgstr "-- 2차원 라인을 따라 20% 위치에 있는 포인트를 반환합니다.\nSELECT ST_AsEWKT(ST_LineInterpolatePoint(the_line, 0.20))\n        FROM (SELECT ST_GeomFromEWKT('LINESTRING(25 50, 100 125, 150 190)') as the_line) As foo;\n   st_asewkt\n----------------\n POINT(51.5974135047432 76.5974135047432)"
 
 #. Tag: programlisting
 #: reference_lrs.xml:55
@@ -157,8 +132,7 @@ msgstr ""
 msgid ""
 "--Return point mid-way of 3d line\n"
 "SELECT ST_AsEWKT(ST_LineInterpolatePoint(the_line, 0.5))\n"
-"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6, 6 7 8)') as "
-"the_line) As foo;\n"
+"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6, 6 7 8)') as the_line) As foo;\n"
 "\n"
 "        st_asewkt\n"
 "--------------------\n"
@@ -166,37 +140,17 @@ msgid ""
 "\n"
 "\n"
 "--find closest point on a line to a point or other geometry\n"
-" SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, "
-"ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))\n"
-"FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As "
-"foo;\n"
+" SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))\n"
+"FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;\n"
 "   st_astext\n"
 "----------------\n"
 " POINT(3 4)"
-msgstr ""
-"-- 3차원 라인의 중간에 위치한 포인트를 반환합니다.\n"
-"SELECT ST_AsEWKT(ST_LineInterpolatePoint(the_line, 0.5))\n"
-"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6, 6 7 8)') as "
-"the_line) As foo;\n"
-"\n"
-"        st_asewkt\n"
-"--------------------\n"
-" POINT(3.5 4.5 5.5)\n"
-"\n"
-"\n"
-"-- 포인트 또는 다른 도형에 가장 가까운 라인 상의 포인트를 찾습니다.\n"
-" SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, "
-"ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))\n"
-"FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As "
-"foo;\n"
-"   st_astext\n"
-"----------------\n"
-" POINT(3 4)"
+msgstr "-- 3차원 라인의 중간에 위치한 포인트를 반환합니다.\nSELECT ST_AsEWKT(ST_LineInterpolatePoint(the_line, 0.5))\n        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6, 6 7 8)') as the_line) As foo;\n\n        st_asewkt\n--------------------\n POINT(3.5 4.5 5.5)\n\n\n-- 포인트 또는 다른 도형에 가장 가까운 라인 상의 포인트를 찾습니다.\n SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))\nFROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;\n   st_astext\n----------------\n POINT(3 4)"
 
 #. Tag: title
-#: reference_lrs.xml:60 reference_lrs.xml:110 reference_lrs.xml:178
-#: reference_lrs.xml:234 reference_lrs.xml:286 reference_lrs.xml:333
-#: reference_lrs.xml:375
+#: reference_lrs.xml:60 reference_lrs.xml:127 reference_lrs.xml:180
+#: reference_lrs.xml:248 reference_lrs.xml:304 reference_lrs.xml:359
+#: reference_lrs.xml:406 reference_lrs.xml:448
 #, no-c-format
 msgid "See Also"
 msgstr "참고"
@@ -206,92 +160,147 @@ msgstr "참고"
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Length\"/>, <xref "
-"linkend=\"ST_LineLocatePoint\"/>"
+"linkend=\"ST_LineInterpolatePoints\"/> <xref "
+"linkend=\"ST_LineLocatePoint\"/> O"
 msgstr ""
-", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Length\"/>, <xref "
-"linkend=\"ST_LineLocatePoint\"/>"
 
 #. Tag: refname
-#: reference_lrs.xml:68
+#: reference_lrs.xml:74
+#, no-c-format
+msgid "ST_LineInterpolatePoints"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_lrs.xml:76
+#, no-c-format
+msgid "Returns one or more points interpolated along a line."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_lrs.xml:83
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_LineInterpolatePoints</function></funcdef> "
+"<paramdef><type>geometry </type> "
+"<parameter>a_linestring</parameter></paramdef> <paramdef><type>float8 "
+"</type> <parameter>a_fraction</parameter></paramdef> <paramdef><type>boolean"
+" </type> <parameter>repeat</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_lrs.xml:95
+#, no-c-format
+msgid ""
+"Returns one or more points interpolated along a line. First argument must be"
+" a LINESTRING. Second argument is a float8 between 0 and 1 representing the "
+"spacing between the points as a fraction of total LineString length. If the "
+"third argument is false, at most one point will be constructed (the function"
+" will be equivalent to <xref linkend=\"ST_LineInterpolatePoint\"/>.)"
+msgstr ""
+
+#. Tag: para
+#: reference_lrs.xml:102
+#, no-c-format
+msgid ""
+"If the result has zero or one points, it will be returned as a POINT. If it "
+"has two or more points, it will be returned as a MULTIPOINT."
+msgstr ""
+
+#. Tag: para
+#: reference_lrs.xml:108
+#, no-c-format
+msgid "Availability: 2.5.0"
+msgstr ""
+
+#. Tag: para
+#: reference_lrs.xml:110 reference_lrs.xml:293 reference_lrs.xml:348
+#, no-c-format
+msgid "&M_support;"
+msgstr "&M_support;"
+
+#. Tag: para
+#: reference_lrs.xml:120
+#, no-c-format
+msgid "A linestring with the interpolated points every 20%"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_lrs.xml:123
+#, no-c-format
+msgid ""
+"--Return points each 20% along a 2D line\n"
+"SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)', 0.20))\n"
+"   st_astext\n"
+"----------------\n"
+" MULTIPOINT(51.5974135047432 76.5974135047432,78.1948270094864 103.194827009486,104.132163186446 130.37181214238,127.066081593223 160.18590607119,150 190)"
+msgstr ""
+
+#. Tag: refname
+#: reference_lrs.xml:138
 #, no-c-format
 msgid "ST_LineLocatePoint"
 msgstr "ST_LineLocatePoint"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:70
+#: reference_lrs.xml:140
 #, no-c-format
 msgid ""
 "Returns a float between 0 and 1 representing the location of the closest "
 "point on LineString to the given Point, as a fraction of total 2d line "
 "length."
-msgstr ""
-"입력 포인트에 가장 가까운 위치에 있는 라인스트링 상의 포인트를 나타내는 2차"
-"원 라인 전체 길이의 비율을 0에서 1 사이의 부동소수점 데이터형(float)으로 반환"
-"합니다."
+msgstr "입력 포인트에 가장 가까운 위치에 있는 라인스트링 상의 포인트를 나타내는 2차원 라인 전체 길이의 비율을 0에서 1 사이의 부동소수점 데이터형(float)으로 반환합니다."
 
 #. Tag: funcprototype
-#: reference_lrs.xml:77
+#: reference_lrs.xml:147
 #, no-c-format
 msgid ""
 "<funcdef>float8 <function>ST_LineLocatePoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>a_point</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_LineLocatePoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>a_point</parameter></"
-"paramdef>"
+"<paramdef><type>geometry </type> "
+"<parameter>a_linestring</parameter></paramdef> <paramdef><type>geometry "
+"</type> <parameter>a_point</parameter></paramdef>"
+msgstr "<funcdef>float8 <function>ST_LineLocatePoint</function></funcdef> <paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef> <paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:88
+#: reference_lrs.xml:158
 #, no-c-format
 msgid ""
 "Returns a float between 0 and 1 representing the location of the closest "
-"point on LineString to the given Point, as a fraction of total <link linkend="
-"\"ST_Length2D\">2d line</link> length."
-msgstr ""
-"입력 포인트에 가장 가까운 위치에 있는 라인스트링 상의 포인트를 나타내는 "
-"<link linkend=\"ST_Length2D\">2차원 라인</link> 전체 길이의 비율을 0에서 1 사"
-"이의 부동소수점 데이터형(float)으로 반환합니다."
+"point on LineString to the given Point, as a fraction of total <link "
+"linkend=\"ST_Length2D\">2d line</link> length."
+msgstr "입력 포인트에 가장 가까운 위치에 있는 라인스트링 상의 포인트를 나타내는 <link linkend=\"ST_Length2D\">2차원 라인</link> 전체 길이의 비율을 0에서 1 사이의 부동소수점 데이터형(float)으로 반환합니다."
 
 #. Tag: para
-#: reference_lrs.xml:92
+#: reference_lrs.xml:162
 #, no-c-format
 msgid ""
-"You can use the returned location to extract a Point (<xref linkend="
-"\"ST_LineInterpolatePoint\"/>) or a substring (<xref linkend="
-"\"ST_LineSubstring\"/>)."
-msgstr ""
-"반환된 위치를 이용해서 포인트(<xref linkend=\"ST_LineInterpolatePoint\"/>) 또"
-"는 부분 스트링(<xref linkend=\"ST_LineSubstring\"/>)을 추출할 수 있습니다."
+"You can use the returned location to extract a Point (<xref "
+"linkend=\"ST_LineInterpolatePoint\"/>) or a substring (<xref "
+"linkend=\"ST_LineSubstring\"/>)."
+msgstr "반환된 위치를 이용해서 포인트(<xref linkend=\"ST_LineInterpolatePoint\"/>) 또는 부분 스트링(<xref linkend=\"ST_LineSubstring\"/>)을 추출할 수 있습니다."
 
 #. Tag: para
-#: reference_lrs.xml:95
+#: reference_lrs.xml:165
 #, no-c-format
 msgid "This is useful for approximating numbers of addresses"
 msgstr "이 함수는 주소의 개수의 근사치를 구하는 데 유용합니다."
 
 #. Tag: para
-#: reference_lrs.xml:97
+#: reference_lrs.xml:167
 #, no-c-format
 msgid "Availability: 1.1.0"
 msgstr "1.1.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_lrs.xml:98
+#: reference_lrs.xml:168
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Locate_Point."
-msgstr ""
-"변경 사항: 2.1.0 미만 버전, 즉 2.0.x 버전까지 이 함수의 명칭은 "
-"ST_Line_Locate_Point였습니다."
+msgstr "변경 사항: 2.1.0 미만 버전, 즉 2.0.x 버전까지 이 함수의 명칭은 ST_Line_Locate_Point였습니다."
 
 #. Tag: programlisting
-#: reference_lrs.xml:105
+#: reference_lrs.xml:175
 #, no-c-format
 msgid ""
-"--Rough approximation of finding the street number of a point along the "
-"street\n"
+"--Rough approximation of finding the street number of a point along the street\n"
 "--Note the whole foo thing is just to generate dummy data that looks\n"
 "--like house centroids and street\n"
 "--We use ST_DWithin to exclude\n"
@@ -299,8 +308,7 @@ msgid ""
 "SELECT ST_AsText(house_loc) As as_text_house_loc,\n"
 "        startstreet_num +\n"
 "                CAST( (endstreet_num - startstreet_num)\n"
-"                        * ST_LineLocatePoint(street_line, house_loc) As "
-"integer) As street_num\n"
+"                        * ST_LineLocatePoint(street_line, house_loc) As integer) As street_num\n"
 "FROM\n"
 "(SELECT ST_GeomFromText('LINESTRING(1 2, 3 4)') As street_line,\n"
 "        ST_MakePoint(x*1.01,y*1.03) As house_loc, 10 As startstreet_num,\n"
@@ -316,166 +324,109 @@ msgid ""
 " POINT(3.03 4.12)  |         20\n"
 "\n"
 " --find closest point on a line to a point or other geometry\n"
-" SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, "
-"ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))\n"
-"FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As "
-"foo;\n"
+" SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))\n"
+"FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;\n"
 "   st_astext\n"
 "----------------\n"
 " POINT(3 4)"
-msgstr ""
-"-- 거리를 따라 있는 포인트의 번지수를 대충 어림짐작하기\n"
-"-- foo 전체가 집 중심점 및 거리처럼 보이는 가짜 데이터를 생성하기 위한 것이라"
-"는 점에 주의\n"
-"-- ST_DWithin을 이용해서 거리에서 너무 멀리 떨어진 집들을 제외\n"
-"SELECT ST_AsText(house_loc) As as_text_house_loc,\n"
-"        startstreet_num +\n"
-"                CAST( (endstreet_num - startstreet_num)\n"
-"                        * ST_LineLocatePoint(street_line, house_loc) As "
-"integer) As street_num\n"
-"FROM\n"
-"(SELECT ST_GeomFromText('LINESTRING(1 2, 3 4)') As street_line,\n"
-"        ST_MakePoint(x*1.01,y*1.03) As house_loc, 10 As startstreet_num,\n"
-"                20 As endstreet_num\n"
-"FROM generate_series(1,3) x CROSS JOIN generate_series(2,4) As y)\n"
-"As foo\n"
-"WHERE ST_DWithin(street_line, house_loc, 0.2);\n"
-"\n"
-" as_text_house_loc | street_num\n"
-"-------------------+------------\n"
-" POINT(1.01 2.06)  |         10\n"
-" POINT(2.02 3.09)  |         15\n"
-" POINT(3.03 4.12)  |         20\n"
-"\n"
-"-- 포인트 또는 다른 도형에 가장 가까운 라인 상의 포인트를 찾기\n"
-" SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, "
-"ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))\n"
-"FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As "
-"foo;\n"
-"   st_astext\n"
-"----------------\n"
-" POINT(3 4)"
+msgstr "-- 거리를 따라 있는 포인트의 번지수를 대충 어림짐작하기\n-- foo 전체가 집 중심점 및 거리처럼 보이는 가짜 데이터를 생성하기 위한 것이라는 점에 주의\n-- ST_DWithin을 이용해서 거리에서 너무 멀리 떨어진 집들을 제외\nSELECT ST_AsText(house_loc) As as_text_house_loc,\n        startstreet_num +\n                CAST( (endstreet_num - startstreet_num)\n                        * ST_LineLocatePoint(street_line, house_loc) As integer) As street_num\nFROM\n(SELECT ST_GeomFromText('LINESTRING(1 2, 3 4)') As street_line,\n        ST_MakePoint(x*1.01,y*1.03) As house_loc, 10 As startstreet_num,\n                20 As endstreet_num\nFROM generate_series(1,3) x CROSS JOIN generate_series(2,4) As y)\nAs foo\nWHERE ST_DWithin(street_line, house_loc, 0.2);\n\n as_text_house_loc | street_num\n-------------------+------------\n POINT(1.01 2.06)  |         10\n POINT(2.02 3.09)  |         15\n POINT(3.03 4.12)  |         20\n\n-- 포인트 또는 다른 도형에 가장 가까운 라인 상의 포인트를 찾기\n SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))\nFROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;\n   st_astext\n----------------\n POINT(3 4)"
 
 #. Tag: para
-#: reference_lrs.xml:112
+#: reference_lrs.xml:182
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
-">, <xref linkend=\"ST_LineSubstring\"/>"
-msgstr ""
-", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
-">, <xref linkend=\"ST_LineSubstring\"/>"
+", <xref linkend=\"ST_Length2D\"/>, <xref "
+"linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineSubstring\"/>"
+msgstr ", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineSubstring\"/>"
 
 #. Tag: refname
-#: reference_lrs.xml:118
+#: reference_lrs.xml:188
 #, no-c-format
 msgid "ST_LineSubstring"
 msgstr "ST_LineSubstring"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:120
+#: reference_lrs.xml:190
 #, no-c-format
 msgid ""
 "Return a linestring being a substring of the input one starting and ending "
 "at the given fractions of total 2d length. Second and third arguments are "
 "float8 values between 0 and 1."
-msgstr ""
-"입력 라인스트링의 전체 2차원 길이의 주어진 비율의 위치에서 시작해서 끝나는, "
-"입력 라인스트링의 부분 스트링(substring)인 라인스트링을 반환합니다. 두 번째 "
-"및 세 번째 인수는 0과 1 사이의 8바이트 부동소수점 데이터형(float8) 값입니다."
+msgstr "입력 라인스트링의 전체 2차원 길이의 주어진 비율의 위치에서 시작해서 끝나는, 입력 라인스트링의 부분 스트링(substring)인 라인스트링을 반환합니다. 두 번째 및 세 번째 인수는 0과 1 사이의 8바이트 부동소수점 데이터형(float8) 값입니다."
 
 #. Tag: funcprototype
-#: reference_lrs.xml:128
+#: reference_lrs.xml:198
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineSubstring</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>startfraction</"
-"parameter></paramdef> <paramdef><type>float8 </type> <parameter>endfraction</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_LineSubstring</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>startfraction</"
-"parameter></paramdef> <paramdef><type>float8 </type> <parameter>endfraction</"
-"parameter></paramdef>"
+"<paramdef><type>geometry </type> "
+"<parameter>a_linestring</parameter></paramdef> <paramdef><type>float8 "
+"</type> <parameter>startfraction</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>endfraction</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_LineSubstring</function></funcdef> <paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef> <paramdef><type>float8 </type> <parameter>startfraction</parameter></paramdef> <paramdef><type>float8 </type> <parameter>endfraction</parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:140
+#: reference_lrs.xml:210
 #, no-c-format
 msgid ""
 "Return a linestring being a substring of the input one starting and ending "
 "at the given fractions of total 2d length. Second and third arguments are "
-"float8 values between 0 and 1. This only works with LINESTRINGs. To use with "
-"contiguous MULTILINESTRINGs use in conjunction with <xref linkend="
-"\"ST_LineMerge\"/>."
-msgstr ""
-"입력 라인스트링의 전체 2차원 길이의 주어진 비율의 위치에서 시작해서 끝나는, "
-"입력 라인스트링의 부분 스트링(substring)인 라인스트링을 반환합니다. 두 번째 "
-"및 세 번째 인수는 0과 1 사이의 8바이트 부동소수점 데이터형(float8) 값입니다. "
-"이 함수는 라인스트링만 입력받습니다. 근접한 멀티라인스트링을 입력하려면 "
-"<xref linkend=\"ST_LineMerge\"/> 함수와 결합해서 이용하십시오."
+"float8 values between 0 and 1. This only works with LINESTRINGs. To use with"
+" contiguous MULTILINESTRINGs use in conjunction with <xref "
+"linkend=\"ST_LineMerge\"/>."
+msgstr "입력 라인스트링의 전체 2차원 길이의 주어진 비율의 위치에서 시작해서 끝나는, 입력 라인스트링의 부분 스트링(substring)인 라인스트링을 반환합니다. 두 번째 및 세 번째 인수는 0과 1 사이의 8바이트 부동소수점 데이터형(float8) 값입니다. 이 함수는 라인스트링만 입력받습니다. 근접한 멀티라인스트링을 입력하려면 <xref linkend=\"ST_LineMerge\"/> 함수와 결합해서 이용하십시오."
 
 #. Tag: para
-#: reference_lrs.xml:146
+#: reference_lrs.xml:216
 #, no-c-format
 msgid ""
-"If 'start' and 'end' have the same value this is equivalent to <xref linkend="
-"\"ST_LineInterpolatePoint\"/>."
-msgstr ""
-"'시작'과 '끝'이 동일한 값일 경우 이 함수는 <xref linkend="
-"\"ST_LineInterpolatePoint\"/> 함수와 같아집니다."
+"If 'start' and 'end' have the same value this is equivalent to <xref "
+"linkend=\"ST_LineInterpolatePoint\"/>."
+msgstr "'시작'과 '끝'이 동일한 값일 경우 이 함수는 <xref linkend=\"ST_LineInterpolatePoint\"/> 함수와 같아집니다."
 
 #. Tag: para
-#: reference_lrs.xml:153
+#: reference_lrs.xml:223
 #, no-c-format
 msgid ""
 "Since release 1.1.1 this function also interpolates M and Z values (when "
 "present), while prior releases set them to unspecified values."
-msgstr ""
-"1.1.1 배포판부터 이 함수는 M 및 Z값(이 있을 경우)도 보간합니다. 이전 배포판에"
-"서는 두 값을 설정하지 않았습니다."
+msgstr "1.1.1 배포판부터 이 함수는 M 및 Z값(이 있을 경우)도 보간합니다. 이전 배포판에서는 두 값을 설정하지 않았습니다."
 
 #. Tag: para
-#: reference_lrs.xml:158
+#: reference_lrs.xml:228
 #, no-c-format
 msgid "Availability: 1.1.0, Z and M supported added in 1.1.1"
 msgstr "1.1.0 버전부터 사용할 수 있습니다. 1.1.1 버전부터 Z 및 M을 지원합니다."
 
 #. Tag: para
-#: reference_lrs.xml:159
+#: reference_lrs.xml:229
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Substring."
-msgstr ""
-"변경 사항: 2.1.0 미만 버전, 즉 2.0.x 버전까지 이 함수의 명칭은 "
-"ST_Line_Substring이었습니다."
+msgstr "변경 사항: 2.1.0 미만 버전, 즉 2.0.x 버전까지 이 함수의 명칭은 ST_Line_Substring이었습니다."
 
 #. Tag: para
-#: reference_lrs.xml:170
+#: reference_lrs.xml:240
 #, no-c-format
 msgid "A linestring seen with 1/3 midrange overlaid (0.333, 0.666)"
 msgstr "중간 1/3 범위(0.333, 0.666)를 중첩해서 출력한 라인스트링"
 
 #. Tag: programlisting
-#: reference_lrs.xml:173
+#: reference_lrs.xml:243
 #, no-c-format
 msgid ""
 "--Return the approximate 1/3 mid-range part of a linestring\n"
-"SELECT ST_AsText(ST_Line_SubString(ST_GeomFromText('LINESTRING(25 50, 100 "
-"125, 150 190)'), 0.333, 0.666));\n"
+"SELECT ST_AsText(ST_Line_SubString(ST_GeomFromText('LINESTRING(25 50, 100 125, 150 190)'), 0.333, 0.666));\n"
 "\n"
 "                                                                                   st_astext\n"
 "------------------------------------------------------------------------------------------------\n"
-"LINESTRING(69.2846934853974 94.2846934853974,100 125,111.700356260683 "
-"140.210463138888)\n"
+"LINESTRING(69.2846934853974 94.2846934853974,100 125,111.700356260683 140.210463138888)\n"
 "\n"
 "--The below example simulates a while loop in\n"
 "--SQL using PostgreSQL generate_series() to cut all\n"
 "--linestrings in a table to 100 unit segments\n"
 "-- of which no segment is longer than 100 units\n"
 "-- units are measured in the SRID units of measurement\n"
-"-- It also assumes all geometries are LINESTRING or contiguous "
-"MULTILINESTRING\n"
+"-- It also assumes all geometries are LINESTRING or contiguous MULTILINESTRING\n"
 "--and no geometry is longer than 100 units*10000\n"
 "--for better performance you can reduce the 10000\n"
 "--to match max number of segments you expect\n"
@@ -493,154 +444,96 @@ msgid ""
 "  ) AS t\n"
 "CROSS JOIN generate_series(0,10000) AS n\n"
 "WHERE n*100.00/length &lt; 1;"
-msgstr ""
-"-- 라인스트링의 중간 1/3 범위 부분의 근사치를 반환합니다.\n"
-"SELECT ST_AsText(ST_Line_SubString(ST_GeomFromText('LINESTRING(25 50, 100 "
-"125, 150 190)'), 0.333, 0.666));\n"
-"\n"
-"                                                                                   st_astext\n"
-"------------------------------------------------------------------------------------------------\n"
-"LINESTRING(69.2846934853974 94.2846934853974,100 125,111.700356260683 "
-"140.210463138888)\n"
-"\n"
-"-- 다음 쿼리는 PostgreSQL generate_series()를 이용해서\n"
-"-- 테이블에 있는 모든 라인스트링을 100단위 구간으로 잘라내는\n"
-"-- SQL의 WHILE 루프 모의 예시입니다.\n"
-"-- 잘라낸 어떤 구간도 100단위를 넘지 않습니다.\n"
-"-- SRID 측정 단위로 단위를 측정합니다.\n"
-"-- 또 모든 도형을 라인스트링 또는 멀티라인스트링으로,\n"
-"-- 어떤 도형도 100단위x10,000 길이를 넘지 않는다고 가정합니다.\n"
-"-- 성능 향상을 위해 사용자가 기대하는 구간의 최대 개수에 맞춰\n"
-"-- 10,000이라는 숫자를 줄일 수 있습니다.\n"
-"\n"
-"SELECT field1, field2, ST_LineSubstring(the_geom, 100.00*n/length,\n"
-"  CASE\n"
-"        WHEN 100.00*(n+1) &lt; length THEN 100.00*(n+1)/length\n"
-"        ELSE 1\n"
-"  END) As the_geom\n"
-"FROM\n"
-"  (SELECT sometable.field1, sometable.field2,\n"
-"  ST_LineMerge(sometable.the_geom) AS the_geom,\n"
-"  ST_Length(sometable.the_geom) As length\n"
-"  FROM sometable\n"
-"  ) AS t\n"
-"CROSS JOIN generate_series(0,10000) AS n\n"
-"WHERE n*100.00/length &lt; 1;"
+msgstr "-- 라인스트링의 중간 1/3 범위 부분의 근사치를 반환합니다.\nSELECT ST_AsText(ST_Line_SubString(ST_GeomFromText('LINESTRING(25 50, 100 125, 150 190)'), 0.333, 0.666));\n\n                                                                                   st_astext\n------------------------------------------------------------------------------------------------\nLINESTRING(69.2846934853974 94.2846934853974,100 125,111.700356260683 140.210463138888)\n\n-- 다음 쿼리는 PostgreSQL generate_series()를 이용해서\n-- 테이블에 있는 모든 라인스트링을 100단위 구간으로 잘라내는\n-- SQL의 WHILE 루프 모의 예시입니다.\n-- 잘라낸 어떤 구간도 100단위를 넘지 않습니다.\n-- SRID 측정 단위로 단위를 측정합니다.\n-- 또 모든 도형을 라인스트링 또는 멀티라인스트링으로,\n-- 어떤 도형도 100단위x10,000 길이를 넘지 않는다고 가정합니다.\n-- 성능 향상을 위해 사용자가 기대하는 구간의 최대 개수에 맞춰\n-- 10,000이라는 숫자를 줄일 수 있습니다.\n\nSELECT field1, field2, ST_LineSubstring(the_geom, 100.00*n/length,\n  CASE\n        WHEN 100.00*(n+1) &lt; length THEN 100.00*(n+1)/length\n        ELSE 1\n  END) As the_geom\nFROM\n  (SELECT sometable.field1, sometable.field2,\n  ST_LineMerge(sometable.the_geom) AS the_geom,\n  ST_Length(sometable.the_geom) As length\n  FROM sometable\n  ) AS t\nCROSS JOIN generate_series(0,10000) AS n\nWHERE n*100.00/length &lt; 1;"
 
 #. Tag: para
-#: reference_lrs.xml:180
+#: reference_lrs.xml:250
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
-msgstr ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
+", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
+"linkend=\"ST_LineMerge\"/>"
+msgstr ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge\"/>"
 
 #. Tag: refname
-#: reference_lrs.xml:186
+#: reference_lrs.xml:256
 #, no-c-format
 msgid "ST_LocateAlong"
 msgstr "ST_LocateAlong"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:188
+#: reference_lrs.xml:258
 #, no-c-format
 msgid ""
 "<refpurpose>Return a derived geometry collection value with elements that "
-"match the specified measure. Polygonal elements are not supported.</"
-"refpurpose>"
-msgstr ""
-"<refpurpose>설정한 척도와 일치하는 요소들을 가진 파생 도형 집합의 값을 반환합"
-"니다. 폴리곤 구성 요소는 지원되지 않습니다.</refpurpose>"
+"match the specified measure. Polygonal elements are not "
+"supported.</refpurpose>"
+msgstr "<refpurpose>설정한 척도와 일치하는 요소들을 가진 파생 도형 집합의 값을 반환합니다. 폴리곤 구성 요소는 지원되지 않습니다.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_lrs.xml:195
+#: reference_lrs.xml:265
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LocateAlong</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>ageom_with_measure</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>a_measure</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_LocateAlong</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>ageom_with_measure</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>a_measure</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset</"
-"parameter></paramdef>"
+"<paramdef><type>geometry </type> "
+"<parameter>ageom_with_measure</parameter></paramdef> <paramdef><type>float8 "
+"</type> <parameter>a_measure</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>float8 </type> <parameter>offset</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_LocateAlong</function></funcdef> <paramdef><type>geometry </type> <parameter>ageom_with_measure</parameter></paramdef> <paramdef><type>float8 </type> <parameter>a_measure</parameter></paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset</parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:207
+#: reference_lrs.xml:277
 #, no-c-format
 msgid ""
 "<para>Return a derived geometry collection value with elements that match "
 "the specified measure. Polygonal elements are not supported.</para>"
-msgstr ""
-"<para>설정한 척도와 일치하는 요소들을 가진 파생 도형 집합의 값을 반환합니다. "
-"폴리곤 구성 요소는 지원되지 않습니다.</para>"
+msgstr "<para>설정한 척도와 일치하는 요소들을 가진 파생 도형 집합의 값을 반환합니다. 폴리곤 구성 요소는 지원되지 않습니다.</para>"
 
 #. Tag: para
-#: reference_lrs.xml:211
+#: reference_lrs.xml:281 reference_lrs.xml:338
 #, no-c-format
 msgid ""
 "If an offset is provided, the resultant will be offset to the left or right "
 "of the input line by the specified number of units. A positive offset will "
 "be to the left, and a negative one to the right."
-msgstr ""
-"오프셋을 설정할 경우, 그 결과 입력 라인에서 설정한 단위 개수만큼 왼쪽 또는 오"
-"른쪽에 오프셋 도형 집합을 출력할 것입니다. 양의 오프셋은 왼쪽, 음의 오프셋은 "
-"오른쪽으로 출력할 것입니다."
+msgstr "오프셋을 설정할 경우, 그 결과 입력 라인에서 설정한 단위 개수만큼 왼쪽 또는 오른쪽에 오프셋 도형 집합을 출력할 것입니다. 양의 오프셋은 왼쪽, 음의 오프셋은 오른쪽으로 출력할 것입니다."
 
 #. Tag: para
-#: reference_lrs.xml:216 reference_lrs.xml:269
+#: reference_lrs.xml:286 reference_lrs.xml:342
 #, no-c-format
 msgid ""
-"Semantic is specified by: ISO/IEC CD 13249-3:200x(E) - Text for Continuation "
-"CD Editing Meeting"
-msgstr ""
-"ISO/IEC CD 13249-3:200x(E) - 지속적인 텍스트를 위한 CD 편집 회의에서 해당 의"
-"미론을 설정합니다."
+"Semantic is specified by: ISO/IEC CD 13249-3:200x(E) - Text for Continuation"
+" CD Editing Meeting"
+msgstr "ISO/IEC CD 13249-3:200x(E) - 지속적인 텍스트를 위한 CD 편집 회의에서 해당 의미론을 설정합니다."
 
 #. Tag: para
-#: reference_lrs.xml:219
+#: reference_lrs.xml:289
 #, no-c-format
 msgid "Availability: 1.1.0 by old name ST_Locate_Along_Measure."
-msgstr ""
-"1.1.0 버전부터 예전 명칭인 ST_Locate_Along_Measure로 사용할 수 있습니다."
+msgstr "1.1.0 버전부터 예전 명칭인 ST_Locate_Along_Measure로 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_lrs.xml:220
+#: reference_lrs.xml:290
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 in prior versions this used to be called "
 "ST_Locate_Along_Measure. The old name has been deprecated and will be "
 "removed in the future but is still available."
-msgstr ""
-"변경 사항: 2.0.0 미만 버전에서는 ST_Locate_Along_Measure라는 명칭이었습니다. "
-"예전 명칭은 더 지원되지 않고 곧 삭제될 예정이지만, 아직은 사용할 수 있습니다."
+msgstr "변경 사항: 2.0.0 미만 버전에서는 ST_Locate_Along_Measure라는 명칭이었습니다. 예전 명칭은 더 지원되지 않고 곧 삭제될 예정이지만, 아직은 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_lrs.xml:221
+#: reference_lrs.xml:291
 #, no-c-format
 msgid "Use this function only for geometries with an M component"
 msgstr "M 구성 요소를 가진 도형에 대해서만 이 함수를 이용하십시오."
 
-#. Tag: para
-#: reference_lrs.xml:223 reference_lrs.xml:275
-#, no-c-format
-msgid "&M_support;"
-msgstr "&M_support;"
-
 #. Tag: programlisting
-#: reference_lrs.xml:229
+#: reference_lrs.xml:299
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(the_geom)\n"
 "                FROM\n"
 "                (SELECT ST_LocateAlong(\n"
-"                        ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 "
-"3),\n"
+"                        ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),\n"
 "                (1 2 3, 5 4 5))'),3) As the_geom) As foo;\n"
 "\n"
 "                                                 st_asewkt\n"
@@ -652,8 +545,7 @@ msgid ""
 "SELECT ST_AsText((ST_Dump(the_geom)).geom)\n"
 "        FROM\n"
 "        (SELECT ST_LocateAlong(\n"
-"                        ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 "
-"3),\n"
+"                        ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),\n"
 "        (1 2 3, 5 4 5))'),3) As the_geom) As foo;\n"
 "\n"
 "   st_asewkt\n"
@@ -661,113 +553,74 @@ msgid ""
 " POINTM(1 2 3)\n"
 " POINTM(9 4 3)\n"
 " POINTM(1 2 3)"
-msgstr ""
-"SELECT ST_AsText(the_geom)\n"
-"                FROM\n"
-"                (SELECT ST_LocateAlong(\n"
-"                        ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 "
-"3),\n"
-"                (1 2 3, 5 4 5))'),3) As the_geom) As foo;\n"
-"\n"
-"                                                 st_asewkt\n"
-"-----------------------------------------------------------\n"
-" MULTIPOINT M (1 2 3)\n"
-"\n"
-"-- 도형 집합은 다루기 어렵기 때문에,\n"
-"-- 더 쉽게 이해할 수 있도록 덤프를 받습니다.\n"
-"SELECT ST_AsText((ST_Dump(the_geom)).geom)\n"
-"        FROM\n"
-"        (SELECT ST_LocateAlong(\n"
-"                        ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 "
-"3),\n"
-"        (1 2 3, 5 4 5))'),3) As the_geom) As foo;\n"
-"\n"
-"   st_asewkt\n"
-"---------------\n"
-" POINTM(1 2 3)\n"
-" POINTM(9 4 3)\n"
-" POINTM(1 2 3)"
+msgstr "SELECT ST_AsText(the_geom)\n                FROM\n                (SELECT ST_LocateAlong(\n                        ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),\n                (1 2 3, 5 4 5))'),3) As the_geom) As foo;\n\n                                                 st_asewkt\n-----------------------------------------------------------\n MULTIPOINT M (1 2 3)\n\n-- 도형 집합은 다루기 어렵기 때문에,\n-- 더 쉽게 이해할 수 있도록 덤프를 받습니다.\nSELECT ST_AsText((ST_Dump(the_geom)).geom)\n        FROM\n        (SELECT ST_LocateAlong(\n                        ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),\n        (1 2 3, 5 4 5))'),3) As the_geom) As foo;\n\n   st_asewkt\n---------------\n POINTM(1 2 3)\n POINTM(9 4 3)\n POINTM(1 2 3)"
 
 #. Tag: para
-#: reference_lrs.xml:236
+#: reference_lrs.xml:306
 #, no-c-format
-msgid ", <xref linkend=\"ST_LocateBetween\"/>"
-msgstr ", <xref linkend=\"ST_LocateBetween\"/>"
+msgid ""
+", <xref linkend=\"ST_LocateBetween\"/>, <xref "
+"linkend=\"ST_LocateBetweenElevations\"/>"
+msgstr ""
 
 #. Tag: refname
-#: reference_lrs.xml:242
+#: reference_lrs.xml:312
 #, no-c-format
 msgid "ST_LocateBetween"
 msgstr "ST_LocateBetween"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:244
+#: reference_lrs.xml:314
 #, no-c-format
 msgid ""
-"<refpurpose>Return a derived geometry collection value with elements that "
-"match the specified range of measures inclusively. Polygonal elements are "
-"not supported.</refpurpose>"
+"Return a derived geometry collection value with elements that match the "
+"specified range of measures inclusively. Polygonal elements are not "
+"supported."
 msgstr ""
-"<refpurpose>설정한 척도의 범위를 계산에 넣어서 일치하는 요소들을 가진 파생 도"
-"형 집합의 값을 반환합니다. 폴리곤 구성 요소는 지원되지 않습니다.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_lrs.xml:251
+#: reference_lrs.xml:321
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LocateBetween</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>measure_start</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>measure_end</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_LocateBetween</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>measure_start</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>measure_end</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset</"
-"parameter></paramdef>"
+"<paramdef><type>float8 </type> "
+"<parameter>measure_start</parameter></paramdef> <paramdef><type>float8 "
+"</type> <parameter>measure_end</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>float8 </type> <parameter>offset</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_LocateBetween</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float8 </type> <parameter>measure_start</parameter></paramdef> <paramdef><type>float8 </type> <parameter>measure_end</parameter></paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset</parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:265
+#: reference_lrs.xml:335
 #, no-c-format
 msgid ""
-"<para>Return a derived geometry collection value with elements that match "
-"the specified range of measures inclusively. Polygonal elements are not "
-"supported.</para>"
+"Return a derived geometry collection with elements that match the specified "
+"range of measures inclusively. Polygonal elements are not supported."
 msgstr ""
-"<para>설정한 척도의 범위를 계산에 넣어서 일치하는 요소들을 가진 파생 도형 집"
-"합의 값을 반환합니다. 폴리곤 구성 요소는 지원되지 않습니다.</para>"
 
 #. Tag: para
-#: reference_lrs.xml:272
+#: reference_lrs.xml:345
 #, no-c-format
 msgid "Availability: 1.1.0 by old name ST_Locate_Between_Measures."
-msgstr ""
-"1.1.0 버전부터 예전 명칭인 ST_Locate_Between_Measures로 사용할 수 있습니다."
+msgstr "1.1.0 버전부터 예전 명칭인 ST_Locate_Between_Measures로 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_lrs.xml:273
+#: reference_lrs.xml:346
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 - in prior versions this used to be called "
 "ST_Locate_Between_Measures. The old name has been deprecated and will be "
 "removed in the future but is still available for backward compatibility."
-msgstr ""
-"변경 사항: 2.0.0 미만 버전에서는 ST_Locate_Between_Measures라는 명칭이었습니"
-"다. 예전 명칭은 더 지원되지 않고 곧 삭제될 예정이지만, 아직은 하위 호환성을 "
-"위해 사용할 수 있습니다."
+msgstr "변경 사항: 2.0.0 미만 버전에서는 ST_Locate_Between_Measures라는 명칭이었습니다. 예전 명칭은 더 지원되지 않고 곧 삭제될 예정이지만, 아직은 하위 호환성을 위해 사용할 수 있습니다."
 
 #. Tag: programlisting
-#: reference_lrs.xml:281
+#: reference_lrs.xml:354
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(the_geom)\n"
 "                FROM\n"
 "                (SELECT ST_LocateBetween(\n"
-"                        ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 2, 9 "
-"4 3),\n"
+"                        ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),\n"
 "                (1 2 3, 5 4 5))'),1.5, 3) As the_geom) As foo;\n"
 "\n"
 "                                                         st_asewkt\n"
@@ -779,276 +632,190 @@ msgid ""
 "SELECT ST_AsText((ST_Dump(the_geom)).geom)\n"
 "                FROM\n"
 "                (SELECT ST_LocateBetween(\n"
-"                        ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 2, 9 "
-"4 3),\n"
+"                        ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),\n"
 "                (1 2 3, 5 4 5))'),1.5, 3) As the_geom) As foo;\n"
 "\n"
 "                   st_asewkt\n"
 "--------------------------------\n"
 " LINESTRING M (1 2 3,3 4 2,9 4 3)\n"
 " POINT M (1 2 3)"
-msgstr ""
-"SELECT ST_AsText(the_geom)\n"
-"                FROM\n"
-"                (SELECT ST_LocateBetween(\n"
-"                        ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 2, 9 "
-"4 3),\n"
-"                (1 2 3, 5 4 5))'),1.5, 3) As the_geom) As foo;\n"
-"\n"
-"                                                         st_asewkt\n"
-"------------------------------------------------------------------------\n"
-" GEOMETRYCOLLECTION M (LINESTRING M (1 2 3,3 4 2,9 4 3),POINT M (1 2 3))\n"
-"\n"
-"-- 도형 집합은 다루기 어렵기 때문에,\n"
-"-- 더 쉽게 이해할 수 있도록 덤프를 받습니다.\n"
-"SELECT ST_AsText((ST_Dump(the_geom)).geom)\n"
-"                FROM\n"
-"                (SELECT ST_LocateBetween(\n"
-"                        ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 2, 9 "
-"4 3),\n"
-"                (1 2 3, 5 4 5))'),1.5, 3) As the_geom) As foo;\n"
-"\n"
-"                   st_asewkt\n"
-"--------------------------------\n"
-" LINESTRING M (1 2 3,3 4 2,9 4 3)\n"
-" POINT M (1 2 3)"
-
-#. Tag: para
-#: reference_lrs.xml:288
-#, no-c-format
-msgid ", <xref linkend=\"ST_LocateAlong\"/>"
-msgstr ", <xref linkend=\"ST_LocateAlong\"/>"
-
-#. Tag: refname
-#: reference_lrs.xml:294
-#, no-c-format
-msgid "ST_LocateBetweenElevations"
-msgstr "ST_LocateBetweenElevations"
-
-#. Tag: refpurpose
-#: reference_lrs.xml:296
-#, no-c-format
-msgid ""
-"Return a derived geometry (collection) value with elements that intersect "
-"the specified range of elevations inclusively. Only 3D, 4D LINESTRINGS and "
-"MULTILINESTRINGS are supported."
-msgstr ""
-"설정한 고도의 범위를 계산에 넣어서 교차하는 요소들을 가진 파생 도형(집합)의 "
-"값을 반환합니다. 3차원, 4차원 라인스트링과 멀티라인스트링만 지원합니다."
-
-#. Tag: funcprototype
-#: reference_lrs.xml:303
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom_mline</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>elevation_start</"
-"parameter></paramdef> <paramdef><type>float8 </type> "
-"<parameter>elevation_end</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom_mline</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>elevation_start</"
-"parameter></paramdef> <paramdef><type>float8 </type> "
-"<parameter>elevation_end</parameter></paramdef>"
-
-#. Tag: para
-#: reference_lrs.xml:316
-#, no-c-format
-msgid ""
-"Return a derived geometry (collection) value with elements that intersect "
-"the specified range of elevations inclusively. Only 3D, 3DM LINESTRINGS and "
-"MULTILINESTRINGS are supported."
-msgstr ""
-"설정한 고도의 범위를 계산에 넣어서 교차하는 요소들을 가진 파생 도형(집합)의 "
-"값을 반환합니다. 3차원, 4차원(3DM) 라인스트링과 멀티라인스트링만 지원합니다."
-
-#. Tag: para
-#: reference_lrs.xml:320
-#, no-c-format
-msgid "Availability: 1.4.0"
-msgstr "1.4.0 버전부터 사용할 수 있습니다."
-
-#. Tag: programlisting
-#: reference_lrs.xml:328
-#, no-c-format
-msgid ""
-"SELECT ST_AsEWKT(ST_LocateBetweenElevations(\n"
-"                        ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6)'),2,4)) As "
-"ewelev;\n"
-"                                                                   ewelev\n"
-"----------------------------------------------------------------\n"
-"        MULTILINESTRING((1 2 3,2 3 4))\n"
-"\n"
-"SELECT ST_AsEWKT(ST_LocateBetweenElevations(\n"
-"                        ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 "
-"9)'),6,9)) As ewelev;\n"
-"\n"
-"                                ewelev\n"
-"----------------------------------------------------------------\n"
-"GEOMETRYCOLLECTION(POINT(1 2 6),LINESTRING(6.1 7.1 6,7 8 9))\n"
-"\n"
-"--Geometry collections are difficult animals so dump them\n"
-"--to make them more digestable\n"
-"SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)\n"
-"                FROM\n"
-"                (SELECT ST_LocateBetweenElevations(\n"
-"                        ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 "
-"9)'),6,9) As the_geom) As foo;\n"
-"\n"
-"                   st_asewkt\n"
-"--------------------------------\n"
-"POINT(1 2 6)\n"
-"LINESTRING(6.1 7.1 6,7 8 9)"
-msgstr ""
-"SELECT ST_AsEWKT(ST_LocateBetweenElevations(\n"
-"                        ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6)'),2,4)) As "
-"ewelev;\n"
-"                                                                   ewelev\n"
-"----------------------------------------------------------------\n"
-"        MULTILINESTRING((1 2 3,2 3 4))\n"
-"\n"
-"SELECT ST_AsEWKT(ST_LocateBetweenElevations(\n"
-"                        ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 "
-"9)'),6,9)) As ewelev;\n"
-"\n"
-"                                ewelev\n"
-"----------------------------------------------------------------\n"
-"GEOMETRYCOLLECTION(POINT(1 2 6),LINESTRING(6.1 7.1 6,7 8 9))\n"
-"\n"
-"-- 도형 집합은 다루기 어렵기 때문에,\n"
-"-- 더 쉽게 이해할 수 있도록 덤프를 받습니다.\n"
-"SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)\n"
-"                FROM\n"
-"                (SELECT ST_LocateBetweenElevations(\n"
-"                        ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 "
-"9)'),6,9) As the_geom) As foo;\n"
-"\n"
-"                   st_asewkt\n"
-"--------------------------------\n"
-"POINT(1 2 6)\n"
-"LINESTRING(6.1 7.1 6,7 8 9)"
-
-#. Tag: refname
-#: reference_lrs.xml:342
-#, no-c-format
-msgid "ST_InterpolatePoint"
-msgstr "ST_InterpolatePoint"
-
-#. Tag: refpurpose
-#: reference_lrs.xml:344
-#, no-c-format
-msgid ""
-"<refpurpose>Return the value of the measure dimension of a geometry at the "
-"point closed to the provided point.</refpurpose>"
-msgstr ""
-"<refpurpose>입력 포인트에 가까운 포인트에서 도형의 척도 차원의 값을 반환합니"
-"다.</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_lrs.xml:349
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>point</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>point</parameter></paramdef>"
+msgstr "SELECT ST_AsText(the_geom)\n                FROM\n                (SELECT ST_LocateBetween(\n                        ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),\n                (1 2 3, 5 4 5))'),1.5, 3) As the_geom) As foo;\n\n                                                         st_asewkt\n------------------------------------------------------------------------\n GEOMETRYCOLLECTION M (LINESTRING M (1 2 3,3 4 2,9 4 3),POINT M (1 2 3))\n\n-- 도형 집합은 다루기 어렵기 때문에,\n-- 더 쉽게 이해할 수 있도록 덤프를 받습니다.\nSELECT ST_AsText((ST_Dump(the_geom)).geom)\n                FROM\n                (SELECT ST_LocateBetween(\n                        ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),\n                (1 2 3, 5 4 5))'),1.5, 3) As the_geom) As foo;\n\n                   st_asewkt\n--------------------------------\n LINESTRING M (1 2 3,3 4 2,9 4 3)\n POINT M (1 2 3)"
 
 #. Tag: para
 #: reference_lrs.xml:361
 #, no-c-format
 msgid ""
-"<para>Return the value of the measure dimension of a geometry at the point "
-"closed to the provided point.</para>"
+", <xref linkend=\"ST_LocateAlong\"/>, <xref "
+"linkend=\"ST_LocateBetweenElevations\"/>"
 msgstr ""
-"<para>입력 포인트에 가까운 포인트에서 도형의 척도 차원(M 차원)의 값을 반환합"
-"니다.</para>"
+
+#. Tag: refname
+#: reference_lrs.xml:367
+#, no-c-format
+msgid "ST_LocateBetweenElevations"
+msgstr "ST_LocateBetweenElevations"
+
+#. Tag: refpurpose
+#: reference_lrs.xml:369
+#, no-c-format
+msgid ""
+"Return a derived geometry (collection) value with elements that intersect "
+"the specified range of elevations inclusively. Only 3D, 4D LINESTRINGS and "
+"MULTILINESTRINGS are supported."
+msgstr "설정한 고도의 범위를 계산에 넣어서 교차하는 요소들을 가진 파생 도형(집합)의 값을 반환합니다. 3차원, 4차원 라인스트링과 멀티라인스트링만 지원합니다."
+
+#. Tag: funcprototype
+#: reference_lrs.xml:376
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef> "
+"<paramdef><type>geometry </type> "
+"<parameter>geom_mline</parameter></paramdef> <paramdef><type>float8 </type> "
+"<parameter>elevation_start</parameter></paramdef> <paramdef><type>float8 "
+"</type> <parameter>elevation_end</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef> <paramdef><type>geometry </type> <parameter>geom_mline</parameter></paramdef> <paramdef><type>float8 </type> <parameter>elevation_start</parameter></paramdef> <paramdef><type>float8 </type> <parameter>elevation_end</parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:363
+#: reference_lrs.xml:389
+#, no-c-format
+msgid ""
+"Return a derived geometry (collection) value with elements that intersect "
+"the specified range of elevations inclusively. Only 3D, 3DM LINESTRINGS and "
+"MULTILINESTRINGS are supported."
+msgstr "설정한 고도의 범위를 계산에 넣어서 교차하는 요소들을 가진 파생 도형(집합)의 값을 반환합니다. 3차원, 4차원(3DM) 라인스트링과 멀티라인스트링만 지원합니다."
+
+#. Tag: para
+#: reference_lrs.xml:393
+#, no-c-format
+msgid "Availability: 1.4.0"
+msgstr "1.4.0 버전부터 사용할 수 있습니다."
+
+#. Tag: programlisting
+#: reference_lrs.xml:401
+#, no-c-format
+msgid ""
+"SELECT ST_AsEWKT(ST_LocateBetweenElevations(\n"
+"                        ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6)'),2,4)) As ewelev;\n"
+"                                                                   ewelev\n"
+"----------------------------------------------------------------\n"
+"        MULTILINESTRING((1 2 3,2 3 4))\n"
+"\n"
+"SELECT ST_AsEWKT(ST_LocateBetweenElevations(\n"
+"                        ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 9)'),6,9)) As ewelev;\n"
+"\n"
+"                                ewelev\n"
+"----------------------------------------------------------------\n"
+"GEOMETRYCOLLECTION(POINT(1 2 6),LINESTRING(6.1 7.1 6,7 8 9))\n"
+"\n"
+"--Geometry collections are difficult animals so dump them\n"
+"--to make them more digestable\n"
+"SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)\n"
+"                FROM\n"
+"                (SELECT ST_LocateBetweenElevations(\n"
+"                        ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 9)'),6,9) As the_geom) As foo;\n"
+"\n"
+"                   st_asewkt\n"
+"--------------------------------\n"
+"POINT(1 2 6)\n"
+"LINESTRING(6.1 7.1 6,7 8 9)"
+msgstr "SELECT ST_AsEWKT(ST_LocateBetweenElevations(\n                        ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6)'),2,4)) As ewelev;\n                                                                   ewelev\n----------------------------------------------------------------\n        MULTILINESTRING((1 2 3,2 3 4))\n\nSELECT ST_AsEWKT(ST_LocateBetweenElevations(\n                        ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 9)'),6,9)) As ewelev;\n\n                                ewelev\n----------------------------------------------------------------\nGEOMETRYCOLLECTION(POINT(1 2 6),LINESTRING(6.1 7.1 6,7 8 9))\n\n-- 도형 집합은 다루기 어렵기 때문에,\n-- 더 쉽게 이해할 수 있도록 덤프를 받습니다.\nSELECT ST_AsEWKT((ST_Dump(the_geom)).geom)\n                FROM\n                (SELECT ST_LocateBetweenElevations(\n                        ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 9)'),6,9) As the_geom) As foo;\n\n                   st_asewkt\n--------------------------------\nPOINT(1 2 6)\nLINESTRING(6.1 7.1 6,7 8 9)"
+
+#. Tag: refname
+#: reference_lrs.xml:415
+#, no-c-format
+msgid "ST_InterpolatePoint"
+msgstr "ST_InterpolatePoint"
+
+#. Tag: refpurpose
+#: reference_lrs.xml:417
+#, no-c-format
+msgid ""
+"<refpurpose>Return the value of the measure dimension of a geometry at the "
+"point closed to the provided point.</refpurpose>"
+msgstr "<refpurpose>입력 포인트에 가까운 포인트에서 도형의 척도 차원의 값을 반환합니다.</refpurpose>"
+
+#. Tag: funcprototype
+#: reference_lrs.xml:422
+#, no-c-format
+msgid ""
+"<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>point</parameter></paramdef>"
+msgstr "<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef> <paramdef><type>geometry </type> <parameter>line</parameter></paramdef> <paramdef><type>geometry </type> <parameter>point</parameter></paramdef>"
+
+#. Tag: para
+#: reference_lrs.xml:434
+#, no-c-format
+msgid ""
+"<para>Return the value of the measure dimension of a geometry at the point "
+"closed to the provided point.</para>"
+msgstr "<para>입력 포인트에 가까운 포인트에서 도형의 척도 차원(M 차원)의 값을 반환합니다.</para>"
+
+#. Tag: para
+#: reference_lrs.xml:436
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "2.0.0 버전부터 사용할 수 있습니다."
 
 #. Tag: programlisting
-#: reference_lrs.xml:371
+#: reference_lrs.xml:444
 #, no-c-format
 msgid ""
 "SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');\n"
 " st_interpolatepoint\n"
 " ---------------------\n"
 "                                    10"
-msgstr ""
-"SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');\n"
-" st_interpolatepoint\n"
-" ---------------------\n"
-"                                    10"
+msgstr "SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');\n st_interpolatepoint\n ---------------------\n                                    10"
 
 #. Tag: para
-#: reference_lrs.xml:377
+#: reference_lrs.xml:450
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
-msgstr ""
-", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
+msgid ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
+msgstr ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refname
-#: reference_lrs.xml:385
+#: reference_lrs.xml:458
 #, no-c-format
 msgid "ST_AddMeasure"
 msgstr "ST_AddMeasure"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:387
+#: reference_lrs.xml:460
 #, no-c-format
 msgid ""
 "Return a derived geometry with measure elements linearly interpolated "
 "between the start and end points."
-msgstr ""
-"시작점과 종단점 사이의 선형적으로 보간된 척도 요소들을 가진 파생 도형을 반환"
-"합니다."
+msgstr "시작점과 종단점 사이의 선형적으로 보간된 척도 요소들을 가진 파생 도형을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_lrs.xml:392
+#: reference_lrs.xml:465
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_AddMeasure</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom_mline</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>measure_start</"
-"parameter></paramdef> <paramdef><type>float8 </type> <parameter>measure_end</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_AddMeasure</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom_mline</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>measure_start</"
-"parameter></paramdef> <paramdef><type>float8 </type> <parameter>measure_end</"
-"parameter></paramdef>"
+"<paramdef><type>geometry </type> "
+"<parameter>geom_mline</parameter></paramdef> <paramdef><type>float8 </type> "
+"<parameter>measure_start</parameter></paramdef> <paramdef><type>float8 "
+"</type> <parameter>measure_end</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_AddMeasure</function></funcdef> <paramdef><type>geometry </type> <parameter>geom_mline</parameter></paramdef> <paramdef><type>float8 </type> <parameter>measure_start</parameter></paramdef> <paramdef><type>float8 </type> <parameter>measure_end</parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:405
+#: reference_lrs.xml:478
 #, no-c-format
 msgid ""
 "Return a derived geometry with measure elements linearly interpolated "
 "between the start and end points. If the geometry has no measure dimension, "
 "one is added. If the geometry has a measure dimension, it is over-written "
 "with new values. Only LINESTRINGS and MULTILINESTRINGS are supported."
-msgstr ""
-"시작점과 종단점 사이의 선형적으로 보간된 척도 요소들을 가진 파생 도형을 반환"
-"합니다. 도형이 척도 차원을 가지고 있지 않을 경우, 척도 차원을 추가합니다. 도"
-"형이 척도 차원을 가지고 있을 경우, 새 값들로 덮어 씁니다. 라인스트링과 멀티라"
-"인스트링만 지원합니다."
+msgstr "시작점과 종단점 사이의 선형적으로 보간된 척도 요소들을 가진 파생 도형을 반환합니다. 도형이 척도 차원을 가지고 있지 않을 경우, 척도 차원을 추가합니다. 도형이 척도 차원을 가지고 있을 경우, 새 값들로 덮어 씁니다. 라인스트링과 멀티라인스트링만 지원합니다."
 
 #. Tag: para
-#: reference_lrs.xml:407
+#: reference_lrs.xml:480
 #, no-c-format
 msgid "Availability: 1.5.0"
 msgstr "1.5.0 버전부터 사용할 수 있습니다."
 
 #. Tag: programlisting
-#: reference_lrs.xml:415
+#: reference_lrs.xml:488
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_AddMeasure(\n"
@@ -1070,33 +837,8 @@ msgid ""
 " LINESTRINGM(1 0 10,2 0 20,4 0 40)\n"
 "\n"
 "SELECT ST_AsText(ST_AddMeasure(\n"
-"ST_GeomFromEWKT('MULTILINESTRINGM((1 0 4, 2 0 4, 4 0 4),(1 0 4, 2 0 4, 4 0 "
-"4))'),10,70)) As ewelev;\n"
+"ST_GeomFromEWKT('MULTILINESTRINGM((1 0 4, 2 0 4, 4 0 4),(1 0 4, 2 0 4, 4 0 4))'),10,70)) As ewelev;\n"
 "                             ewelev\n"
 "-----------------------------------------------------------------\n"
 " MULTILINESTRINGM((1 0 10,2 0 20,4 0 40),(1 0 40,2 0 50,4 0 70))"
-msgstr ""
-"SELECT ST_AsText(ST_AddMeasure(\n"
-"ST_GeomFromEWKT('LINESTRING(1 0, 2 0, 4 0)'),1,4)) As ewelev;\n"
-"           ewelev\n"
-"--------------------------------\n"
-" LINESTRINGM(1 0 1,2 0 2,4 0 4)\n"
-"\n"
-"SELECT ST_AsText(ST_AddMeasure(\n"
-"ST_GeomFromEWKT('LINESTRING(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;\n"
-"                 ewelev\n"
-"----------------------------------------\n"
-" LINESTRING(1 0 4 10,2 0 4 20,4 0 4 40)\n"
-"\n"
-"SELECT ST_AsText(ST_AddMeasure(\n"
-"ST_GeomFromEWKT('LINESTRINGM(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;\n"
-"                 ewelev\n"
-"----------------------------------------\n"
-" LINESTRINGM(1 0 10,2 0 20,4 0 40)\n"
-"\n"
-"SELECT ST_AsText(ST_AddMeasure(\n"
-"ST_GeomFromEWKT('MULTILINESTRINGM((1 0 4, 2 0 4, 4 0 4),(1 0 4, 2 0 4, 4 0 "
-"4))'),10,70)) As ewelev;\n"
-"                             ewelev\n"
-"-----------------------------------------------------------------\n"
-" MULTILINESTRINGM((1 0 10,2 0 20,4 0 40),(1 0 40,2 0 50,4 0 70))"
+msgstr "SELECT ST_AsText(ST_AddMeasure(\nST_GeomFromEWKT('LINESTRING(1 0, 2 0, 4 0)'),1,4)) As ewelev;\n           ewelev\n--------------------------------\n LINESTRINGM(1 0 1,2 0 2,4 0 4)\n\nSELECT ST_AsText(ST_AddMeasure(\nST_GeomFromEWKT('LINESTRING(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;\n                 ewelev\n----------------------------------------\n LINESTRING(1 0 4 10,2 0 4 20,4 0 4 40)\n\nSELECT ST_AsText(ST_AddMeasure(\nST_GeomFromEWKT('LINESTRINGM(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;\n                 ewelev\n----------------------------------------\n LINESTRINGM(1 0 10,2 0 20,4 0 40)\n\nSELECT ST_AsText(ST_AddMeasure(\nST_GeomFromEWKT('MULTILINESTRINGM((1 0 4, 2 0 4, 4 0 4),(1 0 4, 2 0 4, 4 0 4))'),10,70)) As ewelev;\n                             ewelev\n-----------------------------------------------------------------\n MULTILINESTRINGM((1 0 10,2 0 20,4 0 40),(1 0 40,2 0 50,4 0 70))"

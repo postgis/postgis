@@ -1,32 +1,28 @@
 # SOME DESCRIPTIVE TITLE.
-#
+# 
 # Translators:
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
-"PO-Revision-Date: 2016-01-20 02:15+0000\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
-"Language: ja\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2018-07-23 18:00+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: para
 #: reference_guc.xml:5
 #, no-c-format
 msgid ""
-"This section lists custom PostGIS Grand Unified Custom Variables(GUC). These "
-"can be set globally, by database, by session or by transaction. Best set at "
-"global or database level."
-msgstr ""
-"本節では、PostGIS GUC (Grand Unified Custom)変数の一覧を上げます。これらは、"
-"グローバル、データベースごと、セッションごと、またはトランザクションごとに設"
-"定できます。グローバルまたはデータベースごとの設定が最善です。"
+"This section lists custom PostGIS Grand Unified Custom Variables(GUC). These"
+" can be set globally, by database, by session or by transaction. Best set at"
+" global or database level."
+msgstr "本節では、PostGIS GUC (Grand Unified Custom)変数の一覧を上げます。これらは、グローバル、データベースごと、セッションごと、またはトランザクションごとに設定できます。グローバルまたはデータベースごとの設定が最善です。"
 
 #. Tag: title
 #: reference_guc.xml:8
@@ -46,9 +42,7 @@ msgstr "postgis.backend"
 msgid ""
 "The backend to service a function where GEOS and SFCGAL overlap. Options: "
 "geos or sfcgal. Defaults to geos."
-msgstr ""
-"GEOSとSFCGALで重複する関数を提供するバックエンドです。GEOSまたはSFCGALを選択"
-"します。デフォルトはGEOSです。"
+msgstr "GEOSとSFCGALで重複する関数を提供するバックエンドです。GEOSまたはSFCGALを選択します。デフォルトはGEOSです。"
 
 #. Tag: title
 #: reference_guc.xml:17 reference_guc.xml:45 reference_guc.xml:95
@@ -65,11 +59,7 @@ msgid ""
 "default <varname>geos</varname> backend is used for functions where both "
 "GEOS and SFCGAL have the same named function. This variable allows you to "
 "override and make sfcgal the backend to service the request."
-msgstr ""
-"このGUCはSFCGALサポートでPostGISをコンパイルした場合にのみ適切なものとなりま"
-"す。デフォルトでは、<varname>geos</varname>バックエンドはGEOSとSFCGALが同じ名"
-"前の関数を持つ関数で使われます。この変数によって、SFCGALをリクエストを提供す"
-"るバックエンドにすることができます。"
+msgstr "このGUCはSFCGALサポートでPostGISをコンパイルした場合にのみ適切なものとなります。デフォルトでは、<varname>geos</varname>バックエンドはGEOSとSFCGALが同じ名前の関数を持つ関数で使われます。この変数によって、SFCGALをリクエストを提供するバックエンドにすることができます。"
 
 #. Tag: para
 #: reference_guc.xml:19
@@ -127,9 +117,7 @@ msgstr "postgis.gdal_datapath"
 msgid ""
 "A configuration option to assign the value of GDAL's GDAL_DATA option. If "
 "not set, the environmentally set GDAL_DATA variable is used."
-msgstr ""
-"GDALのGDAL_DATAオプションの値を設定するためのコンフィギュレーションオプション"
-"です。設定しない場合には、GDAL_DATA環境変数が使われます。"
+msgstr "GDALのGDAL_DATAオプションの値を設定するためのコンフィギュレーションオプションです。設定しない場合には、GDAL_DATA環境変数が使われます。"
 
 #. Tag: para
 #: reference_guc.xml:46
@@ -138,10 +126,7 @@ msgid ""
 "A PostgreSQL GUC variable for setting the value of GDAL's GDAL_DATA option. "
 "The <varname>postgis.gdal_datapath</varname> value should be the complete "
 "physical path to GDAL's data files."
-msgstr ""
-"GDALのGDAL_DATAオプションの値の設定に使うPostgreSQL GUC変数です。"
-"<varname>postgis.gdal_datapath</varname>値は完全にGDALのデータファイルへの物"
-"理的なパスになるべきものです。"
+msgstr "GDALのGDAL_DATAオプションの値の設定に使うPostgreSQL GUC変数です。<varname>postgis.gdal_datapath</varname>値は完全にGDALのデータファイルへの物理的なパスになるべきものです。"
 
 #. Tag: para
 #: reference_guc.xml:49
@@ -150,11 +135,7 @@ msgid ""
 "This configuration option is of most use for Windows platforms where GDAL's "
 "data files path is not hard-coded. This option should also be set when "
 "GDAL's data files are not located in GDAL's expected path."
-msgstr ""
-"コンフィギュレーションオプションは、GDALのデータファイルパスがハードコーディ"
-"ングされていないWindowsプラットフォームのためにほとんど使われます。このオプ"
-"ションは、GDALのデータファイルがGDALの期待されているパスに無いときに設定しま"
-"す。"
+msgstr "コンフィギュレーションオプションは、GDALのデータファイルパスがハードコーディングされていないWindowsプラットフォームのためにほとんど使われます。このオプションは、GDALのデータファイルがGDALの期待されているパスに無いときに設定します。"
 
 #. Tag: para
 #: reference_guc.xml:54
@@ -162,9 +143,7 @@ msgstr ""
 msgid ""
 "This option can be set in PostgreSQL's configuration file postgresql.conf. "
 "It can also be set by connection or transaction."
-msgstr ""
-"このオプションは、PostgreSQLのコンフィギュレーションファイルpostgresql.confで"
-"設定できます。コネクションまたはトランザクションでも設定できます。"
+msgstr "このオプションは、PostgreSQLのコンフィギュレーションファイルpostgresql.confで設定できます。コネクションまたはトランザクションでも設定できます。"
 
 #. Tag: para
 #: reference_guc.xml:58 reference_guc.xml:141 reference_guc.xml:208
@@ -176,12 +155,10 @@ msgstr "Availability: 2.2.0"
 #: reference_guc.xml:61
 #, no-c-format
 msgid ""
-"Additional information about GDAL_DATA is available at GDAL's <ulink url="
-"\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
-"ulink>."
-msgstr ""
-"GDAL_DATAに関する追加情報報は、GDALの<ulink url=\"http://trac.osgeo.org/gdal/"
-"wiki/ConfigOptions\">Configuration Options</ulink>にあります。"
+"Additional information about GDAL_DATA is available at GDAL's <ulink "
+"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
+"Options</ulink>."
+msgstr "GDAL_DATAに関する追加情報報は、GDALの<ulink url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</ulink>にあります。"
 
 #. Tag: para
 #: reference_guc.xml:70
@@ -195,9 +172,7 @@ msgstr "<varname>postgis.gdal_datapath</varname>の設定とリセット。"
 msgid ""
 "SET postgis.gdal_datapath TO '/usr/local/share/gdal.hidden';\n"
 "SET postgis.gdal_datapath TO default;"
-msgstr ""
-"SET postgis.gdal_datapath TO '/usr/local/share/gdal.hidden';\n"
-"SET postgis.gdal_datapath TO default;"
+msgstr "SET postgis.gdal_datapath TO '/usr/local/share/gdal.hidden';\nSET postgis.gdal_datapath TO default;"
 
 #. Tag: para
 #: reference_guc.xml:74
@@ -211,9 +186,7 @@ msgstr "Windows上における特定のデータベース上で設定する場�
 msgid ""
 "ALTER DATABASE gisdb\n"
 "SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';"
-msgstr ""
-"ALTER DATABASE gisdb\n"
-"SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';"
+msgstr "ALTER DATABASE gisdb\nSET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';"
 
 #. Tag: para
 #: reference_guc.xml:80
@@ -233,9 +206,7 @@ msgstr "postgis.gdal_enabled_drivers"
 msgid ""
 "A configuration option to set the enabled GDAL drivers in the PostGIS "
 "environment. Affects the GDAL configuration variable GDAL_SKIP."
-msgstr ""
-"PostGIS環境でGDALドライバを有効にするコンフィギュレーションオプションです。"
-"GDALコンフィギュレーション変数GDAL_SKIPに影響を与えます。"
+msgstr "PostGIS環境でGDALドライバを有効にするコンフィギュレーションオプションです。GDALコンフィギュレーション変数GDAL_SKIPに影響を与えます。"
 
 #. Tag: para
 #: reference_guc.xml:96
@@ -245,11 +216,7 @@ msgid ""
 "environment. Affects the GDAL configuration variable GDAL_SKIP. This option "
 "can be set in PostgreSQL's configuration file: postgresql.conf. It can also "
 "be set by connection or transaction."
-msgstr ""
-"PostGIS環境でGDALドライバを有効にするコンフィギュレーションオプションです。"
-"GDALコンフィギュレーション変数GDAL_SKIPに影響を与えます。このオプションは、"
-"PostgreSQLのコンフィギュレーションファイルpostgresql.confで設定できます。コネ"
-"クションまたはトランザクションでも設定できます。"
+msgstr "PostGIS環境でGDALドライバを有効にするコンフィギュレーションオプションです。GDALコンフィギュレーション変数GDAL_SKIPに影響を与えます。このオプションは、PostgreSQLのコンフィギュレーションファイルpostgresql.confで設定できます。コネクションまたはトランザクションでも設定できます。"
 
 #. Tag: para
 #: reference_guc.xml:100
@@ -259,34 +226,26 @@ msgid ""
 "also be set by passing the environment variable "
 "<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> with the list of enabled "
 "drivers to the process starting PostgreSQL."
-msgstr ""
-"<varname>postgis.gdal_enabled_drivers</varname>の初期値は、PostgreSQL開始プロ"
-"セスに渡される、有効とするドライバの一覧からなる環境変数"
-"<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname>によって設定されます。"
+msgstr "<varname>postgis.gdal_enabled_drivers</varname>の初期値は、PostgreSQL開始プロセスに渡される、有効とするドライバの一覧からなる環境変数<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname>によって設定されます。"
 
 #. Tag: para
 #: reference_guc.xml:104
 #, no-c-format
 msgid ""
 "Enabled GDAL specified drivers can be specified by the driver's short-name "
-"or code. Driver short-names or codes can be found at <ulink url=\"http://www."
-"gdal.org/formats_list.html\">GDAL Raster Formats</ulink>. Multiple drivers "
-"can be specified by putting a space between each driver."
-msgstr ""
-"有効にするGDALドライバは、ドライバの短縮名またはコードで指定します。ドライバ"
-"の短縮名またはコードは<ulink url=\"http://www.gdal.org/formats_list.html"
-"\">GDAL Raster Formats</ulink>にあります。複数のドライバを指定するには、ドラ"
-"イバの間に一つの空白を置きます。"
+"or code. Driver short-names or codes can be found at <ulink "
+"url=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</ulink>. "
+"Multiple drivers can be specified by putting a space between each driver."
+msgstr "有効にするGDALドライバは、ドライバの短縮名またはコードで指定します。ドライバの短縮名またはコードは<ulink url=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</ulink>にあります。複数のドライバを指定するには、ドライバの間に一つの空白を置きます。"
 
 #. Tag: para
 #: reference_guc.xml:109
 #, no-c-format
 msgid ""
-"There are three special codes available for <varname>postgis."
-"gdal_enabled_drivers</varname>. The codes are case-sensitive."
-msgstr ""
-"<varname>postgis.gdal_enabled_drivers</varname>には三つの特別なコードがありま"
-"す。大文字小文字を区別します。"
+"There are three special codes available for "
+"<varname>postgis.gdal_enabled_drivers</varname>. The codes are case-"
+"sensitive."
+msgstr "<varname>postgis.gdal_enabled_drivers</varname>には三つの特別なコードがあります。大文字小文字を区別します。"
 
 #. Tag: para
 #: reference_guc.xml:114
@@ -295,10 +254,7 @@ msgid ""
 "<varname>DISABLE_ALL</varname> disables all GDAL drivers. If present, "
 "<varname>DISABLE_ALL</varname> overrides all other values in "
 "<varname>postgis.gdal_enabled_drivers</varname>."
-msgstr ""
-"<varname>DISABLE_ALL</varname> 全てのGDALドライバを無効にします。これが出現す"
-"ると、 <varname>postgis.gdal_enabled_drivers</varname>にある他の全ての値を上"
-"書きします。"
+msgstr "<varname>DISABLE_ALL</varname> 全てのGDALドライバを無効にします。これが出現すると、 <varname>postgis.gdal_enabled_drivers</varname>にある他の全ての値を上書きします。"
 
 #. Tag: para
 #: reference_guc.xml:117
@@ -312,9 +268,7 @@ msgstr "<varname>ENABLE_ALL</varname> 全てのGDALドライバを有効にし�
 msgid ""
 "<varname>VSICURL</varname> enables GDAL's <varname>/vsicurl/</varname> "
 "virtual file system."
-msgstr ""
-"<varname>VSICURL</varname> GDALの仮想ファイルシステム<varname>/vsicurl/</"
-"varname>を有効にします。"
+msgstr "<varname>VSICURL</varname> GDALの仮想ファイルシステム<varname>/vsicurl/</varname>を有効にします。"
 
 #. Tag: para
 #: reference_guc.xml:124
@@ -323,32 +277,24 @@ msgid ""
 "When <varname>postgis.gdal_enabled_drivers</varname> is set to DISABLE_ALL, "
 "attempts to use out-db rasters, ST_FromGDALRaster(), ST_AsGDALRaster(), "
 "ST_AsTIFF(), ST_AsJPEG() and ST_AsPNG() will result in error messages."
-msgstr ""
-"<varname>postgis.gdal_enabled_drivers</varname>がDISABLE_ALLにっていされる"
-"と、データベース外ラスタ, ST_FromGDALRaster(), ST_AsGDALRaster(), "
-"ST_AsTIFF(), ST_AsJPEG(), ST_AsPNG()を使おうとすると、エラーメッセージが返さ"
-"れます。"
+msgstr "<varname>postgis.gdal_enabled_drivers</varname>がDISABLE_ALLにっていされると、データベース外ラスタ, ST_FromGDALRaster(), ST_AsGDALRaster(), ST_AsTIFF(), ST_AsJPEG(), ST_AsPNG()を使おうとすると、エラーメッセージが返されます。"
 
 #. Tag: para
 #: reference_guc.xml:130
 #, no-c-format
 msgid ""
-"In the standard PostGIS installation, <varname>postgis.gdal_enabled_drivers</"
-"varname> is set to DISABLE_ALL."
-msgstr ""
-"標準的なPostGISのインストールでは、 <varname>postgis.gdal_enabled_drivers</"
-"varname>はDISALBE_ALLに設定されます。"
+"In the standard PostGIS installation, "
+"<varname>postgis.gdal_enabled_drivers</varname> is set to DISABLE_ALL."
+msgstr "標準的なPostGISのインストールでは、 <varname>postgis.gdal_enabled_drivers</varname>はDISALBE_ALLに設定されます。"
 
 #. Tag: para
 #: reference_guc.xml:136
 #, no-c-format
 msgid ""
-"Additional information about GDAL_SKIP is available at GDAL's <ulink url="
-"\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
-"ulink>."
-msgstr ""
-"GDAL_SKIPに関する追加情報は、GDALの<ulink url=\"http://trac.osgeo.org/gdal/"
-"wiki/ConfigOptions\">Configuration Options</ulink>にあります。"
+"Additional information about GDAL_SKIP is available at GDAL's <ulink "
+"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
+"Options</ulink>."
+msgstr "GDAL_SKIPに関する追加情報は、GDALの<ulink url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</ulink>にあります。"
 
 #. Tag: para
 #: reference_guc.xml:147
@@ -367,8 +313,7 @@ msgstr "データベースへの新規接続にバックエンドを設定しま
 #, no-c-format
 msgid ""
 "ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';"
-msgstr ""
-"ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';"
+msgstr "ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';"
 
 #. Tag: para
 #: reference_guc.xml:152
@@ -377,10 +322,7 @@ msgid ""
 "Sets default enabled drivers for all new connections to server. Requires "
 "super user access and PostgreSQL 9.4+. Also not that database, session, and "
 "user settings override this."
-msgstr ""
-"サーバへの全ての新規接続のための、有効なドライバのデフォルトを設定します。"
-"スーパーユーザ権限とPostgreSQL 9.4以上が必要です。データベース、セッション、"
-"ユーザ設定によって上書きされます。"
+msgstr "サーバへの全ての新規接続のための、有効なドライバのデフォルトを設定します。スーパーユーザ権限とPostgreSQL 9.4以上が必要です。データベース、セッション、ユーザ設定によって上書きされます。"
 
 #. Tag: programlisting
 #: reference_guc.xml:154
@@ -388,9 +330,7 @@ msgstr ""
 msgid ""
 "ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
 "SELECT pg_reload_conf();"
-msgstr ""
-"ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
-"SELECT pg_reload_conf();"
+msgstr "ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\nSELECT pg_reload_conf();"
 
 #. Tag: programlisting
 #: reference_guc.xml:156
@@ -398,9 +338,7 @@ msgstr ""
 msgid ""
 "SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
 "SET postgis.gdal_enabled_drivers = default;"
-msgstr ""
-"SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
-"SET postgis.gdal_enabled_drivers = default;"
+msgstr "SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\nSET postgis.gdal_enabled_drivers = default;"
 
 #. Tag: para
 #: reference_guc.xml:158
@@ -433,10 +371,7 @@ msgid ""
 ", <xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsTIFF\"/>, "
 "<xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsJPEG\"/>, <xref "
 "linkend=\"postgis_enable_outdb_rasters\"/>"
-msgstr ""
-", <xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsTIFF\"/>, "
-"<xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsJPEG\"/>, <xref "
-"linkend=\"postgis_enable_outdb_rasters\"/>"
+msgstr ", <xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsTIFF\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsJPEG\"/>, <xref linkend=\"postgis_enable_outdb_rasters\"/>"
 
 #. Tag: refname
 #: reference_guc.xml:180
@@ -447,23 +382,18 @@ msgstr "postgis.enable_outdb_rasters"
 #. Tag: refpurpose
 #: reference_guc.xml:181
 #, no-c-format
-msgid "A boolean configuration option to enable access to out-db raster bands."
-msgstr ""
-"データベース外ラスタのバンドにアクセスできるようにする、真偽型のコンフィギュ"
-"レーションオプション。"
+msgid ""
+"A boolean configuration option to enable access to out-db raster bands."
+msgstr "データベース外ラスタのバンドにアクセスできるようにする、真偽型のコンフィギュレーションオプション。"
 
 #. Tag: para
 #: reference_guc.xml:188
 #, no-c-format
 msgid ""
-"A boolean configuration option to enable access to out-db raster bands. This "
-"option can be set in PostgreSQL's configuration file: postgresql.conf. It "
+"A boolean configuration option to enable access to out-db raster bands. This"
+" option can be set in PostgreSQL's configuration file: postgresql.conf. It "
 "can also be set by connection or transaction."
-msgstr ""
-"データベース外ラスタのバンドにアクセスできるようにする、真偽型のコンフィギュ"
-"レーションオプションです。このオプションは、PostgreSQLのコンフィギュレーショ"
-"ンファイルpostgresql.confで設定できます。コネクションまたはトランザクションで"
-"も設定できます。"
+msgstr "データベース外ラスタのバンドにアクセスできるようにする、真偽型のコンフィギュレーションオプションです。このオプションは、PostgreSQLのコンフィギュレーションファイルpostgresql.confで設定できます。コネクションまたはトランザクションでも設定できます。"
 
 #. Tag: para
 #: reference_guc.xml:192
@@ -471,12 +401,9 @@ msgstr ""
 msgid ""
 "The initial value of <varname>postgis.enable_outdb_rasters</varname> may "
 "also be set by passing the environment variable "
-"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> with a non-zero value to the "
-"process starting PostgreSQL."
-msgstr ""
-"<varname>postgis.enable_outdb_rasters</varname>の初期値は、環境変数"
-"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname>が0でない値で、PostgreSQL開始"
-"プロセスに渡されることでで設定されます。"
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> with a non-zero value to the"
+" process starting PostgreSQL."
+msgstr "<varname>postgis.enable_outdb_rasters</varname>の初期値は、環境変数<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname>が0でない値で、PostgreSQL開始プロセスに渡されることでで設定されます。"
 
 #. Tag: para
 #: reference_guc.xml:197
@@ -485,20 +412,15 @@ msgid ""
 "Even if <varname>postgis.enable_outdb_rasters</varname> is True, the GUC "
 "<varname>postgis.enable_outdb_rasters</varname> determines the accessible "
 "raster formats."
-msgstr ""
-"<varname>postgis.enable_outdb_rasters</varname>がTrueであってでも、GUC "
-"<varname>postgis.enable_outdb_rasters</varname>は、アクセス可能なラスタ書式を"
-"判定します。"
+msgstr "<varname>postgis.enable_outdb_rasters</varname>がTrueであってでも、GUC <varname>postgis.enable_outdb_rasters</varname>は、アクセス可能なラスタ書式を判定します。"
 
 #. Tag: para
 #: reference_guc.xml:203
 #, no-c-format
 msgid ""
-"In the standard PostGIS installation, <varname>postgis.enable_outdb_rasters</"
-"varname> is set to False."
-msgstr ""
-"標準的なPostGISのインストールでは、<varname>postgis.enable_outdb_rasters</"
-"varname>はFALSEに設定されています。"
+"In the standard PostGIS installation, "
+"<varname>postgis.enable_outdb_rasters</varname> is set to False."
+msgstr "標準的なPostGISのインストールでは、<varname>postgis.enable_outdb_rasters</varname>はFALSEに設定されています。"
 
 #. Tag: para
 #: reference_guc.xml:214
@@ -514,8 +436,4 @@ msgid ""
 "SET postgis.enable_outdb_rasters = default;\n"
 "SET postgis.enable_outdb_rasters = True;\n"
 "SET postgis.enable_outdb_rasters = False;"
-msgstr ""
-"SET postgis.enable_outdb_rasters TO True;\n"
-"SET postgis.enable_outdb_rasters = default;\n"
-"SET postgis.enable_outdb_rasters = True;\n"
-"SET postgis.enable_outdb_rasters = False;"
+msgstr "SET postgis.enable_outdb_rasters TO True;\nSET postgis.enable_outdb_rasters = default;\nSET postgis.enable_outdb_rasters = True;\nSET postgis.enable_outdb_rasters = False;"
