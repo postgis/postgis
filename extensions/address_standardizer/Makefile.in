@@ -51,7 +51,7 @@ EXTRA_CLEAN += sql/*.sql
 
 
 DOCS = README.address_standardizer
-PG_CPPFLAGS = @CPPFLAGS@ -g -O0
+PG_CPPFLAGS = @CFLAGS@ @CPPFLAGS@
 
 SHLIB_LINK = @SHLIB_LINK@ -lpcre
 EXTRA_CLEAN = usps-st-city-name.txt mk-st-regexp mk-city-regex test_main
