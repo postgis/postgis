@@ -171,6 +171,11 @@ DROP FUNCTION IF EXISTS geometry_distance_box_nd(geometry,geometry); -- temporar
 
 DROP FUNCTION IF EXISTS _ST_DumpPoints( geometry, integer[]); -- removed 2.4.0, but really should have been removed 2.1.0 when ST_DumpPoints got reimpmented in C
 
+-- Temporary clean-up while we wait to return these to action in dev
+DROP FUNCTION IF EXISTS _ST_DistanceRectTree(g1 geometry, g2 geometry);
+DROP FUNCTION IF EXISTS _ST_DistanceRectTreeCached(g1 geometry, g2 geometry);
+
+
 -- pgis_abs type was increased from 8 bytes in 2.1 to 16 bytes in 2.2
 -- See #3460
 UPDATE pg_type SET typlen=16 WHERE typname='pgis_abs' AND typlen=8;
