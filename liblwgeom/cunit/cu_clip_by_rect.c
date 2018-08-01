@@ -64,6 +64,15 @@ static void test_lwgeom_clip_by_rect(void)
 	//tmp = lwgeom_to_ewkt(out); printf("%s\n", tmp); lwfree(tmp);
 	CU_ASSERT(lwgeom_is_empty(out));
 	lwgeom_free(out); lwgeom_free(in);
+
+	/* Invalid polygon (lineal self-intersection) */
+	wkt = "POLYGON((0 0, 10 10, 0 10, 10 0, 0 0))";
+	in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
+	out = lwgeom_clip_by_rect(in, 2, 2, 8, 8);
+	tmp = lwgeom_to_ewkt(out);
+	printf("%s\n", tmp);
+	CU_ASSERT_STRING_EQUAL("MULTIPOLYGON(((2 2,5 5,8 2,2 2)),((5 5,2 8,8 8,5 5)))", tmp);
+	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
 }
 
 /*
