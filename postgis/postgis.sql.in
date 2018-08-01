@@ -1312,16 +1312,17 @@ CREATE OR REPLACE FUNCTION ST_Angle(pt1 geometry, pt2 geometry, pt3 geometry, pt
 	AS 'MODULE_PATHNAME', 'LWGEOM_angle'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 2.5.0
-CREATE OR REPLACE FUNCTION _ST_DistanceRectTree(g1 geometry, g2 geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME', 'ST_DistanceRectTree'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+-- Availability: Future
+-- CREATE OR REPLACE FUNCTION _ST_DistanceRectTree(g1 geometry, g2 geometry)
+--	RETURNS float8
+--	AS 'MODULE_PATHNAME', 'ST_DistanceRectTree'
+--	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
-CREATE OR REPLACE FUNCTION _ST_DistanceRectTreeCached(g1 geometry, g2 geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME', 'ST_DistanceRectTreeCached'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+-- Availability: Future
+-- CREATE OR REPLACE FUNCTION _ST_DistanceRectTreeCached(g1 geometry, g2 geometry)
+--	RETURNS float8
+--	AS 'MODULE_PATHNAME', 'ST_DistanceRectTreeCached'
+--	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 ------------------------------------------------------------------------
 -- MISC
