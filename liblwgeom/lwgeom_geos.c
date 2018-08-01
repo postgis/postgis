@@ -858,35 +858,31 @@ LWGEOM *
 lwgeom_clip_by_rect(const LWGEOM *geom1, double x1, double y1, double x2, double y2)
 {
 	LWGEOM *result;
-	LWGEOM *tmp;
+	GEOSGeometry *g1, *g3;
+	int is3d;
 
-	/* This lwgeom_intersection should be a call to GEOSClipByRect:
-	 * g3 = GEOSClipByRect(g1, x1, y1, x2, y2);
-	 * Unfortunately as of GEOS 3.7 it chokes on practical inputs.
-	 * GEOS ticket: https://trac.osgeo.org/geos/ticket/865
-	 */
+	/* A.Intersection(Empty) == Empty */
+	if ( lwgeom_is_empty(geom1) )
+		return lwgeom_clone_deep(geom1);
 
-	LWGEOM *envelope = (LWGEOM *)lwpoly_construct_envelope(geom1->srid, x1, y1, x2, y2);
-	result = lwgeom_intersection(geom1, envelope);
-	lwgeom_free(envelope);
+	is3d = FLAGS_GET_Z(geom1->flags);
 
-	if (!result) return NULL;
+	initGEOS(lwnotice, lwgeom_geos_error);
 
-	/* clipping should not produce lower dimension objects */
-	if (
-	    /* input has exact dimensionality, isn't a generic collection */
-	    geom1->type != COLLECTIONTYPE &&
-	    /* output may have different things inside */
-	    result->type == COLLECTIONTYPE)
-	{
-		tmp = lwcollection_as_lwgeom(lwcollection_extract(lwgeom_as_lwcollection(result), lwgeom_dimension(geom1) + 1));
-		lwfree(result);
-		result = tmp;
-		if (!result) return NULL;
-	}
+	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX)))
+		GEOS_FAIL();
 
-	/* clean up stray points on geometry boundary */
-	lwgeom_simplify_in_place(result, 0.0, LW_TRUE);
+	if (!(g3 = GEOSClipByRect(g1, x1, y1, x2, y2)))
+		GEOS_FREE_AND_FAIL(g1);
+
+	GEOS_FREE(g1);
+	result = GEOS2LWGEOM(g3, is3d);
+	GEOS_FREE(g3);
+
+	if (!result)
+		GEOS_FAIL();
+
+	result->srid = geom1->srid;
 
 	return result;
 }
