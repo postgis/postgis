@@ -192,32 +192,19 @@ TESTS += \
 	clean \
 	relate_bnr
 
+# GEOS-3.4 adds:
+# ST_DelaunayTriangles
+TESTS += \
+	delaunaytriangles
 
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 34),1)
-	# GEOS-3.4 adds:
-	# ST_DelaunayTriangles
-	TESTS += \
-		delaunaytriangles
-endif
 
 
 ifeq ($(INTERRUPTTESTS),yes)
 	# Allow CI servers to configure --with-interrupt-tests
 	TESTS += \
-  	interrupt
-
-ifeq ($(shell expr $(GEOS_NUMERIC_VERSION) ">=" 30403),1)
-	TESTS += \
-		interrupt_relate
-endif
-
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 34),1)
-	# GEOS-3.4 adds:
-	# ST_DelaunayTriangles
-	TESTS += \
+		interrupt \
+		interrupt_relate \
 		interrupt_buffer
-endif
-
 endif
 
 
