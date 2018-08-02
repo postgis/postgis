@@ -1181,9 +1181,6 @@ if test "x$with_topology" != "xno"; then
 
     TOPOLOGY="topology"
     AC_MSG_RESULT([TOPOLOGY: Topology support requested])
-	if test "$GEOS_NUMERIC_VERSION" -lt 30302; then
-		AC_MSG_ERROR([Topology requires GEOS version >= 3.3.2. Use --without-topology or install a newer GEOS.])
-	fi
 else
     AC_MSG_RESULT([TOPOLOGY: Topology support disabled])
 fi

@@ -18,7 +18,6 @@
 
 static void test_lwgeom_delaunay_triangulation(void)
 {
-#if POSTGIS_GEOS_VERSION >= 34
 	LWGEOM *in, *tmp, *out;
 	char *wkt, *exp_wkt;
 
@@ -42,8 +41,6 @@ static void test_lwgeom_delaunay_triangulation(void)
 	}
 	CU_ASSERT_STRING_EQUAL(wkt, exp_wkt);
 	lwfree(wkt);
-
-#endif /* POSTGIS_GEOS_VERSION >= 34 */
 }
 
 static void test_lwgeom_voronoi_diagram(void)
