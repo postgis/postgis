@@ -614,12 +614,27 @@ static void parse_values(mvt_agg_context *ctx)
 {
 	uint32_t n_keys = ctx->keys_hash_i;
 	uint32_t *tags = palloc(n_keys * 2 * sizeof(*tags));
-	bool isnull;
-	uint32_t i, k;
+	uint32_t i;
 	TupleDesc tupdesc = get_tuple_desc(ctx);
 	uint32_t natts = (uint32_t) tupdesc->natts;
-	ctx->row_columns = 0;
+
+	HeapTupleData tuple;
+	Datum *values;
+	bool *nulls;
+
 	POSTGIS_DEBUG(2, "parse_values called");
+	ctx->row_columns = 0;
+
+	/* Build a temporary HeapTuple control structure */
+	tuple.t_len = HeapTupleHeaderGetDatumLength(ctx->row);
+	ItemPointerSetInvalid(&(tuple.t_self));
+	tuple.t_tableOid = InvalidOid;
+	tuple.t_data = ctx->row;
+
+	/* We use heap_deform_tuple as it costs only O(N) vs O(N^2) of GetAttributeByNum */
+	values = (Datum *) palloc(natts * sizeof(Datum));
+	nulls = (bool *)  palloc(natts * sizeof(bool));
+	heap_deform_tuple(&tuple, tupdesc, values, nulls);
 
 	POSTGIS_DEBUGF(3, "parse_values natts: %d", natts);
 
@@ -627,10 +642,17 @@ static void parse_values(mvt_agg_context *ctx)
 	{
 		char *key;
 		Oid typoid;
-		Datum datum;
+		uint32_t k;
+		Datum datum = values[i];
 
 		if (i == ctx->geom_index)
 			continue;
+
+		if (nulls[i])
+		{
+			POSTGIS_DEBUG(3, "parse_values isnull detected");
+			continue;
+		}
 
 #if POSTGIS_PGSQL_VERSION < 110
 		key = tupdesc->attrs[i]->attname.data;
@@ -639,13 +661,8 @@ static void parse_values(mvt_agg_context *ctx)
 		key = tupdesc->attrs[i].attname.data;
 		typoid = getBaseType(tupdesc->attrs[i].atttypid);
 #endif
-		datum = GetAttributeByNum(ctx->row, i+1, &isnull);
 		k = get_key_index(ctx, key);
-		if (isnull)
-		{
-			POSTGIS_DEBUG(3, "parse_values isnull detected");
-			continue;
-		}
+
 #if POSTGIS_PGSQL_VERSION >= 94
 		if (k == UINT32_MAX && typoid != JSONBOID)
 			elog(ERROR, "parse_values: unexpectedly could not find parsed key name '%s'", key);
@@ -655,7 +672,7 @@ static void parse_values(mvt_agg_context *ctx)
 			continue;
 		}
 #else
-		if (k == -1)
+		if (k == UINT32_MAX)
 			elog(ERROR, "parse_values: unexpectedly could not find parsed key name '%s'", key);
 #endif
 
@@ -693,6 +710,8 @@ static void parse_values(mvt_agg_context *ctx)
 	}
 
 	ReleaseTupleDesc(tupdesc);
+	pfree(values);
+	pfree(nulls);
 
 	ctx->feature->n_tags = ctx->row_columns * 2;
 	ctx->feature->tags = tags;
