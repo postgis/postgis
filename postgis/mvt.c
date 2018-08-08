@@ -295,14 +295,18 @@ static TupleDesc get_tuple_desc(mvt_agg_context *ctx)
 	return tupdesc;
 }
 
-static uint32_t get_key_index(mvt_agg_context *ctx, char *name)
+static uint32_t get_key_index_with_size(mvt_agg_context *ctx, const char *name, size_t size)
 {
 	struct mvt_kv_key *kv;
-	size_t size = strlen(name);
 	HASH_FIND(hh, ctx->keys_hash, name, size, kv);
 	if (!kv)
 		return UINT32_MAX;
 	return kv->id;
+}
+
+static uint32_t get_key_index(mvt_agg_context *ctx, char *name)
+{
+	return get_key_index_with_size(ctx, name, strlen(name));
 }
 
 static uint32_t add_key(mvt_agg_context *ctx, char *name)
@@ -486,11 +490,10 @@ static void encode_values(mvt_agg_context *ctx)
 	MVT_PARSE_INT_VALUE(value); \
 }
 
-static void add_value_as_string(mvt_agg_context *ctx,
-	char *value, uint32_t *tags, uint32_t k)
+static void add_value_as_string_with_size(mvt_agg_context *ctx,
+	char *value, size_t size, uint32_t *tags, uint32_t k)
 {
 	struct mvt_kv_string_value *kv;
-	size_t size = strlen(value);
 	POSTGIS_DEBUG(2, "add_value_as_string called");
 	HASH_FIND(hh, ctx->string_values_hash, value, size, kv);
 	if (!kv)
@@ -506,6 +509,12 @@ static void add_value_as_string(mvt_agg_context *ctx,
 	}
 	tags[ctx->row_columns*2] = k;
 	tags[ctx->row_columns*2+1] = kv->id;
+}
+
+static void add_value_as_string(mvt_agg_context *ctx,
+	char *value, uint32_t *tags, uint32_t k)
+{
+	return add_value_as_string_with_size(ctx, value, strlen(value), tags, k);
 }
 
 static void parse_datum_as_string(mvt_agg_context *ctx, Oid typoid,
@@ -542,15 +551,17 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 
 		if (r == WJB_KEY && v.type != jbvNull)
 		{
-			char *key;
-			key = palloc(v.val.string.len + 1 * sizeof(char));
-			memcpy(key, v.val.string.val, v.val.string.len);
-			key[v.val.string.len] = '\0';
 
-			k = get_key_index(ctx, key);
+			k = get_key_index_with_size(ctx, v.val.string.val, v.val.string.len);
 			if (k == UINT32_MAX)
 			{
+				char *key;
 				uint32_t newSize = ctx->keys_hash_i + 1;
+
+				key = palloc(v.val.string.len + 1);
+				memcpy(key, v.val.string.val, v.val.string.len);
+				key[v.val.string.len] = '\0';
+
 				tags = repalloc(tags, newSize * 2 * sizeof(*tags));
 				k = add_key(ctx, key);
 			}
@@ -560,7 +571,7 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 			if (v.type == jbvString)
 			{
 				char *value;
-				value = palloc(v.val.string.len + 1 * sizeof(char));
+				value = palloc(v.val.string.len + 1);
 				memcpy(value, v.val.string.val, v.val.string.len);
 				value[v.val.string.len] = '\0';
 				add_value_as_string(ctx, value, tags, k);
