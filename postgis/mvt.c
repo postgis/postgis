@@ -451,8 +451,8 @@ static void encode_values(mvt_agg_context *ctx)
 			kv->valuefield = value; \
 			HASH_ADD(hh, ctx->hash, valuefield, size, kv); \
 		} \
-		tags[ctx->c*2] = k; \
-		tags[ctx->c*2+1] = kv->id; \
+		tags[ctx->row_columns*2] = k; \
+		tags[ctx->row_columns*2+1] = kv->id; \
 	} \
 }
 
@@ -504,8 +504,8 @@ static void add_value_as_string(mvt_agg_context *ctx,
 		HASH_ADD_KEYPTR(hh, ctx->string_values_hash, kv->string_value,
 			size, kv);
 	}
-	tags[ctx->c*2] = k;
-	tags[ctx->c*2+1] = kv->id;
+	tags[ctx->row_columns*2] = k;
+	tags[ctx->row_columns*2+1] = kv->id;
 }
 
 static void parse_datum_as_string(mvt_agg_context *ctx, Oid typoid,
@@ -564,13 +564,13 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 				memcpy(value, v.val.string.val, v.val.string.len);
 				value[v.val.string.len] = '\0';
 				add_value_as_string(ctx, value, tags, k);
-				ctx->c++;
+				ctx->row_columns++;
 			}
 			else if (v.type == jbvBool)
 			{
 				MVT_PARSE_VALUE(v.val.boolean, mvt_kv_bool_value,
 					bool_values_hash, bool_value, sizeof(protobuf_c_boolean));
-				ctx->c++;
+				ctx->row_columns++;
 			}
 			else if (v.type == jbvNumeric)
 			{
@@ -590,7 +590,7 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 				{
 					MVT_PARSE_INT_VALUE(l);
 				}
-				ctx->c++;
+				ctx->row_columns++;
 			}
 		}
 	}
@@ -607,7 +607,7 @@ static void parse_values(mvt_agg_context *ctx)
 	uint32_t i, k;
 	TupleDesc tupdesc = get_tuple_desc(ctx);
 	uint32_t natts = (uint32_t) tupdesc->natts;
-	ctx->c = 0;
+	ctx->row_columns = 0;
 	POSTGIS_DEBUG(2, "parse_values called");
 
 	POSTGIS_DEBUGF(3, "parse_values natts: %d", natts);
@@ -678,12 +678,12 @@ static void parse_values(mvt_agg_context *ctx)
 			parse_datum_as_string(ctx, typoid, datum, tags, k);
 			break;
 		}
-		ctx->c++;
+		ctx->row_columns++;
 	}
 
 	ReleaseTupleDesc(tupdesc);
 
-	ctx->feature->n_tags = ctx->c * 2;
+	ctx->feature->n_tags = ctx->row_columns * 2;
 	ctx->feature->tags = tags;
 
 	POSTGIS_DEBUGF(3, "parse_values n_tags %zd", ctx->feature->n_tags);

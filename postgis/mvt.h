@@ -66,7 +66,7 @@ typedef struct mvt_agg_context
 	struct mvt_kv_bool_value *bool_values_hash;
 	uint32_t values_hash_i;
 	uint32_t keys_hash_i;
-	uint32_t c;
+	uint32_t row_columns;
 } mvt_agg_context;
 
 /* Prototypes */
