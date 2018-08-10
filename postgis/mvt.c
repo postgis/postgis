@@ -304,11 +304,6 @@ static uint32_t get_key_index_with_size(mvt_agg_context *ctx, const char *name, 
 	return kv->id;
 }
 
-static uint32_t get_key_index(mvt_agg_context *ctx, char *name)
-{
-	return get_key_index_with_size(ctx, name, strlen(name));
-}
-
 static uint32_t add_key(mvt_agg_context *ctx, char *name)
 {
 	struct mvt_kv_key *kv;
@@ -322,27 +317,38 @@ static uint32_t add_key(mvt_agg_context *ctx, char *name)
 
 static void parse_column_keys(mvt_agg_context *ctx)
 {
-	TupleDesc tupdesc = get_tuple_desc(ctx);
-	uint32_t natts = (uint32_t) tupdesc->natts;
-	uint32_t i;
+	uint32_t i, natts;
 	bool geom_found = false;
-	char *key;
+
 	POSTGIS_DEBUG(2, "parse_column_keys called");
+
+	ctx->column_cache.tupdesc = get_tuple_desc(ctx);
+	natts = ctx->column_cache.tupdesc->natts;
+
+	ctx->column_cache.column_keys_index = palloc(sizeof(uint32_t) * natts);
+	ctx->column_cache.column_oid = palloc(sizeof(uint32_t) * natts);
+	ctx->column_cache.values = palloc(sizeof(Datum) * natts);
+	ctx->column_cache.nulls = palloc(sizeof(bool) * natts);
 
 	for (i = 0; i < natts; i++)
 	{
 #if POSTGIS_PGSQL_VERSION < 110
-		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
-		char *tkey = tupdesc->attrs[i]->attname.data;
+		Oid typoid = getBaseType(ctx->column_cache.tupdesc->attrs[i]->atttypid);
+		char *tkey = ctx->column_cache.tupdesc->attrs[i]->attname.data;
 #else
-		Oid typoid = getBaseType(tupdesc->attrs[i].atttypid);
-		char *tkey = tupdesc->attrs[i].attname.data;
+		Oid typoid = getBaseType(ctx->column_cache.tupdesc->attrs[i].atttypid);
+		char *tkey = ctx->column_cache.tupdesc->attrs[i].attname.data;
 #endif
+
+		ctx->column_cache.column_oid[i] = typoid;
 #if POSTGIS_PGSQL_VERSION >= 94
 		if (typoid == JSONBOID)
+		{
+			ctx->column_cache.column_keys_index[i] = UINT32_MAX;
 			continue;
+		}
 #endif
-		key = pstrdup(tkey);
+
 		if (ctx->geom_name == NULL)
 		{
 			if (!geom_found && typoid == TypenameGetTypid("geometry"))
@@ -354,18 +360,19 @@ static void parse_column_keys(mvt_agg_context *ctx)
 		}
 		else
 		{
-			if (!geom_found && strcmp(key, ctx->geom_name) == 0)
+			if (!geom_found && strcmp(tkey, ctx->geom_name) == 0)
 			{
 				ctx->geom_index = i;
 				geom_found = true;
 				continue;
 			}
 		}
-		add_key(ctx, key);
+
+		ctx->column_cache.column_keys_index[i] = add_key(ctx, pstrdup(tkey));
 	}
+
 	if (!geom_found)
 		elog(ERROR, "parse_column_keys: no geometry column found");
-	ReleaseTupleDesc(tupdesc);
 }
 
 static void encode_keys(mvt_agg_context *ctx)
@@ -393,7 +400,8 @@ static VectorTile__Tile__Value *create_value()
 	POSTGIS_DEBUG(2, "MVT_CREATE_VALUES called"); \
 	{ \
 		struct kvtype *kv; \
-		for (kv = ctx->hash; kv != NULL; kv=kv->hh.next) { \
+		for (kv = ctx->hash; kv != NULL; kv=kv->hh.next) \
+		{ \
 			VectorTile__Tile__Value *value = create_value(); \
 			value->hasfield = 1; \
 			value->valuefield = kv->valuefield; \
@@ -437,6 +445,14 @@ static void encode_values(mvt_agg_context *ctx)
 	HASH_CLEAR(hh, ctx->uint_values_hash);
 	HASH_CLEAR(hh, ctx->sint_values_hash);
 	HASH_CLEAR(hh, ctx->bool_values_hash);
+
+	pfree(ctx->column_cache.column_keys_index);
+	pfree(ctx->column_cache.column_oid);
+	pfree(ctx->column_cache.values);
+	pfree(ctx->column_cache.nulls);
+	ReleaseTupleDesc(ctx->column_cache.tupdesc);
+	memset(&ctx->column_cache, 0, sizeof(ctx->column_cache));
+
 }
 
 #define MVT_PARSE_VALUE(value, kvtype, hash, valuefield, size) \
@@ -615,12 +631,10 @@ static void parse_values(mvt_agg_context *ctx)
 	uint32_t n_keys = ctx->keys_hash_i;
 	uint32_t *tags = palloc(n_keys * 2 * sizeof(*tags));
 	uint32_t i;
-	TupleDesc tupdesc = get_tuple_desc(ctx);
-	uint32_t natts = (uint32_t) tupdesc->natts;
+	mvt_column_cache cc = ctx->column_cache;
+	uint32_t natts = (uint32_t) cc.tupdesc->natts;
 
 	HeapTupleData tuple;
-	Datum *values;
-	bool *nulls;
 
 	POSTGIS_DEBUG(2, "parse_values called");
 	ctx->row_columns = 0;
@@ -632,9 +646,7 @@ static void parse_values(mvt_agg_context *ctx)
 	tuple.t_data = ctx->row;
 
 	/* We use heap_deform_tuple as it costs only O(N) vs O(N^2) of GetAttributeByNum */
-	values = (Datum *) palloc(natts * sizeof(Datum));
-	nulls = (bool *)  palloc(natts * sizeof(bool));
-	heap_deform_tuple(&tuple, tupdesc, values, nulls);
+	heap_deform_tuple(&tuple, cc.tupdesc, cc.values, cc.nulls);
 
 	POSTGIS_DEBUGF(3, "parse_values natts: %d", natts);
 
@@ -643,25 +655,24 @@ static void parse_values(mvt_agg_context *ctx)
 		char *key;
 		Oid typoid;
 		uint32_t k;
-		Datum datum = values[i];
+		Datum datum = cc.values[i];
 
 		if (i == ctx->geom_index)
 			continue;
 
-		if (nulls[i])
+		if (cc.nulls[i])
 		{
 			POSTGIS_DEBUG(3, "parse_values isnull detected");
 			continue;
 		}
 
 #if POSTGIS_PGSQL_VERSION < 110
-		key = tupdesc->attrs[i]->attname.data;
-		typoid = getBaseType(tupdesc->attrs[i]->atttypid);
+		key = cc.tupdesc->attrs[i]->attname.data;
 #else
-		key = tupdesc->attrs[i].attname.data;
-		typoid = getBaseType(tupdesc->attrs[i].atttypid);
+		key = cc.tupdesc->attrs[i].attname.data;
 #endif
-		k = get_key_index(ctx, key);
+		k = cc.column_keys_index[i];
+		typoid = cc.column_oid[i];
 
 #if POSTGIS_PGSQL_VERSION >= 94
 		if (k == UINT32_MAX && typoid != JSONBOID)
@@ -709,9 +720,6 @@ static void parse_values(mvt_agg_context *ctx)
 		ctx->row_columns++;
 	}
 
-	ReleaseTupleDesc(tupdesc);
-	pfree(values);
-	pfree(nulls);
 
 	ctx->feature->n_tags = ctx->row_columns * 2;
 	ctx->feature->tags = tags;
@@ -886,6 +894,8 @@ void mvt_agg_init_context(mvt_agg_context *ctx)
 	ctx->bool_values_hash = NULL;
 	ctx->values_hash_i = 0;
 	ctx->keys_hash_i = 0;
+
+	memset(&ctx->column_cache, 0, sizeof(ctx->column_cache));
 
 	layer = palloc(sizeof(*layer));
 	vector_tile__tile__layer__init(layer);
