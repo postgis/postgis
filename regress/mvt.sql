@@ -343,6 +343,48 @@ FROM (
 	) AS geom
 ) AS q;
 
+-- Strings and text
+SELECT 'TA11', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (
+	SELECT 'AbcDfg'::varchar AS cstring,
+	       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed nulla augue. Pellentesque ut vulputate ex. Nunc et odio placerat, lacinia lectus sed, fermentum sapien. Sed massa velit, ullamcorper et est quis, congue rhoncus orci. Suspendisse in ante varius, convallis enim ut, fermentum amet.'::text as ctext,
+	       ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+) AS q;
+
+
+-- Check null attributes
+SELECT 'TA12', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (
+	SELECT 1::int AS c1, NULL::double precision AS c2, ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+	UNION
+	SELECT NULL AS c1, 2.0 AS c2, ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+) AS q;
+
+SELECT 'TA13', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (
+	SELECT 1::int AS c1, NULL::double precision AS c2, ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+	UNION
+	SELECT 5 AS c1, 2.0 AS c2, null AS geom
+) AS q;
+
+-- Extra geometry as parameter (casted as string)
+SELECT 'TA14', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM
+(
+	SELECT geom, St_Expand(geom, 10) as other_geom FROM
+	(
+		SELECT 'SRID=3857;MULTILINESTRING((105209.784484008 5267849.91657293,102374.204885822 5266414.05020624,99717.9874419115 5267379.35282178,90157.5689699989 5266091.78724987,86186.0622890498 5271349.34154337,78713.0972659854 5272871.78773217,76281.8581230672 5277951.00736649,81783.372341432 5289800.59747023))'::geometry as geom
+	) _sq
+) AS q;
+
+-- Numeric: Currently being casted as strings
+SELECT 'TA15', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM
+(
+	SELECT 1::numeric AS c1, '12.232389283223239'::numeric AS c2,
+	       '1' AS cstring, ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+			ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+) AS q;
+
 -- default values tests
 SELECT 'D1', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1, 'abcd'::text AS c2,
 	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
