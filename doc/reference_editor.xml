@@ -805,7 +805,7 @@ GEOMETRYCOLLECTION(
 
 			<para>Availability: 1.1.0</para>
 			<note><para>requires GEOS &gt;= 2.1.0</para></note>
-			<warning><para>Will strip the M dimension.</para></note>
+			<warning><para>Will strip the M dimension.</para></warning>
 		</refsection>
 
 		<refsection>
