@@ -805,6 +805,7 @@ GEOMETRYCOLLECTION(
 
 			<para>Availability: 1.1.0</para>
 			<note><para>requires GEOS &gt;= 2.1.0</para></note>
+			<warning><para>Will strip the M dimension.</para></note>
 		</refsection>
 
 		<refsection>
@@ -827,6 +828,16 @@ ST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45.2 -33.
 st_astext
 ----------------
 MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
+
+-- example with Z dimension
+SELECT ST_AsText(ST_LineMerge(
+ST_GeomFromText('MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 6), (-29 -27 12,-30 -29.7 5), (-45 -33 1,-46 -32 11))')
+		)
+);
+st_astext
+--------------------------------------------------------------------------------------------------
+LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11)
+(1 row)
 			</programlisting>
 		</refsection>
 		<refsection>
