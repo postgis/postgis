@@ -1,3 +1,8 @@
+PostGIS 2.5.0rc1
+2018/XX/XX
+New since PostGIS 2.5.0beta2
+  - #4146, Fix compilation error against Postgres 12 (Raúl Marín).
+
 PostGIS 2.5.0beta2
 2018/08/11
 New since PostGIS 2.5.0beta1
