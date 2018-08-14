@@ -51,7 +51,7 @@ BRIN_OBJ= brin_2d.o brin_nd.o brin_common.o
 endif
 
 ifeq (@HAVE_SPGIST@,yes)
-SPGIST_OBJ= gserialized_spgist_2d.o gserialized_spgist_3d.o
+SPGIST_OBJ= gserialized_spgist_2d.o gserialized_spgist_3d.o gserialized_spgist_nd.o
 endif
 
 ifeq (@HAVE_PROTOBUF@,yes)

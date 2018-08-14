@@ -824,6 +824,48 @@ CREATE OPERATOR &&& (
 	JOIN = gserialized_gist_joinsel_nd
 );
 
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_contains_nd(geometry, geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME' ,'gserialized_contains'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OPERATOR ~~ (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contains_nd,
+	COMMUTATOR = '@@',
+	RESTRICT = gserialized_gist_sel_nd,
+	JOIN = gserialized_gist_joinsel_nd
+);
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_within_nd(geometry, geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME' ,'gserialized_within'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OPERATOR @@ (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_within_nd,
+	COMMUTATOR = '~~',
+	RESTRICT = gserialized_gist_sel_nd,
+	JOIN = gserialized_gist_joinsel_nd
+);
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_same_nd(geometry, geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME' ,'gserialized_same'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 2.5.0
+CREATE OPERATOR ~~= (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_same_nd,
+	COMMUTATOR = '~~=',
+	RESTRICT = gserialized_gist_sel_nd,
+	JOIN = gserialized_gist_joinsel_nd
+);
+
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION geometry_distance_centroid_nd(geometry,geometry)
 	RETURNS float8
@@ -866,9 +908,12 @@ CREATE OPERATOR CLASS gist_geometry_ops_nd
 	FOR TYPE geometry USING GIST AS
 	STORAGE 	gidx,
 	OPERATOR        3        &&&	,
---	OPERATOR        6        ~=	,
---	OPERATOR        7        ~	,
---	OPERATOR        8        @	,
+	-- Availability: 2.5.0
+	OPERATOR        6        ~~=	,
+	-- Availability: 2.5.0
+	OPERATOR        7        ~~	,
+	-- Availability: 2.5.0
+	OPERATOR        8        @@	,
 	-- Availability: 2.2.0
 	OPERATOR        13       <<->> FOR ORDER BY pg_catalog.float_ops,
 #if POSTGIS_PGSQL_VERSION >= 95

@@ -100,6 +100,10 @@ Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS);
 ** ND Operator prototypes
 */
 Datum gserialized_overlaps(PG_FUNCTION_ARGS);
+#if POSTGIS_PGSQL_VERSION > 94
+Datum gserialized_gidx_geom_overlaps(PG_FUNCTION_ARGS);
+Datum gserialized_gidx_gidx_overlaps(PG_FUNCTION_ARGS);
+#endif
 Datum gserialized_contains(PG_FUNCTION_ARGS);
 #if POSTGIS_PGSQL_VERSION > 94
 Datum gserialized_gidx_geom_contains(PG_FUNCTION_ARGS);
@@ -110,11 +114,12 @@ Datum gserialized_within(PG_FUNCTION_ARGS);
 Datum gserialized_gidx_geom_within(PG_FUNCTION_ARGS);
 Datum gserialized_gidx_gidx_within(PG_FUNCTION_ARGS);
 #endif
-Datum gserialized_distance_nd(PG_FUNCTION_ARGS);
+Datum gserialized_same(PG_FUNCTION_ARGS);
 #if POSTGIS_PGSQL_VERSION > 94
 Datum gserialized_gidx_geom_same(PG_FUNCTION_ARGS);
 Datum gserialized_gidx_gidx_same(PG_FUNCTION_ARGS);
 #endif
+Datum gserialized_distance_nd(PG_FUNCTION_ARGS);
 
 /*
 ** GIDX true/false test function type
@@ -133,7 +138,7 @@ GIDX* gidx_copy(GIDX *b)
 
 
 /* Ensure all minimums are below maximums. */
-static inline void gidx_validate(GIDX *b)
+void gidx_validate(GIDX *b)
 {
 	uint32_t i;
 	Assert(b);
@@ -163,7 +168,7 @@ inline bool gidx_is_unknown(const GIDX *a)
 	return false;
 }
 
-static inline void gidx_set_unknown(GIDX *a)
+void gidx_set_unknown(GIDX *a)
 {
 	SET_VARSIZE(a, VARHDRSZ);
 }
@@ -414,10 +419,10 @@ static float gidx_inter_volume(GIDX *a, GIDX *b)
 **
 ** Empty boxes never overlap.
 */
-static bool gidx_overlaps(GIDX *a, GIDX *b)
+bool gidx_overlaps(GIDX *a, GIDX *b)
 {
-	int i;
-	int ndims_b;
+	int i, dims_a, dims_b;
+
 	POSTGIS_DEBUG(5, "entered function");
 
 	if ( (a == NULL) || (b == NULL) ) return false;
@@ -425,18 +430,19 @@ static bool gidx_overlaps(GIDX *a, GIDX *b)
 	if ( gidx_is_unknown(a) || gidx_is_unknown(b) )
 		return false;
 
-	/* Ensure 'a' has the most dimensions. */
-	gidx_dimensionality_check(&a, &b);
+	dims_a = GIDX_NDIMS(a);
+	dims_b = GIDX_NDIMS(b);
 
-	ndims_b = GIDX_NDIMS(b);
-
-	/* compare only up to dimensions of (b), missing dimensions always overlap */
-	for ( i = 0; i < ndims_b; i++ )
+	/* For all shared dimensions min(a) > max(b) and min(b) > max(a)
+	   Unshared dimensions do not matter */
+	for ( i = 0; i < Min(dims_a, dims_b); i++ )
 	{
-		if ( GIDX_GET_MIN(a,i) > GIDX_GET_MAX(b,i) )
-			return false;
-		if ( GIDX_GET_MIN(b,i) > GIDX_GET_MAX(a,i) )
-			return false;
+		/* If the missing dimension was not padded with -+FLT_MAX */
+		if ( GIDX_GET_MAX(a,i) != FLT_MAX && GIDX_GET_MAX(b,i) != FLT_MAX )
+			if ( GIDX_GET_MIN(a,i) > GIDX_GET_MAX(b,i) )
+				return false;
+			if ( GIDX_GET_MIN(b,i) > GIDX_GET_MAX(a,i) )
+				return false;
 	}
 
 	return true;
@@ -461,28 +467,16 @@ bool gidx_contains(GIDX *a, GIDX *b)
 	dims_a = GIDX_NDIMS(a);
 	dims_b = GIDX_NDIMS(b);
 
-	if ( dims_a < dims_b )
-	{
-		/*
-		** If (b) is of higher dimensionality than (a) it can only be contained
-		** if those higher dimensions are zeroes.
-		*/
-		for (i = dims_a; i < dims_b; i++)
-		{
-			if ( GIDX_GET_MIN(b,i) != 0 )
-				return false;
-			if ( GIDX_GET_MAX(b,i) != 0 )
-				return false;
-		}
-	}
-
-	/* Excess dimensions of (a), don't matter, it just has to contain (b) in (b)'s dimensions */
+	/* For all shared dimensions min(a) > min(b) and max(a) < max(b)
+	   Unshared dimensions do not matter */
 	for (i = 0; i < Min(dims_a, dims_b); i++)
 	{
-		if ( GIDX_GET_MIN(a,i) > GIDX_GET_MIN(b,i) )
-			return false;
-		if ( GIDX_GET_MAX(a,i) < GIDX_GET_MAX(b,i) )
-			return false;
+		/* If the missing dimension was not padded with -+FLT_MAX */
+		if ( GIDX_GET_MAX(a,i) != FLT_MAX && GIDX_GET_MAX(b,i) != FLT_MAX )
+			if ( GIDX_GET_MIN(a,i) > GIDX_GET_MIN(b,i) )
+				return false;
+			if ( GIDX_GET_MAX(a,i) < GIDX_GET_MAX(b,i) )
+				return false;
 	}
 
 	return true;
@@ -493,9 +487,10 @@ bool gidx_contains(GIDX *a, GIDX *b)
 **
 ** Box(A) EQUALS Box(B) IFF (pt(A)LL == pt(B)LL) && (pt(A)UR == pt(B)UR)
 */
-static bool gidx_equals(GIDX *a, GIDX *b)
+bool gidx_equals(GIDX *a, GIDX *b)
 {
 	uint32_t i;
+	int dims_a, dims_b;
 
 	POSTGIS_DEBUG(5, "entered function");
 
@@ -508,24 +503,19 @@ static bool gidx_equals(GIDX *a, GIDX *b)
 	if ( gidx_is_unknown(a) || gidx_is_unknown(b) )
 		return false;
 
-	/* Ensure 'a' has the most dimensions. */
-	gidx_dimensionality_check(&a, &b);
+	dims_a = GIDX_NDIMS(a);
+	dims_b = GIDX_NDIMS(b);
 
-	/* For all shared dimensions min(a) == min(b), max(a) == max(b) */
-	for (i = 0; i < GIDX_NDIMS(b); i++)
+	/* For all shared dimensions min(a) == min(b), max(a) == max(b)
+	   Unshared dimensions do not matter */
+	for (i = 0; i < Min(dims_a, dims_b); i++)
 	{
-		if ( GIDX_GET_MIN(a,i) != GIDX_GET_MIN(b,i) )
-			return false;
-		if ( GIDX_GET_MAX(a,i) != GIDX_GET_MAX(b,i) )
-			return false;
-	}
-	/* For all unshared dimensions min(a) == 0.0, max(a) == 0.0 */
-	for (i = GIDX_NDIMS(b); i < GIDX_NDIMS(a); i++)
-	{
-		if ( GIDX_GET_MIN(a,i) != 0.0 )
-			return false;
-		if ( GIDX_GET_MAX(a,i) != 0.0 )
-			return false;
+		/* If the missing dimension was not padded with -+FLT_MAX */
+		if ( GIDX_GET_MAX(a,i) != FLT_MAX && GIDX_GET_MAX(b,i) != FLT_MAX )
+			if ( GIDX_GET_MIN(a,i) != GIDX_GET_MIN(b,i) )
+				return false;
+			if ( GIDX_GET_MAX(a,i) != GIDX_GET_MAX(b,i) )
+				return false;
 	}
 	return true;
 }
@@ -916,7 +906,7 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 }
 
 /*
-** '~' and operator function. Based on two serialized return true if
+** '~~' and operator function. Based on two serialized return true if
 ** the first is contained by the second.
 */
 PG_FUNCTION_INFO_V1(gserialized_within);
@@ -932,7 +922,7 @@ Datum gserialized_within(PG_FUNCTION_ARGS)
 
 #if POSTGIS_PGSQL_VERSION > 94
 /*
-** '~' and operator function. Based on a GIDX and a serialized return true if
+** '~~' and operator function. Based on a GIDX and a serialized return true if
 ** the first is contained by the second.
 */
 PG_FUNCTION_INFO_V1(gserialized_gidx_geom_within);
@@ -947,7 +937,7 @@ Datum gserialized_gidx_geom_within(PG_FUNCTION_ARGS)
 }
 
 /*
-** '~' and operator function. Based on two GIDX return true if
+** '~~' and operator function. Based on two GIDX return true if
 ** the first is contained by the second.
 */
 PG_FUNCTION_INFO_V1(gserialized_gidx_gidx_within);
@@ -961,7 +951,7 @@ Datum gserialized_gidx_gidx_within(PG_FUNCTION_ARGS)
 #endif
 
 /*
-** '@' and operator function. Based on two serialized return true if
+** '@@' and operator function. Based on two serialized return true if
 ** the first contains the second.
 */
 PG_FUNCTION_INFO_V1(gserialized_contains);
@@ -977,7 +967,7 @@ Datum gserialized_contains(PG_FUNCTION_ARGS)
 
 #if POSTGIS_PGSQL_VERSION > 94
 /*
-** '@' and operator function. Based on a GIDX and a serialized return true if
+** '@@' and operator function. Based on a GIDX and a serialized return true if
 ** the first contains the second.
 */
 PG_FUNCTION_INFO_V1(gserialized_gidx_geom_contains);
@@ -992,7 +982,7 @@ Datum gserialized_gidx_geom_contains(PG_FUNCTION_ARGS)
 }
 
 /*
-** '@' and operator function. Based on two GIDX return true if
+** '@@' and operator function. Based on two GIDX return true if
 ** the first contains the second.
 */
 PG_FUNCTION_INFO_V1(gserialized_gidx_gidx_contains);
@@ -1003,7 +993,24 @@ Datum gserialized_gidx_gidx_contains(PG_FUNCTION_ARGS)
 
    PG_RETURN_BOOL(false);
 }
+#endif
 
+/*
+** '~=' and operator function. Based on two serialized return true if
+** the first equals the second.
+*/
+PG_FUNCTION_INFO_V1(gserialized_same);
+Datum gserialized_same(PG_FUNCTION_ARGS)
+{
+	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0),PG_GETARG_DATUM(1), gidx_equals) == LW_TRUE )
+	{
+		PG_RETURN_BOOL(true);
+	}
+
+	PG_RETURN_BOOL(false);
+}
+
+#if POSTGIS_PGSQL_VERSION > 94
 PG_FUNCTION_INFO_V1(gserialized_gidx_geom_same);
 Datum gserialized_gidx_geom_same(PG_FUNCTION_ARGS)
 {
@@ -1015,6 +1022,10 @@ Datum gserialized_gidx_geom_same(PG_FUNCTION_ARGS)
    PG_RETURN_BOOL(false);
 }
 
+/*
+** '~=' and operator function. Based on two GIDX return true if
+** the first equals the second.
+*/
 PG_FUNCTION_INFO_V1(gserialized_gidx_gidx_same);
 Datum gserialized_gidx_gidx_same(PG_FUNCTION_ARGS)
 {
@@ -1026,7 +1037,7 @@ Datum gserialized_gidx_gidx_same(PG_FUNCTION_ARGS)
 #endif
 
 /*
-** '&&' operator function. Based on two serialized return true if
+** '&&&' operator function. Based on two serialized return true if
 ** they overlap and false otherwise.
 */
 PG_FUNCTION_INFO_V1(gserialized_overlaps);
@@ -1141,6 +1152,7 @@ Datum gserialized_gist_compress(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(4, "[GIST] got entry_in->key: %s", gidx_to_string(bbox_out));
 
+	/* ORIGINAL VERSION */
 	/* Check all the dimensions for finite values.
 	 * If not, use the "unknown" GIDX as a key */
 	for ( i = 0; i < GIDX_NDIMS(bbox_out); i++ )
@@ -1157,7 +1169,7 @@ Datum gserialized_gist_compress(PG_FUNCTION_ARGS)
 		}
 	}
 
-	/* Enure bounding box has minimums below maximums. */
+	/* Ensure bounding box has minimums below maximums. */
 	gidx_validate(bbox_out);
 
 	/* Prepare GISTENTRY for return. */

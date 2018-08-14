@@ -125,6 +125,10 @@ TESTS = \
 	regress_ogc_cover \
 	regress_ogc_prep \
 	regress_proj \
+	regress_spgist_index_2d \
+	regress_spgist_index_3d \
+	regress_gist_index_nd \
+	regress_spgist_index_nd \
 	relate \
 	remove_repeated_points \
 	removepoint \
