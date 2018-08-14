@@ -55,7 +55,7 @@ sub strip_default {
 	return $line;
 }
 
-my $time = POSIX::strftime("%c", localtime);
+my $time = POSIX::strftime("%F %T", gmtime(defined($ENV{SOURCE_DATE_EPOCH}) ? $ENV{SOURCE_DATE_EPOCH} : time));
 print "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
 print "--\n";
 print "-- PostGIS - Spatial Types for PostgreSQL\n";
