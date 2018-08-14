@@ -44,24 +44,6 @@
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 + 1)
 
-Datum BOX3D_contains(PG_FUNCTION_ARGS);
-Datum BOX3D_contained(PG_FUNCTION_ARGS);
-Datum BOX3D_overlaps(PG_FUNCTION_ARGS);
-Datum BOX3D_same(PG_FUNCTION_ARGS);
-Datum BOX3D_left(PG_FUNCTION_ARGS);
-Datum BOX3D_overleft(PG_FUNCTION_ARGS);
-Datum BOX3D_right(PG_FUNCTION_ARGS)    ;
-Datum BOX3D_overright(PG_FUNCTION_ARGS);
-Datum BOX3D_below(PG_FUNCTION_ARGS);
-Datum BOX3D_overbelow(PG_FUNCTION_ARGS);
-Datum BOX3D_above(PG_FUNCTION_ARGS);
-Datum BOX3D_overabove(PG_FUNCTION_ARGS);
-Datum BOX3D_front(PG_FUNCTION_ARGS);
-Datum BOX3D_overfront(PG_FUNCTION_ARGS);
-Datum BOX3D_back(PG_FUNCTION_ARGS);
-Datum BOX3D_overback(PG_FUNCTION_ARGS);
-Datum BOX3D_distance(PG_FUNCTION_ARGS);
-
 
 /**
  *  BOX3D_in - takes a string rep of BOX3D and returns internal rep
