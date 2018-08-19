@@ -402,22 +402,21 @@ ptarray_swap_ordinates(POINTARRAY *pa, LWORD o1, LWORD o2)
 	}
 }
 
-
 /**
  * @brief Returns a modified #POINTARRAY so that no segment is
  * 		longer than the given distance (computed using 2d).
  *
  * Every input point is kept.
- * Z and M values for added points (if needed) are set to 0.
+ * Z and M values for added points (if needed) are set proportionally.
  */
 POINTARRAY *
 ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 {
-	double	segdist;
+	double segdist;
 	POINT4D	p1, p2;
 	POINT4D pbuf;
 	POINTARRAY *opa;
-	uint32_t ipoff=0; /* input point offset */
+	uint32_t i, j, nseg;
 	int hasz = FLAGS_GET_Z(ipa->flags);
 	int hasm = FLAGS_GET_M(ipa->flags);
 
@@ -427,12 +426,11 @@ ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 	opa = ptarray_construct_empty(hasz, hasm, ipa->npoints);
 
 	/* Add first point */
-	getPoint4d_p(ipa, ipoff, &p1);
+	getPoint4d_p(ipa, 0, &p1);
 	ptarray_append_point(opa, &p1, LW_FALSE);
 
-	ipoff++;
-
-	while (ipoff<ipa->npoints)
+	/* Loop on all other input points */
+	for (i = 1; i < ipa->npoints; i++)
 	{
 		/*
 		 * We use these pointers to avoid
@@ -442,32 +440,29 @@ ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 		 * It looks that casting a variable address (also
 		 * referred to as "type-punned pointer")
 		 * breaks those "strict" rules.
-		 *
 		 */
 		POINT4D *p1ptr=&p1, *p2ptr=&p2;
 
-		getPoint4d_p(ipa, ipoff, &p2);
+		getPoint4d_p(ipa, i, &p2);
 
 		segdist = distance2d_pt_pt((POINT2D *)p1ptr, (POINT2D *)p2ptr);
+		/* Split input segment into shorter even chunks */
+		nseg = ceil(segdist / dist);
 
-		if (segdist > dist) /* add an intermediate point */
+		for (j = 1; j < nseg; j++)
 		{
-			pbuf.x = p1.x + (p2.x-p1.x)/segdist * dist;
-			pbuf.y = p1.y + (p2.y-p1.y)/segdist * dist;
-			if( hasz )
-				pbuf.z = p1.z + (p2.z-p1.z)/segdist * dist;
-			if( hasm )
-				pbuf.m = p1.m + (p2.m-p1.m)/segdist * dist;
+			pbuf.x = p1.x + (p2.x - p1.x) * j / nseg;
+			pbuf.y = p1.y + (p2.y - p1.y) * j / nseg;
+			if (hasz)
+				pbuf.z = p1.z + (p2.z - p1.z) * j / nseg;
+			if (hasm)
+				pbuf.m = p1.m + (p2.m - p1.m) * j / nseg;
 			ptarray_append_point(opa, &pbuf, LW_FALSE);
-			p1 = pbuf;
-		}
-		else /* copy second point */
-		{
-			ptarray_append_point(opa, &p2, (ipa->npoints==2)?LW_TRUE:LW_FALSE);
-			p1 = p2;
-			ipoff++;
+			LW_ON_INTERRUPT(ptarray_free(opa); return NULL);
 		}
 
+		ptarray_append_point(opa, &p2, (ipa->npoints == 2) ? LW_TRUE : LW_FALSE);
+		p1 = p2;
 		LW_ON_INTERRUPT(ptarray_free(opa); return NULL);
 	}
 
