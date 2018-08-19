@@ -69,7 +69,7 @@ Release procedure
 	(this should only be needed for trunk release)
 - Commit all changes
 - If this is a minor or major release (no branch exists):
-	   $ base=http://svn.osgeo.org/postgis/
+	   $ base=https://svn.osgeo.org/postgis/
 	   $ rev=x.x
 	   $ svn copy -m "Branch $rev" $base/trunk $base/branches/$rev
 
@@ -81,7 +81,7 @@ Release procedure
 	   Go to: ​https://trac.osgeo.org/postgis/ edit the matrix to reflect new branch
 
 - Tag branch:  (replace x.x and x.x.x with minor and micro version e.g 2.3, 2.3.1
-   $ base=http://svn.osgeo.org/postgis/
+   $ base=https://svn.osgeo.org/postgis/
    $ brev=x.x
    $ rev=x.x.x
    $ svn copy -m "Tagged release $rev" $base/branches/$brev $base/tags/$rev
