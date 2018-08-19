@@ -518,6 +518,15 @@ test_lwgeom_segmentize2d(void)
 	lwgeom_free(linein);
 	lwgeom_free(lineout);
 
+	/* test that segmentize is proportional - request every 6, get every 5 */
+	linein = lwgeom_from_wkt("LINESTRING(0 0, 20 0)", LW_PARSER_CHECK_NONE);
+	lineout = lwgeom_segmentize2d(linein, 6);
+	strout = lwgeom_to_ewkt(lineout);
+	ASSERT_STRING_EQUAL(strout, "LINESTRING(0 0,5 0,10 0,15 0,20 0)");
+	lwfree(strout);
+	lwgeom_free(linein);
+	lwgeom_free(lineout);
+
 	/* test interruption */
 
 	linein = lwgeom_from_wkt("LINESTRING(0 0,10 0)", LW_PARSER_CHECK_NONE);
