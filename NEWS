@@ -1,5 +1,5 @@
 PostGIS 2.5.0rc1
-2018/XX/XX
+2018/08/19
 New since PostGIS 2.5.0beta2
   - #4146, Fix compilation error against Postgres 12 (Raúl Marín).
   - #4147, #4148, Honor SOURCE_DATE_EPOCH when present (Christoph Berg).
