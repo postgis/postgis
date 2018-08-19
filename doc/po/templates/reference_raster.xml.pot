@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2018-07-21 17:36+0000\n"
+"POT-Creation-Date: 2018-08-19 21:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -11956,9 +11956,9 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:7072 reference_raster.xml:7423
+#: reference_raster.xml:7072
 #, no-c-format
-msgid "ST_MapAlgebra"
+msgid "ST_MapAlgebra (callback function version)"
 msgstr ""
 
 #. Tag: refpurpose
@@ -12670,6 +12670,12 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra_expr\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_raster.xml:7423
+#, no-c-format
+msgid "ST_MapAlgebra (expression version)"
 msgstr ""
 
 #. Tag: refpurpose

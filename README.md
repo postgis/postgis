@@ -1,13 +1,13 @@
 Debbie:
-   [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_trunk)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_trunk/)
+   [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_2.5)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_2.5/)
 Winnie:
- [![Build Status](https://winnie.postgis.net:444/buildStatus/icon?job=PostGIS_trunk)](https://winnie.postgis.net:444/view/PostGIS/job/PostGIS_trunk/)
+ [![Build Status](https://debbie.postgis.net:444/buildStatus/icon?job=PostGIS_2.5)](https://debbie.postgis.net:444/view/PostGIS/job/PostGIS_2.5/)
 Dronie:
- [![Build Status](https://drone.osgeo.org/api/badges/postgis/postgis/status.svg?branch=svn-trunk)](https://drone.osgeo.org/postgis/postgis?branch=svn-trunk)
+ [![Build Status](https://drone.osgeo.org/api/badges/postgis/postgis/status.svg?branch=svn-2.5)](https://drone.osgeo.org/postgis/postgis?branch=svn-2.5)
 Travis:
  [![Build Status](https://secure.travis-ci.org/postgis/postgis.svg)](http://travis-ci.org/postgis/postgis)
 GitLab-CI:
- [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/svn-trunk/build.svg)](https://gitlab.com/postgis/postgis/commits/svn-trunk)
+ [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/svn-2.5/build.svg)](https://gitlab.com/postgis/postgis/commits/svn-2.5)
 
 This file is here to play nicely with modern code repository facilities.
 Actual readme is [here](README.postgis).

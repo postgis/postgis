@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 # pibinko <pibinko@gmail.com>, 2013
 # pibinko <pibinko@gmail.com>, 2013
@@ -7,14 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2018-07-21 17:36+0000\n"
+"POT-Creation-Date: 2018-08-19 21:47+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: pibinko <pibinko@gmail.com>\n"
-"Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/language/it_IT/)\n"
+"Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
+"language/it_IT/)\n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: it_IT\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Tag: title
@@ -35,7 +36,9 @@ msgstr "GeometryType"
 msgid ""
 "<refpurpose>Returns the type of the geometry as a string. Eg: 'LINESTRING', "
 "'POLYGON', 'MULTIPOINT', etc.</refpurpose>"
-msgstr "<refpurpose>Restituisce il tipo di geometria come stringa. Per esempio: 'LINESTRING', 'POLYGON', 'MULTIPOINT', ecc.</refpurpose>"
+msgstr ""
+"<refpurpose>Restituisce il tipo di geometria come stringa. Per esempio: "
+"'LINESTRING', 'POLYGON', 'MULTIPOINT', ecc.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:16
@@ -43,7 +46,9 @@ msgstr "<refpurpose>Restituisce il tipo di geometria come stringa. Per esempio: 
 msgid ""
 "<funcdef>text <function>GeometryType</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>text <function>GeometryType</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>text <function>GeometryType</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: title
 #: reference_accessor.xml:24 reference_accessor.xml:81
@@ -79,14 +84,16 @@ msgstr "Descrizione"
 msgid ""
 "<para>Returns the type of the geometry as a string. Eg: 'LINESTRING', "
 "'POLYGON', 'MULTIPOINT', etc.</para>"
-msgstr "<para>Restituisce il tipo di geometria come stringa. Per esempio: 'LINESTRING', 'POLYGON', 'MULTIPOINT', ecc.</para>"
+msgstr ""
+"<para>Restituisce il tipo di geometria come stringa. Per esempio: "
+"'LINESTRING', 'POLYGON', 'MULTIPOINT', ecc.</para>"
 
 #. Tag: para
 #: reference_accessor.xml:29
 #, no-c-format
 msgid ""
-"OGC SPEC s2.1.1.1 - Returns the name of the instantiable subtype of Geometry"
-" of which this Geometry instance is a member. The name of the instantiable "
+"OGC SPEC s2.1.1.1 - Returns the name of the instantiable subtype of Geometry "
+"of which this Geometry instance is a member. The name of the instantiable "
 "subtype of Geometry is returned as a string."
 msgstr ""
 
@@ -96,7 +103,9 @@ msgstr ""
 msgid ""
 "This function also indicates if the geometry is measured, by returning a "
 "string of the form 'POINTM'."
-msgstr "Questa funzione indica anche se la geometria viene misurata, restituendo una stringa nella forma 'POINTM'."
+msgstr ""
+"Questa funzione indica anche se la geometria viene misurata, restituendo una "
+"stringa nella forma 'POINTM'."
 
 #. Tag: para
 #: reference_accessor.xml:38 reference_accessor.xml:504
@@ -105,7 +114,9 @@ msgstr "Questa funzione indica anche se la geometria viene misurata, restituendo
 msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
 "introduced."
-msgstr "Migliorato: Nella 2.0.0 è stato introdotto il supporto per le superfici poliedriche, i triangoli e i TIN."
+msgstr ""
+"Migliorato: Nella 2.0.0 è stato introdotto il supporto per le superfici "
+"poliedriche, i triangoli e i TIN."
 
 #. Tag: para
 #: reference_accessor.xml:39 reference_accessor.xml:168
@@ -205,20 +216,29 @@ msgstr "Esempi"
 #: reference_accessor.xml:51
 #, no-c-format
 msgid ""
-"SELECT GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));\n"
+"SELECT GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 "
+"29.26,77.27 29.31,77.29 29.07)'));\n"
 " geometrytype\n"
 "--------------\n"
 " LINESTRING"
-msgstr "SELECT GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));\n geometrytype\n--------------\n LINESTRING"
+msgstr ""
+"SELECT GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 "
+"29.26,77.27 29.31,77.29 29.07)'));\n"
+" geometrytype\n"
+"--------------\n"
+" LINESTRING"
 
 #. Tag: programlisting
 #: reference_accessor.xml:52
 #, no-c-format
 msgid ""
-"SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
-"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 "
+"1 1, 0 1 0, 0 0 0)),\n"
+"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
+"1, 0 0 1, 0 0 0)),\n"
 "                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
-"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));\n"
+"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
+"1, 0 1 1, 0 0 1)) )'));\n"
 "                        --result\n"
 "                        POLYHEDRALSURFACE"
 msgstr ""
@@ -294,7 +314,9 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_Boundary</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_Boundary</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Boundary</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:83
@@ -321,7 +343,10 @@ msgid ""
 "Prior to 2.0.0, this function throws an exception if used with "
 "<varname>GEOMETRYCOLLECTION</varname>. From 2.0.0 up it will return NULL "
 "instead (unsupported input)."
-msgstr "Prma della 2.0.0, questa funzione dava un'eccezione se usata con <varname>GEOMETRYCOLLECTION</varname>. A partire dalla 2.0.0 in poi, restituirà invece NULL (input non supportato)."
+msgstr ""
+"Prma della 2.0.0, questa funzione dava un'eccezione se usata con "
+"<varname>GEOMETRYCOLLECTION</varname>. A partire dalla 2.0.0 in poi, "
+"restituirà invece NULL (input non supportato)."
 
 #. Tag: para
 #: reference_accessor.xml:94
@@ -352,7 +377,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "SELECT ST_Boundary(geom)\n"
-"FROM (SELECT 'LINESTRING(100 150,50 60, 70 80, 160 170)'::geometry As geom) As f;"
+"FROM (SELECT 'LINESTRING(100 150,50 60, 70 80, 160 170)'::geometry As geom) "
+"As f;"
 msgstr ""
 
 #. Tag: screen
@@ -375,8 +401,10 @@ msgstr ""
 msgid ""
 "SELECT ST_Boundary(geom)\n"
 "FROM (SELECT\n"
-"'POLYGON (( 10 130, 50 190, 110 190, 140 150, 150 80, 100 10, 20 40, 10 130 ),\n"
-"        ( 70 40, 100 50, 120 80, 80 110, 50 90, 70 40 ))'::geometry As geom) As f;"
+"'POLYGON (( 10 130, 50 190, 110 190, 140 150, 150 80, 100 10, 20 40, 10 "
+"130 ),\n"
+"        ( 70 40, 100 50, 120 80, 80 110, 50 90, 70 40 ))'::geometry As geom) "
+"As f;"
 msgstr ""
 
 #. Tag: screen
@@ -392,35 +420,67 @@ msgstr ""
 #: reference_accessor.xml:136
 #, no-c-format
 msgid ""
-"SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, -1 1)')));\n"
+"SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, -1 "
+"1)')));\n"
 "st_astext\n"
 "-----------\n"
 "MULTIPOINT(1 1,-1 1)\n"
 "\n"
-"SELECT ST_AsText(ST_Boundary(ST_GeomFromText('POLYGON((1 1,0 0, -1 1, 1 1))')));\n"
+"SELECT ST_AsText(ST_Boundary(ST_GeomFromText('POLYGON((1 1,0 0, -1 1, 1 "
+"1))')));\n"
 "st_astext\n"
 "----------\n"
 "LINESTRING(1 1,0 0,-1 1,1 1)\n"
 "\n"
 "--Using a 3d polygon\n"
-"SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('POLYGON((1 1 1,0 0 1, -1 1 1, 1 1 1))')));\n"
+"SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('POLYGON((1 1 1,0 0 1, -1 1 1, "
+"1 1 1))')));\n"
 "\n"
 "st_asewkt\n"
 "-----------------------------------\n"
 "LINESTRING(1 1 1,0 0 1,-1 1 1,1 1 1)\n"
 "\n"
 "--Using a 3d multilinestring\n"
-"SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTILINESTRING((1 1 1,0 0 0.5, -1 1 1),(1 1 0.5,0 0 0.5, -1 1 0.5, 1 1 0.5) )')));\n"
+"SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTILINESTRING((1 1 1,0 0 "
+"0.5, -1 1 1),(1 1 0.5,0 0 0.5, -1 1 0.5, 1 1 0.5) )')));\n"
 "\n"
 "st_asewkt\n"
 "----------\n"
 "MULTIPOINT(-1 1 1,1 1 0.75)"
-msgstr "SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, -1 1)')));\nst_astext\n-----------\nMULTIPOINT(1 1,-1 1)\n\nSELECT ST_AsText(ST_Boundary(ST_GeomFromText('POLYGON((1 1,0 0, -1 1, 1 1))')));\nst_astext\n----------\nLINESTRING(1 1,0 0,-1 1,1 1)\n\n--Usando un poligono 3d\nSELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('POLYGON((1 1 1,0 0 1, -1 1 1, 1 1 1))')));\n\nst_asewkt\n-----------------------------------\nLINESTRING(1 1 1,0 0 1,-1 1 1,1 1 1)\n\n--Usando una multilinestring 3d\nSELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTILINESTRING((1 1 1,0 0 0.5, -1 1 1),(1 1 0.5,0 0 0.5, -1 1 0.5, 1 1 0.5) )')));\n\nst_asewkt\n----------\nMULTIPOINT(-1 1 1,1 1 0.75)"
+msgstr ""
+"SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, -1 "
+"1)')));\n"
+"st_astext\n"
+"-----------\n"
+"MULTIPOINT(1 1,-1 1)\n"
+"\n"
+"SELECT ST_AsText(ST_Boundary(ST_GeomFromText('POLYGON((1 1,0 0, -1 1, 1 "
+"1))')));\n"
+"st_astext\n"
+"----------\n"
+"LINESTRING(1 1,0 0,-1 1,1 1)\n"
+"\n"
+"--Usando un poligono 3d\n"
+"SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('POLYGON((1 1 1,0 0 1, -1 1 1, "
+"1 1 1))')));\n"
+"\n"
+"st_asewkt\n"
+"-----------------------------------\n"
+"LINESTRING(1 1 1,0 0 1,-1 1 1,1 1 1)\n"
+"\n"
+"--Usando una multilinestring 3d\n"
+"SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTILINESTRING((1 1 1,0 0 "
+"0.5, -1 1 1),(1 1 0.5,0 0 0.5, -1 1 0.5, 1 1 0.5) )')));\n"
+"\n"
+"st_asewkt\n"
+"----------\n"
+"MULTIPOINT(-1 1 1,1 1 0.75)"
 
 #. Tag: para
 #: reference_accessor.xml:141
 #, no-c-format
-msgid ", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
+msgid ""
+", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -433,9 +493,11 @@ msgstr "ST_CoordDim"
 #: reference_accessor.xml:149
 #, no-c-format
 msgid ""
-"<refpurpose>Return the coordinate dimension of the ST_Geometry "
-"value.</refpurpose>"
-msgstr "<refpurpose>Restituisce la dimensione delle coordinate di ST_Geometry value.</refpurpose>"
+"<refpurpose>Return the coordinate dimension of the ST_Geometry value.</"
+"refpurpose>"
+msgstr ""
+"<refpurpose>Restituisce la dimensione delle coordinate di ST_Geometry value."
+"</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:154
@@ -443,13 +505,16 @@ msgstr "<refpurpose>Restituisce la dimensione delle coordinate di ST_Geometry va
 msgid ""
 "<funcdef>integer <function>ST_CoordDim</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>integer <function>ST_CoordDim</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>integer <function>ST_CoordDim</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:164
 #, no-c-format
 msgid "<para>Return the coordinate dimension of the ST_Geometry value.</para>"
-msgstr "<para>Restituisce la dimensione delle coordinate di ST_Geometry value.</para>"
+msgstr ""
+"<para>Restituisce la dimensione delle coordinate di ST_Geometry value.</para>"
 
 #. Tag: para
 #: reference_accessor.xml:166
@@ -467,14 +532,23 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.3"
 #: reference_accessor.xml:180
 #, no-c-format
 msgid ""
-"SELECT ST_CoordDim('CIRCULARSTRING(1 2 3, 1 3 4, 5 6 7, 8 9 10, 11 12 13)');\n"
+"SELECT ST_CoordDim('CIRCULARSTRING(1 2 3, 1 3 4, 5 6 7, 8 9 10, 11 12 "
+"13)');\n"
 "                        ---result--\n"
 "                                3\n"
 "\n"
 "                                SELECT ST_CoordDim(ST_Point(1,2));\n"
 "                        --result--\n"
 "                                2"
-msgstr "SELECT ST_CoordDim('CIRCULARSTRING(1 2 3, 1 3 4, 5 6 7, 8 9 10, 11 12 13)');\n                        ---result--\n                                3\n\n                                SELECT ST_CoordDim(ST_Point(1,2));\n                        --result--\n                                2"
+msgstr ""
+"SELECT ST_CoordDim('CIRCULARSTRING(1 2 3, 1 3 4, 5 6 7, 8 9 10, 11 12 "
+"13)');\n"
+"                        ---result--\n"
+"                                3\n"
+"\n"
+"                                SELECT ST_CoordDim(ST_Point(1,2));\n"
+"                        --result--\n"
+"                                2"
 
 #. Tag: refname
 #: reference_accessor.xml:193
@@ -488,7 +562,9 @@ msgstr "ST_Dimension"
 msgid ""
 "The inherent dimension of this Geometry object, which must be less than or "
 "equal to the coordinate dimension."
-msgstr "La dimensione inerente a questo oggetto Geometry, che deve essere minore o uguale alla dimensione delle coordinate."
+msgstr ""
+"La dimensione inerente a questo oggetto Geometry, che deve essere minore o "
+"uguale alla dimensione delle coordinate."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:201
@@ -496,19 +572,27 @@ msgstr "La dimensione inerente a questo oggetto Geometry, che deve essere minore
 msgid ""
 "<funcdef>integer <function>ST_Dimension</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
-msgstr "<funcdef>integer <function>ST_Dimension</function></funcdef> <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
+msgstr ""
+"<funcdef>integer <function>ST_Dimension</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:212
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The inherent dimension of this Geometry object, which must be less than or "
 "equal to the coordinate dimension. OGC SPEC s2.1.1.1 - returns 0 for "
 "<varname>POINT</varname>, 1 for <varname>LINESTRING</varname>, 2 for "
-"<varname>POLYGON</varname>, and the largest dimension of the components of a"
-" <varname>GEOMETRYCOLLECTION</varname>. If unknown (empty geometry) null is "
-"returned."
-msgstr "La dimensione inerente a questo oggetto Geometry, che deve essere minore o uguale alla dimensione delle coordinate. La specifica OGC s2.1.1.1 restituisce  0 per <varname>POINT</varname>, 1 per <varname>LINESTRING</varname>, 2 per <varname>POLYGON</varname>, e la maggiore fra le dimensioni dei componenti di una <varname>GEOMETRYCOLLECTION</varname>. Se la geometria è sconosciuta (vuota), viene restituito il valore NULL."
+"<varname>POLYGON</varname>, and the largest dimension of the components of a "
+"<varname>GEOMETRYCOLLECTION</varname>. If the dimension is unknown (empty "
+"<varname>GEOMETRYCOLLECTION</varname>) 0 is returned."
+msgstr ""
+"La dimensione inerente a questo oggetto Geometry, che deve essere minore o "
+"uguale alla dimensione delle coordinate. La specifica OGC s2.1.1.1 "
+"restituisce  0 per <varname>POINT</varname>, 1 per <varname>LINESTRING</"
+"varname>, 2 per <varname>POLYGON</varname>, e la maggiore fra le dimensioni "
+"dei componenti di una <varname>GEOMETRYCOLLECTION</varname>. Se la geometria "
+"è sconosciuta (vuota), viene restituito il valore NULL."
 
 #. Tag: para
 #: reference_accessor.xml:220
@@ -522,7 +606,10 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.2"
 msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces and TINs was introduced. No "
 "longer throws an exception if given empty geometry."
-msgstr "Miglioramento: nella versione 2.0.0 è stato introdotto il supporto per le supefici poliedriche e i TIN. Non viene più generata un'eccezione se viene data una geometria vuota."
+msgstr ""
+"Miglioramento: nella versione 2.0.0 è stato introdotto il supporto per le "
+"supefici poliedriche e i TIN. Non viene più generata un'eccezione se viene "
+"data una geometria vuota."
 
 #. Tag: para
 #: reference_accessor.xml:222
@@ -530,7 +617,9 @@ msgstr "Miglioramento: nella versione 2.0.0 è stato introdotto il supporto per 
 msgid ""
 "Prior to 2.0.0, this function throws an exception if used with empty "
 "geometry."
-msgstr "Prima della 2.0.0, questa funzione dava un'eccezione se usata con una geometria vuota."
+msgstr ""
+"Prima della 2.0.0, questa funzione dava un'eccezione se usata con una "
+"geometria vuota."
 
 #. Tag: programlisting
 #: reference_accessor.xml:230
@@ -540,7 +629,11 @@ msgid ""
 "ST_Dimension\n"
 "-----------\n"
 "1"
-msgstr "SELECT ST_Dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0))');\nST_Dimension\n-----------\n1"
+msgstr ""
+"SELECT ST_Dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0))');\n"
+"ST_Dimension\n"
+"-----------\n"
+"1"
 
 #. Tag: refname
 #: reference_accessor.xml:241
@@ -553,8 +646,7 @@ msgstr "ST_EndPoint"
 #, no-c-format
 msgid ""
 "Returns the last point of a <varname>LINESTRING</varname> or "
-"<varname>CIRCULARLINESTRING</varname> geometry as a "
-"<varname>POINT</varname>."
+"<varname>CIRCULARLINESTRING</varname> geometry as a <varname>POINT</varname>."
 msgstr ""
 
 #. Tag: funcprototype
@@ -563,7 +655,9 @@ msgstr ""
 msgid ""
 "<funcdef>boolean <function>ST_EndPoint</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
-msgstr "<funcdef>boolean <function>ST_EndPoint</function></funcdef> <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
+msgstr ""
+"<funcdef>boolean <function>ST_EndPoint</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:260
@@ -572,7 +666,10 @@ msgid ""
 "Returns the last point of a <varname>LINESTRING</varname> geometry as a "
 "<varname>POINT</varname> or <varname>NULL</varname> if the input parameter "
 "is not a <varname>LINESTRING</varname>."
-msgstr "Restituisce l'ultimo punto di una geometria <varname>LINESTRING</varname> come <varname>POINT</varname> o <varname>NULL</varname> se il parametro di input non è una <varname>LINESTRING</varname>."
+msgstr ""
+"Restituisce l'ultimo punto di una geometria <varname>LINESTRING</varname> "
+"come <varname>POINT</varname> o <varname>NULL</varname> se il parametro di "
+"input non è una <varname>LINESTRING</varname>."
 
 #. Tag: para
 #: reference_accessor.xml:264
@@ -590,13 +687,22 @@ msgid ""
 "returns NULL like any other multilinestring. The older behavior was an "
 "undocumented feature, but people who assumed they had their data stored as "
 "LINESTRING may experience these returning NULL in 2.0 now."
-msgstr "Modifica: La versione 2.0.0 non funziona più con geometrie singole di stringhe multilinea. Nelle versioni precedenti di PostGIS una stringa multilinea con una sola linea avrebbe funzionato tranquillamente con questa funzione, restituendo il punto di inizio. Nella versione 2.0.0 la funzione restituisce NULL come per qualsiasi altra stringa multilinea. Il comportamento precedente non era documentato, ma le persone che presumevano di avere i dati memorizzati come LINESTRING potrebbero trovare che questi ora restituiscono il valore NULL."
+msgstr ""
+"Modifica: La versione 2.0.0 non funziona più con geometrie singole di "
+"stringhe multilinea. Nelle versioni precedenti di PostGIS una stringa "
+"multilinea con una sola linea avrebbe funzionato tranquillamente con questa "
+"funzione, restituendo il punto di inizio. Nella versione 2.0.0 la funzione "
+"restituisce NULL come per qualsiasi altra stringa multilinea. Il "
+"comportamento precedente non era documentato, ma le persone che presumevano "
+"di avere i dati memorizzati come LINESTRING potrebbero trovare che questi "
+"ora restituiscono il valore NULL."
 
 #. Tag: programlisting
 #: reference_accessor.xml:279
 #, no-c-format
 msgid ""
-"postgis=# SELECT ST_AsText(ST_EndPoint('LINESTRING(1 1, 2 2, 3 3)'::geometry));\n"
+"postgis=# SELECT ST_AsText(ST_EndPoint('LINESTRING(1 1, 2 2, 3 3)'::"
+"geometry));\n"
 " st_astext\n"
 "------------\n"
 " POINT(3 3)\n"
@@ -614,7 +720,26 @@ msgid ""
 "--------------\n"
 " POINT(0 0 5)\n"
 "(1 row)"
-msgstr "postgis=# SELECT ST_AsText(ST_EndPoint('LINESTRING(1 1, 2 2, 3 3)'::geometry));\n st_astext\n------------\n POINT(3 3)\n(1 row)\n\npostgis=# SELECT ST_EndPoint('POINT(1 1)'::geometry) IS NULL AS is_null;\n  is_null\n----------\n t\n(1 row)\n\n--3d endpoint\nSELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));\n  st_asewkt\n--------------\n POINT(0 0 5)\n(1 row)"
+msgstr ""
+"postgis=# SELECT ST_AsText(ST_EndPoint('LINESTRING(1 1, 2 2, 3 3)'::"
+"geometry));\n"
+" st_astext\n"
+"------------\n"
+" POINT(3 3)\n"
+"(1 row)\n"
+"\n"
+"postgis=# SELECT ST_EndPoint('POINT(1 1)'::geometry) IS NULL AS is_null;\n"
+"  is_null\n"
+"----------\n"
+" t\n"
+"(1 row)\n"
+"\n"
+"--3d endpoint\n"
+"SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));\n"
+"  st_asewkt\n"
+"--------------\n"
+" POINT(0 0 5)\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_accessor.xml:285
@@ -642,7 +767,9 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_Envelope</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_Envelope</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Envelope</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:311
@@ -650,10 +777,9 @@ msgstr "<funcdef>geometry <function>ST_Envelope</function></funcdef> <paramdef><
 msgid ""
 "Returns the float8 minimum bounding box for the supplied geometry, as a "
 "geometry. The polygon is defined by the corner points of the bounding box "
-"((<varname>MINX</varname>, <varname>MINY</varname>), "
-"(<varname>MINX</varname>, <varname>MAXY</varname>), "
-"(<varname>MAXX</varname>, <varname>MAXY</varname>), "
-"(<varname>MAXX</varname>, <varname>MINY</varname>), "
+"((<varname>MINX</varname>, <varname>MINY</varname>), (<varname>MINX</"
+"varname>, <varname>MAXY</varname>), (<varname>MAXX</varname>, <varname>MAXY</"
+"varname>), (<varname>MAXX</varname>, <varname>MINY</varname>), "
 "(<varname>MINX</varname>, <varname>MINY</varname>)). (PostGIS will add a "
 "<varname>ZMIN</varname>/<varname>ZMAX</varname> coordinate as well)."
 msgstr ""
@@ -665,7 +791,10 @@ msgid ""
 "Degenerate cases (vertical lines, points) will return a geometry of lower "
 "dimension than <varname>POLYGON</varname>, ie. <varname>POINT</varname> or "
 "<varname>LINESTRING</varname>."
-msgstr "I casi degeneri (linee verticali, punti) restituiranno una geometria di dimensione inferiore al <varname>POLYGON</varname>, cioè <varname>POINT</varname> o <varname>LINESTRING</varname>."
+msgstr ""
+"I casi degeneri (linee verticali, punti) restituiranno una geometria di "
+"dimensione inferiore al <varname>POLYGON</varname>, cioè <varname>POINT</"
+"varname> o <varname>LINESTRING</varname>."
 
 #. Tag: para
 #: reference_accessor.xml:325
@@ -673,7 +802,9 @@ msgstr "I casi degeneri (linee verticali, punti) restituiranno una geometria di 
 msgid ""
 "Availability: 1.5.0 behavior changed to output double precision instead of "
 "float4"
-msgstr "Disponibilità: il comportamento nella 1.5.0 è stato cambiato per dare in uscita numeri in precisione doppia anziche float4"
+msgstr ""
+"Disponibilità: il comportamento nella 1.5.0 è stato cambiato per dare in "
+"uscita numeri in precisione doppia anziche float4"
 
 #. Tag: para
 #: reference_accessor.xml:326 reference_accessor.xml:923
@@ -706,19 +837,23 @@ msgid ""
 "(1 row)\n"
 "\n"
 "\n"
-"SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000001 1, 1.0000001 0, 0 0))'::geometry));\n"
+"SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000001 1, 1.0000001 0, 0 "
+"0))'::geometry));\n"
 "                                                  st_astext\n"
 "--------------------------------------------------------------\n"
 " POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))\n"
 "(1 row)\n"
-"SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000000001 1, 1.0000000001 0, 0 0))'::geometry));\n"
+"SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000000001 1, "
+"1.0000000001 0, 0 0))'::geometry));\n"
 "                                                  st_astext\n"
 "--------------------------------------------------------------\n"
 " POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))\n"
 "(1 row)\n"
 "\n"
-"SELECT Box3D(geom), Box2D(geom), ST_AsText(ST_Envelope(geom)) As envelopewkt\n"
-"        FROM (SELECT 'POLYGON((0 0, 0 1000012333334.34545678, 1.0000001 1, 1.0000001 0, 0 0))'::geometry As geom) As foo;\n"
+"SELECT Box3D(geom), Box2D(geom), ST_AsText(ST_Envelope(geom)) As "
+"envelopewkt\n"
+"        FROM (SELECT 'POLYGON((0 0, 0 1000012333334.34545678, 1.0000001 1, "
+"1.0000001 0, 0 0))'::geometry As geom) As foo;\n"
 "\n"
 "<!-- TODO: Fix examples to reflect new behavior -->"
 msgstr ""
@@ -767,8 +902,8 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_BoundingDiagonal</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>fits=false</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>boolean </type> <parameter>fits=false</"
+"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -794,8 +929,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The <varname>fits</varname> parameter specifies if the best fit is needed. "
-"If false, the diagonal of a somewhat larger bounding box can be accepted (is"
-" faster to obtain for geometries with a lot of vertices). In any case the "
+"If false, the diagonal of a somewhat larger bounding box can be accepted (is "
+"faster to obtain for geometries with a lot of vertices). In any case the "
 "bounding box of the returned diagonal line always covers the input geometry."
 msgstr ""
 
@@ -838,9 +973,9 @@ msgstr ""
 #: reference_accessor.xml:410
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref "
-"linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, "
-"<xref linkend=\"geometry_overlaps_nd\"/>"
+", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref linkend="
+"\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, <xref "
+"linkend=\"geometry_overlaps_nd\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -856,7 +991,10 @@ msgid ""
 "Returns a line string representing the exterior ring of the "
 "<varname>POLYGON</varname> geometry. Return NULL if the geometry is not a "
 "polygon. Will not work with MULTIPOLYGON"
-msgstr "Restituisce una LINESTRING che rappresenta l'anello esterno per una geometria <varname>POLYGON</varname>. Restituisce NULL se la geometria non è un poligono. Non funziona con MULTIPOLYGON"
+msgstr ""
+"Restituisce una LINESTRING che rappresenta l'anello esterno per una "
+"geometria <varname>POLYGON</varname>. Restituisce NULL se la geometria non è "
+"un poligono. Non funziona con MULTIPOLYGON"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:432
@@ -864,7 +1002,9 @@ msgstr "Restituisce una LINESTRING che rappresenta l'anello esterno per una geom
 msgid ""
 "<funcdef>geometry <function>ST_ExteriorRing</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_ExteriorRing</function></funcdef> <paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_ExteriorRing</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:443
@@ -873,7 +1013,10 @@ msgid ""
 "Returns a line string representing the exterior ring of the "
 "<varname>POLYGON</varname> geometry. Return NULL if the geometry is not a "
 "polygon."
-msgstr "Restituisce una LINESTRING che rappresenta l'anello esterno per una geometria <varname>POLYGON</varname>. Restituisce NULL se la geometria non è un poligono. Non funziona con MULTIPOLYGON"
+msgstr ""
+"Restituisce una LINESTRING che rappresenta l'anello esterno per una "
+"geometria <varname>POLYGON</varname>. Restituisce NULL se la geometria non è "
+"un poligono. Non funziona con MULTIPOLYGON"
 
 #. Tag: para
 #: reference_accessor.xml:446
@@ -902,7 +1045,8 @@ msgid ""
 "FROM sometable;\n"
 "\n"
 "--If you have a table of MULTIPOLYGONs\n"
-"--and want to return a MULTILINESTRING composed of the exterior rings of each polygon\n"
+"--and want to return a MULTILINESTRING composed of the exterior rings of "
+"each polygon\n"
 "SELECT gid, ST_Collect(ST_ExteriorRing(the_geom)) AS erings\n"
 "        FROM (SELECT gid, (ST_Dump(the_geom)).geom As the_geom\n"
 "                        FROM sometable) As foo\n"
@@ -918,13 +1062,37 @@ msgid ""
 "st_asewkt\n"
 "---------\n"
 "LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)"
-msgstr "--Se avete una tabella di poligoni:\nSELECT gid, ST_ExteriorRing(the_geom) AS ering\nFROM sometable;\n\n--Se avete una tabella MULTIPOLYGON\n--e volete riottenere un MULTILINESTRING composto dagli anelli esteriori mposed of the exterior rings of each polygon\nSELECT gid, ST_Collect(ST_ExteriorRing(the_geom)) AS erings\n        FROM (SELECT gid, (ST_Dump(the_geom)).geom As the_geom\n                        FROM sometable) As foo\nGROUP BY gid;\n\n--Esempio 3d\nSELECT ST_AsEWKT(\n        ST_ExteriorRing(\n        ST_GeomFromEWKT('POLYGON((0 0 1, 1 1 1, 1 2 1, 1 1 1, 0 0 1))')\n        )\n);\n\nst_asewkt\n---------\nLINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)"
+msgstr ""
+"--Se avete una tabella di poligoni:\n"
+"SELECT gid, ST_ExteriorRing(the_geom) AS ering\n"
+"FROM sometable;\n"
+"\n"
+"--Se avete una tabella MULTIPOLYGON\n"
+"--e volete riottenere un MULTILINESTRING composto dagli anelli esteriori "
+"mposed of the exterior rings of each polygon\n"
+"SELECT gid, ST_Collect(ST_ExteriorRing(the_geom)) AS erings\n"
+"        FROM (SELECT gid, (ST_Dump(the_geom)).geom As the_geom\n"
+"                        FROM sometable) As foo\n"
+"GROUP BY gid;\n"
+"\n"
+"--Esempio 3d\n"
+"SELECT ST_AsEWKT(\n"
+"        ST_ExteriorRing(\n"
+"        ST_GeomFromEWKT('POLYGON((0 0 1, 1 1 1, 1 2 1, 1 1 1, 0 0 1))')\n"
+"        )\n"
+");\n"
+"\n"
+"st_asewkt\n"
+"---------\n"
+"LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)"
 
 #. Tag: para
 #: reference_accessor.xml:462
 #, no-c-format
-msgid ", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_NumInteriorRings\"/>"
-msgstr ", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_NumInteriorRings\"/>"
+msgid ""
+", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_NumInteriorRings\"/>"
+msgstr ""
+", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_NumInteriorRings\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:472
@@ -939,7 +1107,10 @@ msgid ""
 "Return the 1-based Nth geometry if the geometry is a GEOMETRYCOLLECTION, "
 "(MULTI)POINT, (MULTI)LINESTRING, MULTICURVE or (MULTI)POLYGON, "
 "POLYHEDRALSURFACE Otherwise, return NULL."
-msgstr "Restituisce la geometria numero N (a partire da 1) se la geometria è una GEOMETRYCOLLECTION, (MULTI)POINT, (MULTI)LINESTRING, MULTICURVE o (MULTI)POLYGON, POLYHEDRALSURFACE. Altrimenti restituisce il valore NULL."
+msgstr ""
+"Restituisce la geometria numero N (a partire da 1) se la geometria è una "
+"GEOMETRYCOLLECTION, (MULTI)POINT, (MULTI)LINESTRING, MULTICURVE o "
+"(MULTI)POLYGON, POLYHEDRALSURFACE. Altrimenti restituisce il valore NULL."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:481
@@ -948,7 +1119,10 @@ msgid ""
 "<funcdef>geometry <function>ST_GeometryN</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_GeometryN</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_GeometryN</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:492
@@ -957,7 +1131,10 @@ msgid ""
 "Return the 1-based Nth geometry if the geometry is a GEOMETRYCOLLECTION, "
 "(MULTI)POINT, (MULTI)LINESTRING, MULTICURVE or (MULTI)POLYGON, "
 "POLYHEDRALSURFACE Otherwise, return NULL"
-msgstr "Restituisce la geometria numero N (a partire da 1) se la geometria è una GEOMETRYCOLLECTION, (MULTI)POINT, (MULTI)LINESTRING, MULTICURVE o (MULTI)POLYGON, POLYHEDRALSURFACE. Altrimenti restituisce il valore NULL."
+msgstr ""
+"Restituisce la geometria numero N (a partire da 1) se la geometria è una "
+"GEOMETRYCOLLECTION, (MULTI)POINT, (MULTI)LINESTRING, MULTICURVE o "
+"(MULTI)POLYGON, POLYHEDRALSURFACE. Altrimenti restituisce il valore NULL."
 
 #. Tag: para
 #: reference_accessor.xml:497
@@ -965,7 +1142,10 @@ msgstr "Restituisce la geometria numero N (a partire da 1) se la geometria è un
 msgid ""
 "Index is 1-based as for OGC specs since version 0.8.0. Previous versions "
 "implemented this as 0-based instead."
-msgstr "L'indice parte da 1, come per le specifiche OGC a partire dalla versione 0.8.0. Le precedenti versioni invece implementavano un indice a partire da zero."
+msgstr ""
+"L'indice parte da 1, come per le specifiche OGC a partire dalla versione "
+"0.8.0. Le precedenti versioni invece implementavano un indice a partire da "
+"zero."
 
 #. Tag: para
 #: reference_accessor.xml:502
@@ -973,7 +1153,9 @@ msgstr "L'indice parte da 1, come per le specifiche OGC a partire dalla versione
 msgid ""
 "If you want to extract all geometries, of a geometry, ST_Dump is more "
 "efficient and will also work for singular geoms."
-msgstr "Se volete estrarre tutte le geometria, ST_Dump è più efficiente e funziona anche nel caso di geometrie singole."
+msgstr ""
+"Se volete estrarre tutte le geometria, ST_Dump è più efficiente e funziona "
+"anche nel caso di geometrie singole."
 
 #. Tag: para
 #: reference_accessor.xml:505
@@ -1003,7 +1185,8 @@ msgid ""
 "SELECT n, ST_AsEWKT(ST_GeometryN(the_geom, n)) As geomewkt\n"
 "FROM (\n"
 "VALUES (ST_GeomFromEWKT('MULTIPOINT(1 2 7, 3 4 7, 5 6 7, 8 9 10)') ),\n"
-"( ST_GeomFromEWKT('MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 11, 12 11))') )\n"
+"( ST_GeomFromEWKT('MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 "
+"11, 12 11))') )\n"
 "        )As foo(the_geom)\n"
 "        CROSS JOIN generate_series(1,100) n\n"
 "WHERE n &lt;= ST_NumGeometries(the_geom);\n"
@@ -1102,7 +1285,9 @@ msgstr "Restituisce il tipo di geometria per il valore ST_Geometry."
 msgid ""
 "<funcdef>text <function>ST_GeometryType</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr "<funcdef>text <function>ST_GeometryType</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+msgstr ""
+"<funcdef>text <function>ST_GeometryType</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:553
@@ -1111,16 +1296,22 @@ msgid ""
 "Returns the type of the geometry as a string. EG: 'ST_Linestring', "
 "'ST_Polygon','ST_MultiPolygon' etc. This function differs from "
 "GeometryType(geometry) in the case of the string and ST in front that is "
-"returned, as well as the fact that it will not indicate whether the geometry"
-" is measured."
-msgstr "Restituisce il tipo di geometria come stringa. P. es.: 'ST_Linestring', 'ST_Polygon','ST_MultiPolygon' ecc. Questa funzione differisce da  GeometryType(geometry) per il prefisso ST che viene restituito, così come per il fatto che non indica se la geometria è misurata."
+"returned, as well as the fact that it will not indicate whether the geometry "
+"is measured."
+msgstr ""
+"Restituisce il tipo di geometria come stringa. P. es.: 'ST_Linestring', "
+"'ST_Polygon','ST_MultiPolygon' ecc. Questa funzione differisce da  "
+"GeometryType(geometry) per il prefisso ST che viene restituito, così come "
+"per il fatto che non indica se la geometria è misurata."
 
 #. Tag: para
 #: reference_accessor.xml:555 reference_accessor.xml:815
 #: reference_accessor.xml:1333
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
-msgstr "Miglioramento: nella versione 2.0.0 è stato introdotto il supporto per le superfici poliedriche."
+msgstr ""
+"Miglioramento: nella versione 2.0.0 è stato introdotto il supporto per le "
+"superfici poliedriche."
 
 #. Tag: para
 #: reference_accessor.xml:556
@@ -1132,19 +1323,27 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.4"
 #: reference_accessor.xml:565
 #, no-c-format
 msgid ""
-"SELECT ST_GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));\n"
+"SELECT ST_GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 "
+"29.26,77.27 29.31,77.29 29.07)'));\n"
 "                        --result\n"
 "                        ST_LineString"
-msgstr "SELECT ST_GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));\n                        --risultato\n                        ST_LineString"
+msgstr ""
+"SELECT ST_GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 "
+"29.26,77.27 29.31,77.29 29.07)'));\n"
+"                        --risultato\n"
+"                        ST_LineString"
 
 #. Tag: programlisting
 #: reference_accessor.xml:567 reference_accessor.xml:569
 #, no-c-format
 msgid ""
-"SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
-"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 "
+"1 1, 0 1 0, 0 0 0)),\n"
+"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
+"1, 0 0 1, 0 0 0)),\n"
 "                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
-"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));\n"
+"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
+"1, 0 1 1, 0 0 1)) )'));\n"
 "                        --result\n"
 "                        ST_PolyhedralSurface"
 msgstr ""
@@ -1184,8 +1383,8 @@ msgstr "ST_InteriorRingN"
 #: reference_accessor.xml:586
 #, no-c-format
 msgid ""
-"Return the Nth interior linestring ring of the polygon geometry. Return NULL"
-" if the geometry is not a polygon or the given N is out of range."
+"Return the Nth interior linestring ring of the polygon geometry. Return NULL "
+"if the geometry is not a polygon or the given N is out of range."
 msgstr ""
 
 #. Tag: funcprototype
@@ -1193,16 +1392,19 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_InteriorRingN</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
-" <paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_InteriorRingN</function></funcdef> <paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef> <paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
+"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_InteriorRingN</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:604
 #, no-c-format
 msgid ""
-"Return the Nth interior linestring ring of the polygon geometry. Return NULL"
-" if the geometry is not a polygon or the given N is out of range. index "
+"Return the Nth interior linestring ring of the polygon geometry. Return NULL "
+"if the geometry is not a polygon or the given N is out of range. index "
 "starts at 1."
 msgstr ""
 
@@ -1212,7 +1414,9 @@ msgstr ""
 msgid ""
 "This will not work for MULTIPOLYGONs. Use in conjunction with ST_Dump for "
 "MULTIPOLYGONS"
-msgstr "Non funzionerà per i MULTIPOLYGON. Da utilizzare assieme a ST_Dump per i MULTIPOLYGON"
+msgstr ""
+"Non funzionerà per i MULTIPOLYGON. Da utilizzare assieme a ST_Dump per i "
+"MULTIPOLYGON"
 
 #. Tag: para
 #: reference_accessor.xml:614
@@ -1229,15 +1433,22 @@ msgid ""
 "                ST_Collect(ST_Buffer(ST_Point(1,2), 20,3),\n"
 "                        ST_Buffer(ST_Point(1, 2), 10,3))) As the_geom\n"
 "                )  as foo"
-msgstr "SELECT ST_AsText(ST_InteriorRingN(the_geom, 1)) As the_geom\nFROM (SELECT ST_BuildArea(\n                ST_Collect(ST_Buffer(ST_Point(1,2), 20,3),\n                        ST_Buffer(ST_Point(1, 2), 10,3))) As the_geom\n                )  as foo"
+msgstr ""
+"SELECT ST_AsText(ST_InteriorRingN(the_geom, 1)) As the_geom\n"
+"FROM (SELECT ST_BuildArea(\n"
+"                ST_Collect(ST_Buffer(ST_Point(1,2), 20,3),\n"
+"                        ST_Buffer(ST_Point(1, 2), 10,3))) As the_geom\n"
+"                )  as foo"
 
 #. Tag: para
 #: reference_accessor.xml:630
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_NumInteriorRing\"/>,"
-msgstr ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_NumInteriorRing\"/>,"
+", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend="
+"\"ST_NumInteriorRing\"/>,"
+msgstr ""
+", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend="
+"\"ST_NumInteriorRing\"/>,"
 
 #. Tag: refname
 #: reference_accessor.xml:643
@@ -1257,17 +1468,17 @@ msgstr ""
 #: reference_accessor.xml:653
 #, no-c-format
 msgid ""
-"<funcdef> boolean <function>ST_IsPolygonCCW</function> </funcdef> <paramdef>"
-" <type>geometry</type> <parameter>geom</parameter> </paramdef>"
+"<funcdef> boolean <function>ST_IsPolygonCCW</function> </funcdef> <paramdef> "
+"<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:669
 #, no-c-format
 msgid ""
-"Returns true if all polygonal components of the input geometry use a "
-"counter-clockwise orientation for their exterior ring, and a clockwise "
-"direction for all interior rings."
+"Returns true if all polygonal components of the input geometry use a counter-"
+"clockwise orientation for their exterior ring, and a clockwise direction for "
+"all interior rings."
 msgstr ""
 
 #. Tag: para
@@ -1289,8 +1500,8 @@ msgstr ""
 #: reference_accessor.xml:688 reference_accessor.xml:758
 #, no-c-format
 msgid ""
-"If a polygonal geometry does not use reversed orientation for interior rings"
-" (i.e., if one or more interior rings are oriented in the same direction as "
+"If a polygonal geometry does not use reversed orientation for interior rings "
+"(i.e., if one or more interior rings are oriented in the same direction as "
 "an exterior ring) then both ST_IsPolygonCW and ST_IsPolygonCCW will return "
 "false."
 msgstr ""
@@ -1298,7 +1509,8 @@ msgstr ""
 #. Tag: para
 #: reference_accessor.xml:703 reference_accessor.xml:772
 #, no-c-format
-msgid ", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
+msgid ""
+", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1342,10 +1554,12 @@ msgstr "ST_IsClosed"
 #: reference_accessor.xml:784
 #, no-c-format
 msgid ""
-"Returns <varname>TRUE</varname> if the <varname>LINESTRING</varname>'s start"
-" and end points are coincident. For Polyhedral surface is closed "
-"(volumetric)."
-msgstr "Restituisce <varname>TRUE</varname> se il punto iniziale e quello finale di <varname>LINESTRING</varname> coincidono. Per le superfici poliedriche indica una superficie chiusa (volumetrica)."
+"Returns <varname>TRUE</varname> if the <varname>LINESTRING</varname>'s start "
+"and end points are coincident. For Polyhedral surface is closed (volumetric)."
+msgstr ""
+"Restituisce <varname>TRUE</varname> se il punto iniziale e quello finale di "
+"<varname>LINESTRING</varname> coincidono. Per le superfici poliedriche "
+"indica una superficie chiusa (volumetrica)."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:791
@@ -1353,16 +1567,21 @@ msgstr "Restituisce <varname>TRUE</varname> se il punto iniziale e quello finale
 msgid ""
 "<funcdef>boolean <function>ST_IsClosed</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
-msgstr "<funcdef>boolean <function>ST_IsClosed</function></funcdef> <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
+msgstr ""
+"<funcdef>boolean <function>ST_IsClosed</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:802
 #, no-c-format
 msgid ""
-"Returns <varname>TRUE</varname> if the <varname>LINESTRING</varname>'s start"
-" and end points are coincident. For Polyhedral Surfaces, it tells you if the"
-" surface is areal (open) or volumetric (closed)."
-msgstr "Restituisce <varname>TRUE</varname> se il punto iniziale e quello finale di <varname>LINESTRING</varname> coincidono. Per le superfici poliedriche indicase la superficie è un'area (aperta) o un volume (chiusa)."
+"Returns <varname>TRUE</varname> if the <varname>LINESTRING</varname>'s start "
+"and end points are coincident. For Polyhedral Surfaces, it tells you if the "
+"surface is areal (open) or volumetric (closed)."
+msgstr ""
+"Restituisce <varname>TRUE</varname> se il punto iniziale e quello finale di "
+"<varname>LINESTRING</varname> coincidono. Per le superfici poliedriche "
+"indicase la superficie è un'area (aperta) o un volume (chiusa)."
 
 #. Tag: para
 #: reference_accessor.xml:806
@@ -1374,10 +1593,12 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3"
 #: reference_accessor.xml:808
 #, no-c-format
 msgid ""
-"SQL-MM defines the result of "
-"<function>ST_IsClosed(<varname>NULL</varname>)</function> to be 0, while "
-"PostGIS returns <varname>NULL</varname>."
-msgstr "SQL-MM definisce il risultato di <function>ST_IsClosed(<varname>NULL</varname>)</function> come 0, mentre PostGIS restituisce <varname>NULL</varname>."
+"SQL-MM defines the result of <function>ST_IsClosed(<varname>NULL</varname>)</"
+"function> to be 0, while PostGIS returns <varname>NULL</varname>."
+msgstr ""
+"SQL-MM definisce il risultato di <function>ST_IsClosed(<varname>NULL</"
+"varname>)</function> come 0, mentre PostGIS restituisce <varname>NULL</"
+"varname>."
 
 #. Tag: title
 #: reference_accessor.xml:822
@@ -1401,7 +1622,8 @@ msgid ""
 " t\n"
 "(1 row)\n"
 "\n"
-"postgis=# SELECT ST_IsClosed('MULTILINESTRING((0 0, 0 1, 1 1, 0 0),(0 0, 1 1))'::geometry);\n"
+"postgis=# SELECT ST_IsClosed('MULTILINESTRING((0 0, 0 1, 1 1, 0 0),(0 0, 1 "
+"1))'::geometry);\n"
 " st_isclosed\n"
 "-------------\n"
 " f\n"
@@ -1418,7 +1640,37 @@ msgid ""
 "-------------\n"
 " t\n"
 "(1 row)"
-msgstr "postgis=# SELECT ST_IsClosed('LINESTRING(0 0, 1 1)'::geometry);\n st_isclosed\n-------------\n f\n(1 row)\n\npostgis=# SELECT ST_IsClosed('LINESTRING(0 0, 0 1, 1 1, 0 0)'::geometry);\n st_isclosed\n-------------\n t\n(1 row)\n\npostgis=# SELECT ST_IsClosed('MULTILINESTRING((0 0, 0 1, 1 1, 0 0),(0 0, 1 1))'::geometry);\n st_isclosed\n-------------\n f\n(1 row)\n\npostgis=# SELECT ST_IsClosed('POINT(0 0)'::geometry);\n st_isclosed\n-------------\n t\n(1 row)\n\npostgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);\n st_isclosed\n-------------\n t\n(1 row)"
+msgstr ""
+"postgis=# SELECT ST_IsClosed('LINESTRING(0 0, 1 1)'::geometry);\n"
+" st_isclosed\n"
+"-------------\n"
+" f\n"
+"(1 row)\n"
+"\n"
+"postgis=# SELECT ST_IsClosed('LINESTRING(0 0, 0 1, 1 1, 0 0)'::geometry);\n"
+" st_isclosed\n"
+"-------------\n"
+" t\n"
+"(1 row)\n"
+"\n"
+"postgis=# SELECT ST_IsClosed('MULTILINESTRING((0 0, 0 1, 1 1, 0 0),(0 0, 1 "
+"1))'::geometry);\n"
+" st_isclosed\n"
+"-------------\n"
+" f\n"
+"(1 row)\n"
+"\n"
+"postgis=# SELECT ST_IsClosed('POINT(0 0)'::geometry);\n"
+" st_isclosed\n"
+"-------------\n"
+" t\n"
+"(1 row)\n"
+"\n"
+"postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);\n"
+" st_isclosed\n"
+"-------------\n"
+" t\n"
+"(1 row)"
 
 #. Tag: title
 #: reference_accessor.xml:828
@@ -1431,10 +1683,13 @@ msgstr "Esempi con superfici poliedriche"
 #, no-c-format
 msgid ""
 "-- A cube --\n"
-"                SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
-"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"                SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 "
+"0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
+"1, 0 0 1, 0 0 0)),\n"
 "                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
-"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));\n"
+"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
+"1, 0 1 1, 0 0 1)) )'));\n"
 "\n"
 " st_isclosed\n"
 "-------------\n"
@@ -1442,8 +1697,10 @@ msgid ""
 "\n"
 "\n"
 " -- Same as cube but missing a side --\n"
-" SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
-"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+" SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 "
+"1, 0 1 0, 0 0 0)),\n"
+"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
+"1, 0 0 1, 0 0 0)),\n"
 "                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)) )'));\n"
 "\n"
@@ -1464,7 +1721,9 @@ msgstr "ST_IsCollection"
 msgid ""
 "Returns <varname>TRUE</varname> if the argument is a collection "
 "(<varname>MULTI*</varname>, <varname>GEOMETRYCOLLECTION</varname>, ...)"
-msgstr "Restituisce <varname>TRUE</varname> se l'argomento è una collezione (<varname>MULTI*</varname>, <varname>GEOMETRYCOLLECTION</varname>, ...)"
+msgstr ""
+"Restituisce <varname>TRUE</varname> se l'argomento è una collezione "
+"(<varname>MULTI*</varname>, <varname>GEOMETRYCOLLECTION</varname>, ...)"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:851
@@ -1472,7 +1731,9 @@ msgstr "Restituisce <varname>TRUE</varname> se l'argomento è una collezione (<v
 msgid ""
 "<funcdef>boolean <function>ST_IsCollection</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
-msgstr "<funcdef>boolean <function>ST_IsCollection</function></funcdef> <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
+msgstr ""
+"<funcdef>boolean <function>ST_IsCollection</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:861
@@ -1505,9 +1766,12 @@ msgstr "COMPOUNDCURVE"
 #, no-c-format
 msgid ""
 "This function analyzes the type of the geometry. This means that it will "
-"return <varname>TRUE</varname> on collections that are empty or that contain"
-" a single element."
-msgstr "Questa funzione analizza il tipo di geometria. Significa che restituirà  <varname>TRUE</varname> sulle collezioni che sono vuote o contengono un singolo elemento."
+"return <varname>TRUE</varname> on collections that are empty or that contain "
+"a single element."
+msgstr ""
+"Questa funzione analizza il tipo di geometria. Significa che restituirà  "
+"<varname>TRUE</varname> sulle collezioni che sono vuote o contengono un "
+"singolo elemento."
 
 #. Tag: programlisting
 #: reference_accessor.xml:886
@@ -1537,12 +1801,43 @@ msgid ""
 " t\n"
 "(1 row)\n"
 "\n"
-"postgis=# SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::geometry);\n"
+"postgis=# SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::"
+"geometry);\n"
 " st_iscollection\n"
 "-------------\n"
 " t\n"
 "(1 row)"
-msgstr "postgis=# SELECT ST_IsCollection('LINESTRING(0 0, 1 1)'::geometry);\n st_iscollection\n-------------\n f\n(1 row)\n\npostgis=# SELECT ST_IsCollection('MULTIPOINT EMPTY'::geometry);\n st_iscollection\n-------------\n t\n(1 row)\n\npostgis=# SELECT ST_IsCollection('MULTIPOINT((0 0))'::geometry);\n st_iscollection\n-------------\n t\n(1 row)\n\npostgis=# SELECT ST_IsCollection('MULTIPOINT((0 0), (42 42))'::geometry);\n st_iscollection\n-------------\n t\n(1 row)\n\npostgis=# SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::geometry);\n st_iscollection\n-------------\n t\n(1 row)"
+msgstr ""
+"postgis=# SELECT ST_IsCollection('LINESTRING(0 0, 1 1)'::geometry);\n"
+" st_iscollection\n"
+"-------------\n"
+" f\n"
+"(1 row)\n"
+"\n"
+"postgis=# SELECT ST_IsCollection('MULTIPOINT EMPTY'::geometry);\n"
+" st_iscollection\n"
+"-------------\n"
+" t\n"
+"(1 row)\n"
+"\n"
+"postgis=# SELECT ST_IsCollection('MULTIPOINT((0 0))'::geometry);\n"
+" st_iscollection\n"
+"-------------\n"
+" t\n"
+"(1 row)\n"
+"\n"
+"postgis=# SELECT ST_IsCollection('MULTIPOINT((0 0), (42 42))'::geometry);\n"
+" st_iscollection\n"
+"-------------\n"
+" t\n"
+"(1 row)\n"
+"\n"
+"postgis=# SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::"
+"geometry);\n"
+" st_iscollection\n"
+"-------------\n"
+" t\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_accessor.xml:898
@@ -1554,9 +1849,11 @@ msgstr "ST_IsEmpty"
 #: reference_accessor.xml:900
 #, no-c-format
 msgid ""
-"Returns true if this Geometry is an empty geometrycollection, polygon, point"
-" etc."
-msgstr "Restituisce TRUE se la geometria è una geometrycollection, un poligono o un punto vuoto, ecc."
+"Returns true if this Geometry is an empty geometrycollection, polygon, point "
+"etc."
+msgstr ""
+"Restituisce TRUE se la geometria è una geometrycollection, un poligono o un "
+"punto vuoto, ecc."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:906
@@ -1564,7 +1861,9 @@ msgstr "Restituisce TRUE se la geometria è una geometrycollection, un poligono 
 msgid ""
 "<funcdef>boolean <function>ST_IsEmpty</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>boolean <function>ST_IsEmpty</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>boolean <function>ST_IsEmpty</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:916
@@ -1572,15 +1871,20 @@ msgstr "<funcdef>boolean <function>ST_IsEmpty</function></funcdef> <paramdef><ty
 msgid ""
 "Returns true if this Geometry is an empty geometry. If true, then this "
 "Geometry represents an empty geometry collection, polygon, point etc."
-msgstr "Restituisce TRUE se la Geometry è una geometria vuota. Se è TRUE, allora questa Geometry rappresenta una geometria vuota (una collezione, un poligono, un punto, ecc.)"
+msgstr ""
+"Restituisce TRUE se la Geometry è una geometria vuota. Se è TRUE, allora "
+"questa Geometry rappresenta una geometria vuota (una collezione, un "
+"poligono, un punto, ecc.)"
 
 #. Tag: para
 #: reference_accessor.xml:919
 #, no-c-format
 msgid ""
-"SQL-MM defines the result of ST_IsEmpty(NULL) to be 0, while PostGIS returns"
-" NULL."
-msgstr "SQL-MM definisce il risultato di ST_IsEmpty(NULL) come 0, mentre PostGIS restituisce NULL."
+"SQL-MM defines the result of ST_IsEmpty(NULL) to be 0, while PostGIS returns "
+"NULL."
+msgstr ""
+"SQL-MM definisce il risultato di ST_IsEmpty(NULL) come 0, mentre PostGIS "
+"restituisce NULL."
 
 #. Tag: para
 #: reference_accessor.xml:924
@@ -1620,7 +1924,8 @@ msgid ""
 " f\n"
 "(1 row)\n"
 "\n"
-" SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))')) = false;\n"
+" SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))')) = "
+"false;\n"
 " ?column?\n"
 "----------\n"
 " t\n"
@@ -1631,7 +1936,38 @@ msgid ""
 "------------\n"
 " t\n"
 "(1 row)"
-msgstr "SELECT ST_IsEmpty(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY'));\n st_isempty\n------------\n t\n(1 row)\n\n SELECT ST_IsEmpty(ST_GeomFromText('POLYGON EMPTY'));\n st_isempty\n------------\n t\n(1 row)\n\nSELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));\n\n st_isempty\n------------\n f\n(1 row)\n\n SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))')) = false;\n ?column?\n----------\n t\n(1 row)\n\n SELECT ST_IsEmpty(ST_GeomFromText('CIRCULARSTRING EMPTY'));\n  st_isempty\n------------\n t\n(1 row)"
+msgstr ""
+"SELECT ST_IsEmpty(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY'));\n"
+" st_isempty\n"
+"------------\n"
+" t\n"
+"(1 row)\n"
+"\n"
+" SELECT ST_IsEmpty(ST_GeomFromText('POLYGON EMPTY'));\n"
+" st_isempty\n"
+"------------\n"
+" t\n"
+"(1 row)\n"
+"\n"
+"SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));\n"
+"\n"
+" st_isempty\n"
+"------------\n"
+" f\n"
+"(1 row)\n"
+"\n"
+" SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))')) = "
+"false;\n"
+" ?column?\n"
+"----------\n"
+" t\n"
+"(1 row)\n"
+"\n"
+" SELECT ST_IsEmpty(ST_GeomFromText('CIRCULARSTRING EMPTY'));\n"
+"  st_isempty\n"
+"------------\n"
+" t\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_accessor.xml:941
@@ -1660,12 +1996,16 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if this <varname>LINESTRING</varname> is "
-"both <xref linkend=\"ST_IsClosed\"/> "
-"(<function>ST_StartPoint(<parameter>g</parameter>)</function> "
-"<function>~=</function> "
+"both <xref linkend=\"ST_IsClosed\"/> (<function>ST_StartPoint(<parameter>g</"
+"parameter>)</function> <function>~=</function> "
 "<function>ST_Endpoint(<parameter>g</parameter>)</function>) and <xref "
 "linkend=\"ST_IsSimple\"/> (does not self intersect)."
-msgstr "Restituisce <varname>TRUE</varname> se questa <varname>LINESTRING</varname> è sia <xref linkend=\"ST_IsClosed\"/> (<function>ST_StartPoint(<parameter>g</parameter>)</function> <function>~=</function> <function>ST_Endpoint(<parameter>g</parameter>)</function>) che <xref linkend=\"ST_IsSimple\"/> (non interseca se stessa)."
+msgstr ""
+"Restituisce <varname>TRUE</varname> se questa <varname>LINESTRING</varname> "
+"è sia <xref linkend=\"ST_IsClosed\"/> (<function>ST_StartPoint(<parameter>g</"
+"parameter>)</function> <function>~=</function> "
+"<function>ST_Endpoint(<parameter>g</parameter>)</function>) che <xref "
+"linkend=\"ST_IsSimple\"/> (non interseca se stessa)."
 
 #. Tag: para
 #: reference_accessor.xml:968
@@ -1677,9 +2017,8 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.6"
 #: reference_accessor.xml:970
 #, no-c-format
 msgid ""
-"SQL-MM defines the result of "
-"<function>ST_IsRing(<varname>NULL</varname>)</function> to be 0, while "
-"PostGIS returns <varname>NULL</varname>."
+"SQL-MM defines the result of <function>ST_IsRing(<varname>NULL</varname>)</"
+"function> to be 0, while PostGIS returns <varname>NULL</varname>."
 msgstr ""
 
 #. Tag: programlisting
@@ -1687,19 +2026,36 @@ msgstr ""
 #, no-c-format
 msgid ""
 "SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)\n"
-"FROM (SELECT 'LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)'::geometry AS the_geom) AS foo;\n"
+"FROM (SELECT 'LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)'::geometry AS the_geom) AS "
+"foo;\n"
 " st_isring | st_isclosed | st_issimple\n"
 "-----------+-------------+-------------\n"
 " t         | t           | t\n"
 "(1 row)\n"
 "\n"
 "SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)\n"
-"FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo;\n"
+"FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS "
+"foo;\n"
 " st_isring | st_isclosed | st_issimple\n"
 "-----------+-------------+-------------\n"
 " f         | t           | f\n"
 "(1 row)"
-msgstr "SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)\nFROM (SELECT 'LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)'::geometry AS the_geom) AS foo;\n st_isring | st_isclosed | st_issimple\n-----------+-------------+-------------\n t         | t           | t\n(1 row)\n\nSELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)\nFROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo;\n st_isring | st_isclosed | st_issimple\n-----------+-------------+-------------\n f         | t           | f\n(1 row)"
+msgstr ""
+"SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)\n"
+"FROM (SELECT 'LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)'::geometry AS the_geom) AS "
+"foo;\n"
+" st_isring | st_isclosed | st_issimple\n"
+"-----------+-------------+-------------\n"
+" t         | t           | t\n"
+"(1 row)\n"
+"\n"
+"SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)\n"
+"FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS "
+"foo;\n"
+" st_isring | st_isclosed | st_issimple\n"
+"-----------+-------------+-------------\n"
+" f         | t           | f\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_accessor.xml:985
@@ -1707,7 +2063,9 @@ msgstr "SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)
 msgid ""
 ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_StartPoint\"/>, <xref "
 "linkend=\"ST_EndPoint\"/>"
-msgstr ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_StartPoint\"/>, <xref linkend=\"ST_EndPoint\"/>"
+msgstr ""
+", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_StartPoint\"/>, <xref "
+"linkend=\"ST_EndPoint\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:993
@@ -1729,7 +2087,9 @@ msgstr ""
 msgid ""
 "<funcdef>boolean <function>ST_IsSimple</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>boolean <function>ST_IsSimple</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>boolean <function>ST_IsSimple</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1011
@@ -1737,9 +2097,8 @@ msgstr "<funcdef>boolean <function>ST_IsSimple</function></funcdef> <paramdef><t
 msgid ""
 "Returns true if this Geometry has no anomalous geometric points, such as "
 "self intersection or self tangency. For more information on the OGC's "
-"definition of geometry simplicity and validity, refer to <link "
-"linkend=\"OGC_Validity\">\"Ensuring OpenGIS compliancy of "
-"geometries\"</link>"
+"definition of geometry simplicity and validity, refer to <link linkend="
+"\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
 msgstr ""
 
 #. Tag: para
@@ -1766,12 +2125,25 @@ msgid ""
 " t\n"
 "(1 row)\n"
 "\n"
-" SELECT ST_IsSimple(ST_GeomFromText('LINESTRING(1 1,2 2,2 3.5,1 3,1 2,2 1)'));\n"
+" SELECT ST_IsSimple(ST_GeomFromText('LINESTRING(1 1,2 2,2 3.5,1 3,1 2,2 "
+"1)'));\n"
 " st_issimple\n"
 "-------------\n"
 " f\n"
 "(1 row)"
-msgstr "SELECT ST_IsSimple(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));\n st_issimple\n-------------\n t\n(1 row)\n\n SELECT ST_IsSimple(ST_GeomFromText('LINESTRING(1 1,2 2,2 3.5,1 3,1 2,2 1)'));\n st_issimple\n-------------\n f\n(1 row)"
+msgstr ""
+"SELECT ST_IsSimple(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));\n"
+" st_issimple\n"
+"-------------\n"
+" t\n"
+"(1 row)\n"
+"\n"
+" SELECT ST_IsSimple(ST_GeomFromText('LINESTRING(1 1,2 2,2 3.5,1 3,1 2,2 "
+"1)'));\n"
+" st_issimple\n"
+"-------------\n"
+" f\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_accessor.xml:1042
@@ -1792,12 +2164,18 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_IsValid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> "
-"</funcprototype> <funcprototype> <funcdef>boolean "
-"<function>ST_IsValid</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>g</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>flags</parameter></paramdef> </funcprototype>"
-msgstr "<funcprototype> <funcdef>boolean <function>ST_IsValid</function></funcdef> <paramdef><type>geometry </type> <parameter>g</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>boolean <function>ST_IsValid</function></funcdef> <paramdef><type>geometry </type> <parameter>g</parameter></paramdef> <paramdef><type>integer </type> <parameter>flags</parameter></paramdef> </funcprototype>"
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>boolean <function>ST_IsValid</"
+"function></funcdef> <paramdef><type>geometry </type> <parameter>g</"
+"parameter></paramdef> <paramdef><type>integer </type> <parameter>flags</"
+"parameter></paramdef> </funcprototype>"
+msgstr ""
+"<funcprototype> <funcdef>boolean <function>ST_IsValid</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>boolean <function>ST_IsValid</"
+"function></funcdef> <paramdef><type>geometry </type> <parameter>g</"
+"parameter></paramdef> <paramdef><type>integer </type> <parameter>flags</"
+"parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_accessor.xml:1068
@@ -1814,9 +2192,12 @@ msgstr ""
 #: reference_accessor.xml:1074
 #, no-c-format
 msgid ""
-"SQL-MM defines the result of ST_IsValid(NULL) to be 0, while PostGIS returns"
-" NULL."
-msgstr "SQL-MM definisce il risultato di <function>ST_Valid(<varname>NULL</varname>)</function> come 0, mentre PostGIS restituisce <varname>NULL</varname>."
+"SQL-MM defines the result of ST_IsValid(NULL) to be 0, while PostGIS returns "
+"NULL."
+msgstr ""
+"SQL-MM definisce il risultato di <function>ST_Valid(<varname>NULL</"
+"varname>)</function> come 0, mentre PostGIS restituisce <varname>NULL</"
+"varname>."
 
 #. Tag: para
 #: reference_accessor.xml:1078
@@ -1824,8 +2205,8 @@ msgstr "SQL-MM definisce il risultato di <function>ST_Valid(<varname>NULL</varna
 msgid ""
 "The version accepting flags is available starting with 2.0.0 and requires "
 "GEOS &gt;= 3.3.0. Such version does not print a NOTICE explaining the "
-"invalidity. Allowed <varname>flags</varname> are documented in <xref "
-"linkend=\"ST_IsValidDetail\"/>."
+"invalidity. Allowed <varname>flags</varname> are documented in <xref linkend="
+"\"ST_IsValidDetail\"/>."
 msgstr ""
 
 #. Tag: para
@@ -1847,7 +2228,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "SELECT ST_IsValid(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,\n"
-"        ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As bad_poly\n"
+"        ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As "
+"bad_poly\n"
 "--results\n"
 "NOTICE:  Self-intersection at or near point 0 0\n"
 " good_line | bad_poly\n"
@@ -1859,9 +2241,11 @@ msgstr ""
 #: reference_accessor.xml:1107
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_IsValidReason\"/>, <xref "
-"linkend=\"ST_IsValidDetail\"/>, <xref linkend=\"ST_Summary\"/>"
-msgstr ", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail\"/>, <xref linkend=\"ST_Summary\"/>"
+", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail\"/"
+">, <xref linkend=\"ST_Summary\"/>"
+msgstr ""
+", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail\"/"
+">, <xref linkend=\"ST_Summary\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:1118
@@ -1881,21 +2265,26 @@ msgstr ""
 #: reference_accessor.xml:1124
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>text "
-"<function>ST_IsValidReason</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>geomA</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>text "
-"<function>ST_IsValidReason</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>geomA</parameter></paramdef> <paramdef><type>integer "
-"</type> <parameter>flags</parameter></paramdef> </funcprototype>"
-msgstr "<funcprototype> <funcdef>text <function>ST_IsValidReason</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_IsValidReason</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>integer </type> <parameter>flags</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>text <function>ST_IsValidReason</function></"
+"funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>text "
+"<function>ST_IsValidReason</function></funcdef> <paramdef><type>geometry </"
+"type> <parameter>geomA</parameter></paramdef> <paramdef><type>integer </"
+"type> <parameter>flags</parameter></paramdef> </funcprototype>"
+msgstr ""
+"<funcprototype> <funcdef>text <function>ST_IsValidReason</function></"
+"funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>text "
+"<function>ST_IsValidReason</function></funcdef> <paramdef><type>geometry </"
+"type> <parameter>geomA</parameter></paramdef> <paramdef><type>integer </"
+"type> <parameter>flags</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_accessor.xml:1140
 #, no-c-format
 msgid ""
-"Returns text stating if a geometry is valid or not an if not valid, a reason"
-" why."
+"Returns text stating if a geometry is valid or not an if not valid, a reason "
+"why."
 msgstr ""
 
 #. Tag: para
@@ -1910,8 +2299,8 @@ msgstr ""
 #: reference_accessor.xml:1144
 #, no-c-format
 msgid ""
-"Allowed <varname>flags</varname> are documented in <xref "
-"linkend=\"ST_IsValidDetail\"/>."
+"Allowed <varname>flags</varname> are documented in <xref linkend="
+"\"ST_IsValidDetail\"/>."
 msgstr ""
 
 #. Tag: para
@@ -1934,13 +2323,17 @@ msgid ""
 "--First 3 Rejects from a successful quintuplet experiment\n"
 "SELECT gid, ST_IsValidReason(the_geom) as validity_info\n"
 "FROM\n"
-"(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As the_geom, gid\n"
-"FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid\n"
+"(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As "
+"the_geom, gid\n"
+"FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
+"z1*1000 As gid\n"
 "        FROM generate_series(-4,6) x1\n"
 "        CROSS JOIN generate_series(2,5) y1\n"
 "        CROSS JOIN generate_series(1,8) z1\n"
 "        WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e\n"
-"        INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, z1*2) As line\n"
+"        INNER JOIN (SELECT "
+"ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, "
+"z1*2) As line\n"
 "        FROM generate_series(-3,6) x1\n"
 "        CROSS JOIN generate_series(2,5) y1\n"
 "        CROSS JOIN generate_series(1,10) z1\n"
@@ -1958,7 +2351,8 @@ msgid ""
 " 5350 | Self-intersection [52 5]\n"
 "\n"
 " --simple example\n"
-"SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)');\n"
+"SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 "
+"150410)');\n"
 "\n"
 " st_isvalidreason\n"
 "------------------\n"
@@ -1989,22 +2383,27 @@ msgstr ""
 #: reference_accessor.xml:1176
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>valid_detail "
-"<function>ST_IsValidDetail</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>geom</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>valid_detail "
-"<function>ST_IsValidDetail</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>geom</parameter></paramdef> <paramdef><type>integer "
-"</type> <parameter>flags</parameter></paramdef> </funcprototype>"
-msgstr "<funcprototype> <funcdef>valid_detail <function>ST_IsValidDetail</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>valid_detail <function>ST_IsValidDetail</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef><type>integer </type> <parameter>flags</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>valid_detail <function>ST_IsValidDetail</function></"
+"funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>valid_detail "
+"<function>ST_IsValidDetail</function></funcdef> <paramdef><type>geometry </"
+"type> <parameter>geom</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>flags</parameter></paramdef> </funcprototype>"
+msgstr ""
+"<funcprototype> <funcdef>valid_detail <function>ST_IsValidDetail</function></"
+"funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>valid_detail "
+"<function>ST_IsValidDetail</function></funcdef> <paramdef><type>geometry </"
+"type> <parameter>geom</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>flags</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_accessor.xml:1192
 #, no-c-format
 msgid ""
 "Returns a valid_detail row, formed by a boolean (valid) stating if a "
-"geometry is valid, a varchar (reason) stating a reason why it is invalid and"
-" a geometry (location) pointing out where it is invalid."
+"geometry is valid, a varchar (reason) stating a reason why it is invalid and "
+"a geometry (location) pointing out where it is invalid."
 msgstr ""
 
 #. Tag: para
@@ -2040,15 +2439,20 @@ msgstr ""
 #, no-c-format
 msgid ""
 "--First 3 Rejects from a successful quintuplet experiment\n"
-"SELECT gid, reason(ST_IsValidDetail(the_geom)), ST_AsText(location(ST_IsValidDetail(the_geom))) as location\n"
+"SELECT gid, reason(ST_IsValidDetail(the_geom)), "
+"ST_AsText(location(ST_IsValidDetail(the_geom))) as location\n"
 "FROM\n"
-"(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As the_geom, gid\n"
-"FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid\n"
+"(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As "
+"the_geom, gid\n"
+"FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
+"z1*1000 As gid\n"
 "        FROM generate_series(-4,6) x1\n"
 "        CROSS JOIN generate_series(2,5) y1\n"
 "        CROSS JOIN generate_series(1,8) z1\n"
 "        WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e\n"
-"        INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, z1*2) As line\n"
+"        INNER JOIN (SELECT "
+"ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, "
+"z1*2) As line\n"
 "        FROM generate_series(-3,6) x1\n"
 "        CROSS JOIN generate_series(2,5) y1\n"
 "        CROSS JOIN generate_series(1,10) z1\n"
@@ -2066,7 +2470,8 @@ msgid ""
 " 5350 | Self-intersection | POINT(52 5)\n"
 "\n"
 " --simple example\n"
-"SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 150410)');\n"
+"SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 "
+"150407,222020 150410)');\n"
 "\n"
 " valid | reason | location\n"
 "-------+--------+----------\n"
@@ -2099,7 +2504,9 @@ msgstr ""
 msgid ""
 "<funcdef>float <function>ST_M</function></funcdef> <paramdef><type>geometry "
 "</type> <parameter>a_point</parameter></paramdef>"
-msgstr "<funcdef>float <function>ST_M</function></funcdef> <paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>"
+msgstr ""
+"<funcdef>float <function>ST_M</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1251
@@ -2132,13 +2539,22 @@ msgid ""
 "------\n"
 "        4\n"
 "(1 row)"
-msgstr "SELECT ST_M(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n st_m\n------\n        4\n(1 row)"
+msgstr ""
+"SELECT ST_M(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n"
+" st_m\n"
+"------\n"
+"        4\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_accessor.xml:1274
 #, no-c-format
-msgid ", <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>"
-msgstr ", <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>"
+msgid ""
+", <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/"
+">"
+msgstr ""
+", <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/"
+">"
 
 #. Tag: refname
 #: reference_accessor.xml:1280
@@ -2150,8 +2566,8 @@ msgstr "ST_NDims"
 #: reference_accessor.xml:1281
 #, no-c-format
 msgid ""
-"Returns coordinate dimension of the geometry as a small int. Values are: 2,3"
-" or 4."
+"Returns coordinate dimension of the geometry as a small int. Values are: 2,3 "
+"or 4."
 msgstr ""
 
 #. Tag: funcprototype
@@ -2160,15 +2576,17 @@ msgstr ""
 msgid ""
 "<funcdef>integer <function>ST_NDims</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr "<funcdef>integer <function>ST_NDims</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+msgstr ""
+"<funcdef>integer <function>ST_NDims</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1297
 #, no-c-format
 msgid ""
-"Returns the coordinate dimension of the geometry. PostGIS supports 2 - (x,y)"
-" , 3 - (x,y,z) or 2D with measure - x,y,m, and 4 - 3D with measure space "
-"x,y,z,m"
+"Returns the coordinate dimension of the geometry. PostGIS supports 2 - (x,"
+"y) , 3 - (x,y,z) or 2D with measure - x,y,m, and 4 - 3D with measure space x,"
+"y,z,m"
 msgstr ""
 
 #. Tag: programlisting
@@ -2182,13 +2600,21 @@ msgid ""
 "         d2point | d3point | d2pointm\n"
 "---------+---------+----------\n"
 "           2 |       3 |        3"
-msgstr "SELECT ST_NDims(ST_GeomFromText('POINT(1 1)')) As d2point,\n        ST_NDims(ST_GeomFromEWKT('POINT(1 1 2)')) As d3point,\n        ST_NDims(ST_GeomFromEWKT('POINTM(1 1 0.5)')) As d2pointm;\n\n         d2point | d3point | d2pointm\n---------+---------+----------\n           2 |       3 |        3"
+msgstr ""
+"SELECT ST_NDims(ST_GeomFromText('POINT(1 1)')) As d2point,\n"
+"        ST_NDims(ST_GeomFromEWKT('POINT(1 1 2)')) As d3point,\n"
+"        ST_NDims(ST_GeomFromEWKT('POINTM(1 1 0.5)')) As d2pointm;\n"
+"\n"
+"         d2point | d3point | d2pointm\n"
+"---------+---------+----------\n"
+"           2 |       3 |        3"
 
 #. Tag: para
 #: reference_accessor.xml:1310
 #, no-c-format
 msgid ", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
-msgstr ", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
+msgstr ""
+", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:1316
@@ -2208,7 +2634,9 @@ msgstr ""
 msgid ""
 "<funcdef>integer <function>ST_NPoints</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr "<funcdef>integer <function>ST_NPoints</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+msgstr ""
+"<funcdef>integer <function>ST_NPoints</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1332
@@ -2228,15 +2656,27 @@ msgstr ""
 #: reference_accessor.xml:1344
 #, no-c-format
 msgid ""
-"SELECT ST_NPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));\n"
+"SELECT ST_NPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 "
+"29.31,77.29 29.07)'));\n"
 "--result\n"
 "4\n"
 "\n"
 "--Polygon in 3D space\n"
-"SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 29.31 -1,77.29 29.07 3)'))\n"
+"SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 "
+"0,77.27 29.31 -1,77.29 29.07 3)'))\n"
 "--result\n"
 "4"
-msgstr "SELECT ST_NPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));\n--result\n4\n\n--Poligono nello spazio 3D\nSELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 29.31 -1,77.29 29.07 3)'))\n--result\n4"
+msgstr ""
+"SELECT ST_NPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 "
+"29.31,77.29 29.07)'));\n"
+"--result\n"
+"4\n"
+"\n"
+"--Poligono nello spazio 3D\n"
+"SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 "
+"0,77.27 29.31 -1,77.29 29.07 3)'))\n"
+"--result\n"
+"4"
 
 #. Tag: refname
 #: reference_accessor.xml:1355
@@ -2257,7 +2697,9 @@ msgstr ""
 msgid ""
 "<funcdef>integer <function>ST_NRings</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>integer <function>ST_NRings</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>integer <function>ST_NRings</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1371
@@ -2271,13 +2713,23 @@ msgstr ""
 #: reference_accessor.xml:1381
 #, no-c-format
 msgid ""
-"SELECT ST_NRings(the_geom) As Nrings, ST_NumInteriorRings(the_geom) As ninterrings\n"
-"                                        FROM (SELECT ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))') As the_geom) As foo;\n"
+"SELECT ST_NRings(the_geom) As Nrings, ST_NumInteriorRings(the_geom) As "
+"ninterrings\n"
+"                                        FROM (SELECT "
+"ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))') As the_geom) As foo;\n"
 "         nrings | ninterrings\n"
 "--------+-------------\n"
 "          1 |           0\n"
 "(1 row)"
-msgstr "SELECT ST_NRings(the_geom) As Nrings, ST_NumInteriorRings(the_geom) As ninterrings\n                                        FROM (SELECT ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))') As the_geom) As foo;\n         nrings | ninterrings\n--------+-------------\n          1 |           0\n(1 row)"
+msgstr ""
+"SELECT ST_NRings(the_geom) As Nrings, ST_NumInteriorRings(the_geom) As "
+"ninterrings\n"
+"                                        FROM (SELECT "
+"ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))') As the_geom) As foo;\n"
+"         nrings | ninterrings\n"
+"--------+-------------\n"
+"          1 |           0\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_accessor.xml:1394
@@ -2299,7 +2751,9 @@ msgstr ""
 msgid ""
 "<funcdef>integer <function>ST_NumGeometries</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-msgstr "<funcdef>integer <function>ST_NumGeometries</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+"<funcdef>integer <function>ST_NumGeometries</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1411
@@ -2329,13 +2783,16 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 9.1.4"
 #: reference_accessor.xml:1427
 #, no-c-format
 msgid ""
-"--Prior versions would have returned NULL for this -- in 2.0.0 this returns 1\n"
-"SELECT ST_NumGeometries(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));\n"
+"--Prior versions would have returned NULL for this -- in 2.0.0 this returns "
+"1\n"
+"SELECT ST_NumGeometries(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 "
+"29.26,77.27 29.31,77.29 29.07)'));\n"
 "--result\n"
 "1\n"
 "\n"
 "--Geometry Collection Example - multis count as one geom in a collection\n"
-"SELECT ST_NumGeometries(ST_GeomFromEWKT('GEOMETRYCOLLECTION(MULTIPOINT(-2 3 , -2 2),\n"
+"SELECT ST_NumGeometries(ST_GeomFromEWKT('GEOMETRYCOLLECTION(MULTIPOINT(-2 "
+"3 , -2 2),\n"
 "LINESTRING(5 5 ,10 10),\n"
 "POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));\n"
 "--result\n"
@@ -2366,7 +2823,9 @@ msgstr ""
 msgid ""
 "<funcdef>integer <function>ST_NumInteriorRings</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
-msgstr "<funcdef>integer <function>ST_NumInteriorRings</function></funcdef> <paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
+msgstr ""
+"<funcdef>integer <function>ST_NumInteriorRings</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1454
@@ -2399,7 +2858,8 @@ msgid ""
 "FROM sometable;\n"
 "\n"
 "--If you have multipolygons\n"
-"--And you want to know the total number of interior rings in the MULTIPOLYGON\n"
+"--And you want to know the total number of interior rings in the "
+"MULTIPOLYGON\n"
 "SELECT gid, field1, field2, SUM(ST_NumInteriorRings(the_geom)) AS numholes\n"
 "FROM (SELECT gid, field1, field2, (ST_Dump(the_geom)).geom As the_geom\n"
 "        FROM sometable) As foo\n"
@@ -2426,7 +2886,9 @@ msgstr ""
 msgid ""
 "<funcdef>integer <function>ST_NumInteriorRing</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
-msgstr "<funcdef>integer <function>ST_NumInteriorRing</function></funcdef> <paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
+msgstr ""
+"<funcdef>integer <function>ST_NumInteriorRing</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 
 #. Tag: refname
 #: reference_accessor.xml:1500
@@ -2438,8 +2900,8 @@ msgstr "ST_NumPatches"
 #: reference_accessor.xml:1501
 #, no-c-format
 msgid ""
-"Return the number of faces on a Polyhedral Surface. Will return null for "
-"non-polyhedral geometries."
+"Return the number of faces on a Polyhedral Surface. Will return null for non-"
+"polyhedral geometries."
 msgstr ""
 
 #. Tag: funcprototype
@@ -2448,16 +2910,17 @@ msgstr ""
 msgid ""
 "<funcdef>integer <function>ST_NumPatches</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr "<funcdef>integer <function>ST_NumPatches</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+msgstr ""
+"<funcdef>integer <function>ST_NumPatches</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1516
 #, no-c-format
 msgid ""
-"Return the number of faces on a Polyhedral Surface. Will return null for "
-"non-polyhedral geometries. This is an alias for ST_NumGeometries to support "
-"MM naming. Faster to use ST_NumGeometries if you don't care about MM "
-"convention."
+"Return the number of faces on a Polyhedral Surface. Will return null for non-"
+"polyhedral geometries. This is an alias for ST_NumGeometries to support MM "
+"naming. Faster to use ST_NumGeometries if you don't care about MM convention."
 msgstr ""
 
 #. Tag: para
@@ -2476,10 +2939,13 @@ msgstr "&sqlmm_compliant; SQL-MM 3: ?"
 #: reference_accessor.xml:1529
 #, no-c-format
 msgid ""
-"SELECT ST_NumPatches(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
-"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"SELECT ST_NumPatches(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 "
+"1, 0 1 0, 0 0 0)),\n"
+"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
+"1, 0 0 1, 0 0 0)),\n"
 "                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
-"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));\n"
+"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
+"1, 0 1 1, 0 0 1)) )'));\n"
 "                --result\n"
 "                6"
 msgstr ""
@@ -2503,7 +2969,9 @@ msgstr ""
 msgid ""
 "<funcdef>integer <function>ST_NumPoints</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr "<funcdef>integer <function>ST_NumPoints</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+msgstr ""
+"<funcdef>integer <function>ST_NumPoints</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1557
@@ -2511,8 +2979,8 @@ msgstr "<funcdef>integer <function>ST_NumPoints</function></funcdef> <paramdef><
 msgid ""
 "Return the number of points in an ST_LineString or ST_CircularString value. "
 "Prior to 1.4 only works with Linestrings as the specs state. From 1.4 "
-"forward this is an alias for ST_NPoints which returns number of vertexes for"
-" not just line strings. Consider using ST_NPoints instead which is multi-"
+"forward this is an alias for ST_NPoints which returns number of vertexes for "
+"not just line strings. Consider using ST_NPoints instead which is multi-"
 "purpose and works with many geometry types."
 msgstr ""
 
@@ -2526,10 +2994,15 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.4"
 #: reference_accessor.xml:1570
 #, no-c-format
 msgid ""
-"SELECT ST_NumPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));\n"
+"SELECT ST_NumPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 "
+"29.26,77.27 29.31,77.29 29.07)'));\n"
 "                --result\n"
 "                4"
-msgstr "SELECT ST_NumPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));\n                --result\n                4"
+msgstr ""
+"SELECT ST_NumPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 "
+"29.26,77.27 29.31,77.29 29.07)'));\n"
+"                --result\n"
+"                4"
 
 #. Tag: refname
 #: reference_accessor.xml:1581
@@ -2552,7 +3025,10 @@ msgid ""
 "<funcdef>geometry <function>ST_PatchN</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_PatchN</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_PatchN</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1601
@@ -2585,10 +3061,13 @@ msgid ""
 "--Extract the 2nd face of the polyhedral surface\n"
 "SELECT ST_AsEWKT(ST_PatchN(geom, 2)) As geomewkt\n"
 "FROM (\n"
-"VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
-"        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 "
+"0 0)),\n"
+"        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, "
+"0 0 0)),\n"
 "        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
-"        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )')) ) As foo(geom);\n"
+"        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, "
+"0 0 1)) )')) ) As foo(geom);\n"
 "\n"
 "              geomewkt\n"
 "---+-----------------------------------------\n"
@@ -2601,7 +3080,9 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
-msgstr ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
+msgstr ""
+", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
+"linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:1638
@@ -2623,9 +3104,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_PointN</function></funcdef> "
-"<paramdef><type>geometry </type> "
-"<parameter>a_linestring</parameter></paramdef> <paramdef><type>integer "
-"</type> <parameter>n</parameter></paramdef>"
+"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2643,8 +3123,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Index is 1-based as for OGC specs since version 0.8.0. Backward indexing "
-"(negative index) is not in OGC Previous versions implemented this as 0-based"
-" instead."
+"(negative index) is not in OGC Previous versions implemented this as 0-based "
+"instead."
 msgstr ""
 
 #. Tag: para
@@ -2697,7 +3177,8 @@ msgid ""
 "(3 rows)\n"
 "\n"
 "--Example circular string\n"
-"SELECT ST_AsText(ST_PointN(ST_GeomFromText('CIRCULARSTRING(1 2, 3 2, 1 2)'),2));\n"
+"SELECT ST_AsText(ST_PointN(ST_GeomFromText('CIRCULARSTRING(1 2, 3 2, 1 "
+"2)'),2));\n"
 "\n"
 "st_astext\n"
 "----------\n"
@@ -2737,10 +3218,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns a MultiPoint containing all of the coordinates of a geometry. Does "
-"not remove points that are duplicated in the input geometry, including start"
-" and end points of ring geometries. (If this behavior is undesired, "
-"duplicates may be removed using <xref "
-"linkend=\"ST_RemoveRepeatedPoints\"/>)."
+"not remove points that are duplicated in the input geometry, including start "
+"and end points of ring geometries. (If this behavior is undesired, "
+"duplicates may be removed using <xref linkend=\"ST_RemoveRepeatedPoints\"/>)."
 msgstr ""
 
 #. Tag: para
@@ -2759,7 +3239,8 @@ msgstr ""
 #: reference_accessor.xml:1744
 #, no-c-format
 msgid ""
-"SELECT ST_AsText(ST_Points('POLYGON Z ((30 10 4,10 30 5,40 40 6, 30 10))'));\n"
+"SELECT ST_AsText(ST_Points('POLYGON Z ((30 10 4,10 30 5,40 40 6, 30 "
+"10))'));\n"
 "\n"
 "--result\n"
 "MULTIPOINT Z (30 10 4,10 30 5,40 40 6, 30 10 4)"
@@ -2785,7 +3266,9 @@ msgstr ""
 msgid ""
 "<funcdef>integer <function>ST_SRID</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr "<funcdef>integer <function>ST_SRID</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+msgstr ""
+"<funcdef>integer <function>ST_SRID</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1771
@@ -2799,10 +3282,10 @@ msgstr ""
 #: reference_accessor.xml:1772
 #, no-c-format
 msgid ""
-"spatial_ref_sys table is a table that catalogs all spatial reference systems"
-" known to PostGIS and is used for transformations from one spatial reference"
-" system to another. So verifying you have the right spatial reference system"
-" identifier is important if you plan to ever transform your geometries."
+"spatial_ref_sys table is a table that catalogs all spatial reference systems "
+"known to PostGIS and is used for transformations from one spatial reference "
+"system to another. So verifying you have the right spatial reference system "
+"identifier is important if you plan to ever transform your geometries."
 msgstr ""
 
 #. Tag: para
@@ -2818,15 +3301,20 @@ msgid ""
 "SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));\n"
 "                --result\n"
 "                4326"
-msgstr "SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));\n                --risultato\n                4326"
+msgstr ""
+"SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));\n"
+"                --risultato\n"
+"                4326"
 
 #. Tag: para
 #: reference_accessor.xml:1789
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref"
-" linkend=\"ST_Transform\"/>"
-msgstr ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+"linkend=\"ST_Transform\"/>"
+msgstr ""
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+"linkend=\"ST_Transform\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:1795
@@ -2848,15 +3336,17 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_StartPoint</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_StartPoint</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_StartPoint</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1814
 #, no-c-format
 msgid ""
 "Returns the first point of a <varname>LINESTRING</varname> or "
-"<varname>CIRCULARLINESTRING</varname> geometry as a <varname>POINT</varname>"
-" or <varname>NULL</varname> if the input parameter is not a "
+"<varname>CIRCULARLINESTRING</varname> geometry as a <varname>POINT</varname> "
+"or <varname>NULL</varname> if the input parameter is not a "
 "<varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname>."
 msgstr ""
 
@@ -2890,7 +3380,8 @@ msgid ""
 "(1 row)\n"
 "\n"
 "-- circular linestring --\n"
-"SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 5 2)'::geometry));\n"
+"SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, "
+"5 2)'::geometry));\n"
 " st_astext\n"
 "------------\n"
 " POINT(5 2)"
@@ -2912,8 +3403,8 @@ msgstr "ST_Summary"
 #: reference_accessor.xml:1846
 #, no-c-format
 msgid ""
-"<refpurpose>Returns a text summary of the contents of the "
-"geometry.</refpurpose>"
+"<refpurpose>Returns a text summary of the contents of the geometry.</"
+"refpurpose>"
 msgstr ""
 
 #. Tag: funcsynopsis
@@ -2921,10 +3412,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>text <function>ST_Summary</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> "
-"</funcprototype> <funcprototype> <funcdef>text "
-"<function>ST_Summary</function></funcdef> <paramdef><type>geography </type> "
-"<parameter>g</parameter></paramdef> </funcprototype>"
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>text <function>ST_Summary</"
+"function></funcdef> <paramdef><type>geography </type> <parameter>g</"
+"parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -3001,7 +3492,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "=# SELECT ST_Summary(ST_GeomFromText('LINESTRING(0 0, 1 1)')) as geom,\n"
-"        ST_Summary(ST_GeogFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) geog;\n"
+"        ST_Summary(ST_GeogFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) "
+"geog;\n"
 "            geom             |          geog\n"
 "-----------------------------+--------------------------\n"
 " LineString[B] with 2 points | Polygon[BGS] with 1 rings\n"
@@ -3010,8 +3502,10 @@ msgid ""
 "(1 row)\n"
 "\n"
 "\n"
-"=# SELECT ST_Summary(ST_GeogFromText('LINESTRING(0 0 1, 1 1 1)')) As geog_line,\n"
-"        ST_Summary(ST_GeomFromText('SRID=4326;POLYGON((0 0 1, 1 1 2, 1 2 3, 1 1 1, 0 0 1))')) As geom_poly;\n"
+"=# SELECT ST_Summary(ST_GeogFromText('LINESTRING(0 0 1, 1 1 1)')) As "
+"geog_line,\n"
+"        ST_Summary(ST_GeomFromText('SRID=4326;POLYGON((0 0 1, 1 1 2, 1 2 3, "
+"1 1 1, 0 0 1))')) As geom_poly;\n"
 ";\n"
 "           geog_line             |        geom_poly\n"
 "-------------------------------- +--------------------------\n"
@@ -3036,7 +3530,9 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_IsValidReason\"/>, "
 "<xref linkend=\"ST_IsValidDetail\"/>"
-msgstr ", <xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail\"/>"
+msgstr ""
+", <xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_IsValidReason\"/>, "
+"<xref linkend=\"ST_IsValidDetail\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:1923
@@ -3050,7 +3546,9 @@ msgstr "ST_X"
 msgid ""
 "<refpurpose>Return the X coordinate of the point, or NULL if not available. "
 "Input must be a point.</refpurpose>"
-msgstr "<refpurpose>Restituisce la coordinata X del punto, o NULL se non disponibile. L'input deve essere un punto.</refpurpose>"
+msgstr ""
+"<refpurpose>Restituisce la coordinata X del punto, o NULL se non "
+"disponibile. L'input deve essere un punto.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1931
@@ -3058,7 +3556,9 @@ msgstr "<refpurpose>Restituisce la coordinata X del punto, o NULL se non disponi
 msgid ""
 "<funcdef>float <function>ST_X</function></funcdef> <paramdef><type>geometry "
 "</type> <parameter>a_point</parameter></paramdef>"
-msgstr "<funcdef>float <function>ST_X</function></funcdef> <paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>"
+msgstr ""
+"<funcdef>float <function>ST_X</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1941
@@ -3066,7 +3566,9 @@ msgstr "<funcdef>float <function>ST_X</function></funcdef> <paramdef><type>geome
 msgid ""
 "<para>Return the X coordinate of the point, or NULL if not available. Input "
 "must be a point.</para>"
-msgstr "<para>Restituisce la coordinata X del punto, o NULL se non disponibile. L'input deve essere un punto.</para>"
+msgstr ""
+"<para>Restituisce la coordinata X del punto, o NULL se non disponibile. "
+"L'input deve essere un punto.</para>"
 
 #. Tag: para
 #: reference_accessor.xml:1944
@@ -3074,7 +3576,9 @@ msgstr "<para>Restituisce la coordinata X del punto, o NULL se non disponibile. 
 msgid ""
 "If you want to get the max min x values of any geometry look at ST_XMin, "
 "ST_XMax functions."
-msgstr "Se volete recuperare i valori minimo e massimo della x per una qualsiasi geometria, considerate le funzioni ST_XMin, ST_XMax."
+msgstr ""
+"Se volete recuperare i valori minimo e massimo della x per una qualsiasi "
+"geometria, considerate le funzioni ST_XMin, ST_XMax."
 
 #. Tag: para
 #: reference_accessor.xml:1946
@@ -3097,16 +3601,30 @@ msgid ""
 "------\n"
 "  1.5\n"
 "(1 row)"
-msgstr "SELECT ST_X(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n st_x\n------\n        1\n(1 row)\n\nSELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));\n st_y\n------\n  1.5\n(1 row)"
+msgstr ""
+"SELECT ST_X(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n"
+" st_x\n"
+"------\n"
+"        1\n"
+"(1 row)\n"
+"\n"
+"SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));\n"
+" st_y\n"
+"------\n"
+"  1.5\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_accessor.xml:1961
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref "
-"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
-"linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>"
-msgstr ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>"
+"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_Y\"/"
+">, <xref linkend=\"ST_Z\"/>"
+msgstr ""
+", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref "
+"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_Y\"/"
+">, <xref linkend=\"ST_Z\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:1967
@@ -3118,8 +3636,8 @@ msgstr "ST_XMax"
 #: reference_accessor.xml:1969
 #, no-c-format
 msgid ""
-"<refpurpose>Returns X maxima of a bounding box 2d or 3d or a "
-"geometry.</refpurpose>"
+"<refpurpose>Returns X maxima of a bounding box 2d or 3d or a geometry.</"
+"refpurpose>"
 msgstr ""
 
 #. Tag: funcprototype
@@ -3133,8 +3651,7 @@ msgstr ""
 #. Tag: para
 #: reference_accessor.xml:1984
 #, no-c-format
-msgid ""
-"<para>Returns X maxima of a bounding box 2d or 3d or a geometry.</para>"
+msgid "<para>Returns X maxima of a bounding box 2d or 3d or a geometry.</para>"
 msgstr ""
 
 #. Tag: para
@@ -3143,8 +3660,8 @@ msgstr ""
 #: reference_accessor.xml:2253 reference_accessor.xml:2340
 #, no-c-format
 msgid ""
-"Although this function is only defined for box3d, it will work for box2d and"
-" geometry because of the auto-casting behavior defined for geometries and "
+"Although this function is only defined for box3d, it will work for box2d and "
+"geometry because of the auto-casting behavior defined for geometries and "
 "box2d. However you can not feed it a geometry or box2d text representation, "
 "since that will not auto-cast."
 msgstr ""
@@ -3167,24 +3684,54 @@ msgid ""
 "st_xmax\n"
 "-------\n"
 "3\n"
-"--Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D\n"
+"--Observe THIS DOES NOT WORK because it will try to autocast the string "
+"representation to a BOX3D\n"
 "SELECT ST_XMax('LINESTRING(1 3, 5 6)');\n"
 "\n"
 "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
 "\n"
-"SELECT ST_XMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));\n"
+"SELECT ST_XMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
 "st_xmax\n"
 "--------\n"
 "220288.248780547"
-msgstr "SELECT ST_XMax('BOX3D(1 2 3, 4 5 6)');\nst_xmax\n-------\n4\n\nSELECT ST_XMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\nst_xmax\n-------\n5\n\nSELECT ST_XMax(CAST('BOX(-3 2, 3 4)' As box2d));\nst_xmax\n-------\n3\n--NOTA: QUESTO NON FUNZIONA perché cercherà di eseguire il casting automatico della rappresentazione della stringa a un BOX3D\n\nSELECT ST_XMax('LINESTRING(1 3, 5 6)');\n\n--ERROR:  BOX3D parser - doesn't start with BOX3D(\n\nSELECT ST_XMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));\nst_xmax\n--------\n220288.248780547"
+msgstr ""
+"SELECT ST_XMax('BOX3D(1 2 3, 4 5 6)');\n"
+"st_xmax\n"
+"-------\n"
+"4\n"
+"\n"
+"SELECT ST_XMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+"st_xmax\n"
+"-------\n"
+"5\n"
+"\n"
+"SELECT ST_XMax(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+"st_xmax\n"
+"-------\n"
+"3\n"
+"--NOTA: QUESTO NON FUNZIONA perché cercherà di eseguire il casting "
+"automatico della rappresentazione della stringa a un BOX3D\n"
+"\n"
+"SELECT ST_XMax('LINESTRING(1 3, 5 6)');\n"
+"\n"
+"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+"\n"
+"SELECT ST_XMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
+"st_xmax\n"
+"--------\n"
+"220288.248780547"
 
 #. Tag: para
 #: reference_accessor.xml:2006 reference_accessor.xml:2051
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
-"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
-msgstr ", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+msgstr ""
+", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:2012
@@ -3196,8 +3743,8 @@ msgstr "ST_XMin"
 #: reference_accessor.xml:2014
 #, no-c-format
 msgid ""
-"<refpurpose>Returns X minima of a bounding box 2d or 3d or a "
-"geometry.</refpurpose>"
+"<refpurpose>Returns X minima of a bounding box 2d or 3d or a geometry.</"
+"refpurpose>"
 msgstr ""
 
 #. Tag: funcprototype
@@ -3211,8 +3758,7 @@ msgstr ""
 #. Tag: para
 #: reference_accessor.xml:2029
 #, no-c-format
-msgid ""
-"<para>Returns X minima of a bounding box 2d or 3d or a geometry.</para>"
+msgid "<para>Returns X minima of a bounding box 2d or 3d or a geometry.</para>"
 msgstr ""
 
 #. Tag: programlisting
@@ -3233,16 +3779,43 @@ msgid ""
 "st_xmin\n"
 "-------\n"
 "-3\n"
-"--Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D\n"
+"--Observe THIS DOES NOT WORK because it will try to autocast the string "
+"representation to a BOX3D\n"
 "SELECT ST_XMin('LINESTRING(1 3, 5 6)');\n"
 "\n"
 "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
 "\n"
-"SELECT ST_XMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));\n"
+"SELECT ST_XMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
 "st_xmin\n"
 "--------\n"
 "220186.995121892"
-msgstr "SELECT ST_XMin('BOX3D(1 2 3, 4 5 6)');\nst_xmin\n-------\n1\n\nSELECT ST_XMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\nst_xmin\n-------\n1\n\nSELECT ST_XMin(CAST('BOX(-3 2, 3 4)' As box2d));\nst_xmin\n-------\n-3\n--NOTA: QUESTO NON FUNZIONA perché cercherà di eseguire il casting automatico della rappresentazione della stringa a un BOX3D\nSELECT ST_XMin('LINESTRING(1 3, 5 6)');\n\n--ERROR:  BOX3D parser - doesn't start with BOX3D(\n\nSELECT ST_XMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));\nst_xmin\n--------\n220186.995121892"
+msgstr ""
+"SELECT ST_XMin('BOX3D(1 2 3, 4 5 6)');\n"
+"st_xmin\n"
+"-------\n"
+"1\n"
+"\n"
+"SELECT ST_XMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+"st_xmin\n"
+"-------\n"
+"1\n"
+"\n"
+"SELECT ST_XMin(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+"st_xmin\n"
+"-------\n"
+"-3\n"
+"--NOTA: QUESTO NON FUNZIONA perché cercherà di eseguire il casting "
+"automatico della rappresentazione della stringa a un BOX3D\n"
+"SELECT ST_XMin('LINESTRING(1 3, 5 6)');\n"
+"\n"
+"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+"\n"
+"SELECT ST_XMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
+"st_xmin\n"
+"--------\n"
+"220186.995121892"
 
 #. Tag: refname
 #: reference_accessor.xml:2057
@@ -3264,7 +3837,9 @@ msgstr ""
 msgid ""
 "<funcdef>float <function>ST_Y</function></funcdef> <paramdef><type>geometry "
 "</type> <parameter>a_point</parameter></paramdef>"
-msgstr "<funcdef>float <function>ST_Y</function></funcdef> <paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>"
+msgstr ""
+"<funcdef>float <function>ST_Y</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:2075
@@ -3295,16 +3870,30 @@ msgid ""
 "------\n"
 "  1.5\n"
 "(1 row)"
-msgstr "SELECT ST_Y(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n st_y\n------\n        2\n(1 row)\n\nSELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));\n st_y\n------\n  1.5\n(1 row)"
+msgstr ""
+"SELECT ST_Y(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n"
+" st_y\n"
+"------\n"
+"        2\n"
+"(1 row)\n"
+"\n"
+"SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));\n"
+" st_y\n"
+"------\n"
+"  1.5\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_accessor.xml:2094
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref "
-"linkend=\"ST_X\"/>, <xref linkend=\"ST_YMax\"/>, <xref "
-"linkend=\"ST_YMin\"/>, <xref linkend=\"ST_Z\"/>"
-msgstr ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_Z\"/>"
+"linkend=\"ST_X\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/"
+">, <xref linkend=\"ST_Z\"/>"
+msgstr ""
+", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref "
+"linkend=\"ST_X\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/"
+">, <xref linkend=\"ST_Z\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:2100
@@ -3316,8 +3905,8 @@ msgstr "ST_YMax"
 #: reference_accessor.xml:2102
 #, no-c-format
 msgid ""
-"<refpurpose>Returns Y maxima of a bounding box 2d or 3d or a "
-"geometry.</refpurpose>"
+"<refpurpose>Returns Y maxima of a bounding box 2d or 3d or a geometry.</"
+"refpurpose>"
 msgstr ""
 
 #. Tag: funcprototype
@@ -3326,13 +3915,14 @@ msgstr ""
 msgid ""
 "<funcdef>float <function>ST_YMax</function></funcdef> <paramdef><type>box3d "
 "</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr "<funcdef>float <function>ST_YMax</function></funcdef> <paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
+msgstr ""
+"<funcdef>float <function>ST_YMax</function></funcdef> <paramdef><type>box3d "
+"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:2117
 #, no-c-format
-msgid ""
-"<para>Returns Y maxima of a bounding box 2d or 3d or a geometry.</para>"
+msgid "<para>Returns Y maxima of a bounding box 2d or 3d or a geometry.</para>"
 msgstr ""
 
 #. Tag: programlisting
@@ -3353,24 +3943,53 @@ msgid ""
 "st_ymax\n"
 "-------\n"
 "4\n"
-"--Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D\n"
+"--Observe THIS DOES NOT WORK because it will try to autocast the string "
+"representation to a BOX3D\n"
 "SELECT ST_YMax('LINESTRING(1 3, 5 6)');\n"
 "\n"
 "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
 "\n"
-"SELECT ST_YMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));\n"
+"SELECT ST_YMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
 "st_ymax\n"
 "--------\n"
 "150506.126829327"
-msgstr "SELECT ST_YMax('BOX3D(1 2 3, 4 5 6)');\nst_ymax\n-------\n5\n\nSELECT ST_YMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\nst_ymax\n-------\n6\n\nSELECT ST_YMax(CAST('BOX(-3 2, 3 4)' As box2d));\nst_ymax\n-------\n4\n--NOTA: QUESTO NON FUNZIONA perché cercherà di eseguire il casting automatico della rappresentazione della stringa a un BOX3D\nSELECT ST_YMax('LINESTRING(1 3, 5 6)');\n\n--ERROR:  BOX3D parser - doesn't start with BOX3D(\n\nSELECT ST_YMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));\nst_ymax\n--------\n150506.126829327"
+msgstr ""
+"SELECT ST_YMax('BOX3D(1 2 3, 4 5 6)');\n"
+"st_ymax\n"
+"-------\n"
+"5\n"
+"\n"
+"SELECT ST_YMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+"st_ymax\n"
+"-------\n"
+"6\n"
+"\n"
+"SELECT ST_YMax(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+"st_ymax\n"
+"-------\n"
+"4\n"
+"--NOTA: QUESTO NON FUNZIONA perché cercherà di eseguire il casting "
+"automatico della rappresentazione della stringa a un BOX3D\n"
+"SELECT ST_YMax('LINESTRING(1 3, 5 6)');\n"
+"\n"
+"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+"\n"
+"SELECT ST_YMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
+"st_ymax\n"
+"--------\n"
+"150506.126829327"
 
 #. Tag: para
 #: reference_accessor.xml:2139
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
-"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
-msgstr ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+msgstr ""
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:2145
@@ -3382,8 +4001,8 @@ msgstr "ST_YMin"
 #: reference_accessor.xml:2147
 #, no-c-format
 msgid ""
-"<refpurpose>Returns Y minima of a bounding box 2d or 3d or a "
-"geometry.</refpurpose>"
+"<refpurpose>Returns Y minima of a bounding box 2d or 3d or a geometry.</"
+"refpurpose>"
 msgstr ""
 
 #. Tag: funcprototype
@@ -3392,13 +4011,14 @@ msgstr ""
 msgid ""
 "<funcdef>float <function>ST_YMin</function></funcdef> <paramdef><type>box3d "
 "</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr "<funcdef>float <function>ST_YMin</function></funcdef> <paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
+msgstr ""
+"<funcdef>float <function>ST_YMin</function></funcdef> <paramdef><type>box3d "
+"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:2162
 #, no-c-format
-msgid ""
-"<para>Returns Y minima of a bounding box 2d or 3d or a geometry.</para>"
+msgid "<para>Returns Y minima of a bounding box 2d or 3d or a geometry.</para>"
 msgstr ""
 
 #. Tag: programlisting
@@ -3419,25 +4039,53 @@ msgid ""
 "st_ymin\n"
 "-------\n"
 "2\n"
-"--Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D\n"
+"--Observe THIS DOES NOT WORK because it will try to autocast the string "
+"representation to a BOX3D\n"
 "SELECT ST_YMin('LINESTRING(1 3, 5 6)');\n"
 "\n"
 "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
 "\n"
-"SELECT ST_YMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));\n"
+"SELECT ST_YMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
 "st_ymin\n"
 "--------\n"
 "150406"
-msgstr "SELECT ST_YMin('BOX3D(1 2 3, 4 5 6)');\nst_ymin\n-------\n2\n\nSELECT ST_YMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\nst_ymin\n-------\n3\n\nSELECT ST_YMin(CAST('BOX(-3 2, 3 4)' As box2d));\nst_ymin\n-------\n2\n--Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D\nSELECT ST_YMin('LINESTRING(1 3, 5 6)');\n\n--ERROR:  BOX3D parser - doesn't start with BOX3D(\n\nSELECT ST_YMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));\nst_ymin\n--------\n150406"
+msgstr ""
+"SELECT ST_YMin('BOX3D(1 2 3, 4 5 6)');\n"
+"st_ymin\n"
+"-------\n"
+"2\n"
+"\n"
+"SELECT ST_YMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+"st_ymin\n"
+"-------\n"
+"3\n"
+"\n"
+"SELECT ST_YMin(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+"st_ymin\n"
+"-------\n"
+"2\n"
+"--Observe THIS DOES NOT WORK because it will try to autocast the string "
+"representation to a BOX3D\n"
+"SELECT ST_YMin('LINESTRING(1 3, 5 6)');\n"
+"\n"
+"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+"\n"
+"SELECT ST_YMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
+"st_ymin\n"
+"--------\n"
+"150406"
 
 #. Tag: para
 #: reference_accessor.xml:2184
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
-"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
-"linkend=\"ST_ZMin\"/>"
-msgstr ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+msgstr ""
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:2190
@@ -3459,7 +4107,9 @@ msgstr ""
 msgid ""
 "<funcdef>float <function>ST_Z</function></funcdef> <paramdef><type>geometry "
 "</type> <parameter>a_point</parameter></paramdef>"
-msgstr "<funcdef>float <function>ST_Z</function></funcdef> <paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>"
+msgstr ""
+"<funcdef>float <function>ST_Z</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:2208
@@ -3484,9 +4134,11 @@ msgstr ""
 #: reference_accessor.xml:2227
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref "
-"linkend=\"ST_Y\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
-msgstr ", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/"
+">, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+msgstr ""
+", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/"
+">, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:2233
@@ -3498,8 +4150,8 @@ msgstr "ST_ZMax"
 #: reference_accessor.xml:2235 reference_accessor.xml:2322
 #, no-c-format
 msgid ""
-"<refpurpose>Returns Z minima of a bounding box 2d or 3d or a "
-"geometry.</refpurpose>"
+"<refpurpose>Returns Z minima of a bounding box 2d or 3d or a geometry.</"
+"refpurpose>"
 msgstr ""
 
 #. Tag: funcprototype
@@ -3534,12 +4186,14 @@ msgid ""
 "st_zmax\n"
 "-------\n"
 "1\n"
-"--Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D\n"
+"--Observe THIS DOES NOT WORK because it will try to autocast the string "
+"representation to a BOX3D\n"
 "SELECT ST_ZMax('LINESTRING(1 3 4, 5 6 7)');\n"
 "\n"
 "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
 "\n"
-"SELECT ST_ZMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));\n"
+"SELECT ST_ZMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
 "st_zmax\n"
 "--------\n"
 "3"
@@ -3549,10 +4203,11 @@ msgstr ""
 #: reference_accessor.xml:2272
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
-"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
-"linkend=\"ST_ZMax\"/>"
-msgstr ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+msgstr ""
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:2278
@@ -3580,8 +4235,8 @@ msgstr ""
 #: reference_accessor.xml:2296
 #, no-c-format
 msgid ""
-"<para>Returns ZM (dimension semantic) flag of the geometries as a small int."
-" Values are: 0=2d, 1=3dm, 2=3dz, 3=4d.</para>"
+"<para>Returns ZM (dimension semantic) flag of the geometries as a small int. "
+"Values are: 0=2d, 1=3dm, 2=3dz, 3=4d.</para>"
 msgstr ""
 
 #. Tag: programlisting
@@ -3606,7 +4261,25 @@ msgid ""
 " st_zmflag\n"
 "-----------\n"
 "                 3"
-msgstr "SELECT ST_Zmflag(ST_GeomFromEWKT('LINESTRING(1 2, 3 4)'));\n st_zmflag\n-----------\n                 0\n\nSELECT ST_Zmflag(ST_GeomFromEWKT('LINESTRINGM(1 2 3, 3 4 3)'));\n st_zmflag\n-----------\n                 1\n\nSELECT ST_Zmflag(ST_GeomFromEWKT('CIRCULARSTRING(1 2 3, 3 4 3, 5 6 3)'));\n st_zmflag\n-----------\n                 2\nSELECT ST_Zmflag(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n st_zmflag\n-----------\n                 3"
+msgstr ""
+"SELECT ST_Zmflag(ST_GeomFromEWKT('LINESTRING(1 2, 3 4)'));\n"
+" st_zmflag\n"
+"-----------\n"
+"                 0\n"
+"\n"
+"SELECT ST_Zmflag(ST_GeomFromEWKT('LINESTRINGM(1 2 3, 3 4 3)'));\n"
+" st_zmflag\n"
+"-----------\n"
+"                 1\n"
+"\n"
+"SELECT ST_Zmflag(ST_GeomFromEWKT('CIRCULARSTRING(1 2 3, 3 4 3, 5 6 3)'));\n"
+" st_zmflag\n"
+"-----------\n"
+"                 2\n"
+"SELECT ST_Zmflag(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n"
+" st_zmflag\n"
+"-----------\n"
+"                 3"
 
 #. Tag: para
 #: reference_accessor.xml:2314
@@ -3626,14 +4299,17 @@ msgstr "ST_ZMin"
 msgid ""
 "<funcdef>float <function>ST_ZMin</function></funcdef> <paramdef><type>box3d "
 "</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr "<funcdef>float <function>ST_ZMin</function></funcdef> <paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
+msgstr ""
+"<funcdef>float <function>ST_ZMin</function></funcdef> <paramdef><type>box3d "
+"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:2337
 #, no-c-format
-msgid ""
-"<para>Returns Z minima of a bounding box 2d or 3d or a geometry.</para>"
-msgstr "<para>Restituisce la minima Z per una bounding box 2d o 3d o per una geometria.</para>"
+msgid "<para>Returns Z minima of a bounding box 2d or 3d or a geometry.</para>"
+msgstr ""
+"<para>Restituisce la minima Z per una bounding box 2d o 3d o per una "
+"geometria.</para>"
 
 #. Tag: programlisting
 #: reference_accessor.xml:2352
@@ -3653,22 +4329,53 @@ msgid ""
 "st_zmin\n"
 "-------\n"
 "1\n"
-"--Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D\n"
+"--Observe THIS DOES NOT WORK because it will try to autocast the string "
+"representation to a BOX3D\n"
 "SELECT ST_ZMin('LINESTRING(1 3 4, 5 6 7)');\n"
 "\n"
 "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
 "\n"
-"SELECT ST_ZMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));\n"
+"SELECT ST_ZMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
 "st_zmin\n"
 "--------\n"
 "1"
-msgstr "SELECT ST_ZMin('BOX3D(1 2 3, 4 5 6)');\nst_zmin\n-------\n3\n\nSELECT ST_ZMin(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));\nst_zmin\n-------\n4\n\nSELECT ST_ZMin('BOX3D(-3 2 1, 3 4 1)' );\nst_zmin\n-------\n1\n--NOTA: QUESTO NON FUNZIONA perché cercherà di eseguire il casting automatico della rappresentazione della stringa a un BOX3D\n\nSELECT ST_ZMin('LINESTRING(1 3 4, 5 6 7)');\n\n--ERROR:  BOX3D parser - doesn't start with BOX3D(\n\nSELECT ST_ZMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));\nst_zmin\n--------\n1"
+msgstr ""
+"SELECT ST_ZMin('BOX3D(1 2 3, 4 5 6)');\n"
+"st_zmin\n"
+"-------\n"
+"3\n"
+"\n"
+"SELECT ST_ZMin(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));\n"
+"st_zmin\n"
+"-------\n"
+"4\n"
+"\n"
+"SELECT ST_ZMin('BOX3D(-3 2 1, 3 4 1)' );\n"
+"st_zmin\n"
+"-------\n"
+"1\n"
+"--NOTA: QUESTO NON FUNZIONA perché cercherà di eseguire il casting "
+"automatico della rappresentazione della stringa a un BOX3D\n"
+"\n"
+"SELECT ST_ZMin('LINESTRING(1 3 4, 5 6 7)');\n"
+"\n"
+"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+"\n"
+"SELECT ST_ZMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
+"st_zmin\n"
+"--------\n"
+"1"
 
 #. Tag: para
 #: reference_accessor.xml:2359
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
-"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref "
-"linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
-msgstr ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin"
+"\"/>, <xref linkend=\"ST_ZMax\"/>"
+msgstr ""
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
+"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin"
+"\"/>, <xref linkend=\"ST_ZMax\"/>"
