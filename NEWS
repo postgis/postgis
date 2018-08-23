@@ -1,3 +1,10 @@
+PostGIS 3.0.0
+2019/xx/xx
+* Enhancements *
+  - #4153, ST_Segmentize now splits segments proportionally (Darafei
+    Praliaskouski).
+
+
 PostGIS 2.5.0rc1
 2018/08/19
 New since PostGIS 2.5.0beta2
