@@ -3173,10 +3173,12 @@ CREATE INDEX ON broadcasting_towers using gist (geom);
 CREATE INDEX ON broadcasting_towers using gist (ST_Expand(geom, sending_range));
 
 -- Query towers that 4-kilometer receiver in Minsk Hackerspace can get
+-- Note: two conditions, because shorter LEAST(b.sending_range, 4000) will not use index.
 SELECT b.tower_id, b.geom
   FROM broadcasting_towers b
   WHERE ST_DWithin(b.geom, 'SRID=3857;POINT(3072163.4 7159374.1)', 4000)
 	  AND ST_DWithin(b.geom, 'SRID=3857;POINT(3072163.4 7159374.1)', b.sending_range);
+
 			  </programlisting>
 	  </refsection>
 
