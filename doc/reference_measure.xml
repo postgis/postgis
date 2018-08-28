@@ -3164,12 +3164,12 @@ SELECT s.gid, s.school_name
 	WHERE h.gid IS NULL;
 
 -- Find broadcasting towers that receiver with limited range can receive.
--- Data is in Spherical Mercator (SRID=3857), ranges are approximate.
+-- Data is geometry in Spherical Mercator (SRID=3857), ranges are approximate.
 
--- Create index that will check proximity limit of user to tower
+-- Create geometry index that will check proximity limit of user to tower
 CREATE INDEX ON broadcasting_towers using gist (geom);
 
--- Create index that will check proximity limit of tower to user
+-- Create geometry index that will check proximity limit of tower to user
 CREATE INDEX ON broadcasting_towers using gist (ST_Expand(geom, sending_range));
 
 -- Query towers that 4-kilometer receiver in Minsk Hackerspace can get
