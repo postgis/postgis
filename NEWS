@@ -3,7 +3,8 @@ PostGIS 3.0.0
 * Enhancements *
   - #4153, ST_Segmentize now splits segments proportionally (Darafei
     Praliaskouski).
-
+  - #4162, ST_DWithin documentation examples for storing geometry and
+    radius in table (Darafei Praliaskouski, github user Boscop).
 
 PostGIS 2.5.0rc1
 2018/08/19
