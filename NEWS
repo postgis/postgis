@@ -1,3 +1,9 @@
+PostGIS 2.5.0rc2
+2018/08/xx
+New since PostGIS 2.5.0rc1
+  - #4162, ST_DWithin documentation examples for storing geometry and
+    radius in table (Darafei Praliaskouski, github user Boscop).
+
 PostGIS 2.5.0rc1
 2018/08/19
 New since PostGIS 2.5.0beta2
