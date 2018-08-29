@@ -17,6 +17,7 @@ PostGIS 2.4.5
   - #4093, Inconsistent results from qsort callback (yugr)
   - #4081, Geography DWithin() issues for certain cases (Paul Ramsey)
   - #4105, Parallel build of tarball (Bas Couwenberg)
+  - #4163, MVT: Fix resource leak when the first geometry is NULL (Raúl Marín)
 
 
 PostGIS 2.4.4
