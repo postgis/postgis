@@ -794,6 +794,17 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	fx = extent / width;
 	fy = -(extent / height);
 
+	if (FLAGS_GET_BBOX(lwgeom->flags) && lwgeom->bbox &&
+		(lwgeom->type == LINETYPE || lwgeom->type == MULTILINETYPE ||
+		lwgeom->type == POLYGONTYPE || lwgeom->type == MULTIPOLYGONTYPE))
+	{
+		// Shortcut to drop geometries smaller than the resolution
+		double bbox_width = lwgeom->bbox->xmax - lwgeom->bbox->xmin;
+		double bbox_height = lwgeom->bbox->ymax - lwgeom->bbox->ymin;
+		if (bbox_height * bbox_height + bbox_width * bbox_width < res * res)
+			return NULL;
+	}
+
 	/* Remove all non-essential points (under the output resolution) */
 	lwgeom_remove_repeated_points_in_place(lwgeom, res);
 	lwgeom_simplify_in_place(lwgeom, res, preserve_collapsed);
