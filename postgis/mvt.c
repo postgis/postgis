@@ -894,6 +894,7 @@ void mvt_agg_init_context(mvt_agg_context *ctx)
 	ctx->bool_values_hash = NULL;
 	ctx->values_hash_i = 0;
 	ctx->keys_hash_i = 0;
+	ctx->geom_index = UINT32_MAX;
 
 	memset(&ctx->column_cache, 0, sizeof(ctx->column_cache));
 
@@ -936,7 +937,7 @@ void mvt_agg_transfn(mvt_agg_context *ctx)
 		POSTGIS_DEBUGF(3, "mvt_agg_transfn new_capacity: %zd", new_capacity);
 	}
 
-	if (layer->n_features == 0)
+	if (ctx->geom_index == UINT32_MAX)
 		parse_column_keys(ctx);
 
 	datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);
