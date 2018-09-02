@@ -704,7 +704,7 @@ sub run_simple_test
 	if ( $OPT_EXTENSIONS ) {
 		# TODO: allow override this default with env variable ?
 		my $pgis_majmin = $libver;
-		$pgis_majmin =~ s/^([1-9]*\.[1-9]*).*/\1/;
+		$pgis_majmin =~ s/^([1-9]*\.[0-9]*).*/\1/;
 		$scriptdir = `pg_config --sharedir`;
 		chop $scriptdir;
 		$scriptdir .= "/contrib/postgis-" . $pgis_majmin;
