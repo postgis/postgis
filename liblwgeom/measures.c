@@ -2318,15 +2318,6 @@ distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2)
 	return hypot(hside, vside);
 }
 
-inline double
-distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2)
-{
-	double hside = p2->x - p1->x;
-	double vside = p2->y - p1->y;
-
-	return hside * hside + vside * vside;
-}
-
 double
 distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
 {
