@@ -1180,7 +1180,7 @@ extern float  next_float_up(double d);
 /* general utilities 2D */
 extern double  distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2);
 
-inline double
+inline static double
 distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2)
 {
 	double hside = p2->x - p1->x;
