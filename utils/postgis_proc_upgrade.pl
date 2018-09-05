@@ -493,8 +493,8 @@ BEGIN
 		SELECT into old_scripts MODULE_scripts_installed();
 	END;
 	SELECT into new_scripts 'NEWVERSION';
-	SELECT into old_maj substring(old_scripts from 1 for 2);
-	SELECT into new_maj substring(new_scripts from 1 for 2);
+	SELECT into old_maj substring(old_scripts from 1 for 1);
+	SELECT into new_maj substring(new_scripts from 1 for 1);
 
 	-- 2.x to 3.x was upgrade-compatible, see
 	-- https://trac.osgeo.org/postgis/ticket/4170#comment:1
