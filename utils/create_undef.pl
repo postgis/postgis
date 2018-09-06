@@ -194,7 +194,7 @@ foreach my $op (@ops)
 {
 	if ($op =~ /create operator ([^(]+)\s*\(.*LEFTARG\s*=\s*(\w+),\s*RIGHTARG\s*=\s*(\w+).*/ism )
 	{
-		print "DROP OPERATOR IF EXISTS $1 ($2,$3) CASCADE;\n";
+		print "DROP OPERATOR IF EXISTS $1 ($2,$3);\n";
 	}
 	else
 	{
