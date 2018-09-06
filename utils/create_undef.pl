@@ -263,10 +263,9 @@ BEGIN
 		JOIN pg_type t ON a.atttypid = t.oid
 		WHERE t.typname = '$type'
 		  AND NOT (
-				-- we exclude coplexes defined as types
+				-- we exclude complexes defined as types
 				-- by our own extension
-				c.relkind = 'c'
-				AND
+				c.relkind = 'c' AND
 				c.relname in ( $quotedtypelist )
 			)
 	LOOP
