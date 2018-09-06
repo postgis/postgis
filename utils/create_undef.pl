@@ -246,10 +246,44 @@ foreach my $fn (@funcs)
 }
 
 
-print "-- Drop all types.\n";
+print "-- Drop all types if unused in column types.\n";
+my $quotedtypelist = join ',', map { "'$_'" } @types;
 foreach my $type (@types)
 {
-	print "DROP TYPE IF EXISTS $type CASCADE;\n";
+	print <<EOF;
+DO \$\$
+DECLARE
+	rec RECORD;
+BEGIN
+	FOR rec IN
+		SELECT n.nspname, c.relname, a.attname, t.typname
+		FROM pg_attribute a
+		JOIN pg_class c ON a.attrelid = c.oid
+		JOIN pg_namespace n ON c.relnamespace = n.oid
+		JOIN pg_type t ON a.atttypid = t.oid
+		WHERE t.typname = '$type'
+		  AND NOT (
+				-- we exclude coplexes defined as types
+				-- by our own extension
+				c.relkind = 'c'
+				AND
+				c.relname in ( $quotedtypelist )
+			)
+	LOOP
+		RAISE EXCEPTION
+		  'Column "%" of table "%"."%" '
+		  'depends on type "%", drop it first',
+		  rec.attname, rec.nspname, rec.relname, rec.typname;
+	END LOOP;
+END;
+\$\$;
+-- NOTE: CASCADE is still needed for chicken-egg problem
+--       of input function depending on type and type
+--       depending on function
+DROP TYPE IF EXISTS $type CASCADE;
+
+EOF
+
 }
 
 print "-- Drop all functions needed for types definition.\n";
