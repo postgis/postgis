@@ -1389,13 +1389,15 @@ lwgeom_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle,
 		}
 
 		if (result)
+		{
+			if (noded) lwgeom_free(noded);
 			return result;
+		}
 		else if (!noded)
 		{
 			noded = lwgeom_node(geom);
 			if (!noded)
 			{
-				lwfree(noded);
 				lwerror("lwgeom_offsetcurve: cannot node input");
 				return NULL;
 			}
@@ -1403,10 +1405,12 @@ lwgeom_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle,
 		}
 		else
 		{
+			lwgeom_free(noded);
 			lwerror("lwgeom_offsetcurve: noded geometry cannot be offset");
 			return NULL;
 		}
 	}
+
 	return result;
 }
 
