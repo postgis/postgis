@@ -442,12 +442,23 @@ ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 		 * breaks those "strict" rules.
 		 */
 		POINT4D *p1ptr=&p1, *p2ptr=&p2;
+		double segments;
 
 		getPoint4d_p(ipa, i, &p2);
 
 		segdist = distance2d_pt_pt((POINT2D *)p1ptr, (POINT2D *)p2ptr);
 		/* Split input segment into shorter even chunks */
-		nseg = ceil(segdist / dist);
+		segments = ceil(segdist / dist);
+
+		/* Uses INT32_MAX instead of UINT32_MAX to be safe that it fits */
+		if (segments >= INT32_MAX)
+		{
+			lwnotice("%s:%d - %s: Too many segments required (%e)",
+				__FILE__, __LINE__,__func__, segments);
+			ptarray_free(opa);
+			return NULL;
+		}
+		nseg = segments;
 
 		for (j = 1; j < nseg; j++)
 		{
