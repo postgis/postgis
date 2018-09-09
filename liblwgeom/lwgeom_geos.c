@@ -315,12 +315,12 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 	char* wkt;
 #endif
 
-// 	if (autofix)
-// 	{
-// 		/* cross fingers and try without autofix, maybe it'll work? */
-// 		g = LWGEOM2GEOS(lwgeom, LW_FALSE);
-// 		if (g) return g;
-// 	}
+ 	if (autofix)
+ 	{
+ 		/* cross fingers and try without autofix, maybe it'll work? */
+ 		g = LWGEOM2GEOS(lwgeom, LW_FALSE);
+ 		if (g) return g;
+ 	}
 
 	LWDEBUGF(4, "LWGEOM2GEOS got a %s", lwtype_name(lwgeom->type));
 
@@ -422,7 +422,7 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 
 			if (lwgeom_is_empty(lwc->geoms[i])) continue;
 
-			g = LWGEOM2GEOS(lwc->geoms[i], autofix);
+			g = LWGEOM2GEOS(lwc->geoms[i], 0);
 			if (!g)
 			{
 				uint32_t k;
