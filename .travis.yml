@@ -32,6 +32,7 @@ before_install:
   - curl -sSfL https://raw.githubusercontent.com/mapbox/logbt/30c554dd37b6c96c23fc424f75910fc6d6696f00/bin/logbt | sudo tee /usr/local/bin/logbt > /dev/null
   - sudo logbt --setup
   - sudo service postgresql status 11
+  - echo "jit = off" | sudo tee -a /etc/postgresql/11/main/postgresql.conf
   - sudo service postgresql stop 11
   - sudo chown -hRL --from=postgres travis:travis /etc /var /tmp
   - sudo usermod -u 1000 postgres
