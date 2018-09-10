@@ -151,6 +151,13 @@ static void in_geojson_test_bbox(void)
 
 static void in_geojson_test_geoms(void)
 {
+	
+	/* Incorrect Polygon (#4164) */
+	// do_geojson_test(
+	//     "POLYGON((0 0,0 5,5 5,5 0,0 0))",
+	// 	"{\"type\": \"Polygon\", \"coordinates\": [[0,0],[0,5],[5, 5],[5,0],[0,0]]}",
+	// 	NULL);
+
 	/* Linestring */
 	do_geojson_test(
 	    "LINESTRING(0 1,2 3,4 5)",

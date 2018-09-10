@@ -273,7 +273,17 @@ parse_geojson_polygon(json_object *geojson, int *hasz, int root_srid)
 		{
 			json_object* coords = NULL;
 			coords = json_object_array_get_idx( points, j );
-			parse_geojson_coord(coords, hasz, ppa[i]);
+			if (LW_FAILURE == parse_geojson_coord(coords, hasz, ppa[i]))
+			{
+				int k;
+				for (k = 0; k <= i; k++)
+				{
+					ptarray_free(ppa[k]);
+				}
+				lwfree(ppa);
+				geojson_lwerror("The 'coordinates' in GeoJSON polygon are not sufficiently nested", 4);
+				return NULL;				
+			}
 		}
 	}
 
