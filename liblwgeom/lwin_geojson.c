@@ -282,7 +282,7 @@ parse_geojson_polygon(json_object *geojson, int *hasz, int root_srid)
 				}
 				lwfree(ppa);
 				geojson_lwerror("The 'coordinates' in GeoJSON polygon are not sufficiently nested", 4);
-				return NULL;				
+				return NULL;
 			}
 		}
 	}
