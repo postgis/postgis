@@ -26,6 +26,15 @@
 #include <assert.h>
 #endif
 
+inline static double
+distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2)
+{
+	double hside = p2->x - p1->x;
+	double vside = p2->y - p1->y;
+
+	return hside * hside + vside * vside;
+}
+
 /*
  * Size of point represeneted in the POINTARRAY
  * 16 for 2d, 24 for 3d, 32 for 4d
