@@ -32,28 +32,28 @@ DATA_built = \
 # Scripts making up the extension file
 # NOTE: order matters
 EXTENSION_SCRIPTS = \
-	sql_bits/postgis.sql \
-	sql_bits/postgis_comments.sql \
-	sql_bits/spatial_ref_sys_config_dump.sql \
-	sql_bits/spatial_ref_sys.sql
+	sql/postgis.sql \
+	../../doc/postgis_comments.sql \
+	sql/spatial_ref_sys_config_dump.sql \
+	sql/spatial_ref_sys.sql
 
 # Scripts making up the extension minor upgrade file
 # NOTE: order matters
 EXTENSION_UPGRADE_SCRIPTS = \
 	../postgis_extension_helper.sql \
-	sql_bits/postgis_upgrade.sql \
+	sql/postgis_upgrade.sql \
 	../../doc/postgis_comments.sql \
 	../postgis_extension_helper_uninstall.sql
 
 # Scripts making up the extension upgrade-from-unpackaged file
 # NOTE: order matters
 EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
-	sql_bits/postgis.sql
+	sql/postgis.sql
 
 #DOCS         = $(wildcard ../../doc/html/*.html)
 PG_CONFIG    = @PG_CONFIG@
 
-SQL_BITS     = $(wildcard sql_bits/*.sql)
+SQL_BITS     = $(wildcard sql/*.sql)
 EXTRA_CLEAN += ${SQL_BITS} sql/*.sql
 
 CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
@@ -93,30 +93,26 @@ sql_bits:
 	mkdir -p $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
-sql_bits/spatial_ref_sys.sql: ../../spatial_ref_sys.sql | sql_bits
+sql/spatial_ref_sys.sql: ../../spatial_ref_sys.sql | sql_bits
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
-sql_bits/postgis.sql: ../../postgis/postgis_for_extension.sql | sql_bits
+sql/postgis.sql: ../../postgis/postgis_for_extension.sql | sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
 ../../doc/postgis_comments.sql:
 	$(MAKE) -C ../../doc comments
 
-sql_bits/postgis_comments.sql: ../../doc/postgis_comments.sql | sql_bits
-	cp $< $@
-
-sql_bits/spatial_ref_sys_config_dump.sql: ../../spatial_ref_sys.sql ../../utils/create_spatial_ref_sys_config_dump.pl | sql_bits
+sql/spatial_ref_sys_config_dump.sql: ../../spatial_ref_sys.sql ../../utils/create_spatial_ref_sys_config_dump.pl | sql
 	$(PERL) ../../utils/create_spatial_ref_sys_config_dump.pl $< > $@
 
-sql_bits/postgis_upgrade.sql: ../../postgis/postgis_upgrade_for_extension.sql | sql_bits
+sql/postgis_upgrade.sql: ../../postgis/postgis_upgrade_for_extension.sql | sql
 	$(PERL) -pe "s/BEGIN\;//g ; s/COMMIT\;//g; s/^(DROP .*)\;/SELECT postgis_extension_drop_if_exists('$(EXTENSION)', '\1');\n\1\;/" $< > $@
 
 
-#postgis_extension_upgrade_minor.sql is the one that contains both postgis AND raster
 sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
-	cat $^ >> $@
+	cat $(EXTENSION_UPGRADE_SCRIPTS) >> $@
 
 include ../upgrade-paths-rules.mk
 
