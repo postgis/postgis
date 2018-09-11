@@ -1438,11 +1438,9 @@ if test \
         -e doc/postgis_comments.sql -a \
         -e doc/raster_comments.sql;
 then
-  if test "x$RASTER" = "xraster"; then
-      AC_MSG_RESULT([enabling PostgreSQL extension support...])
-      EXTENSIONS=extensions
-      AC_SUBST([EXTENSIONS])
-  fi
+    AC_MSG_RESULT([enabling PostgreSQL extension support...])
+    EXTENSIONS=extensions
+    AC_SUBST([EXTENSIONS])
 fi
 
 
