@@ -108,10 +108,17 @@ if ( $OPT_UPGRADE_PATH )
 
 if ( $OPT_EXTENSIONS )
 {
-	$OPT_WITH_RASTER = 1; # implied
+	$OPT_WITH_RASTER = 1; # implied (TODO: drop implication !)
 }
 
-
+sub has_split_raster_ext
+{
+  my $fullver = shift;
+  my @ver = split(/\./, $fullver);
+  return 0 if ( $ver[0] < 2 );
+  return 0 if ( $ver[0] == 2 && $ver[1] < 5 );
+  return 1;
+}
 
 ##################################################################
 # Set the locale to "C" so error messages match
@@ -142,21 +149,6 @@ my $OBJ_COUNT_POST = 0;
 ##################################################################
 
 print "PATH is $PATH\n";
-
-#foreach my $exec ( ("psql", "createdb", "createlang", "dropdb") )
-#{
-#	my $execdir = which( $exec );
-#	print "Checking for $exec ... ";
-#	if ( $execdir )
-#	{
-#		print "found $execdir\n";
-#	}
-#	else
-#	{
-#		print "failed\n";
-#		die "Unable to find $exec executable. Please ensure it is on your PATH.\n";
-#	}
-#}
 
 foreach my $exec ( ($SHP2PGSQL, $PGSQL2SHP) )
 {
@@ -213,7 +205,6 @@ my $REGRESS_LOG = "${TMPDIR}/regress_log";
 # Report
 print "TMPDIR is $TMPDIR\n";
 
-
 ##################################################################
 # Prepare the database
 ##################################################################
@@ -242,8 +233,8 @@ else
 	}
 	else
 	{
-		print "Database $DB already exists.\n";
-		print "Drop it, or run with the --nocreate flag to use it.\n";
+		print STDERR "Database $DB already exists.\n";
+		print STDERR "Drop it, or run with the --nocreate flag to use it.\n";
 		exit(1);
 	}
 }
@@ -1270,7 +1261,7 @@ sub load_sql_file
 		if ( $rv )
 		{
 		  fail "Error encountered loading $file", $REGRESS_LOG;
-		  exit 1
+		  exit 1;
 		}
 	}
 	return 1;
@@ -1317,7 +1308,12 @@ sub prepare_spatial_extensions
 		}
  	}
 
-	if ( $OPT_WITH_RASTER )
+	if ( $OPT_WITH_RASTER && (
+		# NOTE: this code is assuming that the default version
+		# (!$OPT_UPGRADE_FROM) has split raster extension
+		! $OPT_UPGRADE_FROM ||
+		has_split_raster_ext($OPT_UPGRADE_FROM)
+	) )
 	{
 		my $sql = "CREATE EXTENSION postgis_raster";
 		if ( $OPT_UPGRADE_FROM ) {
@@ -1325,9 +1321,9 @@ sub prepare_spatial_extensions
 		}
  		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
 		$rv = system($cmd);
-  	if ( $rv ) {
-  		fail "Error encountered creating EXTENSION POSTGIS_RASTER", $REGRESS_LOG;
-  		die;
+		if ( $rv ) {
+			fail "Error encountered creating EXTENSION POSTGIS_RASTER", $REGRESS_LOG;
+			die;
 		}
  	}
 
@@ -1482,6 +1478,34 @@ sub upgrade_spatial_extensions
       die;
     }
 
+    if ( $OPT_WITH_RASTER )
+    {
+      if ( $OPT_UPGRADE_FROM
+           && !  has_split_raster_ext($OPT_UPGRADE_FROM)
+         )
+      {
+        # upgrade of postgis must have unpackaged raster, so
+        # we create it again here
+        my $sql = "CREATE EXTENSION postgis_raster VERSION '${nextver}' FROM unpackaged";
+        my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+        my $rv = system($cmd);
+        if ( $rv ) {
+          fail "Error encountered creating EXTENSION POSTGIS_RASTER from unpackaged on upgrade", $REGRESS_LOG;
+          die;
+        }
+      }
+      else
+      {
+        my $sql = "ALTER EXTENSION postgis_raster UPDATE TO '${nextver}'";
+        my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+        my $rv = system($cmd);
+        if ( $rv ) {
+          fail "Error encountered altering EXTENSION POSTGIS_RASTER", $REGRESS_LOG;
+          die;
+        }
+      }
+    }
+
     if ( $OPT_WITH_TOPO )
     {
       my $sql = "ALTER EXTENSION postgis_topology UPDATE TO '${nextver}'";
@@ -1578,10 +1602,8 @@ sub drop_spatial_extensions
 
     if ( $OPT_WITH_RASTER )
     {
-        $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis_raster;\" $DB >> $REGRESS_LOG 2>&1";
+        $cmd = "psql $psql_opts -c \"DROP EXTENSION IF EXISTS postgis_raster;\" $DB >> $REGRESS_LOG 2>&1";
         $rv = system($cmd);
-        die "\nError encountered dropping EXTENSION POSTGIS_RASTER, see $REGRESS_LOG for details\n\n"
-            if $rv;
       	$ok = 0 if $rv;
     }
 
