@@ -36,7 +36,7 @@
  *
  * We are using traversal values provided by SP-GiST to calculate and
  * to store the bounds of the octants, while traversing into the tree.
- * Traversal value has all the boundaries in the ND space, and is is
+ * Traversal value has all the boundaries in the ND space, and is
  * capable of transferring the required boundaries to the following
  * traversal values.  In conclusion, three things are necessary
  * to calculate the next traversal value:
@@ -88,23 +88,7 @@ Datum gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS);
 Datum gserialized_spgist_leaf_consistent_nd(PG_FUNCTION_ARGS);
 Datum gserialized_spgist_compress_nd(PG_FUNCTION_ARGS);
 
-/*
- * Comparator for qsort
- *
- * We don't need to use the floating point macros in here, because this
- * is only going to be used in a place to effect the performance
- * of the index, not the correctness.
- */
-static int
-compareDoubles(const void *a, const void *b)
-{
-	double		x = *(double *) a;
-	double		y = *(double *) b;
-
-	if (x == y)
-		return 0;
-	return (x > y) ? 1 : -1;
-}
+/* Structure storing the n-dimensional bounding box */
 
 typedef struct
 {
@@ -113,16 +97,34 @@ typedef struct
 } CubeGIDX;
 
 /*
+ * Comparator for qsort
+ *
+ * We don't need to use the floating point macros in here, because this
+ * is only going to be used in a place to effect the performance
+ * of the index, not the correctness.
+ */
+static int
+compareFloats(const void *a, const void *b)
+{
+	float		x = *(float *) a;
+	float		y = *(float *) b;
+
+	if (x == y)
+		return 0;
+	return (x > y) ? 1 : -1;
+}
+
+/*
  * Calculate the octant
  *
- * The octant is an 8-bit unsigned integer with all bits in use.
- * This function accepts 2 GIDX as input. All 8 bits are set by comparing
- * a corner of the box. This makes 256 octants in total.
+ * The octant is a 16-bit unsigned integer with 8 bits in use. The function
+ * accepts 2 GIDX as input. The 8 bits are set by comparing a corner of the
+ * box. This makes 256 octants in total.
  */
-static uint8_t
+static uint16_t
 getOctant(GIDX *centroid, GIDX *inBox)
 {
-	uint8_t		octant = 0,
+	uint16_t	octant = 0,
 				dim = 0x01;
 	int 		ndims,
 				i;
@@ -131,12 +133,17 @@ getOctant(GIDX *centroid, GIDX *inBox)
 
 	for (i = 0; i < ndims; i++)
 	{
-		if (GIDX_GET_MAX(inBox, i) > GIDX_GET_MAX(centroid, i))
-			octant |= dim;
-		dim = dim << 1;
-		if (GIDX_GET_MIN(inBox, i) > GIDX_GET_MIN(centroid, i))
-			octant |= dim;
-		dim = dim << 1;
+		/* If the missing dimension was not padded with -+FLT_MAX */
+		if ( GIDX_GET_MAX(centroid, i) != FLT_MAX &&
+			GIDX_GET_MAX(inBox, i) != FLT_MAX )
+		{
+			if (GIDX_GET_MAX(inBox, i) > GIDX_GET_MAX(centroid, i))
+				octant |= dim;
+			dim = dim << 1;
+			if (GIDX_GET_MIN(inBox, i) > GIDX_GET_MIN(centroid, i))
+				octant |= dim;
+			dim = dim << 1;
+		}
 	}
 
 	return octant;
@@ -151,10 +158,9 @@ getOctant(GIDX *centroid, GIDX *inBox)
 static CubeGIDX *
 initCubeBox(int ndims)
 {
-	CubeGIDX   *cube_box = (CubeGIDX *) palloc(sizeof(GIDX));
+	CubeGIDX   *cube_box = (CubeGIDX *) palloc(sizeof(CubeGIDX));
 	GIDX	   *left = (GIDX*)palloc(GIDX_SIZE(ndims));
 	GIDX	   *right = (GIDX*)palloc(GIDX_SIZE(ndims));
-	double		infinity = get_float8_infinity();
 	int 		i;
 
 	SET_VARSIZE(left, GIDX_SIZE(ndims));
@@ -164,10 +170,10 @@ initCubeBox(int ndims)
 
 	for (i = 0; i < ndims; i++)
 	{
-		GIDX_SET_MIN(cube_box->left, i, -infinity);
-		GIDX_SET_MAX(cube_box->left, i, infinity);
-		GIDX_SET_MIN(cube_box->right, i, -infinity);
-		GIDX_SET_MAX(cube_box->right, i, infinity);
+		GIDX_SET_MIN(cube_box->left, i, -1 * FLT_MAX);
+		GIDX_SET_MAX(cube_box->left, i, FLT_MAX);
+		GIDX_SET_MIN(cube_box->right, i, -1 * FLT_MAX);
+		GIDX_SET_MAX(cube_box->right, i, FLT_MAX);
 	}
 
 	return cube_box;
@@ -181,14 +187,14 @@ initCubeBox(int ndims)
  * using centroid and octant.
  */
 static CubeGIDX *
-nextCubeBox(CubeGIDX *cube_box, GIDX *centroid, uint8_t octant)
+nextCubeBox(CubeGIDX *cube_box, GIDX *centroid, uint16_t octant)
 {
 	int			ndims = GIDX_NDIMS(centroid),
 				i;
 	CubeGIDX   *next_cube_box = (CubeGIDX *) palloc(sizeof(CubeGIDX));
 	GIDX	   *left = (GIDX*)palloc(GIDX_SIZE(ndims));
 	GIDX	   *right = (GIDX*)palloc(GIDX_SIZE(ndims));
-	uint8_t		dim = 0x01;
+	uint16_t	dim = 0x01;
 
 	memcpy(left, cube_box->left, VARSIZE(cube_box->left));
 	memcpy(right, cube_box->right, VARSIZE(cube_box->right));
@@ -197,19 +203,23 @@ nextCubeBox(CubeGIDX *cube_box, GIDX *centroid, uint8_t octant)
 
 	for (i = 0; i < ndims; i++)
 	{
-		if (octant & dim)
-			GIDX_GET_MIN(next_cube_box->right, i) = GIDX_GET_MAX(centroid, i);
-		else
-			GIDX_GET_MAX(next_cube_box->right, i) = GIDX_GET_MAX(centroid, i);
+		if ( GIDX_GET_MAX(cube_box->left, i) != FLT_MAX &&
+			GIDX_GET_MAX(centroid, i) != FLT_MAX )
+		{
+			if (octant & dim)
+				GIDX_GET_MIN(next_cube_box->right, i) = GIDX_GET_MAX(centroid, i);
+			else
+				GIDX_GET_MAX(next_cube_box->right, i) = GIDX_GET_MAX(centroid, i);
 
-		dim = dim << 1;
+			dim = dim << 1;
 
-		if (octant & dim)
-			GIDX_GET_MIN(next_cube_box->left, i) = GIDX_GET_MIN(centroid, i);
-		else
-			GIDX_GET_MAX(next_cube_box->left, i) = GIDX_GET_MIN(centroid, i);
+			if (octant & dim)
+				GIDX_GET_MIN(next_cube_box->left, i) = GIDX_GET_MIN(centroid, i);
+			else
+				GIDX_GET_MAX(next_cube_box->left, i) = GIDX_GET_MIN(centroid, i);
 
-		dim = dim << 1;
+			dim = dim << 1;
+		}
 	}
 
 	return next_cube_box;
@@ -219,13 +229,19 @@ nextCubeBox(CubeGIDX *cube_box, GIDX *centroid, uint8_t octant)
 static bool
 overlapND(CubeGIDX *cube_box, GIDX *query)
 {
-	int		i;
+	int		i,
+			ndims;
 	bool 	result = true;
 
-	for (i = 0; i < GIDX_NDIMS(query); i++)
+	ndims = Min(GIDX_NDIMS(cube_box->left), GIDX_NDIMS(query));
+
+	for (i = 0; i < ndims; i++)
 	{
-		result &= (GIDX_GET_MIN(cube_box->left, i) <= GIDX_GET_MAX(query, i)) &&
-			(GIDX_GET_MAX(cube_box->right, i) >= GIDX_GET_MIN(query, i));
+		/* If the missing dimension was not padded with -+FLT_MAX */
+		if ( GIDX_GET_MAX(cube_box->left, i) != FLT_MAX &&
+			GIDX_GET_MAX(query, i) != FLT_MAX )
+			result &= (GIDX_GET_MIN(cube_box->left, i) <= GIDX_GET_MAX(query, i)) &&
+				(GIDX_GET_MAX(cube_box->right, i) >= GIDX_GET_MIN(query, i));
 	}
 	return result;
 }
@@ -234,13 +250,19 @@ overlapND(CubeGIDX *cube_box, GIDX *query)
 static bool
 containND(CubeGIDX *cube_box, GIDX *query)
 {
-	int		i;
+	int		i,
+			ndims;
 	bool 	result = true;
 
-	for (i = 0; i < GIDX_NDIMS(query); i++)
+	ndims = Min(GIDX_NDIMS(cube_box->left), GIDX_NDIMS(query));
+
+	for (i = 0; i < ndims; i++)
 	{
-		result &= (GIDX_GET_MAX(cube_box->right, i) >= GIDX_GET_MAX(query, i)) &&
-			(GIDX_GET_MIN(cube_box->left, i) <= GIDX_GET_MIN(query, i));
+		/* If the missing dimension was not padded with -+FLT_MAX */
+		if ( GIDX_GET_MAX(cube_box->left, i) != FLT_MAX &&
+			GIDX_GET_MAX(query, i) != FLT_MAX )
+			result &= (GIDX_GET_MAX(cube_box->right, i) >= GIDX_GET_MAX(query, i)) &&
+				(GIDX_GET_MIN(cube_box->left, i) <= GIDX_GET_MIN(query, i));
 	}
 	return result;
 }
@@ -303,42 +325,54 @@ gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 {
 	spgPickSplitIn *in = (spgPickSplitIn *) PG_GETARG_POINTER(0);
 	spgPickSplitOut *out = (spgPickSplitOut *) PG_GETARG_POINTER(1);
-	GIDX	   *box = (GIDX*)DatumGetPointer(in->datums[0]),
+	GIDX	   *box,
 			   *centroid;
-	double	   *lowXs,
+	float	   *lowXs,
 			   *highXs;
 	int 		ndims,
+				maxdims = -1,
+				count[GIDX_MAX_DIM],
 				median,
 				i,
 				j;
 
-	ndims = GIDX_NDIMS(box);
-	lowXs = palloc(sizeof(double) * in->nTuples * ndims),
-	highXs = palloc(sizeof(double) * in->nTuples * ndims);
-	centroid = (GIDX*)palloc(GIDX_SIZE(ndims));
-	SET_VARSIZE(centroid, GIDX_SIZE(ndims));
+	for (i = 0; i < GIDX_MAX_DIM; i++)
+		count[i] = 0;
+
+	lowXs = palloc(sizeof(float) * in->nTuples * GIDX_MAX_DIM),
+	highXs = palloc(sizeof(float) * in->nTuples * GIDX_MAX_DIM);
 
 	/* Calculate median of all ND coordinates */
 	for (i = 0; i < in->nTuples; i++)
 	{
 		box = (GIDX*)DatumGetPointer(in->datums[i]);
+		ndims = GIDX_NDIMS(box);
+		if ( maxdims < ndims )
+			maxdims = ndims;
 		for (j = 0; j < ndims; j++)
 		{
-			lowXs[j*in->nTuples + i] = GIDX_GET_MIN(box, j);
-			highXs[j*in->nTuples + i] = GIDX_GET_MAX(box, j);
+			/* If the missing dimension was not padded with -+FLT_MAX */
+			if ( GIDX_GET_MAX(box, i) != FLT_MAX )
+			{
+				lowXs[j*in->nTuples + count[j]] = GIDX_GET_MIN(box, j);
+				highXs[j*in->nTuples + count[j]] = GIDX_GET_MAX(box, j);
+				count[j]++;
+			}
 		}
 	}
 
-	for (i = 0; i < ndims; i++)
+	for (i = 0; i < maxdims; i++)
 	{
-		qsort(&lowXs[i*in->nTuples], in->nTuples, sizeof(double), compareDoubles);
-		qsort(&highXs[i*in->nTuples], in->nTuples, sizeof(double), compareDoubles);
+		qsort(&lowXs[i*in->nTuples], count[i], sizeof(float), compareFloats);
+		qsort(&highXs[i*in->nTuples], count[i], sizeof(float), compareFloats);
 	}
 
-	median = in->nTuples / 2;
+	centroid = (GIDX*)palloc(GIDX_SIZE(maxdims));
+	SET_VARSIZE(centroid, GIDX_SIZE(maxdims));
 
-	for (i = 0; i < ndims; i++)
+	for (i = 0; i < maxdims; i++)
 	{
+		median = count[i] / 2;
 		GIDX_SET_MIN(centroid, i, lowXs[i*in->nTuples + median]);
 		GIDX_SET_MAX(centroid, i, highXs[i*in->nTuples + median]);
 	}
@@ -347,7 +381,7 @@ gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 	out->hasPrefix = true;
 	out->prefixDatum = PointerGetDatum(gidx_copy(centroid));
 
-	out->nNodes = 0x01 << (2 * ndims);
+	out->nNodes = 0x01 << (2 * maxdims);
 	out->nodeLabels = NULL;		/* We don't need node labels. */
 
 	out->mapTuplesToNodes = palloc(sizeof(int) * in->nTuples);
@@ -360,7 +394,7 @@ gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 	for (i = 0; i < in->nTuples; i++)
 	{
 		GIDX	   *box = (GIDX*)DatumGetPointer(in->datums[i]);
-		uint8_t		octant = getOctant(centroid, box);
+		uint16_t	octant = getOctant(centroid, box);
 
 		out->leafTupleDatums[i] = PointerGetDatum(box);
 		out->mapTuplesToNodes[i] = octant;
@@ -384,9 +418,9 @@ gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
 	spgInnerConsistentOut *out = (spgInnerConsistentOut *) PG_GETARG_POINTER(1);
 	MemoryContext old_ctx;
 	CubeGIDX   *cube_box;
-	uint8_t		octant;
 	int		   *nodeNumbers,
-				i;
+				i,
+				j;
 	void	  **traversalValues;
 	char 		gidxmem[GIDX_MAX_SIZE];
 	GIDX	   *centroid,
@@ -428,15 +462,15 @@ gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
 	nodeNumbers = (int *) palloc(sizeof(int) * in->nNodes);
 	traversalValues = (void **) palloc(sizeof(void *) * in->nNodes);
 
-	for (octant = 0; octant < in->nNodes; octant++)
+	for (i = 0; i < in->nNodes; i++)
 	{
-		CubeGIDX   *next_cube_box = nextCubeBox(cube_box, centroid, octant);
+		CubeGIDX   *next_cube_box = nextCubeBox(cube_box, centroid, (uint16_t)i);
 		bool		flag = true;
 
-		for (i = 0; i < in->nkeys; i++)
+		for (j = 0; j < in->nkeys; j++)
 		{
-			StrategyNumber strategy = in->scankeys[i].sk_strategy;
-			Datum		query = in->scankeys[i].sk_argument;
+			StrategyNumber strategy = in->scankeys[j].sk_strategy;
+			Datum		query = in->scankeys[j].sk_argument;
 
 			/* Quick sanity check on query argument. */
 			if ( DatumGetPointer(query) == NULL )
@@ -478,7 +512,7 @@ gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
 		if (flag)
 		{
 			traversalValues[out->nNodes] = next_cube_box;
-			nodeNumbers[out->nNodes] = octant;
+			nodeNumbers[out->nNodes] = i;
 			out->nNodes++;
 		}
 		else
@@ -593,9 +627,7 @@ gserialized_spgist_compress_nd(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(4, "[SPGIST] 'compress' function called");
 
-	/*
-	** Input entry is null? Return NULL.
-	*/
+	/* Input entry is null? Return NULL. */
 	if (PG_ARGISNULL(0))
 	{
 		POSTGIS_DEBUG(4, "[SPGIST] null entry (!?!)");
@@ -616,8 +648,8 @@ gserialized_spgist_compress_nd(PG_FUNCTION_ARGS)
 	 * If not, use the "unknown" GIDX as a key */
 	for ( i = 0; i < GIDX_NDIMS(result); i++ )
 	{
-		if ( ! isfinite(GIDX_GET_MAX(result, i))
-		     || ! isfinite(GIDX_GET_MIN(result, i)) )
+		if ( ! isfinite(GIDX_GET_MAX(result, i)) ||
+		     ! isfinite(GIDX_GET_MIN(result, i)) )
 		{
 			gidx_set_unknown(result);
 			PG_RETURN_POINTER(result);

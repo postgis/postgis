@@ -1239,16 +1239,14 @@ static inline bool gserialized_gist_consistent_internal(GIDX *key, GIDX *query, 
 	switch (strategy)
 	{
 	case RTOverlapStrategyNumber:
+	case RTContainedByStrategyNumber:
+	case RTOldContainedByStrategyNumber:
 		retval = (bool) gidx_overlaps(key, query);
 		break;
 	case RTSameStrategyNumber:
 	case RTContainsStrategyNumber:
 	case RTOldContainsStrategyNumber:
 		retval = (bool) gidx_contains(key, query);
-		break;
-	case RTContainedByStrategyNumber:
-	case RTOldContainedByStrategyNumber:
-		retval = (bool) gidx_overlaps(key, query);
 		break;
 	default:
 		retval = false;

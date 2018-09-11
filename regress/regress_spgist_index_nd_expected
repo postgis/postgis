@@ -1,4 +1,4 @@
-&/&|90406|Seq Scan|90406|Seq Scan
-@>>|20094|Seq Scan|20094|Seq Scan
-<<@|20094|Seq Scan|20094|Seq Scan
-~==|480|Seq Scan|480|Seq Scan
+&&&|180502|Seq Scan|180502|Index Scan
+~~ |35498|Seq Scan|35498|Index Scan
+@@ |35498|Seq Scan|35498|Index Scan
+~~=|480|Seq Scan|480|Index Scan

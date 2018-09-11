@@ -44,13 +44,13 @@ set enable_bitmapscan = off;
 set enable_seqscan = on;
 
 insert into test_spgist_idx_nd(op, noidx, noidxscan)
-select '&/&', count(*), qnodes('select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g &/& t2.g') from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g &/& t2.g;
+select '&&&', count(*), qnodes('select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g &&& t2.g') from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g &&& t2.g;
 insert into test_spgist_idx_nd(op, noidx, noidxscan)
-select '@>>', count(*), qnodes('select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g @>> t2.g') from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g @>> t2.g;
+select '~~', count(*), qnodes('select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g ~~ t2.g') from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g ~~ t2.g;
 insert into test_spgist_idx_nd(op, noidx, noidxscan)
-select '<<@', count(*), qnodes('select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g <<@ t2.g') from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g <<@ t2.g;
+select '@@', count(*), qnodes('select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g @@ t2.g') from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g @@ t2.g;
 insert into test_spgist_idx_nd(op, noidx, noidxscan)
-select '~==', count(*), qnodes('select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g ~== t2.g') from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g ~== t2.g;
+select '~~=', count(*), qnodes('select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g ~~= t2.g') from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g ~~= t2.g;
 
 ------------------------------------------------------------------------------
 
@@ -61,21 +61,21 @@ set enable_bitmapscan = off;
 set enable_seqscan = off;
 
 update test_spgist_idx_nd
-set spgistidx = ( select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g &/& t2.g ),
-spgidxscan = qnodes(' select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g &/& t2.g ')
-where op = '&/&';
+set spgistidx = ( select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g &&& t2.g ),
+spgidxscan = qnodes(' select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g &&& t2.g ')
+where op = '&&&';
 update test_spgist_idx_nd
-set spgistidx = ( select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g @>> t2.g ),
-spgidxscan = qnodes(' select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g @>> t2.g ')
-where op = '@>>';
+set spgistidx = ( select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g ~~ t2.g ),
+spgidxscan = qnodes(' select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g ~~ t2.g ')
+where op = '~~';
 update test_spgist_idx_nd
-set spgistidx = ( select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g <<@ t2.g ),
-spgidxscan = qnodes(' select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g <<@ t2.g ')
-where op = '<<@';
+set spgistidx = ( select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g @@ t2.g ),
+spgidxscan = qnodes(' select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g @@ t2.g ')
+where op = '@@';
 update test_spgist_idx_nd
-set spgistidx = ( select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g ~== t2.g ),
-spgidxscan = qnodes(' select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g ~== t2.g ')
-where op = '~==';
+set spgistidx = ( select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g ~~= t2.g ),
+spgidxscan = qnodes(' select count(*) from tbl_geomcollection_nd t1, tbl_geomcollection_nd t2 where t1.g ~~= t2.g ')
+where op = '~~=';
 
 -------------------------------------------------------------------------------
 
