@@ -55,6 +55,7 @@ extensions/postgis/sql/
 extensions/postgis/sql_bits/*.sql
 extensions/postgis_raster/Makefile
 extensions/postgis_raster/postgis_raster.control
+extensions/postgis_raster/sql/
 extensions/postgis_sfcgal/Makefile
 extensions/postgis_sfcgal/postgis_sfcgal.control
 extensions/postgis_sfcgal/sql/
