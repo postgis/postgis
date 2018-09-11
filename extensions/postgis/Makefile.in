@@ -80,7 +80,9 @@ $(EXTENSION).control: $(EXTENSION).control.in Makefile
 $(RASTER_DROP_SCRIPTS):
 	$(MAKE) -C ../../raster
 
-sql/raster_unpackage.sql: ../../utils/create_extension_unpackage.pl Makefile
+sql/raster_unpackage.sql: Makefile
+sql/raster_unpackage.sql: ../../utils/create_extension_unpackage.pl
+sql/raster_unpackage.sql: unpackage_raster_if_needed.sql
 sql/raster_unpackage.sql: $(RASTER_DROP_SCRIPTS) | sql
 
 	sed '/UNPACKAGE_CODE/q' unpackage_raster_if_needed.sql > $@
