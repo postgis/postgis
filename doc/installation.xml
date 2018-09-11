@@ -66,7 +66,11 @@ psql -d yourdatabase -f sfcgal.sql
 psql -d yourdatabase -f sfcgal_comments.sql
 </programlisting>
 
-  <sect2 id="install_short_version_raster_configuration">
+  </sect1>
+
+  <sect1 id="raster_configuration">
+
+  <title>Configuring raster</title>
 
 	<para>
 	  If you enabled raster support you may want to read
@@ -92,8 +96,6 @@ psql -d yourdatabase -f sfcgal_comments.sql
 	<para>On windows, if you are running as a service, you can set via System variables which for Windows 7 you can get to by right-clicking on Computer-&gt;Properties Advanced System Settings or in explorer navigating to <varname>Control Panel\All Control Panel Items\System</varname>.
 	Then clicking <emphasis>Advanced System Settings -&gt;Advanced->Environment Variables</emphasis> and adding new system variables.</para>
 	<para>After you set the environment variables, you'll need to restart your PostgreSQL service for the changes to take effect.</para>
-
-  </sect2>
 
   </sect1>
 
@@ -199,7 +201,7 @@ psql -d yourdatabase -f sfcgal_comments.sql
 		  GDAL (pseudo optional) only if you don't want raster
 		  you can leave it out.  Also make sure to enable
 		  the drivers you want to use as described in <xref
-		  linkend="install_short_version_raster_configuration"/>.
+		  linkend="raster_configuration"/>.
     </para>
 	  </listitem>
 	  <listitem>
