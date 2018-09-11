@@ -1319,6 +1319,9 @@ sub prepare_spatial_extensions
 		if ( $OPT_UPGRADE_FROM ) {
 			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
 		}
+
+		print "Preparing db '${DB}' using: ${sql}\n";
+
  		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
 		$rv = system($cmd);
 		if ( $rv ) {
@@ -1487,6 +1490,9 @@ sub upgrade_spatial_extensions
         # upgrade of postgis must have unpackaged raster, so
         # we create it again here
         my $sql = "CREATE EXTENSION postgis_raster VERSION '${nextver}' FROM unpackaged";
+
+        print "Upgrading PostGIS Raster in '${DB}' using: ${sql}\n" ;
+
         my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
         my $rv = system($cmd);
         if ( $rv ) {
@@ -1497,6 +1503,9 @@ sub upgrade_spatial_extensions
       else
       {
         my $sql = "ALTER EXTENSION postgis_raster UPDATE TO '${nextver}'";
+
+        print "Upgrading PostGIS Raster in '${DB}' using: ${sql}\n" ;
+
         my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
         my $rv = system($cmd);
         if ( $rv ) {
@@ -1514,7 +1523,7 @@ sub upgrade_spatial_extensions
 				$sql = "CREATE EXTENSION postgis_topology VERSION '${nextver}' FROM unpackaged";
 			}
 
-			print "Upgrading PostGIS Topology in '${DB}' using: ${sql}\n" ;
+      print "Upgrading PostGIS Topology in '${DB}' using: ${sql}\n";
 
       my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
       my $rv = system($cmd);
