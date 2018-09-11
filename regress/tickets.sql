@@ -1098,6 +1098,8 @@ from (
     select ST_GeogFromText('SRID=4326;POINT(1.0 2.0)') as a, ST_GeogFromText('SRID=4326;POINT(1.0 1.0)') as b
 ) as points;
 
+-- #4164
+SELECT ST_AsText(ST_GeomFromGeoJSON('{"type": "Polygon", "coordinates": [[0,0],[0,5],[5, 5],[5,0],[0,0]]}'));
 
 -- Clean up
 DELETE FROM spatial_ref_sys;

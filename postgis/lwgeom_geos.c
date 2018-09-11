@@ -935,8 +935,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 				/* quadrant segments is an int */
 				quadsegs = atoi(val);
 			}
-			else if ( !strcmp(key, "side") ||
-					  !strcmp(key, "side") )
+			else if ( !strcmp(key, "side") )
 			{
 				if ( !strcmp(val, "both") )
 				{

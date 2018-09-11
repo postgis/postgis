@@ -1,5 +1,20 @@
+PostGIS 3.0.0
+2019/xx/xx
+* Breaking Changes *
+  - #3888, Raster support now available as a separate extension
+    (Sandro Santilli)
+* Enhancements and fixes *
+  - #4153, ST_Segmentize now splits segments proportionally (Darafei
+    Praliaskouski).
+  - #4162, ST_DWithin documentation examples for storing geometry and
+    radius in table (Darafei Praliaskouski, github user Boscop).
+  - #4163, MVT: Fix resource leak when the first geometry is NULL (Raúl Marín)
+  - #4161, MVT: Drop geometries smaller than the resolution (Raúl Marín)
+  - #4172, Fix memory leak in lwgeom_offsetcurve (Raúl Marín)
+  - #4173, Fix undefined behaviour in ptarray_segmentize2d (Raúl Marín)
+
 PostGIS 2.5.0rc1
-2018/XX/XX
+2018/08/19
 New since PostGIS 2.5.0beta2
   - #4146, Fix compilation error against Postgres 12 (Raúl Marín).
   - #4147, #4148, Honor SOURCE_DATE_EPOCH when present (Christoph Berg).

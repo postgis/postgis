@@ -794,6 +794,17 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	fx = extent / width;
 	fy = -(extent / height);
 
+	if (FLAGS_GET_BBOX(lwgeom->flags) && lwgeom->bbox &&
+		(lwgeom->type == LINETYPE || lwgeom->type == MULTILINETYPE ||
+		lwgeom->type == POLYGONTYPE || lwgeom->type == MULTIPOLYGONTYPE))
+	{
+		// Shortcut to drop geometries smaller than the resolution
+		double bbox_width = lwgeom->bbox->xmax - lwgeom->bbox->xmin;
+		double bbox_height = lwgeom->bbox->ymax - lwgeom->bbox->ymin;
+		if (bbox_height * bbox_height + bbox_width * bbox_width < res * res)
+			return NULL;
+	}
+
 	/* Remove all non-essential points (under the output resolution) */
 	lwgeom_remove_repeated_points_in_place(lwgeom, res);
 	lwgeom_simplify_in_place(lwgeom, res, preserve_collapsed);
@@ -894,6 +905,7 @@ void mvt_agg_init_context(mvt_agg_context *ctx)
 	ctx->bool_values_hash = NULL;
 	ctx->values_hash_i = 0;
 	ctx->keys_hash_i = 0;
+	ctx->geom_index = UINT32_MAX;
 
 	memset(&ctx->column_cache, 0, sizeof(ctx->column_cache));
 
@@ -936,7 +948,7 @@ void mvt_agg_transfn(mvt_agg_context *ctx)
 		POSTGIS_DEBUGF(3, "mvt_agg_transfn new_capacity: %zd", new_capacity);
 	}
 
-	if (layer->n_features == 0)
+	if (ctx->geom_index == UINT32_MAX)
 		parse_column_keys(ctx);
 
 	datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);

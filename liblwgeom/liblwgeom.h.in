@@ -1179,7 +1179,16 @@ extern float  next_float_up(double d);
 
 /* general utilities 2D */
 extern double  distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2);
-extern double  distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2);
+
+inline static double
+distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2)
+{
+	double hside = p2->x - p1->x;
+	double vside = p2->y - p1->y;
+
+	return hside * hside + vside * vside;
+}
+
 extern double  distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
 extern double  distance2d_sqr_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
 extern LWGEOM* lwgeom_closest_line(const LWGEOM *lw1, const LWGEOM *lw2);

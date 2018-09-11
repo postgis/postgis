@@ -1420,7 +1420,10 @@ if test "x$with_raster" != "xno"; then
 
 else
 	AC_MSG_RESULT([RASTER: Raster support disabled])
-	RT_MAKEFILE_LIST="raster/Makefile"
+
+	dnl We still generate raster/rt_pg makefile to
+	dnl use for upgrading from pre-split-raster versions
+	RT_MAKEFILE_LIST="raster/Makefile raster/rt_pg/Makefile"
 fi
 
 
@@ -1438,11 +1441,9 @@ if test \
         -e doc/postgis_comments.sql -a \
         -e doc/raster_comments.sql;
 then
-  if test "x$RASTER" = "xraster"; then
-      AC_MSG_RESULT([enabling PostgreSQL extension support...])
-      EXTENSIONS=extensions
-      AC_SUBST([EXTENSIONS])
-  fi
+    AC_MSG_RESULT([enabling PostgreSQL extension support...])
+    EXTENSIONS=extensions
+    AC_SUBST([EXTENSIONS])
 fi
 
 
@@ -1453,6 +1454,7 @@ dnl ===========================================================================
 AC_OUTPUT([GNUmakefile
    extensions/Makefile
    extensions/postgis/Makefile
+   extensions/postgis_raster/Makefile
    extensions/postgis_sfcgal/Makefile
    extensions/postgis_topology/Makefile
    extensions/postgis_tiger_geocoder/Makefile
@@ -1554,7 +1556,7 @@ if test "$GEOS_NUMERIC_VERSION" -lt 30700; then
 AC_MSG_WARN([ --------- GEOS VERSION WARNING ------------ ])
 AC_MSG_WARN([  You are building against GEOS ${GEOS_FULL_VERSION} ])
 AC_MSG_WARN([  To take advantage of all the features of ])
-AC_MSG_WARN([  this PostGIS version requires GEOS 3.7.0 or higher which is not out yet.])
+AC_MSG_WARN([  this PostGIS version requires GEOS 3.7.0 or higher.])
 AC_MSG_WARN([  To take advantage of most of the features of this PostGIS])
 AC_MSG_WARN([  we recommend GEOS 3.6 or higher])
 AC_MSG_WARN([  You can download the latest versions from ])
