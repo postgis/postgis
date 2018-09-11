@@ -8,7 +8,11 @@ BEGIN
 		and t.typname = 'raster'
 	) THEN
 
+		RAISE WARNING 'unpackaging raster';
+
+		EXECUTE $unpackage$
 		-- UNPACKAGE_CODE --
+		$unpackage$;
 
 		RAISE WARNING 'PostGIS Raster functionality have been unpackaged'
 		USING HINT = 'type `CREATE EXTENSION postgis_raster FROM unpackaged` to re-package';
