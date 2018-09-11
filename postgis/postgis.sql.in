@@ -3007,6 +3007,12 @@ BEGIN
 		IF rast_lib_ver != relproc THEN
 			fullver = fullver || ' (raster lib from "' || rast_lib_ver || '" need upgrade)';
 		END IF;
+		IF core_is_extension AND NOT EXISTS (
+			SELECT * FROM pg_catalog.pg_extension
+			WHERE extname = 'postgis_raster')
+		THEN
+				fullver = fullver || ' [UNPACKAGED!]';
+		END IF;
 	END IF;
 
 	IF rast_scr_ver IS NOT NULL AND rast_scr_ver != relproc THEN
