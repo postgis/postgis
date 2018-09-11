@@ -2813,6 +2813,7 @@ AS $$
 $$ LANGUAGE 'sql' STABLE;
 
 -- Availability: 2.5.0
+-- Changed: 3.0.0 also upgrade postgis_raster if it exists
 CREATE OR REPLACE FUNCTION postgis_extensions_upgrade() RETURNS text
 AS $$
 DECLARE rec record; sql text;
@@ -2822,9 +2823,17 @@ BEGIN
 
 	FOR rec in SELECT  name, default_version, installed_version
 		FROM pg_available_extensions
-		WHERE installed_version > '' AND name IN('postgis', 'postgis_sfcgal', 'postgis_tiger_geocoder', 'postgis_topology')
+		WHERE installed_version > '' AND name IN(
+			'postgis',
+			'postgis_raster',
+			'postgis_sfcgal',
+			'postgis_tiger_geocoder',
+			'postgis_topology')
 		AND ( default_version <> installed_version  OR
-			( default_version = installed_version AND default_version ILIKE '%dev%' AND  installed_version ILIKE '%dev%'  )  ) LOOP
+			( default_version = installed_version AND
+				default_version ILIKE '%dev%' AND
+				installed_version ILIKE '%dev%' ) )
+	LOOP
 
 		-- we need to upgrade to next so our installed is different from current
 		-- and then we can upgrade to default_version
