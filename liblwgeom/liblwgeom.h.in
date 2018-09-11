@@ -597,7 +597,7 @@ extern LWMPOINT *lwgeom_as_lwmpoint(const LWGEOM *lwgeom);
 extern LWCOLLECTION *lwgeom_as_lwcollection(const LWGEOM *lwgeom);
 extern LWPOLY *lwgeom_as_lwpoly(const LWGEOM *lwgeom);
 extern LWLINE *lwgeom_as_lwline(const LWGEOM *lwgeom);
-extern LWPOINT *lwgeom_as_lwpoint(const LWGEOM *lwgeom);
+
 extern LWCIRCSTRING *lwgeom_as_lwcircstring(const LWGEOM *lwgeom);
 extern LWCURVEPOLY *lwgeom_as_lwcurvepoly(const LWGEOM *lwgeom);
 extern LWCOMPOUND *lwgeom_as_lwcompound(const LWGEOM *lwgeom);
@@ -831,14 +831,6 @@ extern POINT2D getPoint2d(const POINTARRAY *pa, uint32_t n);
 extern int getPoint2d_p(const POINTARRAY *pa, uint32_t n, POINT2D *point);
 
 /**
-* Returns a POINT2D pointer into the POINTARRAY serialized_ptlist,
-* suitable for reading from. This is very high performance
-* and declared const because you aren't allowed to muck with the
-* values, only read them.
-*/
-extern const POINT2D* getPoint2d_cp(const POINTARRAY *pa, uint32_t n);
-
-/**
 * Returns a POINT3DZ pointer into the POINTARRAY serialized_ptlist,
 * suitable for reading from. This is very high performance
 * and declared const because you aren't allowed to muck with the
@@ -863,24 +855,6 @@ extern const POINT4D* getPoint4d_cp(const POINTARRAY *pa, uint32_t n);
  * N must be a valid point index
  */
 extern void ptarray_set_point4d(POINTARRAY *pa, uint32_t n, const POINT4D *p4d);
-
-/*
- * get a pointer to nth point of a POINTARRAY
- * You'll need to cast it to appropriate dimensioned point.
- * Note that if you cast to a higher dimensional point you'll
- * possibly corrupt the POINTARRAY.
- *
- * WARNING: Don't cast this to a POINT !
- * it would not be reliable due to memory alignment constraints
- */
-extern uint8_t *getPoint_internal(const POINTARRAY *pa, uint32_t n);
-
-/*
- * size of point represeneted in the POINTARRAY
- * 16 for 2d, 24 for 3d, 32 for 4d
- */
-extern size_t ptarray_point_size(const POINTARRAY *pa);
-
 
 /**
 * Construct an empty pointarray, allocating storage and setting
@@ -1313,12 +1287,6 @@ extern uint32_t lwgeom_count_rings(const LWGEOM *geom);
 extern int lwgeom_has_srid(const LWGEOM *geom);
 
 /**
-* Return true or false depending on whether a geometry is an "empty"
-* geometry (no vertices members)
-*/
-extern int lwgeom_is_empty(const LWGEOM *geom);
-
-/**
 * Return true or false depending on whether a geometry is a linear
 * feature that closes on itself.
 */
@@ -1408,11 +1376,6 @@ extern double lwpoint_get_m(const LWPOINT *point);
 * Return SRID number
 */
 extern int32_t lwgeom_get_srid(const LWGEOM *geom);
-
-/**
-* Return LWTYPE number
-*/
-extern uint32_t lwgeom_get_type(const LWGEOM *geom);
 
 /**
 * Return #LW_TRUE if geometry has Z ordinates
@@ -2421,6 +2384,8 @@ LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double toleranc
 * @param k the number of clusters to calculate
 */
 int * lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, uint32_t ngeoms, uint32_t k);
+
+#include "lwinline.h"
 
 #endif /* !defined _LIBLWGEOM_H  */
 

@@ -212,8 +212,6 @@ lwdebug(int level, const char *fmt, ...)
 	va_end(ap);
 }
 
-
-
 const char*
 lwtype_name(uint8_t type)
 {

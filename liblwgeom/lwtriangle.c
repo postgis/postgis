@@ -171,13 +171,6 @@ lwtriangle_from_lwline(const LWLINE *shell)
 	return ret;
 }
 
-int lwtriangle_is_empty(const LWTRIANGLE *triangle)
-{
-	if ( !triangle->points || triangle->points->npoints < 1 )
-		return LW_TRUE;
-	return LW_FALSE;
-}
-
 /**
  * Find the area of the outer ring
  */
