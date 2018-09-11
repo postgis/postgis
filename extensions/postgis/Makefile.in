@@ -41,9 +41,9 @@ EXTENSION_SCRIPTS = \
 # NOTE: order matters
 EXTENSION_UPGRADE_SCRIPTS = \
 	../postgis_extension_helper.sql \
+	sql/raster_unpackage.sql \
 	sql/postgis_upgrade.sql \
 	../../doc/postgis_comments.sql \
-	sql/raster_unpackage.sql \
 	../postgis_extension_helper_uninstall.sql
 
 # Scripts making up the extension upgrade-from-unpackaged file
@@ -80,11 +80,16 @@ $(EXTENSION).control: $(EXTENSION).control.in Makefile
 $(RASTER_DROP_SCRIPTS):
 	$(MAKE) -C ../../raster
 
-sql/raster_unpackage.sql: $(RASTER_DROP_SCRIPTS) ../../utils/create_extension_unpackage.pl Makefile | sql
-	cat $(RASTER_DROP_SCRIPTS) \
-		| ../../utils/create_extension_unpackage.pl postgis > $@
+sql/raster_unpackage.sql: ../../utils/create_extension_unpackage.pl Makefile
+sql/raster_unpackage.sql: $(RASTER_DROP_SCRIPTS) | sql
 
-sql/raster_unpackage.sql: Makefile
+	sed '/UNPACKAGE_CODE/q' unpackage_raster_if_needed.sql > $@
+
+	cat $(RASTER_DROP_SCRIPTS) \
+		| ../../utils/create_extension_unpackage.pl postgis >> $@
+
+	sed -ne '/UNPACKAGE_CODE/{s///; :a' -e 'n;p;ba' -e '}' \
+		unpackage_raster_if_needed.sql  >> $@
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
 	cp $< $@
