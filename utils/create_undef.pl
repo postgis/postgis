@@ -234,9 +234,7 @@ foreach my $fn (@funcs)
 		}
 		else
 		{
-			if ( $type_funcs{$fn_nm} =~ /(typmod|analyze)/ ) {
-				push(@type_funcs, $fn);
-			}
+			push(@type_funcs, $fn);
 		}
 	}
 	else
