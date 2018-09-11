@@ -76,7 +76,7 @@ sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) ../../utils/create_unpackaged.pl
 	mkdir -p sql
-	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) | $(PERL) ../../utils/create_unpackaged.pl postgis > $@
+	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) | $(PERL) ../../utils/create_unpackaged.pl postgis_raster > $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
 sql/rtpostgis.sql: ../../raster/rt_pg/rtpostgis_for_extension.sql
@@ -92,7 +92,6 @@ sql/rtpostgis_upgrade.sql: ../../raster/rt_pg/rtpostgis_upgrade_for_extension.sq
 sql/raster_comments.sql: ../../doc/raster_comments.sql
 	cp $< $@
 
-#postgis_extension_upgrade_minor.sql is the one that contains both postgis AND raster
 sql/postgis_extension_upgrade_minor.sql: $(EXTENSION_UPGRADE_SCRIPTS)
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ >> $@
