@@ -1317,6 +1317,20 @@ sub prepare_spatial_extensions
 		}
  	}
 
+	if ( $OPT_WITH_RASTER )
+	{
+		my $sql = "CREATE EXTENSION postgis_raster";
+		if ( $OPT_UPGRADE_FROM ) {
+			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
+		}
+ 		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+		$rv = system($cmd);
+  	if ( $rv ) {
+  		fail "Error encountered creating EXTENSION POSTGIS_RASTER", $REGRESS_LOG;
+  		die;
+		}
+ 	}
+
 	if ( $OPT_WITH_SFCGAL )
 	{
 		do {
@@ -1560,6 +1574,15 @@ sub drop_spatial_extensions
         $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis_sfcgal;\" $DB >> $REGRESS_LOG 2>&1";
         $rv = system($cmd);
         $ok = 0 if $rv;
+    }
+
+    if ( $OPT_WITH_RASTER )
+    {
+        $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis_raster;\" $DB >> $REGRESS_LOG 2>&1";
+        $rv = system($cmd);
+        die "\nError encountered dropping EXTENSION POSTGIS_RASTER, see $REGRESS_LOG for details\n\n"
+            if $rv;
+      	$ok = 0 if $rv;
     }
 
     $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis\" $DB >> $REGRESS_LOG 2>&1";

@@ -9,8 +9,11 @@
 #
 #############################################################################
 
-SUBDIRS = postgis 
-SUBDIRS += postgis_tiger_geocoder 
+SUBDIRS = postgis
+SUBDIRS += postgis_tiger_geocoder
+ifeq (@RASTER@,raster)
+	SUBDIRS += postgis_raster
+endif
 ifeq (@TOPOLOGY@,topology)
 	SUBDIRS += postgis_topology
 endif

@@ -1453,6 +1453,7 @@ dnl ===========================================================================
 AC_OUTPUT([GNUmakefile
    extensions/Makefile
    extensions/postgis/Makefile
+   extensions/postgis_raster/Makefile
    extensions/postgis_sfcgal/Makefile
    extensions/postgis_topology/Makefile
    extensions/postgis_tiger_geocoder/Makefile
