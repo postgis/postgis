@@ -102,30 +102,7 @@ sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $(EXTENSION_UPGRADE_SCRIPTS) >> $@
 
-EXTDIR=$(DESTDIR)$(datadir)/$(datamoduledir)
-
-install: install-upgrade-paths
-
-# The "next" lines are a cludge to allow upgrading between different
-# revisions of the same version
-install-upgrade-paths: sql/$(EXTENSION)--ANY--$(EXTVERSION).sql
-	tpl='$(EXTENSION)--ANY--$(EXTVERSION).sql'; \
-	$(INSTALL_DATA) $^ "$(EXTDIR)/$${tpl}"; \
-	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql; \
-	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql; \
-	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
-		ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
-	done
-
-uninstall: uninstall-upgrade-paths
-
-INSTALLED_UPGRADE_SCRIPTS = \
-	$(wildcard $(EXTDIR)/*$(EXTVERSION).sql) \
-	$(wildcard $(EXTDIR)/*$(EXTVERSION)next.sql) \
-	$(NULL)
-
-uninstall-upgrade-paths:
-	rm -f $(INSTALLED_UPGRADE_SCRIPTS)
+include ../upgrade-paths-rules.mk
 
 distclean: clean
 	rm -f Makefile
