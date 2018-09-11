@@ -1,0 +1,14 @@
+DO $$
+DECLARE
+	ver TEXT;
+BEGIN
+	ver := split_part(postgis_raster_scripts_installed(), ' ', 1);
+	IF ver != '@EXTVERSION@' THEN
+		RAISE EXCEPTION 'Installed PostGIS Raster version is %', ver
+		USING HINT = 'Try `CREATE EXTENSION postgis_raster VERSION '''
+			|| ver || ''' from unpackaged`,'
+			' or source rtpostgis_upgrade.sql`';
+	END IF;
+END;
+$$ LANGUAGE 'plpgsql';
+

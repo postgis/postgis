@@ -58,8 +58,10 @@ CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
 
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 
-sql/$(EXTENSION).sql: $(EXTENSION_SCRIPTS)
-	mkdir -p sql
+sql:
+	mkdir -p $@
+
+sql/$(EXTENSION).sql: $(EXTENSION_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ >> $@
 
@@ -70,29 +72,32 @@ $(EXTENSION).control: $(EXTENSION).control.in Makefile
 		| sed -e 's|@MODULEPATH@|$(MODULEPATH)|g' \
 		> $@
 
-sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
-	mkdir -p sql
+sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
 	cp $< $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) ../../utils/create_unpackaged.pl
-	mkdir -p sql
-	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) | $(PERL) ../../utils/create_unpackaged.pl postgis_raster > $@
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) ../../utils/create_unpackaged.pl unpackaged_check.sql Makefile | sql
+	cat unpackaged_check.sql > $@
+	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) | $(PERL) ../../utils/create_unpackaged.pl postgis_raster >> $@
+
+unpackaged_check.sql: unpackaged_check.sql.in Makefile
+	cat $< \
+		| sed -e 's|@EXTVERSION@|$(EXTVERSION)|g' \
+		> $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
-sql/rtpostgis.sql: ../../raster/rt_pg/rtpostgis_for_extension.sql
-	mkdir -p sql
+sql/rtpostgis.sql: ../../raster/rt_pg/rtpostgis_for_extension.sql | sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
-sql/rtpostgis_upgrade.sql: ../../raster/rt_pg/rtpostgis_upgrade_for_extension.sql
+sql/rtpostgis_upgrade.sql: ../../raster/rt_pg/rtpostgis_upgrade_for_extension.sql | sql
 	$(PERL) -pe "s/BEGIN\;//g ; s/COMMIT\;//g; s/^(DROP .*)\;/SELECT postgis_extension_drop_if_exists('$(EXTENSION)', '\1');\n\1\;/" $< > $@
 
 ../../doc/raster_comments.sql:
 	$(MAKE) -C ../../doc comments
 
-sql/raster_comments.sql: ../../doc/raster_comments.sql
+sql/raster_comments.sql: ../../doc/raster_comments.sql | sql
 	cp $< $@
 
-sql/postgis_extension_upgrade_minor.sql: $(EXTENSION_UPGRADE_SCRIPTS)
+sql/postgis_extension_upgrade_minor.sql: $(EXTENSION_UPGRADE_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ >> $@
 
