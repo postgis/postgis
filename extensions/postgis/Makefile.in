@@ -32,7 +32,7 @@ DATA_built = \
 # Scripts making up the extension file
 # NOTE: order matters
 EXTENSION_SCRIPTS = \
-	sql/postgis.sql \
+	../../postgis/postgis_for_extension.sql \
 	../../doc/postgis_comments.sql \
 	sql/spatial_ref_sys_config_dump.sql \
 	sql/spatial_ref_sys.sql
@@ -43,12 +43,18 @@ EXTENSION_UPGRADE_SCRIPTS = \
 	../postgis_extension_helper.sql \
 	sql/postgis_upgrade.sql \
 	../../doc/postgis_comments.sql \
+	sql/raster_unpackage.sql \
 	../postgis_extension_helper_uninstall.sql
 
 # Scripts making up the extension upgrade-from-unpackaged file
 # NOTE: order matters
 EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
 	sql/postgis.sql
+
+RASTER_DROP_SCRIPTS = \
+	../../raster/rt_pg/rtpostgis_upgrade_cleanup.sql \
+	../../raster/rt_pg/rtpostgis_drop.sql \
+	../../raster/rt_pg/uninstall_rtpostgis.sql
 
 #DOCS         = $(wildcard ../../doc/html/*.html)
 PG_CONFIG    = @PG_CONFIG@
@@ -70,6 +76,15 @@ $(EXTENSION).control: $(EXTENSION).control.in Makefile
 		| sed -e 's|@EXTENSION@|$(EXTENSION)|g' \
 		| sed -e 's|@MODULEPATH@|$(MODULEPATH)|g' \
 		> $@
+
+$(RASTER_DROP_SCRIPTS):
+	$(MAKE) -C ../../raster
+
+sql/raster_unpackage.sql: $(RASTER_DROP_SCRIPTS) ../../utils/create_extension_unpackage.pl Makefile | sql
+	cat $(RASTER_DROP_SCRIPTS) \
+		| ../../utils/create_extension_unpackage.pl postgis > $@
+
+sql/raster_unpackage.sql: Makefile
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
 	cp $< $@
