@@ -78,7 +78,7 @@ $(EXTENSION).control: $(EXTENSION).control.in Makefile
 		> $@
 
 $(RASTER_DROP_SCRIPTS):
-	$(MAKE) -C ../../raster
+	$(MAKE) -C ../../raster/rt_pg sql_objs
 
 sql/raster_unpackage.sql: Makefile
 sql/raster_unpackage.sql: ../../utils/create_extension_unpackage.pl

@@ -1420,7 +1420,10 @@ if test "x$with_raster" != "xno"; then
 
 else
 	AC_MSG_RESULT([RASTER: Raster support disabled])
-	RT_MAKEFILE_LIST="raster/Makefile"
+
+	dnl We still generate raster/rt_pg makefile to
+	dnl use for upgrading from pre-split-raster versions
+	RT_MAKEFILE_LIST="raster/Makefile raster/rt_pg/Makefile"
 fi
 
 
