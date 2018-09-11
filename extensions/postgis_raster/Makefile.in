@@ -108,7 +108,7 @@ install: install-upgrade-paths
 
 # The "next" lines are a cludge to allow upgrading between different
 # revisions of the same version
-install-upgrade-paths:
+install-upgrade-paths: sql/$(EXTENSION)--ANY--$(EXTVERSION).sql
 	tpl='$(EXTENSION)--ANY--$(EXTVERSION).sql'; \
 	$(INSTALL_DATA) $^ "$(EXTDIR)/$${tpl}"; \
 	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql; \
