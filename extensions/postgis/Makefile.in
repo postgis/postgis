@@ -113,10 +113,6 @@ sql_bits:
 sql/spatial_ref_sys.sql: ../../spatial_ref_sys.sql | sql_bits
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
-#strip BEGIN/COMMIT since these are not allowed in extensions
-sql/postgis.sql: ../../postgis/postgis_for_extension.sql | sql
-	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
-
 ../../doc/postgis_comments.sql:
 	$(MAKE) -C ../../doc comments
 
