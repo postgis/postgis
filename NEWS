@@ -1,5 +1,8 @@
 PostGIS 3.0.0
 2019/xx/xx
+* Breaking Changes *
+  - #3888, Raster support now available as a separate extension
+    (Sandro Santilli)
 * Enhancements and fixes *
   - #4153, ST_Segmentize now splits segments proportionally (Darafei
     Praliaskouski).
