@@ -215,7 +215,9 @@ endif
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g;s'@extschema@\.''g" > $@
 
 postgis_upgrade_for_extension.sql: postgis_drop_before.sql postgis_upgrade_for_extension.sql.in postgis_drop_after.sql
-	cat $^ > $@
+	#strip BEGIN/COMMIT since these are not allowed in extensions
+	# WARNING: we should make sure these are not internal to function bodies
+	cat $^ | $(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' > $@
 
 postgis_for_extension.sql: postgis.sql.in
 	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
