@@ -221,7 +221,9 @@ postgis_upgrade_for_extension.sql: postgis_drop_before.sql postgis_upgrade_for_e
 
 postgis_for_extension.sql: postgis.sql.in
 	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
+	$(PERL) -lpe \
+		"s'MODULE_PATHNAME'\$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" \
+		| $(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' > $@
 
 #this is redundant but trying to fold in with extension just hangs
 postgis_upgrade.sql.in: postgis.sql ../utils/postgis_proc_upgrade.pl
