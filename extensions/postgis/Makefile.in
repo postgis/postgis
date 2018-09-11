@@ -103,11 +103,6 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_
 		| $(PERL) ../../utils/create_unpackaged.pl postgis \
 		>> $@
 
-unpackaged_check.sql: unpackaged_check.sql.in Makefile
-	cat $< \
-		| sed -e 's|@EXTVERSION@|$(EXTVERSION)|g' \
-		> $@
-
 sql:
 	mkdir -p $@
 

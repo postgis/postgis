@@ -75,8 +75,9 @@ $(EXTENSION).control: $(EXTENSION).control.in Makefile
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
 	cp $< $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) ../../utils/create_unpackaged.pl unpackaged_check.sql Makefile | sql
-	cat unpackaged_check.sql > $@
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) ../../utils/create_unpackaged.pl sql/$(EXTENSION)--ANY--$(EXTVERSION).sql Makefile | sql
+	# Ensure version is correct
+	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql > $@
 	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) | $(PERL) ../../utils/create_unpackaged.pl postgis_raster >> $@
 
 unpackaged_check.sql: unpackaged_check.sql.in Makefile
@@ -97,9 +98,9 @@ sql/rtpostgis_upgrade.sql: ../../raster/rt_pg/rtpostgis_upgrade_for_extension.sq
 sql/raster_comments.sql: ../../doc/raster_comments.sql | sql
 	cp $< $@
 
-sql/postgis_extension_upgrade_minor.sql: $(EXTENSION_UPGRADE_SCRIPTS) | sql
+sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
-	cat $^ >> $@
+	cat $(EXTENSION_UPGRADE_SCRIPTS) >> $@
 
 EXTDIR=$(DESTDIR)$(datadir)/$(datamoduledir)
 
@@ -107,7 +108,7 @@ install: install-upgrade-paths
 
 # The "next" lines are a cludge to allow upgrading between different
 # revisions of the same version
-install-upgrade-paths: sql/postgis_extension_upgrade_minor.sql
+install-upgrade-paths:
 	tpl='$(EXTENSION)--ANY--$(EXTVERSION).sql'; \
 	$(INSTALL_DATA) $^ "$(EXTDIR)/$${tpl}"; \
 	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql; \
