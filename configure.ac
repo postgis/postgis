@@ -58,6 +58,9 @@ dnl
 PICFLAGS="$lt_prog_compiler_pic"
 AC_SUBST([PICFLAGS])
 
+AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -fno-math-errno], [_cv_nomatherrno], [-fno-math-errno], [], [CFLAGS="$CFLAGS -fno-math-errno"], [])
+AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -fno-signed-zeros], [_cv_nosignedzeros], [-fno-signed-zeros], [], [CFLAGS="$CFLAGS -fno-signed-zeros"], [])
+
 dnl
 dnl For GCC enable additional warning flags -Wall and -Wmissing-prototypes (using macro included with libtool)
 dnl

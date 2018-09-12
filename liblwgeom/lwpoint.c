@@ -288,12 +288,4 @@ lwpoint_force_dims(const LWPOINT *point, int hasz, int hasm)
 	return pointout;
 }
 
-int lwpoint_is_empty(const LWPOINT *point)
-{
-	if ( ! point->point || point->point->npoints < 1 )
-		return LW_TRUE;
-	return LW_FALSE;
-}
-
-
 
