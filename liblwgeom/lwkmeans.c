@@ -5,9 +5,6 @@
  *
  *------------------------------------------------------------------------*/
 
-#include <float.h>
-#include <math.h>
-
 #include "liblwgeom_internal.h"
 
 /*
@@ -132,7 +129,7 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 	uint32_t p1 = 0, p2 = 0;
 	uint32_t i, j;
 	uint32_t duplicate_count = 1; /* a point is a duplicate of itself */
-	double max_dst = -1;
+	double max_dst = -1, current_distance;
 	double dst_p1, dst_p2;
 
 	/* k=0, k=1: "clustering" is just input validation */
@@ -157,11 +154,16 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 		dst_p2 = distance2d_sqr_pt_pt(objs[i], objs[p2]);
 		if ((dst_p1 > max_dst) || (dst_p2 > max_dst))
 		{
-			max_dst = fmax(dst_p1, dst_p2);
 			if (dst_p1 > dst_p2)
+			{
+				max_dst = dst_p1;
 				p2 = i;
+			}
 			else
+			{
+				max_dst = dst_p2;
 				p1 = i;
+			}
 		}
 		if ((dst_p1 == 0) || (dst_p2 == 0)) duplicate_count++;
 	}
@@ -209,7 +211,9 @@ kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2
 				if (distances[j] < 0) continue;
 
 				/* update minimal distance with previosuly accepted cluster */
-				distances[j] = fmin(distance2d_sqr_pt_pt(objs[j], centers[i - 1]), distances[j]);
+				current_distance = distance2d_sqr_pt_pt(objs[j], centers[i - 1]);
+				if (current_distance < distances[j])
+					distances[j] = current_distance;
 
 				/* greedily take a point that's farthest from any of accepted clusters */
 				if (distances[j] > max_distance)

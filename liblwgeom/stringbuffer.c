@@ -23,8 +23,6 @@
  *
  **********************************************************************/
 
-
-
 #include "liblwgeom_internal.h"
 #include "stringbuffer.h"
 
@@ -94,28 +92,6 @@ stringbuffer_clear(stringbuffer_t *s)
 }
 
 /**
-* If necessary, expand the stringbuffer_t internal buffer to accommodate the
-* specified additional size.
-*/
-static inline void
-stringbuffer_makeroom(stringbuffer_t *s, size_t size_to_add)
-{
-	size_t current_size = (s->str_end - s->str_start);
-	size_t capacity = s->capacity;
-	size_t required_size = current_size + size_to_add;
-
-	while (capacity < required_size)
-		capacity *= 2;
-
-	if ( capacity > s->capacity )
-	{
-		s->str_start = lwrealloc(s->str_start, capacity);
-		s->capacity = capacity;
-		s->str_end = s->str_start + current_size;
-	}
-}
-
-/**
 * Return the last character in the buffer.
 */
 char
@@ -127,18 +103,6 @@ stringbuffer_lastchar(stringbuffer_t *s)
 	return *(s->str_end - 1);
 }
 
-/**
-* Append the specified string to the stringbuffer_t.
-*/
-void
-stringbuffer_append(stringbuffer_t *s, const char *a)
-{
-	int alen = strlen(a); /* Length of string to append */
-	int alen0 = alen + 1; /* Length including null terminator */
-	stringbuffer_makeroom(s, alen0);
-	memcpy(s->str_end, a, alen0);
-	s->str_end += alen;
-}
 
 /**
 * Returns a reference to the internal string being managed by
