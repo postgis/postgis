@@ -1,9 +1,9 @@
 env:
   matrix:
-    - CFLAGS="-g -O1" MATRIX_EVAL="touch check-no-trailing-blanks" PGPORT="5433"
-    - CFLAGS="-g -O2 -fstack-protector -Wformat -Werror=format-security" LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro" PGPORT="5433"
-    - CFLAGS="-g -O3 -mtune=generic -fno-omit-frame-pointer -Werror -Wall -Wextra -Wno-unused-parameter" PGPORT="5433"
-    - CFLAGS="-g -O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage" CONFIGURE_FLAGS="--enable-debug" PGPORT="5433"
+    - CFLAGS="-g -O1" MATRIX_EVAL="touch check-no-trailing-blanks"
+    - CFLAGS="-g -O2 -fstack-protector -Wformat -Werror=format-security" LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
+    - CFLAGS="-g -O3 -mtune=generic -fno-omit-frame-pointer -Werror -Wall -Wextra -Wno-unused-parameter"
+    - CFLAGS="-g -O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage" CONFIGURE_FLAGS="--enable-debug"
 
 addons:
   apt:
