@@ -39,7 +39,7 @@ distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2)
  * Size of point represeneted in the POINTARRAY
  * 16 for 2d, 24 for 3d, 32 for 4d
  */
-inline size_t
+static inline size_t
 ptarray_point_size(const POINTARRAY *pa)
 {
 	return sizeof(double) * FLAGS_NDIMS(pa->flags);
@@ -58,7 +58,7 @@ ptarray_point_size(const POINTARRAY *pa)
  * WARNING: Don't cast this to a POINT!
  * it would not be reliable due to memory alignment constraints
  */
-inline static uint8_t *
+static inline uint8_t *
 getPoint_internal(const POINTARRAY *pa, uint32_t n)
 {
 	size_t size;
@@ -82,7 +82,7 @@ getPoint_internal(const POINTARRAY *pa, uint32_t n)
  * and declared const because you aren't allowed to muck with the
  * values, only read them.
  */
-inline static const POINT2D *
+static inline const POINT2D *
 getPoint2d_cp(const POINTARRAY *pa, uint32_t n)
 {
 	if (!pa)
