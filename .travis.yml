@@ -22,6 +22,7 @@ before_install:
   - curl -sSfL https://raw.githubusercontent.com/mapbox/logbt/30c554dd37b6c96c23fc424f75910fc6d6696f00/bin/logbt | sudo tee /usr/local/bin/logbt > /dev/null
   - sudo logbt --setup
   
+  - sudo apt-get remove postgresql-9.4 postgresql-9.5 postgresql-9.6 postgresql-10
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update -qq
@@ -37,12 +38,12 @@ before_install:
   - echo "postgres               hard    core            unlimited" | sudo tee -a /etc/security/limits.conf
   - echo "pg_ctl_options = '-c'" | sudo tee /etc/postgresql/11/main/pg_ctl.conf
   - echo "jit = off" | sudo tee -a /etc/postgresql/11/main/postgresql.conf
-  - sudo service postgresql stop 11
+  - sudo service postgresql stop
   - sudo chown -hRL --from=postgres travis:travis /etc /var /tmp
   - sudo usermod -u 1000 postgres
   - sudo adduser travis ssl-cert
-  - sudo service postgresql start 11;sudo systemctl status postgresql.service; sudo journalctl -xel
-  - sudo service postgresql status 11
+  - sudo service postgresql start;sudo systemctl status postgresql.service; sudo journalctl -xel
+  - sudo service postgresql status 
   - sudo -u postgres createuser --superuser travis
   
   - sudo ldconfig
