@@ -8,7 +8,7 @@ env:
 addons:
   apt:
     sources:
-      - sourceline: 'deb http://apt.postgresql.org/pub/repos/apt xenial-pgdg 11'
+      - sourceline: 'deb http://apt.postgresql.org/pub/repos/apt bionic-pgdg 11'
         key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
     packages:
       - eatmydata
@@ -22,27 +22,27 @@ before_install:
   - curl -sSfL https://raw.githubusercontent.com/mapbox/logbt/30c554dd37b6c96c23fc424f75910fc6d6696f00/bin/logbt | sudo tee /usr/local/bin/logbt > /dev/null
   - sudo logbt --setup
   
-  - sudo apt-get remove postgresql-9.4 postgresql-9.5 postgresql-9.6 postgresql-10
+  - sudo apt-get remove postgresql-9.4 postgresql-9.5 postgresql-9.6 postgresql-10 postgresql-client-9.4 postgresql-client-9.5 postgresql-client-9.6 postgresql-client-10
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update -qq
   - mkdir -p /home/travis/deb && touch /home/travis/deb/__ && sudo cp -n /home/travis/deb/* /var/cache/apt/archives || true
-  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests postgresql-11 postgresql-client-11 postgresql-server-dev-11 lib64stdc++6-4.8-dbg libc++abi-dev libc++-dev postgresql-11-dbg libgcc1-dbg libsfcgal1 libsfcgal-dev libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson0-dev libprotobuf-c0-dev libgdal-dev gdb libc6-dbg
-  - sudo sh -c "echo deb http://archive.ubuntu.com/ubuntu/ artful main restricted universe multiverse >> /etc/apt/sources.list"
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests plibc++abi-dev libc++-dev libgcc1-dbg libsfcgal1 libsfcgal-dev libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson0-dev libprotobuf-c0-dev libgdal-dev gdb libc6-dbg
+  - sudo sh -c "echo deb http://archive.ubuntu.com/ubuntu/ bionic main restricted universe multiverse >> /etc/apt/sources.list"
   - sudo apt-get update -qq
-  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests binutils libproj-dev libprotobuf-c-dev protobuf-c-compiler
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests ostgresql-11 postgresql-client-11 postgresql-server-dev-11 postgresql-11-dbg binutils libproj-dev libprotobuf-c-dev protobuf-c-compiler
     
   - cp -n /var/cache/apt/archives/* /home/travis/deb || true
   
   - echo "postgres               soft    core            unlimited" | sudo tee -a /etc/security/limits.conf
   - echo "postgres               hard    core            unlimited" | sudo tee -a /etc/security/limits.conf
   - echo "pg_ctl_options = '-c'" | sudo tee /etc/postgresql/11/main/pg_ctl.conf
-  - echo "jit = off" | sudo tee -a /etc/postgresql/11/main/postgresql.conf
+#  - echo "jit = off" | sudo tee -a /etc/postgresql/11/main/postgresql.conf
   - sudo service postgresql stop
   - sudo chown -hRL --from=postgres travis:travis /etc /var /tmp
   - sudo usermod -u 1000 postgres
   - sudo adduser travis ssl-cert
-  - sudo service postgresql start;sudo systemctl status postgresql.service; sudo journalctl -xel
+  - sudo service postgresql start
   - sudo service postgresql status 
   - sudo -u postgres createuser --superuser travis
   
