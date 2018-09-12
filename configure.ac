@@ -1545,7 +1545,7 @@ if test "$GEOS_NUMERIC_VERSION" -lt 30700; then
 AC_MSG_WARN([ --------- GEOS VERSION WARNING ------------ ])
 AC_MSG_WARN([  You are building against GEOS ${GEOS_FULL_VERSION} ])
 AC_MSG_WARN([  To take advantage of all the features of ])
-AC_MSG_WARN([  this PostGIS version requires GEOS 3.7.0 or higher which is not out yet.])
+AC_MSG_WARN([  this PostGIS version requires GEOS 3.7.0 or higher.])
 AC_MSG_WARN([  To take advantage of most of the features of this PostGIS])
 AC_MSG_WARN([  we recommend GEOS 3.6 or higher])
 AC_MSG_WARN([  You can download the latest versions from ])
