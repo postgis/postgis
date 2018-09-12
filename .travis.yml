@@ -43,6 +43,7 @@ before_install:
   - sudo adduser travis ssl-cert
   - sudo service postgresql start 11
   - sudo service postgresql status 11
+  - sudo -u postgres createuser --superuser travis
   
   - sudo ldconfig
 
