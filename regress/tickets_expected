@@ -336,3 +336,4 @@ ERROR:  lwgeom_union: GEOS Error: TopologyException: Input geom 0 is invalid: Se
 ERROR:  lwgeom_pointonsurface: GEOS Error: TopologyException: Input geom 1 is invalid: Self-intersection
 #4081|f|t
 ERROR:  The 'coordinates' in GeoJSON polygon are not sufficiently nested
+#4176|t

@@ -12,6 +12,7 @@ PostGIS 3.0.0
   - #4161, MVT: Drop geometries smaller than the resolution (Raúl Marín)
   - #4172, Fix memory leak in lwgeom_offsetcurve (Raúl Marín)
   - #4173, Fix undefined behaviour in ptarray_segmentize2d (Raúl Marín)
+  - #4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)
 
 PostGIS 2.5.0rc1
 2018/08/19
