@@ -31,12 +31,9 @@
 #include "liblwgeom.h"
 #include "lwgeom_transform.h"
 
-
 Datum transform(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);
-
-
 
 /**
  * transform( GEOMETRY, INT (output srid) )

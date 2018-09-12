@@ -23,7 +23,6 @@
 #include <sys/time.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 
 #ifdef DEBUG
 #define SET_TIME(a) gettimeofday(&(a), NULL)

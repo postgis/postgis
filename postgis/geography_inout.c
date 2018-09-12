@@ -31,7 +31,6 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 
 #include "utils/elog.h"
 #include "utils/array.h"

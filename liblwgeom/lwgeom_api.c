@@ -29,7 +29,6 @@
 #include "lwgeom_log.h"
 
 #include <stdio.h>
-#include <errno.h>
 #include <assert.h>
 #include "../postgis_svn_revision.h"
 

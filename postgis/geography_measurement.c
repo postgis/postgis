@@ -31,7 +31,6 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 
 #include "liblwgeom.h"         /* For standard geometry types. */
 #include "liblwgeom_internal.h"         /* For FP comparators. */
