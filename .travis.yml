@@ -8,7 +8,7 @@ env:
 addons:
   apt:
     sources:
-      - sourceline: 'deb http://apt.postgresql.org/pub/repos/apt trusty-pgdg 11'
+      - sourceline: 'deb http://apt.postgresql.org/pub/repos/apt xenial-pgdg 11'
         key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
     packages:
       - eatmydata
@@ -16,7 +16,7 @@ addons:
 before_install:
   - eval "${MATRIX_EVAL}"
   - sudo sh -c "echo /usr/lib/libeatmydata/libeatmydata.so >> /etc/ld.so.preload"
-  - sudo /etc/init.d/postgresql stop
+  - sudo service postgresql stop
     
   - curl -sSfL https://github.com/mapbox/logbt/archive/v2.0.3.tar.gz | sudo tar --gunzip --extract --strip-components=1 --exclude="*md" --exclude="test*" --directory=/usr/local
   - curl -sSfL https://raw.githubusercontent.com/mapbox/logbt/30c554dd37b6c96c23fc424f75910fc6d6696f00/bin/logbt | sudo tee /usr/local/bin/logbt > /dev/null
@@ -26,7 +26,7 @@ before_install:
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update -qq
   - mkdir -p /home/travis/deb && touch /home/travis/deb/__ && sudo cp -n /home/travis/deb/* /var/cache/apt/archives || true
-  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests postgresql-11 postgresql-server-dev-11 lib64stdc++6-4.8-dbg libc++abi-dev libc++-dev postgresql-11-dbg libgcc1-dbg libsfcgal1 libsfcgal-dev libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson0-dev libprotobuf-c0-dev libgdal-dev gdb libc6-dbg
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests postgresql-11 postgresql-client-11 postgresql-server-dev-11 lib64stdc++6-4.8-dbg libc++abi-dev libc++-dev postgresql-11-dbg libgcc1-dbg libsfcgal1 libsfcgal-dev libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson0-dev libprotobuf-c0-dev libgdal-dev gdb libc6-dbg
   - sudo sh -c "echo deb http://archive.ubuntu.com/ubuntu/ artful main restricted universe multiverse >> /etc/apt/sources.list"
   - sudo apt-get update -qq
   - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests binutils libproj-dev libprotobuf-c-dev protobuf-c-compiler
@@ -57,7 +57,7 @@ language: c
 
 compiler: gcc
 
-dist: trusty
+dist: xenial
 
 cache:
   ccache: true
