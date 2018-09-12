@@ -29,7 +29,6 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 
 #include "access/gist.h"
 #include "access/itup.h"

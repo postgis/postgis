@@ -38,7 +38,6 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 
 Datum lwgeom_lt(PG_FUNCTION_ARGS);
 Datum lwgeom_le(PG_FUNCTION_ARGS);
