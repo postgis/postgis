@@ -39,8 +39,6 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
-
 
 /* forward defs */
 Datum BOX2D_in(PG_FUNCTION_ARGS);

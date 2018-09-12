@@ -41,7 +41,6 @@
 
 #include <libxml/tree.h>
 #include <libxml/parser.h>
-#include <errno.h>
 #include <string.h>
 
 #include "postgres.h"

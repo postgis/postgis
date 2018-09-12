@@ -118,7 +118,6 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 #include <ctype.h>
 
 
