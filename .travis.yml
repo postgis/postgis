@@ -8,7 +8,7 @@ env:
 addons:
   apt:
     sources:
-      - sourceline: 'deb https://apt.postgresql.org/pub/repos/apt trusty-pgdg main 11'
+      - sourceline: 'deb https://apt.postgresql.org/pub/repos/apt trusty-pgdg 11'
         key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
     packages:
       - eatmydata
