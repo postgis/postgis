@@ -17,14 +17,25 @@ before_install:
   - eval "${MATRIX_EVAL}"
   - sudo sh -c "echo /usr/lib/libeatmydata/libeatmydata.so >> /etc/ld.so.preload"
   - sudo /etc/init.d/postgresql stop
-  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests postgresql-11 postgresql-server-dev-11 lib64stdc++6-4.8-dbg libc++abi-dev libc++-dev postgresql-11-dbg libgcc1-dbg
-  - echo "postgres               soft    core            unlimited" | sudo tee -a /etc/security/limits.conf
-  - echo "postgres               hard    core            unlimited" | sudo tee -a /etc/security/limits.conf
-  - echo "pg_ctl_options = '-c'" | sudo tee /etc/postgresql/11/main/pg_ctl.conf
+    
   - curl -sSfL https://github.com/mapbox/logbt/archive/v2.0.3.tar.gz | sudo tar --gunzip --extract --strip-components=1 --exclude="*md" --exclude="test*" --directory=/usr/local
   - curl -sSfL https://raw.githubusercontent.com/mapbox/logbt/30c554dd37b6c96c23fc424f75910fc6d6696f00/bin/logbt | sudo tee /usr/local/bin/logbt > /dev/null
   - sudo logbt --setup
-  - sudo service postgresql status 11
+  
+  - sudo add-apt-repository --yes ppa:ubuntugis/ppa
+  - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
+  - sudo apt-get update -qq
+  - mkdir -p /home/travis/deb && touch /home/travis/deb/__ && sudo cp -n /home/travis/deb/* /var/cache/apt/archives || true
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests postgresql-11 postgresql-server-dev-11 lib64stdc++6-4.8-dbg libc++abi-dev libc++-dev postgresql-11-dbg libgcc1-dbg libsfcgal1 libsfcgal-dev libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson0-dev libprotobuf-c0-dev libgdal-dev gdb libc6-dbg
+  - sudo sh -c "echo deb http://archive.ubuntu.com/ubuntu/ artful main restricted universe multiverse >> /etc/apt/sources.list"
+  - sudo apt-get update -qq
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests binutils libproj-dev libprotobuf-c-dev protobuf-c-compiler
+    
+  - cp -n /var/cache/apt/archives/* /home/travis/deb || true
+  
+  - echo "postgres               soft    core            unlimited" | sudo tee -a /etc/security/limits.conf
+  - echo "postgres               hard    core            unlimited" | sudo tee -a /etc/security/limits.conf
+  - echo "pg_ctl_options = '-c'" | sudo tee /etc/postgresql/11/main/pg_ctl.conf
   - echo "jit = off" | sudo tee -a /etc/postgresql/11/main/postgresql.conf
   - sudo service postgresql stop 11
   - sudo chown -hRL --from=postgres travis:travis /etc /var /tmp
@@ -32,18 +43,8 @@ before_install:
   - sudo adduser travis ssl-cert
   - sudo service postgresql start 11
   - sudo service postgresql status 11
-  - sudo add-apt-repository --yes ppa:ubuntugis/ppa
-  - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
-  - sudo apt-get update -qq
-  - mkdir -p /home/travis/deb && touch /home/travis/deb/__ && sudo cp -n /home/travis/deb/* /var/cache/apt/archives || true
-  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson0-dev libprotobuf-c0-dev libgdal-dev gdb libc6-dbg
-  - sudo sh -c "echo deb http://archive.ubuntu.com/ubuntu/ artful main restricted universe multiverse >> /etc/apt/sources.list"
-  - sudo apt-get update -qq
-  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests binutils libproj-dev libprotobuf-c-dev protobuf-c-compiler
-  - cp -n /var/cache/apt/archives/* /home/travis/deb || true
-  - ls -la /home/travis/deb/
+  
   - sudo ldconfig
-  - ./autogen.sh
 
 after_failure:
   - sudo head -n1000 /var/log/postgresql/postgresql-11-main.log
@@ -63,6 +64,7 @@ cache:
     - /home/travis/deb
 
 script:
+  - ./autogen.sh
   - ./configure CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS" $CONFIGURE_FLAGS || cat config.log
   - make -j
   - chmod 755 /home/travis
