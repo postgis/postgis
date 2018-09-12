@@ -37,8 +37,6 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
-
 
 /*
  * Return the measure at which interpolated points on the two
