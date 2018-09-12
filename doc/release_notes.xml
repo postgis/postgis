@@ -4,6 +4,27 @@
     <subtitle>Release Notes</subtitle>
 
     <sect1>
+      <title>Release 2.4.5</title>
+      <para>Release date: 2018/09/12</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect><title>Bug Fixes</title>
+        <para>#4031, Survive to big MaxError tolerances passed to ST_CurveToLine (Sandro Santilli)</para>
+        <para>#4058, Fix infinite loop in linearization of a big radius small arc (Sandro Santilli)</para>
+        <para>#4071, ST_ClusterKMeans crash on NULL/EMPTY fixed (Darafei Praliaskouski)</para>
+        <para>#4079, ensure St_AsMVTGeom outputs CW oriented polygons (Paul Ramsey)</para>
+        <para>#4070, use standard interruption error code on GEOS interruptions (Paul Ramsey)</para>
+        <para>#3980, delay freeing input until processing complete (lucasvr)</para>
+        <para>#4090, PG 11 support (Paul Ramsey, Raúl Marín)</para>
+        <para>#4077, Serialization failure for particular empty geometry cases (Paul Ramsey)</para>
+        <para>#3997, fix bug in lwgeom_median and avoid division by zero (Raúl Marín)</para>
+        <para>#4093, Inconsistent results from qsort callback (yugr)</para>
+        <para>#4081, Geography DWithin() issues for certain cases (Paul Ramsey)</para>
+        <para>#4105, Parallel build of tarball (Bas Couwenberg)</para>
+        <para>#4163, MVT: Fix resource leak when the first geometry is NULL (Raúl Marín)</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
       <title>Release 2.4.4</title>
       <para>Release date: 2018/04/08</para>
       <para>This is a bug fix and performance improvement release.</para>
