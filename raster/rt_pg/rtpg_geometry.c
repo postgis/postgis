@@ -188,6 +188,8 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(gser);
 }
 
+#define VALUES_LENGTH 2
+
 PG_FUNCTION_INFO_V1(RASTER_dumpAsPolygons);
 Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 	FuncCallContext *funcctx;
@@ -309,9 +311,8 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 2;
-		Datum values[values_length];
-		bool nulls[values_length];
+		Datum values[VALUES_LENGTH];
+		bool nulls[VALUES_LENGTH];
 		HeapTuple    tuple;
 		Datum        result;
 
@@ -320,7 +321,7 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 
 		POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
 
-		memset(nulls, FALSE, sizeof(bool) * values_length);
+		memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 		/* convert LWGEOM to GSERIALIZED */
 		gser = gserialized_from_lwgeom(lwpoly_as_lwgeom(geomval2[call_cntr].geom), &gser_size);
@@ -343,6 +344,9 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 		SRF_RETURN_DONE(funcctx);
 	}
 }
+
+#undef VALUES_LENGTH
+#define VALUES_LENGTH 4
 
 /**
  * Return the geographical shape of all pixels
@@ -611,9 +615,8 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 4;
-		Datum values[values_length];
-		bool nulls[values_length];
+		Datum values[VALUES_LENGTH];
+		bool nulls[VALUES_LENGTH];
 		HeapTuple tuple;
 		Datum result;
 
@@ -622,7 +625,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 
 		POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
 
-		memset(nulls, FALSE, sizeof(bool) * values_length);
+		memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 		/* convert LWGEOM to GSERIALIZED */
 		gser = gserialized_from_lwgeom(pix2[call_cntr].geom, &gser_size);

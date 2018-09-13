@@ -6070,6 +6070,8 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     PG_RETURN_POINTER(pgrtn);
 }
 
+#define ARGKWCOUNT 8
+
 /**
  * Two raster MapAlgebra
  */
@@ -6117,11 +6119,10 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	SPIPlanPtr spi_plan[3] = {NULL};
 	uint16_t spi_empty = 0;
 	Oid *argtype = NULL;
-	const uint32_t argkwcount = 8;
 	uint8_t argpos[3][8] = {{0}};
 	char *argkw[] = {"[rast1.x]", "[rast1.y]", "[rast1.val]", "[rast1]", "[rast2.x]", "[rast2.y]", "[rast2.val]", "[rast2]"};
-	Datum values[argkwcount];
-	char nulls[argkwcount];
+	Datum values[ARGKWCOUNT];
+	char nulls[ARGKWCOUNT];
 	TupleDesc tupdesc;
 	SPITupleTable *tuptable = NULL;
 	HeapTuple tuple;
@@ -6640,7 +6641,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					expr = text_to_cstring(PG_GETARG_TEXT_P(spi_exprpos[i]));
 					POSTGIS_RT_DEBUGF(3, "raw expr #%d: %s", i, expr);
 
-					for (j = 0, k = 1; j < argkwcount; j++) {
+					for (j = 0, k = 1; j < ARGKWCOUNT; j++) {
 						/* attempt to replace keyword with placeholder */
 						len = 0;
 						tmp = rtpg_strreplace(expr, argkw[j], place, &len);
@@ -6705,7 +6706,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						}
 
 						/* specify datatypes of parameters */
-						for (j = 0, k = 0; j < argkwcount; j++) {
+						for (j = 0, k = 0; j < ARGKWCOUNT; j++) {
 							if (argpos[i][j] < 1) continue;
 
 							/* positions are INT4 */
@@ -7004,14 +7005,14 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							POSTGIS_RT_DEBUGF(4, "Using prepared plan: %d", i);
 
 							/* reset values to (Datum) NULL */
-							memset(values, (Datum) NULL, sizeof(Datum) * argkwcount);
+							memset(values, (Datum) NULL, sizeof(Datum) * ARGKWCOUNT);
 							/* reset nulls to FALSE */
-							memset(nulls, FALSE, sizeof(char) * argkwcount);
+							memset(nulls, FALSE, sizeof(char) * ARGKWCOUNT);
 
 							/* expression has argument(s) */
 							if (spi_argcount[i]) {
 								/* set values and nulls */
-								for (j = 0; j < argkwcount; j++) {
+								for (j = 0; j < ARGKWCOUNT; j++) {
 									idx = argpos[i][j];
 									if (idx < 1) continue;
 									idx--; /* 1-based becomes 0-based */
