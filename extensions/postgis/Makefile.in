@@ -88,7 +88,7 @@ sql/raster_unpackage.sql: $(RASTER_DROP_SCRIPTS) | sql
 	sed '/UNPACKAGE_CODE/q' unpackage_raster_if_needed.sql > $@
 
 	cat $(RASTER_DROP_SCRIPTS) \
-		| ../../utils/create_extension_unpackage.pl postgis >> $@
+		| $(PERL) ../../utils/create_extension_unpackage.pl postgis >> $@
 
 	sed -ne '/UNPACKAGE_CODE/{s///; :a' -e 'n;p;ba' -e '}' \
 		unpackage_raster_if_needed.sql  >> $@
