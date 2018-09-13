@@ -694,6 +694,8 @@ nd_box_ratio(const ND_BOX *b1, const ND_BOX *b2, int ndims)
 	return ivol / vol2;
 }
 
+/* How many bins shall we use in figuring out the distribution? */
+#define NUM_BINS 50
 
 /**
 * Calculate how much a set of boxes is homogenously distributed
@@ -713,10 +715,8 @@ nd_box_ratio(const ND_BOX *b1, const ND_BOX *b2, int ndims)
 static int
 nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *extent, int ndims, double *distribution)
 {
-	/* How many bins shall we use in figuring out the distribution? */
-	static int num_bins = 50;
 	int d, i, k, range;
-	int counts[num_bins];
+	int counts[NUM_BINS];
 	double smin, smax;   /* Spatial min, spatial max */
 	double swidth;       /* Spatial width of dimension */
 #if POSTGIS_DEBUG_LEVEL >= 3
@@ -729,7 +729,7 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 	for ( d = 0; d < ndims; d++ )
 	{
 		/* Initialize counts for this dimension */
-		memset(counts, 0, sizeof(int)*num_bins);
+		memset(counts, 0, sizeof(counts));
 
 		smin = extent->min[d];
 		smax = extent->max[d];
@@ -755,7 +755,7 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 			minoffset = ndb->min[d] - smin;
 			maxoffset = ndb->max[d] - smin;
 
-			/* Skip boxes that our outside our working range */
+			/* Skip boxes that are outside our working range */
 			if ( minoffset < 0 || minoffset > swidth ||
 			     maxoffset < 0 || maxoffset > swidth )
 			{
@@ -763,8 +763,12 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 			}
 
 			/* What bins does this range correspond to? */
-			bmin = num_bins * (minoffset) / swidth;
-			bmax = num_bins * (maxoffset) / swidth;
+			bmin = floor(NUM_BINS * minoffset / swidth);
+			bmax = floor(NUM_BINS * maxoffset / swidth);
+
+			/* Should only happen when maxoffset==swidth */
+			if (bmax >= NUM_BINS)
+				bmax = NUM_BINS-1;
 
 			POSTGIS_DEBUGF(4, " dimension %d, feature %d: bin %d to bin %d", d, i, bmin, bmax);
 
@@ -777,11 +781,11 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 		}
 
 		/* How dispersed is the distribution of features across bins? */
-		range = range_quintile(counts, num_bins);
+		range = range_quintile(counts, NUM_BINS);
 
 #if POSTGIS_DEBUG_LEVEL >= 3
-		average = avg(counts, num_bins);
-		sdev = stddev(counts, num_bins);
+		average = avg(counts, NUM_BINS);
+		sdev = stddev(counts, NUM_BINS);
 		sdev_ratio = sdev/average;
 
 		POSTGIS_DEBUGF(3, " dimension %d: range = %d", d, range);
