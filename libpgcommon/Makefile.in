@@ -10,7 +10,7 @@
 # **********************************************************************
 
 CC=@CC@
-CFLAGS=-I../liblwgeom @CFLAGS@ @PGSQL_BE_CPPFLAGS@ @PROJ_CPPFLAGS@ @PICFLAGS@ @WARNFLAGS@ @GETTEXT_CFLAGS@
+CFLAGS=-I../liblwgeom @WARNFLAGS@ @CFLAGS@ @PGSQL_BE_CPPFLAGS@ @PROJ_CPPFLAGS@ @PICFLAGS@ @GETTEXT_CFLAGS@
 LDFLAGS=@GETTEXT_LDFLAGS@ @LIBINTL@
 
 NUMERICFLAGS=@NUMERICFLAGS@
@@ -39,15 +39,15 @@ all: libpgcommon.a
 install uninstall:
 
 libpgcommon.a: $(SA_OBJS) $(SA_HEADERS)
-	ar rs libpgcommon.a $(SA_OBJS) 
+	ar rs libpgcommon.a $(SA_OBJS)
 
 maintainer-clean: clean
 
-clean: 
+clean:
 	$(MAKE) -C cunit clean
-	rm -f $(SA_OBJS) 
-	rm -f $(NM_OBJS) 
-	rm -f libpgcommon.a 
+	rm -f $(SA_OBJS)
+	rm -f $(NM_OBJS)
+	rm -f libpgcommon.a
 
 distclean: clean
 	$(MAKE) -C cunit distclean
@@ -57,7 +57,7 @@ check: libpgcommon.a
 	$(MAKE) -C cunit check
 
 # Command to build each of the .o files
-$(SA_OBJS): %.o: %.c 
+$(SA_OBJS): %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(SA_OBJS): ../postgis_config.h
