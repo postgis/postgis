@@ -1103,3 +1103,5 @@ SELECT ST_AsText(ST_GeomFromGeoJSON('{"type": "Polygon", "coordinates": [[0,0],[
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
+
+SELECT '#4176', ST_Intersects('POLYGON((0 0, 10 10, 3 5, 0 0))', 'GEOMETRYCOLLECTION(POINT(10 10), LINESTRING(0 0, 3 3))');
