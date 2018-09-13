@@ -123,7 +123,7 @@ kmeans(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, uint32_t k)
 }
 
 static void
-kmeans_init(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, POINT2D* centers_raw, uint32_t k)
+kmeans_init(POINT2D **objs, uint32_t n, POINT2D **centers, POINT2D *centers_raw, uint32_t k)
 {
 	double* distances;
 	uint32_t p1 = 0, p2 = 0;
@@ -327,12 +327,12 @@ lwgeom_cluster_2d_kmeans(const LWGEOM** geoms, uint32_t n, uint32_t k)
 
 	if (k > 1)
 	{
-		kmeans_init(objs, clusters, n, centers, centers_raw, k);
+		kmeans_init(objs, n, centers, centers_raw, k);
 		result = kmeans(objs, clusters, n, centers, k);
 	}
 	else
 	{
-		/* k=0: everythong is unclusterable
+		/* k=0: everything is unclusterable
 		 * k=1: mark up NULL and non-NULL */
 		for (i = 0; i < n; i++)
 		{
