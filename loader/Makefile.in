@@ -22,7 +22,7 @@ include $(PGXS)
 # Set CFLAGS afer PGXS, otherwise it will get overwritten with the PGXS
 # version which is not what we want.
 CC=@CC@
-CFLAGS=-I ../liblwgeom @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@
+CFLAGS=-I ../liblwgeom @WARNFLAGS@ @CFLAGS@ @PICFLAGS@ @PROJ_CPPFLAGS@
 top_builddir = @top_builddir@
 SHELL = @SHELL@
 INSTALL = @INSTALL@

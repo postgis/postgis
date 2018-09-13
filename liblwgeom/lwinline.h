@@ -121,41 +121,31 @@ lwgeom_get_type(const LWGEOM *geom)
 static inline int
 lwpoint_is_empty(const LWPOINT *point)
 {
-	if (!point->point || point->point->npoints < 1)
-		return LW_TRUE;
-	return LW_FALSE;
+	return !point->point || point->point->npoints < 1;
 }
 
 static inline int
 lwline_is_empty(const LWLINE *line)
 {
-	if (!line->points || line->points->npoints < 1)
-		return LW_TRUE;
-	return LW_FALSE;
+	return !line->points || line->points->npoints < 1;
 }
 
 static inline int
 lwcircstring_is_empty(const LWCIRCSTRING *circ)
 {
-	if (!circ->points || circ->points->npoints < 1)
-		return LW_TRUE;
-	return LW_FALSE;
+	return !circ->points || circ->points->npoints < 1;
 }
 
 static inline int
 lwpoly_is_empty(const LWPOLY *poly)
 {
-	if ((poly->nrings < 1) || (!poly->rings) || (!poly->rings[0]) || (poly->rings[0]->npoints < 1))
-		return LW_TRUE;
-	return LW_FALSE;
+	return poly->nrings < 1 || !poly->rings || !poly->rings[0] || poly->rings[0]->npoints < 1;
 }
 
 static inline int
 lwtriangle_is_empty(const LWTRIANGLE *triangle)
 {
-	if (!triangle->points || triangle->points->npoints < 1)
-		return LW_TRUE;
-	return LW_FALSE;
+	return !triangle->points || triangle->points->npoints < 1;
 }
 
 static inline int lwgeom_is_empty(const LWGEOM *geom);
@@ -164,7 +154,7 @@ static inline int
 lwcollection_is_empty(const LWCOLLECTION *col)
 {
 	uint32_t i;
-	if ((col->ngeoms == 0) || (!col->geoms))
+	if (col->ngeoms == 0 || !col->geoms)
 		return LW_TRUE;
 	for (i = 0; i < col->ngeoms; i++)
 	{
