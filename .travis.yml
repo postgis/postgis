@@ -2,7 +2,7 @@ env:
   matrix:
     - CFLAGS="-g -O1" MATRIX_EVAL="touch check-no-trailing-blanks"
     - CFLAGS="-g -O2 -fstack-protector -Wformat -Werror=format-security" LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
-    - CFLAGS="-g -O3 -mtune=generic -fno-omit-frame-pointer -Werror -Wall -Wextra -Wno-unused-parameter"
+    - CFLAGS="-g -O3 -mtune=generic -fno-omit-frame-pointer -Werror -Wall -Wextra -Wno-unused-parameter -Wimplicit-fallthrough=2"
     - CFLAGS="-g -O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage" CONFIGURE_FLAGS="--enable-debug"
 
 addons:
@@ -17,11 +17,11 @@ before_install:
   - eval "${MATRIX_EVAL}"
   - sudo sh -c "echo /usr/lib/x86_64-linux-gnu/libeatmydata.so >> /etc/ld.so.preload"
   - sudo service postgresql stop
-    
+
   - curl -sSfL https://github.com/mapbox/logbt/archive/v2.0.3.tar.gz | sudo tar --gunzip --extract --strip-components=1 --exclude="*md" --exclude="test*" --directory=/usr/local
   - curl -sSfL https://raw.githubusercontent.com/mapbox/logbt/30c554dd37b6c96c23fc424f75910fc6d6696f00/bin/logbt | sudo tee /usr/local/bin/logbt > /dev/null
   - sudo logbt --setup
-  
+
   - sudo apt-get remove postgresql-9.4 postgresql-9.5 postgresql-9.6 postgresql-10 postgresql-client-9.4 postgresql-client-9.5 postgresql-client-9.6 postgresql-client-10
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
   - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
@@ -29,9 +29,9 @@ before_install:
   - sudo apt-get update -qq
   - mkdir -p /home/travis/deb && touch /home/travis/deb/__ && sudo cp -n /home/travis/deb/* /var/cache/apt/archives || true
   - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests postgresql-11 postgresql-client-11 postgresql-server-dev-11 postgresql-11-dbgsym libproj-dev libprotobuf-c-dev protobuf-c-compiler libc++abi-dev libc++-dev libgcc1-dbg libsfcgal1 libsfcgal-dev libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson-c-dev libprotobuf-c0-dev libgdal-dev gdb libc6-dbg gcc
-    
+
   - cp -n /var/cache/apt/archives/* /home/travis/deb || true
-  
+
   - echo "postgres               soft    core            unlimited" | sudo tee -a /etc/security/limits.conf
   - echo "postgres               hard    core            unlimited" | sudo tee -a /etc/security/limits.conf
   - echo "pg_ctl_options = '-c'" | sudo tee /etc/postgresql/11/main/pg_ctl.conf
@@ -40,9 +40,9 @@ before_install:
   - sudo usermod -u 1000 postgres
   - sudo adduser travis ssl-cert
   - sudo service postgresql start
-  - sudo service postgresql status 
+  - sudo service postgresql status
   - sudo -u postgres createuser --superuser travis
-  
+
   - sudo ldconfig
 
 after_failure:
