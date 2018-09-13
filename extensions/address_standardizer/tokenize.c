@@ -979,8 +979,7 @@ static int phrase_from_morphs( struct morph *morph_vector ,
        a ;
 
    BLANK_STRING(Dest) ;
-   strcpy( Dest ,
-           morph_vector[ beg ] . Text ) ;
+   strlcpy(Dest, morph_vector[beg].Text, MAXTEXT);
    for ( i = beg + 1 ;
          i <= end ;
          i++ ) {

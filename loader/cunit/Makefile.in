@@ -11,7 +11,7 @@
 
 top_builddir = @top_builddir@
 CC=@CC@
-CFLAGS=@CFLAGS@ @WARNFLAGS@
+CFLAGS=@WARNFLAGS@ @CFLAGS@
 SHELL = @SHELL@
 LIBTOOL = @LIBTOOL@
 
@@ -78,7 +78,7 @@ check: cu_tester
 endif
 
 # Build the main unit test executable
-cu_tester: $(LOADER_OBJS) $(OBJS) 
+cu_tester: $(LOADER_OBJS) $(OBJS)
 	$(LIBTOOL) --mode=link \
 	$(CC)  $^ -o $@ $(LIBLWGEOM) $(LDFLAGS)
 

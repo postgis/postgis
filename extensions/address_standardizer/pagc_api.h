@@ -258,7 +258,7 @@ typedef struct err_param
 typedef int NODE ;
 typedef int DEFDEF ;
 
-#define MAXTEXT 31
+#define MAXTEXT MAXSTRLEN
 
 #define FIRST_LEX_POS 0
 #define RIGHT_COMPRESS STOPWORD
