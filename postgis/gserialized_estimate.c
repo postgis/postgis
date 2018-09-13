@@ -203,6 +203,12 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
 #define MIN_DIMENSION_WIDTH 0.000000001
 
 /**
+* Maximum width of a dimension that we'll bother trying to
+* compute statistics on.
+*/
+#define MAX_DIMENSION_WIDTH 1.0E+20
+
+/**
 * Default geometry selectivity factor
 */
 #define DEFAULT_ND_SEL 0.0001
@@ -782,8 +788,12 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 		smax = extent->max[d];
 		swidth = smax - smin;
 
-		/* Don't try and calculate distribution of overly narrow dimensions */
-		if ( swidth < MIN_DIMENSION_WIDTH )
+		/* Don't try and calculate distribution of overly narrow */
+		/* or overly wide dimensions. Here we're being pretty geographical, */
+		/* expecting "normal" planar or geographic coordinates. */
+		/* Otherwise we have to "handle" +/- Inf bounded features and */
+		/* the assumptions needed for that are as bad as this hack. */
+		if ( swidth < MIN_DIMENSION_WIDTH || swidth > MAX_DIMENSION_WIDTH )
 		{
 			distribution[d] = 0;
 			continue;
@@ -1386,6 +1396,9 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	/* Initialize sum and stddev */
 	nd_box_init(&sum);
 	nd_box_init(&stddev);
+	nd_box_init(&avg);
+	nd_box_init(&histo_extent);
+	nd_box_init(&histo_extent_new);
 
 	/*
 	 * This is where gserialized_analyze_nd

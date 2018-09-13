@@ -1101,6 +1101,18 @@ from (
 -- #4164
 SELECT ST_AsText(ST_GeomFromGeoJSON('{"type": "Polygon", "coordinates": [[0,0],[0,5],[5, 5],[5,0],[0,0]]}'));
 
+-- #4144
+DROP TABLE IF EXISTS bug_4144_table;
+CREATE TABLE bug_4144_table (
+  geom geometry NOT NULL DEFAULT NULL
+);
+
+INSERT INTO bug_4144_table (geom) 
+  VALUES ('GEOMETRYCOLLECTION(POINT(-3.385894e+38 0 0),POINT(0 0 0))');
+
+ANALYZE bug_4144_table;
+DROP TABLE IF EXISTS bug_4144_table;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 
