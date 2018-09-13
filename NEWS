@@ -7,6 +7,7 @@ New since PostGIS 2.5.0rc1
   - #4172, Fix memory leak in lwgeom_offsetcurve (Raúl Marín)
   - #4164, Parse error on incorrectly nested GeoJSON input (Paul Ramsey)
   - #4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)
+  - #4177, Postgres 12 disallows variable length arrays in C (Laurenz Albe)
 
 PostGIS 2.5.0rc1
 2018/08/19
