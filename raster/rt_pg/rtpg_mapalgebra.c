@@ -871,10 +871,8 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 			i = arg->numraster - 1;
 			break;
 		case ET_SECOND:
-			if (arg->numraster > 1) {
-				i = 1;
-				break;
-			}
+			i = (arg->numraster > 1) ? 1 : 0;
+			break;
 		default:
 			i = 0;
 			break;
@@ -6371,6 +6369,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	switch (extenttype) {
 		case ET_FIRST:
 			i = 0;
+			/* fall through */
 		case ET_SECOND:
 			if (i > 1)
 				i = 1;
