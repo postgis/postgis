@@ -776,7 +776,7 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 	for ( d = 0; d < ndims; d++ )
 	{
 		/* Initialize counts for this dimension */
-		memset(counts, 0, sizeof(int)*NUM_BINS);
+		memset(counts, 0, sizeof(counts));
 
 		smin = extent->min[d];
 		smax = extent->max[d];
@@ -802,7 +802,7 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 			minoffset = ndb->min[d] - smin;
 			maxoffset = ndb->max[d] - smin;
 
-			/* Skip boxes that our outside our working range */
+			/* Skip boxes that are outside our working range */
 			if ( minoffset < 0 || minoffset > swidth ||
 			     maxoffset < 0 || maxoffset > swidth )
 			{
@@ -810,8 +810,11 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 			}
 
 			/* What bins does this range correspond to? */
-			bmin = NUM_BINS * (minoffset) / swidth;
-			bmax = NUM_BINS * (maxoffset) / swidth;
+			bmin = floor(NUM_BINS * minoffset / swidth);
+			bmax = floor(NUM_BINS * maxoffset / swidth);
+
+			/* Should only happen when maxoffset==swidth */
+			bmax = bmax >= NUM_BINS ? NUM_BINS-1 : bmax;
 
 			POSTGIS_DEBUGF(4, " dimension %d, feature %d: bin %d to bin %d", d, i, bmin, bmax);
 
