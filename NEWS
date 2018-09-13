@@ -1,10 +1,11 @@
 PostGIS 2.5.0rc2
-2018/08/xx
+2018/09/xx
 New since PostGIS 2.5.0rc1
   - #4162, ST_DWithin documentation examples for storing geometry and
     radius in table (Darafei Praliaskouski, github user Boscop).
   - #4163, MVT: Fix resource leak when the first geometry is NULL (Raúl Marín)
   - #4172, Fix memory leak in lwgeom_offsetcurve (Raúl Marín)
+  - #4146, Parse error on incorrectly nested GeoJSON input (Paul Ramsey)
 
 PostGIS 2.5.0rc1
 2018/08/19
