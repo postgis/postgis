@@ -3474,12 +3474,8 @@ FROM test;
 				returns true, then the geometries also spatially intersect.
 				Disjoint implies false for spatial intersection.</para>
 
-	  <important>
-		<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument for geometry version.  The geography
-			version supports GEOMETRYCOLLECTION since its a thin wrapper around distance implementation.</para>
-	  </important>
-	  <para>Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
-
+			<para>Enhanced: 2.5.0 Supports GEOMETRYCOLLECTION.</para>
+			<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 			<para>Performed by the GEOS module (for geometry), geography is native</para>
 			<para>Availability: 1.5 support for geography was introduced.</para>
 			<note>

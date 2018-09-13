@@ -5,7 +5,8 @@ New since PostGIS 2.5.0rc1
     radius in table (Darafei Praliaskouski, github user Boscop).
   - #4163, MVT: Fix resource leak when the first geometry is NULL (Raúl Marín)
   - #4172, Fix memory leak in lwgeom_offsetcurve (Raúl Marín)
-  - #4146, Parse error on incorrectly nested GeoJSON input (Paul Ramsey)
+  - #4164, Parse error on incorrectly nested GeoJSON input (Paul Ramsey)
+  - #4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)
 
 PostGIS 2.5.0rc1
 2018/08/19
