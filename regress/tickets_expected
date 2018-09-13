@@ -310,3 +310,4 @@ ERROR:  invalid KML representation
 #4055b|4326
 #4089|LINESTRING Z (1 1 1,3 3 1)
 #4081|f|t
+NOTICE:  table "bug_4144_table" does not exist, skipping
