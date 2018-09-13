@@ -28,7 +28,7 @@ before_install:
   - sudo sh -c "echo deb http://archive.ubuntu.com/ubuntu/ cosmic main restricted universe multiverse >> /etc/apt/sources.list"
   - sudo apt-get update -qq
   - mkdir -p /home/travis/deb && touch /home/travis/deb/__ && sudo cp -n /home/travis/deb/* /var/cache/apt/archives || true
-  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests postgresql-11 postgresql-client-11 postgresql-server-dev-11 postgresql-11-dbgsym libproj-dev libprotobuf-c-dev protobuf-c-compiler libc++abi-dev libc++-dev libgcc1-dbg libsfcgal1 libsfcgal-dev libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson-c-dev libprotobuf-c0-dev libgdal-dev gdb libc6-dbg gcc
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests postgresql-11 postgresql-client-11 postgresql-server-dev-11 postgresql-11-dbgsym libproj-dev libprotobuf-c-dev protobuf-c-compiler libc++abi-dev libc++-dev libgcc1-dbg libsfcgal1 libsfcgal-dev libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson-c-dev libgdal-dev gdb libc6-dbg gcc
 
   - cp -n /var/cache/apt/archives/* /home/travis/deb || true
 
