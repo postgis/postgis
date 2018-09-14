@@ -2,7 +2,7 @@ PostGIS 2.4.6
 2018/xx/xx
 
   * Bug Fixes and Enhancements
-
+  - #4160, Use qualified names in topology extension install (Raúl Marín)
 
 
 PostGIS 2.4.5
