@@ -7,6 +7,7 @@ PostGIS 2.3.8
   - #4074, Disable interrupt tests by default (Regina Obe)
   - #3997, fix bug in lwgeom_median and avoid division by zero (Raúl Marín)
   - #4093, Inconsistent results from qsort callback (yugr)
+  - #4160, Use qualified names in topology extension install (Raúl Marín)
 
 
 PostGIS 2.3.7
