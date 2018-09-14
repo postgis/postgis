@@ -623,7 +623,7 @@ gserialized_spgist_compress_nd(PG_FUNCTION_ARGS)
 {
 	char 		gidxmem[GIDX_MAX_SIZE];
 	GIDX 	   *result = (GIDX*)gidxmem;
-	int 		i;
+	long unsigned int 		i;
 
 	POSTGIS_DEBUG(4, "[SPGIST] 'compress' function called");
 
