@@ -94,7 +94,3 @@ include ../upgrade-paths-rules.mk
 
 distclean: clean
 	rm Makefile
-
-PGXS := $(shell $(PG_CONFIG) --pgxs)
-include $(PGXS)
-PERL=@PERL@

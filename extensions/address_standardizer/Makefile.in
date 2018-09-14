@@ -188,7 +188,3 @@ EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged-
 
 distclean: clean
 	rm Makefile
-
-PGXS := @PGXS@
-include $(PGXS)
-PERL = @PERL@

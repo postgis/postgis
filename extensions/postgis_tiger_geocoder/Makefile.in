@@ -248,7 +248,3 @@ EXTRA_CLEAN += $(wildcard expected/*--*.out)
 
 distclean: clean
 	rm Makefile
-
-PGXS := $(shell $(PG_CONFIG) --pgxs)
-include $(PGXS)
-PERL=@PERL@
