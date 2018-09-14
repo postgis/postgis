@@ -1936,6 +1936,22 @@ string, and next time you'll need to drop the "next" suffix again:
 ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</programlisting>
 		<note><para>If you installed PostGIS originally without a version specified, you can often skip the reinstallation of postgis extension before restoring since the backup just has <code>CREATE EXTENSION postgis</code> and thus
 		picks up the newest latest version during restore.</para></note>
+
+    <note>
+    <para>
+    If you are upgrading PostGIS extension from a version prior to 3.0.0
+    you'll end up with an unpackaged PostGIS Raster support. You can
+    repackage the raster support using:
+    <programlisting>
+    CREATE EXTENSION postgis_raster FROM unpackaged;
+    </programlisting>
+    And then, if you don't need it, drop it with:
+    <programlisting>
+    DROP EXTENSION postgis_raster;
+    </programlisting>
+    </para>
+    </note>
+
 	</sect3>
 
 	</sect2>
