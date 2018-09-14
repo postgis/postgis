@@ -4,7 +4,6 @@ EXTENSION     = postgis_topology
 EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 GREP = @GREP@
-PERL = @PERL@
 
 MICRO_NUMBER  = $(shell echo $(EXTVERSION) | sed "s/[0-9]\.[0-9]\.\([0-9]*\)[a-zA-Z]*[0-9]*/\1/")
 PREREL_NUMBER = $(shell echo $(EXTVERSION) | \

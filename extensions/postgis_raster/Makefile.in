@@ -47,7 +47,6 @@ EXTENSION_UPGRADE_SCRIPTS = \
 EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
 	sql/rtpostgis.sql
 
-#DOCS         = $(wildcard ../../doc/html/*.html)
 PG_CONFIG    = @PG_CONFIG@
 
 SQL_BITS     = $(wildcard sql/*.sql)
