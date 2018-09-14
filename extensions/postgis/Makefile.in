@@ -5,7 +5,6 @@ EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEPATH    = $$libdir/$(EXTENSION)-$(MINORVERSION)
 GREP = @GREP@
-PERL = @PERL@
 
 MICRO_NUMBER  = $(shell echo $(EXTVERSION) | \
 						$(PERL) -pe 's/\d.\d.(\d+)[a-zA-Z]*\d*/$1/'
@@ -81,7 +80,7 @@ $(RASTER_DROP_SCRIPTS):
 	$(MAKE) -C ../../raster/rt_pg sql_objs
 
 sql/raster_unpackage.sql: Makefile
-sql/raster_unpackage.sql: $(PERL) ../../utils/create_extension_unpackage.pl
+sql/raster_unpackage.sql: ../../utils/create_extension_unpackage.pl
 sql/raster_unpackage.sql: unpackage_raster_if_needed.sql
 sql/raster_unpackage.sql: $(RASTER_DROP_SCRIPTS) | sql
 
