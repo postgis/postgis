@@ -579,9 +579,9 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  </variablelist>
 	  <note>
 		<para>
-		  If you obtained PostGIS from the SVN
-		  <ulink url="http://svn.osgeo.org/postgis/trunk/">
-			repository
+		  If you obtained PostGIS from the
+		  <ulink url="https://trac.osgeo.org/postgis/wiki/CodeRepository">
+			code repository
 		  </ulink>
 		  , the first step is really to run the script
 		</para>
@@ -1928,7 +1928,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlis
     <programlisting>Version "&last_release_version;" of extension "postgis" is already installed</programlisting>
     <para>
 Then everything is already up to date and you can safely ignore it. <emphasis role="bold">UNLESS</emphasis>
-you're attempting to upgrade from an SVN version to the next (which
+you're attempting to upgrade from an development version to the next (which
 doesn't get a new version number); in that case you can append "next" to the version
 string, and next time you'll need to drop the "next" suffix again:
     </para>
