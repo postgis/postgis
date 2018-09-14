@@ -489,8 +489,7 @@ bool gidx_contains(GIDX *a, GIDX *b)
 */
 bool gidx_equals(GIDX *a, GIDX *b)
 {
-	uint32_t i;
-	int dims_a, dims_b;
+	int i, dims_a, dims_b;
 
 	POSTGIS_DEBUG(5, "entered function");
 
