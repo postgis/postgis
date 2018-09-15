@@ -4317,14 +4317,18 @@ WHERE rid=2;
 
 				<para>Returns the polygon geometry that bounds every pixel of a raster band along with the value (double precision), the X and the Y raster coordinates (integers) of each pixel.</para>
 
+				<para>
+					Return record format: <parameter>geom</parameter> <xref linkend="geometry" />, <parameter>val</parameter> double precision, <parameter>x</parameter> integer, <parameter>y</parameter> integers.
+				</para>
+				<note>
+					<para>
+						When <parameter>exclude_nodata_value</parameter> = TRUE, only those pixels whose values are not NODATA are returned as points.
+					</para>
+				</note>
+
 				<note>
 					<para>
 						ST_PixelAsPolygons returns one polygon geometry for every pixel.  This is different than ST_DumpAsPolygons where each geometry represents one or more pixels with the same pixel value.
-					</para>
-				</note>
-				<note>
-					<para>
-						When exclude_nodata_value = TRUE, only those pixels whose values are not NODATA are returned as polygons.
 					</para>
 				</note>
 
@@ -4428,7 +4432,7 @@ SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-						<funcdef>geometry <function>ST_PixelAsPoints</function></funcdef>
+						<funcdef>setof record <function>ST_PixelAsPoints</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
 						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
@@ -4441,9 +4445,13 @@ SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 				<para>
 					Returns a point geometry for each pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.  The coordinates of the point geometry are of the pixel's upper-left corner.
 				</para>
+
+				<para>
+					Return record format: <parameter>geom</parameter> <xref linkend="geometry" />, <parameter>val</parameter> double precision, <parameter>x</parameter> integer, <parameter>y</parameter> integers.
+				</para>
 				<note>
 					<para>
-						When exclude_nodata_value = TRUE, only those pixels whose values are not NODATA are returned as points.
+						When <parameter>exclude_nodata_value</parameter> = TRUE, only those pixels whose values are not NODATA are returned as points.
 					</para>
 				</note>
 				<para>Availability: 2.1.0</para>
@@ -4558,7 +4566,7 @@ SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-						<funcdef>geometry <function>ST_PixelAsCentroids</function></funcdef>
+						<funcdef>setof record <function>ST_PixelAsCentroids</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
 						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
@@ -4571,11 +4579,15 @@ SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 				<para>
 					Returns the centroid (point geometry) for each pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.  The point geometry is the centroid of the area represented by a pixel.
 				</para>
+				<para>
+					Return record format: <parameter>geom</parameter> <xref linkend="geometry" />, <parameter>val</parameter> double precision, <parameter>x</parameter> integer, <parameter>y</parameter> integers.
+				</para>
 				<note>
 					<para>
-						When exclude_nodata_value = TRUE, only those pixels whose values are not NODATA are returned as points.
+						When <parameter>exclude_nodata_value</parameter> = TRUE, only those pixels whose values are not NODATA are returned as points.
 					</para>
 				</note>
+
 				<para>Availability: 2.1.0</para>
 				<para>Changed: 2.1.1 Changed behavior of exclude_nodata_value.</para>
 			</refsection>
@@ -9882,7 +9894,7 @@ FROM (
 
 			<refentry id="RT_ST_MapAlgebra">
 				<refnamediv>
-					<refname>ST_MapAlgebra</refname>
+					<refname>ST_MapAlgebra (callback function version)</refname>
 					<refpurpose>
 						Callback function version - Returns a one-band raster given one or more input rasters, band indexes and one user-specified callback function.
 					</refpurpose>
@@ -10407,7 +10419,7 @@ FROM foo;
 
 			<refentry id="RT_ST_MapAlgebra_expr">
 				<refnamediv>
-					<refname>ST_MapAlgebra</refname>
+					<refname>ST_MapAlgebra (expression version)</refname>
 					<refpurpose>
 						Expression version - Returns a one-band raster given one or two input rasters, band indexes and one or more user-specified SQL expressions.
 					</refpurpose>

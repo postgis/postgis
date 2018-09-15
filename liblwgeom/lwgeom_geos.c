@@ -618,24 +618,6 @@ lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	g3 = GEOSIntersection(g1, g2);
 
-	if (!g3)
-	{
-		GEOSGeometry *g1v, *g2v;
-		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
-
-		if (!GEOSisValid(g1) || !GEOSisValid(g2))
-		{
-			lwnotice(
-			    "Your geometry dataset is not valid per OGC Specification. "
-			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
-			    "Retrying GEOS operation with ST_MakeValid of your input.");
-			g1v = LWGEOM_GEOS_makeValid(g1);
-			g2v = LWGEOM_GEOS_makeValid(g2);
-			g3 = GEOSIntersection(g1v, g2v);
-			GEOS_FREE(g1v, g2v);
-		}
-	}
-
 	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);
 
@@ -730,24 +712,6 @@ lwgeom_difference(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	g3 = GEOSDifference(g1, g2);
 
-	if (!g3)
-	{
-		GEOSGeometry *g1v, *g2v;
-		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
-
-		if (!GEOSisValid(g1) || !GEOSisValid(g2))
-		{
-			lwnotice(
-			    "Your geometry dataset is not valid per OGC Specification. "
-			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
-			    "Retrying GEOS operation with ST_MakeValid of your input.");
-			g1v = LWGEOM_GEOS_makeValid(g1);
-			g2v = LWGEOM_GEOS_makeValid(g2);
-			g3 = GEOSDifference(g1v, g2v);
-			GEOS_FREE(g1v, g2v);
-		}
-	}
-
 	if (!g3) GEOS_FREE_AND_FAIL(g1, g2);
 	GEOSSetSRID(g3, srid);
 
@@ -780,24 +744,6 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
 	g3 = GEOSSymDifference(g1, g2);
-
-	if (!g3)
-	{
-		GEOSGeometry *g1v, *g2v;
-		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
-
-		if (!GEOSisValid(g1) || !GEOSisValid(g2))
-		{
-			lwnotice(
-			    "Your geometry dataset is not valid per OGC Specification. "
-			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
-			    "Retrying GEOS operation with ST_MakeValid of your input.");
-			g1v = LWGEOM_GEOS_makeValid(g1);
-			g2v = LWGEOM_GEOS_makeValid(g2);
-			g3 = GEOSSymDifference(g1v, g2v);
-			GEOS_FREE(g1v, g2v);
-		}
-	}
 
 	if (!g3) GEOS_FREE_AND_FAIL(g1, g2);
 	GEOSSetSRID(g3, srid);
@@ -864,23 +810,6 @@ lwgeom_pointonsurface(const LWGEOM *geom)
 
 	g3 = GEOSPointOnSurface(g1);
 
-	if (!g3)
-	{
-		GEOSGeometry *g1v;
-		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
-
-		if (!GEOSisValid(g1))
-		{
-			lwnotice(
-			    "Your geometry dataset is not valid per OGC Specification. "
-			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
-			    "Retrying GEOS operation with ST_MakeValid of your input.");
-			g1v = LWGEOM_GEOS_makeValid(g1);
-			g3 = GEOSPointOnSurface(g1v);
-			GEOS_FREE(g1v);
-		}
-	}
-
 	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);
 
@@ -915,24 +844,6 @@ lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	g3 = GEOSUnion(g1, g2);
 
-	if (!g3)
-	{
-		GEOSGeometry *g1v, *g2v;
-		lwnotice("%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg);
-
-		if (!GEOSisValid(g1) || !GEOSisValid(g2))
-		{
-			lwnotice(
-			    "Your geometry dataset is not valid per OGC Specification. "
-			    "Please fix it with manual review of entries that are not ST_IsValid(geom). "
-			    "Retrying GEOS operation with ST_MakeValid of your input.");
-			g1v = LWGEOM_GEOS_makeValid(g1);
-			g2v = LWGEOM_GEOS_makeValid(g2);
-			g3 = GEOSUnion(g1v, g2v);
-			GEOS_FREE(g1v, g2v);
-		}
-	}
-
 	if (!g3) GEOS_FREE_AND_FAIL(g1, g2);
 	GEOSSetSRID(g3, srid);
 
@@ -947,35 +858,31 @@ LWGEOM *
 lwgeom_clip_by_rect(const LWGEOM *geom1, double x1, double y1, double x2, double y2)
 {
 	LWGEOM *result;
-	LWGEOM *tmp;
+	GEOSGeometry *g1, *g3;
+	int is3d;
 
-	/* This lwgeom_intersection should be a call to GEOSClipByRect:
-	 * g3 = GEOSClipByRect(g1, x1, y1, x2, y2);
-	 * Unfortunately as of GEOS 3.7 it chokes on practical inputs.
-	 * GEOS ticket: https://trac.osgeo.org/geos/ticket/865
-	 */
+	/* A.Intersection(Empty) == Empty */
+	if ( lwgeom_is_empty(geom1) )
+		return lwgeom_clone_deep(geom1);
 
-	LWGEOM *envelope = (LWGEOM *)lwpoly_construct_envelope(geom1->srid, x1, y1, x2, y2);
-	result = lwgeom_intersection(geom1, envelope);
-	lwgeom_free(envelope);
+	is3d = FLAGS_GET_Z(geom1->flags);
 
-	if (!result) return NULL;
+	initGEOS(lwnotice, lwgeom_geos_error);
 
-	/* clipping should not produce lower dimension objects */
-	if (
-	    /* input has exact dimensionality, isn't a generic collection */
-	    geom1->type != COLLECTIONTYPE &&
-	    /* output may have different things inside */
-	    result->type == COLLECTIONTYPE)
-	{
-		tmp = lwcollection_as_lwgeom(lwcollection_extract(lwgeom_as_lwcollection(result), lwgeom_dimension(geom1) + 1));
-		lwfree(result);
-		result = tmp;
-		if (!result) return NULL;
-	}
+	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX)))
+		GEOS_FAIL();
 
-	/* clean up stray points on geometry boundary */
-	lwgeom_simplify_in_place(result, 0.0, LW_TRUE);
+	if (!(g3 = GEOSClipByRect(g1, x1, y1, x2, y2)))
+		GEOS_FREE_AND_FAIL(g1);
+
+	GEOS_FREE(g1);
+	result = GEOS2LWGEOM(g3, is3d);
+	GEOS_FREE(g3);
+
+	if (!result)
+		GEOS_FAIL();
+
+	result->srid = geom1->srid;
 
 	return result;
 }
@@ -1482,13 +1389,15 @@ lwgeom_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle,
 		}
 
 		if (result)
+		{
+			if (noded) lwgeom_free(noded);
 			return result;
+		}
 		else if (!noded)
 		{
 			noded = lwgeom_node(geom);
 			if (!noded)
 			{
-				lwfree(noded);
 				lwerror("lwgeom_offsetcurve: cannot node input");
 				return NULL;
 			}
@@ -1496,10 +1405,12 @@ lwgeom_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle,
 		}
 		else
 		{
+			lwgeom_free(noded);
 			lwerror("lwgeom_offsetcurve: noded geometry cannot be offset");
 			return NULL;
 		}
 	}
+
 	return result;
 }
 

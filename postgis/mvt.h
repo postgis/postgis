@@ -46,7 +46,17 @@
 
 #include "vector_tile.pb-c.h"
 
-typedef struct mvt_agg_context {
+typedef struct mvt_column_cache
+{
+    uint32_t *column_keys_index;
+    uint32_t *column_oid;
+    Datum *values;
+    bool *nulls;
+    TupleDesc tupdesc;
+} mvt_column_cache;
+
+typedef struct mvt_agg_context
+{
 	char *name;
 	uint32_t extent;
 	char *id_name;
@@ -66,7 +76,8 @@ typedef struct mvt_agg_context {
 	struct mvt_kv_bool_value *bool_values_hash;
 	uint32_t values_hash_i;
 	uint32_t keys_hash_i;
-	uint32_t c;
+	uint32_t row_columns;
+	mvt_column_cache column_cache;
 } mvt_agg_context;
 
 /* Prototypes */

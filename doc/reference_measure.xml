@@ -1158,7 +1158,7 @@ SELECT ST_AsText(
 		  Returns cluster number for each input geometry, based on a 2D implementation of the
           <ulink url="https://en.wikipedia.org/wiki/DBSCAN">Density-based spatial clustering of applications with noise (DBSCAN)</ulink>
 		  algorithm.  Unlike <xref linkend="ST_ClusterKMeans" />, it does not require the number of clusters to be specified, but instead
-		  uses the desired distance (<varname>eps</varname>) and density(<varname>minpoints</varname>) parameters to construct each cluster.
+		  uses the desired <link linkend="ST_Distance">distance</link> (<varname>eps</varname>) and density (<varname>minpoints</varname>) parameters to construct each cluster.
 	  </para>
 
 	  <para>
@@ -1166,12 +1166,12 @@ SELECT ST_AsText(
 		  <itemizedlist>
               <listitem>
                   <para>
-                      A "core" geometry, that is within <varname>eps</varname> distance (Cartesian) of at least <varname>minpoints</varname> input geometries (including itself) or
+                      A "core" geometry, that is within <varname>eps</varname> <link linkend="ST_Distance">distance</link> of at least <varname>minpoints</varname> input geometries (including itself) or
                   </para>
 			  </listitem>
 			  <listitem>
                   <para>
-                      A "border" geometry, that is within <varname>eps</varname> distance of a core geometry.
+                      A "border" geometry, that is within <varname>eps</varname> <link linkend="ST_Distance">distance</link> of a core geometry.
                   </para>
 			  </listitem>
 		  </itemizedlist>
@@ -2385,7 +2385,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Intersects"/>ST_Intersects</para>
+			<para><xref linkend="ST_Intersects"/></para>
 		</refsection>
 	</refentry>
 
@@ -2393,8 +2393,9 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 	  <refnamediv>
 		<refname>ST_Distance</refname>
 
-		<refpurpose>For geometry type Returns the 2D Cartesian distance between two geometries in
-		projected units (based on spatial ref).  For geography type defaults to return minimum geodesic distance between two geographies in meters.</refpurpose>
+		<refpurpose>For geometry type returns the 2D Cartesian distance between two geometries in
+		projected units (based on spatial reference system).
+		For geography type defaults to return minimum geodesic distance between two geographies in meters.</refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
@@ -2435,8 +2436,8 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 	  <refsection>
 		<title>Description</title>
 
-		<para>For geometry type returns the minimum 2D Cartesian distance between two geometries in
-		projected units (spatial ref units). For geography type defaults to return the minimum geodesic distance between two geographies in meters.  If use_spheroid is
+		<para>For <xref linkend="geometry"/> type returns the minimum 2D Cartesian distance between two geometries in
+		projected units (spatial ref units). For <xref linkend="geography"/> type defaults to return the minimum geodesic distance between two geographies in meters.  If use_spheroid is
 		false, a faster sphere calculation is used instead of a spheroid.</para>
 
 		<para>&sfs_compliant;</para>
@@ -2456,17 +2457,37 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 		<programlisting>
 --Geometry example - units in planar degrees 4326 is WGS 84 long lat unit=degrees
 SELECT ST_Distance(
-		ST_GeomFromText('POINT(-72.1235 42.3521)',4326),
-		ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326)
+		'SRID=4326;POINT(-72.1235 42.3521)'::geometry,
+		'SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry
 	);
 st_distance
 -----------------
 0.00150567726382282
 
+-- Geometry example - units in meters (SRID: 3857, proportional to pixels on popular web maps)
+-- although the value is off, nearby ones can be compared correctly,
+-- which makes it a good choice for algorithms like KNN or KMeans.
+SELECT ST_Distance(
+			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 3857),
+			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 3857)
+		);
+st_distance
+-----------------
+167.441410065196
+
+-- Geometry example - units in meters (SRID: 3857 as above, but corrected by cos(lat) to account for distortion)
+SELECT ST_Distance(
+			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 3857),
+			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 3857)
+		) * cosd(42.3521);
+st_distance
+-----------------
+123.742351254151
+
 -- Geometry example - units in meters (SRID: 26986 Massachusetts state plane meters) (most accurate for Massachusetts)
 SELECT ST_Distance(
-			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),26986),
-			ST_Transform(ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326),26986)
+			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 26986),
+			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 26986)
 		);
 st_distance
 -----------------
@@ -2474,8 +2495,8 @@ st_distance
 
 -- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (least accurate)
 SELECT ST_Distance(
-			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),2163),
-			ST_Transform(ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326),2163)
+			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 2163),
+			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 2163)
 		);
 
 st_distance
@@ -2488,8 +2509,8 @@ st_distance
 <programlisting>-- same as geometry example but note units in meters - use sphere for slightly faster less accurate
 SELECT ST_Distance(gg1, gg2) As spheroid_dist, ST_Distance(gg1, gg2, false) As sphere_dist
 FROM (SELECT
-	ST_GeogFromText('SRID=4326;POINT(-72.1235 42.3521)') As gg1,
-	ST_GeogFromText('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)') As gg2
+	'SRID=4326;POINT(-72.1235 42.3521)'::geography as gg1,
+	'SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geography as gg2
 	) As foo  ;
 
   spheroid_dist   |   sphere_dist
@@ -3038,7 +3059,7 @@ FROM
 		<refname>ST_DWithin</refname>
 
 		<refpurpose>Returns true if the geometries are within the specified
-		distance of one another. For geometry units are in those of spatial reference and For geography units are in meters and measurement is
+		distance of one another. For geometry units are in those of spatial reference and for geography units are in meters and measurement is
 		defaulted to use_spheroid=true (measure around spheroid), for faster check, use_spheroid=false to measure along sphere.</refpurpose>
 	  </refnamediv>
 
@@ -3090,14 +3111,16 @@ FROM
 
 		<para>Returns true if the geometries are within the specified distance
 		of one another.</para>
-		<para>For Geometries: The distance is specified in units defined by the
+
+		<para>For <type>geometry</type>: The distance is specified in units defined by the
 		spatial reference system of the geometries.  For this function to make
 		sense, the source geometries must both be of the same coordinate projection,
 		having the same SRID.</para>
 
-		<para>For geography units are in meters and measurement is
-		defaulted to use_spheroid=true, for faster check, use_spheroid=false to measure along sphere.
+		<para>For <type>geography</type> units are in meters and measurement is
+		defaulted to <varname>use_spheroid</varname>=true, for faster check, <varname>use_spheroid</varname>=false to measure along sphere.
 		</para>
+
 		<note>
 		  <para>This function call will automatically include a bounding box
 		  comparison that will make use of any indexes that are available on
@@ -3122,30 +3145,47 @@ FROM
 	  <refsection>
 		<title>Examples</title>
 		  <programlisting>
---Find the nearest hospital to each school
---that is within 3000 units of the school.
--- We do an ST_DWithin search to utilize indexes to limit our search list
--- that the non-indexable ST_Distance needs to process
---If the units of the spatial reference is meters then units would be meters
-SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.the_geom, h.hospital_name
+-- Find the nearest hospital to each school
+-- that is within 3000 units of the school.
+--  We do an ST_DWithin search to utilize indexes to limit our search list
+--  that the non-indexable ST_Distance needs to process
+-- If the units of the spatial reference is meters then units would be meters
+SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.geom, h.hospital_name
 	FROM schools s
-		LEFT JOIN hospitals h ON ST_DWithin(s.the_geom, h.the_geom, 3000)
-	ORDER BY s.gid, ST_Distance(s.the_geom, h.the_geom);
+		LEFT JOIN hospitals h ON ST_DWithin(s.the_geom, h.geom, 3000)
+	ORDER BY s.gid, ST_Distance(s.geom, h.geom);
 
---The schools with no close hospitals
---Find all schools with no hospital within 3000 units
---away from the school.  Units is in units of spatial ref (e.g. meters, feet, degrees)
+-- The schools with no close hospitals
+-- Find all schools with no hospital within 3000 units
+-- away from the school.  Units is in units of spatial ref (e.g. meters, feet, degrees)
 SELECT s.gid, s.school_name
 	FROM schools s
-		LEFT JOIN hospitals h ON ST_DWithin(s.the_geom, h.the_geom, 3000)
+		LEFT JOIN hospitals h ON ST_DWithin(s.geom, h.geom, 3000)
 	WHERE h.gid IS NULL;
+
+-- Find broadcasting towers that receiver with limited range can receive.
+-- Data is geometry in Spherical Mercator (SRID=3857), ranges are approximate.
+
+-- Create geometry index that will check proximity limit of user to tower
+CREATE INDEX ON broadcasting_towers using gist (geom);
+
+-- Create geometry index that will check proximity limit of tower to user
+CREATE INDEX ON broadcasting_towers using gist (ST_Expand(geom, sending_range));
+
+-- Query towers that 4-kilometer receiver in Minsk Hackerspace can get
+-- Note: two conditions, because shorter LEAST(b.sending_range, 4000) will not use index.
+SELECT b.tower_id, b.geom
+  FROM broadcasting_towers b
+  WHERE ST_DWithin(b.geom, 'SRID=3857;POINT(3072163.4 7159374.1)', 4000)
+	  AND ST_DWithin(b.geom, 'SRID=3857;POINT(3072163.4 7159374.1)', b.sending_range);
+
 			  </programlisting>
 	  </refsection>
 
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_Expand"/></para>
+		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_Expand"/>, <xref linkend="ST_3DDWithin"/></para>
 	  </refsection>
 	</refentry>
 
@@ -3434,12 +3474,8 @@ FROM test;
 				returns true, then the geometries also spatially intersect.
 				Disjoint implies false for spatial intersection.</para>
 
-	  <important>
-		<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument for geometry version.  The geography
-			version supports GEOMETRYCOLLECTION since its a thin wrapper around distance implementation.</para>
-	  </important>
-	  <para>Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
-
+			<para>Enhanced: 2.5.0 Supports GEOMETRYCOLLECTION.</para>
+			<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 			<para>Performed by the GEOS module (for geometry), geography is native</para>
 			<para>Availability: 1.5 support for geography was introduced.</para>
 			<note>

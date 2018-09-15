@@ -795,7 +795,7 @@ Calls analyze.c (deposit_stz)
 =========================================================================*/
 static void scan_clause_tree(STAND_PARAM *__stand_param__,int start_state,int start_pos)
 {
-	int next_state ;
+	int next_state = FAIL ;
 
 	RULE_PARAM *__rules__ = __stand_param__->rules ;
 	KW ***__output_link__ = __rules__->output_link ;

@@ -35,7 +35,6 @@
 
 #include <stdio.h>
 #include <inttypes.h> /* for PRId64 */
-#include <errno.h>
 #include <math.h>
 
 #ifdef WIN32

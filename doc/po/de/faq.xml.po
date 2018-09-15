@@ -1,15 +1,15 @@
 # SOME DESCRIPTIVE TITLE.
 # 
 # Translators:
-# Andreas Schild <andreas.schild@bfw.gv.at>, 2017
+# Andreas Schild <andreas.schild@bfw.gv.at>, 2017-2018
 # Andreas Schild <schildandreas1@gmail.com>, 2015
 # Chris Leick <c.leick@vollbio.de>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-09-07 07:22+0000\n"
-"PO-Revision-Date: 2017-09-08 09:05+0000\n"
+"POT-Creation-Date: 2018-07-21 17:36+0000\n"
+"PO-Revision-Date: 2018-07-22 08:03+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -57,7 +57,7 @@ msgstr "Außerdem hat BostonGIS ein <ulink url=\"http://www.bostongis.com/Printe
 msgid ""
 "My applications and desktop tools worked with PostGIS 1.5,but they don't "
 "work with PostGIS 2.0. How do I fix this?"
-msgstr "Meine Anwendungen und Arbeitsflächenwerkzeuge funktionierten mit PostGIS 1.5, nicht jedoch mit PostGIS 2.0. Wie kann ich dies beheben?"
+msgstr "Meine Anwendungen und Desktop-Tools funktionierten mit PostGIS 1.5, nicht jedoch mit PostGIS 2.0. Wie kann ich dies beheben?"
 
 #. Tag: para
 #: faq.xml:22
@@ -73,7 +73,7 @@ msgid ""
 "etc. and as a last resort, install the whole of "
 "<varname>legacy.sql</varname> or just the portions of "
 "<varname>legacy.sql</varname> you need."
-msgstr "Viele missbilligte Funktionen wurden aus der Codebasis von PostGIS 2.0 entfernt. Dies betraf Anwendungen sowie Werkzeuge von Drittanbietern wie Geoserver, MapServer, QuantumGIS und OpenJump, um einige zu nennen. Es gibt ein paar Wege, dies zu beheben. Für die Anwendungen von Drittanbietern können Sie versuchen, sie auf die neuste Version zu aktualisieren, bei der viele dieser Probleme behoben wurden. Ihren eigenen Code könne Sie so ändern, dass er die entfernten Funktionen nicht mehr benutzt. Die meisten dieser Funktionen sind Pseudonyme von ST_Union, ST_Length etc. ohne den Präfix \"ST_\". Als letzten Ausweg können Sie die gesamte <varname>legacy.sql</varname>, oder die Teile die Sie benötigen installieren."
+msgstr "Viele überholte Funktionen wurden aus der Codebasis von PostGIS 2.0 entfernt. Dies betraf Anwendungen sowie Werkzeuge von Drittanbietern wie Geoserver, MapServer, QuantumGIS und OpenJump, um nur ein paar zu nennen. Es gibt mehrere Möglichkeiten dieses Problem zu lösen. Bei Anwendungen von Drittanbietern können Sie versuchen diese auf die neuste Version zu aktualisieren, bei der viele dieser Probleme bereits fixiert wurden. Ihren eigenen Code können Sie so ändern, dass er die überholten Funktionen nicht mehr benutzt. Die meisten dieser Funktionen sind Pseudonyme von ST_Union, ST_Length etc. ohne den Präfix \"ST_\". Als letzten Ausweg können Sie die gesamte <varname>legacy.sql</varname> oder die benötigten Teile davon ausführen. "
 
 #. Tag: para
 #: faq.xml:28
@@ -83,7 +83,7 @@ msgid ""
 "postgis.sql. You can install this file after you have installed postgis.sql "
 "and spatial_ref_sys.sql to get back all the 200 some-odd old functions we "
 "removed."
-msgstr "Die Datei <varname>legacy.sql</varname> liegt im selben Verzeichnis wie »postgis.sql«. Sie können diese Datei nach der Installation von »postgis.sql« und »spatial_ref_sys.sql« installieren, um alle etwa 200 alten Funktionen zurückzubekommen, die entfernt wurden."
+msgstr "Die Datei <varname>legacy.sql</varname> liegt im selben Verzeichnis wie »postgis.sql«. Sie können diese Datei nach der Installation von »postgis.sql« und »spatial_ref_sys.sql« installieren, um alle 200 alten Funktionen wieder herzustellen, die entfernt wurden."
 
 #. Tag: para
 #: faq.xml:35
@@ -102,7 +102,7 @@ msgid ""
 "changed to gist_geometry_ops_2d and the gist_geometry_ops was completely "
 "removed. This was done because PostGIS 2 also introduced Nd spatial indexes "
 "for 3D support and the old name was deemed confusing and a misnomer."
-msgstr "In PostGIS 2 wurde die Standardgeometrieoperatorklasse »gist_geometry_ops« in »gist_geometry_ops_2d« geändert und »gist_geometry_ops« wurde vollständig entfernt. Grund ist, dass PostGIS auch räumliche Nd-Indizes für 3D-Unterstützung einführt und der alte Name als verwirrend und fehlerhaft angesehen wurde."
+msgstr "In PostGIS 2 wurde die Standardgeometrieoperatorklasse »gist_geometry_ops« in »gist_geometry_ops_2d« geändert und »gist_geometry_ops« wurde vollständig entfernt. Grund ist, dass PostGIS auch räumliche Nd-Indizes für 3D-Unterstützung einführt und der alte Name als verwirrend und fehlerhaft angesehen wurde. "
 
 #. Tag: para
 #: faq.xml:41
@@ -112,7 +112,7 @@ msgid ""
 "indexes, explicitly referenced the operator class name. This was unnecessary"
 " if you want the default 2D index. So if you manage said good, change index "
 "creation from:"
-msgstr "Einige ältere Anwendungen, die als Teil des Prozesses Tabellen und Indizes erstellen, referenzieren explizit den Operatorklassennamen. Dies war unnötig, falls Sie den Standard-2D-Index wollten. Falls Sie dies also gut hinbekommen möchten, ändern Sie die Indexerstellung von:"
+msgstr "Einige ältere Anwendungen, die als Teil des Prozesses Tabellen und Indizes erstellen, referenzieren explizit den Operatorklassennamen. Dies ist nicht nötig, wenn Sie den Standard-2D-Index wollten. Falls Sie dies erreichen möchten, ändern Sie die Indexerstellung von: "
 
 #. Tag: para
 #: faq.xml:42
@@ -146,7 +146,7 @@ msgstr "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom);"
 msgid ""
 "The only case where you WILL need to specify the operator class is if you "
 "want a 3D spatial index as follows:"
-msgstr "Der einzige Fall, in dem Sie die Operatorklasse angeben MÜSSEN, ist, wenn Sie einen räumlichen 3D-Index wie folgt möchten:"
+msgstr "Der einzige Fall, in dem Sie die Operatorklasse angeben müssen, ist, wenn Sie einen räumlichen 3D-Index wie folgt möchten:"
 
 #. Tag: programlisting
 #: faq.xml:48
@@ -166,7 +166,7 @@ msgid ""
 "However if you use this fix, you are advised to at a later point drop the "
 "index and recreate it without the operator class. This will save you grief "
 "in the future when you need to upgrade again."
-msgstr "Falls Sie unglücklicherweise kompilierten Code, den Sie nicht mehr ändern können, am Hals haben und bei dem , bei dem altes »gist_geometry_ops« hart codiert ist, können Sie die alte Klasse mittels des in PostGIS 2.0.2+ paketierten <filename>legacy_gist.sql</filename> erstellen. Falls Sie jedoch diese Fehlerbehebung verwenden, wird Ihnen dringend empfohlen, zu einem späteren Zeitpunkt den Index zu löschen und ihn ohne die Operatorklasse neu zu erstellen. Dies wird Ihnen in der Zukunft, wenn Sie erneut ein Upgrade durchführen, Kummer ersparen."
+msgstr "Falls Sie unglücklicherweise kompilierten Code, den Sie nicht mehr ändern können, am Hals haben und bei dem altes »gist_geometry_ops« hart codiert ist, können Sie die alte Klasse mittels des in PostGIS 2.0.2+ paketierten <filename>legacy_gist.sql</filename> erstellen. Falls Sie jedoch diese Fehlerbehebung verwenden, wird Ihnen dringend empfohlen, zu einem späteren Zeitpunkt den Index zu löschen und ihn ohne die Operatorklasse neu zu erstellen. Dies wird Ihnen in Zukunft Probleme ersparen, wenn Sie erneut ein Upgrade durchführen müssen."
 
 #. Tag: para
 #: faq.xml:56
@@ -194,7 +194,7 @@ msgid ""
 "You can upgrade your JDBC driver to the latest PostgreSQL 9.0 version which "
 "you can get from <ulink "
 "url=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/download.html</ulink>"
-msgstr "Sie können Ihren JDBC-Treiber auf die neuste PostgreSQL-9.0-Version aktualisieren. Diese erhalten Sie unter <ulink url=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/download.html</ulink>."
+msgstr "Sie können Ihren JDBC-Treiber auf die neuste PostgreSQL-9.0-Version aktualisieren. Diese erhalten Sie unter <ulink url=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/download.html</ulink>. "
 
 #. Tag: para
 #: faq.xml:66
@@ -206,7 +206,7 @@ msgid ""
 " and as described on <ulink "
 "url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-released.html\">Francisco"
 " Figueiredo's NpgSQL 2.0.11 released blog entry</ulink>"
-msgstr "Falls Sie eine .NET-Anwendung ausführen, können Sie Npgsql 2.0.11 oder neuer verwenden. Dies können Sie von <ulink url=\"http://pgfoundry.org/frs/?group_id=1000140\">http://pgfoundry.org/frs/?group_id=1000140</ulink>, wie im <ulink url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-released.html\">Blog-Eintrag von Francisco Figueiredo zur Veröffentlichung von NpgSQL 2.0.11</ulink> beschrieben, herunterladen."
+msgstr "Falls Sie eine .NET-Anwendung ausführen, können Sie Npgsql 2.0.11 oder neuer verwenden. Dies können Sie von <ulink url=\"http://pgfoundry.org/frs/?group_id=1000140\">http://pgfoundry.org/frs/?group_id=1000140</ulink>, wie im <ulink url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-released.html\">Blog-Eintrag von Francisco Figueiredo zur Veröffentlichung von NpgSQL 2.0.11</ulink> beschrieben, herunterladen. "
 
 #. Tag: para
 #: faq.xml:70
@@ -244,7 +244,7 @@ msgstr "PgAdmin zeigt bei großen Geometrien nichts an. Was ist der beste Weg, u
 msgid ""
 "-- this should return no records if all your geom fields are filled in\n"
 "SELECT somefield FROM mytable WHERE geom IS NULL;"
-msgstr "-- Diese Abfrage gibt keine Datenbankeinträge zurück, falls alle Geometriefelder ausgefüllt sind\nSELECT somefield FROM mytable WHERE geom IS NULL;"
+msgstr "-- Wenn alle Geometriefelder ausgefüllt sind, dann sollte diese Abfrage keine Datensätze zurückgeben \nSELECT somefield FROM mytable WHERE geom IS NULL;"
 
 #. Tag: programlisting
 #: faq.xml:87
@@ -253,7 +253,7 @@ msgid ""
 "-- To tell just how large your geometry is do a query of the form\n"
 "--which will tell you the most number of points you have in any of your geometry columns\n"
 "SELECT MAX(ST_NPoints(geom)) FROM sometable;"
-msgstr "-- Um nur mitzuteilen, wie groß Ihre Geometrie ist, führen Sie eine Abfrage in der folgenden Form aus.\n-- Sie wird Ihnen die Höchstzahl von Punkten mitteilen, die Sie in Ihren Geometriespalten haben.\nSELECT MAX(ST_NPoints(geom)) FROM sometable;"
+msgstr "-- Um lediglich die Größe einer Geometrie festzustellen, können Sie eine Abfrage in der folgenden Form ausführen.\n-- Sie wird Ihnen die Höchstzahl von Punkten mitteilen, die Sie in Ihren Geometriespalten haben.\nSELECT MAX(ST_NPoints(geom)) FROM sometable;"
 
 #. Tag: para
 #: faq.xml:93
@@ -282,7 +282,7 @@ msgstr "Sie können Punkte, Linien, Polygone, Objekte aus mehreren Punkten, Lini
 #: faq.xml:110
 #, no-c-format
 msgid "I'm all confused. Which data store should I use geometry or geography?"
-msgstr "Ich bin ganz verwirrt. Welchen Datenspeicher soll ich verwenden, »geometry« oder »geography«?"
+msgstr "Ich bin verwirrt. Welchen Datenspeicher soll ich verwenden, »geometry« oder »geography«?"
 
 #. Tag: para
 #: faq.xml:114
@@ -304,7 +304,7 @@ msgid ""
 "two types to gain the benefits of each. Refer to <xref "
 "linkend=\"PostGIS_TypeFunctionMatrix\"/> to see what is currently supported "
 "and what is not."
-msgstr "Kurze Antwort: »geography« ist ein neuer Datentyp, der große Bereiche von Distanzvermessungen unterstützt, die meisten Berechnungen damit sind derzeit langsamer als bei »geometry«. Falls Sie »geography« benutzen, müssen Sie nicht viel über flache Koordinatensysteme lernen. »geography« ist im Allgemeinen am besten, falls alles, was Sie interessiert, das Vermessen von Entfernungen und Längen ist und Sie Daten von überall in der Welt haben. Der Datentyp »geometry« ist ein alter Datentyp, den viel mehr Funktionen unterstützen, der eine größere Unterstützung von Werkzeugen Dritter genießt und mit dem Transaktionen generell schneller sind, manchmal um bis zum Zehnfachen schneller für große Geometrien. »geometry« ist die beste Wahl, wenn Sie sich in räumlichen Bezugssystemen sicher fühlen oder Sie mit lokalisierten Daten umgehen, bei denen alle Ihre Daten in ein einziges <link linkend=\"spatial_ref_sys\">räumliches Bezugssystem (spatial reference system/SRID)</link> passen oder falls Sie eine große Menge räumlicher Daten verarbeiten wollen. Hinweis: Es ist ziemlich einfach, einmalige Umwandlungen zwischen den zwei Typen vorzunehmen, um von den Vorteilen beider zu profitieren. Was derzeit unterstützt wird und was nicht, erfahren Sie unter <xref linkend=\"PostGIS_TypeFunctionMatrix\"/>."
+msgstr "Kurze Antwort: »geography« ist ein neuer Datentyp, der Distanzmessungen über weite Bereiche hinweg unterstützt; allerdings sind die meisten Berechnungen damit derzeit langsamer als bei »geometry«. Wenn Sie den Datentyp »geography« benutzen, dann müssen Sie nicht viel über ebene Koordinatenreferenzsysteme lernen. Der Datentyp »geography« ist im Allgemeinen dann am besten geeignet, wenn Sie weltweite Daten haben und Sie nur am Messen von Entfernungen und Längen interessiert sind. Der Datentyp »geometry« ist ein alter Datentyp, der von wesentlich mehr Funktionen unterstützt wird, der eine größere Unterstützung von Werkzeugen Dritter genießt und mit dem Transaktionen generell schneller sind; bei einer großen Geometrie manchmal bis zum Zehnfachen schneller. Der Datentyp »geometry« ist die beste Wahl, wenn Sie sich in räumlichen Bezugssystemen sicher fühlen oder Sie mit lokalen Daten arbeiten, bei denen alle Ihre Daten in ein einziges <link linkend=\"spatial_ref_sys\">räumliches Bezugssystem (spatial reference system/SRID)</link> passen oder falls Sie eine große Menge räumlicher Daten verarbeiten wollen. Hinweis: Es ist ziemlich einfach, einmalige Umwandlungen zwischen den zwei Typen vorzunehmen, um von den Vorteilen beider zu profitieren. Was derzeit unterstützt wird und was nicht, erfahren Sie unter <xref linkend=\"PostGIS_TypeFunctionMatrix\"/>."
 
 #. Tag: para
 #: faq.xml:125
@@ -362,9 +362,9 @@ msgstr "Für »geometry«: Verbinden Sie Ihre Datenbank mit <filename>psql</file
 #: faq.xml:156
 #, no-c-format
 msgid ""
-"CREATE TABLE gtest ( gid serial primary key, name varchar(20)\n"
-"        , geom geometry(LINESTRING) );"
-msgstr "CREATE TABLE gtest ( gid serial primary key, name varchar(20)\n        , geom geometry(LINESTRING) );"
+"CREATE TABLE gtest (id serial primary key, name varchar(20), geom "
+"geometry(LINESTRING));"
+msgstr "CREATE TABLE gtest (id serial primary key, name varchar(20), geom geometry(LINESTRING));"
 
 #. Tag: para
 #: faq.xml:158
@@ -733,7 +733,7 @@ msgstr "--zum Prüfen, ob die Anzahl der Geometrien wirklich leer ist\n         
 msgid ""
 "When I do an ST_Intersects, it says my two geometries don't intersect when I"
 " KNOW THEY DO. What gives?"
-msgstr "Wenn ich ein ST_Intersects ausführe, sagt es, dass sich meine beiden Geometrien nicht überschneiden, obwohl ICH WEIẞ, DASS SIE DIES TUN. Was ist passiert?"
+msgstr "ST_Intersects ergibt, dass sich meine beiden geometrischen Objekte nicht überschneiden, obwohl ICH WEISS, DASS SIE DIES TUN. Was ist passiert?"
 
 #. Tag: para
 #: faq.xml:371
@@ -763,7 +763,7 @@ msgid ""
 "distributed using the GPL? No. Similarly your software can use a "
 "PostgreSQL/PostGIS database as much as it wants and be under any license you"
 " like."
-msgstr "Höchstwahrscheinlich nicht. Oracle-Datenbanken laufen zum Beispiel unter Linux. Linux steht unter der GPL, Oracles Datenbank nicht. Muss Oracles Datenbank, die unter Linux läuft, unter der GPL verteilt werden? Nein. In ähnlicher Weise kann Ihre Software die PostgreSQL/PostGIS Datenbank soviel nutzen wie sie will, und kann unter irgendeiner, von Ihnen gewünschten Lizenz vorliegen."
+msgstr "Höchstwahrscheinlich nicht. Oracle-Datenbanken laufen zum Beispiel unter Linux. Linux steht unter der GPL, Oracles Datenbank nicht. Muss Oracles Datenbank, die unter Linux läuft, unter der GPL verteilt werden? Nein. In ähnlicher Weise kann Ihre Software die PostgreSQL/PostGIS Datenbank soviel nutzen wie sie will, und kann unter irgendeiner, von Ihnen gewünschten Lizenz vorliegen. "
 
 #. Tag: para
 #: faq.xml:384
@@ -777,7 +777,7 @@ msgid ""
 "distributed binaries to. The GPL does not require that you "
 "<emphasis>publish</emphasis> your source code, only that you share it with "
 "people you give binaries to."
-msgstr "Die einzige Ausnahme wäre, wenn Sie Veränderungen am PostGIS-Quellcode vorgenommen hätten und die <emphasis>veränderte Version verteilen</emphasis> würden. In diesem Fall müssten Sie den Code Ihres veränderten PostGIS freigeben (aber nicht den Code von Anwendungen, die darauf laufen). Sogar in diesem begrenzten Fall müssten Sie nur den Quellcode an Leute verteilen, denen Sie Binärcode weitergegeben haben. Die GPL verlangt nicht, dass Sie Ihren Quellcode <emphasis>veröffentlichen</emphasis>, nur dass Sie ihn mit Leuten teilen, denen Sie Binärcode geben."
+msgstr "Die einzige Ausnahme wäre, wenn Sie Veränderungen am PostGIS-Quellcode vorgenommen hätten und die <emphasis>veränderte Version verteilen</emphasis> würden. In diesem Fall müssten Sie den Code Ihres veränderten PostGIS freigeben (aber nicht den Code von Anwendungen, die darauf laufen). Sogar in diesem begrenzten Fall müssten Sie nur den Quellcode an Leute verteilen, denen Sie Binärcode weitergegeben haben. Die GPL verlangt nicht, dass Sie Ihren Quellcode <emphasis>veröffentlichen</emphasis>, nur dass Sie ihn mit Leuten teilen, denen Sie Binärcode geben. "
 
 #. Tag: para
 #: faq.xml:385

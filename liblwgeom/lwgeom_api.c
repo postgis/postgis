@@ -29,7 +29,6 @@
 #include "lwgeom_log.h"
 
 #include <stdio.h>
-#include <errno.h>
 #include <assert.h>
 #include "../postgis_svn_revision.h"
 
@@ -352,26 +351,6 @@ getPoint2d_p(const POINTARRAY *pa, uint32_t n, POINT2D *point)
 	/* this does x,y */
 	memcpy(point, getPoint_internal(pa, n), sizeof(POINT2D));
 	return 1;
-}
-
-/**
-* Returns a pointer into the POINTARRAY serialized_ptlist,
-* suitable for reading from. This is very high performance
-* and declared const because you aren't allowed to muck with the
-* values, only read them.
-*/
-const POINT2D*
-getPoint2d_cp(const POINTARRAY *pa, uint32_t n)
-{
-	if ( ! pa ) return 0;
-
-	if ( n>=pa->npoints )
-	{
-		lwerror("getPoint2d_cp: point offset out of range");
-		return 0; /*error */
-	}
-
-	return (const POINT2D*)getPoint_internal(pa, n);
 }
 
 const POINT3DZ*

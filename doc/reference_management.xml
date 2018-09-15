@@ -370,9 +370,13 @@ DROP TABLE my_schema.my_spatial_table;
 		to latest installed version. Only extensions you have installed in the database will be upgraded and if they are already at last installed version,
 		they will not be upgraded. Reports full postgis version and build configuration
 		infos after.  This is short-hand for doing multiple ALTER EXTENSION .. UPDATE for each postgis extension.
-		Currently only tries to upgrade extensions postgis, postgis_sfcgal, postgis_topology, and postgis_tiger_geocoder.</para>
+		Currently only tries to upgrade extensions postgis,
+    postgis_raster, postgis_sfcgal, postgis_topology, and postgis_tiger_geocoder.</para>
 
 		<para>Availability: 2.5.0</para>
+		<note>
+			<para>Changed: 3.0.0 to support separate postgis_raster extension</para>
+		</note>
 	  </refsection>
 
 	  <refsection>
@@ -381,9 +385,7 @@ DROP TABLE my_schema.my_spatial_table;
 		<programlisting>SELECT PostGIS_Extensions_Upgrade();</programlisting>
 <screen>
 NOTICE:  ALTER EXTENSION postgis_tiger_geocoder UPDATE TO "2.5.0dev";
-CONTEXT:  PL/pgSQL function postgis_extensions_upgrade() line 10 at RAISE
 NOTICE:  ALTER EXTENSION postgis_topology UPDATE TO "2.5.0dev";
-CONTEXT:  PL/pgSQL function postgis_extensions_upgrade() line 10 at RAISE
 
 							   postgis_extensions_upgrade
 ----------------------------------------------------------------------------------

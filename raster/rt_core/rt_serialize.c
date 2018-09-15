@@ -629,14 +629,24 @@ rt_raster_serialize(rt_raster raster) {
 				ptr += 1;
 				break;
 			}
-			case PT_16BSI:
+			case PT_16BSI: {
+				int16_t v = band->nodataval;
+				memcpy(ptr, &v, 2);
+				ptr += 2;
+				break;
+			}
 			case PT_16BUI: {
 				uint16_t v = band->nodataval;
 				memcpy(ptr, &v, 2);
 				ptr += 2;
 				break;
 			}
-			case PT_32BSI:
+			case PT_32BSI: {
+				int32_t v = band->nodataval;
+				memcpy(ptr, &v, 4);
+				ptr += 4;
+				break;
+			}
 			case PT_32BUI: {
 				uint32_t v = band->nodataval;
 				memcpy(ptr, &v, 4);
@@ -688,11 +698,9 @@ rt_raster_serialize(rt_raster raster) {
 #endif
 
 		/* Pad up to 8-bytes boundary */
-		while ((uintptr_t) ptr % 8) {
+		while ((ptr-ret) % 8) {
 			*ptr = 0;
 			++ptr;
-
-			RASTER_DEBUGF(3, "PAD at %d", (uintptr_t) ptr % 8);
 		}
 
 		/* Consistency checking (ptr is pixbytes-aligned) */

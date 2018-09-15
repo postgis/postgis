@@ -1,22 +1,23 @@
 # SOME DESCRIPTIVE TITLE.
-#
+# 
 # Translators:
+# BJ Jang <jangbi882@gmail.com>, 2016
 # BJ Jang <qgis.tr.kr@gmail.com>, 2013
 # Kwang Woo Nam <kwangwoo@gmail.com>, 2013
+# Kwon.Yongchan <ruvyn@naver.com>, 2016
 # Kwon.Yongchan <ruvyn@naver.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-09-07 07:22+0000\n"
-"PO-Revision-Date: 2016-07-22 09:09+0000\n"
-"Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
-"language/ko_KR/)\n"
-"Language: ko_KR\n"
+"POT-Creation-Date: 2018-07-21 17:36+0000\n"
+"PO-Revision-Date: 2018-07-22 04:06+0000\n"
+"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/language/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: title
@@ -30,34 +31,27 @@ msgstr "PostGIS 자주 묻는 질문들"
 #, no-c-format
 msgid ""
 "Where can I find tutorials, guides and workshops on working with PostGIS"
-msgstr ""
-"PostGIS 활용에 대한 예제, 지침서, 워크숍 등을 어디에서 찾아볼 수 있을까요?"
+msgstr "PostGIS 활용에 대한 예제, 지침서, 워크숍 등을 어디에서 찾아볼 수 있을까요?"
 
 #. Tag: para
 #: faq.xml:12
 #, no-c-format
 msgid ""
-"OpenGeo has a step by step tutorial guide workshop <ulink url=\"http://"
-"workshops.boundlessgeo.com/postgis-intro/\">Introduction to PostGIS</ulink>. "
-"It includes packaged data as well as intro to working with OpenGeo Suite. It "
-"is probably the best tutorial on PostGIS."
-msgstr ""
-"OpenGeo가 단계별 예제 지침 워크숍 <ulink url=\"http://workshops.boundlessgeo."
-"com/postgis-intro/\">PostGIS 개론</ulink> 을 제공하고 있습니다. 이 워크숍은 "
-"패키징된 데이터는 물론 OpenGeo 스위트(suite) 활용법에 대한 소개를 포함하고 있"
-"습니다. 아마도 PostGIS에 대한 최고의 예제일 겁니다."
+"OpenGeo has a step by step tutorial guide workshop <ulink "
+"url=\"http://workshops.boundlessgeo.com/postgis-intro/\">Introduction to "
+"PostGIS</ulink>. It includes packaged data as well as intro to working with "
+"OpenGeo Suite. It is probably the best tutorial on PostGIS."
+msgstr "OpenGeo가 단계별 예제 지침 워크숍 <ulink url=\"http://workshops.boundlessgeo.com/postgis-intro/\">PostGIS 개론</ulink> 을 제공하고 있습니다. 이 워크숍은 패키징된 데이터는 물론 OpenGeo 스위트(suite) 활용법에 대한 소개를 포함하고 있습니다. 아마도 PostGIS에 대한 최고의 예제일 겁니다."
 
 #. Tag: para
 #: faq.xml:13
 #, no-c-format
 msgid ""
-"BostonGIS also has a <ulink url=\"http://www.bostongis.com/PrinterFriendly."
-"aspx?content_name=postgis_tut01\">PostGIS almost idiot's guide on getting "
-"started</ulink>. That one is more focused on the windows user."
-msgstr ""
-"BostonGIS에서도 <ulink url=\"http://www.bostongis.com/PrinterFriendly.aspx?"
-"content_name=postgis_tut01\">PostGIS: 멍청이도 할 수 있는 지침서</ulink> 를 "
-"제공합니다. 이 지침서는 윈도우 사용자를 더 중시하고 있습니다."
+"BostonGIS also has a <ulink "
+"url=\"http://www.bostongis.com/PrinterFriendly.aspx?content_name=postgis_tut01\">PostGIS"
+" almost idiot's guide on getting started</ulink>. That one is more focused "
+"on the windows user."
+msgstr "BostonGIS에서도 <ulink url=\"http://www.bostongis.com/PrinterFriendly.aspx?content_name=postgis_tut01\">PostGIS: 멍청이도 할 수 있는 지침서</ulink> 를 제공합니다. 이 지침서는 윈도우 사용자를 더 중시하고 있습니다."
 
 #. Tag: para
 #: faq.xml:18
@@ -65,34 +59,23 @@ msgstr ""
 msgid ""
 "My applications and desktop tools worked with PostGIS 1.5,but they don't "
 "work with PostGIS 2.0. How do I fix this?"
-msgstr ""
-"PostGIS 1.5에서 돌아가던 응용 프로그램과 데스크톱 툴들이 PostGIS 2.0에서 동작"
-"하지 않습니다. 어떻게 고칠 수 있을까요?"
+msgstr "PostGIS 1.5에서 돌아가던 응용 프로그램과 데스크톱 툴들이 PostGIS 2.0에서 동작하지 않습니다. 어떻게 고칠 수 있을까요?"
 
 #. Tag: para
 #: faq.xml:22
 #, no-c-format
 msgid ""
 "A lot of deprecated functions were removed from the PostGIS code base in "
-"PostGIS 2.0. This has affected applications in addition to third-party tools "
-"such as Geoserver, MapServer, QuantumGIS, and OpenJump to name a few. There "
-"are a couple of ways to resolve this. For the third-party apps, you can try "
-"to upgrade to the latest versions of these which have many of these issues "
+"PostGIS 2.0. This has affected applications in addition to third-party tools"
+" such as Geoserver, MapServer, QuantumGIS, and OpenJump to name a few. There"
+" are a couple of ways to resolve this. For the third-party apps, you can try"
+" to upgrade to the latest versions of these which have many of these issues "
 "fixed. For your own code, you can change your code to not use the functions "
 "removed. Most of these functions are non ST_ aliases of ST_Union, ST_Length "
-"etc. and as a last resort, install the whole of <varname>legacy.sql</"
-"varname> or just the portions of <varname>legacy.sql</varname> you need."
-msgstr ""
-"더 이상 지원되지 않는 상당수의 함수들이 PostGIS 2.0의 코드 기반에서 제거되었"
-"습니다. 이 것은  GeoServer나 MapServer, QuantumGIS, 그리고 OpenJump와 같은 몇"
-"몇 third-party 툴들 뿐만아니라, 많은 응용 프로그램들에게도 영향을 주고 있습니"
-"다. 이것을 해결하는 두가지 방법이 있습니다. thrid-party 응용들의 경우, 당신"
-"은 이 이슈들의 많은 부분들이 수정된 최신버전으로 업그레이드 하는 방법을 시도"
-"할 수 있습니다.  당신이 직접 개발한 코드인 경우, 당신의 코드가 더이상 제거된 "
-"함수들을 사용하지 않도록 수정할 수 있습니다. 이 함수들의 대부분은 ST_Union, "
-"ST_Length의 이전 버전들로서  ST_를  사용하지 않는 것들일 것입니다.  마지막 수"
-"단으로, <varname>legacy.sql</varname>을 설치하거나,  당신이 필요한 만큼 "
-"<varname>legacy.sql</varname>의 일부를 수정하십시오."
+"etc. and as a last resort, install the whole of "
+"<varname>legacy.sql</varname> or just the portions of "
+"<varname>legacy.sql</varname> you need."
+msgstr "더 이상 지원되지 않는 상당수의 함수들이 PostGIS 2.0의 코드 기반에서 제거되었습니다. 이 것은  GeoServer나 MapServer, QuantumGIS, 그리고 OpenJump와 같은 몇몇 third-party 툴들 뿐만아니라, 많은 응용 프로그램들에게도 영향을 주고 있습니다. 이것을 해결하는 두가지 방법이 있습니다. thrid-party 응용들의 경우, 당신은 이 이슈들의 많은 부분들이 수정된 최신버전으로 업그레이드 하는 방법을 시도할 수 있습니다.  당신이 직접 개발한 코드인 경우, 당신의 코드가 더이상 제거된 함수들을 사용하지 않도록 수정할 수 있습니다. 이 함수들의 대부분은 ST_Union, ST_Length의 이전 버전들로서  ST_를  사용하지 않는 것들일 것입니다.  마지막 수단으로, <varname>legacy.sql</varname>을 설치하거나,  당신이 필요한 만큼 <varname>legacy.sql</varname>의 일부를 수정하십시오."
 
 #. Tag: para
 #: faq.xml:28
@@ -102,23 +85,16 @@ msgid ""
 "postgis.sql. You can install this file after you have installed postgis.sql "
 "and spatial_ref_sys.sql to get back all the 200 some-odd old functions we "
 "removed."
-msgstr ""
-"The <varname>legacy.sql</varname> 파일은 postgis.sql. 과 같은 폴더에 위치하"
-"고 있습니다. 제거되었던 총 200개의 조금은 이상한 구버전 함수를 얻기 위해 "
-"postgis.sql 그리고 spatial_ref_sys.sq설치하신 뒤 해당 파일을 설치하시면 됩니"
-"다."
+msgstr "The <varname>legacy.sql</varname> 파일은 postgis.sql. 과 같은 폴더에 위치하고 있습니다. 제거되었던 총 200개의 조금은 이상한 구버전 함수를 얻기 위해 postgis.sql 그리고 spatial_ref_sys.sq설치하신 뒤 해당 파일을 설치하시면 됩니다."
 
 #. Tag: para
 #: faq.xml:35
 #, no-c-format
 msgid ""
 "When I load OpenStreetMap data with osm2pgsql, I'm getting an error failed: "
-"ERROR: operator class \"gist_geometry_ops\" does not exist for access method "
-"\"gist\" Error occurred. This worked fine in PostGIS 1.5."
-msgstr ""
-"osm2pgsql을 통해 OpenStreetMap 데이터를 로드할 때 다음과 같은 오류가 발생합니"
-"다. ERROR: operator class \"gist_geometry_ops\" does not exist for access "
-"method \"gist\". PostGIS 1.5에서는 잘 됐는데 말이죠."
+"ERROR: operator class \"gist_geometry_ops\" does not exist for access method"
+" \"gist\" Error occurred. This worked fine in PostGIS 1.5."
+msgstr "osm2pgsql을 통해 OpenStreetMap 데이터를 로드할 때 다음과 같은 오류가 발생합니다. ERROR: operator class \"gist_geometry_ops\" does not exist for access method \"gist\". PostGIS 1.5에서는 잘 됐는데 말이죠."
 
 #. Tag: para
 #: faq.xml:40
@@ -128,25 +104,17 @@ msgid ""
 "changed to gist_geometry_ops_2d and the gist_geometry_ops was completely "
 "removed. This was done because PostGIS 2 also introduced Nd spatial indexes "
 "for 3D support and the old name was deemed confusing and a misnomer."
-msgstr ""
-"PostGIS 2 버전부터 기본 도형 연산자 클래스가 gist_geometry_ops에서 "
-"gist_geometry_ops_2d로 변경되었고, gist_geometry_ops는 완전히 삭제되었습니"
-"다. PostGIS 2 버전부터 3D를 지원하기 위해 N-D 공간 인덱스를 도입했는데, 구 명"
-"칭 gist_geometry_ops가 부정확하고 혼동된다고 여겨졌기 때문입니다."
+msgstr "PostGIS 2 버전부터 기본 도형 연산자 클래스가 gist_geometry_ops에서 gist_geometry_ops_2d로 변경되었고, gist_geometry_ops는 완전히 삭제되었습니다. PostGIS 2 버전부터 3D를 지원하기 위해 N-D 공간 인덱스를 도입했는데, 구 명칭 gist_geometry_ops가 부정확하고 혼동된다고 여겨졌기 때문입니다."
 
 #. Tag: para
 #: faq.xml:41
 #, no-c-format
 msgid ""
 "Some older applications that as part of the process create tables and "
-"indexes, explicitly referenced the operator class name. This was unnecessary "
-"if you want the default 2D index. So if you manage said good, change index "
+"indexes, explicitly referenced the operator class name. This was unnecessary"
+" if you want the default 2D index. So if you manage said good, change index "
 "creation from:"
-msgstr ""
-"테이블 및 인덱스를 생성하는 과정의 일부인 몇몇 구 버전 응용 프로그램은 연산"
-"자 클래스 명을 정확히 참조합니다. 기본 2D 인덱스를 사용하고자 하는 경우 이렇"
-"게 정확히 참조할 필요는 없습니다. 따라서 이런 경우라면 인덱스 생성 명령어를 "
-"다음과 같이 변경하십시오:"
+msgstr "테이블 및 인덱스를 생성하는 과정의 일부인 몇몇 구 버전 응용 프로그램은 연산자 클래스 명을 정확히 참조합니다. 기본 2D 인덱스를 사용하고자 하는 경우 이렇게 정확히 참조할 필요는 없습니다. 따라서 이런 경우라면 인덱스 생성 명령어를 다음과 같이 변경하십시오:"
 
 #. Tag: para
 #: faq.xml:42
@@ -160,9 +128,7 @@ msgstr "나쁜 예에서:"
 msgid ""
 "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom "
 "gist_geometry_ops);"
-msgstr ""
-"CREATE INDEX idx_my_table_geom ON my_table USING gist(geom "
-"gist_geometry_ops);"
+msgstr "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom gist_geometry_ops);"
 
 #. Tag: para
 #: faq.xml:44
@@ -182,9 +148,7 @@ msgstr "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom);"
 msgid ""
 "The only case where you WILL need to specify the operator class is if you "
 "want a 3D spatial index as follows:"
-msgstr ""
-"사용자가 연산자 클래스를 지정해야만 하는 유일한 경우는 다음과 같이 3D 공간 인"
-"덱스를 생성하고자 할 때뿐입니다:"
+msgstr "사용자가 연산자 클래스를 지정해야만 하는 유일한 경우는 다음과 같이 3D 공간 인덱스를 생성하고자 할 때뿐입니다:"
 
 #. Tag: programlisting
 #: faq.xml:48
@@ -192,9 +156,7 @@ msgstr ""
 msgid ""
 "CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom "
 "gist_geometry_ops_nd);"
-msgstr ""
-"CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom "
-"gist_geometry_ops_nd);"
+msgstr "CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom gist_geometry_ops_nd);"
 
 #. Tag: para
 #: faq.xml:50
@@ -206,13 +168,7 @@ msgid ""
 "However if you use this fix, you are advised to at a later point drop the "
 "index and recreate it without the operator class. This will save you grief "
 "in the future when you need to upgrade again."
-msgstr ""
-"안타깝게도 사용자가 변경할 수 없는, 구 버전 gist_geometry_ops가 하드 코딩되"
-"어 있는 컴파일된 코드를 써야만 할 경우, PostGIS 2.0.2 이상 버전에 패키징된 "
-"<filename>legacy_gist.sql</filename> 을 이용해서 구 버전 클래스를 생성할 수 "
-"있습니다. 하지만 이 해결 방법을 쓸 경우, 이후 어떤 시점에서 해당 인덱스를 삭"
-"제하고 연산자 클래스 없이 재생성하는 것이 좋습니다. 이렇게 하면 향후 다시 업"
-"그레이드를 해야 할 때 수고를 덜게 될 것입니다."
+msgstr "안타깝게도 사용자가 변경할 수 없는, 구 버전 gist_geometry_ops가 하드 코딩되어 있는 컴파일된 코드를 써야만 할 경우, PostGIS 2.0.2 이상 버전에 패키징된 <filename>legacy_gist.sql</filename> 을 이용해서 구 버전 클래스를 생성할 수 있습니다. 하지만 이 해결 방법을 쓸 경우, 이후 어떤 시점에서 해당 인덱스를 삭제하고 연산자 클래스 없이 재생성하는 것이 좋습니다. 이렇게 하면 향후 다시 업그레이드를 해야 할 때 수고를 덜게 될 것입니다."
 
 #. Tag: para
 #: faq.xml:56
@@ -220,9 +176,7 @@ msgstr ""
 msgid ""
 "I'm running PostgreSQL 9.0 and I can no longer read/view geometries in "
 "OpenJump, Safe FME, and some other tools?"
-msgstr ""
-"PostgreSQL 9.0을 운용 중이며 OpenJump, SafeFME와 그리고 몇 몇 다른 툴들에서 "
-"지오메트리들을 더는 읽거나 볼 수 없습니다."
+msgstr "PostgreSQL 9.0을 운용 중이며 OpenJump, SafeFME와 그리고 몇 몇 다른 툴들에서 지오메트리들을 더는 읽거나 볼 수 없습니다."
 
 #. Tag: para
 #: faq.xml:60
@@ -230,46 +184,31 @@ msgstr ""
 msgid ""
 "In PostgreSQL 9.0+, the default encoding for bytea data has been changed to "
 "hex and older JDBC drivers still assume escape format. This has affected "
-"some applications such as Java applications using older JDBC drivers or .NET "
-"applications that use the older npgsql driver that expect the old behavior "
+"some applications such as Java applications using older JDBC drivers or .NET"
+" applications that use the older npgsql driver that expect the old behavior "
 "of ST_AsBinary. There are two approaches to getting this to work again."
-msgstr ""
-"PostgreSQL 9.0+에서, bytea 데이터를 위한 디폴트 인코딩은 hex로 바뀌었고 예전 "
-"JDBC 드라이브는 여전히 escape format을 취합니다. 이것은 예전 JDBC 드라이버를 "
-"사용한 Java 어플리케이션이나 오래된 ST_AsBinary의 작동을 요하는 예전 npgsql "
-"드라이버를 사용하는 .NET 어플리케이션 같은 몇몇 어플리케이션에 영향을 끼칩니"
-"다. 이것을 다시 작동시키기 위한 두 가지 접근 방법이 있습니다."
+msgstr "PostgreSQL 9.0+에서, bytea 데이터를 위한 디폴트 인코딩은 hex로 바뀌었고 예전 JDBC 드라이브는 여전히 escape format을 취합니다. 이것은 예전 JDBC 드라이버를 사용한 Java 어플리케이션이나 오래된 ST_AsBinary의 작동을 요하는 예전 npgsql 드라이버를 사용하는 .NET 어플리케이션 같은 몇몇 어플리케이션에 영향을 끼칩니다. 이것을 다시 작동시키기 위한 두 가지 접근 방법이 있습니다."
 
 #. Tag: para
 #: faq.xml:64
 #, no-c-format
 msgid ""
 "You can upgrade your JDBC driver to the latest PostgreSQL 9.0 version which "
-"you can get from <ulink url=\"http://jdbc.postgresql.org/download.html"
-"\">http://jdbc.postgresql.org/download.html</ulink>"
-msgstr ""
-"JDBC driver를 최신 PostgreSQL 9.0버전으로 업그레이드 시킬 수 있습니다. 최신 "
-"PosgtreSQL버전은 <ulink url=\"http://jdbc.postgresql.org/download.html"
-"\">http://jdbc.postgresql.org/download.html</ulink>에서 다운받으실 수 있습니"
-"다"
+"you can get from <ulink "
+"url=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/download.html</ulink>"
+msgstr "JDBC driver를 최신 PostgreSQL 9.0버전으로 업그레이드 시킬 수 있습니다. 최신 PosgtreSQL버전은 <ulink url=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/download.html</ulink>에서 다운받으실 수 있습니다"
 
 #. Tag: para
 #: faq.xml:66
 #, no-c-format
 msgid ""
-"If you are running a .NET app, you can use Npgsql 2.0.11 or higher which you "
-"can download from <ulink url=\"http://pgfoundry.org/frs/?"
-"group_id=1000140\">http://pgfoundry.org/frs/?group_id=1000140</ulink> and as "
-"described on <ulink url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-"
-"released.html\">Francisco Figueiredo's NpgSQL 2.0.11 released blog entry</"
-"ulink>"
-msgstr ""
-"만약 .NET app을 실행중이라면 Npgsql 2.0.11또는 그 이상의 버전을 사용할 수 있"
-"습니다. 이는 <ulink url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-"
-"released.html\">Francisco Figueiredo's NpgSQL 2.0.11 released blog entry</"
-"ulink>에 설명되어 있는 것과 같이 <ulink url=\"http://pgfoundry.org/frs/?"
-"group_id=1000140\">http://pgfoundry.org/frs/?group_id=1000140</ulink>에서 다"
-"운받으실 수 있습니다. "
+"If you are running a .NET app, you can use Npgsql 2.0.11 or higher which you"
+" can download from <ulink "
+"url=\"http://pgfoundry.org/frs/?group_id=1000140\">http://pgfoundry.org/frs/?group_id=1000140</ulink>"
+" and as described on <ulink "
+"url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-released.html\">Francisco"
+" Figueiredo's NpgSQL 2.0.11 released blog entry</ulink>"
+msgstr "만약 .NET app을 실행중이라면 Npgsql 2.0.11또는 그 이상의 버전을 사용할 수 있습니다. 이는 <ulink url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-released.html\">Francisco Figueiredo's NpgSQL 2.0.11 released blog entry</ulink>에 설명되어 있는 것과 같이 <ulink url=\"http://pgfoundry.org/frs/?group_id=1000140\">http://pgfoundry.org/frs/?group_id=1000140</ulink>에서 다운받으실 수 있습니다. "
 
 #. Tag: para
 #: faq.xml:70
@@ -277,9 +216,7 @@ msgstr ""
 msgid ""
 "If upgrading your PostgreSQL driver is not an option, then you can set the "
 "default back to the old behavior with the following change:"
-msgstr ""
-"만약 PostgreSQL driver를 업그레이드 하는 것이 옵션사항이 아니라면 아래를 입력"
-"함으로써 이전 방식으로 디폴트 설정을 할 수 있습니다:"
+msgstr "만약 PostgreSQL driver를 업그레이드 하는 것이 옵션사항이 아니라면 아래를 입력함으로써 이전 방식으로 디폴트 설정을 할 수 있습니다:"
 
 #. Tag: programlisting
 #: faq.xml:71
@@ -293,9 +230,7 @@ msgstr "ALTER DATABASE mypostgisdb SET bytea_output='escape';"
 msgid ""
 "I tried to use PgAdmin to view my geometry column and it is blank, what "
 "gives?"
-msgstr ""
-"지오메트리 컬럼을 보기 위해 PgAdmin을 사용하려고 했으나 비어있습니다. 왜 그런"
-"지요?"
+msgstr "지오메트리 컬럼을 보기 위해 PgAdmin을 사용하려고 했으나 비어있습니다. 왜 그런지요?"
 
 #. Tag: para
 #: faq.xml:82
@@ -303,9 +238,7 @@ msgstr ""
 msgid ""
 "PgAdmin doesn't show anything for large geometries. The best ways to verify "
 "you do have data in your geometry columns are?"
-msgstr ""
-"PgAdmin은 큰 지오메트리에 대해 아무것도 보여주지 않습니다. 지오메트리 컬럼에 "
-"있는 데이터를 검증하는 가장 좋은 방법은?"
+msgstr "PgAdmin은 큰 지오메트리에 대해 아무것도 보여주지 않습니다. 지오메트리 컬럼에 있는 데이터를 검증하는 가장 좋은 방법은?"
 
 #. Tag: programlisting
 #: faq.xml:85
@@ -313,23 +246,16 @@ msgstr ""
 msgid ""
 "-- this should return no records if all your geom fields are filled in\n"
 "SELECT somefield FROM mytable WHERE geom IS NULL;"
-msgstr ""
-"-- 이 스크립트는 사용자의 모든 geom 항목이 차 있다면 어떤 레코드도 반환하지 "
-"않습니다.\n"
-"SELECT somefield FROM mytable WHERE geom IS NULL;"
+msgstr "-- 이 스크립트는 사용자의 모든 geom 항목이 차 있다면 어떤 레코드도 반환하지 않습니다.\nSELECT somefield FROM mytable WHERE geom IS NULL;"
 
 #. Tag: programlisting
 #: faq.xml:87
 #, no-c-format
 msgid ""
 "-- To tell just how large your geometry is do a query of the form\n"
-"--which will tell you the most number of points you have in any of your "
-"geometry columns\n"
+"--which will tell you the most number of points you have in any of your geometry columns\n"
 "SELECT MAX(ST_NPoints(geom)) FROM sometable;"
-msgstr ""
-"-- 얼마나 큰 지오메트리가 쿼리되는지 알고 싶다면\n"
-"-- 지오메트리 컬럼에 들어있는 어떤 도형의 점 수중 가장 큰 것을 말해 줌\n"
-"SELECT MAX(ST_NPoints(geom)) FROM sometable;"
+msgstr "-- 얼마나 큰 지오메트리가 쿼리되는지 알고 싶다면\n-- 지오메트리 컬럼에 들어있는 어떤 도형의 점 수중 가장 큰 것을 말해 줌\nSELECT MAX(ST_NPoints(geom)) FROM sometable;"
 
 #. Tag: para
 #: faq.xml:93
@@ -345,105 +271,70 @@ msgid ""
 "MultiPolygon, and GeometryCollection geometries. In PostGIS 2.0 and above "
 "you can also store TINS and Polyhedral Surfaces in the basic geometry type. "
 "These are specified in the Open GIS Well Known Text Format (with Z, M, and "
-"ZM extensions). There are three data types currently supported. The standard "
-"OGC geometry data type which uses a planar coordinate system for "
+"ZM extensions). There are three data types currently supported. The standard"
+" OGC geometry data type which uses a planar coordinate system for "
 "measurement, the geography data type which uses a geodetic coordinate "
 "system, with calculations on either a sphere or spheroid. The newest family "
 "member of the PostGIS spatial type family is raster for storing and "
-"analyzing raster data. Raster has its very own FAQ. Refer to <xref linkend="
-"\"RT_FAQ\"/> and <xref linkend=\"RT_reference\"/> for more details."
-msgstr ""
-"포인트, 라인스트링, 폴리곤, 멀티포인트, 멀티라인스트링, 멀티폴리곤, 그리고 지"
-"오메트리컬렉션(GeometryCollection) 도형을 저장할 수 있습니다. PostGIS 2.0 이"
-"상 버전이라면 TINS 및 다면체 표면(Polyhedral Surface)도 기본 도형 유형으로 저"
-"장할 수 있습니다. Z, M, ZM 확장자를 가지는 오픈GIS WKT 형식(Open GIS Well "
-"Known Text Format)이 이런 도형들을 지정하고 있습니다. 현재 다음 세 가지 데이"
-"터 유형을 지원합니다. 그 세 가지 유형은 측정시 평면좌표계를 이용하는 표준 "
-"OGC 도형 데이터 유형, 구체 또는 편구체 상에서 계산하는 측지좌표계를 이용하는 "
-"지리 데이터 유형, 그리고 PostGIS 공간 유형 계보에 새롭게 추가된 래스터 데이"
-"터 분석 및 저장을 위한 래스터입니다. 래스터 전용 FAQ도 있습니다. 더 자세한 설"
-"명은 <xref linkend=\"RT_FAQ\"/> 과 <xref linkend=\"RT_reference\"/> 를 참조하"
-"십시오."
+"analyzing raster data. Raster has its very own FAQ. Refer to <xref "
+"linkend=\"RT_FAQ\"/> and <xref linkend=\"RT_reference\"/> for more details."
+msgstr "포인트, 라인스트링, 폴리곤, 멀티포인트, 멀티라인스트링, 멀티폴리곤, 그리고 지오메트리컬렉션(GeometryCollection) 도형을 저장할 수 있습니다. PostGIS 2.0 이상 버전이라면 TINS 및 다면체 표면(Polyhedral Surface)도 기본 도형 유형으로 저장할 수 있습니다. Z, M, ZM 확장자를 가지는 오픈GIS WKT 형식(Open GIS Well Known Text Format)이 이런 도형들을 지정하고 있습니다. 현재 다음 세 가지 데이터 유형을 지원합니다. 그 세 가지 유형은 측정시 평면좌표계를 이용하는 표준 OGC 도형 데이터 유형, 구체 또는 편구체 상에서 계산하는 측지좌표계를 이용하는 지리 데이터 유형, 그리고 PostGIS 공간 유형 계보에 새롭게 추가된 래스터 데이터 분석 및 저장을 위한 래스터입니다. 래스터 전용 FAQ도 있습니다. 더 자세한 설명은 <xref linkend=\"RT_FAQ\"/> 과 <xref linkend=\"RT_reference\"/> 를 참조하십시오."
 
 #. Tag: para
 #: faq.xml:110
 #, no-c-format
 msgid "I'm all confused. Which data store should I use geometry or geography?"
-msgstr ""
-"혼동되네요. 제가 지오메트리-geometry- 또는 지형-geography- 중 어떤 데이터를 "
-"사용하여 저장해야 합니까?"
+msgstr "혼동되네요. 제가 지오메트리-geometry- 또는 지형-geography- 중 어떤 데이터를 사용하여 저장해야 합니까?"
 
 #. Tag: para
 #: faq.xml:114
 #, no-c-format
 msgid ""
 "Short Answer: geography is a newer data type that supports long range "
-"distances measurements, but most computations on it are slower than they are "
-"on geometry. If you use geography, you don't need to learn much about planar "
-"coordinate systems. Geography is generally best if all you care about is "
-"measuring distances and lengths and you have data from all over the world. "
-"Geometry data type is an older data type that has many more functions "
-"supporting it, enjoys greater support from third party tools, and operations "
-"on it are generally faster -- sometimes as much as 10 fold faster for larger "
-"geometries. Geometry is best if you are pretty comfortable with spatial "
-"reference systems or you are dealing with localized data where all your data "
-"fits in a single <link linkend=\"spatial_ref_sys\">spatial reference system "
-"(SRID)</link>, or you need to do a lot of spatial processing. Note: It is "
-"fairly easy to do one-off conversions between the two types to gain the "
-"benefits of each. Refer to <xref linkend=\"PostGIS_TypeFunctionMatrix\"/> to "
-"see what is currently supported and what is not."
-msgstr ""
-"짧은 답변: 지리형(geography)은 장거리(long range distance) 범위 측정을 지원하"
-"는 새로운 데이터 유형이지만, 이 유형을 대상으로 하는 계산 대부분은 도형의 경"
-"우보다 느립니다. 지리형을 이용할 경우, 평면좌표계를 자세히 알 필요는 없습니"
-"다. 사용자가 전세계에 걸친 데이터를 가지고 있고 거리 및 길이를 측정하는 데에"
-"만 관심이 있을 경우 일반적으로 지리형이 최선입니다. 도형 데이터 유형은 훨씬 "
-"많은 함수가 지원하고, 제3자 도구의 광범위한 지원을 받으며, 도형을 대상으로 하"
-"는 연산이 더 빠릅니다 -- 대용량 도형의 경우 때로는 10배 빠르기도 합니다. 사용"
-"자가 공간 참조 시스템(Spatial Reference System)에 꽤 익숙하거나, 사용자 데이"
-"터 전부가 단일 <link linkend=\"spatial_ref_sys\">공간 참조 시스템(SRID)</"
-"link> 의 적용을 받는 국지적인 데이터를 처리하는 경우, 또는 상당한 양의 공간 "
-"처리 작업을 해야할 경우 도형이 최선입니다. 주의: 각 유형의 장점을 취하기 위"
-"해 1단계 작업(one-off)만으로 꽤 쉽게 두 유형을 변환시킬 수 있습니다. 현재 어"
-"떤 지원을 받는지 그리고 받지 못 하는지 알고 싶다면 <xref linkend="
-"\"PostGIS_TypeFunctionMatrix\"/> 를 참조하십시오."
+"distances measurements, but most computations on it are slower than they are"
+" on geometry. If you use geography, you don't need to learn much about "
+"planar coordinate systems. Geography is generally best if all you care about"
+" is measuring distances and lengths and you have data from all over the "
+"world. Geometry data type is an older data type that has many more functions"
+" supporting it, enjoys greater support from third party tools, and "
+"operations on it are generally faster -- sometimes as much as 10 fold faster"
+" for larger geometries. Geometry is best if you are pretty comfortable with "
+"spatial reference systems or you are dealing with localized data where all "
+"your data fits in a single <link linkend=\"spatial_ref_sys\">spatial "
+"reference system (SRID)</link>, or you need to do a lot of spatial "
+"processing. Note: It is fairly easy to do one-off conversions between the "
+"two types to gain the benefits of each. Refer to <xref "
+"linkend=\"PostGIS_TypeFunctionMatrix\"/> to see what is currently supported "
+"and what is not."
+msgstr "짧은 답변: 지리형(geography)은 장거리(long range distance) 범위 측정을 지원하는 새로운 데이터 유형이지만, 이 유형을 대상으로 하는 계산 대부분은 도형의 경우보다 느립니다. 지리형을 이용할 경우, 평면좌표계를 자세히 알 필요는 없습니다. 사용자가 전세계에 걸친 데이터를 가지고 있고 거리 및 길이를 측정하는 데에만 관심이 있을 경우 일반적으로 지리형이 최선입니다. 도형 데이터 유형은 훨씬 많은 함수가 지원하고, 제3자 도구의 광범위한 지원을 받으며, 도형을 대상으로 하는 연산이 더 빠릅니다 -- 대용량 도형의 경우 때로는 10배 빠르기도 합니다. 사용자가 공간 참조 시스템(Spatial Reference System)에 꽤 익숙하거나, 사용자 데이터 전부가 단일 <link linkend=\"spatial_ref_sys\">공간 참조 시스템(SRID)</link> 의 적용을 받는 국지적인 데이터를 처리하는 경우, 또는 상당한 양의 공간 처리 작업을 해야할 경우 도형이 최선입니다. 주의: 각 유형의 장점을 취하기 위해 1단계 작업(one-off)만으로 꽤 쉽게 두 유형을 변환시킬 수 있습니다. 현재 어떤 지원을 받는지 그리고 받지 못 하는지 알고 싶다면 <xref linkend=\"PostGIS_TypeFunctionMatrix\"/> 를 참조하십시오."
 
 #. Tag: para
 #: faq.xml:125
 #, no-c-format
 msgid ""
-"Long Answer: Refer to our more lengthy discussion in the <xref linkend="
-"\"PostGIS_GeographyVSGeometry\"/> and <link linkend="
-"\"PostGIS_TypeFunctionMatrix\">function type matrix</link>."
-msgstr ""
-"긴 답변: 보다 더 긴 답변을 원하신다면 <xref linkend="
-"\"PostGIS_GeographyVSGeometry\"/> and <link linkend="
-"\"PostGIS_TypeFunctionMatrix\">function type matrix</link>를 참조하십시오."
+"Long Answer: Refer to our more lengthy discussion in the <xref "
+"linkend=\"PostGIS_GeographyVSGeometry\"/> and <link "
+"linkend=\"PostGIS_TypeFunctionMatrix\">function type matrix</link>."
+msgstr "긴 답변: 보다 더 긴 답변을 원하신다면 <xref linkend=\"PostGIS_GeographyVSGeometry\"/> and <link linkend=\"PostGIS_TypeFunctionMatrix\">function type matrix</link>를 참조하십시오."
 
 #. Tag: para
 #: faq.xml:133
 #, no-c-format
 msgid ""
 "I have more intense questions about geography, such as how big of a "
-"geographic region can I stuff in a geography column and still get reasonable "
-"answers. Are there limitations such as poles, everything in the field must "
+"geographic region can I stuff in a geography column and still get reasonable"
+" answers. Are there limitations such as poles, everything in the field must "
 "fit in a hemisphere (like SQL Server 2008 has), speed etc?"
-msgstr ""
-"geography에 관한 geographic region이 얼마나 큰지와 같이 더 복잡하고 심오한 질"
-"문이 있습니다. geography 컬럼을 이용하여 타당한 답들을 얻을 수 있나요? 예를 "
-"들어 극지방 같은 제한사항이 있나요? 필드안의 모든 것은 반구(SQL Server 2008"
-"가 가지고 있는 것처럼), 스피드 등에 맞아 떨어져야 하나요?"
+msgstr "geography에 관한 geographic region이 얼마나 큰지와 같이 더 복잡하고 심오한 질문이 있습니다. geography 컬럼을 이용하여 타당한 답들을 얻을 수 있나요? 예를 들어 극지방 같은 제한사항이 있나요? 필드안의 모든 것은 반구(SQL Server 2008가 가지고 있는 것처럼), 스피드 등에 맞아 떨어져야 하나요?"
 
 #. Tag: para
 #: faq.xml:137
 #, no-c-format
 msgid ""
 "Your questions are too deep and complex to be adequately answered in this "
-"section. Please refer to our <xref linkend=\"PostGIS_Geography_AdvancedFAQ\"/"
-">."
-msgstr ""
-"이 섹션에서 답변하기에는 질문이 너무 깊고 복잡합니다.  <xref linkend="
-"\"PostGIS_Geography_AdvancedFAQ\"/>을 참조하십시오."
+"section. Please refer to our <xref "
+"linkend=\"PostGIS_Geography_AdvancedFAQ\"/>."
+msgstr "이 섹션에서 답변하기에는 질문이 너무 깊고 복잡합니다.  <xref linkend=\"PostGIS_Geography_AdvancedFAQ\"/>을 참조하십시오."
 
 #. Tag: para
 #: faq.xml:144
@@ -456,14 +347,10 @@ msgstr "어떻게 GIS 객체를 데이터베이스에 삽입할 수 있나요?"
 #, no-c-format
 msgid ""
 "First, you need to create a table with a column of type \"geometry\" or "
-"\"geography\" to hold your GIS data. Storing geography type data is a little "
-"different than storing geometry. Refer to <xref linkend=\"Geography_Basics\"/"
-"> for details on storing geography."
-msgstr ""
-"첫째로 GIS 데이터를 보관하기 위해 “geometry” 또는 “geography”의 컬럼을 가진 "
-"테이블을 생성하셔야 합니다. geography 타입 데이터를 저장하는 것은 geometry를 "
-"저장하는 것과는 조금 다릅니다. Geography를 저장하는 것에 관한 보다 자세한 설"
-"명은 <xref linkend=\"Geography_Basics\"/>을 참조하십시오."
+"\"geography\" to hold your GIS data. Storing geography type data is a little"
+" different than storing geometry. Refer to <xref "
+"linkend=\"Geography_Basics\"/> for details on storing geography."
+msgstr "첫째로 GIS 데이터를 보관하기 위해 “geometry” 또는 “geography”의 컬럼을 가진 테이블을 생성하셔야 합니다. geography 타입 데이터를 저장하는 것은 geometry를 저장하는 것과는 조금 다릅니다. Geography를 저장하는 것에 관한 보다 자세한 설명은 <xref linkend=\"Geography_Basics\"/>을 참조하십시오."
 
 #. Tag: para
 #: faq.xml:152
@@ -471,19 +358,15 @@ msgstr ""
 msgid ""
 "For geometry: Connect to your database with <filename>psql</filename> and "
 "try the following SQL:"
-msgstr ""
-"Geometry사용을 위해: psql 로 데이터베이스에 접속하시고 다음 SQL을 실행해 보십"
-"시오."
+msgstr "Geometry사용을 위해: psql 로 데이터베이스에 접속하시고 다음 SQL을 실행해 보십시오."
 
 #. Tag: programlisting
 #: faq.xml:156
 #, no-c-format
 msgid ""
-"CREATE TABLE gtest ( gid serial primary key, name varchar(20)\n"
-"        , geom geometry(LINESTRING) );"
+"CREATE TABLE gtest (id serial primary key, name varchar(20), geom "
+"geometry(LINESTRING));"
 msgstr ""
-"CREATE TABLE gtest ( gid serial primary key, name varchar(20)\n"
-"        , geom geometry(LINESTRING) );"
 
 #. Tag: para
 #: faq.xml:158
@@ -492,22 +375,16 @@ msgid ""
 "If the geometry column definition fails, you probably have not loaded the "
 "PostGIS functions and objects into this database or are using a pre-2.0 "
 "version of PostGIS. See the <xref linkend=\"PGInstall\"/>."
-msgstr ""
-"도형 열 정의가 실패하는 경우, 아마도 PostGIS 함수와 객체를 해당 데이터베이스"
-"에 로드하지 않았거나 PostGIS 2.0 미만 버전을 사용하고 있을 겁니다. <xref "
-"linkend=\"PGInstall\"/> 를 참조하십시오."
+msgstr "도형 열 정의가 실패하는 경우, 아마도 PostGIS 함수와 객체를 해당 데이터베이스에 로드하지 않았거나 PostGIS 2.0 미만 버전을 사용하고 있을 겁니다. <xref linkend=\"PGInstall\"/> 를 참조하십시오."
 
 #. Tag: para
 #: faq.xml:162
 #, no-c-format
 msgid ""
-"Then, you can insert a geometry into the table using a SQL insert statement. "
-"The GIS object itself is formatted using the OpenGIS Consortium \"well-known "
-"text\" format:"
-msgstr ""
-"그러고 난 뒤, SQL insert 구문를 사용함으로서 geometry를 테이블에 삽입할 수 있"
-"습니다. GIS 객체는 표현을 위해 OpenGIS 컨소시움의 “well-knows text” 포맷을 사"
-"용합니다:"
+"Then, you can insert a geometry into the table using a SQL insert statement."
+" The GIS object itself is formatted using the OpenGIS Consortium \"well-"
+"known text\" format:"
+msgstr "그러고 난 뒤, SQL insert 구문를 사용함으로서 geometry를 테이블에 삽입할 수 있습니다. GIS 객체는 표현을 위해 OpenGIS 컨소시움의 “well-knows text” 포맷을 사용합니다:"
 
 #. Tag: programlisting
 #: faq.xml:166
@@ -519,23 +396,15 @@ msgid ""
 "  'First Geometry',\n"
 "  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
 ");"
-msgstr ""
-"INSERT INTO gtest (ID, NAME, GEOM)\n"
-"VALUES (\n"
-"  1,\n"
-"  'First Geometry',\n"
-"  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
-");"
+msgstr "INSERT INTO gtest (ID, NAME, GEOM)\nVALUES (\n  1,\n  'First Geometry',\n  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n);"
 
 #. Tag: para
 #: faq.xml:168
 #, no-c-format
 msgid ""
-"For more information about other GIS objects, see the <link linkend="
-"\"RefObject\">object reference</link>."
-msgstr ""
-"다른 GIS 객체에 대해 더 알아보시려면  <link linkend=\"RefObject\">object "
-"reference</link>를 참고하십시오."
+"For more information about other GIS objects, see the <link "
+"linkend=\"RefObject\">object reference</link>."
+msgstr "다른 GIS 객체에 대해 더 알아보시려면  <link linkend=\"RefObject\">object reference</link>를 참고하십시오."
 
 #. Tag: para
 #: faq.xml:171
@@ -563,11 +432,7 @@ msgid ""
 "----+----------------+-----------------------------\n"
 "  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
 "(1 row)"
-msgstr ""
-"id | name           | geom\n"
-"----+----------------+-----------------------------\n"
-"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
-"(1 row)"
+msgstr "id | name           | geom\n----+----------------+-----------------------------\n  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n(1 row)"
 
 #. Tag: para
 #: faq.xml:183
@@ -581,56 +446,41 @@ msgstr "어떻게 공간 쿼리를 만들 수 있나요?"
 msgid ""
 "The same way you construct any other database query, as an SQL combination "
 "of return values, functions, and boolean tests."
-msgstr ""
-"다른 데이터베이스 쿼리를 만드는 것과 동일한 방식입니다. 하나의 SQL은 반환값, "
-"함수, 부울 연산의 조합입니다."
+msgstr "다른 데이터베이스 쿼리를 만드는 것과 동일한 방식입니다. 하나의 SQL은 반환값, 함수, 부울 연산의 조합입니다."
 
 #. Tag: para
 #: faq.xml:190
 #, no-c-format
 msgid ""
-"For spatial queries, there are two issues that are important to keep in mind "
-"while constructing your query: is there a spatial index you can make use of; "
-"and, are you doing expensive calculations on a large number of geometries."
-msgstr ""
-"공간 쿼리들의 경우, 쿼리를 구축할 시 염두에 두어야 할 두 가지 중요한 사항들"
-"이 있습니다. 활용할 수 있는 공간 인덱스가 있는가? 그리고 많은 수의 지오메트리"
-"에 비용이 많이 드는 고급계산들을 하고 있지 않은가? 가 바로 그 중요한 두 가지 "
-"사항들 입니다."
+"For spatial queries, there are two issues that are important to keep in mind"
+" while constructing your query: is there a spatial index you can make use "
+"of; and, are you doing expensive calculations on a large number of "
+"geometries."
+msgstr "공간 쿼리들의 경우, 쿼리를 구축할 시 염두에 두어야 할 두 가지 중요한 사항들이 있습니다. 활용할 수 있는 공간 인덱스가 있는가? 그리고 많은 수의 지오메트리에 비용이 많이 드는 고급계산들을 하고 있지 않은가? 가 바로 그 중요한 두 가지 사항들 입니다."
 
 #. Tag: para
 #: faq.xml:195
 #, no-c-format
 msgid ""
 "In general, you will want to use the \"intersects operator\" (&amp;&amp;) "
-"which tests whether the bounding boxes of features intersect. The reason the "
-"&amp;&amp; operator is useful is because if a spatial index is available to "
-"speed up the test, the &amp;&amp; operator will make use of this. This can "
+"which tests whether the bounding boxes of features intersect. The reason the"
+" &amp;&amp; operator is useful is because if a spatial index is available to"
+" speed up the test, the &amp;&amp; operator will make use of this. This can "
 "make queries much much faster."
-msgstr ""
-"일반적으로, 피쳐의 바운딩박스가 교차하는 지에 대해 테스트를 하는 “교차 연산자"
-"(&amp;&amp;)”를 사용하길 원할 것입니다. &amp;&amp; 연산자 유용한 이유는 공간 "
-"인덱스가 있을 때 테스트 속도를 높일 수 있기 때문입니다. 이는 쿼리를 매우 매"
-"우 빠르게 할 것입니다."
+msgstr "일반적으로, 피쳐의 바운딩박스가 교차하는 지에 대해 테스트를 하는 “교차 연산자(&amp;&amp;)”를 사용하길 원할 것입니다. &amp;&amp; 연산자 유용한 이유는 공간 인덱스가 있을 때 테스트 속도를 높일 수 있기 때문입니다. 이는 쿼리를 매우 매우 빠르게 할 것입니다."
 
 #. Tag: para
 #: faq.xml:202
 #, no-c-format
 msgid ""
 "You will also make use of spatial functions, such as Distance(), "
-"ST_Intersects(), ST_Contains() and ST_Within(), among others, to narrow down "
-"the results of your search. Most spatial queries include both an indexed "
+"ST_Intersects(), ST_Contains() and ST_Within(), among others, to narrow down"
+" the results of your search. Most spatial queries include both an indexed "
 "test and a spatial function test. The index test serves to limit the number "
 "of return tuples to only tuples that <emphasis>might</emphasis> meet the "
 "condition of interest. The spatial functions are then use to test the "
 "condition exactly."
-msgstr ""
-"사용자는 또한 Distance(), ST_Intersects(), ST_Contains() and ST_Within()와 같"
-"은 공간 함수들을 검색 결과를 좁히기 위해 활용하게 될 것입니다. 대부분의 공간 "
-"쿼리들은 인덱스를 이용한 테스트 및 공간 함수 테스트를 둘 다 포함합니다. 인덱"
-"스를 이용한 테스트는 조건을 충족할 수도 있는 반환 tuple의 숫자를 제한하는 역"
-"할을 합니다. 그러고는 공간 함수들은 조건을 정확히 테스트 하기 위해 사용됩니"
-"다."
+msgstr "사용자는 또한 Distance(), ST_Intersects(), ST_Contains() and ST_Within()와 같은 공간 함수들을 검색 결과를 좁히기 위해 활용하게 될 것입니다. 대부분의 공간 쿼리들은 인덱스를 이용한 테스트 및 공간 함수 테스트를 둘 다 포함합니다. 인덱스를 이용한 테스트는 조건을 충족할 수도 있는 반환 tuple의 숫자를 제한하는 역할을 합니다. 그러고는 공간 함수들은 조건을 정확히 테스트 하기 위해 사용됩니다."
 
 #. Tag: programlisting
 #: faq.xml:210
@@ -640,11 +490,7 @@ msgid ""
 "FROM thetable\n"
 "WHERE\n"
 "  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
-msgstr ""
-"SELECT id, the_geom\n"
-"FROM thetable\n"
-"WHERE\n"
-"  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
+msgstr "SELECT id, the_geom\nFROM thetable\nWHERE\n  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 
 #. Tag: para
 #: faq.xml:216
@@ -657,11 +503,9 @@ msgstr "어떻게 큰 테이블에서 공간 쿼리 속도를 높일 수 있나�
 #, no-c-format
 msgid ""
 "Fast queries on large tables is the <emphasis>raison d'etre</emphasis> of "
-"spatial databases (along with transaction support) so having a good index is "
-"important."
-msgstr ""
-"큰 테이블에서의 빠른 쿼리는 공간 데이터베이스의 존재이유입니다(트랜잭션 지원"
-"와 함께). 그러므로 좋은 인덱스를 가지는 것이 중요합니다."
+"spatial databases (along with transaction support) so having a good index is"
+" important."
+msgstr "큰 테이블에서의 빠른 쿼리는 공간 데이터베이스의 존재이유입니다(트랜잭션 지원와 함께). 그러므로 좋은 인덱스를 가지는 것이 중요합니다."
 
 #. Tag: para
 #: faq.xml:224
@@ -669,27 +513,22 @@ msgstr ""
 msgid ""
 "To build a spatial index on a table with a <varname>geometry</varname> "
 "column, use the \"CREATE INDEX\" function as follows:"
-msgstr ""
-"<varname>geometry</varname> 컬럼과 함께 테이블에 공간 인덱스를 구축하기 위해 "
-"다음과 같은 \"CREATE INDEX\" 함수를 사용하십시오:"
+msgstr "<varname>geometry</varname> 컬럼과 함께 테이블에 공간 인덱스를 구축하기 위해 다음과 같은 \"CREATE INDEX\" 함수를 사용하십시오:"
 
 #. Tag: programlisting
 #: faq.xml:228
 #, no-c-format
 msgid ""
 "CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] );"
-msgstr ""
-"CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] );"
+msgstr "CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] );"
 
 #. Tag: para
 #: faq.xml:230
 #, no-c-format
 msgid ""
-"The \"USING GIST\" option tells the server to use a GiST (Generalized Search "
-"Tree) index."
-msgstr ""
-"\"USING GIST\"옵션은 GiST(Generalized Search Tree) 인덱스를 사용하도록 서버"
-"를 알려줍니다."
+"The \"USING GIST\" option tells the server to use a GiST (Generalized Search"
+" Tree) index."
+msgstr "\"USING GIST\"옵션은 GiST(Generalized Search Tree) 인덱스를 사용하도록 서버를 알려줍니다."
 
 #. Tag: para
 #: faq.xml:234
@@ -697,9 +536,7 @@ msgstr ""
 msgid ""
 "GiST indexes are assumed to be lossy. Lossy indexes uses a proxy object (in "
 "the spatial case, a bounding box) for building the index."
-msgstr ""
-"GiST 인덱스들은 손실이 있다고 가정합니다. 손실 인덱스들은 인덱스 구축을 위해 "
-"proxy 오브젝트(공간의 경우 바운딩 박스)를 사용합니다."
+msgstr "GiST 인덱스들은 손실이 있다고 가정합니다. 손실 인덱스들은 인덱스 구축을 위해 proxy 오브젝트(공간의 경우 바운딩 박스)를 사용합니다."
 
 #. Tag: para
 #: faq.xml:239
@@ -708,20 +545,15 @@ msgid ""
 "You should also ensure that the PostgreSQL query planner has enough "
 "information about your index to make rational decisions about when to use "
 "it. To do this, you have to \"gather statistics\" on your geometry tables."
-msgstr ""
-"사용자는 PosgreSQL 쿼리 플래너가 언제 이것을 사용할 지에 합당한 결정을 할 수 "
-"있도록 충분한 정보를 갖게 보장해야 합니다. 이렇게 하기 위해서는 geometry 테이"
-"블에 “통계 수집”을 반드시 실행 해야 합니다."
+msgstr "사용자는 PosgreSQL 쿼리 플래너가 언제 이것을 사용할 지에 합당한 결정을 할 수 있도록 충분한 정보를 갖게 보장해야 합니다. 이렇게 하기 위해서는 geometry 테이블에 “통계 수집”을 반드시 실행 해야 합니다."
 
 #. Tag: para
 #: faq.xml:244
 #, no-c-format
 msgid ""
-"For PostgreSQL 8.0.x and greater, just run the <command>VACUUM ANALYZE</"
-"command> command."
-msgstr ""
-"PostgreSQL 8.0.x 그리고 그 이상 버전의 경우, <command>VACUUM ANALYZE</"
-"command> 명령어을 실행하십시오."
+"For PostgreSQL 8.0.x and greater, just run the <command>VACUUM "
+"ANALYZE</command> command."
+msgstr "PostgreSQL 8.0.x 그리고 그 이상 버전의 경우, <command>VACUUM ANALYZE</command> 명령어을 실행하십시오."
 
 #. Tag: para
 #: faq.xml:247
@@ -729,9 +561,7 @@ msgstr ""
 msgid ""
 "For PostgreSQL 7.4.x and below, run the <command>SELECT "
 "UPDATE_GEOMETRY_STATS()</command> command."
-msgstr ""
-"PostgreSQL 7.4.x 그 이하의 버전의 경우, <command>SELECT "
-"UPDATE_GEOMETRY_STATS()</command> 명령어를 실행하십시오."
+msgstr "PostgreSQL 7.4.x 그 이하의 버전의 경우, <command>SELECT UPDATE_GEOMETRY_STATS()</command> 명령어를 실행하십시오."
 
 #. Tag: para
 #: faq.xml:254
@@ -746,10 +576,7 @@ msgid ""
 "Early versions of PostGIS used the PostgreSQL R-Tree indexes. However, "
 "PostgreSQL R-Trees have been completely discarded since version 0.6, and "
 "spatial indexing is provided with an R-Tree-over-GiST scheme."
-msgstr ""
-"PostGIS의 초기 버전들은 PostgreSQL R-Tree 인덱스들을 사용했습니다. 그러나 "
-"PostgreSQL R-Tree는 버전0.6 이후 완전히 폐기되었고, 공간인덱싱은 R-Tree-over-"
-"GiST scheme를 이용해 제공됩니다."
+msgstr "PostGIS의 초기 버전들은 PostgreSQL R-Tree 인덱스들을 사용했습니다. 그러나 PostgreSQL R-Tree는 버전0.6 이후 완전히 폐기되었고, 공간인덱싱은 R-Tree-over-GiST scheme를 이용해 제공됩니다."
 
 #. Tag: para
 #: faq.xml:263
@@ -760,23 +587,16 @@ msgid ""
 "undesirable for use with GIS features (note that these limitations are due "
 "to the current PostgreSQL native R-Tree implementation, not the R-Tree "
 "concept in general):"
-msgstr ""
-"우리 테스터들이 R-Tree와 GiST의 검색 속도가 유사하다는 것을 보여주었습니다. "
-"원래의 PostgreSQL R-Tree는 GIS 피처들에 적합하지 않은 두 가지 한계점이 있었습"
-"니다(이런 한계점은 일반적인 R-Tree의 컨셉 때문이 아닌 PostgreSQL native R-"
-"Tree 구현상의 문제임에 주의하십시오):"
+msgstr "우리 테스터들이 R-Tree와 GiST의 검색 속도가 유사하다는 것을 보여주었습니다. 원래의 PostgreSQL R-Tree는 GIS 피처들에 적합하지 않은 두 가지 한계점이 있었습니다(이런 한계점은 일반적인 R-Tree의 컨셉 때문이 아닌 PostgreSQL native R-Tree 구현상의 문제임에 주의하십시오):"
 
 #. Tag: para
 #: faq.xml:271
 #, no-c-format
 msgid ""
-"R-Tree indexes in PostgreSQL cannot handle features which are larger than 8K "
-"in size. GiST indexes can, using the \"lossy\" trick of substituting the "
+"R-Tree indexes in PostgreSQL cannot handle features which are larger than 8K"
+" in size. GiST indexes can, using the \"lossy\" trick of substituting the "
 "bounding box for the feature itself."
-msgstr ""
-"PostgreSQL의 R-Tree 인덱스는 8K 이상의 크기를 가지는 피처를 다루지 못했습니"
-"다. GiST 인덱스는 피처 자신 대신에 바운딩 박스를 쓰는 \"손실\" 트릭을 이용해 "
-"할 수 있습니다."
+msgstr "PostgreSQL의 R-Tree 인덱스는 8K 이상의 크기를 가지는 피처를 다루지 못했습니다. GiST 인덱스는 피처 자신 대신에 바운딩 박스를 쓰는 \"손실\" 트릭을 이용해 할 수 있습니다."
 
 #. Tag: para
 #: faq.xml:278
@@ -784,39 +604,28 @@ msgstr ""
 msgid ""
 "R-Tree indexes in PostgreSQL are not \"null safe\", so building an index on "
 "a geometry column which contains null geometries will fail."
-msgstr ""
-"PostgreSQL의 R-Tree 인덱스는 \"null safe\" 하지 않습니다. 그래서 널 지오메트"
-"리가 포함된 지오메트리 컬럼에 대한 인덱스 생성이 실패할 수 있습니다."
+msgstr "PostgreSQL의 R-Tree 인덱스는 \"null safe\" 하지 않습니다. 그래서 널 지오메트리가 포함된 지오메트리 컬럼에 대한 인덱스 생성이 실패할 수 있습니다."
 
 #. Tag: para
 #: faq.xml:288
 #, no-c-format
 msgid ""
-"Why should I use the <varname>AddGeometryColumn()</varname> function and all "
-"the other OpenGIS stuff?"
-msgstr ""
-"왜 <varname>AddGeometryColumn()</varname> 함수를 사용해야 하나요? 그리고 다"
-"른 모든OpenGIS 들도 사용해야만 하나요?"
+"Why should I use the <varname>AddGeometryColumn()</varname> function and all"
+" the other OpenGIS stuff?"
+msgstr "왜 <varname>AddGeometryColumn()</varname> 함수를 사용해야 하나요? 그리고 다른 모든OpenGIS 들도 사용해야만 하나요?"
 
 #. Tag: para
 #: faq.xml:293
 #, no-c-format
 msgid ""
-"If you do not want to use the OpenGIS support functions, you do not have to. "
-"Simply create tables as in older versions, defining your geometry columns in "
-"the CREATE statement. All your geometries will have SRIDs of -1, and the "
+"If you do not want to use the OpenGIS support functions, you do not have to."
+" Simply create tables as in older versions, defining your geometry columns "
+"in the CREATE statement. All your geometries will have SRIDs of -1, and the "
 "OpenGIS meta-data tables will <emphasis>not</emphasis> be filled in "
 "properly. However, this will cause most applications based on PostGIS to "
 "fail, and it is generally suggested that you do use "
 "<varname>AddGeometryColumn()</varname> to create geometry tables."
-msgstr ""
-"만약 OpenGIS 지원 기능들을 사용하길 원하지 않으신다면 사용할 필요는 없습니"
-"다. 단순히 구 버전의 테이블들을 생성하고 CREATE 문에서 geometry 행들을 정의하"
-"십시오. 모든 지오메트리는 -1의 SRID를 가질 것이며, OpenGIS meta-data 테이블"
-"은 적절하게 채워지지 <emphasis>않을</emphasis> 것입니다. 그러나, 이것은 "
-"PostGIS 기반의 대부분의 애플리케이션들이 실패하도록 할 것 입니다. 그렇기에 "
-"geometry 테이블들을 생성하기 위해서 일반적으로 <varname>AddGeometryColumn()</"
-"varname>을 사용토록 권장합니다."
+msgstr "만약 OpenGIS 지원 기능들을 사용하길 원하지 않으신다면 사용할 필요는 없습니다. 단순히 구 버전의 테이블들을 생성하고 CREATE 문에서 geometry 행들을 정의하십시오. 모든 지오메트리는 -1의 SRID를 가질 것이며, OpenGIS meta-data 테이블은 적절하게 채워지지 <emphasis>않을</emphasis> 것입니다. 그러나, 이것은 PostGIS 기반의 대부분의 애플리케이션들이 실패하도록 할 것 입니다. 그렇기에 geometry 테이블들을 생성하기 위해서 일반적으로 <varname>AddGeometryColumn()</varname>을 사용토록 권장합니다."
 
 #. Tag: para
 #: faq.xml:302
@@ -826,47 +635,34 @@ msgid ""
 "<varname>geometry_columns</varname> meta-data. Specifically, MapServer can "
 "use the SRID of the geometry column to do on-the-fly reprojection of "
 "features into the correct map projection."
-msgstr ""
-"MapServer는 geometry_columns meta-data를 활용하는 애플리케이션 중 하나입니"
-"다. 구체적으로 말하면 MapServer는 피처의 on-the-fly reprojection 시 현재 map "
-"projection에 Geometry 행의 SRID를 사용할 수 있습니다."
+msgstr "MapServer는 geometry_columns meta-data를 활용하는 애플리케이션 중 하나입니다. 구체적으로 말하면 MapServer는 피처의 on-the-fly reprojection 시 현재 map projection에 Geometry 행의 SRID를 사용할 수 있습니다."
 
 #. Tag: para
 #: faq.xml:311
 #, no-c-format
 msgid ""
 "What is the best way to find all objects within a radius of another object?"
-msgstr ""
-"다른 오브젝트의 반경 이내 모든 오브젝트들을 찾을 수 있는 가장 좋은 방법은 무"
-"엇인가요?"
+msgstr "다른 오브젝트의 반경 이내 모든 오브젝트들을 찾을 수 있는 가장 좋은 방법은 무엇인가요?"
 
 #. Tag: para
 #: faq.xml:316
 #, no-c-format
 msgid ""
 "To use the database most efficiently, it is best to do radius queries which "
-"combine the radius test with a bounding box test: the bounding box test uses "
-"the spatial index, giving fast access to a subset of data which the radius "
+"combine the radius test with a bounding box test: the bounding box test uses"
+" the spatial index, giving fast access to a subset of data which the radius "
 "test is then applied to."
-msgstr ""
-"데이터베이스를 가장 효율적으로 사용하기 위해서는 바운딩박스 테스트와 반경 테"
-"스트를 결합하는 반경 쿼리를 하는 것이 가장 좋습니다. 바운딩박스 테스트는 공"
-"간 인덱스를 사용하며, 후에 반경 테스트를 적용할 데이터의 부분집합에 대한 빠"
-"른 엑세스를 제공합니다. "
+msgstr "데이터베이스를 가장 효율적으로 사용하기 위해서는 바운딩박스 테스트와 반경 테스트를 결합하는 반경 쿼리를 하는 것이 가장 좋습니다. 바운딩박스 테스트는 공간 인덱스를 사용하며, 후에 반경 테스트를 적용할 데이터의 부분집합에 대한 빠른 엑세스를 제공합니다. "
 
 #. Tag: para
 #: faq.xml:321
 #, no-c-format
 msgid ""
 "The <varname>ST_DWithin(geometry, geometry, distance)</varname> function is "
-"a handy way of performing an indexed distance search. It works by creating a "
-"search rectangle large enough to enclose the distance radius, then "
+"a handy way of performing an indexed distance search. It works by creating a"
+" search rectangle large enough to enclose the distance radius, then "
 "performing an exact distance search on the indexed subset of results."
-msgstr ""
-"<varname>ST_DWithin(geometry, geometry, distance)</varname> 함수는 인덱스를 "
-"이용한 거리 검색을 수행하는 유용한 방법입니다. 이 함수는 반경을 둘러싸기에 충"
-"분한 크기의 검색 직사각형을 생성하며 작동합니다. 그런 뒤 인덱스로 검색된 부분"
-"집합에 정확한 거리 검색을 수행합니다. "
+msgstr "<varname>ST_DWithin(geometry, geometry, distance)</varname> 함수는 인덱스를 이용한 거리 검색을 수행하는 유용한 방법입니다. 이 함수는 반경을 둘러싸기에 충분한 크기의 검색 직사각형을 생성하며 작동합니다. 그런 뒤 인덱스로 검색된 부분집합에 정확한 거리 검색을 수행합니다. "
 
 #. Tag: para
 #: faq.xml:327
@@ -874,9 +670,7 @@ msgstr ""
 msgid ""
 "For example, to find all objects with 100 meters of POINT(1000 1000) the "
 "following query would work well:"
-msgstr ""
-"예를 들어 POINT(1000 1000)의 100 미터 이내의 모든 오브젝트들을 찾기 위해서는 "
-"다음의 쿼리를 통해 잘 수행할 수 있습니다:"
+msgstr "예를 들어 POINT(1000 1000)의 100 미터 이내의 모든 오브젝트들을 찾기 위해서는 다음의 쿼리를 통해 잘 수행할 수 있습니다:"
 
 #. Tag: programlisting
 #: faq.xml:330
@@ -884,9 +678,7 @@ msgstr ""
 msgid ""
 "SELECT * FROM geotable\n"
 "WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
-msgstr ""
-"SELECT * FROM geotable\n"
-"WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
+msgstr "SELECT * FROM geotable\nWHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
 
 #. Tag: para
 #: faq.xml:336
@@ -904,12 +696,7 @@ msgid ""
 "a reprojection is as simple as referring to the desired destination SRID. "
 "The below projects a geometry to NAD 83 long lat. The below will only work "
 "if the srid of the_geom is not -1 (not undefined spatial ref)"
-msgstr ""
-"좌표계 변환을 수행하기 위해서는, 원본과 대상 좌표계가 모두 SPATIAL_REF_SYS 테"
-"이블에 정의되어 있어야 하며, 좌표계 변환될 지오메트리가 SRID를 미리 가지고 있"
-"어야 합니다. 이것이 만족된다면, 좌표계 변환은 원하는 SRID를 물어보는 것 만큼"
-"이나 쉽습니다. 아래에서 지오메트리를 NAD 83 경위도로 투영합니다. 다음은 "
-"the_geom 의 srid가 -1(정의되지 않은 좌표계)이 아닌 경우에만 동작합니다."
+msgstr "좌표계 변환을 수행하기 위해서는, 원본과 대상 좌표계가 모두 SPATIAL_REF_SYS 테이블에 정의되어 있어야 하며, 좌표계 변환될 지오메트리가 SRID를 미리 가지고 있어야 합니다. 이것이 만족된다면, 좌표계 변환은 원하는 SRID를 물어보는 것 만큼이나 쉽습니다. 아래에서 지오메트리를 NAD 83 경위도로 투영합니다. 다음은 the_geom 의 srid가 -1(정의되지 않은 좌표계)이 아닌 경우에만 동작합니다."
 
 #. Tag: programlisting
 #: faq.xml:348
@@ -921,11 +708,9 @@ msgstr "SELECT ST_Transform(the_geom,4269) FROM geotable;"
 #: faq.xml:354
 #, no-c-format
 msgid ""
-"I did an ST_AsEWKT and ST_AsText on my rather large geometry and it returned "
-"blank field. What gives?"
-msgstr ""
-"제법 큰 지오메트리에 ST_AsEWKT와 ST_AsText을 하였습니다. 그랬더니 이것이 빈 "
-"필드를 반환했습니다. 왜 이런 것인가요?"
+"I did an ST_AsEWKT and ST_AsText on my rather large geometry and it returned"
+" blank field. What gives?"
+msgstr "제법 큰 지오메트리에 ST_AsEWKT와 ST_AsText을 하였습니다. 그랬더니 이것이 빈 필드를 반환했습니다. 왜 이런 것인가요?"
 
 #. Tag: para
 #: faq.xml:358
@@ -934,31 +719,23 @@ msgid ""
 "You are probably using PgAdmin or some other tool that doesn't output large "
 "text. If your geometry is big enough, it will appear blank in these tools. "
 "Use PSQL if you really need to see it or output it in WKT."
-msgstr ""
-"아마도 큰 텍스트를 보여주지 못하는 PgAdmin이나 다른 툴을 쓰고 있기 때문일 것"
-"입니다.  만약 사용자의 지오메트리가 충분히 크다면, 이런 툴에서는 공백으로 나"
-"타날 것입니다. PSQL을 사용하시면 WKT로 보거나 출력하실 수 있습니다."
+msgstr "아마도 큰 텍스트를 보여주지 못하는 PgAdmin이나 다른 툴을 쓰고 있기 때문일 것입니다.  만약 사용자의 지오메트리가 충분히 크다면, 이런 툴에서는 공백으로 나타날 것입니다. PSQL을 사용하시면 WKT로 보거나 출력하실 수 있습니다."
 
 #. Tag: programlisting
 #: faq.xml:361
 #, no-c-format
 msgid ""
 "--To check number of geometries are really blank\n"
-"                                SELECT count(gid) FROM geotable WHERE "
-"the_geom IS NULL;"
-msgstr ""
-"--정말로 비어있는 지오메트리의 수 확인 \n"
-"SELECT count(gid) FROM geotable WHERE the_geom IS NULL;"
+"                                SELECT count(gid) FROM geotable WHERE the_geom IS NULL;"
+msgstr "--정말로 비어있는 지오메트리의 수 확인 \nSELECT count(gid) FROM geotable WHERE the_geom IS NULL;"
 
 #. Tag: para
 #: faq.xml:367
 #, no-c-format
 msgid ""
-"When I do an ST_Intersects, it says my two geometries don't intersect when I "
-"KNOW THEY DO. What gives?"
-msgstr ""
-"ST_Intersects를 했는데 두 지오메트리가 교차하지 않는다는 메시지를 받았습니"
-"다. 교차하고 있음을 내가 아는데 말이죠!!! 왜 이럴까요?"
+"When I do an ST_Intersects, it says my two geometries don't intersect when I"
+" KNOW THEY DO. What gives?"
+msgstr "ST_Intersects를 했는데 두 지오메트리가 교차하지 않는다는 메시지를 받았습니다. 교차하고 있음을 내가 아는데 말이죠!!! 왜 이럴까요?"
 
 #. Tag: para
 #: faq.xml:371
@@ -968,42 +745,31 @@ msgid ""
 "check <xref linkend=\"ST_IsValid\"/> or you are assuming they intersect "
 "because ST_AsText truncates the numbers and you have lots of decimals after "
 "it is not showing you."
-msgstr ""
-"일반적으로 두 가지 경우에 발생합니다. 사용자의 지오메트리가 유효하지 않거나 "
-"- <xref linkend=\"ST_IsValid\"/> 확인, 사용자가 ST_AsText가 잘라낸 유효숫자"
-"를 가지고 교차한다고 판단하는 경우입니다. 소숫점 이하의 많은 숫자들이 사용자"
-"에게 보이지 않습니다."
+msgstr "일반적으로 두 가지 경우에 발생합니다. 사용자의 지오메트리가 유효하지 않거나 - <xref linkend=\"ST_IsValid\"/> 확인, 사용자가 ST_AsText가 잘라낸 유효숫자를 가지고 교차한다고 판단하는 경우입니다. 소숫점 이하의 많은 숫자들이 사용자에게 보이지 않습니다."
 
 #. Tag: para
 #: faq.xml:379
 #, no-c-format
 msgid ""
-"I am releasing software that uses PostGIS, does that mean my software has to "
-"be licensed using the GPL like PostGIS? Will I have to publish all my code "
+"I am releasing software that uses PostGIS, does that mean my software has to"
+" be licensed using the GPL like PostGIS? Will I have to publish all my code "
 "if I use PostGIS?"
-msgstr ""
-"저는 PostIGIS를 사용하여 소프트웨어를 개발해 출시하였습니다. 제 소프트웨어도 "
-"PostGIS처럼 GPL을 라이센스로 가져야 하나요? 만약 PostGIS를 사용할 경우 제 코"
-"드를 공개해야만 하나요?"
+msgstr "저는 PostIGIS를 사용하여 소프트웨어를 개발해 출시하였습니다. 제 소프트웨어도 PostGIS처럼 GPL을 라이센스로 가져야 하나요? 만약 PostGIS를 사용할 경우 제 코드를 공개해야만 하나요?"
 
 #. Tag: para
 #: faq.xml:383
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Almost certainly not. As an example, consider Oracle database running on "
 "Linux. Linux is GPL, Oracle is not: does Oracle running on Linux have to be "
-"distributed using the GPL? No. Similarly your software can use a PostgreSQL/"
-"PostGIS database as much as it wants and be under any license you like."
+"distributed using the GPL? No. Similarly your software can use a "
+"PostgreSQL/PostGIS database as much as it wants and be under any license you"
+" like."
 msgstr ""
-"그렇지 않습니다. 예를 들어, 리눅스 버전의 오라클 데이터베이스를 생각해보십시"
-"오. 리눅스는 GPL이지만 오라클은 그렇지 않습니다. 리눅스에서 운용되는 오라클"
-"은 반드시 GPL을 이용해 배포되어야 하나요? 그렇지 않습니다. 그러므로 보유하신 "
-"소프트웨어는 어떤 라이센스로라도 원하시는 만큼 PostgreSQL/PostGIS 데이터베이"
-"스를 사용하실 수 있습니다."
 
 #. Tag: para
 #: faq.xml:384
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The only exception would be if you made changes to the PostGIS source code, "
 "and <emphasis>distributed your changed version</emphasis> of PostGIS. In "
@@ -1014,12 +780,6 @@ msgid ""
 "<emphasis>publish</emphasis> your source code, only that you share it with "
 "people you give binaries to."
 msgstr ""
-"하나의 예외가 있는데, 본인께서 PostGIS 소스코드에 수정을 가하고 그것을 임의"
-"로 수정하신 PostGIS를 배포하는 경우일 것입니다. 이러한 경우에는 수정하신 "
-"PostGIS의 코드를 공유하셔야만 하실 수도 있습니다. (그러나 이것 상에서 작동하"
-"는 애플리케이션은 제외) 심지어 이렇게 제한된 경우에서도 binaries를 배포하는 "
-"사람들에게만 소스 코드를 베포하시면 됩니다. GPL은 binariaes를 제공하는 사람들"
-"을 제외하고는 소스 코드 <emphasis>공개</emphasis>를 요구하지 않습니다"
 
 #. Tag: para
 #: faq.xml:385

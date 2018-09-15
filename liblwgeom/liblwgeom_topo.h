@@ -188,6 +188,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param ids an array of element identifiers
    * @param numelems input/output parameter, pass number of node identifiers
    *                 in the input array, gets number of node in output array.
+   *	TODO: Should be uint64 to match SPI_processed
    * @param fields fields to be filled in the returned structure, see
    *               LWT_COL_NODE_* macros
    *
@@ -212,6 +213,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param numelems output parameter, gets number of elements found
    *                 if the return is not null, otherwise see @return
    *                 section for semantic.
+   *	TODO: Should be uint64 to match SPI_processed
    * @param fields fields to be filled in the returned structure, see
    *               LWT_COL_NODE_* macros
    * @param limit max number of nodes to return, 0 for no limit, -1
@@ -239,6 +241,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param nodes the nodes to insert. Those with a node_id set to -1
    *              it will be replaced to an automatically assigned identifier
    * @param nelems number of elements in the nodes array
+   *	TODO: Should be uint64 to match SPI_processed
    *
    * @return 1 on success, 0 on error (@see lastErrorMessage)
    */
@@ -319,6 +322,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param edges the edges to insert. Those with a edge_id set to -1
    *              it will be replaced to an automatically assigned identifier
    * @param nelems number of elements in the edges array
+   *	TODO: Should be uint64 to match SPI_processed
    *
    * @return number of inserted edges, or -1 (@see lastErrorMessage)
    */
@@ -555,6 +559,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param faces the faces to insert. Those with a node_id set to -1
    *              it will be replaced to an automatically assigned identifier
    * @param nelems number of elements in the faces array
+   *	TODO: Should be uint64 to match SPI_processed
    *
    * @return number of inserted faces, or -1 (@see lastErrorMessage)
    */
@@ -571,6 +576,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param faces an array of LWT_ISO_FACE object with selecting id
    *              and setting mbr.
    * @param numfaces number of faces in the "faces" array
+   *	TODO: Should be uint64 to match SPI_processed
    *
    * @return number of faces being updated or -1 on error
    *         (@see lastErroMessage)
@@ -598,6 +604,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    *             side (left if positive, right if negative)
    *             and direction (forward if positive, backward if negative).
    * @param numedges output parameter, gets the number of edges visited
+   *
    * @param limit max edges to return (to avoid an infinite loop in case
    *              of a corrupted topology). 0 is for unlimited.
    *              The function is expected to error out if the limit is hit.
@@ -618,6 +625,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param edges an array of LWT_ISO_EDGE object with selecting id
    *              and updating fields.
    * @param numedges number of edges in the "edges" array
+   *	TODO: Should be uint64 to match SPI_processed
    * @param upd_fields fields to be updated for the selected edges,
    *                   see LWT_COL_EDGE_* macros
    *
@@ -641,6 +649,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    *                 in the input array, gets number of edges in output array
    *                 if the return is not null, otherwise see @return
    *                 section for semantic.
+   *	TODO: Should be uint64 to match SPI_processed
    * @param fields fields to be filled in the returned structure, see
    *               LWT_COL_EDGE_* macros
    * @param box optional bounding box to further restrict matches, use
@@ -665,6 +674,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    *                 identifiers in the input array, gets number of
    *                 nodes in output array if the return is not null,
    *                 otherwise see @return section for semantic.
+   *	TODO: Should be uint64 to match SPI_processed
    * @param fields fields to be filled in the returned structure, see
    *               LWT_COL_NODE_* macros
    * @param box optional bounding box to further restrict matches, use
@@ -687,6 +697,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param nodes an array of LWT_ISO_EDGE objects with selecting id
    *              and updating fields.
    * @param numnodes number of nodes in the "nodes" array
+   *	TODO: Should be uint64 to match SPI_processed
    * @param upd_fields fields to be updated for the selected edges,
    *                   see LWT_COL_NODE_* macros
    *
@@ -705,6 +716,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param topo the topology to act upon
    * @param ids an array of face identifiers
    * @param numelems number of face identifiers in the ids array
+   *	TODO: Should be uint64 to match SPI_processed
    *
    * @return number of faces being deleted or -1 on error
    *         (@see lastErrorMessage)
@@ -744,6 +756,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param topo the topology to act upon
    * @param ids an array of node identifiers
    * @param numelems number of node identifiers in the ids array
+   *	TODO: Should be uint64 to match SPI_processed
    *
    * @return number of nodes being deleted or -1 on error
    *         (@see lastErrorMessage)
@@ -847,10 +860,11 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param numelems output parameter, gets number of elements found
    *                 if the return is not null, otherwise see @return
    *                 section for semantic.
+   *	TODO: Should be uint64 to match SPI_processed
    * @param fields fields to be filled in the returned structure, see
    *               LWT_COL_FACE_* macros
    * @param limit max number of faces to return, 0 for no limit, -1
-   *              to only check for existance if a matching row.
+   *              to only check for existence if a matching row.
    *
    * @return an array of faces or null in the following cases:
    *         - limit=-1 ("numelems" is set to 1 if found, 0 otherwise)

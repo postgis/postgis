@@ -39,55 +39,64 @@
 
 #define FEATURES_CAPACITY_INITIAL 50
 
-enum mvt_cmd_id {
+enum mvt_cmd_id
+{
 	CMD_MOVE_TO = 1,
 	CMD_LINE_TO = 2,
 	CMD_CLOSE_PATH = 7
 };
 
-enum mvt_type {
+enum mvt_type
+{
 	MVT_POINT = 1,
 	MVT_LINE = 2,
 	MVT_RING = 3
 };
 
-struct mvt_kv_key {
+struct mvt_kv_key
+{
 	char *name;
 	uint32_t id;
 	UT_hash_handle hh;
 };
 
-struct mvt_kv_string_value {
+struct mvt_kv_string_value
+{
 	char *string_value;
 	uint32_t id;
 	UT_hash_handle hh;
 };
 
-struct mvt_kv_float_value {
+struct mvt_kv_float_value
+{
 	float float_value;
 	uint32_t id;
 	UT_hash_handle hh;
 };
 
-struct mvt_kv_double_value {
+struct mvt_kv_double_value
+{
 	double double_value;
 	uint32_t id;
 	UT_hash_handle hh;
 };
 
-struct mvt_kv_uint_value {
+struct mvt_kv_uint_value
+{
 	uint64_t uint_value;
 	uint32_t id;
 	UT_hash_handle hh;
 };
 
-struct mvt_kv_sint_value {
+struct mvt_kv_sint_value
+{
 	int64_t sint_value;
 	uint32_t id;
 	UT_hash_handle hh;
 };
 
-struct mvt_kv_bool_value {
+struct mvt_kv_bool_value
+{
 	protobuf_c_boolean bool_value;
 	uint32_t id;
 	UT_hash_handle hh;
@@ -113,7 +122,8 @@ static uint32_t encode_ptarray(__attribute__((__unused__)) mvt_agg_context *ctx,
 	const POINT2D *p;
 
 	/* loop points and add to buffer */
-	for (i = 0; i < pa->npoints; i++) {
+	for (i = 0; i < pa->npoints; i++)
+	{
 		/* move offset for command */
 		if (i == 0 || (i == 1 && type > MVT_POINT))
 			offset++;
@@ -133,10 +143,13 @@ static uint32_t encode_ptarray(__attribute__((__unused__)) mvt_agg_context *ctx,
 	}
 
 	/* determine initial move and eventual line command */
-	if (type == MVT_POINT) {
+	if (type == MVT_POINT)
+	{
 		/* point or multipoint, use actual number of point count */
 		buffer[0] = c_int(CMD_MOVE_TO, c);
-	} else {
+	}
+	else
+	{
 		/* line or polygon, assume count 1 */
 		buffer[0] = c_int(CMD_MOVE_TO, 1);
 		/* line command with move point subtracted from count */
@@ -255,7 +268,8 @@ static void encode_geometry(mvt_agg_context *ctx, LWGEOM *lwgeom)
 {
 	int type = lwgeom->type;
 
-	switch (type) {
+	switch (type)
+	{
 	case POINTTYPE:
 		return encode_point(ctx, (LWPOINT*)lwgeom);
 	case LINETYPE:
@@ -281,10 +295,9 @@ static TupleDesc get_tuple_desc(mvt_agg_context *ctx)
 	return tupdesc;
 }
 
-static uint32_t get_key_index(mvt_agg_context *ctx, char *name)
+static uint32_t get_key_index_with_size(mvt_agg_context *ctx, const char *name, size_t size)
 {
 	struct mvt_kv_key *kv;
-	size_t size = strlen(name);
 	HASH_FIND(hh, ctx->keys_hash, name, size, kv);
 	if (!kv)
 		return UINT32_MAX;
@@ -304,44 +317,62 @@ static uint32_t add_key(mvt_agg_context *ctx, char *name)
 
 static void parse_column_keys(mvt_agg_context *ctx)
 {
-	TupleDesc tupdesc = get_tuple_desc(ctx);
-	uint32_t natts = (uint32_t) tupdesc->natts;
-	uint32_t i;
+	uint32_t i, natts;
 	bool geom_found = false;
-	char *key;
+
 	POSTGIS_DEBUG(2, "parse_column_keys called");
 
-	for (i = 0; i < natts; i++) {
+	ctx->column_cache.tupdesc = get_tuple_desc(ctx);
+	natts = ctx->column_cache.tupdesc->natts;
+
+	ctx->column_cache.column_keys_index = palloc(sizeof(uint32_t) * natts);
+	ctx->column_cache.column_oid = palloc(sizeof(uint32_t) * natts);
+	ctx->column_cache.values = palloc(sizeof(Datum) * natts);
+	ctx->column_cache.nulls = palloc(sizeof(bool) * natts);
+
+	for (i = 0; i < natts; i++)
+	{
 #if POSTGIS_PGSQL_VERSION < 110
-		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
-		char *tkey = tupdesc->attrs[i]->attname.data;
+		Oid typoid = getBaseType(ctx->column_cache.tupdesc->attrs[i]->atttypid);
+		char *tkey = ctx->column_cache.tupdesc->attrs[i]->attname.data;
 #else
-		Oid typoid = getBaseType(tupdesc->attrs[i].atttypid);
-		char *tkey = tupdesc->attrs[i].attname.data;
+		Oid typoid = getBaseType(ctx->column_cache.tupdesc->attrs[i].atttypid);
+		char *tkey = ctx->column_cache.tupdesc->attrs[i].attname.data;
 #endif
+
+		ctx->column_cache.column_oid[i] = typoid;
 #if POSTGIS_PGSQL_VERSION >= 94
 		if (typoid == JSONBOID)
+		{
+			ctx->column_cache.column_keys_index[i] = UINT32_MAX;
 			continue;
+		}
 #endif
-		key = pstrdup(tkey);
-		if (ctx->geom_name == NULL) {
-			if (!geom_found && typoid == TypenameGetTypid("geometry")) {
-				ctx->geom_index = i;
-				geom_found = true;
-				continue;
-			}
-		} else {
-			if (!geom_found && strcmp(key, ctx->geom_name) == 0) {
+
+		if (ctx->geom_name == NULL)
+		{
+			if (!geom_found && typoid == TypenameGetTypid("geometry"))
+			{
 				ctx->geom_index = i;
 				geom_found = true;
 				continue;
 			}
 		}
-		add_key(ctx, key);
+		else
+		{
+			if (!geom_found && strcmp(tkey, ctx->geom_name) == 0)
+			{
+				ctx->geom_index = i;
+				geom_found = true;
+				continue;
+			}
+		}
+
+		ctx->column_cache.column_keys_index[i] = add_key(ctx, pstrdup(tkey));
 	}
+
 	if (!geom_found)
 		elog(ERROR, "parse_column_keys: no geometry column found");
-	ReleaseTupleDesc(tupdesc);
 }
 
 static void encode_keys(mvt_agg_context *ctx)
@@ -369,7 +400,8 @@ static VectorTile__Tile__Value *create_value()
 	POSTGIS_DEBUG(2, "MVT_CREATE_VALUES called"); \
 	{ \
 		struct kvtype *kv; \
-		for (kv = ctx->hash; kv != NULL; kv=kv->hh.next) { \
+		for (kv = ctx->hash; kv != NULL; kv=kv->hh.next) \
+		{ \
 			VectorTile__Tile__Value *value = create_value(); \
 			value->hasfield = 1; \
 			value->valuefield = kv->valuefield; \
@@ -386,7 +418,8 @@ static void encode_values(mvt_agg_context *ctx)
 	POSTGIS_DEBUG(2, "encode_values called");
 
 	values = palloc(ctx->values_hash_i * sizeof(*values));
-	for (kv = ctx->string_values_hash; kv != NULL; kv=kv->hh.next) {
+	for (kv = ctx->string_values_hash; kv != NULL; kv=kv->hh.next)
+	{
 		VectorTile__Tile__Value *value = create_value();
 		value->string_value = kv->string_value;
 		values[kv->id] = value;
@@ -412,6 +445,14 @@ static void encode_values(mvt_agg_context *ctx)
 	HASH_CLEAR(hh, ctx->uint_values_hash);
 	HASH_CLEAR(hh, ctx->sint_values_hash);
 	HASH_CLEAR(hh, ctx->bool_values_hash);
+
+	pfree(ctx->column_cache.column_keys_index);
+	pfree(ctx->column_cache.column_oid);
+	pfree(ctx->column_cache.values);
+	pfree(ctx->column_cache.nulls);
+	ReleaseTupleDesc(ctx->column_cache.tupdesc);
+	memset(&ctx->column_cache, 0, sizeof(ctx->column_cache));
+
 }
 
 #define MVT_PARSE_VALUE(value, kvtype, hash, valuefield, size) \
@@ -420,7 +461,8 @@ static void encode_values(mvt_agg_context *ctx)
 	{ \
 		struct kvtype *kv; \
 		HASH_FIND(hh, ctx->hash, &value, size, kv); \
-		if (!kv) { \
+		if (!kv) \
+		{ \
 			POSTGIS_DEBUG(4, "MVT_PARSE_VALUE value not found"); \
 			kv = palloc(sizeof(*kv)); \
 			POSTGIS_DEBUGF(4, "MVT_PARSE_VALUE new hash key: %d", \
@@ -429,19 +471,22 @@ static void encode_values(mvt_agg_context *ctx)
 			kv->valuefield = value; \
 			HASH_ADD(hh, ctx->hash, valuefield, size, kv); \
 		} \
-		tags[ctx->c*2] = k; \
-		tags[ctx->c*2+1] = kv->id; \
+		tags[ctx->row_columns*2] = k; \
+		tags[ctx->row_columns*2+1] = kv->id; \
 	} \
 }
 
 #define MVT_PARSE_INT_VALUE(value) \
 { \
-	if (value >= 0) { \
+	if (value >= 0) \
+	{ \
 		uint64_t cvalue = value; \
 		MVT_PARSE_VALUE(cvalue, mvt_kv_uint_value, \
 				uint_values_hash, uint_value, \
 				sizeof(uint64_t)) \
-	} else { \
+	} \
+	else \
+	{ \
 		int64_t cvalue = value; \
 		MVT_PARSE_VALUE(cvalue, mvt_kv_sint_value, \
 				sint_values_hash, sint_value, \
@@ -461,14 +506,14 @@ static void encode_values(mvt_agg_context *ctx)
 	MVT_PARSE_INT_VALUE(value); \
 }
 
-static void add_value_as_string(mvt_agg_context *ctx,
-	char *value, uint32_t *tags, uint32_t k)
+static void add_value_as_string_with_size(mvt_agg_context *ctx,
+	char *value, size_t size, uint32_t *tags, uint32_t k)
 {
 	struct mvt_kv_string_value *kv;
-	size_t size = strlen(value);
 	POSTGIS_DEBUG(2, "add_value_as_string called");
 	HASH_FIND(hh, ctx->string_values_hash, value, size, kv);
-	if (!kv) {
+	if (!kv)
+	{
 		POSTGIS_DEBUG(4, "add_value_as_string value not found");
 		kv = palloc(sizeof(*kv));
 		POSTGIS_DEBUGF(4, "add_value_as_string new hash key: %d",
@@ -478,8 +523,14 @@ static void add_value_as_string(mvt_agg_context *ctx,
 		HASH_ADD_KEYPTR(hh, ctx->string_values_hash, kv->string_value,
 			size, kv);
 	}
-	tags[ctx->c*2] = k;
-	tags[ctx->c*2+1] = kv->id;
+	tags[ctx->row_columns*2] = k;
+	tags[ctx->row_columns*2+1] = kv->id;
+}
+
+static void add_value_as_string(mvt_agg_context *ctx,
+	char *value, uint32_t *tags, uint32_t k)
+{
+	return add_value_as_string_with_size(ctx, value, strlen(value), tags, k);
 }
 
 static void parse_datum_as_string(mvt_agg_context *ctx, Oid typoid,
@@ -510,36 +561,46 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 
 	it = JsonbIteratorInit(&jb->root);
 
-	while ((r = JsonbIteratorNext(&it, &v, skipNested)) != WJB_DONE) {
+	while ((r = JsonbIteratorNext(&it, &v, skipNested)) != WJB_DONE)
+	{
 		skipNested = true;
 
-		if (r == WJB_KEY && v.type != jbvNull) {
-			char *key;
-			key = palloc(v.val.string.len + 1 * sizeof(char));
-			memcpy(key, v.val.string.val, v.val.string.len);
-			key[v.val.string.len] = '\0';
+		if (r == WJB_KEY && v.type != jbvNull)
+		{
 
-			k = get_key_index(ctx, key);
-			if (k == UINT32_MAX) {
+			k = get_key_index_with_size(ctx, v.val.string.val, v.val.string.len);
+			if (k == UINT32_MAX)
+			{
+				char *key;
 				uint32_t newSize = ctx->keys_hash_i + 1;
+
+				key = palloc(v.val.string.len + 1);
+				memcpy(key, v.val.string.val, v.val.string.len);
+				key[v.val.string.len] = '\0';
+
 				tags = repalloc(tags, newSize * 2 * sizeof(*tags));
 				k = add_key(ctx, key);
 			}
 
 			r = JsonbIteratorNext(&it, &v, skipNested);
 
-			if (v.type == jbvString) {
+			if (v.type == jbvString)
+			{
 				char *value;
-				value = palloc(v.val.string.len + 1 * sizeof(char));
+				value = palloc(v.val.string.len + 1);
 				memcpy(value, v.val.string.val, v.val.string.len);
 				value[v.val.string.len] = '\0';
 				add_value_as_string(ctx, value, tags, k);
-				ctx->c++;
-			} else if (v.type == jbvBool) {
+				ctx->row_columns++;
+			}
+			else if (v.type == jbvBool)
+			{
 				MVT_PARSE_VALUE(v.val.boolean, mvt_kv_bool_value,
 					bool_values_hash, bool_value, sizeof(protobuf_c_boolean));
-				ctx->c++;
-			} else if (v.type == jbvNumeric) {
+				ctx->row_columns++;
+			}
+			else if (v.type == jbvNumeric)
+			{
 				char *str;
 				double d;
 				long l;
@@ -547,13 +608,16 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 					PointerGetDatum(v.val.numeric)));
 				d = strtod(str, NULL);
 				l = strtol(str, NULL, 10);
-				if ((long) d != l) {
+				if ((long) d != l)
+				{
 					MVT_PARSE_VALUE(d, mvt_kv_double_value, double_values_hash,
 						double_value, sizeof(double));
-				} else {
+				}
+				else
+				{
 					MVT_PARSE_INT_VALUE(l);
 				}
-				ctx->c++;
+				ctx->row_columns++;
 			}
 		}
 	}
@@ -572,49 +636,65 @@ static void parse_values(mvt_agg_context *ctx)
 {
 	uint32_t n_keys = ctx->keys_hash_i;
 	uint32_t *tags = palloc(n_keys * 2 * sizeof(*tags));
-	bool isnull;
-	uint32_t i, k;
-	TupleDesc tupdesc = get_tuple_desc(ctx);
-	uint32_t natts = (uint32_t) tupdesc->natts;
-	ctx->c = 0;
+	uint32_t i;
+	mvt_column_cache cc = ctx->column_cache;
+	uint32_t natts = (uint32_t) cc.tupdesc->natts;
+
+	HeapTupleData tuple;
+
 	POSTGIS_DEBUG(2, "parse_values called");
+	ctx->row_columns = 0;
+
+	/* Build a temporary HeapTuple control structure */
+	tuple.t_len = HeapTupleHeaderGetDatumLength(ctx->row);
+	ItemPointerSetInvalid(&(tuple.t_self));
+	tuple.t_tableOid = InvalidOid;
+	tuple.t_data = ctx->row;
+
+	/* We use heap_deform_tuple as it costs only O(N) vs O(N^2) of GetAttributeByNum */
+	heap_deform_tuple(&tuple, cc.tupdesc, cc.values, cc.nulls);
 
 	POSTGIS_DEBUGF(3, "parse_values natts: %d", natts);
 
-	for (i = 0; i < natts; i++) {
+	for (i = 0; i < natts; i++)
+	{
 		char *key;
 		Oid typoid;
-		Datum datum;
+		uint32_t k;
+		Datum datum = cc.values[i];
 
 		if (i == ctx->geom_index)
 			continue;
 
-#if POSTGIS_PGSQL_VERSION < 110
-		key = tupdesc->attrs[i]->attname.data;
-		typoid = getBaseType(tupdesc->attrs[i]->atttypid);
-#else
-		key = tupdesc->attrs[i].attname.data;
-		typoid = getBaseType(tupdesc->attrs[i].atttypid);
-#endif
-		datum = GetAttributeByNum(ctx->row, i+1, &isnull);
-		k = get_key_index(ctx, key);
-		if (isnull) {
+		if (cc.nulls[i])
+		{
 			POSTGIS_DEBUG(3, "parse_values isnull detected");
 			continue;
 		}
+
+#if POSTGIS_PGSQL_VERSION < 110
+		key = cc.tupdesc->attrs[i]->attname.data;
+#else
+		key = cc.tupdesc->attrs[i].attname.data;
+#endif
+		k = cc.column_keys_index[i];
+		typoid = cc.column_oid[i];
+
 #if POSTGIS_PGSQL_VERSION >= 94
 		if (k == UINT32_MAX && typoid != JSONBOID)
 			elog(ERROR, "parse_values: unexpectedly could not find parsed key name '%s'", key);
-		if (typoid == JSONBOID) {
+		if (typoid == JSONBOID)
+		{
 			tags = parse_jsonb(ctx, DatumGetJsonbP(datum), tags);
 			continue;
 		}
 #else
-		if (k == -1)
+		if (k == UINT32_MAX)
 			elog(ERROR, "parse_values: unexpectedly could not find parsed key name '%s'", key);
 #endif
 
-		switch (typoid) {
+		switch (typoid)
+		{
 		case BOOLOID:
 			MVT_PARSE_DATUM(protobuf_c_boolean, mvt_kv_bool_value,
 				bool_values_hash, bool_value,
@@ -648,12 +728,11 @@ static void parse_values(mvt_agg_context *ctx)
 			set_feature_id(ctx, datum);
 		}
 
-		ctx->c++;
+		ctx->row_columns++;
 	}
 
-	ReleaseTupleDesc(tupdesc);
 
-	ctx->feature->n_tags = ctx->c * 2;
+	ctx->feature->n_tags = ctx->row_columns * 2;
 	ctx->feature->tags = tags;
 
 	POSTGIS_DEBUGF(3, "parse_values n_tags %zd", ctx->feature->n_tags);
@@ -689,7 +768,6 @@ lwgeom_to_basic_type(LWGEOM *geom)
 		gc = lwcollection_extract(g, maxtype);
 		*g = *gc;
 	}
-	return;
 }
 
 /**
@@ -726,6 +804,17 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	res = (resx < resy ? resx : resy)/2;
 	fx = extent / width;
 	fy = -(extent / height);
+
+	if (FLAGS_GET_BBOX(lwgeom->flags) && lwgeom->bbox &&
+		(lwgeom->type == LINETYPE || lwgeom->type == MULTILINETYPE ||
+		lwgeom->type == POLYGONTYPE || lwgeom->type == MULTIPOLYGONTYPE))
+	{
+		// Shortcut to drop geometries smaller than the resolution
+		double bbox_width = lwgeom->bbox->xmax - lwgeom->bbox->xmin;
+		double bbox_height = lwgeom->bbox->ymax - lwgeom->bbox->ymin;
+		if (bbox_height * bbox_height + bbox_width * bbox_width < res * res)
+			return NULL;
+	}
 
 	/* Remove all non-essential points (under the output resolution) */
 	lwgeom_remove_repeated_points_in_place(lwgeom, res);
@@ -827,6 +916,9 @@ void mvt_agg_init_context(mvt_agg_context *ctx)
 	ctx->bool_values_hash = NULL;
 	ctx->values_hash_i = 0;
 	ctx->keys_hash_i = 0;
+	ctx->geom_index = UINT32_MAX;
+
+	memset(&ctx->column_cache, 0, sizeof(ctx->column_cache));
 
 	layer = palloc(sizeof(*layer));
 	vector_tile__tile__layer__init(layer);
@@ -858,7 +950,8 @@ void mvt_agg_transfn(mvt_agg_context *ctx)
 /*	VectorTile__Tile__Feature **features = layer->features; */
 	POSTGIS_DEBUG(2, "mvt_agg_transfn called");
 
-	if (layer->n_features >= ctx->features_capacity) {
+	if (layer->n_features >= ctx->features_capacity)
+	{
 		size_t new_capacity = ctx->features_capacity * 2;
 		layer->features = repalloc(layer->features, new_capacity *
 			sizeof(*layer->features));
@@ -866,7 +959,7 @@ void mvt_agg_transfn(mvt_agg_context *ctx)
 		POSTGIS_DEBUGF(3, "mvt_agg_transfn new_capacity: %zd", new_capacity);
 	}
 
-	if (layer->n_features == 0)
+	if (ctx->geom_index == UINT32_MAX)
 		parse_column_keys(ctx);
 
 	datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);
@@ -959,7 +1052,8 @@ static void mvt_deallocator(__attribute__((__unused__)) void *data, void *ptr)
 
 mvt_agg_context * mvt_ctx_deserialize(const bytea *ba)
 {
-	ProtobufCAllocator allocator = {
+	ProtobufCAllocator allocator =
+	{
 		mvt_allocator,
 		mvt_deallocator,
 		NULL

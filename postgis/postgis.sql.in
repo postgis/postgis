@@ -1312,16 +1312,17 @@ CREATE OR REPLACE FUNCTION ST_Angle(pt1 geometry, pt2 geometry, pt3 geometry, pt
 	AS 'MODULE_PATHNAME', 'LWGEOM_angle'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 2.5.0
-CREATE OR REPLACE FUNCTION _ST_DistanceRectTree(g1 geometry, g2 geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME', 'ST_DistanceRectTree'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+-- Availability: Future
+-- CREATE OR REPLACE FUNCTION _ST_DistanceRectTree(g1 geometry, g2 geometry)
+--	RETURNS float8
+--	AS 'MODULE_PATHNAME', 'ST_DistanceRectTree'
+--	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
-CREATE OR REPLACE FUNCTION _ST_DistanceRectTreeCached(g1 geometry, g2 geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME', 'ST_DistanceRectTreeCached'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+-- Availability: Future
+-- CREATE OR REPLACE FUNCTION _ST_DistanceRectTreeCached(g1 geometry, g2 geometry)
+--	RETURNS float8
+--	AS 'MODULE_PATHNAME', 'ST_DistanceRectTreeCached'
+--	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 ------------------------------------------------------------------------
 -- MISC
@@ -1534,6 +1535,13 @@ CREATE OR REPLACE FUNCTION ST_ForceRHR(geometry)
 CREATE OR REPLACE FUNCTION postgis_noop(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_noop'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 10;
+
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION postgis_geos_noop(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'GEOSnoop'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 10;
 
@@ -2812,6 +2820,7 @@ AS $$
 $$ LANGUAGE 'sql' STABLE;
 
 -- Availability: 2.5.0
+-- Changed: 3.0.0 also upgrade postgis_raster if it exists
 CREATE OR REPLACE FUNCTION postgis_extensions_upgrade() RETURNS text
 AS $$
 DECLARE rec record; sql text;
@@ -2821,9 +2830,17 @@ BEGIN
 
 	FOR rec in SELECT  name, default_version, installed_version
 		FROM pg_available_extensions
-		WHERE installed_version > '' AND name IN('postgis', 'postgis_sfcgal', 'postgis_tiger_geocoder', 'postgis_topology')
+		WHERE installed_version > '' AND name IN(
+			'postgis',
+			'postgis_raster',
+			'postgis_sfcgal',
+			'postgis_tiger_geocoder',
+			'postgis_topology')
 		AND ( default_version <> installed_version  OR
-			( default_version = installed_version AND default_version ILIKE '%dev%' AND  installed_version ILIKE '%dev%'  )  ) LOOP
+			( default_version = installed_version AND
+				default_version ILIKE '%dev%' AND
+				installed_version ILIKE '%dev%' ) )
+	LOOP
 
 		-- we need to upgrade to next so our installed is different from current
 		-- and then we can upgrade to default_version
@@ -3005,6 +3022,12 @@ BEGIN
 		fullver = fullver || ' RASTER';
 		IF rast_lib_ver != relproc THEN
 			fullver = fullver || ' (raster lib from "' || rast_lib_ver || '" need upgrade)';
+		END IF;
+		IF core_is_extension AND NOT EXISTS (
+			SELECT * FROM pg_catalog.pg_extension
+			WHERE extname = 'postgis_raster')
+		THEN
+				fullver = fullver || ' [UNPACKAGED!]';
 		END IF;
 	END IF;
 
@@ -5857,6 +5880,7 @@ CREATE OR REPLACE FUNCTION ST_InterpolatePoint(Line geometry, Point geometry)
 -----------------------------------------------------------------------
 -- Contributed by Regina Obe and Leo Hsu
 -- Availability: 2.0.0
+-- Changed: 2.5.0
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION _st_concavehull(param_inputgeom geometry)
   RETURNS geometry AS
@@ -5924,21 +5948,25 @@ $$
 		END IF;
 
 		-- make sure result covers original (#3638)
-		var_resultgeom := @extschema@.ST_Union(param_inputgeom, var_resultgeom);
+		-- Using ST_UnaryUnion since SFCGAL doesn't replace with its own implementation
+		-- and SFCGAL one chokes for some reason
+		var_resultgeom := @extschema@.ST_UnaryUnion(ST_Collect(param_inputgeom, var_resultgeom) );
 		RETURN var_resultgeom;
 
 	END;
 $$
   LANGUAGE plpgsql IMMUTABLE STRICT _PARALLEL;
 
+-- Availability: 2.0.0
+-- Changed: 2.5.0
 CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean DEFAULT false) RETURNS geometry AS
 $$
 	DECLARE
-		var_convhull geometry := @extschema@.ST_ConvexHull(param_geom);
-		var_param_geom geometry := param_geom;
+		var_convhull geometry := @extschema@.ST_ForceSFS(@extschema@.ST_ConvexHull(param_geom));
+		var_param_geom geometry := @extschema@.ST_ForceSFS(param_geom);
 		var_initarea float := @extschema@.ST_Area(var_convhull);
 		var_newarea float := var_initarea;
-		var_div integer := 6; /** this is the 1/var_div is the percent increase we will allow per triangle to keep speed decent **/
+		var_div integer := 6; /** this is the 1/var_div is the percent increase we will allow per geometry to keep speed decent **/
 		var_tempgeom geometry;
 		var_tempgeom2 geometry;
 		var_cent geometry;
@@ -5952,16 +5980,13 @@ $$
 		var_resultgeom := var_convhull;
 
 		IF param_pctconvex = 1 THEN
-			-- make sure result covers original (#3638)
-			var_resultgeom := @extschema@.ST_Union(param_geom, var_resultgeom);
+			-- this is the same as asking for the convex hull
 			return var_resultgeom;
 		ELSIF @extschema@.ST_GeometryType(var_param_geom) = 'ST_Polygon' THEN -- it is as concave as it is going to get
 			IF param_allow_holes THEN -- leave the holes
 				RETURN var_param_geom;
 			ELSE -- remove the holes
 				var_resultgeom := @extschema@.ST_MakePolygon(@extschema@.ST_ExteriorRing(var_param_geom));
-				-- make sure result covers original (#3638)
-				var_resultgeom := @extschema@.ST_Union(param_geom, var_resultgeom);
 				RETURN var_resultgeom;
 			END IF;
 		END IF;
@@ -6002,9 +6027,9 @@ $$
 					IF param_allow_holes THEN
 						var_param_geom := var_tempgeom;
 					ELSIF @extschema@.ST_GeometryType(var_tempgeom) = 'ST_Polygon' THEN
-						var_param_geom := @extschema@.ST_MakePolygon(@extschema@.ST_ExteriorRing(var_tempgeom));
+						var_param_geom := @extschema@.ST_ForceSFS(@extschema@.ST_MakePolygon(@extschema@.ST_ExteriorRing(var_tempgeom)));
 					ELSE
-						var_param_geom := @extschema@.ST_ConvexHull(var_param_geom);
+						var_param_geom := @extschema@.ST_ForceSFS(@extschema@.ST_ConvexHull(var_param_geom));
 					END IF;
 					-- make sure result covers original (#3638)
 					var_param_geom := @extschema@.ST_Union(param_geom, var_param_geom);
@@ -6016,10 +6041,10 @@ $$
 
 			IF @extschema@.ST_GeometryType(var_param_geom) = 'ST_Polygon' THEN
 				IF NOT param_allow_holes THEN
-					var_param_geom := @extschema@.ST_MakePolygon(@extschema@.ST_ExteriorRing(var_param_geom));
+					var_param_geom := @extschema@.ST_ForceSFS(@extschema@.ST_MakePolygon(@extschema@.ST_ExteriorRing(var_param_geom)));
 				END IF;
 				-- make sure result covers original (#3638)
-				var_param_geom := @extschema@.ST_Union(param_geom, var_param_geom);
+				--var_param_geom := @extschema@.ST_Union(param_geom, var_param_geom);
 				return var_param_geom;
 			END IF;
             var_cent := @extschema@.ST_Centroid(var_param_geom);
@@ -6089,8 +6114,6 @@ $$
                 var_resultgeom := @extschema@._ST_ConcaveHull(var_param_geom);
             END IF;
 
-			-- make sure result covers original (#3638)
-			var_resultgeom := @extschema@.ST_Union(param_geom, var_resultgeom);
             RETURN var_resultgeom;
 	END;
 $$

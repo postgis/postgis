@@ -2,9 +2,7 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 #include <endian.h>
-
 
 #include <libpq-fe.h>
 

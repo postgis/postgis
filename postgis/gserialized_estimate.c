@@ -118,7 +118,6 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 #include <ctype.h>
 
 
@@ -201,6 +200,12 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
 * range of meters, we go lower than that.
 */
 #define MIN_DIMENSION_WIDTH 0.000000001
+
+/**
+* Maximum width of a dimension that we'll bother trying to
+* compute statistics on.
+*/
+#define MAX_DIMENSION_WIDTH 1.0E+20
 
 /**
 * Default geometry selectivity factor
@@ -741,6 +746,8 @@ nd_box_ratio(const ND_BOX *b1, const ND_BOX *b2, int ndims)
 	return ivol / vol2;
 }
 
+/* How many bins shall we use in figuring out the distribution? */
+#define NUM_BINS 50
 
 /**
 * Calculate how much a set of boxes is homogenously distributed
@@ -760,10 +767,8 @@ nd_box_ratio(const ND_BOX *b1, const ND_BOX *b2, int ndims)
 static int
 nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *extent, int ndims, double *distribution)
 {
-	/* How many bins shall we use in figuring out the distribution? */
-	static int num_bins = 50;
 	int d, i, k, range;
-	int counts[num_bins];
+	int counts[NUM_BINS];
 	double smin, smax;   /* Spatial min, spatial max */
 	double swidth;       /* Spatial width of dimension */
 #if POSTGIS_DEBUG_LEVEL >= 3
@@ -776,14 +781,18 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 	for ( d = 0; d < ndims; d++ )
 	{
 		/* Initialize counts for this dimension */
-		memset(counts, 0, sizeof(int)*num_bins);
+		memset(counts, 0, sizeof(counts));
 
 		smin = extent->min[d];
 		smax = extent->max[d];
 		swidth = smax - smin;
 
-		/* Don't try and calculate distribution of overly narrow dimensions */
-		if ( swidth < MIN_DIMENSION_WIDTH )
+		/* Don't try and calculate distribution of overly narrow */
+		/* or overly wide dimensions. Here we're being pretty geographical, */
+		/* expecting "normal" planar or geographic coordinates. */
+		/* Otherwise we have to "handle" +/- Inf bounded features and */
+		/* the assumptions needed for that are as bad as this hack. */
+		if ( swidth < MIN_DIMENSION_WIDTH || swidth > MAX_DIMENSION_WIDTH )
 		{
 			distribution[d] = 0;
 			continue;
@@ -810,8 +819,12 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 			}
 
 			/* What bins does this range correspond to? */
-			bmin = num_bins * (minoffset) / swidth;
-			bmax = num_bins * (maxoffset) / swidth;
+			bmin = floor(NUM_BINS * minoffset / swidth);
+			bmax = floor(NUM_BINS * maxoffset / swidth);
+
+			/* Should only happen when maxoffset==swidth */
+			if (bmax >= NUM_BINS)
+				bmax = NUM_BINS-1;
 
 			POSTGIS_DEBUGF(4, " dimension %d, feature %d: bin %d to bin %d", d, i, bmin, bmax);
 
@@ -824,11 +837,11 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 		}
 
 		/* How dispersed is the distribution of features across bins? */
-		range = range_quintile(counts, num_bins);
+		range = range_quintile(counts, NUM_BINS);
 
 #if POSTGIS_DEBUG_LEVEL >= 3
-		average = avg(counts, num_bins);
-		sdev = stddev(counts, num_bins);
+		average = avg(counts, NUM_BINS);
+		sdev = stddev(counts, NUM_BINS);
 		sdev_ratio = sdev/average;
 
 		POSTGIS_DEBUGF(3, " dimension %d: range = %d", d, range);
@@ -1383,6 +1396,9 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	/* Initialize sum and stddev */
 	nd_box_init(&sum);
 	nd_box_init(&stddev);
+	nd_box_init(&avg);
+	nd_box_init(&histo_extent);
+	nd_box_init(&histo_extent_new);
 
 	/*
 	 * This is where gserialized_analyze_nd

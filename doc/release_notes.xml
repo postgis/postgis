@@ -3,8 +3,8 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
-      <title>Release 2.5.0beta1</title>
-      <para>Release date: 2018/07/03</para>
+      <title>Release 2.5.0rc1</title>
+      <para>Release date: 2018/08/19</para>
       <simplesect>
         <title>New Features</title>
         <para>#1847, spgist 2d and 3d support for PG 11+
@@ -84,6 +84,10 @@
             Raster behavior (e.g. Out-DB performance, maximum open files)</para>
         <para>#4084: Fixed wrong code-comment regarding front/back of BOX3D (Matthias Bay)</para>
         <para>#4060, #4094, PostgreSQL JIT support (Raúl Marín, Laurenz Albe)</para>
+        <para>#4120, ST_AsMVTGeom: Clip using tile coordinates (Raúl Marín).</para>
+        <para>#4145, Speedup MVT column parsing (Raúl Marín)</para>
+        <para>#4146, Fix compilation error against Postgres 12 (Raúl Marín).</para>
+        <para>#4147, #4148, Honor SOURCE_DATE_EPOCH when present (Christoph Berg)</para>
       </simplesect>
     </sect1>
 

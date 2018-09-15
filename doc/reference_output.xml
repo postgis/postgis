@@ -126,8 +126,8 @@
 		<refsection>
 		<title>Description</title>
 
-		<para>Returns the geometry as an Encoded Polyline.  This is a format very useful if you are using google maps</para>
-
+		<para>Returns the geometry as an Encoded Polyline. This format is used by Google Maps with precision=5 and by Open Source Routing Machine with precision=5 and 6.</para>
+		<para>Optional <varname>precision</varname> specifies how many decimal places will be preserved in Encoded Polyline. Value should be the same on encoding and decoding, or coordinates will be incorrect.</para>
 
 		<para>Availability: 2.2.0</para>
 		</refsection>

@@ -1,0 +1,6 @@
+# postgis_raster extension
+comment = 'PostGIS raster types and functions'
+default_version = '@EXTVERSION@'
+module_pathname = '@MODULEPATH@'
+relocatable = false
+requires = postgis

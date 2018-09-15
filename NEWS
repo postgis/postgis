@@ -1,9 +1,43 @@
+PostGIS 3.0.0
+2019/xx/xx
+* Breaking Changes *
+  - #3888, Raster support now available as a separate extension
+    (Sandro Santilli)
+* New Features *
+  - #2902, postgis_geos_noop (Sandro Santilli)
+* Enhancements and fixes *
+  - #4153, ST_Segmentize now splits segments proportionally (Darafei
+    Praliaskouski).
+  - #4162, ST_DWithin documentation examples for storing geometry and
+    radius in table (Darafei Praliaskouski, github user Boscop).
+  - #4163, MVT: Fix resource leak when the first geometry is NULL (Raúl Marín)
+  - #4161, MVT: Drop geometries smaller than the resolution (Raúl Marín)
+  - #4172, Fix memory leak in lwgeom_offsetcurve (Raúl Marín)
+  - #4173, Fix undefined behaviour in ptarray_segmentize2d (Raúl Marín)
+  - #4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)
+  - #4177, Postgres 12 disallows variable length arrays in C (Laurenz Albe)
+  - #4160, Use qualified names in topology extension install (Raúl Marín)
+
+PostGIS 2.5.0rc1
+2018/08/19
+New since PostGIS 2.5.0beta2
+  - #4146, Fix compilation error against Postgres 12 (Raúl Marín).
+  - #4147, #4148, Honor SOURCE_DATE_EPOCH when present (Christoph Berg).
+
 PostGIS 2.5.0beta2
-2018/XX/XX
+2018/08/11
 New since PostGIS 2.5.0beta1
   - #4115, Fix a bug that created MVTs with incorrect property values under
     parallel plans (Raúl Marín).
   - #4120, ST_AsMVTGeom: Clip using tile coordinates (Raúl Marín).
+  - #4132, ST_Intersection on Raster now works without throwing TopologyException
+    (Vinícius A.B. Schmidt, Darafei Praliaskouski)
+  - #4109, Fix WKT parser accepting and interpreting numbers with
+    multiple dots (Raúl Marín, Paul Ramsey)
+  - #4140, Use user-provided CFLAGS in address standardizer and the
+    topology module (Raúl Marín)
+  - #4143, Fix backend crash when ST_OffsetCurve fails (Dan Baston)
+  - #4145, Speedup MVT column parsing (Raúl Marín)
 
   See PostGIS 2.5.0 section for full details
 
@@ -86,12 +120,8 @@ PostGIS 2.5.0
   - #2508, ST_OffsetCurve now works with collections (Darafei Praliaskouski)
   - #4006, ST_GeomFromGeoJSON support for json and jsonb as input
            (Paul Ramsey, Regina Obe)
-  - #4037, Invalid input geometry is fixed with MakeValid for GEOS exceptions in
-           ST_Intersection, ST_Union, ST_Difference, ST_SymDifference (Darafei
-           Praliaskouski)
   - #4038, ST_Subdivide now selects pivot for geometry split that reuses input
-           vertices. ST_ClipByBox2D is stubbed with ST_Intersection because of
-           robustness issues. (Darafei Praliaskouski)
+           vertices. (Darafei Praliaskouski)
   - #4025, #4032 Fixed precision issue in ST_ClosestPointOfApproach,
            ST_DistanceCPA, and ST_CPAWithin (Paul Ramsey, Darafei Praliaskouski)
   - #4076, Reduce use of GEOS in topology implementation (Björn Harrtell)
@@ -101,7 +131,6 @@ PostGIS 2.5.0
   - #4084: Fixed wrong code-comment regarding front/back of BOX3D (Matthias Bay)
   - #4060, #4094, PostgreSQL JIT support (Raúl Marín, Laurenz Albe)
   - #3960, ST_Centroid now uses lwgeom_centroid (Darafei Praliaskouski)
-  - #4103, ST_PointOnSurface can handle invalid (Darafei Praliaskouski)
   - #4027, Remove duplicated code in lwgeom_geos (Darafei Praliaskouski,
            Daniel Baston)
   - #4115, Fix a bug that created MVTs with incorrect property values under

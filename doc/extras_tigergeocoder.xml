@@ -781,6 +781,7 @@ TMPDIR="/gisdata/temp/"
 UNZIPTOOL=unzip
 WGETTOOL="/usr/bin/wget"
 export PGBIN=/usr/lib/postgresql/9.4/bin
+-- variables used by psql: https://www.postgresql.org/docs/current/static/libpq-envars.html
 export PGPORT=5432
 export PGHOST=localhost
 export PGUSER=postgres

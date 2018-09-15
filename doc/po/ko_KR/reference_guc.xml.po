@@ -1,41 +1,41 @@
 # SOME DESCRIPTIVE TITLE.
-#
+# 
 # Translators:
+# Kwon.Yongchan <ruvyn@naver.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
-"PO-Revision-Date: 2015-09-29 12:23+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
-"language/ko_KR/)\n"
-"Language: ko_KR\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2018-07-23 18:00+0000\n"
+"Last-Translator: Regina Obe\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/language/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: para
 #: reference_guc.xml:5
 #, no-c-format
 msgid ""
-"This section lists custom PostGIS Grand Unified Custom Variables(GUC). These "
-"can be set globally, by database, by session or by transaction. Best set at "
-"global or database level."
-msgstr ""
+"This section lists custom PostGIS Grand Unified Custom Variables(GUC). These"
+" can be set globally, by database, by session or by transaction. Best set at"
+" global or database level."
+msgstr "이 단원에서 사용자 지정 PostGIS GUC(Grand Unified Custom Variable)에 대해 설명합니다. 전체(global), 데이터베이스, 세션, 또는 상호처리(transaction) 단계에서 GUC를 설정할 수 있습니다. 전체 또는 데이터베이스 단계에서 설정하는 편이 가장 좋습니다."
 
 #. Tag: title
 #: reference_guc.xml:8
 #, no-c-format
 msgid "PostGIS Grand Unified Custom Variables (GUCs)"
-msgstr ""
+msgstr "PostGIS GUC(Grand Unified Custom Variable)"
 
 #. Tag: refname
 #: reference_guc.xml:12
 #, no-c-format
 msgid "postgis.backend"
-msgstr ""
+msgstr "postgis.backend"
 
 #. Tag: refpurpose
 #: reference_guc.xml:13
@@ -43,14 +43,14 @@ msgstr ""
 msgid ""
 "The backend to service a function where GEOS and SFCGAL overlap. Options: "
 "geos or sfcgal. Defaults to geos."
-msgstr ""
+msgstr "GEOS와 SFCGAL 양쪽의 겹치는 함수를 서비스하는 백엔드입니다. geos 또는 sfcgal을 선택할 수 있는데, 기본값은 geos입니다."
 
 #. Tag: title
 #: reference_guc.xml:17 reference_guc.xml:45 reference_guc.xml:95
 #: reference_guc.xml:187
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "설명"
 
 #. Tag: para
 #: reference_guc.xml:18
@@ -60,57 +60,57 @@ msgid ""
 "default <varname>geos</varname> backend is used for functions where both "
 "GEOS and SFCGAL have the same named function. This variable allows you to "
 "override and make sfcgal the backend to service the request."
-msgstr ""
+msgstr "PostGIS를 sfcgal 지원과 함께 컴파일했을 경우에만 GUC가 유의미해집니다. GEOS와 SFCGAL의 동일한 함수명을 가진 함수를 위해 이용되는 <varname>geos</varname> 백엔드가 기본값입니다. 이 변수를 변경하면 기본값을 무시하고 요청을 서비스하는 백엔드를 sfcgal로 바꿀 수 있습니다."
 
 #. Tag: para
 #: reference_guc.xml:19
 #, no-c-format
 msgid "Availability: 2.1.0"
-msgstr ""
+msgstr "2.1.0 버전부터 사용할 수 있습니다."
 
 #. Tag: title
 #: reference_guc.xml:23 reference_guc.xml:69 reference_guc.xml:146
 #: reference_guc.xml:213
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "예시"
 
 #. Tag: para
 #: reference_guc.xml:24
 #, no-c-format
 msgid "Sets backend just for life of connection"
-msgstr ""
+msgstr "연결이 유지될 동안만 백엔드를 설정해봅시다."
 
 #. Tag: programlisting
 #: reference_guc.xml:25
 #, no-c-format
 msgid "set postgis.backend = sfcgal;"
-msgstr ""
+msgstr "set postgis.backend = sfcgal;"
 
 #. Tag: para
 #: reference_guc.xml:27
 #, no-c-format
 msgid "Sets backend for new connections to database"
-msgstr ""
+msgstr "데이터베이스와의 새 연결에 백엔드를 설정해봅시다."
 
 #. Tag: programlisting
 #: reference_guc.xml:28
 #, no-c-format
 msgid "ALTER DATABASE mygisdb SET postgis.backend = sfcgal;"
-msgstr ""
+msgstr "ALTER DATABASE mygisdb SET postgis.backend = sfcgal;"
 
 #. Tag: title
 #: reference_guc.xml:31 reference_guc.xml:79 reference_guc.xml:166
 #: reference_guc.xml:220
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "참고"
 
 #. Tag: refname
 #: reference_guc.xml:38
 #, no-c-format
 msgid "postgis.gdal_datapath"
-msgstr ""
+msgstr "postgis.gdal_datapath"
 
 #. Tag: refpurpose
 #: reference_guc.xml:39
@@ -118,7 +118,7 @@ msgstr ""
 msgid ""
 "A configuration option to assign the value of GDAL's GDAL_DATA option. If "
 "not set, the environmentally set GDAL_DATA variable is used."
-msgstr ""
+msgstr "GDAL의 GDAL_DATA 옵션의 값을 할당하는 설정 옵션입니다. 설정하지 않을 경우, 환경적으로 설정된 GDAL_DATA 변수를 사용합니다."
 
 #. Tag: para
 #: reference_guc.xml:46
@@ -127,7 +127,7 @@ msgid ""
 "A PostgreSQL GUC variable for setting the value of GDAL's GDAL_DATA option. "
 "The <varname>postgis.gdal_datapath</varname> value should be the complete "
 "physical path to GDAL's data files."
-msgstr ""
+msgstr "GDAL의 GDAL_DATA 옵션의 값을 설정하기 위한 PostgreSQL GUC 변수입니다. <varname>postgis.gdal_datapath</varname> 값은 GDAL의 데이터 파일을 가리키는 완전한 물리적 경로여야 합니다."
 
 #. Tag: para
 #: reference_guc.xml:49
@@ -136,7 +136,7 @@ msgid ""
 "This configuration option is of most use for Windows platforms where GDAL's "
 "data files path is not hard-coded. This option should also be set when "
 "GDAL's data files are not located in GDAL's expected path."
-msgstr ""
+msgstr "이 설정 옵션은 GDAL의 데이터 파일 경로가 쉽게 변경할 수 없도록 기록(hard-coded)되지 않은 윈도우 플랫폼에서 가장 쓸모가 있습니다. GDAL의 데이터 파일이 GDAL의 예상 경로에 없을 때 이 옵션을 설정해야 합니다."
 
 #. Tag: para
 #: reference_guc.xml:54
@@ -144,28 +144,28 @@ msgstr ""
 msgid ""
 "This option can be set in PostgreSQL's configuration file postgresql.conf. "
 "It can also be set by connection or transaction."
-msgstr ""
+msgstr "PostgreSQL의 설정 파일 postgresql.conf 안에서 이 옵션을 설정할 수 있습니다. 또 연결이나 상호처리 단계에서도 설정할 수 있습니다."
 
 #. Tag: para
 #: reference_guc.xml:58 reference_guc.xml:141 reference_guc.xml:208
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "2.2.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
 #: reference_guc.xml:61
 #, no-c-format
 msgid ""
-"Additional information about GDAL_DATA is available at GDAL's <ulink url="
-"\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
-"ulink>."
-msgstr ""
+"Additional information about GDAL_DATA is available at GDAL's <ulink "
+"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
+"Options</ulink>."
+msgstr "GDAL의 <ulink url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">설정 옵션</ulink> 페이지에서 GDAL_DATA에 대한 추가 정보를 찾아볼 수 있습니다."
 
 #. Tag: para
 #: reference_guc.xml:70
 #, no-c-format
 msgid "Set and reset <varname>postgis.gdal_datapath</varname>"
-msgstr ""
+msgstr "<varname>postgis.gdal_datapath</varname> 를 설정한 다음 재설정해보십시오."
 
 #. Tag: programlisting
 #: reference_guc.xml:72
@@ -173,13 +173,13 @@ msgstr ""
 msgid ""
 "SET postgis.gdal_datapath TO '/usr/local/share/gdal.hidden';\n"
 "SET postgis.gdal_datapath TO default;"
-msgstr ""
+msgstr "SET postgis.gdal_datapath TO '/usr/local/share/gdal.hidden';\nSET postgis.gdal_datapath TO default;"
 
 #. Tag: para
 #: reference_guc.xml:74
 #, no-c-format
 msgid "Setting on windows for a particular database"
-msgstr ""
+msgstr "특정 데이터베이스를 대상으로 윈도우 상에서 설정해보십시오."
 
 #. Tag: programlisting
 #: reference_guc.xml:75
@@ -187,19 +187,19 @@ msgstr ""
 msgid ""
 "ALTER DATABASE gisdb\n"
 "SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';"
-msgstr ""
+msgstr "ALTER DATABASE gisdb\nSET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';"
 
 #. Tag: para
 #: reference_guc.xml:80
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Transform\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Transform\"/>"
 
 #. Tag: refname
 #: reference_guc.xml:88
 #, no-c-format
 msgid "postgis.gdal_enabled_drivers"
-msgstr ""
+msgstr "postgis.gdal_enabled_drivers"
 
 #. Tag: refpurpose
 #: reference_guc.xml:89
@@ -207,7 +207,7 @@ msgstr ""
 msgid ""
 "A configuration option to set the enabled GDAL drivers in the PostGIS "
 "environment. Affects the GDAL configuration variable GDAL_SKIP."
-msgstr ""
+msgstr "PostGIS 환경에서 사용할 수 있는 GDAL 드라이버를 설정하는 설정 옵션입니다. GDAL 설정 변수 GDAL_SKIP에 영향을 미칩니다."
 
 #. Tag: para
 #: reference_guc.xml:96
@@ -217,7 +217,7 @@ msgid ""
 "environment. Affects the GDAL configuration variable GDAL_SKIP. This option "
 "can be set in PostgreSQL's configuration file: postgresql.conf. It can also "
 "be set by connection or transaction."
-msgstr ""
+msgstr "PostGIS 환경에서 사용할 수 있는 GDAL 드라이버를 설정하는 설정 옵션입니다. GDAL 설정 변수 GDAL_SKIP에 영향을 미칩니다. PostgreSQL의 설정 파일 postgresql.conf 안에서 이 옵션을 설정할 수 있습니다. 또 연결이나 상호처리 단계에서도 설정할 수 있습니다."
 
 #. Tag: para
 #: reference_guc.xml:100
@@ -227,25 +227,26 @@ msgid ""
 "also be set by passing the environment variable "
 "<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> with the list of enabled "
 "drivers to the process starting PostgreSQL."
-msgstr ""
+msgstr "PostgreSQL을 구동시키는 과정에서 사용할 수 있는 드라이버 목록과 함께 환경 변수 <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> 를 패스(pass)시켜 <varname>postgis.gdal_enabled_drivers</varname> 의 초기값을 설정할 수도 있습니다."
 
 #. Tag: para
 #: reference_guc.xml:104
 #, no-c-format
 msgid ""
 "Enabled GDAL specified drivers can be specified by the driver's short-name "
-"or code. Driver short-names or codes can be found at <ulink url=\"http://www."
-"gdal.org/formats_list.html\">GDAL Raster Formats</ulink>. Multiple drivers "
-"can be specified by putting a space between each driver."
-msgstr ""
+"or code. Driver short-names or codes can be found at <ulink "
+"url=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</ulink>. "
+"Multiple drivers can be specified by putting a space between each driver."
+msgstr "드라이버의 축약명 또는 코드를 통해 활성화된 GDAL 특화 드라이버를 지정할 수 있습니다. 드라이버의 축약명 또는 코드는 <ulink url=\"http://www.gdal.org/formats_list.html\">GDAL 래스터 형식</ulink> 에서 찾을 수 있습니다. 각 드라이버 사이에 공백을 삽입하면 복수의 드라이버를 지정할 수 있습니다."
 
 #. Tag: para
 #: reference_guc.xml:109
 #, no-c-format
 msgid ""
-"There are three special codes available for <varname>postgis."
-"gdal_enabled_drivers</varname>. The codes are case-sensitive."
-msgstr ""
+"There are three special codes available for "
+"<varname>postgis.gdal_enabled_drivers</varname>. The codes are case-"
+"sensitive."
+msgstr "<varname>postgis.gdal_enabled_drivers</varname> 를 위해 사용할 수 있는 특별 코드가 세 개 있습니다. 이 코드들은 대소문자를 구분합니다."
 
 #. Tag: para
 #: reference_guc.xml:114
@@ -254,13 +255,13 @@ msgid ""
 "<varname>DISABLE_ALL</varname> disables all GDAL drivers. If present, "
 "<varname>DISABLE_ALL</varname> overrides all other values in "
 "<varname>postgis.gdal_enabled_drivers</varname>."
-msgstr ""
+msgstr "<varname>DISABLE_ALL</varname> 은 모든 GDAL 드라이버를 비활성화시킵니다. <varname>DISABLE_ALL</varname> 이 있을 경우, <varname>postgis.gdal_enabled_drivers</varname> 안에 있는 다른 모든 값을 무시합니다."
 
 #. Tag: para
 #: reference_guc.xml:117
 #, no-c-format
 msgid "<varname>ENABLE_ALL</varname> enables all GDAL drivers."
-msgstr ""
+msgstr "<varname>ENABLE_ALL</varname> 은 모든 GDAL 드라이버를 활성화시킵니다."
 
 #. Tag: para
 #: reference_guc.xml:120
@@ -268,7 +269,7 @@ msgstr ""
 msgid ""
 "<varname>VSICURL</varname> enables GDAL's <varname>/vsicurl/</varname> "
 "virtual file system."
-msgstr ""
+msgstr "<varname>VSICURL</varname> 은 GDAL의 <varname>/vsicurl/</varname> 가상 파일 시스템을 활성화시킵니다."
 
 #. Tag: para
 #: reference_guc.xml:124
@@ -277,43 +278,43 @@ msgid ""
 "When <varname>postgis.gdal_enabled_drivers</varname> is set to DISABLE_ALL, "
 "attempts to use out-db rasters, ST_FromGDALRaster(), ST_AsGDALRaster(), "
 "ST_AsTIFF(), ST_AsJPEG() and ST_AsPNG() will result in error messages."
-msgstr ""
+msgstr "<varname>postgis.gdal_enabled_drivers</varname> 가 DISABLE_ALL로 성정됐을 경우, DB 외부 래스터, ST_FromGDALRaster(), ST_AsGDALRaster(), ST_AsTIFF(), ST_AsJPEG() 그리고 ST_AsPNG()를 사용하려 한다면 모두 오류 메시지를 보게 될 것입니다."
 
 #. Tag: para
 #: reference_guc.xml:130
 #, no-c-format
 msgid ""
-"In the standard PostGIS installation, <varname>postgis.gdal_enabled_drivers</"
-"varname> is set to DISABLE_ALL."
-msgstr ""
+"In the standard PostGIS installation, "
+"<varname>postgis.gdal_enabled_drivers</varname> is set to DISABLE_ALL."
+msgstr "표준 PostGIS 설치시, <varname>postgis.gdal_enabled_drivers</varname> 는 DISABLE_ALL로 설정됩니다."
 
 #. Tag: para
 #: reference_guc.xml:136
 #, no-c-format
 msgid ""
-"Additional information about GDAL_SKIP is available at GDAL's <ulink url="
-"\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
-"ulink>."
-msgstr ""
+"Additional information about GDAL_SKIP is available at GDAL's <ulink "
+"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
+"Options</ulink>."
+msgstr "GDAL_SKIP에 대한 추가 정보는 GDAL의 <ulink url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</ulink> 에서 찾아볼 수 있습니다."
 
 #. Tag: para
 #: reference_guc.xml:147
 #, no-c-format
 msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
-msgstr ""
+msgstr "<varname>postgis.gdal_enabled_drivers</varname> 를 설정한 다음 재설정해보십시오."
 
 #. Tag: para
 #: reference_guc.xml:149
 #, no-c-format
 msgid "Sets backend for all new connections to database"
-msgstr ""
+msgstr "데이터베이스와의 모든 새 연결에 백엔드를 설정해봅시다."
 
 #. Tag: programlisting
 #: reference_guc.xml:150
 #, no-c-format
 msgid ""
 "ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';"
-msgstr ""
+msgstr "ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';"
 
 #. Tag: para
 #: reference_guc.xml:152
@@ -322,7 +323,7 @@ msgid ""
 "Sets default enabled drivers for all new connections to server. Requires "
 "super user access and PostgreSQL 9.4+. Also not that database, session, and "
 "user settings override this."
-msgstr ""
+msgstr "서버와의 모든 새 연결에 기본 활성화된 드라이버를 설정해봅시다. 슈퍼유저 권한 및 PostgreSQL 9.4 이상 버전이 필요합니다. 또 데이터베이스, 세션, 사용자 설정 단계에서 이 설정을 무시할 수 없습니다."
 
 #. Tag: programlisting
 #: reference_guc.xml:154
@@ -330,7 +331,7 @@ msgstr ""
 msgid ""
 "ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
 "SELECT pg_reload_conf();"
-msgstr ""
+msgstr "ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\nSELECT pg_reload_conf();"
 
 #. Tag: programlisting
 #: reference_guc.xml:156
@@ -338,31 +339,31 @@ msgstr ""
 msgid ""
 "SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
 "SET postgis.gdal_enabled_drivers = default;"
-msgstr ""
+msgstr "SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\nSET postgis.gdal_enabled_drivers = default;"
 
 #. Tag: para
 #: reference_guc.xml:158
 #, no-c-format
 msgid "Enable all GDAL Drivers"
-msgstr ""
+msgstr "모든 GDAL 드라이버를 활성화시키십시오."
 
 #. Tag: programlisting
 #: reference_guc.xml:159
 #, no-c-format
 msgid "SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';"
-msgstr ""
+msgstr "SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';"
 
 #. Tag: para
 #: reference_guc.xml:161
 #, no-c-format
 msgid "Disable all GDAL Drivers"
-msgstr ""
+msgstr "모든 GDAL 드라이버를 비활성화시키십시오."
 
 #. Tag: programlisting
 #: reference_guc.xml:162
 #, no-c-format
 msgid "SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';"
-msgstr ""
+msgstr "SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';"
 
 #. Tag: para
 #: reference_guc.xml:167
@@ -371,28 +372,29 @@ msgid ""
 ", <xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsTIFF\"/>, "
 "<xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsJPEG\"/>, <xref "
 "linkend=\"postgis_enable_outdb_rasters\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsTIFF\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsJPEG\"/>, <xref linkend=\"postgis_enable_outdb_rasters\"/>"
 
 #. Tag: refname
 #: reference_guc.xml:180
 #, no-c-format
 msgid "postgis.enable_outdb_rasters"
-msgstr ""
+msgstr "postgis.enable_outdb_rasters"
 
 #. Tag: refpurpose
 #: reference_guc.xml:181
 #, no-c-format
-msgid "A boolean configuration option to enable access to out-db raster bands."
-msgstr ""
+msgid ""
+"A boolean configuration option to enable access to out-db raster bands."
+msgstr "DB 외부 래스터 밴드에 접근할 수 있게 해주는 불 설정 옵션입니다."
 
 #. Tag: para
 #: reference_guc.xml:188
 #, no-c-format
 msgid ""
-"A boolean configuration option to enable access to out-db raster bands. This "
-"option can be set in PostgreSQL's configuration file: postgresql.conf. It "
+"A boolean configuration option to enable access to out-db raster bands. This"
+" option can be set in PostgreSQL's configuration file: postgresql.conf. It "
 "can also be set by connection or transaction."
-msgstr ""
+msgstr "DB 외부 래스터 밴드에 접근할 수 있게 해주는 불 설정 옵션입니다. PostgreSQL의 설정 파일 postgresql.conf 안에서 이 옵션을 설정할 수 있습니다. 또 연결이나 상호처리 단계에서도 설정할 수 있습니다."
 
 #. Tag: para
 #: reference_guc.xml:192
@@ -400,9 +402,9 @@ msgstr ""
 msgid ""
 "The initial value of <varname>postgis.enable_outdb_rasters</varname> may "
 "also be set by passing the environment variable "
-"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> with a non-zero value to the "
-"process starting PostgreSQL."
-msgstr ""
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> with a non-zero value to the"
+" process starting PostgreSQL."
+msgstr "PostgreSQL을 구동시키는 과정에서 0이 아닌 값과 함께 환경 변수 <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> 를 패스(pass)시켜 <varname>postgis.enable_outdb_rasters</varname> 의 초기값을 설정할 수도 있습니다."
 
 #. Tag: para
 #: reference_guc.xml:197
@@ -411,21 +413,21 @@ msgid ""
 "Even if <varname>postgis.enable_outdb_rasters</varname> is True, the GUC "
 "<varname>postgis.enable_outdb_rasters</varname> determines the accessible "
 "raster formats."
-msgstr ""
+msgstr "<varname>postgis.enable_outdb_rasters</varname> 가 참이라 할지라도, GUC <varname>postgis.enable_outdb_rasters</varname> 가 접근 가능한 래스터 형식을 결정합니다."
 
 #. Tag: para
 #: reference_guc.xml:203
 #, no-c-format
 msgid ""
-"In the standard PostGIS installation, <varname>postgis.enable_outdb_rasters</"
-"varname> is set to False."
-msgstr ""
+"In the standard PostGIS installation, "
+"<varname>postgis.enable_outdb_rasters</varname> is set to False."
+msgstr "표준 PostGIS 설치시, <varname>postgis.enable_outdb_rasters</varname> 는 거짓으로 설정됩니다."
 
 #. Tag: para
 #: reference_guc.xml:214
 #, no-c-format
 msgid "Set and reset <varname>postgis.enable_outdb_rasters</varname>"
-msgstr ""
+msgstr "<varname>postgis.enable_outdb_rasters</varname> 를 설정한 다음 재설정해보십시오."
 
 #. Tag: programlisting
 #: reference_guc.xml:216
@@ -435,4 +437,4 @@ msgid ""
 "SET postgis.enable_outdb_rasters = default;\n"
 "SET postgis.enable_outdb_rasters = True;\n"
 "SET postgis.enable_outdb_rasters = False;"
-msgstr ""
+msgstr "SET postgis.enable_outdb_rasters TO True;\nSET postgis.enable_outdb_rasters = default;\nSET postgis.enable_outdb_rasters = True;\nSET postgis.enable_outdb_rasters = False;"

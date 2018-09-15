@@ -155,7 +155,7 @@ static RectBox *
 initRectBox(void)
 {
 	RectBox *rect_box = (RectBox *)palloc(sizeof(RectBox));
-	float infinity = get_float4_infinity();
+	float infinity = FLT_MAX;
 
 	rect_box->left.xmin = -infinity;
 	rect_box->left.xmax = infinity;

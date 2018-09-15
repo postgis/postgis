@@ -29,7 +29,6 @@ POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 # SQL preprocessor
 SQLPP = @SQLPP@
 GREP=@GREP@
-PERL=@PERL@
 EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULE_big = address_standardizer
@@ -51,7 +50,7 @@ EXTRA_CLEAN += sql/*.sql
 
 
 DOCS = README.address_standardizer
-PG_CPPFLAGS = @CPPFLAGS@ -g -O0
+PG_CPPFLAGS = @CFLAGS@ @CPPFLAGS@
 
 SHLIB_LINK = @SHLIB_LINK@ -lpcre
 EXTRA_CLEAN = usps-st-city-name.txt mk-st-regexp mk-city-regex test_main
@@ -61,10 +60,6 @@ REGRESS = test-init-extensions test-parseaddress test-standardize_address_1 test
 PG_CONFIG = @PG_CONFIG@
 
 PGVER := $(shell $(PG_CONFIG) --version)
-
-
-# Set PERL _after_ the include of PGXS
-PERL=@PERL@
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number
@@ -80,21 +75,26 @@ sql/%.sql: %.sql.in
 
 sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql: sql/address_standardizer_types.sql \
     sql/address_standardizer_functions.sql
+	mkdir -p sql
 	cat $^ > $@
 
 sql/address_standardizer.sql: sql/address_standardizer_types.sql \
     sql/address_standardizer_functions.sql
+	mkdir -p sql
 	cat $^ > $@
 
 sql/address_standardizer--1.0--$(EXTVERSION).sql:  sql/address_standardizer_functions.sql
+	mkdir -p sql
 	cat $^ > $@
 
 # upgrade logic for us data extension (to go to next cludge for dev upgrading)
 sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql/address_standardizer_functions.sql
+	mkdir -p sql
 	cat $^ > $@
 
 # upgrade logic for us data extension (to go to original round-robin yoyo cludge for dev upgrading)
 sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/address_standardizer_functions.sql
+	mkdir -p sql
 	cat $^ > $@
 
 # build us data extension
@@ -108,10 +108,12 @@ sql/$(EXTENSION)_data_us.sql: us_lex.sql us_gaz.sql us_rules.sql sql_bits/addres
 
 # upgrade logic for us data extension (to go to next cludge for dev upgrading)
 sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql
+	mkdir -p sql
 	cat $^ > $@
 
 # upgrade logic for us data extension (to go to original round-robin yoyo cludge for dev upgrading)
 sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql
+	mkdir -p sql
 	cat $^ > $@
 
 mk-st-regexp: mk-st-regexp.pl

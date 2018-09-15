@@ -31,7 +31,6 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 
 #include "liblwgeom.h"         /* For standard geometry types. */
 #include "liblwgeom_internal.h"         /* For FP comparators. */
@@ -466,16 +465,20 @@ Datum geography_expand(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g = NULL;
 	GSERIALIZED *g_out = NULL;
-	double distance;
+	double unit_distance, distance;
 
 	/* Get a wholly-owned pointer to the geography */
 	g = PG_GETARG_GSERIALIZED_P_COPY(0);
 
 	/* Read our distance value and normalize to unit-sphere. */
-	distance = PG_GETARG_FLOAT8(1) / WGS84_RADIUS;
+	distance = PG_GETARG_FLOAT8(1);
+	/* Magic 1% expansion is to bridge difference between potential */
+	/* spheroidal input distance and fact that expanded box filter is */
+	/* calculated on sphere */
+	unit_distance = 1.01 * distance / WGS84_RADIUS;
 
 	/* Try the expansion */
-	g_out = gserialized_expand(g, distance);
+	g_out = gserialized_expand(g, unit_distance);
 
 	/* If the expansion fails, the return our input */
 	if ( g_out == NULL )

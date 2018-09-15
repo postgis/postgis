@@ -266,13 +266,6 @@ lwcircstring_is_closed(const LWCIRCSTRING *curve)
 	return ptarray_is_closed_2d(curve->points);
 }
 
-int lwcircstring_is_empty(const LWCIRCSTRING *circ)
-{
-	if ( !circ->points || circ->points->npoints < 1 )
-		return LW_TRUE;
-	return LW_FALSE;
-}
-
 double lwcircstring_length(const LWCIRCSTRING *circ)
 {
 	return lwcircstring_length_2d(circ);

@@ -6434,7 +6434,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 			RETURN TRUE;
 		END IF;
 
-		SELECT @extschema@.ST_Collect(t.geom) INTO _geom FROM @extschema@.ST_PixelAsPolygons(rast, nband) AS t;
+		SELECT @extschema@.ST_Buffer(@extschema@.ST_Collect(t.geom), 0) INTO _geom FROM @extschema@.ST_PixelAsPolygons(rast, nband) AS t;
 		RETURN @extschema@.ST_Intersects(geom, _geom);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL

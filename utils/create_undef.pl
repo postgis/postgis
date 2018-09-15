@@ -55,7 +55,7 @@ sub strip_default {
 	return $line;
 }
 
-my $time = POSIX::strftime("%c", localtime);
+my $time = POSIX::strftime("%F %T", gmtime(defined($ENV{SOURCE_DATE_EPOCH}) ? $ENV{SOURCE_DATE_EPOCH} : time));
 print "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
 print "--\n";
 print "-- PostGIS - Spatial Types for PostgreSQL\n";
@@ -194,7 +194,7 @@ foreach my $op (@ops)
 {
 	if ($op =~ /create operator ([^(]+)\s*\(.*LEFTARG\s*=\s*(\w+),\s*RIGHTARG\s*=\s*(\w+).*/ism )
 	{
-		print "DROP OPERATOR IF EXISTS $1 ($2,$3) CASCADE;\n";
+		print "DROP OPERATOR IF EXISTS $1 ($2,$3);\n";
 	}
 	else
 	{
@@ -234,9 +234,7 @@ foreach my $fn (@funcs)
 		}
 		else
 		{
-			if ( $type_funcs{$fn_nm} =~ /(typmod|analyze)/ ) {
-				push(@type_funcs, $fn);
-			}
+			push(@type_funcs, $fn);
 		}
 	}
 	else
@@ -246,10 +244,43 @@ foreach my $fn (@funcs)
 }
 
 
-print "-- Drop all types.\n";
+print "-- Drop all types if unused in column types.\n";
+my $quotedtypelist = join ',', map { "'$_'" } @types;
 foreach my $type (@types)
 {
-	print "DROP TYPE IF EXISTS $type CASCADE;\n";
+	print <<EOF;
+DO \$\$
+DECLARE
+	rec RECORD;
+BEGIN
+	FOR rec IN
+		SELECT n.nspname, c.relname, a.attname, t.typname
+		FROM pg_attribute a
+		JOIN pg_class c ON a.attrelid = c.oid
+		JOIN pg_namespace n ON c.relnamespace = n.oid
+		JOIN pg_type t ON a.atttypid = t.oid
+		WHERE t.typname = '$type'
+		  AND NOT (
+				-- we exclude complexes defined as types
+				-- by our own extension
+				c.relkind = 'c' AND
+				c.relname in ( $quotedtypelist )
+			)
+	LOOP
+		RAISE EXCEPTION
+		  'Column "%" of table "%"."%" '
+		  'depends on type "%", drop it first',
+		  rec.attname, rec.nspname, rec.relname, rec.typname;
+	END LOOP;
+END;
+\$\$;
+-- NOTE: CASCADE is still needed for chicken-egg problem
+--       of input function depending on type and type
+--       depending on function
+DROP TYPE IF EXISTS $type CASCADE;
+
+EOF
+
 }
 
 print "-- Drop all functions needed for types definition.\n";

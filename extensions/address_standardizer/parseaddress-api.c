@@ -57,7 +57,7 @@ const char *get_state_regex(char *st)
 
 int clean_trailing_punct(char *s)
 {
-    int i;
+    size_t i;
     int ret = 0;
 
     i=strlen(s)-1;
@@ -70,7 +70,7 @@ int clean_trailing_punct(char *s)
 
 char *clean_leading_punct(char *s)
 {
-    int i;
+    size_t i;
 
     for (i=0; i<strlen(s); i++)
         if (!(ispunct(s[i]) || isspace(s[i])))
@@ -81,7 +81,7 @@ char *clean_leading_punct(char *s)
 
 void strtoupper(char *s)
 {
-    int i;
+    size_t i;
 
     for (i=0; i<strlen(s); i++)
         s[i] = toupper(s[i]);
@@ -120,7 +120,7 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
     char *state = NULL;
     char *regx;
     int mi;
-    int i, j;
+    size_t ui, uj;
     int rc;
     int comma = 0;
     ADDRESS *ret;
@@ -145,16 +145,16 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
 
     /* clean the string of multiple white spaces and . */
 
-    for (i=0, j=0; i<strlen(s); i++) {
-        c = s[i];
-        if (c == '.') c = s[i] = ' ';
-        if (j == 0 && isspace(c)) continue;
-        if (i && isspace(c) && isspace(s[i-1])) continue;
-        s[j] = s[i];
-        j++;
+    for (ui=0, uj=0; ui<strlen(s); ui++) {
+        c = s[ui];
+        if (c == '.') c = s[ui] = ' ';
+        if (uj == 0 && isspace(c)) continue;
+        if (ui && isspace(c) && isspace(s[ui-1])) continue;
+        s[uj] = s[ui];
+        uj++;
     }
-    if (isspace(s[j-1])) j--;
-    s[j] = '\0';
+    if (isspace(s[uj-1])) uj--;
+    s[uj] = '\0';
 
     /* clean trailing punctuation */
     comma |= clean_trailing_punct(s);
@@ -299,6 +299,7 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
     }
     DBG("Checked for state-city: %d", rc);
     if (rc <= 0) {
+        int i;
         /* run through the regx's and see if we get a match */
         for (i=0; i<nreg; i++) {
             mi++;

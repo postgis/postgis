@@ -505,18 +505,6 @@ lwcollection_force_dims(const LWCOLLECTION *col, int hasz, int hasm)
 	return colout;
 }
 
-int lwcollection_is_empty(const LWCOLLECTION *col)
-{
-	uint32_t i;
-	if ( (col->ngeoms == 0) || (!col->geoms) )
-		return LW_TRUE;
-	for( i = 0; i < col->ngeoms; i++ )
-	{
-		if ( ! lwgeom_is_empty(col->geoms[i]) ) return LW_FALSE;
-	}
-	return LW_TRUE;
-}
-
 
 uint32_t lwcollection_count_vertices(LWCOLLECTION *col)
 {

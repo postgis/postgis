@@ -124,6 +124,7 @@ sql_bits/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/utility/set_se
 	../../extras/tiger_geocoder/geocode/geocode.sql \
 	../../extras/tiger_geocoder/geocode/reverse_geocode.sql \
 	../../extras/tiger_geocoder/geocode/census_tracts_functions.sql
+	mkdir -p sql_bits
 	cat $^ > $@
 
 #also remove tiger_data from extension if it is part of it so data gets backed up
@@ -163,21 +164,25 @@ sql_bits/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
 	../../extras/tiger_geocoder/topology/tiger_topology_loader.sql \
 	../postgis_extension_helper.sql \
 	sql_bits/add_search_path.sql
+	mkdir -p sql_bits
 	cat $^ > $@
 	echo "SELECT postgis_extension_drop_if_exists('${EXTENSION}', 'DROP SCHEMA tiger_data');" >> $@
 	cat ../postgis_extension_helper_uninstall.sql  >> $@
 
 sql_bits/tiger_geocoder.sql: sql_bits/tiger_geocoder.sql.in
+	mkdir -p sql_bits
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
 sql_bits/add_search_path.sql: sql_bits/add_search_path.sql.in
+	mkdir -p sql_bits
 	cp $< $@
 
 ../../doc/tiger_geocoder_comments.sql:
 	$(MAKE) -C ../../doc comments
 
 sql_bits/tiger_geocoder_comments.sql: ../../doc/tiger_geocoder_comments.sql
+	mkdir -p sql_bits
 	cp $< $@
 
 #grep all lines that start with CREATE OR REPLACE FUNCTION, TRIGGER...

@@ -935,8 +935,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 				/* quadrant segments is an int */
 				quadsegs = atoi(val);
 			}
-			else if ( !strcmp(key, "side") ||
-					  !strcmp(key, "side") )
+			else if ( !strcmp(key, "side") )
 			{
 				if ( !strcmp(val, "both") )
 				{
@@ -2149,7 +2148,6 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
 
-	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Intersects(Empty) == FALSE */
