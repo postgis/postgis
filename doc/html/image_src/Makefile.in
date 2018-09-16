@@ -16,7 +16,7 @@ SHELL = @SHELL@
 LIBTOOL = @LIBTOOL@
 
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
-CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom
+CUNIT_CPPFLAGS=-I../../../liblwgeom @CUNIT_CPPFLAGS@
 
 IMAGES= \
 	../images/de9im01.png \
