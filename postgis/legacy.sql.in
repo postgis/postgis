@@ -393,13 +393,13 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_geometry_in(cstring)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_in'
+	AS 'MODULE_PATHNAME','geometry_in'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_geometry_out(geometry)
 	RETURNS cstring
-	AS 'MODULE_PATHNAME','LWGEOM_out'
+	AS 'MODULE_PATHNAME','geometry_out'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.5.0

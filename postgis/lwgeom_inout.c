@@ -55,8 +55,8 @@
 
 void elog_ERROR(const char* string);
 
-Datum LWGEOM_in(PG_FUNCTION_ARGS);
-Datum LWGEOM_out(PG_FUNCTION_ARGS);
+Datum geometry_in(PG_FUNCTION_ARGS);
+Datum geometry_out(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_text(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS);
 Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS);
@@ -72,16 +72,16 @@ Datum LWGEOMFromTWKB(PG_FUNCTION_ARGS);
 
 
 /*
- * LWGEOM_in(cstring)
+ * geometry_in(cstring)
  * format is '[SRID=#;]wkt|wkb'
- *  LWGEOM_in( 'SRID=99;POINT(0 0)')
- *  LWGEOM_in( 'POINT(0 0)')            --> assumes SRID=SRID_UNKNOWN
- *  LWGEOM_in( 'SRID=99;0101000000000000000000F03F000000000000004')
- *  LWGEOM_in( '0101000000000000000000F03F000000000000004')
+ *  geometry_in( 'SRID=99;POINT(0 0)')
+ *  geometry_in( 'POINT(0 0)')            --> assumes SRID=SRID_UNKNOWN
+ *  geometry_in( 'SRID=99;0101000000000000000000F03F000000000000004')
+ *  geometry_in( '0101000000000000000000F03F000000000000004')
  *  returns a GSERIALIZED object
  */
 PG_FUNCTION_INFO_V1(LWGEOM_in);
-Datum LWGEOM_in(PG_FUNCTION_ARGS)
+Datum geometry_in(PG_FUNCTION_ARGS)
 {
 	char *input = PG_GETARG_CSTRING(0);
 	int32 geom_typmod = -1;
@@ -258,14 +258,14 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 }
 
 /*
- * LWGEOM_out(lwgeom) --> cstring
+ * geometry_out(lwgeom) --> cstring
  * output is 'SRID=#;<wkb in hex form>'
  * ie. 'SRID=-99;0101000000000000000000F03F0000000000000040'
  * WKB is machine endian
  * if SRID=-1, the 'SRID=-1;' will probably not be present.
  */
-PG_FUNCTION_INFO_V1(LWGEOM_out);
-Datum LWGEOM_out(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_out);
+Datum geometry_out(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom;

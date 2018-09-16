@@ -86,16 +86,16 @@ CREATE TYPE spheroid (
 );
 
 -------------------------------------------------------------------
---  GEOMETRY TYPE (lwgeom)
+--  GEOMETRY TYPE
 -------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION geometry_in(cstring)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_in'
+	AS 'MODULE_PATHNAME','geometry_in'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION geometry_out(geometry)
 	RETURNS cstring
-	AS 'MODULE_PATHNAME','LWGEOM_out'
+	AS 'MODULE_PATHNAME','geometry_out'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
