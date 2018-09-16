@@ -167,6 +167,13 @@ psql -d yourdatabase -f sfcgal_comments.sql
 		  <ulink url="http://trac.osgeo.org/gdal/wiki/DownloadSource">http://trac.osgeo.org/gdal/wiki/DownloadSource</ulink>.
 		</para>
 	  </listitem>
+
+		<listitem>
+		<para>
+		  If compiling with PostgreSQL+JIT, LLVM version &gt;=6 is required
+		  <ulink url="https://trac.osgeo.org/postgis/ticket/4125">https://trac.osgeo.org/postgis/ticket/4125</ulink>.
+		</para>
+	  </listitem>
 	</itemizedlist>
 
 	<para>
