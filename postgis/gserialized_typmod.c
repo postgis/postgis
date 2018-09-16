@@ -47,7 +47,7 @@
 
 Datum geography_typmod_in(PG_FUNCTION_ARGS);
 Datum geometry_typmod_in(PG_FUNCTION_ARGS);
-Datum postgis_typmod_out(PG_FUNCTION_ARGS);
+Datum gserialized_typmod_out(PG_FUNCTION_ARGS);
 Datum postgis_typmod_dims(PG_FUNCTION_ARGS);
 Datum postgis_typmod_srid(PG_FUNCTION_ARGS);
 Datum postgis_typmod_type(PG_FUNCTION_ARGS);
@@ -56,10 +56,11 @@ Datum geometry_enforce_typmod(PG_FUNCTION_ARGS);
 
 
 /*
-** postgis_typmod_out(int) returns cstring
+** gserialized_typmod_out(int) returns cstring
+** Used for both geometry and geography data types
 */
-PG_FUNCTION_INFO_V1(postgis_typmod_out);
-Datum postgis_typmod_out(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(gserialized_typmod_out);
+Datum gserialized_typmod_out(PG_FUNCTION_ARGS)
 {
 	char *s = (char*)palloc(64);
 	char *str = s;

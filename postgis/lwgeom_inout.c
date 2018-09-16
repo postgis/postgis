@@ -62,8 +62,8 @@ Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS);
 Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS);
 Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS);
 Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS);
-Datum LWGEOM_recv(PG_FUNCTION_ARGS);
-Datum LWGEOM_send(PG_FUNCTION_ARGS);
+Datum geometry_recv(PG_FUNCTION_ARGS);
+Datum geometry_send(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS);
 Datum WKBFromLWGEOM(PG_FUNCTION_ARGS);
 Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS);
@@ -751,8 +751,8 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
  * ERROR:  incorrect binary data format in bind parameter #
  *
  */
-PG_FUNCTION_INFO_V1(LWGEOM_recv);
-Datum LWGEOM_recv(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_recv);
+Datum geometry_recv(PG_FUNCTION_ARGS)
 {
 	StringInfo buf = (StringInfo) PG_GETARG_POINTER(0);
 	int32 geom_typmod = -1;
@@ -790,10 +790,10 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 
 
 
-PG_FUNCTION_INFO_V1(LWGEOM_send);
-Datum LWGEOM_send(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_send);
+Datum geometry_send(PG_FUNCTION_ARGS)
 {
-	POSTGIS_DEBUG(2, "LWGEOM_send called");
+	POSTGIS_DEBUG(2, "geometry_send called");
 
 	PG_RETURN_POINTER(
 	  DatumGetPointer(

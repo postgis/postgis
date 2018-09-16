@@ -405,13 +405,13 @@ CREATE OR REPLACE FUNCTION st_geometry_out(geometry)
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_geometry_recv(internal)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_recv'
+	AS 'MODULE_PATHNAME','geometry_recv'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_geometry_send(geometry)
 	RETURNS bytea
-	AS 'MODULE_PATHNAME','LWGEOM_send'
+	AS 'MODULE_PATHNAME','geometry_send'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.5.0

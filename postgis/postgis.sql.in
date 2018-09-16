@@ -107,7 +107,7 @@ CREATE OR REPLACE FUNCTION geometry_typmod_in(cstring[])
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_typmod_out(integer)
 	RETURNS cstring
-	AS 'MODULE_PATHNAME','postgis_typmod_out'
+	AS 'MODULE_PATHNAME','gserialized_typmod_out'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION geometry_analyze(internal)
@@ -117,12 +117,12 @@ CREATE OR REPLACE FUNCTION geometry_analyze(internal)
 
 CREATE OR REPLACE FUNCTION geometry_recv(internal)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_recv'
+	AS 'MODULE_PATHNAME','geometry_recv'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION geometry_send(geometry)
 	RETURNS bytea
-	AS 'MODULE_PATHNAME','LWGEOM_send'
+	AS 'MODULE_PATHNAME','geometry_send'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 0.1.0
