@@ -1,5 +1,5 @@
 PostGIS 2.5.0rc2
-2018/09/xx
+2018/09/16
 WARNING: If compiling with PostgreSQL+JIT, LLVM >= 6 is required
 
 New since PostGIS 2.5.0rc1
@@ -11,6 +11,8 @@ New since PostGIS 2.5.0rc1
   - #4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)
   - #4177, Postgres 12 disallows variable length arrays in C (Laurenz Albe)
   - #4160, Use qualified names in topology extension install (Raúl Marín)
+  - #4180, installed liblwgeom includes sometimes getting used
+           instead of source ones (Regina Obe)
 
 PostGIS 2.5.0rc1
 2018/08/19
