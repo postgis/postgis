@@ -80,7 +80,7 @@ Datum LWGEOMFromTWKB(PG_FUNCTION_ARGS);
  *  geometry_in( '0101000000000000000000F03F000000000000004')
  *  returns a GSERIALIZED object
  */
-PG_FUNCTION_INFO_V1(LWGEOM_in);
+PG_FUNCTION_INFO_V1(geometry_in);
 Datum geometry_in(PG_FUNCTION_ARGS)
 {
 	char *input = PG_GETARG_CSTRING(0);
