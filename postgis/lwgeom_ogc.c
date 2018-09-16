@@ -66,27 +66,27 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS);
 Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS);
 /* ---- PointN(geometry, integer) */
 Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS);
-/* ---- X(geometry) */
-Datum LWGEOM_x_point(PG_FUNCTION_ARGS);
-/* ---- Y(geometry) */
-Datum LWGEOM_y_point(PG_FUNCTION_ARGS);
-/* ---- Z(geometry) */
-Datum LWGEOM_z_point(PG_FUNCTION_ARGS);
-/* ---- M(geometry) */
-Datum LWGEOM_m_point(PG_FUNCTION_ARGS);
-/* ---- StartPoint(geometry) */
+/* ---- ST_X(geometry) */
+Datum ST_X(PG_FUNCTION_ARGS);
+/* ---- ST_Y(geometry) */
+Datum ST_Y(PG_FUNCTION_ARGS);
+/* ---- ST_Z(geometry) */
+Datum ST_Z(PG_FUNCTION_ARGS);
+/* ---- ST_M(geometry) */
+Datum ST_M(PG_FUNCTION_ARGS);
+/* ---- ST_StartPoint(geometry) */
 Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS);
-/* ---- EndPoint(geometry) */
+/* ---- ST_EndPoint(geometry) */
 Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS);
-/* ---- AsText(geometry) */
+/* ---- ST_AsText(geometry) */
 Datum LWGEOM_asText(PG_FUNCTION_ARGS);
-/* ---- AsBinary(geometry, [XDR|NDR]) */
+/* ---- ST_AsBinary(geometry, [XDR|NDR]) */
 Datum LWGEOM_asBinary(PG_FUNCTION_ARGS);
-/* ---- GeometryFromText(text, integer) */
+/* ---- ST_GeometryFromText(text, integer) */
 Datum LWGEOM_from_text(PG_FUNCTION_ARGS);
-/* ---- GeomFromWKB(bytea, integer) */
+/* ---- ST_GeomFromWKB(bytea, integer) */
 Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS);
-/* ---- IsClosed(geometry) */
+/* ---- ST_IsClosed(geometry) */
 Datum LWGEOM_isclosed(PG_FUNCTION_ARGS);
 
 /*------------------------------------------------------------------*/
@@ -585,11 +585,11 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 }
 
 /**
- * X(GEOMETRY) -- return X value of the point.
+ * ST_X(GEOMETRY) -- return X value of the point.
  * @return an error if input is not a point.
  */
-PG_FUNCTION_INFO_V1(LWGEOM_x_point);
-Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_X);
+Datum ST_X(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
@@ -614,11 +614,11 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 }
 
 /**
- * Y(GEOMETRY) -- return Y value of the point.
+ * ST_Y(GEOMETRY) -- return Y value of the point.
  * 	Raise an error if input is not a point.
  */
-PG_FUNCTION_INFO_V1(LWGEOM_y_point);
-Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_Y);
+Datum ST_Y(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWPOINT *point = NULL;
@@ -644,12 +644,12 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 }
 
 /**
- * Z(GEOMETRY) -- return Z value of the point.
+ * ST_Z(GEOMETRY) -- return Z value of the point.
  * @return NULL if there is no Z in the point.
  * 		Raise an error if input is not a point.
  */
-PG_FUNCTION_INFO_V1(LWGEOM_z_point);
-Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_Z);
+Datum ST_Z(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWPOINT *point = NULL;
@@ -677,12 +677,13 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(p.z);
 }
 
-/**  M(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its M value.
- * @return NULL if there is no POINT(..) in GEOMETRY.
- * 		Return NULL if there is no M in this geometry.
+/**
+ * ST_M(GEOMETRY) -- return M value of the point.
+ * @return NULL if there is no M in the point.
+ * 		Raise an error if input is not a point.
  */
-PG_FUNCTION_INFO_V1(LWGEOM_m_point);
-Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_M);
+Datum ST_M(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWPOINT *point = NULL;

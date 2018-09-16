@@ -84,13 +84,13 @@ CREATE OR REPLACE FUNCTION SE_IsMeasured(geometry)
 -- PostGIS equivalent function: Z(geometry)
 CREATE OR REPLACE FUNCTION SE_Z(geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_z_point'
+	AS 'MODULE_PATHNAME','ST_Z'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: M(geometry)
 CREATE OR REPLACE FUNCTION SE_M(geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_m_point'
+	AS 'MODULE_PATHNAME','ST_M'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- PostGIS equivalent function: locate_between_measures(geometry, float8, float8)
@@ -1254,7 +1254,7 @@ CREATE OR REPLACE FUNCTION locate_between_measures(geometry, float8, float8)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION M(geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_m_point'
+	AS 'MODULE_PATHNAME','ST_M'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
@@ -1841,7 +1841,7 @@ CREATE OR REPLACE FUNCTION within(geometry,geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION X(geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_x_point'
+	AS 'MODULE_PATHNAME','ST_X'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
@@ -1859,7 +1859,7 @@ CREATE OR REPLACE FUNCTION xmin(box3d)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Y(geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_y_point'
+	AS 'MODULE_PATHNAME','ST_Y'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
@@ -1877,7 +1877,7 @@ CREATE OR REPLACE FUNCTION ymin(box3d)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Z(geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_z_point'
+	AS 'MODULE_PATHNAME','ST_Z'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3

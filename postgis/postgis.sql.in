@@ -200,25 +200,25 @@ CREATE CAST (polygon AS geometry) WITH FUNCTION geometry(polygon);
 -- PostGIS equivalent function: X(geometry)
 CREATE OR REPLACE FUNCTION ST_X(geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_x_point'
+	AS 'MODULE_PATHNAME','ST_X'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: Y(geometry)
 CREATE OR REPLACE FUNCTION ST_Y(geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_y_point'
+	AS 'MODULE_PATHNAME','ST_Y'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Z(geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_z_point'
+	AS 'MODULE_PATHNAME','ST_Z'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_M(geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_m_point'
+	AS 'MODULE_PATHNAME','ST_M'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -------------------------------------------
