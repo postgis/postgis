@@ -1098,16 +1098,13 @@ from (
     select ST_GeogFromText('SRID=4326;POINT(1.0 2.0)') as a, ST_GeogFromText('SRID=4326;POINT(1.0 1.0)') as b
 ) as points;
 
--- #4164
-SELECT ST_AsText(ST_GeomFromGeoJSON('{"type": "Polygon", "coordinates": [[0,0],[0,5],[5, 5],[5,0],[0,0]]}'));
-
 -- #4144
 DROP TABLE IF EXISTS bug_4144_table;
 CREATE TABLE bug_4144_table (
   geom geometry NOT NULL DEFAULT NULL
 );
 
-INSERT INTO bug_4144_table (geom) 
+INSERT INTO bug_4144_table (geom)
   VALUES ('GEOMETRYCOLLECTION(POINT(-3.385894e+38 0 0),POINT(0 0 0))');
 
 ANALYZE bug_4144_table;

@@ -49,3 +49,6 @@ SELECT 'geomfromgeojson_srs_4', ST_AsEWKT(ST_GeomFromGeoJSON('{"type":"GeometryC
 
 -- #3583
 SELECT '#3583', ST_AsText(ST_GeomFromGeoJSON('{"type":"MultiPolygon", "coordinates":[[[139.10030364990232,35.16777444430609],5842.4224490305424]]}'));
+
+-- #4164
+SELECT ST_AsText(ST_GeomFromGeoJSON('{"type": "Polygon", "coordinates": [[0,0],[0,5],[5, 5],[5,0],[0,0]]}'));
