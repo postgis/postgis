@@ -1,13 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
 # 
 # Translators:
-# Andreas Schild <andreas.schild@bfw.gv.at>, 2017
+# Andreas Schild <andreas.schild@bfw.gv.at>, 2017-2018
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2017-01-28 07:03+0000\n"
-"PO-Revision-Date: 2017-08-22 07:12+0000\n"
+"PO-Revision-Date: 2018-09-01 10:16+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -38,7 +38,7 @@ msgid ""
 "information regarding the environment in which it was detected. Good enough "
 "info can be extracted running <code>SELECT postgis_full_version()</code> "
 "[for postgis] and <code>SELECT version()</code> [for postgresql]."
-msgstr "Effektive Fehlerberichte stellen eine wesentliche Methode dar, um an der Entwicklung von PostGIS mitzuwirken. Der wirksamste Fehlerbericht ist jener, der es den PostGIS-Entwicklern ermöglicht ihn nachzuvollziehen. Idealerweise enthält er ein Skript das den Fehler auslöst und jegliche Information bezüglich der Umgebung in der er entdeckt wurde. Ausreichende Information kann über <code>SELECT postgis_full_version()</code> [für PostGIS] und <code>SELECT version()</code> [für PostgreSQL] gewonnen werden."
+msgstr "Effektive Fehlerberichte sind ein wesentlicher Beitrag zur Weiterentwicklung von PostGIS. Am wirksamsten ist ein Fehlerbericht dann, wenn er von den PostGIS-Entwicklern reproduziert werden kann. Idealerweise enthält er ein Skript das den Fehler auslöst und eine vollständige Beschreibung der Umgebung in der er aufgetreten ist. Ausreichend gute Information liefert <code>SELECT postgis_full_version()</code> [für PostGIS] und <code>SELECT version()</code> [für PostgreSQL]."
 
 #. Tag: para
 #: reporting.xml:16
@@ -47,7 +47,7 @@ msgid ""
 "If you aren't using the latest release, it's worth taking a look at its "
 "<ulink url=\"http://svn.osgeo.org/postgis/trunk/NEWS\">release "
 "changelog</ulink> first, to find out if your bug has already been fixed."
-msgstr "Falls Sie nicht die letzte Version verwenden, sollten Sie zuerst unter <ulink url=\"http://svn.osgeo.org/postgis/trunk/NEWS\">release changelog</ulink> nachsehen, ob Ihr Bug bereits bereinigt wurde."
+msgstr "Falls Sie nicht die aktuelle Version verwenden, sollten Sie zuerst unter <ulink url=\"http://svn.osgeo.org/postgis/trunk/NEWS\">release changelog</ulink> nachsehen, ob Ihr Bug nicht bereits bereinigt wurde."
 
 #. Tag: para
 #: reporting.xml:21

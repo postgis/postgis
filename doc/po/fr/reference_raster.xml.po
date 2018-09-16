@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2018-07-21 17:08+0000\n"
+"POT-Creation-Date: 2018-09-16 19:07+0000\n"
 "PO-Revision-Date: 2015-09-29 12:24+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
@@ -12914,9 +12914,9 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:7072 reference_raster.xml:7423
+#: reference_raster.xml:7072
 #, no-c-format
-msgid "ST_MapAlgebra"
+msgid "ST_MapAlgebra (callback function version)"
 msgstr ""
 
 #. Tag: refpurpose
@@ -13681,6 +13681,12 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra_expr\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_raster.xml:7423
+#, no-c-format
+msgid "ST_MapAlgebra (expression version)"
 msgstr ""
 
 #. Tag: refpurpose

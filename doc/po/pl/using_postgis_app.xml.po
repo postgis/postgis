@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
@@ -8,12 +8,15 @@ msgstr ""
 "POT-Creation-Date: 2017-01-28 07:03+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Milena Nowotarska <do.milenki@gmail.com>\n"
-"Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/pl/)\n"
+"Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
+"pl/)\n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: pl\n"
-"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n"
+"%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n"
+"%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
 #. Tag: title
 #: using_postgis_app.xml:3
@@ -39,16 +42,17 @@ msgstr ""
 #: using_postgis_app.xml:12
 #, no-c-format
 msgid ""
-"The MapServer homepage is at <ulink "
-"url=\"http://mapserver.org\">http://mapserver.org</ulink>."
+"The MapServer homepage is at <ulink url=\"http://mapserver.org\">http://"
+"mapserver.org</ulink>."
 msgstr ""
 
 #. Tag: para
 #: using_postgis_app.xml:17
 #, no-c-format
 msgid ""
-"The OpenGIS Web Map Specification is at <ulink "
-"url=\"http://www.opengeospatial.org/standards/wms\">http://www.opengeospatial.org/standards/wms</ulink>."
+"The OpenGIS Web Map Specification is at <ulink url=\"http://www."
+"opengeospatial.org/standards/wms\">http://www.opengeospatial.org/standards/"
+"wms</ulink>."
 msgstr ""
 
 #. Tag: title
@@ -89,8 +93,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "MapServer accesses PostGIS/PostgreSQL data like any other PostgreSQL client "
-"-- using the <filename>libpq</filename> interface. This means that MapServer"
-" can be installed on any machine with network access to the PostGIS server, "
+"-- using the <filename>libpq</filename> interface. This means that MapServer "
+"can be installed on any machine with network access to the PostGIS server, "
 "and use PostGIS as a source of data. The faster the connection between the "
 "systems, the better."
 msgstr ""
@@ -172,8 +176,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The database connection is governed by the a 'connection string' which is a "
-"standard set of keys and values like this (with the default values in "
-"&lt;&gt;):"
+"standard set of keys and values like this (with the default values in &lt;"
+"&gt;):"
 msgstr ""
 
 #. Tag: para
@@ -189,8 +193,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "An empty connection string is still valid, and any of the key/value pairs "
-"can be omitted. At a minimum you will generally supply the database name and"
-" username to connect with."
+"can be omitted. At a minimum you will generally supply the database name and "
+"username to connect with."
 msgstr ""
 
 #. Tag: term
@@ -215,8 +219,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "You can omit the \"using srid\" and \"using unique\" clauses and MapServer "
-"will automatically determine the correct values if possible, but at the cost"
-" of running a few extra queries on the server for each map draw."
+"will automatically determine the correct values if possible, but at the cost "
+"of running a few extra queries on the server for each map draw."
 msgstr ""
 
 #. Tag: term
@@ -302,8 +306,8 @@ msgstr ""
 #: using_postgis_app.xml:158
 #, no-c-format
 msgid ""
-"Unlike shape files, PostGIS field names have to be referenced in EXPRESSIONS"
-" using <emphasis>lower case</emphasis>."
+"Unlike shape files, PostGIS field names have to be referenced in EXPRESSIONS "
+"using <emphasis>lower case</emphasis>."
 msgstr ""
 
 #. Tag: programlisting
@@ -387,8 +391,8 @@ msgstr ""
 #: using_postgis_app.xml:213
 #, no-c-format
 msgid ""
-"You can specify what unique key for mapserver to use with the <varname>USING"
-" UNIQUE</varname> clause in your <varname>DATA</varname> line:"
+"You can specify what unique key for mapserver to use with the <varname>USING "
+"UNIQUE</varname> clause in your <varname>DATA</varname> line:"
 msgstr ""
 
 #. Tag: programlisting
@@ -433,12 +437,12 @@ msgstr ""
 msgid ""
 "The <varname>USING</varname> pseudo-SQL clause is used to add some "
 "information to help mapserver understand the results of more complex "
-"queries. More specifically, when either a view or a subselect is used as the"
-" source table (the thing to the right of \"FROM\" in a "
-"<varname>DATA</varname> definition) it is more difficult for mapserver to "
-"automatically determine a unique identifier for each row and also the SRID "
-"for the table. The <varname>USING</varname> clause can provide mapserver "
-"with these two pieces of information as follows:"
+"queries. More specifically, when either a view or a subselect is used as the "
+"source table (the thing to the right of \"FROM\" in a <varname>DATA</"
+"varname> definition) it is more difficult for mapserver to automatically "
+"determine a unique identifier for each row and also the SRID for the table. "
+"The <varname>USING</varname> clause can provide mapserver with these two "
+"pieces of information as follows:"
 msgstr ""
 
 #. Tag: programlisting
@@ -469,20 +473,20 @@ msgid ""
 "MapServer requires a unique id for each row in order to identify the row "
 "when doing map queries. Normally it identifies the primary key from the "
 "system tables. However, views and subselects don't automatically have an "
-"known unique column. If you want to use MapServer's query functionality, you"
-" need to ensure your view or subselect includes a uniquely valued column, "
-"and declare it with <varname>USING UNIQUE</varname>. For example, you could "
-"explicitly select nee of the table's primary key values for this purpose, or"
-" any other column which is guaranteed to be unique for the result set."
+"known unique column. If you want to use MapServer's query functionality, you "
+"need to ensure your view or subselect includes a uniquely valued column, and "
+"declare it with <varname>USING UNIQUE</varname>. For example, you could "
+"explicitly select nee of the table's primary key values for this purpose, or "
+"any other column which is guaranteed to be unique for the result set."
 msgstr ""
 
 #. Tag: para
 #: using_postgis_app.xml:273
 #, no-c-format
 msgid ""
-"\"Querying a Map\" is the action of clicking on a map to ask for information"
-" about the map features in that location. Don't confuse \"map queries\" with"
-" the SQL query in a <varname>DATA</varname> definition."
+"\"Querying a Map\" is the action of clicking on a map to ask for information "
+"about the map features in that location. Don't confuse \"map queries\" with "
+"the SQL query in a <varname>DATA</varname> definition."
 msgstr ""
 
 #. Tag: term
@@ -497,8 +501,8 @@ msgstr ""
 msgid ""
 "PostGIS needs to know which spatial referencing system is being used by the "
 "geometries in order to return the correct data back to MapServer. Normally "
-"it is possible to find this information in the \"geometry_columns\" table in"
-" the PostGIS database, however, this is not possible for tables which are "
+"it is possible to find this information in the \"geometry_columns\" table in "
+"the PostGIS database, however, this is not possible for tables which are "
 "created on the fly such as subselects and views. So the <varname>USING "
 "SRID=</varname> option allows the correct SRID to be specified in the "
 "<varname>DATA</varname> definition."
@@ -514,8 +518,8 @@ msgstr "Przykłady"
 #: using_postgis_app.xml:302
 #, no-c-format
 msgid ""
-"Lets start with a simple example and work our way up. Consider the following"
-" MapServer layer definition:"
+"Lets start with a simple example and work our way up. Consider the following "
+"MapServer layer definition:"
 msgstr ""
 
 #. Tag: programlisting
@@ -600,8 +604,8 @@ msgstr ""
 msgid ""
 "The first layer is used when the scale is greater than 1:100000, and "
 "displays only the roads of type \"highway\" as black lines. The "
-"<varname>FILTER</varname> option causes only roads of type \"highway\" to be"
-" displayed."
+"<varname>FILTER</varname> option causes only roads of type \"highway\" to be "
+"displayed."
 msgstr ""
 
 #. Tag: para
@@ -609,8 +613,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The second layer is used when the scale is less than 1:100000, and will "
-"display highways as double-thick red lines, and other roads as regular black"
-" lines."
+"display highways as double-thick red lines, and other roads as regular black "
+"lines."
 msgstr ""
 
 #. Tag: para
@@ -654,8 +658,8 @@ msgstr ""
 #: using_postgis_app.xml:333
 #, no-c-format
 msgid ""
-"This annotation layer adds green labels to all the roads when the scale gets"
-" down to 1:20000 or less. It also demonstrates how to use an SQL join in a "
+"This annotation layer adds green labels to all the roads when the scale gets "
+"down to 1:20000 or less. It also demonstrates how to use an SQL join in a "
 "<varname>DATA</varname> definition."
 msgstr ""
 
@@ -670,10 +674,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Java clients can access PostGIS \"geometry\" objects in the PostgreSQL "
-"database either directly as text representations or using the JDBC extension"
-" objects bundled with PostGIS. In order to use the extension objects, the "
-"\"postgis.jar\" file must be in your CLASSPATH along with the "
-"\"postgresql.jar\" JDBC driver package."
+"database either directly as text representations or using the JDBC extension "
+"objects bundled with PostGIS. In order to use the extension objects, the "
+"\"postgis.jar\" file must be in your CLASSPATH along with the \"postgresql."
+"jar\" JDBC driver package."
 msgstr ""
 
 #. Tag: programlisting
@@ -703,8 +707,10 @@ msgid ""
 "    * must cast the connection to the pgsql-specific connection\n"
 "    * implementation before calling the addDataType() method.\n"
 "    */\n"
-"    ((org.postgresql.PGConnection)conn).addDataType(\"geometry\",Class.forName(\"org.postgis.PGgeometry\"));\n"
-"    ((org.postgresql.PGConnection)conn).addDataType(\"box3d\",Class.forName(\"org.postgis.PGbox3d\"));\n"
+"    ((org.postgresql.PGConnection)conn).addDataType(\"geometry\",Class."
+"forName(\"org.postgis.PGgeometry\"));\n"
+"    ((org.postgresql.PGConnection)conn).addDataType(\"box3d\",Class."
+"forName(\"org.postgis.PGbox3d\"));\n"
 "    /*\n"
 "    * Create a statement and execute a select query.\n"
 "    */\n"
@@ -712,7 +718,8 @@ msgid ""
 "    ResultSet r = s.executeQuery(\"select geom,id from geomtable\");\n"
 "    while( r.next() ) {\n"
 "      /*\n"
-"      * Retrieve the geometry as an object then cast it to the geometry type.\n"
+"      * Retrieve the geometry as an object then cast it to the geometry "
+"type.\n"
 "      * Print things out.\n"
 "      */\n"
 "      PGgeometry geom = (PGgeometry)r.getObject(1);\n"

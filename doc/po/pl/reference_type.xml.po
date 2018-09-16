@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
@@ -8,12 +8,15 @@ msgstr ""
 "POT-Creation-Date: 2018-07-21 17:36+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Milena Nowotarska <do.milenki@gmail.com>\n"
-"Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/pl/)\n"
+"Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
+"pl/)\n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: pl\n"
-"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n"
+"%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n"
+"%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
 #. Tag: para
 #: reference_type.xml:5
@@ -31,8 +34,8 @@ msgid ""
 "A Cast is when one type is coerced into another type. PostgreSQL is unique "
 "from most databases in that it allows you to define casting behavior for "
 "custom types and the functions used for casting. A cast can be specified as "
-"automatic in which case, you do not have to do a CAST(myfoo As otherfootype)"
-" or myfoo::otherfootype if you are feeding it to a function that only works "
+"automatic in which case, you do not have to do a CAST(myfoo As otherfootype) "
+"or myfoo::otherfootype if you are feeding it to a function that only works "
 "with otherfootype and there is an automatic cast in place for it."
 msgstr ""
 
@@ -42,9 +45,9 @@ msgstr ""
 msgid ""
 "The danger of relying on automatic cast behavior is when you have an "
 "overloaded function say one that takes a box2d and one that takes a box3d "
-"but no geometry. What happens is that both functions are equally good to use"
-" with geometry since geometry has an autocast for both -- so you end up with"
-" an ambiguous function error. To force PostgreSQL to choose, you do a "
+"but no geometry. What happens is that both functions are equally good to use "
+"with geometry since geometry has an autocast for both -- so you end up with "
+"an ambiguous function error. To force PostgreSQL to choose, you do a "
 "CAST(mygeom As box3d) or mygeom::box3d."
 msgstr ""
 

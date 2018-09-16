@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2018-07-21 17:08+0000\n"
+"POT-Creation-Date: 2018-09-16 19:07+0000\n"
 "PO-Revision-Date: 2015-09-29 12:24+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
@@ -74,7 +74,7 @@ msgstr ""
 #: reference_output.xml:485 reference_output.xml:541 reference_output.xml:599
 #: reference_output.xml:671 reference_output.xml:724 reference_output.xml:797
 #: reference_output.xml:845 reference_output.xml:967 reference_output.xml:1016
-#: reference_output.xml:1056 reference_output.xml:1111
+#: reference_output.xml:1056 reference_output.xml:1119
 #, no-c-format
 msgid "Description"
 msgstr ""
@@ -212,7 +212,7 @@ msgstr ""
 #: reference_output.xml:572 reference_output.xml:628 reference_output.xml:690
 #: reference_output.xml:748 reference_output.xml:812 reference_output.xml:985
 #: reference_output.xml:1031 reference_output.xml:1072
-#: reference_output.xml:1139
+#: reference_output.xml:1150
 #, no-c-format
 msgid "Examples"
 msgstr ""
@@ -285,7 +285,7 @@ msgstr ""
 #: reference_output.xml:79 reference_output.xml:128 reference_output.xml:183
 #: reference_output.xml:236 reference_output.xml:454 reference_output.xml:576
 #: reference_output.xml:761 reference_output.xml:821 reference_output.xml:989
-#: reference_output.xml:1144
+#: reference_output.xml:1155
 #, no-c-format
 msgid "See Also"
 msgstr ""
@@ -2514,13 +2514,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1024 reference_output.xml:1129
+#: reference_output.xml:1024 reference_output.xml:1137
 #, no-c-format
 msgid "<varname>row</varname> row data with at least a geometry column."
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1025 reference_output.xml:1132
+#: reference_output.xml:1025 reference_output.xml:1140
 #, no-c-format
 msgid ""
 "<varname>geom_name</varname> is the name of the geometry column in the row "
@@ -2529,7 +2529,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_output.xml:1027 reference_output.xml:1068
-#: reference_output.xml:1135
+#: reference_output.xml:1146
 #, no-c-format
 msgid "Availability: 2.4.0"
 msgstr ""
@@ -2679,7 +2679,13 @@ msgid ""
 "<paramdef><type>text </type> <parameter>name</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>extent</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef> </"
-"funcprototype>"
+"funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsMVT</function></"
+"funcdef> <paramdef><type>anyelement </type> <parameter>row</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>name</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>extent</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>geom_name</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>feature_id_name</"
+"parameter></paramdef> </funcprototype>"
 msgstr ""
 "<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
@@ -2704,7 +2710,7 @@ msgstr ""
 "funcprototype>"
 
 #. Tag: para
-#: reference_output.xml:1113
+#: reference_output.xml:1121
 #, no-c-format
 msgid ""
 "Return a <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector "
@@ -2718,7 +2724,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1120
+#: reference_output.xml:1128
 #, no-c-format
 msgid ""
 "The <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</"
@@ -2729,7 +2735,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1126
+#: reference_output.xml:1134
 #, no-c-format
 msgid ""
 "Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an element in "
@@ -2738,7 +2744,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1130
+#: reference_output.xml:1138
 #, no-c-format
 msgid ""
 "<varname>name</varname> is the name of the Layer. If NULL it will use the "
@@ -2746,7 +2752,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1131
+#: reference_output.xml:1139
 #, no-c-format
 msgid ""
 "<varname>extent</varname> is the tile extent in screen space as defined by "
@@ -2754,13 +2760,27 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1134
+#: reference_output.xml:1141
+#, no-c-format
+msgid ""
+"<varname>feature_id_name</varname> is the name of the Feature ID column in "
+"the row data. If NULL Feature ID is not set."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1144
+#, no-c-format
+msgid "Enhanced: 3.0 - added support for Feature ID."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1145
 #, no-c-format
 msgid "Enhanced: 2.5.0 - added support parallel query."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_output.xml:1140
+#: reference_output.xml:1151
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_AsMVT(q, 'test', 4096, 'geom') FROM (SELECT 1 AS c1,\n"
