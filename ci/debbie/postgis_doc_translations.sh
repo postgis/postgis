@@ -39,7 +39,8 @@ LDFLAGS="-L${PGPATH}/lib"  ./configure \
   --without-raster
 make clean
 cd doc
-
+make pull-tx
+make update-pot
 
 mv postgis.xml postgis.xml.orig
 sed -e "s:</title>:</title><subtitle><subscript>SVN Revision (<emphasis>${POSTGIS_SVN_REVISION}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
@@ -49,7 +50,7 @@ make check-localized
 #make pdf
 rm -rf images
 mkdir images
-cp html/images/* images 
+cp html/images/* images
 #make epub
 #make -e chunked-html 2>&1 | tee -a doc-errors.log
 #make update-po
