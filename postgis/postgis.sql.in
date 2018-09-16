@@ -326,32 +326,32 @@ CREATE TYPE gidx (
 -------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION geometry_lt(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS 'MODULE_PATHNAME', 'lwgeom_lt'
+	AS 'MODULE_PATHNAME', 'geometry_lt'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION geometry_le(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS 'MODULE_PATHNAME', 'lwgeom_le'
+	AS 'MODULE_PATHNAME', 'geometry_le'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION geometry_gt(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS 'MODULE_PATHNAME', 'lwgeom_gt'
+	AS 'MODULE_PATHNAME', 'geometry_gt'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION geometry_ge(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS 'MODULE_PATHNAME', 'lwgeom_ge'
+	AS 'MODULE_PATHNAME', 'geometry_ge'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION geometry_eq(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS 'MODULE_PATHNAME', 'lwgeom_eq'
+	AS 'MODULE_PATHNAME', 'geometry_eq'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION geometry_cmp(geom1 geometry, geom2 geometry)
 	RETURNS integer
-	AS 'MODULE_PATHNAME', 'lwgeom_cmp'
+	AS 'MODULE_PATHNAME', 'geometry_cmp'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 --

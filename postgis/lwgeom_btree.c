@@ -39,15 +39,15 @@
 #include <string.h>
 #include <stdio.h>
 
-Datum lwgeom_lt(PG_FUNCTION_ARGS);
-Datum lwgeom_le(PG_FUNCTION_ARGS);
-Datum lwgeom_eq(PG_FUNCTION_ARGS);
-Datum lwgeom_ge(PG_FUNCTION_ARGS);
-Datum lwgeom_gt(PG_FUNCTION_ARGS);
-Datum lwgeom_cmp(PG_FUNCTION_ARGS);
+Datum geometry_lt(PG_FUNCTION_ARGS);
+Datum geometry_le(PG_FUNCTION_ARGS);
+Datum geometry_eq(PG_FUNCTION_ARGS);
+Datum geometry_ge(PG_FUNCTION_ARGS);
+Datum geometry_gt(PG_FUNCTION_ARGS);
+Datum geometry_cmp(PG_FUNCTION_ARGS);
 
-PG_FUNCTION_INFO_V1(lwgeom_lt);
-Datum lwgeom_lt(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_lt);
+Datum geometry_lt(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
@@ -60,8 +60,8 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false);
 }
 
-PG_FUNCTION_INFO_V1(lwgeom_le);
-Datum lwgeom_le(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_le);
+Datum geometry_le(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
@@ -74,8 +74,8 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false);
 }
 
-PG_FUNCTION_INFO_V1(lwgeom_eq);
-Datum lwgeom_eq(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_eq);
+Datum geometry_eq(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
@@ -88,8 +88,8 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false);
 }
 
-PG_FUNCTION_INFO_V1(lwgeom_ge);
-Datum lwgeom_ge(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_ge);
+Datum geometry_ge(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
@@ -102,8 +102,8 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false);
 }
 
-PG_FUNCTION_INFO_V1(lwgeom_gt);
-Datum lwgeom_gt(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_gt);
+Datum geometry_gt(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
@@ -116,8 +116,8 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false);
 }
 
-PG_FUNCTION_INFO_V1(lwgeom_cmp);
-Datum lwgeom_cmp(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_cmp);
+Datum geometry_cmp(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
@@ -127,8 +127,8 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(ret);
 }
 
-PG_FUNCTION_INFO_V1(lwgeom_hash);
-Datum lwgeom_hash(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_hash);
+Datum geometry_hash(PG_FUNCTION_ARGS)
 {
 	Datum hval;
 	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);

@@ -430,37 +430,37 @@ CREATE OR REPLACE FUNCTION st_spheroid_out(spheroid)
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_geometry_lt(geometry, geometry)
 	RETURNS bool
-	AS 'MODULE_PATHNAME', 'lwgeom_lt'
+	AS 'MODULE_PATHNAME', 'geometry_lt'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_geometry_le(geometry, geometry)
 	RETURNS bool
-	AS 'MODULE_PATHNAME', 'lwgeom_le'
+	AS 'MODULE_PATHNAME', 'geometry_le'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_geometry_gt(geometry, geometry)
 	RETURNS bool
-	AS 'MODULE_PATHNAME', 'lwgeom_gt'
+	AS 'MODULE_PATHNAME', 'geometry_gt'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_geometry_ge(geometry, geometry)
 	RETURNS bool
-	AS 'MODULE_PATHNAME', 'lwgeom_ge'
+	AS 'MODULE_PATHNAME', 'geometry_ge'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_geometry_eq(geometry, geometry)
 	RETURNS bool
-	AS 'MODULE_PATHNAME', 'lwgeom_eq'
+	AS 'MODULE_PATHNAME', 'geometry_eq'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_geometry_cmp(geometry, geometry)
 	RETURNS integer
-	AS 'MODULE_PATHNAME', 'lwgeom_cmp'
+	AS 'MODULE_PATHNAME', 'geometry_cmp'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 --- end functions that in theory should never have been used
