@@ -626,6 +626,12 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 }
 #endif
 
+static void set_feature_id(mvt_agg_context *ctx, Datum datum)
+{
+	ctx->feature->id = datum;
+	ctx->feature->has_id = true;
+}
+
 static void parse_values(mvt_agg_context *ctx)
 {
 	uint32_t n_keys = ctx->keys_hash_i;
@@ -717,6 +723,11 @@ static void parse_values(mvt_agg_context *ctx)
 			parse_datum_as_string(ctx, typoid, datum, tags, k);
 			break;
 		}
+
+		if (ctx->id_name != NULL && strcmp(key, ctx->id_name) == 0 && (typoid == INT2OID || typoid == INT4OID || typoid == INT8OID)) {
+			set_feature_id(ctx, datum);
+		}
+
 		ctx->row_columns++;
 	}
 
