@@ -21,7 +21,7 @@ CREATE OR REPLACE FUNCTION geography_typmod_in(cstring[])
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_typmod_out(integer)
 	RETURNS cstring
-	AS 'MODULE_PATHNAME','postgis_typmod_out'
+	AS 'MODULE_PATHNAME','gserialized_typmod_out'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0
