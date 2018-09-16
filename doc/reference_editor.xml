@@ -1179,7 +1179,7 @@ SELECT ST_AsText(ST_Normalize(ST_GeomFromText(
 			<note>
 				<para>
 					Only the on-disk size of the geometry is potentially affected by
-					<code>ST_QuantizeCoordinates</code>.  <xref linkend="ST_MemSize"></xref>,
+					<code>ST_QuantizeCoordinates</code>.  <xref linkend="ST_MemSize" />,
 					which reports the in-memory usage of the geometry, will return the
 					the same value regardless of the disk space used by a geometry.
 				</para>
