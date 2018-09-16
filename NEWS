@@ -5,6 +5,7 @@ PostGIS 3.0.0
     (Sandro Santilli)
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
+  - #4128, ST_AsMVT support for Feature ID (Stepan Kuzmin)
 * Enhancements and fixes *
   - #4153, ST_Segmentize now splits segments proportionally (Darafei
     Praliaskouski).

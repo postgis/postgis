@@ -1453,6 +1453,14 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 				<paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
 				<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
 			</funcprototype>
+		        <funcprototype>
+                                <funcdef>bytea <function>ST_AsMVT</function></funcdef>
+                                <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+                                <paramdef><type>text </type> <parameter>name</parameter></paramdef>
+                                <paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>feature_id_name</parameter></paramdef>
+                        </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -1479,7 +1487,10 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 		<para><varname>name</varname> is the name of the Layer. If NULL it will use the string "default".</para>
 		<para><varname>extent</varname> is the tile extent in screen space as defined by the specification. If NULL it will default to 4096.</para>
 		<para><varname>geom_name</varname> is the name of the geometry column in the row data. If NULL it will default to the first found geometry column.</para>
+		<para><varname>feature_id_name</varname> is the name of the Feature ID column in the row data. If NULL Feature ID is not set.</para>
 
+
+	    <para>Enhanced: 3.0 - added support for Feature ID.</para>
 	    <para>Enhanced: 2.5.0 - added support parallel query.</para>
 		<para>Availability: 2.4.0</para>
 	  </refsection>
