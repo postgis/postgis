@@ -139,7 +139,7 @@ msgid ""
 msgstr ""
 "El soporte de Topology se compila por defecto comenzando con PostGIS 2.0, y "
 "puede ser deshabilitado especificando --without-topology configure la opción "
-"en tiempo de compilación como se describe en < xref linkend = "
+"en tiempo de compilación como se describe en <xref linkend = "
 "\"postgis_installation\"/>"
 
 #. Tag: para

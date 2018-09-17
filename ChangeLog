@@ -1,3 +1,154 @@
+2018-09-16 23:58  Regina Obe <lr@pcorp.us>
+
+	* [r16816] Replace long tag with short-tag for xref ST_MemSize. Was
+	  causing problems with po conversion.
+	  Update pots (including getting rid of SVN)
+
+2018-09-16 21:52  Regina Obe <lr@pcorp.us>
+
+	* [r16815] Prepping for 2.5.0 release
+
+2018-09-16 21:36  Regina Obe <lr@pcorp.us>
+
+	* [r16814] Move geofromjson test from tickets to in_geojson so
+	  JSON-C guard can be applied.
+	  Closes #4178 for PostGIS 2.5.0
+
+2018-09-16 20:24  Regina Obe <lr@pcorp.us>
+
+	* [r16813] Try to force liblwgeom source include to be referenced
+	  first before the installed locations.
+	  When installed, the installed one sometimes gets picked up
+	  instead of the source one.
+	  References #4180
+
+2018-09-16 18:51  Regina Obe <lr@pcorp.us>
+
+	* [r16811] remove de_DE, it's redundant with de which is more
+	  complete.
+	  Update all the po files (pulled from transifex)
+	  References #3848
+
+2018-09-16 16:18  Regina Obe <lr@pcorp.us>
+
+	* [r16809] Update pot files
+
+2018-09-16 05:12  Regina Obe <lr@pcorp.us>
+
+	* [r16806] Document that LLV >= 6 is required for JIT compiles.
+	  Closes #4125 for PostGIS 2.5.0
+
+2018-09-14 16:13  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16802] Use qualified names in topology extension install
+	  
+	  References #4160
+
+2018-09-13 20:28  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16786] Handle almost-infinite features when building table
+	  statistics in ANALYZE
+	  References #4144
+
+2018-09-13 19:25  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16784] Avoid array overflow in ANALYZE (References #2985)
+
+2018-09-13 17:25  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16779] Postgres 12 disallows variable length arrays in C,
+	  raster part
+	  
+	  Patch by Laurenz Albe
+	  
+	  Closes #4177
+
+2018-09-13 14:57  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16778] Postgres 12 disallows variable length arrays in C
+	  
+	  Patch by Laurenz Albe
+	  
+	  Closes #4177
+
+2018-09-13 13:29  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16773] ST_Interscts support GEOMETRYCOLLECTION
+	  
+	  By some overlook ST_Intersects has a guard against
+	  GEOMETRYCOLLECTION, while GEOS can handle it.
+	  
+	  Closes #4176
+	  Closes https://github.com/postgis/postgis/pull/297
+
+2018-09-13 13:25  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16772] Add NEWS entry.
+	  
+	  References #4164
+
+2018-09-11 06:07  Regina Obe <lr@pcorp.us>
+
+	* [r16728] Get rid of note that 3.7.0 is not released. Switch
+	  winnie to test and packaged released 3.7.0
+
+2018-09-10 22:27  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16726] NL warning and add regression test
+	  References #4164
+
+2018-09-10 22:18  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16724] Parse error on incorrectly nested GeoJSON input
+	  References #4164
+
+2018-09-07 10:57  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16721] Fix memory leak in lwgeom_offsetcurve
+	  
+	  References #4172
+
+2018-09-06 20:17  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16716] Increase double printing buffer, and strip out assertion
+	  that buffer is never filled
+	  (References #4165)
+
+2018-08-29 09:28  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16709] MVT: Fix resource leak when the first geometry is NULL
+	  
+	  References #4163
+
+2018-08-28 07:51  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16707] Clarify ST_DWithin usage when table stores a point and a
+	  radius.
+	  
+	  Added after IRC discussion.
+	  Thanks github user Boscop for questions and review.
+	  
+	  Closes #4162
+	  Closes https://github.com/postgis/postgis/pull/289
+
+2018-08-28 07:25  Regina Obe <lr@pcorp.us>
+
+	* [r16705] Move ST_QuantizeCoordinates from miscellaneous to
+	  Editors and fix the first example
+
+2018-08-19 22:16  Regina Obe <lr@pcorp.us>
+
+	* [r16700] update translation files, bump version to 2.5.0rc2dev,
+	  update badges
+
+2018-08-19 21:41  Regina Obe <lr@pcorp.us>
+
+	* [r16698] Branch 2.5
+
+2018-08-19 15:09  Regina Obe <lr@pcorp.us>
+
+	* [r16696] Update change log in prep for 2.5.0rc1 release
+
 2018-08-19 14:02  Regina Obe <lr@pcorp.us>
 
 	* [r16695] put in date
