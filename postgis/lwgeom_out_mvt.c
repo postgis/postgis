@@ -102,6 +102,8 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 			ctx->geom_name = text_to_cstring(PG_GETARG_TEXT_P(4));
 		if (PG_NARGS() > 5 && !PG_ARGISNULL(5))
 			ctx->id_name = text_to_cstring(PG_GETARG_TEXT_P(5));
+		else
+			ctx->id_name = NULL;
 		mvt_agg_init_context(ctx);
 	} else {
 		ctx = (mvt_agg_context *) PG_GETARG_POINTER(0);
