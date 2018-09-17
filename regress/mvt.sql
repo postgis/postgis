@@ -385,11 +385,6 @@ SELECT 'TA15', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM
 			ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
 ) AS q;
 
--- feature id encoding tests
-SELECT 'FI1', encode(ST_AsMVT(q, 'test', 4096, 'geom', 'c1'), 'base64') FROM (SELECT 1 AS c1, 'abcd'::text AS c2,
-	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
-		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
-
 -- default values tests
 SELECT 'D1', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1, 'abcd'::text AS c2,
 	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
@@ -430,3 +425,64 @@ SELECT '#3922', length(bytea(ST_AsMVTGeom(
 		true
 		)));
 
+
+-- Feature id encoding tests
+SELECT 'FI1', encode(ST_AsMVT(q, 'test', 4096, 'geom', 'c1'), 'base64') FROM (
+	SELECT 1::smallint AS c1, 'abcd'::text AS c2,
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+) AS q;
+
+SELECT 'FI2', encode(ST_AsMVT(q, 'test', 4096, 'geom', 'c1'), 'base64') FROM (
+	SELECT 1::integer AS c1, 'abcd'::text AS c2,
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+) AS q;
+
+SELECT 'FI3', encode(ST_AsMVT(q, 'test', 4096, 'geom', 'c1'), 'base64') FROM (
+	SELECT 1::bigint AS c1, 'abcd'::text AS c2,
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+) AS q;
+
+-- Column not found
+SELECT 'FI4', encode(ST_AsMVT(q, 'test', 4096, 'geom', 'c1'), 'base64') FROM (
+	SELECT 'abcd'::text AS c2,
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+) AS q;
+
+-- Column of invalid type
+SELECT 'FI5', encode(ST_AsMVT(q, 'test', 4096, 'geom', 'c1'), 'base64') FROM (
+	SELECT 2.0 as c1, 'abcd'::text AS c2,
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+) AS q;
+
+-- Null value is ignored
+SELECT 'FI6', encode(ST_AsMVT(q, 'test', 4096, 'geom', 'c1'), 'base64') FROM (
+	SELECT NULL::integer as c1, 'abcd'::text AS c2,
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+) AS q;
+
+-- Negative value is ignored
+SELECT 'FI7', encode(ST_AsMVT(q, 'test', 4096, 'geom', 'c1'), 'base64') FROM (
+	SELECT -5::integer as c1, 'abcd'::text AS c2,
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+) AS q;
+
+-- When the column is repeated, the fist one is used as id and the second one is added as a property
+SELECT 'FI8', encode(ST_AsMVT(q, 'test', 4096, 'geom', 'c1'), 'base64') FROM (
+	SELECT 1::smallint AS c1, 'abcd'::text AS c2, 20::integer as c1,
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+) AS q;
+
+-- When the column is repeated: Only the ones with the valid types are considered
+SELECT 'FI9', encode(ST_AsMVT(q, 'test', 4096, 'geom', 'c1'), 'base64') FROM (
+	SELECT 1::double precision AS c1, 'abcd'::text AS c2, 20::integer as c1,
+	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+) AS q;
