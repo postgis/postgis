@@ -22,6 +22,8 @@
  *
  **********************************************************************/
 
+#include <string.h>
+
 #include "mvt.h"
 
 #ifdef HAVE_LIBPROTOBUF
@@ -368,11 +370,24 @@ static void parse_column_keys(mvt_agg_context *ctx)
 			}
 		}
 
-		ctx->column_cache.column_keys_index[i] = add_key(ctx, pstrdup(tkey));
+		if (ctx->id_name &&
+			(ctx->id_index == UINT32_MAX) &&
+			(strcmp(tkey, ctx->id_name) == 0) &&
+			(typoid == INT2OID || typoid == INT4OID || typoid == INT8OID))
+		{
+			ctx->id_index = i;
+		}
+		else
+		{
+			ctx->column_cache.column_keys_index[i] = add_key(ctx, pstrdup(tkey));
+		}
 	}
 
 	if (!geom_found)
 		elog(ERROR, "parse_column_keys: no geometry column found");
+
+	if (ctx->id_name != NULL && ctx->id_index == UINT32_MAX)
+		elog(ERROR, "mvt_agg_transfn: Could not find column '%s' of integer type", ctx->id_name);
 }
 
 static void encode_keys(mvt_agg_context *ctx)
@@ -626,10 +641,43 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 }
 #endif
 
-static void set_feature_id(mvt_agg_context *ctx, Datum datum)
+/**
+ * Sets the feature id. Ignores Nulls and negative values
+ */
+static void set_feature_id(mvt_agg_context *ctx, Datum datum, bool isNull)
 {
-	ctx->feature->id = datum;
+	Oid typoid = ctx->column_cache.column_oid[ctx->id_index];
+	int64_t value = INT64_MIN;
+
+	if (isNull)
+	{
+		POSTGIS_DEBUG(3, "set_feature_id: Ignored null value");
+		return;
+	}
+
+	switch (typoid)
+	{
+	case INT2OID:
+		value = DatumGetInt16(datum);
+		break;
+	case INT4OID:
+		value = DatumGetInt32(datum);
+		break;
+	case INT8OID:
+		value = DatumGetInt64(datum);
+		break;
+	default:
+		elog(ERROR, "set_feature_id: Feature id type does not match");
+	}
+
+	if (value < 0)
+	{
+		POSTGIS_DEBUG(3, "set_feature_id: Ignored negative value");
+		return;
+	}
+
 	ctx->feature->has_id = true;
+	ctx->feature->id = (uint64_t) value;
 }
 
 static void parse_values(mvt_agg_context *ctx)
@@ -665,6 +713,12 @@ static void parse_values(mvt_agg_context *ctx)
 
 		if (i == ctx->geom_index)
 			continue;
+
+		if (i == ctx->id_index)
+		{
+			set_feature_id(ctx, datum, cc.nulls[i]);
+			continue;
+		}
 
 		if (cc.nulls[i])
 		{
@@ -722,10 +776,6 @@ static void parse_values(mvt_agg_context *ctx)
 		default:
 			parse_datum_as_string(ctx, typoid, datum, tags, k);
 			break;
-		}
-
-		if (ctx->id_name != NULL && strcmp(key, ctx->id_name) == 0 && (typoid == INT2OID || typoid == INT4OID || typoid == INT8OID)) {
-			set_feature_id(ctx, datum);
 		}
 
 		ctx->row_columns++;
@@ -916,6 +966,7 @@ void mvt_agg_init_context(mvt_agg_context *ctx)
 	ctx->bool_values_hash = NULL;
 	ctx->values_hash_i = 0;
 	ctx->keys_hash_i = 0;
+	ctx->id_index = UINT32_MAX;
 	ctx->geom_index = UINT32_MAX;
 
 	memset(&ctx->column_cache, 0, sizeof(ctx->column_cache));
