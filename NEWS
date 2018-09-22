@@ -1,3 +1,12 @@
+PostGIS 2.5.0rc3
+XXXX/XX/XX
+WARNING: If compiling with PostgreSQL+JIT, LLVM >= 6 is required
+
+New since Postgis 2.5.0rc2:
+  - #4181, St_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)
+  - #4156, ST_ChaikinSmoothing: also smooth start/end point of
+  polygon by default (Darafei Praliaskouski)
+
 PostGIS 2.5.0rc2
 2018/09/16
 WARNING: If compiling with PostgreSQL+JIT, LLVM >= 6 is required
