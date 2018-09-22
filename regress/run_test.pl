@@ -111,12 +111,12 @@ if ( $OPT_EXTENSIONS )
 	$OPT_WITH_RASTER = 1; # implied (TODO: drop implication !)
 }
 
+# Split-raster extension was introduced in PostGIS-3.0.0
 sub has_split_raster_ext
 {
   my $fullver = shift;
   my @ver = split(/\./, $fullver);
-  return 0 if ( $ver[0] < 2 );
-  return 0 if ( $ver[0] == 2 && $ver[1] < 5 );
+  return 0 if ( $ver[0] < 3 );
   return 1;
 }
 
