@@ -18,6 +18,7 @@ PostGIS 3.0.0
   - #4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)
   - #4177, Postgres 12 disallows variable length arrays in C (Laurenz Albe)
   - #4160, Use qualified names in topology extension install (Raúl Marín)
+  - #4181, St_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)
 
 PostGIS 2.5.0rc1
 2018/08/19
