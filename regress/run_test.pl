@@ -106,11 +106,6 @@ if ( $OPT_UPGRADE_PATH )
   print "Upgrade path: ${OPT_UPGRADE_FROM} --> ${OPT_UPGRADE_TO}\n";
 }
 
-if ( $OPT_EXTENSIONS )
-{
-	$OPT_WITH_RASTER = 1; # implied (TODO: drop implication !)
-}
-
 # Split-raster extension was introduced in PostGIS-3.0.0
 sub has_split_raster_ext
 {
