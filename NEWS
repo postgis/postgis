@@ -1,69 +1,9 @@
-PostGIS 2.5.0rc3
-XXXX/XX/XX
-WARNING: If compiling with PostgreSQL+JIT, LLVM >= 6 is required
-
-New since Postgis 2.5.0rc2:
-  - #4181, St_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)
-  - #4156, ST_ChaikinSmoothing: also smooth start/end point of
-  polygon by default (Darafei Praliaskouski)
-
-PostGIS 2.5.0rc2
-2018/09/16
-WARNING: If compiling with PostgreSQL+JIT, LLVM >= 6 is required
-
-New since PostGIS 2.5.0rc1
-  - #4162, ST_DWithin documentation examples for storing geometry and
-    radius in table (Darafei Praliaskouski, github user Boscop).
-  - #4163, MVT: Fix resource leak when the first geometry is NULL (Raúl Marín)
-  - #4172, Fix memory leak in lwgeom_offsetcurve (Raúl Marín)
-  - #4164, Parse error on incorrectly nested GeoJSON input (Paul Ramsey)
-  - #4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)
-  - #4177, Postgres 12 disallows variable length arrays in C (Laurenz Albe)
-  - #4160, Use qualified names in topology extension install (Raúl Marín)
-  - #4180, installed liblwgeom includes sometimes getting used
-           instead of source ones (Regina Obe)
-
-PostGIS 2.5.0rc1
-2018/08/19
-New since PostGIS 2.5.0beta2
-  - #4146, Fix compilation error against Postgres 12 (Raúl Marín).
-  - #4147, #4148, Honor SOURCE_DATE_EPOCH when present (Christoph Berg).
-
-PostGIS 2.5.0beta2
-2018/08/11
-New since PostGIS 2.5.0beta1
-  - #4115, Fix a bug that created MVTs with incorrect property values under
-    parallel plans (Raúl Marín).
-  - #4120, ST_AsMVTGeom: Clip using tile coordinates (Raúl Marín).
-  - #4132, ST_Intersection on Raster now works without throwing TopologyException
-    (Vinícius A.B. Schmidt, Darafei Praliaskouski)
-  - #4109, Fix WKT parser accepting and interpreting numbers with
-    multiple dots (Raúl Marín, Paul Ramsey)
-  - #4140, Use user-provided CFLAGS in address standardizer and the
-    topology module (Raúl Marín)
-  - #4143, Fix backend crash when ST_OffsetCurve fails (Dan Baston)
-  - #4145, Speedup MVT column parsing (Raúl Marín)
-
-  See PostGIS 2.5.0 section for full details
-
-
-PostGIS 2.5.0beta1
-2018/07/03
-New since PostGIS 2.5.0alpha
-  - #1847, spgist 2d and 3d support for PG 11+
-    (Esteban Zimányi and Arthur Lesuisse from Université Libre de Bruxelles (ULB),
-      Darafei Praliaskouski)
-
-  - Numerous packaging fixes
-  See PostGIS 2.5.0 section for full details
-
-
-PostGIS 2.5.0alpha
-2018/05/28
-See PostGIS 2.5.0 section for details
-
 PostGIS 2.5.0
-2018/xx/xx
+2018/09/XX
+WARNING: If compiling with PostgreSQL+JIT, LLVM >= 6 is required
+Supported PostgreSQL versions for this release are:
+PostgreSQL 9.4 - PostgreSQL 12 (in development)
+GEOS >= 3.5
 
 * New Features *
   - #1847, spgist 2d and 3d support for PG 11+
@@ -91,8 +31,9 @@ PostGIS 2.5.0
   - #3885, version number removed from address_standardize lib file
           (Regina Obe)
   - #3893, raster support functions can only be loaded in the same schema
-           with core PostGIS functions.
+           with core PostGIS functions. (Sandro Santilli)
   - #4035, remove dummy pgis_abs type from aggregate/collect routines.
+           (Paul Ramsey)
   - #4069, drop support for GEOS < 3.5 and PostgreSQL < 9.4 (Regina Obe)
   - #4082, ST_BandMetaData extended to include filesize, timestamp (Even Rouault)
 
@@ -141,6 +82,34 @@ PostGIS 2.5.0
   - #4115, Fix a bug that created MVTs with incorrect property values under
     parallel plans (Raúl Marín).
   - #4120, ST_AsMVTGeom: Clip using tile coordinates (Raúl Marín).
+  - #4132, ST_Intersection on Raster now works without throwing TopologyException
+          (Vinícius A.B. Schmidt, Darafei Praliaskouski)
+  - #4177, #4180 Support for PostgreSQL 12 dev branch (Laurenz Albe, Raúl Marín)
+  - #4156, ST_ChaikinSmoothing: also smooth start/end point of
+  polygon by default (Darafei Praliaskouski)
+
+PostGIS 2.5.0rc2
+2018/09/16
+Refer to https://trac.osgeo.org/postgis/browser/tags/2.5.0rc2/NEWS
+
+PostGIS 2.5.0rc1
+2018/08/19
+Refer to https://trac.osgeo.org/postgis/browser/tags/2.5.0rc1/NEWS
+
+PostGIS 2.5.0beta2
+2018/08/11
+Refer to https://trac.osgeo.org/postgis/browser/tags/2.5.0beta2/NEWS
+
+
+PostGIS 2.5.0beta1
+2018/07/03
+Refer to https://trac.osgeo.org/postgis/browser/tags/2.5.0beta1/NEWS
+
+
+PostGIS 2.5.0alpha
+2018/05/28
+Refer to https://trac.osgeo.org/postgis/browser/tags/2.5.0alpha/NEWS
+
 
 PostGIS 2.4.4
 2018/04/08
