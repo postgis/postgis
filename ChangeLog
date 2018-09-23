@@ -1,3 +1,34 @@
+2018-09-23 01:07  Regina Obe <lr@pcorp.us>
+
+	* [r16833] Prep for 2.5.0 release
+
+2018-09-22 13:06  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16832] St_AsMVTGeom: Avoid type changes due to validation
+	  
+	  References #4181
+
+2018-09-21 13:20  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16827] ST_ChaikinSmoothing: also smooth start/end point of
+	  polygon by default
+	  
+	  Closes #4156
+	  Closes https://github.com/postgis/postgis/pull/305
+
+2018-09-17 05:05  Regina Obe <lr@pcorp.us>
+
+	* [r16823] Flip version to 2.5.0rc3dev
+
+2018-09-17 03:01  Regina Obe <lr@pcorp.us>
+
+	* [r16821] Add upgrade path from 2.4.5
+
+2018-09-17 02:44  Regina Obe <lr@pcorp.us>
+
+	* [r16819] Fix parse errors in po files. Update ChangeLog in prep
+	  for release
+
 2018-09-16 23:58  Regina Obe <lr@pcorp.us>
 
 	* [r16816] Replace long tag with short-tag for xref ST_MemSize. Was
