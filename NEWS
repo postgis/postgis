@@ -1,5 +1,5 @@
 PostGIS 2.5.0
-2018/09/XX
+2018/09/23
 WARNING: If compiling with PostgreSQL+JIT, LLVM >= 6 is required
 Supported PostgreSQL versions for this release are:
 PostgreSQL 9.4 - PostgreSQL 12 (in development)

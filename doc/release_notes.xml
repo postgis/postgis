@@ -4,7 +4,7 @@
     <subtitle>Release Notes</subtitle>
     <sect1>
       <title>Release 2.5.0</title>
-      <para>Release date: 2018/09/xx</para>
+      <para>Release date: 2018/09/23</para>
       <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
       <para>Supported PostgreSQL versions for this release are:
       PostgreSQL 9.4 - PostgreSQL 12 (in development)

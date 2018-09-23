@@ -37,7 +37,22 @@ Datum RASTER_out(PG_FUNCTION_ARGS);
 
 Datum RASTER_to_bytea(PG_FUNCTION_ARGS);
 
+/** obsolete as of 2.5.0 stubbing for smoother upgrade from 2.4 **/
+Datum RASTER_to_binary(PG_FUNCTION_ARGS);
+
 Datum RASTER_noop(PG_FUNCTION_ARGS);
+
+/**
+ * Legacy return error if called
+ * Removed in PostGIS 2.5.0
+ */
+PG_FUNCTION_INFO_V1(RASTER_to_binary);
+Datum RASTER_to_binary(PG_FUNCTION_ARGS)
+{
+
+	elog(ERROR, "RASTER_to_binary: This function is out of date. Run ALTER EXTENSION postgis UPDATE; to fix");
+
+}
 
 /**
  * Input is Hex WKB
