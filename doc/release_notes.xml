@@ -3,8 +3,12 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
-      <title>Release 2.5.0rc1</title>
-      <para>Release date: 2018/08/19</para>
+      <title>Release 2.5.0</title>
+      <para>Release date: 2018/09/23</para>
+      <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
+      <para>Supported PostgreSQL versions for this release are:
+      PostgreSQL 9.4 - PostgreSQL 12 (in development)
+      GEOS &gt;= 3.5</para>
       <simplesect>
         <title>New Features</title>
         <para>#1847, spgist 2d and 3d support for PG 11+
@@ -30,64 +34,76 @@
 
       <simplesect>
         <title>Breaking Changes</title>
-        <para>#4054, ST_SimplifyVW changed from &gt; tolerance to &gt;= tolerance</para>
-        <para>#3885, version number removed from address_standardize lib file
-                  (Regina Obe)</para>
-        <para>#3893, raster support functions can only be loaded in the same schema
-                  with core PostGIS functions.</para>
-        <para>#4035, remove dummy pgis_abs type from aggregate/collect routines.</para>
-        <para>#4069, drop support for GEOS &lt; 3.5 and PostgreSQL &lt; 9.4 (Regina Obe)</para>
-        <para>#4082, ST_BandMetaData extended to include filesize, timestamp (Even Rouault)</para>
-      </simplesect>
-
-      <simplesect><title>Enhancements and Fixes</title>
+        <para>Upgrade scripts from multiple old versions are now all symlinks
+          to a single upgrade script (Sandro Santilli)</para>
         <para>#3944, Update to EPSG register v9.2 (Even Rouault)</para>
         <para>#3927, Parallel implementation of ST_AsMVT</para>
         <para>#3925, Simplify geometry using map grid cell size before generating MVT</para>
         <para>#3899, BTree sort order is now defined on collections of EMPTY and
-                  same-prefix geometries (Darafei Praliaskouski)</para>
+                same-prefix geometries (Darafei Praliaskouski)</para>
         <para>#3864, Performance improvement for sorting POINT geometries
-                  (Darafei Praliaskouski)</para>
-        <para>#3900, GCC warnings fixed, make -j is now working (Darafei Praliaskouski)</para>
-        <para>TopoGeo_addLinestring robustness improvements (Sandro Santilli)
-            #1855, #1946, #3718, #3838</para>
+                (Darafei Praliaskouski)</para>
+        <para>#3900, GCC warnings fixed, make -j is now working (Darafei Praliaskouski)
+        - TopoGeo_addLinestring robustness improvements (Sandro Santilli)
+          #1855, #1946, #3718, #3838</para>
         <para>#3234, Do not accept EMPTY points as topology nodes (Sandro Santilli)</para>
         <para>#1014, Hashable geometry, allowing direct use in CTE signatures (Paul Ramsey)</para>
         <para>#3097, Really allow MULTILINESTRING blades in ST_Split() (Paul Ramsey)</para>
-        <para>#3942, geojson: Do not include private header for json-c >= 0.13 (Björn Esser)</para>
+        <para>#3942, geojson: Do not include private header for json-c &gt;= 0.13 (Björn Esser)</para>
         <para>#3954, ST_GeometricMedian now supports point weights (Darafei Praliaskouski)</para>
-        <para>#3965, ST_ClusterKMeans used to lose some clusters on initialization
-                  (Darafei Praliaskouski)</para>
-        <para>#3971, ST_ClusterKMeans now uses better initial seed (Darafei Praliaskouski)</para>
-        <para>#3977, ST_ClusterKMeans is now faster and simpler (Darafei Praliaskouski)</para>
+        <para>#3965, #3971, #3977, #4071 ST_ClusterKMeans rewritten: better initialization,
+                faster convergence, K=2 even faster (Darafei Praliaskouski)</para>
         <para>#3982, ST_AsEncodedPolyline supports LINESTRING EMPTY and MULTIPOINT EMPTY
-                  (Darafei Praliaskouski)</para>
+                (Darafei Praliaskouski)</para>
         <para>#3986, ST_AsText now has second argument to limit decimal digits
-                  (Marc Ducobu, Darafei Praliaskouski)</para>
+                (Marc Ducobu, Darafei Praliaskouski)</para>
         <para>#4020, Casting from box3d to geometry now returns correctly connected
-                  PolyhedralSurface (Matthias Bay)</para>
+                PolyhedralSurface (Matthias Bay)</para>
         <para>#2508, ST_OffsetCurve now works with collections (Darafei Praliaskouski)</para>
         <para>#4006, ST_GeomFromGeoJSON support for json and jsonb as input
-                  (Paul Ramsey, Regina Obe)</para>
-        <para>#4037, Invalid input geometry is fixed with MakeValid for GEOS exceptions in
-                  ST_Intersection, ST_Union, ST_Difference, ST_SymDifference (Darafei
-                  Praliaskouski)</para>
+                (Paul Ramsey, Regina Obe)</para>
         <para>#4038, ST_Subdivide now selects pivot for geometry split that reuses input
-                  vertices. ST_ClipByBox2D is stubbed with ST_Intersection because of
-                  robustness issues. (Darafei Praliaskouski)</para>
+                vertices. (Darafei Praliaskouski)</para>
         <para>#4025, #4032 Fixed precision issue in ST_ClosestPointOfApproach,
-                  ST_DistanceCPA, and ST_CPAWithin (Paul Ramsey, Darafei Praliaskouski)</para>
-        <para>#4071, ST_ClusterKMeans crash on NULL/EMPTY fixed (Darafei Praliaskouski)</para>
+                ST_DistanceCPA, and ST_CPAWithin (Paul Ramsey, Darafei Praliaskouski)</para>
         <para>#4076, Reduce use of GEOS in topology implementation (Björn Harrtell)</para>
-        <para>#4080, Add external raster band index to ST_BandMetaData</para>
-        <para>Add Raster Tips section to Documentation for information about
-            Raster behavior (e.g. Out-DB performance, maximum open files)</para>
+        <para>#4080, Add external raster band index to ST_BandMetaData
+        - Add Raster Tips section to Documentation for information about
+          Raster behavior (e.g. Out-DB performance, maximum open files)</para>
         <para>#4084: Fixed wrong code-comment regarding front/back of BOX3D (Matthias Bay)</para>
         <para>#4060, #4094, PostgreSQL JIT support (Raúl Marín, Laurenz Albe)</para>
+        <para>#3960, ST_Centroid now uses lwgeom_centroid (Darafei Praliaskouski)</para>
+        <para>#4027, Remove duplicated code in lwgeom_geos (Darafei Praliaskouski,
+                Daniel Baston)</para>
+        <para>#4115, Fix a bug that created MVTs with incorrect property values under
+          parallel plans (Raúl Marín).</para>
         <para>#4120, ST_AsMVTGeom: Clip using tile coordinates (Raúl Marín).</para>
-        <para>#4145, Speedup MVT column parsing (Raúl Marín)</para>
-        <para>#4146, Fix compilation error against Postgres 12 (Raúl Marín).</para>
-        <para>#4147, #4148, Honor SOURCE_DATE_EPOCH when present (Christoph Berg)</para>
+        <para>#4132, ST_Intersection on Raster now works without throwing TopologyException
+                (Vinícius A.B. Schmidt, Darafei Praliaskouski)</para>
+        <para>#4177, #4180 Support for PostgreSQL 12 dev branch (Laurenz Albe, Raúl Marín)</para>
+        <para>#4156, ST_ChaikinSmoothing: also smooth start/end point of
+        polygon by default (Darafei Praliaskouski)</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
+      <title>Release 2.4.5</title>
+      <para>Release date: 2018/09/12</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect><title>Bug Fixes</title>
+        <para>#4031, Survive to big MaxError tolerances passed to ST_CurveToLine (Sandro Santilli)</para>
+        <para>#4058, Fix infinite loop in linearization of a big radius small arc (Sandro Santilli)</para>
+        <para>#4071, ST_ClusterKMeans crash on NULL/EMPTY fixed (Darafei Praliaskouski)</para>
+        <para>#4079, ensure St_AsMVTGeom outputs CW oriented polygons (Paul Ramsey)</para>
+        <para>#4070, use standard interruption error code on GEOS interruptions (Paul Ramsey)</para>
+        <para>#3980, delay freeing input until processing complete (lucasvr)</para>
+        <para>#4090, PG 11 support (Paul Ramsey, Raúl Marín)</para>
+        <para>#4077, Serialization failure for particular empty geometry cases (Paul Ramsey)</para>
+        <para>#3997, fix bug in lwgeom_median and avoid division by zero (Raúl Marín)</para>
+        <para>#4093, Inconsistent results from qsort callback (yugr)</para>
+        <para>#4081, Geography DWithin() issues for certain cases (Paul Ramsey)</para>
+        <para>#4105, Parallel build of tarball (Bas Couwenberg)</para>
+        <para>#4163, MVT: Fix resource leak when the first geometry is NULL (Raúl Marín)</para>
       </simplesect>
     </sect1>
 

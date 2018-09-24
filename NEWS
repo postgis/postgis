@@ -20,47 +20,12 @@ PostGIS 3.0.0
   - #4160, Use qualified names in topology extension install (Raúl Marín)
   - #4181, St_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)
 
-PostGIS 2.5.0rc1
-2018/08/19
-New since PostGIS 2.5.0beta2
-  - #4146, Fix compilation error against Postgres 12 (Raúl Marín).
-  - #4147, #4148, Honor SOURCE_DATE_EPOCH when present (Christoph Berg).
-
-PostGIS 2.5.0beta2
-2018/08/11
-New since PostGIS 2.5.0beta1
-  - #4115, Fix a bug that created MVTs with incorrect property values under
-    parallel plans (Raúl Marín).
-  - #4120, ST_AsMVTGeom: Clip using tile coordinates (Raúl Marín).
-  - #4132, ST_Intersection on Raster now works without throwing TopologyException
-    (Vinícius A.B. Schmidt, Darafei Praliaskouski)
-  - #4109, Fix WKT parser accepting and interpreting numbers with
-    multiple dots (Raúl Marín, Paul Ramsey)
-  - #4140, Use user-provided CFLAGS in address standardizer and the
-    topology module (Raúl Marín)
-  - #4143, Fix backend crash when ST_OffsetCurve fails (Dan Baston)
-  - #4145, Speedup MVT column parsing (Raúl Marín)
-
-  See PostGIS 2.5.0 section for full details
-
-
-PostGIS 2.5.0beta1
-2018/07/03
-New since PostGIS 2.5.0alpha
-  - #1847, spgist 2d and 3d support for PG 11+
-    (Esteban Zimányi and Arthur Lesuisse from Université Libre de Bruxelles (ULB),
-      Darafei Praliaskouski)
-
-  - Numerous packaging fixes
-  See PostGIS 2.5.0 section for full details
-
-
-PostGIS 2.5.0alpha
-2018/05/28
-See PostGIS 2.5.0 section for details
-
 PostGIS 2.5.0
-2018/xx/xx
+2018/09/23
+WARNING: If compiling with PostgreSQL+JIT, LLVM >= 6 is required
+Supported PostgreSQL versions for this release are:
+PostgreSQL 9.4 - PostgreSQL 12 (in development)
+GEOS >= 3.5
 
 * New Features *
   - #1847, spgist 2d and 3d support for PG 11+
@@ -88,8 +53,9 @@ PostGIS 2.5.0
   - #3885, version number removed from address_standardize lib file
           (Regina Obe)
   - #3893, raster support functions can only be loaded in the same schema
-           with core PostGIS functions.
+           with core PostGIS functions. (Sandro Santilli)
   - #4035, remove dummy pgis_abs type from aggregate/collect routines.
+           (Paul Ramsey)
   - #4069, drop support for GEOS < 3.5 and PostgreSQL < 9.4 (Regina Obe)
   - #4082, ST_BandMetaData extended to include filesize, timestamp (Even Rouault)
 
@@ -138,6 +104,33 @@ PostGIS 2.5.0
   - #4115, Fix a bug that created MVTs with incorrect property values under
     parallel plans (Raúl Marín).
   - #4120, ST_AsMVTGeom: Clip using tile coordinates (Raúl Marín).
+  - #4132, ST_Intersection on Raster now works without throwing TopologyException
+          (Vinícius A.B. Schmidt, Darafei Praliaskouski)
+  - #4177, #4180 Support for PostgreSQL 12 dev branch (Laurenz Albe, Raúl Marín)
+  - #4156, ST_ChaikinSmoothing: also smooth start/end point of
+  polygon by default (Darafei Praliaskouski)
+
+PostGIS 2.4.5
+2018/09/12
+
+  * Bug Fixes and Enhancements
+
+  - #4031, Survive to big MaxError tolerances passed to ST_CurveToLine
+           (Sandro Santilli)
+  - #4058, Fix infinite loop in linearization of a big radius small arc
+           (Sandro Santilli)
+  - #4071, ST_ClusterKMeans crash on NULL/EMPTY fixed (Darafei Praliaskouski)
+  - #4079, ensure St_AsMVTGeom outputs CW oriented polygons (Paul Ramsey)
+  - #4070, use standard interruption error code on GEOS interruptions
+           (Paul Ramsey)
+  - #3980, delay freeing input until processing complete (lucasvr)
+  - #4090, PG 11 support (Paul Ramsey, Raúl Marín)
+  - #4077, Serialization failure for particular empty geometry cases (Paul Ramsey)
+  - #3997, fix bug in lwgeom_median and avoid division by zero (Raúl Marín)
+  - #4093, Inconsistent results from qsort callback (yugr)
+  - #4081, Geography DWithin() issues for certain cases (Paul Ramsey)
+  - #4105, Parallel build of tarball (Bas Couwenberg)
+  - #4163, MVT: Fix resource leak when the first geometry is NULL (Raúl Marín)
 
 PostGIS 2.4.4
 2018/04/08
