@@ -3,6 +3,7 @@ PostGIS 2.4.6
 
   * Bug Fixes and Enhancements
   - #4160, Use qualified names in topology extension install (Raúl Marín)
+  - #4181, St_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)
 
 
 PostGIS 2.4.5
