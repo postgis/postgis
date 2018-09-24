@@ -1509,6 +1509,30 @@ sub upgrade_spatial_extensions
         }
       }
     }
+		else
+		{
+			# Raster support was not requested, so drop it if
+			# left unpackaged
+      if ( $OPT_UPGRADE_FROM
+           && ! has_split_raster_ext($OPT_UPGRADE_FROM) )
+			{
+        $sql = "CREATE EXTENSION postgis_raster VERSION '${nextver}' FROM unpackaged";
+        $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+        $rv = system($cmd);
+        if ( $rv ) {
+          fail "Error encountered creating EXTENSION POSTGIS_RASTER from unpackaged on upgrade", $REGRESS_LOG;
+          die;
+        }
+
+        $sql = "DROP EXTENSION postgis_raster";
+        $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+        $rv = system($cmd);
+        if ( $rv ) {
+          fail "Error encountered dropping EXTENSION POSTGIS_RASTER on upgrade", $REGRESS_LOG;
+          die;
+        }
+			}
+		}
 
     if ( $OPT_WITH_TOPO )
     {
