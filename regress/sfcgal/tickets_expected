@@ -245,3 +245,8 @@ ERROR:  invalid GML representation
 #2110.2|t
 #2110.3|t
 #2145|6792004
+#3255
+NOTICE:  During difference_3d(A,B) :
+NOTICE:    with A: POINT(-11/1 40/1)
+NOTICE:     and B: POLYGON((1/1 2/1,1/1 2/1,1/1 2/1,1/1 2/1))
+ERROR:  When converting to 3D - Polygon is invalid : ring 0 degenerated to a point : POLYGON((1/1 2/1 0/1,1/1 2/1 0/1,1/1 2/1 0/1,1/1 2/1 0/1))

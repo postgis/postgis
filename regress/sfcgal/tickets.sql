@@ -808,5 +808,9 @@ SELECT '#2110.3', 'POINT(0 0)'::geometry = 'POINT(0 0)'::geometry;
 SELECT '#2145',
 round(ST_Length(St_Segmentize(ST_GeographyFromText('LINESTRING(-89.3000030518 28.2000007629,-89.1999969482 89.1999969482,-89.1999969482 89.1999969482)'), 10000))::numeric,0);
 
+SELECT '#3255';
+-- should raise an error
+SELECT ST_3DDifference('POINT(-11 40)'::geometry, 'POLYGON((1 2,1 2,1 2,1 2))'::geometry);
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
