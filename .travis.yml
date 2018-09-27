@@ -23,6 +23,11 @@ script:
   - docker build -t pgtest .
   - docker run pgtest
 
+after_success:
+  - docker cp pgtest:/src .
+  - docker rm pgtest
+  - bash .github/codecov.bash
+
 notifications:
   email: false
   irc:
