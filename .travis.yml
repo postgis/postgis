@@ -19,16 +19,12 @@ matrix:
 script:
   - echo "FROM postgis/postgis-build-env:${tag}" > Dockerfile
   - echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
-  - echo "CMD ci/travis/run_tests.sh" >> Dockerfile
+  - echo "CMD ci/travis/run_tests.sh && bash .github/codecov.bash" >> Dockerfile
   - docker build -t pgtest .
   - docker run --name pgtest-${TRAVIS_BUILD_NUMBER} pgtest
 
 after_success:
-  - docker cp pgtest-${TRAVIS_BUILD_NUMBER}:/src/postgis/liblwgeom .
-  - docker cp pgtest-${TRAVIS_BUILD_NUMBER}:/src/postgis/postgis .
-  - docker cp pgtest-${TRAVIS_BUILD_NUMBER}:/src/postgis/loader .
   - docker rm pgtest-${TRAVIS_BUILD_NUMBER}
-  - bash .github/codecov.bash
 
 notifications:
   email: false
