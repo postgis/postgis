@@ -2190,15 +2190,15 @@ lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid)
 
 
 /* Prototype for recursion */
-static int lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col);
+static void lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col);
 
-static int
+static void
 lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col)
 {
 	const uint32_t maxdepth = 50;
 	GBOX clip, subbox1, subbox2;
 	uint32_t nvertices = 0;
-	uint32_t i, n = 0;
+	uint32_t i;
 	uint32_t split_ordinate;
 	double width;
 	double height;
@@ -2217,12 +2217,8 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 	if ( width == 0.0 && height == 0.0 )
 	{
 		if ( geom->type == POINTTYPE && dimension == 0)
-		{
 			lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
-			return 1;
-		}
-		else
-			return 0;
+		return;
 	}
 
 	if (width == 0.0)
@@ -2242,19 +2238,18 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 	if ( lwgeom_is_collection(geom) && geom->type != MULTIPOINTTYPE )
 	{
 		LWCOLLECTION *incol = (LWCOLLECTION*)geom;
-		int n = 0;
 		/* Don't increment depth yet, since we aren't actually
 		 * subdividing geometries yet */
 		for ( i = 0; i < incol->ngeoms; i++ )
-			n += lwgeom_subdivide_recursive(incol->geoms[i], dimension, maxvertices, depth, col);
-		return n;
+			lwgeom_subdivide_recursive(incol->geoms[i], dimension, maxvertices, depth, col);
+		return;
 	}
 
 	if (lwgeom_dimension(geom) < dimension)
 	{
 		/* We've hit a lower dimension object produced by clipping at
 		 * a shallower recursion level. Ignore it. */
-		return 0;
+		return;
 	}
 
 	/* But don't go too far. 2^50 ~= 10^15, that's enough subdivision */
@@ -2262,19 +2257,19 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 	if ( depth > maxdepth )
 	{
 		lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
-		return 1;
+		return;
 	}
 
 	nvertices = lwgeom_count_vertices(geom);
 
 	/* Skip empties entirely */
-	if (nvertices == 0) return 0;
+	if (nvertices == 0) return;
 
 	/* If it is under the vertex tolerance, just add it, we're done */
 	if (nvertices <= maxvertices)
 	{
 		lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
-		return 1;
+		return;
 	}
 
 	split_ordinate = (width > height) ? 0 : 1;
@@ -2339,27 +2334,40 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 
 	++depth;
 
-	LWGEOM* subbox = (LWGEOM*) lwpoly_construct_envelope(geom->srid, subbox1.xmin, subbox1.ymin, subbox1.xmax, subbox1.ymax);
-	clipped = lwgeom_intersection(geom, subbox);
-	lwgeom_simplify_in_place(clipped, 0.0, LW_TRUE);
-	lwgeom_free(subbox);
-	if (clipped)
+	LWCOLLECTION *col1 = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
+	LWCOLLECTION *col2 = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
+	#pragma omp parallel sections
 	{
-		n += lwgeom_subdivide_recursive(clipped, dimension, maxvertices, depth, col);
-		lwgeom_free(clipped);
+		#pragma omp section
+		{
+			LWGEOM* subbox = (LWGEOM*) lwpoly_construct_envelope(geom->srid, subbox1.xmin, subbox1.ymin, subbox1.xmax, subbox1.ymax);
+			clipped = lwgeom_intersection(geom, subbox);
+			lwgeom_simplify_in_place(clipped, 0.0, LW_TRUE);
+			lwgeom_free(subbox);
+			if (clipped)
+			{
+				lwgeom_subdivide_recursive(clipped, dimension, maxvertices, depth, col1);
+				lwgeom_free(clipped);
+			}
+		}
+		#pragma omp section
+		{
+			LWGEOM* subbox = (LWGEOM*) lwpoly_construct_envelope(geom->srid, subbox2.xmin, subbox2.ymin, subbox2.xmax, subbox2.ymax);
+			clipped = lwgeom_intersection(geom, subbox);
+			lwgeom_simplify_in_place(clipped, 0.0, LW_TRUE);
+			lwgeom_free(subbox);
+			if (clipped)
+			{
+				lwgeom_subdivide_recursive(clipped, dimension, maxvertices, depth, col2);
+				lwgeom_free(clipped);
+			}
+		}
 	}
-
-	subbox = (LWGEOM*) lwpoly_construct_envelope(geom->srid, subbox2.xmin, subbox2.ymin, subbox2.xmax, subbox2.ymax);
-	clipped = lwgeom_intersection(geom, subbox);
-	lwgeom_simplify_in_place(clipped, 0.0, LW_TRUE);
-	lwgeom_free(subbox);
-	if (clipped)
-	{
-		n += lwgeom_subdivide_recursive(clipped, dimension, maxvertices, depth, col);
-		lwgeom_free(clipped);
-	}
-
-	return n;
+	col = lwcollection_concat_in_place(col, col1);
+	lwcollection_release(col1);
+	col = lwcollection_concat_in_place(col, col2);
+	lwcollection_release(col2);
+	return;
 }
 
 LWCOLLECTION *
@@ -2384,7 +2392,6 @@ lwgeom_subdivide(const LWGEOM *geom, uint32_t maxvertices)
 	lwgeom_set_srid((LWGEOM*)col, geom->srid);
 	return col;
 }
-
 
 int
 lwgeom_is_trajectory(const LWGEOM *geom)
