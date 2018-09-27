@@ -21,11 +21,11 @@ script:
   - echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
   - echo "CMD ci/travis/run_tests.sh" >> Dockerfile
   - docker build -t pgtest .
-  - docker run pgtest
+  - docker run --name pgtest-${TRAVIS_BUILD_NUMBER} pgtest
 
 after_success:
-  - docker cp pgtest:/src .
-  - docker rm pgtest
+  - docker cp pgtest-${TRAVIS_BUILD_NUMBER}:/src .
+  - docker rm pgtest-${TRAVIS_BUILD_NUMBER}
   - bash .github/codecov.bash
 
 notifications:
