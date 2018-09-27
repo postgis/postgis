@@ -330,7 +330,7 @@ static uint8_t* empty_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t varia
 	if ( geom->type == POINTTYPE )
 	{
 		const LWPOINT *pt = (LWPOINT*)geom;
-		static double nn = NAN;
+		double nn = nan("0");
 		int i;
 		for ( i = 0; i < FLAGS_NDIMS(pt->point->flags); i++ )
 		{

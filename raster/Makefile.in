@@ -20,7 +20,7 @@
 #############################################################################
 
 CC=@CC@
-CFLAGS=-I../liblwgeom @CFLAGS@ @WARNFLAGS@
+CFLAGS=-I../liblwgeom @WARNFLAGS@ @CFLAGS@
 LDFLAGS = @LDFLAGS@
 
 all: @RT_CORE_LIB@ @RT_PG_LIB@ @RT_LOADER@ @RT_POSTGIS_SQL@

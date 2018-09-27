@@ -15,10 +15,17 @@ cd postgis-&last_release_version;
 make
 make install</programlisting>
 	<para>Once postgis is installed, it needs to be enabled in each individual database you want to use it in.</para>
-	<note><para>The raster support is currently optional, but installed by default. For enabling using the PostgreSQL 9.1+ extensions model raster is required. Using the extension enable process is preferred and more user-friendly. To spatially enable your database:</para></note>
-	<programlisting>psql -d yourdatabase -c "CREATE EXTENSION postgis;"
+	<note><para>Using the extension enable process is preferred and more user-friendly. To spatially enable your database:</para></note>
+	<programlisting>
+psql -d yourdatabase -c "CREATE EXTENSION postgis;"
+
+-- if you built with raster support and want to install it --
+psql -d yourdatabase -c "CREATE EXTENSION postgis_raster;"
+
+-- if you want to install topology support --
 psql -d yourdatabase -c "CREATE EXTENSION postgis_topology;"
--- if you built with sfcgal support --
+
+-- if you built with sfcgal support and want to install it --
 psql -d yourdatabase -c "CREATE EXTENSION postgis_sfcgal;"
 
 -- if you want to install tiger geocoder --
@@ -33,7 +40,8 @@ psql -d yourdatabase -c "CREATE EXTENSION address_standardizer;"
 
 	<para>Please refer to <xref linkend="make_install_postgis_extensions" /> for more details about querying installed/available extensions and upgrading extensions, or switching from a non-extension install to an extension install.</para>
 
-	<para>For those running who decided for some reason not to compile with raster support, or just are old-fashioned, here are longer more painful instructions for you:</para>
+	<para>For those who decided for some reason to use a non-extension
+based install, here are longer more painful instructions for you:</para>
 	<para>All the .sql files once installed will be installed in share/contrib/postgis-&last_minor_version; folder
 		of your PostgreSQL install</para>
 
@@ -42,21 +50,31 @@ createlang plpgsql yourdatabase
 psql -d yourdatabase -f postgis.sql
 psql -d yourdatabase -f postgis_comments.sql
 psql -d yourdatabase -f spatial_ref_sys.sql
+
+-- if you want to enable topology
 psql -d yourdatabase -f topology.sql
 psql -d yourdatabase -f topology_comments.sql
 
--- only if you compiled with raster (GDAL)
+-- if you want to enable raster
+-- and only if you compiled with raster (GDAL)
 psql -d yourdatabase -f rtpostgis.sql
 psql -d yourdatabase -f raster_comments.sql
 
---if you built with sfcgal support --
+-- if you want to enable sfcgal backend
+-- and only if you built with sfcgal support --
 psql -d yourdatabase -f sfcgal.sql
 psql -d yourdatabase -f sfcgal_comments.sql
 </programlisting>
 
+  </sect1>
+
+  <sect1 id="raster_configuration">
+
+  <title>Configuring raster</title>
+
 	<para>
-	  The rest of this chapter goes into detail each of the above installation
-	  steps.
+	  If you enabled raster support you may want to read
+    below how to properly configure it.
 	</para>
 
 	<para>As of PostGIS 2.1.3, out-of-db rasters and all raster drivers are disabled by default. In order to re-enable these, you need to set the following environment variables
@@ -78,6 +96,7 @@ psql -d yourdatabase -f sfcgal_comments.sql
 	<para>On windows, if you are running as a service, you can set via System variables which for Windows 7 you can get to by right-clicking on Computer-&gt;Properties Advanced System Settings or in explorer navigating to <varname>Control Panel\All Control Panel Items\System</varname>.
 	Then clicking <emphasis>Advanced System Settings -&gt;Advanced->Environment Variables</emphasis> and adding new system variables.</para>
 	<para>After you set the environment variables, you'll need to restart your PostgreSQL service for the changes to take effect.</para>
+
   </sect1>
 
   <sect1 id="install_requirements">
@@ -163,8 +182,18 @@ psql -d yourdatabase -f sfcgal_comments.sql
 
 	  <listitem>
 		<para>
-		  GDAL, version 1.8 or higher (1.9 or higher is strongly recommended since some things will not work well or behavior differently with lower versions).  This is required for raster support and to be able to install with <code>CREATE EXTENSION postgis</code> so highly recommended for those running 9.1+.
+		  GDAL, version 1.8 or higher (1.9 or higher is strongly
+      recommended since some things will not work well or behavior
+      differently with lower versions).  This is required for raster
+      support.
 		  <ulink url="http://trac.osgeo.org/gdal/wiki/DownloadSource">http://trac.osgeo.org/gdal/wiki/DownloadSource</ulink>.
+		</para>
+	  </listitem>
+
+		<listitem>
+		<para>
+		  If compiling with PostgreSQL+JIT, LLVM version &gt;=6 is required
+		  <ulink url="https://trac.osgeo.org/postgis/ticket/4125">https://trac.osgeo.org/postgis/ticket/4125</ulink>.
 		</para>
 	  </listitem>
 	</itemizedlist>
@@ -176,10 +205,11 @@ psql -d yourdatabase -f sfcgal_comments.sql
 	<itemizedlist>
 	  <listitem>
 		<para>
-		  GDAL (pseudo optional) only if you don't want raster and don't care about installing with <code>CREATE EXTENSION postgis</code> can you leave it out.
-		  Keep in mind other extensions may have a requires postgis extension which will prevent you from installing them unless you install postgis as an extension. So it is highly recommended you compile with GDAL support.
-		</para>
-		<para>Also make sure to enable the drivers you want to use as described in <xref linkend="install_short_version" />.</para>
+		  GDAL (pseudo optional) only if you don't want raster
+		  you can leave it out.  Also make sure to enable
+		  the drivers you want to use as described in <xref
+		  linkend="raster_configuration"/>.
+    </para>
 	  </listitem>
 	  <listitem>
 		<para>
@@ -517,12 +547,11 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		  </listitem>
 		</varlistentry>
 		<varlistentry>
-		  <term><command>--with-raster</command></term>
+		  <term><command>--without-raster</command></term>
 		  <listitem>
 			<para>
-			  Compile with raster support.  This will build rtpostgis-&last_release_version; library and rtpostgis.sql file.  This may not
-			  be required in final release as plan is to build in raster support by default.
-			</para>
+			  Compile without raster support.
+      </para>
 		  </listitem>
 		</varlistentry>
 		<varlistentry>
@@ -557,9 +586,9 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  </variablelist>
 	  <note>
 		<para>
-		  If you obtained PostGIS from the SVN
-		  <ulink url="http://svn.osgeo.org/postgis/trunk/">
-			repository
+		  If you obtained PostGIS from the
+		  <ulink url="https://trac.osgeo.org/postgis/wiki/CodeRepository">
+			code repository
 		  </ulink>
 		  , the first step is really to run the script
 		</para>
@@ -724,19 +753,21 @@ CREATE EXTENSION postgis_topology;</programlisting>
 
 <screen>List of installed extensions
 -[ RECORD 1 ]-------------------------------------------------
--
 Name        | postgis
 Version     | &last_release_version;
 Schema      | public
 Description | PostGIS geometry, geography, and raster spat..
 -[ RECORD 2 ]-------------------------------------------------
--
+Name        | postgis_raster
+Version     | 3.0.0dev
+Schema      | public
+Description | PostGIS raster types and functions
+-[ RECORD 3 ]-------------------------------------------------
 Name        | postgis_tiger_geocoder
 Version     | &last_release_version;
 Schema      | tiger
 Description | PostGIS tiger geocoder and reverse geocoder
--[ RECORD 3 ]-------------------------------------------------
--
+-[ RECORD 4 ]-------------------------------------------------
 Name        | postgis_topology
 Version     | &last_release_version;
 Schema      | topology
@@ -747,12 +778,16 @@ be backed up when the respective <varname>postgis</varname> or <varname>postgis_
 As of PostGIS 2.0.1, only srid records not packaged with PostGIS are backed up when the database is backed up so don't go around changing srids we package and expect your changes to be there. Put in a ticket if you find an issue.  The structures of extension tables are never backed up since they are created with <code>CREATE EXTENSION</code>
 and assumed to be the same for a given version of an extension. These behaviors are built into the current PostgreSQL extension model, so nothing we can do about it.</para></warning>
 
-<para>If you installed &last_release_version;, without using our wonderful extension system, you can change it to be extension based by first upgrading to the latest micro version running the upgrade scripts: <filename>postgis_upgrade_22_minor.sql</filename>,<filename>raster_upgrade_22_minor.sql</filename>,<filename>topology_upgrade_22_minor.sql</filename>.</para>
-<para>If you installed postgis without raster support, you'll need to install raster support first (using the full <filename>rtpostgis.sql</filename></para>
-<para>Then you can run the below commands to package the functions in their respective extension.</para>
-<programlisting>CREATE EXTENSION postgis FROM unpackaged;
+<para>If you installed &last_release_version;, without using our
+wonderful extension system, you can change it to be extension based by
+running the below commands to package the functions in their respective extension.
+</para>
+<programlisting>
+CREATE EXTENSION postgis FROM unpackaged;
+CREATE EXTENSION postgis_raster FROM unpackaged;
 CREATE EXTENSION postgis_topology FROM unpackaged;
-CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;</programlisting>
+CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;
+</programlisting>
 
 	</sect2>
 
@@ -1382,12 +1417,20 @@ All 2 tests passed.
 	</para>
 
 	<para>
-	  The core postgis extension installs PostGIS geometry, geography, raster, spatial_ref_sys and all the functions and comments with a simple:
+	  The core postgis extension installs PostGIS geometry, geography, spatial_ref_sys and all the functions and comments with a simple:
 	  <programlisting>CREATE EXTENSION postgis;</programlisting> command.
 	</para>
 
 	<para>
 	  <command>psql -d [yourdatabase] -c "CREATE EXTENSION postgis;"</command>
+	</para>
+
+	<para>
+	  Raster is packaged as a separate extension and installable with command:
+	</para>
+
+	<para>
+	  <command>psql -d [yourdatabase] -c "CREATE EXTENSION postgis_raster;"</command>
 	</para>
 
 	<para>
@@ -1409,7 +1452,10 @@ All 2 tests passed.
     <sect1 id="create_new_db">
 	<title>Create a spatially-enabled database without using extensions</title>
 
-	<note><para>This is generally only needed if you built-PostGIS without raster support. Since raster functions are part of the postgis extension, extension support is not enabled if PostGIS is built without raster.</para></note>
+	<note><para>This is generally only needed if you cannot or don't
+want to get PostGIS installed in the PostgreSQL extension directory
+(for example during testing, development or in a restricted
+environment).</para></note>
 	<para> The first step in creating a PostGIS database is to create a simple
 	  PostgreSQL database.
 	</para>
@@ -1813,30 +1859,61 @@ pretty_address
 	  <para>If you installed your database using extensions, you'll need to upgrade using the extension model as well.  If you installed using the old sql script way,
 	  then you should upgrade using the sql script way. Please refer to the appropriate.</para>
 
-	  <sect3 id="soft_upgrade_sql_script"><title>Soft Upgrade Pre 9.1+ or without extensions</title>
-	  <para>This section applies only to those who installed PostGIS not using extensions.  If you have extensions and try to upgrade with this approach you'll get messages like:</para>
+	  <sect3 id="soft_upgrade_sql_script">
+		<title>Soft Upgrade Pre 9.1+ or without extensions</title>
+
+	  <para>This section applies only to those who installed PostGIS
+	  not using extensions.  If you have extensions and try to
+	  upgrade with this approach you'll get messages like:</para>
+
 	  <programlisting>can't drop ... because postgis extension depends on it</programlisting>
-	  <para>
-		After compiling and installing (make install) you should find a  <filename>postgis_upgrade.sql</filename> and <filename>rtpostgis_upgrade.sql</filename> in the installation folders. For example <filename>/usr/share/postgresql/9.3/contrib/postgis_upgrade.sql</filename>.  Install the <filename>postgis_upgrade.sql</filename>. If you have raster functionality installed, you will also need to install the <filename>/usr/share/postgresql/9.3/contrib/postgis_upgrade.sql</filename>. If you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* prior to r7409, you need to do a HARD UPGRADE.
+
+		<para>
+		NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from
+		PostGIS 2.* prior to r7409, you cannot use this procedure but
+	  would rather need to do a
+		<link linkend="hard_upgrade">HARD UPGRADE</link>.
 	  </para>
 
-	  <programlisting>psql -f postgis_upgrade.sql -d your_spatial_database</programlisting>
+	  <para>
+		After compiling and installing (make install) you should
+		find a set of	<filename>*_upgrade.sql</filename>
+		files in the installation folders. You can list
+		them all with:
+	  </para>
+
+		<programlisting>
+		ls `pg_config --sharedir`/contrib/postgis-&last_release_version;/*_upgrade.sql
+		</programlisting>
+
+		<para>
+		Load them all in turn, starting from <filename>postgis_upgrade.sql</filename>.
+	  </para>
+
+	  <programlisting>
+		psql -f postgis_upgrade.sql -d your_spatial_database
+		</programlisting>
 
 	  <para>
-		The same procedure applies to raster and
-		topology extensions, with upgrade files named
-		<filename>rtpostgis_upgrade*.sql</filename> and
-		<filename>topology_upgrade*.sql</filename> respectively.
+		The same procedure applies to raster,
+		topology and sfcgal extensions, with upgrade files named
+		<filename>rtpostgis_upgrade.sql</filename>,
+		<filename>topology_upgrade.sql</filename> and
+		<filename>sfcgal_upgrade.sql</filename> respectively.
 		If you need them:
 	  </para>
 
 	  <programlisting>psql -f rtpostgis_upgrade.sql -d your_spatial_database</programlisting>
 	  <programlisting>psql -f topology_upgrade.sql -d your_spatial_database</programlisting>
+	  <programlisting>psql -f sfcgal_upgrade.sql -d your_spatial_database</programlisting>
 
 	  <note>
 		<para>
-		  If you can't find the <filename>postgis_upgrade*.sql</filename> specific for upgrading your version you are using a version too early for
-		  a soft upgrade and need to do a HARD UPGRADE.
+		  If you can't find the
+		  <filename>postgis_upgrade.sql</filename> specific for
+		  upgrading your version you are using a version too
+		  early for a soft upgrade and need to do a
+			<link linkend="hard_upgrade">HARD UPGRADE</link>.
 		</para>
 	  </note>
 
@@ -1858,7 +1935,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlis
     <programlisting>Version "&last_release_version;" of extension "postgis" is already installed</programlisting>
     <para>
 Then everything is already up to date and you can safely ignore it. <emphasis role="bold">UNLESS</emphasis>
-you're attempting to upgrade from an SVN version to the next (which
+you're attempting to upgrade from an development version to the next (which
 doesn't get a new version number); in that case you can append "next" to the version
 string, and next time you'll need to drop the "next" suffix again:
     </para>
@@ -1866,6 +1943,22 @@ string, and next time you'll need to drop the "next" suffix again:
 ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</programlisting>
 		<note><para>If you installed PostGIS originally without a version specified, you can often skip the reinstallation of postgis extension before restoring since the backup just has <code>CREATE EXTENSION postgis</code> and thus
 		picks up the newest latest version during restore.</para></note>
+
+    <note>
+    <para>
+    If you are upgrading PostGIS extension from a version prior to 3.0.0
+    you'll end up with an unpackaged PostGIS Raster support. You can
+    repackage the raster support using:
+    <programlisting>
+    CREATE EXTENSION postgis_raster FROM unpackaged;
+    </programlisting>
+    And then, if you don't need it, drop it with:
+    <programlisting>
+    DROP EXTENSION postgis_raster;
+    </programlisting>
+    </para>
+    </note>
+
 	</sect3>
 
 	</sect2>

@@ -33,6 +33,9 @@ SQLPP = @SQLPP@
 # SQL objects (files requiring pre-processing)
 SQL_OBJS=rtpostgis.sql rtpostgis_drop.sql rtpostgis_upgrade_cleanup.sql rtpostgis_legacy.sql
 
+# Utility rule for use from outside
+sql_objs: $(DATA_built)
+
 # Objects to build using PGXS
 OBJS = \
 	rtpostgis.o \

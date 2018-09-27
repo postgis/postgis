@@ -110,6 +110,15 @@ SELECT '#3069',  postgis_getbbox('SRID=0;MULTILINESTRING((0 0, 1 1))'::geometry)
 SELECT '#3069',  postgis_getbbox('SRID=0;MULTIPOINT(1 1)'::geometry);
 SELECT '#3069',  postgis_getbbox('SRID=0;MULTILINESTRING((0 0,1 1))'::geometry);
 
+SELECT '#2902', replace(ST_Summary(PostGIS_GEOS_Noop(
+'SRID=4326;
+ GEOMETRYCOLLECTION(
+   POLYGON((0 0 1, 0 1 2, 1 1 3,1 0 2,0 0 1)),
+   POINT(1 2 3),
+   MULTILINESTRING((1 1 3,0 0 9))
+ )'::geometry)),E'\n',' ');
+
+
 -- ST_BoundingDiagonal
 
 SELECT 'BoundingDiagonal1', ST_AsEwkt(ST_BoundingDiagonal(postgis_addbbox(

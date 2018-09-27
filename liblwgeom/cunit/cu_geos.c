@@ -110,6 +110,20 @@ test_geos_offsetcurve(void)
 }
 
 static void
+test_geos_offsetcurve_crash(void)
+{
+	// Test for Trac #4143. The specific output or lack of output is not important,
+	// we're just testing that we don't crash.
+	LWGEOM* in = lwgeom_from_wkt("LINESTRING(362194.505 5649993.044,362197.451 5649994.125,362194.624 5650001.876,362189.684 5650000.114,362192.542 5649992.324,362194.505 5649993.044)", LW_PARSER_CHECK_NONE);
+	LWGEOM* out = lwgeom_offsetcurve(in, -0.045, 8, 2, 5.0);
+
+	lwgeom_free(in);
+	if (out) {
+		lwgeom_free(out);
+	}
+}
+
+static void
 test_geos_makevalid(void)
 {
 	uint8_t* wkb;
@@ -165,5 +179,6 @@ void geos_suite_setup(void)
 	PG_ADD_TEST(suite, test_geos_subdivide);
 	PG_ADD_TEST(suite, test_geos_linemerge);
 	PG_ADD_TEST(suite, test_geos_offsetcurve);
+	PG_ADD_TEST(suite, test_geos_offsetcurve_crash);
 	PG_ADD_TEST(suite, test_geos_makevalid);
 }

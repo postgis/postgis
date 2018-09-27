@@ -30,7 +30,6 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 #include <assert.h>
 
 #include "access/gist.h"

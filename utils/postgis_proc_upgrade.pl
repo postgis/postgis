@@ -467,9 +467,7 @@ print "DROP TABLE _postgis_upgrade_info;\n";
 
 __END__
 
-CREATE OR REPLACE FUNCTION postgis_major_version_check()
-RETURNS text
-AS '
+DO $$
 DECLARE
 	old_scripts text;
 	new_scripts text;
@@ -491,25 +489,25 @@ BEGIN
 	BEGIN
 		SELECT into old_scripts MODULE_lib_version();
 	EXCEPTION WHEN OTHERS THEN
-		RAISE DEBUG ''Got %'', SQLERRM;
+		RAISE DEBUG 'Got %', SQLERRM;
 		SELECT into old_scripts MODULE_scripts_installed();
 	END;
-	SELECT into new_scripts ''NEWVERSION'';
-	SELECT into old_maj substring(old_scripts from 1 for 2);
-	SELECT into new_maj substring(new_scripts from 1 for 2);
+	SELECT into new_scripts 'NEWVERSION';
+	SELECT into old_maj substring(old_scripts from 1 for 1);
+	SELECT into new_maj substring(new_scripts from 1 for 1);
+
+	-- 2.x to 3.x was upgrade-compatible, see
+	-- https://trac.osgeo.org/postgis/ticket/4170#comment:1
+	IF new_maj = '3' AND old_maj = '2' THEN
+		old_maj = '3'; -- let's pretend old major = new major
+	END IF;
 
 	IF old_maj != new_maj THEN
-		RAISE EXCEPTION ''Upgrade of MODULE from version % to version % requires a dump/reload. See PostGIS manual for instructions'', old_scripts, new_scripts;
-	ELSE
-		RETURN ''Scripts versions checked for upgrade: ok'';
+		RAISE EXCEPTION 'Upgrade of MODULE from version % to version % requires a dump/reload. See PostGIS manual for instructions', old_scripts, new_scripts;
 	END IF;
 END
-'
+$$
 LANGUAGE 'plpgsql';
-
-SELECT postgis_major_version_check();
-
-DROP FUNCTION postgis_major_version_check();
 
 CREATE TEMPORARY TABLE _postgis_upgrade_info AS WITH versions AS (
   SELECT 'NEWVERSION'::text as upgraded,

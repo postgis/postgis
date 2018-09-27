@@ -58,6 +58,9 @@ dnl
 PICFLAGS="$lt_prog_compiler_pic"
 AC_SUBST([PICFLAGS])
 
+AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -fno-math-errno], [_cv_nomatherrno], [-fno-math-errno], [], [CFLAGS="$CFLAGS -fno-math-errno"], [])
+AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -fno-signed-zeros], [_cv_nosignedzeros], [-fno-signed-zeros], [], [CFLAGS="$CFLAGS -fno-signed-zeros"], [])
+
 dnl
 dnl For GCC enable additional warning flags -Wall and -Wmissing-prototypes (using macro included with libtool)
 dnl
@@ -1075,7 +1078,7 @@ if test "$HAVE_LIBXML2" = "1"; then
 fi
 
 POSTGIS_LIB_VERSION="$POSTGIS_MAJOR_VERSION.$POSTGIS_MINOR_VERSION.$POSTGIS_MICRO_VERSION"
-POSTGIS_BUILD_DATE=`date -u "+%Y-%m-%d %H:%M:%S"`
+POSTGIS_BUILD_DATE=`date ${SOURCE_DATE_EPOCH:+-d @$SOURCE_DATE_EPOCH} -u "+%Y-%m-%d %H:%M:%S"`
 POSTGIS_SCRIPTS_VERSION="$POSTGIS_LIB_VERSION"
 
 AC_DEFINE_UNQUOTED([POSTGIS_VERSION], ["$POSTGIS_VERSION"], [PostGIS version])
@@ -1181,9 +1184,6 @@ if test "x$with_topology" != "xno"; then
 
     TOPOLOGY="topology"
     AC_MSG_RESULT([TOPOLOGY: Topology support requested])
-	if test "$GEOS_NUMERIC_VERSION" -lt 30302; then
-		AC_MSG_ERROR([Topology requires GEOS version >= 3.3.2. Use --without-topology or install a newer GEOS.])
-	fi
 else
     AC_MSG_RESULT([TOPOLOGY: Topology support disabled])
 fi
@@ -1256,7 +1256,7 @@ if test "x$with_raster" != "xno"; then
 	dnl ==============================
 	POSTGIS_RASTER_VERSION="$POSTGIS_RASTER_MAJOR_VERSION.$POSTGIS_RASTER_MINOR_VERSION"
 	POSTGIS_RASTER_LIB_VERSION="$POSTGIS_RASTER_MAJOR_VERSION.$POSTGIS_RASTER_MINOR_VERSION.$POSTGIS_RASTER_MICRO_VERSION"
-	POSTGIS_RASTER_BUILD_DATE=`date -u "+%Y-%m-%d %H:%M:%S"`
+	POSTGIS_RASTER_BUILD_DATE=`date ${SOURCE_DATE_EPOCH:+-d @$SOURCE_DATE_EPOCH} -u "+%Y-%m-%d %H:%M:%S"`
 	POSTGIS_RASTER_SCRIPTS_VERSION="$POSTGIS_RASTER_LIB_VERSION"
 
 	AC_DEFINE_UNQUOTED([POSTGIS_RASTER_VERSION], ["$POSTGIS_RASTER_VERSION"], [PostGIS Raster version])
@@ -1423,7 +1423,10 @@ if test "x$with_raster" != "xno"; then
 
 else
 	AC_MSG_RESULT([RASTER: Raster support disabled])
-	RT_MAKEFILE_LIST="raster/Makefile"
+
+	dnl We still generate raster/rt_pg makefile to
+	dnl use for upgrading from pre-split-raster versions
+	RT_MAKEFILE_LIST="raster/Makefile raster/rt_pg/Makefile"
 fi
 
 
@@ -1441,11 +1444,9 @@ if test \
         -e doc/postgis_comments.sql -a \
         -e doc/raster_comments.sql;
 then
-  if test "x$RASTER" = "xraster"; then
-      AC_MSG_RESULT([enabling PostgreSQL extension support...])
-      EXTENSIONS=extensions
-      AC_SUBST([EXTENSIONS])
-  fi
+    AC_MSG_RESULT([enabling PostgreSQL extension support...])
+    EXTENSIONS=extensions
+    AC_SUBST([EXTENSIONS])
 fi
 
 
@@ -1456,6 +1457,7 @@ dnl ===========================================================================
 AC_OUTPUT([GNUmakefile
    extensions/Makefile
    extensions/postgis/Makefile
+   extensions/postgis_raster/Makefile
    extensions/postgis_sfcgal/Makefile
    extensions/postgis_topology/Makefile
    extensions/postgis_tiger_geocoder/Makefile
@@ -1557,7 +1559,7 @@ if test "$GEOS_NUMERIC_VERSION" -lt 30700; then
 AC_MSG_WARN([ --------- GEOS VERSION WARNING ------------ ])
 AC_MSG_WARN([  You are building against GEOS ${GEOS_FULL_VERSION} ])
 AC_MSG_WARN([  To take advantage of all the features of ])
-AC_MSG_WARN([  this PostGIS version requires GEOS 3.7.0 or higher which is not out yet.])
+AC_MSG_WARN([  this PostGIS version requires GEOS 3.7.0 or higher.])
 AC_MSG_WARN([  To take advantage of most of the features of this PostGIS])
 AC_MSG_WARN([  we recommend GEOS 3.6 or higher])
 AC_MSG_WARN([  You can download the latest versions from ])

@@ -74,6 +74,8 @@
 #include "lwgeom_box3d.h"
 #include "lwgeom_pg.h"
 
+#include <float.h>
+
 PG_FUNCTION_INFO_V1(gserialized_overlaps_3d);
 Datum gserialized_overlaps_3d(PG_FUNCTION_ARGS)
 {
@@ -189,7 +191,7 @@ static CubeBox3D *
 initCubeBox(void)
 {
 	CubeBox3D *cube_box = (CubeBox3D *)palloc(sizeof(CubeBox3D));
-	double infinity = get_float8_infinity();
+	double infinity = DBL_MAX;
 
 	cube_box->left.xmin = -infinity;
 	cube_box->left.xmax = infinity;

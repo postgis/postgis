@@ -1538,6 +1538,13 @@ CREATE OR REPLACE FUNCTION postgis_noop(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 10;
 
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION postgis_geos_noop(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'GEOSnoop'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 10;
+
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_Normalize(geom geometry)
 	RETURNS geometry
@@ -2813,6 +2820,7 @@ AS $$
 $$ LANGUAGE 'sql' STABLE;
 
 -- Availability: 2.5.0
+-- Changed: 3.0.0 also upgrade postgis_raster if it exists
 CREATE OR REPLACE FUNCTION postgis_extensions_upgrade() RETURNS text
 AS $$
 DECLARE rec record; sql text;
@@ -2822,9 +2830,17 @@ BEGIN
 
 	FOR rec in SELECT  name, default_version, installed_version
 		FROM pg_available_extensions
-		WHERE installed_version > '' AND name IN('postgis', 'postgis_sfcgal', 'postgis_tiger_geocoder', 'postgis_topology')
+		WHERE installed_version > '' AND name IN(
+			'postgis',
+			'postgis_raster',
+			'postgis_sfcgal',
+			'postgis_tiger_geocoder',
+			'postgis_topology')
 		AND ( default_version <> installed_version  OR
-			( default_version = installed_version AND default_version ILIKE '%dev%' AND  installed_version ILIKE '%dev%'  )  ) LOOP
+			( default_version = installed_version AND
+				default_version ILIKE '%dev%' AND
+				installed_version ILIKE '%dev%' ) )
+	LOOP
 
 		-- we need to upgrade to next so our installed is different from current
 		-- and then we can upgrade to default_version
@@ -3007,6 +3023,12 @@ BEGIN
 		IF rast_lib_ver != relproc THEN
 			fullver = fullver || ' (raster lib from "' || rast_lib_ver || '" need upgrade)';
 		END IF;
+		IF core_is_extension AND NOT EXISTS (
+			SELECT * FROM pg_catalog.pg_extension
+			WHERE extname = 'postgis_raster')
+		THEN
+				fullver = fullver || ' [UNPACKAGED!]';
+		END IF;
 	END IF;
 
 	IF rast_scr_ver IS NOT NULL AND rast_scr_ver != relproc THEN
@@ -3156,7 +3178,7 @@ CREATE OR REPLACE FUNCTION ST_FilterByM(geometry, double precision, double preci
 	COST 1; -- reset cost, see #3675
 
 -- Availability: 2.5.0
-CREATE OR REPLACE FUNCTION ST_ChaikinSmoothing(geometry, integer default 1, boolean default true)
+CREATE OR REPLACE FUNCTION ST_ChaikinSmoothing(geometry, integer default 1, boolean default false)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_ChaikinSmoothing'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
@@ -4492,6 +4514,12 @@ CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, int4, 
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
 	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, int4, text, text)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
+
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_finalfn(internal)
 	RETURNS bytea
@@ -4564,6 +4592,21 @@ CREATE AGGREGATE ST_AsMVT(anyelement, text, int4)
 -- Availability: 2.4.0
 -- Changed: 2.5.0
 CREATE AGGREGATE ST_AsMVT(anyelement, text, int4, text)
+(
+	sfunc = pgis_asmvt_transfn,
+	stype = internal,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+	serialfunc = pgis_asmvt_serialfn,
+	deserialfunc = pgis_asmvt_deserialfn,
+	combinefunc = pgis_asmvt_combinefn,
+#endif
+	finalfunc = pgis_asmvt_finalfn
+);
+
+-- Availability: 3.0.0
+-- Changed: 3.0.0
+CREATE AGGREGATE ST_AsMVT(anyelement, text, int4, text, text)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,

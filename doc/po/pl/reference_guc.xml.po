@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
@@ -8,20 +8,23 @@ msgstr ""
 "POT-Creation-Date: 2017-01-28 07:02+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Milena Nowotarska <do.milenki@gmail.com>\n"
-"Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/pl/)\n"
+"Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
+"pl/)\n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: pl\n"
-"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n"
+"%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n"
+"%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
 #. Tag: para
 #: reference_guc.xml:5
 #, no-c-format
 msgid ""
-"This section lists custom PostGIS Grand Unified Custom Variables(GUC). These"
-" can be set globally, by database, by session or by transaction. Best set at"
-" global or database level."
+"This section lists custom PostGIS Grand Unified Custom Variables(GUC). These "
+"can be set globally, by database, by session or by transaction. Best set at "
+"global or database level."
 msgstr ""
 
 #. Tag: title
@@ -155,9 +158,9 @@ msgstr ""
 #: reference_guc.xml:61
 #, no-c-format
 msgid ""
-"Additional information about GDAL_DATA is available at GDAL's <ulink "
-"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
-"Options</ulink>."
+"Additional information about GDAL_DATA is available at GDAL's <ulink url="
+"\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
+"ulink>."
 msgstr ""
 
 #. Tag: para
@@ -233,18 +236,17 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Enabled GDAL specified drivers can be specified by the driver's short-name "
-"or code. Driver short-names or codes can be found at <ulink "
-"url=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</ulink>. "
-"Multiple drivers can be specified by putting a space between each driver."
+"or code. Driver short-names or codes can be found at <ulink url=\"http://www."
+"gdal.org/formats_list.html\">GDAL Raster Formats</ulink>. Multiple drivers "
+"can be specified by putting a space between each driver."
 msgstr ""
 
 #. Tag: para
 #: reference_guc.xml:109
 #, no-c-format
 msgid ""
-"There are three special codes available for "
-"<varname>postgis.gdal_enabled_drivers</varname>. The codes are case-"
-"sensitive."
+"There are three special codes available for <varname>postgis."
+"gdal_enabled_drivers</varname>. The codes are case-sensitive."
 msgstr ""
 
 #. Tag: para
@@ -283,17 +285,17 @@ msgstr ""
 #: reference_guc.xml:130
 #, no-c-format
 msgid ""
-"In the standard PostGIS installation, "
-"<varname>postgis.gdal_enabled_drivers</varname> is set to DISABLE_ALL."
+"In the standard PostGIS installation, <varname>postgis.gdal_enabled_drivers</"
+"varname> is set to DISABLE_ALL."
 msgstr ""
 
 #. Tag: para
 #: reference_guc.xml:136
 #, no-c-format
 msgid ""
-"Additional information about GDAL_SKIP is available at GDAL's <ulink "
-"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
-"Options</ulink>."
+"Additional information about GDAL_SKIP is available at GDAL's <ulink url="
+"\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
+"ulink>."
 msgstr ""
 
 #. Tag: para
@@ -382,16 +384,15 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_guc.xml:181
 #, no-c-format
-msgid ""
-"A boolean configuration option to enable access to out-db raster bands."
+msgid "A boolean configuration option to enable access to out-db raster bands."
 msgstr ""
 
 #. Tag: para
 #: reference_guc.xml:188
 #, no-c-format
 msgid ""
-"A boolean configuration option to enable access to out-db raster bands. This"
-" option can be set in PostgreSQL's configuration file: postgresql.conf. It "
+"A boolean configuration option to enable access to out-db raster bands. This "
+"option can be set in PostgreSQL's configuration file: postgresql.conf. It "
 "can also be set by connection or transaction."
 msgstr ""
 
@@ -401,8 +402,8 @@ msgstr ""
 msgid ""
 "The initial value of <varname>postgis.enable_outdb_rasters</varname> may "
 "also be set by passing the environment variable "
-"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> with a non-zero value to the"
-" process starting PostgreSQL."
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> with a non-zero value to the "
+"process starting PostgreSQL."
 msgstr ""
 
 #. Tag: para
@@ -418,8 +419,8 @@ msgstr ""
 #: reference_guc.xml:203
 #, no-c-format
 msgid ""
-"In the standard PostGIS installation, "
-"<varname>postgis.enable_outdb_rasters</varname> is set to False."
+"In the standard PostGIS installation, <varname>postgis.enable_outdb_rasters</"
+"varname> is set to False."
 msgstr ""
 
 #. Tag: para

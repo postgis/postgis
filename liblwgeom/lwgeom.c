@@ -157,15 +157,6 @@ lwgeom_reverse_in_place(LWGEOM *geom)
 	}
 }
 
-LWPOINT *
-lwgeom_as_lwpoint(const LWGEOM *lwgeom)
-{
-	if ( lwgeom == NULL ) return NULL;
-	if ( lwgeom->type == POINTTYPE )
-		return (LWPOINT *)lwgeom;
-	else return NULL;
-}
-
 LWLINE *
 lwgeom_as_lwline(const LWGEOM *lwgeom)
 {
@@ -919,13 +910,6 @@ lwgeom_get_srid(const LWGEOM *geom)
 	return geom->srid;
 }
 
-uint32_t
-lwgeom_get_type(const LWGEOM *geom)
-{
-	if ( ! geom ) return 0;
-	return geom->type;
-}
-
 int
 lwgeom_has_z(const LWGEOM *geom)
 {
@@ -1387,49 +1371,6 @@ uint32_t lwgeom_count_rings(const LWGEOM *geom)
 		break;
 	}
 	LWDEBUGF(3, "counted %d rings", result);
-	return result;
-}
-
-int lwgeom_is_empty(const LWGEOM *geom)
-{
-	int result = LW_FALSE;
-	LWDEBUGF(4, "lwgeom_is_empty: got type %s",
-	         lwtype_name(geom->type));
-
-	switch (geom->type)
-	{
-	case POINTTYPE:
-		return lwpoint_is_empty((LWPOINT*)geom);
-		break;
-	case LINETYPE:
-		return lwline_is_empty((LWLINE*)geom);
-		break;
-	case CIRCSTRINGTYPE:
-		return lwcircstring_is_empty((LWCIRCSTRING*)geom);
-		break;
-	case POLYGONTYPE:
-		return lwpoly_is_empty((LWPOLY*)geom);
-		break;
-	case TRIANGLETYPE:
-		return lwtriangle_is_empty((LWTRIANGLE*)geom);
-		break;
-	case MULTIPOINTTYPE:
-	case MULTILINETYPE:
-	case MULTIPOLYGONTYPE:
-	case COMPOUNDTYPE:
-	case CURVEPOLYTYPE:
-	case MULTICURVETYPE:
-	case MULTISURFACETYPE:
-	case POLYHEDRALSURFACETYPE:
-	case TINTYPE:
-	case COLLECTIONTYPE:
-		return lwcollection_is_empty((LWCOLLECTION *)geom);
-		break;
-	default:
-		lwerror("lwgeom_is_empty: unsupported input geometry type: %s",
-		        lwtype_name(geom->type));
-		break;
-	}
 	return result;
 }
 
