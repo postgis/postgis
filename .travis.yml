@@ -24,9 +24,9 @@ script:
   - docker run --name pgtest-${TRAVIS_BUILD_NUMBER} pgtest
 
 after_success:
-  - docker cp pgtest-${TRAVIS_BUILD_NUMBER}:/src/liblwgeom .
-  - docker cp pgtest-${TRAVIS_BUILD_NUMBER}:/src/postgis .
-  - docker cp pgtest-${TRAVIS_BUILD_NUMBER}:/src/loader .
+  - docker cp pgtest-${TRAVIS_BUILD_NUMBER}:/src/postgis/liblwgeom .
+  - docker cp pgtest-${TRAVIS_BUILD_NUMBER}:/src/postgis/postgis .
+  - docker cp pgtest-${TRAVIS_BUILD_NUMBER}:/src/postgis/loader .
   - docker rm pgtest-${TRAVIS_BUILD_NUMBER}
   - bash .github/codecov.bash
 
