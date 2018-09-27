@@ -2205,7 +2205,6 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 	double pivot = DBL_MAX;
 	double center = DBL_MAX;
 	LWPOLY *lwpoly = NULL;
-	LWGEOM *clipped;
 
 	gbox_duplicate(lwgeom_get_bbox(geom), &clip);
 	width = clip.xmax - clip.xmin;
@@ -2341,7 +2340,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 		#pragma omp section
 		{
 			LWGEOM* subbox = (LWGEOM*) lwpoly_construct_envelope(geom->srid, subbox1.xmin, subbox1.ymin, subbox1.xmax, subbox1.ymax);
-			clipped = lwgeom_intersection(geom, subbox);
+			LWGEOM* clipped = lwgeom_intersection(geom, subbox);
 			lwgeom_simplify_in_place(clipped, 0.0, LW_TRUE);
 			lwgeom_free(subbox);
 			if (clipped)
@@ -2353,7 +2352,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 		#pragma omp section
 		{
 			LWGEOM* subbox = (LWGEOM*) lwpoly_construct_envelope(geom->srid, subbox2.xmin, subbox2.ymin, subbox2.xmax, subbox2.ymax);
-			clipped = lwgeom_intersection(geom, subbox);
+			LWGEOM* clipped = lwgeom_intersection(geom, subbox);
 			lwgeom_simplify_in_place(clipped, 0.0, LW_TRUE);
 			lwgeom_free(subbox);
 			if (clipped)
