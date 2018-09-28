@@ -19,7 +19,7 @@ matrix:
 script:
   - echo "/tmp/logbt-coredumps/core.%p.%E" | sudo tee /proc/sys/kernel/core_pattern
   - echo "FROM postgis/postgis-build-env:${tag}" > Dockerfile
-  - echo "USER root" >> Dockerfile'
+  - echo "USER root" >> Dockerfile
   - echo "CMD apt update; apt install gdb" >> Dockerfile
   - echo "USER postgres" >> Dockerfile
   - echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
