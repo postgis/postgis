@@ -20,7 +20,7 @@ script:
   - echo "/tmp/logbt-coredumps/core.%p.%E" | sudo tee /proc/sys/kernel/core_pattern
   - echo "FROM postgis/postgis-build-env:${tag}" > Dockerfile
   - echo "USER root" >> Dockerfile
-  - echo "RUN apt update; apt install gdb" >> Dockerfile
+  - echo "RUN apt update; apt -y install gdb" >> Dockerfile
   - echo "USER postgres" >> Dockerfile
   - echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
   - echo "CMD bash ci/travis/run_tests.sh && bash .github/codecov.bash" >> Dockerfile
