@@ -322,7 +322,7 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 	SET_VARSIZE(result, text_size);
 
 	/* Clean up and return */
-	pfree(hexwkb);
+	lwfree(hexwkb);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_TEXT_P(result);
 }
@@ -351,7 +351,7 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 
 	/* Copy into text obect */
 	result = cstring_to_text(hexwkb);
-	pfree(hexwkb);
+	lwfree(hexwkb);
 
 	/* Clean up and return */
 	PG_FREE_IF_COPY(geom, 0);
