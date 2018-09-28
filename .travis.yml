@@ -22,7 +22,7 @@ script:
   - echo "CMD ci/travis/run_tests.sh && bash .github/codecov.bash" >> Dockerfile
   - docker build -t pgtest .
   - ci_env=`bash .github/codecov_env.bash`
-  - docker run $ci_env --name pgtest-${TRAVIS_BUILD_NUMBER} -e POSTGIS_CODECOV_TOKEN pgtest
+  - docker run $ci_env --name pgtest-${TRAVIS_BUILD_NUMBER} pgtest
 
 after_success:
   - docker rm pgtest-${TRAVIS_BUILD_NUMBER}
