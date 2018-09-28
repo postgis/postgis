@@ -136,7 +136,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		if ( srid ) lwgeom_set_srid(lwgeom, srid);
 		/* Add a bbox if necessary */
 		if ( lwgeom_needs_bbox(lwgeom) ) lwgeom_add_bbox(lwgeom);
-		pfree(wkb);
+		lwfree(wkb);
 		ret = geometry_serialize(lwgeom);
 		lwgeom_free(lwgeom);
 	}

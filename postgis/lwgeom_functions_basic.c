@@ -2348,7 +2348,7 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 
 	/* Write to text and free the WKT */
 	result = cstring_to_text(wkt);
-	pfree(wkt);
+	lwfree(wkt);
 
 	/* Return the text */
 	PG_FREE_IF_COPY(geom, 0);
