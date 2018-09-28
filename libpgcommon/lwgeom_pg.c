@@ -73,50 +73,6 @@ pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result)
 	elog(ERROR, "%s", lwg_unparser_result->message);
 }
 
-
-static void *
-pg_alloc(size_t size)
-{
-	void * result;
-
-	CHECK_FOR_INTERRUPTS(); /* give interrupter a chance */
-
-	POSTGIS_DEBUGF(5, "  pg_alloc(%d) called", (int)size);
-
-	result = palloc(size);
-
-	POSTGIS_DEBUGF(5, "  pg_alloc(%d) returning %p", (int)size, result);
-
-	if ( ! result )
-	{
-		ereport(ERROR, (errmsg_internal("Out of virtual memory")));
-		return NULL;
-	}
-	return result;
-}
-
-static void *
-pg_realloc(void *mem, size_t size)
-{
-	void * result;
-
-	CHECK_FOR_INTERRUPTS(); /* give interrupter a chance */
-
-	POSTGIS_DEBUGF(5, "  pg_realloc(%p, %d) called", mem, (int)size);
-
-	result = repalloc(mem, size);
-
-	POSTGIS_DEBUGF(5, "  pg_realloc(%p, %d) returning %p", mem, (int)size, result);
-
-	return result;
-}
-
-static void
-pg_free(void *ptr)
-{
-	pfree(ptr);
-}
-
 static void
 pg_error(const char *fmt, va_list ap)
 {
