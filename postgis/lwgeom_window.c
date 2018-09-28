@@ -250,7 +250,7 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 
 		/* Safe the result */
 		memcpy(context->result, r, sizeof(int) * N);
-		pfree(r);
+		lwfree(r);
 		context->isdone = true;
 	}
 
