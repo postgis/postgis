@@ -456,7 +456,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	SET_VARSIZE(result, wkb_size+VARHDRSZ);
 
 	/* Clean up and return */
-	pfree(wkb);
+	lwfree(wkb);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_BYTEA_P(result);
 }
