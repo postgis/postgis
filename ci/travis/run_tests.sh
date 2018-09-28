@@ -14,9 +14,9 @@ LDFLAGS_COV="--coverage"
 ./autogen.sh
 
 CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_COV}" ./configure
-make -j2
-make check
+make -j
+RUNTESTFLAGS="-v" make check
 
 CFLAGS="${CFLAGS_COV}" LDFLAGS="${LDFLAGS_COV}" ./configure
-make -j2
+make -j
 make check
