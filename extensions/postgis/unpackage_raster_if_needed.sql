@@ -15,8 +15,8 @@ BEGIN
 		$unpackage$;
 
 		RAISE WARNING 'PostGIS Raster functionality have been unpackaged'
-		USING HINT = 'type `CREATE EXTENSION postgis_raster FROM unpackaged` to re-package'
-								 ' or source `uninstall_rtpostgis.sql` to drop.';
+		USING HINT = 'type `SELECT postgis_extensions_upgrade(); to repackage.'
+								 ' If you want to drop raster after, run: DROP EXTENSION postgis_raster;';
 	END IF;
 END
 $unpackage_if_needed$ LANGUAGE 'plpgsql';

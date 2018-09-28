@@ -2823,7 +2823,7 @@ $$ LANGUAGE 'sql' STABLE;
 -- Changed: 3.0.0 also upgrade postgis_raster if it exists
 CREATE OR REPLACE FUNCTION postgis_extensions_upgrade() RETURNS text
 AS $$
-DECLARE rec record; sql text;
+DECLARE rec record; sql text; var_schema text;
 BEGIN
 	-- if at a version different from default version or we are at a dev version,
 	-- then do an upgrade to default version
@@ -2853,6 +2853,23 @@ BEGIN
 		sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' || quote_ident(rec.default_version)   || ';';
 		EXECUTE sql;
 		RAISE NOTICE '%', sql;
+
+		-- If postgis raster functions still exist, but postgis_raster extension is not installed
+		-- then repackage as postgis_raster
+		IF rec.name = 'postgis' 
+			AND NOT EXISTS(SELECT 1 FROM pg_extension WHERE extname='postgis_raster') 
+			AND EXISTS(SELECT 1 FROM pg_proc WHERE proname LIKE 'raster%') THEN
+			SELECT n.nspname INTO var_schema 
+				FROM pg_catalog.pg_extension AS e 
+					INNER JOIN pg_catalog.pg_namespace AS n ON e.extnamespace = n.oid
+			WHERE e.extname = 'postgis';
+
+			sql = 'CREATE EXTENSION postgis_raster FROM unpackaged SCHEMA ' || quote_ident(var_schema) || ';';
+			EXECUTE sql;
+
+		END IF;
+
+
 	END LOOP;
 
 	RETURN @extschema@.postgis_full_version();
