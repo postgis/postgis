@@ -10,13 +10,11 @@ LDFLAGS_STD="-Wl,-Bsymbolic-functions -Wl,-z,relro"
 CFLAGS_COV="-g -O0 --coverage"
 LDFLAGS_COV="--coverage"
 
-/usr/local/pgsql/bin/pg_ctl -l /tmp/logfile start
+/usr/local/pgsql/bin/pg_ctl -c -l /tmp/logfile start
 ./autogen.sh
 
-CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_COV}" ./configure
-make -j
-RUNTESTFLAGS="-v" make check
+./configure CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_STD}"
+RUNTESTFLAGS="-v" make -j check
 
-CFLAGS="${CFLAGS_COV}" LDFLAGS="${LDFLAGS_COV}" ./configure
-make -j
-make check
+./configure CFLAGS="${CFLAGS_COV}" LDFLAGS="${LDFLAGS_COV}"
+make -j check
