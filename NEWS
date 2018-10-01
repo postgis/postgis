@@ -19,6 +19,7 @@ PostGIS 3.0.0
   - #4161, MVT: Drop geometries smaller than the resolution (Raúl Marín)
   - #4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)
   - #4181, St_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)
+  - #4183, St_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)
 
 PostGIS 2.5.0
 2018/09/23
