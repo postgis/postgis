@@ -314,8 +314,8 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  <para>This section includes general compilation instructions, if you are compiling for Windows etc
 		or another OS, you may find additional more detailed help at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiInstall">PostGIS User contributed compile guides</ulink> and <ulink url="http://trac.osgeo.org/postgis/wiki/DevWikiMain">PostGIS Dev Wiki</ulink>.</para>
 	  <para>Pre-Built Packages for various OS are listed in <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPackages">PostGIS Pre-built Packages</ulink></para>
-	  <para>If you are a windows user, you can get stable builds via Stackbuilder or <ulink url="http://www.postgis.org/download/windows/">PostGIS Windows download site</ulink>
-	  We also have <ulink url="http://www.postgis.org/download/windows/experimental.php">very bleeding-edge windows experimental builds</ulink> that are built usually once or twice a week or whenever anything exciting happens.  You can
+	  <para>If you are a windows user, you can get stable builds via Stackbuilder or <ulink url="https://postgis.net/windows_downloads">PostGIS Windows download site</ulink>
+	  We also have <ulink url="https://postgis.net/windows_downloads">very bleeding-edge windows experimental builds</ulink> that are built usually once or twice a week or whenever anything exciting happens.  You can
 	  use these to experiment with the in progress releases of PostGIS</para>
 	</note>
 
