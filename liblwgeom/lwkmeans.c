@@ -85,8 +85,11 @@ update_means(POINT2D** objs, int* clusters, uint32_t n, POINT2D** centers, uint3
 	}
 	for (i = 0; i < k; i++)
 	{
-		centers[i]->x /= weights[i];
-		centers[i]->y /= weights[i];
+		if (weights[i])
+		{
+			centers[i]->x /= weights[i];
+			centers[i]->y /= weights[i];
+		}
 	}
 }
 
