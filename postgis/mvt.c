@@ -822,10 +822,30 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 			double y0 = bgbox.ymin;
 			double x1 = bgbox.xmax;
 			double y1 = bgbox.ymax;
-			lwgeom = lwgeom_clip_by_rect(lwgeom, x0, y0, x1, y1);
-			POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
-			if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
+			const GBOX pre_clip_box = *lwgeom_get_bbox(lwgeom);
+			LWGEOM *clipped_geom = lwgeom_clip_by_rect(lwgeom, x0, y0, x1, y1);
+			if (clipped_geom == NULL || lwgeom_is_empty(clipped_geom))
+			{
+				POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
 				return NULL;
+			}
+			/* For some polygons, the simplify step might have left them
+			 * as invalid, which can cause clipping to return the complementary
+			 * geometry of what it should */
+			if ((lwgeom->type == POLYGONTYPE ||
+				lwgeom->type == MULTIPOLYGONTYPE ||
+				lwgeom->type == COLLECTIONTYPE) &&
+			    !gbox_contains_2d(&pre_clip_box, lwgeom_get_bbox(clipped_geom)))
+			{
+				/* TODO: Adapt this when and if Exception Policies are introduced.
+				 * Other options would be to fix the geometry and retry
+				 * or to calculate the difference between the 2 boxes.
+				 */
+				POSTGIS_DEBUG(3, "mvt_geom: Invalid geometry after clipping");
+				lwgeom_free(clipped_geom);
+				return NULL;
+			}
+			lwgeom = clipped_geom;
 		}
 	}
 

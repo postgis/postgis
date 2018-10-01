@@ -1,3 +1,9 @@
+PostGIS 2.5.1
+XXXX/XX/XX
+
+ * Bug fixes *
+  - #4183, St_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)
+
 PostGIS 2.5.0
 2018/09/23
 WARNING: If compiling with PostgreSQL+JIT, LLVM >= 6 is required
