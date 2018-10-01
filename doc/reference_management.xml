@@ -375,7 +375,8 @@ DROP TABLE my_schema.my_spatial_table;
 
 		<para>Availability: 2.5.0</para>
 		<note>
-			<para>Changed: 3.0.0 to support separate postgis_raster extension</para>
+			<para>Changed: 3.0.0 to support separate postgis_raster extension
+				and repackage loose raster functions into postgis_raster.</para>
 		</note>
 	  </refsection>
 
