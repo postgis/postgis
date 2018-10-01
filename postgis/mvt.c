@@ -909,9 +909,10 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 				lwgeom->type == COLLECTIONTYPE) &&
 			    !gbox_contains_2d(&pre_clip_box, lwgeom_get_bbox(clipped_geom)))
 			{
-				/* Other options would be to fix the geometry and
-				 * retry or to calculate the difference between the
-				 * 2 boxes */
+				/* TODO: Adapt this when and if Exception Policies are introduced.
+				 * Other options would be to fix the geometry and retry
+				 * or to calculate the difference between the 2 boxes.
+				 */
 				POSTGIS_DEBUG(3, "mvt_geom: Invalid geometry after clipping");
 				lwgeom_free(clipped_geom);
 				return NULL;
