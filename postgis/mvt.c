@@ -699,12 +699,37 @@ LWGEOM *mvt_geom(const LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32
 			LWPOLY *lwenv = lwpoly_construct_envelope(0, x0, y0, x1, y1);
 			lwgeom_out = lwgeom_intersection(lwgeom, lwpoly_as_lwgeom(lwenv));
 			lwpoly_free(lwenv);
-#else
-			lwgeom_out = lwgeom_clip_by_rect(lwgeom, x0, y0, x1, y1);
-#endif
-			POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
 			if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
+			{
+				POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
 				return NULL;
+			}
+#else
+			const GBOX pre_clip_box = *lwgeom_get_bbox(lwgeom);
+			LWGEOM *clipped_geom = lwgeom_clip_by_rect(lwgeom, x0, y0, x1, y1);
+			if (clipped_geom == NULL || lwgeom_is_empty(clipped_geom))
+			{
+				POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
+				return NULL;
+			}
+			/* For some polygons, the simplify step might have left them
+			 * as invalid, which can cause clipping to return the complementary
+			 * geometry of what it should */
+			if ((lwgeom->type == POLYGONTYPE ||
+				lwgeom->type == MULTIPOLYGONTYPE ||
+				lwgeom->type == COLLECTIONTYPE) &&
+			    !gbox_contains_2d(&pre_clip_box, lwgeom_get_bbox(clipped_geom)))
+			{
+				/* Other options would be to fix the geometry and
+				 * retry or to calculate the difference between the
+				 * 2 boxes */
+				POSTGIS_DEBUG(3, "mvt_geom: Invalid geometry after clipping");
+				lwgeom_free(clipped_geom);
+				return NULL;
+			}
+			lwgeom_out = clipped_geom;
+#endif
+
 		}
 	}
 
