@@ -20,11 +20,11 @@ POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 
 MODULE_big=postgis_topology-@POSTGIS_MAJOR_VERSION@
 MODULEDIR=contrib/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
-MODULEPATH    = $$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@
+MODULEPATH=$$libdir/postgis_topology-@POSTGIS_MAJOR_VERSION@
 
 ifeq (@LIBINCLUDEMINORVERSION@,yes)
 MODULEPATH=$$libdir/postgis_topology-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
-MODULE_big=postgis_topology--@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+MODULE_big=postgis_topology-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 endif
 
 # Files to be copied to the contrib/ directory
@@ -95,7 +95,7 @@ endif
 # Generate any .sql file from .sql.in.c files by running them through the SQL pre-processor
 %.sql: %.sql.in
 	$(SQLPP) $< | grep -v '^#' | \
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/postgis_topology-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
 
 #Generate upgrade script by stripping things that can't be reinstalled
 #e.g. don't bother with tables, types, triggers, and domains
