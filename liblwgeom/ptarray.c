@@ -628,7 +628,6 @@ POINTARRAY *
 ptarray_clone_deep(const POINTARRAY *in)
 {
 	POINTARRAY *out = lwalloc(sizeof(POINTARRAY));
-	size_t size;
 
 	LWDEBUG(3, "ptarray_clone_deep called.");
 
@@ -638,9 +637,17 @@ ptarray_clone_deep(const POINTARRAY *in)
 
 	FLAGS_SET_READONLY(out->flags, 0);
 
-	size = in->npoints * ptarray_point_size(in);
-	out->serialized_pointlist = lwalloc(size);
-	memcpy(out->serialized_pointlist, in->serialized_pointlist, size);
+	if (!in->npoints)
+	{
+		// Avoid calling lwalloc of 0 bytes
+		out->serialized_pointlist = NULL;
+	}
+	else
+	{
+		size_t size = in->npoints * ptarray_point_size(in);
+		out->serialized_pointlist = lwalloc(size);
+		memcpy(out->serialized_pointlist, in->serialized_pointlist, size);
+	}
 
 	return out;
 }
