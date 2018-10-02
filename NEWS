@@ -4,6 +4,7 @@ XXXX/XX/XX
  * Bug fixes *
   - #4183, St_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)
   - #4188, Avoid division by zero in kmeans (Raúl Marín)
+  - #4189, Fix undefined behaviour in SADFWrite (Raúl Marín)
 
 PostGIS 2.5.0
 2018/09/23

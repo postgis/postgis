@@ -282,13 +282,13 @@ char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int
 			{
 				/* Add "..." prefix */
 				outstart = str + endpos + 1 - maxlength + 3;
-				strncat(output, "...", 3);
+				strncat(output, "...", 4);
 				strncat(output, outstart, maxlength - 3);
 			}
 			else
 			{
 				/* maxlength is too small; just output "..." */
-				strncat(output, "...", 3);
+				strncat(output, "...", 4);
 			}
 		}
 	}
@@ -309,12 +309,12 @@ char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int
 				/* Add "..." suffix */
 				outstart = str + startpos;
 				strncat(output, outstart, maxlength - 3);
-				strncat(output, "...", 3);
+				strncat(output, "...", 4);
 			}
 			else
 			{
 				/* maxlength is too small; just output "..." */
-				strncat(output, "...", 3);
+				strncat(output, "...", 4);
 			}
 		}
 	}
