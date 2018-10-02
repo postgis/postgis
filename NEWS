@@ -9,6 +9,7 @@ PostGIS 2.3.8
   - #4093, Inconsistent results from qsort callback (yugr)
   - #4160, Use qualified names in topology extension install (Raúl Marín)
   - #4189, Fix undefined behaviour in SADFWrite (Raúl Marín)
+  - #4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)
 
 
 PostGIS 2.3.7
