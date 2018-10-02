@@ -5,6 +5,7 @@ PostGIS 2.2.8
    - #2985, Avoid array overflow in ANALYZE (Paul Ramsey)
    - #4160, Use qualified names in topology extension install (Raúl Marín)
    - #4189, Fix undefined behaviour in SADFWrite (Raúl Marín)
+   - #4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)
 
 PostGIS 2.2.7
 2018/04/06
