@@ -6,6 +6,7 @@ PostGIS 2.4.6
   - #4181, St_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)
   - #4183, St_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)
   - #4189, Fix undefined behaviour in SADFWrite (Raúl Marín)
+  - #4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)
 
 
 PostGIS 2.4.5
