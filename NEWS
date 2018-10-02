@@ -8,6 +8,7 @@ PostGIS 2.3.8
   - #3997, fix bug in lwgeom_median and avoid division by zero (Raúl Marín)
   - #4093, Inconsistent results from qsort callback (yugr)
   - #4160, Use qualified names in topology extension install (Raúl Marín)
+  - #4189, Fix undefined behaviour in SADFWrite (Raúl Marín)
 
 
 PostGIS 2.3.7

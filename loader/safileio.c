@@ -115,8 +115,9 @@ SAOffset SADFRead( void *p, SAOffset size, SAOffset nmemb, SAFile file )
 SAOffset SADFWrite( void *p, SAOffset size, SAOffset nmemb, SAFile file )
 
 {
-    return (SAOffset) fwrite( p, (size_t) size, (size_t) nmemb,
-                              (FILE *) file );
+	if (!nmemb || !p) return 0;
+	return (SAOffset) fwrite( p, (size_t) size, (size_t) nmemb,
+				(FILE *) file );
 }
 
 /************************************************************************/
