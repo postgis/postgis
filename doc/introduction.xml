@@ -28,14 +28,6 @@
 	</para>
 	<variablelist>
 	  <varlistentry>
-		<term>Mark Cave-Ayland</term>
-		<listitem>
-		  <para>Coordinates bug fixing and maintenance effort,  spatial index selectivity and binding, loader/dumper, and Shapefile GUI Loader, integration of new
-		   and new function enhancements.</para>
-		</listitem>
-	  </varlistentry>
-
-	  <varlistentry>
 		<term>Regina Obe</term>
 		<listitem>
 		  <para>Buildbot Maintenance, windows production and experimental builds, Documentation, alignment of
@@ -146,6 +138,13 @@
   </sect1>
   <sect1 id="credits_core_past">
 	<title>Core Contributors Past</title>
+	  <varlistentry>
+		<term>Mark Cave-Ayland</term>
+		<listitem>
+		  <para>Prior PSC Member. Coordinated bug fixing and maintenance effort, spatial index selectivity and binding, loader/dumper, and Shapefile GUI Loader, integration of new
+		   and new function enhancements.</para>
+		</listitem>
+	  </varlistentry>
 
 	<variablelist>
 		<varlistentry>
