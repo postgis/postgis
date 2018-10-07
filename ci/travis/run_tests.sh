@@ -14,7 +14,7 @@ LDFLAGS_COV="--coverage"
 ./autogen.sh
 
 ./configure CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_STD}"
-bash ./ci/travis/logbt -- make -j check "RUNTESTFLAGS='--dumprestore --verbose'"
+bash ./ci/travis/logbt -- make -j check RUNTESTFLAGS=--verbose
 
 ./configure CFLAGS="${CFLAGS_COV}" LDFLAGS="${LDFLAGS_COV}"
 make -j check
