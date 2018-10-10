@@ -2902,7 +2902,7 @@ BEGIN
 	RETURN @extschema@.postgis_full_version();
 
 END
-$$ language plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 -- Changed: 2.4.0
 CREATE OR REPLACE FUNCTION postgis_full_version() RETURNS text
