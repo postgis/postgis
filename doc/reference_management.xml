@@ -348,9 +348,10 @@ DROP TABLE my_schema.my_spatial_table;
 	  <refnamediv>
 		<refname>PostGIS_Extensions_Upgrade</refname>
 
-		<refpurpose>Upgrades installed postgis packaged extensions (e.g. postgis_sfcgal, postgis_topology, postgis_sfcgal)
-		to latest installed version. Reports full postgis version and build configuration
-		infos after.</refpurpose>
+		<refpurpose>
+Packages and upgrades postgis extensions (e.g. postgis_sfcgal,
+postgis_topology, postgis_sfcgal) to latest available version.
+    </refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -366,17 +367,18 @@ DROP TABLE my_schema.my_spatial_table;
 	  <refsection>
 		<title>Description</title>
 
-		<para>Upgrades installed postgis packaged extensions
-		to latest installed version. Only extensions you have installed in the database will be upgraded and if they are already at last installed version,
-		they will not be upgraded. Reports full postgis version and build configuration
-		infos after.  This is short-hand for doing multiple ALTER EXTENSION .. UPDATE for each postgis extension.
+		<para>Packages and upgrades postgis extensions
+		to latest version. Only extensions you have installed in the
+    database will be packaged and upgraded if needed.
+		Reports full postgis version and build configuration infos after.
+    This is short-hand for doing multiple CREATE EXTENSION .. FROM
+    unpackaged and ALTER EXTENSION .. UPDATE for each postgis extension.
 		Currently only tries to upgrade extensions postgis,
     postgis_raster, postgis_sfcgal, postgis_topology, and postgis_tiger_geocoder.</para>
 
 		<para>Availability: 2.5.0</para>
 		<note>
-			<para>Changed: 3.0.0 to support separate postgis_raster extension
-				and repackage loose raster functions into postgis_raster.</para>
+			<para>Changed: 3.0.0 to repackage loose extensions and support postgis_raster.</para>
 		</note>
 	  </refsection>
 
@@ -385,15 +387,19 @@ DROP TABLE my_schema.my_spatial_table;
 
 		<programlisting>SELECT PostGIS_Extensions_Upgrade();</programlisting>
 <screen>
-NOTICE:  ALTER EXTENSION postgis_tiger_geocoder UPDATE TO "2.5.0dev";
-NOTICE:  ALTER EXTENSION postgis_topology UPDATE TO "2.5.0dev";
+NOTICE:  Packaging extension postgis
+NOTICE:  Packaging extension postgis_raster
+NOTICE:  Packaging extension postgis_sfcgal
+NOTICE:  Extension postgis_topology is not available or not packagable for some reason
+NOTICE:  Extension postgis_tiger_geocoder is not available or not packagable for some reason
 
 							   postgis_extensions_upgrade
 ----------------------------------------------------------------------------------
-POSTGIS="2.5.0dev r15966" [EXTENSION] PGSQL="100"
-GEOS="3.7.0dev-CAPI-1.11.0 8fe2ce6" SFCGAL="1.3.1"
-PROJ="Rel. 4.9.3, 15 August 2016" GDAL="GDAL 2.2.2, released 2017/09/15"
-LIBXML="2.7.8" LIBJSON="0.12" LIBPROTOBUF="1.2.1" TOPOLOGY RASTER
+POSTGIS="3.0.0dev r16878" [EXTENSION] PGSQL="96"
+GEOS="3.8.0dev-CAPI-1.11.0 a67b6f86" SFCGAL="1.3.5" PROJ="Rel. 4.9.3,
+15 August 2016" GDAL="GDAL 2.3.0dev, released 2017/99/99"
+LIBXML="2.9.4" LIBJSON="0.12.1" LIBPROTOBUF="1.2.1" TOPOLOGY
+[UNPACKAGED!] RASTER
 (1 row)</screen>
 	  </refsection>
 
