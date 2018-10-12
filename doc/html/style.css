@@ -15,13 +15,13 @@ body {
 div.navheader {
     margin: 0em -4em 0em -4em;
     padding: 2em;
-    background: #282e5b;
+    background: #579;
 }
 
 div.navfooter {
     margin: 0em -4em 0em -4em;
     padding: 2em 6em 2em 6em;
-    background: #282e5b;
+    background: #579;
     color: white;
 }
 
@@ -37,6 +37,14 @@ div.navheader table tbody tr:first-child th {
 
 div.navheader table tbody tr:nth-child(2) {
     display: none;
+}
+
+div.navfooter a {
+    text-decoration: none;
+    color: #bcF;
+}
+div.navfooter a:hover {
+    color: #e9cb2b;
 }
 
 div.refnamediv {
@@ -57,19 +65,19 @@ div.funcsynopsis code {
 /* 2. Standard Tags ----------------------------------------------------- */
 a {
     text-decoration: none;
-    color: #418acd;
+    color: #55d;
 }
- a:hover, li a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {
+a:hover, li a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {
     color: #e9cb2b;
 }
 p,form,td,th,dt,li{
 /*   font-size:10pt */
 }
 h1, h2 {
-    color: #282e5b;
+    color: #579;
 }
 h3,h4,th,dt,b {
-    color: #213780;
+    color: #579;
 }
 h1 {
      font-size: 175%;
@@ -121,14 +129,14 @@ pre, .literallayout {
 
 div.note {
     font-size: 90%;
-    border-color: #ad4;
+    border-color: #dd5;
     border-style: solid;
     border-width: 1.5px;
     margin-bottom: 1em;
     margin-top: 1em;
     overflow: auto;
     padding: 0.8em;
-    background: #efd;
+    background: #ffe;
     border-radius: 1em;
 }
 div.note table p {
