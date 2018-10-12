@@ -76,7 +76,7 @@ p,form,td,th,dt,li{
 h1, h2 {
     color: #579;
 }
-h3,h4,th,dt,b {
+h3,h4,th,dt,b, div.abstract-title, div.toc-title {
     color: #579;
 }
 h1 {
@@ -89,7 +89,7 @@ h2 {
     margin-top: 1.2em;
     margin-bottom: 0.5em;
 }
-h3 {
+h3, div.abstract-title, div.toc-title {
     font-size: 130%;
     margin-top: 1.1em;
     margin-bottom: 0.4em;
