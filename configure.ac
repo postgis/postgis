@@ -109,6 +109,27 @@ AC_SUBST([POSTGIS_MAJOR_VERSION])
 AC_SUBST([POSTGIS_MINOR_VERSION])
 AC_SUBST([POSTGIS_MICRO_VERSION])
 
+dnl =====================================================
+dnl Include minor version in postgis extension libraries
+dnl =====================================================
+LIBINCLUDEMINORVERSION="no"
+AC_ARG_WITH([library-minor-version],
+    [AS_HELP_STRING([--without-interrupt-tests],
+                    [Disable the interrupt tests (for CI servers)])],
+    [], [])
+
+AC_ARG_WITH([library-minor-version],
+    [AS_HELP_STRING([--with-library-minor-version],
+                    [Include minor version in the PostgreSQL PostGIS library files])],
+    [LIBINCLUDEMINORVERSION="yes"], [])
+
+if test "x$with-library-minor-version" = "xno"; then
+    LIBINCLUDEMINORVERSION="no"
+fi
+
+AC_SUBST([LIBINCLUDEMINORVERSION])
+
+
 dnl
 dnl Liblwgeom version information imported from Version.config
 dnl
@@ -1496,11 +1517,16 @@ AC_MSG_RESULT([  C compiler:           ${CC} ${CFLAGS}])
 AC_MSG_RESULT([  SQL preprocessor:     ${SQLPP}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Additional Info ------------- ])
+if test "x$LIBINCLUDEMINORVERSION" = "xyes"; then
+  AC_MSG_RESULT([  POSTGIS lib file includes minor:   ENABLED])
+fi
+
 if test "x$INTERRUPTTESTS" = "xyes"; then
   AC_MSG_RESULT([  Interrupt Tests:   ENABLED])
 else
   AC_MSG_RESULT([  Interrupt Tests:   DISABLED use: --with-interrupt-tests to enable])
 fi
+
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Dependencies -------------- ])
 AC_MSG_RESULT([  GEOS config:          ${GEOSCONFIG}])

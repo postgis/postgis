@@ -110,6 +110,9 @@ if ( $OPT_UPGRADE_PATH )
 sub has_split_raster_ext
 {
   my $fullver = shift;
+  # unpackaged is always current, so does have
+  # split raster already.
+  return 1 if $fullver = 'unpackaged';
   my @ver = split(/\./, $fullver);
   return 0 if ( $ver[0] < 3 );
   return 1;
@@ -1637,8 +1640,10 @@ sub drop_spatial_extensions
 
     $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis\" $DB >> $REGRESS_LOG 2>&1";
     $rv = system($cmd);
-  	die "\nError encountered dropping EXTENSION POSTGIS, see $REGRESS_LOG for details\n\n"
-  	    if $rv;
+    if ( $rv ) {
+        fail "Error encountered dropping EXTENSION POSTGIS", $REGRESS_LOG;
+        die;
+    }
 
     return $ok;
 }

@@ -225,11 +225,9 @@ drawGeometry(char *output, LWGEOM *lwgeom, LAYERSTYLE *styles )
  * shadow to the current layer image.
  *
  * @param layerNumber the current working layer number.
- */
 static void
 addDropShadow(int layerNumber)
 {
-	// TODO: change to properly sized string
 	char str[512];
 	sprintf(
 	    str,
@@ -238,6 +236,7 @@ addDropShadow(int layerNumber)
 	LWDEBUGF(4, "%s", str);
 	checked_system(str);
 }
+ */
 
 /**
  * Invokes a system call to ImageMagick's "convert" command that adds a
@@ -398,7 +397,7 @@ int main( int argc, const char* argv[] )
 		checked_system(output);
 
 		addHighlight( layerCount );
-		addDropShadow( layerCount );
+		// addDropShadow( layerCount );
 		layerCount++;
 		free(styleName);
 	}

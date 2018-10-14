@@ -2,7 +2,7 @@
 # *
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.net
-# * 
+# *
 # * Copyright (C) 2010-2011 Sandro Santilli <strk@kbt.io>
 # * Copyright (C) 2008 Mark Cave-Ayland
 # * Copyright (C) 2005 Refractions Research Inc.
@@ -18,8 +18,14 @@
 
 POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 
-MODULE_big=postgis_topology-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+MODULE_big=postgis_topology-@POSTGIS_MAJOR_VERSION@
 MODULEDIR=contrib/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+MODULEPATH=$$libdir/postgis_topology-@POSTGIS_MAJOR_VERSION@
+
+ifeq (@LIBINCLUDEMINORVERSION@,yes)
+MODULEPATH=$$libdir/postgis_topology-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+MODULE_big=postgis_topology-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+endif
 
 # Files to be copied to the contrib/ directory
 DATA_built=topology.sql topology_upgrade.sql uninstall_topology.sql
@@ -58,7 +64,7 @@ endif
 EXTRA_CLEAN=$(SQL_OBJS) topology_upgrade.sql.in
 
 # PGXS information
-PG_CONFIG = @PG_CONFIG@ 
+PG_CONFIG = @PG_CONFIG@
 PGXS := @PGXS@
 # NO_TEMP_INSTALL is a workaround for a 9.5dev bug. See:
 # http://www.postgresql.org/message-id/CAB7nPqTsR5o3g-fBi6jbsVdhfPiLFWQ_0cGU5=94Rv_8W3qvFA@mail.gmail.com
@@ -86,10 +92,10 @@ endif
 
 
 
-# Generate any .sql file from .sql.in.c files by running them through the SQL pre-processor 
+# Generate any .sql file from .sql.in.c files by running them through the SQL pre-processor
 %.sql: %.sql.in
 	$(SQLPP) $< | grep -v '^#' | \
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/postgis_topology-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
 
 #Generate upgrade script by stripping things that can't be reinstalled
 #e.g. don't bother with tables, types, triggers, and domains
@@ -124,7 +130,7 @@ topology.sql: \
 	../postgis/sqldefines.h \
 	../postgis_svn_revision.h
 
-uninstall_topology.sql: topology.sql ../utils/create_undef.pl 
+uninstall_topology.sql: topology.sql ../utils/create_undef.pl
 	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 check: topology.sql

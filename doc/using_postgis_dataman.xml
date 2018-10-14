@@ -1665,7 +1665,7 @@ COMMIT;</programlisting>
     </varlistentry>
 
     <varlistentry>
-      <term>-s [&lt;FROM_SRID%gt;:]&lt;SRID&gt;</term>
+      <term>-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;</term>
       <listitem>
         <para>
           Creates and populates the geometry tables with the specified SRID.

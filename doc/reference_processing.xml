@@ -68,8 +68,8 @@ from the input geometry.
 			<note><para>Negative radii: For polygons, a negative radius can be used, which will shrink the polygon rather than expanding it.</para></note>
 				<note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
 					fits the bounding box of the geography object (favoring UTM, Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario) and then buffers in that planar spatial ref and retransforms back to WGS84 geography.</para></note>
-			<para><inlinegraphic fileref="images/warning.png" />
-			For geography this may not behave as expected if object is sufficiently large that it falls between two UTM zones or crosses the dateline</para>
+			<warning><para>
+			For geography this may not behave as expected if object is sufficiently large that it falls between two UTM zones or crosses the dateline</para></warning>
 				<para>Enhanced: 2.5.0 - ST_Buffer geometry support was enhanced to allow for side buffering specification <code>side=both|left|right</code>.</para>
 				<para>Availability: 1.5 - ST_Buffer was enhanced to support different endcaps and join types. These are useful for example to convert road linestrings
 					into polygon roads with flat or square edges instead of rounded edges. Thin wrapper for geography was added. - requires GEOS &gt;= 3.2 to take advantage of advanced geometry functionality.
@@ -2880,9 +2880,9 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
 			plotted in a 180 centric map</para>
 		<note><para>This is only useful for data in long lat e.g. 4326 (WGS 84 long lat)</para></note>
 
-		<para><inlinegraphic fileref="images/warning.png" />
-			Pre-1.3.4 bug prevented this from working for MULTIPOINT. 1.3.4+ works with MULTIPOINT as well.
-		</para>
+		<warning>
+			<para>Pre-1.3.4 bug prevented this from working for MULTIPOINT. 1.3.4+ works with MULTIPOINT as well.</para>
+    </warning>
 
 		<para>&Z_support;</para>
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
@@ -3027,17 +3027,19 @@ select ST_WrapX(the_geom, -30, 360);
 		  <refsection>
 			<title>Examples</title>
 			<para>A circle simplified too much becomes a triangle, medium an octagon, </para>
-				<programlisting>
-SELECT ST_Npoints(the_geom) As np_before, ST_NPoints(ST_Simplify(the_geom,0.1)) As np01_notbadcircle, ST_NPoints(ST_Simplify(the_geom,0.5)) As np05_notquitecircle,
-ST_NPoints(ST_Simplify(the_geom,1)) As np1_octagon, ST_NPoints(ST_Simplify(the_geom,10)) As np10_triangle,
-(ST_Simplify(the_geom,100) is null) As  np100_geometrygoesaway
-FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
--result
+				<programlisting>SELECT ST_Npoints(the_geom) AS np_before, 
+       ST_NPoints(ST_Simplify(the_geom,0.1)) AS np01_notbadcircle, 
+       ST_NPoints(ST_Simplify(the_geom,0.5)) AS np05_notquitecircle,
+       ST_NPoints(ST_Simplify(the_geom,1)) AS np1_octagon, 
+       ST_NPoints(ST_Simplify(the_geom,10)) AS np10_triangle,
+       (ST_Simplify(the_geom,100) is null) AS  np100_geometrygoesaway
+  FROM 
+    (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) AS foo;
+
  np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | np10_triangle | np100_geometrygoesaway
 -----------+-------------------+---------------------+-------------+---------------+------------------------
-		49 |                33 |                  17 |           9 |             4 | t
-
-				</programlisting>
+        49 |                33 |                  17 |           9 |             4 | t
+      </programlisting>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>

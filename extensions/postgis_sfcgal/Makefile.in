@@ -3,6 +3,7 @@ include ../upgradeable_versions.mk
 EXTENSION    = postgis_sfcgal
 EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+
 GREP = @GREP@
 
 MICRO_NUMBER  = $(shell echo $(EXTVERSION) | \

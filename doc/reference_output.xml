@@ -272,9 +272,9 @@
 			<note>
 			  <para>The WKT spec does not include the SRID.  To get the OGC WKT format use ST_AsText.</para>
 			</note>
-			<para><inlinegraphic fileref="images/warning.png" />
-				WKT format does not maintain precision so to prevent floating truncation, use ST_AsBinary or ST_AsEWKB format for transport.
-			</para>
+			<warning>
+        <para>WKT format does not maintain precision so to prevent floating truncation, use ST_AsBinary or ST_AsEWKB format for transport.</para>
+			</warning>
 			<note>
 			  <para>ST_AsEWKT is the reverse of <xref linkend="ST_GeomFromEWKT" />.  Use <xref linkend="ST_GeomFromEWKT" /> to convert to a postgis geometry from ST_AsEWKT representation.</para>
 			</note>
@@ -954,9 +954,9 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 			  <para>The WKT spec does not include the SRID.  To get the SRID as part of the data, use the non-standard
 				PostGIS <xref linkend="ST_AsEWKT" /></para>
 			</note>
-			<para><inlinegraphic fileref="images/warning.png" />
-				WKT format does not maintain precision so to prevent floating truncation, use ST_AsBinary or ST_AsEWKB format for transport.
-			</para>
+      <warning>
+			<para>WKT format does not maintain precision so to prevent floating truncation, use ST_AsBinary or ST_AsEWKB format for transport.</para>
+      </warning>
 			<note>
 			  <para>ST_AsText is the reverse of <xref linkend="ST_GeomFromText" />.  Use <xref linkend="ST_GeomFromText" /> to convert to a postgis geometry from ST_AsText representation.</para>
 			</note>

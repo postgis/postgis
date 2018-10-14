@@ -1549,7 +1549,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		{
 			if (!strncasecmp(dbffieldname, state->dbffieldnames[j], 10))
 			{
-				sprintf(dbffieldname, "%.7s_%.2d", ptr, tmpint % 100);
+				sprintf(dbffieldname, "%.7s_%.2d", ptr, abs(tmpint) % 100);
 				tmpint++;
 				continue;
 			}

@@ -77,7 +77,7 @@ export REL_PGVER=${PG_VER//./} #strip the period
 
 
 export RELDIR=${PROJECTS}/postgis/builds/${POSTGIS_MINOR_VER}
-export RELVERDIR=postgis-pg${REL_PGVER}-binaries-${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VER}w${OS_BUILD}${GCC_TYPE}
+export RELVERDIR=postgis-pg${REL_PGVER}-binaries-${POSTGIS_MICRO_VER}w${OS_BUILD}${GCC_TYPE}
 export PATH="${PATHOLD}:${PGPATH}/bin:${PGPATH}/lib"
 export PCRE_VER=8.33 #PATH="${PGPATH}/bin:${PGPATH}/lib:${MINGPROJECTS}/xsltproc:${MINGPROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/gtkw${OS_BUILD}/bin:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/include:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin:${PATH}"
 #echo PATH AFTER: $PATH
@@ -135,7 +135,7 @@ cp ${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/bin/libprotob
 
 echo "POSTGIS: ${POSTGIS_MINOR_VER} r${POSTGIS_SVN_REVISION} http://postgis.net/source" > $verfile
 
-if [ "$POSTGIS_MAJOR_VERSION" == "2" ] ; then
+if [ "$POSTGIS_MAJOR_VERSION" > "1" ] ; then
   ## only copy gdal components if 2+.  1.5 doesn't have raster support
   cp -p ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
   cp -rp  ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/share/gdal $outdir/gdal-data
