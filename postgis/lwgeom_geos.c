@@ -2936,7 +2936,7 @@ Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 		result_array_data[i] = PointerGetDatum(GEOS2POSTGIS(geos_results[i], is3d));
 		GEOSGeom_destroy(geos_results[i]);
 	}
-	pfree(geos_results);
+	lwfree(geos_results);
 
 	get_typlenbyvalalign(array->elemtype, &elmlen, &elmbyval, &elmalign);
 	result = construct_array(result_array_data, nclusters, array->elemtype, elmlen, elmbyval, elmalign);
@@ -3012,7 +3012,7 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 		result_array_data[i] = PointerGetDatum(gserialized_from_lwgeom(lw_results[i], NULL));
 		lwgeom_free(lw_results[i]);
 	}
-	pfree(lw_results);
+	lwfree(lw_results);
 
 	get_typlenbyvalalign(array->elemtype, &elmlen, &elmbyval, &elmalign);
 	result =  construct_array(result_array_data, nclusters, array->elemtype, elmlen, elmbyval, elmalign);
