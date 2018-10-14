@@ -440,6 +440,7 @@ GBOX* gbox_copy(const GBOX *box)
 void gbox_duplicate(const GBOX *original, GBOX *duplicate)
 {
 	assert(duplicate);
+	assert(original);
 	memcpy(duplicate, original, sizeof(GBOX));
 }
 

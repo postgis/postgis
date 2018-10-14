@@ -82,7 +82,6 @@ Datum geom_from_kml(PG_FUNCTION_ARGS)
 	bool hasz=true;
 	xmlNodePtr xmlroot=NULL;
 
-
 	/* Get the KML stream */
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 	xml_input = PG_GETARG_TEXT_P(0);
