@@ -42,7 +42,8 @@ SELECT origin,caseno,
        st_equals(st_collectionextract(st_makevalid(orig),3), st_collectionextract(valid,3)),
        st_isvalid(st_makevalid(orig)), -- paranoia
        (st_isvaliddetail(orig)).valid
-  FROM clean_cases;
+  FROM clean_cases
+ORDER BY 1, 2;
 
 SELECT '#1719.1', ST_AsEWKT(ST_MakeValid('POINT(0 0)'));
 SELECT '#1719.2', ST_AsEWKT(ST_MakeValid('GEOMETRYCOLLECTION(POINT(0 0),MULTIPOINT(3 4,5 2),LINESTRING(4 4, 4 4),POLYGON((0 0,10 10,0 10,10 0,0 0)))'));
