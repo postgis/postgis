@@ -1640,8 +1640,10 @@ sub drop_spatial_extensions
 
     $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis\" $DB >> $REGRESS_LOG 2>&1";
     $rv = system($cmd);
-  	die "\nError encountered dropping EXTENSION POSTGIS, see $REGRESS_LOG for details\n\n"
-  	    if $rv;
+    if ( $rv ) {
+        fail "Error encountered dropping EXTENSION POSTGIS", $REGRESS_LOG;
+        die;
+    }
 
     return $ok;
 }
