@@ -73,6 +73,52 @@ pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result)
 	elog(ERROR, "%s", lwg_unparser_result->message);
 }
 
+
+
+static void *
+pg_alloc(size_t size)
+{
+	void * result;
+
+	CHECK_FOR_INTERRUPTS(); /* give interrupter a chance */
+
+	POSTGIS_DEBUGF(5, "  pg_alloc(%d) called", (int)size);
+
+	result = palloc(size);
+
+	POSTGIS_DEBUGF(5, "  pg_alloc(%d) returning %p", (int)size, result);
+
+	if ( ! result )
+	{
+		ereport(ERROR, (errmsg_internal("Out of virtual memory")));
+		return NULL;
+	}
+	return result;
+}
+
+static void *
+pg_realloc(void *mem, size_t size)
+{
+	void * result;
+
+	CHECK_FOR_INTERRUPTS(); /* give interrupter a chance */
+
+	POSTGIS_DEBUGF(5, "  pg_realloc(%p, %d) called", mem, (int)size);
+
+	result = repalloc(mem, size);
+
+	POSTGIS_DEBUGF(5, "  pg_realloc(%p, %d) returning %p", mem, (int)size, result);
+
+	return result;
+}
+
+static void
+pg_free(void *ptr)
+{
+	pfree(ptr);
+}
+
+
 static void
 pg_error(const char *fmt, va_list ap)
 {
@@ -124,15 +170,13 @@ void
 pg_install_lwgeom_handlers(void)
 {
 	/* install PostgreSQL handlers */
-	//lwgeom_set_handlers(pg_alloc, pg_realloc, pg_free, pg_error, pg_notice);
-	lwgeom_set_handlers(malloc, realloc, free, pg_error, pg_notice);
+	lwgeom_set_handlers(pg_alloc, pg_realloc, pg_free, pg_error, pg_notice);
+	/*
+	If you want to try with malloc:
+	lwgeom_set_handlers(NULL, NULL, NULL, pg_error, pg_notice);
+	*/
 	lwgeom_set_debuglogger(pg_debug);
 }
-
-/**
-* Utility method to call the serialization and then set the
-* PgSQL varsize header appropriately with the serialized size.
-*/
 
 /**
 * Utility method to call the serialization and then set the
