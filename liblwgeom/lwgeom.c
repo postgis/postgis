@@ -2335,9 +2335,9 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 
 	LWCOLLECTION *col1 = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
 	LWCOLLECTION *col2 = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
-	#pragma omp parallel sections
+	//#pragma omp parallel sections
 	{
-		#pragma omp section
+		//#pragma omp section
 		{
 			LWGEOM* subbox = (LWGEOM*) lwpoly_construct_envelope(geom->srid, subbox1.xmin, subbox1.ymin, subbox1.xmax, subbox1.ymax);
 			LWGEOM* clipped = lwgeom_intersection(geom, subbox);
@@ -2349,7 +2349,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 				lwgeom_free(clipped);
 			}
 		}
-		#pragma omp section
+		//#pragma omp section
 		{
 			LWGEOM* subbox = (LWGEOM*) lwpoly_construct_envelope(geom->srid, subbox2.xmin, subbox2.ymin, subbox2.xmax, subbox2.ymax);
 			LWGEOM* clipped = lwgeom_intersection(geom, subbox);
@@ -2366,7 +2366,6 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 	lwcollection_release(col1);
 	col = lwcollection_concat_in_place(col, col2);
 	lwcollection_release(col2);
-	return;
 }
 
 LWCOLLECTION *
