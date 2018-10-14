@@ -73,8 +73,6 @@ pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result)
 	elog(ERROR, "%s", lwg_unparser_result->message);
 }
 
-
-
 static void *
 pg_alloc(size_t size)
 {
@@ -117,7 +115,6 @@ pg_free(void *ptr)
 {
 	pfree(ptr);
 }
-
 
 static void
 pg_error(const char *fmt, va_list ap)

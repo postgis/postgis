@@ -2190,10 +2190,18 @@ lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid)
 
 
 /* Prototype for recursion */
-static void lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col);
+static void lwgeom_subdivide_recursive(const LWGEOM *geom,
+				       uint8_t dimension,
+				       uint32_t maxvertices,
+				       uint32_t depth,
+				       LWCOLLECTION *col);
 
 static void
-lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxvertices, uint32_t depth, LWCOLLECTION *col)
+lwgeom_subdivide_recursive(const LWGEOM *geom,
+			   uint8_t dimension,
+			   uint32_t maxvertices,
+			   uint32_t depth,
+			   LWCOLLECTION *col)
 {
 	const uint32_t maxdepth = 50;
 	GBOX clip, subbox1, subbox2;
@@ -2262,7 +2270,8 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 	nvertices = lwgeom_count_vertices(geom);
 
 	/* Skip empties entirely */
-	if (nvertices == 0) return;
+	if (nvertices == 0)
+		return;
 
 	/* If it is under the vertex tolerance, just add it, we're done */
 	if (nvertices <= maxvertices)
@@ -2333,14 +2342,17 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 
 	++depth;
 
-	LWCOLLECTION *col1 = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
-	LWCOLLECTION *col2 = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
+	LWCOLLECTION *col1 =
+	    lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
+	LWCOLLECTION *col2 =
+	    lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
 	//#pragma omp parallel sections
 	{
 		//#pragma omp section
 		{
-			LWGEOM* subbox = (LWGEOM*) lwpoly_construct_envelope(geom->srid, subbox1.xmin, subbox1.ymin, subbox1.xmax, subbox1.ymax);
-			LWGEOM* clipped = lwgeom_intersection(geom, subbox);
+			LWGEOM *subbox = (LWGEOM *)lwpoly_construct_envelope(
+			    geom->srid, subbox1.xmin, subbox1.ymin, subbox1.xmax, subbox1.ymax);
+			LWGEOM *clipped = lwgeom_intersection(geom, subbox);
 			lwgeom_simplify_in_place(clipped, 0.0, LW_TRUE);
 			lwgeom_free(subbox);
 			if (clipped)
@@ -2351,8 +2363,9 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 		}
 		//#pragma omp section
 		{
-			LWGEOM* subbox = (LWGEOM*) lwpoly_construct_envelope(geom->srid, subbox2.xmin, subbox2.ymin, subbox2.xmax, subbox2.ymax);
-			LWGEOM* clipped = lwgeom_intersection(geom, subbox);
+			LWGEOM *subbox = (LWGEOM *)lwpoly_construct_envelope(
+			    geom->srid, subbox2.xmin, subbox2.ymin, subbox2.xmax, subbox2.ymax);
+			LWGEOM *clipped = lwgeom_intersection(geom, subbox);
 			lwgeom_simplify_in_place(clipped, 0.0, LW_TRUE);
 			lwgeom_free(subbox);
 			if (clipped)
