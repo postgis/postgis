@@ -10,6 +10,7 @@ PostGIS 2.3.8
   - #4160, Use qualified names in topology extension install (Raúl Marín)
   - #4189, Fix undefined behaviour in SADFWrite (Raúl Marín)
   - #4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)
+  - #4020, Fix leftovers in topology upgrade from 2.1 (Sandro Santilli)
 
 
 PostGIS 2.3.7
