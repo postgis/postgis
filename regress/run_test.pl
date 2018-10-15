@@ -112,7 +112,7 @@ sub has_split_raster_ext
   my $fullver = shift;
   # unpackaged is always current, so does have
   # split raster already.
-  return 1 if $fullver = 'unpackaged';
+  return 1 if $fullver eq 'unpackaged';
   my @ver = split(/\./, $fullver);
   return 0 if ( $ver[0] < 3 );
   return 1;
