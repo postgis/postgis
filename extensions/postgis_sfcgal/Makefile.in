@@ -70,7 +70,7 @@ sql_bits/sfcgal_upgrade.sql : ../../postgis/sfcgal_upgrade.sql
 
 sql_bits/sfcgal_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/sfcgal_upgrade.sql ../../doc/sfcgal_comments.sql ../postgis_extension_helper_uninstall.sql
 	mkdir -p sql_bits
-	echo '\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \quit' > $@
+	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ >> $@
 
 sql_minor_upgrade: sql_bits/sfcgal_upgrade_minor.sql
