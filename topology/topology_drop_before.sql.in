@@ -18,5 +18,5 @@ DROP FUNCTION IF EXISTS topology.toTopoGeom(Geometry, varchar, int, float8);
 DROP FUNCTION IF EXISTS postgis_topology_scripts_installed();
 
 -- Removed in 2.2.0 when topology API moved to liblwgeom
-DROP FUNCTION topology._ST_RemEdgeCheck(varchar, integer, integer, integer, integer);
-DROP FUNCTION topology._ST_AddFaceSplit(varchar, integer, integer, boolean);
+DROP FUNCTION IF EXISTS topology._ST_RemEdgeCheck(varchar, integer, integer, integer, integer);
+DROP FUNCTION IF EXISTS topology._ST_AddFaceSplit(varchar, integer, integer, boolean);
