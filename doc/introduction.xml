@@ -203,64 +203,64 @@
 
 		<listitem>
 <itemizedlist>
-	<listitem>Alex Bodnaru</listitem>
-	<listitem>Alex Mayrhofer</listitem>
-	<listitem>Andrea Peri</listitem>
-	<listitem>Andreas Forø Tollefsen</listitem>
-	<listitem>Andreas Neumann</listitem>
-	<listitem>Anne Ghisla</listitem>
-	<listitem>Barbara Phillipot</listitem>
-	<listitem>Ben Jubb</listitem>
-	<listitem>Bernhard Reiter</listitem>
-	<listitem>Brian Hamlin</listitem>
-	<listitem>Bruce Rindahl</listitem>
-	<listitem>Bruno Wolff III</listitem>
-	<listitem>Bryce L. Nordgren</listitem>
-	<listitem>Carl Anderson</listitem>
-	<listitem>Charlie Savage</listitem>
-	<listitem>Dane Springmeyer</listitem>
-	<listitem>David Skea</listitem>
-	<listitem>David Techer</listitem>
-	<listitem>Eduin Carrillo</listitem>
-	<listitem>Even Rouault</listitem>
-	<listitem>Frank Warmerdam</listitem>
-	<listitem>George Silva</listitem>
-	<listitem>Gerald Fenoy</listitem>
-	<listitem>Gino Lucrezi</listitem>
-	<listitem>Guillaume Lelarge</listitem>
-	<listitem>IIDA Tetsushi</listitem>
-	<listitem>Ingvild Nystuen</listitem>
-	<listitem>Jason Smith</listitem>
-	<listitem>Jeff Adams</listitem>
-	<listitem>Jose Carlos Martinez Llari</listitem>
-	<listitem>Julien Rouhaud</listitem>
-	<listitem>Kashif Rasul</listitem>
-	<listitem>Klaus Foerster</listitem>
-	<listitem>Kris Jurka</listitem>
-	<listitem>Leo Hsu</listitem>
-	<listitem>Loic Dachary</listitem>
-	<listitem>Luca S. Percich</listitem>
-	<listitem>Maria Arias de Reyna</listitem>
-	<listitem>Mark Sondheim</listitem>
-	<listitem>Markus Schaber</listitem>
-	<listitem>Maxime Guillaud</listitem>
-	<listitem>Maxime van Noppen</listitem>
-	<listitem>Michael Fuhr</listitem>
-	<listitem>Mike Toews</listitem>
-	<listitem>Nathan Wagner</listitem>
-	<listitem>Nathaniel Clay</listitem>
-	<listitem>Nikita Shulga</listitem>
-	<listitem>Norman Vine</listitem>
-	<listitem>Rafal Magda</listitem>
-	<listitem>Ralph Mason</listitem>
-	<listitem>Rémi Cura</listitem>
-	<listitem>Richard Greenwood</listitem>
-	<listitem>Silvio Grosso</listitem>
-	<listitem>Steffen Macke</listitem>
-	<listitem>Stephen Frost</listitem>
-	<listitem>Tom van Tilburg</listitem>
-	<listitem>Vincent Mora</listitem>
-	<listitem>Vincent Picavet</listitem>
+	<listitem><simpara>Alex Bodnaru</simpara></listitem>
+	<listitem><simpara>Alex Mayrhofer</simpara></listitem>
+	<listitem><simpara>Andrea Peri</simpara></listitem>
+	<listitem><simpara>Andreas Forø Tollefsen</simpara></listitem>
+	<listitem><simpara>Andreas Neumann</simpara></listitem>
+	<listitem><simpara>Anne Ghisla</simpara></listitem>
+	<listitem><simpara>Barbara Phillipot</simpara></listitem>
+	<listitem><simpara>Ben Jubb</simpara></listitem>
+	<listitem><simpara>Bernhard Reiter</simpara></listitem>
+	<listitem><simpara>Brian Hamlin</simpara></listitem>
+	<listitem><simpara>Bruce Rindahl</simpara></listitem>
+	<listitem><simpara>Bruno Wolff III</simpara></listitem>
+	<listitem><simpara>Bryce L. Nordgren</simpara></listitem>
+	<listitem><simpara>Carl Anderson</simpara></listitem>
+	<listitem><simpara>Charlie Savage</simpara></listitem>
+	<listitem><simpara>Dane Springmeyer</simpara></listitem>
+	<listitem><simpara>David Skea</simpara></listitem>
+	<listitem><simpara>David Techer</simpara></listitem>
+	<listitem><simpara>Eduin Carrillo</simpara></listitem>
+	<listitem><simpara>Even Rouault</simpara></listitem>
+	<listitem><simpara>Frank Warmerdam</simpara></listitem>
+	<listitem><simpara>George Silva</simpara></listitem>
+	<listitem><simpara>Gerald Fenoy</simpara></listitem>
+	<listitem><simpara>Gino Lucrezi</simpara></listitem>
+	<listitem><simpara>Guillaume Lelarge</simpara></listitem>
+	<listitem><simpara>IIDA Tetsushi</simpara></listitem>
+	<listitem><simpara>Ingvild Nystuen</simpara></listitem>
+	<listitem><simpara>Jason Smith</simpara></listitem>
+	<listitem><simpara>Jeff Adams</simpara></listitem>
+	<listitem><simpara>Jose Carlos Martinez Llari</simpara></listitem>
+	<listitem><simpara>Julien Rouhaud</simpara></listitem>
+	<listitem><simpara>Kashif Rasul</simpara></listitem>
+	<listitem><simpara>Klaus Foerster</simpara></listitem>
+	<listitem><simpara>Kris Jurka</simpara></listitem>
+	<listitem><simpara>Leo Hsu</simpara></listitem>
+	<listitem><simpara>Loic Dachary</simpara></listitem>
+	<listitem><simpara>Luca S. Percich</simpara></listitem>
+	<listitem><simpara>Maria Arias de Reyna</simpara></listitem>
+	<listitem><simpara>Mark Sondheim</simpara></listitem>
+	<listitem><simpara>Markus Schaber</simpara></listitem>
+	<listitem><simpara>Maxime Guillaud</simpara></listitem>
+	<listitem><simpara>Maxime van Noppen</simpara></listitem>
+	<listitem><simpara>Michael Fuhr</simpara></listitem>
+	<listitem><simpara>Mike Toews</simpara></listitem>
+	<listitem><simpara>Nathan Wagner</simpara></listitem>
+	<listitem><simpara>Nathaniel Clay</simpara></listitem>
+	<listitem><simpara>Nikita Shulga</simpara></listitem>
+	<listitem><simpara>Norman Vine</simpara></listitem>
+	<listitem><simpara>Rafal Magda</simpara></listitem>
+	<listitem><simpara>Ralph Mason</simpara></listitem>
+	<listitem><simpara>Rémi Cura</simpara></listitem>
+	<listitem><simpara>Richard Greenwood</simpara></listitem>
+	<listitem><simpara>Silvio Grosso</simpara></listitem>
+	<listitem><simpara>Steffen Macke</simpara></listitem>
+	<listitem><simpara>Stephen Frost</simpara></listitem>
+	<listitem><simpara>Tom van Tilburg</simpara></listitem>
+	<listitem><simpara>Vincent Mora</simpara></listitem>
+	<listitem><simpara>Vincent Picavet</simpara></listitem>
 </itemizedlist>
 		</listitem>
 	  </varlistentry>
@@ -272,44 +272,44 @@
 			<para>These are corporate entities that have contributed developer time, hosting, or direct monetary funding to the PostGIS project.
 			      In alphabetical order:
 			<itemizedlist>
-				<listitem><ulink url="https://arrival3d.com">Arrival 3D</ulink></listitem>
-				<listitem><ulink url="http://gfoss.it">Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)</ulink></listitem>
-				<listitem><ulink url="https://www.ausvet.com.au">AusVet</ulink></listitem>
-				<listitem>Avencia</listitem>
-				<listitem><ulink url="https://www.azavea.com">Azavea</ulink></listitem>
-				<listitem><ulink url="https://www.boundlessgeo.com">Boundless</ulink></listitem>
-				<listitem><ulink url="https://www.cadcorp.com">Cadcorp</ulink></listitem>
-				<listitem><ulink url="https://www.camptocamp.com">Camptocamp</ulink></listitem>
-				<listitem><ulink url="https://carto.com">Carto</ulink></listitem>
-				<listitem><ulink url="https://www.boston.gov">City of Boston (DND)</ulink></listitem>
-				<listitem><ulink url="https://blog.cleverelephant.ca">Clever Elephant Solutions</ulink></listitem>
-				<listitem><ulink url="https://www.alveo.coop">Cooperativa Alveo</ulink></listitem>
-				<listitem><ulink url="http://www.elecnor-deimos.com">Deimos Space</ulink></listitem>
-				<listitem><ulink url="https://www.faunalia.eu">Faunalia</ulink></listitem>
-				<listitem><ulink url="https://gov.bc.ca">Geographic Data BC</ulink></listitem>
-				<listitem><ulink url="http://www.hunterbiometrics.com">Hunter Systems Group</ulink></listitem>
-				<listitem><ulink url="https://www.isciences.com">ISciences, LLC</ulink></listitem>
-				<listitem><ulink url="https://www.lidwala.com">Lidwala Consulting Engineers</ulink></listitem>
-				<listitem><ulink url="https://www.jirotech.com">LISAsoft</ulink></listitem>
-				<listitem>Logical Tracking &amp; Tracing International AG</listitem>
-				<listitem>Maponics</listitem>
-				<listitem><ulink url="http://www.mtri.org">Michigan Tech Research Institute</ulink></listitem>
-				<listitem><ulink url="https://www.nrcan.gc.ca">Natural Resources Canada</ulink></listitem>
-				<listitem>Norwegian Forest and Landscape Institue</listitem>
-				<listitem><ulink url="https://www.osgeo.org">OSGeo</ulink></listitem>
-				<listitem><ulink url="https://oslandia.com">Oslandia</ulink></listitem>
-				<listitem><ulink url="https://www.palantir.com">Palantir Technologies</ulink></listitem>
-				<listitem><ulink url="https://www.paragoncorporation.com">Paragon Corporation</ulink></listitem>
-				<listitem><ulink url="https://www.r3-gis.com">R3 GIS</ulink></listitem>
-				<listitem><ulink url="http://www.refractions.net">Refractions Research</ulink></listitem>
-				<listitem><ulink url="https://www.regione.toscana.it">Regione Toscana - SITA</ulink></listitem>
-				<listitem><ulink url="https://www.safe.com">Safe Software</ulink></listitem>
-				<listitem>Sirius Corporation plc</listitem>
-				<listitem><ulink url="http://www.uster.ch">Stadt Uster</ulink></listitem>
-				<listitem><ulink url="https://www.ucdavis.edu">UC Davis Center for Vectorborne Diseases</ulink></listitem>
-				<listitem><ulink url="https://www.ulaval.ca">Université Laval</ulink></listitem>
-				<listitem><ulink url="https://hiu.state.gov">U.S. Department of State (HIU)</ulink></listitem>
-				<listitem><ulink url="https://www.zonarsystems.com">Zonar Systems</ulink></listitem>
+				<listitem><simpara><ulink url="https://arrival3d.com">Arrival 3D</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="http://gfoss.it">Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.ausvet.com.au">AusVet</ulink></simpara></listitem>
+				<listitem><simpara>Avencia</simpara></listitem>
+				<listitem><simpara><ulink url="https://www.azavea.com">Azavea</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.boundlessgeo.com">Boundless</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.cadcorp.com">Cadcorp</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.camptocamp.com">Camptocamp</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://carto.com">Carto</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.boston.gov">City of Boston (DND)</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://blog.cleverelephant.ca">Clever Elephant Solutions</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.alveo.coop">Cooperativa Alveo</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="http://www.elecnor-deimos.com">Deimos Space</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.faunalia.eu">Faunalia</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://gov.bc.ca">Geographic Data BC</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="http://www.hunterbiometrics.com">Hunter Systems Group</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.isciences.com">ISciences, LLC</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.lidwala.com">Lidwala Consulting Engineers</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.jirotech.com">LISAsoft</ulink></simpara></listitem>
+				<listitem><simpara>Logical Tracking &amp; Tracing International AG</simpara></listitem>
+				<listitem><simpara>Maponics</simpara></listitem>
+				<listitem><simpara><ulink url="http://www.mtri.org">Michigan Tech Research Institute</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.nrcan.gc.ca">Natural Resources Canada</ulink></simpara></listitem>
+				<listitem><simpara>Norwegian Forest and Landscape Institue</simpara></listitem>
+				<listitem><simpara><ulink url="https://www.osgeo.org">OSGeo</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://oslandia.com">Oslandia</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.palantir.com">Palantir Technologies</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.paragoncorporation.com">Paragon Corporation</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.r3-gis.com">R3 GIS</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="http://www.refractions.net">Refractions Research</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.regione.toscana.it">Regione Toscana - SITA</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.safe.com">Safe Software</ulink></simpara></listitem>
+				<listitem><simpara>Sirius Corporation plc</simpara></listitem>
+				<listitem><simpara><ulink url="http://www.uster.ch">Stadt Uster</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.ucdavis.edu">UC Davis Center for Vectorborne Diseases</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.ulaval.ca">Université Laval</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://hiu.state.gov">U.S. Department of State (HIU)</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.zonarsystems.com">Zonar Systems</ulink></simpara></listitem>
 			</itemizedlist>
 		</para>
 		</listitem>
