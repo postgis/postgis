@@ -108,11 +108,8 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_
 sql:
 	mkdir -p $@
 
-sql_bits:
-	mkdir -p $@
-
 #strip BEGIN/COMMIT since these are not allowed in extensions
-sql/spatial_ref_sys.sql: ../../spatial_ref_sys.sql | sql_bits
+sql/spatial_ref_sys.sql: ../../spatial_ref_sys.sql | sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
 ../../doc/postgis_comments.sql:
