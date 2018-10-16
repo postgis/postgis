@@ -2,14 +2,14 @@
 <chapter id="postgis_introduction">
   <title>Introduction</title>
 
-  <para>PostGIS is a spatial extender for the PostgreSQL relational database
+  <para>PostGIS is a spatial extension for the PostgreSQL relational database
 	that was created by Refractions Research Inc, as a spatial
   database technology research project. Refractions is a GIS and database
   consulting company in Victoria, British Columbia, Canada, specializing in
   data integration and custom software development.</para>
 
-	<para>PostGIS is now a project of the OSGeo Foundation and is developed and funded by many FOSS4G Developers as well
-    as corporations all over the world that gain great benefit from its functionality and versatility.</para>
+	<para>PostGIS is now a project of the OSGeo Foundation and is developed and funded by many FOSS4G developers and
+     organizations all over the world that gain great benefit from its functionality and versatility.</para>
 	<para>The PostGIS project development group plans on supporting and
   enhancing PostGIS to better support a range of important GIS functionality
 	in the areas of OpenGIS and SQL/MM spatial standards, advanced topological constructs (coverages,
@@ -30,9 +30,9 @@
 	  <varlistentry>
 		<term>Regina Obe</term>
 		<listitem>
-		  <para>Buildbot Maintenance, windows production and experimental builds, Documentation, alignment of
+		  <para>Buildbot Maintenance, Windows production and experimental builds, documentation, alignment of
 		  PostGIS with PostgreSQL releases, general user support on PostGIS newsgroup,
-		  X3D support, Tiger Geocoder Support, management functions,  and
+		  X3D support, TIGER geocoder Support, management functions,  and
 		  smoke testing new functionality or major code changes.</para>
 		</listitem>
 	  </varlistentry>
@@ -57,7 +57,7 @@
 		<term>Sandro Santilli</term>
 
 		<listitem>
-		  <para>Bug fixes and maintenance, git mirrors management, integration of new GEOS functionality and alignment with GEOS releases, Topology support, and Raster framework and low level api functions.</para>
+		  <para>Bug fixes and maintenance, git mirror management, integration of new GEOS functionality and alignment with GEOS releases, topology support, and raster framework and low level API functions.</para>
 		</listitem>
 	  </varlistentry>
 
@@ -77,7 +77,7 @@
 			<term>Nicklas Avén</term>
 
 			<listitem>
-			  <para>Distance function enhancements (including 3D distance and relationship functions) and additions, Tiny WKB output format (TWKB) (in development) and general user support</para>
+			  <para>Distance function enhancements (including 3D distance and relationship functions) and additions, Tiny WKB (TWKB) output format and general user support</para>
 			</listitem>
 		</varlistentry>
 
@@ -92,7 +92,7 @@
 		<varlistentry>
 			<term>Olivier Courtin</term>
 			<listitem>
-			  <para>Input output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
+			  <para>Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
 			</listitem>
 		</varlistentry>
 
@@ -108,7 +108,7 @@
 		<varlistentry>
 			<term>Mateusz Loskot</term>
 			<listitem>
-			  <para>CMake support for PostGIS, built original raster loader in python and low level raster api functions</para>
+			  <para>CMake support for PostGIS, built original raster loader in python and low level raster API functions</para>
 			</listitem>
 		</varlistentry>
 
@@ -123,7 +123,7 @@
 			<term>Darafei Praliaskouski</term>
 
 			<listitem>
-			  <para>Index improvements, bug fixing and geometry/geography function improvements, GitHub curator, and Travis bot maintenance.</para>
+			  <para>Index improvements, bug fixing and geometry/geography function improvements, GitHub curation, and Travis bot maintenance.</para>
 			</listitem>
 		</varlistentry>
 
@@ -175,7 +175,7 @@
 		<varlistentry>
 		<term>Jeff Lounsbury</term>
 		<listitem>
-		  <para>Original development of the Shape file loader/dumper. Current PostGIS Project Owner representative.</para>
+		  <para>Original development of the Shapefile loader/dumper.</para>
 		</listitem>
 		</varlistentry>
 
@@ -202,112 +202,151 @@
 		<term>Individual Contributors</term>
 
 		<listitem>
-		  <para>In alphabetical order:
-Alex Bodnaru,
-Alex Mayrhofer,
-Andrea Peri,
-Andreas Forø Tollefsen,
-Andreas Neumann,
-Anne Ghisla,
-Barbara Phillipot,
-Ben Jubb,
-Bernhard Reiter,
-Brian Hamlin,
-Bruce Rindahl,
-Bruno Wolff III,
-Bryce L. Nordgren,
-Carl Anderson,
-Charlie Savage,
-Dane Springmeyer,
-David Skea,
-David Techer,
-Eduin Carrillo,
-Even Rouault,
-Frank Warmerdam,
-George Silva,
-Gerald Fenoy,
-Gino Lucrezi,
-Guillaume Lelarge,
-IIDA Tetsushi,
-Ingvild Nystuen,
-Jason Smith,
-Jeff Adams,
-Jose Carlos Martinez Llari,
-Julien Rouhaud,
-Kashif Rasul,
-Klaus Foerster,
-Kris Jurka,
-Leo Hsu,
-Loic Dachary,
-Luca S. Percich,
-Maria Arias de Reyna,
-Mark Sondheim,
-Markus Schaber,
-Maxime Guillaud,
-Maxime van Noppen,
-Michael Fuhr,
-Mike Toews,
-Nathan Wagner,
-Nathaniel Clay,
-Nikita Shulga,
-Norman Vine,
-Rafal Magda,
-Ralph Mason,
-Rémi Cura,
-Richard Greenwood,
-Silvio Grosso,
-Steffen Macke,
-Stephen Frost,
-Tom van Tilburg,
-Vincent Mora,
-Vincent Picavet
-		  </para>
+			<para>
+				<simplelist type="vert" columns="3">
+					<member>Alex Bodnaru</member>
+					<member>Alex Mayrhofer</member>
+					<member>Andrea Peri</member>
+					<member>Andreas Forø Tollefsen</member>
+					<member>Andreas Neumann</member>
+					<member>Anne Ghisla</member>
+					<member>Antoine Bajolet</member>
+					<member>Artur Zakirov</member>
+					<member>Barbara Phillipot</member>
+					<member>Ben Jubb</member>
+					<member>Bernhard Reiter</member>
+					<member>Björn Esser</member>
+					<member>Brian Hamlin</member>
+					<member>Bruce Rindahl</member>
+					<member>Bruno Wolff III</member>
+					<member>Bryce L. Nordgren</member>
+					<member>Carl Anderson</member>
+					<member>Charlie Savage</member>
+					<member>Christoph Berg</member>
+					<member>Christoph Moench-Tegeder</member>
+					<member>Dane Springmeyer</member>
+					<member>Dave Fuhry</member>
+					<member>David Garnier</member>
+					<member>David Skea</member>
+					<member>David Techer</member>
+					<member>Dmitry Vasilyev</member>
+					<member>Eduin Carrillo</member>
+					<member>Eugene Antimirov</member>
+					<member>Even Rouault</member>
+					<member>Frank Warmerdam</member>
+					<member>George Silva</member>
+					<member>Gerald Fenoy</member>
+					<member>Gino Lucrezi</member>
+					<member>Greg Troxel</member>
+					<member>Guillaume Lelarge</member>
+					<member>Haribabu Kommi</member>
+					<member>Havard Tveite</member>
+					<member>IIDA Tetsushi</member>
+					<member>Ingvild Nystuen</member>
+					<member>Jackie Leng</member>
+					<member>James Marca</member>
+					<member>Jason Smith</member>
+					<member>Jeff Adams</member>
+					<member>Jonne Savolainen</member>
+					<member>Jose Carlos Martinez Llari</member>
+					<member>Jörg Habenicht</member>
+					<member>Julien Rouhaud</member>
+					<member>Kashif Rasul</member>
+					<member>Klaus Foerster</member>
+					<member>Kris Jurka</member>
+					<member>Laurenz Albe</member>
+					<member>Lars Roessiger</member>
+					<member>Leo Hsu</member>
+					<member>Loic Dachary</member>
+					<member>Luca S. Percich</member>
+					<member>Maria Arias de Reyna</member>
+					<member>Marc Ducobu</member>
+					<member>Mark Sondheim</member>
+					<member>Markus Schaber</member>
+					<member>Markus Wanner</member>
+					<member>Matt Amos</member>
+					<member>Matthias Bay</member>
+					<member>Maxime Guillaud</member>
+					<member>Maxime van Noppen</member>
+					<member>Michael Fuhr</member>
+					<member>Mike Toews</member>
+					<member>Nathan Wagner</member>
+					<member>Nathaniel Clay</member>
+					<member>Nikita Shulga</member>
+					<member>Norman Vine</member>
+					<member>Patricia Tozer</member>
+					<member>Rafal Magda</member>
+					<member>Ralph Mason</member>
+					<member>Rémi Cura</member>
+					<member>Richard Greenwood</member>
+					<member>Roger Crew</member>
+					<member>Ron Mayer</member>
+					<member>Sebastiaan Couwenberg</member>
+					<member>Sergey Fedoseev</member>
+					<member>Shinichi Sugiyama</member>
+					<member>Shoaib Burq</member>
+					<member>Silvio Grosso</member>
+					<member>Steffen Macke</member>
+					<member>Stepan Kuzmin</member>
+					<member>Stephen Frost</member>
+					<member>Talha Rizwan</member>
+					<member>Tom Glancy</member>
+					<member>Tom van Tilburg</member>
+					<member>Vincent Mora</member>
+					<member>Vincent Picavet</member>
+					<member>Volf Tomáš</member>
+				</simplelist>
+			</para>
 		</listitem>
-	  </varlistentry>
+	</varlistentry>
 
 	  <varlistentry>
 		<term>Corporate Sponsors</term>
 
 		<listitem>
-		  <para>These are corporate entities that have contributed developer time, hosting, or direct monetary funding to the PostGIS project</para>
-		  <para>In alphabetical order:
-Arrival 3D,
-Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it),
-AusVet,
-Avencia,
-Azavea,
-Cadcorp,
-CampToCamp,
-CartoDB,
-City of Boston (DND),
-Clever Elephant Solutions,
-Cooperativa Alveo,
-Deimos Space,
-Faunalia,
-Geographic Data BC,
-Hunter Systems Group,
-Lidwala Consulting Engineers,
-LisaSoft,
-Logical Tracking &amp; Tracing International AG,
-Maponics,
-Michigan Tech Research Institute,
-Natural Resources Canada,
-Norwegian Forest and Landscape Institute,
-Boundless (former OpenGeo),
-OSGeo,
-Oslandia,
-Palantir Technologies,
-Paragon Corporation,
-R3 GIS,
-Refractions Research,
-Regione Toscana - SITA,
-Safe Software,
-Sirius Corporation plc,
-Stadt Uster,
-UC Davis Center for Vectorborne Diseases,
-University of Laval,
-U.S Department of State (HIU),
-Zonar Systems</para>
+			<para>These are corporate entities that have contributed developer time, hosting, or direct monetary funding to the PostGIS project.
+			      In alphabetical order:
+			<itemizedlist>
+				<listitem><simpara><ulink url="https://arrival3d.com">Arrival 3D</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="http://gfoss.it">Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.ausvet.com.au">AusVet</ulink></simpara></listitem>
+				<listitem><simpara>Avencia</simpara></listitem>
+				<listitem><simpara><ulink url="https://www.azavea.com">Azavea</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.boundlessgeo.com">Boundless</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.cadcorp.com">Cadcorp</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.camptocamp.com">Camptocamp</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://carto.com">Carto</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.boston.gov">City of Boston (DND)</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://blog.cleverelephant.ca">Clever Elephant Solutions</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.alveo.coop">Cooperativa Alveo</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="http://www.elecnor-deimos.com">Deimos Space</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.faunalia.eu">Faunalia</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://gov.bc.ca">Geographic Data BC</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="http://www.hunterbiometrics.com">Hunter Systems Group</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.isciences.com">ISciences, LLC</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.lidwala.com">Lidwala Consulting Engineers</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.jirotech.com">LISAsoft</ulink></simpara></listitem>
+				<listitem><simpara>Logical Tracking &amp; Tracing International AG</simpara></listitem>
+				<listitem><simpara>Maponics</simpara></listitem>
+				<listitem><simpara><ulink url="http://www.mtri.org">Michigan Tech Research Institute</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.nrcan.gc.ca">Natural Resources Canada</ulink></simpara></listitem>
+				<listitem><simpara>Norwegian Forest and Landscape Institue</simpara></listitem>
+				<listitem><simpara><ulink url="https://www.osgeo.org">OSGeo</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://oslandia.com">Oslandia</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.palantir.com">Palantir Technologies</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.paragoncorporation.com">Paragon Corporation</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.r3-gis.com">R3 GIS</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="http://www.refractions.net">Refractions Research</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.regione.toscana.it">Regione Toscana - SITA</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.safe.com">Safe Software</ulink></simpara></listitem>
+				<listitem><simpara>Sirius Corporation plc</simpara></listitem>
+				<listitem><simpara><ulink url="http://www.uster.ch">Stadt Uster</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.ucdavis.edu">UC Davis Center for Vectorborne Diseases</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.ulaval.ca">Université Laval</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://hiu.state.gov">U.S. Department of State (HIU)</ulink></simpara></listitem>
+				<listitem><simpara><ulink url="https://www.zonarsystems.com">Zonar Systems</ulink></simpara></listitem>
+			</itemizedlist>
+		</para>
 		</listitem>
 	  </varlistentry>
 
@@ -318,7 +357,7 @@ Zonar Systems</para>
             <para>Crowd funding campaigns are campaigns we run to get badly wanted features funded that can service a large number of people.  Each campaign is specifically focused on a particular feature or set of features.  Each sponsor chips in a small fraction of the needed funding and with enough people/organizations contributing, we have the funds to pay for the work that will help many.  If you have an idea for a feature you think many others would be willing to co-fund, please post to the <ulink url="https://lists.osgeo.org/mailman/listinfo/postgis-users">PostGIS newsgroup</ulink> your thoughts and together we can make it happen. </para>
 		  <para>PostGIS 2.0.0 was the first release we tried this strategy. We used <ulink url="http://www.pledgebank.com">PledgeBank</ulink> and we got two successful campaigns out of it.</para>
 		  <para><ulink url="http://www.pledgebank.com/postgistopology"><emphasis role="bold">postgistopology</emphasis></ulink> - 10 plus sponsors each contributed $250 USD to build toTopoGeometry function and beef up topology support in 2.0.0. It happened.</para>
-		 <para><ulink url="http://www.pledgebank.com/postgis64windows"><emphasis role="bold">postgis64windows</emphasis></ulink> - 20 someodd sponsors each contributed $100 USD to pay for the work needed to work out PostGIS 64-bit issues on windows. It happened.  We now have a 64-bit release for PostGIS 2.0.1 available on PostgreSQL stack builder.</para>
+		 <para><ulink url="http://www.pledgebank.com/postgis64windows"><emphasis role="bold">postgis64windows</emphasis></ulink> - 20 someodd sponsors each contributed $100 USD to pay for the work needed to work out PostGIS 64-bit issues on windows. It happened.</para>
 		</listitem>
 	  </varlistentry>
 
@@ -326,73 +365,23 @@ Zonar Systems</para>
 		<term>Important Support Libraries</term>
 
 		<listitem>
-		  <para>The <ulink url="http://trac.osgeo.org/geos/">GEOS</ulink>
-		  geometry operations library, and the algorithmic work of Martin
-		  Davis in making it all work, ongoing maintenance and support of
-		  Mateusz Loskot, Sandro Santilli (strk), Paul Ramsey and others.</para>
+		  <para>The <ulink url="https://geos.osgeo.org">GEOS</ulink>
+		  geometry operations library</para>
 
-		  <para>The <ulink url="http://trac.osgeo.org/gdal/">GDAL</ulink>
-		  Geospatial Data Abstraction Library, by Frank Warmerdam and others is used to
-		  power much of the raster functionality introduced in PostGIS 2.0.0. In kind, improvements needed in GDAL
+		  <para>The <ulink url="https://www.gdal.org">GDAL</ulink>
+		  Geospatial Data Abstraction Library used to
+		  power much of the raster functionality introduced in PostGIS 2. In kind, improvements needed in GDAL
 		  to support PostGIS are contributed back to the GDAL project.</para>
 
-		  <para>The <ulink url="http://trac.osgeo.org/proj/">Proj4</ulink>
-		  cartographic projection library, and the work of Gerald Evenden and
-		  Frank Warmerdam in creating and maintaining it.</para>
+		  <para>The <ulink url="https://www.proj4.org">PROJ</ulink>
+		  cartographic projection library</para>
 
-		  <para>Last but not least, the <ulink url="http://www.postgresql.org">PostgreSQL DBMS</ulink>,
-		  The giant that PostGIS stands on.  Much of the speed and flexibility of PostGIS would not be possible without
+		  <para>Last but not least, <ulink url="http://www.postgresql.org">PostgreSQL</ulink>,
+		  the giant that PostGIS stands on.  Much of the speed and flexibility of PostGIS would not be possible without
 		  the extensibility, great query planner, GIST index, and plethora of SQL features provided by PostgreSQL.</para>
 		</listitem>
 	  </varlistentry>
 	</variablelist>
   </sect1>
 
-  <sect1>
-	<title>More Information</title>
-
-	<itemizedlist>
-	  <listitem>
-		<para>The latest software, documentation and news items are available
-		at the PostGIS web site, <ulink
-		url="http://postgis.net">http://postgis.net</ulink>.</para>
-	  </listitem>
-
-	  <listitem>
-		<para>More information about the GEOS geometry operations library is
-		available at<ulink url="http://trac.osgeo.org/geos/">
-		http://trac.osgeo.org/geos/</ulink>.</para>
-	  </listitem>
-
-	  <listitem>
-		<para>More information about the Proj4 reprojection library is
-		available at <ulink
-		url="http://trac.osgeo.org/proj/">http://trac.osgeo.org/proj/</ulink>.</para>
-	  </listitem>
-
-	  <listitem>
-		<para>More information about the PostgreSQL database server is
-		available at the PostgreSQL main site <ulink
-		url="http://www.postgresql.org">http://www.postgresql.org</ulink>.</para>
-	  </listitem>
-
-	  <listitem>
-		<para>More information about GiST indexing is available at the
-		PostgreSQL GiST development site, <ulink
-		url="http://www.sai.msu.su/~megera/postgres/gist/">http://www.sai.msu.su/~megera/postgres/gist/</ulink>.</para>
-	  </listitem>
-
-	  <listitem>
-		<para>More information about MapServer internet map server is
-		available at <ulink
-		url="http://mapserver.org/">http://mapserver.org</ulink>.</para>
-	  </listitem>
-
-	  <listitem>
-		<para>The &quot;<ulink url="http://www.opengeospatial.org/standards/sfs">Simple Features for
-		Specification for SQL</ulink>&quot; is available at the OpenGIS Consortium
-		web site: <ulink url="http://www.opengeospatial.org/">http://www.opengeospatial.org/</ulink>.</para>
-	  </listitem>
-	</itemizedlist>
-  </sect1>
 </chapter>
