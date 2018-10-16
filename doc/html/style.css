@@ -1,6 +1,6 @@
-/* 
+/*
 * PostGIS Alternative Docbook CSS
-* Dane Springmeyer 
+* Dane Springmeyer
 * Paul Ramsey
 */
 
@@ -199,7 +199,7 @@ div.important table tr td img {
 span.inlinemediaobject img {
     vertical-align: middle;
 }
-      
+
 .programlisting {
     font-family: Consolas, Monaco, monospace;
 }
@@ -280,4 +280,7 @@ table.informaltable td, th {
 .pdparam {
     color: #900
 }
- 
+
+.simplelist td {
+    padding-right: 2em;
+}
