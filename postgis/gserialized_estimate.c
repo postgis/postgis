@@ -1304,8 +1304,8 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 	}
 
 	/* What are the Oids of our tables/relations? */
-	relid1 = getrelid(var1->varno, root->parse->rtable);
-	relid2 = getrelid(var2->varno, root->parse->rtable);
+	relid1 = rt_fetch(var1->varno, root->parse->rtable)->relid;
+	relid2 = rt_fetch(var2->varno, root->parse->rtable)->relid;
 
 	POSTGIS_DEBUGF(3, "using relations \"%s\" Oid(%d), \"%s\" Oid(%d)",
 	                 get_rel_name(relid1) ? get_rel_name(relid1) : "NULL", relid1, get_rel_name(relid2) ? get_rel_name(relid2) : "NULL", relid2);
