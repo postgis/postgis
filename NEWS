@@ -12,6 +12,7 @@ PostGIS 2.3.8
   - #4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)
   - #4020, Fix leftovers in topology upgrade from 2.1 (Sandro Santilli)
   - #4203, Fix build with GNU Make 4.1 (Sandro Santilli)
+  - #4206, Fix support for PostgreSQL 12 dev branch (Laurenz Albe)
 
 PostGIS 2.3.7
 2018/04/06
