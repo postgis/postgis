@@ -76,4 +76,7 @@ TESTS_EXPECTED = $(TESTS:.sql=_expected)
 check: topo_predicates.sql load_topology.sql load_topology-4326.sql $(TESTS) $(TESTS_EXPECTED)
 	$(MAKE) -C ../../regress staged-install
 	$(PERL) ../../regress/run_test.pl --topology $(RUNTESTFLAGS) $(TESTS)
-	$(PERL) ../../regress/run_test.pl --upgrade --topology $(RUNTESTFLAGS) $(TESTS)
+	# only run upgrade test if RUNTESTFLAGS was not already doing that
+	if test -z `echo "$(RUNTESTFLAGS)" | grep -- --upgrade`; then \
+		$(PERL) ../../regress/run_test.pl --upgrade --topology $(RUNTESTFLAGS) $(TESTS); \
+	fi
