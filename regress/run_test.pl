@@ -1482,7 +1482,7 @@ sub upgrade_spatial_extensions
     if ( $OPT_WITH_RASTER )
     {
       if ( $OPT_UPGRADE_FROM
-           && !  has_split_raster_ext($OPT_UPGRADE_FROM)
+           && ! has_split_raster_ext($OPT_UPGRADE_FROM)
          )
       {
         # upgrade of postgis must have unpackaged raster, so
@@ -1501,6 +1501,10 @@ sub upgrade_spatial_extensions
       else
       {
         my $sql = "ALTER EXTENSION postgis_raster UPDATE TO '${nextver}'";
+
+        if ( $OPT_UPGRADE_FROM eq "unpackaged" ) {
+          $sql = "CREATE EXTENSION postgis_raster VERSION '${nextver}' FROM unpackaged";
+        }
 
         print "Upgrading PostGIS Raster in '${DB}' using: ${sql}\n" ;
 
