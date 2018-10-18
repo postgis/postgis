@@ -66,9 +66,11 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
   for fname in unpackaged $files; do
     from_version="$fname"
     # only consider versions older than ${to_version}
-    cmp=`semver_compare "${from_version}" "${to_version}"`
-    if test $cmp -ge 0; then
-      continue
+    if test $fname != "unpackaged"; then # unpackaged is always older
+      cmp=`semver_compare "${from_version}" "${to_version}"`
+      if test $cmp -ge 0; then
+        continue
+      fi
     fi
     UPGRADE_PATH="${from_version}--${to_version}"
     if test -e ${EXT}--${UPGRADE_PATH}.sql; then
