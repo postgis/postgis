@@ -9,6 +9,10 @@ ifeq (@LIBLWGEOM_ONLY@,no)
 SUBDIRS += libpgcommon postgis regress @RASTER@ @TOPOLOGY@ loader utils doc @EXTENSIONS@
 endif
 
+POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
+POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
+POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
+
 PERL = @PERL@
 
 # todo: add more rules here, like uninstall, clean...
@@ -45,8 +49,18 @@ check-no-trailing-blanks:
 		grep -v postgis/sqldefines.h | \
 		xargs grep -n '[[:space:]]$$'
 
-installcheck:
+installcheck: installcheck-base installcheck-upgrade
+
+installcheck-base:
 	RUNTESTFLAGS="$(RUNTESTFLAGS) --extension" $(MAKE) check
+
+# only run upgrade test if RUNTESTFLAGS was not already doing that
+installcheck-upgrade:
+	if test -z `echo "$(RUNTESTFLAGS)" | grep -- --upgrade`; then \
+		RUNTESTFLAGS="$(RUNTESTFLAGS) --extension \
+			--upgrade-path unpackaged--$(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION).$(POSTGIS_MICRO_VERSION)" \
+			$(MAKE) check; \
+	fi
 
 distclean: distclean-local
 

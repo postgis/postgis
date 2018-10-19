@@ -181,6 +181,6 @@ check:
 	$(MAKE) -C ../../../regress staged-install
 	$(PERL) ../../../regress/run_test.pl --raster $(RUNTESTFLAGS) $(TESTS)
 	# only run upgrade test if RUNTESTFLAGS was not already doing that
-	if test -z `echo "$(RUNTESTFLAGS)" | grep -- --upgrade`; then \
+	if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
 		$(PERL) ../../../regress/run_test.pl --upgrade --raster $(RUNTESTFLAGS) $(TESTS); \
 	fi

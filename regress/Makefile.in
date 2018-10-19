@@ -301,7 +301,7 @@ staged-install: staged-install-raster staged-install-topology
 test check: staged-install
 	$(PERL) run_test.pl $(RUNTESTFLAGS) $(SFCGALTESTFLAGS) $(TESTS)
 	# only run upgrade test if RUNTESTFLAGS was not already doing that
-	if test -z `echo "$(RUNTESTFLAGS)" | grep -- --upgrade`; then \
+	if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
 		$(PERL) run_test.pl --upgrade $(RUNTESTFLAGS) $(SFCGALTESTFLAGS) $(TESTS); \
 	fi
 
