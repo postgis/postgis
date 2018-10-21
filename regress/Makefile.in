@@ -21,7 +21,7 @@ else
 endif
 REGRESS_INSTALLDIR=$(srcdir)/00-regress-install
 
-all: check
+all:
 
 check: staged-install check-core check-sfcgal
 
