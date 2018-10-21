@@ -9,4 +9,4 @@
 SET postgis.backend = 'sfcgal';
 
 \cd :regdir
-\i legacy.sql
+\i core/legacy.sql

@@ -36,17 +36,17 @@ ifeq ($(HAVE_SFCGAL),yes)
 	# SFCGAL additionnal backend
 	TESTS += \
 		regress_sfcgal \
-		sfcgal/empty.sql \
-		sfcgal/geography.sql \
-		sfcgal/legacy.sql \
-		sfcgal/measures.sql \
-		sfcgal/regress_ogc_prep.sql \
-		sfcgal/regress_ogc.sql \
-		sfcgal/regress.sql \
-		sfcgal/tickets.sql \
-		sfcgal/concave_hull.sql \
-		sfcgal/wmsservers.sql \
-		sfcgal/approximatemedialaxis.sql
+		empty.sql \
+		geography.sql \
+		legacy.sql \
+		measures.sql \
+		regress_ogc_prep.sql \
+		regress_ogc.sql \
+		regress.sql \
+		tickets.sql \
+		concave_hull.sql \
+		wmsservers.sql \
+		approximatemedialaxis.sql
 
 	SFCGALTESTFLAGS = --sfcgal
 endif

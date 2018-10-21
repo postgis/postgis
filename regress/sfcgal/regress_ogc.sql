@@ -6,4 +6,4 @@
 SET postgis.backend = 'sfcgal';
 
 \cd :regdir
-\i regress_ogc.sql
+\i core/regress_ogc.sql
