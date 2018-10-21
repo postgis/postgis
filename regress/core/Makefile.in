@@ -66,8 +66,8 @@ TESTS = \
 	../loader/Latin1 \
 	../loader/Latin1-implicit \
 	../loader/mfile \
-	dumper/literalsrid \
-	dumper/realtable \
+	../dumper/literalsrid \
+	../dumper/realtable \
 	affine \
 	bestsrid \
 	binary \
