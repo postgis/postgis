@@ -45,13 +45,11 @@ TESTS = \
 		wmsservers.sql \
 		approximatemedialaxis.sql
 
-RUNTESTFLAGS += --sfcgal
-
 test check:
-	$(PERL) ../run_test.pl $(RUNTESTFLAGS) $(TESTS)
+	$(PERL) ../run_test.pl --sfcgal $(RUNTESTFLAGS) $(TESTS)
 	# only run upgrade test if RUNTESTFLAGS was not already doing that
 	if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
-		$(PERL) ../run_test.pl --upgrade $(RUNTESTFLAGS) $(TESTS); \
+		$(PERL) ../run_test.pl --sfcgal --upgrade $(RUNTESTFLAGS) $(TESTS); \
 	fi
 
 else
