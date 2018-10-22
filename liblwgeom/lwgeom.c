@@ -2353,7 +2353,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 		lwpoly = (LWPOLY *)geom;
 
 		/* if there are more points in holes than in outer ring */
-		if (nvertices > 2 * lwpoly->rings[0]->npoints)
+		if (nvertices >= 2 * lwpoly->rings[0]->npoints)
 		{
 			/* trim holes starting from biggest */
 			for (i = 1; i < lwpoly->nrings; i++)
