@@ -58,3 +58,5 @@ FROM big_polygon_sliced gs;
 
 drop table big_polygon;
 drop table big_polygon_sliced;
+
+select '#4211', (select sum(ST_Area(geom))::numeric(12,11) from ST_Subdivide('MULTIPOLYGON(((-88.2059 41.7325,-88.2060 41.7244,-88.1959 41.7241,-88.1959 41.7326,-88.2059 41.7325),(-88.1997 41.7289,-88.1996 41.7285,-88.1990 41.7285,-88.1990 41.7289,-88.1997 41.7289)))') geom );

@@ -5,3 +5,4 @@ ERROR:  lwgeom_subdivide: cannot subdivide to fewer than 5 vertices per output
 #3522|POINT(1 1)
 #3744|1600000000000000
 4|29321996468.6|29321996468.6|1857|256
+#4211|0.00008316000

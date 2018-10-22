@@ -23,6 +23,8 @@ PostGIS 3.0.0
   - #4188, Avoid division by zero in kmeans (Raúl Marín)
   - #4189, Fix undefined behaviour in SADFWrite (Raúl Marín)
   - #4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)
+  - #4211, Fix ST_Subdivide for minimal exterior ring with minimal hole (Darafei
+    Praliaskouski)
 
 PostGIS 2.5.0
 2018/09/23
