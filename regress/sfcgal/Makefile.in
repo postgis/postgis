@@ -17,6 +17,8 @@ TMPDIR?=/tmp
 
 HAVE_SFCGAL=@HAVE_SFCGAL@
 
+ifeq ($(HAVE_SFCGAL),yes)
+
 # MingW hack: rather than use PGSQL_BINDIR directly, we change
 # to the directory and then use "pwd" to return the path. This
 # ensures that the returned path is in MSYS format, otherwise
@@ -29,12 +31,7 @@ PGSQL_BINDIR=$(shell cd "@PGSQL_BINDIR@" && pwd)
 PATH := $(PGSQL_BINDIR):$(PATH)
 export PATH
 
-
-TESTS =
-
-ifeq ($(HAVE_SFCGAL),yes)
-	# SFCGAL additionnal backend
-	TESTS += \
+TESTS = \
 		regress_sfcgal \
 		empty.sql \
 		geography.sql \
@@ -48,20 +45,25 @@ ifeq ($(HAVE_SFCGAL),yes)
 		wmsservers.sql \
 		approximatemedialaxis.sql
 
-	SFCGALTESTFLAGS = --sfcgal
-endif
+RUNTESTFLAGS += --sfcgal
 
+test check:
+	$(PERL) ../run_test.pl $(RUNTESTFLAGS) $(TESTS)
+	# only run upgrade test if RUNTESTFLAGS was not already doing that
+	if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
+		$(PERL) ../run_test.pl --upgrade $(RUNTESTFLAGS) $(TESTS); \
+	fi
 
-all install uninstall:
+else
+
+check:
+
+endif # HAVE_SFCGAL
 
 distclean: clean
 	rm Makefile
 
-test check:
-	$(PERL) ../run_test.pl $(RUNTESTFLAGS) $(SFCGALTESTFLAGS) $(TESTS)
-	# only run upgrade test if RUNTESTFLAGS was not already doing that
-	if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
-		$(PERL) ../run_test.pl --upgrade $(RUNTESTFLAGS) $(SFCGALTESTFLAGS) $(TESTS); \
-	fi
+all install uninstall:
+
 
 clean:

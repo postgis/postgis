@@ -12,6 +12,7 @@
 
 PERL=@PERL@
 MINGWBUILD=@MINGWBUILD@
+HAVE_SFCGAL=@HAVE_SFCGAL@
 
 # Where we put our regression installation
 ifeq ($(MINGWBUILD),1)
@@ -23,7 +24,11 @@ REGRESS_INSTALLDIR=$(srcdir)/00-regress-install
 
 all:
 
-check: staged-install check-core check-sfcgal
+check: staged-install check-core
+
+ifeq ($(HAVE_SFCGAL),yes)
+check: check-sfcgal
+endif
 
 check-core:
 	$(MAKE) -C core check
