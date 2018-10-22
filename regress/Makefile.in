@@ -24,17 +24,11 @@ REGRESS_INSTALLDIR=$(srcdir)/00-regress-install
 
 all:
 
-check: staged-install check-core
-
-ifeq ($(HAVE_SFCGAL),yes)
-check: check-sfcgal
-endif
-
-check-core:
+check: staged-install
 	$(MAKE) -C core check
-
-check-sfcgal:
+ifeq ($(HAVE_SFCGAL),yes)
 	$(MAKE) -C sfcgal check
+endif
 
 clean:
 	$(MAKE) -C core $@
