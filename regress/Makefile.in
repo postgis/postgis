@@ -22,7 +22,7 @@ else
 endif
 REGRESS_INSTALLDIR=$(srcdir)/00-regress-install
 
-all:
+all install uninstall:
 
 check: staged-install
 	$(MAKE) -C core check
