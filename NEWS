@@ -25,6 +25,7 @@ PostGIS 3.0.0
   - #4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)
   - #4211, Fix ST_Subdivide for minimal exterior ring with minimal hole (Darafei
     Praliaskouski)
+  - #3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)
 
 PostGIS 2.5.0
 2018/09/23

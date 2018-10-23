@@ -121,3 +121,5 @@ SELECT ST_SummaryStats(ST_Clip(ST_MakeEmptyRaster(42, 42, 0, 0, 1.0, 1.0, 0, 0, 
 -- #4102 negative nodata values don't apply on Raspberry Pi
 SELECT '#4102.1', ST_BandNoDataValue(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BSI', 0, -10), 1) AS rast;
 SELECT '#4102.2', ST_BandNoDataValue(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '32BSI', 0, -10), 1) AS rast;
+
+select '#3457', ST_Area((ST_DumpAsPolygons(ST_Clip(ST_ASRaster(ST_GeomFromText('POLYGON((0 0,100 0,100 100,0 100,0 0))',4326),ST_Addband(ST_MakeEmptyRaster(1,1,0,0,1,-1,0,0,4326),'32BF'::text,0,-1),'32BF'::text,1,-1), ST_GeomFromText('POLYGON((0 0,100 100,100 0,0 0))',4326)))).geom);
