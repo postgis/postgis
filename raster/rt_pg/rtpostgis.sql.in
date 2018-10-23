@@ -6701,7 +6701,7 @@ CREATE OR REPLACE FUNCTION st_clip(
  	AS $$
 	BEGIN
 		-- short-cut if geometry's extent fully contains raster's extent
-		IF (nodataval IS NULL OR array_length(nodataval, 1) < 1) AND geom ~ ST_Envelope(rast) THEN
+		IF (nodataval IS NULL OR array_length(nodataval, 1) < 1) AND ST_Contains(geom, ST_Envelope(rast)) THEN
 			RETURN rast;
 		END IF;
 
