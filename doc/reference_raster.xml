@@ -9797,7 +9797,7 @@ FROM apple;
 					</para>
 
 					<para>
-						The first three variants, returning a setof geomval, works in vector space. The raster is first vectorized (using ST_DumpAsPolygon) into a set of geomval rows and those rows are then intersected with the geometry using the ST_Intersection(geometry, geometry) PostGIS function. Geometries intersecting only with a nodata value area of a raster returns an empty geometry. They are normally excluded from the results by the proper usage of ST_Intersect in the WHERE clause.
+						The first three variants, returning a setof geomval, works in vector space. The raster is first vectorized (using <xref linkend="RT_ST_DumpAsPolygons" />) into a set of geomval rows and those rows are then intersected with the geometry using the <xref linkend="ST_Intersection" /> (geometry, geometry) PostGIS function. Geometries intersecting only with a nodata value area of a raster returns an empty geometry. They are normally excluded from the results by the proper usage of <xref linkend="RT_ST_Intersects" /> in the WHERE clause.
 					</para>
 
 					<para>
@@ -9834,7 +9834,7 @@ FROM apple;
 
 					<note>
 						<para>
-							ST_Intersection should be used in conjunction with ST_Intersects and an index on the raster column and/or the geometry column.
+							ST_Intersection should be used in conjunction with <xref linkend="RT_ST_Intersects" /> and an index on the raster column and/or the geometry column.
 						</para>
 					</note>
 
