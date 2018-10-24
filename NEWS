@@ -11,6 +11,7 @@ PostGIS 2.4.6
   - #4020, Fix leftovers in topology upgrade from 2.1 (Sandro Santilli)
   - #4206, Fix support for PostgreSQL 12 dev branch (Laurenz Albe)
   - #3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)
+  - #4215, Use floating point compare in ST_DumpAsPolygons (Darafei Praliaskouski)
 
 
 PostGIS 2.4.5

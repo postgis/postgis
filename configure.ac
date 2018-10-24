@@ -1357,14 +1357,6 @@ if test "x$with_raster" != "xno"; then
 		AC_SEARCH_LIBS([OGRRegisterAll], [gdal], [], [AC_MSG_ERROR([could not find OGR])], [])
 
 		LIBS="$LIBGDAL_LDFLAGS"
-
-		dnl Check if the new polygonize function is present
-		AC_SEARCH_LIBS(
-			[GDALFPolygonize],
-			[gdal],
-			[AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [1], [Define to 1 if GDALFPolygonize function is available])],
-			[])
-
 		CPPFLAGS="$CPPFLAGS_SAVE"
 		CFLAGS="$CFLAGS_SAVE"
 		LIBS="$LIBS_SAVE"
@@ -1372,8 +1364,6 @@ if test "x$with_raster" != "xno"; then
 		AC_SUBST([LIBGDAL_CFLAGS])
 		AC_SUBST([LIBGDAL_LDFLAGS])
 		AC_SUBST([LIBGDAL_DEPLIBS_LDFLAGS])
-
-		AC_SUBST([GDALFPOLYGONIZE])
 
 	else
 		AC_MSG_RESULT([not found])

@@ -172,11 +172,7 @@ static void test_gdal_polygonize() {
 	nPols = 0;
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
 
-#ifdef GDALFPOLYGONIZE
 	CU_ASSERT_DOUBLE_EQUAL(gv[0].val, 1.8, FLT_EPSILON);
-#else
-	CU_ASSERT_DOUBLE_EQUAL(gv[0].val, 2.0, 1.);
-#endif
 
 	wkt = lwgeom_to_text((const LWGEOM *) gv[0].geom);
 	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))");
@@ -187,11 +183,7 @@ static void test_gdal_polygonize() {
 	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((3 3,3 6,6 6,6 3,3 3))");
 	rtdealloc(wkt);
 
-#ifdef GDALFPOLYGONIZE
 	CU_ASSERT_DOUBLE_EQUAL(gv[2].val, 2.8, FLT_EPSILON);
-#else
-	CU_ASSERT_DOUBLE_EQUAL(gv[2].val, 3.0, 1.);
-#endif
 
 	wkt = lwgeom_to_text((const LWGEOM *) gv[2].geom);
 	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))");
@@ -207,11 +199,7 @@ static void test_gdal_polygonize() {
 	cu_free_raster(rt);
 
 	/* Second test: NODATA value = 1.8 */
-#ifdef GDALFPOLYGONIZE
 	rt = fillRasterToPolygonize(1, 1.8);
-#else
-	rt = fillRasterToPolygonize(1, 2.0);
-#endif
 
 	/* We can check rt_raster_has_band here too */
 	CU_ASSERT(rt_raster_has_band(rt, 0));
@@ -227,7 +215,6 @@ static void test_gdal_polygonize() {
 	}
 	*/
 
-#ifdef GDALFPOLYGONIZE
 	CU_ASSERT_DOUBLE_EQUAL(gv[1].val, 0.0, FLT_EPSILON);
 	wkt = lwgeom_to_text((const LWGEOM *) gv[1].geom);
 	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((3 3,3 6,6 6,6 3,3 3))");
@@ -242,33 +229,13 @@ static void test_gdal_polygonize() {
 	wkt = lwgeom_to_text((const LWGEOM *) gv[3].geom);
 	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))");
 	rtdealloc(wkt);
-#else
-	CU_ASSERT_DOUBLE_EQUAL(gv[0].val, 0.0, 1.);
-	wkt = lwgeom_to_text((const LWGEOM *) gv[0].geom);
-	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((3 3,3 6,6 6,6 3,3 3))");
-	rtdealloc(wkt);
-
-	CU_ASSERT_DOUBLE_EQUAL(gv[1].val, 3.0, 1.);
-	wkt = lwgeom_to_text((const LWGEOM *) gv[1].geom);
-	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))");
-	rtdealloc(wkt);
-
-	CU_ASSERT_DOUBLE_EQUAL(gv[2].val, 0.0, 1.);
-	wkt = lwgeom_to_text((const LWGEOM *) gv[2].geom);
-	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))");
-	rtdealloc(wkt);
-#endif
 
 	for (i = 0; i < nPols; i++) lwgeom_free((LWGEOM *) gv[i].geom);
 	rtdealloc(gv);
 	cu_free_raster(rt);
 
 	/* Third test: NODATA value = 2.8 */
-#ifdef GDALFPOLYGONIZE
 	rt = fillRasterToPolygonize(1, 2.8);
-#else
-	rt = fillRasterToPolygonize(1, 3.0);
-#endif
 
 	/* We can check rt_raster_has_band here too */
 	CU_ASSERT(rt_raster_has_band(rt, 0));
@@ -284,21 +251,12 @@ static void test_gdal_polygonize() {
 	}
 	*/
 
-#ifdef GDALFPOLYGONIZE
 	CU_ASSERT_DOUBLE_EQUAL(gv[0].val, 1.8, FLT_EPSILON);
 
 	CU_ASSERT_DOUBLE_EQUAL(gv[3].val, 0.0, FLT_EPSILON);
 	wkt = lwgeom_to_text((const LWGEOM *) gv[3].geom);
 	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))");
 	rtdealloc(wkt);
-#else
-	CU_ASSERT_DOUBLE_EQUAL(gv[0].val, 2.0, 1.);
-
-	CU_ASSERT_DOUBLE_EQUAL(gv[2].val, 0.0, 1.);
-	wkt = lwgeom_to_text((const LWGEOM *) gv[2].geom);
-	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))");
-	rtdealloc(wkt);
-#endif
 
 	wkt = lwgeom_to_text((const LWGEOM *) gv[0].geom);
 	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))");
@@ -329,21 +287,13 @@ static void test_gdal_polygonize() {
 	}
 	*/
 
-#ifdef GDALFPOLYGONIZE
 	CU_ASSERT_DOUBLE_EQUAL(gv[0].val, 1.8, FLT_EPSILON);
-#else
-	CU_ASSERT_DOUBLE_EQUAL(gv[0].val, 2.0, 1.);
-#endif
 
 	wkt = lwgeom_to_text((const LWGEOM *) gv[0].geom);
 	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))");
 	rtdealloc(wkt);
 
-#ifdef GDALFPOLYGONIZE
 	CU_ASSERT_DOUBLE_EQUAL(gv[1].val, 2.8, FLT_EPSILON);
-#else
-	CU_ASSERT_DOUBLE_EQUAL(gv[1].val, 3.0, 1.);
-#endif
 
 	wkt = lwgeom_to_text((const LWGEOM *) gv[1].geom);
 	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))");
@@ -369,11 +319,7 @@ static void test_gdal_polygonize() {
 	}
 	*/
 
-#ifdef GDALFPOLYGONIZE
 	CU_ASSERT_DOUBLE_EQUAL(gv[0].val, 1.8, FLT_EPSILON);
-#else
-	CU_ASSERT_DOUBLE_EQUAL(gv[0].val, 2.0, 1.);
-#endif
 
 	wkt = lwgeom_to_text((const LWGEOM *) gv[0].geom);
 	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))");
@@ -384,11 +330,7 @@ static void test_gdal_polygonize() {
 	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((3 3,3 6,6 6,6 3,3 3))");
 	rtdealloc(wkt);
 
-#ifdef GDALFPOLYGONIZE
 	CU_ASSERT_DOUBLE_EQUAL(gv[2].val, 2.8, FLT_EPSILON);
-#else
-	CU_ASSERT_DOUBLE_EQUAL(gv[2].val, 3.0, 1.);
-#endif
 
 	wkt = lwgeom_to_text((const LWGEOM *) gv[2].geom);
 	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))");
