@@ -29,6 +29,9 @@ select '#3119a', ST_AsText(ST_LocateBetweenElevations('LINESTRING Z(0 0 0, 10 10
 -- Multilinestrings
 -- #3119 --
 select '#3119b', ST_AsText(ST_LocateBetweenElevations('MULTILINESTRING Z((0 0 0, 10 10 10))'::geometry, 11, 11));
+select '#4155.1', ST_AsText(ST_LocateBetweenElevations('GEOMETRYCOLLECTION(LINESTRING(0 0 0, 10 10 10))', 2, 5));
+select '#4155.2', ST_AsText(ST_LocateBetweenElevations('TIN Z EMPTY', 2, 5));
+select '#4155.3', ST_AsText(ST_LocateBetweenElevations('MULTIPOLYGON Z EMPTY', 2, 5));
 
 --- line_locate_point
 
