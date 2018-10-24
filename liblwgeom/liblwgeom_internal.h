@@ -240,9 +240,9 @@ int point_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int hasz
 LWCOLLECTION *lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, double to);
 
 /**
-* Clip a multi-line based on the from/to range of one of its ordinates. Use for m- and z- clipping
-*/
-LWCOLLECTION *lwmline_clip_to_ordinate_range(const LWMLINE *mline, char ordinate, double from, double to);
+ * Clip collection based on the from/to range of one of its ordinates. Use for m- and z- clipping
+ */
+LWCOLLECTION *lwcollection_clip_to_ordinate_range(const LWCOLLECTION *col, char ordinate, double from, double to);
 
 /**
 * Clip a multi-point based on the from/to range of one of its ordinates. Use for m- and z- clipping

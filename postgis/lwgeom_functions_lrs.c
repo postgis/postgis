@@ -160,7 +160,7 @@ Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
 
 	if ( ! gserialized_has_z(geom_in) )
 	{
-		elog(ERROR,"This function only accepts LINESTRING or MULTILINESTRING with Z dimensions.");
+		elog(ERROR, "This function only accepts geometries with Z dimensions.");
 		PG_RETURN_NULL();
 	}
 

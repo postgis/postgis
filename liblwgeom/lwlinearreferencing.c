@@ -462,80 +462,45 @@ lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double fr
 }
 
 /**
-* Clip an input MULTILINESTRING between two values, on any ordinate input.
-*/
-LWCOLLECTION*
-lwmline_clip_to_ordinate_range(const LWMLINE *mline, char ordinate, double from, double to)
+ * Clip an input COLLECTION between two values, on any ordinate input.
+ */
+LWCOLLECTION *
+lwcollection_clip_to_ordinate_range(const LWCOLLECTION *icol, char ordinate, double from, double to)
 {
 	LWCOLLECTION *lwgeom_out = NULL;
 
-	if ( ! mline )
+	if (!icol)
 	{
 		lwerror("Null input geometry.");
 		return NULL;
 	}
 
-	if ( mline->ngeoms == 1)
-	{
-		lwgeom_out = lwline_clip_to_ordinate_range(mline->geoms[0], ordinate, from, to);
-	}
+	if (icol->ngeoms == 1)
+		lwgeom_out = lwgeom_clip_to_ordinate_range(icol->geoms[0], ordinate, from, to, 0);
 	else
 	{
 		LWCOLLECTION *col;
-		char hasz = lwgeom_has_z(lwmline_as_lwgeom(mline));
-		char hasm = lwgeom_has_m(lwmline_as_lwgeom(mline));
-		uint32_t i, j;
-		char homogeneous = 1;
-		size_t geoms_size = 0;
-		lwgeom_out = lwcollection_construct_empty(MULTILINETYPE, mline->srid, hasz, hasm);
+		char hasz = lwgeom_has_z(lwcollection_as_lwgeom(icol));
+		char hasm = lwgeom_has_m(lwcollection_as_lwgeom(icol));
+		uint32_t i;
+		lwgeom_out = lwcollection_construct_empty(icol->type, icol->srid, hasz, hasm);
 		FLAGS_SET_Z(lwgeom_out->flags, hasz);
 		FLAGS_SET_M(lwgeom_out->flags, hasm);
-		for ( i = 0; i < mline->ngeoms; i ++ )
+		for (i = 0; i < icol->ngeoms; i++)
 		{
-			col = lwline_clip_to_ordinate_range(mline->geoms[i], ordinate, from, to);
-			if ( col )
+			col = lwgeom_clip_to_ordinate_range(icol->geoms[i], ordinate, from, to, 0);
+			if (col)
 			{
-				/* Something was left after the clip. */
-				if ( lwgeom_out->ngeoms + col->ngeoms > geoms_size )
-				{
-					geoms_size += 16;
-					if ( lwgeom_out->geoms )
-					{
-						lwgeom_out->geoms = lwrealloc(lwgeom_out->geoms, geoms_size * sizeof(LWGEOM*));
-					}
-					else
-					{
-						lwgeom_out->geoms = lwalloc(geoms_size * sizeof(LWGEOM*));
-					}
-				}
-				for ( j = 0; j < col->ngeoms; j++ )
-				{
-					lwgeom_out->geoms[lwgeom_out->ngeoms] = col->geoms[j];
-					lwgeom_out->ngeoms++;
-				}
-				if ( col->type != mline->type )
-				{
-					homogeneous = 0;
-				}
-				/* Shallow free the struct, leaving the geoms behind. */
-				if ( col->bbox ) lwfree(col->bbox);
-				lwfree(col->geoms);
-				lwfree(col);
+				if (col->type != icol->type)
+					lwgeom_out->type = COLLECTIONTYPE;
+				lwgeom_out = lwcollection_concat_in_place(lwgeom_out, col);
+				lwcollection_release(col);
 			}
 		}
-		if ( lwgeom_out->bbox )
-		{
-			lwgeom_refresh_bbox((LWGEOM*)lwgeom_out);
-		}
-
-		if ( ! homogeneous )
-		{
-			lwgeom_out->type = COLLECTIONTYPE;
-		}
+		if (lwgeom_out->bbox)
+			lwgeom_refresh_bbox((LWGEOM *)lwgeom_out);
 	}
-
 	return lwgeom_out;
-
 }
 
 
@@ -789,18 +754,24 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 	case LINETYPE:
 		out_col = lwline_clip_to_ordinate_range((LWLINE*)lwin, ordinate, from, to);
 		break;
-	case MULTILINETYPE:
-		out_col = lwmline_clip_to_ordinate_range((LWMLINE*)lwin, ordinate, from, to);
-		break;
 	case MULTIPOINTTYPE:
 		out_col = lwmpoint_clip_to_ordinate_range((LWMPOINT*)lwin, ordinate, from, to);
 		break;
 	case POINTTYPE:
 		out_col = lwpoint_clip_to_ordinate_range((LWPOINT*)lwin, ordinate, from, to);
 		break;
+	// case TRIANGLETYPE:
+	// 	out_col = lwtriangle_clip_to_ordinate_range((LWTRIANGLE*)lwin, ordinate, from, to);
+	// 	break;
+	case TINTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COLLECTIONTYPE:
+		out_col = lwcollection_clip_to_ordinate_range((LWCOLLECTION *)lwin, ordinate, from, to);
+		break;
 	default:
 		lwerror("This function does not accept %s geometries.", lwtype_name(lwin->type));
-		return NULL;;
+		return NULL;
 	}
 
 	/* Stop if result is NULL */
