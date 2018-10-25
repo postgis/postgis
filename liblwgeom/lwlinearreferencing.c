@@ -256,12 +256,6 @@ double lwpoint_get_ordinate(const POINT4D *p, char ordinate)
 		return 0.0;
 	}
 
-	if ( ! ( ordinate == 'X' || ordinate == 'Y' || ordinate == 'Z' || ordinate == 'M' ) )
-	{
-		lwerror("Cannot extract %c ordinate.", ordinate);
-		return 0.0;
-	}
-
 	if ( ordinate == 'X' )
 		return p->x;
 	if ( ordinate == 'Y' )
@@ -271,9 +265,8 @@ double lwpoint_get_ordinate(const POINT4D *p, char ordinate)
 	if ( ordinate == 'M' )
 		return p->m;
 
-	/* X */
-	return p->x;
-
+	lwerror("Cannot extract %c ordinate.", ordinate);
+	return 0.0;
 }
 
 /**
@@ -360,7 +353,7 @@ int point_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int hasz
 /**
 * Clip an input POINT between two values, on any ordinate input.
 */
-LWCOLLECTION*
+static inline LWCOLLECTION *
 lwpoint_clip_to_ordinate_range(const LWPOINT *point, char ordinate, double from, double to)
 {
 	LWCOLLECTION *lwgeom_out = NULL;
@@ -405,12 +398,10 @@ lwpoint_clip_to_ordinate_range(const LWPOINT *point, char ordinate, double from,
 	return lwgeom_out;
 }
 
-
-
 /**
 * Clip an input MULTIPOINT between two values, on any ordinate input.
 */
-LWCOLLECTION*
+static inline LWCOLLECTION *
 lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double from, double to)
 {
 	LWCOLLECTION *lwgeom_out = NULL;
@@ -461,54 +452,13 @@ lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double fr
 	return lwgeom_out;
 }
 
-/**
- * Clip an input COLLECTION between two values, on any ordinate input.
- */
-LWCOLLECTION *
-lwcollection_clip_to_ordinate_range(const LWCOLLECTION *icol, char ordinate, double from, double to)
-{
-	LWCOLLECTION *lwgeom_out = NULL;
-
-	if (!icol)
-	{
-		lwerror("Null input geometry.");
-		return NULL;
-	}
-
-	if (icol->ngeoms == 1)
-		lwgeom_out = lwgeom_clip_to_ordinate_range(icol->geoms[0], ordinate, from, to, 0);
-	else
-	{
-		LWCOLLECTION *col;
-		char hasz = lwgeom_has_z(lwcollection_as_lwgeom(icol));
-		char hasm = lwgeom_has_m(lwcollection_as_lwgeom(icol));
-		uint32_t i;
-		lwgeom_out = lwcollection_construct_empty(icol->type, icol->srid, hasz, hasm);
-		FLAGS_SET_Z(lwgeom_out->flags, hasz);
-		FLAGS_SET_M(lwgeom_out->flags, hasm);
-		for (i = 0; i < icol->ngeoms; i++)
-		{
-			col = lwgeom_clip_to_ordinate_range(icol->geoms[i], ordinate, from, to, 0);
-			if (col)
-			{
-				if (col->type != icol->type)
-					lwgeom_out->type = COLLECTIONTYPE;
-				lwgeom_out = lwcollection_concat_in_place(lwgeom_out, col);
-				lwcollection_release(col);
-			}
-		}
-		if (lwgeom_out->bbox)
-			lwgeom_refresh_bbox((LWGEOM *)lwgeom_out);
-	}
-	return lwgeom_out;
-}
 
 
 /**
 * Take in a LINESTRING and return a MULTILINESTRING of those portions of the
 * LINESTRING between the from/to range for the specified ordinate (XYZM)
 */
-LWCOLLECTION*
+static inline LWCOLLECTION*
 lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, double to)
 {
 
@@ -736,7 +686,48 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 	}
 
 	return lwgeom_out;
+}
 
+/**
+ * Clip an input COLLECTION between two values, on any ordinate input.
+ */
+static inline LWCOLLECTION *
+lwcollection_clip_to_ordinate_range(const LWCOLLECTION *icol, char ordinate, double from, double to)
+{
+	LWCOLLECTION *lwgeom_out = NULL;
+
+	if (!icol)
+	{
+		lwerror("Null input geometry.");
+		return NULL;
+	}
+
+	if (icol->ngeoms == 1)
+		lwgeom_out = lwgeom_clip_to_ordinate_range(icol->geoms[0], ordinate, from, to, 0);
+	else
+	{
+		LWCOLLECTION *col;
+		char hasz = lwgeom_has_z(lwcollection_as_lwgeom(icol));
+		char hasm = lwgeom_has_m(lwcollection_as_lwgeom(icol));
+		uint32_t i;
+		lwgeom_out = lwcollection_construct_empty(icol->type, icol->srid, hasz, hasm);
+		FLAGS_SET_Z(lwgeom_out->flags, hasz);
+		FLAGS_SET_M(lwgeom_out->flags, hasm);
+		for (i = 0; i < icol->ngeoms; i++)
+		{
+			col = lwgeom_clip_to_ordinate_range(icol->geoms[i], ordinate, from, to, 0);
+			if (col)
+			{
+				if (col->type != icol->type)
+					lwgeom_out->type = COLLECTIONTYPE;
+				lwgeom_out = lwcollection_concat_in_place(lwgeom_out, col);
+				lwcollection_release(col);
+			}
+		}
+		if (lwgeom_out->bbox)
+			lwgeom_refresh_bbox((LWGEOM *)lwgeom_out);
+	}
+	return lwgeom_out;
 }
 
 LWCOLLECTION*
