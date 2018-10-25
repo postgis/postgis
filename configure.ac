@@ -60,8 +60,6 @@ AC_SUBST([PICFLAGS])
 
 AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -fno-math-errno], [_cv_nomatherrno], [-fno-math-errno], [], [CFLAGS="$CFLAGS -fno-math-errno"], [])
 AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -fno-signed-zeros], [_cv_nosignedzeros], [-fno-signed-zeros], [], [CFLAGS="$CFLAGS -fno-signed-zeros"], [])
-AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -fopenmp], [_cv_openmp], [-fopenmp], [], [CFLAGS="$CFLAGS -fopenmp"], [])
-AC_LIBTOOL_LINKER_OPTION([if $compiler supports -fopenmp], [_cv_openmp], [-fopenmp], [], [LDFLAGS="-fopenmp $LDFLAGS"], [])
 AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -std=gnu99], [_cv_std], -std=gnu99, [], [CFLAGS="-std=gnu99 $CFLAGS"], [])
 
 
