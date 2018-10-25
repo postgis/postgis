@@ -331,16 +331,23 @@ lwarc_linearize(POINTARRAY *to,
 
 		if ( flags & LW_LINEARIZE_FLAG_RETAIN_ANGLE )
 		{{
-			/* Number of steps */
+			/* Number of complete steps */
 			int steps = trunc(angle / increment);
-			/* Angle reminder */
-			double angle_reminder = angle - ( increment * steps );
-			angle_shift = angle_reminder / 2.0;
+
+			/* Figure out the angle remainder, i.e. the amount of the angle
+			 * that is left after we can take no more complete angle
+			 * increments. */
+			double angle_remainder = angle - ( increment * steps );
+
+			/* Shift the starting angle by half of the remainder. This
+			 * will have the effect of evenly distributing the remainder
+			 * among the first and last segments in the arc. */
+			angle_shift = angle_remainder / 2.0;
 
 			LWDEBUGF(2, "lwarc_linearize RETAIN_ANGLE operation requested - "
-			         "total angle %g, steps %d, increment %g, reminder %g",
+			         "total angle %g, steps %d, increment %g, remainder %g",
 			         angle * 180 / M_PI, steps, increment * 180 / M_PI,
-			         angle_reminder * 180 / M_PI);
+			         angle_remainder * 180 / M_PI);
 		}}
 		else
 		{{
