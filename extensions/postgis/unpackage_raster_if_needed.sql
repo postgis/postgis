@@ -14,7 +14,7 @@ BEGIN
 		-- UNPACKAGE_CODE --
 		$unpackage$;
 
-		RAISE WARNING 'PostGIS Raster functionality have been unpackaged'
+		RAISE WARNING 'PostGIS Raster functionality has been unpackaged'
 		USING HINT = 'type `SELECT postgis_extensions_upgrade(); to finish the upgrade.'
 						' After upgrading, if you want to drop raster, run: DROP EXTENSION postgis_raster;';
 	END IF;
