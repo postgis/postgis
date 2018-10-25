@@ -276,9 +276,10 @@ lwpoint_get_ordinate(const POINT4D *p, char ordinate)
 * Given a point, ordinate number and value, set that ordinate on the
 * point.
 */
-void lwpoint_set_ordinate(POINT4D *p, char ordinate, double value)
+inline void
+lwpoint_set_ordinate(POINT4D *p, char ordinate, double value)
 {
-	if ( ! p )
+	if (!p)
 	{
 		lwerror("Null input geometry.");
 		return;
