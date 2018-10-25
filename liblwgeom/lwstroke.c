@@ -20,6 +20,7 @@
  *
  * Copyright (C) 2001-2006 Refractions Research Inc.
  * Copyright (C) 2017      Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2018      Daniel Baston <dbaston@gmail.com>
  *
  **********************************************************************/
 
@@ -321,23 +322,34 @@ lwarc_linearize(POINTARRAY *to,
 	LWDEBUGF(2, "lwarc_linearize A1:%g (%g) A2:%g (%g) A3:%g (%g)",
 		a1, a1*180/M_PI, a2, a2*180/M_PI, a3, a3*180/M_PI);
 
+	/* Calculate total arc angle, in radians */
+	double total_angle = clockwise ? a1 - a3 : a3 - a1;
+	if ( total_angle < 0 ) total_angle += M_PI * 2;
+
+	/* At extreme tolerance values (very low or very high, depending on
+	 * the semantic) we may cause our arc to collapse. In this case,
+	 * we want shrink the increment enough so that we get two segments
+	 * for a standard arc, or three segments for a complete circle. */
+	int min_segs = is_circle ? 3 : 2;
+	if ( ceil(total_angle / increment) < min_segs)
+	{
+		increment = total_angle / min_segs;
+	}
+
 	if ( flags & LW_LINEARIZE_FLAG_SYMMETRIC )
 	{{
-		/* Calculate total arc angle, in radians */
-		double angle = clockwise ? a1 - a3 : a3 - a1;
-		if ( angle < 0 ) angle += M_PI * 2;
 		LWDEBUGF(2, "lwarc_linearize SYMMETRIC requested - total angle %g deg",
 			         angle * 180 / M_PI);
 
 		if ( flags & LW_LINEARIZE_FLAG_RETAIN_ANGLE )
 		{{
 			/* Number of complete steps */
-			int steps = trunc(angle / increment);
+			int steps = trunc(total_angle / increment);
 
 			/* Figure out the angle remainder, i.e. the amount of the angle
 			 * that is left after we can take no more complete angle
 			 * increments. */
-			double angle_remainder = angle - ( increment * steps );
+			double angle_remainder = total_angle - ( increment * steps );
 
 			/* Shift the starting angle by half of the remainder. This
 			 * will have the effect of evenly distributing the remainder
@@ -346,19 +358,19 @@ lwarc_linearize(POINTARRAY *to,
 
 			LWDEBUGF(2, "lwarc_linearize RETAIN_ANGLE operation requested - "
 			         "total angle %g, steps %d, increment %g, remainder %g",
-			         angle * 180 / M_PI, steps, increment * 180 / M_PI,
+			         total_angle * 180 / M_PI, steps, increment * 180 / M_PI,
 			         angle_remainder * 180 / M_PI);
 		}}
 		else
 		{{
 			/* Number of segments in output */
-			int segs = ceil(angle / increment);
+			int segs = ceil(total_angle / increment);
 			/* Tweak increment to be regular for all the arc */
-			increment = angle/segs;
+			increment = total_angle/segs;
 
 			LWDEBUGF(2, "lwarc_linearize SYMMETRIC operation requested - "
 							"total angle %g degrees - LINESTRING(%g %g,%g %g,%g %g) - S:%d -   I:%g",
-							angle*180/M_PI, p1->x, p1->y, center.x, center.y, p3->x, p3->y,
+							total_angle*180/M_PI, p1->x, p1->y, center.x, center.y, p3->x, p3->y,
 							segs, increment*180/M_PI);
 		}}
 	}}
