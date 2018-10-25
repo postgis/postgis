@@ -407,12 +407,6 @@ lwpoint_clip_to_ordinate_range(const LWPOINT *point, char ordinate, double from,
 		lwcollection_add_lwgeom(lwgeom_out, lwpoint_as_lwgeom(lwp));
 	}
 
-	/* Set the bbox, if necessary */
-	if ( lwgeom_out->bbox )
-	{
-		lwgeom_refresh_bbox((LWGEOM*)lwgeom_out);
-	}
-
 	return lwgeom_out;
 }
 
@@ -462,10 +456,8 @@ lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double fr
 	}
 
 	/* Set the bbox, if necessary */
-	if ( lwgeom_out->bbox )
-	{
+	if (mpoint->bbox)
 		lwgeom_refresh_bbox((LWGEOM*)lwgeom_out);
-	}
 
 	return lwgeom_out;
 }
@@ -791,10 +783,8 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 	lwfree(q);
 	lwfree(r);
 
-	if ( lwgeom_out->bbox && lwgeom_out->ngeoms > 0 )
-	{
+	if (line->bbox && lwgeom_out->ngeoms > 0)
 		lwgeom_refresh_bbox((LWGEOM*)lwgeom_out);
-	}
 
 	return lwgeom_out;
 }
@@ -869,7 +859,7 @@ lwcollection_clip_to_ordinate_range(const LWCOLLECTION *icol, char ordinate, dou
 				lwcollection_release(col);
 			}
 		}
-		if (lwgeom_out->bbox)
+		if (icol->bbox)
 			lwgeom_refresh_bbox((LWGEOM *)lwgeom_out);
 	}
 	return lwgeom_out;
