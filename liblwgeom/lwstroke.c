@@ -243,7 +243,7 @@ lwarc_linearize(POINTARRAY *to,
 	double increment; /* Angle per segment */
 	double angle_shift = 0;
 	double a1, a2, a3, angle;
-	POINTARRAY *pa = to;
+	POINTARRAY *pa;
 	int is_circle = LW_FALSE;
 	int points_added = 0;
 	int reverse = 0;
@@ -398,17 +398,24 @@ lwarc_linearize(POINTARRAY *to,
 	LWDEBUGF(2, "lwarc_linearize angle_shift:%g, increment:%g",
 		angle_shift * 180/M_PI, increment * 180/M_PI);
 
-	if ( reverse ) {{
+	if ( reverse )
+	{
+		/* Append points in order to a temporary POINTARRAY and
+		 * reverse them before writing to the output POINTARRAY. */
 		const int capacity = 8; /* TODO: compute exactly ? */
 		pa = ptarray_construct_empty(ptarray_has_z(to), ptarray_has_m(to), capacity);
-	}}
+	}
+	else
+	{
+		/* Append points directly to the output POINTARRAY,
+		 * starting with p1. */
+		pa = to;
+
+		ptarray_append_point(pa, p1, LW_FALSE);
+		++points_added;
+	}
 
 	/* Sweep from a1 to a3 */
-	if ( ! reverse )
-	{
-		ptarray_append_point(pa, p1, LW_FALSE);
-	}
-	++points_added;
 	if ( angle_shift ) angle_shift -= increment;
 	LWDEBUGF(2, "a1:%g (%g deg), a3:%g (%g deg), inc:%g, shi:%g, cw:%d",
 		a1, a1 * 180 / M_PI, a3, a3 * 180 / M_PI, increment, angle_shift, clockwise);
