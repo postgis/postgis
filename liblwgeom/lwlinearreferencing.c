@@ -379,18 +379,6 @@ lwpoint_clip_to_ordinate_range(const LWPOINT *point, char ordinate, double from,
 	POINT4D p4d;
 	double ordinate_value;
 
-	/* Nothing to do with NULL */
-	if ( ! point )
-		lwerror("Null input geometry.");
-
-	/* Ensure 'from' is less than 'to'. */
-	if ( to < from )
-	{
-		double t = from;
-		from = to;
-		to = t;
-	}
-
 	/* Read Z/M info */
 	hasz = lwgeom_has_z(lwpoint_as_lwgeom(point));
 	hasm = lwgeom_has_m(lwpoint_as_lwgeom(point));
@@ -419,18 +407,6 @@ lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double fr
 	LWCOLLECTION *lwgeom_out = NULL;
 	char hasz, hasm;
 	uint32_t i;
-
-	/* Nothing to do with NULL */
-	if (!mpoint)
-		lwerror("Null input geometry.");
-
-	/* Ensure 'from' is less than 'to'. */
-	if ( to < from )
-	{
-		double t = from;
-		from = to;
-		to = t;
-	}
 
 	/* Read Z/M info */
 	hasz = lwgeom_has_z(lwmpoint_as_lwgeom(mpoint));
@@ -587,21 +563,6 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 	hasz = lwgeom_has_z(lwline_as_lwgeom(line));
 	hasm = lwgeom_has_m(lwline_as_lwgeom(line));
 	dims = FLAGS_NDIMS(line->flags);
-
-	/* Ensure 'from' is less than 'to'. */
-	if ( to < from )
-	{
-		double t = from;
-		from = to;
-		to = t;
-	}
-
-#if POSTGIS_DEBUG_LEVEL >= 4
-	LWDEBUGF(4, "from = %g, to = %g, ordinate = %c", from, to, ordinate);
-	geom_ewkt = lwgeom_to_ewkt((LWGEOM*)line);
-	LWDEBUGF(4, "%s", geom_ewkt);
-	lwfree(geom_ewkt);
-#endif
 
 	/* Asking for an ordinate we don't have. Error. */
 	if ( (ordinate == 'Z' && ! hasz) || (ordinate == 'M' && ! hasm) )
@@ -835,6 +796,14 @@ lwcollection_clip_to_ordinate_range(const LWCOLLECTION *icol, char ordinate, dou
 	{
 		lwerror("Null input geometry.");
 		return NULL;
+	}
+
+	/* Ensure 'from' is less than 'to'. */
+	if (to < from)
+	{
+		double t = from;
+		from = to;
+		to = t;
 	}
 
 	if (icol->ngeoms == 1)
