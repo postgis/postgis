@@ -428,7 +428,6 @@ lwarc_linearize(POINTARRAY *to,
 		pt.m = interpolate_arc(angle, a1, a2, a3, p1->m, p2->m, p3->m);
 		ptarray_append_point(pa, &pt, LW_FALSE);
 		++points_added;
-		angle_shift = 0;
 	}
 
 	if ( reverse ) {{
