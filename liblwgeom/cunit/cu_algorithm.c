@@ -649,7 +649,6 @@ static void test_lwline_clip(void)
 	lwgeom_free(line);
 
 	lwgeom_free(l51);
-
 }
 
 static void test_lwmline_clip(void)
@@ -692,7 +691,8 @@ static void test_lwmline_clip(void)
 	/*
 	** Set up staggered input line to create multi-type output.
 	*/
-	mline = lwgeom_from_wkt("MULTILINESTRING((1 0,1 -1,1 -2,1 -3,1 -4), (0 0,0 1,0 2,0 3,0 4))", LW_PARSER_CHECK_NONE);
+	mline =
+	    lwgeom_from_wkt("MULTILINESTRING((1 0,1 -1,1 -2,1 -3,1 -4), (0 0,0 1,0 2,0 3,0 4))", LW_PARSER_CHECK_NONE);
 
 	/* Clip from 0 upwards.. */
 	c = lwgeom_clip_to_ordinate_range(mline, 'Y', 0.0, 2.5, 0);
@@ -707,7 +707,8 @@ static void test_lwmline_clip(void)
 	/*
 	** Set up input line from MAC
 	*/
-	line = lwgeom_from_wkt("LINESTRING(0 0 0 0,1 1 1 1,2 2 2 2,3 3 3 3,4 4 4 4,3 3 3 5,2 2 2 6,1 1 1 7,0 0 0 8)", LW_PARSER_CHECK_NONE);
+	line = lwgeom_from_wkt("LINESTRING(0 0 0 0,1 1 1 1,2 2 2 2,3 3 3 3,4 4 4 4,3 3 3 5,2 2 2 6,1 1 1 7,0 0 0 8)",
+			       LW_PARSER_CHECK_NONE);
 
 	/* Clip from 3 to 3.5 */
 	c = lwgeom_clip_to_ordinate_range(line, 'Z', 3.0, 3.5, 0);
@@ -747,7 +748,7 @@ static void test_lwmline_clip(void)
 static void test_lwline_clip_big(void)
 {
 	POINTARRAY *pa = ptarray_construct(1, 0, 3);
-	LWGEOM *line = (LWGEOM *) lwline_construct(SRID_UNKNOWN, NULL, pa);
+	LWGEOM *line = (LWGEOM *)lwline_construct(SRID_UNKNOWN, NULL, pa);
 	LWCOLLECTION *c;
 	char *ewkt;
 	POINT4D p;

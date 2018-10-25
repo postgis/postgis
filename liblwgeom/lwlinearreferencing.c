@@ -458,7 +458,7 @@ lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double fr
 * Take in a LINESTRING and return a MULTILINESTRING of those portions of the
 * LINESTRING between the from/to range for the specified ordinate (XYZM)
 */
-static inline LWCOLLECTION*
+static inline LWCOLLECTION *
 lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, double to)
 {
 
