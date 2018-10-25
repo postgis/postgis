@@ -651,6 +651,42 @@ static void test_lwline_clip(void)
 	lwgeom_free(l51);
 }
 
+static void
+test_lwpoly_clip(void)
+{
+	LWCOLLECTION *c;
+	LWGEOM *g = NULL;
+	char *ewkt;
+
+	g = lwgeom_from_wkt(
+	    "POLYGON ((0.51 -0.25, 1.27 -0.14, 1.27 0.25, 0.6 0.3, 0.7 0.7, 1.2 0.7, 0.8 0.5, 1.3 0.4, 1.2 1.2, 0.5 1.2, 0.5 -0.1, 0.3 -0.1, 0.3 1.3, -0.18 1.25, -0.17 -0.25, 0.51 -0.25))",
+	    LW_PARSER_CHECK_NONE);
+	c = lwgeom_clip_to_ordinate_range(g, 'X', 0.0, 1.0, 0);
+
+	ewkt = lwgeom_to_ewkt((LWGEOM *)c);
+	// printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(
+	    ewkt,
+	    "MULTIPOLYGON(((0.51 -0.25,1 -0.179078947368,1 0.270149253731,0.6 0.3,0.7 0.7,1 0.7,1 0.6,0.8 0.5,1 0.46,1 1.2,0.5 1.2,0.5 -0.1,0.3 -0.1,0.3 1.3,0 1.26875,0 -0.25,0.51 -0.25)))");
+	lwfree(ewkt);
+	lwcollection_free(c);
+	lwgeom_free(g);
+
+	g = lwgeom_from_wkt(
+	    "MULTIPOLYGON(((0.51 -0.25,1 -0.179078947368,1 0.270149253731,0.6 0.3,0.7 0.7,1 0.7,1 0.6,0.8 0.5,1 0.46,1 1.2,0.5 1.2,0.5 -0.1,0.3 -0.1,0.3 1.3,0 1.26875,0 -0.25,0.51 -0.25)))",
+	    LW_PARSER_CHECK_NONE);
+	c = lwgeom_clip_to_ordinate_range(g, 'Y', 0.0, 1.0, 0);
+
+	ewkt = lwgeom_to_ewkt((LWGEOM *)c);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(
+	    ewkt,
+	    "MULTIPOLYGON(((1 0,1 0.270149253731,0.6 0.3,0.7 0.7,1 0.7,1 0.6,0.8 0.5,1 0.46,1 1,0.5 1,0.5 0,0.3 0,0.3 1,0 1,0 0)))");
+	lwfree(ewkt);
+	lwcollection_free(c);
+	lwgeom_free(g);
+}
+
 static void test_lwmline_clip(void)
 {
 	LWCOLLECTION *c;
@@ -1494,6 +1530,7 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_point_interpolate);
 	PG_ADD_TEST(suite,test_lwline_interpolate_points);
 	PG_ADD_TEST(suite,test_lwline_clip);
+	PG_ADD_TEST(suite, test_lwpoly_clip);
 	PG_ADD_TEST(suite,test_lwline_clip_big);
 	PG_ADD_TEST(suite,test_lwmline_clip);
 	PG_ADD_TEST(suite,test_geohash_point);
