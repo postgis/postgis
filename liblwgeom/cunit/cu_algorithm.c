@@ -681,7 +681,7 @@ test_lwpoly_clip(void)
 	//printf("c = %s\n", ewkt);
 	CU_ASSERT_STRING_EQUAL(
 	    ewkt,
-	    "MULTIPOLYGON(((1 0,1 0.270149253731,0.6 0.3,0.7 0.7,1 0.7,1 0.6,0.8 0.5,1 0.46,1 1,0.5 1,0.5 0,0.3 0,0.3 1,0 1,0 0)))");
+	    "MULTIPOLYGON(((1 0,1 0.270149253731,0.6 0.3,0.7 0.7,1 0.7,1 0.6,0.8 0.5,1 0.46,1 1,0.5 1,0.5 0,0.3 0,0.3 1,0 1,0 0,1 0)))");
 	lwfree(ewkt);
 	lwcollection_free(c);
 	lwgeom_free(g);
