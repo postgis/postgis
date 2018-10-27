@@ -440,7 +440,7 @@ lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double fr
 }
 
 static inline POINTARRAY *
-ptarray_clamp_to_ordinate_range(const POINTARRAY *ipa, char ordinate, double from, double to)
+ptarray_clamp_to_ordinate_range(const POINTARRAY *ipa, char ordinate, double from, double to, uint8_t is_closed)
 {
 	POINT4D p1, p2;
 	POINTARRAY *opa;
@@ -524,7 +524,7 @@ ptarray_clamp_to_ordinate_range(const POINTARRAY *ipa, char ordinate, double fro
 		LW_ON_INTERRUPT(ptarray_free(opa); return NULL);
 	}
 
-	if (ptarray_is_closed(ipa) && opa->npoints > 0)
+	if (is_closed && opa->npoints > 2)
 	{
 		getPoint4d_p(opa, 0, &p1);
 		ptarray_append_point(opa, &p1, LW_FALSE);
@@ -769,7 +769,7 @@ lwpoly_clip_to_ordinate_range(const LWPOLY *poly, char ordinate, double from, do
 	for (i = 0; i < nrings; i++)
 	{
 		/* Ret number of points */
-		POINTARRAY *pa = ptarray_clamp_to_ordinate_range(poly->rings[i], ordinate, from, to);
+		POINTARRAY *pa = ptarray_clamp_to_ordinate_range(poly->rings[i], ordinate, from, to, LW_TRUE);
 
 		if (pa->npoints >= 4)
 			lwpoly_add_ring(poly_res, pa);
@@ -782,6 +782,41 @@ lwpoly_clip_to_ordinate_range(const LWPOLY *poly, char ordinate, double from, do
 	}
 	lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, (LWGEOM *)poly_res);
 
+	return lwgeom_out;
+}
+
+/**
+ * Clip an input LWTRIANGLE between two values, on any ordinate input.
+ */
+static inline LWCOLLECTION *
+lwtriangle_clip_to_ordinate_range(const LWTRIANGLE *tri, char ordinate, double from, double to)
+{
+	LWCOLLECTION *lwgeom_out = NULL;
+	char hasz = FLAGS_GET_Z(tri->flags), hasm = FLAGS_GET_M(tri->flags);
+
+	assert(tri);
+	lwgeom_out = lwcollection_construct_empty(TINTYPE, tri->srid, hasz, hasm);
+
+	POINTARRAY *pa = ptarray_clamp_to_ordinate_range(tri->points, ordinate, from, to, LW_TRUE);
+
+	if (pa->npoints >= 4)
+	{
+		POINT4D first = getPoint4d(pa, 0);
+		for (uint32_t i = 1; i < pa->npoints - 2; i++)
+		{
+			POINT4D p;
+			POINTARRAY *tpa = ptarray_construct_empty(hasz, hasm, 4);
+			ptarray_append_point(tpa, &first, LW_TRUE);
+			getPoint4d_p(pa, i, &p);
+			ptarray_append_point(tpa, &p, LW_TRUE);
+			getPoint4d_p(pa, i + 1, &p);
+			ptarray_append_point(tpa, &p, LW_TRUE);
+			ptarray_append_point(tpa, &first, LW_TRUE);
+			LWTRIANGLE *otri = lwtriangle_construct(tri->srid, NULL, tpa);
+			lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, (LWGEOM *)otri);
+		}
+	}
+	ptarray_free(pa);
 	return lwgeom_out;
 }
 
@@ -859,9 +894,9 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 	case POLYGONTYPE:
 		out_col = lwpoly_clip_to_ordinate_range((LWPOLY *)lwin, ordinate, from, to);
 		break;
-	// case TRIANGLETYPE:
-	// 	out_col = lwtriangle_clip_to_ordinate_range((LWTRIANGLE*)lwin, ordinate, from, to);
-	// 	break;
+	case TRIANGLETYPE:
+		out_col = lwtriangle_clip_to_ordinate_range((LWTRIANGLE *)lwin, ordinate, from, to);
+		break;
 	case TINTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:

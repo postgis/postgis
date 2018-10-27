@@ -426,15 +426,14 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 		<refname>ST_LocateBetween</refname>
 
 		<refpurpose>Return a derived geometry collection value with elements
-			that match the specified range of measures inclusively. Polygonal
-			elements are not supported.</refpurpose>
+			that match the specified range of measures inclusively.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>geometry <function>ST_LocateBetween</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 			<paramdef><type>float8 </type> <parameter>measure_start</parameter></paramdef>
 			<paramdef><type>float8 </type> <parameter>measure_end</parameter></paramdef>
 			<paramdef choice="opt"><type>float8 </type> <parameter>offset</parameter></paramdef>
@@ -447,7 +446,9 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 		<title>Description</title>
 
 		<para>Return a derived geometry collection with elements that match the specified range of
-		measures inclusively. Polygonal elements are not supported.</para>
+		measures inclusively.</para>
+
+		<para>Clipping a non-convex POLYGON may produce invalid geometry.</para>
 
 		<para>If an offset is provided, the resultant will be offset to the left or right of the
 		input line by the specified number of units. A positive offset will be to the left, and
@@ -458,6 +459,7 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 
 		<para>Availability: 1.1.0 by old name ST_Locate_Between_Measures. </para>
 		<para>Changed: 2.0.0 - in prior versions this used to be called ST_Locate_Between_Measures.  The old name has been deprecated and will be removed in the future but is still available for backward compatibility.</para>
+		<para>Enhanced: 3.0.0 - added support for POLYGON, TIN, TRIANGLE.</para>
 
 		<para>&M_support;</para>
 	  </refsection>
@@ -465,11 +467,15 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_AsText(the_geom)
-		FROM
-		(SELECT ST_LocateBetween(
-			ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),
-		(1 2 3, 5 4 5))'),1.5, 3) As the_geom) As foo;
+		<programlisting>
+SELECT ST_AsText(the_geom)
+FROM (
+    SELECT ST_LocateBetween(
+       'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'),
+       1.5,
+       3
+    ) as the_geom
+) As foo;
 
 							 st_asewkt
 ------------------------------------------------------------------------
@@ -478,10 +484,13 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 --Geometry collections are difficult animals so dump them
 --to make them more digestable
 SELECT ST_AsText((ST_Dump(the_geom)).geom)
-		FROM
-		(SELECT ST_LocateBetween(
-			ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),
-		(1 2 3, 5 4 5))'),1.5, 3) As the_geom) As foo;
+FROM (
+    SELECT ST_LocateBetween(
+	'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'),
+	1.5,
+	3
+    ) As the_geom
+) As foo;
 
 		   st_asewkt
 --------------------------------
@@ -502,15 +511,14 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 		<refname>ST_LocateBetweenElevations</refname>
 
 		<refpurpose>Return a derived geometry (collection) value with elements
-			that intersect the specified range of elevations inclusively. Only 3D, 4D LINESTRINGS and MULTILINESTRINGS
-			are supported.</refpurpose>
+			that intersect the specified range of elevations inclusively.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geom_mline</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 			<paramdef><type>float8 </type> <parameter>elevation_start</parameter></paramdef>
 			<paramdef><type>float8 </type> <parameter>elevation_end</parameter></paramdef>
 		  </funcprototype>
@@ -521,11 +529,13 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 	  <refsection>
 		<title>Description</title>
 
-		   <para>Return a derived geometry (collection) value with elements
-			that intersect the specified range of elevations inclusively. Only 3D, 3DM LINESTRINGS and MULTILINESTRINGS
-			are supported.</para>
+		<para>Return a derived geometry (collection) value with elements
+		that intersect the specified range of elevations inclusively.</para>
 
-			<para>Availability: 1.4.0</para>
+		<para>Clipping a non-convex POLYGON may produce invalid geometry.</para>
+
+		<para>Availability: 1.4.0</para>
+		<para>Enhanced: 3.0.0 - added support for POLYGON, TIN, TRIANGLE.</para>
 
 		<para>&Z_support;</para>
 	  </refsection>
@@ -534,24 +544,22 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 		<title>Examples</title>
 
 		<programlisting>SELECT ST_AsEWKT(ST_LocateBetweenElevations(
-			ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6)'),2,4)) As ewelev;
+			ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6)'), 2, 4)) As ewelev;
 								   ewelev
 ----------------------------------------------------------------
 	MULTILINESTRING((1 2 3,2 3 4))
 
-SELECT ST_AsEWKT(ST_LocateBetweenElevations(
-			ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 9)'),6,9)) As ewelev;
+SELECT ST_AsEWKT(ST_LocateBetweenElevations('LINESTRING(1 2 6, 4 5 -1, 7 8 9)', 6, 9)) As ewelev;
 
 				ewelev
 ----------------------------------------------------------------
 GEOMETRYCOLLECTION(POINT(1 2 6),LINESTRING(6.1 7.1 6,7 8 9))
 
---Geometry collections are difficult animals so dump them
---to make them more digestable
+-- Geometry collections are difficult animals so dump them
+-- to make them more digestable
 SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
-		FROM
-		(SELECT ST_LocateBetweenElevations(
-			ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 9)'),6,9) As the_geom) As foo;
+	FROM
+	(SELECT ST_LocateBetweenElevations('LINESTRING(1 2 6, 4 5 -1, 7 8 9)', 6, 9) as the_geom) As foo;
 
 		   st_asewkt
 --------------------------------
@@ -564,7 +572,7 @@ LINESTRING(6.1 7.1 6,7 8 9)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Dump" /></para>
+		<para><xref linkend="ST_Dump" />, <xref linkend="ST_LocateBetween" /></para>
 	  </refsection>
 	</refentry>
 
