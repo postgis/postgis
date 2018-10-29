@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "mvt.h"
+#include "pgsql_compat.h"
 
 #ifdef HAVE_LIBPROTOBUF
 
@@ -334,13 +335,8 @@ static void parse_column_keys(mvt_agg_context *ctx)
 
 	for (i = 0; i < natts; i++)
 	{
-#if POSTGIS_PGSQL_VERSION < 110
-		Oid typoid = getBaseType(ctx->column_cache.tupdesc->attrs[i]->atttypid);
-		char *tkey = ctx->column_cache.tupdesc->attrs[i]->attname.data;
-#else
-		Oid typoid = getBaseType(ctx->column_cache.tupdesc->attrs[i].atttypid);
-		char *tkey = ctx->column_cache.tupdesc->attrs[i].attname.data;
-#endif
+		Oid typoid = getBaseType(TupleDescAttr(ctx->column_cache.tupdesc, i)->atttypid);
+		char *tkey = TupleDescAttr(ctx->column_cache.tupdesc, i)->attname.data;
 
 		ctx->column_cache.column_oid[i] = typoid;
 #if POSTGIS_PGSQL_VERSION >= 94
@@ -726,11 +722,7 @@ static void parse_values(mvt_agg_context *ctx)
 			continue;
 		}
 
-#if POSTGIS_PGSQL_VERSION < 110
-		key = cc.tupdesc->attrs[i]->attname.data;
-#else
-		key = cc.tupdesc->attrs[i].attname.data;
-#endif
+		key = TupleDescAttr(cc.tupdesc, i)->attname.data;
 		k = cc.column_keys_index[i];
 		typoid = cc.column_oid[i];
 

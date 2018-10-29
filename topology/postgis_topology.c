@@ -32,6 +32,7 @@
 /*#define POSTGIS_DEBUG_LEVEL 1*/
 #include "lwgeom_log.h"
 #include "lwgeom_pg.h"
+#include "pgsql_compat.h"
 
 #include <stdarg.h>
 
@@ -257,11 +258,7 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   }
 
   /* we're dynamically querying geometry type here */
-#if POSTGIS_PGSQL_VERSION < 110
-  topo->geometryOID = SPI_tuptable->tupdesc->attrs[3]->atttypid;
-#else
-  topo->geometryOID = SPI_tuptable->tupdesc->attrs[3].atttypid;
-#endif
+  topo->geometryOID = TupleDescAttr(SPI_tuptable->tupdesc, 3)->atttypid;
 
   POSTGIS_DEBUGF(1, "cb_loadTopologyByName: topo '%s' has "
                  "id %d, srid %d, precision %g",
