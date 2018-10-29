@@ -12,6 +12,8 @@ XXXX/XX/XX
     Praliaskouski)
   - #3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)
   - #4215, Use floating point compare in ST_DumpAsPolygons (Darafei Praliaskouski)
+  - #4217, Fix ST_Subdivide crash on EMPTY in intermediate iterations (Darafei
+    Praliaskouski)
 
 PostGIS 2.5.0
 2018/09/23
