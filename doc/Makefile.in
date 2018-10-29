@@ -62,10 +62,15 @@ XSLTPROC_COMMONOPTS= \
 	--param simplesect.in.toc 0 \
 	--param use.id.as.filename 1 \
 	--param chunk.quietly 1 \
+	--param header.rule 0 \
+	--param footer.rule 0 \
+	--param table.borders.with.css 1 \
+	--stringparam chunker.output.encoding UTF-8 \
+	--stringparam chunker.output.indent no \
+	--stringparam saxon.character.representation decimal \
+	--stringparam html.stylesheet style.css \
 	$(XSLTPROCFLAGS)
 
-XSLTPROC_HTMLOPTS= \
-	--stringparam html.stylesheet style.css \
 
 HTML_DOCBOOK_XSL=$(XSLBASE)/html/docbook.xsl
 CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl
@@ -138,7 +143,7 @@ XML_SOURCES = \
 	reporting.xml \
 	using_postgis_app.xml \
 	using_postgis_dataman.xml \
-	using_raster_dataman.xml 
+	using_raster_dataman.xml
 
 XML_GENERATED_SOURCES = \
 	postgis_aggs_mm.xml \
@@ -209,31 +214,31 @@ endif
 
 postgis_comments.sql: ./xsl/postgis_comments.sql.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid ./xsl/postgis_comments.sql.xsl postgis-out.xml > $@
-	
+
 postgis_cheatsheet.html: ./xsl/postgis_cheatsheet.html.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid ./xsl/postgis_cheatsheet.html.xsl postgis-out.xml > $@
-	
+
 raster_comments.sql: ./xsl/raster_comments.sql.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid ./xsl/raster_comments.sql.xsl postgis-out.xml > $@
-	
+
 raster_cheatsheet.html: ./xsl/raster_cheatsheet.html.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid ./xsl/raster_cheatsheet.html.xsl postgis-out.xml > $@
-	
+
 topology_comments.sql: ./xsl/topology_comments.sql.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid ./xsl/topology_comments.sql.xsl postgis-out.xml > $@
-	
+
 topology_cheatsheet.html: ./xsl/topology_cheatsheet.html.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid ./xsl/topology_cheatsheet.html.xsl postgis-out.xml > $@
-	
+
 sfcgal_comments.sql: ./xsl/sfcgal_comments.sql.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid ./xsl/sfcgal_comments.sql.xsl postgis-out.xml > $@
-	
+
 sfcgal_cheatsheet.html: ./xsl/sfcgal_cheatsheet.html.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid ./xsl/sfcgal_cheatsheet.html.xsl postgis-out.xml > $@
-	
+
 tiger_geocoder_comments.sql: ./xsl/tiger_geocoder_comments.sql.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid ./xsl/tiger_geocoder_comments.sql.xsl postgis-out.xml > $@
-	
+
 tiger_geocoder_cheatsheet.html: ./xsl/tiger_geocoder_cheatsheet.html.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid ./xsl/tiger_geocoder_cheatsheet.html.xsl postgis-out.xml > $@
 
@@ -241,11 +246,18 @@ postgis-out.xml: postgis.xml Makefile
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g;s'@@POSTGIS_DOWNLOAD_URL@@'${POSTGIS_DOWNLOAD_URL}'g;" $< > $@
 
 chunked-html: postgis-out.xml Makefile images $(XML_INPUTS)
-	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
+	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--output html/ \
-		--stringparam saxon.character.representation decimal \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
+
+chunked-html-web: postgis-out.xml Makefile images $(XML_INPUTS)
+	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
+		--output html/ \
+		--stringparam html.script ga.js \
+		$(CHUNK_HTML_DOCBOOK_XSL) \
+		$<
+
 
 html: html/postgis$(DOCSUFFIX).html
 
@@ -256,7 +268,7 @@ html-localized:
   done
 
 html/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile images $(XML_INPUTS)
-	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
+	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--output html/postgis$(DOCSUFFIX).html \
 		$(HTML_DOCBOOK_XSL) \
 		$<
@@ -280,7 +292,7 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 		   -s "${PWD}/texstyle.sty" \
 		   -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf $<; \
 	fi
-	
+
 postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub: postgis-out.xml images $(XML_INPUTS)
 	if test x"$(DBTOEPUB)" = x; then \
 	   echo "Error: dbtoepub not found, can't build epub"; \
@@ -308,13 +320,13 @@ doxygen.cfg: doxygen.cfg.in
 doxygen: doxygen.cfg
 	doxygen $<
 
-images: 
+images:
 	$(MAKE) -C html/image_src images
 
 images-clean:
 	$(MAKE) -C html/image_src images-clean
-	
-clean: 
+
+clean:
 	rm -f html/*.html
 	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 	rm -f *.epub
@@ -339,7 +351,7 @@ endif
 cheatsheets: postgis_cheatsheet.html raster_cheatsheet.html topology_cheatsheet.html sfcgal_cheatsheet.html tiger_geocoder_cheatsheet.html
 
 ifneq ($(CAN_BUILD_COMMENTS),yes)
-comments-install: 
+comments-install:
 	if test -e postgis_comments.sql  -a \
 	        -e raster_comments.sql   -a \
 	        -e topology_comments.sql -a \
@@ -371,7 +383,7 @@ docs-install: html/postgis.html html/style.css
 	$(INSTALL_DATA) html/images/* $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images/
 	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
 
-docs-uninstall: 
+docs-uninstall:
 	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
 	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/style.css
 	rm -rf $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images
@@ -437,11 +449,11 @@ requirements_not_met_xslbase:
 	@echo
 
 requirements_not_met_imagemagick:
-	@echo 
+	@echo
 	@echo "configure was unable to find the ImageMagick's 'convert' utility program."
 	@echo "To build the documentation, install ImageMagick and then re-run configure. Alternatively "
 	@echo "refer to online manual:"
 	@echo
 	@echo "  http://postgis.net/documentation"
-	@echo 
-	
+	@echo
+

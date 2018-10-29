@@ -10,16 +10,16 @@ body {
     background: #ffffff;
     color: #2e2e2e;
     margin: 0;
-    padding: 0em 4em 0em 4em;
+    padding: 0em 6em 0em 6em;
 }
 div.navheader {
-    margin: 0em -4em 0em -4em;
-    padding: 2em;
+    margin: 0em -6em 0em -6em;
+    padding: 2em 6em 2em 6em;
     background: #579;
 }
 
 div.navfooter {
-    margin: 0em -4em 0em -4em;
+    margin: 0em -6em 0em -6em;
     padding: 2em 6em 2em 6em;
     background: #579;
     color: white;
@@ -51,13 +51,6 @@ div.refnamediv {
     display: none;
 }
 
-div.refentry {
-    margin: 2em;
-}
-hr {
-     display: none;
-}
-
 div.funcsynopsis code {
     font: unset;
 }
@@ -70,13 +63,13 @@ a {
 a:hover, li a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {
     color: #e9cb2b;
 }
-p,form,td,th,dt,li{
+p, form, td, th, dt, li {
 /*   font-size:10pt */
 }
 h1, h2 {
     color: #579;
 }
-h3,h4,th,dt,b, div.abstract-title, div.toc-title {
+h3, h4, th, dt, b, div.abstract-title, div.toc-title {
     color: #579;
 }
 h1 {
@@ -108,10 +101,6 @@ table, td {
     border-collapse: collapse;
 }
 
-/*table, td {
-    border: 1;
-    padding: 0
-}*/
 
 /* 3. Block Formatted ----------------------------------------------------- */
 
@@ -166,7 +155,6 @@ div.warning table p {
     margin: 0 0 0 0;
     padding: 0 0 0 0;
 }
-
 div.warning table tr td img {
     margin: 0 0.5em 0 0;
     padding: 0 0 0 0;
@@ -193,8 +181,6 @@ div.important table tr td img {
     margin: 0 0.5em 0 0;
     padding: 0 0 0 0;
 }
-
-
 
 span.inlinemediaobject img {
     vertical-align: middle;
@@ -257,17 +243,8 @@ tr.question td {
     font-weight: bold;
 }
 
-.styledtable table thead th {
-    border-color: #ddd;
-    border-style: solid;
-}
-.styledtable > table {
-     border-color: #ddd;
-     border-style: solid;
-}
 .styledtable table td,th {
-     color: black;
-     padding: 0.3em;
+    padding: 0.5em;
 }
 
 table.informaltable {
