@@ -2402,7 +2402,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 	clipped = lwgeom_intersection(geom, subbox);
 	lwgeom_simplify_in_place(clipped, 0.0, LW_TRUE);
 	lwgeom_free(subbox);
-	if (clipped && !lwgeom_is_empty(geom))
+	if (clipped && !lwgeom_is_empty(clipped))
 	{
 		n += lwgeom_subdivide_recursive(clipped, dimension, maxvertices, depth, col);
 		lwgeom_free(clipped);
@@ -2412,7 +2412,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 	clipped = lwgeom_intersection(geom, subbox);
 	lwgeom_simplify_in_place(clipped, 0.0, LW_TRUE);
 	lwgeom_free(subbox);
-	if (clipped && !lwgeom_is_empty(geom))
+	if (clipped && !lwgeom_is_empty(clipped))
 	{
 		n += lwgeom_subdivide_recursive(clipped, dimension, maxvertices, depth, col);
 		lwgeom_free(clipped);
