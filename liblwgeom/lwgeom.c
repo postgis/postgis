@@ -2342,43 +2342,30 @@ lwgeom_subdivide_recursive(const LWGEOM *geom,
 
 	++depth;
 
-	LWCOLLECTION *col1 =
-	    lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
-	LWCOLLECTION *col2 =
-	    lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
-	//#pragma omp parallel sections
 	{
-		//#pragma omp section
+		LWGEOM *subbox = (LWGEOM *)lwpoly_construct_envelope(
+		    geom->srid, subbox1.xmin, subbox1.ymin, subbox1.xmax, subbox1.ymax);
+		LWGEOM *clipped = lwgeom_intersection(geom, subbox);
+		lwgeom_simplify_in_place(clipped, 0.0, LW_TRUE);
+		lwgeom_free(subbox);
+		if (clipped && !lwgeom_is_empty(clipped))
 		{
-			LWGEOM *subbox = (LWGEOM *)lwpoly_construct_envelope(
-			    geom->srid, subbox1.xmin, subbox1.ymin, subbox1.xmax, subbox1.ymax);
-			LWGEOM *clipped = lwgeom_intersection(geom, subbox);
-			lwgeom_simplify_in_place(clipped, 0.0, LW_TRUE);
-			lwgeom_free(subbox);
-			if (clipped)
-			{
-				lwgeom_subdivide_recursive(clipped, dimension, maxvertices, depth, col1);
-				lwgeom_free(clipped);
-			}
-		}
-		//#pragma omp section
-		{
-			LWGEOM *subbox = (LWGEOM *)lwpoly_construct_envelope(
-			    geom->srid, subbox2.xmin, subbox2.ymin, subbox2.xmax, subbox2.ymax);
-			LWGEOM *clipped = lwgeom_intersection(geom, subbox);
-			lwgeom_simplify_in_place(clipped, 0.0, LW_TRUE);
-			lwgeom_free(subbox);
-			if (clipped)
-			{
-				lwgeom_subdivide_recursive(clipped, dimension, maxvertices, depth, col2);
-				lwgeom_free(clipped);
-			}
+			lwgeom_subdivide_recursive(clipped, dimension, maxvertices, depth, col);
+			lwgeom_free(clipped);
 		}
 	}
-	col = lwcollection_concat_in_place(col, col1);
-	lwcollection_release(col1);
-	col = lwcollection_concat_in_place(col, col2);
-	lwcollection_release(col2);
+	{
+		LWGEOM *subbox = (LWGEOM *)lwpoly_construct_envelope(
+		    geom->srid, subbox2.xmin, subbox2.ymin, subbox2.xmax, subbox2.ymax);
+		LWGEOM *clipped = lwgeom_intersection(geom, subbox);
+		lwgeom_simplify_in_place(clipped, 0.0, LW_TRUE);
+		lwgeom_free(subbox);
+		if (clipped && !lwgeom_is_empty(clipped))
+		{
+			lwgeom_subdivide_recursive(clipped, dimension, maxvertices, depth, col);
+			lwgeom_free(clipped);
+		}
+	}
 }
 
 LWCOLLECTION *
