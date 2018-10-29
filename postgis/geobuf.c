@@ -24,6 +24,7 @@
 
 #include <math.h>
 #include "geobuf.h"
+#include "pgsql_compat.h"
 
 #ifdef HAVE_LIBPROTOBUF
 
@@ -57,13 +58,8 @@ static void encode_keys(struct geobuf_agg_context *ctx)
 	uint32_t i, k = 0;
 	bool geom_found = false;
 	for (i = 0; i < natts; i++) {
-#if POSTGIS_PGSQL_VERSION < 110
-		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
-		char *tkey = tupdesc->attrs[i]->attname.data;
-#else
-		Oid typoid = getBaseType(tupdesc->attrs[i].atttypid);
-		char *tkey = tupdesc->attrs[i].attname.data;
-#endif
+		Oid typoid = getBaseType(TupleDescAttr(tupdesc, i)->atttypid);
+		char *tkey = TupleDescAttr(tupdesc, i)->attname.data;
 		char *key = pstrdup(tkey);
 		if (ctx->geom_name == NULL) {
 			if (!geom_found && typoid == TypenameGetTypid("geometry")) {
@@ -127,11 +123,9 @@ static void encode_properties(struct geobuf_agg_context *ctx,
 		datum = GetAttributeByNum(ctx->row, i + 1, &isnull);
 		if (isnull)
 			continue;
-#if POSTGIS_PGSQL_VERSION < 110
-		typoid = getBaseType(tupdesc->attrs[i]->atttypid);
-#else
-		typoid = getBaseType(tupdesc->attrs[i].atttypid);
-#endif
+
+		typoid = getBaseType(TupleDescAttr(tupdesc, i)->atttypid);
+
 		if (strcmp(type, "int2") == 0) {
 			set_int_value(value, DatumGetInt16(datum));
 		} else if (strcmp(type, "int4") == 0) {
