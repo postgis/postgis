@@ -10,6 +10,9 @@ LDFLAGS_STD="-Wl,-Bsymbolic-functions -Wl,-z,relro"
 CFLAGS_COV="-g -O0 --coverage"
 LDFLAGS_COV="--coverage"
 
+export CUNIT_WITH_VALGRIND=YES
+export CUNIT_VALGRIND_FLAGS="--leak-check=full --error-exitcode=1"
+
 /usr/local/pgsql/bin/pg_ctl -c -l /tmp/logfile start
 ./autogen.sh
 
