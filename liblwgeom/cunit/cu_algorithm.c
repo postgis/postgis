@@ -741,8 +741,7 @@ static void test_lwmline_clip(void)
 
 	/* Clip in the middle, mid-range. */
 	c = lwgeom_clip_to_ordinate_range(mline, 'Y', 1.5, 2.5, 0);
-	ewkt = lwgeom_to_ewkt((LWGEOM*)c);
-	//printf("c = %s\n", ewkt);
+	ewkt = lwgeom_to_ewkt((LWGEOM *)c);
 	ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((0 1.5,0 2,0 2.5))");
 	lwfree(ewkt);
 	lwcollection_free(c);
@@ -756,8 +755,7 @@ static void test_lwmline_clip(void)
 
 	/* Clip off the top. */
 	c = lwgeom_clip_to_ordinate_range(mline, 'Y', 3.5, 5.5, 0);
-	ewkt = lwgeom_to_ewkt((LWGEOM*)c);
-	//printf("c = %s\n", ewkt);
+	ewkt = lwgeom_to_ewkt((LWGEOM *)c);
 	ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((1 3.5,1 4),(0 3.5,0 4))");
 	lwfree(ewkt);
 	lwcollection_free(c);
@@ -772,8 +770,7 @@ static void test_lwmline_clip(void)
 
 	/* Clip from 0 upwards.. */
 	c = lwgeom_clip_to_ordinate_range(mline, 'Y', 0.0, 2.5, 0);
-	ewkt = lwgeom_to_ewkt((LWGEOM*)c);
-	//printf("c = %s\n", ewkt);
+	ewkt = lwgeom_to_ewkt((LWGEOM *)c);
 	ASSERT_STRING_EQUAL(ewkt, "GEOMETRYCOLLECTION(POINT(1 0),LINESTRING(0 0,0 1,0 2,0 2.5))");
 	lwfree(ewkt);
 	lwcollection_free(c);
@@ -788,16 +785,14 @@ static void test_lwmline_clip(void)
 
 	/* Clip from 3 to 3.5 */
 	c = lwgeom_clip_to_ordinate_range(line, 'Z', 3.0, 3.5, 0);
-	ewkt = lwgeom_to_ewkt((LWGEOM*)c);
-	//printf("c = %s\n", ewkt);
+	ewkt = lwgeom_to_ewkt((LWGEOM *)c);
 	ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((3 3 3 3,3.5 3.5 3.5 3.5),(3.5 3.5 3.5 4.5,3 3 3 5))");
 	lwfree(ewkt);
 	lwcollection_free(c);
 
 	/* Clip from 2 to 3.5 */
 	c = lwgeom_clip_to_ordinate_range(line, 'Z', 2.0, 3.5, 0);
-	ewkt = lwgeom_to_ewkt((LWGEOM*)c);
-	//printf("c = %s\n", ewkt);
+	ewkt = lwgeom_to_ewkt((LWGEOM *)c);
 	ASSERT_STRING_EQUAL(ewkt,
 			    "MULTILINESTRING((2 2 2 2,3 3 3 3,3.5 3.5 3.5 3.5),(3.5 3.5 3.5 4.5,3 3 3 5,2 2 2 6))");
 	lwfree(ewkt);
@@ -805,16 +800,14 @@ static void test_lwmline_clip(void)
 
 	/* Clip from 3 to 4 */
 	c = lwgeom_clip_to_ordinate_range(line, 'Z', 3.0, 4.0, 0);
-	ewkt = lwgeom_to_ewkt((LWGEOM*)c);
-	//printf("c = %s\n", ewkt);
+	ewkt = lwgeom_to_ewkt((LWGEOM *)c);
 	ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((3 3 3 3,4 4 4 4,3 3 3 5))");
 	lwfree(ewkt);
 	lwcollection_free(c);
 
 	/* Clip from 2 to 3 */
 	c = lwgeom_clip_to_ordinate_range(line, 'Z', 2.0, 3.0, 0);
-	ewkt = lwgeom_to_ewkt((LWGEOM*)c);
-	//printf("c = %s\n", ewkt);
+	ewkt = lwgeom_to_ewkt((LWGEOM *)c);
 	ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((2 2 2 2,3 3 3 3),(3 3 3 5,2 2 2 6))");
 	lwfree(ewkt);
 	lwcollection_free(c);
