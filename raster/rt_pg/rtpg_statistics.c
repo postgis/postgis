@@ -64,6 +64,8 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS);
 Datum RASTER_valueCount(PG_FUNCTION_ARGS);
 Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS);
 
+#define VALUES_LENGTH 6
+
 /**
  * Get summary stats of a band
  */
@@ -80,9 +82,8 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	rt_bandstats stats = NULL;
 
 	TupleDesc tupdesc;
-	int values_length = 6;
-	Datum values[values_length];
-	bool nulls[values_length];
+	Datum values[VALUES_LENGTH];
+	bool nulls[VALUES_LENGTH];
 	HeapTuple tuple;
 	Datum result;
 
@@ -160,7 +161,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 
 	BlessTupleDesc(tupdesc);
 
-	memset(nulls, FALSE, sizeof(bool) * values_length);
+	memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 	values[0] = Int64GetDatum(stats->count);
 	if (stats->count > 0) {
@@ -224,9 +225,8 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 	rt_bandstats stats = NULL;
 	rt_bandstats rtn = NULL;
 
-	int values_length = 6;
-	Datum values[values_length];
-	bool nulls[values_length];
+	Datum values[VALUES_LENGTH];
+	bool nulls[VALUES_LENGTH];
 	Datum result;
 
 	/* tablename is null, return null */
@@ -462,7 +462,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 
 	BlessTupleDesc(tupdesc);
 
-	memset(nulls, FALSE, sizeof(bool) * values_length);
+	memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 	values[0] = Int64GetDatum(rtn->count);
 	if (rtn->count > 0) {
@@ -833,9 +833,8 @@ Datum RASTER_summaryStats_finalfn(PG_FUNCTION_ARGS)
 
 	TupleDesc tupdesc;
 	HeapTuple tuple;
-	int values_length = 6;
-	Datum values[values_length];
-	bool nulls[values_length];
+	Datum values[VALUES_LENGTH];
+	bool nulls[VALUES_LENGTH];
 	Datum result;
 
 	POSTGIS_RT_DEBUG(3, "Starting...");
@@ -882,7 +881,7 @@ Datum RASTER_summaryStats_finalfn(PG_FUNCTION_ARGS)
 
 	BlessTupleDesc(tupdesc);
 
-	memset(nulls, FALSE, sizeof(bool) * values_length);
+	memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 	values[0] = Int64GetDatum(state->stats->count);
 	if (state->stats->count > 0) {
@@ -911,6 +910,9 @@ Datum RASTER_summaryStats_finalfn(PG_FUNCTION_ARGS)
 
 	PG_RETURN_DATUM(result);
 }
+
+#undef VALUES_LENGTH
+#define VALUES_LENGTH 4
 
 /**
  * Returns histogram for a band
@@ -1157,15 +1159,14 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 4;
-		Datum values[values_length];
-		bool nulls[values_length];
+		Datum values[VALUES_LENGTH];
+		bool nulls[VALUES_LENGTH];
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		memset(nulls, FALSE, sizeof(bool) * values_length);
+		memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 		values[0] = Float8GetDatum(hist2[call_cntr].min);
 		values[1] = Float8GetDatum(hist2[call_cntr].max);
@@ -1688,15 +1689,14 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 4;
-		Datum values[values_length];
-		bool nulls[values_length];
+		Datum values[VALUES_LENGTH];
+		bool nulls[VALUES_LENGTH];
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		memset(nulls, FALSE, sizeof(bool) * values_length);
+		memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 		values[0] = Float8GetDatum(covhist2[call_cntr].min);
 		values[1] = Float8GetDatum(covhist2[call_cntr].max);
@@ -1717,6 +1717,9 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		SRF_RETURN_DONE(funcctx);
 	}
 }
+
+#undef VALUES_LENGTH
+#define VALUES_LENGTH 2
 
 /**
  * Returns quantiles for a band
@@ -1940,15 +1943,14 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 2;
-		Datum values[values_length];
-		bool nulls[values_length];
+		Datum values[VALUES_LENGTH];
+		bool nulls[VALUES_LENGTH];
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		memset(nulls, FALSE, sizeof(bool) * values_length);
+		memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 		values[0] = Float8GetDatum(quant2[call_cntr].quantile);
 		values[1] = Float8GetDatum(quant2[call_cntr].value);
@@ -2369,15 +2371,14 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 2;
-		Datum values[values_length];
-		bool nulls[values_length];
+		Datum values[VALUES_LENGTH];
+		bool nulls[VALUES_LENGTH];
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		memset(nulls, FALSE, sizeof(bool) * values_length);
+		memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 		values[0] = Float8GetDatum(covquant2[call_cntr].quantile);
 		if (covquant2[call_cntr].has_value)
@@ -2400,6 +2401,9 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		SRF_RETURN_DONE(funcctx);
 	}
 }
+
+#undef VALUES_LENGTH
+#define VALUES_LENGTH 3
 
 /* get counts of values */
 PG_FUNCTION_INFO_V1(RASTER_valueCount);
@@ -2583,15 +2587,14 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 3;
-		Datum values[values_length];
-		bool nulls[values_length];
+		Datum values[VALUES_LENGTH];
+		bool nulls[VALUES_LENGTH];
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		memset(nulls, FALSE, sizeof(bool) * values_length);
+		memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 		values[0] = Float8GetDatum(vcnts2[call_cntr].value);
 		values[1] = UInt32GetDatum(vcnts2[call_cntr].count);
@@ -3015,15 +3018,14 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 3;
-		Datum values[values_length];
-		bool nulls[values_length];
+		Datum values[VALUES_LENGTH];
+		bool nulls[VALUES_LENGTH];
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		memset(nulls, FALSE, sizeof(bool) * values_length);
+		memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 		values[0] = Float8GetDatum(covvcnts2[call_cntr].value);
 		values[1] = UInt32GetDatum(covvcnts2[call_cntr].count);

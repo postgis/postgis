@@ -337,6 +337,8 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+#define VALUES_LENGTH 6
+
 /**
  * Returns available GDAL drivers
  */
@@ -403,15 +405,14 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 4;
-		Datum values[values_length];
-		bool nulls[values_length];
+		Datum values[VALUES_LENGTH];
+		bool nulls[VALUES_LENGTH];
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		memset(nulls, FALSE, sizeof(bool) * values_length);
+		memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 		values[0] = Int32GetDatum(drv_set2[call_cntr].idx);
 		values[1] = CStringGetTextDatum(drv_set2[call_cntr].short_name);

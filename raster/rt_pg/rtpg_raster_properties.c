@@ -427,6 +427,8 @@ Datum RASTER_getPixelHeight(PG_FUNCTION_ARGS)
     PG_RETURN_FLOAT8(pheight);
 }
 
+#define VALUES_LENGTH 6
+
 /**
  * Calculates the physically relevant parameters of the supplied raster's
  * geotransform. Returns them as a set.
@@ -447,9 +449,8 @@ Datum RASTER_getGeotransform(PG_FUNCTION_ARGS)
 		*/
 
     TupleDesc result_tuple; /* for returning a composite */
-    int values_length = 6;
-    Datum values[values_length];
-    bool nulls[values_length];
+    Datum values[VALUES_LENGTH];
+    bool nulls[VALUES_LENGTH];
     HeapTuple heap_tuple ;   /* instance of the tuple to return */
     Datum result;
 
@@ -501,7 +502,7 @@ Datum RASTER_getGeotransform(PG_FUNCTION_ARGS)
     values[4] = Float8GetDatum(rt_raster_get_x_offset(raster));
     values[5] = Float8GetDatum(rt_raster_get_y_offset(raster));
 
-    memset(nulls, FALSE, sizeof(bool) * values_length);
+    memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
     /* stick em on the heap */
     heap_tuple = heap_form_tuple(result_tuple, values, nulls);
@@ -579,6 +580,9 @@ Datum RASTER_hasNoBand(PG_FUNCTION_ARGS)
     PG_RETURN_BOOL(hasnoband);
 }
 
+#undef VALUES_LENGTH
+#define VALUES_LENGTH 10
+
 /**
  * Get raster's meta data
  */
@@ -600,9 +604,8 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 	uint32_t height;
 
 	TupleDesc tupdesc;
-	int values_length = 10;
-	Datum values[values_length];
-	bool nulls[values_length];
+	Datum values[VALUES_LENGTH];
+	bool nulls[VALUES_LENGTH];
 	HeapTuple tuple;
 	Datum result;
 
@@ -670,7 +673,7 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 	values[8] = Int32GetDatum(srid);
 	values[9] = UInt32GetDatum(numBands);
 
-	memset(nulls, FALSE, sizeof(bool) * values_length);
+	memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 	/* build a tuple */
 	tuple = heap_form_tuple(tupdesc, values, nulls);
@@ -680,6 +683,9 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 
 	PG_RETURN_DATUM(result);
 }
+
+#undef VALUES_LENGTH
+#define VALUES_LENGTH 2
 
 PG_FUNCTION_INFO_V1(RASTER_rasterToWorldCoord);
 Datum RASTER_rasterToWorldCoord(PG_FUNCTION_ARGS)
@@ -692,9 +698,8 @@ Datum RASTER_rasterToWorldCoord(PG_FUNCTION_ARGS)
 	double cw[2] = {0};
 
 	TupleDesc tupdesc;
-	int values_length = 2;
-	Datum values[values_length];
-	bool nulls[values_length];
+	Datum values[VALUES_LENGTH];
+	bool nulls[VALUES_LENGTH];
 	HeapTuple tuple;
 	Datum result;
 
@@ -765,7 +770,7 @@ Datum RASTER_rasterToWorldCoord(PG_FUNCTION_ARGS)
 	values[0] = Float8GetDatum(cw[0]);
 	values[1] = Float8GetDatum(cw[1]);
 
-	memset(nulls, FALSE, sizeof(bool) * values_length);
+	memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 	/* build a tuple */
 	tuple = heap_form_tuple(tupdesc, values, nulls);
@@ -788,9 +793,8 @@ Datum RASTER_worldToRasterCoord(PG_FUNCTION_ARGS)
 	bool skewed = false;
 
 	TupleDesc tupdesc;
-	int values_length = 2;
-	Datum values[values_length];
-	bool nulls[values_length];
+	Datum values[VALUES_LENGTH];
+	bool nulls[VALUES_LENGTH];
 	HeapTuple tuple;
 	Datum result;
 
@@ -866,7 +870,7 @@ Datum RASTER_worldToRasterCoord(PG_FUNCTION_ARGS)
 	values[0] = Int32GetDatum(cr[0]);
 	values[1] = Int32GetDatum(cr[1]);
 
-	memset(nulls, FALSE, sizeof(bool) * values_length);
+	memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 	/* build a tuple */
 	tuple = heap_form_tuple(tupdesc, values, nulls);

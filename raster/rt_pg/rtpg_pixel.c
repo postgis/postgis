@@ -197,6 +197,8 @@ static void rtpg_dumpvalues_arg_destroy(rtpg_dumpvalues_arg arg) {
 	pfree(arg);
 }
 
+#define VALUES_LENGTH 2
+
 PG_FUNCTION_INFO_V1(RASTER_dumpValues);
 Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 {
@@ -514,9 +516,8 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 2;
-		Datum values[values_length];
-		bool nulls[values_length];
+		Datum values[VALUES_LENGTH];
+		bool nulls[VALUES_LENGTH];
 		HeapTuple tuple;
 		Datum result;
 		ArrayType *mdValues = NULL;
@@ -527,7 +528,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
 		POSTGIS_RT_DEBUGF(4, "dim = %d, %d", dim[0], dim[1]);
 
-		memset(nulls, FALSE, sizeof(bool) * values_length);
+		memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 		values[0] = Int32GetDatum(arg2->nbands[call_cntr] + 1);
 
@@ -1601,6 +1602,9 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(pgrtn);
 }
 
+#undef VALUES_LENGTH
+#define VALUES_LENGTH 3
+
 /**
  * Get pixels of value
  */
@@ -1799,13 +1803,12 @@ Datum RASTER_pixelOfValue(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 3;
-		Datum values[values_length];
-		bool nulls[values_length];
+		Datum values[VALUES_LENGTH];
+		bool nulls[VALUES_LENGTH];
 		HeapTuple tuple;
 		Datum result;
 
-		memset(nulls, FALSE, sizeof(bool) * values_length);
+		memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 		/* 0-based to 1-based */
 		pixels2[call_cntr].x += 1;
