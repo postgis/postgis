@@ -5,8 +5,14 @@
 */
 
 /* 1. Body ----------------------------------------------------- */
+
+html {
+    font-family: 'Lucida Grande', Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-size: 12pt;
+}
+
+
 body {
-    font: 100% 'Lucida Grande', Verdana, Geneva, Arial, Helvetica, sans-serif;
     background: #ffffff;
     color: #2e2e2e;
     margin: 0;
@@ -25,13 +31,33 @@ div.navfooter {
     color: white;
 }
 
+
+
+/* Phone width */
+@media (max-width: 40em) {
+    html {
+        font-size: 14pt;
+    }
+    body {
+        padding: 0em 3em 0em 3em;
+    }
+    div.navheader {
+        margin: 0em -3em 0em -3em;
+        padding: 2em 3em 2em 3em;
+    }
+    div.navfooter {
+        margin: 0em -3em 0em -3em;
+        padding: 2em 3em 2em 3em;
+    }
+}
+
 div.navfooter table {
     color: white;
 }
 
 div.navheader table tbody tr:first-child th {
     color: white;
-    font-size: 140%;
+    font-size: 1.5rem;
     font-style: normal;
 }
 
@@ -55,6 +81,8 @@ div.funcsynopsis code {
     font: unset;
 }
 
+
+
 /* 2. Standard Tags ----------------------------------------------------- */
 a {
     text-decoration: none;
@@ -63,9 +91,6 @@ a {
 a:hover, li a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {
     color: #e9cb2b;
 }
-p, form, td, th, dt, li {
-/*   font-size:10pt */
-}
 h1, h2 {
     color: #579;
 }
@@ -73,27 +98,27 @@ h3, h4, th, dt, b, div.abstract-title, div.toc-title {
     color: #579;
 }
 h1 {
-     font-size: 175%;
+     font-size: 1.75em;
      margin-top: 1.2em;
      margin-bottom: 0.5em;
 }
 h2 {
-    font-size: 150%;
+    font-size: 1.5em;
     margin-top: 1.2em;
     margin-bottom: 0.5em;
 }
 h3, div.abstract-title, div.toc-title {
-    font-size: 130%;
+    font-size: 1.3em;
     margin-top: 1.1em;
     margin-bottom: 0.4em;
 }
 h4 {
-    font-size: 120%;
+    font-size: 1.2em;
     margin-top: 1em;
     margin-bottom: 0.3em;
 }
 h5 {
-    font-size: 110%;
+    font-size: 1.1em;
     margin-top: 1em;
     margin-bottom: 0.3em;
 }
@@ -117,7 +142,7 @@ pre, .literallayout {
 }
 
 div.note {
-    font-size: 90%;
+    font-size: 0.9em;
     border-color: #dd5;
     border-style: solid;
     border-width: 1.5px;
@@ -129,7 +154,7 @@ div.note {
     border-radius: 1em;
 }
 div.note table p {
-    font-size: 90%;
+    font-size: 0.9em;
     margin: 0 0 0 0;
     padding: 0 0 0 0;
 }
@@ -139,7 +164,7 @@ div.note table tr td img {
 }
 
 div.warning {
-    font-size: 90%;
+    font-size: 0.9em;
     border-color: #cc5555;
     border-style: solid;
     border-width: 1.5px;
@@ -151,7 +176,7 @@ div.warning {
     border-radius: 1em;
 }
 div.warning table p {
-    font-size: 90%;
+    font-size: 0.9em;
     margin: 0 0 0 0;
     padding: 0 0 0 0;
 }
@@ -161,7 +186,7 @@ div.warning table tr td img {
 }
 
 div.important {
-    font-size: 90%;
+    font-size: 0.9em;
     border-color: #55d;
     border-style: solid;
     border-width: 1.5px;
@@ -173,7 +198,7 @@ div.important {
     border-radius: 1em;
 }
 div.important table p {
-    font-size: 90%;
+    font-size: 0.9em;
     margin: 0 0 0 0;
     padding: 0 0 0 0;
 }
@@ -235,7 +260,7 @@ tr.question td {
     font-style: italic;
 }
 .command, .code, .varname, .filename {
-    font-size: 105%;
+    font-size: 1.05em;
     font-weight: normal;
     font-family: Consolas, Monaco, monospace;
     color: black;
