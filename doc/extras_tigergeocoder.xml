@@ -803,7 +803,7 @@ rm -f ${TMPDIR}/*.*
       <!-- Optionally add a "See Also" section -->
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="install_tiger_geocoder_extension" />, <xref linkend="Loader_Generate_Nation_Script" /></para>
+        <para><xref linkend="install_tiger_geocoder_extension" />, <xref linkend="Loader_Generate_Nation_Script" />, <xref linkend="Drop_State_Tables_Generate_Script" /></para>
       </refsection>
     </refentry>
 
@@ -860,7 +860,7 @@ rm -f ${TMPDIR}/*.*
       <!-- Optionally add a "See Also" section -->
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="Loader_Generate_Script" /></para>
+        <para><xref linkend="Loader_Generate_Script" />, <xref linkend="Drop_Nation_Tables_Generate_Script" /></para>
       </refsection>
     </refentry>
 
