@@ -14,6 +14,8 @@ XXXX/XX/XX
   - #4215, Use floating point compare in ST_DumpAsPolygons (Darafei Praliaskouski)
   - #4217, Fix ST_Subdivide crash on EMPTY in intermediate iterations (Darafei
     Praliaskouski)
+  - #4223, ST_DistanceTree error for near parallel boxes
+
 
 PostGIS 2.5.0
 2018/09/23
