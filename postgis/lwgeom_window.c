@@ -50,7 +50,7 @@ typedef struct {
 typedef struct
 {
 	uint32_t cluster_id;
-	char is_null;        /* NULL may result from a NULL geometry input, or it may be used by
+	bool is_null;        /* NULL may result from a NULL geometry input, or it may be used by
 							algorithms such as DBSCAN that do not assign all inputs to a
 							cluster. */
 } dbscan_cluster_result;

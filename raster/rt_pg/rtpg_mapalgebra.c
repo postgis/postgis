@@ -1137,14 +1137,14 @@ static int rtpg_nmapalgebraexpr_callback(
 	/* run prepared plan */
 	if (plan != NULL) {
 		Datum values[12];
-		bool nulls[12];
+		char nulls[12];
 		int err = 0;
 
 		TupleDesc tupdesc;
 		SPITupleTable *tuptable = NULL;
 		HeapTuple tuple;
 		Datum datum;
-		bool isnull = FALSE;
+		bool isnull = false;
 
 		POSTGIS_RT_DEBUGF(4, "Running plan %d", id);
 
@@ -6122,7 +6122,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	uint8_t argpos[3][8] = {{0}};
 	char *argkw[] = {"[rast1.x]", "[rast1.y]", "[rast1.val]", "[rast1]", "[rast2.x]", "[rast2.y]", "[rast2.val]", "[rast2]"};
 	Datum values[ARGKWCOUNT];
-	bool nulls[ARGKWCOUNT];
+	char nulls[ARGKWCOUNT];
 	TupleDesc tupdesc;
 	SPITupleTable *tuptable = NULL;
 	HeapTuple tuple;

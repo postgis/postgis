@@ -1542,7 +1542,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	LWGEOM *lwgeom;
-	bool result;
+	char result;
 	GEOSGeom g1;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -1729,7 +1729,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GEOSGeometry *g1, *g2;
-	bool result;
+	char result;
 	GBOX box1, box2;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -1944,7 +1944,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *				geom1;
 	GSERIALIZED *				geom2;
-	bool 					result;
+	char 					result;
 	GBOX 			box1, box2;
 	PrepGeomCache *	prep_cache;
 
@@ -2514,7 +2514,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GEOSGeometry *g1, *g2;
-	bool result;
+	char result;
 	GBOX box1, box2;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -2581,7 +2581,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GEOSGeometry *g1, *g2;
-	bool result;
+	char result;
 	GBOX box1, box2;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -2648,7 +2648,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	char *patt;
-	bool result;
+	char result;
 	GEOSGeometry *g1, *g2;
 	int i;
 
@@ -2784,7 +2784,7 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GEOSGeometry *g1, *g2;
-	bool result;
+	char result;
 	GBOX box1, box2;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);

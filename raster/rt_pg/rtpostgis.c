@@ -246,7 +246,7 @@ rt_pg_debug(const char *fmt, va_list ap)
 
 static char *gdal_datapath = NULL;
 extern char *gdal_enabled_drivers;
-extern char enable_outdb_rasters;
+extern bool enable_outdb_rasters;
 
 /* ---------------------------------------------------------------- */
 /*  Useful variables                                                */
