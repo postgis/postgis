@@ -14,6 +14,7 @@ PostGIS 2.4.6
   - #4215, Use floating point compare in ST_DumpAsPolygons (Darafei Praliaskouski)
   - #4059, #4177, Remove use of variable length arrays
   - #4216, Return to slicing for bbox access in gserialized
+  - #4136, Proper repeated point removal on small polygons
 
 
 PostGIS 2.4.5
