@@ -586,6 +586,12 @@ static void test_edge_intersects(void)
 	GEOGRAPHIC_POINT g;
 	int rv;
 
+	/* 5m close case */
+	line2pts("LINESTRING(58.5112113206308 0, 58.511211320077201 0.00090193752520337797)", &A1, &A2);
+	line2pts("LINESTRING(58.511166525601702 0.00027058124084120699, 58.511166525562899 0.00036077498778824899)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT(rv == 0);
+
 	/* Covers case, end-to-end intersection */
 	line2pts("LINESTRING(50 -10.999999999999998224, -10.0 50.0)", &A1, &A2);
 	line2pts("LINESTRING(-10.0 50.0, -10.272779983831613393 -16.937003313332997578)", &B1, &B2);
