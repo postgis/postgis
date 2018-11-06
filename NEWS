@@ -12,9 +12,10 @@ PostGIS 2.4.6
   - #4206, Fix support for PostgreSQL 12 dev branch (Laurenz Albe)
   - #3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)
   - #4215, Use floating point compare in ST_DumpAsPolygons (Darafei Praliaskouski)
-  - #4059, #4177, Remove use of variable length arrays
-  - #4216, Return to slicing for bbox access in gserialized
-  - #4136, Proper repeated point removal on small polygons
+  - #4059, #4177, Remove use of variable length arrays (Paul Ramsey)
+  - #4216, Return to slicing for bbox access in gserialized (Paul Ramsey)
+  - #4136, Proper repeated point removal on small polygons (Paul Ramsey)
+  - #4223, ST_DistanceTree error for near parallel boxes (Paul Ramsey)
 
 
 PostGIS 2.4.5
