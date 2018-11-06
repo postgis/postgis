@@ -21,13 +21,13 @@ body {
 div.navheader {
     margin: 0em -6em 0em -6em;
     padding: 2em 6em 2em 6em;
-    background: #579;
+    background: #468;
 }
 
 div.navfooter {
     margin: 0em -6em 0em -6em;
     padding: 2em 6em 2em 6em;
-    background: #579;
+    background: #468;
     color: white;
 }
 
@@ -92,10 +92,10 @@ a:hover, li a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {
     color: #e9cb2b;
 }
 h1, h2 {
-    color: #579;
+    color: #468;
 }
 h3, h4, th, dt, b, div.abstract-title, div.toc-title {
-    color: #579;
+    color: #468;
 }
 h1 {
      font-size: 1.75em;
