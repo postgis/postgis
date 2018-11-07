@@ -16,6 +16,7 @@ XXXX/XX/XX
     Praliaskouski)
   - #4223, ST_DistanceTree error for near parallel boxes (Paul Ramsey)
   - Schema qualify more functions for raster (Regina Obe)
+  - #4216, Revert non-sliced box access (Paul Ramsey)
 
 
 PostGIS 2.5.0

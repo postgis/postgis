@@ -86,6 +86,7 @@ uint32_t gserialized_header_size(const GSERIALIZED *gser)
 uint32_t gserialized_get_type(const GSERIALIZED *s)
 {
 	uint32_t *ptr;
+	assert(s);
 	ptr = (uint32_t*)(s->data);
 	LWDEBUG(4,"entered");
 	if ( FLAGS_GET_BBOX(s->flags) )
