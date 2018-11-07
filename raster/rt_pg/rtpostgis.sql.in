@@ -6290,16 +6290,16 @@ CREATE OR REPLACE FUNCTION st_iscoveragetile(rast raster, coverage raster, tilew
 		tile integer[];
 		edge integer[];
 	BEGIN
-		IF NOT ST_SameAlignment(rast, coverage) THEN
+		IF NOT @extschema@.ST_SameAlignment(rast, coverage) THEN
 			RAISE NOTICE 'Raster and coverage are not aligned';
 			RETURN FALSE;
 		END IF;
 
-		_rastmeta := ST_Metadata(rast);
-		_covmeta := ST_Metadata(coverage);
+		_rastmeta := @extschema@.ST_Metadata(rast);
+		_covmeta := @extschema@.ST_Metadata(coverage);
 
 		-- get coverage grid coordinates of upper-left of rast
-		cr := ST_WorldToRasterCoord(coverage, _rastmeta.upperleftx, _rastmeta.upperlefty);
+		cr := @extschema@.ST_WorldToRasterCoord(coverage, _rastmeta.upperleftx, _rastmeta.upperlefty);
 
 		-- rast is not part of coverage
 		IF
@@ -6417,18 +6417,18 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 	RETURNS boolean AS $$
 	DECLARE
 		hasnodata boolean := TRUE;
-		_geom geometry;
+		_geom @extschema@.geometry;
 	BEGIN
-		IF ST_SRID(rast) != ST_SRID(geom) THEN
+		IF @extschema@.ST_SRID(rast) != @extschema@.ST_SRID(geom) THEN
 			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
 		END IF;
 
-		_geom := ST_ConvexHull(rast);
+		_geom := @extschema@.ST_ConvexHull(rast);
 		IF nband IS NOT NULL THEN
 			SELECT CASE WHEN bmd.nodatavalue IS NULL THEN FALSE ELSE NULL END INTO hasnodata FROM @extschema@.ST_BandMetaData(rast, nband) AS bmd;
 		END IF;
 
-		IF ST_Intersects(geom, _geom) IS NOT TRUE THEN
+		IF @extschema@.ST_Intersects(geom, _geom) IS NOT TRUE THEN
 			RETURN FALSE;
 		ELSEIF nband IS NULL OR hasnodata IS FALSE THEN
 			RETURN TRUE;
@@ -6443,7 +6443,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 -- This function can not be STRICT
 CREATE OR REPLACE FUNCTION st_intersects(geom geometry, rast raster, nband integer DEFAULT NULL)
 	RETURNS boolean AS
-	$$ SELECT $1 OPERATOR(@extschema@.&&) $2::geometry AND @extschema@._st_intersects($1, $2, $3); $$
+	$$ SELECT $1 OPERATOR(@extschema@.&&) $2::@extschema@.geometry AND @extschema@._st_intersects($1, $2, $3); $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL
 	COST 1000;
 
@@ -6453,13 +6453,13 @@ CREATE OR REPLACE FUNCTION st_intersects(geom geometry, rast raster, nband integ
 
 CREATE OR REPLACE FUNCTION st_intersects(rast raster, geom geometry, nband integer DEFAULT NULL)
 	RETURNS boolean
-	AS $$ SELECT $1::geometry OPERATOR(@extschema@.&&) $2 AND @extschema@._st_intersects($2, $1, $3) $$
+	AS $$ SELECT $1::@extschema@.geometry OPERATOR(@extschema@.&&) $2 AND @extschema@._st_intersects($2, $1, $3) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_intersects(rast raster, nband integer, geom geometry)
 	RETURNS boolean
-	AS $$ SELECT $1::geometry OPERATOR(@extschema@.&&) $3 AND @extschema@._st_intersects($3, $1, $2) $$
+	AS $$ SELECT $1::@extschema@.geometry OPERATOR(@extschema@.&&) $3 AND @extschema@._st_intersects($3, $1, $2) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL
 	COST 1000;
 
@@ -6629,7 +6629,7 @@ CREATE OR REPLACE FUNCTION _ST_DWithin(rast1 raster, nband1 integer, rast2 raste
 
 CREATE OR REPLACE FUNCTION ST_DWithin(rast1 raster, nband1 integer, rast2 raster, nband2 integer, distance double precision)
 	RETURNS boolean
-	AS $$ SELECT $1::geometry OPERATOR(@extschema@.&&) ST_Expand(ST_ConvexHull($3), $5) AND $3::geometry OPERATOR(@extschema@.&&) ST_Expand(ST_ConvexHull($1), $5) AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._ST_dwithin(st_convexhull($1), st_convexhull($3), $5) ELSE @extschema@._ST_dwithin($1, $2, $3, $4, $5) END $$
+	AS $$ SELECT $1::geometry OPERATOR(@extschema@.&&) @extschema@.ST_Expand(@extschema@.ST_ConvexHull($3), $5) AND $3::@extschema@.geometry OPERATOR(@extschema@.&&) @extschema@.ST_Expand(@extschema@.ST_ConvexHull($1), $5) AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._ST_dwithin(@extschema@.st_convexhull($1), @extschema@.st_convexhull($3), $5) ELSE @extschema@._ST_dwithin($1, $2, $3, $4, $5) END $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL
 	COST 1000;
 
@@ -6651,7 +6651,7 @@ CREATE OR REPLACE FUNCTION _ST_DFullyWithin(rast1 raster, nband1 integer, rast2 
 
 CREATE OR REPLACE FUNCTION ST_DFullyWithin(rast1 raster, nband1 integer, rast2 raster, nband2 integer, distance double precision)
 	RETURNS boolean
-	AS $$ SELECT $1::geometry OPERATOR(@extschema@.&&) @extschema@.ST_Expand(@extschema@.ST_ConvexHull($3), $5) AND $3::geometry OPERATOR(@extschema@.&&) @extschema@.ST_Expand(@extschema@.ST_ConvexHull($1), $5) AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._ST_DFullyWithin(@extschema@.ST_ConvexHull($1), @extschema@.ST_Convexhull($3), $5) ELSE @extschema@._ST_DFullyWithin($1, $2, $3, $4, $5) END $$
+	AS $$ SELECT $1::@extschema@.geometry OPERATOR(@extschema@.&&) @extschema@.ST_Expand(@extschema@.ST_ConvexHull($3), $5) AND $3::@extschema@.geometry OPERATOR(@extschema@.&&) @extschema@.ST_Expand(@extschema@.ST_ConvexHull($1), $5) AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._ST_DFullyWithin(@extschema@.ST_ConvexHull($1), @extschema@.ST_Convexhull($3), $5) ELSE @extschema@._ST_DFullyWithin($1, $2, $3, $4, $5) END $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL
 	COST 1000;
 
@@ -6686,7 +6686,7 @@ CREATE OR REPLACE FUNCTION ST_Intersection(geomin geometry, rast raster, band in
 	DECLARE
 		intersects boolean := FALSE;
 	BEGIN
-		intersects := ST_Intersects(geomin, rast, band);
+		intersects := @extschema@.ST_Intersects(geomin, rast, band);
 		IF intersects THEN
 			-- Return the intersections of the geometry with the vectorized parts of
 			-- the raster and the values associated with those parts, if really their
@@ -6697,12 +6697,12 @@ CREATE OR REPLACE FUNCTION ST_Intersection(geomin geometry, rast raster, band in
 					val
 				FROM (
 					SELECT
-						ST_Intersection((gv).geom, geomin) AS intgeom,
+						@extschema@.ST_Intersection((gv).geom, geomin) AS intgeom,
 						(gv).val
-					FROM ST_DumpAsPolygons(rast, band) gv
-					WHERE ST_Intersects((gv).geom, geomin)
+					FROM @extschema@.ST_DumpAsPolygons(rast, band) gv
+					WHERE @extschema@.ST_Intersects((gv).geom, geomin)
 				) foo
-				WHERE NOT ST_IsEmpty(intgeom);
+				WHERE NOT @extschema@.ST_IsEmpty(intgeom);
 		ELSE
 			-- If the geometry does not intersect with the raster, return an empty
 			-- geometry and a null value
@@ -6710,7 +6710,7 @@ CREATE OR REPLACE FUNCTION ST_Intersection(geomin geometry, rast raster, band in
 				SELECT
 					emptygeom,
 					NULL::float8
-				FROM ST_GeomCollFromText('GEOMETRYCOLLECTION EMPTY', ST_SRID($1)) emptygeom;
+				FROM @extschema@.ST_GeomCollFromText('GEOMETRYCOLLECTION EMPTY', ST_SRID($1)) emptygeom;
 		END IF;
 	END;
 	$$
@@ -6781,7 +6781,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	nodataval double precision
 )
 	RETURNS raster AS
-	$$ SELECT st_intersection($1, $2, $3, $4, $5, ARRAY[$6, $6]) $$
+	$$ SELECT @extschema@.st_intersection($1, $2, $3, $4, $5, ARRAY[$6, $6]) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_intersection(
@@ -6790,7 +6790,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	nodataval double precision[]
 )
 	RETURNS raster AS
-	$$ SELECT st_intersection($1, $2, $3, $4, 'BOTH', $5) $$
+	$$ SELECT @extschema@.st_intersection($1, $2, $3, $4, 'BOTH', $5) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_intersection(
@@ -6799,7 +6799,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	nodataval double precision
 )
 	RETURNS raster AS
-	$$ SELECT st_intersection($1, $2, $3, $4, 'BOTH', ARRAY[$5, $5]) $$
+	$$ SELECT @extschema@.st_intersection($1, $2, $3, $4, 'BOTH', ARRAY[$5, $5]) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Variants without band number
@@ -6810,7 +6810,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	nodataval double precision[] DEFAULT NULL
 )
 	RETURNS raster AS
-	$$ SELECT st_intersection($1, 1, $2, 1, $3, $4) $$
+	$$ SELECT @extschema@.st_intersection($1, 1, $2, 1, $3, $4) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_intersection(
@@ -6820,7 +6820,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	nodataval double precision
 )
 	RETURNS raster AS
-	$$ SELECT st_intersection($1, 1, $2, 1, $3, ARRAY[$4, $4]) $$
+	$$ SELECT @extschema@.st_intersection($1, 1, $2, 1, $3, ARRAY[$4, $4]) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_intersection(
@@ -6829,7 +6829,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	nodataval double precision[]
 )
 	RETURNS raster AS
-	$$ SELECT st_intersection($1, 1, $2, 1, 'BOTH', $3) $$
+	$$ SELECT @extschema@.st_intersection($1, 1, $2, 1, 'BOTH', $3) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_intersection(
@@ -6838,7 +6838,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	nodataval double precision
 )
 	RETURNS raster AS
-	$$ SELECT st_intersection($1, 1, $2, 1, 'BOTH', ARRAY[$3, $3]) $$
+	$$ SELECT @extschema@.st_intersection($1, 1, $2, 1, 'BOTH', ARRAY[$3, $3]) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -7057,7 +7057,7 @@ CREATE OR REPLACE FUNCTION st_nearestvalue(
 	exclude_nodata_value boolean DEFAULT TRUE
 )
 	RETURNS double precision
-	AS $$ SELECT st_nearestvalue($1, $2, st_setsrid(st_makepoint(st_rastertoworldcoordx($1, $3, $4), st_rastertoworldcoordy($1, $3, $4)), st_srid($1)), $5) $$
+	AS $$ SELECT @extschema@.st_nearestvalue($1, $2, @extschema@.st_setsrid(@extschema@.st_makepoint(@extschema@.st_rastertoworldcoordx($1, $3, $4), @extschema@.st_rastertoworldcoordy($1, $3, $4)), @extschema@.st_srid($1)), $5) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_nearestvalue(
@@ -7066,7 +7066,7 @@ CREATE OR REPLACE FUNCTION st_nearestvalue(
 	exclude_nodata_value boolean DEFAULT TRUE
 )
 	RETURNS double precision
-	AS $$ SELECT st_nearestvalue($1, 1, st_setsrid(st_makepoint(st_rastertoworldcoordx($1, $2, $3), st_rastertoworldcoordy($1, $2, $3)), st_srid($1)), $4) $$
+	AS $$ SELECT @extschema@.st_nearestvalue($1, 1, @extschema@.st_setsrid(@extschema@.st_makepoint(@extschema@.st_rastertoworldcoordx($1, $2, $3), @extschema@.st_rastertoworldcoordy($1, $2, $3)), @extschema@.st_srid($1)), $4) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -7116,11 +7116,11 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 		wy double precision;
 		rtn double precision[][];
 	BEGIN
-		IF (st_geometrytype($3) != 'ST_Point') THEN
+		IF (@extschema@.st_geometrytype($3) != 'ST_Point') THEN
 			RAISE EXCEPTION 'Attempting to get the neighbor of a pixel with a non-point geometry';
 		END IF;
 
-		IF ST_SRID(rast) != ST_SRID(pt) THEN
+		IF @extschema@.ST_SRID(rast) != @extschema@.ST_SRID(pt) THEN
 			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
 		END IF;
 
@@ -7129,8 +7129,8 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 
 		SELECT @extschema@._ST_neighborhood(
 			$1, $2,
-			st_worldtorastercoordx(rast, wx, wy),
-			st_worldtorastercoordy(rast, wx, wy),
+			@extschema@.st_worldtorastercoordx(rast, wx, wy),
+			@extschema@.st_worldtorastercoordy(rast, wx, wy),
 			$4, $5,
 			$6
 		) INTO rtn;
@@ -7145,7 +7145,7 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 	exclude_nodata_value boolean DEFAULT TRUE
 )
 	RETURNS double precision[][]
-	AS $$ SELECT st_neighborhood($1, 1, $2, $3, $4, $5) $$
+	AS $$ SELECT @extschema@.st_neighborhood($1, 1, $2, $3, $4, $5) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 ------------------------------------------------------------------------------
@@ -7238,7 +7238,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_srid(rastschema name, rasttabl
 
 		cn := 'enforce_srid_' || $3;
 
-		sql := 'SELECT st_srid('
+		sql := 'SELECT @extschema@.st_srid('
 			|| quote_ident($3)
 			|| ') FROM ' || fqtn
 			|| ' LIMIT 1';
@@ -7252,7 +7252,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_srid(rastschema name, rasttabl
 
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
-			|| ' CHECK (st_srid('
+			|| ' CHECK (@extschema@.st_srid('
 			|| quote_ident($3)
 			|| ') = ' || attr || ')';
 
@@ -7318,7 +7318,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_scale(rastschema name, rasttab
 
 		cn := 'enforce_scale' || $4 || '_' || $3;
 
-		sql := 'SELECT st_scale' || $4 || '('
+		sql := 'SELECT @extschema@.st_scale' || $4 || '('
 			|| quote_ident($3)
 			|| ') FROM '
 			|| fqtn
@@ -7333,7 +7333,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_scale(rastschema name, rasttab
 
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
-			|| ' CHECK (round(st_scale' || $4 || '('
+			|| ' CHECK (round(@extschema@.st_scale' || $4 || '('
 			|| quote_ident($3)
 			|| ')::numeric, 10) = round(' || text(attr) || '::numeric, 10))';
 		RETURN  @extschema@._add_raster_constraint(cn, sql);
@@ -7596,7 +7596,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_spatially_unique(rastschema na
 
 		sql := 'ALTER TABLE ' || fqtn ||
 			' ADD CONSTRAINT ' || quote_ident(cn) ||
-			' EXCLUDE ((' || quote_ident($3) || '::geometry) WITH =)';
+			' EXCLUDE ((' || quote_ident($3) || '::@extschema@.geometry) WITH =)';
 		RETURN  @extschema@._add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
@@ -7690,7 +7690,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 			END IF;
 
 			-- remove band
-			_covrast := ST_MakeEmptyRaster(_covrast);
+			_covrast := @extschema@.ST_MakeEmptyRaster(_covrast);
 		EXCEPTION WHEN OTHERS THEN
 			RAISE NOTICE 'Unable to create coverage raster. Cannot add coverage tile constraint: % (%)',
         SQLERRM, SQLSTATE;
@@ -7862,7 +7862,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_pixel_types(rastschema name, r
 
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
-			|| ' CHECK (_raster_constraint_pixel_types(' || quote_ident($3)
+			|| ' CHECK (@extschema@._raster_constraint_pixel_types(' || quote_ident($3)
 			|| ') = ''{';
 		FOR x in 1..max LOOP
 			sql := sql || '"' || attr[x] || '"';
@@ -8992,7 +8992,7 @@ DECLARE
   ipy FLOAT8;
   tx int;
   ty int;
-  te GEOMETRY; -- tile extent
+  te @extschema@.GEOMETRY; -- tile extent
   ncols int;
   nlins int;
   srid int;
@@ -9002,24 +9002,24 @@ BEGIN
   RAISE DEBUG 'Target coverage will have sfx=%, sfy=%', sfx, sfy;
 
   -- 2. Loop over each target tile and build it from source tiles
-  ipx := st_xmin(ext);
+  ipx := @extschema@.st_xmin(ext);
   ncols := ceil((st_xmax(ext)-ipx)/sfx/tw);
   IF sfy < 0 THEN
-    ipy := st_ymax(ext);
-    nlins := ceil((st_ymin(ext)-ipy)/sfy/th);
+    ipy := @extschema@.st_ymax(ext);
+    nlins := ceil((@extschema@.st_ymin(ext)-ipy)/sfy/th);
   ELSE
-    ipy := st_ymin(ext);
-    nlins := ceil((st_ymax(ext)-ipy)/sfy/th);
+    ipy := @extschema@.st_ymin(ext);
+    nlins := ceil((@extschema@.st_ymax(ext)-ipy)/sfy/th);
   END IF;
 
-  srid := ST_Srid(ext);
+  srid := @extschema@.ST_Srid(ext);
 
   RAISE DEBUG 'Target coverage will have % x % tiles, each of approx size % x %', ncols, nlins, tw, th;
   RAISE DEBUG 'Target coverage will cover extent %', ext::box2d;
 
   FOR tx IN 0..ncols-1 LOOP
     FOR ty IN 0..nlins-1 LOOP
-      te := ST_MakeEnvelope(ipx + tx     *  tw  * sfx,
+      te := @extschema@.ST_MakeEnvelope(ipx + tx     *  tw  * sfx,
                              ipy + ty     *  th  * sfy,
                              ipx + (tx+1) *  tw  * sfx,
                              ipy + (ty+1) *  th  * sfy,
@@ -9093,7 +9093,7 @@ BEGIN
   ttab := 'o_' || factor || '_' || sinfo.tab;
   sql := 'CREATE TABLE ' || quote_ident(sinfo.sch)
       || '.' || quote_ident(ttab)
-      || ' AS SELECT ST_Retile($1, $2, $3, $4, $5, $6, $7) '
+      || ' AS SELECT @extschema@.ST_Retile($1, $2, $3, $4, $5, $6, $7) '
       || quote_ident(col);
   EXECUTE sql USING tab, col, sinfo.ext,
                     sinfo.sfx * factor, sinfo.sfy * factor,
@@ -9121,7 +9121,7 @@ CREATE OR REPLACE FUNCTION st_makeemptycoverage(tilewidth int, tileheight int, w
         rh int;                -- raster height (may change at edges)
         x int;                 -- x index of coverage
         y int;                 -- y index of coverage
-        template raster;       -- an empty template raster, where each cell
+        template @extschema@.raster;       -- an empty template raster, where each cell
                                -- represents a tile in the coverage
         minY double precision;
         maxX double precision;
