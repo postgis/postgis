@@ -310,13 +310,13 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		svn
 	  </ulink>
 	  repository
-	  <ulink url="http://svn.osgeo.org/postgis/trunk/">
-		http://svn.osgeo.org/postgis/trunk/
+	  <ulink url="https://svn.osgeo.org/postgis/trunk/">
+		https://svn.osgeo.org/postgis/trunk/
 	  </ulink>
 	  .
 	</para>
 
-	<programlisting>svn checkout http://svn.osgeo.org/postgis/trunk/ postgis-&last_release_version;</programlisting>
+	<programlisting>svn checkout https://svn.osgeo.org/postgis/trunk/ postgis-&last_release_version;</programlisting>
 
 	<para>
 	  Change into the newly created
@@ -678,39 +678,20 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  <command>make comments</command>
     </para>
 	  <para>Building the comments is not necessary if you are building from a release tar ball since these are packaged pre-built with the tar ball already.</para>
-	  <para>If you are building against PostgreSQL 9.1, the extensions should automatically build as part of the make install process.  You can if needed build from the extensions
+	  <para>The extensions should automatically build as part of the make install process.  You can if needed build from the extensions
 	  folders or copy files if you need them on a different server. </para>
 	  <programlisting>cd extensions
 cd postgis
 make clean
 make
+export PGUSER=postgres #overwrite psql variables
+make check #to test before install
 make install
-cd ..
-cd postgis_topology
-make clean
-make
-make install
-cd ..
-cd postgis_sfcgal
-make clean
-make
-make install
-
-cd ..
-cd address_standardizer
-make clean
-make
-make install
-make installcheck
-
-cd ..
-cd postgis_tiger_geocoder
-make clean
-make
-make install
-make installcheck
-	  </programlisting>
-	  <para>The extension files will always be the same for the same version of PostGIS regardless of OS, so it is fine to copy over the extension files from one OS to another as long as you
+# to test extensions
+make check RUNTESTFLAGS=--extension</programlisting>
+		<note><para><code>make check</code> uses psql to run tests and as such can use psql environment variables.
+		Common ones useful to override are <varname>PGUSER</varname>,<varname>PGPORT</varname>, and <varname>PGHOST</varname>. Refer to <ulink url="https://www.postgresql.org/docs/current/libpq-envars.html">psql environment variables</ulink> </para></note>
+	  <para>The extension files will always be the same for the same version of PostGIS and PostgreSQL regardless of OS, so it is fine to copy over the extension files from one OS to another as long as you
 	  have the PostGIS binaries already installed on your servers. </para>
 		<para>If you want to install the extensions manually on a separate server different from your development,
 		You need to copy the following files from the extensions folder into the <filename>PostgreSQL / share / extension</filename> folder
@@ -826,7 +807,7 @@ CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;
 		<para>
 		  If you configured PostGIS using non-standard PostgreSQL, GEOS, or
 		  Proj4 locations, you may need to add their library locations to the
-		  LD_LIBRARY_PATH environment variable.
+		  <varname>LD_LIBRARY_PATH</varname> environment variable.
 		</para>
 	  </note>
 
