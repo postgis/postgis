@@ -14,6 +14,7 @@ PostGIS 2.3.8
   - #4203, Fix build with GNU Make 4.1 (Sandro Santilli)
   - #4206, Fix support for PostgreSQL 12 dev branch (Laurenz Albe)
   - #3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)
+  - #4223, Fix parallel/near rectangle case in geography (Paul Ramsey)
 
 PostGIS 2.3.7
 2018/04/06
