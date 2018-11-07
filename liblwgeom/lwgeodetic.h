@@ -40,7 +40,7 @@
 #ifdef FP_TOLERANCE
 #undef FP_TOLERANCE
 #define FP_TOLERANCE 1e-14
-#endif 
+#endif
 
 extern int gbox_geocentric_slow;
 
