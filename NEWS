@@ -28,7 +28,8 @@ PostGIS 3.0.0
   - #3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)
   - #4215, Use floating point compare in ST_DumpAsPolygons (Darafei Praliaskouski)
   - #4155, Support for GEOMETRYCOLLECTION, POLYGON, TIN, TRIANGLE in
-    ST_LocateBetween and ST_LocateBetweenElevations (Darafei Praliaskouski)
+    ST_LocateBetween and ST_LocateBetweenElevations (Darafei Praliaskouski
+  - #2767, Added a raw in Synopsis about AddRasterConstraints (Sunveer Singh)
 
 PostGIS 2.5.0
 2018/09/23
