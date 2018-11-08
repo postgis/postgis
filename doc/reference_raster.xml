@@ -453,25 +453,25 @@ VALUES (1,
 			<parameter>rastcolumn</parameter></paramdef>
 
 			<paramdef choice="opt"><type>boolean </type>
-			<parameter>srid</parameter></paramdef>
+			<parameter>srid=true</parameter></paramdef>
 
 			<paramdef choice="opt"><type>boolean </type>
-			<parameter>scale_x</parameter></paramdef>
+			<parameter>scale_x=true</parameter></paramdef>
 
 			<paramdef choice="opt"><type>boolean </type>
-			<parameter>scale_y</parameter></paramdef>
+			<parameter>scale_y=true</parameter></paramdef>
 
 			<paramdef choice="opt"><type>boolean </type>
-			<parameter>blocksize_x</parameter></paramdef>
+			<parameter>blocksize_x=true</parameter></paramdef>
 
 			<paramdef choice="opt"><type>boolean </type>
-			<parameter>blocksize_y</parameter></paramdef>
+			<parameter>blocksize_y=true</parameter></paramdef>
 
 			<paramdef choice="opt"><type>boolean </type>
-			<parameter>same_alignment</parameter></paramdef>
+			<parameter>same_alignment=true</parameter></paramdef>
 
 			<paramdef choice="opt"><type>boolean </type>
-			<parameter>regular_blocking</parameter></paramdef>
+			<parameter>regular_blocking=false</parameter></paramdef>
 
 			<paramdef choice="opt"><type>boolean </type>
 				<parameter>num_bands=true</parameter>
