@@ -489,7 +489,6 @@ VALUES (1,
 				<parameter>extent=true</parameter>
 			</paramdef>
 		  </funcprototype>
-			
 		  <funcprototype>
 			<funcdef>boolean <function>AddRasterConstraints</function></funcdef>
 			<paramdef><type>name </type>
