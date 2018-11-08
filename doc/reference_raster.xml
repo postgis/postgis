@@ -452,26 +452,26 @@ VALUES (1,
 			<paramdef><type>name </type>
 			<parameter>rastcolumn</parameter></paramdef>
 
-			<paramdef><type>boolean </type>
-			<parameter>srid</parameter></paramdef>
+			<paramdef choice="opt"><type>boolean </type>
+			<parameter>srid=true</parameter></paramdef>
 
-			<paramdef><type>boolean </type>
-			<parameter>scale_x</parameter></paramdef>
+			<paramdef choice="opt"><type>boolean </type>
+			<parameter>scale_x=true</parameter></paramdef>
 
-			<paramdef><type>boolean </type>
-			<parameter>scale_y</parameter></paramdef>
+			<paramdef choice="opt"><type>boolean </type>
+			<parameter>scale_y=true</parameter></paramdef>
 
-			<paramdef><type>boolean </type>
-			<parameter>blocksize_x</parameter></paramdef>
+			<paramdef choice="opt"><type>boolean </type>
+			<parameter>blocksize_x=true</parameter></paramdef>
 
-			<paramdef><type>boolean </type>
-			<parameter>blocksize_y</parameter></paramdef>
+			<paramdef choice="opt"><type>boolean </type>
+			<parameter>blocksize_y=true</parameter></paramdef>
 
-			<paramdef><type>boolean </type>
-			<parameter>same_alignment</parameter></paramdef>
+			<paramdef choice="opt"><type>boolean </type>
+			<parameter>same_alignment=true</parameter></paramdef>
 
-			<paramdef><type>boolean </type>
-			<parameter>regular_blocking</parameter></paramdef>
+			<paramdef choice="opt"><type>boolean </type>
+			<parameter>regular_blocking=false</parameter></paramdef>
 
 			<paramdef choice="opt"><type>boolean </type>
 				<parameter>num_bands=true</parameter>
@@ -489,7 +489,6 @@ VALUES (1,
 				<parameter>extent=true</parameter>
 			</paramdef>
 		  </funcprototype>
-
 		  <funcprototype>
 			<funcdef>boolean <function>AddRasterConstraints</function></funcdef>
 			<paramdef><type>name </type>

@@ -17,6 +17,7 @@ XXXX/XX/XX
   - #4223, ST_DistanceTree error for near parallel boxes (Paul Ramsey)
   - Schema qualify more functions for raster (Regina Obe)
   - #4216, Revert non-sliced box access (Paul Ramsey)
+  - #2767, Documentation for AddRasterConstraint optional parameters (Sunveer Singh)
 
 
 PostGIS 2.5.0
