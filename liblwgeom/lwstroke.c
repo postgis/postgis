@@ -20,6 +20,7 @@
  *
  * Copyright (C) 2001-2006 Refractions Research Inc.
  * Copyright (C) 2017      Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2018      Daniel Baston <dbaston@gmail.com>
  *
  **********************************************************************/
 
@@ -114,6 +115,101 @@ static double interpolate_arc(double angle, double a1, double a2, double a3, dou
 	}
 }
 
+/* Compute the angle covered by a single segment such that
+ * a given number of segments per quadrant is achieved. */
+static double angle_increment_using_segments_per_quad(double tol)
+{
+	double increment;
+	int perQuad = rint(tol);
+	// error out if tol != perQuad ? (not-round)
+	if ( perQuad != tol )
+	{
+		lwerror("lwarc_linearize: segments per quadrant must be an integer value, got %.15g", tol, perQuad);
+		return -1;
+	}
+	if ( perQuad < 1 )
+	{
+		lwerror("lwarc_linearize: segments per quadrant must be at least 1, got %d", perQuad);
+		return -1;
+	}
+	increment = fabs(M_PI_2 / perQuad);
+	LWDEBUGF(2, "lwarc_linearize: perQuad:%d, increment:%g (%g degrees)", perQuad, increment, increment*180/M_PI);
+
+	return increment;
+}
+
+/* Compute the angle covered by a single quadrant such that
+ * the segment deviates from the arc by no more than a given
+ * amount. */
+static double angle_increment_using_max_deviation(double max_deviation, double radius)
+{
+	double increment, halfAngle, maxErr;
+	if ( max_deviation <= 0 )
+	{
+		lwerror("lwarc_linearize: max deviation must be bigger than 0, got %.15g", max_deviation);
+		return -1;
+	}
+
+	/*
+	 * Ref: https://en.wikipedia.org/wiki/Sagitta_(geometry)
+	 *
+	 * An arc "sagitta" (distance between middle point of arc and
+	 * middle point of corresponding chord) is defined as:
+	 *
+	 *   sagitta = radius * ( 1 - cos( angle ) );
+	 *
+	 * We want our sagitta to be at most "tolerance" long,
+	 * and we want to find out angle, so we use the inverse
+	 * formula:
+	 *
+	 *   tol = radius * ( 1 - cos( angle ) );
+	 *   1 - cos( angle ) =  tol/radius
+	 *   - cos( angle ) =  tol/radius - 1
+	 *   cos( angle ) =  - tol/radius + 1
+	 *   angle = acos( 1 - tol/radius )
+	 *
+	 * Constraints: 1.0 - tol/radius must be between -1 and 1
+	 * which means tol must be between 0 and 2 times
+	 * the radius, which makes sense as you cannot have a
+	 * sagitta bigger than twice the radius!
+	 *
+	 */
+	maxErr = max_deviation;
+	if ( maxErr > radius * 2 )
+	{
+		maxErr = radius * 2;
+		LWDEBUGF(2, "lwarc_linearize: tolerance %g is too big, "
+			    "using arc-max 2 * radius == %g", tol, maxErr);
+	}
+	do {
+		halfAngle = acos( 1.0 - maxErr / radius );
+		/* TODO: avoid a loop here, going rather straight to
+		 *       a minimum angle value */
+		if ( halfAngle != 0 ) break;
+		LWDEBUGF(2, "lwarc_linearize: tolerance %g is too small for this arc"
+								" to compute approximation angle, doubling it", maxErr);
+		maxErr *= 2;
+	} while(1);
+	increment = 2 * halfAngle;
+	LWDEBUGF(2, "lwarc_linearize: maxDiff:%g, radius:%g, halfAngle:%g, increment:%g (%g degrees)", tol, radius, halfAngle, increment, increment*180/M_PI);
+
+	return increment;
+}
+
+/* Check that a given angle is positive and, if so, take
+ * it to be the angle covered by a single segment. */
+static double angle_increment_using_max_angle(double tol)
+{
+	if ( tol <= 0 )
+	{
+		lwerror("lwarc_linearize: max angle must be bigger than 0, got %.15g", tol);
+		return -1;
+	}
+
+	return tol;
+}
+
+
 /**
  * Segmentize an arc
  *
@@ -148,7 +244,7 @@ lwarc_linearize(POINTARRAY *to,
 	double increment; /* Angle per segment */
 	double angle_shift = 0;
 	double a1, a2, a3, angle;
-	POINTARRAY *pa = to;
+	POINTARRAY *pa;
 	int is_circle = LW_FALSE;
 	int points_added = 0;
 	int reverse = 0;
@@ -162,7 +258,7 @@ lwarc_linearize(POINTARRAY *to,
 
 	LWDEBUGF(2, " p2 side is %d", p2_side);
 
-	/* Force counterclockwise scan if SYMMETRIC operation is requsested */
+	/* Force counterclockwise scan if SYMMETRIC operation is requested */
 	if ( p2_side == -1 && flags & LW_LINEARIZE_FLAG_SYMMETRIC )
 	{
 		/* swap p1-p3 */
@@ -181,7 +277,7 @@ lwarc_linearize(POINTARRAY *to,
 	if ( p1->x == p3->x && p1->y == p3->y )
 		is_circle = LW_TRUE;
 
-	/* Negative radius signals straight line, p1/p2/p3 are colinear */
+	/* Negative radius signals straight line, p1/p2/p3 are collinear */
 	if ( (radius < 0.0 || p2_side == 0) && ! is_circle )
 	    return 0;
 
@@ -192,89 +288,30 @@ lwarc_linearize(POINTARRAY *to,
 	else
 		clockwise = LW_FALSE;
 
-	if ( tolerance_type == LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD )
-	{{
-		int perQuad = rint(tol);
-		// error out if tol != perQuad ? (not-round)
-		if ( perQuad != tol )
-		{
-			lwerror("lwarc_linearize: segments per quadrant must be an integer value, got %.15g", tol, perQuad);
-			return -1;
-		}
-		if ( perQuad < 1 )
-		{
-			lwerror("lwarc_linearize: segments per quadrant must be at least 1, got %d", perQuad);
-			return -1;
-		}
-		increment = fabs(M_PI_2 / perQuad);
-		LWDEBUGF(2, "lwarc_linearize: perQuad:%d, increment:%g (%g degrees)", perQuad, increment, increment*180/M_PI);
-
-	}}
-	else if ( tolerance_type == LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION )
-	{{
-		double halfAngle, maxErr;
-		if ( tol <= 0 )
-		{
-			lwerror("lwarc_linearize: max deviation must be bigger than 0, got %.15g", tol);
-			return -1;
-		}
-
-		/*
-		 * Ref: https://en.wikipedia.org/wiki/Sagitta_(geometry)
-		 *
-		 * An arc "sagitta" (distance between middle point of arc and
-		 * middle point of corresponding chord) is defined as:
-		 *
-		 *   sagitta = radius * ( 1 - cos( angle ) );
-		 *
-		 * We want our sagitta to be at most "tolerance" long,
-		 * and we want to find out angle, so we use the inverse
-		 * formula:
-		 *
-		 *   tol = radius * ( 1 - cos( angle ) );
-		 *   1 - cos( angle ) =  tol/radius
-		 *   - cos( angle ) =  tol/radius - 1
-		 *   cos( angle ) =  - tol/radius + 1
-		 *   angle = acos( 1 - tol/radius )
-		 *
-		 * Constraints: 1.0 - tol/radius must be between -1 and 1
-		 * which means tol must be between 0 and 2 times
-		 * the radius, which makes sense as you cannot have a
-		 * sagitta bigger than twice the radius!
-		 *
-		 */
-		maxErr = tol;
-		if ( maxErr > radius * 2 )
-		{
-			maxErr = radius * 2;
-			LWDEBUGF(2, "lwarc_linearize: tolerance %g is too big, "
-			            "using arc-max 2 * radius == %g", tol, maxErr);
-		}
-		do {
-			halfAngle = acos( 1.0 - maxErr / radius );
-			/* TODO: avoid a loop here, going rather straight to
-			 *       a minimum angle value */
-			if ( halfAngle != 0 ) break;
-			LWDEBUGF(2, "lwarc_linearize: tolerance %g is too small for this arc"
-									" to compute approximation angle, doubling it", maxErr);
-			maxErr *= 2;
-		} while(1);
-		increment = 2 * halfAngle;
-		LWDEBUGF(2, "lwarc_linearize: maxDiff:%g, radius:%g, halfAngle:%g, increment:%g (%g degrees)", tol, radius, halfAngle, increment, increment*180/M_PI);
-	}}
-	else if ( tolerance_type == LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE )
+	/* Compute the increment (angle per segment) depending on
+	 * our tolerance type. */
+	switch(tolerance_type)
 	{
-		increment = tol;
-		if ( increment <= 0 )
-		{
-			lwerror("lwarc_linearize: max angle must be bigger than 0, got %.15g", tol);
+		case LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD:
+			increment = angle_increment_using_segments_per_quad(tol);
+			break;
+		case LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION:
+			increment = angle_increment_using_max_deviation(tol, radius);
+			break;
+		case LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE:
+			increment = angle_increment_using_max_angle(tol);
+			break;
+		default:
+			lwerror("lwarc_linearize: unsupported tolerance type %d", tolerance_type);
 			return -1;
-		}
 	}
-	else
+
+	if (increment < 0)
 	{
-		lwerror("lwarc_linearize: unsupported tolerance type %d", tolerance_type);
-		return LW_FALSE;
+		/* Error occurred in increment calculation somewhere
+		 * (lwerror already called)
+		 */
+		return -1;
 	}
 
 	/* Angles of each point that defines the arc section */
@@ -285,36 +322,55 @@ lwarc_linearize(POINTARRAY *to,
 	LWDEBUGF(2, "lwarc_linearize A1:%g (%g) A2:%g (%g) A3:%g (%g)",
 		a1, a1*180/M_PI, a2, a2*180/M_PI, a3, a3*180/M_PI);
 
+	/* Calculate total arc angle, in radians */
+	double total_angle = clockwise ? a1 - a3 : a3 - a1;
+	if ( total_angle < 0 ) total_angle += M_PI * 2;
+
+	/* At extreme tolerance values (very low or very high, depending on
+	 * the semantic) we may cause our arc to collapse. In this case,
+	 * we want shrink the increment enough so that we get two segments
+	 * for a standard arc, or three segments for a complete circle. */
+	int min_segs = is_circle ? 3 : 2;
+	if ( ceil(total_angle / increment) < min_segs)
+	{
+		increment = total_angle / min_segs;
+	}
+
 	if ( flags & LW_LINEARIZE_FLAG_SYMMETRIC )
 	{{
-		/* Calculate total arc angle, in radians */
-		double angle = clockwise ? a1 - a3 : a3 - a1;
-		if ( angle < 0 ) angle += M_PI * 2;
 		LWDEBUGF(2, "lwarc_linearize SYMMETRIC requested - total angle %g deg",
 			         angle * 180 / M_PI);
+
 		if ( flags & LW_LINEARIZE_FLAG_RETAIN_ANGLE )
 		{{
-			/* Number of steps */
-			int steps = trunc(angle / increment);
-			/* Angle reminder */
-			double angle_reminder = angle - ( increment * steps );
-			angle_shift = angle_reminder / 2.0;
+			/* Number of complete steps */
+			int steps = trunc(total_angle / increment);
+
+			/* Figure out the angle remainder, i.e. the amount of the angle
+			 * that is left after we can take no more complete angle
+			 * increments. */
+			double angle_remainder = total_angle - ( increment * steps );
+
+			/* Shift the starting angle by half of the remainder. This
+			 * will have the effect of evenly distributing the remainder
+			 * among the first and last segments in the arc. */
+			angle_shift = angle_remainder / 2.0;
 
 			LWDEBUGF(2, "lwarc_linearize RETAIN_ANGLE operation requested - "
-			         "total angle %g, steps %d, increment %g, reminder %g",
-			         angle * 180 / M_PI, steps, increment * 180 / M_PI,
-			         angle_reminder * 180 / M_PI);
+			         "total angle %g, steps %d, increment %g, remainder %g",
+			         total_angle * 180 / M_PI, steps, increment * 180 / M_PI,
+			         angle_remainder * 180 / M_PI);
 		}}
 		else
 		{{
 			/* Number of segments in output */
-			int segs = ceil(angle / increment);
+			int segs = ceil(total_angle / increment);
 			/* Tweak increment to be regular for all the arc */
-			increment = angle/segs;
+			increment = total_angle/segs;
 
 			LWDEBUGF(2, "lwarc_linearize SYMMETRIC operation requested - "
 							"total angle %g degrees - LINESTRING(%g %g,%g %g,%g %g) - S:%d -   I:%g",
-							angle*180/M_PI, p1->x, p1->y, center.x, center.y, p3->x, p3->y,
+							total_angle*180/M_PI, p1->x, p1->y, center.x, center.y, p3->x, p3->y,
 							segs, increment*180/M_PI);
 		}}
 	}}
@@ -354,17 +410,24 @@ lwarc_linearize(POINTARRAY *to,
 	LWDEBUGF(2, "lwarc_linearize angle_shift:%g, increment:%g",
 		angle_shift * 180/M_PI, increment * 180/M_PI);
 
-	if ( reverse ) {{
+	if ( reverse )
+	{
+		/* Append points in order to a temporary POINTARRAY and
+		 * reverse them before writing to the output POINTARRAY. */
 		const int capacity = 8; /* TODO: compute exactly ? */
 		pa = ptarray_construct_empty(ptarray_has_z(to), ptarray_has_m(to), capacity);
-	}}
+	}
+	else
+	{
+		/* Append points directly to the output POINTARRAY,
+		 * starting with p1. */
+		pa = to;
+
+		ptarray_append_point(pa, p1, LW_FALSE);
+		++points_added;
+	}
 
 	/* Sweep from a1 to a3 */
-	if ( ! reverse )
-	{
-		ptarray_append_point(pa, p1, LW_FALSE);
-	}
-	++points_added;
 	if ( angle_shift ) angle_shift -= increment;
 	LWDEBUGF(2, "a1:%g (%g deg), a3:%g (%g deg), inc:%g, shi:%g, cw:%d",
 		a1, a1 * 180 / M_PI, a3, a3 * 180 / M_PI, increment, angle_shift, clockwise);
@@ -377,7 +440,6 @@ lwarc_linearize(POINTARRAY *to,
 		pt.m = interpolate_arc(angle, a1, a2, a3, p1->m, p2->m, p3->m);
 		ptarray_append_point(pa, &pt, LW_FALSE);
 		++points_added;
-		angle_shift = 0;
 	}
 
 	if ( reverse ) {{

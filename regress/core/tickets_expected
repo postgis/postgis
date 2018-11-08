@@ -305,6 +305,9 @@ ERROR:  invalid KML representation
 #3627b|t
 #3704|t
 #3709|t
+NOTICE:  Hole lies outside shell at or near point 25495368.044100001 6671726.9312000005
+#3719a|f
+#3719b|t
 #3774|t
 #1014a|POINT(0 0)
 #1014a|POINT(0 0)

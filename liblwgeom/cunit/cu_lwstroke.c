@@ -231,7 +231,7 @@ static void test_lwcurve_linearize(void)
 	 */
 	out = lwcurve_linearize(in, 500, toltype, LW_LINEARIZE_FLAG_SYMMETRIC);
 	str = lwgeom_to_text(out, 2);
-	ASSERT_STRING_EQUAL(str, "LINESTRING(20 50,72 -66)");
+	ASSERT_STRING_EQUAL(str, "LINESTRING(20 50,22 -18,72 -66)");
 	lwfree(str);
 	lwgeom_free(out);
 
@@ -240,7 +240,7 @@ static void test_lwcurve_linearize(void)
 	/*
 	 * ROBUSTNESS: big radius, small tolerance
 	 * See https://trac.osgeo.org/postgis/ticket/4058
-	 * NOTE: we are really only interested in not enterying
+	 * NOTE: we are really only interested in not entering
 	 *       an infinite loop here
 	 */
 	toltype = LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION;
@@ -250,12 +250,12 @@ static void test_lwcurve_linearize(void)
 			"2695865.195999999996275 1125835.189000)");
 	out = lwcurve_linearize(in, 0.0001, toltype, 0);
 	str = lwgeom_to_text(out, 2);
-	ASSERT_STRING_EQUAL(str, "LINESTRING(2696000 1125700,2695866 1125836)");
+	ASSERT_STRING_EQUAL(str, "LINESTRING(2696000 1125700,2695932 1125768,2695866 1125836)");
 	lwfree(str);
 	lwgeom_free(out);
 	out = lwcurve_linearize(in, 0.0001, toltype, LW_LINEARIZE_FLAG_SYMMETRIC);
 	str = lwgeom_to_text(out, 2);
-	ASSERT_STRING_EQUAL(str, "LINESTRING(2696000 1125700,2695866 1125836)");
+	ASSERT_STRING_EQUAL(str, "LINESTRING(2696000 1125700,2695932 1125768,2695866 1125836)");
 	lwfree(str);
 	lwgeom_free(out);
 #ifndef SKIP_TEST_RETAIN_ANGLE
@@ -280,36 +280,36 @@ static void test_lwcurve_linearize(void)
 
 	in = lwgeom_from_text("CIRCULARSTRING(0 0,100 100,200 0)");
 
-	/* Maximum of 45 degrees, asymmetric */
+	/* Maximum of 45 degrees per segment, asymmetric */
 	out = lwcurve_linearize(in, M_PI / 4.0, toltype, 0);
 	str = lwgeom_to_text(out, 2);
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,30 70,100 100,170 70,200 0)");
 	lwfree(str);
 	lwgeom_free(out);
-	/* Maximum of 0 degrees (invalid) */
+	/* Maximum of 0 degrees per segment (invalid) */
 	cu_error_msg_reset();
 	out = lwcurve_linearize(in, 0, toltype, 0);
 	CU_ASSERT( out == NULL );
 	ASSERT_STRING_EQUAL(cu_error_msg, "lwarc_linearize: max angle must be bigger than 0, got 0");
-	/* Maximum of -2 degrees (invalid) */
+	/* Maximum of -2 degrees per segment (invalid) */
 	cu_error_msg_reset();
 	out = lwcurve_linearize(in, -2, toltype, 0);
 	CU_ASSERT( out == NULL );
 	ASSERT_STRING_EQUAL(cu_error_msg, "lwarc_linearize: max angle must be bigger than 0, got -2");
-	/* Maximum of 360 degrees, just return endpoints... */
+	/* Maximum of 360 degrees per segment, just return minimum of two segments... */
 	cu_error_msg_reset();
 	out = lwcurve_linearize(in, M_PI*4, toltype, 0);
 	str = lwgeom_to_text(out, 2);
-	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,200 0)");
+	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,100 100,200 0)");
 	lwfree(str);
 	lwgeom_free(out);
-	/* Maximum of 70 degrees, asymmetric */
+	/* Maximum of 70 degrees per segment, asymmetric */
 	out = lwcurve_linearize(in, 70 * M_PI / 180, toltype, 0);
 	str = lwgeom_to_text(out, 2);
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,66 94,176 64,200 0)");
 	lwfree(str);
 	lwgeom_free(out);
-	/* Maximum of 70 degrees, symmetric */
+	/* Maximum of 70 degrees per segment, symmetric */
 	out = lwcurve_linearize(in, 70 * M_PI / 180, toltype, LW_LINEARIZE_FLAG_SYMMETRIC);
 	str = lwgeom_to_text(out, 2);
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,50 86,150 86,200 0)");
