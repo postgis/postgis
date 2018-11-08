@@ -489,15 +489,6 @@ VALUES (1,
 				<parameter>extent=true</parameter>
 			</paramdef>
 		  </funcprototype>
-                  
-		  <funcprototype>
-			<funcdef>boolean <function>AddRasterConstraints</function></funcdef>
-			<paramdef><type>name </type>
-			<parameter>tablename</parameter></paramdef>
-			  
-			<paramdef><type>name </type>
-			<parameter>fieldname</parameter></paramdef>
-	          </funcprototype>
 			
 		  <funcprototype>
 			<funcdef>boolean <function>AddRasterConstraints</function></funcdef>
