@@ -458,9 +458,7 @@ gidx_overlaps(GIDX *a, GIDX *b)
 */
 bool gidx_contains(GIDX *a, GIDX *b)
 {
-	int i, dims_a, dims_b;
-
-	POSTGIS_DEBUG(5, "entered function");
+	uint32_t i, dims_a, dims_b;
 
 	if ( (a == NULL) || (b == NULL) ) return false;
 
@@ -476,10 +474,12 @@ bool gidx_contains(GIDX *a, GIDX *b)
 	{
 		/* If the missing dimension was not padded with -+FLT_MAX */
 		if (GIDX_GET_MAX(a, i) != FLT_MAX && GIDX_GET_MAX(b, i) != FLT_MAX)
+		{
 			if (GIDX_GET_MIN(a, i) > GIDX_GET_MIN(b, i))
 				return false;
-		if (GIDX_GET_MAX(a, i) < GIDX_GET_MAX(b, i))
-			return false;
+			if (GIDX_GET_MAX(a, i) < GIDX_GET_MAX(b, i))
+				return false;
+		}
 	}
 
 	return true;
@@ -493,9 +493,7 @@ bool gidx_contains(GIDX *a, GIDX *b)
 bool
 gidx_equals(GIDX *a, GIDX *b)
 {
-	int i, dims_a, dims_b;
-
-	POSTGIS_DEBUG(5, "entered function");
+	uint32_t i, dims_a, dims_b;
 
 	if ( (a == NULL) && (b == NULL) ) return true;
 	if ( (a == NULL) || (b == NULL) ) return false;
