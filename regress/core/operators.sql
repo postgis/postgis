@@ -149,15 +149,15 @@ select 'ndcont7', 'LINESTRING(2 2 2 2, 4 4 4 4)'::geometry ~~
 -- ~~ with mixed dimensions
 
 WITH v(i,g) AS ( VALUES
- (1,'POINT(0 0)'::geometry),			-- true for {1,2,3,4,5,6}
- (2,'POINTZ(0 0 1)'),					-- true for {1,2,6}
- (3,'POINTZ(0 0 0)'),					-- true for {1,3,5}
- (4,'POINTM(0 0 1)'),					-- true for {1,2,3,4,5}
- (5,'POINTZM(0 0 0 1)'),				-- true for {1,3,5}
- (6,'POINTZM(0 0 1 0)'),				-- true for {1,2,6}
- (7,'LINESTRINGM(-1 0 2,1 0 3)'),		-- true for {1,2,3,7,8,9}
- (8,'LINESTRINGZ(-1 0 2,1 0 3)'),		-- true for {1,8,9}
- (9,'LINESTRINGZM(-1 0 2 2,1 0 3 3)')	-- true for {1,8,9}
+ (1,'POINT(0 0)'::geometry),
+ (2,'POINTZ(0 0 1)'),
+ (3,'POINTZ(0 0 0)'),
+ (4,'POINTM(0 0 1)'),
+ (5,'POINTZM(0 0 0 1)'),
+ (6,'POINTZM(0 0 1 0)'),
+ (7,'LINESTRINGM(-1 0 2,1 0 3)'),
+ (8,'LINESTRINGZ(-1 0 2,1 0 3)'),
+ (9,'LINESTRINGZM(-1 0 2 2,1 0 3 3)')
  )
 SELECT 'ndcontm', v1.i, array_agg(v2.i) FROM v v1, v v2 WHERE v1.g ~~ v2.g
 group by v1.i
@@ -183,15 +183,15 @@ select 'ndwithin7', 'POINT(4 2 4 2)'::geometry @@
 -- @@ with mixed dimensions
 
 WITH v(i,g) AS ( VALUES
- (1,'POINT(0 0)'::geometry),			-- true for {1,2,3,4,5,6,7,8,9}
- (2,'POINTZ(0 0 1)'),					-- true for {1,2,4,6,7}
- (3,'POINTZ(0 0 0)'),					-- true for {1,3,4,5,7}
- (4,'POINTM(0 0 1)'),					-- true for {1,4}
- (5,'POINTZM(0 0 0 1)'),				-- true for {1,3,4,5}
- (6,'POINTZM(0 0 1 0)'),				-- true for {1,2,6}
- (7,'LINESTRINGM(-1 0 2,1 0 3)'),		-- true for {1,2,6}
- (8,'LINESTRINGZ(-1 0 2,1 0 3)'),		-- true for {7,8,9}
- (9,'LINESTRINGZM(-1 0 2 2,1 0 3 3)')	-- true for {7,8,9}
+ (1,'POINT(0 0)'::geometry),
+ (2,'POINTZ(0 0 1)'),
+ (3,'POINTZ(0 0 0)'),
+ (4,'POINTM(0 0 1)'),
+ (5,'POINTZM(0 0 0 1)'),
+ (6,'POINTZM(0 0 1 0)'),
+ (7,'LINESTRINGM(-1 0 2,1 0 3)'),
+ (8,'LINESTRINGZ(-1 0 2,1 0 3)'),
+ (9,'LINESTRINGZM(-1 0 2 2,1 0 3 3)')
  )
 SELECT 'ndwithinm', v1.i, array_agg(v2.i) FROM v v1, v v2 WHERE v1.g @@ v2.g
 group by v1.i
@@ -217,15 +217,15 @@ select 'ndsame7', 'LINESTRING(2 2 2 2, 4 4 4 4)'::geometry ~~=
 -- ~~= with mixed dimensions
 
 WITH v(i,g) AS ( VALUES
- (1,'POINT(0 0)'::geometry),			-- true for {1,2,3,4,5,6}
- (2,'POINTZ(0 0 1)'),					-- true for {1,2,6}
- (3,'POINTZ(0 0 0)'),					-- true for {1,3,5}
- (4,'POINTM(0 0 1)'),					-- true for {1,4}
- (5,'POINTZM(0 0 0 1)'),				-- true for {1,3,5}
- (6,'POINTZM(0 0 1 0)'),				-- true for {1,2,6}
- (7,'LINESTRINGM(-1 0 2,1 0 3)'),		-- true for {7}
- (8,'LINESTRINGZ(-1 0 2,1 0 3)'),		-- true for {8,9}
- (9,'LINESTRINGZM(-1 0 2 2,1 0 3 3)')	-- true for {8,9}
+ (1,'POINT(0 0)'::geometry),
+ (2,'POINTZ(0 0 1)'),
+ (3,'POINTZ(0 0 0)'),
+ (4,'POINTM(0 0 1)'),
+ (5,'POINTZM(0 0 0 1)'),
+ (6,'POINTZM(0 0 1 0)'),
+ (7,'LINESTRINGM(-1 0 2,1 0 3)'),
+ (8,'LINESTRINGZ(-1 0 2,1 0 3)'),
+ (9,'LINESTRINGZM(-1 0 2 2,1 0 3 3)')
  )
 SELECT 'ndsamem', v1.i, array_agg(v2.i) FROM v v1, v v2 WHERE v1.g ~~= v2.g
 group by v1.i
