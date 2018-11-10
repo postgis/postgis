@@ -92,8 +92,8 @@ Datum gserialized_spgist_compress_nd(PG_FUNCTION_ARGS);
 
 typedef struct
 {
-	GIDX	*left;
-	GIDX	*right;
+	GIDX *left;
+	GIDX *right;
 } CubeGIDX;
 
 /*
@@ -106,8 +106,8 @@ typedef struct
 static int
 compareFloats(const void *a, const void *b)
 {
-	float		x = *(float *) a;
-	float		y = *(float *) b;
+	float x = *(float *)a;
+	float y = *(float *)b;
 
 	if (x == y)
 		return 0;
@@ -124,18 +124,15 @@ compareFloats(const void *a, const void *b)
 static uint16_t
 getOctant(GIDX *centroid, GIDX *inBox)
 {
-	uint16_t	octant = 0,
-				dim = 0x01;
-	int 		ndims,
-				i;
+	uint16_t octant = 0, dim = 0x01;
+	int ndims, i;
 
 	ndims = Min(GIDX_NDIMS(centroid), GIDX_NDIMS(inBox));
 
 	for (i = 0; i < ndims; i++)
 	{
 		/* If the missing dimension was not padded with -+FLT_MAX */
-		if ( GIDX_GET_MAX(centroid, i) != FLT_MAX &&
-			GIDX_GET_MAX(inBox, i) != FLT_MAX )
+		if (GIDX_GET_MAX(centroid, i) != FLT_MAX && GIDX_GET_MAX(inBox, i) != FLT_MAX)
 		{
 			if (GIDX_GET_MAX(inBox, i) > GIDX_GET_MAX(centroid, i))
 				octant |= dim;
@@ -158,10 +155,10 @@ getOctant(GIDX *centroid, GIDX *inBox)
 static CubeGIDX *
 initCubeBox(int ndims)
 {
-	CubeGIDX   *cube_box = (CubeGIDX *) palloc(sizeof(CubeGIDX));
-	GIDX	   *left = (GIDX*)palloc(GIDX_SIZE(ndims));
-	GIDX	   *right = (GIDX*)palloc(GIDX_SIZE(ndims));
-	int 		i;
+	CubeGIDX *cube_box = (CubeGIDX *)palloc(sizeof(CubeGIDX));
+	GIDX *left = (GIDX *)palloc(GIDX_SIZE(ndims));
+	GIDX *right = (GIDX *)palloc(GIDX_SIZE(ndims));
+	int i;
 
 	SET_VARSIZE(left, GIDX_SIZE(ndims));
 	SET_VARSIZE(right, GIDX_SIZE(ndims));
@@ -189,12 +186,11 @@ initCubeBox(int ndims)
 static CubeGIDX *
 nextCubeBox(CubeGIDX *cube_box, GIDX *centroid, uint16_t octant)
 {
-	int			ndims = GIDX_NDIMS(centroid),
-				i;
-	CubeGIDX   *next_cube_box = (CubeGIDX *) palloc(sizeof(CubeGIDX));
-	GIDX	   *left = (GIDX*)palloc(GIDX_SIZE(ndims));
-	GIDX	   *right = (GIDX*)palloc(GIDX_SIZE(ndims));
-	uint16_t	dim = 0x01;
+	int ndims = GIDX_NDIMS(centroid), i;
+	CubeGIDX *next_cube_box = (CubeGIDX *)palloc(sizeof(CubeGIDX));
+	GIDX *left = (GIDX *)palloc(GIDX_SIZE(ndims));
+	GIDX *right = (GIDX *)palloc(GIDX_SIZE(ndims));
+	uint16_t dim = 0x01;
 
 	memcpy(left, cube_box->left, VARSIZE(cube_box->left));
 	memcpy(right, cube_box->right, VARSIZE(cube_box->right));
@@ -203,8 +199,7 @@ nextCubeBox(CubeGIDX *cube_box, GIDX *centroid, uint16_t octant)
 
 	for (i = 0; i < ndims; i++)
 	{
-		if ( GIDX_GET_MAX(cube_box->left, i) != FLT_MAX &&
-			GIDX_GET_MAX(centroid, i) != FLT_MAX )
+		if (GIDX_GET_MAX(cube_box->left, i) != FLT_MAX && GIDX_GET_MAX(centroid, i) != FLT_MAX)
 		{
 			if (octant & dim)
 				GIDX_GET_MIN(next_cube_box->right, i) = GIDX_GET_MAX(centroid, i);
@@ -229,19 +224,17 @@ nextCubeBox(CubeGIDX *cube_box, GIDX *centroid, uint16_t octant)
 static bool
 overlapND(CubeGIDX *cube_box, GIDX *query)
 {
-	int		i,
-			ndims;
-	bool 	result = true;
+	int i, ndims;
+	bool result = true;
 
 	ndims = Min(GIDX_NDIMS(cube_box->left), GIDX_NDIMS(query));
 
 	for (i = 0; i < ndims; i++)
 	{
 		/* If the missing dimension was not padded with -+FLT_MAX */
-		if ( GIDX_GET_MAX(cube_box->left, i) != FLT_MAX &&
-			GIDX_GET_MAX(query, i) != FLT_MAX )
+		if (GIDX_GET_MAX(cube_box->left, i) != FLT_MAX && GIDX_GET_MAX(query, i) != FLT_MAX)
 			result &= (GIDX_GET_MIN(cube_box->left, i) <= GIDX_GET_MAX(query, i)) &&
-				(GIDX_GET_MAX(cube_box->right, i) >= GIDX_GET_MIN(query, i));
+				  (GIDX_GET_MAX(cube_box->right, i) >= GIDX_GET_MIN(query, i));
 	}
 	return result;
 }
@@ -250,19 +243,17 @@ overlapND(CubeGIDX *cube_box, GIDX *query)
 static bool
 containND(CubeGIDX *cube_box, GIDX *query)
 {
-	int		i,
-			ndims;
-	bool 	result = true;
+	int i, ndims;
+	bool result = true;
 
 	ndims = Min(GIDX_NDIMS(cube_box->left), GIDX_NDIMS(query));
 
 	for (i = 0; i < ndims; i++)
 	{
 		/* If the missing dimension was not padded with -+FLT_MAX */
-		if ( GIDX_GET_MAX(cube_box->left, i) != FLT_MAX &&
-			GIDX_GET_MAX(query, i) != FLT_MAX )
+		if (GIDX_GET_MAX(cube_box->left, i) != FLT_MAX && GIDX_GET_MAX(query, i) != FLT_MAX)
 			result &= (GIDX_GET_MAX(cube_box->right, i) >= GIDX_GET_MAX(query, i)) &&
-				(GIDX_GET_MIN(cube_box->left, i) <= GIDX_GET_MIN(query, i));
+				  (GIDX_GET_MIN(cube_box->left, i) <= GIDX_GET_MIN(query, i));
 	}
 	return result;
 }
@@ -273,14 +264,13 @@ containND(CubeGIDX *cube_box, GIDX *query)
 
 PG_FUNCTION_INFO_V1(gserialized_spgist_config_nd);
 
-PGDLLEXPORT Datum
-gserialized_spgist_config_nd(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_config_nd(PG_FUNCTION_ARGS)
 {
-	spgConfigOut *cfg = (spgConfigOut *) PG_GETARG_POINTER(1);
-	Oid 		boxoid = TypenameGetTypid("gidx");
+	spgConfigOut *cfg = (spgConfigOut *)PG_GETARG_POINTER(1);
+	Oid boxoid = TypenameGetTypid("gidx");
 
 	cfg->prefixType = boxoid;
-	cfg->labelType = VOIDOID;	/* We don't need node labels. */
+	cfg->labelType = VOIDOID; /* We don't need node labels. */
 	cfg->leafType = boxoid;
 	cfg->canReturnData = false;
 	cfg->longValuesOK = false;
@@ -294,13 +284,11 @@ gserialized_spgist_config_nd(PG_FUNCTION_ARGS)
 
 PG_FUNCTION_INFO_V1(gserialized_spgist_choose_nd);
 
-PGDLLEXPORT Datum
-gserialized_spgist_choose_nd(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_choose_nd(PG_FUNCTION_ARGS)
 {
-	spgChooseIn *in = (spgChooseIn *) PG_GETARG_POINTER(0);
-	spgChooseOut *out = (spgChooseOut *) PG_GETARG_POINTER(1);
-	GIDX	   *centroid = (GIDX*)DatumGetPointer(in->prefixDatum),
-			   *box = (GIDX*)DatumGetPointer(in->leafDatum);
+	spgChooseIn *in = (spgChooseIn *)PG_GETARG_POINTER(0);
+	spgChooseOut *out = (spgChooseOut *)PG_GETARG_POINTER(1);
+	GIDX *centroid = (GIDX *)DatumGetPointer(in->prefixDatum), *box = (GIDX *)DatumGetPointer(in->leafDatum);
 
 	out->resultType = spgMatchNode;
 	out->result.matchNode.restDatum = PointerGetDatum(box);
@@ -320,21 +308,13 @@ gserialized_spgist_choose_nd(PG_FUNCTION_ARGS)
  */
 PG_FUNCTION_INFO_V1(gserialized_spgist_picksplit_nd);
 
-PGDLLEXPORT Datum
-gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 {
-	spgPickSplitIn *in = (spgPickSplitIn *) PG_GETARG_POINTER(0);
-	spgPickSplitOut *out = (spgPickSplitOut *) PG_GETARG_POINTER(1);
-	GIDX	   *box,
-			   *centroid;
-	float	   *lowXs,
-			   *highXs;
-	int 		ndims,
-				maxdims = -1,
-				count[GIDX_MAX_DIM],
-				median,
-				i,
-				j;
+	spgPickSplitIn *in = (spgPickSplitIn *)PG_GETARG_POINTER(0);
+	spgPickSplitOut *out = (spgPickSplitOut *)PG_GETARG_POINTER(1);
+	GIDX *box, *centroid;
+	float *lowXs, *highXs;
+	int ndims, maxdims = -1, count[GIDX_MAX_DIM], median, i, j;
 
 	for (i = 0; i < GIDX_MAX_DIM; i++)
 		count[i] = 0;
@@ -345,17 +325,17 @@ gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 	/* Calculate median of all ND coordinates */
 	for (i = 0; i < in->nTuples; i++)
 	{
-		box = (GIDX*)DatumGetPointer(in->datums[i]);
+		box = (GIDX *)DatumGetPointer(in->datums[i]);
 		ndims = GIDX_NDIMS(box);
-		if ( maxdims < ndims )
+		if (maxdims < ndims)
 			maxdims = ndims;
 		for (j = 0; j < ndims; j++)
 		{
 			/* If the missing dimension was not padded with -+FLT_MAX */
-			if ( GIDX_GET_MAX(box, i) != FLT_MAX )
+			if (GIDX_GET_MAX(box, i) != FLT_MAX)
 			{
-				lowXs[j*in->nTuples + count[j]] = GIDX_GET_MIN(box, j);
-				highXs[j*in->nTuples + count[j]] = GIDX_GET_MAX(box, j);
+				lowXs[j * in->nTuples + count[j]] = GIDX_GET_MIN(box, j);
+				highXs[j * in->nTuples + count[j]] = GIDX_GET_MAX(box, j);
 				count[j]++;
 			}
 		}
@@ -363,18 +343,18 @@ gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 
 	for (i = 0; i < maxdims; i++)
 	{
-		qsort(&lowXs[i*in->nTuples], count[i], sizeof(float), compareFloats);
-		qsort(&highXs[i*in->nTuples], count[i], sizeof(float), compareFloats);
+		qsort(&lowXs[i * in->nTuples], count[i], sizeof(float), compareFloats);
+		qsort(&highXs[i * in->nTuples], count[i], sizeof(float), compareFloats);
 	}
 
-	centroid = (GIDX*)palloc(GIDX_SIZE(maxdims));
+	centroid = (GIDX *)palloc(GIDX_SIZE(maxdims));
 	SET_VARSIZE(centroid, GIDX_SIZE(maxdims));
 
 	for (i = 0; i < maxdims; i++)
 	{
 		median = count[i] / 2;
-		GIDX_SET_MIN(centroid, i, lowXs[i*in->nTuples + median]);
-		GIDX_SET_MAX(centroid, i, highXs[i*in->nTuples + median]);
+		GIDX_SET_MIN(centroid, i, lowXs[i * in->nTuples + median]);
+		GIDX_SET_MAX(centroid, i, highXs[i * in->nTuples + median]);
 	}
 
 	/* Fill the output */
@@ -382,7 +362,7 @@ gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 	out->prefixDatum = PointerGetDatum(gidx_copy(centroid));
 
 	out->nNodes = 0x01 << (2 * maxdims);
-	out->nodeLabels = NULL;		/* We don't need node labels. */
+	out->nodeLabels = NULL; /* We don't need node labels. */
 
 	out->mapTuplesToNodes = palloc(sizeof(int) * in->nTuples);
 	out->leafTupleDatums = palloc(sizeof(Datum) * in->nTuples);
@@ -393,8 +373,8 @@ gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 	 */
 	for (i = 0; i < in->nTuples; i++)
 	{
-		GIDX	   *box = (GIDX*)DatumGetPointer(in->datums[i]);
-		uint16_t	octant = getOctant(centroid, box);
+		GIDX *box = (GIDX *)DatumGetPointer(in->datums[i]);
+		uint16_t octant = getOctant(centroid, box);
 
 		out->leafTupleDatums[i] = PointerGetDatum(box);
 		out->mapTuplesToNodes[i] = octant;
@@ -411,20 +391,16 @@ gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
  */
 PG_FUNCTION_INFO_V1(gserialized_spgist_inner_consistent_nd);
 
-PGDLLEXPORT Datum
-gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
 {
-	spgInnerConsistentIn *in = (spgInnerConsistentIn *) PG_GETARG_POINTER(0);
-	spgInnerConsistentOut *out = (spgInnerConsistentOut *) PG_GETARG_POINTER(1);
+	spgInnerConsistentIn *in = (spgInnerConsistentIn *)PG_GETARG_POINTER(0);
+	spgInnerConsistentOut *out = (spgInnerConsistentOut *)PG_GETARG_POINTER(1);
 	MemoryContext old_ctx;
-	CubeGIDX   *cube_box;
-	int		   *nodeNumbers,
-				i,
-				j;
-	void	  **traversalValues;
-	char 		gidxmem[GIDX_MAX_SIZE];
-	GIDX	   *centroid,
-			   *query_gbox_index = (GIDX*)gidxmem;
+	CubeGIDX *cube_box;
+	int *nodeNumbers, i, j;
+	void **traversalValues;
+	char gidxmem[GIDX_MAX_SIZE];
+	GIDX *centroid, *query_gbox_index = (GIDX *)gidxmem;
 
 	POSTGIS_DEBUG(4, "[SPGIST] 'inner consistent' function called");
 
@@ -432,7 +408,7 @@ gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
 	{
 		/* Report that all nodes should be visited */
 		out->nNodes = in->nNodes;
-		out->nodeNumbers = (int *) palloc(sizeof(int) * in->nNodes);
+		out->nodeNumbers = (int *)palloc(sizeof(int) * in->nNodes);
 		for (i = 0; i < in->nNodes; i++)
 			out->nodeNumbers[i] = i;
 
@@ -446,7 +422,7 @@ gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
 	 */
 	old_ctx = MemoryContextSwitchTo(in->traversalMemoryContext);
 
-	centroid = (GIDX*)DatumGetPointer(in->prefixDatum);
+	centroid = (GIDX *)DatumGetPointer(in->prefixDatum);
 
 	/*
 	 * We are saving the traversal value or initialize it an unbounded one, if
@@ -459,21 +435,21 @@ gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
 
 	/* Allocate enough memory for nodes */
 	out->nNodes = 0;
-	nodeNumbers = (int *) palloc(sizeof(int) * in->nNodes);
-	traversalValues = (void **) palloc(sizeof(void *) * in->nNodes);
+	nodeNumbers = (int *)palloc(sizeof(int) * in->nNodes);
+	traversalValues = (void **)palloc(sizeof(void *) * in->nNodes);
 
 	for (i = 0; i < in->nNodes; i++)
 	{
-		CubeGIDX   *next_cube_box = nextCubeBox(cube_box, centroid, (uint16_t)i);
-		bool		flag = true;
+		CubeGIDX *next_cube_box = nextCubeBox(cube_box, centroid, (uint16_t)i);
+		bool flag = true;
 
 		for (j = 0; j < in->nkeys; j++)
 		{
 			StrategyNumber strategy = in->scankeys[j].sk_strategy;
-			Datum		query = in->scankeys[j].sk_argument;
+			Datum query = in->scankeys[j].sk_argument;
 
 			/* Quick sanity check on query argument. */
-			if ( DatumGetPointer(query) == NULL )
+			if (DatumGetPointer(query) == NULL)
 			{
 				POSTGIS_DEBUG(4, "[SPGIST] null query pointer (!?!)");
 				flag = false;
@@ -481,7 +457,7 @@ gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
 			}
 
 			/* Null box should never make this far. */
-			if ( gserialized_datum_get_gidx_p(query, query_gbox_index) == LW_FAILURE )
+			if (gserialized_datum_get_gidx_p(query, query_gbox_index) == LW_FAILURE)
 			{
 				POSTGIS_DEBUG(4, "[SPGIST] null query_gbox_index!");
 				flag = false;
@@ -490,18 +466,18 @@ gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
 
 			switch (strategy)
 			{
-				case SPGOverlapStrategyNumber:
-				case SPGContainedByStrategyNumber:
-					flag = overlapND(next_cube_box, query_gbox_index);
-					break;
+			case SPGOverlapStrategyNumber:
+			case SPGContainedByStrategyNumber:
+				flag = overlapND(next_cube_box, query_gbox_index);
+				break;
 
-				case SPGContainsStrategyNumber:
-				case SPGSameStrategyNumber:
-					flag = containND(next_cube_box, query_gbox_index);
-					break;
+			case SPGContainsStrategyNumber:
+			case SPGSameStrategyNumber:
+				flag = containND(next_cube_box, query_gbox_index);
+				break;
 
-				default:
-					elog(ERROR, "unrecognized strategy: %d", strategy);
+			default:
+				elog(ERROR, "unrecognized strategy: %d", strategy);
 			}
 
 			/* If any check is failed, we have found our answer. */
@@ -526,8 +502,8 @@ gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
 	}
 
 	/* Pass to the next level only the values that need to be traversed */
-	out->nodeNumbers = (int *) palloc(sizeof(int) * out->nNodes);
-	out->traversalValues = (void **) palloc(sizeof(void *) * out->nNodes);
+	out->nodeNumbers = (int *)palloc(sizeof(int) * out->nNodes);
+	out->traversalValues = (void **)palloc(sizeof(void *) * out->nNodes);
 	for (i = 0; i < out->nNodes; i++)
 	{
 		out->nodeNumbers[i] = nodeNumbers[i];
@@ -547,16 +523,14 @@ gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
  */
 PG_FUNCTION_INFO_V1(gserialized_spgist_leaf_consistent_nd);
 
-PGDLLEXPORT Datum
-gserialized_spgist_leaf_consistent_nd(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_nd(PG_FUNCTION_ARGS)
 {
-	spgLeafConsistentIn *in = (spgLeafConsistentIn *) PG_GETARG_POINTER(0);
-	spgLeafConsistentOut *out = (spgLeafConsistentOut *) PG_GETARG_POINTER(1);
-	bool		flag = true;
-	int			i;
-	char 		gidxmem[GIDX_MAX_SIZE];
-	GIDX	   *leaf = (GIDX*)DatumGetPointer(in->leafDatum),
-			   *query_gbox_index = (GIDX*)gidxmem;
+	spgLeafConsistentIn *in = (spgLeafConsistentIn *)PG_GETARG_POINTER(0);
+	spgLeafConsistentOut *out = (spgLeafConsistentOut *)PG_GETARG_POINTER(1);
+	bool flag = true;
+	int i;
+	char gidxmem[GIDX_MAX_SIZE];
+	GIDX *leaf = (GIDX *)DatumGetPointer(in->leafDatum), *query_gbox_index = (GIDX *)gidxmem;
 
 	POSTGIS_DEBUG(4, "[SPGIST] 'leaf consistent' function called");
 
@@ -570,17 +544,17 @@ gserialized_spgist_leaf_consistent_nd(PG_FUNCTION_ARGS)
 	for (i = 0; i < in->nkeys; i++)
 	{
 		StrategyNumber strategy = in->scankeys[i].sk_strategy;
-		Datum		query = in->scankeys[i].sk_argument;
+		Datum query = in->scankeys[i].sk_argument;
 
 		/* Quick sanity check on query argument. */
-		if ( DatumGetPointer(query) == NULL )
+		if (DatumGetPointer(query) == NULL)
 		{
 			POSTGIS_DEBUG(4, "[SPGIST] null query pointer (!?!)");
 			flag = false;
 		}
 
 		/* Null box should never make this far. */
-		if ( gserialized_datum_get_gidx_p(query, query_gbox_index) == LW_FAILURE )
+		if (gserialized_datum_get_gidx_p(query, query_gbox_index) == LW_FAILURE)
 		{
 			POSTGIS_DEBUG(4, "[SPGIST] null query_gbox_index!");
 			flag = false;
@@ -588,24 +562,24 @@ gserialized_spgist_leaf_consistent_nd(PG_FUNCTION_ARGS)
 
 		switch (strategy)
 		{
-			case SPGOverlapStrategyNumber:
-				flag = gidx_overlaps(leaf, query_gbox_index);
-				break;
+		case SPGOverlapStrategyNumber:
+			flag = gidx_overlaps(leaf, query_gbox_index);
+			break;
 
-			case SPGContainsStrategyNumber:
-				flag = gidx_contains(leaf, query_gbox_index);
-				break;
+		case SPGContainsStrategyNumber:
+			flag = gidx_contains(leaf, query_gbox_index);
+			break;
 
-			case SPGContainedByStrategyNumber:
-				flag = gidx_contains(query_gbox_index, leaf);
-				break;
+		case SPGContainedByStrategyNumber:
+			flag = gidx_contains(query_gbox_index, leaf);
+			break;
 
-			case SPGSameStrategyNumber:
-				flag = gidx_equals(leaf, query_gbox_index);
-				break;
+		case SPGSameStrategyNumber:
+			flag = gidx_equals(leaf, query_gbox_index);
+			break;
 
-			default:
-				elog(ERROR, "unrecognized strategy: %d", strategy);
+		default:
+			elog(ERROR, "unrecognized strategy: %d", strategy);
 		}
 
 		/* If any check is failed, we have found our answer. */
@@ -618,12 +592,11 @@ gserialized_spgist_leaf_consistent_nd(PG_FUNCTION_ARGS)
 
 PG_FUNCTION_INFO_V1(gserialized_spgist_compress_nd);
 
-PGDLLEXPORT Datum
-gserialized_spgist_compress_nd(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum gserialized_spgist_compress_nd(PG_FUNCTION_ARGS)
 {
-	char 		gidxmem[GIDX_MAX_SIZE];
-	GIDX 	   *result = (GIDX*)gidxmem;
-	long unsigned int 		i;
+	char gidxmem[GIDX_MAX_SIZE];
+	GIDX *result = (GIDX *)gidxmem;
+	long unsigned int i;
 
 	POSTGIS_DEBUG(4, "[SPGIST] 'compress' function called");
 
@@ -636,7 +609,7 @@ gserialized_spgist_compress_nd(PG_FUNCTION_ARGS)
 
 	/* Is the bounding box valid (non-empty, non-infinite) ?
 	 * If not, return NULL. */
-	if ( gserialized_datum_get_gidx_p(PG_GETARG_DATUM(0), result) == LW_FAILURE )
+	if (gserialized_datum_get_gidx_p(PG_GETARG_DATUM(0), result) == LW_FAILURE)
 	{
 		POSTGIS_DEBUG(4, "[SPGIST] empty geometry!");
 		PG_RETURN_NULL();
@@ -646,10 +619,9 @@ gserialized_spgist_compress_nd(PG_FUNCTION_ARGS)
 
 	/* Check all the dimensions for finite values.
 	 * If not, use the "unknown" GIDX as a key */
-	for ( i = 0; i < GIDX_NDIMS(result); i++ )
+	for (i = 0; i < GIDX_NDIMS(result); i++)
 	{
-		if ( ! isfinite(GIDX_GET_MAX(result, i)) ||
-		     ! isfinite(GIDX_GET_MIN(result, i)) )
+		if (!isfinite(GIDX_GET_MAX(result, i)) || !isfinite(GIDX_GET_MIN(result, i)))
 		{
 			gidx_set_unknown(result);
 			PG_RETURN_POINTER(result);

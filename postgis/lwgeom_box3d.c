@@ -43,7 +43,6 @@
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 + 1)
 
-
 /**
  *  BOX3D_in - takes a string rep of BOX3D and returns internal rep
  *

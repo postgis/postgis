@@ -24,7 +24,6 @@
  *
  **********************************************************************/
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -117,23 +116,25 @@ static double interpolate_arc(double angle, double a1, double a2, double a3, dou
 
 /* Compute the angle covered by a single segment such that
  * a given number of segments per quadrant is achieved. */
-static double angle_increment_using_segments_per_quad(double tol)
+static double
+angle_increment_using_segments_per_quad(double tol)
 {
 	double increment;
 	int perQuad = rint(tol);
 	// error out if tol != perQuad ? (not-round)
-	if ( perQuad != tol )
+	if (perQuad != tol)
 	{
 		lwerror("lwarc_linearize: segments per quadrant must be an integer value, got %.15g", tol, perQuad);
 		return -1;
 	}
-	if ( perQuad < 1 )
+	if (perQuad < 1)
 	{
 		lwerror("lwarc_linearize: segments per quadrant must be at least 1, got %d", perQuad);
 		return -1;
 	}
 	increment = fabs(M_PI_2 / perQuad);
-	LWDEBUGF(2, "lwarc_linearize: perQuad:%d, increment:%g (%g degrees)", perQuad, increment, increment*180/M_PI);
+	LWDEBUGF(
+	    2, "lwarc_linearize: perQuad:%d, increment:%g (%g degrees)", perQuad, increment, increment * 180 / M_PI);
 
 	return increment;
 }
@@ -141,10 +142,11 @@ static double angle_increment_using_segments_per_quad(double tol)
 /* Compute the angle covered by a single quadrant such that
  * the segment deviates from the arc by no more than a given
  * amount. */
-static double angle_increment_using_max_deviation(double max_deviation, double radius)
+static double
+angle_increment_using_max_deviation(double max_deviation, double radius)
 {
 	double increment, halfAngle, maxErr;
-	if ( max_deviation <= 0 )
+	if (max_deviation <= 0)
 	{
 		lwerror("lwarc_linearize: max deviation must be bigger than 0, got %.15g", max_deviation);
 		return -1;
@@ -175,32 +177,46 @@ static double angle_increment_using_max_deviation(double max_deviation, double r
 	 *
 	 */
 	maxErr = max_deviation;
-	if ( maxErr > radius * 2 )
+	if (maxErr > radius * 2)
 	{
 		maxErr = radius * 2;
-		LWDEBUGF(2, "lwarc_linearize: tolerance %g is too big, "
-			    "using arc-max 2 * radius == %g", tol, maxErr);
+		LWDEBUGF(2,
+			 "lwarc_linearize: tolerance %g is too big, "
+			 "using arc-max 2 * radius == %g",
+			 tol,
+			 maxErr);
 	}
-	do {
-		halfAngle = acos( 1.0 - maxErr / radius );
+	do
+	{
+		halfAngle = acos(1.0 - maxErr / radius);
 		/* TODO: avoid a loop here, going rather straight to
 		 *       a minimum angle value */
-		if ( halfAngle != 0 ) break;
-		LWDEBUGF(2, "lwarc_linearize: tolerance %g is too small for this arc"
-								" to compute approximation angle, doubling it", maxErr);
+		if (halfAngle != 0)
+			break;
+		LWDEBUGF(2,
+			 "lwarc_linearize: tolerance %g is too small for this arc"
+			 " to compute approximation angle, doubling it",
+			 maxErr);
 		maxErr *= 2;
-	} while(1);
+	} while (1);
 	increment = 2 * halfAngle;
-	LWDEBUGF(2, "lwarc_linearize: maxDiff:%g, radius:%g, halfAngle:%g, increment:%g (%g degrees)", tol, radius, halfAngle, increment, increment*180/M_PI);
+	LWDEBUGF(2,
+		 "lwarc_linearize: maxDiff:%g, radius:%g, halfAngle:%g, increment:%g (%g degrees)",
+		 tol,
+		 radius,
+		 halfAngle,
+		 increment,
+		 increment * 180 / M_PI);
 
 	return increment;
 }
 
 /* Check that a given angle is positive and, if so, take
  * it to be the angle covered by a single segment. */
-static double angle_increment_using_max_angle(double tol)
+static double
+angle_increment_using_max_angle(double tol)
 {
-	if ( tol <= 0 )
+	if (tol <= 0)
 	{
 		lwerror("lwarc_linearize: max angle must be bigger than 0, got %.15g", tol);
 		return -1;
@@ -208,7 +224,6 @@ static double angle_increment_using_max_angle(double tol)
 
 	return tol;
 }
-
 
 /**
  * Segmentize an arc
@@ -290,20 +305,20 @@ lwarc_linearize(POINTARRAY *to,
 
 	/* Compute the increment (angle per segment) depending on
 	 * our tolerance type. */
-	switch(tolerance_type)
+	switch (tolerance_type)
 	{
-		case LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD:
-			increment = angle_increment_using_segments_per_quad(tol);
-			break;
-		case LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION:
-			increment = angle_increment_using_max_deviation(tol, radius);
-			break;
-		case LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE:
-			increment = angle_increment_using_max_angle(tol);
-			break;
-		default:
-			lwerror("lwarc_linearize: unsupported tolerance type %d", tolerance_type);
-			return -1;
+	case LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD:
+		increment = angle_increment_using_segments_per_quad(tol);
+		break;
+	case LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION:
+		increment = angle_increment_using_max_deviation(tol, radius);
+		break;
+	case LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE:
+		increment = angle_increment_using_max_angle(tol);
+		break;
+	default:
+		lwerror("lwarc_linearize: unsupported tolerance type %d", tolerance_type);
+		return -1;
 	}
 
 	if (increment < 0)
@@ -324,14 +339,15 @@ lwarc_linearize(POINTARRAY *to,
 
 	/* Calculate total arc angle, in radians */
 	double total_angle = clockwise ? a1 - a3 : a3 - a1;
-	if ( total_angle < 0 ) total_angle += M_PI * 2;
+	if (total_angle < 0)
+		total_angle += M_PI * 2;
 
 	/* At extreme tolerance values (very low or very high, depending on
 	 * the semantic) we may cause our arc to collapse. In this case,
 	 * we want shrink the increment enough so that we get two segments
 	 * for a standard arc, or three segments for a complete circle. */
 	int min_segs = is_circle ? 3 : 2;
-	if ( ceil(total_angle / increment) < min_segs)
+	if (ceil(total_angle / increment) < min_segs)
 	{
 		increment = total_angle / min_segs;
 	}
@@ -343,35 +359,46 @@ lwarc_linearize(POINTARRAY *to,
 
 		if ( flags & LW_LINEARIZE_FLAG_RETAIN_ANGLE )
 		{{
-			/* Number of complete steps */
-			int steps = trunc(total_angle / increment);
+				/* Number of complete steps */
+				int steps = trunc(total_angle / increment);
 
-			/* Figure out the angle remainder, i.e. the amount of the angle
-			 * that is left after we can take no more complete angle
-			 * increments. */
-			double angle_remainder = total_angle - ( increment * steps );
+				/* Figure out the angle remainder, i.e. the amount of the angle
+				 * that is left after we can take no more complete angle
+				 * increments. */
+				double angle_remainder = total_angle - (increment * steps);
 
-			/* Shift the starting angle by half of the remainder. This
-			 * will have the effect of evenly distributing the remainder
-			 * among the first and last segments in the arc. */
-			angle_shift = angle_remainder / 2.0;
+				/* Shift the starting angle by half of the remainder. This
+				 * will have the effect of evenly distributing the remainder
+				 * among the first and last segments in the arc. */
+				angle_shift = angle_remainder / 2.0;
 
-			LWDEBUGF(2, "lwarc_linearize RETAIN_ANGLE operation requested - "
-			         "total angle %g, steps %d, increment %g, remainder %g",
-			         total_angle * 180 / M_PI, steps, increment * 180 / M_PI,
-			         angle_remainder * 180 / M_PI);
+				LWDEBUGF(2,
+					 "lwarc_linearize RETAIN_ANGLE operation requested - "
+					 "total angle %g, steps %d, increment %g, remainder %g",
+					 total_angle * 180 / M_PI,
+					 steps,
+					 increment * 180 / M_PI,
+					 angle_remainder * 180 / M_PI);
 		}}
 		else
 		{{
 			/* Number of segments in output */
 			int segs = ceil(total_angle / increment);
 			/* Tweak increment to be regular for all the arc */
-			increment = total_angle/segs;
+			increment = total_angle / segs;
 
-			LWDEBUGF(2, "lwarc_linearize SYMMETRIC operation requested - "
-							"total angle %g degrees - LINESTRING(%g %g,%g %g,%g %g) - S:%d -   I:%g",
-							total_angle*180/M_PI, p1->x, p1->y, center.x, center.y, p3->x, p3->y,
-							segs, increment*180/M_PI);
+			LWDEBUGF(2,
+				 "lwarc_linearize SYMMETRIC operation requested - "
+				 "total angle %g degrees - LINESTRING(%g %g,%g %g,%g %g) - S:%d -   I:%g",
+				 total_angle * 180 / M_PI,
+				 p1->x,
+				 p1->y,
+				 center.x,
+				 center.y,
+				 p3->x,
+				 p3->y,
+				 segs,
+				 increment * 180 / M_PI);
 		}}
 	}}
 
@@ -410,7 +437,7 @@ lwarc_linearize(POINTARRAY *to,
 	LWDEBUGF(2, "lwarc_linearize angle_shift:%g, increment:%g",
 		angle_shift * 180/M_PI, increment * 180/M_PI);
 
-	if ( reverse )
+	if (reverse)
 	{
 		/* Append points in order to a temporary POINTARRAY and
 		 * reverse them before writing to the output POINTARRAY. */

@@ -138,7 +138,8 @@ GIDX* gidx_copy(GIDX *b)
 
 
 /* Ensure all minimums are below maximums. */
-void gidx_validate(GIDX *b)
+void
+gidx_validate(GIDX *b)
 {
 	uint32_t i;
 	Assert(b);
@@ -168,7 +169,8 @@ inline bool gidx_is_unknown(const GIDX *a)
 	return false;
 }
 
-void gidx_set_unknown(GIDX *a)
+void
+gidx_set_unknown(GIDX *a)
 {
 	SET_VARSIZE(a, VARHDRSZ);
 }
@@ -419,7 +421,8 @@ static float gidx_inter_volume(GIDX *a, GIDX *b)
 **
 ** Empty boxes never overlap.
 */
-bool gidx_overlaps(GIDX *a, GIDX *b)
+bool
+gidx_overlaps(GIDX *a, GIDX *b)
 {
 	int i, dims_a, dims_b;
 
@@ -435,14 +438,14 @@ bool gidx_overlaps(GIDX *a, GIDX *b)
 
 	/* For all shared dimensions min(a) > max(b) and min(b) > max(a)
 	   Unshared dimensions do not matter */
-	for ( i = 0; i < Min(dims_a, dims_b); i++ )
+	for (i = 0; i < Min(dims_a, dims_b); i++)
 	{
 		/* If the missing dimension was not padded with -+FLT_MAX */
-		if ( GIDX_GET_MAX(a,i) != FLT_MAX && GIDX_GET_MAX(b,i) != FLT_MAX )
-			if ( GIDX_GET_MIN(a,i) > GIDX_GET_MAX(b,i) )
+		if (GIDX_GET_MAX(a, i) != FLT_MAX && GIDX_GET_MAX(b, i) != FLT_MAX)
+			if (GIDX_GET_MIN(a, i) > GIDX_GET_MAX(b, i))
 				return false;
-			if ( GIDX_GET_MIN(b,i) > GIDX_GET_MAX(a,i) )
-				return false;
+		if (GIDX_GET_MIN(b, i) > GIDX_GET_MAX(a, i))
+			return false;
 	}
 
 	return true;
@@ -472,11 +475,11 @@ bool gidx_contains(GIDX *a, GIDX *b)
 	for (i = 0; i < Min(dims_a, dims_b); i++)
 	{
 		/* If the missing dimension was not padded with -+FLT_MAX */
-		if ( GIDX_GET_MAX(a,i) != FLT_MAX && GIDX_GET_MAX(b,i) != FLT_MAX )
-			if ( GIDX_GET_MIN(a,i) > GIDX_GET_MIN(b,i) )
+		if (GIDX_GET_MAX(a, i) != FLT_MAX && GIDX_GET_MAX(b, i) != FLT_MAX)
+			if (GIDX_GET_MIN(a, i) > GIDX_GET_MIN(b, i))
 				return false;
-			if ( GIDX_GET_MAX(a,i) < GIDX_GET_MAX(b,i) )
-				return false;
+		if (GIDX_GET_MAX(a, i) < GIDX_GET_MAX(b, i))
+			return false;
 	}
 
 	return true;
@@ -487,7 +490,8 @@ bool gidx_contains(GIDX *a, GIDX *b)
 **
 ** Box(A) EQUALS Box(B) IFF (pt(A)LL == pt(B)LL) && (pt(A)UR == pt(B)UR)
 */
-bool gidx_equals(GIDX *a, GIDX *b)
+bool
+gidx_equals(GIDX *a, GIDX *b)
 {
 	int i, dims_a, dims_b;
 
@@ -510,11 +514,11 @@ bool gidx_equals(GIDX *a, GIDX *b)
 	for (i = 0; i < Min(dims_a, dims_b); i++)
 	{
 		/* If the missing dimension was not padded with -+FLT_MAX */
-		if ( GIDX_GET_MAX(a,i) != FLT_MAX && GIDX_GET_MAX(b,i) != FLT_MAX )
-			if ( GIDX_GET_MIN(a,i) != GIDX_GET_MIN(b,i) )
+		if (GIDX_GET_MAX(a, i) != FLT_MAX && GIDX_GET_MAX(b, i) != FLT_MAX)
+			if (GIDX_GET_MIN(a, i) != GIDX_GET_MIN(b, i))
 				return false;
-			if ( GIDX_GET_MAX(a,i) != GIDX_GET_MAX(b,i) )
-				return false;
+		if (GIDX_GET_MAX(a, i) != GIDX_GET_MAX(b, i))
+			return false;
 	}
 	return true;
 }
@@ -1001,7 +1005,7 @@ Datum gserialized_gidx_gidx_contains(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_same);
 Datum gserialized_same(PG_FUNCTION_ARGS)
 {
-	if ( gserialized_datum_predicate(PG_GETARG_DATUM(0),PG_GETARG_DATUM(1), gidx_equals) == LW_TRUE )
+	if (gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_equals) == LW_TRUE)
 	{
 		PG_RETURN_BOOL(true);
 	}
