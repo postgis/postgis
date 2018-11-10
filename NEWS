@@ -2,33 +2,39 @@ PostGIS 3.0.0
 2019/xx/xx
 * Breaking Changes *
   - #3888, Raster support now available as a separate extension
-    (Sandro Santilli)
+           (Sandro Santilli)
   - #3807, Extension library files no longer include the minor version.
-        Use New configure switch --with-library-minor-version
-        if you need the old behavior (Regina Obe)
+           Use New configure switch --with-library-minor-version
+           if you need the old behavior (Regina Obe)
+  - #4230, ND box operators (overlaps, contains, within, equals) now don't look on
+           dimentions that aren't present in both operands.
+           Please REINDEX your ND indexes after upgrade.
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
   - #4128, ST_AsMVT support for Feature ID (Stepan Kuzmin)
+  - #4230, SP-GiST and GiST support for ND box operators overlaps, contains,
+           within, equals (Esteban Zimányi and Arthur Lesuisse from Université
+           Libre de Bruxelles (ULB), Darafei Praliaskouski)
 
 * Enhancements and fixes *
   - #4153, ST_Segmentize now splits segments proportionally (Darafei
-    Praliaskouski).
+           Praliaskouski).
   - #4162, ST_DWithin documentation examples for storing geometry and
-    radius in table (Darafei Praliaskouski, github user Boscop).
+           radius in table (Darafei Praliaskouski, github user Boscop).
   - #4161, MVT: Drop geometries smaller than the resolution (Raúl Marín)
   - #4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)
   - #4181, St_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)
   - #4183, St_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)
-  - #4188, Avoid division by zero in kmeans (Raúl Marín)
+  - #4188, Avoid division by zero in KMeans (Raúl Marín)
   - #4189, Fix undefined behaviour in SADFWrite (Raúl Marín)
   - #4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)
   - #4211, Fix ST_Subdivide for minimal exterior ring with minimal hole (Darafei
-    Praliaskouski)
+           Praliaskouski)
   - #3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)
   - #4215, Use floating point compare in ST_DumpAsPolygons (Darafei Praliaskouski)
   - #4155, Support for GEOMETRYCOLLECTION, POLYGON, TIN, TRIANGLE in
-    ST_LocateBetween and ST_LocateBetweenElevations (Darafei Praliaskouski)
+           ST_LocateBetween and ST_LocateBetweenElevations (Darafei Praliaskouski)
   - #2767, Documentation for AddRasterConstraint optional parameters (Sunveer Singh)
 
 PostGIS 2.5.0
@@ -39,9 +45,9 @@ PostgreSQL 9.4 - PostgreSQL 12 (in development)
 GEOS >= 3.5
 
 * New Features *
-  - #1847, spgist 2d and 3d support for PG 11+
-    (Esteban Zimányi and Arthur Lesuisse from Université Libre de Bruxelles (ULB),
-      Darafei Praliaskouski)
+  - #1847, SP-GiST 2D and 3D support for PostgreSQL 11+ (Esteban Zimányi and
+           Arthur Lesuisse from Université Libre de Bruxelles (ULB), Darafei
+           Praliaskouski)
   - #4056, ST_FilterByM (Nicklas Avén)
   - #4050, ST_ChaikinSmoothing (Nicklas Avén)
   - #3989, ST_Buffer single sided option (Stephen Knox)
@@ -62,7 +68,7 @@ GEOS >= 3.5
 * Breaking Changes *
   - #4054, ST_SimplifyVW changed from > tolerance to >= tolerance
   - #3885, version number removed from address_standardize lib file
-          (Regina Obe)
+           (Regina Obe)
   - #3893, raster support functions can only be loaded in the same schema
            with core PostGIS functions. (Sandro Santilli)
   - #4035, remove dummy pgis_abs type from aggregate/collect routines.
