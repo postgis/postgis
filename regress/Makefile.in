@@ -3,9 +3,7 @@
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.net
 # *
-# * Copyright (C) 2011-2012 Sandro Santilli <strk@kbt.io>
-# * Copyright (C) 2009-2011 Paul Ramsey <pramsey@cleverelephant.ca>
-# * Copyright (C) 2008-2009 Mark Cave-Ayland
+# * Copyright (C) 2018 Sandro Santilli <strk@kbt.io>
 # *
 # * This is free software; you can redistribute and/or modify it under
 # * the terms of the GNU General Public Licence. See the COPYING file.
@@ -13,27 +11,8 @@
 # **********************************************************************
 
 PERL=@PERL@
-TMPDIR?=/tmp
-
-POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
-POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
-GEOS_NUMERIC_VERSION=@GEOS_NUMERIC_VERSION@
-POSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
-POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
-POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
-HAVE_JSON=@HAVE_JSON@
-HAVE_PROTOBUF=@HAVE_PROTOBUF@
-HAVE_SFCGAL=@HAVE_SFCGAL@
-HAVE_BRIN=@HAVE_BRIN@
-HAVE_SPGIST=@HAVE_SPGIST@
 MINGWBUILD=@MINGWBUILD@
-INTERRUPTTESTS=@INTERRUPTTESTS@
-
-# MingW hack: rather than use PGSQL_BINDIR directly, we change
-# to the directory and then use "pwd" to return the path. This
-# ensures that the returned path is in MSYS format, otherwise
-# colons in drive letters will break PATH.
-PGSQL_BINDIR=$(shell cd "@PGSQL_BINDIR@" && pwd)
+HAVE_SFCGAL=@HAVE_SFCGAL@
 
 # Where we put our regression installation
 ifeq ($(MINGWBUILD),1)
@@ -43,246 +22,24 @@ else
 endif
 REGRESS_INSTALLDIR=$(srcdir)/00-regress-install
 
-#
-# Put path from pg_config into front of search path
-#
-PATH := $(PGSQL_BINDIR):$(PATH)
-export PATH
-
-
-TESTS = \
-	loader/Point \
-	loader/PointM \
-	loader/PointZ \
-	loader/MultiPoint \
-	loader/MultiPointM \
-	loader/MultiPointZ \
-	loader/Arc \
-	loader/ArcM \
-	loader/ArcZ \
-	loader/Polygon \
-	loader/PolygonM \
-	loader/PolygonZ \
-	loader/TSTPolygon \
-	loader/TSIPolygon \
-	loader/TSTIPolygon \
-	loader/PointWithSchema \
-	loader/NoTransPoint \
-	loader/NotReallyMultiPoint \
-	loader/MultiToSinglePoint \
-	loader/ReprojectPts \
-	loader/ReprojectPtsGeog \
-	loader/Latin1 \
-	loader/Latin1-implicit \
-	loader/mfile \
-	dumper/literalsrid \
-	dumper/realtable \
-	affine \
-	bestsrid \
-	binary \
-	boundary \
-	chaikin \
-	filterm \
-	cluster \
-	concave_hull\
-	concave_hull_hard\
-	ctors \
-	curvetoline \
-	dump \
-	dumppoints \
-	empty \
-	estimatedextent \
-	forcecurve \
-	geography \
-	geometric_median \
-	in_geohash \
-	in_gml \
-	in_kml \
-	in_encodedpolyline \
-	iscollection \
-	legacy \
-	long_xact \
-	lwgeom_regress \
-	measures \
-	minimum_bounding_circle \
-	normalize \
-	operators \
-	orientation \
-	out_geometry \
-	out_geography \
-	polygonize \
-	polyhedralsurface \
-	postgis_type_name \
-	quantize_coordinates \
-	regress \
-	regress_bdpoly \
-	regress_index \
-	regress_index_nulls \
-	regress_management \
-	regress_selectivity \
-	regress_lrs \
-	regress_ogc \
-	regress_ogc_cover \
-	regress_ogc_prep \
-	regress_proj \
-	relate \
-	remove_repeated_points \
-	removepoint \
-	reverse \
-	setpoint \
-	simplify \
-	simplifyvw \
-	size \
-	snaptogrid \
-	split \
-	sql-mm-serialize \
-	sql-mm-circularstring \
-	sql-mm-compoundcurve \
-	sql-mm-curvepoly \
-	sql-mm-general \
-	sql-mm-multicurve \
-	sql-mm-multisurface \
-	swapordinates \
-	summary \
-	temporal \
-	tickets \
-	twkb \
-	typmod \
-	wkb \
-	wkt \
-	wmsservers
-
-ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) "<"  95),1)
-	# Index supported KNN only available in PostgreSQL 9.1 and higher
-	# For 9.5 and higher, use the recheck suite instead
-	TESTS += knn
-endif
-
-ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 95),1)
-	# Index supported KNN recheck only available in PostgreSQL 9.5 and higher
-	TESTS += knn_recheck \
-			temporal_knn
-endif
-
-
-TESTS += \
-	hausdorff \
-	regress_buffer_params
-
-
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 37),1)
-	# GEOS-3.7 adds:
-	# ST_FrechetDistance
-	TESTS += \
-		frechet
-endif
-
-
-# GEOS-3.3 adds:
-# ST_RelateMatch, ST_IsValidDetail, ST_SharedPaths ,
-# ST_Snap, ST_UnaryUnion, ST_MakeClean
-TESTS += \
-	offsetcurve \
-	relatematch \
-	isvaliddetail \
-	sharedpaths \
-	snap \
-	node \
-	unaryunion \
-	clean \
-	relate_bnr
-
-# GEOS-3.4 adds:
-# ST_DelaunayTriangles
-TESTS += \
-	delaunaytriangles
-
-
-
-ifeq ($(INTERRUPTTESTS),yes)
-	# Allow CI servers to configure --with-interrupt-tests
-	TESTS += \
-		interrupt \
-		interrupt_relate \
-		interrupt_buffer
-endif
-
-
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 35),1)
-	# GEOS-3.5 adds:
-	# ST_ClipByBox2d, ST_Subdivide, ST_Voronoi
-	TESTS += \
-		clipbybox2d \
-		subdivide \
-		voronoi
-endif
-
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 36),1)
-	# GEOS-3.6 adds:
-	# ST_MinimumClearance
-	TESTS += \
-		minimum_clearance \
-		oriented_envelope
-endif
-
-ifeq ($(HAVE_JSON),yes)
-	# JSON-C adds:
-	# ST_GeomFromGeoJSON()
-	TESTS += \
-		in_geojson
-endif
-
-ifeq ($(HAVE_BRIN),yes)
-	TESTS += \
-		regress_brin_index \
-		regress_brin_index_3d \
-		regress_brin_index_geography
-endif
-
-ifeq ($(HAVE_SPGIST),yes)
-	TESTS += \
-	regress_spgist_index_2d \
-	regress_spgist_index_3d \
-	regress_spgist_index_nd #\
-#	regress_gist_index_nd
-endif
-
-ifeq ($(HAVE_PROTOBUF),yes)
-	# protobuf-c adds:
-	# ST_AsMVT, ST_AsGeobuf
-	TESTS += \
-		mvt \
-		geobuf
-ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 94),1)
-	TESTS += \
-		mvt_jsonb
-endif
-endif
-
-ifeq ($(HAVE_SFCGAL),yes)
-	# SFCGAL additionnal backend
-	TESTS += \
-		regress_sfcgal \
-		sfcgal/empty.sql \
-		sfcgal/geography.sql \
-		sfcgal/legacy.sql \
-		sfcgal/measures.sql \
-		sfcgal/regress_ogc_prep.sql \
-		sfcgal/regress_ogc.sql \
-		sfcgal/regress.sql \
-		sfcgal/tickets.sql \
-		sfcgal/concave_hull.sql \
-		sfcgal/wmsservers.sql \
-		sfcgal/approximatemedialaxis.sql
-
-	SFCGALTESTFLAGS = --sfcgal
-endif
-
-
 all install uninstall:
 
+check: staged-install
+	$(MAKE) -C core check
+ifeq ($(HAVE_SFCGAL),yes)
+	$(MAKE) -C sfcgal check
+endif
+
+clean:
+	$(MAKE) -C core $@
+	$(MAKE) -C sfcgal $@
+	rm -rf $(REGRESS_INSTALLDIR)
+	rm -f postgis_garden_result.txt
+
 distclean: clean
-	rm Makefile
+	$(MAKE) -C core $@
+	$(MAKE) -C sfcgal $@
+	rm -f Makefile
 
 staged-install-topology:
 	@if test x"@TOPOLOGY@" != "x"; then \
@@ -300,10 +57,6 @@ staged-install: staged-install-raster staged-install-topology
 	$(PERL) -pi.bak -e 's,\$$libdir,$(REGRESS_INSTALLDIR)/lib,g' $(REGRESS_INSTALLDIR)/share/contrib/postgis/*.sql
 	#$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 
-test check: staged-install
-	$(PERL) run_test.pl $(RUNTESTFLAGS) $(SFCGALTESTFLAGS) $(TESTS) && \
-	$(PERL) run_test.pl --upgrade $(RUNTESTFLAGS) $(SFCGALTESTFLAGS) $(TESTS)
-
 garden:
 	createdb postgis_garden
 	createlang plpgsql postgis_garden || true #tolerate an error here
@@ -317,11 +70,3 @@ garden:
 	psql -ad postgis_garden < ../doc/postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > postgis_garden_result.txt 2>&1
 	psql -ad postgis_garden < ../doc/raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > raster_garden_result.txt 2>&1
 	#dropdb postgis_garden
-
-cleanup:
-	@sleep 1
-	@dropdb postgis_reg > /dev/null
-
-clean:
-	rm -rf $(REGRESS_INSTALLDIR)
-	rm -f postgis_garden_result.txt

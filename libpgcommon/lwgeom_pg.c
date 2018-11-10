@@ -73,7 +73,6 @@ pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result)
 	elog(ERROR, "%s", lwg_unparser_result->message);
 }
 
-
 static void *
 pg_alloc(size_t size)
 {
@@ -169,13 +168,12 @@ pg_install_lwgeom_handlers(void)
 {
 	/* install PostgreSQL handlers */
 	lwgeom_set_handlers(pg_alloc, pg_realloc, pg_free, pg_error, pg_notice);
+	/*
+	If you want to try with malloc:
+	lwgeom_set_handlers(NULL, NULL, NULL, pg_error, pg_notice);
+	*/
 	lwgeom_set_debuglogger(pg_debug);
 }
-
-/**
-* Utility method to call the serialization and then set the
-* PgSQL varsize header appropriately with the serialized size.
-*/
 
 /**
 * Utility method to call the serialization and then set the

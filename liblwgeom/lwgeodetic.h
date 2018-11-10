@@ -37,6 +37,11 @@
 #define NAN 0.0/0.0
 #endif
 
+#ifdef FP_TOLERANCE
+#undef FP_TOLERANCE
+#define FP_TOLERANCE 1e-14
+#endif
+
 extern int gbox_geocentric_slow;
 
 #define POW2(x) ((x)*(x))

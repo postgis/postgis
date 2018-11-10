@@ -3,8 +3,12 @@ include ../upgradeable_versions.mk
 EXTENSION     = postgis_topology
 EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+MODULEPATH    = $$libdir/$(EXTENSION)-@POSTGIS_MAJOR_VERSION@
+
+ifeq (@LIBINCLUDEMINORVERSION@,yes)
+MODULEPATH=$$libdir/$(EXTENSION)-$(MINORVERSION)
+endif
 GREP = @GREP@
-PERL = @PERL@
 
 MICRO_NUMBER  = $(shell echo $(EXTVERSION) | sed "s/[0-9]\.[0-9]\.\([0-9]*\)[a-zA-Z]*[0-9]*/\1/")
 PREREL_NUMBER = $(shell echo $(EXTVERSION) | \
@@ -69,10 +73,10 @@ sql_bits/topology.sql: ../../topology/topology.sql
 sql_bits/topology_comments.sql: ../../doc/topology_comments.sql
 	cp $< $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../../utils/create_unpackaged.pl sql/$(EXTENSION)--ANY--$(EXTVERSION).sql Makefile
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../../utils/create_unpackaged.pl sql/topology_upgrade.sql Makefile
 	mkdir -p sql
 	# Ugprade before packaging
-	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql > $@
+	cat sql/topology_upgrade.sql > $@
 	cat $< | $(PERL) ../../utils/create_unpackaged.pl postgis_topology >> $@
 
 #upgrade script should have everything but table, schema, type creation/alter

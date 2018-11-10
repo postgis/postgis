@@ -321,10 +321,12 @@ EOF
 	if ( /^grant select\s+(\S+)\s*/i )
 	{
 		print;
-		while(<INPUT>)
-		{
-			print;
-			last if /\;\s*$/;
+		if ( ! /\;\s*$/) {
+			while(<INPUT>)
+			{
+				print;
+				last if /\;\s*$/;
+			}
 		}
 	}
 

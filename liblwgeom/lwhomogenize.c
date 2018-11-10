@@ -77,42 +77,39 @@ lwcollection_build_buffer(const LWCOLLECTION *col, HomogenizeBuffer *buffer)
 {
 	uint32_t i;
 
-	if ( ! col ) return;
-	if ( lwgeom_is_empty(lwcollection_as_lwgeom(col)) ) return;
-	for ( i = 0; i < col->ngeoms; i++ )
+	if (!col || lwcollection_is_empty(col))
+		return;
+
+	for (i = 0; i < col->ngeoms; i++)
 	{
 		LWGEOM *geom = col->geoms[i];
-		switch(geom->type)
+		switch (geom->type)
 		{
-			case POINTTYPE:
-			case LINETYPE:
-			case CIRCSTRINGTYPE:
-			case COMPOUNDTYPE:
-			case TRIANGLETYPE:
-			case CURVEPOLYTYPE:
-			case POLYGONTYPE:
+		case POINTTYPE:
+		case LINETYPE:
+		case CIRCSTRINGTYPE:
+		case COMPOUNDTYPE:
+		case TRIANGLETYPE:
+		case CURVEPOLYTYPE:
+		case POLYGONTYPE:
+			/* Init if necessary */
+			if (!buffer->buf[geom->type])
 			{
-				/* Init if necessary */
-				if ( ! buffer->buf[geom->type] )
-				{
-					LWCOLLECTION *bufcol = lwcollection_construct_empty(COLLECTIONTYPE, col->srid, FLAGS_GET_Z(col->flags), FLAGS_GET_M(col->flags));
-					bufcol->type = lwtype_get_collectiontype(geom->type);
-					buffer->buf[geom->type] = bufcol;
-				}
-				/* Add sub-geom to buffer */
-				lwcollection_add_lwgeom(buffer->buf[geom->type], lwgeom_clone(geom));
-				/* Increment count for this singleton type */
-				buffer->cnt[geom->type] = buffer->cnt[geom->type] + 1;
+				LWCOLLECTION *bufcol = lwcollection_construct_empty(
+				    COLLECTIONTYPE, col->srid, FLAGS_GET_Z(col->flags), FLAGS_GET_M(col->flags));
+				bufcol->type = lwtype_get_collectiontype(geom->type);
+				buffer->buf[geom->type] = bufcol;
 			}
-			/* FALLTHROUGH */
-			default:
-			{
-				lwcollection_build_buffer(lwgeom_as_lwcollection(geom), buffer);
-				break;
-			}
+			/* Add sub-geom to buffer */
+			lwcollection_add_lwgeom(buffer->buf[geom->type], lwgeom_clone(geom));
+			/* Increment count for this singleton type */
+			buffer->cnt[geom->type]++;
+			break;
+		default:
+			lwcollection_build_buffer(lwgeom_as_lwcollection(geom), buffer);
+			break;
 		}
 	}
-	return;
 }
 
 static LWGEOM*

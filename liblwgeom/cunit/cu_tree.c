@@ -177,10 +177,34 @@ static void test_tree_circ_distance(void)
 	LWGEOM *lwg1, *lwg2;
 	CIRC_NODE *c1, *c2;
 	SPHEROID s;
-	double d1, d2, d3, d4;
+	double d1, d2, d3, d4, e1, e2;
 	double threshold = 0.0;
 
 	spheroid_init(&s, 1.0, 1.0);
+
+	/* Ticket #4223 */
+	/* tall skinny rectangle */
+	lwg1 = lwgeom_from_wkt("POLYGON((58.5112113206308 0,58.5112113200772 0.000901937525203378,58.511300910044 0.000901937636668872,58.5113009105976 0,58.5112113206308 0))", LW_PARSER_CHECK_NONE);
+	/* square box 5m to left */
+	lwg2 = lwgeom_from_wkt("POLYGON((58.5111665256017 0.000270581240841207,58.5111665255629 0.000360774987788249,58.5110769356128 0.000360774943200728,58.5110769356515 0.000270581207400566,58.5111665256017 0.000270581240841207))", LW_PARSER_CHECK_NONE);
+	c1 = lwgeom_calculate_circ_tree(lwg1);
+	c2 = lwgeom_calculate_circ_tree(lwg2);
+	d1 = circ_tree_distance_tree(c1, c2, &s, threshold);
+	d2 = lwgeom_distance_spheroid(lwg1, lwg2, &s, threshold);
+	e1 = d1 * WGS84_RADIUS;
+	e2 = d2 * WGS84_RADIUS;
+	// printf("d1 = %g   d2 = %g\n", d1, d2);
+	// printf("e1 = %g   e2 = %g\n", e1, e2);
+	// printf("polygon a\n");
+	// circ_tree_print(c1, 0);
+	// printf("polygon b\n");
+	// circ_tree_print(c2, 0);
+	circ_tree_free(c1);
+	circ_tree_free(c2);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+	CU_ASSERT_DOUBLE_EQUAL(e1, e2, 0.0001);
+
 
 	/* Ticket #1958 */
 	lwg1 = lwgeom_from_wkt("LINESTRING(22.88333 41.96667,21.32667 42.13667)", LW_PARSER_CHECK_NONE);

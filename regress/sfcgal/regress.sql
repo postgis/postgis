@@ -191,7 +191,7 @@ select '112',ST_NumGeometries('GEOMETRYCOLLECTION(POINT(1 1), LINESTRING( 1 1 , 
 
 -- create a table with data that will be TOASTed (even after compression)
 create table TEST(a GEOMETRY, b GEOMETRY);
-\i regress_biginsert.sql
+\i :regdir/core/regress_biginsert.sql
 
 ---test basic ops on this
 

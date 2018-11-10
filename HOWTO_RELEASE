@@ -95,7 +95,8 @@ Release procedure
 - Announce on e-mail
     - postgis-users
     - postgis-devel
-    - pgsql-announce (send note to david at fetter dot org to be included in Weekly news)
+    - pgsql-announce (send email just to them, not with other ccs, they reject if others in cc)
+    - send note to david at fetter dot org to be included in Weekly news
     - osgeo-discuss
 - Update web sites
     - PostGIS News
@@ -104,6 +105,7 @@ Release procedure
        b) Update links on https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/pages/source.html
        c) commit and wait 5 minutes to see changes on website
     - PostGIS doc release versioned doc - http://postgis.net/documentation/
+    - On postgis.net server, change /etc/apache2/postgis.net-common.conf (Versionless URL line )
      Verify the documentation is up to date (might need to change the apach config)
     - Wikipedia
     - Twitter

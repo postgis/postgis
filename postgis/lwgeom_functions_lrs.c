@@ -85,7 +85,7 @@ Datum ST_LocateAlong(PG_FUNCTION_ARGS)
 	GSERIALIZED *gout;
 	LWGEOM *lwin = NULL, *lwout = NULL;
 	double measure = PG_GETARG_FLOAT8(1);
-	double offset = PG_GETARG_FLOAT8(2);;
+	double offset = PG_GETARG_FLOAT8(2);
 
 	lwin = lwgeom_from_gserialized(gin);
 	lwout = lwgeom_locate_along(lwin, measure, offset);
@@ -160,7 +160,7 @@ Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
 
 	if ( ! gserialized_has_z(geom_in) )
 	{
-		elog(ERROR,"This function only accepts LINESTRING or MULTILINESTRING with Z dimensions.");
+		elog(ERROR, "This function only accepts geometries with Z dimensions.");
 		PG_RETURN_NULL();
 	}
 

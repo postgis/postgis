@@ -1106,14 +1106,8 @@ rt_raster_gdal_polygonize(
 		return NULL;
 	}
 
-	/**
-	 * We don't need a raster mask band. Each band has a nodata value.
-	 **/
-#ifdef GDALFPOLYGONIZE
+	/* We don't need a raster mask band. Each band has a nodata value. */
 	cplerr = GDALFPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
-#else
-	cplerr = GDALPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
-#endif
 
 	if (cplerr != CE_None) {
 		rterror("rt_raster_gdal_polygonize: Could not polygonize GDAL band");

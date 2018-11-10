@@ -1,0 +1,47 @@
+ERROR:  Input geometry does not have a measure dimension
+ERROR:  Input geometry does not have a measure dimension
+PNTM_1|MULTIPOINT M EMPTY
+PNTM_2|MULTIPOINT M (1 2 3)
+PNTM_3|MULTIPOINT M (1 2 3)
+PNTM_4|MULTIPOINT M (1 2 3)
+PNTM_5|MULTIPOINT M EMPTY
+MPNT_1|MULTIPOINT M (1 2 2)
+MPNT_2|MULTIPOINT M (2 2 5)
+MPNT_3|MULTIPOINT M EMPTY
+MPNT_4|MULTIPOINT M (1 2 8,2 2 5)
+LINEZM_1|MULTILINESTRING ZM ((0 8 80 2,0 0 0 10))
+LINEZM_2|MULTILINESTRING ZM ((0 8 20 2,0 0 100 10))
+LINEZM_3|MULTILINESTRING ZM ((0 8 80 2,0 0 0 10,8 0 0 2))
+LINEZM_4|MULTILINESTRING ZM ((0 9 90 2,0 1 10 18),(1 0 0 18,9 0 0 2))
+LINEZM_5|MULTILINESTRING ZM ((0 9 90 2,0 1 10 18),(5.5 4.5 4.5 18,9.5 0.5 0.5 2))
+LINEZM_6|MULTIPOINT ZM (9.5 0.5 0.5 2)
+#3119a|MULTILINESTRING Z EMPTY
+#3119b|MULTILINESTRING Z EMPTY
+#4155.1|MULTILINESTRING Z ((2 2 2,5 5 5))
+#4155.2|TIN Z EMPTY
+#4155.3|MULTIPOLYGON Z EMPTY
+line_locate_point_1|0.528602749909894
+line_locate_point_2|1
+line_locate_point_3|0
+line_locate_point_4|0
+line_locate_point_5|0
+line_substring_1|4326|LINESTRING ZM (2 2 2 2,3 3 3 3,3.2 3.2 3.2 3.2)
+line_substring_2|LINESTRING ZM (2 2 2 2,3 3 3 3)
+line_substring_3|LINESTRING(0 0,1 1)
+line_substring_4|LINESTRING(1 1,2 2)
+line_substring_5|LINESTRING(1 1,2 2)
+line_substring_6|LINESTRING(0 0,1 1)
+line_substring_7|LINESTRING(1 1,2 2)
+line_substring_8|LINESTRING M (1 1 1,2 2 2)
+line_substring_9|LINESTRING M (1 1 3,2 2 2)
+line_substring_10|LINESTRING Z (1 1 3,2 2 2)
+line_substring_11|POINT(0 0)
+line_substring_12|POINT Z (0.5 0.5 7.5)
+line_interpolate_point|POINT(0 0)
+line_interpolate_point|POINT Z (0.5 0.5 7.5)
+line_interpolate_points|POINT(0.7 0.7)
+line_interpolate_points|MULTIPOINT(0.3 0.3,0.6 0.6,0.9 0.9)
+addMeasure1|LINESTRING M (0 0 10,2 0 15,4 0 20)
+addMeasure2|LINESTRING M (0 0 10,9 0 19,10 0 20)
+interpolatePoint1|2
+interpolatePoint2|3

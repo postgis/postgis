@@ -22,7 +22,10 @@
  *
  **********************************************************************/
 
+#include <string.h>
+
 #include "mvt.h"
+#include "pgsql_compat.h"
 
 #ifdef HAVE_LIBPROTOBUF
 
@@ -332,13 +335,8 @@ static void parse_column_keys(mvt_agg_context *ctx)
 
 	for (i = 0; i < natts; i++)
 	{
-#if POSTGIS_PGSQL_VERSION < 110
-		Oid typoid = getBaseType(ctx->column_cache.tupdesc->attrs[i]->atttypid);
-		char *tkey = ctx->column_cache.tupdesc->attrs[i]->attname.data;
-#else
-		Oid typoid = getBaseType(ctx->column_cache.tupdesc->attrs[i].atttypid);
-		char *tkey = ctx->column_cache.tupdesc->attrs[i].attname.data;
-#endif
+		Oid typoid = getBaseType(TupleDescAttr(ctx->column_cache.tupdesc, i)->atttypid);
+		char *tkey = TupleDescAttr(ctx->column_cache.tupdesc, i)->attname.data;
 
 		ctx->column_cache.column_oid[i] = typoid;
 #if POSTGIS_PGSQL_VERSION >= 94
@@ -368,11 +366,24 @@ static void parse_column_keys(mvt_agg_context *ctx)
 			}
 		}
 
-		ctx->column_cache.column_keys_index[i] = add_key(ctx, pstrdup(tkey));
+		if (ctx->id_name &&
+			(ctx->id_index == UINT32_MAX) &&
+			(strcmp(tkey, ctx->id_name) == 0) &&
+			(typoid == INT2OID || typoid == INT4OID || typoid == INT8OID))
+		{
+			ctx->id_index = i;
+		}
+		else
+		{
+			ctx->column_cache.column_keys_index[i] = add_key(ctx, pstrdup(tkey));
+		}
 	}
 
 	if (!geom_found)
 		elog(ERROR, "parse_column_keys: no geometry column found");
+
+	if (ctx->id_name != NULL && ctx->id_index == UINT32_MAX)
+		elog(ERROR, "mvt_agg_transfn: Could not find column '%s' of integer type", ctx->id_name);
 }
 
 static void encode_keys(mvt_agg_context *ctx)
@@ -626,6 +637,45 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 }
 #endif
 
+/**
+ * Sets the feature id. Ignores Nulls and negative values
+ */
+static void set_feature_id(mvt_agg_context *ctx, Datum datum, bool isNull)
+{
+	Oid typoid = ctx->column_cache.column_oid[ctx->id_index];
+	int64_t value = INT64_MIN;
+
+	if (isNull)
+	{
+		POSTGIS_DEBUG(3, "set_feature_id: Ignored null value");
+		return;
+	}
+
+	switch (typoid)
+	{
+	case INT2OID:
+		value = DatumGetInt16(datum);
+		break;
+	case INT4OID:
+		value = DatumGetInt32(datum);
+		break;
+	case INT8OID:
+		value = DatumGetInt64(datum);
+		break;
+	default:
+		elog(ERROR, "set_feature_id: Feature id type does not match");
+	}
+
+	if (value < 0)
+	{
+		POSTGIS_DEBUG(3, "set_feature_id: Ignored negative value");
+		return;
+	}
+
+	ctx->feature->has_id = true;
+	ctx->feature->id = (uint64_t) value;
+}
+
 static void parse_values(mvt_agg_context *ctx)
 {
 	uint32_t n_keys = ctx->keys_hash_i;
@@ -660,17 +710,19 @@ static void parse_values(mvt_agg_context *ctx)
 		if (i == ctx->geom_index)
 			continue;
 
+		if (i == ctx->id_index)
+		{
+			set_feature_id(ctx, datum, cc.nulls[i]);
+			continue;
+		}
+
 		if (cc.nulls[i])
 		{
 			POSTGIS_DEBUG(3, "parse_values isnull detected");
 			continue;
 		}
 
-#if POSTGIS_PGSQL_VERSION < 110
-		key = cc.tupdesc->attrs[i]->attname.data;
-#else
-		key = cc.tupdesc->attrs[i].attname.data;
-#endif
+		key = TupleDescAttr(cc.tupdesc, i)->attname.data;
 		k = cc.column_keys_index[i];
 		typoid = cc.column_oid[i];
 
@@ -717,6 +769,7 @@ static void parse_values(mvt_agg_context *ctx)
 			parse_datum_as_string(ctx, typoid, datum, tags, k);
 			break;
 		}
+
 		ctx->row_columns++;
 	}
 
@@ -727,6 +780,39 @@ static void parse_values(mvt_agg_context *ctx)
 	POSTGIS_DEBUGF(3, "parse_values n_tags %zd", ctx->feature->n_tags);
 }
 
+/* For a given geometry, look for the highest dimensional basic type, that is,
+ * point, line or polygon */
+static uint8
+lwgeom_get_basic_type(LWGEOM *geom)
+{
+	switch(geom->type)
+	{
+	case POINTTYPE:
+	case LINETYPE:
+	case POLYGONTYPE:
+		return geom->type;
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+		return geom->type - 3; /* Based on LWTYPE positions */
+	case COLLECTIONTYPE:
+	{
+		uint32_t i;
+		uint8 type = 0;
+		LWCOLLECTION *g = (LWCOLLECTION*)geom;
+		for (i = 0; i < g->ngeoms; i++)
+		{
+			LWGEOM *sg = g->geoms[i];
+			type = Max(type, lwgeom_get_basic_type(sg));
+		}
+		return type;
+	}
+	default:
+		elog(ERROR, "%s: Invalid type (%d)", __func__, geom->type);
+	}
+}
+
+
 /**
  * In place process a collection to find a concrete geometry
  * object and expose that as the actual object. Will some
@@ -734,27 +820,12 @@ static void parse_values(mvt_agg_context *ctx)
  * draw it anyways.
  */
 static void
-lwgeom_to_basic_type(LWGEOM *geom)
+lwgeom_to_basic_type(LWGEOM *geom, uint8 original_type)
 {
 	if (lwgeom_get_type(geom) == COLLECTIONTYPE)
 	{
-		/* MVT doesn't handle generic collections, so we */
-		/* need to strip them down to a typed collection */
-		/* by finding the largest basic type available and */
-		/* using that as the basis of a typed collection. */
 		LWCOLLECTION *g = (LWCOLLECTION*)geom;
-		LWCOLLECTION *gc;
-		uint32_t i, maxtype = 0;
-		for (i = 0; i < g->ngeoms; i++)
-		{
-			LWGEOM *sg = g->geoms[i];
-			if (sg->type > maxtype && sg->type < COLLECTIONTYPE)
-				maxtype = sg->type;
-		}
-		if (maxtype > 3) maxtype -= 3;
-		/* Force the working geometry to be a simpler version */
-		/* of itself */
-		gc = lwcollection_extract(g, maxtype);
+		LWCOLLECTION *gc = lwcollection_extract(g, original_type);
 		*g = *gc;
 	}
 }
@@ -776,6 +847,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	double height = gbox->ymax - gbox->ymin;
 	double resx, resy, res, fx, fy;
 	int preserve_collapsed = LW_TRUE;
+	const uint8_t basic_type = lwgeom_get_basic_type(lwgeom);
 	POSTGIS_DEBUG(2, "mvt_geom called");
 
 	/* Short circuit out on EMPTY */
@@ -794,13 +866,12 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	fx = extent / width;
 	fy = -(extent / height);
 
-	if (FLAGS_GET_BBOX(lwgeom->flags) && lwgeom->bbox &&
-		(lwgeom->type == LINETYPE || lwgeom->type == MULTILINETYPE ||
-		lwgeom->type == POLYGONTYPE || lwgeom->type == MULTIPOLYGONTYPE))
+	if (basic_type == LINETYPE || basic_type == POLYGONTYPE)
 	{
 		// Shortcut to drop geometries smaller than the resolution
-		double bbox_width = lwgeom->bbox->xmax - lwgeom->bbox->xmin;
-		double bbox_height = lwgeom->bbox->ymax - lwgeom->bbox->ymin;
+		const GBOX *lwgeom_gbox = lwgeom_get_bbox(lwgeom);
+		double bbox_width = lwgeom_gbox->xmax - lwgeom_gbox->xmin;
+		double bbox_height = lwgeom_gbox->ymax - lwgeom_gbox->ymin;
 		if (bbox_height * bbox_height + bbox_width * bbox_width < res * res)
 			return NULL;
 	}
@@ -833,10 +904,28 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 			double y0 = bgbox.ymin;
 			double x1 = bgbox.xmax;
 			double y1 = bgbox.ymax;
-			lwgeom = lwgeom_clip_by_rect(lwgeom, x0, y0, x1, y1);
-			POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
-			if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
+			const GBOX pre_clip_box = *lwgeom_get_bbox(lwgeom);
+			LWGEOM *clipped_geom = lwgeom_clip_by_rect(lwgeom, x0, y0, x1, y1);
+			if (clipped_geom == NULL || lwgeom_is_empty(clipped_geom))
+			{
+				POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
 				return NULL;
+			}
+			/* For some polygons, the simplify step might have left them
+			 * as invalid, which can cause clipping to return the complementary
+			 * geometry of what it should */
+			if ((basic_type == POLYGONTYPE) &&
+			    !gbox_contains_2d(&pre_clip_box, lwgeom_get_bbox(clipped_geom)))
+			{
+				/* TODO: Adapt this when and if Exception Policies are introduced.
+				 * Other options would be to fix the geometry and retry
+				 * or to calculate the difference between the 2 boxes.
+				 */
+				POSTGIS_DEBUG(3, "mvt_geom: Invalid geometry after clipping");
+				lwgeom_free(clipped_geom);
+				return NULL;
+			}
+			lwgeom = clipped_geom;
 		}
 	}
 
@@ -860,21 +949,27 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;
 
-	/* if polygon(s) make valid and force clockwise as per MVT spec */
-	if (lwgeom->type == POLYGONTYPE ||
-		lwgeom->type == MULTIPOLYGONTYPE ||
-		lwgeom->type == COLLECTIONTYPE)
+
+	if (basic_type == POLYGONTYPE)
 	{
+		/* Force validation as per MVT spec */
 		lwgeom = lwgeom_make_valid(lwgeom);
-		/* In image coordinates CW actually comes out a CCW, so */
-		/* we also reverse. ¯\_(ツ)_/¯ */
+
+		/* In image coordinates CW actually comes out a CCW, so we reverse */
 		lwgeom_force_clockwise(lwgeom);
 		lwgeom_reverse_in_place(lwgeom);
 	}
 
 	/* if geometry collection extract highest dimensional geometry type */
 	if (lwgeom->type == COLLECTIONTYPE)
-		lwgeom_to_basic_type(lwgeom);
+		lwgeom_to_basic_type(lwgeom, basic_type);
+
+	if (basic_type != lwgeom_get_basic_type(lwgeom))
+	{
+		/* Drop type changes to play nice with MVT renderers */
+		POSTGIS_DEBUG(3, "mvt_geom: Dropping geometry after type change");
+		return NULL;
+	}
 
 	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;
@@ -905,6 +1000,7 @@ void mvt_agg_init_context(mvt_agg_context *ctx)
 	ctx->bool_values_hash = NULL;
 	ctx->values_hash_i = 0;
 	ctx->keys_hash_i = 0;
+	ctx->id_index = UINT32_MAX;
 	ctx->geom_index = UINT32_MAX;
 
 	memset(&ctx->column_cache, 0, sizeof(ctx->column_cache));

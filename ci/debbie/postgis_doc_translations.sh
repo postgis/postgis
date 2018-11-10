@@ -39,7 +39,8 @@ LDFLAGS="-L${PGPATH}/lib"  ./configure \
   --without-raster
 make clean
 cd doc
-
+make update-pot
+make pull-tx
 
 mv postgis.xml postgis.xml.orig
 sed -e "s:</title>:</title><subtitle><subscript>SVN Revision (<emphasis>${POSTGIS_SVN_REVISION}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml

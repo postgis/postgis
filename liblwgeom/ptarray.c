@@ -46,18 +46,6 @@ ptarray_has_m(const POINTARRAY *pa)
 	return FLAGS_GET_M(pa->flags);
 }
 
-/*
- * Size of point represeneted in the POINTARRAY
- * 16 for 2d, 24 for 3d, 32 for 4d
- */
-inline size_t
-ptarray_point_size(const POINTARRAY *pa)
-{
-	LWDEBUGF(5, "ptarray_point_size: FLAGS_NDIMS(pa->flags)=%x",FLAGS_NDIMS(pa->flags));
-
-	return sizeof(double)*FLAGS_NDIMS(pa->flags);
-}
-
 POINTARRAY*
 ptarray_construct(char hasz, char hasm, uint32_t npoints)
 {
@@ -634,7 +622,6 @@ POINTARRAY *
 ptarray_clone_deep(const POINTARRAY *in)
 {
 	POINTARRAY *out = lwalloc(sizeof(POINTARRAY));
-	size_t size;
 
 	LWDEBUG(3, "ptarray_clone_deep called.");
 
@@ -644,9 +631,17 @@ ptarray_clone_deep(const POINTARRAY *in)
 
 	FLAGS_SET_READONLY(out->flags, 0);
 
-	size = in->npoints * ptarray_point_size(in);
-	out->serialized_pointlist = lwalloc(size);
-	memcpy(out->serialized_pointlist, in->serialized_pointlist, size);
+	if (!in->npoints)
+	{
+		// Avoid calling lwalloc of 0 bytes
+		out->serialized_pointlist = NULL;
+	}
+	else
+	{
+		size_t size = in->npoints * ptarray_point_size(in);
+		out->serialized_pointlist = lwalloc(size);
+		memcpy(out->serialized_pointlist, in->serialized_pointlist, size);
+	}
 
 	return out;
 }
@@ -1737,55 +1732,6 @@ ptarray_length(const POINTARRAY *pts)
 	return dist;
 }
 
-
-/*
- * Get a pointer to nth point of a POINTARRAY.
- *
- * Casting to returned pointer to POINT2D* should be safe,
- * as gserialized format always keeps the POINTARRAY pointer
- * aligned to double boundary.
- */
-uint8_t *
-getPoint_internal(const POINTARRAY *pa, uint32_t n)
-{
-	size_t size;
-	uint8_t *ptr;
-
-#if PARANOIA_LEVEL > 0
-	if ( pa == NULL )
-	{
-		lwerror("%s [%d] got NULL pointarray", __FILE__, __LINE__);
-		return NULL;
-	}
-
-	LWDEBUGF(5, "(n=%d, pa.npoints=%d, pa.maxpoints=%d)",n,pa->npoints,pa->maxpoints);
-
-	if ( ( n > pa->npoints ) ||
-	     ( n >= pa->maxpoints ) )
-	{
-		lwerror("%s [%d] called outside of ptarray range (n=%d, pa.npoints=%d, pa.maxpoints=%d)", __FILE__, __LINE__, n, pa->npoints, pa->maxpoints);
-		return NULL; /*error */
-	}
-#endif
-
-	size = ptarray_point_size(pa);
-
-	ptr = pa->serialized_pointlist + size * n;
-	if ( FLAGS_NDIMS(pa->flags) == 2)
-	{
-		LWDEBUGF(5, "point = %g %g", *((double*)(ptr)), *((double*)(ptr+8)));
-	}
-	else if ( FLAGS_NDIMS(pa->flags) == 3)
-	{
-		LWDEBUGF(5, "point = %g %g %g", *((double*)(ptr)), *((double*)(ptr+8)), *((double*)(ptr+16)));
-	}
-	else if ( FLAGS_NDIMS(pa->flags) == 4)
-	{
-		LWDEBUGF(5, "point = %g %g %g %g", *((double*)(ptr)), *((double*)(ptr+8)), *((double*)(ptr+16)), *((double*)(ptr+24)));
-	}
-
-	return ptr;
-}
 
 
 /**

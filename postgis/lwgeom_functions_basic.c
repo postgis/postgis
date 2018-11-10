@@ -39,7 +39,6 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS);
 Datum LWGEOM_summary(PG_FUNCTION_ARGS);
@@ -144,7 +143,7 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 
 	/* create a text obj to return */
 	mytext = cstring_to_text(result);
-	pfree(result);
+	lwfree(result);
 
 	PG_FREE_IF_COPY(geom,0);
 	PG_RETURN_TEXT_P(mytext);
@@ -2349,7 +2348,7 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 
 	/* Write to text and free the WKT */
 	result = cstring_to_text(wkt);
-	pfree(wkt);
+	lwfree(wkt);
 
 	/* Return the text */
 	PG_FREE_IF_COPY(geom, 0);

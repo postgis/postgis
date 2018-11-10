@@ -464,6 +464,8 @@ Datum RASTER_getBandFileTimestamp(PG_FUNCTION_ARGS)
     PG_RETURN_INT64(fileSize);
 }
 
+#define VALUES_LENGTH 8
+
 /**
  * Get raster bands' meta data
  */
@@ -711,11 +713,10 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		int values_length = 8;
-		Datum values[values_length];
-		bool nulls[values_length];
+		Datum values[VALUES_LENGTH];
+		bool nulls[VALUES_LENGTH];
 
-		memset(nulls, FALSE, sizeof(bool) * values_length);
+		memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
 		values[0] = UInt32GetDatum(bmd2[call_cntr].bandnum);
 		values[1] = CStringGetTextDatum(bmd2[call_cntr].pixeltype);

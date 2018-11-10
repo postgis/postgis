@@ -29,7 +29,6 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 
 #include "access/gist.h"
 #include "access/itup.h"
@@ -880,7 +879,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 
 	/* Write to text and free the WKT */
 	result = cstring_to_text(wkt);
-	pfree(wkt);
+	lwfree(wkt);
 
 	/* Return the text */
 	PG_FREE_IF_COPY(geom, 0);
@@ -927,7 +926,7 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 	result = palloc(wkb_size + VARHDRSZ);
 	memcpy(VARDATA(result), wkb, wkb_size);
 	SET_VARSIZE(result, wkb_size + VARHDRSZ);
-	pfree(wkb);
+	lwfree(wkb);
 
 	/* Return the text */
 	PG_FREE_IF_COPY(geom, 0);

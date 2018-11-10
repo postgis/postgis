@@ -28,7 +28,6 @@
 #include "lwgeom_log.h"
 #include <string.h>
 
-
 /** convert decimal degress to radians */
 static void
 to_rad(POINT4D *pt)
@@ -173,6 +172,3 @@ lwproj_from_string(const char *str1)
 	}
 	return pj_init_plus(str1);
 }
-
-
-

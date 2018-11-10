@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 # Kwon.Yongchan <ruvyn@naver.com>, 2016
 msgid ""
@@ -9,11 +9,12 @@ msgstr ""
 "POT-Creation-Date: 2017-01-28 07:02+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/language/ko_KR/)\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
+"language/ko_KR/)\n"
+"Language: ko_KR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: title
@@ -29,7 +30,10 @@ msgid ""
 "These functions are rarely used functions that should only be used if your "
 "data is corrupted in someway. They are used for troubleshooting corruption "
 "and also fixing things that should under normal circumstances, never happen."
-msgstr "이 함수들은 거의 쓰이지 않는 함수들로, 사용자 데이터에 어떤 식으로든 오류가 생겼을 경우에만 이용해야 합니다. 오류를 해결하고, 일반적인 경우라면 절대로 일어나지 않을 일들을 고치는 데 이 함수들을 이용합니다."
+msgstr ""
+"이 함수들은 거의 쓰이지 않는 함수들로, 사용자 데이터에 어떤 식으로든 오류가 "
+"생겼을 경우에만 이용해야 합니다. 오류를 해결하고, 일반적인 경우라면 절대로 일"
+"어나지 않을 일들을 고치는 데 이 함수들을 이용합니다."
 
 #. Tag: refname
 #: reference_exception.xml:9
@@ -49,7 +53,9 @@ msgstr "도형에 경계 상자를 추가합니다."
 msgid ""
 "<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: title
 #: reference_exception.xml:24 reference_exception.xml:70
@@ -62,9 +68,11 @@ msgstr "설명"
 #: reference_exception.xml:26
 #, no-c-format
 msgid ""
-"Add bounding box to the geometry. This would make bounding box based queries"
-" faster, but will increase the size of the geometry."
-msgstr "도형에 경계 상자를 추가합니다. 이렇게 하면 경계 상자 기반 쿼리의 속도가 빨라지지만, 도형의 용량은 늘어날 것입니다."
+"Add bounding box to the geometry. This would make bounding box based queries "
+"faster, but will increase the size of the geometry."
+msgstr ""
+"도형에 경계 상자를 추가합니다. 이렇게 하면 경계 상자 기반 쿼리의 속도가 빨라"
+"지지만, 도형의 용량은 늘어날 것입니다."
 
 #. Tag: para
 #: reference_exception.xml:31
@@ -74,7 +82,11 @@ msgid ""
 "not needed unless the generated bounding box somehow becomes corrupted or "
 "you have an old install that is lacking bounding boxes. Then you need to "
 "drop the old and readd."
-msgstr "경계 상자는 도형에 자동적으로 추가되기 때문에 일반적으로 이 함수가 필요하지는 않습니다. 생성된 경계 상자에 어떤 이유로든 오류가 발생했거나, 또는 경계 상자가 없는 구버전 도형을 사용하는 경우, 옛 경계 상자를 삭제하고 다시 추가해야 합니다. "
+msgstr ""
+"경계 상자는 도형에 자동적으로 추가되기 때문에 일반적으로 이 함수가 필요하지"
+"는 않습니다. 생성된 경계 상자에 어떤 이유로든 오류가 발생했거나, 또는 경계 상"
+"자가 없는 구버전 도형을 사용하는 경우, 옛 경계 상자를 삭제하고 다시 추가해야 "
+"합니다. "
 
 #. Tag: para
 #: reference_exception.xml:35 reference_exception.xml:83
@@ -97,7 +109,10 @@ msgid ""
 "UPDATE sometable\n"
 " SET the_geom =  PostGIS_AddBBox(the_geom)\n"
 " WHERE PostGIS_HasBBox(the_geom) = false;"
-msgstr "UPDATE sometable\n SET the_geom =  PostGIS_AddBBox(the_geom)\n WHERE PostGIS_HasBBox(the_geom) = false;"
+msgstr ""
+"UPDATE sometable\n"
+" SET the_geom =  PostGIS_AddBBox(the_geom)\n"
+" WHERE PostGIS_HasBBox(the_geom) = false;"
 
 #. Tag: title
 #: reference_exception.xml:47 reference_exception.xml:95
@@ -130,7 +145,9 @@ msgstr "도형으로부터 경계 상자 캐시를 삭제합니다."
 msgid ""
 "<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_exception.xml:72
@@ -139,9 +156,14 @@ msgid ""
 "Drop the bounding box cache from the geometry. This reduces geometry size, "
 "but makes bounding-box based queries slower. It is also used to drop a "
 "corrupt bounding box. A tale-tell sign of a corrupt cached bounding box is "
-"when your ST_Intersects and other relation queries leave out geometries that"
-" rightfully should return true."
-msgstr "도형으로부터 경계 상자 캐시를 삭제합니다. 이렇게 하면 도형 용량이 줄어들지만, 경계 상자 기반 쿼리는 느려집니다. 오류가 발생한 경계 상자를 삭제하는 데에도 이 함수를 이용합니다. 경계 상자 캐시에 오류가 발생했다는 숨길 수 없는 증거는, 사용자가 ST_Intersects 및 다른 관계성 쿼리를 실행했을 때 당연히 참을 반환해야 할 도형들을 배제하는 경우입니다."
+"when your ST_Intersects and other relation queries leave out geometries that "
+"rightfully should return true."
+msgstr ""
+"도형으로부터 경계 상자 캐시를 삭제합니다. 이렇게 하면 도형 용량이 줄어들지"
+"만, 경계 상자 기반 쿼리는 느려집니다. 오류가 발생한 경계 상자를 삭제하는 데에"
+"도 이 함수를 이용합니다. 경계 상자 캐시에 오류가 발생했다는 숨길 수 없는 증거"
+"는, 사용자가 ST_Intersects 및 다른 관계성 쿼리를 실행했을 때 당연히 참을 반환"
+"해야 할 도형들을 배제하는 경우입니다."
 
 #. Tag: para
 #: reference_exception.xml:77
@@ -155,14 +177,24 @@ msgid ""
 "not always recalculated when a geometry changed and upgrading to a newer "
 "version without a dump reload will not correct already corrupted boxes. So "
 "one can manually correct using below and readd the bbox or do a dump reload."
-msgstr "경계 상자는 도형에 자동적으로 추가되어 쿼리의 속도를 향상시키기 때문에 일반적으로는 이 함수가 필요하지 않습니다. 생성된 경계 상자에 어떤 이유로든 오류가 발생했거나, 또는 경계 상자가 없는 구버전 도형을 사용하는 경우, 옛 경계 상자를 삭제하고 다시 추가해야 합니다. 8.3에서 8.3.6 버전 사이에서, 도형을 변경했을 때 경계 상자 캐시를 항상 재계산하지 않거나 덤프/리로드 작업 없이 새로운 버전으로 업그레이드시 이미 오류가 발생한 경계 상자를 수정하지 못 하는 등 이런 종류의 오류 발생이 관찰됐습니다. 따라서 다음 쿼리를 통해 오류를 직접 수정하고 경계 상자를 다시 추가하거나, 또는 덤프/리로드 작업을 할 수 있습니다."
+msgstr ""
+"경계 상자는 도형에 자동적으로 추가되어 쿼리의 속도를 향상시키기 때문에 일반적"
+"으로는 이 함수가 필요하지 않습니다. 생성된 경계 상자에 어떤 이유로든 오류가 "
+"발생했거나, 또는 경계 상자가 없는 구버전 도형을 사용하는 경우, 옛 경계 상자"
+"를 삭제하고 다시 추가해야 합니다. 8.3에서 8.3.6 버전 사이에서, 도형을 변경했"
+"을 때 경계 상자 캐시를 항상 재계산하지 않거나 덤프/리로드 작업 없이 새로운 버"
+"전으로 업그레이드시 이미 오류가 발생한 경계 상자를 수정하지 못 하는 등 이런 "
+"종류의 오류 발생이 관찰됐습니다. 따라서 다음 쿼리를 통해 오류를 직접 수정하"
+"고 경계 상자를 다시 추가하거나, 또는 덤프/리로드 작업을 할 수 있습니다."
 
 #. Tag: programlisting
 #: reference_exception.xml:90
 #, no-c-format
 msgid ""
 "--This example drops bounding boxes where the cached box is not correct\n"
-"                        --The force to ST_AsBinary before applying Box2D forces a recalculation of the box, and Box2D applied to the table geometry always\n"
+"                        --The force to ST_AsBinary before applying Box2D "
+"forces a recalculation of the box, and Box2D applied to the table geometry "
+"always\n"
 "                        -- returns the cached bounding box.\n"
 "                        UPDATE sometable\n"
 " SET the_geom =  PostGIS_DropBBox(the_geom)\n"
@@ -171,7 +203,19 @@ msgid ""
 "        UPDATE sometable\n"
 " SET the_geom =  PostGIS_AddBBox(the_geom)\n"
 " WHERE Not PostGIS_HasBBOX(the_geom);"
-msgstr "-- 이 예시는 오류가 발생한 경계 상자 캐시를 삭제합니다.\n-- Box2D 호출 전에 ST_AsBinary 함수를 적용하면 경계 상자를 강제로 재계산하게 되고,\n-- 테이블 도형 열에 Box2D를 적용하면 언제나 캐시화된 경계 상자를 반환합니다.\n                        UPDATE sometable\n SET the_geom =  PostGIS_DropBBox(the_geom)\n WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom));\n\n        UPDATE sometable\n SET the_geom =  PostGIS_AddBBox(the_geom)\n WHERE Not PostGIS_HasBBOX(the_geom);"
+msgstr ""
+"-- 이 예시는 오류가 발생한 경계 상자 캐시를 삭제합니다.\n"
+"-- Box2D 호출 전에 ST_AsBinary 함수를 적용하면 경계 상자를 강제로 재계산하게 "
+"되고,\n"
+"-- 테이블 도형 열에 Box2D를 적용하면 언제나 캐시화된 경계 상자를 반환합니"
+"다.\n"
+"                        UPDATE sometable\n"
+" SET the_geom =  PostGIS_DropBBox(the_geom)\n"
+" WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom));\n"
+"\n"
+"        UPDATE sometable\n"
+" SET the_geom =  PostGIS_AddBBox(the_geom)\n"
+" WHERE Not PostGIS_HasBBOX(the_geom);"
 
 #. Tag: para
 #: reference_exception.xml:97
@@ -189,7 +233,9 @@ msgstr "PostGIS_HasBBox"
 #: reference_exception.xml:106
 #, no-c-format
 msgid "Returns TRUE if the bbox of this geometry is cached, FALSE otherwise."
-msgstr "해당 도형의 경계 상자가 캐시화된 경우 참을 반환하고, 그렇지 않을 경우 거짓을 반환합니다."
+msgstr ""
+"해당 도형의 경계 상자가 캐시화된 경우 참을 반환하고, 그렇지 않을 경우 거짓을 "
+"반환합니다."
 
 #. Tag: funcprototype
 #: reference_exception.xml:111
@@ -197,16 +243,21 @@ msgstr "해당 도형의 경계 상자가 캐시화된 경우 참을 반환하�
 msgid ""
 "<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_exception.xml:121
 #, no-c-format
 msgid ""
 "Returns TRUE if the bbox of this geometry is cached, FALSE otherwise. Use "
-"<xref linkend=\"PostGIS_AddBBox\"/> and <xref linkend=\"PostGIS_DropBBox\"/>"
-" to control caching."
-msgstr "해당 도형의 경계 상자가 캐시화된 경우 참을 반환하고, 그렇지 않을 경우 거짓을 반환합니다. 캐시 작업을 제어하려면 <xref linkend=\"PostGIS_AddBBox\"/> 및 <xref linkend=\"PostGIS_DropBBox\"/> 를 이용하십시오."
+"<xref linkend=\"PostGIS_AddBBox\"/> and <xref linkend=\"PostGIS_DropBBox\"/> "
+"to control caching."
+msgstr ""
+"해당 도형의 경계 상자가 캐시화된 경우 참을 반환하고, 그렇지 않을 경우 거짓을 "
+"반환합니다. 캐시 작업을 제어하려면 <xref linkend=\"PostGIS_AddBBox\"/> 및 "
+"<xref linkend=\"PostGIS_DropBBox\"/> 를 이용하십시오."
 
 #. Tag: programlisting
 #: reference_exception.xml:131
@@ -214,7 +265,9 @@ msgstr "해당 도형의 경계 상자가 캐시화된 경우 참을 반환하�
 msgid ""
 "SELECT the_geom\n"
 "FROM sometable WHERE PostGIS_HasBBox(the_geom) = false;"
-msgstr "SELECT the_geom\nFROM sometable WHERE PostGIS_HasBBox(the_geom) = false;"
+msgstr ""
+"SELECT the_geom\n"
+"FROM sometable WHERE PostGIS_HasBBox(the_geom) = false;"
 
 #. Tag: para
 #: reference_exception.xml:138

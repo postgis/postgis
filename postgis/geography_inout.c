@@ -31,7 +31,6 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 
 #include "utils/elog.h"
 #include "utils/array.h"
@@ -713,7 +712,7 @@ Datum geography_send(PG_FUNCTION_ARGS)
 	result = palloc(size_result + VARHDRSZ);
 	SET_VARSIZE(result, size_result + VARHDRSZ);
 	memcpy(VARDATA(result), wkb, size_result);
-	pfree(wkb);
+	lwfree(wkb);
 
 	PG_RETURN_POINTER(result);
 }

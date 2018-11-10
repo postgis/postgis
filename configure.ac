@@ -58,6 +58,11 @@ dnl
 PICFLAGS="$lt_prog_compiler_pic"
 AC_SUBST([PICFLAGS])
 
+AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -fno-math-errno], [_cv_nomatherrno], [-fno-math-errno], [], [CFLAGS="$CFLAGS -fno-math-errno"], [])
+AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -fno-signed-zeros], [_cv_nosignedzeros], [-fno-signed-zeros], [], [CFLAGS="$CFLAGS -fno-signed-zeros"], [])
+AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -std=gnu99], [_cv_std], -std=gnu99, [], [CFLAGS="-std=gnu99 $CFLAGS"], [])
+
+
 dnl
 dnl For GCC enable additional warning flags -Wall and -Wmissing-prototypes (using macro included with libtool)
 dnl
@@ -101,6 +106,27 @@ AC_DEFINE_UNQUOTED([POSTGIS_MICRO_VERSION], ["$POSTGIS_MICRO_VERSION"], [PostGIS
 AC_SUBST([POSTGIS_MAJOR_VERSION])
 AC_SUBST([POSTGIS_MINOR_VERSION])
 AC_SUBST([POSTGIS_MICRO_VERSION])
+
+dnl =====================================================
+dnl Include minor version in postgis extension libraries
+dnl =====================================================
+LIBINCLUDEMINORVERSION="no"
+AC_ARG_WITH([library-minor-version],
+    [AS_HELP_STRING([--without-interrupt-tests],
+                    [Disable the interrupt tests (for CI servers)])],
+    [], [])
+
+AC_ARG_WITH([library-minor-version],
+    [AS_HELP_STRING([--with-library-minor-version],
+                    [Include minor version in the PostgreSQL PostGIS library files])],
+    [LIBINCLUDEMINORVERSION="yes"], [])
+
+if test "x$with-library-minor-version" = "xno"; then
+    LIBINCLUDEMINORVERSION="no"
+fi
+
+AC_SUBST([LIBINCLUDEMINORVERSION])
+
 
 dnl
 dnl Liblwgeom version information imported from Version.config
@@ -1371,14 +1397,6 @@ if test "x$with_raster" != "xno"; then
 		AC_SEARCH_LIBS([OGRRegisterAll], [gdal], [], [AC_MSG_ERROR([could not find OGR])], [])
 
 		LIBS="$LIBGDAL_LDFLAGS"
-
-		dnl Check if the new polygonize function is present
-		AC_SEARCH_LIBS(
-			[GDALFPolygonize],
-			[gdal],
-			[AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [1], [Define to 1 if GDALFPolygonize function is available])],
-			[])
-
 		CPPFLAGS="$CPPFLAGS_SAVE"
 		CFLAGS="$CFLAGS_SAVE"
 		CC="$CC_SAVE"
@@ -1387,8 +1405,6 @@ if test "x$with_raster" != "xno"; then
 		AC_SUBST([LIBGDAL_CFLAGS])
 		AC_SUBST([LIBGDAL_LDFLAGS])
 		AC_SUBST([LIBGDAL_DEPLIBS_LDFLAGS])
-
-		AC_SUBST([GDALFPOLYGONIZE])
 
 	else
 		AC_MSG_RESULT([not found])
@@ -1471,6 +1487,8 @@ AC_OUTPUT([GNUmakefile
    topology/Makefile
    topology/test/Makefile
    regress/Makefile
+   regress/core/Makefile
+   regress/sfcgal/Makefile
    doc/Makefile
    doc/Makefile.comments
    doc/html/image_src/Makefile
@@ -1489,11 +1507,16 @@ AC_MSG_RESULT([  C compiler:           ${CC} ${CFLAGS}])
 AC_MSG_RESULT([  SQL preprocessor:     ${SQLPP}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Additional Info ------------- ])
+if test "x$LIBINCLUDEMINORVERSION" = "xyes"; then
+  AC_MSG_RESULT([  POSTGIS lib file includes minor:   ENABLED])
+fi
+
 if test "x$INTERRUPTTESTS" = "xyes"; then
   AC_MSG_RESULT([  Interrupt Tests:   ENABLED])
 else
   AC_MSG_RESULT([  Interrupt Tests:   DISABLED use: --with-interrupt-tests to enable])
 fi
+
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Dependencies -------------- ])
 AC_MSG_RESULT([  GEOS config:          ${GEOSCONFIG}])

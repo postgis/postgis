@@ -2148,7 +2148,6 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
 
-	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Intersects(Empty) == FALSE */
@@ -2937,7 +2936,7 @@ Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 		result_array_data[i] = PointerGetDatum(GEOS2POSTGIS(geos_results[i], is3d));
 		GEOSGeom_destroy(geos_results[i]);
 	}
-	pfree(geos_results);
+	lwfree(geos_results);
 
 	get_typlenbyvalalign(array->elemtype, &elmlen, &elmbyval, &elmalign);
 	result = construct_array(result_array_data, nclusters, array->elemtype, elmlen, elmbyval, elmalign);
@@ -3013,7 +3012,7 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 		result_array_data[i] = PointerGetDatum(gserialized_from_lwgeom(lw_results[i], NULL));
 		lwgeom_free(lw_results[i]);
 	}
-	pfree(lw_results);
+	lwfree(lw_results);
 
 	get_typlenbyvalalign(array->elemtype, &elmlen, &elmbyval, &elmalign);
 	result =  construct_array(result_array_data, nclusters, array->elemtype, elmlen, elmbyval, elmalign);

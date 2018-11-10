@@ -6,4 +6,4 @@
 SET postgis.backend = 'sfcgal';
 
 \cd :regdir
-\i concave_hull.sql
+\i core/concave_hull.sql

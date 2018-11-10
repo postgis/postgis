@@ -1,51 +1,288 @@
-/* PostGIS Alternative Docbook CSS | Dane Springmeyer
------------------------------------------------------ */
-
-/* 1. Body
------------------------------------------------------ */
-
-body { font: 90% 'Lucida Grande', Verdana, Geneva, Arial, Helvetica, sans-serif; background: #ffffff; color: #2e2e2e; margin: 2em; padding: 2em; }
-
-
-/* 2. Standard Tags
------------------------------------------------------ */
-
-a {text-decoration: none; color: #418acd; }
-a:hover, li a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {color: #e9cb2b; }
-p,form,td,th,dt,li{font-size:10pt}
-h1, h2 {color: #282e5b;}
-h3,h4,th,dt,b {color: #213780;}
-h1 { font-size: 24px; line-height: 24px; margin-bottom: 24px;}
-h2 { font-size: 22px; line-height: 22px; margin-bottom: 21px;}
-h3 { font-size: 16px; line-height: 18px; margin-bottom: 16px;}
-h4 { font-size: 14px; line-height: 16px; margin-bottom: 14px;}
-h5 { font-size: 13px; line-height: 10px; margin-bottom: 13px;}
-table, td {border-collapse: collapse;}
-/*table, td {border: 1;padding: 0}
+/*
+* PostGIS Alternative Docbook CSS
+* Dane Springmeyer
+* Paul Ramsey
 */
 
-/* 3. Block Formatted
------------------------------------------------------ */
-pre, .literallayout { border-right-width: 0px; border-left-width: 0px; border-bottom-width: 2px; border-top-width: 2px; font-family: "DejaVu Sans", "Lucida Grande", "Verdana", Courier, mono; line-height: 16px; border-color: #f7931e; border-style: solid; font-size: 11px; margin-bottom: 10px; margin-top: 10px; overflow: auto; padding: 10px; background: #f8f8f9; -moz-border-radius: 2px; -webkit-border-radius: 2px;}
-.note { border-left-width: 0px; border-bottom-width: 2px; border-right-width: 0px; border-top-width: 2px; width: 80%; border-color: #a2d545; border-style: solid; font-size: 11px; margin-bottom: 10px; margin-top: 10px; overflow: auto; padding: 10px; background: #e4f7dd; -moz-border-radius: 2px; -webkit-border-radius: 2px;}
-/* code { border-right-style: solid; border-right-color: #79791a; border-left-color: #79791b; border-left-style: solid; border-left-width: 0px; border-bottom-width: 0px; border-right-width: 0px; border-top-width: 0px; padding-left: 3px; padding-bottom: 1px; padding-right: 3px; padding-top: 1px; font-family: "Courier New", Courier, Monaco, monospace; color: #fefff7; background: #9b9e96; -moz-border-radius: 2px; -webkit-border-radius: 2px;} */
-.programlisting {font-family: "Courier New", Courier, Monaco, monospace;}
-.warning { border-left-width: 0px; border-bottom-width: 2px; border-right-width: 0px; border-top-width: 2px; width: 80%; border-color: #a2d545; border-style: solid; font-size: 11px; margin-bottom: 10px; margin-top: 10px; overflow: auto; padding: 10px; background: #FFE699; -moz-border-radius: 2px; -webkit-border-radius: 2px;}
+/* 1. Body ----------------------------------------------------- */
 
-/* 4. Docbook Specifics
------------------------------------------------------ */
-.question {font-weight: bold; color: #213780;}
-.term { font-weight: bold; color: #38488d;}
-.term:hover { font-weight: bold; color: #88000f;}
-.chapter { margin-top: 60px; }
-.sect1 { margin-top: 50px; }
-.sect2 { margin-top: 40px; }
-.sect3 { margin-top: 30px; }
-.caption p {font-style: italic; font-size: 90%;}
-.remark { background: #ffff00; }
-.equation {font-style: italic; font-size: 90%;}
-.command, .code {font-weight: normal; font-family: "Courier New", Courier, Monaco, monospace; color: #000000;}
-.styledtable table thead th { border-right-width: 0px; border-left-width: 0px; border-bottom-width: 1px; border-top-width: 0px; border-color: #f7931e; border-style: solid;  }
-.styledtable > table { border-right-width: 0px; border-left-width: 0px; border-bottom-width: 2px; border-top-width: 2px; border-color: #f7931e; border-style: solid;  }
-.styledtable table td,th { color: #000000; font-style: italic; padding-right:10px; padding-left:10px; border-right-width: 0px; border-left-width: 0px; border-bottom-width: 2px; border-top-width: 2px; border-width: 0px;}
-.pdparam {color: #990000}
+html {
+    font-family: 'Lucida Grande', Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-size: 12pt;
+}
+
+
+body {
+    background: #ffffff;
+    color: #2e2e2e;
+    margin: 0;
+    padding: 0em 6em 0em 6em;
+}
+div.navheader {
+    margin: 0em -6em 0em -6em;
+    padding: 2em 6em 2em 6em;
+    background: #468;
+}
+
+div.navfooter {
+    margin: 0em -6em 0em -6em;
+    padding: 2em 6em 2em 6em;
+    background: #468;
+    color: white;
+}
+
+
+
+/* Phone width */
+@media (max-width: 40em) {
+    html {
+        font-size: 14pt;
+    }
+    body {
+        padding: 0em 3em 0em 3em;
+    }
+    div.navheader {
+        margin: 0em -3em 0em -3em;
+        padding: 2em 3em 2em 3em;
+    }
+    div.navfooter {
+        margin: 0em -3em 0em -3em;
+        padding: 2em 3em 2em 3em;
+    }
+}
+
+div.navfooter table {
+    color: white;
+}
+
+div.navheader table tbody tr:first-child th {
+    color: white;
+    font-size: 1.5rem;
+    font-style: normal;
+}
+
+div.navheader table tbody tr:nth-child(2) {
+    display: none;
+}
+
+div.navfooter a {
+    text-decoration: none;
+    color: #bcF;
+}
+div.navfooter a:hover {
+    color: #e9cb2b;
+}
+
+div.refnamediv {
+    display: none;
+}
+
+div.funcsynopsis code {
+    font: unset;
+}
+
+
+
+/* 2. Standard Tags ----------------------------------------------------- */
+a {
+    text-decoration: none;
+    color: #55d;
+}
+a:hover, li a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {
+    color: #e9cb2b;
+}
+h1, h2 {
+    color: #468;
+}
+h3, h4, th, dt, b, div.abstract-title, div.toc-title {
+    color: #468;
+}
+h1 {
+     font-size: 1.75em;
+     margin-top: 1.2em;
+     margin-bottom: 0.5em;
+}
+h2 {
+    font-size: 1.5em;
+    margin-top: 1.2em;
+    margin-bottom: 0.5em;
+}
+h3, div.abstract-title, div.toc-title {
+    font-size: 1.3em;
+    margin-top: 1.1em;
+    margin-bottom: 0.4em;
+}
+h4 {
+    font-size: 1.2em;
+    margin-top: 1em;
+    margin-bottom: 0.3em;
+}
+h5 {
+    font-size: 1.1em;
+    margin-top: 1em;
+    margin-bottom: 0.3em;
+}
+table, td {
+    border-collapse: collapse;
+}
+
+
+/* 3. Block Formatted ----------------------------------------------------- */
+
+pre, .literallayout {
+    border-width: 0;
+    font-family: Consolas, Monaco, monospace;
+    border-style: solid;
+    margin-bottom: 1em;
+    margin-top: 1em;
+    overflow: auto;
+    padding: 1em;
+    background: #eee;
+    border-radius: 1em;
+}
+
+div.note {
+    font-size: 0.9em;
+    border-color: #dd5;
+    border-style: solid;
+    border-width: 1.5px;
+    margin-bottom: 1em;
+    margin-top: 1em;
+    overflow: auto;
+    padding: 0.8em;
+    background: #ffe;
+    border-radius: 1em;
+}
+div.note table p {
+    font-size: 0.9em;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+div.note table tr td img {
+    margin: 0 0.5em 0 0;
+    padding: 0 0 0 0;
+}
+
+div.warning {
+    font-size: 0.9em;
+    border-color: #cc5555;
+    border-style: solid;
+    border-width: 1.5px;
+    margin-bottom: 1em;
+    margin-top: 1em;
+    overflow: auto;
+    padding: 0.8em;
+    background: #FFf1f1;
+    border-radius: 1em;
+}
+div.warning table p {
+    font-size: 0.9em;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+div.warning table tr td img {
+    margin: 0 0.5em 0 0;
+    padding: 0 0 0 0;
+}
+
+div.important {
+    font-size: 0.9em;
+    border-color: #55d;
+    border-style: solid;
+    border-width: 1.5px;
+    margin-bottom: 1em;
+    margin-top: 1em;
+    overflow: auto;
+    padding: 0.8em;
+    background: #eef;
+    border-radius: 1em;
+}
+div.important table p {
+    font-size: 0.9em;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+div.important table tr td img {
+    margin: 0 0.5em 0 0;
+    padding: 0 0 0 0;
+}
+
+span.inlinemediaobject img {
+    vertical-align: middle;
+}
+
+.programlisting {
+    font-family: Consolas, Monaco, monospace;
+}
+
+/* 4. Docbook Specifics ----------------------------------------------------- */
+
+span.emphasis {
+    font-style: italic;
+}
+
+tr.question {
+    font-weight: bold;
+    color: #248;
+}
+tr.question td {
+    padding-bottom: 0.5em;
+    padding-top: 0.4em;
+}
+
+.term {
+    font-weight: bold;
+    color: #459;
+}
+.term:hover {
+    font-weight: bold;
+    color: #801;
+}
+.chapter {
+    margin-top: 60px;
+}
+.sect1 {
+    margin-top: 50px;
+}
+.sect2 {
+    margin-top: 40px;
+}
+.sect3 {
+    margin-top: 30px;
+}
+.caption p {
+    font-style: italic;
+}
+.remark {
+    background: #ff0;
+}
+.equation {
+    font-style: italic;
+}
+.command, .code, .varname, .filename {
+    font-size: 1.05em;
+    font-weight: normal;
+    font-family: Consolas, Monaco, monospace;
+    color: black;
+    background-color: #eee;
+    font-weight: bold;
+}
+
+.styledtable table td,th {
+    padding: 0.5em;
+}
+
+table.informaltable {
+    border-color: #aaa;
+}
+table.informaltable td, th {
+    padding: 0.2em 0.4em 0.2em 0.4em;
+}
+
+.pdparam {
+    color: #900
+}
+
+.simplelist td {
+    padding-right: 2em;
+}

@@ -237,6 +237,34 @@ static uint8_t* integer_to_wkb_buf(const int ival, uint8_t *buf, uint8_t variant
 	}
 }
 
+static uint8_t* double_nan_to_wkb_buf(uint8_t *buf, uint8_t variant)
+{
+#define NAN_SIZE 8
+	const uint8_t ndr_nan[NAN_SIZE] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf8, 0x7f};
+	const uint8_t xdr_nan[NAN_SIZE] = {0x7f, 0xf8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+	if ( variant & WKB_HEX )
+	{
+		for (int i = 0; i < NAN_SIZE; i++)
+		{
+			uint8_t b = (variant & WKB_NDR) ? ndr_nan[i] : xdr_nan[i];
+			/* Top four bits to 0-F */
+			buf[2*i] = hexchr[b >> 4];
+			/* Bottom four bits to 0-F */
+			buf[2*i + 1] = hexchr[b & 0x0F];
+		}
+		return buf + (2 * NAN_SIZE);
+	}
+	else
+	{
+		for (int i = 0; i < NAN_SIZE; i++)
+		{
+			buf[i] = (variant & WKB_NDR) ? ndr_nan[i] : xdr_nan[i];;
+		}
+		return buf + NAN_SIZE;
+	}
+}
+
 /*
 * Float64
 */
@@ -330,11 +358,9 @@ static uint8_t* empty_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t varia
 	if ( geom->type == POINTTYPE )
 	{
 		const LWPOINT *pt = (LWPOINT*)geom;
-		double nn = nan("0");
-		int i;
-		for ( i = 0; i < FLAGS_NDIMS(pt->point->flags); i++ )
+		for (int i = 0; i < FLAGS_NDIMS(pt->point->flags); i++)
 		{
-			buf = double_to_wkb_buf(nn, buf, variant);
+			buf = double_nan_to_wkb_buf(buf, variant);
 		}
 	}
 	/* Everything else is flagged as empty using num-elements == 0 */

@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
@@ -8,19 +8,22 @@ msgstr ""
 "POT-Creation-Date: 2017-01-28 07:02+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Jakub Bobrowski <jbobrowski@geoinfor.pl>\n"
-"Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/pl/)\n"
+"Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
+"pl/)\n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: pl\n"
-"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n"
+"%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n"
+"%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
 #. Tag: para
 #: reference_sfcgal.xml:5
 #, no-c-format
 msgid ""
-"SFCGAL is a C++ wrapper library around CGAL that provides advanced 2D and 3D"
-" functions. For robustness, geometry coordinates have an exact rational "
+"SFCGAL is a C++ wrapper library around CGAL that provides advanced 2D and 3D "
+"functions. For robustness, geometry coordinates have an exact rational "
 "number representation."
 msgstr ""
 
@@ -37,10 +40,10 @@ msgstr ""
 #: reference_sfcgal.xml:13
 #, no-c-format
 msgid ""
-"Some SFCGAL functions replace standard ones (ST_Intersects, ST_Intersection,"
-" ST_Difference, ST_Union, ST_Area and ST_Distance), to switch between "
-"standard functions and SFCGAL function use: <programlisting>SET "
-"postgis.backend = sfcgal;</programlisting> and"
+"Some SFCGAL functions replace standard ones (ST_Intersects, ST_Intersection, "
+"ST_Difference, ST_Union, ST_Area and ST_Distance), to switch between "
+"standard functions and SFCGAL function use: <programlisting>SET postgis."
+"backend = sfcgal;</programlisting> and"
 msgstr ""
 
 #. Tag: programlisting
@@ -316,8 +319,8 @@ msgstr ""
 #: reference_sfcgal.xml:241
 #, no-c-format
 msgid ""
-"SELECT ST_ApproximateMedialAxis(ST_GeomFromText('POLYGON (( 190 190, 10 190,"
-" 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));"
+"SELECT ST_ApproximateMedialAxis(ST_GeomFromText('POLYGON (( 190 190, 10 190, "
+"10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));"
 msgstr ""
 
 #. Tag: para
@@ -427,8 +430,8 @@ msgstr ""
 #: reference_sfcgal.xml:377
 #, no-c-format
 msgid ""
-"This function performs a 2D minkowski sum of a point, line or polygon with a"
-" polygon."
+"This function performs a 2D minkowski sum of a point, line or polygon with a "
+"polygon."
 msgstr ""
 
 #. Tag: para
@@ -437,9 +440,8 @@ msgstr ""
 msgid ""
 "A minkowski sum of two geometries A and B is the set of all points that are "
 "the sum of any point in A and B. Minkowski sums are often used in motion "
-"planning and computer-aided design. More details on <ulink "
-"url=\"https://en.wikipedia.org/wiki/Minkowski_addition\">Wikipedia Minkowski"
-" addition</ulink>."
+"planning and computer-aided design. More details on <ulink url=\"https://en."
+"wikipedia.org/wiki/Minkowski_addition\">Wikipedia Minkowski addition</ulink>."
 msgstr ""
 
 #. Tag: para
@@ -456,9 +458,8 @@ msgstr ""
 #: reference_sfcgal.xml:381
 #, no-c-format
 msgid ""
-"Implementation utilizes <ulink "
-"url=\"http://doc.cgal.org/latest/Minkowski_sum_2/\">CGAL 2D "
-"Minkowskisum</ulink>."
+"Implementation utilizes <ulink url=\"http://doc.cgal.org/latest/"
+"Minkowski_sum_2/\">CGAL 2D Minkowskisum</ulink>."
 msgstr ""
 
 #. Tag: para
@@ -491,8 +492,24 @@ msgid ""
 "    ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;\n"
 "\n"
 "-- wkt --\n"
-"MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 54.1472903395161,32.2836140246614 48.5194970290472,35.0559116309237 43.3328930094119,38.7867965644036 38.7867965644035,43.332893009412 35.0559116309236,48.5194970290474 32.2836140246614,54.1472903395162 30.5764415879031,60.0000000000001 30,65.8527096604839 30.5764415879031,71.4805029709527 32.2836140246614,76.6671069905881 35.0559116309237,81.2132034355964 38.7867965644036,171.213203435596 128.786796564404,174.944088369076 133.332893009412,177.716385975339 138.519497029047,179.423558412097 144.147290339516,180 150,179.423558412097 155.852709660484,177.716385975339 161.480502970953,174.944088369076 166.667106990588,171.213203435596 171.213203435596,166.667106990588 174.944088369076,\n"
-"161.480502970953 177.716385975339,155.852709660484 179.423558412097,150 180,144.147290339516 179.423558412097,138.519497029047 177.716385975339,133.332893009412 174.944088369076,128.786796564403 171.213203435596,38.7867965644035 81.2132034355963,35.0559116309236 76.667106990588,32.2836140246614 71.4805029709526,30.5764415879031 65.8527096604838,30 59.9999999999999)))"
+"MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 "
+"54.1472903395161,32.2836140246614 48.5194970290472,35.0559116309237 "
+"43.3328930094119,38.7867965644036 38.7867965644035,43.332893009412 "
+"35.0559116309236,48.5194970290474 32.2836140246614,54.1472903395162 "
+"30.5764415879031,60.0000000000001 30,65.8527096604839 "
+"30.5764415879031,71.4805029709527 32.2836140246614,76.6671069905881 "
+"35.0559116309237,81.2132034355964 38.7867965644036,171.213203435596 "
+"128.786796564404,174.944088369076 133.332893009412,177.716385975339 "
+"138.519497029047,179.423558412097 144.147290339516,180 150,179.423558412097 "
+"155.852709660484,177.716385975339 161.480502970953,174.944088369076 "
+"166.667106990588,171.213203435596 171.213203435596,166.667106990588 "
+"174.944088369076,\n"
+"161.480502970953 177.716385975339,155.852709660484 179.423558412097,150 "
+"180,144.147290339516 179.423558412097,138.519497029047 "
+"177.716385975339,133.332893009412 174.944088369076,128.786796564403 "
+"171.213203435596,38.7867965644035 81.2132034355963,35.0559116309236 "
+"76.667106990588,32.2836140246614 71.4805029709526,30.5764415879031 "
+"65.8527096604838,30 59.9999999999999)))"
 msgstr ""
 
 #. Tag: para
@@ -596,8 +613,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_3DIntersection(linestring, polygon)) As wkt\n"
-"FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring\n"
-" CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;\n"
+"FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 "
+"10)') AS linestring\n"
+" CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') "
+"AS polygon;\n"
 "\n"
 "              wkt\n"
 "--------------------------------\n"
@@ -615,10 +634,13 @@ msgstr ""
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_3DIntersection(\n"
-"                ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
-"        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"                ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, "
+"0 1 0, 0 0 0)),\n"
+"        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, "
+"0 0 0)),\n"
 "        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
-"        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'),\n"
+"        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, "
+"0 0 1)) )'),\n"
 "        'POLYGON Z ((0 0 0, 0 0 0.5, 0 0.5 0.5, 0 0.5 0, 0 0 0))'::geometry))"
 msgstr ""
 
@@ -626,8 +648,7 @@ msgstr ""
 #: reference_sfcgal.xml:528
 #, no-c-format
 msgid ""
-"TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 "
-"0)))"
+"TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 0)))"
 msgstr ""
 
 #. Tag: para
@@ -642,7 +663,8 @@ msgstr ""
 #: reference_sfcgal.xml:531
 #, no-c-format
 msgid ""
-"SELECT ST_AsText(ST_3DIntersection( ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),0,0,30),\n"
+"SELECT ST_AsText(ST_3DIntersection( ST_Extrude(ST_Buffer('POINT(10 20)'::"
+"geometry,10,1),0,0,30),\n"
 " ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),2,0,10) ));"
 msgstr ""
 
@@ -650,20 +672,33 @@ msgstr ""
 #: reference_sfcgal.xml:532
 #, no-c-format
 msgid ""
-"POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 10,13.3333333333333 13.3333333333333 10)),\n"
-"        ((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 13.3333333333333 10,20 20 10)),\n"
+"POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 "
+"10,13.3333333333333 13.3333333333333 10)),\n"
+"        ((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 "
+"13.3333333333333 10,20 20 10)),\n"
 "        ((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),\n"
-"        ((13.3333333333333 13.3333333333333 10,10 10 0,20 20 0,13.3333333333333 13.3333333333333 10)),\n"
-"        ((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 13.3333333333333 10,16.6666666666667 23.3333333333333 10)),\n"
-"        ((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 10,20 20 0)),\n"
-"        ((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 10)),\n"
-"        ((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 10)),\n"
-"        ((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 10,16.6666666666667 23.3333333333333 10)),\n"
+"        ((13.3333333333333 13.3333333333333 10,10 10 0,20 20 "
+"0,13.3333333333333 13.3333333333333 10)),\n"
+"        ((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 "
+"13.3333333333333 10,16.6666666666667 23.3333333333333 10)),\n"
+"        ((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 "
+"10,20 20 0)),\n"
+"        ((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 "
+"13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 "
+"10)),\n"
+"        ((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 "
+"10)),\n"
+"        ((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 "
+"10,16.6666666666667 23.3333333333333 10)),\n"
 "        ((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),\n"
-"        ((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 10,12 28 10)),\n"
-"        ((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),\n"
-"        ((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 10)),((12 28 10,11 29 10,11 11 10,12 28 10)),\n"
-"        ((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),((11 11 10,11 29 10,2 20 10,11 11 10)))"
+"        ((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 "
+"10,12 28 10)),\n"
+"        ((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),"
+"((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),\n"
+"        ((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 "
+"10)),((12 28 10,11 29 10,11 11 10,12 28 10)),\n"
+"        ((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),"
+"((11 11 10,11 29 10,2 20 10,11 11 10)))"
 msgstr ""
 
 #. Tag: refname
@@ -802,8 +837,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Note: By default a PolyhedralSurface built from WKT is a surface geometry, "
-"not solid. It therefore has surface area. Once converted to a solid, no "
-"area."
+"not solid. It therefore has surface area. Once converted to a solid, no area."
 msgstr ""
 
 #. Tag: programlisting
@@ -842,8 +876,8 @@ msgstr ""
 #: reference_sfcgal.xml:730
 #, no-c-format
 msgid ""
-"Perform surface Tesselation of a polygon or polyhedralsurface and returns as"
-" a TIN or collection of TINS"
+"Perform surface Tesselation of a polygon or polyhedralsurface and returns as "
+"a TIN or collection of TINS"
 msgstr ""
 
 #. Tag: funcprototype
@@ -866,10 +900,13 @@ msgstr ""
 #: reference_sfcgal.xml:758
 #, no-c-format
 msgid ""
-"SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
-"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 "
+"0 0)),\n"
+"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
+"1, 0 0 1, 0 0 0)),\n"
 "                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
-"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )');"
+"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
+"1, 0 1 1, 0 0 1)) )');"
 msgstr ""
 
 #. Tag: para
@@ -882,10 +919,13 @@ msgstr ""
 #: reference_sfcgal.xml:769
 #, no-c-format
 msgid ""
-"SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
-"        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 "
+"1 1, 0 1 0, 0 0 0)),\n"
+"        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, "
+"0 0 0)),\n"
 "        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
-"        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));"
+"        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, "
+"0 0 1)) )'));"
 msgstr ""
 
 #. Tag: para
@@ -926,7 +966,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "SELECT\n"
-"        ST_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry);"
+"        ST_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 "
+"160, 120 190, 10 190 ))'::geometry);"
 msgstr ""
 
 #. Tag: para
@@ -983,9 +1024,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "When closed surfaces are created with WKT, they are treated as areal rather "
-"than solid. To make them solid, you need to use <xref "
-"linkend=\"ST_MakeSolid\"/>. Areal geometries have no volume. Here is an "
-"example to demonstrate."
+"than solid. To make them solid, you need to use <xref linkend=\"ST_MakeSolid"
+"\"/>. Areal geometries have no volume. Here is an example to demonstrate."
 msgstr ""
 
 #. Tag: programlisting

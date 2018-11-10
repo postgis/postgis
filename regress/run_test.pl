@@ -106,17 +106,15 @@ if ( $OPT_UPGRADE_PATH )
   print "Upgrade path: ${OPT_UPGRADE_FROM} --> ${OPT_UPGRADE_TO}\n";
 }
 
-if ( $OPT_EXTENSIONS )
-{
-	$OPT_WITH_RASTER = 1; # implied (TODO: drop implication !)
-}
-
+# Split-raster extension was introduced in PostGIS-3.0.0
 sub has_split_raster_ext
 {
   my $fullver = shift;
+  # unpackaged is always current, so does have
+  # split raster already.
+  return 1 if $fullver eq 'unpackaged';
   my @ver = split(/\./, $fullver);
-  return 0 if ( $ver[0] < 2 );
-  return 0 if ( $ver[0] == 2 && $ver[1] < 5 );
+  return 0 if ( $ver[0] < 3 );
   return 1;
 }
 
@@ -1484,7 +1482,7 @@ sub upgrade_spatial_extensions
     if ( $OPT_WITH_RASTER )
     {
       if ( $OPT_UPGRADE_FROM
-           && !  has_split_raster_ext($OPT_UPGRADE_FROM)
+           && ! has_split_raster_ext($OPT_UPGRADE_FROM)
          )
       {
         # upgrade of postgis must have unpackaged raster, so
@@ -1504,12 +1502,44 @@ sub upgrade_spatial_extensions
       {
         my $sql = "ALTER EXTENSION postgis_raster UPDATE TO '${nextver}'";
 
+        if ( $OPT_UPGRADE_FROM eq "unpackaged" ) {
+          $sql = "CREATE EXTENSION postgis_raster VERSION '${nextver}' FROM unpackaged";
+        }
+
         print "Upgrading PostGIS Raster in '${DB}' using: ${sql}\n" ;
 
         my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
         my $rv = system($cmd);
         if ( $rv ) {
           fail "Error encountered altering EXTENSION POSTGIS_RASTER", $REGRESS_LOG;
+          die;
+        }
+      }
+    }
+    else
+    {
+      # Raster support was not requested, so drop it if
+      # left unpackaged
+      if ( $OPT_UPGRADE_FROM
+           && ! has_split_raster_ext($OPT_UPGRADE_FROM) )
+      {
+        print "Packaging PostGIS Raster in '${DB}' for later drop using: ${sql}\n" ;
+
+        $sql = "CREATE EXTENSION postgis_raster VERSION '${nextver}' FROM unpackaged";
+        $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+        $rv = system($cmd);
+        if ( $rv ) {
+          fail "Error encountered creating EXTENSION POSTGIS_RASTER from unpackaged on upgrade", $REGRESS_LOG;
+          die;
+        }
+
+        print "Dropping PostGIS Raster in '${DB}' using: ${sql}\n" ;
+
+        $sql = "DROP EXTENSION postgis_raster";
+        $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+        $rv = system($cmd);
+        if ( $rv ) {
+          fail "Error encountered dropping EXTENSION POSTGIS_RASTER on upgrade", $REGRESS_LOG;
           die;
         }
       }
@@ -1618,8 +1648,10 @@ sub drop_spatial_extensions
 
     $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis\" $DB >> $REGRESS_LOG 2>&1";
     $rv = system($cmd);
-  	die "\nError encountered dropping EXTENSION POSTGIS, see $REGRESS_LOG for details\n\n"
-  	    if $rv;
+    if ( $rv ) {
+        fail "Error encountered dropping EXTENSION POSTGIS", $REGRESS_LOG;
+        die;
+    }
 
     return $ok;
 }

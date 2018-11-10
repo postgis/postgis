@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 # Kwon.Yongchan <ruvyn@naver.com>, 2016
 # Kwon.Yongchan <ruvyn@naver.com>, 2016
@@ -10,11 +10,12 @@ msgstr ""
 "POT-Creation-Date: 2017-01-28 07:02+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/language/ko_KR/)\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
+"language/ko_KR/)\n"
+"Language: ko_KR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: title
@@ -28,13 +29,19 @@ msgstr "이력 추적"
 #, no-c-format
 msgid ""
 "Suppose you have a table of data that represents the current state of a "
-"particular geographic feature. A parcels table, or a roads table, or a fruit"
-" trees table, whatever. Generally, GIS tools understand a table as a single "
+"particular geographic feature. A parcels table, or a roads table, or a fruit "
+"trees table, whatever. Generally, GIS tools understand a table as a single "
 "entity into which they can update, insert and delete rows from. How you do "
-"allow common GIS tools to work against your data, while maintaining an audit"
-" trail of what changes have been made, by whom, and what the past state of "
+"allow common GIS tools to work against your data, while maintaining an audit "
+"trail of what changes have been made, by whom, and what the past state of "
 "the data is?"
-msgstr "특정 지리형 피처의 현재 상태를 나타내는 데이터의 테이블이 있다고 해봅시다. 획지 테이블, 도로 테이블, 과수(果樹) 테이블, 뭐던 간에요. 일반적으로, GIS 도구는 테이블을 행을 업데이트하고, 삽입하고, 삭제할 수 있는 단일 개체로 이해합니다. 어떻게 하면 일반 GIS 도구가 사용자 데이터를 대상으로, 어떤 변경이 이루어졌는지, 누가 변경했는지, 그리고 데이터의 과거 상태가 어땠는지에 대한 감사 추적(audit trail)을 유지하면서, 동작하게 할 수 있을까요?"
+msgstr ""
+"특정 지리형 피처의 현재 상태를 나타내는 데이터의 테이블이 있다고 해봅시다. 획"
+"지 테이블, 도로 테이블, 과수(果樹) 테이블, 뭐던 간에요. 일반적으로, GIS 도구"
+"는 테이블을 행을 업데이트하고, 삽입하고, 삭제할 수 있는 단일 개체로 이해합니"
+"다. 어떻게 하면 일반 GIS 도구가 사용자 데이터를 대상으로, 어떤 변경이 이루어"
+"졌는지, 누가 변경했는지, 그리고 데이터의 과거 상태가 어땠는지에 대한 감사 추"
+"적(audit trail)을 유지하면서, 동작하게 할 수 있을까요?"
 
 #. Tag: para
 #: extras_historytable.xml:10
@@ -42,7 +49,9 @@ msgstr "특정 지리형 피처의 현재 상태를 나타내는 데이터의 �
 msgid ""
 "This <varname>history_table</varname> extra module provides some utility "
 "functions for creating and maintaining history."
-msgstr "이 <varname>history_table</varname> 추가 모듈이 이력을 생성하고 유지하기 위한 몇몇 유틸리티 함수를 제공합니다."
+msgstr ""
+"이 <varname>history_table</varname> 추가 모듈이 이력을 생성하고 유지하기 위"
+"한 몇몇 유틸리티 함수를 제공합니다."
 
 #. Tag: para
 #: extras_historytable.xml:14
@@ -52,7 +61,11 @@ msgid ""
 "added to the documentation in PostGIS 2.0. This package is written in "
 "plpgsql and located in the <varname>extras/history_table</varname> of "
 "PostGIS source tar balls and source repository."
-msgstr "<varname>history_table</varname> 이 PostGIS 1.5 버전부터 패키징되긴 했지만, 문서화는 PostGIS 2.0 버전에서 이루어졌습니다. 이 패키지는 PL/pgSQL 언어로 쓰였고, PostGIS 소스 TAR 파일 및 소스 저장소의 <varname>extras/history_table</varname> 폴더에 있습니다."
+msgstr ""
+"<varname>history_table</varname> 이 PostGIS 1.5 버전부터 패키징되긴 했지만, "
+"문서화는 PostGIS 2.0 버전에서 이루어졌습니다. 이 패키지는 PL/pgSQL 언어로 쓰"
+"였고, PostGIS 소스 TAR 파일 및 소스 저장소의 <varname>extras/history_table</"
+"varname> 폴더에 있습니다."
 
 #. Tag: para
 #: extras_historytable.xml:15
@@ -61,7 +74,10 @@ msgid ""
 "If you have a table 'roads', this module will maintain a 'roads_history' "
 "side table, which contains all the columns of the parent table, and the "
 "following additional columns:"
-msgstr "'roads'라는 테이블이 있을 경우, 이 모듈은 'roads_history'라는 자식 테이블을 유지할 것입니다. 이 테이블은 부모 테이블의 모든 열을 담고 있으며, 다음과 같은 추가 열들을 가집니다:"
+msgstr ""
+"'roads'라는 테이블이 있을 경우, 이 모듈은 'roads_history'라는 자식 테이블을 "
+"유지할 것입니다. 이 테이블은 부모 테이블의 모든 열을 담고 있으며, 다음과 같"
+"은 추가 열들을 가집니다:"
 
 #. Tag: programlisting
 #: extras_historytable.xml:16
@@ -71,19 +87,31 @@ msgid ""
 " date_added      | timestamp without time zone | not null default now()\n"
 " date_deleted    | timestamp without time zone |\n"
 " last_operation  | character varying(30)       | not null\n"
-" active_user     | character varying(90)       | not null default \"current_user\"()\n"
+" active_user     | character varying(90)       | not null default "
+"\"current_user\"()\n"
 " current_version | text                        | not null"
-msgstr "history_id      | integer                     | not null default\n date_added      | timestamp without time zone | not null default now()\n date_deleted    | timestamp without time zone |\n last_operation  | character varying(30)       | not null\n active_user     | character varying(90)       | not null default \"current_user\"()\n current_version | text                        | not null"
+msgstr ""
+"history_id      | integer                     | not null default\n"
+" date_added      | timestamp without time zone | not null default now()\n"
+" date_deleted    | timestamp without time zone |\n"
+" last_operation  | character varying(30)       | not null\n"
+" active_user     | character varying(90)       | not null default "
+"\"current_user\"()\n"
+" current_version | text                        | not null"
 
 #. Tag: para
 #: extras_historytable.xml:20
 #, no-c-format
 msgid ""
-"When you insert a new record into 'roads' a record is automatically inserted"
-" into 'roads_history', with the 'date_added' filled in the 'date_deleted' "
-"set to NULL, a unique 'history_id', a 'last_operation' of 'INSERT' and "
+"When you insert a new record into 'roads' a record is automatically inserted "
+"into 'roads_history', with the 'date_added' filled in the 'date_deleted' set "
+"to NULL, a unique 'history_id', a 'last_operation' of 'INSERT' and "
 "'active_user' set."
-msgstr "사용자가 'roads' 테이블에 새 레코드를 삽입하면 해당 레코드가 자동적으로 'roads_history' 테이블에도 삽입됩니다. 동시에 'date_added' 열이 채워지고 'date_deleted' 열은 NULL로 설정되며, 유일한 'history_id', 'INSERT'의 'last_operation', 그리고 'active_user' 집합도 함께 생성됩니다."
+msgstr ""
+"사용자가 'roads' 테이블에 새 레코드를 삽입하면 해당 레코드가 자동적으로 "
+"'roads_history' 테이블에도 삽입됩니다. 동시에 'date_added' 열이 채워지고 "
+"'date_deleted' 열은 NULL로 설정되며, 유일한 'history_id', 'INSERT'의 "
+"'last_operation', 그리고 'active_user' 집합도 함께 생성됩니다."
 
 #. Tag: para
 #: extras_historytable.xml:23
@@ -91,7 +119,9 @@ msgstr "사용자가 'roads' 테이블에 새 레코드를 삽입하면 해당 �
 msgid ""
 "When you delete a record in 'roads', the record in the history table is "
 "*not* deleted, but the 'date_deleted' is set to the current date."
-msgstr "사용자가 'roads' 테이블에서 레코드를 삭제하면 'roads_history' 테이블의 레코드는 삭제되지 *않으며*, 'date_deleted' 열이 현재 날짜로 설정됩니다."
+msgstr ""
+"사용자가 'roads' 테이블에서 레코드를 삭제하면 'roads_history' 테이블의 레코드"
+"는 삭제되지 *않으며*, 'date_deleted' 열이 현재 날짜로 설정됩니다."
 
 #. Tag: para
 #: extras_historytable.xml:26
@@ -100,7 +130,10 @@ msgid ""
 "When you update a record in 'roads', the current record has 'date_deleted' "
 "filled in and a new record is created with the 'date_added' set and "
 "'date_deleted' NULL."
-msgstr "사용자가 'roads' 테이블의 레코드를 업데이트하면 'roads_history' 테이블의 해당 레코드의 'date_deleted' 열이 현재 날짜로 채워지고, 'date_added' 열이 현재 날짜로 설정되고 'date_deleted' 열이 NULL로 설정된 새 레코드를 생성합니다."
+msgstr ""
+"사용자가 'roads' 테이블의 레코드를 업데이트하면 'roads_history' 테이블의 해"
+"당 레코드의 'date_deleted' 열이 현재 날짜로 채워지고, 'date_added' 열이 현재 "
+"날짜로 설정되고 'date_deleted' 열이 NULL로 설정된 새 레코드를 생성합니다."
 
 #. Tag: para
 #: extras_historytable.xml:30
@@ -108,7 +141,9 @@ msgstr "사용자가 'roads' 테이블의 레코드를 업데이트하면 'roads
 msgid ""
 "With this information maintained, it is possible to retrieve the history of "
 "any record in the roads table:"
-msgstr "이런 정보를 유지하고 있기 때문에, 'roads' 테이블에 있는 모든 레코드의 이력을 검색할 수 있습니다."
+msgstr ""
+"이런 정보를 유지하고 있기 때문에, 'roads' 테이블에 있는 모든 레코드의 이력을 "
+"검색할 수 있습니다."
 
 #. Tag: programlisting
 #: extras_historytable.xml:31
@@ -129,7 +164,10 @@ msgid ""
 "SELECT * FROM roads_history\n"
 "    WHERE date_added &lt; 'January 1, 2001' AND\n"
 "        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL );"
-msgstr "SELECT * FROM roads_history\n    WHERE date_added &lt; 'January 1, 2001' AND\n        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL );"
+msgstr ""
+"SELECT * FROM roads_history\n"
+"    WHERE date_added &lt; 'January 1, 2001' AND\n"
+"        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL );"
 
 #. Tag: refname
 #: extras_historytable.xml:38
@@ -143,7 +181,8 @@ msgstr "Postgis_Install_History"
 msgid ""
 "Creates a table that will hold some interesting values for managing history "
 "tables."
-msgstr "이력 테이블을 관리하기 위한 몇몇 흥미로운 값들을 담게 될 테이블을 생성합니다."
+msgstr ""
+"이력 테이블을 관리하기 위한 몇몇 흥미로운 값들을 담게 될 테이블을 생성합니다."
 
 #. Tag: funcprototype
 #: extras_historytable.xml:44
@@ -151,7 +190,9 @@ msgstr "이력 테이블을 관리하기 위한 몇몇 흥미로운 값들을 �
 msgid ""
 "<funcdef>void <function>Postgis_Install_History</function></funcdef> "
 "<paramdef></paramdef>"
-msgstr "<funcdef>void <function>Postgis_Install_History</function></funcdef> <paramdef></paramdef>"
+msgstr ""
+"<funcdef>void <function>Postgis_Install_History</function></funcdef> "
+"<paramdef></paramdef>"
 
 #. Tag: title
 #: extras_historytable.xml:52 extras_historytable.xml:92
@@ -165,7 +206,9 @@ msgstr "설명"
 msgid ""
 "Creates a table that will hold some interesting values for managing history "
 "tables. Creates a table called <varname>historic_information</varname>"
-msgstr "이력 테이블을 관리하기 위한 몇몇 흥미로운 값들을 담게 될 <varname>historic_information</varname> 라는 테이블을 생성합니다."
+msgstr ""
+"이력 테이블을 관리하기 위한 몇몇 흥미로운 값들을 담게 될 "
+"<varname>historic_information</varname> 라는 테이블을 생성합니다."
 
 #. Tag: para
 #: extras_historytable.xml:58 extras_historytable.xml:100
@@ -201,9 +244,12 @@ msgstr "Postgis_Enable_History"
 #: extras_historytable.xml:78
 #, no-c-format
 msgid ""
-"Registers a tablein the history_information table for tracking and also adds"
-" in side line history table and insert, update, delete rules on the table."
-msgstr "'history_information' 테이블에 추적하기 위한 테이블을 등록하고, 또 사이드라인 이력 테이블을 추가하고 해당 테이블에 삽입, 업데이트, 삭제 규칙을 추가합니다."
+"Registers a tablein the history_information table for tracking and also adds "
+"in side line history table and insert, update, delete rules on the table."
+msgstr ""
+"'history_information' 테이블에 추적하기 위한 테이블을 등록하고, 또 사이드라"
+"인 이력 테이블을 추가하고 해당 테이블에 삽입, 업데이트, 삭제 규칙을 추가합니"
+"다."
 
 #. Tag: funcprototype
 #: extras_historytable.xml:83
@@ -212,7 +258,10 @@ msgid ""
 "<funcdef>boolean <function>Postgis_Enable_History</function></funcdef> "
 "<paramdef><type>text </type> <parameter>p_schema</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>p_table</parameter></paramdef>"
-msgstr "<funcdef>boolean <function>Postgis_Enable_History</function></funcdef> <paramdef><type>text </type> <parameter>p_schema</parameter></paramdef> <paramdef><type>text </type> <parameter>p_table</parameter></paramdef>"
+msgstr ""
+"<funcdef>boolean <function>Postgis_Enable_History</function></funcdef> "
+"<paramdef><type>text </type> <parameter>p_schema</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>p_table</parameter></paramdef>"
 
 #. Tag: para
 #: extras_historytable.xml:94
@@ -220,10 +269,15 @@ msgstr "<funcdef>boolean <function>Postgis_Enable_History</function></funcdef> <
 msgid ""
 "Registers a table in the history_information table for tracking and also "
 "adds in side line history table with same name as table but prefixed with "
-"<varname>history</varname> in the same schema as the original table. Puts in"
-" insert, update, delete rules on the table. Any inserts,updates,deletes of "
+"<varname>history</varname> in the same schema as the original table. Puts in "
+"insert, update, delete rules on the table. Any inserts,updates,deletes of "
 "the geometry are recorded in the history table."
-msgstr "'history_information' 테이블에 추적하기 위한 테이블을 등록하고, 또 원본 테이블과 동일한 스키마 안에 있는, 원본 테이블의 명칭에 <varname>history</varname> 접두사를 붙인 명칭의 사이드라인 이력 테이블을 추가하고 해당 테이블에 삽입, 업데이트, 삭제 규칙을 추가합니다. 어떤 도형을 삽입하고, 업데이트하고, 삭제하든 이력 테이블에 관련 레코드가 저장됩니다."
+msgstr ""
+"'history_information' 테이블에 추적하기 위한 테이블을 등록하고, 또 원본 테이"
+"블과 동일한 스키마 안에 있는, 원본 테이블의 명칭에 <varname>history</"
+"varname> 접두사를 붙인 명칭의 사이드라인 이력 테이블을 추가하고 해당 테이블"
+"에 삽입, 업데이트, 삭제 규칙을 추가합니다. 어떤 도형을 삽입하고, 업데이트하"
+"고, 삭제하든 이력 테이블에 관련 레코드가 저장됩니다."
 
 #. Tag: para
 #: extras_historytable.xml:97
@@ -232,7 +286,10 @@ msgid ""
 "This function currently relies on a geometry column being registered in "
 "<varname>geometry_columns</varname> and fails if the geometry column is not "
 "present in <varname>geometry_columns</varname> table."
-msgstr "이 함수는 현재 <varname>geometry_columns</varname> 테이블에 도형 열이 등록된다는 사실에 의존하고 있습니다. 도형 열이 <varname>geometry_columns</varname> 테이블에 없을 경우 오류가 발생합니다."
+msgstr ""
+"이 함수는 현재 <varname>geometry_columns</varname> 테이블에 도형 열이 등록된"
+"다는 사실에 의존하고 있습니다. 도형 열이 <varname>geometry_columns</varname> "
+"테이블에 없을 경우 오류가 발생합니다."
 
 #. Tag: programlisting
 #: extras_historytable.xml:107
@@ -247,7 +304,8 @@ msgid ""
 "t\n"
 "\n"
 "INSERT INTO roads(road_name, geom)\n"
-"  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 832170,231647 832202,231627.5 832250.5)',26986));\n"
+"  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 832170,231647 "
+"832202,231627.5 832250.5)',26986));\n"
 "\n"
 "-- check transaction detail --\n"
 "SELECT date_added, last_operation, current_version\n"
@@ -257,4 +315,24 @@ msgid ""
 "       date_added       | last_operation | current_version\n"
 "------------------------+----------------+-----------------\n"
 " 2011-02-07 12:44:36.92 | INSERT         | 2"
-msgstr "CREATE TABLE roads(gid SERIAL PRIMARY KEY, road_name varchar(150));\nSELECT AddGeometryColumn('roads', 'geom', 26986, 'LINESTRING', 2);\n\nSELECT postgis_enable_history('public', 'roads', 'geom') As register_table;\nregister_table\n--------------\nt\n\nINSERT INTO roads(road_name, geom)\n  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 832170,231647 832202,231627.5 832250.5)',26986));\n\n-- 트랜잭션 상세 내용 확인 --\nSELECT date_added, last_operation, current_version\nFROM roads_history\nWHERE road_name = 'Test Street' ORDER BY date_added DESC;\n\n       date_added       | last_operation | current_version\n------------------------+----------------+-----------------\n 2011-02-07 12:44:36.92 | INSERT         | 2"
+msgstr ""
+"CREATE TABLE roads(gid SERIAL PRIMARY KEY, road_name varchar(150));\n"
+"SELECT AddGeometryColumn('roads', 'geom', 26986, 'LINESTRING', 2);\n"
+"\n"
+"SELECT postgis_enable_history('public', 'roads', 'geom') As register_table;\n"
+"register_table\n"
+"--------------\n"
+"t\n"
+"\n"
+"INSERT INTO roads(road_name, geom)\n"
+"  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 832170,231647 "
+"832202,231627.5 832250.5)',26986));\n"
+"\n"
+"-- 트랜잭션 상세 내용 확인 --\n"
+"SELECT date_added, last_operation, current_version\n"
+"FROM roads_history\n"
+"WHERE road_name = 'Test Street' ORDER BY date_added DESC;\n"
+"\n"
+"       date_added       | last_operation | current_version\n"
+"------------------------+----------------+-----------------\n"
+" 2011-02-07 12:44:36.92 | INSERT         | 2"

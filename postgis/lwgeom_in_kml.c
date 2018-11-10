@@ -41,7 +41,6 @@
 
 #include <libxml/tree.h>
 #include <libxml/parser.h>
-#include <errno.h>
 #include <string.h>
 
 #include "postgres.h"
@@ -82,7 +81,6 @@ Datum geom_from_kml(PG_FUNCTION_ARGS)
 	char *xml;
 	bool hasz=true;
 	xmlNodePtr xmlroot=NULL;
-
 
 	/* Get the KML stream */
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();

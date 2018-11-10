@@ -68,15 +68,16 @@ rm -rf images
 mkdir images
 cp html/images/* images
 make epub
-make -e chunked-html 2>&1 | tee -a doc-errors.log
+make -e chunked-html-web 2>&1 | tee -a doc-errors.log
 
 if [[ "$reference" == *"trunk"* ]]; then  #only do this for trunk because only trunk follows transifex
-  #make update-po
-  #make -C po/it_IT/ local-html
+  make update-pot
+  make pull-tx
+  make -C po/it_IT/ local-html
   make -C po/pt_BR/ local-html
-  #make -C po/ja/ local-html
+  make -C po/ja/ local-html
   make -C po/de/ local-html
-  #make -C po/ko_KR/ local-html
+  make -C po/ko_KR/ local-html
   #make pdf-localized
 fi
 

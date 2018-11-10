@@ -19,9 +19,14 @@
 #############################################################################
 
 POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
-
-MODULE_big=rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+MODULE_big=rtpostgis-@POSTGIS_MAJOR_VERSION@
 MODULEDIR=contrib/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+MODULEPATH    = $$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@
+
+ifeq (@LIBINCLUDEMINORVERSION@,yes)
+MODULEPATH=$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+MODULE_big=rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+endif
 
 # Files to be copied to the contrib/ directory
 DATA_built=rtpostgis.sql rtpostgis_for_extension.sql rtpostgis_upgrade_for_extension.sql rtpostgis_upgrade.sql rtpostgis_proc_set_search_path.sql uninstall_rtpostgis.sql rtpostgis_legacy.sql
@@ -106,11 +111,11 @@ endif
 # replace @extschema@. with nothing, this is only used as placeholder for extension install
 %.sql: %.sql.in
 	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g;s'@extschema@\.''g" > $@
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
 
 rtpostgis_for_extension.sql: rtpostgis.sql.in
 	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
 
 ../../liblwgeom/.libs/liblwgeom.a:
 	$(MAKE) -C ../../liblwgeom

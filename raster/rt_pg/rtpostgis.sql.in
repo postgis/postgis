@@ -6417,18 +6417,18 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 	RETURNS boolean AS $$
 	DECLARE
 		hasnodata boolean := TRUE;
-		_geom geometry;
+		_geom @extschema@.geometry;
 	BEGIN
-		IF ST_SRID(rast) != ST_SRID(geom) THEN
+		IF @extschema@.ST_SRID(rast) != @extschema@.ST_SRID(geom) THEN
 			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
 		END IF;
 
-		_geom := ST_ConvexHull(rast);
+		_geom := @extschema@.ST_ConvexHull(rast);
 		IF nband IS NOT NULL THEN
 			SELECT CASE WHEN bmd.nodatavalue IS NULL THEN FALSE ELSE NULL END INTO hasnodata FROM @extschema@.ST_BandMetaData(rast, nband) AS bmd;
 		END IF;
 
-		IF ST_Intersects(geom, _geom) IS NOT TRUE THEN
+		IF @extschema@.ST_Intersects(geom, _geom) IS NOT TRUE THEN
 			RETURN FALSE;
 		ELSEIF nband IS NULL OR hasnodata IS FALSE THEN
 			RETURN TRUE;
@@ -6971,7 +6971,7 @@ CREATE OR REPLACE FUNCTION st_clip(
  	AS $$
 	BEGIN
 		-- short-cut if geometry's extent fully contains raster's extent
-		IF (nodataval IS NULL OR array_length(nodataval, 1) < 1) AND geom ~ @extschema@.ST_Envelope(rast) THEN
+		IF (nodataval IS NULL OR array_length(nodataval, 1) < 1) AND @extschema@.ST_Contains(geom, @extschema@.ST_Envelope(rast)) THEN
 			RETURN rast;
 		END IF;
 

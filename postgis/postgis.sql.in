@@ -1583,6 +1583,13 @@ CREATE OR REPLACE FUNCTION postgis_noop(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 10;
 
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION postgis_geos_noop(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'GEOSnoop'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 10;
+
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_Normalize(geom geometry)
 	RETURNS geometry
@@ -2861,42 +2868,86 @@ $$ LANGUAGE 'sql' STABLE;
 -- Changed: 3.0.0 also upgrade postgis_raster if it exists
 CREATE OR REPLACE FUNCTION postgis_extensions_upgrade() RETURNS text
 AS $$
-DECLARE rec record; sql text;
+DECLARE rec record; sql text; var_schema text;
 BEGIN
-	-- if at a version different from default version or we are at a dev version,
-	-- then do an upgrade to default version
 
-	FOR rec in SELECT  name, default_version, installed_version
-		FROM pg_available_extensions
-		WHERE installed_version > '' AND name IN(
+	FOR rec IN
+		SELECT name, default_version, installed_version
+		FROM pg_catalog.pg_available_extensions
+		WHERE name IN (
 			'postgis',
 			'postgis_raster',
 			'postgis_sfcgal',
-			'postgis_tiger_geocoder',
-			'postgis_topology')
-		AND ( default_version <> installed_version  OR
-			( default_version = installed_version AND
-				default_version ILIKE '%dev%' AND
-				installed_version ILIKE '%dev%' ) )
+			'postgis_topology',
+			'postgis_tiger_geocoder'
+		)
+		ORDER BY length(name) -- this is to make sure 'postgis' is first !
 	LOOP
+		IF rec.installed_version IS NULL THEN
+			-- If the support installed by available extension
+			-- is found unpackaged, we package it
+			IF
+				 -- PostGIS is always available (this function is part of it)
+				 rec.name = 'postgis'
 
-		-- we need to upgrade to next so our installed is different from current
-		-- and then we can upgrade to default_version
-		IF rec.installed_version = rec.default_version THEN
-			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' || quote_ident(rec.default_version || 'next')   || ';';
+				 -- PostGIS raster is available if type 'raster' exists
+				 OR ( rec.name = 'postgis_raster' AND EXISTS (
+							SELECT 1 FROM pg_catalog.pg_type
+							WHERE typname = 'raster' ) )
+
+				 -- PostGIS SFCGAL is availble if
+				 -- 'postgis_sfcgal_version' function exists
+				 OR ( rec.name = 'postgis_sfcgal' AND EXISTS (
+							SELECT 1 FROM pg_catalog.pg_proc
+							WHERE proname = 'postgis_sfcgal_version' ) )
+
+				 -- PostGIS Topoology is available if
+				 -- 'topology.topology' table exists
+				 -- NOTE: disabled due to https://trac.osgeo.org/postgis/ticket/2503
+				 OR ( FALSE AND rec.name = 'postgis_topology' AND EXISTS (
+							SELECT 1 FROM pg_catalog.pg_class c
+							JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid )
+							WHERE n.nspname = 'topology' AND c.relname = 'topology') )
+
+				 -- TODO: How do we tell if PostGIS Tiger Geocoder is available  ?
+			THEN
+				sql = 'CREATE EXTENSION ' || rec.name || ' FROM unpackaged';
+				RAISE NOTICE 'Packaging extension %', rec.name;
+				RAISE DEBUG '%', sql;
+				EXECUTE sql;
+			ELSE
+				RAISE NOTICE 'Extension % is not available or not packagable for some reason', rec.name;
+			END IF;
+		ELSIF rec.default_version > rec.installed_version
+		THEN
+			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
+						quote_ident(rec.default_version)   || ';';
+			RAISE NOTICE 'Updating extension % from % to %',
+				rec.name, rec.installed_version, rec.default_version;
+			RAISE DEBUG '%', sql;
 			EXECUTE sql;
-			RAISE NOTICE '%', sql;
+		ELSIF rec.default_version = rec.installed_version AND
+					rec.installed_version ILIKE '%dev%'
+		THEN
+			-- we need to upgrade to next and back
+			RAISE NOTICE 'Updating dev extension % %',
+				rec.name, rec.installed_version;
+			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
+						quote_ident(rec.default_version || 'next')   || ';';
+			RAISE DEBUG '%', sql;
+			EXECUTE sql;
+			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
+						quote_ident(rec.default_version)   || ';';
+			RAISE DEBUG '%', sql;
+			EXECUTE sql;
 		END IF;
 
-		sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' || quote_ident(rec.default_version)   || ';';
-		EXECUTE sql;
-		RAISE NOTICE '%', sql;
 	END LOOP;
 
 	RETURN @extschema@.postgis_full_version();
 
 END
-$$ language plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 -- Changed: 2.4.0
 CREATE OR REPLACE FUNCTION postgis_full_version() RETURNS text
@@ -3216,7 +3267,7 @@ CREATE OR REPLACE FUNCTION ST_FilterByM(geometry, double precision, double preci
 	COST 1; -- reset cost, see #3675
 
 -- Availability: 2.5.0
-CREATE OR REPLACE FUNCTION ST_ChaikinSmoothing(geometry, integer default 1, boolean default true)
+CREATE OR REPLACE FUNCTION ST_ChaikinSmoothing(geometry, integer default 1, boolean default false)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_ChaikinSmoothing'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
@@ -4552,6 +4603,12 @@ CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, int4, 
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
 	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, int4, text, text)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
+
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_finalfn(internal)
 	RETURNS bytea
@@ -4624,6 +4681,21 @@ CREATE AGGREGATE ST_AsMVT(anyelement, text, int4)
 -- Availability: 2.4.0
 -- Changed: 2.5.0
 CREATE AGGREGATE ST_AsMVT(anyelement, text, int4, text)
+(
+	sfunc = pgis_asmvt_transfn,
+	stype = internal,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+	serialfunc = pgis_asmvt_serialfn,
+	deserialfunc = pgis_asmvt_deserialfn,
+	combinefunc = pgis_asmvt_combinefn,
+#endif
+	finalfunc = pgis_asmvt_finalfn
+);
+
+-- Availability: 3.0.0
+-- Changed: 3.0.0
+CREATE AGGREGATE ST_AsMVT(anyelement, text, int4, text, text)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,

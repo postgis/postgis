@@ -3,9 +3,12 @@ include ../upgradeable_versions.mk
 EXTENSION     = postgis_raster
 EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
-MODULEPATH    = $$libdir/$(EXTENSION)-$(MINORVERSION)
+MODULEPATH    = $$libdir/$(EXTENSION)-@POSTGIS_MAJOR_VERSION@
+
+ifeq (@LIBINCLUDEMINORVERSION@,yes)
+MODULEPATH=$$libdir/$(EXTENSION)-$(MINORVERSION)
+endif
 GREP = @GREP@
-PERL = @PERL@
 
 MICRO_NUMBER  = $(shell echo $(EXTVERSION) | \
 						$(PERL) -pe 's/\d.\d.(\d+)[a-zA-Z]*\d*/$1/'
@@ -48,7 +51,6 @@ EXTENSION_UPGRADE_SCRIPTS = \
 EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
 	sql/rtpostgis.sql
 
-#DOCS         = $(wildcard ../../doc/html/*.html)
 PG_CONFIG    = @PG_CONFIG@
 
 SQL_BITS     = $(wildcard sql/*.sql)
