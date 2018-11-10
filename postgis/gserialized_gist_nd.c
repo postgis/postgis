@@ -442,10 +442,12 @@ gidx_overlaps(GIDX *a, GIDX *b)
 	{
 		/* If the missing dimension was not padded with -+FLT_MAX */
 		if (GIDX_GET_MAX(a, i) != FLT_MAX && GIDX_GET_MAX(b, i) != FLT_MAX)
+		{
 			if (GIDX_GET_MIN(a, i) > GIDX_GET_MAX(b, i))
 				return false;
-		if (GIDX_GET_MIN(b, i) > GIDX_GET_MAX(a, i))
-			return false;
+			if (GIDX_GET_MIN(b, i) > GIDX_GET_MAX(a, i))
+				return false;
+		}
 	}
 
 	return true;
@@ -513,10 +515,12 @@ gidx_equals(GIDX *a, GIDX *b)
 	{
 		/* If the missing dimension was not padded with -+FLT_MAX */
 		if (GIDX_GET_MAX(a, i) != FLT_MAX && GIDX_GET_MAX(b, i) != FLT_MAX)
+		{
 			if (GIDX_GET_MIN(a, i) != GIDX_GET_MIN(b, i))
 				return false;
-		if (GIDX_GET_MAX(a, i) != GIDX_GET_MAX(b, i))
-			return false;
+			if (GIDX_GET_MAX(a, i) != GIDX_GET_MAX(b, i))
+				return false;
+		}
 	}
 	return true;
 }
