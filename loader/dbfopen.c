@@ -1347,9 +1347,7 @@ static int DBFWriteAttribute(DBFHandle psDBF, int hEntity, int iField,
 	        szSField[psDBF->panFieldSize[iField]] = '\0';
                 nRetResult = FALSE;
             }
-
-	    strncpy((char *) (pabyRec+psDBF->panFieldOffset[iField]),
-		    szSField, strlen(szSField) );
+		snprintf((char *) (pabyRec+psDBF->panFieldOffset[iField]), psDBF->panFieldSize[iField], "%s", szSField);
 	}
 	else
 	{
@@ -1366,8 +1364,7 @@ static int DBFWriteAttribute(DBFHandle psDBF, int hEntity, int iField,
 	        szSField[psDBF->panFieldSize[iField]] = '\0';
                 nRetResult = FALSE;
             }
-	    strncpy((char *) (pabyRec+psDBF->panFieldOffset[iField]),
-		    szSField, strlen(szSField) );
+	    strcpy_s((char *) (pabyRec+psDBF->panFieldOffset[iField]),  psDBF->panFieldSize[iField], szSField);
 	}
 	break;
 
@@ -1390,8 +1387,7 @@ static int DBFWriteAttribute(DBFHandle psDBF, int hEntity, int iField,
 	    j = strlen((char *) pValue);
         }
 
-	strncpy((char *) (pabyRec+psDBF->panFieldOffset[iField]),
-		(char *) pValue, j );
+	strncpy((char *) (pabyRec+psDBF->panFieldOffset[iField]), j, "%s", (char *) pValue );
 	break;
     }
 
@@ -1459,8 +1455,7 @@ DBFWriteAttributeDirectly(DBFHandle psDBF, int hEntity, int iField,
         j = strlen((char *) pValue);
     }
 
-    strncpy((char *) (pabyRec+psDBF->panFieldOffset[iField]),
-            (char *) pValue, j );
+    snprintf((char *) (pabyRec+psDBF->panFieldOffset[iField]), j, "%s",     (char *) pValue );
 
     psDBF->bCurrentRecordModified = TRUE;
     psDBF->bUpdated = TRUE;
@@ -1706,14 +1701,14 @@ DBFGetFieldIndex(DBFHandle psDBF, const char *pszFieldName)
     char          name[12], name1[12], name2[12];
     int           i;
 
-    strncpy(name1, pszFieldName,11);
+    snprintf(name1, 11, "%s", pszFieldName);
     name1[11] = '\0';
     str_to_upper(name1);
 
     for( i = 0; i < DBFGetFieldCount(psDBF); i++ )
     {
         DBFGetFieldInfo( psDBF, i, name, NULL, NULL );
-        strncpy(name2,name,11);
+        snprintf(name2,11, "%s",name);
         str_to_upper(name2);
 
         if(!strncmp(name1,name2,10))
@@ -2084,10 +2079,7 @@ DBFAlterFieldDefn( DBFHandle psDBF, int iField, const char * pszFieldName,
     for( i = 0; i < 32; i++ )
         pszFInfo[i] = '\0';
 
-    if( (int) strlen(pszFieldName) < 10 )
-        strncpy( pszFInfo, pszFieldName, strlen(pszFieldName));
-    else
-        strncpy( pszFInfo, pszFieldName, 10);
+    strncpy( pszFInfo, 10, "%s", pszFieldName);
 
     pszFInfo[11] = psDBF->pachFieldType[iField];
 
