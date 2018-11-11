@@ -871,7 +871,7 @@ DBFAddNativeFieldType(DBFHandle psDBF, const char *pszFieldName, char chType, in
 	for (i = 0; i < 32; i++)
 		pszFInfo[i] = '\0';
 
-	snprintf(pszFInfo, 11, '%s', pszFieldName);
+	snprintf(pszFInfo, 11, "%s", pszFieldName);
 
 	pszFInfo[11] = psDBF->pachFieldType[psDBF->nFields - 1];
 
