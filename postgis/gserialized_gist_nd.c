@@ -796,7 +796,7 @@ Datum gserialized_gidx_geom_within(PG_FUNCTION_ARGS)
 {
 	GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
 
-	if (gserialized_datum_predicate_geom_gidx(PG_GETARG_DATUM(1), gidx, gidx_contains)
+	if (gserialized_datum_predicate_geom_gidx(PG_GETARG_DATUM(1), gidx, gidx_contains))
 		PG_RETURN_BOOL(true);
 
 	PG_RETURN_BOOL(false);
