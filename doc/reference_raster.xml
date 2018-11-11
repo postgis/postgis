@@ -5314,7 +5314,7 @@ GROUP BY (foo.geomval).val;
 			<refsection>
 				<title>Description</title>
 				<para>
-					Returns modified raster resulting from setting specified pixels to new value(s) for the designated band.
+					Returns modified raster resulting from setting specified pixels to new value(s) for the designated band. <varname>columnx</varname> and <varname>rowy</varname> are 1-indexed.
 				</para>
 
 				<para>
