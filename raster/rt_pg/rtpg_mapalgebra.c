@@ -1464,9 +1464,9 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-		strncpy(sql, "SELECT (", strlen("SELECT ("));
-		strncpy(sql + strlen("SELECT ("), expr, strlen(expr));
-		strncpy(sql + strlen("SELECT (") + strlen(expr), ")::double precision", strlen(")::double precision"));
+		memcpy(sql, "SELECT (", strlen("SELECT ("));
+		memcpy(sql + strlen("SELECT ("), expr, strlen(expr));
+		memcpy(sql + strlen("SELECT (") + strlen(expr), ")::double precision", strlen(")::double precision"));
 		sql[len] = '\0';
 
 		POSTGIS_RT_DEBUGF(3, "sql #%d: %s", exprpos[i], sql);
@@ -6676,9 +6676,9 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						PG_RETURN_NULL();
 					}
 
-					strncpy(sql, "SELECT (", strlen("SELECT ("));
-					strncpy(sql + strlen("SELECT ("), expr, strlen(expr));
-					strncpy(sql + strlen("SELECT (") + strlen(expr), ")::double precision", strlen(")::double precision"));
+					memcpy(sql, "SELECT (", strlen("SELECT ("));
+					memcpy(sql + strlen("SELECT ("), expr, strlen(expr));
+					memcpy(sql + strlen("SELECT (") + strlen(expr), ")::double precision", strlen(")::double precision"));
 					sql[len] = '\0';
 
 					POSTGIS_RT_DEBUGF(3, "sql #%d: %s", i, sql);

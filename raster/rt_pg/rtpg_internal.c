@@ -127,11 +127,11 @@ rtpg_chartrim(const char *input, char *remove) {
 		offset++;
 
 	rtn = palloc(sizeof(char) * (strlen(input) - offset + 1));
-	if (rtn == NULL) {
+	if (!rtn) {
 		fprintf(stderr, "Not enough memory\n");
 		return NULL;
 	}
-	strncpy(rtn, input, strlen(input) - offset);
+	memcmp(rtn, input, strlen(input) - offset);
 	rtn[strlen(input) - offset] = '\0';
 
 	return rtn;
