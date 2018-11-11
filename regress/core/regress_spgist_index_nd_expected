@@ -1,0 +1,4 @@
+&&&|180502|Seq Scan|180502|Index Scan
+~~ |39682|Seq Scan|39682|Index Scan
+@@ |39682|Seq Scan|39682|Index Scan
+~~=|480|Seq Scan|480|Index Scan
