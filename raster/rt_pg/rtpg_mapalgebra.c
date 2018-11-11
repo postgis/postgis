@@ -1466,9 +1466,9 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-		strncpy(sql, "SELECT (", strlen("SELECT ("));
-		strncpy(sql + strlen("SELECT ("), expr, strlen(expr));
-		strncpy(sql + strlen("SELECT (") + strlen(expr), ")::double precision", strlen(")::double precision"));
+		memcpy(sql, "SELECT (", strlen("SELECT ("));
+		memcpy(sql + strlen("SELECT ("), expr, strlen(expr));
+		memcpy(sql + strlen("SELECT (") + strlen(expr), ")::double precision", strlen(")::double precision"));
 		sql[len] = '\0';
 
 		POSTGIS_RT_DEBUGF(3, "sql #%d: %s", exprpos[i], sql);
@@ -4632,9 +4632,9 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         len = strlen("SELECT (") + strlen(expression) + strlen(")::double precision");
         initexpr = (char *)palloc(len + 1);
 
-        strncpy(initexpr, "SELECT (", strlen("SELECT ("));
-        strncpy(initexpr + strlen("SELECT ("), expression, strlen(expression));
-				strncpy(initexpr + strlen("SELECT (") + strlen(expression), ")::double precision", strlen(")::double precision"));
+        memcpy(initexpr, "SELECT (", strlen("SELECT ("));
+        memcpy(initexpr + strlen("SELECT ("), expression, strlen(expression));
+        memcpy(initexpr + strlen("SELECT (") + strlen(expression), ")::double precision", strlen(")::double precision"));
         initexpr[len] = '\0';
 
         POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: Expression is %s", initexpr);
@@ -6677,9 +6677,9 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						PG_RETURN_NULL();
 					}
 
-					strncpy(sql, "SELECT (", strlen("SELECT ("));
-					strncpy(sql + strlen("SELECT ("), expr, strlen(expr));
-					strncpy(sql + strlen("SELECT (") + strlen(expr), ")::double precision", strlen(")::double precision"));
+					memcpy(sql, "SELECT (", strlen("SELECT ("));
+					memcpy(sql + strlen("SELECT ("), expr, strlen(expr));
+					memcpy(sql + strlen("SELECT (") + strlen(expr), ")::double precision", strlen(")::double precision"));
 					sql[len] = '\0';
 
 					POSTGIS_RT_DEBUGF(3, "sql #%d: %s", i, sql);
