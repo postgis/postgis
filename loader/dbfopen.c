@@ -1334,10 +1334,7 @@ DBFWriteAttribute(DBFHandle psDBF, int hEntity, int iField, void *pValue)
 				szSField[psDBF->panFieldSize[iField]] = '\0';
 				nRetResult = FALSE;
 			}
-			snprintf((char *)(pabyRec + psDBF->panFieldOffset[iField]),
-				 psDBF->panFieldSize[iField],
-				 "%s",
-				 szSField);
+			snprintf((char *)(pabyRec + psDBF->panFieldOffset[iField]), nWidth, "%s", szSField);
 		}
 		else
 		{
@@ -1353,8 +1350,10 @@ DBFWriteAttribute(DBFHandle psDBF, int hEntity, int iField, void *pValue)
 				szSField[psDBF->panFieldSize[iField]] = '\0';
 				nRetResult = FALSE;
 			}
-			strcpy_s(
-			    (char *)(pabyRec + psDBF->panFieldOffset[iField]), psDBF->panFieldSize[iField], szSField);
+			snprintf((char *)(pabyRec + psDBF->panFieldOffset[iField]),
+				 nWidth,
+				 "%s",
+				 psDBF->panFieldSize[iField]);
 		}
 		break;
 
@@ -1375,7 +1374,7 @@ DBFWriteAttribute(DBFHandle psDBF, int hEntity, int iField, void *pValue)
 			j = strlen((char *)pValue);
 		}
 
-		strncpy((char *)(pabyRec + psDBF->panFieldOffset[iField]), j, "%s", (char *)pValue);
+		snprintf((char *)(pabyRec + psDBF->panFieldOffset[iField]), j, "%s", (char *)pValue);
 		break;
 	}
 
@@ -2053,7 +2052,7 @@ DBFAlterFieldDefn(DBFHandle psDBF, int iField, const char *pszFieldName, char ch
 	for (i = 0; i < 32; i++)
 		pszFInfo[i] = '\0';
 
-	strncpy(pszFInfo, 10, "%s", pszFieldName);
+	snprintf(pszFInfo, 10, "%s", pszFieldName);
 
 	pszFInfo[11] = psDBF->pachFieldType[iField];
 
