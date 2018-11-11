@@ -1350,10 +1350,7 @@ DBFWriteAttribute(DBFHandle psDBF, int hEntity, int iField, void *pValue)
 				szSField[psDBF->panFieldSize[iField]] = '\0';
 				nRetResult = FALSE;
 			}
-			snprintf((char *)(pabyRec + psDBF->panFieldOffset[iField]),
-				 nWidth,
-				 "%s",
-				 psDBF->panFieldSize[iField]);
+			snprintf((char *)(pabyRec + psDBF->panFieldOffset[iField]), nWidth, "%s", szSField);
 		}
 		break;
 
@@ -1679,7 +1676,6 @@ str_to_upper(char *string)
 
 int SHPAPI_CALL
 DBFGetFieldIndex(DBFHandle psDBF, const char *pszFieldName)
-
 {
 	char name[12], name1[12], name2[12];
 	int i;
@@ -1691,11 +1687,11 @@ DBFGetFieldIndex(DBFHandle psDBF, const char *pszFieldName)
 	for (i = 0; i < DBFGetFieldCount(psDBF); i++)
 	{
 		DBFGetFieldInfo(psDBF, i, name, NULL, NULL);
-		snprintf(name2, 11, "%s", name);
+		snprintf(name2, 12, "%s", name);
 		str_to_upper(name2);
 
 		if (!strncmp(name1, name2, 10))
-			return (i);
+			return i;
 	}
 	return (-1);
 }
@@ -1709,7 +1705,6 @@ DBFGetFieldIndex(DBFHandle psDBF, const char *pszFieldName)
 
 int SHPAPI_CALL
 DBFIsRecordDeleted(DBFHandle psDBF, int iShape)
-
 {
 	/* -------------------------------------------------------------------- */
 	/*      Verify selection.                                               */
