@@ -233,7 +233,9 @@ endif
 ifeq ($(HAVE_SPGIST),yes)
 	TESTS += \
 	regress_spgist_index_2d \
-	regress_spgist_index_3d
+	regress_spgist_index_3d \
+	regress_spgist_index_nd #\
+#	regress_gist_index_nd
 endif
 
 ifeq ($(HAVE_PROTOBUF),yes)

@@ -28,6 +28,7 @@
 #include "fmgr.h"
 #include "utils/elog.h"
 #include "utils/geo_decls.h"
+#include "gserialized_spgist_3d.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"

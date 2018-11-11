@@ -9,8 +9,7 @@ env:
   - tag=pg11-geos37-gdal23-proj52
   - tag=pg10-geos36-gdal23-proj49
   - tag=pg96-geos36-gdal22-proj49
-  - tag=pg95-geos36-gdal22-proj49
-  - tag=pg94-geos35-gdal111-proj48
+  - tag=pg95-geos35-gdal111-proj48
 
 matrix:
   allow_failures:

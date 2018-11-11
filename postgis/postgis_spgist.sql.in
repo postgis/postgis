@@ -163,4 +163,107 @@ CREATE OPERATOR CLASS spgist_geometry_ops_3d
 	FUNCTION	4	geometry_spgist_inner_consistent_3d(internal, internal),
 	FUNCTION	5	geometry_spgist_leaf_consistent_3d(internal, internal),
 	FUNCTION	6	geometry_spgist_compress_3d(internal);
+
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- SP-GiST ND Support Functions
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- Geometry
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_config_nd(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_config_nd'
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_choose_nd(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_choose_nd'
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_picksplit_nd(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_picksplit_nd'
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_inner_consistent_nd(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_inner_consistent_nd'
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_leaf_consistent_nd(internal, internal)
+	RETURNS bool
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_leaf_consistent_nd'
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geometry_spgist_compress_nd(internal)
+	RETURNS internal
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_compress_nd'
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 2.5.0
+CREATE OPERATOR CLASS spgist_geometry_ops_nd
+	FOR TYPE geometry USING SPGIST AS
+	OPERATOR        3        &&& ,
+	OPERATOR        6        ~~=	,
+	OPERATOR        7        ~~	,
+	OPERATOR        8       @@ 	,
+	FUNCTION		1		geometry_spgist_config_nd(internal, internal),
+	FUNCTION		2		geometry_spgist_choose_nd(internal, internal),
+	FUNCTION		3		geometry_spgist_picksplit_nd(internal, internal),
+	FUNCTION		4		geometry_spgist_inner_consistent_nd(internal, internal),
+	FUNCTION		5		geometry_spgist_leaf_consistent_nd(internal, internal),
+	FUNCTION		6		geometry_spgist_compress_nd(internal);
+
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- Geography
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geography_spgist_config_nd(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_config_nd'
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geography_spgist_choose_nd(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_choose_nd'
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geography_spgist_picksplit_nd(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_picksplit_nd'
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geography_spgist_inner_consistent_nd(internal, internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_inner_consistent_nd'
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geography_spgist_leaf_consistent_nd(internal, internal)
+	RETURNS bool
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_leaf_consistent_nd'
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION geography_spgist_compress_nd(internal)
+	RETURNS internal
+	AS 'MODULE_PATHNAME' ,'gserialized_spgist_compress_nd'
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 2.5.0
+CREATE OPERATOR CLASS spgist_geography_ops_nd
+	DEFAULT FOR TYPE geography USING SPGIST AS
+	OPERATOR        3        && ,
+--	OPERATOR        6        ~=	,
+--	OPERATOR        7        ~	,
+--	OPERATOR        8        @	,
+	FUNCTION		1		geography_spgist_config_nd(internal, internal),
+	FUNCTION		2		geography_spgist_choose_nd(internal, internal),
+	FUNCTION		3		geography_spgist_picksplit_nd(internal, internal),
+	FUNCTION		4		geography_spgist_inner_consistent_nd(internal, internal),
+	FUNCTION		5		geography_spgist_leaf_consistent_nd(internal, internal),
+	FUNCTION		6		geography_spgist_compress_nd(internal);
+
 #endif
