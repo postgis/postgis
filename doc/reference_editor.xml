@@ -1652,7 +1652,8 @@ point are equivalent to no scaling the corresponding dimension.
 
 		<para>Availability: 1.1.0.</para>
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-		<para>Enhanced: 2.2.0 support for scaling all dimension (geometry parameter) was introduced.</para>
+                <para>Enhanced: 2.2.0 support for scaling all dimension (<varname>factor</varname> parameter) was introduced.</para>
+                <para>Enhanced: 2.5.0 support for scaling relative to a local origin (<varname>origin</varname> parameter) was introduced.</para>
 		<para>&P_support;</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
