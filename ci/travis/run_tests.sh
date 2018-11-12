@@ -8,7 +8,7 @@ WARNINGS_DISABLED="-Wno-unused-parameter -Wno-implicit-fallthrough -Wno-unknown-
 CFLAGS_STD="-g -O2 -mtune=generic -fno-omit-frame-pointer ${WARNINGS} ${WARNINGS_DISABLED}"
 LDFLAGS_STD="-Wl,-Bsymbolic-functions -Wl,-z,relro"
 
-# Second build with coverage and debugging code enabled
+# Flags for coverage build
 CFLAGS_COV="-g -O0 --coverage"
 LDFLAGS_COV="--coverage"
 
@@ -18,8 +18,15 @@ export CUNIT_VALGRIND_FLAGS="--leak-check=full --error-exitcode=1"
 /usr/local/pgsql/bin/pg_ctl -c -l /tmp/logfile start
 ./autogen.sh
 
+# Standard build
 ./configure CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_STD}"
 bash ./ci/travis/logbt -- make -j check RUNTESTFLAGS=--verbose
 
+# Check that compilation works at nonzero POSTGIS_DEBUG_LEVEL
+./configure --enable-debug # sets PARANOIA_LEVEL
+sed -i 's/POSTGIS_DEBUG_LEVEL [0-9]$/POSTGIS_DEBUG_LEVEL 4/' postgis_config.h
+make
+
+# Coverage build
 ./configure CFLAGS="${CFLAGS_COV}" LDFLAGS="${LDFLAGS_COV}" --enable-debug
 make -j check
