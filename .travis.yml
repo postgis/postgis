@@ -7,6 +7,7 @@ language: c
 env:
   - tag=latest mode=tests
   - tag=pg11-geos37-gdal23-proj52 mode=debug
+  - tag=pg11-geos37-gdal23-proj52 mode=coverage
   - tag=pg11-geos37-gdal23-proj52 mode=tests
   - tag=pg10-geos36-gdal23-proj49 mode=tests
   - tag=pg96-geos36-gdal22-proj49 mode=tests
@@ -15,6 +16,7 @@ env:
 matrix:
   allow_failures:
     - env: tag=latest mode=tests
+    - env: tag=pg11-geos37-gdal23-proj52 mode=coverage
 
 script:
   - echo "/tmp/logbt-coredumps/core.%p.%E" | sudo tee /proc/sys/kernel/core_pattern
@@ -22,16 +24,11 @@ script:
   - echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
   - echo "CMD bash ci/travis/run_${mode}.sh" >> Dockerfile
   - docker build -t pgtest .
-  - docker run --name pgtest-${TRAVIS_BUILD_NUMBER} pgtest
+  - ci_env=`bash .github/codecov_env.bash`
+  - docker run $ci_env --name pgtest-${TRAVIS_BUILD_NUMBER} pgtest
 
 after_success:
   - docker rm pgtest-${TRAVIS_BUILD_NUMBER}
-  - echo "FROM postgis/postgis-build-env:${tag}" > Dockerfile
-  - echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
-  - echo "CMD bash ci/travis/run_coverage.sh && bash .github/codecov.bash" >> Dockerfile
-  - docker build -t pgtest .
-  - ci_env=`bash .github/codecov_env.bash`
-  - docker run $ci_env --name pgtest-coverage-${TRAVIS_BUILD_NUMBER} pgtest
 
 notifications:
   email: false
