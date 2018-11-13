@@ -124,16 +124,6 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 /************************************************************************/
 
 
-/* Fall back to older finite() if necessary */
-#ifndef HAVE_ISFINITE
-# ifdef HAVE_GNU_ISFINITE
-#  define _GNU_SOURCE
-# else
-#  define isfinite finite
-# endif
-#endif
-
-
 /* Prototypes */
 Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS);
 Datum gserialized_gist_joinsel_2d(PG_FUNCTION_ARGS);

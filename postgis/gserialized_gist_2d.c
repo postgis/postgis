@@ -50,14 +50,6 @@
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h"	     /* For utility functions. */
 
-/* Fall back to older finite() if necessary */
-#ifndef HAVE_ISFINITE
-# ifdef HAVE_GNU_ISFINITE
-#  define _GNU_SOURCE
-# else
-#  define isfinite finite
-# endif
-#endif
 
 #include <float.h> /* For FLT_MAX */
 

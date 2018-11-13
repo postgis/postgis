@@ -165,26 +165,6 @@ AC_CHECK_FUNC(asprintf, AC_DEFINE([HAVE_ASPRINTF]))
 AC_FUNC_FSEEKO()
 
 dnl
-dnl First see if we have isfinite in basic header
-dnl then check to see if it's a GNU extension
-dnl
-AC_CHECK_DECL(isfinite,
-  [AC_DEFINE([HAVE_ISFINITE])],
-  [],
-  [#include <math.h>])
-
-dnl Clear the cache
-unset ac_cv_have_decl_isfinite
-
-AC_CHECK_DECL(isfinite,
-  AC_DEFINE([HAVE_GNU_ISFINITE]),
-  [],
-  [[
-    #define _GNU_SOURCE
-    #include <math.h>
-  ]])
-
-dnl
 dnl MingW requires use of pwd -W to give proper Windows (not MingW) paths
 dnl for in-place regression tests
 dnl

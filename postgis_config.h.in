@@ -29,8 +29,6 @@
 /* Define for some functions we are interested in */
 #undef HAVE_VASPRINTF
 #undef HAVE_ASPRINTF
-#undef HAVE_ISFINITE
-#undef HAVE_GNU_ISFINITE
 #undef HAVE_FSEEKO
 #undef HAVE_STRCASESTR
 

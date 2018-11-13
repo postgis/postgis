@@ -50,15 +50,6 @@
 
 #include <assert.h>
 
-/* Fall back to older finite() if necessary */
-#ifndef HAVE_ISFINITE
-#ifdef HAVE_GNU_ISFINITE
-#define _GNU_SOURCE
-#else
-#define isfinite finite
-#endif
-#endif
-
 /*
 ** When is a node split not so good? If more than 90% of the entries
 ** end up in one of the children.
