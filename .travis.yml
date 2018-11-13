@@ -19,12 +19,17 @@ script:
   - echo "/tmp/logbt-coredumps/core.%p.%E" | sudo tee /proc/sys/kernel/core_pattern
   - echo "FROM postgis/postgis-build-env:${tag}" > Dockerfile
   - echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
-  - echo "CMD bash ci/travis/run_tests.sh && bash .github/codecov.bash" >> Dockerfile
+  - echo "CMD bash ci/travis/run_tests.sh" >> Dockerfile
+  - docker build -t pgtest .
+  - docker run --name pgtest-${TRAVIS_BUILD_NUMBER} pgtest
+
+after_success:
+  - echo "FROM postgis/postgis-build-env:${tag}" > Dockerfile
+  - echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
+  - echo "CMD bash ci/travis/run_coverage.sh && bash .github/codecov.bash" >> Dockerfile
   - docker build -t pgtest .
   - ci_env=`bash .github/codecov_env.bash`
   - docker run $ci_env --name pgtest-${TRAVIS_BUILD_NUMBER} pgtest
-
-after_success:
   - docker rm pgtest-${TRAVIS_BUILD_NUMBER}
 
 notifications:
