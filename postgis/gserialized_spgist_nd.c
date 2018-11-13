@@ -64,7 +64,7 @@
  * that we don't yet have as infinity.
  *
  * Portions Copyright (c) 2018, Esteban Zimanyi, Arthur Lesuisse,
- * 		Université Libre de Bruxelles
+ * 		UniversitÃ© Libre de Bruxelles
  * Portions Copyright (c) 1996-2016, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
@@ -314,47 +314,47 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 	spgPickSplitOut *out = (spgPickSplitOut *)PG_GETARG_POINTER(1);
 	GIDX *box, *centroid;
 	float *lowXs, *highXs;
-	int ndims, maxdims = -1, count[GIDX_MAX_DIM], median, i, j;
+	int ndims, maxdims = -1, count[GIDX_MAX_DIM], median, dim, tuple;
 
-	for (i = 0; i < GIDX_MAX_DIM; i++)
-		count[i] = 0;
+	for (dim = 0; dim < GIDX_MAX_DIM; dim++)
+		count[dim] = 0;
 
 	lowXs = palloc(sizeof(float) * in->nTuples * GIDX_MAX_DIM),
 	highXs = palloc(sizeof(float) * in->nTuples * GIDX_MAX_DIM);
 
-	/* Calculate median of all ND coordinates */
-	for (i = 0; i < in->nTuples; i++)
+	/* Calculate maxdims median of all ND coordinates */
+	for (tuple = 0; tuple < in->nTuples; tuple++)
 	{
-		box = (GIDX *)DatumGetPointer(in->datums[i]);
+		box = (GIDX *)DatumGetPointer(in->datums[tuple]);
 		ndims = GIDX_NDIMS(box);
 		if (maxdims < ndims)
 			maxdims = ndims;
-		for (j = 0; j < ndims; j++)
+		for (dim = 0; dim < ndims; dim++)
 		{
 			/* If the missing dimension was not padded with -+FLT_MAX */
-			if (GIDX_GET_MAX(box, i) != FLT_MAX)
+			if (GIDX_GET_MAX(box, dim) != FLT_MAX)
 			{
-				lowXs[j * in->nTuples + count[j]] = GIDX_GET_MIN(box, j);
-				highXs[j * in->nTuples + count[j]] = GIDX_GET_MAX(box, j);
-				count[j]++;
+				lowXs[dim * in->nTuples + count[dim]] = GIDX_GET_MIN(box, dim);
+				highXs[dim * in->nTuples + count[dim]] = GIDX_GET_MAX(box, dim);
+				count[dim]++;
 			}
 		}
 	}
 
-	for (i = 0; i < maxdims; i++)
+	for (dim = 0; dim < maxdims; dim++)
 	{
-		qsort(&lowXs[i * in->nTuples], count[i], sizeof(float), compareFloats);
-		qsort(&highXs[i * in->nTuples], count[i], sizeof(float), compareFloats);
+		qsort(&lowXs[dim * in->nTuples], count[dim], sizeof(float), compareFloats);
+		qsort(&highXs[dim * in->nTuples], count[dim], sizeof(float), compareFloats);
 	}
 
 	centroid = (GIDX *)palloc(GIDX_SIZE(maxdims));
 	SET_VARSIZE(centroid, GIDX_SIZE(maxdims));
 
-	for (i = 0; i < maxdims; i++)
+	for (dim = 0; dim < maxdims; dim++)
 	{
-		median = count[i] / 2;
-		GIDX_SET_MIN(centroid, i, lowXs[i * in->nTuples + median]);
-		GIDX_SET_MAX(centroid, i, highXs[i * in->nTuples + median]);
+		median = count[dim] / 2;
+		GIDX_SET_MIN(centroid, dim, lowXs[dim * in->nTuples + median]);
+		GIDX_SET_MAX(centroid, dim, highXs[dim * in->nTuples + median]);
 	}
 
 	/* Fill the output */
@@ -371,13 +371,13 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 	 * Assign ranges to corresponding nodes according to octants relative to
 	 * the "centroid" range
 	 */
-	for (i = 0; i < in->nTuples; i++)
+	for (tuple = 0; tuple < in->nTuples; tuple++)
 	{
-		GIDX *box = (GIDX *)DatumGetPointer(in->datums[i]);
+		GIDX *box = (GIDX *)DatumGetPointer(in->datums[tuple]);
 		uint16_t octant = getOctant(centroid, box);
 
-		out->leafTupleDatums[i] = PointerGetDatum(box);
-		out->mapTuplesToNodes[i] = octant;
+		out->leafTupleDatums[tuple] = PointerGetDatum(box);
+		out->mapTuplesToNodes[tuple] = octant;
 	}
 
 	pfree(lowXs);
