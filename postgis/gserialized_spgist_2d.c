@@ -679,8 +679,6 @@ PGDLLEXPORT Datum gserialized_spgist_compress_2d(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(bbox_out);
 	}
 
-	POSTGIS_DEBUGF(4, "[SPGIST] got box: %s", box2df_to_string(bbox_out));
-
 	/* Check all the dimensions for finite values */
 	if ((!isfinite(bbox_out->xmax) || !isfinite(bbox_out->xmin)) ||
 	    (!isfinite(bbox_out->ymax) || !isfinite(bbox_out->ymin)))

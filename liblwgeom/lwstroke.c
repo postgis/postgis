@@ -178,8 +178,11 @@ static double angle_increment_using_max_deviation(double max_deviation, double r
 	if ( maxErr > radius * 2 )
 	{
 		maxErr = radius * 2;
-		LWDEBUGF(2, "lwarc_linearize: tolerance %g is too big, "
-			    "using arc-max 2 * radius == %g", tol, maxErr);
+		LWDEBUGF(2,
+			 "lwarc_linearize: tolerance %g is too big, "
+			 "using arc-max 2 * radius == %g",
+			 max_deviation,
+			 maxErr);
 	}
 	do {
 		halfAngle = acos( 1.0 - maxErr / radius );
@@ -191,7 +194,13 @@ static double angle_increment_using_max_deviation(double max_deviation, double r
 		maxErr *= 2;
 	} while(1);
 	increment = 2 * halfAngle;
-	LWDEBUGF(2, "lwarc_linearize: maxDiff:%g, radius:%g, halfAngle:%g, increment:%g (%g degrees)", tol, radius, halfAngle, increment, increment*180/M_PI);
+	LWDEBUGF(2,
+		 "lwarc_linearize: maxDiff:%g, radius:%g, halfAngle:%g, increment:%g (%g degrees)",
+		 max_deviation,
+		 radius,
+		 halfAngle,
+		 increment,
+		 increment * 180 / M_PI);
 
 	return increment;
 }
@@ -337,12 +346,11 @@ lwarc_linearize(POINTARRAY *to,
 	}
 
 	if ( flags & LW_LINEARIZE_FLAG_SYMMETRIC )
-	{{
-		LWDEBUGF(2, "lwarc_linearize SYMMETRIC requested - total angle %g deg",
-			         angle * 180 / M_PI);
+	{
+		LWDEBUGF(2, "lwarc_linearize SYMMETRIC requested - total angle %g deg", total_angle * 180 / M_PI);
 
 		if ( flags & LW_LINEARIZE_FLAG_RETAIN_ANGLE )
-		{{
+		{
 			/* Number of complete steps */
 			int steps = trunc(total_angle / increment);
 
@@ -360,9 +368,9 @@ lwarc_linearize(POINTARRAY *to,
 			         "total angle %g, steps %d, increment %g, remainder %g",
 			         total_angle * 180 / M_PI, steps, increment * 180 / M_PI,
 			         angle_remainder * 180 / M_PI);
-		}}
+		}
 		else
-		{{
+		{
 			/* Number of segments in output */
 			int segs = ceil(total_angle / increment);
 			/* Tweak increment to be regular for all the arc */
@@ -372,8 +380,8 @@ lwarc_linearize(POINTARRAY *to,
 							"total angle %g degrees - LINESTRING(%g %g,%g %g,%g %g) - S:%d -   I:%g",
 							total_angle*180/M_PI, p1->x, p1->y, center.x, center.y, p3->x, p3->y,
 							segs, increment*180/M_PI);
-		}}
-	}}
+		}
+	}
 
 	/* p2 on left side => clockwise sweep */
 	if ( clockwise )
