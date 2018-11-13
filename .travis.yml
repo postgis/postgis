@@ -14,7 +14,7 @@ env:
 
 matrix:
   allow_failures:
-    - env: tag=latest
+    - env: tag=latest mode=tests
 
 script:
   - echo "/tmp/logbt-coredumps/core.%p.%E" | sudo tee /proc/sys/kernel/core_pattern
