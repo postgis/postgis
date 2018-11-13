@@ -824,13 +824,13 @@ CREATE OPERATOR &&& (
 	JOIN = gserialized_gist_joinsel_nd
 );
 
--- Availability: 2.5.0
+-- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geometry_contains_nd(geometry, geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME' ,'gserialized_contains'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 2.5.0
+-- Availability: 3.0.0
 CREATE OPERATOR ~~ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contains_nd,
 	COMMUTATOR = '@@',
@@ -838,13 +838,13 @@ CREATE OPERATOR ~~ (
 	JOIN = gserialized_gist_joinsel_nd
 );
 
--- Availability: 2.5.0
+-- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geometry_within_nd(geometry, geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME' ,'gserialized_within'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 2.5.0
+-- Availability: 3.0.0
 CREATE OPERATOR @@ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_within_nd,
 	COMMUTATOR = '~~',
@@ -852,13 +852,13 @@ CREATE OPERATOR @@ (
 	JOIN = gserialized_gist_joinsel_nd
 );
 
--- Availability: 2.5.0
+-- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geometry_same_nd(geometry, geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME' ,'gserialized_same'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 2.5.0
+-- Availability: 3.0.0
 CREATE OPERATOR ~~= (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_same_nd,
 	COMMUTATOR = '~~=',
