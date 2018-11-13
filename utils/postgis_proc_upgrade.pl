@@ -402,7 +402,7 @@ EOF
 					chop $subdefn;
 					$subdefn =~ s/[,;]$//; # strip ending comma or semicolon
 					# argument types must be specified in ALTER OPERATOR FAMILY
-					if ( $subdefn =~ m/\s+(OPERATOR.*)(FOR.*)/ )
+					if ( $subdefn =~ m/\s+(OPERATOR.*)/ )
 					{
 						$subdefn = $1.'('.$opctype.','.$opctype.') '.$2;
 					}

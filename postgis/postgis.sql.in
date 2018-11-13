@@ -908,11 +908,11 @@ CREATE OPERATOR CLASS gist_geometry_ops_nd
 	FOR TYPE geometry USING GIST AS
 	STORAGE 	gidx,
 	OPERATOR        3        &&&	,
-	-- Availability: 2.5.0
+	-- Availability: 3.0.0
 	OPERATOR        6        ~~=	,
-	-- Availability: 2.5.0
+	-- Availability: 3.0.0
 	OPERATOR        7        ~~	,
-	-- Availability: 2.5.0
+	-- Availability: 3.0.0
 	OPERATOR        8        @@	,
 	-- Availability: 2.2.0
 	OPERATOR        13       <<->> FOR ORDER BY pg_catalog.float_ops,
