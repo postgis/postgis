@@ -6568,8 +6568,8 @@ FROM (
 
 				<para>When the new scalex or scaley is not a divisor of the raster width or height, the extent of the resulting raster is expanded to encompass the extent of the provided raster. If you want to be sure to retain exact input extent see <xref linkend="RT_ST_Resize" /></para>
 
-				<para>A maxerror percent of 0.125 is used if no <varname>maxerr</varname> is specified.</para>
-
+				<para>A maxerr is the threshold for transformation approximation by the resampling algorithm (in pixel units).A maxerror percent of 0.125 is used if no <varname>maxerr</varname> is specified, which is the same value used in GDAL gdalwarp utility. if set to zero, no approximation takes place. </para>
+   
 				<note><para>Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. </para></note>
 
 				<note><para>ST_Rescale is different from <xref linkend="RT_ST_SetScale" /> in that ST_SetScale do not resample the raster to match the raster extent. ST_SetScale only changes the metadata (or georeference) of the raster to correct an originally mis-specified scaling. ST_Rescale results in a raster having different width and height computed to fit the geographic extent of the input raster. ST_SetScale do not modify the width, nor the height of the raster.</para></note>
