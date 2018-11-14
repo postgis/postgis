@@ -6568,7 +6568,7 @@ FROM (
 
 				<para>When the new scalex or scaley is not a divisor of the raster width or height, the extent of the resulting raster is expanded to encompass the extent of the provided raster. If you want to be sure to retain exact input extent see <xref linkend="RT_ST_Resize" /></para>
 
-				<para>A maxerr is the threshold for transformation approximation by the resampling algorithm (in pixel units).A maxerror percent of 0.125 is used if no <varname>maxerr</varname> is specified, which is the same value used in GDAL gdalwarp utility. if set to zero, no approximation takes place. </para>
+				<para><varname>maxerr</varname> is the threshold for transformation approximation by the resampling algorithm (in pixel units). A default of 0.125 is used if no <varname>maxerr</varname> is specified, which is the same value used in GDAL gdalwarp utility. If set to zero, no approximation takes place.</para>
    
 				<note><para>Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. </para></note>
 
