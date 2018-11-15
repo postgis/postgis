@@ -657,7 +657,9 @@ nd_box_expand(ND_BOX *nd_box, double expansion_factor)
 	for ( d = 0; d < ND_DIMS; d++ )
 	{
 		size = nd_box->max[d] - nd_box->min[d];
-		if ( size <= 0 ) continue;
+		/* Avoid expanding boxes that are either too wide or too narrow*/
+		if (size < MIN_DIMENSION_WIDTH || size > MAX_DIMENSION_WIDTH)
+			continue;
 		nd_box->min[d] -= size * expansion_factor / 2;
 		nd_box->max[d] += size * expansion_factor / 2;
 	}
@@ -684,18 +686,26 @@ nd_box_overlap(const ND_STATS *nd_stats, const ND_BOX *nd_box, ND_IBOX *nd_ibox)
 		double smin = nd_stats->extent.min[d];
 		double smax = nd_stats->extent.max[d];
 		double width = smax - smin;
-		int size = roundf(nd_stats->size[d]);
 
-		/* ... find cells the box overlaps with in this dimension */
-		nd_ibox->min[d] = floor(size * (nd_box->min[d] - smin) / width);
-		nd_ibox->max[d] = floor(size * (nd_box->max[d] - smin) / width);
+		if (width < MIN_DIMENSION_WIDTH)
+		{
+			nd_ibox->min[d] = nd_ibox->max[d] = nd_stats->extent.min[d];
+		}
+		else
+		{
+			int size = (int)roundf(nd_stats->size[d]);
 
-		POSTGIS_DEBUGF(5, " stats: dim %d: min %g: max %g: width %g", d, smin, smax, width);
-		POSTGIS_DEBUGF(5, " overlap: dim %d: (%d, %d)", d, nd_ibox->min[d], nd_ibox->max[d]);
+			/* ... find cells the box overlaps with in this dimension */
+			nd_ibox->min[d] = floor(size * (nd_box->min[d] - smin) / width);
+			nd_ibox->max[d] = floor(size * (nd_box->max[d] - smin) / width);
 
-		/* Push any out-of range values into range */
-		nd_ibox->min[d] = Max(nd_ibox->min[d], 0);
-		nd_ibox->max[d] = Min(nd_ibox->max[d], size-1);
+			POSTGIS_DEBUGF(5, " stats: dim %d: min %g: max %g: width %g", d, smin, smax, width);
+			POSTGIS_DEBUGF(5, " overlap: dim %d: (%d, %d)", d, nd_ibox->min[d], nd_ibox->max[d]);
+
+			/* Push any out-of range values into range */
+			nd_ibox->min[d] = Max(nd_ibox->min[d], 0);
+			nd_ibox->max[d] = Min(nd_ibox->max[d], size - 1);
+		}
 	}
 	return true;
 }
@@ -1903,7 +1913,9 @@ Datum gserialized_analyze_nd(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, " attribute stat target: %d", attr->attstattarget);
 
-	/* Setup the minimum rows and the algorithm function */
+	/* Setup the minimum rows and the algorithm function.
+	 * 300 matches the default value set in
+	 * postgresql/src/backend/commands/analyze.c */
 	stats->minrows = 300 * stats->attr->attstattarget;
 	stats->compute_stats = compute_gserialized_stats;
 
