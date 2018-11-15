@@ -35,8 +35,13 @@ char* gidx_to_string(GIDX *a)
 
 	if ( a == NULL )
 		return pstrdup("<NULLPTR>");
-
-	str = (char*)palloc(128); /* 15*2*4+8==128 */
+	/* 4 (GIDX_MAX_DIM) *
+	 * 2 (MAX & MIN) *
+	 * 20 (Max representation (e.g. -3.40282346639e+38) [19] + space)
+	 * = 4*2*20 = 160
+	 * + 9 [ 'GIDX(' = 5, ','  = 1, ' )' = 2 + '\0' = 1]
+	 */
+	str = (char *)palloc(169);
 	rv = str;
 	ndims = GIDX_NDIMS(a);
 

@@ -16,6 +16,7 @@ PostGIS 2.4.6
   - #4216, Return to slicing for bbox access in gserialized (Paul Ramsey)
   - #4136, Proper repeated point removal on small polygons (Paul Ramsey)
   - #4223, ST_DistanceTree error for near parallel boxes (Paul Ramsey)
+  - #4326, Allocate enough memory in gidx_to_string (Raúl Marín)
 
 
 PostGIS 2.4.5
