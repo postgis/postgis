@@ -18,6 +18,7 @@ XXXX/XX/XX
   - Schema qualify more functions for raster (Regina Obe)
   - #4216, Revert non-sliced box access (Paul Ramsey)
   - #2767, Documentation for AddRasterConstraint optional parameters (Sunveer Singh)
+  - #4326, Allocate enough memory in gidx_to_string (Raúl Marín)
 
 
 PostGIS 2.5.0
