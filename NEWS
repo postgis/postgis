@@ -36,6 +36,7 @@ PostGIS 3.0.0
   - #4155, Support for GEOMETRYCOLLECTION, POLYGON, TIN, TRIANGLE in
            ST_LocateBetween and ST_LocateBetweenElevations (Darafei Praliaskouski)
   - #2767, Documentation for AddRasterConstraint optional parameters (Sunveer Singh)
+  - #4326, Allocate enough memory in gidx_to_string (Raúl Marín)
 
 PostGIS 2.5.0
 2018/09/23
