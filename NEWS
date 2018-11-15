@@ -17,6 +17,7 @@ PostGIS 2.4.6
   - #4136, Proper repeated point removal on small polygons (Paul Ramsey)
   - #4223, ST_DistanceTree error for near parallel boxes (Paul Ramsey)
   - #4326, Allocate enough memory in gidx_to_string (Raúl Marín)
+  - #4190, Avoid undefined behaviour in gserialized_estimate
 
 
 PostGIS 2.4.5
