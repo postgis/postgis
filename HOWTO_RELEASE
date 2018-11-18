@@ -95,7 +95,8 @@ Release procedure
 - Announce on e-mail
     - postgis-users
     - postgis-devel
-    - pgsql-announce (send note to david at fetter dot org to be included in Weekly news)
+    - pgsql-announce (when send do not cc: they only accept direct to:)
+    - postgresql weekly news (send note to david at fetter dot org to be included in Weekly news)
     - osgeo-discuss
 - Update web sites
     - PostGIS News

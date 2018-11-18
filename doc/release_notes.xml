@@ -2,6 +2,37 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+        <sect1>
+      <title>Release 2.5.1</title>
+      <para>Release date: 2018/11/18</para>
+      <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
+      <para>Supported PostgreSQL versions for this release are:
+      PostgreSQL 9.4 - PostgreSQL 12 (in development)
+      GEOS &gt;= 3.5</para>
+      <simplesect>
+        <title>Bug Fixes</title>
+            <para>#4183, St_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)</para>
+            <para>#4188, Avoid division by zero in kmeans (Raúl Marín)</para>
+            <para>#4189, Fix undefined behaviour in SADFWrite (Raúl Marín)</para>
+            <para>#4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)</para>
+            <para>#4020, Fix leftovers in topology upgrade from 2.1 (Sandro Santilli)</para>
+            <para>#4206, Fix support for PostgreSQL 12 dev branch (Laurenz Albe)</para>
+            <para>#4211, Fix ST_Subdivide for minimal exterior ring with minimal hole (Darafei
+              Praliaskouski)</para>
+            <para>#3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)</para>
+            <para>#4215, Use floating point compare in ST_DumpAsPolygons (Darafei Praliaskouski)</para>
+            <para>#4217, Fix ST_Subdivide crash on EMPTY in intermediate iterations (Darafei
+              Praliaskouski)</para>
+            <para>#4223, ST_DistanceTree error for near parallel boxes (Paul Ramsey)</para>
+            <para>Schema qualify more functions for raster (Regina Obe)</para>
+            <para>#4216, Revert non-sliced box access (Paul Ramsey)</para>
+            <para>#2767, Documentation for AddRasterConstraint optional parameters (Sunveer Singh)</para>
+            <para>#4326, Allocate enough memory in gidx_to_string (Raúl Marín)</para>
+            <para>#4190, Avoid undefined behaviour in gserialized_estimate</para>
+      </simplesect>
+
+    </sect1>
+
     <sect1>
       <title>Release 2.5.0</title>
       <para>Release date: 2018/09/23</para>
