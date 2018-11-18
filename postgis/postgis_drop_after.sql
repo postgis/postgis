@@ -175,10 +175,6 @@ DROP FUNCTION IF EXISTS _ST_DumpPoints( geometry, integer[]); -- removed 2.4.0, 
 DROP FUNCTION IF EXISTS _ST_DistanceRectTree(g1 geometry, g2 geometry);
 DROP FUNCTION IF EXISTS _ST_DistanceRectTreeCached(g1 geometry, g2 geometry);
 
-DROP FUNCTION IF EXISTS postgis_constraint_srid(text,text,text);
-DROP FUNCTION IF EXISTS postgis_constraint_dims(text,text,text);
-DROP FUNCTION IF EXISTS postgis_constraint_type(text,text,text);
-
 
 -- pgis_abs type was increased from 8 bytes in 2.1 to 16 bytes in 2.2
 -- See #3460
