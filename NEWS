@@ -1,5 +1,5 @@
 PostGIS 2.5.1
-2018/11/xx
+2018/11/18
 
  * Bug fixes *
   - #4183, St_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)
