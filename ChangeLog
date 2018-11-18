@@ -1,3 +1,222 @@
+2018-11-18 08:43  Regina Obe <lr@pcorp.us>
+
+	* [r17023] Prepping for 2.5.1 release
+
+2018-11-15 16:08  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17021] Avoid undefined behaviour in gserialized_estimate
+	  
+	  References #4190
+
+2018-11-15 09:06  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17018] Allocate enough memory in gidx_to_string
+	  
+	  References #4236
+
+2018-11-13 10:47  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17006] Un-break build with debug logs
+	  
+	  Related to #4235
+
+2018-11-12 09:15  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17003] ST_Scale: Document the availability of the origin
+	  parameter
+	  
+	  References #4232
+
+2018-11-08 06:57  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16997] Documentation for AddRasterConstraint optional
+	  parameters
+	  
+	  Patch by Sunveer Singh
+	  
+	  Closes #2767
+	  Closes https://github.com/postgis/postgis/pull/325
+
+2018-11-07 17:56  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16995] Revert change to avoid slicing on box access.
+	  References #4216
+
+2018-11-07 16:50  Regina Obe <lr@pcorp.us>
+
+	* [r16992] Get rid of trailing space
+
+2018-11-07 16:27  Regina Obe <lr@pcorp.us>
+
+	* [r16991] Schema qualify some missed calls in raster plpgsql/sql
+	  functions
+
+2018-11-06 22:26  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16985] Add name to NEWS
+
+2018-11-06 20:30  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16984] Move to "postgis blue" #468
+
+2018-11-05 22:46  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16982] Update news for #4223
+
+2018-11-05 22:36  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16980] Patch over bad behaviour for near-parallel boxes and
+	  distancetree.
+	  Unfortunately, this "fix" is probably breakable, just put the
+	  boxes closer and closer together until we get "close enough to be
+	  the same" results from the edge normal comparison again. Only way
+	  around this is to do dot product and comparisons in
+	  higher-than-double space
+	  References #4223
+
+2018-11-02 22:15  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16974] Try for a responsive font size?
+
+2018-10-30 20:30  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16966] Update icons to new doco versions
+
+2018-10-30 19:50  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16965] Change doc target for debbie to be "html-chunked-web"
+	  for google analytics fragment
+
+2018-10-30 19:47  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16964] Update HTML document styling to new "standard"
+
+2018-10-29 04:10  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16957] Fix typo in r16956
+	  
+	  Closes #4217
+
+2018-10-29 03:22  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16956] ST_Subdivide: don't crash if on some iteration you need
+	  to subdivide Empty
+	  Closes #4217
+
+2018-10-24 14:03  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16947] [raster] Use GDALFPolygonize unconditionally
+	  
+	  GDAL 1.10 is already required and 1.9 contains it, so no check
+	  needed.
+	  
+	  Closes #4215
+
+2018-10-23 13:00  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16941] [raster] Fix envelope Contains shortcut in ST_Clip
+	  
+	  Patch by Sai-bot
+	  
+	  Closes #3457
+
+2018-10-22 15:26  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16938] ST_Subdivide: support rect hole in rect shell
+	  
+	  Closes #4211
+	  Closes https://github.com/postgis/postgis/pull/317
+
+2018-10-17 14:25  Sandro Santilli <strk@kbt.io>
+
+	* [r16918] Fix support for PostgreSQL-12 ("getrelid" macro removed)
+	  
+	  The call is replaced with its expansion which should work
+	  as back as PostgreSQL-9.1 which is before the oldest version
+	  PostGIS-2.2 (our oldest maintained branch) supports.
+	  
+	  This is then safe to backport to all branches till 2.2.
+	  
+	  Patch by Laurenz Albe
+	  
+	  References #4306 in 2.5 branch
+
+2018-10-15 11:46  Sandro Santilli <strk@kbt.io>
+
+	* [r16910] Only drop function IF EXISTS ...
+
+2018-10-15 10:38  Sandro Santilli <strk@kbt.io>
+
+	* [r16901] [topology] properly drop removed internal functions on
+	  upgrade
+	  
+	  References #4202 in 2.5 branch
+
+2018-10-08 23:19  Regina Obe <lr@pcorp.us>
+
+	* [r16879] Fix packaging, was copying over old extension files
+
+2018-10-03 11:11  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16877] St_AsMVTGeom: Handle type changes in geometry
+	  collections
+	  
+	  References #4181
+
+2018-10-02 11:41  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16870] Fix undefined behaviour in ptarray_clone_deep
+	  
+	  References #4191
+
+2018-10-02 09:37  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16862] Fix undefined behaviour in SADFWrite
+	  
+	  Also addresses several gcc warnings
+	  References #4189
+
+2018-10-02 07:23  Regina Obe <lr@pcorp.us>
+
+	* [r16861] Fix packaging link - broke it on last change
+
+2018-10-01 15:55  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16859] Avoid division by zero in kmeans
+	  
+	  References #4188
+
+2018-10-01 13:31  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16857] St_AsMVTGeom: Drop invalid geometries after
+	  simplification
+	  
+	  References #4183
+
+2018-10-01 06:05  Regina Obe <lr@pcorp.us>
+
+	* [r16853] fix windows links should point at postgis.net and not
+	  postgis.org
+
+2018-09-26 12:18  Regina Obe <lr@pcorp.us>
+
+	* [r16843] fix packaging so doesn't include old extension files
+
+2018-09-24 01:07  Regina Obe <lr@pcorp.us>
+
+	* [r16837] flip to 2.5.1dev
+
+2018-09-23 20:04  Regina Obe <lr@pcorp.us>
+
+	* [r16835] Stamp date of release.
+	  Put in legacy stub function for RASTER_to_binary to allow pg
+	  upgrade (newer lib)
+	  Closes #4097
+
+2018-09-23 15:03  Regina Obe <lr@pcorp.us>
+
+	* [r16834] update changelog in prep for PostGIS 2.5.0 release
+
 2018-09-23 01:07  Regina Obe <lr@pcorp.us>
 
 	* [r16833] Prep for 2.5.0 release
