@@ -10,6 +10,12 @@ PostGIS 3.0.0
            dimentions that aren't present in both operands.
            Please REINDEX your ND indexes after upgrade.
 
+  - #4231, remove deprecated functions postgis_constraint_srid,
+           postgis_constraint_dims, postgis_constraint_type
+           These were deprecated in PostGIS 2.2.0
+           and used pg_constraint.consrc which was removed in PostgreSQL 12
+           (Regina Obe)
+
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
   - #4128, ST_AsMVT support for Feature ID (Stepan Kuzmin)

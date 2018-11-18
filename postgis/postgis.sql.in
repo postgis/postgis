@@ -5669,62 +5669,11 @@ $$
 LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL COST 200;
 
 -- Availability: 2.0.0
--- Deprecation in 2.2.0
-CREATE OR REPLACE FUNCTION postgis_constraint_srid(geomschema text, geomtable text, geomcolumn text) RETURNS integer AS
-$$
-SELECT replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integer
-		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
-		 WHERE n.nspname = $1
-		 AND c.relname = $2
-		 AND a.attname = $3
-		 AND a.attrelid = c.oid
-		 AND s.connamespace = n.oid
-		 AND s.conrelid = c.oid
-		 AND a.attnum = ANY (s.conkey)
-		 AND s.consrc LIKE '%srid(% = %';
-$$
-LANGUAGE 'sql' STABLE STRICT _PARALLEL;
-
--- Availability: 2.0.0
--- Deprecation in 2.2.0
-CREATE OR REPLACE FUNCTION postgis_constraint_dims(geomschema text, geomtable text, geomcolumn text) RETURNS integer AS
-$$
-SELECT  replace(split_part(s.consrc, ' = ', 2), ')', '')::integer
-		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
-		 WHERE n.nspname = $1
-		 AND c.relname = $2
-		 AND a.attname = $3
-		 AND a.attrelid = c.oid
-		 AND s.connamespace = n.oid
-		 AND s.conrelid = c.oid
-		 AND a.attnum = ANY (s.conkey)
-		 AND s.consrc LIKE '%ndims(% = %';
-$$
-LANGUAGE 'sql' STABLE STRICT _PARALLEL;
-
--- support function to pull out geometry type from constraint check
--- will return pretty name instead of ugly name
--- Availability: 2.0.0
--- Deprecation in 2.2.0
-CREATE OR REPLACE FUNCTION postgis_constraint_type(geomschema text, geomtable text, geomcolumn text) RETURNS varchar AS
-$$
-SELECT  replace(split_part(s.consrc, '''', 2), ')', '')::varchar
-		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
-		 WHERE n.nspname = $1
-		 AND c.relname = $2
-		 AND a.attname = $3
-		 AND a.attrelid = c.oid
-		 AND s.connamespace = n.oid
-		 AND s.conrelid = c.oid
-		 AND a.attnum = ANY (s.conkey)
-		 AND s.consrc LIKE '%geometrytype(% = %';
-$$
-LANGUAGE 'sql' STABLE STRICT _PARALLEL;
-
--- Availability: 2.0.0
 -- Changed: 2.1.8 significant performance improvement for constraint based columns
 -- Changed: 2.2.0 get rid of schema, table, column cast to improve performance
 -- Changed: 2.4.0 List also Parent partitioned tables
+-- Changed: 2.5.2 replace use of pg_constraint.consrc with pg_get_constraintdef, consrc removed pg12
+
 CREATE OR REPLACE VIEW geometry_columns AS
  SELECT current_database()::character varying(256) AS f_table_catalog,
     n.nspname AS f_table_schema,
@@ -5740,21 +5689,24 @@ CREATE OR REPLACE VIEW geometry_columns AS
      LEFT JOIN ( SELECT s.connamespace,
             s.conrelid,
             s.conkey, replace(split_part(s.consrc, ''''::text, 2), ')'::text, ''::text) As type
-           FROM pg_constraint AS s
+           FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+		    FROM pg_constraint) AS s
           WHERE s.consrc ~~* '%geometrytype(% = %'::text
 
 ) st ON st.connamespace = n.oid AND st.conrelid = c.oid AND (a.attnum = ANY (st.conkey))
      LEFT JOIN ( SELECT s.connamespace,
             s.conrelid,
             s.conkey, replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text)::integer As ndims
-           FROM pg_constraint AS s
+           FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+		    FROM pg_constraint) AS s
           WHERE s.consrc ~~* '%ndims(% = %'::text
 
 ) sn ON sn.connamespace = n.oid AND sn.conrelid = c.oid AND (a.attnum = ANY (sn.conkey))
      LEFT JOIN ( SELECT s.connamespace,
             s.conrelid,
             s.conkey, replace(replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text), '('::text, ''::text)::integer As srid
-           FROM pg_constraint AS s
+           FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+		    FROM pg_constraint) AS s
           WHERE s.consrc ~~* '%srid(% = %'::text
 
 ) sr ON sr.connamespace = n.oid AND sr.conrelid = c.oid AND (a.attnum = ANY (sr.conkey))
