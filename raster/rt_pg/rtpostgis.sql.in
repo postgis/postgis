@@ -7623,7 +7623,7 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_spatially_unique(rastschema n
 		SELECT
 			s.conname INTO cn
 		FROM pg_class c, pg_namespace n, pg_attribute a
-		, (SELECT connamespace, conrelid, conkey, conindid, contype, conexclop, pg_get_constraintdef(oid) As consrc
+		, (SELECT connamespace, conname, conrelid, conkey, conindid, contype, conexclop, pg_get_constraintdef(oid) As consrc
 			FROM pg_constraint) AS s
 		, pg_index idx, pg_operator op
 		WHERE n.nspname = $1
