@@ -122,8 +122,7 @@ PG_OBJS= \
 	mvt.o \
 	lwgeom_out_mvt.o \
 	geobuf.o \
-	lwgeom_out_geobuf.o \
-	postgis_legacy.o
+	lwgeom_out_geobuf.o
 
 # Objects to build using PGXS
 OBJS=$(PG_OBJS)
