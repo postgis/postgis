@@ -634,8 +634,8 @@ lw_dist3d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS3D *dl)
 	/*Find the plane of the polygon, the "holes" have to be on the same plane. so we only care about the boudary*/
 	if(!define_plane(poly->rings[0], &plane))
 	{
-		lwerror("%s: Polygon does not define a plane", __func__);
-		return LW_FALSE;
+		/* Polygon does not define a plane: Return distance point -> line */
+		return lw_dist3d_pt_ptarray(&p, poly->rings[0], dl);
 	}
 
 	/*get our point projected on the plane of the polygon*/
@@ -675,8 +675,8 @@ int lw_dist3d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS3D *dl)
 
 	if(!define_plane(poly->rings[0], &plane))
 	{
-		lwerror("%s: Polygon does not define a plane", __func__);
-		return LW_FALSE;
+		/* Polygon does not define a plane: Return distance line to line */
+		return lw_dist3d_ptarray_ptarray(line->points, poly->rings[0], dl);
 	}
 
 	return lw_dist3d_ptarray_poly(line->points, poly,&plane, dl);
@@ -688,35 +688,45 @@ polygon to polygon calculation
 */
 int lw_dist3d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS3D *dl)
 {
-	PLANE3D plane;
+	PLANE3D plane1, plane2;
+	int planedef1, planedef2;
 	LWDEBUG(2, "lw_dist3d_poly_poly is called");
 	if (dl->mode == DIST_MAX)
 	{
 		return lw_dist3d_ptarray_ptarray(poly1->rings[0], poly2->rings[0], dl);
 	}
 
-	if(!define_plane(poly2->rings[0], &plane))
+	planedef1 = define_plane(poly1->rings[0], &plane1);
+	planedef2 = define_plane(poly2->rings[0], &plane2);
+
+	if (!planedef1 || !planedef2)
 	{
-		lwerror("%s: Polygon does not define a plane", __func__);
-		return LW_FALSE;
+		if (!planedef1 && !planedef2)
+		{
+			/* Neither polygon define a plane: Return distance line to line */
+			return lw_dist3d_ptarray_ptarray(poly1->rings[0], poly2->rings[0], dl);
+		}
+
+		if (!planedef1)
+		{
+			/* Only poly2 defines a plane: Return distance from line (poly1) to poly2 */
+			return lw_dist3d_ptarray_poly(poly1->rings[0], poly2, &plane2, dl);
+		}
+
+		/* Only poly1 defines a plane: Return distance from line (poly2) to poly1 */
+		return lw_dist3d_ptarray_poly(poly2->rings[0], poly1, &plane1, dl);
 	}
 
 	/*What we do here is to compare the boundary of one polygon with the other polygon
 	and then take the second boundary comparing with the first polygon*/
 	dl->twisted=1;
-	if(!lw_dist3d_ptarray_poly(poly1->rings[0], poly2,&plane, dl))
+	if (!lw_dist3d_ptarray_poly(poly1->rings[0], poly2, &plane2, dl))
 		return LW_FALSE;
-	if(dl->distance==0.0) /*Just check if the answer already is given*/
+	if (dl->distance < dl->tolerance) /*Just check if the answer already is given*/
 		return LW_TRUE;
 
-	if(!define_plane(poly1->rings[0], &plane))
-	{
-		lwerror("%s: Polygon does not define a plane", __func__);
-		return LW_FALSE;
-	}
-
 	dl->twisted=-1; /*because we switch the order of geometries we switch "twisted" to -1 which will give the right order of points in shortest line.*/
-	return lw_dist3d_ptarray_poly(poly2->rings[0], poly1,&plane, dl);
+	return lw_dist3d_ptarray_poly(poly2->rings[0], poly1, &plane1, dl);
 }
 
 /**

@@ -235,7 +235,7 @@ test_mindistance3d_tolerance(void)
 	DIST3DTEST("LINESTRING(-10000 -10000 0, 0 0 1)", "POLYGON((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 0))", 1);
 
 	/* This is an invalid polygon since it defines just a line */
-	DIST3DTEST("LINESTRING(1 1 1 , 2 2 2)", "POLYGON((0 0 0, 2 2 2, 3 3 3, 0 0 0))", FLT_MAX);
+	DIST3DTEST("LINESTRING(1 1 1 , 2 2 2)", "POLYGON((0 0 0, 2 2 2, 3 3 3, 0 0 0))", 0);
 }
 
 static int tree_pt(RECT_NODE *tree, double x, double y)
