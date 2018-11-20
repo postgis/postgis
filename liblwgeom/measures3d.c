@@ -59,7 +59,7 @@ get_3dcross_product(VECTOR3D *v1,VECTOR3D *v2, VECTOR3D *v)
 	v->y=(v1->z*v2->x)-(v1->x*v2->z);
 	v->z=(v1->x*v2->y)-(v1->y*v2->x);
 
-	return ((fabs(v->x) > DBL_EPSILON) || (fabs(v->y) > DBL_EPSILON) || (fabs(v->z) > DBL_EPSILON));
+	return (!FP_IS_ZERO(v->x) || !FP_IS_ZERO(v->y) || !FP_IS_ZERO(v->z));
 }
 
 
@@ -1225,7 +1225,7 @@ So, we already have a direction from p to find p0, but we don't know the distanc
 		return 0.0;
 
 	f = DOT(pl->pv, v1);
-	if (fabs(f) < DBL_EPSILON)
+	if (FP_IS_ZERO(f))
 	{
 		/* Point is in the plane */
 		*p0 = *p;
