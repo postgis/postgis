@@ -688,6 +688,26 @@ static void test_f2d(void)
 	f = next_float_up(d);
 	d = next_float_up(f);
 	CU_ASSERT_DOUBLE_EQUAL(f,d, 0.0000001);
+
+	d = DBL_MAX;
+	f = next_float_up(d);
+	d = next_float_up(f);
+	CU_ASSERT_DOUBLE_EQUAL(f, d, 0.0000001);
+
+	d = DBL_MAX;
+	f = next_float_down(d);
+	d = next_float_down(f);
+	CU_ASSERT_DOUBLE_EQUAL(f, d, 0.0000001);
+
+	d = -DBL_MAX;
+	f = next_float_up(d);
+	d = next_float_up(f);
+	CU_ASSERT_DOUBLE_EQUAL(f, d, 0.0000001);
+
+	d = -DBL_MAX;
+	f = next_float_down(d);
+	d = next_float_down(f);
+	CU_ASSERT_DOUBLE_EQUAL(f, d, 0.0000001);
 }
 
 /*
