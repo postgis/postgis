@@ -1,3 +1,9 @@
+PostGIS 2.5.2
+XXXX/XX/XX
+
+ * Bug fixes *
+  - #4247, Avoid undefined behaviour in next_float functions (Raúl Marín)
+
 PostGIS 2.5.1
 2018/11/18
 
@@ -19,7 +25,7 @@ PostGIS 2.5.1
   - #4216, Revert non-sliced box access (Paul Ramsey)
   - #2767, Documentation for AddRasterConstraint optional parameters (Sunveer Singh)
   - #4326, Allocate enough memory in gidx_to_string (Raúl Marín)
-  - #4190, Avoid undefined behaviour in gserialized_estimate
+  - #4190, Avoid undefined behaviour in gserialized_estimate (Raúl Marín)
 
 
 PostGIS 2.5.0
