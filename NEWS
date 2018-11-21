@@ -39,6 +39,7 @@ PostGIS 3.0.0
   - #4326, Allocate enough memory in gidx_to_string (Raúl Marín)
   - #4190, Avoid undefined behaviour in gserialized_estimate (Raúl Marín)
   - #4233, Fix undefined behaviour in gserialized_spgist_picksplit_nd (Raúl Marín)
+  - #4247, Avoid undefined behaviour in next_float functions (Raúl Marín)
 
 PostGIS 2.5.0
 2018/09/23
