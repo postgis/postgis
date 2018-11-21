@@ -11,6 +11,7 @@ PostGIS 2.2.8
    - #4206, Fix support for PostgreSQL 12 dev branch (Laurenz Albe)
    - #3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)
    - #4326, Allocate enough memory in gidx_to_string (Raúl Marín)
+   - #4249, Fix undefined behaviour in raster intersection (Raúl Marín)
 
 
 PostGIS 2.2.7

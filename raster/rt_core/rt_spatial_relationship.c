@@ -715,11 +715,9 @@ int rt_raster_intersects_algorithm(
 		gt2
 	);
 
-	/* parallel vertically */
-	if (FLT_EQ(line1[X2] - line1[X1], 0.) && FLT_EQ(line2[X2] - line2[X1], 0.))
-		byHeight = 0;
-	/* parallel */
-	else if (FLT_EQ(((line1[Y2] - line1[Y1]) / (line1[X2] - line1[X1])), ((line2[Y2] - line2[Y1]) / (line2[X2] - line2[X1]))))
+	/* Parallel lines */
+	if (FLT_EQ(((line1[X2] - line1[X1]) * (line2[Y2] - line2[Y1])),
+		   ((line2[X2] - line2[X1]) * (line1[Y2] - line1[Y1]))))
 		byHeight = 0;
 
 	if (byHeight)
