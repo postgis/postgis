@@ -36,7 +36,6 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 #include "measures3d.h"
 #include "lwgeom_log.h"
@@ -49,7 +48,7 @@ get_3dvector_from_points(POINT3DZ *p1,POINT3DZ *p2, VECTOR3D *v)
 	v->y=p2->y-p1->y;
 	v->z=p2->z-p1->z;
 
-	return LW_TRUE;
+	return (!FP_IS_ZERO(v->x) || !FP_IS_ZERO(v->y) || !FP_IS_ZERO(v->z));
 }
 
 static inline int
@@ -1155,55 +1154,76 @@ int lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly,PLANE3D *plane, DISTPTS3
 return LW_TRUE;
 }
 
-
-/**
-
-Here we define the plane of a polygon (boundary pointarray of a polygon)
-the plane is stored as a point in plane (plane.pop) and a normal vector (plane.pv)
-*/
+/* Here we define the plane of a polygon (boundary pointarray of a polygon)
+ * the plane is stored as a point in plane (plane.pop) and a normal vector (plane.pv)
+ *
+ * We are calculating the average point and using it to break the polygon into
+ * POL_BREAKS (3) parts. Then we calculate the normal of those 3 vectors and
+ * use its average to define the normal of the plane.This is done to minimize
+ * the error introduced by FP precision
+ * We use [3] breaks to contemplate the special case of 3d triangles
+ */
 int
 define_plane(POINTARRAY *pa, PLANE3D *pl)
 {
-	/* We only need 3 non-collinear points so we keep the first 2 and look for
-	 a third that isn't collinear */
-	POINT3DZ points[3];
-	bool found = false;
-	getPoint3dz_p(pa, 0, &points[0]);
-	getPoint3dz_p(pa, 1, &points[1]);
+	const uint32_t POL_BREAKS = 3;
+	uint32_t i;
 
-	/* Vector from p0 to p1 */
-	VECTOR3D v0, v1;
-	get_3dvector_from_points(&points[0], &points[1], &v0);
-
-	for (uint32_t i = 2; i < pa->npoints - 1; i++)
+	/* Calculate the average point */
+	pl->pop.x = 0.0;
+	pl->pop.y = 0.0;
+	pl->pop.z = 0.0;
+	for (i = 0; i < pa->npoints; i++)
 	{
-		VECTOR3D vp;
-		getPoint3dz_p(pa, i, &points[2]);
-		get_3dvector_from_points(&points[0], &points[2], &v1);
-		if (get_3dcross_product(&v0, &v1, &vp))
+		POINT3DZ p;
+		getPoint3dz_p(pa, i, &p);
+		pl->pop.x += p.x;
+		pl->pop.y += p.y;
+		pl->pop.z += p.z;
+	}
+
+	pl->pop.x /= pa->npoints;
+	pl->pop.y /= pa->npoints;
+	pl->pop.z /= pa->npoints;
+
+	pl->pv.x = 0.0;
+	pl->pv.y = 0.0;
+	pl->pv.z = 0.0;
+	for (i = 0; i < POL_BREAKS; i++)
+	{
+		POINT3DZ point1, point2;
+		VECTOR3D v1, v2, vp;
+		uint32_t n1, n2;
+		n1 = i * pa->npoints / POL_BREAKS;
+		n2 = n1 + pa->npoints / POL_BREAKS;
+		if (n2 == pa->npoints)
 		{
-			/* If the cross product isn't zero these 3 points aren't colinear
-			 * and we have the normal vector we needed
-			 */
-			found = true;
-			pl->pv.x = vp.x;
-			pl->pv.y = vp.y;
-			pl->pv.z = vp.z;
-			break;
+			n2 = pa->npoints - 1;
+		}
+
+		if (n1 == n2)
+			continue;
+
+		getPoint3dz_p(pa, n1, &point1);
+		if (!get_3dvector_from_points(&pl->pop, &point1, &v1))
+			continue;
+
+		getPoint3dz_p(pa, n2, &point2);
+		if (!get_3dvector_from_points(&pl->pop, &point2, &v2))
+			continue;
+
+		if (get_3dcross_product(&v1, &v2, &vp))
+		{
+			/* If the cross product isn't zero these 3 points aren't collinear
+			 * We divide by its lengthsq to normalize the additions */
+			double vl = vp.x * vp.x + vp.y * vp.y + vp.z * vp.z;
+			pl->pv.x += vp.x / vl;
+			pl->pv.y += vp.y / vl;
+			pl->pv.z += vp.z / vl;
 		}
 	}
 
-	if (!found)
-	{
-		return LW_FALSE;
-	}
-
-	/* Use the average of the 3 points */
-	pl->pop.x = (points[0].x + points[1].x + points[2].x) / 3.0;
-	pl->pop.y = (points[0].y + points[1].y + points[2].y) / 3.0;
-	pl->pop.z = (points[0].z + points[1].z + points[2].z) / 3.0;
-
-	return LW_TRUE;
+	return (!FP_IS_ZERO(pl->pv.x) || !FP_IS_ZERO(pl->pv.y) || !FP_IS_ZERO(pl->pv.z));
 }
 
 /**
