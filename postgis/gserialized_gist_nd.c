@@ -154,8 +154,7 @@ gidx_set_unknown(GIDX *a)
 	SET_VARSIZE(a, VARHDRSZ);
 }
 
-/* Enlarge b_union to contain b_new. If b_new contains more
-   dimensions than b_union, expand b_union to contain those dimensions. */
+/* Enlarge b_union to contain b_new. */
 void
 gidx_merge(GIDX **b_union, GIDX *b_new)
 {
@@ -180,7 +179,8 @@ gidx_merge(GIDX **b_union, GIDX *b_new)
 
 	POSTGIS_DEBUGF(4, "merging gidx (%s) into gidx (%s)", gidx_to_string(b_new), gidx_to_string(*b_union));
 
-	if (dims_new > dims_union)
+	/* Shrink unshared dimensions */
+	if (dims_new < dims_union)
 	{
 		POSTGIS_DEBUGF(5, "reallocating b_union from %d dims to %d dims", dims_union, dims_new);
 		*b_union = (GIDX *)repalloc(*b_union, GIDX_SIZE(dims_new));
@@ -188,7 +188,7 @@ gidx_merge(GIDX **b_union, GIDX *b_new)
 		dims_union = dims_new;
 	}
 
-	for (i = 0; i < dims_new; i++)
+	for (i = 0; i < dims_union; i++)
 	{
 		/* Adjust minimums */
 		GIDX_SET_MIN(*b_union, i, Min(GIDX_GET_MIN(*b_union, i), GIDX_GET_MIN(b_new, i)));
@@ -197,6 +197,7 @@ gidx_merge(GIDX **b_union, GIDX *b_new)
 	}
 
 	POSTGIS_DEBUGF(5, "merge complete (%s)", gidx_to_string(*b_union));
+	assert(gidx_contains(*b_union, b_new));
 	return;
 }
 
@@ -1092,13 +1093,13 @@ gserialized_gist_consistent_internal(GIDX *key, GIDX *query, StrategyNumber stra
 	switch (strategy)
 	{
 	case RTOverlapStrategyNumber:
-	case RTContainsStrategyNumber:
-	case RTOldContainsStrategyNumber:
 	case RTContainedByStrategyNumber:
 	case RTOldContainedByStrategyNumber:
 		retval = (bool)gidx_overlaps(key, query);
 		break;
 	case RTSameStrategyNumber:
+	case RTContainsStrategyNumber:
+	case RTOldContainsStrategyNumber:
 		retval = (bool)gidx_contains(key, query);
 		break;
 	default:
