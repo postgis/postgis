@@ -39,8 +39,6 @@ EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
 	sql_bits/sfcgal.sql \
 	../../utils/create_unpackaged.pl
 
-PG_CONFIG    =  @PG_CONFIG@
-
 SQL_BITS     = $(wildcard sql_bits/*.sql)
 EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
 
@@ -108,6 +106,7 @@ include ../upgrade-paths-rules.mk
 distclean: clean
 	rm Makefile
 
-PGXS := $(shell $(PG_CONFIG) --pgxs)
+PG_CONFIG := @PG_CONFIG@
+PGXS := @PGXS@
 include $(PGXS)
 PERL = @PERL@

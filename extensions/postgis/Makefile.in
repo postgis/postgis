@@ -59,8 +59,6 @@ RASTER_DROP_SCRIPTS = \
 	../../raster/rt_pg/rtpostgis_drop.sql \
 	../../raster/rt_pg/uninstall_rtpostgis.sql
 
-PG_CONFIG    = @PG_CONFIG@
-
 SQL_BITS     = $(wildcard sql/*.sql)
 EXTRA_CLEAN += ${SQL_BITS} sql/*.sql
 
@@ -131,6 +129,7 @@ include ../upgrade-paths-rules.mk
 distclean: clean
 	rm -f Makefile
 
-PGXS := $(shell $(PG_CONFIG) --pgxs)
+PG_CONFIG := @PG_CONFIG@
+PGXS := @PGXS@
 include $(PGXS)
 PERL = @PERL@

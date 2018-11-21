@@ -64,7 +64,7 @@ endif
 EXTRA_CLEAN=$(SQL_OBJS) topology_upgrade.sql.in
 
 # PGXS information
-PG_CONFIG = @PG_CONFIG@
+PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 # NO_TEMP_INSTALL is a workaround for a 9.5dev bug. See:
 # http://www.postgresql.org/message-id/CAB7nPqTsR5o3g-fBi6jbsVdhfPiLFWQ_0cGU5=94Rv_8W3qvFA@mail.gmail.com

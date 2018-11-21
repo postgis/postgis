@@ -31,8 +31,6 @@ DATA_built = \
 REGRESS = test-normalize_address test-upgrade
 REGRESS_OPTS = --load-extension=fuzzystrmatch --load-extension=postgis --load-extension=$(EXTENSION)
 
-PG_CONFIG    =  @PG_CONFIG@
-
 SQL_BITS     = $(wildcard sql_bits/*.sql)
 EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
 
@@ -249,6 +247,7 @@ EXTRA_CLEAN += $(wildcard expected/*--*.out)
 distclean: clean
 	rm Makefile
 
-PGXS := $(shell $(PG_CONFIG) --pgxs)
+PG_CONFIG := @PG_CONFIG@
+PGXS := @PGXS@
 include $(PGXS)
 PERL=@PERL@
