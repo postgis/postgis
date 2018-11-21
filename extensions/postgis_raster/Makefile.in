@@ -51,8 +51,6 @@ EXTENSION_UPGRADE_SCRIPTS = \
 EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
 	sql/rtpostgis.sql
 
-PG_CONFIG    = @PG_CONFIG@
-
 SQL_BITS     = $(wildcard sql/*.sql)
 EXTRA_CLEAN += ${SQL_BITS} sql/*.sql
 
@@ -109,6 +107,7 @@ include ../upgrade-paths-rules.mk
 distclean: clean
 	rm -f Makefile
 
-PGXS := $(shell $(PG_CONFIG) --pgxs)
+PG_CONFIG := @PG_CONFIG@
+PGXS := @PGXS@
 include $(PGXS)
 PERL = @PERL@

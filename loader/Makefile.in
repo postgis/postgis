@@ -15,7 +15,7 @@
 # the DESTDIR variable so we can get the correct install paths.
 # Hence we include the PGXS Makefile here, but ensure that we override the
 # 'all' and 'install' targets with the ones we really want to use below.
-PG_CONFIG = @PG_CONFIG@
+PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 
