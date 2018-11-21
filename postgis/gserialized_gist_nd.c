@@ -1061,17 +1061,17 @@ gserialized_gist_consistent_leaf(GIDX *key, GIDX *query, StrategyNumber strategy
 		break;
 	case RTContainsStrategyNumber:
 	case RTOldContainsStrategyNumber:
-		retval = (bool)gidx_contains(key, query);
+		retval = (bool)gidx_contains(query, key);
 		break;
 	case RTContainedByStrategyNumber:
 	case RTOldContainedByStrategyNumber:
-		retval = (bool)gidx_contains(query, key);
+		retval = (bool)gidx_contains(key, query);
 		break;
 	default:
 		retval = false;
 	}
 
-	return (retval);
+	return retval;
 }
 
 /*
@@ -1099,13 +1099,13 @@ gserialized_gist_consistent_internal(GIDX *key, GIDX *query, StrategyNumber stra
 	case RTSameStrategyNumber:
 	case RTContainsStrategyNumber:
 	case RTOldContainsStrategyNumber:
-		retval = (bool)gidx_contains(key, query);
+		retval = (bool)gidx_contains(query, key);
 		break;
 	default:
 		retval = false;
 	}
 
-	return (retval);
+	return retval;
 }
 
 /*
