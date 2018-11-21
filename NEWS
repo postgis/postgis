@@ -40,6 +40,7 @@ PostGIS 3.0.0
   - #4190, Avoid undefined behaviour in gserialized_estimate (Raúl Marín)
   - #4233, Fix undefined behaviour in gserialized_spgist_picksplit_nd (Raúl Marín)
   - #4247, Avoid undefined behaviour in next_float functions (Raúl Marín)
+  - #4249, Fix undefined behaviour in raster intersection (Raúl Marín)
 
 PostGIS 2.5.0
 2018/09/23
