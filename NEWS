@@ -16,6 +16,7 @@ PostGIS 2.3.8
   - #3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)
   - #4223, Fix parallel/near rectangle case in geography (Paul Ramsey)
   - #4326, Allocate enough memory in gidx_to_string (Raúl Marín)
+  - #4247, Avoid undefined behaviour in next_float functions (Raúl Marín)
 
 PostGIS 2.3.7
 2018/04/06

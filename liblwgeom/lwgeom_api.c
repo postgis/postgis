@@ -155,7 +155,12 @@ nextafterf_custom(float x, float y)
 
 float next_float_down(double d)
 {
-	float result  = d;
+	float result;
+	if (d > (double)FLT_MAX)
+		return FLT_MAX;
+	if (d <= (double)-FLT_MAX)
+		return -FLT_MAX;
+	result = d;
 
 	if ( ((double) result) <=d)
 		return result;
@@ -171,7 +176,12 @@ float next_float_down(double d)
 float
 next_float_up(double d)
 {
-	float result  = d;
+	float result;
+	if (d >= (double)FLT_MAX)
+		return FLT_MAX;
+	if (d < (double)-FLT_MAX)
+		return -FLT_MAX;
+	result = d;
 
 	if ( ((double) result) >=d)
 		return result;
