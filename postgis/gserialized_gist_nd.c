@@ -1424,7 +1424,14 @@ Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
 static void
 gserialized_gist_picksplit_addlist(OffsetNumber *list, GIDX **box_union, GIDX *box_current, int *pos, int num)
 {
-	gidx_merge(box_union, box_current);
+	if (*pos)
+		gidx_merge(box_union, box_current);
+	else
+	{
+		pfree(*box_union);
+		*box_union = gidx_copy(box_current);
+	}
+
 	list[*pos] = num;
 	(*pos)++;
 }
@@ -1719,7 +1726,7 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 	** sides of the page union box can occasionally all end up in one place, leading
 	** to this condition.
 	*/
-	if (gserialized_gist_picksplit_badratios(pos, ndims_pageunion) == true)
+	if (gserialized_gist_picksplit_badratios(pos, ndims_pageunion))
 	{
 		/*
 		** Instead we split on center points and see if we do better.
