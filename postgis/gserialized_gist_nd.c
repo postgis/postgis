@@ -1061,11 +1061,11 @@ gserialized_gist_consistent_leaf(GIDX *key, GIDX *query, StrategyNumber strategy
 		break;
 	case RTContainsStrategyNumber:
 	case RTOldContainsStrategyNumber:
-		retval = (bool)gidx_contains(query, key);
+		retval = (bool)gidx_contains(key, query);
 		break;
 	case RTContainedByStrategyNumber:
 	case RTOldContainedByStrategyNumber:
-		retval = (bool)gidx_contains(key, query);
+		retval = (bool)gidx_contains(query, key);
 		break;
 	default:
 		retval = false;
@@ -1092,13 +1092,13 @@ gserialized_gist_consistent_internal(GIDX *key, GIDX *query, StrategyNumber stra
 	switch (strategy)
 	{
 	case RTOverlapStrategyNumber:
-	case RTContainedByStrategyNumber:
-	case RTOldContainedByStrategyNumber:
+	case RTContainsStrategyNumber:
+	case RTOldContainsStrategyNumber:
 		retval = (bool)gidx_overlaps(key, query);
 		break;
 	case RTSameStrategyNumber:
-	case RTContainsStrategyNumber:
-	case RTOldContainsStrategyNumber:
+	case RTContainedByStrategyNumber:
+	case RTOldContainedByStrategyNumber:
 		retval = (bool)gidx_contains(query, key);
 		break;
 	default:
