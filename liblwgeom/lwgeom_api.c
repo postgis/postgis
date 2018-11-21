@@ -50,11 +50,12 @@ lwgeom_version()
 inline float
 next_float_down(double d)
 {
+	float result;
 	if (d > (double)FLT_MAX)
 		return FLT_MAX;
 	if (d <= (double)-FLT_MAX)
 		return -FLT_MAX;
-	float result  = d;
+	result = d;
 
 	if ( ((double)result) <=d )
 		return result;
@@ -70,11 +71,12 @@ next_float_down(double d)
 inline float
 next_float_up(double d)
 {
+	float result;
 	if (d >= (double)FLT_MAX)
 		return FLT_MAX;
 	if (d < (double)-FLT_MAX)
 		return -FLT_MAX;
-	float result  = d;
+	result = d;
 
 	if ( ((double)result) >=d )
 		return result;
