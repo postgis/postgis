@@ -1424,10 +1424,7 @@ Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
 static void
 gserialized_gist_picksplit_addlist(OffsetNumber *list, GIDX **box_union, GIDX *box_current, int *pos, int num)
 {
-	if (*pos)
-		gidx_merge(box_union, box_current);
-	else
-		memcpy((void *)(*box_union), (void *)box_current, VARSIZE(box_current));
+	gidx_merge(box_union, box_current);
 	list[*pos] = num;
 	(*pos)++;
 }
