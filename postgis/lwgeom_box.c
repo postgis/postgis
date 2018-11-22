@@ -95,13 +95,21 @@ Datum BOX2D_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(BOX2D_out);
 Datum BOX2D_out(PG_FUNCTION_ARGS)
 {
-	GBOX *box = (GBOX *) PG_GETARG_POINTER(0);
 	char tmp[500]; /* big enough */
 	char *result;
 	int size;
 
-	size  = sprintf(tmp,"BOX(%.15g %.15g,%.15g %.15g)",
-	                box->xmin, box->ymin, box->xmax, box->ymax);
+	GBOX *box = (GBOX *)PG_GETARG_POINTER(0);
+	/* Avoid unaligned access to the gbox struct */
+	GBOX box_aligned;
+	memcpy(&box_aligned, box, sizeof(GBOX));
+
+	size = sprintf(tmp,
+		       "BOX(%.15g %.15g,%.15g %.15g)",
+		       box_aligned.xmin,
+		       box_aligned.ymin,
+		       box_aligned.xmax,
+		       box_aligned.ymax);
 
 	result= palloc(size+1); /* +1= null term */
 	memcpy(result,tmp,size+1);

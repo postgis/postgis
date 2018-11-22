@@ -5,6 +5,7 @@ XXXX/XX/XX
   - #4247, Avoid undefined behaviour in next_float functions (Raúl Marín)
   - #4249, Fix undefined behaviour in raster intersection (Raúl Marín)
   - #4246, Fix undefined behaviour in ST_3DDistance (Raúl Marín)
+  - #4244, Avoid unaligned memory access in BOX2D_out (Raúl Marín)
 
 PostGIS 2.5.1
 2018/11/18
