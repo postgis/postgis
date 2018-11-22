@@ -1,5 +1,5 @@
 PostGIS 2.2.8
-2018/11/DD
+2018/11/21
 
  * Bug Fixes *
    - #2985, Avoid array overflow in ANALYZE (Paul Ramsey)
