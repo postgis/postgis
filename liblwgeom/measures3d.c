@@ -1167,13 +1167,14 @@ int
 define_plane(POINTARRAY *pa, PLANE3D *pl)
 {
 	const uint32_t POL_BREAKS = 3;
+	uint32_t unique_points = pa->npoints - 1;
 	uint32_t i;
 
 	/* Calculate the average point */
 	pl->pop.x = 0.0;
 	pl->pop.y = 0.0;
 	pl->pop.z = 0.0;
-	for (i = 0; i < pa->npoints; i++)
+	for (i = 0; i < unique_points; i++)
 	{
 		POINT3DZ p;
 		getPoint3dz_p(pa, i, &p);
@@ -1182,9 +1183,9 @@ define_plane(POINTARRAY *pa, PLANE3D *pl)
 		pl->pop.z += p.z;
 	}
 
-	pl->pop.x /= pa->npoints;
-	pl->pop.y /= pa->npoints;
-	pl->pop.z /= pa->npoints;
+	pl->pop.x /= unique_points;
+	pl->pop.y /= unique_points;
+	pl->pop.z /= unique_points;
 
 	pl->pv.x = 0.0;
 	pl->pv.y = 0.0;
@@ -1194,12 +1195,8 @@ define_plane(POINTARRAY *pa, PLANE3D *pl)
 		POINT3DZ point1, point2;
 		VECTOR3D v1, v2, vp;
 		uint32_t n1, n2;
-		n1 = i * pa->npoints / POL_BREAKS;
-		n2 = n1 + pa->npoints / POL_BREAKS;
-		if (n2 == pa->npoints)
-		{
-			n2 = pa->npoints - 1;
-		}
+		n1 = i * unique_points / POL_BREAKS;
+		n2 = n1 + unique_points / POL_BREAKS; /* May overflow back to the first / last point */
 
 		if (n1 == n2)
 			continue;
