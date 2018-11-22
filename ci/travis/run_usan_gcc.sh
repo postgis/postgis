@@ -9,6 +9,5 @@ LDFLAGS_STD="-Wl,-Bsymbolic-functions -Wl,-z,relro"
 ./autogen.sh
 
 # Build with GCC and usan flags
-# TODO: Fix topology ubsan
-./configure CC=gcc CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_STD}" --without-topology
+./configure CC=gcc CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_STD}"
 bash ./ci/travis/logbt -- make -j check RUNTESTFLAGS=--verbose
