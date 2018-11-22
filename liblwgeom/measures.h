@@ -34,6 +34,9 @@
  *
  **********************************************************************/
 
+#ifndef _MEASURES_H
+#define _MEASURES_H 1
+
 #include "liblwgeom_internal.h"
 
 /* for the measure functions*/
@@ -124,4 +127,4 @@ double lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
 LWGEOM* lw_dist2d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode);
 LWGEOM* lw_dist2d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode);
 
-
+#endif /* !defined _MEASURES_H  */
