@@ -2,6 +2,8 @@ PostGIS 2.5.2
 XXXX/XX/XX
 
  * Bug fixes *
+  - #4231, Support for PostgreSQL 12dev (remove use of pg_constraint.consrc)
+           (Regina Obe, Laurenz Albe)
   - #4247, Avoid undefined behaviour in next_float functions (Raúl Marín)
   - #4249, Fix undefined behaviour in raster intersection (Raúl Marín)
   - #4246, Fix undefined behaviour in ST_3DDistance (Raúl Marín)

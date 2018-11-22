@@ -7210,7 +7210,9 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_srid(rastschema name, rasttab
 			split_part(s.consrc, ' = ', 2),
 			'[\(\)]', '', 'g'
 		)::integer
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a
+		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+		    FROM pg_constraint) AS s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7280,7 +7282,9 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_scale(rastschema name, rastta
 			),
 			'[ ''''\(\)]', '', 'g'
 		)::text AS val
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a
+		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) AS s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7366,7 +7370,9 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_blocksize(rastschema name, ra
 					'[\(\)]', '', 'g'
 				)::integer
 			END
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a
+		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) AS s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7442,7 +7448,9 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_extent(rastschema name, rastt
 	RETURNS geometry AS $$
 	SELECT
 		trim(both '''' from split_part(trim(split_part(s.consrc, ' @ ', 2)), '::', 1))::geometry
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a
+		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) AS s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7504,7 +7512,9 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_alignment(rastschema name, ra
 	RETURNS boolean AS $$
 	SELECT
 		TRUE
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a
+		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) AS s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7545,7 +7555,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_alignment(rastschema name, ras
 
 		sql := 'ALTER TABLE ' || fqtn ||
 			' ADD CONSTRAINT ' || quote_ident(cn) ||
-			' CHECK (st_samealignment(' || quote_ident($3) || ', ''' || attr || '''::raster))';
+			' CHECK (@extschema@.st_samealignment(' || quote_ident($3) || ', ''' || attr || '''::raster))';
 		RETURN  @extschema@._add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
@@ -7561,7 +7571,10 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_spatially_unique(rastschema n
 	RETURNS boolean AS $$
 	SELECT
 		TRUE
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s, pg_index idx, pg_operator op
+	FROM pg_class c, pg_namespace n, pg_attribute a
+		, (SELECT connamespace, conrelid, conindid, conkey, contype, conexclop, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) AS s
+		, pg_index idx, pg_operator op
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7609,7 +7622,10 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_spatially_unique(rastschema n
 	BEGIN
 		SELECT
 			s.conname INTO cn
-		FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s, pg_index idx, pg_operator op
+		FROM pg_class c, pg_namespace n, pg_attribute a
+		, (SELECT connamespace, conname, conrelid, conkey, conindid, contype, conexclop, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) AS s
+		, pg_index idx, pg_operator op
 		WHERE n.nspname = $1
 			AND c.relname = $2
 			AND a.attname = $3
@@ -7632,7 +7648,9 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_coverage_tile(rastschema name
 	RETURNS boolean AS $$
 	SELECT
 		TRUE
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a
+			, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) AS s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7743,7 +7761,9 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_num_bands(rastschema name, ra
 			split_part(s.consrc, ' = ', 2),
 			'[\(\)]', '', 'g'
 		)::integer
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a
+		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) AS s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7810,7 +7830,9 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_pixel_types(rastschema name, 
 				'::', 1
 			)
 		)::text[]
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a
+		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) AS s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7893,7 +7915,9 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_nodata_values(rastschema name
 				'::', 1
 			)
 		)::double precision[]
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a
+		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) AS s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7982,7 +8006,9 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_out_db(rastschema name, rastt
 				'::', 1
 			)
 		)::boolean[]
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a
+			, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) AS s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -8624,7 +8650,9 @@ CREATE OR REPLACE FUNCTION _overview_constraint_info(
 		split_part(split_part(s.consrc, '''::name', 2), '''', 2)::name,
 		split_part(split_part(s.consrc, '''::name', 3), '''', 2)::name,
 		trim(both from split_part(s.consrc, ',', 2))::integer
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a
+		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) AS s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -8694,7 +8722,8 @@ CREATE OR REPLACE VIEW raster_overviews AS
 		pg_attribute a,
 		pg_type t,
 		pg_namespace n,
-		pg_constraint s
+		(SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) AS s
 	WHERE t.typname = 'raster'::name
 		AND a.attisdropped = false
 		AND a.atttypid = t.oid
