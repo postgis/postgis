@@ -239,6 +239,10 @@ SELECT '3dDistancetest6',
 	SELECT 'LINESTRING(1 1 1 , 2 2 2)'::geometry as a, 'POLYGON((0 0 0, 2 2 2, 3 3 3, 0 0 0))'::geometry as b) as foo;	
 
 
+SELECT '3dDistancetest7',
+	ST_3DDistance(a,b) FROM (
+	SELECT 'LINESTRING(1 1 1 , 2 2 2)'::geometry as a, 'POLYGON((0 0 0, 2 2 2, 3 3 1, 0 0 0))'::geometry as b) as foo;
+
 -- 3D mixed dimmentionality #2034
 --closestpoint with 2d as first point and 3d as second
 select st_astext(st_3dclosestpoint('linestring(0 0,1 1,2 0)'::geometry, 'linestring(0 2 3, 3 2 3)'::geometry));
