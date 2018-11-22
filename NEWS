@@ -1,5 +1,5 @@
 PostGIS 2.2.8
-2018/MM/DD
+2018/11/DD
 
  * Bug Fixes *
    - #2985, Avoid array overflow in ANALYZE (Paul Ramsey)
@@ -8,7 +8,8 @@ PostGIS 2.2.8
    - #4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)
    - #4020, Fix leftovers in topology upgrade from 2.1 (Sandro Santilli)
    - #4203, Fix build with GNU Make 4.1 (Sandro Santilli)
-   - #4206, Fix support for PostgreSQL 12 dev branch (Laurenz Albe)
+   - #4206, Replace getrelid with rt_fetch 
+            (getrelid has been deprecated since PostgreSQL 9.1) (Laurenz Albe)
    - #3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)
    - #4326, Allocate enough memory in gidx_to_string (Raúl Marín)
    - #4249, Fix undefined behaviour in raster intersection (Raúl Marín)

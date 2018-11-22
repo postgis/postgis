@@ -2,6 +2,25 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+     <sect1>
+      <title>Release 2.2.8</title>
+        <para>Release date: 2018/11/22</para>
+        <para>This is a bug fix and performance improvement release.</para>
+        <simplesect>
+            <title>Bug Fixes and Enhancements</title>
+              <para>#2985, Avoid array overflow in ANALYZE (Paul Ramsey)</para>
+              <para>#4160, Use qualified names in topology extension install (Raúl Marín)</para>
+              <para>#4189, Fix undefined behaviour in SADFWrite (Raúl Marín)</para>
+              <para>#4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)</para>
+              <para>#4020, Fix leftovers in topology upgrade from 2.1 (Sandro Santilli)</para>
+              <para>#4203, Fix build with GNU Make 4.1 (Sandro Santilli)</para>
+              <para>#4206, Replace getrelid with rt_fetch 
+            (getrelid has been deprecated since PostgreSQL 9.1) (Laurenz Albe)</para>
+              <para>#3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)</para>
+              <para>#4326, Allocate enough memory in gidx_to_string (Raúl Marín)</para>
+              <para>#4249, Fix undefined behaviour in raster intersection (Raúl Marín)</para>
+        </simplesect>
+    </sect1>
     <sect1>
       <title>Release 2.2.7</title>
         <para>Release date: 2018/04/06</para>
