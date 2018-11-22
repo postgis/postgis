@@ -48,7 +48,7 @@ get_3dvector_from_points(POINT3DZ *p1,POINT3DZ *p2, VECTOR3D *v)
 	v->y=p2->y-p1->y;
 	v->z=p2->z-p1->z;
 
-	return LW_TRUE;
+	return (!FP_IS_ZERO(v->x) || !FP_IS_ZERO(v->y) || !FP_IS_ZERO(v->z));
 }
 
 static inline int
@@ -58,7 +58,7 @@ get_3dcross_product(VECTOR3D *v1,VECTOR3D *v2, VECTOR3D *v)
 	v->y=(v1->z*v2->x)-(v1->x*v2->z);
 	v->z=(v1->x*v2->y)-(v1->y*v2->x);
 
-	return LW_TRUE;
+	return (!FP_IS_ZERO(v->x) || !FP_IS_ZERO(v->y) || !FP_IS_ZERO(v->z));
 }
 
 
@@ -635,7 +635,10 @@ lw_dist3d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS3D *dl)
 
 	/*Find the plane of the polygon, the "holes" have to be on the same plane. so we only care about the boudary*/
 	if(!define_plane(poly->rings[0], &plane))
-		return LW_FALSE;
+	{
+		/* Polygon does not define a plane: Return distance point -> line */
+		return lw_dist3d_pt_ptarray(&p, poly->rings[0], dl);
+	}
 
 	/*get our point projected on the plane of the polygon*/
 	project_point_on_plane(&p, &plane, &projp);
@@ -673,7 +676,10 @@ int lw_dist3d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS3D *dl)
 	}
 
 	if(!define_plane(poly->rings[0], &plane))
-		return LW_FALSE;
+	{
+		/* Polygon does not define a plane: Return distance line to line */
+		return lw_dist3d_ptarray_ptarray(line->points, poly->rings[0], dl);
+	}
 
 	return lw_dist3d_ptarray_poly(line->points, poly,&plane, dl);
 }
@@ -684,28 +690,45 @@ polygon to polygon calculation
 */
 int lw_dist3d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS3D *dl)
 {
-	PLANE3D plane;
+	PLANE3D plane1, plane2;
+	int planedef1, planedef2;
 	LWDEBUG(2, "lw_dist3d_poly_poly is called");
 	if (dl->mode == DIST_MAX)
 	{
 		return lw_dist3d_ptarray_ptarray(poly1->rings[0], poly2->rings[0], dl);
 	}
 
-	if(!define_plane(poly2->rings[0], &plane))
-		return LW_FALSE;
+	planedef1 = define_plane(poly1->rings[0], &plane1);
+	planedef2 = define_plane(poly2->rings[0], &plane2);
 
-	/*What we do here is to compare the bondary of one polygon with the other polygon
-	and then take the second boudary comparing with the first polygon*/
+	if (!planedef1 || !planedef2)
+	{
+		if (!planedef1 && !planedef2)
+		{
+			/* Neither polygon define a plane: Return distance line to line */
+			return lw_dist3d_ptarray_ptarray(poly1->rings[0], poly2->rings[0], dl);
+		}
+
+		if (!planedef1)
+		{
+			/* Only poly2 defines a plane: Return distance from line (poly1) to poly2 */
+			return lw_dist3d_ptarray_poly(poly1->rings[0], poly2, &plane2, dl);
+		}
+
+		/* Only poly1 defines a plane: Return distance from line (poly2) to poly1 */
+		return lw_dist3d_ptarray_poly(poly2->rings[0], poly1, &plane1, dl);
+	}
+
+	/*What we do here is to compare the boundary of one polygon with the other polygon
+	and then take the second boundary comparing with the first polygon*/
 	dl->twisted=1;
-	if(!lw_dist3d_ptarray_poly(poly1->rings[0], poly2,&plane, dl))
+	if (!lw_dist3d_ptarray_poly(poly1->rings[0], poly2, &plane2, dl))
 		return LW_FALSE;
-	if(dl->distance==0.0) /*Just check if the answer already is given*/
+	if (dl->distance < dl->tolerance) /*Just check if the answer already is given*/
 		return LW_TRUE;
 
-	if(!define_plane(poly1->rings[0], &plane))
-		return LW_FALSE;
-	dl->twisted=-1; /*because we swithc the order of geometries we swithch "twisted" to -1 which will give the right order of points in shortest line.*/
-	return lw_dist3d_ptarray_poly(poly2->rings[0], poly1,&plane, dl);
+	dl->twisted=-1; /*because we switch the order of geometries we switch "twisted" to -1 which will give the right order of points in shortest line.*/
+	return lw_dist3d_ptarray_poly(poly2->rings[0], poly1, &plane1, dl);
 }
 
 /**
@@ -1062,8 +1085,13 @@ int lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly,PLANE3D *plane, DISTPTS3
 
 	getPoint3dz_p(pa, 0, &p1);
 
-	s1=project_point_on_plane(&p1, plane, &projp1); /*the sign of s1 tells us on which side of the plane the point is. */
+	s1 = project_point_on_plane(
+	    &p1, plane, &projp1); /*the sign of s1 tells us on which side of the plane the point is. */
 	lw_dist3d_pt_poly(&p1, poly, plane,&projp1, dl);
+	if ((s1 == 0.0) && (dl->distance < dl->tolerance))
+	{
+		return LW_TRUE;
+	}
 
 	for (i=1;i<pa->npoints;i++)
 	{
@@ -1071,10 +1099,14 @@ int lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly,PLANE3D *plane, DISTPTS3
 		getPoint3dz_p(pa, i, &p2);
 		s2=project_point_on_plane(&p2, plane, &projp2);
 		lw_dist3d_pt_poly(&p2, poly, plane,&projp2, dl);
+		if ((s2 == 0.0) && (dl->distance < dl->tolerance))
+		{
+			return LW_TRUE;
+		}
 
 		/*If s1and s2 has different signs that means they are on different sides of the plane of the polygon.
 		That means that the edge between the points crosses the plane and might intersect with the polygon*/
-		if((s1*s2)<=0)
+		if ((s1 * s2) < 0)
 		{
 			f=fabs(s1)/(fabs(s1)+fabs(s2)); /*The size of s1 and s2 is the distance from the point to the plane.*/
 			get_3dvector_from_points(&projp1, &projp2,&projp1_projp2);
@@ -1128,71 +1160,73 @@ return LW_TRUE;
 }
 
 
-/**
-
-Here we define the plane of a polygon (boundary pointarray of a polygon)
-the plane is stored as a pont in plane (plane.pop) and a normal vector (plane.pv)
-*/
+/* Here we define the plane of a polygon (boundary pointarray of a polygon)
+ * the plane is stored as a point in plane (plane.pop) and a normal vector (plane.pv)
+ *
+ * We are calculating the average point and using it to break the polygon into
+ * POL_BREAKS (3) parts. Then we calculate the normal of those 3 vectors and
+ * use its average to define the normal of the plane.This is done to minimize
+ * the error introduced by FP precision
+ * We use [3] breaks to contemplate the special case of 3d triangles
+ */
 int
 define_plane(POINTARRAY *pa, PLANE3D *pl)
 {
-	int i,j, numberofvectors, pointsinslice;
-	POINT3DZ p, p1, p2;
+	const uint32_t POL_BREAKS = 3;
+	uint32_t unique_points = pa->npoints - 1;
+	uint32_t i;
 
-	double sumx=0;
-	double sumy=0;
-	double sumz=0;
-	double vl; /*vector length*/
-
-	VECTOR3D v1, v2, v;
-
-	if((pa->npoints-1)==3) /*Triangle is special case*/
+	/* Calculate the average point */
+	pl->pop.x = 0.0;
+	pl->pop.y = 0.0;
+	pl->pop.z = 0.0;
+	for (i = 0; i < unique_points; i++)
 	{
-		pointsinslice=1;
-	}
-	else
-	{
-		pointsinslice=(int) floor((pa->npoints-1)/4); /*divide the pointarray into 4 slices*/
-	}
-
-	/*find the avg point*/
-	for (i=0;i<(pa->npoints-1);i++)
-	{
+		POINT3DZ p;
 		getPoint3dz_p(pa, i, &p);
-		sumx+=p.x;
-		sumy+=p.y;
-		sumz+=p.z;
+		pl->pop.x += p.x;
+		pl->pop.y += p.y;
+		pl->pop.z += p.z;
 	}
-	pl->pop.x=(sumx/(pa->npoints-1));
-	pl->pop.y=(sumy/(pa->npoints-1));
-	pl->pop.z=(sumz/(pa->npoints-1));
 
-	sumx=0;
-	sumy=0;
-	sumz=0;
-	numberofvectors= floor((pa->npoints-1)/pointsinslice); /*the number of vectors we try can be 3, 4 or 5*/
+	pl->pop.x /= unique_points;
+	pl->pop.y /= unique_points;
+	pl->pop.z /= unique_points;
 
-	getPoint3dz_p(pa, 0, &p1);
-	for (j=pointsinslice;j<pa->npoints;j+=pointsinslice)
+	pl->pv.x = 0.0;
+	pl->pv.y = 0.0;
+	pl->pv.z = 0.0;
+	for (i = 0; i < POL_BREAKS; i++)
 	{
-		getPoint3dz_p(pa, j, &p2);
+		POINT3DZ point1, point2;
+		VECTOR3D v1, v2, vp;
+		uint32_t n1, n2;
+		n1 = i * unique_points / POL_BREAKS;
+		n2 = n1 + unique_points / POL_BREAKS; /* May overflow back to the first / last point */
 
-		if (!get_3dvector_from_points(&(pl->pop), &p1, &v1) || !get_3dvector_from_points(&(pl->pop), &p2, &v2))
-			return LW_FALSE;
-		/*perpendicular vector is cross product of v1 and v2*/
-		if (!get_3dcross_product(&v1,&v2, &v))
-			return LW_FALSE;
-		vl=VECTORLENGTH(v);
-		sumx+=(v.x/vl);
-		sumy+=(v.y/vl);
-		sumz+=(v.z/vl);
-		p1=p2;
+		if (n1 == n2)
+			continue;
+
+		getPoint3dz_p(pa, n1, &point1);
+		if (!get_3dvector_from_points(&pl->pop, &point1, &v1))
+			continue;
+
+		getPoint3dz_p(pa, n2, &point2);
+		if (!get_3dvector_from_points(&pl->pop, &point2, &v2))
+			continue;
+
+		if (get_3dcross_product(&v1, &v2, &vp))
+		{
+			/* If the cross product isn't zero these 3 points aren't collinear
+			 * We divide by its lengthsq to normalize the additions */
+			double vl = vp.x * vp.x + vp.y * vp.y + vp.z * vp.z;
+			pl->pv.x += vp.x / vl;
+			pl->pv.y += vp.y / vl;
+			pl->pv.z += vp.z / vl;
+		}
 	}
-	pl->pv.x=(sumx/numberofvectors);
-	pl->pv.y=(sumy/numberofvectors);
-	pl->pv.z=(sumz/numberofvectors);
 
-	return 1;
+	return (!FP_IS_ZERO(pl->pv.x) || !FP_IS_ZERO(pl->pv.y) || !FP_IS_ZERO(pl->pv.z));
 }
 
 /**
@@ -1211,13 +1245,21 @@ So, we already have a direction from p to find p0, but we don't know the distanc
 	double f;
 
 	if (!get_3dvector_from_points(&(pl->pop), p, &v1))
-	return LW_FALSE;
+		return 0.0;
 
-	f=-(DOT(pl->pv,v1)/DOT(pl->pv,pl->pv));
+	f = DOT(pl->pv, v1);
+	if (FP_IS_ZERO(f))
+	{
+		/* Point is in the plane */
+		*p0 = *p;
+		return 0;
+	}
 
-	p0->x=p->x+pl->pv.x*f;
-	p0->y=p->y+pl->pv.y*f;
-	p0->z=p->z+pl->pv.z*f;
+	f = -f / DOT(pl->pv, pl->pv);
+
+	p0->x = p->x + pl->pv.x * f;
+	p0->y = p->y + pl->pv.y * f;
+	p0->z = p->z + pl->pv.z * f;
 
 	return f;
 }
