@@ -24,11 +24,11 @@ BEGIN;
 CREATE SCHEMA features;
 
 CREATE TABLE features.land_parcels ( -- Land parcels (selected faces)
-  feature_name VARCHAR PRIMARY KEY) with oids;
+  feature_name VARCHAR PRIMARY KEY, fid serial);
 CREATE TABLE features.city_streets ( -- City streets (selected edges)
-  feature_name VARCHAR PRIMARY KEY) with oids;
+  feature_name VARCHAR PRIMARY KEY, fid serial);
 CREATE TABLE features.traffic_signs ( -- Traffic signs (selected nodes)
-  feature_name VARCHAR PRIMARY KEY) with oids;
+  feature_name VARCHAR PRIMARY KEY, fid serial);
 
 -- 4. Associate feature tables with the topology.
 --    Add the three topology geometry layers to the CITY_DATA topology.
@@ -55,7 +55,7 @@ SELECT topology.AddTopoGeometryColumn('city_data', 'features', 'city_streets','f
 
 -- 6A. Load LAND_PARCELS table.
 -- P1
-INSERT INTO features.land_parcels VALUES ('P1', -- Feature name
+INSERT INTO features.land_parcels(feature_name, feature) VALUES ('P1', -- Feature name
   topology.CreateTopoGeom(
     'city_data', -- Topology name
     3, -- Topology geometry type (polygon/multipolygon)
@@ -64,28 +64,28 @@ INSERT INTO features.land_parcels VALUES ('P1', -- Feature name
     );
 
 -- P2
-INSERT INTO features.land_parcels VALUES ('P2', -- Feature name
+INSERT INTO features.land_parcels(feature_name, feature) VALUES ('P2', -- Feature name
   topology.CreateTopoGeom(
     'city_data', -- Topology name
     3, -- Topology geometry type (polygon/multipolygon)
     1, -- TG_LAYER_ID for this topology (from ALL_SDO_TOPO_METADATA)
     '{{4,3},{7,3}}'));
 -- P3
-INSERT INTO features.land_parcels VALUES ('P3', -- Feature name
+INSERT INTO features.land_parcels(feature_name, feature) VALUES ('P3', -- Feature name
   topology.CreateTopoGeom(
     'city_data', -- Topology name
     3, -- Topology geometry type (polygon/multipolygon)
     1, -- TG_LAYER_ID for this topology (from topology.layer)
     '{{5,3},{8,3}}'));
 -- P4
-INSERT INTO features.land_parcels VALUES ('P4', -- Feature name
+INSERT INTO features.land_parcels(feature_name, feature) VALUES ('P4', -- Feature name
   topology.CreateTopoGeom(
     'city_data', -- Topology name
     3, -- Topology geometry type (polygon/multipolygon)
     1, -- TG_LAYER_ID for this topology (from topology.layer)
     '{{2,3}}'));
 -- P5 (Includes F1, but not F9.)
-INSERT INTO features.land_parcels VALUES ('P5', -- Feature name
+INSERT INTO features.land_parcels(feature_name, feature) VALUES ('P5', -- Feature name
   topology.CreateTopoGeom(
     'city_data', -- Topology name
     3, -- Topology geometry type (polygon/multipolygon)
@@ -94,28 +94,28 @@ INSERT INTO features.land_parcels VALUES ('P5', -- Feature name
 
 -- 6B. Load TRAFFIC_SIGNS table.
 -- S1
-INSERT INTO features.traffic_signs VALUES ('S1', -- Feature name
+INSERT INTO features.traffic_signs(feature_name, feature) VALUES ('S1', -- Feature name
   topology.CreateTopoGeom(
     'city_data', -- Topology name
     1, -- Topology geometry type (point)
     2, -- TG_LAYER_ID for this topology (from topology.layer)
     '{{14,1}}'));
 -- S2
-INSERT INTO features.traffic_signs VALUES ('S2', -- Feature name
+INSERT INTO features.traffic_signs(feature_name, feature) VALUES ('S2', -- Feature name
   topology.CreateTopoGeom(
     'city_data', -- Topology name
     1, -- Topology geometry type (point)
     2, -- TG_LAYER_ID for this topology (from topology.layer)
     '{{13,1}}'));
 -- S3
-INSERT INTO features.traffic_signs VALUES ('S3', -- Feature name
+INSERT INTO features.traffic_signs(feature_name, feature) VALUES ('S3', -- Feature name
   topology.CreateTopoGeom(
     'city_data', -- Topology name
     1, -- Topology geometry type (point)
     2, -- TG_LAYER_ID for this topology (from topology.layer)
     '{{6,1}}'));
 -- S4
-INSERT INTO features.traffic_signs VALUES ('S4', -- Feature name
+INSERT INTO features.traffic_signs(feature_name, feature) VALUES ('S4', -- Feature name
   topology.CreateTopoGeom(
     'city_data', -- Topology name
     1, -- Topology geometry type (point)
@@ -125,28 +125,28 @@ INSERT INTO features.traffic_signs VALUES ('S4', -- Feature name
 -- 6C. Load CITY_STREETS table.
 -- (Note: "R" in feature names is for "Road", because "S" is used for signs.)
 -- R1
-INSERT INTO features.city_streets VALUES ('R1', -- Feature name
+INSERT INTO features.city_streets(feature_name, feature) VALUES ('R1', -- Feature name
   topology.CreateTopoGeom(
     'city_data', -- Topology name
     2, -- Topology geometry type (line string)
     3, -- TG_LAYER_ID for this topology (from topology.layer)
     '{{9,2},{-10,2}}')); -- E9, E10
 -- R2
-INSERT INTO features.city_streets VALUES ('R2', -- Feature name
+INSERT INTO features.city_streets(feature_name, feature) VALUES ('R2', -- Feature name
   topology.CreateTopoGeom(
     'city_data', -- Topology name
     2, -- Topology geometry type (line string)
     3, -- TG_LAYER_ID for this topology (from topology.layer)
     '{{4,2},{-5,2}}')); -- E4, E5
 -- R3
-INSERT INTO features.city_streets VALUES ('R3', -- Feature name
+INSERT INTO features.city_streets(feature_name, feature) VALUES ('R3', -- Feature name
   topology.CreateTopoGeom(
     'city_data', -- Topology name
     2, -- Topology geometry type (line string)
     3, -- TG_LAYER_ID for this topology (from topology.layer)
     '{{25,2}}'));
 -- R4
-INSERT INTO features.city_streets VALUES ('R4', -- Feature name
+INSERT INTO features.city_streets(feature_name, feature) VALUES ('R4', -- Feature name
   topology.CreateTopoGeom(
     'city_data', -- Topology name
     2, -- Topology geometry type (line string)
