@@ -164,12 +164,12 @@ gidx_merge(GIDX **b_union, GIDX *b_new)
 	Assert(b_new);
 
 	/* Can't merge an unknown into any thing */
-	/* Q: Unknown is 0 dimensions. Should we reset result to unknown instead? */
+	/* Q: Unknown is 0 dimensions. Should we reset result to unknown instead? (ticket #4232) */
 	if (gidx_is_unknown(b_new))
 		return;
 
 	/* Merge of unknown and known is known */
-	/* Q: Unknown is 0 dimensions. Should we never modify unknown instead? */
+	/* Q: Unknown is 0 dimensions. Should we never modify unknown instead? (ticket #4232) */
 	if (gidx_is_unknown(*b_union))
 	{
 		*b_union = b_new;
