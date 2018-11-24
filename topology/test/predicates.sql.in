@@ -22,7 +22,7 @@ SELECT 'POINT/POINT INTERSECTS' as operation;
 
 SELECT a.feature_name, b.feature_name FROM
 	features.traffic_signs a, features.traffic_signs b
-	WHERE a.oid < b.oid AND @SCHEMA@intersects(a.@COLUMN@, b.@COLUMN@);
+	WHERE a.fid < b.fid AND @SCHEMA@intersects(a.@COLUMN@, b.@COLUMN@);
 
 #endif
 
@@ -46,7 +46,7 @@ SELECT 'LINE/LINE INTERSECTS' as operation;
 
 SELECT a.feature_name, b.feature_name FROM
 	features.city_streets a, features.city_streets b
-	WHERE a.oid < b.oid AND @SCHEMA@intersects(a.@COLUMN@, b.@COLUMN@);
+	WHERE a.fid < b.fid AND @SCHEMA@intersects(a.@COLUMN@, b.@COLUMN@);
 #endif
 
 #if DO_POINT_POLYGON_INTERSECTS
@@ -79,7 +79,7 @@ SELECT 'POLY/POLY INTERSECTS' as operation;
 
 SELECT a.feature_name, b.feature_name FROM
 	features.land_parcels a, features.land_parcels b
-	WHERE a.oid < b.oid AND @SCHEMA@intersects(a.@COLUMN@, b.@COLUMN@);
+	WHERE a.fid < b.fid AND @SCHEMA@intersects(a.@COLUMN@, b.@COLUMN@);
 #endif
 
 #if DO_POINT_POINT_EQUALS
@@ -88,7 +88,7 @@ SELECT 'POINT/POINT EQUALS' as operation;
 
 SELECT a.feature_name, b.feature_name FROM
 	features.traffic_signs a, features.traffic_signs b
-	WHERE a.oid < b.oid AND @SCHEMA@equals(a.@COLUMN@, b.@COLUMN@);
+	WHERE a.fid < b.fid AND @SCHEMA@equals(a.@COLUMN@, b.@COLUMN@);
 
 #endif
 
@@ -98,7 +98,7 @@ SELECT 'LINE/LINE EQUALS' as operation;
 
 SELECT a.feature_name, b.feature_name FROM
 	features.city_streets a, features.city_streets b
-	WHERE a.oid < b.oid AND @SCHEMA@equals(a.@COLUMN@, b.@COLUMN@);
+	WHERE a.fid < b.fid AND @SCHEMA@equals(a.@COLUMN@, b.@COLUMN@);
 
 #endif
 
@@ -108,7 +108,7 @@ SELECT 'POLYGON/POLYGON EQUALS' as operation;
 
 SELECT a.feature_name, b.feature_name FROM
 	features.land_parcels a, features.land_parcels b
-	WHERE a.oid < b.oid AND @SCHEMA@equals(a.@COLUMN@, b.@COLUMN@);
+	WHERE a.fid < b.fid AND @SCHEMA@equals(a.@COLUMN@, b.@COLUMN@);
 
 #endif
 
@@ -116,15 +116,15 @@ SELECT 'POINT/POINT EQUALS (simple/hierarchical)' as operation;
 
 SELECT a.feature_name, b.feature_name
 	FROM features.traffic_signs a, features.big_signs b
-	WHERE a.oid < b.oid AND @SCHEMA@equals(a.feature, b.feature)
-	ORDER BY a.oid;
+	WHERE a.fid < b.fid AND @SCHEMA@equals(a.feature, b.feature)
+	ORDER BY a.feature_name;
 
 SELECT 'POLYGON/POLYGON EQUALS (simple/hierarchical)' as operation;
 
 SELECT a.feature_name, b.feature_name
 	FROM features.land_parcels a, features.big_parcels b
-	WHERE a.oid < b.oid AND @SCHEMA@equals(a.feature, b.feature)
-	ORDER BY a.oid;
+	WHERE a.fid < b.fid AND @SCHEMA@equals(a.feature, b.feature)
+	ORDER BY a.feature_name;
 
 END;
 

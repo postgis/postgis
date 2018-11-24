@@ -80,7 +80,7 @@ SELECT 'E' || TopoGeo_addLinestring('city_data', 'LINESTRING(10 48, 16 48, 16 50
 
 -- And this defines a new feature including both face 1and the new
 -- wrapping face 11 plus the new (holed) face 12
-INSERT INTO features.land_parcels VALUES ('P6',
+INSERT INTO features.land_parcels(feature_name, feature) VALUES ('P6',
   topology.CreateTopoGeom(
     'city_data', -- Topology name
     3, -- Topology geometry type (polygon/multipolygon)

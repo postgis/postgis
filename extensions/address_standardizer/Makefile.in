@@ -56,10 +56,6 @@ SHLIB_LINK = @SHLIB_LINK@ -lpcre
 EXTRA_CLEAN = usps-st-city-name.txt mk-st-regexp mk-city-regex test_main
 REGRESS = test-init-extensions test-parseaddress test-standardize_address_1 test-standardize_address_2
 
-# PGXS information
-PG_CONFIG = @PG_CONFIG@
-
-PGVER := $(shell $(PG_CONFIG) --version)
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number
@@ -184,6 +180,7 @@ EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged-
 distclean: clean
 	rm Makefile
 
+PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 PERL = @PERL@
