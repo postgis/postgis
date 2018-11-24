@@ -1,90 +1,275 @@
+2018-11-22 16:15  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17057] Avoid unaligned memory access in BOX2D_out
+	  
+	  References #4244
+
+2018-11-22 13:41  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17051] Fix undefined behaviour in ST_3DDistance
+	  
+	  References #4246
+
+2018-11-21 14:11  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17041] Fix undefined behaviour in raster intersection
+	  
+	  References #4249
+
+2018-11-21 11:43  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17036] Avoid undefined behaviour in next_float functions (Raúl
+	  Marín)
+	  
+	  References #4247
+
+2018-11-15 16:07  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17020] Avoid undefined behaviour in gserialized_estimate
+	  
+	  References #4190
+
+2018-11-15 09:06  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17017] Allocate enough memory in gidx_to_string
+	  
+	  References #4236
+
+2018-11-07 15:41  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16990] Honestly, spaces?
+
+2018-11-06 22:27  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16986] Add name to NEWS
+
+2018-11-05 22:34  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16979] Patch over bad behaviour for near-parallel boxes and
+	  distancetree.
+	  Unfortunately, this "fix" is probably breakable, just put the
+	  boxes closer and closer together until we get "close enough to be
+	  the same" results from the edge normal comparison again. Only way
+	  around this is to do dot product and comparisons in
+	  higher-than-double space.
+	  Reworking this example with even closer together inputs would be
+	  useful for exposing this problem for eventual complete fix.
+	  Closes #4223
+
+2018-11-05 18:27  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16978] Remove clang warnings
+
+2018-11-05 17:57  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16977] Proper repeated point removal for small polygons
+	  Closes #4136
+
+2018-11-01 19:41  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16972] Update NEWS for #2416
+
+2018-11-01 19:40  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16971] Remove use of variable length arrays
+	  References #4177
+
+2018-11-01 19:31  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16970] Remove use of VLA from geography centroid
+	  References #4059
+
+2018-10-31 22:02  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16969] Revert change to avoid slicing on box access.
+	  References #4216
+
+2018-10-24 14:04  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16948] [raster] Use GDALFPolygonize unconditionally
+	  
+	  GDAL 1.10 is already required and 1.9 contains it, so no check
+	  needed.
+	  
+	  Closes #4215
+
+2018-10-23 13:05  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r16942] [raster] Fix envelope Contains shortcut in ST_Clip
+	  
+	  Patch by Sai-bot
+	  
+	  Closes #3457
+
+2018-10-17 14:27  Sandro Santilli <strk@kbt.io>
+
+	* [r16919] Fix support for PostgreSQL-12 ("getrelid" macro removed)
+	  
+	  The call is replaced with its expansion which should work
+	  as back as PostgreSQL-9.1 which is before the oldest version
+	  PostGIS-2.2 (our oldest maintained branch) supports.
+	  
+	  This is then safe to backport to all branches till 2.2.
+	  
+	  Patch by Laurenz Albe
+	  
+	  References #4206 in 2.4 branch
+
+2018-10-15 11:47  Sandro Santilli <strk@kbt.io>
+
+	* [r16911] Only drop function IF EXISTS ...
+
+2018-10-15 11:31  Sandro Santilli <strk@kbt.io>
+
+	* [r16906] [topology] properly drop removed internal functions on
+	  upgrade
+	  
+	  References #4202 in 2.4 branch
+
+2018-10-02 11:40  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16869] Fix undefined behaviour in ptarray_clone_deep
+	  
+	  References #4191
+
+2018-10-02 09:44  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16864] Fix undefined behaviour in SADFWrite
+	  
+	  References #4189
+
+2018-10-01 13:44  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16858] St_AsMVTGeom: Drop invalid geometries after
+	  simplification
+	  
+	  Closes #4183
+
+2018-09-24 10:06  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16839] St_AsMVTGeom: Avoid type changes due to validation
+	  
+	  Closes #4181
+
+2018-09-16 03:51  Regina Obe <lr@pcorp.us>
+
+	* [r16804] Change windows to build and regress against geos 3.7.0
+
+2018-09-14 18:38  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16803] rt_pg: Fix build issue with LVM jit
+	  References #4094
+
+2018-09-14 15:38  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r16800] Use qualified names in topology extension install
+	  
+	  References #4160
+
+2018-09-13 20:38  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16787] Handle almost-infinite features when building table
+	  statistics in ANALYZE
+	  References #4144
+
+2018-09-13 19:25  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16783] Avoid array overflow in ANALYZE (References #2985)
+
+2018-09-13 13:34  Sandro Santilli <strk@kbt.io>
+
+	* [r16774] Typo fix
+	  
+	  [ci skip]
+
+2018-09-12 16:50  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16766] Push version number forward one
+
+2018-09-12 16:39  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16765] Change warning message
+
+2018-09-12 16:22  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16762] Preparation for 2.4.5 release
+
+2018-09-12 16:22  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r16761] Preparation for 2.4.5 release
+
 2018-08-29 09:17  Raúl Marín Rodríguez <rmrodriguez@carto.com>
 
-	* [r16708] NEWS, postgis/mvt.c: MVT: Fix resource leak when the
-	  first geometry is NULL
+	* [r16708] MVT: Fix resource leak when the first geometry is NULL
 	  
 	  References #4163
 
 2018-07-24 20:55  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16669] NEWS, postgis/geography_measurement.c,
-	  regress/tickets.sql, regress/tickets_expected: Ensure index
-	  filters on expanded boxes are large enough to encompass
+	* [r16669] Ensure index filters on expanded boxes are large enough
+	  to encompass
 	  the radii they are searching, references #4081
 
 2018-07-24 13:34  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16666] liblwgeom/lwin_wkt_lex.c: Revert mistaken commit of
-	  lexer generated file
+	* [r16666] Revert mistaken commit of lexer generated file
 
 2018-07-24 13:33  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16665] NEWS, extensions/address_standardizer/Makefile.in,
-	  extensions/postgis/Makefile.in,
-	  extensions/postgis_tiger_geocoder/Makefile.in,
-	  extensions/postgis_topology/Makefile.in,
-	  liblwgeom/lwin_wkt_lex.c: Better parallel build, closes #4105
+	* [r16665] Better parallel build, closes #4105
 
 2018-07-24 13:11  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16664] doc/reference_accessor.xml: Harmonize doco with existing
-	  behaviour
+	* [r16664] Harmonize doco with existing behaviour
 
 2018-07-04 21:20  Regina Obe <lr@pcorp.us>
 
-	* [r16635] ci/debbie/postgis_regress.sh: reenable sfcgal tests for
-	  debbie.
+	* [r16635] reenable sfcgal tests for debbie.
 	  Closes #4068 for PostGIS 2.4
 
 2018-06-15 22:23  Sandro Santilli <strk@kbt.io>
 
-	* [r16619] NEWS, liblwgeom/cunit/cu_lwstroke.c,
-	  liblwgeom/lwstroke.c: Fix infinite loop in linearization of a big
-	  radius small arc
+	* [r16619] Fix infinite loop in linearization of a big radius small
+	  arc
 	  
 	  Closes #4058 in 2.4 branch (2.4.5dev)
 	  Includes unit test
 
 2018-06-13 14:53  Raúl Marín Rodríguez <rmrodriguez@carto.com>
 
-	* [r16617] .travis.yml: Travis: Install all required dependencies
-	  for MVT tests
+	* [r16617] Travis: Install all required dependencies for MVT tests
 	  
 	  Closes #4106
 
 2018-06-12 12:45  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16613] liblwgeom/g_serialized.c: Fix flags in case where a
-	  boxless geom comes in with a "has box" set of flags.
+	* [r16613] Fix flags in case where a boxless geom comes in with a
+	  "has box" set of flags.
 	  References #4077
 
 2018-05-23 09:40  Raúl Marín Rodríguez <rmrodriguez@carto.com>
 
-	* [r16590] liblwgeom/measures.c: Trailing blank
+	* [r16590] Trailing blank
 
 2018-05-23 09:30  Raúl Marín Rodríguez <rmrodriguez@carto.com>
 
-	* [r16588] liblwgeom/lwgeom_median.c: Avoid segfault in median test
-	  (32bits)
+	* [r16588] Avoid segfault in median test (32bits)
 
 2018-05-22 19:36  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16584] NEWS, liblwgeom/effectivearea.c, liblwgeom/measures.c:
-	  Inconsistent results from qsort callback (yugr)
+	* [r16584] Inconsistent results from qsort callback (yugr)
 	  References #4093
 
 2018-05-21 10:59  Raúl Marín Rodríguez <rmrodriguez@carto.com>
 
-	* [r16579] NEWS, liblwgeom/lwgeom_median.c: Fix bug in
-	  lwgeom_median and avoid division by zero
+	* [r16579] Fix bug in lwgeom_median and avoid division by zero
 	  
 	  References #3997
 	  Closes https://github.com/postgis/postgis/pull/244
 
 2018-05-21 10:41  Raúl Marín Rodríguez <rmrodriguez@carto.com>
 
-	* [r16578] NEWS, extensions/address_standardizer/std_pg_hash.c,
-	  libpgcommon/lwgeom_transform.c: Fix PG 9.5 build in 2.4
+	* [r16578] Fix PG 9.5 build in 2.4
 	  
 	  References #4090
 	  Applies the same fix as #3950
@@ -92,9 +277,8 @@
 
 2018-05-20 14:46  Sandro Santilli <strk@kbt.io>
 
-	* [r16577] NEWS, liblwgeom/cunit/cu_lwstroke.c,
-	  liblwgeom/lwstroke.c: Survive to big max deviation values passed
-	  to ST_CurveToLine
+	* [r16577] Survive to big max deviation values passed to
+	  ST_CurveToLine
 	  
 	  When using "max-deviation" tolerance type, passing a tolerance
 	  bigger than twice the radius of any arc resulted in entering
@@ -108,221 +292,188 @@
 
 2018-05-18 09:10  Raúl Marín Rodríguez <rmrodriguez@carto.com>
 
-	* [r16576] .gitignore,
-	  extensions/address_standardizer/std_pg_hash.c,
-	  libpgcommon/lwgeom_transform.c, postgis/Makefile.in,
-	  postgis/lwgeom_geos_prepared.c,
-	  raster/test/regress/check_gdal.sql,
-	  raster/test/regress/check_gdal_expected: Backport PG 11
-	  compatibility
+	* [r16576] Backport PG 11 compatibility
 	  
 	  Closes #4090
 	  Closes https://github.com/postgis/postgis/pull/242
 
 2018-05-16 21:38  Nicklas Avén <nicklas.aven@jordogskog.no>
 
-	* [r16573] liblwgeom/lwin_twkb.c, regress/tickets.sql,
-	  regress/tickets_expected: Fixes bounding box handling in
-	  twkb_input #4089
+	* [r16573] Fixes bounding box handling in twkb_input #4089
 
 2018-05-07 18:59  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16564] NEWS, postgis/lwgeom_sfcgal.c: Delay freeing input until
-	  processing is complete. From lucasvr.
+	* [r16564] Delay freeing input until processing is complete. From
+	  lucasvr.
 	  Closes #3980
 
 2018-05-07 18:47  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16562] NEWS, postgis/lwgeom_geos.c: Emit a cancellation error
-	  code on GEOS interruptedExceptions, for consistency
+	* [r16562] Emit a cancellation error code on GEOS
+	  interruptedExceptions, for consistency
 	  with internal interruptions.
 	  Closes #4070
 
 2018-05-07 18:05  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16559] NEWS: Update NEWS re #4079
+	* [r16559] Update NEWS re #4079
 
 2018-05-07 18:04  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16558] postgis/mvt.c: ensure that polygons are CW coming out of
-	  the ASMVTGEOM process
+	* [r16558] ensure that polygons are CW coming out of the ASMVTGEOM
+	  process
 	  Closes #4079
 
 2018-04-21 13:20  Darafei Praliaskouski <me@komzpa.net>
 
-	* [r16550] NEWS, liblwgeom/lwkmeans.c, regress/lwgeom_regress.sql,
-	  regress/lwgeom_regress_expected: ST_ClusterKMeans crash on NULL
-	  and EMPTY
+	* [r16550] ST_ClusterKMeans crash on NULL and EMPTY
 	  
 	  Closes #4071
 
 2018-04-16 17:28  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16543] NEWS, libpgcommon/lwgeom_transform.c: Guard against
-	  lookup failure, to avoid segfault in internally called case
-	  (closes #4067)
+	* [r16543] Guard against lookup failure, to avoid segfault in
+	  internally called case (closes #4067)
 
 2018-04-10 02:34  Regina Obe <lr@pcorp.us>
 
-	* [r16536] ci/debbie/postgis_make_dist.sh: Disable sfcgal in make
-	  dist
+	* [r16536] Disable sfcgal in make dist
 	  References #4068 for PostGIS 2.4
 
 2018-04-10 02:31  Regina Obe <lr@pcorp.us>
 
-	* [r16535] ci/debbie/postgis_regress.sh: Disable sfcgal testing
-	  until sfcgal 1.3.3 / CGAL 4.11 issue is resolved.
+	* [r16535] Disable sfcgal testing until sfcgal 1.3.3 / CGAL 4.11
+	  issue is resolved.
 	  References #4068 for PostGIS 2.4
 
 2018-04-09 17:26  Regina Obe <lr@pcorp.us>
 
-	* [r16534] ci/debbie/postgis_regress.sh: revise debbie to build
-	  against master sfcgal
+	* [r16534] revise debbie to build against master sfcgal
 	  References #4068 for PostGIS 2.4
 
 2018-04-09 15:11  Regina Obe <lr@pcorp.us>
 
-	* [r16533] ci/winnie/build_postgis.sh,
-	  ci/winnie/package_postgis.sh: missed some spots where
-	  source_folder variable is used
+	* [r16533] missed some spots where source_folder variable is used
 
 2018-04-09 01:41  Regina Obe <lr@pcorp.us>
 
-	* [r16532] ci/winnie/regress_postgis.sh: switch to test against
-	  GEOS 3.6.2
+	* [r16532] switch to test against GEOS 3.6.2
 
 2018-04-06 09:06  Regina Obe <lr@pcorp.us>
 
-	* [r16529] ci/winnie/regress_postgis.sh: fix path setting
+	* [r16529] fix path setting
 
 2018-04-06 05:21  Regina Obe <lr@pcorp.us>
 
-	* [r16527] Version.config, ci/winnie/build_postgis.sh,
-	  ci/winnie/regress_postgis.sh, extensions/upgradeable_versions.mk:
-	  Flip version to 2.4.5dev, revise winnie to be able to use
-	  source_folder if passed in (will allow tagged builds to be built
-	  from dev branch for testing)
+	* [r16527] Flip version to 2.4.5dev, revise winnie to be able to
+	  use source_folder if passed in (will allow tagged builds to be
+	  built from dev branch for testing)
 
 2018-04-02 06:54  Regina Obe <lr@pcorp.us>
 
-	* [r16520] doc/release_notes.xml: fix date typo in release notes
+	* [r16520] fix date typo in release notes
 
 2018-04-02 06:54  Regina Obe <lr@pcorp.us>
 
-	* [r16519] doc/release_notes.xml: Fix typo in release notes
+	* [r16519] Fix typo in release notes
 
 2018-04-02 04:57  Regina Obe <lr@pcorp.us>
 
-	* [r16517] ChangeLog, HOWTO_RELEASE, NEWS, README.postgis,
-	  Version.config, doc/release_notes.xml,
-	  extensions/upgradeable_versions.mk: Update in prep for 2.4.7
+	* [r16517] Update in prep for 2.4.7
 
 2018-03-28 08:53  Regina Obe <lr@pcorp.us>
 
-	* [r16504] NEWS, doc/reference_raster.xml,
-	  raster/rt_pg/rtpg_mapalgebra.c, raster/test/regress/tickets.sql,
-	  raster/test/regress/tickets_expected: Fix crasher in raster when
-	  fed an empty raster (note was tempted to change the def of empty
-	  raster to include raster with no bands but not sure where else
-	  that is used, so just revised the clip check to not try to clip
-	  if no bands).
+	* [r16504] Fix crasher in raster when fed an empty raster (note was
+	  tempted to change the def of empty raster to include raster with
+	  no bands but not sure where else that is used, so just revised
+	  the clip check to not try to clip if no bands).
 	  References #3055 for PostGIS 2.4.4,
 	  also minor doc fix references #2925 for PostGIS 2.4.4
 
 2018-03-27 17:36  Darafei Praliaskouski <me@komzpa.net>
 
-	* [r16500] NEWS, liblwgeom/lwlinearreferencing.c: ST_CPAWithin
-	  precision fix
+	* [r16500] ST_CPAWithin precision fix
 	  
 	  Closes #4032
 
 2018-03-25 03:33  Regina Obe <lr@pcorp.us>
 
-	* [r16498] NEWS, extensions/postgis_extension_helper.sql: upgrade
-	  support for PostgreSQL 11
+	* [r16498] upgrade support for PostgreSQL 11
 	  closes #4044 for PostGIS 2.4.4
 
 2018-03-24 03:01  Regina Obe <lr@pcorp.us>
 
-	* [r16496] NEWS: change sorting of tickets to be nuermic by ticket
+	* [r16496] change sorting of tickets to be nuermic by ticket
 	  number. Add in missing tickets
 
 2018-03-24 02:17  Regina Obe <lr@pcorp.us>
 
-	* [r16495] doc/installation.xml: note in docs about soft upgrade
-	  that legacy.sql must be rerun for each minor.
+	* [r16495] note in docs about soft upgrade that legacy.sql must be
+	  rerun for each minor.
 	  Closes #2960 for PostGIS 2.4.4
 
 2018-03-24 00:00  Daniel Baston <dbaston@gmail.com>
 
-	* [r16491] liblwgeom/lwgeom_geos_cluster.c, regress/tickets.sql,
-	  regress/tickets_expected: Avoid dropping SRID in
-	  ST_ClusterIntersecting
+	* [r16491] Avoid dropping SRID in ST_ClusterIntersecting
 	  
 	  References #4055
 
 2018-03-23 06:35  Regina Obe <lr@pcorp.us>
 
-	* [r16484] ci/winnie/build_postgis.sh,
-	  ci/winnie/package_postgis.sh, ci/winnie/regress_postgis.sh:
-	  change to use GDAL 2.2.4, 3.6.2 (for packaging) but keep 3.7.0dev
-	  for regress testing
+	* [r16484] change to use GDAL 2.2.4, 3.6.2 (for packaging) but keep
+	  3.7.0dev for regress testing
 
 2018-03-23 00:09  Regina Obe <lr@pcorp.us>
 
-	* [r16482] NEWS, postgis/geography.sql.in: schema qualify geography
-	  functions (including ST_Buffer)
+	* [r16482] schema qualify geography functions (including ST_Buffer)
 	  References #4052 for PostGIS 2.4.4
 
 2018-03-18 22:43  Regina Obe <lr@pcorp.us>
 
-	* [r16477] ci/debbie/postgis_release_docs.sh: Seems sometimes the
-	  postgis_svn_revision.h gets wiped out, so end up with no svn
-	  number.
+	* [r16477] Seems sometimes the postgis_svn_revision.h gets wiped
+	  out, so end up with no svn number.
 	  Explicitly call svn_repo_revision.pl to ensure we have an svn
 	  number to read
 	  References #4047 for PostGIS 2.4
 
 2018-03-18 09:10  Regina Obe <lr@pcorp.us>
 
-	* [r16474] ci/debbie/postgis_release_docs.sh: this for sure will
-	  fix revision # this time I tested before hand
+	* [r16474] this for sure will fix revision # this time I tested
+	  before hand
 	  References #4047 for PostGIS 2.4
 
 2018-03-18 05:16  Regina Obe <lr@pcorp.us>
 
-	* [r16472] ci/debbie/postgis_release_docs.sh: variable typo
+	* [r16472] variable typo
 	  References #4047 for PostGIS 2.4
 
 2018-03-18 05:12  Regina Obe <lr@pcorp.us>
 
-	* [r16470] ci/debbie/postgis_release_docs.sh: Add logic to show git
-	  log timestamp in UTC instead of Unix timestamp and put in svn
-	  revision number
+	* [r16470] Add logic to show git log timestamp in UTC instead of
+	  Unix timestamp and put in svn revision number
 	  References #4047 for PostGIS 2.4
 
 2018-02-26 20:04  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16425] liblwgeom/lwin_wkt_lex.c: Update lexer generated file
+	* [r16425] Update lexer generated file
 	  References #4017
 
 2018-02-26 20:03  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16424] NEWS, liblwgeom/lwin_wkt_lex.l: Fix memory corruption in
-	  case where lexer is interrupted mid-process
+	* [r16424] Fix memory corruption in case where lexer is interrupted
+	  mid-process
 	  References #4017
 	  For 2.4 branch
 
 2018-02-26 18:25  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16420] NEWS, liblwgeom/lwlinearreferencing.c: Use more precise
-	  bounds when testing overlap of temporal ranges.
+	* [r16420] Use more precise bounds when testing overlap of temporal
+	  ranges.
 	  For 2.4, references #4025
 
 2018-02-25 14:54  Sandro Santilli <strk@kbt.io>
 
-	* [r16417] NEWS, liblwgeom/lwin_geojson.c: Do not include private
-	  header for json-c >= 0.13
+	* [r16417] Do not include private header for json-c >= 0.13
 	  
 	  Patch by Björn Esser
 	  
@@ -332,8 +483,7 @@
 
 2018-02-22 11:13  Darafei Praliaskouski <me@komzpa.net>
 
-	* [r16406] NEWS, postgis/lwgeom_box3d.c, regress/regress_expected,
-	  regress/sfcgal/regress_expected: Fix cast from box3d to geometry
+	* [r16406] Fix cast from box3d to geometry
 	  
 	  Patch by Matthias Bay
 	  
@@ -342,52 +492,47 @@
 
 2018-02-21 14:31  Sandro Santilli <strk@kbt.io>
 
-	* [r16401] .gitlab-ci.yml: [gitlab-ci] Switch to PostgreSQL 9.6 and
-	  libjson-c-dev
+	* [r16401] [gitlab-ci] Switch to PostgreSQL 9.6 and libjson-c-dev
 	  
 	  Fixes gitlab-ci build for 2.4, references #4023
 
 2018-02-21 09:05  Sandro Santilli <strk@kbt.io>
 
-	* [r16399] authors.git, authors.svn: Lowercase Algunenano
+	* [r16399] Lowercase Algunenano
 	  
 	  All LDAP account names are lowercase
 
 2018-02-20 22:38  Regina Obe <lr@pcorp.us>
 
-	* [r16398] authors.git, authors.svn: Add Raúl Marín Rodríguez to
-	  developers list
+	* [r16398] Add Raúl Marín Rodríguez to developers list
 
 2018-02-20 22:35  Regina Obe <lr@pcorp.us>
 
-	* [r16397] ci/winnie/build_postgis.sh,
-	  ci/winnie/package_postgis.sh, ci/winnie/regress_postgis.sh:
-	  backport regress changes from 2.5
+	* [r16397] backport regress changes from 2.5
 
 2018-01-26 14:55  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16362] NEWS, liblwgeom/lwpoly.c: lwpoly_construct_circle: Avoid
-	  division by zero (Raúl Marín Rodríguez)
+	* [r16362] lwpoly_construct_circle: Avoid division by zero (Raúl
+	  Marín Rodríguez)
 	  References #4003
 
 2018-01-26 12:47  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16361] NEWS, postgis/geography_btree.c: Avoid memory exhaustion
-	  when building a btree index (references #4004)
+	* [r16361] Avoid memory exhaustion when building a btree index
+	  (references #4004)
 	  From Edmund Horner
 
 2018-01-22 14:15  Sandro Santilli <strk@kbt.io>
 
-	* [r16358] NEWS, postgis/geography.sql.in: Set availability of
-	  support function for KNN index
+	* [r16358] Set availability of support function for KNN index
 	  
 	  Fixes upgrade from 2.1 to 2.2+
 	  Closes #3978 in 2.4 branch (2.4.4)
 
 2018-01-22 12:35  Sandro Santilli <strk@kbt.io>
 
-	* [r16353] .drone.yml: [drone] Use trisquel2 image, test all pgsql
-	  versions and upgrades
+	* [r16353] [drone] Use trisquel2 image, test all pgsql versions and
+	  upgrades
 	  
 	  The new docker image also uses newer GEOS (3.6.2).
 	  References #3813 for 2.4 branch
@@ -395,111 +540,93 @@
 
 2018-01-22 11:30  Sandro Santilli <strk@kbt.io>
 
-	* [r16350] regress/run_test.pl: backport run_test.pl fixes from
-	  trunk
+	* [r16350] backport run_test.pl fixes from trunk
 
 2018-01-21 07:12  Regina Obe <lr@pcorp.us>
 
-	* [r16347] ci/winnie/build_postgis.sh,
-	  ci/winnie/package_postgis.sh, ci/winnie/regress_postgis.sh:
-	  change scripts back to versions of things to compile against
-	  (GDAL, PROJ, SCGAL, GEOS) being set at job level until we have
-	  the stop and start postgres in repo as well.
+	* [r16347] change scripts back to versions of things to compile
+	  against (GDAL, PROJ, SCGAL, GEOS) being set at job level until we
+	  have the stop and start postgres in repo as well.
 
 2018-01-20 12:58  Sandro Santilli <strk@kbt.io>
 
-	* [r16346] ci/debbie/postgis_regress.sh: Have Debbie test all
-	  available upgrades
+	* [r16346] Have Debbie test all available upgrades
 	  
 	  References #2676 for 2.4 branch
 
 2018-01-18 21:46  Sandro Santilli <strk@kbt.io>
 
-	* [r16336] macros/pkg.m4: Forgot to add pkg.m4 macro in r16324
+	* [r16336] Forgot to add pkg.m4 macro in r16324
 	  
 	  See #3992
 
 2018-01-17 23:23  Regina Obe <lr@pcorp.us>
 
-	* [r16328] NEWS: Move PgSQL 11 support note to 2.4.4
+	* [r16328] Move PgSQL 11 support note to 2.4.4
 	  It was put in after 2.4.3 was already tagged and tarred.
 
 2018-01-16 20:54  Sandro Santilli <strk@kbt.io>
 
-	* [r16325] NEWS, configure.ac: Use PKG_PROG_PKG_CONFIG macro from
-	  pkg.m4 to detect pkg-config
+	* [r16325] Use PKG_PROG_PKG_CONFIG macro from pkg.m4 to detect
+	  pkg-config
 	  
 	  Patch by Bas Couwenberg
 	  Closes #3992 in 2.4 branch (for 2.4.4)
 
 2018-01-16 14:47  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16321] NEWS: Updates news re pg11 support
+	* [r16321] Updates news re pg11 support
 
 2018-01-16 14:46  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16320] libpgcommon/lwgeom_pg.h, libpgcommon/lwgeom_transform.c,
-	  postgis/lwgeom_geos_prepared.c: Backport support for Pg11 to 2.4
-	  branch. Closes #3946
+	* [r16320] Backport support for Pg11 to 2.4 branch. Closes #3946
 
 2018-01-16 07:06  Regina Obe <lr@pcorp.us>
 
-	* [r16315] Version.config, ci/debbie/postgis_doc_translations.sh,
-	  ci/debbie/postgis_make_dist.sh,
-	  ci/debbie/postgis_release_docs.sh,
-	  extensions/upgradeable_versions.mk: flip version to 2.4.4dev, add
-	  2.4.3 to upgrade versions
+	* [r16315] flip version to 2.4.4dev, add 2.4.3 to upgrade versions
 	  add timestamp to dev docs
 	  closes #3991 for PostGIS 2.4.4dev
 
 2018-01-15 21:38  Regina Obe <lr@pcorp.us>
 
-	* [r16305] ci/debbie/postgis_release_docs.sh: Get rid of SVN number
-	  and revise to not build local html except for trunk
+	* [r16305] Get rid of SVN number and revise to not build local html
+	  except for trunk
 
 2018-01-15 20:47  Regina Obe <lr@pcorp.us>
 
-	* [r16301] HOWTO_RELEASE, Version.config: more clearifying notes on
-	  HOWTO_RELEASE
+	* [r16301] more clearifying notes on HOWTO_RELEASE
 	  change version to 2.4.3 in prep for tagging tomorrow or
 	  Wednesday.
 
 2018-01-15 00:50  Regina Obe <lr@pcorp.us>
 
-	* [r16299] ChangeLog, Version.config,
-	  ci/debbie/postgis_make_dist.sh: update ChangeLog
+	* [r16299] update ChangeLog
 	  flip Version.config to rc2
 	  revise make dist to output branch reading from
 
 2018-01-15 00:24  Regina Obe <lr@pcorp.us>
 
-	* [r16298] NEWS, configure.ac, doc/release_notes.xml:
-	  with_interrupt_tests using non-standard extension
+	* [r16298] with_interrupt_tests using non-standard extension
 	  Closes #3988 for PostGIS 2.4.3
 
 2018-01-14 15:42  Regina Obe <lr@pcorp.us>
 
-	* [r16294] NEWS, Version.config,
-	  extensions/upgradeable_versions.mk: in prep for release
-	  Wednesday, flip back to dev, stamp expected date of release in
-	  news
+	* [r16294] in prep for release Wednesday, flip back to dev, stamp
+	  expected date of release in news
 	  Add 2.3.6 upgrade path
 
 2018-01-14 15:35  Regina Obe <lr@pcorp.us>
 
-	* [r16292] HOWTO_RELEASE: fix missed edit.
+	* [r16292] fix missed edit.
 	  References #3985 for PostGIS 2.4
 
 2018-01-13 19:24  Regina Obe <lr@pcorp.us>
 
-	* [r16289] Version.config, doc/release_notes.xml: Change release
-	  version to 2.4.3rc1
+	* [r16289] Change release version to 2.4.3rc1
 
 2018-01-13 19:20  Regina Obe <lr@pcorp.us>
 
-	* [r16288] HOWTO_RELEASE, ci/debbie/postgis_make_dist.sh,
-	  ci/debbie/postgis_release_docs.sh, make_dist.sh: fix typo in
-	  make_dist.sh
+	* [r16288] fix typo in make_dist.sh
 	  Add doc building,
 	  update How To release to reflect tar ball and docs start building
 	  as soon as work is committed.
@@ -507,213 +634,188 @@
 
 2018-01-13 18:01  Regina Obe <lr@pcorp.us>
 
-	* [r16284] ci/debbie/postgis_make_dist.sh, make_dist.sh: revise
-	  make_dist.sh to allow overriding the package name, and create
-	  debbie make dist script that calls the main one
+	* [r16284] revise make_dist.sh to allow overriding the package
+	  name, and create debbie make dist script that calls the main one
 	  References #3985 for PostGIS 2.4
 
 2018-01-13 06:05  Regina Obe <lr@pcorp.us>
 
-	* [r16280] doc/release_notes.xml: fix typo in release version it's
-	  2.4.3 not 2.4.8
+	* [r16280] fix typo in release version it's 2.4.3 not 2.4.8
 
 2018-01-13 05:56  Regina Obe <lr@pcorp.us>
 
-	* [r16279] NEWS, doc/release_notes.xml: Add release notes to docs
-	  in prep for release. Minor reword in NEWs
+	* [r16279] Add release notes to docs in prep for release. Minor
+	  reword in NEWs
 
 2018-01-12 16:50  Regina Obe <lr@pcorp.us>
 
-	* [r16277] ci/debbie/postgis_regress.sh: revert setting GDAL and
-	  GEOS, forgot pg launch script needs these which we don't have in
-	  repo. Turn on DUMP_RESTORE testing
+	* [r16277] revert setting GDAL and GEOS, forgot pg launch script
+	  needs these which we don't have in repo. Turn on DUMP_RESTORE
+	  testing
 
 2018-01-12 16:18  Regina Obe <lr@pcorp.us>
 
-	* [r16276] ci/debbie/postgis_regress.sh: change to valid GDAL
-	  version
+	* [r16276] change to valid GDAL version
 
 2018-01-12 15:50  Regina Obe <lr@pcorp.us>
 
-	* [r16275] ci/debbie/postgis_regress.sh: set to a GEOS debbie
-	  doesn't have. Change to GEOS 3.7.0dev
+	* [r16275] set to a GEOS debbie doesn't have. Change to GEOS
+	  3.7.0dev
 
 2018-01-12 15:38  Regina Obe <lr@pcorp.us>
 
-	* [r16274] ci/debbie/postgis_regress.sh,
-	  ci/winnie/package_postgis.sh: more moving of variables to script
-	  from job
+	* [r16274] more moving of variables to script from job
 
 2018-01-12 15:25  Regina Obe <lr@pcorp.us>
 
-	* [r16273] ci/winnie/regress_postgis.sh: change to hard-code GDAL,
-	  GEOS, and MAKE_EXTENSION and dump so easier for people to set
-	  without changing the job.
+	* [r16273] change to hard-code GDAL, GEOS, and MAKE_EXTENSION and
+	  dump so easier for people to set without changing the job.
 
 2018-01-12 13:47  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16271] NEWS, libpgcommon/lwgeom_pg.h,
-	  libpgcommon/lwgeom_transform.c, libpgcommon/lwgeom_transform.h:
-	  2.4 fix, st_transform does not qualify query to spatial_ref_sys
-	  (references #3975)
+	* [r16271] 2.4 fix, st_transform does not qualify query to
+	  spatial_ref_sys (references #3975)
 
 2018-01-12 08:48  Darafei Praliaskouski <me@komzpa.net>
 
-	* [r16264] NEWS, liblwgeom/cunit/cu_out_encoded_polyline.c,
-	  liblwgeom/lwout_encoded_polyline.c: Encoded Polyline of EMPTY
+	* [r16264] Encoded Polyline of EMPTY
 	  Pull in from trunk
 	  
 	  Closes #3982
 
 2018-01-09 18:36  Sandro Santilli <strk@kbt.io>
 
-	* [r16241] NEWS, postgis/geography_brin.sql.in,
-	  postgis/postgis_brin.sql.in: Simplify syntax for brin opclasses
-	  so upgrade script recognizes it
+	* [r16241] Simplify syntax for brin opclasses so upgrade script
+	  recognizes it
 	  
 	  Fixes #3956 in 2.4 branch
 
 2018-01-09 18:36  Sandro Santilli <strk@kbt.io>
 
-	* [r16240] utils/postgis_proc_upgrade.pl: Do not assume CREATE
-	  OPERATOR CLASS needs to end with ');'
+	* [r16240] Do not assume CREATE OPERATOR CLASS needs to end with
+	  ');'
 	  
 	  A single ending semicolon is enough to terminate the statement
 
 2018-01-09 18:36  Sandro Santilli <strk@kbt.io>
 
-	* [r16239] regress/run_test.pl: Upgrade SFCGAL too when requested
+	* [r16239] Upgrade SFCGAL too when requested
 
 2018-01-02 14:06  Darafei Praliaskouski <me@komzpa.net>
 
-	* [r16213] NEWS, liblwgeom/lwkmeans.c: Fix KMeans initialization
-	  issue that lost clusters sometimes.
+	* [r16213] Fix KMeans initialization issue that lost clusters
+	  sometimes.
 	  
 	  Closes #3965
 	  Closes https://github.com/postgis/postgis/pull/179
 
 2018-01-02 13:50  Darafei Praliaskouski <me@komzpa.net>
 
-	* [r16211] authors.git, authors.svn: Drag in authors mapping from
-	  trunk.
+	* [r16211] Drag in authors mapping from trunk.
 
 2018-01-01 19:58  Regina Obe <lr@pcorp.us>
 
-	* [r16204] ci/winnie/build_postgis.sh,
-	  ci/winnie/package_postgis.sh, ci/winnie/regress_postgis.sh:
-	  switch to have version of libs used be defined in script rather
-	  than the jenkins job
+	* [r16204] switch to have version of libs used be defined in script
+	  rather than the jenkins job
 
 2017-12-24 19:06  Regina Obe <lr@pcorp.us>
 
-	* [r16185] doc/release_notes.xml: copy over 2.3.4 and 2.3.5 notes
+	* [r16185] copy over 2.3.4 and 2.3.5 notes
 
 2017-12-20 23:09  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16176] postgis/gserialized_estimate.c: Change syscache stats
-	  lookup to use STATRELATTINH key and three parameters in all cases
-	  for 2.4 branch. Closes #3904
+	* [r16176] Change syscache stats lookup to use STATRELATTINH key
+	  and three parameters in all cases for 2.4 branch. Closes #3904
 
 2017-12-20 14:30  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16166] NEWS, liblwgeom/lwboundingcircle.c: Bring epsilon fix to
-	  minimum bounding circle back to 2.4 (closes #3930)
+	* [r16166] Bring epsilon fix to minimum bounding circle back to 2.4
+	  (closes #3930)
 
 2017-12-18 23:53  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16163] liblwgeom/lwgeodetic.c: Use original vertex values where
-	  available in contructing new pointarray (references #3941)
+	* [r16163] Use original vertex values where available in
+	  contructing new pointarray (references #3941)
 
 2017-12-18 14:54  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16159] spatial_ref_sys.sql: Manual fixes from PostGIS users
-	  (not many left now) to EPSG file
+	* [r16159] Manual fixes from PostGIS users (not many left now) to
+	  EPSG file
 	  References #3944
 
 2017-12-18 09:20  Sandro Santilli <strk@kbt.io>
 
-	* [r16157] NEWS, spatial_ref_sys.sql: Update SRS to EPSG 9.2
+	* [r16157] Update SRS to EPSG 9.2
 	  
 	  Patch by Even Rouault
 	  Ref #3944 for 2.4 branch
 
 2017-12-12 17:59  Regina Obe <lr@pcorp.us>
 
-	* [r16146] ci/bessie/postgis_regress.sh,
-	  ci/bessie32/postgis_regress.sh: add in verbose and logic to drop
-	  test database if it exists. Switch to using BRANCH instead of TAG
+	* [r16146] add in verbose and logic to drop test database if it
+	  exists. Switch to using BRANCH instead of TAG
 
 2017-12-10 01:54  Regina Obe <lr@pcorp.us>
 
-	* [r16139] doc/html/images/osgeo_logo.png: use new osgeo project
-	  logo
+	* [r16139] use new osgeo project logo
 
 2017-12-06 20:00  Regina Obe <lr@pcorp.us>
 
-	* [r16135] NEWS, configure.ac: Turn off interrupt tests in
-	  configure by default.
+	* [r16135] Turn off interrupt tests in configure by default.
 	  Also added a section in configure output to note if interrupt
 	  tests are enabled or not
 	  Closes #3827 for PostGIS 2.4.3
 
 2017-11-30 21:41  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16131] NEWS, liblwgeom/cunit/cu_out_encoded_polyline.c,
-	  liblwgeom/lwout_encoded_polyline.c, postgis/lwgeom_export.c:
-	  Support google line encodings that include a backslash character
-	  (References #3713)
+	* [r16131] Support google line encodings that include a backslash
+	  character (References #3713)
 
 2017-11-29 00:18  Regina Obe <lr@pcorp.us>
 
-	* [r16123] extensions/postgis_sfcgal/Makefile.in: Explicitly
-	  specify $(PERL) to call create_unpackaged.pl otherwise at least
-	  on freebsd it fails
+	* [r16123] Explicitly specify $(PERL) to call create_unpackaged.pl
+	  otherwise at least on freebsd it fails
 	  Also get rid of 9.1 check, we don't support 9.1 anymore.
 	  References #3938 for PostGIS 2.4.3
 
 2017-11-28 23:41  Regina Obe <lr@pcorp.us>
 
-	* [r16122] ci/bessie, ci/bessie/postgis_regress.sh, ci/bessie32,
-	  ci/bessie32/postgis_regress.sh: Add the freebsd bot scripts --
-	  the svn hook change should make these fire right away
+	* [r16122] Add the freebsd bot scripts -- the svn hook change
+	  should make these fire right away
 
 2017-11-15 18:18  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16114] NEWS, README.postgis, Version.config,
-	  doc/release_notes.xml, extensions/upgradeable_versions.mk: push
-	  version numbers forward
+	* [r16114] push version numbers forward
 
 2017-11-15 18:11  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16112] ., ChangeLog, NEWS, README.postgis, Version.config,
-	  extensions/upgradeable_versions.mk: Prepare for 2.4.2
+	* [r16112] Prepare for 2.4.2
 
 2017-11-14 05:42  Regina Obe <lr@pcorp.us>
 
-	* [r16108] doc/extras_tigergeocoder.xml: note about enhanced
-	  feature in reverse_geocode when zcta5 data is loaded.
+	* [r16108] note about enhanced feature in reverse_geocode when
+	  zcta5 data is loaded.
 
 2017-11-09 09:06  Regina Obe <lr@pcorp.us>
 
-	* [r16102] NEWS, extensions/upgradeable_versions.mk: Add missing
-	  2.3.4 upgrade path (as provided by Muhammad Usama)
+	* [r16102] Add missing 2.3.4 upgrade path (as provided by Muhammad
+	  Usama)
 	  Also remove 2.3 and 2.4 dev releases and add missing 2.2.6
 	  Closes #3926 for PostGIS 2.4.2
 
 2017-11-09 08:53  Regina Obe <lr@pcorp.us>
 
-	* [r16099] NEWS: fix spacing
+	* [r16099] fix spacing
 
 2017-11-09 08:52  Regina Obe <lr@pcorp.us>
 
-	* [r16098] NEWS: Add missing release notes for ST_Segmentize
-	  geography fix.
+	* [r16098] Add missing release notes for ST_Segmentize geography
+	  fix.
 	  References #3667 for PostGIS 2.4.2
 
 2017-11-07 18:04  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16094] liblwgeom/cunit/cu_geodetic.c, liblwgeom/lwgeodetic.c,
-	  regress/geography_expected: Replace project-and-entend logic with
+	* [r16094] Replace project-and-entend logic with
 	  bisect-and-recurse in geography segmentization.
 	  Preserves "mostly equal" segment lengths, and
 	  should be more numerically stable.
@@ -722,29 +824,25 @@
 
 2017-10-31 15:15  Sandro Santilli <strk@kbt.io>
 
-	* [r16086] configure.ac, liblwgeom/Makefile.in: Make sure target
-	  directories are created before copying files to them
+	* [r16086] Make sure target directories are created before copying
+	  files to them
 	  
 	  References #3912 for 2.4 branch
 	  References #3916 for 2.4 branch
 
 2017-10-26 01:07  Regina Obe <lr@pcorp.us>
 
-	* [r16061] NEWS: Fix zcta5 load - NEWS item
+	* [r16061] Fix zcta5 load - NEWS item
 	  References #3917 for PostGIS 2.4.2
 
 2017-10-26 01:06  Regina Obe <lr@pcorp.us>
 
-	* [r16060] extras/tiger_geocoder/tiger_loader_2017.sql: Fix zcta5
-	  load
+	* [r16060] Fix zcta5 load
 	  References #3917 for PostGIS 2.4.2
 
 2017-10-21 09:02  Sandro Santilli <strk@kbt.io>
 
-	* [r16029] .gitignore, GNUmakefile.in, configure.ac,
-	  liblwgeom/Makefile.in, loader/Makefile.in, raster/install-sh,
-	  raster/loader/Makefile.in, utils/Makefile.in: Put build AUX files
-	  under build-aux
+	* [r16029] Put build AUX files under build-aux
 	  
 	  Cleans and ignore build aux files from new location,
 	  and remove spurious install-sh from repository.
@@ -753,88 +851,69 @@
 
 2017-10-20 13:05  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16018] raster/rt_pg/Makefile.in: Reflect CFLAGS passed into
-	  core
+	* [r16018] Reflect CFLAGS passed into core
 
 2017-10-20 13:04  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16017] postgis/Makefile.in: Reflect CFLAGS passed into
-	  configure
+	* [r16017] Reflect CFLAGS passed into configure
 
 2017-10-18 19:28  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16014] liblwgeom/lwgeom_geos.c, postgis/geobuf.c,
-	  postgis/geography_centroid.c, postgis/gserialized_gist_2d.c,
-	  postgis/lwgeom_functions_basic.c, postgis/mvt.c: Quiet compile
-	  warnings
+	* [r16014] Quiet compile warnings
 
 2017-10-18 18:46  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16013] HOWTO_RELEASE, NEWS, README.postgis, Version.config,
-	  extensions/upgradeable_versions.mk: Bump forward versions
+	* [r16013] Bump forward versions
 
 2017-10-18 18:32  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r16011] ChangeLog, NEWS, README.postgis, Version.config,
-	  doc/release_notes.xml: Prepare for 2.4.1 release
+	* [r16011] Prepare for 2.4.1 release
 
 2017-10-17 18:23  Regina Obe <lr@pcorp.us>
 
-	* [r16001] doc/introduction.xml:
+	* [r16001]
 
 2017-10-17 16:53  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15997] NEWS, liblwgeom/cunit/cu_geodetic.c, liblwgeom/g_box.c:
-	  Allocate enough space for all possible GBOX string outputs (Raúl
-	  Marín Rodríguez)
+	* [r15997] Allocate enough space for all possible GBOX string
+	  outputs (Raúl Marín Rodríguez)
 	  References #3907
 
 2017-10-17 14:36  Regina Obe <lr@pcorp.us>
 
-	* [r15995] authors.git, authors.svn, doc/introduction.xml: Add
-	  Darafei Praliaskouski to authors lists and core developers list
-	  and make up responsibilities for him.
+	* [r15995] Add Darafei Praliaskouski to authors lists and core
+	  developers list and make up responsibilities for him.
 
 2017-10-16 14:59  Regina Obe <lr@pcorp.us>
 
-	* [r15992] doc/using_postgis_dataman.xml: Fix xml parse error in
-	  docs
+	* [r15992] Fix xml parse error in docs
 	  References #3902 for PostGIS 2.4.1
 
 2017-10-16 09:35  Regina Obe <lr@pcorp.us>
 
-	* [r15991] doc/extras_tigergeocoder.xml,
-	  doc/using_postgis_dataman.xml: Backport geography changes to
-	  PostGIS 2.4.1
+	* [r15991] Backport geography changes to PostGIS 2.4.1
 	  Closes #3902
 	  Changed Changed to Enhanced for tiger zcta
 	  References #3815 for PostGIS 2.4.1
 
 2017-10-15 17:53  Regina Obe <lr@pcorp.us>
 
-	* [r15987] NEWS, doc/extras_tigergeocoder.xml,
-	  doc/installation.xml, doc/xsl/postgis_aggs_mm.xml.xsl,
-	  extensions/postgis_tiger_geocoder/Makefile.in,
-	  extras/tiger_geocoder/tiger_loader_2017.sql: Tiger 2017 and zcta
-	  load support for PostGIS 2.4.1
+	* [r15987] Tiger 2017 and zcta load support for PostGIS 2.4.1
 	  Closes #3815
 
 2017-10-11 14:05  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15965] NEWS, liblwgeom/lwgeom_geos.c: Fix rare missing boxes in
-	  geometry subdivision
+	* [r15965] Fix rare missing boxes in geometry subdivision
 	  References #3886
 
 2017-10-11 13:51  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15964] postgis/mvt.c: PgSQL 11 support for 2.4 branch
-	  (DatumGetJsonbP macro)
+	* [r15964] PgSQL 11 support for 2.4 branch (DatumGetJsonbP macro)
 	  Closes #3867
 
 2017-10-10 22:45  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15960] NEWS, liblwgeom/lwin_wkb.c: Throw error on malformed WKB
-	  input (2.4 branch)
+	* [r15960] Throw error on malformed WKB input (2.4 branch)
 	  Credit to OSS-Fuzz:
 	  https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=2589
 	  Credit to OSS-Fuzz:
@@ -847,176 +926,151 @@
 
 2017-10-10 18:04  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15955] NEWS, liblwgeom/lwout_encoded_polyline.c: Undefined
-	  behaviour in pointarray_to_encoded_polyline (2.4 branch)
+	* [r15955] Undefined behaviour in pointarray_to_encoded_polyline
+	  (2.4 branch)
 	  (References #3891)
 
 2017-10-10 16:58  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15948] NEWS, liblwgeom/cunit/cu_varint.c, liblwgeom/varint.c,
-	  liblwgeom/varint.h: Fix undefined behaviour in zigzag with
-	  negative inputs (2.4 branch)
+	* [r15948] Fix undefined behaviour in zigzag with negative inputs
+	  (2.4 branch)
 	  (References #3882)
 
 2017-10-10 16:36  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15945] NEWS, liblwgeom/cunit/cu_measures.c,
-	  liblwgeom/measures.c: lw_dist2d_pt_arc division by zero
-	  (References #3874)
+	* [r15945] lw_dist2d_pt_arc division by zero (References #3874)
 
 2017-10-09 18:54  Regina Obe <lr@pcorp.us>
 
-	* [r15939] doc/extras_tigergeocoder.xml: Update geocode batch
-	  update example to use LATERAL now that PostgreSQL 9.3 is minimum
-	  supported.
+	* [r15939] Update geocode batch update example to use LATERAL now
+	  that PostgreSQL 9.3 is minimum supported.
 
 2017-10-06 13:31  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15923] NEWS, liblwgeom/g_serialized.c,
-	  postgis/geography_btree.c: Performance improvements for b-tree
-	  geometry sorts
+	* [r15923] Performance improvements for b-tree geometry sorts
 	  References #3864
 
 2017-10-06 13:21  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15919] NEWS, liblwgeom/lwalgorithm.c: geohash_point_as_int: Fix
-	  undefined behaviour in shift operation
+	* [r15919] geohash_point_as_int: Fix undefined behaviour in shift
+	  operation
 	  References #3875
 
 2017-10-06 13:17  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15915] NEWS, liblwgeom/cunit/cu_libgeom.c,
-	  liblwgeom/liblwgeom.h.in: Undefined behaviour in TYPMOD_GET_SRID
+	* [r15915] Undefined behaviour in TYPMOD_GET_SRID
 	  References #3880
 
 2017-10-05 13:21  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15902] NEWS, liblwgeom/cunit/cu_geodetic.c,
-	  liblwgeom/cunit/cu_libgeom.c, liblwgeom/liblwgeom_internal.h,
-	  liblwgeom/lwalgorithm.c, liblwgeom/lwgeodetic.c,
-	  liblwgeom/lwgeodetic.h, liblwgeom/lwspheroid.c: Combine multiple
-	  signum definitions (2.4)
+	* [r15902] Combine multiple signum definitions (2.4)
 	  (References #3878)
 
 2017-10-05 13:00  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15897] NEWS, liblwgeom/cunit/cu_measures.c,
-	  liblwgeom/measures.c: division by zero in lw_dist2d_arc_arc
+	* [r15897] division by zero in lw_dist2d_arc_arc
 	  References #3879
 
 2017-10-02 22:29  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15877] liblwgeom/g_serialized.c: Fix union issue (References
-	  #3871)
+	* [r15877] Fix union issue (References #3871)
 
 2017-10-02 22:00  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15874] NEWS, liblwgeom/g_serialized.c: Use type-pun to avoid
-	  memcpy in building morton key (References #3871)
+	* [r15874] Use type-pun to avoid memcpy in building morton key
+	  (References #3871)
 
 2017-10-02 12:51  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15872] NEWS, liblwgeom/lwlinearreferencing.c: Gracefully handle
-	  short-measure issue (Closes #3845)
+	* [r15872] Gracefully handle short-measure issue (Closes #3845)
 
 2017-10-02 06:17  Sandro Santilli <strk@kbt.io>
 
-	* [r15866] NEWS, liblwgeom/Makefile.in: Add -lm to liblwgeom link
-	  line
+	* [r15866] Add -lm to liblwgeom link line
 	  
 	  References #3869 for 2.4 branch
 
 2017-10-01 18:31  Sandro Santilli <strk@kbt.io>
 
-	* [r15865] NEWS, postgis/lwgeom_btree.c: Fix memory leaks in BTREE
-	  operators
+	* [r15865] Fix memory leaks in BTREE operators
 	  
 	  References #3864 for 2.4 branch
 
 2017-09-30 17:45  Sandro Santilli <strk@kbt.io>
 
-	* [r15860] .drone.yml: Fix yaml syntax in drone config
+	* [r15860] Fix yaml syntax in drone config
 
 2017-09-30 06:38  Regina Obe <lr@pcorp.us>
 
-	* [r15856] README.postgis, Version.config,
-	  extensions/upgradeable_versions.mk: Bump version to 2.4.1dev, get
-	  rid of alpha, beta too
+	* [r15856] Bump version to 2.4.1dev, get rid of alpha, beta too
 
 2017-09-29 14:11  Regina Obe <lr@pcorp.us>
 
-	* [r15852] README.postgis: update README to reflect that 3.4 or
-	  higher is required and 3.6+ is recommended.
+	* [r15852] update README to reflect that 3.4 or higher is required
+	  and 3.6+ is recommended.
 	  Closes #3868 for PostGIS 2.4
 
 2017-09-28 06:50  Regina Obe <lr@pcorp.us>
 
-	* [r15849] NEWS, Version.config, doc/release_notes.xml,
-	  extensions/upgradeable_versions.mk: Soft launch PostGIS 2.4.0
+	* [r15849] Soft launch PostGIS 2.4.0
 
 2017-09-27 06:13  Regina Obe <lr@pcorp.us>
 
-	* [r15846] ChangeLog: Update change log with latest changes
+	* [r15846] Update change log with latest changes
 
 2017-09-27 04:13  Regina Obe <lr@pcorp.us>
 
-	* [r15843] NEWS: it's already 9/27 update date.
+	* [r15843] it's already 9/27 update date.
 
 2017-09-27 04:05  Regina Obe <lr@pcorp.us>
 
-	* [r15842] NEWS: update changes done since 2.4.0rc3 in prep for
-	  tagging
+	* [r15842] update changes done since 2.4.0rc3 in prep for tagging
 
 2017-09-26 16:59  Paul Ramsey <pramsey@cleverelephant.ca>
 
-	* [r15834] liblwgeom/lwin_wkb.c, liblwgeom/lwin_wkt.c: Allow
-	  triangles unclosed in M to be WKT parsed (References #3818)
+	* [r15834] Allow triangles unclosed in M to be WKT parsed
+	  (References #3818)
 
 2017-09-26 16:23  Sandro Santilli <strk@kbt.io>
 
-	* [r15832] GNUmakefile.in: Ignore vector_tile.pb-c when checking
-	  for trailing blanks
+	* [r15832] Ignore vector_tile.pb-c when checking for trailing
+	  blanks
 
 2017-09-26 16:23  Sandro Santilli <strk@kbt.io>
 
-	* [r15831] GNUmakefile.in, postgis_config.h.in: Remove trailing
-	  blank from postgis_config.h.in, prevent them
+	* [r15831] Remove trailing blank from postgis_config.h.in, prevent
+	  them
 
 2017-09-26 13:57  Sandro Santilli <strk@kbt.io>
 
-	* [r15828] GNUmakefile.in: Do not use .gitignore for checking
-	  trailing blank spaces
+	* [r15828] Do not use .gitignore for checking trailing blank spaces
 	  
 	  Manually ignore files instead. Re-using .gitignore patterns
 	  isn't easy for grep.
 
 2017-09-26 13:56  Sandro Santilli <strk@kbt.io>
 
-	* [r15827] loader/pgsql2shp-cli.c, raster/loader/raster2pgsql.c:
-	  Remove trailing blanks
+	* [r15827] Remove trailing blanks
 
 2017-09-26 13:35  Sandro Santilli <strk@kbt.io>
 
-	* [r15824] GNUmakefile.in: Make check-no-trailing-blanks
-	  implementation POSIX compliant
+	* [r15824] Make check-no-trailing-blanks implementation POSIX
+	  compliant
 
 2017-09-26 08:26  Sandro Santilli <strk@kbt.io>
 
-	* [r15822] GNUmakefile.in: Ignore generated files in
-	  check-no-trailing-blanks
+	* [r15822] Ignore generated files in check-no-trailing-blanks
 	  
 	  Also be forgiving of a missing .gitignore (but then tests will
 	  fail due to generated files possibly having trailing blanks)
 
 2017-09-26 01:50  Regina Obe <lr@pcorp.us>
 
-	* [r15820] NEWS, README.md, README.postgis, Version.config,
-	  doc/release_notes.xml, extensions/upgradeable_versions.mk: update
-	  badges to point at 2.4, update to 2.4.0rc3
+	* [r15820] update badges to point at 2.4, update to 2.4.0rc3
 
 2017-09-26 01:09  Regina Obe <lr@pcorp.us>
 
-	* [r15818] .: Branch 2.4 in prep for release Thursday
+	* [r15818] Branch 2.4 in prep for release Thursday
 
 2017-09-25 20:48  Nicklas Avén <nicklas.aven@jordogskog.no>
 

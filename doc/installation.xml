@@ -94,7 +94,7 @@ psql -d yourdatabase -f sfcgal_comments.sql
 	<itemizedlist>
 	  <listitem>
 		<para>
-		  PostgreSQL &min_postgres_version; or higher. A complete installation
+		  PostgreSQL &min_postgres_version; and  &lt;= 10. A complete installation
 		  of PostgreSQL (including server headers) is required. PostgreSQL
 		  is available from
 		  <ulink url="http://www.postgresql.org">
