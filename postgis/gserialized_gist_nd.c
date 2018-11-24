@@ -164,10 +164,12 @@ gidx_merge(GIDX **b_union, GIDX *b_new)
 	Assert(b_new);
 
 	/* Can't merge an unknown into any thing */
+	/* Q: Unknown is 0 dimensions. Should we reset result to unknown instead? */
 	if (gidx_is_unknown(b_new))
 		return;
 
 	/* Merge of unknown and known is known */
+	/* Q: Unknown is 0 dimensions. Should we never modify unknown instead? */
 	if (gidx_is_unknown(*b_union))
 	{
 		*b_union = b_new;
@@ -177,12 +179,10 @@ gidx_merge(GIDX **b_union, GIDX *b_new)
 	dims_union = GIDX_NDIMS(*b_union);
 	dims_new = GIDX_NDIMS(b_new);
 
-	POSTGIS_DEBUGF(4, "merging gidx (%s) into gidx (%s)", gidx_to_string(b_new), gidx_to_string(*b_union));
-
-	/* Shrink unshared dimensions */
+	/* Shrink unshared dimensions.
+	 * Unset dimension is essentially [-FLT_MAX, FLT_MAX], so we can either trim it or reset to that range.*/
 	if (dims_new < dims_union)
 	{
-		POSTGIS_DEBUGF(5, "reallocating b_union from %d dims to %d dims", dims_union, dims_new);
 		*b_union = (GIDX *)repalloc(*b_union, GIDX_SIZE(dims_new));
 		SET_VARSIZE(*b_union, VARSIZE(b_new));
 		dims_union = dims_new;
@@ -195,10 +195,6 @@ gidx_merge(GIDX **b_union, GIDX *b_new)
 		/* Adjust maximums */
 		GIDX_SET_MAX(*b_union, i, Max(GIDX_GET_MAX(*b_union, i), GIDX_GET_MAX(b_new, i)));
 	}
-
-	POSTGIS_DEBUGF(5, "merge complete (%s)", gidx_to_string(*b_union));
-	assert(gidx_contains(*b_union, b_new));
-	return;
 }
 
 /* Calculate the volume (in n-d units) of the GIDX */
