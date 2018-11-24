@@ -107,6 +107,7 @@ TESTS = \
 	quantize_coordinates \
 	regress \
 	regress_bdpoly \
+	regress_gist_index_nd \
 	regress_index \
 	regress_index_nulls \
 	regress_management \
@@ -189,7 +190,6 @@ TESTS += \
 	delaunaytriangles
 
 
-
 ifeq ($(INTERRUPTTESTS),yes)
 	# Allow CI servers to configure --with-interrupt-tests
 	TESTS += \
@@ -234,8 +234,7 @@ ifeq ($(HAVE_SPGIST),yes)
 	TESTS += \
 	regress_spgist_index_2d \
 	regress_spgist_index_3d \
-	regress_spgist_index_nd #\
-#	regress_gist_index_nd
+	regress_spgist_index_nd
 endif
 
 ifeq ($(HAVE_PROTOBUF),yes)

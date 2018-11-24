@@ -85,5 +85,4 @@ select * from test_gist_idx_nd;
 
 DROP TABLE tbl_geomcollection_nd CASCADE;
 DROP TABLE test_gist_idx_nd CASCADE;
-DROP FUNCTION qnodes;
-
+DROP FUNCTION qnodes (text);

@@ -43,6 +43,8 @@ PostGIS 3.0.0
   - #4249, Fix undefined behaviour in raster intersection (Raúl Marín)
   - #4246, Fix undefined behaviour in ST_3DDistance (Raúl Marín)
   - #4244, Avoid unaligned memory access in BOX2D_out (Raúl Marín)
+  - #4139, Make mixed-dimension ND index build tree correctly (Darafei Praliaskouski,
+           Arthur Lesuisse, Andrew Gierth, Raúl Marín)
 
 PostGIS 2.5.0
 2018/09/23

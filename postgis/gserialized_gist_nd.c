@@ -154,8 +154,7 @@ gidx_set_unknown(GIDX *a)
 	SET_VARSIZE(a, VARHDRSZ);
 }
 
-/* Enlarge b_union to contain b_new. If b_new contains more
-   dimensions than b_union, expand b_union to contain those dimensions. */
+/* Enlarge b_union to contain b_new. */
 void
 gidx_merge(GIDX **b_union, GIDX *b_new)
 {
@@ -165,10 +164,12 @@ gidx_merge(GIDX **b_union, GIDX *b_new)
 	Assert(b_new);
 
 	/* Can't merge an unknown into any thing */
+	/* Q: Unknown is 0 dimensions. Should we reset result to unknown instead? (ticket #4232) */
 	if (gidx_is_unknown(b_new))
 		return;
 
 	/* Merge of unknown and known is known */
+	/* Q: Unknown is 0 dimensions. Should we never modify unknown instead? (ticket #4232) */
 	if (gidx_is_unknown(*b_union))
 	{
 		*b_union = b_new;
@@ -178,26 +179,22 @@ gidx_merge(GIDX **b_union, GIDX *b_new)
 	dims_union = GIDX_NDIMS(*b_union);
 	dims_new = GIDX_NDIMS(b_new);
 
-	POSTGIS_DEBUGF(4, "merging gidx (%s) into gidx (%s)", gidx_to_string(b_new), gidx_to_string(*b_union));
-
-	if (dims_new > dims_union)
+	/* Shrink unshared dimensions.
+	 * Unset dimension is essentially [-FLT_MAX, FLT_MAX], so we can either trim it or reset to that range.*/
+	if (dims_new < dims_union)
 	{
-		POSTGIS_DEBUGF(5, "reallocating b_union from %d dims to %d dims", dims_union, dims_new);
 		*b_union = (GIDX *)repalloc(*b_union, GIDX_SIZE(dims_new));
 		SET_VARSIZE(*b_union, VARSIZE(b_new));
 		dims_union = dims_new;
 	}
 
-	for (i = 0; i < dims_new; i++)
+	for (i = 0; i < dims_union; i++)
 	{
 		/* Adjust minimums */
 		GIDX_SET_MIN(*b_union, i, Min(GIDX_GET_MIN(*b_union, i), GIDX_GET_MIN(b_new, i)));
 		/* Adjust maximums */
 		GIDX_SET_MAX(*b_union, i, Max(GIDX_GET_MAX(*b_union, i), GIDX_GET_MAX(b_new, i)));
 	}
-
-	POSTGIS_DEBUGF(5, "merge complete (%s)", gidx_to_string(*b_union));
-	return;
 }
 
 /* Calculate the volume (in n-d units) of the GIDX */
@@ -1071,7 +1068,7 @@ gserialized_gist_consistent_leaf(GIDX *key, GIDX *query, StrategyNumber strategy
 		retval = false;
 	}
 
-	return (retval);
+	return retval;
 }
 
 /*
@@ -1105,7 +1102,7 @@ gserialized_gist_consistent_internal(GIDX *key, GIDX *query, StrategyNumber stra
 		retval = false;
 	}
 
-	return (retval);
+	return retval;
 }
 
 /*
@@ -1426,7 +1423,11 @@ gserialized_gist_picksplit_addlist(OffsetNumber *list, GIDX **box_union, GIDX *b
 	if (*pos)
 		gidx_merge(box_union, box_current);
 	else
-		memcpy((void *)(*box_union), (void *)box_current, VARSIZE(box_current));
+	{
+		pfree(*box_union);
+		*box_union = gidx_copy(box_current);
+	}
+
 	list[*pos] = num;
 	(*pos)++;
 }
@@ -1721,7 +1722,7 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 	** sides of the page union box can occasionally all end up in one place, leading
 	** to this condition.
 	*/
-	if (gserialized_gist_picksplit_badratios(pos, ndims_pageunion) == true)
+	if (gserialized_gist_picksplit_badratios(pos, ndims_pageunion))
 	{
 		/*
 		** Instead we split on center points and see if we do better.
