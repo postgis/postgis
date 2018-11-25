@@ -45,6 +45,7 @@ sql_objs: $(DATA_built)
 OBJS = \
 	rtpostgis.o \
 	rtpg_internal.o \
+	rtpg_legacy.o \
 	rtpg_spatial_relationship.o \
 	rtpg_mapalgebra.o \
 	rtpg_utility.o \
