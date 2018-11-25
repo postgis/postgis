@@ -116,6 +116,7 @@ TESTS = \
 	quantize_coordinates \
 	regress \
 	regress_bdpoly \
+	regress_gist_index_nd \
 	regress_index \
 	regress_index_nulls \
 	regress_management \
