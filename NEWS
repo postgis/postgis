@@ -1,7 +1,18 @@
+PostGIS 2.4.7
+2019/xx/xx
+
+  * Bug Fixes and Enchantments *
+
+  - #4139, Make mixed-dimension ND index build tree correctly.
+  WARNING: REINDEX your ND index on tables that have records with different M/Z
+           dimensions for &&& operator to work predictably.
+           (Darafei Praliaskouski, Arthur Lesuisse, Andrew Gierth, Raúl Marín)
+
+
 PostGIS 2.4.6
 2018/11/24
 
-  * Bug Fixes and Enhancements
+  * Bug Fixes and Enhancements *
 
   - #4160, Use qualified names in topology extension install (Raúl Marín)
   - #4181, ST_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)

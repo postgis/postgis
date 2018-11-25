@@ -193,7 +193,7 @@ static void gidx_merge(GIDX **b_union, GIDX *b_new)
 
 	POSTGIS_DEBUGF(4, "merging gidx (%s) into gidx (%s)", gidx_to_string(b_new), gidx_to_string(*b_union));
 
-	if ( dims_new > dims_union )
+	if ( dims_new < dims_union )
 	{
 		POSTGIS_DEBUGF(5, "reallocating b_union from %d dims to %d dims", dims_union, dims_new);
 		*b_union = (GIDX*)repalloc(*b_union, GIDX_SIZE(dims_new));
@@ -201,7 +201,7 @@ static void gidx_merge(GIDX **b_union, GIDX *b_new)
 		dims_union = dims_new;
 	}
 
-	for ( i = 0; i < dims_new; i++ )
+	for ( i = 0; i < dims_union; i++ )
 	{
 		/* Adjust minimums */
 		GIDX_SET_MIN(*b_union, i, Min(GIDX_GET_MIN(*b_union,i),GIDX_GET_MIN(b_new,i)));
@@ -1598,7 +1598,10 @@ static void gserialized_gist_picksplit_addlist(OffsetNumber *list, GIDX **box_un
 	if ( *pos )
 		gidx_merge(box_union,  box_current);
 	else
-		memcpy((void*)(*box_union), (void*)box_current, VARSIZE(box_current));
+	{
+		pfree(*box_union);
+		*box_union = gidx_copy(box_current);
+	}
 	list[*pos] = num;
 	(*pos)++;
 }
