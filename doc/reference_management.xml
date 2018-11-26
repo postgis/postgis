@@ -1136,16 +1136,23 @@ Check constraints:
 	  </refsection>
 	  <refsection>
 		<title>Examples</title>
-		<para>This will change the srid of the roads table to 4326 from whatever it was before</para>
+
+		<para>Insert geometries into roads table with a SRID set already using <link linkend="ST_GeomFromEWKT">EWKT format</link>:</para>
+		<programlisting>COPY roads (geom) FROM STDIN;
+SRID=4326;LINESTRING(0 0, 10 10)
+SRID=4326;LINESTRING(10 10, 15 0)
+\.
+		</programlisting>
+
+		<para>This will change the srid of the roads table to 4326 from whatever it was before:</para>
 		<programlisting>SELECT UpdateGeometrySRID('roads','geom',4326);</programlisting>
 
-		<para>The prior example is equivalent to this DDL statement</para>
+		<para>The prior example is equivalent to this DDL statement:</para>
 		<programlisting>ALTER TABLE roads
   ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 4326)
     USING ST_SetSRID(geom,4326);</programlisting>
 
-	<para>If you got the projection wrong (or brought it in as unknown) in load and you wanted to transform to web mercator all in one shot
-		You can do this with
+	<para>If you got the projection wrong (or brought it in as unknown) in load and you wanted to transform to web mercator all in one shot you can do this with
 	DDL but there is no equivalent PostGIS management function to do so in one go.</para>
 	<programlisting>ALTER TABLE roads
  ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 3857) USING ST_Transform(ST_SetSRID(geom,4326),3857) ;</programlisting>
@@ -1156,7 +1163,8 @@ Check constraints:
 		<para>
   <xref linkend="RT_UpdateRasterSRID"/>,
   <xref linkend="ST_SetSRID"/>,
-  <xref linkend="ST_Transform"/>
+  <xref linkend="ST_Transform"/>,
+  <xref linkend="ST_GeomFromEWKT"/>
 		</para>
 	  </refsection>
 	</refentry>
