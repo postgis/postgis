@@ -387,7 +387,7 @@ SELECT '#720', ST_AsText(ST_SnapTogrid(ST_Transform(ST_GeomFromText('MULTIPOINT(
 
 -- #723 --
 SELECT '#723',
- encode(ST_AsEWKB(ST_SnapToGrid( ST_Intersection(a.geog, b.geog)::geometry, 0.00001),'ndr'),'hex')
+ ST_IsEmpty(ST_SnapToGrid( ST_Intersection(a.geog, b.geog)::geometry, 0.00001))
 FROM (VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') ) ) As  a(geog) CROSS JOIN ( VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') )) As b(geog);
 
 -- #729 --
