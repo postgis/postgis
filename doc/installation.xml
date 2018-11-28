@@ -1343,6 +1343,311 @@ Running tests
 Run tests: 134
 Failed: 0
 
+
+-- if you build with SFCGAL
+
+PostgreSQL 12devel on x86_64-w64-mingw32, compiled by gcc.exe (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0, 64-bit
+  Postgis 3.0.0dev - r17081 - 2018-11-28 18:50:02
+  scripts 3.0.0dev r17081
+  GEOS: 3.7.0-CAPI-1.11.0 673b9939
+  PROJ: Rel. 5.2.0, September 15th, 2018
+  SFCGAL: 1.3.2
+
+Running tests
+
+ regress_sfcgal .. ok
+ empty .. ok
+ geography .. ok
+ legacy .. ok
+ measures .. ok
+ regress_ogc_prep .. ok
+ regress_ogc .. ok
+ regress .. ok
+ tickets .. ok
+ concave_hull .. ok
+ wmsservers .. ok
+ approximatemedialaxis .. ok
+ uninstall .. ok (4643)
+
+Run tests: 13
+Failed: 0
+
+-- if you built with raster support
+
+
+
+     CUnit - A unit testing framework for C - Version 2.1-2
+     http://cunit.sourceforge.net/
+
+
+Suite: pixtype
+  Test: test_pixtype_size ...passed
+  Test: test_pixtype_alignment ...passed
+  Test: test_pixtype_name ...passed
+  Test: test_pixtype_index_from_name ...passed
+  Test: test_pixtype_get_min_value ...passed
+  Test: test_pixtype_compare_clamped_values ...passed
+Suite: raster_basics
+  Test: test_raster_new ...passed
+  Test: test_raster_empty ...passed
+  Test: test_raster_metadata ...passed
+  Test: test_raster_clone ...passed
+  Test: test_raster_from_band ...passed
+  Test: test_raster_replace_band ...passed
+Suite: band_basics
+  Test: test_band_metadata ...passed
+  Test: test_band_pixtype_1BB ...passed
+  Test: test_band_pixtype_2BUI ...passed
+  Test: test_band_pixtype_4BUI ...passed
+  Test: test_band_pixtype_8BUI ...passed
+  Test: test_band_pixtype_8BSI ...passed
+  Test: test_band_pixtype_16BUI ...passed
+  Test: test_band_pixtype_16BSI ...passed
+  Test: test_band_pixtype_32BUI ...passed
+  Test: test_band_pixtype_32BSI ...passed
+  Test: test_band_pixtype_32BF ...passed
+  Test: test_band_pixtype_64BF ...passed
+  Test: test_band_get_pixel_line ...WARNING: Limiting returning number values to 1
+WARNING: Attempting to get pixel values with out of range raster coordinates: (5, 5)
+passed
+  Test: test_band_new_offline_from_path ...passed
+Suite: raster_wkb
+  Test: test_raster_wkb ...SRID value -1 converted to the officially unknown SRID value 0
+SRID value -1 converted to the officially unknown SRID value 0
+SRID value -1 converted to the officially unknown SRID value 0
+SRID value -1 converted to the officially unknown SRID value 0
+SRID value -1 converted to the officially unknown SRID value 0
+SRID value -1 converted to the officially unknown SRID value 0
+passed
+Suite: gdal
+  Test: test_gdal_configured ...passed
+  Test: test_gdal_drivers ...passed
+  Test: test_gdal_rasterize ...passed
+  Test: test_gdal_polygonize ...passed
+  Test: test_raster_to_gdal ...Warning 6: PNG driver doesn't support data type Float64. Only eight bit (Byte) and sixteen bit (UInt16) bands supported. Defaulting to Byte
+
+passed
+  Test: test_gdal_to_raster ...passed
+  Test: test_gdal_warp ...passed
+Suite: raster_geometry
+  Test: test_raster_envelope ...passed
+  Test: test_raster_envelope_geom ...passed
+  Test: test_raster_convex_hull ...passed
+  Test: test_raster_surface ...INFO: Ring Self-intersection at or near point 2 -2
+INFO: Ring Self-intersection at or near point 3 -3
+passed
+  Test: test_raster_perimeter ...passed
+  Test: test_raster_pixel_as_polygon ...passed
+Suite: raster_misc
+  Test: test_raster_cell_to_geopoint ...passed
+  Test: test_raster_geopoint_to_cell ...passed
+  Test: test_raster_from_two_rasters ...passed
+  Test: test_raster_compute_skewed_raster ...passed
+Suite: band_stats
+  Test: test_band_stats ...passed
+  Test: test_band_value_count ...passed
+Suite: band_misc
+  Test: test_band_get_nearest_pixel ...passed
+  Test: test_band_get_pixel_of_value ...passed
+  Test: test_pixel_set_to_array ...passed
+Suite: mapalgebra
+  Test: test_raster_iterator ...passed
+  Test: test_band_reclass ...passed
+  Test: test_raster_colormap ...passed
+Suite: spatial_relationship
+  Test: test_raster_geos_overlaps ...passed
+  Test: test_raster_geos_touches ...passed
+  Test: test_raster_geos_contains ...passed
+  Test: test_raster_geos_contains_properly ...passed
+  Test: test_raster_geos_covers ...passed
+  Test: test_raster_geos_covered_by ...passed
+  Test: test_raster_within_distance ...passed
+  Test: test_raster_fully_within_distance ...passed
+  Test: test_raster_intersects ...passed
+  Test: test_raster_same_alignment ...passed
+Suite: misc
+  Test: test_rgb_to_hsv ...passed
+  Test: test_hsv_to_rgb ...passed
+  Test: test_util_gdal_open ...passed
+
+Run Summary:    Type  Total    Ran Passed Failed Inactive
+              suites     12     12    n/a      0        0
+               tests     65     65     65      0        0
+             asserts  45896  45896  45896      0      n/a
+
+Elapsed time =    0.499 seconds
+
+Loading Raster into 'postgis_reg'
+PostgreSQL 12devel on x86_64-w64-mingw32, compiled by gcc.exe (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0, 64-bit
+  Postgis 3.0.0dev - r17081 - 2018-11-28 18:50:02
+  scripts 3.0.0dev r17081
+  raster scripts 3.0.0dev r17081
+  GEOS: 3.7.0-CAPI-1.11.0 673b9939
+  PROJ: Rel. 5.2.0, September 15th, 2018
+  GDAL: GDAL 2.3.1, released 2018/06/22
+
+Running tests
+
+ check_gdal .. ok
+ load_outdb ... ok
+ check_raster_columns .. ok
+ check_raster_overviews .. ok
+ rt_io .. ok
+ rt_bytea .. ok
+ rt_wkb .. ok
+ box3d .. ok
+ rt_addband .. ok
+ rt_band .. ok
+ rt_tile .. ok
+ rt_dimensions .. ok
+ rt_scale .. ok
+ rt_pixelsize .. ok
+ rt_upperleft .. ok
+ rt_rotation .. ok
+ rt_georeference .. ok
+ rt_set_properties .. ok
+ rt_isempty .. ok
+ rt_hasnoband .. ok
+ rt_metadata .. ok
+ rt_rastertoworldcoord .. ok
+ rt_worldtorastercoord .. ok
+ rt_convexhull .. ok
+ rt_envelope .. ok
+ rt_band_properties .. ok
+ rt_set_band_properties .. ok
+ rt_pixelaspolygons .. ok
+ rt_pixelaspoints .. ok
+ rt_pixelascentroids .. ok
+ rt_setvalues_array .. ok
+ rt_summarystats .. ok
+ rt_count .. ok
+ rt_histogram .. ok
+ rt_quantile .. ok
+ rt_valuecount .. ok
+ rt_valuepercent .. ok
+ rt_bandmetadata .. ok
+ rt_pixelvalue .. ok
+ rt_neighborhood .. ok
+ rt_nearestvalue .. ok
+ rt_pixelofvalue .. ok
+ rt_polygon .. ok
+ rt_setbandpath .. ok
+ rt_utility .. ok
+ rt_fromgdalraster .. ok
+ rt_asgdalraster .. ok
+ rt_astiff .. ok
+ rt_asjpeg .. ok
+ rt_aspng .. ok
+ rt_reclass .. ok
+ rt_gdalwarp .. ok
+ rt_asraster .. ok
+ rt_dumpvalues .. ok
+ rt_makeemptycoverage .. ok
+ rt_createoverview .. ok
+ rt_mapalgebraexpr .. ok
+ rt_mapalgebrafct .. ok
+ rt_mapalgebraexpr_2raster .. ok
+ rt_mapalgebrafct_2raster .. ok
+ rt_mapalgebrafctngb .. ok
+ rt_mapalgebrafctngb_userfunc .. ok
+ rt_intersection .. ok
+ rt_clip .. ok
+ rt_mapalgebra .. ok
+ rt_mapalgebra_expr .. ok
+ rt_mapalgebra_mask .. ok
+ rt_union .. ok
+ rt_invdistweight4ma .. ok
+ rt_4ma .. ok
+ rt_setvalues_geomval .. ok
+ rt_elevation_functions .. ok
+ rt_colormap .. ok
+ rt_grayscale .. ok
+ rt_gist_relationships .. ok
+ rt_intersects .. ok
+ rt_samealignment .. ok
+ rt_geos_relationships .. ok
+ rt_iscoveragetile .. ok
+ bug_test_car5 .. ok
+ permitted_gdal_drivers .. ok
+ tickets .. ok
+ loader/Basic .. ok
+ loader/Projected ... ok
+ loader/BasicCopy .. ok
+ loader/BasicFilename .. ok
+ loader/BasicOutDB .. ok
+ loader/Tiled10x10 .. ok
+ loader/Tiled10x10Copy .. ok
+ loader/Tiled8x8 .. ok
+ clean .. ok
+ uninstall .. ok (4643)
+
+Run tests: 101
+Failed: 0
+
+-- topology regress
+PostgreSQL 12devel on x86_64-w64-mingw32, compiled by gcc.exe (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0, 64-bit
+  Postgis 3.0.0dev - r17081 - 2018-11-28 18:50:02
+  scripts 3.0.0dev r17081
+  GEOS: 3.7.0-CAPI-1.11.0 673b9939
+  PROJ: Rel. 5.2.0, September 15th, 2018
+
+Running tests
+
+ regress/legacy_validate .. ok
+ regress/legacy_predicate .. ok
+ regress/legacy_invalid .. ok
+ regress/sqlmm .. ok
+ regress/legacy_query .. ok
+ regress/addnode .. ok
+ regress/addedge .. ok
+ regress/addface .. ok
+ regress/addface2.5d .. ok
+ regress/addtopogeometrycolumn .. ok
+ regress/polygonize .. ok
+ regress/st_addisoedge .. ok
+ regress/st_addisonode .. ok
+ regress/st_addedgemodface .. ok
+ regress/st_addedgenewfaces .. ok
+ regress/st_changeedgegeom .. ok
+ regress/st_createtopogeo .. ok
+ regress/st_getfacegeometry .. ok
+ regress/st_getfaceedges .. ok
+ regress/st_modedgeheal .. ok
+ regress/st_modedgesplit .. ok
+ regress/st_newedgeheal .. ok
+ regress/st_newedgessplit .. ok
+ regress/st_remedgenewface .. ok
+ regress/st_remedgemodface .. ok
+ regress/st_simplify .. ok
+ regress/topoelement .. ok
+ regress/topoelementarray_agg .. ok
+ regress/topogeo_addlinestring .. ok
+ regress/topogeo_addpoint .. ok
+ regress/topogeo_addpolygon .. ok
+ regress/topogeom_edit .. ok
+ regress/topogeometry_type .. ok
+ regress/topojson .. ok
+ regress/topologysummary .. ok
+ regress/topo2.5d .. ok
+ regress/totopogeom .. ok
+ regress/droptopology .. ok
+ regress/droptopogeometrycolumn .. ok
+ regress/copytopology .. ok
+ regress/createtopogeom .. ok
+ regress/createtopology .. ok
+ regress/gml .. ok
+ regress/getnodebypoint .. ok
+ regress/getedgebypoint .. ok
+ regress/getfacebypoint .. ok
+ regress/getringedges .. ok
+ regress/gettopogeomelements .. ok
+ regress/layertrigger .. ok
+ regress/validatetopology .. ok
+ uninstall .. ok (4643)
+
+Run tests: 51
+Failed: 0
+
 -- if you built --with-gui, you should see this too
 
      CUnit - A unit testing framework for C - Version 2.1-2
