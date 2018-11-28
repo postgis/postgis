@@ -24,8 +24,8 @@ PostGIS 3.0.0
            radius in table (Darafei Praliaskouski, github user Boscop).
   - #4161, MVT: Drop geometries smaller than the resolution (Raúl Marín)
   - #4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)
-  - #4181, St_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)
-  - #4183, St_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)
+  - #4181, ST_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)
+  - #4183, ST_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)
   - #4188, Avoid division by zero in KMeans (Raúl Marín)
   - #4189, Fix undefined behaviour in SADFWrite (Raúl Marín)
   - #4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)

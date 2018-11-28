@@ -91,7 +91,7 @@ psql -d yourdatabase -f sfcgal_comments.sql
 	<note><para>If you are on windows, do not quote the driver list</para></note>
 
 	<para>Setting environment variables varies depending on OS.  For PostgreSQL installed on Ubuntu or Debian via apt-postgresql, the preferred way is to
-	edit <filename>/etc/postgresql/<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</filename> where 9.3 refers to version of PostgreSQL and main refers to the cluster.</para>
+	edit <filename>/etc/postgresql/<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</filename> where 10 refers to version of PostgreSQL and main refers to the cluster.</para>
 
 	<para>On windows, if you are running as a service, you can set via System variables which for Windows 7 you can get to by right-clicking on Computer-&gt;Properties Advanced System Settings or in explorer navigating to <varname>Control Panel\All Control Panel Items\System</varname>.
 	Then clicking <emphasis>Advanced System Settings -&gt;Advanced->Environment Variables</emphasis> and adding new system variables.</para>
@@ -722,6 +722,7 @@ FROM pg_available_extensions WHERE name LIKE 'postgis%' or name LIKE 'address%';
  address_standardizer         | &last_release_version;         | &last_release_version;
  address_standardizer_data_us | &last_release_version;         | &last_release_version;
  postgis                      | &last_release_version;         | &last_release_version;
+ postgis_raster               | &last_release_version;         | &last_release_version;
  postgis_sfcgal               | &last_release_version;         |
  postgis_tiger_geocoder       | &last_release_version;         | &last_release_version;
  postgis_topology             | &last_release_version;         |
@@ -733,6 +734,7 @@ in the <varname>extensions</varname> section of the database browser tree and wi
 
 <para>If you have the extensions available, you can install postgis extension in your database of choice by either using pgAdmin extension interface or running these sql commands:</para>
 <programlisting>CREATE EXTENSION postgis;
+CREATE EXTENSION postgis_raster;
 CREATE EXTENSION postgis_sfcgal;
 CREATE EXTENSION fuzzystrmatch; --needed for postgis_tiger_geocoder
 --optional used by postgis_tiger_geocoder, or can be used standalone
@@ -829,11 +831,12 @@ CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;
 		following:
 	  </para>
 
-	  <programlisting>    CUnit - A unit testing framework for C - Version 2.1-2
+	  <programlisting>
+     CUnit - A unit testing framework for C - Version 2.1-2
      http://cunit.sourceforge.net/
 
 
-Suite: computational_geometry
+Suite: algorithm
   Test: test_lw_segment_side ...passed
   Test: test_lw_segment_intersects ...passed
   Test: test_lwline_crossing_short_lines ...passed
@@ -842,7 +845,10 @@ Suite: computational_geometry
   Test: test_lwpoint_set_ordinate ...passed
   Test: test_lwpoint_get_ordinate ...passed
   Test: test_point_interpolate ...passed
+  Test: test_lwline_interpolate_points ...passed
   Test: test_lwline_clip ...passed
+  Test: test_lwpoly_clip ...passed
+  Test: test_lwtriangle_clip ...passed
   Test: test_lwline_clip_big ...passed
   Test: test_lwmline_clip ...passed
   Test: test_geohash_point ...passed
@@ -851,6 +857,14 @@ Suite: computational_geometry
   Test: test_geohash_point_as_int ...passed
   Test: test_isclosed ...passed
   Test: test_lwgeom_simplify ...passed
+  Test: test_lw_arc_center ...passed
+  Test: test_point_density ...passed
+  Test: test_kmeans ...passed
+  Test: test_median_handles_3d_correctly ...passed
+  Test: test_median_robustness ...passed
+  Test: test_lwpoly_construct_circle ...passed
+  Test: test_trim_bits ...passed
+  Test: test_lwgeom_remove_repeated_points ...passed
 Suite: buildarea
   Test: buildarea1 ...passed
   Test: buildarea2 ...passed
@@ -872,7 +886,6 @@ Suite: geodetic
   Test: test_sphere_direction ...passed
   Test: test_sphere_project ...passed
   Test: test_lwgeom_area_sphere ...passed
-  Test: test_signum ...passed
   Test: test_gbox_from_spherical_coordinates ...passed
   Test: test_gserialized_get_gbox_geocentric ...passed
   Test: test_clairaut ...passed
@@ -892,20 +905,31 @@ Suite: geodetic
   Test: test_lwgeom_segmentize_sphere ...passed
   Test: test_ptarray_contains_point_sphere ...passed
   Test: test_ptarray_contains_point_sphere_iowa ...passed
-Suite: GEOS
+  Test: test_gbox_to_string_truncated ...passed
+Suite: geos
   Test: test_geos_noop ...passed
   Test: test_geos_subdivide ...passed
   Test: test_geos_linemerge ...passed
-Suite: Clustering
+  Test: test_geos_offsetcurve ...passed
+  Test: test_geos_offsetcurve_crash ...passed
+  Test: test_geos_makevalid ...passed
+Suite: clustering
   Test: basic_test ...passed
   Test: nonsequential_test ...passed
   Test: basic_distance_test ...passed
   Test: single_input_test ...passed
   Test: empty_inputs_test ...passed
-Suite: Clustering Union-Find
+  Test: multipoint_test ...passed
+  Test: dbscan_test ...passed
+  Test: dbscan_test_3612a ...passed
+  Test: dbscan_test_3612b ...passed
+  Test: dbscan_test_3612c ...passed
+Suite: clustering_unionfind
   Test: test_unionfind_create ...passed
   Test: test_unionfind_union ...passed
   Test: test_unionfind_ordered_by_cluster ...passed
+  Test: test_unionfind_path_compression ...passed
+  Test: test_unionfind_collapse_cluster_ids ...passed
 Suite: homogenize
   Test: test_coll_point ...passed
   Test: test_coll_line ...passed
@@ -920,6 +944,13 @@ Suite: geojson_input
   Test: in_geojson_test_srid ...passed
   Test: in_geojson_test_bbox ...passed
   Test: in_geojson_test_geoms ...passed
+Suite: iterator
+  Test: test_point_count ...passed
+  Test: test_ordering ...passed
+  Test: test_modification ...passed
+  Test: test_mixed_rw_access ...passed
+  Test: test_cannot_modify_read_only ...passed
+  Test: test_no_memory_leaked_when_iterator_is_partially_used ...passed
 Suite: twkb_input
   Test: test_twkb_in_point ...passed
   Test: test_twkb_in_linestring ...passed
@@ -932,7 +963,8 @@ Suite: twkb_input
 Suite: serialization/deserialization
   Test: test_typmod_macros ...passed
   Test: test_flags_macros ...passed
-  Test: test_serialized_srid ...passed
+  Test: test_serialized_srid ...NOTICE: SRID value -3005 converted to the officially unknown SRID value 0
+passed
   Test: test_gserialized_from_lwgeom_size ...passed
   Test: test_gbox_serialized_size ...passed
   Test: test_lwgeom_from_gserialized ...passed
@@ -941,7 +973,7 @@ Suite: serialization/deserialization
   Test: test_geometry_type_from_string ...passed
   Test: test_lwcollection_extract ...passed
   Test: test_lwgeom_free ...passed
-  Test: test_lwgeom_flip_coordinates ...passed
+  Test: test_lwgeom_swap_ordinates ...passed
   Test: test_f2d ...passed
   Test: test_lwgeom_clone ...passed
   Test: test_lwgeom_force_clockwise ...passed
@@ -952,12 +984,26 @@ Suite: serialization/deserialization
   Test: test_lwgeom_as_curve ...passed
   Test: test_lwgeom_scale ...passed
   Test: test_gserialized_is_empty ...passed
+  Test: test_gserialized_peek_gbox_p_no_box_when_empty ...passed
+  Test: test_gserialized_peek_gbox_p_gets_correct_box ...passed
+  Test: test_gserialized_peek_gbox_p_fails_for_unsupported_cases ...passed
   Test: test_gbox_same_2d ...passed
+  Test: test_signum_macro ...passed
+Suite: lwstroke
+  Test: test_lwcurve_linearize ...passed
+  Test: test_unstroke ...passed
 Suite: measures
   Test: test_mindistance2d_tolerance ...passed
+  Test: test_mindistance3d_tolerance ...NOTICE: One or both of the geometries is missing z-value. The unknown z-value will be regarded as "any value"
+passed
   Test: test_rect_tree_contains_point ...passed
   Test: test_rect_tree_intersects_tree ...passed
-  Test: test_lwgeom_segmentize2d ...passed
+  Test: test_lwgeom_segmentize2d ...NOTICE: ptarray.c:445 - ptarray_segmentize2d: Too many segments required (1.000000e+101)
+NOTICE: liblwgeom code interrupted
+NOTICE: liblwgeom code interrupted
+NOTICE: liblwgeom code interrupted
+NOTICE: liblwgeom code interrupted
+passed
   Test: test_lwgeom_locate_along ...passed
   Test: test_lw_dist2d_pt_arc ...passed
   Test: test_lw_dist2d_seg_arc ...passed
@@ -966,10 +1012,25 @@ Suite: measures
   Test: test_lw_dist2d_pt_ptarrayarc ...passed
   Test: test_lw_dist2d_ptarray_ptarrayarc ...passed
   Test: test_lwgeom_tcpa ...passed
-  Test: test_lwgeom_is_trajectory ...passed
+  Test: test_lwgeom_is_trajectory ...NOTICE: Geometry is not a LINESTRING
+NOTICE: Line does not have M dimension
+NOTICE: Measure of vertex 1 (1) not bigger than measure of vertex 0 (1)
+NOTICE: Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)
+NOTICE: Measure of vertex 2 (2) not bigger than measure of vertex 1 (3)
+passed
+  Test: test_rect_tree_distance_tree ...passed
 Suite: effectivearea
   Test: do_test_lwgeom_effectivearea_lines ...passed
   Test: do_test_lwgeom_effectivearea_polys ...passed
+Suite: chaikin
+  Test: do_test_chaikin_lines ...passed
+  Test: do_test_chaikin_polygons ...passed
+Suite: filterm
+  Test: do_test_filterm_single_geometries ...passed
+  Test: do_test_filterm_collections ...passed
+Suite: minimum_bounding_circle
+  Test: basic_test ...passed
+  Test: test_empty ...passed
 Suite: miscellaneous
   Test: test_misc_force_2d ...passed
   Test: test_misc_simplify ...passed
@@ -977,6 +1038,9 @@ Suite: miscellaneous
   Test: test_misc_area ...passed
   Test: test_misc_wkb ...passed
   Test: test_grid ...passed
+  Test: test_grid_in_place ...passed
+  Test: test_clone ...passed
+  Test: test_lwmpoint_from_lwgeom ...passed
 Suite: noding
   Test: test_lwgeom_node ...passed
 Suite: encoded_polyline_output
@@ -1020,7 +1084,6 @@ Suite: ptarray
   Test: test_ptarray_locate_point ...passed
   Test: test_ptarray_isccw ...passed
   Test: test_ptarray_signed_area ...passed
-  Test: test_ptarray_unstroke ...passed
   Test: test_ptarray_insert_point ...passed
   Test: test_ptarray_contains_point ...passed
   Test: test_ptarrayarc_contains_point ...passed
@@ -1031,7 +1094,7 @@ Suite: printing
   Test: test_lwprint_optional_format ...passed
   Test: test_lwprint_oddball_formats ...passed
   Test: test_lwprint_bad_formats ...passed
-Suite: SFCGAL
+Suite: sfcgal
   Test: test_sfcgal_noop ...passed
 Suite: split
   Test: test_lwline_split_by_point_to ...passed
@@ -1044,7 +1107,7 @@ Suite: surface
   Test: tin_parse ...passed
   Test: polyhedralsurface_parse ...passed
   Test: surface_dimension ...passed
-Suite: Internal Spatial Trees
+Suite: spatial_trees
   Test: test_tree_circ_create ...passed
   Test: test_tree_circ_pip ...passed
   Test: test_tree_circ_pip2 ...passed
@@ -1052,6 +1115,9 @@ Suite: Internal Spatial Trees
   Test: test_tree_circ_distance_threshold ...passed
 Suite: triangulate
   Test: test_lwgeom_delaunay_triangulation ...passed
+  Test: test_lwgeom_voronoi_diagram ...passed
+  Test: test_lwgeom_voronoi_diagram_expected_empty ...passed
+  Test: test_lwgeom_voronoi_diagram_custom_envelope ...passed
 Suite: twkb_output
   Test: test_twkb_out_point ...passed
   Test: test_twkb_out_linestring ...passed
@@ -1109,6 +1175,7 @@ Suite: wkt_input
   Test: test_wkt_in_tin ...passed
   Test: test_wkt_in_polyhedralsurface ...passed
   Test: test_wkt_in_errlocation ...passed
+  Test: test_wkt_double ...passed
 Suite: wkt_output
   Test: test_wkt_out_point ...passed
   Test: test_wkt_out_linestring ...passed
@@ -1122,68 +1189,68 @@ Suite: wkt_output
   Test: test_wkt_out_curvpolygon ...passed
   Test: test_wkt_out_multicurve ...passed
   Test: test_wkt_out_multisurface ...passed
+Suite: wrapx
+  Test: test_lwgeom_wrapx ...passed
 
 Run Summary:    Type  Total    Ran Passed Failed Inactive
-              suites     38     38    n/a      0        0
-               tests    251    251    251      0        0
-             asserts   2468   2468   2468      0      n/a
+              suites     44     44    n/a      0        0
+               tests    299    299    299      0        0
+             asserts   4087   4087   4087      0      n/a
 
-Elapsed time =    0.298 seconds
+Elapsed time =    0.196 seconds
 
-Creating database 'postgis_reg'
-Loading PostGIS into 'postgis_reg'
-  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/postgis.sql
-  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/postgis_comments.sql
-Loading SFCGAL into 'postgis_reg'
-  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/sfcgal.sql
-  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/sfcgal_comments.sql
-PostgreSQL 9.4.4, compiled by Visual C++ build 1800, 32-bit
-  Postgis 2.2.0dev - r13980 - 2015-08-23 06:13:07
-  scripts 2.2.0dev r13980
-  GEOS: 3.5.0-CAPI-1.9.0 r4088
-  PROJ: Rel. 4.9.1, 04 March 2015
-  SFCGAL: 1.1.0
+PostgreSQL 12devel on x86_64-w64-mingw32, compiled by gcc.exe (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0, 64-bit
+  Postgis 3.0.0dev - r17081 - 2018-11-28 18:50:02
+  scripts 3.0.0dev r17081
+  GEOS: 3.7.0-CAPI-1.11.0 673b9939
+  PROJ: Rel. 5.2.0, September 15th, 2018
 
 Running tests
 
- loader/Point .............. ok
- loader/PointM .............. ok
- loader/PointZ .............. ok
- loader/MultiPoint .............. ok
- loader/MultiPointM .............. ok
- loader/MultiPointZ .............. ok
- loader/Arc .............. ok
- loader/ArcM .............. ok
- loader/ArcZ .............. ok
- loader/Polygon .............. ok
- loader/PolygonM .............. ok
- loader/PolygonZ .............. ok
- loader/TSTPolygon ......... ok
- loader/TSIPolygon ......... ok
- loader/TSTIPolygon ......... ok
- loader/PointWithSchema ..... ok
- loader/NoTransPoint ......... ok
- loader/NotReallyMultiPoint ......... ok
- loader/MultiToSinglePoint ......... ok
- loader/ReprojectPts ........ ok
- loader/ReprojectPtsGeog ........ ok
- loader/Latin1 .... ok
- loader/Latin1-implicit .... ok
- loader/mfile .... ok
- dumper/literalsrid ....... ok
- dumper/realtable ....... ok
+ ../loader/Point .............. ok
+ ../loader/PointM .............. ok
+ ../loader/PointZ .............. ok
+ ../loader/MultiPoint .............. ok
+ ../loader/MultiPointM .............. ok
+ ../loader/MultiPointZ .............. ok
+ ../loader/Arc .............. ok
+ ../loader/ArcM .............. ok
+ ../loader/ArcZ .............. ok
+ ../loader/Polygon .............. ok
+ ../loader/PolygonM .............. ok
+ ../loader/PolygonZ .............. ok
+ ../loader/TSTPolygon ......... ok
+ ../loader/TSIPolygon ......... ok
+ ../loader/TSTIPolygon ......... ok
+ ../loader/PointWithSchema ..... ok
+ ../loader/NoTransPoint ......... ok
+ ../loader/NotReallyMultiPoint ......... ok
+ ../loader/MultiToSinglePoint ......... ok
+ ../loader/ReprojectPts ........ ok
+ ../loader/ReprojectPtsGeog ........ ok
+ ../loader/Latin1 .... ok
+ ../loader/Latin1-implicit .... ok
+ ../loader/mfile .... ok
+ ../dumper/literalsrid ....... ok
+ ../dumper/realtable ....... ok
  affine .. ok
  bestsrid .. ok
  binary .. ok
  boundary .. ok
+ chaikin .. ok
+ filterm .. ok
  cluster .. ok
  concave_hull .. ok
+ concave_hull_hard .. ok
  ctors .. ok
+ curvetoline .. ok
  dump .. ok
  dumppoints .. ok
  empty .. ok
+ estimatedextent .. ok
  forcecurve .. ok
  geography .. ok
+ geometric_median .. ok
  in_geohash .. ok
  in_gml .. ok
  in_kml .. ok
@@ -1193,14 +1260,19 @@ Running tests
  long_xact .. ok
  lwgeom_regress .. ok
  measures .. ok
+ minimum_bounding_circle .. ok
+ normalize .. ok
  operators .. ok
+ orientation .. ok
  out_geometry .. ok
  out_geography .. ok
  polygonize .. ok
  polyhedralsurface .. ok
  postgis_type_name .. ok
+ quantize_coordinates .. ok
  regress .. ok
  regress_bdpoly .. ok
+ regress_gist_index_nd .. ok
  regress_index .. ok
  regress_index_nulls .. ok
  regress_management .. ok
@@ -1213,6 +1285,7 @@ Running tests
  relate .. ok
  remove_repeated_points .. ok
  removepoint .. ok
+ reverse .. ok
  setpoint .. ok
  simplify .. ok
  simplifyvw .. ok
@@ -1235,9 +1308,11 @@ Running tests
  wkb .. ok
  wkt .. ok
  wmsservers .. ok
- knn .. ok
+ knn_recheck .. ok
+ temporal_knn .. ok
  hausdorff .. ok
  regress_buffer_params .. ok
+ frechet .. ok
  offsetcurve .. ok
  relatematch .. ok
  isvaliddetail .. ok
@@ -1250,24 +1325,22 @@ Running tests
  delaunaytriangles .. ok
  clipbybox2d .. ok
  subdivide .. ok
+ voronoi .. ok
+ minimum_clearance .. ok
+ oriented_envelope .. ok
  in_geojson .. ok
- regress_sfcgal .. ok
- sfcgal/empty .. ok
- sfcgal/geography .. ok
- sfcgal/legacy .. ok
- sfcgal/measures .. ok
- sfcgal/regress_ogc_prep .. ok
- sfcgal/regress_ogc .. ok
- sfcgal/regress .. ok
- sfcgal/tickets .. ok
- sfcgal/concave_hull .. ok
- sfcgal/wmsservers .. ok
- sfcgal/approximatemedialaxis .. ok
- uninstall .  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/uninstall_sfcgal.sql
-  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/uninstall_postgis.sql
-. ok (4336)
+ regress_brin_index .. ok
+ regress_brin_index_3d .. ok
+ regress_brin_index_geography .. ok
+ regress_spgist_index_2d .. ok
+ regress_spgist_index_3d .. ok
+ regress_spgist_index_nd .. ok
+ mvt .. ok
+ geobuf .. ok
+ mvt_jsonb .. ok
+ uninstall .. ok (4643)
 
-Run tests: 118
+Run tests: 134
 Failed: 0
 
 -- if you built --with-gui, you should see this too
