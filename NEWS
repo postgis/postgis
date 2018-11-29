@@ -12,7 +12,7 @@ XXXX/XX/XX
   WARNING: REINDEX your ND index on tables that have records with different M/Z
            dimensions for &&& operator to work predictably.
            (Darafei Praliaskouski, Arthur Lesuisse, Andrew Gierth, Raúl Marín)
-  - #4162, Document MULTISURFACE compatibility of ST_LineToCurve (Steven Ottens)
+  - #4262, Document MULTISURFACE compatibility of ST_LineToCurve (Steven Ottens)
 
 
 PostGIS 2.5.1
