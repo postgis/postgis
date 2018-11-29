@@ -8,10 +8,11 @@ XXXX/XX/XX
   - #4249, Fix undefined behaviour in raster intersection (Raúl Marín)
   - #4246, Fix undefined behaviour in ST_3DDistance (Raúl Marín)
   - #4244, Avoid unaligned memory access in BOX2D_out (Raúl Marín)
-  - #4139, Make mixed-dimension ND index build tree correctly. 
+  - #4139, Make mixed-dimension ND index build tree correctly.
   WARNING: REINDEX your ND index on tables that have records with different M/Z
            dimensions for &&& operator to work predictably.
            (Darafei Praliaskouski, Arthur Lesuisse, Andrew Gierth, Raúl Marín)
+  - #4162, Document MULTISURFACE compatibility of ST_LineToCurve (Steven Ottens)
 
 
 PostGIS 2.5.1

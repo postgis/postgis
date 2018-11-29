@@ -920,7 +920,7 @@ POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
 	  <refnamediv>
 		<refname>ST_CurveToLine</refname>
 
-		<refpurpose>Converts a CIRCULARSTRING/CURVEPOLYGON to a LINESTRING/POLYGON</refpurpose>
+		<refpurpose>Converts a CIRCULARSTRING/CURVEPOLYGON/MULTISURFACE to a LINESTRING/POLYGON/MULTIPOLYGON</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -938,7 +938,7 @@ POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
 	  <refsection>
 		<title>Description</title>
 
-		<para>Converts a CIRCULAR STRING to regular LINESTRING or CURVEPOLYGON to POLYGON. Useful for outputting to devices that can't support CIRCULARSTRING geometry types</para>
+		<para>Converts a CIRCULAR STRING to regular LINESTRING or CURVEPOLYGON to POLYGON or MULTISURFACE to MULTIPOLYGON. Useful for outputting to devices that can't support CIRCULARSTRING geometry types</para>
 
 		<para>Converts a given geometry to a linear geometry.
 		Each curved geometry or segment is converted into a linear
