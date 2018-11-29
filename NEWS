@@ -45,7 +45,7 @@ PostGIS 3.0.0
   - #4244, Avoid unaligned memory access in BOX2D_out (Raúl Marín)
   - #4139, Make mixed-dimension ND index build tree correctly (Darafei Praliaskouski,
            Arthur Lesuisse, Andrew Gierth, Raúl Marín)
-  - #4162, Document MULTISURFACE compatibility of ST_LineToCurve (Steven Ottens)
+  - #4262, Document MULTISURFACE compatibility of ST_LineToCurve (Steven Ottens)
 
 PostGIS 2.5.0
 2018/09/23
