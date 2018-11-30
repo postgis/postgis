@@ -71,7 +71,6 @@ struct lwgeom_backend_definition lwgeom_backends[LWGEOM_NUM_BACKENDS] = {{.name 
 									  .intersection_fn = geos_intersection,
 									  .difference_fn = geos_difference,
 									  .union_fn = geos_geomunion,
-									  .distance_fn = LWGEOM_mindistance2d,
 									  .distance3d_fn = LWGEOM_mindistance3d},
 #if HAVE_SFCGAL
 									 {.name = "sfcgal",
@@ -80,7 +79,6 @@ struct lwgeom_backend_definition lwgeom_backends[LWGEOM_NUM_BACKENDS] = {{.name 
 									  .intersection_fn = sfcgal_intersection,
 									  .difference_fn = sfcgal_difference,
 									  .union_fn = sfcgal_union,
-									  .distance_fn = sfcgal_distance,
 									  .distance3d_fn = sfcgal_distance3D}
 #endif
 };
@@ -185,12 +183,6 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	return (*lwgeom_backend->union_fn)(fcinfo);
 }
 
-PG_FUNCTION_INFO_V1(distance);
-Datum distance(PG_FUNCTION_ARGS)
-{
-	return (*lwgeom_backend->distance_fn)(fcinfo);
-}
-
 PG_FUNCTION_INFO_V1(distance3d);
 Datum distance3d(PG_FUNCTION_ARGS)
 {
@@ -204,8 +196,7 @@ Datum intersects3d(PG_FUNCTION_ARGS)
 }
 
 /* intersects3d through dwithin
- * used by the 'geos' backend
- */
+ * used by the 'geos' backend */
 PG_FUNCTION_INFO_V1(intersects3d_dwithin);
 Datum intersects3d_dwithin(PG_FUNCTION_ARGS)
 {

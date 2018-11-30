@@ -766,7 +766,7 @@ CREATE OR REPLACE FUNCTION crosses(geometry,geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION distance(geometry,geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME', 'LWGEOM_mindistance2d'
+	AS 'MODULE_PATHNAME', 'ST_Distance'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
 

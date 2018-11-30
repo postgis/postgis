@@ -201,7 +201,6 @@ lwgeom_maxdistance2d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tole
 double
 lwgeom_mindistance2d(const LWGEOM *lw1, const LWGEOM *lw2)
 {
-	LWDEBUG(2, "lwgeom_mindistance2d is called");
 	return lwgeom_mindistance2d_tolerance( lw1, lw2, 0.0 );
 }
 

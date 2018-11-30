@@ -59,7 +59,7 @@ Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS);
-Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
+Datum ST_Distance(PG_FUNCTION_ARGS);
 Datum LWGEOM_closestpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_shortestline2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS);
@@ -690,8 +690,8 @@ Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS)
 /**
  Minimum 2d distance between objects in geom1 and geom2.
  */
-PG_FUNCTION_INFO_V1(LWGEOM_mindistance2d);
-Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_Distance);
+Datum ST_Distance(PG_FUNCTION_ARGS)
 {
 	double mindist;
 	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -709,7 +709,7 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
 
-	/*if called with empty geometries the ingoing mindistance is untouched, and makes us return NULL*/
+	/* if called with empty geometries the ingoing mindistance is untouched, and makes us return NULL*/
 	if (mindist < FLT_MAX)
 		PG_RETURN_FLOAT8(mindist);
 
@@ -2593,8 +2593,8 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 	 * compute distances
 	 * should be a fast calc if they actually do intersect
 	 */
-	calc_dist = DatumGetFloat8(
-	    DirectFunctionCall2(LWGEOM_mindistance2d, PointerGetDatum(pg_geom1), PointerGetDatum(pg_geom2)));
+	calc_dist =
+	    DatumGetFloat8(DirectFunctionCall2(ST_Distance, PointerGetDatum(pg_geom1), PointerGetDatum(pg_geom2)));
 
 	PG_RETURN_BOOL(calc_dist < dist);
 }

@@ -2454,71 +2454,69 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.23</para>
 		<para>&curve_support;</para>
-		<para>&sfcgal_enhanced;</para>
 
 		<para>Availability: 1.5.0 geography support was introduced in 1.5.  Speed improvements for planar to better handle large or many vertex geometries</para>
 		<para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://boundlessgeo.com/2012/07/making-geography-faster/">Making Geography faster</ulink> for details.</para>
 		<para>Enhanced: 2.1.0 - support for curved geometries was introduced.</para>
 		<para>Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness. Requires Proj &gt;= 4.9.0 to take advantage of the new feature.</para>
+		<para>Changed: 3.0.0 - does not depend on SFCGAL anymore.</para>
 	  </refsection>
 
 	  <refsection>
 		<title>Basic Geometry Examples</title>
 
-		<programlisting>
---Geometry example - units in planar degrees 4326 is WGS 84 long lat unit=degrees
-SELECT ST_Distance(
+		<para>Geometry example - units in planar degrees 4326 is WGS 84 long lat, units are degrees.</para>
+		<programlisting>SELECT ST_Distance(
 		'SRID=4326;POINT(-72.1235 42.3521)'::geometry,
 		'SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry
 	);
 st_distance
 -----------------
-0.00150567726382282
+0.00150567726382282</programlisting>
 
--- Geometry example - units in meters (SRID: 3857, proportional to pixels on popular web maps)
--- although the value is off, nearby ones can be compared correctly,
--- which makes it a good choice for algorithms like KNN or KMeans.
-SELECT ST_Distance(
+<para>Geometry example - units in meters (SRID: 3857, proportional to pixels on popular web maps).
+Although the value is off, nearby ones can be compared correctly,
+which makes it a good choice for algorithms like KNN or KMeans.</para>
+<programlisting>SELECT ST_Distance(
 			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 3857),
 			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 3857)
 		);
 st_distance
 -----------------
-167.441410065196
+167.441410065196</programlisting>
 
--- Geometry example - units in meters (SRID: 3857 as above, but corrected by cos(lat) to account for distortion)
-SELECT ST_Distance(
+<para>Geometry example - units in meters (SRID: 3857 as above, but corrected by cos(lat) to account for distortion)</para>
+<programlisting>SELECT ST_Distance(
 			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 3857),
 			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 3857)
 		) * cosd(42.3521);
 st_distance
 -----------------
-123.742351254151
+123.742351254151</programlisting>
 
--- Geometry example - units in meters (SRID: 26986 Massachusetts state plane meters) (most accurate for Massachusetts)
-SELECT ST_Distance(
+<para>Geometry example - units in meters (SRID: 26986 Massachusetts state plane meters) (most accurate for Massachusetts)</para>
+<programlisting>SELECT ST_Distance(
 			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 26986),
 			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 26986)
 		);
 st_distance
 -----------------
-123.797937878454
+123.797937878454</programlisting>
 
--- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (least accurate)
-SELECT ST_Distance(
+<para>Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (least accurate) </para>
+<programlisting>SELECT ST_Distance(
 			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 2163),
 			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 2163)
 		);
 
 st_distance
 ------------------
-126.664256056812
-</programlisting>
+126.664256056812</programlisting>
 	</refsection>
 	  <refsection>
 		<title>Geography Examples</title>
-<programlisting>-- same as geometry example but note units in meters - use sphere for slightly faster less accurate
-SELECT ST_Distance(gg1, gg2) As spheroid_dist, ST_Distance(gg1, gg2, false) As sphere_dist
+<para>Same as geometry example but note units in meters - use sphere for slightly faster and less accurate computation.</para>
+<programlisting>SELECT ST_Distance(gg1, gg2) As spheroid_dist, ST_Distance(gg1, gg2, false) As sphere_dist
 FROM (SELECT
 	'SRID=4326;POINT(-72.1235 42.3521)'::geography as gg1,
 	'SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geography as gg2
@@ -2526,12 +2524,8 @@ FROM (SELECT
 
   spheroid_dist   |   sphere_dist
 ------------------+------------------
- 123.802076746848 | 123.475736916397
-</programlisting>
+ 123.802076746848 | 123.475736916397</programlisting>
 	</refsection>
-
-
-
 	  <refsection>
 		<title>See Also</title>
 
