@@ -680,7 +680,6 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 			<para>&P_support;</para>
 			<note><para>For polyhedral surfaces, only supports 2D polyhedral surfaces (not 2.5D).  For 2.5D, may give a non-zero answer, but only for the faces that
 			sit completely in XY plane.</para></note>
-                        <para>&sfcgal_enhanced;</para>
 		</refsection>
 
 		  <refsection>
@@ -689,54 +688,64 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 				Note this is in square feet because EPSG:2249 is
 				Massachusetts State Plane Feet </para>
 			<programlisting>
-SELECT ST_Area(the_geom) As sqft, ST_Area(the_geom)*POWER(0.3048,2) As sqm
-		FROM (SELECT
-		ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
-			743265 2967450,743265.625 2967416,743238 2967416))',2249) ) As foo(the_geom);
-  sqft   |     sqm
----------+-------------
- 928.625 | 86.27208552
+select ST_Area(geom) sqft,
+    ST_Area(geom) * 0.3048 ^ 2 sqm
+from (
+         select 'SRID=2249;POLYGON((743238 2967416,743238 2967450,
+				 743265 2967450,743265.625 2967416,743238 2967416))' :: geometry geom
+     ) subquery;
+┌─────────┬─────────────┐
+│  sqft   │     sqm     │
+├─────────┼─────────────┤
+│ 928.625 │ 86.27208552 │
+└─────────┴─────────────┘
 </programlisting>
 <para>Return area square feet and transform to Massachusetts state plane meters (EPSG:26986) to get square meters.
 				Note this is in square feet because 2249 is
 				Massachusetts State Plane Feet and transformed area is in square meters since EPSG:26986 is state plane Massachusetts meters </para>
-<programlisting>
-
-SELECT ST_Area(the_geom) As sqft, ST_Area(ST_Transform(the_geom,26986)) As sqm
-		FROM (SELECT
-		ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
-			743265 2967450,743265.625 2967416,743238 2967416))',2249) ) As foo(the_geom);
-  sqft   |       sqm
----------+------------------
- 928.625 | 86.2724304199219
-			</programlisting>
+<programlisting>select ST_Area(geom) sqft,
+    ST_Area(ST_Transform(geom, 26986)) As sqm
+from (
+         select
+             'SRID=2249;POLYGON((743238 2967416,743238 2967450,	743265 2967450,743265.625 2967416,743238 2967416))' :: geometry geom
+     ) subquery;
+┌─────────┬─────────────────┐
+│  sqft   │       sqm       │
+├─────────┼─────────────────┤
+│ 928.625 │ 86.272430607008 │
+└─────────┴─────────────────┘
+</programlisting>
 
 <para>Return area square feet and square meters using geography data type.  Note that we transform to our geometry to geography
 	(before you can do that make sure your geometry is in WGS 84 long lat 4326).  Geography always measures in meters.
 	This is just for demonstration to compare.  Normally your table will be stored in geography data type already.</para>
 <programlisting>
 
-SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,false)/POWER(0.3048,2) As sqft_sphere, ST_Area(the_geog) As sqm_spheroid
-		FROM (SELECT
-		geography(
-		ST_Transform(
-			ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,743265 2967450,743265.625 2967416,743238 2967416))',
-				2249
-				) ,4326
-			)
-		)
-	) As foo(the_geog);
-  sqft_spheroid   |   sqft_sphere    |   sqm_spheroid
-------------------+------------------+------------------
- 928.684403538925 | 927.049336105925 | 86.2776042893529
+select ST_Area(geog) / 0.3048 ^ 2 sqft_spheroid,
+    ST_Area(geog, false) / 0.3048 ^ 2 sqft_sphere,
+    ST_Area(geog) sqm_spheroid
+from (
+         select ST_Transform(
+                    'SRID=2249;POLYGON((743238 2967416,743238 2967450,743265 2967450,743265.625 2967416,743238 2967416))'::geometry,
+                    4326
+             ) :: geography geog
+     ) as subquery;
+┌──────────────────┬──────────────────┬──────────────────┐
+│  sqft_spheroid   │   sqft_sphere    │   sqm_spheroid   │
+├──────────────────┼──────────────────┼──────────────────┤
+│ 928.684405784452 │ 927.049336105925 │ 86.2776044979692 │
+└──────────────────┴──────────────────┴──────────────────┘
+</programlisting>
 
- --if your data is in geography already
- SELECT ST_Area(the_geog)/POWER(0.3048,2) As  sqft, ST_Area(the_geog) As sqm
-	FROM somegeogtable;</programlisting>
+ <para>If your data is in geography already:</para>
+ <programlisting>
+select ST_Area(geog) / 0.3048 ^ 2 sqft,
+    ST_Area(the_geog) sqm
+from somegeogtable;</programlisting>
 		  </refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeographyFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
+			<para><xref linkend="ST_3DArea" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeographyFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
 		</refsection>
 	</refentry>
 
