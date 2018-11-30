@@ -13,7 +13,7 @@
 
 #export GCC_TYPE=
 export SFCGAL_VER=1.3.2
-export GEOS_VER=3.7.0
+export GEOS_VER=3.7.1
 export GDAL_VER=2.2.4
 export PROJ_VER=4.9.3
 export SFCGAL_VER=1.3.2
