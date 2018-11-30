@@ -543,11 +543,12 @@ static void test_lwline_interpolate_points(void)
 	lwgeom_free(lwline_as_lwgeom(empty_line));
 }
 
-static void test_lwline_interpolate_point_3d(void)
+static void
+test_lwline_interpolate_point_3d(void)
 {
-	LWLINE* line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING Z (0 0 0, 1 1 1, 2 2 2)", LW_PARSER_CHECK_NONE));
+	LWLINE *line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING Z (0 0 0, 1 1 1, 2 2 2)", LW_PARSER_CHECK_NONE));
 	POINT4D point;
-	LWPOINT* pt;
+	LWPOINT *pt;
 
 	/* Empty line -> Empty point*/
 	pt = lwline_interpolate_point_3d(lwline_construct_empty(4326, LW_TRUE, LW_FALSE), 0.5);
@@ -1612,7 +1613,7 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_lwpoint_get_ordinate);
 	PG_ADD_TEST(suite,test_point_interpolate);
 	PG_ADD_TEST(suite,test_lwline_interpolate_points);
-	PG_ADD_TEST(suite,test_lwline_interpolate_point_3d);
+	PG_ADD_TEST(suite, test_lwline_interpolate_point_3d);
 	PG_ADD_TEST(suite,test_lwline_clip);
 	PG_ADD_TEST(suite, test_lwpoly_clip);
 	PG_ADD_TEST(suite, test_lwtriangle_clip);
