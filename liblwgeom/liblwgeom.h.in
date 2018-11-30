@@ -1002,6 +1002,11 @@ extern int lwline_add_lwpoint(LWLINE *line, LWPOINT *point, uint32_t where);
  */
 extern POINTARRAY* lwline_interpolate_points(const LWLINE *line, double length_fraction, char repeat);
 
+/**
+ * Interpolate one point along a line in 3D
+ */
+extern LWPOINT* lwline_interpolate_point_3d(const LWLINE *line, double distance);
+
 /******************************************************************
  * LWPOLY functions
  ******************************************************************/
