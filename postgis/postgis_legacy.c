@@ -40,11 +40,11 @@
 Datum pgis_abs_in(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(pgis_abs_in);
 
-Datum
-pgis_abs_in(PG_FUNCTION_ARGS)
+Datum pgis_abs_in(PG_FUNCTION_ARGS)
 {
-	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-	               errmsg("function %s is out of date. Run: ALTER EXTENSION postgis UPDATE;", __func__)));
+	ereport(ERROR,
+		(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+		 errmsg("function %s is out of date. Run: ALTER EXTENSION postgis UPDATE;", __func__)));
 	PG_RETURN_POINTER(NULL);
 }
 
@@ -52,11 +52,31 @@ pgis_abs_in(PG_FUNCTION_ARGS)
 Datum pgis_abs_out(PG_FUNCTION_ARGS);
 
 PG_FUNCTION_INFO_V1(pgis_abs_out);
-Datum
-pgis_abs_out(PG_FUNCTION_ARGS)
+Datum pgis_abs_out(PG_FUNCTION_ARGS)
 {
-	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-	               errmsg("function %s is out of date. Run: ALTER EXTENSION postgis UPDATE;", __func__)));
+	ereport(ERROR,
+		(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+		 errmsg("function %s is out of date. Run: ALTER EXTENSION postgis UPDATE;", __func__)));
 	PG_RETURN_POINTER(NULL);
 }
 
+/** pgis_abs_out: Removed PostGIS 2.5.0 **/
+Datum area(PG_FUNCTION_ARGS);
+
+PG_FUNCTION_INFO_V1(area);
+Datum area(PG_FUNCTION_ARGS)
+{
+	ereport(ERROR,
+		(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+		 errmsg("function %s is out of date. Run: ALTER EXTENSION postgis UPDATE;", __func__)));
+	PG_RETURN_POINTER(NULL);
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_area_polygon);
+Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS)
+{
+	ereport(ERROR,
+		(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+		 errmsg("function %s is out of date. Run: ALTER EXTENSION postgis UPDATE;", __func__)));
+	PG_RETURN_POINTER(NULL);
+}

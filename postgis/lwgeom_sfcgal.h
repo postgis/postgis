@@ -46,7 +46,6 @@ Datum sfcgal_union3D(PG_FUNCTION_ARGS);
 Datum sfcgal_union(PG_FUNCTION_ARGS);
 Datum sfcgal_volume(PG_FUNCTION_ARGS);
 Datum sfcgal_triangulate(PG_FUNCTION_ARGS);
-Datum sfcgal_area(PG_FUNCTION_ARGS);
 Datum sfcgal_distance(PG_FUNCTION_ARGS);
 Datum sfcgal_distance3D(PG_FUNCTION_ARGS);
 Datum sfcgal_make_solid(PG_FUNCTION_ARGS);
