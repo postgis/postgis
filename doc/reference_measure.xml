@@ -675,6 +675,7 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 		  </para>
 			<para>Enhanced: 2.0.0 - support for 2D polyhedral surfaces was introduced.</para>
 			<para>Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness.  Requires Proj &gt;= 4.9.0 to take advantage of the new feature.</para>
+			<para>Changed: 3.0.0 - does not depend on SFCGAL anymore.</para>
 			<para>&sfs_compliant;</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3</para>
 			<para>&P_support;</para>
