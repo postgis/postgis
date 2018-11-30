@@ -36,27 +36,18 @@
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
 
-/** pgis_abs_in: Removed PostGIS 2.5.0 **/
-Datum pgis_abs_in(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(pgis_abs_in);
+#define POSTGIS_DEPRECATE(version, funcname) \
+	Datum funcname(PG_FUNCTION_ARGS); \
+	PG_FUNCTION_INFO_V1(funcname); \
+	Datum funcname(PG_FUNCTION_ARGS) \
+	{ \
+		ereport(ERROR, \
+			(errcode(ERRCODE_FEATURE_NOT_SUPPORTED), \
+			 errmsg("function %s is out of date since PostGIS %s. Run: ALTER EXTENSION postgis UPDATE;", \
+				__func__, \
+				version))); \
+		PG_RETURN_POINTER(NULL); \
+	}
 
-Datum
-pgis_abs_in(PG_FUNCTION_ARGS)
-{
-	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-	               errmsg("function %s is out of date. Run: ALTER EXTENSION postgis UPDATE;", __func__)));
-	PG_RETURN_POINTER(NULL);
-}
-
-/** pgis_abs_out: Removed PostGIS 2.5.0 **/
-Datum pgis_abs_out(PG_FUNCTION_ARGS);
-
-PG_FUNCTION_INFO_V1(pgis_abs_out);
-Datum
-pgis_abs_out(PG_FUNCTION_ARGS)
-{
-	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-	               errmsg("function %s is out of date. Run: ALTER EXTENSION postgis UPDATE;", __func__)));
-	PG_RETURN_POINTER(NULL);
-}
-
+POSTGIS_DEPRECATE("2.5.0", pgis_abs_in);
+POSTGIS_DEPRECATE("2.5.0", pgis_abs_out);
