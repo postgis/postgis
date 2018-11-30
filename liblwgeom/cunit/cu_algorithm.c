@@ -543,6 +543,54 @@ static void test_lwline_interpolate_points(void)
 	lwgeom_free(lwline_as_lwgeom(empty_line));
 }
 
+static void test_lwline_interpolate_point_3d(void)
+{
+	LWLINE* line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING Z (0 0 0, 1 1 1, 2 2 2)", LW_PARSER_CHECK_NONE));
+	POINT4D point;
+	LWPOINT* pt;
+
+	/* Empty line -> Empty point*/
+	pt = lwline_interpolate_point_3d(lwline_construct_empty(4326, LW_TRUE, LW_FALSE), 0.5);
+	CU_ASSERT(lwpoint_is_empty(pt));
+	CU_ASSERT(lwgeom_has_z(lwpoint_as_lwgeom(pt)));
+	CU_ASSERT_FALSE(lwgeom_has_m(lwpoint_as_lwgeom(pt)));
+	lwpoint_free(pt);
+
+	/* distance = 0 -> first point */
+	pt = lwline_interpolate_point_3d(line, 0);
+	lwpoint_getPoint4d_p(pt, &point);
+	CU_ASSERT_DOUBLE_EQUAL(point.x, 0, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(point.y, 0, 0.001);
+	CU_ASSERT_DOUBLE_EQUAL(point.z, 0, 0.001);
+	lwpoint_free(pt);
+
+	/* distance = 1 -> last point */
+	pt = lwline_interpolate_point_3d(line, 1);
+	lwpoint_getPoint4d_p(pt, &point);
+	CU_ASSERT_DOUBLE_EQUAL(point.x, 2, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(point.y, 2, 0.001);
+	CU_ASSERT_DOUBLE_EQUAL(point.z, 2, 0.001);
+	lwpoint_free(pt);
+
+	/* simple where distance 50% -> second point */
+	pt = lwline_interpolate_point_3d(line, 0.5);
+	lwpoint_getPoint4d_p(pt, &point);
+	CU_ASSERT_DOUBLE_EQUAL(point.x, 1, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(point.y, 1, 0.001);
+	CU_ASSERT_DOUBLE_EQUAL(point.z, 1, 0.001);
+	lwpoint_free(pt);
+
+	/* simple where distance 80% -> between second and last point */
+	pt = lwline_interpolate_point_3d(line, 0.8);
+	lwpoint_getPoint4d_p(pt, &point);
+	CU_ASSERT_DOUBLE_EQUAL(point.x, 1.6, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(point.y, 1.6, 0.001);
+	CU_ASSERT_DOUBLE_EQUAL(point.z, 1.6, 0.001);
+	lwpoint_free(pt);
+
+	lwline_free(line);
+}
+
 static void test_lwline_clip(void)
 {
 	LWCOLLECTION *c;
@@ -1564,6 +1612,7 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_lwpoint_get_ordinate);
 	PG_ADD_TEST(suite,test_point_interpolate);
 	PG_ADD_TEST(suite,test_lwline_interpolate_points);
+	PG_ADD_TEST(suite,test_lwline_interpolate_point_3d);
 	PG_ADD_TEST(suite,test_lwline_clip);
 	PG_ADD_TEST(suite, test_lwpoly_clip);
 	PG_ADD_TEST(suite, test_lwtriangle_clip);
