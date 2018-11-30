@@ -57,7 +57,6 @@ struct lwgeom_backend_definition
     Datum (*intersection_fn)  (PG_FUNCTION_ARGS);
     Datum (*difference_fn)    (PG_FUNCTION_ARGS);
     Datum (*union_fn)         (PG_FUNCTION_ARGS);
-    Datum (*area_fn)          (PG_FUNCTION_ARGS);
     Datum (*distance_fn)      (PG_FUNCTION_ARGS);
     Datum (*distance3d_fn)    (PG_FUNCTION_ARGS);
 };
@@ -75,7 +74,6 @@ struct lwgeom_backend_definition lwgeom_backends[LWGEOM_NUM_BACKENDS] = {
       .intersection_fn  = geos_intersection,
       .difference_fn    = geos_difference,
       .union_fn         = geos_geomunion,
-      .area_fn          = LWGEOM_area_polygon,
       .distance_fn      = LWGEOM_mindistance2d,
       .distance3d_fn    = LWGEOM_mindistance3d
     },
@@ -86,7 +84,6 @@ struct lwgeom_backend_definition lwgeom_backends[LWGEOM_NUM_BACKENDS] = {
       .intersection_fn  = sfcgal_intersection,
       .difference_fn    = sfcgal_difference,
       .union_fn         = sfcgal_union,
-      .area_fn          = sfcgal_area,
       .distance_fn      = sfcgal_distance,
       .distance3d_fn    = sfcgal_distance3D
     }
@@ -187,12 +184,6 @@ PG_FUNCTION_INFO_V1(geomunion);
 Datum geomunion(PG_FUNCTION_ARGS)
 {
     return (*lwgeom_backend->union_fn)( fcinfo );
-}
-
-PG_FUNCTION_INFO_V1(area);
-Datum area(PG_FUNCTION_ARGS)
-{
-    return (*lwgeom_backend->area_fn)( fcinfo );
 }
 
 PG_FUNCTION_INFO_V1(distance);

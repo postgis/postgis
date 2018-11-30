@@ -560,7 +560,7 @@ CREATE OR REPLACE FUNCTION AddPoint(geometry, geometry, integer)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Area(geometry)
 	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','LWGEOM_area_polygon'
+	AS 'MODULE_PATHNAME','ST_Area'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- this is an alias for 'area(geometry)'
@@ -568,7 +568,7 @@ CREATE OR REPLACE FUNCTION Area(geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Area2D(geometry)
 	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME', 'LWGEOM_area_polygon'
+	AS 'MODULE_PATHNAME', 'ST_Area'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3

@@ -38,7 +38,6 @@ Datum postgis_sfcgal_version(PG_FUNCTION_ARGS);
 Datum sfcgal_from_ewkt(PG_FUNCTION_ARGS);
 Datum sfcgal_distance(PG_FUNCTION_ARGS);
 Datum sfcgal_distance3D(PG_FUNCTION_ARGS);
-Datum sfcgal_area(PG_FUNCTION_ARGS);
 Datum sfcgal_area3D(PG_FUNCTION_ARGS);
 Datum sfcgal_intersects(PG_FUNCTION_ARGS);
 Datum sfcgal_intersects3D(PG_FUNCTION_ARGS);
@@ -153,27 +152,6 @@ Datum sfcgal_from_ewkt(PG_FUNCTION_ARGS)
 	result = SFCGALPreparedGeometry2POSTGIS( g, 0 );
 	sfcgal_prepared_geometry_delete( g );
 	PG_RETURN_POINTER(result);
-}
-
-
-PG_FUNCTION_INFO_V1(sfcgal_area);
-Datum sfcgal_area(PG_FUNCTION_ARGS)
-    {
-	GSERIALIZED *input;
-	sfcgal_geometry_t *geom;
-	double result;
-
-	sfcgal_postgis_init();
-
-	input = PG_GETARG_GSERIALIZED_P(0);
-	geom = POSTGIS2SFCGALGeometry(input);
-
-	result = sfcgal_geometry_area(geom);
-	sfcgal_geometry_delete(geom);
-
-	PG_FREE_IF_COPY(input, 0);
-
-	PG_RETURN_FLOAT8(result);
 }
 
 

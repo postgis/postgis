@@ -44,7 +44,7 @@ Datum LWGEOM_mem_size(PG_FUNCTION_ARGS);
 Datum LWGEOM_summary(PG_FUNCTION_ARGS);
 Datum LWGEOM_npoints(PG_FUNCTION_ARGS);
 Datum LWGEOM_nrings(PG_FUNCTION_ARGS);
-Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS);
+Datum ST_Area(PG_FUNCTION_ARGS);
 Datum postgis_uses_stats(PG_FUNCTION_ARGS);
 Datum postgis_autocache_bbox(PG_FUNCTION_ARGS);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS);
@@ -269,14 +269,12 @@ Datum LWGEOM_nrings(PG_FUNCTION_ARGS)
  * 		area (line) = 0
  * 		area(polygon) = find its 2d area
  */
-PG_FUNCTION_INFO_V1(LWGEOM_area_polygon);
-Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_Area);
+Datum ST_Area(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	double area = 0.0;
-
-	POSTGIS_DEBUG(2, "in LWGEOM_area_polygon");
 
 	area = lwgeom_area(lwgeom);
 
