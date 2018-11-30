@@ -202,13 +202,6 @@
           <listitem>
             <para>
               <variablelist>
-	  <varlistentry>
-                  <term>-q </term>
-                  <listitem>
-                    <para>Wrap PostgreSQL identifiers in quotes
-                    </para>
-                  </listitem>
-                </varlistentry>
                 <varlistentry>
                   <term>-f COLUMN</term>
                   <listitem>
