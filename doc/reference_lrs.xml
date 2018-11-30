@@ -93,6 +93,68 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  </refsection>
 		</refentry>
 
+		<refentry id="ST_3DLineInterpolatePoint">
+		  <refnamediv>
+			<refname>ST_3DLineInterpolatePoint</refname>
+
+			<refpurpose>Returns a point interpolated along a line in 3D. Second argument is a float8 between 0 and 1
+			representing fraction of total length of linestring the point has to be located.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+				<paramdef><type>float8 </type> <parameter>a_fraction</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Returns a point interpolated along a line. First argument
+			must be a LINESTRING. Second argument is a float8 between 0 and 1
+			representing fraction of total linestring length the point has to be located.</para>
+
+			<note>
+			  <para><xref linkend="ST_LineInterpolatePoint" /> computes resulting point in 2D and then interpolates
+			  value for Z and M, while ST_3DLineInterpolatePoint computes directly point in 3D and only M value 
+			  is interpolated then.</para>
+			</note>
+			
+			<para>Availability: 3.0.0</para>
+		      </refsection>
+
+
+		  <refsection>
+			<title>Examples</title>
+			
+			<programlisting>--Return point 20% along 3d line
+SELECT ST_AsEWKT(ST_3DLineInterpolatePoint(the_line, 0.20))
+	FROM (SELECT ST_GeomFromEWKT('LINESTRING(25 50 70, 100 125 90, 150 190 200)') as the_line) As foo;
+   st_asewkt
+----------------
+ POINT(59.0675892910822 84.0675892910822 79.0846904776219)
+</programlisting>
+		  </refsection>
+
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="ST_AsText" />,
+				<xref linkend="ST_AsEWKT" />,
+				<xref linkend="ST_Length" />,
+				<xref linkend="ST_LineInterpolatePoint" />
+				<xref linkend="ST_LineInterpolatePoints" />
+				<xref linkend="ST_LineLocatePoint" />
+			</para>
+		  </refsection>
+		</refentry>
+
 		<refentry id="ST_LineInterpolatePoints">
 		  <refnamediv>
 			<refname>ST_LineInterpolatePoints</refname>

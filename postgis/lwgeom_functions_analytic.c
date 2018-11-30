@@ -223,6 +223,50 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
+
+/***********************************************************************
+ * Interpolate a point along a line
+ * 3D version by vincent.mora@olandia.com
+ ***********************************************************************/
+
+Datum LWGEOM_line_interpolate_point_3d(PG_FUNCTION_ARGS);
+
+PG_FUNCTION_INFO_V1(LWGEOM_line_interpolate_point_3d);
+Datum LWGEOM_line_interpolate_point_3d(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *gser = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *result;
+	double distance = PG_GETARG_FLOAT8(1);
+	LWLINE *line;
+	LWGEOM *geom;
+	LWPOINT *point;
+
+	if ( distance < 0 || distance > 1 )
+	{
+		elog(ERROR,"line_interpolate_point: 2nd arg isn't within [0,1]");
+		PG_RETURN_NULL();
+	}
+
+	if ( gserialized_get_type(gser) != LINETYPE )
+	{
+		elog(ERROR,"line_interpolate_point: 1st arg isn't a line");
+		PG_RETURN_NULL();
+	}
+
+	geom = lwgeom_from_gserialized(gser);
+	line = lwgeom_as_lwline(geom);
+
+	point = lwline_interpolate_point_3d(line, distance);
+
+	lwgeom_free(geom);
+	PG_FREE_IF_COPY(gser, 0);
+
+	result = geometry_serialize(lwpoint_as_lwgeom(point));
+	lwpoint_free(point);
+
+	PG_RETURN_POINTER(result);
+}
+
 /***********************************************************************
  * --jsunday@rochgrp.com;
  ***********************************************************************/

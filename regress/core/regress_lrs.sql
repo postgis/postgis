@@ -73,6 +73,13 @@ select 'line_interpolate_point', ST_AsText(ST_LineInterpolatePoint('LINESTRING(0
 select 'line_interpolate_point', ST_AsText(ST_LineInterpolatePoint('LINESTRING(0 0 10, 1 1 5)', 0.5));
 
 --
+--- ST_3DLineInterpolatePoint
+--
+
+select 'line_interpolate_point_3d', ST_AsText(ST_3DLineInterpolatePoint('LINESTRING(0 0 0, 0 0 1)', 0));
+select 'line_interpolate_point_3d', ST_AsText(ST_3DLineInterpolatePoint('LINESTRING(0 0 0, 0 0 1)', 0.5));
+
+--
 --- ST_LineInterpolatePoints
 --
 
