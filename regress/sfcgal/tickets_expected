@@ -15,7 +15,7 @@ ERROR:  lwgeom_longitude_shift: unsupported geom type: CircularString
 #73|GEOMETRYCOLLECTION(CIRCULARSTRING(1 1,2 3,4 5,6 7,5 6))
 #80|MULTILINESTRING((0 0,1 1))
 #83|MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406))
-ERROR:  LWGEOM2SFCGAL: Unknown geometry type !
+#85|0
 #112|GEOMETRYCOLLECTION(POINT(-10 50))
 WARNING:  ST_Locate_Between_Measures and ST_Locate_Along_Measure were deprecated in 2.2.0. Please use ST_LocateAlong and ST_LocateBetween
 ERROR:  Geometry argument does not have an 'M' ordinate

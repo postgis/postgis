@@ -53,3 +53,5 @@ POSTGIS_DEPRECATE("2.5.0", pgis_abs_in);
 POSTGIS_DEPRECATE("2.5.0", pgis_abs_out);
 POSTGIS_DEPRECATE("3.0.0", area);
 POSTGIS_DEPRECATE("3.0.0", LWGEOM_area_polygon);
+POSTGIS_DEPRECATE("3.0.0", distance);
+POSTGIS_DEPRECATE("3.0.0", LWGEOM_mindistance2d);

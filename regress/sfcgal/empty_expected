@@ -30,7 +30,7 @@ ST_Intersection(geometry, empty) == geometry|t
 ST_Intersection(empty, empty) == empty|t
 ST_Difference(geometry, empty) == geometry|t
 ST_Difference(empty, geometry) == empty|t
-ST_Distance(geometry, empty) == NULL|inf
+ST_Distance(geometry, empty) == NULL|
 ST_DWithin(geometry, empty, tolerance) == FALSE|f
 ST_Within(geometry, empty) == FALSE|f
 ST_Contains(empty, geometry) == FALSE|f

@@ -579,16 +579,16 @@ CREATE OPERATOR ~= (
 CREATE OR REPLACE FUNCTION geometry_distance_centroid(geom1 geometry, geom2 geometry)
 	RETURNS float8
 #if POSTGIS_PGSQL_VERSION >= 95
-  AS 'MODULE_PATHNAME' ,'distance'
+	AS 'MODULE_PATHNAME', 'ST_Distance'
 #else
-  AS 'MODULE_PATHNAME' ,'gserialized_distance_centroid_2d'
+	AS 'MODULE_PATHNAME', 'gserialized_distance_centroid_2d'
 #endif
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_distance_box(geom1 geometry, geom2 geometry)
 	RETURNS float8
-  AS 'MODULE_PATHNAME' ,'gserialized_distance_box_2d'
+  AS 'MODULE_PATHNAME', 'gserialized_distance_box_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
@@ -1321,12 +1321,10 @@ CREATE OR REPLACE FUNCTION ST_distance_spheroid(geom1 geometry, geom2 geometry,s
   $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
--- Minimum distance. 2d only.
-
--- PostGIS equivalent function: distance(geom1 geometry, geom2 geometry)
+-- Minimum distance. 2D only.
 CREATE OR REPLACE FUNCTION ST_Distance(geom1 geometry, geom2 geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME', 'distance'
+	AS 'MODULE_PATHNAME', 'ST_Distance'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 25; --changed from 100 should be 1/5th to 1/10 spheroid
 
