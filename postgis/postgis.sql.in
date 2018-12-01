@@ -578,11 +578,7 @@ CREATE OPERATOR ~= (
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_distance_centroid(geom1 geometry, geom2 geometry)
 	RETURNS float8
-#if POSTGIS_PGSQL_VERSION >= 95
 	AS 'MODULE_PATHNAME', 'ST_Distance'
-#else
-	AS 'MODULE_PATHNAME', 'gserialized_distance_centroid_2d'
-#endif
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0

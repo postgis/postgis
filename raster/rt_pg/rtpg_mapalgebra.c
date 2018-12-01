@@ -5754,11 +5754,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     }
 
     /* prep function call data */
-#if POSTGIS_PGSQL_VERSION <= 90
-    InitFunctionCallInfoData(cbdata, &cbinfo, 3, InvalidOid, NULL);
-#else
     InitFunctionCallInfoData(cbdata, &cbinfo, 3, InvalidOid, NULL, NULL);
-#endif
     memset(cbdata.argnull, FALSE, sizeof(bool) * 3);
 
     /* check that the function isn't strict if the args are null. */
@@ -6861,11 +6857,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 				}
 
 				/* prep function call data */
-#if POSTGIS_PGSQL_VERSION <= 90
-				InitFunctionCallInfoData(ufc_info, &ufl_info, ufl_info.fn_nargs, InvalidOid, NULL);
-#else
 				InitFunctionCallInfoData(ufc_info, &ufl_info, ufl_info.fn_nargs, InvalidOid, NULL, NULL);
-#endif
 				memset(ufc_info.argnull, FALSE, sizeof(bool) * ufl_info.fn_nargs);
 
 				if (ufl_info.fn_nargs != 4)

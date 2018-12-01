@@ -37,10 +37,7 @@
 
 #include "../../postgis_config.h"
 
-#if POSTGIS_PGSQL_VERSION > 92
 #include "access/htup_details.h" /* for heap_form_tuple() */
-#endif
-
 #include "lwgeom_pg.h"
 
 #include "rtpostgis.h"

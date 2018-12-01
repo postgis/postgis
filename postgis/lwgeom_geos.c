@@ -372,12 +372,8 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
 	/* Quick scan for nulls */
-#if POSTGIS_PGSQL_VERSION >= 95
 	iterator = array_create_iterator(array, 0, NULL);
-#else
-	iterator = array_create_iterator(array, 0);
-#endif
-	while( array_iterate(iterator, &value, &isnull) )
+	while (array_iterate(iterator, &value, &isnull))
 	{
 		/* Skip null array items */
 		if (isnull) continue;
@@ -412,12 +408,8 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	** We need to convert the array of GSERIALIZED into a GEOS collection.
 	** First make an array of GEOS geometries.
 	*/
-#if POSTGIS_PGSQL_VERSION >= 95
 	iterator = array_create_iterator(array, 0, NULL);
-#else
-	iterator = array_create_iterator(array, 0);
-#endif
-	while( array_iterate(iterator, &value, &isnull) )
+	while (array_iterate(iterator, &value, &isnull))
 	{
 		GSERIALIZED *gser_in;
 
@@ -2673,19 +2665,11 @@ uint32_t array_nelems_not_null(ArrayType* array) {
     Datum value;
     bool isnull;
     uint32_t nelems_not_null = 0;
-
-#if POSTGIS_PGSQL_VERSION >= 95
 	iterator = array_create_iterator(array, 0, NULL);
-#else
-	iterator = array_create_iterator(array, 0);
-#endif
 	while(array_iterate(iterator, &value, &isnull) )
-	{
         if (!isnull)
-        {
             nelems_not_null++;
-        }
-    }
+
     array_free_iterator(iterator);
 
     return nelems_not_null;
@@ -2702,42 +2686,36 @@ LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems,  int* is3d, int* srid)
 
 	LWGEOM** lw_geoms = palloc(nelems * sizeof(LWGEOM*));
 
-#if POSTGIS_PGSQL_VERSION >= 95
     iterator = array_create_iterator(array, 0, NULL);
-#else
-    iterator = array_create_iterator(array, 0);
-#endif
 
-	while(array_iterate(iterator, &value, &isnull))
-	{
-		GSERIALIZED *geom = (GSERIALIZED*) DatumGetPointer(value);
+    while (array_iterate(iterator, &value, &isnull))
+    {
+	    GSERIALIZED *geom = (GSERIALIZED *)DatumGetPointer(value);
 
-        if (isnull)
-        {
-            continue;
-        }
+	    if (isnull)
+		    continue;
 
-		*is3d = *is3d || gserialized_has_z(geom);
+	    *is3d = *is3d || gserialized_has_z(geom);
 
-		lw_geoms[i] = lwgeom_from_gserialized(geom);
-		if (!lw_geoms[i]) /* error in creation */
-		{
-			lwpgerror("Geometry deserializing geometry");
-			return NULL;
-		}
-		if (!gotsrid)
-		{
-            gotsrid = true;
-			*srid = gserialized_get_srid(geom);
-		}
-		else if (*srid != gserialized_get_srid(geom))
-		{
-            error_if_srid_mismatch(*srid, gserialized_get_srid(geom));
-			return NULL;
-		}
+	    lw_geoms[i] = lwgeom_from_gserialized(geom);
+	    if (!lw_geoms[i]) /* error in creation */
+	    {
+		    lwpgerror("Geometry deserializing geometry");
+		    return NULL;
+	    }
+	    if (!gotsrid)
+	    {
+		    gotsrid = true;
+		    *srid = gserialized_get_srid(geom);
+	    }
+	    else if (*srid != gserialized_get_srid(geom))
+	    {
+		    error_if_srid_mismatch(*srid, gserialized_get_srid(geom));
+		    return NULL;
+	    }
 
-		i++;
-	}
+	    i++;
+    }
 
 	return lw_geoms;
 }
@@ -2753,20 +2731,14 @@ GEOSGeometry** ARRAY2GEOS(ArrayType* array, uint32_t nelems, int* is3d, int* sri
 
 	GEOSGeometry** geos_geoms = palloc(nelems * sizeof(GEOSGeometry*));
 
-#if POSTGIS_PGSQL_VERSION >= 95
     iterator = array_create_iterator(array, 0, NULL);
-#else
-    iterator = array_create_iterator(array, 0);
-#endif
 
     while(array_iterate(iterator, &value, &isnull))
 	{
         GSERIALIZED *geom = (GSERIALIZED*) DatumGetPointer(value);
 
         if (isnull)
-        {
             continue;
-        }
 
 		*is3d = *is3d || gserialized_has_z(geom);
 

@@ -108,15 +108,12 @@ Datum gserialized_overabove_2d(PG_FUNCTION_ARGS);
 Datum gserialized_overbelow_2d(PG_FUNCTION_ARGS);
 Datum gserialized_distance_box_2d(PG_FUNCTION_ARGS);
 Datum gserialized_distance_centroid_2d(PG_FUNCTION_ARGS);
-
-#if POSTGIS_PGSQL_VERSION > 94
 Datum gserialized_contains_box2df_geom_2d(PG_FUNCTION_ARGS);
 Datum gserialized_contains_box2df_box2df_2d(PG_FUNCTION_ARGS);
 Datum gserialized_within_box2df_geom_2d(PG_FUNCTION_ARGS);
 Datum gserialized_within_box2df_box2df_2d(PG_FUNCTION_ARGS);
 Datum gserialized_overlaps_box2df_geom_2d(PG_FUNCTION_ARGS);
 Datum gserialized_overlaps_box2df_box2df_2d(PG_FUNCTION_ARGS);
-#endif
 
 /*
 ** true/false test function type
@@ -492,83 +489,6 @@ static double box2df_distance_leaf_centroid(const BOX2DF *a, const BOX2DF *b)
     return sqrt((a_x - b_x) * (a_x - b_x) + (a_y - b_y) * (a_y - b_y));
 }
 
-#if POSTGIS_PGSQL_VERSION < 95
-/**
-* Calculate the The node_box_edge->query_centroid distance
-* between the boxes.
-*/
-static double box2df_distance_node_centroid(const BOX2DF *node, const BOX2DF *query)
-{
-    BOX2DF q;
-    double qx, qy;
-    double d = 0.0;
-
-    /* Turn query into point */
-    q.xmin = q.xmax = (query->xmin + query->xmax) / 2.0;
-    q.ymin = q.ymax = (query->ymin + query->ymax) / 2.0;
-    qx = q.xmin;
-    qy = q.ymin;
-
-    /* Check for overlap */
-    if ( box2df_overlaps(node, &q) == LW_TRUE )
-        return 0.0;
-
-    /* Above or below */
-    if ( qx >= node->xmin && qx <= node->xmax )
-    {
-        if( qy > node->ymax )
-            d = qy - node->ymax;
-        else if ( qy < node->ymin )
-            d = node->ymin - qy;
-        return d;
-    }
-    /* Left or right */
-    else if ( qy >= node->ymin && qy <= node->ymax )
-    {
-        if ( qx > node->xmax )
-            d = qx - node->xmax;
-        else if ( qx < node->xmin )
-            d = node->xmin - qx;
-        return d;
-    }
-    /* Corner quadrants */
-    else
-    {
-        /* below/left of xmin/ymin */
-        if ( qx < node->xmin && qy < node->ymin )
-        {
-            d = (node->xmin - qx) * (node->xmin - qx) +
-                (node->ymin - qy) * (node->ymin - qy);
-        }
-        /* above/left of xmin/ymax */
-        else if ( qx < node->xmin && qy > node->ymax )
-        {
-            d = (node->xmin - qx) * (node->xmin - qx) +
-                (node->ymax - qy) * (node->ymax - qy);
-        }
-        /* above/right of xmax/ymax */
-        else if ( qx > node->xmax && qy > node->ymax )
-        {
-            d = (node->xmax - qx) * (node->xmax - qx) +
-                (node->ymax - qy) * (node->ymax - qy);
-        }
-        /* below/right of xmax/ymin */
-        else if ( qx > node->xmin && qy < node->ymin )
-        {
-            d = (node->xmax - qx) * (node->xmax - qx) +
-                (node->ymin - qy) * (node->ymin - qy);
-        }
-        else
-        {
-            /*ERROR*/
-			elog(ERROR, "%s: reached unreachable code", __func__);
-        }
-    }
-
-    return sqrt(d);
-}
-#endif
-
 /* Quick distance function */
 static inline double pt_distance(double ax, double ay, double bx, double by)
 {
@@ -707,7 +627,6 @@ gserialized_datum_predicate_2d(Datum gs1, Datum gs2, box2df_predicate predicate)
 	return LW_FALSE;
 }
 
-#if POSTGIS_PGSQL_VERSION > 94
 static int
 gserialized_datum_predicate_box2df_geom_2d(const BOX2DF *br1, Datum gs2, box2df_predicate predicate)
 {
@@ -784,7 +703,6 @@ Datum gserialized_overlaps_box2df_box2df_2d(PG_FUNCTION_ARGS)
 
         PG_RETURN_BOOL(false);
 }
-#endif
 
 /***********************************************************************
 * GiST 2-D Index Operator Functions
@@ -1254,9 +1172,7 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 	BOX2DF *entry_box;
 	StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
 	double distance;
-#if POSTGIS_PGSQL_VERSION >= 95
 	bool *recheck = (bool *) PG_GETARG_POINTER(4);
-#endif
 
 	POSTGIS_DEBUG(4, "[GIST] 'distance' function called");
 
@@ -1276,8 +1192,6 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 
 	/* Get the entry box */
 	entry_box = (BOX2DF*)DatumGetPointer(entry->key);
-
-#if POSTGIS_PGSQL_VERSION >= 95
 
 	/* Box-style distance test */
 	if ( strategy == 14 ) /* operator <#> */
@@ -1300,26 +1214,6 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 		elog(ERROR, "%s: reached unreachable code", __func__);
 		PG_RETURN_NULL();
 	}
-#else
-	/* Box-style distance test */
-	if ( strategy == 14 )
-	{
-		distance = (double)box2df_distance(entry_box, &query_box);
-		PG_RETURN_FLOAT8(distance);
-	}
-
-	/* Treat leaf node tests different from internal nodes */
-	if (GIST_LEAF(entry))
-	{
-		/* Calculate distance to leaves */
-		distance = (double)box2df_distance_leaf_centroid(entry_box, &query_box);
-	}
-	else
-	{
-		/* Calculate distance for internal nodes */
-		distance = (double)box2df_distance_node_centroid(entry_box, &query_box);
-	}
-#endif
 
 	PG_RETURN_FLOAT8(distance);
 }

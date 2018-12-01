@@ -102,9 +102,7 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 
 #include "../postgis_config.h"
 
-#if POSTGIS_PGSQL_VERSION >= 93
-	#include "access/htup_details.h"
-#endif
+#include "access/htup_details.h"
 
 #include "stringbuffer.h"
 #include "liblwgeom.h"
@@ -147,15 +145,15 @@ static GBOX * spatial_index_read_extent(Oid idx_oid, int key_type);
 Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
 
 /*
-* Assign a number to the n-dimensional statistics kind
-*
-* tgl suggested:
-*
-* 1-100:	reserved for assignment by the core Postgres project
-* 100-199: reserved for assignment by PostGIS
-* 200-9999: reserved for other globally-known stats kinds
-* 10000-32767: reserved for private site-local use
-*/
+ * Assign a number to the n-dimensional statistics kind
+ *
+ * tgl suggested:
+ *
+ * 1-100:       reserved for assignment by the core Postgres project
+ * 100-199:     reserved for assignment by PostGIS
+ * 200-9999:    reserved for other globally-known stats kinds
+ * 10000-32767: reserved for private site-local use
+ */
 #define STATISTIC_KIND_ND 102
 #define STATISTIC_KIND_2D 103
 #define STATISTIC_SLOT_ND 0
