@@ -9,6 +9,9 @@ PostGIS 3.0.0
   - #4230, ND box operators (overlaps, contains, within, equals) now don't look on
            dimentions that aren't present in both operands.
            Please REINDEX your ND indexes after upgrade.
+  - #4260, liblwgeom headers are not installed anymore.
+           If your project depends on them available, please use
+           librttopo instead.
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
