@@ -545,7 +545,7 @@ static void test_lwline_interpolate_points(void)
 
 static void test_lwline_interpolate_point_3d(void)
 {
-	LWLINE* line;
+	LWLINE *line;
 	POINT4D point;
 	LWPOINT* pt;
 
