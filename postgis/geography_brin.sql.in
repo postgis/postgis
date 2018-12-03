@@ -1,4 +1,3 @@
-#if POSTGIS_PGSQL_VERSION > 94
 --------------------------------------------------------------------
 -- BRIN support for geographies                                   --
 --------------------------------------------------------------------
@@ -72,5 +71,3 @@ CREATE OPERATOR CLASS brin_geography_inclusion_ops
     OPERATOR      3        &&(gidx, geography),
     OPERATOR      3        &&(gidx, gidx),
   STORAGE gidx;
-
-#endif

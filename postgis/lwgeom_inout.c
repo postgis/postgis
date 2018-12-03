@@ -560,13 +560,8 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 	/* Loop through array and build a collection of geometry and */
 	/* a simple array of ids. If either side is NULL, skip it */
 
-#if POSTGIS_PGSQL_VERSION >= 95
 	iter_geoms = array_create_iterator(arr_geoms, 0, NULL);
 	iter_ids = array_create_iterator(arr_ids, 0, NULL);
-#else
-	iter_geoms = array_create_iterator(arr_geoms, 0);
-	iter_ids = array_create_iterator(arr_ids, 0);
-#endif
 
 	while( array_iterate(iter_geoms, &val_geom, &null_geom) &&
 	       array_iterate(iter_ids, &val_id, &null_id) )

@@ -8,7 +8,8 @@ PostGIS 3.0.0
            if you need the old behavior (Regina Obe)
   - #4230, ND box operators (overlaps, contains, within, equals) now don't look on
            dimentions that aren't present in both operands.
-           Please REINDEX your ND indexes after upgrade.
+           Please REINDEX your ND indexes after upgrade. (Darafei Praliaskouski)
+  - #4229, Dropped support for PostgreSQL < 9.5. (Darafei Praliaskouski)
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)

@@ -28,10 +28,7 @@
 #include "pgsql_compat.h"
 
 #ifdef HAVE_LIBPROTOBUF
-
-#if POSTGIS_PGSQL_VERSION >= 94
 #include "utils/jsonb.h"
-#endif
 
 #if POSTGIS_PGSQL_VERSION < 110
 /* See trac ticket #3867 */
@@ -339,13 +336,12 @@ static void parse_column_keys(mvt_agg_context *ctx)
 		char *tkey = TupleDescAttr(ctx->column_cache.tupdesc, i)->attname.data;
 
 		ctx->column_cache.column_oid[i] = typoid;
-#if POSTGIS_PGSQL_VERSION >= 94
+
 		if (typoid == JSONBOID)
 		{
 			ctx->column_cache.column_keys_index[i] = UINT32_MAX;
 			continue;
 		}
-#endif
 
 		if (ctx->geom_name == NULL)
 		{
@@ -726,7 +722,6 @@ static void parse_values(mvt_agg_context *ctx)
 		k = cc.column_keys_index[i];
 		typoid = cc.column_oid[i];
 
-#if POSTGIS_PGSQL_VERSION >= 94
 		if (k == UINT32_MAX && typoid != JSONBOID)
 			elog(ERROR, "parse_values: unexpectedly could not find parsed key name '%s'", key);
 		if (typoid == JSONBOID)
@@ -734,10 +729,6 @@ static void parse_values(mvt_agg_context *ctx)
 			tags = parse_jsonb(ctx, DatumGetJsonbP(datum), tags);
 			continue;
 		}
-#else
-		if (k == UINT32_MAX)
-			elog(ERROR, "parse_values: unexpectedly could not find parsed key name '%s'", key);
-#endif
 
 		switch (typoid)
 		{

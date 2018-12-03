@@ -23,7 +23,6 @@ POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 HAVE_JSON=@HAVE_JSON@
 HAVE_PROTOBUF=@HAVE_PROTOBUF@
-HAVE_BRIN=@HAVE_BRIN@
 HAVE_SPGIST=@HAVE_SPGIST@
 INTERRUPTTESTS=@INTERRUPTTESTS@
 
@@ -86,11 +85,13 @@ TESTS = \
 	forcecurve \
 	geography \
 	geometric_median \
+	hausdorff \
 	in_geohash \
 	in_gml \
 	in_kml \
 	in_encodedpolyline \
 	iscollection \
+	knn_recheck \
 	legacy \
 	long_xact \
 	lwgeom_regress \
@@ -107,6 +108,7 @@ TESTS = \
 	quantize_coordinates \
 	regress \
 	regress_bdpoly \
+	regress_buffer_params \
 	regress_gist_index_nd \
 	regress_index \
 	regress_index_nulls \
@@ -137,43 +139,13 @@ TESTS = \
 	swapordinates \
 	summary \
 	temporal \
+	temporal_knn \
 	tickets \
 	twkb \
 	typmod \
 	wkb \
 	wkt \
-	wmsservers
-
-ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) "<"  95),1)
-	# Index supported KNN only available in PostgreSQL 9.1 and higher
-	# For 9.5 and higher, use the recheck suite instead
-	TESTS += knn
-endif
-
-ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 95),1)
-	# Index supported KNN recheck only available in PostgreSQL 9.5 and higher
-	TESTS += knn_recheck \
-			temporal_knn
-endif
-
-
-TESTS += \
-	hausdorff \
-	regress_buffer_params
-
-
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 37),1)
-	# GEOS-3.7 adds:
-	# ST_FrechetDistance
-	TESTS += \
-		frechet
-endif
-
-
-# GEOS-3.3 adds:
-# ST_RelateMatch, ST_IsValidDetail, ST_SharedPaths ,
-# ST_Snap, ST_UnaryUnion, ST_MakeClean
-TESTS += \
+	wmsservers \
 	offsetcurve \
 	relatematch \
 	isvaliddetail \
@@ -182,31 +154,14 @@ TESTS += \
 	node \
 	unaryunion \
 	clean \
-	relate_bnr
-
-# GEOS-3.4 adds:
-# ST_DelaunayTriangles
-TESTS += \
-	delaunaytriangles
-
-
-ifeq ($(INTERRUPTTESTS),yes)
-	# Allow CI servers to configure --with-interrupt-tests
-	TESTS += \
-		interrupt \
-		interrupt_relate \
-		interrupt_buffer
-endif
-
-
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 35),1)
-	# GEOS-3.5 adds:
-	# ST_ClipByBox2d, ST_Subdivide, ST_Voronoi
-	TESTS += \
-		clipbybox2d \
-		subdivide \
-		voronoi
-endif
+	relate_bnr \
+	delaunaytriangles \
+	clipbybox2d \
+	subdivide \
+	voronoi \
+	regress_brin_index \
+	regress_brin_index_3d \
+	regress_brin_index_geography
 
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 36),1)
 	# GEOS-3.6 adds:
@@ -216,18 +171,26 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 36),1)
 		oriented_envelope
 endif
 
+ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 37),1)
+	# GEOS-3.7 adds:
+	# ST_FrechetDistance
+	TESTS += \
+		frechet
+endif
+
+ifeq ($(INTERRUPTTESTS),yes)
+	# Allow CI servers to configure --with-interrupt-tests
+	TESTS += \
+		interrupt \
+		interrupt_relate \
+		interrupt_buffer
+endif
+
 ifeq ($(HAVE_JSON),yes)
 	# JSON-C adds:
 	# ST_GeomFromGeoJSON()
 	TESTS += \
 		in_geojson
-endif
-
-ifeq ($(HAVE_BRIN),yes)
-	TESTS += \
-		regress_brin_index \
-		regress_brin_index_3d \
-		regress_brin_index_geography
 endif
 
 ifeq ($(HAVE_SPGIST),yes)
@@ -242,11 +205,8 @@ ifeq ($(HAVE_PROTOBUF),yes)
 	# ST_AsMVT, ST_AsGeobuf
 	TESTS += \
 		mvt \
-		geobuf
-ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 94),1)
-	TESTS += \
+		geobuf \
 		mvt_jsonb
-endif
 endif
 
 all install uninstall:

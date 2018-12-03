@@ -774,7 +774,6 @@ Datum gserialized_within(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(false);
 }
 
-#if POSTGIS_PGSQL_VERSION > 94
 /*
 ** '~~' and operator function. Based on a GIDX and a serialized return true if
 ** the first is contained by the second.
@@ -802,7 +801,6 @@ Datum gserialized_gidx_gidx_within(PG_FUNCTION_ARGS)
 
 	PG_RETURN_BOOL(false);
 }
-#endif
 
 /*
 ** '@@' and operator function. Based on two serialized return true if

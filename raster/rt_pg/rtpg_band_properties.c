@@ -736,19 +736,21 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 			nulls[5] = TRUE;
 		}
 
-		if (bmd2[call_cntr].filesize) {
+		if (bmd2[call_cntr].filesize)
+		{
 #if POSTGIS_PGSQL_VERSION > 95
-                    values[6] = UInt64GetDatum(bmd2[call_cntr].filesize);
-                    values[7] = UInt64GetDatum(bmd2[call_cntr].timestamp);
+			values[6] = UInt64GetDatum(bmd2[call_cntr].filesize);
+			values[7] = UInt64GetDatum(bmd2[call_cntr].timestamp);
 #else /* POSTGIS_PGSQL_VERSION <= 95 */
-                    values[6] = Int64GetDatum(bmd2[call_cntr].filesize);
-                    values[7] = Int64GetDatum(bmd2[call_cntr].timestamp);
+			values[6] = Int64GetDatum(bmd2[call_cntr].filesize);
+			values[7] = Int64GetDatum(bmd2[call_cntr].timestamp);
 #endif
-                }
-                else {
-                    nulls[6] = TRUE;
-                    nulls[7] = TRUE;
-                }
+		}
+		else
+		{
+			nulls[6] = TRUE;
+			nulls[7] = TRUE;
+		}
 
 		/* build a tuple */
 		tuple = heap_form_tuple(tupdesc, values, nulls);
