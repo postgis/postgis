@@ -6243,6 +6243,12 @@ GRANT SELECT ON TABLE geography_columns TO public;
 GRANT SELECT ON TABLE geometry_columns TO public;
 GRANT SELECT ON TABLE spatial_ref_sys TO public;
 
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION ST_3DLineInterpolatePoint(geometry, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_3DLineInterpolatePoint'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
 
 -- moved to separate file cause its invovled
 #include "postgis_spgist.sql.in"

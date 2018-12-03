@@ -607,3 +607,69 @@ POINTARRAY* lwline_interpolate_points(const LWLINE *line, double length_fraction
     return opa;
 }
 
+extern LWPOINT *
+lwline_interpolate_point_3d(const LWLINE *line, double distance)
+{
+	double length, slength, tlength;
+	POINTARRAY *ipa;
+	POINT4D pt;
+	int nsegs, i;
+	LWGEOM *geom = lwline_as_lwgeom(line);
+	int has_z = lwgeom_has_z(geom);
+	int has_m = lwgeom_has_m(geom);
+	ipa = line->points;
+
+	/* Empty.InterpolatePoint == Point Empty */
+	if (lwline_is_empty(line))
+	{
+		return lwpoint_construct_empty(line->srid, has_z, has_m);
+	}
+
+	/* If distance is one of the two extremes, return the point on that
+	 * end rather than doing any expensive computations
+	 */
+	if (distance == 0.0 || distance == 1.0)
+	{
+		if (distance == 0.0)
+			getPoint4d_p(ipa, 0, &pt);
+		else
+			getPoint4d_p(ipa, ipa->npoints - 1, &pt);
+
+		return lwpoint_make(line->srid, has_z, has_m, &pt);
+	}
+
+	/* Interpolate a point on the line */
+	nsegs = ipa->npoints - 1;
+	length = ptarray_length(ipa);
+	tlength = 0;
+	for (i = 0; i < nsegs; i++)
+	{
+		POINT4D p1, p2;
+		POINT4D *p1ptr = &p1, *p2ptr = &p2; /* don't break
+						     * strict-aliasing rules
+						     */
+
+		getPoint4d_p(ipa, i, &p1);
+		getPoint4d_p(ipa, i + 1, &p2);
+
+		/* Find the relative length of this segment */
+		slength = distance3d_pt_pt((POINT3D *)p1ptr, (POINT3D *)p2ptr) / length;
+
+		/* If our target distance is before the total length we've seen
+		 * so far. create a new point some distance down the current
+		 * segment.
+		 */
+		if (distance < tlength + slength)
+		{
+			double dseg = (distance - tlength) / slength;
+			interpolate_point4d(&p1, &p2, &pt, dseg);
+			return lwpoint_make(line->srid, has_z, has_m, &pt);
+		}
+		tlength += slength;
+	}
+
+	/* Return the last point on the line. This shouldn't happen, but
+	 * could if there's some floating point rounding errors. */
+	getPoint4d_p(ipa, ipa->npoints - 1, &pt);
+	return lwpoint_make(line->srid, has_z, has_m, &pt);
+}

@@ -17,6 +17,7 @@ PostGIS 3.0.0
   - #4230, SP-GiST and GiST support for ND box operators overlaps, contains,
            within, equals (Esteban Zimányi and Arthur Lesuisse from Université
            Libre de Bruxelles (ULB), Darafei Praliaskouski)
+  - #4171, ST_3DLineInterpolatePoint (Julien Cabieces, Vincent Mora)
 
 * Enhancements and fixes *
   - #4153, ST_Segmentize now splits segments proportionally (Darafei
