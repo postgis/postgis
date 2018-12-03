@@ -11,3 +11,4 @@ Changes:
 - Ported (2.4.1.2+carto-1): Strip decorators from 'sql' functions so inlining works better.
 - Ported (2.4.1.2+carto-1 / 2.4.1.4+carto-1): Add explicit costs to expensive and other functions.
 - Ported (trunk [e5c92b18f](https://github.com/postgis/postgis/commit/e5c92b18ffad323b3996fd68f0b23f80dc5bca28)): ST_AsMVTGeom: Drop geometries smaller than the resolution.
+- Add carto-package.json.
