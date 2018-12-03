@@ -495,7 +495,7 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 {
 	GEOGRAPHIC_POINT a, b;
 	POINT2D p;
-	int i;
+	uint32_t i;
 	double area = 0.0;
 	GBOX gbox2d;
 	int in_south = LW_FALSE;
