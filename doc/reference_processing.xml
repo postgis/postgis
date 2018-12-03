@@ -1887,16 +1887,12 @@ Returns a geometry that represents the shared portion of geomA and geomB.
 
 			<note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
 					fits the bounding box of the 2 geography objects (if geography objects are within one half zone UTM but not same UTM will pick one of those) (favoring UTM or Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario)  and then intersection in that best fit planar spatial ref and retransforms back to WGS84 geography.</para></note>
-		  <important>
-			<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
-		  </important>
 
 	  	<warning><para>This function will drop the M coordinate values if present.</para></warning>
 
-		  <warning><para>If working with 3D geometries, you may want to use SFGCAL based <xref linkend="ST_3DIntersection" /> which does a proper 3D intersection for 3D geometries.  Although this function works with Z-coordinate, it does an averaging of Z-Coordinate values when <code>postgis.backend=geos</code>. <code>postgis.backend=sfcgal</code>, it will return a 2D geometry regardless ignoring the Z-Coordinate. Refer to <xref linkend="postgis_backend" /> for details.</para></warning>
+		  <warning><para>If working with 3D geometries, you may want to use SFGCAL based <xref linkend="ST_3DIntersection" /> which does a proper 3D intersection for 3D geometries.  Although this function works with Z-coordinate, it does an averaging of Z-Coordinate.</para></warning>
 
 		  <para>Performed by the GEOS module</para>
-
 
 		  <para>Availability: 1.5 support for geography data type was introduced.</para>
 			<para>Changed: 3.0.0 does not depend on SFCGAL.</para>
@@ -1910,45 +1906,42 @@ Returns a geometry that represents the shared portion of geomA and geomB.
  st_astext
 ---------------
 GEOMETRYCOLLECTION EMPTY
-(1 row)
+
 SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry));
  st_astext
 ---------------
-POINT(0 0)
-(1 row)
-
----Clip all lines (trails) by country (here we assume country geom are POLYGON or MULTIPOLYGONS)
--- NOTE: we are only keeping intersections that result in a LINESTRING or MULTILINESTRING because we don't
--- care about trails that just share a point
--- the dump is needed to expand a geometry collection into individual single MULT* parts
--- the below is fairly generic and will work for polys, etc. by just changing the where clause
-SELECT clipped.gid, clipped.f_name, clipped_geom
-FROM (SELECT trails.gid, trails.f_name, (ST_Dump(ST_Intersection(country.the_geom, trails.the_geom))).geom As clipped_geom
-FROM country
-	INNER JOIN trails
-	ON ST_Intersects(country.the_geom, trails.the_geom))  As clipped
-	WHERE ST_Dimension(clipped.clipped_geom) = 1 ;
-
---For polys e.g. polygon landmarks, you can also use the sometimes faster hack that buffering anything by 0.0
--- except a polygon results in an empty geometry collection
---(so a geometry collection containing polys, lines and points)
--- buffered by 0.0 would only leave the polygons and dissolve the collection shell
-SELECT poly.gid,  ST_Multi(ST_Buffer(
-				ST_Intersection(country.the_geom, poly.the_geom),
-				0.0)
-				) As clipped_geom
-FROM country
-	INNER JOIN poly
-	ON ST_Intersects(country.the_geom, poly.the_geom)
-	WHERE Not ST_IsEmpty(ST_Buffer(ST_Intersection(country.the_geom, poly.the_geom),0.0));
-		</programlisting>
+POINT(0 0)</programlisting>
+<para>
+Clip all lines (trails) by country. Hhere we assume country geom are POLYGON or MULTIPOLYGONS.
+NOTE: we are only keeping intersections that result in a LINESTRING or MULTILINESTRING because we don't
+care about trails that just share a point. The dump is needed to expand a geometry collection into individual single MULT* parts.
+The below is fairly generic and will work for polys, etc. by just changing the where clause.</para>
+<programlisting>select clipped.gid, clipped.f_name, clipped_geom
+from (
+         select trails.gid, trails.f_name,
+             (ST_Dump(ST_Intersection(country.geom, trails.geom))).geom clipped_geom
+         from country
+              inner join trails on ST_Intersects(country.geom, trails.geom)
+     ) as clipped
+where ST_Dimension(clipped.clipped_geom) = 1;</programlisting>
+<para>For polys e.g. polygon landmarks, you can also use the sometimes faster hack that buffering anything by 0.0 except a polygon results in an empty geometry collection.
+(So a geometry collection containing polys, lines and points buffered by 0.0 would only leave the polygons and dissolve the collection shell.)
+<programlisting>select poly.gid,
+    ST_Multi(
+        ST_Buffer(
+            ST_Intersection(country.geom, poly.geom),
+            0.0
+        )
+    ) clipped_geom
+from country
+     inner join poly on ST_Intersects(country.geom, poly.geom)
+where not ST_IsEmpty(ST_Buffer(ST_Intersection(country.geom, poly.geom), 0.0));</programlisting>
 		</refsection>
 
 		<refsection>
 		<title>Examples: 2.5Dish</title>
-		<para>Geos is the default backend if not set. Note this is not a true intersection, compare to the same example using <xref linkend="ST_3DIntersection" />.</para>
+		<para>Note this is not a true intersection, compare to the same example using <xref linkend="ST_3DIntersection" />.</para>
 		<programlisting>
-set postgis.backend=geos;
 select ST_AsText(ST_Intersection(linestring, polygon)) As wkt
 from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
  CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;
@@ -1957,23 +1950,10 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 ---------------------------------------
  LINESTRING Z (1 1 8,0.5 0.5 8,0 0 10)
 		</programlisting>
-
-		<para>If your PostGIS is compiled with sfcgal support, have option of using sfcgal, but note if basically cases down both geometries to 2D before doing intersection
-		and returns the ST_Force2D equivalent result which is a 2D geometry</para>
-		<programlisting>
-set postgis.backend=sfcgal;
-select ST_AsText(ST_Intersection(linestring, polygon)) As wkt
-from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
- CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;
-
-                     wkt
-----------------------------------------------
- MULTILINESTRING((0.5 0.5,0 0),(1 1,0.5 0.5))
-		</programlisting>
 	  </refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_3DIntersection" />, <xref linkend="ST_Difference"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Force2D" />, <xref linkend="ST_SymDifference"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
+			<para><xref linkend="ST_3DIntersection" />,	<xref linkend="ST_Difference"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Force2D" />, <xref linkend="ST_SymDifference"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
 		</refsection>
 	</refentry>
 
