@@ -3417,7 +3417,7 @@ CREATE OR REPLACE FUNCTION ST_IsValidTrajectory(geometry)
 -- PostGIS equivalent function: intersection(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Intersection(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','intersection'
+	AS 'MODULE_PATHNAME','ST_Intersection'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
 
@@ -3590,7 +3590,7 @@ CREATE OR REPLACE FUNCTION ST_FrechetDistance(geom1 geometry, geom2 geometry, fl
 -- PostGIS equivalent function: difference(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Difference(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','difference'
+	AS 'MODULE_PATHNAME','ST_Difference'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; --guessed based on ST_Intersection
 
@@ -3621,7 +3621,7 @@ CREATE OR REPLACE FUNCTION ST_symmetricdifference(geom1 geometry, geom2 geometry
 -- PostGIS equivalent function: GeomUnion(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Union(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','geomunion'
+	AS 'MODULE_PATHNAME','ST_Union'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
