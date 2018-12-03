@@ -6252,7 +6252,7 @@ GRANT SELECT ON TABLE spatial_ref_sys TO public;
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION ST_3DLineInterpolatePoint(geometry, float8)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_line_interpolate_point_3d'
+	AS 'MODULE_PATHNAME', 'ST_3DLineInterpolatePoint'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 

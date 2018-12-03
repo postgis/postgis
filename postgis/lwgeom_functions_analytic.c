@@ -229,10 +229,10 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
  * --vincent.mora@olandia.com;
  ***********************************************************************/
 
-Datum LWGEOM_line_interpolate_point_3d(PG_FUNCTION_ARGS);
+Datum ST_3DLineInterpolatePoint(PG_FUNCTION_ARGS);
 
-PG_FUNCTION_INFO_V1(LWGEOM_line_interpolate_point_3d);
-Datum LWGEOM_line_interpolate_point_3d(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_3DLineInterpolatePoint);
+Datum ST_3DLineInterpolatePoint(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *gser = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *result;
