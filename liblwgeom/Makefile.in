@@ -158,6 +158,10 @@ SA_HEADERS = \
 
 all: liblwgeom.la
 
+install:
+
+uninstall:
+
 # Make all objects depend upon postgis_config.h and postgis_svn_revision.h
 $(LT_OBJS): ../postgis_config.h ../postgis_svn_revision.h $(SA_HEADERS)
 
