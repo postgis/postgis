@@ -88,6 +88,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 				<xref linkend="ST_AsEWKT" />,
 				<xref linkend="ST_Length" />,
 				<xref linkend="ST_LineInterpolatePoints" />
+				<xref linkend="ST_3DLineInterpolatePoint" />
 				<xref linkend="ST_LineLocatePoint" />
 			O</para>
 		  </refsection>
