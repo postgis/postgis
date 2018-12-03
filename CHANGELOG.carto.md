@@ -1,4 +1,4 @@
-## 2.4.1.1+carto-1
+## 2.5.1.1+carto-1
 
 **Release date**: 20XX-XX-XX
 
