@@ -131,8 +131,9 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 
 		  <refsection>
 			<title>Examples</title>
-			
-			<programlisting>--Return point 20% along 3d line
+
+			<para>Return point 20% along 3D line</para>
+			<programlisting>
 SELECT ST_AsEWKT(ST_3DLineInterpolatePoint(the_line, 0.20))
 	FROM (SELECT ST_GeomFromEWKT('LINESTRING(25 50 70, 100 125 90, 150 190 200)') as the_line) As foo;
    st_asewkt
