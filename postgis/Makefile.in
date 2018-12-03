@@ -32,10 +32,6 @@ MODULEPATH=$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 endif
 
-ifeq (@HAVE_BRIN@,yes)
-BRIN_OBJ= brin_2d.o brin_nd.o brin_common.o
-endif
-
 # Files to be copied to the contrib/ directory
 SQL_built=postgis.sql postgis_for_extension.sql uninstall_postgis.sql postgis_upgrade.sql postgis_upgrade_for_extension.sql postgis_proc_set_search_path.sql legacy.sql uninstall_legacy.sql legacy_minimal.sql legacy_gist.sql
 DATA=../spatial_ref_sys.sql
@@ -54,10 +50,6 @@ else
 BACKEND_OBJ=$(GEOM_BACKEND_OBJ)
 DATA_built=$(SQL_built)
 SQL_OBJS=$(SQL_objs)
-endif
-
-ifeq (@HAVE_BRIN@,yes)
-BRIN_OBJ= brin_2d.o brin_nd.o brin_common.o
 endif
 
 ifeq (@HAVE_SPGIST@,yes)
@@ -109,7 +101,9 @@ PG_OBJS= \
 	gserialized_gist_2d.o \
 	gserialized_gist_nd.o \
 	$(SPGIST_OBJ) \
-	$(BRIN_OBJ) \
+	brin_2d.o \
+	brin_nd.o \
+	brin_common.o \
 	gserialized_estimate.o \
 	geography_inout.o \
 	geography_btree.o \

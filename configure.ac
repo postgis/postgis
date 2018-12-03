@@ -468,8 +468,6 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
     AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.5])
   fi
 
-  HAVE_BRIN=yes
-
   HAVE_SPGIST=no
   if test $POSTGIS_PGSQL_VERSION -gt 100; then
     HAVE_SPGIST=yes
@@ -543,7 +541,6 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
 
   AC_DEFINE_UNQUOTED([POSTGIS_PGSQL_VERSION], [$POSTGIS_PGSQL_VERSION], [PostgreSQL server version])
   AC_SUBST([POSTGIS_PGSQL_VERSION])
-  AC_SUBST([HAVE_BRIN])
   AC_SUBST([HAVE_SPGIST])
 
 fi dnl LIBLWGEOM_ONLY != no
