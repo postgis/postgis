@@ -241,15 +241,15 @@ Datum ST_3DLineInterpolatePoint(PG_FUNCTION_ARGS)
 	LWGEOM *geom;
 	LWPOINT *point;
 
-	if ( distance < 0 || distance > 1 )
+	if (distance < 0 || distance > 1)
 	{
-		elog(ERROR,"line_interpolate_point: 2nd arg isn't within [0,1]");
+		elog(ERROR, "line_interpolate_point: 2nd arg isn't within [0,1]");
 		PG_RETURN_NULL();
 	}
 
-	if ( gserialized_get_type(gser) != LINETYPE )
+	if (gserialized_get_type(gser) != LINETYPE)
 	{
-		elog(ERROR,"line_interpolate_point: 1st arg isn't a line");
+		elog(ERROR, "line_interpolate_point: 1st arg isn't a line");
 		PG_RETURN_NULL();
 	}
 
