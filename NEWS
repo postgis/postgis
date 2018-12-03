@@ -10,6 +10,9 @@ PostGIS 3.0.0
            dimentions that aren't present in both operands.
            Please REINDEX your ND indexes after upgrade. (Darafei Praliaskouski)
   - #4229, Dropped support for PostgreSQL < 9.5. (Darafei Praliaskouski)
+  - #4260, liblwgeom headers are not installed anymore.
+           If your project depends on them available, please use
+           librttopo instead. (Darafei Praliaskouski)￼
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
