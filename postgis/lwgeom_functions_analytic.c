@@ -225,8 +225,8 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 }
 
 /***********************************************************************
- * Interpolate a point along a line
- * 3D version by vincent.mora@olandia.com
+ * Interpolate a point along a line 3D version
+ * --vincent.mora@olandia.com;
  ***********************************************************************/
 
 Datum LWGEOM_line_interpolate_point_3d(PG_FUNCTION_ARGS);
