@@ -7,7 +7,6 @@ language: c
 env:
   - tag=latest mode=tests
   - tag=pg11-geos37-gdal23-proj52 mode=debug
-  - tag=pg11-geos37-gdal23-proj52 mode=coverage
   - tag=pg11-geos37-gdal23-proj52 mode=usan_gcc
   - tag=pg11-geos37-gdal23-proj52 mode=usan_clang
   - tag=pg11-geos37-gdal23-proj52 mode=tests
@@ -18,7 +17,6 @@ env:
 matrix:
   allow_failures:
     - env: tag=latest mode=tests
-    - env: tag=pg11-geos37-gdal23-proj52 mode=coverage
 
 script:
   - echo "/tmp/logbt-coredumps/core.%p.%E" | sudo tee /proc/sys/kernel/core_pattern
@@ -26,7 +24,6 @@ script:
   - echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
   - echo "CMD bash ci/travis/run_${mode}.sh" >> Dockerfile
   - docker build -t pgtest .
-  - ci_env=`bash .github/codecov_env.bash`
   - docker run $ci_env --name pgtest-${TRAVIS_BUILD_NUMBER} pgtest
 
 after_success:
