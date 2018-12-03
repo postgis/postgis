@@ -1,66 +1,36 @@
-env:
-  matrix:
-    - CFLAGS="-g -Og" MATRIX_EVAL="touch check-no-trailing-blanks"
-    - CFLAGS="-g -O2 -fstack-protector -Wformat -Werror=format-security" LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
-    - CFLAGS="-g -O3 -mtune=generic -fno-omit-frame-pointer -Werror -Wall -Wextra -Wno-unused-parameter"
-    - CFLAGS="-g -O0 --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="--coverage -fprofile-arcs -ftest-coverage" CONFIGURE_FLAGS="--enable-debug"
+services:
+  - docker
 
-addons:
-  postgresql: "9.6"
-  apt:
-    packages:
-      - eatmydata
-
-before_install:
-  - eval "${MATRIX_EVAL}"
-  - sudo sh -c "echo /usr/lib/libeatmydata/libeatmydata.so >> /etc/ld.so.preload"
-  - curl -sSfL https://github.com/mapbox/logbt/archive/v2.0.3.tar.gz | sudo tar --gunzip --extract --strip-components=1 --exclude="*md" --exclude="test*" --directory=/usr/local
-  - curl -sSfL https://raw.githubusercontent.com/mapbox/logbt/30c554dd37b6c96c23fc424f75910fc6d6696f00/bin/logbt | sudo tee /usr/local/bin/logbt > /dev/null
-  - sudo logbt --setup
-  - sudo service postgresql stop 9.6
-  - sudo chown -hRL --from=postgres travis:travis /etc /var /tmp
-  - sudo usermod -u 1000 postgres
-  - sudo adduser travis ssl-cert
-  - sudo service postgresql start 9.6
-  - sudo add-apt-repository --yes ppa:ubuntugis/ppa
-  - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
-  - sudo apt-get update -qq
-  - mkdir -p /home/travis/deb && touch /home/travis/deb/__ && sudo cp -n /home/travis/deb/* /var/cache/apt/archives || true
-  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev postgresql-server-dev-9.6 libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson0-dev libgdal-dev gdb libc6-dbg
-  - sudo sh -c "echo deb http://archive.ubuntu.com/ubuntu/ artful main restricted universe multiverse >> /etc/apt/sources.list"
-  - sudo apt-get update -qq
-  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests binutils libproj-dev libprotobuf-c-dev protobuf-c-compiler
-  - cp -n /var/cache/apt/archives/* /home/travis/deb || true
-  - ls -la /home/travis/deb/
-  - sudo ldconfig
-  - ./autogen.sh
-
-after_failure:
-  - sudo head -n1000 /var/log/postgresql/postgresql-9.6-main.log
-
-after_success:
-  - bash .github/codecov.bash
-
+sudo: true
 language: c
 
-compiler: gcc
+env:
+  - tag=latest mode=tests
+  - tag=pg11-geos37-gdal23-proj52 mode=debug
+  - tag=pg11-geos37-gdal23-proj52 mode=coverage
+  - tag=pg11-geos37-gdal23-proj52 mode=usan_gcc
+  - tag=pg11-geos37-gdal23-proj52 mode=usan_clang
+  - tag=pg11-geos37-gdal23-proj52 mode=tests
+  - tag=pg10-geos36-gdal23-proj49 mode=tests
+  - tag=pg96-geos36-gdal22-proj49 mode=tests
+  - tag=pg95-geos35-gdal111-proj48 mode=tests
 
-dist: trusty
-
-cache:
-  ccache: true
-  directories:
-    - /home/travis/deb
+matrix:
+  allow_failures:
+    - env: tag=latest mode=tests
+    - env: tag=pg11-geos37-gdal23-proj52 mode=coverage
 
 script:
-  - ./configure CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS" $CONFIGURE_FLAGS || cat config.log
-  - make -j
-  - chmod 755 /home/travis
-  - logbt -- make check "RUNTESTFLAGS=--verbose"
-  - logbt -- make check "RUNTESTFLAGS='--dumprestore --verbose'"
-  - sudo make install
-  - logbt -- make installcheck "RUNTESTFLAGS=--verbose"
-  - logbt -- make installcheck "RUNTESTFLAGS=--dumprestore --verbose"
+  - echo "/tmp/logbt-coredumps/core.%p.%E" | sudo tee /proc/sys/kernel/core_pattern
+  - echo "FROM postgis/postgis-build-env:${tag}" > Dockerfile
+  - echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
+  - echo "CMD bash ci/travis/run_${mode}.sh" >> Dockerfile
+  - docker build -t pgtest .
+  - ci_env=`bash .github/codecov_env.bash`
+  - docker run $ci_env --name pgtest-${TRAVIS_BUILD_NUMBER} pgtest
+
+after_success:
+  - docker rm pgtest-${TRAVIS_BUILD_NUMBER}
 
 notifications:
   email: false
