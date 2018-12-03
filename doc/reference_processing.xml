@@ -1923,7 +1923,7 @@ from (
      ) as clipped
 where ST_Dimension(clipped.clipped_geom) = 1;</programlisting>
 <para>For polys e.g. polygon landmarks, you can also use the sometimes faster hack that buffering anything by 0.0 except a polygon results in an empty geometry collection.
-(So a geometry collection containing polys, lines and points buffered by 0.0 would only leave the polygons and dissolve the collection shell.)
+(So a geometry collection containing polys, lines and points buffered by 0.0 would only leave the polygons and dissolve the collection shell.)</para>
 <programlisting>select poly.gid,
     ST_Multi(
         ST_Buffer(
