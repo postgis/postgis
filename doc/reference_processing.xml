@@ -1241,11 +1241,9 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
 		<para>Returns a geometry that represents that part of geometry A
 			that does not intersect with geometry B.  One can think of this as GeometryA - ST_Intersection(A,B).  If A is completely contained in B
 			then an empty geometry collection is returned.</para>
-		<note><para>Note - order matters. B - A will always return a portion of B</para></note>
+		<note><para>Order matters. B - A will always return a portion of B</para></note>
 
 		<para>Performed by the GEOS module</para>
-
-		<note><para>Do not call with a GeometryCollection as an argument</para></note>
 
 		<para>&sfs_compliant; s2.1.1.3</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.20</para>
@@ -1287,12 +1285,11 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
 		</tbody>
 	</tgroup>
 </informaltable>
-<programlisting>
---Safe for 2d. This is same geometries as what is shown for st_symdifference
-SELECT ST_AsText(
+<para>Safe for 2D. This is same geometries as what is shown for st_symdifference</para>
+<programlisting>SELECT ST_AsText(
 	ST_Difference(
-			ST_GeomFromText('LINESTRING(50 100, 50 200)'),
-			ST_GeomFromText('LINESTRING(50 50, 50 150)')
+			'LINESTRING(50 100, 50 200)'::geometry,
+			'LINESTRING(50 50, 50 150)'::geometry
 		)
 	);
 
@@ -1301,21 +1298,22 @@ st_astext
 LINESTRING(50 150,50 200)
 </programlisting>
 
-<programlisting>
-
---When used in 3d doesn't quite do the right thing
-SELECT ST_AsEWKT(ST_Difference(ST_GeomFromEWKT('MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)'), ST_GeomFromEWKT('POINT(-118.614 38.281 5)')));
+<para>When used in 3d doesn't quite do the right thing.</para>
+<programlisting>select ST_AsEWKT(
+           ST_Difference(
+               'MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)' :: geometry,
+               'POINT(-118.614 38.281 5)' :: geometry
+               )
+    );
 st_asewkt
 ---------
-MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)
-		</programlisting>
+MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)</programlisting>
 	  </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_SymDifference" /></para>
+		<para><xref linkend="ST_SymDifference" />, <xref linkend="ST_Intersection" />, <xref linkend="ST_Union" /></para>
 	  </refsection>
 	</refentry>
 
