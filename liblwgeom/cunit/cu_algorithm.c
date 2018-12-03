@@ -545,16 +545,20 @@ static void test_lwline_interpolate_points(void)
 
 static void test_lwline_interpolate_point_3d(void)
 {
-	LWLINE* line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING Z (0 0 0, 1 1 1, 2 2 2)", LW_PARSER_CHECK_NONE));
+	LWLINE* line;
 	POINT4D point;
 	LWPOINT* pt;
 
 	/* Empty line -> Empty point*/
-	pt = lwline_interpolate_point_3d(lwline_construct_empty(4326, LW_TRUE, LW_FALSE), 0.5);
+	line = lwline_construct_empty(4326, LW_TRUE, LW_FALSE);
+	pt = lwline_interpolate_point_3d(line, 0.5);
 	CU_ASSERT(lwpoint_is_empty(pt));
 	CU_ASSERT(lwgeom_has_z(lwpoint_as_lwgeom(pt)));
 	CU_ASSERT_FALSE(lwgeom_has_m(lwpoint_as_lwgeom(pt)));
 	lwpoint_free(pt);
+	lwline_free(line);
+
+	line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING Z (0 0 0, 1 1 1, 2 2 2)", LW_PARSER_CHECK_NONE));
 
 	/* distance = 0 -> first point */
 	pt = lwline_interpolate_point_3d(line, 0);
