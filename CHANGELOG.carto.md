@@ -8,3 +8,4 @@ Changes:
 - Backport [24efadd](https://github.com/postgis/postgis/commit/24efadd48d94ae7d6ce2aaab66ca940ab97a0a14): GCC warnings.
 - Backport clang-format.
 - Port (2.4-cartodb) make_cartodb_dist.sh.
+- Ported (2.4-cartodb): Strip decorators from 'sql' functions so inlining works better.

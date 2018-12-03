@@ -73,21 +73,21 @@ CREATE OR REPLACE FUNCTION contains_2d(geometry, box2df)
 RETURNS boolean
 AS
 	'SELECT $2 OPERATOR(@extschema@.@) $1;'
-LANGUAGE SQL IMMUTABLE STRICT;
+LANGUAGE SQL;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION is_contained_2d(geometry, box2df)
 RETURNS boolean
 AS
 	'SELECT $2 OPERATOR(@extschema@.~) $1;'
-LANGUAGE SQL IMMUTABLE STRICT;
+LANGUAGE SQL;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION overlaps_2d(geometry, box2df)
 RETURNS boolean
 AS
 	'SELECT $2 OPERATOR(@extschema@.&&) $1;'
-LANGUAGE SQL IMMUTABLE STRICT;
+LANGUAGE SQL;
 
 -- Availability: 2.3.0
 CREATE OPERATOR ~ (
@@ -161,7 +161,7 @@ CREATE OR REPLACE FUNCTION overlaps_nd(geometry, gidx)
 RETURNS boolean
 AS
 	'SELECT $2 OPERATOR(@extschema@.&&&) $1;'
-LANGUAGE SQL IMMUTABLE STRICT;
+LANGUAGE SQL;
 
 -- Availability: 2.3.0
 CREATE OPERATOR &&& (

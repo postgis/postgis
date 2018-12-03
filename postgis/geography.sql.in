@@ -114,7 +114,7 @@ CREATE OR REPLACE FUNCTION ST_AsText(geography, int4)
 CREATE OR REPLACE FUNCTION ST_AsText(text)
 	RETURNS text AS
 	$$ SELECT @extschema@.ST_AsText($1::@extschema@.geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GeographyFromText(text)
@@ -409,7 +409,7 @@ CREATE OR REPLACE FUNCTION ST_AsSVG(geog geography,rel int4 DEFAULT 0,maxdecimal
 CREATE OR REPLACE FUNCTION ST_AsSVG(text)
 	RETURNS text AS
 	$$ SELECT @extschema@.ST_AsSVG($1::@extschema@.geometry,0,15);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 --
 -- GML OUTPUT
@@ -426,7 +426,7 @@ CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geography, int4, int4, text, text)
 CREATE OR REPLACE FUNCTION ST_AsGML(text)
 	RETURNS text AS
 	$$ SELECT @extschema@._ST_AsGML(2,$1::@extschema@.geometry,15,0, NULL, NULL);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- ST_AsGML (geography, precision, option) / version=2
 -- Availability: 1.5.0
@@ -434,7 +434,7 @@ CREATE OR REPLACE FUNCTION ST_AsGML(text)
 CREATE OR REPLACE FUNCTION ST_AsGML(geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS text
 	AS 'SELECT @extschema@._ST_AsGML(2, $1, $2, $3, null, null)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- ST_AsGML(version, geography, precision, option, prefix)
 -- Changed: 2.0.0 to use default args and allow named args
@@ -443,7 +443,7 @@ CREATE OR REPLACE FUNCTION ST_AsGML(geog geography, maxdecimaldigits int4 DEFAUL
 CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT NULL, id text DEFAULT NULL)
 	RETURNS text
 	AS $$ SELECT @extschema@._ST_AsGML($1, $2, $3, $4, $5, $6);$$
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 --
 -- KML OUTPUT
@@ -460,14 +460,14 @@ CREATE OR REPLACE FUNCTION _ST_AsKML(int4, geography, int4, text)
 CREATE OR REPLACE FUNCTION ST_AsKML(geog geography, maxdecimaldigits int4 DEFAULT 15)
 	RETURNS text
 	AS 'SELECT @extschema@._ST_AsKML(2, $1, $2, null)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- Deprecated 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsKML(text)
 	RETURNS text AS
 	$$ SELECT @extschema@._ST_AsKML(2, $1::@extschema@.geometry, 15, null);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- ST_AsKML(version, geography, precision, prefix)
 -- Availability: 2.0.0 nprefix added
@@ -475,7 +475,7 @@ CREATE OR REPLACE FUNCTION ST_AsKML(text)
 CREATE OR REPLACE FUNCTION ST_AsKML(version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, nprefix text DEFAULT null)
 	RETURNS text
 	AS 'SELECT @extschema@._ST_AsKML($1, $2, $3, $4)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 --
 -- GeoJson Output
@@ -491,21 +491,21 @@ CREATE OR REPLACE FUNCTION _ST_AsGeoJson(int4, geography, int4, int4)
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(text)
 	RETURNS text AS
 	$$ SELECT @extschema@._ST_AsGeoJson(1, $1::@extschema@.geometry,15,0);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- ST_AsGeoJson(geography, precision, options) / version=1
 -- Changed: 2.0.0 to use default args and named args
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS text
 	AS $$ SELECT @extschema@._ST_AsGeoJson(1, $1, $2, $3); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- ST_AsGeoJson(version, geography, precision,options)
 -- Changed: 2.0.0 to use default args and named args
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(gj_version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS text
 	AS $$ SELECT @extschema@._ST_AsGeoJson($1, $2, $3, $4); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 -- Measurement Functions
@@ -532,20 +532,20 @@ CREATE OR REPLACE FUNCTION _ST_DWithin(geography, geography, float8, boolean)
 CREATE OR REPLACE FUNCTION ST_Distance(geography, geography, boolean)
 	RETURNS float8
 	AS 'SELECT @extschema@._ST_Distance($1, $2, 0.0, $3)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Currently defaulting to spheroid calculations
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Distance(geography, geography)
 	RETURNS float8
 	AS 'SELECT @extschema@._ST_Distance($1, $2, 0.0, true)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Distance(text, text)
 	RETURNS float8 AS
 	$$ SELECT @extschema@.ST_Distance($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Only expands the bounding box, the actual geometry will remain unchanged, use with care.
 -- Availability: 1.5.0
@@ -559,20 +559,20 @@ CREATE OR REPLACE FUNCTION _ST_Expand(geography, float8)
 CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8, boolean)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@._ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@._ST_Expand($1,$3) AND @extschema@._ST_DWithin($1, $2, $3, $4)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Currently defaulting to spheroid calculations
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@._ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@._ST_Expand($1,$3) AND @extschema@._ST_DWithin($1, $2, $3, true)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_DWithin(text, text, float8)
 	RETURNS boolean AS
 	$$ SELECT @extschema@.ST_DWithin($1::@extschema@.geometry, $2::@extschema@.geometry, $3);  $$
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
@@ -591,13 +591,13 @@ CREATE OR REPLACE FUNCTION _ST_DistanceUnCached(geography, geography, float8, bo
 CREATE OR REPLACE FUNCTION _ST_DistanceUnCached(geography, geography, boolean)
 	RETURNS float8
 	AS 'SELECT @extschema@._ST_DistanceUnCached($1, $2, 0.0, $3)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' STRICT;
 
 -- Calculate the distance in geographics *without* using the caching code line or tree code
 CREATE OR REPLACE FUNCTION _ST_DistanceUnCached(geography, geography)
 	RETURNS float8
 	AS 'SELECT @extschema@._ST_DistanceUnCached($1, $2, 0.0, true)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' STRICT;
 
 -- Calculate the distance in geographics using the circular tree code, but
 -- *without* using the caching code line
@@ -612,7 +612,7 @@ CREATE OR REPLACE FUNCTION _ST_DistanceTree(geography, geography, float8, boolea
 CREATE OR REPLACE FUNCTION _ST_DistanceTree(geography, geography)
 	RETURNS float8
 	AS 'SELECT @extschema@._ST_DistanceTree($1, $2, 0.0, true)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' STRICT;
 
 -- Calculate the dwithin relation *without* using the caching code line or tree code
 CREATE OR REPLACE FUNCTION _ST_DWithinUnCached(geography, geography, float8, boolean)
@@ -625,7 +625,7 @@ CREATE OR REPLACE FUNCTION _ST_DWithinUnCached(geography, geography, float8, boo
 CREATE OR REPLACE FUNCTION _ST_DWithinUnCached(geography, geography, float8)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@._ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@._ST_Expand($1,$3) AND @extschema@._ST_DWithinUnCached($1, $2, $3, true)'
-	LANGUAGE 'sql' IMMUTABLE;
+	LANGUAGE 'sql' ;
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
@@ -695,26 +695,26 @@ CREATE OR REPLACE FUNCTION _ST_Covers(geography, geography)
 CREATE OR REPLACE FUNCTION ST_Covers(geography, geography)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Covers($1, $2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Covers(text, text)
 	RETURNS boolean AS
 	$$ SELECT @extschema@.ST_Covers($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Only implemented for polygon-over-point
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_CoveredBy(geography, geography)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Covers($2, $1)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_CoveredBy(text, text)
 	RETURNS boolean AS
 	$$ SELECT @extschema@.ST_CoveredBy($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Segmentize(geog geography, max_segment_length float8)
@@ -727,13 +727,13 @@ CREATE OR REPLACE FUNCTION ST_Segmentize(geog geography, max_segment_length floa
 CREATE OR REPLACE FUNCTION ST_Intersects(geography, geography)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Distance($1, $2, 0.0, false) < 0.00001'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Intersects(text, text)
 	RETURNS boolean AS
 	$$ SELECT @extschema@.ST_Intersects($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_BestSRID(geography, geography)
@@ -745,55 +745,55 @@ CREATE OR REPLACE FUNCTION _ST_BestSRID(geography, geography)
 CREATE OR REPLACE FUNCTION _ST_BestSRID(geography)
 	RETURNS integer
 	AS 'SELECT @extschema@._ST_BestSRID($1,$1)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8)
 	RETURNS geography
 	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Buffer(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1)), $2), 4326))'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 2.3.x
 CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8, integer)
 	RETURNS geography
 	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Buffer(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1)), $2, $3), 4326))'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql'  _PARALLEL;
 
 -- Availability: 2.3.x
 CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8, text)
 	RETURNS geography
 	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Buffer(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1)), $2, $3), 4326))'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Buffer(text, float8)
 	RETURNS geometry AS
 	$$ SELECT @extschema@.ST_Buffer($1::@extschema@.geometry, $2);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 2.3.x
 CREATE OR REPLACE FUNCTION ST_Buffer(text, float8, integer)
 	RETURNS geometry AS
 	$$ SELECT @extschema@.ST_Buffer($1::@extschema@.geometry, $2, $3);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 2.3.x
 CREATE OR REPLACE FUNCTION ST_Buffer(text, float8, text)
 	RETURNS geometry AS
 	$$ SELECT @extschema@.ST_Buffer($1::@extschema@.geometry, $2, $3);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Intersection(geography, geography)
 	RETURNS geography
 	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Intersection(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1, $2)), @extschema@.ST_Transform(@extschema@.geometry($2), @extschema@._ST_BestSRID($1, $2))), 4326))'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Intersection(text, text)
 	RETURNS geometry AS
 	$$ SELECT @extschema@.ST_Intersection($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_AsBinary(geography)
@@ -860,6 +860,6 @@ CREATE OR REPLACE FUNCTION ST_Centroid(geography, use_spheroid boolean DEFAULT t
 CREATE OR REPLACE FUNCTION ST_Centroid(text)
 	RETURNS geometry AS
 	$$ SELECT @extschema@.ST_Centroid($1::@extschema@.geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'sql' _PARALLEL;
 
 -----------------------------------------------------------------------------

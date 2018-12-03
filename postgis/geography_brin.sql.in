@@ -32,7 +32,7 @@ CREATE OR REPLACE FUNCTION overlaps_geog(geography, gidx)
 RETURNS boolean
 AS
   'SELECT $2 OPERATOR(@extschema@.&&) $1;'
- LANGUAGE SQL IMMUTABLE STRICT;
+ LANGUAGE SQL;
 
 -- Availability: 2.3.0
 CREATE OPERATOR && (
