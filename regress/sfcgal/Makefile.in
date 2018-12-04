@@ -40,7 +40,6 @@ TESTS = \
 		regress_ogc_prep.sql \
 		regress_ogc.sql \
 		regress.sql \
-		concave_hull.sql \
 		wmsservers.sql \
 		approximatemedialaxis.sql
 
