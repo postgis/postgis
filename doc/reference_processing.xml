@@ -1241,11 +1241,9 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
 		<para>Returns a geometry that represents that part of geometry A
 			that does not intersect with geometry B.  One can think of this as GeometryA - ST_Intersection(A,B).  If A is completely contained in B
 			then an empty geometry collection is returned.</para>
-		<note><para>Note - order matters. B - A will always return a portion of B</para></note>
+		<note><para>Order matters. B - A will always return a portion of B</para></note>
 
 		<para>Performed by the GEOS module</para>
-
-		<note><para>Do not call with a GeometryCollection as an argument</para></note>
 
 		<para>&sfs_compliant; s2.1.1.3</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.20</para>
@@ -1287,12 +1285,11 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
 		</tbody>
 	</tgroup>
 </informaltable>
-<programlisting>
---Safe for 2d. This is same geometries as what is shown for st_symdifference
-SELECT ST_AsText(
+<para>Safe for 2D. This is same geometries as what is shown for st_symdifference</para>
+<programlisting>SELECT ST_AsText(
 	ST_Difference(
-			ST_GeomFromText('LINESTRING(50 100, 50 200)'),
-			ST_GeomFromText('LINESTRING(50 50, 50 150)')
+			'LINESTRING(50 100, 50 200)'::geometry,
+			'LINESTRING(50 50, 50 150)'::geometry
 		)
 	);
 
@@ -1301,21 +1298,22 @@ st_astext
 LINESTRING(50 150,50 200)
 </programlisting>
 
-<programlisting>
-
---When used in 3d doesn't quite do the right thing
-SELECT ST_AsEWKT(ST_Difference(ST_GeomFromEWKT('MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)'), ST_GeomFromEWKT('POINT(-118.614 38.281 5)')));
+<para>When used in 3d doesn't quite do the right thing.</para>
+<programlisting>select ST_AsEWKT(
+           ST_Difference(
+               'MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)' :: geometry,
+               'POINT(-118.614 38.281 5)' :: geometry
+               )
+    );
 st_asewkt
 ---------
-MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)
-		</programlisting>
+MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)</programlisting>
 	  </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_SymDifference" /></para>
+		<para><xref linkend="ST_SymDifference" />, <xref linkend="ST_Intersection" />, <xref linkend="ST_Union" /></para>
 	  </refsection>
 	</refentry>
 
@@ -1887,18 +1885,15 @@ Returns a geometry that represents the shared portion of geomA and geomB.
 
 			<note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
 					fits the bounding box of the 2 geography objects (if geography objects are within one half zone UTM but not same UTM will pick one of those) (favoring UTM or Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario)  and then intersection in that best fit planar spatial ref and retransforms back to WGS84 geography.</para></note>
-		  <important>
-			<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
-		  </important>
 
 	  	<warning><para>This function will drop the M coordinate values if present.</para></warning>
 
-		  <warning><para>If working with 3D geometries, you may want to use SFGCAL based <xref linkend="ST_3DIntersection" /> which does a proper 3D intersection for 3D geometries.  Although this function works with Z-coordinate, it does an averaging of Z-Coordinate values when <code>postgis.backend=geos</code>. <code>postgis.backend=sfcgal</code>, it will return a 2D geometry regardless ignoring the Z-Coordinate. Refer to <xref linkend="postgis_backend" /> for details.</para></warning>
+		  <warning><para>If working with 3D geometries, you may want to use SFGCAL based <xref linkend="ST_3DIntersection" /> which does a proper 3D intersection for 3D geometries.  Although this function works with Z-coordinate, it does an averaging of Z-Coordinate.</para></warning>
 
 		  <para>Performed by the GEOS module</para>
-                  <para>&sfcgal_enhanced;</para>
 
 		  <para>Availability: 1.5 support for geography data type was introduced.</para>
+			<para>Changed: 3.0.0 does not depend on SFCGAL.</para>
 
 		  <para>&sfs_compliant; s2.1.1.3</para>
 		  <para>&sqlmm_compliant; SQL-MM 3: 5.1.18</para>
@@ -1909,45 +1904,42 @@ Returns a geometry that represents the shared portion of geomA and geomB.
  st_astext
 ---------------
 GEOMETRYCOLLECTION EMPTY
-(1 row)
+
 SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry));
  st_astext
 ---------------
-POINT(0 0)
-(1 row)
-
----Clip all lines (trails) by country (here we assume country geom are POLYGON or MULTIPOLYGONS)
--- NOTE: we are only keeping intersections that result in a LINESTRING or MULTILINESTRING because we don't
--- care about trails that just share a point
--- the dump is needed to expand a geometry collection into individual single MULT* parts
--- the below is fairly generic and will work for polys, etc. by just changing the where clause
-SELECT clipped.gid, clipped.f_name, clipped_geom
-FROM (SELECT trails.gid, trails.f_name, (ST_Dump(ST_Intersection(country.the_geom, trails.the_geom))).geom As clipped_geom
-FROM country
-	INNER JOIN trails
-	ON ST_Intersects(country.the_geom, trails.the_geom))  As clipped
-	WHERE ST_Dimension(clipped.clipped_geom) = 1 ;
-
---For polys e.g. polygon landmarks, you can also use the sometimes faster hack that buffering anything by 0.0
--- except a polygon results in an empty geometry collection
---(so a geometry collection containing polys, lines and points)
--- buffered by 0.0 would only leave the polygons and dissolve the collection shell
-SELECT poly.gid,  ST_Multi(ST_Buffer(
-				ST_Intersection(country.the_geom, poly.the_geom),
-				0.0)
-				) As clipped_geom
-FROM country
-	INNER JOIN poly
-	ON ST_Intersects(country.the_geom, poly.the_geom)
-	WHERE Not ST_IsEmpty(ST_Buffer(ST_Intersection(country.the_geom, poly.the_geom),0.0));
-		</programlisting>
+POINT(0 0)</programlisting>
+<para>
+Clip all lines (trails) by country. Hhere we assume country geom are POLYGON or MULTIPOLYGONS.
+NOTE: we are only keeping intersections that result in a LINESTRING or MULTILINESTRING because we don't
+care about trails that just share a point. The dump is needed to expand a geometry collection into individual single MULT* parts.
+The below is fairly generic and will work for polys, etc. by just changing the where clause.</para>
+<programlisting>select clipped.gid, clipped.f_name, clipped_geom
+from (
+         select trails.gid, trails.f_name,
+             (ST_Dump(ST_Intersection(country.geom, trails.geom))).geom clipped_geom
+         from country
+              inner join trails on ST_Intersects(country.geom, trails.geom)
+     ) as clipped
+where ST_Dimension(clipped.clipped_geom) = 1;</programlisting>
+<para>For polys e.g. polygon landmarks, you can also use the sometimes faster hack that buffering anything by 0.0 except a polygon results in an empty geometry collection.
+(So a geometry collection containing polys, lines and points buffered by 0.0 would only leave the polygons and dissolve the collection shell.)</para>
+<programlisting>select poly.gid,
+    ST_Multi(
+        ST_Buffer(
+            ST_Intersection(country.geom, poly.geom),
+            0.0
+        )
+    ) clipped_geom
+from country
+     inner join poly on ST_Intersects(country.geom, poly.geom)
+where not ST_IsEmpty(ST_Buffer(ST_Intersection(country.geom, poly.geom), 0.0));</programlisting>
 		</refsection>
 
 		<refsection>
 		<title>Examples: 2.5Dish</title>
-		<para>Geos is the default backend if not set. Note this is not a true intersection, compare to the same example using <xref linkend="ST_3DIntersection" />.</para>
+		<para>Note this is not a true intersection, compare to the same example using <xref linkend="ST_3DIntersection" />.</para>
 		<programlisting>
-set postgis.backend=geos;
 select ST_AsText(ST_Intersection(linestring, polygon)) As wkt
 from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
  CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;
@@ -1956,23 +1948,10 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 ---------------------------------------
  LINESTRING Z (1 1 8,0.5 0.5 8,0 0 10)
 		</programlisting>
-
-		<para>If your PostGIS is compiled with sfcgal support, have option of using sfcgal, but note if basically cases down both geometries to 2D before doing intersection
-		and returns the ST_Force2D equivalent result which is a 2D geometry</para>
-		<programlisting>
-set postgis.backend=sfcgal;
-select ST_AsText(ST_Intersection(linestring, polygon)) As wkt
-from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
- CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;
-
-                     wkt
-----------------------------------------------
- MULTILINESTRING((0.5 0.5,0 0),(1 1,0.5 0.5))
-		</programlisting>
 	  </refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_3DIntersection" />, <xref linkend="ST_Difference"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Force2D" />, <xref linkend="ST_SymDifference"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
+			<para><xref linkend="ST_3DIntersection" />,	<xref linkend="ST_Difference"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Force2D" />, <xref linkend="ST_SymDifference"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
 		</refsection>
 	</refentry>
 
@@ -3815,14 +3794,15 @@ SELECT ST_AsText(
 		because it tries to dissolve boundaries and reorder geometries to ensure that a constructed Multi* doesn't
 		have intersecting regions.</para></note>
 
+		<para>ST_Union will use the faster Cascaded Union algorithm described in <ulink
+		url="http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html">http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html</ulink></para>
+
 	<para>Performed by the GEOS module.</para>
 	<para>NOTE: this function was formerly called GeomUnion(), which
 		was renamed from "Union" because UNION is an SQL reserved
 		word.</para>
-	<para>Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was introduced and also faster aggregate collection in PostgreSQL.  If you are using GEOS 3.1.0+
-		ST_Union will use the faster Cascaded Union algorithm described in
-		<ulink
-		url="http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html">http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html</ulink></para>
+	<para>Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was introduced and also faster aggregate collection in PostgreSQL.</para>
+	<para>Changed: 3.0.0 does not depend on SFCGAL.</para>
 
 	<para>&sfs_compliant; s2.1.1.3</para>
 	<note><para>Aggregate version is not explicitly defined in OGC SPEC.</para></note>
@@ -3835,53 +3815,50 @@ SELECT ST_AsText(
 		<para>Aggregate example</para>
 			<programlisting>
 SELECT stusps,
-	   ST_Multi(ST_Union(f.the_geom)) as singlegeom
-	 FROM sometable As f
+  	   ST_Union(f.geom) as singlegeom
+FROM sometable f
 GROUP BY stusps
 			  </programlisting>
 		<para>Non-Aggregate example</para>
 			<programlisting>
-SELECT ST_AsText(ST_Union(ST_GeomFromText('POINT(1 2)'),
-	ST_GeomFromText('POINT(-2 3)') ) )
+select ST_AsText(ST_Union('POINT(1 2)' :: geometry, 'POINT(-2 3)' :: geometry))
 
 st_astext
 ----------
 MULTIPOINT(-2 3,1 2)
 
+select ST_AsText(ST_Union('POINT(1 2)' :: geometry, 'POINT(1 2)' :: geometry))
 
-SELECT ST_AsText(ST_Union(ST_GeomFromText('POINT(1 2)'),
-		ST_GeomFromText('POINT(1 2)') ) );
 st_astext
 ----------
-POINT(1 2)
-
---3d example - sort of supports 3d (and with mixed dimensions!)
-SELECT ST_AsEWKT(st_union(the_geom))
-FROM
-(SELECT ST_GeomFromEWKT('POLYGON((-7 4.2,-7.1 4.2,-7.1 4.3,
--7 4.2))') as the_geom
-UNION ALL
-SELECT ST_GeomFromEWKT('POINT(5 5 5)') as the_geom
-UNION ALL
-	SELECT ST_GeomFromEWKT('POINT(-2 3 1)') as the_geom
-UNION ALL
-SELECT ST_GeomFromEWKT('LINESTRING(5 5 5, 10 10 10)') as the_geom ) as foo;
+POINT(1 2)</programlisting>
+<para>3D example - sort of supports 3D (and with mixed dimensions!)</para>
+<programlisting>select ST_AsEWKT(ST_Union(geom))
+from (
+         select 'POLYGON((-7 4.2,-7.1 4.2,-7.1 4.3, -7 4.2))'::geometry geom
+         union all
+         select 'POINT(5 5 5)'::geometry geom
+         union all
+         select 'POINT(-2 3 1)'::geometry geom
+         union all
+         select 'LINESTRING(5 5 5, 10 10 10)'::geometry geom
+     ) as foo;
 
 st_asewkt
 ---------
 GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 5,-7.1 4.2 5,-7.1 4.3 5,-7 4.2 5)));
-
---3d example not mixing dimensions
-SELECT ST_AsEWKT(st_union(the_geom))
-FROM
-(SELECT ST_GeomFromEWKT('POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2,
--7 4.2 2))') as the_geom
-UNION ALL
-SELECT ST_GeomFromEWKT('POINT(5 5 5)') as the_geom
-UNION ALL
-	SELECT ST_GeomFromEWKT('POINT(-2 3 1)') as the_geom
-UNION ALL
-SELECT ST_GeomFromEWKT('LINESTRING(5 5 5, 10 10 10)') as the_geom ) as foo;
+</programlisting>
+<para>3d example not mixing dimensions</para>
+<programlisting>select ST_AsEWKT(ST_Union(geom))
+from (
+         select 'POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2, -7 4.2 2))'::geometry geom
+         union all
+         select 'POINT(5 5 5)'::geometry geom
+         union all
+         select 'POINT(-2 3 1)'::geometry geom
+         union all
+         select 'LINESTRING(5 5 5, 10 10 10)'::geometry geom
+     ) as foo;
 
 st_asewkt
 ---------
@@ -3901,8 +3878,11 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 	  <refsection>
 		<title>See Also</title>
 		<para>
-			<xref linkend="ST_Collect" />
-			<xref linkend="ST_UnaryUnion" />
+			<xref linkend="ST_Collect" />,
+			<xref linkend="ST_UnaryUnion" />,
+			<xref linkend="ST_Intersection" />,
+			<xref linkend="ST_Difference" />
+			<xref linkend="ST_SymDifference" />
 		</para>
 	  </refsection>
 	</refentry>
@@ -3947,7 +3927,7 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 
 		<para>&Z_support;</para>
 
-		<para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0.</para>
+		<para>Availability: 2.0.0</para>
 	  </refsection>
 
 

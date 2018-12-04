@@ -80,13 +80,13 @@ Datum isvalid(PG_FUNCTION_ARGS);
 Datum isvalidreason(PG_FUNCTION_ARGS);
 Datum isvaliddetail(PG_FUNCTION_ARGS);
 Datum buffer(PG_FUNCTION_ARGS);
-Datum geos_intersection(PG_FUNCTION_ARGS);
+Datum ST_Intersection(PG_FUNCTION_ARGS);
 Datum convexhull(PG_FUNCTION_ARGS);
 Datum topologypreservesimplify(PG_FUNCTION_ARGS);
-Datum geos_difference(PG_FUNCTION_ARGS);
+Datum ST_Difference(PG_FUNCTION_ARGS);
 Datum boundary(PG_FUNCTION_ARGS);
 Datum symdifference(PG_FUNCTION_ARGS);
-Datum geos_geomunion(PG_FUNCTION_ARGS);
+Datum ST_Union(PG_FUNCTION_ARGS);
 Datum issimple(PG_FUNCTION_ARGS);
 Datum isring(PG_FUNCTION_ARGS);
 Datum pointonsurface(PG_FUNCTION_ARGS);
@@ -535,33 +535,26 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/**
- * @example geomunion {@link #geomunion} SELECT ST_Union(
- *      'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))',
- *      'POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))'
- * );
- *
- */
-PG_FUNCTION_INFO_V1(geos_geomunion);
-Datum geos_geomunion(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_Union);
+Datum ST_Union(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GSERIALIZED *result;
-	LWGEOM *lwgeom1, *lwgeom2, *lwresult ;
+	LWGEOM *lwgeom1, *lwgeom2, *lwresult;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
 
-	lwgeom1 = lwgeom_from_gserialized(geom1) ;
-	lwgeom2 = lwgeom_from_gserialized(geom2) ;
+	lwgeom1 = lwgeom_from_gserialized(geom1);
+	lwgeom2 = lwgeom_from_gserialized(geom2);
 
-	lwresult = lwgeom_union(lwgeom1, lwgeom2) ;
-	result = geometry_serialize(lwresult) ;
+	lwresult = lwgeom_union(lwgeom1, lwgeom2);
+	result = geometry_serialize(lwresult);
 
-	lwgeom_free(lwgeom1) ;
-	lwgeom_free(lwgeom2) ;
-	lwgeom_free(lwresult) ;
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+	lwgeom_free(lwresult);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -1174,27 +1167,26 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(gser_result);
 }
 
-
-PG_FUNCTION_INFO_V1(geos_intersection);
-Datum geos_intersection(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_Intersection);
+Datum ST_Intersection(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GSERIALIZED *result;
-	LWGEOM *lwgeom1, *lwgeom2, *lwresult ;
+	LWGEOM *lwgeom1, *lwgeom2, *lwresult;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
 
-	lwgeom1 = lwgeom_from_gserialized(geom1) ;
-	lwgeom2 = lwgeom_from_gserialized(geom2) ;
+	lwgeom1 = lwgeom_from_gserialized(geom1);
+	lwgeom2 = lwgeom_from_gserialized(geom2);
 
-	lwresult = lwgeom_intersection(lwgeom1, lwgeom2) ;
-	result = geometry_serialize(lwresult) ;
+	lwresult = lwgeom_intersection(lwgeom1, lwgeom2);
+	result = geometry_serialize(lwresult);
 
-	lwgeom_free(lwgeom1) ;
-	lwgeom_free(lwgeom2) ;
-	lwgeom_free(lwresult) ;
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+	lwgeom_free(lwresult);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -1202,31 +1194,26 @@ Datum geos_intersection(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/**
- * @example difference {@link #difference} - SELECT ST_Difference(
- *      'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))',
- *	'POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
- */
-PG_FUNCTION_INFO_V1(geos_difference);
-Datum geos_difference(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_Difference);
+Datum ST_Difference(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GSERIALIZED *result;
-	LWGEOM *lwgeom1, *lwgeom2, *lwresult ;
+	LWGEOM *lwgeom1, *lwgeom2, *lwresult;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
 
-	lwgeom1 = lwgeom_from_gserialized(geom1) ;
-	lwgeom2 = lwgeom_from_gserialized(geom2) ;
+	lwgeom1 = lwgeom_from_gserialized(geom1);
+	lwgeom2 = lwgeom_from_gserialized(geom2);
 
-	lwresult = lwgeom_difference(lwgeom1, lwgeom2) ;
-	result = geometry_serialize(lwresult) ;
+	lwresult = lwgeom_difference(lwgeom1, lwgeom2);
+	result = geometry_serialize(lwresult);
 
-	lwgeom_free(lwgeom1) ;
-	lwgeom_free(lwgeom2) ;
-	lwgeom_free(lwresult) ;
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+	lwgeom_free(lwresult);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);

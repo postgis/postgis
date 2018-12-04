@@ -773,7 +773,7 @@ CREATE OR REPLACE FUNCTION distance(geometry,geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION difference(geometry,geometry)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','difference'
+	AS 'MODULE_PATHNAME','ST_Difference'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
@@ -986,7 +986,7 @@ CREATE OR REPLACE FUNCTION GeometryN(geometry,integer)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION GeomUnion(geometry,geometry)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','geomunion'
+	AS 'MODULE_PATHNAME','ST_Union'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0  -- replaced with postgis_getbbox
@@ -1109,7 +1109,7 @@ CREATE OR REPLACE FUNCTION InteriorRingN(geometry,integer)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION intersection(geometry,geometry)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','intersection'
+	AS 'MODULE_PATHNAME','ST_Intersection'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 	-- Deprecation in 1.2.3
