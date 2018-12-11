@@ -996,12 +996,6 @@ CREATE OR REPLACE FUNCTION getbbox(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION intersects(geometry,geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION IsRing(geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME'

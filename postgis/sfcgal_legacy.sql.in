@@ -1,0 +1,23 @@
+-- Deprecation in 3.0.0
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_3DIntersection(geom1 geometry, geom2 geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME','sfcgal_intersection3D'
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+       COST 100;
+
+-- Deprecation in 3.0.0
+-- Availability: 2.2
+CREATE OR REPLACE FUNCTION ST_3DDifference(geom1 geometry, geom2 geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME','sfcgal_difference3D'
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+       COST 100;
+
+-- Deprecation in 3.0.0
+-- Availability: 2.2
+CREATE OR REPLACE FUNCTION ST_3DUnion(geom1 geometry, geom2 geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME','sfcgal_union3D'
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+       COST 100;

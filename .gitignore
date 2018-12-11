@@ -106,6 +106,7 @@ postgis/geobuf.pb-c.h
 postgis/legacy_gist.sql
 postgis/legacy_minimal.sql
 postgis/legacy.sql
+postgis/sfcgal_legacy.sql
 postgis/postgis.sql
 postgis/postgis_proc_set_search_path.sql
 postgis/postgis_for_extension.sql

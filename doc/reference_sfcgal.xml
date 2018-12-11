@@ -482,7 +482,161 @@ MULTIPOLYGON(
 
 	</refentry>
 
-	<refentry id="ST_3DIntersection">
+	<refentry id="ST_3DSurfaceIntersection">
+	  <refnamediv>
+		<refname>ST_3DSurfaceIntersection</refname>
+
+		<refpurpose>Perform 3D intersection. Solid geometries are treated as surfaces.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_3DSurfaceIntersection</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Return a geometry that is the shared portion between geom1 and geom2.</para>
+		<para>Availability: 3.0.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<para>3D linestrings and polygons</para>
+		<programlisting>	SELECT ST_AsText(ST_3DSurfaceIntersection(linestring, polygon)) As wkt
+FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
+ CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;
+
+              wkt
+--------------------------------
+ LINESTRING Z (1 1 8,0.5 0.5 8)
+		</programlisting>
+
+		<para>Cube (closed Polyhedral Surface) and Polygon Z</para>
+		<programlisting>SELECT ST_AsText(ST_3DSurfaceIntersection(
+		ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+	((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+	((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'),
+	'POLYGON Z ((0 0 0, 0 0 0.5, 0 0.5 0.5, 0 0.5 0, 0 0 0))'::geometry))</programlisting>
+		<screen>TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 0)))</screen>
+
+		<para>Intersection of 2 solids treated as surfaces</para>
+		<programlisting>SELECT ST_AsText(ST_3DSurfaceIntersection( ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),0,0,30),
+ ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),2,0,10) ));</programlisting>
+ <screen>GEOMETRYCOLLECTION Z (
+ LINESTRING Z (9.99999999999995 30 0,11 29 10,16.6666666666667 23.3333333333333 10),
+ LINESTRING Z (11 11 10,10 10 0),
+ LINESTRING Z (11 11 10,13.3333333333333 13.3333333333333 10),
+ LINESTRING Z (20 20 10,13.3333333333333 13.3333333333333 10),
+ LINESTRING Z (20 20 10,16.6666666666667 23.3333333333333 10),
+ TIN Z (((9.99999999999995 30 0,20 20 0,0 20 0,9.99999999999995 30 0)),((20 20 0,10 10 0,0 20 0,20 20 0))))</screen>
+
+	  </refsection>
+
+	</refentry>
+
+	<refentry id="ST_3DSolidIntersection">
+	  <refnamediv>
+		<refname>ST_3DSolidIntersection</refname>
+
+		<refpurpose>Perform 3D intersection. One of the two parameter geometries must be a solid.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_3DSolidIntersection</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Return a geometry that is the shared portion between geom1 and geom2.</para>
+		<para>Availability: 3.0.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<para>3D images were generated using PostGIS <xref linkend="ST_AsX3D" /> and rendering in HTML using <ulink url="http://www.x3dom.org">X3Dom HTML Javascript rendering library</ulink>.</para>
+            <informaltable>
+            <tgroup cols="2">
+            <tbody>
+              <row>
+                <entry><para>
+                <programlisting>SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=2'),0,0,30) AS geom1,
+        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+ 50, 'quad_segs=1'),0,0,30) AS geom2;
+                </programlisting>
+                <informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_3ddifference01.png" />
+                      </imageobject>
+                      <caption><para>Original 3D geometries overlaid. geom2 is shown semi-transparent</para></caption>
+                    </mediaobject>
+                  </informalfigure></para>
+              </entry>
+              <entry><para>
+              <programlisting>SELECT ST_3DSolidIntersection(geom1,geom2)
+FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=2'),0,0,30) AS geom1,
+        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+ 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;</programlisting>
+              <informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_3dintersection01.png" />
+                      </imageobject>
+                      <caption><para>Intersection of geom1 and geom2</para></caption>
+                    </mediaobject>
+                  </informalfigure></para>
+              </entry>
+              </row>
+             </tbody>
+            </tgroup>
+        </informaltable>
+
+		<para>Intersection of 2 solids that result in volumetric intersection is also a solid (ST_Dimension returns 3)</para>
+		<programlisting>SELECT ST_AsText(ST_3DSolidIntersection( ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),0,0,30),
+ ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),2,0,10) ));</programlisting>
+	<screen>POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 10,13.3333333333333 13.3333333333333 10)),
+	((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 13.3333333333333 10,20 20 10)),
+	((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),
+	((13.3333333333333 13.3333333333333 10,10 10 0,20 20 0,13.3333333333333 13.3333333333333 10)),
+	((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 13.3333333333333 10,16.6666666666667 23.3333333333333 10)),
+	((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 10,20 20 0)),
+	((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 10)),
+	((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 10)),
+	((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 10,16.6666666666667 23.3333333333333 10)),
+	((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),
+	((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 10,12 28 10)),
+	((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),
+	((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 10)),((12 28 10,11 29 10,11 11 10,12 28 10)),
+	((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),((11 11 10,11 29 10,2 20 10,11 11 10)))</screen>
+
+	  </refsection>
+
+	</refentry>
+
+	<refentry id="DEPRECATED_ST_3DIntersection">
 	  <refnamediv>
 		<refname>ST_3DIntersection</refname>
 
@@ -501,9 +655,13 @@ MULTIPOLYGON(
 
 	  <refsection>
 		<title>Description</title>
+		<warning>
+		  <para>
+		    <xref linkend="DEPRECATED_ST_3DIntersection" /> is deprecated as of 3.0.0. Use <xref linkend="ST_3DSurfaceIntersection" /> or <xref linkend="ST_3DSolidIntersection" />instead.
+		  </para>
+		</warning>
 		<para>Return a geometry that is the shared portion between geom1 and geom2.</para>
 		<para>Availability: 2.1.0</para>
-		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -592,7 +750,127 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 
 	</refentry>
 
-	<refentry id="ST_3DDifference">
+	<refentry id="ST_3DSurfaceDifference">
+	  <refnamediv>
+		<refname>ST_3DSurfaceDifference</refname>
+
+		<refpurpose>Perform 3D difference. Solid geometries are treated as surfaces.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_3DSurfaceDifference</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Returns that part of geom1 that is not part of geom2.</para>
+		<para>Availability: 3.0.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para>
+            <xref linkend="ST_Extrude" />,
+            <xref linkend="ST_AsX3D" />,  <xref linkend="ST_3DSurfaceIntersection" />
+            <xref linkend="ST_3DSurfaceUnion" />
+        </para>
+      </refsection>
+	</refentry>
+
+	<refentry id="ST_3DSolidDifference">
+	  <refnamediv>
+		<refname>ST_3DSolidDifference</refname>
+
+		<refpurpose>Perform 3D difference. One of the two parameter geometries must be a solid.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_3DSolidDifference</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Returns that part of geom1 that is not part of geom2.</para>
+		<para>Availability: 3.0.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	  <refsection>
+	      <title>Examples</title>
+	        <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D" /> and rendering in HTML using <ulink url="http://www.x3dom.org">X3Dom HTML Javascript rendering library</ulink>.</para>
+            <informaltable>
+            <tgroup cols="2">
+            <tbody>
+              <row>
+                <entry><para>
+                <programlisting>SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=2'),0,0,30) AS geom1,
+        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+ 50, 'quad_segs=1'),0,0,30) AS geom2;
+                </programlisting>
+                <informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_3ddifference01.png" />
+                      </imageobject>
+                      <caption><para>Original 3D geometries overlaid. geom2 is the part that will be removed.</para></caption>
+                    </mediaobject>
+                  </informalfigure></para>
+              </entry>
+              <entry><para>
+              <programlisting>SELECT ST_3DSolidDifference(geom1,geom2)
+FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=2'),0,0,30) AS geom1,
+        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+ 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;</programlisting>
+              <informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_3ddifference02.png" />
+                      </imageobject>
+                      <caption><para>What's left after removing geom2</para></caption>
+                    </mediaobject>
+                  </informalfigure></para>
+              </entry>
+              </row>
+             </tbody>
+            </tgroup>
+            </informaltable>
+
+	  </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para>
+            <xref linkend="ST_Extrude" />,
+            <xref linkend="ST_AsX3D" />,  <xref linkend="ST_3DSolidIntersection" />
+            <xref linkend="ST_3DSolidUnion" />
+        </para>
+      </refsection>
+	</refentry>
+        
+	<refentry id="DEPRECATED_ST_3DDifference">
 	  <refnamediv>
 		<refname>ST_3DDifference</refname>
 
@@ -611,6 +889,11 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 
 	  <refsection>
 		<title>Description</title>
+		<warning>
+		  <para>
+		    <xref linkend="DEPRECATED_ST_3DDifference" /> is deprecated as of 3.0.0. Use <xref linkend="ST_3DSurfaceDifference" /> or <xref linkend="ST_3DSolidDifference" />instead.
+		  </para>
+		</warning>
 		<para>Returns that part of geom1 that is not part of geom2.</para>
 		<para>Availability: 2.2.0</para>
 		<para>&sfcgal_required;</para>
@@ -668,13 +951,133 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 
         <para>
             <xref linkend="ST_Extrude" />,
-            <xref linkend="ST_AsX3D" />,  <xref linkend="ST_3DIntersection" />
-            <xref linkend="ST_3DUnion" />
+            <xref linkend="ST_AsX3D" />,  <xref linkend="DEPRECATED_ST_3DIntersection" />
+            <xref linkend="DEPRECATED_ST_3DUnion" />
         </para>
       </refsection>
 	</refentry>
 
-	<refentry id="ST_3DUnion">
+	<refentry id="ST_3DSurfaceUnion">
+	  <refnamediv>
+		<refname>ST_3DSurfaceUnion</refname>
+
+		<refpurpose>Perform 3D union. Solid geometries are treated as surfaces.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_3DSurfaceUnion</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability: 3.0.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para>
+            <xref linkend="ST_Extrude" />,
+            <xref linkend="ST_AsX3D" />,  <xref linkend="ST_3DSurfaceIntersection" />
+            <xref linkend="ST_3DSurfaceDifference" />
+        </para>
+      </refsection>
+	</refentry>
+
+	<refentry id="ST_3DSolidUnion">
+	  <refnamediv>
+		<refname>ST_3DSolidUnion</refname>
+
+		<refpurpose>Perform 3D union. One of the two parameter geometries must be a solid.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_3DSolidUnion</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability: 3.0.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+		  <refsection>
+	      <title>Examples</title>
+	        <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D" /> and rendering in HTML using <ulink url="http://www.x3dom.org">X3Dom HTML Javascript rendering library</ulink>.</para>
+            <informaltable>
+            <tgroup cols="2">
+            <tbody>
+              <row>
+                <entry><para>
+                <programlisting>SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=2'),0,0,30) AS geom1,
+        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+ 50, 'quad_segs=1'),0,0,30) AS geom2;
+                </programlisting>
+                <informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_3ddifference01.png" />
+                      </imageobject>
+                      <caption><para>Original 3D geometries overlaid. geom2 is the one with transparency.</para></caption>
+                    </mediaobject>
+                  </informalfigure></para>
+              </entry>
+              <entry><para>
+              <programlisting>SELECT ST_3DSolidUnion(geom1,geom2)
+FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=2'),0,0,30) AS geom1,
+        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+ 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;</programlisting>
+              <informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_3dunion01.png" />
+                      </imageobject>
+                      <caption><para>Union of geom1 and geom2</para></caption>
+                    </mediaobject>
+                  </informalfigure></para>
+              </entry>
+              </row>
+             </tbody>
+            </tgroup>
+            </informaltable>
+
+	  </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para>
+            <xref linkend="ST_Extrude" />,
+            <xref linkend="ST_AsX3D" />,  <xref linkend="ST_3DSolidIntersection" />
+            <xref linkend="ST_3DSolidDifference" />
+        </para>
+      </refsection>
+	</refentry>
+
+	<refentry id="DEPRECATED_ST_3DUnion">
 	  <refnamediv>
 		<refname>ST_3DUnion</refname>
 
@@ -693,7 +1096,11 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 
 	  <refsection>
 		<title>Description</title>
-
+		<warning>
+		  <para>
+		    <xref linkend="DEPRECATED_ST_3DUnion" /> is deprecated as of 3.0.0. Use <xref linkend="ST_3DSurfaceUnion" /> or <xref linkend="ST_3DSolidUnion" />instead.
+		  </para>
+		</warning>
 
 		<para>Availability: 2.2.0</para>
 		<para>&sfcgal_required;</para>
@@ -751,12 +1158,41 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 
         <para>
             <xref linkend="ST_Extrude" />,
-            <xref linkend="ST_AsX3D" />,  <xref linkend="ST_3DIntersection" />
-            <xref linkend="ST_3DDifference" />
+            <xref linkend="ST_AsX3D" />,  <xref linkend="DEPRECATED_ST_3DIntersection" />
+            <xref linkend="DEPRECATED_ST_3DDifference" />
         </para>
       </refsection>
 	</refentry>
 
+
+	<refentry id="ST_3DSolidDistance">
+	  <refnamediv>
+		<refname>ST_3DSolidDistance</refname>
+
+		<refpurpose>Computes the minimal 3D distance between two geometries. One of them must be a solid.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_3DSolidDistance</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability: 3.0.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
 
 	<refentry id="ST_3DArea">
 	  <refnamediv>

@@ -4193,7 +4193,7 @@ CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry, float8)
 -- PostGIS equivalent function: intersects(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION _ST_Intersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'MODULE_PATHNAME','intersects'
+	AS 'MODULE_PATHNAME','geos_intersects'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
 
@@ -5788,7 +5788,7 @@ CREATE OR REPLACE RULE geometry_columns_delete AS
 
 CREATE OR REPLACE FUNCTION ST_3DDistance(geom1 geometry, geom2 geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME', 'distance3d'
+	AS 'MODULE_PATHNAME', 'LWGEOM_mindistance3d'
 	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 100;
 
@@ -5842,7 +5842,7 @@ CREATE OR REPLACE FUNCTION ST_3DDFullyWithin(geom1 geometry, geom2 geometry,floa
 
 CREATE OR REPLACE FUNCTION _ST_3DIntersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'MODULE_PATHNAME','intersects3d'
+	AS 'MODULE_PATHNAME','intersects3d_dwithin'
 	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 100;
 

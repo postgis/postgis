@@ -34,13 +34,7 @@
 Datum postgis_sfcgal_version(PG_FUNCTION_ARGS);
 
 Datum sfcgal_from_ewkt(PG_FUNCTION_ARGS);
-Datum sfcgal_distance3D(PG_FUNCTION_ARGS);
 Datum sfcgal_area3D(PG_FUNCTION_ARGS);
-Datum sfcgal_intersects(PG_FUNCTION_ARGS);
-Datum sfcgal_intersects3D(PG_FUNCTION_ARGS);
-Datum sfcgal_intersection3D(PG_FUNCTION_ARGS);
-Datum sfcgal_difference3D(PG_FUNCTION_ARGS);
-Datum sfcgal_union3D(PG_FUNCTION_ARGS);
 Datum sfcgal_volume(PG_FUNCTION_ARGS);
 Datum sfcgal_extrude(PG_FUNCTION_ARGS);
 Datum sfcgal_straight_skeleton(PG_FUNCTION_ARGS);
@@ -53,6 +47,21 @@ Datum sfcgal_tesselate(PG_FUNCTION_ARGS);
 Datum sfcgal_minkowski_sum(PG_FUNCTION_ARGS);
 Datum sfcgal_make_solid(PG_FUNCTION_ARGS);
 Datum sfcgal_is_solid(PG_FUNCTION_ARGS);
+
+Datum sfcgal_3d_surface_intersects(PG_FUNCTION_ARGS);
+Datum sfcgal_3d_solid_intersects(PG_FUNCTION_ARGS);
+Datum sfcgal_3d_surface_intersection(PG_FUNCTION_ARGS);
+Datum sfcgal_3d_solid_intersection(PG_FUNCTION_ARGS);
+Datum sfcgal_3d_surface_difference(PG_FUNCTION_ARGS);
+Datum sfcgal_3d_solid_difference(PG_FUNCTION_ARGS);
+Datum sfcgal_3d_surface_union(PG_FUNCTION_ARGS);
+Datum sfcgal_3d_solid_union(PG_FUNCTION_ARGS);
+Datum sfcgal_3d_solid_distance(PG_FUNCTION_ARGS);
+
+/* deprecated legacy functions */
+Datum sfcgal_intersection3D(PG_FUNCTION_ARGS);
+Datum sfcgal_difference3D(PG_FUNCTION_ARGS);
+Datum sfcgal_union3D(PG_FUNCTION_ARGS);
 
 GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
 char *text_to_cstring(const text *textptr);
@@ -71,6 +80,91 @@ sfcgal_postgis_init(void)
 	}
 }
 
+static void _reset_solid_flag(LWGEOM* geom, int isSolid)
+{
+	switch (geom->type)
+	{
+		case TINTYPE:
+		case POLYHEDRALSURFACETYPE:
+			{
+				FLAGS_SET_SOLID(geom->flags, isSolid);
+				break;
+			}
+		case COLLECTIONTYPE:
+			{
+				LWCOLLECTION* collection = lwgeom_as_lwcollection(geom);
+				int n_geoms = lwcollection_ngeoms(collection);
+				int i;
+				for (i = 0; i < n_geoms; i++)
+				{
+					_reset_solid_flag(lwcollection_getsubgeom(collection, i), isSolid);
+				}
+				break;
+			}
+		default:
+			break;
+	}
+}
+
+static int _check_solid_flag(LWGEOM* geom)
+{
+	switch (geom->type)
+	{
+		case TINTYPE:
+		case POLYHEDRALSURFACETYPE:
+			{
+				if (!FLAGS_GET_SOLID(geom->flags))
+					return 0;
+				return 1;
+				break;
+			}
+		case COLLECTIONTYPE:
+			{
+				LWCOLLECTION* collection = lwgeom_as_lwcollection(geom);
+				int n_geoms = lwcollection_ngeoms(collection);
+				int i;
+				for (i = 0; i < n_geoms; i++)
+				{
+					if (!_check_solid_flag(lwcollection_getsubgeom(collection, i)))
+						return 0;
+				}
+				return 1;
+				break;
+			}
+		default:
+			break;
+	}
+	return 0;
+}
+
+#define POSTGIS2SFCGAL_BINOP_EXTRACT_CHECK_ONE_IS_SOLID(input0, input1 ) \
+	{ \
+	LWGEOM *lwgeom0, *lwgeom1; \
+	int is_solid0, is_solid1; \
+	lwgeom0 = lwgeom_from_gserialized(input0); \
+	PG_FREE_IF_COPY(input0, 0); \
+	if (!lwgeom0) \
+		lwpgerror("Unable to deserialize input geometry 0"); \
+	is_solid0 = _check_solid_flag(lwgeom0); \
+	lwgeom1 = lwgeom_from_gserialized(input1); \
+	PG_FREE_IF_COPY(input1, 1); \
+	if (!lwgeom1) \
+		lwpgerror("Unable to deserialize input geometry 1"); \
+	is_solid1 = _check_solid_flag(lwgeom1); \
+	if (is_solid0 + is_solid1 == 0) \
+	{ \
+		lwgeom_free(lwgeom0); \
+		lwgeom_free(lwgeom1); \
+		lwpgerror("At least one of the two input geometries must be a solid"); \
+		PG_RETURN_NULL(); \
+	} \
+	geom0 = LWGEOM2SFCGAL(lwgeom0); \
+	lwgeom_free(lwgeom0); \
+	geom1 = LWGEOM2SFCGAL(lwgeom1); \
+	lwgeom_free(lwgeom1); \
+	}
+
+
 /* Conversion from GSERIALIZED* to SFCGAL::Geometry */
 sfcgal_geometry_t *
 POSTGIS2SFCGALGeometry(GSERIALIZED *pglwgeom)
@@ -81,6 +175,22 @@ POSTGIS2SFCGALGeometry(GSERIALIZED *pglwgeom)
 	if (!lwgeom)
 		lwpgerror("POSTGIS2SFCGALGeometry: Unable to deserialize input");
 
+	g = LWGEOM2SFCGAL(lwgeom);
+	lwgeom_free(lwgeom);
+
+	return g;
+}
+
+static sfcgal_geometry_t *
+POSTGIS2SFCGALGeometryForceSolid(GSERIALIZED *pglwgeom, int isSolid)
+{
+	sfcgal_geometry_t *g;
+	LWGEOM *lwgeom = lwgeom_from_gserialized(pglwgeom);
+
+	if (!lwgeom)
+		lwpgerror("POSTGIS2SFCGALGeometry: Unable to deserialize input");
+
+	_reset_solid_flag(lwgeom, isSolid);
 	g = LWGEOM2SFCGAL(lwgeom);
 	lwgeom_free(lwgeom);
 
@@ -206,8 +316,8 @@ Datum sfcgal_orientation(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(result);
 }
 
-PG_FUNCTION_INFO_V1(sfcgal_intersects);
-Datum sfcgal_intersects(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(sfcgal_3d_surface_intersects);
+Datum sfcgal_3d_surface_intersects(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *input0, *input1;
 	sfcgal_geometry_t *geom0, *geom1;
@@ -217,32 +327,9 @@ Datum sfcgal_intersects(PG_FUNCTION_ARGS)
 
 	input0 = PG_GETARG_GSERIALIZED_P(0);
 	input1 = PG_GETARG_GSERIALIZED_P(1);
-	geom0 = POSTGIS2SFCGALGeometry(input0);
+	geom0 = POSTGIS2SFCGALGeometryForceSolid(input0, 0);
 	PG_FREE_IF_COPY(input0, 0);
-	geom1 = POSTGIS2SFCGALGeometry(input1);
-	PG_FREE_IF_COPY(input1, 1);
-
-	result = sfcgal_geometry_intersects(geom0, geom1);
-	sfcgal_geometry_delete(geom0);
-	sfcgal_geometry_delete(geom1);
-
-	PG_RETURN_BOOL(result);
-}
-
-PG_FUNCTION_INFO_V1(sfcgal_intersects3D);
-Datum sfcgal_intersects3D(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *input0, *input1;
-	sfcgal_geometry_t *geom0, *geom1;
-	int result;
-
-	sfcgal_postgis_init();
-
-	input0 = PG_GETARG_GSERIALIZED_P(0);
-	input1 = PG_GETARG_GSERIALIZED_P(1);
-	geom0 = POSTGIS2SFCGALGeometry(input0);
-	PG_FREE_IF_COPY(input0, 0);
-	geom1 = POSTGIS2SFCGALGeometry(input1);
+	geom1 = POSTGIS2SFCGALGeometryForceSolid(input1, 0);
 	PG_FREE_IF_COPY(input1, 1);
 
 	result = sfcgal_geometry_intersects_3d(geom0, geom1);
@@ -252,8 +339,191 @@ Datum sfcgal_intersects3D(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-PG_FUNCTION_INFO_V1(sfcgal_distance3D);
-Datum sfcgal_distance3D(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(sfcgal_3d_solid_intersects);
+Datum sfcgal_3d_solid_intersects(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input0, *input1;
+	sfcgal_geometry_t *geom0, *geom1;
+	int result;
+
+	sfcgal_postgis_init();
+
+	input0 = PG_GETARG_GSERIALIZED_P(0);
+	input1 = PG_GETARG_GSERIALIZED_P(1);
+
+	POSTGIS2SFCGAL_BINOP_EXTRACT_CHECK_ONE_IS_SOLID(input0, input1);
+
+	result = sfcgal_geometry_intersects_3d(geom0, geom1);
+	sfcgal_geometry_delete(geom0);
+	sfcgal_geometry_delete(geom1);
+
+	PG_RETURN_BOOL(result);
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_3d_surface_intersection);
+Datum sfcgal_3d_surface_intersection(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input0, *input1, *output;
+	sfcgal_geometry_t *geom0, *geom1;
+	sfcgal_geometry_t *result;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input0 = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input0);
+	input1 = PG_GETARG_GSERIALIZED_P(1);
+	geom0 = POSTGIS2SFCGALGeometryForceSolid(input0, 0);
+	PG_FREE_IF_COPY(input0, 0);
+	geom1 = POSTGIS2SFCGALGeometryForceSolid(input1, 0);
+	PG_FREE_IF_COPY(input1, 1);
+
+	result = sfcgal_geometry_intersection_3d(geom0, geom1);
+	sfcgal_geometry_delete(geom0);
+	sfcgal_geometry_delete(geom1);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_3d_solid_intersection);
+Datum sfcgal_3d_solid_intersection(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input0, *input1, *output;
+	sfcgal_geometry_t *geom0, *geom1;
+	sfcgal_geometry_t *result;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input0 = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input0);
+	input1 = PG_GETARG_GSERIALIZED_P(1);
+
+	POSTGIS2SFCGAL_BINOP_EXTRACT_CHECK_ONE_IS_SOLID(input0, input1);
+
+	result = sfcgal_geometry_intersection_3d(geom0, geom1);
+	sfcgal_geometry_delete(geom0);
+	sfcgal_geometry_delete(geom1);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_3d_surface_difference);
+Datum sfcgal_3d_surface_difference(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input0, *input1, *output;
+	sfcgal_geometry_t *geom0, *geom1;
+	sfcgal_geometry_t *result;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input0 = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input0);
+	input1 = PG_GETARG_GSERIALIZED_P(1);
+	geom0 = POSTGIS2SFCGALGeometryForceSolid(input0, 0);
+	PG_FREE_IF_COPY(input0, 0);
+	geom1 = POSTGIS2SFCGALGeometryForceSolid(input1, 0);
+	PG_FREE_IF_COPY(input1, 1);
+
+	result = sfcgal_geometry_difference_3d(geom0, geom1);
+	sfcgal_geometry_delete(geom0);
+	sfcgal_geometry_delete(geom1);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_3d_solid_difference);
+Datum sfcgal_3d_solid_difference(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input0, *input1, *output;
+	sfcgal_geometry_t *geom0, *geom1;
+	sfcgal_geometry_t *result;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input0 = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input0);
+	input1 = PG_GETARG_GSERIALIZED_P(1);
+
+	POSTGIS2SFCGAL_BINOP_EXTRACT_CHECK_ONE_IS_SOLID(input0, input1);
+
+	result = sfcgal_geometry_difference_3d(geom0, geom1);
+	sfcgal_geometry_delete(geom0);
+	sfcgal_geometry_delete(geom1);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_3d_surface_union);
+Datum sfcgal_3d_surface_union(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input0, *input1, *output;
+	sfcgal_geometry_t *geom0, *geom1;
+	sfcgal_geometry_t *result;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input0 = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input0);
+	input1 = PG_GETARG_GSERIALIZED_P(1);
+	geom0 = POSTGIS2SFCGALGeometryForceSolid(input0, 0);
+	PG_FREE_IF_COPY(input0, 0);
+	geom1 = POSTGIS2SFCGALGeometryForceSolid(input1, 0);
+	PG_FREE_IF_COPY(input1, 1);
+
+	result = sfcgal_geometry_union_3d(geom0, geom1);
+	sfcgal_geometry_delete(geom0);
+	sfcgal_geometry_delete(geom1);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_3d_solid_union);
+Datum sfcgal_3d_solid_union(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input0, *input1, *output;
+	sfcgal_geometry_t *geom0, *geom1;
+	sfcgal_geometry_t *result;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input0 = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input0);
+	input1 = PG_GETARG_GSERIALIZED_P(1);
+
+	POSTGIS2SFCGAL_BINOP_EXTRACT_CHECK_ONE_IS_SOLID(input0, input1);
+
+	result = sfcgal_geometry_union_3d(geom0, geom1);
+	sfcgal_geometry_delete(geom0);
+	sfcgal_geometry_delete(geom1);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_3d_solid_distance);
+Datum sfcgal_3d_solid_distance(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *input0, *input1;
 	sfcgal_geometry_t *geom0, *geom1;
@@ -263,10 +533,8 @@ Datum sfcgal_distance3D(PG_FUNCTION_ARGS)
 
 	input0 = PG_GETARG_GSERIALIZED_P(0);
 	input1 = PG_GETARG_GSERIALIZED_P(1);
-	geom0 = POSTGIS2SFCGALGeometry(input0);
-	PG_FREE_IF_COPY(input0, 0);
-	geom1 = POSTGIS2SFCGALGeometry(input1);
-	PG_FREE_IF_COPY(input1, 1);
+
+	POSTGIS2SFCGAL_BINOP_EXTRACT_CHECK_ONE_IS_SOLID(input0, input1);
 
 	result = sfcgal_geometry_distance_3d(geom0, geom1);
 	sfcgal_geometry_delete(geom0);
@@ -404,6 +672,7 @@ Datum sfcgal_approximate_medial_axis(PG_FUNCTION_ARGS)
 #endif /* POSTGIS_SFCGAL_VERSION >= 12 */
 }
 
+/* deprecated function in 3.0, see sfcgal_3d_surface_intersection and sfcgal_3d_solid_intersection */
 PG_FUNCTION_INFO_V1(sfcgal_intersection3D);
 Datum sfcgal_intersection3D(PG_FUNCTION_ARGS)
 {
@@ -432,6 +701,7 @@ Datum sfcgal_intersection3D(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(output);
 }
 
+/* deprecated function in 3.0, see sfcgal_3d_surface_difference and sfcgal_3d_solid_difference */
 PG_FUNCTION_INFO_V1(sfcgal_difference3D);
 Datum sfcgal_difference3D(PG_FUNCTION_ARGS)
 {
@@ -460,6 +730,7 @@ Datum sfcgal_difference3D(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(output);
 }
 
+/* deprecated function in 3.0, see sfcgal_3d_surface_union and sfcgal_3d_solid_union */
 PG_FUNCTION_INFO_V1(sfcgal_union3D);
 Datum sfcgal_union3D(PG_FUNCTION_ARGS)
 {
@@ -584,7 +855,7 @@ Datum sfcgal_is_solid(PG_FUNCTION_ARGS)
 	if (!lwgeom)
 		elog(ERROR, "sfcgal_is_solid: Unable to deserialize input");
 
-	result = FLAGS_GET_SOLID(lwgeom->flags);
+	result = _check_solid_flag(lwgeom);
 
 	lwgeom_free(lwgeom);
 
@@ -600,7 +871,7 @@ Datum sfcgal_make_solid(PG_FUNCTION_ARGS)
 	if (!lwgeom)
 		elog(ERROR, "sfcgal_make_solid: Unable to deserialize input");
 
-	FLAGS_SET_SOLID(lwgeom->flags, 1);
+	_reset_solid_flag(lwgeom, 1);
 
 	output = geometry_serialize(lwgeom);
 	lwgeom_free(lwgeom);

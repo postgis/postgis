@@ -27,24 +27,66 @@ CREATE OR REPLACE FUNCTION postgis_sfcgal_version() RETURNS text
         AS 'MODULE_PATHNAME'
         LANGUAGE 'c' IMMUTABLE;
 
--- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_3DIntersection(geom1 geometry, geom2 geometry)
-       RETURNS geometry
-       AS 'MODULE_PATHNAME','sfcgal_intersection3D'
+-- Availability: 3.0
+CREATE OR REPLACE FUNCTION ST_3DSurfaceIntersects(geom1 geometry, geom2 geometry)
+       RETURNS boolean
+       AS 'MODULE_PATHNAME','sfcgal_3d_surface_intersects'
        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
--- Availability: 2.2
-CREATE OR REPLACE FUNCTION ST_3DDifference(geom1 geometry, geom2 geometry)
-       RETURNS geometry
-       AS 'MODULE_PATHNAME','sfcgal_difference3D'
+-- Availability: 3.0
+CREATE OR REPLACE FUNCTION ST_3DSolidIntersects(geom1 geometry, geom2 geometry)
+       RETURNS boolean
+       AS 'MODULE_PATHNAME','sfcgal_3d_solid_intersects'
        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
--- Availability: 2.2
-CREATE OR REPLACE FUNCTION ST_3DUnion(geom1 geometry, geom2 geometry)
+-- Availability: 3.0
+CREATE OR REPLACE FUNCTION ST_3DSurfaceIntersection(geom1 geometry, geom2 geometry)
        RETURNS geometry
-       AS 'MODULE_PATHNAME','sfcgal_union3D'
+       AS 'MODULE_PATHNAME','sfcgal_3d_surface_intersection'
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+       COST 100;
+
+-- Availability: 3.0
+CREATE OR REPLACE FUNCTION ST_3DSolidIntersection(geom1 geometry, geom2 geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME','sfcgal_3d_solid_intersection'
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+       COST 100;
+
+-- Availability: 3.0
+CREATE OR REPLACE FUNCTION ST_3DSurfaceDifference(geom1 geometry, geom2 geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME','sfcgal_3d_surface_difference'
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+       COST 100;
+
+-- Availability: 3.0
+CREATE OR REPLACE FUNCTION ST_3DSolidDifference(geom1 geometry, geom2 geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME','sfcgal_3d_solid_difference'
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+       COST 100;
+
+-- Availability: 3.0
+CREATE OR REPLACE FUNCTION ST_3DSurfaceUnion(geom1 geometry, geom2 geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME','sfcgal_3d_surface_union'
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+       COST 100;
+
+-- Availability: 3.0
+CREATE OR REPLACE FUNCTION ST_3DSolidUnion(geom1 geometry, geom2 geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME','sfcgal_3d_solid_union'
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+       COST 100;
+
+-- Availability: 3.0
+CREATE OR REPLACE FUNCTION ST_3DSolidDistance(geom1 geometry, geom2 geometry)
+       RETURNS boolean
+       AS 'MODULE_PATHNAME','sfcgal_3d_solid_distance'
        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 

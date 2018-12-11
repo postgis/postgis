@@ -17,7 +17,7 @@
         <xsl:template match="chapter">
 		<xsl:variable name="ap"><xsl:text>'</xsl:text></xsl:variable>
 <!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-		<xsl:for-each select="sect1[@id='reference_sfcgal']/refentry">
+		<xsl:for-each select="sect1[@id='reference_sfcgal']/refentry[not(starts-with(@id, 'DEPRECATED'))]">
 		  <xsl:variable name='plaincomment'>
 		  	<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
 		  </xsl:variable>
