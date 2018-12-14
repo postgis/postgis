@@ -158,7 +158,7 @@ psql -d yourdatabase -f sfcgal_comments.sql
 
 	  <listitem>
 		<para>
-		  GEOS geometry library, version 3.5 or greater, but GEOS 3.7+ is recommended to take full advantage of all the new functions and features.  You should have at least GEOS 3.5,
+		  GEOS geometry library, version 3.6 or greater, but GEOS 3.7+ is recommended to take full advantage of all the new functions and features.  You should have at least GEOS 3.5,
 			without which you will be missing some major enhancements such as <xref linkend="ST_ClipByBox2D" /> and <xref linkend="ST_Subdivide" />. GEOS is available for download from
 		  <ulink url="http://trac.osgeo.org/geos/">
 			http://trac.osgeo.org/geos/

@@ -161,15 +161,10 @@ TESTS = \
 	voronoi \
 	regress_brin_index \
 	regress_brin_index_3d \
-	regress_brin_index_geography
-
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 36),1)
-	# GEOS-3.6 adds:
-	# ST_MinimumClearance
-	TESTS += \
-		minimum_clearance \
-		oriented_envelope
-endif
+	regress_brin_index_geography \
+	ST_MinimumClearance \
+	minimum_clearance \
+	oriented_envelope
 
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 37),1)
 	# GEOS-3.7 adds:
