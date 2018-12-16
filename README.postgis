@@ -82,7 +82,7 @@ this to work.
   with raster or extension support. To compile without raster support you
   must ``./configure --without-raster`` (also disables extension)
 
-* CGAL 4.1+ and SFCGAL (Optional) needed for advanced 3D support
+* CGAL 4.1+ and SFCGAL 1.3.1+ (Optional) needed for advanced 3D support
 
   https://github.com/Oslandia/SFCGAL
 

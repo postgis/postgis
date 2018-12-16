@@ -16,6 +16,7 @@ PostGIS 3.0.0
            librttopo instead. (Darafei Praliaskouski)￼
   - #4258, Remove SFCGAL support for ST_Area, ST_Distance, ST_Intersection,
            ST_Difference, ST_Union (Darafei Praliaskouski)
+  - #4268, Bump minimum SFCGAL version to 1.3.1 (Darafei Praliaskouski)
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
