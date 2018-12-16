@@ -825,7 +825,7 @@ if test ! "x$PROJDIR" = "x"; then
 			AC_MSG_RESULT([Using user-specified proj directory: $PROJDIR])
 
 			dnl Add the include directory to PROJ_CPPFLAGS
-			PROJ_CPPFLAGS="-I$PROJDIR/include"
+			PROJ_CPPFLAGS="-I$PROJDIR/include -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
 			PROJ_LDFLAGS="-L$PROJDIR/lib"
 		else
 			AC_MSG_ERROR([the --with-projdir directory "$PROJDIR" cannot be found])
