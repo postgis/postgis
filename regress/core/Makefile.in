@@ -162,7 +162,6 @@ TESTS = \
 	regress_brin_index \
 	regress_brin_index_3d \
 	regress_brin_index_geography \
-	ST_MinimumClearance \
 	minimum_clearance \
 	oriented_envelope
 
