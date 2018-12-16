@@ -802,9 +802,8 @@ GEOMETRYCOLLECTION(
 			the constituent line work of a MULTILINESTRING. </para>
 			<note><para>Only use with MULTILINESTRING/LINESTRINGs. If you feed a polygon or geometry collection into this function, it
 			will return an empty GEOMETRYCOLLECTION</para></note>
-
+			<para>Performed by the GEOS module.</para>
 			<para>Availability: 1.1.0</para>
-			<note><para>requires GEOS &gt;= 2.1.0</para></note>
 			<warning><para>Will strip the M dimension.</para></warning>
 		</refsection>
 
@@ -2073,8 +2072,8 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 		  <xref linkend="ST_IsValid" />).
 		  </para>
 		</note>
-
-		<para>Availability: 2.0.0 requires GEOS &gt;= 3.3.0.</para>
+		<para>Performed by the GEOS module.</para>
+		<para>Availability: 2.0.0</para>
 	  </refsection>
 
 	  <refsection>

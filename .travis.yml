@@ -13,7 +13,7 @@ env:
   - tag=pg11-geos37-gdal23-proj52 mode=tests
   - tag=pg10-geos36-gdal23-proj49 mode=tests
   - tag=pg96-geos36-gdal22-proj49 mode=tests
-  - tag=pg95-geos35-gdal111-proj48 mode=tests
+  - tag=pg95-geos36-gdal111-proj48 mode=tests
 
 matrix:
   allow_failures:

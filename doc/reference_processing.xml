@@ -72,7 +72,7 @@ from the input geometry.
 			For geography this may not behave as expected if object is sufficiently large that it falls between two UTM zones or crosses the dateline</para></warning>
 				<para>Enhanced: 2.5.0 - ST_Buffer geometry support was enhanced to allow for side buffering specification <code>side=both|left|right</code>.</para>
 				<para>Availability: 1.5 - ST_Buffer was enhanced to support different endcaps and join types. These are useful for example to convert road linestrings
-					into polygon roads with flat or square edges instead of rounded edges. Thin wrapper for geography was added. - requires GEOS &gt;= 3.2 to take advantage of advanced geometry functionality.
+					into polygon roads with flat or square edges instead of rounded edges. Thin wrapper for geography was added.
 				</para>
 				<para>
 The optional third parameter (currently only applies to geometry) can either specify number of segments used to approximate a quarter circle (integer case, defaults to 8) or a list of blank-separated key=value pairs (string case) to tweak operations as follows:
@@ -81,10 +81,10 @@ The optional third parameter (currently only applies to geometry) can either spe
 <para>'quad_segs=#' : number of segments used to approximate a quarter circle (defaults to 8).</para>
 </listitem>
 <listitem>
-<para>'endcap=round|flat|square' : endcap style (defaults to "round", needs GEOS-3.2 or higher for a different value). 'butt' is also accepted as a synonym for 'flat'.</para>
+<para>'endcap=round|flat|square' : endcap style (defaults to "round"). 'butt' is also accepted as a synonym for 'flat'.</para>
 </listitem>
 <listitem>
-<para>'join=round|mitre|bevel' : join style (defaults to "round", needs GEOS-3.2 or higher for a different value). 'miter' is also accepted as a synonym for 'mitre'.</para>
+<para>'join=round|mitre|bevel' : join style (defaults to "round"). 'miter' is also accepted as a synonym for 'mitre'.</para>
 </listitem>
 <listitem>
 <para>'mitre_limit=#.#' : mitre ratio limit (only affects mitered join style). 'miter_limit' is also accepted as a synonym for 'mitre_limit'.</para>
@@ -397,7 +397,7 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
 				<para>Input linework must be correctly noded for this function to work properly</para>
 			</note>
 
-			<para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0.</para>
+			<para>Availability: 1.1.0</para>
 		  </refsection>
 
 		  <refsection>
@@ -496,9 +496,8 @@ FROM (SELECT ST_Buffer(
 		</para>
 
 		<para>Performed by the GEOS module.</para>
-		<note><para>Requires GEOS 3.5.0+</para></note>
 
-		<para>Availability: 2.2.0 - requires GEOS &gt;= 3.5.0.</para>
+		<para>Availability: 2.2.0</para>
 
 	  </refsection>
 
@@ -1099,8 +1098,8 @@ Output is a COLLECTION of polygons (for flags=0) or a MULTILINESTRING
 (for flags=1) or TIN (for flags=2).  The tolerance, if any, is used to snap input vertices
 togheter.
 			</para>
-
-			<para>Availability: 2.1.0 - requires GEOS &gt;= 3.4.0.</para>
+			<para>Performed by the GEOS module.</para>
+			<para>Availability: 2.1.0</para>
 			<para>&Z_support;</para>
 			<para>&T_support;</para>
 
@@ -2062,10 +2061,11 @@ FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2)))
     <para>
     Single polygons may become multi-geometries in case of self-intersections.
     </para>
+		<para>Performed by the GEOS module.</para>
 
-    <para>Availability: 2.0.0, requires GEOS-3.3.0</para>
-    <para>Enhanced: 2.0.1, speed improvements requires GEOS-3.3.4</para>
-    <para>Enhanced: 2.1.0 added support for GEOMETRYCOLLECTION and MULTIPOINT.</para>
+    <para>Availability: 2.0.0</para>
+    <para>Enhanced: 2.0.1, speed improvements</para>
+    <para>Enhanced: 2.1.0, added support for GEOMETRYCOLLECTION and MULTIPOINT.</para>
 
     <para>&Z_support;</para>
 
@@ -2156,8 +2156,8 @@ FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2)))
 		ST_MinimumBoundingCircle(ST_Collect(somepointfield)).</para>
 
 		<para>The ratio of the area of a polygon divided by the area of its Minimum Bounding Circle is often referred to as the Roeck test.</para>
-
-		<para>Availability: 1.4.0 - requires GEOS</para>
+		<para>Performed by the GEOS module.</para>
+		<para>Availability: 1.4.0</para>
 
 	  </refsection>
 	  <refsection>
@@ -2347,8 +2347,9 @@ POLYGON((19.9999999999997 79.9999999999999,33.0769230769229 60.3846153846152,138
 			<note>
 				<para>Input linework must be correctly noded for this function to work properly</para>
 			</note>
+			<para>Performed by the GEOS module.</para>
 
-			<para>Availability: 1.0.0RC1 - requires GEOS &gt;= 2.1.0.</para>
+			<para>Availability: 1.0.0RC1</para>
 		</refsection>
 
 		<refsection>
@@ -2418,17 +2419,13 @@ while preserving all of the input ones.
 		</para>
 
 		<para>&Z_support;</para>
+		<para>Performed by the GEOS module.</para>
+		<para>Availability: 2.0.0</para>
 
-		<para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0.</para>
-
-		<note><para>
-Due to a bug in GEOS up to 3.3.1 this function fails to node self-intersecting
-lines. This is fixed with GEOS 3.3.2 or higher.
-		</para></note>
-		<note><para>
+		<para>
 Changed: 2.4.0 this function uses GEOSNode internally instead of GEOSUnaryUnion.
 This may cause the resulting linestrings to have a different order and direction compared to Postgis &lt; 2.4.
-		</para></note>
+		</para>
 	  </refsection>
 	  <refsection>
 		<title>Examples</title>
@@ -2489,14 +2486,9 @@ and retain the same direction. For a negative distance it'll be at the right
 side and in the opposite direction.
 				</para>
 
-				<para>
-Availability: 2.0 - requires GEOS &gt;= 3.2, improved with GEOS &gt;= 3.3
-				</para>
-
-				<para>
-Enhanced: 2.5 - added support for GEOMETRYCOLLECTION and MULTILINESTRING
-				</para>
-
+				<para>Performed by the GEOS module.</para>
+				<para>Availability: 2.0</para>
+				<para>Enhanced: 2.5 - added support for GEOMETRYCOLLECTION and MULTILINESTRING</para>
 
 				<para>
 The optional third parameter allows specifying a list of blank-separated
@@ -2756,8 +2748,8 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
 		    Those going in the same direction are in the first element of the collection, those going in the opposite direction are in the second element.
 		    The paths themselves are given in the direction of the first geometry.
 		</para>
-
-		<para>Availability: 2.0.0 requires GEOS &gt;= 3.3.0.</para>
+		<para>Performed by the GEOS module.</para>
+		<para>Availability: 2.0.0</para>
 	  </refsection>
 	  <refsection>
 		<title>Examples: Finding shared paths</title>
@@ -3056,7 +3048,6 @@ select ST_WrapX(the_geom, -30, 360);
 				this function.</para>
 
 		<para>Performed by the GEOS module.</para>
-		<note><para>Requires GEOS 3.0.0+</para></note>
 		<para>Availability: 1.3.3</para>
 	  </refsection>
 
@@ -3603,8 +3594,8 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
 			Uses the same envelope clipping as <code>ST_ClipByBox2D</code>.
 			<code>max_vertices</code> must be 5 or more, as 5 points are needed to represent a closed box.
 		</para>
-
-		<para>Availability: 2.2.0 requires GEOS &gt;= 3.5.0.</para>
+		<para>Performed by the GEOS module.</para>
+		<para>Availability: 2.2.0</para>
 		<para>Enhanced: 2.5.0 reuses existing points on polygon split, vertex count is lowered from 8 to 5.</para>
 	  </refsection>
 
@@ -3991,8 +3982,8 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 				</listitem>
 			</itemizedlist>
 		</para>
-
-		<para>Availability: 2.3.0 - requires GEOS &gt;= 3.5.0.</para>
+		<para>Performed by the GEOS module.</para>
+		<para>Availability: 2.3.0</para>
 	  </refsection>
 
 	  <!-- Examples -->
@@ -4085,8 +4076,8 @@ MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.818
 				</listitem>
 			</itemizedlist>
 		</para>
-
-		<para>Availability: 2.3.0 - requires GEOS &gt;= 3.5.0.</para>
+		<para>Performed by the GEOS module.</para>
+		<para>Availability: 2.3.0</para>
 	  </refsection>
 
 	  <!-- Examples -->
