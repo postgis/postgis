@@ -19,13 +19,14 @@ AC_DEFUN([AC_PROJ_VERSION], [
 		#ifdef HAVE_STDINT_H
         		#include <stdio.h>
 		#endif
+		#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
 		#include "proj_api.h"
-	], 
+	],
 	[
-		FILE *fp; 
+		FILE *fp;
 
-		fp = fopen("conftest.out", "w"); 
-		fprintf(fp, "%d\n", PJ_VERSION); 
+		fp = fopen("conftest.out", "w");
+		fprintf(fp, "%d\n", PJ_VERSION);
 		fclose(fp)])
 	],
         [
