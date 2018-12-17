@@ -32,6 +32,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdint.h>
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
 #include "proj_api.h"
 
 #if defined(PJ_VERSION) && PJ_VERSION >= 490
