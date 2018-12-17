@@ -1861,12 +1861,11 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
             <para>If use tolerance > 0 and there is more than one edge near the point then an exception is thrown.</para>
 
 
-            <!-- optionally mention that this function uses indexes if appropriate -->
             <note>
               <para>If tolerance = 0, the function use ST_Intersects otherwise uses ST_DWithin.</para>
             </note>
-            <!-- use this format if new function -->
-            <para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0. </para>
+            <para>Performed by the GEOS module.</para>
+            <para>Availability: 2.0.0</para>
           </refsection>
 
 
@@ -1919,13 +1918,11 @@ ERROR:  Two or more edges found</programlisting>
 			<para>The function returns an integer (id-face) given a topology, a POINT and a tolerance. If tolerance = 0 then the point has to intersect the face.</para>
 			<para>If the point doesn't intersect a face, returns 0 (zero).</para>
 			<para>If use tolerance > 0 and there is more than one face near the point then an exception is thrown.</para>
-
-			<!-- optionally mention that this function uses indexes if appropriate -->
 			<note>
 				<para>If tolerance = 0, the function uses ST_Intersects otherwise uses ST_DWithin.</para>
 			</note>
-			<!-- use this format if new function -->
-			<para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0. </para>
+			<para>Performed by the GEOS module.</para>
+			<para>Availability: 2.0.0</para>
 		</refsection>
 		<refsection>
 			<title>Examples</title>
@@ -1978,14 +1975,11 @@ ERROR:  Two or more faces found</programlisting>
             <para>The function return an integer (id-node) given a topology, a POINT and a tolerance. If tolerance = 0 mean exactly intersection otherwise retrieve the node from an interval.</para>
             <para>If there isn't a node at the point, it return 0 (zero).</para>
             <para>If use tolerance > 0 and near the point there are more than one node it throw an exception.</para>
-
-
-            <!-- optionally mention that this function uses indexes if appropriate -->
             <note>
               <para>If tolerance = 0, the function use ST_Intersects otherwise will use ST_DWithin.</para>
             </note>
-            <!-- use this format if new function -->
-            <para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0. </para>
+            <para>Performed by the GEOS module.</para>
+            <para>Availability: 2.0.0</para>
           </refsection>
 
 
@@ -2526,12 +2520,9 @@ nodeid
                 The newly added edge has "universe" face on both sides and links to itself.</para>
                 <note><para>If the <varname>aline</varname> geometry crosses, overlaps, contains or is contained by an existing linestring edge, then an error is thrown and the edge is not added.</para></note>
                 <note><para>The geometry of <varname>aline</varname> must have the same <varname>srid</varname> as defined for the topology otherwise an invalid spatial reference sys error will be thrown.</para></note>
-
-
-                <!-- use this format if new function -->
-                <para>Availability: 2.0.0 requires GEOS &gt;= 3.3.0.</para>
+                <para>Performed by the GEOS module.</para>
+                <para>Availability: 2.0.0</para>
 			</refsection>
-
 
 			<refsection>
 				<title>Examples</title>

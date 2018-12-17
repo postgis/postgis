@@ -3350,13 +3350,6 @@ Datum ST_MinimumClearance(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_MinimumClearance);
 Datum ST_MinimumClearance(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 36
-	lwpgerror("The GEOS version this PostGIS binary "
-	        "was compiled against (%d) doesn't support "
-	        "'ST_MinimumClearance' function (3.6.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL();
-#else /* POSTGIS_GEOS_VERSION >= 36 */
 	GSERIALIZED* input;
 	GEOSGeometry* input_geos;
 	int error;
@@ -3375,7 +3368,6 @@ Datum ST_MinimumClearance(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(input, 0);
 	PG_RETURN_FLOAT8(result);
-#endif
 }
 
 /******************************************
@@ -3389,13 +3381,6 @@ Datum ST_MinimumClearanceLine(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_MinimumClearanceLine);
 Datum ST_MinimumClearanceLine(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 36
-	lwpgerror("The GEOS version this PostGIS binary "
-	        "was compiled against (%d) doesn't support "
-	        "'ST_MinimumClearanceLine' function (3.6.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL();
-#else /* POSTGIS_GEOS_VERSION >= 36 */
 	GSERIALIZED* input;
 	GSERIALIZED* result;
 	GEOSGeometry* input_geos;
@@ -3421,7 +3406,6 @@ Datum ST_MinimumClearanceLine(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(input, 0);
 	PG_RETURN_POINTER(result);
-#endif
 }
 
 /******************************************
@@ -3433,13 +3417,6 @@ Datum ST_OrientedEnvelope(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_OrientedEnvelope);
 Datum ST_OrientedEnvelope(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 36
-	lwpgerror("The GEOS version this PostGIS binary "
-			"was compiled against (%d) doesn't support "
-			"'ST_OrientedEnvelope' function (3.6.0+ required)",
-			POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL();
-#else
 	GSERIALIZED* input;
 	GSERIALIZED* result;
 	GEOSGeometry* input_geos;
@@ -3465,5 +3442,4 @@ Datum ST_OrientedEnvelope(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(input, 0);
 	PG_RETURN_POINTER(result);
-#endif
 }

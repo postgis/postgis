@@ -1,6 +1,5 @@
 ---
 --- Tests for GEOS/JTS implemented functions
---- supported by GEOS 3.0 and upwards
 ---
 
 SELECT 'covers100', ST_Covers('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'LINESTRING(1 10, 9 10, 9 8)');

@@ -1200,7 +1200,7 @@ SELECT ST_AsText(
 		  Input geometries that do not meet the criteria to join any other cluster will be assigned a cluster number of NULL.
 	  </para></note>
 
-      <para>Availability: 2.3.0 - requires GEOS </para>
+      <para>Availability: 2.3.0</para>
     </refsection>
 
     <refsection>
@@ -1302,7 +1302,7 @@ GROUP BY cid;
 
         <para>ST_ClusterIntersecting is an aggregate function that returns an array of GeometryCollections, where each GeometryCollection represents an interconnected set of geometries.</para>
 
-        <para>Availability: 2.2.0 - requires GEOS </para>
+        <para>Availability: 2.2.0</para>
       </refsection>
 
       <refsection>
@@ -1366,7 +1366,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
         cluster number for each input geometry. The distance used for clustering is the
         distance between the centroids of the geometries.
       </para>
-      <para>Availability: 2.3.0 - requires GEOS </para>
+      <para>Availability: 2.3.0</para>
     </refsection>
 
     <refsection>
@@ -1471,7 +1471,7 @@ FROM parcels;
 
         <para>ST_ClusterWithin is an aggregate function that returns an array of GeometryCollections, where each GeometryCollection represents a set of geometries separated by no more than the specified distance.  (Distances are Cartesian distances in the units of the SRID.)</para>
 
-        <para>Availability: 2.2.0 - requires GEOS</para>
+        <para>Availability: 2.2.0</para>
       </refsection>
 
       <refsection>
@@ -1722,16 +1722,12 @@ ST_Point      | t          | t              | f           | f
 		  <para>From JTS docs slightly reworded: The advantage to using this predicate over <xref linkend="ST_Contains" /> and <xref linkend="ST_Intersects" /> is that it can be computed
 	  efficiently, with no need to compute topology at individual points.</para>
 		<para>
-			 An example use case for this predicate is computing the intersections
-	 of a set of geometries with a large polygonal geometry.
-	Since intersection is a fairly slow operation, it can be more efficient
-	 to use containsProperly to filter out test geometries which lie
-	wholly inside the area.  In these cases the intersection is
-	known a priori to be exactly the original test geometry.
+			 An example use case for this predicate is computing the intersections of a set of geometries with a large polygonal geometry. Since intersection is a fairly slow operation, it can be more efficient to use containsProperly to filter out test geometries which lie
+	wholly inside the area.  In these cases the intersection is	known a priori to be exactly the original test geometry.
 	 </para>
 		</note>
-
-		<para>Availability: 1.4.0 - requires GEOS &gt;= 3.1.0.</para>
+		<para>Performed by the GEOS module.</para>
+		<para>Availability: 1.4.0</para>
 
 		<important>
 		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
@@ -1824,8 +1820,6 @@ ST_Point      | t          | t              | f           | f
 		  <para>Returns 1 (TRUE) if no point in Geometry/Geography B is outside
 			Geometry/Geography A</para>
 
-		<para>Performed by the GEOS module</para>
-
 		<important>
 		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
 		</important>
@@ -1839,10 +1833,11 @@ ST_Point      | t          | t              | f           | f
 			the geometries. To avoid index use, use the function
 			_ST_Covers.</para>
 
-        <para>Enhanced: 2.4.0 Support for polygon in polygon and line in polygon added for geography type</para>
+		<para>Performed by the GEOS module</para>
+    <para>Enhanced: 2.4.0 Support for polygon in polygon and line in polygon added for geography type</para>
 		<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit for geometry extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 		<para>Availability: 1.5 - support for geography was introduced. </para>
-		<para>Availability: 1.2.2 - requires GEOS &gt;= 3.0</para>
+		<para>Availability: 1.2.2</para>
 
 		<para>NOTE: this is the "allowable" version that returns a
 			boolean, not an integer.</para>
@@ -1926,8 +1921,6 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
 		  <para>Returns 1 (TRUE) if no point in Geometry/Geography A is outside
 			Geometry/Geography B</para>
 
-		<para>Performed by the GEOS module</para>
-
 		<important>
 		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
 		</important>
@@ -1935,7 +1928,8 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
 		<important>
 		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
 		</important>
-		<para>Availability: 1.2.2 - requires GEOS &gt;= 3.0</para>
+		<para>Performed by the GEOS module</para>
+		<para>Availability: 1.2.2</para>
 		<para>This function call will automatically include a bounding box
 			comparison that will make use of any indexes that are available on
 			the geometries. To avoid index use, use the function
@@ -2586,7 +2580,7 @@ FROM (SELECT
 			ST_MinimumClearance will return Infinity.
 		</para>
 
-		<para>Availability: 2.3.0 - requires GEOS &gt;= 3.6.0</para>
+		<para>Availability: 2.3.0</para>
 
 	  </refsection>
 
@@ -2635,7 +2629,7 @@ SELECT ST_MinimumClearance('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))');
 			Returns the two-point LineString spanning a geometry's minimum clearance.  If the geometry does not have a minimum
 			clearance, <varname>LINESTRING EMPTY</varname> will be returned.
 		</para>
-
+		<para>Performed by the GEOS module.</para>
 		<para>Availability: 2.3.0 - requires GEOS &gt;= 3.6.0</para>
 
 	  </refsection>
@@ -2716,7 +2710,7 @@ The current implementation supports only vertices as the discrete locations. Thi
 			One important part of this subset is Linestrings that are roughly parallel to each other, and roughly equal in length.  This is a useful metric for line matching.
 			</para>
 		</note>
-		<para>Availability: 1.5.0 - requires GEOS &gt;= 3.2.0</para>
+		<para>Availability: 1.5.0</para>
 
 	  </refsection>
 
@@ -2795,6 +2789,7 @@ The current implementation supports only vertices as the discrete locations. Thi
 The smaller densifyFrac we specify, the more acurate Fréchet distance we get. But, the computation time and the memory usage increase with the square of the number of subsegments.
 			</para>
 		</note>
+		<para>Performed by the GEOS module.</para>
 		<para>Availability: 2.4.0 - requires GEOS &gt;= 3.7.0</para>
 
 	  </refsection>
@@ -4538,13 +4533,10 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 			<note><para>Do not call with a GeometryCollection as an argument</para></note>
 
 			<para>not in OGC spec, but implied. see s2.1.13.2</para>
-
-			<para>Performed by the GEOS module</para>
-
 			<para>&sfs_compliant; s2.1.1.2 // s2.1.13.3</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.25</para>
-			<para>Enhanced: 2.0.0 - added support for specifying boundary node rule (requires GEOS &gt;= 3.0).</para>
-
+			<para>Performed by the GEOS module</para>
+			<para>Enhanced: 2.0.0 - added support for specifying boundary node rule.</para>
 		</refsection>
 
 
@@ -4611,8 +4603,8 @@ t
 
 		<para> Takes intersectionMatrix and intersectionMatrixPattern and Returns true if the intersectionMatrix satisfies
 		the intersectionMatrixPattern. For more information refer to <xref linkend="DE-9IM" />.	</para>
-
-		<para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0. </para>
+		<para>Performed by the GEOS module</para>
+		<para>Availability: 2.0.0</para>
 	</refsection>
 
 
