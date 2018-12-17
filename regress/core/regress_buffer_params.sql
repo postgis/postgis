@@ -1,5 +1,5 @@
 ---
---- Tests for ST_Buffer with parameters (needs GEOS-3.2 or higher)
+--- Tests for ST_Buffer with parameters
 ---
 ---
 

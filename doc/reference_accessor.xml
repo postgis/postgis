@@ -1458,11 +1458,9 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 			<para>SQL-MM defines the result of ST_IsValid(NULL) to be 0, while
 			PostGIS returns NULL.</para>
 		</note>
-
+	  <para>Performed by the GEOS module.</para>
 		<para>
-The version accepting flags is available starting with 2.0.0
-and requires GEOS &gt;= 3.3.0. Such version does not print a NOTICE
-explaining the invalidity.
+The version accepting flags is available starting with 2.0.0. Such version does not print a NOTICE explaining the invalidity.
 Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail" />.
 		</para>
 
@@ -1535,13 +1533,10 @@ NOTICE:  Self-intersection at or near point 0 0
 		<para>
 Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail" />.
 		</para>
-
-		<para>Availability: 1.4 - requires GEOS &gt;= 3.1.0.</para>
-		<para>Availability: 2.0 - requires GEOS &gt;= 3.3.0 for the version taking flags.</para>
-
+		<para>Performed by the GEOS module.</para>
+		<para>Availability: 1.4</para>
+		<para>Availability: 2.0 version taking flags.</para>
 	  </refsection>
-
-
 	  <refsection>
 		<title>Examples</title>
 
@@ -1630,11 +1625,9 @@ The 'flags' argument is a bitfield. It can have the following values:
 				</listitem>
 			</itemizedlist>
 		</para>
-
-		<para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0.</para>
-
+		<para>Performed by the GEOS module.</para>
+		<para>Availability: 2.0.0</para>
 	  </refsection>
-
 
 	  <refsection>
 		<title>Examples</title>

@@ -29,8 +29,6 @@ UPDATE _time SET t = now(); -- reset time as creating tables spends some
 
 -----------------------------
 -- IM9 based predicates
---
--- These require GEOS-3.4.3+
 -----------------------------
 
 SET statement_timeout TO 100;
