@@ -825,7 +825,7 @@ if test ! "x$PROJDIR" = "x"; then
 			AC_MSG_RESULT([Using user-specified proj directory: $PROJDIR])
 
 			dnl Add the include directory to PROJ_CPPFLAGS
-			PROJ_CPPFLAGS="-I$PROJDIR/include"
+			PROJ_CPPFLAGS="-I$PROJDIR/include -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1"
 			PROJ_LDFLAGS="-L$PROJDIR/lib"
 		else
 			AC_MSG_ERROR([the --with-projdir directory "$PROJDIR" cannot be found])
@@ -833,11 +833,11 @@ if test ! "x$PROJDIR" = "x"; then
 	fi
 fi
 
-
 dnl Check that we can find the proj_api.h header file
-CPPFLAGS_SAVE="$CPPFLAGS"
-CPPFLAGS="$PROJ_CPPFLAGS"
-AC_CHECK_HEADER([proj_api.h], [], [AC_MSG_ERROR([could not find proj_api.h - you may need to specify the directory of a PROJ.4 installation using --with-projdir])])
+AC_CHECK_HEADER([proj_api.h], [], [AC_MSG_ERROR([could not find proj_api.h - you may need to specify the directory of a PROJ.4 installation using --with-projdir])],
+[
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
+])
 
 dnl Return the PROJ.4 version number
 AC_PROJ_VERSION([POSTGIS_PROJ_VERSION])
