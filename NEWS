@@ -8,6 +8,8 @@ PostGIS 2.3.9
            dimensions for &&& operator to work predictably.
            (Darafei Praliaskouski, Arthur Lesuisse, Andrew Gierth, Raúl Marín)
 
+  - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
+
 
 PostGIS 2.3.8
 2018/11/24
