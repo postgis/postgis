@@ -43,8 +43,7 @@ this to work.
 
     http://trac.osgeo.org/proj/
 
-* GEOS (Required, Version 3.5 or higher)
-  - 3.6+ is strongly recommended to expose most GEOS features
+* GEOS (Required, Version 3.6 or higher)
   - 3.7+ is needed just for the ST_FrechetDistance function
 
   The GEOS library provides support for exact topological tests such as

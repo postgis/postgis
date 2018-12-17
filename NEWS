@@ -1,7 +1,7 @@
 PostGIS 3.0.0
 2019/xx/xx
 * Breaking Changes *
-  - #4267, Bump minimum GEOS version to 3.6 (Regina Obe)
+  - #4267, Bump minimum GEOS version to 3.6 (Regina Obe, Darafei Praliaskouski)
   - #3888, Raster support now available as a separate extension
            (Sandro Santilli)
   - #3807, Extension library files no longer include the minor version.

@@ -3428,7 +3428,7 @@ CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
 
--- Availability: 1.5.0 - requires GEOS-3.2 or higher
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_Buffer(geometry,float8,cstring)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','buffer'
@@ -3470,7 +3470,7 @@ CREATE OR REPLACE FUNCTION ST_OrientedEnvelope(geometry)
     AS 'MODULE_PATHNAME', 'ST_OrientedEnvelope'
     LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 2.0.0 - requires GEOS-3.2 or higher
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_OffsetCurve(line geometry, distance float8, params text DEFAULT '')
        RETURNS geometry
        AS 'MODULE_PATHNAME','ST_OffsetCurve'
@@ -3505,7 +3505,6 @@ CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(geom1 geometry, geom2 geomet
 	$$ SELECT CASE WHEN NOT $1 OPERATOR(@extschema@.&&) $2 THEN 0 ELSE @extschema@._ST_LineCrossingDirection($1,$2) END $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
--- Requires GEOS >= 3.0.0
 -- Availability: 1.3.3
 CREATE OR REPLACE FUNCTION ST_SimplifyPreserveTopology(geometry, float8)
 	RETURNS geometry
@@ -3513,7 +3512,6 @@ CREATE OR REPLACE FUNCTION ST_SimplifyPreserveTopology(geometry, float8)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
 
--- Requires GEOS >= 3.1.0
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_IsValidReason(geometry)
 	RETURNS text
@@ -3528,7 +3526,6 @@ CREATE TYPE valid_detail AS (
 	location geometry
 );
 
--- Requires GEOS >= 3.3.0
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_IsValidDetail(geometry)
 	RETURNS valid_detail
@@ -3536,7 +3533,6 @@ CREATE OR REPLACE FUNCTION ST_IsValidDetail(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1000;
 
--- Requires GEOS >= 3.3.0
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_IsValidDetail(geometry, int4)
 	RETURNS valid_detail
@@ -3544,7 +3540,6 @@ CREATE OR REPLACE FUNCTION ST_IsValidDetail(geometry, int4)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1000;
 
--- Requires GEOS >= 3.3.0
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_IsValidReason(geometry, int4)
 	RETURNS text
@@ -3556,14 +3551,12 @@ SELECT CASE WHEN valid THEN 'Valid Geometry' ELSE reason END FROM (
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL
 	COST 100;
 
--- Requires GEOS >= 3.3.0
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_IsValid(geometry, int4)
 	RETURNS boolean
 	AS 'SELECT (@extschema@.ST_isValidDetail($1, $2)).valid'
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
--- Requires GEOS >= 3.2.0
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geom1 geometry, geom2 geometry)
 	RETURNS FLOAT8
@@ -3571,7 +3564,6 @@ CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
 
--- Requires GEOS >= 3.2.0
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geom1 geometry, geom2 geometry, float8)
 	RETURNS FLOAT8
@@ -3579,7 +3571,6 @@ CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geom1 geometry, geom2 geometry, 
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
 
--- Requires GEOS >= 3.7.0
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION ST_FrechetDistance(geom1 geometry, geom2 geometry, float8 default -1)
        RETURNS FLOAT8
@@ -3625,7 +3616,6 @@ CREATE OR REPLACE FUNCTION ST_Union(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
--- Requires: GEOS-3.3.0
 CREATE OR REPLACE FUNCTION ST_UnaryUnion(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','ST_UnaryUnion'
@@ -3644,7 +3634,6 @@ CREATE OR REPLACE FUNCTION ST_RemoveRepeatedPoints(geom geometry, tolerance floa
        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 1; -- reset cost, see #3675
 
--- Requires GEOS >= 3.5.0
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_ClipByBox2d(geom geometry, box box2d)
 	RETURNS geometry
@@ -3652,7 +3641,6 @@ CREATE OR REPLACE FUNCTION ST_ClipByBox2d(geom geometry, box box2d)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 50; -- Guessed cost
 
--- Requires GEOS >= 3.5.0
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_Subdivide(geom geometry, maxvertices integer DEFAULT 256)
 	RETURNS setof geometry
@@ -3671,7 +3659,6 @@ CREATE OR REPLACE FUNCTION ST_Subdivide(geom geometry, maxvertices integer DEFAU
 -- May return a geometry with inferior dimensions (dimensional collapses).
 -- May return NULL if can't handle input.
 --
--- Requires: GEOS-3.3.0
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_MakeValid(geometry)
        RETURNS geometry
@@ -3692,7 +3679,6 @@ CREATE OR REPLACE FUNCTION ST_MakeValid(geometry)
 --
 -- Returns NULL on failure.
 --
--- Requires: GEOS-3.3.0
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_CleanGeometry(geometry)
        RETURNS geometry
@@ -3735,7 +3721,6 @@ CREATE OR REPLACE FUNCTION ST_Split(geom1 geometry, geom2 geometry)
 -- first geometry.
 --
 -- Availability: 2.0.0
--- Requires GEOS >= 3.3.0
 --
 CREATE OR REPLACE FUNCTION ST_SharedPaths(geom1 geometry, geom2 geometry)
        RETURNS geometry
@@ -3752,7 +3737,6 @@ CREATE OR REPLACE FUNCTION ST_SharedPaths(geom1 geometry, geom2 geometry)
 -- Snap first geometry against second.
 --
 -- Availability: 2.0.0
--- Requires GEOS >= 3.3.0
 --
 CREATE OR REPLACE FUNCTION ST_Snap(geom1 geometry, geom2 geometry, float8)
        RETURNS geometry
@@ -3769,7 +3753,6 @@ CREATE OR REPLACE FUNCTION ST_Snap(geom1 geometry, geom2 geometry, float8)
 -- Returns true if pattern 'pattern' matches DE9 intersection matrix 'matrix'
 --
 -- Availability: 2.0.0
--- Requires GEOS >= 3.3.0
 --
 CREATE OR REPLACE FUNCTION ST_RelateMatch(text, text)
        RETURNS bool
@@ -3788,7 +3771,6 @@ CREATE OR REPLACE FUNCTION ST_RelateMatch(text, text)
 -- Returns a linestring or a multilinestring containing all parts.
 --
 -- Availability: 2.0.0
--- Requires GEOS >= 3.3.0
 --
 CREATE OR REPLACE FUNCTION ST_Node(g geometry)
        RETURNS geometry
@@ -3841,7 +3823,6 @@ CREATE OR REPLACE FUNCTION ST_DelaunayTriangles(g1 geometry, tolerance float8 DE
 -- If return_polygons is false, returns a MultiLineString.
 --
 -- Availability: 2.3.0
--- Requires GEOS >= 3.5.0
 --
 
 CREATE OR REPLACE FUNCTION _ST_Voronoi(g1 geometry, clip geometry DEFAULT NULL, tolerance float8 DEFAULT 0.0, return_polygons boolean DEFAULT true)
@@ -4145,7 +4126,6 @@ CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
--- Requires GEOS >= 3.3.0
 CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry, int4)
 	RETURNS text
 	AS 'MODULE_PATHNAME','relate_full'

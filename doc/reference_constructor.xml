@@ -34,8 +34,8 @@
 			</note>
 
 			 <para>&sfs_compliant; s3.2.6.2</para>
-
-			 <para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0.</para>
+			 <para>Performed by the GEOS module.</para>
+			 <para>Availability: 1.1.0</para>
 		  </refsection>
 
 		  <refsection>
@@ -86,13 +86,12 @@
 				</note>
 
 				 <para>&sfs_compliant; s3.2.6.2</para>
-
-				 <para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0.</para>
+				 <para>Performed by the GEOS module.</para>
+				 <para>Availability: 1.1.0</para>
 			</refsection>
 
 			<refsection>
 				<title>Examples</title>
-
 				<programlisting>Forthcoming</programlisting>
 			</refsection>
 
@@ -838,7 +837,7 @@ LINESTRING(1 2,4 5,7 8)
 			OGC KML standards, cf: <ulink url="http://www.opengeospatial.org/standards/kml">http://www.opengeospatial.org/standards/kml</ulink>:
 		</para>
 
-		<para>Availability: 1.5,libxml2 2.6+</para>
+		<para>Availability: 1.5, requires libxml2 2.6+</para>
 		<para>&Z_support;</para>
 		<note>
 			<para>ST_GeomFromKML function not support SQL/MM curves geometries.</para>
