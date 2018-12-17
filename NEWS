@@ -21,7 +21,7 @@ XXXX/XX/XX
 
   - #4262, Document MULTISURFACE compatibility of ST_LineToCurve (Steven Ottens)
 
-  - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski)
+  - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
 
 PostGIS 2.5.1
 2018/11/18
