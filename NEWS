@@ -17,7 +17,7 @@ PostGIS 3.0.0
   - #4258, Remove SFCGAL support for ST_Area, ST_Distance, ST_Intersection,
            ST_Difference, ST_Union (Darafei Praliaskouski)
 
-  - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski)
+  - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
