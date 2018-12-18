@@ -18,41 +18,51 @@
 # *
 # **********************************************************************
 # *
-# * Copyright 2008 Mark Cave-Ayland
+# * Copyright 2018 Raúl Marín
 # *
 # **********************************************************************/
 
 CXX = clang++ -std=c++11
 CPPFLAGS =  -I/usr/include   -I/usr/include/libxml2 -I/usr/include -DHAVE_SFCGAL   -D_FORTIFY_SOURCE=2
-CXXFLAGS =  -Wall -Wmissing-prototypes -std=gnu99 -fstrict-aliasing -march=native -mtune=native -O3 -pipe -fstack-protector-strong -fno-plt -Wall -Wextra -g3 -gdwarf-4 -fno-omit-frame-pointer -Wno-unused-parameter -Werror -fno-math-errno -fno-signed-zeros
+CXXFLAGS=-I../../liblwgeom -Iinclude  -Wall -Wmissing-prototypes -fstrict-aliasing -march=native -mtune=native -O3 -pipe -fstack-protector-strong -fno-plt -Wall -Wextra -g3 -gdwarf-4 -fno-omit-frame-pointer -Wno-unused-parameter -Werror
 LDFLAGS = -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
+top_builddir = ../..
+libdir = ${exec_prefix}/lib
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
+
+WAGYU_OBJS = \
+	lwgeom_wagyu.o
+
+WAGYU_LT_OBJS = $(WAGYU_OBJS:.o=.lo)
+
 
 
 all: libwagyu.la
 
-install:
 
-uninstall:
+libwagyu.la: $(WAGYU_LT_OBJS)
+	$(LIBTOOL) --tag=CXX --mode=link $(CXX) -rpath $(libdir) $(WAGYU_LT_OBJS) $(LDFLAGS) -o $@
 
-# Make all objects depend upon postgis_config.h and postgis_svn_revision.h
-$(LT_OBJS): ../postgis_config.h ../postgis_svn_revision.h $(SA_HEADERS)
 
-../postgis_svn_revision.h:
-	$(MAKE) -C .. postgis_svn_revision.h
 
-#libwagyu.la: $(LT_OBJS)
-#	$(LIBTOOL) --tag=CC --mode=link $(CXX) -rpath $(libdir) $(LT_OBJS) \
-#             -release $(SOVER) -version-info $(VERSION_INFO) $(LDFLAGS) -o $@
-libwagyu.la:
-	touch libwagyu.la
+$(WAGYU_LT_OBJS): %.lo: %.cpp ../../liblwgeom.h
+	$(LIBTOOL) --mode=compile $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
+
+../../liblwgeom.h:
+	$(MAKE) -C ../../liblwgeom liblwgeom.h
+
 
 clean:
-	rm -f libwagyu.la
+	rm -f libwagyu.la @WAGYU_OBJS@ @WAGYU_LT_OBJS@
 	rm -rf .libs
 
 distclean: clean
 	rm -f Makefile
+
+
+install:
+
+uninstall:
 
 check:
 

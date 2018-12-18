@@ -25,8 +25,11 @@
 CC=clang
 CXX=clang++ -std=c++11
 CFLAGS=-I../liblwgeom  -Wall -Wmissing-prototypes -std=gnu99 -fstrict-aliasing -march=native -mtune=native -O3 -pipe -fstack-protector-strong -fno-plt -Wall -Wextra -g3 -gdwarf-4 -fno-omit-frame-pointer -Wno-unused-parameter -Werror -fno-math-errno -fno-signed-zeros
-CXXFLAGS=-I../liblwgeom  -Wall -Wmissing-prototypes -std=gnu99 -fstrict-aliasing -march=native -mtune=native -O3 -pipe -fstack-protector-strong -fno-plt -Wall -Wextra -g3 -gdwarf-4 -fno-omit-frame-pointer -Wno-unused-parameter -Werror -fno-math-errno -fno-signed-zeros
+CXXFLAGS=-I../liblwgeom  -Wall -Wmissing-prototypes -fstrict-aliasing -march=native -mtune=native -O3 -pipe -fstack-protector-strong -fno-plt -Wall -Wextra -g3 -gdwarf-4 -fno-omit-frame-pointer -Wno-unused-parameter -Werror
 LDFLAGS = -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
+top_builddir = ..
+libdir = ${exec_prefix}/lib
+LIBTOOL = $(SHELL) $(top_builddir)/libtool
 
 all: libwagyu.la
 

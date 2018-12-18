@@ -24,21 +24,36 @@
 
 CXX = @CXX@
 CPPFLAGS = @CPPFLAGS@
-CXXFLAGS = @WARNFLAGS@ @CXXFLAGS@
+CXXFLAGS=-I../../liblwgeom -Iinclude @WARNFLAGS@ @CXXFLAGS@
 LDFLAGS = @LDFLAGS@
+top_builddir = @top_builddir@
+libdir = @libdir@
 LIBTOOL = @LIBTOOL@
+
+WAGYU_OBJS = \
+	lwgeom_wagyu.o
+
+WAGYU_LT_OBJS = $(WAGYU_OBJS:.o=.lo)
+
 
 
 all: @WAGYU_LIB@
 
-#@WAGYU_LIB@: $(LT_OBJS)
-#	$(LIBTOOL) --tag=CC --mode=link $(CXX) -rpath $(libdir) $(LT_OBJS) \
-#             -release $(SOVER) -version-info $(VERSION_INFO) $(LDFLAGS) -o $@
-@WAGYU_LIB@:
-	touch @WAGYU_LIB@
+
+@WAGYU_LIB@: $(WAGYU_LT_OBJS)
+	$(LIBTOOL) --tag=CXX --mode=link $(CXX) -rpath $(libdir) $(WAGYU_LT_OBJS) $(LDFLAGS) -o $@
+
+
+
+$(WAGYU_LT_OBJS): %.lo: %.cpp ../../liblwgeom.h
+	$(LIBTOOL) --mode=compile $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
+
+../../liblwgeom.h:
+	$(MAKE) -C ../../liblwgeom liblwgeom.h
+
 
 clean:
-	rm -f @WAGYU_LIB@
+	rm -f @WAGYU_LIB@ @WAGYU_OBJS@ @WAGYU_LT_OBJS@
 	rm -rf .libs
 
 distclean: clean

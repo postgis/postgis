@@ -27,6 +27,9 @@ CXX=@CXX@
 CFLAGS=-I../liblwgeom @WARNFLAGS@ @CFLAGS@
 CXXFLAGS=-I../liblwgeom @WARNFLAGS@ @CXXFLAGS@
 LDFLAGS = @LDFLAGS@
+top_builddir = @top_builddir@
+libdir = @libdir@
+LIBTOOL = @LIBTOOL@
 
 all: @WAGYU_LIB@
 
