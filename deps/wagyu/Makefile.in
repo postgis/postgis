@@ -24,7 +24,7 @@
 
 CXX = @CXX@
 CPPFLAGS = @CPPFLAGS@
-CXXFLAGS=-I../../liblwgeom -Iinclude @WARNFLAGS@ @CXXFLAGS@
+CXXFLAGS =-I../../liblwgeom -Iinclude @WARNFLAGS@ @CXXFLAGS@
 LDFLAGS = @LDFLAGS@
 top_builddir = @top_builddir@
 libdir = @libdir@
