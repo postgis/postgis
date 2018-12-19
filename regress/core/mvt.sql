@@ -190,17 +190,17 @@ SELECT 'PG35', ST_AsText(ST_AsMVTGeom(
 	4096, 256, true));
 
 SELECT 'PG36', ST_AsText(ST_AsMVTGeom(
-	ST_Point(4352.49, -256.50),
+	ST_Point(4352.49, -256.51),
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
 	4096, 256, true));
 
 SELECT 'PG37', ST_AsText(ST_AsMVTGeom(
-	ST_Point(4352.50, -256.49),
+	ST_Point(4352.51, -256.49),
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
 	4096, 256, true));
 
 SELECT 'PG38', ST_AsText(ST_AsMVTGeom(
-	ST_Point(4352.50, -256.50),
+	ST_Point(4352.51, -256.51),
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
 	4096, 256, true));
 
