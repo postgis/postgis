@@ -105,7 +105,6 @@ lwgeom_to_vwgpoly(const LWGEOM *geom)
 	case MULTIPOLYGONTYPE:
 		return lwmpoly_to_vwgpoly(reinterpret_cast<const LWMPOLY *>(geom));
 	default:
-		lwerror("%s: Invalid geometry type: %s[%d]", lwtype_name(geom->type), geom->type);
 		return vwpolygon();
 	}
 }
@@ -162,13 +161,11 @@ lwgeom_wagyu_clip_by_polygon(const LWGEOM *geom, const LWGEOM *clip)
 
 	if (geom->type != POLYGONTYPE && geom->type != MULTIPOLYGONTYPE)
 	{
-		lwnotice("%s: Input geometry must be of polygon type");
 		return NULL;
 	}
 
 	if (clip->type != POLYGONTYPE && clip->type != MULTIPOLYGONTYPE)
 	{
-		lwnotice("%s: Clipping geometry must be of polygon type");
 		return NULL;
 	}
 
@@ -197,9 +194,9 @@ lwgeom_wagyu_clip_by_polygon(const LWGEOM *geom, const LWGEOM *clip)
 
 	/* TODO: Check if we want to reverse the ouput here */
 	wagyu_multipolygon solution;
-	if (!clipper.execute(wagyu::clip_type_union, solution, wagyu::fill_type_even_odd, wagyu::fill_type_even_odd))
+	if (!clipper.execute(
+		wagyu::clip_type_intersection, solution, wagyu::fill_type_even_odd, wagyu::fill_type_even_odd))
 	{
-		lwdebug(1, "%s: Clipping failed");
 		return NULL;
 	}
 
