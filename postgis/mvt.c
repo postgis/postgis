@@ -886,6 +886,81 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 	return ng;
 }
 
+#ifdef HAVE_WAGYU
+
+#include "lwgeom_wagyu.h"
+
+static LWGEOM *
+bbox_to_lwgeom(GBOX *bbox)
+{
+	uint32_t nrings = 1;
+	uint32_t npoints = 5;
+	POINTARRAY **ppa = (POINTARRAY **)lwalloc(sizeof(POINTARRAY *) * nrings);
+	ppa[0] = ptarray_construct(0, 0, npoints);
+
+	POINT4D point = {bbox->xmin, bbox->ymin, 0.0, 0.0};
+	ptarray_set_point4d(ppa[0], 0, &point);
+
+	point.x = bbox->xmax;
+	point.y = bbox->ymin;
+	ptarray_set_point4d(ppa[0], 1, &point);
+
+	point.x = bbox->xmax;
+	point.y = bbox->ymax;
+	ptarray_set_point4d(ppa[0], 2, &point);
+
+	point.x = bbox->xmin;
+	point.y = bbox->ymax;
+	ptarray_set_point4d(ppa[0], 3, &point);
+
+	point.x = bbox->xmin;
+	point.y = bbox->ymin;
+	ptarray_set_point4d(ppa[0], 4, &point);
+
+	return (LWGEOM *)lwpoly_construct(0, NULL, nrings, ppa);
+}
+
+static LWGEOM *
+mvt_clip_and_validate(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint32_t buffer, bool clip_geom)
+{
+	/* Wagyu only supports polygons */
+	if (basic_type != POLYGONTYPE)
+	{
+		return mvt_clip_and_validate_geos(lwgeom, basic_type, extent, buffer, clip_geom);
+	}
+
+	GBOX geombox;
+	lwgeom_calculate_gbox(lwgeom, &geombox);
+
+	GBOX clipbox;
+	/* With clipping disabled, we request a clip with the geometry bbox to force validation */
+	if (!clip_geom)
+	{
+		clipbox = geombox;
+	}
+	else
+	{
+		clipbox.xmax = clipbox.ymax = (double)extent + (double)buffer;
+		clipbox.xmin = clipbox.ymin = -(double)buffer;
+	}
+
+	LWGEOM *clippoly = bbox_to_lwgeom(&clipbox);
+
+	LWGEOM *clipped_lwgeom = lwgeom_wagyu_clip_by_polygon(lwgeom, clippoly);
+
+	lwgeom_free(clippoly);
+
+	return clipped_lwgeom;
+}
+#else /* ! HAVE_WAGYU */
+
+static LWGEOM *
+mvt_clip_and_validate(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint32_t buffer, bool clip_geom)
+{
+	return mvt_clip_and_validate_geos(lwgeom, basic_type, extent, buffer, clip_geom);
+}
+#endif
+
 /**
  * Transform a geometry into vector tile coordinate space.
  *
@@ -955,7 +1030,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;
 
-	lwgeom = mvt_clip_and_validate_geos(lwgeom, basic_type, extent, buffer, clip_geom);
+	lwgeom = mvt_clip_and_validate(lwgeom, basic_type, extent, buffer, clip_geom);
 	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;
 

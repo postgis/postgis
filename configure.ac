@@ -1447,11 +1447,11 @@ if test "x$HAVE_WAGYU" = "xyes"; then
         AC_PROG_CXX
         AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
 
+        AC_DEFINE([HAVE_WAGYU], [1], [Define to 1 if wagyu is being built])
+        AC_SUBST([HAVE_WAGYU])
         DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
                 deps/wagyu/Makefile"
 fi
-
-
 
 
 dnl ===========================================================================
