@@ -36,14 +36,15 @@ extern "C" {
  * The result is guaranteed to be valid according to OGC standard.
  * This function only supports 2D and will DROP any extra dimensions.
  *
- * The return value will be either NULL (on error) or a new geometry.
+ * The return value will be either NULL (on error) or a new geometry with the
+ * same SRID as the first input.
  * The ownership of it is given to the caller.
  *
  * @param geom - A geometry of either POLYGONTYPE or MULTIPOLYGONTYPE type.
  * @param polygon - A geometry of either POLYGONTYPE or MULTIPOLYGONTYPE type.
  * @return - NULL on invalid input (NULL or wrong type).
  *         - An empty MULTIPOLYGONTYPE if any of the inputs is empty.
- *         - A pointer to a LWGEOM of MULTIPOLYGONTYPE otherwise.
+ *         - A pointer to a LWMPOLY otherwise.
  */
 LWGEOM *lwgeom_wagyu_clip_by_polygon(const LWGEOM *geom, const LWGEOM *polygon);
 

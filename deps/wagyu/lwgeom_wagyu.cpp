@@ -27,13 +27,66 @@
 
 #include "mapbox/geometry/wagyu/wagyu.hpp"
 
+#include <iterator>
 #include <vector>
 
 using namespace mapbox::geometry;
 
-using wagyu_polygon = mapbox::geometry::polygon<double>;
-using wagyu_multipolygon = mapbox::geometry::multi_polygon<double>;
-using vpolygon = std::vector<wagyu_polygon>;
+/* TODO: May be std::int64_t if we do this after MVT coordinate conversion*/
+using wagyu_coord_type = double;
+using wagyu_polygon = mapbox::geometry::polygon<wagyu_coord_type>;
+using wagyu_multipolygon = mapbox::geometry::multi_polygon<wagyu_coord_type>;
+using wagyu_linearring = mapbox::geometry::line_string<wagyu_coord_type>;
+using vwpolygon = std::vector<wagyu_polygon>;
+
+static wagyu_linearring
+ptarray_to_wglinearring(const POINTARRAY *pa)
+{
+	wagyu_linearring lr;
+	for (std::uint32_t i = 0; i < pa->npoints; i++)
+	{
+		const POINT2D *p2d = getPoint2d_cp(pa, i);
+		lr.push_back({static_cast<wagyu_coord_type>(p2d->x), static_cast<wagyu_coord_type>(p2d->y)});
+	}
+	return lr;
+}
+
+static vwpolygon
+lwpoly_to_vwgpoly(const LWPOLY *geom)
+{
+	vwpolygon vp;
+	for (std::uint32_t i = 0; i < geom->nrings; i++)
+	{
+		wagyu_polygon pol;
+		pol.push_back(ptarray_to_wglinearring(geom->rings[i]));
+
+		/* If it has an inner ring, push it too */
+		i++;
+		if (i != geom->nrings)
+		{
+			pol.push_back(ptarray_to_wglinearring(geom->rings[i]));
+		}
+
+		vp.push_back(pol);
+	}
+
+	return vp;
+}
+
+static vwpolygon
+lwmpoly_to_vwgpoly(const LWMPOLY *geom)
+{
+	vwpolygon vp;
+	for (std::uint32_t i = 0; i < geom->ngeoms; i++)
+	{
+		vwpolygon vp_intermediate = lwpoly_to_vwgpoly(geom->geoms[i]);
+		vp.insert(vp.end(),
+			  std::make_move_iterator(vp_intermediate.begin()),
+			  std::make_move_iterator(vp_intermediate.end()));
+	}
+
+	return vp;
+}
 
 /**
  * Transforms a liblwgeom geometry (types POLYGONTYPE or MULTIPOLYGONTYPE)
@@ -42,20 +95,63 @@ using vpolygon = std::vector<wagyu_polygon>;
  * are treated as new polygons (and even numbered treated as holes in the
  * previous rings)
  */
-static vpolygon
-lwgeom2wagyu(const LWGEOM *geom)
+static vwpolygon
+lwgeom_to_vwgpoly(const LWGEOM *geom)
 {
-	std::vector<wagyu_polygon> v;
-	/* TODO: Implement */
-	return v;
+	switch (geom->type)
+	{
+	case POLYGONTYPE:
+		return lwpoly_to_vwgpoly(reinterpret_cast<const LWPOLY *>(geom));
+	case MULTIPOLYGONTYPE:
+		return lwmpoly_to_vwgpoly(reinterpret_cast<const LWMPOLY *>(geom));
+	default:
+		lwerror("%s: Invalid geometry type: %s[%d]", lwtype_name(geom->type), geom->type);
+		return vwpolygon();
+	}
+}
+
+static POINTARRAY *
+wglinearring_to_ptarray(const wagyu_polygon::linear_ring_type &lr)
+{
+	const uint32_t npoints = lr.size();
+	POINTARRAY *pa = ptarray_construct(0, 0, npoints);
+
+	for (uint32_t i = 0; i < npoints; i++)
+	{
+		const wagyu_polygon::linear_ring_type::point_type &p = lr[i];
+		POINT4D point = {static_cast<double>(p.x), static_cast<double>(p.y), 0.0, 0.0};
+		ptarray_set_point4d(pa, i, &point);
+	}
+
+	return pa;
 }
 
 static LWGEOM *
-wagyu2lwgeom(wagyu_multipolygon &mp)
+wgpoly_to_lwgeom(const wagyu_multipolygon::polygon_type &p)
 {
-	LWGEOM *g = NULL;
-	/* TODO: Implement */
-	return g;
+	const uint32_t nrings = p.size();
+	POINTARRAY **ppa = reinterpret_cast<POINTARRAY **>(lwalloc(sizeof(POINTARRAY *) * nrings));
+
+	for (uint32_t i = 0; i < nrings; i++)
+	{
+		ppa[i] = wglinearring_to_ptarray(p[i]);
+	}
+
+	return reinterpret_cast<LWGEOM *>(lwpoly_construct(0, NULL, nrings, ppa));
+}
+
+static LWGEOM *
+wgmpoly_to_lwgeom(const wagyu_multipolygon &mp)
+{
+	const uint32_t ngeoms = mp.size();
+	LWGEOM **geoms = reinterpret_cast<LWGEOM **>(lwalloc(sizeof(LWGEOM *) * ngeoms));
+
+	for (uint32_t i = 0; i < ngeoms; i++)
+	{
+		geoms[i] = wgpoly_to_lwgeom(mp[i]);
+	}
+
+	return reinterpret_cast<LWGEOM *>(lwcollection_construct(MULTIPOLYGONTYPE, 0, NULL, ngeoms, geoms));
 }
 
 LWGEOM *
@@ -82,10 +178,10 @@ lwgeom_wagyu_clip_by_polygon(const LWGEOM *geom, const LWGEOM *clip)
 		out->flags = geom->flags;
 	}
 
-	wagyu::wagyu<double> clipper;
+	wagyu::wagyu<wagyu_coord_type> clipper;
 
-	vpolygon psubject = lwgeom2wagyu(geom);
-	vpolygon pclip = lwgeom2wagyu(clip);
+	vwpolygon psubject = lwgeom_to_vwgpoly(geom);
+	vwpolygon pclip = lwgeom_to_vwgpoly(clip);
 
 	/* Any polygon from the source geometry is added as `polygon_type_subject` */
 	for (auto &p : psubject)
@@ -107,5 +203,8 @@ lwgeom_wagyu_clip_by_polygon(const LWGEOM *geom, const LWGEOM *clip)
 		return NULL;
 	}
 
-	return wagyu2lwgeom(solution);
+	LWGEOM *g = wgmpoly_to_lwgeom(solution);
+	g->srid = geom->srid;
+
+	return g;
 }
