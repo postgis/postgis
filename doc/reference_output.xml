@@ -423,15 +423,15 @@ from (
         select
             'Feature' as "type",
             ST_AsGeoJSON(ST_Transform(way, 4326), 6) :: json as "geometry",
-        (
-            select json_strip_nulls(row_to_json(t)) properties
-            from (
-                select
-                    osm_id,
-                    "natural",
-                    place
+            (
+                select json_strip_nulls(row_to_json(t))
+                from (
+                    select
+                        osm_id,
+                        "natural",
+                        place
                 ) t
-            )
+            ) as "properties"
         from planet_osm_point
         where
             "natural" is not null
