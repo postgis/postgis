@@ -826,10 +826,9 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 
 	if (clip_geom)
 	{
-		GBOX bgbox;
+		GBOX bgbox, lwgeom_gbox;
 		bgbox.xmax = bgbox.ymax = (double)extent + (double)buffer;
 		bgbox.xmin = bgbox.ymin = -(double)buffer;
-		GBOX lwgeom_gbox;
 		FLAGS_SET_GEODETIC(lwgeom_gbox.flags, 0);
 		FLAGS_SET_GEODETIC(bgbox.flags, 0);
 		lwgeom_calculate_gbox(lwgeom, &lwgeom_gbox);
@@ -866,8 +865,10 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 			}
 
 			/* Clipping will produce float values. Grid again into int */
-			gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
-			lwgeom_grid_in_place(clipped_geom, &grid);
+			{
+				gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
+				lwgeom_grid_in_place(clipped_geom, &grid);
+			}
 
 			ng = clipped_geom;
 		}
@@ -895,10 +896,12 @@ bbox_to_lwgeom(GBOX *bbox)
 {
 	uint32_t nrings = 1;
 	uint32_t npoints = 5;
+	POINT4D point = {0.0, 0.0, 0.0, 0.0};
 	POINTARRAY **ppa = (POINTARRAY **)lwalloc(sizeof(POINTARRAY *) * nrings);
 	ppa[0] = ptarray_construct(0, 0, npoints);
 
-	POINT4D point = {bbox->xmin, bbox->ymin, 0.0, 0.0};
+	point.x = bbox->xmin;
+	point.y = bbox->ymin;
 	ptarray_set_point4d(ppa[0], 0, &point);
 
 	point.x = bbox->xmax;
@@ -923,29 +926,31 @@ bbox_to_lwgeom(GBOX *bbox)
 static LWGEOM *
 mvt_clip_and_validate(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint32_t buffer, bool clip_geom)
 {
-	/* Wagyu only supports polygons */
+	GBOX clip_box = {0};
+	LWGEOM *clip_poly, *clipped_lwgeom;
+
+	/* Wagyu only supports polygons. Default to geos for other types */
 	if (basic_type != POLYGONTYPE)
 	{
 		return mvt_clip_and_validate_geos(lwgeom, basic_type, extent, buffer, clip_geom);
 	}
 
-	GBOX clipbox = {0};
 	if (!clip_geom)
 	{
 		/* With clipping disabled, we request a clip with the geometry bbox to force validation */
-		lwgeom_calculate_gbox(lwgeom, &clipbox);
+		lwgeom_calculate_gbox(lwgeom, &clip_box);
 	}
 	else
 	{
-		clipbox.xmax = clipbox.ymax = (double)extent + (double)buffer;
-		clipbox.xmin = clipbox.ymin = -(double)buffer;
+		clip_box.xmax = clip_box.ymax = (double)extent + (double)buffer;
+		clip_box.xmin = clip_box.ymin = -(double)buffer;
 	}
 
-	LWGEOM *clippoly = bbox_to_lwgeom(&clipbox);
+	clip_poly = bbox_to_lwgeom(&clip_box);
 
-	LWGEOM *clipped_lwgeom = lwgeom_wagyu_clip_by_polygon(lwgeom, clippoly);
+	clipped_lwgeom = lwgeom_wagyu_clip_by_polygon(lwgeom, clip_poly);
 
-	lwgeom_free(clippoly);
+	lwgeom_free(clip_poly);
 
 	return clipped_lwgeom;
 }
