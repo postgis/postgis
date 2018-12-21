@@ -374,14 +374,6 @@ Datum sfcgal_straight_skeleton(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(sfcgal_approximate_medial_axis);
 Datum sfcgal_approximate_medial_axis(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_SFCGAL_VERSION < 12
-	lwpgerror(
-	    "The SFCGAL version this PostGIS binary "
-	    "was compiled against (%d) doesn't support "
-	    "'sfcgal_geometry_approximate_medial_axis' function (1.2.0+ required)",
-	    POSTGIS_SFCGAL_VERSION);
-	PG_RETURN_NULL();
-#else  /* POSTGIS_SFCGAL_VERSION >= 12 */
 	GSERIALIZED *input, *output;
 	sfcgal_geometry_t *geom;
 	sfcgal_geometry_t *result;
@@ -401,7 +393,6 @@ Datum sfcgal_approximate_medial_axis(PG_FUNCTION_ARGS)
 	sfcgal_geometry_delete(result);
 
 	PG_RETURN_POINTER(output);
-#endif /* POSTGIS_SFCGAL_VERSION >= 12 */
 }
 
 PG_FUNCTION_INFO_V1(sfcgal_intersection3D);

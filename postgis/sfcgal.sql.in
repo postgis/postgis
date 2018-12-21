@@ -100,31 +100,8 @@ CREATE OR REPLACE FUNCTION ST_StraightSkeleton(geometry)
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_ApproximateMedialAxis(geometry)
        RETURNS geometry
-#if POSTGIS_SFCGAL_VERSION < 12
-       AS $$
-       DECLARE
-         poly alias for $1;
-         ret GEOMETRY;
-       BEGIN
-         WITH components AS (
-           SELECT (ST_Dump(ST_StraightSkeleton(poly))).geom
-         ),
-         filtered AS (
-           SELECT ST_Collect(geom) g
-           FROM components
-           WHERE NOT ST_Touches(geom, ST_Boundary(poly))
-         )
-         SELECT
-          COALESCE(g, ST_SetSRID('MULTILINESTRING EMPTY'::geometry, ST_Srid(poly)))
-         INTO ret
-         FROM filtered;
-         RETURN ret;
-       END; $$
-       LANGUAGE 'plpgsql'
-#else // POSTGIS_SFCGAL_VERSION >= 12
        AS 'MODULE_PATHNAME','sfcgal_approximate_medial_axis'
        LANGUAGE 'c'
-#endif // POSTGIS_SFCGAL_VERSION >= 12
        IMMUTABLE STRICT  _PARALLEL
        COST 100;
 
