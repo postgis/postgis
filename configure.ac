@@ -1429,29 +1429,35 @@ dnl ===========================================================================
 dnl Wagyu
 dnl ===========================================================================
 
-AC_ARG_WITH(
-	[wagyu],
-	AC_HELP_STRING([--with-wagyu], [Use the wagyu library]),
-	[HAVE_WAGYU=yes],
-        [HAVE_WAGYU=no])
+dnl Wagyu will only be necessary if protobuf is present to build MVTs
 
-if test "x$HAVE_WAGYU" = "xyes"; then
-        AC_MSG_RESULT([WAGYU: Wagyu usage requested])
+HAVE_WAGYU=no
+if test "x$HAVE_PROTOBUF" = "xyes"; then
+    AC_ARG_WITH(
+            [wagyu],
+            AC_HELP_STRING([--with-wagyu], [Use the wagyu library]),
+            [HAVE_WAGYU=yes],
+            [HAVE_WAGYU=no])
 
-        DEPS_SUBDIR="deps"
-        AC_SUBST([DEPS_SUBDIR])
+    if test "x$HAVE_WAGYU" = "xyes"; then
+            AC_MSG_RESULT([WAGYU: Wagyu usage requested])
 
-        WAGYU_LIB=libwagyu.la
-        AC_SUBST([WAGYU_LIB])
+            DEPS_SUBDIR="deps"
+            AC_SUBST([DEPS_SUBDIR])
 
-        AC_PROG_CXX
-        AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
+            WAGYU_LIB=libwagyu.la
+            AC_SUBST([WAGYU_LIB])
 
-        AC_DEFINE([HAVE_WAGYU], [1], [Define to 1 if wagyu is being built])
-        AC_SUBST([HAVE_WAGYU])
-        DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
-                deps/wagyu/Makefile"
+            AC_PROG_CXX
+            AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
+
+            AC_DEFINE([HAVE_WAGYU], [1], [Define to 1 if wagyu is being built])
+            AC_SUBST([HAVE_WAGYU])
+            DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
+                    deps/wagyu/Makefile"
+    fi
 fi
+
 
 
 dnl ===========================================================================
