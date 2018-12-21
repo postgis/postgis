@@ -929,14 +929,11 @@ mvt_clip_and_validate(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint3
 		return mvt_clip_and_validate_geos(lwgeom, basic_type, extent, buffer, clip_geom);
 	}
 
-	GBOX geombox;
-	lwgeom_calculate_gbox(lwgeom, &geombox);
-
-	GBOX clipbox;
-	/* With clipping disabled, we request a clip with the geometry bbox to force validation */
+	GBOX clipbox = {0};
 	if (!clip_geom)
 	{
-		clipbox = geombox;
+		/* With clipping disabled, we request a clip with the geometry bbox to force validation */
+		lwgeom_calculate_gbox(lwgeom, &clipbox);
 	}
 	else
 	{
