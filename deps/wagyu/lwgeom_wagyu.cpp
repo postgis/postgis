@@ -205,3 +205,13 @@ lwgeom_wagyu_clip_by_polygon(const LWGEOM *geom, const LWGEOM *clip)
 
 	return g;
 }
+
+const char *
+libwagyu_version()
+{
+	static char str[50] = {0};
+	snprintf(
+	    str, sizeof(str), "%d.%d.%d (Internal)", WAGYU_MAJOR_VERSION, WAGYU_MINOR_VERSION, WAGYU_PATCH_VERSION);
+
+	return str;
+}

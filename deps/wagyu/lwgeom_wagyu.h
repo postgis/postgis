@@ -48,6 +48,8 @@ extern "C" {
  */
 LWGEOM *lwgeom_wagyu_clip_by_polygon(const LWGEOM *geom, const LWGEOM *polygon);
 
+const char *libwagyu_version();
+
 #ifdef __cplusplus
 }
 #endif
