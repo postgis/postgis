@@ -32,7 +32,6 @@
 
 using namespace mapbox::geometry;
 
-/* TODO: May be std::int64_t if we do this after MVT coordinate conversion*/
 using wagyu_coord_type = std::int64_t;
 using wagyu_polygon = mapbox::geometry::polygon<wagyu_coord_type>;
 using wagyu_multipolygon = mapbox::geometry::multi_polygon<wagyu_coord_type>;
@@ -192,7 +191,6 @@ lwgeom_wagyu_clip_by_polygon(const LWGEOM *geom, const LWGEOM *clip)
 		clipper.add_polygon(p, wagyu::polygon_type::polygon_type_clip);
 	}
 
-	/* TODO: Check if we want to reverse the ouput here */
 	wagyu_multipolygon solution;
 	if (!clipper.execute(
 		wagyu::clip_type_intersection, solution, wagyu::fill_type_even_odd, wagyu::fill_type_even_odd))

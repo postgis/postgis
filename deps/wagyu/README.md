@@ -6,8 +6,19 @@ Wagyu is a header only library but does have a dependency on [Mapbox Geometry](h
 
 # Liblwgeom bindings
 
+To be able to use Wagyu in Postgis, we have added a function to bridge between liblwgeom's C code, and the C++ header only library: `lwgeom_wagyu_clip_by_polygon`.
 
-# Changelog
+It is integrated in the project as an static library integrated inside postgis.so, so it doesn't require an extra dependency at runtime besides `libstdc++` and `libm` which were already required by other libraries.
+
+# Main things to consider about the library
+
+- It works only with POLYGONTYPE or MULTIPOLYGONTYPE type geometries. Anything else will be dropped.
+- It's currently setup to use `int64_t` values internally for extra speed. It could be changed to use double and match liblwgeom but, as it's only used by MVT, this isn't necessary.
+- The library is `Intersect`ing the 2 passing geometries. It also supports `Union`, `Difference` or `XOR` but those functionalities aren't exposed.
+- The library outputs the geometry in the correct winding order for MVT, which is the opposite of OGC.
+
+
+# Dependency changelog
 
   - 2018-12-18 - [Wagyu] Library extraction from https://github.com/mapbox/wagyu
   - 2018-12-18 - [geometry.hpp] Library extraction from https://github.com/mapbox/geometry.hpp
