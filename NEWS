@@ -57,6 +57,8 @@ PostGIS 3.0.0
            Arthur Lesuisse, Andrew Gierth, Raúl Marín)
   - #4262, Document MULTISURFACE compatibility of ST_LineToCurve (Steven Ottens)
 
+  - #4276, ST_AsGeoJSON documentation refresh (Darafei Praliaskouski)
+
 PostGIS 2.5.0
 2018/09/23
 WARNING: If compiling with PostgreSQL+JIT, LLVM >= 6 is required
