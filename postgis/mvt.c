@@ -882,6 +882,10 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 		/* In image coordinates CW actually comes out a CCW, so we reverse */
 		lwgeom_force_clockwise(ng);
 		lwgeom_reverse_in_place(ng);
+
+		/* Make valid might return collections */
+		if (lwgeom->type == COLLECTIONTYPE)
+			lwgeom_to_basic_type(lwgeom, basic_type);
 	}
 
 	return ng;
@@ -1009,6 +1013,10 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 			return NULL;
 	}
 
+	/* if geometry collection extract highest dimensional geometry type */
+	if (lwgeom->type == COLLECTIONTYPE)
+		lwgeom_to_basic_type(lwgeom, basic_type);
+
 	/* Remove all non-essential points (under the output resolution) */
 	lwgeom_remove_repeated_points_in_place(lwgeom, res);
 	lwgeom_simplify_in_place(lwgeom, res, preserve_collapsed);
@@ -1035,10 +1043,6 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	lwgeom = mvt_clip_and_validate(lwgeom, basic_type, extent, buffer, clip_geom);
 	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;
-
-	/* if geometry collection extract highest dimensional geometry type */
-	if (lwgeom->type == COLLECTIONTYPE)
-		lwgeom_to_basic_type(lwgeom, basic_type);
 
 	if (basic_type != lwgeom_get_basic_type(lwgeom))
 	{
