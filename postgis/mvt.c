@@ -1039,6 +1039,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	affine.xoff = -gbox->xmin * fx;
 	affine.yoff = -gbox->ymax * fy;
 	lwgeom_affine(lwgeom, &affine);
+	lwgeom->srid = 0; /* MVT doesn't use it */
 
 	/* Snap to integer precision, removing duplicate points */
 	lwgeom_grid_in_place(lwgeom, &grid);
