@@ -142,14 +142,21 @@ static LWGEOM *
 wgmpoly_to_lwgeom(const wagyu_multipolygon &mp)
 {
 	const uint32_t ngeoms = mp.size();
-	LWGEOM **geoms = reinterpret_cast<LWGEOM **>(lwalloc(sizeof(LWGEOM *) * ngeoms));
-
-	for (uint32_t i = 0; i < ngeoms; i++)
+	if (ngeoms == 1)
 	{
-		geoms[i] = wgpoly_to_lwgeom(mp[i]);
+		return wgpoly_to_lwgeom(mp[0]);
 	}
+	else
+	{
+		LWGEOM **geoms = reinterpret_cast<LWGEOM **>(lwalloc(sizeof(LWGEOM *) * ngeoms));
 
-	return reinterpret_cast<LWGEOM *>(lwcollection_construct(MULTIPOLYGONTYPE, 0, NULL, ngeoms, geoms));
+		for (uint32_t i = 0; i < ngeoms; i++)
+		{
+			geoms[i] = wgpoly_to_lwgeom(mp[i]);
+		}
+
+		return reinterpret_cast<LWGEOM *>(lwcollection_construct(MULTIPOLYGONTYPE, 0, NULL, ngeoms, geoms));
+	}
 }
 
 LWGEOM *

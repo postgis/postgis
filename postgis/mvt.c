@@ -808,15 +808,27 @@ lwgeom_get_basic_type(LWGEOM *geom)
  * geom be lost? Sure, but your MVT renderer couldn't
  * draw it anyways.
  */
-static void
+static inline LWGEOM *
 lwgeom_to_basic_type(LWGEOM *geom, uint8 original_type)
 {
+	LWGEOM *geom_out = geom;
 	if (lwgeom_get_type(geom) == COLLECTIONTYPE)
 	{
 		LWCOLLECTION *g = (LWCOLLECTION*)geom;
-		LWCOLLECTION *gc = lwcollection_extract(g, original_type);
-		*g = *gc;
+		geom_out = (LWGEOM *)lwcollection_extract(g, original_type);
 	}
+
+	/* If a collection only contains 1 geometry return than instead */
+	if (lwgeom_is_collection(geom_out))
+	{
+		LWCOLLECTION *g = (LWCOLLECTION *)geom_out;
+		if (g->ngeoms == 1)
+		{
+			geom_out = g->geoms[0];
+		}
+	}
+
+	return geom_out;
 }
 
 static LWGEOM *
@@ -882,11 +894,10 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 		/* In image coordinates CW actually comes out a CCW, so we reverse */
 		lwgeom_force_clockwise(ng);
 		lwgeom_reverse_in_place(ng);
-
-		/* Make valid might return collections */
-		if (lwgeom->type == COLLECTIONTYPE)
-			lwgeom_to_basic_type(lwgeom, basic_type);
 	}
+
+	/* Make sure we return the most basic type */
+	ng = lwgeom_to_basic_type(ng, basic_type);
 
 	return ng;
 }
@@ -934,7 +945,8 @@ mvt_clip_and_validate(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint3
 	LWGEOM *clip_poly, *clipped_lwgeom;
 
 	/* Wagyu only supports polygons. Default to geos for other types */
-	if (basic_type != POLYGONTYPE)
+	lwgeom = lwgeom_to_basic_type(lwgeom, POLYGONTYPE);
+	if (lwgeom->type != POLYGONTYPE && lwgeom->type != MULTIPOLYGONTYPE)
 	{
 		return mvt_clip_and_validate_geos(lwgeom, basic_type, extent, buffer, clip_geom);
 	}
@@ -951,9 +963,7 @@ mvt_clip_and_validate(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint3
 	}
 
 	clip_poly = bbox_to_lwgeom(&clip_box);
-
 	clipped_lwgeom = lwgeom_wagyu_clip_by_polygon(lwgeom, clip_poly);
-
 	lwgeom_free(clip_poly);
 
 	return clipped_lwgeom;
@@ -1012,10 +1022,6 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 		if (bbox_height * bbox_height + bbox_width * bbox_width < res * res)
 			return NULL;
 	}
-
-	/* if geometry collection extract highest dimensional geometry type */
-	if (lwgeom->type == COLLECTIONTYPE)
-		lwgeom_to_basic_type(lwgeom, basic_type);
 
 	/* Remove all non-essential points (under the output resolution) */
 	lwgeom_remove_repeated_points_in_place(lwgeom, res);
