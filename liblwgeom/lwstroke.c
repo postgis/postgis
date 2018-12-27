@@ -333,7 +333,7 @@ lwarc_linearize(POINTARRAY *to,
 
 	/* Calculate total arc angle, in radians */
 	double total_angle = clockwise ? a1 - a3 : a3 - a1;
-	if ( total_angle < 0 ) total_angle += M_PI * 2;
+	if ( total_angle <= 0 ) total_angle += M_PI * 2;
 
 	/* At extreme tolerance values (very low or very high, depending on
 	 * the semantic) we may cause our arc to collapse. In this case,
