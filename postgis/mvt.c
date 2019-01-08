@@ -915,42 +915,10 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 #include "lwgeom_wagyu.h"
 
 static LWGEOM *
-bbox_to_lwgeom(GBOX *bbox)
-{
-	uint32_t nrings = 1;
-	uint32_t npoints = 5;
-	POINT4D point = {0.0, 0.0, 0.0, 0.0};
-	POINTARRAY **ppa = (POINTARRAY **)lwalloc(sizeof(POINTARRAY *) * nrings);
-	ppa[0] = ptarray_construct(0, 0, npoints);
-
-	point.x = bbox->xmin;
-	point.y = bbox->ymin;
-	ptarray_set_point4d(ppa[0], 0, &point);
-
-	point.x = bbox->xmax;
-	point.y = bbox->ymin;
-	ptarray_set_point4d(ppa[0], 1, &point);
-
-	point.x = bbox->xmax;
-	point.y = bbox->ymax;
-	ptarray_set_point4d(ppa[0], 2, &point);
-
-	point.x = bbox->xmin;
-	point.y = bbox->ymax;
-	ptarray_set_point4d(ppa[0], 3, &point);
-
-	point.x = bbox->xmin;
-	point.y = bbox->ymin;
-	ptarray_set_point4d(ppa[0], 4, &point);
-
-	return (LWGEOM *)lwpoly_construct(0, NULL, nrings, ppa);
-}
-
-static LWGEOM *
 mvt_clip_and_validate(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint32_t buffer, bool clip_geom)
 {
 	GBOX clip_box = {0};
-	LWGEOM *clip_poly, *clipped_lwgeom;
+	LWGEOM *clipped_lwgeom;
 
 	/* Wagyu only supports polygons. Default to geos for other types */
 	lwgeom = lwgeom_to_basic_type(lwgeom, POLYGONTYPE);
@@ -970,9 +938,7 @@ mvt_clip_and_validate(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint3
 		clip_box.xmin = clip_box.ymin = -(double)buffer;
 	}
 
-	clip_poly = bbox_to_lwgeom(&clip_box);
-	clipped_lwgeom = lwgeom_wagyu_clip_by_polygon(lwgeom, clip_poly);
-	lwgeom_free(clip_poly);
+	clipped_lwgeom = lwgeom_wagyu_clip_by_box(lwgeom, &clip_box);
 
 	return clipped_lwgeom;
 }

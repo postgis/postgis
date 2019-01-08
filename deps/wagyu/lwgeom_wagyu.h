@@ -46,7 +46,7 @@ extern "C" {
  *         - An empty MULTIPOLYGONTYPE if any of the inputs is empty.
  *         - A pointer to a LWMPOLY otherwise.
  */
-LWGEOM *lwgeom_wagyu_clip_by_polygon(const LWGEOM *geom, const LWGEOM *polygon);
+LWGEOM *lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox);
 
 const char *libwagyu_version();
 
