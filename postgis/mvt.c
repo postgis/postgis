@@ -876,12 +876,6 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 				return NULL;
 			}
 
-			/* Clipping will produce float values. Grid again into int */
-			{
-				gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
-				lwgeom_grid_in_place(clipped_geom, &grid);
-			}
-
 			ng = clipped_geom;
 		}
 	}
@@ -898,6 +892,20 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 
 	/* Make sure we return the most basic type */
 	ng = lwgeom_to_basic_type(ng, basic_type);
+
+	if (basic_type != lwgeom_get_basic_type(ng))
+	{
+		/* Drop type changes to play nice with MVT renderers */
+		POSTGIS_DEBUG(3, "mvt_geom: Dropping geometry after type change");
+		return NULL;
+	}
+
+	/* Clipping and validation might produce float values. Grid again into int
+	 * and pray that the output is still valid */
+	{
+		gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
+		lwgeom_grid_in_place(ng, &grid);
+	}
 
 	return ng;
 }
@@ -1039,7 +1047,6 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	affine.xoff = -gbox->xmin * fx;
 	affine.yoff = -gbox->ymax * fy;
 	lwgeom_affine(lwgeom, &affine);
-	lwgeom->srid = 0; /* MVT doesn't use it */
 
 	/* Snap to integer precision, removing duplicate points */
 	lwgeom_grid_in_place(lwgeom, &grid);
@@ -1051,16 +1058,10 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;
 
-	if (basic_type != lwgeom_get_basic_type(lwgeom))
-	{
-		/* Drop type changes to play nice with MVT renderers */
-		POSTGIS_DEBUG(3, "mvt_geom: Dropping geometry after type change");
-		return NULL;
-	}
-
 	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;
 
+	lwgeom->srid = 0; /* MVT doesn't use it */
 	return lwgeom;
 }
 

@@ -47,6 +47,15 @@ select 'PG9', ST_Area(ST_AsMVTGeom(
 	ST_GeomFromText('POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))'),
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(5, 5)),
 	4096, 0, true));
+
+WITH geometry AS
+(
+	SELECT ST_AsMVTGeom(
+		ST_GeomFromText('POLYGON ((5 0, 0 5, 0 0, 5 5, 5 0))'),
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(5, 5)),
+		5, 0, true) as g
+)
+SELECT  'PG9.1', ST_NumGeometries(g), ST_Area(g) FROM geometry;
 SELECT 'PG10', ST_AsText(ST_AsMVTGeom(
 	'POINT EMPTY'::geometry,
 	'BOX(0 0,2 2)'::box2d));
