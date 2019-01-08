@@ -141,11 +141,11 @@ void insert_local_minima_into_ABL_hot_pixel(T top_y,
         right_bound.current_x = static_cast<double>(right_bound.current_edge->bot.x);
         auto lb_abl_itr = insert_bound_into_ABL(left_bound, right_bound, active_bounds);
         if (!current_edge_is_horizontal<T>(lb_abl_itr)) {
-            scanbeam.push_back((*lb_abl_itr)->current_edge->top.y);
+            insert_sorted_scanbeam(scanbeam, (*lb_abl_itr)->current_edge->top.y);
         }
         auto rb_abl_itr = std::next(lb_abl_itr);
         if (!current_edge_is_horizontal<T>(rb_abl_itr)) {
-            scanbeam.push_back((*rb_abl_itr)->current_edge->top.y);
+            insert_sorted_scanbeam(scanbeam, (*rb_abl_itr)->current_edge->top.y);
         }
         ++lm;
     }
