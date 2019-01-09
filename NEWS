@@ -25,6 +25,8 @@ XXXX/XX/XX
 
   - #4276, ST_AsGeoJSON documentation refresh (Darafei Praliaskouski)￼	
 
+  - #4273, Tighter parsing of WKT (Paul Ramsey)
+
 
 PostGIS 2.5.1
 2018/11/18
