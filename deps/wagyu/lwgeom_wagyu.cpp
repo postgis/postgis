@@ -38,6 +38,7 @@ using wagyu_polygon = mapbox::geometry::polygon<wagyu_coord_type>;
 using wagyu_multipolygon = mapbox::geometry::multi_polygon<wagyu_coord_type>;
 using wagyu_linearring = mapbox::geometry::line_string<wagyu_coord_type>;
 using vwpolygon = std::vector<wagyu_polygon>;
+using wagyu_box = mapbox::geometry::box<wagyu_coord_type>;
 
 static wagyu_linearring
 ptarray_to_wglinearring(const POINTARRAY *pa)
@@ -164,7 +165,9 @@ LWGEOM *
 lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox)
 {
 	if (!geom || !bbox)
+	{
 		return NULL;
+	}
 
 	if (geom->type != POLYGONTYPE && geom->type != MULTIPOLYGONTYPE)
 	{
@@ -175,30 +178,50 @@ lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox)
 	{
 		LWGEOM *out = lwgeom_construct_empty(MULTIPOLYGONTYPE, geom->srid, 0, 0);
 		out->flags = geom->flags;
+		return out;
 	}
 
 	mapbox::geometry::point<wagyu_coord_type> box_min(bbox->xmin, bbox->ymin);
 	mapbox::geometry::point<wagyu_coord_type> box_max(bbox->xmax, bbox->ymax);
-	mapbox::geometry::box<wagyu_coord_type> const box(std::move(box_min), std::move(box_max));
+	wagyu_box const box(box_min, box_max);
 
-	// Do this properly, test with more than 2 rings levels
-	// wagyu_multipolygon solution = clip(psubject[0], box, wagyu::fill_type_even_odd);
-
-	wagyu::wagyu<wagyu_coord_type> clipper;
+	wagyu_multipolygon solution;
 	vwpolygon vpsubject = lwgeom_to_vwgpoly(geom);
-	for (auto &poly : vpsubject)
+	if (vpsubject.size() == 0)
 	{
-		for (auto &lr : poly)
+		LWGEOM *out = lwgeom_construct_empty(MULTIPOLYGONTYPE, geom->srid, 0, 0);
+		out->flags = geom->flags;
+		return out;
+	}
+
+	/**
+	 * Check this by generating the bounding boxes of the geometry and comparing
+	 * If outside -> Drop
+	 * If inside -> add_ring, no quick_clip is necessary (TODO)
+	 * If intersects -> quick_clip + if not empty --> add_ring
+	 */
+	wagyu::wagyu<wagyu_coord_type> clipper;
+	for (auto const &poly : vpsubject)
+	{
+		for (auto const &lr : poly)
 		{
-			auto new_lr = mapbox::geometry::wagyu::quick_clip::quick_lr_clip(lr, box);
-			if (!new_lr.empty())
+			for (auto const &p : lr)
 			{
-				clipper.add_ring(new_lr, wagyu::polygon_type_subject);
+				/* If any point of the linear ring is in the box, quick_clip the ring and add it */
+				if (p.x >= box.min.x || p.x <= box.max.x || p.y >= box.min.y || p.y <= box.min.y)
+				{
+					auto new_lr = mapbox::geometry::wagyu::quick_clip::quick_lr_clip(lr, box);
+					if (!new_lr.empty())
+					{
+						clipper.add_ring(new_lr, wagyu::polygon_type_subject);
+					}
+
+					break;
+				}
 			}
 		}
 	}
 
-	wagyu_multipolygon solution;
 	clipper.execute(wagyu::clip_type_union, solution, wagyu::fill_type_even_odd, wagyu::fill_type_even_odd);
 
 	LWGEOM *g = wgmpoly_to_lwgeom(solution);
