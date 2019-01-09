@@ -68,7 +68,7 @@ SELECT 'PG11', ST_AsText(ST_AsMVTGeom(
 
 -- Same as PG11 but CCW
 SELECT 'PG12', ST_AsText(ST_AsMVTGeom(
-	ST_GeomFromText('POLYGON((10 10, 0 10, 0 0, 10 0, 10 10))'),
+	ST_GeomFromText('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))'),
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(10, 10)),
 	10, 0, false));
 
@@ -90,14 +90,14 @@ SELECT 'PG14', ST_AsText(ST_AsMVTGeom(
 -- Input: Exterior CCW, interior CW
 -- Output: CW, CCW
 SELECT 'PG15', ST_AsText(ST_AsMVTGeom(
-	ST_GeomFromText('POLYGON((10 10, 0 10, 0 0, 10 0, 10 10), (9 9, 9 1, 1 1, 1 9, 9 9))'),
+	ST_GeomFromText('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0), (9 9, 9 1, 1 1, 1 9, 9 9))'),
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(10, 10)),
 	10, 0, false));
 
 -- Input: Exterior CCW, interior CW
 -- Output: CW, CCW
 SELECT 'PG16', ST_AsText(ST_AsMVTGeom(
-	ST_GeomFromText('POLYGON((10 10, 0 10, 0 0, 10 0, 10 10), (9 9, 9 1, 1 1, 1 9, 9 9))'),
+	ST_GeomFromText('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0), (9 9, 9 1, 1 1, 1 9, 9 9))'),
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(10, 10)),
 	10, 0, false));
 
