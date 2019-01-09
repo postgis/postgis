@@ -33,8 +33,49 @@ LIBTOOL = @LIBTOOL@
 WAGYU_OBJS = \
 	lwgeom_wagyu.o
 
-WAGYU_LT_OBJS = $(WAGYU_OBJS:.o=.lo)
+WAGYU_HEADERS = \
+	lwgeom_wagyu.h \
+	include/mapbox/geometry/polygon.hpp \
+	include/mapbox/geometry/point_arithmetic.hpp \
+	include/mapbox/geometry/multi_polygon.hpp \
+	include/mapbox/geometry/box.hpp \
+	include/mapbox/geometry/for_each_point.hpp \
+	include/mapbox/geometry/line_string.hpp \
+	include/mapbox/geometry/wagyu/process_horizontal.hpp \
+	include/mapbox/geometry/wagyu/wagyu.hpp \
+	include/mapbox/geometry/wagyu/ring_util.hpp \
+	include/mapbox/geometry/wagyu/bubble_sort.hpp \
+	include/mapbox/geometry/wagyu/snap_rounding.hpp \
+	include/mapbox/geometry/wagyu/bound.hpp \
+	include/mapbox/geometry/wagyu/edge.hpp \
+	include/mapbox/geometry/wagyu/build_result.hpp \
+	include/mapbox/geometry/wagyu/scanbeam.hpp \
+	include/mapbox/geometry/wagyu/ring.hpp \
+	include/mapbox/geometry/wagyu/config.hpp \
+	include/mapbox/geometry/wagyu/quick_clip.hpp \
+	include/mapbox/geometry/wagyu/local_minimum_util.hpp \
+	include/mapbox/geometry/wagyu/process_maxima.hpp \
+	include/mapbox/geometry/wagyu/intersect.hpp \
+	include/mapbox/geometry/wagyu/point.hpp \
+	include/mapbox/geometry/wagyu/util.hpp \
+	include/mapbox/geometry/wagyu/intersect_util.hpp \
+	include/mapbox/geometry/wagyu/vatti.hpp \
+	include/mapbox/geometry/wagyu/active_bound_list.hpp \
+	include/mapbox/geometry/wagyu/build_local_minima_list.hpp \
+	include/mapbox/geometry/wagyu/build_edges.hpp \
+	include/mapbox/geometry/wagyu/local_minimum.hpp \
+	include/mapbox/geometry/wagyu/topology_correction.hpp \
+	include/mapbox/geometry/geometry.hpp \
+	include/mapbox/geometry/point.hpp \
+	include/mapbox/geometry/empty.hpp \
+	include/mapbox/geometry/multi_line_string.hpp \
+	include/mapbox/geometry/envelope.hpp \
+	include/mapbox/geometry/multi_point.hpp \
+	include/mapbox/feature.hpp \
+	include/mapbox/geometry_io.hpp \
+	include/mapbox/geometry.hpp
 
+WAGYU_LT_OBJS = $(WAGYU_OBJS:.o=.lo)
 
 
 all: @WAGYU_LIB@
@@ -44,11 +85,10 @@ all: @WAGYU_LIB@
 	$(LIBTOOL) --tag=CXX --mode=link $(CXX) -rpath $(libdir) $(WAGYU_LT_OBJS) $(LDFLAGS) -o $@
 
 
-
-$(WAGYU_LT_OBJS): %.lo: %.cpp ../../liblwgeom.h
+$(WAGYU_LT_OBJS): %.lo: %.cpp ../../liblwgeom/liblwgeom.h $(WAGYU_HEADERS)
 	$(LIBTOOL) --mode=compile $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
 
-../../liblwgeom.h:
+../../liblwgeom/liblwgeom.h:
 	$(MAKE) -C ../../liblwgeom liblwgeom.h
 
 
@@ -66,3 +106,4 @@ uninstall:
 
 check:
 
+.PHONY: clean distclean install uninstall check
