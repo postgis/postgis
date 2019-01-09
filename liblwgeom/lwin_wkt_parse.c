@@ -167,7 +167,7 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 	wkt_lexer_close(); /* Clean up lexer */
 
 	/* A non-zero parser return is an error. */
-	if ( parse_rv != 0 )
+	if ( parse_rv || global_parser_result.errcode )
 	{
 		if( ! global_parser_result.errcode )
 		{
