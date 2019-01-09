@@ -13,11 +13,14 @@ PostGIS 3.0.0
   - #4229, Dropped support for PostgreSQL < 9.5. (Darafei Praliaskouski)
   - #4260, liblwgeom headers are not installed anymore.
            If your project depends on them available, please use
-           librttopo instead. (Darafei Praliaskouski)￼
+           librttopo instead. (Darafei Praliaskouski)
+
   - #4258, Remove SFCGAL support for ST_Area, ST_Distance, ST_Intersection,
            ST_Difference, ST_Union (Darafei Praliaskouski)
 
   - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
+
+  - #4268, Bump minimum SFCGAL version to 1.3.1 (Darafei Praliaskouski) 
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
@@ -56,6 +59,8 @@ PostGIS 3.0.0
   - #4139, Make mixed-dimension ND index build tree correctly (Darafei Praliaskouski,
            Arthur Lesuisse, Andrew Gierth, Raúl Marín)
   - #4262, Document MULTISURFACE compatibility of ST_LineToCurve (Steven Ottens)
+
+  - #4276, ST_AsGeoJSON documentation refresh (Darafei Praliaskouski)
 
 PostGIS 2.5.0
 2018/09/23

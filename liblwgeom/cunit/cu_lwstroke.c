@@ -70,6 +70,7 @@ static void test_lwcurve_linearize(void)
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,30 70,100 100,170 70,200 0)");
 	lwfree(str);
 	lwgeom_free(out);
+
 	/* 3 segment per quadrant */
 	out = lwcurve_linearize(in, 3, toltype, 0);
 	str = lwgeom_to_text(out, 2);
@@ -130,6 +131,14 @@ static void test_lwcurve_linearize(void)
 	lwgeom_free(out);
 #endif /* SKIP_TEST_RETAIN_ANGLE */
 
+	lwgeom_free(in);
+
+	/* 10 segments per quadrant (circular) */
+	in = lwgeom_from_text("CIRCULARSTRING(0 0,1 0,0 0)");
+	out = lwcurve_linearize(in, 10, toltype, 0);
+
+	ASSERT_INT_EQUAL(1 + 10*4, lwgeom_count_vertices(out));
+	lwgeom_free(out);
 	lwgeom_free(in);
 
 	/***********************************************************

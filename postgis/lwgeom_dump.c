@@ -343,7 +343,8 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 		GSERIALIZED *gser;
 		LWGEOM *geom;
 		LWCOLLECTION *col;
-		int maxvertices = 256;
+		/* default to maxvertices < page size */
+		int maxvertices = 128;
 
 		/* create a function context for cross-call persistence */
 		funcctx = SRF_FIRSTCALL_INIT();

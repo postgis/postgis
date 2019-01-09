@@ -740,7 +740,10 @@ if test "x$with_sfcgal" != "xno"; then
 
 		SFCGAL_MAJOR_VERSION=`echo $SFCGAL_VERSION | cut -d. -f1 | sed 's/[[^0-9]]//g'`
 		SFCGAL_MINOR_VERSION=`echo $SFCGAL_VERSION | cut -d. -f2 | sed 's/[[^0-9]]//g'`
-		POSTGIS_SFCGAL_VERSION="$SFCGAL_MAJOR_VERSION$SFCGAL_MINOR_VERSION"
+		SFCGAL_PATCH_VERSION=`echo $SFCGAL_VERSION | cut -d. -f3 | sed 's/[[^0-9]]//g'`
+		SFCGAL_NUMERIC_PATCH_VERSION=`printf "%02d" $SFCGAL_PATCH_VERSION`
+		SFCGAL_NUMERIC_MINOR_VERSION=`printf "%02d" $SFCGAL_MINOR_VERSION`
+		POSTGIS_SFCGAL_VERSION="$SFCGAL_MAJOR_VERSION$SFCGAL_NUMERIC_MINOR_VERSION$SFCGAL_NUMERIC_PATCH_VERSION"
 		AC_DEFINE_UNQUOTED([POSTGIS_SFCGAL_VERSION], [$POSTGIS_SFCGAL_VERSION], [SFCGAL library version at build time])
 		AC_SUBST([POSTGIS_SFCGAL_VERSION])
 
@@ -751,10 +754,9 @@ if test "x$with_sfcgal" != "xno"; then
         		SFCGAL="sfcgal"
 			HAVE_SFCGAL="yes"
 		fi
-		if test ! "$POSTGIS_SFCGAL_VERSION" -ge 11; then
-			AC_MSG_ERROR([PostGIS requires SFCGAL >= 1.1.0 (found $SFCGAL_VERSION)])
+		if test ! "$POSTGIS_SFCGAL_VERSION" -ge 10301; then
+			AC_MSG_ERROR([PostGIS requires SFCGAL >= 1.3.1 (found $SFCGAL_VERSION)])
 		fi
-
 	else
 		if test "x$with_sfcgal" != "xauto"; then
 			AC_MSG_ERROR([sfcgal-config cannot be found. Please install sfcgal])
@@ -834,6 +836,8 @@ if test ! "x$PROJDIR" = "x"; then
 fi
 
 dnl Check that we can find the proj_api.h header file
+CPPFLAGS_SAVE="$CPPFLAGS"
+CPPFLAGS="$PROJ_CPPFLAGS"
 AC_CHECK_HEADER([proj_api.h], [], [AC_MSG_ERROR([could not find proj_api.h - you may need to specify the directory of a PROJ.4 installation using --with-projdir])],
 [
 #define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1

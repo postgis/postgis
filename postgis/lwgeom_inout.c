@@ -143,7 +143,8 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 	/* WKT then. */
 	else
 	{
-		if ( lwgeom_parse_wkt(&lwg_parser_result, str, LW_PARSER_CHECK_ALL) == LW_FAILURE )
+		int rv = lwgeom_parse_wkt(&lwg_parser_result, str, LW_PARSER_CHECK_ALL);
+		if ( rv == LW_FAILURE || lwg_parser_result.errcode )
 		{
 			PG_PARSER_ERROR(lwg_parser_result);
 			PG_RETURN_NULL();
