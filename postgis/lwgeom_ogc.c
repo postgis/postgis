@@ -788,11 +788,13 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	LWGEOM_PARSER_RESULT lwg_parser_result;
 	GSERIALIZED *geom_result = NULL;
 	LWGEOM *lwgeom;
+	int rv;
 
 	POSTGIS_DEBUG(2, "LWGEOM_from_text");
 	POSTGIS_DEBUGF(3, "wkt: [%s]", wkt);
 
-	if (lwgeom_parse_wkt(&lwg_parser_result, wkt, LW_PARSER_CHECK_ALL) == LW_FAILURE)
+	rv = lwgeom_parse_wkt(&lwg_parser_result, wkt, LW_PARSER_CHECK_ALL);
+	if (rv == LW_FAILURE || lwg_parser_result.errcode)
 		PG_PARSER_ERROR(lwg_parser_result);
 
 	lwgeom = lwg_parser_result.geom;
