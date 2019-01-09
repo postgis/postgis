@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2018 Raúl Marín
+ * Copyright 2019 Raúl Marín
  *
  **********************************************************************/
 
@@ -49,6 +49,8 @@ extern "C" {
 LWGEOM *lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox);
 
 const char *libwagyu_version();
+
+void lwgeom_wagyu_interruptRequest();
 
 #ifdef __cplusplus
 }

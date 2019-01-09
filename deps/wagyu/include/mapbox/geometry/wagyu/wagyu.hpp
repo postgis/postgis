@@ -15,6 +15,8 @@
 #include <mapbox/geometry/wagyu/topology_correction.hpp>
 #include <mapbox/geometry/wagyu/vatti.hpp>
 
+#include "../../../../lwgeom_wagyu_interrupt.h"
+
 #define WAGYU_MAJOR_VERSION 0
 #define WAGYU_MINOR_VERSION 4
 #define WAGYU_PATCH_VERSION 3
@@ -124,9 +126,15 @@ public:
 
         build_hot_pixels(minima_list, manager);
 
+        lwgeom_interrupt_check();
+
         execute_vatti(minima_list, manager, cliptype, subject_fill_type, clip_fill_type);
 
+        lwgeom_interrupt_check();
+
         correct_topology(manager);
+
+        lwgeom_interrupt_check();
 
         build_result(solution, manager, reverse_output);
 

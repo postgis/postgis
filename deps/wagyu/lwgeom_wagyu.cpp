@@ -23,6 +23,7 @@
  **********************************************************************/
 
 #include "lwgeom_wagyu.h"
+#include "lwgeom_wagyu_interrupt.h"
 
 #include "mapbox/geometry/wagyu/wagyu.hpp"
 #include "mapbox/geometry/wagyu/quick_clip.hpp"
@@ -206,8 +207,8 @@ wgmpoly_to_lwgeom(const wagyu_multipolygon &mp)
 	}
 }
 
-LWGEOM *
-lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox)
+static LWGEOM *
+__lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox)
 {
 	if (!geom || !bbox)
 	{
@@ -265,6 +266,20 @@ lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox)
 	return g;
 }
 
+LWGEOM *
+lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox)
+{
+	mapbox::geometry::wagyu::lwgeom_interrupt_reset();
+	try
+	{
+		return __lwgeom_wagyu_clip_by_box(geom, bbox);
+	}
+	catch (...)
+	{
+		return NULL;
+	}
+}
+
 const char *
 libwagyu_version()
 {
@@ -273,4 +288,10 @@ libwagyu_version()
 	    str, sizeof(str), "%d.%d.%d (Internal)", WAGYU_MAJOR_VERSION, WAGYU_MINOR_VERSION, WAGYU_PATCH_VERSION);
 
 	return str;
+}
+
+void
+lwgeom_wagyu_interruptRequest()
+{
+	mapbox::geometry::wagyu::lwgeom_interrupt_request();
 }

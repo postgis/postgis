@@ -23,3 +23,13 @@ It is integrated in the project as an static library integrated inside postgis.s
   - 2018-12-18 - [Wagyu] Library extraction from https://github.com/mapbox/wagyu
   - 2018-12-18 - [geometry.hpp] Library extraction from https://github.com/mapbox/geometry.hpp
   - 2019-01-08 - [Wagyu] Update from upstream (`insert_sorted_scanbeam`)
+  - 2019-01-09 - [Wagyu] Added interrupts (lwgeom_wagyu_interrupt.h):
+
+# Differences with upstream
+
+The following files have differences with upstream:
+
+- Check for interrupts:
+    include/mapbox/geometry/wagyu/local_minimum_util.hpp
+    include/mapbox/geometry/wagyu/process_maxima.hpp
+    include/mapbox/geometry/wagyu/wagyu.hpp

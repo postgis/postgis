@@ -12,6 +12,8 @@
 #include <mapbox/geometry/wagyu/topology_correction.hpp>
 #include <mapbox/geometry/wagyu/util.hpp>
 
+#include "../../../../lwgeom_wagyu_interrupt.h"
+
 namespace mapbox {
 namespace geometry {
 namespace wagyu {
@@ -65,6 +67,8 @@ void process_edges_at_top_of_scanbeam(T top_y,
                                       fill_type clip_fill_type) {
 
     for (auto bnd = active_bounds.begin(); bnd != active_bounds.end();) {
+        lwgeom_interrupt_check();
+
         if (*bnd == nullptr) {
             ++bnd;
             continue;

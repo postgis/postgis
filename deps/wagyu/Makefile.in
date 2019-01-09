@@ -35,6 +35,7 @@ WAGYU_OBJS = \
 
 WAGYU_HEADERS = \
 	lwgeom_wagyu.h \
+	lwgeom_wagyu_interrupt.h \
 	include/mapbox/geometry/polygon.hpp \
 	include/mapbox/geometry/point_arithmetic.hpp \
 	include/mapbox/geometry/multi_polygon.hpp \
