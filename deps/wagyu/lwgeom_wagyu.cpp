@@ -33,7 +33,7 @@
 
 using namespace mapbox::geometry;
 
-using wagyu_coord_type = std::int64_t;
+using wagyu_coord_type = std::int32_t;
 using wagyu_polygon = mapbox::geometry::polygon<wagyu_coord_type>;
 using wagyu_multipolygon = mapbox::geometry::multi_polygon<wagyu_coord_type>;
 using wagyu_linearring = mapbox::geometry::linear_ring<wagyu_coord_type>;
