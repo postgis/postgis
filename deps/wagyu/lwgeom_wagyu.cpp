@@ -208,7 +208,7 @@ lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox)
 			for (auto const &p : lr)
 			{
 				/* If any point of the linear ring is in the box, quick_clip the ring and add it */
-				if (p.x >= box.min.x || p.x <= box.max.x || p.y >= box.min.y || p.y <= box.min.y)
+				if (p.x >= box.min.x && p.x <= box.max.x && p.y >= box.min.y && p.y <= box.max.y)
 				{
 					auto new_lr = mapbox::geometry::wagyu::quick_clip::quick_lr_clip(lr, box);
 					if (!new_lr.empty())
