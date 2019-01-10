@@ -175,6 +175,14 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 			global_parser_result.message = parser_error_messages[PARSER_ERROR_OTHER];
 			global_parser_result.errlocation = wkt_yylloc.last_column;
 		}
+		/* Got a completed object parsed, but errored out after... */
+		/* Due to junk after the valid WKT, eg: "POINT(1 1) foobar" */
+		/* https://trac.osgeo.org/postgis/ticket/4273 */
+		if ( global_parser_result.errcode && ! parse_rv )
+		{
+			lwgeom_free(global_parser_result.geom);
+			global_parser_result.geom = NULL;
+		}
 
 		LWDEBUGF(5, "error returned by wkt_yyparse() @ %d: [%d] '%s'",
 		            global_parser_result.errlocation,
@@ -183,13 +191,13 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 
 		/* Copy the global values into the return pointer */
 		*parser_result = global_parser_result;
-                wkt_yylex_destroy();
+		wkt_yylex_destroy();
 		return LW_FAILURE;
 	}
 
 	/* Copy the global value into the return pointer */
 	*parser_result = global_parser_result;
-        wkt_yylex_destroy();
+	wkt_yylex_destroy();
 	return LW_SUCCESS;
 }
 
