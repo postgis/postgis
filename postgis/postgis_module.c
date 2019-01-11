@@ -36,6 +36,10 @@
 #include "geos_c.h"
 #include "lwgeom_backend_api.h"
 
+#ifdef HAVE_WAGYU
+#include "lwgeom_wagyu.h"
+#endif
+
 /*
  * This is required for builds against pgsql
  */
@@ -98,8 +102,6 @@ handleInterrupt(int sig)
   GEOS_interruptRequest();
 
 #ifdef HAVE_WAGYU
-
-#include "lwgeom_wagyu.h"
   lwgeom_wagyu_interruptRequest();
 #endif
 

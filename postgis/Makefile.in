@@ -60,7 +60,7 @@ ifeq (@HAVE_PROTOBUF@,yes)
 PROTOBUF_OBJ=vector_tile.pb-c.o geobuf.pb-c.o
 endif
 
-WAGYU_LIBPATH = ../deps/wagyu/.libs/libwagyu.a
+WAGYU_LIBPATH = ../deps/wagyu/@WAGYU_LIB@
 ifeq (@HAVE_WAGYU@,yes)
 WAYGU_INCLUDE += -I../deps/wagyu
 WAYGU_LIB = $(WAGYU_LIBPATH)

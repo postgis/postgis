@@ -23,8 +23,7 @@
 # **********************************************************************/
 
 CXX = @CXX@
-CPPFLAGS = @CPPFLAGS@
-CXXFLAGS =-I../../liblwgeom -Iinclude @WARNFLAGS@ @CXXFLAGS@
+CXXFLAGS =-I../../liblwgeom -Iinclude @CPPFLAGS@ @WARNFLAGS@ @CXXFLAGS@ @PICFLAGS@
 LDFLAGS = @LDFLAGS@
 top_builddir = @top_builddir@
 libdir = @libdir@
@@ -76,26 +75,19 @@ WAGYU_HEADERS = \
 	include/mapbox/geometry_io.hpp \
 	include/mapbox/geometry.hpp
 
-WAGYU_LT_OBJS = $(WAGYU_OBJS:.o=.lo)
-
-
 all: @WAGYU_LIB@
 
+@WAGYU_LIB@: $(WAGYU_OBJS)
+	ar rs @WAGYU_LIB@ $(WAGYU_OBJS)
 
-@WAGYU_LIB@: $(WAGYU_LT_OBJS)
-	$(LIBTOOL) --tag=CXX --mode=link $(CXX) -rpath $(libdir) $(WAGYU_LT_OBJS) $(LDFLAGS) -o $@
-
-
-$(WAGYU_LT_OBJS): %.lo: %.cpp ../../liblwgeom/liblwgeom.h $(WAGYU_HEADERS)
-	$(LIBTOOL) --mode=compile $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
+$(WAGYU_OBJS): %.o: %.cpp ../../liblwgeom/liblwgeom.h $(WAGYU_HEADERS)
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 ../../liblwgeom/liblwgeom.h:
 	$(MAKE) -C ../../liblwgeom liblwgeom.h
 
-
 clean:
-	rm -f @WAGYU_LIB@ @WAGYU_OBJS@ @WAGYU_LT_OBJS@
-	rm -rf .libs
+	rm -f @WAGYU_LIB@ $(WAGYU_OBJS)
 
 distclean: clean
 	rm -f Makefile
