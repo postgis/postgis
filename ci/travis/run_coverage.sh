@@ -10,3 +10,7 @@ LDFLAGS_COV="--coverage"
 ./configure CFLAGS="${CFLAGS_COV}" LDFLAGS="${LDFLAGS_COV}" --enable-debug
 make -j check
 bash .github/codecov.bash
+
+./configure CFLAGS="${CFLAGS_COV}" CXXFLAGS="$(CFLAGS_COV)" LDFLAGS="${LDFLAGS_COV}" --enable-debug --with-wagyu
+make -j check
+bash .github/codecov.bash
