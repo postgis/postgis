@@ -43,10 +43,12 @@ using wagyu_point = mapbox::geometry::point<wagyu_coord_type>;
 using wagyu_box = mapbox::geometry::box<wagyu_coord_type>;
 
 static wagyu_linearring
-ptarray_to_wglinearring(const POINTARRAY *pa, const wagyu_box &box)
+ptarray_to_wglinearring(const POINTARRAY *pa, const wagyu_box &tile)
 {
 	wagyu_linearring lr;
 	lr.reserve(pa->npoints);
+
+	/* We calculate the bounding box of the point array */
 	wagyu_coord_type min_x = std::numeric_limits<wagyu_coord_type>::max();
 	wagyu_coord_type max_x = std::numeric_limits<wagyu_coord_type>::min();
 	wagyu_coord_type min_y = min_x;
@@ -77,24 +79,27 @@ ptarray_to_wglinearring(const POINTARRAY *pa, const wagyu_box &box)
 		lr.push_back(std::move(wp));
 	}
 
+	/* Check how many sides of the calculated box are inside the tile */
 	uint32_t sides_in = 0;
-	sides_in += min_x >= box.min.x && min_x <= box.max.x;
-	sides_in += max_x >= box.min.x && max_x <= box.max.x;
-	sides_in += min_y >= box.min.y && min_y <= box.max.y;
-	sides_in += max_y >= box.min.y && max_y <= box.max.y;
+	sides_in += min_x >= tile.min.x && min_x <= tile.max.x;
+	sides_in += max_x >= tile.min.x && max_x <= tile.max.x;
+	sides_in += min_y >= tile.min.y && min_y <= tile.max.y;
+	sides_in += max_y >= tile.min.y && max_y <= tile.max.y;
 
-	if (sides_in == 0 && (min_x > box.max.x || max_x < box.min.x) && (min_y > box.max.y || max_y < box.min.y))
+	/* With 0 sides in, the box it's either outside or covers the tile completely */
+	if ((sides_in == 0) && (min_x > tile.max.x || max_x < tile.min.x || min_y > tile.max.y || max_y < tile.min.y))
 	{
 		/* No overlapping: Return an empty linearring */
 		return wagyu_linearring();
 	}
+
 	if (sides_in != 4)
 	{
 		/* Some edges need to be clipped */
-		return mapbox::geometry::wagyu::quick_clip::quick_lr_clip(lr, box);
+		return mapbox::geometry::wagyu::quick_clip::quick_lr_clip(lr, tile);
 	}
 
-	/* All points were inside the box */
+	/* All points are inside the box */
 	return lr;
 }
 
@@ -240,12 +245,6 @@ __lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox)
 		return out;
 	}
 
-	/**
-	 * Check this by generating the bounding boxes of the geometry and comparing
-	 * If outside -> Drop
-	 * If inside -> add_ring, no quick_clip is necessary (TODO)
-	 * If intersects -> quick_clip + if not empty --> add_ring
-	 */
 	wagyu::wagyu<wagyu_coord_type> clipper;
 	for (auto &poly : vpsubject)
 	{
