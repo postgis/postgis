@@ -7,6 +7,7 @@ PostGIS 2.3.9
   WARNING: REINDEX your ND index on tables that have records with different M/Z
            dimensions for &&& operator to work predictably.
            (Darafei Praliaskouski, Arthur Lesuisse, Andrew Gierth, Raúl Marín)
+  - #4290, More robust distance calculations in geography (Paul Ramsey)
 
   - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
 

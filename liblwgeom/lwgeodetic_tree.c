@@ -541,8 +541,6 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 			c = 0;
 			for ( i = 0; i < node->num_nodes; i++ )
 			{
-				LWDEBUG(3,"internal node calculation");
-				LWDEBUGF(3," calling circ_tree_contains_point on child %d!", i);
 				c += circ_tree_contains_point(node->nodes[i], pt, pt_outside, on_boundary);
 			}
 			return c % 2;
