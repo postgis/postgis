@@ -1479,7 +1479,7 @@ static void test_lwpoly_construct_circle(void)
 	LWPOLY* p;
 	const GBOX* g;
 	const int srid = 4326;
-	const int segments_per_quad = 17;
+	const uint32_t segments_per_quad = 17;
 	const int x = 10;
 	const int y = 20;
 	const int r = 5;
