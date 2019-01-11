@@ -2984,7 +2984,7 @@ BEGIN
 	EXCEPTION
 		WHEN undefined_function THEN
 			gdalver := NULL;
-			RAISE NOTICE 'Function postgis_gdal_version() not found.  Is raster support enabled and rtpostgis.sql installed?';
+			RAISE LOG 'Function postgis_gdal_version() not found.  Is raster support enabled and rtpostgis.sql installed?';
 	END;
 	BEGIN
 		SELECT @extschema@.postgis_sfcgal_version() INTO sfcgalver;
@@ -3008,11 +3008,11 @@ BEGIN
 	EXCEPTION
 		WHEN undefined_function OR invalid_schema_name THEN
 			topo_scr_ver := NULL;
-			RAISE DEBUG 'Function postgis_topology_scripts_installed() not found. Is topology support enabled and topology.sql installed?';
+			RAISE LOG 'Function postgis_topology_scripts_installed() not found. Is topology support enabled and topology.sql installed?';
 		WHEN insufficient_privilege THEN
-			RAISE NOTICE 'Topology support cannot be inspected. Is current user granted USAGE on schema "topology" ?';
+			RAISE LOG 'Topology support cannot be inspected. Is current user granted USAGE on schema "topology" ?';
 		WHEN OTHERS THEN
-			RAISE NOTICE 'Function postgis_topology_scripts_installed() could not be called: % (%)', SQLERRM, SQLSTATE;
+			RAISE LOG 'Function postgis_topology_scripts_installed() could not be called: % (%)', SQLERRM, SQLSTATE;
 	END;
 
 	BEGIN
@@ -3020,7 +3020,7 @@ BEGIN
 	EXCEPTION
 		WHEN undefined_function THEN
 			rast_scr_ver := NULL;
-			RAISE DEBUG 'Function postgis_raster_scripts_installed() not found. Is raster support enabled and rtpostgis.sql installed?';
+			RAISE LOG 'Function postgis_raster_scripts_installed() not found. Is raster support enabled and rtpostgis.sql installed?';
 	END;
 
 	BEGIN
@@ -3028,7 +3028,7 @@ BEGIN
 	EXCEPTION
 		WHEN undefined_function THEN
 			rast_lib_ver := NULL;
-			RAISE DEBUG 'Function postgis_raster_lib_version() not found. Is raster support enabled and rtpostgis.sql installed?';
+			RAISE LOG 'Function postgis_raster_lib_version() not found. Is raster support enabled and rtpostgis.sql installed?';
 	END;
 
 	fullver = 'POSTGIS="' || libver;
