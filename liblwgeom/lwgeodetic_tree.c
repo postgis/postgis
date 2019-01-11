@@ -807,7 +807,6 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 		/* tests above. */
 		if ( n1->geom_type && lwtype_is_collection(n1->geom_type) )
 		{
-			printf("arg1 is a collection\n");
 			circ_internal_nodes_sort(n1->nodes, n1->num_nodes, n2);
 			for ( i = 0; i < n1->num_nodes; i++ )
 			{
@@ -817,7 +816,6 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 		}
 		else if ( n2->geom_type && lwtype_is_collection(n2->geom_type) )
 		{
-			printf("arg2 is a collection\n");
 			circ_internal_nodes_sort(n2->nodes, n2->num_nodes, n1);
 			for ( i = 0; i < n2->num_nodes; i++ )
 			{
