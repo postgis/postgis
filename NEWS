@@ -23,10 +23,11 @@ XXXX/XX/XX
 
   - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
 
-  - #4276, ST_AsGeoJSON documentation refresh (Darafei Praliaskouski)￼	
+  - #4276, ST_AsGeoJSON documentation refresh (Darafei Praliaskouski)￼
 
   - #4273, Tighter parsing of WKT (Paul Ramsey)
 
+  - #4292, ST_AsMVT: parse JSON numeric values with decimals as doubles (Raúl Marín)
 
 PostGIS 2.5.1
 2018/11/18
