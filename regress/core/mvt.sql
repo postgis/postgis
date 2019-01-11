@@ -298,6 +298,65 @@ SELECT 'PG46', St_AsEWKT(ST_AsMVTGeom(
 	16,
 	true));
 
+-- Check polygon clipping
+--- Outside the tile
+SELECT 'PG47', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON((-10 -10, -10 -5, -5 -5, -5 -10, -10 -10))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
+--- Outside the tile
+SELECT 'PG48', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON((10 -10, 10 -5, 5 -5, 5 -10, 10 -10))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
+--- Outside the tile
+SELECT 'PG49', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON((110 110, 110 105, 105 105, 105 110, 110 110))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
+--- Outside the tile
+SELECT 'PG50', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON((10 -5, 10 0, 5 0, 5 -5, 10 -5))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
+--- Fully covers the tile
+SELECT 'PG51', ST_Area(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON((-10 110, -10 -10, 110 -10, 110 110, -10 110))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
+--- Partially in the tile
+SELECT 'PG52', ST_Area(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON((20 -10, 110 -10, 110 110, 20 110, 20 -10))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
+--- Partially in the tile
+SELECT 'PG53', ST_Area(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON((-20 10, 20 10, 20 40, -20 40, -20 10))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
+-- Simplification
+SELECT 'PG54', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON((0 10, 100 10, 100 10.3, 0 10))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
+SELECT 'PG55', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON((0 99.9, 99.9 99.9, 99.9 150, 0 150, 0 99.9))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
+SELECT 'PG56', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON((0 0, 99.6 100, 100 99.6, 0 0))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
 -- geometry encoding tests
 SELECT 'TG1', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1,
 	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
