@@ -141,7 +141,7 @@ CircTreePIP(const CIRC_NODE* tree1, const GSERIALIZED* g1, const POINT4D* in_poi
 			POSTGIS_DEBUGF(3, "p2d_inside=POINT(%g %g) p2d_outside=POINT(%g %g)", pt2d_inside.x, pt2d_inside.y, pt2d_outside.x, pt2d_outside.y);
 			/* Test the candidate point for strict containment */
 			POSTGIS_DEBUG(3, "calling circ_tree_contains_point for PiP test");
-			return circ_tree_contains_point(tree1, &pt2d_inside, &pt2d_outside, NULL);
+			return circ_tree_contains_point(tree1, &pt2d_inside, &pt2d_outside, 0, NULL);
 		}
 	}
 	else
