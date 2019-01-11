@@ -839,6 +839,8 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 	if (clip_geom)
 	{
 		GBOX bgbox, lwgeom_gbox;
+		gbox_init(&bgbox);
+		gbox_init(&lwgeom_gbox);
 		bgbox.xmax = bgbox.ymax = (double)extent + (double)buffer;
 		bgbox.xmin = bgbox.ymin = -(double)buffer;
 		FLAGS_SET_GEODETIC(lwgeom_gbox.flags, 0);
