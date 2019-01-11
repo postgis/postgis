@@ -615,7 +615,7 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 					PointerGetDatum(v.val.numeric)));
 				d = strtod(str, NULL);
 				l = strtol(str, NULL, 10);
-				if ((long) d != l)
+				if (FP_NEQUALS(d, (double)l))
 				{
 					MVT_PARSE_VALUE(d, mvt_kv_double_value, double_values_hash,
 						double_value, sizeof(double));
