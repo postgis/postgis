@@ -3364,13 +3364,46 @@ point_in_cone(const POINT3D *A1, const POINT3D *A2, const POINT3D *P)
 	/* The projection of start onto the center defines the minimum similarity */
 	min_similarity = dot_product(A1, &AC);
 
-	/* The projection of candidate p onto the center */
-	similarity = dot_product(P, &AC);
-
-	/* If the point is more similar than the end, the point is in the cone */
-	if ( similarity > min_similarity || fabs(similarity - min_similarity) < 2e-16 )
+	/* If the edge is sufficiently curved, use the dot product test */
+	if (fabs(1.0 - min_similarity) > 1e-10 )
 	{
-		return LW_TRUE;
+		/* The projection of candidate p onto the center */
+		similarity = dot_product(P, &AC);
+
+		/* If the projection of the candidate is larger than */
+		/* the projection of the start point, the candidate */
+		/* must be closer to the center than the start, so */
+		/* therefor inside the cone */
+		if ( similarity > min_similarity )
+		{
+			return LW_TRUE;
+		}
+		else
+		{
+			return LW_FALSE;
+		}
+	}
+	else
+	{
+		/* Where the edge is very narrow, the dot product test */
+		/* fails, but we can use the almost-planar nature of the */
+		/* problem space then to test if the vector from the */
+		/* candidate to the start point in a different direction */
+		/* to the vector from candidate to end point */
+		/* If so, then candidate is between start and end */
+		POINT3D PA1, PA2;
+		vector_difference(P, A1, &PA1);
+		vector_difference(P, A2, &PA2);
+		normalize(&PA1);
+		normalize(&PA2);
+		if (dot_product(&PA1, &PA2) < 0.0)
+		{
+			return LW_TRUE;
+		}
+		else
+		{
+			return LW_FALSE;
+		}
 	}
 	return LW_FALSE;
 }
@@ -3418,6 +3451,7 @@ edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const P
 
 	/* Are A-plane and B-plane basically the same? */
 	ab_dot = dot_product(&AN, &BN);
+
 	if ( FP_EQUALS(fabs(ab_dot), 1.0) )
 	{
 		/* Co-linear case */

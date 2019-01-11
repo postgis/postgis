@@ -477,7 +477,7 @@ int circ_tree_get_point(const CIRC_NODE* node, POINT2D* pt)
 * KNOWN PROBLEM: Grazings (think of a sharp point, just touching the
 *   stabline) will be counted for one, which will throw off the count.
 */
-int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POINT2D* pt_outside, int* on_boundary)
+int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POINT2D* pt_outside, int level, int* on_boundary)
 {
 	GEOGRAPHIC_POINT closest;
 	GEOGRAPHIC_EDGE stab_edge, edge;
@@ -491,48 +491,65 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 	geog2cart(&(stab_edge.start), &S1);
 	geog2cart(&(stab_edge.end), &S2);
 
-	LWDEBUG(3, "entered");
+	LWDEBUGF(3, "%*s entered", level, "");
 
 	/*
 	* If the stabline doesn't cross within the radius of a node, there's no
 	* way it can cross.
 	*/
 
-	LWDEBUGF(3, "working on node %p, edge_num %d, radius %g, center POINT(%g %g)", node, node->edge_num, node->radius, rad2deg(node->center.lon), rad2deg(node->center.lat));
+	LWDEBUGF(3, "%*s :working on node %p, edge_num %d, radius %g, center POINT(%.12g %.12g)", level, "", node, node->edge_num, node->radius, rad2deg(node->center.lon), rad2deg(node->center.lat));
 	d = edge_distance_to_point(&stab_edge, &(node->center), &closest);
-	LWDEBUGF(3, "edge_distance_to_point=%g, node_radius=%g", d, node->radius);
+	LWDEBUGF(3, "%*s :edge_distance_to_point=%g, node_radius=%g", level, "", d, node->radius);
 	if ( FP_LTEQ(d, node->radius) )
 	{
-		LWDEBUGF(3,"entering this branch (%p)", node);
+		LWDEBUGF(3,"%*s :entering this branch (%p)", level, "", node);
 
 		/* Return the crossing number of this leaf */
 		if ( circ_node_is_leaf(node) )
 		{
 			int inter;
-			LWDEBUGF(3, "leaf node calculation (edge %d)", node->edge_num);
+			LWDEBUGF(3, "%*s :leaf node calculation (edge %d)", level, "", node->edge_num);
 			geographic_point_init(node->p1->x, node->p1->y, &(edge.start));
 			geographic_point_init(node->p2->x, node->p2->y, &(edge.end));
 			geog2cart(&(edge.start), &E1);
 			geog2cart(&(edge.end), &E2);
 
 			inter = edge_intersects(&S1, &S2, &E1, &E2);
+			LWDEBUGF(3, "%*s :inter = %d", level, "", inter);
 
 			if ( inter & PIR_INTERSECTS )
 			{
-				LWDEBUG(3," got stab line edge_intersection with this edge!");
+				LWDEBUGF(3,"%*s ::got stab line edge_intersection with this edge!", level, "");
 				/* To avoid double counting crossings-at-a-vertex, */
 				/* always ignore crossings at "lower" ends of edges*/
+				GEOGRAPHIC_POINT e1, e2;
+				cart2geog(&E1,&e1); cart2geog(&E2,&e2);
+
+				LWDEBUGF(3,"%*s LINESTRING(%.15g %.15g,%.15g %.15g)", level, "",
+					pt->x, pt->y,
+					pt_outside->x, pt_outside->y
+					);
+
+				LWDEBUGF(3,"%*s LINESTRING(%.15g %.15g,%.15g %.15g)", level, "",
+					rad2deg(e1.lon), rad2deg(e1.lat),
+					rad2deg(e2.lon), rad2deg(e2.lat)
+					);
 
 				if ( inter & PIR_B_TOUCH_RIGHT || inter & PIR_COLINEAR )
 				{
-					LWDEBUG(3,"  rejecting stab line grazing by left-side edge");
+					LWDEBUGF(3,"%*s ::rejecting stab line grazing by left-side edge", level, "");
 					return 0;
 				}
 				else
 				{
-					LWDEBUG(3,"  accepting stab line intersection");
+					LWDEBUGF(3,"%*s ::accepting stab line intersection", level, "");
 					return 1;
 				}
+			}
+			else
+			{
+				LWDEBUGF(3,"%*s edge does not intersect", level, "");
 			}
 		}
 		/* Or, add up the crossing numbers of all children of this node. */
@@ -541,18 +558,16 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 			c = 0;
 			for ( i = 0; i < node->num_nodes; i++ )
 			{
-				LWDEBUG(3,"internal node calculation");
-				LWDEBUGF(3," calling circ_tree_contains_point on child %d!", i);
-				c += circ_tree_contains_point(node->nodes[i], pt, pt_outside, on_boundary);
+				LWDEBUGF(3,"%*s calling circ_tree_contains_point on child %d!", level, "", i);
+				c += circ_tree_contains_point(node->nodes[i], pt, pt_outside, level + 1, on_boundary);
 			}
 			return c % 2;
 		}
 	}
 	else
 	{
-		LWDEBUGF(3,"skipping this branch (%p)", node);
+		LWDEBUGF(3,"%*s skipping this branch (%p)", level, "", node);
 	}
-
 	return 0;
 }
 
@@ -607,10 +622,11 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 	int i;
 
 	LWDEBUGF(4, "entered, min_dist=%.8g max_dist=%.8g, type1=%d, type2=%d", *min_dist, *max_dist, n1->geom_type, n2->geom_type);
-/*
-	circ_tree_print(n1, 0);
-	circ_tree_print(n2, 0);
-*/
+
+	// printf("-==-\n");
+	// circ_tree_print(n1, 0);
+	// printf("--\n");
+	// circ_tree_print(n2, 0);
 
 	/* Short circuit if we've already hit the minimum */
 	if( *min_dist < threshold || *min_dist == 0.0 )
@@ -636,7 +652,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 		POINT2D pt;
 		circ_tree_get_point(n2, &pt);
 		LWDEBUGF(4, "n1 is polygon, testing if contains (%.5g,%.5g)", pt.x, pt.y);
-		if ( circ_tree_contains_point(n1, &pt, &(n1->pt_outside), NULL) )
+		if ( circ_tree_contains_point(n1, &pt, &(n1->pt_outside), 0, NULL) )
 		{
 			LWDEBUG(4, "it does");
 			*min_dist = 0.0;
@@ -652,7 +668,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 		POINT2D pt;
 		circ_tree_get_point(n1, &pt);
 		LWDEBUGF(4, "n2 is polygon, testing if contains (%.5g,%.5g)", pt.x, pt.y);
-		if ( circ_tree_contains_point(n2, &pt, &(n2->pt_outside), NULL) )
+		if ( circ_tree_contains_point(n2, &pt, &(n2->pt_outside), 0, NULL) )
 		{
 			LWDEBUG(4, "it does");
 			geographic_point_init(pt.x, pt.y, closest1);
@@ -824,7 +840,7 @@ void circ_tree_print(const CIRC_NODE* node, int depth)
 		}
   		if ( node->geom_type == POLYGONTYPE )
   		{
-  			printf(" O(%.5g %.5g)", node->pt_outside.x, node->pt_outside.y);
+  			printf(" O(%.15g %.15g)", node->pt_outside.x, node->pt_outside.y);
   		}
 		printf("\n");
 	}
