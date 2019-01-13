@@ -4,6 +4,9 @@
 
 # See https://git.osgeo.org/gitea/postgis/postgis-docker
 test-image: &test-image docker.kbt.io/postgis/build-test:trisquel2
+kind: pipeline
+name: postgis
+
 clone:
     image: plugins/git
     depth: 20
