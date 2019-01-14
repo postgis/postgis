@@ -99,8 +99,8 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 			double bounds_width = (bounds->xmax - bounds->xmin) / extent;
 			double bounds_height = (bounds->ymax - bounds->ymin) / extent;
 
-			/* We use half the area of the grid square as minimun resolution */
-			double min_resolution_area = bounds_width * bounds_height / 2.0;
+			/* We use 1/4th of the grid square area as the minimum resolution */
+			double min_resolution_area = bounds_width * bounds_height / 4.0;
 
 			if (geom_area < min_resolution_area)
 			{
