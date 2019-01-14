@@ -73,7 +73,7 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 	extent = PG_ARGISNULL(2) ? 4096 : PG_GETARG_INT32(2);
 	if (extent <= 0)
 	{
-		elog(ERROR, "%s: extent cannot be 0", __func__);
+		elog(ERROR, "%s: extent must be greater than 0", __func__);
 		PG_RETURN_NULL();
 	}
 
@@ -83,7 +83,7 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 	geom_in = PG_GETARG_GSERIALIZED_P_COPY(0);
 	type = gserialized_get_type(geom_in);
 
-	/* If possible, peak into the bounding box before deserializating it to discard small geometries
+	/* If possible, peek into the bounding box before deserializing it to discard small geometries
 	 * We don't check COLLECTIONTYPE since that might be a collection of points */
 	if (type == LINETYPE || type == POLYGONTYPE || type == MULTILINETYPE || type == MULTIPOLYGONTYPE)
 	{
