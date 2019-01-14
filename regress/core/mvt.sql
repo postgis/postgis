@@ -1,3 +1,10 @@
+-- Input validation
+select 'I1', ST_AsMVTGeom(NULL, ST_MakeEnvelope(10, 10, 20, 20), 4096);
+select 'I2', ST_AsMVTGeom(ST_Point(1, 2), NULL, 4096);
+select 'I3', ST_AsMVTGeom(ST_Point(1, 2), ST_MakeBox2D(ST_Point(0, 0), ST_Point(0, 0)));
+select 'I4', ST_AsMVTGeom(ST_Point(1, 2), ST_MakeEnvelope(10, 10, 20, 20), -10);
+select 'I5', ST_AsMVTGeom(ST_Point(1, 2), ST_MakeEnvelope(10, 10, 20, 20), 0);
+
 -- geometry preprocessing tests
 select 'PG1', ST_AsText(ST_AsMVTGeom(
 	ST_Point(1, 2),
@@ -280,6 +287,12 @@ SELECT 'PG46', St_AsEWKT(ST_AsMVTGeom(
 	4096,
 	16,
 	true));
+
+-- Geometry fastpath
+SELECT 'PG47', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('LINESTRING(0 0, 0 4, 4 4, 4 0, 0 0)'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(1000, 1000)),
+	100, 0, false));
 
 -- geometry encoding tests
 SELECT 'TG1', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1,

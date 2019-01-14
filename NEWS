@@ -35,7 +35,8 @@ PostGIS 3.0.0
            Praliaskouski).
   - #4162, ST_DWithin documentation examples for storing geometry and
            radius in table (Darafei Praliaskouski, github user Boscop).
-  - #4161, MVT: Drop geometries smaller than the resolution (Raúl Marín)
+  - #4161 and #4294, ST_AsMVTGeom: Shortcut geometries smaller than the
+           resolution (Raúl Marín)
   - #4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)
   - #4181, ST_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)
   - #4183, ST_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)

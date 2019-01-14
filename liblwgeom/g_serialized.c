@@ -457,7 +457,8 @@ int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 * Populate a bounding box *without* allocating an LWGEOM. Useful
 * for some performance purposes.
 */
-static int gserialized_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
+int
+gserialized_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 {
 	uint32_t type = gserialized_get_type(g);
 

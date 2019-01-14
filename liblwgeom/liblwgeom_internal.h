@@ -262,6 +262,12 @@ double lwtriangle_area(const LWTRIANGLE *triangle);
 int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox);
 
 /*
+ * Populate a bounding box *without* allocating an LWGEOM. Useful for some performance
+ * purposes. Use only if gserialized_read_gbox_p failed
+ */
+int gserialized_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox);
+
+/*
 * Length calculations
 */
 double lwcompound_length(const LWCOMPOUND *comp);

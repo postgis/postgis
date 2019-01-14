@@ -845,27 +845,11 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	if (lwgeom_is_empty(lwgeom))
 		return NULL;
 
-	if (width == 0 || height == 0)
-		elog(ERROR, "mvt_geom: bounds width or height cannot be 0");
-
-	if (extent == 0)
-		elog(ERROR, "mvt_geom: extent cannot be 0");
-
 	resx = width / extent;
 	resy = height / extent;
 	res = (resx < resy ? resx : resy)/2;
 	fx = extent / width;
 	fy = -(extent / height);
-
-	if (basic_type == LINETYPE || basic_type == POLYGONTYPE)
-	{
-		// Shortcut to drop geometries smaller than the resolution
-		const GBOX *lwgeom_gbox = lwgeom_get_bbox(lwgeom);
-		double bbox_width = lwgeom_gbox->xmax - lwgeom_gbox->xmin;
-		double bbox_height = lwgeom_gbox->ymax - lwgeom_gbox->ymin;
-		if (bbox_height * bbox_height + bbox_width * bbox_width < res * res)
-			return NULL;
-	}
 
 	/* Remove all non-essential points (under the output resolution) */
 	lwgeom_remove_repeated_points_in_place(lwgeom, res);
