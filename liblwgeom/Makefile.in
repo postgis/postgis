@@ -147,6 +147,7 @@ SA_HEADERS = \
 	lwgeom_geos.h \
 	lwgeom_log.h \
 	lwgeom_sfcgal.h \
+	lwinline.h \
 	lwin_wkt.h \
 	lwin_wkt_parse.h \
 	lwout_twkb.h \
