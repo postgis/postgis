@@ -60,20 +60,20 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 
 	if (PG_ARGISNULL(1))
 	{
-		elog(ERROR, "%s: parameter bounds cannot be null", __func__);
+		elog(ERROR, "%s: Geometric bounds cannot be null", __func__);
 		PG_RETURN_NULL();
 	}
 	bounds = (GBOX *)PG_GETARG_POINTER(1);
 	if (bounds->xmax - bounds->xmin <= 0 || bounds->ymax - bounds->ymin <= 0)
 	{
-		elog(ERROR, "%s: bounds width or height cannot be 0", __func__);
+		elog(ERROR, "%s: Geometric bounds are too small", __func__);
 		PG_RETURN_NULL();
 	}
 
 	extent = PG_ARGISNULL(2) ? 4096 : PG_GETARG_INT32(2);
 	if (extent <= 0)
 	{
-		elog(ERROR, "%s: extent must be greater than 0", __func__);
+		elog(ERROR, "%s: Extent must be greater than 0", __func__);
 		PG_RETURN_NULL();
 	}
 

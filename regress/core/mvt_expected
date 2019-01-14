@@ -1,8 +1,8 @@
 I1|
-ERROR:  ST_AsMVTGeom: parameter bounds cannot be null
-ERROR:  ST_AsMVTGeom: bounds width or height cannot be 0
-ERROR:  ST_AsMVTGeom: extent must be greater than 0
-ERROR:  ST_AsMVTGeom: extent must be greater than 0
+ERROR:  ST_AsMVTGeom: Geometric bounds cannot be null
+ERROR:  ST_AsMVTGeom: Geometric bounds are too small
+ERROR:  ST_AsMVTGeom: Extent must be greater than 0
+ERROR:  ST_AsMVTGeom: Extent must be greater than 0
 PG1|POINT(1 4094)
 PG2|POINT(0 4095)
 PG3|POINT(2 4092)
