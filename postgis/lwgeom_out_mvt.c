@@ -45,6 +45,13 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 	elog(ERROR, "Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
+	GBOX *bounds = NULL;
+	int32_t extent = 0;
+	int32_t buffer = 0;
+	bool clip_geom = true;
+	GSERIALIZED *geom_in, *geom_out;
+	LWGEOM *lwgeom_in, *lwgeom_out;
+	uint8_t type = 0;
 
 	if (PG_ARGISNULL(0))
 	{
@@ -56,25 +63,25 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 		elog(ERROR, "%s: parameter bounds cannot be null", __func__);
 		PG_RETURN_NULL();
 	}
-	GBOX *bounds = (GBOX *)PG_GETARG_POINTER(1);
+	bounds = (GBOX *)PG_GETARG_POINTER(1);
 	if (bounds->xmax - bounds->xmin <= 0 || bounds->ymax - bounds->ymin <= 0)
 	{
 		elog(ERROR, "%s: bounds width or height cannot be 0", __func__);
 		PG_RETURN_NULL();
 	}
 
-	int32_t extent = PG_ARGISNULL(2) ? 4096 : PG_GETARG_INT32(2);
+	extent = PG_ARGISNULL(2) ? 4096 : PG_GETARG_INT32(2);
 	if (extent <= 0)
 	{
 		elog(ERROR, "%s: extent cannot be 0", __func__);
 		PG_RETURN_NULL();
 	}
 
-	int32_t buffer = PG_ARGISNULL(3) ? 256 : PG_GETARG_INT32(3);
-	bool clip_geom = PG_ARGISNULL(4) ? true : PG_GETARG_BOOL(4);
+	buffer = PG_ARGISNULL(3) ? 256 : PG_GETARG_INT32(3);
+	clip_geom = PG_ARGISNULL(4) ? true : PG_GETARG_BOOL(4);
 
-	GSERIALIZED *geom_in = PG_GETARG_GSERIALIZED_P_COPY(0);
-	uint8_t type = gserialized_get_type(geom_in);
+	geom_in = PG_GETARG_GSERIALIZED_P_COPY(0);
+	type = gserialized_get_type(geom_in);
 
 	/* If possible, peak into the bounding box before deserializating it to discard small geometries
 	 * We don't check COLLECTIONTYPE since that might be a collection of points */
@@ -102,13 +109,13 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 		}
 	}
 
-	LWGEOM *lwgeom_in = lwgeom_from_gserialized(geom_in);
+	lwgeom_in = lwgeom_from_gserialized(geom_in);
 
-	LWGEOM *lwgeom_out = mvt_geom(lwgeom_in, bounds, extent, buffer, clip_geom);
+	lwgeom_out = mvt_geom(lwgeom_in, bounds, extent, buffer, clip_geom);
 	if (lwgeom_out == NULL)
 		PG_RETURN_NULL();
 
-	GSERIALIZED *geom_out = geometry_serialize(lwgeom_out);
+	geom_out = geometry_serialize(lwgeom_out);
 	lwgeom_free(lwgeom_out);
 	PG_FREE_IF_COPY(geom_in, 0);
 	PG_RETURN_POINTER(geom_out);
