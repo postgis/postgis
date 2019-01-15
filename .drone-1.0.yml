@@ -82,6 +82,5 @@ steps:
     image: *test-image
     pull: true
     commands:
-      - sudo -i
       - bash ci/travis/run_tests.sh
 ...
