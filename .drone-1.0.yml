@@ -72,4 +72,28 @@ steps:
       - make install
       - utils/check_all_upgrades.sh
         `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
+
+---
+test-image: &test-image postgis/postgis-build-env:latest
+kind: pipeline
+name: pg-11-latest
+steps:
+  - name: build
+    image: *test-image
+    pull: true
+    commands:
+      - export PGVER=10
+      - service postgresql start $PGVER
+      - export PGPORT=`grep ^port /etc/postgresql/$PGVER/main/postgresql.conf | awk '{print $3}'`
+      - export PATH=/usr/lib/postgresql/$PGVER/bin:$PATH
+      - psql --version
+      - ./autogen.sh
+      - ./configure CFLAGS="-O0 -Wall -fno-omit-frame-pointer -Werror" --without-interrupt-tests
+      - make -j
+      # we should maybe wait for postgresql service to startup here...
+      - psql -c "select version()" template1
+      - make check RUNTESTFLAGS=-v
+      - make install
+      - utils/check_all_upgrades.sh
+        `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
 ...
