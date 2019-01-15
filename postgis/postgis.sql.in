@@ -2943,7 +2943,7 @@ BEGIN
 END
 $$ LANGUAGE plpgsql VOLATILE;
 
--- Changed: 2.4.0
+-- Changed: 3.0.0
 CREATE OR REPLACE FUNCTION postgis_full_version() RETURNS text
 AS $$
 DECLARE
@@ -2952,16 +2952,15 @@ DECLARE
 	projver text;
 	geosver text;
 	sfcgalver text;
-	cgalver text;
-	gdalver text;
+	gdalver text := NULL;
 	libxmlver text;
 	liblwgeomver text;
 	dbproc text;
 	relproc text;
 	fullver text;
-	rast_lib_ver text;
-	rast_scr_ver text;
-	topo_scr_ver text;
+	rast_lib_ver text := NULL;
+	rast_scr_ver text := NULL;
+	topo_scr_ver text := NULL;
 	json_lib_ver text;
 	protobuf_lib_ver text;
 	sfcgal_lib_ver text;
@@ -2981,31 +2980,29 @@ BEGIN
 		SELECT @extschema@.postgis_gdal_version() INTO gdalver;
 	EXCEPTION
 		WHEN undefined_function THEN
-			gdalver := NULL;
-			RAISE NOTICE 'Function postgis_gdal_version() not found.  Is raster support enabled and rtpostgis.sql installed?';
+			RAISE DEBUG 'Function postgis_gdal_version() not found.  Is raster support enabled and rtpostgis.sql installed?';
 	END;
 	BEGIN
 		SELECT @extschema@.postgis_sfcgal_version() INTO sfcgalver;
-    BEGIN
-      SELECT @extschema@.postgis_sfcgal_scripts_installed() INTO sfcgal_scr_ver;
-    EXCEPTION
-      WHEN undefined_function THEN
-        sfcgal_scr_ver := 'missing';
-    END;
+		BEGIN
+			SELECT @extschema@.postgis_sfcgal_scripts_installed() INTO sfcgal_scr_ver;
+		EXCEPTION
+			WHEN undefined_function THEN
+				sfcgal_scr_ver := 'missing';
+		END;
 	EXCEPTION
 		WHEN undefined_function THEN
-			sfcgalver := NULL;
+			RAISE DEBUG 'Function postgis_sfcgal_scripts_installed() not found. Is sfcgal support enabled and sfcgal.sql installed?';
 	END;
 	SELECT @extschema@.postgis_liblwgeom_version() INTO liblwgeomver;
 	SELECT @extschema@.postgis_libxml_version() INTO libxmlver;
 	SELECT @extschema@.postgis_scripts_installed() INTO dbproc;
 	SELECT @extschema@.postgis_scripts_released() INTO relproc;
-	select @extschema@.postgis_svn_version() INTO svnver;
+	SELECT @extschema@.postgis_svn_version() INTO svnver;
 	BEGIN
 		SELECT topology.postgis_topology_scripts_installed() INTO topo_scr_ver;
 	EXCEPTION
 		WHEN undefined_function OR invalid_schema_name THEN
-			topo_scr_ver := NULL;
 			RAISE DEBUG 'Function postgis_topology_scripts_installed() not found. Is topology support enabled and topology.sql installed?';
 		WHEN insufficient_privilege THEN
 			RAISE NOTICE 'Topology support cannot be inspected. Is current user granted USAGE on schema "topology" ?';
@@ -3017,16 +3014,18 @@ BEGIN
 		SELECT postgis_raster_scripts_installed() INTO rast_scr_ver;
 	EXCEPTION
 		WHEN undefined_function THEN
-			rast_scr_ver := NULL;
-			RAISE NOTICE 'Function postgis_raster_scripts_installed() not found. Is raster support enabled and rtpostgis.sql installed?';
+			RAISE DEBUG 'Function postgis_raster_scripts_installed() not found. Is raster support enabled and rtpostgis.sql installed?';
+		WHEN OTHERS THEN
+			RAISE NOTICE 'Function postgis_raster_scripts_installed() could not be called: % (%)', SQLERRM, SQLSTATE;
 	END;
 
 	BEGIN
 		SELECT @extschema@.postgis_raster_lib_version() INTO rast_lib_ver;
 	EXCEPTION
 		WHEN undefined_function THEN
-			rast_lib_ver := NULL;
-			RAISE NOTICE 'Function postgis_raster_lib_version() not found. Is raster support enabled and rtpostgis.sql installed?';
+			RAISE DEBUG 'Function postgis_raster_lib_version() not found. Is raster support enabled and rtpostgis.sql installed?';
+		WHEN OTHERS THEN
+			RAISE NOTICE 'Function postgis_raster_lib_version() could not be called: % (%)', SQLERRM, SQLSTATE;
 	END;
 
 	fullver = 'POSTGIS="' || libver;
@@ -3119,7 +3118,7 @@ BEGIN
 	END IF;
 
 	IF sfcgal_scr_ver IS NOT NULL AND sfcgal_scr_ver != relproc THEN
-    fullver = fullver || ' (sfcgal procs from "' || sfcgal_scr_ver || '" need upgrade)';
+		fullver = fullver || ' (sfcgal procs from "' || sfcgal_scr_ver || '" need upgrade)';
 	END IF;
 
 	RETURN fullver;
