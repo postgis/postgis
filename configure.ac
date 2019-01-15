@@ -1523,20 +1523,20 @@ AC_MSG_RESULT([  Perl:                 ${PERL}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ --------------- Extensions --------------- ])
 if test "x$RASTER" = "xraster"; then
-    AC_MSG_RESULT([  PostGIS Raster:       enabled])
+    AC_MSG_RESULT([  PostGIS Raster:                     enabled])
 else
-    AC_MSG_RESULT([  PostGIS Raster:       disabled])
+    AC_MSG_RESULT([  PostGIS Raster:                     disabled])
 
 fi
 if test "x$TOPOLOGY" = "xtopology"; then
-    AC_MSG_RESULT([  PostGIS Topology:     enabled])
+    AC_MSG_RESULT([  PostGIS Topology:                   enabled])
 else
-    AC_MSG_RESULT([  PostGIS Topology:     disabled])
+    AC_MSG_RESULT([  PostGIS Topology:                   disabled])
 fi
 if test "x$SFCGAL" = "xsfcgal"; then
-    AC_MSG_RESULT([  SFCGAL support:       enabled])
+    AC_MSG_RESULT([  SFCGAL support:                     enabled])
 else
-    AC_MSG_RESULT([  SFCGAL support:       disabled])
+    AC_MSG_RESULT([  SFCGAL support:                     disabled])
 fi
 
 if test "x$ADDRESS_STANDARDIZER" = "xaddress_standardizer"; then
@@ -1544,6 +1544,7 @@ if test "x$ADDRESS_STANDARDIZER" = "xaddress_standardizer"; then
 else
     AC_MSG_RESULT([  Address Standardizer support:       disabled])
 fi
+
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------- Documentation Generation -------- ])
 AC_MSG_RESULT([  xsltproc:             ${XSLTPROC}])
