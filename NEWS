@@ -62,6 +62,7 @@ PostGIS 3.0.0
   - #4262, Document MULTISURFACE compatibility of ST_LineToCurve (Steven Ottens)
   - #4276, ST_AsGeoJSON documentation refresh (Darafei Praliaskouski)
   - #4292, ST_AsMVT: parse JSON numeric values with decimals as doubles (Raúl Marín)
+  - #4300, ST_AsMVTGeom: Always return the simplest geometry (Raúl Marín)
 
 PostGIS 2.5.0
 2018/09/23
