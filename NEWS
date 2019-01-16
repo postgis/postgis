@@ -28,6 +28,7 @@ XXXX/XX/XX
   - #4273, Tighter parsing of WKT (Paul Ramsey)
 
   - #4292, ST_AsMVT: parse JSON numeric values with decimals as doubles (Raúl Marín)
+  - #4300, ST_AsMVTGeom: Always return the simplest geometry (Raúl Marín)
 
 PostGIS 2.5.1
 2018/11/18

@@ -766,15 +766,28 @@ lwgeom_get_basic_type(LWGEOM *geom)
  * geom be lost? Sure, but your MVT renderer couldn't
  * draw it anyways.
  */
-static void
+static inline LWGEOM *
 lwgeom_to_basic_type(LWGEOM *geom, uint8 original_type)
 {
+	LWGEOM *geom_out = geom;
 	if (lwgeom_get_type(geom) == COLLECTIONTYPE)
 	{
 		LWCOLLECTION *g = (LWCOLLECTION*)geom;
-		LWCOLLECTION *gc = lwcollection_extract(g, original_type);
-		*g = *gc;
+		geom_out = (LWGEOM *)lwcollection_extract(g, original_type);
 	}
+
+	/* If a collection only contains 1 geometry return than instead */
+	if (lwgeom_is_collection(geom_out))
+	{
+		LWCOLLECTION *g = (LWCOLLECTION *)geom_out;
+		if (g->ngeoms == 1)
+		{
+			geom_out = g->geoms[0];
+		}
+	}
+
+	geom_out->srid = geom->srid;
+	return geom_out;
 }
 
 /**
@@ -898,8 +911,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	}
 
 	/* if geometry collection extract highest dimensional geometry type */
-	if (lwgeom->type == COLLECTIONTYPE)
-		lwgeom_to_basic_type(lwgeom, basic_type);
+	lwgeom = lwgeom_to_basic_type(lwgeom, basic_type);
 
 	if (basic_type != lwgeom_get_basic_type(lwgeom))
 	{
