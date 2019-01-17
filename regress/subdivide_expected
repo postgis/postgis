@@ -7,3 +7,4 @@ ERROR:  lwgeom_subdivide: cannot subdivide to fewer than 5 vertices per output
 4|29321996468.6|29321996468.6|1857|256
 #4211|0.00008316000
 #4217|0.00002463668
+#4301|0.00213614552
