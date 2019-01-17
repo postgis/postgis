@@ -34,6 +34,8 @@ XXXX/XX/XX
   - #4301, ST_Subdivide: fix endless loop on coordinates near coincident to bounds
            (Darafei Praliaskouski)
 
+  - #4261, Use AccessShareLock in spatial_index_read_extent (Paul Ramsey)
+
 
 PostGIS 2.5.1
 2018/11/18
