@@ -36,6 +36,15 @@
 int gbox_geocentric_slow = LW_FALSE;
 
 /**
+* Utility function for ptarray_contains_point_sphere()
+*/
+static int
+point3d_equals(const POINT3D *p1, const POINT3D *p2)
+{
+	return FP_EQUALS(p1->x, p2->x) && FP_EQUALS(p1->y, p2->y) && FP_EQUALS(p1->z, p2->z);
+}
+
+/**
 * Convert a longitude to the range of -PI,PI
 */
 double longitude_radians_normalize(double lon)
@@ -3373,6 +3382,10 @@ point_in_cone(const POINT3D *A1, const POINT3D *A2, const POINT3D *P)
 	POINT3D AC; /* Center point of A1/A2 */
 	double min_similarity, similarity;
 
+	/* Boundary case */
+	if (point3d_equals(A1, P) || point3d_equals(A2, P))
+		return LW_TRUE;
+
 	/* The normalized sum bisects the angle between start and end. */
 	vector_sum(A1, A2, &AC);
 	normalize(&AC);
@@ -3381,7 +3394,7 @@ point_in_cone(const POINT3D *A1, const POINT3D *A2, const POINT3D *P)
 	min_similarity = dot_product(A1, &AC);
 
 	/* If the edge is sufficiently curved, use the dot product test */
-	if (fabs(1.0 - min_similarity) > 1e-10 )
+	if (fabs(1.0 - min_similarity) > 1e-10)
 	{
 		/* The projection of candidate p onto the center */
 		similarity = dot_product(P, &AC);
@@ -3390,7 +3403,7 @@ point_in_cone(const POINT3D *A1, const POINT3D *A2, const POINT3D *P)
 		/* the projection of the start point, the candidate */
 		/* must be closer to the center than the start, so */
 		/* therefor inside the cone */
-		if ( similarity > min_similarity )
+		if (similarity > min_similarity)
 		{
 			return LW_TRUE;
 		}
@@ -3425,14 +3438,6 @@ point_in_cone(const POINT3D *A1, const POINT3D *A2, const POINT3D *P)
 }
 
 
-/**
-* Utility function for ptarray_contains_point_sphere()
-*/
-static int
-point3d_equals(const POINT3D *p1, const POINT3D *p2)
-{
-	return FP_EQUALS(p1->x, p2->x) && FP_EQUALS(p1->y, p2->y) && FP_EQUALS(p1->z, p2->z);
-}
 
 /**
 * Utility function for edge_intersects(), signum with a tolerance
