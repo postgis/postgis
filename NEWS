@@ -11,7 +11,7 @@ PostGIS 2.4.7
   - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
   - #4290, More robust distance calculations in geography (Paul Ramsey)
   - #4292, ST_AsMVT: parse JSON numeric values with decimals as doubles (Raúl Marín)
-  - #4300, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)
+  - #4289, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)
 
 
 PostGIS 2.4.6
