@@ -638,17 +638,67 @@ static void parse_values(struct mvt_agg_context *ctx)
 
 	POSTGIS_DEBUGF(3, "parse_values n_tags %zd", ctx->feature->n_tags);
 }
-static int max_type(LWCOLLECTION *lwcoll)
+
+/* For a given geometry, look for the highest dimensional basic type, that is,
+ * point, line or polygon */
+static uint8
+lwgeom_get_basic_type(LWGEOM *geom)
 {
-	int i, max = POINTTYPE;
-	for (i = 0; i < lwcoll->ngeoms; i++) {
-		uint8_t type = lwcoll->geoms[i]->type;
-		if (type == POLYGONTYPE || type == MULTIPOLYGONTYPE)
-			return POLYGONTYPE;
-		else if (type == LINETYPE || type == MULTILINETYPE)
-			max = LINETYPE;
+	switch(geom->type)
+	{
+	case POINTTYPE:
+	case LINETYPE:
+	case POLYGONTYPE:
+		return geom->type;
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+		return geom->type - 3; /* Based on LWTYPE positions */
+	case COLLECTIONTYPE:
+	{
+		uint32_t i;
+		uint8 type = 0;
+		LWCOLLECTION *g = (LWCOLLECTION*)geom;
+		for (i = 0; i < g->ngeoms; i++)
+		{
+			LWGEOM *sg = g->geoms[i];
+			type = Max(type, lwgeom_get_basic_type(sg));
+		}
+		return type;
 	}
-	return max;
+	default:
+		elog(ERROR, "%s: Invalid type (%d)", __func__, geom->type);
+	}
+}
+
+/**
+ * In place process a collection to find a concrete geometry
+ * object and expose that as the actual object. Will some
+ * geom be lost? Sure, but your MVT renderer couldn't
+ * draw it anyways.
+ */
+static inline LWGEOM *
+lwgeom_to_basic_type(LWGEOM *geom, uint8 original_type)
+{
+	LWGEOM *geom_out = geom;
+	if (lwgeom_get_type(geom) == COLLECTIONTYPE)
+	{
+		LWCOLLECTION *g = (LWCOLLECTION*)geom;
+		geom_out = (LWGEOM *)lwcollection_extract(g, original_type);
+	}
+
+	/* If a collection only contains 1 geometry return than instead */
+	if (lwgeom_is_collection(geom_out))
+	{
+		LWCOLLECTION *g = (LWCOLLECTION *)geom_out;
+		if (g->ngeoms == 1)
+		{
+			geom_out = g->geoms[0];
+		}
+	}
+
+	geom_out->srid = geom->srid;
+	return geom_out;
 }
 
 /**
@@ -665,77 +715,23 @@ LWGEOM *mvt_geom(const LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32
 	LWGEOM *lwgeom_out = NULL;
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;
-	double resx = width / extent;
 	double fx = extent / width;
 	double fy = -(extent / height);
-	double buffer_map_xunits = resx * buffer;
-	const GBOX *ggbox;
+	uint8_t basic_type;
 	POSTGIS_DEBUG(2, "mvt_geom called");
 
 	/* Short circuit out on EMPTY */
 	if (lwgeom_is_empty(lwgeom))
 		return NULL;
 
-	ggbox = lwgeom_get_bbox(lwgeom);
 	if (width == 0 || height == 0)
 		elog(ERROR, "mvt_geom: bounds width or height cannot be 0");
 
 	if (extent == 0)
 		elog(ERROR, "mvt_geom: extent cannot be 0");
 
-	if (clip_geom) {
-		GBOX *bgbox = gbox_copy(gbox);
-		gbox_expand(bgbox, buffer_map_xunits);
-		if (!gbox_overlaps_2d(ggbox, bgbox)) {
-			POSTGIS_DEBUG(3, "mvt_geom: geometry outside clip box");
-			return NULL;
-		}
-		if (!gbox_contains_2d(bgbox, ggbox)) {
-			double x0 = bgbox->xmin;
-			double y0 = bgbox->ymin;
-			double x1 = bgbox->xmax;
-			double y1 = bgbox->ymax;
-#if POSTGIS_GEOS_VERSION < 35
-			LWPOLY *lwenv = lwpoly_construct_envelope(0, x0, y0, x1, y1);
-			lwgeom_out = lwgeom_intersection(lwgeom, lwpoly_as_lwgeom(lwenv));
-			lwpoly_free(lwenv);
-			if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
-			{
-				POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
-				return NULL;
-			}
-#else
-			const GBOX pre_clip_box = *lwgeom_get_bbox(lwgeom);
-			LWGEOM *clipped_geom = lwgeom_clip_by_rect(lwgeom, x0, y0, x1, y1);
-			if (clipped_geom == NULL || lwgeom_is_empty(clipped_geom))
-			{
-				POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
-				return NULL;
-			}
-			/* For some polygons, the simplify step might have left them
-			 * as invalid, which can cause clipping to return the complementary
-			 * geometry of what it should */
-			if ((lwgeom->type == POLYGONTYPE ||
-				lwgeom->type == MULTIPOLYGONTYPE ||
-				lwgeom->type == COLLECTIONTYPE) &&
-			    !gbox_contains_2d(&pre_clip_box, lwgeom_get_bbox(clipped_geom)))
-			{
-				/* Other options would be to fix the geometry and
-				 * retry or to calculate the difference between the
-				 * 2 boxes */
-				POSTGIS_DEBUG(3, "mvt_geom: Invalid geometry after clipping");
-				lwgeom_free(clipped_geom);
-				return NULL;
-			}
-			lwgeom_out = clipped_geom;
-#endif
-
-		}
-	}
-
-	/* if no clip output deep clone original to avoid mutation */
-	if (lwgeom_out == NULL)
-		lwgeom_out = lwgeom_clone_deep(lwgeom);
+	lwgeom_out = lwgeom_clone_deep(lwgeom);
+	basic_type = lwgeom_get_basic_type(lwgeom_out);
 
 	/* transform to tile coordinate space */
 	memset(&affine, 0, sizeof(affine));
@@ -757,20 +753,65 @@ LWGEOM *mvt_geom(const LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32
 	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
 		return NULL;
 
-	/* if polygon(s) make valid and force clockwise as per MVT spec */
-	if (lwgeom_out->type == POLYGONTYPE ||
-	    lwgeom_out->type == MULTIPOLYGONTYPE)
+	if (clip_geom)
 	{
-		lwgeom_out = lwgeom_make_valid(lwgeom_out);
+		GBOX bgbox, lwgeom_gbox;
+		gbox_init(&bgbox);
+		gbox_init(&lwgeom_gbox);
+		bgbox.xmax = bgbox.ymax = (double)extent + (double)buffer;
+		bgbox.xmin = bgbox.ymin = -(double)buffer;
+		FLAGS_SET_GEODETIC(lwgeom_gbox.flags, 0);
+		FLAGS_SET_GEODETIC(bgbox.flags, 0);
+		lwgeom_calculate_gbox(lwgeom_out, &lwgeom_gbox);
 
-		/* Drop type changes to play nice with MVT renderers */
-		if (!(lwgeom_out->type == POLYGONTYPE ||
-		      lwgeom_out->type == MULTIPOLYGONTYPE ||
-		      lwgeom_out->type == COLLECTIONTYPE))
+ 		if (!gbox_overlaps_2d(&lwgeom_gbox, &bgbox))
 		{
-			lwgeom_free(lwgeom_out);
+			POSTGIS_DEBUG(3, "mvt_geom: geometry outside clip box");
 			return NULL;
 		}
+
+ 		if (!gbox_contains_2d(&bgbox, &lwgeom_gbox))
+		{
+			LWGEOM *clipped_geom;
+#if POSTGIS_GEOS_VERSION < 35
+			LWPOLY *lwenv = lwpoly_construct_envelope(0, bgbox.xmin, bgbox.ymin, bgbox.xmax, bgbox.ymax);
+			clipped_geom = lwgeom_intersection(lwgeom_out, lwpoly_as_lwgeom(lwenv));
+			lwpoly_free(lwenv);
+#else
+			clipped_geom = lwgeom_clip_by_rect(lwgeom_out, bgbox.xmin, bgbox.ymin, bgbox.xmax, bgbox.ymax);
+#endif
+			if (clipped_geom == NULL || lwgeom_is_empty(clipped_geom))
+			{
+				POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
+				return NULL;
+			}
+
+ 			/* For some polygons, the simplify step might have left them
+			 * as invalid, which can cause clipping to return the complementary
+			 * geometry of what it should */
+			if ((basic_type == POLYGONTYPE) &&
+			    !gbox_contains_2d(&lwgeom_gbox, lwgeom_get_bbox(clipped_geom)))
+			{
+				/* TODO: Adapt this when and if Exception Policies are introduced.
+				 * Other options would be to fix the geometry and retry
+				 * or to calculate the difference between the 2 boxes.
+				 */
+				POSTGIS_DEBUG(3, "mvt_geom: Invalid geometry after clipping");
+				lwgeom_free(clipped_geom);
+				return NULL;
+			}
+
+ 			lwgeom_out = clipped_geom;
+		}
+	}
+
+	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
+		return NULL;
+
+	/* if polygon(s) make valid and force clockwise as per MVT spec */
+	if (basic_type == POLYGONTYPE)
+	{
+		lwgeom_out = lwgeom_make_valid(lwgeom_out);
 
 		/* Because we are in image coordinates, we need to go to CCW in */
 		/* order to get a CW output in image space */
@@ -778,31 +819,22 @@ LWGEOM *mvt_geom(const LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32
 		lwgeom_reverse(lwgeom_out);
 	}
 
-	/* if geometry collection extract highest dimensional geometry type */
-	if (lwgeom_out->type == COLLECTIONTYPE) {
-		LWCOLLECTION *lwcoll = lwgeom_as_lwcollection(lwgeom_out);
-		lwgeom_out = lwcollection_as_lwgeom(lwcollection_extract(lwcoll, max_type(lwcoll)));
-		lwgeom_out = lwgeom_homogenize(lwgeom_out);
-		/* if polygon(s) make valid and force clockwise as per MVT spec */
-		if (lwgeom_out->type == POLYGONTYPE ||
-		    lwgeom_out->type == MULTIPOLYGONTYPE)
-		{
-			lwgeom_out = lwgeom_make_valid(lwgeom_out);
-
-			/* Drop type changes to play nice with MVT renderers */
-			if (!(lwgeom_out->type == POLYGONTYPE ||
-				lwgeom_out->type == MULTIPOLYGONTYPE))
-			{
-				lwgeom_free(lwgeom_out);
-				return NULL;
-			}
-
-			/* Because we are in image coordinates, we need to go to CCW in */
-			/* order to get a CW output in image space */
-			lwgeom_force_clockwise(lwgeom_out);
-			lwgeom_reverse(lwgeom_out);
-		}
+	/* Make sure we return the most basic type after simplification and validation */
+	lwgeom_out = lwgeom_to_basic_type(lwgeom_out, basic_type);
+	if (basic_type != lwgeom_get_basic_type(lwgeom_out))
+	{
+		/* Drop type changes to play nice with MVT renderers */
+		POSTGIS_DEBUG(3, "mvt_geom: Dropping geometry after type change");
+		return NULL;
 	}
+
+	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
+		return NULL;
+
+
+	/* Clipping and validation might produce float values. Grid again into int
+	 * and pray that the output is still valid */
+	lwgeom_out = lwgeom_grid(lwgeom_out, &grid);
 
 	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
 		return NULL;
