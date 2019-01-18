@@ -8,11 +8,8 @@ PostGIS 2.3.9
            dimensions for &&& operator to work predictably.
            (Darafei Praliaskouski, Arthur Lesuisse, Andrew Gierth, Raúl Marín)
   - #4290, More robust distance calculations in geography (Paul Ramsey)
-
   - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
-
   - #4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)
-
   - #4296, Use `server_version_num` instead of parsing `version()` (Raúl Marín)
   - #4298, Geodetic tolerance issue in 32-bit (Paul Ramsey)
 
