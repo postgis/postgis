@@ -66,6 +66,7 @@ PostGIS 3.0.0
   - #4301, ST_Subdivide: fix endless loop on coordinates near coincident to bounds
            (Darafei Praliaskouski)
   - #4289, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)
+  - #4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)
 
 
 PostGIS 2.5.0
