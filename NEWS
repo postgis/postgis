@@ -12,6 +12,7 @@ PostGIS 2.4.7
   - #4290, More robust distance calculations in geography (Paul Ramsey)
   - #4292, ST_AsMVT: parse JSON numeric values with decimals as doubles (Raúl Marín)
   - #4289, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)
+  - #4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)
 
 
 PostGIS 2.4.6
