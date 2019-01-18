@@ -38,6 +38,7 @@ XXXX/XX/XX
 
   - #4289, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)
 
+  - #4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)
 
 PostGIS 2.5.1
 2018/11/18
