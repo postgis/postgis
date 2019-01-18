@@ -344,9 +344,9 @@ lwarc_linearize(POINTARRAY *to,
 	/* Override angles for circle case */
 	if( is_circle )
 	{
+		increment = fabs(increment);
 		a3 = a1 + 2.0 * M_PI;
 		a2 = a1 + M_PI;
-		increment = fabs(increment);
 		clockwise = LW_FALSE;
 	}
 
@@ -379,7 +379,15 @@ lwarc_linearize(POINTARRAY *to,
 		angle_shift = 0;
 	}
 
-	if ( reverse ) {{
+	/* Ensure the final point is EXACTLY the same as the first for the circular case */
+	if ( is_circle )
+	{
+		ptarray_remove_point(pa, pa->npoints - 1);
+		ptarray_append_point(pa, p1, LW_FALSE);
+	}
+
+	if ( reverse )
+	{
 		int i;
 		ptarray_append_point(to, p3, LW_FALSE);
 		for ( i=pa->npoints; i>0; i-- ) {
@@ -387,7 +395,7 @@ lwarc_linearize(POINTARRAY *to,
 			ptarray_append_point(to, &pt, LW_FALSE);
 		}
 		ptarray_free(pa);
-	}}
+	}
 
 	return points_added;
 }
@@ -446,7 +454,7 @@ lwcircstring_linearize(const LWCIRCSTRING *icurve, double tol,
 		}
 	}
 	getPoint4d_p(icurve->points, icurve->points->npoints-1, &p1);
-	ptarray_append_point(ptarray, &p1, LW_TRUE);
+	ptarray_append_point(ptarray, &p1, LW_FALSE);
 
 	oline = lwline_construct(icurve->srid, NULL, ptarray);
 	return oline;
