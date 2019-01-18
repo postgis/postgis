@@ -28,13 +28,15 @@ XXXX/XX/XX
   - #4273, Tighter parsing of WKT (Paul Ramsey)
 
   - #4292, ST_AsMVT: parse JSON numeric values with decimals as doubles (Raúl Marín)
- 
+
   - #4300, ST_AsMVTGeom: Always return the simplest geometry (Raúl Marín)
 
   - #4301, ST_Subdivide: fix endless loop on coordinates near coincident to bounds
            (Darafei Praliaskouski)
 
   - #4261, Use AccessShareLock in spatial_index_read_extent (Paul Ramsey)
+
+  - #4300, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)
 
 
 PostGIS 2.5.1
