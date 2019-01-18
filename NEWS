@@ -42,6 +42,12 @@ XXXX/XX/XX
 
   - #4296, Use `server_version_num` instead of parsing `version()` (Raúl Marín)
 
+  - #4290, More robust geography distance (Paul Ramsey)
+
+  - #4283, Avoid final point duplicates for circle stroking
+
+
+
 PostGIS 2.5.1
 2018/11/18
 
