@@ -36,7 +36,7 @@ XXXX/XX/XX
 
   - #4261, Use AccessShareLock in spatial_index_read_extent (Paul Ramsey)
 
-  - #4300, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)
+  - #4289, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)
 
 
 PostGIS 2.5.1
