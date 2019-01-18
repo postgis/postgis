@@ -14,6 +14,7 @@ PostGIS 2.4.7
   - #4289, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)
   - #4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)
   - #4296, Use `server_version_num` instead of parsing `version()` (Raúl Marín)
+  - #4298, Geodetic tolerance issue in 32-bit (Paul Ramsey)
 
 
 PostGIS 2.4.6
