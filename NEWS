@@ -11,6 +11,7 @@ PostGIS 2.3.9
 
   - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
 
+  - #4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)
 
 PostGIS 2.3.8
 2018/11/24
