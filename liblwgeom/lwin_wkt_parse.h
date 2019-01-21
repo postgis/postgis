@@ -1,31 +1,8 @@
-/**********************************************************************
- *
- * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.net
- *
- * PostGIS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * PostGIS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with PostGIS.  If not, see <http://www.gnu.org/licenses/>.
- *
- **********************************************************************
- *
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
- *
- **********************************************************************/
-
+/* A Bison parser, made by GNU Bison 3.2.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -52,6 +29,9 @@
 
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
+
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
 
 #ifndef YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED
 # define YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED
@@ -123,7 +103,7 @@ extern int wkt_yydebug;
 
 union YYSTYPE
 {
-#line 108 "lwin_wkt_parse.y" /* yacc.c:1909  */
+#line 116 "lwin_wkt_parse.y" /* yacc.c:1906  */
 
 	int integervalue;
 	double doublevalue;
@@ -132,7 +112,7 @@ union YYSTYPE
 	POINT coordinatevalue;
 	POINTARRAY *ptarrayvalue;
 
-#line 113 "lwin_wkt_parse.h" /* yacc.c:1909  */
+#line 116 "lwin_wkt_parse.h" /* yacc.c:1906  */
 };
 
 typedef union YYSTYPE YYSTYPE;
