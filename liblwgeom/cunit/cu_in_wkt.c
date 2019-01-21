@@ -54,11 +54,12 @@ static char* cu_wkt_in(char *wkt, uint8_t variant)
 	char *s = 0;
 
 	rv = lwgeom_parse_wkt(&p, wkt, 0);
-	if( p.errcode ) {
-	  CU_ASSERT_EQUAL( rv, LW_FAILURE );
+	if (p.errcode)
+	{
+		CU_ASSERT_EQUAL(rv, LW_FAILURE);
 		return strdup(p.message);
 	}
-	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_EQUAL(rv, LW_SUCCESS);
 	s = lwgeom_to_wkt(p.geom, variant, 8, NULL);
 	lwgeom_parser_result_free(&p);
 	return s;
