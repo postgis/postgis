@@ -1,3 +1,10 @@
+-- Input validation
+select 'I1', ST_AsMVTGeom(NULL, ST_MakeEnvelope(10, 10, 20, 20), 4096);
+select 'I2', ST_AsMVTGeom(ST_Point(1, 2), NULL, 4096);
+select 'I3', ST_AsMVTGeom(ST_Point(1, 2), ST_MakeBox2D(ST_Point(0, 0), ST_Point(0, 0)));
+select 'I4', ST_AsMVTGeom(ST_Point(1, 2), ST_MakeEnvelope(10, 10, 20, 20), -10);
+select 'I5', ST_AsMVTGeom(ST_Point(1, 2), ST_MakeEnvelope(10, 10, 20, 20), 0);
+
 -- geometry preprocessing tests
 select 'PG1', ST_AsText(ST_AsMVTGeom(
 	ST_Point(1, 2),
@@ -26,7 +33,7 @@ select 'PG6', ST_AsText(ST_AsMVTGeom(
 
 WITH geometry AS
 (
-SELECT 'PG7', ST_AsText(ST_AsMVTGeom(
+SELECT ST_AsText(ST_AsMVTGeom(
 	ST_GeomFromText('POLYGON((-7792023.4539488 1411512.60791779,-7785283.40665468 1406282.69482469,-7783978.88137195 1404858.20373788,-7782986.89858399 1402324.91434802,-7779028.02672366 1397370.31802772,
 	-7778652.06985644 1394387.75452545,-7779906.76953697 1393279.22658385,-7782212.33678782 1393293.14086794,-7784631.14401331 1394225.4151684,-7786257.27108231 1395867.40241344,-7783978.88137195 1395867.40241344,
 	-7783978.88137195 1396646.68250521,-7787752.03959369 1398469.72134299,-7795443.30325373 1405280.43988858,-7797717.16326269 1406217.73286975,-7798831.44531677 1406904.48130551,-7799311.5830898 1408004.24038921,
@@ -48,14 +55,15 @@ select 'PG9', ST_Area(ST_AsMVTGeom(
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(5, 5)),
 	4096, 0, true));
 
+-- There shouldn't be floating point values
 WITH geometry AS
 (
 	SELECT ST_AsMVTGeom(
-		ST_GeomFromText('POLYGON ((5 0, 0 5, 0 0, 5 5, 5 0))'),
+		ST_GeomFromText('POLYGON((5 0, 0 5, 0 0, 5 5, 5 0))'),
 		ST_MakeBox2D(ST_Point(0, 0), ST_Point(5, 5)),
 		5, 0, true) as g
 )
-SELECT  'PG9.1', ST_NumGeometries(g), ST_Area(g) FROM geometry;
+SELECT  'PG9.1', ST_NumGeometries(g), ST_Area(g), ST_AsText(g) LIKE '%2.5%'as fvalue FROM geometry;
 SELECT 'PG10', ST_AsText(ST_AsMVTGeom(
 	'POINT EMPTY'::geometry,
 	'BOX(0 0,2 2)'::box2d));
@@ -354,6 +362,62 @@ SELECT 'PG55', ST_AsText(ST_AsMVTGeom(
 
 SELECT 'PG56', ST_AsText(ST_AsMVTGeom(
 	ST_GeomFromText('POLYGON((0 0, 99.6 100, 100 99.6, 0 0))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
+-- Different round behaviour between geos and wagyu
+WITH geometry AS
+(
+    SELECT ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON((0 0, 0 99, 1 101, 100 100, 100 0, 0 0))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true)) as g
+)
+SELECT 'PG57',
+        g = 'POLYGON((100 0,100 100,0 100,0 1,1 0,100 0))' OR g = 'POLYGON((0 1,0 0,100 0,100 100,0 100,0 1))'
+FROM geometry;
+
+-- Geometrycollection test
+SELECT 'PG58', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0))), POINT(50 50))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
+SELECT 'PG59', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('GEOMETRYCOLLECTION(POINT(50 50), LINESTRING(10 10, 20 20), MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0))))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
+SELECT 'PG60', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('GEOMETRYCOLLECTION(POINT(50 50), GEOMETRYCOLLECTION(POINT(50 50), MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0)))))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
+SELECT 'PG61', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('GEOMETRYCOLLECTION(POINT(50 50), MULTIPOLYGON(((100 100, 110 100, 110 110, 100 110, 100 100))))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
+SELECT 'PG62', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('GEOMETRYCOLLECTION(LINESTRING(10 10, 20 20), POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), LINESTRING(20 20, 15 15))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true));
+
+-- Same polygon, different starting point between Wagyu and GEOS backends
+WITH geometry AS
+(
+    SELECT ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('GEOMETRYCOLLECTION(LINESTRING(10 10, 20 20), POLYGON((110 90, 110 110, 90 110, 90 90, 110 90)), LINESTRING(20 20, 15 15))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, 0, true)) as g
+)
+SELECT 'PG63',
+        ST_Area(g),
+        g = 'POLYGON((90 10,90 0,100 0,100 10,90 10))' OR g = 'POLYGON((90 0,100 0,100 10,90 10,90 0))'
+FROM geometry;
+
+SELECT 'PG64', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('GEOMETRYCOLLECTION(MULTIPOLYGON EMPTY, POINT(50 50))'),
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
 	100, 0, true));
 

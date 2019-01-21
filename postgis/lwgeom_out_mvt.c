@@ -45,26 +45,77 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 	elog(ERROR, "Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
-	LWGEOM *lwgeom_in, *lwgeom_out;
+	GBOX *bounds = NULL;
+	int32_t extent = 0;
+	int32_t buffer = 0;
+	bool clip_geom = true;
 	GSERIALIZED *geom_in, *geom_out;
-	GBOX *bounds;
-	int extent, buffer;
-	bool clip_geom;
+	LWGEOM *lwgeom_in, *lwgeom_out;
+	uint8_t type = 0;
+
 	if (PG_ARGISNULL(0))
+	{
 		PG_RETURN_NULL();
-	geom_in = PG_GETARG_GSERIALIZED_P_COPY(0);
-	lwgeom_in = lwgeom_from_gserialized(geom_in);
+	}
+
 	if (PG_ARGISNULL(1))
-		elog(ERROR, "%s: parameter bounds cannot be null", __func__);
-	bounds = (GBOX *) PG_GETARG_POINTER(1);
+	{
+		elog(ERROR, "%s: Geometric bounds cannot be null", __func__);
+		PG_RETURN_NULL();
+	}
+	bounds = (GBOX *)PG_GETARG_POINTER(1);
+	if (bounds->xmax - bounds->xmin <= 0 || bounds->ymax - bounds->ymin <= 0)
+	{
+		elog(ERROR, "%s: Geometric bounds are too small", __func__);
+		PG_RETURN_NULL();
+	}
+
 	extent = PG_ARGISNULL(2) ? 4096 : PG_GETARG_INT32(2);
+	if (extent <= 0)
+	{
+		elog(ERROR, "%s: Extent must be greater than 0", __func__);
+		PG_RETURN_NULL();
+	}
+
 	buffer = PG_ARGISNULL(3) ? 256 : PG_GETARG_INT32(3);
 	clip_geom = PG_ARGISNULL(4) ? true : PG_GETARG_BOOL(4);
-	// NOTE: can both return in clone and in place modification so
-	// not known if lwgeom_in can be freed
+
+	geom_in = PG_GETARG_GSERIALIZED_P_COPY(0);
+	type = gserialized_get_type(geom_in);
+
+	/* If possible, peek into the bounding box before deserializing it to discard small geometries
+	 * We don't check COLLECTIONTYPE since that might be a collection of points */
+	if (type == LINETYPE || type == POLYGONTYPE || type == MULTILINETYPE || type == MULTIPOLYGONTYPE)
+	{
+		GBOX gserialized_box;
+		/* We only apply the optimization if the bounding box is available */
+		if ((gserialized_read_gbox_p(geom_in, &gserialized_box) == LW_SUCCESS) ||
+		    (gserialized_peek_gbox_p(geom_in, &gserialized_box) == LW_SUCCESS))
+		{
+			/* Shortcut to drop geometries smaller than the resolution */
+			double geom_width = gserialized_box.xmax - gserialized_box.xmin;
+			double geom_height = gserialized_box.ymax - gserialized_box.ymin;
+			double geom_area = geom_width * geom_height;
+
+			double bounds_width = (bounds->xmax - bounds->xmin) / extent;
+			double bounds_height = (bounds->ymax - bounds->ymin) / extent;
+
+			/* We use 1/4th of the grid square area as the minimum resolution */
+			double min_resolution_area = bounds_width * bounds_height / 4.0;
+
+			if (geom_area < min_resolution_area)
+			{
+				PG_RETURN_NULL();
+			}
+		}
+	}
+
+	lwgeom_in = lwgeom_from_gserialized(geom_in);
+
 	lwgeom_out = mvt_geom(lwgeom_in, bounds, extent, buffer, clip_geom);
 	if (lwgeom_out == NULL)
 		PG_RETURN_NULL();
+
 	geom_out = geometry_serialize(lwgeom_out);
 	lwgeom_free(lwgeom_out);
 	PG_FREE_IF_COPY(geom_in, 0);

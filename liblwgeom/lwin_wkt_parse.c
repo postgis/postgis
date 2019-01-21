@@ -95,16 +95,16 @@ LWGEOM_PARSER_RESULT global_parser_result;
 /* Turn on/off verbose parsing (turn off for production) */
 int wkt_yydebug = 0;
 
-/* 
-* Error handler called by the bison parser. Mostly we will be 
+/*
+* Error handler called by the bison parser. Mostly we will be
 * catching our own errors and filling out the message and errlocation
-* from WKT_ERROR in the grammar, but we keep this one 
+* from WKT_ERROR in the grammar, but we keep this one
 * around just in case.
 */
 void wkt_yyerror(__attribute__((__unused__)) const char *str)
 {
 	/* If we haven't already set a message and location, let's set one now. */
-	if ( ! global_parser_result.message ) 
+	if ( ! global_parser_result.message )
 	{
 		global_parser_result.message = parser_error_messages[PARSER_ERROR_OTHER];
 		global_parser_result.errcode = PARSER_ERROR_OTHER;
@@ -137,14 +137,14 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 	/* Set the input text string, and parse checks. */
 	global_parser_result.wkinput = wktstr;
 	global_parser_result.parser_check_flags = parser_check_flags;
-		
+
 	wkt_lexer_init(wktstr); /* Lexer ready */
 	parse_rv = wkt_yyparse(); /* Run the parse */
 	LWDEBUGF(4,"wkt_yyparse returned %d", parse_rv);
 	wkt_lexer_close(); /* Clean up lexer */
-	
+
 	/* A non-zero parser return is an error. */
-	if ( parse_rv != 0 ) 
+	if ( parse_rv || global_parser_result.errcode )
 	{
 		if( ! global_parser_result.errcode )
 		{
@@ -152,21 +152,29 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 			global_parser_result.message = parser_error_messages[PARSER_ERROR_OTHER];
 			global_parser_result.errlocation = wkt_yylloc.last_column;
 		}
+		/* Got a completed object parsed, but errored out after... */
+		/* Due to junk after the valid WKT, eg: "POINT(1 1) foobar" */
+		/* https://trac.osgeo.org/postgis/ticket/4273 */
+		if ( global_parser_result.errcode && ! parse_rv )
+		{
+			lwgeom_free(global_parser_result.geom);
+			global_parser_result.geom = NULL;
+		}
 
-		LWDEBUGF(5, "error returned by wkt_yyparse() @ %d: [%d] '%s'", 
-		            global_parser_result.errlocation, 
-		            global_parser_result.errcode, 
+		LWDEBUGF(5, "error returned by wkt_yyparse() @ %d: [%d] '%s'",
+		            global_parser_result.errlocation,
+		            global_parser_result.errcode,
 		            global_parser_result.message);
-		
+
 		/* Copy the global values into the return pointer */
 		*parser_result = global_parser_result;
-                wkt_yylex_destroy();
+		wkt_yylex_destroy();
 		return LW_FAILURE;
 	}
-	
+
 	/* Copy the global value into the return pointer */
 	*parser_result = global_parser_result;
-        wkt_yylex_destroy();
+	wkt_yylex_destroy();
 	return LW_SUCCESS;
 }
 

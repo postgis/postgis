@@ -28,8 +28,7 @@ DECLARE
 	var_class text := '';
 	var_is_aggregate boolean := false;
 	var_sql_list text := '';
-	var_pgsql_version integer := CASE WHEN split_part(s,'.',1)::integer > 9 THEN split_part(s,'.',1) || '0' ELSE split_part(s,'.', 1) || split_part(s,'.', 2) END AS v
-	FROM substring(version(), 'PostgreSQL ([0-9\.]+)') AS s;
+	var_pgsql_version integer := current_setting('server_version_num');
 BEGIN
 		var_class := CASE WHEN lower(param_type) = 'function' OR lower(param_type) = 'aggregate' THEN 'pg_proc' ELSE '' END;
 		var_is_aggregate := CASE WHEN lower(param_type) = 'aggregate' THEN true ELSE false END;

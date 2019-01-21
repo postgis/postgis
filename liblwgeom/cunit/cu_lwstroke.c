@@ -135,9 +135,10 @@ static void test_lwcurve_linearize(void)
 
 	/* 10 segments per quadrant (circular) */
 	in = lwgeom_from_text("CIRCULARSTRING(0 0,1 0,0 0)");
+	// out = lwcurve_linearize(in, 10, toltype, 0);
 	out = lwcurve_linearize(in, 10, toltype, 0);
-
-	ASSERT_INT_EQUAL(1 + 10*4, lwgeom_count_vertices(out));
+	// printf("OUT: %s\n", lwgeom_to_wkt(out, WKT_EXTENDED, 5, NULL));
+	ASSERT_INT_EQUAL(10*4, lwgeom_count_vertices(out));
 	lwgeom_free(out);
 	lwgeom_free(in);
 

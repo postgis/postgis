@@ -14,13 +14,10 @@ PostGIS 3.0.0
   - #4260, liblwgeom headers are not installed anymore.
            If your project depends on them available, please use
            librttopo instead. (Darafei Praliaskouski)
-
   - #4258, Remove SFCGAL support for ST_Area, ST_Distance, ST_Intersection,
            ST_Difference, ST_Union (Darafei Praliaskouski)
-
   - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
-
-  - #4268, Bump minimum SFCGAL version to 1.3.1 (Darafei Praliaskouski) 
+  - #4268, Bump minimum SFCGAL version to 1.3.1 (Darafei Praliaskouski)
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
@@ -35,7 +32,8 @@ PostGIS 3.0.0
            Praliaskouski).
   - #4162, ST_DWithin documentation examples for storing geometry and
            radius in table (Darafei Praliaskouski, github user Boscop).
-  - #4161, MVT: Drop geometries smaller than the resolution (Raúl Marín)
+  - #4161 and #4294, ST_AsMVTGeom: Shortcut geometries smaller than the
+           resolution (Raúl Marín)
   - #4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)
   - #4181, ST_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)
   - #4183, ST_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)
@@ -59,8 +57,15 @@ PostGIS 3.0.0
   - #4139, Make mixed-dimension ND index build tree correctly (Darafei Praliaskouski,
            Arthur Lesuisse, Andrew Gierth, Raúl Marín)
   - #4262, Document MULTISURFACE compatibility of ST_LineToCurve (Steven Ottens)
-
   - #4276, ST_AsGeoJSON documentation refresh (Darafei Praliaskouski)
+  - #4292, ST_AsMVT: parse JSON numeric values with decimals as doubles (Raúl Marín)
+  - #4300, ST_AsMVTGeom: Always return the simplest geometry (Raúl Marín)
+  - #4301, ST_Subdivide: fix endless loop on coordinates near coincident to bounds
+           (Darafei Praliaskouski)
+  - #4289, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)
+  - #4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)
+  - #4296, Use `server_version_num` instead of parsing `version()` (Raúl Marín)
+
 
 PostGIS 2.5.0
 2018/09/23

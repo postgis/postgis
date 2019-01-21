@@ -614,7 +614,7 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 					PointerGetDatum(v.val.numeric)));
 				d = strtod(str, NULL);
 				l = strtol(str, NULL, 10);
-				if ((long) d != l)
+				if (FP_NEQUALS(d, (double)l))
 				{
 					MVT_PARSE_VALUE(d, mvt_kv_double_value, double_values_hash,
 						double_value, sizeof(double));
@@ -828,6 +828,7 @@ lwgeom_to_basic_type(LWGEOM *geom, uint8 original_type)
 		}
 	}
 
+	geom_out->srid = geom->srid;
 	return geom_out;
 }
 
@@ -892,9 +893,8 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 		lwgeom_reverse_in_place(ng);
 	}
 
-	/* Make sure we return the most basic type */
+	/* Make sure we return the most basic type after simplification and validation */
 	ng = lwgeom_to_basic_type(ng, basic_type);
-
 	if (basic_type != lwgeom_get_basic_type(ng))
 	{
 		/* Drop type changes to play nice with MVT renderers */
@@ -944,6 +944,7 @@ mvt_clip_and_validate(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint3
 
 	return clipped_lwgeom;
 }
+
 #else /* ! HAVE_WAGYU */
 
 static LWGEOM *
@@ -964,7 +965,7 @@ mvt_clip_and_validate(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint3
 LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buffer,
 	bool clip_geom)
 {
-	AFFINE affine;
+	AFFINE affine = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;
@@ -973,31 +974,18 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	const uint8_t basic_type = lwgeom_get_basic_type(lwgeom);
 	POSTGIS_DEBUG(2, "mvt_geom called");
 
+	/* Simplify it as soon as possible */
+	lwgeom = lwgeom_to_basic_type(lwgeom, basic_type);
+
 	/* Short circuit out on EMPTY */
 	if (lwgeom_is_empty(lwgeom))
 		return NULL;
-
-	if (width == 0 || height == 0)
-		elog(ERROR, "mvt_geom: bounds width or height cannot be 0");
-
-	if (extent == 0)
-		elog(ERROR, "mvt_geom: extent cannot be 0");
 
 	resx = width / extent;
 	resy = height / extent;
 	res = (resx < resy ? resx : resy)/2;
 	fx = extent / width;
 	fy = -(extent / height);
-
-	if (basic_type == LINETYPE || basic_type == POLYGONTYPE)
-	{
-		/* Shortcut to drop geometries smaller than the resolution */
-		const GBOX *lwgeom_gbox = lwgeom_get_bbox(lwgeom);
-		double bbox_width = lwgeom_gbox->xmax - lwgeom_gbox->xmin;
-		double bbox_height = lwgeom_gbox->ymax - lwgeom_gbox->ymin;
-		if (bbox_height * bbox_height + bbox_width * bbox_width < res * res)
-			return NULL;
-	}
 
 	/* Remove all non-essential points (under the output resolution) */
 	lwgeom_remove_repeated_points_in_place(lwgeom, res);
@@ -1008,7 +996,6 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 		return NULL;
 
 	/* transform to tile coordinate space */
-	memset(&affine, 0, sizeof(affine));
 	affine.afac = fx;
 	affine.efac = fy;
 	affine.ifac = 1;
@@ -1026,10 +1013,6 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;
 
-	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
-		return NULL;
-
-	lwgeom->srid = 0; /* MVT doesn't use it */
 	return lwgeom;
 }
 
