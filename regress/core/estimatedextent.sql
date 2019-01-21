@@ -206,3 +206,10 @@ select '4.b box',_postgis_index_extent('test', 'geom2');
 -- select '6.b null', _postgis_index_extent('test', 'geom2');
 drop table test cascade;
 
+-- Check NOTICE message
+create table test (id serial primary key, geom1 geometry, geom2 geometry);
+insert into test (geom1, geom2) select NULL, NULL;
+insert into test (geom1, geom2) select NULL, NULL;
+insert into test (geom1, geom2) select NULL, NULL;
+ANALYZE test;
+drop table test cascade;
