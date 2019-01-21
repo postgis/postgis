@@ -21,16 +21,16 @@ LWGEOM_PARSER_RESULT global_parser_result;
 /* Turn on/off verbose parsing (turn off for production) */
 int wkt_yydebug = 0;
 
-/* 
-* Error handler called by the bison parser. Mostly we will be 
+/*
+* Error handler called by the bison parser. Mostly we will be
 * catching our own errors and filling out the message and errlocation
-* from WKT_ERROR in the grammar, but we keep this one 
+* from WKT_ERROR in the grammar, but we keep this one
 * around just in case.
 */
 void wkt_yyerror(const char *str)
 {
 	/* If we haven't already set a message and location, let's set one now. */
-	if ( ! global_parser_result.message ) 
+	if ( ! global_parser_result.message )
 	{
 		global_parser_result.message = parser_error_messages[PARSER_ERROR_OTHER];
 		global_parser_result.errcode = PARSER_ERROR_OTHER;
@@ -63,14 +63,14 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 	/* Set the input text string, and parse checks. */
 	global_parser_result.wkinput = wktstr;
 	global_parser_result.parser_check_flags = parser_check_flags;
-		
+
 	wkt_lexer_init(wktstr); /* Lexer ready */
 	parse_rv = wkt_yyparse(); /* Run the parse */
 	LWDEBUGF(4,"wkt_yyparse returned %d", parse_rv);
 	wkt_lexer_close(); /* Clean up lexer */
-	
+
 	/* A non-zero parser return is an error. */
-	if ( parse_rv != 0 ) 
+	if ( parse_rv || global_parser_result.errcode )
 	{
 		if( ! global_parser_result.errcode )
 		{
@@ -78,21 +78,29 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 			global_parser_result.message = parser_error_messages[PARSER_ERROR_OTHER];
 			global_parser_result.errlocation = wkt_yylloc.last_column;
 		}
+		/* Got a completed object parsed, but errored out after... */
+		/* Due to junk after the valid WKT, eg: "POINT(1 1) foobar" */
+		/* https://trac.osgeo.org/postgis/ticket/4273 */
+		if ( global_parser_result.errcode && ! parse_rv )
+		{
+			lwgeom_free(global_parser_result.geom);
+			global_parser_result.geom = NULL;
+		}
 
-		LWDEBUGF(5, "error returned by wkt_yyparse() @ %d: [%d] '%s'", 
-		            global_parser_result.errlocation, 
-		            global_parser_result.errcode, 
+		LWDEBUGF(5, "error returned by wkt_yyparse() @ %d: [%d] '%s'",
+		            global_parser_result.errlocation,
+		            global_parser_result.errcode,
 		            global_parser_result.message);
-		
+
 		/* Copy the global values into the return pointer */
 		*parser_result = global_parser_result;
-                wkt_yylex_destroy();
+		wkt_yylex_destroy();
 		return LW_FAILURE;
 	}
-	
+
 	/* Copy the global value into the return pointer */
 	*parser_result = global_parser_result;
-        wkt_yylex_destroy();
+	wkt_yylex_destroy();
 	return LW_SUCCESS;
 }
 
@@ -114,10 +122,10 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 	POINTARRAY *ptarrayvalue;
 }
 
-%token POINT_TOK LINESTRING_TOK POLYGON_TOK 
-%token MPOINT_TOK MLINESTRING_TOK MPOLYGON_TOK 
+%token POINT_TOK LINESTRING_TOK POLYGON_TOK
+%token MPOINT_TOK MLINESTRING_TOK MPOLYGON_TOK
 %token MSURFACE_TOK MCURVE_TOK CURVEPOLYGON_TOK COMPOUNDCURVE_TOK CIRCULARSTRING_TOK
-%token COLLECTION_TOK 
+%token COLLECTION_TOK
 %token RBRACKET_TOK LBRACKET_TOK COMMA_TOK EMPTY_TOK
 %token SEMICOLON_TOK
 %token TRIANGLE_TOK TIN_TOK
@@ -168,8 +176,8 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 %type <geometryvalue> triangle_untagged
 
 
-/* These clean up memory on errors and parser aborts. */ 
-%destructor { ptarray_free($$); } ptarray 
+/* These clean up memory on errors and parser aborts. */
+%destructor { ptarray_free($$); } ptarray
 %destructor { ptarray_free($$); } ring
 %destructor { ptarray_free($$); } patchring
 %destructor { lwgeom_free($$); } curvering_list
@@ -209,20 +217,20 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 %%
 
 geometry:
-	geometry_no_srid 
+	geometry_no_srid
 		{ wkt_parser_geometry_new($1, SRID_UNKNOWN); WKT_ERROR(); } |
-	SRID_TOK SEMICOLON_TOK geometry_no_srid 
+	SRID_TOK SEMICOLON_TOK geometry_no_srid
 		{ wkt_parser_geometry_new($3, $1); WKT_ERROR(); } ;
 
-geometry_no_srid : 
-	point { $$ = $1; } | 
-	linestring { $$ = $1; } | 
-	circularstring { $$ = $1; } | 
-	compoundcurve { $$ = $1; } | 
-	polygon { $$ = $1; } | 
-	curvepolygon { $$ = $1; } | 
+geometry_no_srid :
+	point { $$ = $1; } |
+	linestring { $$ = $1; } |
+	circularstring { $$ = $1; } |
+	compoundcurve { $$ = $1; } |
+	polygon { $$ = $1; } |
+	curvepolygon { $$ = $1; } |
 	multipoint { $$ = $1; } |
-	multilinestring { $$ = $1; } | 
+	multilinestring { $$ = $1; } |
 	multipolygon { $$ = $1; } |
 	multisurface { $$ = $1; } |
 	multicurve { $$ = $1; } |
@@ -230,21 +238,21 @@ geometry_no_srid :
 	polyhedralsurface { $$ = $1; } |
 	triangle { $$ = $1; } |
 	geometrycollection { $$ = $1; } ;
-	
+
 geometrycollection :
-	COLLECTION_TOK LBRACKET_TOK geometry_list RBRACKET_TOK 
+	COLLECTION_TOK LBRACKET_TOK geometry_list RBRACKET_TOK
 		{ $$ = wkt_parser_collection_finalize(COLLECTIONTYPE, $3, NULL); WKT_ERROR(); } |
-	COLLECTION_TOK DIMENSIONALITY_TOK LBRACKET_TOK geometry_list RBRACKET_TOK 
+	COLLECTION_TOK DIMENSIONALITY_TOK LBRACKET_TOK geometry_list RBRACKET_TOK
 		{ $$ = wkt_parser_collection_finalize(COLLECTIONTYPE, $4, $2); WKT_ERROR(); } |
-	COLLECTION_TOK DIMENSIONALITY_TOK EMPTY_TOK 
+	COLLECTION_TOK DIMENSIONALITY_TOK EMPTY_TOK
 		{ $$ = wkt_parser_collection_finalize(COLLECTIONTYPE, NULL, $2); WKT_ERROR(); } |
-	COLLECTION_TOK EMPTY_TOK 
+	COLLECTION_TOK EMPTY_TOK
 		{ $$ = wkt_parser_collection_finalize(COLLECTIONTYPE, NULL, NULL); WKT_ERROR(); } ;
-	
+
 geometry_list :
-	geometry_list COMMA_TOK geometry_no_srid 
+	geometry_list COMMA_TOK geometry_no_srid
 		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
-	geometry_no_srid 
+	geometry_no_srid
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
 multisurface :
@@ -256,7 +264,7 @@ multisurface :
 		{ $$ = wkt_parser_collection_finalize(MULTISURFACETYPE, NULL, $2); WKT_ERROR(); } |
 	MSURFACE_TOK EMPTY_TOK
 		{ $$ = wkt_parser_collection_finalize(MULTISURFACETYPE, NULL, NULL); WKT_ERROR(); } ;
-	
+
 surface_list :
 	surface_list COMMA_TOK polygon
 		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
@@ -264,11 +272,11 @@ surface_list :
 		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	surface_list COMMA_TOK polygon_untagged
 		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
-	polygon 
+	polygon
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } |
-	curvepolygon 
+	curvepolygon
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } |
-	polygon_untagged 
+	polygon_untagged
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
 tin :
@@ -302,34 +310,34 @@ multipolygon :
 		{ $$ = wkt_parser_collection_finalize(MULTIPOLYGONTYPE, NULL, NULL); WKT_ERROR(); } ;
 
 polygon_list :
-	polygon_list COMMA_TOK polygon_untagged 
+	polygon_list COMMA_TOK polygon_untagged
 		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
-	polygon_untagged 
+	polygon_untagged
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
 patch_list :
-	patch_list COMMA_TOK patch 
+	patch_list COMMA_TOK patch
 		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
-	patch 
+	patch
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
-polygon : 
-	POLYGON_TOK LBRACKET_TOK ring_list RBRACKET_TOK 
+polygon :
+	POLYGON_TOK LBRACKET_TOK ring_list RBRACKET_TOK
 		{ $$ = wkt_parser_polygon_finalize($3, NULL); WKT_ERROR(); } |
-	POLYGON_TOK DIMENSIONALITY_TOK LBRACKET_TOK ring_list RBRACKET_TOK 
+	POLYGON_TOK DIMENSIONALITY_TOK LBRACKET_TOK ring_list RBRACKET_TOK
 		{ $$ = wkt_parser_polygon_finalize($4, $2); WKT_ERROR(); } |
-	POLYGON_TOK DIMENSIONALITY_TOK EMPTY_TOK 
+	POLYGON_TOK DIMENSIONALITY_TOK EMPTY_TOK
 		{ $$ = wkt_parser_polygon_finalize(NULL, $2); WKT_ERROR(); } |
-	POLYGON_TOK EMPTY_TOK 
+	POLYGON_TOK EMPTY_TOK
 		{ $$ = wkt_parser_polygon_finalize(NULL, NULL); WKT_ERROR(); } ;
 
-polygon_untagged : 
-	LBRACKET_TOK ring_list RBRACKET_TOK 
+polygon_untagged :
+	LBRACKET_TOK ring_list RBRACKET_TOK
 		{ $$ = $2; } |
 	EMPTY_TOK
 		{ $$ = wkt_parser_polygon_finalize(NULL, NULL); WKT_ERROR(); };
 
-patch : 
+patch :
 	LBRACKET_TOK patchring_list RBRACKET_TOK { $$ = $2; } ;
 
 curvepolygon :
@@ -343,9 +351,9 @@ curvepolygon :
 		{ $$ = wkt_parser_curvepolygon_finalize(NULL, NULL); WKT_ERROR(); } ;
 
 curvering_list :
-	curvering_list COMMA_TOK curvering 
+	curvering_list COMMA_TOK curvering
 		{ $$ = wkt_parser_curvepolygon_add_ring($1,$3); WKT_ERROR(); } |
-	curvering 
+	curvering
 		{ $$ = wkt_parser_curvepolygon_new($1); WKT_ERROR(); } ;
 
 curvering :
@@ -355,15 +363,15 @@ curvering :
 	circularstring { $$ = $1; } ;
 
 patchring_list :
-	patchring_list COMMA_TOK patchring 
+	patchring_list COMMA_TOK patchring
 		{ $$ = wkt_parser_polygon_add_ring($1,$3,'Z'); WKT_ERROR(); } |
-	patchring 
+	patchring
 		{ $$ = wkt_parser_polygon_new($1,'Z'); WKT_ERROR(); } ;
 
 ring_list :
-	ring_list COMMA_TOK ring 
+	ring_list COMMA_TOK ring
 		{ $$ = wkt_parser_polygon_add_ring($1,$3,'2'); WKT_ERROR(); } |
-	ring 
+	ring
 		{ $$ = wkt_parser_polygon_new($1,'2'); WKT_ERROR(); } ;
 
 patchring :
@@ -425,60 +433,60 @@ curve_list :
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
 multilinestring :
-	MLINESTRING_TOK LBRACKET_TOK linestring_list RBRACKET_TOK 
+	MLINESTRING_TOK LBRACKET_TOK linestring_list RBRACKET_TOK
 		{ $$ = wkt_parser_collection_finalize(MULTILINETYPE, $3, NULL); WKT_ERROR(); } |
-	MLINESTRING_TOK DIMENSIONALITY_TOK LBRACKET_TOK linestring_list RBRACKET_TOK 
+	MLINESTRING_TOK DIMENSIONALITY_TOK LBRACKET_TOK linestring_list RBRACKET_TOK
 		{ $$ = wkt_parser_collection_finalize(MULTILINETYPE, $4, $2); WKT_ERROR(); } |
-	MLINESTRING_TOK DIMENSIONALITY_TOK EMPTY_TOK 
+	MLINESTRING_TOK DIMENSIONALITY_TOK EMPTY_TOK
 		{ $$ = wkt_parser_collection_finalize(MULTILINETYPE, NULL, $2); WKT_ERROR(); } |
-	MLINESTRING_TOK EMPTY_TOK 
+	MLINESTRING_TOK EMPTY_TOK
 		{ $$ = wkt_parser_collection_finalize(MULTILINETYPE, NULL, NULL); WKT_ERROR(); } ;
 
 linestring_list :
-	linestring_list COMMA_TOK linestring_untagged 
+	linestring_list COMMA_TOK linestring_untagged
 		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
-	linestring_untagged 
+	linestring_untagged
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
-circularstring : 
-	CIRCULARSTRING_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
+circularstring :
+	CIRCULARSTRING_TOK LBRACKET_TOK ptarray RBRACKET_TOK
 		{ $$ = wkt_parser_circularstring_new($3, NULL); WKT_ERROR(); } |
-	CIRCULARSTRING_TOK DIMENSIONALITY_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
+	CIRCULARSTRING_TOK DIMENSIONALITY_TOK LBRACKET_TOK ptarray RBRACKET_TOK
 		{ $$ = wkt_parser_circularstring_new($4, $2); WKT_ERROR(); } |
 	CIRCULARSTRING_TOK DIMENSIONALITY_TOK EMPTY_TOK
 		{ $$ = wkt_parser_circularstring_new(NULL, $2); WKT_ERROR(); } |
-	CIRCULARSTRING_TOK EMPTY_TOK 
+	CIRCULARSTRING_TOK EMPTY_TOK
 		{ $$ = wkt_parser_circularstring_new(NULL, NULL); WKT_ERROR(); } ;
 
-linestring : 
-	LINESTRING_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
-		{ $$ = wkt_parser_linestring_new($3, NULL); WKT_ERROR(); } | 
-	LINESTRING_TOK DIMENSIONALITY_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
+linestring :
+	LINESTRING_TOK LBRACKET_TOK ptarray RBRACKET_TOK
+		{ $$ = wkt_parser_linestring_new($3, NULL); WKT_ERROR(); } |
+	LINESTRING_TOK DIMENSIONALITY_TOK LBRACKET_TOK ptarray RBRACKET_TOK
 		{ $$ = wkt_parser_linestring_new($4, $2); WKT_ERROR(); } |
-	LINESTRING_TOK DIMENSIONALITY_TOK EMPTY_TOK 
+	LINESTRING_TOK DIMENSIONALITY_TOK EMPTY_TOK
 		{ $$ = wkt_parser_linestring_new(NULL, $2); WKT_ERROR(); } |
-	LINESTRING_TOK EMPTY_TOK 
+	LINESTRING_TOK EMPTY_TOK
 		{ $$ = wkt_parser_linestring_new(NULL, NULL); WKT_ERROR(); } ;
 
 linestring_untagged :
-	LBRACKET_TOK ptarray RBRACKET_TOK 
+	LBRACKET_TOK ptarray RBRACKET_TOK
 		{ $$ = wkt_parser_linestring_new($2, NULL); WKT_ERROR(); } |
 	EMPTY_TOK
 		{ $$ = wkt_parser_linestring_new(NULL, NULL); WKT_ERROR(); };
 
 triangle_list :
-	triangle_list COMMA_TOK triangle_untagged 
+	triangle_list COMMA_TOK triangle_untagged
 		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
-	triangle_untagged 
+	triangle_untagged
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
 triangle :
-	TRIANGLE_TOK LBRACKET_TOK LBRACKET_TOK ptarray RBRACKET_TOK RBRACKET_TOK 
-		{ $$ = wkt_parser_triangle_new($4, NULL); WKT_ERROR(); } | 
-	TRIANGLE_TOK DIMENSIONALITY_TOK LBRACKET_TOK LBRACKET_TOK ptarray RBRACKET_TOK RBRACKET_TOK 
+	TRIANGLE_TOK LBRACKET_TOK LBRACKET_TOK ptarray RBRACKET_TOK RBRACKET_TOK
+		{ $$ = wkt_parser_triangle_new($4, NULL); WKT_ERROR(); } |
+	TRIANGLE_TOK DIMENSIONALITY_TOK LBRACKET_TOK LBRACKET_TOK ptarray RBRACKET_TOK RBRACKET_TOK
 		{ $$ = wkt_parser_triangle_new($5, $2); WKT_ERROR(); } |
 	TRIANGLE_TOK DIMENSIONALITY_TOK EMPTY_TOK
-		{ $$ = wkt_parser_triangle_new(NULL, $2); WKT_ERROR(); } | 
+		{ $$ = wkt_parser_triangle_new(NULL, $2); WKT_ERROR(); } |
 	TRIANGLE_TOK EMPTY_TOK
 		{ $$ = wkt_parser_triangle_new(NULL, NULL); WKT_ERROR(); } ;
 
@@ -487,51 +495,51 @@ triangle_untagged :
 		{ $$ = wkt_parser_triangle_new($3, NULL); WKT_ERROR(); } ;
 
 multipoint :
-	MPOINT_TOK LBRACKET_TOK point_list RBRACKET_TOK 
+	MPOINT_TOK LBRACKET_TOK point_list RBRACKET_TOK
 		{ $$ = wkt_parser_collection_finalize(MULTIPOINTTYPE, $3, NULL); WKT_ERROR(); } |
-	MPOINT_TOK DIMENSIONALITY_TOK LBRACKET_TOK point_list RBRACKET_TOK 
+	MPOINT_TOK DIMENSIONALITY_TOK LBRACKET_TOK point_list RBRACKET_TOK
 		{ $$ = wkt_parser_collection_finalize(MULTIPOINTTYPE, $4, $2); WKT_ERROR(); } |
-	MPOINT_TOK DIMENSIONALITY_TOK EMPTY_TOK 
+	MPOINT_TOK DIMENSIONALITY_TOK EMPTY_TOK
 		{ $$ = wkt_parser_collection_finalize(MULTIPOINTTYPE, NULL, $2); WKT_ERROR(); } |
-	MPOINT_TOK EMPTY_TOK 
+	MPOINT_TOK EMPTY_TOK
 		{ $$ = wkt_parser_collection_finalize(MULTIPOINTTYPE, NULL, NULL); WKT_ERROR(); } ;
 
 point_list :
-	point_list COMMA_TOK point_untagged 
+	point_list COMMA_TOK point_untagged
 		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
-	point_untagged 
+	point_untagged
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
 
 point_untagged :
-	coordinate 
+	coordinate
 		{ $$ = wkt_parser_point_new(wkt_parser_ptarray_new($1),NULL); WKT_ERROR(); } |
 	LBRACKET_TOK coordinate RBRACKET_TOK
 		{ $$ = wkt_parser_point_new(wkt_parser_ptarray_new($2),NULL); WKT_ERROR(); } |
 	EMPTY_TOK
 		{ $$ = wkt_parser_point_new(NULL, NULL); WKT_ERROR(); };
 
-point : 
-	POINT_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
+point :
+	POINT_TOK LBRACKET_TOK ptarray RBRACKET_TOK
 		{ $$ = wkt_parser_point_new($3, NULL); WKT_ERROR(); } |
-	POINT_TOK DIMENSIONALITY_TOK LBRACKET_TOK ptarray RBRACKET_TOK 
+	POINT_TOK DIMENSIONALITY_TOK LBRACKET_TOK ptarray RBRACKET_TOK
 		{ $$ = wkt_parser_point_new($4, $2); WKT_ERROR(); } |
-	POINT_TOK DIMENSIONALITY_TOK EMPTY_TOK 
+	POINT_TOK DIMENSIONALITY_TOK EMPTY_TOK
 		{ $$ = wkt_parser_point_new(NULL, $2); WKT_ERROR(); } |
-	POINT_TOK EMPTY_TOK 
+	POINT_TOK EMPTY_TOK
 		{ $$ = wkt_parser_point_new(NULL,NULL); WKT_ERROR(); } ;
 
-ptarray : 
-	ptarray COMMA_TOK coordinate 
+ptarray :
+	ptarray COMMA_TOK coordinate
 		{ $$ = wkt_parser_ptarray_add_coord($1, $3); WKT_ERROR(); } |
-	coordinate 
+	coordinate
 		{ $$ = wkt_parser_ptarray_new($1); WKT_ERROR(); } ;
 
-coordinate : 
-	DOUBLE_TOK DOUBLE_TOK 
-		{ $$ = wkt_parser_coord_2($1, $2); WKT_ERROR(); } | 
-	DOUBLE_TOK DOUBLE_TOK DOUBLE_TOK 
-		{ $$ = wkt_parser_coord_3($1, $2, $3); WKT_ERROR(); } | 
-	DOUBLE_TOK DOUBLE_TOK DOUBLE_TOK DOUBLE_TOK 
+coordinate :
+	DOUBLE_TOK DOUBLE_TOK
+		{ $$ = wkt_parser_coord_2($1, $2); WKT_ERROR(); } |
+	DOUBLE_TOK DOUBLE_TOK DOUBLE_TOK
+		{ $$ = wkt_parser_coord_3($1, $2, $3); WKT_ERROR(); } |
+	DOUBLE_TOK DOUBLE_TOK DOUBLE_TOK DOUBLE_TOK
 		{ $$ = wkt_parser_coord_4($1, $2, $3, $4); WKT_ERROR(); } ;
 
 %%
