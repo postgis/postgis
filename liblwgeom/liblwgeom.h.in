@@ -1461,9 +1461,9 @@ extern LWCOLLECTION *lwcollection_segmentize2d(const LWCOLLECTION *coll, double 
 /*
  * Point density functions
  */
-extern LWMPOINT *lwpoly_to_points(const LWPOLY *poly, uint32_t npoints);
-extern LWMPOINT *lwmpoly_to_points(const LWMPOLY *mpoly, uint32_t npoints);
-extern LWMPOINT *lwgeom_to_points(const LWGEOM *lwgeom, uint32_t npoints);
+extern LWMPOINT *lwpoly_to_points(const LWPOLY *poly, uint32_t npoints, int seed);
+extern LWMPOINT *lwmpoly_to_points(const LWMPOLY *mpoly, uint32_t npoints, int seed);
+extern LWMPOINT *lwgeom_to_points(const LWGEOM *lwgeom, uint32_t npoints, int seed);
 
 /*
  * Geometric median

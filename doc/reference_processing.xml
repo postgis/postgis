@@ -1777,6 +1777,10 @@ POINT(2 1)
 				<parameter>npoints</parameter>
 				<type>numeric</type>
 			</paramdef>
+			<paramdef choice="opt">
+				<parameter>seed</parameter>
+				<type>numeric</type>
+			</paramdef>
 		  </funcprototype>
 
 		</funcsynopsis>
@@ -1787,10 +1791,12 @@ POINT(2 1)
 
 		<para>
 			ST_GeneratePoints generates pseudo-random points until the requested number are
-			found within the input area.
+			found within the input area. Optional seed parameter allows re-generation of
+			points.
 		</para>
 
 		<para>Availability: 2.3.0</para>
+		<para>Enhanced: 3.0.0, added seed parameter</para>
 		</refsection>
 
 		<refsection>

@@ -96,6 +96,7 @@ SA_OBJS = \
 	g_util.o \
 	lwgeodetic.o \
 	lwgeodetic_tree.o \
+	lwrandom.o \
 	lwtree.o \
 	lwout_gml.o \
 	lwout_kml.o \
@@ -151,6 +152,7 @@ SA_HEADERS = \
 	lwin_wkt.h \
 	lwin_wkt_parse.h \
 	lwout_twkb.h \
+	lwrandom.h \
 	lwtree.h \
 	measures3d.h \
 	measures.h \

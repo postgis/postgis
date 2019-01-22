@@ -1014,16 +1014,20 @@ Datum ST_GeneratePoints(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom_input;
 	LWGEOM *lwgeom_result;
 	int32 npoints;
+	int32 seed = 0;
 
 	gser_input = PG_GETARG_GSERIALIZED_P(0);
 	npoints = DatumGetInt32(DirectFunctionCall1(numeric_int4, PG_GETARG_DATUM(1)));
+
+	if (PG_NARGS() > 2 && ! PG_ARGISNULL(2))
+		seed = DatumGetInt32(DirectFunctionCall1(numeric_int4, PG_GETARG_DATUM(2)));
 
 	if (npoints < 0)
 		PG_RETURN_NULL();
 
 	/* Types get checked in the code, we'll keep things small out there */
 	lwgeom_input = lwgeom_from_gserialized(gser_input);
-	lwgeom_result = (LWGEOM*)lwgeom_to_points(lwgeom_input, npoints);
+	lwgeom_result = (LWGEOM*)lwgeom_to_points(lwgeom_input, npoints, seed);
 	lwgeom_free(lwgeom_input);
 	PG_FREE_IF_COPY(gser_input, 0);
 

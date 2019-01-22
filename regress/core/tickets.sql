@@ -1114,6 +1114,15 @@ INSERT INTO bug_4144_table (geom)
 ANALYZE bug_4144_table;
 DROP TABLE IF EXISTS bug_4144_table;
 
+-- #4299
+select '#4299', ST_GeneratePoints(g, 2) = ST_GeneratePoints(g, 2)
+from (select 'POLYGON((0 0,1 0,1 1,0 1,0 0))'::geometry as g) as f;
+
+-- #4304
+select '#4304', ST_GeneratePoints(g, 2, 1234) = ST_GeneratePoints(g, 2, 1234), ST_AsText(ST_SnapToGrid(ST_GeneratePoints(g, 2, 1234), 0.0001))
+from (select 'POLYGON((0 0,1 0,1 1,0 1,0 0))'::geometry as g) as f;
+
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 

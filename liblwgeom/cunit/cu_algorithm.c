@@ -1439,22 +1439,30 @@ static void test_point_density(void)
 {
 	LWGEOM *geom;
 	LWMPOINT *mpt;
+	LWPOINT *pt;
 	// char *ewkt;
 
 	/* POLYGON */
 	geom = lwgeom_from_wkt("POLYGON((1 0,0 1,1 2,2 1,1 0))", LW_PARSER_CHECK_NONE);
-	mpt = lwgeom_to_points(geom, 100);
+	mpt = lwgeom_to_points(geom, 100, 0);
 	CU_ASSERT_EQUAL(mpt->ngeoms,100);
 	// ewkt = lwgeom_to_ewkt((LWGEOM*)mpt);
 	// printf("%s\n", ewkt);
 	// lwfree(ewkt);
 	lwmpoint_free(mpt);
 
-	mpt = lwgeom_to_points(geom, 1);
-	CU_ASSERT_EQUAL(mpt->ngeoms,1);
+	/* Set seed to get a deterministic sequence.
+	 * Warning: This may fail on different platforms!
+	 */
+	mpt = lwgeom_to_points(geom, 12, 12345);
+	CU_ASSERT_EQUAL(mpt->ngeoms,12);
+	pt = (LWPOINT*)mpt->geoms[8];
+	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_x(pt), 1.481926853565, 1e-11);
+	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_y(pt), 0.919877055376, 1e-11);
+	// lwpoint_free(pt);
 	lwmpoint_free(mpt);
 
-	mpt = lwgeom_to_points(geom, 0);
+	mpt = lwgeom_to_points(geom, 0, 0);
 	CU_ASSERT_EQUAL(mpt, NULL);
 	lwmpoint_free(mpt);
 
@@ -1463,11 +1471,11 @@ static void test_point_density(void)
 	/* MULTIPOLYGON */
 	geom = lwgeom_from_wkt("MULTIPOLYGON(((10 0,0 10,10 20,20 10,10 0)),((0 0,5 0,5 5,0 5,0 0)))", LW_PARSER_CHECK_NONE);
 
-	mpt = lwgeom_to_points(geom, 1000);
+	mpt = lwgeom_to_points(geom, 1000, 0);
 	CU_ASSERT_EQUAL(mpt->ngeoms,1000);
 	lwmpoint_free(mpt);
 
-	mpt = lwgeom_to_points(geom, 1);
+	mpt = lwgeom_to_points(geom, 1, 0);
 	CU_ASSERT_EQUAL(mpt->ngeoms,1);
 	lwmpoint_free(mpt);
 

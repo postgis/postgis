@@ -3476,10 +3476,11 @@ CREATE OR REPLACE FUNCTION ST_OffsetCurve(line geometry, distance float8, params
        COST 1; -- reset cost, see #3675
 
 -- Availability: 2.3.0
-CREATE OR REPLACE FUNCTION ST_GeneratePoints(area geometry, npoints numeric)
+-- Changed: 3.0.0 to add seed parameter, and change from IMMUTABLE to VOLATILE PARALLEL RESTRICTED
+CREATE OR REPLACE FUNCTION ST_GeneratePoints(area geometry, npoints numeric, seed numeric DEFAULT NULL)
        RETURNS geometry
        AS 'MODULE_PATHNAME','ST_GeneratePoints'
-       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+       LANGUAGE 'c' VOLATILE PARALLEL RESTRICTED
        COST 1; -- reset cost, see #3675
 
 -- PostGIS equivalent function: convexhull(geometry)
