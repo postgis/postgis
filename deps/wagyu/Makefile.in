@@ -24,13 +24,13 @@
 
 CXX = @CXX@
 CXXFLAGS =-I../../liblwgeom -Iinclude @CPPFLAGS@ @WARNFLAGS@ @CXXFLAGS@ @PICFLAGS@
-LDFLAGS = @LDFLAGS@
+LDFLAGS = @LDFLAGS@ -static
 top_builddir = @top_builddir@
 libdir = @libdir@
 LIBTOOL = @LIBTOOL@
 
 WAGYU_OBJS = \
-	lwgeom_wagyu.o
+	lwgeom_wagyu.lo
 
 WAGYU_HEADERS = \
 	lwgeom_wagyu.h \
@@ -78,10 +78,10 @@ WAGYU_HEADERS = \
 all: @WAGYU_LIB@
 
 @WAGYU_LIB@: $(WAGYU_OBJS)
-	ar rs @WAGYU_LIB@ $(WAGYU_OBJS)
+	$(LIBTOOL) --tag=CXX --mode=link $(CXX) -rpath $(libdir) $(WAGYU_OBJS) $(LDFLAGS) -o $@
 
-$(WAGYU_OBJS): %.o: %.cpp ../../liblwgeom/liblwgeom.h $(WAGYU_HEADERS)
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+$(WAGYU_OBJS): %.lo: %.cpp ../../liblwgeom/liblwgeom.h $(WAGYU_HEADERS)
+	$(LIBTOOL) --mode=compile $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 ../../liblwgeom/liblwgeom.h:
 	$(MAKE) -C ../../liblwgeom liblwgeom.h
