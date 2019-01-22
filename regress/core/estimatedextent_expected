@@ -47,3 +47,5 @@ NOTICE:  drop cascades to 2 other objects
 3.b null|
 4.a box|BOX(-100 -100,100 100)
 4.b box|BOX(-200 -200,200 200)
+NOTICE:  PostGIS: Unable to compute statistics for "test.geom1": No non-null/empty features
+NOTICE:  PostGIS: Unable to compute statistics for "test.geom2": No non-null/empty features

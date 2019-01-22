@@ -1523,7 +1523,12 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	/* If there's no useful features, we can't work out stats */
 	if ( ! notnull_cnt )
 	{
-		elog(NOTICE, "no non-null/empty features, unable to compute statistics");
+		Oid relation_oid = stats->attr->attrelid;
+		char *relation_name = get_rel_name(relation_oid);
+		elog(NOTICE,
+		     "PostGIS: Unable to compute statistics for \"%s.%s\": No non-null/empty features",
+		     relation_name ? relation_name : "(NULL)",
+		     stats->attr->attname.data);
 		stats->stats_valid = false;
 		return;
 	}
@@ -1854,8 +1859,12 @@ compute_gserialized_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 {
 	/* 2D Mode */
 	compute_gserialized_stats_mode(stats, fetchfunc, sample_rows, total_rows, 2);
-	/* ND Mode */
-	compute_gserialized_stats_mode(stats, fetchfunc, sample_rows, total_rows, 0);
+
+	if (stats->stats_valid)
+	{
+		/* ND Mode: Only computed if 2D was computed too (not NULL and valid) */
+		compute_gserialized_stats_mode(stats, fetchfunc, sample_rows, total_rows, 0);
+	}
 }
 
 

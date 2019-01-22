@@ -53,8 +53,16 @@ alter table big_polygon alter column geom set storage main;
 \set QUIET off
 SET client_min_messages TO NOTICE;
 
-SELECT '#3697', ST_Area(ST_Intersection(geom,ST_ConcaveHull(geom, 0.8) )) = ST_Area(geom) As encloses_geom,
-(ST_Area(ST_ConvexHull(geom)) - ST_Area(ST_ConcaveHull(geom, 0.8))) < (0.8 * ST_Area(ST_ConvexHull(geom) ) ) As reached_target
-FROM big_polygon;
+WITH intermediate AS
+(
+    SELECT ST_ConcaveHull(geom, 0.8)    as concave,
+           ST_Area(ST_ConvexHull(geom)) as convex_area,
+           geom                         as geom
+    FROM big_polygon
+)
+SELECT '#3697',
+        ST_Area(ST_Intersection(geom,concave)) = ST_Area(geom) As encloses_geom,
+        (convex_area - ST_Area(concave) < (0.8 * convex_area)) As reached_target
+FROM intermediate;
 
 drop table big_polygon;
