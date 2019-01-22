@@ -171,7 +171,7 @@ $(LT_OBJS): ../postgis_config.h ../postgis_svn_revision.h $(SA_HEADERS)
 
 liblwgeom.la: $(LT_OBJS)
 	$(LIBTOOL) --tag=CC --mode=link $(CC) -rpath $(libdir) $(LT_OBJS) \
-             -release $(SOVER) -version-info $(VERSION_INFO) $(LDFLAGS) -o $@
+             -release $(SOVER) -version-info $(VERSION_INFO) $(LDFLAGS) -static -o $@
 
 maintainer-clean: clean
 	rm -f lwin_wkt_lex.c
