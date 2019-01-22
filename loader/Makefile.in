@@ -43,6 +43,7 @@ ICONV_CFLAGS=@ICONV_CFLAGS@
 
 # liblwgeom
 LIBLWGEOM=../liblwgeom/liblwgeom.la
+LDFLAGS += -static $(LIBLWGEOM)
 
 # GTK includes and libraries
 GTK_CFLAGS = @GTK_CFLAGS@ @IGE_MAC_CFLAGS@
@@ -97,11 +98,11 @@ pgsql2shp-cli.o: pgsql2shp-cli.c pgsql2shp-core.h shpcommon.h
 
 $(PGSQL2SHP-CLI): $(SHPLIB_OBJS) pgsql2shp-core.o pgsql2shp-cli.o $(LIBLWGEOM)
 	$(LIBTOOL) --mode=link \
-	  $(CC) $(CFLAGS) $^ $(LDFLAGS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS) -o $@ -static-libtool-libs
+	  $(CC) $(CFLAGS) $^ $(LDFLAGS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS) -o $@
 
 $(SHP2PGSQL-CLI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM)
 	$(LIBTOOL) --mode=link \
-	  $(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(GETTEXT_LDFLAGS) $(ICONV_LDFLAGS) -static-libtool-libs
+	  $(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(GETTEXT_LDFLAGS) $(ICONV_LDFLAGS)
 
 shp2pgsql-gui.o: shp2pgsql-gui.c shp2pgsql-core.h shpcommon.h
 	$(CC) $(CFLAGS) $(GTK_CFLAGS) $(PGSQL_FE_CPPFLAGS) -o $@ -c shp2pgsql-gui.c
@@ -109,7 +110,7 @@ shp2pgsql-gui.o: shp2pgsql-gui.c shp2pgsql-core.h shpcommon.h
 $(SHP2PGSQL-GUI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-gui.o pgsql2shp-core.o $(LIBLWGEOM) $(GTK_WIN32_RES)
 	$(LIBTOOL) --mode=link \
 	  $(CC) $(CFLAGS) $(GTK_WIN32_FLAGS) $^ -o $@ \
-	  $(GTK_LIBS) $(LDFLAGS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS) -static-libtool-libs
+	  $(GTK_LIBS) $(LDFLAGS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS)
 
 installdir:
 	@mkdir -p $(DESTDIR)$(bindir)
