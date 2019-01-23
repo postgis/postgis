@@ -1457,8 +1457,8 @@ static void test_point_density(void)
 	mpt = lwgeom_to_points(geom, 12, 12345);
 	CU_ASSERT_EQUAL(mpt->ngeoms,12);
 	pt = (LWPOINT*)mpt->geoms[8];
-	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_x(pt), 1.481926853565, 1e-11);
-	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_y(pt), 0.919877055376, 1e-11);
+	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_x(pt), 1.041762256506, 1e-11);
+	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_y(pt), 0.056992828494, 1e-11);
 	// lwpoint_free(pt);
 	lwmpoint_free(mpt);
 

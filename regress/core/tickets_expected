@@ -340,5 +340,5 @@ ERROR:  lwgeom_pointonsurface: GEOS Error: TopologyException: Input geom 1 is in
 #4081|f|t
 NOTICE:  table "bug_4144_table" does not exist, skipping
 #4299|f
-#4304|t|MULTIPOINT(0.0199 0.317,0.7177 0.4646)
+#4304|t|MULTIPOINT(0.1017 0.8068,0.5105 0.578)
 #4176|t

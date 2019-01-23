@@ -1514,14 +1514,13 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, uint32_t seed)
 		}
 	}
 
-	/* shuffle */
+	/* Fisher--Yates shuffle */
 	n = sample_height * sample_width;
 	if (n > 1)
 	{
-		for (i = 0; i < n - 1; ++i)
+		for (i = n - 1; i > 0; i--)
 		{
-			size_t rnd = (size_t)(lwrandom_uniform() * 1073741824);
-			size_t j = i + rnd / (1073741824 / (n - i) + 1);
+			size_t j = (size_t)(lwrandom_uniform() * (i + 1));
 
 			memcpy(tmp, (char *)cells + j * stride, size);
 			memcpy((char *)cells + j * stride, (char *)cells + i * stride, size);
