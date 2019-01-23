@@ -53,7 +53,6 @@
 0.000
 -4.086
 NOTICE:  Invalid band index (must use 1-based). Returning NULL
-BEGIN
 0.000|-10.000
 0.100|-10.000
 0.200|-10.000
@@ -94,22 +93,9 @@ BEGIN
 3.142
 3.142
 3.142
-SAVEPOINT
 NOTICE:  Raster does not have band at index 2. Skipping raster
 NOTICE:  Raster does not have band at index 2. Skipping raster
 NOTICE:  Invalid band index (must use 1-based). Returning NULL
-COMMIT
-RELEASE
-SAVEPOINT
 3.142
-COMMIT
-RELEASE
-SAVEPOINT
 3.142
-COMMIT
-RELEASE
-SAVEPOINT
 NOTICE:  Invalid value for quantile (must be between 0 and 1). Returning NULL
-COMMIT
-RELEASE
-COMMIT

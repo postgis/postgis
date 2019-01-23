@@ -1,14 +1,10 @@
-BEGIN
 t
 9
 22
 26
-COMMIT
-BEGIN
 1
 2
 3
-COMMIT
 4
 features.big_parcels.the_geom SRID:0 TYPE:MULTIPOLYGON DIMS:2 
 5

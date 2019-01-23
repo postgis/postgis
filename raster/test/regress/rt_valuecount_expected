@@ -22,7 +22,6 @@
 1
 1
 NOTICE:  Invalid band index (must use 1-based). Returning NULL
-BEGIN
 -10.000|10
 0.000|980
 3.142|10
@@ -36,16 +35,6 @@ BEGIN
 0
 10
 0
-SAVEPOINT
 NOTICE:  Invalid band index (must use 1-based). Returning NULL
-COMMIT
-RELEASE
-SAVEPOINT
 ERROR:  relation "test1" does not exist at character 20
-COMMIT
-RELEASE
-SAVEPOINT
 ERROR:  column "rast1" does not exist at character 8
-COMMIT
-RELEASE
-COMMIT
