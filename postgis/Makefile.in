@@ -60,11 +60,11 @@ ifeq (@HAVE_PROTOBUF@,yes)
 PROTOBUF_OBJ=vector_tile.pb-c.o geobuf.pb-c.o
 endif
 
-# We use the static library built with libtool
-WAGYU_LIBPATH = ../deps/wagyu/.libs/libwagyu.a
+WAGYU_LIBPATH = ../deps/wagyu/@WAGYU_LIB@
 ifeq (@HAVE_WAGYU@,yes)
 WAYGU_INCLUDE += -I../deps/wagyu
 WAYGU_LIB = $(WAGYU_LIBPATH)
+WAGYU_DEP = $(WAGYU_LIBPATH)
 endif
 
 # SQL preprocessor
@@ -190,7 +190,7 @@ endif
 # Also they are all dependent on postgis_config.h
 # and thus postgis_svn_revision.h
 #
-$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_svn_revision.h $(WAYGU_LIB)
+$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_svn_revision.h $(WAGYU_DEP)
 
 ../postgis_svn_revision.h:
 	$(MAKE) -C .. postgis_svn_revision.h
