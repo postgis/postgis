@@ -24,6 +24,7 @@
 
 
 #include <stdlib.h>
+#include <stdint.h>
 /* #include <stdio.h> */
 
 #include "lwrandom.h"
@@ -31,26 +32,26 @@
 #include <time.h>
 
 
-static char _lwrandom_seed_set = 0;
-static int _lwrandom_seed[3] = {0x330e,	0xabcd,	0x1234};
+static unsigned char _lwrandom_seed_set = 0;
+static int32_t _lwrandom_seed[3] = {0x330e, 0xabcd, 0x1234};
 
 /*
  * Set seed for a random number generator.
  * A zero value uses clock as seed the first time only.
  */
 void
-lwrandom_set_seed(int seed)
+lwrandom_set_seed(uint32_t seed)
 {
 	if (seed == 0)
 	{
 		if (_lwrandom_seed_set == 0)
-			seed = ((int)time(NULL) * 1996) << 8;
+			seed = ((unsigned int)time(NULL) * 1996) << 8;
 		else
 			return;
 	}
 
-	_lwrandom_seed[1] = (abs(seed) % 2147483562) + 1; /* value between 1 and 2147483562 */
-	_lwrandom_seed[2] = ((abs(seed + 6) >> 12) % 2147483398) + 1; /* value between 1 and 2147483398 */
+	_lwrandom_seed[1] = (seed % 2147483562) + 1; /* value between 1 and 2147483562 */
+	_lwrandom_seed[2] = (((seed + 6) >> 12) % 2147483398) + 1; /* value between 1 and 2147483398 */
 	_lwrandom_seed_set = 1;
 }
 
@@ -71,11 +72,11 @@ lwrandom_set_seed(int seed)
 double
 lwrandom_uniform(void)
 {
-	int k;
 	double value;
-	int z;
-	int *s1 = &_lwrandom_seed[1];
-	int *s2 = &_lwrandom_seed[2];
+	int32_t k;
+	int32_t z;
+	int32_t *s1 = &_lwrandom_seed[1];
+	int32_t *s2 = &_lwrandom_seed[2];
 
 	k = *s1 / 53668;
 	*s1 = 40014 * ( *s1 - k * 53668 ) - k * 12211;
@@ -102,8 +103,8 @@ void test10 ( )
 {
 	int i;
 	double r;
-	int *s1 = &_lwrandom_seed[1];
-	int *s2 = &_lwrandom_seed[2];
+	int32_t *s1 = &_lwrandom_seed[1];
+	int32_t *s2 = &_lwrandom_seed[2];
 
 	printf ( "\n" );
 	printf ( "TEST10\n" );
@@ -130,8 +131,8 @@ void test11 ( )
 {
 	int i;
 	int n = 100000;
-	int *s1 = &_lwrandom_seed[1];
-	int *s2 = &_lwrandom_seed[2];
+	int32_t *s1 = &_lwrandom_seed[1];
+	int32_t *s2 = &_lwrandom_seed[2];
 	double *u;
 	double u_avg;
 	double u_var;
@@ -183,10 +184,10 @@ void test12 ( )
 {
 	int i;
 	double r;
-	int *s1 = &_lwrandom_seed[1];
-	int *s2 = &_lwrandom_seed[2];
-	int s1_save;
-	int s2_save;
+	int32_t *s1 = &_lwrandom_seed[1];
+	int32_t *s2 = &_lwrandom_seed[2];
+	int32_t s1_save;
+	int32_t s2_save;
 
 	printf ( "\n" );
 	printf ( "TEST12\n" );

@@ -23,5 +23,5 @@
  **********************************************************************/
 
 
-void lwrandom_set_seed(int seed);
+void lwrandom_set_seed(uint32_t seed);
 double lwrandom_uniform(void);

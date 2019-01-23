@@ -1415,7 +1415,7 @@ lwgeom_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle,
 }
 
 LWMPOINT*
-lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int seed)
+lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, uint32_t seed)
 {
 	double area, bbox_area, bbox_width, bbox_height;
 	GBOX bbox;
@@ -1589,7 +1589,7 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int seed)
 /* Allocate points to sub-geometries by area, then call lwgeom_poly_to_points and bundle up final result in a single
  * multipoint. */
 LWMPOINT*
-lwmpoly_to_points(const LWMPOLY* lwmpoly, uint32_t npoints, int seed)
+lwmpoly_to_points(const LWMPOLY* lwmpoly, uint32_t npoints, uint32_t seed)
 {
 	const LWGEOM* lwgeom = (LWGEOM*)lwmpoly;
 	double area;
@@ -1630,7 +1630,7 @@ lwmpoly_to_points(const LWMPOLY* lwmpoly, uint32_t npoints, int seed)
 }
 
 LWMPOINT*
-lwgeom_to_points(const LWGEOM* lwgeom, uint32_t npoints, int seed)
+lwgeom_to_points(const LWGEOM* lwgeom, uint32_t npoints, uint32_t seed)
 {
 	switch (lwgeom_get_type(lwgeom))
 	{

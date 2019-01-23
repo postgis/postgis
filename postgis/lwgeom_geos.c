@@ -1020,7 +1020,14 @@ Datum ST_GeneratePoints(PG_FUNCTION_ARGS)
 	npoints = DatumGetInt32(DirectFunctionCall1(numeric_int4, PG_GETARG_DATUM(1)));
 
 	if (PG_NARGS() > 2 && ! PG_ARGISNULL(2))
-		seed = DatumGetInt32(DirectFunctionCall1(numeric_int4, PG_GETARG_DATUM(2)));
+	{
+		seed = PG_GETARG_INT32(2);
+		if (seed < 1)
+		{
+			lwpgerror("ST_GeneratePoints: seed must greater than zero");
+			PG_RETURN_NULL();
+		}
+	}
 
 	if (npoints < 0)
 		PG_RETURN_NULL();
