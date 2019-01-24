@@ -1,7 +1,8 @@
 test:
+  image: debian:buster
   script:
     - apt-get update -qq && apt-get install -y
-        postgresql-9.6 postgresql-server-dev-9.6
+        postgresql-11 postgresql-server-dev-11
         build-essential autoconf libtool libcunit1-dev
         xsltproc docbook-xsl docbook-mathml dblatex
         libproj-dev libgdal-dev libgeos-dev libjson-c-dev
