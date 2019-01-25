@@ -2,6 +2,7 @@ PostGIS 2.5.2
 XXXX/XX/XX
 
  * Bug fixes *
+
   - #4231, Support for PostgreSQL 12dev (remove use of pg_constraint.consrc)
            (Regina Obe, Laurenz Albe)
   - #4247, Avoid undefined behaviour in next_float functions (Raúl Marín)
@@ -13,13 +14,27 @@ XXXX/XX/XX
            dimensions for &&& operator to work predictably.
            (Darafei Praliaskouski, Arthur Lesuisse, Andrew Gierth, Raúl Marín)
   - #4262, Document MULTISURFACE compatibility of ST_LineToCurve (Steven Ottens)
+  - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
+  - #4276, ST_AsGeoJSON documentation refresh (Darafei Praliaskouski)￼
+  - #4273, Tighter parsing of WKT (Paul Ramsey)
+  - #4292, ST_AsMVT: parse JSON numeric values with decimals as doubles (Raúl Marín)
+  - #4300, ST_AsMVTGeom: Always return the simplest geometry (Raúl Marín)
+  - #4301, ST_Subdivide: fix endless loop on coordinates near coincident to bounds
+           (Darafei Praliaskouski)
+  - #4261, Use AccessShareLock in spatial_index_read_extent (Paul Ramsey)
+  - #4289, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)
+  - #4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)
+  - #4296, Use `server_version_num` instead of parsing `version()` (Raúl Marín)
+  - #4290, More robust geography distance (Paul Ramsey)
+  - #4283, Avoid final point duplicates for circle stroking (Paul Ramsey)
+
 
 
 PostGIS 2.5.1
 2018/11/18
 
  * Bug fixes *
-  - #4183, St_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)
+  - #4183, ST_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)
   - #4188, Avoid division by zero in kmeans (Raúl Marín)
   - #4189, Fix undefined behaviour in SADFWrite (Raúl Marín)
   - #4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)

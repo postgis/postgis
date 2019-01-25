@@ -573,11 +573,15 @@ LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry* gin)
 		const GEOSGeometry* g = GEOSGetGeometryN(gin, i);
 		GEOSGeometry* vg;
 		vg = LWGEOM_GEOS_makeValidLine(g);
+		/* Drop any invalid or empty geometry */
+		if (!vg)
+			continue;
 		if (GEOSisEmpty(vg))
 		{
-			/* we don't care about this one */
 			GEOSGeom_destroy(vg);
+			continue;
 		}
+
 		if (GEOSGeomTypeId(vg) == GEOS_POINT)
 			points[npoints++] = vg;
 		else if (GEOSGeomTypeId(vg) == GEOS_LINESTRING)
@@ -827,7 +831,7 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 		pd = GEOSDifference(pi, po); /* input points - output points */
 		GEOSGeom_destroy(pi);
 		GEOSGeom_destroy(po);
-		loss = !GEOSisEmpty(pd);
+		loss = pd && !GEOSisEmpty(pd);
 		GEOSGeom_destroy(pd);
 		if (loss)
 		{

@@ -178,7 +178,7 @@ union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf
 	{
 		const GEOSPreparedGeometry* prep = NULL;
 
-		if (GEOSisEmpty(geoms[p]))
+		if (!geoms[p] || GEOSisEmpty(geoms[p]))
 			continue;
 
 		cxt.num_items_found = 0;
