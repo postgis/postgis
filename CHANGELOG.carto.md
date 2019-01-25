@@ -12,3 +12,5 @@ Changes:
 - Ported (2.4.1.2+carto-1 / 2.4.1.4+carto-1): Add explicit costs to expensive and other functions.
 - Ported (trunk [e5c92b18f](https://github.com/postgis/postgis/commit/e5c92b18ffad323b3996fd68f0b23f80dc5bca28)): ST_AsMVTGeom: Drop geometries smaller than the resolution.
 - Add carto-package.json.
+- Merged community `svn-2.5` as of 2019-01-25 ([cb703716d](https://github.com/postgis/postgis/commit/cb703716dd0a833e1b39e803a036368ce97f33e1)).
+- Backport [789707ed2](https://github.com/postgis/postgis/commit/789707ed2c2e67c728cdc088de427f409379944b): ST_AsMVTGeom: Do resolution check before deserializing.
