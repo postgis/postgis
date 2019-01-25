@@ -78,7 +78,6 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 #include "utils/regproc.h"
 #include "utils/varlena.h"
 #endif
-#include "utils/tqual.h"
 #include "utils/builtins.h"
 #include "utils/datum.h"
 #include "utils/snapmgr.h"
