@@ -3,6 +3,7 @@
 #include <mapbox/geometry/wagyu/active_bound_list.hpp>
 #include <mapbox/geometry/wagyu/config.hpp>
 #include <mapbox/geometry/wagyu/edge.hpp>
+#include <mapbox/geometry/wagyu/interrupt.hpp>
 #include <mapbox/geometry/wagyu/intersect_util.hpp>
 #include <mapbox/geometry/wagyu/local_minimum.hpp>
 #include <mapbox/geometry/wagyu/local_minimum_util.hpp>
@@ -11,8 +12,6 @@
 #include <mapbox/geometry/wagyu/ring_util.hpp>
 #include <mapbox/geometry/wagyu/topology_correction.hpp>
 #include <mapbox/geometry/wagyu/util.hpp>
-
-#include "../../../../lwgeom_wagyu_interrupt.h"
 
 namespace mapbox {
 namespace geometry {
@@ -67,8 +66,7 @@ void process_edges_at_top_of_scanbeam(T top_y,
                                       fill_type clip_fill_type) {
 
     for (auto bnd = active_bounds.begin(); bnd != active_bounds.end();) {
-        lwgeom_interrupt_check();
-
+        interrupt_check(); // Check for interruptions
         if (*bnd == nullptr) {
             ++bnd;
             continue;

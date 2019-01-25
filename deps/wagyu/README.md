@@ -10,26 +10,17 @@ To be able to use Wagyu in Postgis, we have added a function to bridge between l
 
 It is integrated in the project as an static library integrated inside postgis.so, so it doesn't require an extra dependency at runtime besides `libstdc++` and `libm` which were already required by other libraries.
 
-# Main things to consider about the library
+# Main considerations about the library
 
 - It works only with POLYGONTYPE or MULTIPOLYGONTYPE type geometries. Anything else will be dropped.
-- It's currently setup to use `int64_t` values internally for extra speed. It could be changed to use double and match liblwgeom but, as it's only used by MVT, this isn't necessary.
-- The library is `Intersect`ing the 2 passing geometries. It also supports `Union`, `Difference` or `XOR` but those functionalities aren't exposed.
-- The library outputs the geometry in the correct winding order for MVT, which is the opposite of OGC.
+- It's currently setup to use `int32_t` values internally for extra speed. It could be changed to use to `int64_t` or to `double` to match liblwgeom but, as it's only used by MVT, this isn't necessary.
+- The library is clipping the geometry to the bounding box passed. It also supports `Intersection`, `Union`, `Difference` or `XOR` of 2 geometries but those functionalities aren't exposed.
+- The library outputs the geometry in the correct winding order for MVT, which is the opposite of OGC as the vertical order is switched.
 
 
 # Dependency changelog
 
   - 2018-12-18 - [Wagyu] Library extraction from https://github.com/mapbox/wagyu
   - 2018-12-18 - [geometry.hpp] Library extraction from https://github.com/mapbox/geometry.hpp
-  - 2019-01-08 - [Wagyu] Update from upstream (`insert_sorted_scanbeam`)
-  - 2019-01-09 - [Wagyu] Added interrupts (lwgeom_wagyu_interrupt.h):
-
-# Differences with upstream
-
-The following files have differences with upstream:
-
-- Check for interrupts:
-    include/mapbox/geometry/wagyu/local_minimum_util.hpp
-    include/mapbox/geometry/wagyu/process_maxima.hpp
-    include/mapbox/geometry/wagyu/wagyu.hpp
+  - 2019-01-08 - [Wagyu] Update from [upstream (`insert_sorted_scanbeam`)](https://github.com/mapbox/wagyu/commit/438050e1c8caf86d57e51b7d1bf503d000b96634)
+  - 2019-01-25 - [Wagyu] Update from [upstream (interrupt support)](https://github.com/mapbox/wagyu/commit/35402803a5355983b854b07a5063014c4894f21a)

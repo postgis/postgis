@@ -34,7 +34,6 @@ WAGYU_OBJS = \
 
 WAGYU_HEADERS = \
 	lwgeom_wagyu.h \
-	lwgeom_wagyu_interrupt.h \
 	include/mapbox/geometry/polygon.hpp \
 	include/mapbox/geometry/point_arithmetic.hpp \
 	include/mapbox/geometry/multi_polygon.hpp \
@@ -65,6 +64,7 @@ WAGYU_HEADERS = \
 	include/mapbox/geometry/wagyu/build_edges.hpp \
 	include/mapbox/geometry/wagyu/local_minimum.hpp \
 	include/mapbox/geometry/wagyu/topology_correction.hpp \
+	include/mapbox/geometry/wagyu/interrupt.hpp \
 	include/mapbox/geometry/geometry.hpp \
 	include/mapbox/geometry/point.hpp \
 	include/mapbox/geometry/empty.hpp \

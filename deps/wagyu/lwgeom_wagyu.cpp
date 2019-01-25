@@ -23,8 +23,8 @@
  **********************************************************************/
 
 #include "lwgeom_wagyu.h"
-#include "lwgeom_wagyu_interrupt.h"
 
+#define USE_WAGYU_INTERRUPT
 #include "mapbox/geometry/wagyu/wagyu.hpp"
 #include "mapbox/geometry/wagyu/quick_clip.hpp"
 
@@ -268,7 +268,7 @@ __lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox)
 LWGEOM *
 lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox)
 {
-	mapbox::geometry::wagyu::lwgeom_interrupt_reset();
+	mapbox::geometry::wagyu::interrupt_reset();
 	try
 	{
 		return __lwgeom_wagyu_clip_by_box(geom, bbox);
@@ -292,5 +292,5 @@ libwagyu_version()
 void
 lwgeom_wagyu_interruptRequest()
 {
-	mapbox::geometry::wagyu::lwgeom_interrupt_request();
+	mapbox::geometry::wagyu::interrupt_request();
 }
