@@ -78,7 +78,6 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 #include "utils/regproc.h"
 #include "utils/varlena.h"
 #endif
-#include "utils/tqual.h"
 #include "utils/builtins.h"
 #include "utils/datum.h"
 #include "utils/snapmgr.h"
@@ -2515,7 +2514,7 @@ spatial_index_read_extent(Oid idx_oid, int key_type)
 	if (!idx_oid)
 		return NULL;
 
-	idx_rel = index_open(idx_oid, AccessExclusiveLock);
+	idx_rel = index_open(idx_oid, AccessShareLock);
 	buffer = ReadBuffer(idx_rel, GIST_ROOT_BLKNO);
 	page = (Page) BufferGetPage(buffer);
 	offset = FirstOffsetNumber;
@@ -2527,7 +2526,7 @@ spatial_index_read_extent(Oid idx_oid, int key_type)
 		if (!iid)
 		{
 			ReleaseBuffer(buffer);
-			index_close(idx_rel, AccessExclusiveLock);
+			index_close(idx_rel, AccessShareLock);
 			return NULL;
 		}
 		ituple = (IndexTuple) PageGetItem(page, iid);
@@ -2559,7 +2558,7 @@ spatial_index_read_extent(Oid idx_oid, int key_type)
 	}
 
 	ReleaseBuffer(buffer);
-	index_close(idx_rel, AccessExclusiveLock);
+	index_close(idx_rel, AccessShareLock);
 
 	if (key_type == STATISTIC_SLOT_2D && bounds_2df)
 	{

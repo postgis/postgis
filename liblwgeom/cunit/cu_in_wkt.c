@@ -67,6 +67,11 @@ static char* cu_wkt_in(char *wkt, uint8_t variant)
 
 static void test_wkt_in_point(void)
 {
+	s = "POINT(1 2) foobar";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	CU_ASSERT_STRING_EQUAL("parse error - invalid geometry", r);
+	lwfree(r);
+
 	s = "POINT(1e700 0)";
 	r = cu_wkt_in(s, WKT_SFSQL);
 	CU_TEST ( ! strcmp(r, "POINT(inf 0)") || ! strcmp(r, "POINT(1.#INF 0)") || ! strcmp(r, "POINT(Infinity 0)") );

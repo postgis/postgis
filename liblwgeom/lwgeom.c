@@ -2392,9 +2392,19 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 	if (pivot == DBL_MAX) pivot = center;
 
 	if (split_ordinate == 0)
-		subbox1.xmax = subbox2.xmin = pivot;
+	{
+		if (FP_NEQUALS(subbox1.xmax, pivot) && FP_NEQUALS(subbox1.xmin, pivot))
+			subbox1.xmax = subbox2.xmin = pivot;
+		else
+			subbox1.xmax = subbox2.xmin = center;
+	}
 	else
-		subbox1.ymax = subbox2.ymin = pivot;
+	{
+		if (FP_NEQUALS(subbox1.ymax, pivot) && FP_NEQUALS(subbox1.ymin, pivot))
+			subbox1.ymax = subbox2.ymin = pivot;
+		else
+			subbox1.ymax = subbox2.ymin = center;
+	}
 
 	++depth;
 
