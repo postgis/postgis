@@ -27,7 +27,7 @@
 	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
-	<xsl:variable name='var_logtable'>postgis_topology_garden_log21</xsl:variable>
+	<xsl:variable name='var_logtable'>postgis_topology_garden_log30</xsl:variable>
 	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
 		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
 		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
