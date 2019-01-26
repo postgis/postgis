@@ -72,15 +72,4 @@ steps:
       - make install
       - utils/check_all_upgrades.sh
         `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
-
----
-test-image: &test-image postgis/postgis-build-env:pg11-geosmaster-gdal23-proj51
-kind: pipeline
-name: pg-11-geosmaster-gdal23-proj51
-steps:
-  - name: build
-    image: *test-image
-    pull: true
-    commands:
-      - bash ci/travis/run_tests.sh
 ...
