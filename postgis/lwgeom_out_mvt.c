@@ -95,15 +95,12 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 			/* Shortcut to drop geometries smaller than the resolution */
 			double geom_width = gserialized_box.xmax - gserialized_box.xmin;
 			double geom_height = gserialized_box.ymax - gserialized_box.ymin;
-			double geom_area = geom_width * geom_height;
 
-			double bounds_width = (bounds->xmax - bounds->xmin) / extent;
-			double bounds_height = (bounds->ymax - bounds->ymin) / extent;
-
-			/* We use 1/4th of the grid square area as the minimum resolution */
-			double min_resolution_area = bounds_width * bounds_height / 4.0;
-
-			if (geom_area < min_resolution_area)
+			/* We use half of the square height and width as limit: We use this
+			 * and not area so it works properly with lines */
+			double bounds_width = ((bounds->xmax - bounds->xmin) / extent) / 2.0;
+			double bounds_height = ((bounds->ymax - bounds->ymin) / extent) / 2.0;
+			if (geom_width < bounds_width && geom_height < bounds_height)
 			{
 				PG_RETURN_NULL();
 			}

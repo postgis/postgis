@@ -569,6 +569,15 @@ SELECT '#3922', St_Area(ST_AsMVTGeom(
 		true
 		));
 
+SELECT '#4294_Horizontal', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('MULTILINESTRING((0 0, 0 5))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(10, 10)),
+	10, 0, true));
+
+SELECT '#4294_Vertical', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('MULTILINESTRING((0 0, 5 0))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(10, 10)),
+	10, 0, true));
 
 -- Feature id encoding tests
 SELECT 'FI1', encode(ST_AsMVT(q, 'test', 4096, 'geom', 'c1'), 'base64') FROM (
