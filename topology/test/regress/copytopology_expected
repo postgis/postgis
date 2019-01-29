@@ -1,14 +1,10 @@
-BEGIN
 t
 9
 22
 26
-COMMIT
-BEGIN
 1
 2
 3
-COMMIT
 t
 4326|0
 nodes|22

@@ -1,9 +1,7 @@
-BEGIN
 t
 9
 22
 26
-COMMIT
 T1|Edge 25 changed
 ERROR:  SQL/MM Spatial exception - start node not geometry start point.
 ERROR:  SQL/MM Spatial exception - end node not geometry end point.

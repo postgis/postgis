@@ -597,7 +597,7 @@ sub run_simple_sql
 
 	# Dump output to a temp file.
 	my $tmpfile = sprintf("%s/test_%s_tmp", $TMPDIR, $RUN);
-	my $cmd = "psql -v \"VERBOSITY=terse\" -tXA $DB < $sql > $tmpfile 2>&1";
+	my $cmd = "psql -v \"VERBOSITY=terse\" -tXAq $DB < $sql > $tmpfile 2>&1";
 	#print($cmd);
 	my $rv = system($cmd);
 	# Check if psql errored out.
@@ -626,7 +626,7 @@ sub run_simple_sql
 sub drop_table
 {
 	my $tblname = shift;
-	my $cmd = "psql -tXA -d $DB -c \"DROP TABLE IF EXISTS $tblname\" >> $REGRESS_LOG 2>&1";
+	my $cmd = "psql -tXAq -d $DB -c \"DROP TABLE IF EXISTS $tblname\" >> $REGRESS_LOG 2>&1";
 	my $rv = system($cmd);
 	die "Could not run: $cmd\n" if $rv;
 }
@@ -704,7 +704,7 @@ sub run_simple_test
           . " -v \"tmpfile='$tmpfile'\""
           . " -v \"scriptdir=$scriptdir\""
           . " -v \"regdir=$REGDIR\""
-          . " -tXA $DB < $sql > $outfile 2>&1";
+          . " -tXAq $DB < $sql > $outfile 2>&1";
 	my $rv = system($cmd);
 
 	# Check for ERROR lines

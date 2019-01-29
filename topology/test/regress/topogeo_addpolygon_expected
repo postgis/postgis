@@ -1,9 +1,7 @@
-BEGIN
 t
 9
 22
 26
-COMMIT
 max|node|22
 max|edge|26
 max|face|9

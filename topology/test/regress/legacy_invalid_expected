@@ -1,4 +1,3 @@
-BEGIN
 t
 coincident nodes|1|23
 edge crosses node|1|23
@@ -19,5 +18,4 @@ face without edges|10|
 face has no rings|10|
 face within face|11|2
 face overlaps face|2|12
-COMMIT
 Topology 'invalid_topology' dropped
