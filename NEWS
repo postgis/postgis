@@ -27,6 +27,7 @@ XXXX/XX/XX
   - #4296, Use `server_version_num` instead of parsing `version()` (Raúl Marín)
   - #4290, More robust geography distance (Paul Ramsey)
   - #4283, Avoid final point duplicates for circle stroking (Paul Ramsey)
+  - #4314, ST_ClipByBox2D: Do not throw when the geometry is invalid (Raúl Marín)
 
 
 

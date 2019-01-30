@@ -64,6 +64,13 @@ static void test_lwgeom_clip_by_rect(void)
 	//tmp = lwgeom_to_ewkt(out); printf("%s\n", tmp); lwfree(tmp);
 	CU_ASSERT(lwgeom_is_empty(out));
 	lwgeom_free(out); lwgeom_free(in);
+
+	/* Returns NULL with an invalid polygon (line) */
+	wkt = "POLYGON((1410 2055, 1410 2056, 1410 2057, 1410 2055))";
+	in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
+	out = lwgeom_clip_by_rect(in, -8.000000, -8.000000, 2056.000000, 2056.000000);
+	CU_ASSERT_PTR_NULL(out);
+	lwgeom_free(in);
 }
 
 /*
