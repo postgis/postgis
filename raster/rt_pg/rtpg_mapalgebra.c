@@ -147,7 +147,9 @@ static rtpg_nmapalgebra_arg rtpg_nmapalgebra_arg_init() {
 	arg->cextent = NULL;
 	arg->mask = NULL;
 
+#if POSTGIS_PGSQL_VERSION >= 120
 	arg->callback.ufc_info = &(arg->callback.ufc_info_data.fcinfo);
+#endif
 	arg->callback.ufc_noid = InvalidOid;
 	arg->callback.ufc_rettype = InvalidOid;
 
