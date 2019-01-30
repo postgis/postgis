@@ -9,4 +9,4 @@ LDFLAGS_COV="--coverage"
 ./autogen.sh
 ./configure CFLAGS="${CFLAGS_COV}" LDFLAGS="${LDFLAGS_COV}" --enable-debug
 make -j check
-bash .github/codecov.bash
+bash .github/codecov.bash -a "-l" -Z
