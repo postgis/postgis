@@ -6,7 +6,7 @@
 
 set -e +o pipefail
 
-VERSION="8b76995"
+VERSION="8a28df4"
 
 url="https://codecov.io"
 env="$CODECOV_ENV"
@@ -36,8 +36,9 @@ ft_fix="1"
 ft_search="1"
 ft_s3="1"
 ft_network="1"
-ft_xcodellvm="0"
-ft_xcodeplist="1"
+ft_xcodellvm="1"
+ft_xcodeplist="0"
+ft_gcovout="1"
 
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
@@ -123,6 +124,7 @@ cat << EOF
                  -X search        Disable searching for reports
                  -X xcode         Disable xcode processing
                  -X network       Disable uploading the file network
+                 -X gcovout       Disable gcov output
 
     -R root dir  Used when not in git/hg project to identify project root directory
     -y conf file Used to specify the location of the .codecov.yml config file
@@ -379,6 +381,9 @@ $OPTARG"
         elif [ "$OPTARG" = "coveragepy" ] || [ "$OPTARG" = "py" ];
         then
           ft_coveragepy="0"
+        elif [ "$OPTARG" = "gcovout" ];
+        then
+          ft_gcovout="0"
         elif [ "$OPTARG" = "xcodellvm" ];
         then
           ft_xcodellvm="1"
@@ -634,7 +639,7 @@ then
   fi
   tag="$BUILDKITE_TAG"
 
-elif [ "$CI" = "drone" ];
+elif [ "$CI" = "drone" ] || [ "$DRONE" = "true" ];
 then
   say "$e==>$x Drone CI detected."
   # http://docs.drone.io/env.html
@@ -730,6 +735,23 @@ then
   remote_addr="${CI_BUILD_REPO:-$CI_REPOSITORY_URL}"
   commit="${CI_BUILD_REF:-$CI_COMMIT_SHA}"
 
+elif [ "$SYSTEM_TEAMFOUNDATIONSERVERURI" != "" ];
+then
+  say "$e==>$x Azure Pipelines detected."
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=vsts
+  service="azure_pipelines"
+  commit="$BUILD_SOURCEVERSION"
+  build="$BUILD_BUILDNUMBER"
+  if [  -z "$PULL_REQUEST_NUMBER"];
+  then
+    pr="$PULL_REQUEST_ID"
+  else
+    pr="$PULL_REQUEST_NUMBER"
+  fi
+  job="${BUILD_BUILDID}"
+  branch="$BUILD_SOURCEBRANCHNAME"
+  build_url=$(urlencode "${SYSTEM_TEAMFOUNDATIONSERVERURI}${SYSTEM_TEAMPROJECT}/_build/results?buildId=${BUILD_BUILDID}")
+  
 else
   say "${r}x>${x} No CI provider detected."
   say "    Testing inside Docker? ${b}http://docs.codecov.io/docs/testing-with-docker${x}"
@@ -916,7 +938,13 @@ then
     if [ "$ft_gcov" = "1" ];
     then
       say "    ${e}->${x} Running $gcov_exe for Obj-C"
-      bash -c "find $ddp -type f -name '*.gcda' $gcov_include $gcov_ignore -exec $gcov_exe -p $gcov_arg {} +" || true
+      if [ "$ft_gcovout" = "1" ];
+      then
+        # suppress gcov output
+        bash -c "find $ddp -type f -name '*.gcda' $gcov_include $gcov_ignore -exec $gcov_exe -p $gcov_arg {} +" || true 2>/dev/null
+      else
+        bash -c "find $ddp -type f -name '*.gcda' $gcov_include $gcov_ignore -exec $gcov_exe -p $gcov_arg {} +" || true
+      fi
     fi
   fi
 
@@ -1476,6 +1504,7 @@ else
     do
       i=$[$i+1]
       say "    ${e}->${x} Pinging Codecov"
+      say "$url/upload/v4?$query"
       res=$(curl $curl_s -X POST $curlargs $cacert \
             -H 'X-Reduced-Redundancy: false' \
             -H 'X-Content-Type: application/x-gzip' \
