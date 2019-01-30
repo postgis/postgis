@@ -85,8 +85,7 @@ typedef struct {
 	FunctionCallInfoData ufc_info;
 #else
 	/* copied from LOCAL_FCINFO in fmgr.h */
-	union
-	{
+	union {
 		FunctionCallInfoBaseData fcinfo;
 		char fcinfo_data[SizeForFunctionCallInfo(3)];
 	} ufc_info_data;
@@ -504,7 +503,8 @@ static int rtpg_nmapalgebra_callback(
 #if POSTGIS_PGSQL_VERSION < 120
 	if (!callback->ufc_info.isnull) {
 #else
-	if (!callback->ufc_info->isnull) {
+	if (!callback->ufc_info->isnull)
+	{
 #endif
 		switch (callback->ufc_rettype) {
 			case FLOAT8OID:
@@ -867,7 +867,12 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 
 		memset(arg->callback.ufc_info.argnull, FALSE, sizeof(bool) * arg->callback.ufl_info.fn_nargs);
 #else
-		InitFunctionCallInfoData(*(arg->callback.ufc_info), &(arg->callback.ufl_info), arg->callback.ufl_info.fn_nargs, InvalidOid, NULL, NULL);
+		InitFunctionCallInfoData(*(arg->callback.ufc_info),
+					 &(arg->callback.ufl_info),
+					 arg->callback.ufl_info.fn_nargs,
+					 InvalidOid,
+					 NULL,
+					 NULL);
 
 		arg->callback.ufc_info->args[0].isnull = FALSE;
 		arg->callback.ufc_info->args[1].isnull = FALSE;
@@ -891,9 +896,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 				);
 				arg->callback.ufc_info.argnull[2] = FALSE;
 #else
-				arg->callback.ufc_info->args[2].value = PointerGetDatum(
-					construct_empty_array(TEXTOID)
-				);
+				arg->callback.ufc_info->args[2].value = PointerGetDatum(construct_empty_array(TEXTOID));
 				arg->callback.ufc_info->args[2].isnull = FALSE;
 #endif
       }
@@ -902,7 +905,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 				arg->callback.ufc_info.arg[2] = (Datum) NULL;
 				arg->callback.ufc_info.argnull[2] = TRUE;
 #else
-				arg->callback.ufc_info->args[2].value = (Datum) NULL;
+				arg->callback.ufc_info->args[2].value = (Datum)NULL;
 				arg->callback.ufc_info->args[2].isnull = TRUE;
 #endif
 			}
@@ -5138,7 +5141,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
 #if POSTGIS_PGSQL_VERSION < 120
     FunctionCallInfoData cbdata;
 #else
-	LOCAL_FCINFO(cbdata, 2);  /* at most 2 arguments */
+    LOCAL_FCINFO(cbdata, 2); /* at most 2 arguments */
 #endif
     Datum tmpnewval;
     char * strFromText = NULL;
@@ -5382,15 +5385,15 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
 #if POSTGIS_PGSQL_VERSION < 120
     InitFunctionCallInfoData(cbdata, &cbinfo, 2, InvalidOid, NULL, NULL);
 
-	cbdata.argnull[0] = FALSE;
-	cbdata.argnull[1] = FALSE;
-	cbdata.argnull[2] = FALSE;
+    cbdata.argnull[0] = FALSE;
+    cbdata.argnull[1] = FALSE;
+    cbdata.argnull[2] = FALSE;
 #else
     InitFunctionCallInfoData(*cbdata, &cbinfo, 2, InvalidOid, NULL, NULL);
 
-	cbdata->args[0].isnull = FALSE;
-	cbdata->args[1].isnull = FALSE;
-	cbdata->args[2].isnull = FALSE;
+    cbdata->args[0].isnull = FALSE;
+    cbdata->args[1].isnull = FALSE;
+    cbdata->args[2].isnull = FALSE;
 #endif
 
     /* check that the function isn't strict if the args are null. */
@@ -5406,18 +5409,18 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
         }
 
 #if POSTGIS_PGSQL_VERSION < 120
-        cbdata.arg[k] = (Datum)NULL;
+	cbdata.arg[k] = (Datum)NULL;
         cbdata.argnull[k] = TRUE;
 #else
-        cbdata->args[k].value = (Datum)NULL;
-        cbdata->args[k].isnull = TRUE;
+	cbdata->args[k].value = (Datum)NULL;
+	cbdata->args[k].isnull = TRUE;
 #endif
     }
     else {
 #if POSTGIS_PGSQL_VERSION < 120
-        cbdata.arg[k] = PG_GETARG_DATUM(4);
+	    cbdata.arg[k] = PG_GETARG_DATUM(4);
 #else
-        cbdata->args[k].value = PG_GETARG_DATUM(4);
+	    cbdata->args[k].value = PG_GETARG_DATUM(4);
 #endif
     }
 
@@ -5496,22 +5499,22 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
                         continue;
                     }
 #if POSTGIS_PGSQL_VERSION < 120
-                    cbdata.argnull[0] = TRUE;
+		    cbdata.argnull[0] = TRUE;
                     cbdata.arg[0] = (Datum)NULL;
 #else
-                    cbdata->args[0].isnull = TRUE;
-                    cbdata->args[0].value = (Datum)NULL;
+		    cbdata->args[0].isnull = TRUE;
+		    cbdata->args[0].value = (Datum)NULL;
 #endif
-                }
+		}
                 else {
 #if POSTGIS_PGSQL_VERSION < 120
-                    cbdata.argnull[0] = FALSE;
-                    cbdata.arg[0] = Float8GetDatum(r);
+			cbdata.argnull[0] = FALSE;
+			cbdata.arg[0] = Float8GetDatum(r);
 #else
-                    cbdata->args[0].isnull = FALSE;
-                    cbdata->args[0].value = Float8GetDatum(r);
+			cbdata->args[0].isnull = FALSE;
+			cbdata->args[0].value = Float8GetDatum(r);
 #endif
-                }
+		}
 
                 /* Add pixel positions if callback has proper # of args */
                 if (cbinfo.fn_nargs == 3) {
@@ -5524,31 +5527,32 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
                     a = construct_array(d, 2, INT4OID, sizeof(int32), true, 'i');
 
 #if POSTGIS_PGSQL_VERSION < 120
-                    cbdata.argnull[1] = FALSE;
+		    cbdata.argnull[1] = FALSE;
                     cbdata.arg[1] = PointerGetDatum(a);
 #else
-                    cbdata->args[1].isnull = FALSE;
-                    cbdata->args[1].value = PointerGetDatum(a);
+		    cbdata->args[1].isnull = FALSE;
+		    cbdata->args[1].value = PointerGetDatum(a);
 #endif
-                }
+		}
 
                 POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFct: (%dx%d), r = %f",
                     x, y, r);
 
 #if POSTGIS_PGSQL_VERSION < 120
-                tmpnewval = FunctionCallInvoke(&cbdata);
+		tmpnewval = FunctionCallInvoke(&cbdata);
 
                 if (cbdata.isnull) {
                     newval = newnodatavalue;
                 }
 #else
-                tmpnewval = FunctionCallInvoke(cbdata);
+		tmpnewval = FunctionCallInvoke(cbdata);
 
-                if (cbdata->isnull) {
-                    newval = newnodatavalue;
-                }
+		if (cbdata->isnull)
+		{
+			newval = newnodatavalue;
+		}
 #endif
-                else {
+		else {
                     newval = DatumGetFloat8(tmpnewval);
                 }
 
@@ -5606,7 +5610,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
 #if POSTGIS_PGSQL_VERSION < 120
     FunctionCallInfoData cbdata;
 #else
-	LOCAL_FCINFO(cbdata, 3);  /* at most 3 arguments */
+    LOCAL_FCINFO(cbdata, 3); /* at most 3 arguments */
 #endif
     Datum tmpnewval;
     ArrayType * neighborDatum;
@@ -5859,9 +5863,9 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     memset(cbdata.argnull, FALSE, sizeof(bool) * 3);
 #else
     InitFunctionCallInfoData(*cbdata, &cbinfo, 3, InvalidOid, NULL, NULL);
-	cbdata->args[0].isnull = FALSE;
-	cbdata->args[1].isnull = FALSE;
-	cbdata->args[2].isnull = FALSE;
+    cbdata->args[0].isnull = FALSE;
+    cbdata->args[1].isnull = FALSE;
+    cbdata->args[2].isnull = FALSE;
 #endif
 
     /* check that the function isn't strict if the args are null. */
@@ -5877,18 +5881,18 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
         }
 
 #if POSTGIS_PGSQL_VERSION < 120
-        cbdata.arg[2] = (Datum)NULL;
+	cbdata.arg[2] = (Datum)NULL;
         cbdata.argnull[2] = TRUE;
 #else
-        cbdata->args[2].value = (Datum)NULL;
-        cbdata->args[2].isnull = TRUE;
+	cbdata->args[2].value = (Datum)NULL;
+	cbdata->args[2].isnull = TRUE;
 #endif
     }
     else {
 #if POSTGIS_PGSQL_VERSION < 120
-        cbdata.arg[2] = PG_GETARG_DATUM(7);
+	    cbdata.arg[2] = PG_GETARG_DATUM(7);
 #else
-        cbdata->args[2].value = PG_GETARG_DATUM(7);
+	    cbdata->args[2].value = PG_GETARG_DATUM(7);
 #endif
     }
 
@@ -6133,7 +6137,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
                     FLOAT8OID, typlen, typbyval, typalign);
 
 #if POSTGIS_PGSQL_VERSION < 120
-                /* Assign the neighbor matrix as the first argument to the user function */
+		/* Assign the neighbor matrix as the first argument to the user function */
                 cbdata.arg[0] = PointerGetDatum(neighborDatum);
 
                 /* Invoke the user function */
@@ -6144,18 +6148,19 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
                     newval = newnodatavalue;
                 }
 #else
-                /* Assign the neighbor matrix as the first argument to the user function */
-                cbdata->args[0].value = PointerGetDatum(neighborDatum);
+		/* Assign the neighbor matrix as the first argument to the user function */
+		cbdata->args[0].value = PointerGetDatum(neighborDatum);
 
-                /* Invoke the user function */
-                tmpnewval = FunctionCallInvoke(cbdata);
+		/* Invoke the user function */
+		tmpnewval = FunctionCallInvoke(cbdata);
 
-                /* Get the return value of the user function */
-                if (cbdata->isnull) {
-                    newval = newnodatavalue;
-                }
+		/* Get the return value of the user function */
+		if (cbdata->isnull)
+		{
+			newval = newnodatavalue;
+		}
 #endif
-                else {
+		else {
                     newval = DatumGetFloat8(tmpnewval);
                 }
 
@@ -6266,7 +6271,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 #if POSTGIS_PGSQL_VERSION < 120
 	FunctionCallInfoData ufc_info;
 #else
-	LOCAL_FCINFO(ufc_info, 4);  /* at most 4 arguments */
+	LOCAL_FCINFO(ufc_info, 4); /* at most 4 arguments */
 #endif
 	int ufc_nullcount = 0;
 
@@ -6998,7 +7003,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 				InitFunctionCallInfoData(ufc_info, &ufl_info, ufl_info.fn_nargs, InvalidOid, NULL, NULL);
 				memset(ufc_info.argnull, FALSE, sizeof(bool) * ufl_info.fn_nargs);
 #else
-				InitFunctionCallInfoData(*ufc_info, &ufl_info, ufl_info.fn_nargs, InvalidOid, NULL, NULL);
+				InitFunctionCallInfoData(
+				    *ufc_info, &ufl_info, ufl_info.fn_nargs, InvalidOid, NULL, NULL);
 				ufc_info->args[0].isnull = FALSE;
 				ufc_info->args[1].isnull = FALSE;
 				ufc_info->args[2].isnull = FALSE;
@@ -7020,13 +7026,15 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 				 ufc_nullcount++;
 				}
 #else
-				if (!PG_ARGISNULL(7)) {
+				if (!PG_ARGISNULL(7))
+				{
 					ufc_info->args[k].value = PG_GETARG_DATUM(7);
 				}
-				else {
-				 ufc_info->args[k].value = (Datum) NULL;
-				 ufc_info->args[k].isnull = TRUE;
-				 ufc_nullcount++;
+				else
+				{
+					ufc_info->args[k].value = (Datum)NULL;
+					ufc_info->args[k].isnull = TRUE;
+					ufc_nullcount++;
 				}
 #endif
 			}
@@ -7275,7 +7283,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 #else
 								ufc_info->args[i].isnull = TRUE;
 #endif
-				 				ufc_nullcount++;
+								ufc_nullcount++;
 							}
 						}
 
@@ -7321,7 +7329,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						datum = FunctionCallInvoke(ufc_info);
 
 						/* result is not null*/
-						if (!ufc_info->isnull) {
+						if (!ufc_info->isnull)
+						{
 							haspixel = 1;
 							pixel = DatumGetFloat8(datum);
 						}
