@@ -459,7 +459,7 @@ static GeomCacheMethods PrepGeomCacheMethods =
 * we need for this particular caching strategy.
 */
 PrepGeomCache*
-GetPrepGeomCache(FunctionCallInfoData* fcinfo, GSERIALIZED* g1, GSERIALIZED* g2)
+GetPrepGeomCache(FunctionCallInfo fcinfo, GSERIALIZED* g1, GSERIALIZED* g2)
 {
 	return (PrepGeomCache*)GetGeomCache(fcinfo, &PrepGeomCacheMethods, g1, g2);
 }
