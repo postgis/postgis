@@ -14,4 +14,4 @@ Changes:
 - Add carto-package.json.
 - Merged community `svn-2.5` as of 2019-01-25 ([cb703716d](https://github.com/postgis/postgis/commit/fa3163d575b99abe430133909d2cd755c904e9c3)).
 - Backport [789707ed2](https://github.com/postgis/postgis/commit/789707ed2c2e67c728cdc088de427f409379944b): ST_AsMVTGeom: Do resolution check before deserializing.
-- - Merged community `svn-2.5` as of 2019-01-31.
+- Merged community `svn-2.5` as of 2019-01-31.
