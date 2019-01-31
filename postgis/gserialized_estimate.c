@@ -63,7 +63,11 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 #include "executor/spi.h"
 #include "fmgr.h"
 #include "commands/vacuum.h"
+#if PG_VERSION_NUM < 120000
 #include "nodes/relation.h"
+#else
+#include "nodes/pathnodes.h"
+#endif
 #include "parser/parsetree.h"
 #include "utils/array.h"
 #include "utils/lsyscache.h"

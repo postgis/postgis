@@ -101,7 +101,10 @@ typedef struct
 /*
 * Cache retrieval functions
 */
-PROJ4PortalCache*  GetPROJ4SRSCache(FunctionCallInfoData *fcinfo);
-GeomCache*         GetGeomCache(FunctionCallInfoData *fcinfo, const GeomCacheMethods* cache_methods, const GSERIALIZED* g1, const GSERIALIZED* g2);
+PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfo fcinfo);
+GeomCache *GetGeomCache(FunctionCallInfo fcinfo,
+			const GeomCacheMethods *cache_methods,
+			const GSERIALIZED *g1,
+			const GSERIALIZED *g2);
 
 #endif /* LWGEOM_CACHE_H_ */

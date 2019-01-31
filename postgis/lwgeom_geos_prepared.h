@@ -74,6 +74,6 @@ typedef struct {
 ** If you are only caching one argument (e.g., in contains) supply 0 as the
 ** value for pg_geom2.
 */
-PrepGeomCache *GetPrepGeomCache(FunctionCallInfoData *fcinfo, GSERIALIZED *pg_geom1, GSERIALIZED *pg_geom2);
+PrepGeomCache *GetPrepGeomCache(FunctionCallInfo fcinfo, GSERIALIZED *pg_geom1, GSERIALIZED *pg_geom2);
 
 #endif /* LWGEOM_GEOS_PREPARED_H_ */

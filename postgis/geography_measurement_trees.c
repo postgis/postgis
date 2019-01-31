@@ -94,8 +94,8 @@ static GeomCacheMethods CircTreeCacheMethods =
 	CircTreeAllocator
 };
 
-static CircTreeGeomCache*
-GetCircTreeGeomCache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2)
+static CircTreeGeomCache *
+GetCircTreeGeomCache(FunctionCallInfo fcinfo, const GSERIALIZED *g1, const GSERIALIZED *g2)
 {
 	return (CircTreeGeomCache*)GetGeomCache(fcinfo, &CircTreeCacheMethods, g1, g2);
 }
@@ -156,9 +156,13 @@ CircTreePIP(const CIRC_NODE* tree1, const GSERIALIZED* g1, const POINT4D* in_poi
 	}
 }
 
-
 static int
-geography_distance_cache_tolerance(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2, const SPHEROID* s, double tolerance, double* distance)
+geography_distance_cache_tolerance(FunctionCallInfo fcinfo,
+				   const GSERIALIZED *g1,
+				   const GSERIALIZED *g2,
+				   const SPHEROID *s,
+				   double tolerance,
+				   double *distance)
 {
 	CircTreeGeomCache* tree_cache = NULL;
 
@@ -247,15 +251,23 @@ geography_distance_cache_tolerance(FunctionCallInfoData* fcinfo, const GSERIALIZ
 	}
 }
 
-
 int
-geography_distance_cache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2, const SPHEROID* s, double* distance)
+geography_distance_cache(FunctionCallInfo fcinfo,
+			 const GSERIALIZED *g1,
+			 const GSERIALIZED *g2,
+			 const SPHEROID *s,
+			 double *distance)
 {
 	return geography_distance_cache_tolerance(fcinfo, g1, g2, s, FP_TOLERANCE, distance);
 }
 
 int
-geography_dwithin_cache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2, const SPHEROID* s, double tolerance, int* dwithin)
+geography_dwithin_cache(FunctionCallInfo fcinfo,
+			const GSERIALIZED *g1,
+			const GSERIALIZED *g2,
+			const SPHEROID *s,
+			double tolerance,
+			int *dwithin)
 {
 	double distance;
 	/* Ticket #2422, difference between sphere and spheroid distance can trip up the */

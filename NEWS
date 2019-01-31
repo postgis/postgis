@@ -16,6 +16,7 @@ PostGIS 2.4.7
   - #4296, Use `server_version_num` instead of parsing `version()` (Raúl Marín)
   - #4298, Geodetic tolerance issue in 32-bit (Paul Ramsey)
   - #4283, Avoid final point duplicates for circle stroking (Paul Ramsey)
+  - #4313, #4307, PostgreSQL 12 compatibility (Laurenz Albe, Raúl Marín)
 
 
 PostGIS 2.4.6

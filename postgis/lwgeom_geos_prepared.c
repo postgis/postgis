@@ -462,8 +462,8 @@ static GeomCacheMethods PrepGeomCacheMethods =
 * and freeing the GEOS PreparedGeometry structures
 * we need for this particular caching strategy.
 */
-PrepGeomCache*
-GetPrepGeomCache(FunctionCallInfoData* fcinfo, GSERIALIZED* g1, GSERIALIZED* g2)
+PrepGeomCache *
+GetPrepGeomCache(FunctionCallInfo fcinfo, GSERIALIZED *g1, GSERIALIZED *g2)
 {
 	return (PrepGeomCache*)GetGeomCache(fcinfo, &PrepGeomCacheMethods, g1, g2);
 }

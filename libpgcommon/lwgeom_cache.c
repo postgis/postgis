@@ -52,7 +52,7 @@ typedef struct {
 * info data.
 */
 static MemoryContext
-FIContext(FunctionCallInfoData* fcinfo)
+FIContext(FunctionCallInfo fcinfo)
 {
 	return fcinfo->flinfo->fn_mcxt;
 }
@@ -61,8 +61,8 @@ FIContext(FunctionCallInfoData* fcinfo)
 * Get the generic collection off the statement, allocate a
 * new one if we don't have one already.
 */
-static GenericCacheCollection*
-GetGenericCacheCollection(FunctionCallInfoData* fcinfo)
+static GenericCacheCollection *
+GetGenericCacheCollection(FunctionCallInfo fcinfo)
 {
 	GenericCacheCollection* cache = fcinfo->flinfo->fn_extra;
 
@@ -80,8 +80,8 @@ GetGenericCacheCollection(FunctionCallInfoData* fcinfo)
 * Get the Proj4 entry from the generic cache if one exists.
 * If it doesn't exist, make a new empty one and return it.
 */
-PROJ4PortalCache*
-GetPROJ4SRSCache(FunctionCallInfoData* fcinfo)
+PROJ4PortalCache *
+GetPROJ4SRSCache(FunctionCallInfo fcinfo)
 {
 	GenericCacheCollection* generic_cache = GetGenericCacheCollection(fcinfo);
 	PROJ4PortalCache* cache = (PROJ4PortalCache*)(generic_cache->entry[PROJ_CACHE_ENTRY]);
@@ -120,8 +120,11 @@ GetPROJ4SRSCache(FunctionCallInfoData* fcinfo)
 * Returns a cache pointer if there is a cache hit and we have an
 * index built and ready to use. Returns NULL otherwise.
 */
-GeomCache*
-GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods, const GSERIALIZED* g1, const GSERIALIZED* g2)
+GeomCache *
+GetGeomCache(FunctionCallInfo fcinfo,
+	     const GeomCacheMethods *cache_methods,
+	     const GSERIALIZED *g1,
+	     const GSERIALIZED *g2)
 {
 	GeomCache* cache;
 	int cache_hit = 0;

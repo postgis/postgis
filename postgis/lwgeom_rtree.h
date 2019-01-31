@@ -86,7 +86,6 @@ LWMLINE *RTreeFindLineSegments(RTREE_NODE *root, double value);
 * a pre-built index structure (RTREE_POLY_CACHE) if one exists. Otherwise
 * builds a new one and returns that.
 */
-RTREE_POLY_CACHE* GetRtreeCache(FunctionCallInfoData* fcinfo, GSERIALIZED* g1);
-
+RTREE_POLY_CACHE *GetRtreeCache(FunctionCallInfo fcinfo, GSERIALIZED *g1);
 
 #endif /* !defined _LWGEOM_RTREE_H */
