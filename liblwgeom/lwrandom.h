@@ -22,6 +22,12 @@
  *
  **********************************************************************/
 
+#include <stddef.h>
+#include <stdint.h>
 
-void lwrandom_set_seed(uint32_t seed);
+void lwrandom_set_seed(int32_t seed);
 double lwrandom_uniform(void);
+
+/* for low-level external debugging */
+void _lwrandom_set_seeds(int32_t s1, int32_t s2);
+int32_t _lwrandom_get_seed(size_t idx);
