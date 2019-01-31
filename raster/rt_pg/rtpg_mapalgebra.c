@@ -87,7 +87,7 @@ typedef struct {
 	/* copied from LOCAL_FCINFO in fmgr.h */
 	union {
 		FunctionCallInfoBaseData fcinfo;
-		char fcinfo_data[SizeForFunctionCallInfo(3)];
+		char fcinfo_data[SizeForFunctionCallInfo(FUNC_MAX_ARGS)]; /* Could be optimized */
 	} ufc_info_data;
 	FunctionCallInfo ufc_info;
 #endif
@@ -5141,7 +5141,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
 #if POSTGIS_PGSQL_VERSION < 120
     FunctionCallInfoData cbdata;
 #else
-    LOCAL_FCINFO(cbdata, 2); /* at most 2 arguments */
+    LOCAL_FCINFO(cbdata, FUNC_MAX_ARGS); /* Could be optimized */
 #endif
     Datum tmpnewval;
     char * strFromText = NULL;
@@ -5610,7 +5610,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
 #if POSTGIS_PGSQL_VERSION < 120
     FunctionCallInfoData cbdata;
 #else
-    LOCAL_FCINFO(cbdata, 3); /* at most 3 arguments */
+    LOCAL_FCINFO(cbdata, FUNC_MAX_ARGS); /* Could be optimized */
 #endif
     Datum tmpnewval;
     ArrayType * neighborDatum;
@@ -6271,7 +6271,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 #if POSTGIS_PGSQL_VERSION < 120
 	FunctionCallInfoData ufc_info;
 #else
-	LOCAL_FCINFO(ufc_info, 4); /* at most 4 arguments */
+	LOCAL_FCINFO(ufc_info, FUNC_MAX_ARGS); /* Could be optimized */
 #endif
 	int ufc_nullcount = 0;
 
