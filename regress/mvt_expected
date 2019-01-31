@@ -123,3 +123,4 @@ TU2
 ERROR:  pgis_asmvt_transfn: parameter row cannot be other than a rowtype
 TU3|
 #3922|6.5
+#4314|

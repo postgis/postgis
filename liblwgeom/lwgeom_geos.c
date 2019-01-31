@@ -65,11 +65,26 @@ do { \
 	return NULL; \
 } while (0)
 
+/* Pass the latest GEOS error to lwdebug, then return NULL */
+#define GEOS_FAIL_DEBUG() \
+	do \
+	{ \
+		lwdebug(1, "%s: GEOS Error: %s", __func__, lwgeom_geos_errmsg); \
+		return NULL; \
+	} while (0)
+
 #define GEOS_FREE_AND_FAIL(...) \
 do { \
 	GEOS_FREE(__VA_ARGS__); \
 	GEOS_FAIL(); \
 } while (0)
+
+#define GEOS_FREE_AND_FAIL_DEBUG(...) \
+	do \
+	{ \
+		GEOS_FREE(__VA_ARGS__); \
+		GEOS_FAIL_DEBUG(); \
+	} while (0)
 
 /* Return the consistent SRID of all inputs, or call lwerror
  * in case of SRID mismatch. */
@@ -870,17 +885,17 @@ lwgeom_clip_by_rect(const LWGEOM *geom1, double x1, double y1, double x2, double
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX)))
-		GEOS_FAIL();
+		GEOS_FAIL_DEBUG();
 
 	if (!(g3 = GEOSClipByRect(g1, x1, y1, x2, y2)))
-		GEOS_FREE_AND_FAIL(g1);
+		GEOS_FREE_AND_FAIL_DEBUG(g1);
 
 	GEOS_FREE(g1);
 	result = GEOS2LWGEOM(g3, is3d);
 	GEOS_FREE(g3);
 
 	if (!result)
-		GEOS_FAIL();
+		GEOS_FAIL_DEBUG();
 
 	result->srid = geom1->srid;
 
