@@ -106,7 +106,7 @@ static GeomCacheMethods RectTreeCacheMethods =
 };
 
 static RectTreeGeomCache *
-GetRectTreeGeomCache(FunctionCallInfoData *fcinfo, const GSERIALIZED *g1, const GSERIALIZED *g2)
+GetRectTreeGeomCache(FunctionCallInfo fcinfo, const GSERIALIZED *g1, const GSERIALIZED *g2)
 {
 	return (RectTreeGeomCache*)GetGeomCache(fcinfo, &RectTreeCacheMethods, g1, g2);
 }

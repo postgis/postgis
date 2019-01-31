@@ -67,6 +67,7 @@ PostGIS 3.0.0
   - #4296, Use `server_version_num` instead of parsing `version()` (Raúl Marín)
   - #4272, Improve notice message when unable to compute stats (Raúl Marín)
   - #4314, ST_ClipByBox2D: Do not throw when the geometry is invalid (Raúl Marín)
+  - #4313, #4307, PostgreSQL 12 compatibility (Laurenz Albe, Raúl Marín)
 
 
 PostGIS 2.5.0
