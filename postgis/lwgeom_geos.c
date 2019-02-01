@@ -1017,7 +1017,7 @@ Datum ST_GeneratePoints(PG_FUNCTION_ARGS)
 	int32 seed = 0;
 
 	gser_input = PG_GETARG_GSERIALIZED_P(0);
-	npoints = DatumGetInt32(DirectFunctionCall1(numeric_int4, PG_GETARG_DATUM(1)));
+	npoints = PG_GETARG_INT32(1);
 
 	if (npoints < 0)
 		PG_RETURN_NULL();
