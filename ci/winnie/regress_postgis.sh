@@ -134,7 +134,7 @@ fi;
 make clean
 
 #patch liblwgeom generated make to get rid of dynamic linking
-sed -i 's/LDFLAGS += -no-undefined//g' liblwgeom/Makefile
+#sed -i 's/LDFLAGS += -no-undefined//g' liblwgeom/Makefile
 
 make
 make install
