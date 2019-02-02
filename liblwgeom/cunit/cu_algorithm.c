@@ -1439,28 +1439,63 @@ static void test_point_density(void)
 {
 	LWGEOM *geom;
 	LWMPOINT *mpt;
+	LWMPOINT *mpt2;
 	LWPOINT *pt;
+	LWPOINT *pt2;
+	int eq, i;
 	// char *ewkt;
 
 	/* POLYGON */
-	geom = lwgeom_from_wkt("POLYGON((1 0,0 1,1 2,2 1,1 0))", LW_PARSER_CHECK_NONE);
-	mpt = lwgeom_to_points(geom, 100, 0);
+	geom = lwgeom_from_wkt("POLYGON((0 0,1 0,1 1,0 1,0 0))", LW_PARSER_CHECK_NONE);
+	mpt = lwgeom_to_points(geom, 100, 0); /* seed based on clock */
 	CU_ASSERT_EQUAL(mpt->ngeoms,100);
-	// ewkt = lwgeom_to_ewkt((LWGEOM*)mpt);
-	// printf("%s\n", ewkt);
-	// lwfree(ewkt);
 	lwmpoint_free(mpt);
 
-	/* Set seed to get a deterministic sequence.
-	 * Warning: This may fail on different platforms!
+	/* Set seed to get a deterministic sequence */
+	mpt = lwgeom_to_points(geom, 1000, 12345);
+
+	/* Check to find a different multipoint sequence with different seed */
+	mpt2 = lwgeom_to_points(geom, 1000, 54321);
+	eq = 0;
+	for (i = 0; i < 1000; i++)
+	{
+		pt = (LWPOINT*)mpt->geoms[i];
+		pt2 = (LWPOINT*)mpt2->geoms[i];
+		if (lwpoint_get_x(pt) == lwpoint_get_x(pt2) && lwpoint_get_y(pt) == lwpoint_get_y(pt2))
+			eq++;
+	}
+	CU_ASSERT_EQUAL(eq, 0);
+	lwmpoint_free(mpt2);
+	pt = NULL;
+	pt2 = NULL;
+
+	/* Check to find an identical multipoint sequence with same seed */
+	mpt2 = lwgeom_to_points(geom, 1000, 12345);
+	eq = 0;
+	for (i = 0; i < 1000; i++)
+	{
+		pt = (LWPOINT*)mpt->geoms[i];
+		pt2 = (LWPOINT*)mpt2->geoms[i];
+		if (lwpoint_get_x(pt) == lwpoint_get_x(pt2) && lwpoint_get_y(pt) == lwpoint_get_y(pt2))
+			eq++;
+	}
+	CU_ASSERT_EQUAL(eq, 1000);
+	lwmpoint_free(mpt2);
+	pt = NULL;
+	pt2 = NULL;
+
+
+	/* Check if the 1000th point is the expected value.
+	 * Note that if the PRNG is not portable, this test may fail
 	 */
-	mpt = lwgeom_to_points(geom, 12, 12345);
-	CU_ASSERT_EQUAL(mpt->ngeoms,12);
-	pt = (LWPOINT*)mpt->geoms[8];
-	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_x(pt), 1.041762256506, 1e-11);
-	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_y(pt), 0.056992828494, 1e-11);
-	// lwpoint_free(pt);
+	pt = (LWPOINT*)mpt->geoms[999];
+	// ewkt = lwgeom_to_ewkt((LWGEOM*)pt);
+	// printf("%s\n", ewkt);
+	// lwfree(ewkt);
+	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_x(pt), 0.179235638039549, 1e-11);
+	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_y(pt), 0.531253711538885, 1e-11);
 	lwmpoint_free(mpt);
+	pt = NULL;
 
 	mpt = lwgeom_to_points(geom, 0, 0);
 	CU_ASSERT_EQUAL(mpt, NULL);

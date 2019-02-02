@@ -1115,12 +1115,13 @@ ANALYZE bug_4144_table;
 DROP TABLE IF EXISTS bug_4144_table;
 
 -- #4299
-select '#4299', ST_GeneratePoints(g, 2) = ST_GeneratePoints(g, 2)
-from (select 'POLYGON((0 0,1 0,1 1,0 1,0 0))'::geometry as g) as f;
+SELECT '#4299', ST_Equals(ST_GeneratePoints(g, 1000), ST_GeneratePoints(g, 1000))
+FROM (SELECT 'POLYGON((0 0,1 0,1 1,0 1,0 0))'::geometry AS g) AS f;
 
 -- #4304
-select '#4304', ST_GeneratePoints(g, 2, 1234) = ST_GeneratePoints(g, 2, 1234), ST_AsText(ST_SnapToGrid(ST_GeneratePoints(g, 2, 1234), 0.0001))
-from (select 'POLYGON((0 0,1 0,1 1,0 1,0 0))'::geometry as g) as f;
+SELECT '#4304', ST_Equals(ST_GeneratePoints(g, 1000, 12345), ST_GeneratePoints(g, 1000, 12345)),
+ST_Distance(ST_GeometryN(ST_GeneratePoints(g, 1000, 12345), 1000), ST_GeometryFromText('POINT(0.1792356 0.5312537)')) < 1e-7
+FROM (SELECT 'POLYGON((0 0,1 0,1 1,0 1,0 0))'::geometry AS g) AS f;
 
 
 -- Clean up
