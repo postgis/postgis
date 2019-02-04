@@ -3,7 +3,7 @@ Debbie:
 Winnie:
  [![Build Status](https://debbie.postgis.net:444/buildStatus/icon?job=PostGIS_2.5)](https://debbie.postgis.net:444/view/PostGIS/job/PostGIS_2.5/)
 Dronie:
- [![Build Status](https://drone.osgeo.org/api/badges/postgis/postgis/status.svg?branch=svn-2.5)](https://drone.osgeo.org/postgis/postgis?branch=svn-2.5)
+ [![Build Status](https://dronie.osgeo.org/api/badges/postgis/postgis/status.svg?ref=refs/heads/svn-2.5)](https://dronie.osgeo.org/postgis/postgis?branch=svn-2.5)
 Travis:
  [![Build Status](https://secure.travis-ci.org/postgis/postgis.svg)](http://travis-ci.org/postgis/postgis)
 GitLab-CI:
