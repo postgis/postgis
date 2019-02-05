@@ -41,15 +41,22 @@ extern "C" {
  * The ownership of it is given to the caller.
  *
  * @param geom - A geometry of either POLYGONTYPE or MULTIPOLYGONTYPE type.
- * @param polygon - A geometry of either POLYGONTYPE or MULTIPOLYGONTYPE type.
- * @return - NULL on invalid input (NULL or wrong type).
- *         - An empty MULTIPOLYGONTYPE if any of the inputs is empty.
+ * @param bbox - The GBOX that will be used to clip.
+ * @return - NULL on invalid input (NULL or wrong type), or when interrupted.
+ *         - An empty MULTIPOLYGONTYPE the geometry is empty.
  *         - A pointer to a LWMPOLY otherwise.
  */
 LWGEOM *lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox);
 
+/**
+ * Returns a pointer to the static string representing the Wagyu release
+ * being used (Should not be freed)
+ */
 const char *libwagyu_version();
 
+/**
+ * Requests wagyu to stop processing. In this case it will return NULL
+ */
 void lwgeom_wagyu_interruptRequest();
 
 #ifdef __cplusplus
