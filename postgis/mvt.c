@@ -553,7 +553,6 @@ static void parse_datum_as_string(mvt_agg_context *ctx, Oid typoid,
 	add_value_as_string(ctx, value, tags, k);
 }
 
-#if POSTGIS_PGSQL_VERSION >= 94
 static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 	uint32_t *tags)
 {
@@ -631,7 +630,6 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 
 	return tags;
 }
-#endif
 
 /**
  * Sets the feature id. Ignores Nulls and negative values
@@ -914,6 +912,48 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 	return ng;
 }
 
+#ifdef HAVE_WAGYU
+
+#include "lwgeom_wagyu.h"
+
+static LWGEOM *
+mvt_clip_and_validate(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint32_t buffer, bool clip_geom)
+{
+	GBOX clip_box = {0};
+	LWGEOM *clipped_lwgeom;
+
+	/* Wagyu only supports polygons. Default to geos for other types */
+	lwgeom = lwgeom_to_basic_type(lwgeom, POLYGONTYPE);
+	if (lwgeom->type != POLYGONTYPE && lwgeom->type != MULTIPOLYGONTYPE)
+	{
+		return mvt_clip_and_validate_geos(lwgeom, basic_type, extent, buffer, clip_geom);
+	}
+
+	if (!clip_geom)
+	{
+		/* With clipping disabled, we request a clip with the geometry bbox to force validation */
+		lwgeom_calculate_gbox(lwgeom, &clip_box);
+	}
+	else
+	{
+		clip_box.xmax = clip_box.ymax = (double)extent + (double)buffer;
+		clip_box.xmin = clip_box.ymin = -(double)buffer;
+	}
+
+	clipped_lwgeom = lwgeom_wagyu_clip_by_box(lwgeom, &clip_box);
+
+	return clipped_lwgeom;
+}
+
+#else /* ! HAVE_WAGYU */
+
+static LWGEOM *
+mvt_clip_and_validate(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint32_t buffer, bool clip_geom)
+{
+	return mvt_clip_and_validate_geos(lwgeom, basic_type, extent, buffer, clip_geom);
+}
+#endif
+
 /**
  * Transform a geometry into vector tile coordinate space.
  *
@@ -963,13 +1003,13 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	affine.yoff = -gbox->ymax * fy;
 	lwgeom_affine(lwgeom, &affine);
 
-	/* snap to integer precision, removing duplicate points */
+	/* Snap to integer precision, removing duplicate points */
 	lwgeom_grid_in_place(lwgeom, &grid);
 
 	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;
 
-	lwgeom = mvt_clip_and_validate_geos(lwgeom, basic_type, extent, buffer, clip_geom);
+	lwgeom = mvt_clip_and_validate(lwgeom, basic_type, extent, buffer, clip_geom);
 	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;
 

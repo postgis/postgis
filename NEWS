@@ -26,6 +26,7 @@ PostGIS 3.0.0
            within, equals (Esteban Zimányi and Arthur Lesuisse from Université
            Libre de Bruxelles (ULB), Darafei Praliaskouski)
   - #4171, ST_3DLineInterpolatePoint (Julien Cabieces, Vincent Mora)
+  - #4311, Introduce `--with-wagyu` as an option for MVT polygons (Raúl Marín)
 
 * Enhancements and fixes *
   - #4153, ST_Segmentize now splits segments proportionally (Darafei

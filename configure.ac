@@ -1421,6 +1421,46 @@ else
 fi
 
 
+dnl ===========================================================================
+dnl Deps folder
+dnl ===========================================================================
+
+DEPS_MAKEFILE_LIST="
+    deps/Makefile"
+
+
+dnl ===========================================================================
+dnl Wagyu
+dnl ===========================================================================
+
+dnl Wagyu will only be necessary if protobuf is present to build MVTs
+
+HAVE_WAGYU=no
+if test "x$HAVE_PROTOBUF" = "xyes"; then
+    AC_ARG_WITH(
+            [wagyu],
+            AC_HELP_STRING([--with-wagyu], [Use the wagyu library]),
+            [HAVE_WAGYU=yes],
+            [HAVE_WAGYU=no])
+
+    if test "x$HAVE_WAGYU" = "xyes"; then
+            AC_MSG_RESULT([WAGYU: Wagyu usage requested])
+
+            DEPS_SUBDIR="deps"
+            AC_SUBST([DEPS_SUBDIR])
+
+            WAGYU_LIB=libwagyu.la
+            AC_SUBST([WAGYU_LIB])
+
+            AC_PROG_CXX
+            AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
+
+            AC_DEFINE([HAVE_WAGYU], [1], [Define to 1 if wagyu is being built])
+            AC_SUBST([HAVE_WAGYU])
+            DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
+                    deps/wagyu/Makefile"
+    fi
+fi
 
 
 
@@ -1471,7 +1511,8 @@ AC_OUTPUT([GNUmakefile
    doc/Makefile.comments
    doc/html/image_src/Makefile
    utils/Makefile
-   $RT_MAKEFILE_LIST])
+   $RT_MAKEFILE_LIST
+   $DEPS_MAKEFILE_LIST])
 
 dnl ===========================================================================
 dnl Display the configuration status information
@@ -1482,6 +1523,9 @@ AC_MSG_RESULT([  PostGIS is now configured for ${host}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Compiler Info ------------- ])
 AC_MSG_RESULT([  C compiler:           ${CC} ${CFLAGS}])
+if test "x$HAVE_WAGYU" = "xyes"; then
+    AC_MSG_RESULT([  C++ compiler:         ${CXX} ${CXXFLAGS}])
+fi
 AC_MSG_RESULT([  SQL preprocessor:     ${SQLPP}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Additional Info ------------- ])
@@ -1520,6 +1564,8 @@ AC_MSG_RESULT([  JSON-C support:       ${HAVE_JSON}])
 AC_MSG_RESULT([  protobuf-c support:   ${HAVE_PROTOBUF}])
 AC_MSG_RESULT([  PCRE support:         ${HAVE_PCRE}])
 AC_MSG_RESULT([  Perl:                 ${PERL}])
+AC_MSG_RESULT([  Wagyu:                ${HAVE_WAGYU}])
+
 AC_MSG_RESULT()
 AC_MSG_RESULT([ --------------- Extensions --------------- ])
 if test "x$RASTER" = "xraster"; then
