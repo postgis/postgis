@@ -14,4 +14,5 @@ LDFLAGS="--coverage"
 # Standard build
 ./configure --with-wagyu CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}"
 bash ./ci/travis/logbt -- make -j check RUNTESTFLAGS=--verbose
+curl -S -f https://codecov.io/bash -o .github/codecov.bash
 bash .github/codecov.bash
