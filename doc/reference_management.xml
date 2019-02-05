@@ -466,7 +466,7 @@ GDAL="GDAL 2.3.2, released 2018/09/21" LIBXML="2.9.9" LIBJSON="0.13.1" LIBPROTOB
 		<xref linkend="PostGIS_Lib_Version" />,
 		<xref linkend="PostGIS_LibXML_Version" />,
 		<xref linkend="PostGIS_PROJ_Version" />,
-        <xref linkend="PostGIS_Wagyu_Version" />,
+		<xref linkend="PostGIS_Wagyu_Version" />,
 		<xref linkend="PostGIS_Version" />
 		</para>
 	  </refsection>
@@ -734,7 +734,7 @@ postgis_liblwgeom_version
 	  </refsection>
 	</refentry>
 
-    <refentry id="PostGIS_Wagyu_Version">
+	<refentry id="PostGIS_Wagyu_Version">
 	  <refnamediv>
 		<refname>PostGIS_Wagyu_Version</refname>
 

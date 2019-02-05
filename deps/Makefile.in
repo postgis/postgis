@@ -18,14 +18,14 @@
 # *
 # **********************************************************************
 # *
-# * Copyright 2018 Raúl Marín
+# * Copyright 2019 Raúl Marín
 # *
 # **********************************************************************/
 
 CC=@CC@
 CXX=@CXX@
-CFLAGS=-I../liblwgeom @WARNFLAGS@ @CFLAGS@
-CXXFLAGS=-I../liblwgeom @WARNFLAGS@ @CXXFLAGS@
+CFLAGS=-I../liblwgeom @WARNFLAGS@ @CFLAGS@ @PICFLAGS@
+CXXFLAGS=-I../liblwgeom @WARNFLAGS@ @CXXFLAGS@ @PICFLAGS@
 LDFLAGS = @LDFLAGS@
 top_builddir = @top_builddir@
 libdir = @libdir@
