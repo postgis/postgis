@@ -1447,6 +1447,10 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 		<para><varname>clip_geom</varname> is a boolean to control if geometries should be clipped or encoded as is. If NULL it will default to true.</para>
 
 		<para>Availability: 2.4.0</para>
+
+        <note>
+            <para>From 3.0, Wagyu can be chosen at configure time to clip and validate MVT polygons. This library is faster and produces more correct results than the GEOS default, but it might drop small polygons.</para>
+        </note>
 	  </refsection>
 
 	  <refsection>
@@ -1457,11 +1461,19 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 	4096, 0, false));
                               st_astext
 --------------------------------------------------------------------
- MULTIPOLYGON(((5 4096,10 4096,10 4091,5 4096)),((5 4096,0 4096,0 4101,5 4096)))
+ MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))
 
 		]]>
 		</programlisting>
 	  </refsection>
+
+    <refsection>
+        <title>See Also</title>
+            <para>
+                <xref linkend="ST_AsMVT" />,
+                <xref linkend="PostGIS_Wagyu_Version" />
+            </para>
+        </refsection>
 	</refentry>
 
 	<refentry id="ST_AsMVT">
@@ -1532,7 +1544,7 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
                               st_asmvt
 --------------------------------------------------------------------
- \x1a320a0474657374121d12020000180322150946ec3f1a14453b0a09280f091413121e09091e0f1a026331220228012880207802
+ \x1a320a0474657374121d1202000018032215095aa63f1a134631130a270f09280a121d0a14140f1a026331220228012880207802
 
 		]]>
 		</programlisting>

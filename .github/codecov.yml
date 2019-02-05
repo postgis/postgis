@@ -7,3 +7,5 @@ coverage:
             default:
                 threshold: 0.2%
 comment: false
+ignore:
+  - "deps/wagyu/include/**/*" # Ignore wagyu library files

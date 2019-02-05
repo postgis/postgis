@@ -442,9 +442,10 @@ LIBXML="2.7.8" LIBJSON="0.12" LIBPROTOBUF="1.2.1" TOPOLOGY RASTER
 		<programlisting>SELECT PostGIS_Full_Version();
 							   postgis_full_version
 ----------------------------------------------------------------------------------
-POSTGIS="2.2.0dev r12699" GEOS="3.5.0dev-CAPI-1.9.0 r3989" SFCGAL="1.0.4" PROJ="Rel. 4.8.0, 6 March 2012"
-GDAL="GDAL 1.11.0, released 2014/04/16" LIBXML="2.7.8" LIBJSON="0.12" RASTER
-(1 row)</programlisting>
+POSTGIS="3.0.0dev r17211" [EXTENSION] PGSQL="110" GEOS="3.8.0dev-CAPI-1.11.0 df24b6bb" SFCGAL="1.3.6" PROJ="Rel. 5.2.0, September 15th, 2018"
+GDAL="GDAL 2.3.2, released 2018/09/21" LIBXML="2.9.9" LIBJSON="0.13.1" LIBPROTOBUF="1.3.1" WAGYU="0.4.3 (Internal)" TOPOLOGY RASTER
+(1 row)
+</programlisting>
 	  </refsection>
 
 	  <refsection>
@@ -456,6 +457,7 @@ GDAL="GDAL 1.11.0, released 2014/04/16" LIBXML="2.7.8" LIBJSON="0.12" RASTER
 		<xref linkend="PostGIS_Lib_Version" />,
 		<xref linkend="PostGIS_LibXML_Version" />,
 		<xref linkend="PostGIS_PROJ_Version" />,
+		<xref linkend="PostGIS_Wagyu_Version" />,
 		<xref linkend="PostGIS_Version" />
 		</para>
 	  </refsection>
@@ -717,6 +719,52 @@ postgis_liblwgeom_version
 
 		<para><xref linkend="PostGIS_Full_Version" />, <xref
 		linkend="PostGIS_GEOS_Version" />,  <xref
+		linkend="PostGIS_Lib_Version" />, <xref
+		linkend="PostGIS_LibXML_Version" />, <xref
+		linkend="PostGIS_Version" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="PostGIS_Wagyu_Version">
+	  <refnamediv>
+		<refname>PostGIS_Wagyu_Version</refname>
+
+		<refpurpose>Returns the version number of the internal Wagyu library.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_Wagyu_Version</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the version number of the internal Wagyu library, or
+		<varname>NULL</varname> if Wagyu support is not enabled.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_Wagyu_Version();
+ postgis_wagyu_version
+-----------------------
+ 0.4.3 (Internal)
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="PostGIS_Full_Version" />, <xref
+		linkend="PostGIS_GEOS_Version" />,  <xref
+        linkend="PostGIS_PROJ_Version" />, <xref
 		linkend="PostGIS_Lib_Version" />, <xref
 		linkend="PostGIS_LibXML_Version" />, <xref
 		linkend="PostGIS_Version" /></para>

@@ -5,6 +5,7 @@
 Changes:
 - carto-package.json: Declare internal package compatibility.
 - Merged community `svn-2.5` as of 2019-02-12.
+- Backport wagyu introduction ([5508a4f](https://github.com/postgis/postgis/commit/5508a4f89c20686a19f233ef0a04b796d8a2cbaa)).
 
 ## 2.5.1.1+carto-1
 

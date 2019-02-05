@@ -2784,6 +2784,10 @@ CREATE OR REPLACE FUNCTION postgis_proj_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION postgis_wagyu_version() RETURNS text
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' IMMUTABLE;
+
 --
 -- IMPORTANT:
 -- Starting at 1.1.0 this function is used by postgis_proc_upgrade.pl
@@ -2887,6 +2891,7 @@ DECLARE
 	topo_scr_ver text;
 	json_lib_ver text;
 	protobuf_lib_ver text;
+	wagyu_lib_ver text;
 	sfcgal_lib_ver text;
 	sfcgal_scr_ver text;
 	pgsql_scr_ver text;
@@ -2898,6 +2903,7 @@ BEGIN
 	SELECT @extschema@.postgis_geos_version() INTO geosver;
 	SELECT @extschema@.postgis_libjson_version() INTO json_lib_ver;
 	SELECT @extschema@.postgis_libprotobuf_version() INTO protobuf_lib_ver;
+	SELECT @extschema@.postgis_wagyu_version() INTO wagyu_lib_ver;
 	SELECT @extschema@._postgis_scripts_pgsql_version() INTO pgsql_scr_ver;
 	SELECT @extschema@._postgis_pgsql_version() INTO pgsql_ver;
 	BEGIN
@@ -3005,6 +3011,10 @@ BEGIN
 
 	IF protobuf_lib_ver IS NOT NULL THEN
 		fullver = fullver || ' LIBPROTOBUF="' || protobuf_lib_ver || '"';
+	END IF;
+
+	IF wagyu_lib_ver IS NOT NULL THEN
+		fullver = fullver || ' WAGYU="' || wagyu_lib_ver || '"';
 	END IF;
 
 	IF dbproc != relproc THEN
