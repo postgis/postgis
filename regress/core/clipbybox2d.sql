@@ -22,3 +22,5 @@ CREATE TEMPORARY TABLE t AS SELECT
 SELECT '8', ST_AsEWKT(ST_ClipByBox2d(g, ST_MakeEnvelope(-20,-20,-10,-10))) FROM t;
 -- See http://trac.osgeo.org/postgis/ticket/2954
 SELECT '9', ST_AsEWKT(ST_ClipByBox2D('SRID=4326;POINT(0 0)','BOX3D(-1 -1,1 1)'::box3d::box2d));
+-- See https://trac.osgeo.org/postgis/ticket/4314
+SELECT '10', ST_ClipByBox2D('POLYGON((1410 2055, 1410 2056, 1410 2057, 1410 2055))'::geometry, ST_MakeEnvelope(-8.000000, -8.000000, 2056.000000, 2056.000000));

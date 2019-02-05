@@ -12,7 +12,7 @@ set -e
 #POSTGIS_MINOR_VERSION=1
 #POSTGIS_MICRO_VERSION=0SVN
 #export GCC_TYPE=gcc48  #for pre-4.8.0 compiles this is blank
-export GEOS_VER=3.7
+export GEOS_VER=3.8.0dev
 export GDAL_VER=2.2.4
 export PROJ_VER=4.9.3
 export SFCGAL_VER=1.3.2
@@ -146,7 +146,7 @@ fi;
 
 make clean
 #patch liblwgeom generated make to get rid of dynamic linking
-sed -i 's/LDFLAGS += -no-undefined//g' liblwgeom/Makefile
+#sed -i 's/LDFLAGS += -no-undefined//g' liblwgeom/Makefile
 
 #make uninstall
 
