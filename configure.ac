@@ -901,49 +901,58 @@ AC_ARG_WITH([json],
 
 if test "$CHECK_JSON" != "no"; then
 
-AC_ARG_WITH([jsondir],
-	[AS_HELP_STRING([--with-jsondir=PATH], [specify the json-c installation directory])],
-	[JSONDIR="$withval"], [JSONDIR=])
+    AC_ARG_WITH([jsondir],
+            [AS_HELP_STRING([--with-jsondir=PATH], [specify the json-c installation directory])],
+            [JSONDIR="$withval"], [JSONDIR=])
 
-if test ! "x$JSONDIR" = "x"; then
-	dnl Make sure that the directory exists
-	if test "x$JSONDIR" = "xyes"; then
-		AC_MSG_ERROR([you must specify a parameter to --with-jsondir, e.g. --with-jsondir=/path/to])
-	else
-		AC_MSG_RESULT([Using user-specified json-c directory: $JSONDIR])
+    if test ! "x$JSONDIR" = "x"; then
+            dnl Make sure that the directory exists
+            if test "x$JSONDIR" = "xyes"; then
+                    AC_MSG_ERROR([you must specify a parameter to --with-jsondir, e.g. --with-jsondir=/path/to])
+            else
+                    AC_MSG_RESULT([Using user-specified json-c directory: $JSONDIR])
 
-		dnl Add the include directory to JSON_CPPFLAGS
-		JSON_CPPFLAGS="-I$JSONDIR/include"
-		JSON_LDFLAGS="-L$JSONDIR/lib"
-	fi
-fi
+                    dnl Add the include directory to JSON_CPPFLAGS
+                    JSON_CPPFLAGS="-I$JSONDIR/include"
+                    JSON_LDFLAGS="-L$JSONDIR/lib"
+            fi
+    elif test ! -z "$PKG_CONFIG"; then
+	PKG_CHECK_MODULES([JSONC], [json-c], [
+                HAVE_JSON=yes
+                HAVE_JSON_C=yes
+                JSON_CPPFLAGS="$JSONC_CFLAGS"
+                JSON_LDFLAGS="$JSONC_LIBS"
+            ], [])
+    fi
 
-dnl Check that we can find the json/json.h header file
-CPPFLAGS_SAVE="$CPPFLAGS"
-CPPFLAGS="$JSON_CPPFLAGS"
-AC_CHECK_HEADER([json/json.h], [HAVE_JSON=yes], [
-  AC_CHECK_HEADER([json-c/json.h], [HAVE_JSON=yes; HAVE_JSON_C=yes], [])
-])
-CPPFLAGS="$CPPFLAGS_SAVE"
+    if test "$HAVE_JSON" != "yes"; then
+        dnl Check that we can find the json/json.h header file
+        CPPFLAGS_SAVE="$CPPFLAGS"
+        CPPFLAGS="$JSON_CPPFLAGS"
+        AC_CHECK_HEADER([json/json.h], [HAVE_JSON=yes], [
+          AC_CHECK_HEADER([json-c/json.h], [HAVE_JSON=yes; HAVE_JSON_C=yes], [])
+        ])
+        CPPFLAGS="$CPPFLAGS_SAVE"
 
-dnl Ensure we can link against libjson
-LIBS_SAVE="$LIBS"
-LIBS="$JSON_LDFLAGS"
-AC_CHECK_LIB([json-c], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson-c"], [
-  AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson"], [], [])
-], [])
-LIBS="$LIBS_SAVE"
+        dnl Ensure we can link against libjson
+        LIBS_SAVE="$LIBS"
+        LIBS="$JSON_LDFLAGS"
+        AC_CHECK_LIB([json-c], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson-c"], [
+          AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson"], [], [])
+        ], [])
+        LIBS="$LIBS_SAVE"
+    fi
 
-if test "$HAVE_JSON" = "yes"; then
-	AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
-fi
-if test "$HAVE_JSON_C" = "yes"; then
-	AC_DEFINE([HAVE_LIBJSON_C], 1, [Define to 1 if libjson resides in a json-c subdir])
-fi
+    if test "$HAVE_JSON" = "yes"; then
+            AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
+    fi
+    if test "$HAVE_JSON_C" = "yes"; then
+            AC_DEFINE([HAVE_LIBJSON_C], 1, [Define to 1 if libjson resides in a json-c subdir])
+    fi
 
-AC_SUBST([JSON_CPPFLAGS])
-AC_SUBST([JSON_LDFLAGS])
-AC_SUBST([HAVE_JSON])
+    AC_SUBST([JSON_CPPFLAGS])
+    AC_SUBST([JSON_LDFLAGS])
+    AC_SUBST([HAVE_JSON])
 
 fi
 
