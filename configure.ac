@@ -845,7 +845,6 @@ if test ! "x$PROJDIR" = "x"; then
 	fi
 elif test ! -z "$PKG_CONFIG"; then
 	PKG_CHECK_MODULES([PROJ], [proj], [
-                HAVE_PROTOBUF=yes;
                 PROJ_CPPFLAGS="$PROJ_CFLAGS"
                 PROJ_LDFLAGS="$PROJ_LIBS"
             ], [])
