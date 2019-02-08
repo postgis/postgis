@@ -727,7 +727,6 @@ AC_ARG_WITH([sfcgal],
 	[SFCGAL_CONFIG="$withval"],
 	[with_sfcgal=auto])
 
-HAVE_SFCGAL="no"
 
 if test "x$with_sfcgal" != "xno"; then
   if test "x$with_sfcgal" = "xyes" -o "x$with_sfcgal" = "xauto"; then
@@ -736,7 +735,7 @@ if test "x$with_sfcgal" != "xno"; then
 	if test -x "$SFCGAL_CONFIG"; then
 		SFCGAL_VERSION=`$SFCGAL_CONFIG --version` || AC_MSG_ERROR([cannot determine sfcgal version (tried with $SFCGAL_CONFIG --version)])
 		SFCGAL_LDFLAGS=`$SFCGAL_CONFIG --libs`
-		SFCGAL_CPPFLAGS=`$SFCGAL_CONFIG --cflags`" -DHAVE_SFCGAL"
+		SFCGAL_CPPFLAGS=`$SFCGAL_CONFIG --cflags`
 
 		SFCGAL_MAJOR_VERSION=`echo $SFCGAL_VERSION | cut -d. -f1 | sed 's/[[^0-9]]//g'`
 		SFCGAL_MINOR_VERSION=`echo $SFCGAL_VERSION | cut -d. -f2 | sed 's/[[^0-9]]//g'`
@@ -753,6 +752,7 @@ if test "x$with_sfcgal" != "xno"; then
 		else
         		SFCGAL="sfcgal"
 			HAVE_SFCGAL="yes"
+                        AC_DEFINE([HAVE_SFCGAL], [1], [Define to 1 if sfcgal is being built])
 		fi
 		if test ! "$POSTGIS_SFCGAL_VERSION" -ge 10301; then
 			AC_MSG_ERROR([PostGIS requires SFCGAL >= 1.3.1 (found $SFCGAL_VERSION)])
@@ -770,7 +770,6 @@ AC_SUBST([SFCGAL_LDFLAGS])
 AC_SUBST([SFCGAL_OBJS])
 AC_SUBST([SFCGAL])
 AC_SUBST([HAVE_SFCGAL])
-
 
 
 dnl ===========================================================================

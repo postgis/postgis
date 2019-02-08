@@ -113,6 +113,9 @@
 /* Define to 1 if wagyu is being built */
 #undef HAVE_WAGYU
 
+/* Define to 1 if sfcgal is being built */
+#undef HAVE_SFCGAL
+
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
 #undef LT_OBJDIR
