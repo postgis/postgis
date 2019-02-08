@@ -36,7 +36,7 @@
 #include "../postgis_config.h"
 #include "proj_api.h"
 
-#if defined(PJ_VERSION) && PJ_VERSION >= 490
+#if POSTGIS_PROJ_VERSION >= 49
 /* Enable new geodesic functions */
 #define PROJ_GEODESIC 1
 #else

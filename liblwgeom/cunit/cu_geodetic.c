@@ -1373,7 +1373,6 @@ static void test_spheroid_area(void)
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.106982993974659, 0.1);
 	/* spheroid: Planimeter -E -p 20 -r --input-string "3 -2;4 -2;4 -1;3 -1" */
 #if PROJ_GEODESIC
-	// printf("XXXXX %d\n", PJ_VERSION);
 	a2 = lwgeom_area_spheroid(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12286884908.946891319597874, 0.1);
 #endif
