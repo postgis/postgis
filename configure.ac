@@ -868,7 +868,7 @@ CPPFLAGS="$CPPFLAGS_SAVE"
 
 dnl For PROJ 6 add the ACCEPT_USE_OF_DEPRECATED_PROJ_API_H definition
 if test "$POSTGIS_PROJ_VERSION" -ge 60 && test "$POSTGIS_PROJ_VERSION" -lt 70; then
-    PROJ_CPPFLAGS+="-DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1"
+    AC_DEFINE([ACCEPT_USE_OF_DEPRECATED_PROJ_API_H], [1], [Define to use the old PROJ API])
 fi
 
 dnl Ensure that we are using PROJ >= 4.6.0 (requires pj_set_searchpath)

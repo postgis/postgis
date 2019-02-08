@@ -32,6 +32,8 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdint.h>
+
+#include "../postgis_config.h"
 #include "proj_api.h"
 
 #if defined(PJ_VERSION) && PJ_VERSION >= 490
