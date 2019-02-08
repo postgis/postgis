@@ -4194,6 +4194,15 @@ CREATE OR REPLACE FUNCTION _ST_Intersects(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
 
+
+-- Availability: 3.0.0
+-- Test function for PostgreSQL 12 support function infrastructure
+CREATE OR REPLACE FUNCTION ST_Intersects2(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','geos_intersects2'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+
 -- Availability: 1.2.2
 -- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Intersects(geom1 geometry, geom2 geometry)
