@@ -33,16 +33,10 @@
 
 #define JSON_C_VERSION_013 (13 << 8)
 
-#ifdef HAVE_LIBJSON_C
-#include <json-c/json.h>
+#include <json.h>
+
 #if !defined(JSON_C_VERSION_NUM) || JSON_C_VERSION_NUM < JSON_C_VERSION_013
-#include <json-c/json_object_private.h>
-#endif
-#else
-#include <json/json.h>
-#if !defined(JSON_C_VERSION_NUM) || JSON_C_VERSION_NUM < JSON_C_VERSION_013
-#include <json/json_object_private.h>
-#endif
+#include <json_object_private.h>
 #endif
 
 #ifndef JSON_C_VERSION
