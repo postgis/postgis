@@ -810,6 +810,17 @@ AC_SUBST([GETTEXT_LDFLAGS])
 LDFLAGS="$LDFLAGS_SAVE"
 CFLAGS="$CFLAGS_SAVE"
 
+
+dnl ===========================================================================
+dnl Detect if pkg-config installed
+dnl ===========================================================================
+# check for pkg-config
+PKG_PROG_PKG_CONFIG
+if test -z "$PKG_CONFIG"; then
+   AC_MSG_WARN([Cannot find pkg-config, make sure it is installed in your PATH])
+fi
+
+
 dnl ===========================================================================
 dnl Detect the version of PROJ.4 installed
 dnl ===========================================================================
@@ -827,13 +838,21 @@ if test ! "x$PROJDIR" = "x"; then
 			AC_MSG_RESULT([Using user-specified proj directory: $PROJDIR])
 
 			dnl Add the include directory to PROJ_CPPFLAGS
-			PROJ_CPPFLAGS="-I$PROJDIR/include -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1"
+			PROJ_CPPFLAGS="-I$PROJDIR/include"
 			PROJ_LDFLAGS="-L$PROJDIR/lib"
 		else
 			AC_MSG_ERROR([the --with-projdir directory "$PROJDIR" cannot be found])
 		fi
 	fi
+elif test ! -z "$PKG_CONFIG"; then
+	PKG_CHECK_MODULES([PROJ], [proj], [
+                HAVE_PROTOBUF=yes;
+                PROJ_CPPFLAGS="$PROJ_CFLAGS"
+                PROJ_LDFLAGS="$PROJ_LIBS"
+            ], [])
+    AC_MSG_WARN([PKGBUILD BRANCH])
 fi
+
 
 dnl Check that we can find the proj_api.h header file
 CPPFLAGS_SAVE="$CPPFLAGS"
@@ -851,6 +870,11 @@ CPPFLAGS="$CPPFLAGS_SAVE"
 
 AC_SUBST([PROJ_CPPFLAGS])
 AC_SUBST([PROJ_LDFLAGS])
+
+dnl For PROJ 6 add the ACCEPT_USE_OF_DEPRECATED_PROJ_API_H macro
+if test "$POSTGIS_PROJ_VERSION" -gt 60 && "$POSTGIS_PROJ_VERSION" -lt 70; then
+    PROJ_CPPFLAGS="$PROJ_CPPFLAGS -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1"
+fi
 
 dnl Ensure that we are using PROJ >= 4.6.0 (requires pj_set_searchpath)
 if test ! "$POSTGIS_PROJ_VERSION" -ge 46; then
@@ -924,15 +948,6 @@ AC_SUBST([JSON_CPPFLAGS])
 AC_SUBST([JSON_LDFLAGS])
 AC_SUBST([HAVE_JSON])
 
-fi
-
-dnl ===========================================================================
-dnl Detect if pkg-config installed
-dnl ===========================================================================
-# check for pkg-config
-PKG_PROG_PKG_CONFIG
-if test -z "$PKG_CONFIG"; then
-   AC_MSG_WARN([Cannot find pkg-config, make sure it is installed in your PATH])
 fi
 
 
