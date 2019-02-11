@@ -314,14 +314,23 @@ dnl specialised flags using a --with-X parameter, and so we allow this
 dnl information to be passed in if required.
 dnl ===========================================================================
 
+CUNIT_CPPFLAGS=""
 CUNIT_LDFLAGS=""
-AC_CHECK_HEADER([CUnit/CUnit.h], [
-	CUNIT_CPPFLAGS="$CPPFLAGS"
-	AC_CHECK_LIB([cunit], [CU_initialize_registry], [CUNIT_LDFLAGS="$LDFLAGS -lcunit"], [AC_MSG_WARN([could not locate CUnit required for unit tests])])
-	],
-	[
-	AC_MSG_WARN([could not locate CUnit required for unit tests])
-	])
+if test ! -z "$PKG_CONFIG"; then
+	PKG_CHECK_MODULES([CUNIT], [cunit],
+		[
+			CUNIT_CPPFLAGS="$CPPFLAGS $CUNIT_CFLAGS"
+			CUNIT_LDFLAGS="$LDFLAGS $CUNIT_LIBS"
+		],
+		[AC_MSG_WARN([could not locate CUnit required for unit tests])])
+else
+	AC_CHECK_HEADER([CUnit/CUnit.h],
+		[
+			CUNIT_CPPFLAGS="$CPPFLAGS"
+			AC_CHECK_LIB([cunit], [CU_initialize_registry], [CUNIT_LDFLAGS="$LDFLAGS -lcunit"], [AC_MSG_WARN([could not locate CUnit required for unit tests])])
+		],
+		[AC_MSG_WARN([could not locate CUnit required for unit tests])])
+fi
 
 AC_SUBST([CUNIT_CPPFLAGS])
 AC_SUBST([CUNIT_LDFLAGS])
