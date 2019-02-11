@@ -1,3 +1,11 @@
+## 2.5.1.2+carto-1
+
+**Release date**: 2019-XX-XX
+
+Changes:
+- carto-package.json: Declare internal package compatibility.
+
+
 ## 2.5.1.1+carto-1
 
 **Release date**: 2019-01-31
