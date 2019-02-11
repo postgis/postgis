@@ -1488,26 +1488,21 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
             dnl ============================================================
             CXX_SAVE="$CXX"
             CC_SAVE="$CC"
-            CFLAGS_SAVE="$CFLAGS_SAVE"
+            CFLAGS_SAVE="$CFLAGS"
+            CXXFLAGS_SAVE="$CXXFLAGS"
+            CPPFLAGS_SAVE="$CPPFLAGS_SAVE"
 
             WAGYU_CXX=`"$PG_CONFIG" --cc`
-            if test "x$WAGYU_CXX" = "xclang"; then
-                WAGYU_CXX="clang++"
-            elif test "x$WAGYU_CXX" = "xgcc"; then
-                WAGYU_CXX="g++"
-            else
-                WAGYU_CXX="$CXX"
-            fi
-
+            CPPFLAGS="-x c++"
             CXX="$WAGYU_CXX"
             AC_PROG_CXX
             AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
-            WAGYU_CXX="$CXX"
+            WAGYU_CXX="$CXX -x c++"
 
             dnl ============================================================
             dnl Check if we can declare the c++ stdlib
             dnl ============================================================
-            CC=`"$PG_CONFIG" --cc`
+            CC="$WAGYU_CXX"
 
             AC_CHECK_LIB(c++, main, [HAVE_CPP=yes], [HAVE_CPP=no])
             AC_CHECK_LIB(stdc++, main, [HAVE_STDCPP=yes], [HAVE_STDCPP=no])
@@ -1524,6 +1519,8 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
             CXX="$CXX_SAVE"
             CC="$CC_SAVE"
             CFLAGS="$CFLAGS_SAVE"
+            CXXFLAGS="$CXXFLAGS_SAVE"
+            CPPFLAGS="$CPPFLAGS_SAVE"
 
             AC_DEFINE([HAVE_WAGYU], [1], [Define to 1 if wagyu is being built])
             AC_SUBST([HAVE_WAGYU])
