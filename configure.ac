@@ -1133,16 +1133,15 @@ AC_ARG_WITH([address-standardizer],
                     [Disable the address_standardizer extension])],
     [], [])
 
+HAVE_PCRE=no
+ADDRESS_STANDARDIZER=""
+
 if test "x$with_address_standardizer" != "xno"; then
     dnl ===========================================================================
     dnl Detect the version of PCRE installed
     dnl ===========================================================================
-    LDFLAGS="$LDFLAGS_SAVE"
-    CFLAGS="$CFLAGS_SAVE"
 
-    CHECK_PCRE=yes
-    HAVE_PCRE=no
-    ADDRESS_STANDARDIZER="address_standardizer"
+
     AC_ARG_WITH([pcredir],
         [AS_HELP_STRING([--with-pcredir=PATH], [specify the PCRE installation directory])],
         [PCREDIR="$withval"], [PCREDIR=""])
@@ -1155,38 +1154,37 @@ if test "x$with_address_standardizer" != "xno"; then
             if test -d "$PCREDIR"; then
                 AC_MSG_RESULT([Using user-specified PCRE directory: $PCREDIR])
 
-                dnl Add the include directory to PCRE_CPPFLAGS
-                PCRE_CPPFLAGS="-I$PCREDIR/include"
-                PCRE_LDFLAGS="-L$PCREDIR/lib"
+                AC_CHECK_FILE("$PCREDIR/include/pcre.h",
+                        [
+                            PCRE_CPPFLAGS="-I$PCREDIR/include"
+                            PCRE_LDFLAGS="-L$PCREDIR/lib -lpcre"
+                            HAVE_PCRE=yes
+                            ADDRESS_STANDARDIZER="address_standardizer"
+                        ],
+                        [AC_MSG_ERROR([Could not find header: pcre.h])])
             else
                 AC_MSG_ERROR([the --with-pcredir directory "$PCREDIR" cannot be found])
             fi
         fi
+    elif test ! -z "$PKG_CONFIG"; then
+	PKG_CHECK_MODULES([PCRE], [libpcre], [
+                PCRE_CPPFLAGS="$PCRE_CFLAGS"
+                PCRE_LDFLAGS="$PCRE_LIBS"
+                ADDRESS_STANDARDIZER="address_standardizer"
+                HAVE_PCRE=yes
+            ], [AC_MSG_ERROR([libpcre could not be found])])
     fi
-
-
-    dnl Check that we can find the pcre.h header file
-    CPPFLAGS_SAVE="$CPPFLAGS"
-    CPPFLAGS="$PCRE_CPPFLAGS"
-
-    AC_CHECK_HEADER([pcre.h], [HAVE_PCRE=yes], [ADDRESS_STANDARDIZER=""])
-    AC_SUBST([PCRE])
-    AC_SUBST([HAVE_PCRE])
-    AC_SUBST([ADDRESS_STANDARDIZER])
-
-    dnl Return the PCRE version number
-    AC_DEFINE_UNQUOTED([PCRE_VERSION], [$PCRE_VERSION], [PCRE library version])
-    AC_SUBST([PCRE_VERSION])
-    CPPFLAGS="$CPPFLAGS_SAVE"
 
     AC_SUBST([PCRE_CPPFLAGS])
     AC_SUBST([PCRE_LDFLAGS])
 
 else
     ADDRESS_STANDARDIZER=""
-    AC_SUBST([ADDRESS_STANDARDIZER])
     AC_MSG_RESULT([ADDRESS_STANDARDIZER support: disabled])
 fi
+
+AC_SUBST([HAVE_PCRE])
+AC_SUBST([ADDRESS_STANDARDIZER])
 
 CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $PROTOBUF_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $PCRE_CPPFLAGS $CPPFLAGS"
 dnl AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])
