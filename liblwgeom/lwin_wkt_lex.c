@@ -2276,6 +2276,7 @@ void wkt_yyfree (void * ptr )
 */
 void wkt_lexer_init(char *src) 
 { 
+	yy_init_globals();
 	wkt_yy_buf_state = wkt_yy_scan_string(src); 
 } 
 
