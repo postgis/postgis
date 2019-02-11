@@ -113,6 +113,9 @@
 /* Define to 1 if wagyu is being built */
 #undef HAVE_WAGYU
 
+/* Define to 1 if sfcgal is being built */
+#undef HAVE_SFCGAL
+
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
 #undef LT_OBJDIR
@@ -155,6 +158,9 @@
 
 /* PROJ library version */
 #undef POSTGIS_PROJ_VERSION
+
+/* PROJ 6: Flag to use the old API */
+#undef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
 
 /* PostGIS Raster build date */
 #undef POSTGIS_RASTER_BUILD_DATE

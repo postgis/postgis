@@ -32,12 +32,9 @@
 #include "liblwgeom.h"
 #include "lwgeom_export.h"
 
-#ifdef HAVE_LIBJSON
-# ifdef HAVE_LIBJSON_C
-#  include <json-c/json.h>
-# else
-#  include <json/json.h>
-# endif
+#if defined(HAVE_LIBJSON) || defined(HAVE_LIBJSON_C)
+
+#include <json.h>
 
 /* We don't include <utils/builtins.h> to avoid collisions with json-c/json.h */
 static text*

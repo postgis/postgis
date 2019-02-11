@@ -314,14 +314,23 @@ dnl specialised flags using a --with-X parameter, and so we allow this
 dnl information to be passed in if required.
 dnl ===========================================================================
 
+CUNIT_CPPFLAGS=""
 CUNIT_LDFLAGS=""
-AC_CHECK_HEADER([CUnit/CUnit.h], [
-	CUNIT_CPPFLAGS="$CPPFLAGS"
-	AC_CHECK_LIB([cunit], [CU_initialize_registry], [CUNIT_LDFLAGS="$LDFLAGS -lcunit"], [AC_MSG_WARN([could not locate CUnit required for unit tests])])
-	],
-	[
-	AC_MSG_WARN([could not locate CUnit required for unit tests])
-	])
+if test ! -z "$PKG_CONFIG"; then
+	PKG_CHECK_MODULES([CUNIT], [cunit],
+		[
+			CUNIT_CPPFLAGS="$CPPFLAGS $CUNIT_CFLAGS"
+			CUNIT_LDFLAGS="$LDFLAGS $CUNIT_LIBS"
+		],
+		[AC_MSG_WARN([could not locate CUnit required for unit tests])])
+else
+	AC_CHECK_HEADER([CUnit/CUnit.h],
+		[
+			CUNIT_CPPFLAGS="$CPPFLAGS"
+			AC_CHECK_LIB([cunit], [CU_initialize_registry], [CUNIT_LDFLAGS="$LDFLAGS -lcunit"], [AC_MSG_WARN([could not locate CUnit required for unit tests])])
+		],
+		[AC_MSG_WARN([could not locate CUnit required for unit tests])])
+fi
 
 AC_SUBST([CUNIT_CPPFLAGS])
 AC_SUBST([CUNIT_LDFLAGS])
@@ -693,8 +702,8 @@ if test ! "$GEOS_NUMERIC_VERSION" -ge 30600; then
 fi
 
 dnl Extract the linker and include flags
-GEOS_LDFLAGS=`$GEOSCONFIG --ldflags`
-GEOS_CPPFLAGS=-I`$GEOSCONFIG --includes`
+GEOS_LDFLAGS=`$GEOSCONFIG --clibs`
+GEOS_CPPFLAGS=`$GEOSCONFIG --cflags`
 AC_SUBST([GEOS_LDFLAGS])
 AC_SUBST([GEOS_CPPFLAGS])
 
@@ -727,7 +736,6 @@ AC_ARG_WITH([sfcgal],
 	[SFCGAL_CONFIG="$withval"],
 	[with_sfcgal=auto])
 
-HAVE_SFCGAL="no"
 
 if test "x$with_sfcgal" != "xno"; then
   if test "x$with_sfcgal" = "xyes" -o "x$with_sfcgal" = "xauto"; then
@@ -736,7 +744,7 @@ if test "x$with_sfcgal" != "xno"; then
 	if test -x "$SFCGAL_CONFIG"; then
 		SFCGAL_VERSION=`$SFCGAL_CONFIG --version` || AC_MSG_ERROR([cannot determine sfcgal version (tried with $SFCGAL_CONFIG --version)])
 		SFCGAL_LDFLAGS=`$SFCGAL_CONFIG --libs`
-		SFCGAL_CPPFLAGS=`$SFCGAL_CONFIG --cflags`" -DHAVE_SFCGAL"
+		SFCGAL_CPPFLAGS=`$SFCGAL_CONFIG --cflags`
 
 		SFCGAL_MAJOR_VERSION=`echo $SFCGAL_VERSION | cut -d. -f1 | sed 's/[[^0-9]]//g'`
 		SFCGAL_MINOR_VERSION=`echo $SFCGAL_VERSION | cut -d. -f2 | sed 's/[[^0-9]]//g'`
@@ -753,6 +761,7 @@ if test "x$with_sfcgal" != "xno"; then
 		else
         		SFCGAL="sfcgal"
 			HAVE_SFCGAL="yes"
+                        AC_DEFINE([HAVE_SFCGAL], [1], [Define to 1 if sfcgal is being built])
 		fi
 		if test ! "$POSTGIS_SFCGAL_VERSION" -ge 10301; then
 			AC_MSG_ERROR([PostGIS requires SFCGAL >= 1.3.1 (found $SFCGAL_VERSION)])
@@ -770,7 +779,6 @@ AC_SUBST([SFCGAL_LDFLAGS])
 AC_SUBST([SFCGAL_OBJS])
 AC_SUBST([SFCGAL])
 AC_SUBST([HAVE_SFCGAL])
-
 
 
 dnl ===========================================================================
@@ -810,6 +818,17 @@ AC_SUBST([GETTEXT_LDFLAGS])
 LDFLAGS="$LDFLAGS_SAVE"
 CFLAGS="$CFLAGS_SAVE"
 
+
+dnl ===========================================================================
+dnl Detect if pkg-config installed
+dnl ===========================================================================
+# check for pkg-config
+PKG_PROG_PKG_CONFIG
+if test -z "$PKG_CONFIG"; then
+   AC_MSG_WARN([Cannot find pkg-config, make sure it is installed in your PATH])
+fi
+
+
 dnl ===========================================================================
 dnl Detect the version of PROJ.4 installed
 dnl ===========================================================================
@@ -827,13 +846,19 @@ if test ! "x$PROJDIR" = "x"; then
 			AC_MSG_RESULT([Using user-specified proj directory: $PROJDIR])
 
 			dnl Add the include directory to PROJ_CPPFLAGS
-			PROJ_CPPFLAGS="-I$PROJDIR/include -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1"
-			PROJ_LDFLAGS="-L$PROJDIR/lib"
+			PROJ_CPPFLAGS="-I$PROJDIR/include"
+			PROJ_LDFLAGS="-L$PROJDIR/lib -lproj"
 		else
 			AC_MSG_ERROR([the --with-projdir directory "$PROJDIR" cannot be found])
 		fi
 	fi
+elif test ! -z "$PKG_CONFIG"; then
+	PKG_CHECK_MODULES([PROJ], [proj], [
+                PROJ_CPPFLAGS="$PROJ_CFLAGS"
+                PROJ_LDFLAGS="$PROJ_LIBS"
+            ], [])
 fi
+
 
 dnl Check that we can find the proj_api.h header file
 CPPFLAGS_SAVE="$CPPFLAGS"
@@ -849,13 +874,18 @@ AC_DEFINE_UNQUOTED([POSTGIS_PROJ_VERSION], [$POSTGIS_PROJ_VERSION], [PROJ librar
 AC_SUBST([POSTGIS_PROJ_VERSION])
 CPPFLAGS="$CPPFLAGS_SAVE"
 
-AC_SUBST([PROJ_CPPFLAGS])
-AC_SUBST([PROJ_LDFLAGS])
+dnl For PROJ 6 add the ACCEPT_USE_OF_DEPRECATED_PROJ_API_H definition
+if test "$POSTGIS_PROJ_VERSION" -ge 60 && test "$POSTGIS_PROJ_VERSION" -lt 70; then
+    AC_DEFINE([ACCEPT_USE_OF_DEPRECATED_PROJ_API_H], [1], [Define to use the old PROJ API])
+fi
 
 dnl Ensure that we are using PROJ >= 4.6.0 (requires pj_set_searchpath)
 if test ! "$POSTGIS_PROJ_VERSION" -ge 46; then
 	AC_MSG_ERROR([PostGIS requires PROJ >= 4.6.0])
 fi
+
+AC_SUBST([PROJ_CPPFLAGS])
+AC_SUBST([PROJ_LDFLAGS])
 
 dnl Ensure we can link against libproj
 LIBS_SAVE="$LIBS"
@@ -880,59 +910,53 @@ AC_ARG_WITH([json],
 
 if test "$CHECK_JSON" != "no"; then
 
-AC_ARG_WITH([jsondir],
-	[AS_HELP_STRING([--with-jsondir=PATH], [specify the json-c installation directory])],
-	[JSONDIR="$withval"], [JSONDIR=])
+    AC_ARG_WITH([jsondir],
+            [AS_HELP_STRING([--with-jsondir=PATH], [specify the json-c installation directory])],
+            [JSONDIR="$withval"], [JSONDIR=])
 
-if test ! "x$JSONDIR" = "x"; then
-	dnl Make sure that the directory exists
-	if test "x$JSONDIR" = "xyes"; then
-		AC_MSG_ERROR([you must specify a parameter to --with-jsondir, e.g. --with-jsondir=/path/to])
-	else
-		AC_MSG_RESULT([Using user-specified json-c directory: $JSONDIR])
+    if test ! "x$JSONDIR" = "x"; then
+            dnl Make sure that the directory exists
+            if test "x$JSONDIR" = "xyes"; then
+                    AC_MSG_ERROR([you must specify a parameter to --with-jsondir, e.g. --with-jsondir=/path/to])
+            else
+                    AC_MSG_RESULT([Using user-specified json-c directory: $JSONDIR])
 
-		dnl Add the include directory to JSON_CPPFLAGS
-		JSON_CPPFLAGS="-I$JSONDIR/include"
-		JSON_LDFLAGS="-L$JSONDIR/lib"
-	fi
-fi
+                    AC_CHECK_FILE("$JSONDIR/include/json-c/json.h",
+                                [
+                                    JSON_CPPFLAGS="-I$JSONDIR/include/json-c"
+                                    AC_CHECK_LIB([json-c], [json_object_get], [HAVE_JSON_C=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson-c"])
+                                ],
+                                [
+                                    AC_CHECK_FILE("$JSONDIR/include/json/json.h",
+                                    [
+                                        JSON_CPPFLAGS="-I$JSONDIR/include/json"
+                                        AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson"])
+                                    ],
+                                    [AC_MSG_ERROR([Could not find header: json.h])])
+                                ])
+            fi
+    elif test ! -z "$PKG_CONFIG"; then
+	PKG_CHECK_MODULES([JSONC], [json-c], [
+                HAVE_JSON_C=yes
+                JSON_CPPFLAGS="$JSONC_CFLAGS"
+                JSON_LDFLAGS="$JSONC_LIBS"
+            ], [])
+    fi
 
-dnl Check that we can find the json/json.h header file
-CPPFLAGS_SAVE="$CPPFLAGS"
-CPPFLAGS="$JSON_CPPFLAGS"
-AC_CHECK_HEADER([json/json.h], [HAVE_JSON=yes], [
-  AC_CHECK_HEADER([json-c/json.h], [HAVE_JSON=yes; HAVE_JSON_C=yes], [])
-])
-CPPFLAGS="$CPPFLAGS_SAVE"
+    if test "$HAVE_JSON" = "yes"; then
+            AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
+    fi
+    if test "$HAVE_JSON_C" = "yes"; then
+            AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
+            AC_DEFINE([HAVE_LIBJSON_C], 1, [Define to 1 if libjson resides in a json-c subdir])
+            HAVE_JSON=yes
+    fi
 
-dnl Ensure we can link against libjson
-LIBS_SAVE="$LIBS"
-LIBS="$JSON_LDFLAGS"
-AC_CHECK_LIB([json-c], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson-c"], [
-  AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson"], [], [])
-], [])
-LIBS="$LIBS_SAVE"
+    AC_SUBST([JSON_CPPFLAGS])
+    AC_SUBST([JSON_LDFLAGS])
+    AC_SUBST([HAVE_JSON])
+    AC_SUBST([HAVE_LIBJSON_C])
 
-if test "$HAVE_JSON" = "yes"; then
-	AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
-fi
-if test "$HAVE_JSON_C" = "yes"; then
-	AC_DEFINE([HAVE_LIBJSON_C], 1, [Define to 1 if libjson resides in a json-c subdir])
-fi
-
-AC_SUBST([JSON_CPPFLAGS])
-AC_SUBST([JSON_LDFLAGS])
-AC_SUBST([HAVE_JSON])
-
-fi
-
-dnl ===========================================================================
-dnl Detect if pkg-config installed
-dnl ===========================================================================
-# check for pkg-config
-PKG_PROG_PKG_CONFIG
-if test -z "$PKG_CONFIG"; then
-   AC_MSG_WARN([Cannot find pkg-config, make sure it is installed in your PATH])
 fi
 
 
@@ -1111,16 +1135,15 @@ AC_ARG_WITH([address-standardizer],
                     [Disable the address_standardizer extension])],
     [], [])
 
+HAVE_PCRE=no
+ADDRESS_STANDARDIZER=""
+
 if test "x$with_address_standardizer" != "xno"; then
     dnl ===========================================================================
     dnl Detect the version of PCRE installed
     dnl ===========================================================================
-    LDFLAGS="$LDFLAGS_SAVE"
-    CFLAGS="$CFLAGS_SAVE"
 
-    CHECK_PCRE=yes
-    HAVE_PCRE=no
-    ADDRESS_STANDARDIZER="address_standardizer"
+
     AC_ARG_WITH([pcredir],
         [AS_HELP_STRING([--with-pcredir=PATH], [specify the PCRE installation directory])],
         [PCREDIR="$withval"], [PCREDIR=""])
@@ -1133,43 +1156,42 @@ if test "x$with_address_standardizer" != "xno"; then
             if test -d "$PCREDIR"; then
                 AC_MSG_RESULT([Using user-specified PCRE directory: $PCREDIR])
 
-                dnl Add the include directory to PCRE_CPPFLAGS
-                PCRE_CPPFLAGS="-I$PCREDIR/include"
-                PCRE_LDFLAGS="-L$PCREDIR/lib"
+                AC_CHECK_FILE("$PCREDIR/include/pcre.h",
+                        [
+                            PCRE_CPPFLAGS="-I$PCREDIR/include"
+                            PCRE_LDFLAGS="-L$PCREDIR/lib -lpcre"
+                            HAVE_PCRE=yes
+                            ADDRESS_STANDARDIZER="address_standardizer"
+                        ],
+                        [AC_MSG_ERROR([Could not find header: pcre.h])])
             else
                 AC_MSG_ERROR([the --with-pcredir directory "$PCREDIR" cannot be found])
             fi
         fi
+    elif test ! -z "$PKG_CONFIG"; then
+	PKG_CHECK_MODULES([PCRE], [libpcre], [
+                PCRE_CPPFLAGS="$PCRE_CFLAGS"
+                PCRE_LDFLAGS="$PCRE_LIBS"
+                ADDRESS_STANDARDIZER="address_standardizer"
+                HAVE_PCRE=yes
+            ], [AC_MSG_ERROR([libpcre could not be found])])
     fi
-
-
-    dnl Check that we can find the pcre.h header file
-    CPPFLAGS_SAVE="$CPPFLAGS"
-    CPPFLAGS="$PCRE_CPPFLAGS"
-
-    AC_CHECK_HEADER([pcre.h], [HAVE_PCRE=yes], [ADDRESS_STANDARDIZER=""])
-    AC_SUBST([PCRE])
-    AC_SUBST([HAVE_PCRE])
-    AC_SUBST([ADDRESS_STANDARDIZER])
-
-    dnl Return the PCRE version number
-    AC_DEFINE_UNQUOTED([PCRE_VERSION], [$PCRE_VERSION], [PCRE library version])
-    AC_SUBST([PCRE_VERSION])
-    CPPFLAGS="$CPPFLAGS_SAVE"
 
     AC_SUBST([PCRE_CPPFLAGS])
     AC_SUBST([PCRE_LDFLAGS])
 
 else
     ADDRESS_STANDARDIZER=""
-    AC_SUBST([ADDRESS_STANDARDIZER])
     AC_MSG_RESULT([ADDRESS_STANDARDIZER support: disabled])
 fi
+
+AC_SUBST([HAVE_PCRE])
+AC_SUBST([ADDRESS_STANDARDIZER])
 
 CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $PROTOBUF_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $PCRE_CPPFLAGS $CPPFLAGS"
 dnl AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])
 
-SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $JSON_LDFLAGS $PROTOBUF_LDFLAGS $XML2_LDFLAGS $SFCGAL_LDFLAGS $PCRE_LDFLAGS $EXCLUDELIBS_LDFLAGS $LDFLAGS"
+SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS $JSON_LDFLAGS $PROTOBUF_LDFLAGS $XML2_LDFLAGS $SFCGAL_LDFLAGS $EXCLUDELIBS_LDFLAGS $LDFLAGS"
 AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
@@ -1526,6 +1548,7 @@ AC_MSG_RESULT([  C compiler:           ${CC} ${CFLAGS}])
 if test "x$HAVE_WAGYU" = "xyes"; then
     AC_MSG_RESULT([  C++ compiler:         ${CXX} ${CXXFLAGS}])
 fi
+AC_MSG_RESULT([  CPPFLAGS:             $CPPFLAGS])
 AC_MSG_RESULT([  SQL preprocessor:     ${SQLPP}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Additional Info ------------- ])
@@ -1612,3 +1635,34 @@ AC_MSG_WARN([  http://trac.osgeo.org/geos ])
 AC_MSG_WARN()
 fi
 
+if test ! -z "$PKG_CONFIG"; then
+    if test ! "x$PROJDIR" = "x"; then
+        AC_MSG_WARN()
+        AC_MSG_WARN([ | You are building using --with-projdir. This option isn't standard and    |])
+        AC_MSG_WARN([ | might be incompatible with future releases of PROJ.                      |])
+        AC_MSG_WARN([ | You can instead adjust the PKG_CONFIG_PATH environment variable if you   |])
+        AC_MSG_WARN([ | installed software in a non-standard prefix.                             |])
+        AC_MSG_WARN([ | Alternatively, you may set the environment variables PROJ_CFLAGS and     |])
+        AC_MSG_WARN([ | PROJ_LIBS to avoid the need to call pkg-config.                          |])
+    fi
+
+    if test ! "x$JSONDIR" = "x"; then
+        AC_MSG_WARN()
+        AC_MSG_WARN([ | You are building using --with-jsondir. This option isn't standard and    |])
+        AC_MSG_WARN([ | might be incompatible with future releases of json-c.                    |])
+        AC_MSG_WARN([ | You can instead adjust the PKG_CONFIG_PATH environment variable if you   |])
+        AC_MSG_WARN([ | installed software in a non-standard prefix.                             |])
+        AC_MSG_WARN([ | Alternatively, you may set the environment variables JSONC_CFLAGS and    |])
+        AC_MSG_WARN([ | JSONC_LIBS to avoid the need to call pkg-config.                         |])
+    fi
+
+    if test ! "x$PCREDIR" = "x"; then
+        AC_MSG_WARN()
+        AC_MSG_WARN([ | You are building using --with-pcredir. This option isn't standard and    |])
+        AC_MSG_WARN([ | might be incompatible with future releases of libpcre.                   |])
+        AC_MSG_WARN([ | You can instead adjust the PKG_CONFIG_PATH environment variable if you   |])
+        AC_MSG_WARN([ | installed software in a non-standard prefix.                             |])
+        AC_MSG_WARN([ | Alternatively, you may set the environment variables PCRE_CFLAGS and     |])
+        AC_MSG_WARN([ | PCRE_LIBS to avoid the need to call pkg-config.                          |])
+    fi
+fi
