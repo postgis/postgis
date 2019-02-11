@@ -947,6 +947,7 @@ if test "$CHECK_JSON" != "no"; then
             AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
     fi
     if test "$HAVE_JSON_C" = "yes"; then
+            AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
             AC_DEFINE([HAVE_LIBJSON_C], 1, [Define to 1 if libjson resides in a json-c subdir])
             HAVE_JSON=yes
     fi
@@ -954,6 +955,7 @@ if test "$CHECK_JSON" != "no"; then
     AC_SUBST([JSON_CPPFLAGS])
     AC_SUBST([JSON_LDFLAGS])
     AC_SUBST([HAVE_JSON])
+    AC_SUBST([HAVE_LIBJSON_C])
 
 fi
 
