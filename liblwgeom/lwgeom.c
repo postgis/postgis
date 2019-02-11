@@ -2074,10 +2074,10 @@ lwgeom_startpoint(const LWGEOM *lwgeom, POINT4D *pt)
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
 		case COLLECTIONTYPE:
+		case POLYHEDRALSURFACETYPE:
 			return lwcollection_startpoint((LWCOLLECTION*)lwgeom, pt);
 		default:
-			lwerror("int: unsupported geometry type: %s",
-		        	lwtype_name(lwgeom->type));
+			lwerror("lwgeom_startpoint: unsupported geometry type: %s", lwtype_name(lwgeom->type));
 			return LW_FAILURE;
 	}
 }

@@ -96,7 +96,7 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 {
 	LWDEBUG(2, "lw_dist3d_distanceline is called");
 	double x1, x2, y1, y2, z1, z2, x, y;
-	double initdistance = (mode == DIST_MIN ? FLT_MAX : -1.0);
+	double initdistance = (mode == DIST_MIN ? DBL_MAX : -1.0);
 	DISTPTS3D thedl;
 	LWPOINT *lwpoints[2];
 	LWGEOM *result;
@@ -201,7 +201,7 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 
 	double x, y, z;
 	DISTPTS3D thedl;
-	double initdistance = FLT_MAX;
+	double initdistance = DBL_MAX;
 	LWGEOM *result;
 
 	thedl.mode = mode;
@@ -335,6 +335,58 @@ lwgeom_mindistance3d(const LWGEOM *lw1, const LWGEOM *lw2)
 	return lwgeom_mindistance3d_tolerance(lw1, lw2, 0.0);
 }
 
+static inline int
+gbox_contains_3d(const GBOX *g1, const GBOX *g2)
+{
+	return (g2->xmin >= g1->xmin) && (g2->xmax <= g1->xmax) && (g2->ymin >= g1->ymin) && (g2->ymax <= g1->ymax) &&
+	       (g2->zmin >= g1->zmin) && (g2->zmax <= g1->zmax);
+}
+
+static inline int
+lwgeom_solid_contains_lwgeom(const LWGEOM *solid, const LWGEOM *g)
+{
+	const GBOX *b1;
+	const GBOX *b2;
+
+	/* If solid isn't solid it can't contain anything */
+	if (!FLAGS_GET_SOLID(solid->flags))
+		return LW_FALSE;
+
+	b1 = lwgeom_get_bbox(solid);
+	b2 = lwgeom_get_bbox(g);
+
+	/* If box won't contain box, shape won't contain shape */
+	if (!gbox_contains_3d(b1, b2))
+		return LW_FALSE;
+	else /* Raycast upwards in Z */
+	{
+		POINT4D pt;
+		LWCOLLECTION *c;
+		/* take first point */
+		if (!lwgeom_startpoint(g, &pt))
+		{
+			return LW_FALSE;
+		};
+		uint8_t is_inside = LW_FALSE;
+
+		/* get part of solid that is upwards */
+		c = lwgeom_clip_to_ordinate_range(solid, 'Z', pt.z, DBL_MAX, 0);
+
+		for (uint32_t i = 0; i < c->ngeoms; i++)
+		{
+			/* walls of solid should be polygons, otherwise uninteresting */
+			if (lwgeom_get_type(c->geoms[i]) != POLYGONTYPE)
+				continue;
+
+			/* 3D raycast along Z is 2D point in polygon */
+			if (lwpoly_contains_point((LWPOLY *)c->geoms[i], (POINT2D *)&pt))
+				is_inside = !is_inside;
+		}
+		lwcollection_free(c);
+		return is_inside;
+	}
+}
+
 /**
 	Function handling 3d min distance calculations and dwithin calculations.
 	The difference is just the tolerance.
@@ -350,17 +402,22 @@ lwgeom_mindistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tole
 		return lwgeom_mindistance2d_tolerance(lw1, lw2, tolerance);
 	}
 	DISTPTS3D thedl;
-	LWDEBUG(2, "lwgeom_mindistance3d_tolerance is called");
 	thedl.mode = DIST_MIN;
-	thedl.distance = FLT_MAX;
+	thedl.distance = DBL_MAX;
 	thedl.tolerance = tolerance;
 	if (lw_dist3d_recursive(lw1, lw2, &thedl))
 	{
+		if (thedl.distance < tolerance)
+			return thedl.distance;
+		if (lwgeom_solid_contains_lwgeom(lw1, lw2) || lwgeom_solid_contains_lwgeom(lw2, lw1))
+			return 0;
+
 		return thedl.distance;
 	}
+
 	/* should never get here. all cases ought to be error handled earlier */
 	lwerror("Some unspecified error.");
-	return FLT_MAX;
+	return DBL_MAX;
 }
 
 /*------------------------------------------------------------------------------------------------------------
