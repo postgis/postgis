@@ -1498,7 +1498,10 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 	/* Get an empty multi-point ready to return */
 	mpt = lwmpoint_construct_empty(srid, 0, 0);
 
-	/* Init random number generator. Zero means "no seed", so make one up. */
+	/* Initiate random number generator.
+	 * Repeatable numbers are generated with seed values >= 1.
+	 * When seed is zero and has not previously been set, it is based on
+	 * Unix time (seconds) and process ID. */
 	lwrandom_set_seed( seed );
 
 	/* Now we fill in an array of cells, and then shuffle that array, */
@@ -1514,7 +1517,7 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 		}
 	}
 
-	/* Fisher--Yates shuffle */
+	/* Fisher-Yates shuffle */
 	n = sample_height * sample_width;
 	if (n > 1)
 	{

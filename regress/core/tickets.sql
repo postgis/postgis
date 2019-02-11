@@ -1120,7 +1120,7 @@ FROM (SELECT 'POLYGON((0 0,1 0,1 1,0 1,0 0))'::geometry AS g) AS f;
 
 -- #4304
 SELECT '#4304', ST_Equals(ST_GeneratePoints(g, 1000, 12345), ST_GeneratePoints(g, 1000, 12345)),
-ST_Distance(ST_GeometryN(ST_GeneratePoints(g, 1000, 12345), 1000), ST_GeometryFromText('POINT(0.1792356 0.5312537)')) < 1e-7
+ST_Distance(ST_GeometryN(ST_GeneratePoints(g, 1000, 12345), 1000), ST_GeometryFromText('POINT(0.801167838758 0.345281131175)')) < 1e-11
 FROM (SELECT 'POLYGON((0 0,1 0,1 1,0 1,0 0))'::geometry AS g) AS f;
 
 

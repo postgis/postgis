@@ -29,27 +29,35 @@
 #include <stddef.h>
 #include <time.h>
 
+#ifdef _WIN32
+#include <process.h>
+#define getpid _getpid
+#else
+#include <unistd.h>
+#endif
 
 static unsigned char _lwrandom_seed_set = 0;
 static int32_t _lwrandom_seed[3] = {0x330e, 0xabcd, 0x1234};
 
 /*
  * Set seed for a random number generator.
- * A zero value uses clock as seed the first time only.
- */
+ * Repeatable numbers are generated with seed values >= 1.
+ * When seed is zero and has not previously been set, it is based on
+ * Unix time (seconds) and process ID. */
 void
 lwrandom_set_seed(int32_t seed)
 {
 	if (seed == 0)
 	{
 		if (_lwrandom_seed_set == 0)
-			seed = ((unsigned int)time(NULL) * 1996) << 8;
+			seed = (unsigned int)time(NULL) + (unsigned int)getpid() - 0xbadd;
 		else
 			return;
 	}
-
-	_lwrandom_seed[1] = (seed % 2147483562) + 1; /* value between 1 and 2147483562 */
-	_lwrandom_seed[2] = (((seed + 6) >> 12) % 2147483398) + 1; /* value between 1 and 2147483398 */
+	/* s1 value between 1 and 2147483562 */
+	_lwrandom_seed[1] = (((int64_t)seed + 0xfeed) % 2147483562) + 1;
+	/* s2 value between 1 and 2147483398 */
+	_lwrandom_seed[2] = ((((int64_t)seed + 0xdefeb) << 5) % 2147483398) + 1;
 	_lwrandom_seed_set = 1;
 }
 
@@ -57,6 +65,7 @@ lwrandom_set_seed(int32_t seed)
 void
 _lwrandom_set_seeds(int32_t s1, int32_t s2)
 {
+	/* _lwrandom_seed[0] not used */
 	_lwrandom_seed[1] = s1;
 	_lwrandom_seed[2] = s2;
 	_lwrandom_seed_set = 1;

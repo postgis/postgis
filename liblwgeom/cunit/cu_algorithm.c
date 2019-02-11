@@ -1447,9 +1447,24 @@ static void test_point_density(void)
 
 	/* POLYGON */
 	geom = lwgeom_from_wkt("POLYGON((0 0,1 0,1 1,0 1,0 0))", LW_PARSER_CHECK_NONE);
-	mpt = lwgeom_to_points(geom, 100, 0); /* seed based on clock */
+	mpt = lwgeom_to_points(geom, 100, 0);  /* Set a zero seed to base it on Unix time and process ID */
 	CU_ASSERT_EQUAL(mpt->ngeoms,100);
+
+	/* Run a second time with a zero seed to get a different multipoint sequence */
+	mpt2 = lwgeom_to_points(geom, 100, 0);
+	eq = 0;
+	for (i = 0; i < 100; i++)
+	{
+		pt = (LWPOINT*)mpt->geoms[i];
+		pt2 = (LWPOINT*)mpt2->geoms[i];
+		if (lwpoint_get_x(pt) == lwpoint_get_x(pt2) && lwpoint_get_y(pt) == lwpoint_get_y(pt2))
+			eq++;
+	}
+	CU_ASSERT_EQUAL(eq, 0);
 	lwmpoint_free(mpt);
+	lwmpoint_free(mpt2);
+	pt = NULL;
+	pt2 = NULL;
 
 	/* Set seed to get a deterministic sequence */
 	mpt = lwgeom_to_points(geom, 1000, 12345);
@@ -1486,14 +1501,13 @@ static void test_point_density(void)
 
 
 	/* Check if the 1000th point is the expected value.
-	 * Note that if the PRNG is not portable, this test may fail
-	 */
+	 * Note that if the RNG is not portable, this test may fail. */
 	pt = (LWPOINT*)mpt->geoms[999];
 	// ewkt = lwgeom_to_ewkt((LWGEOM*)pt);
 	// printf("%s\n", ewkt);
 	// lwfree(ewkt);
-	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_x(pt), 0.179235638039549, 1e-11);
-	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_y(pt), 0.531253711538885, 1e-11);
+	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_x(pt), 0.801167838758, 1e-11);
+	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_y(pt), 0.345281131175, 1e-11);
 	lwmpoint_free(mpt);
 	pt = NULL;
 
