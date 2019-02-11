@@ -1494,6 +1494,7 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
 
             WAGYU_CXX=`"$PG_CONFIG" --cc`
             CPPFLAGS="-x c++"
+            CFLAGS=""
             CXX="$WAGYU_CXX"
             AC_PROG_CXX
             AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
