@@ -1179,7 +1179,11 @@ if test "x$with_address_standardizer" != "xno"; then
                 PCRE_LDFLAGS="$PCRE_LIBS"
                 ADDRESS_STANDARDIZER="address_standardizer"
                 HAVE_PCRE=yes
-            ], [AC_MSG_ERROR([libpcre could not be found])])
+            ],
+            [
+                ADDRESS_STANDARDIZER=""
+                HAVE_PCRE=no
+            ])
     fi
 
     AC_SUBST([PCRE_CPPFLAGS])
