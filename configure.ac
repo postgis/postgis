@@ -1635,3 +1635,34 @@ AC_MSG_WARN([  http://trac.osgeo.org/geos ])
 AC_MSG_WARN()
 fi
 
+if test ! -z "$PKG_CONFIG"; then
+    if test ! "x$PROJDIR" = "x"; then
+        AC_MSG_WARN()
+        AC_MSG_WARN([ | You are building using --with-projdir. This option isn't standard and    |])
+        AC_MSG_WARN([ | might be incompatible with future releases of PROJ.                      |])
+        AC_MSG_WARN([ | You can instead adjust the PKG_CONFIG_PATH environment variable if you   |])
+        AC_MSG_WARN([ | installed software in a non-standard prefix.                             |])
+        AC_MSG_WARN([ | Alternatively, you may set the environment variables PROJ_CFLAGS and     |])
+        AC_MSG_WARN([ | PROJ_LIBS to avoid the need to call pkg-config.                          |])
+    fi
+
+    if test ! "x$JSONDIR" = "x"; then
+        AC_MSG_WARN()
+        AC_MSG_WARN([ | You are building using --with-jsondir. This option isn't standard and    |])
+        AC_MSG_WARN([ | might be incompatible with future releases of json-c.                    |])
+        AC_MSG_WARN([ | You can instead adjust the PKG_CONFIG_PATH environment variable if you   |])
+        AC_MSG_WARN([ | installed software in a non-standard prefix.                             |])
+        AC_MSG_WARN([ | Alternatively, you may set the environment variables JSONC_CFLAGS and    |])
+        AC_MSG_WARN([ | JSONC_LIBS to avoid the need to call pkg-config.                         |])
+    fi
+
+    if test ! "x$PCREDIR" = "x"; then
+        AC_MSG_WARN()
+        AC_MSG_WARN([ | You are building using --with-pcredir. This option isn't standard and    |])
+        AC_MSG_WARN([ | might be incompatible with future releases of libpcre.                   |])
+        AC_MSG_WARN([ | You can instead adjust the PKG_CONFIG_PATH environment variable if you   |])
+        AC_MSG_WARN([ | installed software in a non-standard prefix.                             |])
+        AC_MSG_WARN([ | Alternatively, you may set the environment variables PCRE_CFLAGS and     |])
+        AC_MSG_WARN([ | PCRE_LIBS to avoid the need to call pkg-config.                          |])
+    fi
+fi
