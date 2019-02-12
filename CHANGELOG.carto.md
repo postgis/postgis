@@ -4,7 +4,7 @@
 
 Changes:
 - carto-package.json: Declare internal package compatibility.
-
+- Merged community `svn-2.5` as of 2019-02-12.
 
 ## 2.5.1.1+carto-1
 
