@@ -339,4 +339,6 @@ ERROR:  lwgeom_union: GEOS Error: TopologyException: Input geom 0 is invalid: Se
 ERROR:  lwgeom_pointonsurface: GEOS Error: TopologyException: Input geom 1 is invalid: Self-intersection
 #4081|f|t
 NOTICE:  table "bug_4144_table" does not exist, skipping
+#4299|t
+#4304|t|t|t|t
 #4176|t

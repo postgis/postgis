@@ -1114,6 +1114,18 @@ INSERT INTO bug_4144_table (geom)
 ANALYZE bug_4144_table;
 DROP TABLE IF EXISTS bug_4144_table;
 
+-- #4299
+SELECT '#4299', ST_Disjoint(ST_GeneratePoints(g, 1000), ST_GeneratePoints(g, 1000))
+FROM (SELECT 'POLYGON((0 0,1 0,1 1,0 1,0 0))'::geometry AS g) AS f;
+
+-- #4304
+SELECT '#4304', ST_Equals(ST_GeneratePoints(g, 1000, 12345), ST_GeneratePoints(g, 1000, 12345)),
+ST_Disjoint(ST_GeneratePoints(g, 1000, 12345), ST_GeneratePoints(g, 1000, 54321)),
+ST_Disjoint(ST_GeneratePoints(g, 1000, 12345), ST_GeneratePoints(g, 1000)),
+ST_Distance(ST_GeometryN(ST_GeneratePoints(g, 1000, 12345), 1000), 'POINT(0.801167838758 0.345281131175)'::geometry) < 1e-11
+FROM (SELECT 'POLYGON((0 0,1 0,1 1,0 1,0 0))'::geometry AS g) AS f;
+
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 

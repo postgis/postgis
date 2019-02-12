@@ -1439,22 +1439,79 @@ static void test_point_density(void)
 {
 	LWGEOM *geom;
 	LWMPOINT *mpt;
+	LWMPOINT *mpt2;
+	LWPOINT *pt;
+	LWPOINT *pt2;
+	int eq, i;
 	// char *ewkt;
 
 	/* POLYGON */
-	geom = lwgeom_from_wkt("POLYGON((1 0,0 1,1 2,2 1,1 0))", LW_PARSER_CHECK_NONE);
-	mpt = lwgeom_to_points(geom, 100);
+	geom = lwgeom_from_wkt("POLYGON((0 0,1 0,1 1,0 1,0 0))", LW_PARSER_CHECK_NONE);
+	mpt = lwgeom_to_points(geom, 100, 0);  /* Set a zero seed to base it on Unix time and process ID */
 	CU_ASSERT_EQUAL(mpt->ngeoms,100);
-	// ewkt = lwgeom_to_ewkt((LWGEOM*)mpt);
+
+	/* Run a second time with a zero seed to get a different multipoint sequence */
+	mpt2 = lwgeom_to_points(geom, 100, 0);
+	eq = 0;
+	for (i = 0; i < 100; i++)
+	{
+		pt = (LWPOINT*)mpt->geoms[i];
+		pt2 = (LWPOINT*)mpt2->geoms[i];
+		if (lwpoint_get_x(pt) == lwpoint_get_x(pt2) && lwpoint_get_y(pt) == lwpoint_get_y(pt2))
+			eq++;
+	}
+	CU_ASSERT_EQUAL(eq, 0);
+	lwmpoint_free(mpt);
+	lwmpoint_free(mpt2);
+	pt = NULL;
+	pt2 = NULL;
+
+	/* Set seed to get a deterministic sequence */
+	mpt = lwgeom_to_points(geom, 1000, 12345);
+
+	/* Check to find a different multipoint sequence with different seed */
+	mpt2 = lwgeom_to_points(geom, 1000, 54321);
+	eq = 0;
+	for (i = 0; i < 1000; i++)
+	{
+		pt = (LWPOINT*)mpt->geoms[i];
+		pt2 = (LWPOINT*)mpt2->geoms[i];
+		if (lwpoint_get_x(pt) == lwpoint_get_x(pt2) && lwpoint_get_y(pt) == lwpoint_get_y(pt2))
+			eq++;
+	}
+	CU_ASSERT_EQUAL(eq, 0);
+	lwmpoint_free(mpt2);
+	pt = NULL;
+	pt2 = NULL;
+
+	/* Check to find an identical multipoint sequence with same seed */
+	mpt2 = lwgeom_to_points(geom, 1000, 12345);
+	eq = 0;
+	for (i = 0; i < 1000; i++)
+	{
+		pt = (LWPOINT*)mpt->geoms[i];
+		pt2 = (LWPOINT*)mpt2->geoms[i];
+		if (lwpoint_get_x(pt) == lwpoint_get_x(pt2) && lwpoint_get_y(pt) == lwpoint_get_y(pt2))
+			eq++;
+	}
+	CU_ASSERT_EQUAL(eq, 1000);
+	lwmpoint_free(mpt2);
+	pt = NULL;
+	pt2 = NULL;
+
+
+	/* Check if the 1000th point is the expected value.
+	 * Note that if the RNG is not portable, this test may fail. */
+	pt = (LWPOINT*)mpt->geoms[999];
+	// ewkt = lwgeom_to_ewkt((LWGEOM*)pt);
 	// printf("%s\n", ewkt);
 	// lwfree(ewkt);
+	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_x(pt), 0.801167838758, 1e-11);
+	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_y(pt), 0.345281131175, 1e-11);
 	lwmpoint_free(mpt);
+	pt = NULL;
 
-	mpt = lwgeom_to_points(geom, 1);
-	CU_ASSERT_EQUAL(mpt->ngeoms,1);
-	lwmpoint_free(mpt);
-
-	mpt = lwgeom_to_points(geom, 0);
+	mpt = lwgeom_to_points(geom, 0, 0);
 	CU_ASSERT_EQUAL(mpt, NULL);
 	lwmpoint_free(mpt);
 
@@ -1463,11 +1520,11 @@ static void test_point_density(void)
 	/* MULTIPOLYGON */
 	geom = lwgeom_from_wkt("MULTIPOLYGON(((10 0,0 10,10 20,20 10,10 0)),((0 0,5 0,5 5,0 5,0 0)))", LW_PARSER_CHECK_NONE);
 
-	mpt = lwgeom_to_points(geom, 1000);
+	mpt = lwgeom_to_points(geom, 1000, 0);
 	CU_ASSERT_EQUAL(mpt->ngeoms,1000);
 	lwmpoint_free(mpt);
 
-	mpt = lwgeom_to_points(geom, 1);
+	mpt = lwgeom_to_points(geom, 1, 0);
 	CU_ASSERT_EQUAL(mpt->ngeoms,1);
 	lwmpoint_free(mpt);
 
