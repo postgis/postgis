@@ -3486,7 +3486,7 @@ CREATE OR REPLACE FUNCTION ST_GeneratePoints(area geometry, npoints integer)
 CREATE OR REPLACE FUNCTION ST_GeneratePoints(area geometry, npoints integer, seed integer)
        RETURNS geometry
        AS 'MODULE_PATHNAME','ST_GeneratePoints'
-       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL_RESTRICTED
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 1;
 
 -- PostGIS equivalent function: convexhull(geometry)

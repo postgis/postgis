@@ -1027,7 +1027,7 @@ Datum ST_GeneratePoints(PG_FUNCTION_ARGS)
 		seed = PG_GETARG_INT32(2);
 		if (seed < 1)
 		{
-			lwpgerror("ST_GeneratePoints: seed must greater than zero");
+			lwpgerror("ST_GeneratePoints: seed must be greater than zero");
 			PG_RETURN_NULL();
 		}
 	}
