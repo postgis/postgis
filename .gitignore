@@ -177,3 +177,6 @@ postgis/uninstall_sfcgal.sql
 # LLVM JIT
 *.bc
 *.ll
+
+deps/Makefile
+deps/wagyu/Makefile

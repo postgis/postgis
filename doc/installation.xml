@@ -174,6 +174,7 @@ psql -d yourdatabase -f sfcgal_comments.sql
 		  <ulink url="https://trac.osgeo.org/postgis/ticket/4125">https://trac.osgeo.org/postgis/ticket/4125</ulink>.
 		</para>
 	  </listitem>
+
 	</itemizedlist>
 
 	<para>
@@ -218,6 +219,7 @@ psql -d yourdatabase -f sfcgal_comments.sql
 			  To enable ST_AsMVT protobuf-c library (for usage) and the protoc-c compiler (for building) are required.
 				Also, pkg-config is required to verify the correct minimum version of protobuf-c.
 				See <ulink url="https://github.com/protobuf-c/protobuf-c">protobuf-c</ulink>.
+                To use Wagyu to validate MVT polygons faster, a c++11 compiler is required. It requires <varname>--with-wagyu</varname> to be passed during configure; and it will use CXXFLAGS and the same compiler as the PostgreSQL installation.
 			</para>
 		</listitem>
 
@@ -558,6 +560,14 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 			<para>
 			  By default PostGIS will not install with sfcgal support without this switch.
 			  <varname>PATH</varname> is an optional argument that allows to specify an alternate PATH to sfcgal-config.
+			</para>
+		  </listitem>
+		</varlistentry>
+		<varlistentry>
+		  <term><command>--with-wagyu</command></term>
+		  <listitem>
+			<para>
+			  When building with MVT support, by default Postgis will use GEOS to clip and validate MVT polygons. You can use <ulink url="https://github.com/mapbox/wagyu/">Wagyu</ulink> instead which is faster and guaranteed to produce correct values for this specific case.
 			</para>
 		  </listitem>
 		</varlistentry>

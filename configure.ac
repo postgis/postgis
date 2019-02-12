@@ -1416,6 +1416,86 @@ else
 fi
 
 
+dnl ===========================================================================
+dnl Deps folder
+dnl ===========================================================================
+
+DEPS_MAKEFILE_LIST="
+    deps/Makefile"
+
+
+dnl ===========================================================================
+dnl Wagyu
+dnl ===========================================================================
+
+dnl Wagyu will only be necessary if protobuf is present to build MVTs
+
+HAVE_WAGYU=yes
+if test "x$HAVE_PROTOBUF" = "xyes"; then
+    AC_ARG_WITH(
+            [wagyu],
+            AC_HELP_STRING([--without-wagyu], [Do not use the wagyu library]),
+            [HAVE_WAGYU=no],
+            [HAVE_WAGYU=yes])
+
+    if test "x$HAVE_WAGYU" = "xyes"; then
+            AC_MSG_RESULT([WAGYU: Wagyu usage requested])
+
+            DEPS_SUBDIR="deps"
+            AC_SUBST([DEPS_SUBDIR])
+
+            WAGYU_LIB=libwagyu.la
+            AC_SUBST([WAGYU_LIB])
+
+            dnl ============================================================
+            dnl We force  to use the same compiler as Postgresql
+            dnl ============================================================
+            CXX_SAVE="$CXX"
+            CC_SAVE="$CC"
+            CFLAGS_SAVE="$CFLAGS"
+            CXXFLAGS_SAVE="$CXXFLAGS"
+            CPPFLAGS_SAVE="$CPPFLAGS_SAVE"
+
+            WAGYU_CXX=`"$PG_CONFIG" --cc`
+            CPPFLAGS="-x c++"
+            CFLAGS=""
+            CXX="$WAGYU_CXX"
+            AC_PROG_CXX
+            AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
+            WAGYU_CXX="$CXX -x c++"
+
+            dnl ============================================================
+            dnl Check if we can declare the c++ stdlib
+            dnl ============================================================
+            CC="$WAGYU_CXX"
+
+            AC_CHECK_LIB(c++, main, [HAVE_CPP=yes], [HAVE_CPP=no])
+            AC_CHECK_LIB(stdc++, main, [HAVE_STDCPP=yes], [HAVE_STDCPP=no])
+
+            if test "x$HAVE_CPP" = "xyes"; then
+                WAGYU_LDFLAGS="-lc++"
+            elif test "x$HAVE_STDCPP" = "xyes"; then
+                WAGYU_LDFLAGS="-lstdc++"
+            else
+                AC_MSG_WARN("Could not find a C++ standard library")
+                WAGYU_LDFLAGS=""
+            fi
+
+            CXX="$CXX_SAVE"
+            CC="$CC_SAVE"
+            CFLAGS="$CFLAGS_SAVE"
+            CXXFLAGS="$CXXFLAGS_SAVE"
+            CPPFLAGS="$CPPFLAGS_SAVE"
+
+            AC_DEFINE([HAVE_WAGYU], [1], [Define to 1 if wagyu is being built])
+            AC_SUBST([HAVE_WAGYU])
+            AC_SUBST([WAGYU_CXX])
+            AC_SUBST([WAGYU_LDFLAGS])
+
+            DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
+                    deps/wagyu/Makefile"
+    fi
+fi
 
 
 
@@ -1465,7 +1545,8 @@ AC_OUTPUT([GNUmakefile
    doc/Makefile.comments
    doc/html/image_src/Makefile
    utils/Makefile
-   $RT_MAKEFILE_LIST])
+   $RT_MAKEFILE_LIST
+   $DEPS_MAKEFILE_LIST])
 
 dnl ===========================================================================
 dnl Display the configuration status information
@@ -1476,6 +1557,9 @@ AC_MSG_RESULT([  PostGIS is now configured for ${host}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Compiler Info ------------- ])
 AC_MSG_RESULT([  C compiler:           ${CC} ${CFLAGS}])
+if test "x$HAVE_WAGYU" = "xyes"; then
+    AC_MSG_RESULT([  C++ compiler (Wagyu): ${WAGYU_CXX} ${CXXFLAGS}])
+fi
 AC_MSG_RESULT([  SQL preprocessor:     ${SQLPP}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Additional Info ------------- ])
@@ -1509,6 +1593,8 @@ AC_MSG_RESULT([  JSON-C support:       ${HAVE_JSON}])
 AC_MSG_RESULT([  protobuf-c support:   ${HAVE_PROTOBUF}])
 AC_MSG_RESULT([  PCRE support:         ${HAVE_PCRE}])
 AC_MSG_RESULT([  Perl:                 ${PERL}])
+AC_MSG_RESULT([  Wagyu:                ${HAVE_WAGYU}])
+
 AC_MSG_RESULT()
 AC_MSG_RESULT([ --------------- Extensions --------------- ])
 if test "x$RASTER" = "xraster"; then

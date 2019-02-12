@@ -1,0 +1,56 @@
+# LICENSE.geometry applies to:
+
+include/
+└── mapbox
+    ├── feature.hpp
+    ├── geometry
+    │   ├── box.hpp
+    │   ├── empty.hpp
+    │   ├── envelope.hpp
+    │   ├── for_each_point.hpp
+    │   ├── geometry.hpp
+    │   ├── line_string.hpp
+    │   ├── multi_line_string.hpp
+    │   ├── multi_point.hpp
+    │   ├── multi_polygon.hpp
+    │   ├── point_arithmetic.hpp
+    │   ├── point.hpp
+    │   └── polygon.hpp
+    ├── geometry.hpp
+    └── geometry_io.hpp
+
+2 directories, 15 files
+
+# LICENSE.wagyu applies to:
+
+include/
+└── mapbox
+    └── geometry
+        └── wagyu
+            ├── active_bound_list.hpp
+            ├── bound.hpp
+            ├── bubble_sort.hpp
+            ├── build_edges.hpp
+            ├── build_local_minima_list.hpp
+            ├── build_result.hpp
+            ├── config.hpp
+            ├── edge.hpp
+            ├── interrupt.hpp
+            ├── intersect.hpp
+            ├── intersect_util.hpp
+            ├── local_minimum.hpp
+            ├── local_minimum_util.hpp
+            ├── point.hpp
+            ├── process_horizontal.hpp
+            ├── process_maxima.hpp
+            ├── quick_clip.hpp
+            ├── ring.hpp
+            ├── ring_util.hpp
+            ├── scanbeam.hpp
+            ├── snap_rounding.hpp
+            ├── topology_correction.hpp
+            ├── util.hpp
+            ├── vatti.hpp
+            └── wagyu.hpp
+
+3 directories, 24 files
