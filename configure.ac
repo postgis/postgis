@@ -1430,13 +1430,13 @@ dnl ===========================================================================
 
 dnl Wagyu will only be necessary if protobuf is present to build MVTs
 
-HAVE_WAGYU=no
+HAVE_WAGYU=yes
 if test "x$HAVE_PROTOBUF" = "xyes"; then
     AC_ARG_WITH(
             [wagyu],
-            AC_HELP_STRING([--with-wagyu], [Use the wagyu library]),
-            [HAVE_WAGYU=yes],
-            [HAVE_WAGYU=no])
+            AC_HELP_STRING([--without-wagyu], [Do not use the wagyu library]),
+            [HAVE_WAGYU=no],
+            [HAVE_WAGYU=yes])
 
     if test "x$HAVE_WAGYU" = "xyes"; then
             AC_MSG_RESULT([WAGYU: Wagyu usage requested])
