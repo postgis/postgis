@@ -63,7 +63,7 @@ endif
 WAGYU_LIBPATH = ../deps/wagyu/@WAGYU_LIB@
 ifeq (@HAVE_WAGYU@,yes)
 WAYGU_INCLUDE += -I../deps/wagyu
-WAYGU_LIB = $(WAGYU_LIBPATH)
+WAYGU_LIB = $(WAGYU_LIBPATH) @WAGYU_LDFLAGS@
 WAGYU_DEP = $(WAGYU_LIBPATH)
 endif
 
