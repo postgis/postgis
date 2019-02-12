@@ -1484,7 +1484,7 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 	 * http://lin-ear-th-inking.blogspot.ca/2010/05/more-random-points-in-jts.html to try and get a more uniform
 	 * "random" set of points. So we have to figure out how to stick a grid into our box */
 	sample_sqrt = lround(sqrt(sample_npoints));
-	if (sample_sqrt == 0) 
+	if (sample_sqrt == 0)
 		sample_sqrt = 1;
 
 	/* Calculate the grids we're going to randomize within */
