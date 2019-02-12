@@ -241,7 +241,7 @@ psql -d yourdatabase -f sfcgal_comments.sql
 			  To enable ST_AsMVT protobuf-c library (for usage) and the protoc-c compiler (for building) are required.
 				Also, pkg-config is required to verify the correct minimum version of protobuf-c.
 				See <ulink url="https://github.com/protobuf-c/protobuf-c">protobuf-c</ulink>.
-                To use Wagyu to validate MVT polygons faster, a c++11 compiler is required. It will use the CXX and CXXFLAGS and needs <varname>--with-wagyu</varname> to be passed during configure.
+                To use Wagyu to validate MVT polygons faster, a c++11 compiler is required. It requires <varname>--with-wagyu</varname> to be passed during configure; and it will use CXXFLAGS and the same compiler as the PostgreSQL installation.
 			</para>
 		</listitem>
 

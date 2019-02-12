@@ -69,6 +69,8 @@ PostGIS 3.0.0
   - #4272, Improve notice message when unable to compute stats (Raúl Marín)
   - #4314, ST_ClipByBox2D: Do not throw when the geometry is invalid (Raúl Marín)
   - #4313, #4307, PostgreSQL 12 compatibility (Laurenz Albe, Raúl Marín)
+  - #4299, #4304, ST_GeneratePoints is now VOLATILE. IMMUTABLE version with 
+           seed parameter added. (Mike Taves)
 
 
 PostGIS 2.5.0

@@ -1775,7 +1775,22 @@ POINT(2 1)
 			</paramdef>
 			<paramdef>
 				<parameter>npoints</parameter>
-				<type>numeric</type>
+				<type>integer</type>
+			</paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeneratePoints</function></funcdef>
+			<paramdef>
+				<parameter>g</parameter>
+				<type>geometry</type>
+			</paramdef>
+			<paramdef>
+				<parameter>npoints</parameter>
+				<type>integer</type>
+			</paramdef>
+			<paramdef>
+				<parameter>seed</parameter>
+				<type>integer</type>
 			</paramdef>
 		  </funcprototype>
 
@@ -1787,10 +1802,12 @@ POINT(2 1)
 
 		<para>
 			ST_GeneratePoints generates pseudo-random points until the requested number are
-			found within the input area.
+			found within the input area. The optional seed must be greater than zero,
+			and is used to regenerate a deterministic sequence of points.
 		</para>
 
 		<para>Availability: 2.3.0</para>
+		<para>Enhanced: 3.0.0, added seed parameter</para>
 		</refsection>
 
 		<refsection>
@@ -1817,14 +1834,16 @@ POINT(2 1)
 						  <imageobject>
 							<imagedata fileref="images/st_generatepoints02.png" />
 						  </imageobject>
-						  <caption><para>Generated 12 Points overlaid on top of original polygon</para></caption>
+						  <caption><para>Generated 12 Points overlaid on top of original polygon using a random seed value 1996</para></caption>
 						</mediaobject>
 					  </informalfigure>
-						<programlisting>SELECT ST_GeneratePoints(
-	ST_Buffer(
+						<programlisting>SELECT ST_GeneratePoints(geom, 12, 1996)
+FROM (
+	SELECT ST_Buffer(
 		ST_GeomFromText(
-		'LINESTRING(50 50,150 150,150 50)'
-		), 10, 'endcap=round join=round'), 12);</programlisting>
+		'LINESTRING(50 50,150 150,150 50)'),
+		10, 'endcap=round join=round') AS geom
+) AS s;</programlisting>
 					</para></entry>
 				  </row>
 			</tbody>

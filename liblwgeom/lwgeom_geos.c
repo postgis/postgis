@@ -28,10 +28,10 @@
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
+#include "lwrandom.h"
 
 #include <stdarg.h>
 #include <stdlib.h>
-#include <time.h>
 
 LWTIN* lwtin_from_geos(const GEOSGeometry* geom, uint8_t want3d);
 
@@ -1430,7 +1430,7 @@ lwgeom_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle,
 }
 
 LWMPOINT*
-lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints)
+lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 {
 	double area, bbox_area, bbox_width, bbox_height;
 	GBOX bbox;
@@ -1484,7 +1484,8 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints)
 	 * http://lin-ear-th-inking.blogspot.ca/2010/05/more-random-points-in-jts.html to try and get a more uniform
 	 * "random" set of points. So we have to figure out how to stick a grid into our box */
 	sample_sqrt = lround(sqrt(sample_npoints));
-	if (sample_sqrt == 0) sample_sqrt = 1;
+	if (sample_sqrt == 0)
+		sample_sqrt = 1;
 
 	/* Calculate the grids we're going to randomize within */
 	if (bbox_width > bbox_height)
@@ -1513,8 +1514,11 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints)
 	/* Get an empty multi-point ready to return */
 	mpt = lwmpoint_construct_empty(srid, 0, 0);
 
-	/* Init random number generator */
-	srand(time(NULL));
+	/* Initiate random number generator.
+	 * Repeatable numbers are generated with seed values >= 1.
+	 * When seed is zero and has not previously been set, it is based on
+	 * Unix time (seconds) and process ID. */
+	lwrandom_set_seed(seed);
 
 	/* Now we fill in an array of cells, and then shuffle that array, */
 	/* so we can visit the cells in random order to avoid visual ugliness */
@@ -1529,14 +1533,13 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints)
 		}
 	}
 
-	/* shuffle */
+	/* Fisher-Yates shuffle */
 	n = sample_height * sample_width;
 	if (n > 1)
 	{
-		for (i = 0; i < n - 1; ++i)
+		for (i = n - 1; i > 0; i--)
 		{
-			size_t rnd = (size_t)rand();
-			size_t j = i + rnd / (RAND_MAX / (n - i) + 1);
+			size_t j = (size_t)(lwrandom_uniform() * (i + 1));
 
 			memcpy(tmp, (char *)cells + j * stride, size);
 			memcpy((char *)cells + j * stride, (char *)cells + i * stride, size);
@@ -1553,8 +1556,8 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints)
 			int contains = 0;
 			double y = bbox.ymin + cells[2 * i] * sample_cell_size;
 			double x = bbox.xmin + cells[2 * i + 1] * sample_cell_size;
-			x += rand() * sample_cell_size / RAND_MAX;
-			y += rand() * sample_cell_size / RAND_MAX;
+			x += lwrandom_uniform() * sample_cell_size;
+			y += lwrandom_uniform() * sample_cell_size;
 			if (x >= bbox.xmax || y >= bbox.ymax) continue;
 
 			gseq = GEOSCoordSeq_create(1, 2);
@@ -1604,7 +1607,7 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints)
 /* Allocate points to sub-geometries by area, then call lwgeom_poly_to_points and bundle up final result in a single
  * multipoint. */
 LWMPOINT*
-lwmpoly_to_points(const LWMPOLY* lwmpoly, uint32_t npoints)
+lwmpoly_to_points(const LWMPOLY* lwmpoly, uint32_t npoints, int32_t seed)
 {
 	const LWGEOM* lwgeom = (LWGEOM*)lwmpoly;
 	double area;
@@ -1626,7 +1629,7 @@ lwmpoly_to_points(const LWMPOLY* lwmpoly, uint32_t npoints)
 		int sub_npoints = lround(npoints * sub_area / area);
 		if (sub_npoints > 0)
 		{
-			LWMPOINT* sub_mpt = lwpoly_to_points(lwmpoly->geoms[i], sub_npoints);
+			LWMPOINT* sub_mpt = lwpoly_to_points(lwmpoly->geoms[i], sub_npoints, seed);
 			if (!mpt)
 				mpt = sub_mpt;
 			else
@@ -1645,14 +1648,14 @@ lwmpoly_to_points(const LWMPOLY* lwmpoly, uint32_t npoints)
 }
 
 LWMPOINT*
-lwgeom_to_points(const LWGEOM* lwgeom, uint32_t npoints)
+lwgeom_to_points(const LWGEOM* lwgeom, uint32_t npoints, int32_t seed)
 {
 	switch (lwgeom_get_type(lwgeom))
 	{
 	case MULTIPOLYGONTYPE:
-		return lwmpoly_to_points((LWMPOLY*)lwgeom, npoints);
+		return lwmpoly_to_points((LWMPOLY*)lwgeom, npoints, seed);
 	case POLYGONTYPE:
-		return lwpoly_to_points((LWPOLY*)lwgeom, npoints);
+		return lwpoly_to_points((LWPOLY*)lwgeom, npoints, seed);
 	default:
 		lwerror("%s: unsupported geometry type '%s'", __func__, lwtype_name(lwgeom_get_type(lwgeom)));
 		return NULL;
