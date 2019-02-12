@@ -28,6 +28,7 @@ XXXX/XX/XX
   - #4290, More robust geography distance (Paul Ramsey)
   - #4283, Avoid final point duplicates for circle stroking (Paul Ramsey)
   - #4314, ST_ClipByBox2D: Do not throw when the geometry is invalid (Raúl Marín)
+  - #4313, #4307, PostgreSQL 12 compatibility (Laurenz Albe, Raúl Marín)
 
 
 
