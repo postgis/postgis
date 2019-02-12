@@ -532,19 +532,29 @@ int
 lwpoly_contains_point(const LWPOLY *poly, const POINT2D *pt)
 {
 	uint32_t i;
+	int t;
 
 	if ( lwpoly_is_empty(poly) )
-		return LW_FALSE;
+		return LW_OUTSIDE;
 
-	if ( ptarray_contains_point(poly->rings[0], pt) == LW_OUTSIDE )
-		return LW_FALSE;
+	t = ptarray_contains_point(poly->rings[0], pt);
 
-	for ( i = 1; i < poly->nrings; i++ )
+	if (t == LW_INSIDE)
 	{
-		if ( ptarray_contains_point(poly->rings[i], pt) == LW_INSIDE )
-			return LW_FALSE;
+		for (i = 1; i < poly->nrings; i++)
+		{
+			t = ptarray_contains_point(poly->rings[i], pt);
+			if (t == LW_INSIDE)
+				return LW_OUTSIDE;
+			if (t == LW_BOUNDARY){
+				return LW_BOUNDARY;
+			}
+		}
+		return LW_INSIDE;
 	}
-	return LW_TRUE;
+	else
+		return t;
+
 }
 
 

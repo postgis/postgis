@@ -26,6 +26,7 @@
 #include <stdlib.h>
 
 #include "measures3d.h"
+#include "lwrandom.h"
 #include "lwgeom_log.h"
 
 static inline int
@@ -361,29 +362,66 @@ lwgeom_solid_contains_lwgeom(const LWGEOM *solid, const LWGEOM *g)
 	else /* Raycast upwards in Z */
 	{
 		POINT4D pt;
-		LWCOLLECTION *c;
-		/* take first point */
-		if (!lwgeom_startpoint(g, &pt))
-		{
-			return LW_FALSE;
-		};
-		uint8_t is_inside = LW_FALSE;
+		/* We'll skew copies if we're not lucky */
+		LWGEOM * solid_copy = lwgeom_clone_deep(solid);
+		LWGEOM * g_copy = lwgeom_clone_deep(g);
 
-		/* get part of solid that is upwards */
-		c = lwgeom_clip_to_ordinate_range(solid, 'Z', pt.z, DBL_MAX, 0);
-
-		for (uint32_t i = 0; i < c->ngeoms; i++)
+		while (LW_TRUE)
 		{
-			/* walls of solid should be polygons, otherwise uninteresting */
-			if (lwgeom_get_type(c->geoms[i]) != POLYGONTYPE)
+			uint8_t is_boundary = LW_FALSE;
+			uint8_t is_inside = LW_FALSE;
+
+			/* take first point */
+			if (!lwgeom_startpoint(g_copy, &pt))
+				return LW_FALSE;
+
+			/* get part of solid that is upwards */
+			LWCOLLECTION *c = lwgeom_clip_to_ordinate_range(solid_copy, 'Z', pt.z, DBL_MAX, 0);
+
+			for (uint32_t i = 0; i < c->ngeoms; i++)
+			{
+				/* walls of solid should be polygons, otherwise uninteresting */
+				if (c->geoms[i]->type != POLYGONTYPE)
+					continue;
+
+				/* 3D raycast along Z is 2D point in polygon */
+				int t = lwpoly_contains_point((LWPOLY *)c->geoms[i], (POINT2D *)&pt);
+
+				if (t == LW_INSIDE)
+					is_inside = !is_inside;
+				else if (t == LW_BOUNDARY)
+				{
+					is_boundary = LW_TRUE;
+					break;
+				}
+			}
+
+			lwcollection_free(c);
+
+			if (is_boundary)
+			{
+				/* randomly skew a bit and restart*/
+				double cx = lwrandom_uniform()-0.5;
+				double cy = lwrandom_uniform()-0.5;
+				AFFINE aff = {
+					1, 0, cx,
+					0, 1, cy,
+					0, 0, 1,
+					0, 0, 0
+				};
+
+				lwgeom_free(solid_copy);
+				solid_copy = lwgeom_clone_deep(solid);
+				lwgeom_affine(solid_copy, &aff);
+
+				lwgeom_free(g_copy);
+				g_copy = lwgeom_clone_deep(g);
+				lwgeom_affine(g_copy, &aff);
+
 				continue;
-
-			/* 3D raycast along Z is 2D point in polygon */
-			if (lwpoly_contains_point((LWPOLY *)c->geoms[i], (POINT2D *)&pt))
-				is_inside = !is_inside;
+			}
+			return is_inside;
 		}
-		lwcollection_free(c);
-		return is_inside;
 	}
 }
 
@@ -394,6 +432,7 @@ lwgeom_solid_contains_lwgeom(const LWGEOM *solid, const LWGEOM *g)
 double
 lwgeom_mindistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tolerance)
 {
+	assert(tolerance >= 0);
 	if (!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
 	{
 		lwnotice(
@@ -407,7 +446,7 @@ lwgeom_mindistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tole
 	thedl.tolerance = tolerance;
 	if (lw_dist3d_recursive(lw1, lw2, &thedl))
 	{
-		if (thedl.distance < tolerance)
+		if (thedl.distance <= tolerance)
 			return thedl.distance;
 		if (lwgeom_solid_contains_lwgeom(lw1, lw2) || lwgeom_solid_contains_lwgeom(lw2, lw1))
 			return 0;
@@ -460,7 +499,6 @@ lw_dist3d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D *dl)
 
 	for (i = 0; i < n1; i++)
 	{
-
 		if (lwgeom_is_collection(lwg1))
 			g1 = c1->geoms[i];
 		else
@@ -481,8 +519,8 @@ lw_dist3d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D *dl)
 			if (lwgeom_is_collection(lwg2))
 				g2 = c2->geoms[j];
 			else
-
 				g2 = (LWGEOM *)lwg2;
+
 			if (lwgeom_is_collection(g2))
 			{
 				LWDEBUG(3, "Found collection inside second geometry collection, recursing");
