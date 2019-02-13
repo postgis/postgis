@@ -397,6 +397,8 @@ lwgeom_solid_contains_lwgeom(const LWGEOM *solid, const LWGEOM *g)
 			}
 
 			lwcollection_free(c);
+			lwgeom_free(solid_copy);
+			lwgeom_free(g_copy);
 
 			if (is_boundary)
 			{
@@ -410,11 +412,9 @@ lwgeom_solid_contains_lwgeom(const LWGEOM *solid, const LWGEOM *g)
 					0, 0, 0
 				};
 
-				lwgeom_free(solid_copy);
 				solid_copy = lwgeom_clone_deep(solid);
 				lwgeom_affine(solid_copy, &aff);
 
-				lwgeom_free(g_copy);
 				g_copy = lwgeom_clone_deep(g);
 				lwgeom_affine(g_copy, &aff);
 
