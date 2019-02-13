@@ -3487,6 +3487,7 @@ CREATE OR REPLACE FUNCTION ST_OffsetCurve(line geometry, distance float8, params
        COST 1; -- reset cost, see #3675
 
 -- Availability: 2.3.0
+-- Changed: 3.0.0
 CREATE OR REPLACE FUNCTION ST_GeneratePoints(area geometry, npoints integer)
        RETURNS geometry
        AS 'MODULE_PATHNAME','ST_GeneratePoints'
