@@ -377,22 +377,37 @@ lwgeom_solid_contains_lwgeom(const LWGEOM *solid, const LWGEOM *g)
 
 			/* get part of solid that is upwards */
 			LWCOLLECTION *c = lwgeom_clip_to_ordinate_range(solid_copy, 'Z', pt.z, DBL_MAX, 0);
+			if (solid->type == TINTYPE)
+				printLWTIN((LWTIN *)c);
 
 			for (uint32_t i = 0; i < c->ngeoms; i++)
 			{
-				/* walls of solid should be polygons, otherwise uninteresting */
-				if (c->geoms[i]->type != POLYGONTYPE)
-					continue;
-
-				/* 3D raycast along Z is 2D point in polygon */
-				int t = lwpoly_contains_point((LWPOLY *)c->geoms[i], (POINT2D *)&pt);
-
-				if (t == LW_INSIDE)
-					is_inside = !is_inside;
-				else if (t == LW_BOUNDARY)
+				if (c->geoms[i]->type == POLYGONTYPE)
 				{
-					is_boundary = LW_TRUE;
-					break;
+					/* 3D raycast along Z is 2D point in polygon */
+					int t = lwpoly_contains_point((LWPOLY *)c->geoms[i], (POINT2D *)&pt);
+
+					if (t == LW_INSIDE)
+						is_inside = !is_inside;
+					else if (t == LW_BOUNDARY)
+					{
+						is_boundary = LW_TRUE;
+						break;
+					}
+				}
+				else if (c->geoms[i]->type == TRIANGLETYPE)
+				{
+					/* 3D raycast along Z is 2D point in polygon */
+					LWTRIANGLE *tri = (LWTRIANGLE *)c->geoms[i];
+					int t = ptarray_contains_point(tri->points, (POINT2D *)&pt);
+
+					if (t == LW_INSIDE)
+						is_inside = !is_inside;
+					else if (t == LW_BOUNDARY)
+					{
+						is_boundary = LW_TRUE;
+						break;
+					}
 				}
 			}
 
@@ -444,6 +459,8 @@ lwgeom_mindistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tole
 	thedl.mode = DIST_MIN;
 	thedl.distance = DBL_MAX;
 	thedl.tolerance = tolerance;
+	if (lw1->type == TINTYPE)
+		printLWTIN((LWTIN *)lw1);
 	if (lw_dist3d_recursive(lw1, lw2, &thedl))
 	{
 		if (thedl.distance <= tolerance)
@@ -504,6 +521,9 @@ lw_dist3d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D *dl)
 		else
 			g1 = (LWGEOM *)lwg1;
 
+		if (g1->type == TRIANGLETYPE)
+			printLWTRIANGLE((LWTRIANGLE *)g1);
+
 		if (lwgeom_is_empty(g1))
 			return LW_TRUE;
 
@@ -550,11 +570,13 @@ This function distributes the brute-force for 3D so far the only type, tasks dep
 int
 lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D *dl)
 {
-
 	int t1 = lwg1->type;
 	int t2 = lwg2->type;
 
 	LWDEBUGF(2, "lw_dist3d_distribute_bruteforce is called with typ1=%d, type2=%d", lwg1->type, lwg2->type);
+
+	if (lwg1->type == TRIANGLETYPE)
+		printLWTRIANGLE((LWTRIANGLE *)lwg1);
 
 	if (t1 == POINTTYPE)
 	{
@@ -573,6 +595,11 @@ lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3
 			dl->twisted = 1;
 			return lw_dist3d_point_poly((LWPOINT *)lwg1, (LWPOLY *)lwg2, dl);
 		}
+		else if (t2 == TRIANGLETYPE)
+		{
+			dl->twisted = 1;
+			return lw_dist3d_point_tri((LWPOINT *)lwg1, (LWTRIANGLE *)lwg2, dl);
+		}
 		else
 		{
 			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
@@ -583,7 +610,7 @@ lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3
 	{
 		if (t2 == POINTTYPE)
 		{
-			dl->twisted = (-1);
+			dl->twisted = -1;
 			return lw_dist3d_point_line((LWPOINT *)lwg2, (LWLINE *)lwg1, dl);
 		}
 		else if (t2 == LINETYPE)
@@ -595,6 +622,11 @@ lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3
 		{
 			dl->twisted = 1;
 			return lw_dist3d_line_poly((LWLINE *)lwg1, (LWPOLY *)lwg2, dl);
+		}
+		else if (t2 == TRIANGLETYPE)
+		{
+			dl->twisted = 1;
+			return lw_dist3d_line_tri((LWLINE *)lwg1, (LWTRIANGLE *)lwg2, dl);
 		}
 		else
 		{
@@ -619,12 +651,46 @@ lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3
 			dl->twisted = -1;
 			return lw_dist3d_line_poly((LWLINE *)lwg2, (LWPOLY *)lwg1, dl);
 		}
+		else if (t2 == TRIANGLETYPE)
+		{
+			dl->twisted = 1;
+			return lw_dist3d_poly_tri((LWPOLY *)lwg1, (LWTRIANGLE *)lwg2, dl);
+		}
 		else
 		{
 			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
 			return LW_FALSE;
 		}
 	}
+	else if (t1 == TRIANGLETYPE)
+	{
+		if (t2 == POLYGONTYPE)
+		{
+			dl->twisted = -1;
+			return lw_dist3d_poly_tri((LWPOLY *)lwg1, (LWTRIANGLE *)lwg2, dl);
+		}
+		else if (t2 == POINTTYPE)
+		{
+			dl->twisted = -1;
+			return lw_dist3d_point_tri((LWPOINT *)lwg2, (LWTRIANGLE *)lwg1, dl);
+		}
+		else if (t2 == LINETYPE)
+		{
+			dl->twisted = -1;
+			return lw_dist3d_line_tri((LWLINE *)lwg2, (LWTRIANGLE *)lwg1, dl);
+		}
+		else if (t2 == TRIANGLETYPE)
+		{
+			dl->twisted = 1;
+			return lw_dist3d_tri_tri((LWTRIANGLE *)lwg1, (LWTRIANGLE *)lwg2, dl);
+		}
+		else
+		{
+			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+			return LW_FALSE;
+		}
+	}
+
 	else
 	{
 		lwerror("Unsupported geometry type: %s", lwtype_name(t1));
@@ -683,6 +749,7 @@ For mindistance that means:
 for max distance it is always point against boundary
 
 */
+
 int
 lw_dist3d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS3D *dl)
 {
@@ -691,30 +758,46 @@ lw_dist3d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS3D *dl)
 	LWDEBUG(2, "lw_dist3d_point_poly is called");
 	getPoint3dz_p(point->point, 0, &p);
 
-	/*If we are looking for max distance, longestline or dfullywithin*/
+	/* If we are looking for max distance, longestline or dfullywithin */
 	if (dl->mode == DIST_MAX)
-	{
-		LWDEBUG(3, "looking for maxdistance");
 		return lw_dist3d_pt_ptarray(&p, poly->rings[0], dl);
-	}
 
-	/*Find the plane of the polygon, the "holes" have to be on the same plane. so we only care about the boudary*/
+	/* Find the plane of the polygon, the "holes" have to be on the same plane. so we only care about the boudary */
 	if (!define_plane(poly->rings[0], &plane))
 	{
 		/* Polygon does not define a plane: Return distance point -> line */
 		return lw_dist3d_pt_ptarray(&p, poly->rings[0], dl);
 	}
 
-	/*get our point projected on the plane of the polygon*/
+	/* Get our point projected on the plane of the polygon */
 	project_point_on_plane(&p, &plane, &projp);
 
 	return lw_dist3d_pt_poly(&p, poly, &plane, &projp, dl);
 }
 
-/**
+/* point to triangle calculation */
+int
+lw_dist3d_point_tri(LWPOINT *point, LWTRIANGLE *tri, DISTPTS3D *dl)
+{
+	POINT3DZ p, projp; /*projp is "point projected on plane"*/
+	PLANE3D plane;
+	getPoint3dz_p(point->point, 0, &p);
 
-line to line calculation
-*/
+	/* If we are looking for max distance, longestline or dfullywithin */
+	if (dl->mode == DIST_MAX)
+		return lw_dist3d_pt_ptarray(&p, tri->points, dl);
+
+	/* If triangle does not define a plane, treat it as a line */
+	if (!define_plane(tri->points, &plane))
+		return lw_dist3d_pt_ptarray(&p, tri->points, dl);
+
+	/* Get our point projected on the plane of triangle */
+	project_point_on_plane(&p, &plane, &projp);
+
+	return lw_dist3d_pt_tri(&p, tri, &plane, &projp, dl);
+}
+
+/** line to line calculation */
 int
 lw_dist3d_line_line(LWLINE *line1, LWLINE *line2, DISTPTS3D *dl)
 {
@@ -725,9 +808,7 @@ lw_dist3d_line_line(LWLINE *line1, LWLINE *line2, DISTPTS3D *dl)
 	return lw_dist3d_ptarray_ptarray(pa1, pa2, dl);
 }
 
-/**
-line to polygon calculation
-*/
+/** line to polygon calculation */
 int
 lw_dist3d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS3D *dl)
 {
@@ -735,22 +816,32 @@ lw_dist3d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS3D *dl)
 	LWDEBUG(2, "lw_dist3d_line_poly is called");
 
 	if (dl->mode == DIST_MAX)
-	{
 		return lw_dist3d_ptarray_ptarray(line->points, poly->rings[0], dl);
-	}
 
+	/* if polygon does not define a plane: Return distance line to line */
 	if (!define_plane(poly->rings[0], &plane))
-	{
-		/* Polygon does not define a plane: Return distance line to line */
 		return lw_dist3d_ptarray_ptarray(line->points, poly->rings[0], dl);
-	}
 
 	return lw_dist3d_ptarray_poly(line->points, poly, &plane, dl);
 }
 
-/**
-polygon to polygon calculation
-*/
+/** line to triangle calculation */
+int
+lw_dist3d_line_tri(LWLINE *line, LWTRIANGLE *tri, DISTPTS3D *dl)
+{
+	PLANE3D plane;
+
+	if (dl->mode == DIST_MAX)
+		return lw_dist3d_ptarray_ptarray(line->points, tri->points, dl);
+
+	/* if triangle does not define a plane: Return distance line to line */
+	if (!define_plane(tri->points, &plane))
+		return lw_dist3d_ptarray_ptarray(line->points, tri->points, dl);
+
+	return lw_dist3d_ptarray_tri(line->points, tri, &plane, dl);
+}
+
+/** polygon to polygon calculation */
 int
 lw_dist3d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS3D *dl)
 {
@@ -758,29 +849,24 @@ lw_dist3d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS3D *dl)
 	int planedef1, planedef2;
 	LWDEBUG(2, "lw_dist3d_poly_poly is called");
 	if (dl->mode == DIST_MAX)
-	{
 		return lw_dist3d_ptarray_ptarray(poly1->rings[0], poly2->rings[0], dl);
-	}
 
 	planedef1 = define_plane(poly1->rings[0], &plane1);
 	planedef2 = define_plane(poly2->rings[0], &plane2);
 
 	if (!planedef1 || !planedef2)
 	{
+		/* Neither polygon define a plane: Return distance line to line */
 		if (!planedef1 && !planedef2)
-		{
-			/* Neither polygon define a plane: Return distance line to line */
 			return lw_dist3d_ptarray_ptarray(poly1->rings[0], poly2->rings[0], dl);
-		}
 
-		if (!planedef1)
-		{
-			/* Only poly2 defines a plane: Return distance from line (poly1) to poly2 */
+		/* Only poly2 defines a plane: Return distance from line (poly1) to poly2 */
+		else if (!planedef1)
 			return lw_dist3d_ptarray_poly(poly1->rings[0], poly2, &plane2, dl);
-		}
 
 		/* Only poly1 defines a plane: Return distance from line (poly2) to poly1 */
-		return lw_dist3d_ptarray_poly(poly2->rings[0], poly1, &plane1, dl);
+		else
+			return lw_dist3d_ptarray_poly(poly2->rings[0], poly1, &plane1, dl);
 	}
 
 	/* What we do here is to compare the boundary of one polygon with the other polygon
@@ -796,8 +882,89 @@ lw_dist3d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS3D *dl)
 	return lw_dist3d_ptarray_poly(poly2->rings[0], poly1, &plane1, dl);
 }
 
-/**
+/** polygon to triangle calculation */
+int
+lw_dist3d_poly_tri(LWPOLY *poly, LWTRIANGLE *tri, DISTPTS3D *dl)
+{
+	PLANE3D plane1, plane2;
+	int planedef1, planedef2;
 
+	if (dl->mode == DIST_MAX)
+		return lw_dist3d_ptarray_ptarray(poly->rings[0], tri->points, dl);
+
+	planedef1 = define_plane(poly->rings[0], &plane1);
+	planedef2 = define_plane(tri->points, &plane2);
+
+	if (!planedef1 || !planedef2)
+	{
+		/* Neither define a plane: Return distance line to line */
+		if (!planedef1 && !planedef2)
+			return lw_dist3d_ptarray_ptarray(poly->rings[0], tri->points, dl);
+
+		/* Only tri defines a plane: Return distance from line (poly) to tri */
+		else if (!planedef1)
+			return lw_dist3d_ptarray_tri(poly->rings[0], tri, &plane2, dl);
+
+		/* Only poly defines a plane: Return distance from line (tri) to poly */
+		else
+			return lw_dist3d_ptarray_poly(tri->points, poly, &plane1, dl);
+	}
+
+	/* What we do here is to compare the boundary of one polygon with the other polygon
+	and then take the second boundary comparing with the first polygon */
+	dl->twisted = 1;
+	if (!lw_dist3d_ptarray_tri(poly->rings[0], tri, &plane2, dl))
+		return LW_FALSE;
+	if (dl->distance < dl->tolerance) /* Just check if the answer already is given*/
+		return LW_TRUE;
+
+	dl->twisted = -1; /* because we switch the order of geometries we switch "twisted" to -1 which will give the
+			     right order of points in shortest line. */
+	return lw_dist3d_ptarray_poly(tri->points, poly, &plane1, dl);
+}
+
+/** triangle to triangle calculation */
+int
+lw_dist3d_tri_tri(LWTRIANGLE *tri1, LWTRIANGLE *tri2, DISTPTS3D *dl)
+{
+	PLANE3D plane1, plane2;
+	int planedef1, planedef2;
+
+	if (dl->mode == DIST_MAX)
+		return lw_dist3d_ptarray_ptarray(tri1->points, tri2->points, dl);
+
+	planedef1 = define_plane(tri1->points, &plane1);
+	planedef2 = define_plane(tri2->points, &plane2);
+
+	if (!planedef1 || !planedef2)
+	{
+		/* Neither define a plane: Return distance line to line */
+		if (!planedef1 && !planedef2)
+			return lw_dist3d_ptarray_ptarray(tri1->points, tri2->points, dl);
+
+		/* Only tri defines a plane: Return distance from line (tri1) to tri2 */
+		else if (!planedef1)
+			return lw_dist3d_ptarray_tri(tri1->points, tri2, &plane2, dl);
+
+		/* Only poly defines a plane: Return distance from line (tri2) to tri1 */
+		else
+			return lw_dist3d_ptarray_tri(tri2->points, tri1, &plane1, dl);
+	}
+
+	/* What we do here is to compare the boundary of one polygon with the other polygon
+	and then take the second boundary comparing with the first polygon */
+	dl->twisted = 1;
+	if (!lw_dist3d_ptarray_tri(tri1->points, tri2, &plane2, dl))
+		return LW_FALSE;
+	if (dl->distance < dl->tolerance) /* Just check if the answer already is given*/
+		return LW_TRUE;
+
+	dl->twisted = -1; /* because we switch the order of geometries we switch "twisted" to -1 which will give the
+			     right order of points in shortest line. */
+	return lw_dist3d_ptarray_tri(tri2->points, tri1, &plane1, dl);
+}
+
+/**
  * search all the segments of pointarray to see which one is closest to p
  * Returns distance between point and pointarray
  */
@@ -807,8 +974,8 @@ lw_dist3d_pt_ptarray(POINT3DZ *p, POINTARRAY *pa, DISTPTS3D *dl)
 	uint32_t t;
 	POINT3DZ start, end;
 	int twist = dl->twisted;
-
-	LWDEBUG(2, "lw_dist3d_pt_ptarray is called");
+	if (!pa)
+		return LW_FALSE;
 
 	getPoint3dz_p(pa, 0, &start);
 
@@ -1100,28 +1267,37 @@ lw_dist3d_pt_poly(POINT3DZ *p, LWPOLY *poly, PLANE3D *plane, POINT3DZ *projp, DI
 		{
 			/* Inside a hole. Distance = pt -> ring */
 			if (pt_in_ring_3d(projp, poly->rings[i], plane))
-			{
 				return lw_dist3d_pt_ptarray(p, poly->rings[i], dl);
-			}
 		}
 
-		return lw_dist3d_pt_pt(p, projp, dl); /* If the projected point is inside the polygon the shortest
-							 distance is between that point and the inputed point*/
+		/* if the projected point is inside the polygon the shortest distance is between that point and the
+		 * input point */
+		return lw_dist3d_pt_pt(p, projp, dl);
 	}
 	else
-	{
-		return lw_dist3d_pt_ptarray(
-		    p, poly->rings[0], dl); /*If the projected point is outside the polygon we search for the closest
-					       distance against the boundary instead*/
-	}
+		/* if the projected point is outside the polygon we search for the closest distance against the boundary
+		 * instead */
+		return lw_dist3d_pt_ptarray(p, poly->rings[0], dl);
 
 	return LW_TRUE;
 }
 
-/**
+int
+lw_dist3d_pt_tri(POINT3DZ *p, LWTRIANGLE *tri, PLANE3D *plane, POINT3DZ *projp, DISTPTS3D *dl)
+{
+	if (pt_in_ring_3d(projp, tri->points, plane))
+		/* if the projected point is inside the polygon the shortest distance is between that point and the
+		 * input point */
+		return lw_dist3d_pt_pt(p, projp, dl);
+	else
+		/* if the projected point is outside the polygon we search for the closest distance against the boundary
+		 * instead */
+		return lw_dist3d_pt_ptarray(p, tri->points, dl);
 
-Computes pointarray to polygon distance
-*/
+	return LW_TRUE;
+}
+
+/** Computes pointarray to polygon distance */
 int
 lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, PLANE3D *plane, DISTPTS3D *dl)
 {
@@ -1132,8 +1308,8 @@ lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, PLANE3D *plane, DISTPTS3D *
 
 	getPoint3dz_p(pa, 0, &p1);
 
-	s1 = project_point_on_plane(
-	    &p1, plane, &projp1); /*the sign of s1 tells us on which side of the plane the point is. */
+	/* the sign of s1 tells us on which side of the plane the point is. */
+	s1 = project_point_on_plane(&p1, plane, &projp1);
 	lw_dist3d_pt_poly(&p1, poly, plane, &projp1, dl);
 	if ((s1 == 0.0) && (dl->distance < dl->tolerance))
 		return LW_TRUE;
@@ -1147,21 +1323,21 @@ lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, PLANE3D *plane, DISTPTS3D *
 		if ((s2 == 0.0) && (dl->distance < dl->tolerance))
 			return LW_TRUE;
 
-		/*If s1and s2 has different signs that means they are on different sides of the plane of the polygon.
-		That means that the edge between the points crosses the plane and might intersect with the polygon*/
+		/* If s1 and s2 has different signs that means they are on different sides of the plane of the polygon.
+		 * That means that the edge between the points crosses the plane and might intersect with the polygon */
 		if ((s1 * s2) < 0)
 		{
-			f = fabs(s1) /
-			    (fabs(s1) +
-			     fabs(s2)); /*The size of s1 and s2 is the distance from the point to the plane.*/
+			/* The size of s1 and s2 is the distance from the point to the plane. */
+			f = fabs(s1) / (fabs(s1) + fabs(s2));
 			get_3dvector_from_points(&projp1, &projp2, &projp1_projp2);
 
-			/*get the point where the line segment crosses the plane*/
+			/* Get the point where the line segment crosses the plane */
 			intersectionp.x = projp1.x + f * projp1_projp2.x;
 			intersectionp.y = projp1.y + f * projp1_projp2.y;
 			intersectionp.z = projp1.z + f * projp1_projp2.z;
 
-			intersects = LW_TRUE; /*We set intersects to true until the opposite is proved*/
+			/* We set intersects to true until the opposite is proved */
+			intersects = LW_TRUE;
 
 			if (pt_in_ring_3d(&intersectionp, poly->rings[0], plane)) /*Inside outer ring*/
 			{
@@ -1194,12 +1370,80 @@ lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, PLANE3D *plane, DISTPTS3D *
 		p1 = p2;
 	}
 
-	/*check or pointarray against boundary and inner boundaries of the polygon*/
+	/* check our pointarray against boundary and inner boundaries of the polygon */
 	for (j = 0; j < poly->nrings; j++)
-	{
 		lw_dist3d_ptarray_ptarray(pa, poly->rings[j], dl);
+
+	return LW_TRUE;
+}
+
+/** Computes pointarray to triangle distance */
+int
+lw_dist3d_ptarray_tri(POINTARRAY *pa, LWTRIANGLE *tri, PLANE3D *plane, DISTPTS3D *dl)
+{
+	uint32_t i;
+	double f, s1, s2;
+	VECTOR3D projp1_projp2;
+	POINT3DZ p1, p2, projp1, projp2, intersectionp;
+
+	getPoint3dz_p(pa, 0, &p1);
+
+	/* the sign of s1 tells us on which side of the plane the point is. */
+	s1 = project_point_on_plane(&p1, plane, &projp1);
+	lw_dist3d_pt_tri(&p1, tri, plane, &projp1, dl);
+	if ((s1 == 0.0) && (dl->distance < dl->tolerance))
+		return LW_TRUE;
+
+	for (i = 1; i < pa->npoints; i++)
+	{
+		int intersects;
+		getPoint3dz_p(pa, i, &p2);
+		s2 = project_point_on_plane(&p2, plane, &projp2);
+		lw_dist3d_pt_tri(&p2, tri, plane, &projp2, dl);
+		if ((s2 == 0.0) && (dl->distance < dl->tolerance))
+			return LW_TRUE;
+
+		/* If s1 and s2 has different signs that means they are on different sides of the plane of the triangle.
+		 * That means that the edge between the points crosses the plane and might intersect with the triangle
+		 */
+		if ((s1 * s2) < 0)
+		{
+			/* The size of s1 and s2 is the distance from the point to the plane. */
+			f = fabs(s1) / (fabs(s1) + fabs(s2));
+			get_3dvector_from_points(&projp1, &projp2, &projp1_projp2);
+
+			/* Get the point where the line segment crosses the plane */
+			intersectionp.x = projp1.x + f * projp1_projp2.x;
+			intersectionp.y = projp1.y + f * projp1_projp2.y;
+			intersectionp.z = projp1.z + f * projp1_projp2.z;
+
+			/* We set intersects to true until the opposite is proved */
+			intersects = LW_TRUE;
+
+			if (pt_in_ring_3d(&intersectionp, tri->points, plane)) /*Inside outer ring*/
+			{
+				if (intersects)
+				{
+					dl->distance = 0.0;
+					dl->p1.x = intersectionp.x;
+					dl->p1.y = intersectionp.y;
+					dl->p1.z = intersectionp.z;
+
+					dl->p2.x = intersectionp.x;
+					dl->p2.y = intersectionp.y;
+					dl->p2.z = intersectionp.z;
+					return LW_TRUE;
+				}
+			}
+		}
+
+		projp1 = projp2;
+		s1 = s2;
+		p1 = p2;
 	}
 
+	/* check our pointarray against triangle contour */
+	lw_dist3d_ptarray_ptarray(pa, tri->points, dl);
 	return LW_TRUE;
 }
 
@@ -1216,8 +1460,17 @@ int
 define_plane(POINTARRAY *pa, PLANE3D *pl)
 {
 	const uint32_t POL_BREAKS = 3;
+
+	assert(pa);
+	assert(pa->npoints > 3);
+	if (!pa)
+		return LW_FALSE;
+
 	uint32_t unique_points = pa->npoints - 1;
 	uint32_t i;
+
+	if (pa->npoints < 3)
+		return LW_FALSE;
 
 	/* Calculate the average point */
 	pl->pop.x = 0.0;
