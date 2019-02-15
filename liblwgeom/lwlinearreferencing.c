@@ -751,42 +751,6 @@ lwpoly_clip_to_ordinate_range(const LWPOLY *poly, char ordinate, double from, do
 	return lwgeom_out;
 }
 
-{
-	LWCOLLECTION *lwgeom_out = NULL;
-	uint32_t i, nrings;
-	char hasz = FLAGS_GET_Z(poly->flags), hasm = FLAGS_GET_M(poly->flags);
-	LWPOLY *poly_res = lwpoly_construct_empty(poly->srid, hasz, hasm);
-
-	assert(poly);
-	lwgeom_out = lwcollection_construct_empty(MULTIPOLYGONTYPE, poly->srid, hasz, hasm);
-
-	nrings = poly->nrings;
-	for (i = 0; i < nrings; i++)
-	{
-		/* Ret number of points */
-		POINTARRAY *pa = ptarray_clamp_to_ordinate_range(poly->rings[i], ordinate, from, to, LW_TRUE);
-
-		if (pa->npoints >= 4)
-			lwpoly_add_ring(poly_res, pa);
-		else
-		{
-			ptarray_free(pa);
-			if (i == 0)
-				break;
-		}
-	}
-	if (poly_res->nrings > 0)
-		lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, (LWGEOM *)poly_res);
-	else
-		lwpoly_free(poly_res);
-
-	return lwgeom_out;
-}
-	lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, (LWGEOM *)poly_res);
-
-	return lwgeom_out;
-}
-
 /**
  * Clip an input LWTRIANGLE between two values, on any ordinate input.
  */
