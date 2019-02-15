@@ -364,8 +364,8 @@ lwgeom_solid_contains_lwgeom(const LWGEOM *solid, const LWGEOM *g)
 	{
 		POINT4D pt;
 		/* We'll skew copies if we're not lucky */
-		LWGEOM * solid_copy = lwgeom_clone_deep(solid);
-		LWGEOM * g_copy = lwgeom_clone_deep(g);
+		LWGEOM *solid_copy = lwgeom_clone_deep(solid);
+		LWGEOM *g_copy = lwgeom_clone_deep(g);
 
 		while (LW_TRUE)
 		{
@@ -417,14 +417,9 @@ lwgeom_solid_contains_lwgeom(const LWGEOM *solid, const LWGEOM *g)
 			if (is_boundary)
 			{
 				/* randomly skew a bit and restart*/
-				double cx = lwrandom_uniform()-0.5;
-				double cy = lwrandom_uniform()-0.5;
-				AFFINE aff = {
-					1, 0, cx,
-					0, 1, cy,
-					0, 0, 1,
-					0, 0, 0
-				};
+				double cx = lwrandom_uniform() - 0.5;
+				double cy = lwrandom_uniform() - 0.5;
+				AFFINE aff = {1, 0, cx, 0, 1, cy, 0, 0, 1, 0, 0, 0};
 
 				solid_copy = lwgeom_clone_deep(solid);
 				lwgeom_affine(solid_copy, &aff);

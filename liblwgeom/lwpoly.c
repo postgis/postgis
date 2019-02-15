@@ -546,7 +546,8 @@ lwpoly_contains_point(const LWPOLY *poly, const POINT2D *pt)
 			t = ptarray_contains_point(poly->rings[i], pt);
 			if (t == LW_INSIDE)
 				return LW_OUTSIDE;
-			if (t == LW_BOUNDARY){
+			if (t == LW_BOUNDARY)
+			{
 				return LW_BOUNDARY;
 			}
 		}
@@ -554,7 +555,6 @@ lwpoly_contains_point(const LWPOLY *poly, const POINT2D *pt)
 	}
 	else
 		return t;
-
 }
 
 
