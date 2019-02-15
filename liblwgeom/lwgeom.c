@@ -2068,6 +2068,7 @@ lwgeom_startpoint(const LWGEOM *lwgeom, POINT4D *pt)
 			return ptarray_startpoint(((LWLINE*)lwgeom)->points, pt);
 		case POLYGONTYPE:
 			return lwpoly_startpoint((LWPOLY*)lwgeom, pt);
+		case TINTYPE:
 		case CURVEPOLYTYPE:
 		case COMPOUNDTYPE:
 		case MULTIPOINTTYPE:
