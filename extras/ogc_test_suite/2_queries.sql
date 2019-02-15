@@ -78,23 +78,23 @@
 --//////////////////////////////////////////////////////////////////////////////
 --
 --================================
--- Conformance Item T1	
--- GEOMETRY_COLUMNS table/view is created/updated properly	
+-- Conformance Item T1
+-- GEOMETRY_COLUMNS table/view is created/updated properly
 -- For this test we will check to see that all of the feature tables are
 -- represented by entries in the GEOMETRY_COLUMNS table/view
 --
 -- ANSWER: lakes, road_segments, divided_routes, buildings, forests, bridges,
 --         named_places, streams, ponds, map_neatlines
--- *** ADAPTATION ALERT ***	
+-- *** ADAPTATION ALERT ***
 -- Since there are no quotes around the table names in the CREATE TABLEs,
 -- they will be converted to upper case in many DBMSs, and therefore, the
 -- answer to this query may be:
 -- ANSWER: LAKES, ROAD_SEGMENTS, DIVIDED_ROUTES, BUILDINGS, FORESTS, BRIDGES,
 --         NAMED_PLACES, STREAMS, PONDS, MAP_NEATLINES
--- *** ADAPTATION ALERT ***	
+-- *** ADAPTATION ALERT ***
 -- If the implementer made the adaptation concerning the buildings table
 -- in sqltsch.sql, then the answer here may differ slightly.
---	
+--
 --
 --================================
 --
@@ -103,13 +103,13 @@ FROM geometry_columns;
 --
 --
 --================================
--- Conformance Item T2	
--- GEOMETRY_COLUMNS table/view is created/updated properly	
+-- Conformance Item T2
+-- GEOMETRY_COLUMNS table/view is created/updated properly
 -- For this test we will check to see that the correct geometry columns for the
 -- streams table is represented in the GEOMETRY_COLUMNS table/view
 --
 -- ANSWER: centerline
--- *** ADAPTATION ALERT ***	
+-- *** ADAPTATION ALERT ***
 -- Since there are no quotes around the table name, streams, in it's CREATE TABLE,
 -- it will be converted to upper case in many DBMSs, and therefore, the WHERE
 -- clause may have to be f_table_name = 'STREAMS'.
@@ -122,13 +122,13 @@ WHERE f_table_name = 'streams';
 --
 --
 --================================
--- Conformance Item T3	
--- GEOMETRY_COLUMNS table/view is created/updated properly	
+-- Conformance Item T3
+-- GEOMETRY_COLUMNS table/view is created/updated properly
 -- For this test we will check to see that the correct coordinate dimension
 -- for the streams table is represented in the GEOMETRY_COLUMNS table/view
 --
--- ANSWER: 2	
--- *** ADAPTATION ALERT ***	
+-- ANSWER: 2
+-- *** ADAPTATION ALERT ***
 -- Since there are no quotes around the table name, streams, in it's CREATE TABLE,
 -- it will be converted to upper case in many DBMSs, and therefore, the WHERE
 -- clause may have to be f_table_name = 'STREAMS'.
@@ -141,13 +141,13 @@ WHERE f_table_name = 'streams';
 --
 --
 --================================
--- Conformance Item T4	
--- GEOMETRY_COLUMNS table/view is created/updated properly	
+-- Conformance Item T4
+-- GEOMETRY_COLUMNS table/view is created/updated properly
 -- For this test we will check to see that the correct value of srid for
 -- the streams table is represented in the GEOMETRY_COLUMNS table/view
 --
--- ANSWER: 101	
--- *** ADAPTATION ALERT ***	
+-- ANSWER: 101
+-- *** ADAPTATION ALERT ***
 -- Since there are no quotes around the table name, streams, in it's CREATE TABLE,
 -- it will be converted to upper case in many DBMSs, and therefore, the WHERE
 -- clause may have to be f_table_name = 'STREAMS'.
@@ -171,7 +171,7 @@ WHERE f_table_name = 'streams';
 --           PROJECTION["Traverse_Mercator"], PARAMETER["False_Easting", 500000.0],
 --           PARAMETER["False_Northing", 0.0], PARAMETER["Central_Meridian", -99.0],
 --           PARAMETER["Scale_Factor", 0.9996], PARAMETER["Latitude_of_origin", 0.0],
---           UNIT["Meter", 1.0]]'	
+--           UNIT["Meter", 1.0]]'
 --
 --================================
 --
@@ -187,8 +187,13 @@ WHERE SRID = 101;
 --
 --//////////////////////////////////////////////////////////////////////////////
 --
+-- -- !#@ ADAPTATION BEGIN
+-- All functions are now prefixed with "ST_" in accordance with SFSQL 1.2
+-- and ISO SQL/MM Part 2
+-- -- !#@ ADAPTATION END
+--
 --================================
--- Conformance Item T6	
+-- Conformance Item T6
 -- Dimension(g Geometry) : Integer
 -- For this test we will determine the dimension of Blue Lake.
 --
@@ -196,13 +201,13 @@ WHERE SRID = 101;
 --
 --================================
 --
-SELECT Dimension(shore)
+SELECT ST_Dimension(shore)
 FROM lakes
 WHERE name = 'Blue Lake';
 --
 --
 --================================
--- Conformance Item T7	
+-- Conformance Item T7
 -- GeometryType(g Geometry) : String
 -- For this test we will determine the type of Route 75.
 --
@@ -225,7 +230,7 @@ WHERE name = 'Blue Lake';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT GeometryType(centerlines)
+SELECT ST_GeometryType(centerlines)
 FROM divided_routes
 WHERE name = 'Route 75';
 -- ---------------------
@@ -234,7 +239,7 @@ WHERE name = 'Route 75';
 -- -- !#@ ADAPTATION END
 --
 --================================
--- Conformance Item T8	
+-- Conformance Item T8
 -- AsText(g Geometry) : String
 -- For this test we will determine the WKT representation of Goose Island.
 --
@@ -242,12 +247,12 @@ WHERE name = 'Route 75';
 --
 --================================
 --
-SELECT AsText(boundary)
+SELECT ST_AsText(boundary)
 FROM named_places
 WHERE name = 'Goose Island';
 --
 --================================
--- Conformance Item T9	
+-- Conformance Item T9
 -- AsBinary(g Geometry) : Blob
 -- For this test we will determine the WKB representation of Goose Island.
 -- We will test by applying AsText to the result of PolygonFromText to the
@@ -257,12 +262,12 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT AsText(PolygonFromWKB(AsBinary(boundary)))
+SELECT ST_AsText(ST_PolygonFromWKB(ST_AsBinary(boundary)))
 FROM named_places
 WHERE name = 'Goose Island';
 --
 --================================
--- Conformance Item T10	
+-- Conformance Item T10
 -- SRID(g Geometry) : Integer
 -- For this test we will determine the SRID of Goose Island.
 --
@@ -270,12 +275,12 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT SRID(boundary)
+SELECT ST_SRID(boundary)
 FROM named_places
 WHERE name = 'Goose Island';
 --
 --================================
--- Conformance Item T11	
+-- Conformance Item T11
 -- IsEmpty(g Geometry) : Integer
 -- For this test we will determine whether the geometry of a
 -- segment of Route 5 is empty.
@@ -288,12 +293,12 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT IsEmpty(centerline)
+SELECT ST_IsEmpty(centerline)
 FROM road_segments
 WHERE name = 'Route 5' AND aliases = 'Main Street';
 --
 --================================
--- Conformance Item T12	
+-- Conformance Item T12
 -- IsSimple(g Geometry) : Integer
 -- For this test we will determine whether the geometry of a
 -- segment of Blue Lake is simple.
@@ -306,12 +311,12 @@ WHERE name = 'Route 5' AND aliases = 'Main Street';
 --
 --================================
 --
-SELECT IsSimple(shore)
+SELECT ST_IsSimple(shore)
 FROM lakes
 WHERE name = 'Blue Lake';
 --
 --================================
--- Conformance Item T13	
+-- Conformance Item T13
 -- Boundary(g Geometry) : Geometry
 -- For this test we will determine the boundary of Goose Island.
 -- NOTE: The boundary result is as defined in 3.12.3.2 of 96-015R1.
@@ -334,7 +339,7 @@ WHERE name = 'Blue Lake';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(Boundary(boundary))
+SELECT ST_AsText(ST_Boundary(boundary))
 FROM named_places
 WHERE name = 'Goose Island';
 -- ---------------------
@@ -343,7 +348,7 @@ WHERE name = 'Goose Island';
 -- -- !#@ ADAPTATION END
 --
 --================================
--- Conformance Item T14	
+-- Conformance Item T14
 -- Envelope(g Geometry) : Geometry
 -- For this test we will determine the envelope of Goose Island.
 --
@@ -365,7 +370,7 @@ WHERE name = 'Goose Island';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(Envelope(boundary))
+SELECT ST_AsText(ST_Envelope(boundary))
 FROM named_places
 WHERE name = 'Goose Island';
 -- ---------------------
@@ -382,7 +387,7 @@ WHERE name = 'Goose Island';
 --//////////////////////////////////////////////////////////////////////////////
 --
 --================================
--- Conformance Item T15	
+-- Conformance Item T15
 -- X(p Point) : Double Precision
 -- For this test we will determine the X coordinate of Cam Bridge.
 --
@@ -404,7 +409,7 @@ WHERE name = 'Goose Island';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT X(position)
+SELECT ST_X(position)
 FROM bridges
 WHERE name = 'Cam Bridge';
 -- ---------------------
@@ -413,7 +418,7 @@ WHERE name = 'Cam Bridge';
 -- -- !#@ ADAPTATION END
 --
 --================================
--- Conformance Item T16	
+-- Conformance Item T16
 -- Y(p Point) : Double Precision
 -- For this test we will determine the Y coordinate of Cam Bridge.
 --
@@ -421,7 +426,7 @@ WHERE name = 'Cam Bridge';
 --
 --================================
 --
-SELECT Y(position)
+SELECT ST_Y(position)
 FROM bridges
 WHERE name = 'Cam Bridge';
 --
@@ -434,7 +439,7 @@ WHERE name = 'Cam Bridge';
 --//////////////////////////////////////////////////////////////////////////////
 --
 --================================
--- Conformance Item T17	
+-- Conformance Item T17
 -- StartPoint(c Curve) : Point
 -- For this test we will determine the start point of road segment 102.
 --
@@ -442,12 +447,12 @@ WHERE name = 'Cam Bridge';
 --
 --================================
 --
-SELECT AsText(StartPoint(centerline))
+SELECT ST_AsText(ST_StartPoint(centerline))
 FROM road_segments
 WHERE fid = 102;
 --
 --================================
--- Conformance Item T18	
+-- Conformance Item T18
 -- EndPoint(c Curve) : Point
 -- For this test we will determine the end point of road segment 102.
 --
@@ -455,12 +460,12 @@ WHERE fid = 102;
 --
 --================================
 --
-SELECT AsText(EndPoint(centerline))
+SELECT ST_AsText(ST_EndPoint(centerline))
 FROM road_segments
 WHERE fid = 102;
 --
 --================================
--- Conformance Item T19	
+-- Conformance Item T19
 -- IsClosed(c Curve) : Integer
 -- For this test we will determine the boundary of Goose Island.
 --
@@ -472,12 +477,12 @@ WHERE fid = 102;
 --
 --================================
 --
-SELECT IsClosed(Boundary(boundary))
+SELECT ST_IsClosed(ST_Boundary(boundary))
 FROM named_places
 WHERE name = 'Goose Island';
 --
 --================================
--- Conformance Item T20	
+-- Conformance Item T20
 -- IsRing(c Curve) : Integer
 -- For this test we will determine the boundary of Goose Island.
 --
@@ -489,12 +494,12 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT IsRing(Boundary(boundary))
+SELECT ST_IsRing(ST_Boundary(boundary))
 FROM named_places
 WHERE name = 'Goose Island';
 --
 --================================
--- Conformance Item T21	
+-- Conformance Item T21
 -- Length(c Curve) : Double Precision
 -- For this test we will determine the length of road segment 106.
 --
@@ -502,7 +507,7 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT Length(centerline)
+SELECT ST_Length(centerline)
 FROM road_segments
 WHERE fid = 106;
 --
@@ -515,7 +520,7 @@ WHERE fid = 106;
 --//////////////////////////////////////////////////////////////////////////////
 --
 --================================
--- Conformance Item T22	
+-- Conformance Item T22
 -- NumPoints(l LineString) : Integer
 -- For this test we will determine the number of points in road segment 102.
 --
@@ -523,12 +528,12 @@ WHERE fid = 106;
 --
 --================================
 --
-SELECT NumPoints(centerline)
+SELECT ST_NumPoints(centerline)
 FROM road_segments
 WHERE fid = 102;
 --
 --================================
--- Conformance Item T23	
+-- Conformance Item T23
 -- PointN(l LineString, n Integer) : Point
 -- For this test we will determine the 1st point in road segment 102.
 --
@@ -536,7 +541,7 @@ WHERE fid = 102;
 --
 --================================
 --
-SELECT AsText(PointN(centerline, 1))
+SELECT ST_AsText(ST_PointN(centerline, 1))
 FROM road_segments
 WHERE fid = 102;
 --
@@ -549,7 +554,7 @@ WHERE fid = 102;
 --//////////////////////////////////////////////////////////////////////////////
 --
 --================================
--- Conformance Item T24	
+-- Conformance Item T24
 -- Centroid(s Surface) : Point
 -- For this test we will determine the centroid of Goose Island.
 --
@@ -557,12 +562,12 @@ WHERE fid = 102;
 --
 --================================
 --
-SELECT AsText(Centroid(boundary))
+SELECT ST_AsText(ST_Centroid(boundary))
 FROM named_places
 WHERE name = 'Goose Island';
 --
 --================================
--- Conformance Item T25	
+-- Conformance Item T25
 -- PointOnSurface(s Surface) : Point
 -- For this test we will determine a point on Goose Island.
 -- NOTE: For this test we will have to uses the Contains function
@@ -576,12 +581,12 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT Contains(boundary, PointOnSurface(boundary))
+SELECT ST_Contains(boundary, ST_PointOnSurface(boundary))
 FROM named_places
 WHERE name = 'Goose Island';
 --
 --================================
--- Conformance Item T26	
+-- Conformance Item T26
 -- Area(s Surface) : Double Precision
 -- For this test we will determine the area of Goose Island.
 --
@@ -589,7 +594,7 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT Area(boundary)
+SELECT ST_Area(boundary)
 FROM named_places
 WHERE name = 'Goose Island';
 --
@@ -602,7 +607,7 @@ WHERE name = 'Goose Island';
 --//////////////////////////////////////////////////////////////////////////////
 --
 --================================
--- Conformance Item T27	
+-- Conformance Item T27
 -- ExteriorRing(p Polygon) : LineString
 -- For this test we will determine the exteroir ring of Blue Lake.
 --
@@ -610,12 +615,12 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT AsText(ExteriorRing(shore))
+SELECT ST_AsText(ST_ExteriorRing(shore))
 FROM lakes
 WHERE name = 'Blue Lake';
 --
 --================================
--- Conformance Item T28	
+-- Conformance Item T28
 -- NumInteriorRings(p Polygon) : Integer
 -- For this test we will determine the number of interior rings of Blue Lake.
 --
@@ -623,12 +628,12 @@ WHERE name = 'Blue Lake';
 --
 --================================
 --
-SELECT NumInteriorRings(shore)
+SELECT ST_NumInteriorRings(shore)
 FROM lakes
 WHERE name = 'Blue Lake';
 --
 --================================
--- Conformance Item T29	
+-- Conformance Item T29
 -- InteriorRingN(p Polygon, n Integer) : LineString
 -- For this test we will determine the first interior ring of Blue Lake.
 --
@@ -636,7 +641,7 @@ WHERE name = 'Blue Lake';
 --
 --================================
 --
-SELECT AsText(InteriorRingN(shore, 1))
+SELECT ST_AsText(ST_InteriorRingN(shore, 1))
 FROM lakes
 WHERE name = 'Blue Lake';
 --
@@ -649,7 +654,7 @@ WHERE name = 'Blue Lake';
 --//////////////////////////////////////////////////////////////////////////////
 --
 --================================
--- Conformance Item T30	
+-- Conformance Item T30
 -- NumGeometries(g GeometryCollection) : Integer
 -- For this test we will determine the number of geometries in Route 75.
 --
@@ -657,12 +662,12 @@ WHERE name = 'Blue Lake';
 --
 --================================
 --
-SELECT NumGeometries(centerlines)
+SELECT ST_NumGeometries(centerlines)
 FROM divided_routes
 WHERE name = 'Route 75';
 --
 --================================
--- Conformance Item T31	
+-- Conformance Item T31
 -- GeometryN(g GeometryCollection, n Integer) : Geometry
 -- For this test we will determine the second geometry in Route 75.
 --
@@ -685,7 +690,7 @@ WHERE name = 'Route 75';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(GeometryN(centerlines, 2))
+SELECT ST_AsText(ST_GeometryN(centerlines, 2))
 FROM divided_routes
 WHERE name = 'Route 75';
 -- ---------------------
@@ -702,7 +707,7 @@ WHERE name = 'Route 75';
 --//////////////////////////////////////////////////////////////////////////////
 --
 --================================
--- Conformance Item T32	
+-- Conformance Item T32
 -- IsClosed(mc MultiCurve) : Integer
 -- For this test we will determine if the geometry of Route 75 is closed.
 --
@@ -714,12 +719,12 @@ WHERE name = 'Route 75';
 --
 --================================
 --
-SELECT IsClosed(centerlines)
+SELECT ST_IsClosed(centerlines)
 FROM divided_routes
 WHERE name = 'Route 75';
 --
 --================================
--- Conformance Item T33	
+-- Conformance Item T33
 -- Length(mc MultiCurve) : Double Precision
 -- For this test we will determine the length of Route 75.
 -- NOTE: This makes no semantic sense in our example...
@@ -728,7 +733,7 @@ WHERE name = 'Route 75';
 --
 --================================
 --
-SELECT Length(centerlines)
+SELECT ST_Length(centerlines)
 FROM divided_routes
 WHERE name = 'Route 75';
 --
@@ -741,7 +746,7 @@ WHERE name = 'Route 75';
 --//////////////////////////////////////////////////////////////////////////////
 --
 --================================
--- Conformance Item T34	
+-- Conformance Item T34
 -- Centroid(ms MultiSurface) : Point
 -- For this test we will determine the centroid of the ponds.
 --
@@ -749,12 +754,12 @@ WHERE name = 'Route 75';
 --
 --================================
 --
-SELECT AsText(Centroid(shores))
+SELECT ST_AsText(ST_Centroid(shores))
 FROM ponds
 WHERE fid = 120;
 --
 --================================
--- Conformance Item T35	
+-- Conformance Item T35
 -- PointOnSurface(ms MultiSurface) : Point
 -- For this test we will determine a point on the ponds.
 -- NOTE: For this test we will have to uses the Contains function
@@ -768,12 +773,12 @@ WHERE fid = 120;
 --
 --================================
 --
-SELECT Contains(shores, PointOnSurface(shores))
+SELECT ST_Contains(shores, ST_PointOnSurface(shores))
 FROM ponds
 WHERE fid = 120;
 --
 --================================
--- Conformance Item T36	
+-- Conformance Item T36
 -- Area(ms MultiSurface) : Double Precision
 -- For this test we will determine the area of the ponds.
 --
@@ -781,7 +786,7 @@ WHERE fid = 120;
 --
 --================================
 --
-SELECT Area(shores)
+SELECT ST_Area(shores)
 FROM ponds
 WHERE fid = 120;
 --
@@ -794,7 +799,7 @@ WHERE fid = 120;
 --//////////////////////////////////////////////////////////////////////////////
 --
 --================================
--- Conformance Item T37	
+-- Conformance Item T37
 -- Equals(g1 Geometry, g2 Geometry) : Integer
 -- For this test we will determine if the geometry of Goose Island is equal
 -- to the same geometry as consructed from it's WKT representation.
@@ -807,12 +812,12 @@ WHERE fid = 120;
 --
 --================================
 --
-SELECT Equals(boundary, PolygonFromText('POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )',1))
+SELECT ST_Equals(boundary, ST_PolygonFromText('POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )',101))
 FROM named_places
 WHERE name = 'Goose Island';
 --
 --================================
--- Conformance Item T38	
+-- Conformance Item T38
 -- Disjoint(g1 Geometry, g2 Geometry) : Integer
 -- For this test we will determine if the geometry of Route 75 is disjoint
 -- from the geometry of Ashton.
@@ -825,12 +830,12 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT Disjoint(centerlines, boundary)
+SELECT ST_Disjoint(centerlines, boundary)
 FROM divided_routes, named_places
 WHERE divided_routes.name = 'Route 75' AND named_places.name = 'Ashton';
 --
 --================================
--- Conformance Item T39	
+-- Conformance Item T39
 -- Touch(g1 Geometry, g2 Geometry) : Integer
 -- For this test we will determine if the geometry of Cam Stream touches
 -- the geometry of Blue Lake.
@@ -857,7 +862,7 @@ WHERE divided_routes.name = 'Route 75' AND named_places.name = 'Ashton';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT Touches(centerline, shore)
+SELECT ST_Touches(centerline, shore)
 FROM streams, lakes
 WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 -- ---------------------
@@ -866,7 +871,7 @@ WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 -- -- !#@ ADAPTATION END
 --
 --================================
--- Conformance Item T40	
+-- Conformance Item T40
 -- Within(g1 Geometry, g2 Geometry) : Integer
 -- For this test we will determine if the geometry of the house at 215 Main Street
 -- is within Ashton.
@@ -895,7 +900,7 @@ WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT Within(footprint, boundary)
+SELECT ST_Within(footprint, boundary)
 FROM named_places, buildings
 WHERE named_places.name = 'Ashton' AND buildings.address = '215 Main Street';
 -- ---------------------
@@ -904,7 +909,7 @@ WHERE named_places.name = 'Ashton' AND buildings.address = '215 Main Street';
 -- -- !#@ ADAPTATION END
 --
 --================================
--- Conformance Item T41	
+-- Conformance Item T41
 -- Overlap(g1 Geometry, g2 Geometry) : Integer
 -- For this test we will determine if the geometry of Green Forest overlaps
 -- the geometry of Ashton.
@@ -931,7 +936,7 @@ WHERE named_places.name = 'Ashton' AND buildings.address = '215 Main Street';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT Overlaps(forests.boundary, named_places.boundary)
+SELECT ST_Overlaps(forests.boundary, named_places.boundary)
 FROM forests, named_places
 WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 -- ---------------------
@@ -940,7 +945,7 @@ WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 -- -- !#@ ADAPTATION END
 --
 --================================
--- Conformance Item T42	
+-- Conformance Item T42
 -- Cross(g1 Geometry, g2 Geometry) : Integer
 -- For this test we will determine if the geometry of road segment 102 crosses
 -- the geometry of Route 75.
@@ -969,7 +974,7 @@ WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT Crosses(road_segments.centerline, divided_routes.centerlines)
+SELECT ST_Crosses(road_segments.centerline, divided_routes.centerlines)
 FROM road_segments, divided_routes
 WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
 -- ---------------------
@@ -978,7 +983,7 @@ WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
 -- -- !#@ ADAPTATION END
 --
 --================================
--- Conformance Item T43	
+-- Conformance Item T43
 -- Intersects(g1 Geometry, g2 Geometry) : Integer
 -- For this test we will determine if the geometry of road segment 102 intersects
 -- the geometry of Route 75.
@@ -1005,7 +1010,7 @@ WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT Intersects(road_segments.centerline, divided_routes.centerlines)
+SELECT ST_Intersects(road_segments.centerline, divided_routes.centerlines)
 FROM road_segments, divided_routes
 WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
 -- ---------------------
@@ -1014,7 +1019,7 @@ WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
 -- -- !#@ ADAPTATION END
 --
 --================================
--- Conformance Item T44	
+-- Conformance Item T44
 -- Contains(g1 Geometry, g2 Geometry) : Integer
 -- For this test we will determine if the geometry of Green Forest contains
 -- the geometry of Ashton.
@@ -1041,7 +1046,7 @@ WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT Contains(forests.boundary, named_places.boundary)
+SELECT ST_Contains(forests.boundary, named_places.boundary)
 FROM forests, named_places
 WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 -- ---------------------
@@ -1050,7 +1055,7 @@ WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 -- -- !#@ ADAPTATION END
 --
 --================================
--- Conformance Item T45	
+-- Conformance Item T45
 -- Relate(g1 Geometry, g2 Geometry, PatternMatrix String) : Integer
 -- For this test we will determine if the geometry of Green Forest relates to
 -- the geometry of Ashton using the pattern "TTTTTTTTT".
@@ -1077,7 +1082,7 @@ WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT Relate(forests.boundary, named_places.boundary, 'TTTTTTTTT')
+SELECT ST_Relate(forests.boundary, named_places.boundary, 'TTTTTTTTT')
 FROM forests, named_places
 WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 -- ---------------------
@@ -1094,7 +1099,7 @@ WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 --//////////////////////////////////////////////////////////////////////////////
 --
 --================================
--- Conformance Item T46	
+-- Conformance Item T46
 -- Distance(g1 Geometry, g2 Geometry) : Double Precision
 -- For this test we will determine the distance between Cam Bridge and Ashton.
 --
@@ -1102,7 +1107,7 @@ WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 --
 --================================
 --
-SELECT Distance(position, boundary)
+SELECT ST_Distance(position, boundary)
 FROM bridges, named_places
 WHERE bridges.name = 'Cam Bridge' AND named_places.name = 'Ashton';
 --
@@ -1115,7 +1120,7 @@ WHERE bridges.name = 'Cam Bridge' AND named_places.name = 'Ashton';
 --//////////////////////////////////////////////////////////////////////////////
 --
 --================================
--- Conformance Item T47	
+-- Conformance Item T47
 -- Intersection(g1 Geometry, g2 Geometry) : Geometry
 -- For this test we will determine the intersection between Cam Stream and
 -- Blue Lake.
@@ -1139,7 +1144,7 @@ WHERE bridges.name = 'Cam Bridge' AND named_places.name = 'Ashton';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(Intersection(centerline, shore))
+SELECT ST_AsText(ST_Intersection(centerline, shore))
 FROM streams, lakes
 WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 -- ---------------------
@@ -1148,7 +1153,7 @@ WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 -- -- !#@ ADAPTATION END
 --
 --================================
--- Conformance Item T48	
+-- Conformance Item T48
 -- Difference(g1 Geometry, g2 Geometry) : Geometry
 -- For this test we will determine the difference between Ashton and
 -- Green Forest.
@@ -1175,7 +1180,7 @@ WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(Difference(named_places.boundary, forests.boundary))
+SELECT ST_AsText(ST_Difference(named_places.boundary, forests.boundary))
 FROM named_places, forests
 WHERE named_places.name = 'Ashton' AND forests.name = 'Green Forest';
 -- ---------------------
@@ -1184,7 +1189,7 @@ WHERE named_places.name = 'Ashton' AND forests.name = 'Green Forest';
 -- -- !#@ ADAPTATION END
 --
 --================================
--- Conformance Item T49	
+-- Conformance Item T49
 -- Union(g1 Geometry, g2 Geometry) : Integer
 -- For this test we will determine the union of Blue Lake and Goose Island
 --
@@ -1199,9 +1204,6 @@ WHERE named_places.name = 'Ashton' AND forests.name = 'Green Forest';
 -- will match the official answer.
 -- Test script uses 'Ashton' as the place name where it means
 -- to use 'Goose Island'.
--- Specification uses 'Union()' as a function name, but UNION
--- is a SQL reserved work.  Function name adapted to 'GeomUnion()'
--- for out implementation.
 -- ---------------------
 -- -- BEGIN ORIGINAL SQL
 -- ---------------------
@@ -1213,7 +1215,7 @@ WHERE named_places.name = 'Ashton' AND forests.name = 'Green Forest';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(GeomUnion(shore, boundary))
+SELECT ST_AsText(ST_Union(shore, boundary))
 FROM lakes, named_places
 WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 -- ---------------------
@@ -1222,7 +1224,7 @@ WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 -- -- !#@ ADAPTATION END
 --
 --================================
--- Conformance Item T50	
+-- Conformance Item T50
 -- SymmetricDifference(g1 Geometry, g2 Geometry) : Integer
 -- For this test we will determine the symmetric difference of Blue Lake
 -- and Goose Island
@@ -1249,7 +1251,7 @@ WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(SymmetricDifference(shore, boundary))
+SELECT ST_AsText(ST_SymmetricDifference(shore, boundary))
 FROM lakes, named_places
 WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 -- ---------------------
@@ -1258,7 +1260,7 @@ WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 -- -- !#@ ADAPTATION END
 --
 --================================
--- Conformance Item T51	
+-- Conformance Item T51
 -- Buffer(g Geometry, d Double Precision) : Geometry
 -- For this test we will make a 15 meter buffer about Cam Bridge.
 -- NOTE: This test we count the number of buildings contained in
@@ -1293,14 +1295,14 @@ WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 -- ---------------------
 SELECT count(*)
 FROM buildings, bridges
-WHERE Contains(Buffer(bridges.position, 15.0), buildings.footprint);
+WHERE ST_Contains(ST_Buffer(bridges.position, 15.0), buildings.footprint);
 -- ---------------------
 -- -- END   ADAPTED  SQL
 -- ---------------------
 -- -- !#@ ADAPTATION END
 --
 --================================
--- Conformance Item T52	
+-- Conformance Item T52
 -- ConvexHull(g Geometry) : Geometry
 -- For this test we will determine the convex hull of Blue Lake
 --
@@ -1326,14 +1328,13 @@ WHERE Contains(Buffer(bridges.position, 15.0), buildings.footprint);
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(ConvexHull(shore))
+SELECT ST_AsText(ST_ConvexHull(shore))
 FROM lakes
 WHERE lakes.name = 'Blue Lake';
 -- ---------------------
 -- -- END   ADAPTED  SQL
 -- ---------------------
 -- -- !#@ ADAPTATION END
-
 
 --
 --
