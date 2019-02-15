@@ -187,6 +187,11 @@ WHERE SRID = 101;
 --
 --//////////////////////////////////////////////////////////////////////////////
 --
+-- -- !#@ ADAPTATION BEGIN
+-- All functions are now prefixed with "ST_" in accordance with SFSQL 1.2
+-- and ISO SQL/MM Part 2
+-- -- !#@ ADAPTATION END
+--
 --================================
 -- Conformance Item T6
 -- Dimension(g Geometry) : Integer
@@ -196,7 +201,7 @@ WHERE SRID = 101;
 --
 --================================
 --
-SELECT Dimension(shore)
+SELECT ST_Dimension(shore)
 FROM lakes
 WHERE name = 'Blue Lake';
 --
@@ -225,7 +230,7 @@ WHERE name = 'Blue Lake';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT GeometryType(centerlines)
+SELECT ST_GeometryType(centerlines)
 FROM divided_routes
 WHERE name = 'Route 75';
 -- ---------------------
@@ -242,7 +247,7 @@ WHERE name = 'Route 75';
 --
 --================================
 --
-SELECT AsText(boundary)
+SELECT ST_AsText(boundary)
 FROM named_places
 WHERE name = 'Goose Island';
 --
@@ -257,7 +262,7 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT AsText(PolygonFromWKB(AsBinary(boundary)))
+SELECT ST_AsText(ST_PolygonFromWKB(ST_AsBinary(boundary)))
 FROM named_places
 WHERE name = 'Goose Island';
 --
@@ -270,7 +275,7 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT SRID(boundary)
+SELECT ST_SRID(boundary)
 FROM named_places
 WHERE name = 'Goose Island';
 --
@@ -288,7 +293,7 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT IsEmpty(centerline)
+SELECT ST_IsEmpty(centerline)
 FROM road_segments
 WHERE name = 'Route 5' AND aliases = 'Main Street';
 --
@@ -306,7 +311,7 @@ WHERE name = 'Route 5' AND aliases = 'Main Street';
 --
 --================================
 --
-SELECT IsSimple(shore)
+SELECT ST_IsSimple(shore)
 FROM lakes
 WHERE name = 'Blue Lake';
 --
@@ -334,7 +339,7 @@ WHERE name = 'Blue Lake';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(Boundary(boundary))
+SELECT ST_AsText(ST_Boundary(boundary))
 FROM named_places
 WHERE name = 'Goose Island';
 -- ---------------------
@@ -365,7 +370,7 @@ WHERE name = 'Goose Island';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(Envelope(boundary))
+SELECT ST_AsText(ST_Envelope(boundary))
 FROM named_places
 WHERE name = 'Goose Island';
 -- ---------------------
@@ -404,7 +409,7 @@ WHERE name = 'Goose Island';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT X(position)
+SELECT ST_X(position)
 FROM bridges
 WHERE name = 'Cam Bridge';
 -- ---------------------
@@ -421,7 +426,7 @@ WHERE name = 'Cam Bridge';
 --
 --================================
 --
-SELECT Y(position)
+SELECT ST_Y(position)
 FROM bridges
 WHERE name = 'Cam Bridge';
 --
@@ -442,7 +447,7 @@ WHERE name = 'Cam Bridge';
 --
 --================================
 --
-SELECT AsText(StartPoint(centerline))
+SELECT ST_AsText(ST_StartPoint(centerline))
 FROM road_segments
 WHERE fid = 102;
 --
@@ -455,7 +460,7 @@ WHERE fid = 102;
 --
 --================================
 --
-SELECT AsText(EndPoint(centerline))
+SELECT ST_AsText(ST_EndPoint(centerline))
 FROM road_segments
 WHERE fid = 102;
 --
@@ -472,7 +477,7 @@ WHERE fid = 102;
 --
 --================================
 --
-SELECT IsClosed(Boundary(boundary))
+SELECT ST_IsClosed(ST_Boundary(boundary))
 FROM named_places
 WHERE name = 'Goose Island';
 --
@@ -489,7 +494,7 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT IsRing(Boundary(boundary))
+SELECT ST_IsRing(ST_Boundary(boundary))
 FROM named_places
 WHERE name = 'Goose Island';
 --
@@ -502,7 +507,7 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT Length(centerline)
+SELECT ST_Length(centerline)
 FROM road_segments
 WHERE fid = 106;
 --
@@ -523,7 +528,7 @@ WHERE fid = 106;
 --
 --================================
 --
-SELECT NumPoints(centerline)
+SELECT ST_NumPoints(centerline)
 FROM road_segments
 WHERE fid = 102;
 --
@@ -536,7 +541,7 @@ WHERE fid = 102;
 --
 --================================
 --
-SELECT AsText(PointN(centerline, 1))
+SELECT ST_AsText(ST_PointN(centerline, 1))
 FROM road_segments
 WHERE fid = 102;
 --
@@ -557,7 +562,7 @@ WHERE fid = 102;
 --
 --================================
 --
-SELECT AsText(Centroid(boundary))
+SELECT ST_AsText(ST_Centroid(boundary))
 FROM named_places
 WHERE name = 'Goose Island';
 --
@@ -576,7 +581,7 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT Contains(boundary, PointOnSurface(boundary))
+SELECT ST_Contains(boundary, ST_PointOnSurface(boundary))
 FROM named_places
 WHERE name = 'Goose Island';
 --
@@ -589,7 +594,7 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT Area(boundary)
+SELECT ST_Area(boundary)
 FROM named_places
 WHERE name = 'Goose Island';
 --
@@ -610,7 +615,7 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT AsText(ExteriorRing(shore))
+SELECT ST_AsText(ST_ExteriorRing(shore))
 FROM lakes
 WHERE name = 'Blue Lake';
 --
@@ -623,7 +628,7 @@ WHERE name = 'Blue Lake';
 --
 --================================
 --
-SELECT NumInteriorRings(shore)
+SELECT ST_NumInteriorRings(shore)
 FROM lakes
 WHERE name = 'Blue Lake';
 --
@@ -636,7 +641,7 @@ WHERE name = 'Blue Lake';
 --
 --================================
 --
-SELECT AsText(InteriorRingN(shore, 1))
+SELECT ST_AsText(ST_InteriorRingN(shore, 1))
 FROM lakes
 WHERE name = 'Blue Lake';
 --
@@ -657,7 +662,7 @@ WHERE name = 'Blue Lake';
 --
 --================================
 --
-SELECT NumGeometries(centerlines)
+SELECT ST_NumGeometries(centerlines)
 FROM divided_routes
 WHERE name = 'Route 75';
 --
@@ -685,7 +690,7 @@ WHERE name = 'Route 75';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(GeometryN(centerlines, 2))
+SELECT ST_AsText(ST_GeometryN(centerlines, 2))
 FROM divided_routes
 WHERE name = 'Route 75';
 -- ---------------------
@@ -714,7 +719,7 @@ WHERE name = 'Route 75';
 --
 --================================
 --
-SELECT IsClosed(centerlines)
+SELECT ST_IsClosed(centerlines)
 FROM divided_routes
 WHERE name = 'Route 75';
 --
@@ -728,7 +733,7 @@ WHERE name = 'Route 75';
 --
 --================================
 --
-SELECT Length(centerlines)
+SELECT ST_Length(centerlines)
 FROM divided_routes
 WHERE name = 'Route 75';
 --
@@ -749,7 +754,7 @@ WHERE name = 'Route 75';
 --
 --================================
 --
-SELECT AsText(Centroid(shores))
+SELECT ST_AsText(ST_Centroid(shores))
 FROM ponds
 WHERE fid = 120;
 --
@@ -768,7 +773,7 @@ WHERE fid = 120;
 --
 --================================
 --
-SELECT Contains(shores, PointOnSurface(shores))
+SELECT ST_Contains(shores, ST_PointOnSurface(shores))
 FROM ponds
 WHERE fid = 120;
 --
@@ -781,7 +786,7 @@ WHERE fid = 120;
 --
 --================================
 --
-SELECT Area(shores)
+SELECT ST_Area(shores)
 FROM ponds
 WHERE fid = 120;
 --
@@ -807,7 +812,7 @@ WHERE fid = 120;
 --
 --================================
 --
-SELECT Equals(boundary, PolygonFromText('POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )',1))
+SELECT ST_Equals(boundary, ST_PolygonFromText('POLYGON( ( 67 13, 67 18, 59 18, 59 13, 67 13) )',101))
 FROM named_places
 WHERE name = 'Goose Island';
 --
@@ -825,7 +830,7 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT Disjoint(centerlines, boundary)
+SELECT ST_Disjoint(centerlines, boundary)
 FROM divided_routes, named_places
 WHERE divided_routes.name = 'Route 75' AND named_places.name = 'Ashton';
 --
@@ -857,7 +862,7 @@ WHERE divided_routes.name = 'Route 75' AND named_places.name = 'Ashton';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT Touches(centerline, shore)
+SELECT ST_Touches(centerline, shore)
 FROM streams, lakes
 WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 -- ---------------------
@@ -895,7 +900,7 @@ WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT Within(footprint, boundary)
+SELECT ST_Within(footprint, boundary)
 FROM named_places, buildings
 WHERE named_places.name = 'Ashton' AND buildings.address = '215 Main Street';
 -- ---------------------
@@ -931,7 +936,7 @@ WHERE named_places.name = 'Ashton' AND buildings.address = '215 Main Street';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT Overlaps(forests.boundary, named_places.boundary)
+SELECT ST_Overlaps(forests.boundary, named_places.boundary)
 FROM forests, named_places
 WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 -- ---------------------
@@ -969,7 +974,7 @@ WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT Crosses(road_segments.centerline, divided_routes.centerlines)
+SELECT ST_Crosses(road_segments.centerline, divided_routes.centerlines)
 FROM road_segments, divided_routes
 WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
 -- ---------------------
@@ -1005,7 +1010,7 @@ WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT Intersects(road_segments.centerline, divided_routes.centerlines)
+SELECT ST_Intersects(road_segments.centerline, divided_routes.centerlines)
 FROM road_segments, divided_routes
 WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
 -- ---------------------
@@ -1041,7 +1046,7 @@ WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT Contains(forests.boundary, named_places.boundary)
+SELECT ST_Contains(forests.boundary, named_places.boundary)
 FROM forests, named_places
 WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 -- ---------------------
@@ -1077,7 +1082,7 @@ WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT Relate(forests.boundary, named_places.boundary, 'TTTTTTTTT')
+SELECT ST_Relate(forests.boundary, named_places.boundary, 'TTTTTTTTT')
 FROM forests, named_places
 WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 -- ---------------------
@@ -1102,7 +1107,7 @@ WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 --
 --================================
 --
-SELECT Distance(position, boundary)
+SELECT ST_Distance(position, boundary)
 FROM bridges, named_places
 WHERE bridges.name = 'Cam Bridge' AND named_places.name = 'Ashton';
 --
@@ -1139,7 +1144,7 @@ WHERE bridges.name = 'Cam Bridge' AND named_places.name = 'Ashton';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(Intersection(centerline, shore))
+SELECT ST_AsText(ST_Intersection(centerline, shore))
 FROM streams, lakes
 WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 -- ---------------------
@@ -1175,7 +1180,7 @@ WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(Difference(named_places.boundary, forests.boundary))
+SELECT ST_AsText(ST_Difference(named_places.boundary, forests.boundary))
 FROM named_places, forests
 WHERE named_places.name = 'Ashton' AND forests.name = 'Green Forest';
 -- ---------------------
@@ -1199,9 +1204,6 @@ WHERE named_places.name = 'Ashton' AND forests.name = 'Green Forest';
 -- will match the official answer.
 -- Test script uses 'Ashton' as the place name where it means
 -- to use 'Goose Island'.
--- Specification uses 'Union()' as a function name, but UNION
--- is a SQL reserved work.  Function name adapted to 'GeomUnion()'
--- for out implementation.
 -- ---------------------
 -- -- BEGIN ORIGINAL SQL
 -- ---------------------
@@ -1213,7 +1215,7 @@ WHERE named_places.name = 'Ashton' AND forests.name = 'Green Forest';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(GeomUnion(shore, boundary))
+SELECT ST_AsText(ST_Union(shore, boundary))
 FROM lakes, named_places
 WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 -- ---------------------
@@ -1249,7 +1251,7 @@ WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(SymmetricDifference(shore, boundary))
+SELECT ST_AsText(ST_SymmetricDifference(shore, boundary))
 FROM lakes, named_places
 WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 -- ---------------------
@@ -1293,7 +1295,7 @@ WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 -- ---------------------
 SELECT count(*)
 FROM buildings, bridges
-WHERE Contains(Buffer(bridges.position, 15.0), buildings.footprint);
+WHERE ST_Contains(ST_Buffer(bridges.position, 15.0), buildings.footprint);
 -- ---------------------
 -- -- END   ADAPTED  SQL
 -- ---------------------
@@ -1326,7 +1328,7 @@ WHERE Contains(Buffer(bridges.position, 15.0), buildings.footprint);
 -- ---------------------
 -- -- BEGIN ADAPTED  SQL
 -- ---------------------
-SELECT AsText(ConvexHull(shore))
+SELECT ST_AsText(ST_ConvexHull(shore))
 FROM lakes
 WHERE lakes.name = 'Blue Lake';
 -- ---------------------
