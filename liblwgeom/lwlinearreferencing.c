@@ -724,6 +724,34 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 static inline LWCOLLECTION *
 lwpoly_clip_to_ordinate_range(const LWPOLY *poly, char ordinate, double from, double to)
 {
+	assert(poly);
+	char hasz = FLAGS_GET_Z(poly->flags), hasm = FLAGS_GET_M(poly->flags);
+	LWPOLY *poly_res = lwpoly_construct_empty(poly->srid, hasz, hasm);
+	LWCOLLECTION *lwgeom_out = lwcollection_construct_empty(MULTIPOLYGONTYPE, poly->srid, hasz, hasm);
+
+	for (uint32_t i = 0; i < poly->nrings; i++)
+	{
+		/* Ret number of points */
+		POINTARRAY *pa = ptarray_clamp_to_ordinate_range(poly->rings[i], ordinate, from, to, LW_TRUE);
+
+		if (pa->npoints >= 4)
+			lwpoly_add_ring(poly_res, pa);
+		else
+		{
+			ptarray_free(pa);
+			if (i == 0)
+				break;
+		}
+	}
+	if (poly_res->nrings > 0)
+		lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, (LWGEOM *)poly_res);
+	else
+		lwpoly_free(poly_res);
+
+	return lwgeom_out;
+}
+
+{
 	LWCOLLECTION *lwgeom_out = NULL;
 	uint32_t i, nrings;
 	char hasz = FLAGS_GET_Z(poly->flags), hasm = FLAGS_GET_M(poly->flags);
@@ -765,12 +793,9 @@ lwpoly_clip_to_ordinate_range(const LWPOLY *poly, char ordinate, double from, do
 static inline LWCOLLECTION *
 lwtriangle_clip_to_ordinate_range(const LWTRIANGLE *tri, char ordinate, double from, double to)
 {
-	LWCOLLECTION *lwgeom_out = NULL;
-	char hasz = FLAGS_GET_Z(tri->flags), hasm = FLAGS_GET_M(tri->flags);
-
 	assert(tri);
-	lwgeom_out = lwcollection_construct_empty(TINTYPE, tri->srid, hasz, hasm);
-
+	char hasz = FLAGS_GET_Z(tri->flags), hasm = FLAGS_GET_M(tri->flags);
+	LWCOLLECTION *lwgeom_out = lwcollection_construct_empty(TINTYPE, tri->srid, hasz, hasm);
 	POINTARRAY *pa = ptarray_clamp_to_ordinate_range(tri->points, ordinate, from, to, LW_TRUE);
 
 	if (pa->npoints >= 4)
