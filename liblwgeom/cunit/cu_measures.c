@@ -51,9 +51,6 @@ do_test_mindistance_tolerance(char *in1,
 	lw1 = lwgeom_from_wkt(in1, LW_PARSER_CHECK_NONE);
 	lw2 = lwgeom_from_wkt(in2, LW_PARSER_CHECK_NONE);
 
-	FLAGS_SET_SOLID(lw1->flags, 1);
-	FLAGS_SET_SOLID(lw2->flags, 1);
-
 	if ( ! lw1 )
 	{
 		printf(msg2, in1);
@@ -64,6 +61,9 @@ do_test_mindistance_tolerance(char *in1,
 		printf(msg2, in2);
 		exit(1);
 	}
+
+	FLAGS_SET_SOLID(lw1->flags, 1);
+	FLAGS_SET_SOLID(lw2->flags, 1);
 
 	distance = distancef(lw1, lw2, 0.0);
 	lwgeom_free(lw1);
@@ -231,6 +231,15 @@ test_mindistance3d_tolerance(void)
 	DIST3DTEST("LINESTRING(1 0 0 , 2 0 0)", "POLYGON((1 1 0, 2 1 0, 2 2 0, 1 2 0, 1 1 0))", 1.0);
 	DIST3DTEST("LINESTRING(1 1 1 , 2 1 0)", "POLYGON((1 1 0, 2 1 0, 2 2 0, 1 2 0, 1 1 0))", 0.0);
 	DIST3DTEST("LINESTRING(1 1 1 , 2 1 1)", "POLYGON((1 1 0, 2 1 0, 2 2 0, 1 2 0, 1 1 0))", 1.0);
+
+	/* Same but triangles */
+	DIST3DTEST("LINESTRING(1 0 0 , 2 0 0)", "TRIANGLE((1 1 0, 2 1 0, 1 2 0, 1 1 0))", 1.0);
+	DIST3DTEST("LINESTRING(1 1 1 , 2 1 0)", "TRIANGLE((1 1 0, 2 1 0, 1 2 0, 1 1 0))", 0.0);
+	DIST3DTEST("LINESTRING(1 1 1 , 2 1 1)", "TRIANGLE((1 1 0, 2 1 0, 1 2 0, 1 1 0))", 1.0);
+
+	/* Triangle to triangle*/
+	DIST3DTEST("TRIANGLE((-1 1 0, -2 1 0, -1 2 0, -1 1 0))", "TRIANGLE((1 1 0, 2 1 0, 1 2 0, 1 1 0))", 2.0);
+
 	/* Line in polygon */
 	DIST3DTEST("LINESTRING(1 1 1 , 2 2 2)", "POLYGON((0 0 0, 2 2 2, 3 3 1, 0 0 0))", 0.0);
 
@@ -238,7 +247,8 @@ test_mindistance3d_tolerance(void)
 	DIST3DTEST("LINESTRING(-10000 -10000 0, 0 0 1)", "POLYGON((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 0))", 1);
 
 	/* This is an invalid polygon since it defines just a line */
-	DIST3DTEST("LINESTRING(1 1 1 , 2 2 2)", "POLYGON((0 0 0, 2 2 2, 3 3 3, 0 0 0))", 0);
+	DIST3DTEST("LINESTRING(1 1 1, 2 2 2)", "POLYGON((0 0 0, 2 2 2, 3 3 3, 0 0 0))", 0);
+	DIST3DTEST("TRIANGLE((1 1 1, 2 2 2, 3 3 3, 1 1 1))", "POLYGON((0 0 0, 2 2 2, 3 3 3, 0 0 0))", 0);
 
 	/* A box in a box: two solids, one inside another */
 	DIST3DTEST(

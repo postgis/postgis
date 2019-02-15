@@ -658,7 +658,7 @@ lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3
 		if (t2 == POLYGONTYPE)
 		{
 			dl->twisted = -1;
-			return lw_dist3d_poly_tri((LWPOLY *)lwg1, (LWTRIANGLE *)lwg2, dl);
+			return lw_dist3d_poly_tri((LWPOLY *)lwg2, (LWTRIANGLE *)lwg1, dl);
 		}
 		else if (t2 == POINTTYPE)
 		{
