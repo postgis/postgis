@@ -377,8 +377,6 @@ lwgeom_solid_contains_lwgeom(const LWGEOM *solid, const LWGEOM *g)
 
 			/* get part of solid that is upwards */
 			LWCOLLECTION *c = lwgeom_clip_to_ordinate_range(solid_copy, 'Z', pt.z, DBL_MAX, 0);
-			if (solid->type == TINTYPE)
-				printLWTIN((LWTIN *)c);
 
 			for (uint32_t i = 0; i < c->ngeoms; i++)
 			{
@@ -459,8 +457,7 @@ lwgeom_mindistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tole
 	thedl.mode = DIST_MIN;
 	thedl.distance = DBL_MAX;
 	thedl.tolerance = tolerance;
-	if (lw1->type == TINTYPE)
-		printLWTIN((LWTIN *)lw1);
+
 	if (lw_dist3d_recursive(lw1, lw2, &thedl))
 	{
 		if (thedl.distance <= tolerance)
@@ -521,9 +518,6 @@ lw_dist3d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D *dl)
 		else
 			g1 = (LWGEOM *)lwg1;
 
-		if (g1->type == TRIANGLETYPE)
-			printLWTRIANGLE((LWTRIANGLE *)g1);
-
 		if (lwgeom_is_empty(g1))
 			return LW_TRUE;
 
@@ -574,9 +568,6 @@ lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3
 	int t2 = lwg2->type;
 
 	LWDEBUGF(2, "lw_dist3d_distribute_bruteforce is called with typ1=%d, type2=%d", lwg1->type, lwg2->type);
-
-	if (lwg1->type == TRIANGLETYPE)
-		printLWTRIANGLE((LWTRIANGLE *)lwg1);
 
 	if (t1 == POINTTYPE)
 	{
