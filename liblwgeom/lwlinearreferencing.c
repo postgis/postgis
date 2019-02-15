@@ -285,12 +285,6 @@ lwpoint_set_ordinate(POINT4D *p, char ordinate, double value)
 		return;
 	}
 
-	if (!(ordinate == 'X' || ordinate == 'Y' || ordinate == 'Z' || ordinate == 'M'))
-	{
-		lwerror("Cannot set %c ordinate.", ordinate);
-		return;
-	}
-
 	switch ( ordinate )
 	{
 	case 'X':
@@ -306,6 +300,8 @@ lwpoint_set_ordinate(POINT4D *p, char ordinate, double value)
 		p->m = value;
 		return;
 	}
+	lwerror("Cannot set %c ordinate.", ordinate);
+	return;
 }
 
 /**
@@ -345,11 +341,10 @@ point_interpolate(const POINT4D *p1,
 	}
 #endif
 
-	proportion = fabs((interpolation_value - p1_value) / (p2_value - p1_value));
+	proportion = (interpolation_value - p1_value) / (p2_value - p1_value);
 
 	for (i = 0; i < 4; i++)
 	{
-		double newordinate = 0.0;
 		if (dims[i] == 'Z' && !hasz)
 			continue;
 		if (dims[i] == 'M' && !hasm)
@@ -358,6 +353,7 @@ point_interpolate(const POINT4D *p1,
 			lwpoint_set_ordinate(p, dims[i], interpolation_value);
 		else
 		{
+			double newordinate = 0.0;
 			p1_value = lwpoint_get_ordinate(p1, dims[i]);
 			p2_value = lwpoint_get_ordinate(p2, dims[i]);
 			newordinate = p1_value + proportion * (p2_value - p1_value);
@@ -478,7 +474,7 @@ ptarray_clamp_to_ordinate_range(const POINTARRAY *ipa, char ordinate, double fro
 		{
 			ptarray_append_point(opa, &p2, LW_FALSE);
 		}
-		else if (p1out == p2out && p1out != 0) /* both invisible */
+		else if (p1out == p2out && p1out != 0) /* both invisible on the same side */
 		{
 			/* skip */
 		}
@@ -751,6 +747,13 @@ lwpoly_clip_to_ordinate_range(const LWPOLY *poly, char ordinate, double from, do
 				break;
 		}
 	}
+	if (poly_res->nrings > 0)
+		lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, (LWGEOM *)poly_res);
+	else
+		lwpoly_free(poly_res);
+
+	return lwgeom_out;
+}
 	lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, (LWGEOM *)poly_res);
 
 	return lwgeom_out;
