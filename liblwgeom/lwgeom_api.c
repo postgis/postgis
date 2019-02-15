@@ -175,8 +175,6 @@ getPoint4d_p(const POINTARRAY *pa, uint32_t n, POINT4D *op)
 
 }
 
-
-
 /*
  * Copy a point from the point array into the parameter point
  * will set point's z=NO_Z_VALUE if pa is 2d
@@ -221,6 +219,7 @@ getPoint3dz_p(const POINTARRAY *pa, uint32_t n, POINT3DZ *op)
 		return 0;
 	}
 
+	assert(n < pa->npoints);
 	if ( n>=pa->npoints )
 	{
 		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
@@ -276,7 +275,7 @@ getPoint3dm_p(const POINTARRAY *pa, uint32_t n, POINT3DM *op)
 
 	if ( n>=pa->npoints )
 	{
-		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
+		lwerror("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
 	}
 
@@ -497,23 +496,24 @@ void printPA(POINTARRAY *pa)
 	         FLAGS_NDIMS(pa->flags), ptarray_point_size(pa));
 	lwnotice("                 npoints = %i", pa->npoints);
 
-	for (t =0; t<pa->npoints; t++)
+	if (!pa)
 	{
-		getPoint4d_p(pa, t, &pt);
-		if (FLAGS_NDIMS(pa->flags) == 2)
+		lwnotice("                    PTARRAY is null pointer!");
+	}
+	else
+	{
+
+		for (t = 0; t < pa->npoints; t++)
 		{
-			lwnotice("                    %i : %lf,%lf",t,pt.x,pt.y);
-		}
-		if (FLAGS_NDIMS(pa->flags) == 3)
-		{
-			lwnotice("                    %i : %lf,%lf,%lf",t,pt.x,pt.y,pt.z);
-		}
-		if (FLAGS_NDIMS(pa->flags) == 4)
-		{
-			lwnotice("                    %i : %lf,%lf,%lf,%lf",t,pt.x,pt.y,pt.z,pt.m);
+			getPoint4d_p(pa, t, &pt);
+			if (FLAGS_NDIMS(pa->flags) == 2)
+				lwnotice("                    %i : %lf,%lf", t, pt.x, pt.y);
+			if (FLAGS_NDIMS(pa->flags) == 3)
+				lwnotice("                    %i : %lf,%lf,%lf", t, pt.x, pt.y, pt.z);
+			if (FLAGS_NDIMS(pa->flags) == 4)
+				lwnotice("                    %i : %lf,%lf,%lf,%lf", t, pt.x, pt.y, pt.z, pt.m);
 		}
 	}
-
 	lwnotice("      }");
 }
 
