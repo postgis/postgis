@@ -866,12 +866,12 @@ fi
 
 
 dnl Check that we can find the proj_api.h header file
-dnl CPPFLAGS_SAVE="$CPPFLAGS"
-dnl CPPFLAGS="$PROJ_CPPFLAGS"
-dnl AC_CHECK_HEADER([proj_api.h], [], [AC_MSG_ERROR([could not find proj_api.h - you may need to specify the directory of a PROJ.4 installation using --with-projdir])],
-dnl [
-dnl #define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-dnl ])
+CPPFLAGS_SAVE="$CPPFLAGS"
+CPPFLAGS="$PROJ_CPPFLAGS"
+AC_CHECK_HEADER([proj_api.h], [], [AC_MSG_ERROR([could not find proj_api.h - you may need to specify the directory of a PROJ.4 installation using --with-projdir])],
+[
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
+])
 
 dnl Return the PROJ.4 version number
 AC_PROJ_VERSION([POSTGIS_PROJ_VERSION])
