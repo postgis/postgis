@@ -390,11 +390,11 @@ GBOX* gbox_from_string(const char *str)
 
 char* gbox_to_string(const GBOX *gbox)
 {
-	static int sz = 138;
+	const size_t sz = 138;
 	char *str = NULL;
 
 	if ( ! gbox )
-		return strdup("NULL POINTER");
+		return lwstrdup("NULL POINTER");
 
 	str = (char*)lwalloc(sz);
 

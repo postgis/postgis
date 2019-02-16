@@ -171,7 +171,7 @@ Datum geography_in(PG_FUNCTION_ARGS)
 	}
 
 	/* Error on any SRID != default */
-	srid_is_latlong(fcinfo, lwgeom->srid);
+	srid_check_latlong(fcinfo, lwgeom->srid);
 
 	/* Convert to gserialized */
 	g_ser = gserialized_geography_from_lwgeom(lwgeom, geog_typmod);
@@ -563,7 +563,7 @@ Datum geography_from_text(PG_FUNCTION_ARGS)
 		PG_PARSER_ERROR(lwg_parser_result);
 
 	/* Error on any SRID != default */
-	srid_is_latlong(fcinfo, lwg_parser_result.geom->srid);
+	srid_check_latlong(fcinfo, lwg_parser_result.geom->srid);
 
 	/* Clean up string */
 	pfree(wkt);
@@ -591,7 +591,7 @@ Datum geography_from_binary(PG_FUNCTION_ARGS)
 		lwpgerror("Unable to parse WKB");
 
 	/* Error on any SRID != default */
-	srid_is_latlong(fcinfo, lwgeom->srid);
+	srid_check_latlong(fcinfo, lwgeom->srid);
 
 	gser = gserialized_geography_from_lwgeom(lwgeom, -1);
 	lwgeom_free(lwgeom);
@@ -617,7 +617,7 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	}
 
 	/* Error on any SRID != default */
-	srid_is_latlong(fcinfo, lwgeom->srid);
+	srid_check_latlong(fcinfo, lwgeom->srid);
 
 	/* Force the geometry to have valid geodetic coordinate range. */
 	lwgeom_nudge_geodetic(lwgeom);
@@ -681,7 +681,7 @@ Datum geography_recv(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_wkb((uint8_t*)buf->data, buf->len, LW_PARSER_CHECK_ALL);
 
 	/* Error on any SRID != default */
-	srid_is_latlong(fcinfo, lwgeom->srid);
+	srid_check_latlong(fcinfo, lwgeom->srid);
 
 	g_ser = gserialized_geography_from_lwgeom(lwgeom, geog_typmod);
 

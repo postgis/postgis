@@ -292,36 +292,68 @@ static xmlNodePtr get_xlink_node(xmlNodePtr xnode)
 }
 
 
+
 /**
- * Use Proj4 to reproject a given POINTARRAY
+ * Use Proj to reproject a given POINTARRAY
  */
+
+#if POSTGIS_PROJ_VERSION < 60
+
 static POINTARRAY* gml_reproject_pa(POINTARRAY *pa, int srid_in, int srid_out)
 {
-	projPJ in_pj, out_pj;
+	PJ pj;
 	char *text_in, *text_out;
 
 	if (srid_in == SRID_UNKNOWN) return pa; /* nothing to do */
 	if (srid_out == SRID_UNKNOWN) gml_lwpgerror("invalid GML representation", 3);
 
-	text_in = GetProj4StringSPI(srid_in);
-	text_out = GetProj4StringSPI(srid_out);
+	text_in = GetProjStringSPI(srid_in);
+	text_out = GetProjStringSPI(srid_out);
 
-	in_pj = lwproj_from_string(text_in);
-	out_pj = lwproj_from_string(text_out);
+	pj.pj_from = lwproj_from_string(text_in);
+	pj.pj_to = lwproj_from_string(text_out);
 
 	lwfree(text_in);
 	lwfree(text_out);
 
-	if ( ptarray_transform(pa, in_pj, out_pj) == LW_FAILURE )
+	if ( ptarray_transform(pa, &pj) == LW_FAILURE )
 	{
 		elog(ERROR, "gml_reproject_pa: reprojection failed");
 	}
 
-	pj_free(in_pj);
-	pj_free(out_pj);
+	pj_free(pj.pj_from);
+	pj_free(pj.pj_to);
 
 	return pa;
 }
+#else
+/*
+ * TODO: rework GML projection handling to skip the spatial_ref_sys
+ * lookups, and use the Proj 6+ EPSG catalogue and built-in SRID
+ * lookups directly. Drop this ugly hack.
+ */
+static POINTARRAY* gml_reproject_pa(POINTARRAY *pa, int srid_in, int srid_out)
+{
+	PJ *pj;
+	char text_in[32];
+	char text_out[32];
+
+	if (srid_in == SRID_UNKNOWN) return pa; /* nothing to do */
+	if (srid_out == SRID_UNKNOWN) gml_lwpgerror("invalid GML representation", 3);
+
+	snprintf(text_in, 32, "EPSG:%d", srid_in);
+	snprintf(text_out, 32, "EPSG:%d", srid_out);
+	pj = proj_create_crs_to_crs(NULL, text_in, text_out, NULL);
+
+	if (ptarray_transform(pa, pj) == LW_FAILURE)
+	{
+		elog(ERROR, "gml_reproject_pa: reprojection failed");
+	}
+	proj_destroy(pj);
+
+	return pa;
+}
+#endif /* POSTGIS_PROJ_VERSION */
 
 
 /**

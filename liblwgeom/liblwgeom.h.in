@@ -34,14 +34,24 @@
 #include <stdint.h>
 
 #include "../postgis_config.h"
-#include "proj_api.h"
 
-#if POSTGIS_PROJ_VERSION >= 49
-/* Enable new geodesic functions */
-#define PROJ_GEODESIC 1
+#if POSTGIS_PROJ_VERSION < 60
+#include "proj_api.h"
+typedef struct PJ
+{
+    projPJ pj_from;
+    projPJ pj_to;
+} PJ;
 #else
+#include "proj.h"
+#endif
+
+#if POSTGIS_PROJ_VERSION < 49
 /* Use the old (pre-2.2) geodesic functions */
-#define PROJ_GEODESIC 0
+#undef PROJ_GEODESIC
+#else
+/* Enable new geodesic functions API */
+#define PROJ_GEODESIC
 #endif
 
 /**
@@ -83,13 +93,13 @@ const char* lwgeom_version(void);
 /**
 * LWTYPE numbers, used internally by PostGIS
 */
-#define	POINTTYPE                1
-#define	LINETYPE                 2
-#define	POLYGONTYPE              3
-#define	MULTIPOINTTYPE           4
-#define	MULTILINETYPE            5
-#define	MULTIPOLYGONTYPE         6
-#define	COLLECTIONTYPE           7
+#define POINTTYPE                1
+#define LINETYPE                 2
+#define POLYGONTYPE              3
+#define MULTIPOINTTYPE           4
+#define MULTILINETYPE            5
+#define MULTIPOLYGONTYPE         6
+#define COLLECTIONTYPE           7
 #define CIRCSTRINGTYPE           8
 #define COMPOUNDTYPE             9
 #define CURVEPOLYTYPE           10
@@ -271,16 +281,16 @@ extern lwinterrupt_callback *lwgeom_register_interrupt_callback(lwinterrupt_call
 /******************************************************************/
 
 typedef struct {
-	double afac, bfac, cfac, dfac, efac, ffac, gfac, hfac, ifac, xoff, yoff, zoff;
+    double afac, bfac, cfac, dfac, efac, ffac, gfac, hfac, ifac, xoff, yoff, zoff;
 } AFFINE;
 
 /******************************************************************/
 
 typedef struct
 {
-	double xmin, ymin, zmin;
-	double xmax, ymax, zmax;
-	int32_t srid;
+    double xmin, ymin, zmin;
+    double xmax, ymax, zmax;
+    int32_t srid;
 }
 BOX3D;
 
@@ -292,15 +302,15 @@ BOX3D;
 */
 typedef struct
 {
-	uint8_t flags;
-	double xmin;
-	double xmax;
-	double ymin;
-	double ymax;
-	double zmin;
-	double zmax;
-	double mmin;
-	double mmax;
+    uint8_t flags;
+    double xmin;
+    double xmax;
+    double ymin;
+    double ymax;
+    double zmin;
+    double zmax;
+    double mmin;
+    double mmax;
 } GBOX;
 
 
@@ -314,13 +324,13 @@ typedef struct
 */
 typedef struct
 {
-	double	a;	/* semimajor axis */
-	double	b; 	/* semiminor axis b = (a - fa) */
-	double	f;	/* flattening f = (a-b)/a */
-	double	e;	/* eccentricity (first) */
-	double	e_sq;	/* eccentricity squared (first) e_sq = (a*a-b*b)/(a*a) */
-	double  radius;  /* spherical average radius = (2*a+b)/3 */
-	char	name[20];  /* name of ellipse */
+    double  a;  /* semimajor axis */
+    double  b;  /* semiminor axis b = (a - fa) */
+    double  f;  /* flattening f = (a-b)/a */
+    double  e;  /* eccentricity (first) */
+    double  e_sq;   /* eccentricity squared (first) e_sq = (a*a-b*b)/(a*a) */
+    double  radius;  /* spherical average radius = (2*a+b)/3 */
+    char    name[20];  /* name of ellipse */
 }
 SPHEROID;
 
@@ -329,31 +339,31 @@ SPHEROID;
 */
 typedef struct
 {
-	double x, y;
+    double x, y;
 }
 POINT2D;
 
 typedef struct
 {
-	double x, y, z;
+    double x, y, z;
 }
 POINT3DZ;
 
 typedef struct
 {
-	double x, y, z;
+    double x, y, z;
 }
 POINT3D;
 
 typedef struct
 {
-	double x, y, m;
+    double x, y, m;
 }
 POINT3DM;
 
 typedef struct
 {
-	double x, y, z, m;
+    double x, y, z, m;
 }
 POINT4D;
 
@@ -366,14 +376,14 @@ POINT4D;
 */
 typedef struct
 {
-	/* Array of POINT 2D, 3D or 4D, possibly misaligned. */
-	uint8_t *serialized_pointlist;
+    /* Array of POINT 2D, 3D or 4D, possibly misaligned. */
+    uint8_t *serialized_pointlist;
 
-	/* Use FLAGS_* macros to handle */
-	uint8_t  flags;
+    /* Use FLAGS_* macros to handle */
+    uint8_t  flags;
 
-	uint32_t npoints;   /* how many points we are currently storing */
-	uint32_t maxpoints; /* how many points we have space for in serialized_pointlist */
+    uint32_t npoints;   /* how many points we are currently storing */
+    uint32_t maxpoints; /* how many points we have space for in serialized_pointlist */
 }
 POINTARRAY;
 
@@ -382,10 +392,10 @@ POINTARRAY;
 */
 typedef struct
 {
-	uint32_t size; /* For PgSQL use only, use VAR* macros to manipulate. */
-	uint8_t srid[3]; /* 24 bits of SRID */
-	uint8_t flags; /* HasZ, HasM, HasBBox, IsGeodetic, IsReadOnly */
-	uint8_t data[1]; /* See gserialized.txt */
+    uint32_t size; /* For PgSQL use only, use VAR* macros to manipulate. */
+    uint8_t srid[3]; /* 24 bits of SRID */
+    uint8_t flags; /* HasZ, HasM, HasBBox, IsGeodetic, IsReadOnly */
+    uint8_t data[1]; /* See gserialized.txt */
 } GSERIALIZED;
 
 
@@ -397,198 +407,198 @@ typedef struct
 */
 typedef struct
 {
-	uint8_t type;
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	void *data;
+    uint8_t type;
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    void *data;
 }
 LWGEOM;
 
 /* POINTYPE */
 typedef struct
 {
-	uint8_t type; /* POINTTYPE */
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	POINTARRAY *point;  /* hide 2d/3d (this will be an array of 1 point) */
+    uint8_t type; /* POINTTYPE */
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    POINTARRAY *point;  /* hide 2d/3d (this will be an array of 1 point) */
 }
 LWPOINT; /* "light-weight point" */
 
 /* LINETYPE */
 typedef struct
 {
-	uint8_t type; /* LINETYPE */
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	POINTARRAY *points; /* array of POINT3D */
+    uint8_t type; /* LINETYPE */
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    POINTARRAY *points; /* array of POINT3D */
 }
 LWLINE; /* "light-weight line" */
 
 /* TRIANGLE */
 typedef struct
 {
-	uint8_t type;
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	POINTARRAY *points;
+    uint8_t type;
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    POINTARRAY *points;
 }
 LWTRIANGLE;
 
 /* CIRCSTRINGTYPE */
 typedef struct
 {
-	uint8_t type; /* CIRCSTRINGTYPE */
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	POINTARRAY *points; /* array of POINT(3D/3DM) */
+    uint8_t type; /* CIRCSTRINGTYPE */
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    POINTARRAY *points; /* array of POINT(3D/3DM) */
 }
 LWCIRCSTRING; /* "light-weight circularstring" */
 
 /* POLYGONTYPE */
 typedef struct
 {
-	uint8_t type; /* POLYGONTYPE */
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	uint32_t nrings;   /* how many rings we are currently storing */
-	uint32_t maxrings; /* how many rings we have space for in **rings */
-	POINTARRAY **rings; /* list of rings (list of points) */
+    uint8_t type; /* POLYGONTYPE */
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    uint32_t nrings;   /* how many rings we are currently storing */
+    uint32_t maxrings; /* how many rings we have space for in **rings */
+    POINTARRAY **rings; /* list of rings (list of points) */
 }
 LWPOLY; /* "light-weight polygon" */
 
 /* MULTIPOINTTYPE */
 typedef struct
 {
-	uint8_t type;
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	uint32_t ngeoms;   /* how many geometries we are currently storing */
-	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-	LWPOINT **geoms;
+    uint8_t type;
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    uint32_t ngeoms;   /* how many geometries we are currently storing */
+    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
+    LWPOINT **geoms;
 }
 LWMPOINT;
 
 /* MULTILINETYPE */
 typedef struct
 {
-	uint8_t type;
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	uint32_t ngeoms;   /* how many geometries we are currently storing */
-	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-	LWLINE **geoms;
+    uint8_t type;
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    uint32_t ngeoms;   /* how many geometries we are currently storing */
+    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
+    LWLINE **geoms;
 }
 LWMLINE;
 
 /* MULTIPOLYGONTYPE */
 typedef struct
 {
-	uint8_t type;
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	uint32_t ngeoms;   /* how many geometries we are currently storing */
-	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-	LWPOLY **geoms;
+    uint8_t type;
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    uint32_t ngeoms;   /* how many geometries we are currently storing */
+    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
+    LWPOLY **geoms;
 }
 LWMPOLY;
 
 /* COLLECTIONTYPE */
 typedef struct
 {
-	uint8_t type;
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	uint32_t ngeoms;   /* how many geometries we are currently storing */
-	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-	LWGEOM **geoms;
+    uint8_t type;
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    uint32_t ngeoms;   /* how many geometries we are currently storing */
+    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
+    LWGEOM **geoms;
 }
 LWCOLLECTION;
 
 /* COMPOUNDTYPE */
 typedef struct
 {
-	uint8_t type; /* COMPOUNDTYPE */
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	uint32_t ngeoms;   /* how many geometries we are currently storing */
-	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-	LWGEOM **geoms;
+    uint8_t type; /* COMPOUNDTYPE */
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    uint32_t ngeoms;   /* how many geometries we are currently storing */
+    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
+    LWGEOM **geoms;
 }
 LWCOMPOUND; /* "light-weight compound line" */
 
 /* CURVEPOLYTYPE */
 typedef struct
 {
-	uint8_t type; /* CURVEPOLYTYPE */
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	uint32_t nrings;    /* how many rings we are currently storing */
-	uint32_t maxrings;  /* how many rings we have space for in **rings */
-	LWGEOM **rings; /* list of rings (list of points) */
+    uint8_t type; /* CURVEPOLYTYPE */
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    uint32_t nrings;    /* how many rings we are currently storing */
+    uint32_t maxrings;  /* how many rings we have space for in **rings */
+    LWGEOM **rings; /* list of rings (list of points) */
 }
 LWCURVEPOLY; /* "light-weight polygon" */
 
 /* MULTICURVE */
 typedef struct
 {
-	uint8_t type;
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	uint32_t ngeoms;   /* how many geometries we are currently storing */
-	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-	LWGEOM **geoms;
+    uint8_t type;
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    uint32_t ngeoms;   /* how many geometries we are currently storing */
+    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
+    LWGEOM **geoms;
 }
 LWMCURVE;
 
 /* MULTISURFACETYPE */
 typedef struct
 {
-	uint8_t type;
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	uint32_t ngeoms;   /* how many geometries we are currently storing */
-	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-	LWGEOM **geoms;
+    uint8_t type;
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    uint32_t ngeoms;   /* how many geometries we are currently storing */
+    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
+    LWGEOM **geoms;
 }
 LWMSURFACE;
 
 /* POLYHEDRALSURFACETYPE */
 typedef struct
 {
-	uint8_t type;
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	uint32_t ngeoms;   /* how many geometries we are currently storing */
-	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-	LWPOLY **geoms;
+    uint8_t type;
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    uint32_t ngeoms;   /* how many geometries we are currently storing */
+    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
+    LWPOLY **geoms;
 }
 LWPSURFACE;
 
 /* TINTYPE */
 typedef struct
 {
-	uint8_t type;
-	uint8_t flags;
-	GBOX *bbox;
-	int32_t srid;
-	uint32_t ngeoms;   /* how many geometries we are currently storing */
-	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-	LWTRIANGLE **geoms;
+    uint8_t type;
+    uint8_t flags;
+    GBOX *bbox;
+    int32_t srid;
+    uint32_t ngeoms;   /* how many geometries we are currently storing */
+    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
+    LWTRIANGLE **geoms;
 }
 LWTIN;
 
@@ -929,7 +939,7 @@ extern POINTARRAY *ptarray_addPoint(const POINTARRAY *pa, uint8_t *p, size_t pdi
 
 /**
  * @brief Remove a point from a pointarray.
- * 	@param which -  is the offset (starting at 0)
+ *  @param which -  is the offset (starting at 0)
  * @return #POINTARRAY is newly allocated
  */
 extern POINTARRAY *ptarray_removePoint(POINTARRAY *pa, uint32_t where);
@@ -1615,8 +1625,8 @@ extern double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s);
 extern int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2);
 
 typedef struct {
-	POINT2D* center;
-	double radius;
+    POINT2D* center;
+    double radius;
 } LWBOUNDINGCIRCLE;
 
 extern void lwboundingcircle_destroy(LWBOUNDINGCIRCLE* c);
@@ -1971,7 +1981,7 @@ extern int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *gbox);
 #define LW_PARSER_CHECK_ZCLOSURE   8
 
 #define LW_PARSER_CHECK_NONE   0
-#define LW_PARSER_CHECK_ALL	(LW_PARSER_CHECK_MINPOINTS | LW_PARSER_CHECK_ODD | LW_PARSER_CHECK_CLOSURE)
+#define LW_PARSER_CHECK_ALL (LW_PARSER_CHECK_MINPOINTS | LW_PARSER_CHECK_ODD | LW_PARSER_CHECK_CLOSURE)
 
 /**
  * Parser result structure: returns the result of attempting to convert
@@ -1979,14 +1989,14 @@ extern int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *gbox);
  */
 typedef struct struct_lwgeom_parser_result
 {
-	const char *wkinput;        /* Copy of pointer to input WKT/WKB */
-	uint8_t *serialized_lwgeom; /* Pointer to serialized LWGEOM */
-	size_t size;                /* Size of serialized LWGEOM in bytes */
-	LWGEOM *geom;               /* Pointer to LWGEOM struct */
-	const char *message;        /* Error/warning message */
-	int errcode;                /* Error/warning number */
-	int errlocation;            /* Location of error */
-	int parser_check_flags;     /* Bitmask of validity checks run during this parse */
+    const char *wkinput;        /* Copy of pointer to input WKT/WKB */
+    uint8_t *serialized_lwgeom; /* Pointer to serialized LWGEOM */
+    size_t size;                /* Size of serialized LWGEOM in bytes */
+    LWGEOM *geom;               /* Pointer to LWGEOM struct */
+    const char *message;        /* Error/warning message */
+    int errcode;                /* Error/warning number */
+    int errlocation;            /* Location of error */
+    int parser_check_flags;     /* Bitmask of validity checks run during this parse */
 }
 LWGEOM_PARSER_RESULT;
 
@@ -2011,20 +2021,20 @@ LWGEOM_PARSER_RESULT;
  */
 typedef struct struct_lwgeom_unparser_result
 {
-	uint8_t *serialized_lwgeom;	/* Copy of pointer to input serialized LWGEOM */
-	char *wkoutput;			/* Pointer to WKT or WKB output */
-	size_t size;			/* Size of serialized LWGEOM in bytes */
-	const char *message;		/* Error/warning message */
-	int errlocation;		/* Location of error */
+    uint8_t *serialized_lwgeom; /* Copy of pointer to input serialized LWGEOM */
+    char *wkoutput;         /* Pointer to WKT or WKB output */
+    size_t size;            /* Size of serialized LWGEOM in bytes */
+    const char *message;        /* Error/warning message */
+    int errlocation;        /* Location of error */
 }
 LWGEOM_UNPARSER_RESULT;
 
 /*
  * Unparser error messages (these must match the message array in lwgunparse.c)
  */
-#define UNPARSER_ERROR_MOREPOINTS 	1
-#define UNPARSER_ERROR_ODDPOINTS	2
-#define UNPARSER_ERROR_UNCLOSED		3
+#define UNPARSER_ERROR_MOREPOINTS   1
+#define UNPARSER_ERROR_ODDPOINTS    2
+#define UNPARSER_ERROR_UNCLOSED     3
 
 
 /*
@@ -2168,27 +2178,27 @@ LWGEOM *lwgeom_unstroke(const LWGEOM *geom);
  * lwcurve_linearize
  */
 typedef enum {
-	/**
-	 * Tolerance expresses the number of segments to use
-	 * for each quarter of circle (quadrant). Must be
-	 * an integer.
-	 */
-	LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD = 0,
-	/**
-	 * Tolerance expresses the maximum distance between
-	 * an arbitrary point on the curve and the closest
-	 * point to it on the resulting approximation, in
-	 * cartesian units.
-	 */
-	LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION = 1,
-	/**
-	 * Tolerance expresses the maximum angle between
-	 * the radii generating approximation line vertices,
-	 * given in radiuses. A value of 1 would result
-	 * in an approximation of a semicircle composed by
-	 * 180 segments
-	 */
-	LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE = 2
+    /**
+     * Tolerance expresses the number of segments to use
+     * for each quarter of circle (quadrant). Must be
+     * an integer.
+     */
+    LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD = 0,
+    /**
+     * Tolerance expresses the maximum distance between
+     * an arbitrary point on the curve and the closest
+     * point to it on the resulting approximation, in
+     * cartesian units.
+     */
+    LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION = 1,
+    /**
+     * Tolerance expresses the maximum angle between
+     * the radii generating approximation line vertices,
+     * given in radiuses. A value of 1 would result
+     * in an approximation of a semicircle composed by
+     * 180 segments
+     */
+    LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE = 2
 } LW_LINEARIZE_TOLERANCE_TYPE;
 
 typedef enum {
@@ -2197,7 +2207,7 @@ typedef enum {
    * vertices would be the same no matter the order
    * of the points defining the input curve.
    */
-	LW_LINEARIZE_FLAG_SYMMETRIC = 1 << 0,
+    LW_LINEARIZE_FLAG_SYMMETRIC = 1 << 0,
 
   /**
    * Retain angle instructs the engine to try its best
@@ -2217,7 +2227,7 @@ typedef enum {
    * instead be smaller (shorter) than the others.
    *
    */
-	LW_LINEARIZE_FLAG_RETAIN_ANGLE = 1 << 1
+    LW_LINEARIZE_FLAG_RETAIN_ANGLE = 1 << 1
 } LW_LINEARIZE_FLAGS;
 
 /**
@@ -2296,6 +2306,9 @@ int lwgeom_is_simple(const LWGEOM *lwgeom);
  * PROJ4-dependent extra functions on LWGEOM
  ******************************************************************************/
 
+int lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr);
+
+#if POSTGIS_PROJ_VERSION < 60
 /**
  * Get a projection from a string representation
  *
@@ -2303,14 +2316,14 @@ int lwgeom_is_simple(const LWGEOM *lwgeom);
  */
 projPJ lwproj_from_string(const char* txt);
 
+#endif
 /**
  * Transform (reproject) a geometry in-place.
  * @param geom the geometry to transform
- * @param inpj the input (or current, or source) projection
- * @param outpj the output (or destination) projection
+ * @param PJ the input and output
  */
-int lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj);
-int ptarray_transform(POINTARRAY *pa, projPJ inpj, projPJ outpj);
+int lwgeom_transform(LWGEOM *geom, PJ* pj);
+int ptarray_transform(POINTARRAY *pa, PJ* pj);
 
 
 /*******************************************************************************

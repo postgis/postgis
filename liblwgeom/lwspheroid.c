@@ -28,8 +28,8 @@
 #include "lwgeodetic.h"
 #include "lwgeom_log.h"
 
-/* GeographicLib */
-#if PROJ_GEODESIC
+/* In proj4.9, GeographicLib is in special header */
+#ifdef PROJ_GEODESIC
 #include <geodesic.h>
 #endif
 
@@ -45,7 +45,7 @@ void spheroid_init(SPHEROID *s, double a, double b)
 	s->radius = (2.0 * a + b ) / 3.0;
 }
 
-#if ! PROJ_GEODESIC
+#ifndef PROJ_GEODESIC
 static double spheroid_mu2(double alpha, const SPHEROID *s)
 {
 	double b2 = POW2(s->b);
@@ -64,7 +64,7 @@ static double spheroid_big_b(double u2)
 #endif /* ! PROJ_GEODESIC */
 
 
-#if PROJ_GEODESIC
+#ifdef PROJ_GEODESIC
 
 /**
 * Computes the shortest distance along the surface of the spheroid
@@ -165,7 +165,7 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 	return fabs(area);
 }
 
-/* Above use GeographicLib */
+/* Above use Proj GeographicLib */
 #else /* ! PROJ_GEODESIC */
 /* Below use pre-version 2.2 geodesic functions */
 

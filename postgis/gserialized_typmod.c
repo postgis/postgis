@@ -294,7 +294,7 @@ Datum geography_typmod_in(PG_FUNCTION_ARGS)
 	int32 typmod = gserialized_typmod_in(arr, LW_TRUE);
 	int srid = TYPMOD_GET_SRID(typmod);
 	/* Check the SRID is legal (geographic coordinates) */
-	srid_is_latlong(fcinfo, srid);
+	srid_check_latlong(fcinfo, srid);
 
 	PG_RETURN_INT32(typmod);
 }

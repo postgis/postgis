@@ -39,7 +39,7 @@
 #include "geography_measurement_trees.h" /* For circ_tree caching */
 #include "lwgeom_transform.h" /* For SRID functions */
 
-#if PROJ_GEODESIC
+#ifdef PROJ_GEODESIC
 /* round to 10 nm precision */
 #define INVMINDIST 1.0e8
 #else
@@ -531,7 +531,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	else
 		lwgeom_calculate_gbox_geodetic(lwgeom, &gbox);
 
-#if ! PROJ_GEODESIC
+#ifndef PROJ_GEODESIC
 	/* Test for cases that are currently not handled by spheroid code */
 	if ( use_spheroid )
 	{
@@ -542,7 +542,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 		if ( gbox.zmax > 0.0 && gbox.zmin < 0.0 )
 			use_spheroid = LW_FALSE;
 	}
-#endif /* if ! PROJ_GEODESIC */
+#endif /* ifndef PROJ_GEODESIC */
 
 	/* User requests spherical calculation, turn our spheroid into a sphere */
 	if ( ! use_spheroid )
