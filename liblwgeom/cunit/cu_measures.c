@@ -33,7 +33,8 @@ static LWGEOM* lwgeom_from_text(const char *str)
 #define DIST2DTEST(str1, str2, res) \
 	do_test_mindistance_tolerance(str1, str2, res, __LINE__, lwgeom_mindistance2d_tolerance)
 #define DIST3DTEST(str1, str2, res) \
-	do_test_mindistance_tolerance(str1, str2, res, __LINE__, lwgeom_mindistance3d_tolerance)
+	do_test_mindistance_tolerance(str1, str2, res, __LINE__, lwgeom_mindistance3d_tolerance);\
+	do_test_mindistance_tolerance(str2, str1, res, __LINE__, lwgeom_mindistance3d_tolerance)
 
 static void
 do_test_mindistance_tolerance(char *in1,
@@ -249,6 +250,7 @@ test_mindistance3d_tolerance(void)
 	/* This is an invalid polygon since it defines just a line */
 	DIST3DTEST("LINESTRING(1 1 1, 2 2 2)", "POLYGON((0 0 0, 2 2 2, 3 3 3, 0 0 0))", 0);
 	DIST3DTEST("TRIANGLE((1 1 1, 2 2 2, 3 3 3, 1 1 1))", "POLYGON((0 0 0, 2 2 2, 3 3 3, 0 0 0))", 0);
+	DIST3DTEST("POLYGON((0 0 0, 2 2 2, 3 3 3, 0 0 0))", "TRIANGLE((1 1 1, 2 2 2, 3 3 3, 1 1 1))", 0);
 	DIST3DTEST("TRIANGLE((0 0 0, 2 2 2, 3 3 3, 0 0 0))", "LINESTRING(1 1 1, 2 2 2)", 0);
 
 	/* A box in a box: two solids, one inside another */
