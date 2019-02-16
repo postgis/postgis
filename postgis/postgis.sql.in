@@ -4190,7 +4190,7 @@ CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry, float8)
 -- PostGIS equivalent function: intersects(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION _ST_Intersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'MODULE_PATHNAME','intersects'
+	AS 'MODULE_PATHNAME','ST_Intersects'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
 

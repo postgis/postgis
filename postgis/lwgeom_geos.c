@@ -70,7 +70,7 @@ Datum relate_full(PG_FUNCTION_ARGS);
 Datum relate_pattern(PG_FUNCTION_ARGS);
 Datum disjoint(PG_FUNCTION_ARGS);
 Datum touches(PG_FUNCTION_ARGS);
-Datum geos_intersects(PG_FUNCTION_ARGS);
+Datum ST_Intersects(PG_FUNCTION_ARGS);
 Datum crosses(PG_FUNCTION_ARGS);
 Datum contains(PG_FUNCTION_ARGS);
 Datum containsproperly(PG_FUNCTION_ARGS);
@@ -2126,8 +2126,8 @@ Datum crosses(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-PG_FUNCTION_INFO_V1(geos_intersects);
-Datum geos_intersects(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_Intersects);
+Datum ST_Intersects(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
@@ -2152,9 +2152,7 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 	        gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
-		{
 			PG_RETURN_BOOL(false);
-		}
 	}
 
 	/*

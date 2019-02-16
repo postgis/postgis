@@ -998,7 +998,7 @@ CREATE OR REPLACE FUNCTION getbbox(geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION intersects(geometry,geometry)
 	RETURNS boolean
-	AS 'MODULE_PATHNAME'
+	AS 'MODULE_PATHNAME','ST_Intersects'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3

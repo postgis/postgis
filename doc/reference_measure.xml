@@ -3437,7 +3437,7 @@ FROM test;
 
 			<refpurpose>Returns TRUE if the Geometries/Geography "spatially
 			intersect in 2D" - (share any portion of space) and FALSE if they don't (they are Disjoint).
-			For geography -- tolerance is 0.00001 meters (so any points that close are considered to intersect)
+			For geography tolerance is 0.00001 meters (so any points that close are considered to intersect)
 			</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
@@ -3470,10 +3470,12 @@ FROM test;
 			<title>Description</title>
 			<para>If a geometry or geography shares any portion of space then they intersect.
 			For geography -- tolerance is 0.00001 meters (so any points that are close are considered to intersect)</para>
-			<para>Overlaps, Touches, Within all imply spatial intersection.  If any of the aforementioned
+			<para>ST_Overlaps, ST_Touches, ST_Within all imply spatial intersection.
+			  If any of the aforementioned
 				returns true, then the geometries also spatially intersect.
 				Disjoint implies false for spatial intersection.</para>
 
+			<para>Changed: 3.0.0 SFCGAL version removed.</para>
 			<para>Enhanced: 2.5.0 Supports GEOMETRYCOLLECTION.</para>
 			<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 			<para>Performed by the GEOS module (for geometry), geography is native</para>
@@ -3514,8 +3516,8 @@ SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry
 		<refsection>
 		<title>Geography Examples</title>
 <programlisting>SELECT ST_Intersects(
-		ST_GeographyFromText('SRID=4326;LINESTRING(-43.23456 72.4567,-43.23456 72.4568)'),
-		ST_GeographyFromText('SRID=4326;POINT(-43.23456 72.4567772)')
+		'SRID=4326;LINESTRING(-43.23456 72.4567,-43.23456 72.4568)'::geography,
+		'SRID=4326;POINT(-43.23456 72.4567772)'::geography
 		);
 
  st_intersects

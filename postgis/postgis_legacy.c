@@ -62,3 +62,5 @@ POSTGIS_DEPRECATE("3.0.0", intersection);
 POSTGIS_DEPRECATE("3.0.0", geos_intersection);
 POSTGIS_DEPRECATE("3.0.0", difference);
 POSTGIS_DEPRECATE("3.0.0", geos_difference);
+POSTGIS_DEPRECATE("3.0.0", geos_intersects);
+POSTGIS_DEPRECATE("3.0.0", sfcgal_intersects);
