@@ -38,12 +38,13 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <float.h>
+#include <math.h>
 
 #if HAVE_IEEEFP_H
 #include <ieeefp.h>
 #endif
-
-#include <float.h>
 
 #include "liblwgeom.h"
 
@@ -351,7 +352,7 @@ char lwcircstring_same(const LWCIRCSTRING *p1, const LWCIRCSTRING *p2);
 /*
 * Transform
 */
-int point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj);
+int point4d_transform(POINT4D *pt, PJ* pj);
 
 /*
 * Shift
@@ -488,5 +489,6 @@ int ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox);
 int gbox_contains_point2d(const GBOX *g, const POINT2D *p);
 int lwpoly_contains_point(const LWPOLY *poly, const POINT2D *pt);
 POINT4D* lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_empty);
+char* lwstrdup(const char* a);
 
 #endif /* _LIBLWGEOM_INTERNAL_H */

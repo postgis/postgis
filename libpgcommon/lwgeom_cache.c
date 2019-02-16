@@ -77,35 +77,36 @@ GetGenericCacheCollection(FunctionCallInfo fcinfo)
 
 
 /**
-* Get the Proj4 entry from the generic cache if one exists.
+* Get the Proj entry from the generic cache if one exists.
 * If it doesn't exist, make a new empty one and return it.
 */
-PROJ4PortalCache *
-GetPROJ4SRSCache(FunctionCallInfo fcinfo)
+PROJPortalCache *
+GetPROJSRSCache(FunctionCallInfo fcinfo)
 {
 	GenericCacheCollection* generic_cache = GetGenericCacheCollection(fcinfo);
-	PROJ4PortalCache* cache = (PROJ4PortalCache*)(generic_cache->entry[PROJ_CACHE_ENTRY]);
+	PROJPortalCache* cache = (PROJPortalCache*)(generic_cache->entry[PROJ_CACHE_ENTRY]);
 
 	if ( ! cache )
 	{
 		/* Allocate in the upper context */
-		cache = MemoryContextAlloc(FIContext(fcinfo), sizeof(PROJ4PortalCache));
+		cache = MemoryContextAlloc(FIContext(fcinfo), sizeof(PROJPortalCache));
 
 		if (cache)
 		{
 			int i;
 
-			POSTGIS_DEBUGF(3, "Allocating PROJ4Cache for portal with transform() MemoryContext %p", FIContext(fcinfo));
+			POSTGIS_DEBUGF(3, "Allocating PROJCache for portal with transform() MemoryContext %p", FIContext(fcinfo));
 			/* Put in any required defaults */
-			for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
+			for (i = 0; i < PROJ_CACHE_ITEMS; i++)
 			{
-				cache->PROJ4SRSCache[i].srid = SRID_UNKNOWN;
-				cache->PROJ4SRSCache[i].projection = NULL;
-				cache->PROJ4SRSCache[i].projection_mcxt = NULL;
+				cache->PROJSRSCache[i].srid_from = SRID_UNKNOWN;
+				cache->PROJSRSCache[i].srid_to = SRID_UNKNOWN;
+				cache->PROJSRSCache[i].projection = NULL;
+				cache->PROJSRSCache[i].projection_mcxt = NULL;
 			}
 			cache->type = PROJ_CACHE_ENTRY;
-			cache->PROJ4SRSCacheCount = 0;
-			cache->PROJ4SRSCacheContext = FIContext(fcinfo);
+			cache->PROJSRSCacheCount = 0;
+			cache->PROJSRSCacheContext = FIContext(fcinfo);
 
 			/* Store the pointer in GenericCache */
 			generic_cache->entry[PROJ_CACHE_ENTRY] = (GenericCache*)cache;

@@ -62,31 +62,32 @@ typedef struct {
 * fcinfo->flinfo->fn_extra to avoid collisions.
 */
 
-/* An entry in the PROJ4 SRS cache */
-typedef struct struct_PROJ4SRSCacheItem
+/* An entry in the PROJ SRS cache */
+typedef struct struct_PROJSRSCacheItem
 {
-	int srid;
-	projPJ projection;
+	int srid_from;
+	int srid_to;
+	PJ* projection;
 	MemoryContext projection_mcxt;
 }
-PROJ4SRSCacheItem;
+PROJSRSCacheItem;
 
 /* PROJ 4 lookup transaction cache methods */
-#define PROJ4_CACHE_ITEMS	8
+#define PROJ_CACHE_ITEMS	8
 
 /*
 * The proj4 cache holds a fixed number of reprojection
 * entries. In normal usage we don't expect it to have
 * many entries, so we always linearly scan the list.
 */
-typedef struct struct_PROJ4PortalCache
+typedef struct struct_PROJPortalCache
 {
 	int type;
-	PROJ4SRSCacheItem PROJ4SRSCache[PROJ4_CACHE_ITEMS];
-	int PROJ4SRSCacheCount;
-	MemoryContext PROJ4SRSCacheContext;
+	PROJSRSCacheItem PROJSRSCache[PROJ_CACHE_ITEMS];
+	int PROJSRSCacheCount;
+	MemoryContext PROJSRSCacheContext;
 }
-PROJ4PortalCache;
+PROJPortalCache;
 
 /**
 * Generic signature for functions to manage a geometry
@@ -103,7 +104,7 @@ typedef struct
 /*
 * Cache retrieval functions
 */
-PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfo fcinfo);
+PROJPortalCache *GetPROJSRSCache(FunctionCallInfo fcinfo);
 GeomCache *GetGeomCache(FunctionCallInfo fcinfo,
 			const GeomCacheMethods *cache_methods,
 			const GSERIALIZED *g1,

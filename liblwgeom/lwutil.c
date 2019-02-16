@@ -244,6 +244,15 @@ lwfree(void *mem)
 	lwfree_var(mem);
 }
 
+char *
+lwstrdup(const char* a)
+{
+	size_t l = strlen(a)+1;
+	char *b = lwalloc(l);
+	strncpy(b, a, l);
+	return b;
+}
+
 /*
  * Returns a new string which contains a maximum of maxlength characters starting
  * from startpos and finishing at endpos (0-based indexing). If the string is
