@@ -71,7 +71,8 @@ PostGIS 3.0.0
   - #4313, #4307, PostgreSQL 12 compatibility (Laurenz Albe, Raúl Marín)
   - #4299, #4304, ST_GeneratePoints is now VOLATILE. IMMUTABLE version with 
            seed parameter added. (Mike Taves)
-
+  - #4278, ST_3DDistance and ST_3DIntersects now support Solid TIN and Solid
+           POLYHEDRALSURFACE
 
 PostGIS 2.5.0
 2018/09/23

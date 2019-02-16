@@ -285,12 +285,6 @@ lwpoint_set_ordinate(POINT4D *p, char ordinate, double value)
 		return;
 	}
 
-	if (!(ordinate == 'X' || ordinate == 'Y' || ordinate == 'Z' || ordinate == 'M'))
-	{
-		lwerror("Cannot set %c ordinate.", ordinate);
-		return;
-	}
-
 	switch ( ordinate )
 	{
 	case 'X':
@@ -306,6 +300,8 @@ lwpoint_set_ordinate(POINT4D *p, char ordinate, double value)
 		p->m = value;
 		return;
 	}
+	lwerror("Cannot set %c ordinate.", ordinate);
+	return;
 }
 
 /**
@@ -345,11 +341,10 @@ point_interpolate(const POINT4D *p1,
 	}
 #endif
 
-	proportion = fabs((interpolation_value - p1_value) / (p2_value - p1_value));
+	proportion = (interpolation_value - p1_value) / (p2_value - p1_value);
 
 	for (i = 0; i < 4; i++)
 	{
-		double newordinate = 0.0;
 		if (dims[i] == 'Z' && !hasz)
 			continue;
 		if (dims[i] == 'M' && !hasm)
@@ -358,6 +353,7 @@ point_interpolate(const POINT4D *p1,
 			lwpoint_set_ordinate(p, dims[i], interpolation_value);
 		else
 		{
+			double newordinate = 0.0;
 			p1_value = lwpoint_get_ordinate(p1, dims[i]);
 			p2_value = lwpoint_get_ordinate(p2, dims[i]);
 			newordinate = p1_value + proportion * (p2_value - p1_value);
@@ -478,7 +474,7 @@ ptarray_clamp_to_ordinate_range(const POINTARRAY *ipa, char ordinate, double fro
 		{
 			ptarray_append_point(opa, &p2, LW_FALSE);
 		}
-		else if (p1out == p2out && p1out != 0) /* both invisible */
+		else if (p1out == p2out && p1out != 0) /* both invisible on the same side */
 		{
 			/* skip */
 		}
@@ -728,16 +724,12 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 static inline LWCOLLECTION *
 lwpoly_clip_to_ordinate_range(const LWPOLY *poly, char ordinate, double from, double to)
 {
-	LWCOLLECTION *lwgeom_out = NULL;
-	uint32_t i, nrings;
+	assert(poly);
 	char hasz = FLAGS_GET_Z(poly->flags), hasm = FLAGS_GET_M(poly->flags);
 	LWPOLY *poly_res = lwpoly_construct_empty(poly->srid, hasz, hasm);
+	LWCOLLECTION *lwgeom_out = lwcollection_construct_empty(MULTIPOLYGONTYPE, poly->srid, hasz, hasm);
 
-	assert(poly);
-	lwgeom_out = lwcollection_construct_empty(MULTIPOLYGONTYPE, poly->srid, hasz, hasm);
-
-	nrings = poly->nrings;
-	for (i = 0; i < nrings; i++)
+	for (uint32_t i = 0; i < poly->nrings; i++)
 	{
 		/* Ret number of points */
 		POINTARRAY *pa = ptarray_clamp_to_ordinate_range(poly->rings[i], ordinate, from, to, LW_TRUE);
@@ -751,7 +743,10 @@ lwpoly_clip_to_ordinate_range(const LWPOLY *poly, char ordinate, double from, do
 				break;
 		}
 	}
-	lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, (LWGEOM *)poly_res);
+	if (poly_res->nrings > 0)
+		lwgeom_out = lwcollection_add_lwgeom(lwgeom_out, (LWGEOM *)poly_res);
+	else
+		lwpoly_free(poly_res);
 
 	return lwgeom_out;
 }
@@ -762,12 +757,9 @@ lwpoly_clip_to_ordinate_range(const LWPOLY *poly, char ordinate, double from, do
 static inline LWCOLLECTION *
 lwtriangle_clip_to_ordinate_range(const LWTRIANGLE *tri, char ordinate, double from, double to)
 {
-	LWCOLLECTION *lwgeom_out = NULL;
-	char hasz = FLAGS_GET_Z(tri->flags), hasm = FLAGS_GET_M(tri->flags);
-
 	assert(tri);
-	lwgeom_out = lwcollection_construct_empty(TINTYPE, tri->srid, hasz, hasm);
-
+	char hasz = FLAGS_GET_Z(tri->flags), hasm = FLAGS_GET_M(tri->flags);
+	LWCOLLECTION *lwgeom_out = lwcollection_construct_empty(TINTYPE, tri->srid, hasz, hasm);
 	POINTARRAY *pa = ptarray_clamp_to_ordinate_range(tri->points, ordinate, from, to, LW_TRUE);
 
 	if (pa->npoints >= 4)
@@ -870,6 +862,7 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
+	case POLYHEDRALSURFACETYPE:
 		out_col = lwcollection_clip_to_ordinate_range((LWCOLLECTION *)lwin, ordinate, from, to);
 		break;
 	default:

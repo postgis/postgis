@@ -274,3 +274,11 @@ select 'spheroidLength1', round(ST_LengthSpheroid('MULTILINESTRING((-118.584 38.
 
 select 'length2d_spheroid', ST_Length2DSpheroid('LINESTRING(0 0 0, 0 0 100)'::geometry, 'SPHEROID["GRS_1980",6378137,298.257222101]');
 select 'length_spheroid', ST_LengthSpheroid('LINESTRING(0 0 0, 0 0 100)'::geometry, 'SPHEROID["GRS_1980",6378137,298.257222101]');
+
+
+-- Solid intersects solid when contains it
+select '#4278.1', ST_3DIntersects('BOX3D(0 0 0, 1 1 1)'::box3d::geometry, 'BOX3D(-1 -1 -1, 2 2 2)'::box3d::geometry);
+select '#4278.2', ST_3DDistance('BOX3D(0 0 0, 1 1 1)'::box3d::geometry, 'BOX3D(-1 -1 -1, 2 2 2)'::box3d::geometry);
+-- cast to text and back as a way of getting rid of solid flag
+select '#4278.3', ST_3DIntersects('BOX3D(0 0 0, 1 1 1)'::box3d::geometry::text::geometry, 'BOX3D(-1 -1 -1, 2 2 2)'::box3d::geometry::text::geometry);
+select '#4278.4', ST_3DDistance('BOX3D(0 0 0, 1 1 1)'::box3d::geometry::text::geometry, 'BOX3D(-1 -1 -1, 2 2 2)'::box3d::geometry::text::geometry);
