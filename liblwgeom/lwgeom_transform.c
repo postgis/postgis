@@ -288,6 +288,32 @@ lwgeom_transform(LWGEOM* geom, PJ* pj)
 	return LW_SUCCESS;
 }
 
+static int
+proj_crs_is_swapped(const PJ* pj_crs)
+{
+	PJ *pj_cs = proj_crs_get_coordinate_system(NULL, pj_crs);
+	int axis_count = proj_cs_get_axis_count(NULL, pj_cs);
+	if (axis_count > 0)
+	{
+		const char *out_name, *out_abbrev, *out_direction;
+		double out_unit_conv_factor;
+		const char *out_unit_name, *out_unit_auth_name, *out_unit_code;
+		/* Read only first axis, see if it is degrees / north */
+		proj_cs_get_axis_info(NULL, pj_cs, 0,
+			&out_name,
+			&out_abbrev,
+			&out_direction,
+			&out_unit_conv_factor,
+			&out_unit_name,
+			&out_unit_auth_name,
+			&out_unit_code
+			);
+		return (strcasecmp(out_direction, "north") == 0);
+	}
+	return LW_FALSE;
+}
+
+
 int
 ptarray_transform(POINTARRAY* pa, PJ* pj)
 {
@@ -301,7 +327,10 @@ ptarray_transform(POINTARRAY* pa, PJ* pj)
 
 	/* XXXX TODO check that the PJ has decimal degrees as units in input/output */
 
-	/* Convert degrees to radians if necessary */
+	int input_swapped = proj_crs_is_swapped(proj_get_source_crs(NULL, pj));
+	int output_swapped = proj_crs_is_swapped(proj_get_target_crs(NULL, pj));
+
+	/* Convert to radians if necessary */
 	if (proj_angular_input(pj, PJ_FWD))
 	{
 		for (i = 0; i < pa->npoints; i++)
@@ -310,6 +339,9 @@ ptarray_transform(POINTARRAY* pa, PJ* pj)
 			to_rad(&p);
 		}
 	}
+
+	if (input_swapped)
+		ptarray_swap_ordinates(pa, LWORD_X, LWORD_Y);
 
 	// size_t proj_trans_generic(PJ *P, PJ_DIRECTION direction,
 	// double *x, size_t sx, size_t nx,
@@ -334,13 +366,17 @@ ptarray_transform(POINTARRAY* pa, PJ* pj)
 		return LW_FAILURE;
 	}
 
-	if (proj_errno(pj))
+	int pj_errno_val = proj_errno(pj);
+	if (pj_errno_val)
 	{
-		int pj_errno_val = proj_errno(pj);
+		;
 		lwerror("ptarray_transform: %s (%d)",
 			proj_errno_string(pj_errno_val), pj_errno_val);
 		return LW_FAILURE;
 	}
+
+	if (output_swapped)
+		ptarray_swap_ordinates(pa, LWORD_X, LWORD_Y);
 
 	/* Convert radians to degrees if necessary */
 	if (proj_angular_output(pj, PJ_FWD))
@@ -360,6 +396,8 @@ point4d_transform(POINT4D *pt, PJ* pj)
 {
 	POINT4D pt_src = *pt; /* Copy for error report*/
 	PJ_COORD pj_coord_src, pj_coord_dst;
+	int input_swapped = proj_crs_is_swapped(proj_get_source_crs(NULL, pj));
+	int output_swapped = proj_crs_is_swapped(proj_get_target_crs(NULL, pj));
 
 	if (proj_angular_input(pj, PJ_FWD))
 		to_rad(pt);
@@ -367,20 +405,32 @@ point4d_transform(POINT4D *pt, PJ* pj)
 	LWDEBUGF(4, "transforming POINT(%f %f) using '%s'",
 		pt_src.x, pt_src.y, (proj_pj_info(pj)).definition);
 
-	pj_coord_src = proj_coord(pt->x, pt->y, pt->z, pt->m);
+	if (input_swapped)
+		pj_coord_src = proj_coord(pt->y, pt->x, pt->z, pt->m);
+	else
+		pj_coord_src = proj_coord(pt->x, pt->y, pt->z, pt->m);
+
 	pj_coord_dst = proj_trans(pj, PJ_FWD, pj_coord_src);
 
-	if (proj_errno(pj))
+	int pj_errno_val = proj_errno(pj);
+	if (pj_errno_val)
 	{
-		int pj_errno_val = proj_errno(pj);
 		lwerror("point4d_transform: couldn't project point (%g %g %g): %s (%d)",
 			pt_src.x, pt_src.y, pt_src.z,
 			proj_errno_string(pj_errno_val), pj_errno_val);
 		return LW_FAILURE;
 	}
 
-	pt->x = pj_coord_dst.xyzt.x;
-	pt->y = pj_coord_dst.xyzt.y;
+	if (output_swapped)
+	{
+		pt->x = pj_coord_dst.xyzt.y;
+		pt->y = pj_coord_dst.xyzt.x;
+	}
+	else
+	{
+		pt->x = pj_coord_dst.xyzt.x;
+		pt->y = pj_coord_dst.xyzt.y;
+	}
 	pt->z = pj_coord_dst.xyzt.z;
 	pt->m = pt_src.m;
 
