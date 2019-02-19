@@ -80,8 +80,7 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 	{
 		pj_errstr = pj_strerrno(*pj_get_errno_ref());
 		if (!pj_errstr) pj_errstr = "";
-		lwerror("could not parse proj string '%s' %s",
-		    instr, pj_errstr);
+		lwerror("could not parse proj string '%s'", instr);
 		return LW_FAILURE;
 	}
 
@@ -90,8 +89,7 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 	{
 		pj_errstr = pj_strerrno(*pj_get_errno_ref());
 		if (!pj_errstr) pj_errstr = "";
-		lwerror("could not parse proj string '%s' %s",
-		    outstr, pj_errstr);
+		lwerror("could not parse proj string '%s'", instr);
 		return LW_FAILURE;
 	}
 
@@ -188,8 +186,7 @@ point4d_transform(POINT4D *pt, PJ* pj)
 		}
 		else
 		{
-			lwerror("transform: couldn't project point (%g %g %g): %s (%d)",
-				orig_pt.x, orig_pt.y, orig_pt.z,
+			lwerror("transform: %s (%d)",
 				pj_strerrno(pj_errno_val), pj_errno_val);
 		}
 		return LW_FAILURE;
@@ -219,9 +216,12 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 	PJ *pj = proj_create_crs_to_crs(NULL, instr, outstr, NULL);
 	if (!pj)
 	{
-		int pj_errno_val = proj_errno(NULL);
-		lwerror("lwgeom_transform_from_str: %s (%d)",
-			proj_errno_string(pj_errno_val), pj_errno_val);
+		PJ *pj_in = proj_create(NULL, instr);
+		PJ *pj_out = proj_create(NULL, outstr);
+		if (!pj_in)
+			lwerror("could not parse proj string '%s'", instr);
+		if (!pj_out)
+			lwerror("could not parse proj string '%s'", outstr);
 		return LW_FAILURE;
 	}
 
@@ -369,8 +369,7 @@ ptarray_transform(POINTARRAY* pa, PJ* pj)
 	int pj_errno_val = proj_errno(pj);
 	if (pj_errno_val)
 	{
-		;
-		lwerror("ptarray_transform: %s (%d)",
+		lwerror("transform: %s (%d)",
 			proj_errno_string(pj_errno_val), pj_errno_val);
 		return LW_FAILURE;
 	}
@@ -423,8 +422,8 @@ point4d_transform(POINT4D *pt, PJ* pj)
 
 	if (output_swapped)
 	{
-		pt->x = pj_coord_dst.xyzt.y;
-		pt->y = pj_coord_dst.xyzt.x;
+		pt->x = pj_coord_dst.xyzt.x;
+		pt->y = pj_coord_dst.xyzt.y;
 	}
 	else
 	{
