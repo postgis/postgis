@@ -36,12 +36,9 @@
 #include "lwgeom_sfcgal.h"
 #endif
 
-Datum distance3d(PG_FUNCTION_ARGS);
-
 struct lwgeom_backend_definition
 {
 	const char *name;
-	Datum (*distance3d_fn)(PG_FUNCTION_ARGS);
 };
 
 #if HAVE_SFCGAL
@@ -50,11 +47,9 @@ struct lwgeom_backend_definition
 #define LWGEOM_NUM_BACKENDS 1
 #endif
 
-struct lwgeom_backend_definition lwgeom_backends[LWGEOM_NUM_BACKENDS] = {{.name = "geos",
-									  .distance3d_fn = LWGEOM_mindistance3d},
+struct lwgeom_backend_definition lwgeom_backends[LWGEOM_NUM_BACKENDS] = {{.name = "geos"}
 #if HAVE_SFCGAL
-									 {.name = "sfcgal",
-									  .distance3d_fn = sfcgal_distance3D}
+									 ,{.name = "sfcgal"}
 #endif
 };
 
@@ -120,12 +115,6 @@ lwgeom_init_backend()
 	    lwgeom_backend_switch, /* GucStringAssignHook assign_hook */
 	    NULL                   /* GucShowHook show_hook */
 	);
-}
-
-PG_FUNCTION_INFO_V1(distance3d);
-Datum distance3d(PG_FUNCTION_ARGS)
-{
-	return (*lwgeom_backend->distance3d_fn)(fcinfo);
 }
 
 /* intersects3d through dwithin */

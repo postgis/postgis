@@ -128,10 +128,10 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 		<!-- Optionally mention supports Polyhedral Surface  -->
 		<para>&P_support;</para>
 		<para>&sqlmm_compliant; SQL-MM ?</para>
-        <para>&sfcgal_enhanced;</para>
 
 		<para>Availability: 2.0.0</para>
 		<para>Changed: 2.2.0 - In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
+		<para>Changed: 3.0.0 - SFCGAL version removed</para>
 	  </refsection>
 
 	  <refsection>
@@ -141,12 +141,12 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 -- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line)
 -- Note: currently no vertical datum support so Z is not transformed and assumed to be same units as final.
 SELECT ST_3DDistance(
-			ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 4)'),2163),
-			ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163)
+			ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry,2163),
+			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'::geometry,2163)
 		) As dist_3d,
 		ST_Distance(
-			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),2163),
-			ST_Transform(ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326),2163)
+			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry,2163),
+			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry,2163)
 		) As dist_2d;
 
      dist_3d      |     dist_2d
@@ -158,9 +158,8 @@ SELECT ST_3DDistance(
 -- Same example as 3D closest point example
 SELECT ST_3DDistance(poly, mline) As dist3d,
     ST_Distance(poly, mline) As dist2d
-        FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))') As poly,
-                ST_GeomFromEWKT('MULTILINESTRING((175 155 2, 20 40 20, 50 60 -2, 125 100 1, 175 155 1),
-                (1 10 2, 5 20 1))') As mline ) As foo;
+        FROM (SELECT  'POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))'::geometry as poly,
+               'MULTILINESTRING((175 155 2, 20 40 20, 50 60 -2, 125 100 1, 175 155 1), (1 10 2, 5 20 1))'::geometry as mline) as foo;
       dist3d       | dist2d
 -------------------+--------
  0.716635696066337 |      0

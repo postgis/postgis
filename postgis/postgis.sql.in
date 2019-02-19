@@ -5785,7 +5785,7 @@ CREATE OR REPLACE RULE geometry_columns_delete AS
 
 CREATE OR REPLACE FUNCTION ST_3DDistance(geom1 geometry, geom2 geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME', 'distance3d'
+	AS 'MODULE_PATHNAME', 'ST_3DDistance'
 	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 100;
 

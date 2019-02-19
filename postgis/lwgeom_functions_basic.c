@@ -908,8 +908,8 @@ Datum LWGEOM_longestline3d(PG_FUNCTION_ARGS)
 /**
  Minimum 2d distance between objects in geom1 and geom2 in 3D
  */
-PG_FUNCTION_INFO_V1(LWGEOM_mindistance3d);
-Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_3DDistance);
+Datum ST_3DDistance(PG_FUNCTION_ARGS)
 {
 	double mindist;
 	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);

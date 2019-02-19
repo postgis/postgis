@@ -45,7 +45,7 @@ Datum geos_difference(PG_FUNCTION_ARGS);
 Datum geos_geomunion(PG_FUNCTION_ARGS);
 Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
-Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS);
+Datum ST_3DDistance(PG_FUNCTION_ARGS);
 
 void errorIfGeometryCollection(GSERIALIZED *g1, GSERIALIZED *g2);
 uint32_t array_nelems_not_null(ArrayType* array);
