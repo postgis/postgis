@@ -33,11 +33,6 @@ export PATH
 
 TESTS = \
 		regress_sfcgal \
-		legacy.sql \
-		regress_ogc_prep.sql \
-		regress_ogc.sql \
-		regress.sql \
-		wmsservers.sql \
 		approximatemedialaxis.sql
 
 test check:

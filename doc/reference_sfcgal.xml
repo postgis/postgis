@@ -10,13 +10,7 @@
             Installation instructions of the library can be found on SFCGAL home page <ulink url="http://www.sfcgal.org">http://www.sfcgal.org</ulink>.
             To load the functions create extension postgis_sfcgal.
         </para>
-        <para>
-          Some SFCGAL functions replace standard ones (ST_Intersects, ST_Intersection, ST_Difference, ST_Union, ST_Area and ST_Distance), to switch between standard functions and SFCGAL function use:
-	<programlisting>SET postgis.backend = sfcgal;</programlisting>
-	and
-	<programlisting>SET postgis.backend = geos;</programlisting>
 
-        </para>
 		</abstract>
 	</sect1info>
 	<title>SFCGAL Functions</title>
