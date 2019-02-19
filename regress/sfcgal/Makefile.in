@@ -33,10 +33,7 @@ export PATH
 
 TESTS = \
 		regress_sfcgal \
-		empty.sql \
-		geography.sql \
 		legacy.sql \
-		measures.sql \
 		regress_ogc_prep.sql \
 		regress_ogc.sql \
 		regress.sql \
