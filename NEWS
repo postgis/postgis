@@ -15,7 +15,7 @@ PostGIS 3.0.0
            If your project depends on them available, please use
            librttopo instead. (Darafei Praliaskouski)
   - #4258, Remove SFCGAL support for ST_Area, ST_Distance, ST_Intersection,
-           ST_Difference, ST_Union, ST_Intersects (Darafei Praliaskouski)
+           ST_Difference, ST_Union, ST_Intersects, ST_3DIntersects (Darafei Praliaskouski)
   - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
   - #4268, Bump minimum SFCGAL version to 1.3.1 (Darafei Praliaskouski)
 

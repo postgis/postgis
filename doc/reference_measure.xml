@@ -315,7 +315,7 @@ ST_DWithin(
 			<refname>ST_3DIntersects</refname>
 
 			<refpurpose>Returns TRUE if the Geometries "spatially
-			intersect" in 3d - only for points, linestrings, polygons, polyhedral surface (area).  With SFCGAL backend enabled also supports TINS
+			intersect" in 3D - only for points, linestrings, polygons, polyhedral surface (area).
 			</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
@@ -339,8 +339,7 @@ ST_DWithin(
 				returns true, then the geometries also spatially intersect.
 				Disjoint implies false for spatial intersection.</para>
 
-
-
+			<para>Changed: 3.0.0 SFCGAL backend removed, GEOS backend supports TINs.</para>
 			<para>Availability: 2.0.0</para>
 			<note>
 			  <para>This function call will automatically include a bounding box
@@ -348,7 +347,6 @@ ST_DWithin(
 			  geometries.</para>
 			</note>
 
-			<note><para>In order to take advantage of support for TINS, you need to enable the SFCGAL backend.  This can be done at session time with: <code>set postgis.backend = sfcgal;</code> or at the database or system level.  Database level can be done with <code>ALTER DATABASE gisdb SET postgis.backend = sfcgal;</code>.</para></note>
 			<para>&Z_support;</para>
 			<!-- Optionally mention supports Polyhedral Surface  -->
 			<para>&P_support;</para>
@@ -358,9 +356,8 @@ ST_DWithin(
 		</refsection>
 		<refsection>
 		<title>Geometry Examples</title>
-<programlisting>SELECT ST_3DIntersects(pt, line), ST_Intersects(pt,line)
-	FROM (SELECT 'POINT(0 0 2)'::geometry As pt,
-		'LINESTRING (0 0 1, 0 2 3 )'::geometry As line) As foo;
+<programlisting>SELECT ST_3DIntersects(pt, line), ST_Intersects(pt, line)
+	FROM (SELECT 'POINT(0 0 2)'::geometry As pt, 'LINESTRING (0 0 1, 0 2 3)'::geometry As line) As foo;
  st_3dintersects | st_intersects
 -----------------+---------------
  f               | t
@@ -369,8 +366,7 @@ ST_DWithin(
 		</refsection>
 
 		<refsection><title>TIN Examples</title>
-		    <programlisting>set postgis.backend = sfcgal;
-SELECT ST_3DIntersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'POINT(.1 .1)'::geometry);
+		    <programlisting>SELECT ST_3DIntersects('TIN(((0 0 0,1 0 0,0 1 0,0 0 0)))'::geometry, 'POINT(.1 .1 0)'::geometry);
  st_3dintersects
 -----------------
  t</programlisting></refsection>

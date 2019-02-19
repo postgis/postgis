@@ -5839,7 +5839,7 @@ CREATE OR REPLACE FUNCTION ST_3DDFullyWithin(geom1 geometry, geom2 geometry,floa
 
 CREATE OR REPLACE FUNCTION _ST_3DIntersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'MODULE_PATHNAME','intersects3d'
+	AS 'MODULE_PATHNAME', 'ST_3DIntersects'
 	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 100;
 

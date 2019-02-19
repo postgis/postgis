@@ -36,14 +36,11 @@
 #include "lwgeom_sfcgal.h"
 #endif
 
-Datum intersects3d(PG_FUNCTION_ARGS);
 Datum distance3d(PG_FUNCTION_ARGS);
-Datum intersects3d_dwithin(PG_FUNCTION_ARGS);
 
 struct lwgeom_backend_definition
 {
 	const char *name;
-	Datum (*intersects3d_fn)(PG_FUNCTION_ARGS);
 	Datum (*distance3d_fn)(PG_FUNCTION_ARGS);
 };
 
@@ -54,11 +51,9 @@ struct lwgeom_backend_definition
 #endif
 
 struct lwgeom_backend_definition lwgeom_backends[LWGEOM_NUM_BACKENDS] = {{.name = "geos",
-									  .intersects3d_fn = intersects3d_dwithin,
 									  .distance3d_fn = LWGEOM_mindistance3d},
 #if HAVE_SFCGAL
 									 {.name = "sfcgal",
-									  .intersects3d_fn = sfcgal_intersects3D,
 									  .distance3d_fn = sfcgal_distance3D}
 #endif
 };
@@ -133,16 +128,9 @@ Datum distance3d(PG_FUNCTION_ARGS)
 	return (*lwgeom_backend->distance3d_fn)(fcinfo);
 }
 
-PG_FUNCTION_INFO_V1(intersects3d);
-Datum intersects3d(PG_FUNCTION_ARGS)
-{
-	return (*lwgeom_backend->intersects3d_fn)(fcinfo);
-}
-
-/* intersects3d through dwithin
- * used by the 'geos' backend */
-PG_FUNCTION_INFO_V1(intersects3d_dwithin);
-Datum intersects3d_dwithin(PG_FUNCTION_ARGS)
+/* intersects3d through dwithin */
+PG_FUNCTION_INFO_V1(ST_3DIntersects);
+Datum ST_3DIntersects(PG_FUNCTION_ARGS)
 {
 	double mindist;
 	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
