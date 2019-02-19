@@ -10,4 +10,4 @@ ERROR:  Input geometry has unknown (0) SRID
 9|POINT(574600 5316780)
 10|POINT(574600 5316780)
 11|SRID=100001;POINT(574600 5316780)
-ERROR:  could not parse proj string 'invalid projection' no arguments in initialization list
+ERROR:  could not parse proj string 'invalid projection'

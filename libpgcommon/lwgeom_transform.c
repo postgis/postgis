@@ -63,7 +63,15 @@ static char *spatialRefSysSchema = NULL;
  */
 static HTAB *PJHash = NULL;
 
-
+/**
+ * Utility structure to get many potential string representations
+ * from spatial_ref_sys query.
+ */
+typedef struct {
+	char* epsgtext;
+	char* srtext;
+	char* proj4text;
+} PjStrs;
 
 
 typedef struct struct_PJHashEntry
@@ -361,14 +369,27 @@ GetProjectionFromPROJCache(PROJPortalCache *cache, int srid_from, int srid_to)
 	return NULL;
 }
 
-char*
-GetProjStringSPI(int srid)
+static char*
+SPI_pstrdup(const char* str)
+{
+	char* ostr = NULL;
+	if (str)
+	{
+		ostr = SPI_palloc(strlen(str)+1);
+		strcpy(ostr, str);
+	}
+	return ostr;
+}
+
+static PjStrs
+GetProjStringsSPI(int srid)
 {
 	const int maxprojlen = 512;
 	const int spibufferlen = 512;
 	int spi_result;
-	char *proj_str = palloc(maxprojlen);
 	char proj_spi_buffer[spibufferlen];
+	PjStrs strs;
+	memset(&strs, 0, sizeof(strs));
 
 	/* Connect */
 	spi_result = SPI_connect();
@@ -382,16 +403,19 @@ GetProjStringSPI(int srid)
 	* and is set by SetSpatialRefSysSchema the first time
 	* that GetPJUsingFCInfo is called.
 	*/
+	static char *proj_str_tmpl = "SELECT proj4text, auth_name, auth_srid, srtext "
+	                             "FROM %s%sspatial_ref_sys "
+	                             "WHERE srid = %d "
+	                             "LIMIT 1";
 	if (spatialRefSysSchema)
 	{
-		static char *proj_str_tmpl = "SELECT proj4text,auth_name,auth_srid FROM %s.spatial_ref_sys WHERE srid = %d LIMIT 1";
-		snprintf(proj_spi_buffer, spibufferlen, proj_str_tmpl, spatialRefSysSchema, srid);
+		snprintf(proj_spi_buffer, spibufferlen, proj_str_tmpl, spatialRefSysSchema, ".", srid);
 	}
 	else
 	{
-		static char *proj_str_tmpl = "SELECT proj4text,auth_name,auth_srid FROM spatial_ref_sys WHERE srid = %d LIMIT 1";
-		snprintf(proj_spi_buffer, spibufferlen, proj_str_tmpl, srid);
+		snprintf(proj_spi_buffer, spibufferlen, proj_str_tmpl, "", "", srid);
 	}
+
 	/* Execute the query, noting the readonly status of this SQL */
 	spi_result = SPI_execute(proj_spi_buffer, true, 1);
 
@@ -402,36 +426,29 @@ GetProjStringSPI(int srid)
 		TupleDesc tupdesc = SPI_tuptable->tupdesc;
 		SPITupleTable *tuptable = SPI_tuptable;
 		HeapTuple tuple = tuptable->vals[0];
-		char *proj_srs = SPI_getvalue(tuple, tupdesc, 1);
-#if POSTGIS_PROJ_VERSION < 60
-		if (proj_srs)
-		{
-			/* Make a projection object out of it */
-			strncpy(proj_str, proj_srs, maxprojlen - 1);
-		}
-		else
-		{
-			proj_str[0] = 0;
-		}
-#else
+		/* Always return the proj4text */
+		char* proj4text = SPI_getvalue(tuple, tupdesc, 1);
+		if (proj4text && strlen(proj4text))
+			strs.proj4text = SPI_pstrdup(proj4text);
+
 		/* For Proj >= 6 prefer "EPSG:XXXX" to proj strings */
 		/* as proj_create_crs_to_crs() will give us more consistent */
 		/* results with EPSG numbers than with proj strings */
-		char *authname = SPI_getvalue(tuple, tupdesc, 2);
-		char *authsrid = SPI_getvalue(tuple, tupdesc, 3);
-		if (authname && authsrid && strcmp(authname,"EPSG") == 0)
+		char* authname = SPI_getvalue(tuple, tupdesc, 2);
+		char* authsrid = SPI_getvalue(tuple, tupdesc, 3);
+		if (authname && authsrid &&
+		    strcmp(authname,"EPSG") == 0 &&
+		    strlen(authsrid))
 		{
-			snprintf(proj_str, maxprojlen, "EPSG:%s", authsrid);
+			char tmp[maxprojlen];
+			snprintf(tmp, maxprojlen, "EPSG:%s", authsrid);
+			strs.epsgtext = SPI_pstrdup(tmp);
 		}
-		else if (proj_srs)
-		{
-			strncpy(proj_str, proj_srs, maxprojlen - 1);
-		}
-		else
-		{
-			proj_str[0] = 0;
-		}
-#endif
+
+		/* Proj6+ can parse srtext, so return that too */
+		char* srtext = SPI_getvalue(tuple, tupdesc, 4);
+		if (srtext && strlen(srtext))
+			strs.srtext = SPI_pstrdup(srtext);
 	}
 	else
 	{
@@ -444,7 +461,7 @@ GetProjStringSPI(int srid)
 		elog(ERROR, "GetProjStringSPI: Could not disconnect from database using SPI");
 	}
 
-	return proj_str;
+	return strs;
 }
 
 
@@ -454,29 +471,32 @@ GetProjStringSPI(int srid)
  *  (WGS84 UTM N/S, Polar Stereographic N/S - see SRID_* macros),
  *  return the proj4text for those.
  */
-static char* GetProjString(int srid)
+static PjStrs
+GetProjStrings(int srid)
 {
 	const int maxprojlen = 512;
+	PjStrs strs;
+	memset(&strs, 0, sizeof(strs));
 
 	/* SRIDs in SPATIAL_REF_SYS */
 	if ( srid < SRID_RESERVE_OFFSET )
 	{
-		return GetProjStringSPI(srid);
+		return GetProjStringsSPI(srid);
 	}
 	/* Automagic SRIDs */
 	else
 	{
-		char *proj_str = palloc(maxprojlen);
+		strs.proj4text = palloc(maxprojlen);
 		int id = srid;
 		/* UTM North */
 		if ( id >= SRID_NORTH_UTM_START && id <= SRID_NORTH_UTM_END )
 		{
-			snprintf(proj_str, maxprojlen, "+proj=utm +zone=%d +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - SRID_NORTH_UTM_START + 1);
+			snprintf(strs.proj4text, maxprojlen, "+proj=utm +zone=%d +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - SRID_NORTH_UTM_START + 1);
 		}
 		/* UTM South */
 		else if ( id >= SRID_SOUTH_UTM_START && id <= SRID_SOUTH_UTM_END )
 		{
-			snprintf(proj_str, maxprojlen, "+proj=utm +zone=%d +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - SRID_SOUTH_UTM_START + 1);
+			snprintf(strs.proj4text, maxprojlen, "+proj=utm +zone=%d +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - SRID_SOUTH_UTM_START + 1);
 		}
 		/* Lambert zones (about 30x30, larger in higher latitudes) */
 		/* There are three latitude zones, divided at -90,-60,-30,0,30,60,90. */
@@ -501,44 +521,81 @@ static char* GetProjString(int srid)
 			else
 				lwerror("Unknown yzone encountered!");
 
-			snprintf(proj_str, maxprojlen, "+proj=laea +ellps=WGS84 +datum=WGS84 +lat_0=%g +lon_0=%g +units=m +no_defs", lat_0, lon_0);
+			snprintf(strs.proj4text, maxprojlen, "+proj=laea +ellps=WGS84 +datum=WGS84 +lat_0=%g +lon_0=%g +units=m +no_defs", lat_0, lon_0);
 		}
 		/* Lambert Azimuthal Equal Area South Pole */
 		else if ( id == SRID_SOUTH_LAMBERT )
 		{
-			strncpy(proj_str, "+proj=laea +lat_0=-90 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxprojlen );
+			strncpy(strs.proj4text, "+proj=laea +lat_0=-90 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxprojlen );
 		}
 		/* Polar Sterographic South */
 		else if ( id == SRID_SOUTH_STEREO )
 		{
-			strncpy(proj_str, "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxprojlen);
+			strncpy(strs.proj4text, "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxprojlen);
 		}
 		/* Lambert Azimuthal Equal Area North Pole */
 		else if ( id == SRID_NORTH_LAMBERT )
 		{
-			strncpy(proj_str, "+proj=laea +lat_0=90 +lon_0=-40 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxprojlen );
+			strncpy(strs.proj4text, "+proj=laea +lat_0=90 +lon_0=-40 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxprojlen );
 		}
 		/* Polar Stereographic North */
 		else if ( id == SRID_NORTH_STEREO )
 		{
-			strncpy(proj_str, "+proj=stere +lat_0=90 +lat_ts=71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxprojlen );
+			strncpy(strs.proj4text, "+proj=stere +lat_0=90 +lat_ts=71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxprojlen );
 		}
 		/* World Mercator */
 		else if ( id == SRID_WORLD_MERCATOR )
 		{
-			strncpy(proj_str, "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxprojlen );
+			strncpy(strs.proj4text, "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxprojlen );
 		}
 		else
 		{
 			elog(ERROR, "Invalid reserved SRID (%d)", srid);
-			return NULL;
+			return strs;
 		}
 
-		POSTGIS_DEBUGF(3, "returning on SRID=%d: %s", srid, proj_str);
-		return proj_str;
+		POSTGIS_DEBUGF(3, "returning on SRID=%d: %s", srid, strs.proj4text);
+		return strs;
 	}
 }
 
+static int
+pjstrs_has_entry(const PjStrs *strs)
+{
+	if ((strs->proj4text && strlen(strs->proj4text)) ||
+		(strs->epsgtext && strlen(strs->epsgtext)) ||
+		(strs->srtext && strlen(strs->srtext)))
+		return 1;
+	else
+		return 0;
+}
+
+static void
+pjstrs_pfree(PjStrs *strs)
+{
+	if (strs->proj4text)
+		pfree(strs->proj4text);
+	if (strs->epsgtext)
+		pfree(strs->epsgtext);
+	if (strs->srtext)
+		pfree(strs->srtext);
+}
+
+static char*
+pgstrs_get_entry(const PjStrs *strs, int n)
+{
+	switch (n)
+	{
+		case 0:
+			return strs->epsgtext;
+		case 1:
+			return strs->srtext;
+		case 2:
+			return strs->proj4text;
+		default:
+			return NULL;
+	}
+}
 
 /**
  * Add an entry to the local PROJ SRS cache. If we need to wrap around then
@@ -549,39 +606,57 @@ static void
 AddToPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
 {
 	MemoryContext PJMemoryContext;
-	PJ* projection = NULL;
-	char* pj_from_str = NULL;
-	char* pj_to_str = NULL;
+
+	PjStrs from_strs;
+	PjStrs to_strs;
 
 	/*
 	** Turn the SRID number into a proj4 string, by reading from spatial_ref_sys
 	** or instantiating a magical value from a negative srid.
 	*/
-	;
-	if (!(pj_from_str = GetProjString(srid_from)))
-		elog(ERROR, "GetProjString returned NULL for SRID (%d)", srid_from);
-	if (!(pj_to_str = GetProjString(srid_to)))
-		elog(ERROR, "GetProjString returned NULL for SRID (%d)", srid_to);
+	from_strs = GetProjStrings(srid_from);
+	to_strs = GetProjStrings(srid_to);
+	if (!pjstrs_has_entry(&from_strs))
+		elog(ERROR, "AddToPROJSRSCache: GetProjStrings returned NULL for SRID (%d)", srid_from);
+	if (!pjstrs_has_entry(&to_strs))
+		elog(ERROR, "AddToPROJSRSCache: GetProjStrings returned NULL for SRID (%d)", srid_to);
 
 #if POSTGIS_PROJ_VERSION < 60
-	projection = malloc(sizeof(PJ));
-	projection->pj_from = lwproj_from_string(pj_from_str);
-	projection->pj_to = lwproj_from_string(pj_to_str);
+	PJ* projection = malloc(sizeof(PJ));
+	projection->pj_from = lwproj_from_string(from_strs.proj4text);
+	projection->pj_to = lwproj_from_string(to_strs.proj4text);
 
-	if (projection->pj_from == NULL)
+	if (!projection->pj_from)
 		elog(ERROR,
-		    "AddToPROJSRSCache: could not parse proj string '%s' %s",
-		    pj_from_str, PJErrStr());
+		    "AddToPROJSRSCache: could not form projection from 'srid=%d' to 'srid=%d'",
+		    srid_from, srid_to);
 
-	if (projection->pj_to == NULL)
+	if (!projection->pj_to)
 		elog(ERROR,
-		    "AddToPROJSRSCache: could not parse proj string '%s' %s",
-		    pj_to_str, PJErrStr());
+		    "AddToPROJSRSCache: could not form projection from 'srid=%d' to 'srid=%d'",
+		    srid_from, srid_to);
 #else
-	projection = proj_create_crs_to_crs(NULL, pj_from_str, pj_to_str, NULL);
+	PJ* projection = NULL;
+	/* Try combinations of ESPG/SRTEXT/PROJ4TEXT until we find */
+	/* one that gives us a usable transform. Note that we prefer */
+	/* EPSG numbers over SRTEXT and SRTEXT over PROJ4TEXT */
+	for (uint32_t i = 0; i < 9; i++)
+	{
+		char *pj_from_str = pgstrs_get_entry(&from_strs, i / 3);
+		char *pj_to_str   = pgstrs_get_entry(&to_strs,   i % 3);
+		if (!(pj_from_str && pj_to_str))
+			continue;
+		projection = proj_create_crs_to_crs(NULL, pj_from_str, pj_to_str, NULL);
+		if (projection && !proj_errno(projection))
+			break;
+	}
+	if (!projection)
+	{
+		elog(ERROR,
+		    "AddToPROJSRSCache: could not form projection from 'srid=%d' to 'srid=%d'",
+		    srid_from, srid_to);
+	}
 #endif
-
-
 
 	/*
 	 * If the cache is already full then find the first entry
@@ -617,8 +692,8 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
 		srid_from, srid_to, pj_from_str, pj_to_str, PROJCache->PROJSRSCacheCount);
 
 	/* Free the projection strings */
-	pfree(pj_from_str);
-	pfree(pj_to_str);
+	pjstrs_pfree(&from_strs);
+	pjstrs_pfree(&to_strs);
 
 #if POSTGIS_PGSQL_VERSION < 96
 	PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
@@ -761,65 +836,26 @@ GetPJUsingFCInfo(FunctionCallInfo fcinfo, int srid_from, int srid_to, PJ** pj)
 	return LW_SUCCESS;
 }
 
-int
-spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
+
+static int
+proj_pj_is_latlong(const PJ* pj)
 {
-	PJ* pj;
-#if POSTGIS_PROJ_VERSION >= 60
-	double out_semi_major_metre, out_semi_minor_metre, out_inv_flattening;
-	int out_is_semi_minor_computed;
-	PJ* pj_ellps;
-#elif POSTGIS_PROJ_VERSION >= 48
-	double major_axis, minor_axis, eccentricity_squared;
-#endif
-
-	if ( GetPJUsingFCInfo(fcinfo, srid, srid, &pj) == LW_FAILURE)
-		return LW_FAILURE;
-
-#if POSTGIS_PROJ_VERSION >= 60
-	if (!proj_angular_input(pj, PJ_FWD))
-		return LW_FAILURE;
-	pj_ellps = proj_get_ellipsoid(NULL, pj);
-	proj_ellipsoid_get_parameters(NULL, pj_ellps,
-		&out_semi_major_metre, &out_semi_minor_metre,
-		&out_is_semi_minor_computed, &out_inv_flattening);
-	proj_destroy(pj_ellps);
-	spheroid_init(s, out_semi_major_metre, out_semi_minor_metre);
-
-#elif POSTGIS_PROJ_VERSION >= 48
-	if (!pj_is_latlong(pj->pj_from))
-		return LW_FAILURE;
-	/* For newer versions of Proj we can pull the spheroid paramaeters and initialize */
-	/* using them */
-	pj_get_spheroid_defn(pj->pj_from, &major_axis, &eccentricity_squared);
-	minor_axis = major_axis * sqrt(1-eccentricity_squared);
-	spheroid_init(s, major_axis, minor_axis);
-
+#if POSTGIS_PROJ_VERSION < 60
+	return pj_is_latlong(pj->pj_from);
 #else
-	if (!pj_is_latlong(pj->pj_from))
-		return LW_FAILURE;
-	/* For old versions of Proj we cannot lookup the spheroid parameters from the API */
-	/* So we use the WGS84 parameters (boo!) */
-	spheroid_init(s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+	PJ_TYPE pj_type = proj_get_type(proj_get_source_crs(NULL, pj));
+	return (pj_type == PJ_TYPE_GEOGRAPHIC_2D_CRS) ||
+	       (pj_type == PJ_TYPE_GEOGRAPHIC_3D_CRS);
 #endif
-
-	return LW_SUCCESS;
 }
 
 static int
 srid_is_latlong(FunctionCallInfo fcinfo, int srid)
 {
 	PJ* pj;
-	bool is_latlong;
-
 	if ( GetPJUsingFCInfo(fcinfo, srid, srid, &pj) == LW_FAILURE)
 		return LW_FALSE;
-#if POSTGIS_PROJ_VERSION < 60
-	is_latlong = pj_is_latlong(pj->pj_from);
-#else
-	is_latlong = proj_angular_input(pj, PJ_FWD);
-#endif
-	return is_latlong;
+	return proj_pj_is_latlong(pj);
 }
 
 void
@@ -854,4 +890,51 @@ srid_axis_precision(FunctionCallInfo fcinfo, int srid, int precision)
 	}
 
 	return sp;
+}
+
+int
+spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
+{
+	PJ* pj;
+#if POSTGIS_PROJ_VERSION >= 60
+	double out_semi_major_metre, out_semi_minor_metre, out_inv_flattening;
+	int out_is_semi_minor_computed;
+	PJ *pj_ellps, *pj_crs;
+#elif POSTGIS_PROJ_VERSION >= 48
+	double major_axis, minor_axis, eccentricity_squared;
+#endif
+
+	if ( GetPJUsingFCInfo(fcinfo, srid, srid, &pj) == LW_FAILURE)
+		return LW_FAILURE;
+
+#if POSTGIS_PROJ_VERSION >= 60
+	if (!proj_pj_is_latlong(pj))
+		return LW_FAILURE;
+	pj_crs = proj_get_source_crs(NULL, pj);
+	pj_ellps = proj_get_ellipsoid(NULL, pj_crs);
+	proj_ellipsoid_get_parameters(NULL, pj_ellps,
+		&out_semi_major_metre, &out_semi_minor_metre,
+		&out_is_semi_minor_computed, &out_inv_flattening);
+	proj_destroy(pj_ellps);
+	proj_destroy(pj_crs);
+	spheroid_init(s, out_semi_major_metre, out_semi_minor_metre);
+
+#elif POSTGIS_PROJ_VERSION >= 48
+	if (!pj_is_latlong(pj->pj_from))
+		return LW_FAILURE;
+	/* For newer versions of Proj we can pull the spheroid paramaeters and initialize */
+	/* using them */
+	pj_get_spheroid_defn(pj->pj_from, &major_axis, &eccentricity_squared);
+	minor_axis = major_axis * sqrt(1-eccentricity_squared);
+	spheroid_init(s, major_axis, minor_axis);
+
+#else
+	if (!pj_is_latlong(pj->pj_from))
+		return LW_FAILURE;
+	/* For old versions of Proj we cannot lookup the spheroid parameters from the API */
+	/* So we use the WGS84 parameters (boo!) */
+	spheroid_init(s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+#endif
+
+	return LW_SUCCESS;
 }
