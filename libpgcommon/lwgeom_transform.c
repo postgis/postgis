@@ -282,8 +282,8 @@ static HTAB *CreatePJHash(void)
 static void AddPJHashEntry(MemoryContext mcxt, PJ* projection)
 {
 	bool found;
-	void** key;
-	PJHashEntry* he;
+	void **key;
+	PJHashEntry *he;
 
 	/* The hash key is the MemoryContext pointer */
 	key = (void *)&mcxt;
@@ -304,8 +304,8 @@ static void AddPJHashEntry(MemoryContext mcxt, PJ* projection)
 
 static PJ* GetPJHashEntry(MemoryContext mcxt)
 {
-	void** key;
-	PJHashEntry* he;
+	void **key;
+	PJHashEntry *he;
 
 	/* The hash key is the MemoryContext pointer */
 	key = (void *)&mcxt;
@@ -319,8 +319,8 @@ static PJ* GetPJHashEntry(MemoryContext mcxt)
 
 static void DeletePJHashEntry(MemoryContext mcxt)
 {
-	void** key;
-	PJHashEntry* he;
+	void **key;
+	PJHashEntry *he;
 
 	/* The hash key is the MemoryContext pointer */
 	key = (void *)&mcxt;
@@ -346,7 +346,8 @@ IsInPROJSRSCache(PROJPortalCache *cache, int srid_from, int srid_to)
 	 * Return true/false depending upon whether the item
 	 * is in the SRS cache.
 	 */
-	for (uint32_t i = 0; i < PROJ_CACHE_ITEMS; i++)
+	uint32_t i;
+	for (i = 0; i < PROJ_CACHE_ITEMS; i++)
 	{
 		if (cache->PROJSRSCache[i].srid_from == srid_from &&
 		    cache->PROJSRSCache[i].srid_to == srid_to)
@@ -359,7 +360,8 @@ IsInPROJSRSCache(PROJPortalCache *cache, int srid_from, int srid_to)
 static PJ*
 GetProjectionFromPROJCache(PROJPortalCache *cache, int srid_from, int srid_to)
 {
-	for (uint32_t i = 0; i < PROJ_CACHE_ITEMS; i++)
+	uint32_t i;
+	for (i = 0; i < PROJ_CACHE_ITEMS; i++)
 	{
 		if (cache->PROJSRSCache[i].srid_from == srid_from &&
 		    cache->PROJSRSCache[i].srid_to == srid_to)
@@ -581,6 +583,7 @@ pjstrs_pfree(PjStrs *strs)
 		pfree(strs->srtext);
 }
 
+#if POSTGIS_PROJ_VERSION >= 60
 static char*
 pgstrs_get_entry(const PjStrs *strs, int n)
 {
@@ -596,6 +599,7 @@ pgstrs_get_entry(const PjStrs *strs, int n)
 			return NULL;
 	}
 }
+#endif
 
 /**
  * Add an entry to the local PROJ SRS cache. If we need to wrap around then
@@ -615,9 +619,9 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
 	** or instantiating a magical value from a negative srid.
 	*/
 	from_strs = GetProjStrings(srid_from);
-	to_strs = GetProjStrings(srid_to);
 	if (!pjstrs_has_entry(&from_strs))
 		elog(ERROR, "AddToPROJSRSCache: GetProjStrings returned NULL for SRID (%d)", srid_from);
+	to_strs = GetProjStrings(srid_to);
 	if (!pjstrs_has_entry(&to_strs))
 		elog(ERROR, "AddToPROJSRSCache: GetProjStrings returned NULL for SRID (%d)", srid_to);
 
@@ -640,7 +644,9 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
 	/* Try combinations of ESPG/SRTEXT/PROJ4TEXT until we find */
 	/* one that gives us a usable transform. Note that we prefer */
 	/* EPSG numbers over SRTEXT and SRTEXT over PROJ4TEXT */
-	for (uint32_t i = 0; i < 9; i++)
+	/* (3 entries * 3 entries = 9 combos) */
+	uint32_t i;
+	for (i = 0; i < 9; i++)
 	{
 		char *pj_from_str = pgstrs_get_entry(&from_strs, i / 3);
 		char *pj_to_str   = pgstrs_get_entry(&to_strs,   i % 3);
@@ -666,7 +672,8 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
 	if (PROJCache->PROJSRSCacheCount == PROJ_CACHE_ITEMS)
 	{
 		bool found = false;
-		for (uint32_t i = 0; i < PROJ_CACHE_ITEMS; i++)
+		uint32_t i;
+		for (i = 0; i < PROJ_CACHE_ITEMS; i++)
 		{
 			if (found == false &&
 				(PROJCache->PROJSRSCache[i].srid_from != srid_from ||
@@ -742,8 +749,8 @@ DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
 	/*
 	 * Delete the SRID entry from the cache
 	 */
-
-	for (uint32_t i = 0; i < PROJ_CACHE_ITEMS; i++)
+	uint32_t i;
+	for (i = 0; i < PROJ_CACHE_ITEMS; i++)
 	{
 		if (PROJCache->PROJSRSCache[i].srid_from == srid_from &&
 			PROJCache->PROJSRSCache[i].srid_to == srid_to)
@@ -911,7 +918,16 @@ spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
 	if (!proj_pj_is_latlong(pj))
 		return LW_FAILURE;
 	pj_crs = proj_get_source_crs(NULL, pj);
+	if (!pj_crs)
+	{
+		lwerror("%s: proj_get_source_crs returned NULL", __func__);
+	}
 	pj_ellps = proj_get_ellipsoid(NULL, pj_crs);
+	if (!pj_ellps)
+	{
+		proj_destroy(pj_crs);
+		lwerror("%s: proj_get_ellipsoid returned NULL", __func__);
+	}
 	proj_ellipsoid_get_parameters(NULL, pj_ellps,
 		&out_semi_major_metre, &out_semi_minor_metre,
 		&out_is_semi_minor_computed, &out_inv_flattening);
