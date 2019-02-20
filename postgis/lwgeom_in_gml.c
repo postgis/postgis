@@ -307,8 +307,8 @@ static POINTARRAY* gml_reproject_pa(POINTARRAY *pa, int srid_in, int srid_out)
 	if (srid_in == SRID_UNKNOWN) return pa; /* nothing to do */
 	if (srid_out == SRID_UNKNOWN) gml_lwpgerror("invalid GML representation", 3);
 
-	text_in = GetProjStringSPI(srid_in);
-	text_out = GetProjStringSPI(srid_out);
+	text_in = GetProj4String(srid_in);
+	text_out = GetProj4String(srid_out);
 
 	pj.pj_from = lwproj_from_string(text_in);
 	pj.pj_to = lwproj_from_string(text_out);

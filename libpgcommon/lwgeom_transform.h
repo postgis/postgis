@@ -10,7 +10,7 @@
  **********************************************************************/
 
 #include "postgres.h"
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "lwgeom_pg.h"
 
 
@@ -21,7 +21,7 @@ typedef struct srs_precision
 	int precision_m;
 } srs_precision;
 
-char* GetProjStringSPI(int srid);
+char * GetProj4String(int srid);
 
 /**
  * Opaque type to use in the projection cache API.
