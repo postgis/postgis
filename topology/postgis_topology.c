@@ -952,7 +952,7 @@ cb_getEdgeById(const LWT_BE_TOPOLOGY* topo,
   }
   pfree(sqldata.data);
 
-  POSTGIS_DEBUGF(1, "cb_getEdgeById: edge query returned %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_getEdgeById: edge query returned %ld rows", SPI_processed);
   *numelems = SPI_processed;
   if ( ! SPI_processed )
   {
@@ -1015,7 +1015,7 @@ cb_getEdgeByNode(const LWT_BE_TOPOLOGY* topo,
   }
   pfree(sqldata.data);
 
-  POSTGIS_DEBUGF(1, "cb_getEdgeByNode: edge query returned %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_getEdgeByNode: edge query returned %ld rows", SPI_processed);
   *numelems = SPI_processed;
   if ( ! SPI_processed )
   {
@@ -1096,7 +1096,7 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
   }
   pfree(sqldata.data);
 
-  POSTGIS_DEBUGF(1, "cb_getEdgeByFace: edge query returned %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_getEdgeByFace: edge query returned %ld rows", SPI_processed);
   *numelems = SPI_processed;
   if ( ! SPI_processed )
   {
@@ -1152,7 +1152,7 @@ cb_getFacesById(const LWT_BE_TOPOLOGY* topo,
   }
   pfree(sqldata.data);
 
-  POSTGIS_DEBUGF(1, "cb_getFaceById: face query returned %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_getFaceById: face query returned %ld rows", SPI_processed);
   *numelems = SPI_processed;
   if ( ! SPI_processed )
   {
@@ -1214,7 +1214,7 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY* topo,
   }
   pfree(sqldata.data);
 
-  POSTGIS_DEBUGF(1, "cb_getRingEdges: edge query returned %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_getRingEdges: edge query returned %ld rows", SPI_processed);
   *numelems = SPI_processed;
   if ( ! SPI_processed )
   {
@@ -1289,7 +1289,7 @@ cb_getNodeById(const LWT_BE_TOPOLOGY* topo,
   }
   pfree(sqldata.data);
 
-  POSTGIS_DEBUGF(1, "cb_getNodeById: edge query returned %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_getNodeById: edge query returned %ld rows", SPI_processed);
   *numelems = SPI_processed;
   if ( ! SPI_processed )
   {
@@ -1351,7 +1351,7 @@ cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
   }
   pfree(sqldata.data);
 
-  POSTGIS_DEBUGF(1, "cb_getNodeByFace: edge query returned %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_getNodeByFace: edge query returned %ld rows", SPI_processed);
   *numelems = SPI_processed;
   if ( ! SPI_processed )
   {
@@ -1428,7 +1428,7 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
   pfree(sqldata.data);
 
   POSTGIS_DEBUGF(1, "cb_getEdgeWithinDistance2D: edge query "
-                 "(limited by %d) returned %d rows",
+                 "(limited by %d) returned %ld rows",
                  elems_requested, SPI_processed);
   *numelems = SPI_processed;
   if ( ! SPI_processed )
@@ -1531,7 +1531,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
   pfree(sqldata.data);
 
   POSTGIS_DEBUGF(1, "cb_getNodeWithinDistance2D: node query "
-                 "(limited by %d) returned %d rows",
+                 "(limited by %d) returned %ld rows",
                  elems_requested, SPI_processed);
   if ( ! SPI_processed )
   {
@@ -1666,7 +1666,7 @@ cb_insertEdges( const LWT_BE_TOPOLOGY* topo,
   }
   pfree(sqldata.data);
   if ( SPI_processed ) topo->be_data->data_changed = true;
-  POSTGIS_DEBUGF(1, "cb_insertEdges query processed %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_insertEdges query processed %ld rows", SPI_processed);
   if ( SPI_processed != (uint64) numelems )
   {
     cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected %d",
@@ -1726,10 +1726,10 @@ cb_insertFaces( const LWT_BE_TOPOLOGY* topo,
   }
   pfree(sqldata.data);
   if ( SPI_processed ) topo->be_data->data_changed = true;
-  POSTGIS_DEBUGF(1, "cb_insertFaces query processed %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_insertFaces query processed %ld rows", SPI_processed);
   if ( SPI_processed != (uint64) numelems )
   {
-    cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected %d",
+    cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected %ld",
             (uint64)SPI_processed, numelems);
     return -1;
   }
@@ -1790,7 +1790,7 @@ cb_updateEdges( const LWT_BE_TOPOLOGY* topo,
 
   if ( SPI_processed ) topo->be_data->data_changed = true;
 
-  POSTGIS_DEBUGF(1, "cb_updateEdges: update query processed %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_updateEdges: update query processed %ld rows", SPI_processed);
 
   return SPI_processed;
 }
@@ -1835,7 +1835,7 @@ cb_updateNodes( const LWT_BE_TOPOLOGY* topo,
 
   if ( SPI_processed ) topo->be_data->data_changed = true;
 
-  POSTGIS_DEBUGF(1, "cb_updateNodes: update query processed %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_updateNodes: update query processed %ld rows", SPI_processed);
 
   return SPI_processed;
 }
@@ -1908,7 +1908,7 @@ cb_updateNodesById( const LWT_BE_TOPOLOGY* topo,
 
   if ( SPI_processed ) topo->be_data->data_changed = true;
 
-  POSTGIS_DEBUGF(1, "cb_updateNodesById: update query processed %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_updateNodesById: update query processed %ld rows", SPI_processed);
 
   return SPI_processed;
 }
@@ -1956,7 +1956,7 @@ cb_updateFacesById( const LWT_BE_TOPOLOGY* topo,
 
   if ( SPI_processed ) topo->be_data->data_changed = true;
 
-  POSTGIS_DEBUGF(1, "cb_updateFacesById: update query processed %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_updateFacesById: update query processed %ld rows", SPI_processed);
 
   return SPI_processed;
 }
@@ -2049,7 +2049,7 @@ cb_updateEdgesById( const LWT_BE_TOPOLOGY* topo,
 
   if ( SPI_processed ) topo->be_data->data_changed = true;
 
-  POSTGIS_DEBUGF(1, "cb_updateEdgesById: update query processed %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_updateEdgesById: update query processed %ld rows", SPI_processed);
 
   return SPI_processed;
 }
@@ -2082,7 +2082,7 @@ cb_deleteEdges( const LWT_BE_TOPOLOGY* topo,
 
   if ( SPI_processed ) topo->be_data->data_changed = true;
 
-  POSTGIS_DEBUGF(1, "cb_deleteEdges: delete query processed %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_deleteEdges: delete query processed %ld rows", SPI_processed);
 
   return SPI_processed;
 }
@@ -2178,7 +2178,7 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
 
   if ( spi_result == SPI_OK_DELETE_RETURNING && SPI_processed )
   {
-    POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeSplit: deleted %d faces", SPI_processed);
+    POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeSplit: deleted %ld faces", SPI_processed);
     topo->be_data->data_changed = true;
   }
 
@@ -2847,7 +2847,7 @@ cb_deleteFacesById( const LWT_BE_TOPOLOGY* topo,
 
   if ( SPI_processed ) topo->be_data->data_changed = true;
 
-  POSTGIS_DEBUGF(1, "cb_deleteFacesById: delete query processed %d rows",
+  POSTGIS_DEBUGF(1, "cb_deleteFacesById: delete query processed %ld rows",
                  SPI_processed);
 
   return SPI_processed;
@@ -2886,7 +2886,7 @@ cb_deleteNodesById( const LWT_BE_TOPOLOGY* topo,
 
   if ( SPI_processed ) topo->be_data->data_changed = true;
 
-  POSTGIS_DEBUGF(1, "cb_deleteNodesById: delete query processed %d rows",
+  POSTGIS_DEBUGF(1, "cb_deleteNodesById: delete query processed %ld rows",
                  SPI_processed);
 
   return SPI_processed;
@@ -2941,7 +2941,7 @@ cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   pfree(sqldata.data);
 
   POSTGIS_DEBUGF(1, "cb_getNodeWithinBox2D: edge query "
-                 "(limited by %d) returned %d rows",
+                 "(limited by %d) returned %ld rows",
                  elems_requested, SPI_processed);
   *numelems = SPI_processed;
   if ( ! SPI_processed )
@@ -3030,7 +3030,7 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   pfree(sqldata.data);
 
   POSTGIS_DEBUGF(1, "cb_getEdgeWithinBox2D: edge query "
-                 "(limited by %d) returned %d rows",
+                 "(limited by %d) returned %ld rows",
                  elems_requested, SPI_processed);
   *numelems = SPI_processed;
   if ( ! SPI_processed )
@@ -3114,7 +3114,7 @@ cb_getFaceWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   pfree(sqldata.data);
 
   POSTGIS_DEBUGF(1, "cb_getFaceWithinBox2D: face query "
-                 "(limited by %d) returned %d rows",
+                 "(limited by %d) returned %ld rows",
                  elems_requested, SPI_processed);
   *numelems = SPI_processed;
   if ( ! SPI_processed )
