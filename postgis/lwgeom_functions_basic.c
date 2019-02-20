@@ -908,8 +908,8 @@ Datum LWGEOM_longestline3d(PG_FUNCTION_ARGS)
 /**
  Minimum 2d distance between objects in geom1 and geom2 in 3D
  */
-PG_FUNCTION_INFO_V1(LWGEOM_mindistance3d);
-Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_3DDistance);
+Datum ST_3DDistance(PG_FUNCTION_ARGS)
 {
 	double mindist;
 	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -930,6 +930,28 @@ Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS)
 
 	PG_RETURN_NULL();
 }
+
+/* intersects3d through dwithin */
+PG_FUNCTION_INFO_V1(ST_3DIntersects);
+Datum ST_3DIntersects(PG_FUNCTION_ARGS)
+{
+	double mindist;
+	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
+	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
+	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
+
+	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+
+	mindist = lwgeom_mindistance3d_tolerance(lwgeom1, lwgeom2, 0.0);
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+	/*empty geometries cases should be right handled since return from underlying
+	  functions should be FLT_MAX which causes false as answer*/
+	PG_RETURN_BOOL(0.0 == mindist);
+}
+
 
 /**
 Returns boolean describing if

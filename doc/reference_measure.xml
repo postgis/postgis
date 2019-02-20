@@ -128,10 +128,10 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 		<!-- Optionally mention supports Polyhedral Surface  -->
 		<para>&P_support;</para>
 		<para>&sqlmm_compliant; SQL-MM ?</para>
-        <para>&sfcgal_enhanced;</para>
 
 		<para>Availability: 2.0.0</para>
 		<para>Changed: 2.2.0 - In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
+		<para>Changed: 3.0.0 - SFCGAL version removed</para>
 	  </refsection>
 
 	  <refsection>
@@ -141,12 +141,12 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 -- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line)
 -- Note: currently no vertical datum support so Z is not transformed and assumed to be same units as final.
 SELECT ST_3DDistance(
-			ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 4)'),2163),
-			ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163)
+			ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry,2163),
+			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'::geometry,2163)
 		) As dist_3d,
 		ST_Distance(
-			ST_Transform(ST_GeomFromText('POINT(-72.1235 42.3521)',4326),2163),
-			ST_Transform(ST_GeomFromText('LINESTRING(-72.1260 42.45, -72.123 42.1546)', 4326),2163)
+			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry,2163),
+			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry,2163)
 		) As dist_2d;
 
      dist_3d      |     dist_2d
@@ -158,9 +158,8 @@ SELECT ST_3DDistance(
 -- Same example as 3D closest point example
 SELECT ST_3DDistance(poly, mline) As dist3d,
     ST_Distance(poly, mline) As dist2d
-        FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))') As poly,
-                ST_GeomFromEWKT('MULTILINESTRING((175 155 2, 20 40 20, 50 60 -2, 125 100 1, 175 155 1),
-                (1 10 2, 5 20 1))') As mline ) As foo;
+        FROM (SELECT  'POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))'::geometry as poly,
+               'MULTILINESTRING((175 155 2, 20 40 20, 50 60 -2, 125 100 1, 175 155 1), (1 10 2, 5 20 1))'::geometry as mline) as foo;
       dist3d       | dist2d
 -------------------+--------
  0.716635696066337 |      0
@@ -315,7 +314,7 @@ ST_DWithin(
 			<refname>ST_3DIntersects</refname>
 
 			<refpurpose>Returns TRUE if the Geometries "spatially
-			intersect" in 3d - only for points, linestrings, polygons, polyhedral surface (area).  With SFCGAL backend enabled also supports TINS
+			intersect" in 3D - only for points, linestrings, polygons, polyhedral surface (area).
 			</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
@@ -339,8 +338,7 @@ ST_DWithin(
 				returns true, then the geometries also spatially intersect.
 				Disjoint implies false for spatial intersection.</para>
 
-
-
+			<para>Changed: 3.0.0 SFCGAL backend removed, GEOS backend supports TINs.</para>
 			<para>Availability: 2.0.0</para>
 			<note>
 			  <para>This function call will automatically include a bounding box
@@ -348,7 +346,6 @@ ST_DWithin(
 			  geometries.</para>
 			</note>
 
-			<note><para>In order to take advantage of support for TINS, you need to enable the SFCGAL backend.  This can be done at session time with: <code>set postgis.backend = sfcgal;</code> or at the database or system level.  Database level can be done with <code>ALTER DATABASE gisdb SET postgis.backend = sfcgal;</code>.</para></note>
 			<para>&Z_support;</para>
 			<!-- Optionally mention supports Polyhedral Surface  -->
 			<para>&P_support;</para>
@@ -358,9 +355,8 @@ ST_DWithin(
 		</refsection>
 		<refsection>
 		<title>Geometry Examples</title>
-<programlisting>SELECT ST_3DIntersects(pt, line), ST_Intersects(pt,line)
-	FROM (SELECT 'POINT(0 0 2)'::geometry As pt,
-		'LINESTRING (0 0 1, 0 2 3 )'::geometry As line) As foo;
+<programlisting>SELECT ST_3DIntersects(pt, line), ST_Intersects(pt, line)
+	FROM (SELECT 'POINT(0 0 2)'::geometry As pt, 'LINESTRING (0 0 1, 0 2 3)'::geometry As line) As foo;
  st_3dintersects | st_intersects
 -----------------+---------------
  f               | t
@@ -369,8 +365,7 @@ ST_DWithin(
 		</refsection>
 
 		<refsection><title>TIN Examples</title>
-		    <programlisting>set postgis.backend = sfcgal;
-SELECT ST_3DIntersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'POINT(.1 .1)'::geometry);
+		    <programlisting>SELECT ST_3DIntersects('TIN(((0 0 0,1 0 0,0 1 0,0 0 0)))'::geometry, 'POINT(.1 .1 0)'::geometry);
  st_3dintersects
 -----------------
  t</programlisting></refsection>
@@ -3437,7 +3432,7 @@ FROM test;
 
 			<refpurpose>Returns TRUE if the Geometries/Geography "spatially
 			intersect in 2D" - (share any portion of space) and FALSE if they don't (they are Disjoint).
-			For geography -- tolerance is 0.00001 meters (so any points that close are considered to intersect)
+			For geography tolerance is 0.00001 meters (so any points that close are considered to intersect)
 			</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
@@ -3470,10 +3465,12 @@ FROM test;
 			<title>Description</title>
 			<para>If a geometry or geography shares any portion of space then they intersect.
 			For geography -- tolerance is 0.00001 meters (so any points that are close are considered to intersect)</para>
-			<para>Overlaps, Touches, Within all imply spatial intersection.  If any of the aforementioned
+			<para>ST_Overlaps, ST_Touches, ST_Within all imply spatial intersection.
+			  If any of the aforementioned
 				returns true, then the geometries also spatially intersect.
 				Disjoint implies false for spatial intersection.</para>
 
+			<para>Changed: 3.0.0 SFCGAL version removed.</para>
 			<para>Enhanced: 2.5.0 Supports GEOMETRYCOLLECTION.</para>
 			<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 			<para>Performed by the GEOS module (for geometry), geography is native</para>
@@ -3514,8 +3511,8 @@ SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry
 		<refsection>
 		<title>Geography Examples</title>
 <programlisting>SELECT ST_Intersects(
-		ST_GeographyFromText('SRID=4326;LINESTRING(-43.23456 72.4567,-43.23456 72.4568)'),
-		ST_GeographyFromText('SRID=4326;POINT(-43.23456 72.4567772)')
+		'SRID=4326;LINESTRING(-43.23456 72.4567,-43.23456 72.4568)'::geography,
+		'SRID=4326;POINT(-43.23456 72.4567772)'::geography
 		);
 
  st_intersects
