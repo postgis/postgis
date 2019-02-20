@@ -350,11 +350,6 @@ char lwcollection_same(const LWCOLLECTION *p1, const LWCOLLECTION *p2);
 char lwcircstring_same(const LWCIRCSTRING *p1, const LWCIRCSTRING *p2);
 
 /*
-* Transform
-*/
-int point4d_transform(POINT4D *pt, PJ* pj);
-
-/*
 * Shift
 */
 void ptarray_longitude_shift(POINTARRAY *pa);
