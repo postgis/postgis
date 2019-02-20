@@ -107,22 +107,22 @@ select
 
 select 'distancepoly2',
 		ST_Distance(a, b),
-			st_maxdistance(a, b),
-				st_astext(st_shortestline(a,b)),
-					st_astext(st_shortestline(b,a)),
-						st_astext(st_longestline(a,b)),
-							st_astext(st_longestline(b,a)) from (
+		st_maxdistance(a, b)::numeric(12,6),
+		st_astext(st_shortestline(a,b)),
+		st_astext(st_shortestline(b,a)),
+		st_astext(st_longestline(a,b)),
+		st_astext(st_longestline(b,a)) from (
 	select ST_GeomFromText('POLYGON((17 14, 16 17, 17 18, 17 17, 17 14))') as a,
 			ST_GeomFromText('POLYGON((-1 -1, -1 25, 25 25, 25 -1, -1 -1), (14 14,14 19,19 19,19 14,14 14))') as b
 	) as foo;
 
 select 'distancepoly3',
 		ST_Distance(a, b),
-			st_maxdistance(a, b)::numeric(12,6),
-				st_astext(st_shortestline(a,b)),
-					st_astext(st_shortestline(b,a)),
-						st_astext(st_longestline(a,b)),
-							st_astext(st_longestline(b,a)) from (
+		st_maxdistance(a, b)::numeric(12,6),
+		st_astext(st_shortestline(a,b)),
+		st_astext(st_shortestline(b,a)),
+		st_astext(st_longestline(a,b)),
+		st_astext(st_longestline(b,a)) from (
 	select ST_GeomFromText('POLYGON((17 16, 16 17, 17 19, 17 17, 17 16))') as a,
 			ST_GeomFromText('POLYGON((-1 -1, -1 25, 25 25, 25 -1, -1 -1), (14 14,14 19,19 19,19 14,14 14))') as b
 	) as foo;
