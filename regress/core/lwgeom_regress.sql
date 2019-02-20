@@ -153,13 +153,13 @@ SELECT 'ST_Azimuth_null_geom' , ST_Azimuth(geom1,geom2)
 FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('EMPTY') AS geom2;
 
 --- ST_Angle(points)
-SELECT 'ST_Angle_4_pts', St_Angle(p1,p2,p3,p4)
+SELECT 'ST_Angle_4_pts', St_Angle(p1,p2,p3,p4)::numeric(12,6)
 	FROM ST_GeomFromtext('POINT(0 1)') AS p1, ST_GeomFromtext('POINT(0 0)') AS p2
 	, ST_GeomFromtext('POINT(1 0)') AS p3, ST_GeomFromtext('POINT(2 0)') AS p4;
-SELECT 'ST_Angle_4_pts', St_Angle(p1,p2,p3,p4)
+SELECT 'ST_Angle_4_pts', St_Angle(p1,p2,p3,p4)::numeric(12,6)
 	FROM ST_GeomFromtext('POINT(2 0)') AS p1, ST_GeomFromtext('POINT(1 0)') AS p2
 	, ST_GeomFromtext('POINT(1 -1)') AS p3, ST_GeomFromtext('POINT(0 0)') AS p4;
-SELECT 'ST_Angle_3_pts', St_Angle(p1,p2,p3)
+SELECT 'ST_Angle_3_pts', St_Angle(p1,p2,p3)::numeric(12,6)
 	FROM ST_GeomFromtext('POINT(0 1)') AS p1, ST_GeomFromtext('POINT(0 0)') AS p2
 	, ST_GeomFromtext('POINT(1 0)') AS p3, ST_GeomFromtext('POINT(2 0)') AS p4;
 SELECT 'ST_Angle_mixed_srid', St_Angle(p1,p2,p3,p4)
@@ -169,7 +169,7 @@ SELECT 'ST_Angle_empty' , St_Angle(p1,p2,p3,p4)
 	FROM ST_GeomFromtext('POINT EMPTY') AS p1, ST_GeomFromtext('POINT(0 0)') AS p2
 	, ST_GeomFromtext('POINT(1 0)',4326) AS p3, ST_GeomFromtext('POINT(2 0)') AS p4;
 --- ST_Angle(lines)
-SELECT 'ST_Angle_2_lines', St_Angle(l1,l2)
+SELECT 'ST_Angle_2_lines', St_Angle(l1,l2)::numeric(12,6)
 	FROM ST_GeomFromtext('LINESTRING(0 1,0 0)') AS l1
 	, ST_GeomFromtext('LINESTRING(1 0, 2 0)') AS l2;
 

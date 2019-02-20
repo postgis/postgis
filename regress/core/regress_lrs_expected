@@ -20,7 +20,7 @@ LINEZM_6|MULTIPOINT ZM (9.5 0.5 0.5 2)
 #4155.1|MULTILINESTRING Z ((2 2 2,5 5 5))
 #4155.2|TIN Z EMPTY
 #4155.3|MULTIPOLYGON Z EMPTY
-line_locate_point_1|0.528602749909894
+line_locate_point_1|0.528603
 line_locate_point_2|1
 line_locate_point_3|0
 line_locate_point_4|0

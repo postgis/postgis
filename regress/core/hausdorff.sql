@@ -3,7 +3,7 @@
 -- polygon and polygon
 SELECT 'hausdorff_poly_poly', st_hausdorffdistance(
 	'POLYGON((0 0, 0 2, 1 2, 2 2, 2 0, 0 0))'::geometry,
-	'POLYGON((0.5 0.5, 0.5 2.5, 1.5 2.5, 2.5 2.5, 2.5 0.5, 0.5 0.5))'::geometry);
+	'POLYGON((0.5 0.5, 0.5 2.5, 1.5 2.5, 2.5 2.5, 2.5 0.5, 0.5 0.5))'::geometry)::numeric(12,5);
 -- 0.707106781186548
 
 -- linestring and linestring
@@ -27,7 +27,7 @@ SELECT 'hausdorff_ls_mp', st_hausdorffdistance(
 -- another linestring and linestring
 SELECT 'hausdorff_ls_ls_3', st_hausdorffdistance(
 	'LINESTRING (130 0, 0 0, 0 150)'::geometry,
-	'LINESTRING (10 10, 10 150, 130 10)'::geometry);
+	'LINESTRING (10 10, 10 150, 130 10)'::geometry)::numeric(12,5);
 -- 14.142135623730951
 
 -- hausdorf with densification

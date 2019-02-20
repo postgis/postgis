@@ -27,12 +27,12 @@ ST_Azimuth_same_point|
 ERROR:  Operation on mixed SRID geometries
 ERROR:  Argument must be POINT geometries
 ERROR:  parse error - invalid geometry
-ST_Angle_4_pts|4.71238898038469
-ST_Angle_4_pts|0.785398163397448
-ST_Angle_3_pts|1.5707963267949
+ST_Angle_4_pts|4.712389
+ST_Angle_4_pts|0.785398
+ST_Angle_3_pts|1.570796
 ERROR:  Operation on mixed SRID geometries
 ERROR:  Empty geometry
-ST_Angle_2_lines|4.71238898038469
+ST_Angle_2_lines|4.712389
 #3965|25|25
 #3971|t
 #4071|2|3|4

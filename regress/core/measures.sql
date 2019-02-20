@@ -5,9 +5,9 @@ select '114', ST_perimeter2d('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0
 
 select '115', ST_3DPerimeter('MULTIPOLYGON( ((0 0 0, 10 0 0, 10 10 0, 0 10 0, 0 0 0)),( (0 0 0, 10 0 0, 10 10 0, 0 10 0, 0 0 0),(5 5 0, 7 5 0, 7 7  0, 5 7 0, 5 5 0) ) ,( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7 1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) )'::GEOMETRY) as value;
 
-select '116', ST_length2d('MULTILINESTRING((0 0, 1 1),(0 0, 1 1, 2 2) )'::GEOMETRY) as value;
-select '117', ST_3dlength('MULTILINESTRING((0 0, 1 1),(0 0, 1 1, 2 2) )'::GEOMETRY) as value;
-select '118', ST_3dlength('MULTILINESTRING((0 0 0, 1 1 1),(0 0 0, 1 1 1, 2 2 2) )'::GEOMETRY) as value;
+select '116', ST_length2d('MULTILINESTRING((0 0, 1 1),(0 0, 1 1, 2 2) )'::GEOMETRY)::numeric(12,6) as value;
+select '117', ST_3dlength('MULTILINESTRING((0 0, 1 1),(0 0, 1 1, 2 2) )'::GEOMETRY)::numeric(12,6) as value;
+select '118', ST_3dlength('MULTILINESTRING((0 0 0, 1 1 1),(0 0 0, 1 1 1, 2 2 2) )'::GEOMETRY)::numeric(12,6) as value;
 
 select '134', ST_Distance('POINT(1 2)', 'POINT(1 2)');
 select '135', ST_Distance('POINT(5 0)', 'POINT(10 12)');
@@ -47,7 +47,7 @@ select 'st_maxdistance_135', st_maxdistance('POINT(5 0)', 'POINT(10 12)');
 select 'st_maxdistance_136', st_maxdistance('POINT(0 0)', ST_translate('POINT(0 0)', 5, 12, 0));
 
 -- postgis-users/2006-May/012174.html
-select 'st_maxdistance_dist', st_maxdistance(a,b), st_maxdistance(b,a) from (
+select 'st_maxdistance_dist', st_maxdistance(a,b)::numeric(12,6), st_maxdistance(b,a)::numeric(12,6) from (
 	select 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry as a,
 		'POLYGON((11 0, 11 10, 20 10, 20 0, 11 0),
 			(15 5, 15 8, 17 8, 17 5, 15 5))'::geometry as b
@@ -118,7 +118,7 @@ select 'distancepoly2',
 
 select 'distancepoly3',
 		ST_Distance(a, b),
-			st_maxdistance(a, b),
+			st_maxdistance(a, b)::numeric(12,6),
 				st_astext(st_shortestline(a,b)),
 					st_astext(st_shortestline(b,a)),
 						st_astext(st_longestline(a,b)),
@@ -129,7 +129,7 @@ select 'distancepoly3',
 
 select 'distancepoly4',
 		ST_Distance(a, b),
-			st_maxdistance(a, b),
+			st_maxdistance(a, b)::numeric(12,6),
 				st_astext(st_shortestline(a,b)),
 					st_astext(st_shortestline(b,a)),
 						st_astext(st_longestline(a,b)),
@@ -140,7 +140,7 @@ select 'distancepoly4',
 
 select 'distancepoly5',
 		ST_Distance(a, b),
-			st_maxdistance(a, b),
+			st_maxdistance(a, b)::numeric(12,6),
 				st_astext(st_shortestline(a,b)),
 					st_astext(st_shortestline(b,a)),
 						st_astext(st_longestline(a,b)),
@@ -151,7 +151,7 @@ select 'distancepoly5',
 
 select 'distancepoly6',
 		ST_Distance(a, b),
-			st_maxdistance(a, b),
+			st_maxdistance(a, b)::numeric(12,6),
 				st_astext(st_shortestline(a,b)),
 					st_astext(st_shortestline(b,a)),
 						st_astext(st_longestline(a,b)),
@@ -163,8 +163,8 @@ select 'distancepoly6',
 --3D Distance functions
 
 SELECT '3dDistancetest1',
-	ST_3DDistance(a,b),
-		ST_3DMaxDistance(a,b),
+	ST_3DDistance(a,b)::numeric(12,6),
+		ST_3DMaxDistance(a,b)::numeric(12,6),
 			ST_3DDWithin(a,b,5),
 				ST_3DDFullyWithin(a,b,5),
 					ST_ASEWKT(ST_3DShortestline(a,b)),
@@ -175,7 +175,7 @@ SELECT '3dDistancetest1',
 
 SELECT '3dDistancetest2',
 	ST_3DDistance(a,b),
-		ST_3DMaxDistance(a,b),
+		ST_3DMaxDistance(a,b)::numeric(12,6),
 			ST_3DDWithin(a,b,5),
 				ST_3DDFullyWithin(a,b,5),
 					ST_ASEWKT(ST_3DShortestline(a,b)),
@@ -185,8 +185,8 @@ SELECT '3dDistancetest2',
 	) as foo;
 
 SELECT '3dDistancetest3',
-	ST_3DDistance(a,b),
-		ST_3DMaxDistance(a,b),
+	ST_3DDistance(a,b)::numeric(12,6),
+		ST_3DMaxDistance(a,b)::numeric(12,6),
 			ST_3DDWithin(a,b,5),
 				ST_3DDFullyWithin(a,b,5),
 					ST_ASEWKT(ST_SnapToGrid(ST_3DShortestline(a,b), 1e-14)),
@@ -197,7 +197,7 @@ SELECT '3dDistancetest3',
 
 SELECT '3dDistancetest4',
 	ST_3DDistance(a,b),
-		ST_3DMaxDistance(a,b),
+		ST_3DMaxDistance(a,b)::numeric(12,6),
 			ST_3DDWithin(a,b,5),
 				ST_3DDFullyWithin(a,b,5),
 					ST_ASEWKT(ST_3DShortestline(a,b)),
