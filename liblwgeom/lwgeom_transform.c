@@ -87,6 +87,7 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 	pj.pj_to = lwproj_from_string(outstr);
 	if (!pj.pj_to)
 	{
+		pj_free(pj.pj_from);
 		pj_errstr = pj_strerrno(*pj_get_errno_ref());
 		if (!pj_errstr) pj_errstr = "";
 		lwerror("could not parse proj string '%s'", instr);
@@ -219,9 +220,14 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 		PJ *pj_in = proj_create(NULL, instr);
 		PJ *pj_out = proj_create(NULL, outstr);
 		if (!pj_in)
+		{
 			lwerror("could not parse proj string '%s'", instr);
+		}
 		if (!pj_out)
+		{
+			proj_destroy(pj_in);
 			lwerror("could not parse proj string '%s'", outstr);
+		}
 		return LW_FAILURE;
 	}
 
@@ -324,11 +330,23 @@ ptarray_transform(POINTARRAY* pa, PJ* pj)
 	size_t point_size = ptarray_point_size(pa);
 	int has_z = ptarray_has_z(pa);
 	double *pa_double = (double*)(pa->serialized_pointlist);
+	int input_swapped, output_swapped;
 
 	/* XXXX TODO check that the PJ has decimal degrees as units in input/output */
 
-	int input_swapped = proj_crs_is_swapped(proj_get_source_crs(NULL, pj));
-	int output_swapped = proj_crs_is_swapped(proj_get_target_crs(NULL, pj));
+	PJ* pj_source_crs = proj_get_source_crs(NULL, pj);
+	PJ* pj_target_crs = proj_get_target_crs(NULL, pj);
+
+	if (!(pj_source_crs && pj_source_crs))
+	{
+		lwerror("ptarray_transform: unable to access source and target crs");
+		return LW_FAILURE;
+	}
+
+	input_swapped = proj_crs_is_swapped(pj_source_crs);
+	output_swapped = proj_crs_is_swapped(pj_target_crs);
+	proj_destroy(pj_source_crs);
+	proj_destroy(pj_target_crs);
 
 	/* Convert to radians if necessary */
 	if (proj_angular_input(pj, PJ_FWD))
@@ -343,11 +361,13 @@ ptarray_transform(POINTARRAY* pa, PJ* pj)
 	if (input_swapped)
 		ptarray_swap_ordinates(pa, LWORD_X, LWORD_Y);
 
-	// size_t proj_trans_generic(PJ *P, PJ_DIRECTION direction,
-	// double *x, size_t sx, size_t nx,
-	// double *y, size_t sy, size_t ny,
-	// double *z, size_t sz, size_t nz,
-	// double *t, size_t st, size_t nt)
+	/*
+	* size_t proj_trans_generic(PJ *P, PJ_DIRECTION direction,
+	* double *x, size_t sx, size_t nx,
+	* double *y, size_t sy, size_t ny,
+	* double *z, size_t sz, size_t nz,
+	* double *t, size_t st, size_t nt)
+	*/
 
 	n_converted = proj_trans_generic(
 		pj, PJ_FWD,

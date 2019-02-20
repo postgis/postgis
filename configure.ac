@@ -868,21 +868,19 @@ fi
 dnl Check that we can find the proj_api.h header file
 CPPFLAGS_SAVE="$CPPFLAGS"
 CPPFLAGS="$PROJ_CPPFLAGS"
-AC_CHECK_HEADER([proj_api.h], [], [AC_MSG_ERROR([could not find proj_api.h - you may need to specify the directory of a PROJ.4 installation using --with-projdir])],
-[
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-])
+AC_CHECK_HEADER([proj_api.h],
+	[],
+	[AC_CHECK_HEADER([proj.h],
+		[],
+		[AC_MSG_ERROR([could not find proj.h or proj_api.h - you may need to specify the directory of a PROJ installation using --with-projdir])]
+		)]
+	)
 
 dnl Return the PROJ.4 version number
 AC_PROJ_VERSION([POSTGIS_PROJ_VERSION])
 AC_DEFINE_UNQUOTED([POSTGIS_PROJ_VERSION], [$POSTGIS_PROJ_VERSION], [PROJ library version])
 AC_SUBST([POSTGIS_PROJ_VERSION])
 CPPFLAGS="$CPPFLAGS_SAVE"
-
-dnl For PROJ 6 add the ACCEPT_USE_OF_DEPRECATED_PROJ_API_H definition
-if test "$POSTGIS_PROJ_VERSION" -ge 60 && test "$POSTGIS_PROJ_VERSION" -lt 70; then
-    AC_DEFINE([ACCEPT_USE_OF_DEPRECATED_PROJ_API_H], [1], [Define to use the old PROJ API])
-fi
 
 dnl Ensure that we are using PROJ >= 4.6.0 (requires pj_set_searchpath)
 if test ! "$POSTGIS_PROJ_VERSION" -ge 46; then
@@ -897,7 +895,7 @@ LIBS_SAVE="$LIBS"
 LIBS="$PROJ_LDFLAGS"
 AC_CHECK_LIB([proj], [pj_get_release],
 	[],
-	[AC_MSG_ERROR([could not find libproj - you may need to specify the directory of a PROJ.4 installation using --with-projdir])],
+	[AC_MSG_ERROR([could not find libproj - you may need to specify the directory of a PROJ installation using --with-projdir])],
 	[])
 LIBS="$LIBS_SAVE"
 
