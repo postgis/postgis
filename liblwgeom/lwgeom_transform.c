@@ -127,7 +127,7 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 		pj_free(pj.pj_from);
 		pj_errstr = pj_strerrno(*pj_get_errno_ref());
 		if (!pj_errstr) pj_errstr = "";
-		lwerror("could not parse proj string '%s'", instr);
+		lwerror("could not parse proj string '%s'", outstr);
 		return LW_FAILURE;
 	}
 

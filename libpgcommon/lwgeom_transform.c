@@ -397,7 +397,7 @@ GetProjStringsSPI(int srid)
 	spi_result = SPI_connect();
 	if (spi_result != SPI_OK_CONNECT)
 	{
-		elog(ERROR, "%s: Could not connect to database using SPI", __func__);
+		elog(ERROR, "Could not connect to database using SPI");
 	}
 
 	/*
@@ -454,13 +454,13 @@ GetProjStringsSPI(int srid)
 	}
 	else
 	{
-		elog(ERROR, "%s: Cannot find SRID (%d) in spatial_ref_sys", __func__, srid);
+		elog(ERROR, "Cannot find SRID (%d) in spatial_ref_sys", srid);
 	}
 
 	spi_result = SPI_finish();
 	if (spi_result != SPI_OK_FINISH)
 	{
-		elog(ERROR, "%s: Could not disconnect from database using SPI", __func__);
+		elog(ERROR, "Could not disconnect from database using SPI");
 	}
 
 	return strs;
@@ -636,10 +636,10 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
 	*/
 	from_strs = GetProjStrings(srid_from);
 	if (!pjstrs_has_entry(&from_strs))
-		elog(ERROR, "AddToPROJSRSCache: GetProjStrings returned NULL for SRID (%d)", srid_from);
+		elog(ERROR, "got NULL for SRID (%d)", srid_from);
 	to_strs = GetProjStrings(srid_to);
 	if (!pjstrs_has_entry(&to_strs))
-		elog(ERROR, "AddToPROJSRSCache: GetProjStrings returned NULL for SRID (%d)", srid_to);
+		elog(ERROR, "got NULL for SRID (%d)", srid_to);
 
 #if POSTGIS_PROJ_VERSION < 60
 	PJ* projection = malloc(sizeof(PJ));
@@ -650,12 +650,12 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
 
 	if (!projection->pj_from)
 		elog(ERROR,
-		    "AddToPROJSRSCache: could not form projection from 'srid=%d' to 'srid=%d'",
+		    "could not form projection from 'srid=%d' to 'srid=%d'",
 		    srid_from, srid_to);
 
 	if (!projection->pj_to)
 		elog(ERROR,
-		    "AddToPROJSRSCache: could not form projection from 'srid=%d' to 'srid=%d'",
+		    "could not form projection from 'srid=%d' to 'srid=%d'",
 		    srid_from, srid_to);
 #else
 	PJ* projection = NULL;
@@ -677,7 +677,7 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
 	if (!projection)
 	{
 		elog(ERROR,
-		    "AddToPROJSRSCache: could not form projection from 'srid=%d' to 'srid=%d'",
+		    "could not form projection from 'srid=%d' to 'srid=%d'",
 		    srid_from, srid_to);
 	}
 #endif
