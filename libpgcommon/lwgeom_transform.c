@@ -36,7 +36,7 @@
 /**
 * Global variable to hold cached information about what
 * schema functions are installed in. Currently used by
-* SetSpatialRefSysSchema and GetProjStringSPI
+* SetSpatialRefSysSchema and GetProjStringsSPI
 */
 static char *spatialRefSysSchema = NULL;
 
@@ -105,7 +105,7 @@ void SetPROJLibPath(void);
 /*
 * Given a function call context, figure out what namespace the
 * function is being called from, and copy that into a global
-* for use by GetProjStringSPI
+* for use by GetProjStringsSPI
 */
 static void
 SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
@@ -142,7 +142,7 @@ PROJSRSDestroyPJ(PJ* pj)
 #endif
 }
 
-#if POSTGIS_PROJ_VERSION < 60
+#if 0
 static const char *
 PJErrStr()
 {
@@ -397,7 +397,7 @@ GetProjStringsSPI(int srid)
 	spi_result = SPI_connect();
 	if (spi_result != SPI_OK_CONNECT)
 	{
-		elog(ERROR, "GetProjStringSPI: Could not connect to database using SPI");
+		elog(ERROR, "%s: Could not connect to database using SPI", __func__);
 	}
 
 	/*
@@ -454,13 +454,13 @@ GetProjStringsSPI(int srid)
 	}
 	else
 	{
-		elog(ERROR, "GetProjStringSPI: Cannot find SRID (%d) in spatial_ref_sys", srid);
+		elog(ERROR, "%s: Cannot find SRID (%d) in spatial_ref_sys", __func__, srid);
 	}
 
 	spi_result = SPI_finish();
 	if (spi_result != SPI_OK_FINISH)
 	{
-		elog(ERROR, "GetProjStringSPI: Could not disconnect from database using SPI");
+		elog(ERROR, "%s: Could not disconnect from database using SPI", __func__);
 	}
 
 	return strs;
@@ -601,6 +601,22 @@ pgstrs_get_entry(const PjStrs *strs, int n)
 }
 #endif
 
+/*
+* Utility function for GML reader that still
+* needs proj4text access
+*/
+char *
+GetProj4String(int srid)
+{
+	PjStrs strs;
+	char *proj4str;
+	memset(&strs, 0, sizeof(strs));
+	strs = GetProjStringsSPI(srid);
+	proj4str = pstrdup(strs.proj4text);
+	pjstrs_pfree(&strs);
+	return proj4str;
+}
+
 /**
  * Add an entry to the local PROJ SRS cache. If we need to wrap around then
  * we must make sure the entry we choose to delete does not contain other_srid
@@ -611,8 +627,8 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
 {
 	MemoryContext PJMemoryContext;
 
-	PjStrs from_strs;
-	PjStrs to_strs;
+	PjStrs from_strs, to_strs;
+	char *pj_from_str, *pj_to_str;
 
 	/*
 	** Turn the SRID number into a proj4 string, by reading from spatial_ref_sys
@@ -627,8 +643,10 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
 
 #if POSTGIS_PROJ_VERSION < 60
 	PJ* projection = malloc(sizeof(PJ));
-	projection->pj_from = lwproj_from_string(from_strs.proj4text);
-	projection->pj_to = lwproj_from_string(to_strs.proj4text);
+	pj_from_str = from_strs.proj4text;
+	pj_to_str = to_strs.proj4text;
+	projection->pj_from = lwproj_from_string(pj_from_str);
+	projection->pj_to = lwproj_from_string(pj_to_str);
 
 	if (!projection->pj_from)
 		elog(ERROR,
@@ -648,8 +666,8 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
 	uint32_t i;
 	for (i = 0; i < 9; i++)
 	{
-		char *pj_from_str = pgstrs_get_entry(&from_strs, i / 3);
-		char *pj_to_str   = pgstrs_get_entry(&to_strs,   i % 3);
+		pj_from_str = pgstrs_get_entry(&from_strs, i / 3);
+		pj_to_str   = pgstrs_get_entry(&to_strs,   i % 3);
 		if (!(pj_from_str && pj_to_str))
 			continue;
 		projection = proj_create_crs_to_crs(NULL, pj_from_str, pj_to_str, NULL);
@@ -679,7 +697,10 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
 				(PROJCache->PROJSRSCache[i].srid_from != srid_from ||
 				 PROJCache->PROJSRSCache[i].srid_to != srid_to))
 			{
-				POSTGIS_DEBUGF(3, "choosing to remove item from query cache with SRID %d and index %d", PROJCache->PROJSRSCache[i].srid, i);
+				POSTGIS_DEBUGF(3, "choosing to remove item from query cache with SRIDs %d => %d and index %d",
+					PROJCache->PROJSRSCache[i].srid_from,
+					PROJCache->PROJSRSCache[i].srid_to,
+					i);
 
 				DeleteFromPROJSRSCache(PROJCache,
 				    PROJCache->PROJSRSCache[i].srid_from,
