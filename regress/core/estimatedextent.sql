@@ -159,24 +159,24 @@ analyze c2;
 analyze p;
 
 -- #3391.17
-with e as ( select ST_EstimatedExtent('public','p','g','f') as e )
 select '#3391.17', round(st_xmin(e.e)::numeric, 2), round(st_xmax(e.e)::numeric, 2),
-round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2) from e;
+round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2)
+from ( select ST_EstimatedExtent('public','p','g','f') as e) AS e;
 
 -- #3391.18
-with e as ( select ST_EstimatedExtent('public','p','g','t') as e )
 select '#3391.18', round(st_xmin(e.e)::numeric, 2), round(st_xmax(e.e)::numeric, 2),
-round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2) from e;
+round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2)
+from ( select ST_EstimatedExtent('public','p','g','t') as e )AS e;
 
 -- #3391.19
-with e as ( select ST_EstimatedExtent('public','c1','g', 'f') as e )
 select '#3391.19', round(st_xmin(e.e)::numeric, 2), round(st_xmax(e.e)::numeric, 2),
-round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2) from e;
+round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2)
+from ( select ST_EstimatedExtent('public','c1','g', 'f') as e ) AS e;
 
 -- #3391.20
-with e as ( select ST_EstimatedExtent('public','c1','g', 't') as e )
 select '#3391.20', round(st_xmin(e.e)::numeric, 2), round(st_xmax(e.e)::numeric, 2),
-round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2) from e;
+round(st_ymin(e.e)::numeric, 2), round(st_ymax(e.e)::numeric, 2)
+from ( select ST_EstimatedExtent('public','c1','g', 't') as e ) AS e;
 
 drop table p cascade;
 
