@@ -49,6 +49,7 @@
 #include "geography.h"
 
 #include <assert.h>
+#include <math.h>
 
 /*
 ** When is a node split not so good? If more than 90% of the entries
