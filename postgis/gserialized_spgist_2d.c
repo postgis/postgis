@@ -82,6 +82,7 @@
 #include "lwgeom_pg.h"        /* For debugging macros. */
 #include <gserialized_gist.h> /* For utility functions. */
 #include <lwgeom_pg.h>        /* For debugging macros. */
+#include <math.h>
 
 /*
 ** SP-GiST 2D index function prototypes
