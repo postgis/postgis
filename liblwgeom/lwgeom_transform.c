@@ -309,9 +309,9 @@ proj_crs_is_swapped(const PJ* pj_crs)
 	}
 	else if (proj_get_type(pj_crs) == PJ_TYPE_BOUND_CRS)
 	{
-		PJ *pj_bound_crs = proj_get_source_crs(NULL, pj_crs);
-		pj_cs = proj_crs_get_coordinate_system(NULL, pj_bound_crs);
-		proj_destroy(pj_bound_crs);
+		PJ *pj_src_crs = proj_get_source_crs(NULL, pj_crs);
+		pj_cs = proj_crs_get_coordinate_system(NULL, pj_src_crs);
+		proj_destroy(pj_src_crs);
 	}
 	else
 	{
