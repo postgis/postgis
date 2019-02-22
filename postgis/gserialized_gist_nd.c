@@ -141,7 +141,7 @@ gidx_validate(GIDX *b)
 inline bool
 gidx_is_unknown(const GIDX *a)
 {
-	size_t size = VARSIZE(a) - VARHDRSZ;
+	size_t size = VARSIZE_ANY_EXHDR(a);
 	/* "unknown" gidx objects have a too-small size of one float */
 	if (size <= 0.0)
 		return true;

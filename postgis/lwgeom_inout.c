@@ -374,7 +374,7 @@ Datum LWGEOMFromEWKB(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	uint8_t *wkb = (uint8_t*)VARDATA(bytea_wkb);
 
-	lwgeom = lwgeom_from_wkb(wkb, VARSIZE(bytea_wkb)-VARHDRSZ, LW_PARSER_CHECK_ALL);
+	lwgeom = lwgeom_from_wkb(wkb, VARSIZE_ANY_EXHDR(bytea_wkb), LW_PARSER_CHECK_ALL);
 
 	if (  ( PG_NARGS()>1) && ( ! PG_ARGISNULL(1) ))
 	{
@@ -403,7 +403,7 @@ Datum LWGEOMFromTWKB(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	uint8_t *twkb = (uint8_t*)VARDATA(bytea_twkb);
 
-	lwgeom = lwgeom_from_twkb(twkb, VARSIZE(bytea_twkb)-VARHDRSZ, LW_PARSER_CHECK_ALL);
+	lwgeom = lwgeom_from_twkb(twkb, VARSIZE_ANY_EXHDR(bytea_twkb), LW_PARSER_CHECK_ALL);
 
 	if ( lwgeom_needs_bbox(lwgeom) )
 		lwgeom_add_bbox(lwgeom);
@@ -443,7 +443,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 			variant = variant | WKB_NDR;
 		}
 	}
-	wkb_size= VARSIZE(geom) - VARHDRSZ;
+	wkb_size= VARSIZE_ANY_EXHDR(geom);
 	/* Create WKB hex string */
 	lwgeom = lwgeom_from_gserialized(geom);
 

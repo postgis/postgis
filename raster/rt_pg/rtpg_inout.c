@@ -142,7 +142,7 @@ Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
 	result_size = wkb_size + VARHDRSZ;
 	result = (bytea *)palloc(result_size);
 	SET_VARSIZE(result, result_size);
-	memcpy(VARDATA(result), wkb, VARSIZE(result) - VARHDRSZ);
+	memcpy(VARDATA(result), wkb, VARSIZE_ANY_EXHDR(result));
 
 	/* Free raster objects used */
 	rt_raster_destroy(raster);

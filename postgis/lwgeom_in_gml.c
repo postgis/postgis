@@ -108,7 +108,7 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 	xml_input = PG_GETARG_TEXT_P(0);
 	xml = text_to_cstring(xml_input);
-	xml_size = VARSIZE(xml_input) - VARHDRSZ;
+	xml_size = VARSIZE_ANY_EXHDR(xml_input);
 
 	/* Zero for undefined */
 	root_srid = PG_GETARG_INT32(1);
