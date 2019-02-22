@@ -352,12 +352,10 @@ ptarray_transform(POINTARRAY* pa, PJ* pj)
 	double *pa_double = (double*)(pa->serialized_pointlist);
 	int input_swapped, output_swapped;
 
-	/* XXXX TODO check that the PJ has decimal degrees as units in input/output */
-
 	PJ* pj_source_crs = proj_get_source_crs(NULL, pj);
 	PJ* pj_target_crs = proj_get_target_crs(NULL, pj);
 
-	if (!(pj_source_crs && pj_source_crs))
+	if (!(pj_source_crs && pj_target_crs))
 	{
 		lwerror("ptarray_transform: unable to access source and target crs");
 		return LW_FAILURE;
