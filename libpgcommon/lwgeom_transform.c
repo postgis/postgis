@@ -864,14 +864,18 @@ GetPJUsingFCInfo(FunctionCallInfo fcinfo, int srid_from, int srid_to, PJ** pj)
 	return LW_SUCCESS;
 }
 
-
 static int
 proj_pj_is_latlong(const PJ* pj)
 {
 #if POSTGIS_PROJ_VERSION < 60
 	return pj_is_latlong(pj->pj_from);
 #else
-	PJ_TYPE pj_type = proj_get_type(proj_get_source_crs(NULL, pj));
+	PJ_TYPE pj_type;
+	PJ *pj_src_crs = proj_get_source_crs(NULL, pj);
+	if (!pj_src_crs)
+		elog(ERROR, "%s: proj_get_source_crs returned NULL", __func__);
+	pj_type = proj_get_type(pj_src_crs);
+	proj_destroy(pj_src_crs);
 	return (pj_type == PJ_TYPE_GEOGRAPHIC_2D_CRS) ||
 	       (pj_type == PJ_TYPE_GEOGRAPHIC_3D_CRS);
 #endif
