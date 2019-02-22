@@ -439,7 +439,7 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
  *    (if deltaX is 1 degrees, then that distance represents 1/360 of a circle of radius S.)
  *
  *
- *  Parts taken from PROJ4 - geodetic_to_geocentric() (for calculating Rn)
+ *  Parts taken from PROJ - geodetic_to_geocentric() (for calculating Rn)
  *
  *  remember that lat1/long1/lat2/long2 are comming in a *RADIANS* not degrees.
  *

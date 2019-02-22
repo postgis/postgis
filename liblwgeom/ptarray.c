@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "../postgis_config.h"
 /*#define POSTGIS_DEBUG_LEVEL 4*/
@@ -378,8 +379,8 @@ ptarray_swap_ordinates(POINTARRAY *pa, LWORD o1, LWORD o2)
 	double d, *dp1, *dp2;
 	POINT4D p;
 
-  dp1 = ((double*)&p)+(unsigned)o1;
-  dp2 = ((double*)&p)+(unsigned)o2;
+	dp1 = ((double*)&p)+(unsigned)o1;
+	dp2 = ((double*)&p)+(unsigned)o2;
 	for (i=0 ; i < pa->npoints ; i++)
 	{
 		getPoint4d_p(pa, i, &p);

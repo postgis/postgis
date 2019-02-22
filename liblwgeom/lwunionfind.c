@@ -26,6 +26,7 @@
 #include "liblwgeom.h"
 #include "lwunionfind.h"
 #include <string.h>
+#include <stdlib.h>
 
 static int cmp_int(const void *a, const void *b);
 static int cmp_int_ptr(const void *a, const void *b);

@@ -52,6 +52,7 @@
 
 
 #include <float.h> /* For FLT_MAX */
+#include <math.h>
 
 /*
 ** When is a node split not so good? If more than 90% of the entries
