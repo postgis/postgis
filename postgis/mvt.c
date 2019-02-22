@@ -1183,7 +1183,7 @@ mvt_agg_context * mvt_ctx_deserialize(const bytea *ba)
 		NULL
 	};
 
-	size_t len = VARSIZE(ba) - VARHDRSZ;
+	size_t len = VARSIZE_ANY_EXHDR(ba);
 	VectorTile__Tile *tile = vector_tile__tile__unpack(&allocator, len, (uint8_t*)VARDATA(ba));
 	mvt_agg_context *ctx = palloc(sizeof(mvt_agg_context));
 	memset(ctx, 0, sizeof(mvt_agg_context));

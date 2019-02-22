@@ -51,7 +51,7 @@ cstring2text(const char *cstring)
 static char*
 text2cstring(const text *textptr)
 {
-	size_t size = VARSIZE(textptr) - VARHDRSZ;
+	size_t size = VARSIZE_ANY_EXHDR(textptr);
 	char *str = lwalloc(size+1);
 	memcpy(str, VARDATA(textptr), size);
 	str[size]='\0';

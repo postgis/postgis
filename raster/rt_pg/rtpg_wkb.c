@@ -81,7 +81,7 @@ Datum RASTER_asWKB(PG_FUNCTION_ARGS)
 	result_size = wkb_size + VARHDRSZ;
 	result = (char *)palloc(result_size);
 	SET_VARSIZE(result, result_size);
-	memcpy(VARDATA(result), wkb, VARSIZE(result) - VARHDRSZ);
+	memcpy(VARDATA(result), wkb, VARSIZE_ANY_EXHDR(result));
 
 	/* Free raster objects used */
 	rt_raster_destroy(raster);
@@ -153,7 +153,7 @@ Datum RASTER_fromWKB(PG_FUNCTION_ARGS)
 
 	bytea_data = (bytea *) PG_GETARG_BYTEA_P(0);
 	data = (uint8_t *) VARDATA(bytea_data);
-	data_len = VARSIZE(bytea_data) - VARHDRSZ;
+	data_len = VARSIZE_ANY_EXHDR(bytea_data);
 
 	raster = rt_raster_from_wkb(data, data_len);
 	PG_FREE_IF_COPY(bytea_data, 0);

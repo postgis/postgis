@@ -304,7 +304,7 @@ text_p_get_mode(const text *txt)
 {
 	int mode = 2;
 	char *modestr;
-	if (VARSIZE(txt) - VARHDRSZ <= 0)
+	if (VARSIZE_ANY_EXHDR(txt) <= 0)
 		return mode;
 	modestr = (char*)VARDATA(txt);
 	if ( modestr[0] == 'N' )

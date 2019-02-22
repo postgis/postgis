@@ -77,7 +77,7 @@ Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS)
 	/* get data */
 	bytea_data = (bytea *) PG_GETARG_BYTEA_P(0);
 	data = (uint8_t *) VARDATA(bytea_data);
-	data_len = VARSIZE(bytea_data) - VARHDRSZ;
+	data_len = VARSIZE_ANY_EXHDR(bytea_data);
 
 	/* process srid */
 	/* NULL srid means try to determine SRID from bytea */
@@ -321,7 +321,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 	SET_VARSIZE(result, result_size);
-	memcpy(VARDATA(result), gdal, VARSIZE(result) - VARHDRSZ);
+	memcpy(VARDATA(result), gdal, VARSIZE_ANY_EXHDR(result));
 
 	/* free gdal mem buffer */
 	CPLFree(gdal);

@@ -233,7 +233,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 		}
 		else
 		{
-			len = VARSIZE(prefix_text)-VARHDRSZ;
+			len = VARSIZE_ANY_EXHDR(prefix_text);
 			prefix_buf = palloc(len + 2); /* +2 is one for the ':' and one for term null */
 			memcpy(prefix_buf, VARDATA(prefix_text), len);
 			/* add colon and null terminate */
@@ -252,7 +252,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 		}
 		else
 		{
-			len = VARSIZE(gml_id_text)-VARHDRSZ;
+			len = VARSIZE_ANY_EXHDR(gml_id_text);
 			gml_id_buf = palloc(len+1);
 			memcpy(gml_id_buf, VARDATA(gml_id_text), len);
 			gml_id_buf[len] = '\0';
@@ -355,19 +355,19 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
 	{
 		prefix_text = PG_GETARG_TEXT_P(3);
-		if ( VARSIZE(prefix_text)-VARHDRSZ == 0 )
+		if ( VARSIZE_ANY_EXHDR(prefix_text) == 0 )
 		{
 			prefix = "";
 		}
 		else
 		{
 			/* +2 is one for the ':' and one for term null */
-			prefixbuf = palloc(VARSIZE(prefix_text)-VARHDRSZ+2);
+			prefixbuf = palloc(VARSIZE_ANY_EXHDR(prefix_text)+2);
 			memcpy(prefixbuf, VARDATA(prefix_text),
-			       VARSIZE(prefix_text)-VARHDRSZ);
+			       VARSIZE_ANY_EXHDR(prefix_text));
 			/* add colon and null terminate */
-			prefixbuf[VARSIZE(prefix_text)-VARHDRSZ] = ':';
-			prefixbuf[VARSIZE(prefix_text)-VARHDRSZ+1] = '\0';
+			prefixbuf[VARSIZE_ANY_EXHDR(prefix_text)] = ':';
+			prefixbuf[VARSIZE_ANY_EXHDR(prefix_text)+1] = '\0';
 			prefix = prefixbuf;
 		}
 	}
@@ -581,19 +581,19 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >4 && !PG_ARGISNULL(4))
 	{
 		defid_text = PG_GETARG_TEXT_P(4);
-		if ( VARSIZE(defid_text)-VARHDRSZ == 0 )
+		if ( VARSIZE_ANY_EXHDR(defid_text) == 0 )
 		{
 			defid = "";
 		}
 		else
 		{
 			/* +2 is one for the ':' and one for term null */
-			defidbuf = palloc(VARSIZE(defid_text)-VARHDRSZ+2);
+			defidbuf = palloc(VARSIZE_ANY_EXHDR(defid_text)+2);
 			memcpy(defidbuf, VARDATA(defid_text),
-			       VARSIZE(defid_text)-VARHDRSZ);
+			       VARSIZE_ANY_EXHDR(defid_text));
 			/* add colon and null terminate */
-			defidbuf[VARSIZE(defid_text)-VARHDRSZ] = ':';
-			defidbuf[VARSIZE(defid_text)-VARHDRSZ+1] = '\0';
+			defidbuf[VARSIZE_ANY_EXHDR(defid_text)] = ':';
+			defidbuf[VARSIZE_ANY_EXHDR(defid_text)+1] = '\0';
 			defid = defidbuf;
 		}
 	}

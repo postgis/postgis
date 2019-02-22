@@ -260,19 +260,19 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >4 && !PG_ARGISNULL(4))
 	{
 		prefix_text = PG_GETARG_TEXT_P(4);
-		if ( VARSIZE(prefix_text)-VARHDRSZ == 0 )
+		if ( VARSIZE_ANY_EXHDR(prefix_text) == 0 )
 		{
 			prefix = "";
 		}
 		else
 		{
 			/* +2 is one for the ':' and one for term null */
-			prefix_buf = palloc(VARSIZE(prefix_text)-VARHDRSZ+2);
-			memcpy(prefix_buf, VARDATA(prefix_text),
-			       VARSIZE(prefix_text)-VARHDRSZ);
+			prefix_buf = palloc(VARSIZE_ANY_EXHDR(prefix_text)+2);
+			memcpy(prefix_buf, VARDATA_ANY(prefix_text),
+			       VARSIZE_ANY_EXHDR(prefix_text));
 			/* add colon and null terminate */
-			prefix_buf[VARSIZE(prefix_text)-VARHDRSZ] = ':';
-			prefix_buf[VARSIZE(prefix_text)-VARHDRSZ+1] = '\0';
+			prefix_buf[VARSIZE_ANY_EXHDR(prefix_text)] = ':';
+			prefix_buf[VARSIZE_ANY_EXHDR(prefix_text)+1] = '\0';
 			prefix = prefix_buf;
 		}
 	}
@@ -281,15 +281,15 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >5 && !PG_ARGISNULL(5))
 	{
 		id_text = PG_GETARG_TEXT_P(5);
-		if ( VARSIZE(id_text)-VARHDRSZ == 0 )
+		if ( VARSIZE_ANY_EXHDR(id_text) == 0 )
 		{
 			id = "";
 		}
 		else
 		{
-			id_buf = palloc(VARSIZE(id_text)-VARHDRSZ+1);
-			memcpy(id_buf, VARDATA(id_text), VARSIZE(id_text)-VARHDRSZ);
-			prefix_buf[VARSIZE(id_text)-VARHDRSZ+1] = '\0';
+			id_buf = palloc(VARSIZE_ANY_EXHDR(id_text)+1);
+			memcpy(id_buf, VARDATA(id_text), VARSIZE_ANY_EXHDR(id_text));
+			prefix_buf[VARSIZE_ANY_EXHDR(id_text)+1] = '\0';
 			id = id_buf;
 		}
 	}
@@ -389,19 +389,19 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
 	{
 		prefix_text = PG_GETARG_TEXT_P(3);
-		if ( VARSIZE(prefix_text)-VARHDRSZ == 0 )
+		if ( VARSIZE_ANY_EXHDR(prefix_text) == 0 )
 		{
 			prefix = "";
 		}
 		else
 		{
 			/* +2 is one for the ':' and one for term null */
-			prefixbuf = palloc(VARSIZE(prefix_text)-VARHDRSZ+2);
+			prefixbuf = palloc(VARSIZE_ANY_EXHDR(prefix_text)+2);
 			memcpy(prefixbuf, VARDATA(prefix_text),
-			       VARSIZE(prefix_text)-VARHDRSZ);
+			       VARSIZE_ANY_EXHDR(prefix_text));
 			/* add colon and null terminate */
-			prefixbuf[VARSIZE(prefix_text)-VARHDRSZ] = ':';
-			prefixbuf[VARSIZE(prefix_text)-VARHDRSZ+1] = '\0';
+			prefixbuf[VARSIZE_ANY_EXHDR(prefix_text)] = ':';
+			prefixbuf[VARSIZE_ANY_EXHDR(prefix_text)+1] = '\0';
 			prefix = prefixbuf;
 		}
 	}

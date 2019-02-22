@@ -22,14 +22,6 @@
 
 Datum parse_address(PG_FUNCTION_ARGS);
 
-static char *text2char(text *in)
-{
-    char *out = palloc(VARSIZE(in));
-    memcpy(out, VARDATA(in), VARSIZE(in) - VARHDRSZ);
-    out[VARSIZE(in) - VARHDRSZ] = '\0';
-    return out;
-}
-
 PG_FUNCTION_INFO_V1(parse_address);
 
 Datum parse_address(PG_FUNCTION_ARGS)
@@ -47,7 +39,7 @@ Datum parse_address(PG_FUNCTION_ARGS)
 
     DBG("Start standardize_address");
 
-    str = text2char(PG_GETARG_TEXT_P(0));
+    str = text_to_cstring(PG_GETARG_TEXT_P(0));
 
     DBG("str='%s'", str);
 
