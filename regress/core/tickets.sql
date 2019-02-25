@@ -1125,6 +1125,9 @@ ST_Disjoint(ST_GeneratePoints(g, 1000, 12345), ST_GeneratePoints(g, 1000)),
 ST_Distance(ST_GeometryN(ST_GeneratePoints(g, 1000, 12345), 1000), 'POINT(0.801167838758 0.345281131175)'::geometry) < 1e-11
 FROM (SELECT 'POLYGON((0 0,1 0,1 1,0 1,0 0))'::geometry AS g) AS f;
 
+-- #4331
+
+SELECT '#4304', ST_3DMakeBox(ST_GeomFromText('POINT EMPTY',4326), ST_GeomFromText('POINT EMPTY',4326)) is not NULL;
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
