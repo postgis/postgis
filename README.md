@@ -5,7 +5,7 @@ Winnie:
 Dronie:
  [![Build Status](https://dronie.osgeo.org/api/badges/postgis/postgis/status.svg?ref=refs/heads/svn-trunk)](https://dronie.osgeo.org/postgis/postgis?branch=svn-trunk)
 Travis:
- [![Build Status](https://secure.travis-ci.org/postgis/postgis.svg)](http://travis-ci.org/postgis/postgis)
+ [![Build Status](https://api.travis-ci.org/postgis/postgis.svg?branch=svn-trunk,svn-2.5,svn-2.4,svn-2.3)](http://travis-ci.org/postgis/postgis)
 GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/svn-trunk/build.svg)](https://gitlab.com/postgis/postgis/commits/svn-trunk)
 
