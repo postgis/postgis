@@ -340,4 +340,6 @@ ERROR:  lwgeom_union: GEOS Error: TopologyException: Input geom 0 is invalid: Se
 NOTICE:  table "bug_4144_table" does not exist, skipping
 #4299|t
 #4304|t|t|t|t
+ERROR:  BOX3D_construct: args can not be empty points
+ERROR:  BOX2D_construct: args can not be empty points
 #4176|t
