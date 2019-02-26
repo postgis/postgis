@@ -36,7 +36,13 @@
 # define DatumGetJsonbP DatumGetJsonb
 #endif
 
+#define uthash_fatal(msg) lwerror("uthash: fatal error (out of memory)")
+#define uthash_malloc(sz) palloc(sz)
+#define uthash_free(ptr,sz) pfree(ptr)
 #include "uthash.h"
+#undef uthash_fatal
+#undef uthash_malloc
+#undef uthash_free
 
 #define FEATURES_CAPACITY_INITIAL 50
 
