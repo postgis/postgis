@@ -58,11 +58,12 @@ endif
 
 ifeq (@HAVE_PROTOBUF@,yes)
 PROTOBUF_OBJ=vector_tile.pb-c.o geobuf.pb-c.o
+UTHASH_INCLUDE = -I../deps/uthash/include
 endif
 
 WAGYU_LIBPATH = ../deps/wagyu/@WAGYU_LIB@
 ifeq (@HAVE_WAGYU@,yes)
-WAYGU_INCLUDE += -I../deps/wagyu
+WAYGU_INCLUDE = -I../deps/wagyu
 WAYGU_LIB = $(WAGYU_LIBPATH) @WAGYU_LDFLAGS@
 WAGYU_DEP = $(WAGYU_LIBPATH)
 endif
@@ -136,7 +137,7 @@ OBJS=$(PG_OBJS)
 # to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
 # older version of PostGIS, rather than with the static liblwgeom.a
 # supplied with newer versions of PostGIS
-PG_CPPFLAGS += -I../liblwgeom @CFLAGS@ -I../libpgcommon $(WAYGU_INCLUDE) @CPPFLAGS@ @PICFLAGS@
+PG_CPPFLAGS += -I../liblwgeom @CFLAGS@ -I../libpgcommon $(WAYGU_INCLUDE) $(UTHASH_INCLUDE) @CPPFLAGS@ @PICFLAGS@
 SHLIB_LINK_F = $(WAYGU_LIB) ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@
 
 # Add SFCGAL Flags if defined
