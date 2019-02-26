@@ -547,7 +547,7 @@ Datum BOX2D_construct(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (lwgeom_is_empty(minpoint) || lwgeom_is_empty(maxpoint) ){
+	if (lwpoint_is_empty(minpoint) || lwpoint_is_empty(maxpoint) ){
 		elog(ERROR, "BOX2D_construct: args can not be empty points");
 		PG_RETURN_NULL();
 	}
