@@ -31,6 +31,8 @@ PostGIS 3.0.0
   - #4311, Introduce `--with-wagyu` as an option for MVT polygons (Raúl Marín)
 
 * Enhancements and fixes *
+  - #4322, Support for Proj 6+ API, bringing more accurate datum transforms
+           and support for WKT projections
   - #4153, ST_Segmentize now splits segments proportionally (Darafei
            Praliaskouski).
   - #4162, ST_DWithin documentation examples for storing geometry and
