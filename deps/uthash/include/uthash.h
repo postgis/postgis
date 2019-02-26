@@ -587,8 +587,8 @@ do {                                                                            
 #endif
 
 /* default to Jenkin's hash unless overridden e.g. DHASH_FUNCTION=HASH_SAX */
-#ifdef HASH_FUNCTION
-#define HASH_FCN HASH_FUNCTION
+#ifdef UTHASH_FUNCTION
+#define HASH_FCN UTHASH_FUNCTION
 #else
 #define HASH_FCN HASH_JEN
 #endif
