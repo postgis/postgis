@@ -304,12 +304,14 @@ proj_crs_is_swapped(const PJ* pj_crs)
 	if (proj_get_type(pj_crs) == PJ_TYPE_COMPOUND_CRS)
 	{
 		PJ *pj_horiz_crs = proj_crs_get_sub_crs(NULL, pj_crs, 0);
+		assert(pj_horiz_crs);
 		pj_cs = proj_crs_get_coordinate_system(NULL, pj_horiz_crs);
 		proj_destroy(pj_horiz_crs);
 	}
 	else if (proj_get_type(pj_crs) == PJ_TYPE_BOUND_CRS)
 	{
 		PJ *pj_src_crs = proj_get_source_crs(NULL, pj_crs);
+		assert(pj_src_crs);
 		pj_cs = proj_crs_get_coordinate_system(NULL, pj_src_crs);
 		proj_destroy(pj_src_crs);
 	}
@@ -317,6 +319,7 @@ proj_crs_is_swapped(const PJ* pj_crs)
 	{
 		pj_cs = proj_crs_get_coordinate_system(NULL, pj_crs);
 	}
+	assert(pj_cs);
 	int axis_count = proj_cs_get_axis_count(NULL, pj_cs);
 	if (axis_count > 0)
 	{
