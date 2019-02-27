@@ -106,6 +106,7 @@ PG_OBJS= \
 	gserialized_typmod.o \
 	gserialized_gist_2d.o \
 	gserialized_gist_nd.o \
+	gserialized_supportfn.o \
 	$(SPGIST_OBJ) \
 	brin_2d.o \
 	brin_nd.o \
