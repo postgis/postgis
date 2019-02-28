@@ -45,49 +45,6 @@
 /* PostGIS */
 #include "liblwgeom.h"
 
-
-static Oid
-getGeographyOid(void)
-{
-	if (GEOGRAPHYOID == InvalidOid) {
-		Oid typoid = TypenameGetTypid("geography");
-		if (OidIsValid(typoid) && get_typisdefined(typoid))
-		{
-			GEOGRAPHYOID = typoid;
-		}
-	}
-
-	return GEOGRAPHYOID;
-}
-
-static Oid
-getGeometryOid(void)
-{
-	if (GEOMETRYOID == InvalidOid) {
-		Oid typoid = TypenameGetTypid("geometry");
-		if (OidIsValid(typoid) && get_typisdefined(typoid))
-		{
-			GEOMETRYOID = typoid;
-		}
-	}
-
-	return GEOMETRYOID;
-}
-
-static char*
-supportRequestType(NodeTag t)
-{
-	switch (t)
-	{
-		case T_SupportRequestSimplify: return "T_SupportRequestSimplify";
-		case T_SupportRequestSelectivity: return "T_SupportRequestSelectivity";
-		case T_SupportRequestCost: return "T_SupportRequestCost";
-		case T_SupportRequestRows: return "T_SupportRequestRows";
-		case T_SupportRequestIndexCondition: return "T_SupportRequestIndexCondition";
-		default: return "UNKNOWN";
-	}
-}
-
 typedef struct
 {
 	char *fn_name;
@@ -95,16 +52,6 @@ typedef struct
 	int   nargs;
 	int   expand_arg;
 } IndexableFunction;
-
-
-// extern char *get_func_name(Oid funcid);
-// extern Oid	get_func_namespace(Oid funcid);
-// extern Oid	get_func_rettype(Oid funcid);
-// extern int	get_func_nargs(Oid funcid);
-// extern Oid	get_func_signature(Oid funcid, Oid **argtypes, int *nargs);
-// extern Oid	get_func_variadictype(Oid funcid);
-// extern bool get_func_retset(Oid funcid);
-
 
 const IndexableFunction IndexableFunctions[] = {
 	{"st_intersects", RTOverlapStrategyNumber, 2, 0},
@@ -168,14 +115,13 @@ expandFunctionOid(Oid geo_datatype)
 {
 	List *expandfn_name = list_make1(makeString("st_expand"));
 	Oid radius_datatype = FLOAT8OID; /* Should always be FLOAT8OID */
-	const int expandfn_nargs = 2;
-	Oid expandfn_args[expandfn_nargs];
+	Oid expandfn_args[2];
 	const bool noError = true;
 	Oid expandfn_oid;
 
 	expandfn_args[0] = geo_datatype;
 	expandfn_args[1] = radius_datatype;
-	expandfn_oid = LookupFuncName(expandfn_name, expandfn_nargs, expandfn_args, noError);
+	expandfn_oid = LookupFuncName(expandfn_name, 2, expandfn_args, noError);
 	if (expandfn_oid == InvalidOid)
 		elog(ERROR, "%s: unable to lookup 'st_expand(Oid[%u], Oid[%u])'", __func__, geo_datatype, radius_datatype);
 	return expandfn_oid;
@@ -201,12 +147,12 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 		{
 			FuncExpr *clause = (FuncExpr *) req->node;
 			Oid funcid = clause->funcid;
-			IndexableFunction idxfn = {NULL, 0};
+			IndexableFunction idxfn = {NULL, 0, 0, 0};
 			Oid opfamilyoid = req->opfamily; /* OPERATOR FAMILY of the index */
 
 			if (needsSpatialIndex(funcid, &idxfn))
 			{
-				Node *indexarg, *otherarg, *radiusarg;
+				Node *indexarg, *otherarg;
 				Oid indexdatatype, otherdatatype;
 				Oid oproid;
 				int nargs = list_length(clause->args);
