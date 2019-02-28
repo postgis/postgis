@@ -173,6 +173,41 @@ needsSpatialIndex(Oid funcid, IndexableFunction *idxfn)
 	return false;
 }
 
+static Oid
+opFamilyAmOid(Oid opfamilyoid)
+{
+	Form_pg_opfamily familyform;
+	// char *opfamilyname;
+	Oid opfamilyam;
+	HeapTuple familytup = SearchSysCache1(OPFAMILYOID, ObjectIdGetDatum(opfamilyoid));
+	if (!HeapTupleIsValid(familytup))
+		elog(ERROR, "cache lookup failed for operator family %u", opfamilyoid);
+	familyform = (Form_pg_opfamily) GETSTRUCT(familytup);
+	opfamilyam = familyform->opfmethod;
+	// opfamilyname = NameStr(familyform->opfname);
+	// elog(NOTICE, "%s: found opfamily %s [%u]", __func__, opfamilyname, opfamilyam);
+	ReleaseSysCache(familytup);
+	return opfamilyam;
+}
+
+static Oid
+expandFunctionOid(Oid geo_datatype)
+{
+	List *expandfn_name = list_make1(makeString("st_expand"));
+	Oid radius_datatype = FLOAT8OID; /* Should always be FLOAT8OID */
+	const int expandfn_nargs = 2;
+	Oid expandfn_args[expandfn_nargs];
+	const bool noError = true;
+	Oid expandfn_oid;
+
+	expandfn_args[0] = geo_datatype;
+	expandfn_args[1] = radius_datatype;
+	expandfn_oid = LookupFuncName(expandfn_name, expandfn_nargs, expandfn_args, noError);
+	if (expandfn_oid == InvalidOid)
+		elog(ERROR, "%s: unable to lookup 'st_expand(Oid[%u], Oid[%u])'", __func__, geo_datatype, radius_datatype);
+	return expandfn_oid;
+}
+
 Datum postgis_index_supportfn(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(postgis_index_supportfn);
 Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
@@ -204,34 +239,10 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 
 			if (needsSpatialIndex(funcid, &idxfn))
 			{
-				HeapTuple familytup;
-				Form_pg_opfamily familyform;
-				char *opfamilyname;
-				Oid opfamilyam; /* Access method, GIST or SPGIST */
-				Node *larg, *rarg;
-				int nargs;
-				Oid ldatatype, rdatatype;
+				Node *indexarg, *otherarg, *radiusarg;
+				Oid indexdatatype, otherdatatype;
 				Oid oproid;
-
-				// elog(NOTICE, "needsSpatialIndex == true");
-				// elog(NOTICE, "opfamily == %u", opfamilyoid);
-				// elog(NOTICE, "fn_name == %s", idxfn.fn_name);
-
-				/*
-				* We need to lookup the operator family, either to test
-				* the family name against known families we will support or
-				* (currently) to ensure we're only using families
-				* that have the search strategies we support (overlaps, etc)
-				*/
-				familytup = SearchSysCache1(OPFAMILYOID, ObjectIdGetDatum(opfamilyoid));
-				if (!HeapTupleIsValid(familytup))
-					elog(ERROR, "cache lookup failed for operator family %u", opfamilyoid);
-				familyform = (Form_pg_opfamily) GETSTRUCT(familytup);
-				opfamilyname = NameStr(familyform->opfname);
-				opfamilyam = familyform->opfmethod;
-				// elog(NOTICE, "opfamily relname == %s", opfamilyname);
-				// elog(NOTICE, "opfamily am = %u", opfamilyam);
-				ReleaseSysCache(familytup);
+				int nargs = list_length(clause->args);
 
 				/*
 				* Only add an operator condition for GIST and SPGIST indexes.
@@ -240,6 +251,7 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				* gist_geometry_ops_2d, gist_geometry_ops_nd,
 				* spgist_geometry_ops_2d, spgist_geometry_ops_nd
 				*/
+				Oid opfamilyam = opFamilyAmOid(opfamilyoid);
 				if (opfamilyam != GIST_AM_OID &&
 				    opfamilyam != SPGIST_AM_OID &&
 				    opfamilyam != BRIN_AM_OID)
@@ -252,70 +264,46 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				* since this function is only bound to those functions)
 				* to use in the operator function lookup
 				*/
-				nargs = list_length(clause->args);
 				if (nargs < 2)
-					elog(ERROR, "%s: associated with function with only %d arguments", __func__, nargs);
-				larg = (Node *) linitial(clause->args);
-				rarg = (Node *) lsecond(clause->args);
-				ldatatype = exprType(larg);
-				rdatatype = exprType(rarg);
+					elog(ERROR, "%s: associated with function with %d arguments", __func__, nargs);
+				if (req->indexarg > 1)
+					elog(ERROR, "%s: indexarg '%d' out of range", __func__, req->indexarg);
 
-
-				// elog(NOTICE, "ldatatype == %u", ldatatype);
-				// elog(NOTICE, "rdatatype == %u", rdatatype);
+				indexarg = req->indexarg ? lsecond(clause->args) : linitial(clause->args);
+				otherarg = req->indexarg ? linitial(clause->args) : lsecond(clause->args);
+				indexdatatype = exprType(indexarg);
+				otherdatatype = exprType(otherarg);
 
 				/*
 				* Given the index operator family and the arguments and the
 				* desired strategy number we can now lookup the operator
 				* we want (usually && or &&&).
 				*/
-				oproid = get_opfamily_member(opfamilyoid, ldatatype, rdatatype, idxfn.strategy_number);
-				// elog(NOTICE, "oproid == %u", oproid);
-
+				oproid = get_opfamily_member(opfamilyoid, indexdatatype, otherdatatype, idxfn.strategy_number);
 				if (oproid == InvalidOid)
-					elog(ERROR, "no spatial operator found for opfamily %u", opfamilyoid);
+					elog(ERROR, "no spatial operator found for opfamily %u strategy %d", opfamilyoid, idxfn.strategy_number);
 
 				/*
-				* For the ST_DWithin variants we need to build a more complex return
-				* with two OpExpr bound together with an OR and expansions
-				* on either side.
-				* st_dwithin(g1, g2, radius) yields this:
-				* g1 && st_expand(g2, radius) OR g2 && st_expand(g1, radius)
+				* For the ST_DWithin variants we need to build a more complex return.
+				* We want to expand the non-indexed side of the call by the
+				* radius and then apply the operator.
+				* st_dwithin(g1, g2, radius) yields this, if g1 is the indexarg:
+				* g1 && st_expand(g2, radius)
 				*/
 				if (idxfn.expand_arg)
 				{
 					Node *radiusarg = (Node *) list_nth(clause->args, idxfn.expand_arg-1);
-					List *expandfn_name = list_make1(makeString("st_expand"));
-					Oid exdatatype = exprType(radiusarg); /* Should always be FLOAT8OID */
-					const int expandfn_nargs = 2;
-					Oid expandfn_args[expandfn_nargs];
-					const bool noError = true;
-					Oid expandfn_oid;
-					FuncExpr *exleft, *exright;
-					Expr *opleft, *opright, *opor;
+					Oid expandfn_oid = expandFunctionOid(otherdatatype);
 
-					/*
-					* We want the "st_expand(g, radius)" variant that apes the data type we've
-					* been called with, be that geometry or geography
-					*/
-					expandfn_args[0] = ldatatype;
-					expandfn_args[1] = exdatatype;
-					expandfn_oid = LookupFuncName(expandfn_name, expandfn_nargs, expandfn_args, noError);
-					if (expandfn_oid == InvalidOid)
-						elog(ERROR, "%s: unable to lookup 'st_expand(Oid[%u], Oid[%u])'", __func__, ldatatype, exdatatype);
+					FuncExpr *expandexpr = makeFuncExpr(expandfn_oid, otherdatatype,
+					    list_make2(otherarg, radiusarg),
+						InvalidOid, req->indexcollation, COERCE_EXPLICIT_CALL);
 
-					exleft = makeFuncExpr(expandfn_oid, ldatatype, list_make2(larg, radiusarg),
-						                  InvalidOid, req->indexcollation, COERCE_EXPLICIT_CALL);
-					exright = makeFuncExpr(expandfn_oid, rdatatype, list_make2(rarg, radiusarg),
-						                   InvalidOid, req->indexcollation, COERCE_EXPLICIT_CALL);
-					opleft = make_opclause(oproid, BOOLOID, false,
-					                       (Expr *) larg, (Expr *) exright,
-					                       InvalidOid, req->indexcollation);
-					opright = make_opclause(oproid, BOOLOID, false,
-					                       (Expr *) rarg, (Expr *) exleft,
-					                       InvalidOid, req->indexcollation);
-					opor = make_orclause(list_make2(opleft, opright));
-					ret = (Node *)(list_make1(opor));
+					Expr *expr = make_opclause(oproid, BOOLOID, false,
+					              (Expr *) indexarg, (Expr *) expandexpr,
+					              InvalidOid, req->indexcollation);
+
+					ret = (Node *)(list_make1(expr));
 				}
 				/*
 				* For the ST_Intersects variants we just need to return
@@ -326,7 +314,7 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				else
 				{
 					Expr *expr = make_opclause(oproid, BOOLOID, false,
-					                     (Expr *) larg, (Expr *) rarg,
+					                     (Expr *) indexarg, (Expr *) otherarg,
 					                     InvalidOid, req->indexcollation);
 					ret = (Node *)(list_make1(expr));
 				}
