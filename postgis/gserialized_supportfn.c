@@ -215,10 +215,6 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 	Node *rawreq = (Node *) PG_GETARG_POINTER(0);
 	Node *ret = NULL;
 
-	// elog(NOTICE, "%s", __func__);
-
-	// elog(NOTICE, "%s [%d]", supportRequestType(rawreq->type), rawreq->type);
-
 	/*
 	* This support function is strictly for adding spatial index
 	* support.
@@ -234,8 +230,6 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 			Oid funcid = clause->funcid;
 			IndexableFunction idxfn = {NULL, 0};
 			Oid opfamilyoid = req->opfamily; /* OPERATOR FAMILY of the index */
-
-			// elog(NOTICE, "req->node == FuncExpr");
 
 			if (needsSpatialIndex(funcid, &idxfn))
 			{
