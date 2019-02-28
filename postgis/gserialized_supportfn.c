@@ -18,6 +18,7 @@
  *
  **********************************************************************/
 
+#if POSTGIS_PGSQL_VERSION >= 120
 
 #include "../postgis_config.h"
 
@@ -43,10 +44,6 @@
 /* PostGIS */
 #include "liblwgeom.h"
 
-
-/* Globals to hold GEOMETRYOID and GEOGRAPHYOID */
-Oid GEOMETRYOID  = InvalidOid;
-Oid GEOGRAPHYOID = InvalidOid;
 
 static Oid
 getGeographyOid(void)
@@ -74,36 +71,6 @@ getGeometryOid(void)
 	}
 
 	return GEOMETRYOID;
-}
-
-
-#if 0
-CREATE OR REPLACE FUNCTION geos_intersects_new_support(internal)
-	RETURNS internal
-	AS '/Users/pramsey/Code/postgis-git/postgis/postgis-3.so','geos_intersects_new_support'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION geos_intersects_new(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS '/Users/pramsey/Code/postgis-git/postgis/postgis-3.so','geos_intersects_new'
-	SUPPORT geos_intersects_new_support
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
-#endif
-
-Datum geos_intersects_new(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(geos_intersects_new);
-Datum geos_intersects_new(PG_FUNCTION_ARGS)
-{
-	// Oid geometry_oid = ogrGetGeometryOid();
-
-	elog(NOTICE, "%s", __func__);
-
-	// elog(NOTICE, "GEOMETRYOID = %u", geometry_oid);
-	PG_RETURN_BOOL(true);
-
-	// return DirectFunctionCall2(geos_intersects,
-	// 	PG_GETARG_DATUM(0),
-	// 	PG_GETARG_DATUM(1));
 }
 
 static char*
@@ -332,3 +299,4 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(ret);
 }
 
+#endif /* POSTGIS_PGSQL_VERSION >= 120 */
