@@ -33,6 +33,7 @@
 #include "nodes/supportnodes.h"
 #include "nodes/nodeFuncs.h"
 #include "nodes/makefuncs.h"
+#include "parser/parse_func.h"
 #include "utils/array.h"
 #include "utils/builtins.h"
 #include "utils/lsyscache.h"
@@ -208,6 +209,7 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				char *opfamilyname;
 				Oid opfamilyam; /* Access method, GIST or SPGIST */
 				Node *larg, *rarg;
+				int nargs;
 				Oid ldatatype, rdatatype;
 				Oid oproid;
 
@@ -238,7 +240,9 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				* gist_geometry_ops_2d, gist_geometry_ops_nd,
 				* spgist_geometry_ops_2d, spgist_geometry_ops_nd
 				*/
-				if (opfamilyam != GIST_AM_OID && opfamilyam != SPGIST_AM_OID && opfamilyam != BRIN_AM_OID)
+				if (opfamilyam != GIST_AM_OID &&
+				    opfamilyam != SPGIST_AM_OID &&
+				    opfamilyam != BRIN_AM_OID)
 				{
 					PG_RETURN_POINTER((Node *)NULL);
 				}
@@ -248,11 +252,14 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				* since this function is only bound to those functions)
 				* to use in the operator function lookup
 				*/
-				Assert(list_length(clause->args) == 2);
+				nargs = list_length(clause->args);
+				if (nargs < 2)
+					elog(ERROR, "%s: associated with function with only %d arguments", __func__, nargs);
 				larg = (Node *) linitial(clause->args);
 				rarg = (Node *) lsecond(clause->args);
 				ldatatype = exprType(larg);
 				rdatatype = exprType(rarg);
+
 
 				// elog(NOTICE, "ldatatype == %u", ldatatype);
 				// elog(NOTICE, "rdatatype == %u", rdatatype);
@@ -269,18 +276,65 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 					elog(ERROR, "no spatial operator found for opfamily %u", opfamilyoid);
 
 				/*
-				* Bind the operator into a operator clause with our unaltered
-				* arguments on each side
+				* For the ST_DWithin variants we need to build a more complex return
+				* with two OpExpr bound together with an OR and expansions
+				* on either side.
+				* st_dwithin(g1, g2, radius) yields this:
+				* g1 && st_expand(g2, radius) OR g2 && st_expand(g1, radius)
 				*/
-				Expr *expr = make_opclause(oproid, BOOLOID, false,
-				                     (Expr *) larg, (Expr *) rarg,
-				                     InvalidOid, req->indexcollation);
-				ret = (Node *)(list_make1(expr));
+				if (idxfn.expand_arg)
+				{
+					Node *radiusarg = (Node *) list_nth(clause->args, idxfn.expand_arg-1);
+					List *expandfn_name = list_make1(makeString("st_expand"));
+					Oid exdatatype = exprType(radiusarg); /* Should always be FLOAT8OID */
+					const int expandfn_nargs = 2;
+					Oid expandfn_args[expandfn_nargs];
+					const bool noError = true;
+					Oid expandfn_oid;
+					FuncExpr *exleft, *exright;
+					Expr *opleft, *opright, *opor;
+
+					/*
+					* We want the "st_expand(g, radius)" variant that apes the data type we've
+					* been called with, be that geometry or geography
+					*/
+					expandfn_args[0] = ldatatype;
+					expandfn_args[1] = exdatatype;
+					expandfn_oid = LookupFuncName(expandfn_name, expandfn_nargs, expandfn_args, noError);
+					if (expandfn_oid == InvalidOid)
+						elog(ERROR, "%s: unable to lookup 'st_expand(Oid[%u], Oid[%u])'", __func__, ldatatype, exdatatype);
+
+					exleft = makeFuncExpr(expandfn_oid, ldatatype, list_make2(larg, radiusarg),
+						                  InvalidOid, req->indexcollation, COERCE_EXPLICIT_CALL);
+					exright = makeFuncExpr(expandfn_oid, rdatatype, list_make2(rarg, radiusarg),
+						                   InvalidOid, req->indexcollation, COERCE_EXPLICIT_CALL);
+					opleft = make_opclause(oproid, BOOLOID, false,
+					                       (Expr *) larg, (Expr *) exright,
+					                       InvalidOid, req->indexcollation);
+					opright = make_opclause(oproid, BOOLOID, false,
+					                       (Expr *) rarg, (Expr *) exleft,
+					                       InvalidOid, req->indexcollation);
+					opor = make_orclause(list_make2(opleft, opright));
+					ret = (Node *)(list_make1(opor));
+				}
+				/*
+				* For the ST_Intersects variants we just need to return
+				* an index OpExpr with the original arguments on each
+				* side.
+				* st_intersects(g1, g2) yields: g1 && g2
+				*/
+				else
+				{
+					Expr *expr = make_opclause(oproid, BOOLOID, false,
+					                     (Expr *) larg, (Expr *) rarg,
+					                     InvalidOid, req->indexcollation);
+					ret = (Node *)(list_make1(expr));
+				}
 
 				/*
-				* Set the return field on the SupportRequestIndexCondition parameter
+				* Set the lossy field on the SupportRequestIndexCondition parameter
 				* to indicate that the index alone is not sufficient to evaluate
-				* the condition. The function also must still be applied.
+				* the condition. The function must also still be applied.
 				*/
 				req->lossy = true;
 
