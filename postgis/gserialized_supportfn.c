@@ -18,9 +18,10 @@
  *
  **********************************************************************/
 
-#if POSTGIS_PGSQL_VERSION >= 120
 
 #include "../postgis_config.h"
+
+#if POSTGIS_PGSQL_VERSION >= 120
 
 /* PostgreSQL */
 #include "postgres.h"
