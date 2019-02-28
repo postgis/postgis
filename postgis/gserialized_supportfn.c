@@ -114,8 +114,13 @@ const IndexableFunction IndexableFunctions[] = {
 	{"st_3dintersects", RTOverlapStrategyNumber, 2, 0},
 	{"st_containsproperly", RTContainsStrategyNumber, 2, 0},
 	{"st_coveredby", RTContainsStrategyNumber, 2, 0},
+	{"st_overlaps", RTOverlapStrategyNumber, 2, 0},
 	{"st_covers", RTContainsStrategyNumber, 2, 0},
 	{"st_crosses", RTOverlapStrategyNumber, 2, 0},
+	{"st_dfullywithin", RTOverlapStrategyNumber, 3, 3},
+	{"st_3dintersects", RTOverlapStrategyNumber, 3, 3},
+	{"st_3ddwithin", RTOverlapStrategyNumber, 3, 3},
+	{"st_3ddfullywithin", RTOverlapStrategyNumber, 3, 3},
 	{"st_linecrossingdirection", RTOverlapStrategyNumber, 2, 0},
 	{NULL, 0, 0, 0}
 };
