@@ -176,21 +176,6 @@ DROP FUNCTION IF EXISTS _ST_DumpPoints( geometry, integer[]); -- removed 2.4.0, 
 DROP FUNCTION IF EXISTS _ST_DistanceRectTree(g1 geometry, g2 geometry);
 DROP FUNCTION IF EXISTS _ST_DistanceRectTreeCached(g1 geometry, g2 geometry);
 
-DROP FUNCTION IF EXISTS _ST_LineCrossingDirection(line1 geometry, line2 geometry);
-DROP FUNCTION IF EXISTS _ST_DWithin(geom1 geometry, geom2 geometry,float8);
-DROP FUNCTION IF EXISTS _ST_Touches(geom1 geometry, geom2 geometry);
-DROP FUNCTION IF EXISTS _ST_Intersects(geom1 geometry, geom2 geometry);
-DROP FUNCTION IF EXISTS _ST_Crosses(geom1 geometry, geom2 geometry);
-DROP FUNCTION IF EXISTS _ST_Contains(geom1 geometry, geom2 geometry);
-DROP FUNCTION IF EXISTS _ST_CoveredBy(geom1 geometry, geom2 geometry);
-DROP FUNCTION IF EXISTS _ST_Covers(geom1 geometry, geom2 geometry);
-DROP FUNCTION IF EXISTS _ST_ContainsProperly(geom1 geometry, geom2 geometry);
-DROP FUNCTION IF EXISTS _ST_Within(geom1 geometry, geom2 geometry);
-DROP FUNCTION IF EXISTS _ST_Overlaps(geom1 geometry, geom2 geometry);
-DROP FUNCTION IF EXISTS _ST_DFullyWithin(geom1 geometry, geom2 geometry,float8);
-DROP FUNCTION IF EXISTS _ST_3DDWithin(geom1 geometry, geom2 geometry,float8);
-DROP FUNCTION IF EXISTS _ST_3DDFullyWithin(geom1 geometry, geom2 geometry,float8);
-DROP FUNCTION IF EXISTS _ST_3DIntersects(geom1 geometry, geom2 geometry);
 
 -- pgis_abs type was increased from 8 bytes in 2.1 to 16 bytes in 2.2
 -- See #3460
