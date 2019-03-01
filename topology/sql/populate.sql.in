@@ -477,7 +477,7 @@ BEGIN
 
       -- Skip non-covered edges
       IF NOT ST_Equals(p2, ST_EndPoint(rec.geom)) THEN
-        IF NOT ( ST_Intersects(bounds, p1) AND ST_Intersects(bounds, p2) )
+        IF NOT ( _ST_Intersects(bounds, p1) AND _ST_Intersects(bounds, p2) )
         THEN
           --RAISE DEBUG 'Edge % has points % and % not intersecting with ring bounds', rec.edge_id, st_astext(p1), st_astext(p2);
           CONTINUE;
