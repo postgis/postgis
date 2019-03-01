@@ -37,7 +37,8 @@ my @casts = ();
 my @funcs = ();
 my @types = ();
 my %type_funcs = ();
-my @type_funcs= (); # function to drop _after_ type drop
+my @type_funcs = (); # function to drop _after_ type drop
+my @supp_funcs = ();
 my @ops = ();
 my @opcs = ();
 my @views = ();
@@ -82,11 +83,16 @@ open( INPUT, $ARGV[0] ) || die "Couldn't open file: $ARGV[0]\n";
 while( my $line = <INPUT>)
 {
 	if ($line =~ /^create (or replace )?function/i) {
+		my $supp = 0;
 		my $defn = $line;
 		while( not $defn =~ /\)/ ) {
 			$defn .= <INPUT>;
 		}
-		push (@funcs, $defn)
+		if ($defn =~ /_supportfn /) {
+			$supp = 1;
+		}
+		push (@funcs, $defn) if ! $supp;
+		push (@supp_funcs, $defn) if $supp;
 	}
 	elsif ($line =~ /^create or replace view\s*(\w+)/i) {
 		push (@views, $1);
@@ -281,6 +287,24 @@ DROP TYPE IF EXISTS $type CASCADE;
 
 EOF
 
+}
+
+print "-- Drop all support functions.\n";
+foreach my $fn (@supp_funcs)
+{
+	if ($fn =~ /.* function ([^(]+)\((.*)\)/i )
+	{
+		my $fn_nm = $1;
+		my $fn_arg = $2;
+
+		$fn_arg =~ s/DEFAULT [\w']+//ig;
+
+		print "DROP FUNCTION IF EXISTS $fn_nm ($fn_arg);\n";
+	}
+	else
+	{
+		die "Couldn't parse line: $fn\n";
+	}
 }
 
 print "-- Drop all functions needed for types definition.\n";
