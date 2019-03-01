@@ -73,6 +73,7 @@ Datum touches(PG_FUNCTION_ARGS);
 Datum ST_Intersects(PG_FUNCTION_ARGS);
 Datum crosses(PG_FUNCTION_ARGS);
 Datum contains(PG_FUNCTION_ARGS);
+Datum within(PG_FUNCTION_ARGS);
 Datum containsproperly(PG_FUNCTION_ARGS);
 Datum covers(PG_FUNCTION_ARGS);
 Datum overlaps(PG_FUNCTION_ARGS);
@@ -1610,26 +1611,20 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-
-PG_FUNCTION_INFO_V1(contains);
-Datum contains(PG_FUNCTION_ARGS)
+static bool
+containsImpl(FunctionCallInfo fcinfo, GSERIALIZED *geom1, GSERIALIZED *geom2)
 {
-	GSERIALIZED *geom1;
-	GSERIALIZED *geom2;
 	GEOSGeometry *g1, *g2;
 	GBOX box1, box2;
 	int result;
 	PrepGeomCache *prep_cache;
-
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
-	geom2 = PG_GETARG_GSERIALIZED_P(1);
 
 	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Contains(Empty) == FALSE */
 	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
-		PG_RETURN_BOOL(false);
+		return false;
 
 	POSTGIS_DEBUG(3, "contains called.");
 
@@ -1637,10 +1632,11 @@ Datum contains(PG_FUNCTION_ARGS)
 	** short-circuit 1: if geom2 bounding box is not completely inside
 	** geom1 bounding box we can return FALSE.
 	*/
-	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	        gserialized_get_gbox_p(geom2, &box2) )
+	if (gserialized_get_gbox_p(geom1, &box1) &&
+	    gserialized_get_gbox_p(geom2, &box2))
 	{
-		if (!gbox_contains_2d(&box1, &box2)) PG_RETURN_BOOL(false);
+		if (!gbox_contains_2d(&box1, &box2))
+			return false;
 	}
 
 	/*
@@ -1695,12 +1691,10 @@ Datum contains(PG_FUNCTION_ARGS)
 		{
 			/* Never get here */
 			elog(ERROR,"Type isn't point or multipoint!");
-			PG_RETURN_NULL();
+			return false;
 		}
 
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
-		PG_RETURN_BOOL(retval);
+		return retval > 0;
 	}
 	else
 	{
@@ -1739,12 +1733,31 @@ Datum contains(PG_FUNCTION_ARGS)
 
 	if (result == 2) HANDLE_GEOS_ERROR("GEOSContains");
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-
-	PG_RETURN_BOOL(result);
-
+	return result > 0;
 }
+
+PG_FUNCTION_INFO_V1(contains);
+Datum contains(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom0 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(1);
+	bool result = containsImpl(fcinfo, geom0, geom1);
+	PG_FREE_IF_COPY(geom0, 0);
+	PG_FREE_IF_COPY(geom1, 1);
+	PG_RETURN_BOOL(result);
+}
+
+PG_FUNCTION_INFO_V1(within);
+Datum within(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom0 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(1);
+	bool result = containsImpl(fcinfo, geom1, geom0);
+	PG_FREE_IF_COPY(geom0, 0);
+	PG_FREE_IF_COPY(geom1, 1);
+	PG_RETURN_BOOL(result);
+}
+
 
 PG_FUNCTION_INFO_V1(containsproperly);
 Datum containsproperly(PG_FUNCTION_ARGS)

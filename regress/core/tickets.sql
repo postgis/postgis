@@ -597,7 +597,7 @@ with inp as (
  select ST_Collect('POLYGON EMPTY', 'POLYGON EMPTY') as mp,
         'POINT(0 0)'::geometry as p
 )
-select '#1578', _st_within(p, mp), _st_intersects(p, mp) FROM inp;
+select '#1578', st_within(p, mp), st_intersects(p, mp) FROM inp;
 
 -- #1580
 select '#1580.1', ST_Summary(ST_Transform('SRID=4326;POINT(0 0)'::geometry, 3395));

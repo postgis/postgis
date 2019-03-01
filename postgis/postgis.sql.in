@@ -4203,10 +4203,18 @@ CREATE OR REPLACE FUNCTION ST_Contains(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_CoveredBy(geom1 geometry, geom2 geometry)
+-- Availability: 1.4.0
+CREATE OR REPLACE FUNCTION ST_ContainsProperly(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'MODULE_PATHNAME', 'coveredby'
+	AS 'MODULE_PATHNAME','containsproperly'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Within(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','within'
 	SUPPORT postgis_index_supportfn
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100;
@@ -4219,18 +4227,10 @@ CREATE OR REPLACE FUNCTION ST_Covers(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100;
 
--- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION ST_ContainsProperly(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME','containsproperly'
-	SUPPORT postgis_index_supportfn
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 100;
-
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Within(geom1 geometry, geom2 geometry)
+CREATE OR REPLACE FUNCTION ST_CoveredBy(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'MODULE_PATHNAME','containsproperly'
+	AS 'MODULE_PATHNAME', 'coveredby'
 	SUPPORT postgis_index_supportfn
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100;
