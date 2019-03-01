@@ -1049,7 +1049,7 @@ static inline bool gserialized_gist_consistent_internal_2d(BOX2DF *key, BOX2DF *
 		break;
 	case RTContainedByStrategyNumber:
 	case RTOldContainedByStrategyNumber:
-		retval = (bool) box2df_overlaps(key, query);
+		retval = (bool) box2df_contains(query, key);
 		break;
 
 	/* To one side */
