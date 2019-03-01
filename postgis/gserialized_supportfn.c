@@ -46,7 +46,7 @@
 #include "liblwgeom.h"
 
 /* Prototypes */
-PGDLLEXPORT Datum postgis_index_supportfn(PG_FUNCTION_ARGS);
+Datum postgis_index_supportfn(PG_FUNCTION_ARGS);
 
 
 /*
@@ -188,7 +188,7 @@ expandFunctionOid(Oid geo_datatype)
 * index search strategy we want to apply.
 */
 PG_FUNCTION_INFO_V1(postgis_index_supportfn);
-PGDLLEXPORT Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
+Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 {
 	Node *rawreq = (Node *) PG_GETARG_POINTER(0);
 	Node *ret = NULL;
