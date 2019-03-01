@@ -151,16 +151,23 @@ static Oid
 expandFunctionOid(Oid geo_datatype)
 {
 	List *expandfn_name = list_make1(makeString("st_expand"));
-	Oid radius_datatype = FLOAT8OID; /* Should always be FLOAT8OID */
-	Oid expandfn_args[2];
+	const Oid radius_datatype = FLOAT8OID; /* Should always be FLOAT8OID */
+	const Oid expandfn_args[2] = {geo_datatype, radius_datatype};
 	const bool noError = true;
-	Oid expandfn_oid;
-
-	expandfn_args[0] = geo_datatype;
-	expandfn_args[1] = radius_datatype;
-	expandfn_oid = LookupFuncName(expandfn_name, 2, expandfn_args, noError);
+	Oid expandfn_oid = LookupFuncName(expandfn_name, 2, expandfn_args, noError);
 	if (expandfn_oid == InvalidOid)
-		elog(ERROR, "%s: unable to lookup 'st_expand(Oid[%u], Oid[%u])'", __func__, geo_datatype, radius_datatype);
+	{
+		/*
+		* This is ugly, but we first lookup the geometry variant of expand
+		* and if we fail, we look up the geography variant. The alternative
+		* is re-naming the geography variant to match the geometry
+		* one, which would not be the end of the world.
+		*/
+		expandfn_name = list_make1(makeString("_st_expand"));
+		expandfn_oid = LookupFuncName(expandfn_name, 2, expandfn_args, noError);
+		if (expandfn_oid == InvalidOid)
+			elog(ERROR, "%s: unable to lookup 'st_expand(Oid[%u], Oid[%u])'", __func__, geo_datatype, radius_datatype);
+	}
 	return expandfn_oid;
 }
 
