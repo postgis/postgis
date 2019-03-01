@@ -45,14 +45,32 @@
 /* PostGIS */
 #include "liblwgeom.h"
 
+/* Prototypes */
+PGDLLEXPORT Datum postgis_index_supportfn(PG_FUNCTION_ARGS);
+
+
+/*
+* Depending on the function, we will deploy different
+* index enhancement strategies. Containment functions
+* can use a more strict index strategy than overlapping
+* functions. For within-distance functions, we need
+* to construct expanded boxes, on the non-indexed
+* function argument. We store the metadata to drive
+* these choices in the IndexableFunctions array.
+*/
 typedef struct
 {
 	char *fn_name;
-	int   strategy_number;
-	int   nargs;
-	int   expand_arg;
+	int   strategy_number; /* Index strategy to add */
+	int   nargs;           /* Expected number of function arguments */
+	int   expand_arg;      /* Radius argument for "within distance" search */
 } IndexableFunction;
 
+/*
+* Metadata currently scanned from start to back,
+* so most common functions first. Could be sorted
+* and searched with binary search.
+*/
 const IndexableFunction IndexableFunctions[] = {
 	{"st_intersects", RTOverlapStrategyNumber, 2, 0},
 	{"st_dwithin", RTOverlapStrategyNumber, 3, 3},
@@ -73,6 +91,13 @@ const IndexableFunction IndexableFunctions[] = {
 	{NULL, 0, 0, 0}
 };
 
+/*
+* Is the function calling the support function
+* one of those we will enhance with index ops? If
+* so, copy the metadata for the function into
+* idxfn and return true. If false... how did the
+* support function get added, anyways?
+*/
 static bool
 needsSpatialIndex(Oid funcid, IndexableFunction *idxfn)
 {
@@ -93,6 +118,12 @@ needsSpatialIndex(Oid funcid, IndexableFunction *idxfn)
 	return false;
 }
 
+/*
+* We only add spatial index enhancements for
+* indexes that support spatial searches (range
+* based searches like the && operator), so only
+* implementations based on GIST, SPGIST and BRIN.
+*/
 static Oid
 opFamilyAmOid(Oid opfamilyoid)
 {
@@ -110,6 +141,12 @@ opFamilyAmOid(Oid opfamilyoid)
 	return opfamilyam;
 }
 
+/*
+* To apply the "expand for radius search" pattern
+* we need access to the expand function, so lookup
+* the function Oid using the function name and
+* type number.
+*/
 static Oid
 expandFunctionOid(Oid geo_datatype)
 {
@@ -127,9 +164,24 @@ expandFunctionOid(Oid geo_datatype)
 	return expandfn_oid;
 }
 
-Datum postgis_index_supportfn(PG_FUNCTION_ARGS);
+/*
+* For functions that we want enhanced with spatial
+* index lookups, add this support function to the
+* SQL function defintion, for example:
+*
+* CREATE OR REPLACE FUNCTION ST_Intersects(g1 geometry, g2 geometry)
+*	RETURNS boolean
+*	AS 'MODULE_PATHNAME','ST_Intersects'
+*	SUPPORT postgis_index_supportfn
+*	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+*	COST 100;
+*
+* The function must also have an entry above in the
+* IndexableFunctions array so that we know what
+* index search strategy we want to apply.
+*/
 PG_FUNCTION_INFO_V1(postgis_index_supportfn);
-Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 {
 	Node *rawreq = (Node *) PG_GETARG_POINTER(0);
 	Node *ret = NULL;
@@ -158,7 +210,7 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				int nargs = list_length(clause->args);
 
 				/*
-				* Only add an operator condition for GIST and SPGIST indexes.
+				* Only add an operator condition for GIST, SPGIST, BRIN indexes.
 				* Effectively this means only these opclasses will get automatic
 				* indexing when used with one of the indexable functions
 				* gist_geometry_ops_2d, gist_geometry_ops_nd,
