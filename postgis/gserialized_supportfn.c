@@ -199,7 +199,6 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 	*/
 	if (IsA(rawreq, SupportRequestIndexCondition))
 	{
-		/* Try to convert operator/function call to index conditions */
 		SupportRequestIndexCondition *req = (SupportRequestIndexCondition *) rawreq;
 
 		if (is_funcclause(req->node))	/* ST_Something() */

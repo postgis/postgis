@@ -987,7 +987,7 @@ static inline bool gserialized_gist_consistent_leaf_2d(BOX2DF *key, BOX2DF *quer
 		break;
 	case RTContainedByStrategyNumber:
 	case RTOldContainedByStrategyNumber:
-		retval = (bool) box2df_contains(query, key);
+		retval = (bool) box2df_overlaps(key, query);
 		break;
 
 	/* To one side */
