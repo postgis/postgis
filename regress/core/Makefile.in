@@ -75,7 +75,6 @@ TESTS = \
 	filterm \
 	cluster \
 	concave_hull\
-	concave_hull_hard\
 	ctors \
 	curvetoline \
 	dump \
@@ -91,7 +90,6 @@ TESTS = \
 	in_kml \
 	in_encodedpolyline \
 	iscollection \
-	knn_recheck \
 	legacy \
 	long_xact \
 	lwgeom_regress \
@@ -164,6 +162,10 @@ TESTS = \
 	regress_brin_index_geography \
 	minimum_clearance \
 	oriented_envelope
+
+# Slow slow tests
+#	concave_hull_hard 
+#	knn_recheck 
 
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 37),1)
 	# GEOS-3.7 adds:
