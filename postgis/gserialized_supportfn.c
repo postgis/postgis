@@ -210,10 +210,9 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 
 			if (needsSpatialIndex(funcid, &idxfn))
 			{
-				Node *indexarg, *otherarg;
-				Oid indexdatatype, otherdatatype;
-				Oid oproid;
 				int nargs = list_length(clause->args);
+				Node *leftarg, *rightarg;
+				Oid leftdatatype, rightdatatype, oproid;
 
 				/*
 				* Only add an operator condition for GIST, SPGIST, BRIN indexes.
@@ -231,26 +230,31 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				}
 
 				/*
+				* Somehow an indexed third argument has slipped in. That
+				* should not happen.
+				*/
+				if (req->indexarg > 1)
+					PG_RETURN_POINTER((Node *)NULL);
+
+				/*
 				* Need the argument types (which should always be geometry or geography
 				* since this function is only bound to those functions)
 				* to use in the operator function lookup
 				*/
 				if (nargs < 2)
 					elog(ERROR, "%s: associated with function with %d arguments", __func__, nargs);
-				if (req->indexarg > 1)
-					elog(ERROR, "%s: indexarg '%d' out of range", __func__, req->indexarg);
 
-				indexarg = req->indexarg ? lsecond(clause->args) : linitial(clause->args);
-				otherarg = req->indexarg ? linitial(clause->args) : lsecond(clause->args);
-				indexdatatype = exprType(indexarg);
-				otherdatatype = exprType(otherarg);
+				leftarg = linitial(clause->args);
+				rightarg = lsecond(clause->args);
+				leftdatatype = exprType(leftarg);
+				rightdatatype = exprType(rightarg);
 
 				/*
 				* Given the index operator family and the arguments and the
 				* desired strategy number we can now lookup the operator
 				* we want (usually && or &&&).
 				*/
-				oproid = get_opfamily_member(opfamilyoid, indexdatatype, otherdatatype, idxfn.strategy_number);
+				oproid = get_opfamily_member(opfamilyoid, leftdatatype, rightdatatype, idxfn.strategy_number);
 				if (oproid == InvalidOid)
 					elog(ERROR, "no spatial operator found for opfamily %u strategy %d", opfamilyoid, idxfn.strategy_number);
 
@@ -263,7 +267,11 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				*/
 				if (idxfn.expand_arg)
 				{
+					Node *indexarg = req->indexarg ? rightarg : leftarg;
+					Node *otherarg = req->indexarg ? leftarg : rightarg;
 					Node *radiusarg = (Node *) list_nth(clause->args, idxfn.expand_arg-1);
+					// Oid indexdatatype = exprType(indexarg);
+					Oid otherdatatype = exprType(otherarg);
 					Oid expandfn_oid = expandFunctionOid(otherdatatype);
 
 					FuncExpr *expandexpr = makeFuncExpr(expandfn_oid, otherdatatype,
@@ -284,9 +292,25 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				*/
 				else
 				{
-					Expr *expr = make_opclause(oproid, BOOLOID, false,
-					                     (Expr *) indexarg, (Expr *) otherarg,
-					                     InvalidOid, req->indexcollation);
+					Expr *expr;
+					/*
+					* PgSQL wants the left-hand side to be the non-const
+					* term, so if we have a const left we swap with
+					* the right
+					*/
+					if (IsA(leftarg, Const))
+					{
+						Node *tmp;
+						oproid = get_commutator(oproid);
+						if (!OidIsValid(oproid))
+							PG_RETURN_POINTER((Node *)NULL);
+						tmp = leftarg;
+						leftarg = rightarg;
+						rightarg = tmp;
+					}
+					expr = make_opclause(oproid, BOOLOID, false,
+					                (Expr *) leftarg, (Expr *) rightarg,
+					                InvalidOid, InvalidOid);
 					ret = (Node *)(list_make1(expr));
 				}
 
