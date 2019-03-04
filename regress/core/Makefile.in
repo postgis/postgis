@@ -164,8 +164,9 @@ TESTS = \
 	oriented_envelope
 
 # Slow slow tests
-#	concave_hull_hard 
-#	knn_recheck 
+TESTS_SLOW = \
+	concave_hull_hard \
+	knn_recheck
 
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 37),1)
 	# GEOS-3.7 adds:
@@ -216,5 +217,9 @@ test check:
 	if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
 		$(PERL) ../run_test.pl --upgrade $(RUNTESTFLAGS) $(TESTS); \
 	fi
+
+check-long:
+	$(PERL) ../run_test.pl $(RUNTESTFLAGS) $(TESTS) $(TESTS_SLOW)
+
 
 clean:
