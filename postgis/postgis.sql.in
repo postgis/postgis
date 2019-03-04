@@ -4164,28 +4164,28 @@ CREATE OR REPLACE FUNCTION _ST_DWithin(geom1 geometry, geom2 geometry,float8)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
 
--- PostGIS equivalent function: touches(geom1 geometry, geom2 geometry)
+-- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Touches(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','touches'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
 
--- PostGIS equivalent function: intersects(geom1 geometry, geom2 geometry)
+-- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Intersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','ST_Intersects'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
 
--- PostGIS equivalent function: crosses(geom1 geometry, geom2 geometry)
+-- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Crosses(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','crosses'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
 
--- PostGIS equivalent function: contains(geom1 geometry, geom2 geometry)
+-- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Contains(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','contains'
@@ -4213,13 +4213,13 @@ CREATE OR REPLACE FUNCTION _ST_CoveredBy(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
 
--- PostGIS equivalent function: within(geom1 geometry, geom2 geometry)
+-- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Within(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT @extschema@._ST_Contains($2,$1)'
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
--- PostGIS equivalent function: overlaps(geom1 geometry, geom2 geometry)
+-- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Overlaps(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','overlaps'
@@ -4265,6 +4265,7 @@ CREATE OR REPLACE FUNCTION postgis_index_supportfn (internal)
 
 -----------------------------------------------------------------------------
 
+-- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(geom1 geometry, geom2 geometry)
 	RETURNS integer
 	AS 'MODULE_PATHNAME', 'ST_LineCrossingDirection'
@@ -4280,6 +4281,7 @@ CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry,float8)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100;
 
+-- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Touches(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','touches'
@@ -4287,6 +4289,7 @@ CREATE OR REPLACE FUNCTION ST_Touches(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100;
 
+-- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Intersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','ST_Intersects'
@@ -4294,6 +4297,7 @@ CREATE OR REPLACE FUNCTION ST_Intersects(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100;
 
+-- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Crosses(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','crosses'
@@ -4301,6 +4305,7 @@ CREATE OR REPLACE FUNCTION ST_Crosses(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100;
 
+-- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Contains(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','contains'
@@ -4340,6 +4345,7 @@ CREATE OR REPLACE FUNCTION ST_CoveredBy(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100;
 
+-- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Overlaps(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','overlaps'
@@ -4389,28 +4395,24 @@ CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry, float8)
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Availability: 1.2.2
--- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Touches(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Touches($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Availability: 1.2.2
--- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Intersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Intersects($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Availability: 1.2.2
--- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Crosses(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Crosses($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Availability: 1.2.2
--- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Contains(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.~) $2 AND @extschema@._ST_Contains($1,$2)'
@@ -4423,28 +4425,24 @@ CREATE OR REPLACE FUNCTION ST_CoveredBy(geom1 geometry, geom2 geometry)
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Availability: 1.2.2
--- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Covers(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.~) $2 AND @extschema@._ST_Covers($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Availability: 1.4.0
--- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_ContainsProperly(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.~) $2 AND @extschema@._ST_ContainsProperly($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Availability: 1.2.2
--- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Within(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $2 OPERATOR(@extschema@.~) $1 AND @extschema@._ST_Contains($2,$1)'
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Availability: 1.2.2
--- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Overlaps(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Overlaps($1,$2)'
