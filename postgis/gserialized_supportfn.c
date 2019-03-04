@@ -255,7 +255,7 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				* we want (usually && or &&&).
 				*/
 				oproid = get_opfamily_member(opfamilyoid, leftdatatype, rightdatatype, idxfn.strategy_number);
-				if (oproid == InvalidOid)
+				if (!OidIsValid(oproid))
 					elog(ERROR, "no spatial operator found for opfamily %u strategy %d", opfamilyoid, idxfn.strategy_number);
 
 				/*
