@@ -155,7 +155,7 @@ expandFunctionOid(Oid geotype, Oid callingfunc)
 	const Oid expandfn_args[2] = {geotype, radiustype};
 	const bool noError = true;
 	/* Expand function must be in same namespace as the caller */
-	const char *nspname = get_namespace_name(get_func_namespace(callingfunc));
+	char *nspname = get_namespace_name(get_func_namespace(callingfunc));
 	List *expandfn_name = list_make2(makeString(nspname), makeString("st_expand"));
 	Oid expandfn_oid = LookupFuncName(expandfn_name, 2, expandfn_args, noError);
 	if (expandfn_oid == InvalidOid)
