@@ -75,7 +75,6 @@ TESTS = \
 	filterm \
 	cluster \
 	concave_hull\
-	concave_hull_hard\
 	ctors \
 	curvetoline \
 	dump \
@@ -91,7 +90,6 @@ TESTS = \
 	in_kml \
 	in_encodedpolyline \
 	iscollection \
-	knn_recheck \
 	legacy \
 	long_xact \
 	lwgeom_regress \
@@ -165,6 +163,11 @@ TESTS = \
 	minimum_clearance \
 	oriented_envelope
 
+# Slow slow tests
+TESTS_SLOW = \
+	concave_hull_hard \
+	knn_recheck
+
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 37),1)
 	# GEOS-3.7 adds:
 	# ST_FrechetDistance
@@ -214,5 +217,9 @@ test check:
 	if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
 		$(PERL) ../run_test.pl --upgrade $(RUNTESTFLAGS) $(TESTS); \
 	fi
+
+check-long:
+	$(PERL) ../run_test.pl $(RUNTESTFLAGS) $(TESTS) $(TESTS_SLOW)
+
 
 clean:

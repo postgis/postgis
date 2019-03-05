@@ -219,7 +219,7 @@ getPoint3dz_p(const POINTARRAY *pa, uint32_t n, POINT3DZ *op)
 		return 0;
 	}
 
-	assert(n < pa->npoints);
+	//assert(n < pa->npoints); --causes point emtpy/point empty to crash
 	if ( n>=pa->npoints )
 	{
 		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);

@@ -70,3 +70,4 @@ POSTGIS_DEPRECATE("3.0.0", sfcgal_intersects3d);
 POSTGIS_DEPRECATE("3.0.0", distance3d);
 POSTGIS_DEPRECATE("3.0.0", sfcgal_distance3d);
 POSTGIS_DEPRECATE("3.0.0", LWGEOM_mindistance3d);
+POSTGIS_DEPRECATE("3.0.0", intersects);

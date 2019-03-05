@@ -543,7 +543,12 @@ Datum BOX2D_construct(PG_FUNCTION_ARGS)
 
 	if ( (minpoint->type != POINTTYPE) || (maxpoint->type != POINTTYPE) )
 	{
-		elog(ERROR, "GBOX_construct: arguments must be points");
+		elog(ERROR, "BOX2D_construct: arguments must be points");
+		PG_RETURN_NULL();
+	}
+
+	if (lwpoint_is_empty(minpoint) || lwpoint_is_empty(maxpoint) ){
+		elog(ERROR, "BOX2D_construct: args can not be empty points");
 		PG_RETURN_NULL();
 	}
 
