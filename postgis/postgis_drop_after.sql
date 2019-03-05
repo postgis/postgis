@@ -104,6 +104,7 @@ DROP FUNCTION IF EXISTS st_box(box3d);
 DROP FUNCTION IF EXISTS st_box3d(geometry);
 DROP FUNCTION IF EXISTS st_box(geometry);
 DROP FUNCTION IF EXISTS ST_ConcaveHull(geometry,float); -- this one changed to use default parameters
+DROP FUNCTION IF EXISTS ST_DWithin(geography, geography, float8); -- this one changed to use default parameters
 DROP FUNCTION IF EXISTS st_text(geometry);
 DROP FUNCTION IF EXISTS st_geometry(box2d);
 DROP FUNCTION IF EXISTS st_geometry(box3d);
@@ -175,6 +176,7 @@ DROP FUNCTION IF EXISTS _ST_DumpPoints( geometry, integer[]); -- removed 2.4.0, 
 -- Temporary clean-up while we wait to return these to action in dev
 DROP FUNCTION IF EXISTS _ST_DistanceRectTree(g1 geometry, g2 geometry);
 DROP FUNCTION IF EXISTS _ST_DistanceRectTreeCached(g1 geometry, g2 geometry);
+
 
 
 -- pgis_abs type was increased from 8 bytes in 2.1 to 16 bytes in 2.2

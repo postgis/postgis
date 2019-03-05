@@ -35,6 +35,7 @@
 #include "nodes/supportnodes.h"
 #include "nodes/nodeFuncs.h"
 #include "nodes/makefuncs.h"
+#include "optimizer/optimizer.h"
 #include "parser/parse_func.h"
 #include "utils/array.h"
 #include "utils/builtins.h"
@@ -60,7 +61,7 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS);
 */
 typedef struct
 {
-	char *fn_name;
+	const char *fn_name;
 	int   strategy_number; /* Index strategy to add */
 	int   nargs;           /* Expected number of function arguments */
 	int   expand_arg;      /* Radius argument for "within distance" search */
@@ -230,22 +231,43 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				}
 
 				/*
-				* Somehow an indexed third argument has slipped in. That
-				* should not happen.
+				* We can only do something with index matches on the first
+				* or second argument.
 				*/
 				if (req->indexarg > 1)
 					PG_RETURN_POINTER((Node *)NULL);
 
 				/*
-				* Need the argument types (which should always be geometry or geography
-				* since this function is only bound to those functions)
-				* to use in the operator function lookup
+				* Make sure we have enough arguments.
 				*/
-				if (nargs < 2)
+				if (nargs < 2 || nargs < idxfn.expand_arg)
 					elog(ERROR, "%s: associated with function with %d arguments", __func__, nargs);
 
-				leftarg = linitial(clause->args);
-				rightarg = lsecond(clause->args);
+				/*
+				* Extract "leftarg" as the arg matching
+				* the index and "rightarg" as the other, even if
+				* they were in the opposite order in the call.
+				* NOTE: The functions we deal with here treat
+				* their first two arguments symmetrically
+				* enough that we needn't distinguish between
+				* the two cases beyond this. Could be more
+				* complications in the future.
+				*/
+				if (req->indexarg == 0)
+				{
+					leftarg = linitial(clause->args);
+					rightarg = lsecond(clause->args);
+				}
+				else
+				{
+					rightarg = linitial(clause->args);
+					leftarg = lsecond(clause->args);
+				}
+				/*
+				* Need the argument types (which should always be geometry/geography) as
+				* this support function is only ever bound to functions
+				* using those types.
+				*/
 				leftdatatype = exprType(leftarg);
 				rightdatatype = exprType(rightarg);
 
@@ -267,20 +289,25 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				*/
 				if (idxfn.expand_arg)
 				{
-					Node *indexarg = req->indexarg ? rightarg : leftarg;
-					Node *otherarg = req->indexarg ? leftarg : rightarg;
+					Expr *expr;
 					Node *radiusarg = (Node *) list_nth(clause->args, idxfn.expand_arg-1);
-					// Oid indexdatatype = exprType(indexarg);
-					Oid otherdatatype = exprType(otherarg);
-					Oid expandfn_oid = expandFunctionOid(otherdatatype);
+					Oid expandfn_oid = expandFunctionOid(rightdatatype);
 
-					FuncExpr *expandexpr = makeFuncExpr(expandfn_oid, otherdatatype,
-					    list_make2(otherarg, radiusarg),
-						InvalidOid, req->indexcollation, COERCE_EXPLICIT_CALL);
+					FuncExpr *expandexpr = makeFuncExpr(expandfn_oid, rightdatatype,
+					    list_make2(rightarg, radiusarg),
+						InvalidOid, InvalidOid, COERCE_EXPLICIT_CALL);
 
-					Expr *expr = make_opclause(oproid, BOOLOID, false,
-					              (Expr *) indexarg, (Expr *) expandexpr,
-					              InvalidOid, req->indexcollation);
+					/*
+					* The comparison expression has to be a pseudo constant,
+					* (not volatile or dependent on the target index table)
+					*/
+					if (!is_pseudo_constant_for_index((Node*)expandexpr, req->index))
+						PG_RETURN_POINTER((Node*)NULL);
+
+					/* OK, we can make an index expression */
+					expr = make_opclause(oproid, BOOLOID, false,
+					              (Expr *) leftarg, (Expr *) expandexpr,
+					              InvalidOid, InvalidOid);
 
 					ret = (Node *)(list_make1(expr));
 				}
@@ -294,23 +321,16 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				{
 					Expr *expr;
 					/*
-					* PgSQL wants the left-hand side to be the non-const
-					* term, so if we have a const left we swap with
-					* the right
+					* The comparison expression has to be a pseudoconstant
+					* (not volatile or dependent on the target index's table)
 					*/
-					if (IsA(leftarg, Const))
-					{
-						Node *tmp;
-						oproid = get_commutator(oproid);
-						if (!OidIsValid(oproid))
-							PG_RETURN_POINTER((Node *)NULL);
-						tmp = leftarg;
-						leftarg = rightarg;
-						rightarg = tmp;
-					}
+					if (!is_pseudo_constant_for_index(rightarg, req->index))
+						PG_RETURN_POINTER((Node*)NULL);
+
 					expr = make_opclause(oproid, BOOLOID, false,
 					                (Expr *) leftarg, (Expr *) rightarg,
 					                InvalidOid, InvalidOid);
+
 					ret = (Node *)(list_make1(expr));
 				}
 
