@@ -149,12 +149,14 @@ opFamilyAmOid(Oid opfamilyoid)
 * type number.
 */
 static Oid
-expandFunctionOid(Oid geo_datatype)
+expandFunctionOid(Oid geotype, Oid callingfunc)
 {
-	List *expandfn_name = list_make1(makeString("st_expand"));
-	const Oid radius_datatype = FLOAT8OID; /* Should always be FLOAT8OID */
-	const Oid expandfn_args[2] = {geo_datatype, radius_datatype};
+	const Oid radiustype = FLOAT8OID; /* Should always be FLOAT8OID */
+	const Oid expandfn_args[2] = {geotype, radiustype};
 	const bool noError = true;
+	/* Expand function must be in same namespace as the caller */
+	const char *nspname = get_namespace_name(get_func_namespace(callingfunc));
+	List *expandfn_name = list_make2(makeString(nspname), makeString("st_expand"));
 	Oid expandfn_oid = LookupFuncName(expandfn_name, 2, expandfn_args, noError);
 	if (expandfn_oid == InvalidOid)
 	{
@@ -164,10 +166,10 @@ expandFunctionOid(Oid geo_datatype)
 		* is re-naming the geography variant to match the geometry
 		* one, which would not be the end of the world.
 		*/
-		expandfn_name = list_make1(makeString("_st_expand"));
+		expandfn_name = list_make2(makeString(nspname), makeString("_st_expand"));
 		expandfn_oid = LookupFuncName(expandfn_name, 2, expandfn_args, noError);
 		if (expandfn_oid == InvalidOid)
-			elog(ERROR, "%s: unable to lookup 'st_expand(Oid[%u], Oid[%u])'", __func__, geo_datatype, radius_datatype);
+			elog(ERROR, "%s: unable to lookup 'st_expand(Oid[%u], Oid[%u])'", __func__, geotype, radiustype);
 	}
 	return expandfn_oid;
 }
@@ -293,7 +295,7 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				{
 					Expr *expr;
 					Node *radiusarg = (Node *) list_nth(clause->args, idxfn.expand_arg-1);
-					Oid expandfn_oid = expandFunctionOid(rightdatatype);
+					Oid expandfn_oid = expandFunctionOid(rightdatatype, clause->funcid);
 
 					FuncExpr *expandexpr = makeFuncExpr(expandfn_oid, rightdatatype,
 					    list_make2(rightarg, radiusarg),
