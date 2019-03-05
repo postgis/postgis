@@ -214,6 +214,7 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				int nargs = list_length(clause->args);
 				Node *leftarg, *rightarg;
 				Oid leftdatatype, rightdatatype, oproid;
+				bool swapped = false;
 
 				/*
 				* Only add an operator condition for GIST, SPGIST, BRIN indexes.
@@ -262,6 +263,7 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				{
 					rightarg = linitial(clause->args);
 					leftarg = lsecond(clause->args);
+					swapped = true;
 				}
 				/*
 				* Need the argument types (which should always be geometry/geography) as
@@ -326,6 +328,18 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 					*/
 					if (!is_pseudo_constant_for_index(rightarg, req->index))
 						PG_RETURN_POINTER((Node*)NULL);
+
+					/*
+					* Arguments were swapped to put the index value on the
+					* left, so we need the commutated operator for
+					* the OpExpr
+					*/
+					if (swapped)
+					{
+						oproid = get_commutator(oproid);
+						if (!OidIsValid(oproid))
+							PG_RETURN_POINTER((Node *)NULL);
+					}
 
 					expr = make_opclause(oproid, BOOLOID, false,
 					                (Expr *) leftarg, (Expr *) rightarg,
