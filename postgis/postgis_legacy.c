@@ -43,7 +43,7 @@
 	{ \
 		ereport(ERROR, \
 			(errcode(ERRCODE_FEATURE_NOT_SUPPORTED), \
-			 errmsg("function %s is out of date since PostGIS %s. Run: ALTER EXTENSION postgis UPDATE;", \
+			 errmsg("function %s is out of date since PostGIS %s, do you need to update procs ?", \
 				__func__, \
 				version))); \
 		PG_RETURN_POINTER(NULL); \
