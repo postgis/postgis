@@ -41,11 +41,14 @@
 	PG_FUNCTION_INFO_V1(funcname); \
 	Datum funcname(PG_FUNCTION_ARGS) \
 	{ \
-		ereport(ERROR, \
-			(errcode(ERRCODE_FEATURE_NOT_SUPPORTED), \
-			 errmsg("function %s is out of date since PostGIS %s. Run: ALTER EXTENSION postgis UPDATE;", \
-				__func__, \
-				version))); \
+		ereport(ERROR, (\
+			errcode(ERRCODE_FEATURE_NOT_SUPPORTED), \
+			errmsg("A stored procedure tried to use deprecated C function '%s'", \
+			       __func__), \
+			errdetail("Library function '%s' was deprecated in PostGIS %s", \
+			          __func__, version), \
+			errhint("Consider running: SELECT postgis_extensions_upgrade()") \
+		)); \
 		PG_RETURN_POINTER(NULL); \
 	}
 

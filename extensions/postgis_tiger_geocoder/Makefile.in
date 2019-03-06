@@ -197,8 +197,8 @@ sql_bits/tiger_geocoder_comments.sql: ../../doc/tiger_geocoder_comments.sql
 # 		-e 's/\\(;/;/' \
 # 		-e 's/;;/;/g' $< > $@
 
-#hardcode for now using
-#the extensions/make_unpackaged.sql script form an install
+#hardcode for now
+#TODO: generate via create_unpackaged.pl
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/tiger_geocoder--unpackaged.sql.in | sql
 	cp $< $@
 

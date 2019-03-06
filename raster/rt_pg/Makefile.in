@@ -38,9 +38,6 @@ SQLPP = @SQLPP@
 # SQL objects (files requiring pre-processing)
 SQL_OBJS=rtpostgis.sql rtpostgis_drop.sql rtpostgis_upgrade_cleanup.sql rtpostgis_legacy.sql
 
-# Utility rule for use from outside
-sql_objs: $(DATA_built)
-
 # Objects to build using PGXS
 OBJS = \
 	rtpostgis.o \
@@ -89,6 +86,9 @@ PGXS := @PGXS@
 # http://www.postgresql.org/message-id/CAB7nPqTsR5o3g-fBi6jbsVdhfPiLFWQ_0cGU5=94Rv_8W3qvFA@mail.gmail.com
 NO_TEMP_INSTALL=yes
 include $(PGXS)
+
+# Utility rule for use from outside
+sql_objs: $(DATA_built)
 
 # Set PERL _after_ the include of PGXS
 PERL=@PERL@
