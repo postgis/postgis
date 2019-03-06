@@ -487,6 +487,8 @@ st_asgeojson
 				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
 				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
 				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
+				<paramdef choice="opt"><type>text </type> <parameter>nprefix=null</parameter></paramdef>
+				<paramdef choice="opt"><type>text </type> <parameter>id=null</parameter></paramdef>
 			</funcprototype>
 
 

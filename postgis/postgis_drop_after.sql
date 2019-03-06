@@ -66,16 +66,18 @@ DROP FUNCTION IF EXISTS st_asgml(geometry); -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(geometry, int4);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geometry);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4,int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4,int4,text); -- changed to use default args
+DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4, int4);  -- changed to use default args
+DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4, int4, text); -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(geography); -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(geography, int4);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geography);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4,int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4,int4,text); -- changed to use default args
-DROP FUNCTION IF EXISTS _st_asgml(int4, geometry, int4,int4,text); -- changed to use default args
-DROP FUNCTION IF EXISTS _st_asgml(int4, geography, int4,int4,text); -- changed to use default args
+DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4, int4);  -- changed to use default args
+DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4, int4, text); -- changed to use default args
+DROP FUNCTION IF EXISTS _st_asgml(int4, geometry, int4, int4, text); -- changed to use default args
+DROP FUNCTION IF EXISTS _st_asgml(int4, geography, int4, int4, text); -- changed to use default args
+DROP FUNCTION IF EXISTS st_asgml(geography, int4, int4);
+
 DROP FUNCTION IF EXISTS ST_AsKML(geometry); -- changed to use default args
 DROP FUNCTION IF EXISTS ST_AsKML(geography); -- changed to use default args
 DROP FUNCTION IF EXISTS ST_AsKML(int4, geometry, int4); -- changed to use default args
