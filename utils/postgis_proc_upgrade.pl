@@ -275,19 +275,21 @@ END
 EOF
 	}
 
-	# This code handles operators by creating them if we are doing a major upgrade
+	# This code handles operators by creating them if needed
 	if ( /^create operator\s+(\S+)\s*\(/i )
 	{
 		my $opname = $1;
-		my $optype = 'unknown';
+		my $opleft = 'unknown';
+		my $opright = 'unknown';
 		my $def = $_;
 		while(<INPUT>)
 		{
 			$def .= $_;
-			$optype = $1 if ( /leftarg\s*=\s*(\w+)\s*,/i );
+			$opleft = $1 if ( /leftarg\s*=\s*(\w+)\s*,/i );
+			$opright = $1 if ( /rightarg\s*=\s*(\w+)\s*,/i );
 			last if /\);/;
 		}
-		my $opsig = $optype . " " . $opname;
+		my $opsig = $opleft . " " . $opname . " " . $opright;
 
     my $last_updated = parse_last_updated($comment);
     if ( ! $last_updated ) {
@@ -298,7 +300,22 @@ EOF
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
-  IF $last_updated > version_from_num FROM _postgis_upgrade_info THEN
+  --IF $last_updated > version_from_num FROM _postgis_upgrade_info
+	--We trust presence of operator rather than version info
+	IF NOT EXISTS (
+		SELECT o.oprname
+		FROM
+			pg_catalog.pg_operator o,
+			pg_catalog.pg_type tl,
+			pg_catalog.pg_type tr
+		WHERE
+			o.oprleft = tl.oid AND
+			o.oprright = tr.oid AND
+			o.oprname = '$opname' AND
+			tl.typname = '$opleft' AND
+			tr.typname = '$opright'
+	)
+	THEN
     EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
   END IF;
 END
@@ -432,7 +449,9 @@ EOF
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
-  IF $last_updated > version_from_num FROM _postgis_upgrade_info THEN
+
+  IF $last_updated > version_from_num FROM _postgis_upgrade_info
+  THEN
     EXECUTE \$postgis_proc_upgrade_parsed_def\$
     $def    \$postgis_proc_upgrade_parsed_def\$;
 EOF
