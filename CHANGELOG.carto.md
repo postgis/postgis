@@ -4,6 +4,8 @@
 
 Changes:
 - Reduce the cost of ST_Simplify from 512 to 64. The cost turned out to be too high for points, creating PARALLEL plans when it wasn't the best option.
+- Enable wagyu by default only if protobuf is available.
+- Merged community `svn-2.5` as of 2019-03-06.
 
 ## 2.5.1.2+carto-1
 
