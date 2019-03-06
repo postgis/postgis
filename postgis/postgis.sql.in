@@ -2942,7 +2942,7 @@ BEGIN
 
 	END LOOP;
 
-	RETURN @extschema@.postgis_full_version();
+	RETURN 'Upgrade completed, run postgis_full_version() for details';
 
 END
 $$ LANGUAGE plpgsql VOLATILE;
