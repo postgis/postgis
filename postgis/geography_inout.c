@@ -349,66 +349,48 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = NULL;
 	char *kml;
 	text *result;
-	int version;
 	int precision = DBL_DIG;
 	static const char *default_prefix = "";
 	char *prefixbuf;
-	const char* prefix = default_prefix;
+	const char *prefix = default_prefix;
 	text *prefix_text;
 
-
-	/* Get the version */
-	version = PG_GETARG_INT32(0);
-	if ( version != 2)
-	{
-		elog(ERROR, "Only KML 2 is supported");
-		PG_RETURN_NULL();
-	}
-
-	/* Get the geometry */
-	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	g = PG_GETARG_GSERIALIZED_P(1);
+	/* Get the arguments */
+	g = PG_GETARG_GSERIALIZED_P(0);
+	precision = PG_GETARG_INT32(1);
+	prefix_text = PG_GETARG_TEXT_P(2);
 
 	/* Convert to lwgeom so we can run the old functions */
 	lwgeom = lwgeom_from_gserialized(g);
 
-	/* Retrieve precision if any (default is max) */
-	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
-	{
-		precision = PG_GETARG_INT32(2);
-		/* TODO: leave this to liblwgeom */
-		if ( precision > DBL_DIG )
-			precision = DBL_DIG;
-		else if ( precision < 0 ) precision = 0;
-	}
+	/* Condition the precision */
+	if (precision > DBL_DIG)
+		precision = DBL_DIG;
+	if (precision < 0)
+		precision = 0;
 
-	/* retrieve prefix */
-	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
+	if (VARSIZE_ANY_EXHDR(prefix_text) > 0)
 	{
-		prefix_text = PG_GETARG_TEXT_P(3);
-		if ( VARSIZE_ANY_EXHDR(prefix_text) == 0 )
-		{
-			prefix = "";
-		}
-		else
-		{
-			/* +2 is one for the ':' and one for term null */
-			prefixbuf = palloc(VARSIZE_ANY_EXHDR(prefix_text)+2);
-			memcpy(prefixbuf, VARDATA(prefix_text),
-			       VARSIZE_ANY_EXHDR(prefix_text));
-			/* add colon and null terminate */
-			prefixbuf[VARSIZE_ANY_EXHDR(prefix_text)] = ':';
-			prefixbuf[VARSIZE_ANY_EXHDR(prefix_text)+1] = '\0';
-			prefix = prefixbuf;
-		}
+		/* +2 is one for the ':' and one for term null */
+		prefixbuf = palloc(VARSIZE_ANY_EXHDR(prefix_text)+2);
+		memcpy(prefixbuf, VARDATA(prefix_text),
+		       VARSIZE_ANY_EXHDR(prefix_text));
+		/* add colon and null terminate */
+		prefixbuf[VARSIZE_ANY_EXHDR(prefix_text)] = ':';
+		prefixbuf[VARSIZE_ANY_EXHDR(prefix_text)+1] = '\0';
+		prefix = prefixbuf;
+	}
+	else
+	{
+		prefix = "";
 	}
 
 	kml = lwgeom_to_kml2(lwgeom, precision, prefix);
 
     lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(g, 1);
+	PG_FREE_IF_COPY(g, 0);
 
-	if ( ! kml )
+	if (!kml)
 		PG_RETURN_NULL();
 
 	result = cstring_to_text(kml);
