@@ -414,8 +414,6 @@ CREATE OR REPLACE FUNCTION ST_AsSVG(text)
 --
 
 -- ST_AsGML(version, geography, precision, option, prefix, id)
-
--- ST_AsGML(version, geography, precision, option, prefix)
 -- Changed: 3.0.0 to bind directly to C
 -- Changed: 2.0.0 to use default args and allow named args
 -- Changed: 2.1.0 enhance to allow id value
@@ -441,9 +439,7 @@ CREATE OR REPLACE FUNCTION ST_AsGML(text)
 -- KML OUTPUT
 --
 
--- _ST_AsKML(version, geography, precision)
-
--- AsKML(geography,precision) / version=2
+-- AsKML(geography,precision)
 -- Changed: 2.0.0 to use default args and named args
 CREATE OR REPLACE FUNCTION ST_AsKML(geog geography, maxdecimaldigits int4 DEFAULT 15, nprefix text DEFAULT '')
 	RETURNS text
@@ -461,7 +457,7 @@ CREATE OR REPLACE FUNCTION ST_AsKML(text)
 -- GeoJson Output
 --
 
-CREATE OR REPLACE FUNCTION _ST_AsGeoJson(int4, geography, int4, int4)
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_geojson'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
@@ -473,45 +469,18 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(text)
 	$$ SELECT @extschema@._ST_AsGeoJson(1, $1::@extschema@.geometry,15,0);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
--- ST_AsGeoJson(geography, precision, options) / version=1
--- Changed: 2.0.0 to use default args and named args
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
-	RETURNS text
-	AS $$ SELECT @extschema@._ST_AsGeoJson(1, $1, $2, $3); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
--- ST_AsGeoJson(version, geography, precision,options)
--- Changed: 2.0.0 to use default args and named args
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(gj_version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
-	RETURNS text
-	AS $$ SELECT @extschema@._ST_AsGeoJson($1, $2, $3, $4); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 -- Measurement Functions
 -- Availability: 1.5.0
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
--- Stop calculation and return immediately once distance is less than tolerance
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION _ST_Distance(geography, geography, float8, boolean)
+
+CREATE OR REPLACE FUNCTION ST_Distance(geog1 geography, geog2 geography, use_spheroid boolean DEFAULT true)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_distance'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100;
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_Distance(geography, geography, boolean)
-	RETURNS float8
-	AS 'SELECT @extschema@._ST_Distance($1, $2, 0.0, $3)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
--- Currently defaulting to spheroid calculations
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_Distance(geography, geography)
-	RETURNS float8
-	AS 'SELECT @extschema@._ST_Distance($1, $2, 0.0, true)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Distance(text, text)

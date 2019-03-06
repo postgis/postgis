@@ -335,12 +335,6 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
-				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
 				<paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
@@ -348,7 +342,6 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
-				<paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef>
 				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
 				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
 				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>

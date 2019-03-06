@@ -2399,6 +2399,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
+
 		  <funcprototype>
 			<funcdef>float <function>ST_Distance</function></funcdef>
 
@@ -2408,28 +2409,20 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 			<paramdef><type>geometry </type>
 			<parameter>g2</parameter></paramdef>
 		  </funcprototype>
-		  <funcprototype>
-			<funcdef>float <function>ST_Distance</function></funcdef>
-
-			<paramdef><type>geography </type>
-			<parameter>gg1</parameter></paramdef>
-
-			<paramdef><type>geography </type>
-			<parameter>gg2</parameter></paramdef>
-		  </funcprototype>
 
 		  <funcprototype>
 			<funcdef>float <function>ST_Distance</function></funcdef>
 
 			<paramdef><type>geography </type>
-			<parameter>gg1</parameter></paramdef>
+			<parameter>geog1</parameter></paramdef>
 
 			<paramdef><type>geography </type>
-			<parameter>gg2</parameter></paramdef>
+			<parameter>geog2</parameter></paramdef>
 
-			<paramdef><type>boolean </type>
-			<parameter>use_spheroid</parameter></paramdef>
+			<paramdef choice="opt">><type>boolean </type>
+			<parameter>use_spheroid=true</parameter></paramdef>
 		  </funcprototype>
+
 		</funcsynopsis>
 	  </refsynopsisdiv>
 

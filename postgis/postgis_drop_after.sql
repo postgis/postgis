@@ -62,6 +62,7 @@ DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry); -- this one changed to use
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry,int4); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography,int4); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography, int4, int4); -- dropped because the version-first signature is dumb
 DROP FUNCTION IF EXISTS st_asgml(geometry); -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(geometry, int4);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geometry);  -- changed to use default args
@@ -181,7 +182,7 @@ DROP FUNCTION IF EXISTS _ST_DumpPoints(geometry, integer[]); -- removed 2.4.0, b
 -- Temporary clean-up while we wait to return these to action in dev
 DROP FUNCTION IF EXISTS _ST_DistanceRectTree(g1 geometry, g2 geometry);
 DROP FUNCTION IF EXISTS _ST_DistanceRectTreeCached(g1 geometry, g2 geometry);
-
+DROP FUNCTION IF EXISTS ST_Distance(geography, geography, float8, boolean);
 
 
 -- pgis_abs type was increased from 8 bytes in 2.1 to 16 bytes in 2.2

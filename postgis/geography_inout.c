@@ -345,23 +345,16 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_as_kml);
 Datum geography_as_kml(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g = NULL;
-	LWGEOM *lwgeom = NULL;
+
 	char *kml;
 	text *result;
-	int precision = DBL_DIG;
 	static const char *default_prefix = "";
 	char *prefixbuf;
 	const char *prefix = default_prefix;
-	text *prefix_text;
-
-	/* Get the arguments */
-	g = PG_GETARG_GSERIALIZED_P(0);
-	precision = PG_GETARG_INT32(1);
-	prefix_text = PG_GETARG_TEXT_P(2);
-
-	/* Convert to lwgeom so we can run the old functions */
-	lwgeom = lwgeom_from_gserialized(g);
+	GSERIALIZED *g = PG_GETARG_GSERIALIZED_P(0);
+	int precision = PG_GETARG_INT32(1);
+	text *prefix_text = PG_GETARG_TEXT_P(2);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(g);
 
 	/* Condition the precision */
 	if (precision > DBL_DIG)
@@ -406,25 +399,17 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_as_svg);
 Datum geography_as_svg(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g = NULL;
-	LWGEOM *lwgeom = NULL;
 	char *svg;
 	text *result;
-	int relative = 0;
-	int precision=DBL_DIG;
+	GSERIALIZED *g = PG_GETARG_GSERIALIZED_P(0);
+	int relative = PG_GETARG_INT32(1) ? 1 : 0;
+	int precision = PG_GETARG_INT32(2);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(g);
 
-	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
-
-	g = PG_GETARG_GSERIALIZED_P(0);
-
-	/* Convert to lwgeom so we can run the old functions */
-	lwgeom = lwgeom_from_gserialized(g);
-	relative = PG_GETARG_INT32(1) ? 1 : 0;
-	precision = PG_GETARG_INT32(2);
-
-	if ( precision > DBL_DIG )
+	if (precision > DBL_DIG)
 		precision = DBL_DIG;
-	else if ( precision < 0 ) precision = 0;
+	else if (precision < 0)
+		precision = 0;
 
 	svg = lwgeom_to_svg(lwgeom, precision, relative);
 
@@ -444,40 +429,19 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_as_geojson);
 Datum geography_as_geojson(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwgeom = NULL;
-	GSERIALIZED *g = NULL;
 	char *geojson;
 	text *result;
-	int version;
-	int option = 0;
 	int has_bbox = 0;
-	int precision = DBL_DIG;
 	char * srs = NULL;
+	GSERIALIZED *g = PG_GETARG_GSERIALIZED_P(0);
+	int precision = PG_GETARG_INT32(1);
+	int option = PG_GETARG_INT32(2);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(g);
 
-	/* Get the version */
-	version = PG_GETARG_INT32(0);
-	if ( version != 1)
-	{
-		elog(ERROR, "Only GeoJSON 1 is supported");
-		PG_RETURN_NULL();
-	}
-
-	/* Get the geography */
-	if (PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	g = PG_GETARG_GSERIALIZED_P(1);
-
-	/* Convert to lwgeom so we can run the old functions */
-	lwgeom = lwgeom_from_gserialized(g);
-
-	/* Retrieve precision if any (default is max) */
-	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
-	{
-		precision = PG_GETARG_INT32(2);
-		/* TODO: leave this to liblwgeom */
-		if ( precision > DBL_DIG )
-			precision = DBL_DIG;
-		else if ( precision < 0 ) precision = 0;
-	}
+	if (precision > DBL_DIG)
+		precision = DBL_DIG;
+	if (precision < 0)
+		precision = 0;
 
 	/* Retrieve output option
 	 * 0 = without option (default)
@@ -485,8 +449,6 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	 * 2 = short crs
 	 * 4 = long crs
 	 */
-	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
-		option = PG_GETARG_INT32(3);
 
 	if (option & 2 || option & 4)
 	{
@@ -505,7 +467,7 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 
 	geojson = lwgeom_to_geojson(lwgeom, srs, precision, has_bbox);
     lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(g, 1);
+	PG_FREE_IF_COPY(g, 0);
 	if (srs) pfree(srs);
 
 	result = cstring_to_text(geojson);

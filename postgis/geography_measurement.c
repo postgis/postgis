@@ -24,6 +24,7 @@
 
 
 #include "postgres.h"
+#include "catalog/pg_type.h" /* for CSTRINGOID */
 
 #include "../postgis_config.h"
 
@@ -213,10 +214,8 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	/* Get our geometry objects loaded into memory. */
 	g1 = PG_GETARG_GSERIALIZED_P(0);
 	g2 = PG_GETARG_GSERIALIZED_P(1);
+	use_spheroid = PG_GETARG_BOOL(2);
 
-	/* Read our calculation type. */
-	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
-		use_spheroid = PG_GETARG_BOOL(3);
 
 	error_if_srid_mismatch(gserialized_get_srid(g1), gserialized_get_srid(g2));
 
