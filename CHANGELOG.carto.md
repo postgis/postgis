@@ -1,6 +1,6 @@
 ## 2.5.1.3+carto-1
 
-**Release date**: 2019-XX-XX
+**Release date**: 2019-03-06
 
 Changes:
 - Reduce the cost of `ST_Simplify` from 512 to 64. The cost turned out to be too high for points, creating PARALLEL plans when it wasn't the best option.
