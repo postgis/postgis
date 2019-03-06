@@ -4141,7 +4141,7 @@ CREATE OR REPLACE FUNCTION _ST_Intersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','intersects'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	_COST_GEOS_MED;
+	_COST_GEOS_LOW;
 
 -- Availability: 1.2.2
 -- Inlines index magic
