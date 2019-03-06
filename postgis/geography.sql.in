@@ -397,10 +397,8 @@ CREATE OPERATOR CLASS btree_geography_ops
 -- SVG OUTPUT
 --
 
--- ST_AsSVG(geography, rel, precision)
--- rel int4 DEFAULT 0, maxdecimaldigits int4 DEFAULT 15
 -- Changed 2.0.0 to use default args and named args
-CREATE OR REPLACE FUNCTION ST_AsSVG(geog geography,rel int4 DEFAULT 0,maxdecimaldigits int4 DEFAULT 15)
+CREATE OR REPLACE FUNCTION ST_AsSVG(geog geography, rel int4 DEFAULT 0, maxdecimaldigits int4 DEFAULT 15)
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_svg'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;

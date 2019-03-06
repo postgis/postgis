@@ -419,19 +419,12 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 
 	/* Convert to lwgeom so we can run the old functions */
 	lwgeom = lwgeom_from_gserialized(g);
+	relative = PG_GETARG_INT32(1) ? 1 : 0;
+	precision = PG_GETARG_INT32(2);
 
-	/* check for relative path notation */
-	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
-		relative = PG_GETARG_INT32(1) ? 1:0;
-
-	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
-	{
-		precision = PG_GETARG_INT32(2);
-		/* TODO: leave this to liblwgeom */
-		if ( precision > DBL_DIG )
-			precision = DBL_DIG;
-		else if ( precision < 0 ) precision = 0;
-	}
+	if ( precision > DBL_DIG )
+		precision = DBL_DIG;
+	else if ( precision < 0 ) precision = 0;
 
 	svg = lwgeom_to_svg(lwgeom, precision, relative);
 
