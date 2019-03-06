@@ -58,6 +58,7 @@ Datum geography_length(PG_FUNCTION_ARGS);
 Datum geography_expand(PG_FUNCTION_ARGS);
 Datum geography_point_outside(PG_FUNCTION_ARGS);
 Datum geography_covers(PG_FUNCTION_ARGS);
+Datum geography_coveredby(PG_FUNCTION_ARGS);
 Datum geography_bestsrid(PG_FUNCTION_ARGS);
 Datum geography_perimeter(PG_FUNCTION_ARGS);
 Datum geography_project(PG_FUNCTION_ARGS);
@@ -267,32 +268,12 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 }
 
 
-/*
-** geography_dwithin(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
-** returns double distance in meters
-*/
-PG_FUNCTION_INFO_V1(geography_dwithin);
-Datum geography_dwithin(PG_FUNCTION_ARGS)
+static bool
+geography_dwithin_impl(FunctionCallInfo fcinfo, GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, bool use_spheroid)
 {
-	GSERIALIZED *g1 = NULL;
-	GSERIALIZED *g2 = NULL;
-	double tolerance = 0.0;
 	double distance;
-	bool use_spheroid = true;
 	SPHEROID s;
 	int dwithin = LW_FALSE;
-
-	/* Get our geometry objects loaded into memory. */
-	g1 = PG_GETARG_GSERIALIZED_P(0);
-	g2 = PG_GETARG_GSERIALIZED_P(1);
-
-	/* Read our tolerance value. */
-	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
-		tolerance = PG_GETARG_FLOAT8(2);
-
-	/* Read our calculation type. */
-	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
-		use_spheroid = PG_GETARG_BOOL(3);
 
 	error_if_srid_mismatch(gserialized_get_srid(g1), gserialized_get_srid(g2));
 
@@ -305,11 +286,7 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 
 	/* Return FALSE on empty arguments. */
 	if ( gserialized_is_empty(g1) || gserialized_is_empty(g2) )
-	{
-		PG_FREE_IF_COPY(g1, 0);
-		PG_FREE_IF_COPY(g2, 1);
-		PG_RETURN_BOOL(false);
-	}
+		return false;
 
 	/* Do the brute force calculation if the cached calculation doesn't tick over */
 	if ( LW_FAILURE == geography_dwithin_cache(fcinfo, g1, g2, &s, tolerance, &dwithin) )
@@ -325,13 +302,49 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 		lwgeom_free(lwgeom2);
 	}
 
-	/* Clean up */
+	return dwithin;
+}
+
+/*
+** geography_dwithin(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
+** returns double distance in meters
+*/
+PG_FUNCTION_INFO_V1(geography_dwithin);
+Datum geography_dwithin(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	double tolerance = 0.0;
+	bool use_spheroid = true;
+	bool dwithin = false;
+
+	/* Read our tolerance value. */
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
+		tolerance = PG_GETARG_FLOAT8(2);
+
+	/* Read our calculation type. */
+	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
+		use_spheroid = PG_GETARG_BOOL(3);
+
+	dwithin = geography_dwithin_impl(fcinfo, g1, g2, tolerance, use_spheroid);
+
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
-
 	PG_RETURN_BOOL(dwithin);
 }
 
+PG_FUNCTION_INFO_V1(geography_intersects);
+Datum geography_intersects(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	double tolerance = 0.0;
+	bool use_spheroid = true;
+	bool dwithin = geography_dwithin_impl(fcinfo, g1, g2, tolerance, use_spheroid);
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+	PG_RETURN_BOOL(dwithin);
+}
 
 /*
 ** geography_distance_tree(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
@@ -765,6 +778,48 @@ Datum geography_covers(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom2);
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
+
+	PG_RETURN_BOOL(result);
+}
+
+PG_FUNCTION_INFO_V1(geography_coveredby);
+Datum geography_coveredby(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom1 = NULL;
+	LWGEOM *lwgeom2 = NULL;
+	GSERIALIZED *g1 = NULL;
+	GSERIALIZED *g2 = NULL;
+	int result = LW_FALSE;
+
+	/* Get our geometry objects loaded into memory. */
+	/* Pick them up in reverse order to covers */
+	g1 = PG_GETARG_GSERIALIZED_P(1);
+	g2 = PG_GETARG_GSERIALIZED_P(0);
+
+	/* Construct our working geometries */
+	lwgeom1 = lwgeom_from_gserialized(g1);
+	lwgeom2 = lwgeom_from_gserialized(g2);
+
+	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+
+	/* EMPTY never intersects with another geometry */
+	if ( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
+	{
+		lwgeom_free(lwgeom1);
+		lwgeom_free(lwgeom2);
+		PG_FREE_IF_COPY(g1, 1);
+		PG_FREE_IF_COPY(g2, 0);
+		PG_RETURN_BOOL(false);
+	}
+
+	/* Calculate answer */
+	result = lwgeom_covers_lwgeom_sphere(lwgeom1, lwgeom2);
+
+	/* Clean up */
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+	PG_FREE_IF_COPY(g1, 1);
+	PG_FREE_IF_COPY(g2, 0);
 
 	PG_RETURN_BOOL(result);
 }

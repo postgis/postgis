@@ -31,6 +31,8 @@ PostGIS 3.0.0
   - #4311, Introduce `--with-wagyu` as an option for MVT polygons (Raúl Marín)
 
 * Enhancements and fixes *
+  - #4341, Using "support function" API in PgSQL 12+ to replace SQL inlining
+           as the mechanism for providing index support under ST_Intersects, et al
   - #4322, Support for Proj 6+ API, bringing more accurate datum transforms
            and support for WKT projections
   - #4153, ST_Segmentize now splits segments proportionally (Darafei

@@ -221,7 +221,7 @@ CREATE OR REPLACE FUNCTION ST_M(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_m_point'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--------------------------------------------
+
 -------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION box3d_in(cstring)
@@ -536,6 +536,7 @@ CREATE OR REPLACE FUNCTION gserialized_gist_joinsel_nd (internal, oid, internal,
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'gserialized_gist_joinsel_nd'
 	LANGUAGE 'c' _PARALLEL;
+
 
 -----------------------------------------------------------------------------
 -- GEOMETRY Operators
@@ -3508,20 +3509,6 @@ CREATE OR REPLACE FUNCTION ST_ConvexHull(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
 
--- Only accepts LINESTRING as parameters.
--- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION _ST_LineCrossingDirection(geom1 geometry, geom2 geometry)
-	RETURNS integer
-	AS 'MODULE_PATHNAME', 'ST_LineCrossingDirection'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 100; -- Guessed cost
-
--- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(geom1 geometry, geom2 geometry)
-	RETURNS integer AS
-	$$ SELECT CASE WHEN NOT $1 OPERATOR(@extschema@.&&) $2 THEN 0 ELSE @extschema@._ST_LineCrossingDirection($1,$2) END $$
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
-
 -- Availability: 1.3.3
 CREATE OR REPLACE FUNCTION ST_SimplifyPreserveTopology(geometry, float8)
 	RETURNS geometry
@@ -4160,19 +4147,15 @@ CREATE OR REPLACE FUNCTION ST_Disjoint(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME','disjoint'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--- PostGIS equivalent function: touches(geom1 geometry, geom2 geometry)
-CREATE OR REPLACE FUNCTION _ST_Touches(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME','touches'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 100; -- Guessed cost
+-----------------------------------------------------------------------------
+-- Non-indexed functions (see above for public indexed variants)
 
--- Availability: 1.2.2
--- Inlines index magic
-CREATE OR REPLACE FUNCTION ST_Touches(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Touches($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+-- Availability: 1.4.0
+CREATE OR REPLACE FUNCTION _ST_LineCrossingDirection(line1 geometry, line2 geometry)
+	RETURNS integer
+	AS 'MODULE_PATHNAME', 'ST_LineCrossingDirection'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100;
 
 -- Availability: 1.3.4
 CREATE OR REPLACE FUNCTION _ST_DWithin(geom1 geometry, geom2 geometry,float8)
@@ -4182,12 +4165,13 @@ CREATE OR REPLACE FUNCTION _ST_DWithin(geom1 geometry, geom2 geometry,float8)
 	COST 100; -- Guessed cost
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry, float8)
+CREATE OR REPLACE FUNCTION _ST_Touches(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_DWithin($1, $2, $3)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+	AS 'MODULE_PATHNAME','touches'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100; -- Guessed cost
 
--- PostGIS equivalent function: intersects(geom1 geometry, geom2 geometry)
+-- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Intersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','ST_Intersects'
@@ -4195,13 +4179,6 @@ CREATE OR REPLACE FUNCTION _ST_Intersects(geom1 geometry, geom2 geometry)
 	COST 100; -- Guessed cost
 
 -- Availability: 1.2.2
--- Inlines index magic
-CREATE OR REPLACE FUNCTION ST_Intersects(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Intersects($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
-
--- PostGIS equivalent function: crosses(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION _ST_Crosses(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','crosses'
@@ -4209,38 +4186,18 @@ CREATE OR REPLACE FUNCTION _ST_Crosses(geom1 geometry, geom2 geometry)
 	COST 100; -- Guessed cost
 
 -- Availability: 1.2.2
--- Inlines index magic
-CREATE OR REPLACE FUNCTION ST_Crosses(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Crosses($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
-
--- PostGIS equivalent function: contains(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION _ST_Contains(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','contains'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
 
--- Availability: 1.2.2
--- Inlines index magic
-CREATE OR REPLACE FUNCTION ST_Contains(geom1 geometry, geom2 geometry)
+-- Availability: 1.4.0
+CREATE OR REPLACE FUNCTION _ST_ContainsProperly(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.~) $2 AND @extschema@._ST_Contains($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION _ST_CoveredBy(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME', 'coveredby'
+	AS 'MODULE_PATHNAME','containsproperly'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_CoveredBy(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.@) $2 AND @extschema@._ST_CoveredBy($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Covers(geom1 geometry, geom2 geometry)
@@ -4250,52 +4207,273 @@ CREATE OR REPLACE FUNCTION _ST_Covers(geom1 geometry, geom2 geometry)
 	COST 100; -- Guessed cost
 
 -- Availability: 1.2.2
--- Inlines index magic
-CREATE OR REPLACE FUNCTION ST_Covers(geom1 geometry, geom2 geometry)
+CREATE OR REPLACE FUNCTION _ST_CoveredBy(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.~) $2 AND @extschema@._ST_Covers($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
-
--- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION _ST_ContainsProperly(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME','containsproperly'
+	AS 'MODULE_PATHNAME', 'coveredby'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
 
--- Availability: 1.4.0
--- Inlines index magic
-CREATE OR REPLACE FUNCTION ST_ContainsProperly(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.~) $2 AND @extschema@._ST_ContainsProperly($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
-
--- PostGIS equivalent function: overlaps(geom1 geometry, geom2 geometry)
-CREATE OR REPLACE FUNCTION _ST_Overlaps(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME','overlaps'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 100; -- Guessed cost
-
--- PostGIS equivalent function: within(geom1 geometry, geom2 geometry)
+-- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Within(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT @extschema@._ST_Contains($2,$1)'
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Availability: 1.2.2
--- Inlines index magic
+CREATE OR REPLACE FUNCTION _ST_Overlaps(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','overlaps'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100; -- Guessed cost
+
+CREATE OR REPLACE FUNCTION _ST_DFullyWithin(geom1 geometry, geom2 geometry,float8)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_dfullywithin'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+CREATE OR REPLACE FUNCTION _ST_3DDWithin(geom1 geometry, geom2 geometry,float8)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_dwithin3d'
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _ST_3DDFullyWithin(geom1 geometry, geom2 geometry,float8)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_dfullywithin3d'
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _ST_3DIntersects(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'ST_3DIntersects'
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
+	COST 100;
+
+-----------------------------------------------------------------------------
+
+
+#if POSTGIS_PGSQL_VERSION >= 120
+
+-----------------------------------------------------------------------------
+-- Planner Support Functions
+-----------------------------------------------------------------------------
+-- Availability 3.0.0
+CREATE OR REPLACE FUNCTION postgis_index_supportfn (internal)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'postgis_index_supportfn'
+	LANGUAGE 'c';
+
+-----------------------------------------------------------------------------
+
+-- Availability: 1.4.0
+CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(geom1 geometry, geom2 geometry)
+	RETURNS integer
+	AS 'MODULE_PATHNAME', 'ST_LineCrossingDirection'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100; -- Guessed cost
+
+-- Availability: 1.3.4
+CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry,float8)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_dwithin'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Touches(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','touches'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Intersects(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','ST_Intersects'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Crosses(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','crosses'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Contains(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','contains'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100;
+
+-- Availability: 1.4.0
+CREATE OR REPLACE FUNCTION ST_ContainsProperly(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','containsproperly'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Within(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','within'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Covers(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'covers'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_CoveredBy(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'coveredby'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Overlaps(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','overlaps'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100;
+
+CREATE OR REPLACE FUNCTION ST_DFullyWithin(geom1 geometry, geom2 geometry,float8)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_dfullywithin'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+CREATE OR REPLACE FUNCTION ST_3DDWithin(geom1 geometry, geom2 geometry,float8)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_dwithin3d'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
+	COST 100;
+
+CREATE OR REPLACE FUNCTION ST_3DDFullyWithin(geom1 geometry, geom2 geometry,float8)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_dfullywithin3d'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
+	COST 100;
+
+CREATE OR REPLACE FUNCTION ST_3DIntersects(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'ST_3DIntersects'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
+	COST 100;
+
+#else
+
+-- Availability: 1.4.0
+CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(line1 geometry, line2 geometry)
+	RETURNS integer AS
+	$$ SELECT CASE WHEN NOT $1 OPERATOR(@extschema@.&&) $2 THEN 0 ELSE @extschema@._ST_LineCrossingDirection($1,$2) END $$
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry, float8)
+	RETURNS boolean
+	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_DWithin($1, $2, $3)'
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Touches(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Touches($1,$2)'
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Intersects(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Intersects($1,$2)'
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Crosses(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Crosses($1,$2)'
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Contains(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'SELECT $1 OPERATOR(@extschema@.~) $2 AND @extschema@._ST_Contains($1,$2)'
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_CoveredBy(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'SELECT $1 OPERATOR(@extschema@.@) $2 AND @extschema@._ST_CoveredBy($1,$2)'
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Covers(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'SELECT $1 OPERATOR(@extschema@.~) $2 AND @extschema@._ST_Covers($1,$2)'
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+
+-- Availability: 1.4.0
+CREATE OR REPLACE FUNCTION ST_ContainsProperly(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'SELECT $1 OPERATOR(@extschema@.~) $2 AND @extschema@._ST_ContainsProperly($1,$2)'
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+
+-- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Within(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $2 OPERATOR(@extschema@.~) $1 AND @extschema@._ST_Contains($2,$1)'
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Availability: 1.2.2
--- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Overlaps(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Overlaps($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
+
+CREATE OR REPLACE FUNCTION ST_DFullyWithin(geom1 geometry, geom2 geometry, float8)
+	RETURNS boolean
+	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_DFullyWithin(@extschema@.ST_ConvexHull($1), @extschema@.ST_ConvexHull($2), $3)'
+	LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION ST_3DDWithin(geom1 geometry, geom2 geometry,float8)
+	RETURNS boolean
+	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_3DDWithin($1, $2, $3)'
+	LANGUAGE 'sql' IMMUTABLE  _PARALLEL
+	COST 100;
+
+CREATE OR REPLACE FUNCTION ST_3DDFullyWithin(geom1 geometry, geom2 geometry,float8)
+	RETURNS boolean
+	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_3DDFullyWithin($1, $2, $3)'
+	LANGUAGE 'sql' IMMUTABLE  _PARALLEL
+	COST 100;
+
+CREATE OR REPLACE FUNCTION ST_3DIntersects(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_3DIntersects($1, $2)'
+	LANGUAGE 'sql' IMMUTABLE  _PARALLEL
+	COST 100;
+
+#endif
+
+-----------------------------------------------------------------------------
 
 -- PostGIS equivalent function: IsValid(geometry)
 -- TODO: change null returns to true
@@ -5433,16 +5611,6 @@ CREATE OR REPLACE FUNCTION ST_LongestLine(geom1 geometry, geom2 geometry)
 	AS 'SELECT @extschema@._ST_LongestLine(@extschema@.ST_ConvexHull($1), @extschema@.ST_ConvexHull($2))'
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
-CREATE OR REPLACE FUNCTION _ST_DFullyWithin(geom1 geometry, geom2 geometry,float8)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME', 'LWGEOM_dfullywithin'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
-
-CREATE OR REPLACE FUNCTION ST_DFullyWithin(geom1 geometry, geom2 geometry, float8)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_DFullyWithin(@extschema@.ST_ConvexHull($1), @extschema@.ST_ConvexHull($2), $3)'
-	LANGUAGE 'sql' IMMUTABLE;
-
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_SwapOrdinates(geom geometry, ords cstring)
 	RETURNS geometry
@@ -5813,41 +5981,6 @@ CREATE OR REPLACE FUNCTION ST_3DLongestLine(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 1; -- reset cost, see #3675
 
-CREATE OR REPLACE FUNCTION _ST_3DDWithin(geom1 geometry, geom2 geometry,float8)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME', 'LWGEOM_dwithin3d'
-	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
-	COST 100;
-
-CREATE OR REPLACE FUNCTION ST_3DDWithin(geom1 geometry, geom2 geometry,float8)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_3DDWithin($1, $2, $3)'
-	LANGUAGE 'sql' IMMUTABLE  _PARALLEL
-	COST 100;
-
-CREATE OR REPLACE FUNCTION _ST_3DDFullyWithin(geom1 geometry, geom2 geometry,float8)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME', 'LWGEOM_dfullywithin3d'
-	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
-	COST 100;
-
-CREATE OR REPLACE FUNCTION ST_3DDFullyWithin(geom1 geometry, geom2 geometry,float8)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_3DDFullyWithin($1, $2, $3)'
-	LANGUAGE 'sql' IMMUTABLE  _PARALLEL
-	COST 100;
-
-CREATE OR REPLACE FUNCTION _ST_3DIntersects(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME', 'ST_3DIntersects'
-	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
-	COST 100;
-
-CREATE OR REPLACE FUNCTION ST_3DIntersects(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_3DIntersects($1, $2)'
-	LANGUAGE 'sql' IMMUTABLE  _PARALLEL
-	COST 100;
 
 ---------------------------------------------------------------
 -- SQL-MM

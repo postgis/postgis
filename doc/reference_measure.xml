@@ -3082,20 +3082,8 @@ FROM
 
 				<paramdef><type>double precision </type>
 				<parameter>distance_meters</parameter></paramdef>
-		  </funcprototype>
 
-		  <funcprototype>
-				<funcdef>boolean <function>ST_DWithin</function></funcdef>
-				<paramdef><type>geography </type>
-				<parameter>gg1</parameter></paramdef>
-
-				<paramdef><type>geography </type>
-				<parameter>gg2</parameter></paramdef>
-
-				<paramdef><type>double precision </type>
-				<parameter>distance_meters</parameter></paramdef>
-
-				<paramdef><type>boolean </type>
+				<paramdef choice="opt"><type>boolean </type>
 				<parameter>use_spheroid</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>

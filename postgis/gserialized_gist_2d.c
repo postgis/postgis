@@ -383,8 +383,13 @@ static bool box2df_within(const BOX2DF *a, const BOX2DF *b)
 	if ( box2df_is_empty(a) && ! box2df_is_empty(b) )
 		return true;
 
-	POSTGIS_DEBUG(5, "entered function");
-	return box2df_contains(b,a);
+	if ( (a->xmin < b->xmin) || (a->xmax > b->xmax) ||
+	     (a->ymin < b->ymin) || (a->ymax > b->ymax) )
+	{
+		return false;
+	}
+
+	return true;
 }
 
 bool box2df_equals(const BOX2DF *a, const BOX2DF *b)
@@ -987,7 +992,7 @@ static inline bool gserialized_gist_consistent_leaf_2d(BOX2DF *key, BOX2DF *quer
 		break;
 	case RTContainedByStrategyNumber:
 	case RTOldContainedByStrategyNumber:
-		retval = (bool) box2df_contains(query, key);
+		retval = (bool) box2df_within(key, query);
 		break;
 
 	/* To one side */
