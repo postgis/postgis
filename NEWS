@@ -20,6 +20,7 @@ PostGIS 3.0.0
   - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
   - #4268, Bump minimum SFCGAL version to 1.3.1 (Darafei Praliaskouski)
   - #4331, ST_3DMakeBox now returns error instead of a miniscule box (Regina Obe)
+  - #4342, Removed "versioned" variants of ST_AsGeoJSON and ST_AsKML (Paul Ramsey)
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
@@ -31,6 +32,7 @@ PostGIS 3.0.0
   - #4311, Introduce `--with-wagyu` as an option for MVT polygons (Raúl Marín)
 
 * Enhancements and fixes *
+  - #4342, Move deprecated functions into legacy.sql file
   - #4341, Using "support function" API in PgSQL 12+ to replace SQL inlining
            as the mechanism for providing index support under ST_Intersects, et al
   - #4322, Support for Proj 6+ API, bringing more accurate datum transforms

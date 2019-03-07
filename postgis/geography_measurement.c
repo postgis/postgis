@@ -24,6 +24,7 @@
 
 
 #include "postgres.h"
+#include "catalog/pg_type.h" /* for CSTRINGOID */
 
 #include "../postgis_config.h"
 
@@ -213,10 +214,8 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	/* Get our geometry objects loaded into memory. */
 	g1 = PG_GETARG_GSERIALIZED_P(0);
 	g2 = PG_GETARG_GSERIALIZED_P(1);
+	use_spheroid = PG_GETARG_BOOL(2);
 
-	/* Read our calculation type. */
-	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
-		use_spheroid = PG_GETARG_BOOL(3);
 
 	error_if_srid_mismatch(gserialized_get_srid(g1), gserialized_get_srid(g2));
 
@@ -844,7 +843,10 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	POINT2D center;
 
 	Datum d1 = PG_GETARG_DATUM(0);
-	Datum d2 = PG_GETARG_DATUM(1);
+	Datum d2;
+
+	if (PG_NARGS() > 1)
+		d2 = PG_GETARG_DATUM(1);
 
 	/* Get our geometry objects loaded into memory. */
 	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(d1);
@@ -859,7 +861,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(4, "calculated gbox = %s", gbox_to_string(&gbox1));
 
 	/* If we have a unique second argument, fill in all the necessary variables. */
-	if ( d1 != d2 )
+	if (PG_NARGS() > 1)
 	{
 		g2 = (GSERIALIZED*)PG_DETOAST_DATUM(d2);
 		gbox2.flags = g2->flags;

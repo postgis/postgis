@@ -36,9 +36,9 @@ DROP AGGREGATE IF EXISTS st_astwkbagg(geometry, integer, bigint, boolean); -- te
 DROP AGGREGATE IF EXISTS st_astwkbagg(geometry, integer, bigint, boolean, boolean); -- temporarely introduced before 2.2.0 final
 
 -- BEGIN Management functions that now have default param for typmod --
-DROP FUNCTION IF EXISTS AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer);
-DROP FUNCTION IF EXISTS AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer);
-DROP FUNCTION IF EXISTS AddGeometryColumn(varchar,varchar,integer,varchar,integer);
+DROP FUNCTION IF EXISTS AddGeometryColumn(varchar, varchar, varchar, varchar, integer, varchar, integer);
+DROP FUNCTION IF EXISTS AddGeometryColumn(varchar, varchar, varchar, integer, varchar, integer);
+DROP FUNCTION IF EXISTS AddGeometryColumn(varchar, varchar, integer, varchar, integer);
 DROP FUNCTION IF EXISTS populate_geometry_columns();
 DROP FUNCTION IF EXISTS populate_geometry_columns(oid);
 
@@ -56,36 +56,42 @@ DROP FUNCTION IF EXISTS box2d_intersects(box2d, box2d);
 DROP FUNCTION IF EXISTS st_area(geography); -- this one changed to use default parameters
 DROP FUNCTION IF EXISTS ST_AsGeoJson(geometry); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(geography); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(geometry,int4); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(geography,int4); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(int4,geometry); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(int4,geography); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(int4,geometry,int4); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(int4,geography,int4); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(geometry, int4); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(geography, int4); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry,int4); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography,int4); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography, int4, int4); -- dropped because the version-first signature is dumb
 DROP FUNCTION IF EXISTS st_asgml(geometry); -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(geometry, int4);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geometry);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4,int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4,int4,text); -- changed to use default args
+DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4, int4);  -- changed to use default args
+DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4, int4, text); -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(geography); -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(geography, int4);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geography);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4,int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4,int4,text); -- changed to use default args
-DROP FUNCTION IF EXISTS _st_asgml(int4, geometry, int4,int4,text); -- changed to use default args
-DROP FUNCTION IF EXISTS _st_asgml(int4, geography, int4,int4,text); -- changed to use default args
-DROP FUNCTION IF EXISTS ST_AsKML(geometry); -- changed to use default args
-DROP FUNCTION IF EXISTS ST_AsKML(geography); -- changed to use default args
-DROP FUNCTION IF EXISTS ST_AsKML(int4, geometry, int4); -- changed to use default args
-DROP FUNCTION IF EXISTS ST_AsKML(int4, geography, int4); -- changed to use default args
+DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4, int4);  -- changed to use default args
+DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4, int4, text); -- changed to use default args
+DROP FUNCTION IF EXISTS _st_asgml(int4, geometry, int4, int4, text); -- changed to use default args
+DROP FUNCTION IF EXISTS _st_asgml(int4, geography, int4, int4, text); -- changed to use default args
+DROP FUNCTION IF EXISTS _st_asgml(int4, geography, int4, int4, text, text); -- changed to use default args
+DROP FUNCTION IF EXISTS st_asgml(geography, int4, int4);
+DROP FUNCTION IF EXISTS _st_askml(int4, geography, int4, text); -- dropped because the version-first signature is dumb
+DROP FUNCTION IF EXISTS st_askml(geometry); -- changed to use default args
+DROP FUNCTION IF EXISTS st_askml(geography); -- changed to use default args
+DROP FUNCTION IF EXISTS st_askml(int4, geometry, int4); -- changed to use default args
+DROP FUNCTION IF EXISTS st_askml(int4, geography, int4); -- changed to use default args
+DROP FUNCTION IF EXISTS st_askml(int4, geography, int4, text); -- dropped because the version-first signature is dumb
+
 DROP FUNCTION IF EXISTS st_asx3d(geometry); -- this one changed to use default parameters so full function deals with it
 DROP FUNCTION IF EXISTS st_asx3d(geometry, int4); -- introduce variant with opts so get rid of other without ops
 DROP FUNCTION IF EXISTS st_assvg(geometry); -- changed to use default args
-DROP FUNCTION IF EXISTS st_assvg(geometry,int4); -- changed to use default args
+DROP FUNCTION IF EXISTS st_assvg(geometry, int4); -- changed to use default args
 DROP FUNCTION IF EXISTS st_assvg(geography); -- changed to use default args
-DROP FUNCTION IF EXISTS st_assvg(geography,int4); -- changed to use default args
+DROP FUNCTION IF EXISTS st_assvg(geography, int4); -- changed to use default args
 DROP FUNCTION IF EXISTS st_box2d_overleft(box2d, box2d);
 DROP FUNCTION IF EXISTS st_box2d_overright(box2d, box2d);
 DROP FUNCTION IF EXISTS st_box2d_left(box2d, box2d);
@@ -119,7 +125,7 @@ DROP FUNCTION IF EXISTS st_cache_bbox();
 DROP FUNCTION IF EXISTS ST_GeoHash(geometry); -- changed to use default args
 DROP FUNCTION IF EXISTS st_length(geography); -- this one changed to use default parameters
 DROP FUNCTION IF EXISTS st_perimeter(geography); -- this one changed to use default parameters
-DROP FUNCTION IF EXISTS transform_geometry(geometry,text,text,int);
+DROP FUNCTION IF EXISTS transform_geometry(geometry, text, text, int);
 DROP FUNCTION IF EXISTS collector(geometry, geometry);
 DROP FUNCTION IF EXISTS st_collector(geometry, geometry);
 DROP FUNCTION IF EXISTS geom_accum (geometry[],geometry);
@@ -160,23 +166,58 @@ DROP FUNCTION IF EXISTS ST_GeneratePoints(geometry, numeric); -- numeric -> inte
 -- Old accum aggregate support type, removed in 2.5.0
 DROP TYPE IF EXISTS pgis_abs CASCADE;
 
-DROP FUNCTION IF EXISTS st_astwkb(geometry,integer,bigint,bool,bool); -- temporarely introduced before 2.2.0 final
-DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal,geometry,integer); -- temporarely introduced before 2.2.0 final
-DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal,geometry,integer,bigint); -- temporarely introduced before 2.2.0 final
-DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal,geometry,integer,bigint,bool); -- temporarely introduced before 2.2.0 final
-DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal,geometry,integer,bigint,bool,bool); -- temporarely introduced before 2.2.0 final
+DROP FUNCTION IF EXISTS st_astwkb(geometry, integer, bigint, bool, bool); -- temporarely introduced before 2.2.0 final
+DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal, geometry, integer); -- temporarely introduced before 2.2.0 final
+DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal, geometry, integer, bigint); -- temporarely introduced before 2.2.0 final
+DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal, geometry, integer, bigint, bool); -- temporarely introduced before 2.2.0 final
+DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal, geometry, integer, bigint, bool, bool); -- temporarely introduced before 2.2.0 final
 DROP FUNCTION IF EXISTS pgis_twkb_accum_finalfn(internal); -- temporarely introduced before 2.2.0 final
 
 DROP FUNCTION IF EXISTS st_seteffectivearea(geometry, double precision); -- temporarely introduced before 2.2.0 final
 
-DROP FUNCTION IF EXISTS geometry_distance_box_nd(geometry,geometry); -- temporarely introduced before 2.2.0 final
+DROP FUNCTION IF EXISTS geometry_distance_box_nd(geometry, geometry); -- temporarely introduced before 2.2.0 final
 
-DROP FUNCTION IF EXISTS _ST_DumpPoints( geometry, integer[]); -- removed 2.4.0, but really should have been removed 2.1.0 when ST_DumpPoints got reimpmented in C
+DROP FUNCTION IF EXISTS _ST_DumpPoints(geometry, integer[]); -- removed 2.4.0, but really should have been removed 2.1.0 when ST_DumpPoints got reimpmented in C
 
 -- Temporary clean-up while we wait to return these to action in dev
 DROP FUNCTION IF EXISTS _ST_DistanceRectTree(g1 geometry, g2 geometry);
 DROP FUNCTION IF EXISTS _ST_DistanceRectTreeCached(g1 geometry, g2 geometry);
 
+-- Deplicative signatures removed
+DROP FUNCTION IF EXISTS ST_Distance(geography, geography, float8, boolean);
+DROP FUNCTION IF EXISTS ST_Buffer(geometry, float8, cstring);
+DROP FUNCTION IF EXISTS ST_IsValidDetail(geometry);
+DROP FUNCTION IF EXISTS ST_AsKML(int4, geometry, int4, text);
+DROP FUNCTION IF EXISTS ST_AsKML(geometry, int4);
+DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry, int4, int4);
+DROP FUNCTION IF EXISTS _ST_AsGeoJson(int4, geometry, int4, int4);
+
+-- Underscore_signatures removed for CamelCase
+DROP FUNCTION IF EXISTS st_shift_longitude(geometry);
+DROP FUNCTION IF EXISTS st_estimated_extent(text,text,text);
+DROP FUNCTION IF EXISTS st_estimated_extent(text,text);
+DROP FUNCTION IF EXISTS st_find_extent(text,text,text);
+DROP FUNCTION IF EXISTS st_find_extent(text,text);
+DROP FUNCTION IF EXISTS st_mem_size(geometry);
+DROP FUNCTION IF EXISTS st_3dlength_spheroid(geometry, spheroid);
+DROP FUNCTION IF EXISTS st_length_spheroid(geometry, spheroid);
+DROP FUNCTION IF EXISTS st_length2d_spheroid(geometry, spheroid);
+DROP FUNCTION IF EXISTS st_distance_spheroid(geometry, geometry, spheroid);
+DROP FUNCTION IF EXISTS st_point_inside_circle(geometry, float8, float8, float8);
+DROP FUNCTION IF EXISTS st_force_2d(geometry);
+DROP FUNCTION IF EXISTS st_force_3dz(geometry);
+DROP FUNCTION IF EXISTS st_force_3dm(geometry);
+DROP FUNCTION IF EXISTS st_force_collection(geometry);
+DROP FUNCTION IF EXISTS st_force_4d(geometry);
+DROP FUNCTION IF EXISTS st_force_3d(geometry);
+DROP FUNCTION IF EXISTS st_line_interpolate_point(geometry, float8);
+DROP FUNCTION IF EXISTS st_line_substring(geometry, float8, float8);
+DROP FUNCTION IF EXISTS st_line_locate_point(geometry, geometry);
+DROP FUNCTION IF EXISTS st_locate_between_measures(geometry, float8, float8);
+DROP FUNCTION IF EXISTS st_locate_along_measure(geometry, float8);
+DROP FUNCTION IF EXISTS st_combine_bbox(box3d, geometry);
+DROP FUNCTION IF EXISTS st_combine_bbox(box2d, geometry);
+DROP FUNCTION IF EXISTS st_distance_sphere(geometry, geometry);
 
 
 -- pgis_abs type was increased from 8 bytes in 2.1 to 16 bytes in 2.2

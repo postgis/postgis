@@ -368,17 +368,16 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOMFromEWKB);
 Datum LWGEOMFromEWKB(PG_FUNCTION_ARGS)
 {
-	bytea *bytea_wkb = (bytea*)PG_GETARG_BYTEA_P(0);
-	int32 srid = 0;
+	bytea *bytea_wkb = PG_GETARG_BYTEA_P(0);
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
 	uint8_t *wkb = (uint8_t*)VARDATA(bytea_wkb);
 
 	lwgeom = lwgeom_from_wkb(wkb, VARSIZE_ANY_EXHDR(bytea_wkb), LW_PARSER_CHECK_ALL);
 
-	if (  ( PG_NARGS()>1) && ( ! PG_ARGISNULL(1) ))
+	if ((PG_NARGS() > 1) && (!PG_ARGISNULL(1)))
 	{
-		srid = PG_GETARG_INT32(1);
+		int32 srid = PG_GETARG_INT32(1);
 		lwgeom_set_srid(lwgeom, srid);
 	}
 
@@ -398,14 +397,14 @@ Datum LWGEOMFromEWKB(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOMFromTWKB);
 Datum LWGEOMFromTWKB(PG_FUNCTION_ARGS)
 {
-	bytea *bytea_twkb = (bytea*)PG_GETARG_BYTEA_P(0);
+	bytea *bytea_twkb = PG_GETARG_BYTEA_P(0);
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
 	uint8_t *twkb = (uint8_t*)VARDATA(bytea_twkb);
 
 	lwgeom = lwgeom_from_twkb(twkb, VARSIZE_ANY_EXHDR(bytea_twkb), LW_PARSER_CHECK_ALL);
 
-	if ( lwgeom_needs_bbox(lwgeom) )
+	if (lwgeom_needs_bbox(lwgeom))
 		lwgeom_add_bbox(lwgeom);
 
 	geom = geometry_serialize(lwgeom);

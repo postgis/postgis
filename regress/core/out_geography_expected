@@ -25,11 +25,6 @@ kml_srid_02|<Point><coordinates>0,1</coordinates></Point>
 kml_empty_geom|
 kml_precision_01|<Point><coordinates>1,1</coordinates></Point>
 kml_precision_02|<Point><coordinates>1.1111111,1.1111111</coordinates></Point>
-kml_version_01|<Point><coordinates>1,1</coordinates></Point>
-ERROR:  Only KML 2 is supported
-ERROR:  Only KML 2 is supported
-kml_prefix_01|<Point><coordinates>1,2</coordinates></Point>
-kml_prefix_02|<kml:Point><kml:coordinates>1,2</kml:coordinates></kml:Point>
 ERROR:  Only lon/lat coordinate systems are supported in geography.
 svg_empty_geom|
 svg_option_01|M 1 -1 L 4 -4 5 -7
@@ -41,9 +36,6 @@ svg_precision_02|x="1.1111111" y="-1.1111111"
 geojson_empty_geom|
 geojson_precision_01|{"type":"Point","coordinates":[1,1]}
 geojson_precision_02|{"type":"Point","coordinates":[1.1111111,1.1111111]}
-geojson_version_01|{"type":"Point","coordinates":[1,1]}
-ERROR:  Only GeoJSON 1 is supported
-ERROR:  Only GeoJSON 1 is supported
 geojson_crs_01|{"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:4326"}},"coordinates":[1,1]}
 geojson_crs_02|{"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:4326"}},"coordinates":[1,1]}
 geojson_crs_03|{"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"coordinates":[1,1]}

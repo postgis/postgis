@@ -39,7 +39,6 @@
 #include "lwgeom_export.h"
 
 Datum LWGEOM_asGML(PG_FUNCTION_ARGS);
-Datum LWGEOM_asKML(PG_FUNCTION_ARGS);
 Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS);
 Datum LWGEOM_asGeoJson_old(PG_FUNCTION_ARGS);
 Datum LWGEOM_asSVG(PG_FUNCTION_ARGS);
@@ -311,80 +310,6 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 }
 
 
-/**
- * Encode feature in KML
- */
-PG_FUNCTION_INFO_V1(LWGEOM_asKML);
-Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *geom;
-	LWGEOM *lwgeom;
-	char *kml;
-	text *result;
-	int version;
-	int precision = DBL_DIG;
-	static const char* default_prefix = ""; /* default prefix */
-	char *prefixbuf;
-	const char* prefix = default_prefix;
-	text *prefix_text;
-
-
-	/* Get the version */
-	version = PG_GETARG_INT32(0);
-	if ( version != 2)
-	{
-		elog(ERROR, "Only KML 2 is supported");
-		PG_RETURN_NULL();
-	}
-
-	/* Get the geometry */
-	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	geom = PG_GETARG_GSERIALIZED_P(1);
-
-	/* Retrieve precision if any (default is max) */
-	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
-	{
-		/* TODO: leave this to liblwgeom ? */
-		precision = PG_GETARG_INT32(2);
-		if ( precision > DBL_DIG )
-			precision = DBL_DIG;
-		else if ( precision < 0 ) precision = 0;
-	}
-
-	/* retrieve prefix */
-	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
-	{
-		prefix_text = PG_GETARG_TEXT_P(3);
-		if ( VARSIZE_ANY_EXHDR(prefix_text) == 0 )
-		{
-			prefix = "";
-		}
-		else
-		{
-			/* +2 is one for the ':' and one for term null */
-			prefixbuf = palloc(VARSIZE_ANY_EXHDR(prefix_text)+2);
-			memcpy(prefixbuf, VARDATA(prefix_text),
-			       VARSIZE_ANY_EXHDR(prefix_text));
-			/* add colon and null terminate */
-			prefixbuf[VARSIZE_ANY_EXHDR(prefix_text)] = ':';
-			prefixbuf[VARSIZE_ANY_EXHDR(prefix_text)+1] = '\0';
-			prefix = prefixbuf;
-		}
-	}
-
-	lwgeom = lwgeom_from_gserialized(geom);
-	kml = lwgeom_to_kml2(lwgeom, precision, prefix);
-	lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(geom, 1);
-
-	if( ! kml )
-		PG_RETURN_NULL();
-
-	result = cstring_to_text(kml);
-	lwfree(kml);
-
-	PG_RETURN_POINTER(result);
-}
 
 
 /**

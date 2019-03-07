@@ -2399,6 +2399,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
+
 		  <funcprototype>
 			<funcdef>float <function>ST_Distance</function></funcdef>
 
@@ -2408,28 +2409,20 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 			<paramdef><type>geometry </type>
 			<parameter>g2</parameter></paramdef>
 		  </funcprototype>
-		  <funcprototype>
-			<funcdef>float <function>ST_Distance</function></funcdef>
-
-			<paramdef><type>geography </type>
-			<parameter>gg1</parameter></paramdef>
-
-			<paramdef><type>geography </type>
-			<parameter>gg2</parameter></paramdef>
-		  </funcprototype>
 
 		  <funcprototype>
 			<funcdef>float <function>ST_Distance</function></funcdef>
 
 			<paramdef><type>geography </type>
-			<parameter>gg1</parameter></paramdef>
+			<parameter>geog1</parameter></paramdef>
 
 			<paramdef><type>geography </type>
-			<parameter>gg2</parameter></paramdef>
+			<parameter>geog2</parameter></paramdef>
 
-			<paramdef><type>boolean </type>
-			<parameter>use_spheroid</parameter></paramdef>
+			<paramdef choice="opt">><type>boolean </type>
+			<parameter>use_spheroid=true</parameter></paramdef>
 		  </funcprototype>
+
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -3755,80 +3748,6 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Length2D_Spheroid">
-	  <refnamediv>
-		<refname>ST_Length2D_Spheroid</refname>
-
-        <refpurpose>Calculates the 2D length/perimeter of a geometry on an ellipsoid. This
-			is useful if the coordinates of the geometry are in
-			longitude/latitude and a length is desired without reprojection.  </refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>float <function>ST_Length2D_Spheroid</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>a_geometry</parameter></paramdef>
-			<paramdef><type>spheroid </type> <parameter>a_spheroid</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-        <para>Calculates the 2D length/perimeter of a geometry on an ellipsoid. This
-			is useful if the coordinates of the geometry are in
-			longitude/latitude and a length is desired without reprojection.
-			The ellipsoid is a separate database type and can be constructed
-			as follows:</para>
-
-		<literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
-
-		<literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
-		<note><para>This is much like <xref linkend="ST_Length_Spheroid" /> except it will ignore the Z ordinate in calculations.</para></note>
-	  </refsection>
-
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>SELECT ST_Length2D_Spheroid( geometry_column,
-			  'SPHEROID["GRS_1980",6378137,298.257222101]' )
-			  FROM geometry_table;
-
-SELECT ST_Length2D_Spheroid( the_geom, sph_m ) As tot_len,
-ST_Length2D_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
-ST_Length2D_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
-			  FROM (SELECT ST_GeomFromText('MULTILINESTRING((-118.584 38.374,-118.583 38.5),
-	(-71.05957 42.3589 , -71.061 43))') As the_geom,
-CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
-	tot_len      |    len_line1     |    len_line2
-------------------+------------------+------------------
- 85204.5207562955 | 13986.8725229309 | 71217.6482333646
-
- --3D Observe same answer
-SELECT ST_Length2D_Spheroid( the_geom, sph_m ) As tot_len,
-ST_Length2D_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
-ST_Length2D_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
-			  FROM (SELECT ST_GeomFromEWKT('MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
-	(-71.05957 42.3589 75, -71.061 43 90))') As the_geom,
-CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
-
-	tot_len      |    len_line1     |    len_line2
-------------------+------------------+------------------
- 85204.5207562955 | 13986.8725229309 | 71217.6482333646
-
-</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length_Spheroid" /></para>
-	  </refsection>
-	</refentry>
 
 <refentry id="ST_LongestLine">
 	  <refnamediv>

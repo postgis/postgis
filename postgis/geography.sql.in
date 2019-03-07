@@ -397,10 +397,8 @@ CREATE OPERATOR CLASS btree_geography_ops
 -- SVG OUTPUT
 --
 
--- ST_AsSVG(geography, rel, precision)
--- rel int4 DEFAULT 0, maxdecimaldigits int4 DEFAULT 15
 -- Changed 2.0.0 to use default args and named args
-CREATE OR REPLACE FUNCTION ST_AsSVG(geog geography,rel int4 DEFAULT 0,maxdecimaldigits int4 DEFAULT 15)
+CREATE OR REPLACE FUNCTION ST_AsSVG(geog geography, rel int4 DEFAULT 0, maxdecimaldigits int4 DEFAULT 15)
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_svg'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
@@ -415,11 +413,20 @@ CREATE OR REPLACE FUNCTION ST_AsSVG(text)
 -- GML OUTPUT
 --
 
--- _ST_AsGML(version, geography, precision, option, prefix, id)
-CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geography, int4, int4, text, text)
+-- ST_AsGML(version, geography, precision, option, prefix, id)
+-- Changed: 3.0.0 to bind directly to C
+-- Changed: 2.0.0 to use default args and allow named args
+-- Changed: 2.1.0 enhance to allow id value
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT 'gml', id text DEFAULT '')
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_gml'
-	LANGUAGE 'c' IMMUTABLE _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+CREATE OR REPLACE FUNCTION ST_AsGML(geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT 'gml', id text DEFAULT '')
+	RETURNS text
+	AS 'MODULE_PATHNAME','geography_as_gml'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- Change 2.0.0 to use base function
@@ -428,60 +435,29 @@ CREATE OR REPLACE FUNCTION ST_AsGML(text)
 	$$ SELECT @extschema@._ST_AsGML(2,$1::@extschema@.geometry,15,0, NULL, NULL);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
--- ST_AsGML (geography, precision, option) / version=2
--- Availability: 1.5.0
--- Changed: 2.0.0 to use default args
-CREATE OR REPLACE FUNCTION ST_AsGML(geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
-	RETURNS text
-	AS 'SELECT @extschema@._ST_AsGML(2, $1, $2, $3, null, null)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
--- ST_AsGML(version, geography, precision, option, prefix)
--- Changed: 2.0.0 to use default args and allow named args
--- Changed: 2.1.0 enhance to allow id value
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT NULL, id text DEFAULT NULL)
-	RETURNS text
-	AS $$ SELECT @extschema@._ST_AsGML($1, $2, $3, $4, $5, $6);$$
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
-
 --
 -- KML OUTPUT
 --
 
--- _ST_AsKML(version, geography, precision)
-CREATE OR REPLACE FUNCTION _ST_AsKML(int4, geography, int4, text)
+-- AsKML(geography,precision)
+-- Changed: 2.0.0 to use default args and named args
+CREATE OR REPLACE FUNCTION ST_AsKML(geog geography, maxdecimaldigits int4 DEFAULT 15, nprefix text DEFAULT '')
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_kml'
-	LANGUAGE 'c' IMMUTABLE _PARALLEL;
-
--- AsKML(geography,precision) / version=2
--- Changed: 2.0.0 to use default args and named args
-CREATE OR REPLACE FUNCTION ST_AsKML(geog geography, maxdecimaldigits int4 DEFAULT 15)
-	RETURNS text
-	AS 'SELECT @extschema@._ST_AsKML(2, $1, $2, null)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- Deprecated 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsKML(text)
 	RETURNS text AS
-	$$ SELECT @extschema@._ST_AsKML(2, $1::@extschema@.geometry, 15, null);  $$
+	$$ SELECT @extschema@.ST_AsKML($1::@extschema@.geometry, 15);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
--- ST_AsKML(version, geography, precision, prefix)
--- Availability: 2.0.0 nprefix added
--- Changed: 2.0.0 to use default args and named args
-CREATE OR REPLACE FUNCTION ST_AsKML(version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, nprefix text DEFAULT null)
-	RETURNS text
-	AS 'SELECT @extschema@._ST_AsKML($1, $2, $3, $4)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 --
 -- GeoJson Output
 --
 
-CREATE OR REPLACE FUNCTION _ST_AsGeoJson(int4, geography, int4, int4)
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_geojson'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
@@ -490,48 +466,21 @@ CREATE OR REPLACE FUNCTION _ST_AsGeoJson(int4, geography, int4, int4)
 -- Deprecated in 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(text)
 	RETURNS text AS
-	$$ SELECT @extschema@._ST_AsGeoJson(1, $1::@extschema@.geometry,15,0);  $$
+	$$ SELECT @extschema@.ST_AsGeoJson($1::@extschema@.geometry,15,0);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
--- ST_AsGeoJson(geography, precision, options) / version=1
--- Changed: 2.0.0 to use default args and named args
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
-	RETURNS text
-	AS $$ SELECT @extschema@._ST_AsGeoJson(1, $1, $2, $3); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
--- ST_AsGeoJson(version, geography, precision,options)
--- Changed: 2.0.0 to use default args and named args
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(gj_version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
-	RETURNS text
-	AS $$ SELECT @extschema@._ST_AsGeoJson($1, $2, $3, $4); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 -- Measurement Functions
 -- Availability: 1.5.0
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
--- Stop calculation and return immediately once distance is less than tolerance
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION _ST_Distance(geography, geography, float8, boolean)
+
+CREATE OR REPLACE FUNCTION ST_Distance(geog1 geography, geog2 geography, use_spheroid boolean DEFAULT true)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_distance'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100;
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_Distance(geography, geography, boolean)
-	RETURNS float8
-	AS 'SELECT @extschema@._ST_Distance($1, $2, 0.0, $3)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
--- Currently defaulting to spheroid calculations
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_Distance(geography, geography)
-	RETURNS float8
-	AS 'SELECT @extschema@._ST_Distance($1, $2, 0.0, true)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Distance(text, text)
@@ -672,8 +621,8 @@ CREATE OR REPLACE FUNCTION _ST_BestSRID(geography, geography)
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_BestSRID(geography)
 	RETURNS integer
-	AS 'SELECT @extschema@._ST_BestSRID($1,$1)'
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+	AS 'MODULE_PATHNAME','geography_bestsrid'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8)
@@ -730,10 +679,10 @@ CREATE OR REPLACE FUNCTION ST_AsBinary(geography)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_AsBinary(geography,text)
-	RETURNS bytea AS
-	$$ SELECT @extschema@.ST_AsBinary($1::@extschema@.geometry, $2);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+CREATE OR REPLACE FUNCTION ST_AsBinary(geography, text)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsEWKT(geography)

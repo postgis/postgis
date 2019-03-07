@@ -34,6 +34,7 @@
 Datum transform(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);
+Datum LWGEOM_asKML(PG_FUNCTION_ARGS);
 
 /**
  * transform( GEOMETRY, INT (output srid) )
@@ -159,5 +160,79 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS)
 	PJ_INFO pji = proj_info();
 	text *result = 	cstring_to_text(pji.version);
 #endif
+	PG_RETURN_POINTER(result);
+}
+
+
+/**
+ * Encode feature in KML
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_asKML);
+Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom;
+	char *kml;
+	text *result;
+	const char *default_prefix = ""; /* default prefix */
+	char *prefixbuf;
+	const char *prefix = default_prefix;
+	int srid_from;
+	const int srid_to = 4326;
+
+	/* Get the geometry */
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P_COPY(0);
+	int precision = PG_GETARG_INT32(1);
+	text *prefix_text = PG_GETARG_TEXT_P(2);
+	srid_from = gserialized_get_srid(geom);
+
+	if ( srid_from == SRID_UNKNOWN )
+	{
+		PG_FREE_IF_COPY(geom, 0);
+		elog(ERROR, "Input geometry has unknown (%d) SRID", SRID_UNKNOWN);
+		PG_RETURN_NULL();
+	}
+
+	/* Condition precision */
+	if (precision > DBL_DIG)
+		precision = DBL_DIG;
+	if (precision < 0)
+		precision = 0;
+
+	if (VARSIZE_ANY_EXHDR(prefix_text) > 0)
+	{
+		/* +2 is one for the ':' and one for term null */
+		prefixbuf = palloc(VARSIZE_ANY_EXHDR(prefix_text)+2);
+		memcpy(prefixbuf, VARDATA(prefix_text),
+		       VARSIZE_ANY_EXHDR(prefix_text));
+		/* add colon and null terminate */
+		prefixbuf[VARSIZE_ANY_EXHDR(prefix_text)] = ':';
+		prefixbuf[VARSIZE_ANY_EXHDR(prefix_text)+1] = '\0';
+		prefix = prefixbuf;
+	}
+
+	lwgeom = lwgeom_from_gserialized(geom);
+
+	if (srid_from != srid_to)
+	{
+		PJ* pj;
+		if (GetPJUsingFCInfo(fcinfo, srid_from, srid_to, &pj) == LW_FAILURE)
+		{
+			PG_FREE_IF_COPY(geom, 0);
+			elog(ERROR, "Failure reading projections from spatial_ref_sys.");
+			PG_RETURN_NULL();
+		}
+		lwgeom_transform(lwgeom, pj);
+	}
+
+	kml = lwgeom_to_kml2(lwgeom, precision, prefix);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
+
+	if (!kml)
+		PG_RETURN_NULL();
+
+	result = cstring_to_text(kml);
+	lwfree(kml);
+
 	PG_RETURN_POINTER(result);
 }
