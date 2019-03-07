@@ -606,21 +606,21 @@ CREATE OR REPLACE FUNCTION AsGML(geometry, int4)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsKML(geometry, int4)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML(2, ST_transform($1,4326), $2, null)'
+	AS 'SELECT ST_AsKML(ST_transform($1,4326), $2, null)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- AsKML(geom) / precision=15 version=2
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsKML(geometry)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML(2, ST_Transform($1,4326), 15, null)'
+	AS 'SELECT ST_AsKML(ST_Transform($1,4326), 15, null)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- AsKML(version, geom, precision)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsKML(int4, geometry, int4)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML($1, ST_Transform($2,4326), $3, null)'
+	AS 'SELECT ST_AsKML(ST_Transform($2,4326), $3, null)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
@@ -2004,3 +2004,28 @@ CREATE AGGREGATE ST_Extent3D(
 	stype = box3d
 	);
 --END 3D functions--
+
+------------------------------------------------
+-- Versioned Format Export Functions --
+------------------------------------------------
+
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
+	RETURNS text AS
+	$$ SELECT ST_AsGeoJson($2::geometry,$3,$4); $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(version int4, geog geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
+	RETURNS text AS
+	$$ SELECT ST_AsGeoJson($2::geometry,15,0); $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION ST_AsKML(version int4, geom geography, maxdecimaldigits int4 DEFAULT 15, nprefix TEXT default '')
+	RETURNS text AS
+	$$ SELECT ST_AsKML($2::geometry,$3,$4); $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION ST_AsKML(version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, nprefix TEXT default '')
+	RETURNS text AS
+	$$ SELECT ST_AsKML($2::geometry,$3,$4); $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+

@@ -4221,8 +4221,19 @@ CREATE OR REPLACE FUNCTION _ST_3DIntersects(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 100;
 
------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION _ST_OrderingEquals(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_same'
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
+	COST 100;
 
+CREATE OR REPLACE FUNCTION _ST_Equals(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','ST_Equals'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100;
+
+-----------------------------------------------------------------------------
 
 #if POSTGIS_PGSQL_VERSION >= 120
 
@@ -4352,6 +4363,20 @@ CREATE OR REPLACE FUNCTION ST_3DIntersects(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 100;
 
+CREATE OR REPLACE FUNCTION ST_OrderingEquals(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_same'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
+	COST 100;
+
+CREATE OR REPLACE FUNCTION ST_Equals(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','ST_Equals'
+	SUPPORT postgis_index_supportfn
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 100;
+
 #else
 
 -- Availability: 1.4.0
@@ -4443,6 +4468,19 @@ CREATE OR REPLACE FUNCTION ST_3DIntersects(geom1 geometry, geom2 geometry)
 	LANGUAGE 'sql' IMMUTABLE  _PARALLEL
 	COST 100;
 
+CREATE OR REPLACE FUNCTION ST_OrderingEquals(GeometryA geometry, GeometryB geometry)
+	RETURNS boolean
+	AS 'SELECT $1 OPERATOR(@extschema@.~=) $2 AND @extschema@._ST_OrderingEquals($1, $2)'
+	LANGUAGE 'sql' IMMUTABLE  _PARALLEL
+	COST 100;
+
+-- Availability: 1.2.1
+CREATE OR REPLACE FUNCTION ST_Equals(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'SELECT $1 OPERATOR(@extschema@.~=) $2 AND @extschema@._ST_Equals($1,$2)'
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL
+	COST 100;
+
 #endif
 
 -----------------------------------------------------------------------------
@@ -4507,18 +4545,6 @@ CREATE OR REPLACE FUNCTION ST_IsCollection(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 5;
 
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION _ST_Equals(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME','ST_Equals'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 100; --Guessed cost
-
--- Availability: 1.2.1
-CREATE OR REPLACE FUNCTION ST_Equals(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.~=) $2 AND @extschema@._ST_Equals($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Deprecation in 1.2.3
 -- TODO: drop in 2.0.0 !
@@ -4599,7 +4625,7 @@ CREATE OR REPLACE FUNCTION postgis_libjson_version()
 -----------------------------------------------------------------------
 -- Availability: 2.2.0
 -- ST_LineFromEncodedPolyline(polyline text, precision int4)
-CREATE OR REPLACE FUNCTION ST_LineFromEncodedPolyline(text, int4 DEFAULT 5)
+CREATE OR REPLACE FUNCTION ST_LineFromEncodedPolyline(txtin text, nprecision int4 DEFAULT 5)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','line_from_encoded_polyline'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
@@ -4611,7 +4637,7 @@ CREATE OR REPLACE FUNCTION ST_LineFromEncodedPolyline(text, int4 DEFAULT 5)
 -----------------------------------------------------------------------
 -- Availability: 2.2.0
 -- ST_AsEncodedPolyline(geom geometry, precision int4)
-CREATE OR REPLACE FUNCTION ST_AsEncodedPolyline(geom geometry, int4 DEFAULT 5)
+CREATE OR REPLACE FUNCTION ST_AsEncodedPolyline(geom geometry, nprecision int4 DEFAULT 5)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asEncodedPolyline'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
@@ -4623,7 +4649,7 @@ CREATE OR REPLACE FUNCTION ST_AsEncodedPolyline(geom geometry, int4 DEFAULT 5)
 -----------------------------------------------------------------------
 -- Availability: 1.2.2
 -- Changed: 2.0.0 changed to use default args and allow calling by named args
-CREATE OR REPLACE FUNCTION ST_AsSVG(geom geometry,rel int4 DEFAULT 0,maxdecimaldigits int4 DEFAULT 15)
+CREATE OR REPLACE FUNCTION ST_AsSVG(geom geometry, rel int4 DEFAULT 0, maxdecimaldigits int4 DEFAULT 15)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
@@ -4667,27 +4693,14 @@ CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geom geometry, maxdecimaldigit
 -----------------------------------------------------------------------
 -- KML OUTPUT
 -----------------------------------------------------------------------
--- _ST_AsKML(version, geom, precision, nprefix)
-CREATE OR REPLACE FUNCTION _ST_AsKML(int4,geometry, int4, text)
-	RETURNS TEXT
-	AS 'MODULE_PATHNAME','LWGEOM_asKML'
-	LANGUAGE 'c' IMMUTABLE  _PARALLEL
-	COST 5000;
 
 -- Availability: 1.2.2
 -- Changed: 2.0.0 to use default args and allow named args
-CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits int4 DEFAULT 15)
+CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits int4 DEFAULT 15, nprefix TEXT default '')
 	RETURNS TEXT
-	AS $$ SELECT @extschema@._ST_AsKML(2, ST_Transform($1,4326), $2, null); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT  _PARALLEL;
-
--- ST_AsKML(version, geom, precision, text)
--- Availability: 2.0.0
--- Changed: 2.0.0 allows default args and got rid of other permutations
-CREATE OR REPLACE FUNCTION ST_AsKML(version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, nprefix text DEFAULT null)
-	RETURNS TEXT
-	AS $$ SELECT @extschema@._ST_AsKML($1, @extschema@.ST_Transform($2,4326), $3, $4); $$
-	LANGUAGE 'sql' IMMUTABLE  _PARALLEL;
+	AS 'MODULE_PATHNAME','LWGEOM_asKML'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 5000;
 
 -----------------------------------------------------------------------
 -- GEOJSON OUTPUT
@@ -4701,19 +4714,6 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits int4 DEF
 	AS 'MODULE_PATHNAME','LWGEOM_asGeoJson'
 	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 1000;
-
--- _ST_AsGeoJson(version, geom, precision, options)
-CREATE OR REPLACE FUNCTION _ST_AsGeoJson(int4, geometry, int4, int4)
-	RETURNS TEXT
-	AS $$ SELECT @extschema@.ST_AsGeoJson($2::@extschema@.geometry, $3::int4, $4::int4); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT  _PARALLEL;
-
--- ST_AsGeoJson(version, geom, precision,options)
--- Changed 2.0.0 to use default args and named args
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(gj_version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
-	RETURNS TEXT
-	AS $$ SELECT @extschema@.ST_AsGeoJson($2::@extschema@.geometry, $3::int4, $4::int4); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------
 -- Mapbox Vector Tile OUTPUT
@@ -5996,21 +5996,6 @@ CREATE OR REPLACE FUNCTION ST_LineToCurve(Geometry geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_desegmentize'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION _ST_OrderingEquals(GeometryA geometry, GeometryB geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME', 'LWGEOM_same'
-	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
-	COST 100;
-
--- Availability: 1.3.0
-CREATE OR REPLACE FUNCTION ST_OrderingEquals(GeometryA geometry, GeometryB geometry)
-	RETURNS boolean
-	AS $$
-	SELECT $1 OPERATOR(@extschema@.~=) $2 AND @extschema@._ST_OrderingEquals($1, $2)
-	$$
-	LANGUAGE 'sql' IMMUTABLE  _PARALLEL;
 
 -------------------------------------------------------------------------------
 -- SQL/MM - SQL Functions on type ST_Point

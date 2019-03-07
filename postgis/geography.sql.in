@@ -450,7 +450,7 @@ CREATE OR REPLACE FUNCTION ST_AsKML(geog geography, maxdecimaldigits int4 DEFAUL
 -- Deprecated 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsKML(text)
 	RETURNS text AS
-	$$ SELECT @extschema@._ST_AsKML(2, $1::@extschema@.geometry, 15, null);  $$
+	$$ SELECT @extschema@.ST_AsKML($1::@extschema@.geometry, 15);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 --
@@ -466,7 +466,7 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(geog geography, maxdecimaldigits int4 DE
 -- Deprecated in 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(text)
 	RETURNS text AS
-	$$ SELECT @extschema@._ST_AsGeoJson(1, $1::@extschema@.geometry,15,0);  $$
+	$$ SELECT @extschema@.ST_AsGeoJson($1::@extschema@.geometry,15,0);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 

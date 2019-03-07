@@ -824,7 +824,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_from_WKB);
 Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 {
-	bytea *bytea_wkb = (bytea*)PG_GETARG_BYTEA_P(0);
+	bytea *bytea_wkb = PG_GETARG_BYTEA_P(0);
 	int32 srid = 0;
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;

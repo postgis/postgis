@@ -36,9 +36,6 @@ ERROR:  Input geometry has unknown (0) SRID
 kml_empty_geom|
 kml_precision_01|<Point><coordinates>1,1</coordinates></Point>
 kml_precision_02|<Point><coordinates>1.1111111,1.1111111</coordinates></Point>
-kml_version_01|<Point><coordinates>1,1</coordinates></Point>
-ERROR:  Only KML 2 is supported
-ERROR:  Only KML 2 is supported
 kml_prefix_01|<Point><coordinates>1,2</coordinates></Point>
 kml_prefix_02|<kml:Point><kml:coordinates>1,2</kml:coordinates></kml:Point>
 kml_projection_01|<Point><coordinates>-74.078,4.596</coordinates></Point>
@@ -57,8 +54,6 @@ geojson_empty_geom|
 geojson_precision_01|{"type":"Point","coordinates":[1,1]}
 geojson_precision_02|{"type":"Point","coordinates":[1.1111111,1.1111111]}
 geojson_version_01|{"type":"Point","coordinates":[1,1]}
-geojson_version_02|{"type":"Point","coordinates":[1,1]}
-geojson_version_03|{"type":"Point","coordinates":[1,1]}
 geojson_crs_01|{"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:4326"}},"coordinates":[1,1]}
 geojson_crs_02|{"type":"Point","coordinates":[1,1]}
 geojson_crs_03|{"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"coordinates":[1,1]}
