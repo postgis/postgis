@@ -184,12 +184,9 @@ select '142', ST_AsEWKT(ST_multi(ST_setsrid('LINESTRING(2 2, 3 3)'::geometry, 5)
 select '143', ST_AsEWKT(ST_multi(ST_setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
 select '143c1', ST_AsEWKT(ST_multi('CIRCULARSTRING(0 0, 1 1, 2 2)'::geometry));
 select '144', ST_AsEWKT(ST_Force3dm('POINT(1 2 3)'));
-select '144d', ST_AsEWKT(ST_Force_3dm('POINT(1 2 3)'));
 select '145', ST_AsEWKT(ST_Force3dz('POINTM(1 2 3)'));
-select '145d', ST_AsEWKT(ST_Force_3dz('POINTM(1 2 3)'));
 select '146', ST_AsEWKT(ST_Force4d('POINTM(1 2 3)'));
 select '147', ST_AsEWKT(ST_Force4d('POINT(1 2 3)'));
-select '147d', ST_AsEWKT(ST_Force_4d('POINT(1 2 3)'));
 
 select '148', ST_AsText(ST_segmentize('LINESTRING(0 0, 10 0)'::geometry, 5));
 
