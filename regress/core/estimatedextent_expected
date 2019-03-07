@@ -2,9 +2,6 @@ WARNING:  stats for "t.g" do not exist
 #877.1|
 WARNING:  stats for "t.g" do not exist
 #877.2|
-WARNING:  ST_Estimated_Extent signature was deprecated in 2.1.0. Please use ST_EstimatedExtent
-WARNING:  stats for "t.g" do not exist
-#877.2.deprecated|
 WARNING:  stats for "t.g" do not exist
 WARNING:  stats for "t.g" do not exist
 WARNING:  stats for "t.g" do not exist

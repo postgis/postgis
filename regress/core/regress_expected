@@ -124,15 +124,12 @@ ERROR:  parse error - invalid geometry at character 23
 143|SRID=6;MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0)))
 143c1|MULTICURVE(CIRCULARSTRING(0 0,1 1,2 2))
 144|POINTM(1 2 0)
-WARNING:  ST_Force_3dm signature was deprecated in 2.1.0. Please use ST_Force3DM
-144d|POINTM(1 2 0)
+ERROR:  function st_force_3dm(unknown) does not exist at character 26
 145|POINT(1 2 0)
-WARNING:  ST_Force_3dz signature was deprecated in 2.1.0. Please use ST_Force3DZ
-145d|POINT(1 2 0)
+ERROR:  function st_force_3dz(unknown) does not exist at character 26
 146|POINT(1 2 0 3)
 147|POINT(1 2 3 0)
-WARNING:  ST_Force_4d signature was deprecated in 2.1.0. Please use ST_Force4D
-147d|POINT(1 2 3 0)
+ERROR:  function st_force_4d(unknown) does not exist at character 26
 148|LINESTRING(0 0,5 0,10 0)
 149|GEOMETRYCOLLECTION EMPTY
 150d|SRID=6;GEOMETRYCOLLECTION(POLYGON((0 0,1 0,1 1,0 1,0 0)))

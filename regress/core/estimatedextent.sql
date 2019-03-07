@@ -3,7 +3,6 @@ create table t(g geometry);
 select '#877.1', ST_EstimatedExtent('t','g');
 analyze t;
 select '#877.2', ST_EstimatedExtent('public', 't','g');
-select '#877.2.deprecated', ST_Estimated_Extent('public', 't','g');
 SET client_min_messages TO NOTICE;
 insert into t(g) values ('LINESTRING(-10 -50, 20 30)');
 

@@ -939,15 +939,6 @@ CREATE OR REPLACE FUNCTION ST_WrapX(geom geometry, wrap float8, move float8)
 	AS 'MODULE_PATHNAME', 'ST_WrapX'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 1.2.2
--- Deprecation in 2.2.0
-CREATE OR REPLACE FUNCTION ST_Shift_Longitude(geometry)
-	RETURNS geometry AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Shift_Longitude', 'ST_ShiftLongitude', '2.2.0');
-    SELECT @extschema@.ST_ShiftLongitude($1);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
 -----------------------------------------------------------------------------
 --  BOX3D FUNCTIONS
 -----------------------------------------------------------------------------
@@ -1030,16 +1021,6 @@ CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text,text) RETURNS box2d AS
 	'MODULE_PATHNAME', 'gserialized_estimated_extent'
 	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
 
--- Availability: 1.2.2
--- Deprecation in 2.1.0
-CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Estimated_Extent', 'ST_EstimatedExtent', '2.1.0');
-    -- We use security invoker instead of security definer
-    -- to prevent malicious injection of a different same named function
-    SELECT @extschema@.ST_EstimatedExtent($1, $2, $3);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT SECURITY INVOKER;
-
 -----------------------------------------------------------------------
 -- ST_ESTIMATED_EXTENT( <table name>, <column name> )
 -----------------------------------------------------------------------
@@ -1048,17 +1029,6 @@ CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
 CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text) RETURNS box2d AS
 	'MODULE_PATHNAME', 'gserialized_estimated_extent'
 	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
-
--- Availability: 1.2.2
--- Deprecation in 2.1.0
-CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Estimated_Extent', 'ST_EstimatedExtent', '2.1.0');
-    -- We use security invoker instead of security definer
-    -- to prevent malicious injection of a same named different function
-    -- that would be run under elevated permissions
-    SELECT @extschema@.ST_EstimatedExtent($1, $2);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT SECURITY INVOKER;
 
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <schema name>, <table name>, <column name> )
@@ -1080,14 +1050,6 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 1.2.2
--- Deprecation in 2.2.0
-CREATE OR REPLACE FUNCTION ST_find_extent(text,text,text) RETURNS box2d AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Find_Extent', 'ST_FindExtent', '2.2.0');
-    SELECT @extschema@.ST_FindExtent($1,$2,$3);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <table name>, <column name> )
 -----------------------------------------------------------------------
@@ -1108,13 +1070,6 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 1.2.2
--- Deprecation in 2.2.0
-CREATE OR REPLACE FUNCTION ST_find_extent(text,text) RETURNS box2d AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Find_Extent', 'ST_FindExtent', '2.2.0');
-    SELECT @extschema@.ST_FindExtent($1,$2);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -------------------------------------------
 -- other lwgeom functions
@@ -1156,30 +1111,21 @@ CREATE OR REPLACE FUNCTION ST_MemSize(geometry)
 	COST 5;
 
 -- Availability: 1.2.2
--- Deprecation in 2.2.0
-CREATE OR REPLACE FUNCTION ST_mem_size(geometry)
-	RETURNS int4 AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Mem_Size', 'ST_MemSize', '2.2.0');
-    SELECT @extschema@.ST_MemSize($1);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT SECURITY INVOKER;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_summary(geometry)
+CREATE OR REPLACE FUNCTION ST_Summary(geometry)
 	RETURNS text
 	AS 'MODULE_PATHNAME', 'LWGEOM_summary'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 25;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Npoints(geometry)
+CREATE OR REPLACE FUNCTION ST_NPoints(geometry)
 	RETURNS int4
 	AS 'MODULE_PATHNAME', 'LWGEOM_npoints'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 10;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_nrings(geometry)
+CREATE OR REPLACE FUNCTION ST_NRings(geometry)
 	RETURNS int4
 	AS 'MODULE_PATHNAME', 'LWGEOM_nrings'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
@@ -1215,42 +1161,12 @@ CREATE OR REPLACE FUNCTION ST_LengthSpheroid(geometry, spheroid)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 500;
 
--- this is a fake (for back-compatibility)
--- uses 3d if 3d is available, 2d otherwise
--- Availability: 2.0.0
--- Deprecation in 2.2.0
-CREATE OR REPLACE FUNCTION ST_3DLength_spheroid(geometry, spheroid)
-	RETURNS FLOAT8 AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_3DLength_Spheroid', 'ST_LengthSpheroid', '2.2.0');
-    SELECT @extschema@.ST_LengthSpheroid($1,$2);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT
-	COST 100;
-
--- Availability: 1.2.2
--- Deprecation in 2.2.0
-CREATE OR REPLACE FUNCTION ST_length_spheroid(geometry, spheroid)
-	RETURNS FLOAT8 AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Length_Spheroid', 'ST_LengthSpheroid', '2.2.0');
-    SELECT @extschema@.ST_LengthSpheroid($1,$2);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_Length2DSpheroid(geometry, spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_length2d_ellipsoid'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 500;
-
--- Availability: 1.2.2
--- Deprecation in 2.2.0
-CREATE OR REPLACE FUNCTION ST_length2d_spheroid(geometry, spheroid)
-	RETURNS FLOAT8 AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Length2D_Spheroid', 'ST_Length2DSpheroid', '2.2.0');
-    SELECT @extschema@.ST_Length2DSpheroid($1,$2);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_3DPerimeter(geometry)
@@ -1309,15 +1225,6 @@ CREATE OR REPLACE FUNCTION ST_DistanceSpheroid(geom1 geometry, geom2 geometry,sp
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 200; --upped this
 
--- Availability: 1.2.2
--- Deprecation in 2.2.0
-CREATE OR REPLACE FUNCTION ST_distance_spheroid(geom1 geometry, geom2 geometry,spheroid)
-	RETURNS FLOAT8 AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Distance_Spheroid', 'ST_DistanceSpheroid', '2.2.0');
-    SELECT @extschema@.ST_DistanceSpheroid($1,$2,$3);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
 -- Minimum distance. 2D only.
 CREATE OR REPLACE FUNCTION ST_Distance(geom1 geometry, geom2 geometry)
 	RETURNS float8
@@ -1330,15 +1237,6 @@ CREATE OR REPLACE FUNCTION ST_PointInsideCircle(geometry,float8,float8,float8)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'LWGEOM_inside_circle_point'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
-
--- Availability: 1.2.2
--- Deprecation in 2.2.0
-CREATE OR REPLACE FUNCTION ST_point_inside_circle(geometry,float8,float8,float8)
-	RETURNS bool AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Point_Inside_Circle', 'ST_PointInsideCircle', '2.2.0');
-    SELECT @extschema@.ST_PointInsideCircle($1,$2,$3,$4);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_azimuth(geom1 geometry, geom2 geometry)
@@ -1375,30 +1273,12 @@ CREATE OR REPLACE FUNCTION ST_Force2D(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
 
--- Availability: 1.2.2
--- Deprecation in 2.1.0
-CREATE OR REPLACE FUNCTION ST_force_2d(geometry)
-	RETURNS geometry AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Force_2d', 'ST_Force2D', '2.1.0');
-    SELECT @extschema@.ST_Force2D($1);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Force3DZ(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
-
--- Availability: 1.2.2
--- Deprecation in 2.1.0
-CREATE OR REPLACE FUNCTION ST_force_3dz(geometry)
-	RETURNS geometry AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Force_3dz', 'ST_Force3DZ', '2.1.0');
-    SELECT @extschema@.ST_Force3DZ($1);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Force3D(geometry)
@@ -1407,30 +1287,12 @@ CREATE OR REPLACE FUNCTION ST_Force3D(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
 
--- Availability: 1.2.2
--- Deprecation in 2.1.0
-CREATE OR REPLACE FUNCTION ST_force_3d(geometry)
-	RETURNS geometry AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Force_3d', 'ST_Force3D', '2.1.0');
-    SELECT @extschema@.ST_Force3D($1);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Force3DM(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dm'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
-
--- Availability: 1.2.2
--- Deprecation in 2.1.0
-CREATE OR REPLACE FUNCTION ST_force_3dm(geometry)
-	RETURNS geometry AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Force_3dm', 'ST_Force3DM', '2.1.0');
-    SELECT @extschema@.ST_Force3DM($1);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Force4D(geometry)
@@ -1439,30 +1301,12 @@ CREATE OR REPLACE FUNCTION ST_Force4D(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
 
--- Availability: 1.2.2
--- Deprecation in 2.1.0
-CREATE OR REPLACE FUNCTION ST_force_4d(geometry)
-	RETURNS geometry AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Force_4d', 'ST_Force4D', '2.1.0');
-    SELECT @extschema@.ST_Force4D($1);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_ForceCollection(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_collection'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
-
--- Availability: 1.2.2
--- Deprecation in 2.1.0
-CREATE OR REPLACE FUNCTION ST_force_collection(geometry)
-	RETURNS geometry AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Force_Collection', 'ST_ForceCollection', '2.1.0');
-    SELECT @extschema@.ST_ForceCollection($1);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_CollectionExtract(geometry, integer)
@@ -3331,60 +3175,17 @@ CREATE OR REPLACE FUNCTION ST_LineInterpolatePoints(geometry, float8, repeat boo
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_interpolate_point'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 1.2.2
--- Deprecation in 2.1.0
-CREATE OR REPLACE FUNCTION ST_line_interpolate_point(geometry, float8)
-	RETURNS geometry AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Line_Interpolate_Point', 'ST_LineInterpolatePoint', '2.1.0');
-    SELECT @extschema@.ST_LineInterpolatePoint($1, $2);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_LineSubstring(geometry, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_substring'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
--- Availability: 1.2.2
--- Deprecation in 2.1.0
-CREATE OR REPLACE FUNCTION ST_line_substring(geometry, float8, float8)
-	RETURNS geometry AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Line_Substring', 'ST_LineSubstring', '2.1.0');
-     SELECT @extschema@.ST_LineSubstring($1, $2, $3);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_LineLocatePoint(geom1 geometry, geom2 geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_locate_point'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
-
--- Availability: 1.2.2
--- Deprecation in 2.1.0
-CREATE OR REPLACE FUNCTION ST_line_locate_point(geom1 geometry, geom2 geometry)
-	RETURNS float8 AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Line_Locate_Point', 'ST_LineLocatePoint', '2.1.0');
-     SELECT @extschema@.ST_LineLocatePoint($1, $2);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
--- Availability: 1.2.2
--- Deprecation in 2.0.0 replaced by ST_LocateBetween
--- TODO: switch to use of _postgis_deprecate() in 2.3.0 (or drop)
-CREATE OR REPLACE FUNCTION ST_locate_between_measures(geometry, float8, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
-
--- Availability: 1.2.2
--- Deprecation in 2.0.0 replaced by ST_LocateAlong
--- TODO: switch to use of _postgis_deprecate() in 2.3.0 (or drop)
-CREATE OR REPLACE FUNCTION ST_locate_along_measure(geometry, float8)
-	RETURNS geometry
-	AS $$ SELECT @extschema@.ST_locate_between_measures($1, $2, $2) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8)
@@ -3837,29 +3638,13 @@ CREATE OR REPLACE FUNCTION ST_CombineBBox(box3d,box3d)
 	AS 'MODULE_PATHNAME', 'BOX3D_combine_BOX3D'
 	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
--- Availability: 1.2.2
--- Deprecation in 2.2.0
-CREATE OR REPLACE FUNCTION ST_Combine_BBox(box3d,geometry)
-	RETURNS box3d AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Combine_BBox', 'ST_CombineBbox', '2.2.0');
-    SELECT @extschema@.ST_CombineBbox($1,$2);
-  $$
-	LANGUAGE 'sql' IMMUTABLE;
-
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_CombineBbox(box2d,geometry)
 	RETURNS box2d
 	AS 'MODULE_PATHNAME', 'BOX2D_combine'
 	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
--- Availability: 1.2.2
--- Deprecation in 2.2.0
-CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
-	RETURNS box2d AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Combine_BBox', 'ST_CombineBbox', '2.2.0');
-    SELECT @extschema@.ST_CombineBbox($1,$2);
-  $$
-	LANGUAGE 'sql' IMMUTABLE;
+
 
 -- Availability: 1.2.2
 -- Changed: 2.2.0 to use non-deprecated ST_CombineBBox (r13535)
@@ -4544,7 +4329,6 @@ CREATE OR REPLACE FUNCTION ST_IsCollection(geometry)
 	AS 'MODULE_PATHNAME', 'ST_IsCollection'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 5;
-
 
 -- Deprecation in 1.2.3
 -- TODO: drop in 2.0.0 !
@@ -5693,15 +5477,6 @@ CREATE OR REPLACE FUNCTION ST_DistanceSphere(geom1 geometry, geom2 geometry)
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL
 	COST 300;
 
--- Availability: 1.2.2
--- Deprecation in 2.2.0
-CREATE OR REPLACE FUNCTION ST_distance_sphere(geom1 geometry, geom2 geometry)
-	RETURNS FLOAT8 AS
-  $$ SELECT @extschema@._postgis_deprecate('ST_Distance_Sphere', 'ST_DistanceSphere', '2.2.0');
-    SELECT @extschema@.ST_DistanceSphere($1,$2);
-  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL
-	COST 300;
 
 ---------------------------------------------------------------
 -- GEOMETRY_COLUMNS view support functions

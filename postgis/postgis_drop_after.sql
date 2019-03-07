@@ -182,6 +182,8 @@ DROP FUNCTION IF EXISTS _ST_DumpPoints(geometry, integer[]); -- removed 2.4.0, b
 -- Temporary clean-up while we wait to return these to action in dev
 DROP FUNCTION IF EXISTS _ST_DistanceRectTree(g1 geometry, g2 geometry);
 DROP FUNCTION IF EXISTS _ST_DistanceRectTreeCached(g1 geometry, g2 geometry);
+
+-- Deplicative signatures removed
 DROP FUNCTION IF EXISTS ST_Distance(geography, geography, float8, boolean);
 DROP FUNCTION IF EXISTS ST_Buffer(geometry, float8, cstring);
 DROP FUNCTION IF EXISTS ST_IsValidDetail(geometry);
@@ -189,6 +191,34 @@ DROP FUNCTION IF EXISTS ST_AsKML(int4, geometry, int4, text);
 DROP FUNCTION IF EXISTS ST_AsKML(geometry, int4);
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry, int4, int4);
 DROP FUNCTION IF EXISTS _ST_AsGeoJson(int4, geometry, int4, int4);
+
+-- Underscore_signatures removed for CamelCase
+DROP FUNCTION IF EXISTS st_shift_longitude(geometry);
+DROP FUNCTION IF EXISTS st_estimated_extent(text,text,text);
+DROP FUNCTION IF EXISTS st_estimated_extent(text,text);
+DROP FUNCTION IF EXISTS st_find_extent(text,text,text);
+DROP FUNCTION IF EXISTS st_find_extent(text,text);
+DROP FUNCTION IF EXISTS st_mem_size(geometry);
+DROP FUNCTION IF EXISTS st_3dlength_spheroid(geometry, spheroid);
+DROP FUNCTION IF EXISTS st_length_spheroid(geometry, spheroid);
+DROP FUNCTION IF EXISTS st_length2d_spheroid(geometry, spheroid);
+DROP FUNCTION IF EXISTS st_distance_spheroid(geometry, geometry, spheroid);
+DROP FUNCTION IF EXISTS st_point_inside_circle(geometry, float8, float8, float8);
+DROP FUNCTION IF EXISTS st_force_2d(geometry);
+DROP FUNCTION IF EXISTS st_force_3dz(geometry);
+DROP FUNCTION IF EXISTS st_force_3dm(geometry);
+DROP FUNCTION IF EXISTS st_force_collection(geometry);
+DROP FUNCTION IF EXISTS st_force_4d(geometry);
+DROP FUNCTION IF EXISTS st_force_3d(geometry);
+DROP FUNCTION IF EXISTS st_line_interpolate_point(geometry, float8);
+DROP FUNCTION IF EXISTS st_line_substring(geometry, float8, float8);
+DROP FUNCTION IF EXISTS st_line_locate_point(geometry, geometry);
+DROP FUNCTION IF EXISTS st_locate_between_measures(geometry, float8, float8);
+DROP FUNCTION IF EXISTS st_locate_along_measure(geometry, float8);
+DROP FUNCTION IF EXISTS st_combine_bbox(box3d, geometry);
+DROP FUNCTION IF EXISTS st_combine_bbox(box2d, geometry);
+DROP FUNCTION IF EXISTS st_distance_sphere(geometry, geometry);
+
 
 -- pgis_abs type was increased from 8 bytes in 2.1 to 16 bytes in 2.2
 -- See #3460
