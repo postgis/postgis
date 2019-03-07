@@ -679,10 +679,10 @@ CREATE OR REPLACE FUNCTION ST_AsBinary(geography)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_AsBinary(geography,text)
-	RETURNS bytea AS
-	$$ SELECT @extschema@.ST_AsBinary($1::@extschema@.geometry, $2);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+CREATE OR REPLACE FUNCTION ST_AsBinary(geography, text)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsEWKT(geography)
