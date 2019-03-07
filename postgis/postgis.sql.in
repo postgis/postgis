@@ -3424,43 +3424,22 @@ CREATE OR REPLACE FUNCTION ST_IsValidTrajectory(geometry)
 -- GEOS
 ---------------------------------------------------------------
 
--- PostGIS equivalent function: intersection(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Intersection(geom1 geometry, geom2 geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','ST_Intersection'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
 
--- PostGIS equivalent function: buffer(geometry,float8)
-CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','buffer'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 1; -- reset cost, see #3675
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION _ST_Buffer(geometry,float8,cstring)
+CREATE OR REPLACE FUNCTION ST_Buffer(geom geometry, radius float8, options text DEFAULT '')
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','buffer'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8,integer)
+CREATE OR REPLACE FUNCTION ST_Buffer(geom geometry, radius float8, quadsegs integer)
 	RETURNS geometry
-	AS $$ SELECT @extschema@._ST_Buffer($1, $2,
-		CAST('quad_segs='||CAST($3 AS text) as cstring))
-	   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8,text)
-	RETURNS geometry
-	AS $$ SELECT @extschema@._ST_Buffer($1, $2,
-		CAST( regexp_replace($3, '^[0123456789]+$',
-			'quad_segs='||$3) AS cstring)
-		)
-	   $$
+	AS $$ SELECT @extschema@.ST_Buffer($1, $2, CAST('quad_segs='||CAST($3 AS text) as text)) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.3.0

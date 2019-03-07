@@ -779,13 +779,11 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(buffer);
 Datum buffer(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED	*geom1;
-	double	size;
 	GEOSBufferParams *bufferparams;
 	GEOSGeometry *g1, *g3 = NULL;
 	GSERIALIZED *result;
+	LWGEOM *lwg;
 	int quadsegs = 8; /* the default */
-	int nargs;
 	int singleside = 0; /* the default */
 	enum
 	{
@@ -799,19 +797,16 @@ Datum buffer(PG_FUNCTION_ARGS)
 	    JOIN_MITRE = 2,
 	    JOIN_BEVEL = 3
 	};
-	static const double DEFAULT_MITRE_LIMIT = 5.0;
-	static const int DEFAULT_ENDCAP_STYLE = ENDCAP_ROUND;
-	static const int DEFAULT_JOIN_STYLE = JOIN_ROUND;
-
+	const double DEFAULT_MITRE_LIMIT = 5.0;
+	const int DEFAULT_ENDCAP_STYLE = ENDCAP_ROUND;
+	const int DEFAULT_JOIN_STYLE = JOIN_ROUND;
 	double mitreLimit = DEFAULT_MITRE_LIMIT;
 	int endCapStyle = DEFAULT_ENDCAP_STYLE;
 	int joinStyle  = DEFAULT_JOIN_STYLE;
-	char *param;
-	char *params = NULL;
-	LWGEOM *lwg;
 
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
-	size = PG_GETARG_FLOAT8(1);
+	GSERIALIZED	*geom1 = PG_GETARG_GSERIALIZED_P(0);
+	double size = PG_GETARG_FLOAT8(1);
+	text *params_text = PG_GETARG_TEXT_P(2);
 
 	/* Empty.Buffer() == Empty[polygon] */
 	if ( gserialized_is_empty(geom1) )
@@ -822,20 +817,17 @@ Datum buffer(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(geometry_serialize(lwg));
 	}
 
-	nargs = PG_NARGS();
-
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	g1 = POSTGIS2GEOS(geom1);
 	if (!g1)
 		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 
-	if (nargs > 2)
-	{
-		/* We strdup `cause we're going to modify it */
-		params = pstrdup(PG_GETARG_CSTRING(2));
 
-		POSTGIS_DEBUGF(3, "Params: %s", params);
+	if (VARSIZE_ANY_EXHDR(params_text) > 0)
+	{
+		char *param;
+		char *params = text_to_cstring(params_text);
 
 		for (param=params; ; param=NULL)
 		{
@@ -950,13 +942,12 @@ Datum buffer(PG_FUNCTION_ARGS)
 				break;
 			}
 		}
-
 		pfree(params); /* was pstrduped */
-
-		POSTGIS_DEBUGF(3, "endCap:%d joinStyle:%d mitreLimit:%g",
-		               endCapStyle, joinStyle, mitreLimit);
-
 	}
+
+
+	POSTGIS_DEBUGF(3, "endCap:%d joinStyle:%d mitreLimit:%g",
+	               endCapStyle, joinStyle, mitreLimit);
 
 	bufferparams = GEOSBufferParams_create();
 	if (bufferparams)

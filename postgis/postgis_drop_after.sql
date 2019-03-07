@@ -183,7 +183,7 @@ DROP FUNCTION IF EXISTS _ST_DumpPoints(geometry, integer[]); -- removed 2.4.0, b
 DROP FUNCTION IF EXISTS _ST_DistanceRectTree(g1 geometry, g2 geometry);
 DROP FUNCTION IF EXISTS _ST_DistanceRectTreeCached(g1 geometry, g2 geometry);
 DROP FUNCTION IF EXISTS ST_Distance(geography, geography, float8, boolean);
-
+DROP FUNCTION IF EXISTS ST_Buffer(geometry, float8, cstring);
 
 -- pgis_abs type was increased from 8 bytes in 2.1 to 16 bytes in 2.2
 -- See #3460
