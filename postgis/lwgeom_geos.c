@@ -1482,11 +1482,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	attinmeta = TupleDescGetAttInMetadata(tupdesc);
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
-
-	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
-	{
-		flags = PG_GETARG_INT32(1);
-	}
+	flags = PG_GETARG_INT32(1);
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 

@@ -3510,14 +3510,7 @@ CREATE TYPE valid_detail AS (
 );
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_IsValidDetail(geometry)
-	RETURNS valid_detail
-	AS 'MODULE_PATHNAME', 'isvaliddetail'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	COST 1000;
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_IsValidDetail(geometry, int4)
+CREATE OR REPLACE FUNCTION ST_IsValidDetail(geom geometry, flags int4 DEFAULT 0)
 	RETURNS valid_detail
 	AS 'MODULE_PATHNAME', 'isvaliddetail'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
