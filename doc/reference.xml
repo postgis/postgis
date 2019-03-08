@@ -17,7 +17,6 @@
   </note>
 
   &reference_type;
-  &reference_guc;
   &reference_management;
   &reference_constructor;
   &reference_accessor;
@@ -31,6 +30,8 @@
   &reference_temporal;
   &reference_transaction;
   &reference_misc;
+  &reference_version;
+  &reference_guc;
   &reference_exception;
 
 </chapter>

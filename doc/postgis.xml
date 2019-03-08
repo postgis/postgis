@@ -42,6 +42,7 @@
 <!ENTITY reference_transaction SYSTEM "reference_transaction.xml">
 <!ENTITY reference_misc SYSTEM "reference_misc.xml">
 <!ENTITY reference_exception SYSTEM "reference_exception.xml">
+<!ENTITY reference_version SYSTEM "reference_version.xml">
 <!ENTITY reference_raster SYSTEM "reference_raster.xml">
 <!ENTITY faq_raster SYSTEM "faq_raster.xml">
 <!ENTITY extras SYSTEM "extras.xml">
