@@ -20,7 +20,7 @@ https://trac.osgeo.org/postgis/
 Official chat room is the #postgis channel on the
 [freenode](https://freenode.net) network.
 
-To partecipate, point your preferred
+To participate, point your preferred
 [IRC client](https://en.wikipedia.org/wiki/Comparison_of_Internet_Relay_Chat_clients)
 to:
 
