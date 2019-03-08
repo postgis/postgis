@@ -552,7 +552,8 @@ CREATE OR REPLACE FUNCTION gserialized_gist_joinsel_nd (internal, oid, internal,
 CREATE OR REPLACE FUNCTION geometry_overlaps(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME' ,'gserialized_overlaps_2d'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	_COST_LOW;
 
 -- Availability: 0.1.0
 -- Changed: 2.0.0 use gserialized selectivity estimators
@@ -567,7 +568,8 @@ CREATE OPERATOR && (
 CREATE OR REPLACE FUNCTION geometry_same(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME' ,'gserialized_same_2d'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	_COST_LOW;
 
 -- Availability: 0.1.0
 CREATE OPERATOR ~= (
@@ -582,7 +584,8 @@ CREATE OPERATOR ~= (
 CREATE OR REPLACE FUNCTION geometry_distance_centroid(geom1 geometry, geom2 geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'ST_Distance'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	_COST_MEDIUM;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_distance_box(geom1 geometry, geom2 geometry)
