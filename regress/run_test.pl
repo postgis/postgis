@@ -235,9 +235,9 @@ else
 	}
 	else
 	{
-		print STDERR "Database $DB already exists.\n";
-		print STDERR "Drop it, or run with the --nocreate flag to use it.\n";
-		exit(1);
+		print STDERR "Database $DB already exists, dropping.\n";
+		`dropdb $DB`;
+		create_spatial();
 	}
 }
 
