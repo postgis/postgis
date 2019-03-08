@@ -24,6 +24,7 @@ de9i*.png
 doc/html/image_src/generator
 doc/html/image_src/Makefile
 doc/html/*.html
+doc/html/docbook.css
 doc/Makefile
 doc/Makefile.comments
 doc/po/*/*.xml
