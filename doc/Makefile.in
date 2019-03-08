@@ -266,7 +266,6 @@ chunked-html-web-mobile: postgis-out.xml Makefile images $(XML_INPUTS)
 		--stringparam html.script ga.js \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
-	tidy -utf8 -m $(HTML_BITS)
 	$(PERL) -pi -e 's/<head>/<head><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">/g' $(HTML_BITS)
 
 
