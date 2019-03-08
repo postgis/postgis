@@ -1215,8 +1215,10 @@ sub count_db_objects
 ##################################################################
 sub create_db
 {
-	my $cmd = "createdb --encoding=UTF-8 --template=template0 --lc-collate=C $DB > $REGRESS_LOG";
-	return system($cmd);
+	my $dropcmd = "dropdb --if-exists $DB > $REGRESS_LOG";
+	my $createcmd = "createdb --encoding=UTF-8 --template=template0 --lc-collate=C $DB > $REGRESS_LOG";
+	system($dropcmd);
+	return system($createcmd);
 }
 
 sub create_spatial
