@@ -823,7 +823,7 @@ CREATE OR REPLACE FUNCTION ST_DWithin(geog1 geography, geog2 geography, toleranc
 
 CREATE OR REPLACE FUNCTION ST_Intersects(geography, geography)
 	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Distance($1, $2, 0.0, false) < 0.00001'
+	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@.ST_Distance($1, $2, false) < 0.00001'
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 #endif
