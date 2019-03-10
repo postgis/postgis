@@ -282,7 +282,7 @@ CREATE OR REPLACE FUNCTION st_summary(rast raster)
 		msg text;
 		msgset text[];
 	BEGIN
-		extent := @extschema@.ST_Extent(rast::geometry);
+		extent := @extschema@.ST_Extent(rast::@extschema@.geometry);
 		metadata := @extschema@.ST_Metadata(rast);
 
 		msg := 'Raster of ' || metadata.width || 'x' || metadata.height || ' pixels has ' || metadata.numbands || ' ';
@@ -341,7 +341,7 @@ CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx 
 
 CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, pixelsize float8)
     RETURNS raster
-    AS $$ SELECT  @extschema@.ST_makeemptyraster($1, $2, $3, $4, $5, -($5), 0, 0, @extschema@.ST_SRID('POINT(0 0)'::geometry)) $$
+    AS $$ SELECT  @extschema@.ST_makeemptyraster($1, $2, $3, $4, $5, -($5), 0, 0, @extschema@.ST_SRID('POINT(0 0)'::@extschema@.geometry)) $$
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_makeemptyraster(rast raster)
@@ -7447,7 +7447,7 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_blocksize(rastschema name, ra
 CREATE OR REPLACE FUNCTION _raster_constraint_info_extent(rastschema name, rasttable name, rastcolumn name)
 	RETURNS geometry AS $$
 	SELECT
-		trim(both '''' from split_part(trim(split_part(s.consrc, ' @ ', 2)), '::', 1))::geometry
+		trim(both '''' from split_part(trim(split_part(s.consrc, ' @ ', 2)), '::', 1))::@extschema@.geometry
 	FROM pg_class c, pg_namespace n, pg_attribute a
 		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 			FROM pg_constraint) AS s
@@ -7496,7 +7496,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rastta
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
 			|| ' CHECK ( @extschema@.st_envelope('
 			|| quote_ident($3)
-			|| ') @ ''' || attr || '''::geometry) NOT VALID';
+			|| ') @ ''' || attr || '''::@extschema@.geometry) NOT VALID';
 		RETURN  @extschema@._add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
@@ -7584,7 +7584,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_spatially_unique(rastschema n
 		AND s.contype = 'x'
 		AND 0::smallint = ANY (s.conkey)
 		AND idx.indexrelid = s.conindid
-		AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::geometry)'
+		AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::@extschema@.geometry)'
 		AND s.conexclop[1] = op.oid
 		AND op.oprname = '=';
 	$$ LANGUAGE sql STABLE STRICT
@@ -7635,7 +7635,7 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_spatially_unique(rastschema n
 			AND s.contype = 'x'
 			AND 0::smallint = ANY (s.conkey)
 			AND idx.indexrelid = s.conindid
-			AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::geometry)'
+			AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::@extschema@.geometry)'
 			AND s.conexclop[1] = op.oid
 			AND op.oprname = '=';
 
@@ -8604,7 +8604,7 @@ CREATE OR REPLACE VIEW raster_columns AS
 		n.nspname AS r_table_schema,
 		c.relname AS r_table_name,
 		a.attname AS r_raster_column,
-		COALESCE(_raster_constraint_info_srid(n.nspname, c.relname, a.attname), (SELECT ST_SRID('POINT(0 0)'::geometry))) AS srid,
+		COALESCE(_raster_constraint_info_srid(n.nspname, c.relname, a.attname), (SELECT ST_SRID('POINT(0 0)'::@extschema@.geometry))) AS srid,
 		_raster_constraint_info_scale(n.nspname, c.relname, a.attname, 'x') AS scale_x,
 		_raster_constraint_info_scale(n.nspname, c.relname, a.attname, 'y') AS scale_y,
 		_raster_constraint_info_blocksize(n.nspname, c.relname, a.attname, 'width') AS blocksize_x,
