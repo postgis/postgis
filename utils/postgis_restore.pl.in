@@ -94,6 +94,8 @@ die "$me:\tUnable to open dump file '$dumpfile'.\n" if ! -r $dumpfile;
 
 print STDERR "Converting $dumpfile to ASCII on stdout...\n";
 
+STDOUT->autoflush(1);
+
 ######################################################################
 # Load the signatures of things to skip.
 #
@@ -265,7 +267,7 @@ while( my $l = <INPUT> ) {
   #
   elsif ( $l =~ /CREATE TABLE *([^ ,]*)/)
   {
-    my @sublines = ($l);
+    print STDOUT $l;
     while( my $subline = <INPUT>)
     {
       if ( $subline =~ /CONSTRAINT "?enforce_dims_/i ) {
@@ -281,10 +283,9 @@ while( my $l = <INPUT> ) {
           print STDERR "WARNING: could not find SRID value in: $subline";
         }
       }
-      push(@sublines, $subline);
+      print STDOUT $subline;
       last if $subline =~ /;[\t ]*$/;
     }
-    print STDOUT @sublines;
     next;
   }
 
@@ -292,15 +293,13 @@ while( my $l = <INPUT> ) {
   # See http://trac.osgeo.org/postgis/ticket/2759
   elsif ( $l =~ /^COMMENT ON .* IS '(.*)/)
   {
-    my @sublines = ($l);
-    my $comment = $1;
+    print STDOUT $l;
+    while( my $subline = <INPUT>)
     # A comment ends with an odd number of single quotes and a semicolon
-    while( $comment !~ /('*)[\t ]*;[\t ]*$/ || length($1) % 2 == 0)
     {
-      $comment = <INPUT>;
-      push(@sublines, $comment);
+      print STDOUT $subline;
+      last if ( $subline !~ /('*)[\t ]*;[\t ]*$/ || length($1) % 2 == 0)
     }
-    print STDOUT @sublines;
     next;
   }
 

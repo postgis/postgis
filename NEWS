@@ -35,6 +35,8 @@ PostGIS 3.0.0
   - #4342, Move deprecated functions into legacy.sql file
   - #4341, Using "support function" API in PgSQL 12+ to replace SQL inlining
            as the mechanism for providing index support under ST_Intersects, et al
+  - #4330, postgis_restore OOM when output piped to an intermediate process
+           (Hugh Ranalli)
   - #4322, Support for Proj 6+ API, bringing more accurate datum transforms
            and support for WKT projections
   - #4153, ST_Segmentize now splits segments proportionally (Darafei
