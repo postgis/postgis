@@ -1,7 +1,7 @@
 #!/bin/sh
 
 test -n "$1" || {
-  echo "Usage: $0 { <dbname> | - }"
+  echo "Usage: $0 <dbname>"
   exit 1
 }
 
@@ -28,13 +28,8 @@ INNER JOIN pg_extension AS e ON (d.refobjid = e.oid)
 WHERE d.refclassid = 'pg_catalog.pg_extension'::pg_catalog.regclass
 AND deptype = 'e' AND e.extname = '${ext}' ORDER BY sqladd;
 
-SELECT 'DROP EXTENSION ${ext};';
+SELECT 'DROP EXTENSION IF EXISTS ${ext};';
 
 EOF
   done
-) |
-if test ${db} = '-'; then
-  cat
-else
-  psql -XtA ${db}
-fi
+) | psql -XtA ${db}
