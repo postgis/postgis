@@ -62,7 +62,6 @@ CREATE OR REPLACE FUNCTION make_test_raster(
 		rast := ST_MakeEmptyRaster(width, height, ul_x, ul_y, 1, 1, skew_x, skew_y, 0);
 		rast := ST_AddBand(rast, 1, '8BUI', initvalue, nodataval);
 
-
 		INSERT INTO test_raster_columns VALUES (rid, rast);
 
 		RETURN;
@@ -105,7 +104,7 @@ SELECT make_test_raster(4, 3, 3, 3, 3);
 
 SELECT AddRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name);
 SELECT AddRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name, 'regular_blocking');
-SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, ST_AsEWKT(extent) FROM raster_columns WHERE r_table_name = 'test_raster_columns';
+SELECT '#1', r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, ST_AsEWKT(extent) FROM raster_columns WHERE r_table_name = 'test_raster_columns';
 
 -- spatially unique, this should fail
 SELECT make_test_raster(0, 3, 3, 0, 0);
@@ -114,7 +113,7 @@ SELECT make_test_raster(0, 3, 3, 0, 0);
 SELECT make_test_raster(0, 3, 3, 1, 0);
 
 SELECT DropRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name, 'regular_blocking');
-SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, ST_AsEWKT(extent) FROM raster_columns WHERE r_table_name = 'test_raster_columns';
+SELECT '#2', r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, ST_AsEWKT(extent) FROM raster_columns WHERE r_table_name = 'test_raster_columns';
 
 -- check spatial_index
 SELECT
@@ -139,8 +138,8 @@ FROM raster_columns WHERE r_table_name = 'test_raster_columns';
 -- ticket #2215
 CREATE TABLE test_raster_columns_2 AS
 	SELECT rid, rast FROM test_raster_columns;
-SELECT AddRasterConstraints(current_schema(), 'test_raster_columns_2', 'rast'::name);
-SELECT AddRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name, 'regular_blocking');
+SELECT '#2215-1', AddRasterConstraints(current_schema(), 'test_raster_columns_2', 'rast'::name);
+SELECT '#2215-2', AddRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name, 'regular_blocking');
 DROP TABLE IF EXISTS test_raster_columns_2;
 
 DROP FUNCTION make_test_raster(integer, integer, integer, double precision, double precision, double precision, double precision, double precision, double precision);
