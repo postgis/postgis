@@ -25,12 +25,18 @@
 	<refentry id="box2d_type">
       <refnamediv>
         <refname>box2d</refname>
-        <refpurpose>A box composed of <varname>xmin, ymin, xmax, ymax</varname>.  Often used to describe the 2D extent of a geometry or collection of geometries. </refpurpose>
+        <refpurpose>A box composed of <varname>xmin, ymin, xmax, ymax</varname>.
+				Often used to describe the 2D extent of a geometry or collection of geometries. </refpurpose>
       </refnamediv>
 
       <refsection>
         <title>Description</title>
-        <para><varname>box2d</varname> is a spatial data type used to represent the enclosing box of a geometry or set of geometries. The <varname>ST_Extent</varname> function returns a <varname>box2d</varname>.</para>
+        <para><varname>box2d</varname> is a spatial data type used to represent
+				the two-dimensional enclosing box of a geometry or collection of geometries.
+				For example, the <varname>ST_Extent</varname> aggregate function returns a <varname>box2d</varname> object.</para>
+				<para>The representation contains the values <varname>xmin, ymin, xmax, ymax</varname>.
+				These are the minimum and maxium values of the X and Y extents.
+				</para>
       </refsection>
 
 		<refsection>
@@ -42,12 +48,19 @@
 	<refentry id="box3d_type">
       <refnamediv>
         <refname>box3d</refname>
-        <refpurpose>A box composed of <varname>xmin, ymin, zmin, xmax, ymax, zmax</varname>.  Often used to describe the 3D extent of a geometry or collection of geometries. </refpurpose>
+        <refpurpose>A box composed of <varname>xmin, ymin, zmin, xmax, ymax, zmax</varname>.
+				Often used to describe the 3D extent of a geometry or collection of geometries. </refpurpose>
       </refnamediv>
 
       <refsection>
         <title>Description</title>
-        <para><varname>box3d</varname> is a postgis spatial data type used to represent the enclosing box of a geometry or set of geometries. ST_3DExtent returns a box3d object.</para>
+        <para><varname>box3d</varname> is a postgis spatial data type used to represent
+				the three-dimensional enclosing box of a geometry or collection of geometries.
+				For example, the <varname>ST_3DExtent</varname> aggregate function returns a <varname>box3d</varname> object.
+				</para>
+				<para>The representation contains the values <varname>xmin, ymin, zmin, xmax, ymax, zmax</varname>.
+				These are the minimum and maxium values of the X, Y and Z extents.
+				</para>
       </refsection>
 
       <refsection>
@@ -87,7 +100,7 @@
 	<refentry id="geometry">
 		<refnamediv>
 			<refname>geometry</refname>
-			<refpurpose>Planar spatial data type.</refpurpose>
+			<refpurpose>The type representing spatial features with planar coordinate systems.</refpurpose>
 		</refnamediv>
 
 		<refsection>
@@ -144,18 +157,19 @@
 	<refentry id="geometry_dump">
 		<refnamediv>
 			<refname>geometry_dump</refname>
-			<refpurpose>A compound data type with two fields: <varname>geom</varname> (holding a geometry object)
-				and <varname>path[]</varname> (a 1-d array holding the position of the geometry within the dumped object.)</refpurpose>
+			<refpurpose>A composite type with two fields: <varname>geom</varname> (a geometry object)
+				and <varname>path[]</varname> (a 1-d array giving the path of the geometry within the dumped object.)</refpurpose>
 		</refnamediv>
 
 		<refsection>
 		<title>Description</title>
-		<para><varname>geometry_dump</varname> is a compound data type consisting of the <varname>geom</varname> field referencing a geometry,
-			and the <varname>path[]</varname> field, which is a 1-dimensional integer array
-			that defines the navigation path within the dumped geometry to the <varname>geom</varname> element.
-			The path array starts at 1 (e.g. <varname>path[1]</varname> is the first element.)
-			It is used by the <varname>ST_Dump*</varname> family of functions as an output type to explode a complex geometry into its
-				constituent parts along with their location paths.</para>
+		<para><varname>geometry_dump</varname> is a <ulink url="https://www.postgresql.org/docs/current/rowtypes.html">composite data type</ulink>
+		It contains the fields <varname>geom</varname>, which references a geometry,
+		and <varname>path[]</varname>, which is a 1-dimensional integer array
+		that defines the navigation path within the dumped geometry to the <varname>geom</varname> element.
+		The path array starts at 1 (e.g. <varname>path[1]</varname> is the first element.)
+		It is used by the <varname>ST_Dump*</varname> family of functions as an output type to explode a complex geometry into its
+		constituent parts.</para>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -166,14 +180,16 @@
 	<refentry id="geography">
 		<refnamediv>
 			<refname>geography</refname>
-			<refpurpose>Ellipsoidal spatial data type.</refpurpose>
+			<refpurpose>The type representing spatial features with geodetic (ellipsoidal) coordinate systems.</refpurpose>
 		</refnamediv>
 
 		<refsection>
 		<title>Description</title>
 		<para><varname>geography</varname> is a spatial data type used to represent a feature in geodetic coordinate systems.
 		Geodetic coordinate systems model the earth using an ellipsoid.
-		The geography type provides more accurate	spatial computations
+		</para>
+		<para>
+		Spatial operations on the geography type provide more accurate results
 		by taking the ellipsoidal model into account.
 		</para>
 		</refsection>
