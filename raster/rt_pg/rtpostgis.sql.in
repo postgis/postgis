@@ -7584,7 +7584,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_spatially_unique(rastschema n
 		AND s.contype = 'x'
 		AND 0::smallint = ANY (s.conkey)
 		AND idx.indexrelid = s.conindid
-		AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::@extschema@.geometry)'
+		AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::%geometry)'
 		AND s.conexclop[1] = op.oid
 		AND op.oprname = '=';
 	$$ LANGUAGE sql STABLE STRICT
@@ -7635,7 +7635,7 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_spatially_unique(rastschema n
 			AND s.contype = 'x'
 			AND 0::smallint = ANY (s.conkey)
 			AND idx.indexrelid = s.conindid
-			AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::@extschema@.geometry)'
+			AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::%geometry)'
 			AND s.conexclop[1] = op.oid
 			AND op.oprname = '=';
 
@@ -7686,7 +7686,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 		END IF;
 		fqtn := fqtn || quote_ident($2);
 
-		cn := 'enforce_coverage_tile_' || $3;
+		cn := 'enforce_coverage_tile_' || quote_ident($3);
 
 		-- metadata
 		BEGIN
