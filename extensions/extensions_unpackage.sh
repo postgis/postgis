@@ -18,9 +18,10 @@ SELECT 'ALTER EXTENSION ' || extname || ' DROP ' ||
     regexp_replace(
       pg_catalog.pg_describe_object(d.classid, d.objid, 0),
       E'cast from (.*) to (.*)',
-      E'cast\(\\1 as \\2\)'),
-      E'(.*) for access method (.*)',
-      E'\\1 using \\2'
+      E'cast\\(\\\\1 as \\\\2\\)'
+    ),
+    E'(.*) for access method (.*)',
+    E'\\\\1 using \\\\2'
   ) || ';' AS sqladd
 FROM pg_catalog.pg_depend AS d
 INNER JOIN pg_extension AS e ON (d.refobjid = e.oid)
