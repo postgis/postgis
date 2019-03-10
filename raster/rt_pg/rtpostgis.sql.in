@@ -7496,7 +7496,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rastta
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
 			|| ' CHECK ( @extschema@.st_envelope('
 			|| quote_ident($3)
-			|| ') @ ''' || attr || '''::@extschema@.geometry) NOT VALID';
+			|| ') @ ''' || attr || '''::geometry) NOT VALID';
 		RETURN  @extschema@._add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
