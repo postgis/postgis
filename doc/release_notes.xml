@@ -38,6 +38,7 @@
           <para>#4314, ST_ClipByBox2D: Do not throw when the geometry is invalid (Raúl Marín)</para>
           <para>#4313, #4307, PostgreSQL 12 compatibility (Laurenz Albe, Raúl Marín)</para>
           <para>#4290, Schema qualify geometry casts in raster functions (Regina Obe)</para>
+          <para>#4086, Constraint violation loading tiger_data (zcta5 geometry type) (Regina Obe)</para>
       </simplesect>
     </sect1>
 

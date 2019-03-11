@@ -30,7 +30,7 @@ PostGIS 2.5.2
   - #4314, ST_ClipByBox2D: Do not throw when the geometry is invalid (Raúl Marín)
   - #4313, #4307, PostgreSQL 12 compatibility (Laurenz Albe, Raúl Marín)
   - #4290, Schema qualify geometry casts in raster functions (Regina Obe)
-
+  - #4086, Constraint violation loading tiger_data (zcta5 geometry type) (Regina Obe)
 
 
 PostGIS 2.5.1
