@@ -321,3 +321,101 @@ postgis_guc_find_option(const char *name)
 	return 1;
 }
 
+
+#if POSTGIS_PGSQL_VERSION < 100
+Datum
+CallerFInfoFunctionCall1(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum arg1)
+{
+	FunctionCallInfoData fcinfo;
+	Datum		result;
+
+	InitFunctionCallInfoData(fcinfo, flinfo, 1, collation, NULL, NULL);
+
+	fcinfo.arg[0] = arg1;
+	fcinfo.argnull[0] = false;
+
+	result = (*func) (&fcinfo);
+
+	/* Check for null result, since caller is clearly not expecting one */
+	if (fcinfo.isnull)
+		elog(ERROR, "function %p returned NULL", (void *) func);
+
+	return result;
+}
+
+Datum
+CallerFInfoFunctionCall2(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2)
+{
+	FunctionCallInfoData fcinfo;
+	Datum		result;
+
+	InitFunctionCallInfoData(fcinfo, flinfo, 2, collation, NULL, NULL);
+
+	fcinfo.arg[0] = arg1;
+	fcinfo.arg[1] = arg2;
+	fcinfo.argnull[0] = false;
+	fcinfo.argnull[1] = false;
+
+	result = (*func) (&fcinfo);
+
+	/* Check for null result, since caller is clearly not expecting one */
+	if (fcinfo.isnull)
+		elog(ERROR, "function %p returned NULL", (void *) func);
+
+	return result;
+}
+
+#else
+
+#if POSTGIS_PGSQL_VERSION < 120
+Datum
+CallerFInfoFunctionCall3(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2, Datum arg3)
+{
+	FunctionCallInfoData fcinfo;
+	Datum		result;
+
+	InitFunctionCallInfoData(fcinfo, flinfo, 3, collation, NULL, NULL);
+
+	fcinfo.arg[0] = arg1;
+	fcinfo.arg[1] = arg2;
+	fcinfo.arg[2] = arg3;
+	fcinfo.argnull[0] = false;
+	fcinfo.argnull[1] = false;
+	fcinfo.argnull[2] = false;
+
+	result = (*func) (&fcinfo);
+
+	/* Check for null result, since caller is clearly not expecting one */
+	if (fcinfo.isnull)
+		elog(ERROR, "function %p returned NULL", (void *) func);
+
+	return result;
+}
+#else
+/* PgSQL 12+ still lacks 3-argument version of these functions */
+Datum
+CallerFInfoFunctionCall3(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2, Datum arg3)
+{
+    LOCAL_FCINFO(fcinfo, 3);
+    Datum       result;
+
+    InitFunctionCallInfoData(*fcinfo, flinfo, 3, collation, NULL, NULL);
+
+    fcinfo->args[0].value = arg1;
+    fcinfo->args[0].isnull = false;
+    fcinfo->args[1].value = arg2;
+    fcinfo->args[1].isnull = false;
+    fcinfo->args[2].value = arg3;
+    fcinfo->args[2].isnull = false;
+
+    result = (*func) (fcinfo);
+
+    /* Check for null result, since caller is clearly not expecting one */
+    if (fcinfo->isnull)
+        elog(ERROR, "function %p returned NULL", (void *) func);
+
+    return result;
+}
+#endif
+
+#endif
