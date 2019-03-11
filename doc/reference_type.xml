@@ -17,7 +17,7 @@
 		Since geometry has an automatic cast to both box types, this will produce an "ambiguous function" error.
 	  To prevent the error use an explicit cast to the desired box type.</para>
 
-    <para>Everything can be CAST to <varname>text</varname>, so CASTs to text do not need to be specified.</para>
+    <para>All data types can be CAST to <varname>text</varname>, so these do not need to be specified explicitly.</para>
     </abstract>
     </sect1info>
     <title>PostGIS Geometry/Geography/Box Data Types</title>
@@ -25,7 +25,7 @@
 	<refentry id="box2d_type">
       <refnamediv>
         <refname>box2d</refname>
-        <refpurpose>A box composed of <varname>xmin, ymin, xmax, ymax</varname>.
+        <refpurpose>A 2-dimensional bounding box.
 				Often used to describe the 2D extent of a geometry or collection of geometries. </refpurpose>
       </refnamediv>
 
@@ -48,7 +48,7 @@
 	<refentry id="box3d_type">
       <refnamediv>
         <refname>box3d</refname>
-        <refpurpose>A box composed of <varname>xmin, ymin, zmin, xmax, ymax, zmax</varname>.
+        <refpurpose>A 3-dimensional bounding box.
 				Often used to describe the 3D extent of a geometry or collection of geometries. </refpurpose>
       </refnamediv>
 
@@ -157,17 +157,25 @@
 	<refentry id="geometry_dump">
 		<refnamediv>
 			<refname>geometry_dump</refname>
-			<refpurpose>A composite type with two fields: <varname>geom</varname> (a geometry object)
-				and <varname>path[]</varname> (a 1-d array giving the path of the geometry within the dumped object.)</refpurpose>
+			<refpurpose>A composite type used to describe the parts of complex geometry.</refpurpose>
 		</refnamediv>
 
 		<refsection>
 		<title>Description</title>
-		<para><varname>geometry_dump</varname> is a <ulink url="https://www.postgresql.org/docs/current/rowtypes.html">composite data type</ulink>
-		It contains the fields <varname>geom</varname>, which references a geometry,
-		and <varname>path[]</varname>, which is a 1-dimensional integer array
-		that defines the navigation path within the dumped geometry to the <varname>geom</varname> element.
-		The path array starts at 1 (e.g. <varname>path[1]</varname> is the first element.)
+		<para><varname>geometry_dump</varname> is a
+		<ulink url="https://www.postgresql.org/docs/current/rowtypes.html">composite data type</ulink>
+		containing the fields:</para>
+		<itemizedlist>
+		<listitem>
+			<para><varname>geom</varname> - a references to a component geometry</para>
+			</listitem>
+		<listitem>
+			<para><varname>path[]</varname> - a 1-dimensional integer array
+			that defines the navigation path within the dumped geometry to the <varname>geom</varname> component.
+			The path array starts at 1 (e.g. <varname>path[1]</varname> is the first element.)</para>
+			</listitem>
+		</itemizedlist>
+		<para>
 		It is used by the <varname>ST_Dump*</varname> family of functions as an output type to explode a complex geometry into its
 		constituent parts.</para>
 		</refsection>
