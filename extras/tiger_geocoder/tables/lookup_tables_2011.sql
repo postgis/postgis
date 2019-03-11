@@ -1333,7 +1333,6 @@ CREATE TABLE zcta5
   the_geom geometry,
   CONSTRAINT uidx_tiger_zcta5_gid UNIQUE (gid),
   CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
-  CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
   CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269),
   CONSTRAINT pk_tiger_zcta5_zcta5ce PRIMARY KEY (zcta5ce,statefp)
  );

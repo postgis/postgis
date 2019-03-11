@@ -3,6 +3,29 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>Release 2.4.7</title>
+      <para>Release date: 2019/03/11</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect><title>Bug Fixes and Enhancements</title>
+        <para>#4139, Make mixed-dimension ND index build tree correctly.
+          WARNING: REINDEX your ND index on tables that have records with different M/Z
+                dimensions for &amp;&amp;&amp; operator to work predictably.
+                (Darafei Praliaskouski, Arthur Lesuisse, Andrew Gierth, Raúl Marín)</para>
+        <para>#4273, Tighter parsing of WKT (Paul Ramsey)</para>
+        <para>#4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)</para>
+        <para>#4290, More robust distance calculations in geography (Paul Ramsey)</para>
+        <para>#4292, ST_AsMVT: parse JSON numeric values with decimals as doubles (Raúl Marín)</para>
+        <para>#4289, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)</para>
+        <para>#4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)</para>
+        <para>#4296, Use `server_version_num` instead of parsing `version()` (Raúl Marín)</para>
+        <para>#4298, Geodetic tolerance issue in 32-bit (Paul Ramsey)</para>
+        <para>#4283, Avoid final point duplicates for circle stroking (Paul Ramsey)</para>
+        <para>#4313, #4307, PostgreSQL 12 compatibility (Laurenz Albe, Raúl Marín)</para>
+        <para>#4290, Schema qualify geometry casts in raster functions (Regina Obe)</para>
+        <para>#4086, Constraint violation loading tiger_data (zcta5 geometry type) (Regina Obe)</para>
+      </simplesect>
+    </sect1>
+    <sect1>
       <title>Release 2.4.6</title>
       <para>Release date: 2018/11/24</para>
       <para>This is a bug fix and performance improvement release.</para>

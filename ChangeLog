@@ -1,3 +1,161 @@
+2019-03-10 19:04  Regina Obe <lr@pcorp.us>
+
+	* [r17322] Make _drop_raster_constraint_spatially_unique and
+	  _raster_constraint_info_spatially_unique allow for presence or
+	  absense of schema qual on geometry cast.
+	  Was failing before when installed as extension (but not by
+	  script)
+	  Reference #4291 for PostGIS 2.4.7
+
+2019-03-09 18:43  Regina Obe <lr@pcorp.us>
+
+	* [r17315] Schema qualify all geometry casts in raster code,
+	  otherwise materialized views do not resture
+	  Closes #4291 for PostGIS 2.4.7
+
+2019-02-15 19:00  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17258] Update test running instructions
+
+2019-02-15 18:53  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17254] Update OGC certification scripts to match new SFSQL 1.2
+	  signatures
+
+2019-02-11 17:20  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17239] Add generated file
+
+2019-02-11 17:20  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17238] Add lexer initialization
+	  References #4017
+
+2019-01-31 15:51  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17225] PostgreSQL 12 compatibility
+	  
+	  Initial patch by Laurenz Albe
+	  Closes #4313
+	  Closes https://github.com/postgis/postgis/pull/368/
+
+2019-01-22 09:07  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17205] Partially revert r17179
+	  
+	  It changed the behaviour of _postgis_pgsql_version
+	  Now uses the appropiate 5-6 digit version from server_version_num
+	  
+	  References #4296
+	  References #4303
+
+2019-01-21 19:50  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17198] Sync generated files to parser file
+
+2019-01-21 19:47  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17197] Put fix for parser into y file
+	  References #4273
+
+2019-01-18 20:45  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17187] Avoid final point duplicates for circle stroking
+	  References #4283
+
+2019-01-18 18:03  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17183] Geodetic tolerance issue in 32-bit
+	  References #4298
+
+2019-01-18 17:24  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17179] Use `server_version_num` instead of parsing `version()`
+	  
+	  References #4296
+
+2019-01-18 16:06  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17176] Avoid passing a NULL pointer to GEOSisEmpty
+	  
+	  References #4275
+
+2019-01-18 11:56  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17171] Correct issue reference from previous commit
+	  
+	  References #4289
+
+2019-01-18 11:52  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17169] ST_AsMVTGeom: Transform coordinates space before
+	  clipping
+	  
+	  References #4300
+
+2019-01-11 21:46  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17141] More robust geography distance
+	  References #4290
+
+2019-01-11 13:50  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17136] ST_AsMVT: parse JSON numeric values with decimals as
+	  doubles
+	  
+	  Closes #4292
+
+2019-01-10 18:21  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17133] Fix memory leak in case where valid WKT is
+	  followed by garbage content
+	  Closes #4273
+
+2019-01-09 20:34  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17130] Tighter parsing of WKT
+	  References #4273
+
+2018-12-26 04:08  Regina Obe <lr@pcorp.us>
+
+	* [r17120] Fix so custom --with-projdir= configure switch works
+	  again.
+	  References #4279 for PostGIS 2.4
+
+2018-12-17 10:38  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17110] Support Proj 6. Support is via legacy API.
+	  
+	  Closes #4254
+	  Closes https://github.com/postgis/postgis/pull/354
+
+2018-11-27 00:15  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17079] Change test conditions to explicit empty test
+	  References #4245
+
+2018-11-25 19:32  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17075] Stabilize GiST ND indexes for mixed dimensions
+	  
+	  Patch by Darafei Praliaskouski
+	  
+	  Thanks to
+	  Arthur Lesuisse for synthesizing test case,
+	  Andrew Gierth for finding runaway memcpy,
+	  Raúl Marín for pointing to memory problem in index construction.
+	  
+	  Closes #4139
+
+2018-11-24 05:35  Regina Obe <lr@pcorp.us>
+
+	* [r17069] Flip to 2.4.7dev
+
+2018-11-24 05:31  Regina Obe <lr@pcorp.us>
+
+	* [r17067] Prepping for 2.4.6 release and update docs to reflect
+	  2.4 only supported up to PostgreSQL 10
+
 2018-11-22 16:15  Raúl Marín Rodríguez <rmrodriguez@carto.com>
 
 	* [r17057] Avoid unaligned memory access in BOX2D_out
