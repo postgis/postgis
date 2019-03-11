@@ -17,10 +17,10 @@
 		Since geometry has an automatic cast to both box types, this will produce an "ambiguous function" error.
 	  To prevent the error use an explicit cast to the desired box type.</para>
 
-    <para><emphasis>(At least as of PostgreSQL 8.3)</emphasis> Everything can be CAST to <varname>text</varname>, so CASTs to text do not need to be specified.</para>
+    <para>Everything can be CAST to <varname>text</varname>, so CASTs to text do not need to be specified.</para>
     </abstract>
     </sect1info>
-    <title>Geometry/Geography/Box Data Types</title>
+    <title>PostGIS Geometry/Geography/Box Data Types</title>
 
 	<refentry id="box2d_type">
       <refnamediv>
@@ -33,7 +33,7 @@
         <title>Description</title>
         <para><varname>box2d</varname> is a spatial data type used to represent
 				the two-dimensional enclosing box of a geometry or collection of geometries.
-				For example, the <varname>ST_Extent</varname> aggregate function returns a <varname>box2d</varname> object.</para>
+				For example, the <xref linkend="ST_Extent" /> aggregate function returns a <varname>box2d</varname> object.</para>
 				<para>The representation contains the values <varname>xmin, ymin, xmax, ymax</varname>.
 				These are the minimum and maxium values of the X and Y extents.
 				</para>
@@ -56,7 +56,7 @@
         <title>Description</title>
         <para><varname>box3d</varname> is a postgis spatial data type used to represent
 				the three-dimensional enclosing box of a geometry or collection of geometries.
-				For example, the <varname>ST_3DExtent</varname> aggregate function returns a <varname>box3d</varname> object.
+				For example, the <xref linkend="ST_3DExtent" /> aggregate function returns a <varname>box3d</varname> object.
 				</para>
 				<para>The representation contains the values <varname>xmin, ymin, zmin, xmax, ymax, zmax</varname>.
 				These are the minimum and maxium values of the X, Y and Z extents.

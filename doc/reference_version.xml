@@ -14,7 +14,7 @@
 		<refname>PostGIS_Extensions_Upgrade</refname>
 
 		<refpurpose>
-Packages and upgrades postgis extensions (e.g. postgis_sfcgal,
+Packages and upgrades postgis extensions (e.g. postgis_raster,
 postgis_topology, postgis_sfcgal) to latest available version.
     </refpurpose>
 	  </refnamediv>
