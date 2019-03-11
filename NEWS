@@ -1,5 +1,5 @@
 PostGIS 2.3.9
-2019/xx/xx
+2019/03/11
 ￼
   * Bug Fixes and Enchantments *
 ￼
@@ -11,6 +11,7 @@ PostGIS 2.3.9
   - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
   - #4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)
   - #4298, Geodetic tolerance issue in 32-bit (Paul Ramsey)
+  - #4290, Schema qualify geometry casts in raster functions (Regina Obe)
 
 PostGIS 2.3.8
 2018/11/24
