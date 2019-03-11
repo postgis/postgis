@@ -1,3 +1,95 @@
+2019-02-15 19:00  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17257] Update test running instructions
+
+2019-02-15 18:54  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17255] Update OGC certification scripts to match SFSQL 1.2
+	  signatures
+
+2019-02-11 17:34  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17241] Add generated file
+
+2019-02-11 17:34  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17240] Add initialization to lexer
+	  References #4017
+
+2019-01-22 09:02  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17204] Revert r17178
+	  
+	  It changes the behaviour of _postgis_pgsql_version
+	  
+	  References #4303
+
+2019-01-18 21:56  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17188] Un space
+
+2019-01-18 18:05  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17184] Geodetic tolerance issue in 32-bit
+	  References #4298
+
+2019-01-18 17:24  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17178] Use `server_version_num` instead of parsing `version()`
+	  
+	  References #4296
+
+2019-01-18 16:07  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17177] Avoid passing a NULL pointer to GEOSisEmpty
+	  
+	  Closes #4275
+	  Closes https://github.com/postgis/postgis/pull/362
+
+2019-01-11 21:45  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17140] More robust geography distance
+	  References #4290
+
+2018-12-26 04:12  Regina Obe <lr@pcorp.us>
+
+	* [r17121] Fix so custom --with-projdir= configure switch works
+	  again.
+	  Closes #4279 for PostGIS 2.3
+
+2018-12-17 10:39  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17111] Support Proj 6. Support is via legacy API.
+	  
+	  Closes #4254
+	  Closes https://github.com/postgis/postgis/pull/354
+
+2018-11-27 00:16  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17080] Change test conditions to explicit empty test
+	  References #4245
+
+2018-11-25 19:36  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17076] Stabilize GiST ND indexes for mixed dimensions
+	  
+	  Patch by Darafei Praliaskouski
+	  
+	  Thanks to
+	  Arthur Lesuisse for synthesizing test case,
+	  Andrew Gierth for finding runaway memcpy,
+	  Raúl Marín for pointing to memory problem in index construction.
+	  
+	  Closes #4139
+
+2018-11-24 05:08  Regina Obe <lr@pcorp.us>
+
+	* [r17066] Flip to 2.3.9dev
+
+2018-11-24 05:02  Regina Obe <lr@pcorp.us>
+
+	* [r17064] Preparing for 2.3.8 release
+
 2018-11-22 16:14  Raúl Marín Rodríguez <rmrodriguez@carto.com>
 
 	* [r17056] Avoid unaligned memory access in BOX2D_out
