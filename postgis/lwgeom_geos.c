@@ -1598,20 +1598,23 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-static bool
-containsImpl(FunctionCallInfo fcinfo, GSERIALIZED *geom1, GSERIALIZED *geom2)
+
+PG_FUNCTION_INFO_V1(contains);
+Datum contains(PG_FUNCTION_ARGS)
 {
+	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
+	int result;
 	GEOSGeometry *g1, *g2;
 	GBOX box1, box2;
-	int result;
 	PrepGeomCache *prep_cache;
 
-	errorIfGeometryCollection(geom1,geom2);
+	errorIfGeometryCollection(geom1, geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Contains(Empty) == FALSE */
-	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
-		return false;
+	if (gserialized_is_empty(geom1) || gserialized_is_empty(geom2))
+		PG_RETURN_BOOL(false);
 
 	POSTGIS_DEBUG(3, "contains called.");
 
@@ -1623,7 +1626,7 @@ containsImpl(FunctionCallInfo fcinfo, GSERIALIZED *geom1, GSERIALIZED *geom2)
 	    gserialized_get_gbox_p(geom2, &box2))
 	{
 		if (!gbox_contains_2d(&box1, &box2))
-			return false;
+			PG_RETURN_BOOL(false);
 	}
 
 	/*
@@ -1678,7 +1681,7 @@ containsImpl(FunctionCallInfo fcinfo, GSERIALIZED *geom1, GSERIALIZED *geom2)
 		{
 			/* Never get here */
 			elog(ERROR,"Type isn't point or multipoint!");
-			return false;
+			PG_RETURN_BOOL(false);
 		}
 
 		return retval > 0;
@@ -1720,30 +1723,19 @@ containsImpl(FunctionCallInfo fcinfo, GSERIALIZED *geom1, GSERIALIZED *geom2)
 
 	if (result == 2) HANDLE_GEOS_ERROR("GEOSContains");
 
-	return result > 0;
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+	PG_RETURN_BOOL(result > 0);
 }
 
-PG_FUNCTION_INFO_V1(contains);
-Datum contains(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *geom0 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(1);
-	bool result = containsImpl(fcinfo, geom0, geom1);
-	PG_FREE_IF_COPY(geom0, 0);
-	PG_FREE_IF_COPY(geom1, 1);
-	PG_RETURN_BOOL(result);
-}
 
 PG_FUNCTION_INFO_V1(within);
 Datum within(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom0 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(1);
-	bool result = containsImpl(fcinfo, geom1, geom0);
-	PG_FREE_IF_COPY(geom0, 0);
-	PG_FREE_IF_COPY(geom1, 1);
-	PG_RETURN_BOOL(result);
+	PG_RETURN_DATUM(CallerFInfoFunctionCall2(contains, fcinfo->flinfo, InvalidOid,
+		PG_GETARG_DATUM(1), PG_GETARG_DATUM(0)));
 }
+
 
 
 PG_FUNCTION_INFO_V1(containsproperly);

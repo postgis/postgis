@@ -214,7 +214,9 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	/* Get our geometry objects loaded into memory. */
 	g1 = PG_GETARG_GSERIALIZED_P(0);
 	g2 = PG_GETARG_GSERIALIZED_P(1);
-	use_spheroid = PG_GETARG_BOOL(2);
+
+	if (PG_NARGS() > 2)
+		use_spheroid = PG_GETARG_BOOL(2);
 
 
 	error_if_srid_mismatch(gserialized_get_srid(g1), gserialized_get_srid(g2));
@@ -266,13 +268,28 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(distance);
 }
 
-
-static bool
-geography_dwithin_impl(FunctionCallInfo fcinfo, GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, bool use_spheroid)
+/*
+** geography_dwithin(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
+** returns double distance in meters
+*/
+PG_FUNCTION_INFO_V1(geography_dwithin);
+Datum geography_dwithin(PG_FUNCTION_ARGS)
 {
-	double distance;
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
 	SPHEROID s;
+	double tolerance = 0.0;
+	bool use_spheroid = true;
+	double distance;
 	int dwithin = LW_FALSE;
+
+	/* Read our tolerance value. */
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
+		tolerance = PG_GETARG_FLOAT8(2);
+
+	/* Read our calculation type. */
+	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
+		use_spheroid = PG_GETARG_BOOL(3);
 
 	error_if_srid_mismatch(gserialized_get_srid(g1), gserialized_get_srid(g2));
 
@@ -285,7 +302,7 @@ geography_dwithin_impl(FunctionCallInfo fcinfo, GSERIALIZED *g1, GSERIALIZED *g2
 
 	/* Return FALSE on empty arguments. */
 	if ( gserialized_is_empty(g1) || gserialized_is_empty(g2) )
-		return false;
+		PG_RETURN_BOOL(false);
 
 	/* Do the brute force calculation if the cached calculation doesn't tick over */
 	if ( LW_FAILURE == geography_dwithin_cache(fcinfo, g1, g2, &s, tolerance, &dwithin) )
@@ -301,32 +318,6 @@ geography_dwithin_impl(FunctionCallInfo fcinfo, GSERIALIZED *g1, GSERIALIZED *g2
 		lwgeom_free(lwgeom2);
 	}
 
-	return dwithin;
-}
-
-/*
-** geography_dwithin(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
-** returns double distance in meters
-*/
-PG_FUNCTION_INFO_V1(geography_dwithin);
-Datum geography_dwithin(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
-	double tolerance = 0.0;
-	bool use_spheroid = true;
-	bool dwithin = false;
-
-	/* Read our tolerance value. */
-	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
-		tolerance = PG_GETARG_FLOAT8(2);
-
-	/* Read our calculation type. */
-	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
-		use_spheroid = PG_GETARG_BOOL(3);
-
-	dwithin = geography_dwithin_impl(fcinfo, g1, g2, tolerance, use_spheroid);
-
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
 	PG_RETURN_BOOL(dwithin);
@@ -335,14 +326,9 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_intersects);
 Datum geography_intersects(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
-	double tolerance = 0.0;
-	bool use_spheroid = true;
-	bool dwithin = geography_dwithin_impl(fcinfo, g1, g2, tolerance, use_spheroid);
-	PG_FREE_IF_COPY(g1, 0);
-	PG_FREE_IF_COPY(g2, 1);
-	PG_RETURN_BOOL(dwithin);
+	PG_RETURN_BOOL(CallerFInfoFunctionCall2(
+		geography_dwithin, fcinfo->flinfo, InvalidOid,
+		PG_GETARG_DATUM(0), PG_GETARG_DATUM(1)));
 }
 
 /*
