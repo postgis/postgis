@@ -124,7 +124,6 @@ XML_SOURCES = \
 	reference_accessor.xml \
 	reference_constructor.xml \
 	reference_editor.xml \
-	reference_exception.xml \
 	reference_guc.xml \
 	reference_lrs.xml \
 	reference_management.xml \
@@ -137,7 +136,9 @@ XML_SOURCES = \
 	reference_raster.xml \
 	reference_temporal.xml \
 	reference_transaction.xml \
+	reference_troubleshooting.xml \
 	reference_type.xml \
+	reference_version.xml \
 	reference.xml \
 	release_notes.xml \
 	reporting.xml \

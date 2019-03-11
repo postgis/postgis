@@ -2,43 +2,65 @@
   <sect1 id="PostGIS_Types">
     <sect1info>
     <abstract>
-    <para>This section lists the PostgreSQL data types installed by PostGIS.  Note we describe the casting behavior of these which is very
-	important especially when designing your own functions.
+    <para>This section lists the custom PostgreSQL
+		data types installed by PostGIS to represent spatial data.
     </para>
-    <para>A Cast is when one type is coerced into another type.  PostgreSQL
-	is unique from most databases in that it allows you to define casting behavior for custom types and the functions used for casting.
-	A cast can be specified as automatic in which case, you do not have to do a CAST(myfoo As otherfootype) or myfoo::otherfootype
-	if you are feeding it to a function that only works with otherfootype and there is an automatic cast in place for it.
-    </para>
-    <para>The danger of relying on automatic cast behavior is when you have an overloaded function say one that takes a box2d and one that takes a box3d
-	but no geometry.  What happens is that both functions are equally good to use with geometry since geometry has an autocast for both
-	-- so you end up with an ambiguous function error. To force PostgreSQL to choose, you do a CAST(mygeom As box3d)  or mygeom::box3d.</para>
+    <para>Each data type describes its type casting behaviour.
+		A <ulink url="https://www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-CASTS">type cast</ulink> converts values of one data type into another type.
+		PostgreSQL allows defining casting behavior for custom types, along with the functions used to convert type values.
+		Casts can be defined as <emphasis role="bold">automatic</emphasis>.
+		This allows PostgreSQL to automatically convert a function argument to a type supported by the function.
+		Casts can also be specified <emphasis role="bold">explicitly</emphasis>,
+		using the syntax <varname>CAST(myval As sometype)</varname>  or <varname>myval::sometype</varname>.
+		This allows avoiding an issue that can occur when using an overloaded function which does not support a given type
+		(for example, one that accepts a box2d or a box3d, but not a geometry.)
+		Since geometry has an automatic cast to both box types, this will produce an "ambiguous function" error.
+	  To prevent the error use an explicit cast to the desired box type.</para>
 
-    <para><emphasis>At least as of PostgreSQL 8.3</emphasis> - Everything can be CAST to text (presumably because of the magical unknown type), so no defined CASTS for that need to be present for you to CAST an object to text.</para>
+    <para>All data types can be CAST to <varname>text</varname>, so these do not need to be specified explicitly.</para>
     </abstract>
     </sect1info>
-    <title>PostgreSQL PostGIS Geometry/Geography/Box Types</title>
+    <title>PostGIS Geometry/Geography/Box Data Types</title>
 
 	<refentry id="box2d_type">
       <refnamediv>
         <refname>box2d</refname>
-        <refpurpose>A box composed of x min, ymin,  xmax, ymax.  Often used to return the 2d enclosing box of a geometry. </refpurpose>
+        <refpurpose>A 2-dimensional bounding box.
+				Often used to describe the 2D extent of a geometry or collection of geometries. </refpurpose>
       </refnamediv>
 
       <refsection>
         <title>Description</title>
-        <para>box2d is a spatial data type used to represent the enclosing box of a geometry or set of geometries. ST_Extent in earlier versions prior to PostGIS 1.4 would return a box2d.</para>
+        <para><varname>box2d</varname> is a spatial data type used to represent
+				the two-dimensional enclosing box of a geometry or collection of geometries.
+				For example, the <xref linkend="ST_Extent" /> aggregate function returns a <varname>box2d</varname> object.</para>
+				<para>The representation contains the values <varname>xmin, ymin, xmax, ymax</varname>.
+				These are the minimum and maxium values of the X and Y extents.
+				</para>
       </refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="PostGIS_BoxFunctions" /></para>
+		</refsection>
     </refentry>
+
 	<refentry id="box3d_type">
       <refnamediv>
         <refname>box3d</refname>
-        <refpurpose>A box composed of x min, ymin, zmin, xmax, ymax, zmax.  Often used to return the 3d extent of a geometry or collection of geometries. </refpurpose>
+        <refpurpose>A 3-dimensional bounding box.
+				Often used to describe the 3D extent of a geometry or collection of geometries. </refpurpose>
       </refnamediv>
 
       <refsection>
         <title>Description</title>
-        <para>box3d is a postgis spatial data type used to represent the enclosing box of a geometry or set of geometries. ST_3DExtent returns a box3d object.</para>
+        <para><varname>box3d</varname> is a postgis spatial data type used to represent
+				the three-dimensional enclosing box of a geometry or collection of geometries.
+				For example, the <xref linkend="ST_3DExtent" /> aggregate function returns a <varname>box3d</varname> object.
+				</para>
+				<para>The representation contains the values <varname>xmin, ymin, zmin, xmax, ymax, zmax</varname>.
+				These are the minimum and maxium values of the X, Y and Z extents.
+				</para>
       </refsection>
 
       <refsection>
@@ -67,18 +89,24 @@
 		</tgroup>
 		</informaltable>
 		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="PostGIS_BoxFunctions" /></para>
+		</refsection>
+
     </refentry>
 
 	<refentry id="geometry">
 		<refnamediv>
 			<refname>geometry</refname>
-			<refpurpose>Planar spatial data type.</refpurpose>
+			<refpurpose>The type representing spatial features with planar coordinate systems.</refpurpose>
 		</refnamediv>
 
 		<refsection>
 			<title>Description</title>
-			<para>geometry is a fundamental PostGIS spatial data type used to represent a feature in the Euclidean coordinate system.</para>
-			<para>All spatial operations on geometry are using units of the Spatial Reference System the geomtry is in.</para>
+			<para><varname>geometry</varname> is a fundamental PostGIS spatial data type used to represent a feature in planar (Euclidean) coordinate systems.</para>
+			<para>All spatial operations on geometry use the units of the Spatial Reference System the geometry is in.</para>
 		</refsection>
 
 		<refsection>
@@ -122,23 +150,34 @@
 
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="RefObject" /></para>
+			<para><xref linkend="RefObject" />, <xref linkend="PostGIS_SQLMM_Functions" /></para>
 		</refsection>
 	</refentry>
 
 	<refentry id="geometry_dump">
 		<refnamediv>
 			<refname>geometry_dump</refname>
-			<refpurpose>A spatial datatype with two fields - geom (holding a geometry object)
-				and path[] (a 1-d array holding the position of the geometry within the dumped object.)</refpurpose>
+			<refpurpose>A composite type used to describe the parts of complex geometry.</refpurpose>
 		</refnamediv>
 
 		<refsection>
 		<title>Description</title>
-		<para>geometry_dump is a compound data type consisting of a geometry object referenced by the .geom field
-			and path[] a 1-dimensional integer array (starting at 1 e.g. path[1] to get first element) array that defines the navigation path within the dumped geometry to find this element.
-			It is used by the ST_Dump* family of functions as an output type to explode a more complex geometry into its
-				constituent parts and location of parts.</para>
+		<para><varname>geometry_dump</varname> is a
+		<ulink url="https://www.postgresql.org/docs/current/rowtypes.html">composite data type</ulink>
+		containing the fields:</para>
+		<itemizedlist>
+		<listitem>
+			<para><varname>geom</varname> - a references to a component geometry</para>
+			</listitem>
+		<listitem>
+			<para><varname>path[]</varname> - a 1-dimensional integer array
+			that defines the navigation path within the dumped geometry to the <varname>geom</varname> component.
+			The path array starts at 1 (e.g. <varname>path[1]</varname> is the first element.)</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+		It is used by the <varname>ST_Dump*</varname> family of functions as an output type to explode a complex geometry into its
+		constituent parts.</para>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -149,12 +188,18 @@
 	<refentry id="geography">
 		<refnamediv>
 			<refname>geography</refname>
-			<refpurpose>Ellipsoidal spatial data type.</refpurpose>
+			<refpurpose>The type representing spatial features with geodetic (ellipsoidal) coordinate systems.</refpurpose>
 		</refnamediv>
 
 		<refsection>
 		<title>Description</title>
-		<para>geography is a spatial data type used to represent a feature in the round-earth coordinate system.</para>
+		<para><varname>geography</varname> is a spatial data type used to represent a feature in geodetic coordinate systems.
+		Geodetic coordinate systems model the earth using an ellipsoid.
+		</para>
+		<para>
+		Spatial operations on the geography type provide more accurate results
+		by taking the ellipsoidal model into account.
+		</para>
 		</refsection>
 
 		<refsection>
@@ -178,7 +223,7 @@
 
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="PostGIS_GeographyFunctions" />, <xref linkend="PostGIS_Geography" /></para>
+			<para><xref linkend="PostGIS_Geography" />, <xref linkend="PostGIS_GeographyFunctions" /></para>
 		</refsection>
 	</refentry>
   </sect1>
