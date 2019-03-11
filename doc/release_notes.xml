@@ -7,7 +7,24 @@
       <para>Release date: 2018/11/24</para>
       <para>This is a bug fix and performance improvement release.</para>
       <simplesect>
-        <title>Bug Fixes and Enhancements</title>
+          <title>Bug Fixes and Enhancements</title>
+          <para>#4139, Make mixed-dimension ND index build tree correctly.
+          WARNING: REINDEX your ND index on tables that have records with different M/Z
+                  dimensions for &amp;&amp;&amp; operator to work predictably.
+                  (Darafei Praliaskouski, Arthur Lesuisse, Andrew Gierth, Raúl Marín)</para>
+          <para>#4290, More robust distance calculations in geography (Paul Ramsey)</para>
+          <para>#4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)</para>
+          <para>#4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)</para>
+          <para>#4298, Geodetic tolerance issue in 32-bit (Paul Ramsey)</para>
+          <para>#4290, Schema qualify geometry casts in raster functions (Regina Obe)</para>
+        </simplesect>
+    </sect1>
+    <sect1>
+      <title>Release 2.3.8</title>
+      <para>Release date: 2018/11/24</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+          <title>Bug Fixes and Enhancements</title>
           <para>#4071, ST_ClusterKMeans crash on NULL/EMPTY fixed (Darafei Praliaskouski)</para>
           <para>#4074, Disable interrupt tests by default (Regina Obe)</para>
           <para>#3997, fix bug in lwgeom_median and avoid division by zero (Raúl Marín)</para>
