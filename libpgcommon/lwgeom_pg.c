@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#define PGC_ERRMSG_MAXLEN 2048 //256
+#define PGC_ERRMSG_MAXLEN 204800 // 256
 
 /*
  * Error message parsing functions

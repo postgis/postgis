@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "mvt.h"
+#include "lwgeom_geos.h"
 #include "pgsql_compat.h"
 
 #ifdef HAVE_LIBPROTOBUF
@@ -865,7 +866,11 @@ mvt_safe_clip_geom_by_box(LWGEOM *lwg_in, GBOX *clip_box, bool retry)
 	{
 		if (retry)
 		{
-			POSTGIS_DEBUG(3, "mvt_geom: Invalid clipping. Forcing validation and retrying");
+			//			char *wkt = lwgeom_to_wkt(lwg_in, WKT_EXTENDED, 1, NULL);
+			//			lwnotice("mvt_geom: Invalid clipping. Forcing validation and retrying");
+			//			lwnotice("%s", wkt);
+			//			lwnotice("%.10f %.10f %.10f %.10f", clip_box->xmin, clip_box->ymin,
+			//clip_box->xmax, clip_box->ymax);
 			lwgeom_free(geom_clipped);
 			return mvt_safe_clip_geom_by_box(lwgeom_make_valid(lwg_in), clip_box, false);
 		}
@@ -938,6 +943,7 @@ static LWGEOM *
 mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint32_t buffer, bool clip_geom)
 {
 	LWGEOM *ng = lwgeom;
+	gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
 
 	if (clip_geom)
 	{
@@ -957,12 +963,43 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 
 	if (basic_type == POLYGONTYPE)
 	{
+		GEOSGeometry *geo;
+		uint32_t iterations = 0;
 		/* Force validation as per MVT spec */
-		ng = lwgeom_make_valid(ng);
+		lwgeom_grid_in_place(ng, &grid);
+		geo = LWGEOM2GEOS(ng, 0);
+		if (!geo)
+			return NULL;
+
+		while (!GEOSisValid(geo) && iterations < 3)
+		{
+			GEOSGeometry *geo_valid = GEOSMakeValid(geo);
+			GEOSGeom_destroy(geo);
+			if (!geo_valid)
+				return NULL;
+
+			ng = GEOS2LWGEOM(geo_valid, 0);
+			lwgeom_grid_in_place(ng, &grid);
+			geo = LWGEOM2GEOS(ng, 0);
+		}
+		GEOSGeom_destroy(geo);
+
+		if (iterations == 3)
+		{
+			POSTGIS_DEBUG(3, "mvt_geom: Could not transform into a valid MVT geometry");
+			return NULL;
+		}
 
 		/* In image coordinates CW actually comes out a CCW, so we reverse */
 		lwgeom_force_clockwise(ng);
 		lwgeom_reverse_in_place(ng);
+	}
+	else
+	{
+		/* Clipping and validation might produce float values. Grid again into int
+		 * and pray that the output is still valid */
+		gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
+		lwgeom_grid_in_place(ng, &grid);
 	}
 
 	/* Make sure we return the most basic type after simplification and validation */
