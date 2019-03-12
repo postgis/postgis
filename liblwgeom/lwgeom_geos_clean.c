@@ -30,7 +30,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <geos/version.h>
 
 /* #define POSTGIS_DEBUG_LEVEL 4 */
 /* #define PARANOIA_LEVEL 2 */
@@ -890,7 +889,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 		lwgeom_out = lwgeom_in;
 	}
 
-	geosout = GEOSMakeValid(geosgeom);
+	geosout = LWGEOM_GEOS_makeValid(geosgeom);
 	GEOSGeom_destroy(geosgeom);
 	if (!geosout) return NULL;
 
