@@ -866,11 +866,7 @@ mvt_safe_clip_geom_by_box(LWGEOM *lwg_in, GBOX *clip_box, bool retry)
 	{
 		if (retry)
 		{
-			//			char *wkt = lwgeom_to_wkt(lwg_in, WKT_EXTENDED, 1, NULL);
-			//			lwnotice("mvt_geom: Invalid clipping. Forcing validation and retrying");
-			//			lwnotice("%s", wkt);
-			//			lwnotice("%.10f %.10f %.10f %.10f", clip_box->xmin, clip_box->ymin,
-			//clip_box->xmax, clip_box->ymax);
+			POSTGIS_DEBUG(1, "mvt_geom: Invalid clipping. Retrying after validation");
 			lwgeom_free(geom_clipped);
 			return mvt_safe_clip_geom_by_box(lwgeom_make_valid(lwg_in), clip_box, false);
 		}
@@ -943,7 +939,6 @@ static LWGEOM *
 mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint32_t buffer, bool clip_geom)
 {
 	LWGEOM *ng = lwgeom;
-	gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
 
 	if (clip_geom)
 	{
@@ -961,32 +956,56 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 		}
 	}
 
-	if (basic_type == POLYGONTYPE)
+	if (basic_type != POLYGONTYPE)
 	{
+		/* Make sure there is no pending float values (clipping can do that) */
+		lwgeom_grid_mvt_in_place(ng);
+		ng = lwgeom_to_basic_type(ng, basic_type);
+	}
+	else
+	{
+		/* For polygons we have to both snap to the integer grid and force validation.
+		 * The problem with this procedure is that snapping to the grid can create
+		 * an invalid geometry and validating it can create float values, so
+		 * we iterate several times (up to 3) looking for a valid response
+		 */
 		GEOSGeometry *geo;
 		uint32_t iterations = 0;
-		/* Force validation as per MVT spec */
-		lwgeom_grid_in_place(ng, &grid);
+		static const uint32_t max_iterations = 3;
+		bool valid = false;
+
+		/* Grid to int */
+		lwgeom_grid_mvt_in_place(ng);
+
+		initGEOS(lwgeom_geos_error, lwgeom_geos_error);
 		geo = LWGEOM2GEOS(ng, 0);
 		if (!geo)
 			return NULL;
+		valid = GEOSisValid(geo) == 1;
 
-		while (!GEOSisValid(geo) && iterations < 3)
+		while (!valid && iterations < max_iterations)
 		{
-			GEOSGeometry *geo_valid = GEOSMakeValid(geo);
+			GEOSGeometry *geo_valid = LWGEOM_GEOS_makeValid(geo);
 			GEOSGeom_destroy(geo);
 			if (!geo_valid)
 				return NULL;
 
 			ng = GEOS2LWGEOM(geo_valid, 0);
-			lwgeom_grid_in_place(ng, &grid);
+			GEOSGeom_destroy(geo_valid);
+			if (!ng)
+				return NULL;
+
+			lwgeom_grid_mvt_in_place(ng);
+			ng = lwgeom_to_basic_type(ng, basic_type);
 			geo = LWGEOM2GEOS(ng, 0);
+			valid = GEOSisValid(geo) == 1;
+			iterations++;
 		}
 		GEOSGeom_destroy(geo);
 
-		if (iterations == 3)
+		if (!valid)
 		{
-			POSTGIS_DEBUG(3, "mvt_geom: Could not transform into a valid MVT geometry");
+			POSTGIS_DEBUG(1, "mvt_geom: Could not transform into a valid MVT geometry");
 			return NULL;
 		}
 
@@ -994,28 +1013,13 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 		lwgeom_force_clockwise(ng);
 		lwgeom_reverse_in_place(ng);
 	}
-	else
-	{
-		/* Clipping and validation might produce float values. Grid again into int
-		 * and pray that the output is still valid */
-		gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
-		lwgeom_grid_in_place(ng, &grid);
-	}
 
-	/* Make sure we return the most basic type after simplification and validation */
-	ng = lwgeom_to_basic_type(ng, basic_type);
+	/* Make sure we return the expected type */
 	if (basic_type != lwgeom_get_basic_type(ng))
 	{
 		/* Drop type changes to play nice with MVT renderers */
-		POSTGIS_DEBUG(3, "mvt_geom: Dropping geometry after type change");
+		POSTGIS_DEBUG(1, "mvt_geom: Dropping geometry after type change");
 		return NULL;
-	}
-
-	/* Clipping and validation might produce float values. Grid again into int
-	 * and pray that the output is still valid */
-	{
-		gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
-		lwgeom_grid_in_place(ng, &grid);
 	}
 
 	return ng;
@@ -1075,7 +1079,6 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	bool clip_geom)
 {
 	AFFINE affine = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;
 	double resx, resy, res, fx, fy;
@@ -1113,8 +1116,8 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	affine.yoff = -gbox->ymax * fy;
 	lwgeom_affine(lwgeom, &affine);
 
-	/* Snap to integer precision, removing duplicate points */
-	lwgeom_grid_in_place(lwgeom, &grid);
+	/* Snap to integer precision, removing duplicate points and spikes */
+	lwgeom_grid_mvt_in_place(lwgeom);
 
 	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;
