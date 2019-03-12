@@ -2058,7 +2058,8 @@ ptarray_grid_mvt_in_place(POINTARRAY *pa, __attribute__((__unused__)) const grid
 
 			if ((FP_EQUALS(p2_out->x, p->x) && FP_EQUALS(p2_out->y, p->y)) ||
 			    (FP_IS_ZERO(diff_y1) && FP_IS_ZERO(diff_y2)) ||
-			    (FP_EQUALS(((p->x - p2_out->x) / (diff_y2)), ((p->x - p1_out->x) / (diff_y1)))))
+			    (!FP_IS_ZERO(diff_y1) && !FP_IS_ZERO(diff_y2) &&
+			     FP_EQUALS(((p->x - p2_out->x) / (diff_y2)), ((p->x - p1_out->x) / (diff_y1)))))
 			{
 				/* Overwrite last point */
 				p1_out->x = p->x;

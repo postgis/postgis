@@ -213,7 +213,6 @@ do_grid_mvt_test(const char *wkt_in, const char *wkt_out)
 	wkt_norm = lwgeom_to_ewkt(go);
 	lwgeom_grid_mvt_in_place(g);
 	wkt_result = lwgeom_to_ewkt(g);
-	printf("%s -- %s\n", wkt_in, wkt_result);
 	CU_ASSERT_STRING_EQUAL(wkt_result, wkt_norm);
 	lwfree(wkt_result);
 	lwfree(wkt_norm);
