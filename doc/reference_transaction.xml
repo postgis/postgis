@@ -6,14 +6,14 @@
 	  <para>These functions implement locking to support long transactions.  This mechanism is required by the
 		<ulink url="http://www.opengeospatial.org/standards/wfs">Web Feature Service</ulink> specification.</para>
 
+    </abstract>
+    </sect1info>
+
 	  <note>
 		<para>For the locking mechanism to operate correctly the <emphasis role="bold">serializable</emphasis>
 		<ulink url="http://www.postgresql.org/docs/current/static/transaction-iso.html">
 		transaction isolation level</ulink> must be used.</para>
 	  </note>
-
-    </abstract>
-    </sect1info>
 
 	  <title>Long Transaction Support</title>
 
