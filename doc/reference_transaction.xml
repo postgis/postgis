@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <sect1 id="Long_Transactions_Support">
-	  <title>Long Transactions Support</title>
+    <sect1info>
+    <abstract>
 
-	   <para>This module and associated pl/pgsql functions have been
-	  implemented to provide long locking support required by <ulink
-          url="http://www.opengeospatial.org/standards/wfs">Web Feature Service</ulink> specification.</para>
+	  <para>These functions implement locking to support long transactions.  This mechanism is required by the
+		<ulink url="http://www.opengeospatial.org/standards/wfs">Web Feature Service</ulink> specification.</para>
 
 	  <note>
-		<para>Users must use <ulink
-		url="http://www.postgresql.org/docs/current/static/transaction-iso.html">serializable
-		transaction level</ulink> otherwise locking mechanism would
-		break.</para>
+		<para>For the locking mechanism to operate correctly the <emphasis role="bold">serializable</emphasis>
+		<ulink url="http://www.postgresql.org/docs/current/static/transaction-iso.html">
+		transaction isolation level</ulink> must be used.</para>
 	  </note>
+
+    </abstract>
+    </sect1info>
+
+	  <title>Long Transaction Support</title>
 
 	<refentry id="AddAuth">
 	  <refnamediv>
 		<refname>AddAuth</refname>
 
-		<refpurpose>Add an authorization token to be used in current transaction.</refpurpose>
+		<refpurpose>Adds an authorization token to be used in the current transaction.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -32,14 +36,13 @@
 	  <refsection>
 		<title>Description</title>
 
-		<para>Add an authorization token to be used in current transaction.</para>
+		<para>Adds an authorization token to be used in the current transaction.</para>
 
-		<para>Creates/adds to a temp table called temp_lock_have_table the current transaction identifier
-			and authorization token key.</para>
+		<para>Adds the current transaction identifier
+			and authorization token to a temporary table called <varname>temp_lock_have_table</varname>.</para>
 
 		<para>Availability: 1.1.3</para>
 	  </refsection>
-
 
 	  <refsection>
 		<title>Examples</title>
@@ -69,7 +72,7 @@
 		  <refnamediv>
 			<refname>CheckAuth</refname>
 
-			<refpurpose>Creates trigger on a table to prevent/allow updates and deletes of rows based on authorization token.</refpurpose>
+			<refpurpose>Creates a trigger on a table to prevent/allow updates and deletes of rows based on authorization token.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -92,7 +95,8 @@
 		  <refsection>
 			<title>Description</title>
 
-			<para>Creates trigger on a table to prevent/allow updates and deletes of rows based on authorization token. Identify rows using &lt;rowid_col&gt; column.</para>
+			<para>Creates trigger on a table to prevent/allow updates and deletes of rows based on an authorization token.
+			Identify rows using &lt;rowid_col&gt; column.</para>
 
 			<para>If a_schema_name is not passed in, then searches for table in current schema.</para>
 			<note><para>If an authorization trigger already exists on this table function errors.</para>
@@ -127,9 +131,7 @@
 		<refnamediv>
 		  <refname>DisableLongTransactions</refname>
 
-		  <refpurpose>Disable long transaction support. This function removes the
-			long transaction support metadata tables, and drops all triggers
-			attached to lock-checked tables.</refpurpose>
+		  <refpurpose>Disables long transaction support.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -144,7 +146,7 @@
 		<refsection>
 		  <title>Description</title>
 
-			<para>Disable long transaction support. This function removes the
+			<para>Disables long transaction support. This function removes the
 			long transaction support metadata tables, and drops all triggers
 			attached to lock-checked tables.</para>
 			<para>Drops meta table called <varname>authorization_table</varname> and a view called <varname>authorized_tables</varname>
@@ -176,10 +178,7 @@ Long transactions support disabled
 		<refnamediv>
 		  <refname>EnableLongTransactions</refname>
 
-		  <refpurpose>Enable long transaction support. This function creates the
-			required metadata tables, needs to be called once before using the
-			other functions in this section. Calling it twice is
-			harmless.</refpurpose>
+		  <refpurpose>Enables long transaction support.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -194,8 +193,9 @@ Long transactions support disabled
 		<refsection>
 		  <title>Description</title>
 
-			<para>Enable long transaction support. This function creates the
-			required metadata tables, needs to be called once before using the
+			<para>Enables long transaction support.
+			This function creates the
+			required metadata tables. It must be called once before using the
 			other functions in this section. Calling it twice is
 			harmless.</para>
 			<para>Creates a meta table called <varname>authorization_table</varname> and a view called <varname>authorized_tables</varname></para>
@@ -226,7 +226,7 @@ Long transactions support enabled
 	  <refnamediv>
 		<refname>LockRow</refname>
 
-		<refpurpose>Set lock/authorization for specific row in table</refpurpose>
+		<refpurpose>Sets lock/authorization for a row in a table.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -261,10 +261,12 @@ Long transactions support enabled
 	  <refsection>
 		<title>Description</title>
 
-		<para>Set lock/authorization for specific row in table
-		&lt;authid&gt; is a text value, &lt;expires&gt; is a timestamp
-		defaulting to now()+1hour. Returns 1 if lock has been assigned, 0
-		otherwise (already locked by other auth)</para>
+		<para>Sets lock/authorization for a specific row in a table.
+		<varname>an_auth_token</varname> is a text value.
+		<varname>expire_dt</varname> is a timestamp
+		which defaults to <emphasis>now() + 1 hour</emphasis>.
+		Returns 1 if lock has been assigned, 0
+		otherwise (i.e. row is already locked by another auth.)</para>
 
 		<para>Availability: 1.1.3</para>
 	  </refsection>
@@ -299,8 +301,8 @@ LockRow
 	  <refnamediv>
 		<refname>UnlockRows</refname>
 
-		<refpurpose>Remove all locks held by specified authorization id. Returns
-			the number of locks released.</refpurpose>
+		<refpurpose>Removes all locks held by an authorization token.
+		</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -315,8 +317,8 @@ LockRow
 	  <refsection>
 		<title>Description</title>
 
-		<para>Remove all locks held by specified authorization id. Returns
-			the number of locks released.</para>
+		<para>Removes all locks held by specified authorization token.
+		Returns the number of locks released.</para>
 
 		<para>Availability: 1.1.3</para>
 	  </refsection>
