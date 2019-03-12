@@ -9,13 +9,14 @@
     </abstract>
     </sect1info>
 
+	  <title>Long Transaction Support</title>
+
 	  <note>
-		<para>For the locking mechanism to operate correctly the <emphasis role="bold">serializable</emphasis>
-		<ulink url="http://www.postgresql.org/docs/current/static/transaction-iso.html">
-		transaction isolation level</ulink> must be used.</para>
+			<para>For the locking mechanism to operate correctly the <emphasis role="bold">serializable</emphasis>
+			<ulink url="http://www.postgresql.org/docs/current/static/transaction-iso.html">
+			transaction isolation level</ulink> must be used.</para>
 	  </note>
 
-	  <title>Long Transaction Support</title>
 
 	<refentry id="AddAuth">
 	  <refnamediv>
