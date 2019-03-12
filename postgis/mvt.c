@@ -959,11 +959,12 @@ mvt_iterate_clip_by_box_geos(LWGEOM *lwgeom, GBOX *clip_gbox)
 static LWGEOM *
 mvt_grid_and_validate_geos(LWGEOM *ng, uint8_t basic_type)
 {
+	ng = lwgeom_to_basic_type(ng, basic_type);
+
 	if (basic_type != POLYGONTYPE)
 	{
 		/* Make sure there is no pending float values (clipping can do that) */
 		lwgeom_grid_mvt_in_place(ng);
-		ng = lwgeom_to_basic_type(ng, basic_type);
 	}
 	else
 	{
