@@ -26,6 +26,7 @@
   &reference_measure;
   &reference_sfcgal;
   &reference_processing;
+  &reference_bbox;
   &reference_lrs;
   &reference_trajectory;
   &reference_transaction;

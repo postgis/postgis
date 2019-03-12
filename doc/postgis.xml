@@ -31,6 +31,7 @@
 <!ENTITY reference_management SYSTEM "reference_management.xml">
 <!ENTITY reference_constructor SYSTEM "reference_constructor.xml">
 <!ENTITY reference_accessor SYSTEM "reference_accessor.xml">
+<!ENTITY reference_bbox SYSTEM "reference_bbox.xml">
 <!ENTITY reference_editor SYSTEM "reference_editor.xml">
 <!ENTITY reference_output SYSTEM "reference_output.xml">
 <!ENTITY reference_operator SYSTEM "reference_operator.xml">

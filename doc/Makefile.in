@@ -122,6 +122,7 @@ XML_SOURCES = \
 	performance_tips.xml \
 	postgis.xml \
 	reference_accessor.xml \
+	reference_bbox.xml \
 	reference_constructor.xml \
 	reference_editor.xml \
 	reference_guc.xml \
