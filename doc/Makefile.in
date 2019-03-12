@@ -130,7 +130,6 @@ XML_SOURCES = \
 	reference_management.xml \
 	reference_measure.xml \
 	reference_sfcgal.xml \
-	reference_misc.xml \
 	reference_operator.xml \
 	reference_output.xml \
 	reference_processing.xml \
