@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sect1 id="Temporal">
-	  <title>Temporal Support</title>
+    <sect1info>
+    <abstract>
+			<para>These functions support working with trajectories.
+			A trajectory is a linear geometry with a measure (M value) on each coordinate.
+			The measure values must increase along the line.
+			Spatio-temporal data can be modelled by using relative times (such as the epoch)
+			as the measure values.
+			</para>
+    </abstract>
+    </sect1info>
+ 	  <title>Trajectory Functions</title>
 
 		<refentry id="ST_IsValidTrajectory">
 
@@ -22,18 +32,16 @@ Returns <varname>true</varname> if the geometry is a valid trajectory.
 
 		  <refsection>
 			<title>Description</title>
-
 			<para>
-Tell if a geometry encodes a valid trajectory.
-Valid trajectories are encoded as LINESTRING with M value growing
-from each vertex to the next.
+Tests if a geometry encodes a valid trajectory.
+A valid trajectory is represented as a <varname>LINESTRING</varname>
+with measures (M values).
+The measure values must increase from each vertex to the next.
 			</para>
-
 			<para>
-Valid trajectories are expected as input to some spatio-temporal queries
+Valid trajectories are expected as input to spatio-temporal functions
 like <xref linkend="ST_ClosestPointOfApproach" />
 			</para>
-
 			<para>Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
@@ -58,7 +66,6 @@ NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)
 </programlisting>
 		  </refsection>
 
-		  <!-- Optionally add a "See Also" section -->
 		  <refsection>
 			<title>See Also</title>
 			<para>
@@ -72,7 +79,7 @@ NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)
 		  <refnamediv>
 			<refname>ST_ClosestPointOfApproach</refname>
 			<refpurpose>
-Returns the measure at which points interpolated along two lines are closest.
+Returns the measure at which points interpolated along two trajectories are closest.
       </refpurpose>
 		  </refnamediv>
 
@@ -90,10 +97,13 @@ Returns the measure at which points interpolated along two lines are closest.
 			<title>Description</title>
 
 			<para>
-Returns the smallest measure at which point interpolated along the given
-lines are at the smallest distance. Inputs must be valid trajectories as
+Returns the smallest measure at which points interpolated along the given
+trajectories are at the smallest distance.
+      </para>
+			<para>
+Inputs must be valid trajectories as
 checked by <xref linkend="ST_IsValidTrajectory" />. Null is returned if
-the trajectories do not overlap on the M range.
+the trajectories do not overlap in their M ranges.
 			</para>
 
 			<para>
@@ -104,7 +114,6 @@ the given measure.
 			<para>Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
-
 
 		  <refsection>
 			<title>Examples</title>
@@ -137,7 +146,6 @@ FROM points, cpa;
 </programlisting>
 		  </refsection>
 
-		  <!-- Optionally add a "See Also" section -->
 		  <refsection>
 			<title>See Also</title>
 			<para>
@@ -154,7 +162,7 @@ FROM points, cpa;
 		  <refnamediv>
 			<refname>ST_DistanceCPA</refname>
 			<refpurpose>
-Returns the distance between closest points of approach in two trajectories.
+Returns the distance between the closest point of approach of two trajectories.
       </refpurpose>
 		  </refnamediv>
 
@@ -172,10 +180,12 @@ Returns the distance between closest points of approach in two trajectories.
 			<title>Description</title>
 
 			<para>
-Returns the minimum distance two moving objects have ever been each-other.
+Returns the minimum distance two moving objects have ever been each other.
+      </para>
+			<para>
 Inputs must be valid trajectories as checked by
 <xref linkend="ST_IsValidTrajectory" />.
-Null is returned if the trajectories do not overlap on the M range.
+Null is returned if the trajectories do not overlap in their M ranges.
 			</para>
 
 			<para>Availability: 2.2.0</para>
@@ -205,7 +215,6 @@ SELECT ST_DistanceCPA(a,b) distance FROM inp;
 </programlisting>
 		  </refsection>
 
-		  <!-- Optionally add a "See Also" section -->
 		  <refsection>
 			<title>See Also</title>
 			<para>
@@ -222,8 +231,8 @@ SELECT ST_DistanceCPA(a,b) distance FROM inp;
 		  <refnamediv>
 			<refname>ST_CPAWithin</refname>
 			<refpurpose>
-Returns true if the trajectories' closest points of approach
-are within the specified distance.
+Returns <varname>true</varname> if the closest point of approach of two trajectories
+is within the specified distance.
       </refpurpose>
 		  </refnamediv>
 
@@ -243,12 +252,12 @@ are within the specified distance.
 
 			<para>
 Checks whether two moving objects have ever been within the
-specified max distance.
+specified maximum distance.
       </para>
 			<para>
 Inputs must be valid trajectories as checked by
 <xref linkend="ST_IsValidTrajectory" />.
-False is returned if the trajectories do not overlap on the M range.
+False is returned if the trajectories do not overlap in their M ranges.
 			</para>
 
 			<para>Availability: 2.2.0</para>
