@@ -62,56 +62,6 @@ all_em|grabone   | grab_rest
 	  </refsection>
 	</refentry>
 
-	<refentry id="Find_SRID">
-	  <refnamediv>
-		<refname>Find_SRID</refname>
-
-		<refpurpose>The syntax is find_srid(a_db_schema, a_table,
-			a_column) and the function returns the integer SRID of the
-			specified column by searching through the GEOMETRY_COLUMNS table.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>integer <function>Find_SRID</function></funcdef>
-			<paramdef><type>varchar </type> <parameter>a_schema_name</parameter></paramdef>
-			<paramdef><type>varchar </type> <parameter>a_table_name</parameter></paramdef>
-			 <paramdef><type>varchar </type> <parameter>a_geomfield_name</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>The syntax is find_srid(&lt;db/schema&gt;, &lt;table&gt;,
-			&lt;column&gt;) and the function returns the integer SRID of the
-			specified column by searching through the GEOMETRY_COLUMNS table.
-			If the geometry column has not been properly added with the
-			AddGeometryColumns() function, this function will not work
-			either.</para>
-	  </refsection>
-
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting> SELECT Find_SRID('public', 'tiger_us_state_2007', 'the_geom_4269');
-find_srid
-----------
-4269
-</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_SRID" /></para>
-	  </refsection>
-	</refentry>
-
 	<refentry id="ST_MemSize">
 	  <refnamediv>
 		<refname>ST_MemSize</refname>
