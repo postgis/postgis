@@ -25,6 +25,27 @@
 BEGIN;
 SET LOCAL client_min_messages TO warning;
 
+DO $$
+DECLARE
+	pgver text;
+BEGIN
+	SELECT substring(version(), 'PostgreSQL ([0-9\.]+)') INTO pgver;
+
+	IF POSTGIS_PGSQL_VERSION::text != ( SELECT CASE
+		WHEN split_part(s,'.',1)::integer > 9
+			THEN split_part(s,'.',1) || '0'
+		ELSE
+			split_part(s,'.', 1) || split_part(s,'.', 2)
+		END
+		FROM substring(version(), 'PostgreSQL ([0-9\.]+)') AS s )
+	THEN
+		RAISE EXCEPTION 'PostGIS built for PostgreSQL % cannot be loaded in PostgreSQL %',
+			POSTGIS_PGSQL_HR_VERSION, pgver;
+	END IF;
+END;
+$$;
+
+
 -- Check that no other postgis is installed
 DO $$
 DECLARE
@@ -2952,7 +2973,7 @@ BEGIN
 
 	fullver = fullver || ' PGSQL="' || pgsql_scr_ver || '"';
 	IF pgsql_scr_ver != pgsql_ver THEN
-		fullver = fullver || ' (procs need upgrade for use with "' || pgsql_ver || '")';
+		fullver = fullver || ' (procs need upgrade for use with PostgreSQL "' || pgsql_ver || '")';
 	END IF;
 
 	IF  geosver IS NOT NULL THEN
