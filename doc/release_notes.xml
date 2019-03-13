@@ -2,7 +2,47 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
-        <sect1>
+    <sect1>
+      <title>Release 2.5.2</title>
+      <para>Release date: 2019/03/11</para>
+      <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
+      <para>Supported PostgreSQL versions for this release are:
+      PostgreSQL 9.4 - PostgreSQL 11
+      GEOS &gt;= 3.5</para>
+      <simplesect>
+        <title>Bug Fixes</title>
+          <para>#4231, Support for PostgreSQL 12dev (remove use of pg_constraint.consrc)
+                  (Regina Obe, Laurenz Albe)</para>
+          <para>#4247, Avoid undefined behaviour in next_float functions (Raúl Marín)</para>
+          <para>#4249, Fix undefined behaviour in raster intersection (Raúl Marín)</para>
+          <para>#4246, Fix undefined behaviour in ST_3DDistance (Raúl Marín)</para>
+          <para>#4244, Avoid unaligned memory access in BOX2D_out (Raúl Marín)</para>
+          <para>#4139, Make mixed-dimension ND index build tree correctly.
+          WARNING: REINDEX your ND index on tables that have records with different M/Z
+                  dimensions for &amp;&amp;&amp; operator to work predictably.
+                  (Darafei Praliaskouski, Arthur Lesuisse, Andrew Gierth, Raúl Marín)</para>
+          <para>#4262, Document MULTISURFACE compatibility of ST_LineToCurve (Steven Ottens)</para>
+          <para>#4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)</para>
+          <para>#4276, ST_AsGeoJSON documentation refresh (Darafei Praliaskouski)￼</para>
+          <para>#4273, Tighter parsing of WKT (Paul Ramsey)</para>
+          <para>#4292, ST_AsMVT: parse JSON numeric values with decimals as doubles (Raúl Marín)</para>
+          <para>#4300, ST_AsMVTGeom: Always return the simplest geometry (Raúl Marín)</para>
+          <para>#4301, ST_Subdivide: fix endless loop on coordinates near coincident to bounds
+                  (Darafei Praliaskouski)</para>
+          <para>#4261, Use AccessShareLock in spatial_index_read_extent (Paul Ramsey)</para>
+          <para>#4289, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)</para>
+          <para>#4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)</para>
+          <para>#4296, Use `server_version_num` instead of parsing `version()` (Raúl Marín)</para>
+          <para>#4290, More robust geography distance (Paul Ramsey)</para>
+          <para>#4283, Avoid final point duplicates for circle stroking (Paul Ramsey)</para>
+          <para>#4314, ST_ClipByBox2D: Do not throw when the geometry is invalid (Raúl Marín)</para>
+          <para>#4313, #4307, PostgreSQL 12 compatibility (Laurenz Albe, Raúl Marín)</para>
+          <para>#4290, Schema qualify geometry casts in raster functions (Regina Obe)</para>
+          <para>#4086, Constraint violation loading tiger_data (zcta5 geometry type) (Regina Obe)</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
       <title>Release 2.5.1</title>
       <para>Release date: 2018/11/18</para>
       <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
@@ -30,7 +70,6 @@
             <para>#4326, Allocate enough memory in gidx_to_string (Raúl Marín)</para>
             <para>#4190, Avoid undefined behaviour in gserialized_estimate</para>
       </simplesect>
-
     </sect1>
 
     <sect1>
