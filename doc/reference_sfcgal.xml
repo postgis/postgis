@@ -7,7 +7,7 @@
           For robustness, geometry coordinates have an exact rational number representation.
         </para>
         <para>
-          Installation instructions for the library can be found on the <ulink url="http://www.sfcgal.org">SFCGAL home page</ulink>.
+          Installation instructions for the library can be found on the SFCGAL home page (<ulink url="http://www.sfcgal.org">http://www.sfcgal.org</ulink>).
           To enable the functions use <code>create extension postgis_sfcgal</code>.
         </para>
 
