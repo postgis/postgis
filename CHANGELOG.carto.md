@@ -4,6 +4,7 @@
 
 Chanes:
 - Merged community `svn-2.5` as of 2019-03-13. No need to bump the minor version as there aren't any changes in SQL code.
+- MVT (GEOS): Backport improvements to verify validity of output geometries.
 
 ## 2.5.1.3+carto-1
 
