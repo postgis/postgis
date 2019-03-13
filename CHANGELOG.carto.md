@@ -1,3 +1,10 @@
+## 2.5.1.4+carto-1
+
+**Release date**: 2019-XX-XX
+
+Chanes:
+- Merged community `svn-2.5` as of 2019-03-13. No need to bump the minor version as there aren't any changes in SQL code.
+
 ## 2.5.1.3+carto-1
 
 **Release date**: 2019-03-06
