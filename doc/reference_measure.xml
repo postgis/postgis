@@ -4257,7 +4257,7 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Point_Inside_Circle">
+	<refentry id="ST_PointInsideCircle">
 	  <refnamediv>
 		<refname>ST_PointInsideCircle</refname>
 
@@ -4370,7 +4370,7 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Centroid" />, <xref linkend="ST_Point_Inside_Circle" /></para>
+		<para><xref linkend="ST_Centroid" />, <xref linkend="ST_PointInsideCircle" /></para>
 	  </refsection>
 	</refentry>
 
