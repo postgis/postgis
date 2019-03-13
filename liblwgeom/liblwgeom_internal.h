@@ -442,6 +442,8 @@ gridspec;
 LWGEOM* lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid);
 void lwgeom_grid_in_place(LWGEOM *lwgeom, const gridspec *grid);
 void ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid);
+void lwgeom_grid_mvt_in_place(LWGEOM *lwgeom);
+void ptarray_grid_mvt_in_place(POINTARRAY *pa, const gridspec *grid);
 
 /*
 * What side of the line formed by p1 and p2 does q fall?
