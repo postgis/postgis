@@ -297,7 +297,7 @@ SELECT CAST(ST_Expand(ST_GeomFromText('LINESTRING(2312980 110676,2312923 110701,
 ------------------------------------
  BOX(2312882 110666,2312990 110724)
 
---10 meter expanded 3d box of a 3d box
+--10 meter expanded 3D box of a 3D box
 SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As box3d),10)
 							  st_expand
 -----------------------------------------------------
@@ -515,7 +515,7 @@ WHERE the_geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.
 	  <refnamediv>
 		<refname>ST_3DMakeBox</refname>
 
-		<refpurpose>Creates a BOX3D defined by two 3d point	geometries.</refpurpose>
+		<refpurpose>Creates a BOX3D defined by two 3D point	geometries.</refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
@@ -533,12 +533,12 @@ WHERE the_geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.
 		<para>Creates a BOX3D defined by the given two 3D point
 			geometries. </para>
 
-		<!-- Optionally mention 3d support -->
+		<!-- Optionally mention 3D support -->
 		<para><inlinemediaobject>
 			<imageobject>
 			  <imagedata fileref="images/check.png" />
 			</imageobject>
-		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  </inlinemediaobject> This function supports 3D and will not drop the z-index.</para>
 		 <para>Changed: 2.0.0 In prior versions this used to be called ST_MakeBox3D</para>
 	  </refsection>
 
@@ -568,7 +568,7 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 	  <refnamediv>
 		<refname>ST_XMax</refname>
 
-		<refpurpose>Returns the X maxima of a 2d or 3d bounding box or a geometry.</refpurpose>
+		<refpurpose>Returns the X maxima of a 2D or 3D bounding box or a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -583,7 +583,7 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the X maxima of a 2d or 3d bounding box or a geometry.</para>
+		<para>Returns the X maxima of a 2D or 3D bounding box or a geometry.</para>
 
 		<note>
 		  <para>Although this function is only defined for box3d, it also works for box2d and geometry values due to automatic casting.
@@ -636,7 +636,7 @@ st_xmax
 	  <refnamediv>
 		<refname>ST_XMin</refname>
 
-		<refpurpose>Returns the X minima of a 2d or 3d bounding box or a geometry.</refpurpose>
+		<refpurpose>Returns the X minima of a 2D or 3D bounding box or a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -651,7 +651,7 @@ st_xmax
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the X minima of a 2d or 3d bounding box or a geometry.</para>
+		<para>Returns the X minima of a 2D or 3D bounding box or a geometry.</para>
 
 		<note>
 		  <para>Although this function is only defined for box3d, it also works for box2d and geometry values due to automatic casting.
@@ -704,7 +704,7 @@ st_xmin
 	  <refnamediv>
 		<refname>ST_YMax</refname>
 
-		<refpurpose>Returns the Y maxima of a 2d or 3d bounding box or a geometry.</refpurpose>
+		<refpurpose>Returns the Y maxima of a 2D or 3D bounding box or a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -719,7 +719,7 @@ st_xmin
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the Y maxima of a 2d or 3d bounding box or a geometry.</para>
+		<para>Returns the Y maxima of a 2D or 3D bounding box or a geometry.</para>
 
 		<note>
 		  <para>Although this function is only defined for box3d, it also works for box2d and geometry values due to automatic casting.
@@ -772,7 +772,7 @@ st_ymax
 	  <refnamediv>
 		<refname>ST_YMin</refname>
 
-		<refpurpose>Returns the Y minima of a 2d or 3d bounding box or a geometry.</refpurpose>
+		<refpurpose>Returns the Y minima of a 2D or 3D bounding box or a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -787,7 +787,7 @@ st_ymax
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the Y minima of a 2d or 3d bounding box or a geometry.</para>
+		<para>Returns the Y minima of a 2D or 3D bounding box or a geometry.</para>
 
 		<note>
 		  <para>Although this function is only defined for box3d, it also works for box2d and geometry values due to automatic casting.
@@ -840,7 +840,7 @@ st_ymin
 	  <refnamediv>
 		<refname>ST_ZMax</refname>
 
-		<refpurpose>Returns the Z maxima of a 2d or 3d bounding box or a geometry.</refpurpose>
+		<refpurpose>Returns the Z maxima of a 2D or 3D bounding box or a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -855,7 +855,7 @@ st_ymin
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the Z maxima of a 2d or 3d bounding box or a geometry.</para>
+		<para>Returns the Z maxima of a 2D or 3D bounding box or a geometry.</para>
 
 		<note>
 		  <para>Although this function is only defined for box3d, it also works for box2d and geometry values due to automatic casting.
@@ -908,7 +908,7 @@ st_zmax
 	  <refnamediv>
 		<refname>ST_ZMin</refname>
 
-		<refpurpose>Returns the Z minima of a 2d or 3d bounding box or a geometry.</refpurpose>
+		<refpurpose>Returns the Z minima of a 2D or 3D bounding box or a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -923,7 +923,7 @@ st_zmax
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the Z minima of a 2d or 3d bounding box or a geometry.</para>
+		<para>Returns the Z minima of a 2D or 3D bounding box or a geometry.</para>
 
 		<note>
 		  <para>Although this function is only defined for box3d, it also works for box2d and geometry values due to automatic casting.
