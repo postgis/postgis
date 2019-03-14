@@ -311,6 +311,7 @@ BEGIN
 		WHERE
 			o.oprleft = tl.oid AND
 			o.oprright = tr.oid AND
+			o.oprcode != 0 AND
 			o.oprname = '$opname' AND
 			tl.typname = '$opleft' AND
 			tr.typname = '$opright'
