@@ -65,14 +65,15 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
   files=`'ls' ${EXT}--* | grep -v -- '--.*--' | sed "s/^${EXT}--\(.*\)\.sql/\1/"`
   for fname in unpackaged $files; do
     from_version="$fname"
+    UPGRADE_PATH="${from_version}--${to_version}"
     # only consider versions older than ${to_version}
     if test $fname != "unpackaged"; then # unpackaged is always older
       cmp=`semver_compare "${from_version}" "${to_version}"`
       if test $cmp -ge 0; then
+        echo "SKIP: upgrade $UPGRADE_PATH (target is not newer than source)"
         continue
       fi
     fi
-    UPGRADE_PATH="${from_version}--${to_version}"
     if test -e ${EXT}--${UPGRADE_PATH}.sql; then
       echo "Testing ${EXT} upgrade $UPGRADE_PATH"
       export RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH}"
