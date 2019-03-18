@@ -862,25 +862,31 @@ mvt_safe_clip_geom_by_box_geos(LWGEOM *lwg_in, GBOX *clip_box, bool retry)
 	}
 
 	geom_clipped = lwgeom_clip_by_rect(lwg_in, clip_box->xmin, clip_box->ymin, clip_box->xmax, clip_box->ymax);
-	if (geom_clipped == NULL || lwgeom_is_empty(geom_clipped))
-	{
-		POSTGIS_DEBUG(3, "mvt_geom: no geometry after clipping");
-		return NULL;
-	}
 
+	/* With invalid polygons as input, GEOSClipByRect might return an empty geometry
+	 * or the complementary geometry of the expected result. We try to detect it here
+	 * and retry after forcing validation of the input */
 	if ((lwg_in->type == POLYGONTYPE || lwg_in->type == MULTIPOLYGONTYPE) &&
-	    !gbox_contains_2d(&geom_box, lwgeom_get_bbox(geom_clipped)))
+	    (geom_clipped == NULL || lwgeom_is_empty(geom_clipped) ||
+	     !gbox_contains_2d(&geom_box, lwgeom_get_bbox(geom_clipped))))
 	{
 		if (retry)
 		{
-			POSTGIS_DEBUG(1, "mvt_geom: Invalid clipping. Retrying after validation");
+			POSTGIS_DEBUG(1, "mvt_geom: Empty or invalid polygon clipping. Retrying after validation");
 			lwgeom_free(geom_clipped);
 			return mvt_safe_clip_geom_by_box_geos(lwgeom_make_valid(lwg_in), clip_box, false);
 		}
 		else
 		{
+			POSTGIS_DEBUG(1, "mvt_geom: Empty or invalid polygon clipping. Giving up");
 			return NULL;
 		}
+	}
+
+	if (geom_clipped == NULL || lwgeom_is_empty(geom_clipped))
+	{
+		POSTGIS_DEBUG(3, "mvt_geom: no geometry after clipping");
+		return NULL;
 	}
 
 	return geom_clipped;
