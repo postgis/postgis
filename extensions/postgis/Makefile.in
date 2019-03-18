@@ -10,6 +10,9 @@ MODULEPATH=$$libdir/$(EXTENSION)-$(MINORVERSION)
 endif
 GREP = @GREP@
 
+# SQL preprocessor
+SQLPP = @SQLPP@
+
 MICRO_NUMBER  = $(shell echo $(EXTVERSION) | \
 						$(PERL) -pe 's/\d.\d.(\d+)[a-zA-Z]*\d*/$1/'
 
@@ -35,7 +38,7 @@ DATA_built = \
 # Scripts making up the extension file
 # NOTE: order matters
 EXTENSION_SCRIPTS = \
-	../../postgis/postgis_for_extension.sql \
+	sql/postgis_for_extension.sql \
 	../../doc/postgis_comments.sql \
 	sql/spatial_ref_sys_config_dump.sql \
 	sql/spatial_ref_sys.sql
@@ -116,7 +119,21 @@ sql/spatial_ref_sys.sql: ../../spatial_ref_sys.sql | sql
 sql/spatial_ref_sys_config_dump.sql: ../../spatial_ref_sys.sql ../../utils/create_spatial_ref_sys_config_dump.pl | sql
 	$(PERL) ../../utils/create_spatial_ref_sys_config_dump.pl $< > $@
 
-sql/postgis_upgrade.sql: ../../postgis/postgis_upgrade_for_extension.sql | sql
+sql/postgis_upgrade_for_extension.sql: ../../postgis/postgis_drop_before.sql sql/postgis_upgrade_for_extension.sql.in ../../postgis/postgis_drop_after.sql | sql
+	#strip BEGIN/COMMIT since these are not allowed in extensions
+	# WARNING: we should make sure these are not internal to function bodies
+	cat $^ | $(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' > $@
+
+sql/postgis_upgrade_for_extension.sql.in: sql/postgis_for_extension.sql ../../utils/postgis_proc_upgrade.pl | sql
+	$(PERL) ../../utils/postgis_proc_upgrade.pl $< UNUSED > $@
+
+sql/postgis_for_extension.sql: ../../postgis/postgis.sql.in | sql
+	$(SQLPP) -I../../libpgcommon $< | grep -v '^#' | \
+	$(PERL) -lpe \
+		"s'MODULE_PATHNAME'\$(MODULEPATH)'g" \
+		| $(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' > $@
+
+sql/postgis_upgrade.sql: sql/postgis_upgrade_for_extension.sql | sql
 	$(PERL) -pe "s/BEGIN\;//g ; s/COMMIT\;//g; s/^(DROP .*)\;/SELECT postgis_extension_drop_if_exists('$(EXTENSION)', '\1');\n\1\;/" $< > $@
 
 
