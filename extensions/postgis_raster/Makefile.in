@@ -10,6 +10,9 @@ MODULEPATH=$$libdir/$(EXTENSION)-$(MINORVERSION)
 endif
 GREP = @GREP@
 
+# SQL preprocessor
+SQLPP = @SQLPP@
+
 MICRO_NUMBER  = $(shell echo $(EXTVERSION) | \
 						$(PERL) -pe 's/\d.\d.(\d+)[a-zA-Z]*\d*/$1/'
 
@@ -86,11 +89,26 @@ unpackaged_check.sql: unpackaged_check.sql.in Makefile
 		> $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
-sql/rtpostgis.sql: ../../raster/rt_pg/rtpostgis_for_extension.sql | sql
+sql/rtpostgis.sql: sql/rtpostgis_for_extension.sql | sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
-sql/rtpostgis_upgrade.sql: ../../raster/rt_pg/rtpostgis_upgrade_for_extension.sql | sql
+sql/rtpostgis_for_extension.sql: ../../raster/rt_pg/rtpostgis.sql.in | sql
+	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
+
+sql/rtpostgis_upgrade.sql: sql/rtpostgis_upgrade_for_extension.sql | sql
 	$(PERL) -pe "s/BEGIN\;//g ; s/COMMIT\;//g; s/^(DROP .*)\;/SELECT postgis_extension_drop_if_exists('$(EXTENSION)', '\1');\n\1\;/" $< > $@
+
+#this keeps the @extschema@. in place since extension machinery will replace during install
+sql/rtpostgis_upgrade_for_extension.sql: ../../raster/rt_pg/rtpostgis_upgrade_cleanup.sql sql/rtpostgis_upgrade_for_extension.sql.in ../../raster/rt_pg/rtpostgis_drop.sql | sql
+	echo 'BEGIN;' > $@
+	cat $^ | sed -e 's/^BEGIN;$$//' -e 's/^COMMIT;$$//' >> $@
+	echo 'COMMIT;' >> $@
+
+
+sql/rtpostgis_upgrade_for_extension.sql.in: sql/rtpostgis_for_extension.sql ../../utils/postgis_proc_upgrade.pl | sql
+	$(PERL) ../../utils/postgis_proc_upgrade.pl $< UNUSED > $@
+
 
 ../../doc/raster_comments.sql:
 	$(MAKE) -C ../../doc comments

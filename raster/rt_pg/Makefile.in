@@ -29,7 +29,7 @@ MODULE_big=rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 endif
 
 # Files to be copied to the contrib/ directory
-DATA_built=rtpostgis.sql rtpostgis_for_extension.sql rtpostgis_upgrade_for_extension.sql rtpostgis_upgrade.sql rtpostgis_proc_set_search_path.sql uninstall_rtpostgis.sql rtpostgis_legacy.sql
+DATA_built=rtpostgis.sql rtpostgis_upgrade.sql rtpostgis_proc_set_search_path.sql uninstall_rtpostgis.sql rtpostgis_legacy.sql
 DATA=
 
 # SQL preprocessor
@@ -77,7 +77,7 @@ PG_CPPFLAGS+= $(LIBLWGEOM_CFLAGS) @CPPFLAGS@ @CFLAGS@ $(LIBGDAL_CFLAGS) $(LIBPGC
 SHLIB_LINK_F = ../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBPGCOMMON_LDFLAGS) $(LIBGDAL_LDFLAGS) @SHLIB_LINK@
 
 # Extra files to remove during 'make clean'
-EXTRA_CLEAN=$(SQL_OBJS) $(DATA_built) rtpostgis_upgrade.sql.in rtpostgis_upgrade_for_extension.sql.in
+EXTRA_CLEAN=$(SQL_OBJS) $(DATA_built) rtpostgis_upgrade.sql.in
 
 # PGXS information
 PG_CONFIG := @PG_CONFIG@
@@ -114,10 +114,6 @@ endif
 	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
 
-rtpostgis_for_extension.sql: rtpostgis.sql.in
-	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
-
 ../../liblwgeom/.libs/liblwgeom.a:
 	$(MAKE) -C ../../liblwgeom
 
@@ -139,19 +135,10 @@ $(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_svn_revision.h
 rtpostgis_upgrade.sql.in: rtpostgis.sql ../../utils/postgis_proc_upgrade.pl
 	$(PERL) ../../utils/postgis_proc_upgrade.pl $< UNUSED > $@
 
-rtpostgis_upgrade_for_extension.sql.in: rtpostgis_for_extension.sql ../../utils/postgis_proc_upgrade.pl
-	$(PERL) ../../utils/postgis_proc_upgrade.pl $< UNUSED > $@
-
 rtpostgis_proc_set_search_path.sql: rtpostgis.sql ../../utils/postgis_proc_set_search_path.pl
 	$(PERL) ../../utils/postgis_proc_set_search_path.pl $< UNUSED > $@
 
 rtpostgis_upgrade.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql.in rtpostgis_drop.sql
-	echo 'BEGIN;' > $@
-	cat $^ | sed -e 's/^BEGIN;$$//' -e 's/^COMMIT;$$//' >> $@
-	echo 'COMMIT;' >> $@
-
-#this keeps the @extschema@. in place since extension machinery will replace during install
-rtpostgis_upgrade_for_extension.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade_for_extension.sql.in rtpostgis_drop.sql
 	echo 'BEGIN;' > $@
 	cat $^ | sed -e 's/^BEGIN;$$//' -e 's/^COMMIT;$$//' >> $@
 	echo 'COMMIT;' >> $@
