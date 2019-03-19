@@ -860,7 +860,7 @@ mvt_safe_clip_geom_by_box_geos(LWGEOM *lwg_in, GBOX *clip_box, bool retry)
 	if (gbox_contains_2d(clip_box, &geom_box))
 	{
 		POSTGIS_DEBUG(3, "mvt_geom: geometry contained fully inside the box");
-		return lwgeom_clone_deep(lwg_in);
+		return lwg_in;
 	}
 
 	initGEOS(lwnotice, lwgeom_geos_error);
@@ -914,7 +914,7 @@ mvt_safe_clip_geom_by_box_geos(LWGEOM *lwg_in, GBOX *clip_box, bool retry)
 }
 
 /**
- * Clips the geometry using GEOSClipByRect in a "safe way", cleaning the input
+ * Clips the geometry using GEOSIntersection in a "safe way", cleaning the input
  * if necessary and clipping MULTIPOLYGONs separately to reduce the impact
  * of using invalid input in GEOS
  */
@@ -1062,7 +1062,7 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 		FLAGS_SET_GEODETIC(bgbox.flags, 0);
 
 		ng = mvt_iterate_clip_by_box_geos(lwgeom, &bgbox);
-		if (ng == NULL || lwgeom_is_empty(ng))
+		if (!ng || lwgeom_is_empty(ng))
 		{
 			POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
 			return NULL;
@@ -1141,7 +1141,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	double height = gbox->ymax - gbox->ymin;
 	double resx, resy, res, fx, fy;
 	const uint8_t basic_type = lwgeom_get_basic_type(lwgeom);
-	LWGEOM *clipped;
+	int preserve_collapsed = LW_FALSE;
 	POSTGIS_DEBUG(2, "mvt_geom called");
 
 	/* Simplify it as soon as possible */
@@ -1153,13 +1153,13 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 
 	resx = width / extent;
 	resy = height / extent;
-	res = (resx < resy ? resx : resy) / 3;
+	res = (resx < resy ? resx : resy) / 2;
 	fx = extent / width;
 	fy = -(extent / height);
 
 	/* Remove all non-essential points (under the output resolution) */
 	lwgeom_remove_repeated_points_in_place(lwgeom, res);
-	lwgeom_simplify_in_place(lwgeom, res, LW_FALSE);
+	lwgeom_simplify_in_place(lwgeom, res, preserve_collapsed);
 
 	/* If geometry has disappeared, you're done */
 	if (lwgeom_is_empty(lwgeom))
@@ -1176,16 +1176,14 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	/* Snap to integer precision, removing duplicate points and spikes */
 	lwgeom_grid_in_place(lwgeom, &grid);
 
-	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
+	if (!lwgeom || lwgeom_is_empty(lwgeom))
 		return NULL;
 
-	clipped = mvt_clip_and_validate(lwgeom, basic_type, extent, buffer, clip_geom);
-	if (clipped == NULL || lwgeom_is_empty(clipped))
-	{
+	lwgeom = mvt_clip_and_validate(lwgeom, basic_type, extent, buffer, clip_geom);
+	if (!lwgeom || lwgeom_is_empty(lwgeom))
 		return NULL;
-	}
 
-	return clipped;
+	return lwgeom;
 }
 
 /**
