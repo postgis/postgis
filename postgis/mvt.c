@@ -1117,7 +1117,6 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;
 	double resx, resy, res, fx, fy;
-	int preserve_collapsed = LW_TRUE;
 	const uint8_t basic_type = lwgeom_get_basic_type(lwgeom);
 	LWGEOM *clipped;
 	POSTGIS_DEBUG(2, "mvt_geom called");
@@ -1131,13 +1130,13 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 
 	resx = width / extent;
 	resy = height / extent;
-	res = (resx < resy ? resx : resy)/2;
+	res = (resx < resy ? resx : resy) / 3;
 	fx = extent / width;
 	fy = -(extent / height);
 
 	/* Remove all non-essential points (under the output resolution) */
 	lwgeom_remove_repeated_points_in_place(lwgeom, res);
-	lwgeom_simplify_in_place(lwgeom, res, preserve_collapsed);
+	lwgeom_simplify_in_place(lwgeom, res, LW_FALSE);
 
 	/* If geometry has disappeared, you're done */
 	if (lwgeom_is_empty(lwgeom))
