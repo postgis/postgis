@@ -833,6 +833,34 @@ lwgeom_to_basic_type(LWGEOM *geom, uint8 original_type)
 	return geom_out;
 }
 
+static LWGEOM *
+mvt_unsafe_clip_by_box(LWGEOM *lwg_in, GBOX *clip_box)
+{
+	LWGEOM *geom_clipped;
+	GBOX geom_box;
+
+	gbox_init(&geom_box);
+	FLAGS_SET_GEODETIC(geom_box.flags, 0);
+	lwgeom_calculate_gbox(lwg_in, &geom_box);
+
+	if (!gbox_overlaps_2d(&geom_box, clip_box))
+	{
+		POSTGIS_DEBUG(3, "mvt_geom: geometry outside clip box");
+		return NULL;
+	}
+
+	if (gbox_contains_2d(clip_box, &geom_box))
+	{
+		POSTGIS_DEBUG(3, "mvt_geom: geometry contained fully inside the box");
+		return lwg_in;
+	}
+
+	geom_clipped = lwgeom_clip_by_rect(lwg_in, clip_box->xmin, clip_box->ymin, clip_box->xmax, clip_box->ymax);
+	if (!geom_clipped || lwgeom_is_empty(geom_clipped))
+		return NULL;
+	return geom_clipped;
+}
+
 /**
  * Clips an input geometry using GEOSIntersection
  * As you can get invalid output of invalid input, it tries to detect
@@ -841,7 +869,7 @@ lwgeom_to_basic_type(LWGEOM *geom, uint8 original_type)
  * *retry* is true, it cleans the input and retries, else it returns NULL
  */
 static LWGEOM *
-mvt_safe_clip_geom_by_box_geos(LWGEOM *lwg_in, GBOX *clip_box, bool retry)
+mvt_safe_clip_polygon_by_box(LWGEOM *lwg_in, GBOX *clip_box)
 {
 	LWGEOM *geom_clipped, *envelope;
 	GBOX geom_box;
@@ -919,11 +947,16 @@ mvt_safe_clip_geom_by_box_geos(LWGEOM *lwg_in, GBOX *clip_box, bool retry)
  * of using invalid input in GEOS
  */
 static LWGEOM *
-mvt_iterate_clip_by_box_geos(LWGEOM *lwgeom, GBOX *clip_gbox)
+mvt_iterate_clip_by_box_geos(LWGEOM *lwgeom, GBOX *clip_gbox, uint8_t basic_type)
 {
+	if (basic_type != POLYGONTYPE)
+	{
+		return mvt_unsafe_clip_by_box(lwgeom, clip_gbox);
+	}
+
 	if (lwgeom->type != MULTIPOLYGONTYPE || ((LWMPOLY *)lwgeom)->ngeoms == 1)
 	{
-		return mvt_safe_clip_geom_by_box_geos(lwgeom, clip_gbox, true);
+		return mvt_safe_clip_polygon_by_box(lwgeom, clip_gbox);
 	}
 	else
 	{
@@ -936,25 +969,12 @@ mvt_iterate_clip_by_box_geos(LWGEOM *lwgeom, GBOX *clip_gbox)
 		FLAGS_SET_GEODETIC(geom_box.flags, 0);
 		lwgeom_calculate_gbox(lwgeom, &geom_box);
 
-		if (!gbox_overlaps_2d(&geom_box, clip_gbox))
-		{
-			POSTGIS_DEBUG(3, "mvt_geom: geometry outside clip box");
-			return NULL;
-		}
-
-		if (gbox_contains_2d(clip_gbox, &geom_box))
-		{
-			POSTGIS_DEBUG(3, "mvt_geom: geometry contained fully inside the box");
-			return lwgeom;
-		}
-
 		lwmg = ((LWCOLLECTION *)lwgeom);
 		res = lwcollection_construct_empty(
 		    MULTIPOLYGONTYPE, lwgeom->srid, FLAGS_GET_Z(lwgeom->flags), FLAGS_GET_M(lwgeom->flags));
 		for (i = 0; i < lwmg->ngeoms; i++)
 		{
-			LWGEOM *clipped =
-			    mvt_safe_clip_geom_by_box_geos(lwcollection_getsubgeom(lwmg, i), clip_gbox, true);
+			LWGEOM *clipped = mvt_safe_clip_polygon_by_box(lwcollection_getsubgeom(lwmg, i), clip_gbox);
 			if (clipped)
 			{
 				clipped = lwgeom_to_basic_type(clipped, POLYGONTYPE);
@@ -1062,7 +1082,7 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 		bgbox.xmin = bgbox.ymin = -(double)buffer;
 		FLAGS_SET_GEODETIC(bgbox.flags, 0);
 
-		ng = mvt_iterate_clip_by_box_geos(lwgeom, &bgbox);
+		ng = mvt_iterate_clip_by_box_geos(lwgeom, &bgbox, basic_type);
 		if (!ng || lwgeom_is_empty(ng))
 		{
 			POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
