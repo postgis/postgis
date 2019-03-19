@@ -24,12 +24,13 @@
   &reference_output;
   &reference_operator;
   &reference_measure;
-  &reference_sfcgal;
   &reference_processing;
+  &reference_bbox;
   &reference_lrs;
-  &reference_temporal;
+  &reference_trajectory;
+  &reference_sfcgal;
   &reference_transaction;
-  &reference_misc;
+  <!-- &reference_misc; -->
   &reference_version;
   &reference_guc;
   &reference_troubleshooting;

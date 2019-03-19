@@ -3,12 +3,12 @@
 	<sect1info>
 		<abstract>
 				<para>
-            SFCGAL is a C++ wrapper  library around CGAL that provides advanced 2D and 3D functions.
-            For robustness, geometry coordinates have an exact rational number representation.
+          SFCGAL is a C++ wrapper library around CGAL that provides advanced 2D and 3D spatial functions.
+          For robustness, geometry coordinates have an exact rational number representation.
         </para>
         <para>
-            Installation instructions of the library can be found on SFCGAL home page <ulink url="http://www.sfcgal.org">http://www.sfcgal.org</ulink>.
-            To load the functions create extension postgis_sfcgal.
+          Installation instructions for the library can be found on the SFCGAL home page (<ulink url="http://www.sfcgal.org">http://www.sfcgal.org</ulink>).
+          To enable the functions use <code>create extension postgis_sfcgal</code>.
         </para>
 
 		</abstract>
