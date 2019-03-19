@@ -674,7 +674,7 @@ SELECT 'FI9', encode(ST_AsMVT(q, 'test', 4096, 'geom', 'c1'), 'base64') FROM (
                 8,
                 true
                 )
-        ) BETWEEN 21990 AND 22010;
+        ) BETWEEN 21950 AND 22050;
 
 -- Do not return invalid responses
 SELECT '#4348Invalid', ST_IsValid(ST_AsMVTGeom(
@@ -707,4 +707,4 @@ SELECT '#4348Reversed2', ST_NPoints(ST_AsMVTGeom(
     2048,
     8,
     true
-    )) BETWEEN 2100 AND 2300;
+    ))  BETWEEN 2150 AND 2250;

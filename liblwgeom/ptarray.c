@@ -2025,61 +2025,6 @@ ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
 	return;
 }
 
-/**
- * Grid to int values, removes spikes.
- * NOTE: Z and M may be left with incorrect values
- */
-void
-ptarray_grid_mvt_in_place(POINTARRAY *pa, __attribute__((__unused__)) const gridspec *grid)
-{
-	uint32_t i, j = 0;
-	POINT4D *p;
-	POINT4D *p1_out = NULL, *p2_out = NULL;
-
-	LWDEBUGF(2, "%s called on %p", __func__, pa);
-
-	for (i = 0; i < pa->npoints; i++)
-	{
-		p = (POINT4D *)(getPoint_internal(pa, i));
-		p->x = nearbyint(p->x);
-		p->y = nearbyint(p->y);
-
-		/* Skip duplicates */
-		if (j && FP_EQUALS(p1_out->x, p->x) && FP_EQUALS(p1_out->y, p->y))
-		{
-			continue;
-		}
-
-		/* Skip spikes */
-		if (j > 1)
-		{
-			double diff_y1 = p->y - p1_out->y;
-			double diff_y2 = p->y - p2_out->y;
-
-			if ((FP_EQUALS(p2_out->x, p->x) && FP_EQUALS(p2_out->y, p->y)) ||
-			    (FP_IS_ZERO(diff_y1) && FP_IS_ZERO(diff_y2)) ||
-			    (!FP_IS_ZERO(diff_y1) && !FP_IS_ZERO(diff_y2) &&
-			     FP_EQUALS(((p->x - p2_out->x) / (diff_y2)), ((p->x - p1_out->x) / (diff_y1)))))
-			{
-				/* Overwrite last point */
-				p1_out->x = p->x;
-				p1_out->y = p->y;
-				continue;
-			}
-		}
-
-		/* Write rounded values into the next available point */
-		p2_out = p1_out;
-		p1_out = (POINT4D *)(getPoint_internal(pa, j++));
-		p1_out->x = p->x;
-		p1_out->y = p->y;
-	}
-
-	/* Update output ptarray length */
-	pa->npoints = j;
-	return;
-}
-
 int
 ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox)
 {

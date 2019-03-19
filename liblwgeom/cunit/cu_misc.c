@@ -202,51 +202,6 @@ static void test_grid_in_place(void)
 	);
 }
 
-static void
-do_grid_mvt_test(const char *wkt_in, const char *wkt_out)
-{
-	char *wkt_result, *wkt_norm;
-	LWGEOM *g = lwgeom_from_wkt(wkt_in, LW_PARSER_CHECK_ALL);
-	CU_ASSERT_PTR_NOT_NULL_FATAL(g);
-	LWGEOM *go = lwgeom_from_wkt(wkt_out, LW_PARSER_CHECK_ALL);
-	CU_ASSERT_PTR_NOT_NULL_FATAL(go);
-	wkt_norm = lwgeom_to_ewkt(go);
-	lwgeom_grid_mvt_in_place(g);
-	wkt_result = lwgeom_to_ewkt(g);
-	CU_ASSERT_STRING_EQUAL(wkt_result, wkt_norm);
-	lwfree(wkt_result);
-	lwfree(wkt_norm);
-	lwgeom_free(g);
-	lwgeom_free(go);
-}
-
-static void
-test_grid_mvt_in_place(void)
-{
-	do_grid_mvt_test("POINT ZM (5.1423999999 5.1423999999 5.1423999999 5.1423999999)",
-			 "POINT(5 5 5.1423999999 5.1423999999)");
-	do_grid_mvt_test("POLYGON((0.2 0.2, 10.1 0.1, 10.3 9.8, 0 10, 0.2 0.2))",
-			 "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
-	do_grid_mvt_test("POLYGON((0 0, 11 0, 10 0, 10 10, 0 10, 0 0))", "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
-	do_grid_mvt_test("POLYGON((0 0, 9 0, 10 0, 10 10, 0 10, 0 0))", "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
-	do_grid_mvt_test("POLYGON((0 0, 10 0, 11 0, 10 0, 10 10, 0 10, 0 0))",
-			 "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
-	do_grid_mvt_test("POLYGON((0 0, -1 0, 10 0, 10 10, 0 10, 0 0))", "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
-
-	do_grid_mvt_test("POLYGON((0 0, 10 0, 10 9, 10 10, 0 10, 0 0))", "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
-	do_grid_mvt_test("POLYGON((0 0, 10 0, 10 10, 10 11, 10 10, 0 10, 0 0))",
-			 "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
-	do_grid_mvt_test("POLYGON((0 0, 10 0, 10 10, 11 10, 0 10, 0 0))", "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
-
-	do_grid_mvt_test("POLYGON((0 0, 10 0, 10 10, 11 11, 10 10, 0 10, 0 0))",
-			 "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
-
-	do_grid_mvt_test("POLYGON((0 0, 10 0, 10 10, 9 9, 11 11, 9 9, 11 11, 9 9, 11 11, 10 10, 0 10, 0 0))",
-			 "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
-
-	do_grid_mvt_test("POLYGON((0 0, 10 0, 11 10, 10 10, 0 10, 0 0))", "POLYGON((0 0, 10 0, 11 10, 0 10, 0 0))");
-}
-
 static void test_clone(void)
 {
 	static char *wkt = "GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0))),POINT(1 1),LINESTRING(2 3,4 5))";
@@ -295,5 +250,4 @@ void misc_suite_setup(void)
 	PG_ADD_TEST(suite, test_grid_in_place);
 	PG_ADD_TEST(suite, test_clone);
 	PG_ADD_TEST(suite, test_lwmpoint_from_lwgeom);
-	PG_ADD_TEST(suite, test_grid_mvt_in_place);
 }

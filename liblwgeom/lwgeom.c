@@ -2083,9 +2083,8 @@ lwgeom_startpoint(const LWGEOM *lwgeom, POINT4D *pt)
 	}
 }
 
-/* Grids in place. *fun* will be used to grid ptarrays in polygons (but not in points or lines) */
-static void
-lwgeom_grid_in_place_fn(LWGEOM *geom, const gridspec *grid, void (*fun)(POINTARRAY *, const gridspec *))
+void
+lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
 {
 	if (!geom) return;
 	switch ( geom->type )
@@ -2114,7 +2113,7 @@ lwgeom_grid_in_place_fn(LWGEOM *geom, const gridspec *grid, void (*fun)(POINTARR
 			/* Check first the external ring */
 			uint32_t i = 0;
 			POINTARRAY *pa = ply->rings[0];
-			fun(pa, grid);
+			ptarray_grid_in_place(pa, grid);
 			if (pa->npoints < 4)
 			{
 				/* External ring collapsed: free everything */
@@ -2131,7 +2130,7 @@ lwgeom_grid_in_place_fn(LWGEOM *geom, const gridspec *grid, void (*fun)(POINTARR
 			for (i = 1; i < ply->nrings; i++)
 			{
 				POINTARRAY *pa = ply->rings[i];
-				fun(pa, grid);
+				ptarray_grid_in_place(pa, grid);
 
 				/* Skip bad rings */
 				if (pa->npoints >= 4)
@@ -2159,7 +2158,7 @@ lwgeom_grid_in_place_fn(LWGEOM *geom, const gridspec *grid, void (*fun)(POINTARR
 			for (i = 0; i < col->ngeoms; i++)
 			{
 				LWGEOM *g = col->geoms[i];
-				lwgeom_grid_in_place_fn(g, grid, fun);
+				lwgeom_grid_in_place(g, grid);
 				/* Empty geoms need to be freed */
 				/* before we move on */
 				if (lwgeom_is_empty(g))
@@ -2181,18 +2180,6 @@ lwgeom_grid_in_place_fn(LWGEOM *geom, const gridspec *grid, void (*fun)(POINTARR
 	}
 }
 
-void
-lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
-{
-	lwgeom_grid_in_place_fn(geom, grid, ptarray_grid_in_place);
-}
-
-void
-lwgeom_grid_mvt_in_place(LWGEOM *geom)
-{
-	gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
-	lwgeom_grid_in_place_fn(geom, &grid, ptarray_grid_mvt_in_place);
-}
 
 LWGEOM *
 lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid)
