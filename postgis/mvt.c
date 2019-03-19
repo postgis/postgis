@@ -843,8 +843,10 @@ lwgeom_to_basic_type(LWGEOM *geom, uint8 original_type)
 static LWGEOM *
 mvt_safe_clip_geom_by_box_geos(LWGEOM *lwg_in, GBOX *clip_box, bool retry)
 {
-	LWGEOM *geom_clipped;
+	LWGEOM *geom_clipped, *envelope;
 	GBOX geom_box;
+	GEOSGeometry *geos_input, *geos_box, *geos_result;
+
 	gbox_init(&geom_box);
 	FLAGS_SET_GEODETIC(geom_box.flags, 0);
 	lwgeom_calculate_gbox(lwg_in, &geom_box);
@@ -861,27 +863,46 @@ mvt_safe_clip_geom_by_box_geos(LWGEOM *lwg_in, GBOX *clip_box, bool retry)
 		return lwgeom_clone_deep(lwg_in);
 	}
 
-	geom_clipped = lwgeom_clip_by_rect(lwg_in, clip_box->xmin, clip_box->ymin, clip_box->xmax, clip_box->ymax);
+	initGEOS(lwnotice, lwgeom_geos_error);
+	if (!(geos_input = LWGEOM2GEOS(lwg_in, 1)))
+		return NULL;
 
-	/* With invalid polygons as input, GEOSClipByRect might return an empty geometry
-	 * or the complementary geometry of the expected result. We try to detect it here
-	 * and retry after forcing validation of the input */
-	if ((lwg_in->type == POLYGONTYPE || lwg_in->type == MULTIPOLYGONTYPE) &&
-	    (geom_clipped == NULL || lwgeom_is_empty(geom_clipped) ||
-	     !gbox_contains_2d(&geom_box, lwgeom_get_bbox(geom_clipped))))
+	envelope = (LWGEOM *)lwpoly_construct_envelope(
+	    lwg_in->srid, clip_box->xmin, clip_box->ymin, clip_box->xmax, clip_box->ymax);
+	geos_box = LWGEOM2GEOS(envelope, 1);
+	lwgeom_free(envelope);
+	if (!geos_box)
 	{
-		if (retry)
+		GEOSGeom_destroy(geos_input);
+		return NULL;
+	}
+
+	geos_result = GEOSIntersection(geos_input, geos_box);
+	if (!geos_result)
+	{
+		POSTGIS_DEBUG(3, "mvt_geom: no geometry after intersection. Retrying after validation");
+		GEOSGeom_destroy(geos_input);
+		lwg_in = lwgeom_make_valid(lwg_in);
+		if (!(geos_input = LWGEOM2GEOS(lwg_in, 1)))
 		{
-			POSTGIS_DEBUG(1, "mvt_geom: Empty or invalid polygon clipping. Retrying after validation");
-			lwgeom_free(geom_clipped);
-			return mvt_safe_clip_geom_by_box_geos(lwgeom_make_valid(lwg_in), clip_box, false);
+			GEOSGeom_destroy(geos_box);
+			return NULL;
 		}
-		else
+		geos_result = GEOSIntersection(geos_input, geos_box);
+		if (!geos_result)
 		{
-			POSTGIS_DEBUG(1, "mvt_geom: Empty or invalid polygon clipping. Giving up");
+			GEOSGeom_destroy(geos_box);
+			GEOSGeom_destroy(geos_input);
 			return NULL;
 		}
 	}
+
+	GEOSSetSRID(geos_result, lwg_in->srid);
+	geom_clipped = GEOS2LWGEOM(geos_result, 0);
+
+	GEOSGeom_destroy(geos_box);
+	GEOSGeom_destroy(geos_input);
+	GEOSGeom_destroy(geos_result);
 
 	if (geom_clipped == NULL || lwgeom_is_empty(geom_clipped))
 	{
@@ -1130,7 +1151,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 
 	resx = width / extent;
 	resy = height / extent;
-	res = (resx < resy ? resx : resy) / 3;
+	res = (resx < resy ? resx : resy) / 2;
 	fx = extent / width;
 	fy = -(extent / height);
 
@@ -1151,7 +1172,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	lwgeom_affine(lwgeom, &affine);
 
 	/* Snap to integer precision, removing duplicate points and spikes */
-	lwgeom_grid_mvt_in_place(lwgeom);
+	lwgeom_grid_in_place(lwgeom);
 
 	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
 		return NULL;
