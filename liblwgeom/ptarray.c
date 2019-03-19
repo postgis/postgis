@@ -2025,6 +2025,7 @@ ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
 	return;
 }
 
+
 int
 ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox)
 {
