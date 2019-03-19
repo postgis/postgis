@@ -958,7 +958,8 @@ mvt_iterate_clip_by_box_geos(LWGEOM *lwgeom, GBOX *clip_gbox)
 			if (clipped)
 			{
 				clipped = lwgeom_to_basic_type(clipped, POLYGONTYPE);
-				if (!lwgeom_is_empty(clipped))
+				if (!lwgeom_is_empty(clipped) &&
+				    (clipped->type == POLYGONTYPE || clipped->type == MULTIPOLYGONTYPE))
 				{
 					if (!lwgeom_is_collection(clipped))
 					{
