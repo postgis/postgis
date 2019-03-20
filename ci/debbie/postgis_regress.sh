@@ -72,7 +72,16 @@ if [ "$?" != "0" ]; then
   exit $?
 fi
 
-export RUNTESTFLAGS=-v
+if [ "$MAKE_LOGBT" = "1" ]; then
+ echo "Running logbt testing"
+ bash ./ci/debbie/logbt -- make -j check RUNTESTFLAGS=--verbose
+ if [ "$?" != "0" ]; then
+  exit $?
+ fi
+else
+  export RUNTESTFLAGS=-v
+fi
+
 
 make check
 
@@ -87,13 +96,7 @@ if [ "$MAKE_EXTENSION" = "1" ]; then
  fi
 fi
 
-if [ "$MAKE_LOGBT" = "1" ]; then
- echo "Running logbt testing"
- bash ./ci/debbie/logbt -- make -j check RUNTESTFLAGS=--verbose
- if [ "$?" != "0" ]; then
-  exit $?
- fi
-fi
+
 
 if [ "$DUMP_RESTORE" = "1" ]; then
  echo "Dum restore test"
