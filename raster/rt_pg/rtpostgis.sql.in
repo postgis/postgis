@@ -282,7 +282,7 @@ CREATE OR REPLACE FUNCTION st_summary(rast raster)
 		msg text;
 		msgset text[];
 	BEGIN
-		extent := @extschema@.ST_Extent(rast::geometry);
+		extent := @extschema@.ST_Extent(rast::@extschema@.geometry);
 		metadata := @extschema@.ST_Metadata(rast);
 
 		msg := 'Raster of ' || metadata.width || 'x' || metadata.height || ' pixels has ' || metadata.numbands || ' ';
@@ -341,7 +341,7 @@ CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx 
 
 CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, pixelsize float8)
     RETURNS raster
-    AS $$ SELECT  @extschema@.ST_makeemptyraster($1, $2, $3, $4, $5, -($5), 0, 0, @extschema@.ST_SRID('POINT(0 0)'::geometry)) $$
+    AS $$ SELECT  @extschema@.ST_makeemptyraster($1, $2, $3, $4, $5, -($5), 0, 0, @extschema@.ST_SRID('POINT(0 0)'::@extschema@.geometry)) $$
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_makeemptyraster(rast raster)
@@ -5968,52 +5968,52 @@ CREATE OR REPLACE FUNCTION raster_overright(raster, raster)
 
 CREATE OR REPLACE FUNCTION raster_left(raster, raster)
     RETURNS bool
-    AS 'select $1::geometry << $2::geometry'
+    AS 'select $1::@extschema@.geometry << $2::@extschema@.geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION raster_right(raster, raster)
     RETURNS bool
-    AS 'select $1::geometry >> $2::geometry'
+    AS 'select $1::@extschema@.geometry >> $2::@extschema@.geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION raster_overabove(raster, raster)
     RETURNS bool
-    AS 'select $1::geometry |&> $2::geometry'
+    AS 'select $1::@extschema@.geometry |&> $2::@extschema@.geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION raster_overbelow(raster, raster)
     RETURNS bool
-    AS 'select $1::geometry &<| $2::geometry'
+    AS 'select $1::@extschema@.geometry &<| $2::@extschema@.geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION raster_above(raster, raster)
     RETURNS bool
-    AS 'select $1::geometry |>> $2::geometry'
+    AS 'select $1::@extschema@.geometry |>> $2::@extschema@.geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION raster_below(raster, raster)
     RETURNS bool
-    AS 'select $1::geometry <<| $2::geometry'
+    AS 'select $1::@extschema@.geometry <<| $2::@extschema@.geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION raster_same(raster, raster)
     RETURNS bool
-    AS 'select $1::geometry ~= $2::geometry'
+    AS 'select $1::@extschema@.geometry ~= $2::@extschema@.geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION raster_contained(raster, raster)
     RETURNS bool
-    AS 'select $1::geometry OPERATOR(@extschema@.@) $2::geometry'
+    AS 'select $1::@extschema@.geometry OPERATOR(@extschema@.@) $2::@extschema@.geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION raster_contain(raster, raster)
     RETURNS bool
-    AS 'select $1::geometry ~ $2::geometry'
+    AS 'select $1::@extschema@.geometry ~ $2::@extschema@.geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION raster_overlap(raster, raster)
     RETURNS bool
-    AS 'select $1::geometry OPERATOR(@extschema@.&&) $2::geometry'
+    AS 'select $1::@extschema@.geometry OPERATOR(@extschema@.&&) $2::@extschema@.geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- raster/geometry functions
@@ -6021,19 +6021,19 @@ CREATE OR REPLACE FUNCTION raster_overlap(raster, raster)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION raster_geometry_contain(raster, geometry)
     RETURNS bool
-    AS 'select $1::geometry ~ $2'
+    AS 'select $1::@extschema@.geometry ~ $2'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.5
 CREATE OR REPLACE FUNCTION raster_contained_by_geometry(raster, geometry)
     RETURNS bool
-    AS 'select $1::geometry OPERATOR(@extschema@.@) $2'
+    AS 'select $1::@extschema@.geometry OPERATOR(@extschema@.@) $2'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
     RETURNS bool
-    AS 'select $1::geometry OPERATOR(@extschema@.&&) $2'
+    AS 'select $1::@extschema@.geometry OPERATOR(@extschema@.&&) $2'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- geometry/raster functions
@@ -6041,19 +6041,19 @@ CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_raster_contain(geometry, raster)
     RETURNS bool
-    AS 'select $1 OPERATOR(@extschema@.~) $2::geometry'
+    AS 'select $1 OPERATOR(@extschema@.~) $2::@extschema@.geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.5
 CREATE OR REPLACE FUNCTION geometry_contained_by_raster(geometry, raster)
     RETURNS bool
-    AS 'select $1 OPERATOR(@extschema@.@) $2::geometry'
+    AS 'select $1 OPERATOR(@extschema@.@) $2::@extschema@.geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_raster_overlap(geometry, raster)
     RETURNS bool
-    AS 'select $1 OPERATOR(@extschema@.&&) $2::geometry'
+    AS 'select $1 OPERATOR(@extschema@.&&) $2::@extschema@.geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 ------------------------------------------------------------------------------
@@ -6629,7 +6629,7 @@ CREATE OR REPLACE FUNCTION _ST_DWithin(rast1 raster, nband1 integer, rast2 raste
 
 CREATE OR REPLACE FUNCTION ST_DWithin(rast1 raster, nband1 integer, rast2 raster, nband2 integer, distance double precision)
 	RETURNS boolean
-	AS $$ SELECT $1::geometry OPERATOR(@extschema@.&&) @extschema@.ST_Expand(@extschema@.ST_ConvexHull($3), $5) AND $3::@extschema@.geometry OPERATOR(@extschema@.&&) @extschema@.ST_Expand(@extschema@.ST_ConvexHull($1), $5) AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._ST_dwithin(@extschema@.st_convexhull($1), @extschema@.st_convexhull($3), $5) ELSE @extschema@._ST_dwithin($1, $2, $3, $4, $5) END $$
+	AS $$ SELECT $1::@extschema@.geometry OPERATOR(@extschema@.&&) @extschema@.ST_Expand(@extschema@.ST_ConvexHull($3), $5) AND $3::@extschema@.geometry OPERATOR(@extschema@.&&) @extschema@.ST_Expand(@extschema@.ST_ConvexHull($1), $5) AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._ST_dwithin(@extschema@.st_convexhull($1), @extschema@.st_convexhull($3), $5) ELSE @extschema@._ST_dwithin($1, $2, $3, $4, $5) END $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL
 	COST 1000;
 
@@ -7447,7 +7447,7 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_blocksize(rastschema name, ra
 CREATE OR REPLACE FUNCTION _raster_constraint_info_extent(rastschema name, rasttable name, rastcolumn name)
 	RETURNS geometry AS $$
 	SELECT
-		trim(both '''' from split_part(trim(split_part(s.consrc, ' @ ', 2)), '::', 1))::geometry
+		trim(both '''' from split_part(trim(split_part(s.consrc, ' @ ', 2)), '::', 1))::@extschema@.geometry
 	FROM pg_class c, pg_namespace n, pg_attribute a
 		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 			FROM pg_constraint) AS s
@@ -7584,7 +7584,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_spatially_unique(rastschema n
 		AND s.contype = 'x'
 		AND 0::smallint = ANY (s.conkey)
 		AND idx.indexrelid = s.conindid
-		AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::geometry)'
+		AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::%geometry)'
 		AND s.conexclop[1] = op.oid
 		AND op.oprname = '=';
 	$$ LANGUAGE sql STABLE STRICT
@@ -7635,7 +7635,7 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_spatially_unique(rastschema n
 			AND s.contype = 'x'
 			AND 0::smallint = ANY (s.conkey)
 			AND idx.indexrelid = s.conindid
-			AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::geometry)'
+			AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::%geometry)'
 			AND s.conexclop[1] = op.oid
 			AND op.oprname = '=';
 
@@ -7686,7 +7686,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 		END IF;
 		fqtn := fqtn || quote_ident($2);
 
-		cn := 'enforce_coverage_tile_' || $3;
+		cn := 'enforce_coverage_tile_' || quote_ident($3);
 
 		-- metadata
 		BEGIN
@@ -8604,7 +8604,7 @@ CREATE OR REPLACE VIEW raster_columns AS
 		n.nspname AS r_table_schema,
 		c.relname AS r_table_name,
 		a.attname AS r_raster_column,
-		COALESCE(_raster_constraint_info_srid(n.nspname, c.relname, a.attname), (SELECT ST_SRID('POINT(0 0)'::geometry))) AS srid,
+		COALESCE(_raster_constraint_info_srid(n.nspname, c.relname, a.attname), (SELECT ST_SRID('POINT(0 0)'::@extschema@.geometry))) AS srid,
 		_raster_constraint_info_scale(n.nspname, c.relname, a.attname, 'x') AS scale_x,
 		_raster_constraint_info_scale(n.nspname, c.relname, a.attname, 'y') AS scale_y,
 		_raster_constraint_info_blocksize(n.nspname, c.relname, a.attname, 'width') AS blocksize_x,

@@ -1,3 +1,321 @@
+2019-03-10 18:58  Regina Obe <lr@pcorp.us>
+
+	* [r17321] Make _drop_raster_constraint_spatially_unique and
+	  _raster_constraint_info_spatially_unique allow for presence or
+	  absense of schema qual on geometry cast.
+	  Was failing before when installed as extension (but not by
+	  script)
+	  Reference #4291 for PostGIS 2.5.2
+
+2019-03-10 09:07  Regina Obe <lr@pcorp.us>
+
+	* [r17317] Take out schema qualify in constraint see if it resolves
+	  failing check constraint check on bessie and debbie
+	  Reference #4291 for PostGIS 2.5.2
+
+2019-03-10 07:20  Regina Obe <lr@pcorp.us>
+
+	* [r17316] Schema qualify all geometry casts in raster code,
+	  otherwise materialized views do not resture
+	  Closes #4291 for PostGIS 2.5.2
+	  Missed some spots in last commit
+
+2019-03-09 06:54  Regina Obe <lr@pcorp.us>
+
+	* [r17313] Schema qualify all geometry casts in raster code,
+	  otherwise materialized views do not resture
+	  Reference #4291 for PostGIS 2.5.2
+
+2019-03-09 06:29  Regina Obe <lr@pcorp.us>
+
+	* [r17311] Change de_DE to de. de is the one that is active
+	  References #3848 for PostGIS 2.5
+
+2019-02-21 20:44  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17270] Add extra_float_digits for pg12
+
+2019-02-15 19:00  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17256] Update test running instructions
+
+2019-02-15 18:53  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17253] Update OGC certification scripts to match new SFSQL 1.2
+	  signatures
+
+2019-02-11 17:18  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17237] Add generated file
+
+2019-02-11 17:18  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17236] Add lexer initialization
+	  References #4017
+
+2019-02-05 00:41  Regina Obe <lr@pcorp.us>
+
+	* [r17230] Get rid of sudo -i on the pg11 docker evidentally not
+	  installed
+
+2019-02-04 22:45  Regina Obe <lr@pcorp.us>
+
+	* [r17228] Fix dronie badge (still need to fix build link)
+
+2019-01-31 15:49  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17224] PostgreSQL 12 compatibility
+	  
+	  Initial patch by Laurenz Albe
+	  References #4313
+
+2019-01-30 19:17  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17221] ST_ClipByBox2D: Do not throw when the geometry is
+	  invalid
+	  
+	  Closes #4314
+
+2019-01-25 11:52  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17215] PG12 compat: Remove unnecessary header include (tqual.h)
+	  
+	  Closes #4307
+
+2019-01-22 09:09  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17206] Partially revert r17180
+	  
+	  It changed the behaviour of _postgis_pgsql_version
+	  Now uses the appropiate 5-6 digit version from server_version_num
+	  
+	  References #4296
+	  References #4303
+
+2019-01-21 19:52  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17199] Sync generated parser to y file, using newer bison
+	  version
+
+2019-01-21 19:24  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17195] Commit generated code to match parser
+
+2019-01-21 19:24  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17194] Actually put fix for #4273 in the right place
+	  so it isn't blown away when parser.y is evaluated.
+	  References #4273
+
+2019-01-18 21:57  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17189] Un space
+
+2019-01-18 20:43  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17186] Avoid final point duplicates for circle stroking
+	  References #4283
+
+2019-01-18 18:02  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17182] More robust geography distance
+	  References #4290
+
+2019-01-18 17:24  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17180] Use `server_version_num` instead of parsing `version()`
+	  
+	  References #4296
+
+2019-01-18 16:06  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17175] Avoid passing a NULL pointer to GEOSisEmpty
+	  
+	  References #4275
+
+2019-01-18 11:56  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17172] Correct issue reference from previous commit
+	  
+	  References #4289
+
+2019-01-18 11:53  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17170] ST_AsMVTGeom: Transform coordinates space before
+	  clipping
+	  
+	  References #4300
+
+2019-01-17 23:22  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17168] Use AccessShareLock in spatial_index_read_extent
+	  References #4261
+
+2019-01-17 11:32  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17164] ST_Subdivide endless loop on coordinates near coincident
+	  to bounds
+	  
+	  Closes #4301
+	  Closes https://github.com/postgis/postgis/pull/361
+
+2019-01-16 10:50  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17161] ST_AsMVTGeom: Always return the simplest geometry
+	  
+	  Closes #4300
+
+2019-01-16 09:04  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17159] Tests: Remove warning when building with 32bit arch
+	  
+	  It appeared when investigating #4298
+
+2019-01-15 22:16  Regina Obe <lr@pcorp.us>
+
+	* [r17157] Add dronie.osgeo.org agent config (drone 1.0 standard)
+
+2019-01-11 12:37  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17135] ST_AsMVT: parse JSON numeric values with decimals as
+	  doubles
+	  
+	  References #4292
+
+2019-01-10 16:21  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17131] Remove memory leak in "junky wkt" case
+	  References #4273
+
+2019-01-09 20:09  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17129] Move fix further into parser, fix bad test case
+	  References #4273
+
+2018-12-26 04:06  Regina Obe <lr@pcorp.us>
+
+	* [r17119] Fix so custom --with-projdir= configure switch works
+	  again.
+	  References #4279 for PostGIS 2.5
+
+2018-12-21 05:38  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17115] [doc] ST_AsGeoJSON doc refresh
+	  
+	  Closes #4276
+
+2018-12-17 10:41  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17112] Attribute Raúl Marín for help resolving build issue.
+	  
+	  References #4254
+
+2018-12-17 10:34  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17109] Support Proj 6. Support is via legacy API, we need to
+	  redesign for non-legacy and Proj 7.
+	  
+	  Closes #4254
+	  Closes https://github.com/postgis/postgis/pull/354
+
+2018-11-30 15:01  Regina Obe <lr@pcorp.us>
+
+	* [r17089] change winnie to build, test, and package using GEOS
+	  3.7.1 instead of GEOS 3.7.0
+
+2018-11-29 11:11  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17088] Correct referenfce in NEWS file
+
+2018-11-29 09:29  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17085] Document MULTISURFACE compatibility of ST_LineToCurve
+	  (Steven Ottens)
+	  
+	  References #4162
+
+2018-11-27 00:14  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17078] Change test conditions to look for empty.
+	  References #4245
+
+2018-11-25 19:28  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17074] Stabilize GiST ND indexes for mixed dimensions
+	  
+	  Patch by Darafei Praliaskouski
+	  
+	  Thanks to
+	  Arthur Lesuisse for synthesizing test case,
+	  Andrew Gierth for finding runaway memcpy,
+	  Raúl Marín for pointing to memory problem in index construction.
+	  
+	  This is not backpatchable to 2.x, that requires separate
+	  solution.
+	  
+	  Closes #4139
+
+2018-11-23 17:56  Regina Obe <lr@pcorp.us>
+
+	* [r17063] Get rid of use of oids in topology regress was taken out
+	  in PostgreSQL 12.
+	  Closes #4251 for PostGIS 2.5.2
+
+2018-11-23 07:49  Regina Obe <lr@pcorp.us>
+
+	* [r17061] Missed a spot in last commit
+	  Closes #4231 for postgis 2.5.2
+
+2018-11-22 21:10  Regina Obe <lr@pcorp.us>
+
+	* [r17060] Add 2.2.8 to upgrade targets
+	  Remove using of pg_constraint.consrc to allow support of 12 as
+	  noted by Laurenz Albe (pg_constraint.consrc was removed in
+	  12devel)
+	  Closes #4231 for postgis 2.5.2
+
+2018-11-22 16:16  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17058] Avoid unaligned memory access in BOX2D_out
+	  
+	  References #4244
+
+2018-11-22 13:43  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17052] Fix undefined behaviour in ST_3DDistance
+	  
+	  References #4246
+
+2018-11-21 14:13  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17042] Fix undefined behaviour in raster intersection
+	  
+	  References #4249
+
+2018-11-21 11:45  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17037] Avoid undefined behaviour in next_float functions (Raúl
+	  Marín)
+	  
+	  References #4247
+
+2018-11-18 21:32  Regina Obe <lr@pcorp.us>
+
+	* [r17028] Flip to 2.5.2dev
+
+2018-11-18 21:29  Regina Obe <lr@pcorp.us>
+
+	* [r17026] Prep for 2.5.1 for real this time
+
+2018-11-18 09:41  Regina Obe <lr@pcorp.us>
+
+	* [r17025] Flip back to 2.5.1dev until confirm winnie's issues on
+	  #4242 are just winnie's
+
+2018-11-18 09:19  Regina Obe <lr@pcorp.us>
+
+	* [r17024] update change log in prep for 2.5.1 release
+
 2018-11-18 08:43  Regina Obe <lr@pcorp.us>
 
 	* [r17023] Prepping for 2.5.1 release
