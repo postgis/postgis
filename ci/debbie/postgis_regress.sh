@@ -14,6 +14,7 @@ set -e
 export MAKE_GARDEN=0
 export MAKE_EXTENSION=1
 export DUMP_RESTORE=0
+export MAKE_LOGBT=1
 
 ## end variables passed in by jenkins
 
@@ -81,6 +82,14 @@ make install
 if [ "$MAKE_EXTENSION" = "1" ]; then
  echo "Running extension testing"
  make check RUNTESTFLAGS="$RUNTESTFLAGS --extension"
+ if [ "$?" != "0" ]; then
+  exit $?
+ fi
+fi
+
+if [ "$MAKE_LOGBT" = "1" ]; then
+ echo "Running logbt testing"
+ bash ./ci/debbie/logbt -- make -j check RUNTESTFLAGS=--verbose
  if [ "$?" != "0" ]; then
   exit $?
  fi
