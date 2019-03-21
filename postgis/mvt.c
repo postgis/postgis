@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "mvt.h"
+#include "lwgeom_geos.h"
 #include "pgsql_compat.h"
 
 #ifdef HAVE_LIBPROTOBUF
@@ -833,80 +834,269 @@ lwgeom_to_basic_type(LWGEOM *geom, uint8 original_type)
 }
 
 static LWGEOM *
+mvt_unsafe_clip_by_box(LWGEOM *lwg_in, GBOX *clip_box)
+{
+	LWGEOM *geom_clipped;
+	GBOX geom_box;
+
+	gbox_init(&geom_box);
+	FLAGS_SET_GEODETIC(geom_box.flags, 0);
+	lwgeom_calculate_gbox(lwg_in, &geom_box);
+
+	if (!gbox_overlaps_2d(&geom_box, clip_box))
+	{
+		POSTGIS_DEBUG(3, "mvt_geom: geometry outside clip box");
+		return NULL;
+	}
+
+	if (gbox_contains_2d(clip_box, &geom_box))
+	{
+		POSTGIS_DEBUG(3, "mvt_geom: geometry contained fully inside the box");
+		return lwg_in;
+	}
+
+	geom_clipped = lwgeom_clip_by_rect(lwg_in, clip_box->xmin, clip_box->ymin, clip_box->xmax, clip_box->ymax);
+	if (!geom_clipped || lwgeom_is_empty(geom_clipped))
+		return NULL;
+	return geom_clipped;
+}
+
+/**
+ * Clips an input geometry using GEOSIntersection
+ * It used to try to use GEOSClipByRect (as mvt_unsafe_clip_by_box) but since that produces
+ * invalid output when an invalid geometry is given and detecting it resulted to be impossible,
+ * we use intersection instead and, upon error, force validation of the input and retry.
+ */
+static LWGEOM *
+mvt_safe_clip_polygon_by_box(LWGEOM *lwg_in, GBOX *clip_box)
+{
+	LWGEOM *geom_clipped, *envelope;
+	GBOX geom_box;
+	GEOSGeometry *geos_input, *geos_box, *geos_result;
+
+	gbox_init(&geom_box);
+	FLAGS_SET_GEODETIC(geom_box.flags, 0);
+	lwgeom_calculate_gbox(lwg_in, &geom_box);
+
+	if (!gbox_overlaps_2d(&geom_box, clip_box))
+	{
+		POSTGIS_DEBUG(3, "mvt_geom: geometry outside clip box");
+		return NULL;
+	}
+
+	if (gbox_contains_2d(clip_box, &geom_box))
+	{
+		POSTGIS_DEBUG(3, "mvt_geom: geometry contained fully inside the box");
+		return lwg_in;
+	}
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+	if (!(geos_input = LWGEOM2GEOS(lwg_in, 1)))
+		return NULL;
+
+	envelope = (LWGEOM *)lwpoly_construct_envelope(
+	    lwg_in->srid, clip_box->xmin, clip_box->ymin, clip_box->xmax, clip_box->ymax);
+	geos_box = LWGEOM2GEOS(envelope, 1);
+	lwgeom_free(envelope);
+	if (!geos_box)
+	{
+		GEOSGeom_destroy(geos_input);
+		return NULL;
+	}
+
+	geos_result = GEOSIntersection(geos_input, geos_box);
+	if (!geos_result)
+	{
+		POSTGIS_DEBUG(3, "mvt_geom: no geometry after intersection. Retrying after validation");
+		GEOSGeom_destroy(geos_input);
+		lwg_in = lwgeom_make_valid(lwg_in);
+		if (!(geos_input = LWGEOM2GEOS(lwg_in, 1)))
+		{
+			GEOSGeom_destroy(geos_box);
+			return NULL;
+		}
+		geos_result = GEOSIntersection(geos_input, geos_box);
+		if (!geos_result)
+		{
+			GEOSGeom_destroy(geos_box);
+			GEOSGeom_destroy(geos_input);
+			return NULL;
+		}
+	}
+
+	GEOSSetSRID(geos_result, lwg_in->srid);
+	geom_clipped = GEOS2LWGEOM(geos_result, 0);
+
+	GEOSGeom_destroy(geos_box);
+	GEOSGeom_destroy(geos_input);
+	GEOSGeom_destroy(geos_result);
+
+	if (!geom_clipped || lwgeom_is_empty(geom_clipped))
+	{
+		POSTGIS_DEBUG(3, "mvt_geom: no geometry after clipping");
+		return NULL;
+	}
+
+	return geom_clipped;
+}
+
+/**
+ * Clips the geometry using GEOSIntersection in a "safe way", cleaning the input
+ * if necessary and clipping MULTIPOLYGONs separately to reduce the impact
+ * of using invalid input in GEOS
+ */
+static LWGEOM *
+mvt_iterate_clip_by_box_geos(LWGEOM *lwgeom, GBOX *clip_gbox, uint8_t basic_type)
+{
+	if (basic_type != POLYGONTYPE)
+	{
+		return mvt_unsafe_clip_by_box(lwgeom, clip_gbox);
+	}
+
+	if (lwgeom->type != MULTIPOLYGONTYPE || ((LWMPOLY *)lwgeom)->ngeoms == 1)
+	{
+		return mvt_safe_clip_polygon_by_box(lwgeom, clip_gbox);
+	}
+	else
+	{
+		GBOX geom_box;
+		uint32_t i;
+		LWCOLLECTION *lwmg;
+		LWCOLLECTION *res;
+
+		gbox_init(&geom_box);
+		FLAGS_SET_GEODETIC(geom_box.flags, 0);
+		lwgeom_calculate_gbox(lwgeom, &geom_box);
+
+		lwmg = ((LWCOLLECTION *)lwgeom);
+		res = lwcollection_construct_empty(
+		    MULTIPOLYGONTYPE, lwgeom->srid, FLAGS_GET_Z(lwgeom->flags), FLAGS_GET_M(lwgeom->flags));
+		for (i = 0; i < lwmg->ngeoms; i++)
+		{
+			LWGEOM *clipped = mvt_safe_clip_polygon_by_box(lwcollection_getsubgeom(lwmg, i), clip_gbox);
+			if (clipped)
+			{
+				clipped = lwgeom_to_basic_type(clipped, POLYGONTYPE);
+				if (!lwgeom_is_empty(clipped) &&
+				    (clipped->type == POLYGONTYPE || clipped->type == MULTIPOLYGONTYPE))
+				{
+					if (!lwgeom_is_collection(clipped))
+					{
+						lwcollection_add_lwgeom(res, clipped);
+					}
+					else
+					{
+						uint32_t j;
+						for (j = 0; j < ((LWCOLLECTION *)clipped)->ngeoms; j++)
+							lwcollection_add_lwgeom(
+							    res, lwcollection_getsubgeom((LWCOLLECTION *)clipped, j));
+					}
+				}
+			}
+		}
+		return lwcollection_as_lwgeom(res);
+	}
+}
+
+/**
+ * Given a geometry, it uses GEOS operations to make sure that it's valid according
+ * to the MVT spec and that all points are snapped into int coordinates
+ * It iterates several times if needed, if it fails, returns NULL
+ */
+static LWGEOM *
+mvt_grid_and_validate_geos(LWGEOM *ng, uint8_t basic_type)
+{
+	gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
+	ng = lwgeom_to_basic_type(ng, basic_type);
+
+	if (basic_type != POLYGONTYPE)
+	{
+		/* Make sure there is no pending float values (clipping can do that) */
+		lwgeom_grid_in_place(ng, &grid);
+	}
+	else
+	{
+		/* For polygons we have to both snap to the integer grid and force validation.
+		 * The problem with this procedure is that snapping to the grid can create
+		 * an invalid geometry and making it valid can create float values; so
+		 * we iterate several times (up to 3) to generate a valid geom with int coordinates
+		 */
+		GEOSGeometry *geo;
+		uint32_t iterations = 0;
+		static const uint32_t max_iterations = 3;
+		bool valid = false;
+
+		/* Grid to int */
+		lwgeom_grid_in_place(ng, &grid);
+
+		initGEOS(lwgeom_geos_error, lwgeom_geos_error);
+		geo = LWGEOM2GEOS(ng, 0);
+		if (!geo)
+			return NULL;
+		valid = GEOSisValid(geo) == 1;
+
+		while (!valid && iterations < max_iterations)
+		{
+			GEOSGeometry *geo_valid = LWGEOM_GEOS_makeValid(geo);
+			GEOSGeom_destroy(geo);
+			if (!geo_valid)
+				return NULL;
+
+			ng = GEOS2LWGEOM(geo_valid, 0);
+			GEOSGeom_destroy(geo_valid);
+			if (!ng)
+				return NULL;
+
+			lwgeom_grid_in_place(ng, &grid);
+			ng = lwgeom_to_basic_type(ng, basic_type);
+			geo = LWGEOM2GEOS(ng, 0);
+			valid = GEOSisValid(geo) == 1;
+			iterations++;
+		}
+		GEOSGeom_destroy(geo);
+
+		if (!valid)
+		{
+			POSTGIS_DEBUG(1, "mvt_geom: Could not transform into a valid MVT geometry");
+			return NULL;
+		}
+
+		/* In image coordinates CW actually comes out a CCW, so we reverse */
+		lwgeom_force_clockwise(ng);
+		lwgeom_reverse_in_place(ng);
+	}
+	return ng;
+}
+
+static LWGEOM *
 mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint32_t buffer, bool clip_geom)
 {
 	LWGEOM *ng = lwgeom;
 
 	if (clip_geom)
 	{
-		GBOX bgbox, lwgeom_gbox;
+		GBOX bgbox;
 		gbox_init(&bgbox);
-		gbox_init(&lwgeom_gbox);
 		bgbox.xmax = bgbox.ymax = (double)extent + (double)buffer;
 		bgbox.xmin = bgbox.ymin = -(double)buffer;
-		FLAGS_SET_GEODETIC(lwgeom_gbox.flags, 0);
 		FLAGS_SET_GEODETIC(bgbox.flags, 0);
-		lwgeom_calculate_gbox(lwgeom, &lwgeom_gbox);
 
-		if (!gbox_overlaps_2d(&lwgeom_gbox, &bgbox))
+		ng = mvt_iterate_clip_by_box_geos(lwgeom, &bgbox, basic_type);
+		if (!ng || lwgeom_is_empty(ng))
 		{
-			POSTGIS_DEBUG(3, "mvt_geom: geometry outside clip box");
+			POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
 			return NULL;
 		}
-
-		if (!gbox_contains_2d(&bgbox, &lwgeom_gbox))
-		{
-			LWGEOM *clipped_geom =
-			    lwgeom_clip_by_rect(lwgeom, bgbox.xmin, bgbox.ymin, bgbox.xmax, bgbox.ymax);
-			if (clipped_geom == NULL || lwgeom_is_empty(clipped_geom))
-			{
-				POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
-				return NULL;
-			}
-
-			/* For some polygons, the simplify step might have left them
-			 * as invalid, which can cause clipping to return the complementary
-			 * geometry of what it should */
-			if ((basic_type == POLYGONTYPE) &&
-			    !gbox_contains_2d(&lwgeom_gbox, lwgeom_get_bbox(clipped_geom)))
-			{
-				/* TODO: Adapt this when and if Exception Policies are introduced.
-				 * Other options would be to fix the geometry and retry
-				 * or to calculate the difference between the 2 boxes.
-				 */
-				POSTGIS_DEBUG(3, "mvt_geom: Invalid geometry after clipping");
-				lwgeom_free(clipped_geom);
-				return NULL;
-			}
-
-			ng = clipped_geom;
-		}
 	}
 
-	if (basic_type == POLYGONTYPE)
-	{
-		/* Force validation as per MVT spec */
-		ng = lwgeom_make_valid(ng);
+	ng = mvt_grid_and_validate_geos(ng, basic_type);
 
-		/* In image coordinates CW actually comes out a CCW, so we reverse */
-		lwgeom_force_clockwise(ng);
-		lwgeom_reverse_in_place(ng);
-	}
-
-	/* Make sure we return the most basic type after simplification and validation */
-	ng = lwgeom_to_basic_type(ng, basic_type);
+	/* Make sure we return the expected type */
 	if (basic_type != lwgeom_get_basic_type(ng))
 	{
 		/* Drop type changes to play nice with MVT renderers */
-		POSTGIS_DEBUG(3, "mvt_geom: Dropping geometry after type change");
+		POSTGIS_DEBUG(1, "mvt_geom: Dropping geometry after type change");
 		return NULL;
-	}
-
-	/* Clipping and validation might produce float values. Grid again into int
-	 * and pray that the output is still valid */
-	{
-		gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
-		lwgeom_grid_in_place(ng, &grid);
 	}
 
 	return ng;
@@ -970,8 +1160,8 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;
 	double resx, resy, res, fx, fy;
-	int preserve_collapsed = LW_TRUE;
 	const uint8_t basic_type = lwgeom_get_basic_type(lwgeom);
+	int preserve_collapsed = LW_FALSE;
 	POSTGIS_DEBUG(2, "mvt_geom called");
 
 	/* Simplify it as soon as possible */
@@ -1006,11 +1196,11 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	/* Snap to integer precision, removing duplicate points */
 	lwgeom_grid_in_place(lwgeom, &grid);
 
-	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
+	if (!lwgeom || lwgeom_is_empty(lwgeom))
 		return NULL;
 
 	lwgeom = mvt_clip_and_validate(lwgeom, basic_type, extent, buffer, clip_geom);
-	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
+	if (!lwgeom || lwgeom_is_empty(lwgeom))
 		return NULL;
 
 	return lwgeom;

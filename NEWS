@@ -83,6 +83,7 @@ PostGIS 3.0.0
            seed parameter added. (Mike Taves)
   - #4278, ST_3DDistance and ST_3DIntersects now support Solid TIN and Solid
            POLYHEDRALSURFACE (Darafei Praliaskouski)
+  - #4348, ST_AsMVTGeom (GEOS): Enforce validation at all times (Raúl Marín)
 
 PostGIS 2.5.0
 2018/09/23
