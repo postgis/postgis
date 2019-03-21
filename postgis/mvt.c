@@ -863,10 +863,9 @@ mvt_unsafe_clip_by_box(LWGEOM *lwg_in, GBOX *clip_box)
 
 /**
  * Clips an input geometry using GEOSIntersection
- * As you can get invalid output of invalid input, it tries to detect
- * if something has gone wrong by checking the bounding box of the input
- * and the output. If the output isn't contained in the input geometry and
- * *retry* is true, it cleans the input and retries, else it returns NULL
+ * It used to try to use GEOSClipByRect (as mvt_unsafe_clip_by_box) but since that produces
+ * invalid output when an invalid geometry is given and detecting it resulted to be impossible,
+ * we use intersection instead and, upon error, force validation of the input and retry.
  */
 static LWGEOM *
 mvt_safe_clip_polygon_by_box(LWGEOM *lwg_in, GBOX *clip_box)
@@ -1174,7 +1173,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 
 	resx = width / extent;
 	resy = height / extent;
-	res = (resx < resy ? resx : resy) / 2;
+	res = (resx < resy ? resx : resy)/2;
 	fx = extent / width;
 	fy = -(extent / height);
 
@@ -1194,7 +1193,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	affine.yoff = -gbox->ymax * fy;
 	lwgeom_affine(lwgeom, &affine);
 
-	/* Snap to integer precision, removing duplicate points and spikes */
+	/* Snap to integer precision, removing duplicate points */
 	lwgeom_grid_in_place(lwgeom, &grid);
 
 	if (!lwgeom || lwgeom_is_empty(lwgeom))
