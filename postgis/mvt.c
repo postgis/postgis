@@ -833,6 +833,7 @@ lwgeom_to_basic_type(LWGEOM *geom, uint8 original_type)
 	return geom_out;
 }
 
+/* Clips a geometry using lwgeom_clip_by_rect. Might return NULL */
 static LWGEOM *
 mvt_unsafe_clip_by_box(LWGEOM *lwg_in, GBOX *clip_box)
 {
@@ -866,6 +867,7 @@ mvt_unsafe_clip_by_box(LWGEOM *lwg_in, GBOX *clip_box)
  * It used to try to use GEOSClipByRect (as mvt_unsafe_clip_by_box) but since that produces
  * invalid output when an invalid geometry is given and detecting it resulted to be impossible,
  * we use intersection instead and, upon error, force validation of the input and retry.
+ * Might return NULL
  */
 static LWGEOM *
 mvt_safe_clip_polygon_by_box(LWGEOM *lwg_in, GBOX *clip_box)
@@ -944,6 +946,7 @@ mvt_safe_clip_polygon_by_box(LWGEOM *lwg_in, GBOX *clip_box)
  * Clips the geometry using GEOSIntersection in a "safe way", cleaning the input
  * if necessary and clipping MULTIPOLYGONs separately to reduce the impact
  * of using invalid input in GEOS
+ * Might return NULL
  */
 static LWGEOM *
 mvt_iterate_clip_by_box_geos(LWGEOM *lwgeom, GBOX *clip_gbox, uint8_t basic_type)
@@ -1068,6 +1071,9 @@ mvt_grid_and_validate_geos(LWGEOM *ng, uint8_t basic_type)
 	return ng;
 }
 
+/* Clips and validates a geometry for MVT using GEOS
+ * Might return NULL
+ */
 static LWGEOM *
 mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint32_t buffer, bool clip_geom)
 {
@@ -1092,7 +1098,7 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 	ng = mvt_grid_and_validate_geos(ng, basic_type);
 
 	/* Make sure we return the expected type */
-	if (basic_type != lwgeom_get_basic_type(ng))
+	if (!ng || basic_type != lwgeom_get_basic_type(ng))
 	{
 		/* Drop type changes to play nice with MVT renderers */
 		POSTGIS_DEBUG(1, "mvt_geom: Dropping geometry after type change");
