@@ -1,8 +1,15 @@
+## 2.5.1.5+carto-1
+
+**Release date**: 2019-XX-XX
+
+Changes:
+- MVT Geos: Avoid NULL dereference when NULL is returned from validation
+
 ## 2.5.1.4+carto-1
 
 **Release date**: 2019-03-20
 
-Chanes:
+Changes:
 - Merged community `svn-2.5` as of 2019-03-13. No need to bump the minor version as there aren't any changes in SQL code.
 - MVT (GEOS): Backport improvements to verify validity of output geometries.
 - MVT (Both): Backport a fix for a bug that oversimplifed vertical and horizontal lines ([30fe210](https://github.com/postgis/postgis/commit/30fe210917713755b4f50f867caf68983cad8394).
