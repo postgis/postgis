@@ -3362,51 +3362,6 @@ FROM test;
 
 	</refentry>
 
-	<refentry id="ST_HasArc">
-	  <refnamediv>
-		<refname>ST_HasArc</refname>
-
-		<refpurpose>Returns true if a geometry or geometry collection contains a circular string</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>boolean <function>ST_HasArc</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Returns true if a geometry or geometry collection contains a circular string</para>
-
-		<para>Availability: 1.2.3?</para>
-		<para>&Z_support;</para>
-		<para>&curve_support;</para>
-	  </refsection>
-
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>SELECT ST_HasArc(ST_Collect('LINESTRING(1 2, 3 4, 5 6)', 'CIRCULARSTRING(1 1, 2 3, 4 5, 6 7, 5 6)'));
-		st_hasarc
-		--------
-		t
-		</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_CurveToLine" />, <xref linkend="ST_LineToCurve" /></para>
-	  </refsection>
-	</refentry>
-
 	<refentry id="ST_Intersects">
 		<refnamediv>
 			<refname>ST_Intersects</refname>
