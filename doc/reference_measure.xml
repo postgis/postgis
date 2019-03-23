@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="Spatial_Measurement">
-	<title>Spatial Measurement</title>
+  <sect1 id="Measurement_Functions">
+    <sect1info>
+    <abstract>
+    <para>These functions compute measurements of distance, area and angles.
+		There are also functions to compute geometric values determined by distance.</para>
+    </abstract>
+    </sect1info>
+
+	<title>Measurement Functions</title>
 	<refentry id="ST_3DClosestPoint">
 		  <refnamediv>
 			<refname>ST_3DClosestPoint</refname>

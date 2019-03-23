@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <sect1 id="Spatial_Relationships">
+    <sect1info>
+    <abstract>
+    <para>These functions determine spatial relationships between geometries.</para>
+    </abstract>
+    </sect1info>
 	<title>Spatial Relationships</title>
 
 	<refentry id="ST_3DDWithin">
