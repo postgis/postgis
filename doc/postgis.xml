@@ -36,6 +36,7 @@
 <!ENTITY reference_output SYSTEM "reference_output.xml">
 <!ENTITY reference_operator SYSTEM "reference_operator.xml">
 <!ENTITY reference_measure SYSTEM "reference_measure.xml">
+<!ENTITY reference_relation SYSTEM "reference_relation.xml">
 <!ENTITY reference_sfcgal SYSTEM "reference_sfcgal.xml">
 <!ENTITY reference_processing SYSTEM "reference_processing.xml">
 <!ENTITY reference_lrs SYSTEM "reference_lrs.xml">

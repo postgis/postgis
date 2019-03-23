@@ -134,6 +134,7 @@ XML_SOURCES = \
 	reference_output.xml \
 	reference_processing.xml \
 	reference_raster.xml \
+	reference_relation.xml \
 	reference_srs.xml \
 	reference_trajectory.xml \
 	reference_transaction.xml \
