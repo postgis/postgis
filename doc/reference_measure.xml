@@ -460,9 +460,9 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 	  <refnamediv>
 		<refname>ST_Distance</refname>
 
-		<refpurpose>For geometry type returns the 2D Cartesian distance between two geometries in
+		<refpurpose>Returns the 2D Cartesian distance between two geometries in
 		projected units (based on spatial reference system).
-		For geography type defaults to return minimum geodesic distance between two geographies in meters.</refpurpose>
+		For geography type returns the geodesic distance between two geographies in meters.</refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
@@ -587,7 +587,7 @@ FROM (SELECT
 	  <refnamediv>
 		<refname>ST_3DDistance</refname>
 
-		<refpurpose>For geometry type Returns the 3-dimensional cartesian minimum distance (based on spatial ref) between two geometries in
+		<refpurpose>Returns the 3-dimensional cartesian minimum distance (based on spatial ref) between two geometries in
 		projected units. </refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
@@ -607,7 +607,7 @@ FROM (SELECT
 	  <refsection>
 		<title>Description</title>
 
-		<para>For geometry type returns the 3-dimensional minimum cartesian distance between two geometries in
+		<para>Returns the 3-dimensional minimum cartesian distance between two geometries in
 		projected units (spatial ref units).</para>
 
 		<para>&Z_support;</para>
@@ -664,10 +664,8 @@ SELECT ST_3DDistance(poly, mline) As dist3d,
 		<refname>ST_DistanceSphere</refname>
 
 		<refpurpose>Returns minimum distance in meters between two lon/lat
-				geometries. Uses a spherical earth and radius derived from the spheroid
-        defined by the SRID.
-				Faster than ST_DistanceSpheroid <xref linkend="ST_Distance_Spheroid" />, but less
-				accurate. PostGIS versions prior to 1.5 only implemented for points.</refpurpose>
+				geometries using a spherical earth model.
+			</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -725,8 +723,7 @@ FROM
 		<refname>ST_DistanceSpheroid</refname>
 
 		<refpurpose>Returns the minimum distance between two lon/lat geometries given a
-			particular spheroid.
-			PostGIS  versions prior to 1.5 only support points.</refpurpose>
+			particular spheroid.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -786,8 +783,7 @@ FROM
 	  <refnamediv>
 		<refname>ST_FrechetDistance</refname>
 
-		<refpurpose>Returns the Fréchet distance between two geometries. This is a measure of similarity between curves that takes into account the location
-		and ordering of the points along the curves.  Units are in the units of the spatial reference system of the geometries.</refpurpose>
+		<refpurpose>Returns the Fréchet distance between two geometries.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -814,6 +810,8 @@ FROM
 		The Fréchet distance is a measure of similarity between curves that takes into account the location and ordering of the points along the curves. Therefore it is often better than the Hausdorff distance. </para>
 		<para>
 When the optional densifyFrac is specified, this function performs a segment densification before computing the discrete Fréchet distance. The densifyFrac parameter sets the fraction by which to densify each segment. Each segment will be split into a number of equal-length subsegments, whose fraction of the total length is closest to the given fraction.
+		</para>
+		<para>Units are in the units of the spatial reference system of the geometries.
 		</para>
 
 		<note>
@@ -854,13 +852,11 @@ The smaller densifyFrac we specify, the more acurate Fréchet distance we get. B
 	  </refsection>
 	</refentry>
 
-
 	<refentry id="ST_HausdorffDistance">
 	  <refnamediv>
 		<refname>ST_HausdorffDistance</refname>
 
-		<refpurpose>Returns the Hausdorff distance between two geometries.  Basically a measure of how similar or dissimilar 2 geometries are. Units are in the units of the spatial
-		reference system of the geometries.</refpurpose>
+		<refpurpose>Returns the Hausdorff distance between two geometries. </refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -892,11 +888,15 @@ The smaller densifyFrac we specify, the more acurate Fréchet distance we get. B
 	  <refsection>
 		<title>Description</title>
 
+		<para>Returns the Hausdorff distance between two geometries, a measure of how similar or dissimilar 2 geometries are.
+		</para>
 		<para>Implements algorithm for computing a distance metric which can be thought of as the "Discrete Hausdorff Distance".
 This is the Hausdorff distance restricted to discrete points for one of the geometries. <ulink url="http://en.wikipedia.org/wiki/Hausdorff_distance">Wikipedia article on Hausdorff distance</ulink>
 	<ulink url="http://lin-ear-th-inking.blogspot.com/2009/01/computing-geometric-similarity.html">Martin Davis note on how Hausdorff Distance calculation was used to prove correctness of the CascadePolygonUnion approach.</ulink></para>
 		<para>
 When densifyFrac is specified, this function performs a segment densification before computing the discrete hausdorff distance. The densifyFrac parameter sets the fraction by which to densify each segment. Each segment will be split into a number of equal-length subsegments, whose fraction of the total length is closest to the given fraction.
+		</para>
+		<para>Units are in the units of the spatial reference system of the geometries.
 		</para>
 
 		<note>
@@ -949,7 +949,7 @@ The current implementation supports only vertices as the discrete locations. Thi
 		<refnamediv>
 		  <refname>ST_Length</refname>
 
-		  <refpurpose>Returns the 2D length of the geometry if it is a LineString or MultiLineString. geometry are in units of spatial reference and geography are in meters (default spheroid)</refpurpose>
+		  <refpurpose>Returns the 2D length of a linear geometry.</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
@@ -967,17 +967,21 @@ The current implementation supports only vertices as the discrete locations. Thi
 		<refsection>
 			<title>Description</title>
 
-			<para>For geometry: Returns the 2D Cartesian length of the geometry if it is a LineString, MultiLineString, ST_Curve, ST_MultiCurve.  0 is returned for
-				areal geometries.  For areal geometries use <xref linkend="ST_Perimeter" />. For geometry types, units for length measures are specified by the
+			<para>For geometry types: returns the 2D Cartesian length of the geometry if it is a LineString, MultiLineString, ST_Curve, ST_MultiCurve.
+				For areal geometries 0 is returned; use <xref linkend="ST_Perimeter" /> instead.
+				The units of length is determined by the
 				spatial reference system of the geometry.</para>
-			<para>For geography types, the calculations are performed using the inverse geodesic problem, where length units are in meters.
+			<para>For geography types: computation is performed using the inverse geodesic calculation. Units of length are in meters.
 				If PostGIS is compiled with PROJ version 4.8.0 or later, the spheroid is specified by the SRID, otherwise it is exclusive to WGS84.
-				If <varname>use_spheroid=false</varname>, then calculations will approximate a sphere instead of a spheroid.</para>
+				If <varname>use_spheroid=false</varname>, then the calculation is based on a sphere instead of a spheroid.
+				</para>
 
 			<para>Currently for geometry this is an alias for ST_Length2D, but this may change to support higher dimensions.</para>
+
 			<warning><para>Changed: 2.0.0 Breaking change -- in prior versions applying this to a MULTI/POLYGON of type geography would give you the perimeter of the POLYGON/MULTIPOLYGON.  In 2.0.0
 			this was changed to return 0 to be in line with geometry behavior.  Please use ST_Perimeter if you want the perimeter of a polygon</para></warning>
-			<note><para>For geography measurement defaults spheroid measurement.  To use the faster less accurate sphere use ST_Length(gg,false);</para></note>
+
+			<note><para>For geography the calculation defaults to using a spheroidal model.  To use the faster but less accurate spherical calculation use ST_Length(gg,false);</para></note>
 			<para>&sfs_compliant; s2.1.5.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 7.1.2, 9.3.4</para>
 			<para>Availability: 1.5.0 geography support was introduced in 1.5.</para>
@@ -991,6 +995,7 @@ The current implementation supports only vertices as the discrete locations. Thi
 			<programlisting>
 SELECT ST_Length(ST_GeomFromText('LINESTRING(743238 2967416,743238 2967450,743265 2967450,
 743265.625 2967416,743238 2967416)',2249));
+
 st_length
 ---------
  122.630744000095
@@ -1003,6 +1008,7 @@ SELECT ST_Length(
 		26986
 	)
 );
+
 st_length
 ---------
 34309.4563576191
@@ -1012,11 +1018,12 @@ st_length
 			<title>Geography Examples</title>
 			<para>Return length of WGS 84 geography line</para>
 			<programlisting>
-			-- default calculation is using a sphere rather than spheroid
+-- the default calculation uses a spheroid
 SELECT ST_Length(the_geog) As length_spheroid,  ST_Length(the_geog,false) As length_sphere
 FROM (SELECT ST_GeographyFromText(
 'SRID=4326;LINESTRING(-72.1260 42.45, -72.1240 42.45666, -72.123 42.1546)') As the_geog)
  As foo;
+
  length_spheroid  |  length_sphere
 ------------------+------------------
  34310.5703627288 | 34346.2060960742
@@ -1032,8 +1039,7 @@ FROM (SELECT ST_GeographyFromText(
 	  <refnamediv>
 		<refname>ST_Length2D</refname>
 
-		<refpurpose>Returns the 2-dimensional length of the geometry if it is a
-				linestring or multi-linestring. This is an alias for <varname>ST_Length</varname></refpurpose>
+		<refpurpose>Returns the 2-dimensional length of a linear geometry. Alias for <varname>ST_Length</varname></refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1048,7 +1054,7 @@ FROM (SELECT ST_GeographyFromText(
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the 2-dimensional length of the geometry if it is a
+		<para>Returns the 2D length of the geometry if it is a
 				linestring or multi-linestring. This is an alias for <varname>ST_Length</varname></para>
 
 	  </refsection>
@@ -1065,8 +1071,7 @@ FROM (SELECT ST_GeographyFromText(
 	  <refnamediv>
 		<refname>ST_3DLength</refname>
 
-		<refpurpose>Returns the 3-dimensional or 2-dimensional length of the geometry if it is a
-			linestring or multi-linestring. </refpurpose>
+		<refpurpose>Returns the 3D length of a linear geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1114,9 +1119,7 @@ ST_3DLength
 	  <refnamediv>
 		<refname>ST_LengthSpheroid</refname>
 
-        <refpurpose>Calculates the 2D or 3D length/perimeter of a geometry on an ellipsoid. This
-			is useful if the coordinates of the geometry are in
-			longitude/latitude and a length is desired without reprojection.</refpurpose>
+        <refpurpose>Returns the 2D or 3D length/perimeter of a long/lat geometry on a spheroid.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1132,14 +1135,14 @@ ST_3DLength
 	  <refsection>
 		<title>Description</title>
 
-        <para>Calculates the length/perimeter of a geometry on an ellipsoid. This
+      <para>Calculates the length/perimeter of a geometry on an ellipsoid. This
 			is useful if the coordinates of the geometry are in
 			longitude/latitude and a length is desired without reprojection.
-			The ellipsoid is a separate database type and can be constructed
+			The spheroid is specified by a text value
 			as follows:</para>
 
 		<literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
-
+		<para>For example:</para>
 		<literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
 
 		<para>Availability: 1.2.2</para>
@@ -1192,10 +1195,8 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 	  <refnamediv>
 		<refname>ST_LongestLine</refname>
 
-		<refpurpose>Returns the 2-dimensional longest line points of two geometries.
-		The function will only return the first longest line if more than one, that the function finds.
-		The line returned will always start in g1 and end in g2.
-		The length of the line this function returns will always be the same as st_maxdistance returns for g1 and g2.</refpurpose>
+		<refpurpose>Returns the 2D longest line between two geometries.
+		</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1215,9 +1216,12 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the 2-dimensional longest line between the points of two geometries.
+		<para>Returns the 2-D longest line between the points of two geometries.
 		</para>
-
+		<para>The function returns the first longest line if more than one is found.
+		The line returned starts on g1 and ends on g2.
+		The length of the line is equal to the distance returned by <xref linkend="ST_MaxDistance"/>.
+		</para>
 		<para>Availability: 1.5.0</para>
 
 	  </refsection>
@@ -1313,7 +1317,7 @@ FROM (SELECT ST_BuildArea(ST_Collect(the_geom)) As the_geom
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_LongestLine"/></para>
+		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_3DLongestLine"/></para>
 	  </refsection>
 	</refentry>
 
@@ -1474,7 +1478,7 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
 	  <refnamediv>
 		<refname>ST_3DMaxDistance</refname>
 
-		<refpurpose>For geometry type Returns the 3-dimensional cartesian maximum distance (based on spatial ref) between two geometries in
+		<refpurpose>Returns the 3-dimensional cartesian maximum distance (based on spatial ref) between two geometries in
 		projected units.  </refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
@@ -1494,7 +1498,7 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
 	  <refsection>
 		<title>Description</title>
 
-		<para>For geometry type returns the 3-dimensional maximum cartesian distance between two geometries in
+		<para>Returns the 3-dimensional maximum cartesian distance between two geometries in
 		projected units (spatial ref units). </para>
 
         <para>&Z_support;</para>
@@ -1533,7 +1537,7 @@ SELECT ST_3DMaxDistance(
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_MinimumClearance">
+<refentry id="ST_MinimumClearance">
 		<refnamediv>
 			<refname>ST_MinimumClearance</refname>
 			<refpurpose>Returns the minimum clearance of a geometry, a measure of a geometry's robustness.</refpurpose>
@@ -1663,8 +1667,7 @@ LINESTRING(0.5 0.00032,0.5 0)
 		<refnamediv>
 		  <refname>ST_Perimeter</refname>
 
-		  <refpurpose>Return the length measurement of the boundary of an ST_Surface
-		  or ST_MultiSurface geometry or geography. (Polygon, MultiPolygon).  geometry measurement is in units of spatial reference and geography is in meters.</refpurpose>
+		  <refpurpose>Returns the length of the boundary of a polygonal geometry or geography.</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
@@ -1765,8 +1768,8 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 	  <refnamediv>
 		<refname>ST_Perimeter2D</refname>
 
-		<refpurpose>Returns the 2-dimensional perimeter of the geometry, if it
-			is a polygon or multi-polygon.  This is currently an alias for ST_Perimeter.</refpurpose>
+		<refpurpose>Returns the 2-dimensional perimeter of a polygonal geometry.
+		Alias for <varname>ST_Perimeter</varname>.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1781,8 +1784,7 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the 2-dimensional perimeter of the geometry, if it
-			is a polygon or multi-polygon. </para>
+		<para>Returns the 2-dimensional perimeter of a polygonal geometry. </para>
 
 		<!-- optionally mention that this function uses indexes if appropriate -->
 		<note>
@@ -1802,8 +1804,7 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 	  <refnamediv>
 		<refname>ST_3DPerimeter</refname>
 
-		<refpurpose>Returns the 3-dimensional perimeter of the geometry, if it
-			is a polygon or multi-polygon.</refpurpose>
+		<refpurpose>Returns the 3-dimensional perimeter of a polygonal geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1851,7 +1852,7 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 		  <refnamediv>
 			<refname>ST_Project</refname>
 
-			<refpurpose>Returns a <varname>POINT</varname> projected from a start point using a distance in meters and bearing (azimuth) in radians.</refpurpose>
+			<refpurpose>Returns a point projected from a start point via a distance and bearing (azimuth).</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -1872,7 +1873,7 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns a <varname>POINT</varname> projected along a geodesic from a start point using an azimuth (bearing) measured in radians and distance measured in meters. This is also called a direct geodesic problem.</para>
+			<para>Returns a <varname>POINT</varname> projected along a geodesic from a start point using an azimuth (bearing) measured in radians and a distance measured in meters. This is also called a direct geodesic problem.</para>
 			<para>The azimuth is sometimes called the heading or the bearing in navigation. It is measured relative to true north (azimuth zero). East is azimuth 90 (&#x03C0;/2), south is azimuth 180 (&#x03C0;), west is azimuth 270 (3&#x03C0;/2).</para>
 			<para>The distance is given in meters.</para>
 
@@ -1997,7 +1998,6 @@ SELECT ST_AsText(
 		<para><xref linkend="ST_ClosestPoint"/>, <xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_MaxDistance"/></para>
 	  </refsection>
 	</refentry>
-
 	<refentry id="ST_3DShortestLine">
 	  <refnamediv>
 		<refname>ST_3DShortestLine</refname>
@@ -2100,6 +2100,7 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 		<para><xref linkend="ST_3DClosestPoint"/>, <xref linkend="ST_3DDistance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_3DMaxDistance"/></para>
 	  </refsection>
 	</refentry>
+
 
 
 </sect1>
