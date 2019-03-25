@@ -1537,10 +1537,6 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 		<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 
 		<important>
-		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
-		</important>
-
-		<important>
 		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
 		</important>
 
@@ -1725,10 +1721,6 @@ ST_Point      | t          | t              | f           | f
 		<para>Availability: 1.4.0</para>
 
 		<important>
-		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
-		</important>
-
-		<important>
 		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
 		</important>
 
@@ -1814,10 +1806,6 @@ ST_Point      | t          | t              | f           | f
 
 		  <para>Returns 1 (TRUE) if no point in Geometry/Geography B is outside
 			Geometry/Geography A</para>
-
-		<important>
-		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
-		</important>
 
 		<important>
 		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
@@ -1915,10 +1903,6 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
 
 		  <para>Returns 1 (TRUE) if no point in Geometry/Geography A is outside
 			Geometry/Geography B</para>
-
-		<important>
-		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
-		</important>
 
 		<important>
 		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
@@ -2032,10 +2016,6 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 		JTS / GEOS extends the definition to apply to Line/Point, Area/Point and
 		Area/Line situations as well. This makes the relation
 		symmetric.</para>
-
-	  <important>
-		<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
-	  </important>
 
 	<note>
 	  <para>This function call will automatically include a bounding box
@@ -2349,10 +2329,6 @@ WHERE ST_CrossingDirection(s1.the_geom, s2.the_geom) > 0;
 			<para>Overlaps, Touches, Within all imply geometries are not spatially disjoint.  If any of the aforementioned
 				returns true, then the geometries are not spatially disjoint.
 				Disjoint implies false for spatial intersection.</para>
-
-			<important>
-				<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
-			</important>
 
 			<para>Performed by the GEOS module</para>
 			<note>
@@ -3198,10 +3174,6 @@ SELECT b.tower_id, b.geom
 		  <para>This function will return false if either geometry is invalid except in the case where they are binary equal.</para>
 		</important>
 
-        <important>
-            <para>Do not call with a GEOMETRYCOLLECTION as an argument.</para>
- 		</important>
-
 		<para>&sfs_compliant; s2.1.1.2</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.24</para>
         <para>Changed: 2.2.0 Returns true even for invalid geometries if they are binary equal</para>
@@ -3967,8 +3939,6 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 
 		 <para>Performed by the GEOS module</para>
 
-		<note><para>Do not call with a GeometryCollection as an argument</para></note>
-
 		<para>This function call will automatically include a bounding box
 		comparison that will make use of any indexes that are available on
 		the geometries. To avoid index use, use the function
@@ -4471,7 +4441,6 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 					by the values in the <ulink url="http://en.wikipedia.org/wiki/DE-9IM">DE-9IM matrix pattern</ulink>.</para>
 
 			<para>This is especially useful for testing compound checks of intersection, crosses, etc in one step.</para>
-			<para>Do not call with a GeometryCollection as an argument</para>
 
 			<note><para>This is the "allowable" version that returns a
 			boolean, not an integer.  This is defined in OGC spec</para></note>
@@ -4484,8 +4453,6 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 			<para>Version 2: Takes geomA and geomB and returns the <xref linkend="DE-9IM" /></para>
 
 			<para>Version 3: same as version 2, but allows to specify a boundary node rule (1:OGC/MOD2, 2:Endpoint, 3:MultivalentEndpoint, 4:MonovalentEndpoint)</para>
-
-			<note><para>Do not call with a GeometryCollection as an argument</para></note>
 
 			<para>not in OGC spec, but implied. see s2.1.13.2</para>
 			<para>&sfs_compliant; s2.1.1.2 // s2.1.13.3</para>
@@ -4748,10 +4715,6 @@ SELECT ST_AsText(
 		  </listitem>
 		</itemizedlist>
 
-		<important>
-		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
-		</important>
-
 		<note>
 		  <para>This function call will automatically include a bounding box
 		  comparison that will make use of any indexes that are available on
@@ -4881,10 +4844,6 @@ SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry)
 		<para>Performed by the GEOS module</para>
 
 		<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit for geometry extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
-
-		<important>
-		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
-		</important>
 
 		<important>
 		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>

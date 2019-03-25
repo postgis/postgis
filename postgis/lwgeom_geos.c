@@ -1327,50 +1327,6 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 
 /*---------------------------------------------*/
 
-/**
- * @brief Throws an ereport ERROR if either geometry is a COLLECTIONTYPE.  Additionally
- * 		displays a HINT of the first 80 characters of the WKT representation of the
- * 		problematic geometry so a user knows which parameter and which geometry
- * 		is causing the problem.
- */
-void errorIfGeometryCollection(GSERIALIZED *g1, GSERIALIZED *g2)
-{
-	int t1 = gserialized_get_type(g1);
-	int t2 = gserialized_get_type(g2);
-
-	char *hintmsg;
-	char *hintwkt;
-	size_t hintsz;
-	LWGEOM *lwgeom;
-
-	if ( t1 == COLLECTIONTYPE)
-	{
-		lwgeom = lwgeom_from_gserialized(g1);
-		hintwkt = lwgeom_to_wkt(lwgeom, WKT_SFSQL, DBL_DIG, &hintsz);
-		lwgeom_free(lwgeom);
-		hintmsg = lwmessage_truncate(hintwkt, 0, hintsz-1, 80, 1);
-		ereport(ERROR,
-		        (errmsg("Relate Operation called with a LWGEOMCOLLECTION type.  This is unsupported."),
-		         errhint("Change argument 1: '%s'", hintmsg))
-		       );
-		pfree(hintwkt);
-		pfree(hintmsg);
-	}
-	else if (t2 == COLLECTIONTYPE)
-	{
-		lwgeom = lwgeom_from_gserialized(g2);
-		hintwkt = lwgeom_to_wkt(lwgeom, WKT_SFSQL, DBL_DIG, &hintsz);
-		hintmsg = lwmessage_truncate(hintwkt, 0, hintsz-1, 80, 1);
-		lwgeom_free(lwgeom);
-		ereport(ERROR,
-		        (errmsg("Relate Operation called with a LWGEOMCOLLECTION type.  This is unsupported."),
-		         errhint("Change argument 2: '%s'", hintmsg))
-		       );
-		pfree(hintwkt);
-		pfree(hintmsg);
-	}
-}
-
 PG_FUNCTION_INFO_V1(isvalid);
 Datum isvalid(PG_FUNCTION_ARGS)
 {
@@ -1552,7 +1508,6 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
 
-	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Overlaps(Empty) == FALSE */
@@ -1609,7 +1564,6 @@ Datum contains(PG_FUNCTION_ARGS)
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
-	errorIfGeometryCollection(geom1, geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Contains(Empty) == FALSE */
@@ -1750,7 +1704,6 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
 
-	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.ContainsProperly(Empty) == FALSE */
@@ -1825,7 +1778,6 @@ Datum covers(PG_FUNCTION_ARGS)
 	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
 		PG_RETURN_BOOL(false);
 
-	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/*
@@ -1957,7 +1909,6 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
 
-	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.CoveredBy(Empty) == FALSE */
@@ -2072,7 +2023,6 @@ Datum crosses(PG_FUNCTION_ARGS)
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
 
-	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Crosses(Empty) == FALSE */
@@ -2256,7 +2206,6 @@ Datum touches(PG_FUNCTION_ARGS)
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
 
-	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Touches(Empty) == FALSE */
@@ -2315,7 +2264,6 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
 
-	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Disjoint(Empty) == TRUE */
@@ -2377,7 +2325,6 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 
 	/* TODO handle empty */
 
-	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -2441,7 +2388,6 @@ Datum relate_full(PG_FUNCTION_ARGS)
 		bnr = PG_GETARG_INT32(2);
 	}
 
-	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -2490,7 +2436,6 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
 
-	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* Empty == Empty */

@@ -3556,9 +3556,6 @@ GEOMETRYCOLLECTION(
 			</para>
 
 		<para>Performed by the GEOS module</para>
-
-		<note><para>Do not call with a GeometryCollection as an argument</para></note>
-
 		<para>&sfs_compliant; s2.1.1.3</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.21</para>
 		<para>&Z_support; However it seems to only consider x y when
