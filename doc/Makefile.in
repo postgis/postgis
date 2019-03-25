@@ -123,6 +123,7 @@ XML_SOURCES = \
 	postgis.xml \
 	reference_accessor.xml \
 	reference_bbox.xml \
+	reference_cluster.xml \
 	reference_constructor.xml \
 	reference_editor.xml \
 	reference_guc.xml \

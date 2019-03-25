@@ -28,6 +28,7 @@
   &reference_relation;
   &reference_measure;
   &reference_processing;
+  &reference_cluster;
   &reference_bbox;
   &reference_lrs;
   &reference_trajectory;

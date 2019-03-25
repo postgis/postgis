@@ -29,6 +29,7 @@
 <!ENTITY reference_type SYSTEM "reference_type.xml">
 <!ENTITY reference_guc SYSTEM "reference_guc.xml">
 <!ENTITY reference_management SYSTEM "reference_management.xml">
+<!ENTITY reference_cluster SYSTEM "reference_cluster.xml">
 <!ENTITY reference_constructor SYSTEM "reference_constructor.xml">
 <!ENTITY reference_accessor SYSTEM "reference_accessor.xml">
 <!ENTITY reference_bbox SYSTEM "reference_bbox.xml">
