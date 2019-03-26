@@ -68,11 +68,11 @@ DROP FUNCTION IF EXISTS ST_AsTWKB(geometry,int4,int8);
 DROP FUNCTION IF EXISTS ST_AsTWKB(geometry,int4,int8,boolean);
 
 -- Going from un-named to named arguments
-DROP FUNCTION _st_linecrossingdirection(geometry,geometry);
-DROP FUNCTION _st_orderingequals(geometry,geometry);
-DROP FUNCTION st_orderingequals(geometry,geometry);
-DROP FUNCTION st_askml(geometry, integer);
-DROP FUNCTION st_buffer(geometry, double precision);
+DROP FUNCTION IF EXISTS _st_linecrossingdirection(geometry,geometry);
+DROP FUNCTION IF EXISTS _st_orderingequals(geometry,geometry);
+DROP FUNCTION IF EXISTS st_orderingequals(geometry,geometry);
+DROP FUNCTION IF EXISTS st_askml(geometry, integer);
+DROP FUNCTION IF EXISTS st_buffer(geometry, double precision);
 
 -- Old signatures for protobuf related functions improved in 2.4.0 RC/final
 DROP AGGREGATE IF EXISTS ST_AsMVT(text, int4, text, anyelement);
