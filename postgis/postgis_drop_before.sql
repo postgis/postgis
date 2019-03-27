@@ -69,6 +69,7 @@ DROP FUNCTION IF EXISTS ST_AsTWKB(geometry,int4,int8,boolean);
 
 -- Going from un-named to named arguments
 DROP FUNCTION IF EXISTS _st_linecrossingdirection(geometry,geometry);
+DROP FUNCTION IF EXISTS ST_LineCrossingDirection(geometry, geometry);
 DROP FUNCTION IF EXISTS _st_orderingequals(geometry,geometry);
 DROP FUNCTION IF EXISTS st_orderingequals(geometry,geometry);
 DROP FUNCTION IF EXISTS st_askml(geometry, integer);
