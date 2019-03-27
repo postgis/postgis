@@ -5621,7 +5621,9 @@ $$
  	( VALUES
  		 ('GEOMETRY', 'Geometry', 2) ,
  		 	('GEOMETRY', 'GeometryZ', 3) ,
+      ('GEOMETRYM', 'GeometryM', 3) ,
  		 	('GEOMETRY', 'GeometryZM', 4) ,
+
 			('GEOMETRYCOLLECTION', 'GeometryCollection', 2) ,
 			('GEOMETRYCOLLECTION', 'GeometryCollectionZ', 3) ,
 			('GEOMETRYCOLLECTIONM', 'GeometryCollectionM', 3) ,
