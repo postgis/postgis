@@ -822,7 +822,50 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 		</refsection>
 	</refentry>
 
+	<refentry id="ST_HasArc">
+	  <refnamediv>
+		<refname>ST_HasArc</refname>
 
+		<refpurpose>Returns true if a geometry or geometry collection contains a circular string</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_HasArc</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns true if a geometry or geometry collection contains a circular string</para>
+
+		<para>Availability: 1.2.3?</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_HasArc(ST_Collect('LINESTRING(1 2, 3 4, 5 6)', 'CIRCULARSTRING(1 1, 2 3, 4 5, 6 7, 5 6)'));
+		st_hasarc
+		--------
+		t
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_CurveToLine" />, <xref linkend="ST_LineToCurve" /></para>
+	  </refsection>
+	</refentry>
 
 	<refentry id="ST_InteriorRingN">
 	  <refnamediv>
@@ -2301,49 +2344,6 @@ MULTIPOINT Z (30 10 4,10 30 5,40 40 6, 30 10 4)
 			<title>See Also</title>
 			<para><xref linkend="ST_RemoveRepeatedPoints" /></para>
 		</refsection>
-	</refentry>
-
-	<refentry id="ST_SRID">
-	  <refnamediv>
-		<refname>ST_SRID</refname>
-		<refpurpose>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>integer <function>ST_SRID</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table. <xref linkend="spatial_ref_sys" /></para>
-		<para><note><para>spatial_ref_sys
-		table is a table that catalogs all spatial reference systems known to PostGIS and is used for transformations from one spatial
-			reference system to another.  So verifying you have the right spatial reference system identifier is important if you plan to ever transform your geometries.</para></note></para>
-		<para>&sfs_compliant; s2.1.1.1</para>
-		<para>&sqlmm_compliant; SQL-MM 3: 5.1.5</para>
-		<para>&curve_support;</para>
-
-	  </refsection>
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));
-		--result
-		4326
-		</programlisting>
-	  </refsection>
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
-	  </refsection>
 	</refentry>
 
 	<refentry id="ST_StartPoint">

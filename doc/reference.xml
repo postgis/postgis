@@ -21,10 +21,14 @@
   &reference_constructor;
   &reference_accessor;
   &reference_editor;
+  &reference_srs;
+  &reference_transformation;
   &reference_output;
   &reference_operator;
+  &reference_relationship;
   &reference_measure;
   &reference_processing;
+  &reference_cluster;
   &reference_bbox;
   &reference_lrs;
   &reference_trajectory;

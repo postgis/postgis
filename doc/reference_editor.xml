@@ -61,113 +61,129 @@
 		  </refsection>
 	</refentry>
 
-	<refentry id="ST_Affine">
-	  <refnamediv>
-		<refname>ST_Affine</refname>
 
-		<refpurpose>Apply a 3d affine transformation to a geometry.</refpurpose>
-	  </refnamediv>
+	<refentry id="ST_CollectionExtract">
+		<refnamediv>
+			<refname>ST_CollectionExtract</refname>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_Affine</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>a</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>b</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>c</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>d</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>e</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>f</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>g</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>h</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>i</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>xoff</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>yoff</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>zoff</parameter></paramdef>
-		  </funcprototype>
+			<refpurpose>
+Given a (multi)geometry, return a (multi)geometry consisting only of elements of the specified type.
+			</refpurpose>
+		</refnamediv>
 
-		  <funcprototype>
-			<funcdef>geometry <function>ST_Affine</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>a</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>b</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>d</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>e</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>xoff</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>yoff</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+		<refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_CollectionExtract</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>type</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+		<refsection>
+			<title>Description</title>
 
-		<para>Applies a 3d affine transformation to the geometry to do things like translate, rotate, scale in one step.</para>
-		<para>
-		Version 1: The
-			call <programlisting>ST_Affine(geom, a, b, c, d, e, f, g, h, i, xoff, yoff, zoff) </programlisting>
-			represents the transformation matrix <programlisting>/ a  b  c  xoff \
-| d  e  f  yoff |
-| g  h  i  zoff |
-\ 0  0  0     1 /</programlisting> and the vertices are transformed as
-			follows: <programlisting>x' = a*x + b*y + c*z + xoff
-y' = d*x + e*y + f*z + yoff
-z' = g*x + h*y + i*z + zoff</programlisting> All of the translate / scale
-			functions below are expressed via such an affine
-			transformation.</para>
-		<para>Version 2: Applies a 2d affine transformation to the geometry. The
-			call <programlisting>ST_Affine(geom, a, b, d, e, xoff, yoff)</programlisting>
-			represents the transformation matrix <programlisting>/  a  b  0  xoff  \       /  a  b  xoff  \
-|  d  e  0  yoff  | rsp.  |  d  e  yoff  |
-|  0  0  1     0  |       \  0  0     1  /
-\  0  0  0     1  /</programlisting> and the vertices are transformed as
-			follows: <programlisting>x' = a*x + b*y + xoff
-y' = d*x + e*y + yoff
-z' = z </programlisting> This method is a subcase of the 3D method
-			above.</para>
+			<para>
+Given a (multi)geometry, returns a (multi)geometry consisting only of elements of the specified type.
+Sub-geometries that are not the specified type are ignored. If there are no sub-geometries of the right type, an EMPTY geometry will be returned.
+Only points, lines and polygons are supported. Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON.
+			</para>
 
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-		<para>Availability: 1.1.2. Name changed from Affine to ST_Affine in 1.2.2</para>
-		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
+			<para>Availability: 1.5.0</para>
 
-		<para>&P_support;</para>
-		<para>&T_support;</para>
-		<para>&Z_support;</para>
-		<para>&curve_support;</para>
-	  </refsection>
+			<note><para>
+Prior to 1.5.3 this function returned non-collection inputs untouched, no matter type.
+In 1.5.3 non-matching single geometries result in a NULL return.
+In of 2.0.0 every case of missing match results in a typed EMPTY return.
+			</para></note>
 
+			<warning><para>When specifying 3 == POLYGON a multipolygon is returned even when the edges are shared.  This results in an invalid multipolygon for many cases
+			such as applying this function on an <xref linkend="ST_Split" /> result.</para></warning>
 
-	  <refsection>
-		<title>Examples</title>
+		</refsection>
 
-		<programlisting>
---Rotate a 3d line 180 degrees about the z axis.  Note this is long-hand for doing ST_Rotate();
- SELECT ST_AsEWKT(ST_Affine(the_geom,  cos(pi()), -sin(pi()), 0,  sin(pi()), cos(pi()), 0,  0, 0, 1,  0, 0, 0)) As using_affine,
-	 ST_AsEWKT(ST_Rotate(the_geom, pi())) As using_rotate
-	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As the_geom) As foo;
-        using_affine         |        using_rotate
------------------------------+-----------------------------
- LINESTRING(-1 -2 3,-1 -4 3) | LINESTRING(-1 -2 3,-1 -4 3)
+		<refsection>
+			<title>Examples</title>
+
+			<programlisting>-- Constants: 1 == POINT, 2 == LINESTRING, 3 == POLYGON
+SELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))'),1));
+st_astext
+---------------
+MULTIPOINT(0 0)
 (1 row)
 
---Rotate a 3d line 180 degrees in both the x and z axis
-SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), 0, 0, 0))
-	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As the_geom) As foo;
-           st_asewkt
--------------------------------
- LINESTRING(-1 -2 -3,-1 -4 -3)
+SELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1)),LINESTRING(2 2, 3 3))'),2));
+st_astext
+---------------
+MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
 (1 row)
-		</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_Rotate" />, <xref linkend="ST_Scale" />, <xref linkend="ST_Translate" />, <xref linkend="ST_TransScale" /></para>
-	  </refsection>
+			</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Multi" />, <xref linkend="ST_Dump" />, <xref linkend="ST_CollectionHomogenize" /></para>
+		</refsection>
 	</refentry>
+
+		<refentry id="ST_CollectionHomogenize">
+			<refnamediv>
+				<refname>ST_CollectionHomogenize</refname>
+
+				<refpurpose>
+	Given a geometry collection, return the "simplest" representation of the contents.
+				</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Given a geometry collection, returns the "simplest" representation of the contents.  Singletons will be returned as singletons.  Collections that are homogeneous will be returned as the appropriate multi-type.
+				</para>
+
+				<warning><para>When specifying 3 == POLYGON a multipolygon is returned even when the edges are shared.  This results in an invalid multipolygon for many cases
+			such as applying this function on an <xref linkend="ST_Split" /> result.</para></warning>
+
+
+				<para>Availability: 2.0.0</para>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+
+				<programlisting>
+  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0))'));
+
+	st_astext
+	------------
+	 POINT(0 0)
+	(1 row)
+
+  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1))'));
+
+	st_astext
+	---------------------
+	 MULTIPOINT(0 0,1 1)
+	(1 row)
+
+				</programlisting>
+			</refsection>
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_Multi" />, <xref linkend="ST_CollectionExtract" /></para>
+			</refsection>
+		</refentry>
 
 	<refentry id="ST_Force2D">
 	  <refnamediv>
@@ -845,129 +861,6 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_CollectionExtract">
-		<refnamediv>
-			<refname>ST_CollectionExtract</refname>
-
-			<refpurpose>
-Given a (multi)geometry, return a (multi)geometry consisting only of elements of the specified type.
-			</refpurpose>
-		</refnamediv>
-
-		<refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>geometry <function>ST_CollectionExtract</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>type</parameter></paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		</refsynopsisdiv>
-
-		<refsection>
-			<title>Description</title>
-
-			<para>
-Given a (multi)geometry, returns a (multi)geometry consisting only of elements of the specified type.
-Sub-geometries that are not the specified type are ignored. If there are no sub-geometries of the right type, an EMPTY geometry will be returned.
-Only points, lines and polygons are supported. Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON.
-			</para>
-
-			<para>Availability: 1.5.0</para>
-
-			<note><para>
-Prior to 1.5.3 this function returned non-collection inputs untouched, no matter type.
-In 1.5.3 non-matching single geometries result in a NULL return.
-In of 2.0.0 every case of missing match results in a typed EMPTY return.
-			</para></note>
-
-			<warning><para>When specifying 3 == POLYGON a multipolygon is returned even when the edges are shared.  This results in an invalid multipolygon for many cases
-			such as applying this function on an <xref linkend="ST_Split" /> result.</para></warning>
-
-		</refsection>
-
-		<refsection>
-			<title>Examples</title>
-
-			<programlisting>-- Constants: 1 == POINT, 2 == LINESTRING, 3 == POLYGON
-SELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))'),1));
-st_astext
----------------
-MULTIPOINT(0 0)
-(1 row)
-
-SELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1)),LINESTRING(2 2, 3 3))'),2));
-st_astext
----------------
-MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
-(1 row)
-			</programlisting>
-		</refsection>
-		<refsection>
-			<title>See Also</title>
-			<para><xref linkend="ST_Multi" />, <xref linkend="ST_Dump" />, <xref linkend="ST_CollectionHomogenize" /></para>
-		</refsection>
-	</refentry>
-
-		<refentry id="ST_CollectionHomogenize">
-			<refnamediv>
-				<refname>ST_CollectionHomogenize</refname>
-
-				<refpurpose>
-	Given a geometry collection, return the "simplest" representation of the contents.
-				</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef>
-					<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>
-				  </funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-				<title>Description</title>
-
-				<para>
-					Given a geometry collection, returns the "simplest" representation of the contents.  Singletons will be returned as singletons.  Collections that are homogeneous will be returned as the appropriate multi-type.
-				</para>
-
-				<warning><para>When specifying 3 == POLYGON a multipolygon is returned even when the edges are shared.  This results in an invalid multipolygon for many cases
-			such as applying this function on an <xref linkend="ST_Split" /> result.</para></warning>
-
-
-				<para>Availability: 2.0.0</para>
-
-			</refsection>
-
-			<refsection>
-				<title>Examples</title>
-
-				<programlisting>
-  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0))'));
-
-	st_astext
-	------------
-	 POINT(0 0)
-	(1 row)
-
-  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1))'));
-
-	st_astext
-	---------------------
-	 MULTIPOINT(0 0,1 1)
-	(1 row)
-
-				</programlisting>
-			</refsection>
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="ST_Multi" />, <xref linkend="ST_CollectionExtract" /></para>
-			</refsection>
-		</refentry>
-
 	<refentry id="ST_Multi">
 		<refnamediv>
 			<refname>ST_Multi</refname>
@@ -1327,379 +1220,6 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Rotate">
-	  <refnamediv>
-		<refname>ST_Rotate</refname>
-
-		<refpurpose>Rotate a geometry rotRadians counter-clockwise about an origin.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_Rotate</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
-		  </funcprototype>
-
-		  <funcprototype>
-                        <funcdef>geometry <function>ST_Rotate</function></funcdef>
-                        <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
-                        <paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
-                        <paramdef><type>float</type> <parameter>x0</parameter></paramdef>
-                        <paramdef><type>float</type> <parameter>y0</parameter></paramdef>
-                  </funcprototype>
-
-		  <funcprototype>
-                        <funcdef>geometry <function>ST_Rotate</function></funcdef>
-                        <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
-                        <paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
-                        <paramdef><type>geometry</type> <parameter>pointOrigin</parameter></paramdef>
-                  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Rotates geometry rotRadians counter-clockwise about the origin. The rotation origin can be
-			specified either as a POINT geometry, or as x and y coordinates. If the origin is not
-			specified, the geometry is rotated about POINT(0 0).</para>
-
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-		<para>Enhanced: 2.0.0 additional parameters for specifying the origin of rotation were added.</para>
-		<para>Availability: 1.1.2. Name changed from Rotate to ST_Rotate in 1.2.2</para>
-		<para>&Z_support;</para>
-		<para>&curve_support;</para>
-		<para>&P_support;</para>
-		<para>&T_support;</para>
-
-	  </refsection>
-
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>
---Rotate 180 degrees
-SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()));
-               st_asewkt
----------------------------------------
- LINESTRING(-50 -160,-50 -50,-100 -50)
-(1 row)
-
---Rotate 30 degrees counter-clockwise at x=50, y=160
-SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()/6, 50, 160));
-                                 st_asewkt
----------------------------------------------------------------------------
- LINESTRING(50 160,105 64.7372055837117,148.301270189222 89.7372055837117)
-(1 row)
-
---Rotate 60 degrees clockwise from centroid
-SELECT ST_AsEWKT(ST_Rotate(geom, -pi()/3, ST_Centroid(geom)))
-FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS foo;
-                           st_asewkt
---------------------------------------------------------------
- LINESTRING(116.4225 130.6721,21.1597 75.6721,46.1597 32.3708)
-(1 row)
-		</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateX" />, <xref linkend="ST_RotateY" />, <xref linkend="ST_RotateZ" /></para>
-	  </refsection>
-	</refentry>
-
-	<refentry id="ST_RotateX">
-	  <refnamediv>
-		<refname>ST_RotateX</refname>
-
-		<refpurpose>Rotate a geometry rotRadians about the X axis.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_RotateX</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Rotate a geometry geomA - rotRadians about the X axis.</para>
-
-		<note><para><code>ST_RotateX(geomA,  rotRadians)</code>
-			is short-hand for <code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>.</para></note>
-
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-		<para>Availability: 1.1.2. Name changed from RotateX to ST_RotateX in 1.2.2</para>
-		<para>&P_support;</para>
-		<para>&Z_support;</para>
-		<para>&T_support;</para>
-	  </refsection>
-
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>
---Rotate a line 90 degrees along x-axis
-SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));
-		 st_asewkt
----------------------------
- LINESTRING(1 -3 2,1 -1 1)
-</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateY" />, <xref linkend="ST_RotateZ" /></para>
-	  </refsection>
-	</refentry>
-
-	<refentry id="ST_RotateY">
-	  <refnamediv>
-		<refname>ST_RotateY</refname>
-
-		<refpurpose>Rotate a geometry rotRadians about the Y axis.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_RotateY</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Rotate a geometry geomA - rotRadians about the y axis.</para>
-
-		<note><para><code>ST_RotateY(geomA,  rotRadians)</code>
-			is short-hand for <code>ST_Affine(geomA,  cos(rotRadians), 0, sin(rotRadians),  0, 1, 0,  -sin(rotRadians), 0, cos(rotRadians), 0,  0, 0)</code>.</para></note>
-
-		<para>Availability: 1.1.2. Name changed from RotateY to ST_RotateY in 1.2.2</para>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-
-		<para>&P_support;</para>
-		<para>&Z_support;</para>
-		<para>&T_support;</para>
-
-	  </refsection>
-
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>
---Rotate a line 90 degrees along y-axis
- SELECT ST_AsEWKT(ST_RotateY(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));
-		 st_asewkt
----------------------------
- LINESTRING(3 2 -1,1 1 -1)
-</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateX" />, <xref linkend="ST_RotateZ" /></para>
-	  </refsection>
-	</refentry>
-
-	<refentry id="ST_RotateZ">
-	  <refnamediv>
-		<refname>ST_RotateZ</refname>
-
-		<refpurpose>Rotate a geometry rotRadians about the Z axis.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_RotateZ</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Rotate a geometry geomA - rotRadians about the Z axis.</para>
-
-		<note><para>This is a synonym for ST_Rotate</para></note>
-		<note><para><code>ST_RotateZ(geomA,  rotRadians)</code>
-			is short-hand for <code>SELECT ST_Affine(geomA,  cos(rotRadians), -sin(rotRadians), 0,  sin(rotRadians), cos(rotRadians), 0,  0, 0, 1,  0, 0, 0)</code>.</para></note>
-
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-
-		<para>Availability: 1.1.2. Name changed from RotateZ to ST_RotateZ in 1.2.2</para>
-		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
-
-		<para>&Z_support;</para>
-		<para>&curve_support;</para>
-		<para>&P_support;</para>
-		<para>&T_support;</para>
-	  </refsection>
-
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>
---Rotate a line 90 degrees along z-axis
-SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));
-		 st_asewkt
----------------------------
- LINESTRING(-2 1 3,-1 1 1)
-
- --Rotate a curved circle around z-axis
-SELECT ST_AsEWKT(ST_RotateZ(the_geom, pi()/2))
-FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) As the_geom) As foo;
-
-													   st_asewkt
-----------------------------------------------------------------------------------------------------------------------------
- CURVEPOLYGON(CIRCULARSTRING(-567 237,-564.87867965644 236.12132034356,-564 234,-569.12132034356 231.87867965644,-567 237))
-
-</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateX" />, <xref linkend="ST_RotateY" /></para>
-	  </refsection>
-	</refentry>
-
-	<refentry id="ST_Scale">
-	  <refnamediv>
-		<refname>ST_Scale</refname>
-
-		<refpurpose>Scale a geometry by given factors.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-
-		  <funcprototype>
-			<funcdef>geometry <function>ST_Scale</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>ZFactor</parameter></paramdef>
-		  </funcprototype>
-
-		  <funcprototype>
-			<funcdef>geometry <function>ST_Scale</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>
-		  </funcprototype>
-
-		  <funcprototype>
-			<funcdef>geometry <function>ST_Scale</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-			<paramdef><type>geometry</type> <parameter>factor</parameter></paramdef>
-		  </funcprototype>
-
-		  <funcprototype>
-			<funcdef>geometry <function>ST_Scale</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-			<paramdef><type>geometry</type> <parameter>factor</parameter></paramdef>
-			<paramdef><type>geometry</type> <parameter>origin</parameter></paramdef>
-		  </funcprototype>
-
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Scales the geometry to a new size by multiplying the
-			ordinates with the corresponding factor parameters.
-		</para>
-
-		<para>
-The version taking a geometry as the <varname>factor</varname> parameter
-allows passing a 2d, 3dm, 3dz or 4d point to set scaling factor for all
-supported dimensions. Missing dimensions in the <varname>factor</varname>
-point are equivalent to no scaling the corresponding dimension.
-    </para>
-    <para>
-        The three-geometry variant allows a "false origin" for the scaling to be passed in. This allows "scaling in place", for example using the centroid of the geometry as the false origin. Without a false origin, scaling takes place relative to the actual origin, so all coordinates are just multipled by the scale factor.
-    </para>
-
-		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
-
-
-		<para>Availability: 1.1.0.</para>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-                <para>Enhanced: 2.2.0 support for scaling all dimension (<varname>factor</varname> parameter) was introduced.</para>
-                <para>Enhanced: 2.5.0 support for scaling relative to a local origin (<varname>origin</varname> parameter) was introduced.</para>
-		<para>&P_support;</para>
-		<para>&Z_support;</para>
-		<para>&curve_support;</para>
-		<para>&T_support;</para>
-		<para>&M_support;</para>
-	  </refsection>
-
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>--Version 1: scale X, Y, Z
-SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75, 0.8));
-			  st_asewkt
---------------------------------------
- LINESTRING(0.5 1.5 2.4,0.5 0.75 0.8)
-
---Version 2: Scale X Y
- SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75));
-			st_asewkt
-----------------------------------
- LINESTRING(0.5 1.5 3,0.5 0.75 1)
-
---Version 3: Scale X Y Z M
- SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)'),
-   ST_MakePoint(0.5, 0.75, 2, -1)));
-			       st_asewkt
-----------------------------------------
- LINESTRING(0.5 1.5 6 -4,0.5 0.75 2 -1)
-
---Version 4: Scale X Y using false origin
-SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::geometry));
-      st_astext
----------------------
- LINESTRING(1 1,3 3)
-
-</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_Affine" />, <xref linkend="ST_TransScale" /></para>
-	  </refsection>
-	</refentry>
-
 	<refentry id="ST_Segmentize">
 		<refnamediv>
 			<refname>ST_Segmentize</refname>
@@ -1824,66 +1344,6 @@ LINESTRING(0 0,1 1,0 0,3 3,4 4)
 			<title>See Also</title>
 			<para><xref linkend="ST_AddPoint"/>, <xref linkend="ST_NPoints"/>, <xref linkend="ST_NumPoints"/>, <xref linkend="ST_PointN"/>, <xref linkend="ST_RemovePoint"/></para>
 		  </refsection>
-	</refentry>
-
-	<refentry id="ST_SetSRID">
-	  <refnamediv>
-		<refname>ST_SetSRID</refname>
-
-		<refpurpose>Set the SRID on a geometry to a particular integer
-		value.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_SetSRID</function></funcdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>geom</parameter></paramdef>
-
-			<paramdef><type>integer </type>
-			<parameter>srid</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Sets the SRID on a geometry to a particular integer value.
-		Useful in constructing bounding boxes for queries.</para>
-
-		<note>
-		  <para>This function does not transform the geometry coordinates in any way -
-		  it simply sets the meta data defining the spatial reference system the geometry is assumed to be in.
-		  Use <xref linkend="ST_Transform"/> if you want to transform the
-		  geometry into a new projection.</para>
-		</note>
-		<para>&sfs_compliant;</para>
-		<para>&curve_support;</para>
-	  </refsection>
-
-	  <refsection>
-			<title>Examples</title>
-			<para>-- Mark a point as WGS 84 long lat --</para>
-			<programlisting>SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;
--- the ewkt representation (wrap with ST_AsEWKT) -
-SRID=4326;POINT(-123.365556 48.428611)
-			</programlisting>
-			<para>-- Mark a point as WGS 84 long lat and then transform to web mercator (Spherical Mercator) --</para>
-			<programlisting>SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) As spere_merc;
--- the ewkt representation (wrap with ST_AsEWKT) -
-SRID=3785;POINT(-13732990.8753491 6178458.96425423)
-			</programlisting>
-		</refsection>
-
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_AsEWKT"/>,  <xref linkend="ST_Point" />, <xref linkend="ST_SRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
-	  </refsection>
-
 	</refentry>
 
 	<refentry id="ST_SnapToGrid">
@@ -2221,309 +1681,65 @@ LINESTRING(26 125,54 84,101 100)
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Transform">
+	<refentry id="ST_SwapOrdinates">
 	  <refnamediv>
-		<refname>ST_Transform</refname>
-
-		<refpurpose>Return a new geometry with its coordinates transformed to
-			a different spatial reference.</refpurpose>
+		<refname>ST_SwapOrdinates</refname>
+		<refpurpose>Returns a version of the given geometry with
+				given ordinate values swapped.
+    </refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry <function>ST_Transform</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+			<funcdef>geometry <function>ST_SwapOrdinates</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>cstring</type> <parameter>ords</parameter></paramdef>
 		  </funcprototype>
-
-          <funcprototype>
-              <funcdef>geometry <function>ST_Transform</function></funcdef>
-              <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-              <paramdef><type>text </type> <parameter>to_proj</parameter></paramdef>
-          </funcprototype>
-
-          <funcprototype>
-              <funcdef>geometry <function>ST_Transform</function></funcdef>
-              <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-              <paramdef><type>text </type> <parameter>from_proj</parameter></paramdef>
-              <paramdef><type>text </type> <parameter>to_proj</parameter></paramdef>
-          </funcprototype>
-
-          <funcprototype>
-              <funcdef>geometry <function>ST_Transform</function></funcdef>
-              <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-              <paramdef><type>text </type> <parameter>from_proj</parameter></paramdef>
-              <paramdef><type>integer </type> <parameter>to_srid</parameter></paramdef>
-          </funcprototype>
-
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
 	  <refsection>
 		<title>Description</title>
-
-        <para>Returns a new geometry with its coordinates transformed to
-            a different spatial reference system. The destination spatial
-			reference <varname>to_srid</varname> may be identified by a valid
-			SRID integer parameter (i.e. it must exist in the
-			<varname>spatial_ref_sys</varname> table).
-			Alternatively, a spatial reference defined as a PROJ.4 string
-			can be used for <varname>to_proj</varname> and/or
-			<varname>from_proj</varname>, however these methods are not
-			optimized. If the destination spatial reference system is
-			expressed with a PROJ.4 string instead of an SRID, the SRID of the
-			output geometry will be set to zero. With the exception of functions with
-			<varname>from_proj</varname>, input geometries must have a defined SRID.
-		</para>
-
-		<para>ST_Transform is often confused with ST_SetSRID().  ST_Transform actually changes the coordinates
-		of a geometry from one spatial reference system to another, while ST_SetSRID() simply changes the SRID identifier of
-		the geometry.</para>
-
-		<note>
-		  <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version" /> to confirm you have proj support compiled in.</para>
-		</note>
-
-		<note>
-		  <para>If using more than one transformation, it is useful to have a functional index on the commonly used
-			transformations to take advantage of index usage.</para>
-		</note>
-
-		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
-
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
-		<para>Enhanced: 2.3.0 support for direct PROJ.4 text was introduced.</para>
-		<para>&sqlmm_compliant; SQL-MM 3: 5.1.6</para>
+		<para>
+Returns a version of the given geometry with given ordinates swapped.
+    </para>
+		<para>
+The <varname>ords</varname> parameter is a 2-characters string naming
+the ordinates to swap. Valid names are: x,y,z and m.
+    </para>
+		<para>Availability: 2.2.0</para>
 		<para>&curve_support;</para>
+		<para>&Z_support;</para>
+		<para>&M_support;</para>
 		<para>&P_support;</para>
-
+		<para>&T_support;</para>
 	  </refsection>
 
 	  <refsection>
-		<title>Examples</title>
-		<para>Change Massachusetts state plane US feet geometry to WGS 84 long lat</para>
-		<programlisting>
-SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
-	743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As wgs_geom;
-
- wgs_geom
----------------------------
- POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 42.3903829478009,
--71.1775844305465 42.3903826677917,-71.1775825927231 42.3902893647987,-71.177684
-8522251 42.3902896512902));
-(1 row)
-
---3D Circular String example
-SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'),4326));
-
-				 st_asewkt
---------------------------------------------------------------------------------------
- SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-71.1776843766326 42.3903829478009 2,
- -71.1775844305465 42.3903826677917 3,
- -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)
-
-		</programlisting>
-		<para>Example of creating a partial functional index.  For tables where you are not sure all the geometries
-			will be filled in, its best to use a partial index that leaves out null geometries which will both conserve space and make your index smaller and more efficient.</para>
-		<programlisting>
-CREATE INDEX idx_the_geom_26986_parcels
-  ON parcels
-  USING gist
-  (ST_Transform(the_geom, 26986))
-  WHERE the_geom IS NOT NULL;
-		</programlisting>
-
-		<para>Examples of using PROJ.4 text to transform with custom spatial references.</para>
-		<programlisting>
--- Find intersection of two polygons near the North pole, using a custom Gnomic projection
--- See http://boundlessgeo.com/2012/02/flattening-the-peel/
- WITH data AS (
-   SELECT
-     ST_GeomFromText('POLYGON((170 50,170 72,-130 72,-130 50,170 50))', 4326) AS p1,
-     ST_GeomFromText('POLYGON((-170 68,-170 90,-141 90,-141 68,-170 68))', 4326) AS p2,
-     '+proj=gnom +ellps=WGS84 +lat_0=70 +lon_0=-160 +no_defs'::text AS gnom
- )
- SELECT ST_AsText(
-   ST_Transform(
-     ST_Intersection(ST_Transform(p1, gnom), ST_Transform(p2, gnom)),
-   gnom, 4326))
- FROM data;
-                                          st_astext
- --------------------------------------------------------------------------------
-  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 74.053793645338))
-		</programlisting>
-
-	  </refsection>
-	  <refsection>
-		<title>Configuring transformation behaviour</title>
-			<para>Sometimes coordinate transformation involving a grid-shift
-				can fail, for example if PROJ.4 has not been built with
-				grid-shift files or the coordinate does not lie within the
-				range for which the grid shift is defined. By default, PostGIS
-				will throw an error if a grid shift file is not present, but
-				this behaviour can be configured on a per-SRID basis either
-				by testing different <varname>to_proj</varname> values of
-				PROJ.4 text, or altering the <varname>proj4text</varname> value
-				within the <varname>spatial_ref_sys</varname> table.
-			</para>
-				<para>For example, the proj4text parameter +datum=NAD87 is a shorthand form for the following +nadgrids parameter:</para>
-				<programlisting>+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat</programlisting>
-				<para>The @ prefix means no error is reported if the files are not present, but if the end of the list is reached with no file having been appropriate (ie. found and overlapping) then an error is issued.</para>
-				<para>If, conversely, you wanted to ensure that at least the standard files were present, but that if all files were scanned without a hit a null transformation is applied you could use:</para>
-				<programlisting>+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null</programlisting>
-				<para>The null grid shift file is a valid grid shift file covering the whole world and applying no shift. So for a complete example, if you wanted to alter PostGIS so that transformations to SRID 4267 that didn't lie within the correct range did not throw an ERROR, you would use the following:</para>
-				<programlisting>UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 +nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid = 4267;</programlisting>
-		  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="PostGIS_Full_Version" />, <xref linkend="ST_AsText" />, <xref linkend="ST_SetSRID" />, <xref linkend="UpdateGeometrySRID"/></para>
-	  </refsection>
-	</refentry>
-
-	<refentry id="ST_Translate">
-	  <refnamediv>
-		<refname>ST_Translate</refname>
-
-		<refpurpose>Translate a geometry by given offsets.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_Translate</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>deltax</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>deltay</parameter></paramdef>
-		  </funcprototype>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_Translate</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>deltax</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>deltay</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>deltaz</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Returns a new geometry whose coordinates are translated delta x,delta y,delta z units. Units are
-		based on the units defined in spatial reference (SRID) for this geometry.</para>
-
-		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
-
-		<para>Availability: 1.2.2</para>
-		<para>&Z_support;</para>
-		<para>&curve_support;</para>
-	  </refsection>
-
-	  <refsection>
-		<title>Examples</title>
-		<para>Move a point 1 degree longitude</para>
-		<programlisting>
-	SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 42.37)',4326),1,0)) As wgs_transgeomtxt;
-
-	wgs_transgeomtxt
-	---------------------
-	POINT(-70.01 42.37)
-		</programlisting>
-		<para>Move a linestring 1 degree longitude and 1/2 degree latitude</para>
-		<programlisting>SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 42.37,-71.11 42.38)',4326),1,0.5)) As wgs_transgeomtxt;
-		   wgs_transgeomtxt
-	---------------------------------------
-	LINESTRING(-70.01 42.87,-70.11 42.88)
-		</programlisting>
-		<para>Move a 3d point</para>
-		<programlisting>SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, 12,3));
-	st_asewkt
-	---------
-	POINT(5 12 3)
-		</programlisting>
-		<para>Move a curve and a point</para>
-<programlisting>SELECT ST_AsText(ST_Translate(ST_Collect('CURVEPOLYGON(CIRCULARSTRING(4 3,3.12 0.878,1 0,-1.121 5.1213,6 7, 8 9,4 3))','POINT(1 3)'),1,2));
-														 st_astext
-------------------------------------------------------------------------------------------------------------
- GEOMETRYCOLLECTION(CURVEPOLYGON(CIRCULARSTRING(5 5,4.12 2.878,2 2,-0.121 7.1213,7 9,9 11,5 5)),POINT(2 5))
-</programlisting>
+		<title>Example</title>
+		<programlisting><![CDATA[
+-- Scale M value by 2
+SELECT ST_AsText(
+  ST_SwapOrdinates(
+    ST_Scale(
+      ST_SwapOrdinates(g,'xm'),
+      2, 1
+    ),
+  'xm')
+) FROM ( SELECT 'POINT ZM (0 0 0 2)'::geometry g ) foo;
+     st_astext
+--------------------
+ POINT ZM (0 0 0 4)
+		 ]]></programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Affine" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" /></para>
+		<para> <xref linkend="ST_FlipCoordinates" /> </para>
 	  </refsection>
+
 	</refentry>
-
-	<refentry id="ST_TransScale">
-	  <refnamediv>
-		<refname>ST_TransScale</refname>
-
-		<refpurpose>Translate a geometry by given factors and offsets.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_TransScale</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>deltaX</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>deltaY</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Translates the geometry using the deltaX and deltaY args,
-			then scales it using the XFactor, YFactor args, working in 2D only.</para>
-
-		<note><para><code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code>
-			is short-hand for <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0,
-			0, 0, 1, deltaX*XFactor, deltaY*YFactor, 0)</code>.</para></note>
-
-		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
-
-
-		<para>Availability: 1.1.0.</para>
-		<para>&Z_support;</para>
-		<para>&curve_support;</para>
-	  </refsection>
-
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 1, 1, 2));
-		  st_asewkt
------------------------------
- LINESTRING(1.5 6 3,1.5 4 1)
-
-
---Buffer a point to get an approximation of a circle, convert to curve and then translate 1,2 and scale it 3,4
-  SELECT ST_AsText(ST_Transscale(ST_LineToCurve(ST_Buffer('POINT(234 567)', 3)),1,2,3,4));
-														  st_astext
-------------------------------------------------------------------------------------------------------------------------------
- CURVEPOLYGON(CIRCULARSTRING(714 2276,711.363961030679 2267.51471862576,705 2264,698.636038969321 2284.48528137424,714 2276))
-
-</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_Affine" />, <xref linkend="ST_Translate" /></para>
-	  </refsection>
-	</refentry>
-
-
 
   </sect1>
