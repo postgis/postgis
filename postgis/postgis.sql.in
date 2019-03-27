@@ -5619,10 +5619,10 @@ $$
  SELECT CASE WHEN $3 THEN new_name ELSE old_name END As geomname
 	FROM
  	( VALUES
- 		  ('GEOMETRY', 'Geometry', 2) ,
- 		 	('GEOMETRY', 'GeometryZ', 3) ,
-      ('GEOMETRYM', 'GeometryM', 3) ,
- 		 	('GEOMETRY', 'GeometryZM', 4) ,
+			('GEOMETRY', 'Geometry', 2) ,
+			('GEOMETRY', 'GeometryZ', 3) ,
+			('GEOMETRYM', 'GeometryM', 3) ,
+			('GEOMETRY', 'GeometryZM', 4) ,
 
 			('GEOMETRYCOLLECTION', 'GeometryCollection', 2) ,
 			('GEOMETRYCOLLECTION', 'GeometryCollectionZ', 3) ,
@@ -5631,7 +5631,7 @@ $$
 
 			('POINT', 'Point',2) ,
 			('POINT', 'PointZ',3) ,
-      ('POINTM','PointM',3) ,
+			('POINTM','PointM',3) ,
 			('POINT', 'PointZM',4) ,
 
 			('MULTIPOINT','MultiPoint',2) ,
