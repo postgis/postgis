@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <sect1 id="SRS_Functions">
+    <sect1info>
+    <abstract>
+	<para>These functions work with the Spatial Reference System of geometries.</para>
+   </abstract>
+    </sect1info>
+
+	  <title>Spatial Reference System Functions</title>
+
+	<refentry id="ST_SetSRID">
+	  <refnamediv>
+		<refname>ST_SetSRID</refname>
+
+		<refpurpose>Set the SRID on a geometry to a particular integer
+		value.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_SetSRID</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>geom</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Sets the SRID on a geometry to a particular integer value.
+		Useful in constructing bounding boxes for queries.</para>
+
+		<note>
+		  <para>This function does not transform the geometry coordinates in any way -
+		  it simply sets the meta data defining the spatial reference system the geometry is assumed to be in.
+		  Use <xref linkend="ST_Transform"/> if you want to transform the
+		  geometry into a new projection.</para>
+		</note>
+		<para>&sfs_compliant;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+	  <refsection>
+			<title>Examples</title>
+			<para>-- Mark a point as WGS 84 long lat --</para>
+			<programlisting>SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;
+-- the ewkt representation (wrap with ST_AsEWKT) -
+SRID=4326;POINT(-123.365556 48.428611)
+			</programlisting>
+			<para>-- Mark a point as WGS 84 long lat and then transform to web mercator (Spherical Mercator) --</para>
+			<programlisting>SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) As spere_merc;
+-- the ewkt representation (wrap with ST_AsEWKT) -
+SRID=3785;POINT(-13732990.8753491 6178458.96425423)
+			</programlisting>
+		</refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_AsEWKT"/>,  <xref linkend="ST_SRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
+	  </refsection>
+
+	</refentry>
+
+	<refentry id="ST_SRID">
+	  <refnamediv>
+		<refname>ST_SRID</refname>
+		<refpurpose>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_SRID</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table. <xref linkend="spatial_ref_sys" /></para>
+		<para><note><para>spatial_ref_sys
+		table is a table that catalogs all spatial reference systems known to PostGIS and is used for transformations from one spatial
+			reference system to another.  So verifying you have the right spatial reference system identifier is important if you plan to ever transform your geometries.</para></note></para>
+		<para>&sfs_compliant; s2.1.1.1</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.5</para>
+		<para>&curve_support;</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));
+		--result
+		4326
+		</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Transform">
+	  <refnamediv>
+		<refname>ST_Transform</refname>
+
+		<refpurpose>Return a new geometry with its coordinates transformed to
+			a different spatial reference system.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Transform</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+
+          <funcprototype>
+              <funcdef>geometry <function>ST_Transform</function></funcdef>
+              <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+              <paramdef><type>text </type> <parameter>to_proj</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+              <funcdef>geometry <function>ST_Transform</function></funcdef>
+              <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+              <paramdef><type>text </type> <parameter>from_proj</parameter></paramdef>
+              <paramdef><type>text </type> <parameter>to_proj</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+              <funcdef>geometry <function>ST_Transform</function></funcdef>
+              <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+              <paramdef><type>text </type> <parameter>from_proj</parameter></paramdef>
+              <paramdef><type>integer </type> <parameter>to_srid</parameter></paramdef>
+          </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+        <para>Returns a new geometry with its coordinates transformed to
+            a different spatial reference system. The destination spatial
+			reference <varname>to_srid</varname> may be identified by a valid
+			SRID integer parameter (i.e. it must exist in the
+			<varname>spatial_ref_sys</varname> table).
+			Alternatively, a spatial reference defined as a PROJ.4 string
+			can be used for <varname>to_proj</varname> and/or
+			<varname>from_proj</varname>, however these methods are not
+			optimized. If the destination spatial reference system is
+			expressed with a PROJ.4 string instead of an SRID, the SRID of the
+			output geometry will be set to zero. With the exception of functions with
+			<varname>from_proj</varname>, input geometries must have a defined SRID.
+		</para>
+
+		<para>ST_Transform is often confused with <xref linkend="ST_SetSRID" />.  ST_Transform actually changes the coordinates
+		of a geometry from one spatial reference system to another, while ST_SetSRID() simply changes the SRID identifier of
+		the geometry.</para>
+
+		<note>
+		  <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version" /> to confirm you have proj support compiled in.</para>
+		</note>
+
+		<note>
+		  <para>If using more than one transformation, it is useful to have a functional index on the commonly used
+			transformations to take advantage of index usage.</para>
+		</note>
+
+		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
+
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Enhanced: 2.3.0 support for direct PROJ.4 text was introduced.</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.6</para>
+		<para>&curve_support;</para>
+		<para>&P_support;</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<para>Change Massachusetts state plane US feet geometry to WGS 84 long lat</para>
+		<programlisting>
+SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
+	743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As wgs_geom;
+
+ wgs_geom
+---------------------------
+ POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 42.3903829478009,
+-71.1775844305465 42.3903826677917,-71.1775825927231 42.3902893647987,-71.177684
+8522251 42.3902896512902));
+(1 row)
+
+--3D Circular String example
+SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'),4326));
+
+				 st_asewkt
+--------------------------------------------------------------------------------------
+ SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-71.1776843766326 42.3903829478009 2,
+ -71.1775844305465 42.3903826677917 3,
+ -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)
+
+		</programlisting>
+		<para>Example of creating a partial functional index.  For tables where you are not sure all the geometries
+			will be filled in, its best to use a partial index that leaves out null geometries which will both conserve space and make your index smaller and more efficient.</para>
+		<programlisting>
+CREATE INDEX idx_the_geom_26986_parcels
+  ON parcels
+  USING gist
+  (ST_Transform(the_geom, 26986))
+  WHERE the_geom IS NOT NULL;
+		</programlisting>
+
+		<para>Examples of using PROJ.4 text to transform with custom spatial references.</para>
+		<programlisting>
+-- Find intersection of two polygons near the North pole, using a custom Gnomic projection
+-- See http://boundlessgeo.com/2012/02/flattening-the-peel/
+ WITH data AS (
+   SELECT
+     ST_GeomFromText('POLYGON((170 50,170 72,-130 72,-130 50,170 50))', 4326) AS p1,
+     ST_GeomFromText('POLYGON((-170 68,-170 90,-141 90,-141 68,-170 68))', 4326) AS p2,
+     '+proj=gnom +ellps=WGS84 +lat_0=70 +lon_0=-160 +no_defs'::text AS gnom
+ )
+ SELECT ST_AsText(
+   ST_Transform(
+     ST_Intersection(ST_Transform(p1, gnom), ST_Transform(p2, gnom)),
+   gnom, 4326))
+ FROM data;
+                                          st_astext
+ --------------------------------------------------------------------------------
+  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 74.053793645338))
+		</programlisting>
+
+	  </refsection>
+	  <refsection>
+		<title>Configuring transformation behaviour</title>
+			<para>Sometimes coordinate transformation involving a grid-shift
+				can fail, for example if PROJ.4 has not been built with
+				grid-shift files or the coordinate does not lie within the
+				range for which the grid shift is defined. By default, PostGIS
+				will throw an error if a grid shift file is not present, but
+				this behaviour can be configured on a per-SRID basis either
+				by testing different <varname>to_proj</varname> values of
+				PROJ.4 text, or altering the <varname>proj4text</varname> value
+				within the <varname>spatial_ref_sys</varname> table.
+			</para>
+				<para>For example, the proj4text parameter +datum=NAD87 is a shorthand form for the following +nadgrids parameter:</para>
+				<programlisting>+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat</programlisting>
+				<para>The @ prefix means no error is reported if the files are not present, but if the end of the list is reached with no file having been appropriate (ie. found and overlapping) then an error is issued.</para>
+				<para>If, conversely, you wanted to ensure that at least the standard files were present, but that if all files were scanned without a hit a null transformation is applied you could use:</para>
+				<programlisting>+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null</programlisting>
+				<para>The null grid shift file is a valid grid shift file covering the whole world and applying no shift. So for a complete example, if you wanted to alter PostGIS so that transformations to SRID 4267 that didn't lie within the correct range did not throw an ERROR, you would use the following:</para>
+				<programlisting>UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 +nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid = 4267;</programlisting>
+		  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="PostGIS_Full_Version" />, <xref linkend="ST_AsText" />, <xref linkend="ST_SetSRID" />, <xref linkend="UpdateGeometrySRID"/></para>
+	  </refsection>
+	</refentry>
+
+  </sect1>

@@ -1124,6 +1124,96 @@ SELECT 'contains212', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geom
 -- CIP - elements of the collection fully outside and fully inside polygon
 SELECT 'contains213', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0), LINESTRING(4 4,5 5))'::geometry);
 
+-- CIP - collection within polygon
+SELECT 'within210', ST_within('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(5 5),LINESTRING(1 1,2 2))'::geometry);
+-- CIP - collection on edge of polygon
+SELECT 'within211', ST_within('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(10 10), LINESTRING(0 0, 0 10))'::geometry);
+-- CIP - collection outside polygon
+SELECT 'within212', ST_within('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0),LINESTRING(11 5,12 5))'::geometry);
+-- CIP - elements of the collection fully outside and fully inside polygon
+SELECT 'within213', ST_within('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0), LINESTRING(4 4,5 5))'::geometry);
+
+-- CIP - collection within polygon
+SELECT 'containsproperly210', ST_containsproperly('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(5 5),LINESTRING(1 1,2 2))'::geometry);
+-- CIP - collection on edge of polygon
+SELECT 'containsproperly211', ST_containsproperly('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(10 10), LINESTRING(0 0, 0 10))'::geometry);
+-- CIP - collection outside polygon
+SELECT 'containsproperly212', ST_containsproperly('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0),LINESTRING(11 5,12 5))'::geometry);
+-- CIP - elements of the collection fully outside and fully inside polygon
+SELECT 'containsproperly213', ST_containsproperly('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0), LINESTRING(4 4,5 5))'::geometry);
+
+-- CIP - collection within polygon
+SELECT 'overlaps210', ST_overlaps('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(5 5),LINESTRING(1 1,2 2))'::geometry);
+-- CIP - collection on edge of polygon
+SELECT 'overlaps211', ST_overlaps('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(10 10), LINESTRING(0 0, 0 10))'::geometry);
+-- CIP - collection outside polygon
+SELECT 'overlaps212', ST_overlaps('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0),LINESTRING(11 5,12 5))'::geometry);
+-- CIP - elements of the collection fully outside and fully inside polygon
+SELECT 'overlaps213', ST_overlaps('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0), LINESTRING(4 4,5 5))'::geometry);
+
+-- CIP - collection within polygon
+SELECT 'covers210', ST_covers('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(5 5),LINESTRING(1 1,2 2))'::geometry);
+-- CIP - collection on edge of polygon
+SELECT 'covers211', ST_covers('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(10 10), LINESTRING(0 0, 0 10))'::geometry);
+-- CIP - collection outside polygon
+SELECT 'covers212', ST_covers('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0),LINESTRING(11 5,12 5))'::geometry);
+-- CIP - elements of the collection fully outside and fully inside polygon
+SELECT 'covers213', ST_covers('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0), LINESTRING(4 4,5 5))'::geometry);
+
+-- CIP - collection within polygon
+SELECT 'coveredby210', ST_coveredby('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(5 5),LINESTRING(1 1,2 2))'::geometry);
+-- CIP - collection on edge of polygon
+SELECT 'coveredby211', ST_coveredby('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(10 10), LINESTRING(0 0, 0 10))'::geometry);
+-- CIP - collection outside polygon
+SELECT 'coveredby212', ST_coveredby('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0),LINESTRING(11 5,12 5))'::geometry);
+-- CIP - elements of the collection fully outside and fully inside polygon
+SELECT 'coveredby213', ST_coveredby('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0), LINESTRING(4 4,5 5))'::geometry);
+
+-- CIP - collection within polygon
+SELECT 'crosses210', ST_crosses('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(5 5),LINESTRING(1 1,2 2))'::geometry);
+-- CIP - collection on edge of polygon
+SELECT 'crosses211', ST_crosses('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(10 10), LINESTRING(0 0, 0 10))'::geometry);
+-- CIP - collection outside polygon
+SELECT 'crosses212', ST_crosses('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0),LINESTRING(11 5,12 5))'::geometry);
+-- CIP - elements of the collection fully outside and fully inside polygon
+SELECT 'crosses213', ST_crosses('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0), LINESTRING(4 4,5 5))'::geometry);
+
+-- CIP - collection within polygon
+SELECT 'touches210', ST_touches('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(5 5),LINESTRING(1 1,2 2))'::geometry);
+-- CIP - collection on edge of polygon
+SELECT 'touches211', ST_touches('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(10 10), LINESTRING(0 0, 0 10))'::geometry);
+-- CIP - collection outside polygon
+SELECT 'touches212', ST_touches('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0),LINESTRING(11 5,12 5))'::geometry);
+-- CIP - elements of the collection fully outside and fully inside polygon
+SELECT 'touches213', ST_touches('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0), LINESTRING(4 4,5 5))'::geometry);
+
+-- CIP - collection within polygon
+SELECT 'disjoint210', ST_disjoint('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(5 5),LINESTRING(1 1,2 2))'::geometry);
+-- CIP - collection on edge of polygon
+SELECT 'disjoint211', ST_disjoint('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(10 10), LINESTRING(0 0, 0 10))'::geometry);
+-- CIP - collection outside polygon
+SELECT 'disjoint212', ST_disjoint('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0),LINESTRING(11 5,12 5))'::geometry);
+-- CIP - elements of the collection fully outside and fully inside polygon
+SELECT 'disjoint213', ST_disjoint('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0), LINESTRING(4 4,5 5))'::geometry);
+
+-- CIP - collection within polygon
+SELECT 'relate210', ST_relate('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(5 5),LINESTRING(1 1,2 2))'::geometry);
+-- CIP - collection on edge of polygon
+SELECT 'relate211', ST_relate('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(10 10), LINESTRING(0 0, 0 10))'::geometry);
+-- CIP - collection outside polygon
+SELECT 'relate212', ST_relate('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0),LINESTRING(11 5,12 5))'::geometry);
+-- CIP - elements of the collection fully outside and fully inside polygon
+SELECT 'relate213', ST_relate('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0), LINESTRING(4 4,5 5))'::geometry);
+
+-- CIP - collection within polygon
+SELECT 'relate_pattern210', ST_relate('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(5 5),LINESTRING(1 1,2 2))'::geometry, 'FF*FF****');
+-- CIP - collection on edge of polygon
+SELECT 'relate_pattern211', ST_relate('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(10 10), LINESTRING(0 0, 0 10))'::geometry, 'FF*FF****');
+-- CIP - collection outside polygon
+SELECT 'relate_pattern212', ST_relate('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0),LINESTRING(11 5,12 5))'::geometry, 'FF*FF****');
+-- CIP - elements of the collection fully outside and fully inside polygon
+SELECT 'relate_pattern213', ST_relate('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0), LINESTRING(4 4,5 5))'::geometry, 'FF*FF****');
+
 -- equals - element inside polygon
 SELECT 'equals210', ST_equals('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 
 'GEOMETRYCOLLECTION (POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)),LINESTRING(0 2, 0 5))'::geometry);
