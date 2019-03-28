@@ -3,7 +3,8 @@
     <sect1info>
     <abstract>
 
-	  <para>These functions implement locking to support long transactions.  This mechanism is required by the
+	  <para>These functions implement a row locking mechanism to support long transactions.
+		They are provided primarily for implementors of the
 		<ulink url="http://www.opengeospatial.org/standards/wfs">Web Feature Service</ulink> specification.</para>
 
     </abstract>

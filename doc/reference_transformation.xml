@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <sect1 id="Affine_Transformation">
+    <sect1info>
+    <abstract>
+	<para>These functions change the position and shape of geometries using
+	<ulink url="https://en.wikipedia.org/wiki/Affine_transformation">affine transformations</ulink>.</para>
+   </abstract>
+    </sect1info>
+
+	  <title>Affine Transformations</title>
+
+	<refentry id="ST_Affine">
+	  <refnamediv>
+		<refname>ST_Affine</refname>
+
+		<refpurpose>Apply a 3D affine transformation to a geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Affine</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>a</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>b</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>c</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>d</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>e</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>f</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>g</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>h</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>i</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>xoff</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>yoff</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>zoff</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Affine</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>a</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>b</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>d</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>e</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>xoff</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>yoff</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Applies a 3D affine transformation to the geometry to do things like translate, rotate, scale in one step.</para>
+		<para>
+		Version 1: The
+			call <programlisting>ST_Affine(geom, a, b, c, d, e, f, g, h, i, xoff, yoff, zoff) </programlisting>
+			represents the transformation matrix <programlisting>/ a  b  c  xoff \
+| d  e  f  yoff |
+| g  h  i  zoff |
+\ 0  0  0     1 /</programlisting> and the vertices are transformed as
+			follows: <programlisting>x' = a*x + b*y + c*z + xoff
+y' = d*x + e*y + f*z + yoff
+z' = g*x + h*y + i*z + zoff</programlisting> All of the translate / scale
+			functions below are expressed via such an affine
+			transformation.</para>
+		<para>Version 2: Applies a 2d affine transformation to the geometry. The
+			call <programlisting>ST_Affine(geom, a, b, d, e, xoff, yoff)</programlisting>
+			represents the transformation matrix <programlisting>/  a  b  0  xoff  \       /  a  b  xoff  \
+|  d  e  0  yoff  | rsp.  |  d  e  yoff  |
+|  0  0  1     0  |       \  0  0     1  /
+\  0  0  0     1  /</programlisting> and the vertices are transformed as
+			follows: <programlisting>x' = a*x + b*y + xoff
+y' = d*x + e*y + yoff
+z' = z </programlisting> This method is a subcase of the 3D method
+			above.</para>
+
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para>Availability: 1.1.2. Name changed from Affine to ST_Affine in 1.2.2</para>
+		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
+
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--Rotate a 3d line 180 degrees about the z axis.  Note this is long-hand for doing ST_Rotate();
+ SELECT ST_AsEWKT(ST_Affine(the_geom,  cos(pi()), -sin(pi()), 0,  sin(pi()), cos(pi()), 0,  0, 0, 1,  0, 0, 0)) As using_affine,
+	 ST_AsEWKT(ST_Rotate(the_geom, pi())) As using_rotate
+	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As the_geom) As foo;
+        using_affine         |        using_rotate
+-----------------------------+-----------------------------
+ LINESTRING(-1 -2 3,-1 -4 3) | LINESTRING(-1 -2 3,-1 -4 3)
+(1 row)
+
+--Rotate a 3d line 180 degrees in both the x and z axis
+SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), 0, 0, 0))
+	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As the_geom) As foo;
+           st_asewkt
+-------------------------------
+ LINESTRING(-1 -2 -3,-1 -4 -3)
+(1 row)
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Rotate" />, <xref linkend="ST_Scale" />, <xref linkend="ST_Translate" />, <xref linkend="ST_TransScale" /></para>
+	  </refsection>
+	</refentry>
+
+
+	<refentry id="ST_Rotate">
+	  <refnamediv>
+		<refname>ST_Rotate</refname>
+
+		<refpurpose>Rotates a geometry about an origin point.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Rotate</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+                        <funcdef>geometry <function>ST_Rotate</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+                        <paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+                        <paramdef><type>float</type> <parameter>x0</parameter></paramdef>
+                        <paramdef><type>float</type> <parameter>y0</parameter></paramdef>
+                  </funcprototype>
+
+		  <funcprototype>
+                        <funcdef>geometry <function>ST_Rotate</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+                        <paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+                        <paramdef><type>geometry</type> <parameter>pointOrigin</parameter></paramdef>
+                  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Rotates geometry rotRadians counter-clockwise about the origin point. The rotation origin can be
+			specified either as a POINT geometry, or as x and y coordinates. If the origin is not
+			specified, the geometry is rotated about POINT(0 0).</para>
+
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para>Enhanced: 2.0.0 additional parameters for specifying the origin of rotation were added.</para>
+		<para>Availability: 1.1.2. Name changed from Rotate to ST_Rotate in 1.2.2</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--Rotate 180 degrees
+SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()));
+               st_asewkt
+---------------------------------------
+ LINESTRING(-50 -160,-50 -50,-100 -50)
+(1 row)
+
+--Rotate 30 degrees counter-clockwise at x=50, y=160
+SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()/6, 50, 160));
+                                 st_asewkt
+---------------------------------------------------------------------------
+ LINESTRING(50 160,105 64.7372055837117,148.301270189222 89.7372055837117)
+(1 row)
+
+--Rotate 60 degrees clockwise from centroid
+SELECT ST_AsEWKT(ST_Rotate(geom, -pi()/3, ST_Centroid(geom)))
+FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS foo;
+                           st_asewkt
+--------------------------------------------------------------
+ LINESTRING(116.4225 130.6721,21.1597 75.6721,46.1597 32.3708)
+(1 row)
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateX" />, <xref linkend="ST_RotateY" />, <xref linkend="ST_RotateZ" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_RotateX">
+	  <refnamediv>
+		<refname>ST_RotateX</refname>
+
+		<refpurpose>Rotates a geometry about the X axis.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RotateX</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Rotates a geometry geomA - rotRadians about the X axis.</para>
+
+		<note><para><code>ST_RotateX(geomA,  rotRadians)</code>
+			is short-hand for <code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>.</para></note>
+
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para>Availability: 1.1.2. Name changed from RotateX to ST_RotateX in 1.2.2</para>
+		<para>&P_support;</para>
+		<para>&Z_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--Rotate a line 90 degrees along x-axis
+SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));
+		 st_asewkt
+---------------------------
+ LINESTRING(1 -3 2,1 -1 1)
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateY" />, <xref linkend="ST_RotateZ" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_RotateY">
+	  <refnamediv>
+		<refname>ST_RotateY</refname>
+
+		<refpurpose>Rotates a geometry about the Y axis.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RotateY</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Rotates a geometry geomA - rotRadians about the y axis.</para>
+
+		<note><para><code>ST_RotateY(geomA,  rotRadians)</code>
+			is short-hand for <code>ST_Affine(geomA,  cos(rotRadians), 0, sin(rotRadians),  0, 1, 0,  -sin(rotRadians), 0, cos(rotRadians), 0,  0, 0)</code>.</para></note>
+
+		<para>Availability: 1.1.2. Name changed from RotateY to ST_RotateY in 1.2.2</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+
+		<para>&P_support;</para>
+		<para>&Z_support;</para>
+		<para>&T_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--Rotate a line 90 degrees along y-axis
+ SELECT ST_AsEWKT(ST_RotateY(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));
+		 st_asewkt
+---------------------------
+ LINESTRING(3 2 -1,1 1 -1)
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateX" />, <xref linkend="ST_RotateZ" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_RotateZ">
+	  <refnamediv>
+		<refname>ST_RotateZ</refname>
+
+		<refpurpose>Rotates a geometry about the Z axis.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RotateZ</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Rotates a geometry geomA - rotRadians about the Z axis.</para>
+
+		<note><para>This is a synonym for ST_Rotate</para></note>
+		<note><para><code>ST_RotateZ(geomA,  rotRadians)</code>
+			is short-hand for <code>SELECT ST_Affine(geomA,  cos(rotRadians), -sin(rotRadians), 0,  sin(rotRadians), cos(rotRadians), 0,  0, 0, 1,  0, 0, 0)</code>.</para></note>
+
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+
+		<para>Availability: 1.1.2. Name changed from RotateZ to ST_RotateZ in 1.2.2</para>
+		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
+
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--Rotate a line 90 degrees along z-axis
+SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));
+		 st_asewkt
+---------------------------
+ LINESTRING(-2 1 3,-1 1 1)
+
+ --Rotate a curved circle around z-axis
+SELECT ST_AsEWKT(ST_RotateZ(the_geom, pi()/2))
+FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) As the_geom) As foo;
+
+													   st_asewkt
+----------------------------------------------------------------------------------------------------------------------------
+ CURVEPOLYGON(CIRCULARSTRING(-567 237,-564.87867965644 236.12132034356,-564 234,-569.12132034356 231.87867965644,-567 237))
+
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateX" />, <xref linkend="ST_RotateY" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Scale">
+	  <refnamediv>
+		<refname>ST_Scale</refname>
+
+		<refpurpose>Scales a geometry by given factors.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Scale</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>ZFactor</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Scale</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Scale</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>factor</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Scale</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>factor</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>origin</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Scales the geometry to a new size by multiplying the
+			ordinates with the corresponding factor parameters.
+		</para>
+
+		<para>
+The version taking a geometry as the <varname>factor</varname> parameter
+allows passing a 2d, 3dm, 3dz or 4d point to set scaling factor for all
+supported dimensions. Missing dimensions in the <varname>factor</varname>
+point are equivalent to no scaling the corresponding dimension.
+    </para>
+    <para>
+        The three-geometry variant allows a "false origin" for the scaling to be passed in. This allows "scaling in place", for example using the centroid of the geometry as the false origin. Without a false origin, scaling takes place relative to the actual origin, so all coordinates are just multipled by the scale factor.
+    </para>
+
+		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
+
+
+		<para>Availability: 1.1.0.</para>
+		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+                <para>Enhanced: 2.2.0 support for scaling all dimension (<varname>factor</varname> parameter) was introduced.</para>
+                <para>Enhanced: 2.5.0 support for scaling relative to a local origin (<varname>origin</varname> parameter) was introduced.</para>
+		<para>&P_support;</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+		<para>&T_support;</para>
+		<para>&M_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>--Version 1: scale X, Y, Z
+SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75, 0.8));
+			  st_asewkt
+--------------------------------------
+ LINESTRING(0.5 1.5 2.4,0.5 0.75 0.8)
+
+--Version 2: Scale X Y
+ SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75));
+			st_asewkt
+----------------------------------
+ LINESTRING(0.5 1.5 3,0.5 0.75 1)
+
+--Version 3: Scale X Y Z M
+ SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)'),
+   ST_MakePoint(0.5, 0.75, 2, -1)));
+			       st_asewkt
+----------------------------------------
+ LINESTRING(0.5 1.5 6 -4,0.5 0.75 2 -1)
+
+--Version 4: Scale X Y using false origin
+SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::geometry));
+      st_astext
+---------------------
+ LINESTRING(1 1,3 3)
+
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Affine" />, <xref linkend="ST_TransScale" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Translate">
+	  <refnamediv>
+		<refname>ST_Translate</refname>
+
+		<refpurpose>Translates a geometry by given offsets.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Translate</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>deltax</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>deltay</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Translate</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>deltax</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>deltay</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>deltaz</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a new geometry whose coordinates are translated delta x,delta y,delta z units. Units are
+		based on the units defined in spatial reference (SRID) for this geometry.</para>
+
+		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
+
+		<para>Availability: 1.2.2</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<para>Move a point 1 degree longitude</para>
+		<programlisting>
+	SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 42.37)',4326),1,0)) As wgs_transgeomtxt;
+
+	wgs_transgeomtxt
+	---------------------
+	POINT(-70.01 42.37)
+		</programlisting>
+		<para>Move a linestring 1 degree longitude and 1/2 degree latitude</para>
+		<programlisting>SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 42.37,-71.11 42.38)',4326),1,0.5)) As wgs_transgeomtxt;
+		   wgs_transgeomtxt
+	---------------------------------------
+	LINESTRING(-70.01 42.87,-70.11 42.88)
+		</programlisting>
+		<para>Move a 3d point</para>
+		<programlisting>SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, 12,3));
+	st_asewkt
+	---------
+	POINT(5 12 3)
+		</programlisting>
+		<para>Move a curve and a point</para>
+<programlisting>SELECT ST_AsText(ST_Translate(ST_Collect('CURVEPOLYGON(CIRCULARSTRING(4 3,3.12 0.878,1 0,-1.121 5.1213,6 7, 8 9,4 3))','POINT(1 3)'),1,2));
+														 st_astext
+------------------------------------------------------------------------------------------------------------
+ GEOMETRYCOLLECTION(CURVEPOLYGON(CIRCULARSTRING(5 5,4.12 2.878,2 2,-0.121 7.1213,7 9,9 11,5 5)),POINT(2 5))
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Affine" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_TransScale">
+	  <refnamediv>
+		<refname>ST_TransScale</refname>
+
+		<refpurpose>Translates and scales a geometry by given offsets and factors.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_TransScale</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>deltaX</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>deltaY</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Translates the geometry using the deltaX and deltaY args,
+			then scales it using the XFactor, YFactor args, working in 2D only.</para>
+
+		<note><para><code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code>
+			is short-hand for <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0,
+			0, 0, 1, deltaX*XFactor, deltaY*YFactor, 0)</code>.</para></note>
+
+		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
+
+
+		<para>Availability: 1.1.0.</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 1, 1, 2));
+		  st_asewkt
+-----------------------------
+ LINESTRING(1.5 6 3,1.5 4 1)
+
+
+--Buffer a point to get an approximation of a circle, convert to curve and then translate 1,2 and scale it 3,4
+  SELECT ST_AsText(ST_Transscale(ST_LineToCurve(ST_Buffer('POINT(234 567)', 3)),1,2,3,4));
+														  st_astext
+------------------------------------------------------------------------------------------------------------------------------
+ CURVEPOLYGON(CIRCULARSTRING(714 2276,711.363961030679 2267.51471862576,705 2264,698.636038969321 2284.48528137424,714 2276))
+
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Affine" />, <xref linkend="ST_Translate" /></para>
+	  </refsection>
+	</refentry>
+
+
+
+  </sect1>

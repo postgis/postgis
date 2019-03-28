@@ -806,7 +806,17 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	GSERIALIZED	*geom1 = PG_GETARG_GSERIALIZED_P(0);
 	double size = PG_GETARG_FLOAT8(1);
-	text *params_text = PG_GETARG_TEXT_P(2);
+	text *params_text;
+
+	if (PG_NARGS() > 2)
+	{
+		params_text = PG_GETARG_TEXT_P(2);
+	}
+	else
+	{
+		params_text = palloc(VARHDRSZ);
+		SET_VARSIZE(params_text, 0);
+	}
 
 	/* Empty.Buffer() == Empty[polygon] */
 	if ( gserialized_is_empty(geom1) )
