@@ -171,12 +171,12 @@ cp ${PGPATHEDB}/bin/libxml2-2.dll   $outdir/bin/
 
 cd ${POSTGIS_SRC}
 strip postgis/postgis-${POSTGIS_MINOR_VER}.dll
-strip raster/rt_pg/rtpostgis-${POSTGIS_MINOR_VER}.dll
+strip raster/rt_pg/postgis_raster-${POSTGIS_MINOR_VER}.dll
 strip liblwgeom/.libs/*.dll
 
 cp postgis/postgis-${POSTGIS_MINOR_VER}.dll ${RELDIR}/${RELVERDIR}/lib
 cp topology/*.dll ${RELDIR}/${RELVERDIR}/lib
-cp raster/rt_pg/rtpostgis-${POSTGIS_MINOR_VER}.dll ${RELDIR}/${RELVERDIR}/lib
+cp raster/rt_pg/postgis_raster-${POSTGIS_MINOR_VER}.dll ${RELDIR}/${RELVERDIR}/lib
 cp doc/*_comments.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 cp postgis/*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 cp raster/rt_pg/*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}

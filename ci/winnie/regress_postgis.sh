@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
-export GEOS_VER=3.8.0dev
-export GDAL_VER=2.2.4
-export PROJ_VER=4.9.3
+export GEOS_VER=3.8
+export GDAL_VER=2.4.0
+export PROJ_VER=6.0.0
 export SFCGAL_VER=1.3.2
 export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
@@ -149,10 +149,10 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  cd ${POSTGIS_SRC}
  echo "Postgis src dir is ${POSTGIS_SRC}"
  strip postgis/postgis-*.dll
- strip raster/rt_pg/rtpostgis-*.dll
+ strip raster/rt_pg/postgis_raster-*.dll
  cp topology/*.dll ${PGPATHEDB}/lib
  cp postgis/postgis*.dll ${PGPATHEDB}/lib
- cp raster/rt_pg/rtpostgis-*.dll ${PGPATHEDB}/lib
+ cp raster/rt_pg/postgis_raster-*.dll ${PGPATHEDB}/lib
  cp -r ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}.sql ${PGPATHEDB}/share/extension
  cp -r ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}next.sql ${PGPATHEDB}/share/extension
  cp -r ${PGPATH}/share/extension/address_standardizer*${POSTGIS_MICRO_VER}.sql ${PGPATHEDB}/share/extension
