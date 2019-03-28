@@ -1,10 +1,19 @@
 #!/bin/sh
 
 if test -z "$1"; then
-  echo "Usage: $0 <to_version>" >&2
+  echo "Usage: $0 [-s] <to_version>" >&2
+  echo "Options:" >&2
+  echo "\t-s  Stop on first failure" >&2
   exit 1
 fi
+EXIT_ON_FIRST_FAILURE=0
+
+if test "$1" = "-s"; then
+  EXIT_ON_FIRST_FAILURE=1
+  shift
+fi
 to_version="$1"
+
 
 # Return -1, 1 or 0 if the first version
 # is respectively smaller, greater or equal
@@ -53,6 +62,9 @@ fi
 echo "INFO: installed extensions: $INSTALLED_EXTENSIONS"
 
 for EXT in ${INSTALLED_EXTENSIONS}; do
+  if test $EXIT_ON_FIRST_FAILURE != 0 -a $failures != 0; then
+    exit $failures
+  fi
   if test "${EXT}" = "postgis"; then
     REGDIR=${BUILDDIR}/regress
   elif test "${EXT}" = "postgis_topology"; then

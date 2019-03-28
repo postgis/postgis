@@ -24,7 +24,7 @@ steps:
       - psql -c "select version()" template1
       - make check RUNTESTFLAGS=-v
       - make install
-      - utils/check_all_upgrades.sh
+      - utils/check_all_upgrades.sh -s
         `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
 ---
 test-image: &test-image docker.kbt.io/postgis/build-test:trisquel2
@@ -47,7 +47,7 @@ steps:
       - psql -c "select version()" template1
       - make check RUNTESTFLAGS=-v
       - make install
-      - utils/check_all_upgrades.sh
+      - utils/check_all_upgrades.sh -s
         `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
 ---
 test-image: &test-image docker.kbt.io/postgis/build-test:trisquel2
@@ -70,6 +70,6 @@ steps:
       - psql -c "select version()" template1
       - make check RUNTESTFLAGS=-v
       - make install
-      - utils/check_all_upgrades.sh
+      - utils/check_all_upgrades.sh -s
         `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
 ...
