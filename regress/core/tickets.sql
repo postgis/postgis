@@ -1114,6 +1114,28 @@ INSERT INTO bug_4144_table (geom)
 ANALYZE bug_4144_table;
 DROP TABLE IF EXISTS bug_4144_table;
 
+--4295
+-- CIP - collection within polygon
+SELECT 'contains210', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(5 5),LINESTRING(1 1,2 2))'::geometry);
+-- CIP - collection on edge of polygon
+SELECT 'contains211', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(10 10), LINESTRING(0 0, 0 10))'::geometry);
+-- CIP - collection outside polygon
+SELECT 'contains212', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0),LINESTRING(11 5,12 5))'::geometry);
+-- CIP - elements of the collection fully outside and fully inside polygon
+SELECT 'contains213', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'GEOMETRYCOLLECTION (POINT(-1 0), LINESTRING(4 4,5 5))'::geometry);
+
+-- equals - element inside polygon
+SELECT 'equals210', ST_equals('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 
+'GEOMETRYCOLLECTION (POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)),LINESTRING(0 2, 0 5))'::geometry);
+-- equals - element on border of polygon
+SELECT 'equals211', ST_equals('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 
+'GEOMETRYCOLLECTION (POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)),MULTIPOINT(0 2, 0 5))'::geometry);
+-- equals - element on border and inside polygon
+SELECT 'equals212', ST_equals('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 
+'GEOMETRYCOLLECTION (POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)),LINESTRING(0 2, 0 5, 5 5))'::geometry);
+SELECT 'equals213', ST_equals('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 
+'GEOMETRYCOLLECTION (POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)),MULTIPOINT(0 2, 5 5))'::geometry);
+
 -- #4299
 SELECT '#4299', ST_Disjoint(ST_GeneratePoints(g, 1000), ST_GeneratePoints(g, 1000))
 FROM (SELECT 'POLYGON((0 0,1 0,1 1,0 1,0 0))'::geometry AS g) AS f;
