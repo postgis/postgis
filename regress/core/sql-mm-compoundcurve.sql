@@ -159,10 +159,10 @@ UPDATE public.compoundcurve
                         2 0,
                         0 0))');
 
-SELECT 'astext01', ST_Astext(the_geom_2d) FROM public.compoundcurve;
-SELECT 'astext02', ST_Astext(the_geom_3dm) FROM public.compoundcurve;
-SELECT 'astext03', ST_Astext(the_geom_3dz) FROM public.compoundcurve;
-SELECT 'astext04', ST_Astext(the_geom_4d) FROM public.compoundcurve;
+SELECT 'astext01', ST_AsText(the_geom_2d) FROM public.compoundcurve;
+SELECT 'astext02', ST_AsText(the_geom_3dm) FROM public.compoundcurve;
+SELECT 'astext03', ST_AsText(the_geom_3dz) FROM public.compoundcurve;
+SELECT 'astext04', ST_AsText(the_geom_4d) FROM public.compoundcurve;
 
 SELECT 'asewkt01', ST_Asewkt(the_geom_2d) FROM public.compoundcurve;
 SELECT 'asewkt02', ST_Asewkt(the_geom_3dm) FROM public.compoundcurve;

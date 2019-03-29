@@ -508,7 +508,7 @@ CREATE TABLE map_neatlines (
 -- POPULATE GEOMETRY AND FEATURE TABLES
 --
 -- *** ADAPTATION ALERT ***
--- This script DOES NOT make any inserts into a GEOMTERY_COLUMNS table/view.
+-- This script DOES NOT make any inserts into a GEOMETRY_COLUMNS table/view.
 -- Implementers should insert whatever makes this happen in their implementation
 -- below. Furthermore, the inserts below may be replaced by whatever mechanism
 -- may be provided by implementers to insert rows in feature tables such that
