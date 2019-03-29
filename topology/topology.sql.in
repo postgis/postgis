@@ -353,7 +353,7 @@ CREATE TYPE topology.TopoGeometry AS (
 --
 -- When used to define _hierarchical_ TopoGeometries,
 -- element_type will be the child layer identifier and
--- element_id will be composing TopoGoemetry identifier
+-- element_id will be composing TopoGeometry identifier
 --
 CREATE DOMAIN topology.TopoElement AS integer[]
   CONSTRAINT DIMENSIONS CHECK (

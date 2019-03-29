@@ -22,7 +22,7 @@ Comments welcome --strk(2012-03-13);
 =Building
 
   To build the topology support:
- 
+
   $ make
 
 =Testing
@@ -40,7 +40,7 @@ To enable topology support:
 	It will create a 'topology' schema in <your_postgis_enabled_db>
 	hosting all the topology functions. To be run with db-owner perms.
 	Remember to grant execute to users.
-	
+
 To uninstall:
 
 	$ psql -c 'drop schema topology cascade'
@@ -79,7 +79,7 @@ Example:
 ==Destroying a topology
 
 To destroy a topology:
-		
+
 	SELECT topology.DropTopology(<name>);
 
 ==Loading topology data
@@ -98,7 +98,7 @@ under you topology schema:
 	 * left_face integer REFERENCES Face.face_id
 	 * right_face integer REFERENCES Face.face_id
 	 * geom geometry ( a linestring )
-	
+
 
 	* Node
 	 * node_id integer PRIMARY KEY
@@ -152,7 +152,7 @@ elements). Otherwise this layer will contain hierarchical TopoGeometries
 (composed by TopoGeometries from the child_layer).
 
 Once the layer is created (it's id is returned by the AddTopoGeometryColumn
-function) you're ready to construct TopoGeometry objects in it: 
+function) you're ready to construct TopoGeometry objects in it:
 
   	topology.CreateTopoGeom(
 
@@ -173,7 +173,7 @@ be:
 
 For Hierarchical TopoGeometry objects this would be:
 
-	{{child_layer_id, topogeoemtry_id}, ...}
+	{{child_layer_id, topogeometry_id}, ...}
 
 ==Converting Geometry to TopoGeometry while populating the topology
 
@@ -211,7 +211,7 @@ being input has already been snapped by caller.
 
 ==ST_GetFaceGeometry() implementation
 
-The ST_GetFaceGeometry() function is currently implemented 
+The ST_GetFaceGeometry() function is currently implemented
 as a call to polygonize() receiving all edges with the
 given Face on the left or right side. This reduces the number
 of SQL queries to 1, but makes it hard to detect any
@@ -229,7 +229,7 @@ by topology-aware replacement of the two predicates. The
 Face geometries might also be cached, but that might still
 be slower then overloading the predicates.
 
-==Topology table constraints 
+==Topology table constraints
 
 In addition to the constraints defined in SQL/MM specification,
 this implementation adds constraints to enforce Node and Edge

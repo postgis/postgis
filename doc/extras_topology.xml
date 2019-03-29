@@ -25,7 +25,7 @@
 		<refentry id="getfaceedges_returntype">
 		  <refnamediv>
 			<refname>getfaceedges_returntype</refname>
-			<refpurpose>A composite type that consists of a sequence number and edge number.  This is the return type for <varname>ST_GetFaceEdges</varname></refpurpose>
+			<refpurpose>A composite type that consists of a sequence number and edge number.  This is the return type for <varname>ST_GetFaceEdges</varname>.</refpurpose>
 		  </refnamediv>
 		  <refsection>
 			<title>Description</title>
@@ -44,7 +44,7 @@
 		<refentry id="topogeometry">
 			  <refnamediv>
 				<refname>TopoGeometry</refname>
-				<refpurpose>A composite type representing a topologically defined geometry</refpurpose>
+				<refpurpose>A composite type representing a topologically defined geometry.</refpurpose>
 			  </refnamediv>
 			  <refsection>
 				<title>Description</title>
@@ -93,7 +93,7 @@
 		<refentry id="validatetopology_returntype">
             <refnamediv>
                 <refname>validatetopology_returntype</refname>
-                    <refpurpose>A composite type that consists of an error message and id1 and id2 to denote location of error.  This is the return type for <varname>ValidateTopology</varname></refpurpose>
+                    <refpurpose>A composite type that consists of an error message and id1 and id2 to denote location of error.  This is the return type for <varname>ValidateTopology</varname>.</refpurpose>
                 </refnamediv>
             <refsection>
             <title>Description</title>
@@ -195,7 +195,7 @@ ERROR:  value for domain topology.topoelement violates check constraint "dimensi
 		<refentry id="topoelementarray">
 		  <refnamediv>
 			<refname>TopoElementArray</refname>
-			<refpurpose>An array of TopoElement objects</refpurpose>
+			<refpurpose>An array of TopoElement objects.</refpurpose>
 		  </refnamediv>
 		  <refsection>
 			<title>Description</title>
@@ -369,7 +369,8 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para></para>
+
+				<para><xref linkend="DropTopoGeometryColumn"/></para>
 			</refsection>
 		</refentry>
 		<refentry id="DropTopoGeometryColumn">
@@ -484,7 +485,7 @@ FROM topology.layer;
 			<refnamediv>
 				<refname>TopologySummary</refname>
 
-				<refpurpose>Takes a topology name and provides summary totals of types of objects in topology</refpurpose>
+				<refpurpose>Takes a topology name and provides summary totals of types of objects in topology.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -537,7 +538,7 @@ FROM topology.layer;
 			<refnamediv>
 				<refname>ValidateTopology</refname>
 
-				<refpurpose>Returns a set of validatetopology_returntype objects detailing issues with topology</refpurpose>
+				<refpurpose>Returns a set of validatetopology_returntype objects detailing issues with topology.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -893,7 +894,7 @@ Adds a point to an existing topology using a tolerance and possibly splitting an
 				<funcsynopsis>
 					<funcprototype>
 						<funcdef>integer <function>TopoGeo_AddPoint</function></funcdef>
-						<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
 					</funcprototype>
@@ -904,7 +905,7 @@ Adds a point to an existing topology using a tolerance and possibly splitting an
                 <title>Description</title>
 
                 <para>
-Adds a point to an existing topology and return its identifier.
+Adds a point to an existing topology and returns its identifier.
 The given point will snap to existing nodes or edges within given tolerance.
 An existing edge may be split by the snapped point.
                 </para>
@@ -930,16 +931,14 @@ An existing edge may be split by the snapped point.
 			<refnamediv>
 				<refname>TopoGeo_AddLineString</refname>
 
-				<refpurpose>
-Adds a linestring to an existing topology using a tolerance and possibly splitting existing edges/faces. Returns edge identifiers
-				</refpurpose>
+				<refpurpose>Adds a linestring to an existing topology using a tolerance and possibly splitting existing edges/faces. Returns edge identifiers.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
 						<funcdef>SETOF integer <function>TopoGeo_AddLineString</function></funcdef>
-						<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
 					</funcprototype>
@@ -950,7 +949,7 @@ Adds a linestring to an existing topology using a tolerance and possibly splitti
                 <title>Description</title>
 
                 <para>
-Adds a linestring to an existing topology and return a set of edge identifiers forming it up.
+Adds a linestring to an existing topology and returns a set of edge identifiers forming it up.
 The given line will snap to existing nodes or edges within given tolerance.
 Existing edges and faces may be split by the line.
                 </para>
@@ -976,18 +975,16 @@ Existing edges and faces may be split by the line.
 			<refnamediv>
 				<refname>TopoGeo_AddPolygon</refname>
 
-				<refpurpose>
-Adds a polygon to an existing topology using a tolerance and possibly splitting existing edges/faces.
-				</refpurpose>
+				<refpurpose>Adds a polygon to an existing topology using a tolerance and possibly splitting existing edges/faces. Returns face identifiers.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-						<funcdef>integer <function>TopoGeo_AddPolygon</function></funcdef>
+						<funcdef>SETOF integer <function>TopoGeo_AddPolygon</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>apoly</parameter></paramdef>
-						<paramdef choice="opt"><type>float8 </type> <parameter>atolerance</parameter></paramdef>
+						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -996,7 +993,7 @@ Adds a polygon to an existing topology using a tolerance and possibly splitting 
                 <title>Description</title>
 
                 <para>
-Adds a polygon to an existing topology and return a set of face identifiers forming it up.
+Adds a polygon to an existing topology and returns a set of face identifiers forming it up.
 The boundary of the given polygon will snap to existing nodes or edges within given tolerance.
 Existing edges and faces may be split by the boundary of the new polygon.
                 </para>
@@ -1051,8 +1048,8 @@ Existing edges and faces may be split by the boundary of the new polygon.
                 <title>Description</title>
 
                 <para>Adds an isolated node with point location <varname>apoint</varname> to an existing face with faceid <varname>aface</varname> to a topology <varname>atopology</varname> and returns the nodeid of the new node.</para>
-                <para>If the spatial reference system (srid) of the point geometry is not the same as the topology, the <varname>apoint</varname> is not a point geometry, the point is null, or the point intersects an existing edge (even at the boundaries) then an exception is thrown. If the point already
-                    exists as a node, an exception is thrown. </para>
+                <para>If the spatial reference system (srid) of the point geometry is not the same as the topology, the <varname>apoint</varname> is not a point geometry, the point is null, or the point intersects an existing edge
+                    (even at the boundaries) then an exception is thrown. If the point already exists as a node, an exception is thrown.</para>
                 <para>If <varname>aface</varname> is not null and the <varname>apoint</varname> is not within the face, then an exception is thrown.</para>
 
                 <!-- use this format if new function -->
@@ -1097,9 +1094,9 @@ Existing edges and faces may be split by the boundary of the new polygon.
                 <title>Description</title>
 
                 <para>Adds an isolated edge defined by geometry <varname>alinestring</varname> to a topology connecting two existing isolated nodes <varname>anode</varname> and <varname>anothernode</varname> and returns the edge id of the new edge.</para>
-                <para>If the spatial reference system (srid) of the <varname>alinestring</varname> geometry is not the same as the topology, any of the input arguments are null,   or the nodes are contained in more than one face, or the nodes are start or end nodes of an existing edge,
-                    then an exception is thrown. </para>
-                <para>If the <varname>alinestring</varname> is not within the face of the face the <varname>anode</varname> and <varname>anothernode</varname> belong to, then an exception is thrown. </para>
+                <para>If the spatial reference system (srid) of the <varname>alinestring</varname> geometry is not the same as the topology, any of the input arguments are null, or the nodes are contained in more than one face, or the nodes are start or end nodes of an existing edge,
+                    then an exception is thrown.</para>
+                <para>If the <varname>alinestring</varname> is not within the face of the face the <varname>anode</varname> and <varname>anothernode</varname> belong to, then an exception is thrown.</para>
                 <para>If the <varname>anode</varname> and <varname>anothernode</varname> are not the start and end points of the <varname>alinestring</varname> then an exception is thrown.</para>
 
                 <!-- use this format if new function -->
@@ -1524,7 +1521,7 @@ SELECT topology.ST_ModEdgeSplit('ma_topo',  3, ST_SetSRID(ST_Point(227594,893910
 				<refname>ST_ModEdgeHeal</refname>
 
 				<refpurpose>
-Heal two edges by deleting the node connecting them, modifying the first edge
+Heals two edges by deleting the node connecting them, modifying the first edge
 and deleting the second edge. Returns the id of the deleted node.
 				</refpurpose>
 			</refnamediv>
@@ -1544,7 +1541,7 @@ and deleting the second edge. Returns the id of the deleted node.
                 <title>Description</title>
 
                 <para>
-Heal two edges by deleting the node connecting them, modifying the first edge
+Heals two edges by deleting the node connecting them, modifying the first edge
 and deleting the second edge.
 Returns the id of the deleted node.
 Updates all existing joined edges and relationships accordingly.
@@ -1571,7 +1568,7 @@ Updates all existing joined edges and relationships accordingly.
 				<refname>ST_NewEdgeHeal</refname>
 
 				<refpurpose>
-Heal two edges by deleting the node connecting them, deleting both edges,
+Heals two edges by deleting the node connecting them, deleting both edges,
 and replacing them with an edge whose direction is the same as the first
 edge provided.
 				</refpurpose>
@@ -1592,7 +1589,7 @@ edge provided.
                 <title>Description</title>
 
                 <para>
-Heal two edges by deleting the node connecting them, deleting both edges,
+Heals two edges by deleting the node connecting them, deleting both edges,
 and replacing them with an edge whose direction is the same as the first
 edge provided.
 Returns the id of the new edge replacing the healed ones.
@@ -1838,7 +1835,7 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
           <refnamediv>
             <refname>GetEdgeByPoint</refname>
 
-            <refpurpose>Find the edge-id of an edge that intersects a given point</refpurpose>
+            <refpurpose>Finds the edge-id of an edge that intersects a given point.</refpurpose>
           </refnamediv>
 
           <refsynopsisdiv>
@@ -1847,22 +1844,23 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
                 <funcdef>integer <function>GetEdgeByPoint</function></funcdef>
                 <paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
                 <paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
-                <paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>
+                <paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>
               </funcprototype>
 
             </funcsynopsis>
           </refsynopsisdiv>
 
           <refsection>
-            <title>Retrieve the id of an edge that intersects a Point</title>
+            <title>Description</title>
 
+            <para>Retrieves the id of an edge that intersects a Point.</para>
             <para>The function returns an integer (id-edge) given a topology, a POINT and a tolerance. If tolerance = 0 then the point has to intersect the edge.</para>
-            <para>If the point doesn't intersect an edge, returns 0 (zero).</para>
+            <para>If <varname>apoint</varname> doesn't intersect an edge, returns 0 (zero).</para>
             <para>If use tolerance > 0 and there is more than one edge near the point then an exception is thrown.</para>
 
 
             <note>
-              <para>If tolerance = 0, the function use ST_Intersects otherwise uses ST_DWithin.</para>
+              <para>If tolerance = 0, the function uses ST_Intersects otherwise uses ST_DWithin.</para>
             </note>
             <para>Performed by the GEOS module.</para>
             <para>Availability: 2.0.0</para>
@@ -1900,7 +1898,7 @@ ERROR:  Two or more edges found</programlisting>
         <refentry id="GetFaceByPoint">
 		<refnamediv>
 			<refname>GetFaceByPoint</refname>
-			<refpurpose>Find the face-id of a face that intersects a given point</refpurpose>
+			<refpurpose>Finds the face-id of a face that intersects a given point.</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 			<funcsynopsis>
@@ -1908,15 +1906,16 @@ ERROR:  Two or more edges found</programlisting>
 					<funcdef>integer <function>GetFaceByPoint</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
-					<paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>
 				</funcprototype>
 			</funcsynopsis>
 		</refsynopsisdiv>
 		<refsection>
-                <title>Description</title>
-			<para>Retrieve the id of a face that intersects a Point.</para>
+      <title>Description</title>
+
+			<para>Retrieves the id of a face that intersects a Point.</para>
 			<para>The function returns an integer (id-face) given a topology, a POINT and a tolerance. If tolerance = 0 then the point has to intersect the face.</para>
-			<para>If the point doesn't intersect a face, returns 0 (zero).</para>
+			<para>If <varname>apoint</varname> doesn't intersect a face, returns 0 (zero).</para>
 			<para>If use tolerance > 0 and there is more than one face near the point then an exception is thrown.</para>
 			<note>
 				<para>If tolerance = 0, the function uses ST_Intersects otherwise uses ST_DWithin.</para>
@@ -1954,7 +1953,7 @@ ERROR:  Two or more faces found</programlisting>
           <refnamediv>
             <refname>GetNodeByPoint</refname>
 
-            <refpurpose>Find the id of a node at a point location</refpurpose>
+            <refpurpose>Finds the node-id of a node at a point location.</refpurpose>
           </refnamediv>
 
           <refsynopsisdiv>
@@ -1962,21 +1961,22 @@ ERROR:  Two or more faces found</programlisting>
               <funcprototype>
                 <funcdef>integer <function>GetNodeByPoint</function></funcdef>
                 <paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-                <paramdef><type>geometry </type> <parameter>point</parameter></paramdef>
-                <paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>
+                <paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
+                <paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>
               </funcprototype>
 
             </funcsynopsis>
           </refsynopsisdiv>
 
           <refsection>
-            <title>Retrieve the id of a node at a point location</title>
+            <title>Description</title>
 
-            <para>The function return an integer (id-node) given a topology, a POINT and a tolerance. If tolerance = 0 mean exactly intersection otherwise retrieve the node from an interval.</para>
-            <para>If there isn't a node at the point, it return 0 (zero).</para>
-            <para>If use tolerance > 0 and near the point there are more than one node it throw an exception.</para>
+            <para>Retrieves the id of a node at a point location.</para>
+            <para>The function returns an integer (id-node) given a topology, a POINT and a tolerance. If tolerance = 0 means exact intersection, otherwise retrieves the node from an interval.</para>
+            <para>If <varname>apoint</varname> doesn't intersect a node, returns 0 (zero).</para>
+            <para>If use tolerance > 0 and there is more than one node near the point then an exception is thrown.</para>
             <note>
-              <para>If tolerance = 0, the function use ST_Intersects otherwise will use ST_DWithin.</para>
+              <para>If tolerance = 0, the function uses ST_Intersects otherwise uses ST_DWithin.</para>
             </note>
             <para>Performed by the GEOS module.</para>
             <para>Availability: 2.0.0</para>
@@ -2398,7 +2398,7 @@ and is thus usable to build edge ring linking.
 		<refentry id="TopologyPolygonize">
 			<refnamediv>
 				<refname>Polygonize</refname>
-				<refpurpose>Find and register all faces defined by topology edges</refpurpose>
+				<refpurpose>Finds and registers all faces defined by topology edges.</refpurpose>
 			</refnamediv>
 			<refsynopsisdiv>
 				<funcsynopsis>
@@ -2412,7 +2412,7 @@ and is thus usable to build edge ring linking.
 			<refsection>
                 <title>Description</title>
 
-                <para>Register all faces that can be built out a topology edge primitives.</para>
+                <para>Registers all faces that can be built out a topology edge primitives.</para>
                 <para>The target topology is assumed to contain no self-intersecting edges.</para>
                 <note><para>Already known faces are recognized, so it is safe to call Polygonize multiple times on the same topology.</para></note>
 		<note><para>
@@ -2561,9 +2561,7 @@ edgeid
 			<refnamediv>
 				<refname>AddFace</refname>
 
-				<refpurpose>
-Registers a face primitive to a topology and gets its identifier.
-        </refpurpose>
+				<refpurpose>Registers a face primitive to a topology and gets its identifier.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -2679,8 +2677,8 @@ faceid
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>geometry <function>ST_Simplify</function></funcdef>
-			<paramdef><type>TopoGeometry</type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
+			<paramdef><type>TopoGeometry</type> <parameter>tg</parameter></paramdef>
+			<paramdef><type>float8</type> <parameter>tolerance</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -2742,8 +2740,8 @@ faceid
 			<refsection>
                 <title>Description</title>
 
-                <para>Creates a topogeometry object for layer denoted by layer_id and registers it in the relations table in the <varname>toponame</varname> schema.</para>
-                <para>tg_type is an integer: 1:[multi]point (punctal), 2:[multi]line (lineal), 3:[multi]poly (areal), 4:collection. layer_id is the layer id in the topology.layer table.</para>
+                <para>Creates a topogeometry object for layer denoted by <varname>layer_id</varname> and registers it in the relations table in the <varname>toponame</varname> schema.</para>
+                <para><varname>tg_type</varname> is an integer: 1:[multi]point (punctal), 2:[multi]line (lineal), 3:[multi]poly (areal), 4:collection. <varname>layer_id</varname> is the layer id in the topology.layer table.</para>
                 <para>punctal layers are formed from set of nodes, lineal layers are formed from a set of edges, areal layers are formed from a set of faces,
 	and collections can be formed from a mixture of nodes, edges, and faces.</para>
                 <para>Omitting the array of components generates an empty TopoGeometry object.</para>
@@ -2833,9 +2831,7 @@ UPDATE boston.blockgroups SET new_geom = topo::geometry;
 			<refnamediv>
 				<refname>toTopoGeom</refname>
 
-				<refpurpose>
-Converts a simple Geometry into a topo geometry
-        </refpurpose>
+				<refpurpose>Converts a simple Geometry into a topo geometry.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -2960,7 +2956,7 @@ SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
 		<refentry id="TopoElementArray_Agg">
           <refnamediv>
             <refname>TopoElementArray_Agg</refname>
-            <refpurpose>Returns a <varname>topoelementarray</varname> for a set of element_id, type arrays (topoelements)</refpurpose>
+            <refpurpose>Returns a <varname>topoelementarray</varname> for a set of element_id, type arrays (topoelements).</refpurpose>
           </refnamediv>
 
           <refsynopsisdiv>
@@ -3009,7 +3005,7 @@ SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
 			<refnamediv>
 				<refname>clearTopoGeom</refname>
 
-				<refpurpose>Clears the content of a topo geometry</refpurpose>
+				<refpurpose>Clears the content of a topo geometry.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -3054,7 +3050,7 @@ UPDATE nei_topo SET topo = ST_Buffer(clearTopoGeom(topo), -10);
     <refentry id="TopoGeom_addElement">
 			<refnamediv>
 				<refname>TopoGeom_addElement</refname>
-				<refpurpose>Add an element to the definition of a TopoGeometry</refpurpose>
+				<refpurpose>Adds an element to the definition of a TopoGeometry.</refpurpose>
 			</refnamediv>
 			<refsynopsisdiv>
 				<funcsynopsis>
@@ -3100,7 +3096,7 @@ UPDATE mylayer SET tg = TopoGeom_addElement(tg, '{5,2}');
 			<refnamediv>
 				<refname>TopoGeom_remElement</refname>
 
-				<refpurpose>Remove an element from the definition of a TopoGeometry</refpurpose>
+				<refpurpose>Removes an element from the definition of a TopoGeometry.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -3145,12 +3141,12 @@ UPDATE mylayer SET tg = TopoGeom_remElement(tg, '{43,3}');
     <refentry id="toTopoGeom_editor_proxy">
 			<refnamediv>
         <refname>toTopoGeom</refname>
-				<refpurpose>Adds a geometry shape to an existing topo geometry</refpurpose>
+				<refpurpose>Adds a geometry shape to an existing topo geometry.</refpurpose>
 			</refnamediv>
 			<refsection>
                 <title>Description</title>
 <para>
-Refer to <xref linkend="toTopoGeom" />
+Refer to <xref linkend="toTopoGeom" />.
 </para>
       </refsection>
     </refentry>
@@ -3165,7 +3161,7 @@ Refer to <xref linkend="toTopoGeom" />
 			<refnamediv>
 				<refname>GetTopoGeomElementArray</refname>
 
-				<refpurpose>Returns a <varname>topoelementarray</varname> (an array of topoelements) containing the topological elements and type of the given TopoGeometry (primitive elements)</refpurpose>
+				<refpurpose>Returns a <varname>topoelementarray</varname> (an array of topoelements) containing the topological elements and type of the given TopoGeometry (primitive elements).</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -3213,7 +3209,7 @@ Refer to <xref linkend="toTopoGeom" />
 			<refnamediv>
 				<refname>GetTopoGeomElements</refname>
 
-				<refpurpose>Returns a set of <varname>topoelement</varname> objects containing the topological  element_id,element_type of the given TopoGeometry (primitive elements)</refpurpose>
+				<refpurpose>Returns a set of <varname>topoelement</varname> objects containing the topological element_id,element_type of the given TopoGeometry (primitive elements).</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -3610,10 +3606,7 @@ UNION ALL SELECT ']}'::text as t;
         <refnamediv>
           <refname>Intersects</refname>
 
-          <refpurpose>
-Returns true if any pair of primitives from the
-two topogeometries intersect.
-          </refpurpose>
+          <refpurpose>Returns true if any pair of primitives from the two topogeometries intersect.</refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>
