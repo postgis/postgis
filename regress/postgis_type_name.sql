@@ -1,3 +1,15 @@
+SELECT 'GEOMETRY(0)', postgis_type_name('GEOMETRY', 0);
+SELECT 'GEOMETRY(1)', postgis_type_name('GEOMETRY', 1);
+SELECT 'GEOMETRY(2)', postgis_type_name('GEOMETRY', 2);
+SELECT 'GEOMETRY(3)', postgis_type_name('GEOMETRY', 3);
+SELECT 'GEOMETRY(4)', postgis_type_name('GEOMETRY', 4);
+SELECT 'GEOMETRY(5)', postgis_type_name('GEOMETRY', 5);
+SELECT 'GEOMETRYM(2)', postgis_type_name('GEOMETRYM', 2);
+SELECT 'GEOMETRYM(3)', postgis_type_name('GEOMETRYM', 3);
+SELECT 'GEOMETRYZ(3)', postgis_type_name('GEOMETRYZ', 3);
+SELECT 'GEOMETRYZM(3)', postgis_type_name('GEOMETRYZM', 3);
+SELECT 'GEOMETRYZM(4)', postgis_type_name('GEOMETRYZM', 4);
+
 SELECT 'POINT(0)', postgis_type_name('POINT', 0);
 SELECT 'POINT(1)', postgis_type_name('POINT', 1);
 SELECT 'POINT(2)', postgis_type_name('POINT', 2);
