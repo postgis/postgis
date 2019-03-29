@@ -8,7 +8,7 @@
 # 2.1.13.3 - Named Spatial Relationship predicates based on the DE-9IM
 
 + intersects -- support Hierarchical geometries
-* equals 
+* equals
 - disjoint
 - touches
 - crosses
@@ -17,4 +17,4 @@
 - contains
 - relate
 
-# Geomery editing
+# Geometry editing
