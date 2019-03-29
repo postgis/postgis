@@ -1042,8 +1042,8 @@ pta_unstroke(const POINTARRAY *points, int srid)
 			else {
 				lw_arc_center((POINT2D*)&first, (POINT2D*)&b, (POINT2D*)&a1, (POINT2D*)&center);
 				angle = lw_arc_angle((POINT2D*)&first, (POINT2D*)&center, (POINT2D*)&b);
-        int p2_side = lw_segment_side((POINT2D*)&first, (POINT2D*)&a1, (POINT2D*)&b);
-        if ( p2_side >= 0 ) angle = -angle;
+				int p2_side = lw_segment_side((POINT2D*)&first, (POINT2D*)&a1, (POINT2D*)&b);
+				if ( p2_side >= 0 ) angle = -angle;
 
 				if ( angle < 0 ) angle = 2 * M_PI + angle;
 				num_quadrants = ( 4 * angle ) / ( 2 * M_PI );
