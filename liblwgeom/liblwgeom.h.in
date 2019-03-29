@@ -2061,8 +2061,8 @@ LWGEOM_UNPARSER_RESULT;
 #define TWKB_BBOX 0x01 /* User wants bboxes */
 #define TWKB_SIZE 0x02 /* User wants sizes */
 #define TWKB_ID 0x04 /* User wants id */
-#define TWKB_NO_TYPE 0x10 /* No type because it is a sub geoemtry */
-#define TWKB_NO_ID 0x20 /* No ID because it is a subgeoemtry */
+#define TWKB_NO_TYPE 0x10 /* No type because it is a sub geometry */
+#define TWKB_NO_ID 0x20 /* No ID because it is a subgeometry */
 #define TWKB_DEFAULT_PRECISION 0 /* Aim for 1m (or ft) rounding by default */
 
 /*

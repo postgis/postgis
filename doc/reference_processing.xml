@@ -3603,11 +3603,11 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) As foo;
 		<para>Filters away vertex points based on their m-value. Returns a geometry with only
 			vertex points that have a m-value larger or equal to the min value and smaller or equal to
 			the max value. If max-value argument is left out only min value is considered. If fourth argument is left out the m-value
-			will not be in the resulting geoemtry. If resulting geometry have too few vertex points left for its geometry type an empty
-			geoemtry will be returned. In a geometry collection
+			will not be in the resulting geometry. If resulting geometry have too few vertex points left for its geometry type an empty
+			geometry will be returned. In a geometry collection
 			geometries without enough points will just be left out silently. If </para>
 		<para>This function is mainly intended to be used in conjunction with ST_SetEffectiveArea. ST_EffectiveArea sets the effective area
-			of a vertex in it's m-value. With ST_FilterByM it then is possible to get a simplified version of the geoemtry without any calculations, just by filtering</para>
+			of a vertex in it's m-value. With ST_FilterByM it then is possible to get a simplified version of the geometry without any calculations, just by filtering</para>
 
 		<note><para>There is a difference in what ST_SimplifyVW returns when not enough points meets the creterias compared to ST_FilterByM.
 				ST_SimplifyVW returns the geometry with enough points while ST_FilterByM returns an empty geometry</para></note>

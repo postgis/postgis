@@ -2672,7 +2672,7 @@ msgstr "ST_DumpPoints"
 msgid ""
 "Returns a set of geometry_dump (geom,path) rows of all points that make up a "
 "geometry."
-msgstr "ジオメトリを作る全ての点のgometry_dump(geom,path)行の集合を返します。"
+msgstr "ジオメトリを作る全ての点のgeometry_dump(geom,path)行の集合を返します。"
 
 #. Tag: funcprototype
 #: reference_processing.xml:1021

@@ -53,8 +53,8 @@ OPTIONS
               this  will reduce the likelihood of coordinate drift due to con-
               version to and from WKT format. Coordinate drifts will not occur
               with  PostGIS  1.0.0  and  newer  versions.  It will be slightly
-              faster, but might fail if any NON-gemetry column lacks a cast to
-              text.
+              faster, but might fail if any  NON-geometry  column lacks a cast
+              to text.
 
        -r     Raw mode. Do not drop the gid field, or escape column names.
 
