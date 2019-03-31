@@ -12,7 +12,7 @@
 #export OS_BUILD=32
 
 #export GCC_TYPE=
-export GEOS_VER=3.8.0dev
+export GEOS_VER=3.8
 export GDAL_VER=2.2.4
 export PROJ_VER=4.9.3
 export SFCGAL_VER=1.3.2

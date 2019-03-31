@@ -1,8 +1,16 @@
 #!/bin/bash
 set -e
 export GEOS_VER=3.8
-export GDAL_VER=2.4.0
-export PROJ_VER=6.0.0
+export SFCGAL_VER=1.3.2
+export PCRE_VER=8.33
+export PROTOBUF_VER=3.2.0
+export PROTOBUFC_VER=1.2.1
+export CGAL_VER=4.11
+export LIBXML_VER=2.7.8
+#export GDAL_VER=2.4.0
+export GDAL_VER=2.2.4
+export PROJ_VER=4.9.3
+#export PROJ_VER=5.2.0
 export SFCGAL_VER=1.3.2
 export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
