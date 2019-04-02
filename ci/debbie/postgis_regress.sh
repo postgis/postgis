@@ -14,7 +14,7 @@ set -e
 export MAKE_GARDEN=0
 export MAKE_EXTENSION=1
 export DUMP_RESTORE=0
-export MAKE_LOGBT=1
+export MAKE_LOGBT=0
 
 ## end variables passed in by jenkins
 
