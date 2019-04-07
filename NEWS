@@ -85,6 +85,9 @@ PostGIS 3.0.0
            POLYHEDRALSURFACE (Darafei Praliaskouski)
   - #4348, ST_AsMVTGeom (GEOS): Enforce validation at all times (Raúl Marín)
   - #4361, Fix postgis_type_name with (GEOMETRYM,3) (Matt Bretl)
+  - #4295, Allow GEOMETRYCOLLECTION in ST_Overlaps, ST_Contains, ST_ContainsProperly,
+           ST_Covers, ST_CoveredBy, ST_Crosses, ST_Touches, ST_Disjoint, ST_Relate,
+           ST_Equals (Esteban Zimányi)
 
 PostGIS 2.5.0
 2018/09/23

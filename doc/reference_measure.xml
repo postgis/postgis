@@ -255,7 +255,7 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 		, round(degrees(2*PI()-rad2 -2*PI()+rad1+2*PI()))::int%360 AS reference
 	FROM points ;
 
-1 | line | computed_angle | reference
+1 | line | computed_angle | reference
 ------------------+------------------
 1 | LINESTRING(1.511 1.86,1 1,0.896 0.005) | 155.27033848688 | 155
 
@@ -2116,3 +2116,4 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 
 
 </sect1>
+

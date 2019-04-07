@@ -247,7 +247,7 @@ ST_DWithin(
 		<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 
 		<important>
-		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
 		</important>
 
 		<important>
@@ -435,7 +435,7 @@ ST_Point      | t          | t              | f           | f
 		<para>Availability: 1.4.0</para>
 
 		<important>
-		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
 		</important>
 
 		<important>
@@ -526,7 +526,7 @@ ST_Point      | t          | t              | f           | f
 			Geometry/Geography A</para>
 
 		<important>
-		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
 		</important>
 
 		<important>
@@ -627,7 +627,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
 			Geometry/Geography B</para>
 
 		<important>
-		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
 		</important>
 
 		<important>
@@ -743,9 +743,9 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 		Area/Line situations as well. This makes the relation
 		symmetric.</para>
 
-	  <important>
-		<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
-	  </important>
+		<important>
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+		</important>
 
 	<note>
 	  <para>This function call will automatically include a bounding box
@@ -1060,9 +1060,9 @@ WHERE ST_CrossingDirection(s1.the_geom, s2.the_geom) > 0;
 				returns true, then the geometries are not spatially disjoint.
 				Disjoint implies false for spatial intersection.</para>
 
-			<important>
-				<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
-			</important>
+		<important>
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+		</important>
 
 			<para>Performed by the GEOS module</para>
 			<note>
@@ -1316,9 +1316,9 @@ SELECT b.tower_id, b.geom
 		  <para>This function will return false if either geometry is invalid except in the case where they are binary equal.</para>
 		</important>
 
-        <important>
-            <para>Do not call with a GEOMETRYCOLLECTION as an argument.</para>
- 		</important>
+		<important>
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+		</important>
 
 		<para>&sfs_compliant; s2.1.1.2</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.24</para>
@@ -1542,7 +1542,9 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 
 		 <para>Performed by the GEOS module</para>
 
-		<note><para>Do not call with a GeometryCollection as an argument</para></note>
+		<important>
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+		</important>
 
 		<para>This function call will automatically include a bounding box
 		comparison that will make use of any indexes that are available on
@@ -1740,7 +1742,6 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 					by the values in the <ulink url="http://en.wikipedia.org/wiki/DE-9IM">DE-9IM matrix pattern</ulink>.</para>
 
 			<para>This is especially useful for testing compound checks of intersection, crosses, etc in one step.</para>
-			<para>Do not call with a GeometryCollection as an argument</para>
 
 			<note><para>This is the "allowable" version that returns a
 			boolean, not an integer.  This is defined in OGC spec</para></note>
@@ -1754,7 +1755,9 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 
 			<para>Version 3: same as version 2, but allows to specify a boundary node rule (1:OGC/MOD2, 2:Endpoint, 3:MultivalentEndpoint, 4:MonovalentEndpoint)</para>
 
-			<note><para>Do not call with a GeometryCollection as an argument</para></note>
+			<important>
+			  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+			</important>
 
 			<para>not in OGC spec, but implied. see s2.1.13.2</para>
 			<para>&sfs_compliant; s2.1.1.2 // s2.1.13.3</para>
@@ -1921,7 +1924,7 @@ SELECT mat.name, pat.name, ST_RelateMatch(mat.val, pat.val) As satisfied
 		</itemizedlist>
 
 		<important>
-		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
 		</important>
 
 		<note>
@@ -2055,7 +2058,7 @@ SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry)
 		<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit for geometry extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 
 		<important>
-		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
 		</important>
 
 		<important>
