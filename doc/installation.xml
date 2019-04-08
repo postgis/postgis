@@ -1635,17 +1635,17 @@ sh ma_load.sh</programlisting>
 			</listitem>
 			<listitem><para>After you are done loading all data or at a stopping point, it's a good idea to analyze all the tiger tables to update the stats (include inherited stats)</para>
 			    <programlisting>SELECT install_missing_indexes();
-vacuum analyze verbose tiger.addr;
-vacuum analyze verbose tiger.edges;
-vacuum analyze verbose tiger.faces;
-vacuum analyze verbose tiger.featnames;
-vacuum analyze verbose tiger.place;
-vacuum analyze verbose tiger.cousub;
-vacuum analyze verbose tiger.county;
-vacuum analyze verbose tiger.state;
-vacuum analyze verbose tiger.zip_lookup_base;
-vacuum analyze verbose tiger.zip_state;
-vacuum analyze verbose tiger.zip_state_loc;</programlisting>
+vacuum (analyze, verbose) tiger.addr;
+vacuum (analyze, verbose) tiger.edges;
+vacuum (analyze, verbose) tiger.faces;
+vacuum (analyze, verbose) tiger.featnames;
+vacuum (analyze, verbose) tiger.place;
+vacuum (analyze, verbose) tiger.cousub;
+vacuum (analyze, verbose) tiger.county;
+vacuum (analyze, verbose) tiger.state;
+vacuum (analyze, verbose) tiger.zip_lookup_base;
+vacuum (analyze, verbose) tiger.zip_state;
+vacuum (analyze, verbose) tiger.zip_state_loc;</programlisting>
 			</listitem>
 		</orderedlist>
 		<sect3 id="convert_tiger_geocoder_extension"><title>Converting a Tiger Geocoder Regular Install to Extension Model</title>
