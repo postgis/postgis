@@ -63,6 +63,8 @@ DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography); -- this one changed to us
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry,int4); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography,int4); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography, int4, int4); -- dropped because the version-first signature is dumb
+DROP FUNCTION IF EXISTS _ST_AsGeoJson(int4, geometry, int4, int4); -- dropped in PostGIS-3.0 (r17300)
+DROP FUNCTION IF EXISTS _ST_AsGeoJson(int4, geography, int4, int4); -- dropped in PostGIS-3.0 (r17300)
 DROP FUNCTION IF EXISTS st_asgml(geometry); -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(geometry, int4);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geometry);  -- changed to use default args
@@ -79,7 +81,8 @@ DROP FUNCTION IF EXISTS _st_asgml(int4, geometry, int4, int4, text); -- changed 
 DROP FUNCTION IF EXISTS _st_asgml(int4, geography, int4, int4, text); -- changed to use default args
 DROP FUNCTION IF EXISTS _st_asgml(int4, geography, int4, int4, text, text); -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(geography, int4, int4);
-DROP FUNCTION IF EXISTS _st_askml(int4, geography, int4, text); -- dropped because the version-first signature is dumb
+DROP FUNCTION IF EXISTS _st_askml(int4, geography, int4, text); -- dropped in PostGIS-3.0 (r17300)
+DROP FUNCTION IF EXISTS _st_askml(int4, geometry, int4, text); -- dropped in PostGIS-3.0 (r17300)
 DROP FUNCTION IF EXISTS st_askml(geometry); -- changed to use default args
 DROP FUNCTION IF EXISTS st_askml(geography); -- changed to use default args
 DROP FUNCTION IF EXISTS st_askml(int4, geometry, int4); -- changed to use default args
@@ -109,6 +112,7 @@ DROP FUNCTION IF EXISTS st_box3d(box2d);
 DROP FUNCTION IF EXISTS st_box(box3d);
 DROP FUNCTION IF EXISTS st_box3d(geometry);
 DROP FUNCTION IF EXISTS st_box(geometry);
+DROP FUNCTION IF EXISTS _st_buffer(geometry, float8, cstring); -- dropped in PostGIS-3.0 (r17300)
 DROP FUNCTION IF EXISTS ST_ConcaveHull(geometry,float); -- this one changed to use default parameters
 DROP FUNCTION IF EXISTS ST_DWithin(geography, geography, float8); -- this one changed to use default parameters
 DROP FUNCTION IF EXISTS st_text(geometry);
@@ -118,6 +122,7 @@ DROP FUNCTION IF EXISTS st_geometry(text);
 DROP FUNCTION IF EXISTS st_geometry(bytea);
 DROP FUNCTION IF EXISTS st_bytea(geometry);
 DROP FUNCTION IF EXISTS st_addbbox(geometry);
+DROP FUNCTION IF EXISTS _st_distance(geography, geography, float8, boolean); -- dropped in PostGIS-3.0 (r17300)
 DROP FUNCTION IF EXISTS st_dropbbox(geometry);
 DROP FUNCTION IF EXISTS st_hasbbox(geometry);
 DROP FUNCTION IF EXISTS cache_bbox();
