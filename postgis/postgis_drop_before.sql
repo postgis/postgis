@@ -72,7 +72,8 @@ DROP FUNCTION IF EXISTS _st_linecrossingdirection(geometry,geometry);
 DROP FUNCTION IF EXISTS ST_LineCrossingDirection(geometry, geometry);
 DROP FUNCTION IF EXISTS _st_orderingequals(geometry,geometry);
 DROP FUNCTION IF EXISTS st_orderingequals(geometry,geometry);
-DROP FUNCTION IF EXISTS st_askml(geometry, integer);
+DROP FUNCTION IF EXISTS st_askml(geometry, integer); -- changed to use default args in PostGIS 3.0 (r17357)
+DROP FUNCTION IF EXISTS st_askml(geography, integer); -- changed to use default args in PostGIS 3.0 (r17357)
 DROP FUNCTION IF EXISTS st_buffer(geometry, double precision);
 
 -- Old signatures for protobuf related functions improved in 2.4.0 RC/final
