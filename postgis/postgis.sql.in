@@ -2831,7 +2831,7 @@ BEGIN
 			ELSE
 				RAISE NOTICE 'Extension % is not available or not packagable for some reason', rec.name;
 			END IF;
-		ELSIF rec.default_version > rec.installed_version
+		ELSIF rec.default_version != rec.installed_version
 		THEN
 			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
 						quote_ident(rec.default_version)   || ';';
@@ -2840,7 +2840,7 @@ BEGIN
 			RAISE DEBUG '%', sql;
 			EXECUTE sql;
 		ELSIF rec.default_version = rec.installed_version AND
-					rec.installed_version ILIKE '%dev%'
+					rec.installed_version ILIKE '%dev'
 		THEN
 			-- we need to upgrade to next and back
 			RAISE NOTICE 'Updating dev extension % %',
