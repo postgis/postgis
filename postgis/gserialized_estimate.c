@@ -1632,7 +1632,9 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		histo_cells_new = 1;
 		for ( d = 0; d < ndims; d++ )
 		{
-			histo_size[d] = 1 + (int)pow((double)histo_cells_target, 1/(double)ndims);
+			histo_size[d] = (int)pow((double)histo_cells_target, 1/(double)ndims);
+			if ( ! histo_size[d] )
+				histo_size[d] = 1;
 			POSTGIS_DEBUGF(3, "   histo_size[d]: %d", histo_size[d]);
 			histo_cells_new *= histo_size[d];
 		}
