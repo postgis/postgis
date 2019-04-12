@@ -31,7 +31,8 @@ static LWGEOM* lwgeom_from_text(const char *str)
 }
 
 #define DIST2DTEST(str1, str2, res) \
-	do_test_mindistance_tolerance(str1, str2, res, __LINE__, lwgeom_mindistance2d_tolerance)
+	do_test_mindistance_tolerance(str1, str2, res, __LINE__, lwgeom_mindistance2d_tolerance);\
+	do_test_mindistance_tolerance(str2, str1, res, __LINE__, lwgeom_mindistance2d_tolerance)
 #define DIST3DTEST(str1, str2, res) \
 	do_test_mindistance_tolerance(str1, str2, res, __LINE__, lwgeom_mindistance3d_tolerance)
 
@@ -794,6 +795,18 @@ test_lw_dist2d_arc_arc(void)
 	POINT2D A1, A2, A3, B1, B2, B3;
 	int rv;
 
+	/* Ticket #4326 */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -1.0; A1.y =  4.0;
+	A2.x =  0.0; A2.y =  5.0;
+	A3.x =  1.0; A3.y =  4.0;
+	B1.x =  1.0; B1.y =  6.0;
+	B2.x =  6.0; B2.y =  1.0;
+	B3.x =  9.0; B3.y =  7.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.0475666, 0.000001);
+
 	/* Unit semicircle at 0,0 */
 	B1.x = -1; B1.y = 0;
 	B2.x = 0 ; B2.y = 1;
@@ -957,7 +970,6 @@ test_lw_dist2d_arc_arc(void)
 	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 5.0, 0.000001);
-
 
 }
 

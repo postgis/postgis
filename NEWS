@@ -5,6 +5,7 @@ PostGIS 2.5.3
 
   - #4348, ST_AsMVTGeom (GEOS): Enforce validation at all times (Raúl Marín)
   - #4361, Fix postgis_type_name with (GEOMETRYM,3) (Matt Bretl)
+  - #4326, Fix circular arc distance calculation (Paul Ramsey)
 
 
 PostGIS 2.5.2
