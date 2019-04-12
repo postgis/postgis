@@ -1496,7 +1496,6 @@ lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
 {
 	POINT2D CA, CB; /* Center points of arcs A and B */
 	double radius_A, radius_B, d; /* Radii of arcs A and B */
-	POINT2D P; /* Temporary point P */
 	POINT2D D; /* Mid-point between the centers CA and CB */
 	int pt_in_arc_A, pt_in_arc_B; /* Test whether potential intersection point is within the arc */
 
@@ -1542,11 +1541,13 @@ lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
 	if ( radius_B > radius_A )
 	{
 		const POINT2D *tmp;
+		POINT2D TP; /* Temporary point P */
+		double td;
 		tmp = B1; B1 = A1; A1 = tmp;
 		tmp = B2; B2 = A2; A2 = tmp;
 		tmp = B3; B3 = A3; A3 = tmp;
-		P = CB; CB = CA; CA = P;
-		d = radius_B; radius_B = radius_A; radius_A = d;
+		TP = CB; CB = CA; CA = TP;
+		td = radius_B; radius_B = radius_A; radius_A = td;
 	}
 
 	/* Circles touch at a point. Is that point within the arcs? */
@@ -1662,8 +1663,8 @@ lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
 	{
 		lw_dist2d_pt_pt(A1, B1, dl);
 		lw_dist2d_pt_pt(A1, B3, dl);
-		lw_dist2d_pt_pt(A2, B1, dl);
-		lw_dist2d_pt_pt(A2, B3, dl);
+		lw_dist2d_pt_pt(A3, B1, dl);
+		lw_dist2d_pt_pt(A3, B3, dl);
 		return LW_TRUE;
 	}
 
