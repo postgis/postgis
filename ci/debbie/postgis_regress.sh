@@ -16,6 +16,7 @@ export MAKE_GARDEN=0
 export MAKE_EXTENSION=1
 export DUMP_RESTORE=0
 export MAKE_LOGBT=0
+export NO_SFCGAL=0
 
 ## end variables passed in by jenkins
 
@@ -59,12 +60,12 @@ if [ -e ./GNUMakefile ]; then
 fi
 
 ./autogen.sh
-
+#--with-sfcgal=${PROJECTS}/sfcgal/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}/bin/sfcgal-config
 ./configure \
     --with-pgconfig=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}/bin/pg_config \
     --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/geos-config \
     --with-gdalconfig=${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/bin/gdal-config \
-    --with-sfcgal=${PROJECTS}/sfcgal/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}/bin/sfcgal-config --without-interrupt-tests \
+    --without-interrupt-tests \
     --prefix=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}
 make clean
 make
