@@ -23,7 +23,7 @@ PROJECTS=${JENKINS_HOME}/workspace
 PGPATH=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}
 
 export PGUSER=postgres
-export PATH="${PGPATH}/bin:$PATH"
+export PATH="${PGPATH}/bin:${PROJECTS}/sfcgal/rel-${SFCGAL_VER}w${OS_BUILD}/bin:$PATH"
 export LD_LIBRARY_PATH="${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/lib:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/lib:${PROJECTS}/sfcgal/rel-${SFCGAL_VER}w${OS_BUILD}/lib:${PGPATH}/lib"
 
 rm -rf ${WORKSPACE}/tmp/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
@@ -64,7 +64,7 @@ fi
     --with-pgconfig=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}/bin/pg_config \
     --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/geos-config \
     --with-gdalconfig=${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/bin/gdal-config \
-    --with-sfcgal=/var/lib/jenkins/workspace/sfcgal/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}/bin/sfcgal-config --without-interrupt-tests \
+    --with-sfcgal=${PROJECTS}/sfcgal/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}/bin/sfcgal-config --without-interrupt-tests \
     --prefix=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}
 make clean
 make
