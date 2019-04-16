@@ -454,9 +454,25 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 		}
 		if (!g) return NULL;
 		break;
+	case TRIANGLETYPE:
+
+		if (lwgeom_is_empty(lwgeom))
+			g = GEOSGeom_createEmptyPolygon();
+		else
+		{
+			LWTRIANGLE *lwt = (LWTRIANGLE *)lwgeom;
+			shell = ptarray_to_GEOSLinearRing(lwt->points, autofix);
+			if (!shell)
+				return NULL;
+			g = GEOSGeom_createPolygon(shell, NULL, 0);
+		}
+		if (!g)
+			return NULL;
+		break;
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		if (lwgeom->type == MULTIPOINTTYPE)
 			geostype = GEOS_MULTIPOINT;
