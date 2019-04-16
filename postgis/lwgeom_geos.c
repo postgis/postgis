@@ -527,6 +527,7 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 	UnionBuildState *state;
 	GSERIALIZED *gser_in;
 	uint32_t curgeom;
+	GEOSGeometry *g;
 
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 	{
@@ -573,7 +574,7 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 				state->is3d = gserialized_has_z(gser_in);
 			}
 
-			GEOSGeometry *g = POSTGIS2GEOS(gser_in);
+			g = POSTGIS2GEOS(gser_in);
 
 			if (!g)
 				HANDLE_GEOS_ERROR("One of the geometries in the set could not be converted to GEOS");
