@@ -88,6 +88,8 @@ PostGIS 3.0.0
   - #4295, Allow GEOMETRYCOLLECTION in ST_Overlaps, ST_Contains, ST_ContainsProperly,
            ST_Covers, ST_CoveredBy, ST_Crosses, ST_Touches, ST_Disjoint, ST_Relate,
            ST_Equals (Esteban Zimányi)
+  - #4340, ST_Union aggregate now can handle more than 1 GB of geometries
+           (Darafei Praliaskouski)
 
 PostGIS 2.5.0
 2018/09/23
