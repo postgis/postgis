@@ -520,17 +520,13 @@ typedef struct UnionBuildState
 	bool is3d;
 } UnionBuildState;
 
-/**
-** The transfer function hooks into the PostgreSQL accumArrayResult()
-** function (present since 8.0) to build an array in a side memory
-** context.
-*/
 PG_FUNCTION_INFO_V1(pgis_geometry_union_transfn);
 Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 {
 	MemoryContext aggcontext;
 	UnionBuildState *state;
 	GSERIALIZED *gser_in;
+	uint32_t curgeom;
 
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 	{
@@ -582,7 +578,7 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 			if (!g)
 				HANDLE_GEOS_ERROR("One of the geometries in the set could not be converted to GEOS");
 
-			uint32_t curgeom = state->ngeoms;
+			curgeom = state->ngeoms;
 			state->ngeoms++;
 
 			if (state->ngeoms > state->alen)
@@ -604,18 +600,11 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(state);
 }
 
-/**
- * The "union" final function passes the geometry[] to a union
- * conversion before returning the result.
- */
 PG_FUNCTION_INFO_V1(pgis_geometry_union_finalfn);
 Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
 {
-	Datum result = 0;
 	UnionBuildState *state;
-	Datum geometry_array = 0;
 	GSERIALIZED *gser_out = NULL;
-
 	GEOSGeometry *g = NULL;
 	GEOSGeometry *g_union = NULL;
 
