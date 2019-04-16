@@ -454,8 +454,8 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 		}
 		if (!g) return NULL;
 		break;
-	case TRIANGLETYPE:
 
+	case TRIANGLETYPE:
 		if (lwgeom_is_empty(lwgeom))
 			g = GEOSGeom_createEmptyPolygon();
 		else

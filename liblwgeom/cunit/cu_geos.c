@@ -48,7 +48,7 @@ test_geos_noop(void)
 		in_ewkt = ewkt[i];
 		geom_in = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
 		geom_out = lwgeom_geos_noop(geom_in);
-		assert(geom_out);
+		CU_ASSERT_PTR_NOT_NULL_FATAL(geom_out);
 		out_ewkt = lwgeom_to_ewkt(geom_out);
 		ASSERT_STRING_EQUAL(out_ewkt, in_ewkt);
 		lwfree(out_ewkt);
