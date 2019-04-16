@@ -2091,16 +2091,6 @@ CREATE OR REPLACE FUNCTION ST_distance_sphere(geom1 geometry, geom2 geometry)
 
 -- end Old underscored_names replaced by CamelCase names
 
-
---- Start Aggregates and supporting functions --
--- Deprecation in: 1.2.3
--- Changed: 2.5.0 use 'internal' stype
-CREATE AGGREGATE accum (
-	sfunc = pgis_geometry_accum_transfn,
-	basetype = geometry,
-	stype = internal,
-	finalfunc = pgis_geometry_accum_finalfn
-	);
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION collect(geometry, geometry)
 	RETURNS geometry
