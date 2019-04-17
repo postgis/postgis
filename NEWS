@@ -88,6 +88,8 @@ PostGIS 3.0.0
   - #4295, Allow GEOMETRYCOLLECTION in ST_Overlaps, ST_Contains, ST_ContainsProperly,
            ST_Covers, ST_CoveredBy, ST_Crosses, ST_Touches, ST_Disjoint, ST_Relate,
            ST_Equals (Esteban Zimányi)
+  - #4378, Allow passing TINs as input to GEOS-backed functions (Darafei
+           Praliaskouski)
 
 PostGIS 2.5.0
 2018/09/23
