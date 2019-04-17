@@ -939,6 +939,13 @@ newFace(const GEOSGeometry* g)
 	Face* f = lwalloc(sizeof(Face));
 	f->geom = g;
 	f->env = GEOSEnvelope(f->geom);
+
+#if defined(__has_feature)
+#if __has_feature(memory_sanitizer)
+	f->envarea = 0;
+#endif
+#endif
+
 	GEOSArea(f->env, &f->envarea);
 	f->parent = NULL;
 	return f;
