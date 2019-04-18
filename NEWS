@@ -21,6 +21,7 @@ PostGIS 3.0.0
   - #4268, Bump minimum SFCGAL version to 1.3.1 (Darafei Praliaskouski)
   - #4331, ST_3DMakeBox now returns error instead of a miniscule box (Regina Obe)
   - #4342, Removed "versioned" variants of ST_AsGeoJSON and ST_AsKML (Paul Ramsey)
+  - #4356, ST_Accum removed. Use array_agg instead. (Darafei Praliaskouski)
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)

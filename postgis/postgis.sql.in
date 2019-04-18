@@ -3822,13 +3822,6 @@ CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(internal, geometry, float
 
 -- Availability: 1.4.0
 -- Changed: 2.5.0 use 'internal' transfer type
-CREATE OR REPLACE FUNCTION pgis_geometry_accum_finalfn(internal)
-	RETURNS geometry[]
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c' _PARALLEL;
-
--- Availability: 1.4.0
--- Changed: 2.5.0 use 'internal' transfer type
 CREATE OR REPLACE FUNCTION pgis_geometry_union_finalfn(internal)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
@@ -3868,18 +3861,6 @@ CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(internal)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
-
--- Availability: 1.2.2
--- Changed: 2.4.0 marked parallel safe
--- Changed: 2.5.0 use 'internal' stype
-CREATE AGGREGATE ST_Accum (geometry) (
-	sfunc = pgis_geometry_accum_transfn,
-	stype = internal,
-#if POSTGIS_PGSQL_VERSION >= 96
-	parallel = safe,
-#endif
-	finalfunc = pgis_geometry_accum_finalfn
-	);
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_Union (geometry[])

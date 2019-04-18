@@ -27,6 +27,8 @@ DROP AGGREGATE IF EXISTS collect(geometry); -- Deprecated in 1.2.3, Dropped in 2
 DROP AGGREGATE IF EXISTS st_geomunion(geometry);
 DROP AGGREGATE IF EXISTS accum_old(geometry);
 DROP AGGREGATE IF EXISTS st_accum_old(geometry);
+DROP AGGREGATE IF EXISTS st_accum(geometry); -- Dropped in 3.0.0
+DROP FUNCTION IF EXISTS pgis_geometry_accum_finalfn(internal);
 
 DROP AGGREGATE IF EXISTS st_astwkb_agg(geometry, integer); -- temporarely introduced before 2.2.0 final
 DROP AGGREGATE IF EXISTS st_astwkb_agg(geometry, integer, bigint); -- temporarely introduced before 2.2.0 final

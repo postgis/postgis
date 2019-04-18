@@ -1588,7 +1588,7 @@ Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDeta
 --First 3 Rejects from a successful quintuplet experiment
 SELECT gid, ST_IsValidReason(the_geom) as validity_info
 FROM
-(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As the_geom, gid
+(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As the_geom, gid
 FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
 	FROM generate_series(-4,6) x1
 	CROSS JOIN generate_series(2,5) y1
@@ -1676,7 +1676,7 @@ The 'flags' argument is a bitfield. It can have the following values:
 --First 3 Rejects from a successful quintuplet experiment
 SELECT gid, reason(ST_IsValidDetail(the_geom)), ST_AsText(location(ST_IsValidDetail(the_geom))) as location
 FROM
-(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As the_geom, gid
+(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As the_geom, gid
 FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
 	FROM generate_series(-4,6) x1
 	CROSS JOIN generate_series(2,5) y1

@@ -1551,7 +1551,7 @@ POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))
 				geometries must be closed LINESTRINGS. Comes in 2 variants.</para>
 			<para>Variant 1:  Takes one closed linestring.</para>
 			<para>Variant 2:  Creates a Polygon formed by the given shell and array of
-			holes. You can construct a geometry array using ST_Accum or the PostgreSQL ARRAY[] and
+			holes. You can construct a geometry array using the PostgreSQL array_agg, ARRAY[] and
 			ARRAY() constructs. Input geometries must be closed LINESTRINGS.</para>
 			<note>
 				<para>This function will not accept a MULTILINESTRING.  Use <xref linkend="ST_LineMerge" /> or <xref linkend="ST_Dump" /> to generate line strings.</para>
@@ -1604,15 +1604,14 @@ FROM
 		<para>Build province boundaries with holes
 		representing lakes in the province from a set of
 		province polygons/multipolygons and water linestrings.
-		This is an example of using PostGIS ST_Accum.
 		<note><para>The CASE construct is used because feeding a null array into
 		ST_MakePolygon results in NULL.</para></note>
 		<note><para>A left join is used to guarantee we get all provinces back even if they have no lakes.</para></note></para>
 		<programlisting>
 	SELECT p.gid, p.province_name,
 		CASE WHEN
-			ST_Accum(w.the_geom) IS NULL THEN p.the_geom
-		ELSE  ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)), ST_Accum(w.the_geom)) END
+			array_agg(w.the_geom) IS NULL THEN p.the_geom
+		ELSE  ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)), array_agg(w.the_geom)) END
 	FROM
 		provinces p LEFT JOIN waterlines w
 			ON (ST_Within(w.the_geom, p.the_geom) AND ST_IsClosed(w.the_geom))
@@ -1641,7 +1640,6 @@ FROM
 			<title>See Also</title>
 			<para>
 				<xref linkend="ST_Boundary" />,
-				<xref linkend="ST_Accum" />,
 				<xref linkend="ST_AddPoint" />,
 				<xref linkend="ST_GeometryType" />,
 				<xref linkend="ST_IsClosed" />,
