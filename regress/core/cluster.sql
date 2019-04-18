@@ -11,9 +11,9 @@ INSERT INTO cluster_inputs VALUES
 (7, 'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))');
 
 SELECT 't1', ST_AsText(unnest(ST_ClusterIntersecting(geom ORDER BY id))) FROM cluster_inputs;
-SELECT 't2', ST_AsText(unnest(ST_ClusterIntersecting(ST_Accum(geom ORDER BY id)))) FROM cluster_inputs;
+SELECT 't2', ST_AsText(unnest(ST_ClusterIntersecting(array_agg(geom ORDER BY id)))) FROM cluster_inputs;
 SELECT 't3', ST_AsText(unnest(ST_ClusterWithin(geom, 1.4 ORDER BY id))) FROM cluster_inputs;
-SELECT 't4', ST_AsText(unnest(ST_ClusterWithin(ST_Accum(geom ORDER BY id), 1.5))) FROM cluster_inputs;
+SELECT 't4', ST_AsText(unnest(ST_ClusterWithin(array_agg(geom ORDER BY id), 1.5))) FROM cluster_inputs;
 
 -- tests for ST_DBSCAN
 

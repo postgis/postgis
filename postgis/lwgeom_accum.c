@@ -42,7 +42,6 @@
 Datum PGISDirectFunctionCall1(PGFunction func, Datum arg1);
 Datum PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2);
 Datum pgis_geometry_accum_transfn(PG_FUNCTION_ARGS);
-Datum pgis_geometry_accum_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_collect_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS);
@@ -173,27 +172,6 @@ pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, __attribute__((__unused__)) 
 	lbs[0] = 1;
 	result = makeMdArrayResult(state, 1, dims, lbs, mctx, false);
 	return result;
-}
-
-/**
-** The "accum" final function just returns the geometry[]
-*/
-PG_FUNCTION_INFO_V1(pgis_geometry_accum_finalfn);
-Datum
-pgis_geometry_accum_finalfn(PG_FUNCTION_ARGS)
-{
-	pgis_abs *p;
-	Datum result = 0;
-
-	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();   /* returns null iff no input values */
-
-	p = (pgis_abs*) PG_GETARG_POINTER(0);
-
-	result = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-
-	PG_RETURN_DATUM(result);
-
 }
 
 /**
