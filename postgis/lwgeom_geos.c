@@ -564,7 +564,12 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 		gser_in = PG_GETARG_GSERIALIZED_P(1);
 
 		if (state->ngeoms > 0)
+		{
+			if (state->srid != gserialized_get_srid(gser_in))
+				for (curgeom = 0; curgeom < state->ngeoms; curgeom++)
+					GEOSGeom_destroy(state->geoms[curgeom]);
 			error_if_srid_mismatch(state->srid, gserialized_get_srid(gser_in));
+		}
 
 		if (!gserialized_is_empty(gser_in))
 		{
@@ -577,7 +582,11 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 			g = POSTGIS2GEOS(gser_in);
 
 			if (!g)
+			{
+				for (curgeom = 0; curgeom < state->ngeoms; curgeom++)
+					GEOSGeom_destroy(state->geoms[curgeom]);
 				HANDLE_GEOS_ERROR("One of the geometries in the set could not be converted to GEOS");
+			}
 
 			curgeom = state->ngeoms;
 			state->ngeoms++;
