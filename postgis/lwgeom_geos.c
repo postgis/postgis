@@ -508,6 +508,161 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(gser_out);
 }
 
+typedef struct UnionBuildState
+{
+	MemoryContext mcontext; /* where all the temp stuff is kept */
+	GEOSGeometry **geoms;   /* collected GEOS geometries*/
+	int empty_type;
+	uint32_t alen;   /* allocated length of above arrays */
+	uint32_t ngeoms; /* number of valid entries in above arrays */
+	int32_t srid;
+	bool is3d;
+} UnionBuildState;
+
+PG_FUNCTION_INFO_V1(pgis_geometry_union_transfn);
+Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
+{
+	MemoryContext aggcontext;
+	UnionBuildState *state;
+	GSERIALIZED *gser_in;
+	uint32_t curgeom;
+	GEOSGeometry *g;
+
+	if (!AggCheckCallContext(fcinfo, &aggcontext))
+	{
+		/* cannot be called directly because of dummy-type argument */
+		elog(ERROR, "%s called in non-aggregate context", __func__);
+		aggcontext = NULL; /* keep compiler quiet */
+	}
+
+	if (!PG_ARGISNULL(0))
+	{
+		state = (UnionBuildState *)PG_GETARG_POINTER(0);
+	}
+	else
+	{
+		MemoryContext old = MemoryContextSwitchTo(aggcontext);
+		state = (UnionBuildState *)palloc(sizeof(UnionBuildState));
+
+		state->mcontext = aggcontext;
+		state->alen = 10;
+		state->ngeoms = 0;
+		state->geoms = palloc(sizeof(GEOSGeometry *) * state->alen);
+		state->is3d = false;
+		state->srid = 0;
+		state->empty_type = 0;
+
+		initGEOS(lwpgnotice, lwgeom_geos_error);
+
+		MemoryContextSwitchTo(old);
+	};
+
+	/* do we have geometry to push? */
+	if (!PG_ARGISNULL(1))
+	{
+		gser_in = PG_GETARG_GSERIALIZED_P(1);
+
+		if (state->ngeoms > 0)
+		{
+			if (state->srid != gserialized_get_srid(gser_in))
+				for (curgeom = 0; curgeom < state->ngeoms; curgeom++)
+					GEOSGeom_destroy(state->geoms[curgeom]);
+			error_if_srid_mismatch(state->srid, gserialized_get_srid(gser_in));
+		}
+
+		if (!gserialized_is_empty(gser_in))
+		{
+			if (state->ngeoms == 0)
+			{
+				state->srid = gserialized_get_srid(gser_in);
+				state->is3d = gserialized_has_z(gser_in);
+			}
+
+			g = POSTGIS2GEOS(gser_in);
+
+			if (!g)
+			{
+				for (curgeom = 0; curgeom < state->ngeoms; curgeom++)
+					GEOSGeom_destroy(state->geoms[curgeom]);
+				HANDLE_GEOS_ERROR("One of the geometries in the set could not be converted to GEOS");
+			}
+
+			curgeom = state->ngeoms;
+			state->ngeoms++;
+
+			if (state->ngeoms > state->alen)
+			{
+				state->alen *= 2;
+				state->geoms = repalloc(state->geoms, state->alen);
+			}
+
+			state->geoms[curgeom] = g;
+		}
+		else
+		{
+			int gser_type = gserialized_get_type(gser_in);
+			if (gser_type > state->empty_type)
+				state->empty_type = gser_type;
+		}
+	}
+
+	PG_RETURN_POINTER(state);
+}
+
+PG_FUNCTION_INFO_V1(pgis_geometry_union_finalfn);
+Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
+{
+	UnionBuildState *state;
+	GSERIALIZED *gser_out = NULL;
+	GEOSGeometry *g = NULL;
+	GEOSGeometry *g_union = NULL;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL(); /* returns null iff no input values */
+
+	state = (UnionBuildState *)PG_GETARG_POINTER(0);
+
+	/*
+	** Take our GEOS geometries and turn them into a GEOS collection,
+	** then pass that into cascaded union.
+	*/
+	if (state->ngeoms > 0)
+	{
+		g = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, state->geoms, state->ngeoms);
+		if (!g)
+			HANDLE_GEOS_ERROR("Could not create GEOS COLLECTION from geometry array");
+
+		g_union = GEOSUnaryUnion(g);
+		GEOSGeom_destroy(g);
+		if (!g_union)
+			HANDLE_GEOS_ERROR("GEOSUnaryUnion");
+
+		GEOSSetSRID(g_union, state->srid);
+		gser_out = GEOS2POSTGIS(g_union, state->is3d);
+		GEOSGeom_destroy(g_union);
+	}
+	/* No real geometries in our array, any empties? */
+	else
+	{
+		/* If it was only empties, we'll return the largest type number */
+		if (state->empty_type > 0)
+			PG_RETURN_POINTER(
+			    geometry_serialize(lwgeom_construct_empty(state->empty_type, state->srid, state->is3d, 0)));
+
+		/* Nothing but NULL, returns NULL */
+		else
+			PG_RETURN_NULL();
+	}
+
+	if (!gser_out)
+	{
+		/* Union returned a NULL geometry */
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_POINTER(gser_out);
+}
+
 /**
  * @example ST_UnaryUnion {@link #geomunion} SELECT ST_UnaryUnion(
  *      'POLYGON((0 0, 10 0, 0 10, 10 10, 0 0))'

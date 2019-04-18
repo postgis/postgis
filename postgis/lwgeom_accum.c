@@ -175,31 +175,6 @@ pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, __attribute__((__unused__)) 
 }
 
 /**
-* The "union" final function passes the geometry[] to a union
-* conversion before returning the result.
-*/
-PG_FUNCTION_INFO_V1(pgis_geometry_union_finalfn);
-Datum
-pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
-{
-	pgis_abs *p;
-	Datum result = 0;
-	Datum geometry_array = 0;
-
-	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();   /* returns null iff no input values */
-
-	p = (pgis_abs*) PG_GETARG_POINTER(0);
-
-	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-	result = PGISDirectFunctionCall1( pgis_union_geometry_array, geometry_array );
-	if (!result)
-		PG_RETURN_NULL();
-
-	PG_RETURN_DATUM(result);
-}
-
-/**
 * The "collect" final function passes the geometry[] to a geometrycollection
 * conversion before returning the result.
 */

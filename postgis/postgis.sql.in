@@ -3820,6 +3820,12 @@ CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(internal, geometry, float
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' _PARALLEL;
 
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION pgis_geometry_union_transfn(internal, geometry)
+	RETURNS internal
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' _PARALLEL;
+
 -- Availability: 1.4.0
 -- Changed: 2.5.0 use 'internal' transfer type
 CREATE OR REPLACE FUNCTION pgis_geometry_union_finalfn(internal)
@@ -3873,8 +3879,9 @@ CREATE OR REPLACE FUNCTION ST_Union (geometry[])
 -- we don't want to force drop of this agg since its often used in views
 -- parallel handling dealt with in postgis_drop_after.sql
 -- Changed: 2.5.0 use 'internal' stype
+-- Changed: 3.0.0 transfn now converts to GEOS
 CREATE AGGREGATE ST_Union (geometry) (
-	sfunc = pgis_geometry_accum_transfn,
+	sfunc = pgis_geometry_union_transfn,
 	stype = internal,
 #if POSTGIS_PGSQL_VERSION >= 96
 	parallel = safe,
