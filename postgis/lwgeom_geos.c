@@ -515,8 +515,7 @@ typedef struct UnionBuildState
 	int empty_type;
 	uint32_t alen;   /* allocated length of above arrays */
 	uint32_t ngeoms; /* number of valid entries in above arrays */
-	uint32_t srid;
-
+	int32_t srid;
 	bool is3d;
 } UnionBuildState;
 
