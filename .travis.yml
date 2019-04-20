@@ -5,6 +5,7 @@ sudo: true
 language: c
 
 env:
+  - tag=pg11-geos37-gdal24-proj52 mode=garden
   - tag=latest mode=tests
   - tag=pg11-geos37-gdal24-proj52 mode=debug
   - tag=pg11-geos37-gdal24-proj52 mode=coverage
