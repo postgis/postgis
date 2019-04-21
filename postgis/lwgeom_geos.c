@@ -593,7 +593,9 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 			if (state->ngeoms > state->alen)
 			{
 				state->alen *= 2;
+				MemoryContext old = MemoryContextSwitchTo(aggcontext);
 				state->geoms = repalloc(state->geoms, state->alen);
+				MemoryContextSwitchTo(old);
 			}
 
 			state->geoms[curgeom] = g;
