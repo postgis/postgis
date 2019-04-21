@@ -592,8 +592,8 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 
 			if (state->ngeoms > state->alen)
 			{
-				state->alen *= 2;
 				MemoryContext old = MemoryContextSwitchTo(aggcontext);
+				state->alen *= 2;
 				state->geoms = repalloc(state->geoms, state->alen);
 				MemoryContextSwitchTo(old);
 			}
