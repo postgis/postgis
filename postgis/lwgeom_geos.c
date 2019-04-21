@@ -572,6 +572,7 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 
 		if (!gserialized_is_empty(gser_in))
 		{
+			MemoryContext old = MemoryContextSwitchTo(aggcontext);
 			if (state->ngeoms == 0)
 			{
 				state->srid = gserialized_get_srid(gser_in);
@@ -592,13 +593,12 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 
 			if (state->ngeoms > state->alen)
 			{
-				MemoryContext old = MemoryContextSwitchTo(aggcontext);
 				state->alen *= 2;
 				state->geoms = repalloc(state->geoms, state->alen);
-				MemoryContextSwitchTo(old);
 			}
 
 			state->geoms[curgeom] = g;
+			MemoryContextSwitchTo(old);
 		}
 		else
 		{
