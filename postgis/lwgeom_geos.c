@@ -572,7 +572,7 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 		}
 
 		if (!gserialized_is_empty(gser_in))
-		{			
+		{
 			if (state->ngeoms == 0)
 			{
 				state->srid = gserialized_get_srid(gser_in);
