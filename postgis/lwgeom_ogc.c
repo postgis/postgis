@@ -898,9 +898,13 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 	bytea *result;
 	uint8_t variant = WKB_ISO;
 
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
 	/* Get a 2D version of the geometry */
 	geom = PG_GETARG_GSERIALIZED_P(0);
 	lwgeom = lwgeom_from_gserialized(geom);
+
 
 	/* If user specified endianness, respect it */
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )

@@ -72,16 +72,18 @@ staged-install: staged-install-raster staged-install-topology
 	$(PERL) -pi.bak -e 's,\$$libdir,$(REGRESS_INSTALLDIR)/lib,g' $(REGRESS_INSTALLDIR)/share/contrib/postgis/*.sql
 	#$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 
-garden:
+garden: staged-install
 	createdb postgis_garden
 	createlang plpgsql postgis_garden || true #tolerate an error here
-	psql -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/postgis.sql && \
-	psql -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/spatial_ref_sys.sql || true # tolerate an error here
-	psql -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/rtpostgis.sql || true #tolerate an error here
+	psql --no-psqlrc --variable ON_ERROR_STOP=true -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/postgis.sql && \
+	psql --no-psqlrc --variable ON_ERROR_STOP=true -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/spatial_ref_sys.sql || true # tolerate an error here
+	psql --no-psqlrc --variable ON_ERROR_STOP=true -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/rtpostgis.sql || true #tolerate an error here
 	@echo '-------------------------------------------------'
 	@echo 'Regression tests in progress (it will take time)'
 	@echo 'Result output: ./regress/postgis_garden_result.txt'
 	@echo '-------------------------------------------------'
-	psql -ad postgis_garden < ../doc/postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > postgis_garden_result.txt 2>&1
-	psql -ad postgis_garden < ../doc/raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > raster_garden_result.txt 2>&1
+	psql --no-psqlrc -ad postgis_garden < ../doc/postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > postgis_garden_result.txt 2>&1
+	tail postgis_garden_result.txt
+	psql --no-psqlrc -ad postgis_garden < ../doc/raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > raster_garden_result.txt 2>&1
+	tail raster_garden_result.txt
 	#dropdb postgis_garden
