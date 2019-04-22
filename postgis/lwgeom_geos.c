@@ -561,7 +561,7 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 	/* do we have geometry to push? */
 	if (!PG_ARGISNULL(1))
 	{
-		gser_in = PG_GETARG_GSERIALIZED_P(1);
+		gser_in = PG_GETARG_GSERIALIZED_P_COPY(1);
 
 		if (state->ngeoms > 0)
 		{
