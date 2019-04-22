@@ -407,198 +407,214 @@ typedef struct
 */
 typedef struct
 {
-    uint8_t type;
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
-    void *data;
+	GBOX *bbox;
+	void *data;
+	int32_t srid;
+	uint8_t type;
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
 }
 LWGEOM;
 
 /* POINTYPE */
 typedef struct
 {
-    uint8_t type; /* POINTTYPE */
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
-    POINTARRAY *point;  /* hide 2d/3d (this will be an array of 1 point) */
+	GBOX *bbox;
+	POINTARRAY *point;  /* hide 2d/3d (this will be an array of 1 point) */
+	int32_t srid;
+	uint8_t type; /* POINTTYPE */
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
 }
 LWPOINT; /* "light-weight point" */
 
 /* LINETYPE */
 typedef struct
 {
-    uint8_t type; /* LINETYPE */
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
-    POINTARRAY *points; /* array of POINT3D */
+	GBOX *bbox;
+	POINTARRAY *points; /* array of POINT3D */
+	int32_t srid;
+	uint8_t type; /* LINETYPE */
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
 }
 LWLINE; /* "light-weight line" */
 
 /* TRIANGLE */
 typedef struct
 {
-    uint8_t type;
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
-    POINTARRAY *points;
+	GBOX *bbox;
+	POINTARRAY *points;
+	int32_t srid;
+	uint8_t type;
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
 }
 LWTRIANGLE;
 
 /* CIRCSTRINGTYPE */
 typedef struct
 {
-    uint8_t type; /* CIRCSTRINGTYPE */
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
-    POINTARRAY *points; /* array of POINT(3D/3DM) */
+	GBOX *bbox;
+	POINTARRAY *points; /* array of POINT(3D/3DM) */
+	int32_t srid;
+	uint8_t type; /* CIRCSTRINGTYPE */
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
 }
 LWCIRCSTRING; /* "light-weight circularstring" */
 
 /* POLYGONTYPE */
 typedef struct
 {
-    uint8_t type; /* POLYGONTYPE */
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
-    uint32_t nrings;   /* how many rings we are currently storing */
-    uint32_t maxrings; /* how many rings we have space for in **rings */
-    POINTARRAY **rings; /* list of rings (list of points) */
+	GBOX *bbox;
+	POINTARRAY **rings; /* list of rings (list of points) */
+	int32_t srid;
+	uint8_t type; /* POLYGONTYPE */
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
+	uint32_t nrings;   /* how many rings we are currently storing */
+	uint32_t maxrings; /* how many rings we have space for in **rings */
 }
 LWPOLY; /* "light-weight polygon" */
 
 /* MULTIPOINTTYPE */
 typedef struct
 {
-    uint8_t type;
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
-    uint32_t ngeoms;   /* how many geometries we are currently storing */
-    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-    LWPOINT **geoms;
+	GBOX *bbox;
+	LWPOINT **geoms;
+	int32_t srid;
+	uint8_t type; /* MULTYPOINTTYPE */
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 }
 LWMPOINT;
 
 /* MULTILINETYPE */
 typedef struct
 {
-    uint8_t type;
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
-    uint32_t ngeoms;   /* how many geometries we are currently storing */
-    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-    LWLINE **geoms;
+	GBOX *bbox;
+	LWLINE **geoms;
+	int32_t srid;
+	uint8_t type; /* MULTILINETYPE */
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 }
 LWMLINE;
 
 /* MULTIPOLYGONTYPE */
 typedef struct
 {
-    uint8_t type;
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
-    uint32_t ngeoms;   /* how many geometries we are currently storing */
-    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-    LWPOLY **geoms;
+	GBOX *bbox;
+	LWPOLY **geoms;
+	int32_t srid;
+	uint8_t type; /* MULTIPOLYGONTYPE */
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 }
 LWMPOLY;
 
 /* COLLECTIONTYPE */
 typedef struct
 {
-    uint8_t type;
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
-    uint32_t ngeoms;   /* how many geometries we are currently storing */
-    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-    LWGEOM **geoms;
+	GBOX *bbox;
+	LWGEOM **geoms;
+	int32_t srid;
+	uint8_t type; /* COLLECTIONTYPE */
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 }
 LWCOLLECTION;
 
 /* COMPOUNDTYPE */
 typedef struct
 {
-    uint8_t type; /* COMPOUNDTYPE */
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
-    uint32_t ngeoms;   /* how many geometries we are currently storing */
-    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-    LWGEOM **geoms;
+	GBOX *bbox;
+	LWGEOM **geoms;
+	int32_t srid;
+	uint8_t type; /* COLLECTIONTYPE */
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 }
 LWCOMPOUND; /* "light-weight compound line" */
 
 /* CURVEPOLYTYPE */
 typedef struct
 {
-    uint8_t type; /* CURVEPOLYTYPE */
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
+	GBOX *bbox;
+	LWGEOM **rings;
+	int32_t srid;
+	uint8_t type; /* CURVEPOLYTYPE */
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
     uint32_t nrings;    /* how many rings we are currently storing */
     uint32_t maxrings;  /* how many rings we have space for in **rings */
-    LWGEOM **rings; /* list of rings (list of points) */
 }
 LWCURVEPOLY; /* "light-weight polygon" */
 
 /* MULTICURVE */
 typedef struct
 {
-    uint8_t type;
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
-    uint32_t ngeoms;   /* how many geometries we are currently storing */
-    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-    LWGEOM **geoms;
+	GBOX *bbox;
+	LWGEOM **geoms;
+	int32_t srid;
+	uint8_t type; /* MULTICURVE */
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 }
 LWMCURVE;
 
 /* MULTISURFACETYPE */
 typedef struct
 {
-    uint8_t type;
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
-    uint32_t ngeoms;   /* how many geometries we are currently storing */
-    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-    LWGEOM **geoms;
+	GBOX *bbox;
+	LWGEOM **geoms;
+	int32_t srid;
+	uint8_t type; /* MULTISURFACETYPE */
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 }
 LWMSURFACE;
 
 /* POLYHEDRALSURFACETYPE */
 typedef struct
 {
-    uint8_t type;
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
-    uint32_t ngeoms;   /* how many geometries we are currently storing */
-    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-    LWPOLY **geoms;
+	GBOX *bbox;
+	LWPOLY **geoms;
+	int32_t srid;
+	uint8_t type; /* POLYHEDRALSURFACETYPE */
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 }
 LWPSURFACE;
 
 /* TINTYPE */
 typedef struct
 {
-    uint8_t type;
-    uint8_t flags;
-    GBOX *bbox;
-    int32_t srid;
-    uint32_t ngeoms;   /* how many geometries we are currently storing */
-    uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
-    LWTRIANGLE **geoms;
+	GBOX *bbox;
+	LWTRIANGLE **geoms;
+	int32_t srid;
+	uint8_t type; /* TINTYPE */
+	uint8_t flags;
+	char pad[2]; /* Padding to 24 bytes (unused) */
+	uint32_t ngeoms;   /* how many geometries we are currently storing */
+	uint32_t maxgeoms; /* how many geometries we have space for in **geoms */
 }
 LWTIN;
 
