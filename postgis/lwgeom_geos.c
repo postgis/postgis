@@ -579,7 +579,7 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 				state->is3d = gserialized_has_z(gser_in);
 			}
 
-			old = MemoryContextSwitchTo(aggcontext);
+			old = MemoryContextSwitchTo(state->mcontext);
 			g = POSTGIS2GEOS(gser_in);
 			MemoryContextSwitchTo(old);
 
@@ -595,7 +595,7 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 
 			if (state->ngeoms > state->alen)
 			{
-				old = MemoryContextSwitchTo(aggcontext);
+				old = MemoryContextSwitchTo(state->mcontext);
 				state->alen *= 2;
 				state->geoms = repalloc(state->geoms, state->alen);
 				MemoryContextSwitchTo(old);
