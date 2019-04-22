@@ -599,7 +599,7 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 			{
 				old = MemoryContextSwitchTo(state->mcontext);
 				state->alen *= 2;
-				state->geoms = repalloc(state->geoms, state->alen);
+				state->geoms = repalloc(state->geoms, sizeof(GEOSGeometry *) * state->alen);
 				MemoryContextSwitchTo(old);
 			}
 
