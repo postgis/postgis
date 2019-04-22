@@ -523,6 +523,7 @@ PG_FUNCTION_INFO_V1(pgis_geometry_union_transfn);
 Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 {
 	MemoryContext aggcontext;
+	MemoryContext old;
 	UnionBuildState *state;
 	GSERIALIZED *gser_in;
 	uint32_t curgeom;
@@ -541,7 +542,7 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		MemoryContext old = MemoryContextSwitchTo(aggcontext);
+		old = MemoryContextSwitchTo(aggcontext);
 		state = (UnionBuildState *)palloc(sizeof(UnionBuildState));
 
 		state->mcontext = aggcontext;
@@ -560,7 +561,9 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 	/* do we have geometry to push? */
 	if (!PG_ARGISNULL(1))
 	{
-		gser_in = PG_GETARG_GSERIALIZED_P(1);
+		old = MemoryContextSwitchTo(state->mcontext);
+		gser_in = PG_GETARG_GSERIALIZED_P_COPY(1);
+		MemoryContextSwitchTo(old);
 
 		if (state->ngeoms > 0)
 		{
@@ -572,14 +575,15 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 
 		if (!gserialized_is_empty(gser_in))
 		{
-			MemoryContext old = MemoryContextSwitchTo(aggcontext);
 			if (state->ngeoms == 0)
 			{
 				state->srid = gserialized_get_srid(gser_in);
 				state->is3d = gserialized_has_z(gser_in);
 			}
 
+			old = MemoryContextSwitchTo(state->mcontext);
 			g = POSTGIS2GEOS(gser_in);
+			MemoryContextSwitchTo(old);
 
 			if (!g)
 			{
@@ -593,12 +597,13 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 
 			if (state->ngeoms > state->alen)
 			{
+				old = MemoryContextSwitchTo(state->mcontext);
 				state->alen *= 2;
-				state->geoms = repalloc(state->geoms, state->alen);
+				state->geoms = repalloc(state->geoms, sizeof(GEOSGeometry *) * state->alen);
+				MemoryContextSwitchTo(old);
 			}
 
 			state->geoms[curgeom] = g;
-			MemoryContextSwitchTo(old);
 		}
 		else
 		{
