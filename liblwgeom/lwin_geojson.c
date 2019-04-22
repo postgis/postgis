@@ -552,6 +552,17 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 
 	/* Begin to Parse json */
 	jstok = json_tokener_new();
+	if (!jstok)
+	{
+		return NULL;
+	}
+
+#if defined(__has_feature)
+#if __has_feature(memory_sanitizer)
+	memset(jstok->pb->buf, 0, jstok->pb->size);
+#endif
+#endif
+
 	poObj = json_tokener_parse_ex(jstok, geojson, -1);
 	if( jstok->err != json_tokener_success)
 	{
