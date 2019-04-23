@@ -156,7 +156,7 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 	for ( i = 0; i < pa->npoints; i++ )
 	{
 		double *dbl_ptr = (double*)getPoint_internal(pa, i);
-		int diff = 0;
+		int64_t diff = 0;
 
 		/* Write this coordinate to the buffer as a varint */
 		for ( j = 0; j < ndims; j++ )
