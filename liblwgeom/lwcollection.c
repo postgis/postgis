@@ -38,10 +38,8 @@ lwcollection_release(LWCOLLECTION *lwcollection)
 	lwgeom_release(lwcollection_as_lwgeom(lwcollection));
 }
 
-
 LWCOLLECTION *
-lwcollection_construct(uint8_t type, int srid, GBOX *bbox,
-                       uint32_t ngeoms, LWGEOM **geoms)
+lwcollection_construct(uint8_t type, int32_t srid, GBOX *bbox, uint32_t ngeoms, LWGEOM **geoms)
 {
 	LWCOLLECTION *ret;
 	int hasz, hasm;
@@ -91,7 +89,7 @@ lwcollection_construct(uint8_t type, int srid, GBOX *bbox,
 }
 
 LWCOLLECTION *
-lwcollection_construct_empty(uint8_t type, int srid, char hasz, char hasm)
+lwcollection_construct_empty(uint8_t type, int32_t srid, char hasz, char hasm)
 {
 	LWCOLLECTION *ret;
 	if( ! lwtype_is_collection(type) )

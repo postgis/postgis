@@ -35,7 +35,7 @@ lwmline_release(LWMLINE *lwmline)
 }
 
 LWMLINE *
-lwmline_construct_empty(int srid, char hasz, char hasm)
+lwmline_construct_empty(int32_t srid, char hasz, char hasm)
 {
 	LWMLINE *ret = (LWMLINE*)lwcollection_construct_empty(MULTILINETYPE, srid, hasz, hasm);
 	return ret;

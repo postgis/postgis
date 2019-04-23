@@ -1469,7 +1469,7 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 	GEOSGeometry* gpt;
 	GEOSCoordSequence* gseq;
 	LWMPOINT* mpt;
-	int srid = lwgeom_get_srid(lwgeom);
+	int32_t srid = lwgeom_get_srid(lwgeom);
 	int done = 0;
 	int* cells;
 	const size_t size = 2 * sizeof(int);
@@ -1839,7 +1839,7 @@ lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double tolerance, int o
 	uint32_t num_points = lwgeom_count_vertices(g);
 	LWGEOM* lwgeom_result;
 	char is_3d = LW_FALSE;
-	int srid = lwgeom_get_srid(g);
+	int32_t srid = lwgeom_get_srid(g);
 	GEOSCoordSequence* coords;
 	GEOSGeometry* geos_geom;
 	GEOSGeometry* geos_env = NULL;

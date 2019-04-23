@@ -406,7 +406,7 @@ lwgeom_as_curve(const LWGEOM *lwgeom)
 	/*
 	int hasz = FLAGS_GET_Z(lwgeom->flags);
 	int hasm = FLAGS_GET_M(lwgeom->flags);
-	int srid = lwgeom->srid;
+	int32_t srid = lwgeom->srid;
 	*/
 
 	switch(type)
@@ -2022,8 +2022,8 @@ lwgeom_scale(LWGEOM *geom, const POINT4D *factor)
 	}
 }
 
-LWGEOM*
-lwgeom_construct_empty(uint8_t type, int srid, char hasz, char hasm)
+LWGEOM *
+lwgeom_construct_empty(uint8_t type, int32_t srid, char hasz, char hasm)
 {
 	switch(type)
 	{

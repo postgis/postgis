@@ -39,8 +39,8 @@
 /* construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
  * use SRID=SRID_UNKNOWN for unknown SRID (will have 8bit type's S = 0)
  */
-LWPOLY*
-lwpoly_construct(int srid, GBOX *bbox, uint32_t nrings, POINTARRAY **points)
+LWPOLY *
+lwpoly_construct(int32_t srid, GBOX *bbox, uint32_t nrings, POINTARRAY **points)
 {
 	LWPOLY *result;
 	int hasz, hasm;
@@ -95,7 +95,7 @@ lwpoly_construct_rectangle(char hasz, char hasm, POINT4D *p1, POINT4D *p2,
 }
 
 LWPOLY *
-lwpoly_construct_envelope(int srid, double x1, double y1, double x2, double y2)
+lwpoly_construct_envelope(int32_t srid, double x1, double y1, double x2, double y2)
 {
 	POINT4D p1, p2, p3, p4;
 	LWPOLY *poly;
@@ -116,8 +116,8 @@ lwpoly_construct_envelope(int srid, double x1, double y1, double x2, double y2)
 	return poly;
 }
 
-LWPOLY*
-lwpoly_construct_circle(int srid, double x, double y, double radius, uint32_t segments_per_quarter, char exterior)
+LWPOLY *
+lwpoly_construct_circle(int32_t srid, double x, double y, double radius, uint32_t segments_per_quarter, char exterior)
 {
 	const uint32_t segments = 4*segments_per_quarter;
 	double theta;
@@ -157,8 +157,8 @@ lwpoly_construct_circle(int srid, double x, double y, double radius, uint32_t se
 	return lwpoly;
 }
 
-LWPOLY*
-lwpoly_construct_empty(int srid, char hasz, char hasm)
+LWPOLY *
+lwpoly_construct_empty(int32_t srid, char hasz, char hasm)
 {
 	LWPOLY *result = lwalloc(sizeof(LWPOLY));
 	result->type = POLYGONTYPE;
@@ -362,7 +362,7 @@ lwpoly_from_lwlines(const LWLINE *shell,
 {
 	uint32_t nrings;
 	POINTARRAY **rings = lwalloc((nholes+1)*sizeof(POINTARRAY *));
-	int srid = shell->srid;
+	int32_t srid = shell->srid;
 	LWPOLY *ret;
 
 	if ( shell->points->npoints < 4 )
