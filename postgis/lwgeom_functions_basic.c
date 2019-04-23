@@ -2246,7 +2246,7 @@ Datum LWGEOM_removepoint(PG_FUNCTION_ARGS)
 
 	if (which < 0 || (uint32_t)which > line->points->npoints - 1)
 	{
-		elog(ERROR, "Point index out of range (%d..%d)", 0, line->points->npoints - 1);
+		elog(ERROR, "Point index out of range (%u..%u)", 0, line->points->npoints - 1);
 		PG_RETURN_NULL();
 	}
 
@@ -2275,7 +2275,7 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 	LWLINE *line;
 	LWPOINT *lwpoint;
 	POINT4D newpoint;
-	int32 which;
+	int64_t which;
 
 	POSTGIS_DEBUG(2, "LWGEOM_setpoint_linestring called.");
 
@@ -2307,11 +2307,11 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 	if (which < 0)
 	{
 		/* Use backward indexing for negative values */
-		which = which + line->points->npoints;
+		which += (int64_t)line->points->npoints;
 	}
-	if ((uint32_t)which + 1 > line->points->npoints)
+	if ((uint32_t)which > line->points->npoints - 1)
 	{
-		elog(ERROR, "abs(Point index) out of range (-)(%d..%d)", 0, line->points->npoints - 1);
+		elog(ERROR, "abs(Point index) out of range (-)(%u..%u)", 0, line->points->npoints - 1);
 		PG_RETURN_NULL();
 	}
 
