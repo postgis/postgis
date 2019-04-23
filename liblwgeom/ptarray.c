@@ -329,9 +329,11 @@ void ptarray_free(POINTARRAY *pa)
 void
 ptarray_reverse_in_place(POINTARRAY *pa)
 {
-	int i;
-	int last = pa->npoints-1;
-	int mid = pa->npoints/2;
+	if (!pa->npoints)
+		return;
+	uint32_t i;
+	uint32_t last = pa->npoints - 1;
+	uint32_t mid = pa->npoints / 2;
 
 	double *d = (double*)(pa->serialized_pointlist);
 	int j;
