@@ -2229,7 +2229,7 @@ Datum LWGEOM_removepoint(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *pglwg1, *result;
 	LWLINE *line, *outline;
-	uint32 which;
+	int32 which;
 
 	POSTGIS_DEBUG(2, "LWGEOM_removepoint called.");
 
@@ -2244,7 +2244,7 @@ Datum LWGEOM_removepoint(PG_FUNCTION_ARGS)
 
 	line = lwgeom_as_lwline(lwgeom_from_gserialized(pglwg1));
 
-	if (which > line->points->npoints - 1)
+	if (which < 0 || (uint32_t)which > line->points->npoints - 1)
 	{
 		elog(ERROR, "Point index out of range (%d..%d)", 0, line->points->npoints - 1);
 		PG_RETURN_NULL();
@@ -2256,7 +2256,7 @@ Datum LWGEOM_removepoint(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	outline = lwline_removepoint(line, which);
+	outline = lwline_removepoint(line, (uint32_t)which);
 	/* Release memory */
 	lwline_free(line);
 
