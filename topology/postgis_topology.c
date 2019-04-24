@@ -922,14 +922,14 @@ getNotNullInt32( HeapTuple row, TupleDesc desc, int col, int32 *val )
 
 static LWT_ISO_EDGE*
 cb_getEdgeById(const LWT_BE_TOPOLOGY* topo,
-               const LWT_ELEMID* ids, int* numelems, int fields)
+               const LWT_ELEMID* ids, uint64_t* numelems, int fields)
 {
   LWT_ISO_EDGE *edges;
   int spi_result;
   MemoryContext oldcontext = CurrentMemoryContext;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int i;
+  uint64_t i;
 
   initStringInfo(sql);
   appendStringInfoString(sql, "SELECT ");
@@ -950,7 +950,7 @@ cb_getEdgeById(const LWT_BE_TOPOLOGY* topo,
   {
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
     pfree(sqldata.data);
-    *numelems = -1;
+    *numelems = UINT64_MAX;
     return NULL;
   }
   pfree(sqldata.data);
@@ -976,14 +976,14 @@ cb_getEdgeById(const LWT_BE_TOPOLOGY* topo,
 
 static LWT_ISO_EDGE*
 cb_getEdgeByNode(const LWT_BE_TOPOLOGY* topo,
-                 const LWT_ELEMID* ids, int* numelems, int fields)
+                 const LWT_ELEMID* ids, uint64_t* numelems, int fields)
 {
   LWT_ISO_EDGE *edges;
   int spi_result;
 
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int i;
+  uint64_t i;
   MemoryContext oldcontext = CurrentMemoryContext;
 
   initStringInfo(sql);
@@ -1013,7 +1013,7 @@ cb_getEdgeByNode(const LWT_BE_TOPOLOGY* topo,
   {
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
     pfree(sqldata.data);
-    *numelems = -1;
+    *numelems = UINT64_MAX;
     return NULL;
   }
   pfree(sqldata.data);
@@ -1039,7 +1039,7 @@ cb_getEdgeByNode(const LWT_BE_TOPOLOGY* topo,
 
 static LWT_ISO_EDGE*
 cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
-                 const LWT_ELEMID* ids, int* numelems, int fields,
+                 const LWT_ELEMID* ids, uint64_t* numelems, int fields,
                  const GBOX *box)
 {
   LWT_ISO_EDGE *edges;
@@ -1047,7 +1047,7 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
   MemoryContext oldcontext = CurrentMemoryContext;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int i;
+  uint64_t i;
   ArrayType *array_ids;
   Datum *datum_ids;
   Datum values[2];
@@ -1094,7 +1094,7 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
   {
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
     pfree(sqldata.data);
-    *numelems = -1;
+    *numelems = UINT64_MAX;
     return NULL;
   }
   pfree(sqldata.data);
@@ -1120,13 +1120,13 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
 
 static LWT_ISO_FACE*
 cb_getFacesById(const LWT_BE_TOPOLOGY* topo,
-                const LWT_ELEMID* ids, int* numelems, int fields)
+                const LWT_ELEMID* ids, uint64_t* numelems, int fields)
 {
   LWT_ISO_FACE *faces;
   int spi_result;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int i;
+  uint64_t i;
   MemoryContext oldcontext = CurrentMemoryContext;
 
   initStringInfo(sql);
@@ -1150,7 +1150,7 @@ cb_getFacesById(const LWT_BE_TOPOLOGY* topo,
   {
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
     pfree(sqldata.data);
-    *numelems = -1;
+    *numelems = UINT64_MAX;
     return NULL;
   }
   pfree(sqldata.data);
@@ -1176,14 +1176,14 @@ cb_getFacesById(const LWT_BE_TOPOLOGY* topo,
 
 static LWT_ELEMID*
 cb_getRingEdges(const LWT_BE_TOPOLOGY* topo,
-                LWT_ELEMID edge, int* numelems, int limit)
+                LWT_ELEMID edge, uint64_t* numelems, uint64_t limit)
 {
   LWT_ELEMID *edges;
   int spi_result;
   TupleDesc rowdesc;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int i;
+  uint64_t i;
   MemoryContext oldcontext = CurrentMemoryContext;
 
   initStringInfo(sql);
@@ -1202,22 +1202,22 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY* topo,
   if ( limit )
   {
     ++limit; /* so we know if we hit it */
-    appendStringInfo(sql, " LIMIT %d", limit);
+    appendStringInfo(sql, " LIMIT " UINT64_FORMAT, limit);
   }
 
-  POSTGIS_DEBUGF(1, "cb_getRingEdges query (limit %d): %s", limit, sql->data);
+  POSTGIS_DEBUGF(1, "cb_getRingEdges query (limit " UINT64_FORMAT "): %s", limit, sql->data);
   spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, limit);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT )
   {
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
     pfree(sqldata.data);
-    *numelems = -1;
+    *numelems = UINT64_MAX;
     return NULL;
   }
   pfree(sqldata.data);
 
-  POSTGIS_DEBUGF(1, "cb_getRingEdges: edge query returned %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_getRingEdges: edge query returned " UINT64_FORMAT " rows", SPI_processed);
   *numelems = SPI_processed;
   if ( ! SPI_processed )
   {
@@ -1225,8 +1225,8 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY* topo,
   }
   if ( limit && *numelems == limit )
   {
-    cberror(topo->be_data, "Max traversing limit hit: %d", limit-1);
-    *numelems = -1;
+    cberror(topo->be_data, "Max traversing limit hit: "UINT64_FORMAT, limit-1);
+    *numelems = UINT64_MAX;
     return NULL;
   }
 
@@ -1243,7 +1243,7 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY* topo,
     {
       lwfree(edges);
       cberror(topo->be_data, "Found edge with NULL edge_id");
-      *numelems = -1;
+      *numelems = UINT64_MAX;
       return NULL;
     }
     val = DatumGetInt32(dat);
@@ -1259,14 +1259,14 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY* topo,
 
 static LWT_ISO_NODE*
 cb_getNodeById(const LWT_BE_TOPOLOGY* topo,
-               const LWT_ELEMID* ids, int* numelems, int fields)
+               const LWT_ELEMID* ids, uint64_t* numelems, int fields)
 {
   LWT_ISO_NODE *nodes;
   int spi_result;
 
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int i;
+  uint64_t i;
   MemoryContext oldcontext = CurrentMemoryContext;
 
   initStringInfo(sql);
@@ -1313,7 +1313,7 @@ cb_getNodeById(const LWT_BE_TOPOLOGY* topo,
 
 static LWT_ISO_NODE*
 cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
-                 const LWT_ELEMID* ids, int* numelems, int fields,
+                 const LWT_ELEMID* ids, uint64_t* numelems, int fields,
                  const GBOX *box)
 {
   LWT_ISO_NODE *nodes;
@@ -1321,7 +1321,7 @@ cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
   MemoryContext oldcontext = CurrentMemoryContext;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int i;
+  uint64_t i;
   char *hexbox;
 
   initStringInfo(sql);
@@ -1349,7 +1349,7 @@ cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
   {
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
     pfree(sqldata.data);
-    *numelems = -1;
+    *numelems = UINT64_MAX;
     return NULL;
   }
   pfree(sqldata.data);
@@ -1375,7 +1375,7 @@ cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
 
 static LWT_ISO_EDGE*
 cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
-                           const LWPOINT* pt, double dist, int* numelems,
+                           const LWPOINT* pt, double dist, uint64_t* numelems,
                            int fields, int limit)
 {
   LWT_ISO_EDGE *edges;
@@ -1386,7 +1386,7 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
   MemoryContext oldcontext = CurrentMemoryContext;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int i;
+  uint64_t i;
 
   initStringInfo(sql);
   if ( elems_requested == -1 )
@@ -1425,7 +1425,7 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
   {
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
     pfree(sqldata.data);
-    *numelems = -1;
+    *numelems = UINT64_MAX;
     return NULL;
   }
   pfree(sqldata.data);
@@ -1470,7 +1470,7 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
 
 static LWT_ISO_NODE*
 cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
-                           const LWPOINT* pt, double dist, int* numelems,
+                           const LWPOINT* pt, double dist, uint64_t* numelems,
                            int fields, int limit)
 {
   MemoryContext oldcontext = CurrentMemoryContext;
@@ -1481,7 +1481,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
   int elems_requested = limit;
-  int i;
+  uint64_t i;
 
   initStringInfo(sql);
   if ( elems_requested == -1 )
@@ -1528,7 +1528,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
     pfree(sqldata.data);
-    *numelems = -1;
+    *numelems = UINT64_MAX;
     return NULL;
   }
   pfree(sqldata.data);
@@ -1575,13 +1575,13 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
 
 static int
 cb_insertNodes( const LWT_BE_TOPOLOGY* topo,
-                LWT_ISO_NODE* nodes, int numelems )
+                LWT_ISO_NODE* nodes, uint64_t numelems )
 {
   MemoryContext oldcontext = CurrentMemoryContext;
   int spi_result;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int i;
+  uint64_t i;
 
   initStringInfo(sql);
   appendStringInfo(sql, "INSERT INTO \"%s\".node (", topo->name);
@@ -1613,8 +1613,8 @@ cb_insertNodes( const LWT_BE_TOPOLOGY* topo,
   // TODO: Remove cast when numelems uses uint64 instead of int
   if ( SPI_processed != (uint64) numelems )
   {
-    cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected %d",
-            (uint64)SPI_processed, numelems);
+    cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected " UINT64_FORMAT,
+            SPI_processed, numelems);
     return 0;
   }
 
@@ -1634,13 +1634,13 @@ cb_insertNodes( const LWT_BE_TOPOLOGY* topo,
 
 static int
 cb_insertEdges( const LWT_BE_TOPOLOGY* topo,
-                LWT_ISO_EDGE* edges, int numelems )
+                LWT_ISO_EDGE* edges, uint64_t numelems )
 {
   MemoryContext oldcontext = CurrentMemoryContext;
   int spi_result;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int i;
+  uint64_t i;
   int needsEdgeIdReturn = 0;
 
   initStringInfo(sql);
@@ -1672,15 +1672,15 @@ cb_insertEdges( const LWT_BE_TOPOLOGY* topo,
   POSTGIS_DEBUGF(1, "cb_insertEdges query processed %d rows", SPI_processed);
   if ( SPI_processed != (uint64) numelems )
   {
-    cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected %d",
-            (uint64)SPI_processed, numelems);
+    cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected " UINT64_FORMAT,
+            SPI_processed, numelems);
     return -1;
   }
 
   if ( needsEdgeIdReturn )
   {
     /* Set node_id for items that need it */
-    for ( i=0; i<(int)SPI_processed; ++i )
+    for ( i=0; i< SPI_processed; ++i )
     {
       if ( edges[i].edge_id != -1 ) continue;
       fillEdgeFields(&edges[i], SPI_tuptable->vals[i],
@@ -1695,13 +1695,13 @@ cb_insertEdges( const LWT_BE_TOPOLOGY* topo,
 
 static int
 cb_insertFaces( const LWT_BE_TOPOLOGY* topo,
-                LWT_ISO_FACE* faces, int numelems )
+                LWT_ISO_FACE* faces, uint64_t numelems )
 {
   MemoryContext oldcontext = CurrentMemoryContext;
   int spi_result;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int i;
+  uint64_t i;
   int needsFaceIdReturn = 0;
 
   initStringInfo(sql);
@@ -1717,7 +1717,7 @@ cb_insertFaces( const LWT_BE_TOPOLOGY* topo,
   }
   if ( needsFaceIdReturn ) appendStringInfoString(sql, " RETURNING face_id");
 
-  POSTGIS_DEBUGF(1, "cb_insertFaces query (%d elems): %s", numelems, sql->data);
+  POSTGIS_DEBUGF(1, "cb_insertFaces query (" UINT64_MAX " elems): %s", numelems, sql->data);
   spi_result = SPI_execute(sql->data, false, numelems);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != ( needsFaceIdReturn ? SPI_OK_INSERT_RETURNING : SPI_OK_INSERT ) )
@@ -1730,10 +1730,10 @@ cb_insertFaces( const LWT_BE_TOPOLOGY* topo,
   pfree(sqldata.data);
   if ( SPI_processed ) topo->be_data->data_changed = true;
   POSTGIS_DEBUGF(1, "cb_insertFaces query processed %d rows", SPI_processed);
-  if ( SPI_processed != (uint64) numelems )
+  if ( SPI_processed != numelems )
   {
-    cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected %d",
-            (uint64)SPI_processed, numelems);
+    cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected " UINT64_FORMAT,
+            SPI_processed, numelems);
     return -1;
   }
 
@@ -1845,10 +1845,10 @@ cb_updateNodes( const LWT_BE_TOPOLOGY* topo,
 
 static int
 cb_updateNodesById( const LWT_BE_TOPOLOGY* topo,
-                    const LWT_ISO_NODE* nodes, int numnodes, int fields )
+                    const LWT_ISO_NODE* nodes, uint64_t numnodes, int fields )
 {
   MemoryContext oldcontext = CurrentMemoryContext;
-  int i;
+  uint64_t i;
   int spi_result;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
@@ -1966,10 +1966,10 @@ cb_updateFacesById( const LWT_BE_TOPOLOGY* topo,
 
 static int
 cb_updateEdgesById( const LWT_BE_TOPOLOGY* topo,
-                    const LWT_ISO_EDGE* edges, int numedges, int fields )
+                    const LWT_ISO_EDGE* edges, uint64_t numedges, int fields )
 {
   MemoryContext oldcontext = CurrentMemoryContext;
-  int i;
+  uint64_t i;
   int spi_result;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
@@ -2820,16 +2820,16 @@ cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
 
 static int
 cb_deleteFacesById( const LWT_BE_TOPOLOGY* topo,
-                    const LWT_ELEMID* ids, int numelems )
+                    const LWT_ELEMID* ids, uint64_t numelems )
 {
   MemoryContext oldcontext = CurrentMemoryContext;
-  int spi_result, i;
+  int spi_result;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
 
   initStringInfo(sql);
   appendStringInfo(sql, "DELETE FROM \"%s\".face WHERE face_id IN (", topo->name);
-  for (i=0; i<numelems; ++i)
+  for (uint64_t i=0; i<numelems; ++i)
   {
     appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
@@ -2858,17 +2858,17 @@ cb_deleteFacesById( const LWT_BE_TOPOLOGY* topo,
 
 static int
 cb_deleteNodesById( const LWT_BE_TOPOLOGY* topo,
-                    const LWT_ELEMID* ids, int numelems )
+                    const LWT_ELEMID* ids, uint64_t numelems )
 {
   MemoryContext oldcontext = CurrentMemoryContext;
-  int spi_result, i;
+  int spi_result;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
 
   initStringInfo(sql);
   appendStringInfo(sql, "DELETE FROM \"%s\".node WHERE node_id IN (",
                    topo->name);
-  for (i=0; i<numelems; ++i)
+  for (uint64_t i=0; i<numelems; ++i)
   {
     appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
@@ -2897,13 +2897,13 @@ cb_deleteNodesById( const LWT_BE_TOPOLOGY* topo,
 
 static LWT_ISO_NODE*
 cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
-                        int* numelems, int fields, int limit )
+                        uint64_t* numelems, int fields, int limit )
 {
   MemoryContext oldcontext = CurrentMemoryContext;
   int spi_result;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int i;
+  uint64_t i;
   int elems_requested = limit;
   LWT_ISO_NODE* nodes;
   char *hexbox;
@@ -2938,7 +2938,7 @@ cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   {
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
     pfree(sqldata.data);
-    *numelems = -1;
+    *numelems = UINT64_MAX;
     return NULL;
   }
   pfree(sqldata.data);
@@ -2981,13 +2981,13 @@ cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
 
 static LWT_ISO_EDGE*
 cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
-                        int* numelems, int fields, int limit )
+                        uint64_t* numelems, int fields, int limit )
 {
   MemoryContext oldcontext = CurrentMemoryContext;
   int spi_result;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int i;
+  uint64_t i;
   int elems_requested = limit;
   LWT_ISO_EDGE* edges;
   char *hexbox;
@@ -3027,7 +3027,7 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   {
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
     pfree(sqldata.data);
-    *numelems = -1;
+    *numelems = UINT64_MAX;
     return NULL;
   }
   pfree(sqldata.data);
@@ -3070,13 +3070,13 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
 
 static LWT_ISO_FACE*
 cb_getFaceWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
-                        int* numelems, int fields, int limit )
+                        uint64_t* numelems, int fields, uint64_t limit )
 {
   MemoryContext oldcontext = CurrentMemoryContext;
   int spi_result;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int i;
+  uint64_t i;
   int elems_requested = limit;
   LWT_ISO_FACE* faces;
   char *hexbox;
@@ -3111,7 +3111,7 @@ cb_getFaceWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   {
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
     pfree(sqldata.data);
-    *numelems = -1;
+    *numelems = UINT64_MAX;
     return NULL;
   }
   pfree(sqldata.data);
