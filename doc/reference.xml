@@ -22,6 +22,7 @@
   &reference_accessor;
   &reference_editor;
   &reference_srs;
+  &reference_input;
   &reference_output;
   &reference_operator;
   &reference_relationship;
