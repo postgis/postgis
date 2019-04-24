@@ -94,6 +94,8 @@ PostGIS 3.0.0
   - #4378, Allow passing TINs as input to GEOS-backed functions (Darafei
            Praliaskouski)
   - #4368, Reorder LWGEOM struct members to minimize extra padding (Raúl Marín)
+  - #4141, Use uint64 to handle row counts in the topology extension (Raúl Marín)
+
 
 PostGIS 2.5.0
 2018/09/23
