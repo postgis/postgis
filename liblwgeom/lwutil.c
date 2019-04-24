@@ -340,9 +340,8 @@ getMachineEndian(void)
 	                                       */
 }
 
-
 void
-error_if_srid_mismatch(int srid1, int srid2)
+error_if_srid_mismatch(int32_t srid1, int32_t srid2)
 {
 	if ( srid1 != srid2 )
 	{
@@ -350,8 +349,8 @@ error_if_srid_mismatch(int srid1, int srid2)
 	}
 }
 
-int
-clamp_srid(int srid)
+int32_t
+clamp_srid(int32_t srid)
 {
 	int newsrid = srid;
 

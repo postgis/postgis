@@ -103,7 +103,7 @@ POSTGIS2SFCGALPreparedGeometry(GSERIALIZED *pglwgeom)
 
 /* Conversion from SFCGAL::Geometry to GSERIALIZED */
 GSERIALIZED *
-SFCGALGeometry2POSTGIS(const sfcgal_geometry_t *geom, int force3D, int SRID)
+SFCGALGeometry2POSTGIS(const sfcgal_geometry_t *geom, int force3D, int32_t SRID)
 {
 	GSERIALIZED *result;
 	LWGEOM *lwgeom = SFCGAL2LWGEOM(geom, force3D, SRID);

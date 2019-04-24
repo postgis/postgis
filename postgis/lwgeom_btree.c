@@ -139,7 +139,7 @@ Datum lwgeom_hash(PG_FUNCTION_ARGS)
 	size_t sz1 = VARSIZE(g1);
 	size_t bsz1 = sz1 - hsz1;
 	/* Calculate size of srid/type/coordinate buffer */
-	int srid = gserialized_get_srid(g1);
+	int32_t srid = gserialized_get_srid(g1);
 	size_t bsz2 = bsz1 + sizeof(int);
 	uint8_t *b2 = palloc(bsz2);
 	/* Copy srid into front of combined buffer */

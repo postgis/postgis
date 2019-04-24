@@ -3014,7 +3014,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 	rt_pgraster *pgraster = NULL;
 	LWGEOM *rastgeom = NULL;
 	double gt[6] = {0};
-	int srid = SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 
 	rt_pgraster *pgrtn = NULL;
 	rt_raster rtn = NULL;

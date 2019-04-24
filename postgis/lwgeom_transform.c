@@ -176,8 +176,8 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	const char *default_prefix = ""; /* default prefix */
 	char *prefixbuf;
 	const char *prefix = default_prefix;
-	int srid_from;
-	const int srid_to = 4326;
+	int32_t srid_from;
+	const int32_t srid_to = 4326;
 
 	/* Get the geometry */
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P_COPY(0);

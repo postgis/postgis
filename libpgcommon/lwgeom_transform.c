@@ -92,10 +92,9 @@ static void AddPJHashEntry(MemoryContext mcxt, PJ* projection);
 
 /* Internal Cache API */
 /* static PROJPortalCache *GetPROJSRSCache(FunctionCallInfo fcinfo) ; */
-static bool IsInPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to);
-static void AddToPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to);
-static void DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to);
-
+static bool IsInPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
+static void AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
+static void DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
 
 /* Search path for PROJ.4 library */
 static bool IsPROJLibPathSet = false;
@@ -340,7 +339,7 @@ static void DeletePJHashEntry(MemoryContext mcxt)
  */
 
 static bool
-IsInPROJSRSCache(PROJPortalCache *cache, int srid_from, int srid_to)
+IsInPROJSRSCache(PROJPortalCache *cache, int32_t srid_from, int32_t srid_to)
 {
 	/*
 	 * Return true/false depending upon whether the item
@@ -357,8 +356,8 @@ IsInPROJSRSCache(PROJPortalCache *cache, int srid_from, int srid_to)
 	return false;
 }
 
-static PJ*
-GetProjectionFromPROJCache(PROJPortalCache *cache, int srid_from, int srid_to)
+static PJ *
+GetProjectionFromPROJCache(PROJPortalCache *cache, int32_t srid_from, int32_t srid_to)
 {
 	uint32_t i;
 	for (i = 0; i < PROJ_CACHE_ITEMS; i++)
@@ -384,7 +383,7 @@ SPI_pstrdup(const char* str)
 }
 
 static PjStrs
-GetProjStringsSPI(int srid)
+GetProjStringsSPI(int32_t srid)
 {
 	const int maxprojlen = 512;
 	const int spibufferlen = 512;
@@ -474,7 +473,7 @@ GetProjStringsSPI(int srid)
  *  return the proj4text for those.
  */
 static PjStrs
-GetProjStrings(int srid)
+GetProjStrings(int32_t srid)
 {
 	const int maxprojlen = 512;
 	PjStrs strs;
@@ -606,7 +605,7 @@ pgstrs_get_entry(const PjStrs *strs, int n)
 * needs proj4text access
 */
 char *
-GetProj4String(int srid)
+GetProj4String(int32_t srid)
 {
 	PjStrs strs;
 	char *proj4str;
@@ -623,7 +622,7 @@ GetProj4String(int srid)
  * which is the definition for the other half of the transformation.
  */
 static void
-AddToPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
+AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to)
 {
 	MemoryContext PJMemoryContext;
 
@@ -763,9 +762,8 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
 	PROJCache->PROJSRSCacheCount++;
 }
 
-
 static void
-DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, int srid_from, int srid_to)
+DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to)
 {
 	/*
 	 * Delete the SRID entry from the cache
@@ -837,9 +835,8 @@ void SetPROJLibPath(void)
 	}
 }
 
-
 int
-GetPJUsingFCInfo(FunctionCallInfo fcinfo, int srid_from, int srid_to, PJ** pj)
+GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, PJ **pj)
 {
 	PROJPortalCache *proj_cache = NULL;
 
@@ -882,7 +879,7 @@ proj_pj_is_latlong(const PJ* pj)
 }
 
 static int
-srid_is_latlong(FunctionCallInfo fcinfo, int srid)
+srid_is_latlong(FunctionCallInfo fcinfo, int32_t srid)
 {
 	PJ* pj;
 	if ( GetPJUsingFCInfo(fcinfo, srid, srid, &pj) == LW_FAILURE)
@@ -891,7 +888,7 @@ srid_is_latlong(FunctionCallInfo fcinfo, int srid)
 }
 
 void
-srid_check_latlong(FunctionCallInfo fcinfo, int srid)
+srid_check_latlong(FunctionCallInfo fcinfo, int32_t srid)
 {
 	if (srid == SRID_DEFAULT || srid == SRID_UNKNOWN)
 		return;
@@ -905,7 +902,7 @@ srid_check_latlong(FunctionCallInfo fcinfo, int srid)
 }
 
 srs_precision
-srid_axis_precision(FunctionCallInfo fcinfo, int srid, int precision)
+srid_axis_precision(FunctionCallInfo fcinfo, int32_t srid, int precision)
 {
 	srs_precision sp;
 	sp.precision_xy = precision;
@@ -925,7 +922,7 @@ srid_axis_precision(FunctionCallInfo fcinfo, int srid, int precision)
 }
 
 int
-spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
+spheroid_init_from_srid(FunctionCallInfo fcinfo, int32_t srid, SPHEROID *s)
 {
 	PJ* pj;
 #if POSTGIS_PROJ_VERSION >= 60

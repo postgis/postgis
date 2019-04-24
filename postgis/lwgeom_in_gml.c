@@ -68,7 +68,7 @@ static LWGEOM* parse_gml(xmlNodePtr xnode, bool *hasz, int *root_srid);
 
 typedef struct struct_gmlSrs
 {
-	int srid;
+	int32_t srid;
 	bool reverse_axis;
 }
 gmlSrs;
@@ -299,7 +299,8 @@ static xmlNodePtr get_xlink_node(xmlNodePtr xnode)
 
 #if POSTGIS_PROJ_VERSION < 60
 
-static POINTARRAY* gml_reproject_pa(POINTARRAY *pa, int srid_in, int srid_out)
+static POINTARRAY *
+gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
 {
 	PJ pj;
 	char *text_in, *text_out;
@@ -332,7 +333,8 @@ static POINTARRAY* gml_reproject_pa(POINTARRAY *pa, int srid_in, int srid_out)
  * lookups, and use the Proj 6+ EPSG catalogue and built-in SRID
  * lookups directly. Drop this ugly hack.
  */
-static POINTARRAY* gml_reproject_pa(POINTARRAY *pa, int srid_in, int srid_out)
+static POINTARRAY *
+gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
 {
 	PJ *pj;
 	char text_in[32];
@@ -360,7 +362,8 @@ static POINTARRAY* gml_reproject_pa(POINTARRAY *pa, int srid_in, int srid_out)
  * Return 1 if given srid is planar (0 otherwise, i.e geocentric srid)
  * Return -1 if srid is not in spatial_ref_sys
  */
-static int gml_is_srid_planar(int srid)
+static int
+gml_is_srid_planar(int32_t srid)
 {
 	char *result;
 	char query[256];

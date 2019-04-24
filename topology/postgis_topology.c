@@ -83,7 +83,7 @@ struct LWT_BE_TOPOLOGY_T
   LWT_BE_DATA* be_data;
   char *name;
   int id;
-  int srid;
+  int32_t srid;
   double precision;
   int hasZ;
   Oid geometryOID;
@@ -124,7 +124,7 @@ _lwtype_upper_name(int type, char *buf, size_t buflen)
 
 /* Return an lwalloc'ed geometrical representation of the box */
 static LWGEOM *
-_box2d_to_lwgeom(const GBOX *bbox, int srid)
+_box2d_to_lwgeom(const GBOX *bbox, int32_t srid)
 {
   POINTARRAY *pa = ptarray_construct(0, 0, 2);
   POINT4D p;
@@ -142,7 +142,7 @@ _box2d_to_lwgeom(const GBOX *bbox, int srid)
 
 /* Return lwalloc'ed hexwkb representation for a GBOX */
 static char *
-_box2d_to_hexwkb(const GBOX *bbox, int srid)
+_box2d_to_hexwkb(const GBOX *bbox, int32_t srid)
 {
   char *hex;
   size_t sz;
@@ -647,7 +647,7 @@ addNodeValues(StringInfo str, const LWT_ISO_NODE *node, int fields)
 
 /* Add face values for an insert, in text form */
 static void
-addFaceValues(StringInfo str, LWT_ISO_FACE *face, int srid)
+addFaceValues(StringInfo str, LWT_ISO_FACE *face, int32_t srid)
 {
   if ( face->face_id != -1 )
     appendStringInfo(str, "(%" LWTFMT_ELEMID, face->face_id);

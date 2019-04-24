@@ -62,12 +62,12 @@ int wkt_lexer_read_srid(char *str)
 {
 	char *c = str;
 	long i = 0;
-	int srid;
+	int32_t srid;
 
 	if( ! str ) return SRID_UNKNOWN;
 	c += 5; /* Advance past "SRID=" */
 	i = strtol(c, NULL, 10);
-	srid = clamp_srid((int)i);
+	srid = clamp_srid((int32_t)i);
 	/* TODO: warn on explicit UNKNOWN srid ? */
 	return srid;
 }
@@ -856,7 +856,8 @@ LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *geom, char *dimension
 	return geom;
 }
 
-void wkt_parser_geometry_new(LWGEOM *geom, int srid)
+void
+wkt_parser_geometry_new(LWGEOM *geom, int32_t srid)
 {
 	LWDEBUG(4,"entered");
 	LWDEBUGF(4,"geom %p",geom);

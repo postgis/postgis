@@ -126,7 +126,7 @@ lwpoint_get_m(const LWPOINT *point)
  * use SRID=SRID_UNKNOWN for unknown SRID (will have 8bit type's S = 0)
  */
 LWPOINT *
-lwpoint_construct(int srid, GBOX *bbox, POINTARRAY *point)
+lwpoint_construct(int32_t srid, GBOX *bbox, POINTARRAY *point)
 {
 	LWPOINT *result;
 	uint8_t flags = 0;
@@ -148,7 +148,7 @@ lwpoint_construct(int srid, GBOX *bbox, POINTARRAY *point)
 }
 
 LWPOINT *
-lwpoint_construct_empty(int srid, char hasz, char hasm)
+lwpoint_construct_empty(int32_t srid, char hasz, char hasm)
 {
 	LWPOINT *result = lwalloc(sizeof(LWPOINT));
 	result->type = POINTTYPE;
@@ -160,7 +160,7 @@ lwpoint_construct_empty(int srid, char hasz, char hasm)
 }
 
 LWPOINT *
-lwpoint_make2d(int srid, double x, double y)
+lwpoint_make2d(int32_t srid, double x, double y)
 {
 	POINT4D p = {x, y, 0.0, 0.0};
 	POINTARRAY *pa = ptarray_construct_empty(0, 0, 1);
@@ -170,7 +170,7 @@ lwpoint_make2d(int srid, double x, double y)
 }
 
 LWPOINT *
-lwpoint_make3dz(int srid, double x, double y, double z)
+lwpoint_make3dz(int32_t srid, double x, double y, double z)
 {
 	POINT4D p = {x, y, z, 0.0};
 	POINTARRAY *pa = ptarray_construct_empty(1, 0, 1);
@@ -181,7 +181,7 @@ lwpoint_make3dz(int srid, double x, double y, double z)
 }
 
 LWPOINT *
-lwpoint_make3dm(int srid, double x, double y, double m)
+lwpoint_make3dm(int32_t srid, double x, double y, double m)
 {
 	POINT4D p = {x, y, 0.0, m};
 	POINTARRAY *pa = ptarray_construct_empty(0, 1, 1);
@@ -192,7 +192,7 @@ lwpoint_make3dm(int srid, double x, double y, double m)
 }
 
 LWPOINT *
-lwpoint_make4d(int srid, double x, double y, double z, double m)
+lwpoint_make4d(int32_t srid, double x, double y, double z, double m)
 {
 	POINT4D p = {x, y, z, m};
 	POINTARRAY *pa = ptarray_construct_empty(1, 1, 1);
@@ -203,7 +203,7 @@ lwpoint_make4d(int srid, double x, double y, double z, double m)
 }
 
 LWPOINT *
-lwpoint_make(int srid, int hasz, int hasm, const POINT4D *p)
+lwpoint_make(int32_t srid, int hasz, int hasm, const POINT4D *p)
 {
 	POINTARRAY *pa = ptarray_construct_empty(hasz, hasm, 1);
 	ptarray_append_point(pa, p, LW_TRUE);

@@ -96,7 +96,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_get_srid);
 Datum LWGEOM_get_srid(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom=PG_GETARG_GSERIALIZED_P(0);
-	int srid = gserialized_get_srid (geom);
+	int32_t srid = gserialized_get_srid(geom);
 	PG_FREE_IF_COPY(geom,0);
 	PG_RETURN_INT32(srid);
 }
@@ -106,7 +106,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_set_srid);
 Datum LWGEOM_set_srid(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-	int srid = PG_GETARG_INT32(1);
+	int32_t srid = PG_GETARG_INT32(1);
 	gserialized_set_srid(g, srid);
 	PG_RETURN_POINTER(g);
 }

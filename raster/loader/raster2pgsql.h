@@ -97,7 +97,7 @@ typedef struct raster_loader_config {
 	int quoteident;
 
 	/* SRID of input raster */
-	int srid;
+	int32_t srid;
 
 	/* SRID of output raster (reprojection) */
 	int out_srid;
@@ -163,7 +163,7 @@ typedef struct raster_loader_config {
 
 typedef struct rasterinfo_t {
 	/* SRID of raster */
-	int srid;
+	int32_t srid;
 
 	/* srs of raster */
 	char *srs;

@@ -186,7 +186,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	GSERIALIZED *result;
 	double distance_fraction = PG_GETARG_FLOAT8(1);
 	int repeat = PG_NARGS() > 2 && PG_GETARG_BOOL(2);
-	int srid = gserialized_get_srid(gser);
+	int32_t srid = gserialized_get_srid(gser);
 	LWLINE* lwline;
 	LWGEOM* lwresult;
 	POINTARRAY* opa;

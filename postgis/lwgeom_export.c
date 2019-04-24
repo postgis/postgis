@@ -52,7 +52,8 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS);
  * Could return SRS as short one (i.e EPSG:4326)
  * or as long one: (i.e urn:ogc:def:crs:EPSG::4326)
  */
-char * getSRSbySRID(int srid, bool short_crs)
+char *
+getSRSbySRID(int32_t srid, bool short_crs)
 {
 	char query[256];
 	char *srs, *srscopy;
@@ -117,7 +118,7 @@ char * getSRSbySRID(int srid, bool short_crs)
 int getSRIDbySRS(const char* srs)
 {
 	char query[256];
-	int srid, err;
+	int32_t srid, err;
 
 	if (!srs) return 0;
 
@@ -184,7 +185,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	text *result;
 	int version;
 	char *srs;
-	int srid;
+	int32_t srid;
 	int option = 0;
 	int lwopts = LW_GML_IS_DIMS;
 	int precision = DBL_DIG;
@@ -377,7 +378,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 		if ( option & 2 || option & 4 )
 		{
-			int srid = gserialized_get_srid(geom);
+			int32_t srid = gserialized_get_srid(geom);
 			if ( srid != SRID_UNKNOWN )
 			{
 				if ( option & 2 )
@@ -466,7 +467,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	text *result;
 	int version;
 	char *srs;
-	int srid;
+	int32_t srid;
 	int option = 0;
 	int precision = DBL_DIG;
 	static const char* default_defid = "x3d:"; /* default defid */

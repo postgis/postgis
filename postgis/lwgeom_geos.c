@@ -358,7 +358,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	GEOSGeometry *g_union = NULL;
 	GEOSGeometry **geoms = NULL;
 
-	int srid = SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 
 	int empty_type = 0;
 
@@ -765,7 +765,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 	GEOSGeometry *g1, *g3;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom;
-	int srid;
+	int32_t srid;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 
@@ -837,7 +837,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	GEOSGeometry *g1, *g3;
 	GSERIALIZED *result;
 	LWGEOM *lwout;
-	int srid;
+	int32_t srid;
 	GBOX bbox;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -2912,7 +2912,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	GSERIALIZED *result;
 	GEOSGeometry *geos_result;
 	const GEOSGeometry **vgeoms;
-	int srid=SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 #if POSTGIS_DEBUG_LEVEL >= 3
 	static int call=1;
 #endif
@@ -2969,7 +2969,7 @@ Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 	int is3d = 0;
 	uint32 nelems, nclusters, i;
 	GEOSGeometry **geos_inputs, **geos_results;
-	int srid=SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 
 	/* Parameters used to construct a result array */
 	int16 elmlen;
@@ -3037,7 +3037,7 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 	LWGEOM** lw_inputs;
 	LWGEOM** lw_results;
 	double tolerance;
-	int srid=SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 
 	/* Parameters used to construct a result array */
 	int16 elmlen;
@@ -3503,7 +3503,7 @@ Datum ST_MinimumClearanceLine(PG_FUNCTION_ARGS)
 	GSERIALIZED* result;
 	GEOSGeometry* input_geos;
 	GEOSGeometry* result_geos;
-	int srid;
+	int32_t srid;
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
@@ -3539,7 +3539,7 @@ Datum ST_OrientedEnvelope(PG_FUNCTION_ARGS)
 	GSERIALIZED* result;
 	GEOSGeometry* input_geos;
 	GEOSGeometry* result_geos;
-	int srid;
+	int32_t srid;
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 

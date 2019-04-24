@@ -156,10 +156,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @return a topology handler, which embeds the backend data/params
    *         or NULL on error (@see lastErrorMessage)
    */
-  LWT_BE_TOPOLOGY* (*createTopology) (
-    const LWT_BE_DATA* be,
-    const char* name, int srid, double precision, int hasZ
-  );
+  LWT_BE_TOPOLOGY *(*createTopology)(const LWT_BE_DATA *be, const char *name, int32_t srid, double precision, int hasZ);
 
   /**
    * Load a topology from the backend
@@ -906,8 +903,7 @@ typedef struct LWT_TOPOLOGY_T LWT_TOPOLOGY;
  * @return the handler of the topology, or NULL on error
  *         (liblwgeom error handler will be invoked with error message)
  */
-LWT_TOPOLOGY *lwt_CreateTopology(LWT_BE_IFACE *iface, const char *name,
-                        int srid, double prec, int hasz);
+LWT_TOPOLOGY *lwt_CreateTopology(LWT_BE_IFACE *iface, const char *name, int32_t srid, double prec, int hasz);
 
 /**
  * Loads an existing topology by name from the database

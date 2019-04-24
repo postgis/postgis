@@ -40,7 +40,7 @@ typedef struct
 	int swap_bytes; /* Do an endian flip? */
 	int check; /* Simple validity checks on geometries */
 	uint32_t lwtype; /* Current type we are handling */
-	uint32_t srid; /* Current SRID we are handling */
+	int32_t srid;    /* Current SRID we are handling */
 	int has_z; /* Z? */
 	int has_m; /* M? */
 	int has_srid; /* SRID? */

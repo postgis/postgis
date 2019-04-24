@@ -452,7 +452,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	GSERIALIZED *result;
 	LWGEOM **lwgeoms;
 	LWGEOM *lwgeom;
-	int srid;
+	int32_t srid;
 	GBOX *bbox;
 
 	POSTGIS_DEBUG(2, "LWGEOM_force_collection called");
@@ -1148,7 +1148,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeoms[2], *outlwg;
 	uint32 type1, type2;
 	uint8_t outtype;
-	int srid;
+	int32_t srid;
 
 	POSTGIS_DEBUG(2, "LWGEOM_collect called.");
 
@@ -1231,7 +1231,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	LWGEOM **lwgeoms, *outlwg;
 	uint32 outtype;
 	int count;
-	int srid = SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 	GBOX *box = NULL;
 
 	ArrayIterator iterator;
@@ -1404,7 +1404,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	LWGEOM **geoms;
 	LWGEOM *outlwg;
 	uint32 ngeoms;
-	int srid = SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 
 	ArrayIterator iterator;
 	Datum value;
@@ -1607,7 +1607,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	int srid = lwgeom_get_srid(lwgeom);
+	int32_t srid = lwgeom_get_srid(lwgeom);
 	LWPOLY *poly;
 	GSERIALIZED *result;
 	GBOX gbox;
@@ -1708,7 +1708,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	int srid = lwgeom->srid;
+	int32_t srid = lwgeom->srid;
 	POINT4D pt;
 	GBOX box;
 	POINTARRAY *pa;
@@ -2069,7 +2069,7 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 	LWPOLY *poly;
 	GSERIALIZED *result;
 	double x1, y1, x2, y2;
-	int srid = SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 
 	POSTGIS_DEBUG(2, "ST_MakeEnvelope called");
 
@@ -2369,7 +2369,7 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 	LWPOINT *lwpoint;
 	POINT2D p1, p2;
 	double result;
-	int srid;
+	int32_t srid;
 
 	/* Extract first point */
 	geom = PG_GETARG_GSERIALIZED_P(0);
@@ -2445,7 +2445,7 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 	POINT2D points[4];
 	double az1, az2;
 	double result;
-	int srids[4];
+	int32_t srids[4];
 	int i = 0;
 	int j = 0;
 	int err_code = 0;
@@ -2884,7 +2884,7 @@ Datum ST_BoundingDiagonal(PG_FUNCTION_ARGS)
 	const GBOX *gbox;
 	int hasz = FLAGS_GET_Z(lwgeom_in->flags);
 	int hasm = FLAGS_GET_M(lwgeom_in->flags);
-	int srid = lwgeom_in->srid;
+	int32_t srid = lwgeom_in->srid;
 	POINT4D pt;
 	POINTARRAY *pa;
 

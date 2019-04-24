@@ -56,7 +56,7 @@ extern int wkt_yylex_destroy(void);
 /*
 * Functions called from within the bison parser to construct geometries.
 */
-int wkt_lexer_read_srid(char *str);
+int32_t wkt_lexer_read_srid(char *str);
 POINT wkt_parser_coord_2(double c1, double c2);
 POINT wkt_parser_coord_3(double c1, double c2, double c3);
 POINT wkt_parser_coord_4(double c1, double c2, double c3, double c4);
@@ -77,5 +77,4 @@ LWGEOM* wkt_parser_compound_add_geom(LWGEOM *col, LWGEOM *geom);
 LWGEOM* wkt_parser_collection_new(LWGEOM *geom);
 LWGEOM* wkt_parser_collection_add_geom(LWGEOM *col, LWGEOM *geom);
 LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *col, char *dimensionality);
-void    wkt_parser_geometry_new(LWGEOM *geom, int srid);
-
+void wkt_parser_geometry_new(LWGEOM *geom, int32_t srid);

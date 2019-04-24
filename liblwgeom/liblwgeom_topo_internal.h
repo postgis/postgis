@@ -92,7 +92,7 @@ struct LWT_TOPOLOGY_T
 {
   const LWT_BE_IFACE *be_iface;
   LWT_BE_TOPOLOGY *be_topo;
-  int srid;
+  int32_t srid;
   double precision;
   int hasZ;
 };

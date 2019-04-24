@@ -56,7 +56,7 @@ geometries lacks z-values. The vertical line crosses the 2d point that is closes
 and the z-range is from maxz to minz in the geometry that has z values.
 */
 static LWGEOM *
-create_v_line(const LWGEOM *lwgeom, double x, double y, int srid)
+create_v_line(const LWGEOM *lwgeom, double x, double y, int32_t srid)
 {
 
 	LWPOINT *lwpoints[2];
@@ -94,7 +94,7 @@ lwgeom_closest_point_3d(const LWGEOM *lw1, const LWGEOM *lw2)
 Function initializing 3dshortestline and 3dlongestline calculations.
 */
 LWGEOM *
-lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
+lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int32_t srid, int mode)
 {
 	LWDEBUG(2, "lw_dist3d_distanceline is called");
 	double x1, x2, y1, y2, z1, z2, x, y;
@@ -198,7 +198,7 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 Function initializing 3dclosestpoint calculations.
 */
 LWGEOM *
-lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
+lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int32_t srid, int mode)
 {
 
 	double x, y, z;

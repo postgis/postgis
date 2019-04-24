@@ -1188,7 +1188,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 	int numbands = 0;
 	int width = 0;
 	int height = 0;
-	int srid = 0;
+	int32_t srid = 0;
 	double gt[6] = {0};
 
 	rt_pixtype pixtype = PT_END;

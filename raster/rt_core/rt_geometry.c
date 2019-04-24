@@ -192,7 +192,7 @@ rt_errorstate rt_raster_get_perimeter(
 	uint16_t trim[4] = {0}; /* top, right, bottom, left */
 	int isset[4] = {0};
 	double gt[6] = {0.0};
-	int srid = SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 
 	POINTARRAY *pts = NULL;
 	POINT4D p4d;
@@ -612,7 +612,7 @@ rt_raster_pixel_as_polygon(rt_raster rast, int x, int y)
     double scale_x, scale_y;
     double skew_x, skew_y;
     double ul_x, ul_y;
-    int srid;
+    int32_t srid;
     POINTARRAY **points;
     POINT4D p, p0;
     LWPOLY *poly;
@@ -669,7 +669,7 @@ rt_raster_pixel_as_polygon(rt_raster rast, int x, int y)
 rt_errorstate
 rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env) {
 	double gt[6] = {0.0};
-	int srid = SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 
 	POINTARRAY *pts = NULL;
 	POINT4D p4d;
@@ -802,7 +802,7 @@ rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env) {
 rt_errorstate
 rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull) {
 	double gt[6] = {0.0};
-	int srid = SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 
 	POINTARRAY *pts = NULL;
 	POINT4D p4d;

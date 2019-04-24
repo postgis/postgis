@@ -782,7 +782,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 
 	uint32_t num_bands = 0;
 
-	int srid = SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 	char *srs = NULL;
 
 	POSTGIS_RT_DEBUG(3, "RASTER_asRaster: Starting");

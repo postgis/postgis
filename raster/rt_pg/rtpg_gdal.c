@@ -65,7 +65,7 @@ Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS)
 	int data_len = 0;
 	VSILFILE *vsifp = NULL;
 	GDALDatasetH hdsSrc;
-	int srid = -1; /* -1 for NULL */
+	int32_t srid = -1; /* -1 for NULL */
 
 	rt_pgraster *pgraster = NULL;
 	rt_raster raster;
@@ -155,7 +155,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 	char **options = NULL;
 	text *optiontext = NULL;
 	char *option = NULL;
-	int srid = SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 	char *srs = NULL;
 
 	ArrayType *array;

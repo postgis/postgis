@@ -214,7 +214,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	text *result;
 	int version;
 	char *srs;
-	int srid = SRID_DEFAULT;
+	int32_t srid = SRID_DEFAULT;
 	int precision = DBL_DIG;
 	int option = 0;
 	int lwopts = LW_GML_IS_DIMS;
