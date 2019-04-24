@@ -20,7 +20,7 @@
 /*
 ** Global variable to hold WKT strings
 */
-char *s = NULL;
+static char *s = NULL;
 
 /*
 ** The suite initialization function.

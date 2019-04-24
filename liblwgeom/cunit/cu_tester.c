@@ -16,6 +16,8 @@
 #include "cu_tester.h"
 #include "../postgis_config.h"
 
+char cu_error_msg[MAX_CUNIT_ERROR_LENGTH + 1] = {0};
+
 /* Internal funcs */
 static void
 cu_errorreporter(const char *fmt, va_list ap);

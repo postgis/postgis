@@ -80,7 +80,7 @@ endif
 # Build the main unit test executable
 cu_tester: $(LOADER_OBJS) $(OBJS) 
 	$(LIBTOOL) --mode=link \
-	$(CC)  $^ -o $@ $(LIBLWGEOM) $(LDFLAGS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LIBLWGEOM) $(LDFLAGS)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
