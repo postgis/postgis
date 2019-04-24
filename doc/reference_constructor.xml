@@ -2,6 +2,135 @@
   <sect1 id="Geometry_Constructors">
 	  <title>Geometry Constructors</title>
 
+	<refentry id="ST_Collect">
+	  <refnamediv>
+		<refname>ST_Collect</refname>
+		<refpurpose>Creates a GeometryCollection or Multi* value from a set of other geometries.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>geometry <function>ST_Collect</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>g1</parameter></paramdef>
+					<paramdef><type>geometry</type> <parameter>g2</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>geometry <function>ST_Collect</function></funcdef>
+					<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>geometry <function>ST_Collect</function></funcdef>
+					<paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para> Collects geometries into an appropriate geometry collection type.
+			The output geometry is either a MULTI* or a
+			GEOMETRYCOLLECTION, depending on whether the input geometries have the same or different types
+			(homogeneous or heterogeneous).
+			The input geometries are left unchanged within the collection.
+			</para>
+		<para>
+			Comes in 3 variants.
+			Variant 1 collects 2 geometries.
+			Variant 2 takes an array of geometries.
+			Variant 3 is an aggregate function that takes a set of geometries.
+			</para>
+
+		<para>Two-argument and array variants: Returns a geometry which is a collection of the
+			input geometries. </para>
+
+		<para>Aggregate variant: Returns a GEOMETRYCOLLECTION or a MULTI geometry
+			from a set of geometries. The function is an "aggregate"
+			function in the terminology of PostgreSQL. That means that it
+			operates on rows of data, in the same way the SUM() and AVG()
+			functions do. For example, "SELECT ST_Collect(GEOM) FROM GEOMTABLE
+			GROUP BY ATTRCOLUMN" returns a separate collection geometry for
+			each distinct value of ATTRCOLUMN.</para>
+
+		<note><para>
+			If any of the input geometries are collections (MULTI* or GEOMETRYCOLLECTION)
+			ST_Collect will return a GEOMETRYCOLLECTION (since that is the only type
+			which can contain nested collections).
+			To prevent this, use <xref linkend="ST_Dump" /> to expand the
+			input collections to their elements, and then collect the atomic geometries (see example below).
+			</para></note>
+
+		<note><para>ST_Collect and ST_Union are superficially similar, but in fact operate very differently.
+		ST_Collect simply aggregates geometries into a collection without changing them in any way.
+		ST_Union geometrically merges geometries where they overlap,
+		and splits linestrings at intersections.
+		It may return single geometries when it dissolves boundaries.
+		</para></note>
+
+		<para>Availability: 1.4.0 -  ST_Collect(geomarray) was introduced. ST_Collect was enhanced to handle more geometries faster.</para>
+		  <para>&Z_support;</para>
+		  <para>&curve_support; This method supports Circular Strings
+		    and Curves, but will never return a MULTICURVE or MULTI as one
+		    would expect and PostGIS does not currently support those.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<para>Aggregate example</para>
+			<programlisting>SELECT stusps, ST_Collect(f.the_geom) as singlegeom
+	 FROM (SELECT stusps, (ST_Dump(the_geom)).geom As the_geom
+				FROM
+				somestatetable ) As f
+GROUP BY stusps</programlisting>
+		<para>Non-Aggregate example</para>
+			<programlisting>SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),
+	ST_GeomFromText('POINT(-2 3)') ));
+
+st_astext
+----------
+MULTIPOINT(1 2,-2 3)
+
+--Collect 2 d points
+SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),
+		ST_GeomFromText('POINT(1 2)') ) );
+
+st_astext
+----------
+MULTIPOINT(1 2,1 2)
+
+--Collect 3d points
+SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),
+		ST_GeomFromEWKT('POINT(1 2 4)') ) );
+
+		st_asewkt
+-------------------------
+ MULTIPOINT(1 2 3,1 2 4)
+
+ --Example with curves
+SELECT ST_AsText(ST_Collect(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'),
+ST_GeomFromText('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)')));
+																st_astext
+------------------------------------------------------------------------------------
+ GEOMETRYCOLLECTION(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),
+ CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))
+
+--New ST_Collect array construct
+SELECT ST_Collect(ARRAY(SELECT the_geom FROM sometable));
+
+SELECT ST_AsText(ST_Collect(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'),
+			ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As wktcollect;
+
+--wkt collect --
+MULTILINESTRING((1 2,3 4),(3 4,4 5))
+
+</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Dump" />, <xref linkend="ST_Union" /></para>
+	  </refsection>
+	</refentry>
+
 	<refentry id="ST_LineFromMultiPoint">
 	  <refnamediv>
 		<refname>ST_LineFromMultiPoint</refname>
@@ -49,7 +178,7 @@ LINESTRING(1 2 3,4 5 6,7 8 9)
 		<refnamediv>
 		<refname>ST_MakeLine</refname>
 
-		<refpurpose>Creates a Linestring from point, multipoint, or line geometries.</refpurpose>
+		<refpurpose>Creates a Linestring from Point, MultiPoint, or LineString geometries.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -167,8 +296,7 @@ LINESTRING(1 2 3,3 4 5,6 6 6)
 		<refnamediv>
 		<refname>ST_MakeEnvelope</refname>
 
-		<refpurpose>Creates a rectangular Polygon formed from the given minimums and maximums. Input
-			values must be in SRS specified by the SRID.</refpurpose>
+		<refpurpose>Creates a rectangular Polygon from the given minimum and maximum ordinates.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -215,8 +343,7 @@ POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))
 		<refnamediv>
 		<refname>ST_MakePolygon</refname>
 
-		<refpurpose>Creates a Polygon formed by the given shell. Input
-			geometries must be closed LINESTRINGS.</refpurpose>
+		<refpurpose>Creates a Polygon from a shell and optional list of holes.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -344,7 +471,7 @@ FROM
 		<refnamediv>
 		<refname>ST_MakePoint</refname>
 
-		<refpurpose>Creates a 2D, 3DZ or 4D point geometry.</refpurpose>
+		<refpurpose>Creates a 2D, 3DZ or 4D Point.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -383,8 +510,10 @@ FROM
 			and <xref linkend="ST_PointFromText" />.  It is also easier to use if
 			you have raw coordinates rather than WKT.</para>
 
-			<note><para>Note x is longitude and y is latitude</para></note>
+			<note><para>For geodetic coordinates, <varname>x</varname> is longitude and <varname>y</varname> is latitude</para></note>
+
 			<note><para>Use <xref linkend="ST_MakePointM" /> if you need to make a point with x, y and m.</para></note>
+
 			<para>&Z_support;</para>
 
 		</refsection>
@@ -416,7 +545,7 @@ result
 		<refnamediv>
 		<refname>ST_MakePointM</refname>
 
-		<refpurpose>Creates a point geometry with an x y and m coordinate.</refpurpose>
+		<refpurpose>Creates a Point from X, Y and M values.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -477,7 +606,7 @@ result
 	  <refnamediv>
 		<refname>ST_Point</refname>
 
-		<refpurpose>Returns an ST_Point with the given coordinate values. OGC alias for ST_MakePoint.</refpurpose>
+		<refpurpose>Creates a Point with the given coordinate values. OGC alias for ST_MakePoint.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -493,7 +622,7 @@ result
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns an ST_Point with the given coordinate values. MM compliant alias for ST_MakePoint that takes just an x and y.</para>
+		<para>Returns an Point with the given coordinate values. SQL-MM alias for ST_MakePoint that takes just an x and y.</para>
 
 
 		<para>&sqlmm_compliant; SQL-MM 3: 6.1.2</para>
@@ -531,7 +660,7 @@ SELECT ST_Transform(ST_SetSRID(ST_Point(3637510, 3014852),2273),4326)::geography
 	  <refnamediv>
 		<refname>ST_Polygon</refname>
 
-		<refpurpose>Returns a polygon built from the specified linestring and SRID.</refpurpose>
+		<refpurpose>Creates a Polygon from a LineString, with a specified SRID.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
