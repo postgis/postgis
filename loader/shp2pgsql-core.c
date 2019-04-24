@@ -845,7 +845,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	int field_precision, field_width;
 	char name[MAXFIELDNAMELEN];
 	char name2[MAXFIELDNAMELEN];
-	DBFFieldType type = -1;
+	DBFFieldType type = FTInvalid;
 	char *utf8str;
 
 	/* If we are reading the entire shapefile, open it */
