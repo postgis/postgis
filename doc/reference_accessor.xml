@@ -7,8 +7,7 @@
 	  <refnamediv>
 		<refname>GeometryType</refname>
 
-		<refpurpose>Returns the type of the geometry as a string. Eg:
-			'LINESTRING', 'POLYGON', 'MULTIPOINT', etc.</refpurpose>
+		<refpurpose>Returns the type of the geometry as text.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -91,7 +90,7 @@
 	  <refnamediv>
 		<refname>ST_Boundary</refname>
 
-		<refpurpose>Returns the closure of the combinatorial boundary of this
+		<refpurpose>Returns the closure of the combinatorial boundary of a
 			Geometry.</refpurpose>
 	  </refnamediv>
 
@@ -208,7 +207,7 @@ MULTIPOINT(-1 1 1,1 1 0.75)
 	  <refnamediv>
 		<refname>ST_CoordDim</refname>
 
-		<refpurpose>Return the coordinate dimension of the ST_Geometry value.</refpurpose>
+		<refpurpose>Return the coordinate dimension of a Geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -262,8 +261,7 @@ MULTIPOINT(-1 1 1,1 1 0.75)
 	  <refnamediv>
 		<refname>ST_Dimension</refname>
 
-		<refpurpose>The inherent dimension of this Geometry object, which must
-			be less than or equal to the coordinate dimension. </refpurpose>
+		<refpurpose>Returns the topological dimension of a Geometry. </refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -279,12 +277,12 @@ MULTIPOINT(-1 1 1,1 1 0.75)
 	  <refsection>
 		<title>Description</title>
 
-		<para>The inherent dimension of this Geometry object, which must
+		<para>Return the topological dimension of this Geometry object, which must
 			be less than or equal to the coordinate dimension. OGC SPEC
 			s2.1.1.1 - returns 0 for <varname>POINT</varname>, 1 for <varname>LINESTRING</varname>, 2 for <varname>POLYGON</varname>, and
 			the largest dimension of the components of a
 			<varname>GEOMETRYCOLLECTION</varname>.
-			If the dimension is unknown (empty <varname>GEOMETRYCOLLECTION</varname>) 0 is returned.
+			If the dimension is unknown (e.g. for an empty <varname>GEOMETRYCOLLECTION</varname>) 0 is returned.
 		</para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.2</para>
@@ -645,7 +643,7 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
 		<refname>ST_DumpRings</refname>
 
 		<refpurpose>Returns a set of <varname>geometry_dump</varname> rows for
-			the exterior and interior rings of a polygon.</refpurpose>
+			the exterior and interior rings of a Polygon.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -709,8 +707,7 @@ SELECT ST_AsEWKT(geom) As the_geom, path
 	  <refnamediv>
 		<refname>ST_EndPoint</refname>
 
-		<refpurpose>Returns the last point of a <varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname>
-		geometry as a <varname>POINT</varname>.</refpurpose>
+		<refpurpose>Returns the last point of a LineString or CircularLineString.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -726,9 +723,9 @@ SELECT ST_AsEWKT(geom) As the_geom, path
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the last point of a <varname>LINESTRING</varname> geometry
-		as a <varname>POINT</varname> or <varname>NULL</varname> if the input
-		parameter is not a <varname>LINESTRING</varname>.</para>
+		<para>Returns the last point of a LINESTRING
+		as a POINT.  Returns <varname>NULL</varname> if the input
+		is not a <varname>LINESTRING</varname>.</para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 7.1.4</para>
 		<para>&Z_support;</para>
@@ -777,8 +774,7 @@ SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
 		  <refnamediv>
 			<refname>ST_Envelope</refname>
 
-			<refpurpose>Returns a geometry representing the double precision (float8) bounding box of the
-			supplied geometry.</refpurpose>
+			<refpurpose>Returns a geometry representing the double precision (float8) bounding box of a geometry.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -894,10 +890,10 @@ POLYGON((20 75,20 150,125 150,125 75,20 75))</programlisting>
 			<title>Description</title>
 
 			<para>
-Returns the diagonal of the supplied geometry's bounding box as linestring.
+Returns the diagonal of the supplied geometry's bounding box as a LineString.
 If the input geometry is empty, the diagonal line is also empty, otherwise
-it is a 2-points linestring with minimum values of each dimension in its
-start point and maximum values in its end point.
+it is a 2-point LineString with the minimum values of each dimension in its
+start point and the maximum values in its end point.
 			</para>
 
 			<para>
@@ -955,8 +951,7 @@ SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
 	  <refnamediv>
 		<refname>ST_ExteriorRing</refname>
 
-		<refpurpose>Returns a line string representing the exterior ring of the <varname>POLYGON</varname> geometry. Return
-				NULL if the geometry is not a polygon.  Will not work with MULTIPOLYGON</refpurpose>
+		<refpurpose>Returns a LineString representing the exterior ring of a Polygon. </refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1025,9 +1020,7 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 	  <refnamediv>
 		<refname>ST_GeometryN</refname>
 
-		<refpurpose>Return the 1-based Nth geometry if the geometry is a
-			GEOMETRYCOLLECTION, (MULTI)POINT, (MULTI)LINESTRING, MULTICURVE or (MULTI)POLYGON, POLYHEDRALSURFACE
-			Otherwise, return NULL.</refpurpose>
+		<refpurpose>Return the Nth geometry element of a geometry collection.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1053,7 +1046,7 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		</note>
 
 		<note>
-		  <para>If you want to extract all geometries, of a geometry, ST_Dump is more efficient and will also work for singular geoms.</para>
+		  <para>If you want to extract all geometries, of a geometry, <xref linkend="ST_Dump" /> is more efficient, and also works for singular geoms.</para>
 		</note>
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>Changed: 2.0.0 Prior versions would return NULL for singular geometries.  This was changed to return the geometry for ST_GeometryN(..,1) case.</para>
@@ -1146,7 +1139,7 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 	<refentry id="ST_GeometryType">
 		<refnamediv>
 			<refname>ST_GeometryType</refname>
-			<refpurpose>Return the geometry type of the ST_Geometry value.</refpurpose>
+			<refpurpose>Returns the type of a ST_Geometry value as text.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -1221,7 +1214,7 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 	  <refnamediv>
 		<refname>ST_HasArc</refname>
 
-		<refpurpose>Returns true if a geometry or geometry collection contains a circular string</refpurpose>
+		<refpurpose>Tests if a geometry contains a circular arc</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1266,9 +1259,7 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 	  <refnamediv>
 		<refname>ST_InteriorRingN</refname>
 
-		<refpurpose>Return the Nth interior linestring ring of the polygon geometry.
-			Return NULL if the geometry is not a polygon or the given N is out
-			of range.</refpurpose>
+		<refpurpose>Returns the Nth interior ring (hole) of a Polygon.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1284,13 +1275,13 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return the Nth interior linestring ring of the polygon geometry.
-			Return NULL if the geometry is not a polygon or the given N is out
-			of range.  index starts at 1.</para>
+		<para>Returns the Nth interior linestring ring of the polygon geometry.
+			Returns NULL if the geometry is not a polygon or the given N is out
+			of range.  The index starts at 1.</para>
 
 		<!-- optionally mention that this function uses indexes if appropriate -->
 		<note>
-		  <para>This will not work for MULTIPOLYGONs.  Use in conjunction with ST_Dump for MULTIPOLYGONS</para>
+		  <para>This function does not support for MULTIPOLYGONs.  Use in conjunction with <xref linkend="ST_Dump" /> for MULTIPOLYGONS</para>
 		</note>
 
 		<para>&sfs_compliant;</para>
@@ -1332,8 +1323,7 @@ FROM (SELECT ST_BuildArea(
 			<refname>
 				ST_IsPolygonCCW
 			</refname>
-			<refpurpose>
-				Returns true if all exterior rings are oriented counter-clockwise and all interior rings are oriented clockwise.
+			<refpurpose>Tests if Polygons have exterior rings oriented counter-clockwise and interior rings oriented clockwise.
 			</refpurpose>
 		</refnamediv>
 
@@ -1402,8 +1392,7 @@ FROM (SELECT ST_BuildArea(
 			<refname>
 				ST_IsPolygonCW
 			</refname>
-			<refpurpose>
-				Returns true if all exterior rings are oriented clockwise and all interior rings are oriented counter-clockwise.
+			<refpurpose>Tests if Polygons have exterior rings oriented clockwise and interior rings oriented counter-clockwise.
 			</refpurpose>
 		</refnamediv>
 
@@ -1470,8 +1459,7 @@ FROM (SELECT ST_BuildArea(
 	  <refnamediv>
 		<refname>ST_IsClosed</refname>
 
-		<refpurpose>Returns <varname>TRUE</varname> if the
-		<varname>LINESTRING</varname>'s start and end points are coincident. For Polyhedral surface is closed (volumetric).
+		<refpurpose>Tests if a LineStrings's start and end points are coincident. For a PolyhedralSurface tests if it is closed (volumetric).
 		</refpurpose>
 	  </refnamediv>
 
@@ -1489,7 +1477,8 @@ FROM (SELECT ST_BuildArea(
 		<title>Description</title>
 
 		<para>Returns <varname>TRUE</varname> if the <varname>LINESTRING</varname>'s
-		start and end points are coincident.  For Polyhedral Surfaces, it tells you if the surface is areal (open) or volumetric (closed).</para>
+		start and end points are coincident.
+		For Polyhedral Surfaces, reports if the surface is areal (open) or volumetric (closed).</para>
 
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3</para>
@@ -1579,10 +1568,7 @@ postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);
 	<refentry id="ST_IsCollection">
 	  <refnamediv>
 		<refname>ST_IsCollection</refname>
-
-                <refpurpose>Returns <varname>TRUE</varname> if the argument is a
-                  collection (<varname>MULTI*</varname>, <varname>GEOMETRYCOLLECTION</varname>, ...)
-                </refpurpose>
+      <refpurpose>Tests if a geometry is a geometry collection type.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1664,7 +1650,7 @@ postgis=# SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::geometry);
 	  <refnamediv>
 		<refname>ST_IsEmpty</refname>
 
-		<refpurpose>Returns true if this Geometry is an empty geometrycollection, polygon, point etc.</refpurpose>
+		<refpurpose>Tests if a geometry is empty.</refpurpose>
 
 	  </refnamediv>
 
@@ -1740,8 +1726,7 @@ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
 	<refnamediv>
 	  <refname>ST_IsRing</refname>
 
-	  <refpurpose>Returns <varname>TRUE</varname> if this
-	  <varname>LINESTRING</varname> is both closed and simple.</refpurpose>
+	  <refpurpose>Tests if a LineString is closed and simple.</refpurpose>
 	</refnamediv>
 
 	<refsynopsisdiv>
@@ -1804,8 +1789,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 	  <refnamediv>
 		<refname>ST_IsSimple</refname>
 
-		<refpurpose>Returns (TRUE) if this Geometry has no anomalous geometric
-				points, such as self intersection or self tangency.</refpurpose>
+		<refpurpose>Tests if a Geometry has no points of self-intersection or self-tangency.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1863,8 +1847,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 	  <refnamediv>
 		<refname>ST_IsValid</refname>
 
-		<refpurpose>Returns <varname>true</varname> if the
-		<varname>ST_Geometry</varname> is well formed.
+		<refpurpose>Tests if a Geometry is well-formed.
 		</refpurpose>
 	  </refnamediv>
 
@@ -1887,9 +1870,15 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 	  <refsection>
 		<title>Description</title>
 
-		<para>Test if an ST_Geometry value is well formed.  For geometries that are invalid,
-			the PostgreSQL NOTICE will provide details of why it is not valid.  For more
-			information on the OGC's definition of geometry simplicity and validity, refer
+		<para>Test if an ST_Geometry value is well-formed according to the OGC rules.
+		  For geometries that are invalid,
+			the PostgreSQL NOTICE will provide details of why it is not valid.  </para>
+		<para>
+For the version with flags,
+supported <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail" />
+This version does not print a NOTICE explaining invalidity.
+		</para>
+		<para>For more information on the definition of geometry validity, refer
 			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliancy of geometries"</link>
 		</para>
 		<note>
@@ -1897,10 +1886,9 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 			PostGIS returns NULL.</para>
 		</note>
 	  <para>Performed by the GEOS module.</para>
-		<para>
-The version accepting flags is available starting with 2.0.0. Such version does not print a NOTICE explaining the invalidity.
-Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail" />.
-		</para>
+
+		<para>The version accepting flags is available starting with 2.0.0.		</para>
+
 
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.9</para>
@@ -1944,7 +1932,7 @@ NOTICE:  Self-intersection at or near point 0 0
 	  <refnamediv>
 		<refname>ST_IsValidReason</refname>
 
-		<refpurpose>Returns text stating if a geometry is valid or not and if not valid, a reason why.</refpurpose>
+		<refpurpose>Returns text stating if a geometry is valid, or a reason for invalidity.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2028,7 +2016,7 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
 	  <refnamediv>
 		<refname>ST_IsValidDetail</refname>
 
-		<refpurpose>Returns a valid_detail (valid,reason,location) row stating if a geometry is valid or not and if not valid, a reason why and a location where.</refpurpose>
+		<refpurpose>Returns a <varname>valid_detail</varname> row stating if a geometry is valid, and if not a reason why and a location.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2119,8 +2107,7 @@ SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 1
 	  <refnamediv>
 		<refname>ST_M</refname>
 
-		<refpurpose>Return the M coordinate of the point, or NULL if not
-			available. Input must be a point.</refpurpose>
+		<refpurpose>Returns the M ordinate of a Point.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2135,8 +2122,8 @@ SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 1
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return the M coordinate of the point, or NULL if not
-			available. Input must be a point.</para>
+		<para>Return the M crdinate of a Point, or NULL if not
+			available. Input must be a Point.</para>
 
 		<note>
 			  <para>This is not (yet) part of the OGC spec, but is listed here
@@ -2240,8 +2227,7 @@ fulltable_size geomsize  pergeom
 	<refentry id="ST_NDims">
 		<refnamediv>
 			<refname>ST_NDims</refname>
-			<refpurpose>Returns coordinate dimension of the geometry as a small int.
-			Values are: 2,3 or 4.</refpurpose>
+			<refpurpose>Returns the coordinate dimension of the geometry.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -2283,7 +2269,7 @@ fulltable_size geomsize  pergeom
 	<refentry id="ST_NPoints">
 		<refnamediv>
 			<refname>ST_NPoints</refname>
-			<refpurpose>Return the number of points (vertexes) in a geometry.</refpurpose>
+			<refpurpose>Returns the number of points (vertices) in a geometry.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -2329,7 +2315,7 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 	<refentry id="ST_NRings">
 	  <refnamediv>
 		<refname>ST_NRings</refname>
-		<refpurpose>If the geometry is a polygon or multi-polygon returns the number of rings.</refpurpose>
+		<refpurpose>Returns the number of rings in a polygonal geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2374,8 +2360,7 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 	<refentry id="ST_NumGeometries">
 		<refnamediv>
 			<refname>ST_NumGeometries</refname>
-			<refpurpose>If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the
-			number of geometries, for single geometries will return 1, otherwise return NULL.</refpurpose>
+			<refpurpose>Returns the number of elements in a geometry collection.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -2430,7 +2415,7 @@ POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));
 	<refentry id="ST_NumInteriorRings">
 	  <refnamediv>
 		<refname>ST_NumInteriorRings</refname>
-		<refpurpose>Return the number of interior rings of a polygon geometry.</refpurpose>
+		<refpurpose>Returns the number of interior rings (holes) of a Polygon.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2480,8 +2465,7 @@ GROUP BY gid, field1,field2;
 	<refentry id="ST_NumInteriorRing">
 	  <refnamediv>
 		<refname>ST_NumInteriorRing</refname>
-		<refpurpose>Return the number of interior rings of a polygon in
-			the geometry. Synonym for ST_NumInteriorRings. </refpurpose>
+		<refpurpose>Returns the number of interior rings (holes) of a Polygon. Aias for ST_NumInteriorRings</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2549,8 +2533,7 @@ GROUP BY gid, field1,field2;
 	<refentry id="ST_NumPoints">
 	  <refnamediv>
 		<refname>ST_NumPoints</refname>
-		<refpurpose>Return the number of points in an ST_LineString or
-		  ST_CircularString value.</refpurpose>
+		<refpurpose>Returns the number of points in a LineString or CircularString.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2594,9 +2577,7 @@ GROUP BY gid, field1,field2;
 	  <refnamediv>
 		<refname>ST_PatchN</refname>
 
-		<refpurpose>Return the 1-based Nth geometry (face) if the geometry is a
-			POLYHEDRALSURFACE, POLYHEDRALSURFACEM.
-			Otherwise, return NULL.</refpurpose>
+		<refpurpose>Returns the Nth geometry (face) of a PolyhedralSurface.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2612,17 +2593,18 @@ GROUP BY gid, field1,field2;
 	  <refsection>
 		<title>Description</title>
 
-		<para>>Return the 1-based Nth geometry (face) if the geometry is a
-			POLYHEDRALSURFACE, POLYHEDRALSURFACEM.
-			Otherwise, return NULL.  This  returns the same answer as ST_GeometryN for Polyhedral Surfaces.
-				Using ST_GeometryN is faster.</para>
+		<para>>Returns the 1-based Nth geometry (face) if the geometry is a
+			POLYHEDRALSURFACE or POLYHEDRALSURFACEM.
+			Otherwise, returns NULL.
+			This returns the same answer as ST_GeometryN for PolyhedralSurfaces.
+			Using ST_GeometryN is faster.</para>
 
 		<note>
 		  <para>Index is 1-based.</para>
 		</note>
 
 		<note>
-		  <para>If you want to extract all geometries, of a geometry, ST_Dump is more efficient.</para>
+		  <para>If you want to extract all elements of a geometry <xref linkend="ST_Dump" /> is more efficient.</para>
 		</note>
 
 		<para>Availability: 2.0.0</para>
@@ -2663,9 +2645,8 @@ VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)
 	  <refnamediv>
 		<refname>ST_PointN</refname>
 
-		<refpurpose>Return the Nth point in the first LineString or circular LineString in the
-			geometry. Negative values are counted backwards from the end of the LineString. Returns NULL if there is no linestring in the
-			geometry.</refpurpose>
+		<refpurpose>Returns the Nth point in the first LineString or circular LineString in a
+			geometry. </refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2692,7 +2673,7 @@ VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)
 		</note>
 
 		<note>
-			  <para>If you want to get the nth point of each line string in a multilinestring, use in conjunction
+			  <para>If you want to get the Nth point of each LineString in a MultiLineString, use in conjunction
 			  with ST_Dump</para>
 		</note>
 
@@ -2758,7 +2739,7 @@ FROM ST_GeomFromText('LINESTRING(0 0 0, 1 1 1, 2 2 2)') AS g
 	<refentry id="ST_Points">
 		<refnamediv>
 			<refname>ST_Points</refname>
-			<refpurpose>Returns a MultiPoint containing all of the coordinates of a geometry.
+			<refpurpose>Returns a MultiPoint containing all the coordinates of a geometry.
 			</refpurpose>
 		</refnamediv>
 
@@ -2816,8 +2797,7 @@ MULTIPOINT Z (30 10 4,10 30 5,40 40 6, 30 10 4)
 	<refnamediv>
 	  <refname>ST_StartPoint</refname>
 
-	  <refpurpose>Returns the first point of a <varname>LINESTRING</varname>
-	  geometry as a <varname>POINT</varname>.</refpurpose>
+	  <refpurpose>Returns the first point of a LineString.</refpurpose>
 	</refnamediv>
 
 	<refsynopsisdiv>
@@ -2889,8 +2869,7 @@ SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 5 2)
 	  <refnamediv>
 		<refname>ST_Summary</refname>
 
-		<refpurpose>
-Returns a text summary of the contents of the geometry.
+		<refpurpose>Returns a text summary of the contents of the geometry.
 		</refpurpose>
 	  </refnamediv>
 
@@ -2989,8 +2968,7 @@ Returns a text summary of the contents of the geometry.
 	  <refnamediv>
 		<refname>ST_X</refname>
 
-		<refpurpose>Return the X coordinate of the point, or NULL if not
-			available. Input must be a point.</refpurpose>
+		<refpurpose>Returns the X ordinate of a Point.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -3005,7 +2983,7 @@ Returns a text summary of the contents of the geometry.
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return the X coordinate of the point, or NULL if not
+		<para>Return the X ordinate of the point, or NULL if not
 			available. Input must be a point.</para>
 
 		<note><para>If you want to get the max min x values of any geometry look at ST_XMin, ST_XMax functions.</para></note>
@@ -3045,8 +3023,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 	  <refnamediv>
 		<refname>ST_Y</refname>
 
-		<refpurpose>Return the Y coordinate of the point, or NULL if not
-			available. Input must be a point.</refpurpose>
+		<refpurpose>Returns the Y ordinate of a Point</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -3061,7 +3038,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return the Y coordinate of the point, or NULL if not
+		<para>Return the Y ordinate of the point, or NULL if not
 			available. Input must be a point.</para>
 
 		<para>&sfs_compliant;</para>
@@ -3101,8 +3078,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 	  <refnamediv>
 		<refname>ST_Z</refname>
 
-		<refpurpose>Return the Z coordinate of the point, or NULL if not
-			available. Input must be a point.</refpurpose>
+		<refpurpose>Returns the Z ordinate of a Point.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -3150,8 +3126,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 	  <refnamediv>
 		<refname>ST_Zmflag</refname>
 
-		<refpurpose>Returns ZM (dimension semantic) flag of the geometries as a
-			small int. Values are: 0=2d, 1=3dm, 2=3dz, 3=4d.</refpurpose>
+		<refpurpose>Returns a code indicating the ZM coordinate dimension of a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -3166,8 +3141,9 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns ZM (dimension semantic) flag of the geometries as a
-			small int. Values are: 0=2d, 1=3dm, 2=3dz, 3=4d.</para>
+		<para>Returns a code indicating the ZM coordinate dimension of a geometry. </para>
+
+		<para>Values are: 0 = 2D, 1 = 3D-M, 2 = 3D-Z, 3 = 4D.</para>
 
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
