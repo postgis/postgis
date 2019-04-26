@@ -4598,6 +4598,23 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(r record, geom_column text DEFAULT '', m
 	LANGUAGE 'c' STABLE STRICT _PARALLEL
 	_COST_LOW;
 
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION json(geometry)
+	RETURNS json
+	AS 'MODULE_PATHNAME','geometry_to_json'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION jsonb(geometry)
+	RETURNS jsonb
+	AS 'MODULE_PATHNAME','geometry_to_jsonb'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 3.0.0
+CREATE CAST (geometry AS json) WITH FUNCTION geometry_to_json(geometry);
+-- Availability: 3.0.0
+CREATE CAST (geometry AS jsonb) WITH FUNCTION geometry_to_jsonb(point);
+
 -----------------------------------------------------------------------
 -- Mapbox Vector Tile OUTPUT
 -- Availability: 2.4.0
