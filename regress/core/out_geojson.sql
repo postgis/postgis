@@ -19,11 +19,13 @@ VALUES ('POLYGON((42 42, 45 45, 45 42, 42 42))', 3, 3.3, 'three', '2003-03-03');
 INSERT INTO g (g, i, f, t, d)
 VALUES ('GEOMETRYCOLLECTION(POINT(42 42))', 4, 4.4, 'four', '2004-04-04');
 
+INSERT INTO g VALUES ('POINT EMPTY', 5, 5.5, 'five', '2005-05-05');
+INSERT INTO g VALUES (NULL, 6, 6.6, 'six', '2006-06-06');
+
 SELECT 'gj01', ST_AsGeoJSON(g) AS g
 	FROM g ORDER BY i;
 
 SELECT 'gj02', ST_AsGeoJSON(g.*) AS gj
 	FROM g ORDER BY i;
-
 
 DROP TABLE g;

@@ -3,7 +3,11 @@ gj01|{"type":"Point","coordinates":[42,42]}
 gj01|{"type":"LineString","coordinates":[[42,42],[45,45]]}
 gj01|{"type":"Polygon","coordinates":[[[42,42],[45,45],[45,42],[42,42]]]}
 gj01|{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[42,42]}]}
+gj01|{"type":"Point","coordinates":[]}
+gj01|
 gj02|{"type": "Feature", "geometry": {"type":"Point","coordinates":[42,42]}, "properties": {"i": 1, "f": 1.1, "t": "one", "d": "2001-01-01"}}
 gj02|{"type": "Feature", "geometry": {"type":"LineString","coordinates":[[42,42],[45,45]]}, "properties": {"i": 2, "f": 2.2, "t": "two", "d": "2002-02-02"}}
 gj02|{"type": "Feature", "geometry": {"type":"Polygon","coordinates":[[[42,42],[45,45],[45,42],[42,42]]]}, "properties": {"i": 3, "f": 3.3, "t": "three", "d": "2003-03-03"}}
 gj02|{"type": "Feature", "geometry": {"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[42,42]}]}, "properties": {"i": 4, "f": 4.4, "t": "four", "d": "2004-04-04"}}
+gj02|{"type": "Feature", "geometry": {"type":"Point","coordinates":[]}, "properties": {"i": 5, "f": 5.5, "t": "five", "d": "2005-05-05"}}
+gj02|{"type": "Feature", "geometry": {"type": null}, "properties": {"i": 6, "f": 6.6, "t": "six", "d": "2006-06-06"}}
