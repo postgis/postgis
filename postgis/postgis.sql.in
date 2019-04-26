@@ -4589,7 +4589,13 @@ CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits int4 DEFAULT
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asGeoJson'
-	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	_COST_LOW;
+
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(r record, geom_column text DEFAULT '', maxdecimaldigits int4 DEFAULT 15, pretty_print bool DEFAULT false)
+	RETURNS json
+	AS 'MODULE_PATHNAME','ST_AsGeoJsonRow'
+	LANGUAGE 'c' STABLE STRICT _PARALLEL
 	_COST_LOW;
 
 -----------------------------------------------------------------------
