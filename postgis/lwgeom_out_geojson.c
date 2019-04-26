@@ -61,6 +61,8 @@ static void json_categorize_type(Oid typoid,
 								 JsonTypeCategory *tcategory,
 								 Oid *outfuncoid);
 static char * JsonEncodeDateTime(char *buf, Datum value, Oid typid);
+static int time2tm(TimeADT time, struct pg_tm *tm, fsec_t *fsec);
+static int timetz2tm(TimeTzADT *time, struct pg_tm *tm, fsec_t *fsec, int *tzp);
 
 Datum row_to_geojson(PG_FUNCTION_ARGS);
 extern Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS);
