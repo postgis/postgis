@@ -329,9 +329,10 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
-				<paramdef><type>row </type> <parameter>feature</parameter></paramdef>
+				<paramdef><type>record </type> <parameter>feature</parameter></paramdef>
 				<paramdef choice="opt"><type>text </type> <parameter>geomcolumnname</parameter></paramdef>
 				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>boolean </type> <parameter>prettyprint=false</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
