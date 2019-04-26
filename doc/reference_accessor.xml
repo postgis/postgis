@@ -724,7 +724,7 @@ SELECT ST_AsEWKT(geom) As the_geom, path
 
 		<para>Returns the last point of a LINESTRING
 		as a POINT.  Returns <varname>NULL</varname> if the input
-		is not a <varname>LINESTRING</varname>.</para>
+		is not a LINESTRING.</para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 7.1.4</para>
 		<para>&Z_support;</para>
@@ -1583,7 +1583,7 @@ postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);
 		<title>Description</title>
 
                 <para>Returns <varname>TRUE</varname> if the geometry type of
-                  the argument is either:
+                  the argument a geometry collection type.  Collection types are the following:
                   <itemizedlist>
                     <listitem><para>GEOMETRYCOLLECTION</para></listitem>
                     <listitem><para>MULTI{POINT,POLYGON,LINESTRING,CURVE,SURFACE}</para></listitem>
@@ -2106,7 +2106,7 @@ SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 1
 	  <refnamediv>
 		<refname>ST_M</refname>
 
-		<refpurpose>Returns the M ordinate of a Point.</refpurpose>
+		<refpurpose>Returns the M coordinate of a Point.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2766,7 +2766,7 @@ FROM ST_GeomFromText('LINESTRING(0 0 0, 1 1 1, 2 2 2)') AS g
 			</para>
 
 			<para>
-				M and Z ordinates will be preserved if present.
+				M and Z coordinates will be preserved if present.
 			</para>
 
 			<para>&curve_support;</para>
@@ -2894,8 +2894,8 @@ SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 5 2)
                   Flags shown square brackets after the geometry type
                   have the following meaning:
                   <itemizedlist>
-                    <listitem><para>M: has M ordinate</para></listitem>
-                    <listitem><para>Z: has Z ordinate</para></listitem>
+                    <listitem><para>M: has M coordinate</para></listitem>
+                    <listitem><para>Z: has Z coordinate</para></listitem>
                     <listitem><para>B: has a cached bounding box</para></listitem>
                     <listitem><para>G: is geodetic (geography)</para></listitem>
                     <listitem><para>S: has spatial reference system</para></listitem>
@@ -2967,7 +2967,7 @@ SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 5 2)
 	  <refnamediv>
 		<refname>ST_X</refname>
 
-		<refpurpose>Returns the X ordinate of a Point.</refpurpose>
+		<refpurpose>Returns the X coordinate of a Point.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2982,10 +2982,11 @@ SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 5 2)
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return the X ordinate of the point, or NULL if not
+		<para>Return the X coordinate of the point, or NULL if not
 			available. Input must be a point.</para>
 
-		<note><para>If you want to get the max min x values of any geometry look at ST_XMin, ST_XMax functions.</para></note>
+		<note><para>To get the minimum and maximum X value of geometry coordinates use the functions
+		<xref linkend="ST_XMin" /> and <xref linkend="ST_XMax" />.</para></note>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 6.1.3</para>
 		<para>&Z_support;</para>
@@ -3022,7 +3023,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 	  <refnamediv>
 		<refname>ST_Y</refname>
 
-		<refpurpose>Returns the Y ordinate of a Point.</refpurpose>
+		<refpurpose>Returns the Y coordinate of a Point.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -3039,6 +3040,9 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 
 		<para>Return the Y ordinate of the point, or NULL if not
 			available. Input must be a point.</para>
+
+		<note><para>To get the minimum and maximum Y value of geometry coordinates use the functions
+		<xref linkend="ST_YMin" /> and <xref linkend="ST_YMax" />.</para></note>
 
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 6.1.4</para>
@@ -3095,6 +3099,8 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 		<para>Return the Z coordinate of the point, or NULL if not
 			available. Input must be a point.</para>
 
+		<note><para>To get the minimum and maximum Z value of geometry coordinates use the functions
+		<xref linkend="ST_ZMin" /> and <xref linkend="ST_ZMax" />.</para></note>
 
 
 		<para>&sqlmm_compliant;</para>
