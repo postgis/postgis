@@ -21,6 +21,7 @@
   &reference_constructor;
   &reference_accessor;
   &reference_editor;
+  &reference_validation;
   &reference_srs;
   &reference_input;
   &reference_output;
