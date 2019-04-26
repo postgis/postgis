@@ -49,12 +49,13 @@
 			 <para>Availability: 1.1.0</para>
 		  </refsection>
 
+<!-->
 		  <refsection>
 			<title>Examples</title>
 
 			<programlisting>Forthcoming</programlisting>
 		  </refsection>
-
+-->
 		  <refsection>
 			<title>See Also</title>
 			<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_BdMPolyFromText" /></para>
@@ -101,11 +102,12 @@
 				 <para>Availability: 1.1.0</para>
 			</refsection>
 
+<!--
 			<refsection>
 				<title>Examples</title>
 				<programlisting>Forthcoming</programlisting>
 			</refsection>
-
+-->
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_BdPolyFromText" /></para>
