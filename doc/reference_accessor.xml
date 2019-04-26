@@ -7,7 +7,7 @@
 	  <refnamediv>
 		<refname>GeometryType</refname>
 
-		<refpurpose>Returns the type of the geometry as text.</refpurpose>
+		<refpurpose>Returns the type of a geometry as text.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -90,8 +90,7 @@
 	  <refnamediv>
 		<refname>ST_Boundary</refname>
 
-		<refpurpose>Returns the closure of the combinatorial boundary of a
-			Geometry.</refpurpose>
+		<refpurpose>Returns the boundary of a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -207,7 +206,7 @@ MULTIPOINT(-1 1 1,1 1 0.75)
 	  <refnamediv>
 		<refname>ST_CoordDim</refname>
 
-		<refpurpose>Return the coordinate dimension of a Geometry.</refpurpose>
+		<refpurpose>Return the coordinate dimension of a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -261,7 +260,7 @@ MULTIPOINT(-1 1 1,1 1 0.75)
 	  <refnamediv>
 		<refname>ST_Dimension</refname>
 
-		<refpurpose>Returns the topological dimension of a Geometry. </refpurpose>
+		<refpurpose>Returns the topological dimension of a geometry. </refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -774,7 +773,7 @@ SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
 		  <refnamediv>
 			<refname>ST_Envelope</refname>
 
-			<refpurpose>Returns a geometry representing the double precision (float8) bounding box of a geometry.</refpurpose>
+			<refpurpose>Returns a geometry representing the bounding box of a geometry.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -790,7 +789,7 @@ SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns the float8 minimum bounding box for the supplied geometry, as a geometry.
+			<para>Returns the double-precision (float8) minimum bounding box for the supplied geometry, as a geometry.
 			The polygon is defined by the corner points of the bounding box
 			((<varname>MINX</varname>, <varname>MINY</varname>),
 			(<varname>MINX</varname>, <varname>MAXY</varname>),
@@ -872,7 +871,7 @@ POLYGON((20 75,20 150,125 150,125 75,20 75))</programlisting>
 		  <refnamediv>
 			<refname>ST_BoundingDiagonal</refname>
 
-			<refpurpose>Returns the diagonal of the supplied geometry's bounding box.</refpurpose>
+			<refpurpose>Returns the diagonal of a geometry's bounding box.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -1139,7 +1138,7 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 	<refentry id="ST_GeometryType">
 		<refnamediv>
 			<refname>ST_GeometryType</refname>
-			<refpurpose>Returns the type of a ST_Geometry value as text.</refpurpose>
+			<refpurpose>Returns the SQL-MM type of a geometry as text.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -1789,7 +1788,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 	  <refnamediv>
 		<refname>ST_IsSimple</refname>
 
-		<refpurpose>Tests if a Geometry has no points of self-intersection or self-tangency.</refpurpose>
+		<refpurpose>Tests if a geometry has no points of self-intersection or self-tangency.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1847,7 +1846,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 	  <refnamediv>
 		<refname>ST_IsValid</refname>
 
-		<refpurpose>Tests if a Geometry is well-formed.
+		<refpurpose>Tests if a geometry is well-formed.
 		</refpurpose>
 	  </refnamediv>
 
@@ -2227,7 +2226,7 @@ fulltable_size geomsize  pergeom
 	<refentry id="ST_NDims">
 		<refnamediv>
 			<refname>ST_NDims</refname>
-			<refpurpose>Returns the coordinate dimension of the geometry.</refpurpose>
+			<refpurpose>Returns the coordinate dimension of a geometry.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -2869,7 +2868,7 @@ SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 5 2)
 	  <refnamediv>
 		<refname>ST_Summary</refname>
 
-		<refpurpose>Returns a text summary of the contents of the geometry.
+		<refpurpose>Returns a text summary of the contents of a geometry.
 		</refpurpose>
 	  </refnamediv>
 
@@ -3023,7 +3022,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 	  <refnamediv>
 		<refname>ST_Y</refname>
 
-		<refpurpose>Returns the Y ordinate of a Point</refpurpose>
+		<refpurpose>Returns the Y ordinate of a Point.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
