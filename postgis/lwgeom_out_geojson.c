@@ -60,6 +60,7 @@ static void datum_to_json(Datum val, bool is_null, StringInfo result,
 static void json_categorize_type(Oid typoid,
 								 JsonTypeCategory *tcategory,
 								 Oid *outfuncoid);
+static char * JsonEncodeDateTime(char *buf, Datum value, Oid typid);
 
 Datum row_to_geojson(PG_FUNCTION_ARGS);
 extern Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS);
@@ -574,3 +575,130 @@ array_dim_to_json(StringInfo result, int dim, int ndims, int *dims, Datum *vals,
 	appendStringInfoChar(result, ']');
 }
 
+static int
+time2tm(TimeADT time, struct pg_tm *tm, fsec_t *fsec)
+{
+	tm->tm_hour = time / USECS_PER_HOUR;
+	time -= tm->tm_hour * USECS_PER_HOUR;
+	tm->tm_min = time / USECS_PER_MINUTE;
+	time -= tm->tm_min * USECS_PER_MINUTE;
+	tm->tm_sec = time / USECS_PER_SEC;
+	time -= tm->tm_sec * USECS_PER_SEC;
+	*fsec = time;
+	return 0;
+}
+
+static int
+timetz2tm(TimeTzADT *time, struct pg_tm *tm, fsec_t *fsec, int *tzp)
+{
+	TimeOffset	trem = time->time;
+
+	tm->tm_hour = trem / USECS_PER_HOUR;
+	trem -= tm->tm_hour * USECS_PER_HOUR;
+	tm->tm_min = trem / USECS_PER_MINUTE;
+	trem -= tm->tm_min * USECS_PER_MINUTE;
+	tm->tm_sec = trem / USECS_PER_SEC;
+	*fsec = trem - tm->tm_sec * USECS_PER_SEC;
+
+	if (tzp != NULL)
+		*tzp = time->zone;
+
+	return 0;
+}
+
+static char *
+JsonEncodeDateTime(char *buf, Datum value, Oid typid)
+{
+	if (!buf)
+		buf = palloc(MAXDATELEN + 1);
+
+	switch (typid)
+	{
+		case DATEOID:
+			{
+				DateADT		date;
+				struct pg_tm tm;
+
+				date = DatumGetDateADT(value);
+
+				/* Same as date_out(), but forcing DateStyle */
+				if (DATE_NOT_FINITE(date))
+					EncodeSpecialDate(date, buf);
+				else
+				{
+					j2date(date + POSTGRES_EPOCH_JDATE,
+						   &(tm.tm_year), &(tm.tm_mon), &(tm.tm_mday));
+					EncodeDateOnly(&tm, USE_XSD_DATES, buf);
+				}
+			}
+			break;
+		case TIMEOID:
+			{
+				TimeADT		time = DatumGetTimeADT(value);
+				struct pg_tm tt,
+						   *tm = &tt;
+				fsec_t		fsec;
+
+				/* Same as time_out(), but forcing DateStyle */
+				time2tm(time, tm, &fsec);
+				EncodeTimeOnly(tm, fsec, false, 0, USE_XSD_DATES, buf);
+			}
+			break;
+		case TIMETZOID:
+			{
+				TimeTzADT  *time = DatumGetTimeTzADTP(value);
+				struct pg_tm tt,
+						   *tm = &tt;
+				fsec_t		fsec;
+				int			tz;
+
+				/* Same as timetz_out(), but forcing DateStyle */
+				timetz2tm(time, tm, &fsec, &tz);
+				EncodeTimeOnly(tm, fsec, true, tz, USE_XSD_DATES, buf);
+			}
+			break;
+		case TIMESTAMPOID:
+			{
+				Timestamp	timestamp;
+				struct pg_tm tm;
+				fsec_t		fsec;
+
+				timestamp = DatumGetTimestamp(value);
+				/* Same as timestamp_out(), but forcing DateStyle */
+				if (TIMESTAMP_NOT_FINITE(timestamp))
+					EncodeSpecialTimestamp(timestamp, buf);
+				else if (timestamp2tm(timestamp, NULL, &tm, &fsec, NULL, NULL) == 0)
+					EncodeDateTime(&tm, fsec, false, 0, NULL, USE_XSD_DATES, buf);
+				else
+					ereport(ERROR,
+							(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
+							 errmsg("timestamp out of range")));
+			}
+			break;
+		case TIMESTAMPTZOID:
+			{
+				TimestampTz timestamp;
+				struct pg_tm tm;
+				int			tz;
+				fsec_t		fsec;
+				const char *tzn = NULL;
+
+				timestamp = DatumGetTimestampTz(value);
+				/* Same as timestamptz_out(), but forcing DateStyle */
+				if (TIMESTAMP_NOT_FINITE(timestamp))
+					EncodeSpecialTimestamp(timestamp, buf);
+				else if (timestamp2tm(timestamp, &tz, &tm, &fsec, &tzn, NULL) == 0)
+					EncodeDateTime(&tm, fsec, true, tz, tzn, USE_XSD_DATES, buf);
+				else
+					ereport(ERROR,
+							(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
+							 errmsg("timestamp out of range")));
+			}
+			break;
+		default:
+			elog(ERROR, "unknown jsonb value datetime type oid %d", typid);
+			return NULL;
+	}
+
+	return buf;
+}
