@@ -60,9 +60,9 @@ static void datum_to_json(Datum val, bool is_null, StringInfo result,
 static void json_categorize_type(Oid typoid,
 								 JsonTypeCategory *tcategory,
 								 Oid *outfuncoid);
-static char * JsonEncodeDateTime(char *buf, Datum value, Oid typid);
-static int time2tm(TimeADT time, struct pg_tm *tm, fsec_t *fsec);
-static int timetz2tm(TimeTzADT *time, struct pg_tm *tm, fsec_t *fsec, int *tzp);
+static char * postgis_JsonEncodeDateTime(char *buf, Datum value, Oid typid);
+static int postgis_time2tm(TimeADT time, struct pg_tm *tm, fsec_t *fsec);
+static int postgis_timetz2tm(TimeTzADT *time, struct pg_tm *tm, fsec_t *fsec, int *tzp);
 
 Datum row_to_geojson(PG_FUNCTION_ARGS);
 extern Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS);
@@ -375,7 +375,7 @@ datum_to_json(Datum val, bool is_null, StringInfo result,
 			{
 				char		buf[MAXDATELEN + 1];
 
-				JsonEncodeDateTime(buf, val, DATEOID);
+				postgis_JsonEncodeDateTime(buf, val, DATEOID);
 				appendStringInfo(result, "\"%s\"", buf);
 			}
 			break;
@@ -383,7 +383,7 @@ datum_to_json(Datum val, bool is_null, StringInfo result,
 			{
 				char		buf[MAXDATELEN + 1];
 
-				JsonEncodeDateTime(buf, val, TIMESTAMPOID);
+				postgis_JsonEncodeDateTime(buf, val, TIMESTAMPOID);
 				appendStringInfo(result, "\"%s\"", buf);
 			}
 			break;
@@ -391,7 +391,7 @@ datum_to_json(Datum val, bool is_null, StringInfo result,
 			{
 				char		buf[MAXDATELEN + 1];
 
-				JsonEncodeDateTime(buf, val, TIMESTAMPTZOID);
+				postgis_JsonEncodeDateTime(buf, val, TIMESTAMPTZOID);
 				appendStringInfo(result, "\"%s\"", buf);
 			}
 			break;
@@ -578,7 +578,7 @@ array_dim_to_json(StringInfo result, int dim, int ndims, int *dims, Datum *vals,
 }
 
 static int
-time2tm(TimeADT time, struct pg_tm *tm, fsec_t *fsec)
+postgis_time2tm(TimeADT time, struct pg_tm *tm, fsec_t *fsec)
 {
 	tm->tm_hour = time / USECS_PER_HOUR;
 	time -= tm->tm_hour * USECS_PER_HOUR;
@@ -591,7 +591,7 @@ time2tm(TimeADT time, struct pg_tm *tm, fsec_t *fsec)
 }
 
 static int
-timetz2tm(TimeTzADT *time, struct pg_tm *tm, fsec_t *fsec, int *tzp)
+postgis_timetz2tm(TimeTzADT *time, struct pg_tm *tm, fsec_t *fsec, int *tzp)
 {
 	TimeOffset	trem = time->time;
 
@@ -609,7 +609,7 @@ timetz2tm(TimeTzADT *time, struct pg_tm *tm, fsec_t *fsec, int *tzp)
 }
 
 static char *
-JsonEncodeDateTime(char *buf, Datum value, Oid typid)
+postgis_JsonEncodeDateTime(char *buf, Datum value, Oid typid)
 {
 	if (!buf)
 		buf = palloc(MAXDATELEN + 1);
@@ -642,7 +642,7 @@ JsonEncodeDateTime(char *buf, Datum value, Oid typid)
 				fsec_t		fsec;
 
 				/* Same as time_out(), but forcing DateStyle */
-				time2tm(time, tm, &fsec);
+				postgis_time2tm(time, tm, &fsec);
 				EncodeTimeOnly(tm, fsec, false, 0, USE_XSD_DATES, buf);
 			}
 			break;
@@ -655,7 +655,7 @@ JsonEncodeDateTime(char *buf, Datum value, Oid typid)
 				int			tz;
 
 				/* Same as timetz_out(), but forcing DateStyle */
-				timetz2tm(time, tm, &fsec, &tz);
+				postgis_timetz2tm(time, tm, &fsec, &tz);
 				EncodeTimeOnly(tm, fsec, true, tz, USE_XSD_DATES, buf);
 			}
 			break;
