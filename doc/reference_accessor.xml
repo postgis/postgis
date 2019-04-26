@@ -3038,7 +3038,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return the Y ordinate of the point, or NULL if not
+		<para>Return the Y coordinate of the point, or NULL if not
 			available. Input must be a point.</para>
 
 		<note><para>To get the minimum and maximum Y value of geometry coordinates use the functions
@@ -3081,7 +3081,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 	  <refnamediv>
 		<refname>ST_Z</refname>
 
-		<refpurpose>Returns the Z ordinate of a Point.</refpurpose>
+		<refpurpose>Returns the Z coordinate of a Point.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
