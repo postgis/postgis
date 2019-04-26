@@ -4612,9 +4612,9 @@ CREATE OR REPLACE FUNCTION jsonb(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 3.0.0
-CREATE CAST (geometry AS json) WITH FUNCTION geometry_to_json(geometry);
+CREATE CAST (geometry AS json) WITH FUNCTION json(geometry);
 -- Availability: 3.0.0
-CREATE CAST (geometry AS jsonb) WITH FUNCTION geometry_to_jsonb(point);
+CREATE CAST (geometry AS jsonb) WITH FUNCTION jsonb(geometry);
 
 -----------------------------------------------------------------------
 -- Mapbox Vector Tile OUTPUT

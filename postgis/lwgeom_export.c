@@ -44,6 +44,8 @@ Datum LWGEOM_asGeoJson_old(PG_FUNCTION_ARGS);
 Datum LWGEOM_asSVG(PG_FUNCTION_ARGS);
 Datum LWGEOM_asX3D(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS);
+Datum geometry_to_json(PG_FUNCTION_ARGS);
+Datum geometry_to_jsonb(PG_FUNCTION_ARGS);
 
 /*
  * Retrieve an SRS from a given SRID
@@ -412,6 +414,33 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_TEXT_P(result);
+}
+
+
+/**
+ * Cast feature to JSON
+ */
+PG_FUNCTION_INFO_V1(geometry_to_json);
+Datum geometry_to_json(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	char *geojson = lwgeom_to_geojson(lwgeom, NULL, 7, 0);
+	text *result = cstring_to_text(geojson);
+	lwgeom_free(lwgeom);
+	pfree(geojson);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_TEXT_P(result);
+}
+
+PG_FUNCTION_INFO_V1(geometry_to_jsonb);
+Datum geometry_to_jsonb(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	char *geojson = lwgeom_to_geojson(lwgeom, NULL, 7, 0);
+	lwgeom_free(lwgeom);
+	PG_RETURN_DATUM(DirectFunctionCall1(jsonb_in, PointerGetDatum(geojson)));
 }
 
 
