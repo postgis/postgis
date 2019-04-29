@@ -329,6 +329,13 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+				<paramdef><type>record </type> <parameter>feature</parameter></paramdef>
+				<paramdef choice="opt"><type>text </type> <parameter>geomcolumnname</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>boolean </type> <parameter>prettyprint=false</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
 				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
@@ -345,15 +352,13 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 	  <refsection>
 		<title>Description</title>
 
-		  <para>Return the geometry as a GeoJSON element. (Cf <ulink
-			url="http://geojson.org/geojson-spec.html">GeoJSON specifications 1.0</ulink>). 2D and 3D Geometries are both supported. GeoJSON only support SFS 1.1 geometry type (no curve
+		  <para>Return the geometry as a GeoJSON "geometry" object, or the row as a GeoJSON "feature" object. (Cf <ulink
+			url="https://tools.ietf.org/html/rfc7946">GeoJSON specifications RFC 7946</ulink>). 2D and 3D Geometries are both supported. GeoJSON only support SFS 1.1 geometry types (no curve
 			support for example).</para>
 
-			<para>The <varname>gj_version</varname> parameter is the major version of the GeoJSON spec. If specified, must be 1.  This represents the spec version of GeoJSON.</para>
+			<para>The maxdecimaldigits argument may be used to reduce the maximum number of decimal places used in output (defaults to 15). If you are using EPSG:4326 and are outputting the geometry only for display, <varname>maxdecimaldigits</varname>=6 can be a good choice for many maps.</para>
 
-			<para>The third argument may be used to reduce the maximum number	of decimal places used in output (defaults to 15). If you are using EPSG:4326 and are outputting the geometry only for display, <varname>maxdecimaldigits</varname>=6 can be a good choice for many maps.</para>
-
-			<para>The last <varname>options</varname> argument could be used to add BBOX or CRS in GeoJSON output:
+			<para>The <varname>options</varname> argument could be used to add BBOX or CRS in GeoJSON output:
 			  <itemizedlist>
 				<listitem>
 				  <para>0: means no option (default value)</para>
@@ -400,31 +405,9 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 
 		<para>ST_AsGeoJSON only builds geometry. You need to build the rest of Feature from your Postgres table yourself:</para>
 		<programlisting>
-select row_to_json(fc)
-from (
-    select
-        'FeatureCollection' as "type",
-        array_to_json(array_agg(f)) as "features"
-    from (
-        select
-            'Feature' as "type",
-            ST_AsGeoJSON(ST_Transform(way, 4326), 6) :: json as "geometry",
-            (
-                select json_strip_nulls(row_to_json(t))
-                from (
-                    select
-                        osm_id,
-                        "natural",
-                        place
-                ) t
-            ) as "properties"
-        from planet_osm_point
-        where
-            "natural" is not null
-            or place is not null
-        limit 10
-    ) as f
-) as fc;
+SELECT planet_osm_point.*
+FROM planet_osm_point
+LIMIT 10;
 					   st_asgeojson
 -----------------------------------------------------------------------------------------------------------
 {"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[23.569251,51.541599]},"properties":{"osm_id":3424148658,"place":"locality"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[23.625174,51.511718]},"properties":{"osm_id":4322036818,"place":"locality"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[23.613928,51.5417]},"properties":{"osm_id":242979330,"place":"hamlet"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[23.586361,51.563272]},"properties":{"osm_id":3424148656,"place":"locality"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[23.605488,51.553886]},"properties":{"osm_id":242979323,"place":"village"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[23.6067,51.57609]},"properties":{"osm_id":242979327,"place":"village"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[23.636533,51.575683]},"properties":{"osm_id":5737800420,"place":"locality"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[23.656733,51.518733]},"properties":{"osm_id":5737802397,"place":"locality"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[23.672542,51.504584]},"properties":{"osm_id":242979320,"place":"hamlet"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[23.574094,51.63389]},"properties":{"osm_id":242979333,"place":"village"}}]}
@@ -433,17 +416,19 @@ from (
 		<programlisting>SELECT ST_AsGeoJSON(geom) from fe_edges limit 1;
 					   st_asgeojson
 -----------------------------------------------------------------------------------------------------------
-
 {"type":"MultiLineString","coordinates":[[[-89.734634999999997,31.492072000000000],
 [-89.734955999999997,31.492237999999997]]]}
 (1 row)</programlisting>
-<para>You can also use it with 3D geometries:</para>
+
+<para>You can also use the function with 3D geometries:</para>
 <programlisting>SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');
 
 st_asgeojson
 -----------------------------------------------------------------------------------------
  {"type":"LineString","coordinates":[[1,2,3],[4,5,6]]}</programlisting>
-	  </refsection>
+
+  </refsection>
+
   <refsection>
     <title>See Also</title>
 
