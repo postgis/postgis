@@ -21,11 +21,18 @@ VALUES ('GEOMETRYCOLLECTION(POINT(42 42))', 4, 4.4, 'four', '2004-04-04');
 
 INSERT INTO g VALUES ('POINT EMPTY', 5, 5.5, 'five', '2005-05-05');
 INSERT INTO g VALUES (NULL, 6, 6.6, 'six', '2006-06-06');
+INSERT INTO g VALUES ('GEOMETRYCOLLECTION(POINT EMPTY, POINT(1 2))', 7, 7.7, 'seven', '2007-07-07');
 
-SELECT 'gj01', ST_AsGeoJSON(g) AS g
+SELECT 'gj01', i, ST_AsGeoJSON(g) AS g1
 	FROM g ORDER BY i;
 
-SELECT 'gj02', ST_AsGeoJSON(g.*) AS gj
+SELECT 'gj02', i, ST_AsGeoJSON(g.*) AS gj2
+	FROM g ORDER BY i;
+
+SELECT 'gj03', i, to_json(g.*) AS rj3
+	FROM g ORDER BY i;
+
+SELECT 'gj04', i, to_jsonb(g.*) AS rj4
 	FROM g ORDER BY i;
 
 DROP TABLE g;
