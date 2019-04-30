@@ -431,7 +431,7 @@ Datum geometry_to_json(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	char *geojson = lwgeom_to_geojson(lwgeom, NULL, 9, 0);
+	char *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
 	text *result = cstring_to_text(geojson);
 	lwgeom_free(lwgeom);
 	pfree(geojson);
@@ -444,7 +444,7 @@ Datum geometry_to_jsonb(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	char *geojson = lwgeom_to_geojson(lwgeom, NULL, 9, 0);
+	char *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
 	lwgeom_free(lwgeom);
 	PG_RETURN_DATUM(DirectFunctionCall1(jsonb_in, PointerGetDatum(geojson)));
 }
