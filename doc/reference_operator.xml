@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <sect1 id="Operators">
 	<title>Operators</title>
+
+	    <sect2>
+      <title>Bounding Box Operators</title>
+
 		<refentry id="geometry_overlaps">
 		  <refnamediv>
 			<refname>&amp;&amp;</refname>
@@ -1845,6 +1849,13 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 		  </refsection>
 		</refentry>
 
+    </sect2>
+	<!-- ==============================================================================  -->
+
+		<sect2>
+		<title>Distance Operators</title>
+
+
 		<refentry id="geometry_distance_knn">
 		  <refnamediv>
 			<refname>&lt;-&gt;</refname>
@@ -2273,4 +2284,7 @@ Index only kicks in if one of the geometries is a constant e.g. ORDER BY
 		  </refsection>
 		</refentry>
 
+    </sect2>
+
 	</sect1>
+

@@ -143,14 +143,6 @@
 				<entry>text</entry>
 				<entry>automatic</entry>
 			  </row>
-			  <row>
-				<entry>json</entry>
-				<entry>automatic</entry>
-			  </row>
-			  <row>
-				<entry>jsonb</entry>
-				<entry>automatic</entry>
-			  </row>
 			</tbody>
 		</tgroup>
 		</informaltable>
