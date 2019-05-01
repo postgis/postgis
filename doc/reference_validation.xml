@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <sect1 id="Geometry_Validation">
+	<title>Geometry Validation</title>
+
+	  <sect1info>
+	    <abstract>
+			<para>These functions test whether geometries are valid according to
+			the OGC SFS standard.  They also provide information about
+			the nature and location of invalidity.
+			</para>
+   	</abstract>
+    </sect1info>
+
+
+	<refentry id="ST_IsValid">
+	  <refnamediv>
+		<refname>ST_IsValid</refname>
+
+		<refpurpose>Tests if a geometry is well-formed.
+		</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_IsValid</function></funcdef>
+
+			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_IsValid</function></funcdef>
+
+			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>flags</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Test if an ST_Geometry value is well-formed according to the OGC rules.
+		  For geometries that are invalid,
+			the PostgreSQL NOTICE will provide details of why it is not valid.  </para>
+		<para>
+For the version with flags,
+supported <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail" />
+This version does not print a NOTICE explaining invalidity.
+		</para>
+		<para>For more information on the definition of geometry validity, refer
+			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliancy of geometries"</link>
+		</para>
+		<note>
+			<para>SQL-MM defines the result of ST_IsValid(NULL) to be 0, while
+			PostGIS returns NULL.</para>
+		</note>
+	  <para>Performed by the GEOS module.</para>
+
+		<para>The version accepting flags is available starting with 2.0.0.		</para>
+
+
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.9</para>
+
+		<note>
+			<para>
+Neither OGC-SFS nor SQL-MM specifications include a flag argument
+for ST_IsValid. The flag is a PostGIS extension.
+			</para>
+		</note>
+
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_IsValid(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,
+	ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As bad_poly
+--results
+NOTICE:  Self-intersection at or near point 0 0
+ good_line | bad_poly
+-----------+----------
+ t         | f
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+<xref linkend="ST_IsSimple" />,
+<xref linkend="ST_IsValidReason" />,
+<xref linkend="ST_IsValidDetail" />,
+<xref linkend="ST_Summary" />
+</para>
+	  </refsection>
+	</refentry>
+
+
+	<refentry id="ST_IsValidDetail">
+	  <refnamediv>
+		<refname>ST_IsValidDetail</refname>
+
+		<refpurpose>Returns a <varname>valid_detail</varname> row stating if a geometry is valid, and if not a reason why and a location.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>valid_detail <function>ST_IsValidDetail</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef choice="opt"><type>integer </type> <parameter>flags</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a valid_detail row, formed by a boolean (valid) stating if a geometry is valid, a varchar (reason) stating a reason why it is invalid and a geometry (location) pointing out where it is invalid.</para>
+
+		<para>Useful to substitute and improve the combination of ST_IsValid and ST_IsValidReason to generate a detailed report of invalid geometries.</para>
+
+		<para>
+The 'flags' argument is a bitfield. It can have the following values:
+			<itemizedlist>
+				<listitem>
+<para>
+1: Consider self-intersecting rings forming holes as valid.
+   This is also know as "the ESRI flag".
+   Note that this is against the OGC model.
+</para>
+				</listitem>
+			</itemizedlist>
+		</para>
+		<para>Performed by the GEOS module.</para>
+		<para>Availability: 2.0.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--First 3 Rejects from a successful quintuplet experiment
+SELECT gid, reason(ST_IsValidDetail(the_geom)), ST_AsText(location(ST_IsValidDetail(the_geom))) as location
+FROM
+(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As the_geom, gid
+FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
+	FROM generate_series(-4,6) x1
+	CROSS JOIN generate_series(2,5) y1
+	CROSS JOIN generate_series(1,8) z1
+	WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e
+	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, z1*2) As line
+	FROM generate_series(-3,6) x1
+	CROSS JOIN generate_series(2,5) y1
+	CROSS JOIN generate_series(1,10) z1
+	WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f
+ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))
+GROUP BY gid, e.buff) As quintuplet_experiment
+WHERE ST_IsValid(the_geom) = false
+ORDER BY gid
+LIMIT 3;
+
+ gid  |      reason       |  location
+------+-------------------+-------------
+ 5330 | Self-intersection | POINT(32 5)
+ 5340 | Self-intersection | POINT(42 5)
+ 5350 | Self-intersection | POINT(52 5)
+
+ --simple example
+SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 150410)');
+
+ valid | reason | location
+-------+--------+----------
+ t     |        |
+
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+<xref linkend="ST_IsValid" />,
+<xref linkend="ST_IsValidReason" />
+</para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_IsValidReason">
+	  <refnamediv>
+		<refname>ST_IsValidReason</refname>
+
+		<refpurpose>Returns text stating if a geometry is valid, or a reason for invalidity.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>ST_IsValidReason</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>flags</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>ST_IsValidReason</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns text stating if a geometry is valid or not an if not valid, a reason why.</para>
+
+		<para>Useful in combination with ST_IsValid to generate a detailed report of invalid geometries and reasons.</para>
+
+		<para>
+Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail" />.
+		</para>
+		<para>Performed by the GEOS module.</para>
+		<para>Availability: 1.4</para>
+		<para>Availability: 2.0 version taking flags.</para>
+	  </refsection>
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--First 3 Rejects from a successful quintuplet experiment
+SELECT gid, ST_IsValidReason(the_geom) as validity_info
+FROM
+(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As the_geom, gid
+FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
+	FROM generate_series(-4,6) x1
+	CROSS JOIN generate_series(2,5) y1
+	CROSS JOIN generate_series(1,8) z1
+	WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e
+	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, z1*2) As line
+	FROM generate_series(-3,6) x1
+	CROSS JOIN generate_series(2,5) y1
+	CROSS JOIN generate_series(1,10) z1
+	WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f
+ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))
+GROUP BY gid, e.buff) As quintuplet_experiment
+WHERE ST_IsValid(the_geom) = false
+ORDER BY gid
+LIMIT 3;
+
+ gid  |      validity_info
+------+--------------------------
+ 5330 | Self-intersection [32 5]
+ 5340 | Self-intersection [42 5]
+ 5350 | Self-intersection [52 5]
+
+ --simple example
+SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)');
+
+ st_isvalidreason
+------------------
+ Valid Geometry
+
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_IsValid" />, <xref linkend="ST_Summary" /></para>
+	  </refsection>
+	</refentry>
+
+  </sect1>
