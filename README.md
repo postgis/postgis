@@ -8,6 +8,9 @@ Travis:
  [![Build Status](https://api.travis-ci.org/postgis/postgis.svg?branch=svn-trunk,svn-2.5,svn-2.4,svn-2.3)](http://travis-ci.org/postgis/postgis)
 GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/svn-trunk/build.svg)](https://gitlab.com/postgis/postgis/commits/svn-trunk)
+Drone.io:
+ [![Build Status](https://cloud.drone.io/api/badges/postgis/postgis/status.svg)](https://cloud.drone.io/postgis/postgis?branch=svn-trunk)
+
 
 This file is here to play nicely with modern code repository facilities.
 Actual readme is [here](README.postgis).
