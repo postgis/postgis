@@ -1092,7 +1092,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 	  <refnamediv>
 		<refname>ST_AsMVT</refname>
 
-		<refpurpose>Return a <ulink url="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</ulink> representation of a set of rows.</refpurpose>
+		<refpurpose>Aggregate function returning a Mapbox Vector Tile representation of a set of rows.</refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
@@ -1118,40 +1118,49 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 				<paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
 				<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
 			</funcprototype>
-		        <funcprototype>
-                                <funcdef>bytea <function>ST_AsMVT</function></funcdef>
-                                <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
-                                <paramdef><type>text </type> <parameter>name</parameter></paramdef>
-                                <paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
+		  <funcprototype>
+				<funcdef>bytea <function>ST_AsMVT</function></funcdef>
+				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>name</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
 				<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
 				<paramdef><type>text </type> <parameter>feature_id_name</parameter></paramdef>
-                        </funcprototype>
+      </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return a <ulink url="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</ulink> representation of a set of rows corresponding to a Layer.
-		Multiple calls can be concatenated to a tile with multiple Layers.
-		Geometry is assumed to be in tile coordinate space and valid as per <ulink url="https://www.mapbox.com/vector-tiles/specification/">specification</ulink>.
-		Typically <xref linkend="ST_AsMVTGeom" /> can be used to transform geometry into tile coordinate space.
-		Other row data will be encoded as attributes.
+		<para>An aggregate function which returns a binary <ulink url="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</ulink>
+		representation of a set of rows corresponding to a tile layer.
+		The rows should contain a geometry column which will be encoded as a feature geometry.
+		The geometry should be in tile coordinate space
+		and valid as per the <ulink url="https://www.mapbox.com/vector-tiles/specification/">MVT specification</ulink>.
+		<xref linkend="ST_AsMVTGeom" /> can be used to transform geometry into tile coordinate space.
+		Other row columns are encoded as feature attributes.
 		</para>
 
-		<para>The <ulink url="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</ulink> format can store features with a different
-		set of attributes per feature. To make use of this feature supply a JSONB column in the row data containing Json objects one level
-		deep. The keys and values in the object will be parsed into feature attributes.
+		<para>The <ulink url="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</ulink> format
+		can store features with varying	sets of attributes.
+		To use this capability supply a JSONB column in the row data containing Json objects one level deep.
+		The keys and values in the JSONB values will be encoded as feature attributes.
+		</para>
+
+		<para>
+		Tiles with multiple layers
+		can be created by concatenating multiple calls to this function	using <varname>||</varname>.
 		</para>
 
 		<important>
-			<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an element in the row. However you can use <xref linkend="ST_AsMVTGeom" /> to prep a geometry collection for inclusion.</para>
+			<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an element in the row.
+			However you can use <xref linkend="ST_AsMVTGeom" /> to prepare a geometry collection for inclusion.</para>
 		</important>
 
 	  <para><varname>row</varname> row data with at least a geometry column.</para>
-		<para><varname>name</varname> is the name of the Layer. If NULL it will use the string "default".</para>
-		<para><varname>extent</varname> is the tile extent in screen space as defined by the specification. If NULL it will default to 4096.</para>
-		<para><varname>geom_name</varname> is the name of the geometry column in the row data. If NULL it will default to the first found geometry column.</para>
+		<para><varname>name</varname> is the name of the layer. Default is the string "default".</para>
+		<para><varname>extent</varname> is the tile extent in screen space as defined by the specification. Default is 4096.</para>
+		<para><varname>geom_name</varname> is the name of the geometry column in the row data. Default is the first geometry column.</para>
 		<para><varname>feature_id_name</varname> is the name of the Feature ID column in the row data. If NULL or negative the Feature ID is not set. The first column matching name and valid type (smallint, integer, bigint) will be used as Feature ID, and any subsequent column will be added as a property. JSON properties are not supported.</para>
 
 
@@ -1162,14 +1171,17 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting><![CDATA[SELECT ST_AsMVT(q, 'test', 4096, 'geom') FROM (SELECT 1 AS c1,
-    ST_AsMVTGeom(ST_GeomFromText('POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))'),
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
+		<programlisting><![CDATA[SELECT ST_AsMVT(q, 'test', 4096, 'geom')
+  FROM (SELECT 1 AS c1,
+    ST_AsMVTGeom(
+      ST_GeomFromText('POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))'),
+      ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
+      4096, 0, false) AS geom) AS q;
+
                               st_asmvt
 --------------------------------------------------------------------
  \x1a320a0474657374121d1202000018032215095aa63f1a134631130a270f09280a121d0a14140f1a026331220228012880207802
-
-		]]>
+]]>
 		</programlisting>
 	  </refsection>
 
@@ -1185,7 +1197,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 	  <refnamediv>
 		<refname>ST_AsSVG</refname>
 
-		<refpurpose>Returns a Geometry in SVG path data given a geometry or geography object.</refpurpose>
+		<refpurpose>Returns SVG path data for a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1226,7 +1238,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_AsSVG(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+		<programlisting>SELECT ST_AsSVG('POLYGON((0 0,0 1,1 1,1 0,0 0))');
 
 		st_assvg
 		--------
