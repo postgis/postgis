@@ -1167,9 +1167,9 @@ Suite: wrapx
 Run Summary:    Type  Total    Ran Passed Failed Inactive
               suites     44     44    n/a      0        0
                tests    297    297    297      0        0
-             asserts   4081   4081   4081      0      n/a
+             asserts   4121   4121   4121      0      n/a
 
-Elapsed time =    0.159 seconds
+Elapsed time =    0.193 seconds
 
 Creating database 'postgis_reg'
 Loading PostGIS into 'postgis_reg'
