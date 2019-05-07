@@ -841,7 +841,8 @@ CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;
 	  </para>
 
 	  <programlisting>
-     CUnit - A unit testing framework for C - Version 2.1-2
+
+     CUnit - A unit testing framework for C - Version 2.1-3
      http://cunit.sourceforge.net/
 
 
@@ -855,6 +856,7 @@ Suite: algorithm
   Test: test_lwpoint_get_ordinate ...passed
   Test: test_point_interpolate ...passed
   Test: test_lwline_interpolate_points ...passed
+  Test: test_lwline_interpolate_point_3d ...passed
   Test: test_lwline_clip ...passed
   Test: test_lwpoly_clip ...passed
   Test: test_lwtriangle_clip ...passed
@@ -886,7 +888,8 @@ Suite: buildarea
 Suite: geometry_clean
   Test: test_lwgeom_make_valid ...passed
 Suite: clip_by_rectangle
-  Test: test_lwgeom_clip_by_rect ...passed
+  Test: test_lwgeom_clip_by_rect ...DEBUG1: lwgeom_clip_by_rect: GEOS Error: IllegalArgumentException: Invalid number of points in LinearRing found 3 - must be 0 or >= 4
+passed
 Suite: force_sfs
   Test: test_sfs_11 ...passed
   Test: test_sfs_12 ...passed
@@ -1004,10 +1007,11 @@ Suite: lwstroke
 Suite: measures
   Test: test_mindistance2d_tolerance ...passed
   Test: test_mindistance3d_tolerance ...NOTICE: One or both of the geometries is missing z-value. The unknown z-value will be regarded as "any value"
+NOTICE: One or both of the geometries is missing z-value. The unknown z-value will be regarded as "any value"
 passed
   Test: test_rect_tree_contains_point ...passed
   Test: test_rect_tree_intersects_tree ...passed
-  Test: test_lwgeom_segmentize2d ...NOTICE: ptarray.c:445 - ptarray_segmentize2d: Too many segments required (1.000000e+101)
+  Test: test_lwgeom_segmentize2d ...NOTICE: ptarray.c:448 - ptarray_segmentize2d: Too many segments required (1.000000e+101)
 NOTICE: liblwgeom code interrupted
 NOTICE: liblwgeom code interrupted
 NOTICE: liblwgeom code interrupted
@@ -1203,10 +1207,9 @@ Suite: wrapx
 
 Run Summary:    Type  Total    Ran Passed Failed Inactive
               suites     44     44    n/a      0        0
-               tests    299    299    299      0        0
-             asserts   4087   4087   4087      0      n/a
-
-Elapsed time =    0.196 seconds
+               tests    300    300    300      0        0
+             asserts   4215   4215   4215      0      n/a
+Elapsed time =    0.229 seconds
 
 PostgreSQL 12devel on x86_64-w64-mingw32, compiled by gcc.exe (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0, 64-bit
   Postgis 3.0.0dev - r17081 - 2018-11-28 18:50:02

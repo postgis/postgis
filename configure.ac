@@ -241,6 +241,7 @@ if test "x$XSLBASE" = "x"; then
 		/usr/share/xml/docbook/stylesheet/nwalsh
 		/usr/share/sgml/docbook/stylesheet/xsl/nwalsh
 		/opt/local/share/xsl/docbook-xsl
+		/usr/local/opt/docbook-xsl/docbook-xsl
 		/usr/local/share/xsl/docbook-xsl
 		/usr/share/xsl/docbook-xsl
 		"

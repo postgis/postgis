@@ -6,18 +6,22 @@
 		data types installed by PostGIS to represent spatial data.
     </para>
     <para>Each data type describes its type casting behaviour.
-		A <ulink url="https://www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-CASTS">type cast</ulink> converts values of one data type into another type.
+		A <ulink url="https://www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-CASTS">type cast</ulink>
+		converts values of one data type into another type.
 		PostgreSQL allows defining casting behavior for custom types, along with the functions used to convert type values.
-		Casts can be defined as <emphasis role="bold">automatic</emphasis>.
-		This allows PostgreSQL to automatically convert a function argument to a type supported by the function.
-		Casts can also be specified <emphasis role="bold">explicitly</emphasis>,
-		using the syntax <varname>CAST(myval As sometype)</varname>  or <varname>myval::sometype</varname>.
-		This allows avoiding an issue that can occur when using an overloaded function which does not support a given type
-		(for example, one that accepts a box2d or a box3d, but not a geometry.)
-		Since geometry has an automatic cast to both box types, this will produce an "ambiguous function" error.
+		Casts can have <emphasis role="bold">automatic</emphasis> behaviour,
+		which allows automatic conversion of a function argument to a type supported by the function.</para>
+		<para>
+		Some casts have <emphasis role="bold">explicit</emphasis> behaviour,
+		which means the cast must be specified using the syntax <varname>CAST(myval As sometype)</varname>
+		or <varname>myval::sometype</varname>.
+		Explicit casting avoids the issue of ambiguous casts,
+		which can occur when using an overloaded function which does not support a given type.
+		For example, a function may accept a box2d or a box3d, but not a geometry.
+		Since geometry has an automatic cast to both box types, this produces an "ambiguous function" error.
 	  To prevent the error use an explicit cast to the desired box type.</para>
 
-    <para>All data types can be CAST to <varname>text</varname>, so these do not need to be specified explicitly.</para>
+    <para>All data types can be cast to <varname>text</varname>, so this does not need to be specified explicitly.</para>
     </abstract>
     </sect1info>
     <title>PostGIS Geometry/Geography/Box Data Types</title>
@@ -26,7 +30,7 @@
       <refnamediv>
         <refname>box2d</refname>
         <refpurpose>A 2-dimensional bounding box.
-				Often used to describe the 2D extent of a geometry or collection of geometries. </refpurpose>
+				Used to describe the 2D extent of a geometry or collection of geometries. </refpurpose>
       </refnamediv>
 
       <refsection>
@@ -49,7 +53,7 @@
       <refnamediv>
         <refname>box3d</refname>
         <refpurpose>A 3-dimensional bounding box.
-				Often used to describe the 3D extent of a geometry or collection of geometries. </refpurpose>
+				Used to describe the 3D extent of a geometry or collection of geometries. </refpurpose>
       </refnamediv>
 
       <refsection>

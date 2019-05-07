@@ -23,6 +23,12 @@
 #include "liblwgeom.h"
 #include "pgsql_compat.h"
 
+/* Globals to hold GEOMETRYOID, GEOGRAPHYOID */
+extern Oid GEOMETRYOID;
+extern Oid GEOGRAPHYOID;
+Oid postgis_geometry_oid(void);
+Oid postgis_geography_oid(void);
+
 /* Install PosgreSQL handlers for liblwgeom use */
 void pg_install_lwgeom_handlers(void);
 

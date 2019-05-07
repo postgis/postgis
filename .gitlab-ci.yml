@@ -2,6 +2,7 @@ test:
   image: debian:buster
   script:
     - apt-get update -qq && apt-get install -y
+        bison
         postgresql-11 postgresql-server-dev-11
         build-essential autoconf libtool libcunit1-dev
         xsltproc docbook-xsl docbook-mathml dblatex
