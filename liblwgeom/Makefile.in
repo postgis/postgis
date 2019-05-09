@@ -202,9 +202,17 @@ $(LT_NM_OBJS): %.lo: %.c
 	$(LIBTOOL) --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
 
 lwin_wkt_parse.c lwin_wkt_parse.h: lwin_wkt_parse.y
+	@test -n "$(YACC)" || { \
+			echo "No yacc found, cannot build parser" >&2; \
+			false; \
+	}
 	$(YACC) -p wkt_yy -o'lwin_wkt_parse.c' -d lwin_wkt_parse.y
 
 lwin_wkt_lex.c: lwin_wkt_lex.l
+	@test -n "$(LEX)" || { \
+			echo "No lex found, cannot build parser" >&2; \
+			false; \
+	}
 	$(LEX) -i lwin_wkt_lex.l
 
 liblwgeom.h: liblwgeom.h.in
