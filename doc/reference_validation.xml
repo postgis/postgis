@@ -17,7 +17,7 @@
 	  <refnamediv>
 		<refname>ST_IsValid</refname>
 
-		<refpurpose>Tests if a geometry is well-formed.
+		<refpurpose>Tests if a geometry is well-formed in 2D.
 		</refpurpose>
 	  </refnamediv>
 
@@ -40,9 +40,11 @@
 	  <refsection>
 		<title>Description</title>
 
-		<para>Test if an ST_Geometry value is well-formed according to the OGC rules.
-		  For geometries that are invalid,
-			the PostgreSQL NOTICE will provide details of why it is not valid.  </para>
+		<para>
+                  Test if an ST_Geometry value is well-formed in 2D according to the OGC rules.
+		  For geometries that are invalid, the PostgreSQL NOTICE will provide details of why it is not valid.
+                  For geometries with 3 and 4 dimensions, the validity still only tested in 2 dimensions.
+                </para>
 		<para>
 For the version with flags,
 supported <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail" />
