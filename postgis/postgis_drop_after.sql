@@ -231,3 +231,16 @@ DROP FUNCTION IF EXISTS st_distance_sphere(geometry, geometry);
 -- pgis_abs type was increased from 8 bytes in 2.1 to 16 bytes in 2.2
 -- See #3460
 UPDATE pg_type SET typlen=16 WHERE typname='pgis_abs' AND typlen=8;
+
+DO language 'plpgsql'
+$$
+BEGIN
+IF _postgis_scripts_pgsql_version()::integer >= 96 THEN
+-- mark ST_Union agg as parallel safe if it is not already
+	UPDATE pg_proc SET proparallel = 's'
+	WHERE oid = 'st_union(geometry)'::regprocedure AND proparallel = 'u';
+END IF;
+END;
+$$;
+
+UPDATE pg_aggregate SET aggtransfn = 'pgis_geometry_union_transfn', aggtranstype='internal'::regtype where aggfnoid='st_union(geometry)'::regprocedure;
