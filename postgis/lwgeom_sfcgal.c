@@ -45,7 +45,7 @@ Datum sfcgal_approximate_medial_axis(PG_FUNCTION_ARGS);
 Datum sfcgal_is_planar(PG_FUNCTION_ARGS);
 Datum sfcgal_orientation(PG_FUNCTION_ARGS);
 Datum sfcgal_force_lhr(PG_FUNCTION_ARGS);
-Datum sfcgal_triangulate(PG_FUNCTION_ARGS);
+Datum ST_ConstraiedDelaunayTriangles(PG_FUNCTION_ARGS);
 Datum sfcgal_tesselate(PG_FUNCTION_ARGS);
 Datum sfcgal_minkowski_sum(PG_FUNCTION_ARGS);
 Datum sfcgal_make_solid(PG_FUNCTION_ARGS);
@@ -227,8 +227,8 @@ Datum sfcgal_tesselate(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(output);
 }
 
-PG_FUNCTION_INFO_V1(sfcgal_triangulate);
-Datum sfcgal_triangulate(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_ConstraiedDelaunayTriangles);
+Datum ST_ConstraiedDelaunayTriangles(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *input, *output;
 	sfcgal_geometry_t *geom;
