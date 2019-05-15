@@ -1114,11 +1114,12 @@ Return a <ulink
 url="http://en.wikipedia.org/wiki/Delaunay_triangulation">Delaunay
 triangulation</ulink> around the vertices of the input geometry.
 Output is a COLLECTION of polygons (for flags=0) or a MULTILINESTRING
-(for flags=1) or TIN (for flags=2).  The tolerance, if any, is used to snap input vertices
+(for flags=1) or TIN (for flags=2, default).  The tolerance, if any, is used to snap input vertices
 togheter.
 			</para>
 			<para>Performed by the GEOS module.</para>
 			<para>Availability: 2.1.0</para>
+			<para>Changed: 3.0.0 default output is TIN</para>
 			<para>&Z_support;</para>
 			<para>&T_support;</para>
 

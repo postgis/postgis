@@ -3666,8 +3666,8 @@ CREATE OR REPLACE FUNCTION ST_Node(g geometry)
 --
 --
 -- Availability: 2.1.0
---
-CREATE OR REPLACE FUNCTION ST_DelaunayTriangles(g1 geometry, tolerance float8 DEFAULT 0.0, flags int4 DEFAULT 0)
+-- Changed: 3.0.0 default ouptut is TIN
+CREATE OR REPLACE FUNCTION ST_DelaunayTriangles(g1 geometry, tolerance float8 DEFAULT 0.0, flags int4 DEFAULT 2)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_DelaunayTriangles'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
