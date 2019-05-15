@@ -1547,6 +1547,7 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 	{
 		/* No-op! Cannot remote points */
 		case POINTTYPE:
+		case TRIANGLETYPE:
 			return;
 		case LINETYPE:
 		{
@@ -1646,6 +1647,7 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 		/* Can process most multi* types as generic collection */
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
+		case TINTYPE:
 		case COLLECTIONTYPE:
 		/* Curve types we mostly ignore, but allow the linear */
 		/* portions to be processed by recursing into them */
@@ -1690,8 +1692,9 @@ lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 {
 	switch (geom->type)
 	{
-		/* No-op! Cannot simplify points */
+		/* No-op! Cannot simplify points or triangles */
 		case POINTTYPE:
+		case TRIANGLETYPE:
 			return;
 		case LINETYPE:
 		{
@@ -1750,6 +1753,7 @@ lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
+		case TINTYPE:
 		case COLLECTIONTYPE:
 		{
 			uint32_t i, j = 0;
@@ -2096,6 +2100,7 @@ lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
 			return;
 		}
 		case CIRCSTRINGTYPE:
+		case TRIANGLETYPE:
 		case LINETYPE:
 		{
 			LWLINE *ln = (LWLINE*)(geom);
@@ -2149,6 +2154,7 @@ lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
+		case TINTYPE:
 		case COLLECTIONTYPE:
 		case COMPOUNDTYPE:
 		{
