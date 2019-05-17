@@ -511,31 +511,13 @@ Output is a TIN.
 			<informaltable>
 				  <tgroup cols="2">
 					<tbody>
-					  <row>
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_delaunaytriangles03.png" />
-							  </imageobject>
-							  <caption><para>ST_DelaunayTriangles of 2 polygons: delaunay triangle polygons each triangle themed in different color</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT
-	ST_DelaunayTriangles(
-		ST_Union('POLYGON((175 150, 20 40,
-			50 60, 125 100, 175 150))'::geometry,
-		ST_Buffer('POINT(110 170)'::geometry, 20)
-		))
-	 As  dtriag;
-				</programlisting>
-						  </para></entry>
+					  <row>					
 						  <entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
 								<imagedata fileref="images/st_constraineddelaunaytriangles01.png" />
 							  </imageobject>
-							  <caption><para>ST_ConstrainedDelaunayTriangles of 2 polygons: delaunay triangle polygons each triangle themed in different color</para></caption>
+							  <caption><para>ST_ConstrainedDelaunayTriangles of 2 polygons</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
@@ -548,28 +530,33 @@ SELECT
 	 As  dtriag;
 				</programlisting>
 						  </para></entry>
-						  
-						  
+							<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_constraineddelaunaytriangles02.png" />
+							  </imageobject>
+							  <caption><para>ST_DelaunayTriangles of 2 polygons</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT
+	ST_DelaunayTriangles(
+		ST_Union('POLYGON((175 150, 20 40,
+			50 60, 125 100, 175 150))'::geometry,
+		ST_Buffer('POINT(110 170)'::geometry, 20)
+		))
+	 As  dtriag;
+				</programlisting>
+						  </para></entry>						  
 			 </row>
-
 		</tbody>
 	</tgroup>
 </informaltable>
 	  </refsection>
-	  <refsection>
-			<title>3D Examples</title>
-			<programlisting>-- 3D multipoint --
-SELECT ST_AsText(ST_DelaunayTriangles(ST_GeomFromText(
-'MULTIPOINT Z(14 14 10,
-150 14 100,34 6 25, 20 10 150)'))) As wkt;
-
------wkt----
-GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
- ,POLYGON Z ((14 14 10,34 6 25,150 14 100,14 14 10)))</programlisting>
-		</refsection>
+	  <refsection
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />
+			<para><xref linkend="ST_DelaunayTriangles" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />
 			</para>
 		</refsection>
 	</refentry>
