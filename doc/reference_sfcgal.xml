@@ -553,7 +553,6 @@ SELECT
 	</tgroup>
 </informaltable>
 	  </refsection>
-	  <refsection
 		<refsection>
 			<title>See Also</title>
 			<para><xref linkend="ST_DelaunayTriangles" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />
