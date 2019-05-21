@@ -860,8 +860,7 @@ SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 
 	<refentry id="ST_ConvexHull">
 	  <refnamediv>
 		<refname>ST_ConvexHull</refname>
-		<refpurpose>The convex hull of a geometry represents the minimum convex
-		geometry that encloses all geometries within the set.</refpurpose>
+		<refpurpose>Computes the convex hull of a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -875,21 +874,24 @@ SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 
 
 	  <refsection>
 		<title>Description</title>
-			<para>The convex hull of a geometry represents the minimum convex
-		geometry that encloses all geometries within the set.</para>
+			<para>Computes the convex hull of a geometry.
+		The convex hull is the smallest convex
+		geometry that encloses all geometries in the input.</para>
 
-		<para>One can think of the convex hull as the geometry you get by wrapping an elastic
+		<para>In the general case the convex hull is a Polygon.
+		The convext hull of two or more collinear points is a two-point LineString.
+		The convex hull of one or more identical points is a Point.</para>
+
+		<para>It is usually used with Multi* and GeometryCollections.
+		It is not an aggregate function.
+		To compute the convex hull of a set of geometries,
+		use	<xref linkend="ST_Collect" /> to aggregate them.</para>
+
+		<para>One can think of the convex hull as the geometry obtained by wrapping an elastic
 			band around a set of geometries.  This is different from a concave hull
-				which is analogous to shrink-wrapping your geometries.</para>
-
-			<para>It is usually used with MULTI and Geometry Collections.
-		Although it is not an aggregate - you can use it in conjunction
-		with ST_Collect to get the convex hull of a set of points.
-		ST_ConvexHull(ST_Collect(somepointfield)).</para>
-
-		<para>It is often used to
-		determine an affected area based on a set of point
-		observations.</para>
+			which is analogous to "shrink-wrapping" the geometries.
+			A convex hull is often used to
+			determine an affected area based on a set of point observations.</para>
 
 		<para>Performed by the GEOS module</para>
 
@@ -900,13 +902,6 @@ SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 
 
 	  <refsection>
 		<title>Examples</title>
-<programlisting>
---Get estimate of infected area based on point observations
-SELECT d.disease_type,
-	ST_ConvexHull(ST_Collect(d.the_geom)) As the_geom
-	FROM disease_obs As d
-	GROUP BY d.disease_type;
-</programlisting>
 
 <para>
 	<informalfigure>
@@ -914,7 +909,7 @@ SELECT d.disease_type,
 		<imageobject>
 		  <imagedata fileref="images/st_convexhull01.png" />
 		</imageobject>
-		<caption><para>Convex Hull of a MultiLinestring and a MultiPoint seen together with the MultiLinestring and MultiPoint</para></caption>
+		<caption><para>Convex Hull of a MultiLinestring and a MultiPoint</para></caption>
 	  </mediaobject>
 	</informalfigure>
 	<programlisting>
@@ -927,6 +922,17 @@ SELECT ST_AsText(ST_ConvexHull(
 POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
 	</programlisting>
 </para>
+
+<para>Using with ST_Collect to compute the convex hulls of geometry sets.</para>
+
+<programlisting>
+--Get estimate of infected area based on point observations
+SELECT d.disease_type,
+	ST_ConvexHull(ST_Collect(d.the_geom)) As the_geom
+	FROM disease_obs As d
+	GROUP BY d.disease_type;
+</programlisting>
+
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
