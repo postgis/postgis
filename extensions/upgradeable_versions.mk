@@ -47,4 +47,4 @@ UPGRADEABLE_VERSIONS = \
 	2.5.0 \
 	2.5.1 \
 	2.5.2 \
-	3.0.0dev
+	3.0.0alpha1
