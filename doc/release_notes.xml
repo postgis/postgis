@@ -3,6 +3,20 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>Release 3.0.0</title>
+      <para>Release date: 2019/xx/xx</para>
+      <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
+      <para>Supported PostgreSQL versions for this release are:
+      PostgreSQL 9.5 - PostgreSQL 12
+      GEOS &gt;= 3.6</para>
+      <simplesect>
+        <title>New Features</title>
+         <para>additional features enabled if you are running Proj6+</para>
+         <para>Read the NEWS for more details</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
       <title>Release 2.5.0</title>
       <para>Release date: 2018/09/23</para>
       <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
