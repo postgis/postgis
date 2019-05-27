@@ -46,8 +46,12 @@
 /* PostGIS */
 #include "liblwgeom.h"
 
-/* Prototypes */
+/* Local prototypes */
 Datum postgis_index_supportfn(PG_FUNCTION_ARGS);
+
+/* From gserialized_estimate.c */
+float8 gserialized_joinsel_internal(PlannerInfo *root, List *args, JoinType jointype, int mode);
+float8 gserialized_sel_internal(PlannerInfo *root, List *args, int varRelid, int mode);
 
 
 /*
@@ -197,6 +201,22 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 {
 	Node *rawreq = (Node *) PG_GETARG_POINTER(0);
 	Node *ret = NULL;
+
+	if (IsA(rawreq, SupportRequestSelectivity))
+	{
+		SupportRequestSelectivity *req = (SupportRequestSelectivity *) rawreq;
+
+		if (req->is_join)
+		{
+			req->selectivity = gserialized_joinsel_internal(req->root, req->args, req->jointype, 2);
+		}
+		else
+		{
+			req->selectivity = gserialized_sel_internal(req->root, req->args, req->varRelid, 2);
+		}
+		elog(DEBUG2, "%s: got selectivity %g", __func__, req->selectivity);
+		PG_RETURN_POINTER(req);
+	}
 
 	/*
 	* This support function is strictly for adding spatial index

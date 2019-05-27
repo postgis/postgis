@@ -60,7 +60,6 @@ Datum geography_centroid(PG_FUNCTION_ARGS)
 	int32_t srid;
 	bool use_spheroid = true;
 	SPHEROID s;
-	uint32_t type;
 
 	/* Get our geometry object loaded into memory. */
 	g = PG_GETARG_GSERIALIZED_P(0);
@@ -91,9 +90,7 @@ Datum geography_centroid(PG_FUNCTION_ARGS)
 	if ( ! use_spheroid )
 		s.a = s.b = s.radius;
 
-	type = gserialized_get_type(g);
-
-	switch (type)
+	switch (lwgeom_get_type(lwgeom))
 	{
 
 	case POINTTYPE:
