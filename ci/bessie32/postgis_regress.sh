@@ -1,6 +1,6 @@
 export PATH=${PATH}:/usr/local:/usr/local/lib:/usr/local/bin
 sh autogen.sh
-./configure --with-projdir=/usr/local --with-libiconv=/usr/local --without-interrupt-tests --with-wagyu
+./configure --with-projdir=/usr/local --with-libiconv=/usr/local --with-wagyu --without-interrupt-tests
 make clean
 make
 export PGUSER=postgres

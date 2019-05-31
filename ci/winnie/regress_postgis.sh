@@ -119,6 +119,7 @@ LDFLAGS="-L${PGPATH}/lib -L${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYP
   --with-libiconv=${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE} \
   --with-xsldir=${PROJECTS}/docbook/docbook-xsl-1.76.1 \
   --with-gui --with-gettext=no \
+  --with-wagyu \
   --with-protobufdir=${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE} \
   --with-sfcgal=${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/sfcgal-config \
   --with-pcredir=${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE} \
@@ -135,6 +136,7 @@ LDFLAGS="-L${PGPATH}/lib -L${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYP
   --with-gdalconfig=${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/gdal-config \
   --with-gui --with-gettext=no \
   --with-protobufdir=${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE} \
+  --with-wagyu \
   --with-jsondir=${PROJECTS}/json-c/rel-${JSON_VER}w${OS_BUILD}${GCC_TYPE} \
   --with-libiconv=${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE} \
   --with-xsldir=${PROJECTS}/docbook/docbook-xsl-1.76.1 \
