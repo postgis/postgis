@@ -520,14 +520,13 @@ Output is a TIN.
 							  <caption><para>ST_ConstrainedDelaunayTriangles of 2 polygons</para></caption>
 							</mediaobject>
 						  </informalfigure>
-				<programlisting>
-SELECT
-	ST_ConstrainedDelaunayTriangles(
-		ST_Union('POLYGON((175 150, 20 40,
-			50 60, 125 100, 175 150))'::geometry,
-		ST_Buffer('POINT(110 170)'::geometry, 20)
-		))
-	 As  dtriag;
+						  <programlisting>
+select ST_ConstrainedDelaunayTriangles(
+               ST_Union(
+                       'POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'::geometry,
+                       ST_Buffer('POINT(110 170)'::geometry, 20)
+                   )
+           );
 				</programlisting>
 						  </para></entry>
 							<entry><para><informalfigure>
@@ -535,18 +534,17 @@ SELECT
 							  <imageobject>
 								<imagedata fileref="images/st_constraineddelaunaytriangles02.png" />
 							  </imageobject>
-							  <caption><para>ST_DelaunayTriangles of 2 polygons</para></caption>
+							  <caption><para><xref linkend="ST_DelaunayTriangles" />  of 2 polygons. Triangle edges cross polygon boundaries.</para></caption>
 							</mediaobject>
 						  </informalfigure>
-				<programlisting>
-SELECT
-	ST_DelaunayTriangles(
-		ST_Union('POLYGON((175 150, 20 40,
-			50 60, 125 100, 175 150))'::geometry,
-		ST_Buffer('POINT(110 170)'::geometry, 20)
-		))
-	 As  dtriag;
-				</programlisting>
+						  <programlisting>
+select ST_DelaunayTriangles(
+               ST_Union(
+                       'POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'::geometry,
+                       ST_Buffer('POINT(110 170)'::geometry, 20)
+                   )
+	   );
+</programlisting>
 						  </para></entry>						  
 			 </row>
 		</tbody>
