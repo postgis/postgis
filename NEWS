@@ -59,7 +59,8 @@ PostGIS 3.0.0
            within, equals (Esteban Zimányi and Arthur Lesuisse from Université
            Libre de Bruxelles (ULB), Darafei Praliaskouski)
   - #4171, ST_3DLineInterpolatePoint (Julien Cabieces, Vincent Mora)
-  - #4311, Introduce `--with-wagyu` as an option for MVT polygons (Raúl Marín)
+  - #4311, Introduce WAGYU to validate MVT polygons. Adds `--without-wagyu`
+           to disable it (Raúl Marín)
   - #1833, ST_AsGeoJSON(row) generates full GeoJSON Features (Joe Conway)
   - #3687, Casts json(geometry) and jsonb(geometry) for implicit GeoJSON
            generation (Paul Ramsey)
