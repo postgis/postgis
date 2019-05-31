@@ -128,6 +128,8 @@ PostGIS 3.0.0
   - #4368, Reorder LWGEOM struct members to minimize extra padding (Raúl Marín)
   - #4141, Use uint64 to handle row counts in the topology extension (Raúl Marín)
   - #4225, Upgrade tiger to use tiger 2018 census files
+  - #4198, Add ST_ConstrainedDelaunayTriangles SFCGAL function (Darafei
+           Praliaskouski)
 
 
 PostGIS 2.5.0

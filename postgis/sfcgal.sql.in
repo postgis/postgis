@@ -133,4 +133,10 @@ CREATE OR REPLACE FUNCTION ST_IsSolid(geometry)
        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION ST_ConstrainedDelaunayTriangles(geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'ST_ConstrainedDelaunayTriangles'
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+       COST 100;
 COMMIT;
