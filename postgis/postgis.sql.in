@@ -2857,7 +2857,7 @@ BEGIN
 
 	END LOOP;
 
-	RETURN 'Upgrade completed, run postgis_full_version() for details';
+	RETURN 'Upgrade completed, run SELECT postgis_full_version(); for details';
 
 END
 $$ LANGUAGE plpgsql VOLATILE;
