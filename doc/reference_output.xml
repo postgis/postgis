@@ -613,32 +613,42 @@ POINT(111.11 1.11)
 		</para>
 		<para>You can test and view your GeoJSON data online on <ulink url="http://geojson.io/">geojson.io</ulink>.</para>
 
+<para>To build FeatureCollection:</para>
+<programlisting>select json_build_object(
+    'type', 'FeatureCollection',
+    'features', json_agg(ST_AsGeoJSON(t.*)::json)
+    )
+from ( values (1, 'one', 'POINT(1 1)'::geometry),
+              (2, 'two', 'POINT(2 2)'),
+              (3, 'three', 'POINT(3 3)')
+     ) as t(id, name, geom);</programlisting>
+<screen>{"type" : "FeatureCollection", "features" : [{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "properties": {"id": 1, "name": "one"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[2,2]}, "properties": {"id": 2, "name": "two"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[3,3]}, "properties": {"id": 3, "name": "three"}}]}</screen>
+
+<para>To get Features as records:</para>
 		<programlisting>SELECT ST_AsGeoJSON(t.*)
 FROM (VALUES
   (1, 'one', 'POINT(1 1)'::geometry),
   (2, 'two', 'POINT(2 2)'),
   (3, 'three', 'POINT(3 3)'))
-AS t(id, name, geom);
-                                                  st_asgeojson
+AS t(id, name, geom);</programlisting>
+<screen>                                                  st_asgeojson
 -----------------------------------------------------------------------------------------------------------------
  {"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "properties": {"id": 1, "name": "one"}}
  {"type": "Feature", "geometry": {"type":"Point","coordinates":[2,2]}, "properties": {"id": 2, "name": "two"}}
  {"type": "Feature", "geometry": {"type":"Point","coordinates":[3,3]}, "properties": {"id": 3, "name": "three"}}
-</programlisting>
+</screen>
 
-		<programlisting>SELECT ST_AsGeoJSON(geom) from fe_edges limit 1;
-					   st_asgeojson
+<para>Don't forget to transform your data to WGS84 longitude, latitude to conform with RFC7946:</para>
+		<programlisting>SELECT ST_AsGeoJSON(ST_Transform(geom,4326)) from fe_edges limit 1;</programlisting>
+<screen>					   st_asgeojson
 -----------------------------------------------------------------------------------------------------------
 
 {"type":"MultiLineString","coordinates":[[[-89.734634999999997,31.492072000000000],
 [-89.734955999999997,31.492237999999997]]]}
-(1 row)</programlisting>
+(1 row)</screen>
 <para>You can also use it with 3D geometries:</para>
-<programlisting>SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');
-
-st_asgeojson
------------------------------------------------------------------------------------------
- {"type":"LineString","coordinates":[[1,2,3],[4,5,6]]}</programlisting>
+<programlisting>SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');</programlisting>
+<screen>{"type":"LineString","coordinates":[[1,2,3],[4,5,6]]}</screen>
 	  </refsection>
   <refsection>
     <title>See Also</title>
