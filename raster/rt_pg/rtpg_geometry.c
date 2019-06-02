@@ -826,13 +826,15 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	/* scale x */
 	if (!PG_ARGISNULL(1)) {
 		scale[0] = PG_GETARG_FLOAT8(1);
-		if (FLT_NEQ(scale[0], 0)) scale_x = &scale[0];
+		if (FLT_NEQ(scale[0], 0.0))
+		 scale_x = &scale[0];
 	}
 
 	/* scale y */
 	if (!PG_ARGISNULL(2)) {
 		scale[1] = PG_GETARG_FLOAT8(2);
-		if (FLT_NEQ(scale[1], 0)) scale_y = &scale[1];
+		if (FLT_NEQ(scale[1], 0.0))
+		 scale_y = &scale[1];
 	}
 	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: scale (x, y) = %f, %f", scale[0], scale[1]);
 
@@ -1188,13 +1190,13 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	/* skewx */
 	if (!PG_ARGISNULL(12)) {
 		skew[0] = PG_GETARG_FLOAT8(12);
-		if (FLT_NEQ(skew[0], 0)) skew_x = &skew[0];
+		if (FLT_NEQ(skew[0], 0.0)) skew_x = &skew[0];
 	}
 
 	/* skewy */
 	if (!PG_ARGISNULL(13)) {
 		skew[1] = PG_GETARG_FLOAT8(13);
-		if (FLT_NEQ(skew[1], 0)) skew_y = &skew[1];
+		if (FLT_NEQ(skew[1], 0.0)) skew_y = &skew[1];
 	}
 	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: skew (x, y) = %f, %f", skew[0], skew[1]);
 

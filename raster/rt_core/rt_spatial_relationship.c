@@ -876,8 +876,8 @@ int rt_raster_intersects_algorithm(
 							}
 							/* cell is outside bounds of grid */
 							else if (
-								(Qr[pX] < 0 || Qr[pX] > width1 || FLT_EQ(Qr[pX], width1)) ||
-								(Qr[pY] < 0 || Qr[pY] > height1 || FLT_EQ(Qr[pY], height1))
+								(Qr[pX] < 0 || Qr[pX] >= width1) ||
+								(Qr[pY] < 0 || Qr[pY] >= height1)
 							) {
 								noval1 = 1;
 							}
@@ -899,8 +899,8 @@ int rt_raster_intersects_algorithm(
 							}
 							/* cell is outside bounds of grid */
 							else if (
-								(Qr[pX] < 0 || Qr[pX] > width2 || FLT_EQ(Qr[pX], width2)) ||
-								(Qr[pY] < 0 || Qr[pY] > height2 || FLT_EQ(Qr[pY], height2))
+								(Qr[pX] < 0 || Qr[pX] >= width2) ||
+								(Qr[pY] < 0 || Qr[pY] >= height2)
 							) {
 								noval2 = 1;
 							}
@@ -1246,8 +1246,8 @@ rt_raster_intersects(
 							}
 
 							if (
-								(Qr[pX] < 0 || Qr[pX] > *widthL || FLT_EQ(Qr[pX], *widthL)) ||
-								(Qr[pY] < 0 || Qr[pY] > *heightL || FLT_EQ(Qr[pY], *heightL))
+								(Qr[pX] < 0 || Qr[pX] >= *widthL) ||
+								(Qr[pY] < 0 || Qr[pY] >= *heightL)
 							) {
 								continue;
 							}

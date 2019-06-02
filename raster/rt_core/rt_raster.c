@@ -768,8 +768,8 @@ rt_raster_cell_to_geopoint(
 
 	/* scale of matrix is not set */
 	if (
-		FLT_EQ(_gt[1], 0) ||
-		FLT_EQ(_gt[5], 0)
+		FLT_EQ(_gt[1], 0.0) ||
+		FLT_EQ(_gt[5], 0.0)
 	) {
 		rt_raster_get_geotransform_matrix(raster, _gt);
 	}
@@ -1006,7 +1006,7 @@ rt_raster_compute_skewed_raster(
 	if (scale == NULL)
 		return NULL;
 	for (i = 0; i < 2; i++) {
-		if (FLT_EQ(scale[i], 0)) {
+		if (FLT_EQ(scale[i], 0.0)) {
 			rterror("rt_raster_compute_skewed_raster: Scale cannot be zero");
 			return 0;
 		}
@@ -1022,8 +1022,8 @@ rt_raster_compute_skewed_raster(
 	/* skew not provided or skew is zero, return raster of correct dim and spatial attributes */
 	if (
 		(skew == NULL) || (
-			FLT_EQ(skew[0], 0) &&
-			FLT_EQ(skew[1], 0)
+			FLT_EQ(skew[0], 0.0) &&
+			FLT_EQ(skew[1], 0.0)
 		)
 	) {
 		int _dim[2] = {
@@ -2644,8 +2644,8 @@ rt_raster_gdal_rasterize(
 	else if (
 		(NULL != width) &&
 		(NULL != height) &&
-		(FLT_NEQ(*width, 0.0)) &&
-		(FLT_NEQ(*height, 0.0))
+		(*width != 0) &&
+		(*height != 0)
 	) {
 		_dim[0] = abs(*width);
 		_dim[1] = abs(*height);
@@ -2852,8 +2852,8 @@ rt_raster_gdal_rasterize(
 
 	/* reprocess extent if skewed */
 	if (
-		FLT_NEQ(_skew[0], 0) ||
-		FLT_NEQ(_skew[1], 0)
+		FLT_NEQ(_skew[0], 0.0) ||
+		FLT_NEQ(_skew[1], 0.0)
 	) {
 		rt_raster skewedrast;
 
@@ -3118,7 +3118,7 @@ rt_raster_gdal_rasterize(
 			_gt[1] = *scale_x;
 
 			/* check for skew */
-			if (NULL != skew_x && FLT_NEQ(*skew_x, 0))
+			if (NULL != skew_x && FLT_NEQ(*skew_x, 0.0))
 				_gt[2] = *skew_x;
 		}
 		/* positive scale-y */
@@ -3148,7 +3148,7 @@ rt_raster_gdal_rasterize(
 			_gt[5] = *scale_y;
 
 			/* check for skew */
-			if (NULL != skew_y && FLT_NEQ(*skew_y, 0))
+			if (NULL != skew_y && FLT_NEQ(*skew_y, 0.0))
 				_gt[4] = *skew_y;
 		}
 	}

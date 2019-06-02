@@ -1897,7 +1897,7 @@ static int rtpg_union_mean_callback(
 
 	if (
 		!arg->nodata[0][0][0] &&
-		FLT_NEQ(arg->values[0][0][0], 0) &&
+		FLT_NEQ(arg->values[0][0][0], 0.0) &&
 		!arg->nodata[1][0][0]
 	) {
 		*value = arg->values[1][0][0] / arg->values[0][0][0];
