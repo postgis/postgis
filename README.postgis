@@ -1,9 +1,9 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 2.5.0rc1
-:Date: 2018-08-19
-:Website: http://postgis.net
+:Version: 3.0.0alpah2
+:Date: 2019-06-02
+:Website: https://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
 the features to R-tree indexing, and provides many spatial functions for
@@ -12,10 +12,12 @@ accessing and analyzing geographic data.
 Directory structure::
 
   ./            Build scripts and install directions
+  ./deps        Extra dependencies (currently only mapbox wagyu)
   ./doc         PostGIS Documentation
   ./extensions  Support for the PostgreSQL Extensions framework
   ./extras      Various pieces that didn't belong to mainstream
-                (package management specfiles, WFS_locks, sample WKB parser)
+                (package management specfiles, WFS_locks
+                  , sample WKB parser, postgis_tiger_geocoder)
   ./liblwgeom   LWGEOM geometry library
   ./libpgcommon PostGIS library to bridge LWGEOM to PostgreSQL
   ./loader      A program to convert ESRI Shape files into SQL text suitable
@@ -31,7 +33,7 @@ Directory structure::
 REQUIREMENTS
 ------------
 
-PostGIS is compatible with PostgreSQL 9.4 and above.
+PostGIS is compatible with PostgreSQL 9.5 and above.
 
 You *must* have the full PostgreSQL - including server headers - installed for
 this to work.

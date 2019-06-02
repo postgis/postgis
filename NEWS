@@ -1,5 +1,5 @@
 PostGIS 3.0.0alpha2
-2019/XX/XX
+2019/06/02
 
 For full changes and enhancements, refer to PostGIS 3.0.0 section.
 This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
@@ -9,9 +9,11 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4404, Fix selectivity issue with support functions (Paul Ramsey)
   - #4311, Make wagyu the default option to validate polygons.
           This option requires a C++11 compiler and will use CXXFLAGS (not CFLAGS).
+          It only enabled if built with MVT support (protobuf)
           Add `--without-wagyu` to disable this option and keep the behaviour
           from 2.5 (Raúl Marín)
-
+  - #4198, Add ST_ConstrainedDelaunayTriangles SFCGAL function (Darafei
+           Praliaskouski)
 
 PostGIS 3.0.0alpha1
 2019/05/26
