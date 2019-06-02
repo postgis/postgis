@@ -36,7 +36,7 @@ CPPFLAGS="-I${PGPATH}/include"  \
 LDFLAGS="-L${PGPATH}/lib"  ./configure \
   --with-pgconfig=${PGPATH}/bin/pg_config \
   --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/geos-config \
-  --without-raster
+  --without-raster --without-wagyu
 make clean
 cd doc
 make update-pot
