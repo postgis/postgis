@@ -12,7 +12,7 @@ accessing and analyzing geographic data.
 Directory structure::
 
   ./            Build scripts and install directions
-  ./deps        Extra dependencies (currently only mapbox wagyu)
+  ./deps        Extra dependencies
   ./doc         PostGIS Documentation
   ./extensions  Support for the PostgreSQL Extensions framework
   ./extras      Various pieces that didn't belong to mainstream
