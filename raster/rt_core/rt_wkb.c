@@ -701,12 +701,12 @@ rt_raster_to_hexwkb(rt_raster raster, int outasin, uint32_t *hexwkbsize) {
 	char *optr = hexwkb;
 	uint8_t *iptr = wkb;
 	const char hexchar[]="0123456789ABCDEF";
-	for (size_t i = 0, j = 0; i < wkbsize; i++, j= i*2) {
-		uint8_t v = iptr[i];
-		optr[j] = hexchar[v>>4];
-		optr[j+1] = hexchar[v & 0x0F];
+	while (wkbsize--) {
+		uint8_t v = *iptr++;
+		*optr++ = hexchar[v>>4];
+		*optr++ = hexchar[v & 0x0F];
 	}
-	optr[*hexwkbsize] = '\0'; /* Null-terminate */
+	*optr = '\0'; /* Null-terminate */
 
 	rtdealloc(wkb); /* we don't need this anymore */
 

@@ -1895,11 +1895,8 @@ static int rtpg_union_mean_callback(
 	POSTGIS_RT_DEBUGF(4, "rast0: %f %d", arg->values[0][0][0], arg->nodata[0][0][0]);
 	POSTGIS_RT_DEBUGF(4, "rast1: %f %d", arg->values[1][0][0], arg->nodata[1][0][0]);
 
-	if (
-		!arg->nodata[0][0][0] &&
-		FLT_NEQ(arg->values[0][0][0], 0.0) &&
-		!arg->nodata[1][0][0]
-	) {
+	if (!arg->nodata[0][0][0] && FLT_NEQ(arg->values[0][0][0], 0.0) && !arg->nodata[1][0][0])
+	{
 		*value = arg->values[1][0][0] / arg->values[0][0][0];
 		*nodata = 0;
 	}

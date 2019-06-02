@@ -492,11 +492,8 @@ static void calc_tile_size(
 			}
 			r = r - (double) d;
 
-			if (
-				FLT_EQ(_r, -1.0) ||
-				(r < _r) ||
-				FLT_EQ(r, _r)
-			) {
+			if (FLT_EQ(_r, -1.0) || (r < _r) || FLT_EQ(r, _r))
+			{
 				/*_d = d;*/
 				_r = r;
 				_i = i;

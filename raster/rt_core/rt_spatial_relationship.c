@@ -875,10 +875,9 @@ int rt_raster_intersects_algorithm(
 								noval1 = 1;
 							}
 							/* cell is outside bounds of grid */
-							else if (
-								(Qr[pX] < 0 || Qr[pX] >= width1) ||
-								(Qr[pY] < 0 || Qr[pY] >= height1)
-							) {
+							else if ((Qr[pX] < 0 || Qr[pX] >= width1) ||
+								 (Qr[pY] < 0 || Qr[pY] >= height1))
+							{
 								noval1 = 1;
 							}
 							else if (hasnodata1 == FALSE)
@@ -898,10 +897,9 @@ int rt_raster_intersects_algorithm(
 								noval2 = 1;
 							}
 							/* cell is outside bounds of grid */
-							else if (
-								(Qr[pX] < 0 || Qr[pX] >= width2) ||
-								(Qr[pY] < 0 || Qr[pY] >= height2)
-							) {
+							else if ((Qr[pX] < 0 || Qr[pX] >= width2) ||
+								 (Qr[pY] < 0 || Qr[pY] >= height2))
+							{
 								noval2 = 1;
 							}
 							else if (hasnodata2 == FALSE)
@@ -1245,10 +1243,9 @@ rt_raster_intersects(
 								continue;
 							}
 
-							if (
-								(Qr[pX] < 0 || Qr[pX] >= *widthL) ||
-								(Qr[pY] < 0 || Qr[pY] >= *heightL)
-							) {
+							if ((Qr[pX] < 0 || Qr[pX] >= *widthL) ||
+							    (Qr[pY] < 0 || Qr[pY] >= *heightL))
+							{
 								continue;
 							}
 
