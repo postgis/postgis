@@ -152,6 +152,7 @@ PostGIS 3.0.0
   - #4225, Upgrade tiger to use tiger 2018 census files
   - #4198, Add ST_ConstrainedDelaunayTriangles SFCGAL function (Darafei
            Praliaskouski)
+  - #4412, Support ingesting rasters with NODATA=NaN (Darafei Praliaskouski)
 
 
 PostGIS 2.5.0

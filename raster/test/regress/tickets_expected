@@ -17,3 +17,4 @@ NOTICE:  Invalid band index (must use 1-based). Returning NULL
 #4102.1|-10
 #4102.2|-10
 #3457|4950
+#4412|t
