@@ -20,6 +20,7 @@ export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
 export CGAL_VER=4.11
+export ICON_VER=1.15
 
 if [[ "${GCC_TYPE}" == *gcc48* ]] ; then
 	export PROJECTS=/projects
@@ -78,7 +79,8 @@ export REL_PGVER=${PG_VER//./} #strip the period
 export RELDIR=${PROJECTS}/postgis/builds/${POSTGIS_MINOR_VER}
 export RELVERDIR=postgis-pg${REL_PGVER}-binaries-${POSTGIS_MICRO_VER}w${OS_BUILD}${GCC_TYPE}
 export PATH="${PATHOLD}:${PGPATH}/bin:${PGPATH}/lib"
-export PCRE_VER=8.33 #PATH="${PGPATH}/bin:${PGPATH}/lib:${MINGPROJECTS}/xsltproc:${MINGPROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/gtkw${OS_BUILD}/bin:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/include:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin:${PATH}"
+export PCRE_VER=8.33 
+#PATH="${PGPATH}/bin:${PGPATH}/lib:${MINGPROJECTS}/xsltproc:${MINGPROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/gtkw${OS_BUILD}/bin:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin:${MINGPROJECTS}/rel-libiconv-${ICON_VER}.1w${OS_BUILD}${GCC_TYPE}/include:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin:${PATH}"
 #echo PATH AFTER: $PATH
 outdir="${RELDIR}/${RELVERDIR}"
 package="${RELDIR}/${RELVERDIR}.zip"
@@ -104,7 +106,7 @@ if [[ "$PG_VER" == *9.2* || "$PG_VER" == *9.3* ]]; then
 fi;
 cp ${PGPATHEDB}/bin/libpq.dll  $outdir/bin/postgisgui
 #cp ${PGPATHEDB}/bin/libiconv2.dll  $outdir/bin/postgisgui
-cp ${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin/libicon*.dll $outdir/bin/postgisgui
+cp ${MINGPROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/libicon*.dll $outdir/bin/postgisgui
 cp ${PGPATHEDB}/bin/libintl*.dll $outdir/bin/postgisgui
 
 cp ${PGPATHEDB}/bin/ssleay32.dll $outdir/bin/postgisgui
@@ -174,9 +176,9 @@ strip postgis/postgis-${POSTGIS_MINOR_VER}.dll
 strip raster/rt_pg/postgis_raster-${POSTGIS_MINOR_VER}.dll
 strip liblwgeom/.libs/*.dll
 
-cp postgis/postgis-${POSTGIS_MINOR_VER}.dll ${RELDIR}/${RELVERDIR}/lib
+cp postgis/*.dll ${RELDIR}/${RELVERDIR}/lib
 cp topology/*.dll ${RELDIR}/${RELVERDIR}/lib
-cp raster/rt_pg/postgis_raster-${POSTGIS_MINOR_VER}.dll ${RELDIR}/${RELVERDIR}/lib
+cp raster/rt_pg/*.dll ${RELDIR}/${RELVERDIR}/lib
 cp doc/*_comments.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 cp postgis/*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 cp raster/rt_pg/*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
