@@ -457,7 +457,7 @@ static void calc_tile_size(
 	int i = 0;
 	int j = 0;
 	int min = 30;
-	int max = 100;
+	int max = 300;
 
 	int d = 0;
 	double r = 0;
@@ -1569,6 +1569,8 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	int _tile_size[2] = {0, 0};
 	int xtile = 0;
 	int ytile = 0;
+	int naturalx = 1;
+	int naturaly = 1;
 	double gt[6] = {0.};
 	const char* pszProjectionRef = NULL;
 	int tilesize = 0;
@@ -1708,14 +1710,52 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	info->dim[0] = GDALGetRasterXSize(hdsSrc);
 	info->dim[1] = GDALGetRasterYSize(hdsSrc);
 
+	tilesize = 0;
+
+	/* go through bands for attributes */
+	for (i = 0; i < info->nband_count; i++) {
+		hbandSrc = GDALGetRasterBand(hdsSrc, info->nband[i]);
+
+		/* datatype */
+		info->gdalbandtype[i] = GDALGetRasterDataType(hbandSrc);
+
+		/* complex data type? */
+		if (GDALDataTypeIsComplex(info->gdalbandtype[i])) {
+			rterror(_("convert_raster: The pixel type of band %d is a complex data type.  PostGIS raster does not support complex data types"), i + 1);
+			GDALClose(hdsSrc);
+			return 0;
+		}
+		GDALGetBlockSize(hbandSrc, &naturalx, &naturaly);
+
+		/* convert data type to that of postgis raster */
+		info->bandtype[i] = rt_util_gdal_datatype_to_pixtype(info->gdalbandtype[i]);
+
+		/* hasnodata and nodataval */
+		info->nodataval[i] = GDALGetRasterNoDataValue(hbandSrc, &(info->hasnodata[i]));
+		if (!info->hasnodata[i]) {
+			/* does NOT have nodata value, but user-specified */
+			if (config->hasnodata) {
+				info->hasnodata[i] = 1;
+				info->nodataval[i] = config->nodataval;
+			}
+			else
+				info->nodataval[i] = 0;
+		}
+
+		/* update estimated byte size of 1 pixel */
+		tilesize += rt_pixtype_size(info->bandtype[i]);
+	}
+
 	/* tile size is "auto" */
 	if (
 		config->tile_size[0] == -1 &&
 		config->tile_size[1] == -1
 	) {
 		calc_tile_size(
-			info->dim[0], info->dim[1],
-			&(config->tile_size[0]), &(config->tile_size[1])
+			(naturalx>1)?naturalx:info->dim[0],
+			(naturaly>1)?naturaly:info->dim[1],
+			&(config->tile_size[0]),
+			&(config->tile_size[1])
 		);
 
 		rtinfo(_("Using computed tile size: %dx%d"), config->tile_size[0], config->tile_size[1]);
@@ -1740,38 +1780,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	/* estimate size of 1 tile */
 	tilesize = info->tile_size[0] * info->tile_size[1];
 
-	/* go through bands for attributes */
-	for (i = 0; i < info->nband_count; i++) {
-		hbandSrc = GDALGetRasterBand(hdsSrc, info->nband[i]);
 
-		/* datatype */
-		info->gdalbandtype[i] = GDALGetRasterDataType(hbandSrc);
-
-		/* complex data type? */
-		if (GDALDataTypeIsComplex(info->gdalbandtype[i])) {
-			rterror(_("convert_raster: The pixel type of band %d is a complex data type.  PostGIS raster does not support complex data types"), i + 1);
-			GDALClose(hdsSrc);
-			return 0;
-		}
-
-		/* convert data type to that of postgis raster */
-		info->bandtype[i] = rt_util_gdal_datatype_to_pixtype(info->gdalbandtype[i]);
-
-		/* hasnodata and nodataval */
-		info->nodataval[i] = GDALGetRasterNoDataValue(hbandSrc, &(info->hasnodata[i]));
-		if (!info->hasnodata[i]) {
-			/* does NOT have nodata value, but user-specified */
-			if (config->hasnodata) {
-				info->hasnodata[i] = 1;
-				info->nodataval[i] = config->nodataval;
-			}
-			else
-				info->nodataval[i] = 0;
-		}
-
-		/* update estimated size of 1 tile */
-		tilesize *= rt_pixtype_size(info->bandtype[i]);
-	}
 
 	/* roughly estimate size of one tile and all bands */
 	tilesize *= 1.1;
