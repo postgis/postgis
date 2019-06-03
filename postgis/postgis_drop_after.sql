@@ -242,3 +242,5 @@ IF _postgis_scripts_pgsql_version()::integer >= 96 THEN
 END IF;
 END;
 $$;
+
+UPDATE pg_aggregate SET aggtransfn = 'pgis_geometry_union_transfn', aggtranstype='internal'::regtype where aggfnoid='st_union(geometry)'::regprocedure;
