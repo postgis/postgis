@@ -1774,7 +1774,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		ntiles[1] = (info->dim[1] + info->tile_size[1] - 1) / info->tile_size[1];
 
 	/* estimate size of 1 tile */
-	tilesize = info->tile_size[0] * info->tile_size[1];
+	tilesize *= info->tile_size[0] * info->tile_size[1];
 
 	/* roughly estimate size of one tile and all bands */
 	tilesize *= 1.1;
