@@ -453,53 +453,49 @@ usage() {
 static void
 calc_tile_size(uint32_t dimX, uint32_t dimY, int *tileX, int *tileY)
 {
-	int i = 0;
-	int j = 0;
-	int min = 30;
-	int max = 300;
+	uint32_t min_tile_size = 30;
+	uint32_t max_tile_size = 300;
+	uint32_t tile_size;
+	uint32_t best_size;
+	uint32_t current_dimension;
+	double gap;
+	double best_gap;
 
-	int d = 0;
-	double r = 0;
-	double _r = -1;
-	int _i = 0;
+	for (current_dimension = 0; current_dimension <= 1; current_dimension++)
+	{
+		best_size = 0;
+		best_gap = 5;
 
-	/* j = 0, X */
-	for (j = 0; j < 2; j++) {
-		_i = 0;
-		_r = -1;
-
-		if (j < 1 && dimX <= max) {
+		if (current_dimension == 0 && dimX <= max_tile_size)
+		{
 			*tileX = dimX;
 			continue;
 		}
-		else if (dimY <= max) {
+		else if (dimY <= max_tile_size)
+		{
 			*tileY = dimY;
 			continue;
 		}
 
-		for (i = max; i >= min; i--) {
-			if (j < 1) {
-				d = dimX / i;
-				r = (double) dimX / (double) i;
+		for (tile_size = max_tile_size; tile_size >= min_tile_size; tile_size--)
+		{
+			if (current_dimension == 0)
+				gap = (double)dimX / (double)tile_size - (double)(dimX / tile_size);
+			else
+				gap = (double)dimY / (double)tile_size - (double)(dimY / tile_size);
 
-			}
-			else {
-				d = dimY / i;
-				r = (double) dimY / (double) i;
-			}
-			r = r - (double) d;
-
-			if (FLT_EQ(_r, -1.0) || (r < _r) || FLT_EQ(r, _r))
+			assert(gap < 1);
+			if (gap <= best_gap)
 			{
-				_r = r;
-				_i = i;
+				best_gap = gap;
+				best_size = tile_size;
 			}
 		}
 
-		if (j < 1)
-			*tileX = _i;
+		if (current_dimension == 0)
+			*tileX = best_size;
 		else
-			*tileY = _i;
+			*tileY = best_size;
 	}
 }
 
