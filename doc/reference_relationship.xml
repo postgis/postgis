@@ -7,141 +7,8 @@
     </sect1info>
 	<title>Spatial Relationships</title>
 
-	<refentry id="ST_3DDWithin">
-	  <refnamediv>
-		<refname>ST_3DDWithin</refname>
-
-		<refpurpose>For 3d (z) geometry type Returns true if two geometries 3d distance is within number of units. </refpurpose>
-	  </refnamediv>
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>boolean <function>ST_3DDWithin</function></funcdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g1</parameter></paramdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g2</parameter></paramdef>
-
-			<paramdef><type>double precision </type>
-			<parameter>distance_of_srid</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>For geometry type returns true if the 3d distance between two objects is within distance_of_srid specified
-		projected units (spatial ref units). </para>
-
-        <para>&Z_support;</para>
-        <!-- Optionally mention supports Polyhedral Surface  -->
-        <para>&P_support;</para>
-		<para>&sqlmm_compliant; SQL-MM ?</para>
-
-		<para>Availability: 2.0.0</para>
-	  </refsection>
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>
--- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line)
--- Note: currently no vertical datum support so Z is not transformed and assumed to be same units as final.
-SELECT ST_3DDWithin(
-			ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 4)'),2163),
-			ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163),
-			126.8
-		) As within_dist_3d,
-ST_DWithin(
-			ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 4)'),2163),
-			ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163),
-			126.8
-		) As within_dist_2d;
-
- within_dist_3d | within_dist_2d
-----------------+----------------
- f              | t
-</programlisting>
-	  </refsection>
-
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_3DDistance"/>, <xref linkend="ST_Distance"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
-	  </refsection>
-	</refentry>
-
-<refentry id="ST_3DDFullyWithin">
-	  <refnamediv>
-		<refname>ST_3DDFullyWithin</refname>
-
-		<refpurpose>Returns true if all of the 3D geometries are within the specified
-		distance of one another. </refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>boolean <function>ST_3DDFullyWithin</function></funcdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g1</parameter></paramdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g2</parameter></paramdef>
-
-			<paramdef><type>double precision </type>
-			<parameter>distance</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Returns true if the 3D geometries are fully within the specified distance
-		of one another. The distance is specified in units defined by the
-		spatial reference system of the geometries.  For this function to make
-		sense, the source geometries must both be of the same coordinate projection,
-		having the same SRID.</para>
-
-		<note>
-		  <para>This function call will automatically include a bounding box
-		  comparison that will make use of any indexes that are available on
-		  the geometries.</para>
-		</note>
-
-		<para>Availability: 2.0.0</para>
-        <para>&Z_support;</para>
-        <!-- Optionally mention supports Polyhedral Surface  -->
-        <para>&P_support;</para>
-
-	  </refsection>
-
-	  <refsection>
-		<title>Examples</title>
-		<programlisting>
-		-- This compares the difference between fully within and distance within as well
-		-- as the distance fully within for the 2D footprint of the line/point vs. the 3d fully within
-		SELECT ST_3DDFullyWithin(geom_a, geom_b, 10) as D3DFullyWithin10, ST_3DDWithin(geom_a, geom_b, 10) as D3DWithin10,
-	ST_DFullyWithin(geom_a, geom_b, 20) as D2DFullyWithin20,
-	ST_3DDFullyWithin(geom_a, geom_b, 20) as D3DFullyWithin20 from
-		(select ST_GeomFromEWKT('POINT(1 1 2)') as geom_a,
-		ST_GeomFromEWKT('LINESTRING(1 5 2, 2 7 20, 1 9 100, 14 12 3)') as geom_b) t1;
- d3dfullywithin10 | d3dwithin10 | d2dfullywithin20 | d3dfullywithin20
-------------------+-------------+------------------+------------------
- f                | t           | t                | f </programlisting>
-	  </refsection>
-
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_3DMaxDistance"/>, <xref linkend="ST_3DDWithin"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_DFullyWithin"/></para>
-	  </refsection>
-	</refentry>
+		<sect2>
+		<title>Topological Relationships</title>
 
 	<refentry id="ST_3DIntersects">
 		<refnamediv>
@@ -247,7 +114,7 @@ ST_DWithin(
 		<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 
 		<important>
-		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 		</important>
 
 		<important>
@@ -435,7 +302,7 @@ ST_Point      | t          | t              | f           | f
 		<para>Availability: 1.4.0</para>
 
 		<important>
-		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 		</important>
 
 		<important>
@@ -526,7 +393,7 @@ ST_Point      | t          | t              | f           | f
 			Geometry/Geography A</para>
 
 		<important>
-		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 		</important>
 
 		<important>
@@ -627,7 +494,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
 			Geometry/Geography B</para>
 
 		<important>
-		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 		</important>
 
 		<important>
@@ -744,7 +611,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 		symmetric.</para>
 
 		<important>
-		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 		</important>
 
 	<note>
@@ -1061,7 +928,7 @@ WHERE ST_CrossingDirection(s1.the_geom, s2.the_geom) > 0;
 				Disjoint implies false for spatial intersection.</para>
 
 		<important>
-		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 		</important>
 
 			<para>Performed by the GEOS module</para>
@@ -1099,190 +966,6 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_DFullyWithin">
-	  <refnamediv>
-		<refname>ST_DFullyWithin</refname>
-
-		<refpurpose>Returns true if all of the geometries are within the specified
-		distance of one another</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>boolean <function>ST_DFullyWithin</function></funcdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g1</parameter></paramdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g2</parameter></paramdef>
-
-			<paramdef><type>double precision </type>
-			<parameter>distance</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Returns true if the geometries is fully within the specified distance
-		of one another. The distance is specified in units defined by the
-		spatial reference system of the geometries.  For this function to make
-		sense, the source geometries must both be of the same coordinate projection,
-		having the same SRID.</para>
-
-		<note>
-		  <para>This function call will automatically include a bounding box
-		  comparison that will make use of any indexes that are available on
-		  the geometries.</para>
-		</note>
-
-		<para>Availability: 1.5.0</para>
-	  </refsection>
-
-	  <refsection>
-		<title>Examples</title>
-		<programlisting>postgis=# SELECT ST_DFullyWithin(geom_a, geom_b, 10) as DFullyWithin10, ST_DWithin(geom_a, geom_b, 10) as DWithin10, ST_DFullyWithin(geom_a, geom_b, 20) as DFullyWithin20 from
-		(select ST_GeomFromText('POINT(1 1)') as geom_a,ST_GeomFromText('LINESTRING(1 5, 2 7, 1 9, 14 12)') as geom_b) t1;
-
------------------
- DFullyWithin10 | DWithin10 | DFullyWithin20 |
----------------+----------+---------------+
- f             | t        | t             |  </programlisting>
-	  </refsection>
-
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_DWithin"/></para>
-	  </refsection>
-	</refentry>
-
-	<refentry id="ST_DWithin">
-	  <refnamediv>
-		<refname>ST_DWithin</refname>
-
-		<refpurpose>Returns true if the geometries are within the specified
-		distance of one another. For geometry units are in those of spatial reference and for geography units are in meters and measurement is
-		defaulted to use_spheroid=true (measure around spheroid), for faster check, use_spheroid=false to measure along sphere.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-				<funcdef>boolean <function>ST_DWithin</function></funcdef>
-				<paramdef><type>geometry </type>
-				<parameter>g1</parameter></paramdef>
-
-				<paramdef><type>geometry </type>
-				<parameter>g2</parameter></paramdef>
-
-				<paramdef><type>double precision </type>
-				<parameter>distance_of_srid</parameter></paramdef>
-		  </funcprototype>
-
-		  <funcprototype>
-				<funcdef>boolean <function>ST_DWithin</function></funcdef>
-				<paramdef><type>geography </type>
-				<parameter>gg1</parameter></paramdef>
-
-				<paramdef><type>geography </type>
-				<parameter>gg2</parameter></paramdef>
-
-				<paramdef><type>double precision </type>
-				<parameter>distance_meters</parameter></paramdef>
-
-				<paramdef choice="opt"><type>boolean </type>
-				<parameter>use_spheroid</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Returns true if the geometries are within the specified distance
-		of one another.</para>
-
-		<para>For <type>geometry</type>: The distance is specified in units defined by the
-		spatial reference system of the geometries.  For this function to make
-		sense, the source geometries must both be of the same coordinate projection,
-		having the same SRID.</para>
-
-		<para>For <type>geography</type> units are in meters and measurement is
-		defaulted to <varname>use_spheroid</varname>=true, for faster check, <varname>use_spheroid</varname>=false to measure along sphere.
-		</para>
-
-		<note>
-		  <para>This function call will automatically include a bounding box
-		  comparison that will make use of any indexes that are available on
-		  the geometries.</para>
-		</note>
-
-		<note>
-		  <para>Prior to 1.3, ST_Expand was commonly used in conjunction with &amp;&amp; and ST_Distance to
-		  achieve the same effect and in pre-1.3.4 this function was basically short-hand for that construct.
-		  From 1.3.4, ST_DWithin uses a more short-circuit distance function which should make it more efficient
-		  than prior versions for larger buffer regions.</para>
-		</note>
-
-		<note><para>Use ST_3DDWithin if you have 3D geometries.</para></note>
-
-		<para>&sfs_compliant;</para>
-		<para>Availability: 1.5.0 support for geography was introduced</para>
-		<para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://blog.opengeo.org/2012/07/12/making-geography-faster/">Making Geography faster</ulink> for details.</para>
-		<para>Enhanced: 2.1.0 support for curved geometries was introduced.</para>
-	  </refsection>
-
-	  <refsection>
-		<title>Examples</title>
-		  <programlisting>
--- Find the nearest hospital to each school
--- that is within 3000 units of the school.
---  We do an ST_DWithin search to utilize indexes to limit our search list
---  that the non-indexable ST_Distance needs to process
--- If the units of the spatial reference is meters then units would be meters
-SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.geom, h.hospital_name
-	FROM schools s
-		LEFT JOIN hospitals h ON ST_DWithin(s.the_geom, h.geom, 3000)
-	ORDER BY s.gid, ST_Distance(s.geom, h.geom);
-
--- The schools with no close hospitals
--- Find all schools with no hospital within 3000 units
--- away from the school.  Units is in units of spatial ref (e.g. meters, feet, degrees)
-SELECT s.gid, s.school_name
-	FROM schools s
-		LEFT JOIN hospitals h ON ST_DWithin(s.geom, h.geom, 3000)
-	WHERE h.gid IS NULL;
-
--- Find broadcasting towers that receiver with limited range can receive.
--- Data is geometry in Spherical Mercator (SRID=3857), ranges are approximate.
-
--- Create geometry index that will check proximity limit of user to tower
-CREATE INDEX ON broadcasting_towers using gist (geom);
-
--- Create geometry index that will check proximity limit of tower to user
-CREATE INDEX ON broadcasting_towers using gist (ST_Expand(geom, sending_range));
-
--- Query towers that 4-kilometer receiver in Minsk Hackerspace can get
--- Note: two conditions, because shorter LEAST(b.sending_range, 4000) will not use index.
-SELECT b.tower_id, b.geom
-  FROM broadcasting_towers b
-  WHERE ST_DWithin(b.geom, 'SRID=3857;POINT(3072163.4 7159374.1)', 4000)
-	  AND ST_DWithin(b.geom, 'SRID=3857;POINT(3072163.4 7159374.1)', b.sending_range);
-
-			  </programlisting>
-	  </refsection>
-
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_Expand"/>, <xref linkend="ST_3DDWithin"/></para>
-	  </refsection>
-	</refentry>
-
 	<refentry id="ST_Equals">
 	  <refnamediv>
 		<refname>ST_Equals</refname>
@@ -1317,7 +1000,7 @@ SELECT b.tower_id, b.geom
 		</important>
 
 		<important>
-		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 		</important>
 
 		<para>&sfs_compliant; s2.1.1.2</para>
@@ -1543,7 +1226,7 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 		 <para>Performed by the GEOS module</para>
 
 		<important>
-		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 		</important>
 
 		<para>This function call will automatically include a bounding box
@@ -1756,7 +1439,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 			<para>Version 3: same as version 2, but allows to specify a boundary node rule (1:OGC/MOD2, 2:Endpoint, 3:MultivalentEndpoint, 4:MonovalentEndpoint)</para>
 
 			<important>
-			  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+			  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 			</important>
 
 			<para>not in OGC spec, but implied. see s2.1.13.2</para>
@@ -1924,7 +1607,7 @@ SELECT mat.name, pat.name, ST_RelateMatch(mat.val, pat.val) As satisfied
 		</itemizedlist>
 
 		<important>
-		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 		</important>
 
 		<note>
@@ -2058,7 +1741,7 @@ SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry)
 		<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit for geometry extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 
 		<important>
-		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para> 
+		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 		</important>
 
 		<important>
@@ -2113,5 +1796,333 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 	  </refsection>
 	</refentry>
 
+    </sect2>
+	<!-- ==============================================================================  -->
+
+		<sect2>
+		<title>Distance Relationships</title>
+
+	<refentry id="ST_3DDWithin">
+	  <refnamediv>
+		<refname>ST_3DDWithin</refname>
+
+		<refpurpose>For 3d (z) geometry type Returns true if two geometries 3d distance is within number of units. </refpurpose>
+	  </refnamediv>
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_3DDWithin</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+
+			<paramdef><type>double precision </type>
+			<parameter>distance_of_srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>For geometry type returns true if the 3d distance between two objects is within distance_of_srid specified
+		projected units (spatial ref units). </para>
+
+        <para>&Z_support;</para>
+        <!-- Optionally mention supports Polyhedral Surface  -->
+        <para>&P_support;</para>
+		<para>&sqlmm_compliant; SQL-MM ?</para>
+
+		<para>Availability: 2.0.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+-- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line)
+-- Note: currently no vertical datum support so Z is not transformed and assumed to be same units as final.
+SELECT ST_3DDWithin(
+			ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 4)'),2163),
+			ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163),
+			126.8
+		) As within_dist_3d,
+ST_DWithin(
+			ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 4)'),2163),
+			ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163),
+			126.8
+		) As within_dist_2d;
+
+ within_dist_3d | within_dist_2d
+----------------+----------------
+ f              | t
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_3DDistance"/>, <xref linkend="ST_Distance"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
+	  </refsection>
+	</refentry>
+
+<refentry id="ST_3DDFullyWithin">
+	  <refnamediv>
+		<refname>ST_3DDFullyWithin</refname>
+
+		<refpurpose>Returns true if all of the 3D geometries are within the specified
+		distance of one another. </refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_3DDFullyWithin</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+
+			<paramdef><type>double precision </type>
+			<parameter>distance</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns true if the 3D geometries are fully within the specified distance
+		of one another. The distance is specified in units defined by the
+		spatial reference system of the geometries.  For this function to make
+		sense, the source geometries must both be of the same coordinate projection,
+		having the same SRID.</para>
+
+		<note>
+		  <para>This function call will automatically include a bounding box
+		  comparison that will make use of any indexes that are available on
+		  the geometries.</para>
+		</note>
+
+		<para>Availability: 2.0.0</para>
+        <para>&Z_support;</para>
+        <!-- Optionally mention supports Polyhedral Surface  -->
+        <para>&P_support;</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>
+		-- This compares the difference between fully within and distance within as well
+		-- as the distance fully within for the 2D footprint of the line/point vs. the 3d fully within
+		SELECT ST_3DDFullyWithin(geom_a, geom_b, 10) as D3DFullyWithin10, ST_3DDWithin(geom_a, geom_b, 10) as D3DWithin10,
+	ST_DFullyWithin(geom_a, geom_b, 20) as D2DFullyWithin20,
+	ST_3DDFullyWithin(geom_a, geom_b, 20) as D3DFullyWithin20 from
+		(select ST_GeomFromEWKT('POINT(1 1 2)') as geom_a,
+		ST_GeomFromEWKT('LINESTRING(1 5 2, 2 7 20, 1 9 100, 14 12 3)') as geom_b) t1;
+ d3dfullywithin10 | d3dwithin10 | d2dfullywithin20 | d3dfullywithin20
+------------------+-------------+------------------+------------------
+ f                | t           | t                | f </programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_3DMaxDistance"/>, <xref linkend="ST_3DDWithin"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_DFullyWithin"/></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_DFullyWithin">
+	  <refnamediv>
+		<refname>ST_DFullyWithin</refname>
+
+		<refpurpose>Returns true if all of the geometries are within the specified
+		distance of one another</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_DFullyWithin</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+
+			<paramdef><type>double precision </type>
+			<parameter>distance</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns true if the geometries is fully within the specified distance
+		of one another. The distance is specified in units defined by the
+		spatial reference system of the geometries.  For this function to make
+		sense, the source geometries must both be of the same coordinate projection,
+		having the same SRID.</para>
+
+		<note>
+		  <para>This function call will automatically include a bounding box
+		  comparison that will make use of any indexes that are available on
+		  the geometries.</para>
+		</note>
+
+		<para>Availability: 1.5.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>postgis=# SELECT ST_DFullyWithin(geom_a, geom_b, 10) as DFullyWithin10, ST_DWithin(geom_a, geom_b, 10) as DWithin10, ST_DFullyWithin(geom_a, geom_b, 20) as DFullyWithin20 from
+		(select ST_GeomFromText('POINT(1 1)') as geom_a,ST_GeomFromText('LINESTRING(1 5, 2 7, 1 9, 14 12)') as geom_b) t1;
+
+-----------------
+ DFullyWithin10 | DWithin10 | DFullyWithin20 |
+---------------+----------+---------------+
+ f             | t        | t             |  </programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_DWithin"/></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_DWithin">
+	  <refnamediv>
+		<refname>ST_DWithin</refname>
+
+		<refpurpose>Returns true if the geometries are within the specified
+		distance of one another. For geometry units are in those of spatial reference and for geography units are in meters and measurement is
+		defaulted to use_spheroid=true (measure around spheroid), for faster check, use_spheroid=false to measure along sphere.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+				<funcdef>boolean <function>ST_DWithin</function></funcdef>
+				<paramdef><type>geometry </type>
+				<parameter>g1</parameter></paramdef>
+
+				<paramdef><type>geometry </type>
+				<parameter>g2</parameter></paramdef>
+
+				<paramdef><type>double precision </type>
+				<parameter>distance_of_srid</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+				<funcdef>boolean <function>ST_DWithin</function></funcdef>
+				<paramdef><type>geography </type>
+				<parameter>gg1</parameter></paramdef>
+
+				<paramdef><type>geography </type>
+				<parameter>gg2</parameter></paramdef>
+
+				<paramdef><type>double precision </type>
+				<parameter>distance_meters</parameter></paramdef>
+
+				<paramdef choice="opt"><type>boolean </type>
+				<parameter>use_spheroid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns true if the geometries are within the specified distance
+		of one another.</para>
+
+		<para>For <type>geometry</type>: The distance is specified in units defined by the
+		spatial reference system of the geometries.  For this function to make
+		sense, the source geometries must both be of the same coordinate projection,
+		having the same SRID.</para>
+
+		<para>For <type>geography</type> units are in meters and measurement is
+		defaulted to <varname>use_spheroid</varname>=true, for faster check, <varname>use_spheroid</varname>=false to measure along sphere.
+		</para>
+
+		<note>
+		  <para>This function call will automatically include a bounding box
+		  comparison that will make use of any indexes that are available on
+		  the geometries.</para>
+		</note>
+
+		<note>
+		  <para>Prior to 1.3, ST_Expand was commonly used in conjunction with &amp;&amp; and ST_Distance to
+		  achieve the same effect and in pre-1.3.4 this function was basically short-hand for that construct.
+		  From 1.3.4, ST_DWithin uses a more short-circuit distance function which should make it more efficient
+		  than prior versions for larger buffer regions.</para>
+		</note>
+
+		<note><para>Use ST_3DDWithin if you have 3D geometries.</para></note>
+
+		<para>&sfs_compliant;</para>
+		<para>Availability: 1.5.0 support for geography was introduced</para>
+		<para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://blog.opengeo.org/2012/07/12/making-geography-faster/">Making Geography faster</ulink> for details.</para>
+		<para>Enhanced: 2.1.0 support for curved geometries was introduced.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		  <programlisting>
+-- Find the nearest hospital to each school
+-- that is within 3000 units of the school.
+--  We do an ST_DWithin search to utilize indexes to limit our search list
+--  that the non-indexable ST_Distance needs to process
+-- If the units of the spatial reference is meters then units would be meters
+SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.geom, h.hospital_name
+	FROM schools s
+		LEFT JOIN hospitals h ON ST_DWithin(s.the_geom, h.geom, 3000)
+	ORDER BY s.gid, ST_Distance(s.geom, h.geom);
+
+-- The schools with no close hospitals
+-- Find all schools with no hospital within 3000 units
+-- away from the school.  Units is in units of spatial ref (e.g. meters, feet, degrees)
+SELECT s.gid, s.school_name
+	FROM schools s
+		LEFT JOIN hospitals h ON ST_DWithin(s.geom, h.geom, 3000)
+	WHERE h.gid IS NULL;
+
+-- Find broadcasting towers that receiver with limited range can receive.
+-- Data is geometry in Spherical Mercator (SRID=3857), ranges are approximate.
+
+-- Create geometry index that will check proximity limit of user to tower
+CREATE INDEX ON broadcasting_towers using gist (geom);
+
+-- Create geometry index that will check proximity limit of tower to user
+CREATE INDEX ON broadcasting_towers using gist (ST_Expand(geom, sending_range));
+
+-- Query towers that 4-kilometer receiver in Minsk Hackerspace can get
+-- Note: two conditions, because shorter LEAST(b.sending_range, 4000) will not use index.
+SELECT b.tower_id, b.geom
+  FROM broadcasting_towers b
+  WHERE ST_DWithin(b.geom, 'SRID=3857;POINT(3072163.4 7159374.1)', 4000)
+	  AND ST_DWithin(b.geom, 'SRID=3857;POINT(3072163.4 7159374.1)', b.sending_range);
+
+			  </programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_Expand"/>, <xref linkend="ST_3DDWithin"/></para>
+	  </refsection>
+	</refentry>
+
+
+    </sect2>
 
 </sect1>

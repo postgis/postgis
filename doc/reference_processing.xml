@@ -651,120 +651,6 @@ SELECT ST_ClipByBox2D(the_geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Collect">
-	  <refnamediv>
-		<refname>ST_Collect</refname>
-		<refpurpose>Return a specified ST_Geometry value from a collection of other geometries.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-			<funcprototype>
-				<funcdef>geometry <function>ST_Collect</function></funcdef>
-				<paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-			<funcdef>geometry <function>ST_Collect</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>geometry</type> <parameter>g2</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>geometry <function>ST_Collect</function></funcdef>
-				<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></paramdef>
-			</funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-		<para> Output type can be a MULTI* or a
-			GEOMETRYCOLLECTION. Comes in 2 variants.  Variant 1 collects 2 geometries. Variant 2 is an aggregate function that takes a set of geometries and collects
-			them into a single ST_Geometry.</para>
-
-		<para>Aggregate version: This function returns a GEOMETRYCOLLECTION or a MULTI object
-			from a set of geometries. The ST_Collect() function is an "aggregate"
-			function in the terminology of PostgreSQL. That means that it
-			operates on rows of data, in the same way the SUM() and AVG()
-			functions do. For example, "SELECT ST_Collect(GEOM) FROM GEOMTABLE
-			GROUP BY ATTRCOLUMN" will return a separate GEOMETRYCOLLECTION for
-			each distinct value of ATTRCOLUMN.</para>
-
-		<para>Non-Aggregate version: This function returns a geometry being a collection of two
-			input geometries. Output type can be a MULTI* or a
-			GEOMETRYCOLLECTION.</para>
-
-		<note><para>ST_Collect and ST_Union are often interchangeable except that ST_Collect will always return a GeometryCollection or MULTI geometry
-		and ST_Union may return single geometries when it dissolves boundaries.  ST_Union will also split linestrings at node intersections, whereas ST_Collect
-		will never split linestrings and in turn just return as MULTILINESTRING.
-			 To prevent ST_Collect from
-			returning a Geometry Collection when collecting MULTI geometries,
-			one can use the below trick that utilizes <xref linkend="ST_Dump" /> to expand the
-			MULTIs out to singles and then regroup them.</para></note>
-
-		<para>Availability: 1.4.0 -  ST_Collect(geomarray) was introduced. ST_Collect was enhanced to handle more geometries faster.</para>
-		  <para>&Z_support;</para>
-		  <para>&curve_support; This method supports Circular Strings
-		    and Curves, but will never return a MULTICURVE or MULTI as one
-		    would expect and PostGIS does not currently support those.</para>
-	  </refsection>
-
-	  <refsection>
-		<title>Examples</title>
-		<para>Aggregate example</para>
-			<programlisting>SELECT stusps, ST_Collect(f.the_geom) as singlegeom
-	 FROM (SELECT stusps, (ST_Dump(the_geom)).geom As the_geom
-				FROM
-				somestatetable ) As f
-GROUP BY stusps</programlisting>
-		<para>Non-Aggregate example</para>
-			<programlisting>SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),
-	ST_GeomFromText('POINT(-2 3)') ));
-
-st_astext
-----------
-MULTIPOINT(1 2,-2 3)
-
---Collect 2 d points
-SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),
-		ST_GeomFromText('POINT(1 2)') ) );
-
-st_astext
-----------
-MULTIPOINT(1 2,1 2)
-
---Collect 3d points
-SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),
-		ST_GeomFromEWKT('POINT(1 2 4)') ) );
-
-		st_asewkt
--------------------------
- MULTIPOINT(1 2 3,1 2 4)
-
- --Example with curves
-SELECT ST_AsText(ST_Collect(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'),
-ST_GeomFromText('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)')));
-																st_astext
-------------------------------------------------------------------------------------
- GEOMETRYCOLLECTION(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),
- CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))
-
---New ST_Collect array construct
-SELECT ST_Collect(ARRAY(SELECT the_geom FROM sometable));
-
-SELECT ST_AsText(ST_Collect(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'),
-			ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As wktcollect;
-
---wkt collect --
-MULTILINESTRING((1 2,3 4),(3 4,4 5))
-
-</programlisting>
-	  </refsection>
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="ST_Dump" />, <xref linkend="ST_Union" /></para>
-	  </refsection>
-	</refentry>
-
 
 	<refentry id="ST_ConcaveHull">
 	  <refnamediv>
@@ -974,8 +860,7 @@ SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 
 	<refentry id="ST_ConvexHull">
 	  <refnamediv>
 		<refname>ST_ConvexHull</refname>
-		<refpurpose>The convex hull of a geometry represents the minimum convex
-		geometry that encloses all geometries within the set.</refpurpose>
+		<refpurpose>Computes the convex hull of a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -989,21 +874,24 @@ SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 
 
 	  <refsection>
 		<title>Description</title>
-			<para>The convex hull of a geometry represents the minimum convex
-		geometry that encloses all geometries within the set.</para>
+			<para>Computes the convex hull of a geometry.
+		The convex hull is the smallest convex
+		geometry that encloses all geometries in the input.</para>
 
-		<para>One can think of the convex hull as the geometry you get by wrapping an elastic
+		<para>In the general case the convex hull is a Polygon.
+		The convext hull of two or more collinear points is a two-point LineString.
+		The convex hull of one or more identical points is a Point.</para>
+
+		<para>It is usually used with Multi* and GeometryCollections.
+		It is not an aggregate function.
+		To compute the convex hull of a set of geometries,
+		use	<xref linkend="ST_Collect" /> to aggregate them.</para>
+
+		<para>One can think of the convex hull as the geometry obtained by wrapping an elastic
 			band around a set of geometries.  This is different from a concave hull
-				which is analogous to shrink-wrapping your geometries.</para>
-
-			<para>It is usually used with MULTI and Geometry Collections.
-		Although it is not an aggregate - you can use it in conjunction
-		with ST_Collect to get the convex hull of a set of points.
-		ST_ConvexHull(ST_Collect(somepointfield)).</para>
-
-		<para>It is often used to
-		determine an affected area based on a set of point
-		observations.</para>
+			which is analogous to "shrink-wrapping" the geometries.
+			A convex hull is often used to
+			determine an affected area based on a set of point observations.</para>
 
 		<para>Performed by the GEOS module</para>
 
@@ -1014,13 +902,6 @@ SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 
 
 	  <refsection>
 		<title>Examples</title>
-<programlisting>
---Get estimate of infected area based on point observations
-SELECT d.disease_type,
-	ST_ConvexHull(ST_Collect(d.the_geom)) As the_geom
-	FROM disease_obs As d
-	GROUP BY d.disease_type;
-</programlisting>
 
 <para>
 	<informalfigure>
@@ -1028,7 +909,7 @@ SELECT d.disease_type,
 		<imageobject>
 		  <imagedata fileref="images/st_convexhull01.png" />
 		</imageobject>
-		<caption><para>Convex Hull of a MultiLinestring and a MultiPoint seen together with the MultiLinestring and MultiPoint</para></caption>
+		<caption><para>Convex Hull of a MultiLinestring and a MultiPoint</para></caption>
 	  </mediaobject>
 	</informalfigure>
 	<programlisting>
@@ -1041,6 +922,17 @@ SELECT ST_AsText(ST_ConvexHull(
 POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
 	</programlisting>
 </para>
+
+<para>Using with ST_Collect to compute the convex hulls of geometry sets.</para>
+
+<programlisting>
+--Get estimate of infected area based on point observations
+SELECT d.disease_type,
+	ST_ConvexHull(ST_Collect(d.the_geom)) As the_geom
+	FROM disease_obs As d
+	GROUP BY d.disease_type;
+</programlisting>
+
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -1344,7 +1236,7 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />
+			<para><xref linkend="ST_ConstrainedDelaunayTriangles" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />
 			</para>
 		</refsection>
 	</refentry>
@@ -1446,401 +1338,6 @@ MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)</programlisting>
 		<title>See Also</title>
 
 		<para><xref linkend="ST_SymDifference" />, <xref linkend="ST_Intersection" />, <xref linkend="ST_Union" /></para>
-	  </refsection>
-	</refentry>
-
-	<refentry id="ST_Dump">
-	  <refnamediv>
-		<refname>ST_Dump</refname>
-		<refpurpose>Returns a set of geometry_dump (geom,path) rows, that make up a geometry g1.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry_dump[] <function>ST_Dump</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-			<para>This is a set-returning function (SRF). It returns a set of
-			geometry_dump rows, formed by a geometry (geom) and an array of
-			integers (path). When the input geometry is a simple type
-			(POINT,LINESTRING,POLYGON) a single record will be returned with
-			an empty path array and the input geometry as geom. When the input
-			geometry is a collection or multi it will return a record for each
-			of the collection components, and the path will express the
-			position of the component inside the collection.</para>
-
-			<para>ST_Dump is useful for expanding geometries. It is the
-			reverse of a GROUP BY in that it creates new rows. For example it
-			can be use to expand MULTIPOLYGONS into POLYGONS.</para>
-
-			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-			<para>Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher.</para>
-
-			<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
-
-
-
-            <para>&curve_support;</para>
-            <para>&P_support;</para>
-            <para>&T_support;</para>
-            <para>&Z_support;</para>
-	  </refsection>
-
-	  <refsection>
-		<title>Standard Examples</title>
-	<programlisting>SELECT sometable.field1, sometable.field1,
-      (ST_Dump(sometable.the_geom)).geom AS the_geom
-FROM sometable;
-
--- Break a compound curve into its constituent linestrings and circularstrings
-SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)
-  FROM ( SELECT (ST_Dump(p_geom)).geom AS geom
-         FROM (SELECT ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 1, 1 0),(1 0, 0 1))') AS p_geom) AS b
-        ) AS a;
-          st_asewkt          | st_hasarc
------------------------------+----------
- CIRCULARSTRING(0 0,1 1,1 0) | t
- LINESTRING(1 0,0 1)         | f
-(2 rows)</programlisting>
-</refsection>
-<refsection><title>Polyhedral Surfaces, TIN and Triangle Examples</title>
-<programlisting>-- Polyhedral surface example
--- Break a Polyhedral surface into its faces
-SELECT (a.p_geom).path[1] As path, ST_AsEWKT((a.p_geom).geom) As geom_ewkt
-  FROM (SELECT ST_Dump(ST_GeomFromEWKT('POLYHEDRALSURFACE(
-((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))
-)') ) AS p_geom )  AS a;
-
- path |                geom_ewkt
-------+------------------------------------------
-    1 | POLYGON((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0))
-    2 | POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))
-    3 | POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))
-    4 | POLYGON((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0))
-    5 | POLYGON((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0))
-    6 | POLYGON((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))</programlisting>
-
-<programlisting>-- TIN --
-SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
-  FROM
-    (SELECT
-       ST_Dump( ST_GeomFromEWKT('TIN (((
-                0 0 0,
-                0 0 1,
-                0 1 0,
-                0 0 0
-            )), ((
-                0 0 0,
-                0 1 0,
-                1 1 0,
-                0 0 0
-            ))
-            )') ) AS gdump
-    ) AS g;
--- result --
- path |                 wkt
-------+-------------------------------------
- {1}  | TRIANGLE((0 0 0,0 0 1,0 1 0,0 0 0))
- {2}  | TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))
-</programlisting>
-	  </refsection>
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="geometry_dump" />, <xref linkend="PostGIS_Geometry_DumpFunctions" />, <xref linkend="ST_Collect" />, <xref linkend="ST_Collect" />, <xref linkend="ST_GeometryN" /></para>
-	  </refsection>
-	</refentry>
-
-	<refentry id="ST_DumpPoints">
-		<refnamediv>
-			<refname>ST_DumpPoints</refname>
-			<refpurpose>Returns a set of geometry_dump (geom,path) rows of all points that make up a geometry.</refpurpose>
-		</refnamediv>
-
-		<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry_dump[]<function>ST_DumpPoints</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-			</funcprototype>
-		</funcsynopsis>
-		</refsynopsisdiv>
-
-		<refsection>
-			<title>Description</title>
-				<para>This set-returning function (SRF) returns a set of <varname>geometry_dump</varname> rows formed
-				    by a geometry (<varname>geom</varname>) and an array of integers (<varname>path</varname>).</para>
-
-				<para>The <parameter>geom</parameter> component of <varname>geometry_dump</varname> are
-				    all the <varname>POINT</varname>s that make up the supplied geometry</para>
-
-				<para>The <parameter>path</parameter> component of <varname>geometry_dump</varname> (an <varname>integer[]</varname>)
-				    is an index reference enumerating the <varname>POINT</varname>s of the supplied geometry.
-					For example, if a <varname>LINESTRING</varname> is supplied, a path of <varname>{i}</varname> is
-					returned where <varname>i</varname> is the <varname>nth</varname> coordinate in the <varname>LINESTRING</varname>.
-					If a <varname>POLYGON</varname> is supplied, a path of <varname>{i,j}</varname> is returned where
-					<varname>i</varname> is the ring number (1 is outer; inner rings follow) and <varname>j</varname>
-					enumerates the <varname>POINT</varname>s (again 1-based index).
-				</para>
-				<para>Enhanced: 2.1.0 Faster speed. Reimplemented as native-C.</para>
-				<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-				<para>Availability: 1.5.0</para>
-				<para>&curve_support;</para>
-				<para>&P_support;</para>
-				<para>&T_support;</para>
-				<para>&Z_support;</para>
-		</refsection>
-
-		<refsection><title>Classic Explode a Table of LineStrings into nodes</title>
-			<programlisting>SELECT edge_id, (dp).path[1] As index, ST_AsText((dp).geom) As wktnode
-FROM (SELECT 1 As edge_id
-	, ST_DumpPoints(ST_GeomFromText('LINESTRING(1 2, 3 4, 10 10)')) AS dp
-     UNION ALL
-     SELECT 2 As edge_id
-	, ST_DumpPoints(ST_GeomFromText('LINESTRING(3 5, 5 6, 9 10)')) AS dp
-   ) As foo;
- edge_id | index |    wktnode
----------+-------+--------------
-       1 |     1 | POINT(1 2)
-       1 |     2 | POINT(3 4)
-       1 |     3 | POINT(10 10)
-       2 |     1 | POINT(3 5)
-       2 |     2 | POINT(5 6)
-       2 |     3 | POINT(9 10)</programlisting>
-		</refsection>
-		<refsection>
-			<title>Standard Geometry Examples</title>
-
-			<informalfigure>
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/st_dumppoints01.png" />
-					</imageobject>
-				</mediaobject>
-			</informalfigure>
-
-			<programlisting>SELECT path, ST_AsText(geom)
-FROM (
-  SELECT (ST_DumpPoints(g.geom)).*
-  FROM
-    (SELECT
-       'GEOMETRYCOLLECTION(
-          POINT ( 0 1 ),
-          LINESTRING ( 0 3, 3 4 ),
-          POLYGON (( 2 0, 2 3, 0 2, 2 0 )),
-          POLYGON (( 3 0, 3 3, 6 3, 6 0, 3 0 ),
-                   ( 5 1, 4 2, 5 2, 5 1 )),
-          MULTIPOLYGON (
-                  (( 0 5, 0 8, 4 8, 4 5, 0 5 ),
-                   ( 1 6, 3 6, 2 7, 1 6 )),
-                  (( 5 4, 5 8, 6 7, 5 4 ))
-          )
-        )'::geometry AS geom
-    ) AS g
-  ) j;
-
-   path    | st_astext
------------+------------
- {1,1}     | POINT(0 1)
- {2,1}     | POINT(0 3)
- {2,2}     | POINT(3 4)
- {3,1,1}   | POINT(2 0)
- {3,1,2}   | POINT(2 3)
- {3,1,3}   | POINT(0 2)
- {3,1,4}   | POINT(2 0)
- {4,1,1}   | POINT(3 0)
- {4,1,2}   | POINT(3 3)
- {4,1,3}   | POINT(6 3)
- {4,1,4}   | POINT(6 0)
- {4,1,5}   | POINT(3 0)
- {4,2,1}   | POINT(5 1)
- {4,2,2}   | POINT(4 2)
- {4,2,3}   | POINT(5 2)
- {4,2,4}   | POINT(5 1)
- {5,1,1,1} | POINT(0 5)
- {5,1,1,2} | POINT(0 8)
- {5,1,1,3} | POINT(4 8)
- {5,1,1,4} | POINT(4 5)
- {5,1,1,5} | POINT(0 5)
- {5,1,2,1} | POINT(1 6)
- {5,1,2,2} | POINT(3 6)
- {5,1,2,3} | POINT(2 7)
- {5,1,2,4} | POINT(1 6)
- {5,2,1,1} | POINT(5 4)
- {5,2,1,2} | POINT(5 8)
- {5,2,1,3} | POINT(6 7)
- {5,2,1,4} | POINT(5 4)
-(29 rows)</programlisting>
-		</refsection>
-	<refsection>
-			<title>Polyhedral Surfaces, TIN and Triangle Examples</title>
-			<programlisting>-- Polyhedral surface cube --
-SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
-  FROM
-    (SELECT
-       ST_DumpPoints(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )') ) AS gdump
-    ) AS g;
--- result --
-  path   |     wkt
----------+--------------
- {1,1,1} | POINT(0 0 0)
- {1,1,2} | POINT(0 0 1)
- {1,1,3} | POINT(0 1 1)
- {1,1,4} | POINT(0 1 0)
- {1,1,5} | POINT(0 0 0)
- {2,1,1} | POINT(0 0 0)
- {2,1,2} | POINT(0 1 0)
- {2,1,3} | POINT(1 1 0)
- {2,1,4} | POINT(1 0 0)
- {2,1,5} | POINT(0 0 0)
- {3,1,1} | POINT(0 0 0)
- {3,1,2} | POINT(1 0 0)
- {3,1,3} | POINT(1 0 1)
- {3,1,4} | POINT(0 0 1)
- {3,1,5} | POINT(0 0 0)
- {4,1,1} | POINT(1 1 0)
- {4,1,2} | POINT(1 1 1)
- {4,1,3} | POINT(1 0 1)
- {4,1,4} | POINT(1 0 0)
- {4,1,5} | POINT(1 1 0)
- {5,1,1} | POINT(0 1 0)
- {5,1,2} | POINT(0 1 1)
- {5,1,3} | POINT(1 1 1)
- {5,1,4} | POINT(1 1 0)
- {5,1,5} | POINT(0 1 0)
- {6,1,1} | POINT(0 0 1)
- {6,1,2} | POINT(1 0 1)
- {6,1,3} | POINT(1 1 1)
- {6,1,4} | POINT(0 1 1)
- {6,1,5} | POINT(0 0 1)
-(30 rows)</programlisting>
-<programlisting>-- Triangle --
-SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt
-  FROM
-    (SELECT
-       ST_DumpPoints( ST_GeomFromEWKT('TRIANGLE ((
-                0 0,
-                0 9,
-                9 0,
-                0 0
-            ))') ) AS gdump
-    ) AS g;
--- result --
- path |    wkt
-------+------------
- {1}  | POINT(0 0)
- {2}  | POINT(0 9)
- {3}  | POINT(9 0)
- {4}  | POINT(0 0)
-</programlisting>
-<programlisting>-- TIN --
-SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
-  FROM
-    (SELECT
-       ST_DumpPoints( ST_GeomFromEWKT('TIN (((
-                0 0 0,
-                0 0 1,
-                0 1 0,
-                0 0 0
-            )), ((
-                0 0 0,
-                0 1 0,
-                1 1 0,
-                0 0 0
-            ))
-            )') ) AS gdump
-    ) AS g;
--- result --
-  path   |     wkt
----------+--------------
- {1,1,1} | POINT(0 0 0)
- {1,1,2} | POINT(0 0 1)
- {1,1,3} | POINT(0 1 0)
- {1,1,4} | POINT(0 0 0)
- {2,1,1} | POINT(0 0 0)
- {2,1,2} | POINT(0 1 0)
- {2,1,3} | POINT(1 1 0)
- {2,1,4} | POINT(0 0 0)
-(8 rows)
-</programlisting>
-		</refsection>
-			<refsection>
-			<title>See Also</title>
-			<para><xref linkend="geometry_dump" />, <xref linkend="PostGIS_Geometry_DumpFunctions" />, <xref linkend="ST_Dump" />, <xref linkend="ST_DumpRings" /></para>
-		</refsection>
-	</refentry>
-	<refentry id="ST_DumpRings">
-	  <refnamediv>
-		<refname>ST_DumpRings</refname>
-
-		<refpurpose>Returns a set of <varname>geometry_dump</varname> rows, representing
-			the exterior and interior rings of a polygon.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>This is a set-returning function (SRF). It returns a set of
-			<varname>geometry_dump</varname> rows, defined as an <varname>integer[]</varname>
-			and a <varname>geometry</varname>, aliased "path" and "geom" respectively.
-			The "path" field holds the polygon ring index containing a single integer: 0 for the shell, >0 for holes.
-			The "geom" field contains the corresponding ring as a polygon.</para>
-
-		<para>Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher.</para>
-		<note><para>This only works for POLYGON geometries. It will not work for MULTIPOLYGONS</para></note>
-		<para>&Z_support;</para>
-	  </refsection>
-
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>SELECT sometable.field1, sometable.field1,
-	  (ST_DumpRings(sometable.the_geom)).geom As the_geom
-FROM sometableOfpolys;
-
-SELECT ST_AsEWKT(geom) As the_geom, path
-	FROM ST_DumpRings(
-		ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,-8148941 5132466 1,-8148924 5132394 1,
-		-8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,
-		-8150305 5132788 1,-8149064 5133092 1),
-		(-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))')
-		)  as foo;
- path |                                            the_geom
-----------------------------------------------------------------------------------------------------------------
-  {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,
-	  |          -8148941 5132466 1,-8148924 5132394 1,
-	  |          -8148903 5132210 1,-8148930 5131967 1,
-	  |          -8148992 5131978 1,-8149237 5132093 1,
-	  |          -8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,-8150305 5132788 1,-8149064 5133092 1))
-  {1} | POLYGON((-8149362 5132394 1,-8149446 5132501 1,
-	  |          -8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="geometry_dump" />, <xref linkend="PostGIS_Geometry_DumpFunctions" />, <xref linkend="ST_Dump" />, <xref linkend="ST_ExteriorRing" />, <xref linkend="ST_InteriorRingN" /></para>
 	  </refsection>
 	</refentry>
 

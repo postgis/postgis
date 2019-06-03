@@ -3,6 +3,39 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>Release 3.0.0alpha2</title>
+      <para>Release date: 2019/06/02</para>
+      <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
+      <para>Supported PostgreSQL versions for this release are:
+      PostgreSQL 9.5 - PostgreSQL 12
+      GEOS &gt;= 3.6</para>
+      <simplesect>
+        <title>Major highlights</title>
+         <para>#4404, Fix selectivity issue with support functions (Paul Ramsey)</para>
+         <para>#4311, Make wagyu the default option to validate polygons.
+          This option requires a C++11 compiler and will use CXXFLAGS (not CFLAGS).
+          It is only enabled if built with MVT support (protobuf)
+          Add `--without-wagyu` to disable this option and keep the behaviour
+          from 2.5 (Raúl Marín)</para>
+        <para>#4198, Add ST_ConstrainedDelaunayTriangles SFCGAL function (Darafei
+           Praliaskouski)</para>
+      </simplesect>
+    </sect1>
+    <sect1>
+      <title>Release 3.0.0alpha1</title>
+      <para>Release date: 2019/05/26</para>
+      <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
+      <para>Supported PostgreSQL versions for this release are:
+      PostgreSQL 9.5 - PostgreSQL 12
+      GEOS &gt;= 3.6</para>
+      <simplesect>
+        <title>New Features</title>
+         <para>additional features enabled if you are running Proj6+</para>
+         <para>Read the NEWS file in the included tarball for more details</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
       <title>Release 2.5.0</title>
       <para>Release date: 2018/09/23</para>
       <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>

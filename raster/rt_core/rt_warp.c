@@ -286,11 +286,9 @@ rt_raster rt_raster_gdal_warp(
 			gt[0], gt[1], gt[2], gt[3], gt[4], gt[5]);
 
 		/* substitute spatial info (lack of) with a real one EPSG:32731 (WGS84/UTM zone 31s) */
-		if (
-			FLT_EQ(gt[0], 0) && FLT_EQ(gt[3], 0) &&
-			FLT_EQ(gt[1], 1) && FLT_EQ(gt[5], -1) &&
-			FLT_EQ(gt[2], 0) && FLT_EQ(gt[4], 0)
-		) {
+		if (FLT_EQ(gt[0], 0.0) && FLT_EQ(gt[3], 0.0) && FLT_EQ(gt[1], 1.0) && FLT_EQ(gt[5], -1.0) &&
+		    FLT_EQ(gt[2], 0.0) && FLT_EQ(gt[4], 0.0))
+		{
 			double ngt[6] = {166021.4431, 0.1, 0, 10000000.0000, 0, -0.1};
 
 			rtwarn("Raster has default geotransform. Adjusting metadata for use of GDAL Warp API");
@@ -432,7 +430,8 @@ rt_raster rt_raster_gdal_warp(
 	}
 
 	/* scale not defined, use suggested */
-	if (FLT_EQ(_scale[0], 0) && FLT_EQ(_scale[1], 0)) {
+	if (FLT_EQ(_scale[0], 0.0) && FLT_EQ(_scale[1], 0.0))
+	{
 		_scale[0] = fabs(_gt[1]);
 		_scale[1] = fabs(_gt[5]);
 	}
@@ -472,10 +471,8 @@ rt_raster rt_raster_gdal_warp(
 	RASTER_DEBUGF(4, "Using skew: %f x %f", _skew[0], _skew[1]);
 
 	/* reprocess extent if skewed */
-	if (
-		FLT_NEQ(_skew[0], 0) ||
-		FLT_NEQ(_skew[1], 0)
-	) {
+	if (FLT_NEQ(_skew[0], 0.0) || FLT_NEQ(_skew[1], 0.0))
+	{
 		rt_raster skewedrast;
 
 		RASTER_DEBUG(3, "Computing skewed extent's envelope");
@@ -706,7 +703,7 @@ rt_raster rt_raster_gdal_warp(
 			_gt[1] = *scale_x;
 
 			/* check for skew */
-			if (NULL != skew_x && FLT_NEQ(*skew_x, 0))
+			if (NULL != skew_x && FLT_NEQ(*skew_x, 0.0))
 				_gt[2] = *skew_x;
 		}
 		/* positive scale-y */
@@ -730,7 +727,7 @@ rt_raster rt_raster_gdal_warp(
 			_gt[5] = *scale_y;
 
 			/* check for skew */
-			if (NULL != skew_y && FLT_NEQ(*skew_y, 0))
+			if (NULL != skew_y && FLT_NEQ(*skew_y, 0.0))
 				_gt[4] = *skew_y;
 		}
 	}

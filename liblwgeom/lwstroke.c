@@ -38,8 +38,7 @@
 
 #include "liblwgeom_internal.h"
 
-
-LWGEOM* pta_unstroke(const POINTARRAY *points, int srid);
+LWGEOM *pta_unstroke(const POINTARRAY *points, int32_t srid);
 LWGEOM* lwline_unstroke(const LWLINE *line);
 LWGEOM* lwpolygon_unstroke(const LWPOLY *poly);
 LWGEOM* lwmline_unstroke(const LWMLINE *mline);
@@ -909,8 +908,8 @@ static int pt_continues_arc(const POINT4D *a1, const POINT4D *a2, const POINT4D 
 	return LW_FALSE;
 }
 
-static LWGEOM*
-linestring_from_pa(const POINTARRAY *pa, int srid, int start, int end)
+static LWGEOM *
+linestring_from_pa(const POINTARRAY *pa, int32_t srid, int start, int end)
 {
 	int i = 0, j = 0;
 	POINT4D p;
@@ -924,8 +923,8 @@ linestring_from_pa(const POINTARRAY *pa, int srid, int start, int end)
 	return lwline_as_lwgeom(lwline_construct(srid, NULL, pao));
 }
 
-static LWGEOM*
-circstring_from_pa(const POINTARRAY *pa, int srid, int start, int end)
+static LWGEOM *
+circstring_from_pa(const POINTARRAY *pa, int32_t srid, int start, int end)
 {
 
 	POINT4D p0, p1, p2;
@@ -940,8 +939,8 @@ circstring_from_pa(const POINTARRAY *pa, int srid, int start, int end)
 	return lwcircstring_as_lwgeom(lwcircstring_construct(srid, NULL, pao));
 }
 
-static LWGEOM*
-geom_from_pa(const POINTARRAY *pa, int srid, int is_arc, int start, int end)
+static LWGEOM *
+geom_from_pa(const POINTARRAY *pa, int32_t srid, int is_arc, int start, int end)
 {
 	LWDEBUGF(4, "srid=%d, is_arc=%d, start=%d, end=%d", srid, is_arc, start, end);
 	if ( is_arc )
@@ -950,8 +949,8 @@ geom_from_pa(const POINTARRAY *pa, int srid, int is_arc, int start, int end)
 		return linestring_from_pa(pa, srid, start, end);
 }
 
-LWGEOM*
-pta_unstroke(const POINTARRAY *points, int srid)
+LWGEOM *
+pta_unstroke(const POINTARRAY *points, int32_t srid)
 {
 	int i = 0, j, k;
 	POINT4D a1, a2, a3, b;

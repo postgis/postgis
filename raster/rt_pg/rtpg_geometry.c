@@ -782,7 +782,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 
 	uint32_t num_bands = 0;
 
-	int srid = SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 	char *srs = NULL;
 
 	POSTGIS_RT_DEBUG(3, "RASTER_asRaster: Starting");
@@ -826,13 +826,15 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	/* scale x */
 	if (!PG_ARGISNULL(1)) {
 		scale[0] = PG_GETARG_FLOAT8(1);
-		if (FLT_NEQ(scale[0], 0)) scale_x = &scale[0];
+		if (FLT_NEQ(scale[0], 0.0))
+			scale_x = &scale[0];
 	}
 
 	/* scale y */
 	if (!PG_ARGISNULL(2)) {
 		scale[1] = PG_GETARG_FLOAT8(2);
-		if (FLT_NEQ(scale[1], 0)) scale_y = &scale[1];
+		if (FLT_NEQ(scale[1], 0.0))
+			scale_y = &scale[1];
 	}
 	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: scale (x, y) = %f, %f", scale[0], scale[1]);
 
@@ -926,8 +928,8 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		}
 	}
 #if POSTGIS_DEBUG_LEVEL > 0
-	for (i = 0; i < pixtypes_len; i++)
-		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: pixtypes[%d] = %d", i, (int) pixtypes[i]);
+	for (uint32_t u = 0; u < pixtypes_len; u++)
+		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: pixtypes[%u] = %u", i, pixtypes[i]);
 #endif
 
 	/* value */
@@ -989,8 +991,8 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		}
 	}
 #if POSTGIS_DEBUG_LEVEL > 0
-	for (i = 0; i < values_len; i++)
-		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: values[%d] = %f", i, values[i]);
+	for (uint32_t u = 0; u < values_len; u++)
+		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: values[%u] = %f", i, values[i]);
 #endif
 
 	/* nodataval */
@@ -1061,9 +1063,10 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		}
 	}
 #if POSTGIS_DEBUG_LEVEL > 0
-	for (i = 0; i < nodatavals_len; i++) {
-		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: hasnodatas[%d] = %d", i, hasnodatas[i]);
-		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: nodatavals[%d] = %f", i, nodatavals[i]);
+	for (uint32_t u = 0; u < nodatavals_len; u++)
+	{
+		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: hasnodatas[%u] = %d", u, hasnodatas[u]);
+		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: nodatavals[%u] = %f", u, nodatavals[u]);
 	}
 #endif
 
@@ -1187,13 +1190,15 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	/* skewx */
 	if (!PG_ARGISNULL(12)) {
 		skew[0] = PG_GETARG_FLOAT8(12);
-		if (FLT_NEQ(skew[0], 0)) skew_x = &skew[0];
+		if (FLT_NEQ(skew[0], 0.0))
+			skew_x = &skew[0];
 	}
 
 	/* skewy */
 	if (!PG_ARGISNULL(13)) {
 		skew[1] = PG_GETARG_FLOAT8(13);
-		if (FLT_NEQ(skew[1], 0)) skew_y = &skew[1];
+		if (FLT_NEQ(skew[1], 0.0))
+			skew_y = &skew[1];
 	}
 	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: skew (x, y) = %f, %f", skew[0], skew[1]);
 

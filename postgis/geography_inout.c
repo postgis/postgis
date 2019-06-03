@@ -214,7 +214,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	text *result;
 	int version;
 	char *srs;
-	int srid = SRID_DEFAULT;
+	int32_t srid = SRID_DEFAULT;
 	int precision = DBL_DIG;
 	int option = 0;
 	int lwopts = LW_GML_IS_DIMS;
@@ -536,13 +536,11 @@ Datum geography_from_binary(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_from_geometry);
 Datum geography_from_geometry(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P_COPY(0);
-	LWGEOM *lwgeom = NULL;
 	GSERIALIZED *g_ser = NULL;
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P_COPY(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 
-	geography_valid_type(gserialized_get_type(geom));
-
-	lwgeom = lwgeom_from_gserialized(geom);
+	geography_valid_type(lwgeom_get_type(lwgeom));
 
 	/* Force default SRID */
 	if ( (int)lwgeom->srid <= 0 )

@@ -2228,12 +2228,13 @@ rt_util_hsv_to_rgb(
 );
 
 /*
-	helper macros for consistent floating point equality checks
+	helper macros for consistent floating point equality checks.
+	NaN equals NaN for NODATA support.
 */
-#define FLT_NEQ(x, y) (fabs(x - y) > FLT_EPSILON)
-#define FLT_EQ(x, y) (!FLT_NEQ(x, y))
-#define DBL_NEQ(x, y) (fabs(x - y) > DBL_EPSILON)
-#define DBL_EQ(x, y) (!DBL_NEQ(x, y))
+#define FLT_NEQ(x, y) ((x != y) && !(isnan(x) && isnan(y)) && (fabs(x - y) > FLT_EPSILON))
+#define FLT_EQ(x, y) ((x == y) || (isnan(x) && isnan(y)) || (fabs(x - y) <= FLT_EPSILON))
+#define DBL_NEQ(x, y) ((x != y) && !(isnan(x) && isnan(y)) && (fabs(x - y) > DBL_EPSILON))
+#define DBL_EQ(x, y) ((x == y) || (isnan(x) && isnan(y)) || (fabs(x - y) <= DBL_EPSILON))
 
 /*
 	helper macro for symmetrical rounding

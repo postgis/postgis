@@ -31,7 +31,7 @@ sfcgal_geometry_t *POSTGIS2SFCGALGeometry(GSERIALIZED *pglwgeom);
 sfcgal_prepared_geometry_t *POSTGIS2SFCGALPreparedGeometry(GSERIALIZED *pglwgeom);
 
 /* Conversion from SFCGAL::Geometry to GSERIALIZED */
-GSERIALIZED *SFCGALGeometry2POSTGIS(const sfcgal_geometry_t *geom, int force3D, int SRID);
+GSERIALIZED *SFCGALGeometry2POSTGIS(const sfcgal_geometry_t *geom, int force3D, int32_t SRID);
 
 /* Conversion from SFCGAL::PreparedGeometry to GSERIALIZED */
 GSERIALIZED *SFCGALPreparedGeometry2POSTGIS(const sfcgal_prepared_geometry_t *geom, int force3D);

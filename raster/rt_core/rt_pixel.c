@@ -393,7 +393,8 @@ rt_errorstate rt_pixel_set_to_array(
 			/* unweighted (boolean) mask */
 			if (mask->weighted == 0) {
 				/* pixel is set to zero or nodata */
-				if (FLT_EQ(mask->values[_y][_x],0) || mask->nodata[_y][_x] == 1) {
+				if (FLT_EQ(mask->values[_y][_x], 0.0) || mask->nodata[_y][_x] == 1)
+				{
 					values[_y][_x] = 0;
 					nodatas[_y][_x] = 1;
 				}

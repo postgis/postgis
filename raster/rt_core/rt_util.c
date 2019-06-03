@@ -77,7 +77,9 @@ rt_util_clamp_to_32BUI(double value) {
 
 float
 rt_util_clamp_to_32F(double value) {
-    return (float)fmin(fmax((value), -FLT_MAX), FLT_MAX);
+	if (isnan(value))
+		return value;
+	return (float)fmin(fmax((value), -FLT_MAX), FLT_MAX);
 }
 
 /**
@@ -650,7 +652,8 @@ rt_util_dbl_trunc_warning(
 #endif
 				result = 1;
 			}
-			else if (FLT_NEQ(checkvalint, initialvalue)) {
+			else if (checkvalint != initialvalue)
+			{
 #if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
 				rtwarn("Value set for %s band got truncated from %f to %d",
 					rt_pixtype_name(pixtype),
@@ -671,7 +674,8 @@ rt_util_dbl_trunc_warning(
 #endif
 				result = 1;
 			}
-			else if (FLT_NEQ(checkvaluint, initialvalue)) {
+			else if (checkvaluint != initialvalue)
+			{
 #if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
 				rtwarn("Value set for %s band got truncated from %f to %u",
 					rt_pixtype_name(pixtype),

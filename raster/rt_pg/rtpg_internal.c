@@ -278,8 +278,9 @@ rtpg_strrstr(const char *s1, const char *s2) {
 	return NULL;
 }
 
-char*
-rtpg_getSR(int srid) {
+char *
+rtpg_getSR(int32_t srid)
+{
 	int i = 0;
 	int len = 0;
 	char *sql = NULL;

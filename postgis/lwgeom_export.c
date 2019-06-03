@@ -33,6 +33,12 @@
 #include "executor/spi.h"
 #include "utils/builtins.h"
 
+#if POSTGIS_PGSQL_VERSION > 95
+#include "utils/fmgrprotos.h"
+#else
+#include "utils/jsonb.h"
+#endif
+
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
@@ -44,6 +50,8 @@ Datum LWGEOM_asGeoJson_old(PG_FUNCTION_ARGS);
 Datum LWGEOM_asSVG(PG_FUNCTION_ARGS);
 Datum LWGEOM_asX3D(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS);
+Datum geometry_to_json(PG_FUNCTION_ARGS);
+Datum geometry_to_jsonb(PG_FUNCTION_ARGS);
 
 /*
  * Retrieve an SRS from a given SRID
@@ -52,7 +60,8 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS);
  * Could return SRS as short one (i.e EPSG:4326)
  * or as long one: (i.e urn:ogc:def:crs:EPSG::4326)
  */
-char * getSRSbySRID(int srid, bool short_crs)
+char *
+getSRSbySRID(int32_t srid, bool short_crs)
 {
 	char query[256];
 	char *srs, *srscopy;
@@ -117,7 +126,7 @@ char * getSRSbySRID(int srid, bool short_crs)
 int getSRIDbySRS(const char* srs)
 {
 	char query[256];
-	int srid, err;
+	int32_t srid, err;
 
 	if (!srs) return 0;
 
@@ -184,7 +193,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	text *result;
 	int version;
 	char *srs;
-	int srid;
+	int32_t srid;
 	int option = 0;
 	int lwopts = LW_GML_IS_DIMS;
 	int precision = DBL_DIG;
@@ -377,7 +386,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 		if ( option & 2 || option & 4 )
 		{
-			int srid = gserialized_get_srid(geom);
+			int32_t srid = gserialized_get_srid(geom);
 			if ( srid != SRID_UNKNOWN )
 			{
 				if ( option & 2 )
@@ -411,6 +420,33 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_TEXT_P(result);
+}
+
+
+/**
+ * Cast feature to JSON
+ */
+PG_FUNCTION_INFO_V1(geometry_to_json);
+Datum geometry_to_json(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	char *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
+	text *result = cstring_to_text(geojson);
+	lwgeom_free(lwgeom);
+	pfree(geojson);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_TEXT_P(result);
+}
+
+PG_FUNCTION_INFO_V1(geometry_to_jsonb);
+Datum geometry_to_jsonb(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	char *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
+	lwgeom_free(lwgeom);
+	PG_RETURN_DATUM(DirectFunctionCall1(jsonb_in, PointerGetDatum(geojson)));
 }
 
 
@@ -466,7 +502,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	text *result;
 	int version;
 	char *srs;
-	int srid;
+	int32_t srid;
 	int option = 0;
 	int precision = DBL_DIG;
 	static const char* default_defid = "x3d:"; /* default defid */

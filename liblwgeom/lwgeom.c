@@ -406,7 +406,7 @@ lwgeom_as_curve(const LWGEOM *lwgeom)
 	/*
 	int hasz = FLAGS_GET_Z(lwgeom->flags);
 	int hasm = FLAGS_GET_M(lwgeom->flags);
-	int srid = lwgeom->srid;
+	int32_t srid = lwgeom->srid;
 	*/
 
 	switch(type)
@@ -1547,6 +1547,7 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 	{
 		/* No-op! Cannot remote points */
 		case POINTTYPE:
+		case TRIANGLETYPE:
 			return;
 		case LINETYPE:
 		{
@@ -1646,6 +1647,7 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 		/* Can process most multi* types as generic collection */
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
+		case TINTYPE:
 		case COLLECTIONTYPE:
 		/* Curve types we mostly ignore, but allow the linear */
 		/* portions to be processed by recursing into them */
@@ -1690,8 +1692,9 @@ lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 {
 	switch (geom->type)
 	{
-		/* No-op! Cannot simplify points */
+		/* No-op! Cannot simplify points or triangles */
 		case POINTTYPE:
+		case TRIANGLETYPE:
 			return;
 		case LINETYPE:
 		{
@@ -1750,6 +1753,7 @@ lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
+		case TINTYPE:
 		case COLLECTIONTYPE:
 		{
 			uint32_t i, j = 0;
@@ -2022,8 +2026,8 @@ lwgeom_scale(LWGEOM *geom, const POINT4D *factor)
 	}
 }
 
-LWGEOM*
-lwgeom_construct_empty(uint8_t type, int srid, char hasz, char hasm)
+LWGEOM *
+lwgeom_construct_empty(uint8_t type, int32_t srid, char hasz, char hasm)
 {
 	switch(type)
 	{
@@ -2096,6 +2100,7 @@ lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
 			return;
 		}
 		case CIRCSTRINGTYPE:
+		case TRIANGLETYPE:
 		case LINETYPE:
 		{
 			LWLINE *ln = (LWLINE*)(geom);
@@ -2149,6 +2154,7 @@ lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
+		case TINTYPE:
 		case COLLECTIONTYPE:
 		case COMPOUNDTYPE:
 		{

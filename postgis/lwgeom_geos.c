@@ -358,7 +358,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	GEOSGeometry *g_union = NULL;
 	GEOSGeometry **geoms = NULL;
 
-	int srid = SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 
 	int empty_type = 0;
 
@@ -515,8 +515,7 @@ typedef struct UnionBuildState
 	int empty_type;
 	uint32_t alen;   /* allocated length of above arrays */
 	uint32_t ngeoms; /* number of valid entries in above arrays */
-	uint32_t srid;
-
+	int32_t srid;
 	bool is3d;
 } UnionBuildState;
 
@@ -524,6 +523,7 @@ PG_FUNCTION_INFO_V1(pgis_geometry_union_transfn);
 Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 {
 	MemoryContext aggcontext;
+	MemoryContext old;
 	UnionBuildState *state;
 	GSERIALIZED *gser_in;
 	uint32_t curgeom;
@@ -542,7 +542,7 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		MemoryContext old = MemoryContextSwitchTo(aggcontext);
+		old = MemoryContextSwitchTo(aggcontext);
 		state = (UnionBuildState *)palloc(sizeof(UnionBuildState));
 
 		state->mcontext = aggcontext;
@@ -561,7 +561,9 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 	/* do we have geometry to push? */
 	if (!PG_ARGISNULL(1))
 	{
-		gser_in = PG_GETARG_GSERIALIZED_P(1);
+		old = MemoryContextSwitchTo(state->mcontext);
+		gser_in = PG_GETARG_GSERIALIZED_P_COPY(1);
+		MemoryContextSwitchTo(old);
 
 		if (state->ngeoms > 0)
 		{
@@ -579,7 +581,9 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 				state->is3d = gserialized_has_z(gser_in);
 			}
 
+			old = MemoryContextSwitchTo(state->mcontext);
 			g = POSTGIS2GEOS(gser_in);
+			MemoryContextSwitchTo(old);
 
 			if (!g)
 			{
@@ -593,8 +597,10 @@ Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
 
 			if (state->ngeoms > state->alen)
 			{
+				old = MemoryContextSwitchTo(state->mcontext);
 				state->alen *= 2;
-				state->geoms = repalloc(state->geoms, state->alen);
+				state->geoms = repalloc(state->geoms, sizeof(GEOSGeometry *) * state->alen);
+				MemoryContextSwitchTo(old);
 			}
 
 			state->geoms[curgeom] = g;
@@ -759,7 +765,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 	GEOSGeometry *g1, *g3;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom;
-	int srid;
+	int32_t srid;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 
@@ -831,7 +837,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	GEOSGeometry *g1, *g3;
 	GSERIALIZED *result;
 	LWGEOM *lwout;
-	int srid;
+	int32_t srid;
 	GBOX bbox;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -896,12 +902,14 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 	double	tolerance;
 	GEOSGeometry *g1, *g3;
 	GSERIALIZED *result;
+	uint32_t type;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	tolerance = PG_GETARG_FLOAT8(1);
 
 	/* Empty.Simplify() == Empty */
-	if ( gserialized_is_empty(geom1) )
+	type = gserialized_get_type(geom1);
+	if ( gserialized_is_empty(geom1) || type == TINTYPE || type == TRIANGLETYPE )
 		PG_RETURN_POINTER(geom1);
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -2906,7 +2914,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	GSERIALIZED *result;
 	GEOSGeometry *geos_result;
 	const GEOSGeometry **vgeoms;
-	int srid=SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 #if POSTGIS_DEBUG_LEVEL >= 3
 	static int call=1;
 #endif
@@ -2963,7 +2971,7 @@ Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 	int is3d = 0;
 	uint32 nelems, nclusters, i;
 	GEOSGeometry **geos_inputs, **geos_results;
-	int srid=SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 
 	/* Parameters used to construct a result array */
 	int16 elmlen;
@@ -3031,7 +3039,7 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 	LWGEOM** lw_inputs;
 	LWGEOM** lw_results;
 	double tolerance;
-	int srid=SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 
 	/* Parameters used to construct a result array */
 	int16 elmlen;
@@ -3497,7 +3505,7 @@ Datum ST_MinimumClearanceLine(PG_FUNCTION_ARGS)
 	GSERIALIZED* result;
 	GEOSGeometry* input_geos;
 	GEOSGeometry* result_geos;
-	int srid;
+	int32_t srid;
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
@@ -3533,7 +3541,7 @@ Datum ST_OrientedEnvelope(PG_FUNCTION_ARGS)
 	GSERIALIZED* result;
 	GEOSGeometry* input_geos;
 	GEOSGeometry* result_geos;
-	int srid;
+	int32_t srid;
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 

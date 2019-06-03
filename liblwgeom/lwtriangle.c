@@ -36,8 +36,8 @@
 /* construct a new LWTRIANGLE.
  * use SRID=SRID_UNKNOWN for unknown SRID (will have 8bit type's S = 0)
  */
-LWTRIANGLE*
-lwtriangle_construct(int srid, GBOX *bbox, POINTARRAY *points)
+LWTRIANGLE *
+lwtriangle_construct(int32_t srid, GBOX *bbox, POINTARRAY *points)
 {
 	LWTRIANGLE *result;
 
@@ -54,8 +54,8 @@ lwtriangle_construct(int srid, GBOX *bbox, POINTARRAY *points)
 	return result;
 }
 
-LWTRIANGLE*
-lwtriangle_construct_empty(int srid, char hasz, char hasm)
+LWTRIANGLE *
+lwtriangle_construct_empty(int32_t srid, char hasz, char hasm)
 {
 	LWTRIANGLE *result = lwalloc(sizeof(LWTRIANGLE));
 	result->type = TRIANGLETYPE;

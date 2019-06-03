@@ -2,6 +2,7 @@ test:
   image: debian:buster
   script:
     - apt-get update -qq && apt-get install -y
+        bison flex
         postgresql-11 postgresql-server-dev-11
         build-essential autoconf libtool libcunit1-dev
         xsltproc docbook-xsl docbook-mathml dblatex
@@ -10,6 +11,9 @@ test:
     - uname -a
     - service postgresql start
     - su -l postgres -c "createuser -s `whoami`"
+    - ./autogen.sh
+    - ./configure
+    - make maintainer-clean
     - ./autogen.sh
     - ./configure CFLAGS="-Wall -fno-omit-frame-pointer -Werror"
     - make

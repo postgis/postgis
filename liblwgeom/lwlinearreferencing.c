@@ -35,16 +35,16 @@ segment_locate_along(const POINT4D *p1, const POINT4D *p2, double m, double offs
 	double mprop;
 
 	/* M is out of range, no new point generated. */
-	if ( (m < FP_MIN(m1,m2)) || (m > FP_MAX(m1,m2)) )
+	if ((m < FP_MIN(m1, m2)) || (m > FP_MAX(m1, m2)))
 	{
 		return LW_FALSE;
 	}
 
-	if( m1 == m2 )
+	if (m1 == m2)
 	{
 		/* Degenerate case: same M on both points.
 		   If they are the same point we just return one of them. */
-		if ( p4d_same(p1,p2) )
+		if (p4d_same(p1, p2))
 		{
 			*pn = *p1;
 			return LW_TRUE;
@@ -64,7 +64,7 @@ segment_locate_along(const POINT4D *p1, const POINT4D *p2, double m, double offs
 	pn->m = m;
 
 	/* Offset to the left or right, if necessary. */
-	if ( offset != 0.0 )
+	if (offset != 0.0)
 	{
 		double theta = atan2(p2->y - p1->y, p2->x - p1->x);
 		pn->x -= sin(theta) * offset;
@@ -74,8 +74,7 @@ segment_locate_along(const POINT4D *p1, const POINT4D *p2, double m, double offs
 	return LW_TRUE;
 }
 
-
-static POINTARRAY*
+static POINTARRAY *
 ptarray_locate_along(const POINTARRAY *pa, double m, double offset)
 {
 	uint32_t i;
@@ -83,20 +82,21 @@ ptarray_locate_along(const POINTARRAY *pa, double m, double offset)
 	POINTARRAY *dpa = NULL;
 
 	/* Can't do anything with degenerate point arrays */
-	if ( ! pa || pa->npoints < 2 ) return NULL;
+	if (!pa || pa->npoints < 2)
+		return NULL;
 
 	/* Walk through each segment in the point array */
-	for ( i = 1; i < pa->npoints; i++ )
+	for (i = 1; i < pa->npoints; i++)
 	{
-		getPoint4d_p(pa, i-1, &p1);
+		getPoint4d_p(pa, i - 1, &p1);
 		getPoint4d_p(pa, i, &p2);
 
 		/* No derived point? Move to next segment. */
-		if ( segment_locate_along(&p1, &p2, m, offset, &pn) == LW_FALSE )
+		if (segment_locate_along(&p1, &p2, m, offset, &pn) == LW_FALSE)
 			continue;
 
 		/* No pointarray, make a fresh one */
-		if ( dpa == NULL )
+		if (dpa == NULL)
 			dpa = ptarray_construct_empty(ptarray_has_z(pa), ptarray_has_m(pa), 8);
 
 		/* Add our new point to the array */
@@ -106,7 +106,7 @@ ptarray_locate_along(const POINTARRAY *pa, double m, double offset)
 	return dpa;
 }
 
-static LWMPOINT*
+static LWMPOINT *
 lwline_locate_along(const LWLINE *lwline, double m, double offset)
 {
 	POINTARRAY *opa = NULL;
@@ -115,14 +115,15 @@ lwline_locate_along(const LWLINE *lwline, double m, double offset)
 	int hasz, hasm, srid;
 
 	/* Return degenerates upwards */
-	if ( ! lwline ) return NULL;
+	if (!lwline)
+		return NULL;
 
 	/* Create empty return shell */
 	srid = lwgeom_get_srid(lwg);
 	hasz = lwgeom_has_z(lwg);
 	hasm = lwgeom_has_m(lwg);
 
-	if ( hasm )
+	if (hasm)
 	{
 		/* Find points along */
 		opa = ptarray_locate_along(lwline->points, m, offset);
@@ -135,7 +136,7 @@ lwline_locate_along(const LWLINE *lwline, double m, double offset)
 	}
 
 	/* Return NULL as EMPTY */
-	if ( ! opa )
+	if (!opa)
 		return lwmpoint_construct_empty(srid, hasz, hasm);
 
 	/* Convert pointarray into a multipoint */
@@ -144,7 +145,7 @@ lwline_locate_along(const LWLINE *lwline, double m, double offset)
 	return mp;
 }
 
-static LWMPOINT*
+static LWMPOINT *
 lwmline_locate_along(const LWMLINE *lwmline, double m, double offset)
 {
 	LWMPOINT *lwmpoint = NULL;
@@ -152,20 +153,21 @@ lwmline_locate_along(const LWMLINE *lwmline, double m, double offset)
 	uint32_t i, j;
 
 	/* Return degenerates upwards */
-	if ( (!lwmline) || (lwmline->ngeoms < 1) ) return NULL;
+	if ((!lwmline) || (lwmline->ngeoms < 1))
+		return NULL;
 
 	/* Construct return */
 	lwmpoint = lwmpoint_construct_empty(lwgeom_get_srid(lwg), lwgeom_has_z(lwg), lwgeom_has_m(lwg));
 
 	/* Locate along each sub-line */
-	for ( i = 0; i < lwmline->ngeoms; i++ )
+	for (i = 0; i < lwmline->ngeoms; i++)
 	{
 		LWMPOINT *along = lwline_locate_along(lwmline->geoms[i], m, offset);
-		if ( along )
+		if (along)
 		{
-			if ( ! lwgeom_is_empty((LWGEOM*)along) )
+			if (!lwgeom_is_empty((LWGEOM *)along))
 			{
-				for ( j = 0; j < along->ngeoms; j++ )
+				for (j = 0; j < along->ngeoms; j++)
 				{
 					lwmpoint_add_lwpoint(lwmpoint, along->geoms[j]);
 				}
@@ -178,20 +180,20 @@ lwmline_locate_along(const LWMLINE *lwmline, double m, double offset)
 	return lwmpoint;
 }
 
-static LWMPOINT*
+static LWMPOINT *
 lwpoint_locate_along(const LWPOINT *lwpoint, double m, __attribute__((__unused__)) double offset)
 {
 	double point_m = lwpoint_get_m(lwpoint);
 	LWGEOM *lwg = lwpoint_as_lwgeom(lwpoint);
 	LWMPOINT *r = lwmpoint_construct_empty(lwgeom_get_srid(lwg), lwgeom_has_z(lwg), lwgeom_has_m(lwg));
-	if ( FP_EQUALS(m, point_m) )
+	if (FP_EQUALS(m, point_m))
 	{
 		lwmpoint_add_lwpoint(r, lwpoint_clone(lwpoint));
 	}
 	return r;
 }
 
-static LWMPOINT*
+static LWMPOINT *
 lwmpoint_locate_along(const LWMPOINT *lwin, double m, __attribute__((__unused__)) double offset)
 {
 	LWGEOM *lwg = lwmpoint_as_lwgeom(lwin);
@@ -201,10 +203,10 @@ lwmpoint_locate_along(const LWMPOINT *lwin, double m, __attribute__((__unused__)
 	/* Construct return */
 	lwout = lwmpoint_construct_empty(lwgeom_get_srid(lwg), lwgeom_has_z(lwg), lwgeom_has_m(lwg));
 
-	for ( i = 0; i < lwin->ngeoms; i++ )
+	for (i = 0; i < lwin->ngeoms; i++)
 	{
 		double point_m = lwpoint_get_m(lwin->geoms[i]);
-		if ( FP_EQUALS(m, point_m) )
+		if (FP_EQUALS(m, point_m))
 		{
 			lwmpoint_add_lwpoint(lwout, lwpoint_clone(lwin->geoms[i]));
 		}
@@ -213,41 +215,42 @@ lwmpoint_locate_along(const LWMPOINT *lwin, double m, __attribute__((__unused__)
 	return lwout;
 }
 
-LWGEOM*
+LWGEOM *
 lwgeom_locate_along(const LWGEOM *lwin, double m, double offset)
 {
-	if ( ! lwin ) return NULL;
+	if (!lwin)
+		return NULL;
 
-	if ( ! lwgeom_has_m(lwin) )
+	if (!lwgeom_has_m(lwin))
 		lwerror("Input geometry does not have a measure dimension");
 
 	switch (lwin->type)
 	{
 	case POINTTYPE:
-		return (LWGEOM*)lwpoint_locate_along((LWPOINT*)lwin, m, offset);
+		return (LWGEOM *)lwpoint_locate_along((LWPOINT *)lwin, m, offset);
 	case MULTIPOINTTYPE:
-		return (LWGEOM*)lwmpoint_locate_along((LWMPOINT*)lwin, m, offset);
+		return (LWGEOM *)lwmpoint_locate_along((LWMPOINT *)lwin, m, offset);
 	case LINETYPE:
-		return (LWGEOM*)lwline_locate_along((LWLINE*)lwin, m, offset);
+		return (LWGEOM *)lwline_locate_along((LWLINE *)lwin, m, offset);
 	case MULTILINETYPE:
-		return (LWGEOM*)lwmline_locate_along((LWMLINE*)lwin, m, offset);
+		return (LWGEOM *)lwmline_locate_along((LWMLINE *)lwin, m, offset);
 	/* Only line types supported right now */
 	/* TO DO: CurveString, CompoundCurve, MultiCurve */
 	/* TO DO: Point, MultiPoint */
 	default:
-		lwerror("Only linear geometries are supported, %s provided.",lwtype_name(lwin->type));
+		lwerror("Only linear geometries are supported, %s provided.", lwtype_name(lwin->type));
 		return NULL;
 	}
 	return NULL;
 }
 
 /**
-* Given a POINT4D and an ordinate number, return
-* the value of the ordinate.
-* @param p input point
-* @param ordinate number (1=x, 2=y, 3=z, 4=m)
-* @return d value at that ordinate
-*/
+ * Given a POINT4D and an ordinate number, return
+ * the value of the ordinate.
+ * @param p input point
+ * @param ordinate number (1=x, 2=y, 3=z, 4=m)
+ * @return d value at that ordinate
+ */
 inline double
 lwpoint_get_ordinate(const POINT4D *p, char ordinate)
 {
@@ -273,9 +276,9 @@ lwpoint_get_ordinate(const POINT4D *p, char ordinate)
 }
 
 /**
-* Given a point, ordinate number and value, set that ordinate on the
-* point.
-*/
+ * Given a point, ordinate number and value, set that ordinate on the
+ * point.
+ */
 inline void
 lwpoint_set_ordinate(POINT4D *p, char ordinate, double value)
 {
@@ -285,7 +288,7 @@ lwpoint_set_ordinate(POINT4D *p, char ordinate, double value)
 		return;
 	}
 
-	switch ( ordinate )
+	switch (ordinate)
 	{
 	case 'X':
 		p->x = value;
@@ -305,10 +308,10 @@ lwpoint_set_ordinate(POINT4D *p, char ordinate, double value)
 }
 
 /**
-* Given two points, a dimensionality, an ordinate, and an interpolation value
-* generate a new point that is proportionally between the input points,
-* using the values in the provided dimension as the scaling factors.
-*/
+ * Given two points, a dimensionality, an ordinate, and an interpolation value
+ * generate a new point that is proportionally between the input points,
+ * using the values in the provided dimension as the scaling factors.
+ */
 inline int
 point_interpolate(const POINT4D *p1,
 		  const POINT4D *p2,
@@ -318,7 +321,7 @@ point_interpolate(const POINT4D *p1,
 		  char ordinate,
 		  double interpolation_value)
 {
-	static char* dims = "XYZM";
+	static char *dims = "XYZM";
 	double p1_value = lwpoint_get_ordinate(p1, ordinate);
 	double p2_value = lwpoint_get_ordinate(p2, ordinate);
 	double proportion;
@@ -364,10 +367,9 @@ point_interpolate(const POINT4D *p1,
 	return LW_SUCCESS;
 }
 
-
 /**
-* Clip an input POINT between two values, on any ordinate input.
-*/
+ * Clip an input POINT between two values, on any ordinate input.
+ */
 static inline LWCOLLECTION *
 lwpoint_clip_to_ordinate_range(const LWPOINT *point, char ordinate, double from, double to)
 {
@@ -386,7 +388,7 @@ lwpoint_clip_to_ordinate_range(const LWPOINT *point, char ordinate, double from,
 	/* Test if ordinate is in range */
 	lwpoint_getPoint4d_p(point, &p4d);
 	ordinate_value = lwpoint_get_ordinate(&p4d, ordinate);
-	if ( from <= ordinate_value && to >= ordinate_value )
+	if (from <= ordinate_value && to >= ordinate_value)
 	{
 		LWPOINT *lwp = lwpoint_clone(point);
 		lwcollection_add_lwgeom(lwgeom_out, lwpoint_as_lwgeom(lwp));
@@ -396,8 +398,8 @@ lwpoint_clip_to_ordinate_range(const LWPOINT *point, char ordinate, double from,
 }
 
 /**
-* Clip an input MULTIPOINT between two values, on any ordinate input.
-*/
+ * Clip an input MULTIPOINT between two values, on any ordinate input.
+ */
 static inline LWCOLLECTION *
 lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double from, double to)
 {
@@ -413,7 +415,7 @@ lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double fr
 	lwgeom_out = lwcollection_construct_empty(MULTIPOINTTYPE, mpoint->srid, hasz, hasm);
 
 	/* For each point, is its ordinate value between from and to? */
-	for ( i = 0; i < mpoint->ngeoms; i ++ )
+	for (i = 0; i < mpoint->ngeoms; i++)
 	{
 		POINT4D p4d;
 		double ordinate_value;
@@ -421,7 +423,7 @@ lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double fr
 		lwpoint_getPoint4d_p(mpoint->geoms[i], &p4d);
 		ordinate_value = lwpoint_get_ordinate(&p4d, ordinate);
 
-		if ( from <= ordinate_value && to >= ordinate_value )
+		if (from <= ordinate_value && to >= ordinate_value)
 		{
 			LWPOINT *lwp = lwpoint_clone(mpoint->geoms[i]);
 			lwcollection_add_lwgeom(lwgeom_out, lwpoint_as_lwgeom(lwp));
@@ -430,7 +432,7 @@ lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double fr
 
 	/* Set the bbox, if necessary */
 	if (mpoint->bbox)
-		lwgeom_refresh_bbox((LWGEOM*)lwgeom_out);
+		lwgeom_refresh_bbox((LWGEOM *)lwgeom_out);
 
 	return lwgeom_out;
 }
@@ -531,9 +533,9 @@ ptarray_clamp_to_ordinate_range(const POINTARRAY *ipa, char ordinate, double fro
 }
 
 /**
-* Take in a LINESTRING and return a MULTILINESTRING of those portions of the
-* LINESTRING between the from/to range for the specified ordinate (XYZM)
-*/
+ * Take in a LINESTRING and return a MULTILINESTRING of those portions of the
+ * LINESTRING between the from/to range for the specified ordinate (XYZM)
+ */
 static inline LWCOLLECTION *
 lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, double to)
 {
@@ -585,7 +587,7 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 		if (ordinate_value_p >= from && ordinate_value_p <= to)
 		{
 
-			if ( ! added_last_point )
+			if (!added_last_point)
 			{
 				/* We didn't add the previous point, so this is a new segment.
 				 *  Make a new point array. */
@@ -823,7 +825,7 @@ lwcollection_clip_to_ordinate_range(const LWCOLLECTION *icol, char ordinate, dou
 	return lwgeom_out;
 }
 
-LWCOLLECTION*
+LWCOLLECTION *
 lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, double to, double offset)
 {
 	LWCOLLECTION *out_col;
@@ -838,19 +840,19 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 		to = t;
 	}
 
-	if ( ! lwin )
+	if (!lwin)
 		lwerror("lwgeom_clip_to_ordinate_range: null input geometry!");
 
-	switch ( lwin->type )
+	switch (lwin->type)
 	{
 	case LINETYPE:
-		out_col = lwline_clip_to_ordinate_range((LWLINE*)lwin, ordinate, from, to);
+		out_col = lwline_clip_to_ordinate_range((LWLINE *)lwin, ordinate, from, to);
 		break;
 	case MULTIPOINTTYPE:
-		out_col = lwmpoint_clip_to_ordinate_range((LWMPOINT*)lwin, ordinate, from, to);
+		out_col = lwmpoint_clip_to_ordinate_range((LWMPOINT *)lwin, ordinate, from, to);
 		break;
 	case POINTTYPE:
-		out_col = lwpoint_clip_to_ordinate_range((LWPOINT*)lwin, ordinate, from, to);
+		out_col = lwpoint_clip_to_ordinate_range((LWPOINT *)lwin, ordinate, from, to);
 		break;
 	case POLYGONTYPE:
 		out_col = lwpoly_clip_to_ordinate_range((LWPOLY *)lwin, ordinate, from, to);
@@ -875,8 +877,7 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 		lwerror("lwgeom_clip_to_ordinate_range clipping routine returned NULL");
 
 	/* Return if we aren't going to offset the result */
-	if (FP_IS_ZERO(offset) ||
-	    lwgeom_is_empty(lwcollection_as_lwgeom(out_col)))
+	if (FP_IS_ZERO(offset) || lwgeom_is_empty(lwcollection_as_lwgeom(out_col)))
 		return out_col;
 
 	/* Construct a collection to hold our outputs. */
@@ -884,19 +885,19 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 	out_offset = lwcollection_construct_empty(MULTILINETYPE, lwin->srid, 0, 0);
 
 	/* Try and offset the linear portions of the return value */
-	for ( i = 0; i < out_col->ngeoms; i++ )
+	for (i = 0; i < out_col->ngeoms; i++)
 	{
 		int type = out_col->geoms[i]->type;
-		if ( type == POINTTYPE )
+		if (type == POINTTYPE)
 		{
 			lwnotice("lwgeom_clip_to_ordinate_range cannot offset a clipped point");
 			continue;
 		}
-		else if ( type == LINETYPE )
+		else if (type == LINETYPE)
 		{
 			/* lwgeom_offsetcurve(line, offset, quadsegs, joinstyle (round), mitrelimit) */
 			LWGEOM *lwoff = lwgeom_offsetcurve(out_col->geoms[i], offset, 8, 1, 5.0);
-			if ( ! lwoff )
+			if (!lwoff)
 			{
 				lwerror("lwgeom_offsetcurve returned null");
 			}
@@ -904,17 +905,18 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 		}
 		else
 		{
-			lwerror("lwgeom_clip_to_ordinate_range found an unexpected type (%s) in the offset routine",lwtype_name(type));
+			lwerror("lwgeom_clip_to_ordinate_range found an unexpected type (%s) in the offset routine",
+				lwtype_name(type));
 		}
 	}
 
 	return out_offset;
 }
 
-LWCOLLECTION*
+LWCOLLECTION *
 lwgeom_locate_between(const LWGEOM *lwin, double from, double to, double offset)
 {
-	if ( ! lwgeom_has_m(lwin) )
+	if (!lwgeom_has_m(lwin))
 		lwerror("Input geometry does not have a measure dimension");
 
 	return lwgeom_clip_to_ordinate_range(lwin, 'M', from, to, offset);
@@ -926,16 +928,16 @@ lwgeom_interpolate_point(const LWGEOM *lwin, const LWPOINT *lwpt)
 	POINT4D p, p_proj;
 	double ret = 0.0;
 
-	if ( ! lwin )
+	if (!lwin)
 		lwerror("lwgeom_interpolate_point: null input geometry!");
 
-	if ( ! lwgeom_has_m(lwin) )
+	if (!lwgeom_has_m(lwin))
 		lwerror("Input geometry does not have a measure dimension");
 
-	if ( lwgeom_is_empty(lwin) || lwpoint_is_empty(lwpt) )
+	if (lwgeom_is_empty(lwin) || lwpoint_is_empty(lwpt))
 		lwerror("Input geometry is empty");
 
-	switch ( lwin->type )
+	switch (lwin->type)
 	{
 	case LINETYPE:
 	{
@@ -976,9 +978,7 @@ lwgeom_interpolate_point(const LWGEOM *lwin, const LWPOINT *lwpt)
  *
  */
 static double
-segments_tcpa(POINT4D* p0, const POINT4D* p1,
-              POINT4D* q0, const POINT4D* q1,
-              double t0, double t1)
+segments_tcpa(POINT4D *p0, const POINT4D *p1, POINT4D *q0, const POINT4D *q1, double t0, double t1)
 {
 	POINT3DZ pv; /* velocity of p, aka u */
 	POINT3DZ qv; /* velocity of q, aka v */
@@ -995,15 +995,15 @@ segments_tcpa(POINT4D* p0, const POINT4D* p1,
 	*/
 
 	/* PV aka U */
-	pv.x = ( p1->x - p0->x );
-	pv.y = ( p1->y - p0->y );
-	pv.z = ( p1->z - p0->z );
+	pv.x = (p1->x - p0->x);
+	pv.y = (p1->y - p0->y);
+	pv.z = (p1->z - p0->z);
 	/*lwnotice("PV:  %g, %g, %g", pv.x, pv.y, pv.z);*/
 
 	/* QV aka V */
-	qv.x = ( q1->x - q0->x );
-	qv.y = ( q1->y - q0->y );
-	qv.z = ( q1->z - q0->z );
+	qv.x = (q1->x - q0->x);
+	qv.y = (q1->y - q0->y);
+	qv.z = (q1->z - q0->z);
 	/*lwnotice("QV:  %g, %g, %g", qv.x, qv.y, qv.z);*/
 
 	dv.x = pv.x - qv.x;
@@ -1011,35 +1011,35 @@ segments_tcpa(POINT4D* p0, const POINT4D* p1,
 	dv.z = pv.z - qv.z;
 	/*lwnotice("DV:  %g, %g, %g", dv.x, dv.y, dv.z);*/
 
-	double dv2 = DOT(dv,dv);
+	double dv2 = DOT(dv, dv);
 	/*lwnotice("DOT: %g", dv2);*/
 
-	if ( dv2 == 0.0 )
+	if (dv2 == 0.0)
 	{
 		/* Distance is the same at any time, we pick the earliest */
 		return t0;
 	}
 
 	/* Distance at any given time, with t0 */
-	w0.x = ( p0->x - q0->x );
-	w0.y = ( p0->y - q0->y );
-	w0.z = ( p0->z - q0->z );
+	w0.x = (p0->x - q0->x);
+	w0.y = (p0->y - q0->y);
+	w0.z = (p0->z - q0->z);
 
 	/*lwnotice("W0:  %g, %g, %g", w0.x, w0.y, w0.z);*/
 
 	/* Check that at distance dt w0 is distance */
 
 	/* This is the fraction of measure difference */
-	double t = -DOT(w0,dv) / dv2;
+	double t = -DOT(w0, dv) / dv2;
 	/*lwnotice("CLOSEST TIME (fraction): %g", t);*/
 
-	if ( t > 1.0 )
+	if (t > 1.0)
 	{
 		/* Getting closer as we move to the end */
 		/*lwnotice("Converging");*/
 		t = 1;
 	}
-	else if ( t < 0.0 )
+	else if (t < 0.0)
 	{
 		/*lwnotice("Diverging");*/
 		t = 0;
@@ -1065,11 +1065,11 @@ static int
 ptarray_collect_mvals(const POINTARRAY *pa, double tmin, double tmax, double *mvals)
 {
 	POINT4D pbuf;
-	uint32_t i, n=0;
-	for (i=0; i<pa->npoints; ++i)
+	uint32_t i, n = 0;
+	for (i = 0; i < pa->npoints; ++i)
 	{
 		getPoint4d_p(pa, i, &pbuf); /* could be optimized */
-		if ( pbuf.m >= tmin && pbuf.m <= tmax )
+		if (pbuf.m >= tmin && pbuf.m <= tmax)
 			mvals[n++] = pbuf.m;
 	}
 	return n;
@@ -1080,9 +1080,9 @@ compare_double(const void *pa, const void *pb)
 {
 	double a = *((double *)pa);
 	double b = *((double *)pb);
-	if ( a < b )
+	if (a < b)
 		return -1;
-	else if ( a > b )
+	else if (a > b)
 		return 1;
 	else
 		return 0;
@@ -1092,17 +1092,17 @@ compare_double(const void *pa, const void *pb)
 static int
 uniq(double *vals, int nvals)
 {
-	int i, last=0;
-	for (i=1; i<nvals; ++i)
+	int i, last = 0;
+	for (i = 1; i < nvals; ++i)
 	{
 		// lwnotice("(I%d):%g", i, vals[i]);
-		if ( vals[i] != vals[last] )
+		if (vals[i] != vals[last])
 		{
 			vals[++last] = vals[i];
 			// lwnotice("(O%d):%g", last, vals[last]);
 		}
 	}
-	return last+1;
+	return last + 1;
 }
 
 /*
@@ -1127,12 +1127,12 @@ ptarray_locate_along_linear(const POINTARRAY *pa, double m, POINT4D *p, uint32_t
 
 	/* Walk through each segment in the point array */
 	getPoint4d_p(pa, i, &p1);
-	for ( i = from+1; i < pa->npoints; i++ )
+	for (i = from + 1; i < pa->npoints; i++)
 	{
 		getPoint4d_p(pa, i, &p2);
 
-		if ( segment_locate_along(&p1, &p2, m, 0, p) == LW_TRUE )
-			return i-1; /* found */
+		if (segment_locate_along(&p1, &p2, m, 0, p) == LW_TRUE)
+			return i - 1; /* found */
 
 		p1 = p2;
 	}
@@ -1152,7 +1152,7 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 	double mintime;
 	double mindist2 = FLT_MAX; /* minimum distance, squared */
 
-	if ( ! lwgeom_has_m(g1) || ! lwgeom_has_m(g2) )
+	if (!lwgeom_has_m(g1) || !lwgeom_has_m(g2))
 	{
 		lwerror("Both input geometries must have a measure dimension");
 		return -1;
@@ -1161,13 +1161,13 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 	l1 = lwgeom_as_lwline(g1);
 	l2 = lwgeom_as_lwline(g2);
 
-	if ( ! l1 || ! l2 )
+	if (!l1 || !l2)
 	{
 		lwerror("Both input geometries must be linestrings");
 		return -1;
 	}
 
-	if ( l1->points->npoints < 2 || l2->points->npoints < 2 )
+	if (l1->points->npoints < 2 || l2->points->npoints < 2)
 	{
 		lwerror("Both input lines must have at least 2 points");
 		return -1;
@@ -1187,7 +1187,7 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 	tmin = FP_MAX(gbox1.mmin, gbox2.mmin);
 	tmax = FP_MIN(gbox1.mmax, gbox2.mmax);
 
-	if ( tmax < tmin )
+	if (tmax < tmin)
 	{
 		LWDEBUG(1, "Inputs never exist at the same time");
 		return -2;
@@ -1199,11 +1199,10 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 	 * Collect M values in common time range from inputs
 	 */
 
-	mvals = lwalloc( sizeof(double) *
-	                 ( l1->points->npoints + l2->points->npoints ) );
+	mvals = lwalloc(sizeof(double) * (l1->points->npoints + l2->points->npoints));
 
 	/* TODO: also clip the lines ? */
-	nmvals  = ptarray_collect_mvals(l1->points, tmin, tmax, mvals);
+	nmvals = ptarray_collect_mvals(l1->points, tmin, tmax, mvals);
 	nmvals += ptarray_collect_mvals(l2->points, tmin, tmax, mvals + nmvals);
 
 	/* Sort values in ascending order */
@@ -1212,28 +1211,28 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 	/* Remove duplicated values */
 	nmvals = uniq(mvals, nmvals);
 
-	if ( nmvals < 2 )
+	if (nmvals < 2)
 	{
 		{
 			/* there's a single time, must be that one... */
 			double t0 = mvals[0];
 			POINT4D p0, p1;
 			LWDEBUGF(1, "Inputs only exist both at a single time (%g)", t0);
-			if ( mindist )
+			if (mindist)
 			{
-				if ( -1 == ptarray_locate_along_linear(l1->points, t0, &p0, 0) )
+				if (-1 == ptarray_locate_along_linear(l1->points, t0, &p0, 0))
 				{
 					lwfree(mvals);
 					lwerror("Could not find point with M=%g on first geom", t0);
 					return -1;
 				}
-				if ( -1 == ptarray_locate_along_linear(l2->points, t0, &p1, 0) )
+				if (-1 == ptarray_locate_along_linear(l2->points, t0, &p1, 0))
 				{
 					lwfree(mvals);
 					lwerror("Could not find point with M=%g on second geom", t0);
 					return -1;
 				}
-				*mindist = distance3d_pt_pt((POINT3D*)&p0, (POINT3D*)&p1);
+				*mindist = distance3d_pt_pt((POINT3D *)&p0, (POINT3D *)&p1);
 			}
 			lwfree(mvals);
 			return t0;
@@ -1245,9 +1244,9 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 	 * approach and actual distance between points at that time
 	 */
 	mintime = tmin;
-	for (i=1; i<nmvals; ++i)
+	for (i = 1; i < nmvals; ++i)
 	{
-		double t0 = mvals[i-1];
+		double t0 = mvals[i - 1];
 		double t1 = mvals[i];
 		double t;
 		POINT4D p0, p1, q0, q1;
@@ -1257,19 +1256,23 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 		// lwnotice("T %g-%g", t0, t1);
 
 		seg = ptarray_locate_along_linear(l1->points, t0, &p0, 0);
-		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
+		if (-1 == seg)
+			continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t0, seg, p0.x, p0.y, p0.z);
 
 		seg = ptarray_locate_along_linear(l1->points, t1, &p1, seg);
-		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
+		if (-1 == seg)
+			continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t1, seg, p1.x, p1.y, p1.z);
 
 		seg = ptarray_locate_along_linear(l2->points, t0, &q0, 0);
-		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
+		if (-1 == seg)
+			continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t0, seg, q0.x, q0.y, q0.z);
 
 		seg = ptarray_locate_along_linear(l2->points, t1, &q1, seg);
-		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
+		if (-1 == seg)
+			continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t1, seg, q1.x, q1.y, q1.z);
 
 		t = segments_tcpa(&p0, &p1, &q0, &q1, t0, t1);
@@ -1280,10 +1283,8 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 		q0.x, q0.y, q0.z, t);
 		*/
 
-		dist2 = ( q0.x - p0.x ) * ( q0.x - p0.x ) +
-		        ( q0.y - p0.y ) * ( q0.y - p0.y ) +
-		        ( q0.z - p0.z ) * ( q0.z - p0.z );
-		if ( dist2 < mindist2 )
+		dist2 = (q0.x - p0.x) * (q0.x - p0.x) + (q0.y - p0.y) * (q0.y - p0.y) + (q0.z - p0.z) * (q0.z - p0.z);
+		if (dist2 < mindist2)
 		{
 			mindist2 = dist2;
 			mintime = t;
@@ -1297,7 +1298,7 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 
 	lwfree(mvals);
 
-	if ( mindist )
+	if (mindist)
 	{
 		*mindist = sqrt(mindist2);
 	}
@@ -1318,7 +1319,7 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 	double maxdist2 = maxdist * maxdist;
 	int within = LW_FALSE;
 
-	if ( ! lwgeom_has_m(g1) || ! lwgeom_has_m(g2) )
+	if (!lwgeom_has_m(g1) || !lwgeom_has_m(g2))
 	{
 		lwerror("Both input geometries must have a measure dimension");
 		return LW_FALSE;
@@ -1327,13 +1328,13 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 	l1 = lwgeom_as_lwline(g1);
 	l2 = lwgeom_as_lwline(g2);
 
-	if ( ! l1 || ! l2 )
+	if (!l1 || !l2)
 	{
 		lwerror("Both input geometries must be linestrings");
 		return LW_FALSE;
 	}
 
-	if ( l1->points->npoints < 2 || l2->points->npoints < 2 )
+	if (l1->points->npoints < 2 || l2->points->npoints < 2)
 	{
 		/* TODO: return distance between these two points */
 		lwerror("Both input lines must have at least 2 points");
@@ -1341,10 +1342,10 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 	}
 
 	/* We use lwgeom_calculate_gbox() instead of lwgeom_get_gbox() */
- 	/* because we cannot afford the float rounding inaccuracy when */
- 	/* we compare the ranges for overlap below */
- 	lwgeom_calculate_gbox(g1, &gbox1);
- 	lwgeom_calculate_gbox(g2, &gbox2);
+	/* because we cannot afford the float rounding inaccuracy when */
+	/* we compare the ranges for overlap below */
+	lwgeom_calculate_gbox(g1, &gbox1);
+	lwgeom_calculate_gbox(g2, &gbox2);
 
 	/*
 	 * Find overlapping M range
@@ -1354,7 +1355,7 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 	tmin = FP_MAX(gbox1.mmin, gbox2.mmin);
 	tmax = FP_MIN(gbox1.mmax, gbox2.mmax);
 
-	if ( tmax < tmin )
+	if (tmax < tmin)
 	{
 		LWDEBUG(1, "Inputs never exist at the same time");
 		return LW_FALSE;
@@ -1364,11 +1365,10 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 	 * Collect M values in common time range from inputs
 	 */
 
-	mvals = lwalloc( sizeof(double) *
-	                 ( l1->points->npoints + l2->points->npoints ) );
+	mvals = lwalloc(sizeof(double) * (l1->points->npoints + l2->points->npoints));
 
 	/* TODO: also clip the lines ? */
-	nmvals  = ptarray_collect_mvals(l1->points, tmin, tmax, mvals);
+	nmvals = ptarray_collect_mvals(l1->points, tmin, tmax, mvals);
 	nmvals += ptarray_collect_mvals(l2->points, tmin, tmax, mvals + nmvals);
 
 	/* Sort values in ascending order */
@@ -1377,23 +1377,23 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 	/* Remove duplicated values */
 	nmvals = uniq(mvals, nmvals);
 
-	if ( nmvals < 2 )
+	if (nmvals < 2)
 	{
 		/* there's a single time, must be that one... */
 		double t0 = mvals[0];
 		POINT4D p0, p1;
 		LWDEBUGF(1, "Inputs only exist both at a single time (%g)", t0);
-		if ( -1 == ptarray_locate_along_linear(l1->points, t0, &p0, 0) )
+		if (-1 == ptarray_locate_along_linear(l1->points, t0, &p0, 0))
 		{
 			lwnotice("Could not find point with M=%g on first geom", t0);
 			return LW_FALSE;
 		}
-		if ( -1 == ptarray_locate_along_linear(l2->points, t0, &p1, 0) )
+		if (-1 == ptarray_locate_along_linear(l2->points, t0, &p1, 0))
 		{
 			lwnotice("Could not find point with M=%g on second geom", t0);
 			return LW_FALSE;
 		}
-		if ( distance3d_pt_pt((POINT3D*)&p0, (POINT3D*)&p1) <= maxdist )
+		if (distance3d_pt_pt((POINT3D *)&p0, (POINT3D *)&p1) <= maxdist)
 			within = LW_TRUE;
 		lwfree(mvals);
 		return within;
@@ -1403,9 +1403,9 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 	 * For each consecutive pair of measures, compute time of closest point
 	 * approach and actual distance between points at that time
 	 */
-	for (i=1; i<nmvals; ++i)
+	for (i = 1; i < nmvals; ++i)
 	{
-		double t0 = mvals[i-1];
+		double t0 = mvals[i - 1];
 		double t1 = mvals[i];
 #if POSTGIS_DEBUG_LEVEL >= 1
 		double t;
@@ -1417,25 +1417,29 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 		// lwnotice("T %g-%g", t0, t1);
 
 		seg = ptarray_locate_along_linear(l1->points, t0, &p0, 0);
-		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
+		if (-1 == seg)
+			continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t0, seg, p0.x, p0.y, p0.z);
 
 		seg = ptarray_locate_along_linear(l1->points, t1, &p1, seg);
-		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
+		if (-1 == seg)
+			continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t1, seg, p1.x, p1.y, p1.z);
 
 		seg = ptarray_locate_along_linear(l2->points, t0, &q0, 0);
-		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
+		if (-1 == seg)
+			continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t0, seg, q0.x, q0.y, q0.z);
 
 		seg = ptarray_locate_along_linear(l2->points, t1, &q1, seg);
-		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
-		// lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t1, seg, q1.x, q1.y, q1.z);
+		if (-1 == seg)
+			continue; /* possible, if GBOX is approximated */
+			// lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t1, seg, q1.x, q1.y, q1.z);
 
 #if POSTGIS_DEBUG_LEVEL >= 1
 		t =
 #endif
-		segments_tcpa(&p0, &p1, &q0, &q1, t0, t1);
+		    segments_tcpa(&p0, &p1, &q0, &q1, t0, t1);
 
 		/*
 		lwnotice("Closest points: %g,%g,%g and %g,%g,%g at time %g",
@@ -1443,10 +1447,8 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 		q0.x, q0.y, q0.z, t);
 		*/
 
-		dist2 = ( q0.x - p0.x ) * ( q0.x - p0.x ) +
-		        ( q0.y - p0.y ) * ( q0.y - p0.y ) +
-		        ( q0.z - p0.z ) * ( q0.z - p0.z );
-		if ( dist2 <= maxdist2 )
+		dist2 = (q0.x - p0.x) * (q0.x - p0.x) + (q0.y - p0.y) * (q0.y - p0.y) + (q0.z - p0.z) * (q0.z - p0.z);
+		if (dist2 <= maxdist2)
 		{
 			LWDEBUGF(1, "Within distance %g at time %g, breaking", sqrt(dist2), t);
 			within = LW_TRUE;

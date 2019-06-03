@@ -89,7 +89,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 	LWGEOM_PARSER_RESULT lwg_parser_result;
 	LWGEOM *lwgeom;
 	GSERIALIZED *ret;
-	int srid = 0;
+	int32_t srid = 0;
 
 	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) ) {
 		geom_typmod = PG_GETARG_INT32(2);

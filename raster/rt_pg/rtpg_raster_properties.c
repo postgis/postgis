@@ -721,8 +721,8 @@ Datum RASTER_rasterToWorldCoord(PG_FUNCTION_ARGS)
 	}
 
 	/* raster skewed? */
-	skewed[0] = FLT_NEQ(rt_raster_get_x_skew(raster), 0) ? true : false;
-	skewed[1] = FLT_NEQ(rt_raster_get_y_skew(raster), 0) ? true : false;
+	skewed[0] = FLT_NEQ(rt_raster_get_x_skew(raster), 0.0) ? true : false;
+	skewed[1] = FLT_NEQ(rt_raster_get_y_skew(raster), 0.0) ? true : false;
 
 	/* column and row */
 	for (i = 1; i <= 2; i++) {
@@ -816,9 +816,9 @@ Datum RASTER_worldToRasterCoord(PG_FUNCTION_ARGS)
 	}
 
 	/* raster skewed? */
-	skewed = FLT_NEQ(rt_raster_get_x_skew(raster), 0) ? true : false;
+	skewed = FLT_NEQ(rt_raster_get_x_skew(raster), 0.0) ? true : false;
 	if (!skewed)
-		skewed = FLT_NEQ(rt_raster_get_y_skew(raster), 0) ? true : false;
+		skewed = FLT_NEQ(rt_raster_get_y_skew(raster), 0.0) ? true : false;
 
 	/* longitude and latitude */
 	for (i = 1; i <= 2; i++) {

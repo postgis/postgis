@@ -1755,11 +1755,11 @@ rt_band_check_is_nodata(rt_band band) {
 	int isnodata = 0;
 
 	assert(NULL != band);
+	band->isnodata = FALSE;
 
 	/* Check if band has nodata value */
 	if (!band->hasnodata) {
 		RASTER_DEBUG(3, "Band has no NODATA value");
-		band->isnodata = FALSE;
 		return FALSE;
 	}
 

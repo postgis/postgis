@@ -1,3 +1,52 @@
+PostGIS 3.0.0alpha3
+2019/xx/xx
+Coming soon
+
+PostGIS 3.0.0alpha2
+2019/06/02
+For full changes and enhancements, refer to PostGIS 3.0.0 section.
+This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
+Additional features enabled if you are running Proj6+ and PostgreSQL 12
+
+* Major highlights *
+  - #4404, Fix selectivity issue with support functions (Paul Ramsey)
+  - #4311, Make wagyu the default option to validate polygons.
+          This option requires a C++11 compiler and will use CXXFLAGS (not CFLAGS).
+          It only enabled if built with MVT support (protobuf)
+          Add `--without-wagyu` to disable this option and keep the behaviour
+          from 2.5 (Raúl Marín)
+  - #4198, Add ST_ConstrainedDelaunayTriangles SFCGAL function (Darafei
+           Praliaskouski)
+
+PostGIS 3.0.0alpha1
+2019/05/26
+For full changes and enhancements, refer to PostGIS 3.0.0 section.
+This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
+Additional features enabled if you are running Proj6+ and PostgreSQL 12
+* Major highlights *
+  - #4341, Using "support function" API in PgSQL 12+ to replace SQL inlining
+           as the mechanism for providing index support under ST_Intersects, et al
+           (Paul Ramsey)
+  - #3888, Raster support now packaged as a separate extension - postgis_raster
+           (Sandro Santilli)
+  - #3807, Extension library files no longer include the minor version.
+           Use New configure switch --with-library-minor-version
+           if you need the old behavior (Regina Obe)
+  - #4322, Support for Proj 6+ API, bringing more accurate datum transforms
+           and support for WKT projections
+  - #4260, liblwgeom headers are not installed anymore.
+           If your project depends on them available, please use
+           librttopo instead. (Darafei Praliaskouski)
+  - #4311, Introduce `--with-wagyu` as an option for MVT polygons (Raúl Marín)
+  - #4258, #4278 Enhance postgis functions ST_Area, ST_Distance, ST_Intersection,
+           ST_Difference, ST_Union, ST_Intersects, ST_3DIntersects, ST_3DDistance
+           to handle types (Solid PolyhedralSurface, TINS) that were only available in SFCGAL.
+           Remove postgis.backend switch.
+          (Darafei Praliaskouski)
+  - #4230, SP-GiST and GiST support for ND box operators overlaps, contains,
+           within, equals (Esteban Zimányi and Arthur Lesuisse from Université
+           Libre de Bruxelles (ULB), Darafei Praliaskouski)
+
 PostGIS 3.0.0
 2019/xx/xx
 * Breaking Changes *
@@ -8,7 +57,7 @@ PostGIS 3.0.0
            Use New configure switch --with-library-minor-version
            if you need the old behavior (Regina Obe)
   - #4230, ND box operators (overlaps, contains, within, equals) now don't look on
-           dimentions that aren't present in both operands.
+           dimensions that aren't present in both operands.
            Please REINDEX your ND indexes after upgrade. (Darafei Praliaskouski)
   - #4229, Dropped support for PostgreSQL < 9.5. (Darafei Praliaskouski)
   - #4260, liblwgeom headers are not installed anymore.
@@ -30,7 +79,12 @@ PostGIS 3.0.0
            within, equals (Esteban Zimányi and Arthur Lesuisse from Université
            Libre de Bruxelles (ULB), Darafei Praliaskouski)
   - #4171, ST_3DLineInterpolatePoint (Julien Cabieces, Vincent Mora)
-  - #4311, Introduce `--with-wagyu` as an option for MVT polygons (Raúl Marín)
+  - #4311, Introduce WAGYU to validate MVT polygons. This option requires a C++11
+           compiler and will use CXXFLAGS (not CFLAGS). Add `--without-wagyu`
+           to disable this option and keep the behaviour from 2.5 (Raúl Marín)
+  - #1833, ST_AsGeoJSON(row) generates full GeoJSON Features (Joe Conway)
+  - #3687, Casts json(geometry) and jsonb(geometry) for implicit GeoJSON
+           generation (Paul Ramsey)
 
 * Enhancements and fixes *
   - #4342, Move deprecated functions into legacy.sql file
@@ -93,6 +147,13 @@ PostGIS 3.0.0
            (Darafei Praliaskouski)
   - #4378, Allow passing TINs as input to GEOS-backed functions (Darafei
            Praliaskouski)
+  - #4368, Reorder LWGEOM struct members to minimize extra padding (Raúl Marín)
+  - #4141, Use uint64 to handle row counts in the topology extension (Raúl Marín)
+  - #4225, Upgrade tiger to use tiger 2018 census files
+  - #4198, Add ST_ConstrainedDelaunayTriangles SFCGAL function (Darafei
+           Praliaskouski)
+  - #4412, Support ingesting rasters with NODATA=NaN (Darafei Praliaskouski)
+
 
 PostGIS 2.5.0
 2018/09/23

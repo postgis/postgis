@@ -143,6 +143,10 @@ Datum _postgis_gserialized_stats(PG_FUNCTION_ARGS);
 static Oid table_get_spatial_index(Oid tbl_oid, text *col, int *key_type);
 static GBOX * spatial_index_read_extent(Oid idx_oid, int key_type);
 
+/* Other prototypes */
+float8 gserialized_joinsel_internal(PlannerInfo *root, List *args, JoinType jointype, int mode);
+float8 gserialized_sel_internal(PlannerInfo *root, List *args, int varRelid, int mode);
+
 
 /* Old Prototype */
 Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
@@ -1259,6 +1263,54 @@ Datum gserialized_gist_joinsel_2d(PG_FUNCTION_ARGS)
 	));
 }
 
+double
+gserialized_joinsel_internal(PlannerInfo *root, List *args, JoinType jointype, int mode)
+{
+	float8 selectivity;
+	Oid relid1, relid2;
+	ND_STATS *stats1, *stats2;
+	Node *arg1 = (Node*) linitial(args);
+	Node *arg2 = (Node*) lsecond(args);
+	Var *var1 = (Var*) arg1;
+	Var *var2 = (Var*) arg2;
+
+	elog(DEBUG2, "%s: entered function", __func__);
+
+	/* We only do column joins right now, no functional joins */
+	/* TODO: handle g1 && ST_Expand(g2) */
+	if (!IsA(arg1, Var) || !IsA(arg2, Var))
+	{
+		elog(DEBUG1, "%s called with arguments that are not column references", __func__);
+		return DEFAULT_ND_JOINSEL;
+	}
+
+	/* What are the Oids of our tables/relations? */
+	relid1 = rt_fetch(var1->varno, root->parse->rtable)->relid;
+	relid2 = rt_fetch(var2->varno, root->parse->rtable)->relid;
+
+	/* Pull the stats from the stats system. */
+	stats1 = pg_get_nd_stats(relid1, var1->varattno, mode, false);
+	stats2 = pg_get_nd_stats(relid2, var2->varattno, mode, false);
+
+	/* If we can't get stats, we have to stop here! */
+	if (!stats1)
+	{
+		elog(DEBUG2, "%s: cannot find stats for \"%s\"",  __func__, get_rel_name(relid2) ? get_rel_name(relid2) : "NULL");
+		return DEFAULT_ND_JOINSEL;
+	}
+	else if (!stats2)
+	{
+		elog(DEBUG2, "%s: cannot find stats for \"%s\"",  __func__, get_rel_name(relid2) ? get_rel_name(relid2) : "NULL");
+		return DEFAULT_ND_JOINSEL;
+	}
+
+	selectivity = estimate_join_selectivity(stats1, stats2);
+	elog(DEBUG2, "got selectivity %g", selectivity);
+	pfree(stats1);
+	pfree(stats2);
+	return selectivity;
+}
+
 /**
 * Join selectivity of the && operator. The selectivity
 * is the ratio of the number of rows we think will be
@@ -1276,12 +1328,14 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 	JoinType jointype = (JoinType) PG_GETARG_INT16(3);
 	int mode = PG_GETARG_INT32(4);
 
-	Node *arg1, *arg2;
-	Var *var1, *var2;
-	Oid relid1, relid2;
+	elog(DEBUG2, "%s: entered function", __func__);
 
-	ND_STATS *stats1, *stats2;
-	float8 selectivity;
+	/* Check length of args and punt on > 2 */
+	if (list_length(args) != 2)
+	{
+		elog(DEBUG2, "%s: got nargs == %d", __func__, list_length(args));
+		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
+	}
 
 	/* Only respond to an inner join/unknown context join */
 	if (jointype != JOIN_INNER)
@@ -1290,49 +1344,7 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
 	}
 
-	/* Find Oids of the geometry columns we are working with */
-	arg1 = (Node*) linitial(args);
-	arg2 = (Node*) lsecond(args);
-	var1 = (Var*) arg1;
-	var2 = (Var*) arg2;
-
-	/* We only do column joins right now, no functional joins */
-	/* TODO: handle g1 && ST_Expand(g2) */
-	if (!IsA(arg1, Var) || !IsA(arg2, Var))
-	{
-		elog(DEBUG1, "%s called with arguments that are not column references", __func__);
-		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
-	}
-
-	/* What are the Oids of our tables/relations? */
-	relid1 = rt_fetch(var1->varno, root->parse->rtable)->relid;
-	relid2 = rt_fetch(var2->varno, root->parse->rtable)->relid;
-
-	POSTGIS_DEBUGF(3, "using relations \"%s\" Oid(%d), \"%s\" Oid(%d)",
-	                 get_rel_name(relid1) ? get_rel_name(relid1) : "NULL", relid1, get_rel_name(relid2) ? get_rel_name(relid2) : "NULL", relid2);
-
-	/* Pull the stats from the stats system. */
-	stats1 = pg_get_nd_stats(relid1, var1->varattno, mode, false);
-	stats2 = pg_get_nd_stats(relid2, var2->varattno, mode, false);
-
-	/* If we can't get stats, we have to stop here! */
-	if ( ! stats1 )
-	{
-		POSTGIS_DEBUGF(3, "unable to retrieve stats for \"%s\" Oid(%d)", get_rel_name(relid1) ? get_rel_name(relid1) : "NULL" , relid1);
-		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
-	}
-	else if ( ! stats2 )
-	{
-		POSTGIS_DEBUGF(3, "unable to retrieve stats for \"%s\" Oid(%d)", get_rel_name(relid2) ? get_rel_name(relid2) : "NULL", relid2);
-		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
-	}
-
-	selectivity = estimate_join_selectivity(stats1, stats2);
-	POSTGIS_DEBUGF(2, "got selectivity %g", selectivity);
-
-	pfree(stats1);
-	pfree(stats2);
-	PG_RETURN_FLOAT8(selectivity);
+	PG_RETURN_FLOAT8(gserialized_joinsel_internal(root, args, jointype, mode));
 }
 
 
@@ -2208,6 +2220,7 @@ Datum gserialized_gist_sel_nd(PG_FUNCTION_ARGS)
 	));
 }
 
+
 /**
  * This function should return an estimation of the number of
  * rows returned by a query involving an overlap check
@@ -2221,87 +2234,63 @@ Datum gserialized_gist_sel_nd(PG_FUNCTION_ARGS)
  * and invoke the work-horse.
  *
  */
+
+float8
+gserialized_sel_internal(PlannerInfo *root, List *args, int varRelid, int mode)
+{
+	VariableStatData vardata;
+	Node *other = NULL;
+	bool varonleft;
+	ND_STATS *nd_stats = NULL;
+
+	GBOX search_box;
+	float8 selectivity = 0;
+
+	elog(DEBUG2, "%s: entered function", __func__);
+
+	if (!get_restriction_variable(root, args, varRelid, &vardata, &other, &varonleft))
+	{
+		elog(DEBUG2, "%s: could not find vardata", __func__);
+		return DEFAULT_ND_SEL;
+	}
+
+	if (!IsA(other, Const))
+	{
+		ReleaseVariableStats(vardata);
+		elog(DEBUG2, "%s: no constant argument, returning default selectivity %g", __func__, DEFAULT_ND_SEL);
+		return DEFAULT_ND_SEL;
+	}
+
+	if (!gserialized_datum_get_gbox_p(((Const*)other)->constvalue, &search_box))
+	{
+		ReleaseVariableStats(vardata);
+		elog(DEBUG2, "%s: search box is EMPTY", __func__);
+		return 0.0;
+	}
+
+	if (!vardata.statsTuple)
+	{
+		elog(DEBUG1, "%s: no statistics available on table, run ANALYZE", __func__);
+		return DEFAULT_ND_SEL;
+	}
+
+	nd_stats = pg_nd_stats_from_tuple(vardata.statsTuple, mode);
+	ReleaseVariableStats(vardata);
+	selectivity = estimate_selectivity(&search_box, nd_stats, mode);
+	pfree(nd_stats);
+	return selectivity;
+}
+
 PG_FUNCTION_INFO_V1(gserialized_gist_sel);
 Datum gserialized_gist_sel(PG_FUNCTION_ARGS)
 {
 	PlannerInfo *root = (PlannerInfo *) PG_GETARG_POINTER(0);
-	/* Oid operator_oid = PG_GETARG_OID(1); */
+	// Oid operator_oid = PG_GETARG_OID(1);
 	List *args = (List *) PG_GETARG_POINTER(2);
-	/* int varRelid = PG_GETARG_INT32(3); */
+	int varRelid = PG_GETARG_INT32(3);
 	int mode = PG_GETARG_INT32(4);
-
-	VariableStatData vardata;
-	ND_STATS *nd_stats = NULL;
-
-	Node *other;
-	Var *self;
-	GBOX search_box;
-	float8 selectivity = 0;
-
-	POSTGIS_DEBUG(2, "gserialized_gist_sel called");
-
-	/*
-	 * TODO: This is a big one,
-	 * All this statistics code *only* tries to generate a valid
-	 * selectivity for && and &&&. That leaves all the other
-	 * geometry operators with bad stats! The selectivity
-	 * calculation should take account of the incoming operator
-	 * type and do the right thing.
-	 */
-
-	/* Fail if not a binary opclause (probably shouldn't happen) */
-	if (list_length(args) != 2)
-	{
-		POSTGIS_DEBUG(3, "gserialized_gist_sel: not a binary opclause");
-		PG_RETURN_FLOAT8(DEFAULT_ND_SEL);
-	}
-
-	/* Find the constant part */
-	other = (Node *) linitial(args);
-	if ( ! IsA(other, Const) )
-	{
-		self = (Var *)other;
-		other = (Node *) lsecond(args);
-	}
-	else
-	{
-		self = (Var *) lsecond(args);
-	}
-
-	if ( ! IsA(other, Const) )
-	{
-		POSTGIS_DEBUG(3, " no constant arguments - returning a default selectivity");
-		PG_RETURN_FLOAT8(DEFAULT_ND_SEL);
-	}
-
-	/* Convert the constant to a BOX */
-	if( ! gserialized_datum_get_gbox_p(((Const*)other)->constvalue, &search_box) )
-	{
-		POSTGIS_DEBUG(3, "search box is EMPTY");
-		PG_RETURN_FLOAT8(0.0);
-	}
-	POSTGIS_DEBUGF(4, " requested search box is: %s", gbox_to_string(&search_box));
-
-	/* Get pg_statistic row */
-	examine_variable(root, (Node*)self, 0, &vardata);
-	if ( vardata.statsTuple ) {
-		nd_stats = pg_nd_stats_from_tuple(vardata.statsTuple, mode);
-	}
-	ReleaseVariableStats(vardata);
-
-	if ( ! nd_stats )
-	{
-		POSTGIS_DEBUG(3, " unable to load stats from syscache, not analyzed yet?");
-		PG_RETURN_FLOAT8(FALLBACK_ND_SEL);
-	}
-
-	POSTGIS_DEBUGF(4, " got stats:\n%s", nd_stats_to_json(nd_stats));
-
-	/* Do the estimation! */
-	selectivity = estimate_selectivity(&search_box, nd_stats, mode);
-	POSTGIS_DEBUGF(3, " returning computed value: %f", selectivity);
-
-	pfree(nd_stats);
+	float8 selectivity = gserialized_sel_internal(root, args, varRelid, mode);
+	elog(DEBUG2, "%s: selectivity is %g", __func__, selectivity);
 	PG_RETURN_FLOAT8(selectivity);
 }
 

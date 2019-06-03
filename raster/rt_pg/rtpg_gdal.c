@@ -65,7 +65,7 @@ Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS)
 	int data_len = 0;
 	VSILFILE *vsifp = NULL;
 	GDALDatasetH hdsSrc;
-	int srid = -1; /* -1 for NULL */
+	int32_t srid = -1; /* -1 for NULL */
 
 	rt_pgraster *pgraster = NULL;
 	rt_raster raster;
@@ -155,7 +155,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 	char **options = NULL;
 	text *optiontext = NULL;
 	char *option = NULL;
-	int srid = SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 	char *srs = NULL;
 
 	ArrayType *array;
@@ -417,8 +417,8 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUGF(4, "Result %d, Index %d", call_cntr, drv_set2[call_cntr].idx);
 		POSTGIS_RT_DEBUGF(4, "Result %d, Short Name %s", call_cntr, drv_set2[call_cntr].short_name);
 		POSTGIS_RT_DEBUGF(4, "Result %d, Full Name %s", call_cntr, drv_set2[call_cntr].long_name);
-		POSTGIS_RT_DEBUGF(4, "Result %d, Can Read %s", call_cntr, drv_set2[call_cntr].can_read);
-		POSTGIS_RT_DEBUGF(4, "Result %d, Can Write %s", call_cntr, drv_set2[call_cntr].can_write);
+		POSTGIS_RT_DEBUGF(4, "Result %d, Can Read %u", call_cntr, drv_set2[call_cntr].can_read);
+		POSTGIS_RT_DEBUGF(4, "Result %d, Can Write %u", call_cntr, drv_set2[call_cntr].can_write);
 		POSTGIS_RT_DEBUGF(5, "Result %d, Create Options %s", call_cntr, drv_set2[call_cntr].create_options);
 
 		/* build a tuple */
@@ -542,13 +542,15 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	/* scale x */
 	if (!PG_ARGISNULL(4)) {
 		scale[0] = PG_GETARG_FLOAT8(4);
-		if (FLT_NEQ(scale[0], 0)) scale_x = &scale[0];
+		if (FLT_NEQ(scale[0], 0.0))
+			scale_x = &scale[0];
 	}
 
 	/* scale y */
 	if (!PG_ARGISNULL(5)) {
 		scale[1] = PG_GETARG_FLOAT8(5);
-		if (FLT_NEQ(scale[1], 0)) scale_y = &scale[1];
+		if (FLT_NEQ(scale[1], 0.0))
+			scale_y = &scale[1];
 	}
 
 	/* grid alignment x */
@@ -566,13 +568,15 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	/* skew x */
 	if (!PG_ARGISNULL(8)) {
 		skew[0] = PG_GETARG_FLOAT8(8);
-		if (FLT_NEQ(skew[0], 0)) skew_x = &skew[0];
+		if (FLT_NEQ(skew[0], 0.0))
+			skew_x = &skew[0];
 	}
 
 	/* skew y */
 	if (!PG_ARGISNULL(9)) {
 		skew[1] = PG_GETARG_FLOAT8(9);
-		if (FLT_NEQ(skew[1], 0)) skew_y = &skew[1];
+		if (FLT_NEQ(skew[1], 0.0))
+			skew_y = &skew[1];
 	}
 
 	/* width */

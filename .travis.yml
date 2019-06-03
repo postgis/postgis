@@ -5,12 +5,13 @@ sudo: true
 language: c
 
 env:
+  - tag=pg11-geos37-gdal24-proj52 mode=garden
   - tag=latest mode=tests
   - tag=pg11-geos37-gdal24-proj52 mode=debug
   - tag=pg11-geos37-gdal24-proj52 mode=coverage
   - tag=pg11-geos37-gdal24-proj52 mode=usan_gcc
   - tag=pg11-geos37-gdal24-proj52 mode=usan_clang
-  - tag=pg11-geos37-gdal24-proj52 mode=wagyu
+  - tag=pg11-geos37-gdal24-proj52 mode=nowagyu
   - tag=pg11-geos37-gdal24-proj52 mode=tests
   - tag=pg10-geos36-gdal23-proj49 mode=tests
   - tag=pg96-geos36-gdal22-proj49 mode=tests
@@ -19,7 +20,6 @@ env:
 matrix:
   allow_failures:
     - env: tag=latest mode=tests
-    - env: tag=pg11-geos37-gdal24-proj52 mode=coverage
 
 script:
   - echo "/tmp/logbt-coredumps/core.%p.%E" | sudo tee /proc/sys/kernel/core_pattern

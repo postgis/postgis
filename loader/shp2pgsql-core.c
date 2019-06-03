@@ -836,7 +836,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	int field_precision, field_width;
 	char name[MAXFIELDNAMELEN];
 	char name2[MAXFIELDNAMELEN];
-	DBFFieldType type = -1;
+	DBFFieldType type = FTInvalid;
 	char *utf8str;
 
 	/* If we are reading the entire shapefile, open it */
@@ -1439,7 +1439,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		if (state->config->readshape == 1 && (!state->config->geography))
 		{
 			/* If they didn't specify a target SRID, see if they specified a source SRID. */
-			int srid = state->to_srid;
+			int32_t srid = state->to_srid;
 			if (state->config->schema)
 			{
 				stringbuffer_aprintf(sb, "SELECT AddGeometryColumn('%s','%s','%s','%d',",

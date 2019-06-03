@@ -35,7 +35,7 @@ CPPFLAGS="-I${PGPATH}/include"  \
 LDFLAGS="-L${PGPATH}/lib"  ./configure \
   --with-pgconfig=${PGPATH}/bin/pg_config \
   --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/geos-config \
-  --without-raster
+  --without-raster --without-wagyu
 make clean
 
 # generating postgis_svn_revision.h in case hasn't been generated

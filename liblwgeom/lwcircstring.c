@@ -34,8 +34,8 @@
 void printLWCIRCSTRING(LWCIRCSTRING *curve);
 void lwcircstring_release(LWCIRCSTRING *lwcirc);
 char lwcircstring_same(const LWCIRCSTRING *me, const LWCIRCSTRING *you);
-LWCIRCSTRING *lwcircstring_from_lwpointarray(int srid, uint32_t npoints, LWPOINT **points);
-LWCIRCSTRING *lwcircstring_from_lwmpoint(int srid, LWMPOINT *mpoint);
+LWCIRCSTRING *lwcircstring_from_lwpointarray(int32_t srid, uint32_t npoints, LWPOINT **points);
+LWCIRCSTRING *lwcircstring_from_lwmpoint(int32_t srid, LWMPOINT *mpoint);
 LWCIRCSTRING *lwcircstring_addpoint(LWCIRCSTRING *curve, LWPOINT *point, uint32_t where);
 LWCIRCSTRING *lwcircstring_removepoint(LWCIRCSTRING *curve, uint32_t index);
 void lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32_t index, POINT4D *newpoint);
@@ -47,7 +47,7 @@ void lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32_t index, POINT4D *newpo
  * use SRID=SRID_UNKNOWN for unknown SRID (will have 8bit type's S = 0)
  */
 LWCIRCSTRING *
-lwcircstring_construct(int srid, GBOX *bbox, POINTARRAY *points)
+lwcircstring_construct(int32_t srid, GBOX *bbox, POINTARRAY *points)
 {
 	LWCIRCSTRING *result;
 
@@ -76,7 +76,7 @@ lwcircstring_construct(int srid, GBOX *bbox, POINTARRAY *points)
 }
 
 LWCIRCSTRING *
-lwcircstring_construct_empty(int srid, char hasz, char hasm)
+lwcircstring_construct_empty(int32_t srid, char hasz, char hasm)
 {
 	LWCIRCSTRING *result = lwalloc(sizeof(LWCIRCSTRING));
 	result->type = CIRCSTRINGTYPE;
@@ -138,7 +138,7 @@ lwcircstring_same(const LWCIRCSTRING *me, const LWCIRCSTRING *you)
  * LWCIRCSTRING dimensions are large enough to host all input dimensions.
  */
 LWCIRCSTRING *
-lwcircstring_from_lwpointarray(int srid, uint32_t npoints, LWPOINT **points)
+lwcircstring_from_lwpointarray(int32_t srid, uint32_t npoints, LWPOINT **points)
 {
 	int zmflag=0;
 	uint32_t i;
@@ -189,7 +189,7 @@ lwcircstring_from_lwpointarray(int srid, uint32_t npoints, LWPOINT **points)
  * Construct a LWCIRCSTRING from a LWMPOINT
  */
 LWCIRCSTRING *
-lwcircstring_from_lwmpoint(int srid, LWMPOINT *mpoint)
+lwcircstring_from_lwmpoint(int32_t srid, LWMPOINT *mpoint)
 {
 	uint32_t i;
 	POINTARRAY *pa;

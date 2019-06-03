@@ -2857,7 +2857,7 @@ BEGIN
 
 	END LOOP;
 
-	RETURN 'Upgrade completed, run postgis_full_version() for details';
+	RETURN 'Upgrade completed, run SELECT postgis_full_version(); for details';
 
 END
 $$ LANGUAGE plpgsql VOLATILE;
@@ -3879,6 +3879,7 @@ CREATE OR REPLACE FUNCTION ST_Union (geometry[])
 -- we don't want to force drop of this agg since its often used in views
 -- parallel handling dealt with in postgis_drop_after.sql
 -- Changed: 2.5.0 use 'internal' stype
+-- Changed: 3.0.0 transfn now converts to GEOS
 CREATE AGGREGATE ST_Union (geometry) (
 	sfunc = pgis_geometry_union_transfn,
 	stype = internal,
@@ -4586,10 +4587,34 @@ CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits int4 DEFAULT
 -- ST_AsGeoJson(geom, precision, options) / version=1
 -- Changed 2.0.0 to use default args and named args
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
-	RETURNS TEXT
+	RETURNS text
 	AS 'MODULE_PATHNAME','LWGEOM_asGeoJson'
-	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	_COST_LOW;
+
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(r record, geom_column text DEFAULT '', maxdecimaldigits int4 DEFAULT 15, pretty_print bool DEFAULT false)
+	RETURNS text
+	AS 'MODULE_PATHNAME','ST_AsGeoJsonRow'
+	LANGUAGE 'c' STABLE STRICT _PARALLEL
+	_COST_LOW;
+
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION json(geometry)
+	RETURNS json
+	AS 'MODULE_PATHNAME','geometry_to_json'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION jsonb(geometry)
+	RETURNS jsonb
+	AS 'MODULE_PATHNAME','geometry_to_jsonb'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 3.0.0
+CREATE CAST (geometry AS json) WITH FUNCTION json(geometry);
+-- Availability: 3.0.0
+CREATE CAST (geometry AS jsonb) WITH FUNCTION jsonb(geometry);
 
 -----------------------------------------------------------------------
 -- Mapbox Vector Tile OUTPUT

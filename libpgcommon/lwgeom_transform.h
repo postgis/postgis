@@ -21,7 +21,7 @@ typedef struct srs_precision
 	int precision_m;
 } srs_precision;
 
-char * GetProj4String(int srid);
+char *GetProj4String(int32_t srid);
 
 /**
  * Opaque type to use in the projection cache API.
@@ -29,12 +29,12 @@ char * GetProj4String(int srid);
 typedef void *ProjCache ;
 
 void SetPROJLibPath(void);
-bool IsInPROJCache(ProjCache cache, int srid_from, int srid_to);
-PJ* GetPJFromPROJCache(ProjCache cache, int srid_from, int srid_to);
-int GetPJUsingFCInfo(FunctionCallInfo fcinfo, int srid_from, int srid_to, PJ** pj);
-int spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s);
-void srid_check_latlong(FunctionCallInfo fcinfo, int srid);
-srs_precision srid_axis_precision(FunctionCallInfo fcinfo, int srid, int precision);
+bool IsInPROJCache(ProjCache cache, int32_t srid_from, int32_t srid_to);
+PJ *GetPJFromPROJCache(ProjCache cache, int32_t srid_from, int32_t srid_to);
+int GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, PJ **pj);
+int spheroid_init_from_srid(FunctionCallInfo fcinfo, int32_t srid, SPHEROID *s);
+void srid_check_latlong(FunctionCallInfo fcinfo, int32_t srid);
+srs_precision srid_axis_precision(FunctionCallInfo fcinfo, int32_t srid, int precision);
 
 /**
  * Builtin SRID values

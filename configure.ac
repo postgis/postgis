@@ -241,6 +241,7 @@ if test "x$XSLBASE" = "x"; then
 		/usr/share/xml/docbook/stylesheet/nwalsh
 		/usr/share/sgml/docbook/stylesheet/xsl/nwalsh
 		/opt/local/share/xsl/docbook-xsl
+		/usr/local/opt/docbook-xsl/docbook-xsl
 		/usr/local/share/xsl/docbook-xsl
 		/usr/share/xsl/docbook-xsl
 		"
@@ -1471,9 +1472,9 @@ HAVE_WAGYU=no
 if test "x$HAVE_PROTOBUF" = "xyes"; then
     AC_ARG_WITH(
             [wagyu],
-            AC_HELP_STRING([--with-wagyu], [Use the wagyu library]),
-            [HAVE_WAGYU=yes],
-            [HAVE_WAGYU=no])
+            AC_HELP_STRING([--without-wagyu], [Don't use the wagyu library]),
+            [HAVE_WAGYU=no],
+            [HAVE_WAGYU=yes])
 
     if test "x$HAVE_WAGYU" = "xyes"; then
             AC_MSG_RESULT([WAGYU: Wagyu usage requested])
@@ -1675,13 +1676,17 @@ AC_MSG_RESULT()
 
 if test "$GEOS_NUMERIC_VERSION" -lt 30700; then
 AC_MSG_WARN([ --------- GEOS VERSION WARNING ------------ ])
-AC_MSG_WARN([  You are building against GEOS ${GEOS_FULL_VERSION} ])
-AC_MSG_WARN([  To take advantage of all the features of ])
-AC_MSG_WARN([  this PostGIS version requires GEOS 3.7.0 or higher.])
-AC_MSG_WARN([  To take advantage of most of the features of this PostGIS])
-AC_MSG_WARN([  we recommend GEOS 3.6 or higher])
+AC_MSG_WARN([  You are building against GEOS ${GEOS_FULL_VERSION}.])
+AC_MSG_WARN([])
+AC_MSG_WARN([  To take advantage of _all_ the features of ])
+AC_MSG_WARN([  PostGIS, GEOS 3.7.0 or higher is required.])
+AC_MSG_WARN([])
+AC_MSG_WARN([  For _most_ features, GEOS 3.6.0 is enough.])
+AC_MSG_WARN([])
+AC_MSG_WARN([  We recommend GEOS 3.7.0 or higher])
+AC_MSG_WARN([])
 AC_MSG_WARN([  You can download the latest versions from ])
-AC_MSG_WARN([  http://trac.osgeo.org/geos ])
+AC_MSG_WARN([  http://geos.osgeo.org/ ])
 AC_MSG_WARN()
 fi
 

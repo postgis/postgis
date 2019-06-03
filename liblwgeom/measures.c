@@ -81,7 +81,7 @@ lw_dist2d_distpts_init(DISTPTS *dl, int mode)
 Function initializing shortestline and longestline calculations.
 */
 LWGEOM *
-lw_dist2d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
+lw_dist2d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int32_t srid, int mode)
 {
 	double x1,x2,y1,y2;
 
@@ -128,7 +128,7 @@ lw_dist2d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 Function initializing closestpoint calculations.
 */
 LWGEOM *
-lw_dist2d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2,int srid,int mode)
+lw_dist2d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int32_t srid, int mode)
 {
 	double x,y;
 	DISTPTS thedl;

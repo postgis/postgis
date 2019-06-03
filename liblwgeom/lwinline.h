@@ -72,7 +72,7 @@ getPoint_internal(const POINTARRAY *pa, uint32_t n)
 #if PARANOIA_LEVEL > 0
 	assert(pa);
 	assert(n <= pa->npoints);
-	assert(n < pa->maxpoints);
+	assert(n <= pa->maxpoints);
 #endif
 
 	size = ptarray_point_size(pa);

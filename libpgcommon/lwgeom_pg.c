@@ -20,6 +20,7 @@
 #include <executor/spi.h>
 #include <utils/guc.h>
 #include <utils/guc_tables.h>
+#include <catalog/namespace.h>
 
 #include "../postgis_config.h"
 #include "liblwgeom.h"
@@ -30,6 +31,34 @@
 #include <stdarg.h>
 
 #define PGC_ERRMSG_MAXLEN 2048 //256
+
+/* Global cache to hold GEOMETRYOID */
+Oid GEOMETRYOID = InvalidOid;
+Oid GEOGRAPHYOID = InvalidOid;
+
+Oid postgis_geometry_oid(void)
+{
+	if (GEOMETRYOID == InvalidOid) {
+		Oid typoid = TypenameGetTypid("geometry");
+		if (OidIsValid(typoid) && get_typisdefined(typoid))
+		{
+			GEOMETRYOID = typoid;
+		}
+	}
+	return GEOMETRYOID;
+}
+
+Oid postgis_geography_oid(void)
+{
+	if (GEOGRAPHYOID == InvalidOid) {
+		Oid typoid = TypenameGetTypid("geography");
+		if (OidIsValid(typoid) && get_typisdefined(typoid))
+		{
+			GEOGRAPHYOID = typoid;
+		}
+	}
+	return GEOGRAPHYOID;
+}
 
 /*
  * Error message parsing functions

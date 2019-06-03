@@ -947,7 +947,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		struct {
 			rt_raster raster;
 			double gt[6];
-			int srid;
+			int32_t srid;
 			int width;
 			int height;
 		} raster;
