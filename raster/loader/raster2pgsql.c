@@ -450,10 +450,9 @@ usage() {
 	));
 }
 
-static void calc_tile_size(
-	int dimX, int dimY,
-	int *tileX, int *tileY
-) {
+static void
+calc_tile_size(uint32_t dimX, uint32_t dimY, int *tileX, int *tileY)
+{
 	int i = 0;
 	int j = 0;
 	int min = 30;
@@ -461,14 +460,12 @@ static void calc_tile_size(
 
 	int d = 0;
 	double r = 0;
-	/*int _d = 0;*/
 	double _r = -1;
 	int _i = 0;
 
 	/* j = 0, X */
 	for (j = 0; j < 2; j++) {
 		_i = 0;
-		/*_d = 0;*/
 		_r = -1;
 
 		if (j < 1 && dimX <= max) {
@@ -494,7 +491,6 @@ static void calc_tile_size(
 
 			if (FLT_EQ(_r, -1.0) || (r < _r) || FLT_EQ(r, _r))
 			{
-				/*_d = d;*/
 				_r = r;
 				_i = i;
 			}
@@ -1749,8 +1745,8 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	/* tile size is "auto" */
 	if (config->tile_size[0] == -1 && config->tile_size[1] == -1)
 	{
-		calc_tile_size((naturalx > 1) ? naturalx : info->dim[0],
-			       (naturaly > 1) ? naturaly : info->dim[1],
+		calc_tile_size((naturalx > 1) ? (uint32_t)naturalx : info->dim[0],
+			       (naturaly > 1) ? (uint32_t)naturaly : info->dim[1],
 			       &(config->tile_size[0]),
 			       &(config->tile_size[1]));
 
