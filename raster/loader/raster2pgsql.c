@@ -1747,16 +1747,12 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	}
 
 	/* tile size is "auto" */
-	if (
-		config->tile_size[0] == -1 &&
-		config->tile_size[1] == -1
-	) {
-		calc_tile_size(
-			(naturalx>1)?naturalx:info->dim[0],
-			(naturaly>1)?naturaly:info->dim[1],
-			&(config->tile_size[0]),
-			&(config->tile_size[1])
-		);
+	if (config->tile_size[0] == -1 && config->tile_size[1] == -1)
+	{
+		calc_tile_size((naturalx > 1) ? naturalx : info->dim[0],
+			       (naturaly > 1) ? naturaly : info->dim[1],
+			       &(config->tile_size[0]),
+			       &(config->tile_size[1]));
 
 		rtinfo(_("Using computed tile size: %dx%d"), config->tile_size[0], config->tile_size[1]);
 	}
@@ -1773,14 +1769,12 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 	/* number of tiles */
 	if ((uint32_t)info->tile_size[0] != info->dim[0])
-		ntiles[0] = (info->dim[0] + info->tile_size[0]  - 1) / info->tile_size[0];
+		ntiles[0] = (info->dim[0] + info->tile_size[0] - 1) / info->tile_size[0];
 	if ((uint32_t)info->tile_size[1] != info->dim[1])
-		ntiles[1] = (info->dim[1] + info->tile_size[1]  - 1) / info->tile_size[1];
+		ntiles[1] = (info->dim[1] + info->tile_size[1] - 1) / info->tile_size[1];
 
 	/* estimate size of 1 tile */
 	tilesize = info->tile_size[0] * info->tile_size[1];
-
-
 
 	/* roughly estimate size of one tile and all bands */
 	tilesize *= 1.1;
