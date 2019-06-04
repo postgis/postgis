@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-if  [[ "${OVERRIDE}" == '' ]] ;
+if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.8
 	export GDAL_VER=2.4.1
 	export PROJ_VER=6.1.0
