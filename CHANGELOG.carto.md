@@ -3,7 +3,10 @@
 **Release date**: 2019-XX-XX
 
 Changes:
-- MVT Geos: Avoid NULL dereference when NULL is returned from validation
+- MVT (GEOS): Avoid NULL dereference when NULL is returned from validation
+- Merged community `svn-2.5` as of 2019-06-04: Minimal changes in the SQL for postgis_type_name; not worth to bump the minor version.
+- Applied a small patch from trunk to pass tests with GEOS/master.
+- Added a static cache for SRID 4326 and 3857 if the lookup fails. This is to prevent failures during pg_upgrade when calling ST_Transform before loading the data of spatial_ref_sys.
 
 ## 2.5.1.4+carto-1
 
