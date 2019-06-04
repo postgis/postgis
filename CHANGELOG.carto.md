@@ -1,6 +1,6 @@
 ## 2.5.1.5+carto-1
 
-**Release date**: 2019-XX-XX
+**Release date**: 2019-06-04
 
 Changes:
 - MVT (GEOS): Avoid NULL dereference when NULL is returned from validation
