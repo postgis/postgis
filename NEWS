@@ -153,6 +153,9 @@ PostGIS 3.0.0
   - #4198, Add ST_ConstrainedDelaunayTriangles SFCGAL function (Darafei
            Praliaskouski)
   - #4412, Support ingesting rasters with NODATA=NaN (Darafei Praliaskouski)
+  - #4413, Raster tile size follows GeoTIFF block size on raster2pgsql -t auto
+           (Darafei Praliaskouski)
+
 
 
 PostGIS 2.5.0

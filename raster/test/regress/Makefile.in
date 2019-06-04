@@ -154,7 +154,8 @@ TEST_LOADER = \
 	loader/BasicOutDB \
 	loader/Tiled10x10 \
 	loader/Tiled10x10Copy \
-	loader/Tiled8x8
+	loader/Tiled8x8 \
+	loader/TiledAuto
 
 TESTS = $(TEST_FIRST) \
 	$(TEST_METADATA) $(TEST_IO) $(TEST_BASIC_FUNC) \
