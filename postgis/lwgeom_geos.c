@@ -754,12 +754,14 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 	double	tolerance;
 	GEOSGeometry *g1, *g3;
 	GSERIALIZED *result;
+	uint32_t type;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	tolerance = PG_GETARG_FLOAT8(1);
 
 	/* Empty.Simplify() == Empty */
-	if ( gserialized_is_empty(geom1) )
+	type = gserialized_get_type(geom1);
+	if ( gserialized_is_empty(geom1) || type == TINTYPE || type == TRIANGLETYPE )
 		PG_RETURN_POINTER(geom1);
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);

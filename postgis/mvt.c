@@ -1121,7 +1121,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 
 	resx = width / extent;
 	resy = height / extent;
-	res = (resx < resy ? resx : resy) / 2;
+	res = (resx < resy ? resx : resy)/2;
 	fx = extent / width;
 	fy = -(extent / height);
 
@@ -1141,7 +1141,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	affine.yoff = -gbox->ymax * fy;
 	lwgeom_affine(lwgeom, &affine);
 
-	/* Snap to integer precision, removing duplicate points and spikes */
+	/* Snap to integer precision, removing duplicate points */
 	lwgeom_grid_in_place(lwgeom, &grid);
 
 	if (!lwgeom || lwgeom_is_empty(lwgeom))
@@ -1508,5 +1508,6 @@ bytea *mvt_agg_finalfn(mvt_agg_context *ctx)
 {
 	return mvt_ctx_to_bytea(ctx);
 }
+
 
 #endif
