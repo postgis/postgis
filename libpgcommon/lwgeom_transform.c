@@ -386,7 +386,18 @@ char* GetProj4StringSPI(int srid)
 	}
 	else
 	{
-		elog(ERROR, "GetProj4StringSPI: Cannot find SRID (%d) in spatial_ref_sys", srid);
+		/* Include an static cache with the common SRID used in CARTO to help with pg_upgrade */
+		if (srid == 4326 || srid == 3857)
+		{
+			static const char *proj4text_4326 = "+proj=longlat +datum=WGS84 +no_defs";
+			static const char *projt4text_3857 =
+			    "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs";
+			strncpy(proj_str, srid == 4326 ? proj4text_4326 : projt4text_3857, maxproj4len - 1);
+		}
+		else
+		{
+			elog(ERROR, "GetProj4StringSPI: Cannot find SRID (%d) in spatial_ref_sys", srid);
+		}
 	}
 
 	spi_result = SPI_finish();
