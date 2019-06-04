@@ -455,11 +455,8 @@ calc_tile_size(uint32_t dimX, uint32_t dimY, int *tileX, int *tileY)
 {
 	uint32_t min_tile_size = 30;
 	uint32_t max_tile_size = 300;
-	uint32_t tile_size;
-	uint32_t current_dimension;
-	uint32_t gap;
 
-	for (current_dimension = 0; current_dimension <= 1; current_dimension++)
+	for (uint8_t current_dimension = 0; current_dimension <= 1; current_dimension++)
 	{
 		uint32_t img_size = (current_dimension == 0) ? dimX : dimY;
 		uint32_t best_gap = max_tile_size;
@@ -467,9 +464,9 @@ calc_tile_size(uint32_t dimX, uint32_t dimY, int *tileX, int *tileY)
 
 		if (img_size > max_tile_size)
 		{
-			for (tile_size = max_tile_size; tile_size >= min_tile_size; tile_size--)
+			for (uint32_t tile_size = max_tile_size; tile_size >= min_tile_size; tile_size--)
 			{
-				gap = img_size % tile_size;
+				uint32_t gap = img_size % tile_size;
 				if (gap < best_gap)
 				{
 					best_gap = gap;
