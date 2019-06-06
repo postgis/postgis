@@ -21,6 +21,7 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
+from __future__ import print_function
 from osgeo import gdal
 from osgeo import osr
 import osgeo.gdalconst as gdalc
@@ -40,12 +41,12 @@ def pt2fmt(pt):
     return fmttypes.get(pt, 'x')
 
 if len(sys.argv) < 5 or len(sys.argv) > 6:
-    print "Usage: pixval.py <raster> <band> <x> <y>"
-    print "\traster - GDAL supported dataset"
-    print "\tband - 1-based number of band"
-    print "\toverview - optional 1-based number of overview"
-    print "\tx - Pixel column - 1..N where N is raster X dimension"
-    print "\ty - Pixel row - 1..N where N is raster Y dimension"
+    print("Usage: pixval.py <raster> <band> <x> <y>")
+    print("\traster - GDAL supported dataset")
+    print("\tband - 1-based number of band")
+    print("\toverview - optional 1-based number of overview")
+    print("\tx - Pixel column - 1..N where N is raster X dimension")
+    print("\ty - Pixel row - 1..N where N is raster Y dimension")
     sys.exit(0)
 
 infile = sys.argv[1]
@@ -57,11 +58,11 @@ if len(sys.argv) > 5:
 else:
     noverview = None
 
-print "File : %s" % infile
-print "Band : %d" % nband
+print("File : %s" % infile)
+print("Band : %d" % nband)
 if noverview is not None:
-    print "Overview: %d" % noverview
-print "Pixel: %d x %d" % (x, y)
+    print("Overview: %d" % noverview)
+print("Pixel: %d x %d" % (x, y))
 
 ds = gdal.Open(infile, gdalc.GA_ReadOnly);
 if ds is None:
@@ -77,13 +78,13 @@ else:
     if noverview > 0 and noverview <= band.GetOverviewCount():
         src_band = band.GetOverview(noverview - 1)
     else:
-        print "ERROR: Invalid overview index"
-        print "Band %d consists of %d overivews" % (nband, band.GetOverviewCount())
+        print("ERROR: Invalid overview index")
+        print("Band %d consists of %d overivews" % (nband, band.GetOverviewCount()))
         sys.exit(1)
 
 if x <= 0 or x > src_band.XSize or y <= 0 or y > src_band.YSize:
-    print "ERROR: Invalid pixel coordinates"
-    print "Band or overview dimensions are %d x %d" % (src_band.XSize, src_band.YSize)
+    print("ERROR: Invalid pixel coordinates")
+    print("Band or overview dimensions are %d x %d" % (src_band.XSize, src_band.YSize))
     sys.exit(1)
 
 # Pixel index is 0-based
@@ -92,4 +93,4 @@ pixel = src_band.ReadRaster(x - 1, y - 1, 1, 1, 1, 1)
 fmt = pt2fmt(src_band.DataType)
 pixval = struct.unpack(fmt, pixel)
 
-print "Pixel value -> %s" % str(pixval[0])
+print("Pixel value -> %s" % str(pixval[0]))
