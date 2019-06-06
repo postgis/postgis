@@ -1,7 +1,7 @@
 PostGIS 2.3.10
 2019/XX/XX
 
-  * Bug Fixes and Enchantments *
+  * Bug Fixes and Enhancements *
 
   - #4361, Fix postgis_type_name with (GEOMETRYM,3) (Matt Bretl)
   - #4326, Fix circular arc distance calculation (Paul Ramsey)
@@ -10,7 +10,7 @@ PostGIS 2.3.10
 PostGIS 2.3.9
 2019/03/11
 
-  * Bug Fixes and Enchantments *
+  * Bug Fixes and Enhancements *
 
   - #4139, Make mixed-dimension ND index build tree correctly.
            WARNING: REINDEX your ND index on tables that have records with
