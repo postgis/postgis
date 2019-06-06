@@ -131,4 +131,4 @@ try:
         band.WriteArray(raster)
 
 except rtreader.RasterError as e:
-    print "ERROR - ", e
+    print("ERROR - ", e)
