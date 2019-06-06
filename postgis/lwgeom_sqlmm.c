@@ -38,7 +38,6 @@
 
 
 Datum LWGEOM_has_arc(PG_FUNCTION_ARGS);
-Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS);
 Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS);
 
 
@@ -65,6 +64,7 @@ Datum LWGEOM_has_arc(PG_FUNCTION_ARGS)
  *
  * TODO: drop, use ST_CurveToLine instead
  */
+Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(LWGEOM_curve_segmentize);
 Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 {
@@ -96,6 +96,7 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(ret);
 }
 
+Datum ST_CurveToLine(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_CurveToLine);
 Datum ST_CurveToLine(PG_FUNCTION_ARGS)
 {

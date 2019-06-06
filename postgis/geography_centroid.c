@@ -330,33 +330,36 @@ LWPOINT* geography_centroid_from_mpoly(const LWMPOLY* mpoly, bool use_spheroid, 
 
             /* split into triangles (two points + reference point) */
             for (i = 0; i < ring->npoints - 1; i++) {
+                LWPOLY* poly_tri;
+                LWGEOM* geom_tri;
+                LWPOINT* tri_centroid;
+                POINT3DM triangle[3];
+                double_t weight;
                 const POINT4D* p1 = (const POINT4D*) getPoint2d_cp(ring, i);
                 const POINT4D* p2 = (const POINT4D*) getPoint2d_cp(ring, i+1);
-
                 POINTARRAY* pa = ptarray_construct_empty(0, 0, 4);
+
                 ptarray_insert_point(pa, p1, 0);
                 ptarray_insert_point(pa, p2, 1);
                 ptarray_insert_point(pa, reference_point, 2);
                 ptarray_insert_point(pa, p1, 3);
 
-                LWPOLY* poly_tri = lwpoly_construct_empty(mpoly->srid, 0, 0);
+                poly_tri = lwpoly_construct_empty(mpoly->srid, 0, 0);
                 lwpoly_add_ring(poly_tri, pa);
 
-                LWGEOM* geom_tri = lwpoly_as_lwgeom(poly_tri);
+                geom_tri = lwpoly_as_lwgeom(poly_tri);
                 lwgeom_set_geodetic(geom_tri, LW_TRUE);
 
             	/* Calculate the weight of the triangle. If counter clockwise,
                  * the weight is negative (e.g. for holes in polygons)
                  */
 
-                double_t weight;
             	if ( use_spheroid )
             		weight = lwgeom_area_spheroid(geom_tri, s);
             	else
             		weight = lwgeom_area_sphere(geom_tri, s);
 
 
-                POINT3DM triangle[3];
                 triangle[0].x = p1->x;
                 triangle[0].y = p1->y;
                 triangle[0].m = 1;
@@ -370,14 +373,14 @@ LWPOINT* geography_centroid_from_mpoly(const LWMPOLY* mpoly, bool use_spheroid, 
                 triangle[2].m = 1;
 
                 /* get center of triangle */
-                LWPOINT* tri_centroid = geography_centroid_from_wpoints(mpoly->srid, triangle, 3);
+                tri_centroid = geography_centroid_from_wpoints(mpoly->srid, triangle, 3);
 
                 points[j].x = lwpoint_get_x(tri_centroid);
                 points[j].y = lwpoint_get_y(tri_centroid);
                 points[j].m = weight;
                 j++;
 
-				lwpoint_free(tri_centroid);
+                lwpoint_free(tri_centroid);
                 lwgeom_free(geom_tri);
             }
         }
