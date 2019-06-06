@@ -1,7 +1,6 @@
 services:
   - docker
 
-sudo: true
 language: c
 
 env:
@@ -20,6 +19,11 @@ env:
 matrix:
   allow_failures:
     - env: tag=latest mode=tests
+  include:
+    - language: python
+      script:
+        - pip install flake8  # lint Python code for syntax errors
+        - flake8 . --count --select=E9,F63,F72,F82 --show-source --statistics
 
 script:
   - echo "/tmp/logbt-coredumps/core.%p.%E" | sudo tee /proc/sys/kernel/core_pattern
