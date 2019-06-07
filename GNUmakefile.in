@@ -39,7 +39,7 @@ clean-local:
 # TODO: drop 'test' target..
 test: check
 
-check: all docs-check check-no-trailing-blanks
+check: all docs-check check-no-trailing-blanks lint-python
 
 check-no-trailing-blanks:
 	! find . -name '*.c' -o -name '*.h' -o -name '*.proto' | \
@@ -48,6 +48,10 @@ check-no-trailing-blanks:
 		grep -v vector_tile.pb-c | \
 		grep -v postgis/sqldefines.h | \
 		xargs grep -n '[[:space:]]$$'
+
+lint-python:
+	python3 -m pip install --upgrade flake8
+	flake8 . --count --select=E9,F63,F72,F82 --show-source --statistics
 
 installcheck: installcheck-base installcheck-upgrade
 
