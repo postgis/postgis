@@ -21,18 +21,19 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 ##############################################################################
+from __future__ import print_function
 from osgeo import gdal
 from osgeo import osr
 import osgeo.gdalconst as gdalc
 import sys
 
 if len(sys.argv) != 6:
-    print "Usage: window.py <raster> <x> <y> <xsize> <ysize>"
-    print "\traster - GDAL supported dataset"
-    print "\tx - column - 1..N where N is raster X dimension"
-    print "\ty - row - 1..N where N is raster Y dimension"
-    print "\txsize - x-dimension of requested window (xsize <= xsize of raster - x)"
-    print "\tysize - y-dimension of requested window (ysize <= ysize of raster - y)"
+    print("Usage: window.py <raster> <x> <y> <xsize> <ysize>")
+    print("\traster - GDAL supported dataset")
+    print("\tx - column - 1..N where N is raster X dimension")
+    print("\ty - row - 1..N where N is raster Y dimension")
+    print("\txsize - x-dimension of requested window (xsize <= xsize of raster - x)")
+    print("\tysize - y-dimension of requested window (ysize <= ysize of raster - y)")
     sys.exit(0)
 
 def is_georeferenced(gt):
@@ -55,11 +56,11 @@ inxoff = int(sys.argv[2])
 inyoff = int(sys.argv[3])
 inxsize = int(sys.argv[4])
 inysize = int(sys.argv[5])
-print "=== INPUT ==="
-print "File: %s" % infile
-print "Window:"
-print "- upper-left: %d x %d" % (inxoff, inyoff)
-print "- dimensions: %d x %d" % (inxsize, inysize)
+print("=== INPUT ===")
+print("File: %s" % infile)
+print("Window:")
+print("- upper-left: %d x %d" % (inxoff, inyoff))
+print("- dimensions: %d x %d" % (inxsize, inysize))
 
 ds = gdal.Open(infile, gdalc.GA_ReadOnly);
 if ds is None:
@@ -67,11 +68,11 @@ if ds is None:
 
 xsize = ds.RasterXSize
 ysize = ds.RasterYSize
-print "=== RASTER ==="
-print "- dimensions: %d x %d" % (xsize, ysize)
+print("=== RASTER ===")
+print("- dimensions: %d x %d" % (xsize, ysize))
 
 if inxsize > xsize or inysize > ysize or inxoff > xsize or inyoff > ysize:
-    print "Invalid size of input window"
+    print("Invalid size of input window")
     sys.exit(1)
 
 gt = ds.GetGeoTransform()
@@ -80,16 +81,16 @@ ulp = ( gt[0], gt[3] ) # X/Y upper left pixel corner
 rot = ( gt[2], gt[4] ) # X-/Y-axis rotation
 
 if is_georeferenced(gt):
-    print "- pixel size:", res
-    print "- upper left:", ulp
-    print "- rotation  :", rot
+    print("- pixel size:", res)
+    print("- upper left:", ulp)
+    print("- rotation  :", rot)
 else:
-    print "No georeferencing is available"
+    print("No georeferencing is available")
     sys.exit(1)
 
-print "=== WINDOW ==="
-print "- upper-left :", calculate_corner(gt, inxoff, inyoff)
-print "- lower-left :", calculate_corner(gt, inxoff, ysize)
-print "- upper-right:", calculate_corner(gt, xsize, inyoff)
-print "- lower-right:", calculate_corner(gt, xsize, ysize)
-print "- center     :", calculate_corner(gt, xsize/2, ysize/2)
+print("=== WINDOW ===")
+print("- upper-left :", calculate_corner(gt, inxoff, inyoff))
+print("- lower-left :", calculate_corner(gt, inxoff, ysize))
+print("- upper-right:", calculate_corner(gt, xsize, inyoff))
+print("- lower-right:", calculate_corner(gt, xsize, ysize))
+print("- center     :", calculate_corner(gt, xsize/2, ysize/2))

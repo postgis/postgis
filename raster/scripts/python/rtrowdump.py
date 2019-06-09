@@ -130,5 +130,5 @@ try:
         assert band is not None
         band.WriteArray(raster)
 
-except rtreader.RasterError, e:
-    print "ERROR - ", e
+except rtreader.RasterError as e:
+    print("ERROR - ", e)
