@@ -7477,11 +7477,13 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rastta
 		fqtn := fqtn || quote_ident($2);
 
 		sql := 'SELECT @extschema@.ST_SRID('
-            || quote_ident($3)
-      || ') FROM '
-            || fqtn
-            || ' LIMIT 1;';
-    EXECUTE sql INTO srid;
+                        || quote_ident($3)
+                        || ') FROM '
+                        || fqtn
+                        || ' WHERE '
+                        || quote_ident($3)
+                        || ' IS NOT NULL LIMIT 1;';
+                EXECUTE sql INTO srid;
 
 		cn := 'enforce_max_extent_' || $3;
 
