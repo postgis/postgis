@@ -1739,20 +1739,6 @@ extern void deparse_hex(uint8_t str, char *result);
 */
 
 /**
-* Calculate the geocentric bounding box directly from the serialized
-* form of the geodetic coordinates. Only accepts serialized geographies
-* flagged as geodetic. Caller is responsible for disposing of the GBOX.
-*/
-extern GBOX* gserialized_calculate_gbox_geocentric(const GSERIALIZED *g);
-
-/**
-* Calculate the geocentric bounding box directly from the serialized
-* form of the geodetic coordinates. Only accepts serialized geographies
-* flagged as geodetic.
-*/
-int gserialized_calculate_gbox_geocentric_p(const GSERIALIZED *g, GBOX *g_box);
-
-/**
 * Return a WKT representation of the gserialized geometry.
 * Caller is responsible for disposing of the char*.
 */
