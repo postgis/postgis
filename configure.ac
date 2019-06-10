@@ -1124,16 +1124,6 @@ AC_SUBST([POSTGIS_BUILD_DATE])
 AC_SUBST([POSTGIS_SCRIPTS_VERSION])
 
 
-dnl ===========================================================================
-dnl Other parameters
-dnl
-
-dnl Always enable BBOX caching by default
-AC_DEFINE_UNQUOTED([POSTGIS_AUTOCACHE_BBOX], [1], [Enable caching of bounding box within geometries])
-
-dnl Always enable use of ANALYZE statistics by default
-AC_DEFINE_UNQUOTED([POSTGIS_USE_STATS], [1], [Enable use of ANALYZE statistics])
-
 dnl ====================================
 dnl address standardizer stuff
 dnl ====================================
