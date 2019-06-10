@@ -44,8 +44,6 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS);
 Datum LWGEOM_npoints(PG_FUNCTION_ARGS);
 Datum LWGEOM_nrings(PG_FUNCTION_ARGS);
 Datum ST_Area(PG_FUNCTION_ARGS);
-Datum postgis_uses_stats(PG_FUNCTION_ARGS);
-Datum postgis_autocache_bbox(PG_FUNCTION_ARGS);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS);
 Datum postgis_version(PG_FUNCTION_ARGS);
 Datum postgis_liblwgeom_version(PG_FUNCTION_ARGS);
@@ -205,22 +203,6 @@ Datum postgis_scripts_released(PG_FUNCTION_ARGS)
 
 	result = cstring_to_text(ver);
 	PG_RETURN_TEXT_P(result);
-}
-
-PG_FUNCTION_INFO_V1(postgis_uses_stats);
-Datum postgis_uses_stats(PG_FUNCTION_ARGS)
-{
-	PG_RETURN_BOOL(true);
-}
-
-PG_FUNCTION_INFO_V1(postgis_autocache_bbox);
-Datum postgis_autocache_bbox(PG_FUNCTION_ARGS)
-{
-#ifdef POSTGIS_AUTOCACHE_BBOX
-	PG_RETURN_BOOL(true);
-#else
-	PG_RETURN_BOOL(false);
-#endif
 }
 
 PG_FUNCTION_INFO_V1(postgis_libxml_version);
