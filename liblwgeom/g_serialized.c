@@ -180,10 +180,6 @@ int gserialized_is_empty(const GSERIALIZED *g)
 	return isempty;
 }
 
-char* gserialized_to_string(const GSERIALIZED *g)
-{
-	return lwgeom_to_wkt(lwgeom_from_gserialized(g), WKT_ISO, 12, 0);
-}
 
 /* Unfortunately including advanced instructions is something that
 only helps a small sliver of users who can build their own
