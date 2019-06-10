@@ -138,15 +138,6 @@ inline static int gserialized_cmp_srid(const GSERIALIZED *s1, const GSERIALIZED 
 	) ? 0 : 1;
 }
 
-GSERIALIZED* gserialized_copy(const GSERIALIZED *g)
-{
-	GSERIALIZED *g_out = NULL;
-	assert(g);
-	g_out = (GSERIALIZED*)lwalloc(SIZE_GET(g->size));
-	memcpy((uint8_t*)g_out,(uint8_t*)g,SIZE_GET(g->size));
-	return g_out;
-}
-
 static size_t gserialized_is_empty_recurse(const uint8_t *p, int *isempty);
 static size_t gserialized_is_empty_recurse(const uint8_t *p, int *isempty)
 {

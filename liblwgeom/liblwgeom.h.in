@@ -1745,11 +1745,6 @@ extern void deparse_hex(uint8_t str, char *result);
 extern char* gserialized_to_string(const GSERIALIZED *g);
 
 /**
-* Return a copy of the input serialized geometry.
-*/
-extern GSERIALIZED* gserialized_copy(const GSERIALIZED *g);
-
-/**
 * Check that coordinates of LWGEOM are all within the geodetic range (-180, -90, 180, 90)
 */
 extern int lwgeom_check_geodetic(const LWGEOM *geom);
