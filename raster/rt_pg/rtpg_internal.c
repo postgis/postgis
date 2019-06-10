@@ -60,9 +60,9 @@ rtpg_strreplace(
 	const char *tmp = str;
 	char *result;
 	int found = 0;
-	int length, reslen;
-	int oldlen = strlen(oldstr);
-	int newlen = strlen(newstr);
+	int64_t length, reslen;
+	size_t oldlen = strlen(oldstr);
+	size_t newlen = strlen(newstr);
 	int limit = (count != NULL && *count > 0) ? *count : -1;
 
 	tmp = str;

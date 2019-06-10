@@ -54,7 +54,7 @@ LWT_ISO_NODE *lwt_be_getNodeWithinDistance2D(LWT_TOPOLOGY *topo,
 					     double dist,
 					     uint64_t *numelems,
 					     int fields,
-					     uint64_t limit);
+					     int64_t limit);
 
 LWT_ISO_NODE *lwt_be_getNodeById(LWT_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *numelems, int fields);
 
@@ -70,7 +70,7 @@ LWT_ISO_EDGE *lwt_be_getEdgeWithinDistance2D(LWT_TOPOLOGY *topo,
 					     double dist,
 					     uint64_t *numelems,
 					     int fields,
-					     uint64_t limit);
+					     int64_t limit);
 int lwt_be_insertEdges(LWT_TOPOLOGY *topo, LWT_ISO_EDGE *edge, uint64_t numelems);
 int
 lwt_be_updateEdges(LWT_TOPOLOGY* topo, const LWT_ISO_EDGE* sel_edge, int sel_fields, const LWT_ISO_EDGE* upd_edge, int upd_fields, const LWT_ISO_EDGE* exc_edge, int exc_fields);

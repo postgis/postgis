@@ -164,7 +164,7 @@ lwt_be_getNodeWithinDistance2D(LWT_TOPOLOGY *topo,
 			       double dist,
 			       uint64_t *numelems,
 			       int fields,
-			       uint64_t limit)
+			       int64_t limit)
 {
   CBT5(topo, getNodeWithinDistance2D, pt, dist, numelems, fields, limit);
 }
@@ -253,7 +253,7 @@ lwt_be_getEdgeWithinDistance2D(LWT_TOPOLOGY *topo,
 			       double dist,
 			       uint64_t *numelems,
 			       int fields,
-			       uint64_t limit)
+			       int64_t limit)
 {
   CBT5(topo, getEdgeWithinDistance2D, pt, dist, numelems, fields, limit);
 }

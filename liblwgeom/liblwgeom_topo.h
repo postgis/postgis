@@ -225,7 +225,7 @@ typedef struct LWT_BE_CALLBACKS_T {
 					   double dist,
 					   uint64_t *numelems,
 					   int fields,
-					   int limit);
+					   int64_t limit);
 
   /**
    * Insert nodes
@@ -285,7 +285,7 @@ typedef struct LWT_BE_CALLBACKS_T {
 					   double dist,
 					   uint64_t *numelems,
 					   int fields,
-					   int limit);
+					   int64_t limit);
 
   /**
    * Get next available edge identifier
