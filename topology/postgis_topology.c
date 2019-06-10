@@ -221,6 +221,7 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   topo = palloc(sizeof(LWT_BE_TOPOLOGY));
   topo->be_data = (LWT_BE_DATA *)be; /* const cast.. */
   topo->name = pstrdup(name);
+  topo->hasZ = 0;
 
   dat = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull);
   if ( isnull )
@@ -1366,11 +1367,11 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
 			   double dist,
 			   uint64_t *numelems,
 			   int fields,
-			   int limit)
+			   int64_t limit)
 {
   LWT_ISO_EDGE *edges;
   int spi_result;
-  int elems_requested = limit;
+  int64_t elems_requested = limit;
   size_t hexewkb_size;
   char *hexewkb;
   MemoryContext oldcontext = CurrentMemoryContext;
@@ -1406,7 +1407,7 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
   }
   else if ( elems_requested > 0 )
   {
-    appendStringInfo(sql, " LIMIT %d", elems_requested);
+	  appendStringInfo(sql, " LIMIT " INT64_FORMAT, elems_requested);
   }
   POSTGIS_DEBUGF(1, "cb_getEdgeWithinDistance2D: query is: %s", sql->data);
   spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, limit >= 0 ? limit : 0);
@@ -1422,7 +1423,7 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
 
   POSTGIS_DEBUGF(1,
 		 "cb_getEdgeWithinDistance2D: edge query "
-		 "(limited by %d) returned " UINT64_FORMAT " rows",
+		 "(limited by " INT64_FORMAT ") returned " UINT64_FORMAT " rows",
 		 elems_requested,
 		 SPI_processed);
   *numelems = SPI_processed;
@@ -1466,7 +1467,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
 			   double dist,
 			   uint64_t *numelems,
 			   int fields,
-			   int limit)
+			   int64_t limit)
 {
   MemoryContext oldcontext = CurrentMemoryContext;
   LWT_ISO_NODE *nodes;
@@ -1475,7 +1476,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
   char *hexewkb;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int elems_requested = limit;
+  int64_t elems_requested = limit;
   uint64_t i;
 
   initStringInfo(sql);
@@ -1514,7 +1515,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
   }
   else if ( elems_requested > 0 )
   {
-    appendStringInfo(sql, " LIMIT %d", elems_requested);
+	  appendStringInfo(sql, " LIMIT " INT64_FORMAT, elems_requested);
   }
   spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, limit >= 0 ? limit : 0);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
@@ -1530,7 +1531,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
 
   POSTGIS_DEBUGF(1,
 		 "cb_getNodeWithinDistance2D: node query "
-		 "(limited by %d) returned " UINT64_FORMAT " rows",
+		 "(limited by " INT64_FORMAT ") returned " UINT64_FORMAT " rows",
 		 elems_requested,
 		 SPI_processed);
   if ( ! SPI_processed )
