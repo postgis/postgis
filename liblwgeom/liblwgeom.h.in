@@ -689,6 +689,13 @@ extern uint32_t gserialized_max_header_size(void);
 extern uint32_t gserialized_header_size(const GSERIALIZED *gser);
 
 /**
+* Returns a hash code for the srid/type/geometry information
+* in the GSERIALIZED. Ignores metadata like flags and optional
+* boxes, etc.
+*/
+extern uint64_t gserialized_hash(const GSERIALIZED *g);
+
+/**
 * Extract the SRID from the serialized form (it is packed into
 * three bytes so this is a handy function).
 */

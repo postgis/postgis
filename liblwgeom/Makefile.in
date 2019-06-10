@@ -55,6 +55,7 @@ SA_OBJS = \
 	measures.o \
 	measures3d.o \
 	ptarray.o \
+	lookup3.o \
 	lwgeom_api.o \
 	lwgeom.o \
 	lwpoint.o \
