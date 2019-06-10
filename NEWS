@@ -17,6 +17,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
           from 2.5 (Raúl Marín)
   - #4198, Add ST_ConstrainedDelaunayTriangles SFCGAL function (Darafei
            Praliaskouski)
+  - #4414, Include version number in address_standardizer lib (Raúl Marín)
 
 PostGIS 3.0.0alpha1
 2019/05/26
@@ -71,6 +72,7 @@ PostGIS 3.0.0
   - #4331, ST_3DMakeBox now returns error instead of a miniscule box (Regina Obe)
   - #4342, Removed "versioned" variants of ST_AsGeoJSON and ST_AsKML (Paul Ramsey)
   - #4356, ST_Accum removed. Use array_agg instead. (Darafei Praliaskouski)
+  - #4414, Include version number in address_standardizer lib (Raúl Marín)
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
