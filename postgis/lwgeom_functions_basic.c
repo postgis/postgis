@@ -1947,7 +1947,7 @@ Datum ST_Normalize(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_zmflag);
 Datum LWGEOM_zmflag(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);;
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
 	int ret = 0;
 
 	if (gserialized_has_z(in))
