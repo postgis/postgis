@@ -77,6 +77,10 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS);
 /*  n-raster MapAlgebra                                             */
 /* ---------------------------------------------------------------- */
 
+/* Quiet warning */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-variable-sized-type-not-at-end"
+
 typedef struct {
 	Oid ufc_noid;
 	Oid ufc_rettype;
@@ -92,6 +96,9 @@ typedef struct {
 	FunctionCallInfo ufc_info;
 #endif
 } rtpg_nmapalgebra_callback_arg;
+
+#pragma clang diagnostic pop
+/* ! Quiet warning */
 
 typedef struct rtpg_nmapalgebra_arg_t *rtpg_nmapalgebra_arg;
 struct rtpg_nmapalgebra_arg_t {

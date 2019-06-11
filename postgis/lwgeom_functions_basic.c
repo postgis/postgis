@@ -1903,22 +1903,11 @@ Datum LWGEOM_force_clockwise_poly(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_noop);
 Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in, *out;
-	LWGEOM *lwgeom;
-
-	POSTGIS_DEBUG(2, "LWGEOM_noop called");
-
-	in = PG_GETARG_GSERIALIZED_P(0);
-
-	lwgeom = lwgeom_from_gserialized(in);
-
-	POSTGIS_DEBUGF(3, "Deserialized: %s", lwgeom_summary(lwgeom, 0));
-
-	out = geometry_serialize(lwgeom);
-
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(in);
+	GSERIALIZED *out = geometry_serialize(lwgeom);;
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(in, 0);
-
 	PG_RETURN_POINTER(out);
 }
 
@@ -1958,10 +1947,9 @@ Datum ST_Normalize(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_zmflag);
 Datum LWGEOM_zmflag(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in;
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);;
 	int ret = 0;
 
-	in = PG_GETARG_GSERIALIZED_P(0);
 	if (gserialized_has_z(in))
 		ret += 2;
 	if (gserialized_has_m(in))
@@ -1997,11 +1985,8 @@ Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_ndims);
 Datum LWGEOM_ndims(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in;
-	int ret;
-
-	in = PG_GETARG_GSERIALIZED_P(0);
-	ret = (gserialized_ndims(in));
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
+	int ret = gserialized_ndims(in);
 	PG_FREE_IF_COPY(in, 0);
 	PG_RETURN_INT16(ret);
 }
@@ -2015,18 +2000,13 @@ Datum LWGEOM_same(PG_FUNCTION_ARGS)
 	LWGEOM *lwg1, *lwg2;
 	bool result;
 
-	if (gserialized_get_type(g1) != gserialized_get_type(g2))
+	if ((gserialized_get_type(g1) != gserialized_get_type(g2)) ||
+		(gserialized_has_z(g1) != gserialized_has_z(g2)) ||
+		(gserialized_has_m(g1) != gserialized_has_m(g2)))
 	{
 		PG_FREE_IF_COPY(g1, 0);
 		PG_FREE_IF_COPY(g2, 1);
-		PG_RETURN_BOOL(false); /* different types */
-	}
-
-	if (gserialized_get_zm(g1) != gserialized_get_zm(g2))
-	{
-		PG_FREE_IF_COPY(g1, 0);
-		PG_FREE_IF_COPY(g2, 1);
-		PG_RETURN_BOOL(false); /* different dimensions */
+		PG_RETURN_BOOL(false); /* different type or dimensionality */
 	}
 
 	/* ok, deserialize. */

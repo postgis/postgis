@@ -730,12 +730,6 @@ extern int gserialized_has_m(const GSERIALIZED *gser);
 extern int gserialized_is_geodetic(const GSERIALIZED *gser);
 
 /**
-* Return a number indicating presence of Z and M coordinates.
-* 0 = None, 1 = M, 2 = Z, 3 = ZM
-*/
-extern int gserialized_get_zm(const GSERIALIZED *gser);
-
-/**
 * Return the number of dimensions (2, 3, 4) in a geometry
 */
 extern int gserialized_ndims(const GSERIALIZED *gser);
