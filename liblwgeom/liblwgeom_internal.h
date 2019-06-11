@@ -268,6 +268,13 @@ int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox);
  */
 int gserialized_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox);
 
+/**
+* Calculate required memory segment to contain a serialized form of the LWGEOM.
+* Primarily used internally by the serialization code. Exposed to allow the cunit
+* tests to exercise it.
+*/
+size_t gserialized_from_lwgeom_size(const LWGEOM *geom);
+
 /*
 * Length calculations
 */

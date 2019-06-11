@@ -1948,13 +1948,6 @@ extern uint64_t gbox_get_sortable_hash(const GBOX *g);
 extern int geometry_type_from_string(const char *str, uint8_t *type, int *z, int *m);
 
 /**
-* Calculate required memory segment to contain a serialized form of the LWGEOM.
-* Primarily used internally by the serialization code. Exposed to allow the cunit
-* tests to exercise it.
-*/
-extern size_t gserialized_from_lwgeom_size(const LWGEOM *geom);
-
-/**
 * Allocate a new #GSERIALIZED from an #LWGEOM. For all non-point types, a bounding
 * box will be calculated and embedded in the serialization. The geodetic flag is used
 * to control the box calculation (cartesian or geocentric). If set, the size pointer
