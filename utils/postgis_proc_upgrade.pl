@@ -234,6 +234,7 @@ EOF
 	}
 
 	# This code handles aggregates by dropping and recreating them.
+	# For PG12 use REPLACE instead
 	if ( /^create aggregate\s+([^(]+)\s*\(/i )
 	{
 		my $aggname = $1;
@@ -258,12 +259,21 @@ EOF
     if ( ! $last_updated ) {
       die "ERROR: no last updated info for aggregate '${aggsig}'\n";
     }
+
+    my $pg12_def = $def =~ s/CREATE AGGREGATE/CREATE OR REPLACE AGGREGATE/r;
+    if ($pg12_def eq "")
+    {
+        $pg12_def = "RAISE EXCEPTION 'Could not parse AGGREGATE'"
+    }
     print "-- Aggregate ${aggsig} -- LastUpdated: ${last_updated}\n";
       print <<"EOF";
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
-  IF $last_updated > version_from_num OR (
+  IF current_setting('server_version_num')::integer >= 120000
+  THEN
+    EXECUTE \$postgis_proc_upgrade_parsed_def\$ $pg12_def \$postgis_proc_upgrade_parsed_def\$;
+  ELSIF $last_updated > version_from_num OR (
       $last_updated = version_from_num AND version_from_isdev
     ) FROM _postgis_upgrade_info
   THEN

@@ -18,6 +18,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4198, Add ST_ConstrainedDelaunayTriangles SFCGAL function (Darafei
            Praliaskouski)
   - #4414, Include version number in address_standardizer lib (Raúl Marín)
+  - #4352, Use CREATE OR REPLACE AGGREGATE for PG12+ (Raúl Marín)
 
 PostGIS 3.0.0alpha1
 2019/05/26
@@ -159,6 +160,7 @@ PostGIS 3.0.0
            (Darafei Praliaskouski)
   - #4422, Modernize Python 2 code to get ready for Python 3 (Christian Clauss)
   - #4383, Fix undefined behaviour in implicit conversions (Raúl Marín)
+  - #4352, Use CREATE OR REPLACE AGGREGATE for PG12+ (Raúl Marín)
 
 
 PostGIS 2.5.0
