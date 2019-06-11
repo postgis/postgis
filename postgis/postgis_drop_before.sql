@@ -19,12 +19,77 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-DROP FUNCTION IF EXISTS AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer,boolean);
-DROP FUNCTION IF EXISTS ST_MakeEnvelope(float8, float8, float8, float8);
---changed name of prec arg to be consistent with ST_AsGML/KML
-DROP FUNCTION IF EXISTS ST_AsX3D(geometry, integer, integer);
---changed name of arg: http://trac.osgeo.org/postgis/ticket/1606
-DROP FUNCTION IF EXISTS UpdateGeometrySRID(varchar,varchar,varchar,varchar,integer);
+
+-- Helper function to drop functions when they match the full signature
+-- Requires schema, name and __identity_arguments__ as extracted from pg_catalog
+CREATE OR REPLACE FUNCTION _postgis_drop_function_if_needed(
+    function_schema text,
+    function_name text,
+    function_arguments text) RETURNS void AS $$
+DECLARE
+    frec RECORD;
+    sql_drop text;
+BEGIN
+    FOR frec IN
+        SELECT  p.oid as oid,
+                n.nspname as schema,
+                p.proname as name,
+                pg_catalog.pg_get_function_arguments(p.oid) as arguments,
+                pg_catalog.pg_get_function_identity_arguments(p.oid) as identity_arguments
+            FROM pg_catalog.pg_proc p
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+            WHERE
+                LOWER(n.nspname) = LOWER(function_schema) AND
+                LOWER(p.proname) = LOWER(function_name) AND
+                LOWER(pg_catalog.pg_get_function_arguments(p.oid)) ~ LOWER(function_arguments) AND
+                pg_catalog.pg_function_is_visible(p.oid)
+            ORDER BY 1, 2, 4
+    LOOP
+        sql_drop := 'DROP FUNCTION ' || quote_ident(frec.schema) || '.' || quote_ident(frec.name) || ' ( ' || frec.identity_arguments || ' ) ';
+        RAISE DEBUG 'Name (%): %', frec.oid, frec.name;
+        RAISE DEBUG 'Arguments: %', frec.arguments;
+        RAISE DEBUG 'Identity arguments: %', frec.identity_arguments;
+        RAISE DEBUG 'SQL query: %', sql_drop;
+        BEGIN
+            EXECUTE sql_drop;
+        EXCEPTION
+            WHEN OTHERS THEN
+                RAISE EXCEPTION 'Could not drop function %.%. You might need to drop dependant objects. Postgres error: %', function_schema, function_name, SQLERRM;
+        END;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- FUNCTION AddGeometryColumn signature dropped
+-- (catalog_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid integer, new_type character varying, new_dim integer, use_typmod boolean)
+SELECT _postgis_drop_function_if_needed
+    (
+    '@extschema@',
+    'AddGeometryColumn',
+    'catalog_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid integer, new_type character varying, new_dim integer, use_typmod boolean'
+    );
+
+-- FUNCTION ST_AsX3D was changed to add versioning for 2.0
+-- (geom geometry, prec integer, options integer)
+SELECT _postgis_drop_function_if_needed
+    (
+    '@extschema@',
+    'ST_AsX3D',
+    'geom geometry, prec integer, options integer'
+    );
+
+-- FUNCTION UpdateGeometrySRID changed the name of the args (http://trac.osgeo.org/postgis/ticket/1606) for 2.0
+-- It changed the paramenter `new_srid` to `new_srid_in`
+-- (catalogn_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid integer)
+-- Dropping it conditionally since the same signature still exists.
+SELECT _postgis_drop_function_if_needed
+    (
+    '@extschema@',
+    'UpdateGeometrySRID',
+    'catalogn_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid integer'
+    );
+
 
 --deprecated and removed in 2.1
 -- Hack to fix 2.0 naming
@@ -59,32 +124,72 @@ BEGIN
 END;
 $$ ;
 
--- Going from multiple functions to default args
--- Need to drop old multiple variants to not get in trouble.
-DROP FUNCTION IF EXISTS ST_AsLatLonText(geometry);
-DROP FUNCTION IF EXISTS ST_AsLatLonText(geometry, text);
-DROP FUNCTION IF EXISTS ST_AsTWKB(geometry,int4);
-DROP FUNCTION IF EXISTS ST_AsTWKB(geometry,int4,int8);
-DROP FUNCTION IF EXISTS ST_AsTWKB(geometry,int4,int8,boolean);
 
--- Going from un-named to named arguments
-DROP FUNCTION IF EXISTS _st_linecrossingdirection(geometry,geometry);
-DROP FUNCTION IF EXISTS ST_LineCrossingDirection(geometry, geometry);
-DROP FUNCTION IF EXISTS _st_orderingequals(geometry,geometry);
-DROP FUNCTION IF EXISTS st_orderingequals(geometry,geometry);
-DROP FUNCTION IF EXISTS st_askml(geometry, integer); -- changed to use default args in PostGIS 3.0 (r17357)
-DROP FUNCTION IF EXISTS st_askml(geography, integer); -- changed to use default args in PostGIS 3.0 (r17357)
-DROP FUNCTION IF EXISTS st_buffer(geometry, double precision);
+-- FUNCTION ST_AsLatLonText went from multiple signatures to a single one with defaults for 2.2.0
+DROP FUNCTION IF EXISTS ST_AsLatLonText(geometry); -- Does not conflict
+SELECT _postgis_drop_function_if_needed
+    (
+    '@extschema@',
+    'ST_AsLatLonText',
+    'geometry, text'
+    );
 
--- Old signatures for protobuf related functions improved in 2.4.0 RC/final
-DROP AGGREGATE IF EXISTS ST_AsMVT(text, int4, text, anyelement);
-DROP FUNCTION IF EXISTS ST_AsMVTGeom(geom geometry, bounds box2d, extent int4, buffer int4, clip_geom bool);
-DROP AGGREGATE IF EXISTS ST_AsGeobuf(text, anyelement);
-DROP FUNCTION IF EXISTS pgis_asgeobuf_transfn(internal, text, anyelement);
-DROP FUNCTION IF EXISTS pgis_asmvt_transfn(internal, text, int4, text, anyelement);
--- Going from multiple functions to default args
--- Need to drop old multiple variants to not get in trouble.
-DROP FUNCTION IF EXISTS  ST_CurveToLine(geometry, integer);
-DROP FUNCTION IF EXISTS  ST_CurveToLine(geometry);
 
-DROP VIEW IF EXISTS geometry_columns; -- removed cast 2.2.0 so need to recreate
+-- FUNCTION _st_linecrossingdirection changed argument names in 3.0
+-- Was (geom1 geometry, geom2 geometry) and now (line1 geometry, line2 geometry)
+SELECT _postgis_drop_function_if_needed
+    (
+    '@extschema@',
+    '_st_linecrossingdirection',
+    'geom1 geometry, geom2 geometry'
+    );
+
+
+-- FUNCTION ST_LineCrossingDirection changed argument names in 3.0
+-- Was (geom1 geometry, geom2 geometry) and now (line1 geometry, line2 geometry)
+SELECT _postgis_drop_function_if_needed
+    (
+    '@extschema@',
+    'ST_LineCrossingDirection',
+    'geom1 geometry, geom2 geometry'
+    );
+
+
+-- FUNCTION _st_orderingequals changed argument names in 3.0
+-- Was (GeometryA geometry, GeometryB geometry) and now (geom1 geometry, geom2 geometry)
+SELECT _postgis_drop_function_if_needed
+    (
+    '@extschema@',
+    '_st_orderingequals',
+    'GeometryA geometry, GeometryB geometry'
+    );
+
+-- FUNCTION st_orderingequals changed argument names in 3.0
+-- Was (GeometryA geometry, GeometryB geometry) and now (geom1 geometry, geom2 geometry)
+SELECT _postgis_drop_function_if_needed
+    (
+    '@extschema@',
+    'st_orderingequals',
+    'GeometryA geometry, GeometryB geometry'
+    );
+
+
+-- FUNCTION st_askml changed to add defaults in 3.0 / r17357
+-- These signatures were superseeded
+DROP FUNCTION IF EXISTS st_askml(geometry, integer); -- Does not conflict
+DROP FUNCTION IF EXISTS st_askml(geography, integer); -- Does not conflict
+
+
+-- FUNCTION st_buffer changed to add defaults in 3.0
+-- This signature was superseeded
+DROP FUNCTION IF EXISTS st_buffer(geometry, double precision); -- Does not conflict
+
+
+-- FUNCTION ST_CurveToLine changed to add defaults in 2.5
+-- These signatures were superseeded
+DROP FUNCTION IF EXISTS ST_CurveToLine(geometry, integer); -- Does not conflict
+DROP FUNCTION IF EXISTS ST_CurveToLine(geometry); -- Does not conflict
+
+
+-- DROP auxiliar function (created above)
+DROP FUNCTION _postgis_drop_function_if_needed(text, text, text);
