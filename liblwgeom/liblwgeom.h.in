@@ -1429,6 +1429,11 @@ extern int lwgeom_has_z(const LWGEOM *geom);
 extern int lwgeom_has_m(const LWGEOM *geom);
 
 /**
+* Return #LW_TRUE if geometry has SOLID flag.
+*/
+extern int lwgeom_is_solid(const LWGEOM *geom);
+
+/**
 * Return the number of dimensions (2, 3, 4) in a geometry
 */
 extern int lwgeom_ndims(const LWGEOM *geom);

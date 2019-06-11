@@ -561,7 +561,6 @@ int
 gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 {
 	GSERIALIZED *gpart;
-	uint8_t flags;
 	int result = LW_SUCCESS;
 
 	POSTGIS_DEBUG(4, "entered function");
@@ -577,12 +576,11 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	** which makes slicing worthwhile.
 	*/
 	gpart = (GSERIALIZED*)PG_DETOAST_DATUM(gsdatum);
-	flags = gpart->flags;
 
 	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);
 
 	/* Do we even have a serialized bounding box? */
-	if ( FLAGS_GET_BBOX(flags) )
+	if (gserialized_has_bbox(gpart))
 	{
 		/* Yes! Copy it out into the box! */
 		POSTGIS_DEBUG(4, "copying box out of serialization");

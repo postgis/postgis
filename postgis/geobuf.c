@@ -490,11 +490,12 @@ static void analyze_geometry(struct geobuf_agg_context *ctx, LWGEOM *lwgeom)
 static void analyze_geometry_flags(struct geobuf_agg_context *ctx,
 	LWGEOM *lwgeom)
 {
-	if (!ctx->has_dimensions) {
-		if (FLAGS_GET_Z(lwgeom->flags) || FLAGS_GET_M(lwgeom->flags))
-			ctx->dimensions = 3;
-		else if (FLAGS_GET_ZM(lwgeom->flags))
+	if (!ctx->has_dimensions)
+	{
+		if (lwgeom_has_z(lwgeom) && lwgeom_has_m(lwgeom))
 			ctx->dimensions = 4;
+		else if (lwgeom_has_z(lwgeom) || lwgeom_has_m(lwgeom))
+			ctx->dimensions = 3;
 		else
 			ctx->dimensions = 2;
 		ctx->has_dimensions = 1;

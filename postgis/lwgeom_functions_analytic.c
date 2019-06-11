@@ -433,9 +433,9 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	getPoint4d_p(in_lwpoint->point, 0, &offsetpoint);
 	grid.ipx = offsetpoint.x;
 	grid.ipy = offsetpoint.y;
-	if (FLAGS_GET_Z(in_lwpoint->flags) ) grid.ipz = offsetpoint.z;
+	if (lwgeom_has_z(in_lwpoint) ) grid.ipz = offsetpoint.z;
 	else grid.ipz=0;
-	if (FLAGS_GET_M(in_lwpoint->flags) ) grid.ipm = offsetpoint.m;
+	if (lwgeom_has_m(in_lwpoint) ) grid.ipm = offsetpoint.m;
 	else grid.ipm=0;
 
 #if POSTGIS_DEBUG_LEVEL >= 4

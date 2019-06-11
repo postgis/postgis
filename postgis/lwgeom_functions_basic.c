@@ -1151,7 +1151,8 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 		       lwtype_name(gserialized_get_type(gser1)),
 		       lwtype_name(gserialized_get_type(gser2)));
 
-	if (FLAGS_GET_ZM(gser1->flags) != FLAGS_GET_ZM(gser2->flags))
+	if ((gserialized_has_z(gser1) != gserialized_has_z(gser2)) ||
+		(gserialized_has_m(gser1) != gserialized_has_m(gser2)))
 	{
 		elog(ERROR, "Cannot ST_Collect geometries with differing dimensionality.");
 		PG_RETURN_NULL();
@@ -2675,7 +2676,7 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 		else
 		{
 			lwcol = lwgeom_construct_empty(
-			    type, lwgeom->srid, FLAGS_GET_Z(lwgeom->flags), FLAGS_GET_M(lwgeom->flags));
+			    type, lwgeom->srid, lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom));
 		}
 	}
 	else
@@ -3092,7 +3093,7 @@ Datum LWGEOM_FilterByM(PG_FUNCTION_ARGS)
 
 	lwgeom_in = lwgeom_from_gserialized(geom_in);
 
-	hasm = FLAGS_GET_M(lwgeom_in->flags);
+	hasm = lwgeom_has_m(lwgeom_in);
 
 	if (!hasm)
 	{
