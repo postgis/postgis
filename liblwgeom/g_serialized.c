@@ -465,8 +465,12 @@ int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		}
 		return LW_SUCCESS;
 	}
-
-	return LW_FAILURE;
+	else
+	{
+		/* Read directly off coordinates for  */
+		/* simple (point, 2-point line) cases */
+		return gserialized_peek_gbox_p(g, gbox);
+	}
 }
 
 /*

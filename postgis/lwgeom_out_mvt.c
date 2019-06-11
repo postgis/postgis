@@ -89,8 +89,7 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 	{
 		GBOX gserialized_box;
 		/* We only apply the optimization if the bounding box is available */
-		if ((gserialized_read_gbox_p(geom_in, &gserialized_box) == LW_SUCCESS) ||
-		    (gserialized_peek_gbox_p(geom_in, &gserialized_box) == LW_SUCCESS))
+		if (gserialized_read_gbox_p(geom_in, &gserialized_box) == LW_SUCCESS)
 		{
 			/* Shortcut to drop geometries smaller than the resolution */
 			double geom_width = gserialized_box.xmax - gserialized_box.xmin;
