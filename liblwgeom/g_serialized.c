@@ -73,7 +73,7 @@ uint32_t gserialized_max_header_size(void)
 	return sizeof(GSERIALIZED) + 8 * sizeof(float) + sizeof(int);
 }
 
-uint32_t gserialized_header_size(const GSERIALIZED *gser)
+static uint32_t gserialized_header_size(const GSERIALIZED *gser)
 {
 	uint32_t sz = 8; /* varsize (4) + srid(3) + flags (1) */
 

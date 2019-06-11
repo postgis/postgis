@@ -683,12 +683,6 @@ extern uint32_t gserialized_get_type(const GSERIALIZED *g);
 extern uint32_t gserialized_max_header_size(void);
 
 /**
-* Returns the size in bytes of the header, from the start of the
-* object up to the type number.
-*/
-extern uint32_t gserialized_header_size(const GSERIALIZED *gser);
-
-/**
 * Returns a hash code for the srid/type/geometry information
 * in the GSERIALIZED. Ignores metadata like flags and optional
 * boxes, etc.
