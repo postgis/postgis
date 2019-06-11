@@ -1239,8 +1239,31 @@ extern void interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, 
 extern int lwgeom_is_clockwise(LWGEOM *lwgeom);
 
 
+/**
+* Simplification
+*/
 extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist, int preserve_collapsed);
 extern LWGEOM* lwgeom_remove_repeated_points(const LWGEOM *in, double tolerance);
+
+/**
+* Snap-to-grid
+*/
+typedef struct gridspec_t
+{
+    double ipx;
+    double ipy;
+    double ipz;
+    double ipm;
+    double xsize;
+    double ysize;
+    double zsize;
+    double msize;
+}
+gridspec;
+
+extern LWGEOM* lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid);
+extern void lwgeom_grid_in_place(LWGEOM *lwgeom, const gridspec *grid);
+
 
 /****************************************************************
 * READ/WRITE FUNCTIONS
@@ -1951,7 +1974,13 @@ extern LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g);
 * it is not, calculate it from the geometry. If that doesn't work (null
 * or empty) return LW_FAILURE.
 */
-extern int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *gbox);
+extern int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *box);
+
+/**
+* Pull a #GBOX from the header of a #GSERIALIZED, if one is available. If
+* it is not, return LW_FAILURE.
+*/
+extern int gserialized_fast_gbox_p(const GSERIALIZED *g, GBOX *box);
 
 
 /**

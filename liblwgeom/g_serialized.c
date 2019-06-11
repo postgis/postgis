@@ -677,6 +677,31 @@ int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *box)
 	}
 }
 
+/**
+* Read the bounding box off a serialization and fail if
+* it is not already there.
+*/
+int gserialized_fast_gbox_p(const GSERIALIZED *g, GBOX *box)
+{
+	/* Try to just read the serialized box. */
+	if ( gserialized_read_gbox_p(g, box) == LW_SUCCESS )
+	{
+		return LW_SUCCESS;
+	}
+	/* No box? Try to peek into simpler geometries and */
+	/* derive a box without creating an lwgeom */
+	else if ( gserialized_peek_gbox_p(g, box) == LW_SUCCESS )
+	{
+		return LW_SUCCESS;
+	}
+	else
+	{
+		return LW_FAILURE;
+	}
+}
+
+
+
 
 /***********************************************************************
 * Calculate the GSERIALIZED size for an LWGEOM.

@@ -398,25 +398,6 @@ int lwtin_is_closed(const LWTIN *tin);
 /**
 * Snap to grid
 */
-
-/**
-* Snap-to-grid Support
-*/
-typedef struct gridspec_t
-{
-	double ipx;
-	double ipy;
-	double ipz;
-	double ipm;
-	double xsize;
-	double ysize;
-	double zsize;
-	double msize;
-}
-gridspec;
-
-LWGEOM* lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid);
-void lwgeom_grid_in_place(LWGEOM *lwgeom, const gridspec *grid);
 void ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid);
 
 /*
