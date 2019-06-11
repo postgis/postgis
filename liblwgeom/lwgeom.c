@@ -940,7 +940,6 @@ lwgeom_ndims(const LWGEOM *geom)
 
 
 
-
 void
 lwgeom_set_geodetic(LWGEOM *geom, int value)
 {
