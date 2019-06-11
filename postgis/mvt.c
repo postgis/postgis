@@ -24,6 +24,7 @@
 
 #include <string.h>
 #include <float.h>
+#include <math.h>
 
 #include "mvt.h"
 #include "lwgeom_geos.h"
