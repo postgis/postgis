@@ -15,7 +15,7 @@
 #include "CUnit/Basic.h"
 
 #include "liblwgeom_internal.h"
-#include "g_serialized.c" /* for gserialized_peek_gbox_p */
+#include "gserialized1.c" /* for gserialized_peek_gbox_p */
 #include "cu_tester.h"
 
 static void test_typmod_macros(void)
