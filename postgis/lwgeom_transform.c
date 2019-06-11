@@ -31,6 +31,8 @@
 #include "liblwgeom.h"
 #include "lwgeom_transform.h"
 
+#include "float.h" /* DBL_DIG */
+
 Datum transform(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);

@@ -129,13 +129,10 @@ Datum LWGEOM_mem_size(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_summary);
 Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	char *result;
 	text *mytext;
-	LWGEOM *lwgeom;
-
-	lwgeom = lwgeom_from_gserialized(geom);
-	result = lwgeom_summary(lwgeom, 0);
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	char *result = lwgeom_summary(lwgeom, 0);
 	lwgeom_free(lwgeom);
 
 	/* create a text obj to return */
@@ -1905,7 +1902,7 @@ Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(in);
-	GSERIALIZED *out = geometry_serialize(lwgeom);;
+	GSERIALIZED *out = geometry_serialize(lwgeom);
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(in, 0);
 	PG_RETURN_POINTER(out);
