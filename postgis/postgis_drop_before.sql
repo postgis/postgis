@@ -190,6 +190,45 @@ DROP FUNCTION IF EXISTS st_buffer(geometry, double precision); -- Does not confl
 DROP FUNCTION IF EXISTS ST_CurveToLine(geometry, integer); -- Does not conflict
 DROP FUNCTION IF EXISTS ST_CurveToLine(geometry); -- Does not conflict
 
+-- geometry_columns changed parameter types so we verify if it needs to be dropped
+-- We check the catalog to see if the view (geometry_columns) has a column
+-- with name `f_table_schema` and type `character varying(256)` as it was
+-- changed to type `name` in 2.2
+DO  language 'plpgsql' $$
+BEGIN
+	IF EXISTS
+        (
+            WITH oids AS
+            (
+                SELECT c.oid as oid,
+                    n.nspname,
+                    c.relname
+                    FROM pg_catalog.pg_class c
+                    LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+                    WHERE c.relname = 'geometry_columns' AND
+                        n.nspname = 'public'
+                    AND pg_catalog.pg_table_is_visible(c.oid)
+                    ORDER BY 2, 3
+
+            ),
+            name_attribute AS
+            (
+                SELECT  a.attname as attname,
+                        pg_catalog.format_type(a.atttypid, a.atttypmod) as format_type
+                        FROM pg_catalog.pg_attribute a, oids
+                        WHERE a.attrelid = oids.oid AND a.attnum > 0 AND NOT a.attisdropped
+                        ORDER BY a.attnum
+            )
+            SELECT attname, format_type
+            FROM name_attribute
+            WHERE attname = 'f_table_schema' AND format_type = 'character varying(256)'
+        )
+        THEN
+            DROP VIEW geometry_columns;
+        END IF;
+END;
+$$;
+
 
 -- DROP auxiliar function (created above)
 DROP FUNCTION _postgis_drop_function_if_needed(text, text, text);
