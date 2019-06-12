@@ -7,6 +7,7 @@ PostGIS 2.5.3
   - #4361, Fix postgis_type_name with (GEOMETRYM,3) (Matt Bretl)
   - #4326, Fix circular arc distance calculation (Paul Ramsey)
   - #4380, Simple TIN support to allow viz in QGIS (Paul Ramsey)
+  - #4388, AddRasterConstraints: Ignore NULLs when generating constraints (Raúl Marín)
 
 
 PostGIS 2.5.2
