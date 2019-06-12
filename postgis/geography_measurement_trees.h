@@ -22,7 +22,7 @@
  *
  **********************************************************************/
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "lwgeodetic.h"
 #include "lwgeodetic_tree.h"
 #include "lwgeom_cache.h"
