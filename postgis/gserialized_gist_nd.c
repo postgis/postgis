@@ -628,7 +628,7 @@ gserialized_expand(GSERIALIZED *g, double distance)
 	if (gserialized_get_gbox_p(g, &gbox) == LW_FAILURE)
 		return g;
 
-	gbox_expand(&gbox, fdistance);
+	gbox_expand(&gbox, 1.01 * fdistance);
 
 	return gserialized_set_gbox(g, &gbox);
 }
