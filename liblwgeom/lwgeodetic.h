@@ -40,8 +40,8 @@
 /* Override tolerance for geodetic */
 #ifdef FP_TOLERANCE
 #undef FP_TOLERANCE
-#endif
 #define FP_TOLERANCE 1e-14
+#endif
 
 extern int gbox_geocentric_slow;
 
