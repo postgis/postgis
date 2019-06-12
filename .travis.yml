@@ -7,13 +7,9 @@ env:
 
 addons:
   postgresql: "9.6"
-  apt:
-    packages:
-      - eatmydata
 
 before_install:
   - eval "${MATRIX_EVAL}"
-  - sudo sh -c "echo /usr/lib/libeatmydata/libeatmydata.so >> /etc/ld.so.preload"
   - curl -sSfL https://github.com/mapbox/logbt/archive/v2.0.3.tar.gz | sudo tar --gunzip --extract --strip-components=1 --exclude="*md" --exclude="test*" --directory=/usr/local
   - curl -sSfL https://raw.githubusercontent.com/mapbox/logbt/30c554dd37b6c96c23fc424f75910fc6d6696f00/bin/logbt | sudo tee /usr/local/bin/logbt > /dev/null
   - sudo logbt --setup
@@ -27,7 +23,7 @@ before_install:
   - sudo apt-get update -qq
   - mkdir -p /home/travis/deb && touch /home/travis/deb/__ && sudo cp -n /home/travis/deb/* /var/cache/apt/archives || true
   - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests libsfcgal1 libsfcgal-dev postgresql-server-dev-9.6 libxml2-utils libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex libgeos-dev libjson0-dev libgdal-dev gdb libc6-dbg
-  - sudo sh -c "echo deb http://archive.ubuntu.com/ubuntu/ artful main restricted universe multiverse >> /etc/apt/sources.list"
+  - sudo sh -c "echo deb http://archive.ubuntu.com/ubuntu/ bionic main restricted universe multiverse >> /etc/apt/sources.list"
   - sudo apt-get update -qq
   - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests binutils libproj-dev libprotobuf-c-dev protobuf-c-compiler
   - cp -n /var/cache/apt/archives/* /home/travis/deb || true
@@ -45,7 +41,7 @@ language: c
 
 compiler: gcc
 
-dist: trusty
+dist: xenial
 
 cache:
   ccache: true

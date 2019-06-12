@@ -147,6 +147,7 @@ bool box2df_above(const BOX2DF *a, const BOX2DF *b);
 bool box2df_overabove(const BOX2DF *a, const BOX2DF *b);
 
 
+void gidx_validate(GIDX *b);
 bool gidx_contains(GIDX *a, GIDX *b);
 int gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df);
 

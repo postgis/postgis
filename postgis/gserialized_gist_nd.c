@@ -133,19 +133,19 @@ GIDX* gidx_copy(GIDX *b)
 
 
 /* Ensure all minimums are below maximums. */
-static inline void gidx_validate(GIDX *b)
+void
+gidx_validate(GIDX *b)
 {
 	uint32_t i;
 	Assert(b);
-	POSTGIS_DEBUGF(5,"validating gidx (%s)", gidx_to_string(b));
-	for ( i = 0; i < GIDX_NDIMS(b); i++ )
+	POSTGIS_DEBUGF(5, "validating gidx (%s)", gidx_to_string(b));
+	for (i = 0; i < GIDX_NDIMS(b); i++)
 	{
-		if ( GIDX_GET_MIN(b,i) > GIDX_GET_MAX(b,i) )
+		if (GIDX_GET_MIN(b, i) > GIDX_GET_MAX(b, i))
 		{
-			float tmp;
-			tmp = GIDX_GET_MIN(b,i);
-			GIDX_SET_MIN(b,i,GIDX_GET_MAX(b,i));
-			GIDX_SET_MAX(b,i,tmp);
+			float tmp = GIDX_GET_MIN(b, i);
+			GIDX_SET_MIN(b, i, GIDX_GET_MAX(b, i));
+			GIDX_SET_MAX(b, i, tmp);
 		}
 	}
 	return;
