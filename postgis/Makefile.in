@@ -238,7 +238,7 @@ postgis_upgrade.sql.in: postgis.sql ../utils/postgis_proc_upgrade.pl
 postgis_proc_set_search_path.sql: postgis.sql ../utils/postgis_proc_set_search_path.pl
 	$(PERL) ../utils/postgis_proc_set_search_path.pl $< UNUSED > $@
 
-postgis_upgrade.sql: postgis_drop_before.sql postgis_upgrade.sql.in postgis_drop_after.sql
+postgis_upgrade.sql: postgis_before_upgrade.sql postgis_upgrade.sql.in postgis_after_upgrade.sql
 	echo "BEGIN;" > $@
 	cat $^ >> $@
 	echo "COMMIT;" >> $@
@@ -246,7 +246,7 @@ postgis_upgrade.sql: postgis_drop_before.sql postgis_upgrade.sql.in postgis_drop
 sfcgal_upgrade.sql.in: sfcgal.sql ../utils/postgis_proc_upgrade.pl
 	$(PERL) ../utils/postgis_proc_upgrade.pl $< UNUSED > $@
 
-sfcgal_upgrade.sql: sfcgal_upgrade.sql.in postgis_drop_after.sql
+sfcgal_upgrade.sql: sfcgal_upgrade.sql.in postgis_after_upgrade.sql
 	cat $^ > $@
 
 # SQL objects are also dependent on postgis_config.h for PostgreSQL version
