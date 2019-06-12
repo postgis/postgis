@@ -67,7 +67,9 @@ static void test_gdal_rasterize() {
 	wkb_len = (int) ceil(((double) strlen(wkb_hex)) / 2);
 	wkb = (unsigned char *) rtalloc(sizeof(unsigned char) * wkb_len);
 	for (i = 0; i < wkb_len; i++) {
-		sscanf(pos, "%2hhx", &wkb[i]);
+		int b = 0;
+		sscanf(pos, "%2x", &b);
+		wkb[i] = (unsigned char)b;
 		pos += 2;
 	}
 
