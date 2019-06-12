@@ -19,6 +19,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
            Praliaskouski)
   - #4414, Include version number in address_standardizer lib (Raúl Marín)
   - #4352, Use CREATE OR REPLACE AGGREGATE for PG12+ (Raúl Marín)
+  - #4334, Fix upgrade issues related to renamed parameters (Raúl Marín)
 
 PostGIS 3.0.0alpha1
 2019/05/26
@@ -74,6 +75,7 @@ PostGIS 3.0.0
   - #4342, Removed "versioned" variants of ST_AsGeoJSON and ST_AsKML (Paul Ramsey)
   - #4356, ST_Accum removed. Use array_agg instead. (Darafei Praliaskouski)
   - #4414, Include version number in address_standardizer lib (Raúl Marín)
+  - #4334, Fix upgrade issues related to renamed function parameters (Raúl Marín)
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
@@ -161,6 +163,7 @@ PostGIS 3.0.0
   - #4422, Modernize Python 2 code to get ready for Python 3 (Christian Clauss)
   - #4383, Fix undefined behaviour in implicit conversions (Raúl Marín)
   - #4352, Use CREATE OR REPLACE AGGREGATE for PG12+ (Raúl Marín)
+  - #4334, Fix upgrade issues related to renamed function parameters (Raúl Marín)
 
 
 PostGIS 2.5.0
