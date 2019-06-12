@@ -613,59 +613,24 @@ gidx_distance(const GIDX *a, const GIDX *b, int m_is_time)
 	return sqrt(sum);
 }
 
-static double
-gidx_distance_m(const GIDX *a, const GIDX *b)
-{
-	int mdim_a, mdim_b;
-	double d, amin, amax, bmin, bmax;
-
-	/* Base computation on least available dimensions */
-	mdim_a = GIDX_NDIMS(a) - 1;
-	mdim_b = GIDX_NDIMS(b) - 1;
-
-	amin = GIDX_GET_MIN(a, mdim_a);
-	amax = GIDX_GET_MAX(a, mdim_a);
-	bmin = GIDX_GET_MIN(b, mdim_b);
-	bmax = GIDX_GET_MAX(b, mdim_b);
-
-	if ((amin <= bmax && amax >= bmin))
-	{
-		/* overlaps */
-		d = 0;
-	}
-	else if (bmax < amin)
-	{
-		/* is "left" */
-		d = amin - bmax;
-	}
-	else
-	{
-		/* is "right" */
-		assert(bmin > amax);
-		d = bmin - amax;
-	}
-
-	return d;
-}
-
 /**
  * Return a #GSERIALIZED with an expanded bounding box.
  */
 GSERIALIZED *
 gserialized_expand(GSERIALIZED *g, double distance)
 {
-	char boxmem[GIDX_MAX_SIZE];
-	GIDX *gidx = (GIDX *)boxmem;
+	GBOX gbox;
 	float fdistance = (float)distance;
+	gbox_init(&gbox);
 
 	/* Get our bounding box out of the geography, return right away if
 	   input is an EMPTY geometry. */
-	if (gserialized_get_gidx_p(g, gidx) == LW_FAILURE)
+	if (gserialized_get_gbox_p(g, &gbox) == LW_FAILURE)
 		return g;
 
-	gidx_expand(gidx, fdistance);
+	gbox_expand(&gbox, fdistance);
 
-	return gserialized_set_gidx(g, gidx);
+	return gserialized_set_gbox(g, &gbox);
 }
 
 /***********************************************************************
@@ -678,11 +643,6 @@ gserialized_expand(GSERIALIZED *g, double distance)
 PG_FUNCTION_INFO_V1(gserialized_distance_nd);
 Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 {
-	char b1mem[GIDX_MAX_SIZE];
-	GIDX *b1 = (GIDX *)b1mem;
-	char b2mem[GIDX_MAX_SIZE];
-	GIDX *b2 = (GIDX *)b2mem;
-
 	/* Feature-to-feature distance */
 	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
@@ -743,11 +703,21 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 
 		if (usebox)
 		{
-			double d;
-			gserialized_get_gidx_p(geom1, b1);
-			gserialized_get_gidx_p(geom2, b2);
-			d = gidx_distance_m(b1, b2);
-			distance += d * d;
+			GBOX b1, b2;
+			if (gserialized_get_gbox_p(geom1, &b1) && gserialized_get_gbox_p(geom2, &b2))
+			{
+				double d;
+				/* Disjoint left */
+				if (b1.mmin > b2.mmax)
+					d = b1.mmin - b2.mmax;
+				/* Disjoint right */
+				else if (b2.mmin > b1.mmax)
+					d = b2.mmin - b1.mmax;
+				/* Not Disjoint */
+				else
+					d = 0;
+				distance += d * d;
+			}
 		}
 		else
 			distance += (m2 - m1) * (m2 - m1);

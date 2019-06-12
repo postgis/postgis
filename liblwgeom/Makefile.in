@@ -96,7 +96,6 @@ SA_OBJS = \
 	gserialized.o \
 	gserialized1.o \
 	gserialized2.o \
-	gutil.o \
 	lwgeodetic.o \
 	lwgeodetic_tree.o \
 	lwrandom.o \

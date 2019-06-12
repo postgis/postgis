@@ -1612,3 +1612,121 @@ LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g)
 
 	return lwgeom;
 }
+
+const float * gserialized_get_float_box_p(const GSERIALIZED *g, size_t *ndims)
+{
+	if (ndims)
+		*ndims = FLAGS_NDIMS_BOX(g->flags);
+	if (!g) return NULL;
+	if (!gserialized_has_bbox(g)) return NULL;
+	return (const float *)(g->data);
+}
+
+/**
+* Update the bounding box of a #GSERIALIZED, allocating a fresh one
+* if there is not enough space to just write the new box in.
+* <em>WARNING</em> if a new object needs to be created, the
+* input pointer will have to be freed by the caller! Check
+* to see if input == output. Returns null if there's a problem
+* like mismatched dimensions.
+*/
+GSERIALIZED* gserialized_set_gbox(GSERIALIZED *g, GBOX *gbox)
+{
+
+	int g_ndims = FLAGS_NDIMS_BOX(g->flags);
+	int box_ndims = FLAGS_NDIMS_BOX(gbox->flags);
+	GSERIALIZED *g_out = NULL;
+	size_t box_size = 2 * g_ndims * sizeof(float);
+	float *fbox;
+	int fbox_pos = 0;
+
+	/* The dimensionality of the inputs has to match or we are SOL. */
+	if ( g_ndims != box_ndims )
+	{
+		return NULL;
+	}
+
+	/* Serialized already has room for a box. */
+	if (FLAGS_GET_BBOX(g->flags))
+	{
+		g_out = g;
+	}
+	/* Serialized has no box. We need to allocate enough space for the old
+	   data plus the box, and leave a gap in the memory segment to write
+	   the new values into.
+	*/
+	else
+	{
+		size_t varsize_new = SIZE_GET(g->size) + box_size;
+		uint8_t *ptr;
+		g_out = lwalloc(varsize_new);
+		/* Copy the head of g into place */
+		memcpy(g_out, g, 8);
+		/* Copy the body of g into place after leaving space for the box */
+		ptr = g_out->data;
+		ptr += box_size;
+		memcpy(ptr, g->data, SIZE_GET(g->size) - 8);
+		FLAGS_SET_BBOX(g_out->flags, 1);
+		g->size = SIZE_SET(g->size, varsize_new);
+	}
+
+	/* Move bounds to nearest float values */
+	gbox_float_round(gbox);
+	/* Now write the float box values into the memory segement */
+	fbox = (float*)(g_out->data);
+	/* Copy in X/Y */
+	fbox[fbox_pos++] = gbox->xmin;
+	fbox[fbox_pos++] = gbox->xmax;
+	fbox[fbox_pos++] = gbox->ymin;
+	fbox[fbox_pos++] = gbox->ymax;
+	/* Optionally copy in higher dims */
+	if (g_ndims > 2)
+	{
+		fbox[fbox_pos++] = gbox->zmin;
+		fbox[fbox_pos++] = gbox->zmax;
+	}
+	/* Optionally copy in higher dims */
+	if (g_ndims > 3)
+	{
+		fbox[fbox_pos++] = gbox->mmin;
+		fbox[fbox_pos++] = gbox->mmax;
+	}
+
+	return g_out;
+}
+
+
+/**
+* Remove the bounding box from a #GSERIALIZED. Returns a freshly
+* allocated #GSERIALIZED every time.
+*/
+GSERIALIZED* gserialized_drop_gbox(GSERIALIZED *g)
+{
+	int g_ndims = FLAGS_NDIMS_BOX(g->flags);
+	size_t box_size = 2 * g_ndims * sizeof(float);
+	size_t g_out_size = SIZE_GET(g->size) - box_size;
+	GSERIALIZED *g_out = lwalloc(g_out_size);
+
+	/* Copy the contents while omitting the box */
+	if ( FLAGS_GET_BBOX(g->flags) )
+	{
+		uint8_t *outptr = (uint8_t*)g_out;
+		uint8_t *inptr = (uint8_t*)g;
+		/* Copy the header (size+type) of g into place */
+		memcpy(outptr, inptr, 8);
+		outptr += 8;
+		inptr += 8 + box_size;
+		/* Copy parts after the box into place */
+		memcpy(outptr, inptr, g_out_size - 8);
+		FLAGS_SET_BBOX(g_out->flags, 0);
+		g_out->size = SIZE_SET(g_out->size, g_out_size);
+	}
+	/* No box? Nothing to do but copy and return. */
+	else
+	{
+		memcpy(g_out, g, g_out_size);
+	}
+
+	return g_out;
+}
+

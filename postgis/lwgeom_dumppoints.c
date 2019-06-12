@@ -257,7 +257,7 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 				pathpt[0] = PointerGetDatum(construct_array(state->path, state->pathlen+1,
 						INT4OID, state->typlen, state->byval, state->align));
 
-				pathpt[1] = PointerGetDatum(gserialized_from_lwgeom((LWGEOM*)lwpoint,0));
+				pathpt[1] = PointerGetDatum(geometry_serialize((LWGEOM*)lwpoint));
 
 				tuple = heap_form_tuple(funcctx->tuple_desc, pathpt, isnull);
 				result = HeapTupleGetDatum(tuple);

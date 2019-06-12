@@ -62,7 +62,7 @@ ptarray_construct_empty(char hasz, char hasm, uint32_t maxpoints)
 	pa->serialized_pointlist = NULL;
 
 	/* Set our dimensionality info on the bitmap */
-	pa->flags = gflags(hasz, hasm, 0);
+	pa->flags = lwflags(hasz, hasm, 0);
 
 	/* We will be allocating a bit of room */
 	pa->npoints = 0;
@@ -283,7 +283,7 @@ POINTARRAY* ptarray_construct_reference_data(char hasz, char hasm, uint32_t npoi
 {
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
 	LWDEBUGF(5, "hasz = %d, hasm = %d, npoints = %d, ptlist = %p", hasz, hasm, npoints, ptlist);
-	pa->flags = gflags(hasz, hasm, 0);
+	pa->flags = lwflags(hasz, hasm, 0);
 	FLAGS_SET_READONLY(pa->flags, 1); /* We don't own this memory, so we can't alter or free it. */
 	pa->npoints = npoints;
 	pa->maxpoints = npoints;
@@ -297,7 +297,7 @@ ptarray_construct_copy_data(char hasz, char hasm, uint32_t npoints, const uint8_
 {
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
 
-	pa->flags = gflags(hasz, hasm, 0);
+	pa->flags = lwflags(hasz, hasm, 0);
 	pa->npoints = npoints;
 	pa->maxpoints = npoints;
 

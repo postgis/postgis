@@ -65,7 +65,7 @@ lwpoly_construct(int32_t srid, GBOX *bbox, uint32_t nrings, POINTARRAY **points)
 
 	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
 	result->type = POLYGONTYPE;
-	result->flags = gflags(hasz, hasm, 0);
+	result->flags = lwflags(hasz, hasm, 0);
 	FLAGS_SET_BBOX(result->flags, bbox?1:0);
 	result->srid = srid;
 	result->nrings = nrings;
@@ -162,7 +162,7 @@ lwpoly_construct_empty(int32_t srid, char hasz, char hasm)
 {
 	LWPOLY *result = lwalloc(sizeof(LWPOLY));
 	result->type = POLYGONTYPE;
-	result->flags = gflags(hasz,hasm,0);
+	result->flags = lwflags(hasz,hasm,0);
 	result->srid = srid;
 	result->nrings = 0;
 	result->maxrings = 1; /* Allocate room for ring, just in case. */

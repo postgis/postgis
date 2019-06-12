@@ -62,7 +62,7 @@ parse_geohash(char *geohash, int precision)
 	POSTGIS_DEBUGF(2, "ST_Box2dFromGeoHash sw: %.20f, %.20f", lon[0], lat[0]);
 	POSTGIS_DEBUGF(2, "ST_Box2dFromGeoHash ne: %.20f, %.20f", lon[1], lat[1]);
 
-	box = gbox_new(gflags(0, 0, 1));
+	box = gbox_new(lwflags(0, 0, 1));
 
 	box->xmin = lon[0];
 	box->ymin = lat[0];

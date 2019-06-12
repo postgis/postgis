@@ -669,15 +669,22 @@ extern LWTIN* lwtin_add_lwtriangle(LWTIN *mobj, const LWTRIANGLE *obj);
 
 extern LWCOLLECTION* lwcollection_concat_in_place(LWCOLLECTION* col1, const LWCOLLECTION* col2);
 
-
-/***********************************************************************
-** Utility functions for flag byte and srid_flag integer.
-*/
-
 /**
 * Construct a new flags char.
 */
-extern uint8_t gflags(int hasz, int hasm, int geodetic);
+extern uint8_t lwflags(int hasz, int hasm, int geodetic);
+
+
+
+/***********************************************************************
+** GSERIALIZED API
+*/
+
+/**
+* Access to the float bounding box, if there is one.
+* NULL if there is not.
+*/
+extern const float * gserialized_get_float_box_p(const GSERIALIZED *g, size_t *ndims);
 
 /**
 * Extract the geometry type from the serialized form (it hides in
@@ -753,6 +760,50 @@ extern int gserialized_ndims(const GSERIALIZED *gser);
 * point of the object bounds.
 */
 extern int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2);
+
+/**
+* Allocate a new #GSERIALIZED from an #LWGEOM. For all non-point types, a bounding
+* box will be calculated and embedded in the serialization. The geodetic flag is used
+* to control the box calculation (cartesian or geocentric). If set, the size pointer
+* will contain the size of the final output, which is useful for setting the PgSQL
+* VARSIZE information.
+*/
+extern GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size);
+
+/**
+* Allocate a new #LWGEOM from a #GSERIALIZED. The resulting #LWGEOM will have coordinates
+* that are double aligned and suitable for direct reading using getPoint2d_p_ro
+*/
+extern LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g);
+
+/**
+* Pull a #GBOX from the header of a #GSERIALIZED, if one is available. If
+* it is not, calculate it from the geometry. If that doesn't work (null
+* or empty) return LW_FAILURE.
+*/
+extern int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *box);
+
+/**
+* Pull a #GBOX from the header of a #GSERIALIZED, if one is available. If
+* it is not, return LW_FAILURE.
+*/
+extern int gserialized_fast_gbox_p(const GSERIALIZED *g, GBOX *box);
+
+/**
+* Copy a new bounding box into an existing gserialized.
+* If necessary a new #GSERIALIZED will be allocated. Test
+* that input != output before freeing input.
+*/
+extern GSERIALIZED *gserialized_set_gbox(GSERIALIZED *g, GBOX *gbox);
+
+/**
+* Remove the bounding box from a #GSERIALIZED. Returns a freshly
+* allocated #GSERIALIZED every time.
+*/
+extern GSERIALIZED* gserialized_drop_gbox(GSERIALIZED *g);
+
+/*****************************************************************************/
+
 
 /**
 * Call this function to drop BBOX and SRID
@@ -1960,35 +2011,6 @@ extern uint64_t gbox_get_sortable_hash(const GBOX *g);
 * would return type of 1 and z of 1 and m of 0. Valid
 */
 extern int geometry_type_from_string(const char *str, uint8_t *type, int *z, int *m);
-
-/**
-* Allocate a new #GSERIALIZED from an #LWGEOM. For all non-point types, a bounding
-* box will be calculated and embedded in the serialization. The geodetic flag is used
-* to control the box calculation (cartesian or geocentric). If set, the size pointer
-* will contain the size of the final output, which is useful for setting the PgSQL
-* VARSIZE information.
-*/
-extern GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size);
-
-/**
-* Allocate a new #LWGEOM from a #GSERIALIZED. The resulting #LWGEOM will have coordinates
-* that are double aligned and suitable for direct reading using getPoint2d_p_ro
-*/
-extern LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g);
-
-/**
-* Pull a #GBOX from the header of a #GSERIALIZED, if one is available. If
-* it is not, calculate it from the geometry. If that doesn't work (null
-* or empty) return LW_FAILURE.
-*/
-extern int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *box);
-
-/**
-* Pull a #GBOX from the header of a #GSERIALIZED, if one is available. If
-* it is not, return LW_FAILURE.
-*/
-extern int gserialized_fast_gbox_p(const GSERIALIZED *g, GBOX *box);
-
 
 /**
  * Parser check flags

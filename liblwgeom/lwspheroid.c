@@ -502,7 +502,7 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 	double delta_lon_tolerance;
 	double latitude_min;
 
-	gbox2d.flags = gflags(0, 0, 0);
+	gbox2d.flags = lwflags(0, 0, 0);
 
 	/* Return zero on non-sensical inputs */
 	if ( ! pa || pa->npoints < 4 )
