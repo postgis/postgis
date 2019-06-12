@@ -6966,7 +6966,9 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_srid(rastschema name, rasttabl
 		sql := 'SELECT st_srid('
 			|| quote_ident($3)
 			|| ') FROM ' || fqtn
-			|| ' LIMIT 1';
+			|| ' WHERE '
+			|| quote_ident($3)
+			|| ' IS NOT NULL LIMIT 1;';
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN
@@ -7047,7 +7049,9 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_scale(rastschema name, rasttab
 			|| quote_ident($3)
 			|| ') FROM '
 			|| fqtn
-			|| ' LIMIT 1';
+			|| ' WHERE '
+			|| quote_ident($3)
+			|| ' IS NOT NULL LIMIT 1;';
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN
@@ -7194,11 +7198,13 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rastta
 		fqtn := fqtn || quote_ident($2);
 
 		sql := 'SELECT @extschema@.ST_SRID('
-            || quote_ident($3)
-      || ') FROM '
-            || fqtn
-            || ' LIMIT 1;';
-    EXECUTE sql INTO srid;
+			|| quote_ident($3)
+			|| ') FROM '
+			|| fqtn
+			|| ' WHERE '
+			|| quote_ident($3)
+			|| ' IS NOT NULL LIMIT 1;';
+                EXECUTE sql INTO srid;
 
 		cn := 'enforce_max_extent_' || $3;
 
@@ -7259,7 +7265,11 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_alignment(rastschema name, ras
 
 		sql := 'SELECT @extschema@.st_makeemptyraster(1, 1, upperleftx, upperlefty, scalex, scaley, skewx, skewy, srid) FROM @extschema@.st_metadata((SELECT '
 			|| quote_ident($3)
-			|| ' FROM ' || fqtn || ' LIMIT 1))';
+			|| ' FROM '
+			|| fqtn
+			|| ' WHERE '
+			|| quote_ident($3)
+			|| ' IS NOT NULL LIMIT 1))';
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN
@@ -7497,8 +7507,11 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_num_bands(rastschema name, ras
 		cn := 'enforce_num_bands_' || $3;
 
 		sql := 'SELECT @extschema@.st_numbands(' || quote_ident($3)
-			|| ') FROM ' || fqtn
-			|| ' LIMIT 1';
+			|| ') FROM '
+			|| fqtn
+			|| ' WHERE '
+			|| quote_ident($3)
+			|| ' IS NOT NULL LIMIT 1;';
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN
@@ -7571,7 +7584,9 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_pixel_types(rastschema name, r
 
 		sql := 'SELECT @extschema@._raster_constraint_pixel_types(' || quote_ident($3)
 			|| ') FROM ' || fqtn
-			|| ' LIMIT 1';
+			|| ' WHERE '
+			|| quote_ident($3)
+			|| ' IS NOT NULL LIMIT 1;';
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN
@@ -7655,7 +7670,9 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_nodata_values(rastschema name,
 
 		sql := 'SELECT @extschema@._raster_constraint_nodata_values(' || quote_ident($3)
 			|| ') FROM ' || fqtn
-			|| ' LIMIT 1';
+			|| ' WHERE '
+			|| quote_ident($3)
+			|| ' IS NOT NULL LIMIT 1;';
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN
@@ -7742,7 +7759,9 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_out_db(rastschema name, rastta
 
 		sql := 'SELECT @extschema@._raster_constraint_out_db(' || quote_ident($3)
 			|| ') FROM ' || fqtn
-			|| ' LIMIT 1';
+			|| ' WHERE '
+			|| quote_ident($3)
+			|| ' IS NOT NULL LIMIT 1;';
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN

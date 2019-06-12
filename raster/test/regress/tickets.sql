@@ -117,3 +117,12 @@ SET client_min_messages TO DEFAULT;
  #3055 ST_Clip() on a raster without band crashes the server
 ******************************************************************************/
 SELECT ST_SummaryStats(ST_Clip(ST_MakeEmptyRaster(42, 42, 0, 0, 1.0, 1.0, 0, 0, 4269), ST_MakeEnvelope(0, 0, 20, 20, 4269)));
+
+/**
+#4308,
+*/
+CREATE TABLE table_4308 (r raster);
+INSERT INTO table_4308(r) values (NULL);
+INSERT INTO table_4308(r) SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 1, 1, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);;
+SELECT AddRasterConstraints('table_4308', 'r');
+DROP TABLE table_4308;
