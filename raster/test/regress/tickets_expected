@@ -14,3 +14,15 @@ test_raster_scale_small|rast||1
 ERROR:  new row for relation "test_raster_scale_small" violates check constraint "enforce_scaley_rast"
 NOTICE:  Input raster is empty or has no bands. Returning empty raster
 NOTICE:  Invalid band index (must use 1-based). Returning NULL
+NOTICE:  Adding SRID constraint
+NOTICE:  Adding scale-X constraint
+NOTICE:  Adding scale-Y constraint
+NOTICE:  Adding blocksize-X constraint
+NOTICE:  Adding blocksize-Y constraint
+NOTICE:  Adding alignment constraint
+NOTICE:  Adding number of bands constraint
+NOTICE:  Adding pixel type constraint
+NOTICE:  Adding nodata value constraint
+NOTICE:  Adding out-of-database constraint
+NOTICE:  Adding maximum extent constraint
+t
