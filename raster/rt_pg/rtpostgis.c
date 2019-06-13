@@ -468,7 +468,8 @@ _PG_init(void) {
 		if (strcmp(env, "1") == 0)
 			boot_postgis_enable_outdb_rasters = true;
 
-		pfree(env);
+		if (env != env_postgis_enable_outdb_rasters)
+			pfree(env);
 	}
 	POSTGIS_RT_DEBUGF(
 		4,
