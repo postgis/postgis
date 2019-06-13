@@ -7,6 +7,7 @@ PostGIS 2.3.10
   - #4326, Fix circular arc distance calculation (Paul Ramsey)
   - #4388, AddRasterConstraints: Ignore NULLs when generating constraints (Raúl Marín)
   - #4327, Avoid pfree'ing the result of getenv (Raúl Marín)
+  - #4406, Throw on invalid characters when decoding geohash (Raúl Marín)
 
 
 PostGIS 2.3.9
