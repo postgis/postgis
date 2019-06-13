@@ -16,8 +16,8 @@
 #otherwise use the ones jenkins passes thru
 if  [[ "${OVERRIDE}" == '' ]] ;
 	export GEOS_VER=3.8
-	export GDAL_VER=2.4.1
-	export PROJ_VER=6.1.0
+	export GDAL_VER=2.2.4
+	export PROJ_VER=4.9.3
 	export SFCGAL_VER=1.3.2
 	export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
