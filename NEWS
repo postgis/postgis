@@ -22,6 +22,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4334, Fix upgrade issues related to renamed parameters (Raúl Marín)
   - #4388, AddRasterConstraints: Ignore NULLs when generating constraints (Raúl Marín)
   - #4327, Avoid pfree'ing the result of getenv (Raúl Marín)
+  - #4406, Throw on invalid characters when decoding geohash (Raúl Marín)
 
 PostGIS 3.0.0alpha1
 2019/05/26
@@ -168,6 +169,7 @@ PostGIS 3.0.0
   - #4334, Fix upgrade issues related to renamed function parameters (Raúl Marín)
   - #4388, AddRasterConstraints: Ignore NULLs when generating constraints (Raúl Marín)
   - #4327, Avoid pfree'ing the result of getenv (Raúl Marín)
+  - #4406, Throw on invalid characters when decoding geohash (Raúl Marín)
 
 
 PostGIS 2.5.0
