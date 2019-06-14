@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-if  [[ "${OVERRIDE}" == '' ]] ;
+if  [[ "${OVERRIDE}" == '' ]] ; then
   export SFCGAL_VER=1.3.2
   export GEOS_VER=3.7.1
   export GDAL_VER=2.2.4
