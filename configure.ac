@@ -868,18 +868,6 @@ elif test ! -z "$PKG_CONFIG"; then
             ])
 fi
 
-
-dnl Check that we can find the proj_api.h header file
-CPPFLAGS_SAVE="$CPPFLAGS"
-CPPFLAGS="$PROJ_CPPFLAGS"
-AC_CHECK_HEADER([proj_api.h],
-	[],
-	[AC_CHECK_HEADER([proj.h],
-		[],
-		[AC_MSG_ERROR([could not find proj.h or proj_api.h - you may need to specify the directory of a PROJ installation using --with-projdir])]
-		)]
-	)
-
 dnl Return the PROJ.4 version number
 AC_PROJ_VERSION([POSTGIS_PROJ_VERSION])
 AC_DEFINE_UNQUOTED([POSTGIS_PROJ_VERSION], [$POSTGIS_PROJ_VERSION], [PROJ library version])
@@ -891,6 +879,20 @@ if test ! "$POSTGIS_PROJ_VERSION" -ge 46; then
 	AC_MSG_ERROR([PostGIS requires PROJ >= 4.6.0])
 fi
 
+dnl Check that we can find proj headers
+CPPFLAGS_SAVE="$CPPFLAGS"
+CPPFLAGS="$PROJ_CPPFLAGS"
+if test ! "$POSTGIS_PROJ_VERSION" -ge 60; then
+	AC_CHECK_HEADER([proj_api.h],
+		[],
+		[AC_MSG_ERROR([could not find proj.h or proj_api.h - you may need to specify the directory of a PROJ installation using --with-projdir])]
+	)
+else
+	AC_CHECK_HEADER([proj.h],
+		[],
+		[AC_MSG_ERROR([could not find proj.h or proj_api.h - you may need to specify the directory of a PROJ installation using --with-projdir])]
+        )
+fi
 AC_SUBST([PROJ_CPPFLAGS])
 AC_SUBST([PROJ_LDFLAGS])
 
