@@ -99,12 +99,12 @@ void gbox_expand(GBOX *g, double d)
 	g->xmax += d;
 	g->ymin -= d;
 	g->ymax += d;
-	if ( FLAGS_GET_Z(g->flags) )
+	if (FLAGS_GET_Z(g->flags) || FLAGS_GET_GEODETIC(g->flags))
 	{
 		g->zmin -= d;
 		g->zmax += d;
 	}
-	if ( FLAGS_GET_M(g->flags) )
+	if (FLAGS_GET_M(g->flags))
 	{
 		g->mmin -= d;
 		g->mmax += d;
