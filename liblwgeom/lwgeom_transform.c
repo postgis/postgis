@@ -219,20 +219,26 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 	if (!pj)
 	{
 		PJ *pj_in = proj_create(NULL, instr);
-		PJ *pj_out = proj_create(NULL, outstr);
 		if (!pj_in)
 		{
 			lwerror("could not parse proj string '%s'", instr);
 		}
+		proj_destroy(pj_in);
+
+		PJ *pj_out = proj_create(NULL, outstr);
 		if (!pj_out)
 		{
-			proj_destroy(pj_in);
 			lwerror("could not parse proj string '%s'", outstr);
 		}
+		proj_destroy(pj_out);
+		lwerror("%s: Failed to transform", __func__);
 		return LW_FAILURE;
 	}
 
-	return lwgeom_transform(geom, pj);
+	int ret = lwgeom_transform(geom, pj);
+	proj_destroy(pj);
+
+	return ret;
 }
 
 int
