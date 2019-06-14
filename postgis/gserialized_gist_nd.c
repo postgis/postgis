@@ -620,7 +620,6 @@ GSERIALIZED *
 gserialized_expand(GSERIALIZED *g, double distance)
 {
 	GBOX gbox;
-	float fdistance = (float)distance;
 	gbox_init(&gbox);
 
 	/* Get our bounding box out of the geography, return right away if
@@ -628,7 +627,7 @@ gserialized_expand(GSERIALIZED *g, double distance)
 	if (gserialized_get_gbox_p(g, &gbox) == LW_FAILURE)
 		return g;
 
-	gbox_expand(&gbox, 1.01 * fdistance);
+	gbox_expand(&gbox, distance);
 
 	return gserialized_set_gbox(g, &gbox);
 }

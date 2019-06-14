@@ -1680,13 +1680,12 @@ GSERIALIZED* gserialized_set_gbox(GSERIALIZED *g, GBOX *gbox)
 	fbox[fbox_pos++] = gbox->ymin;
 	fbox[fbox_pos++] = gbox->ymax;
 	/* Optionally copy in higher dims */
-	if (g_ndims > 2)
+	if(gserialized_has_z(g) || gserialized_is_geodetic(g))
 	{
 		fbox[fbox_pos++] = gbox->zmin;
 		fbox[fbox_pos++] = gbox->zmax;
 	}
-	/* Optionally copy in higher dims */
-	if (g_ndims > 3)
+	if(gserialized_has_m(g) && ! gserialized_is_geodetic(g))
 	{
 		fbox[fbox_pos++] = gbox->mmin;
 		fbox[fbox_pos++] = gbox->mmax;
