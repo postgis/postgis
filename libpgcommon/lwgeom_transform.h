@@ -29,7 +29,6 @@ char *GetProj4String(int32_t srid);
  */
 typedef void *ProjCache ;
 
-void SetPROJLibPath(void);
 bool IsInPROJCache(ProjCache cache, int32_t srid_from, int32_t srid_to);
 PJ *GetPJFromPROJCache(ProjCache cache, int32_t srid_from, int32_t srid_to);
 int GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, PJ **pj);

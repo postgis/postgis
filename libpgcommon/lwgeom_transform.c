@@ -96,11 +96,6 @@ static bool IsInPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int3
 static void AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
 static void DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
 
-/* Search path for PROJ.4 library */
-static bool IsPROJLibPathSet = false;
-void SetPROJLibPath(void);
-
-
 /*
 * Given a function call context, figure out what namespace the
 * function is being called from, and copy that into a global
@@ -790,58 +785,10 @@ DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t sr
 }
 
 
-/**
- * Specify an alternate directory for the PROJ.4 grid files
- * (this should augment the PROJ.4 compile-time path)
- *
- * It's main purpose is to allow Win32 PROJ.4 installations
- * to find a set grid shift files, although other platforms
- * may find this useful too.
- *
- * Note that we currently ignore this on PostgreSQL < 8.0
- * since the method of determining the current installation
- * path are different on older PostgreSQL versions.
- */
-void SetPROJLibPath(void)
-{
-	char *path;
-	char *share_path;
-	const char **proj_lib_path;
-
-	if (!IsPROJLibPathSet) {
-
-		/*
-		 * Get the sharepath and append /contrib/postgis/proj to form a suitable
-		 * directory in which to store the grid shift files
-		 */
-		proj_lib_path = palloc(sizeof(char *));
-
-		share_path = palloc(MAXPGPATH);
-		get_share_path(my_exec_path, share_path);
-
-		path = palloc(MAXPGPATH);
-		*proj_lib_path = path;
-
-		snprintf(path, MAXPGPATH - 1, "%s/contrib/postgis-%s.%s/proj", share_path, POSTGIS_MAJOR_VERSION, POSTGIS_MINOR_VERSION);
-#if POSTGIS_PROJ_VERSION < 60
-		/* Set the search path for PROJ.4 */
-		pj_set_searchpath(1, proj_lib_path);
-#else
-		/* Set the search path for PROJ */
-		proj_context_set_search_paths(NULL, 1, proj_lib_path);
-#endif
-		/* Ensure we only do this once... */
-		IsPROJLibPathSet = true;
-	}
-}
-
 int
 GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, PJ **pj)
 {
 	PROJPortalCache *proj_cache = NULL;
-
-	/* Set the search path if we haven't already */
-	SetPROJLibPath();
 
 	/* Look up the spatial_ref_sys schema if we haven't already */
 	SetSpatialRefSysSchema(fcinfo);

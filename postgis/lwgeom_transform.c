@@ -119,9 +119,6 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	/* Take a copy, since we will be altering the coordinates */
 	gser = PG_GETARG_GSERIALIZED_P_COPY(0);
 
-	/* Set the search path if we haven't already */
-	SetPROJLibPath();
-
 	/* Convert from text to cstring for libproj */
 	input_srs = text_to_cstring(PG_GETARG_TEXT_P(1));
 	output_srs = text_to_cstring(PG_GETARG_TEXT_P(2));
