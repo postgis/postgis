@@ -75,53 +75,53 @@ static void test_typmod_macros(void)
 
 static void test_flags_macros(void)
 {
-	uint16_t flags = 0;
+	uint8_t flags = 0;
 
-	CU_ASSERT_EQUAL(0, FLAGS_GET_Z(flags));
-	FLAGS_SET_Z(flags, 1);
-	CU_ASSERT_EQUAL(1, FLAGS_GET_Z(flags));
-	FLAGS_SET_Z(flags, 0);
-	CU_ASSERT_EQUAL(0, FLAGS_GET_Z(flags));
-	CU_ASSERT_EQUAL(0, FLAGS_GET_BBOX(flags));
+	CU_ASSERT_EQUAL(0, G1FLAGS_GET_Z(flags));
+	G1FLAGS_SET_Z(flags, 1);
+	CU_ASSERT_EQUAL(1, G1FLAGS_GET_Z(flags));
+	G1FLAGS_SET_Z(flags, 0);
+	CU_ASSERT_EQUAL(0, G1FLAGS_GET_Z(flags));
+	CU_ASSERT_EQUAL(0, G1FLAGS_GET_BBOX(flags));
 
-	CU_ASSERT_EQUAL(0, FLAGS_GET_M(flags));
-	FLAGS_SET_M(flags, 1);
-	CU_ASSERT_EQUAL(1, FLAGS_GET_M(flags));
+	CU_ASSERT_EQUAL(0, G1FLAGS_GET_M(flags));
+	G1FLAGS_SET_M(flags, 1);
+	CU_ASSERT_EQUAL(1, G1FLAGS_GET_M(flags));
 
-	CU_ASSERT_EQUAL(0, FLAGS_GET_BBOX(flags));
-	FLAGS_SET_BBOX(flags, 1);
-	CU_ASSERT_EQUAL(1, FLAGS_GET_BBOX(flags));
-	CU_ASSERT_EQUAL(0, FLAGS_GET_READONLY(flags));
+	CU_ASSERT_EQUAL(0, G1FLAGS_GET_BBOX(flags));
+	G1FLAGS_SET_BBOX(flags, 1);
+	CU_ASSERT_EQUAL(1, G1FLAGS_GET_BBOX(flags));
+	CU_ASSERT_EQUAL(0, G1FLAGS_GET_READONLY(flags));
 
-	FLAGS_SET_READONLY(flags, 1);
-	CU_ASSERT_EQUAL(1, FLAGS_GET_READONLY(flags));
-	FLAGS_SET_READONLY(flags, 0);
-	CU_ASSERT_EQUAL(0, FLAGS_GET_READONLY(flags));
+	G1FLAGS_SET_READONLY(flags, 1);
+	CU_ASSERT_EQUAL(1, G1FLAGS_GET_READONLY(flags));
+	G1FLAGS_SET_READONLY(flags, 0);
+	CU_ASSERT_EQUAL(0, G1FLAGS_GET_READONLY(flags));
 
-	CU_ASSERT_EQUAL(0, FLAGS_GET_GEODETIC(flags));
-	FLAGS_SET_GEODETIC(flags, 1);
-	CU_ASSERT_EQUAL(1, FLAGS_GET_GEODETIC(flags));
+	CU_ASSERT_EQUAL(0, G1FLAGS_GET_GEODETIC(flags));
+	G1FLAGS_SET_GEODETIC(flags, 1);
+	CU_ASSERT_EQUAL(1, G1FLAGS_GET_GEODETIC(flags));
 
-	flags = lwflags(1, 0, 1); /* z=1, m=0, geodetic=1 */
+	flags = g1flags(1, 0, 1); /* z=1, m=0, geodetic=1 */
 
-	CU_ASSERT_EQUAL(1, FLAGS_GET_GEODETIC(flags));
-	CU_ASSERT_EQUAL(1, FLAGS_GET_Z(flags));
-	CU_ASSERT_EQUAL(0, FLAGS_GET_M(flags));
-	CU_ASSERT_EQUAL(2, FLAGS_GET_ZM(flags));
+	CU_ASSERT_EQUAL(1, G1FLAGS_GET_GEODETIC(flags));
+	CU_ASSERT_EQUAL(1, G1FLAGS_GET_Z(flags));
+	CU_ASSERT_EQUAL(0, G1FLAGS_GET_M(flags));
+	CU_ASSERT_EQUAL(2, G1FLAGS_GET_ZM(flags));
 
-	flags = lwflags(1, 1, 1); /* z=1, m=1, geodetic=1 */
+	flags = g1flags(1, 1, 1); /* z=1, m=1, geodetic=1 */
 
-	CU_ASSERT_EQUAL(1, FLAGS_GET_GEODETIC(flags));
-	CU_ASSERT_EQUAL(1, FLAGS_GET_Z(flags));
-	CU_ASSERT_EQUAL(1, FLAGS_GET_M(flags));
-	CU_ASSERT_EQUAL(3, FLAGS_GET_ZM(flags));
+	CU_ASSERT_EQUAL(1, G1FLAGS_GET_GEODETIC(flags));
+	CU_ASSERT_EQUAL(1, G1FLAGS_GET_Z(flags));
+	CU_ASSERT_EQUAL(1, G1FLAGS_GET_M(flags));
+	CU_ASSERT_EQUAL(3, G1FLAGS_GET_ZM(flags));
 
-	flags = lwflags(0, 1, 0); /* z=0, m=1, geodetic=0 */
+	flags = g1flags(0, 1, 0); /* z=0, m=1, geodetic=0 */
 
-	CU_ASSERT_EQUAL(0, FLAGS_GET_GEODETIC(flags));
-	CU_ASSERT_EQUAL(0, FLAGS_GET_Z(flags));
-	CU_ASSERT_EQUAL(1, FLAGS_GET_M(flags));
-	CU_ASSERT_EQUAL(1, FLAGS_GET_ZM(flags));
+	CU_ASSERT_EQUAL(0, G1FLAGS_GET_GEODETIC(flags));
+	CU_ASSERT_EQUAL(0, G1FLAGS_GET_Z(flags));
+	CU_ASSERT_EQUAL(1, G1FLAGS_GET_M(flags));
+	CU_ASSERT_EQUAL(1, G1FLAGS_GET_ZM(flags));
 }
 
 static void test_serialized_srid(void)
@@ -233,23 +233,6 @@ static void test_lwgeom_calculate_gbox(void)
 	lwgeom_free(g);
 
 }
-
-static void test_gbox_serialized_size(void)
-{
-	uint8_t flags = lwflags(0, 0, 0);
-	CU_ASSERT_EQUAL(gbox_serialized_size(flags),16);
-	FLAGS_SET_BBOX(flags, 1);
-	CU_ASSERT_EQUAL(gbox_serialized_size(flags),16);
-	FLAGS_SET_Z(flags, 1);
-	CU_ASSERT_EQUAL(gbox_serialized_size(flags),24);
-	FLAGS_SET_M(flags, 1);
-	CU_ASSERT_EQUAL(gbox_serialized_size(flags),32);
-	FLAGS_SET_GEODETIC(flags, 1);
-	CU_ASSERT_EQUAL(gbox_serialized_size(flags),24);
-
-}
-
-
 
 static void test_lwgeom_from_gserialized(void)
 {
@@ -1240,7 +1223,6 @@ void libgeom_suite_setup(void)
 	PG_ADD_TEST(suite, test_flags_macros);
 	PG_ADD_TEST(suite, test_serialized_srid);
 	PG_ADD_TEST(suite, test_gserialized_from_lwgeom_size);
-	PG_ADD_TEST(suite, test_gbox_serialized_size);
 	PG_ADD_TEST(suite, test_lwgeom_from_gserialized);
 	PG_ADD_TEST(suite, test_lwgeom_count_vertices);
 	PG_ADD_TEST(suite, test_on_gser_lwgeom_count_vertices);

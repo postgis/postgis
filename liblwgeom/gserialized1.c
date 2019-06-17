@@ -55,6 +55,18 @@ static inline uint32_t gserialized_get_uint32_t(const uint8_t *loc)
 	return i;
 }
 
+uint8_t g1flags(int has_z, int has_m, int is_geodetic)
+{
+	uint8_t flags = 0;
+	if (has_z)
+		G1FLAGS_SET_Z(flags, 1);
+	if (has_m)
+		G1FLAGS_SET_M(flags, 1);
+	if (is_geodetic)
+		G1FLAGS_SET_GEODETIC(flags, 1);
+	return flags;
+}
+
 int gserialized_has_bbox(const GSERIALIZED *gser)
 {
 	return G1FLAGS_GET_BBOX(gser->flags);
