@@ -311,8 +311,8 @@ gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
 	text_in = GetProj4String(srid_in);
 	text_out = GetProj4String(srid_out);
 
-	pj.pj_from = lwproj_from_string(text_in);
-	pj.pj_to = lwproj_from_string(text_out);
+	pj.pj_from = projpj_from_string(text_in);
+	pj.pj_to = projpj_from_string(text_out);
 
 	lwfree(text_in);
 	lwfree(text_out);
@@ -340,18 +340,35 @@ gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
 	char text_in[32];
 	char text_out[32];
 
-	if (srid_in == SRID_UNKNOWN) return pa; /* nothing to do */
-	if (srid_out == SRID_UNKNOWN) gml_lwpgerror("invalid GML representation", 3);
+	if (srid_in == SRID_UNKNOWN)
+		return pa; /* nothing to do */
+
+	if (srid_out == SRID_UNKNOWN)
+	{
+		gml_lwpgerror("invalid GML representation", 3);
+		return NULL;
+	}
 
 	snprintf(text_in, 32, "EPSG:%d", srid_in);
 	snprintf(text_out, 32, "EPSG:%d", srid_out);
 	pj = proj_create_crs_to_crs(NULL, text_in, text_out, NULL);
 
-	if (ptarray_transform(pa, pj) == LW_FAILURE)
+	LWPROJ *lwp = lwproj_from_PJ(pj);
+	if (!lwp)
 	{
+		proj_destroy(pj);
+		gml_lwpgerror("Could not create LWPROJ*", 57);
+		return NULL;
+	}
+
+	if (ptarray_transform(pa, lwp) == LW_FAILURE)
+	{
+		proj_destroy(pj);
 		elog(ERROR, "gml_reproject_pa: reprojection failed");
+		return NULL;
 	}
 	proj_destroy(pj);
+	free(lwp);
 
 	return pa;
 }

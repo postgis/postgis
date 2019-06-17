@@ -67,7 +67,7 @@ typedef struct struct_PROJSRSCacheItem
 {
 	int32_t srid_from;
 	int32_t srid_to;
-	PJ* projection;
+	LWPROJ *projection;
 	MemoryContext projection_mcxt;
 }
 PROJSRSCacheItem;
