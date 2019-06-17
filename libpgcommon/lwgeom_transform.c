@@ -819,7 +819,7 @@ static int
 proj_pj_is_latlong(const LWPROJ *pj)
 {
 #if POSTGIS_PROJ_VERSION < 60
-	return pj_is_latlong(pj - pj_from);
+	return pj_is_latlong(pj->pj_from);
 #else
 	PJ_TYPE pj_type;
 	PJ *pj_src_crs = proj_get_source_crs(NULL, pj->pj);

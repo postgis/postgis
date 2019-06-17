@@ -44,7 +44,7 @@ typedef struct PJ
     projPJ pj_to;
 } PJ;
 
-typedef LWPROJ PJ;
+typedef PJ LWPROJ;
 
 #else
 #include "proj.h"

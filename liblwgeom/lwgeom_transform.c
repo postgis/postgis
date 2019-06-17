@@ -130,7 +130,7 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 		return LW_FAILURE;
 	}
 
-	rv = lwgeom_transform(geom, pj);
+	rv = lwgeom_transform(geom, &pj);
 	pj_free(pj.pj_from);
 	pj_free(pj.pj_to);
 	return rv;
