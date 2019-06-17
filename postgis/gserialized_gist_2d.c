@@ -577,7 +577,7 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	*/
 	gpart = (GSERIALIZED*)PG_DETOAST_DATUM(gsdatum);
 
-	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);
+	POSTGIS_DEBUGF(4, "got flags %d", gpart->gflags);
 
 	/* Do we even have a serialized bounding box? */
 	if (gserialized_has_bbox(gpart))
