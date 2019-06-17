@@ -160,6 +160,7 @@
 #define XDR 0 /* big endian */
 #define NDR 1 /* little endian */
 extern char getMachineEndian(void);
+uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2);
 
 
 /*

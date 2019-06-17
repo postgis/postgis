@@ -30,7 +30,7 @@
 * Read the flags from a #GSERIALIZED and return a standard lwflag
 * integer
 */
-uint16_t gserialized_get_lwflags(const GSERIALIZED *g);
+lwflags_t gserialized_get_lwflags(const GSERIALIZED *g);
 
 /**
 * Copy a new bounding box into an existing gserialized.
