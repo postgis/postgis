@@ -28,7 +28,7 @@
 #include <math.h>
 
 
-GBOX* gbox_new(uint16_t flags)
+GBOX* gbox_new(lwflags_t flags)
 {
 	GBOX *g = (GBOX*)lwalloc(sizeof(GBOX));
 	gbox_init(g);
@@ -436,9 +436,9 @@ void gbox_duplicate(const GBOX *original, GBOX *duplicate)
 	memcpy(duplicate, original, sizeof(GBOX));
 }
 
-size_t gbox_serialized_size(uint16_t flags)
+size_t gbox_serialized_size(lwflags_t flags)
 {
-	if ( FLAGS_GET_GEODETIC(flags) )
+	if (FLAGS_GET_GEODETIC(flags))
 		return 6 * sizeof(float);
 	else
 		return 2 * FLAGS_NDIMS(flags) * sizeof(float);

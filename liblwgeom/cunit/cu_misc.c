@@ -236,7 +236,7 @@ static void test_lwmpoint_from_lwgeom(void)
 
 static void test_gbox_serialized_size(void)
 {
-	uint16_t flags = lwflags(0, 0, 0);
+	lwflags_t flags = lwflags(0, 0, 0);
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),16);
 	FLAGS_SET_BBOX(flags, 1);
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),16);
@@ -246,7 +246,6 @@ static void test_gbox_serialized_size(void)
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),32);
 	FLAGS_SET_GEODETIC(flags, 1);
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),24);
-
 }
 
 

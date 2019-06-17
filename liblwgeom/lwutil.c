@@ -488,14 +488,14 @@ static char dumb_toupper(int in)
 	return dumb_upper_map[in];
 }
 
-uint16_t lwflags(int hasz, int hasm, int geodetic)
+lwflags_t lwflags(int hasz, int hasm, int geodetic)
 {
-	uint16_t flags = 0;
-	if ( hasz )
+	lwflags_t flags = 0;
+	if (hasz)
 		FLAGS_SET_Z(flags, 1);
-	if ( hasm )
+	if (hasm)
 		FLAGS_SET_M(flags, 1);
-	if ( geodetic )
+	if (geodetic)
 		FLAGS_SET_GEODETIC(flags, 1);
 	return flags;
 }

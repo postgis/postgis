@@ -287,6 +287,13 @@ extern void lwgeom_cancel_interrupt(void);
 typedef void (lwinterrupt_callback)();
 extern lwinterrupt_callback *lwgeom_register_interrupt_callback(lwinterrupt_callback *);
 
+
+/******************************************************************
+* LWGEOM and GBOX both use LWFLAGS bit mask.
+* Serializations (may) use different bit mask schemes.
+*/
+typedef uint16_t lwflags_t;
+
 /******************************************************************/
 
 typedef struct {
@@ -311,7 +318,7 @@ BOX3D;
 */
 typedef struct
 {
-    uint16_t flags;
+    lwflags_t flags;
     double xmin;
     double xmax;
     double ymin;
@@ -389,7 +396,7 @@ typedef struct
     uint32_t maxpoints; /* how many points we have space for in serialized_pointlist */
 
     /* Use FLAGS_* macros to handle */
-    uint16_t flags;
+    lwflags_t flags;
 
     /* Array of POINT 2D, 3D or 4D, possibly misaligned. */
     uint8_t *serialized_pointlist;
@@ -419,7 +426,7 @@ typedef struct
 	GBOX *bbox;
 	void *data;
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type;
 	char pad[2]; /* Padding to 24 bytes (unused) */
 }
@@ -431,7 +438,7 @@ typedef struct
 	GBOX *bbox;
 	POINTARRAY *point;  /* hide 2d/3d (this will be an array of 1 point) */
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type; /* POINTTYPE */
 	char pad[2]; /* Padding to 24 bytes (unused) */
 }
@@ -443,7 +450,7 @@ typedef struct
 	GBOX *bbox;
 	POINTARRAY *points; /* array of POINT3D */
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type; /* LINETYPE */
 	char pad[2]; /* Padding to 24 bytes (unused) */
 }
@@ -455,7 +462,7 @@ typedef struct
 	GBOX *bbox;
 	POINTARRAY *points;
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type;
 	char pad[2]; /* Padding to 24 bytes (unused) */
 }
@@ -467,7 +474,7 @@ typedef struct
 	GBOX *bbox;
 	POINTARRAY *points; /* array of POINT(3D/3DM) */
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type; /* CIRCSTRINGTYPE */
 	char pad[2]; /* Padding to 24 bytes (unused) */
 }
@@ -479,7 +486,7 @@ typedef struct
 	GBOX *bbox;
 	POINTARRAY **rings; /* list of rings (list of points) */
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type; /* POLYGONTYPE */
 	char pad[2]; /* Padding to 24 bytes (unused) */
 	uint32_t nrings;   /* how many rings we are currently storing */
@@ -493,7 +500,7 @@ typedef struct
 	GBOX *bbox;
 	LWPOINT **geoms;
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type; /* MULTYPOINTTYPE */
 	char pad[2]; /* Padding to 24 bytes (unused) */
 	uint32_t ngeoms;   /* how many geometries we are currently storing */
@@ -507,7 +514,7 @@ typedef struct
 	GBOX *bbox;
 	LWLINE **geoms;
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type; /* MULTILINETYPE */
 	char pad[2]; /* Padding to 24 bytes (unused) */
 	uint32_t ngeoms;   /* how many geometries we are currently storing */
@@ -521,7 +528,7 @@ typedef struct
 	GBOX *bbox;
 	LWPOLY **geoms;
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type; /* MULTIPOLYGONTYPE */
 	char pad[2]; /* Padding to 24 bytes (unused) */
 	uint32_t ngeoms;   /* how many geometries we are currently storing */
@@ -535,7 +542,7 @@ typedef struct
 	GBOX *bbox;
 	LWGEOM **geoms;
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type; /* COLLECTIONTYPE */
 	char pad[2]; /* Padding to 24 bytes (unused) */
 	uint32_t ngeoms;   /* how many geometries we are currently storing */
@@ -549,7 +556,7 @@ typedef struct
 	GBOX *bbox;
 	LWGEOM **geoms;
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type; /* COLLECTIONTYPE */
 	char pad[2]; /* Padding to 24 bytes (unused) */
 	uint32_t ngeoms;   /* how many geometries we are currently storing */
@@ -563,7 +570,7 @@ typedef struct
 	GBOX *bbox;
 	LWGEOM **rings;
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type; /* CURVEPOLYTYPE */
 	char pad[2]; /* Padding to 24 bytes (unused) */
 	uint32_t nrings;    /* how many rings we are currently storing */
@@ -577,7 +584,7 @@ typedef struct
 	GBOX *bbox;
 	LWGEOM **geoms;
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type; /* MULTICURVE */
 	char pad[2]; /* Padding to 24 bytes (unused) */
 	uint32_t ngeoms;   /* how many geometries we are currently storing */
@@ -591,7 +598,7 @@ typedef struct
 	GBOX *bbox;
 	LWGEOM **geoms;
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type; /* MULTISURFACETYPE */
 	char pad[2]; /* Padding to 24 bytes (unused) */
 	uint32_t ngeoms;   /* how many geometries we are currently storing */
@@ -605,7 +612,7 @@ typedef struct
 	GBOX *bbox;
 	LWPOLY **geoms;
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type; /* POLYHEDRALSURFACETYPE */
 	char pad[2]; /* Padding to 24 bytes (unused) */
 	uint32_t ngeoms;   /* how many geometries we are currently storing */
@@ -619,7 +626,7 @@ typedef struct
 	GBOX *bbox;
 	LWTRIANGLE **geoms;
 	int32_t srid;
-	uint16_t flags;
+	lwflags_t flags;
 	uint8_t type; /* TINTYPE */
 	char pad[2]; /* Padding to 24 bytes (unused) */
 	uint32_t ngeoms;   /* how many geometries we are currently storing */
@@ -672,7 +679,7 @@ extern LWCOLLECTION* lwcollection_concat_in_place(LWCOLLECTION* col1, const LWCO
 /**
 * Construct a new flags bitmask.
 */
-extern uint16_t lwflags(int hasz, int hasm, int geodetic);
+extern lwflags_t lwflags(int hasz, int hasm, int geodetic);
 
 
 
@@ -683,7 +690,7 @@ extern uint16_t lwflags(int hasz, int hasm, int geodetic);
 /**
 * Read standard lwflags from gserialized
 */
-extern uint16_t gserialized_get_lwflags(const GSERIALIZED *g);
+extern lwflags_t gserialized_get_lwflags(const GSERIALIZED *g);
 
 /**
 * Access to the float bounding box, if there is one.
@@ -1892,7 +1899,7 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside);
 * Create a new gbox with the dimensionality indicated by the flags. Caller
 * is responsible for freeing.
 */
-extern GBOX* gbox_new(uint16_t flags);
+extern GBOX* gbox_new(lwflags_t flags);
 
 /**
 * Zero out all the entries in the #GBOX. Useful for cleaning
@@ -1974,7 +1981,7 @@ extern void gbox_duplicate(const GBOX *original, GBOX *duplicate);
 * Return the number of bytes necessary to hold a #GBOX of this dimension in
 * serialized form.
 */
-extern size_t gbox_serialized_size(uint16_t flags);
+extern size_t gbox_serialized_size(lwflags_t flags);
 
 /**
 * Check if 2 given Gbox are the same

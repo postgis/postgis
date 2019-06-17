@@ -67,7 +67,7 @@ GIDX* gidx_new(int ndims)
 	return g;
 }
 
-static uint16_t
+static lwflags_t
 gserialized_datum_get_flags(Datum gsdatum)
 {
 	GSERIALIZED *gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(gsdatum, 0, 40);
@@ -188,7 +188,7 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 	if (gserialized_has_bbox(gpart))
 	{
 		/* Yes! Copy it out into the GIDX! */
-		uint16_t lwflags = gserialized_get_lwflags(gpart);
+		lwflags_t lwflags = gserialized_get_lwflags(gpart);
 		size_t size = gbox_serialized_size(lwflags);
 		size_t ndims, dim;
 		const float *f = gserialized_get_float_box_p(gpart, &ndims);
