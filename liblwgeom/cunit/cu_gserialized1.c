@@ -75,7 +75,7 @@ static void test_typmod_macros(void)
 
 static void test_flags_macros(void)
 {
-	uint8_t flags = 0;
+	uint16_t flags = 0;
 
 	CU_ASSERT_EQUAL(0, FLAGS_GET_Z(flags));
 	FLAGS_SET_Z(flags, 1);

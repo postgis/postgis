@@ -31,7 +31,7 @@
 */
 typedef struct
 {
-	uint8_t flags;
+	uint16_t flags;
 	double x;
 	double y;
 	double z;

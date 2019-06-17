@@ -72,10 +72,10 @@ int wkt_lexer_read_srid(char *str)
 	return srid;
 }
 
-static uint8_t wkt_dimensionality(char *dimensionality)
+static uint16_t wkt_dimensionality(char *dimensionality)
 {
 	size_t i = 0;
-	uint8_t flags = 0;
+	uint16_t flags = 0;
 
 	if( ! dimensionality )
 		return flags;
@@ -98,7 +98,7 @@ static uint8_t wkt_dimensionality(char *dimensionality)
 * Force the dimensionality of a geometry to match the dimensionality
 * of a set of flags (usually derived from a ZM WKT tag).
 */
-static int wkt_parser_set_dims(LWGEOM *geom, uint8_t flags)
+static int wkt_parser_set_dims(LWGEOM *geom, uint16_t flags)
 {
 	int hasz = FLAGS_GET_Z(flags);
 	int hasm = FLAGS_GET_M(flags);
@@ -180,7 +180,7 @@ static int wkt_parser_set_dims(LWGEOM *geom, uint8_t flags)
 * dimensionality matches that of the pointarray. If the dimension counts
 * match, ensure the pointarray is using the right "Z" or "M".
 */
-static int wkt_pointarray_dimensionality(POINTARRAY *pa, uint8_t flags)
+static int wkt_pointarray_dimensionality(POINTARRAY *pa, uint16_t flags)
 {
 	int hasz = FLAGS_GET_Z(flags);
 	int hasm = FLAGS_GET_M(flags);
@@ -319,7 +319,7 @@ POINTARRAY* wkt_parser_ptarray_new(POINT p)
 */
 LWGEOM* wkt_parser_point_new(POINTARRAY *pa, char *dimensionality)
 {
-	uint8_t flags = wkt_dimensionality(dimensionality);
+	uint16_t flags = wkt_dimensionality(dimensionality);
 	LWDEBUG(4,"entered");
 
 	/* No pointarray means it is empty */
@@ -353,7 +353,7 @@ LWGEOM* wkt_parser_point_new(POINTARRAY *pa, char *dimensionality)
 */
 LWGEOM* wkt_parser_linestring_new(POINTARRAY *pa, char *dimensionality)
 {
-	uint8_t flags = wkt_dimensionality(dimensionality);
+	uint16_t flags = wkt_dimensionality(dimensionality);
 	LWDEBUG(4,"entered");
 
 	/* No pointarray means it is empty */
@@ -387,7 +387,7 @@ LWGEOM* wkt_parser_linestring_new(POINTARRAY *pa, char *dimensionality)
 */
 LWGEOM* wkt_parser_circularstring_new(POINTARRAY *pa, char *dimensionality)
 {
-	uint8_t flags = wkt_dimensionality(dimensionality);
+	uint16_t flags = wkt_dimensionality(dimensionality);
 	LWDEBUG(4,"entered");
 
 	/* No pointarray means it is empty */
@@ -423,7 +423,7 @@ LWGEOM* wkt_parser_circularstring_new(POINTARRAY *pa, char *dimensionality)
 
 LWGEOM* wkt_parser_triangle_new(POINTARRAY *pa, char *dimensionality)
 {
-	uint8_t flags = wkt_dimensionality(dimensionality);
+	uint16_t flags = wkt_dimensionality(dimensionality);
 	LWDEBUG(4,"entered");
 
 	/* No pointarray means it is empty */
@@ -534,7 +534,7 @@ LWGEOM* wkt_parser_polygon_add_ring(LWGEOM *poly, POINTARRAY *pa, char dimcheck)
 
 LWGEOM* wkt_parser_polygon_finalize(LWGEOM *poly, char *dimensionality)
 {
-	uint8_t flags = wkt_dimensionality(dimensionality);
+	uint16_t flags = wkt_dimensionality(dimensionality);
 	int flagdims = FLAGS_NDIMS(flags);
 	LWDEBUG(4,"entered");
 
@@ -665,7 +665,7 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 
 LWGEOM* wkt_parser_curvepolygon_finalize(LWGEOM *poly, char *dimensionality)
 {
-	uint8_t flags = wkt_dimensionality(dimensionality);
+	uint16_t flags = wkt_dimensionality(dimensionality);
 	int flagdims = FLAGS_NDIMS(flags);
 	LWDEBUG(4,"entered");
 
@@ -804,7 +804,7 @@ LWGEOM* wkt_parser_collection_add_geom(LWGEOM *col, LWGEOM *geom)
 
 LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *geom, char *dimensionality)
 {
-	uint8_t flags = wkt_dimensionality(dimensionality);
+	uint16_t flags = wkt_dimensionality(dimensionality);
 	int flagdims = FLAGS_NDIMS(flags);
 
 	/* No geometry means it is empty */

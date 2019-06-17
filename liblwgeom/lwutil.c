@@ -488,9 +488,9 @@ static char dumb_toupper(int in)
 	return dumb_upper_map[in];
 }
 
-uint8_t lwflags(int hasz, int hasm, int geodetic)
+uint16_t lwflags(int hasz, int hasm, int geodetic)
 {
-	uint8_t flags = 0;
+	uint16_t flags = 0;
 	if ( hasz )
 		FLAGS_SET_Z(flags, 1);
 	if ( hasm )

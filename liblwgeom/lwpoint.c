@@ -129,7 +129,7 @@ LWPOINT *
 lwpoint_construct(int32_t srid, GBOX *bbox, POINTARRAY *point)
 {
 	LWPOINT *result;
-	uint8_t flags = 0;
+	uint16_t flags = 0;
 
 	if (point == NULL)
 		return NULL; /* error */

@@ -29,3 +29,4 @@
 #define G1FLAGS_NDIMS(flags) (2 + G1FLAGS_GET_Z(flags) + G1FLAGS_GET_M(flags))
 #define G1FLAGS_GET_ZM(flags) (G1FLAGS_GET_M(flags) + G1FLAGS_GET_Z(flags) * 2)
 #define G1FLAGS_NDIMS_BOX(flags) (G1FLAGS_GET_GEODETIC(flags) ? 3 : G1FLAGS_NDIMS(flags))
+
