@@ -354,12 +354,10 @@ IsInPROJSRSCache(PROJPortalCache *cache, int32_t srid_from, int32_t srid_to)
 		if (cache->PROJSRSCache[i].srid_from == srid_from &&
 		    cache->PROJSRSCache[i].srid_to == srid_to)
 		{
-			lwnotice("IsInPROJSRSCache found %d - %d", srid_from, srid_to);
 			return true;
 		}
 	}
 	/* Otherwise not found */
-	lwnotice("IsInPROJSRSCache not found %d - %d", srid_from, srid_to);
 	return false;
 }
 
