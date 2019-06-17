@@ -887,7 +887,7 @@ static size_t gserialized1_from_lwline(const LWLINE *line, uint8_t *buf)
 	memcpy(loc, &(line->points->npoints), sizeof(uint32_t));
 	loc += sizeof(uint32_t);
 
-	LWDEBUGF(3, "%s added npoints (%d)", _func_, line->points->npoints);
+	LWDEBUGF(3, "%s added npoints (%d)", __func__, line->points->npoints);
 
 	/* Copy in the ordinates. */
 	if ( line->points->npoints > 0 )
@@ -896,7 +896,7 @@ static size_t gserialized1_from_lwline(const LWLINE *line, uint8_t *buf)
 		memcpy(loc, getPoint_internal(line->points, 0), size);
 		loc += size;
 	}
-	LWDEBUGF(3, "%s copied serialized_pointlist (%d bytes)", _func_, ptsize * line->points->npoints);
+	LWDEBUGF(3, "%s copied serialized_pointlist (%d bytes)", __func__, ptsize * line->points->npoints);
 
 	return (size_t)(loc - buf);
 }
