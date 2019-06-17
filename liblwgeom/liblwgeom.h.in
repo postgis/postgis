@@ -30,8 +30,8 @@
 #define _LIBLWGEOM_H 1
 
 #include <stdarg.h>
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include "../postgis_config.h"
 
@@ -42,8 +42,19 @@ typedef struct PJ
     projPJ pj_from;
     projPJ pj_to;
 } PJ;
+
+typedef PJ LWPROJ;
+
 #else
 #include "proj.h"
+
+/* Typedef including PROJ projection and whether source or target crs are swapped */
+typedef struct LWPROJ
+{
+	PJ* pj;
+	uint8_t source_swapped;
+	uint8_t target_swapped;
+} LWPROJ;
 #endif
 
 #if POSTGIS_PROJ_VERSION < 49
@@ -2358,7 +2369,7 @@ int lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outst
  *
  * Eg: "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
  */
-projPJ lwproj_from_string(const char* txt);
+projPJ projpj_from_string(const char* txt);
 
 #endif
 /**
@@ -2366,8 +2377,17 @@ projPJ lwproj_from_string(const char* txt);
  * @param geom the geometry to transform
  * @param PJ the input and output
  */
-int lwgeom_transform(LWGEOM *geom, PJ* pj);
-int ptarray_transform(POINTARRAY *pa, PJ* pj);
+int lwgeom_transform(LWGEOM *geom, LWPROJ* pj);
+int ptarray_transform(POINTARRAY *pa, LWPROJ* pj);
+
+#if POSTGIS_PROJ_VERSION >= 60
+
+/**
+ * Allocate a new LWPROJ containing the reference to the PROJ' PJ
+ */
+LWPROJ* lwproj_from_PJ(PJ *pj);
+
+#endif
 
 
 /*******************************************************************************

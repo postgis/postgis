@@ -48,9 +48,8 @@ to_dec(POINT4D *pt)
 
 #if POSTGIS_PROJ_VERSION < 60
 
-
 static int
-point4d_transform(POINT4D *pt, PJ* pj)
+point4d_transform(POINT4D *pt, LWPROJ *pj)
 {
 	POINT3D orig_pt = {pt->x, pt->y, pt->z}; /* Copy for error report*/
 
@@ -90,7 +89,7 @@ point4d_transform(POINT4D *pt, PJ* pj)
  * from inpj projection to outpj projection
  */
 int
-ptarray_transform(POINTARRAY *pa, PJ* pj)
+ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 {
 	uint32_t i;
 	POINT4D p;
@@ -110,9 +109,9 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 {
 	char *pj_errstr;
 	int rv;
-	PJ pj;
+	LWPROJ pj;
 
-	pj.pj_from = lwproj_from_string(instr);
+	pj.pj_from = projpj_from_string(instr);
 	if (!pj.pj_from)
 	{
 		pj_errstr = pj_strerrno(*pj_get_errno_ref());
@@ -121,7 +120,7 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 		return LW_FAILURE;
 	}
 
-	pj.pj_to = lwproj_from_string(outstr);
+	pj.pj_to = projpj_from_string(outstr);
 	if (!pj.pj_to)
 	{
 		pj_free(pj.pj_from);
@@ -142,7 +141,7 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
  * from inpj projection to outpj projection
  */
 int
-lwgeom_transform(LWGEOM *geom, PJ* pj)
+lwgeom_transform(LWGEOM *geom, LWPROJ *pj)
 {
 	uint32_t i;
 
@@ -199,7 +198,7 @@ lwgeom_transform(LWGEOM *geom, PJ* pj)
 }
 
 projPJ
-lwproj_from_string(const char *str1)
+projpj_from_string(const char *str1)
 {
 	if (!str1 || str1[0] == '\0')
 	{
@@ -211,6 +210,86 @@ lwproj_from_string(const char *str1)
 /***************************************************************************/
 
 #else /* POSTGIS_PROJ_VERION >= 60 */
+
+static uint8_t
+proj_crs_is_swapped(const PJ *pj_crs)
+{
+	PJ *pj_cs;
+	uint8_t rv = LW_FALSE;
+
+	if (proj_get_type(pj_crs) == PJ_TYPE_COMPOUND_CRS)
+	{
+		PJ *pj_horiz_crs = proj_crs_get_sub_crs(NULL, pj_crs, 0);
+		if (!pj_horiz_crs)
+			lwerror("%s: proj_crs_get_sub_crs returned NULL", __func__);
+		pj_cs = proj_crs_get_coordinate_system(NULL, pj_horiz_crs);
+		proj_destroy(pj_horiz_crs);
+	}
+	else if (proj_get_type(pj_crs) == PJ_TYPE_BOUND_CRS)
+	{
+		PJ *pj_src_crs = proj_get_source_crs(NULL, pj_crs);
+		if (!pj_src_crs)
+			lwerror("%s: proj_get_source_crs returned NULL", __func__);
+		pj_cs = proj_crs_get_coordinate_system(NULL, pj_src_crs);
+		proj_destroy(pj_src_crs);
+	}
+	else
+	{
+		pj_cs = proj_crs_get_coordinate_system(NULL, pj_crs);
+	}
+	if (!pj_cs)
+		lwerror("%s: proj_crs_get_coordinate_system returned NULL", __func__);
+	int axis_count = proj_cs_get_axis_count(NULL, pj_cs);
+	if (axis_count > 0)
+	{
+		const char *out_name, *out_abbrev, *out_direction;
+		double out_unit_conv_factor;
+		const char *out_unit_name, *out_unit_auth_name, *out_unit_code;
+		/* Read only first axis, see if it is degrees / north */
+		proj_cs_get_axis_info(NULL,
+				      pj_cs,
+				      0,
+				      &out_name,
+				      &out_abbrev,
+				      &out_direction,
+				      &out_unit_conv_factor,
+				      &out_unit_name,
+				      &out_unit_auth_name,
+				      &out_unit_code);
+		rv = (strcasecmp(out_direction, "north") == 0);
+	}
+	proj_destroy(pj_cs);
+	return rv;
+}
+
+LWPROJ *
+lwproj_from_PJ(PJ *pj)
+{
+	PJ *pj_source_crs = proj_get_source_crs(NULL, pj);
+	if (!pj_source_crs)
+	{
+		lwerror("%s: unable to access source crs", __func__);
+		return NULL;
+	}
+	uint8_t source_swapped = proj_crs_is_swapped(pj_source_crs);
+	proj_destroy(pj_source_crs);
+
+	PJ *pj_target_crs = proj_get_target_crs(NULL, pj);
+	if (!pj_target_crs)
+	{
+		lwerror("%s: unable to access target crs", __func__);
+		return NULL;
+	}
+	uint8_t target_swapped = proj_crs_is_swapped(pj_target_crs);
+	proj_destroy(pj_target_crs);
+
+	LWPROJ *lp = malloc(sizeof(LWPROJ));
+	lp->pj = pj;
+	lp->source_swapped = source_swapped;
+	lp->target_swapped = target_swapped;
+
+	return lp;
+}
 
 int
 lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
@@ -235,14 +314,18 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 		return LW_FAILURE;
 	}
 
-	int ret = lwgeom_transform(geom, pj);
+	LWPROJ *lp = lwproj_from_PJ(pj);
+
+	int ret = lwgeom_transform(geom, lp);
+
 	proj_destroy(pj);
+	free(lp);
 
 	return ret;
 }
 
 int
-lwgeom_transform(LWGEOM* geom, PJ* pj)
+lwgeom_transform(LWGEOM *geom, LWPROJ *pj)
 {
 	uint32_t i;
 
@@ -301,56 +384,8 @@ lwgeom_transform(LWGEOM* geom, PJ* pj)
 	return LW_SUCCESS;
 }
 
-static int
-proj_crs_is_swapped(const PJ* pj_crs)
-{
-	PJ *pj_cs;
-	int rv = LW_FALSE;
-
-	if (proj_get_type(pj_crs) == PJ_TYPE_COMPOUND_CRS)
-	{
-		PJ *pj_horiz_crs = proj_crs_get_sub_crs(NULL, pj_crs, 0);
-		if (!pj_horiz_crs) lwerror("%s: proj_crs_get_sub_crs returned NULL", __func__);
-		pj_cs = proj_crs_get_coordinate_system(NULL, pj_horiz_crs);
-		proj_destroy(pj_horiz_crs);
-	}
-	else if (proj_get_type(pj_crs) == PJ_TYPE_BOUND_CRS)
-	{
-		PJ *pj_src_crs = proj_get_source_crs(NULL, pj_crs);
-		if (!pj_src_crs) lwerror("%s: proj_get_source_crs returned NULL", __func__);
-		pj_cs = proj_crs_get_coordinate_system(NULL, pj_src_crs);
-		proj_destroy(pj_src_crs);
-	}
-	else
-	{
-		pj_cs = proj_crs_get_coordinate_system(NULL, pj_crs);
-	}
-	if (!pj_cs) lwerror("%s: proj_crs_get_coordinate_system returned NULL", __func__);
-	int axis_count = proj_cs_get_axis_count(NULL, pj_cs);
-	if (axis_count > 0)
-	{
-		const char *out_name, *out_abbrev, *out_direction;
-		double out_unit_conv_factor;
-		const char *out_unit_name, *out_unit_auth_name, *out_unit_code;
-		/* Read only first axis, see if it is degrees / north */
-		proj_cs_get_axis_info(NULL, pj_cs, 0,
-			&out_name,
-			&out_abbrev,
-			&out_direction,
-			&out_unit_conv_factor,
-			&out_unit_name,
-			&out_unit_auth_name,
-			&out_unit_code
-			);
-		rv = (strcasecmp(out_direction, "north") == 0);
-	}
-	proj_destroy(pj_cs);
-	return rv;
-}
-
-
 int
-ptarray_transform(POINTARRAY* pa, PJ* pj)
+ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 {
 	uint32_t i;
 	POINT4D p;
@@ -359,24 +394,9 @@ ptarray_transform(POINTARRAY* pa, PJ* pj)
 	size_t point_size = ptarray_point_size(pa);
 	int has_z = ptarray_has_z(pa);
 	double *pa_double = (double*)(pa->serialized_pointlist);
-	int input_swapped, output_swapped;
-
-	PJ* pj_source_crs = proj_get_source_crs(NULL, pj);
-	PJ* pj_target_crs = proj_get_target_crs(NULL, pj);
-
-	if (!(pj_source_crs && pj_target_crs))
-	{
-		lwerror("ptarray_transform: unable to access source and target crs");
-		return LW_FAILURE;
-	}
-
-	input_swapped = proj_crs_is_swapped(pj_source_crs);
-	output_swapped = proj_crs_is_swapped(pj_target_crs);
-	proj_destroy(pj_source_crs);
-	proj_destroy(pj_target_crs);
 
 	/* Convert to radians if necessary */
-	if (proj_angular_input(pj, PJ_FWD))
+	if (proj_angular_input(pj->pj, PJ_FWD)) /* CACHE THIS TOO */
 	{
 		for (i = 0; i < pa->npoints; i++)
 		{
@@ -385,7 +405,7 @@ ptarray_transform(POINTARRAY* pa, PJ* pj)
 		}
 	}
 
-	if (input_swapped)
+	if (pj->source_swapped)
 		ptarray_swap_ordinates(pa, LWORD_X, LWORD_Y);
 
 	/*
@@ -396,15 +416,21 @@ ptarray_transform(POINTARRAY* pa, PJ* pj)
 	* double *t, size_t st, size_t nt)
 	*/
 
-	n_converted = proj_trans_generic(
-		pj, PJ_FWD,
-		pa_double,     point_size, n_points, /* X */
-		pa_double + 1, point_size, n_points, /* Y */
-		has_z ? pa_double + 2 : NULL,
-		has_z ? point_size : 0,
-		has_z ? n_points : 0, /* Z */
-		NULL, 0, 0 /* M */
-		);
+	n_converted = proj_trans_generic(pj->pj,
+					 PJ_FWD,
+					 pa_double,
+					 point_size,
+					 n_points, /* X */
+					 pa_double + 1,
+					 point_size,
+					 n_points, /* Y */
+					 has_z ? pa_double + 2 : NULL,
+					 has_z ? point_size : 0,
+					 has_z ? n_points : 0, /* Z */
+					 NULL,
+					 0,
+					 0 /* M */
+	);
 
 	if (n_converted != n_points)
 	{
@@ -413,7 +439,7 @@ ptarray_transform(POINTARRAY* pa, PJ* pj)
 		return LW_FAILURE;
 	}
 
-	int pj_errno_val = proj_errno(pj);
+	int pj_errno_val = proj_errno(pj->pj);
 	if (pj_errno_val)
 	{
 		lwerror("transform: %s (%d)",
@@ -421,11 +447,11 @@ ptarray_transform(POINTARRAY* pa, PJ* pj)
 		return LW_FAILURE;
 	}
 
-	if (output_swapped)
+	if (pj->target_swapped)
 		ptarray_swap_ordinates(pa, LWORD_X, LWORD_Y);
 
 	/* Convert radians to degrees if necessary */
-	if (proj_angular_output(pj, PJ_FWD))
+	if (proj_angular_output(pj->pj, PJ_FWD))
 	{
 		for (i = 0; i < pa->npoints; i++)
 		{

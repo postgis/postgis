@@ -77,7 +77,7 @@ typedef struct {
 typedef struct struct_PJHashEntry
 {
 	MemoryContext ProjectionContext;
-	PJ* projection;
+	LWPROJ *projection;
 }
 PJHashEntry;
 
@@ -87,8 +87,8 @@ uint32 mcxt_ptr_hash(const void *key, Size keysize);
 
 static HTAB *CreatePJHash(void);
 static void DeletePJHashEntry(MemoryContext mcxt);
-static PJ* GetPJHashEntry(MemoryContext mcxt);
-static void AddPJHashEntry(MemoryContext mcxt, PJ* projection);
+static LWPROJ *GetPJHashEntry(MemoryContext mcxt);
+static void AddPJHashEntry(MemoryContext mcxt, LWPROJ *projection);
 
 /* Internal Cache API */
 /* static PROJPortalCache *GetPROJSRSCache(FunctionCallInfo fcinfo) ; */
@@ -127,7 +127,7 @@ SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
 }
 
 static void
-PROJSRSDestroyPJ(PJ* pj)
+PROJSRSDestroyPJ(LWPROJ *pj)
 {
 #if POSTGIS_PROJ_VERSION < 60
 /* Ape the Proj 6+ API for versions < 6 */
@@ -137,7 +137,8 @@ PROJSRSDestroyPJ(PJ* pj)
 		pj_free(pj->pj_to);
 	free(pj);
 #else
-	proj_destroy(pj);
+	proj_destroy(pj->pj);
+	free(pj);
 #endif
 }
 
@@ -163,7 +164,7 @@ PROJSRSCacheDelete(void *ptr)
 #endif
 
 	/* Lookup the PJ pointer in the global hash table so we can free it */
-	PJ* projection = GetPJHashEntry(context);
+	LWPROJ *projection = GetPJHashEntry(context);
 
 	if (!projection)
 		elog(ERROR, "PROJSRSCacheDelete: Trying to delete non-existant projection object with MemoryContext key (%p)", (void *)context);
@@ -278,7 +279,8 @@ static HTAB *CreatePJHash(void)
 	return hash_create("PostGIS PROJ Backend MemoryContext Hash", PROJ_BACKEND_HASH_SIZE, &ctl, (HASH_ELEM | HASH_FUNCTION));
 }
 
-static void AddPJHashEntry(MemoryContext mcxt, PJ* projection)
+static void
+AddPJHashEntry(MemoryContext mcxt, LWPROJ *projection)
 {
 	bool found;
 	void **key;
@@ -301,7 +303,8 @@ static void AddPJHashEntry(MemoryContext mcxt, PJ* projection)
 	}
 }
 
-static PJ* GetPJHashEntry(MemoryContext mcxt)
+static LWPROJ *
+GetPJHashEntry(MemoryContext mcxt)
 {
 	void **key;
 	PJHashEntry *he;
@@ -356,7 +359,7 @@ IsInPROJSRSCache(PROJPortalCache *cache, int32_t srid_from, int32_t srid_to)
 	return false;
 }
 
-static PJ *
+static LWPROJ *
 GetProjectionFromPROJCache(PROJPortalCache *cache, int32_t srid_from, int32_t srid_to)
 {
 	uint32_t i;
@@ -644,8 +647,8 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 	PJ* projection = malloc(sizeof(PJ));
 	pj_from_str = from_strs.proj4text;
 	pj_to_str = to_strs.proj4text;
-	projection->pj_from = lwproj_from_string(pj_from_str);
-	projection->pj_to = lwproj_from_string(pj_to_str);
+	projection->pj_from = projpj_from_string(pj_from_str);
+	projection->pj_to = projpj_from_string(pj_to_str);
 
 	if (!projection->pj_from)
 		elog(ERROR,
@@ -657,7 +660,7 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 		    "could not form projection from 'srid=%d' to 'srid=%d'",
 		    srid_from, srid_to);
 #else
-	PJ* projection = NULL;
+	PJ *projpj = NULL;
 	/* Try combinations of ESPG/SRTEXT/PROJ4TEXT until we find */
 	/* one that gives us a usable transform. Note that we prefer */
 	/* EPSG numbers over SRTEXT and SRTEXT over PROJ4TEXT */
@@ -669,15 +672,20 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 		pj_to_str   = pgstrs_get_entry(&to_strs,   i % 3);
 		if (!(pj_from_str && pj_to_str))
 			continue;
-		projection = proj_create_crs_to_crs(NULL, pj_from_str, pj_to_str, NULL);
-		if (projection && !proj_errno(projection))
+		projpj = proj_create_crs_to_crs(NULL, pj_from_str, pj_to_str, NULL);
+		if (projpj && !proj_errno(projpj))
 			break;
 	}
+	if (!projpj)
+	{
+		elog(ERROR, "could not form projection (PJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);
+		return;
+	}
+	LWPROJ *projection = lwproj_from_PJ(projpj);
 	if (!projection)
 	{
-		elog(ERROR,
-		    "could not form projection from 'srid=%d' to 'srid=%d'",
-		    srid_from, srid_to);
+		elog(ERROR, "could not form projection (LWPROJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);
+		return;
 	}
 #endif
 
@@ -836,7 +844,7 @@ void SetPROJLibPath(void)
 }
 
 int
-GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, PJ **pj)
+GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, LWPROJ **pj)
 {
 	PROJPortalCache *proj_cache = NULL;
 
@@ -862,13 +870,13 @@ GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, PJ
 }
 
 static int
-proj_pj_is_latlong(const PJ* pj)
+proj_pj_is_latlong(const LWPROJ *pj)
 {
 #if POSTGIS_PROJ_VERSION < 60
 	return pj_is_latlong(pj->pj_from);
 #else
 	PJ_TYPE pj_type;
-	PJ *pj_src_crs = proj_get_source_crs(NULL, pj);
+	PJ *pj_src_crs = proj_get_source_crs(NULL, pj->pj);
 	if (!pj_src_crs)
 		elog(ERROR, "%s: proj_get_source_crs returned NULL", __func__);
 	pj_type = proj_get_type(pj_src_crs);
@@ -881,7 +889,7 @@ proj_pj_is_latlong(const PJ* pj)
 static int
 srid_is_latlong(FunctionCallInfo fcinfo, int32_t srid)
 {
-	PJ* pj;
+	LWPROJ *pj;
 	if ( GetPJUsingFCInfo(fcinfo, srid, srid, &pj) == LW_FAILURE)
 		return LW_FALSE;
 	return proj_pj_is_latlong(pj);
@@ -924,7 +932,7 @@ srid_axis_precision(FunctionCallInfo fcinfo, int32_t srid, int precision)
 int
 spheroid_init_from_srid(FunctionCallInfo fcinfo, int32_t srid, SPHEROID *s)
 {
-	PJ* pj;
+	LWPROJ *pj;
 #if POSTGIS_PROJ_VERSION >= 60
 	double out_semi_major_metre, out_semi_minor_metre, out_inv_flattening;
 	int out_is_semi_minor_computed;
@@ -939,7 +947,7 @@ spheroid_init_from_srid(FunctionCallInfo fcinfo, int32_t srid, SPHEROID *s)
 #if POSTGIS_PROJ_VERSION >= 60
 	if (!proj_pj_is_latlong(pj))
 		return LW_FAILURE;
-	pj_crs = proj_get_source_crs(NULL, pj);
+	pj_crs = proj_get_source_crs(NULL, pj->pj);
 	if (!pj_crs)
 	{
 		lwerror("%s: proj_get_source_crs returned NULL", __func__);
