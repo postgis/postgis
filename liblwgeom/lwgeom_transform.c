@@ -263,16 +263,59 @@ proj_crs_is_swapped(const PJ *pj_crs)
 }
 
 LWPROJ *
-lwproj_from_PJ(PJ *pj)
+lwproj_from_PJ(PJ *pj, int8_t extra_geography_data)
 {
 	PJ *pj_source_crs = proj_get_source_crs(NULL, pj);
+	uint8_t source_is_latlong = LW_FALSE;
+	double out_semi_major_metre = DBL_MAX, out_semi_minor_metre = DBL_MAX;
+
 	if (!pj_source_crs)
 	{
 		lwerror("%s: unable to access source crs", __func__);
 		return NULL;
 	}
 	uint8_t source_swapped = proj_crs_is_swapped(pj_source_crs);
-	proj_destroy(pj_source_crs);
+
+	/* We only care about the extra values if there is no transformation */
+	if (!extra_geography_data)
+	{
+		proj_destroy(pj_source_crs);
+	}
+	else
+	{
+		PJ *pj_ellps;
+		double out_inv_flattening;
+		int out_is_semi_minor_computed;
+
+		PJ_TYPE pj_type = proj_get_type(pj_source_crs);
+		if (pj_type == PJ_TYPE_UNKNOWN)
+		{
+			proj_destroy(pj_source_crs);
+			lwerror("%s: unable to access source crs type", __func__);
+			return NULL;
+		}
+		source_is_latlong = (pj_type == PJ_TYPE_GEOGRAPHIC_2D_CRS) || (pj_type == PJ_TYPE_GEOGRAPHIC_3D_CRS);
+
+		pj_ellps = proj_get_ellipsoid(NULL, pj_source_crs);
+		proj_destroy(pj_source_crs);
+		if (!pj_ellps)
+		{
+			lwerror("%s: unable to access source crs ellipsoid", __func__);
+			return NULL;
+		}
+		if (!proj_ellipsoid_get_parameters(NULL,
+						   pj_ellps,
+						   &out_semi_major_metre,
+						   &out_semi_minor_metre,
+						   &out_is_semi_minor_computed,
+						   &out_inv_flattening))
+		{
+			proj_destroy(pj_ellps);
+			lwerror("%s: unable to access source crs ellipsoid parameters", __func__);
+			return NULL;
+		}
+		proj_destroy(pj_ellps);
+	}
 
 	PJ *pj_target_crs = proj_get_target_crs(NULL, pj);
 	if (!pj_target_crs)
@@ -287,6 +330,9 @@ lwproj_from_PJ(PJ *pj)
 	lp->pj = pj;
 	lp->source_swapped = source_swapped;
 	lp->target_swapped = target_swapped;
+	lp->source_is_latlong = source_is_latlong;
+	lp->source_semi_major_metre = out_semi_major_metre;
+	lp->source_semi_minor_metre = out_semi_minor_metre;
 
 	return lp;
 }
@@ -314,7 +360,7 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 		return LW_FAILURE;
 	}
 
-	LWPROJ *lp = lwproj_from_PJ(pj);
+	LWPROJ *lp = lwproj_from_PJ(pj, LW_FALSE);
 
 	int ret = lwgeom_transform(geom, lp);
 

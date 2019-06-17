@@ -354,7 +354,7 @@ gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
 	snprintf(text_out, 32, "EPSG:%d", srid_out);
 	pj = proj_create_crs_to_crs(NULL, text_in, text_out, NULL);
 
-	lwp = lwproj_from_PJ(pj);
+	lwp = lwproj_from_PJ(pj, LW_FALSE);
 	if (!lwp)
 	{
 		proj_destroy(pj);

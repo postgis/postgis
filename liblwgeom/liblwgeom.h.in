@@ -48,12 +48,21 @@ typedef PJ LWPROJ;
 #else
 #include "proj.h"
 
-/* Typedef including PROJ projection and whether source or target crs are swapped */
+/* For PROJ6 we cache several extra values to avoid calls to proj_get_source_crs
+ * or proj_get_target_crs since those are very costly
+ */
 typedef struct LWPROJ
 {
 	PJ* pj;
+        /* CRSs are swapped: Used in transformation calls */
 	uint8_t source_swapped;
 	uint8_t target_swapped;
+        /* Source crs is geographic: Used in geography calls (source srid == dst srid) */
+        uint8_t source_is_latlong;
+
+        /* Source ellipsoid parameters */
+        double source_semi_major_metre;
+        double source_semi_minor_metre;
 } LWPROJ;
 #endif
 
@@ -2383,9 +2392,11 @@ int ptarray_transform(POINTARRAY *pa, LWPROJ* pj);
 #if POSTGIS_PROJ_VERSION >= 60
 
 /**
- * Allocate a new LWPROJ containing the reference to the PROJ' PJ
+ * Allocate a new LWPROJ containing the reference to the PROJ's PJ
+ * If extra_geography_data is true, it will generate the following values for
+ * the source srs: is_latlong (geometric or not) and spheroid values
  */
-LWPROJ* lwproj_from_PJ(PJ *pj);
+LWPROJ *lwproj_from_PJ(PJ *pj, int8_t extra_geography_data);
 
 #endif
 

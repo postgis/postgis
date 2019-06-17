@@ -681,7 +681,7 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 		elog(ERROR, "could not form projection (PJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);
 		return;
 	}
-	LWPROJ *projection = lwproj_from_PJ(projpj);
+	LWPROJ *projection = lwproj_from_PJ(projpj, srid_from == srid_to);
 	if (!projection)
 	{
 		elog(ERROR, "could not form projection (LWPROJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);
@@ -875,14 +875,7 @@ proj_pj_is_latlong(const LWPROJ *pj)
 #if POSTGIS_PROJ_VERSION < 60
 	return pj_is_latlong(pj->pj_from);
 #else
-	PJ_TYPE pj_type;
-	PJ *pj_src_crs = proj_get_source_crs(NULL, pj->pj);
-	if (!pj_src_crs)
-		elog(ERROR, "%s: proj_get_source_crs returned NULL", __func__);
-	pj_type = proj_get_type(pj_src_crs);
-	proj_destroy(pj_src_crs);
-	return (pj_type == PJ_TYPE_GEOGRAPHIC_2D_CRS) ||
-	       (pj_type == PJ_TYPE_GEOGRAPHIC_3D_CRS);
+	return pj->source_is_latlong;
 #endif
 }
 
@@ -933,11 +926,7 @@ int
 spheroid_init_from_srid(FunctionCallInfo fcinfo, int32_t srid, SPHEROID *s)
 {
 	LWPROJ *pj;
-#if POSTGIS_PROJ_VERSION >= 60
-	double out_semi_major_metre, out_semi_minor_metre, out_inv_flattening;
-	int out_is_semi_minor_computed;
-	PJ *pj_ellps, *pj_crs;
-#elif POSTGIS_PROJ_VERSION >= 48
+#if POSTGIS_PROJ_VERSION >= 48 && POSTGIS_PROJ_VERSION < 60
 	double major_axis, minor_axis, eccentricity_squared;
 #endif
 
@@ -945,25 +934,9 @@ spheroid_init_from_srid(FunctionCallInfo fcinfo, int32_t srid, SPHEROID *s)
 		return LW_FAILURE;
 
 #if POSTGIS_PROJ_VERSION >= 60
-	if (!proj_pj_is_latlong(pj))
+	if (!pj->source_is_latlong)
 		return LW_FAILURE;
-	pj_crs = proj_get_source_crs(NULL, pj->pj);
-	if (!pj_crs)
-	{
-		lwerror("%s: proj_get_source_crs returned NULL", __func__);
-	}
-	pj_ellps = proj_get_ellipsoid(NULL, pj_crs);
-	if (!pj_ellps)
-	{
-		proj_destroy(pj_crs);
-		lwerror("%s: proj_get_ellipsoid returned NULL", __func__);
-	}
-	proj_ellipsoid_get_parameters(NULL, pj_ellps,
-		&out_semi_major_metre, &out_semi_minor_metre,
-		&out_is_semi_minor_computed, &out_inv_flattening);
-	proj_destroy(pj_ellps);
-	proj_destroy(pj_crs);
-	spheroid_init(s, out_semi_major_metre, out_semi_minor_metre);
+	spheroid_init(s, pj->source_semi_major_metre, pj->source_semi_minor_metre);
 
 #elif POSTGIS_PROJ_VERSION >= 48
 	if (!pj_is_latlong(pj->pj_from))
