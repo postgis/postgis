@@ -73,7 +73,7 @@ typedef struct struct_PROJSRSCacheItem
 PROJSRSCacheItem;
 
 /* PROJ 4 lookup transaction cache methods */
-#define PROJ_CACHE_ITEMS	8
+#define PROJ_CACHE_ITEMS 64
 
 /*
 * The proj4 cache holds a fixed number of reprojection
