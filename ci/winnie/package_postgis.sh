@@ -14,7 +14,7 @@
 #export GCC_TYPE=
 #if no override is set - use these values
 #otherwise use the ones jenkins passes thru
-if  [[ "${OVERRIDE}" == '' ]] ;
+if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.8
 	export GDAL_VER=2.2.4
 	export PROJ_VER=4.9.3
@@ -27,16 +27,11 @@ fi;
 
 export PCRE_VER=8.33
 
-if [[ "${GCC_TYPE}" == *gcc48* ]] ; then
-	export PROJECTS=/projects
-	export MINGPROJECTS=/projects
-	export PATHOLD=$PATH
-else
-	export PROJECTS=/projects
-	export MINGPROJECTS=/projects
-	export PATHOLD=$PATH
-	#export JSON_VER=0.9
-fi;
+
+export PROJECTS=/projects
+export MINGPROJECTS=/projects
+export PATHOLD=$PATH
+
 
 export PGHOST=localhost
 
@@ -103,7 +98,7 @@ mkdir $outdir/bin/postgisgui
 mkdir $outdir/bin/postgisgui/share
 mkdir $outdir/bin/postgisgui/lib
 mkdir $outdir/utils
-cp ${MINGPROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin/postgisgui
+cp ${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin/postgisgui
 # it seems 9.2 and 9.3 doesn't come with its own libiconv good grief
 # and trying to use their libiconv2.dll makes shp2pgsql crash
 if [[ "$PG_VER" == *9.2* || "$PG_VER" == *9.3* ]]; then
