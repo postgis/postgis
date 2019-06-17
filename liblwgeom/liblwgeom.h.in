@@ -404,7 +404,7 @@ typedef struct
 {
     uint32_t size; /* For PgSQL use only, use VAR* macros to manipulate. */
     uint8_t srid[3]; /* 24 bits of SRID */
-    uint8_t flags; /* HasZ, HasM, HasBBox, IsGeodetic, IsReadOnly */
+    uint8_t gflags; /* HasZ, HasM, HasBBox, IsGeodetic, IsReadOnly */
     uint8_t data[1]; /* See gserialized.txt */
 } GSERIALIZED;
 
@@ -679,6 +679,11 @@ extern uint16_t lwflags(int hasz, int hasm, int geodetic);
 /***********************************************************************
 ** GSERIALIZED API
 */
+
+/**
+* Read standard lwflags from gserialized
+*/
+extern uint16_t gserialized_get_lwflags(const GSERIALIZED *g);
 
 /**
 * Access to the float bounding box, if there is one.

@@ -1192,7 +1192,7 @@ void test_gserialized_peek_gbox_p_fails_for_unsupported_cases(void)
 
 		ptr += 8; // Skip header
 		gserialized_from_lwgeom_any(geom, ptr);
-		gser->flags = geom->flags;
+		gser->gflags = lwgeom_get_gflags(geom);
 
 		CU_ASSERT_FALSE(gserialized_has_bbox(gser));
 		CU_ASSERT_EQUAL(LW_FAILURE, gserialized_peek_gbox_p(gser, &box));

@@ -12,22 +12,23 @@
 #define G1FLAG_READONLY 0x10
 #define G1FLAG_SOLID    0x20
 
-#define G1FLAGS_GET_Z(flags)         ((flags) & G1FLAG_Z)
-#define G1FLAGS_GET_M(flags)        (((flags) & G1FLAG_M)>>1)
-#define G1FLAGS_GET_BBOX(flags)     (((flags) & G1FLAG_BBOX)>>2)
-#define G1FLAGS_GET_GEODETIC(flags) (((flags) & G1FLAG_GEODETIC)>>3)
-#define G1FLAGS_GET_READONLY(flags) (((flags) & G1FLAG_READONLY)>>4)
-#define G1FLAGS_GET_SOLID(flags)    (((flags) & G1FLAG_SOLID)>>5)
+#define G1FLAGS_GET_Z(gflags)         ((gflags) & G1FLAG_Z)
+#define G1FLAGS_GET_M(gflags)        (((gflags) & G1FLAG_M)>>1)
+#define G1FLAGS_GET_BBOX(gflags)     (((gflags) & G1FLAG_BBOX)>>2)
+#define G1FLAGS_GET_GEODETIC(gflags) (((gflags) & G1FLAG_GEODETIC)>>3)
+#define G1FLAGS_GET_READONLY(gflags) (((gflags) & G1FLAG_READONLY)>>4)
+#define G1FLAGS_GET_SOLID(gflags)    (((gflags) & G1FLAG_SOLID)>>5)
 
-#define G1FLAGS_SET_Z(flags, value) ((flags) = (value) ? ((flags) | G1FLAG_Z) : ((flags) & ~G1FLAG_Z))
-#define G1FLAGS_SET_M(flags, value) ((flags) = (value) ? ((flags) | G1FLAG_M) : ((flags) & ~G1FLAG_M))
-#define G1FLAGS_SET_BBOX(flags, value) ((flags) = (value) ? ((flags) | G1FLAG_BBOX) : ((flags) & ~G1FLAG_BBOX))
-#define G1FLAGS_SET_GEODETIC(flags, value) ((flags) = (value) ? ((flags) | G1FLAG_GEODETIC) : ((flags) & ~G1FLAG_GEODETIC))
-#define G1FLAGS_SET_READONLY(flags, value) ((flags) = (value) ? ((flags) | G1FLAG_READONLY) : ((flags) & ~G1FLAG_READONLY))
-#define G1FLAGS_SET_SOLID(flags, value) ((flags) = (value) ? ((flags) | G1FLAG_SOLID) : ((flags) & ~G1FLAG_SOLID))
+#define G1FLAGS_SET_Z(gflags, value) ((gflags) = (value) ? ((gflags) | G1FLAG_Z) : ((gflags) & ~G1FLAG_Z))
+#define G1FLAGS_SET_M(gflags, value) ((gflags) = (value) ? ((gflags) | G1FLAG_M) : ((gflags) & ~G1FLAG_M))
+#define G1FLAGS_SET_BBOX(gflags, value) ((gflags) = (value) ? ((gflags) | G1FLAG_BBOX) : ((gflags) & ~G1FLAG_BBOX))
+#define G1FLAGS_SET_GEODETIC(gflags, value) ((gflags) = (value) ? ((gflags) | G1FLAG_GEODETIC) : ((gflags) & ~G1FLAG_GEODETIC))
+#define G1FLAGS_SET_READONLY(gflags, value) ((gflags) = (value) ? ((gflags) | G1FLAG_READONLY) : ((gflags) & ~G1FLAG_READONLY))
+#define G1FLAGS_SET_SOLID(gflags, value) ((gflags) = (value) ? ((gflags) | G1FLAG_SOLID) : ((gflags) & ~G1FLAG_SOLID))
 
-#define G1FLAGS_NDIMS(flags) (2 + G1FLAGS_GET_Z(flags) + G1FLAGS_GET_M(flags))
-#define G1FLAGS_GET_ZM(flags) (G1FLAGS_GET_M(flags) + G1FLAGS_GET_Z(flags) * 2)
-#define G1FLAGS_NDIMS_BOX(flags) (G1FLAGS_GET_GEODETIC(flags) ? 3 : G1FLAGS_NDIMS(flags))
+#define G1FLAGS_NDIMS(gflags) (2 + G1FLAGS_GET_Z(gflags) + G1FLAGS_GET_M(gflags))
+#define G1FLAGS_GET_ZM(gflags) (G1FLAGS_GET_M(gflags) + G1FLAGS_GET_Z(gflags) * 2)
+#define G1FLAGS_NDIMS_BOX(gflags) (G1FLAGS_GET_GEODETIC(gflags) ? 3 : G1FLAGS_NDIMS(gflags))
 
 uint8_t g1flags(int has_z, int has_m, int is_geodetic);
+uint8_t lwgeom_get_gflags(const LWGEOM *geom);

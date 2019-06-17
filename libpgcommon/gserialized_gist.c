@@ -67,14 +67,11 @@ GIDX* gidx_new(int ndims)
 	return g;
 }
 
-static uint8_t
+static uint16_t
 gserialized_datum_get_flags(Datum gsdatum)
 {
-	GSERIALIZED *gpart;
-	POSTGIS_DEBUG(4, "entered function");
-	gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(gsdatum, 0, 40);
-	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);
-	return gpart->flags;
+	GSERIALIZED *gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(gsdatum, 0, 40);
+	return gserialized_get_lwflags(gpart);
 }
 
 /* Convert a double-based GBOX into a float-based GIDX,
@@ -191,7 +188,8 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 	if (gserialized_has_bbox(gpart))
 	{
 		/* Yes! Copy it out into the GIDX! */
-		size_t size = gbox_serialized_size(gpart->flags);
+		uint16_t lwflags = gserialized_get_lwflags(gpart);
+		size_t size = gbox_serialized_size(lwflags);
 		size_t ndims, dim;
 		const float *f = gserialized_get_float_box_p(gpart, &ndims);
 		if (!f) return LW_FAILURE;
