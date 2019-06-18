@@ -40,12 +40,11 @@
 */
 static char *spatialRefSysSchema = NULL;
 
-
 /*
  * PROJ 4 backend hash table initial hash size
  * (since 16 is the default portal hash table size, and we would
  * typically have 2 entries per portal
- * then we shall use a default size of 32)
+ * then we shall use a default size of 256)
  */
 #define PROJ_BACKEND_HASH_SIZE 256
 
