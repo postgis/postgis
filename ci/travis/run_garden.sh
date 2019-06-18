@@ -11,4 +11,4 @@ LDFLAGS_STD="--coverage"
 make -j
 bash ./ci/travis/logbt -- make garden
 curl -S -f https://codecov.io/bash -o .github/codecov.bash
-bash .github/codecov.bash
+bash .github/codecov.bash || echo "Coverage report failed"
