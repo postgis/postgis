@@ -326,7 +326,7 @@ lwproj_from_PJ(PJ *pj, int8_t extra_geography_data)
 	uint8_t target_swapped = proj_crs_is_swapped(pj_target_crs);
 	proj_destroy(pj_target_crs);
 
-	LWPROJ *lp = malloc(sizeof(LWPROJ));
+	LWPROJ *lp = lwalloc(sizeof(LWPROJ));
 	lp->pj = pj;
 	lp->source_swapped = source_swapped;
 	lp->target_swapped = target_swapped;
@@ -365,7 +365,7 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 	int ret = lwgeom_transform(geom, lp);
 
 	proj_destroy(pj);
-	free(lp);
+	lwfree(lp);
 
 	return ret;
 }
