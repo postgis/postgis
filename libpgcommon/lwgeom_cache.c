@@ -90,7 +90,7 @@ GetPROJSRSCache(FunctionCallInfo fcinfo)
 	if ( ! cache )
 	{
 		/* Allocate in the upper context */
-		cache = MemoryContextAlloc(TopTransactionContext, sizeof(PROJPortalCache));
+		cache = MemoryContextAlloc(FIContext(fcinfo), sizeof(PROJPortalCache));
 
 		if (cache)
 		{
@@ -98,7 +98,7 @@ GetPROJSRSCache(FunctionCallInfo fcinfo)
 
 			POSTGIS_DEBUGF(3,
 				       "Allocating PROJCache for portal with transform() MemoryContext %p",
-				       TopTransactionContext);
+				       FIContext(fcinfo));
 			/* Put in any required defaults */
 			for (i = 0; i < PROJ_CACHE_ITEMS; i++)
 			{
@@ -109,7 +109,7 @@ GetPROJSRSCache(FunctionCallInfo fcinfo)
 			}
 			cache->type = PROJ_CACHE_ENTRY;
 			cache->PROJSRSCacheCount = 0;
-			cache->PROJSRSCacheContext = TopTransactionContext;
+			cache->PROJSRSCacheContext = FIContext(fcinfo);
 
 			/* Store the pointer in GenericCache */
 			generic_cache->entry[PROJ_CACHE_ENTRY] = (GenericCache*)cache;
