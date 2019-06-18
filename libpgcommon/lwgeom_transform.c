@@ -48,18 +48,6 @@ static char *spatialRefSysSchema = NULL;
  */
 #define PROJ_BACKEND_HASH_SIZE 256
 
-/**
- * Backend PROJ hash table
- *
- * This hash table stores a key/value pair of MemoryContext/PJ objects.
- * Whenever we create a PJ object using pj_init(), we create a separate
- * MemoryContext as a child context of the current executor context.
- * The MemoryContext/PJ object is stored in this hash table so
- * that when PROJSRSCacheDelete() is called during query cleanup, we can
- * lookup the PJ object based upon the MemoryContext parameter and hence
- * pj_free() it.
- */
-static HTAB *PJHash = NULL;
 
 /**
  * Utility structure to get many potential string representations
@@ -70,23 +58,6 @@ typedef struct {
 	char* srtext;
 	char* proj4text;
 } PjStrs;
-
-
-typedef struct struct_PJHashEntry
-{
-	MemoryContext ProjectionContext;
-	LWPROJ *projection;
-}
-PJHashEntry;
-
-
-/* PJ Hash API */
-uint32 mcxt_ptr_hash(const void *key, Size keysize);
-
-static HTAB *CreatePJHash(void);
-static void DeletePJHashEntry(MemoryContext mcxt);
-static LWPROJ *GetPJHashEntry(MemoryContext mcxt);
-static void AddPJHashEntry(MemoryContext mcxt, LWPROJ *projection);
 
 /* Internal Cache API */
 static LWPROJ *AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
@@ -118,8 +89,9 @@ SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
 }
 
 static void
-PROJSRSDestroyPJ(LWPROJ *pj)
+PROJSRSDestroyPJ(void *projection)
 {
+	LWPROJ *pj = (LWPROJ *)projection;
 #if POSTGIS_PROJ_VERSION < 60
 /* Ape the Proj 6+ API for versions < 6 */
 	if (pj->pj_from)
@@ -133,27 +105,37 @@ PROJSRSDestroyPJ(LWPROJ *pj)
 #endif
 }
 
-#if 0
-static const char *
-PJErrStr()
+#if POSTGIS_PGSQL_VERSION < 96
+/**
+ * Backend PROJ hash table
+ *
+ * This hash table stores a key/value pair of MemoryContext/PJ objects.
+ * Whenever we create a PJ object using pj_init(), we create a separate
+ * MemoryContext as a child context of the current executor context.
+ * The MemoryContext/PJ object is stored in this hash table so
+ * that when PROJSRSCacheDelete() is called during query cleanup, we can
+ * lookup the PJ object based upon the MemoryContext parameter and hence
+ * pj_free() it.
+ */
+static HTAB *PJHash = NULL;
+
+typedef struct struct_PJHashEntry
 {
-	const char *pj_errstr = pj_strerrno(*pj_get_errno_ref());
-	if (!pj_errstr)
-		return "";
-	return pj_errstr;
-}
-#endif
+	MemoryContext ProjectionContext;
+	LWPROJ *projection;
+} PJHashEntry;
+
+/* PJ Hash API */
+uint32 mcxt_ptr_hash(const void *key, Size keysize);
+
+static HTAB *CreatePJHash(void);
+static void DeletePJHashEntry(MemoryContext mcxt);
+static LWPROJ *GetPJHashEntry(MemoryContext mcxt);
+static void AddPJHashEntry(MemoryContext mcxt, LWPROJ *projection);
 
 static void
-#if POSTGIS_PGSQL_VERSION < 96
 PROJSRSCacheDelete(MemoryContext context)
 {
-#else
-PROJSRSCacheDelete(void *ptr)
-{
-	MemoryContext context = (MemoryContext)ptr;
-#endif
-
 	/* Lookup the PJ pointer in the global hash table so we can free it */
 	LWPROJ *projection = GetPJHashEntry(context);
 
@@ -167,8 +149,6 @@ PROJSRSCacheDelete(void *ptr)
 	/* Remove the hash entry as it is no longer needed */
 	DeletePJHashEntry(context);
 }
-
-#if POSTGIS_PGSQL_VERSION < 96
 
 static void
 PROJSRSCacheInit(MemoryContext context)
@@ -237,7 +217,6 @@ static MemoryContextMethods PROJSRSCacheContextMethods =
 #endif
 };
 
-#endif /* POSTGIS_PGSQL_VERSION < 96 */
 
 /*
  * PROJ PJ Hash Table functions
@@ -327,6 +306,7 @@ static void DeletePJHashEntry(MemoryContext mcxt)
 		he->projection = NULL;
 }
 
+#endif /* POSTGIS_PGSQL_VERSION < 96 */
 
 /*****************************************************************************
  * Per-cache management functions
@@ -600,7 +580,10 @@ GetProj4String(int32_t srid)
 static LWPROJ *
 AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to)
 {
-	MemoryContext PJMemoryContext, oldContext;
+#if POSTGIS_PGSQL_VERSION < 96
+	MemoryContext PJMemoryContext;
+#endif
+	MemoryContext oldContext;
 
 	PjStrs from_strs, to_strs;
 	char *pj_from_str, *pj_to_str;
@@ -710,38 +693,28 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 	                                      &PROJSRSCacheContextMethods,
 	                                      PROJCache->PROJSRSCacheContext,
 	                                      "PostGIS PROJ PJ Memory Context");
-#else
-	PJMemoryContext = AllocSetContextCreate(PROJCache->PROJSRSCacheContext,
-	                                        "PostGIS PROJ PJ Memory Context",
-	                                        ALLOCSET_SMALL_SIZES);
 
-	/* PgSQL comments suggest allocating callback in the context */
-	/* being managed, so that the callback object gets cleaned along with */
-	/* the context */
-	{
-		MemoryContextCallback *callback = MemoryContextAlloc(PJMemoryContext, sizeof(MemoryContextCallback));
-		callback->arg = (void*)PJMemoryContext;
-		callback->func = PROJSRSCacheDelete;
-		MemoryContextRegisterResetCallback(PJMemoryContext, callback);
-	}
-#endif
-
- 	/* Create the backend hash if it doesn't already exist */
+	/* We register a new memory context to use it to delete the projection on exit */
 	if (!PJHash)
 		PJHash = CreatePJHash();
 
-	/*
-	 * Add the MemoryContext to the backend hash so we can
-	 * clean up upon portal shutdown
-	 */
-	POSTGIS_DEBUGF(3, "adding projection object (%p) to hash table with MemoryContext key (%p)", projection, PJMemoryContext);
-
 	AddPJHashEntry(PJMemoryContext, projection);
+
+#else
+	/* We register a new callback to delete the projection on exit */
+	MemoryContextCallback *callback =
+	    MemoryContextAlloc(PROJCache->PROJSRSCacheContext, sizeof(MemoryContextCallback));
+	callback->func = PROJSRSDestroyPJ;
+	callback->arg = (void *)projection;
+	MemoryContextRegisterResetCallback(PROJCache->PROJSRSCacheContext, callback);
+#endif
 
 	PROJCache->PROJSRSCache[PROJCache->PROJSRSCacheCount].srid_from = srid_from;
 	PROJCache->PROJSRSCache[PROJCache->PROJSRSCacheCount].srid_to = srid_to;
 	PROJCache->PROJSRSCache[PROJCache->PROJSRSCacheCount].projection = projection;
+#if POSTGIS_PGSQL_VERSION < 96
 	PROJCache->PROJSRSCache[PROJCache->PROJSRSCacheCount].projection_mcxt = PJMemoryContext;
+#endif
 	PROJCache->PROJSRSCacheCount++;
 
 	MemoryContextSwitchTo(oldContext);
@@ -766,9 +739,11 @@ DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t sr
 			 * Zero out the entries and free the PROJ handle
 			 * by deleting the memory context
 			 */
+#if POSTGIS_PGSQL_VERSION < 96
 			MemoryContextDelete(PROJCache->PROJSRSCache[i].projection_mcxt);
-			PROJCache->PROJSRSCache[i].projection = NULL;
 			PROJCache->PROJSRSCache[i].projection_mcxt = NULL;
+#endif
+			PROJCache->PROJSRSCache[i].projection = NULL;
 			PROJCache->PROJSRSCache[i].srid_from = SRID_UNKNOWN;
 			PROJCache->PROJSRSCache[i].srid_to = SRID_UNKNOWN;
 		}
@@ -796,7 +771,7 @@ GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, LW
 		*pj = AddToPROJSRSCache(proj_cache, srid_from, srid_to);
 	}
 
-	return LW_SUCCESS;
+	return pj != NULL;
 }
 
 static int

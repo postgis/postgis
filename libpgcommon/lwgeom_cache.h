@@ -68,7 +68,9 @@ typedef struct struct_PROJSRSCacheItem
 	int32_t srid_from;
 	int32_t srid_to;
 	LWPROJ *projection;
+#if POSTGIS_PGSQL_VERSION < 96
 	MemoryContext projection_mcxt;
+#endif
 }
 PROJSRSCacheItem;
 
