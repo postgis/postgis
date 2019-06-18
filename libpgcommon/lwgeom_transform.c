@@ -95,13 +95,21 @@ PROJSRSDestroyPJ(void *projection)
 #if POSTGIS_PROJ_VERSION < 60
 /* Ape the Proj 6+ API for versions < 6 */
 	if (pj->pj_from)
+	{
 		pj_free(pj->pj_from);
+		pj->pj_from = NULL;
+	}
 	if (pj->pj_to)
+	{
 		pj_free(pj->pj_to);
-	pfree(pj);
+		pj->pj_to = NULL;
+	}
 #else
-	proj_destroy(pj->pj);
-	pfree(pj);
+	if (pj->pj)
+	{
+		proj_destroy(pj->pj);
+		pj->pj = NULL;
+	}
 #endif
 }
 
@@ -740,8 +748,13 @@ DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t sr
 			 * by deleting the memory context
 			 */
 #if POSTGIS_PGSQL_VERSION < 96
+			/* Deleting the memory context will free the PROJ objects */
 			MemoryContextDelete(PROJCache->PROJSRSCache[i].projection_mcxt);
 			PROJCache->PROJSRSCache[i].projection_mcxt = NULL;
+#else
+			/* Call PROJSRSDestroyPJ to free the PROJ objects memory now instead of
+			 * waiting for the parent memory context to exit */
+			PROJSRSDestroyPJ(PROJCache->PROJSRSCache[i].projection);
 #endif
 			PROJCache->PROJSRSCache[i].projection = NULL;
 			PROJCache->PROJSRSCache[i].srid_from = SRID_UNKNOWN;
