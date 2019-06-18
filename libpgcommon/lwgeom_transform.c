@@ -342,7 +342,7 @@ static LWPROJ *
 GetProjectionFromPROJCache(PROJPortalCache *cache, int32_t srid_from, int32_t srid_to)
 {
 	uint32_t i;
-	for (i = 0; i < PROJ_CACHE_ITEMS; i++)
+	for (i = 0; i < cache->PROJSRSCacheCount; i++)
 	{
 		if (cache->PROJSRSCache[i].srid_from == srid_from &&
 		    cache->PROJSRSCache[i].srid_to == srid_to)
