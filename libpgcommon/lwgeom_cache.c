@@ -12,6 +12,7 @@
 
 #include "postgres.h"
 #include "fmgr.h"
+#include "utils/memutils.h" //
 
 #include "../postgis_config.h"
 #include "lwgeom_cache.h"
@@ -89,13 +90,14 @@ GetPROJSRSCache(FunctionCallInfo fcinfo)
 	if ( ! cache )
 	{
 		/* Allocate in the upper context */
-		cache = MemoryContextAlloc(FIContext(fcinfo), sizeof(PROJPortalCache));
+		cache = MemoryContextAlloc(CacheMemoryContext, sizeof(PROJPortalCache));
 
 		if (cache)
 		{
 			int i;
 
-			POSTGIS_DEBUGF(3, "Allocating PROJCache for portal with transform() MemoryContext %p", FIContext(fcinfo));
+			POSTGIS_DEBUGF(
+			    3, "Allocating PROJCache for portal with transform() MemoryContext %p", CacheMemoryContext);
 			/* Put in any required defaults */
 			for (i = 0; i < PROJ_CACHE_ITEMS; i++)
 			{
@@ -106,7 +108,7 @@ GetPROJSRSCache(FunctionCallInfo fcinfo)
 			}
 			cache->type = PROJ_CACHE_ENTRY;
 			cache->PROJSRSCacheCount = 0;
-			cache->PROJSRSCacheContext = FIContext(fcinfo);
+			cache->PROJSRSCacheContext = CacheMemoryContext;
 
 			/* Store the pointer in GenericCache */
 			generic_cache->entry[PROJ_CACHE_ENTRY] = (GenericCache*)cache;
