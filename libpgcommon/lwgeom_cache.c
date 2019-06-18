@@ -12,7 +12,6 @@
 
 #include "postgres.h"
 #include "fmgr.h"
-#include "utils/memutils.h" //
 
 #include "../postgis_config.h"
 #include "lwgeom_cache.h"
