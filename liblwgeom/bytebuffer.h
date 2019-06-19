@@ -46,7 +46,6 @@ typedef struct
 bytebuffer_t;
 
 void bytebuffer_init_with_size(bytebuffer_t *b, size_t size);
-void bytebuffer_destroy(bytebuffer_t *s);
 void bytebuffer_destroy_buffer(bytebuffer_t *s);
 void bytebuffer_append_byte(bytebuffer_t *s, const uint8_t val);
 void bytebuffer_append_bytebuffer(bytebuffer_t *write_to, bytebuffer_t *write_from);
@@ -58,7 +57,7 @@ const uint8_t* bytebuffer_get_buffer(const bytebuffer_t *s, size_t *buffer_lengt
 
 /* Unused functions */
 #if 0
-
+void bytebuffer_destroy(bytebuffer_t *s);
 bytebuffer_t *bytebuffer_create_with_size(size_t size);
 bytebuffer_t *bytebuffer_create(void);
 void bytebuffer_clear(bytebuffer_t *s);

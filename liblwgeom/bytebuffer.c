@@ -53,19 +53,6 @@ bytebuffer_init_with_size(bytebuffer_t *s, size_t size)
 * Free the bytebuffer_t and all memory managed within it.
 */
 void
-bytebuffer_destroy(bytebuffer_t *s)
-{
-	bytebuffer_destroy_buffer(s);
-	if ( s )
-		lwfree(s);
-
-	return;
-}
-
-/**
-* Free the bytebuffer_t and all memory managed within it.
-*/
-void
 bytebuffer_destroy_buffer(bytebuffer_t *s)
 {
 	if ( s->buf_start != s->buf_static )
@@ -229,6 +216,19 @@ bytebuffer_create_with_size(size_t size)
 	memset(s->buf_start,0,s->capacity);
 	LWDEBUGF(4,"We create a buffer on %p of %d bytes", s->buf_start, s->capacity);
 	return s;
+}
+
+/**
+* Free the bytebuffer_t and all memory managed within it.
+*/
+void
+bytebuffer_destroy(bytebuffer_t *s)
+{
+	bytebuffer_destroy_buffer(s);
+	if ( s )
+		lwfree(s);
+
+	return;
 }
 
 /**
