@@ -71,6 +71,12 @@ lwflags_t gserialized2_get_lwflags(const GSERIALIZED *g)
 	return lwflags;
 }
 
+static int lwflags_uses_extended_flags(lwflags_t lwflags)
+{
+	const lwflags_t core_lwflags = LWFLAG_Z | LWFLAG_M | LWFLAG_BBOX | LWFLAG_GEODETIC;
+	return (int)(lwflags & ~ core_lwflags);
+}
+
 uint8_t lwflags_get_g2flags(lwflags_t lwflags)
 {
 	uint8_t gflags = 0;
@@ -78,13 +84,8 @@ uint8_t lwflags_get_g2flags(lwflags_t lwflags)
 	G2FLAGS_SET_M(gflags, FLAGS_GET_M(lwflags));
 	G2FLAGS_SET_BBOX(gflags, FLAGS_GET_BBOX(lwflags));
 	G2FLAGS_SET_GEODETIC(gflags, FLAGS_GET_GEODETIC(lwflags));
+	G2FLAGS_SET_EXTENDED(gflags, lwflags_uses_extended_flags(lwflags));
 	return gflags;
-}
-
-static int lwflags_uses_extended_flags(lwflags_t lwflags)
-{
-	const lwflags_t core_lwflags = LWFLAG_Z | LWFLAG_M | LWFLAG_BBOX | LWFLAG_GEODETIC;
-	return (int)(lwflags & ~ core_lwflags);
 }
 
 static size_t gserialized2_box_size(const GSERIALIZED *g)
