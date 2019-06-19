@@ -442,7 +442,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 	double *pa_double = (double*)(pa->serialized_pointlist);
 
 	/* Convert to radians if necessary */
-	if (proj_angular_input(pj->pj, PJ_FWD)) /* CACHE THIS TOO */
+	if (proj_angular_input(pj->pj, PJ_FWD))
 	{
 		for (i = 0; i < pa->npoints; i++)
 		{
@@ -454,43 +454,61 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 	if (pj->source_swapped)
 		ptarray_swap_ordinates(pa, LWORD_X, LWORD_Y);
 
-	/*
-	* size_t proj_trans_generic(PJ *P, PJ_DIRECTION direction,
-	* double *x, size_t sx, size_t nx,
-	* double *y, size_t sy, size_t ny,
-	* double *z, size_t sz, size_t nz,
-	* double *t, size_t st, size_t nt)
-	*/
-
-	n_converted = proj_trans_generic(pj->pj,
-					 PJ_FWD,
-					 pa_double,
-					 point_size,
-					 n_points, /* X */
-					 pa_double + 1,
-					 point_size,
-					 n_points, /* Y */
-					 has_z ? pa_double + 2 : NULL,
-					 has_z ? point_size : 0,
-					 has_z ? n_points : 0, /* Z */
-					 NULL,
-					 0,
-					 0 /* M */
-	);
-
-	if (n_converted != n_points)
+	if (n_points == 1)
 	{
-		lwerror("ptarray_transform: converted (%d) != input (%d)",
-			n_converted, n_points);
-		return LW_FAILURE;
+		/* For single points it's faster to call proj_trans */
+		PJ_XYZT v = {pa_double[0], pa_double[1], has_z ? pa_double[2] : 0.0, 0.0};
+		PJ_COORD t = proj_trans(pj->pj, PJ_FWD, (PJ_COORD)v);
+
+		int pj_errno_val = proj_errno(pj->pj);
+		if (pj_errno_val)
+		{
+			lwerror("transform: %s (%d)", proj_errno_string(pj_errno_val), pj_errno_val);
+			return LW_FAILURE;
+		}
+		pa_double[0] = ((PJ_XYZT)t.xyzt).x;
+		pa_double[1] = ((PJ_XYZT)t.xyzt).y;
+		if (has_z)
+			pa_double[2] = ((PJ_XYZT)t.xyzt).z;
 	}
-
-	int pj_errno_val = proj_errno(pj->pj);
-	if (pj_errno_val)
+	else
 	{
-		lwerror("transform: %s (%d)",
-			proj_errno_string(pj_errno_val), pj_errno_val);
-		return LW_FAILURE;
+		/*
+		 * size_t proj_trans_generic(PJ *P, PJ_DIRECTION direction,
+		 * double *x, size_t sx, size_t nx,
+		 * double *y, size_t sy, size_t ny,
+		 * double *z, size_t sz, size_t nz,
+		 * double *t, size_t st, size_t nt)
+		 */
+
+		n_converted = proj_trans_generic(pj->pj,
+						 PJ_FWD,
+						 pa_double,
+						 point_size,
+						 n_points, /* X */
+						 pa_double + 1,
+						 point_size,
+						 n_points, /* Y */
+						 has_z ? pa_double + 2 : NULL,
+						 has_z ? point_size : 0,
+						 has_z ? n_points : 0, /* Z */
+						 NULL,
+						 0,
+						 0 /* M */
+		);
+
+		if (n_converted != n_points)
+		{
+			lwerror("ptarray_transform: converted (%d) != input (%d)", n_converted, n_points);
+			return LW_FAILURE;
+		}
+
+		int pj_errno_val = proj_errno(pj->pj);
+		if (pj_errno_val)
+		{
+			lwerror("transform: %s (%d)", proj_errno_string(pj_errno_val), pj_errno_val);
+			return LW_FAILURE;
+		}
 	}
 
 	if (pj->target_swapped)

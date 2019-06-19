@@ -84,7 +84,7 @@ typedef struct struct_PROJPortalCache
 {
 	int type;
 	PROJSRSCacheItem PROJSRSCache[PROJ_CACHE_ITEMS];
-	int PROJSRSCacheCount;
+	uint32_t PROJSRSCacheCount;
 	MemoryContext PROJSRSCacheContext;
 }
 PROJPortalCache;
