@@ -1,36 +1,43 @@
 /**
-* Macros for manipulating the 'flags' byte. A uint8_t used as follows:
-* VVSRGBMZ
-* Version bit, followed by
-* Validty, Solid, ReadOnly, Geodetic, HasBBox, HasM and HasZ flags.
+* Macros for manipulating the core 'flags' byte. A uint8_t used as follows:
 */
 #define G2FLAG_Z        0x01
 #define G2FLAG_M        0x02
 #define G2FLAG_BBOX     0x04
 #define G2FLAG_GEODETIC 0x08
-#define G2FLAG_READONLY 0x10
-#define G2FLAG_SOLID    0x20
+#define G2FLAG_EXTENDED 0x10
+#define G2FLAG_UNUSED   0x20 /
+#define G2FLAG_VER_1    0x40
+#define G2FLAG_VER_2    0x80
 
+/**
+* Macros for the extended 'flags' uint64_t.
+*/
+#define G2FLAG_X_SOLID            0x00000001
+#define G2FLAG_X_CHECKED_VALID    0x00000002 // To Be Implemented
+#define G2FLAG_X_IS_VALID         0x00000004 // To Be Implemented
+#define G2FLAG_X_HAS_HASH         0x00000008 // To Be Implemented
+
+#define G2FLAGS_GET_VERSION(gflags) (((gflags) & G2FLAG_VER_1) + ((gflags) & G2FLAG_VER_2) * 2 + 1)
 #define G2FLAGS_GET_Z(gflags)         ((gflags) & G2FLAG_Z)
 #define G2FLAGS_GET_M(gflags)        (((gflags) & G2FLAG_M)>>1)
 #define G2FLAGS_GET_BBOX(gflags)     (((gflags) & G2FLAG_BBOX)>>2)
 #define G2FLAGS_GET_GEODETIC(gflags) (((gflags) & G2FLAG_GEODETIC)>>3)
-#define G2FLAGS_GET_READONLY(gflags) (((gflags) & G2FLAG_READONLY)>>4)
-#define G2FLAGS_GET_SOLID(gflags)    (((gflags) & G2FLAG_SOLID)>>5)
+#define G2FLAGS_GET_EXTENDED(gflags) (((gflags) & G2FLAG_EXTENDED)>>4)
+#define G2FLAGS_GET_UNUSED(gflags)   (((gflags) & G2FLAG_UNUSED)>>5)
 
 #define G2FLAGS_SET_Z(gflags, value) ((gflags) = (value) ? ((gflags) | G2FLAG_Z) : ((gflags) & ~G2FLAG_Z))
 #define G2FLAGS_SET_M(gflags, value) ((gflags) = (value) ? ((gflags) | G2FLAG_M) : ((gflags) & ~G2FLAG_M))
 #define G2FLAGS_SET_BBOX(gflags, value) ((gflags) = (value) ? ((gflags) | G2FLAG_BBOX) : ((gflags) & ~G2FLAG_BBOX))
 #define G2FLAGS_SET_GEODETIC(gflags, value) ((gflags) = (value) ? ((gflags) | G2FLAG_GEODETIC) : ((gflags) & ~G2FLAG_GEODETIC))
-#define G2FLAGS_SET_READONLY(gflags, value) ((gflags) = (value) ? ((gflags) | G2FLAG_READONLY) : ((gflags) & ~G2FLAG_READONLY))
-#define G2FLAGS_SET_SOLID(gflags, value) ((gflags) = (value) ? ((gflags) | G2FLAG_SOLID) : ((gflags) & ~G2FLAG_SOLID))
+#define G2FLAGS_SET_EXTENDED(gflags, value) ((gflags) = (value) ? ((gflags) | G2FLAG_EXTENDED) : ((gflags) & ~G2FLAG_EXTENDED))
 
 #define G2FLAGS_NDIMS(gflags) (2 + G2FLAGS_GET_Z(gflags) + G2FLAGS_GET_M(gflags))
 #define G2FLAGS_GET_ZM(gflags) (G2FLAGS_GET_M(gflags) + G2FLAGS_GET_Z(gflags) * 2)
 #define G2FLAGS_NDIMS_BOX(gflags) (G2FLAGS_GET_GEODETIC(gflags) ? 3 : G2FLAGS_NDIMS(gflags))
 
 uint8_t g2flags(int has_z, int has_m, int is_geodetic);
-uint8_t lwgeom_get_g2flags(const LWGEOM *geom);
+uint8_t lwflags_get_g2flags(lwflags_t lwflags);
 
 /*
 * GSERIALIZED PUBLIC API
@@ -111,6 +118,11 @@ int gserialized2_is_empty(const GSERIALIZED *g);
 * Check if a #GSERIALIZED has a bounding box without deserializing first.
 */
 int gserialized2_has_bbox(const GSERIALIZED *gser);
+
+/**
+* Check if a #GSERIALIZED has an extended flags section.
+*/
+int gserialized2_has_extended(const GSERIALIZED *g);
 
 /**
 * Check if a #GSERIALIZED has a Z ordinate.

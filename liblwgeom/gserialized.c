@@ -1,5 +1,11 @@
 #include "liblwgeom_internal.h"
 #include "gserialized1.h"
+#include "gserialized2.h"
+
+/* v1 and v2 MUST share the same version bits */
+#define GFLAG_VER_1    0x40
+#define GFLAG_VER_2    0x80
+#define GFLAGS_GET_VERSION(gflags) (((gflags) & GFLAG_VER_1) + ((gflags) & GFLAG_VER_2) * 2 + 1)
 
 /**
 * Read the flags from a #GSERIALIZED and return a standard lwflag
@@ -7,7 +13,10 @@
 */
 lwflags_t gserialized_get_lwflags(const GSERIALIZED *g)
 {
-	return gserialized1_get_lwflags(g);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_get_lwflags(g);
+	else
+		return gserialized1_get_lwflags(g);
 };
 
 /**
@@ -17,7 +26,10 @@ lwflags_t gserialized_get_lwflags(const GSERIALIZED *g)
 */
 GSERIALIZED *gserialized_set_gbox(GSERIALIZED *g, GBOX *gbox)
 {
-	return gserialized1_set_gbox(g, gbox);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_set_gbox(g, gbox);
+	else
+		return gserialized1_set_gbox(g, gbox);
 }
 
 

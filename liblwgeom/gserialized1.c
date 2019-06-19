@@ -44,20 +44,17 @@ lwflags_t gserialized1_get_lwflags(const GSERIALIZED *g)
 	FLAGS_SET_M(lwflags, G1FLAGS_GET_M(gflags));
 	FLAGS_SET_BBOX(lwflags, G1FLAGS_GET_BBOX(gflags));
 	FLAGS_SET_GEODETIC(lwflags, G1FLAGS_GET_GEODETIC(gflags));
-	FLAGS_SET_READONLY(lwflags, G1FLAGS_GET_READONLY(gflags));
 	FLAGS_SET_SOLID(lwflags, G1FLAGS_GET_SOLID(gflags));
 	return lwflags;
 }
 
-uint8_t lwgeom_get_g1flags(const LWGEOM *geom)
+uint8_t lwflags_get_g1flags(lwflags_t lwflags)
 {
-	lwflags_t lwflags = geom->flags;
 	uint8_t gflags = 0;
 	G1FLAGS_SET_Z(gflags, FLAGS_GET_Z(lwflags));
 	G1FLAGS_SET_M(gflags, FLAGS_GET_M(lwflags));
 	G1FLAGS_SET_BBOX(gflags, FLAGS_GET_BBOX(lwflags));
 	G1FLAGS_SET_GEODETIC(gflags, FLAGS_GET_GEODETIC(lwflags));
-	G1FLAGS_SET_READONLY(gflags, FLAGS_GET_READONLY(lwflags));
 	G1FLAGS_SET_SOLID(gflags, FLAGS_GET_SOLID(lwflags));
 	return gflags;
 }
@@ -74,9 +71,7 @@ static size_t gserialized1_box_size(const GSERIALIZED *g)
 /* handle missaligned uint32_t data */
 static inline uint32_t gserialized1_get_uint32_t(const uint8_t *loc)
 {
-	uint32_t i;
-	memcpy(&i, loc, sizeof(uint32_t));
-	return i;
+	return *((uint32_t*)loc);
 }
 
 uint8_t g1flags(int has_z, int has_m, int is_geodetic)
@@ -1235,7 +1230,7 @@ GSERIALIZED* gserialized1_from_lwgeom(LWGEOM *geom, size_t *size)
 	/* Set the SRID! */
 	gserialized1_set_srid(g, geom->srid);
 
-	g->gflags = lwgeom_get_g1flags(geom);
+	g->gflags = lwflags_get_g1flags(geom->flags);
 
 	return g;
 }

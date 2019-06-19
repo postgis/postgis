@@ -10,19 +10,20 @@
 #define G1FLAG_GEODETIC 0x08
 #define G1FLAG_READONLY 0x10
 #define G1FLAG_SOLID    0x20
+/* VERSION BITS         0x40 */
+/* VERSION BITS         0x80 */
 
 #define G1FLAGS_GET_Z(gflags)         ((gflags) & G1FLAG_Z)
 #define G1FLAGS_GET_M(gflags)        (((gflags) & G1FLAG_M)>>1)
 #define G1FLAGS_GET_BBOX(gflags)     (((gflags) & G1FLAG_BBOX)>>2)
 #define G1FLAGS_GET_GEODETIC(gflags) (((gflags) & G1FLAG_GEODETIC)>>3)
-#define G1FLAGS_GET_READONLY(gflags) (((gflags) & G1FLAG_READONLY)>>4)
 #define G1FLAGS_GET_SOLID(gflags)    (((gflags) & G1FLAG_SOLID)>>5)
+
 
 #define G1FLAGS_SET_Z(gflags, value) ((gflags) = (value) ? ((gflags) | G1FLAG_Z) : ((gflags) & ~G1FLAG_Z))
 #define G1FLAGS_SET_M(gflags, value) ((gflags) = (value) ? ((gflags) | G1FLAG_M) : ((gflags) & ~G1FLAG_M))
 #define G1FLAGS_SET_BBOX(gflags, value) ((gflags) = (value) ? ((gflags) | G1FLAG_BBOX) : ((gflags) & ~G1FLAG_BBOX))
 #define G1FLAGS_SET_GEODETIC(gflags, value) ((gflags) = (value) ? ((gflags) | G1FLAG_GEODETIC) : ((gflags) & ~G1FLAG_GEODETIC))
-#define G1FLAGS_SET_READONLY(gflags, value) ((gflags) = (value) ? ((gflags) | G1FLAG_READONLY) : ((gflags) & ~G1FLAG_READONLY))
 #define G1FLAGS_SET_SOLID(gflags, value) ((gflags) = (value) ? ((gflags) | G1FLAG_SOLID) : ((gflags) & ~G1FLAG_SOLID))
 
 #define G1FLAGS_NDIMS(gflags) (2 + G1FLAGS_GET_Z(gflags) + G1FLAGS_GET_M(gflags))
@@ -30,7 +31,7 @@
 #define G1FLAGS_NDIMS_BOX(gflags) (G1FLAGS_GET_GEODETIC(gflags) ? 3 : G1FLAGS_NDIMS(gflags))
 
 uint8_t g1flags(int has_z, int has_m, int is_geodetic);
-uint8_t lwgeom_get_g1flags(const LWGEOM *geom);
+uint8_t lwflags_get_g1flags(lwflags_t lwflags);
 
 /*
 * GSERIALIZED PUBLIC API
