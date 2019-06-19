@@ -89,9 +89,7 @@ static LWPROJ *GetPJHashEntry(MemoryContext mcxt);
 static void AddPJHashEntry(MemoryContext mcxt, LWPROJ *projection);
 
 /* Internal Cache API */
-/* static PROJPortalCache *GetPROJSRSCache(FunctionCallInfo fcinfo) ; */
-static bool IsInPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
-static void AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
+static LWPROJ *AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
 static void DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
 
 /* Search path for PROJ.4 library */
@@ -339,29 +337,11 @@ static void DeletePJHashEntry(MemoryContext mcxt)
  * Per-cache management functions
  */
 
-static bool
-IsInPROJSRSCache(PROJPortalCache *cache, int32_t srid_from, int32_t srid_to)
-{
-	/*
-	 * Return true/false depending upon whether the item
-	 * is in the SRS cache.
-	 */
-	uint32_t i;
-	for (i = 0; i < PROJ_CACHE_ITEMS; i++)
-	{
-		if (cache->PROJSRSCache[i].srid_from == srid_from &&
-		    cache->PROJSRSCache[i].srid_to == srid_to)
-			return true;
-	}
-	/* Otherwise not found */
-	return false;
-}
-
 static LWPROJ *
 GetProjectionFromPROJCache(PROJPortalCache *cache, int32_t srid_from, int32_t srid_to)
 {
 	uint32_t i;
-	for (i = 0; i < PROJ_CACHE_ITEMS; i++)
+	for (i = 0; i < cache->PROJSRSCacheCount; i++)
 	{
 		if (cache->PROJSRSCache[i].srid_from == srid_from &&
 		    cache->PROJSRSCache[i].srid_to == srid_to)
@@ -622,7 +602,7 @@ GetProj4String(int32_t srid)
  * we must make sure the entry we choose to delete does not contain other_srid
  * which is the definition for the other half of the transformation.
  */
-static void
+static LWPROJ *
 AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to)
 {
 	MemoryContext PJMemoryContext;
@@ -677,13 +657,13 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 	if (!projpj)
 	{
 		elog(ERROR, "could not form projection (PJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);
-		return;
+		return NULL;
 	}
 	LWPROJ *projection = lwproj_from_PJ(projpj, srid_from == srid_to);
 	if (!projection)
 	{
 		elog(ERROR, "could not form projection (LWPROJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);
-		return;
+		return NULL;
 	}
 #endif
 
@@ -766,6 +746,8 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 	PROJCache->PROJSRSCache[PROJCache->PROJSRSCacheCount].projection = projection;
 	PROJCache->PROJSRSCache[PROJCache->PROJSRSCacheCount].projection_mcxt = PJMemoryContext;
 	PROJCache->PROJSRSCacheCount++;
+
+	return projection;
 }
 
 static void
@@ -858,11 +840,11 @@ GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, LW
 		return LW_FAILURE;
 
 	/* Add the output srid to the cache if it's not already there */
-	if (!IsInPROJSRSCache(proj_cache, srid_from, srid_to))
-		AddToPROJSRSCache(proj_cache, srid_from, srid_to);
-
-	/* Get the projections */
 	*pj = GetProjectionFromPROJCache(proj_cache, srid_from, srid_to);
+	if (*pj == NULL)
+	{
+		*pj = AddToPROJSRSCache(proj_cache, srid_from, srid_to);
+	}
 
 	return LW_SUCCESS;
 }
