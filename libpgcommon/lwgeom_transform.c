@@ -131,10 +131,10 @@ PROJSRSDestroyPJ(LWPROJ *pj)
 		pj_free(pj->pj_from);
 	if (pj->pj_to)
 		pj_free(pj->pj_to);
-	free(pj);
+	pfree(pj);
 #else
 	proj_destroy(pj->pj);
-	free(pj);
+	pfree(pj);
 #endif
 }
 
@@ -311,7 +311,7 @@ GetPJHashEntry(MemoryContext mcxt)
 	/* Return the projection object from the hash */
 	he = (PJHashEntry *) hash_search(PJHash, key, HASH_FIND, NULL);
 
-	return he->projection;
+	return he ? he->projection : NULL;
 }
 
 
@@ -605,7 +605,7 @@ GetProj4String(int32_t srid)
 static LWPROJ *
 AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to)
 {
-	MemoryContext PJMemoryContext;
+	MemoryContext PJMemoryContext, oldContext;
 
 	PjStrs from_strs, to_strs;
 	char *pj_from_str, *pj_to_str;
@@ -621,8 +621,10 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 	if (!pjstrs_has_entry(&to_strs))
 		elog(ERROR, "got NULL for SRID (%d)", srid_to);
 
+	oldContext = MemoryContextSwitchTo(PROJCache->PROJSRSCacheContext);
+
 #if POSTGIS_PROJ_VERSION < 60
-	PJ* projection = malloc(sizeof(PJ));
+	PJ *projection = palloc(sizeof(PJ));
 	pj_from_str = from_strs.proj4text;
 	pj_to_str = to_strs.proj4text;
 	projection->pj_from = projpj_from_string(pj_from_str);
@@ -747,6 +749,7 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 	PROJCache->PROJSRSCache[PROJCache->PROJSRSCacheCount].projection_mcxt = PJMemoryContext;
 	PROJCache->PROJSRSCacheCount++;
 
+	MemoryContextSwitchTo(oldContext);
 	return projection;
 }
 
