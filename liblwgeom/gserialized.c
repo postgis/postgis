@@ -39,7 +39,10 @@ GSERIALIZED *gserialized_set_gbox(GSERIALIZED *g, GBOX *gbox)
 */
 GSERIALIZED* gserialized_drop_gbox(GSERIALIZED *g)
 {
-	return gserialized1_drop_gbox(g);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_drop_gbox(g);
+	else
+		return gserialized1_drop_gbox(g);
 }
 
 /**
@@ -49,7 +52,10 @@ GSERIALIZED* gserialized_drop_gbox(GSERIALIZED *g)
 */
 int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 {
-	return gserialized1_get_gbox_p(g, gbox);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_get_gbox_p(g, gbox);
+	else
+		return gserialized1_get_gbox_p(g, gbox);
 }
 
 /**
@@ -58,7 +64,10 @@ int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 */
 int gserialized_fast_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 {
-	return gserialized1_fast_gbox_p(g, gbox);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_fast_gbox_p(g, gbox);
+	else
+		return gserialized1_fast_gbox_p(g, gbox);
 }
 
 /**
@@ -67,7 +76,10 @@ int gserialized_fast_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 */
 uint32_t gserialized_get_type(const GSERIALIZED *g)
 {
-	return gserialized1_get_type(g);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_get_type(g);
+	else
+		return gserialized1_get_type(g);
 }
 
 /**
@@ -76,7 +88,9 @@ uint32_t gserialized_get_type(const GSERIALIZED *g)
 */
 uint32_t gserialized_max_header_size(void)
 {
-	return gserialized1_max_header_size();
+	size_t sz1 = gserialized1_max_header_size();
+	size_t sz2 = gserialized2_max_header_size();
+	return sz1 > sz2 ? sz1 : sz2;
 }
 
 /**
@@ -86,7 +100,10 @@ uint32_t gserialized_max_header_size(void)
 */
 uint64_t gserialized_hash(const GSERIALIZED *g)
 {
-	return gserialized1_hash(g);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_hash(g);
+	else
+		return gserialized1_hash(g);
 }
 
 /**
@@ -95,7 +112,10 @@ uint64_t gserialized_hash(const GSERIALIZED *g)
 */
 int32_t gserialized_get_srid(const GSERIALIZED *g)
 {
-	return gserialized1_get_srid(g);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_get_srid(g);
+	else
+		return gserialized1_get_srid(g);
 }
 
 /**
@@ -104,7 +124,10 @@ int32_t gserialized_get_srid(const GSERIALIZED *g)
 */
 void gserialized_set_srid(GSERIALIZED *g, int32_t srid)
 {
-	return gserialized1_set_srid(g, srid);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_set_srid(g, srid);
+	else
+		return gserialized1_set_srid(g, srid);
 }
 
 /**
@@ -115,7 +138,10 @@ void gserialized_set_srid(GSERIALIZED *g, int32_t srid)
 */
 int gserialized_is_empty(const GSERIALIZED *g)
 {
-	return gserialized1_is_empty(g);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_is_empty(g);
+	else
+		return gserialized1_is_empty(g);
 }
 
 /**
@@ -123,7 +149,10 @@ int gserialized_is_empty(const GSERIALIZED *g)
 */
 int gserialized_has_bbox(const GSERIALIZED *g)
 {
-	return gserialized1_has_bbox(g);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_has_bbox(g);
+	else
+		return gserialized1_has_bbox(g);
 }
 
 /**
@@ -131,7 +160,10 @@ int gserialized_has_bbox(const GSERIALIZED *g)
 */
 int gserialized_has_z(const GSERIALIZED *g)
 {
-	return gserialized1_has_z(g);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_has_z(g);
+	else
+		return gserialized1_has_z(g);
 }
 
 /**
@@ -139,7 +171,10 @@ int gserialized_has_z(const GSERIALIZED *g)
 */
 int gserialized_has_m(const GSERIALIZED *g)
 {
-	return gserialized1_has_m(g);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_has_m(g);
+	else
+		return gserialized1_has_m(g);
 }
 
 /**
@@ -147,7 +182,10 @@ int gserialized_has_m(const GSERIALIZED *g)
 */
 int gserialized_is_geodetic(const GSERIALIZED *g)
 {
-	return gserialized1_is_geodetic(g);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_is_geodetic(g);
+	else
+		return gserialized1_is_geodetic(g);
 }
 
 /**
@@ -155,7 +193,10 @@ int gserialized_is_geodetic(const GSERIALIZED *g)
 */
 int gserialized_ndims(const GSERIALIZED *g)
 {
-	return gserialized1_ndims(g);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_ndims(g);
+	else
+		return gserialized1_ndims(g);
 }
 
 /**
@@ -169,7 +210,10 @@ int gserialized_ndims(const GSERIALIZED *g)
 */
 int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 {
-	return gserialized1_cmp(g1, g2);
+	if (GFLAGS_GET_VERSION(g1->gflags) == 2)
+		return gserialized2_cmp(g1, g2);
+	else
+		return gserialized1_cmp(g1, g2);
 }
 
 /**
@@ -181,7 +225,7 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 */
 GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size)
 {
-	return gserialized1_from_lwgeom(geom, size);
+	return gserialized2_from_lwgeom(geom, size);
 }
 
 /**
@@ -189,7 +233,7 @@ GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size)
 */
 size_t gserialized_from_lwgeom_size(const LWGEOM *geom)
 {
-	return gserialized1_from_lwgeom_size(geom);
+	return gserialized2_from_lwgeom_size(geom);
 }
 
 /**
@@ -198,11 +242,19 @@ size_t gserialized_from_lwgeom_size(const LWGEOM *geom)
 */
 LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g)
 {
-	return lwgeom_from_gserialized1(g);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return lwgeom_from_gserialized2(g);
+	else
+		return lwgeom_from_gserialized1(g);
 }
 
 
 const float * gserialized_get_float_box_p(const GSERIALIZED *g, size_t *ndims)
 {
-	return gserialized1_get_float_box_p(g, ndims);
+	if (GFLAGS_GET_VERSION(g->gflags) == 2)
+		return gserialized2_get_float_box_p(g, ndims);
+	else
+		return gserialized1_get_float_box_p(g, ndims);
 }
+
+

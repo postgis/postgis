@@ -146,8 +146,8 @@ int gserialized2_is_geodetic(const GSERIALIZED *g)
 
 uint32_t gserialized2_max_header_size(void)
 {
-	/* read GSERIALIZED size + max bbox according gbox_serialized_size (2 + Z + M) + 1 int for type */
-	return sizeof(GSERIALIZED) + 8 * sizeof(float) + sizeof(int);
+	/* read GSERIALIZED size + max bbox according gbox_serialized_size (XYZM*2) + extended flags + 1 int for type */
+	return sizeof(GSERIALIZED) + 8 * sizeof(float) + sizeof(uint64_t) + sizeof(int);
 }
 
 static uint32_t gserialized2_header_size(const GSERIALIZED *g)
