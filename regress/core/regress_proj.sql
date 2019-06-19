@@ -58,3 +58,12 @@ SELECT 12, ST_AsEWKT(ST_Transform(
 
 DELETE FROM spatial_ref_sys WHERE srid >= 100000;
 
+--- Overflow proj cache
+TRUNCATE spatial_ref_sys;
+\i ../../spatial_ref_sys.sql
+SELECT 13, count(*) FROM
+(
+    SELECT ST_Transform('SRID=4326; POINT(0 0)'::geometry, srid) AS g
+    FROM
+        ( SELECT srid FROM spatial_ref_sys LIMIT 150 ) _a
+) _b WHERE g IS NOT NULL;

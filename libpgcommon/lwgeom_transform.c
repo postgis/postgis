@@ -61,7 +61,7 @@ typedef struct {
 
 /* Internal Cache API */
 static LWPROJ *AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
-static void DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
+static void DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, uint32_t position);
 
 /*
 * Given a function call context, figure out what namespace the
@@ -328,7 +328,10 @@ GetProjectionFromPROJCache(PROJPortalCache *cache, int32_t srid_from, int32_t sr
 	{
 		if (cache->PROJSRSCache[i].srid_from == srid_from &&
 		    cache->PROJSRSCache[i].srid_to == srid_to)
+		{
+			cache->PROJSRSCache[i].hits++;
 			return cache->PROJSRSCache[i].projection;
+		}
 	}
 
 	return NULL;
@@ -655,48 +658,50 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 	}
 #endif
 
-	/*
-	 * If the cache is already full then find the first entry
-	 * that doesn't contain our srids and use this as the
-	 * subsequent value of PROJSRSCacheCount
-	 */
-	if (PROJCache->PROJSRSCacheCount == PROJ_CACHE_ITEMS)
+	/* If the cache is already full then find the least used element and delete it */
+	uint32_t cache_position = PROJCache->PROJSRSCacheCount;
+	uint32_t hits = 1;
+	if (cache_position == PROJ_CACHE_ITEMS)
 	{
-		bool found = false;
-		uint32_t i;
-		for (i = 0; i < PROJ_CACHE_ITEMS; i++)
+		cache_position = 0;
+		hits = PROJCache->PROJSRSCache[0].hits;
+		for (uint32_t i = 1; i < PROJ_CACHE_ITEMS; i++)
 		{
-			if (found == false &&
-				(PROJCache->PROJSRSCache[i].srid_from != srid_from ||
-				 PROJCache->PROJSRSCache[i].srid_to != srid_to))
+			if (PROJCache->PROJSRSCache[i].hits < hits)
 			{
-				POSTGIS_DEBUGF(3, "choosing to remove item from query cache with SRIDs %d => %d and index %d",
-					PROJCache->PROJSRSCache[i].srid_from,
-					PROJCache->PROJSRSCache[i].srid_to,
-					i);
-
-				DeleteFromPROJSRSCache(PROJCache,
-				    PROJCache->PROJSRSCache[i].srid_from,
-				    PROJCache->PROJSRSCache[i].srid_to);
-
-				PROJCache->PROJSRSCacheCount = i;
-				found = true;
+				cache_position = i;
+				hits = PROJCache->PROJSRSCache[i].hits;
 			}
 		}
+		DeleteFromPROJSRSCache(PROJCache, cache_position);
+		/* To avoid the element we are introduced now being evicted next (as
+		 * it would have 1 hit, being most likely the lower one) we reuse the
+		 * hits from the evicted position and add some extra buffer
+		 */
+		hits += 5;
+	}
+	else
+	{
+		PROJCache->PROJSRSCacheCount++;
 	}
 
-	/*
-	 * Now create a memory context for this projection and
-	 * store it in the backend hash
-	 */
-	POSTGIS_DEBUGF(3, "adding transform %d => %d aka \"%s\" => \"%s\" to query cache at index %d",
-		srid_from, srid_to, pj_from_str, pj_to_str, PROJCache->PROJSRSCacheCount);
+	POSTGIS_DEBUGF(3,
+		       "adding transform %d => %d aka \"%s\" => \"%s\" to query cache at index %d",
+		       srid_from,
+		       srid_to,
+		       pj_from_str,
+		       pj_to_str,
+		       cache_position);
 
 	/* Free the projection strings */
 	pjstrs_pfree(&from_strs);
 	pjstrs_pfree(&to_strs);
 
 #if POSTGIS_PGSQL_VERSION < 96
+	/*
+	 * Now create a memory context for this projection and
+	 * store it in the backend hash
+	 */
 	PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
 	                                      &PROJSRSCacheContextMethods,
 	                                      PROJCache->PROJSRSCacheContext,
@@ -717,50 +722,39 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 	MemoryContextRegisterResetCallback(PROJCache->PROJSRSCacheContext, callback);
 #endif
 
-	PROJCache->PROJSRSCache[PROJCache->PROJSRSCacheCount].srid_from = srid_from;
-	PROJCache->PROJSRSCache[PROJCache->PROJSRSCacheCount].srid_to = srid_to;
-	PROJCache->PROJSRSCache[PROJCache->PROJSRSCacheCount].projection = projection;
+	PROJCache->PROJSRSCache[cache_position].srid_from = srid_from;
+	PROJCache->PROJSRSCache[cache_position].srid_to = srid_to;
+	PROJCache->PROJSRSCache[cache_position].projection = projection;
+	PROJCache->PROJSRSCache[cache_position].hits = hits;
 #if POSTGIS_PGSQL_VERSION < 96
-	PROJCache->PROJSRSCache[PROJCache->PROJSRSCacheCount].projection_mcxt = PJMemoryContext;
+	PROJCache->PROJSRSCache[cache_position].projection_mcxt = PJMemoryContext;
 #endif
-	PROJCache->PROJSRSCacheCount++;
 
 	MemoryContextSwitchTo(oldContext);
 	return projection;
 }
 
 static void
-DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to)
+DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, uint32_t position)
 {
-	/*
-	 * Delete the SRID entry from the cache
-	 */
-	uint32_t i;
-	for (i = 0; i < PROJ_CACHE_ITEMS; i++)
-	{
-		if (PROJCache->PROJSRSCache[i].srid_from == srid_from &&
-			PROJCache->PROJSRSCache[i].srid_to == srid_to)
-		{
-			POSTGIS_DEBUGF(3, "removing query cache entry with SRIDs %d => %d at index %d", srid_from, srid_to, i);
+	POSTGIS_DEBUGF(3,
+		       "removing query cache entry with SRIDs %d => %d at index %u",
+		       PROJCache->PROJSRSCache[position].srid_from,
+		       PROJCache->PROJSRSCache[position].srid_to,
+		       position);
 
-			/*
-			 * Zero out the entries and free the PROJ handle
-			 * by deleting the memory context
-			 */
 #if POSTGIS_PGSQL_VERSION < 96
-			/* Deleting the memory context will free the PROJ objects */
-			MemoryContextDelete(PROJCache->PROJSRSCache[i].projection_mcxt);
-			PROJCache->PROJSRSCache[i].projection_mcxt = NULL;
+	/* Deleting the memory context will free the PROJ objects */
+	MemoryContextDelete(PROJCache->PROJSRSCache[position].projection_mcxt);
+	PROJCache->PROJSRSCache[position].projection_mcxt = NULL;
 #else
-			/* Call PROJSRSDestroyPJ to free the PROJ objects memory now instead of
-			 * waiting for the parent memory context to exit */
-			PROJSRSDestroyPJ(PROJCache->PROJSRSCache[i].projection);
+	/* Call PROJSRSDestroyPJ to free the PROJ objects memory now instead of
+	 * waiting for the parent memory context to exit */
+	PROJSRSDestroyPJ(PROJCache->PROJSRSCache[position].projection);
 #endif
-			PROJCache->PROJSRSCache[i].projection = NULL;
-			PROJCache->PROJSRSCache[i].srid_from = SRID_UNKNOWN;
-			PROJCache->PROJSRSCache[i].srid_to = SRID_UNKNOWN;
-		}
-	}
+	PROJCache->PROJSRSCache[position].projection = NULL;
+	PROJCache->PROJSRSCache[position].srid_from = SRID_UNKNOWN;
+	PROJCache->PROJSRSCache[position].srid_to = SRID_UNKNOWN;
 }
 
 

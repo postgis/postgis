@@ -96,7 +96,6 @@ GetPROJSRSCache(FunctionCallInfo fcinfo)
 			POSTGIS_DEBUGF(3,
 				       "Allocating PROJCache for portal with transform() MemoryContext %p",
 				       FIContext(fcinfo));
-			/* Put in any required defaults */
 			memset(cache->PROJSRSCache, 0, sizeof(PROJSRSCacheItem) * PROJ_CACHE_ITEMS);
 			cache->type = PROJ_CACHE_ENTRY;
 			cache->PROJSRSCacheCount = 0;
