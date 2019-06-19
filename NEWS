@@ -13,7 +13,8 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4388, AddRasterConstraints: Ignore NULLs when generating constraints (Raúl Marín)
   - #4327, Avoid pfree'ing the result of getenv (Raúl Marín)
   - #4406, Throw on invalid characters when decoding geohash (Raúl Marín)
-  - #4372, Avoid resource leaks with PROJ6 (Raúl Marín)
+  - #4429, Avoid resource leaks with PROJ6 (Raúl Marín)
+  - #4372, PROJ6: Speed improvements (Raúl Marín)
 
 PostGIS 3.0.0alpha2
 2019/06/02

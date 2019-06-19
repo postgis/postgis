@@ -50,7 +50,7 @@ Datum transform(PG_FUNCTION_ARGS)
 	GSERIALIZED* geom;
 	GSERIALIZED* result=NULL;
 	LWGEOM* lwgeom;
-	PJ* pj;
+	LWPROJ *pj;
 	int32 srid_to, srid_from;
 
 	srid_to = PG_GETARG_INT32(1);
@@ -216,7 +216,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 
 	if (srid_from != srid_to)
 	{
-		PJ* pj;
+		LWPROJ *pj;
 		if (GetPJUsingFCInfo(fcinfo, srid_from, srid_to, &pj) == LW_FAILURE)
 		{
 			PG_FREE_IF_COPY(geom, 0);

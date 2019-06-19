@@ -32,7 +32,7 @@ typedef void *ProjCache ;
 void SetPROJLibPath(void);
 bool IsInPROJCache(ProjCache cache, int32_t srid_from, int32_t srid_to);
 PJ *GetPJFromPROJCache(ProjCache cache, int32_t srid_from, int32_t srid_to);
-int GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, PJ **pj);
+int GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, LWPROJ **pj);
 int spheroid_init_from_srid(FunctionCallInfo fcinfo, int32_t srid, SPHEROID *s);
 void srid_check_latlong(FunctionCallInfo fcinfo, int32_t srid);
 srs_precision srid_axis_precision(FunctionCallInfo fcinfo, int32_t srid, int precision);
