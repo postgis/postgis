@@ -1274,7 +1274,7 @@ GSERIALIZED* gserialized2_from_lwgeom(LWGEOM *geom, size_t *size)
 	** We are aping PgSQL code here, PostGIS code should use
 	** VARSIZE to set this for real.
 	*/
-	g->size = SIZE_SET(g->size, expected_size);
+	SIZE_SET(g->size, expected_size);
 	g->gflags = lwflags_get_g2flags(geom->flags);
 
 	/* Move write head past size, srid and flags. */
@@ -1295,7 +1295,7 @@ GSERIALIZED* gserialized2_from_lwgeom(LWGEOM *geom, size_t *size)
 
 	if (expected_size != return_size) /* Uh oh! */
 	{
-		lwerror("Return size (%d) not equal to expected size (%d)!", return_size, expected_size);
+		lwerror("Return size (%lu) not equal to expected size (%lu)!", return_size, expected_size);
 		return NULL;
 	}
 
@@ -1702,7 +1702,7 @@ GSERIALIZED* gserialized2_set_gbox(GSERIALIZED *g, GBOX *gbox)
 		ptr_out += box_size;
 		memcpy(ptr_out, ptr_in, varsize_in - (ptr_in - ptr));
 		G2FLAGS_SET_BBOX(g_out->gflags, 1);
-		g_out->size = SIZE_SET(g_out->size, varsize_out);
+		SIZE_SET(g_out->size, varsize_out);
 	}
 
 	/* Move bounds to nearest float values */
@@ -1758,7 +1758,7 @@ GSERIALIZED* gserialized2_drop_gbox(GSERIALIZED *g)
 		/* Copy parts after the box into place */
 		memcpy(outptr, inptr, g_out_size - 8);
 		G2FLAGS_SET_BBOX(g_out->gflags, 0);
-		g_out->size = SIZE_SET(g_out->size, g_out_size);
+		SIZE_SET(g_out->size, g_out_size);
 	}
 	/* No box? Nothing to do but copy and return. */
 	else

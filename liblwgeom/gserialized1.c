@@ -1623,7 +1623,7 @@ GSERIALIZED* gserialized1_set_gbox(GSERIALIZED *g, GBOX *gbox)
 		ptr += box_size;
 		memcpy(ptr, g->data, SIZE_GET(g->size) - 8);
 		G1FLAGS_SET_BBOX(g_out->gflags, 1);
-		g_out->size = SIZE_SET(g_out->size, varsize_new);
+		SIZE_SET(g_out->size, varsize_new);
 	}
 
 	/* Move bounds to nearest float values */
@@ -1674,7 +1674,7 @@ GSERIALIZED* gserialized1_drop_gbox(GSERIALIZED *g)
 		/* Copy parts after the box into place */
 		memcpy(outptr, inptr, g_out_size - 8);
 		G1FLAGS_SET_BBOX(g_out->gflags, 0);
-		g_out->size = SIZE_SET(g_out->size, g_out_size);
+		SIZE_SET(g_out->size, g_out_size);
 	}
 	/* No box? Nothing to do but copy and return. */
 	else

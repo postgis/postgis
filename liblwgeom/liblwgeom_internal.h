@@ -119,8 +119,13 @@
 * Cribbed from PgSQL, top 30 bits are size. Use VARSIZE() when working
 * internally with PgSQL.
 */
+#ifdef WORDS_BIGENDIAN
+#define SIZE_GET(varsize) ((varsize) & 0x3FFFFFFF)
+#define SIZE_SET(varsize, len) ((varsize) = ((len) & 0x3FFFFFFF))
+#else
 #define SIZE_GET(varsize) (((varsize) >> 2) & 0x3FFFFFFF)
-#define SIZE_SET(varsize, size) (((varsize) & 0x00000003)|(((size) & 0x3FFFFFFF) << 2 ))
+#define SIZE_SET(varsize, len) ((varsize) = (((uint32_t)(len)) << 2))
+#endif
 
 /**
 * Macro that returns:
