@@ -74,7 +74,7 @@ lwflags_t gserialized2_get_lwflags(const GSERIALIZED *g)
 static int lwflags_uses_extended_flags(lwflags_t lwflags)
 {
 	const lwflags_t core_lwflags = LWFLAG_Z | LWFLAG_M | LWFLAG_BBOX | LWFLAG_GEODETIC;
-	return (int)(lwflags & ~ core_lwflags);
+	return (lwflags & ~ core_lwflags) != 0;
 }
 
 uint8_t lwflags_get_g2flags(lwflags_t lwflags)
@@ -1269,10 +1269,7 @@ GSERIALIZED* gserialized2_from_lwgeom(LWGEOM *geom, size_t *size)
 	/*
 	** Harmonize the flags to the state of the lwgeom
 	*/
-	if (geom->bbox)
-		FLAGS_SET_BBOX(geom->flags, 1);
-	else
-		FLAGS_SET_BBOX(geom->flags, 0);
+	FLAGS_SET_BBOX(geom->flags, (geom->bbox ? 1 : 0));
 
 	/* Set up the uint8_t buffer into which we are going to write the serialized geometry. */
 	expected_size = gserialized2_from_lwgeom_size(geom);
@@ -1285,7 +1282,7 @@ GSERIALIZED* gserialized2_from_lwgeom(LWGEOM *geom, size_t *size)
 	** We are aping PgSQL code here, PostGIS code should use
 	** VARSIZE to set this for real.
 	*/
-	g->size = return_size << 2;
+	g->size = SIZE_SET(g->size, return_size);
 	g->gflags = lwflags_get_g2flags(geom->flags);
 
 	/* Move write head past size, srid and flags. */
