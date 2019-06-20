@@ -77,6 +77,28 @@ static int lwflags_uses_extended_flags(lwflags_t lwflags)
 	return (lwflags & ~ core_lwflags) != 0;
 }
 
+
+static size_t gserialized2_box_size(const GSERIALIZED *g)
+{
+	if (G2FLAGS_GET_GEODETIC(g->gflags))
+		return 6 * sizeof(float);
+	else
+		return 2 * G2FLAGS_NDIMS(g->gflags) * sizeof(float);
+}
+
+static size_t gserialized2_header_size(const GSERIALIZED *g)
+{
+	uint32_t sz = 8; /* varsize (4) + srid(3) + flags (1) */
+
+	if (gserialized2_has_extended(g))
+		sz += 8;
+
+	if (gserialized2_has_bbox(g))
+		sz += gserialized2_box_size(g);
+
+	return sz;
+}
+
 uint8_t lwflags_get_g2flags(lwflags_t lwflags)
 {
 	uint8_t gflags = 0;
@@ -87,14 +109,6 @@ uint8_t lwflags_get_g2flags(lwflags_t lwflags)
 	G2FLAGS_SET_EXTENDED(gflags, lwflags_uses_extended_flags(lwflags));
 	G2FLAGS_SET_VERSION(gflags, 1);
 	return gflags;
-}
-
-static size_t gserialized2_box_size(const GSERIALIZED *g)
-{
-	if (G2FLAGS_GET_GEODETIC(g->gflags))
-		return 6 * sizeof(float);
-	else
-		return 2 * G2FLAGS_NDIMS(g->gflags) * sizeof(float);
 }
 
 /* handle missaligned uint32_t data */
@@ -151,28 +165,12 @@ uint32_t gserialized2_max_header_size(void)
 	return sizeof(GSERIALIZED) + 8 * sizeof(float) + sizeof(uint64_t) + sizeof(int);
 }
 
-static uint32_t gserialized2_header_size(const GSERIALIZED *g)
-{
-	uint32_t sz = 8; /* varsize (4) + srid(3) + flags (1) */
-
-	if (gserialized2_has_bbox(g))
-		sz += gserialized2_box_size(g);
-
-	return sz;
-}
 
 uint32_t gserialized2_get_type(const GSERIALIZED *g)
 {
-	uint32_t *ptr;
-	ptr = (uint32_t*)(g->data);
-
-	if (G2FLAGS_GET_EXTENDED(g->gflags))
-		ptr += sizeof(uint64_t) / sizeof(uint32_t);
-
-	if (G2FLAGS_GET_BBOX(g->gflags))
-		ptr += (gserialized2_box_size(g) / sizeof(uint32_t));
-
-	return *ptr;
+	uint8_t *ptr = (uint8_t*)g;
+	ptr += gserialized2_header_size(g);
+	return *((uint32_t*)(ptr));
 }
 
 int32_t gserialized2_get_srid(const GSERIALIZED *g)
@@ -247,16 +245,10 @@ static size_t gserialized2_is_empty_recurse(const uint8_t *p, int *isempty)
 
 int gserialized2_is_empty(const GSERIALIZED *g)
 {
-	uint8_t *p = (uint8_t*)g;
 	int isempty = 0;
+	uint8_t *p = (uint8_t*)g;
 	assert(g);
-
-	p += 8; /* Skip varhdr and srid/flags */
-	if (gserialized2_has_bbox(g))
-		p += gserialized2_box_size(g); /* Skip the box */
-	if (gserialized2_has_extended(g))
-		p += sizeof(uint64_t); /* Skip extended flags */
-
+	p += gserialized2_header_size(g);
 	gserialized2_is_empty_recurse(p, &isempty);
 	return isempty;
 }
@@ -432,19 +424,19 @@ const float * gserialized2_get_float_box_p(const GSERIALIZED *g, size_t *ndims)
 		*ndims = bndims;
 
 	/* Cannot do anything if there's no box */
-	if (!(g && G2FLAGS_GET_BBOX(g->gflags)))
+	if (!(g && gserialized_has_bbox(g)))
 		return NULL;
 
 	/* Advance past optional extended flags */
-	if (G2FLAGS_GET_EXTENDED(g->gflags))
-		ptr += sizeof(uint64_t);
+	if (gserialized2_has_extended(g))
+		ptr += 8;
 
 	return (const float *)(ptr);
 }
 
 int gserialized2_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 {
-
+	uint8_t gflags = g->gflags;
 	/* Null input! */
 	if (!(g && gbox)) return LW_FAILURE;
 
@@ -452,7 +444,7 @@ int gserialized2_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 	gbox->flags = gserialized2_get_lwflags(g);
 
 	/* Has pre-calculated box */
-	if (G2FLAGS_GET_BBOX(g->gflags))
+	if (G2FLAGS_GET_BBOX(gflags))
 	{
 		int i = 0;
 		const float *fbox = gserialized2_get_float_box_p(g, NULL);
@@ -462,19 +454,19 @@ int gserialized2_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		gbox->ymax = fbox[i++];
 
 		/* Geodetic? Read next dimension (geocentric Z) and return */
-		if (G2FLAGS_GET_GEODETIC(g->gflags))
+		if (G2FLAGS_GET_GEODETIC(gflags))
 		{
 			gbox->zmin = fbox[i++];
 			gbox->zmax = fbox[i++];
 			return LW_SUCCESS;
 		}
 		/* Cartesian? Read extra dimensions (if there) and return */
-		if (G2FLAGS_GET_Z(g->gflags))
+		if (G2FLAGS_GET_Z(gflags))
 		{
 			gbox->zmin = fbox[i++];
 			gbox->zmax = fbox[i++];
 		}
-		if (G2FLAGS_GET_M(g->gflags))
+		if (G2FLAGS_GET_M(gflags))
 		{
 			gbox->mmin = fbox[i++];
 			gbox->mmax = fbox[i++];
@@ -867,7 +859,7 @@ size_t gserialized2_from_lwgeom_size(const LWGEOM *geom)
 
 	/* Reserve space for extended flags */
 	if (lwflags_uses_extended_flags(geom->flags))
-		size += sizeof(uint64_t);
+		size += 8;
 
 	/* Reserve space for bounding box */
 	if (geom->bbox)
@@ -1282,7 +1274,7 @@ GSERIALIZED* gserialized2_from_lwgeom(LWGEOM *geom, size_t *size)
 	** We are aping PgSQL code here, PostGIS code should use
 	** VARSIZE to set this for real.
 	*/
-	g->size = SIZE_SET(g->size, return_size);
+	g->size = SIZE_SET(g->size, expected_size);
 	g->gflags = lwflags_get_g2flags(geom->flags);
 
 	/* Move write head past size, srid and flags. */

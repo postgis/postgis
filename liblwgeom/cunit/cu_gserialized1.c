@@ -266,12 +266,15 @@ static void test_lwgeom_from_gserialized(void)
 	for ( i = 0; i < (sizeof ewkt/sizeof(char*)); i++ )
 	{
 		LWGEOM* geom2;
+		size_t sz1, sz2;
 
 		in_ewkt = ewkt[i];
 		geom = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
 		lwgeom_add_bbox(geom);
 		if ( geom->bbox ) gbox_float_round(geom->bbox);
-		g = gserialized1_from_lwgeom(geom, 0);
+		sz1 = gserialized1_from_lwgeom_size(geom);
+		g = gserialized1_from_lwgeom(geom, &sz2);
+		CU_ASSERT_EQUAL(sz1, sz2);
 
 		geom2 = lwgeom_from_gserialized(g);
 		out_ewkt = lwgeom_to_ewkt(geom2);
