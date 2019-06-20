@@ -19,7 +19,7 @@ steps:
       - psql --version
       - ./autogen.sh
       - ./configure CFLAGS="-O0 -Wall -fno-omit-frame-pointer" --without-interrupt-tests
-      - make -j
+      - make
       # we should maybe wait for postgresql service to startup here...
       - psql -c "select version()" template1
       - make check RUNTESTFLAGS=-v
@@ -42,7 +42,7 @@ steps:
       - psql --version
       - ./autogen.sh
       - ./configure CFLAGS="-O0 -Wall -fno-omit-frame-pointer" --without-interrupt-tests
-      - make -j
+      - make
       # we should maybe wait for postgresql service to startup here...
       - psql -c "select version()" template1
       - make check RUNTESTFLAGS=-v
@@ -65,7 +65,7 @@ steps:
       - psql --version
       - ./autogen.sh
       - ./configure CFLAGS="-O0 -Wall -fno-omit-frame-pointer" --without-interrupt-tests
-      - make -j
+      - make
       # we should maybe wait for postgresql service to startup here...
       - psql -c "select version()" template1
       - make check RUNTESTFLAGS=-v
@@ -88,7 +88,7 @@ steps:
       - psql --version
       - ./autogen.sh
       - ./configure CFLAGS="-O0 -Wall -fno-omit-frame-pointer" --without-interrupt-tests
-      - make -j
+      - make
       # we should maybe wait for postgresql service to startup here...
       - psql -c "select version()" template1
       - make check RUNTESTFLAGS=-v
@@ -111,7 +111,7 @@ steps:
       - psql --version
       - ./autogen.sh
       - ./configure CFLAGS="-O0 -Wall -fno-omit-frame-pointer" --without-interrupt-tests
-      - make -j
+      - make
       # we should maybe wait for postgresql service to startup here...
       - psql -c "select version()" template1
       - make check RUNTESTFLAGS=-v
