@@ -7,8 +7,8 @@
 #define G2FLAG_GEODETIC 0x08
 #define G2FLAG_EXTENDED 0x10
 #define G2FLAG_UNUSED   0x20
-#define G2FLAG_VER_1    0x40
-#define G2FLAG_VER_2    0x80
+#define G2FLAG_VER_0    0x40
+#define G2FLAG_VER_1    0x80
 
 /**
 * Macros for the extended 'flags' uint64_t.
@@ -18,7 +18,7 @@
 #define G2FLAG_X_IS_VALID         0x00000004 // To Be Implemented
 #define G2FLAG_X_HAS_HASH         0x00000008 // To Be Implemented
 
-#define G2FLAGS_GET_VERSION(gflags) ((((gflags) & G2FLAG_VER_1)>>6) + (((gflags) & G2FLAG_VER_2)>>7) * 2)
+#define G2FLAGS_GET_VERSION(gflags) ((((gflags) & G2FLAG_VER_0)>>6) + (((gflags) & G2FLAG_VER_1)>>7) * 2)
 #define G2FLAGS_GET_Z(gflags)         ((gflags) & G2FLAG_Z)
 #define G2FLAGS_GET_M(gflags)        (((gflags) & G2FLAG_M)>>1)
 #define G2FLAGS_GET_BBOX(gflags)     (((gflags) & G2FLAG_BBOX)>>2)
@@ -34,9 +34,9 @@
 
 #define G2FLAGS_SET_VERSION(gflags, version) ( \
 	(gflags) = \
-		((gflags) & ~(G2FLAG_VER_1|G2FLAG_VER_2)) | \
-		(((version) / 2) ? G2FLAG_VER_2 : 0) | \
-		(((version) % 2) ? G2FLAG_VER_1 : 0) \
+		((gflags) & ~(G2FLAG_VER_0|G2FLAG_VER_1)) | \
+		(((version) / 2) ? G2FLAG_VER_1 : 0) | \
+		(((version) % 2) ? G2FLAG_VER_0 : 0) \
 		)
 
 #define G2FLAGS_NDIMS(gflags) (2 + G2FLAGS_GET_Z(gflags) + G2FLAGS_GET_M(gflags))

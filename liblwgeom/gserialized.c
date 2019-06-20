@@ -3,9 +3,9 @@
 #include "gserialized2.h"
 
 /* v1 and v2 MUST share the same version bits */
-#define GFLAG_VER_1    0x40
-#define GFLAG_VER_2    0x80
-#define GFLAGS_GET_VERSION(gflags) ((((gflags) & GFLAG_VER_1)>>6) + (((gflags) & GFLAG_VER_2)>>7) * 2)
+#define GFLAG_VER_0    0x40
+#define GFLAG_VER_1    0x80
+#define GFLAGS_GET_VERSION(gflags) ((((gflags) & GFLAG_VER_0)>>6) + (((gflags) & GFLAG_VER_1)>>7) * 2)
 
 
 /**
