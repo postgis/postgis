@@ -165,10 +165,13 @@ uint32_t gserialized2_get_type(const GSERIALIZED *g)
 {
 	uint32_t *ptr;
 	ptr = (uint32_t*)(g->data);
+
+	if (G2FLAGS_GET_EXTENDED(g->gflags))
+		ptr += sizeof(uint64_t);
+
 	if (G2FLAGS_GET_BBOX(g->gflags))
-	{
 		ptr += (gserialized2_box_size(g) / sizeof(uint32_t));
-	}
+
 	return *ptr;
 }
 
@@ -424,14 +427,18 @@ const float * gserialized2_get_float_box_p(const GSERIALIZED *g, size_t *ndims)
 {
 	uint8_t *ptr = (uint8_t*)(g->data);
 	size_t bndims = G2FLAGS_NDIMS_BOX(g->gflags);
+
 	if (ndims)
 		*ndims = bndims;
+
 	/* Cannot do anything if there's no box */
 	if (!(g && G2FLAGS_GET_BBOX(g->gflags)))
 		return NULL;
+
 	/* Advance past optional extended flags */
 	if (G2FLAGS_GET_EXTENDED(g->gflags))
 		ptr += sizeof(uint64_t);
+
 	return (const float *)(ptr);
 }
 
@@ -1689,17 +1696,24 @@ GSERIALIZED* gserialized2_set_gbox(GSERIALIZED *g, GBOX *gbox)
 	*/
 	else
 	{
-		size_t varsize_new = SIZE_GET(g->size) + box_size;
-		uint8_t *ptr;
-		g_out = lwalloc(varsize_new);
+		size_t varsize_in = SIZE_GET(g->size);
+		size_t varsize_out = varsize_in + box_size;
+		uint8_t *ptr_out, *ptr_in, *ptr;
+		g_out = lwalloc(varsize_out);
+		ptr_out = (uint8_t*)g_out;
+		ptr = ptr_in = (uint8_t*)g;
 		/* Copy the head of g into place */
-		memcpy(g_out, g, 8);
+		memcpy(ptr_out, ptr_in, 8); ptr_out += 8; ptr_in += 8;
+		/* Optionally copy extended bit into place */
+		if (G2FLAGS_GET_EXTENDED(g->gflags))
+		{
+			memcpy(ptr_out, ptr_in, 8); ptr_out += 8; ptr_in += 8;
+		}
 		/* Copy the body of g into place after leaving space for the box */
-		ptr = g_out->data;
-		ptr += box_size;
-		memcpy(ptr, g->data, SIZE_GET(g->size) - 8);
+		ptr_out += box_size;
+		memcpy(ptr_out, ptr_in, varsize_in - (ptr_in - ptr));
 		G2FLAGS_SET_BBOX(g_out->gflags, 1);
-		g_out->size = SIZE_SET(g_out->size, varsize_new);
+		g_out->size = SIZE_SET(g_out->size, varsize_out);
 	}
 
 	/* Move bounds to nearest float values */
@@ -1744,9 +1758,14 @@ GSERIALIZED* gserialized2_drop_gbox(GSERIALIZED *g)
 		uint8_t *outptr = (uint8_t*)g_out;
 		uint8_t *inptr = (uint8_t*)g;
 		/* Copy the header (size+type) of g into place */
-		memcpy(outptr, inptr, 8);
-		outptr += 8;
-		inptr += 8 + box_size;
+		memcpy(outptr, inptr, 8); outptr += 8; inptr += 8;
+		/* Copy extended flags, if there are any */
+		if (G2FLAGS_GET_EXTENDED(g->gflags))
+		{
+			memcpy(outptr, inptr, 8); outptr += 8; inptr += 8;
+		}
+		/* Advance past box */
+		inptr += box_size;
 		/* Copy parts after the box into place */
 		memcpy(outptr, inptr, g_out_size - 8);
 		G2FLAGS_SET_BBOX(g_out->gflags, 0);
