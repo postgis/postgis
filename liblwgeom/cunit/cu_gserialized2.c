@@ -255,9 +255,11 @@ static void test_lwgeom_from_gserialized2(void)
 		size1 = gserialized2_from_lwgeom_size(geom1);
 		g1 = gserialized2_from_lwgeom(geom1, &size2);
 		CU_ASSERT_EQUAL(size1, size2);
+		CU_ASSERT_EQUAL(SIZE_GET(g1->size), size2);
 		geom2 = lwgeom_from_gserialized2(g1);
 		CU_ASSERT_EQUAL(geom1->flags, geom2->flags);
 		g2 = gserialized2_from_lwgeom(geom2, &size2);
+		CU_ASSERT_EQUAL(SIZE_GET(g2->size), size2);
 		CU_ASSERT_EQUAL(g1->gflags, g2->gflags);
 		CU_ASSERT_EQUAL(FLAGS_GET_SOLID(geom2->flags), 1);
 		lwfree(g1);
