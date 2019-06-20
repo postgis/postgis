@@ -85,6 +85,7 @@ uint8_t lwflags_get_g2flags(lwflags_t lwflags)
 	G2FLAGS_SET_BBOX(gflags, FLAGS_GET_BBOX(lwflags));
 	G2FLAGS_SET_GEODETIC(gflags, FLAGS_GET_GEODETIC(lwflags));
 	G2FLAGS_SET_EXTENDED(gflags, lwflags_uses_extended_flags(lwflags));
+	G2FLAGS_SET_VERSION(gflags, 1);
 	return gflags;
 }
 
@@ -1279,8 +1280,6 @@ GSERIALIZED* gserialized2_from_lwgeom(LWGEOM *geom, size_t *size)
 	*/
 	g->size = return_size << 2;
 	g->gflags = lwflags_get_g2flags(geom->flags);
-	/* Set the version number, since we're writing "new coke" here */
-	G2FLAGS_SET_VERSION(g->gflags, 1);
 
 	/* Move write head past size, srid and flags. */
 	ptr += 8;
