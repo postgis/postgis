@@ -1279,6 +1279,8 @@ GSERIALIZED* gserialized2_from_lwgeom(LWGEOM *geom, size_t *size)
 	*/
 	g->size = return_size << 2;
 	g->gflags = lwflags_get_g2flags(geom->flags);
+	/* Set the version number, since we're writing "new coke" here */
+	G2FLAGS_SET_VERSION(g->gflags, 1);
 
 	/* Move write head past size, srid and flags. */
 	ptr += 8;
