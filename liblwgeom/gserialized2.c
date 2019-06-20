@@ -167,7 +167,7 @@ uint32_t gserialized2_get_type(const GSERIALIZED *g)
 	ptr = (uint32_t*)(g->data);
 
 	if (G2FLAGS_GET_EXTENDED(g->gflags))
-		ptr += sizeof(uint64_t);
+		ptr += sizeof(uint64_t) / sizeof(uint32_t);
 
 	if (G2FLAGS_GET_BBOX(g->gflags))
 		ptr += (gserialized2_box_size(g) / sizeof(uint32_t));
