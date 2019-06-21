@@ -263,6 +263,7 @@ static void test_lwgeom_from_gserialized2(void)
 		CU_ASSERT_EQUAL(g1->gflags, g2->gflags);
 		CU_ASSERT_EQUAL(FLAGS_GET_SOLID(geom2->flags), 1);
 		lwfree(g1);
+		lwfree(g2);
 		lwgeom_free(geom1);
 		lwgeom_free(geom2);
 	}
