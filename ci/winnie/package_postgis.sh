@@ -12,25 +12,26 @@
 #export OS_BUILD=32
 
 #export GCC_TYPE=
-export GEOS_VER=3.8
-export GDAL_VER=2.2.4
-export PROJ_VER=4.9.3
-export SFCGAL_VER=1.3.2
-export PCRE_VER=8.33
-export PROTOBUF_VER=3.2.0
-export PROTOBUFC_VER=1.2.1
-export CGAL_VER=4.11
-
-if [[ "${GCC_TYPE}" == *gcc48* ]] ; then
-	export PROJECTS=/projects
-	export MINGPROJECTS=/projects
-	export PATHOLD=$PATH
-else
-	export PROJECTS=/projects
-	export MINGPROJECTS=/projects
-	export PATHOLD=$PATH
-	#export JSON_VER=0.9
+#if no override is set - use these values
+#otherwise use the ones jenkins passes thru
+if  [[ "${OVERRIDE}" == '' ]] ; then
+	export GEOS_VER=3.8
+	export GDAL_VER=2.2.4
+	export PROJ_VER=4.9.3
+	export SFCGAL_VER=1.3.2
+	export PROTOBUF_VER=3.2.0
+	export PROTOBUFC_VER=1.2.1
+	export CGAL_VER=4.11
+	export ICON_VER=1.15
 fi;
+
+export PCRE_VER=8.33
+
+
+export PROJECTS=/projects
+export MINGPROJECTS=/projects
+export PATHOLD=$PATH
+
 
 export PGHOST=localhost
 
@@ -40,7 +41,7 @@ export PATHOLD=$PATH
 WEB=/home/www/postgis/htdocs
 DWN=${WEB}/download
 
-export PATHOLD="/mingw/bin:/mingw/include:/c/Windows/system32:/c/Windows:.:/bin:/include:/usr/local/bin:/c/ming${OS_BUILD}/svn"
+export PATHOLD="/mingw/bin:/mingw/include:/c/Windows/system32:/c/Windows:.:/bin:/include:/usr/local/bin:/c/ming${OS_BUILD}}${GCC_TYPE}/svn"
 #export PG_VER=9.2beta2
 
 echo PATH BEFORE: $PATH
@@ -78,7 +79,8 @@ export REL_PGVER=${PG_VER//./} #strip the period
 export RELDIR=${PROJECTS}/postgis/builds/${POSTGIS_MINOR_VER}
 export RELVERDIR=postgis-pg${REL_PGVER}-binaries-${POSTGIS_MICRO_VER}w${OS_BUILD}${GCC_TYPE}
 export PATH="${PATHOLD}:${PGPATH}/bin:${PGPATH}/lib"
-export PCRE_VER=8.33 #PATH="${PGPATH}/bin:${PGPATH}/lib:${MINGPROJECTS}/xsltproc:${MINGPROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/gtkw${OS_BUILD}/bin:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/include:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin:${PATH}"
+export PCRE_VER=8.33 
+#PATH="${PGPATH}/bin:${PGPATH}/lib:${MINGPROJECTS}/xsltproc:${MINGPROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/gtkw${OS_BUILD}/bin:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin:${MINGPROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/include:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin:${PATH}"
 #echo PATH AFTER: $PATH
 outdir="${RELDIR}/${RELVERDIR}"
 package="${RELDIR}/${RELVERDIR}.zip"
@@ -96,7 +98,7 @@ mkdir $outdir/bin/postgisgui
 mkdir $outdir/bin/postgisgui/share
 mkdir $outdir/bin/postgisgui/lib
 mkdir $outdir/utils
-cp ${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}/bin/*.dll  $outdir/bin/postgisgui
+cp ${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin/postgisgui
 # it seems 9.2 and 9.3 doesn't come with its own libiconv good grief
 # and trying to use their libiconv2.dll makes shp2pgsql crash
 if [[ "$PG_VER" == *9.2* || "$PG_VER" == *9.3* ]]; then
@@ -104,7 +106,7 @@ if [[ "$PG_VER" == *9.2* || "$PG_VER" == *9.3* ]]; then
 fi;
 cp ${PGPATHEDB}/bin/libpq.dll  $outdir/bin/postgisgui
 #cp ${PGPATHEDB}/bin/libiconv2.dll  $outdir/bin/postgisgui
-cp ${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin/libicon*.dll $outdir/bin/postgisgui
+cp ${MINGPROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/libicon*.dll $outdir/bin/postgisgui
 cp ${PGPATHEDB}/bin/libintl*.dll $outdir/bin/postgisgui
 
 cp ${PGPATHEDB}/bin/ssleay32.dll $outdir/bin/postgisgui
@@ -170,31 +172,35 @@ echo "PROTOBUF-C VERSION: ${PROTOBUFC_VER} https://github.com/protobuf-c/protobu
 cp ${PGPATHEDB}/bin/libxml2-2.dll   $outdir/bin/
 
 cd ${POSTGIS_SRC}
-strip postgis/postgis-${POSTGIS_MINOR_VER}.dll
-strip raster/rt_pg/postgis_raster-${POSTGIS_MINOR_VER}.dll
+strip postgis/*.dll
+strip raster/rt_pg/*.dll
 strip liblwgeom/.libs/*.dll
 
-cp postgis/postgis-${POSTGIS_MINOR_VER}.dll ${RELDIR}/${RELVERDIR}/lib
+cp postgis/*.dll ${RELDIR}/${RELVERDIR}/lib
 cp topology/*.dll ${RELDIR}/${RELVERDIR}/lib
-cp raster/rt_pg/postgis_raster-${POSTGIS_MINOR_VER}.dll ${RELDIR}/${RELVERDIR}/lib
+cp raster/rt_pg/*.dll ${RELDIR}/${RELVERDIR}/lib
 cp doc/*_comments.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 cp postgis/*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 cp raster/rt_pg/*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 cp utils/*.pl ${RELDIR}/${RELVERDIR}/utils
 #add extras
-svn export "${svnurl}/extras" ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}/extras
+#svn export "${svnurl}/extras" ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}/extras
 #cp raster/rt_pg/rtpostgis.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 #cp raster/rt_pg/rtpostgis_upgrade_20_minor.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 
 cp raster/loader/.libs/raster2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin
+cp loader/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/.libs/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
+cp loader/pgsql2shp.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/.libs/pgsql2shp.exe ${RELDIR}/${RELVERDIR}/bin
+cp loader/shp2pgsql-gui.exe ${RELDIR}/${RELVERDIR}/bin/postgisgui
 cp loader/.libs/shp2pgsql-gui.exe ${RELDIR}/${RELVERDIR}/bin/postgisgui
+
 #cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin/postgisgui
 
 #shp2pgsql-gui now has dependency on geos (though in theory it shouldn't)
-cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/*.dll ${RELDIR}/${RELVERDIR}/bin/postgisgui
+cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll ${RELDIR}/${RELVERDIR}/bin/postgisgui
 cp spatial_ref_sys.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 cp topology/topology.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 cp topology/topology_upgrade_*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}

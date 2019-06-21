@@ -3877,7 +3877,7 @@ CREATE OR REPLACE FUNCTION ST_Union (geometry[])
 -- Availability: 1.2.2
 -- Changed but upgrader helper no touch: 2.4.0 marked parallel safe
 -- we don't want to force drop of this agg since its often used in views
--- parallel handling dealt with in postgis_drop_after.sql
+-- parallel handling dealt with in postgis_drop_upgrade.sql
 -- Changed but upgrader helper no touch: 2.5.0 use 'internal' stype
 -- Changed but upgrader helper no touch: 3.0.0 transfn now converts to GEOS
 CREATE AGGREGATE ST_Union (geometry) (

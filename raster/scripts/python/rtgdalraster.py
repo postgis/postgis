@@ -28,6 +28,7 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 ###############################################################################
+from __future__ import print_function
 from optparse import OptionParser
 import sys
 import os
@@ -92,7 +93,7 @@ try:
 	cur.close();
 	conn.close();
 
-	print "raster outputted to %s" % opts.output;
+	print("raster outputted to %s" % opts.output);
 
-except Exception, e:
-    print "ERROR: ", e
+except Exception as e:
+    print("ERROR: ", e)

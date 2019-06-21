@@ -15,7 +15,7 @@
 #include "CUnit/Basic.h"
 
 #include "liblwgeom_internal.h"
-#include "g_serialized.c" /* for gserialized_peek_gbox_p */
+#include "gserialized1.c" /* for gserialized_peek_gbox_p */
 #include "cu_tester.h"
 
 static void test_typmod_macros(void)
@@ -102,21 +102,21 @@ static void test_flags_macros(void)
 	FLAGS_SET_GEODETIC(flags, 1);
 	CU_ASSERT_EQUAL(1, FLAGS_GET_GEODETIC(flags));
 
-	flags = gflags(1, 0, 1); /* z=1, m=0, geodetic=1 */
+	flags = lwflags(1, 0, 1); /* z=1, m=0, geodetic=1 */
 
 	CU_ASSERT_EQUAL(1, FLAGS_GET_GEODETIC(flags));
 	CU_ASSERT_EQUAL(1, FLAGS_GET_Z(flags));
 	CU_ASSERT_EQUAL(0, FLAGS_GET_M(flags));
 	CU_ASSERT_EQUAL(2, FLAGS_GET_ZM(flags));
 
-	flags = gflags(1, 1, 1); /* z=1, m=1, geodetic=1 */
+	flags = lwflags(1, 1, 1); /* z=1, m=1, geodetic=1 */
 
 	CU_ASSERT_EQUAL(1, FLAGS_GET_GEODETIC(flags));
 	CU_ASSERT_EQUAL(1, FLAGS_GET_Z(flags));
 	CU_ASSERT_EQUAL(1, FLAGS_GET_M(flags));
 	CU_ASSERT_EQUAL(3, FLAGS_GET_ZM(flags));
 
-	flags = gflags(0, 1, 0); /* z=0, m=1, geodetic=0 */
+	flags = lwflags(0, 1, 0); /* z=0, m=1, geodetic=0 */
 
 	CU_ASSERT_EQUAL(0, FLAGS_GET_GEODETIC(flags));
 	CU_ASSERT_EQUAL(0, FLAGS_GET_Z(flags));
@@ -236,7 +236,7 @@ static void test_lwgeom_calculate_gbox(void)
 
 static void test_gbox_serialized_size(void)
 {
-	uint8_t flags = gflags(0, 0, 0);
+	uint8_t flags = lwflags(0, 0, 0);
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),16);
 	FLAGS_SET_BBOX(flags, 1);
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),16);

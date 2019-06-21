@@ -10,7 +10,7 @@ name: pg-9.5
 steps:
   - name: build
     image: *test-image
-    pull: true
+    pull: always
     commands:
       - export PGVER=9.5
       - service postgresql start $PGVER
@@ -33,7 +33,7 @@ name: pg-9.6
 steps:
   - name: build
     image: *test-image
-    pull: true
+    pull: always
     commands:
       - export PGVER=9.6
       - service postgresql start $PGVER
@@ -56,7 +56,7 @@ name: pg-10
 steps:
   - name: build
     image: *test-image
-    pull: true
+    pull: always
     commands:
       - export PGVER=10
       - service postgresql start $PGVER

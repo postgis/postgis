@@ -697,11 +697,8 @@ Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(geom);
 	point = lwgeom_as_lwpoint(lwgeom);
 
-	if ( lwgeom_is_empty(lwgeom) )
+	if (lwgeom_is_empty(lwgeom) || !lwgeom_has_m(lwgeom))
 		PG_RETURN_NULL();
-
-	/* no M in input */
-	if ( ! FLAGS_GET_M(point->flags) ) PG_RETURN_NULL();
 
 	getPoint3dm_p(point->point, 0, &p);
 

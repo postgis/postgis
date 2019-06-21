@@ -235,7 +235,7 @@ static uint32 gserialized_typmod_in(ArrayType *arr, int is_geography)
 	                  &elem_values, NULL, &n);
 
 	/* Set the SRID to the default value first */
-	if ( is_geography)
+	if (is_geography)
 	    TYPMOD_SET_SRID(typmod, SRID_DEFAULT);
 	else
 	    TYPMOD_SET_SRID(typmod, SRID_UNKNOWN);

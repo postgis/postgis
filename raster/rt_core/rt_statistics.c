@@ -113,7 +113,7 @@ rt_band_get_summary_stats(
 	uint64_t *cK, double *cM, double *cQ
 ) {
 	uint32_t x = 0;
-	uint32_t y = 0;
+	int64_t y = 0;
 	uint32_t z = 0;
 	uint32_t offset = 0;
 	uint32_t diff = 0;
@@ -928,7 +928,7 @@ static void quantile_llist_index_delete(struct quantile_llist *qll, struct quant
 		}
 
 		RASTER_DEBUGF(5, "deleting index: %d => %f", i, qle->value);
-		qll->index[i].index = -1;
+		qll->index[i].index = UINT32_MAX;
 		qll->index[i].element = NULL;
 	}
 }
@@ -973,7 +973,7 @@ static void quantile_llist_index_reset(struct quantile_llist *qll) {
 
 	RASTER_DEBUG(5, "resetting index");
 	for (i = 0; i < qll->index_max; i++) {
-		qll->index[i].index = -1;
+		qll->index[i].index = UINT32_MAX;
 		qll->index[i].element = NULL;
 	}
 }
@@ -1032,7 +1032,7 @@ rt_band_get_quantiles_stream(
 	uint32_t j = 0;
 	uint32_t k = 0;
 	uint32_t x = 0;
-	uint32_t y = 0;
+	int64_t y = 0;
 	uint32_t z = 0;
 	uint32_t idx = 0;
 	uint32_t offset = 0;

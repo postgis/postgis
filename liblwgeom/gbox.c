@@ -99,12 +99,12 @@ void gbox_expand(GBOX *g, double d)
 	g->xmax += d;
 	g->ymin -= d;
 	g->ymax += d;
-	if ( FLAGS_GET_Z(g->flags) )
+	if (FLAGS_GET_Z(g->flags) || FLAGS_GET_GEODETIC(g->flags))
 	{
 		g->zmin -= d;
 		g->zmax += d;
 	}
-	if ( FLAGS_GET_M(g->flags) )
+	if (FLAGS_GET_M(g->flags))
 	{
 		g->mmin -= d;
 		g->mmax += d;
@@ -365,7 +365,7 @@ GBOX* gbox_from_string(const char *str)
 	const char *ptr = str;
 	char *nextptr;
 	char *gbox_start = strstr(str, "GBOX((");
-	GBOX *gbox = gbox_new(gflags(0,0,1));
+	GBOX *gbox = gbox_new(lwflags(0,0,1));
 	if ( ! gbox_start ) return NULL; /* No header found */
 	ptr += 6;
 	gbox->xmin = strtod(ptr, &nextptr);
@@ -544,7 +544,7 @@ int ptarray_calculate_gbox_cartesian(const POINTARRAY *pa, GBOX *gbox )
 
 	has_z = FLAGS_GET_Z(pa->flags);
 	has_m = FLAGS_GET_M(pa->flags);
-	gbox->flags = gflags(has_z, has_m, 0);
+	gbox->flags = lwflags(has_z, has_m, 0);
 	LWDEBUGF(4, "ptarray_calculate_gbox Z: %d M: %d", has_z, has_m);
 
 	getPoint4d_p(pa, 0, &p);
@@ -586,7 +586,7 @@ static int lwcircstring_calculate_gbox_cartesian(LWCIRCSTRING *curve, GBOX *gbox
 	if (curve->points->npoints < 3) return LW_FAILURE;
 
 	tmp.flags =
-	    gflags(FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags), 0);
+	    lwflags(FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags), 0);
 
 	/* Initialize */
 	gbox->xmin = gbox->ymin = gbox->zmin = gbox->mmin = FLT_MAX;

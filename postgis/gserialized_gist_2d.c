@@ -561,7 +561,6 @@ int
 gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 {
 	GSERIALIZED *gpart;
-	uint8_t flags;
 	int result = LW_SUCCESS;
 
 	POSTGIS_DEBUG(4, "entered function");
@@ -571,17 +570,17 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	** enough to take serious advantage of PG_DETOAST_DATUM_SLICE will have
 	** already been compressed, which means the entire object will be
 	** fetched and decompressed before a slice is taken, thus removing
-	** any efficiencies gained from slicing. We need to move to
-	** "storage = external" and implement our own geometry compressor
-	** before we can take advantage of sliced retrieval.
+	** any efficiencies gained from slicing.
+	** As of Pg12 we can partially decompress a toasted object
+	** (though we still need to fully retrieve it from TOAST)
+	** which makes slicing worthwhile.
 	*/
 	gpart = (GSERIALIZED*)PG_DETOAST_DATUM(gsdatum);
-	flags = gpart->flags;
 
 	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);
 
 	/* Do we even have a serialized bounding box? */
-	if ( FLAGS_GET_BBOX(flags) )
+	if (gserialized_has_bbox(gpart))
 	{
 		/* Yes! Copy it out into the box! */
 		POSTGIS_DEBUG(4, "copying box out of serialization");

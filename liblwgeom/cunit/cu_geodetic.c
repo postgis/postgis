@@ -853,7 +853,7 @@ static void test_gbox_calculation(void)
 
 	LWGEOM *geom;
 	int i = 0;
-	GBOX *gbox = gbox_new(gflags(0,0,0));
+	GBOX *gbox = gbox_new(lwflags(0,0,0));
 	BOX3D *box3d;
 
 	char ewkt[][512] =
@@ -1348,7 +1348,7 @@ static void test_spheroid_area(void)
 	/* Init to WGS84 */
 	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
 
-	gbox.flags = gflags(0, 0, 1);
+	gbox.flags = lwflags(0, 0, 1);
 
 	/* Medford lot test polygon */
 	lwg = lwgeom_from_wkt("POLYGON((-122.848227067007 42.5007249610493,-122.848309475585 42.5007179884263,-122.848327688675 42.500835880696,-122.848245279942 42.5008428533324,-122.848227067007 42.5007249610493))", LW_PARSER_CHECK_NONE);
@@ -1429,7 +1429,7 @@ static void test_gbox_utils(void)
 	/* Init to WGS84 */
 	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
 
-	gbox.flags = gflags(0, 0, 1);
+	gbox.flags = lwflags(0, 0, 1);
 
 	/* One-degree square by equator */
 	lwg = lwgeom_from_wkt("POLYGON((1 20,1 21,2 21,2 20,1 20))", LW_PARSER_CHECK_NONE);

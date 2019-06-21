@@ -24,6 +24,7 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
+from __future__ import print_function
 from osgeo import gdal
 from osgeo import osr
 import osgeo.gdalconst as gdalc
@@ -66,13 +67,13 @@ for nv in range(nvstart, nvend):
 
     band = src_ds.GetRasterBand(1)
     if nv < 0 and nv >= band.GetOverviewCount():
-        print "ERROR: Failed to find overview %d" % nv
+        print("ERROR: Failed to find overview %d" % nv)
         sys.exit(1)
     ov_band = band.GetOverview(nv)
 
     ovf = int(0.5 + band.XSize / float(ov_band.XSize))
 
-    print "--- OVERVIEW #%d level = %d ---------------------------------------" % (nv + 1, ovf)
+    print("--- OVERVIEW #%d level = %d ---------------------------------------" % (nv + 1, ovf))
 
     # Destination
     dst_file = os.path.basename(opts.raster) + "_ov_" + str(ovf) + ".tif"
@@ -80,9 +81,9 @@ for nv in range(nvstart, nvend):
     dst_drv = gdal.GetDriverByName(dst_format)
     dst_ds = dst_drv.Create(dst_file, ov_band.XSize, ov_band.YSize, src_ds.RasterCount, ov_band.DataType)
 
-    print "Source: " + opts.raster
-    print "Target: " + dst_file
-    print "Exporting %d bands of size %d x %d" % (src_ds.RasterCount, ov_band.XSize, ov_band.YSize)
+    print("Source: " + opts.raster)
+    print("Target: " + dst_file)
+    print("Exporting %d bands of size %d x %d" % (src_ds.RasterCount, ov_band.XSize, ov_band.YSize))
 
     # Rewrite bands of overview to output file
     ov_band = None
@@ -95,8 +96,8 @@ for nv in range(nvstart, nvend):
         ov_band = band.GetOverview(nv)
         assert ov_band is not None
 
-        print " Band #%d (%s) (%d x %d)" % \
-              (nb, gdal.GetDataTypeName(ov_band.DataType), ov_band.XSize, ov_band.YSize)
+        print(" Band #%d (%s) (%d x %d)" % \
+              (nb, gdal.GetDataTypeName(ov_band.DataType), ov_band.XSize, ov_band.YSize))
 
         dst_band = dst_ds.GetRasterBand(nb)
         assert dst_band is not None

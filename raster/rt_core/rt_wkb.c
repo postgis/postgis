@@ -588,7 +588,7 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize) {
 			}
 			case PT_8BSI: {
 				int8_t v = band->nodataval;
-				*ptr = v;
+				*ptr = (uint8_t)v;
 				ptr += 1;
 				break;
 			}

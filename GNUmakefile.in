@@ -45,6 +45,7 @@ check-no-trailing-blanks:
 	! find . -name '*.c' -o -name '*.h' -o -name '*.proto' | \
 		grep -v lwin_wkt_lex.c | \
 		grep -v lwin_wkt_parse | \
+		grep -v lookup3 | \
 		grep -v vector_tile.pb-c | \
 		grep -v postgis/sqldefines.h | \
 		xargs grep -n '[[:space:]]$$'

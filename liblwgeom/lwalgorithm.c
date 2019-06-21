@@ -26,6 +26,7 @@
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include <ctype.h> /* for tolower */
+#include <stdbool.h>
 
 int
 p4d_same(const POINT4D *p1, const POINT4D *p2)
@@ -709,33 +710,40 @@ unsigned int geohash_point_as_int(POINT2D *pt)
 ** set in them will be the southwest and northeast coordinates of the bounding
 ** box accordingly. A precision less than 0 indicates that the entire length
 ** of the GeoHash should be used.
+** It will call `lwerror` if an invalid character is found
 */
 void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision)
 {
-	int i, j, hashlen;
-	char c, cd, mask, is_even = 1;
-	static char bits[] = {16, 8, 4, 2, 1};
+	bool is_even = 1;
 
 	lat[0] = -90.0;
 	lat[1] = 90.0;
 	lon[0] = -180.0;
 	lon[1] = 180.0;
 
-	hashlen = strlen(geohash);
-
-	if (precision < 0 || precision > hashlen)
+	size_t hashlen = strlen(geohash);
+	if (precision < 0 || (size_t)precision > hashlen)
 	{
-		precision = hashlen;
+		precision = (int)hashlen;
 	}
 
-	for (i = 0; i < precision; i++)
+	for (int i = 0; i < precision; i++)
 	{
-		c = tolower(geohash[i]);
-		cd = strchr(base32, c) - base32;
+		char c = tolower(geohash[i]);
 
-		for (j = 0; j < 5; j++)
+		/* Valid characters are all digits in base32 */
+		char *base32_pos = strchr(base32, c);
+		if (!base32_pos)
 		{
-			mask = bits[j];
+			lwerror("%s: Invalid character '%c'", __func__, geohash[i]);
+			return;
+		}
+		char cd = base32_pos - base32;
+
+		for (size_t j = 0; j < 5; j++)
+		{
+			const char bits[] = {16, 8, 4, 2, 1};
+			char mask = bits[j];
 			if (is_even)
 			{
 				lon[!(cd & mask)] = (lon[0] + lon[1]) / 2;
@@ -884,26 +892,3 @@ char *lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 	*/
 	return geohash_point(lon, lat, precision);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -77,6 +77,12 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS);
 /*  n-raster MapAlgebra                                             */
 /* ---------------------------------------------------------------- */
 
+/* Quiet warning */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-variable-sized-type-not-at-end"
+
 typedef struct {
 	Oid ufc_noid;
 	Oid ufc_rettype;
@@ -92,6 +98,10 @@ typedef struct {
 	FunctionCallInfo ufc_info;
 #endif
 } rtpg_nmapalgebra_callback_arg;
+
+#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
+/* ! Quiet warning */
 
 typedef struct rtpg_nmapalgebra_arg_t *rtpg_nmapalgebra_arg;
 struct rtpg_nmapalgebra_arg_t {
@@ -457,10 +467,10 @@ static int rtpg_nmapalgebra_callback(
 	i++;
 
 	for (z = 0; z < arg->rasters; z++) {
-		_pos[i] = arg->src_pixel[z][0] + 1;
+		_pos[i] = (Datum)arg->src_pixel[z][0] + 1;
 		i++;
 
-		_pos[i] = arg->src_pixel[z][1] + 1;
+		_pos[i] = (Datum)arg->src_pixel[z][1] + 1;
 		i++;
 	}
 
@@ -7068,8 +7078,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					_pixel[i] = 0;
 
 					/* row/column */
-					_x = x - (int) _rastoffset[i][0];
-					_y = y - (int) _rastoffset[i][1];
+					_x = (int)x - (int)_rastoffset[i][0];
+					_y = (int)y - (int)_rastoffset[i][1];
 
 					/* store _x and _y in 1-based */
 					_pos[i][0] = _x + 1;

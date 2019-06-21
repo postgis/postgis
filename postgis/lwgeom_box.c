@@ -554,7 +554,7 @@ Datum BOX2D_construct(PG_FUNCTION_ARGS)
 
 	error_if_srid_mismatch(minpoint->srid, maxpoint->srid);
 
-	result = gbox_new(gflags(0, 0, 0));
+	result = gbox_new(lwflags(0, 0, 0));
 
 	/* Process X min/max */
 	min = lwpoint_get_x(minpoint);

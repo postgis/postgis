@@ -52,11 +52,6 @@ int gserialized_has_m(const GSERIALIZED *gser)
 	return FLAGS_GET_M(gser->flags);
 }
 
-int gserialized_get_zm(const GSERIALIZED *gser)
-{
-	return 2 * FLAGS_GET_Z(gser->flags) + FLAGS_GET_M(gser->flags);
-}
-
 int gserialized_ndims(const GSERIALIZED *gser)
 {
 	return FLAGS_NDIMS(gser->flags);
@@ -73,7 +68,7 @@ uint32_t gserialized_max_header_size(void)
 	return sizeof(GSERIALIZED) + 8 * sizeof(float) + sizeof(int);
 }
 
-uint32_t gserialized_header_size(const GSERIALIZED *gser)
+static uint32_t gserialized_header_size(const GSERIALIZED *gser)
 {
 	uint32_t sz = 8; /* varsize (4) + srid(3) + flags (1) */
 
@@ -138,15 +133,6 @@ inline static int gserialized_cmp_srid(const GSERIALIZED *s1, const GSERIALIZED 
 	) ? 0 : 1;
 }
 
-GSERIALIZED* gserialized_copy(const GSERIALIZED *g)
-{
-	GSERIALIZED *g_out = NULL;
-	assert(g);
-	g_out = (GSERIALIZED*)lwalloc(SIZE_GET(g->size));
-	memcpy((uint8_t*)g_out,(uint8_t*)g,SIZE_GET(g->size));
-	return g_out;
-}
-
 static size_t gserialized_is_empty_recurse(const uint8_t *p, int *isempty);
 static size_t gserialized_is_empty_recurse(const uint8_t *p, int *isempty)
 {
@@ -189,10 +175,40 @@ int gserialized_is_empty(const GSERIALIZED *g)
 	return isempty;
 }
 
-char* gserialized_to_string(const GSERIALIZED *g)
+
+/* Prototype for lookup3.c */
+/* key = the key to hash */
+/* length = length of the key */
+/* pc = IN: primary initval, OUT: primary hash */
+/* pb = IN: secondary initval, OUT: secondary hash */
+void hashlittle2(const void *key, size_t length, uint32_t *pc, uint32_t *pb);
+
+
+uint64_t gserialized_hash(const GSERIALIZED *g1)
 {
-	return lwgeom_to_wkt(lwgeom_from_gserialized(g), WKT_ISO, 12, 0);
+	uint64_t hval;
+	uint32_t pb = 0, pc = 0;
+	/* Point to just the type/coordinate part of buffer */
+	size_t hsz1 = gserialized_header_size(g1);
+	uint8_t *b1 = (uint8_t*)g1 + hsz1;
+	/* Calculate size of type/coordinate buffer */
+	size_t sz1 = SIZE_GET(g1->size);
+	size_t bsz1 = sz1 - hsz1;
+	/* Calculate size of srid/type/coordinate buffer */
+	int32_t srid = gserialized_get_srid(g1);
+	size_t bsz2 = bsz1 + sizeof(int);
+	uint8_t *b2 = lwalloc(bsz2);
+	/* Copy srid into front of combined buffer */
+	memcpy(b2, &srid, sizeof(int));
+	/* Copy type/coordinates into rest of combined buffer */
+	memcpy(b2+sizeof(int), b1, bsz1);
+	/* Hash combined buffer */
+	hashlittle2(b2, bsz1, &pb, &pc);
+	lwfree(b2);
+	hval = pc + (((uint64_t)pb)<<32);
+	return hval;
 }
+
 
 /* Unfortunately including advanced instructions is something that
 only helps a small sliver of users who can build their own
@@ -449,7 +465,6 @@ int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		}
 		return LW_SUCCESS;
 	}
-
 	return LW_FAILURE;
 }
 
@@ -661,6 +676,31 @@ int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *box)
 		return ret;
 	}
 }
+
+/**
+* Read the bounding box off a serialization and fail if
+* it is not already there.
+*/
+int gserialized_fast_gbox_p(const GSERIALIZED *g, GBOX *box)
+{
+	/* Try to just read the serialized box. */
+	if ( gserialized_read_gbox_p(g, box) == LW_SUCCESS )
+	{
+		return LW_SUCCESS;
+	}
+	/* No box? Try to peek into simpler geometries and */
+	/* derive a box without creating an lwgeom */
+	else if ( gserialized_peek_gbox_p(g, box) == LW_SUCCESS )
+	{
+		return LW_SUCCESS;
+	}
+	else
+	{
+		return LW_FAILURE;
+	}
+}
+
+
 
 
 /***********************************************************************
@@ -1572,3 +1612,120 @@ LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g)
 
 	return lwgeom;
 }
+
+const float * gserialized_get_float_box_p(const GSERIALIZED *g, size_t *ndims)
+{
+	if (ndims)
+		*ndims = FLAGS_NDIMS_BOX(g->flags);
+	if (!g) return NULL;
+	if (!gserialized_has_bbox(g)) return NULL;
+	return (const float *)(g->data);
+}
+
+/**
+* Update the bounding box of a #GSERIALIZED, allocating a fresh one
+* if there is not enough space to just write the new box in.
+* <em>WARNING</em> if a new object needs to be created, the
+* input pointer will have to be freed by the caller! Check
+* to see if input == output. Returns null if there's a problem
+* like mismatched dimensions.
+*/
+GSERIALIZED* gserialized_set_gbox(GSERIALIZED *g, GBOX *gbox)
+{
+
+	int g_ndims = FLAGS_NDIMS_BOX(g->flags);
+	int box_ndims = FLAGS_NDIMS_BOX(gbox->flags);
+	GSERIALIZED *g_out = NULL;
+	size_t box_size = 2 * g_ndims * sizeof(float);
+	float *fbox;
+	int fbox_pos = 0;
+
+	/* The dimensionality of the inputs has to match or we are SOL. */
+	if ( g_ndims != box_ndims )
+	{
+		return NULL;
+	}
+
+	/* Serialized already has room for a box. */
+	if (FLAGS_GET_BBOX(g->flags))
+	{
+		g_out = g;
+	}
+	/* Serialized has no box. We need to allocate enough space for the old
+	   data plus the box, and leave a gap in the memory segment to write
+	   the new values into.
+	*/
+	else
+	{
+		size_t varsize_new = SIZE_GET(g->size) + box_size;
+		uint8_t *ptr;
+		g_out = lwalloc(varsize_new);
+		/* Copy the head of g into place */
+		memcpy(g_out, g, 8);
+		/* Copy the body of g into place after leaving space for the box */
+		ptr = g_out->data;
+		ptr += box_size;
+		memcpy(ptr, g->data, SIZE_GET(g->size) - 8);
+		FLAGS_SET_BBOX(g_out->flags, 1);
+		g->size = SIZE_SET(g->size, varsize_new);
+	}
+
+	/* Move bounds to nearest float values */
+	gbox_float_round(gbox);
+	/* Now write the float box values into the memory segement */
+	fbox = (float*)(g_out->data);
+	/* Copy in X/Y */
+	fbox[fbox_pos++] = gbox->xmin;
+	fbox[fbox_pos++] = gbox->xmax;
+	fbox[fbox_pos++] = gbox->ymin;
+	fbox[fbox_pos++] = gbox->ymax;
+	/* Optionally copy in higher dims */
+	if(gserialized_has_z(g) || gserialized_is_geodetic(g))
+	{
+		fbox[fbox_pos++] = gbox->zmin;
+		fbox[fbox_pos++] = gbox->zmax;
+	}
+	if(gserialized_has_m(g) && ! gserialized_is_geodetic(g))
+	{
+		fbox[fbox_pos++] = gbox->mmin;
+		fbox[fbox_pos++] = gbox->mmax;
+	}
+
+	return g_out;
+}
+
+
+/**
+* Remove the bounding box from a #GSERIALIZED. Returns a freshly
+* allocated #GSERIALIZED every time.
+*/
+GSERIALIZED* gserialized_drop_gbox(GSERIALIZED *g)
+{
+	int g_ndims = FLAGS_NDIMS_BOX(g->flags);
+	size_t box_size = 2 * g_ndims * sizeof(float);
+	size_t g_out_size = SIZE_GET(g->size) - box_size;
+	GSERIALIZED *g_out = lwalloc(g_out_size);
+
+	/* Copy the contents while omitting the box */
+	if ( FLAGS_GET_BBOX(g->flags) )
+	{
+		uint8_t *outptr = (uint8_t*)g_out;
+		uint8_t *inptr = (uint8_t*)g;
+		/* Copy the header (size+type) of g into place */
+		memcpy(outptr, inptr, 8);
+		outptr += 8;
+		inptr += 8 + box_size;
+		/* Copy parts after the box into place */
+		memcpy(outptr, inptr, g_out_size - 8);
+		FLAGS_SET_BBOX(g_out->flags, 0);
+		g_out->size = SIZE_SET(g_out->size, g_out_size);
+	}
+	/* No box? Nothing to do but copy and return. */
+	else
+	{
+		memcpy(g_out, g, g_out_size);
+	}
+
+	return g_out;
+}
+

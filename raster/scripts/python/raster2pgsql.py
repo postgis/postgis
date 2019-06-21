@@ -30,6 +30,7 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 ################################################################################
 #
+from __future__ import print_function
 from osgeo import gdal
 from osgeo import osr
 import osgeo.gdalconst as gdalc
@@ -303,7 +304,7 @@ def quote_sql_name(name):
 def make_sql_value_array(values):
     sql = "ARRAY["
     for v in values:
-        if type(v) == str:
+        if isinstance(v, str):
             sql += quote_sql_value(v) + ","
         else:
             sql += str(v) + ','
@@ -628,15 +629,15 @@ def check_hex(hex, bytes_size = None):
 
 def dump_block_numpy(pixels):
     assert pixels.ndim == 2
-    print 'BEGIN BLOCK SCANLINES (numpy): (%d, %d)' %(len(pixels[0]), len(pixels))
+    print('BEGIN BLOCK SCANLINES (numpy): (%d, %d)' %(len(pixels[0]), len(pixels)))
 
     i = 0
     for row in range (0, len(pixels)):
         s = binascii.hexlify(pixels[row])
-        print '%d (%d)\t%s' % (i, (len(s) / 2), s)
+        print('%d (%d)\t%s' % (i, (len(s) / 2), s))
         i = i + 1
 
-    print 'END BLOCK SCANLINES'
+    print('END BLOCK SCANLINES')
 
 def fetch_band_nodata(band, default = 0):
     assert band is not None
@@ -962,7 +963,7 @@ def main():
     SUMMARY = []
     
     saved_out = sys.stdout
-    if type(opts.output) is str:
+    if isinstance(opts.output, str):
         filename = opts.output
         opts.output = open(filename, "w")
 
@@ -1019,19 +1020,19 @@ def main():
     if opts.output != sys.stdout:
         sys.stdout = saved_out
 
-        print "------------------------------------------------------------"
-        print " Summary of GDAL to PostGIS Raster processing:"
-        print "------------------------------------------------------------"
+        print("------------------------------------------------------------")
+        print(" Summary of GDAL to PostGIS Raster processing:")
+        print("------------------------------------------------------------")
         if i == 1:
             m = '%d (%s)' % (i, infile)
         else:
             m = '%d' % i
-        print "Number of processed raster files: " + m
-        print "List of generated tables (number of tiles):"
+        print("Number of processed raster files: " + m)
+        print("List of generated tables (number of tiles):")
         i = 0
         for s in SUMMARY:
             i += 1
-            print "%d\t%s (%d)" % (i, s[0], s[1])
+            print("%d\t%s (%d)" % (i, s[0], s[1]))
 
 ################################################################################
 

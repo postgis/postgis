@@ -16,7 +16,7 @@
 #include "postgres.h"
 #include "fmgr.h"
 
-#include "liblwgeom_internal.h"
+#include "liblwgeom.h"
 #include "lwgeodetic_tree.h"
 #include "lwgeom_pg.h"
 
@@ -67,13 +67,16 @@ typedef struct struct_PROJSRSCacheItem
 {
 	int32_t srid_from;
 	int32_t srid_to;
-	PJ* projection;
+	uint64_t hits;
+	LWPROJ *projection;
+#if POSTGIS_PGSQL_VERSION < 96
 	MemoryContext projection_mcxt;
+#endif
 }
 PROJSRSCacheItem;
 
 /* PROJ 4 lookup transaction cache methods */
-#define PROJ_CACHE_ITEMS	8
+#define PROJ_CACHE_ITEMS 128
 
 /*
 * The proj4 cache holds a fixed number of reprojection
@@ -84,7 +87,7 @@ typedef struct struct_PROJPortalCache
 {
 	int type;
 	PROJSRSCacheItem PROJSRSCache[PROJ_CACHE_ITEMS];
-	int PROJSRSCacheCount;
+	uint32_t PROJSRSCacheCount;
 	MemoryContext PROJSRSCacheContext;
 }
 PROJPortalCache;

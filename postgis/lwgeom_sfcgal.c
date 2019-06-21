@@ -503,7 +503,7 @@ Datum sfcgal_is_solid(PG_FUNCTION_ARGS)
 	if (!lwgeom)
 		elog(ERROR, "sfcgal_is_solid: Unable to deserialize input");
 
-	result = FLAGS_GET_SOLID(lwgeom->flags);
+	result = lwgeom_is_solid(lwgeom);
 
 	lwgeom_free(lwgeom);
 

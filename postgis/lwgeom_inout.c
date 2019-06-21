@@ -701,7 +701,7 @@ Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
 	if ( ! gserialized_has_bbox(geom) )
 		PG_RETURN_POINTER(geom);
 
-	PG_RETURN_POINTER(gserialized_drop_gidx(geom));
+	PG_RETURN_POINTER(gserialized_drop_gbox(geom));
 }
 
 
