@@ -73,8 +73,8 @@ lwflags_t gserialized2_get_lwflags(const GSERIALIZED *g)
 
 static int lwflags_uses_extended_flags(lwflags_t lwflags)
 {
-	const lwflags_t core_lwflags = LWFLAG_Z | LWFLAG_M | LWFLAG_BBOX | LWFLAG_GEODETIC;
-	return (lwflags & ~ core_lwflags) != 0;
+	lwflags_t core_lwflags = LWFLAG_Z | LWFLAG_M | LWFLAG_BBOX | LWFLAG_GEODETIC;
+	return (lwflags & (~core_lwflags)) != 0;
 }
 
 
