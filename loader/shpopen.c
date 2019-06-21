@@ -1565,7 +1565,7 @@ SHPReadObject( SHPHandle psSHP, int hEntity )
 {
     int32                nEntitySize, nRequiredSize;
     SHPObject           *psShape;
-    char                 szErrorMsg[128];
+    char                 szErrorMsg[130];
 
 /* -------------------------------------------------------------------- */
 /*      Validate the record/entity number.                              */
