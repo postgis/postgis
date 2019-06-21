@@ -232,6 +232,9 @@ DROP FUNCTION IF EXISTS st_distance_sphere(geometry, geometry);
 -- See #3460
 UPDATE pg_type SET typlen=16 WHERE typname='pgis_abs' AND typlen=8;
 
+update pg_operator set oprcanhash = true, oprcanmerge = true where oprname = '=' and oprcode = '@extschema@.geometry_eq'::regproc;
+
+
 DO language 'plpgsql'
 $$
 BEGIN
