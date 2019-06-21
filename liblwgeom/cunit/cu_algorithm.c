@@ -1038,6 +1038,23 @@ static void test_lwgeom_remove_repeated_points(void)
 	lwfree(ewkt);
 }
 
+static void
+test_geohash_bbox(void)
+{
+	double lat[2], lon[2];
+
+	/* SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326)) */
+	decode_geohash_bbox("c0w3hf1s70w3hf1s70w3", lat, lon, 100);
+	CU_ASSERT_DOUBLE_EQUAL(lat[0], 48, 1e-11);
+	CU_ASSERT_DOUBLE_EQUAL(lat[1], 48, 1e-11);
+	CU_ASSERT_DOUBLE_EQUAL(lon[0], -126, 1e-11);
+	CU_ASSERT_DOUBLE_EQUAL(lon[1], -126, 1e-11);
+
+	cu_error_msg_reset();
+	decode_geohash_bbox("@@@@@@", lat, lon, 100);
+	ASSERT_STRING_EQUAL(cu_error_msg, "decode_geohash_bbox: Invalid character '@'");
+}
+
 static void test_lwgeom_simplify(void)
 {
 	LWGEOM *l;
@@ -1503,6 +1520,7 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_geohash_precision);
 	PG_ADD_TEST(suite,test_geohash);
 	PG_ADD_TEST(suite,test_geohash_point_as_int);
+	PG_ADD_TEST(suite, test_geohash_bbox);
 	PG_ADD_TEST(suite,test_isclosed);
 	PG_ADD_TEST(suite,test_lwgeom_simplify);
 	PG_ADD_TEST(suite,test_lw_arc_center);

@@ -1,5 +1,13 @@
 ## 2.5.1.5+carto-1
 
+**Release date**: 2019-XX-XX
+
+Changes:
+- Merged community `svn-2.5` as of 2019-06-21: Minor changes in the functions to handle raster constraints (not worth deploying in our case).
+- Backport [6018250](https://github.com/postgis/postgis/commit/601825064dbf8175f71e2ff896821a7a932ebe4f) to also cache prepared points and multipoints, speeding up ST_Intersects with those types.
+
+## 2.5.1.5+carto-1
+
 **Release date**: 2019-06-04
 
 Changes:
