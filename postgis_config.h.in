@@ -14,26 +14,8 @@
    language is requested. */
 #undef ENABLE_NLS
 
-/* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
-   CoreFoundation framework. */
-#undef HAVE_CFLOCALECOPYCURRENT
-
-/* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
-   the CoreFoundation framework. */
-#undef HAVE_CFPREFERENCESCOPYAPPVALUE
-
-/* Define if the GNU dcgettext() function is already present or preinstalled.
-   */
-#undef HAVE_DCGETTEXT
-
 /* Define for some functions we are interested in */
-#undef HAVE_VASPRINTF
-#undef HAVE_ASPRINTF
 #undef HAVE_FSEEKO
-#undef HAVE_STRCASESTR
-
-/* Define to 1 if you have the <dlfcn.h> header file. */
-#undef HAVE_DLFCN_H
 
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
@@ -46,9 +28,6 @@
 
 /* ieeefp.h header */
 #undef HAVE_IEEEFP_H
-
-/* Define to 1 if you have the <inttypes.h> header file. */
-#undef HAVE_INTTYPES_H
 
 /* Define to 1 if you have the `geos_c' library (-lgeos_c). */
 #undef HAVE_LIBGEOS_C
@@ -86,27 +65,6 @@
 /* Define to 1 if you have the <libxml/xpath.h> header file. */
 #undef HAVE_LIBXML_XPATH_H
 
-/* Define to 1 if you have the <memory.h> header file. */
-#undef HAVE_MEMORY_H
-
-/* Define to 1 if you have the <stdint.h> header file. */
-#undef HAVE_STDINT_H
-
-/* Define to 1 if you have the <stdlib.h> header file. */
-#undef HAVE_STDLIB_H
-
-/* Define to 1 if you have the <strings.h> header file. */
-#undef HAVE_STRINGS_H
-
-/* Define to 1 if you have the <string.h> header file. */
-#undef HAVE_STRING_H
-
-/* Define to 1 if you have the <sys/stat.h> header file. */
-#undef HAVE_SYS_STAT_H
-
-/* Define to 1 if you have the <sys/types.h> header file. */
-#undef HAVE_SYS_TYPES_H
-
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
@@ -116,15 +74,11 @@
 /* Define to 1 if sfcgal is being built */
 #undef HAVE_SFCGAL
 
-/* Define to the sub-directory in which libtool stores uninstalled libraries.
-   */
+/* Define to the sub-directory in which libtool stores uninstalled libraries. */
 #undef LT_OBJDIR
 
 /* Location of PostgreSQL locale directory */
 #undef PGSQL_LOCALEDIR
-
-/* Enable caching of bounding box within geometries */
-#undef POSTGIS_AUTOCACHE_BBOX
 
 /* PostGIS build date */
 #undef POSTGIS_BUILD_DATE
@@ -159,9 +113,6 @@
 /* PROJ library version */
 #undef POSTGIS_PROJ_VERSION
 
-/* PROJ 6: Flag to use the old API */
-#undef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-
 /* PostGIS Raster build date */
 #undef POSTGIS_RASTER_BUILD_DATE
 
@@ -189,14 +140,9 @@
 /* PostGIS scripts version */
 #undef POSTGIS_SCRIPTS_VERSION
 
-/* Enable use of ANALYZE statistics */
-#undef POSTGIS_USE_STATS
 
 /* PostGIS version */
 #undef POSTGIS_VERSION
-
-/* Define command to determine the current directory during regression */
-#undef PWDREGRESS
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS

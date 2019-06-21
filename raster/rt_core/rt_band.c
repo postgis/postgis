@@ -978,7 +978,7 @@ rt_band_set_pixel(
 	int *converted
 ) {
 	rt_pixtype pixtype = PT_END;
-	unsigned char* data = NULL;
+	uint8_t *data = NULL;
 	uint32_t offset = 0;
 
 	int32_t checkvalint = 0;
@@ -1044,7 +1044,7 @@ rt_band_set_pixel(
 			break;
 		}
 		case PT_8BSI: {
-			data[offset] = rt_util_clamp_to_8BSI(val);
+			data[offset] = (uint8_t)rt_util_clamp_to_8BSI(val);
 			checkvalint = (int8_t) data[offset];
 			break;
 		}
@@ -1300,7 +1300,7 @@ rt_band_get_pixel(
 			}
 #endif
 		case PT_8BSI: {
-			int8_t val = data[offset];
+			int8_t val = (int8_t)data[offset];
 			*value = val;
 			break;
 		}
@@ -1491,10 +1491,10 @@ uint32_t rt_band_get_nearest_pixel(
 	*npixels = NULL;
 
 	/* maximum extent */
-	max_extent[0] = x - distance[0]; /* min X */
-	max_extent[1] = y - distance[1]; /* min Y */
-	max_extent[2] = x + distance[0]; /* max X */
-	max_extent[3] = y + distance[1]; /* max Y */
+	max_extent[0] = x - (int)distance[0]; /* min X */
+	max_extent[1] = y - (int)distance[1]; /* min Y */
+	max_extent[2] = x + (int)distance[0]; /* max X */
+	max_extent[3] = y + (int)distance[1]; /* max Y */
 	RASTER_DEBUGF(4, "Maximum Extent: (%d, %d, %d, %d)",
 		max_extent[0], max_extent[1], max_extent[2], max_extent[3]);
 
@@ -1504,10 +1504,10 @@ uint32_t rt_band_get_nearest_pixel(
 		_d[0]++;
 		_d[1]++;
 
-		extent[0] = x - _d[0]; /* min x */
-		extent[1] = y - _d[1]; /* min y */
-		extent[2] = x + _d[0]; /* max x */
-		extent[3] = y + _d[1]; /* max y */
+		extent[0] = x - (int)_d[0]; /* min x */
+		extent[1] = y - (int)_d[1]; /* min y */
+		extent[2] = x + (int)_d[0]; /* max x */
+		extent[3] = y + (int)_d[1]; /* max y */
 
 		RASTER_DEBUGF(4, "Processing distances: %d x %d", _d[0], _d[1]);
 		RASTER_DEBUGF(4, "Extent: (%d, %d, %d, %d)",

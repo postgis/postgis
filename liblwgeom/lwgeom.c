@@ -925,11 +925,19 @@ lwgeom_has_m(const LWGEOM *geom)
 }
 
 int
+lwgeom_is_solid(const LWGEOM *geom)
+{
+	if ( ! geom ) return LW_FALSE;
+	return FLAGS_GET_GEODETIC(geom->flags);
+}
+
+int
 lwgeom_ndims(const LWGEOM *geom)
 {
 	if ( ! geom ) return 0;
 	return FLAGS_NDIMS(geom->flags);
 }
+
 
 
 void

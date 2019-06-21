@@ -30,8 +30,8 @@
 #define _LIBLWGEOM_H 1
 
 #include <stdarg.h>
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include "../postgis_config.h"
 
@@ -42,8 +42,28 @@ typedef struct PJ
     projPJ pj_from;
     projPJ pj_to;
 } PJ;
+
+typedef PJ LWPROJ;
+
 #else
 #include "proj.h"
+
+/* For PROJ6 we cache several extra values to avoid calls to proj_get_source_crs
+ * or proj_get_target_crs since those are very costly
+ */
+typedef struct LWPROJ
+{
+	PJ* pj;
+        /* CRSs are swapped: Used in transformation calls */
+	uint8_t source_swapped;
+	uint8_t target_swapped;
+        /* Source crs is geographic: Used in geography calls (source srid == dst srid) */
+        uint8_t source_is_latlong;
+
+        /* Source ellipsoid parameters */
+        double source_semi_major_metre;
+        double source_semi_minor_metre;
+} LWPROJ;
 #endif
 
 #if POSTGIS_PROJ_VERSION < 49
@@ -148,18 +168,27 @@ typedef enum LWORD_T {
 * Version bit, followed by
 * Validty, Solid, ReadOnly, Geodetic, HasBBox, HasM and HasZ flags.
 */
-#define FLAGS_GET_Z(flags) ((flags) & 0x01)
-#define FLAGS_GET_M(flags) (((flags) & 0x02)>>1)
-#define FLAGS_GET_BBOX(flags) (((flags) & 0x04)>>2)
-#define FLAGS_GET_GEODETIC(flags) (((flags) & 0x08)>>3)
-#define FLAGS_GET_READONLY(flags) (((flags) & 0x10)>>4)
-#define FLAGS_GET_SOLID(flags) (((flags) & 0x20)>>5)
-#define FLAGS_SET_Z(flags, value) ((flags) = (value) ? ((flags) | 0x01) : ((flags) & 0xFE))
-#define FLAGS_SET_M(flags, value) ((flags) = (value) ? ((flags) | 0x02) : ((flags) & 0xFD))
-#define FLAGS_SET_BBOX(flags, value) ((flags) = (value) ? ((flags) | 0x04) : ((flags) & 0xFB))
-#define FLAGS_SET_GEODETIC(flags, value) ((flags) = (value) ? ((flags) | 0x08) : ((flags) & 0xF7))
-#define FLAGS_SET_READONLY(flags, value) ((flags) = (value) ? ((flags) | 0x10) : ((flags) & 0xEF))
-#define FLAGS_SET_SOLID(flags, value) ((flags) = (value) ? ((flags) | 0x20) : ((flags) & 0xDF))
+#define LWFLAG_Z        0x01
+#define LWFLAG_M        0x02
+#define LWFLAG_BBOX     0x04
+#define LWFLAG_GEODETIC 0x08
+#define LWFLAG_READONLY 0x10
+#define LWFLAG_SOLID    0x20
+
+#define FLAGS_GET_Z(flags)         ((flags) & LWFLAG_Z)
+#define FLAGS_GET_M(flags)        (((flags) & LWFLAG_M)>>1)
+#define FLAGS_GET_BBOX(flags)     (((flags) & LWFLAG_BBOX)>>2)
+#define FLAGS_GET_GEODETIC(flags) (((flags) & LWFLAG_GEODETIC)>>3)
+#define FLAGS_GET_READONLY(flags) (((flags) & LWFLAG_READONLY)>>4)
+#define FLAGS_GET_SOLID(flags)    (((flags) & LWFLAG_SOLID)>>5)
+
+#define FLAGS_SET_Z(flags, value) ((flags) = (value) ? ((flags) | LWFLAG_Z) : ((flags) & ~LWFLAG_Z))
+#define FLAGS_SET_M(flags, value) ((flags) = (value) ? ((flags) | LWFLAG_M) : ((flags) & ~LWFLAG_M))
+#define FLAGS_SET_BBOX(flags, value) ((flags) = (value) ? ((flags) | LWFLAG_BBOX) : ((flags) & ~LWFLAG_BBOX))
+#define FLAGS_SET_GEODETIC(flags, value) ((flags) = (value) ? ((flags) | LWFLAG_GEODETIC) : ((flags) & ~LWFLAG_GEODETIC))
+#define FLAGS_SET_READONLY(flags, value) ((flags) = (value) ? ((flags) | LWFLAG_READONLY) : ((flags) & ~LWFLAG_READONLY))
+#define FLAGS_SET_SOLID(flags, value) ((flags) = (value) ? ((flags) | LWFLAG_SOLID) : ((flags) & ~LWFLAG_SOLID))
+
 #define FLAGS_NDIMS(flags) (2 + FLAGS_GET_Z(flags) + FLAGS_GET_M(flags))
 #define FLAGS_GET_ZM(flags) (FLAGS_GET_M(flags) + FLAGS_GET_Z(flags) * 2)
 #define FLAGS_NDIMS_BOX(flags) (FLAGS_GET_GEODETIC(flags) ? 3 : FLAGS_NDIMS(flags))
@@ -660,15 +689,22 @@ extern LWTIN* lwtin_add_lwtriangle(LWTIN *mobj, const LWTRIANGLE *obj);
 
 extern LWCOLLECTION* lwcollection_concat_in_place(LWCOLLECTION* col1, const LWCOLLECTION* col2);
 
-
-/***********************************************************************
-** Utility functions for flag byte and srid_flag integer.
-*/
-
 /**
 * Construct a new flags char.
 */
-extern uint8_t gflags(int hasz, int hasm, int geodetic);
+extern uint8_t lwflags(int hasz, int hasm, int geodetic);
+
+
+
+/***********************************************************************
+** GSERIALIZED API
+*/
+
+/**
+* Access to the float bounding box, if there is one.
+* NULL if there is not.
+*/
+extern const float * gserialized_get_float_box_p(const GSERIALIZED *g, size_t *ndims);
 
 /**
 * Extract the geometry type from the serialized form (it hides in
@@ -683,10 +719,11 @@ extern uint32_t gserialized_get_type(const GSERIALIZED *g);
 extern uint32_t gserialized_max_header_size(void);
 
 /**
-* Returns the size in bytes of the header, from the start of the
-* object up to the type number.
+* Returns a hash code for the srid/type/geometry information
+* in the GSERIALIZED. Ignores metadata like flags and optional
+* boxes, etc.
 */
-extern uint32_t gserialized_header_size(const GSERIALIZED *gser);
+extern uint64_t gserialized_hash(const GSERIALIZED *g);
 
 /**
 * Extract the SRID from the serialized form (it is packed into
@@ -729,12 +766,6 @@ extern int gserialized_has_m(const GSERIALIZED *gser);
 extern int gserialized_is_geodetic(const GSERIALIZED *gser);
 
 /**
-* Return a number indicating presence of Z and M coordinates.
-* 0 = None, 1 = M, 2 = Z, 3 = ZM
-*/
-extern int gserialized_get_zm(const GSERIALIZED *gser);
-
-/**
 * Return the number of dimensions (2, 3, 4) in a geometry
 */
 extern int gserialized_ndims(const GSERIALIZED *gser);
@@ -749,6 +780,50 @@ extern int gserialized_ndims(const GSERIALIZED *gser);
 * point of the object bounds.
 */
 extern int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2);
+
+/**
+* Allocate a new #GSERIALIZED from an #LWGEOM. For all non-point types, a bounding
+* box will be calculated and embedded in the serialization. The geodetic flag is used
+* to control the box calculation (cartesian or geocentric). If set, the size pointer
+* will contain the size of the final output, which is useful for setting the PgSQL
+* VARSIZE information.
+*/
+extern GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size);
+
+/**
+* Allocate a new #LWGEOM from a #GSERIALIZED. The resulting #LWGEOM will have coordinates
+* that are double aligned and suitable for direct reading using getPoint2d_p_ro
+*/
+extern LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g);
+
+/**
+* Pull a #GBOX from the header of a #GSERIALIZED, if one is available. If
+* it is not, calculate it from the geometry. If that doesn't work (null
+* or empty) return LW_FAILURE.
+*/
+extern int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *box);
+
+/**
+* Pull a #GBOX from the header of a #GSERIALIZED, if one is available. If
+* it is not, return LW_FAILURE.
+*/
+extern int gserialized_fast_gbox_p(const GSERIALIZED *g, GBOX *box);
+
+/**
+* Copy a new bounding box into an existing gserialized.
+* If necessary a new #GSERIALIZED will be allocated. Test
+* that input != output before freeing input.
+*/
+extern GSERIALIZED *gserialized_set_gbox(GSERIALIZED *g, GBOX *gbox);
+
+/**
+* Remove the bounding box from a #GSERIALIZED. Returns a freshly
+* allocated #GSERIALIZED every time.
+*/
+extern GSERIALIZED* gserialized_drop_gbox(GSERIALIZED *g);
+
+/*****************************************************************************/
+
 
 /**
 * Call this function to drop BBOX and SRID
@@ -1244,8 +1319,31 @@ extern void interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, 
 extern int lwgeom_is_clockwise(LWGEOM *lwgeom);
 
 
+/**
+* Simplification
+*/
 extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist, int preserve_collapsed);
 extern LWGEOM* lwgeom_remove_repeated_points(const LWGEOM *in, double tolerance);
+
+/**
+* Snap-to-grid
+*/
+typedef struct gridspec_t
+{
+    double ipx;
+    double ipy;
+    double ipz;
+    double ipm;
+    double xsize;
+    double ysize;
+    double zsize;
+    double msize;
+}
+gridspec;
+
+extern LWGEOM* lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid);
+extern void lwgeom_grid_in_place(LWGEOM *lwgeom, const gridspec *grid);
+
 
 /****************************************************************
 * READ/WRITE FUNCTIONS
@@ -1409,6 +1507,11 @@ extern int lwgeom_has_z(const LWGEOM *geom);
 * Return #LW_TRUE if geometry has M ordinates.
 */
 extern int lwgeom_has_m(const LWGEOM *geom);
+
+/**
+* Return #LW_TRUE if geometry has SOLID flag.
+*/
+extern int lwgeom_is_solid(const LWGEOM *geom);
 
 /**
 * Return the number of dimensions (2, 3, 4) in a geometry
@@ -1739,31 +1842,6 @@ extern void deparse_hex(uint8_t str, char *result);
 */
 
 /**
-* Calculate the geocentric bounding box directly from the serialized
-* form of the geodetic coordinates. Only accepts serialized geographies
-* flagged as geodetic. Caller is responsible for disposing of the GBOX.
-*/
-extern GBOX* gserialized_calculate_gbox_geocentric(const GSERIALIZED *g);
-
-/**
-* Calculate the geocentric bounding box directly from the serialized
-* form of the geodetic coordinates. Only accepts serialized geographies
-* flagged as geodetic.
-*/
-int gserialized_calculate_gbox_geocentric_p(const GSERIALIZED *g, GBOX *g_box);
-
-/**
-* Return a WKT representation of the gserialized geometry.
-* Caller is responsible for disposing of the char*.
-*/
-extern char* gserialized_to_string(const GSERIALIZED *g);
-
-/**
-* Return a copy of the input serialized geometry.
-*/
-extern GSERIALIZED* gserialized_copy(const GSERIALIZED *g);
-
-/**
 * Check that coordinates of LWGEOM are all within the geodetic range (-180, -90, 180, 90)
 */
 extern int lwgeom_check_geodetic(const LWGEOM *geom);
@@ -1953,36 +2031,6 @@ extern uint64_t gbox_get_sortable_hash(const GBOX *g);
 * would return type of 1 and z of 1 and m of 0. Valid
 */
 extern int geometry_type_from_string(const char *str, uint8_t *type, int *z, int *m);
-
-/**
-* Calculate required memory segment to contain a serialized form of the LWGEOM.
-* Primarily used internally by the serialization code. Exposed to allow the cunit
-* tests to exercise it.
-*/
-extern size_t gserialized_from_lwgeom_size(const LWGEOM *geom);
-
-/**
-* Allocate a new #GSERIALIZED from an #LWGEOM. For all non-point types, a bounding
-* box will be calculated and embedded in the serialization. The geodetic flag is used
-* to control the box calculation (cartesian or geocentric). If set, the size pointer
-* will contain the size of the final output, which is useful for setting the PgSQL
-* VARSIZE information.
-*/
-extern GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size);
-
-/**
-* Allocate a new #LWGEOM from a #GSERIALIZED. The resulting #LWGEOM will have coordinates
-* that are double aligned and suitable for direct reading using getPoint2d_p_ro
-*/
-extern LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g);
-
-/**
-* Pull a #GBOX from the header of a #GSERIALIZED, if one is available. If
-* it is not, calculate it from the geometry. If that doesn't work (null
-* or empty) return LW_FAILURE.
-*/
-extern int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *gbox);
-
 
 /**
  * Parser check flags
@@ -2330,7 +2378,7 @@ int lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outst
  *
  * Eg: "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
  */
-projPJ lwproj_from_string(const char* txt);
+projPJ projpj_from_string(const char* txt);
 
 #endif
 /**
@@ -2338,8 +2386,19 @@ projPJ lwproj_from_string(const char* txt);
  * @param geom the geometry to transform
  * @param PJ the input and output
  */
-int lwgeom_transform(LWGEOM *geom, PJ* pj);
-int ptarray_transform(POINTARRAY *pa, PJ* pj);
+int lwgeom_transform(LWGEOM *geom, LWPROJ* pj);
+int ptarray_transform(POINTARRAY *pa, LWPROJ* pj);
+
+#if POSTGIS_PROJ_VERSION >= 60
+
+/**
+ * Allocate a new LWPROJ containing the reference to the PROJ's PJ
+ * If extra_geography_data is true, it will generate the following values for
+ * the source srs: is_latlong (geometric or not) and spheroid values
+ */
+LWPROJ *lwproj_from_PJ(PJ *pj, int8_t extra_geography_data);
+
+#endif
 
 
 /*******************************************************************************

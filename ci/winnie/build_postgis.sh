@@ -1,22 +1,22 @@
 #!/bin/bash
 set -e
-export GEOS_VER=3.8
-export SFCGAL_VER=1.3.2
+if  [[ "${OVERRIDE}" == '' ]] ; then
+  export SFCGAL_VER=1.3.2
+  export GEOS_VER=3.7.1
+  export GDAL_VER=2.2.4
+  export PROJ_VER=4.9.3
+  export SFCGAL_VER=1.3.2
+  export PCRE_VER=8.33
+  export PROTOBUF_VER=3.2.0
+  export PROTOBUFC_VER=1.2.1
+  export CGAL_VER=4.11
+	export GEOS_VER=3.8
+fi;
+
 export PCRE_VER=8.33
-export PROTOBUF_VER=3.2.0
-export PROTOBUFC_VER=1.2.1
-export CGAL_VER=4.11
+
 export LIBXML_VER=2.7.8
 #export GDAL_VER=2.4.0
-export GDAL_VER=2.2.4
-export PROJ_VER=4.9.3
-#export PROJ_VER=5.2.0
-export SFCGAL_VER=1.3.2
-export PCRE_VER=8.33
-export PROTOBUF_VER=3.2.0
-export PROTOBUFC_VER=1.2.1
-export CGAL_VER=4.11
-export ICON_VER=1.15
 
 export PROJECTS=/projects
 export MINGPROJECTS=/projects
@@ -70,7 +70,7 @@ PATH="${MINGPROJECTS}/xsltproc:${MINGPROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${
 
 #add protobuf
 export PATH="${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
-export PKG_CONFIG_PATH=${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig;
+#export PKG_CONFIG_PATH=${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig;
 
 echo PATH AFTER: $PATH
 
@@ -122,6 +122,7 @@ LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${PROJECTS}/rel-libiconv-${I
   --with-xsldir=${PROJECTS}/docbook/docbook-xsl-1.76.1 \
   --with-gui --with-gettext=no \
   --with-sfcgal=${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/sfcgal-config \
+  --with-projdir=${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE} \
   --without-interrupt-tests \
   --prefix=${PROJECTS}/postgis/liblwgeom-${POSTGIS_VER}w${OS_BUILD}${GCC_TYPE}
 else
@@ -134,6 +135,7 @@ LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${PROJECTS}/rel-libiconv-${I
   --with-pgconfig=${PGPATH}/bin/pg_config \
   --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/geos-config \
   --with-gui --with-gettext=no \
+  --with-projdir=${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE} \
   --with-libiconv=${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE} \
   --with-xsldir=${PROJECTS}/docbook/docbook-xsl-1.76.1 \
   --without-interrupt-tests \

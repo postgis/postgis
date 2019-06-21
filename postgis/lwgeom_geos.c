@@ -1209,7 +1209,7 @@ Datum ST_GeneratePoints(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 
 	/* Serialize and return */
-	gser_result = gserialized_from_lwgeom(lwgeom_result, 0);
+	gser_result = geometry_serialize(lwgeom_result);
 	lwgeom_free(lwgeom_result);
 	PG_RETURN_POINTER(gser_result);
 }
@@ -1338,7 +1338,7 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 	if (!lwgeom_result)
 		lwpgerror("ST_OffsetCurve: lwgeom_offsetcurve returned NULL");
 
-	gser_result = gserialized_from_lwgeom(lwgeom_result, 0);
+	gser_result = geometry_serialize(lwgeom_result);
 	lwgeom_free(lwgeom_input);
 	lwgeom_free(lwgeom_result);
 	PG_RETURN_POINTER(gser_result);
@@ -3088,7 +3088,7 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 	result_array_data = palloc(nclusters * sizeof(Datum));
 	for (i=0; i<nclusters; ++i)
 	{
-		result_array_data[i] = PointerGetDatum(gserialized_from_lwgeom(lw_results[i], NULL));
+		result_array_data[i] = PointerGetDatum(geometry_serialize(lw_results[i]));
 		lwgeom_free(lw_results[i]);
 	}
 	lwfree(lw_results);

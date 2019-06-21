@@ -77,7 +77,7 @@ lwcollection_construct(uint8_t type, int32_t srid, GBOX *bbox, uint32_t ngeoms, 
 
 	ret = lwalloc(sizeof(LWCOLLECTION));
 	ret->type = type;
-	ret->flags = gflags(hasz,hasm,0);
+	ret->flags = lwflags(hasz,hasm,0);
 	FLAGS_SET_BBOX(ret->flags, bbox?1:0);
 	ret->srid = srid;
 	ret->ngeoms = ngeoms;
@@ -97,7 +97,7 @@ lwcollection_construct_empty(uint8_t type, int32_t srid, char hasz, char hasm)
 
 	ret = lwalloc(sizeof(LWCOLLECTION));
 	ret->type = type;
-	ret->flags = gflags(hasz,hasm,0);
+	ret->flags = lwflags(hasz,hasm,0);
 	ret->srid = srid;
 	ret->ngeoms = 0;
 	ret->maxgeoms = 1; /* Allocate room for sub-members, just in case. */

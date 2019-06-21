@@ -450,60 +450,35 @@ usage() {
 	));
 }
 
-static void calc_tile_size(
-	int dimX, int dimY,
-	int *tileX, int *tileY
-) {
-	int i = 0;
-	int j = 0;
-	int min = 30;
-	int max = 100;
+static void
+calc_tile_size(uint32_t dimX, uint32_t dimY, int *tileX, int *tileY)
+{
+	uint32_t min_tile_size = 30;
+	uint32_t max_tile_size = 300;
 
-	int d = 0;
-	double r = 0;
-	/*int _d = 0;*/
-	double _r = -1;
-	int _i = 0;
+	for (uint8_t current_dimension = 0; current_dimension <= 1; current_dimension++)
+	{
+		uint32_t img_size = (current_dimension == 0) ? dimX : dimY;
+		uint32_t best_gap = max_tile_size;
+		uint32_t best_size = img_size;
 
-	/* j = 0, X */
-	for (j = 0; j < 2; j++) {
-		_i = 0;
-		/*_d = 0;*/
-		_r = -1;
-
-		if (j < 1 && dimX <= max) {
-			*tileX = dimX;
-			continue;
-		}
-		else if (dimY <= max) {
-			*tileY = dimY;
-			continue;
-		}
-
-		for (i = max; i >= min; i--) {
-			if (j < 1) {
-				d = dimX / i;
-				r = (double) dimX / (double) i;
-
-			}
-			else {
-				d = dimY / i;
-				r = (double) dimY / (double) i;
-			}
-			r = r - (double) d;
-
-			if (FLT_EQ(_r, -1.0) || (r < _r) || FLT_EQ(r, _r))
+		if (img_size > max_tile_size)
+		{
+			for (uint32_t tile_size = max_tile_size; tile_size >= min_tile_size; tile_size--)
 			{
-				/*_d = d;*/
-				_r = r;
-				_i = i;
+				uint32_t gap = img_size % tile_size;
+				if (gap < best_gap)
+				{
+					best_gap = gap;
+					best_size = tile_size;
+				}
 			}
 		}
 
-		if (j < 1)
-			*tileX = _i;
+		if (current_dimension == 0)
+			*tileX = best_size;
 		else
-			*tileY = _i;
+			*tileY = best_size;
 	}
 }
 
@@ -1569,6 +1544,8 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	int _tile_size[2] = {0, 0};
 	int xtile = 0;
 	int ytile = 0;
+	int naturalx = 1;
+	int naturaly = 1;
 	double gt[6] = {0.};
 	const char* pszProjectionRef = NULL;
 	int tilesize = 0;
@@ -1708,37 +1685,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	info->dim[0] = GDALGetRasterXSize(hdsSrc);
 	info->dim[1] = GDALGetRasterYSize(hdsSrc);
 
-	/* tile size is "auto" */
-	if (
-		config->tile_size[0] == -1 &&
-		config->tile_size[1] == -1
-	) {
-		calc_tile_size(
-			info->dim[0], info->dim[1],
-			&(config->tile_size[0]), &(config->tile_size[1])
-		);
-
-		rtinfo(_("Using computed tile size: %dx%d"), config->tile_size[0], config->tile_size[1]);
-	}
-
-	/* decide on tile size */
-	if (!config->tile_size[0])
-		info->tile_size[0] = info->dim[0];
-	else
-		info->tile_size[0] = config->tile_size[0];
-	if (!config->tile_size[1])
-		info->tile_size[1] = info->dim[1];
-	else
-		info->tile_size[1] = config->tile_size[1];
-
-	/* number of tiles */
-	if ((uint32_t)info->tile_size[0] != info->dim[0])
-		ntiles[0] = (info->dim[0] + info->tile_size[0]  - 1) / info->tile_size[0];
-	if ((uint32_t)info->tile_size[1] != info->dim[1])
-		ntiles[1] = (info->dim[1] + info->tile_size[1]  - 1) / info->tile_size[1];
-
-	/* estimate size of 1 tile */
-	tilesize = info->tile_size[0] * info->tile_size[1];
+	tilesize = 0;
 
 	/* go through bands for attributes */
 	for (i = 0; i < info->nband_count; i++) {
@@ -1753,6 +1700,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 			GDALClose(hdsSrc);
 			return 0;
 		}
+		GDALGetBlockSize(hbandSrc, &naturalx, &naturaly);
 
 		/* convert data type to that of postgis raster */
 		info->bandtype[i] = rt_util_gdal_datatype_to_pixtype(info->gdalbandtype[i]);
@@ -1769,9 +1717,39 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				info->nodataval[i] = 0;
 		}
 
-		/* update estimated size of 1 tile */
-		tilesize *= rt_pixtype_size(info->bandtype[i]);
+		/* update estimated byte size of 1 pixel */
+		tilesize += rt_pixtype_size(info->bandtype[i]);
 	}
+
+	/* tile size is "auto" */
+	if (config->tile_size[0] == -1 && config->tile_size[1] == -1)
+	{
+		calc_tile_size((naturalx > 1) ? (uint32_t)naturalx : info->dim[0],
+			       (naturaly > 1) ? (uint32_t)naturaly : info->dim[1],
+			       &(config->tile_size[0]),
+			       &(config->tile_size[1]));
+
+		rtinfo(_("Using computed tile size: %dx%d"), config->tile_size[0], config->tile_size[1]);
+	}
+
+	/* decide on tile size */
+	if (!config->tile_size[0])
+		info->tile_size[0] = info->dim[0];
+	else
+		info->tile_size[0] = config->tile_size[0];
+	if (!config->tile_size[1])
+		info->tile_size[1] = info->dim[1];
+	else
+		info->tile_size[1] = config->tile_size[1];
+
+	/* number of tiles */
+	if ((uint32_t)info->tile_size[0] != info->dim[0])
+		ntiles[0] = (info->dim[0] + info->tile_size[0] - 1) / info->tile_size[0];
+	if ((uint32_t)info->tile_size[1] != info->dim[1])
+		ntiles[1] = (info->dim[1] + info->tile_size[1] - 1) / info->tile_size[1];
+
+	/* estimate size of 1 tile */
+	tilesize *= info->tile_size[0] * info->tile_size[1];
 
 	/* roughly estimate size of one tile and all bands */
 	tilesize *= 1.1;

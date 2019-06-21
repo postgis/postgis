@@ -176,8 +176,8 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 					if (state->pt <= 3) {
 						getPoint4d_p(tri->points, state->pt, &pt);
 						lwpoint = lwpoint_make(tri->srid,
-								FLAGS_GET_Z(tri->points->flags),
-								FLAGS_GET_M(tri->points->flags),
+								lwgeom_has_z(lwgeom),
+								lwgeom_has_m(lwgeom),
 								&pt);
 					}
 					if (state->pt > 3) {
@@ -210,8 +210,8 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 					 */
 						getPoint4d_p(poly->rings[state->ring], state->pt, &pt);
 						lwpoint = lwpoint_make(poly->srid,
-								FLAGS_GET_Z(poly->rings[state->ring]->flags),
-								FLAGS_GET_M(poly->rings[state->ring]->flags),
+								lwgeom_has_z(lwgeom),
+								lwgeom_has_m(lwgeom),
 								&pt);
 					}
 					break;
@@ -257,7 +257,7 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 				pathpt[0] = PointerGetDatum(construct_array(state->path, state->pathlen+1,
 						INT4OID, state->typlen, state->byval, state->align));
 
-				pathpt[1] = PointerGetDatum(gserialized_from_lwgeom((LWGEOM*)lwpoint,0));
+				pathpt[1] = PointerGetDatum(geometry_serialize((LWGEOM*)lwpoint));
 
 				tuple = heap_form_tuple(funcctx->tuple_desc, pathpt, isnull);
 				result = HeapTupleGetDatum(tuple);
@@ -291,21 +291,4 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 	}
 }
 
-/*
- * Geometry types of collection types for reference
- */
-
-#if 0
-        case MULTIPOINTTYPE:
-        case MULTILINETYPE:
-        case MULTIPOLYGONTYPE:
-        case COLLECTIONTYPE:
-        case CURVEPOLYTYPE:
-        case COMPOUNDTYPE:
-        case MULTICURVETYPE:
-        case MULTISURFACETYPE:
-        case POLYHEDRALSURFACETYPE:
-        case TINTYPE:
-
-#endif
 

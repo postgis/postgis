@@ -47,8 +47,8 @@ all: postgis_restore.pl
 DROP_FILES = \
   ../raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in \
   ../raster/rt_pg/rtpostgis_drop.sql.in \
-  ../postgis/postgis_drop_after.sql \
-  ../postgis/postgis_drop_before.sql
+  ../postgis/postgis_after_upgrade.sql \
+  ../postgis/postgis_before_upgrade.sql
 
 update-restore:
 	tac postgis_restore.pl.in | sed '/^__END__/q' | grep -v '^__END__' \

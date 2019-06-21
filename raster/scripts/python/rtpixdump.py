@@ -21,6 +21,7 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 ###############################################################################
+from __future__ import print_function
 import rtreader
 from optparse import OptionParser
 import sys
@@ -69,8 +70,8 @@ try:
             scanline = ""
             for x in range(1, rast.width + 1):
                 scanline += str(int(rast.get_value(band, x, y))) + '\t'
-            print scanline
-        print # Bands separator
+            print(scanline)
+        print() # Bands separator
 
-except rtreader.RasterError, e:
-    print "ERROR - ", e
+except rtreader.RasterError as e:
+    print("ERROR - ", e)

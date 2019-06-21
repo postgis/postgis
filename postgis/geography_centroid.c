@@ -78,7 +78,7 @@ Datum geography_centroid(PG_FUNCTION_ARGS)
 		LWCOLLECTION* empty = lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 	 	lwgeom_out = lwcollection_as_lwgeom(empty);
 		lwgeom_set_geodetic(lwgeom_out, true);
-		g_out = gserialized_from_lwgeom(lwgeom_out, 0);
+		g_out = geography_serialize(lwgeom_out);
 		PG_RETURN_POINTER(g_out);
 	}
 
@@ -167,8 +167,7 @@ Datum geography_centroid(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(g, 0);
 
     lwgeom_out = lwpoint_as_lwgeom(lwpoint_out);
-    lwgeom_set_geodetic(lwgeom_out, true);
-    g_out = gserialized_from_lwgeom(lwgeom_out, 0);
+    g_out = geography_serialize(lwgeom_out);
 
 	PG_RETURN_POINTER(g_out);
 }

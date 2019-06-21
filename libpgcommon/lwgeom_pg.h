@@ -43,27 +43,27 @@ void pg_install_lwgeom_handlers(void);
 /* Display a simple message at NOTICE level */
 /* from PgSQL utils/elog.h, LOG is 15, and DEBUG5 is 10 and everything else is in between */
 #define POSTGIS_DEBUG(level, msg) \
-        do { \
-                if (POSTGIS_DEBUG_LEVEL >= level) \
-                        ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__))); \
-        } while (0);
+		do { \
+				if (POSTGIS_DEBUG_LEVEL >= level) \
+						ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__))); \
+		} while (0);
 
 /* Display a formatted message at NOTICE level (like printf, with variadic arguments) */
 #define POSTGIS_DEBUGF(level, msg, ...) \
-        do { \
-                if (POSTGIS_DEBUG_LEVEL >= level) \
-                        ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__))); \
-        } while (0);
+		do { \
+				if (POSTGIS_DEBUG_LEVEL >= level) \
+						ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__))); \
+		} while (0);
 
 #else /* POSTGIS_DEBUG_LEVEL */
 
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
 #define POSTGIS_DEBUG(level, msg) \
-        ((void) 0)
+		((void) 0)
 
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
 #define POSTGIS_DEBUGF(level, msg, ...) \
-        ((void) 0)
+		((void) 0)
 
 #endif /* POSTGIS_DEBUG_LEVEL */
 
@@ -83,32 +83,22 @@ extern void pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result);
 extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
 
 #define PG_PARSER_ERROR(lwg_parser_result) \
-        do { \
-                pg_parser_errhint(&lwg_parser_result); \
-        } while(0);
+		do { \
+				pg_parser_errhint(&lwg_parser_result); \
+		} while(0);
 
 /*
  * Standard macro for reporting unparser errors to PostgreSQL
  */
 #define PG_UNPARSER_ERROR(lwg_unparser_result) \
-        do { \
-                pg_unparser_errhint(&lwg_unparser_result); \
-        } while(0);
+		do { \
+				pg_unparser_errhint(&lwg_unparser_result); \
+		} while(0);
 
 /* TODO: only cancel the interrupt if inside an outer call ? */
 #define LWGEOM_INIT() { \
   lwgeom_cancel_interrupt(); \
 }
-
-
-/*
-** GSERIALIED prototypes used outside the index functions
-*/
-
-/**
-* Remove the embedded bounding box
-*/
-GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
 
 /**
 * Utility method to call the serialization and then set the

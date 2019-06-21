@@ -119,7 +119,7 @@ sql/spatial_ref_sys.sql: ../../spatial_ref_sys.sql | sql
 sql/spatial_ref_sys_config_dump.sql: ../../spatial_ref_sys.sql ../../utils/create_spatial_ref_sys_config_dump.pl | sql
 	$(PERL) ../../utils/create_spatial_ref_sys_config_dump.pl $< > $@
 
-sql/postgis_upgrade_for_extension.sql: ../../postgis/postgis_drop_before.sql sql/postgis_upgrade_for_extension.sql.in ../../postgis/postgis_drop_after.sql | sql
+sql/postgis_upgrade_for_extension.sql: ../../postgis/postgis_before_upgrade.sql sql/postgis_upgrade_for_extension.sql.in ../../postgis/postgis_after_upgrade.sql | sql
 	#strip BEGIN/COMMIT since these are not allowed in extensions
 	# WARNING: we should make sure these are not internal to function bodies
 	cat $^ | $(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' > $@

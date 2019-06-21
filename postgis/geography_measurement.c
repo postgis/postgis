@@ -687,7 +687,6 @@ Datum geography_point_outside(PG_FUNCTION_ARGS)
 	GBOX gbox;
 	GSERIALIZED *g = NULL;
 	GSERIALIZED *g_out = NULL;
-	size_t g_out_size;
 	LWGEOM *lwpoint = NULL;
 	POINT2D pt;
 
@@ -707,12 +706,8 @@ Datum geography_point_outside(PG_FUNCTION_ARGS)
 	gbox_pt_outside(&gbox, &pt);
 
 	lwpoint = (LWGEOM*) lwpoint_make2d(4326, pt.x, pt.y);
-	/* TODO: Investigate where this is used, this was probably not
-	* returning a geography object before. How did this miss checking
-	*/
-	lwgeom_set_geodetic(lwpoint, true);
-	g_out = gserialized_from_lwgeom(lwpoint, &g_out_size);
-	SET_VARSIZE(g_out, g_out_size);
+
+	g_out = geography_serialize(lwpoint);
 
 	PG_FREE_IF_COPY(g, 0);
 	PG_RETURN_POINTER(g_out);

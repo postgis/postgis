@@ -28,7 +28,7 @@
 #
 
 eval "exec perl -w $0 $@"
-	if (0);
+  if (0);
 
 use strict;
 use warnings;
@@ -41,30 +41,32 @@ use warnings;
 
 sub parse_last_updated
 {
-  my $comment = shift;
-  if ( $comment =~ m/.*(?:Availability|Changed|Updated):\s([^\.])\.([^.]*)/s ) {
-    return $1*100 + $2;
-  }
-  return 0;
+    my $comment = shift;
+    if ( $comment =~ m/.*(?:Availability|Changed|Updated):\s([^\.])\.([^.]*)/s )
+    {
+        return $1*100 + $2;
+    }
+    return 0;
 }
 
 sub parse_missing
 {
-  my $comment = shift;
-  my @missing = ();
-  if ( $comment =~ m/.*(?:Missing in):\s([^\.])\.([^.]*)/s ) {
-    push(@missing, $1*100 + $2);
-  }
-  return join(',',@missing);
+    my $comment = shift;
+    my @missing = ();
+    if ( $comment =~ m/.*(?:Missing in):\s([^\.])\.([^.]*)/s )
+    {
+        push(@missing, $1*100 + $2);
+    }
+    return join(',',@missing);
 }
-
 
 #
 # Commandline argument handling
 #
-($#ARGV == 0) ||
-die "Usage: perl postgis_proc_upgrade.pl <postgis.sql> <version_from> [<schema>]\nCreates a new SQL script to upgrade all of the PostGIS functions.\n"
-	if ( @ARGV < 1 || @ARGV > 3 );
+($#ARGV == 0)
+  ||die
+"Usage: perl postgis_proc_upgrade.pl <postgis.sql> <version_from> [<schema>]\nCreates a new SQL script to upgrade all of the PostGIS functions.\n"
+  if ( @ARGV < 1 || @ARGV > 3 );
 
 my $sql_file = $ARGV[0];
 my $module = 'postgis';
@@ -77,7 +79,7 @@ my $schema = "";
 $schema = $ARGV[2] if @ARGV > 2;
 
 die "Unable to open input SQL file $sql_file\n"
-	if ( ! -f $sql_file );
+  if ( !-f $sql_file );
 
 #
 # Search the SQL file for the target version number (the
@@ -86,36 +88,37 @@ die "Unable to open input SQL file $sql_file\n"
 open( INPUT, $sql_file ) || die "Couldn't open file: $sql_file\n";
 while(<INPUT>)
 {
-	#
-	# Since 1.1.0 scripts/lib/release versions are the same
-	#
-	if (/INSTALL VERSION: (.*)/)
-	{
-				$version_to = $1;
-				#last;
-	}
-	elsif (/TYPE raster/)
-	{
+    #
+    # Since 1.1.0 scripts/lib/release versions are the same
+    #
+    if (/INSTALL VERSION: (.*)/)
+    {
+        $version_to = $1;
+
+        #last;
+    }
+    elsif (/TYPE raster/)
+    {
         $module = 'postgis_raster';
-	}
-	elsif (m@('\$libdir/[^']*')@)
-	{
+    }
+    elsif (m@('\$libdir/[^']*')@)
+    {
         $soname = $1;
-	}
+    }
 }
 close(INPUT);
 
 die "Unable to locate target new version number in $sql_file\n"
- 	if( ! $version_to );
+  if( !$version_to );
 
 if ( $version_to =~ /(\d+)\.(\d+)\..*/ )
 {
-	$version_to = $1 . "." . $2;
-	$version_to_num = 100 * $1 + $2;
+    $version_to = $1 . "." . $2;
+    $version_to_num = 100 * $1 + $2;
 }
 else
 {
-	die "Version to number invalid, must be of form X.X.X\n";
+    die "Version to number invalid, must be of form X.X.X\n";
 }
 
 print qq{
@@ -136,9 +139,9 @@ print "SET search_path TO $schema;\n" if $schema;
 #
 while(<DATA>)
 {
-	s/NEWVERSION/$version_to/g;
-  s/MODULE/$module/g;
-	print;
+    s/NEWVERSION/$version_to/g;
+    s/MODULE/$module/g;
+    print;
 }
 
 #
@@ -151,53 +154,55 @@ open( INPUT, $sql_file ) || die "Couldn't open file: $sql_file\n";
 while(<INPUT>)
 {
 
-	if ( /^\-\-/ ) {
-		$comment .= $_;
-		next;
-	}
-
-	#
-	# Allow through deprecations from postgis_drop.sql
-	#
-	print if ( /^drop function /i );
-	print if ( /^drop aggregate /i );
-
-	if ( /^create or replace function/i )
-	{
-		print $_;
-		my $endfunc = 0;
-		while(<INPUT>)
-		{
-			print $_;
-			$endfunc = 1 if /^\s*(\$\$\s*)?LANGUAGE /;
-			last if ( $endfunc && /\;/ );
-		}
-	}
-
-	if ( /^create type (\w+)/i )
-	{
-		my $newtype = $1;
-		my $def .= $_;
-		while(<INPUT>)
-		{
-			$def .= $_;
-			last if /\)/;
-		}
-
-    my $last_updated = parse_last_updated($comment);
-    if ( ! $last_updated ) {
-      die "ERROR: no last updated info for type '${newtype}'\n";
+    if (/^\-\-/)
+    {
+        $comment .= $_;
+        next;
     }
-    my $missing = parse_missing($comment);
-    print "-- Type ${newtype} -- LastUpdated: ${last_updated}\n";
-      print <<"EOF";
+
+    #
+    # Allow through deprecations from postgis_drop.sql
+    #
+    print if (/^drop function /i);
+    print if (/^drop aggregate /i);
+
+    if (/^create or replace function/i)
+    {
+        print $_;
+        my $endfunc = 0;
+        while(<INPUT>)
+        {
+            print $_;
+            $endfunc = 1 if /^\s*(\$\$\s*)?LANGUAGE /;
+            last if ( $endfunc && /\;/ );
+        }
+    }
+
+    if (/^create type (\w+)/i)
+    {
+        my $newtype = $1;
+        my $def .= $_;
+        while(<INPUT>)
+        {
+            $def .= $_;
+            last if /\)/;
+        }
+
+        my $last_updated = parse_last_updated($comment);
+        if ( !$last_updated )
+        {
+            die "ERROR: no last updated info for type '${newtype}'\n";
+        }
+        my $missing = parse_missing($comment);
+        print "-- Type ${newtype} -- LastUpdated: ${last_updated}\n";
+        print <<"EOF";
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
   IF $last_updated > version_from_num
 EOF
-      print "OR version_from_num IN ( ${missing} )" if ( $missing );
-      print <<"EOF";
+        print "OR version_from_num IN ( ${missing} )" if ($missing);
+        print <<"EOF";
      FROM _postgis_upgrade_info
   THEN
       EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
@@ -205,65 +210,80 @@ EOF
 END
 \$postgis_proc_upgrade\$;
 EOF
-	}
-
-	if ( /^do *language .*\$\$/i )
-	{
-		print;
-		while(<INPUT>)
-		{
-			print;
-			last if /\$\$/;
-		}
-	}
-
-	# This code handles casts by dropping and recreating them.
-	if ( /^create cast\s+\(\s*(\w+)\s+as\s+(\w+)\)/i )
-	{
-		my $type1 = $1;
-		my $type2 = $2;
-		my $def = $_;
-    unless (/;$/) {
-      while(<INPUT>) {
-        $def .= $_;
-        last if /;$/;
-      }
     }
-		print "DROP CAST IF EXISTS ($type1 AS $type2);\n";
-		print $def;
-	}
 
-	# This code handles aggregates by dropping and recreating them.
-	if ( /^create aggregate\s+([^(]+)\s*\(/i )
-	{
-		my $aggname = $1;
-    #print "-- Aggname ${aggname}\n";
-		my $aggtype = 'unknown';
-		my $def = $_;
-    if ( /^create aggregate\s+\S+\s*\(([^)]*)\)/i ) {
-	    $aggtype = $1;
-      $aggtype =~ s/\s*,\s*/,/g; # drop spaces around commas
-      $aggtype =~ s/\s\s*/ /g; # collapse multiple spaces into one
+    if (/^do *language .*\$\$/i)
+    {
+        print;
+        while(<INPUT>)
+        {
+            print;
+            last if /\$\$/;
+        }
     }
-		while(<INPUT>)
-		{
-			$def .= $_;
-			$aggtype = $1 if ( /basetype\s*=\s*([^,]*)\s*,/i );
-			last if /\);/;
-		}
-		my $aggsig = "$aggname($aggtype)";
 
-    #print "-- Checking comment $comment\n";
-    my $last_updated = parse_last_updated($comment);
-    if ( ! $last_updated ) {
-      die "ERROR: no last updated info for aggregate '${aggsig}'\n";
+    # This code handles casts by dropping and recreating them.
+    if (/^create cast\s+\(\s*(\w+)\s+as\s+(\w+)\)/i)
+    {
+        my $type1 = $1;
+        my $type2 = $2;
+        my $def = $_;
+        unless (/;$/)
+        {
+            while(<INPUT>)
+            {
+                $def .= $_;
+                last if /;$/;
+            }
+        }
+        print "DROP CAST IF EXISTS ($type1 AS $type2);\n";
+        print $def;
     }
-    print "-- Aggregate ${aggsig} -- LastUpdated: ${last_updated}\n";
-      print <<"EOF";
+
+    # This code handles aggregates by dropping and recreating them.
+    # For PG12 use REPLACE instead
+    if (/^create aggregate\s+([^(]+)\s*\(/i)
+    {
+        my $aggname = $1;
+
+        #print "-- Aggname ${aggname}\n";
+        my $aggtype = 'unknown';
+        my $def = $_;
+        if (/^create aggregate\s+\S+\s*\(([^)]*)\)/i)
+        {
+            $aggtype = $1;
+            $aggtype =~ s/\s*,\s*/,/g; # drop spaces around commas
+            $aggtype =~ s/\s\s*/ /g; # collapse multiple spaces into one
+        }
+        while(<INPUT>)
+        {
+            $def .= $_;
+            $aggtype = $1 if (/basetype\s*=\s*([^,]*)\s*,/i);
+            last if /\);/;
+        }
+        my $aggsig = "$aggname($aggtype)";
+
+        #print "-- Checking comment $comment\n";
+        my $last_updated = parse_last_updated($comment);
+        if ( !$last_updated )
+        {
+            die "ERROR: no last updated info for aggregate '${aggsig}'\n";
+        }
+
+        my $pg12_def = $def =~ s/CREATE AGGREGATE/CREATE OR REPLACE AGGREGATE/r;
+        if ($pg12_def eq "")
+        {
+            $pg12_def = "RAISE EXCEPTION 'Could not parse AGGREGATE'";
+        }
+        print "-- Aggregate ${aggsig} -- LastUpdated: ${last_updated}\n";
+        print <<"EOF";
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
-  IF $last_updated > version_from_num OR (
+  IF current_setting('server_version_num')::integer >= 120000
+  THEN
+    EXECUTE \$postgis_proc_upgrade_parsed_def\$ $pg12_def \$postgis_proc_upgrade_parsed_def\$;
+  ELSIF $last_updated > version_from_num OR (
       $last_updated = version_from_num AND version_from_isdev
     ) FROM _postgis_upgrade_info
   THEN
@@ -273,30 +293,31 @@ BEGIN
 END
 \$postgis_proc_upgrade\$;
 EOF
-	}
-
-	# This code handles operators by creating them if needed
-	if ( /^create operator\s+(\S+)\s*\(/i )
-	{
-		my $opname = $1;
-		my $opleft = 'unknown';
-		my $opright = 'unknown';
-		my $def = $_;
-		while(<INPUT>)
-		{
-			$def .= $_;
-			$opleft = $1 if ( /leftarg\s*=\s*(\w+)\s*,/i );
-			$opright = $1 if ( /rightarg\s*=\s*(\w+)\s*,/i );
-			last if /\);/;
-		}
-		my $opsig = $opleft . " " . $opname . " " . $opright;
-
-    my $last_updated = parse_last_updated($comment);
-    if ( ! $last_updated ) {
-      die "WARNING: no last updated info for operator '${opsig}'\n";
     }
-    print "-- Operator ${opsig} -- LastUpdated: ${last_updated}\n";
-      print <<"EOF";
+
+    # This code handles operators by creating them if needed
+    if (/^create operator\s+(\S+)\s*\(/i)
+    {
+        my $opname = $1;
+        my $opleft = 'unknown';
+        my $opright = 'unknown';
+        my $def = $_;
+        while(<INPUT>)
+        {
+            $def .= $_;
+            $opleft = $1 if (/leftarg\s*=\s*(\w+)\s*,/i);
+            $opright = $1 if (/rightarg\s*=\s*(\w+)\s*,/i);
+            last if /\);/;
+        }
+        my $opsig = $opleft . " " . $opname . " " . $opright;
+
+        my $last_updated = parse_last_updated($comment);
+        if ( !$last_updated )
+        {
+            die "WARNING: no last updated info for operator '${opsig}'\n";
+        }
+        print "-- Operator ${opsig} -- LastUpdated: ${last_updated}\n";
+        print <<"EOF";
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
@@ -322,62 +343,64 @@ BEGIN
 END
 \$postgis_proc_upgrade\$;
 EOF
-	}
+    }
 
-	# Always output create ore replace view (see ticket #1097)
-	if ( /^create or replace view\s+(\S+)\s*/i )
-	{
-		print;
-		while(<INPUT>)
-		{
-			print;
-			last if /\;\s*$/;
-		}
-	}
+    # Always output create ore replace view (see ticket #1097)
+    if (/^create or replace view\s+(\S+)\s*/i)
+    {
+        print;
+        while(<INPUT>)
+        {
+            print;
+            last if /\;\s*$/;
+        }
+    }
 
-	# Always output grant permissions (see ticket #3680)
-	if ( /^grant select\s+(\S+)\s*/i )
-	{
-		print;
-		if ( ! /\;\s*$/) {
-			while(<INPUT>)
-			{
-				print;
-				last if /\;\s*$/;
-			}
-		}
-	}
+    # Always output grant permissions (see ticket #3680)
+    if (/^grant select\s+(\S+)\s*/i)
+    {
+        print;
+        if ( !/\;\s*$/)
+        {
+            while(<INPUT>)
+            {
+                print;
+                last if /\;\s*$/;
+            }
+        }
+    }
 
-	# Always output create ore replace rule
-	if ( /^create or replace rule\s+(\S+)\s*/i )
-	{
-		print;
-		while(<INPUT>)
-		{
-			print;
-			last if /\;\s*$/;
-		}
-	}
+    # Always output create ore replace rule
+    if (/^create or replace rule\s+(\S+)\s*/i)
+    {
+        print;
+        while(<INPUT>)
+        {
+            print;
+            last if /\;\s*$/;
+        }
+    }
 
-	# This code handles operator family by creating them if we are doing a major upgrade
-	if ( /^create operator family\s+(\w+)\s+USING\s+(\w+)\s*/i )
-	{
-		my $opfname = $1;
-		my $amname = $2;
-		my $def = $_;
-		my $opfsig = $opfname . " " . $amname;
-		while(<INPUT>)
-		{
-			$def .= $_;
-			last if /\);/;
-		}
+    # This code handles operator family by creating them if we are doing a major upgrade
+    if (/^create operator family\s+(\w+)\s+USING\s+(\w+)\s*/i)
+    {
+        my $opfname = $1;
+        my $amname = $2;
+        my $def = $_;
+        my $opfsig = $opfname . " " . $amname;
+        while(<INPUT>)
+        {
+            $def .= $_;
+            last if /\);/;
+        }
 
-	my $last_updated = parse_last_updated($comment);
-	if ( ! $last_updated ) {
-		die "WARNING: no last updated info for operator family '${opfname}'\n";
-	}
-	print "-- Operator family ${opfsig} -- LastUpdated: ${last_updated}\n";
-	print <<"EOF";
+        my $last_updated = parse_last_updated($comment);
+        if ( !$last_updated )
+        {
+            die "WARNING: no last updated info for operator family '${opfname}'\n";
+        }
+        print "-- Operator family ${opfsig} -- LastUpdated: ${last_updated}\n";
+        print <<"EOF";
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
@@ -387,66 +410,68 @@ BEGIN
 END
 \$postgis_proc_upgrade\$;
 EOF
-	}
-
-	# This code handles operator classes by creating them if we are doing a major upgrade
-	if ( /^create operator class\s+(\w+)\s*/i )
-	{
-		my $opclassname = $1;
-		my $opctype = 'unknown';
-		my $opcidx = 'unknown';
-		my $def = $_;
-		my $last_updated;
-		my $subcomment = '';
-		my @subobjects; # minversion, definition
-		while(<INPUT>)
-		{
-			if ( /^\s*\-\-/ ) {
-				$subcomment .= $_;
-				next;
-			}
-
-			$def .= $_;
-			$opctype = $1 if ( /for type (\w+) /i );
-			$opcidx = $1 if ( /using (\w+) /i );
-
-			# Support adding members at later versions
-			if ( /\s+(OPERATOR|FUNCTION)\s+[0-9]+\s+ / )
-			{
-				my $last_updated = parse_last_updated($subcomment);
-				if ( $last_updated )
-				{
-					my $subdefn = $_;
-					chop $subdefn;
-					$subdefn =~ s/[,;]$//; # strip ending comma or semicolon
-					# argument types must be specified in ALTER OPERATOR FAMILY
-					if ( $subdefn =~ m/\s+(OPERATOR.*)(FOR.*)/ )
-					{
-						$subdefn = $1.'('.$opctype.','.$opctype.') '.$2;
-					}
-					elsif ( $subdefn =~ m/\s+(OPERATOR.*)/ )
-					{
-						$subdefn = $1.'('.$opctype.','.$opctype.') '
-					}
-					elsif ( $subdefn =~ m/\s+(FUNCTION\s+[0-9]+ )(.*)/ )
-					{
-						$subdefn = $1.'('.$opctype.','.$opctype.') '.$2;
-					}
-					push @subobjects, [$last_updated, $subdefn];
-				}
-				$subcomment = '';
-			}
-			last if /;$/;
-		}
-		$opctype =~ tr/A-Z/a-z/;
-		$opcidx =~ tr/A-Z/a-z/;
-
-    $last_updated = parse_last_updated($comment);
-    if ( ! $last_updated ) {
-      die "WARNING: no last updated info for operator class '${opclassname}'\n";
     }
-    print "-- Operator class ${opclassname} -- LastUpdated: ${last_updated}\n";
-    print <<"EOF";
+
+    # This code handles operator classes by creating them if we are doing a major upgrade
+    if (/^create operator class\s+(\w+)\s*/i)
+    {
+        my $opclassname = $1;
+        my $opctype = 'unknown';
+        my $opcidx = 'unknown';
+        my $def = $_;
+        my $last_updated;
+        my $subcomment = '';
+        my @subobjects; # minversion, definition
+        while(<INPUT>)
+        {
+            if (/^\s*\-\-/)
+            {
+                $subcomment .= $_;
+                next;
+            }
+
+            $def .= $_;
+            $opctype = $1 if (/for type (\w+) /i);
+            $opcidx = $1 if (/using (\w+) /i);
+
+            # Support adding members at later versions
+            if (/\s+(OPERATOR|FUNCTION)\s+[0-9]+\s+ /)
+            {
+                my $last_updated = parse_last_updated($subcomment);
+                if ($last_updated)
+                {
+                    my $subdefn = $_;
+                    chop $subdefn;
+                    $subdefn =~ s/[,;]$//; # strip ending comma or semicolon
+                     # argument types must be specified in ALTER OPERATOR FAMILY
+                    if ( $subdefn =~ m/\s+(OPERATOR.*)(FOR.*)/ )
+                    {
+                        $subdefn = $1.'('.$opctype.','.$opctype.') '.$2;
+                    }
+                    elsif ( $subdefn =~ m/\s+(OPERATOR.*)/ )
+                    {
+                        $subdefn = $1.'('.$opctype.','.$opctype.') ';
+                    }
+                    elsif ( $subdefn =~ m/\s+(FUNCTION\s+[0-9]+ )(.*)/ )
+                    {
+                        $subdefn = $1.'('.$opctype.','.$opctype.') '.$2;
+                    }
+                    push @subobjects, [$last_updated, $subdefn];
+                }
+                $subcomment = '';
+            }
+            last if /;$/;
+        }
+        $opctype =~ tr/A-Z/a-z/;
+        $opcidx =~ tr/A-Z/a-z/;
+
+        $last_updated = parse_last_updated($comment);
+        if ( !$last_updated )
+        {
+            die "WARNING: no last updated info for operator class '${opclassname}'\n";
+        }
+        print "-- Operator class ${opclassname} -- LastUpdated: ${last_updated}\n";
+        print <<"EOF";
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
@@ -456,12 +481,12 @@ BEGIN
     EXECUTE \$postgis_proc_upgrade_parsed_def\$
     $def    \$postgis_proc_upgrade_parsed_def\$;
 EOF
-    my $ELSE="ELSE -- version_from >= $last_updated";
-    for my $subobj ( @subobjects )
-    {
-      $last_updated = @{$subobj}[0];
-      $def = @{$subobj}[1];
-      print <<"EOF";
+        my $ELSE="ELSE -- version_from >= $last_updated";
+        for my $subobj (@subobjects)
+        {
+            $last_updated = @{$subobj}[0];
+            $def = @{$subobj}[1];
+            print <<"EOF";
   $ELSE
     -- Last Updated: ${last_updated}
     IF $last_updated > version_from_num FROM _postgis_upgrade_info THEN
@@ -471,19 +496,19 @@ EOF
       \$postgis_proc_upgrade_parsed_def\$;
     END IF;
 EOF
-      $ELSE="";
-    }
-    print <<"EOF";
+            $ELSE="";
+        }
+        print <<"EOF";
   END IF; -- version_from >= $last_updated
 END
 \$postgis_proc_upgrade\$;
 EOF
-	}
+    }
 
-	$comment = '';
+    $comment = '';
 }
 
-close( INPUT );
+close(INPUT);
 
 print "DROP TABLE _postgis_upgrade_info;\n";
 

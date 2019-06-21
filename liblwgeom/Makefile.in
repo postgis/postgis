@@ -55,6 +55,7 @@ SA_OBJS = \
 	measures.o \
 	measures3d.o \
 	ptarray.o \
+	lookup3.o \
 	lwgeom_api.o \
 	lwgeom.o \
 	lwpoint.o \
@@ -91,9 +92,10 @@ SA_OBJS = \
 	lwstroke.o \
 	lwlinearreferencing.o \
 	lwprint.o \
-	g_box.o \
-	g_serialized.o \
-	g_util.o \
+	gbox.o \
+	gserialized.o \
+	gserialized1.o \
+	gserialized2.o \
 	lwgeodetic.o \
 	lwgeodetic_tree.o \
 	lwrandom.o \

@@ -80,7 +80,7 @@ lwcircstring_construct_empty(int32_t srid, char hasz, char hasm)
 {
 	LWCIRCSTRING *result = lwalloc(sizeof(LWCIRCSTRING));
 	result->type = CIRCSTRINGTYPE;
-	result->flags = gflags(hasz,hasm,0);
+	result->flags = lwflags(hasz,hasm,0);
 	result->srid = srid;
 	result->points = ptarray_construct_empty(hasz, hasm, 1);
 	result->bbox = NULL;

@@ -40,28 +40,14 @@
 */
 static char *spatialRefSysSchema = NULL;
 
-
 /*
  * PROJ 4 backend hash table initial hash size
  * (since 16 is the default portal hash table size, and we would
  * typically have 2 entries per portal
- * then we shall use a default size of 32)
+ * then we shall use a default size of 256)
  */
-#define PROJ_BACKEND_HASH_SIZE	32
+#define PROJ_BACKEND_HASH_SIZE 256
 
-
-/**
- * Backend PROJ hash table
- *
- * This hash table stores a key/value pair of MemoryContext/PJ objects.
- * Whenever we create a PJ object using pj_init(), we create a separate
- * MemoryContext as a child context of the current executor context.
- * The MemoryContext/PJ object is stored in this hash table so
- * that when PROJSRSCacheDelete() is called during query cleanup, we can
- * lookup the PJ object based upon the MemoryContext parameter and hence
- * pj_free() it.
- */
-static HTAB *PJHash = NULL;
 
 /**
  * Utility structure to get many potential string representations
@@ -73,33 +59,9 @@ typedef struct {
 	char* proj4text;
 } PjStrs;
 
-
-typedef struct struct_PJHashEntry
-{
-	MemoryContext ProjectionContext;
-	PJ* projection;
-}
-PJHashEntry;
-
-
-/* PJ Hash API */
-uint32 mcxt_ptr_hash(const void *key, Size keysize);
-
-static HTAB *CreatePJHash(void);
-static void DeletePJHashEntry(MemoryContext mcxt);
-static PJ* GetPJHashEntry(MemoryContext mcxt);
-static void AddPJHashEntry(MemoryContext mcxt, PJ* projection);
-
 /* Internal Cache API */
-/* static PROJPortalCache *GetPROJSRSCache(FunctionCallInfo fcinfo) ; */
-static bool IsInPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
-static void AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
-static void DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
-
-/* Search path for PROJ.4 library */
-static bool IsPROJLibPathSet = false;
-void SetPROJLibPath(void);
-
+static LWPROJ *AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
+static void DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, uint32_t position);
 
 /*
 * Given a function call context, figure out what namespace the
@@ -127,43 +89,63 @@ SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
 }
 
 static void
-PROJSRSDestroyPJ(PJ* pj)
+PROJSRSDestroyPJ(void *projection)
 {
+	LWPROJ *pj = (LWPROJ *)projection;
 #if POSTGIS_PROJ_VERSION < 60
 /* Ape the Proj 6+ API for versions < 6 */
 	if (pj->pj_from)
+	{
 		pj_free(pj->pj_from);
+		pj->pj_from = NULL;
+	}
 	if (pj->pj_to)
+	{
 		pj_free(pj->pj_to);
-	free(pj);
+		pj->pj_to = NULL;
+	}
 #else
-	proj_destroy(pj);
+	if (pj->pj)
+	{
+		proj_destroy(pj->pj);
+		pj->pj = NULL;
+	}
 #endif
 }
 
-#if 0
-static const char *
-PJErrStr()
+#if POSTGIS_PGSQL_VERSION < 96
+/**
+ * Backend PROJ hash table
+ *
+ * This hash table stores a key/value pair of MemoryContext/PJ objects.
+ * Whenever we create a PJ object using pj_init(), we create a separate
+ * MemoryContext as a child context of the current executor context.
+ * The MemoryContext/PJ object is stored in this hash table so
+ * that when PROJSRSCacheDelete() is called during query cleanup, we can
+ * lookup the PJ object based upon the MemoryContext parameter and hence
+ * pj_free() it.
+ */
+static HTAB *PJHash = NULL;
+
+typedef struct struct_PJHashEntry
 {
-	const char *pj_errstr = pj_strerrno(*pj_get_errno_ref());
-	if (!pj_errstr)
-		return "";
-	return pj_errstr;
-}
-#endif
+	MemoryContext ProjectionContext;
+	LWPROJ *projection;
+} PJHashEntry;
+
+/* PJ Hash API */
+uint32 mcxt_ptr_hash(const void *key, Size keysize);
+
+static HTAB *CreatePJHash(void);
+static void DeletePJHashEntry(MemoryContext mcxt);
+static LWPROJ *GetPJHashEntry(MemoryContext mcxt);
+static void AddPJHashEntry(MemoryContext mcxt, LWPROJ *projection);
 
 static void
-#if POSTGIS_PGSQL_VERSION < 96
 PROJSRSCacheDelete(MemoryContext context)
 {
-#else
-PROJSRSCacheDelete(void *ptr)
-{
-	MemoryContext context = (MemoryContext)ptr;
-#endif
-
 	/* Lookup the PJ pointer in the global hash table so we can free it */
-	PJ* projection = GetPJHashEntry(context);
+	LWPROJ *projection = GetPJHashEntry(context);
 
 	if (!projection)
 		elog(ERROR, "PROJSRSCacheDelete: Trying to delete non-existant projection object with MemoryContext key (%p)", (void *)context);
@@ -175,8 +157,6 @@ PROJSRSCacheDelete(void *ptr)
 	/* Remove the hash entry as it is no longer needed */
 	DeletePJHashEntry(context);
 }
-
-#if POSTGIS_PGSQL_VERSION < 96
 
 static void
 PROJSRSCacheInit(MemoryContext context)
@@ -245,7 +225,6 @@ static MemoryContextMethods PROJSRSCacheContextMethods =
 #endif
 };
 
-#endif /* POSTGIS_PGSQL_VERSION < 96 */
 
 /*
  * PROJ PJ Hash Table functions
@@ -278,7 +257,8 @@ static HTAB *CreatePJHash(void)
 	return hash_create("PostGIS PROJ Backend MemoryContext Hash", PROJ_BACKEND_HASH_SIZE, &ctl, (HASH_ELEM | HASH_FUNCTION));
 }
 
-static void AddPJHashEntry(MemoryContext mcxt, PJ* projection)
+static void
+AddPJHashEntry(MemoryContext mcxt, LWPROJ *projection)
 {
 	bool found;
 	void **key;
@@ -301,7 +281,8 @@ static void AddPJHashEntry(MemoryContext mcxt, PJ* projection)
 	}
 }
 
-static PJ* GetPJHashEntry(MemoryContext mcxt)
+static LWPROJ *
+GetPJHashEntry(MemoryContext mcxt)
 {
 	void **key;
 	PJHashEntry *he;
@@ -312,7 +293,7 @@ static PJ* GetPJHashEntry(MemoryContext mcxt)
 	/* Return the projection object from the hash */
 	he = (PJHashEntry *) hash_search(PJHash, key, HASH_FIND, NULL);
 
-	return he->projection;
+	return he ? he->projection : NULL;
 }
 
 
@@ -333,38 +314,24 @@ static void DeletePJHashEntry(MemoryContext mcxt)
 		he->projection = NULL;
 }
 
+#endif /* POSTGIS_PGSQL_VERSION < 96 */
 
 /*****************************************************************************
  * Per-cache management functions
  */
 
-static bool
-IsInPROJSRSCache(PROJPortalCache *cache, int32_t srid_from, int32_t srid_to)
-{
-	/*
-	 * Return true/false depending upon whether the item
-	 * is in the SRS cache.
-	 */
-	uint32_t i;
-	for (i = 0; i < PROJ_CACHE_ITEMS; i++)
-	{
-		if (cache->PROJSRSCache[i].srid_from == srid_from &&
-		    cache->PROJSRSCache[i].srid_to == srid_to)
-			return true;
-	}
-	/* Otherwise not found */
-	return false;
-}
-
-static PJ *
+static LWPROJ *
 GetProjectionFromPROJCache(PROJPortalCache *cache, int32_t srid_from, int32_t srid_to)
 {
 	uint32_t i;
-	for (i = 0; i < PROJ_CACHE_ITEMS; i++)
+	for (i = 0; i < cache->PROJSRSCacheCount; i++)
 	{
 		if (cache->PROJSRSCache[i].srid_from == srid_from &&
 		    cache->PROJSRSCache[i].srid_to == srid_to)
+		{
+			cache->PROJSRSCache[i].hits++;
 			return cache->PROJSRSCache[i].projection;
+		}
 	}
 
 	return NULL;
@@ -621,10 +588,13 @@ GetProj4String(int32_t srid)
  * we must make sure the entry we choose to delete does not contain other_srid
  * which is the definition for the other half of the transformation.
  */
-static void
+static LWPROJ *
 AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to)
 {
+#if POSTGIS_PGSQL_VERSION < 96
 	MemoryContext PJMemoryContext;
+#endif
+	MemoryContext oldContext;
 
 	PjStrs from_strs, to_strs;
 	char *pj_from_str, *pj_to_str;
@@ -640,12 +610,14 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 	if (!pjstrs_has_entry(&to_strs))
 		elog(ERROR, "got NULL for SRID (%d)", srid_to);
 
+	oldContext = MemoryContextSwitchTo(PROJCache->PROJSRSCacheContext);
+
 #if POSTGIS_PROJ_VERSION < 60
-	PJ* projection = malloc(sizeof(PJ));
+	PJ *projection = palloc(sizeof(PJ));
 	pj_from_str = from_strs.proj4text;
 	pj_to_str = to_strs.proj4text;
-	projection->pj_from = lwproj_from_string(pj_from_str);
-	projection->pj_to = lwproj_from_string(pj_to_str);
+	projection->pj_from = projpj_from_string(pj_from_str);
+	projection->pj_to = projpj_from_string(pj_to_str);
 
 	if (!projection->pj_from)
 		elog(ERROR,
@@ -657,7 +629,7 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 		    "could not form projection from 'srid=%d' to 'srid=%d'",
 		    srid_from, srid_to);
 #else
-	PJ* projection = NULL;
+	PJ *projpj = NULL;
 	/* Try combinations of ESPG/SRTEXT/PROJ4TEXT until we find */
 	/* one that gives us a usable transform. Note that we prefer */
 	/* EPSG numbers over SRTEXT and SRTEXT over PROJ4TEXT */
@@ -669,179 +641,127 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 		pj_to_str   = pgstrs_get_entry(&to_strs,   i % 3);
 		if (!(pj_from_str && pj_to_str))
 			continue;
-		projection = proj_create_crs_to_crs(NULL, pj_from_str, pj_to_str, NULL);
-		if (projection && !proj_errno(projection))
+		projpj = proj_create_crs_to_crs(NULL, pj_from_str, pj_to_str, NULL);
+		if (projpj && !proj_errno(projpj))
 			break;
 	}
+	if (!projpj)
+	{
+		elog(ERROR, "could not form projection (PJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);
+		return NULL;
+	}
+	LWPROJ *projection = lwproj_from_PJ(projpj, srid_from == srid_to);
 	if (!projection)
 	{
-		elog(ERROR,
-		    "could not form projection from 'srid=%d' to 'srid=%d'",
-		    srid_from, srid_to);
+		elog(ERROR, "could not form projection (LWPROJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);
+		return NULL;
 	}
 #endif
 
-	/*
-	 * If the cache is already full then find the first entry
-	 * that doesn't contain our srids and use this as the
-	 * subsequent value of PROJSRSCacheCount
-	 */
-	if (PROJCache->PROJSRSCacheCount == PROJ_CACHE_ITEMS)
+	/* If the cache is already full then find the least used element and delete it */
+	uint32_t cache_position = PROJCache->PROJSRSCacheCount;
+	uint32_t hits = 1;
+	if (cache_position == PROJ_CACHE_ITEMS)
 	{
-		bool found = false;
-		uint32_t i;
-		for (i = 0; i < PROJ_CACHE_ITEMS; i++)
+		cache_position = 0;
+		hits = PROJCache->PROJSRSCache[0].hits;
+		for (uint32_t i = 1; i < PROJ_CACHE_ITEMS; i++)
 		{
-			if (found == false &&
-				(PROJCache->PROJSRSCache[i].srid_from != srid_from ||
-				 PROJCache->PROJSRSCache[i].srid_to != srid_to))
+			if (PROJCache->PROJSRSCache[i].hits < hits)
 			{
-				POSTGIS_DEBUGF(3, "choosing to remove item from query cache with SRIDs %d => %d and index %d",
-					PROJCache->PROJSRSCache[i].srid_from,
-					PROJCache->PROJSRSCache[i].srid_to,
-					i);
-
-				DeleteFromPROJSRSCache(PROJCache,
-				    PROJCache->PROJSRSCache[i].srid_from,
-				    PROJCache->PROJSRSCache[i].srid_to);
-
-				PROJCache->PROJSRSCacheCount = i;
-				found = true;
+				cache_position = i;
+				hits = PROJCache->PROJSRSCache[i].hits;
 			}
 		}
+		DeleteFromPROJSRSCache(PROJCache, cache_position);
+		/* To avoid the element we are introduced now being evicted next (as
+		 * it would have 1 hit, being most likely the lower one) we reuse the
+		 * hits from the evicted position and add some extra buffer
+		 */
+		hits += 5;
+	}
+	else
+	{
+		PROJCache->PROJSRSCacheCount++;
 	}
 
-	/*
-	 * Now create a memory context for this projection and
-	 * store it in the backend hash
-	 */
-	POSTGIS_DEBUGF(3, "adding transform %d => %d aka \"%s\" => \"%s\" to query cache at index %d",
-		srid_from, srid_to, pj_from_str, pj_to_str, PROJCache->PROJSRSCacheCount);
+	POSTGIS_DEBUGF(3,
+		       "adding transform %d => %d aka \"%s\" => \"%s\" to query cache at index %d",
+		       srid_from,
+		       srid_to,
+		       pj_from_str,
+		       pj_to_str,
+		       cache_position);
 
 	/* Free the projection strings */
 	pjstrs_pfree(&from_strs);
 	pjstrs_pfree(&to_strs);
 
 #if POSTGIS_PGSQL_VERSION < 96
+	/*
+	 * Now create a memory context for this projection and
+	 * store it in the backend hash
+	 */
 	PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
 	                                      &PROJSRSCacheContextMethods,
 	                                      PROJCache->PROJSRSCacheContext,
 	                                      "PostGIS PROJ PJ Memory Context");
-#else
-	PJMemoryContext = AllocSetContextCreate(PROJCache->PROJSRSCacheContext,
-	                                        "PostGIS PROJ PJ Memory Context",
-	                                        ALLOCSET_SMALL_SIZES);
 
-	/* PgSQL comments suggest allocating callback in the context */
-	/* being managed, so that the callback object gets cleaned along with */
-	/* the context */
-	{
-		MemoryContextCallback *callback = MemoryContextAlloc(PJMemoryContext, sizeof(MemoryContextCallback));
-		callback->arg = (void*)PJMemoryContext;
-		callback->func = PROJSRSCacheDelete;
-		MemoryContextRegisterResetCallback(PJMemoryContext, callback);
-	}
-#endif
-
- 	/* Create the backend hash if it doesn't already exist */
+	/* We register a new memory context to use it to delete the projection on exit */
 	if (!PJHash)
 		PJHash = CreatePJHash();
 
-	/*
-	 * Add the MemoryContext to the backend hash so we can
-	 * clean up upon portal shutdown
-	 */
-	POSTGIS_DEBUGF(3, "adding projection object (%p) to hash table with MemoryContext key (%p)", projection, PJMemoryContext);
-
 	AddPJHashEntry(PJMemoryContext, projection);
 
-	PROJCache->PROJSRSCache[PROJCache->PROJSRSCacheCount].srid_from = srid_from;
-	PROJCache->PROJSRSCache[PROJCache->PROJSRSCacheCount].srid_to = srid_to;
-	PROJCache->PROJSRSCache[PROJCache->PROJSRSCacheCount].projection = projection;
-	PROJCache->PROJSRSCache[PROJCache->PROJSRSCacheCount].projection_mcxt = PJMemoryContext;
-	PROJCache->PROJSRSCacheCount++;
+#else
+	/* We register a new callback to delete the projection on exit */
+	MemoryContextCallback *callback =
+	    MemoryContextAlloc(PROJCache->PROJSRSCacheContext, sizeof(MemoryContextCallback));
+	callback->func = PROJSRSDestroyPJ;
+	callback->arg = (void *)projection;
+	MemoryContextRegisterResetCallback(PROJCache->PROJSRSCacheContext, callback);
+#endif
+
+	PROJCache->PROJSRSCache[cache_position].srid_from = srid_from;
+	PROJCache->PROJSRSCache[cache_position].srid_to = srid_to;
+	PROJCache->PROJSRSCache[cache_position].projection = projection;
+	PROJCache->PROJSRSCache[cache_position].hits = hits;
+#if POSTGIS_PGSQL_VERSION < 96
+	PROJCache->PROJSRSCache[cache_position].projection_mcxt = PJMemoryContext;
+#endif
+
+	MemoryContextSwitchTo(oldContext);
+	return projection;
 }
 
 static void
-DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to)
+DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, uint32_t position)
 {
-	/*
-	 * Delete the SRID entry from the cache
-	 */
-	uint32_t i;
-	for (i = 0; i < PROJ_CACHE_ITEMS; i++)
-	{
-		if (PROJCache->PROJSRSCache[i].srid_from == srid_from &&
-			PROJCache->PROJSRSCache[i].srid_to == srid_to)
-		{
-			POSTGIS_DEBUGF(3, "removing query cache entry with SRIDs %d => %d at index %d", srid_from, srid_to, i);
+	POSTGIS_DEBUGF(3,
+		       "removing query cache entry with SRIDs %d => %d at index %u",
+		       PROJCache->PROJSRSCache[position].srid_from,
+		       PROJCache->PROJSRSCache[position].srid_to,
+		       position);
 
-			/*
-			 * Zero out the entries and free the PROJ handle
-			 * by deleting the memory context
-			 */
-			MemoryContextDelete(PROJCache->PROJSRSCache[i].projection_mcxt);
-			PROJCache->PROJSRSCache[i].projection = NULL;
-			PROJCache->PROJSRSCache[i].projection_mcxt = NULL;
-			PROJCache->PROJSRSCache[i].srid_from = SRID_UNKNOWN;
-			PROJCache->PROJSRSCache[i].srid_to = SRID_UNKNOWN;
-		}
-	}
-}
-
-
-/**
- * Specify an alternate directory for the PROJ.4 grid files
- * (this should augment the PROJ.4 compile-time path)
- *
- * It's main purpose is to allow Win32 PROJ.4 installations
- * to find a set grid shift files, although other platforms
- * may find this useful too.
- *
- * Note that we currently ignore this on PostgreSQL < 8.0
- * since the method of determining the current installation
- * path are different on older PostgreSQL versions.
- */
-void SetPROJLibPath(void)
-{
-	char *path;
-	char *share_path;
-	const char **proj_lib_path;
-
-	if (!IsPROJLibPathSet) {
-
-		/*
-		 * Get the sharepath and append /contrib/postgis/proj to form a suitable
-		 * directory in which to store the grid shift files
-		 */
-		proj_lib_path = palloc(sizeof(char *));
-
-		share_path = palloc(MAXPGPATH);
-		get_share_path(my_exec_path, share_path);
-
-		path = palloc(MAXPGPATH);
-		*proj_lib_path = path;
-
-		snprintf(path, MAXPGPATH - 1, "%s/contrib/postgis-%s.%s/proj", share_path, POSTGIS_MAJOR_VERSION, POSTGIS_MINOR_VERSION);
-#if POSTGIS_PROJ_VERSION < 60
-		/* Set the search path for PROJ.4 */
-		pj_set_searchpath(1, proj_lib_path);
+#if POSTGIS_PGSQL_VERSION < 96
+	/* Deleting the memory context will free the PROJ objects */
+	MemoryContextDelete(PROJCache->PROJSRSCache[position].projection_mcxt);
+	PROJCache->PROJSRSCache[position].projection_mcxt = NULL;
 #else
-		/* Set the search path for PROJ */
-		proj_context_set_search_paths(NULL, 1, proj_lib_path);
+	/* Call PROJSRSDestroyPJ to free the PROJ objects memory now instead of
+	 * waiting for the parent memory context to exit */
+	PROJSRSDestroyPJ(PROJCache->PROJSRSCache[position].projection);
 #endif
-		/* Ensure we only do this once... */
-		IsPROJLibPathSet = true;
-	}
+	PROJCache->PROJSRSCache[position].projection = NULL;
+	PROJCache->PROJSRSCache[position].srid_from = SRID_UNKNOWN;
+	PROJCache->PROJSRSCache[position].srid_to = SRID_UNKNOWN;
 }
+
 
 int
-GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, PJ **pj)
+GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, LWPROJ **pj)
 {
 	PROJPortalCache *proj_cache = NULL;
-
-	/* Set the search path if we haven't already */
-	SetPROJLibPath();
 
 	/* Look up the spatial_ref_sys schema if we haven't already */
 	SetSpatialRefSysSchema(fcinfo);
@@ -852,36 +772,29 @@ GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, PJ
 		return LW_FAILURE;
 
 	/* Add the output srid to the cache if it's not already there */
-	if (!IsInPROJSRSCache(proj_cache, srid_from, srid_to))
-		AddToPROJSRSCache(proj_cache, srid_from, srid_to);
-
-	/* Get the projections */
 	*pj = GetProjectionFromPROJCache(proj_cache, srid_from, srid_to);
+	if (*pj == NULL)
+	{
+		*pj = AddToPROJSRSCache(proj_cache, srid_from, srid_to);
+	}
 
-	return LW_SUCCESS;
+	return pj != NULL;
 }
 
 static int
-proj_pj_is_latlong(const PJ* pj)
+proj_pj_is_latlong(const LWPROJ *pj)
 {
 #if POSTGIS_PROJ_VERSION < 60
 	return pj_is_latlong(pj->pj_from);
 #else
-	PJ_TYPE pj_type;
-	PJ *pj_src_crs = proj_get_source_crs(NULL, pj);
-	if (!pj_src_crs)
-		elog(ERROR, "%s: proj_get_source_crs returned NULL", __func__);
-	pj_type = proj_get_type(pj_src_crs);
-	proj_destroy(pj_src_crs);
-	return (pj_type == PJ_TYPE_GEOGRAPHIC_2D_CRS) ||
-	       (pj_type == PJ_TYPE_GEOGRAPHIC_3D_CRS);
+	return pj->source_is_latlong;
 #endif
 }
 
 static int
 srid_is_latlong(FunctionCallInfo fcinfo, int32_t srid)
 {
-	PJ* pj;
+	LWPROJ *pj;
 	if ( GetPJUsingFCInfo(fcinfo, srid, srid, &pj) == LW_FAILURE)
 		return LW_FALSE;
 	return proj_pj_is_latlong(pj);
@@ -924,12 +837,8 @@ srid_axis_precision(FunctionCallInfo fcinfo, int32_t srid, int precision)
 int
 spheroid_init_from_srid(FunctionCallInfo fcinfo, int32_t srid, SPHEROID *s)
 {
-	PJ* pj;
-#if POSTGIS_PROJ_VERSION >= 60
-	double out_semi_major_metre, out_semi_minor_metre, out_inv_flattening;
-	int out_is_semi_minor_computed;
-	PJ *pj_ellps, *pj_crs;
-#elif POSTGIS_PROJ_VERSION >= 48
+	LWPROJ *pj;
+#if POSTGIS_PROJ_VERSION >= 48 && POSTGIS_PROJ_VERSION < 60
 	double major_axis, minor_axis, eccentricity_squared;
 #endif
 
@@ -937,25 +846,9 @@ spheroid_init_from_srid(FunctionCallInfo fcinfo, int32_t srid, SPHEROID *s)
 		return LW_FAILURE;
 
 #if POSTGIS_PROJ_VERSION >= 60
-	if (!proj_pj_is_latlong(pj))
+	if (!pj->source_is_latlong)
 		return LW_FAILURE;
-	pj_crs = proj_get_source_crs(NULL, pj);
-	if (!pj_crs)
-	{
-		lwerror("%s: proj_get_source_crs returned NULL", __func__);
-	}
-	pj_ellps = proj_get_ellipsoid(NULL, pj_crs);
-	if (!pj_ellps)
-	{
-		proj_destroy(pj_crs);
-		lwerror("%s: proj_get_ellipsoid returned NULL", __func__);
-	}
-	proj_ellipsoid_get_parameters(NULL, pj_ellps,
-		&out_semi_major_metre, &out_semi_minor_metre,
-		&out_is_semi_minor_computed, &out_inv_flattening);
-	proj_destroy(pj_ellps);
-	proj_destroy(pj_crs);
-	spheroid_init(s, out_semi_major_metre, out_semi_minor_metre);
+	spheroid_init(s, pj->source_semi_major_metre, pj->source_semi_minor_metre);
 
 #elif POSTGIS_PROJ_VERSION >= 48
 	if (!pj_is_latlong(pj->pj_from))

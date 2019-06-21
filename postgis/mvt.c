@@ -23,6 +23,8 @@
  **********************************************************************/
 
 #include <string.h>
+#include <float.h>
+#include <math.h>
 
 #include "mvt.h"
 #include "lwgeom_geos.h"
@@ -619,7 +621,8 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 					PointerGetDatum(v.val.numeric)));
 				d = strtod(str, NULL);
 				l = strtol(str, NULL, 10);
-				if (FP_NEQUALS(d, (double)l))
+
+				if (fabs(d - (double)l) > FLT_EPSILON)
 				{
 					MVT_PARSE_VALUE(d, mvt_kv_double_value, double_values_hash,
 						double_value, sizeof(double));

@@ -152,7 +152,7 @@ lwpoint_construct_empty(int32_t srid, char hasz, char hasm)
 {
 	LWPOINT *result = lwalloc(sizeof(LWPOINT));
 	result->type = POINTTYPE;
-	result->flags = gflags(hasz, hasm, 0);
+	result->flags = lwflags(hasz, hasm, 0);
 	result->srid = srid;
 	result->point = ptarray_construct(hasz, hasm, 0);
 	result->bbox = NULL;

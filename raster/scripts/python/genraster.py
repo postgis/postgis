@@ -26,6 +26,7 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 ###############################################################################
+from __future__ import print_function
 import Image
 import ImageDraw
 import ImageFont
@@ -33,8 +34,8 @@ import random
 import sys
 
 if len(sys.argv) < 5 or len(sys.argv) > 6:
-    print 'Usage: genraster.py <xsize> <ysize> <xsizecell> <ysizecell> <outline colour>'
-    print 'Note: Generated image is saved as out.png'
+    print('Usage: genraster.py <xsize> <ysize> <xsizecell> <ysizecell> <outline colour>')
+    print('Note: Generated image is saved as out.png')
     sys.exit(1)
 
 g_file = "out.png"
@@ -46,8 +47,8 @@ else:
     g_outline = None
 
 ncells = (g_size[0] / g_cell_size[0]) * (g_size[1] / g_cell_size[1])
-print 'Number of cells: ',ncells
-print 'ID \tULX\tULY\tCLR\tTXTCLR\tOUTCLR'
+print('Number of cells: ',ncells)
+print('ID \tULX\tULY\tCLR\tTXTCLR\tOUTCLR')
 
 img = Image.new("L", g_size, 255)
 draw = ImageDraw.Draw(img)
@@ -74,9 +75,9 @@ for j in range(0, g_size[1], g_cell_size[1]):
         draw.rectangle( [(i,j), (i + g_cell_size[0], j + g_cell_size[1])], fill=value, outline=g_outline)
         draw.text( (i,j), ('%d' % count), fill=value_text, font=font)
 
-        print '%d:\t%d\t%d\t%d\t%d\t%s' % (count, i, j, value, value_text, str(g_outline))
+        print('%d:\t%d\t%d\t%d\t%d\t%s' % (count, i, j, value, value_text, str(g_outline)))
         count = count + 1
 
 del draw
 img.save(g_file, 'PNG')
-print 'Output saved: %s' % g_file
+print('Output saved: %s' % g_file)

@@ -62,9 +62,6 @@ typedef struct
 /* allocate a new gidx object on the heap */
 GIDX *gidx_new(int ndims);
 
-/* Increase the size of a GIDX */
-void gidx_expand(GIDX *a, float d);
-
 /* Note empty GIDX */
 bool gidx_is_unknown(const GIDX *a);
 
@@ -117,16 +114,6 @@ int box2df_to_gbox_p(BOX2DF *a, GBOX *box);
 
 /* Pull out the #GIDX bounding box with a absolute minimum system overhead */
 int gserialized_datum_get_gidx_p(Datum gserialized_datum, GIDX *gidx);
-
-/* Pull out the gidx bounding box from an already de-toasted geography */
-int gserialized_get_gidx_p(const GSERIALIZED *g, GIDX *gidx);
-/* Copy a new bounding box into an existing gserialized */
-GSERIALIZED *gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx);
-
-/* Given two datums, do they overlap? Computed very fast using embedded boxes. */
-/* int gserialized_datum_overlaps(Datum gs1, Datum gs2); */
-/* Remove the box from a disk serialization */
-GSERIALIZED *gserialized_drop_gidx(GSERIALIZED *g);
 
 bool box2df_contains(const BOX2DF *a, const BOX2DF *b);
 void box2df_set_empty(BOX2DF *a);

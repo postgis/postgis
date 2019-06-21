@@ -29,9 +29,13 @@ POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 # SQL preprocessor
 SQLPP = @SQLPP@
 GREP=@GREP@
-EXTVERSION    = @POSTGIS_LIB_VERSION@
-MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
-MODULE_big = address_standardizer
+EXTVERSION = @POSTGIS_LIB_VERSION@
+MODULE_big = address_standardizer-@POSTGIS_MAJOR_VERSION@
+MODULEPATH    = $$libdir/address_standardizer-@POSTGIS_MAJOR_VERSION@
+ifeq (@LIBINCLUDEMINORVERSION@,yes)
+MODULE_big = address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+MODULEPATH    = $$libdir/address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+endif
 EXTENSION = address_standardizer
 DATA = sql/$(EXTENSION).sql sql/$(EXTENSION)_data_us.sql
 
@@ -62,7 +66,7 @@ REGRESS = test-init-extensions test-parseaddress test-standardize_address_1 test
 sql/%.sql: %.sql.in
 	mkdir -p sql
 	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/${EXTENSION}'g" > $@
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
 
 %.control: %.control.in Makefile
 	cat $< \

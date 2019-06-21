@@ -37,6 +37,7 @@
 #define NAN 0.0/0.0
 #endif
 
+/* Override tolerance for geodetic */
 #ifdef FP_TOLERANCE
 #undef FP_TOLERANCE
 #define FP_TOLERANCE 1e-14
