@@ -1,5 +1,12 @@
 ## 2.5.1.5+carto-1
 
+**Release date**: 2019-XX-XX
+
+Changes:
+- Merged community `svn-2.5` as of 2019-06-21: Minor changes in the functions to handle raster constraints (not worth deploying in our case).
+
+## 2.5.1.5+carto-1
+
 **Release date**: 2019-06-04
 
 Changes:

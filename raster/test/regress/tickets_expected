@@ -17,3 +17,15 @@ NOTICE:  Invalid band index (must use 1-based). Returning NULL
 #4102.1|-10
 #4102.2|-10
 #3457|4950
+NOTICE:  Adding SRID constraint
+NOTICE:  Adding scale-X constraint
+NOTICE:  Adding scale-Y constraint
+NOTICE:  Adding blocksize-X constraint
+NOTICE:  Adding blocksize-Y constraint
+NOTICE:  Adding alignment constraint
+NOTICE:  Adding number of bands constraint
+NOTICE:  Adding pixel type constraint
+NOTICE:  Adding nodata value constraint
+NOTICE:  Adding out-of-database constraint
+NOTICE:  Adding maximum extent constraint
+t

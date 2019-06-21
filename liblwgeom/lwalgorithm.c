@@ -709,6 +709,7 @@ unsigned int geohash_point_as_int(POINT2D *pt)
 ** set in them will be the southwest and northeast coordinates of the bounding
 ** box accordingly. A precision less than 0 indicates that the entire length
 ** of the GeoHash should be used.
+** It will call `lwerror` if an invalid character is found
 */
 void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision)
 {
@@ -731,6 +732,13 @@ void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision)
 	for (i = 0; i < precision; i++)
 	{
 		c = tolower(geohash[i]);
+		/* Valid characters are all digits and letters except a, i, l and o */
+		if (!(((c >= '0') && (c <= '9')) ||
+		      ((c >= 'b') && (c <= 'z') && (c != 'i') && (c != 'l') && (c != 'o'))))
+		{
+			lwerror("%s: Invalid character '%c'", __func__, geohash[i]);
+			return;
+		}
 		cd = strchr(base32, c) - base32;
 
 		for (j = 0; j < 5; j++)
