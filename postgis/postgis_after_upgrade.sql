@@ -246,8 +246,8 @@ $$;
 DO language 'plpgsql'
 $$
 BEGIN
-IF (exists(select * from pg_proc where proname='st_union' and pronargs = 1)) THEN
-	UPDATE pg_aggregate SET aggtransfn = 'pgis_geometry_union_transfn', aggtranstype='internal'::regtype where aggfnoid='st_union(geometry)'::regprocedure;
+IF (exists(select * from pg_proc where proname='st_union' and pronargs = 1 and prorettype = 'geometry'::regtype and proargtypes=array['geometry'::regtype::oid]::oidvector)) THEN
+	UPDATE pg_aggregate SET aggtransfn = 'pgis_geometry_union_transfn', aggtranstype='internal'::regtype where aggfnoid=(select oid from pg_proc where proname='st_union' and pronargs = 1 and prorettype = 'geometry'::regtype and proargtypes=array['geometry'::regtype::oid]::oidvector);
 END IF;
 END;
 $$;
