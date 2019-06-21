@@ -64,7 +64,7 @@ lwflags_t gserialized2_get_lwflags(const GSERIALIZED *g)
 	FLAGS_SET_GEODETIC(lwflags, G2FLAGS_GET_GEODETIC(gflags));
 	if (G2FLAGS_GET_EXTENDED(gflags))
 	{
-		uint64_t xflags;
+		uint64_t xflags = 0;
 		memcpy(&xflags, g->data, sizeof(uint64_t));
 		FLAGS_SET_SOLID(lwflags, xflags & G2FLAG_X_SOLID);
 	}
