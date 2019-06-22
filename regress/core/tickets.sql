@@ -1246,3 +1246,5 @@ SELECT '#4304b', ST_MakeBox2D(ST_GeomFromText('POINT EMPTY',4326), ST_GeomFromTe
 DELETE FROM spatial_ref_sys;
 
 SELECT '#4176', ST_Intersects('POLYGON((0 0, 10 10, 3 5, 0 0))', 'GEOMETRYCOLLECTION(POINT(10 10), LINESTRING(0 0, 3 3))');
+
+with mj as (select 'POINT(0 0)'::geometry geom) select '#4394' from mj a full join mj b on a.geom = b.geom;
