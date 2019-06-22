@@ -175,7 +175,7 @@ class RasterReader(object):
             self._sizes = self._query_single_row(sql)
 
         if self._sizes is None:
-            raise RasterError("Falied to query %dx%d of band %d is none" %(x, y, band))
+            raise RasterError("Falied to query raster size of dim {} with force {}".format(dim, force))
         return self._sizes[dim]
 
     def _query_pixel_types(self):
