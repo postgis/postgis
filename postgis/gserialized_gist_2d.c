@@ -1180,67 +1180,47 @@ Datum gserialized_gist_penalty_2d(PG_FUNCTION_ARGS)
 	GISTENTRY *origentry = (GISTENTRY*) PG_GETARG_POINTER(0);
 	GISTENTRY *newentry = (GISTENTRY*) PG_GETARG_POINTER(1);
 	float *result = (float*) PG_GETARG_POINTER(2);
-	BOX2DF *box_orig, *box_new;
-	double penalty;
-	uint8_t realm;
+	BOX2DF *b1, *b2;
 
-	box_orig = (BOX2DF *)DatumGetPointer(origentry->key);
-	box_new = (BOX2DF *)DatumGetPointer(newentry->key);
+	b1 = (BOX2DF *)DatumGetPointer(origentry->key);
+	b2 = (BOX2DF *)DatumGetPointer(newentry->key);
+	*result = 0;
 
-	/* Empty? Collapse into specialized empty subtree. */
-	if (!box_orig || !box_new || box2df_is_empty(box_new) || box2df_is_empty(box_orig))
-		*result = 0;
-	else
+	if (b1 && b2 && !box2df_is_empty(b1) && !box2df_is_empty(b2))
 	{
-		double b1xmin = box_orig->xmin, b1xmax = box_orig->xmax, b1dx = b1xmax - b1xmin;
-		double b1ymin = box_orig->ymin, b1ymax = box_orig->ymax, b1dy = b1ymax - b1ymin;
-		double b1area = b1dx * b1dy;
+		float b1xmin = b1->xmin, b1xmax = b1->xmax;
+		float b1ymin = b1->ymin, b1ymax = b1->ymax;
+		float b2xmin = b2->xmin, b2xmax = b2->xmax;
+		float b2ymin = b2->ymin, b2ymax = b2->ymax;
 
-		double b2xmin = box_new->xmin, b2xmax = box_new->xmax;
-		double buxmin = Min(b1xmin, b2xmin), buxmax = Max(b1xmax, b2xmax);
-		double budx = buxmax - buxmin;
+		float box_union_xmin = Min(b1xmin, b2xmin), box_union_xmax = Max(b1xmax, b2xmax);
+		float box_union_ymin = Min(b1ymin, b2ymin), box_union_ymax = Max(b1ymax, b2ymax);
 
-		double b2ymin = box_new->ymin, b2ymax = box_new->ymax;
-		double buymin = Min(b1ymin, b2ymin), buymax = Max(b1ymax, b2ymax);
-		double budy = buymax - buymin;
+		float b1dx = b1xmax - b1xmin, b1dy = b1ymax - b1ymin;
+		float box_union_dx = box_union_xmax - box_union_xmin, box_union_dy = box_union_ymax - box_union_ymin;
 
-		double buarea = budx * budy;
+		float box_union_area = box_union_dx * box_union_dy, b1area = b1dx * b1dy;
+		float box_union_edge = box_union_dx + box_union_dy, b1edge = b1dx + b1dy;
 
-		/* REALM 0: No extension is required, area is zero, return 1/edge */
-		/* REALM 1: No extension is required, return nonzero 1/area */
+		float area_extension = box_union_area - b1area;
+		float edge_extension = box_union_edge - b1edge;
+
+		/* REALM 0: No extension is required, area is zero, return edge */
+		float packed_b1edge = pack_float(b1edge, 0);
+		/* REALM 1: No extension is required, area is non-zero, return area */
+		float packed_b1area = pack_float(b1area, 1);
 		/* REALM 2: Area extension is zero, return nonzero edge extension */
+		float packed_edge_extension = pack_float(edge_extension, 2);
 		/* REALM 3: Area extension is nonzero, return it */
+		float packed_area_extension = pack_float(area_extension, 3);
 
-		if (buarea == b1area)
-		{
-			if (b1area != 0)
-			{
-				realm = 1;
-				penalty = 1.0 / b1area;
-			}
-			else
-			{
-				double buedge = budx + budy, b1edge = b1dx + b1dy;
-
-				if (buedge == b1edge)
-				{
-					realm = 0;
-					penalty = (b1edge != 0.0) ? 1.0 / b1edge : 0.0;
-				}
-				else
-				{
-					realm = 2;
-					penalty = buedge - b1edge;
-				}
-			}
-		}
-		else
-		{
-			penalty = buarea - b1area;
-			realm = 3;
-		}
-
-		*result = pack_float(penalty, realm);
+		*result = packed_area_extension;
+		if (area_extension == 0 && edge_extension == 0 && b1area != 0)
+			*result = packed_b1area;
+		if (area_extension == 0 && edge_extension == 0 && b1area == 0 && b1edge != 0)
+			*result = packed_b1edge;
+		if (area_extension == 0 && edge_extension != 0)
+			*result = packed_edge_extension;
 	}
 
 	PG_RETURN_POINTER(result);
