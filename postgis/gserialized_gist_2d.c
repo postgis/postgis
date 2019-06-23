@@ -19,10 +19,9 @@
  **********************************************************************
  *
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright 2017 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright 2017-2019 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
-
 
 /*
 ** R-Tree Bibliography
@@ -50,9 +49,9 @@
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h"	     /* For utility functions. */
 
-
 #include <float.h> /* For FLT_MAX */
 #include <math.h>
+#include <assert.h>
 
 /*
 ** When is a node split not so good? If more than 90% of the entries
@@ -170,8 +169,7 @@ inline void box2df_set_finite(BOX2DF *a)
 	return;
 }
 
-/* Enlarge b_union to contain b_new. If b_new contains more
-   dimensions than b_union, expand b_union to contain those dimensions. */
+/* Enlarge b_union to contain b_new. */
 void box2df_merge(BOX2DF *b_union, BOX2DF *b_new)
 {
 
@@ -213,85 +211,6 @@ static bool box2df_intersection(const BOX2DF *a, const BOX2DF *b, BOX2DF *n)
 }
 #endif
 
-static float box2df_size(const BOX2DF *a)
-{
-	float result;
-
-	if ( a == NULL || box2df_is_empty(a) )
-		return (float)0.0;
-
-	if ( (a->xmax <= a->xmin) || (a->ymax <= a->ymin) )
-	{
-		result =  (float) 0.0;
-	}
-	else
-	{
-		result = (((double) a->xmax)-((double) a->xmin)) * (((double) a->ymax)-((double) a->ymin));
-	}
-
-	return result;
-}
-
-static float box2df_edge(const BOX2DF *a)
-{
-	if ( a == NULL || box2df_is_empty(a) )
-		return (float)0.0;
-
-	return ((a->xmax) - (a->xmin)) + ((a->ymax) - (a->ymin));
-}
-
-static float box2df_union_size(const BOX2DF *a, const BOX2DF *b)
-{
-	float result;
-
-	POSTGIS_DEBUG(5,"entered function");
-
-	if ( a == NULL && b == NULL )
-	{
-		elog(ERROR, "box2df_union_size received two null arguments");
-		return 0.0;
-	}
-
-	if ( a == NULL || box2df_is_empty(a) )
-		return box2df_size(b);
-
-	if ( b == NULL || box2df_is_empty(b) )
-		return box2df_size(a);
-
-	result = ((double)Max(a->xmax,b->xmax) - (double)Min(a->xmin,b->xmin)) *
- 	         ((double)Max(a->ymax,b->ymax) - (double)Min(a->ymin,b->ymin));
-
-	POSTGIS_DEBUGF(5, "union size of %s and %s is %.8g", box2df_to_string(a), box2df_to_string(b), result);
-
-	return result;
-}
-
-
-static float box2df_union_edge(const BOX2DF *a, const BOX2DF *b)
-{
-	float result;
-
-	POSTGIS_DEBUG(5,"entered function");
-
-	if ( a == NULL && b == NULL )
-	{
-		elog(ERROR, "box2df_union_edge received two null arguments");
-		return 0.0;
-	}
-
-	if ( a == NULL || box2df_is_empty(a) )
-		return box2df_edge(b);
-
-	if ( b == NULL || box2df_is_empty(b) )
-		return box2df_edge(a);
-
-	result = (Max(a->xmax,b->xmax) - Min(a->xmin,b->xmin)) +
- 	         (Max(a->ymax,b->ymax) - Min(a->ymin,b->ymin));
-
-	POSTGIS_DEBUGF(5, "union edge of %s and %s is %.8g", box2df_to_string(a), box2df_to_string(b), result);
-
-	return result;
-}
 
 /* Convert a double-based GBOX into a float-based BOX2DF,
    ensuring the float box is larger than the double box */
@@ -315,14 +234,13 @@ int box2df_to_gbox_p(BOX2DF *a, GBOX *box)
 }
 
 /***********************************************************************
-** BOX3DF tests for 2D index operators.
+** BOX2DF tests for 2D index operators.
 */
 
 /* Ensure all minimums are below maximums. */
 inline void box2df_validate(BOX2DF *b)
 {
 	float tmp;
-	POSTGIS_DEBUGF(5,"validating box2df (%s)", box2df_to_string(b));
 
 	if ( box2df_is_empty(b) )
 		return;
@@ -1236,7 +1154,8 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 ** greater than float b, integer A with same bit representation as a is greater
 ** than integer B with same bits as b.
 */
-static float pack_float(const float value, const int realm)
+static inline float
+pack_float(const float value, const uint8_t realm)
 {
   union {
     float f;
@@ -1261,59 +1180,68 @@ Datum gserialized_gist_penalty_2d(PG_FUNCTION_ARGS)
 	GISTENTRY *origentry = (GISTENTRY*) PG_GETARG_POINTER(0);
 	GISTENTRY *newentry = (GISTENTRY*) PG_GETARG_POINTER(1);
 	float *result = (float*) PG_GETARG_POINTER(2);
-	BOX2DF *gbox_index_orig, *gbox_index_new;
-	float size_union, size_orig, edge_union, edge_orig;
+	BOX2DF *box_orig, *box_new;
+	double penalty;
+	uint8_t realm;
 
-	POSTGIS_DEBUG(4, "[GIST] 'penalty' function called");
+	box_orig = (BOX2DF *)DatumGetPointer(origentry->key);
+	box_new = (BOX2DF *)DatumGetPointer(newentry->key);
 
-	gbox_index_orig = (BOX2DF*)DatumGetPointer(origentry->key);
-	gbox_index_new = (BOX2DF*)DatumGetPointer(newentry->key);
-
-	/* Drop out if we're dealing with null inputs. Shouldn't happen. */
-	if ( (gbox_index_orig == NULL) && (gbox_index_new == NULL) )
+	/* Empty? Collapse into specialized empty subtree. */
+	if (!box_orig || !box_new || box2df_is_empty(box_new) || box2df_is_empty(box_orig))
+		*result = 0;
+	else
 	{
-		POSTGIS_DEBUG(4, "[GIST] both inputs NULL! returning penalty of zero");
-		*result = 0.0;
-		PG_RETURN_FLOAT8(*result);
-	}
+		double b1xmin = box_orig->xmin, b1xmax = box_orig->xmax, b1dx = b1xmax - b1xmin;
+		double b1ymin = box_orig->ymin, b1ymax = box_orig->ymax, b1dy = b1ymax - b1ymin;
+		double b1area = b1dx * b1dy;
 
-	/* Calculate the size difference of the boxes. */
-	size_union = box2df_union_size(gbox_index_orig, gbox_index_new);
-	size_orig = box2df_size(gbox_index_orig);
-	*result = size_union - size_orig;
+		double b2xmin = box_new->xmin, b2xmax = box_new->xmax;
+		double buxmin = Min(b1xmin, b2xmin), buxmax = Max(b1xmax, b2xmax);
+		double budx = buxmax - buxmin;
 
-	/* REALM 0: No extension is required, volume is zero, return edge */
- 	/* REALM 1: No extension is required, return nonzero area */
- 	/* REALM 2: Area extension is zero, return nonzero edge extension */
- 	/* REALM 3: Area extension is nonzero, return it */
+		double b2ymin = box_new->ymin, b2ymax = box_new->ymax;
+		double buymin = Min(b1ymin, b2ymin), buymax = Max(b1ymax, b2ymax);
+		double budy = buymax - buymin;
 
- 	if( *result == 0 )
- 	{
-		if (size_orig > 0)
+		double buarea = budx * budy;
+
+		/* REALM 0: No extension is required, area is zero, return 1/edge */
+		/* REALM 1: No extension is required, return nonzero 1/area */
+		/* REALM 2: Area extension is zero, return nonzero edge extension */
+		/* REALM 3: Area extension is nonzero, return it */
+
+		if (buarea == b1area)
 		{
-			*result = pack_float(size_orig, 1); /* REALM 1 */
+			if (b1area != 0)
+			{
+				realm = 1;
+				penalty = 1.0 / b1area;
+			}
+			else
+			{
+				double buedge = budx + budy, b1edge = b1dx + b1dy;
+
+				if (buedge == b1edge)
+				{
+					realm = 0;
+					penalty = (b1edge != 0.0) ? 1.0 / b1edge : 0.0;
+				}
+				else
+				{
+					realm = 2;
+					penalty = buedge - b1edge;
+				}
+			}
 		}
 		else
 		{
-			edge_union = box2df_union_edge(gbox_index_orig, gbox_index_new);
-			edge_orig = box2df_edge(gbox_index_orig);
- 			*result = edge_union - edge_orig;
- 			if( *result == 0 )
-	 		{
-	 			*result = pack_float(edge_orig, 0); /* REALM 0 */
- 			}
- 			else
- 			{
- 				*result = pack_float(*result, 2); /* REALM 2 */
- 			}
+			penalty = buarea - b1area;
+			realm = 3;
 		}
- 	}
- 	else
- 	{
- 		*result = pack_float(*result, 3); /* REALM 3 */
- 	}
 
-	POSTGIS_DEBUGF(4, "[GIST] 'penalty', union size (%.12f), original size (%.12f), penalty (%.12f)", size_union, size_orig, *result);
+		*result = pack_float(penalty, realm);
+	}
 
 	PG_RETURN_POINTER(result);
 }
@@ -2360,9 +2288,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 
 #endif
 
-
 /*
-** The BOX32DF key must be defined as a PostgreSQL type, even though it is only
+** The BOX2DF key must be defined as a PostgreSQL type, even though it is only
 ** ever used internally. These no-op stubs are used to bind the type.
 */
 PG_FUNCTION_INFO_V1(box2df_in);
