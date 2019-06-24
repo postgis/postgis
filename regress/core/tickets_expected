@@ -194,9 +194,9 @@ ERROR:  got NULL for SRID (500001)
 #1398b|POINT(-160.137654 77.091608)
 #1543|MULTILINESTRING((0 0,10 0,10 10,0 0),(0 0))|POLYGON((0 0,10 10,10 0,0 0))
 #1578|f|f
-#1580.1|Point[S]
+#1580.1|Point[S] (serialization v1)
 ERROR:  transform: tolerance condition error (-20)
-#1580.3|Point[S]
+#1580.3|Point[S] (serialization v1)
 #1596.1|public.road_pg.roads_geom SRID:3395 TYPE:POINT DIMS:2 
 ERROR:  invalid SRID: 330000 not found in spatial_ref_sys
 #1596.3|3395
@@ -205,7 +205,7 @@ ERROR:  invalid SRID: 999000 not found in spatial_ref_sys
 NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
 #1596.6|public.road_pg.roads_geom SRID changed to 0
 #1596.7|0
-#1596|Point[GS]
+#1596|Point[GS] (serialization v1)
 #1695|MULTIPOLYGON EMPTY
 #1697.1|0
 #1697.2|0
@@ -246,7 +246,7 @@ ERROR:  invalid GML representation
         LineString[] with 5 points
         CircularString[] with 5 points
   Tin[] with 1 elements
-    Triangle[] with 4 points
+    Triangle[] with 4 points (serialization v1)
 #2415.1|MULTICURVE(COMPOUNDCURVE((0 0,10 0),CIRCULARSTRING(10 0,15 1,20 10)))
 #2415.2|MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(10 0,15 1,20 0,18 5,20 10,10 10,10 0)))
 #2412|LINESTRING(0 0,10 0,20 0)
@@ -265,7 +265,7 @@ ERROR:  invalid GML representation
 #2712|LINESTRING EMPTY
 #2717|POINT(-1 -1)|POINT(3 1)|POINT(-1 -1)|POINT(1 1)|POINT(1 1)|POINT(2 2)|POINT(3 1)
 #2788|f|Self-intersection|POINT(1 1)
-#2870|Point[GS]
+#2870|Point[GS] (serialization v1)
 #2956|t
 #2985|LINESTRING(20.9511664253809 52.3984560730436)
 #2996|247.44|247.44
@@ -276,8 +276,8 @@ ERROR:  invalid GML representation
 #3172|LINESTRING M (0 0 1,0 0 2)
 #3300|POLYGON((-71.7821 42.2622,-71.7821 42.9067,-71.029 42.9067,-71.029 42.2622,-71.7821 42.2622))
 #3355|t
-#3356|LineString[] with 2 points|LineString[GS] with 2 points|LineString[GS] with 2 points
-#3356|LineString[B] with 3 points|LineString[BGS] with 3 points|LineString[BGS] with 3 points
+#3356|LineString[] with 2 points (serialization v1)|LineString[GS] with 2 points (serialization v1)|LineString[GS] with 2 points (serialization v1)
+#3356|LineString[B] with 3 points (serialization v1)|LineString[BGS] with 3 points (serialization v1)|LineString[BGS] with 3 points (serialization v1)
 #3367|POLYGON EMPTY
 #3368|\x660001011fb98788d35ed6fbcdc831c580012b959f01469d8d0e9305ff8618ed08b1b607e302a614fe70bc4682b303b4379ab503a228eeb603e2138eb802900cc0b802ba04dab802b801a8840cb0229cca06f401c216f403a016ea05d0c301a8b301cc189226ac15ee27f811a029b40eac2ae00a902b8407c82b9e03d0e305801dfad3239504ce7e8d01e2f701f6019b04d1e2279bf901ff01
 #3375|GEOMETRYCOLLECTION(POINT(0 -7))

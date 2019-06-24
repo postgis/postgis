@@ -129,18 +129,23 @@ Datum LWGEOM_mem_size(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_summary);
 Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 {
-	text *mytext;
-	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	char *result = lwgeom_summary(lwgeom, 0);
-	lwgeom_free(lwgeom);
+	text *summary;
+	GSERIALIZED *g = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwg = lwgeom_from_gserialized(g);
+	char *lwresult = lwgeom_summary(lwg, 0);
+	uint32_t gver = gserialized_get_version(g);
+	size_t result_sz = strlen(lwresult) + 256;
+	char *result = lwalloc(result_sz);
+	snprintf(result, result_sz, "%s (serialization v%u)", lwresult, gver);
+	lwgeom_free(lwg);
+	lwfree(lwresult);
 
 	/* create a text obj to return */
-	mytext = cstring_to_text(result);
+	summary = cstring_to_text(result);
 	lwfree(result);
 
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_TEXT_P(mytext);
+	PG_FREE_IF_COPY(g, 0);
+	PG_RETURN_TEXT_P(summary);
 }
 
 PG_FUNCTION_INFO_V1(postgis_version);
