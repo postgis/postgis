@@ -2,6 +2,21 @@ PostGIS 3.0.0alpha3
 2019/xx/xx
 Coming soon
 
+For full changes and enhancements, refer to PostGIS 3.0.0 section.
+This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
+Additional features enabled if you are running Proj6+ and PostgreSQL 12
+
+* Major highlights *
+  - #4414, Include version number in address_standardizer lib (Raúl Marín)
+  - #4352, Use CREATE OR REPLACE AGGREGATE for PG12+ (Raúl Marín)
+  - #4334, Fix upgrade issues related to renamed parameters (Raúl Marín)
+  - #4388, AddRasterConstraints: Ignore NULLs when generating constraints (Raúl Marín)
+  - #4327, Avoid pfree'ing the result of getenv (Raúl Marín)
+  - #4406, Throw on invalid characters when decoding geohash (Raúl Marín)
+  - #4429, Avoid resource leaks with PROJ6 (Raúl Marín)
+  - #4372, PROJ6: Speed improvements (Raúl Marín)
+  - #3437, Speed up ST_Intesects with Points (Raúl Marín)
+
 PostGIS 3.0.0alpha2
 2019/06/02
 For full changes and enhancements, refer to PostGIS 3.0.0 section.
@@ -17,12 +32,6 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
           from 2.5 (Raúl Marín)
   - #4198, Add ST_ConstrainedDelaunayTriangles SFCGAL function (Darafei
            Praliaskouski)
-  - #4414, Include version number in address_standardizer lib (Raúl Marín)
-  - #4352, Use CREATE OR REPLACE AGGREGATE for PG12+ (Raúl Marín)
-  - #4334, Fix upgrade issues related to renamed parameters (Raúl Marín)
-  - #4388, AddRasterConstraints: Ignore NULLs when generating constraints (Raúl Marín)
-  - #4327, Avoid pfree'ing the result of getenv (Raúl Marín)
-  - #4406, Throw on invalid characters when decoding geohash (Raúl Marín)
 
 PostGIS 3.0.0alpha1
 2019/05/26
@@ -170,6 +179,7 @@ PostGIS 3.0.0
   - #4388, AddRasterConstraints: Ignore NULLs when generating constraints (Raúl Marín)
   - #4327, Avoid pfree'ing the result of getenv (Raúl Marín)
   - #4406, Throw on invalid characters when decoding geohash (Raúl Marín)
+  - #4394, Allow FULL OUTER JOIN on geometry (Darafei Praliaskouski)
 
 
 PostGIS 2.5.0

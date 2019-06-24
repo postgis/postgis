@@ -93,17 +93,10 @@ GetPROJSRSCache(FunctionCallInfo fcinfo)
 
 		if (cache)
 		{
-			int i;
-
-			POSTGIS_DEBUGF(3, "Allocating PROJCache for portal with transform() MemoryContext %p", FIContext(fcinfo));
-			/* Put in any required defaults */
-			for (i = 0; i < PROJ_CACHE_ITEMS; i++)
-			{
-				cache->PROJSRSCache[i].srid_from = SRID_UNKNOWN;
-				cache->PROJSRSCache[i].srid_to = SRID_UNKNOWN;
-				cache->PROJSRSCache[i].projection = NULL;
-				cache->PROJSRSCache[i].projection_mcxt = NULL;
-			}
+			POSTGIS_DEBUGF(3,
+				       "Allocating PROJCache for portal with transform() MemoryContext %p",
+				       FIContext(fcinfo));
+			memset(cache->PROJSRSCache, 0, sizeof(PROJSRSCacheItem) * PROJ_CACHE_ITEMS);
 			cache->type = PROJ_CACHE_ENTRY;
 			cache->PROJSRSCacheCount = 0;
 			cache->PROJSRSCacheContext = FIContext(fcinfo);

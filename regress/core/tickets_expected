@@ -389,3 +389,4 @@ equals213|t
 ERROR:  BOX3D_construct: args can not be empty points
 ERROR:  BOX2D_construct: args can not be empty points
 #4176|t
+#4394
