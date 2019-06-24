@@ -814,6 +814,11 @@ extern GSERIALIZED *gserialized_set_gbox(GSERIALIZED *g, GBOX *gbox);
 */
 extern GSERIALIZED* gserialized_drop_gbox(GSERIALIZED *g);
 
+/**
+* Return the serialization version
+*/
+extern uint32_t gserialized_get_version(const GSERIALIZED *g);
+
 /*****************************************************************************/
 
 

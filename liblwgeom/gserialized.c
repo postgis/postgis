@@ -33,6 +33,14 @@ GSERIALIZED *gserialized_set_gbox(GSERIALIZED *g, GBOX *gbox)
 		return gserialized1_set_gbox(g, gbox);
 }
 
+/**
+* Return the serialization version
+*/
+uint32_t gserialized_get_version(const GSERIALIZED *g)
+{
+	return GFLAGS_GET_VERSION(g->gflags);
+}
+
 
 /**
 * Remove the bounding box from a #GSERIALIZED. Returns a freshly
