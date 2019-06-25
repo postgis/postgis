@@ -724,38 +724,6 @@ void gbox_float_round(GBOX *gbox)
 	}
 }
 
-
-
-/* Unfortunately including advanced instructions is something that
-only helps a small sliver of users who can build their own
-knowing the target system they will be running on. Packagers
-have to aim for the lowest common denominator. So this is
-dead code for the forseeable future. */
-#define HAVE_PDEP 0
-#if HAVE_PDEP
-/* http://www.joshbarczak.com/blog/?p=454 */
-static uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2)
-{
-    uint64_t x = u1;
-    uint64_t y = u2;
-    uint64_t x_mask = 0x5555555555555555;
-    uint64_t y_mask = 0xAAAAAAAAAAAAAAAA;
-    return _pdep_u64(x, x_mask) | _pdep_u64(y, y_mask);
-}
-
-static uint64_t uint32_interleave_3(uint32_t u1, uint32_t u2, uint32_t u3)
-{
-    /* only look at the first 21 bits */
-    uint64_t x = u1 & 0x1FFFFF;
-    uint64_t y = u2 & 0x1FFFFF;
-    uint64_t z = u3 & 0x1FFFFF;
-    uint64_t x_mask = 0x9249249249249249;
-    uint64_t y_mask = 0x2492492492492492;
-    uint64_t z_mask = 0x4924924924924924;
-    return _pdep_u64(x, x_mask) | _pdep_u64(y, y_mask) | _pdep_u64(z, z_mask);
-}
-
-#else
 uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2)
 {
     uint64_t x = u1;
@@ -780,8 +748,6 @@ uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2)
 
     return x | (y << 1);
 }
-#endif
-
 
 uint64_t gbox_get_sortable_hash(const GBOX *g)
 {

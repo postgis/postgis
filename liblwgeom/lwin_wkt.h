@@ -31,7 +31,7 @@
 */
 typedef struct
 {
-	uint16_t flags;
+	lwflags_t flags;
 	double x;
 	double y;
 	double z;

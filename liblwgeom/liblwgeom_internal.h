@@ -117,7 +117,8 @@
 /**
 * Macro for reading the size from the GSERIALIZED size attribute.
 * Cribbed from PgSQL, top 30 bits are size. Use VARSIZE() when working
-* internally with PgSQL.
+* internally with PgSQL. See SET_VARSIZE_4B / VARSIZE_4B in
+* PGSRC/src/include/postgres.h for details.
 */
 #ifdef WORDS_BIGENDIAN
 #define SIZE_GET(varsize) ((varsize) & 0x3FFFFFFF)
