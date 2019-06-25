@@ -2,9 +2,9 @@
 GSERIALIZED FORM
 =================
 
-The serialized, attempts to learn from the
-lessons of the PostGIS 1.x format, making slightly different
-trade-offs between alignment and overall compactness.
+The new serialized form, used by GEOGRAPHY, attempts to learn from the
+lessons of the SERIALIZED_LWGEOM, making slightly different trade-offs
+between alignment and overall compactness.
 
 * It is understood that GSERIALIZED is be used primarily (only)
   by PostGIS. Other users of the geometry library (for example, the
@@ -14,11 +14,10 @@ trade-offs between alignment and overall compactness.
 * Like SERIALIZED_LWGEOM, GSERIALIZED is built to be read and written
   recursively, so that nested collections of collections (of ...) are
   possible without restrictions on depth.
-* GSERIALIZED preserves double alignment of ordinate arrays. This
-  allows coordinate access without memcpy.
+* GSERIALIZED preserves double alignment of ordinate arrays. This will
+  allow coordinate access without memcpy.
 * GSERIALIZED includes a mandatory SRID, in recognition of the fact
-  that most production use of PostGIS does actually use an SRID. In
-  SERIALIZED_LWGEOM the SRID is optional.
+  that most production use of PostGIS does actually use an SRID.
 * GSERIALIZED places the dimensionality information, the SRID
   information and the bounding boxes at the front of the structure,
   and all sub-components inherit from those parent values.
@@ -29,38 +28,116 @@ trade-offs between alignment and overall compactness.
 STRUCTURE
 ---------
 
-Most of the internals of GSERIALIZED are anonymous. One thing that
-differs from SERIALIZED_LWGEOM is that the geometry type is not
-directly accessible from the structure (it was inside the one byte "type"
-at the top of the SERIALIZED_LWGEOM). To access the type in GSERIALIZED,
-you must first figure out whether there is a an bounding box, how many
-dimensions that bounding box has, and move the data pointer appropriately
-before dereferencing. The gserialized_get_type(GSERIALIZED *s) function
-carries out this operation.
+Most of the internals of GSERIALIZED are anonymous. The start of the "data" member can be the type number, or the bounding box, or an extended flags area. Or some combination of the above.
 
 typedef struct
 {
-	uint32 size; /* For PgSQL use, use VAR* macros to manipulate. */
-	uchar srid[3]; /* 21 bits of SRID (and 3 spare bits) */
-	uchar flags; /* Version, Validity, Solid, ReadOnly, IsGeodetic, HasZ, HasM, HasBBox */
-	uchar data[1]; /* See gserialized.txt */
+  uint32 size; /* Use SIZE_SET() and SIZE_GET() macros to manipulate. */
+  uchar srid[3]; /* 21 bits of SRID (and 3 spare bits) */
+  uchar flags; /* High priority information */
+  uchar data[1]; /* See gserialized.txt */
 } GSERIALIZED;
 
-The standard header is as follows (using <> to denote 4-byte fields and
-[] to denote 8-byte fields):
+SIZE
+----
 
-<size> size  /* Used by PgSQL */
-<srid        /* 3 bytes */
- flags>      /* 1 byte */
-<bbox-xmin>  /* bounding box is optional */
-<bbox-xmax>  /* number of dimensions is variable and indicated in the flags */
-<bbox-ymin>
-<bbox-ymax>
+The first four bytes in the "size" member are meant to be compatible with
+the PostgreSQL VARLENA header. Use SIZE_SET() and SIZE_GET() macros to
+manipulate the "size". Be careful not to mis-set the size, or operations
+in PostgreSQL will end up scribbling on memory it should not.
 
-After the header comes the recursively searchable geometry
-representations. Each type is double aligned, so any combination is
-double aligned, and we start after a double aligned standard header,
-so we are golden:
+FLAGS (V1)
+----------
+
+In the v1 serialization we have used up all of our flags except the version
+bits.
+
+* HasZ       (0x01)
+* HasM       (0x02)
+* HasBBox    (0x04)
+* IsGeodetic (0x08)
+* ReadOnly   (0x10)
+* IsSolid    (0x20)
+* Version1   (0x40)
+* Version2   (0x80)
+
+FLAGS (V2)
+----------
+
+The v2 serialization recovers the flag space used by less-important flags
+and moves those flags to a new optional flag area.
+
+* HasZ             (0x01)
+* HasM             (0x02)
+* HasBBox          (0x04)
+* IsGeodetic       (0x08)
+* Reserved         (0x10)
+* HasExtendedFlags (0x20)
+* Version1         (0x40)
+* Version2         (0x80)
+
+Potential uses of the reserved flag:
+
+* IsLightPoint: signals that the geometry type is point, and that the
+  double coordinates will begin immediately in the "data" member without
+  the usual type number and padding bytes. Allows 2D points to be
+  represented in a minimum of 24 bytes, rather than the current 32.
+
+OPTIONAL ELEMENTS (V1)
+----------------------
+
+If the HasBBox flag is set, the serialization contains the optional BBox
+section, which is 2*ndims*sizeof(float) in size, and consists of the
+bounding box. Since the box consists of pairs of floats, the presence
+or absence of the box does not affect the double alignment of the
+geometry coordinates.
+
+* 2D:  <xmin><xmax><ymin><ymax>
+* 3D:  <xmin><xmax><ymin><ymax><zmin><zmax>
+* 3DM: <xmin><xmax><ymin><ymax><mmin><mmax>
+* 4D:  <xmin><xmax><ymin><ymax><zmin><zmax><mmin><mmax>
+
+OPTIONAL ELEMENTS (V2)
+----------------------
+
+The v2 serialization has a lot more flag space, and therefor a lot of
+extra room to flag potential optional elements in the serialization.
+
+In order to keep the double coordinates in the geometry section
+double aligned, optional elements should themselves be multiples of
+8 bytes.
+
+* ExtendedFlags: If the HasExtendedFlags flag is set, then 8 bytes
+  of extra flag space (uint64_t) are inserted prior to the (optional) BBox
+* BBox: See V1 above.
+
+EXTENDED FLAGS (V2)
+-------------------
+
+The extended flags are not heavily used at present, but can be used
+to expand the serialization with options in the future. Extended flags
+use 8 bytes of space, to ensure that that the coordinates in the
+geometry section (see below) remain double-aligned for direct
+memory access.
+
+* IsSolid (0x01)
+
+Potential extra uses of extended flags are:
+
+* IsValidChecked/IsValid: a pair of flags used to cache validity state
+  in the serialization to make ST_IsValid() checks blindingly fast.
+* HasGeometryHash: signals presence of optional hash value that provides
+  a small identity check that can be used in prepared geometry cache
+  management to determine of the cache is dirty without requiring
+  a full read and comparison of the geometry.
+
+GEOMETRY (V1 & V2)
+------------------
+
+After the header and optional elements comes the recursively
+searchable geometry representations. Each type is double aligned,
+so any combination is double aligned, and we start after a double
+aligned standard header, so we are golden:
 
 <pointype>
 <npoints>       /* 0 if empty, 1 otherwise */
