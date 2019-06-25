@@ -37,7 +37,7 @@ ST_TransScale|POINT(4 2)
 ST_TransScale|POINT(2 4)
 ST_TransScale|POINT(15 28)
 ST_TransScale|POINT(15 28 1)
-#3159|Point[] (serialization v1)
+#3159|Point[]
 transl_bbox|BOX(1 0,2 1)
 ST_Scale_bbox|BOX(2 0,4 0)
 ST_Scale_bbox|BOX(3 1,4 2)
