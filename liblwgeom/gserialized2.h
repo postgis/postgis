@@ -6,17 +6,17 @@
 #define G2FLAG_BBOX     0x04
 #define G2FLAG_GEODETIC 0x08
 #define G2FLAG_EXTENDED 0x10
-#define G2FLAG_UNUSED   0x20
+#define G2FLAG_UNUSED   0x20 /* RESERVED FOR FUTURE USES */
 #define G2FLAG_VER_0    0x40
-#define G2FLAG_VER_1    0x80
+#define G2FLAG_VER_1    0x80 /* RESERVED FOR FUTURE VERSIONS */
 
 /**
 * Macros for the extended 'flags' uint64_t.
 */
 #define G2FLAG_X_SOLID            0x00000001
-#define G2FLAG_X_CHECKED_VALID    0x00000002 // To Be Implemented
-#define G2FLAG_X_IS_VALID         0x00000004 // To Be Implemented
-#define G2FLAG_X_HAS_HASH         0x00000008 // To Be Implemented
+#define G2FLAG_X_CHECKED_VALID    0x00000002 // To Be Implemented?
+#define G2FLAG_X_IS_VALID         0x00000004 // To Be Implemented?
+#define G2FLAG_X_HAS_HASH         0x00000008 // To Be Implemented?
 
 #define G2FLAGS_GET_VERSION(gflags) ((((gflags) & G2FLAG_VER_0)>>6) + (((gflags) & G2FLAG_VER_1)>>7) * 2)
 #define G2FLAGS_GET_Z(gflags)         ((gflags) & G2FLAG_Z)
