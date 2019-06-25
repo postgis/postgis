@@ -1156,7 +1156,7 @@ static size_t gserialized2_from_lwgeom_any(const LWGEOM *geom, uint8_t *buf)
 	return 0;
 }
 
-static size_t gserialized2_extended_flags(lwflags_t lwflags, uint8_t *buf)
+static size_t gserialized2_from_extended_flags(lwflags_t lwflags, uint8_t *buf)
 {
 	if (lwflags_uses_extended_flags(lwflags))
 	{
@@ -1281,7 +1281,7 @@ GSERIALIZED* gserialized2_from_lwgeom(LWGEOM *geom, size_t *size)
 	ptr += 8;
 
 	/* Write in the extended flags if necessary */
-	ptr += gserialized2_extended_flags(geom->flags, ptr);
+	ptr += gserialized2_from_extended_flags(geom->flags, ptr);
 
 	/* Write in the serialized form of the gbox, if necessary. */
 	if (geom->bbox)
