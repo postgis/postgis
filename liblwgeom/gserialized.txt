@@ -3,7 +3,7 @@ GSERIALIZED FORM
 =================
 
 The serialized form is a byte array, that holds all the information
-stored in an LWGEOM, but in a flat structure, rather than an 
+stored in an LWGEOM, but in a flat structure, rather than an
 in-memory tree. As with all such formats, trade-offs much be
 made between size, data alignment, and convenience of access.
 
@@ -12,7 +12,7 @@ made between size, data alignment, and convenience of access.
   loaders and dumpers) will serialize to WKB or EWKB or various text
   representations. Therefore, GSERIALIZED includes the uint32 "size"
   field at the top used by PostgreSQL for varlena types.
-* GSERIALIZED is built to be read and written recursively, so that 
+* GSERIALIZED is built to be read and written recursively, so that
   nested collections of collections (of ...) are possible without
   restrictions on depth.
 * GSERIALIZED preserves double alignment of ordinate arrays. This will
@@ -29,8 +29,8 @@ made between size, data alignment, and convenience of access.
 STRUCTURE
 ---------
 
-Most of the internals of GSERIALIZED are anonymous. The start of the 
-"data" member can be the type number, or the bounding box, or an extended 
+Most of the internals of GSERIALIZED are anonymous. The start of the
+"data" member can be the type number, or the bounding box, or an extended
 flags area. Or some combination of the above.
 
 typedef struct
@@ -55,14 +55,14 @@ FLAGS (V1)
 In the v1 serialization we have used up all of our flags except the version
 bits.
 
-* HasZ       (0x01)
-* HasM       (0x02)
-* HasBBox    (0x04)
-* IsGeodetic (0x08)
-* ReadOnly   (0x10)
-* IsSolid    (0x20)
-* Version1   (0x40)
-* Version2   (0x80)
+* HasZ        (0x01)
+* HasM        (0x02)
+* HasBBox     (0x04)
+* IsGeodetic  (0x08)
+* ReadOnly    (0x10)
+* IsSolid     (0x20)
+* VersionBit1 (0x40)
+* VersionBit2 (0x80)
 
 FLAGS (V2)
 ----------
@@ -76,8 +76,8 @@ and moves those flags to a new optional flag area.
 * IsGeodetic       (0x08)
 * Reserved         (0x10)
 * HasExtendedFlags (0x20)
-* Version1         (0x40)
-* Version2         (0x80)
+* VersionBit1      (0x40)
+* VersionBit2      (0x80)
 
 Potential uses of the reserved flag:
 
