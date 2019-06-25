@@ -2,18 +2,19 @@
 GSERIALIZED FORM
 =================
 
-The new serialized form, used by GEOGRAPHY, attempts to learn from the
-lessons of the SERIALIZED_LWGEOM, making slightly different trade-offs
-between alignment and overall compactness.
+The serialized form is a byte array, that holds all the information
+stored in an LWGEOM, but in a flat structure, rather than an 
+in-memory tree. As with all such formats, trade-offs much be
+made between size, data alignment, and convenience of access.
 
 * It is understood that GSERIALIZED is to be used primarily (only)
   by PostGIS. Other users of the geometry library (for example, the
   loaders and dumpers) will serialize to WKB or EWKB or various text
   representations. Therefore, GSERIALIZED includes the uint32 "size"
   field at the top used by PostgreSQL for varlena types.
-* Like SERIALIZED_LWGEOM, GSERIALIZED is built to be read and written
-  recursively, so that nested collections of collections (of ...) are
-  possible without restrictions on depth.
+* GSERIALIZED is built to be read and written recursively, so that 
+  nested collections of collections (of ...) are possible without
+  restrictions on depth.
 * GSERIALIZED preserves double alignment of ordinate arrays. This will
   allow coordinate access without memcpy.
 * GSERIALIZED includes a mandatory SRID, in recognition of the fact
