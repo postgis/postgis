@@ -95,7 +95,7 @@ NOTICE:  IllegalArgumentException: Invalid number of points in LinearRing found 
 #835.11|MULTILINESTRING EMPTY
 #835.12|MULTIPOLYGON EMPTY
 #650|MULTIPOINT(0 0,1 1,2 2)
-#667|SRID=4326;CURVEPOLYGON(CIRCULARSTRING(30 40,-50 39.9999999999999,30 40))
+ERROR:  function postgis_sfcgal_version() does not exist at character 118
 #677|1121395
 #680|01d107000000000000000024c000000000000049400000000000000040
 #681a|
@@ -150,6 +150,9 @@ WARNING:  stats for "t.g" do not exist
 WARNING:  ST_Estimated_Extent signature was deprecated in 2.1.0. Please use ST_EstimatedExtent
 WARNING:  stats for "t.g" do not exist
 #877.2.deprecated|
+WARNING:  stats for "t.g" do not exist
+WARNING:  stats for "t.g" do not exist
+WARNING:  stats for "t.g" do not exist
 WARNING:  stats for "t.g" do not exist
 #877.3||||
 #877.4|-10.15000|20.15000|-50.40000|30.40000
