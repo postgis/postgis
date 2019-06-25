@@ -136,8 +136,8 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 	uint32_t gver = gserialized_get_version(g);
 	size_t result_sz = strlen(lwresult) + 8;
 	char *result = lwalloc(result_sz);
-	if (gver == 1)
-		snprintf(result, result_sz, "%s@v1)", lwresult);
+	if (gver == 0)
+		snprintf(result, result_sz, "%s@v0)", lwresult);
 	else
 		snprintf(result, result_sz, "%s", lwresult);
 	lwgeom_free(lwg);
