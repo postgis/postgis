@@ -68,10 +68,6 @@ static void test_g2flags_macros(void)
 	CU_ASSERT_EQUAL(0, G2FLAGS_GET_VERSION(flags));
 	G2FLAGS_SET_VERSION(flags, 1);
 	CU_ASSERT_EQUAL(1, G2FLAGS_GET_VERSION(flags));
-	G2FLAGS_SET_VERSION(flags, 2);
-	CU_ASSERT_EQUAL(2, G2FLAGS_GET_VERSION(flags));
-	G2FLAGS_SET_VERSION(flags, 3);
-	CU_ASSERT_EQUAL(3, G2FLAGS_GET_VERSION(flags));
 }
 
 static void test_gserialized2_extended_flags(void)
