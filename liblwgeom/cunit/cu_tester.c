@@ -45,7 +45,8 @@ extern void in_encoded_polyline_suite_setup(void);
 extern void in_geojson_suite_setup(void);
 extern void iterator_suite_setup(void);
 extern void twkb_in_suite_setup(void);
-extern void libgeom_suite_setup(void);
+extern void gserialized1_suite_setup(void);
+extern void gserialized2_suite_setup(void);
 extern void lwstroke_suite_setup(void);
 extern void measures_suite_setup(void);
 extern void effectivearea_suite_setup(void);
@@ -97,7 +98,8 @@ PG_SuiteSetup setupfuncs[] =
 #endif
     iterator_suite_setup,
 	twkb_in_suite_setup,
-	libgeom_suite_setup,
+	gserialized1_suite_setup,
+	gserialized2_suite_setup,
 	lwstroke_suite_setup,
 	measures_suite_setup,
 	effectivearea_suite_setup,

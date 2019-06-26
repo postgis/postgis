@@ -77,7 +77,6 @@ Datum geography_centroid(PG_FUNCTION_ARGS)
 	{
 		LWCOLLECTION* empty = lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 	 	lwgeom_out = lwcollection_as_lwgeom(empty);
-		lwgeom_set_geodetic(lwgeom_out, true);
 		g_out = geography_serialize(lwgeom_out);
 		PG_RETURN_POINTER(g_out);
 	}

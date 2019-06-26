@@ -260,7 +260,7 @@ lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32_t index, POINT4D *newpoint)
 int
 lwcircstring_is_closed(const LWCIRCSTRING *curve)
 {
-	if (FLAGS_GET_Z(curve->flags))
+	if (lwgeom_has_z((LWGEOM*)curve))
 		return ptarray_is_closed_3d(curve->points);
 
 	return ptarray_is_closed_2d(curve->points);

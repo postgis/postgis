@@ -14,7 +14,7 @@ insert_final_newline = true
 trim_trailing_whitespace = false
 
 # C files want tab indentation
-[*.{c,h}]
+[*.{c,h,h.in}]
 indent_style = tab
 
 # Perl files want tab indentation

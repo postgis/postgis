@@ -27,6 +27,12 @@
 */
 
 /**
+* Read the flags from a #GSERIALIZED and return a standard lwflag
+* integer
+*/
+lwflags_t gserialized_get_lwflags(const GSERIALIZED *g);
+
+/**
 * Copy a new bounding box into an existing gserialized.
 * If necessary a new #GSERIALIZED will be allocated. Test
 * that input != output before freeing input.
