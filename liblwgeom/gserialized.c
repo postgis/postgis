@@ -9,8 +9,7 @@
 #define GFLAG_GEODETIC  0x08
 /* v1 and v2 MUST share the same version bits */
 #define GFLAG_VER_0     0x40
-#define GFLAG_VER_1     0x80
-#define GFLAGS_GET_VERSION(gflags) ((((gflags) & GFLAG_VER_0)>>6) + (((gflags) & GFLAG_VER_1)>>7) * 2)
+#define GFLAGS_GET_VERSION(gflags) (((gflags) & GFLAG_VER_0)>>6)
 
 /**
 * Read the flags from a #GSERIALIZED and return a standard lwflag
@@ -18,7 +17,7 @@
 */
 lwflags_t gserialized_get_lwflags(const GSERIALIZED *g)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_get_lwflags(g);
 	else
 		return gserialized1_get_lwflags(g);
@@ -31,7 +30,7 @@ lwflags_t gserialized_get_lwflags(const GSERIALIZED *g)
 */
 GSERIALIZED *gserialized_set_gbox(GSERIALIZED *g, GBOX *gbox)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_set_gbox(g, gbox);
 	else
 		return gserialized1_set_gbox(g, gbox);
@@ -52,7 +51,7 @@ uint32_t gserialized_get_version(const GSERIALIZED *g)
 */
 GSERIALIZED* gserialized_drop_gbox(GSERIALIZED *g)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_drop_gbox(g);
 	else
 		return gserialized1_drop_gbox(g);
@@ -65,7 +64,7 @@ GSERIALIZED* gserialized_drop_gbox(GSERIALIZED *g)
 */
 int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_get_gbox_p(g, gbox);
 	else
 		return gserialized1_get_gbox_p(g, gbox);
@@ -77,7 +76,7 @@ int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 */
 int gserialized_fast_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_fast_gbox_p(g, gbox);
 	else
 		return gserialized1_fast_gbox_p(g, gbox);
@@ -89,7 +88,7 @@ int gserialized_fast_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 */
 uint32_t gserialized_get_type(const GSERIALIZED *g)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_get_type(g);
 	else
 		return gserialized1_get_type(g);
@@ -113,7 +112,7 @@ uint32_t gserialized_max_header_size(void)
 */
 uint64_t gserialized_hash(const GSERIALIZED *g)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_hash(g);
 	else
 		return gserialized1_hash(g);
@@ -125,7 +124,7 @@ uint64_t gserialized_hash(const GSERIALIZED *g)
 */
 int32_t gserialized_get_srid(const GSERIALIZED *g)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_get_srid(g);
 	else
 		return gserialized1_get_srid(g);
@@ -137,7 +136,7 @@ int32_t gserialized_get_srid(const GSERIALIZED *g)
 */
 void gserialized_set_srid(GSERIALIZED *g, int32_t srid)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_set_srid(g, srid);
 	else
 		return gserialized1_set_srid(g, srid);
@@ -151,7 +150,7 @@ void gserialized_set_srid(GSERIALIZED *g, int32_t srid)
 */
 int gserialized_is_empty(const GSERIALIZED *g)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_is_empty(g);
 	else
 		return gserialized1_is_empty(g);
@@ -162,7 +161,7 @@ int gserialized_is_empty(const GSERIALIZED *g)
 */
 int gserialized_has_bbox(const GSERIALIZED *g)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_has_bbox(g);
 	else
 		return gserialized1_has_bbox(g);
@@ -173,7 +172,7 @@ int gserialized_has_bbox(const GSERIALIZED *g)
 */
 int gserialized_has_z(const GSERIALIZED *g)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_has_z(g);
 	else
 		return gserialized1_has_z(g);
@@ -184,7 +183,7 @@ int gserialized_has_z(const GSERIALIZED *g)
 */
 int gserialized_has_m(const GSERIALIZED *g)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_has_m(g);
 	else
 		return gserialized1_has_m(g);
@@ -195,7 +194,7 @@ int gserialized_has_m(const GSERIALIZED *g)
 */
 int gserialized_is_geodetic(const GSERIALIZED *g)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_is_geodetic(g);
 	else
 		return gserialized1_is_geodetic(g);
@@ -206,7 +205,7 @@ int gserialized_is_geodetic(const GSERIALIZED *g)
 */
 int gserialized_ndims(const GSERIALIZED *g)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_ndims(g);
 	else
 		return gserialized1_ndims(g);
@@ -238,7 +237,7 @@ size_t gserialized_from_lwgeom_size(const LWGEOM *geom)
 */
 LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return lwgeom_from_gserialized2(g);
 	else
 		return lwgeom_from_gserialized1(g);
@@ -247,7 +246,7 @@ LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g)
 
 const float * gserialized_get_float_box_p(const GSERIALIZED *g, size_t *ndims)
 {
-	if (GFLAGS_GET_VERSION(g->gflags) == 1)
+	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_get_float_box_p(g, ndims);
 	else
 		return gserialized1_get_float_box_p(g, ndims);
@@ -273,7 +272,7 @@ inline static size_t gserialized_header_size(const GSERIALIZED *g)
 {
 	size_t sz = 8; /* varsize (4) + srid(3) + flags (1) */
 
-	if ((GFLAGS_GET_VERSION(g->gflags) == 1) &&
+	if ((GFLAGS_GET_VERSION(g->gflags)) &&
 	    (G2FLAG_EXTENDED & g->gflags))
 		sz += 8;
 

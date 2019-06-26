@@ -1,14 +1,14 @@
 /**
 * Macros for manipulating the core 'flags' byte. A uint8_t used as follows:
 */
-#define G2FLAG_Z        0x01
-#define G2FLAG_M        0x02
-#define G2FLAG_BBOX     0x04
-#define G2FLAG_GEODETIC 0x08
-#define G2FLAG_EXTENDED 0x10
-#define G2FLAG_UNUSED   0x20 /* RESERVED FOR FUTURE USES */
-#define G2FLAG_VER_0    0x40
-#define G2FLAG_VER_1    0x80 /* RESERVED FOR FUTURE VERSIONS */
+#define G2FLAG_Z         0x01
+#define G2FLAG_M         0x02
+#define G2FLAG_BBOX      0x04
+#define G2FLAG_GEODETIC  0x08
+#define G2FLAG_EXTENDED  0x10
+#define G2FLAG_RESERVED1 0x20 /* RESERVED FOR FUTURE USES */
+#define G2FLAG_VER_0     0x40
+#define G2FLAG_RESERVED2 0x80 /* RESERVED FOR FUTURE VERSIONS */
 
 /**
 * Macros for the extended 'flags' uint64_t.
@@ -18,7 +18,7 @@
 #define G2FLAG_X_IS_VALID         0x00000004 // To Be Implemented?
 #define G2FLAG_X_HAS_HASH         0x00000008 // To Be Implemented?
 
-#define G2FLAGS_GET_VERSION(gflags) ((((gflags) & G2FLAG_VER_0)>>6) + (((gflags) & G2FLAG_VER_1)>>7) * 2)
+#define G2FLAGS_GET_VERSION(gflags)  (((gflags) & G2FLAG_VER_0)>>6)
 #define G2FLAGS_GET_Z(gflags)         ((gflags) & G2FLAG_Z)
 #define G2FLAGS_GET_M(gflags)        (((gflags) & G2FLAG_M)>>1)
 #define G2FLAGS_GET_BBOX(gflags)     (((gflags) & G2FLAG_BBOX)>>2)
@@ -31,13 +31,7 @@
 #define G2FLAGS_SET_BBOX(gflags, value) ((gflags) = (value) ? ((gflags) | G2FLAG_BBOX) : ((gflags) & ~G2FLAG_BBOX))
 #define G2FLAGS_SET_GEODETIC(gflags, value) ((gflags) = (value) ? ((gflags) | G2FLAG_GEODETIC) : ((gflags) & ~G2FLAG_GEODETIC))
 #define G2FLAGS_SET_EXTENDED(gflags, value) ((gflags) = (value) ? ((gflags) | G2FLAG_EXTENDED) : ((gflags) & ~G2FLAG_EXTENDED))
-
-#define G2FLAGS_SET_VERSION(gflags, version) ( \
-	(gflags) = \
-		((gflags) & ~(G2FLAG_VER_0|G2FLAG_VER_1)) | \
-		(((version) / 2) ? G2FLAG_VER_1 : 0) | \
-		(((version) % 2) ? G2FLAG_VER_0 : 0) \
-		)
+#define G2FLAGS_SET_VERSION(gflags, value) ((gflags) = (value) ? ((gflags) | G2FLAG_VER_0) : ((gflags) & ~G2FLAG_VER_0))
 
 #define G2FLAGS_NDIMS(gflags) (2 + G2FLAGS_GET_Z(gflags) + G2FLAGS_GET_M(gflags))
 #define G2FLAGS_GET_ZM(gflags) (G2FLAGS_GET_M(gflags) + G2FLAGS_GET_Z(gflags) * 2)
