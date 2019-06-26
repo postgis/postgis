@@ -134,17 +134,6 @@ int gserialized1_is_geodetic(const GSERIALIZED *gser);
 int gserialized1_ndims(const GSERIALIZED *gser);
 
 /**
-* Return -1 if g1 is "less than" g2, 1 if g1 is "greater than"
-* g2 and 0 if g1 and g2 are the "same". Equality is evaluated
-* with a memcmp and size check. So it is possible that two
-* identical objects where one lacks a bounding box could be
-* evaluated as non-equal initially. Greater and less than
-* are evaluated by calculating a sortable key from the center
-* point of the object bounds.
-*/
-int gserialized1_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2);
-
-/**
 * Allocate a new #GSERIALIZED from an #LWGEOM. For all non-point types, a bounding
 * box will be calculated and embedded in the serialization. The geodetic flag is used
 * to control the box calculation (cartesian or geocentric). If set, the size pointer

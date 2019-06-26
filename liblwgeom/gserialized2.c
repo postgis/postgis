@@ -78,7 +78,7 @@ static int lwflags_uses_extended_flags(lwflags_t lwflags)
 }
 
 
-static size_t gserialized2_box_size(const GSERIALIZED *g)
+static inline size_t gserialized2_box_size(const GSERIALIZED *g)
 {
 	if (G2FLAGS_GET_GEODETIC(g->gflags))
 		return 6 * sizeof(float);
@@ -86,7 +86,7 @@ static size_t gserialized2_box_size(const GSERIALIZED *g)
 		return 2 * G2FLAGS_NDIMS(g->gflags) * sizeof(float);
 }
 
-static size_t gserialized2_header_size(const GSERIALIZED *g)
+static inline size_t gserialized2_header_size(const GSERIALIZED *g)
 {
 	uint32_t sz = 8; /* varsize (4) + srid(3) + flags (1) */
 
@@ -206,15 +206,6 @@ void gserialized2_set_srid(GSERIALIZED *g, int32_t srid)
 	g->srid[2] = (srid & 0x000000FF);
 }
 
-inline static int gserialized2_cmp_srid(const GSERIALIZED *g1, const GSERIALIZED *g2)
-{
-	return (
-		g1->srid[0] == g2->srid[0] &&
-		g1->srid[1] == g2->srid[1] &&
-		g1->srid[2] == g2->srid[2]
-	) ? 0 : 1;
-}
-
 static size_t gserialized2_is_empty_recurse(const uint8_t *p, int *isempty);
 static size_t gserialized2_is_empty_recurse(const uint8_t *p, int *isempty)
 {
@@ -285,133 +276,6 @@ uint64_t gserialized2_hash(const GSERIALIZED *g)
 	lwfree(b2);
 	hval = pc + (((uint64_t)pb)<<32);
 	return hval;
-}
-
-int gserialized2_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
-{
-	union floatuint {
-		uint32_t u;
-		float f;
-	};
-
-	int g1_is_empty, g2_is_empty, cmp;
-	GBOX box1, box2;
-	uint64_t hash1, hash2;
-	size_t sz1 = SIZE_GET(g1->size);
-	size_t sz2 = SIZE_GET(g2->size);
-	union floatuint x, y;
-
-	/*
-	* For two non-same points, we can skip a lot of machinery.
-	*/
-	if (
-		sz1 > 16 && // 16 is size of EMPTY, if it's larger - it has coordinates
-		sz2 > 16 &&
-		*(uint32_t*)(g1+8) == POINTTYPE &&
-		*(uint32_t*)(g2+8) == POINTTYPE &&
-		!G2FLAGS_GET_BBOX(g1->gflags) &&
-		!G2FLAGS_GET_BBOX(g2->gflags) &&
-		!G2FLAGS_GET_EXTENDED(g1->gflags) &&
-		!G2FLAGS_GET_EXTENDED(g2->gflags)
-	)
-	{
-		double *dptr = (double*)(g1->data + sizeof(double));
-		x.f = 2.0 * dptr[0];
-		y.f = 2.0 * dptr[1];
-		hash1 = uint32_interleave_2(x.u, y.u);
-
-		dptr = (double*)(g2->data + sizeof(double));
-		x.f = 2.0 * dptr[0];
-		y.f = 2.0 * dptr[1];
-		hash2 = uint32_interleave_2(x.u, y.u);
-
-		/* If the SRIDs are the same, we can use hash inequality */
-		/* to jump us out of this function early. Otherwise we still */
-		/* have to do the full calculation */
-		if (gserialized2_cmp_srid(g1, g2) == 0)
-		{
-			if (hash1 > hash2)
-				return 1;
-			if (hash1 < hash2)
-				return -1;
-		}
-
-		/* if hashes happen to be the same, go to full compare. */
-	}
-
-	size_t hsz1 = gserialized2_header_size(g1);
-	size_t hsz2 = gserialized2_header_size(g2);
-
-	uint8_t *b1 = (uint8_t*)g1 + hsz1;
-	uint8_t *b2 = (uint8_t*)g2 + hsz2;
-	size_t bsz1 = sz1 - hsz1;
-	size_t bsz2 = sz2 - hsz2;
-	size_t bsz = bsz1 < bsz2 ? bsz1 : bsz2;
-
-	int cmp_srid = gserialized2_cmp_srid(g1, g2);
-
-	g1_is_empty = (gserialized2_get_gbox_p(g1, &box1) == LW_FAILURE);
-	g2_is_empty = (gserialized2_get_gbox_p(g2, &box2) == LW_FAILURE);
-
-	/* Empty < Non-empty */
-	if (g1_is_empty && !g2_is_empty)
-		return -1;
-
-	/* Non-empty > Empty */
-	if (!g1_is_empty && g2_is_empty)
-		return 1;
-
-	/* Return equality for perfect equality only */
-	cmp = memcmp(b1, b2, bsz);
-	if (bsz1 == bsz2 && cmp_srid == 0 && cmp == 0)
-		return 0;
-
-	if (!g1_is_empty && !g2_is_empty)
-	{
-		/* Using the centroids, calculate somewhat sortable */
-		/* hash key. The key doesn't provide good locality over */
-		/* the +/- boundary, but otherwise is pretty OK */
-		hash1 = gbox_get_sortable_hash(&box1);
-		hash2 = gbox_get_sortable_hash(&box2);
-
-		if (hash1 > hash2)
-			return 1;
-		else if (hash1 < hash2)
-			return -1;
-
-		/* What, the hashes are equal? OK... sort on the */
-		/* box minima */
-		if (box1.xmin < box2.xmin)
-			return -1;
-		else if (box1.xmin > box2.xmin)
-			return 1;
-
-		if (box1.ymin < box2.ymin)
-			return -1;
-		else if (box1.ymin > box2.ymin)
-			return 1;
-
-		/* Still equal? OK... sort on the box maxima */
-		if (box1.xmax < box2.xmax)
-			return -1;
-		else if (box1.xmax > box2.xmax)
-			return 1;
-
-		if (box1.ymax < box2.ymax)
-			return -1;
-		else if (box1.ymax > box2.ymax)
-			return 1;
-	}
-
-	/* Prefix comes before longer one. */
-	if (bsz1 != bsz2 && cmp == 0)
-	{
-		if (bsz1 < bsz2)
- 			return -1;
-		else if (bsz1 > bsz2)
- 			return 1;
-	}
-	return cmp > 0 ? 1 : -1;
 }
 
 

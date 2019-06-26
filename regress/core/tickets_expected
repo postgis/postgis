@@ -237,15 +237,15 @@ ERROR:  invalid GML representation
 #2145|6792004
 #2232|M 0 0 l 0 0 1 0 0 0 1 0 0 0
 #2307|MULTIPOLYGON(((-41.1932 -7.3257,-41.1616 -7.3257,-41.1569 -7.3257,-41.1569 -7.3483,-41.1932 -7.3483,-41.1932 -7.3257),(-41.1616 -7.3257,-41.1879 -7.3257,-41.1879 -7.3425,-41.1616 -7.3425,-41.1616 -7.3257)))
-#2409|GeometryCollection[B] with 2 elements:
-  MultiSurface[] with 2 elements:
-    Polygon[] with 1 ring:
+#2409|GeometryCollection[B] with 2 elements
+  MultiSurface[] with 2 elements
+    Polygon[] with 1 rings
    ring 0 has 5 points
-    CurvePolygon[] with 1 element:
-      CompoundCurve[] with 2 elements:
+    CurvePolygon[] with 1 elements
+      CompoundCurve[] with 2 elements
         LineString[] with 5 points
         CircularString[] with 5 points
-  Tin[] with 1 element:
+  Tin[] with 1 elements
     Triangle[] with 4 points
 #2415.1|MULTICURVE(COMPOUNDCURVE((0 0,10 0),CIRCULARSTRING(10 0,15 1,20 10)))
 #2415.2|MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(10 0,15 1,20 0,18 5,20 10,10 10,10 0)))
