@@ -135,11 +135,17 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 	char *lwresult = lwgeom_summary(lwg, 0);
 	uint32_t gver = gserialized_get_version(g);
 	size_t result_sz = strlen(lwresult) + 8;
-	char *result = lwalloc(result_sz);
+	char *result;
 	if (gver == 0)
-		snprintf(result, result_sz, "%s@v0)", lwresult);
+	{
+		result = lwalloc(result_sz + 2);
+		snprintf(result, result_sz, "0:%s", lwresult);
+	}
 	else
+	{
+		result = lwalloc(result_sz);
 		snprintf(result, result_sz, "%s", lwresult);
+	}
 	lwgeom_free(lwg);
 	lwfree(lwresult);
 
