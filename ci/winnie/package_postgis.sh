@@ -26,6 +26,17 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
 fi;
 
 export PCRE_VER=8.33
+#set to something even if override is on but not set
+if  [[ "${ZLIB_VER}" == '' ]] ; then
+  export ZLIB_VER=1.2.11
+fi;
+
+export PCRE_VER=8.33
+
+#set to something even if override is on but not set
+if  [[ "${LIBXML_VER}" == '' ]] ; then
+  export LIBXML_VER=2.7.8
+fi;
 
 
 export PROJECTS=/projects

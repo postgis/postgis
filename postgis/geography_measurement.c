@@ -827,7 +827,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	/* Get our geometry objects loaded into memory. */
 	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(d1);
 	/* Synchronize our box types */
-	gbox1.flags = g1->flags;
+	gbox1.flags = gserialized_get_lwflags(g1);
 	/* Calculate if the geometry is empty. */
 	empty1 = gserialized_is_empty(g1);
 	/* Calculate a geocentric bounds for the objects */
@@ -841,7 +841,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	{
 		Datum d2 = PG_GETARG_DATUM(1);
 		g2 = (GSERIALIZED*)PG_DETOAST_DATUM(d2);
-		gbox2.flags = g2->flags;
+		gbox2.flags = gserialized_get_lwflags(g2);
 		empty2 = gserialized_is_empty(g2);
 		if ( ! empty2 && gserialized_get_gbox_p(g2, &gbox2) == LW_FAILURE )
 			elog(ERROR, "Error in geography_bestsrid calling gserialized_get_gbox_p(g2, &gbox2)");

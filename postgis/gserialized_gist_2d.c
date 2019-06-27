@@ -466,14 +466,17 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	*/
 	gpart = (GSERIALIZED*)PG_DETOAST_DATUM(gsdatum);
 
-	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);
+	POSTGIS_DEBUGF(4, "got flags %d", gpart->gflags);
 
 	/* Do we even have a serialized bounding box? */
 	if (gserialized_has_bbox(gpart))
 	{
 		/* Yes! Copy it out into the box! */
+		size_t box_ndims;
+		const float *f = gserialized_get_float_box_p(gpart, &box_ndims);
+
 		POSTGIS_DEBUG(4, "copying box out of serialization");
-		memcpy(box2df, gpart->data, sizeof(BOX2DF));
+		memcpy(box2df, f, sizeof(BOX2DF));
 		result = LW_SUCCESS;
 	}
 	else

@@ -23,12 +23,13 @@
  **********************************************************************/
 
 #include "liblwgeom_internal.h"
+#include "lwgeodetic.h"
 #include "lwgeom_log.h"
 #include <stdlib.h>
 #include <math.h>
 
 
-GBOX* gbox_new(uint8_t flags)
+GBOX* gbox_new(lwflags_t flags)
 {
 	GBOX *g = (GBOX*)lwalloc(sizeof(GBOX));
 	gbox_init(g);
@@ -436,9 +437,9 @@ void gbox_duplicate(const GBOX *original, GBOX *duplicate)
 	memcpy(duplicate, original, sizeof(GBOX));
 }
 
-size_t gbox_serialized_size(uint8_t flags)
+size_t gbox_serialized_size(lwflags_t flags)
 {
-	if ( FLAGS_GET_GEODETIC(flags) )
+	if (FLAGS_GET_GEODETIC(flags))
 		return 6 * sizeof(float);
 	else
 		return 2 * FLAGS_NDIMS(flags) * sizeof(float);
@@ -722,4 +723,70 @@ void gbox_float_round(GBOX *gbox)
 		gbox->zmax = next_float_up(gbox->zmax);
 	}
 }
+
+uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2)
+{
+    uint64_t x = u1;
+    uint64_t y = u2;
+    int i;
+
+    static uint64_t B[5] =
+    {
+        0x5555555555555555,
+        0x3333333333333333,
+        0x0F0F0F0F0F0F0F0F,
+        0x00FF00FF00FF00FF,
+        0x0000FFFF0000FFFF
+    };
+    static uint64_t S[5] = { 1, 2, 4, 8, 16 };
+
+    for ( i = 4; i >= 0; i-- )
+    {
+        x = (x | (x << S[i])) & B[i];
+        y = (y | (y << S[i])) & B[i];
+    }
+
+    return x | (y << 1);
+}
+
+uint64_t gbox_get_sortable_hash(const GBOX *g)
+{
+	union floatuint {
+		uint32_t u;
+		float f;
+	};
+
+	union floatuint x, y;
+
+	/*
+	* Since in theory the bitwise representation of an IEEE
+	* float is sortable (exponents come before mantissa, etc)
+	* we just copy the bits directly into an int and then
+	* interleave those ints.
+	*/
+	if (FLAGS_GET_GEODETIC(g->flags))
+	{
+		GEOGRAPHIC_POINT gpt;
+		POINT3D p;
+		p.x = (g->xmax + g->xmin) / 2.0;
+		p.y = (g->ymax + g->ymin) / 2.0;
+		p.z = (g->zmax + g->zmin) / 2.0;
+		normalize(&p);
+		cart2geog(&p, &gpt);
+		x.f = gpt.lon;
+		y.f = gpt.lat;
+	}
+	else
+	{
+		/*
+		* Here we'd like to get two ordinates from 4 in the box.
+		* Since it's just a sortable bit representation we can omit division from (A+B)/2.
+		* All it should do is subtract 1 from exponent anyways.
+		*/
+		x.f = g->xmax + g->xmin;
+		y.f = g->ymax + g->ymin;
+	}
+	return uint32_interleave_2(x.u, y.u);
+}
+
 

@@ -98,10 +98,13 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 
 	result = (char *)lwalloc(size);
 
-	sprintf(result, "%*.s%s[%s] with %d elements\n",
+	sprintf(result, "%*.s%s[%s] with %d element%s",
 	        offset, pad, lwtype_name(col->type),
 	        zmflags,
-	        col->ngeoms);
+	        col->ngeoms,
+					col->ngeoms ?
+						( col->ngeoms > 1 ? "s:\n" : ":\n")
+						: "s");
 
 	for (i=0; i<col->ngeoms; i++)
 	{
@@ -136,10 +139,13 @@ lwpoly_summary(LWPOLY *poly, int offset)
 
 	result = (char *)lwalloc(size);
 
-	sprintf(result, "%*.s%s[%s] with %i rings\n",
+	sprintf(result, "%*.s%s[%s] with %i ring%s",
 	        offset, pad, lwtype_name(poly->type),
 	        zmflags,
-	        poly->nrings);
+	        poly->nrings,
+					poly->nrings ?
+						( poly->nrings > 1 ? "s:\n" : ":\n")
+						: "s");
 
 	for (i=0; i<poly->nrings; i++)
 	{
