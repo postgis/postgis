@@ -18,7 +18,9 @@
 #include "postgres.h"
 #include "fmgr.h"
 #include "catalog/namespace.h" /* For TypenameGetTypid */
+#if POSTGIS_PGSQL_VERSION > 100
 #include "catalog/pg_type_d.h" /* For TypenameGetTypid */
+#endif
 #include "utils/geo_decls.h"
 #include "utils/lsyscache.h"
 #include "utils/memutils.h"
