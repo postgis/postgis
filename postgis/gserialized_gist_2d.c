@@ -1145,6 +1145,36 @@ pack_float(const float value, const uint8_t realm)
 	return a.f;
 }
 
+static inline float
+box2df_penalty(const BOX2DF *b1, const BOX2DF *b2)
+{
+	float b1xmin = b1->xmin, b1xmax = b1->xmax;
+	float b1ymin = b1->ymin, b1ymax = b1->ymax;
+	float b2xmin = b2->xmin, b2xmax = b2->xmax;
+	float b2ymin = b2->ymin, b2ymax = b2->ymax;
+
+	float box_union_xmin = Min(b1xmin, b2xmin), box_union_xmax = Max(b1xmax, b2xmax);
+	float box_union_ymin = Min(b1ymin, b2ymin), box_union_ymax = Max(b1ymax, b2ymax);
+
+	float b1dx = b1xmax - b1xmin, b1dy = b1ymax - b1ymin;
+	float box_union_dx = box_union_xmax - box_union_xmin, box_union_dy = box_union_ymax - box_union_ymin;
+
+	float box_union_area = box_union_dx * box_union_dy, box1area = b1dx * b1dy;
+	float box_union_edge = box_union_dx + box_union_dy, box1edge = b1dx + b1dy;
+
+	float area_extension = box_union_area - box1area;
+	float edge_extension = box_union_edge - box1edge;
+
+	/* REALM 1: Area extension is nonzero, return it */
+	if (area_extension > FLT_EPSILON)
+		return pack_float(area_extension, 1);
+	/* REALM 0: Area extension is zero, return nonzero edge extension */
+	else if (edge_extension > FLT_EPSILON)
+		return pack_float(edge_extension, 0);
+
+	return 0;
+}
+
 /*
 ** GiST support function. Calculate the "penalty" cost of adding this entry into an existing entry.
 ** Calculate the change in volume of the old entry once the new entry is added.
@@ -1167,31 +1197,8 @@ Datum gserialized_gist_penalty_2d(PG_FUNCTION_ARGS)
 	*result = 0;
 
 	if (b1 && b2 && !box2df_is_empty(b1) && !box2df_is_empty(b2))
-	{
-		float b1xmin = b1->xmin, b1xmax = b1->xmax;
-		float b1ymin = b1->ymin, b1ymax = b1->ymax;
-		float b2xmin = b2->xmin, b2xmax = b2->xmax;
-		float b2ymin = b2->ymin, b2ymax = b2->ymax;
+		*result = box2df_penalty(b1, b2);
 
-		float box_union_xmin = Min(b1xmin, b2xmin), box_union_xmax = Max(b1xmax, b2xmax);
-		float box_union_ymin = Min(b1ymin, b2ymin), box_union_ymax = Max(b1ymax, b2ymax);
-
-		float b1dx = b1xmax - b1xmin, b1dy = b1ymax - b1ymin;
-		float box_union_dx = box_union_xmax - box_union_xmin, box_union_dy = box_union_ymax - box_union_ymin;
-
-		float box_union_area = box_union_dx * box_union_dy, box1area = b1dx * b1dy;
-		float box_union_edge = box_union_dx + box_union_dy, box1edge = b1dx + b1dy;
-
-		float area_extension = box_union_area - box1area;
-		float edge_extension = box_union_edge - box1edge;
-
-		/* REALM 1: Area extension is nonzero, return it */
-		if (area_extension > FLT_EPSILON)
-			*result = pack_float(area_extension, 1);
-		/* REALM 0: Area extension is zero, return nonzero edge extension */
-		else if (edge_extension > FLT_EPSILON)
-			*result = pack_float(edge_extension, 0);
-	}
 	PG_RETURN_POINTER(result);
 }
 
@@ -1557,23 +1564,6 @@ g_box_consider_split(ConsiderSplitContext *context, int dimNum,
 }
 
 /*
- * Return increase of original BOX2DF area by new BOX2DF area insertion.
- */
-static float
-box_penalty(BOX2DF *original, BOX2DF *new)
-{
-	float		union_width,
-				union_height;
-
-	union_width = Max(original->xmax, new->xmax) -
-		Min(original->xmin, new->xmin);
-	union_height = Max(original->ymax, new->ymax) -
-		Min(original->ymin, new->ymin);
-	return union_width * union_height - (original->xmax - original->xmin) *
-		(original->ymax - original->ymin);
-}
-
-/*
  * Compare common entries by their deltas.
  */
 static int
@@ -1932,8 +1922,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		{
 			box = (BOX2DF *) DatumGetPointer(entryvec->vector[
 												commonEntries[i].index].key);
-			commonEntries[i].delta = Abs(box_penalty(leftBox, box) -
-										 box_penalty(rightBox, box));
+			commonEntries[i].delta = Abs(box2df_penalty(leftBox, box) - box2df_penalty(rightBox, box));
 		}
 
 		/*
@@ -1961,7 +1950,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 			else
 			{
 				/* Otherwise select the group by minimal penalty */
-				if (box_penalty(leftBox, box) < box_penalty(rightBox, box))
+				if (box2df_penalty(leftBox, box) < box2df_penalty(rightBox, box))
 					PLACE_LEFT(box, commonEntries[i].index);
 				else
 					PLACE_RIGHT(box, commonEntries[i].index);
