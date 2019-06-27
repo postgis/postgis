@@ -51,7 +51,6 @@
 
 #include <float.h> /* For FLT_MAX */
 #include <math.h>
-#include <assert.h>
 
 /*
 ** When is a node split not so good? If more than 90% of the entries
@@ -1142,14 +1141,14 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 }
 
 /*
-** Function to pack floats of different realms
-** This function serves to pack bit flags inside float type
-** Resulted value represent can be from four different "realms"
-** Every value from realm 3 is greater than any value from realms 2, 1 and 0.
-** Every value from realm 2 is less than every value from realm 3 and greater
-** than any value from realm 1 and 0, and so on. Values from the same realm
-** loose two bits of precision. This technique is possible due to floating
-** point numbers specification according to IEEE 754: exponent bits are highest
+** Function to pack floats of different realms.
+** This function serves to pack bit flags inside float type.
+** Result value represent can be from two different "realms".
+** Every value from realm 1 is greater than any value from realm 0.
+** Values from the same realm loose one bit of precision.
+**
+** This technique is possible due to floating point numbers specification
+** according to IEEE 754: exponent bits are highest
 ** (excluding sign bits, but here penalty is always positive). If float a is
 ** greater than float b, integer A with same bit representation as a is greater
 ** than integer B with same bits as b.
@@ -1157,17 +1156,17 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 static inline float
 pack_float(const float value, const uint8_t realm)
 {
-  union {
-    float f;
-    struct { unsigned value:31, sign:1; } vbits;
-    struct { unsigned value:29, realm:2, sign:1; } rbits;
-  } a;
+	union {
+		float f;
+		struct { unsigned value: 31, sign: 1; } vbits;
+		struct { unsigned value: 29, realm: 1, sign: 1; } rbits;
+	} a;
 
-  a.f = value;
-  a.rbits.value = a.vbits.value >> 2;
-  a.rbits.realm = realm;
+	a.f = value;
+	a.rbits.value = a.vbits.value >> 1;
+	a.rbits.realm = realm;
 
-  return a.f;
+	return a.f;
 }
 
 /*
@@ -1184,6 +1183,11 @@ Datum gserialized_gist_penalty_2d(PG_FUNCTION_ARGS)
 
 	b1 = (BOX2DF *)DatumGetPointer(origentry->key);
 	b2 = (BOX2DF *)DatumGetPointer(newentry->key);
+
+	/* Penalty value of 0 has special code path in Postgres's gistchoose.
+	 * It is used as an early exit condition in subtree loop, allowing faster tree descend.
+	 * For multi-column index, it lets next column break the tie, possibly more confidently.
+	 */
 	*result = 0;
 
 	if (b1 && b2 && !box2df_is_empty(b1) && !box2df_is_empty(b2))
@@ -1199,30 +1203,19 @@ Datum gserialized_gist_penalty_2d(PG_FUNCTION_ARGS)
 		float b1dx = b1xmax - b1xmin, b1dy = b1ymax - b1ymin;
 		float box_union_dx = box_union_xmax - box_union_xmin, box_union_dy = box_union_ymax - box_union_ymin;
 
-		float box_union_area = box_union_dx * box_union_dy, b1area = b1dx * b1dy;
-		float box_union_edge = box_union_dx + box_union_dy, b1edge = b1dx + b1dy;
+		float box_union_area = box_union_dx * box_union_dy, box1area = b1dx * b1dy;
+		float box_union_edge = box_union_dx + box_union_dy, box1edge = b1dx + b1dy;
 
-		float area_extension = box_union_area - b1area;
-		float edge_extension = box_union_edge - b1edge;
+		float area_extension = box_union_area - box1area;
+		float edge_extension = box_union_edge - box1edge;
 
-		/* REALM 0: No extension is required, area is zero, return edge */
-		float packed_b1edge = pack_float(b1edge, 0);
-		/* REALM 1: No extension is required, area is non-zero, return area */
-		float packed_b1area = pack_float(b1area, 1);
-		/* REALM 2: Area extension is zero, return nonzero edge extension */
-		float packed_edge_extension = pack_float(edge_extension, 2);
-		/* REALM 3: Area extension is nonzero, return it */
-		float packed_area_extension = pack_float(area_extension, 3);
-
-		*result = packed_area_extension;
-		if (area_extension == 0 && edge_extension == 0 && b1area != 0)
-			*result = packed_b1area;
-		if (area_extension == 0 && edge_extension == 0 && b1area == 0 && b1edge != 0)
-			*result = packed_b1edge;
-		if (area_extension == 0 && edge_extension != 0)
-			*result = packed_edge_extension;
+		/* REALM 1: Area extension is nonzero, return it */
+		if (area_extension > FLT_EPSILON)
+			*result = pack_float(area_extension, 1);
+		/* REALM 0: Area extension is zero, return nonzero edge extension */
+		else if (edge_extension > FLT_EPSILON)
+			*result = pack_float(edge_extension, 0);
 	}
-
 	PG_RETURN_POINTER(result);
 }
 

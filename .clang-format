@@ -26,7 +26,7 @@ BraceWrapping:
   AfterFunction:   true
   AfterNamespace:  false
   AfterObjCDeclaration: false
-  AfterStruct:     true
+  AfterStruct:     false
   AfterUnion:      false
   AfterExternBlock: false
   BeforeCatch:     true
