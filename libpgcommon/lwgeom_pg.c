@@ -41,7 +41,9 @@ postgisConstants *POSTGIS_CONSTANTS = NULL;
 static Oid TypenameNspGetTypid(const char *typname, Oid nsp_oid)
 {
 	return GetSysCacheOid2(TYPENAMENSP,
+#if POSTGIS_PGSQL_VERSION >= 120
 	                       Anum_pg_type_oid,
+#endif
 	                       PointerGetDatum(typname),
 	                       ObjectIdGetDatum(nsp_oid));
 }
