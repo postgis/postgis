@@ -1134,7 +1134,7 @@ pack_float(const float value, const uint8_t realm)
 			unsigned value : 31, sign : 1;
 		} vbits;
 		struct {
-			unsigned value : 29, realm : 1, sign : 1;
+			unsigned value : 30, realm : 1, sign : 1;
 		} rbits;
 	} a;
 

@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright 2017 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright 2017-2019 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -1155,7 +1155,7 @@ pack_float(const float value, const uint8_t realm)
 			unsigned value : 31, sign : 1;
 		} vbits;
 		struct {
-			unsigned value : 29, realm : 1, sign : 1;
+			unsigned value : 30, realm : 1, sign : 1;
 		} rbits;
 	} a;
 
