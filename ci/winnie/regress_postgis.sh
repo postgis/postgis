@@ -9,9 +9,22 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
 	export PROTOBUFC_VER=1.2.1
 	export CGAL_VER=4.11
 	export ICON_VER=1.15
+  export ZLIB_VER=1.2.11
 fi;
+
+
+#set to something even if override is on but not set
+if  [[ "${ZLIB_VER}" == '' ]] ; then
+  export ZLIB_VER=1.2.11
+fi;
+
 export PCRE_VER=8.33
-export LIBXML_VER=2.7.8
+
+#set to something even if override is on but not set
+if  [[ "${LIBXML_VER}" == '' ]] ; then
+  export LIBXML_VER=2.7.8
+fi;
+
 #export GDAL_VER=2.4.0
 #export PROJ_VER=5.2.0
 
@@ -56,7 +69,6 @@ else
   fi;
 fi;
 
-export LIBXML_VER=2.7.8
 #export POSTGIS_SRC=${PROJECTS}/postgis/trunk
 export GDAL_DATA="${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/share/gdal"
 
@@ -95,7 +107,8 @@ if [ -n "$PCRE_VER" ]; then
     export PATH="${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/include:${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
 fi
 
-export PKG_CONFIG_PATH="${PROJECTS}/sqlite/rel-sqlite3w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/zlib/rel-zlib-${ZLIB_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/json-c/rel-${JSON_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig"
+export PKG_CONFIG_PATH="${PROJECTS}/sqlite/rel-sqlite3w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/zlib/rel-zlib-${ZLIB_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/json-c/rel-${JSON_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig ${PROJECTS}/zlib/rel-zlib-${ZLIB_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig"
+
 
 
 if [ -n "$SFCGAL_VER" ]; then
