@@ -167,13 +167,6 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
 #define STATISTIC_SLOT_2D 1
 
 /*
-* To look-up the spatial index associated with a table we
-* need to find GIST indexes using our spatial keys.
-*/
-#define INDEX_KEY_ND "gidx"
-#define INDEX_KEY_2D "box2df"
-
-/*
 * The SD factor restricts the side of the statistics histogram
 * based on the standard deviation of the extent of the data.
 * SDFACTOR is the number of standard deviations from the mean
@@ -2417,16 +2410,6 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 /************************************************************************/
 
 static Oid
-typname_to_oid(const char *typname)
-{
-    Oid typoid = TypenameGetTypid(typname);
-    if (OidIsValid(typoid) && get_typisdefined(typoid))
-		return typoid;
-	else
-		return InvalidOid;
-}
-
-static Oid
 table_get_spatial_index(Oid tbl_oid, text *col, int *key_type)
 {
 	Relation tbl_rel;
@@ -2436,8 +2419,8 @@ table_get_spatial_index(Oid tbl_oid, text *col, int *key_type)
 	char *colname = text_to_cstring(col);
 
 	/* Lookup our spatial index key types */
-	Oid b2d_oid = typname_to_oid(INDEX_KEY_2D);
-	Oid gdx_oid = typname_to_oid(INDEX_KEY_ND);
+	Oid b2d_oid = postgis_oid(BOX2DFOID);
+	Oid gdx_oid = postgis_oid(BOX3DOID);
 
 	if (!(b2d_oid && gdx_oid))
 		return InvalidOid;
