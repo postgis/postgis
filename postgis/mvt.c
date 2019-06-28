@@ -324,7 +324,7 @@ static void parse_column_keys(struct mvt_agg_context *ctx)
 #endif
 		key = pstrdup(tkey);
 		if (ctx->geom_name == NULL) {
-			if (!geom_found && typoid == TypenameGetTypid("geometry")) {
+			if (!geom_found && typoid == postgis_oid(GEOMETRYOID)) {
 				ctx->geom_index = i;
 				geom_found = true;
 				continue;
