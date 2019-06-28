@@ -1483,7 +1483,7 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
             CC_SAVE="$CC"
             CFLAGS_SAVE="$CFLAGS"
             CXXFLAGS_SAVE="$CXXFLAGS"
-            CPPFLAGS_SAVE="$CPPFLAGS_SAVE"
+            CPPFLAGS_SAVE="$CPPFLAGS"
 
             WAGYU_CXX=`"$PG_CONFIG" --cc`
             CPPFLAGS="-x c++"
