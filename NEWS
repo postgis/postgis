@@ -18,6 +18,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #3437, Speed up ST_Intersects with Points (Raúl Marín)
   - #4438, Update serialization to support extended flags area (Paul Ramsey)
   - #4443, Fix wagyu configure dropping CPPFLAGS (Raúl Marín)
+  - #4440, Type lookups in FDW fail (Paul Ramsey)
 
 PostGIS 3.0.0alpha2
 2019/06/02

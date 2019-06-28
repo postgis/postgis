@@ -16,18 +16,66 @@
 #define _LWGEOM_PG_H 1
 
 #include "postgres.h"
-#include "utils/geo_decls.h"
 #include "fmgr.h"
+#include "catalog/namespace.h" /* For TypenameGetTypid */
+#if POSTGIS_PGSQL_VERSION > 100
+#include "catalog/pg_type_d.h" /* For TypenameGetTypid */
+#endif
+#include "utils/geo_decls.h"
 #include "utils/lsyscache.h"
+#include "utils/memutils.h"
+#include "utils/syscache.h"
 
 #include "liblwgeom.h"
 #include "pgsql_compat.h"
 
+
+/****************************************************************************************/
+
+typedef enum
+{
+	GEOMETRYOID = 1,
+	GEOGRAPHYOID,
+	BOX3DOID,
+	BOX2DFOID,
+	GIDXOID,
+	RASTEROID,
+	POSTGISNSPOID
+} postgisType;
+
+typedef struct
+{
+	Oid geometry_oid;
+	Oid geography_oid;
+	Oid box2df_oid;
+	Oid box3d_oid;
+	Oid gidx_oid;
+	Oid raster_oid;
+	Oid install_nsp_oid;
+	char *install_nsp;
+} postgisConstants;
+
+/* Global to hold all the run-time constants */
+extern postgisConstants *POSTGIS_CONSTANTS;
+
+/* uses the nsp information of the calling function to infer the */
+/* install location of postgis, and thus the namespace to use */
+/* when looking up the type name */
+Oid postgis_oid_fcinfo(FunctionCallInfo fcinfo, postgisType typ);
+
+/* only useful if postgis_oid_fcinfo() has been called first and */
+/* populated first, otherwise returns InvalidOid */
+Oid postgis_oid(postgisType typ);
+
+/****************************************************************************************/
+
 /* Globals to hold GEOMETRYOID, GEOGRAPHYOID */
-extern Oid GEOMETRYOID;
-extern Oid GEOGRAPHYOID;
-Oid postgis_geometry_oid(void);
-Oid postgis_geography_oid(void);
+// extern Oid GEOMETRYOID;
+// extern Oid GEOGRAPHYOID;
+// Oid postgis_geometry_oid(void);
+// Oid postgis_geography_oid(void);
+
+/****************************************************************************************/
 
 /* Install PosgreSQL handlers for liblwgeom use */
 void pg_install_lwgeom_handlers(void);
