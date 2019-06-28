@@ -31,6 +31,125 @@
 
 #define PGC_ERRMSG_MAXLEN 2048 //256
 
+
+/****************************************************************************************/
+/* Global to hold all the run-time constants */
+
+postgisConstants *POSTGIS_CONSTANTS = NULL;
+
+/* Utility call to lookup type oid given name and nspoid */
+static Oid TypenameNspGetTypid(const char *typname, Oid nsp_oid)
+  {
+	return GetSysCacheOid2(TYPENAMENSP,
+#if POSTGIS_PGSQL_VERSION >= 120
+	                       Anum_pg_type_oid,
+#endif
+	                       PointerGetDatum(typname),
+	                       ObjectIdGetDatum(nsp_oid));
+  }
+
+/* Cache type lookups in per-session location */
+static postgisConstants *
+getPostgisConstants(FunctionCallInfo fcinfo)
+  {
+	char *nsp_name;
+	Oid nsp_oid;
+	postgisConstants *constants;
+
+	/* For some reason we have a hobbled fcinfo/flinfo */
+	if (!fcinfo || !fcinfo->flinfo) return NULL;
+
+	/* Allocate in the CacheContext so we don't lose this at the end of the statement */
+	constants = MemoryContextAlloc(CacheMemoryContext, sizeof(postgisConstants));
+
+	/* early exit if we cannot lookup nsp_name, cf #4067 */
+	nsp_oid = get_func_namespace(fcinfo->flinfo->fn_oid);
+	if (!nsp_oid) return NULL;
+	nsp_name = get_namespace_name(nsp_oid);
+	constants->install_nsp_oid = nsp_oid;
+	constants->install_nsp = MemoryContextStrdup(CacheMemoryContext, nsp_name);
+	elog(DEBUG4, "%s located %s in namespace %s", __func__, get_func_name(fcinfo->flinfo->fn_oid), nsp_name);
+
+	/* Lookup all the type names in the context of the install schema */
+	constants->geometry_oid = TypenameNspGetTypid("geometry", nsp_oid);
+	constants->geography_oid = TypenameNspGetTypid("geography", nsp_oid);
+	constants->box2df_oid = TypenameNspGetTypid("box2df", nsp_oid);
+	constants->box3d_oid = TypenameNspGetTypid("box3d", nsp_oid);
+	constants->gidx_oid = TypenameNspGetTypid("gidx", nsp_oid);
+	constants->raster_oid = TypenameNspGetTypid("raster", nsp_oid);
+
+	/* Done */
+	return constants;
+}
+
+Oid
+postgis_oid(postgisType typ)
+{
+	/* Use a schema qualified, cached lookup if we can */
+	postgisConstants *cnsts = POSTGIS_CONSTANTS;
+	if (cnsts)
+	{
+		switch (typ)
+		{
+			case GEOMETRYOID:
+				return cnsts->geometry_oid;
+			case GEOGRAPHYOID:
+				return cnsts->geography_oid;
+			case BOX3DOID:
+				return cnsts->box3d_oid;
+			case BOX2DFOID:
+				return cnsts->box2df_oid;
+			case GIDXOID:
+				return cnsts->gidx_oid;
+			case RASTEROID:
+				return cnsts->raster_oid;
+			case POSTGISNSPOID:
+				return cnsts->install_nsp_oid;
+			default:
+				return InvalidOid;
+		}
+	}
+	/* Fall back to a bare lookup and hope the type in is */
+	/* the search_path */
+	else
+	{
+		switch (typ)
+  		{
+			case GEOMETRYOID:
+				return TypenameGetTypid("geometry");
+			case GEOGRAPHYOID:
+				return TypenameGetTypid("geography");
+			case BOX3DOID:
+				return TypenameGetTypid("box3d");
+			case BOX2DFOID:
+				return TypenameGetTypid("box2df");
+			case GIDXOID:
+				return TypenameGetTypid("gidx");
+			case RASTEROID:
+				return TypenameGetTypid("raster");
+			default:
+				return InvalidOid;
+  		}
+  	}
+  }
+
+Oid
+postgis_oid_fcinfo(FunctionCallInfo fcinfo, postgisType oid)
+{
+	/* Cache the info if we don't already have it */
+	if (!POSTGIS_CONSTANTS)
+		POSTGIS_CONSTANTS = getPostgisConstants(fcinfo);;
+
+	if (!POSTGIS_CONSTANTS) return InvalidOid;
+	return postgis_oid(oid);
+}
+
+/****************************************************************************************/
+
+
+
+
+
 /*
  * Error message parsing functions
  *

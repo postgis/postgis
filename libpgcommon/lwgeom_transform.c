@@ -690,6 +690,7 @@ static void
 SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
 {
 	char *nsp_name;
+	Oid nsp_oid;
 
 	/* Schema info is already cached, we're done here */
 	if (spatialRefSysSchema) return;
@@ -697,7 +698,9 @@ SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
 	/* For some reason we have a hobbled fcinfo/flinfo */
 	if (!fcinfo || !fcinfo->flinfo) return;
 
-	nsp_name = get_namespace_name(get_func_namespace(fcinfo->flinfo->fn_oid));
+	nsp_oid = postgis_oid_fcinfo(fcinfo, POSTGISNSPOID);
+	if (!nsp_oid) return;
+	nsp_name = get_namespace_name(nsp_oid);
 	/* early exit if we cannot lookup nsp_name, cf #4067 */
 	if (!nsp_name) return;
 
