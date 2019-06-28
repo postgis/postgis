@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright 2017 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright 2017-2019 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -1134,35 +1134,33 @@ Datum gserialized_gist_consistent(PG_FUNCTION_ARGS)
 }
 
 /*
-** Function to pack floats of different realms
-** This function serves to pack bit flags inside float type
-** Resulted value represent can be from four different "realms"
-** Every value from realm 3 is greater than any value from realms 2, 1 and 0.
-** Every value from realm 2 is less than every value from realm 3 and greater
-** than any value from realm 1 and 0, and so on. Values from the same realm
-** loose two bits of precision. This technique is possible due to floating
-** point numbers specification according to IEEE 754: exponent bits are highest
+** Function to pack floats of different realms.
+** This function serves to pack bit flags inside float type.
+** Result value represent can be from two different "realms".
+** Every value from realm 1 is greater than any value from realm 0.
+** Values from the same realm loose one bit of precision.
+**
+** This technique is possible due to floating point numbers specification
+** according to IEEE 754: exponent bits are highest
 ** (excluding sign bits, but here penalty is always positive). If float a is
 ** greater than float b, integer A with same bit representation as a is greater
 ** than integer B with same bits as b.
 */
-static float
-pack_float(const float value, const int realm)
+static inline float
+pack_float(const float value, const uint8_t realm)
 {
 	union {
 		float f;
-		struct
-		{
+		struct {
 			unsigned value : 31, sign : 1;
 		} vbits;
-		struct
-		{
-			unsigned value : 29, realm : 2, sign : 1;
+		struct {
+			unsigned value : 30, realm : 1, sign : 1;
 		} rbits;
 	} a;
 
 	a.f = value;
-	a.rbits.value = a.vbits.value >> 2;
+	a.rbits.value = a.vbits.value >> 1;
 	a.rbits.realm = realm;
 
 	return a.f;
@@ -1179,52 +1177,37 @@ Datum gserialized_gist_penalty(PG_FUNCTION_ARGS)
 	GISTENTRY *newentry = (GISTENTRY *)PG_GETARG_POINTER(1);
 	float *result = (float *)PG_GETARG_POINTER(2);
 	GIDX *gbox_index_orig, *gbox_index_new;
-	float size_union, size_orig, edge_union, edge_orig;
-
-	POSTGIS_DEBUG(4, "[GIST] 'penalty' function called");
 
 	gbox_index_orig = (GIDX *)DatumGetPointer(origentry->key);
 	gbox_index_new = (GIDX *)DatumGetPointer(newentry->key);
 
+	/* Penalty value of 0 has special code path in Postgres's gistchoose.
+	 * It is used as an early exit condition in subtree loop, allowing faster tree descend.
+	 * For multi-column index, it lets next column break the tie, possibly more confidently.
+	 */
+	*result = 0.0;
+
 	/* Drop out if we're dealing with null inputs. Shouldn't happen. */
-	if (!gbox_index_orig && !gbox_index_new)
+	if (gbox_index_orig && gbox_index_new)
 	{
-		POSTGIS_DEBUG(4, "[GIST] both inputs NULL! returning penalty of zero");
-		*result = 0.0;
-		PG_RETURN_FLOAT8(*result);
-	}
+		/* Calculate the size difference of the boxes (volume difference in this case). */
+		float size_union = gidx_union_volume(gbox_index_orig, gbox_index_new);
+		float size_orig = gidx_volume(gbox_index_orig);
+		float volume_extension = size_union - size_orig;
 
-	/* Calculate the size difference of the boxes (volume difference in this case). */
-	size_union = gidx_union_volume(gbox_index_orig, gbox_index_new);
-	size_orig = gidx_volume(gbox_index_orig);
-	*result = size_union - size_orig;
-
-	/* REALM 0: No extension is required, volume is zero, return edge */
-	/* REALM 1: No extension is required, return nonzero area */
-	/* REALM 2: Area extension is zero, return nonzero edge extension */
-	/* REALM 3: Area extension is nonzero, return it */
-
-	if (*result == 0)
-	{
-		if (size_orig > 0)
-			*result = pack_float(size_orig, 1); /* REALM 1 */
+		/* REALM 1: Area extension is nonzero, return it */
+		if (volume_extension > FLT_EPSILON)
+			*result = pack_float(volume_extension, 1);
 		else
 		{
-			edge_union = gidx_union_edge(gbox_index_orig, gbox_index_new);
-			edge_orig = gidx_edge(gbox_index_orig);
-			*result = edge_union - edge_orig;
-			if (*result == 0)
-				*result = pack_float(edge_orig, 0); /* REALM 0 */
-			else
-				*result = pack_float(*result, 2); /* REALM 2 */
+			/* REALM 0: Area extension is zero, return nonzero edge extension */
+			float edge_union = gidx_union_edge(gbox_index_orig, gbox_index_new);
+			float edge_orig = gidx_edge(gbox_index_orig);
+			float edge_extension = edge_union - edge_orig;
+			if (edge_extension > FLT_EPSILON)
+				*result = pack_float(edge_extension, 0);
 		}
 	}
-	else
-		*result = pack_float(*result, 3); /* REALM 3 */
-
-	POSTGIS_DEBUGF(
-	    4, "[GIST] union size (%.12f), original size (%.12f), penalty (%.12f)", size_union, size_orig, *result);
-
 	PG_RETURN_POINTER(result);
 }
 

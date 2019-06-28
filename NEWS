@@ -183,6 +183,8 @@ PostGIS 3.0.0
   - #4327, Avoid pfree'ing the result of getenv (Raúl Marín)
   - #4406, Throw on invalid characters when decoding geohash (Raúl Marín)
   - #4394, Allow FULL OUTER JOIN on geometry (Darafei Praliaskouski)
+  - #4441, Make GiST penalty friendly to multi-column indexes and build single-column 
+           ones faster. (Darafei Praliaskouski)
 
 
 PostGIS 2.5.0
