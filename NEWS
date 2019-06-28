@@ -89,6 +89,8 @@ PostGIS 3.0.0
   - #4356, ST_Accum removed. Use array_agg instead. (Darafei Praliaskouski)
   - #4414, Include version number in address_standardizer lib (Raúl Marín)
   - #4334, Fix upgrade issues related to renamed function parameters (Raúl Marín)
+  - #4442, raster2pgsql now skips NODATA tiles. Use -k option if you still want
+           them in database for some reason. (Darafei Praliaskouski)
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)

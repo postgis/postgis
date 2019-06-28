@@ -1769,6 +1769,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				_tile_size[1] = info->tile_size[1];
 
 			for (xtile = 0; xtile < ntiles[0]; xtile++) {
+				int tile_is_nodata = !config->skip_nodataval_check;
 
 				/* edge x tile */
 				if (!config->pad_tile && ntiles[0] > 1 && (xtile + 1) == ntiles[0])
@@ -1819,20 +1820,23 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 					/* inspect each band of raster where band is NODATA */
 					if (!config->skip_nodataval_check)
-						rt_band_check_is_nodata(band);
+						tile_is_nodata = tile_is_nodata && rt_band_check_is_nodata(band);
 				}
 
 				/* convert rt_raster to hexwkb */
-				hex = rt_raster_to_hexwkb(rast, FALSE, &hexlen);
+				if (!tile_is_nodata)
+					hex = rt_raster_to_hexwkb(rast, FALSE, &hexlen);
 				raster_destroy(rast);
 
-				if (hex == NULL) {
+				if (!hex && !tile_is_nodata)
+				{
 					rterror(_("convert_raster: Could not convert PostGIS raster to hex WKB"));
 					return 0;
 				}
 
 				/* add hexwkb to tileset */
-				append_stringbuffer(tileset, hex);
+				if (!tile_is_nodata)
+					append_stringbuffer(tileset, hex);
 
 				/* flush if tileset gets too big */
 				if (tileset->length > 10) {
@@ -1866,6 +1870,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				_tile_size[1] = info->tile_size[1];
 
 			for (xtile = 0; xtile < ntiles[0]; xtile++) {
+				int tile_is_nodata = !config->skip_nodataval_check;
 				/*
 				char fn[100];
 				sprintf(fn, "/tmp/tile%d.vrt", (ytile * ntiles[0]) + xtile);
@@ -1935,21 +1940,24 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				for (i = 0; i < numbands; i++) {
 					band = rt_raster_get_band(rast, i);
 					if (band != NULL && !config->skip_nodataval_check)
-						rt_band_check_is_nodata(band);
+						tile_is_nodata = tile_is_nodata && rt_band_check_is_nodata(band);
 				}
 
 				/* convert rt_raster to hexwkb */
-				hex = rt_raster_to_hexwkb(rast, FALSE, &hexlen);
+				if (!tile_is_nodata)
+					hex = rt_raster_to_hexwkb(rast, FALSE, &hexlen);
 				raster_destroy(rast);
 
-				if (hex == NULL) {
+				if (!hex && !tile_is_nodata)
+				{
 					rterror(_("convert_raster: Could not convert PostGIS raster to hex WKB"));
 					GDALClose(hdsDst);
 					return 0;
 				}
 
 				/* add hexwkb to tileset */
-				append_stringbuffer(tileset, hex);
+				if (!tile_is_nodata)
+					append_stringbuffer(tileset, hex);
 
 				GDALClose(hdsDst);
 
