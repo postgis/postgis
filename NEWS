@@ -1,8 +1,6 @@
 PostGIS 3.0.0alpha3
-2019/xx/xx
-Coming soon
-
-For full changes and enhancements, refer to PostGIS 3.0.0 section.
+2019/07/01
+For full changes and enhancements, refer to PostGIS 3.0.0.
 This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
 Additional features enabled if you are running Proj6+ and PostgreSQL 12
 
@@ -19,12 +17,13 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4438, Update serialization to support extended flags area (Paul Ramsey)
   - #4443, Fix wagyu configure dropping CPPFLAGS (Raúl Marín)
   - #4440, Type lookups in FDW fail (Paul Ramsey)
+  - #4442, raster2pgsql now skips NODATA tiles. Use -k option if you still want
+           them in database for some reason. (Darafei Praliaskouski)
+  - #4441, Make GiST penalty friendly to multi-column indexes and build single-column
+           ones faster. (Darafei Praliaskouski)
 
 PostGIS 3.0.0alpha2
 2019/06/02
-For full changes and enhancements, refer to PostGIS 3.0.0 section.
-This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
-Additional features enabled if you are running Proj6+ and PostgreSQL 12
 
 * Major highlights *
   - #4404, Fix selectivity issue with support functions (Paul Ramsey)
@@ -38,9 +37,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
 
 PostGIS 3.0.0alpha1
 2019/05/26
-For full changes and enhancements, refer to PostGIS 3.0.0 section.
-This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
-Additional features enabled if you are running Proj6+ and PostgreSQL 12
+
 * Major highlights *
   - #4341, Using "support function" API in PgSQL 12+ to replace SQL inlining
            as the mechanism for providing index support under ST_Intersects, et al
@@ -67,6 +64,9 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
 
 PostGIS 3.0.0
 2019/xx/xx
+This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
+Additional features enabled if you are running Proj6+ and PostgreSQL 12
+
 * Breaking Changes *
   - #4267, Bump minimum GEOS version to 3.6 (Regina Obe, Darafei Praliaskouski)
   - #3888, Raster support now available as a separate extension
@@ -184,7 +184,7 @@ PostGIS 3.0.0
   - #4388, AddRasterConstraints: Ignore NULLs when generating constraints (Raúl Marín)
   - #4327, Avoid pfree'ing the result of getenv (Raúl Marín)
   - #4406, Throw on invalid characters when decoding geohash (Raúl Marín)
-  - #4394, Allow FULL OUTER JOIN on geometry (Darafei Praliaskouski)
+  - #4394, Allow FULL OUTER JOIN on geometry equality operator (Darafei Praliaskouski)
   - #4441, Make GiST penalty friendly to multi-column indexes and build single-column
            ones faster. (Darafei Praliaskouski)
 

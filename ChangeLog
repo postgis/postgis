@@ -1,3 +1,739 @@
+2019-07-01 01:27  Regina Obe <lr@pcorp.us>
+
+	* [r17570] ci/winnie/build_postgis.sh,
+	  ci/winnie/package_postgis.sh, ci/winnie/regress_postgis.sh: more
+	  changes to allow custom building of version items
+
+2019-06-28 16:49  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17567] NEWS, libpgcommon/lwgeom_pg.c, libpgcommon/lwgeom_pg.h,
+	  libpgcommon/lwgeom_transform.c, postgis/geobuf.c,
+	  postgis/gserialized_estimate.c, postgis/gserialized_spgist_2d.c,
+	  postgis/gserialized_spgist_3d.c, postgis/gserialized_spgist_nd.c,
+	  postgis/lwgeom_out_geojson.c, postgis/mvt.c: Type lookups in FDW
+	  fail due to sparse search_path.
+	  References #4440
+
+2019-06-28 15:39  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17566] NEWS, configure.ac: Fix wagyu configure dropping
+	  CPPFLAGS
+	  
+	  Closes #4443
+
+2019-06-28 10:00  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17565] .clang-format, NEWS, postgis/gserialized_gist_2d.c,
+	  postgis/gserialized_gist_nd.c: Rewrite GiST penalty.
+	  
+	  Use value of 0 as often as possible, as it's special code path in
+	  Postgres.
+	  Fix picksplit to use correct penalty function.
+	  Drop dead code.
+	  
+	  Closes #4441
+	  Closes https://github.com/postgis/postgis/pull/425
+
+2019-06-28 09:42  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17564] NEWS, raster/loader/raster2pgsql.c,
+	  raster/test/regress/Makefile.in,
+	  raster/test/regress/loader/TiledAuto.opts,
+	  raster/test/regress/loader/TiledAutoSkipNoData-post.pl,
+	  raster/test/regress/loader/TiledAutoSkipNoData-pre.pl,
+	  raster/test/regress/loader/TiledAutoSkipNoData.opts,
+	  raster/test/regress/loader/TiledAutoSkipNoData.select.expected,
+	  raster/test/regress/loader/TiledAutoSkipNoData.select.sql:
+	  [raster] Skip NODATA tiles in raster2pgsql.
+	  
+	  Closes #4442
+	  Closes https://github.com/postgis/postgis/pull/427
+
+2019-06-27 20:15  Regina Obe <lr@pcorp.us>
+
+	* [r17563] ci/winnie/build_postgis.sh,
+	  ci/winnie/package_postgis.sh, ci/winnie/regress_postgis.sh: add
+	  more pkgconfig and make zlib swappable
+
+2019-06-27 14:15  Regina Obe <lr@pcorp.us>
+
+	* [r17562] NEWS: fix typo in news
+
+2019-06-27 01:52  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17561] liblwgeom/cunit/cu_gserialized2.c: Commit missing file
+	  into SVN
+
+2019-06-26 22:34  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17560] .editorconfig, NEWS, configure.ac,
+	  liblwgeom/cunit/Makefile.in, liblwgeom/cunit/cu_gserialized1.c,
+	  liblwgeom/cunit/cu_misc.c, liblwgeom/cunit/cu_tester.c,
+	  liblwgeom/gbox.c, liblwgeom/gserialized.c,
+	  liblwgeom/gserialized.h, liblwgeom/gserialized.txt,
+	  liblwgeom/gserialized1.c, liblwgeom/gserialized1.h,
+	  liblwgeom/gserialized2.c, liblwgeom/gserialized2.h,
+	  liblwgeom/liblwgeom.h.in, liblwgeom/liblwgeom_internal.h,
+	  liblwgeom/lwcircstring.c, liblwgeom/lwin_wkt.c,
+	  liblwgeom/lwin_wkt.h, liblwgeom/lwpoint.c, liblwgeom/lwutil.c,
+	  libpgcommon/gserialized_gist.c, postgis/geography_centroid.c,
+	  postgis/geography_measurement.c, postgis/gserialized_gist_2d.c,
+	  postgis/lwgeom_functions_basic.c, postgis/lwgeom_rtree.c,
+	  postgis_config.h.in: Add extended flags area in serialization
+	  Closes #4438
+
+2019-06-26 08:04  Sandro Santilli <strk@kbt.io>
+
+	* [r17559] liblwgeom/lwgeom_debug.c,
+	  regress/core/lwgeom_regress_expected,
+	  regress/core/summary_expected, regress/core/tickets_expected:
+	  Improve output of lwgeom_summary
+	  
+	  - Do not print a useless newline
+	  - Use plural/singular correctly
+	  - Prepend a colon to elements listing
+
+2019-06-22 20:08  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17557] NEWS, postgis/postgis.sql.in,
+	  postgis/postgis_after_upgrade.sql, regress/core/tickets.sql,
+	  regress/core/tickets_expected: Allow FULL OUTER JOIN on geometry.
+	  
+	  Closes #4394
+	  Closes https://github.com/postgis/postgis/pull/409
+
+2019-06-22 20:05  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17556] .travis.yml, raster/scripts/python/raster2pgsql.py,
+	  raster/scripts/python/rtreader.py: [travis] Lint Python code for
+	  syntax errors
+	  
+	  Patch by Christian Clauss
+	  
+	  Closes #411
+
+2019-06-21 13:45  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17555] loader/shpopen.c: Address GCC 9 warning
+	  
+	  shpopen.c:1757:22: error: ‘. Probably broken SHP file’ directive
+	  output may be truncated writing 26 bytes into a region of size
+	  between 25 and 48 [-Werror=format-truncation=]
+
+2019-06-21 10:49  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17554] NEWS, postgis/lwgeom_geos_prepared.c: Use GEOSPrepare
+	  also for Points and Multipoints
+	  
+	  This was removed waiting for a fix that was introduced
+	  in GEOS 3.6, which is now the minimum required version.
+	  
+	  Basic tests show this makes ST_Intersects with cached
+	  points 30x faster.
+	  
+	  Closes #3437
+
+2019-06-20 16:28  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17553] ci/travis/run_coverage.sh, ci/travis/run_garden.sh,
+	  ci/travis/run_nowagyu.sh: Travis: Avoid failing both if codecov
+	  download or upload fail
+
+2019-06-20 07:38  Sandro Santilli <strk@kbt.io>
+
+	* [r17551] .drone-1.0.yml: [drone] Fix yml syntax (pull image)
+
+2019-06-19 16:57  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17549] configure.ac: Revert r17538
+	  
+	  Some of the bots didn't like it
+
+2019-06-19 15:26  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17548] libpgcommon/lwgeom_cache.c, libpgcommon/lwgeom_cache.h,
+	  libpgcommon/lwgeom_transform.c, regress/core/regress_proj.sql,
+	  regress/core/regress_proj_expected: PROJ cache: Improve the
+	  eviction process
+	  
+	  Instead of selecting a projection that doesn't match
+	  the input source srid and silently drop all cache elements
+	  after it (potentially dropping the whole cache), we keep
+	  a count to know how many item each element has been used
+	  and only drop the element with less uses.
+	  
+	  Closes #4372
+
+2019-06-19 15:23  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17547] libpgcommon/lwgeom_cache.c, libpgcommon/lwgeom_cache.h,
+	  libpgcommon/lwgeom_transform.c: PROJ: Remove the extra
+	  MemoryContext for PG9.6+
+	  
+	  In PG9.6+ we can allocate callbacks in the parent node
+	  and associate them directly without creating new contextes
+	  
+	  References #4372
+
+2019-06-19 15:21  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17546] libpgcommon/lwgeom_transform.c,
+	  libpgcommon/lwgeom_transform.h, postgis/lwgeom_transform.c: PROJ:
+	  Remove manual call to proj_context_set_search_paths
+	  
+	  AFAIK, we don't provide PROJ files inside our postgis
+	  installation
+	  anymore and this is conflicting with PROJ6, as changing the
+	  search path makes it unable to find the proj.db in the
+	  default PATH.
+
+2019-06-19 15:19  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17545] liblwgeom/lwgeom_transform.c,
+	  libpgcommon/lwgeom_cache.h: PROJ6: Use proj_trans for single
+	  points
+	  
+	  It's slighly faster to use it for single points,
+	  and improves it to match PROJ5 performance
+	  
+	  References #4372
+
+2019-06-19 15:17  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17544] liblwgeom/lwgeom_transform.c,
+	  libpgcommon/lwgeom_cache.c, libpgcommon/lwgeom_transform.c,
+	  postgis/lwgeom_in_gml.c: PROJ: Use the cache memory context
+	  
+	  Before it was using malloc/free manually, so with
+	  this change we depend fully on Postgres allocator
+	  
+	  References #4372
+
+2019-06-19 15:16  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17543] libpgcommon/lwgeom_transform.c: PROJ: Avoid double
+	  lookups
+	  
+	  References #4372
+
+2019-06-19 15:15  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17542] libpgcommon/lwgeom_cache.h,
+	  libpgcommon/lwgeom_transform.c: Increase size of internal PROJ
+	  cache
+	  
+	  Creating PROJ projections is specially slow for PROJ6, so
+	  we want to avoid recalculating them as much as possible
+	  
+	  This is specially important for ST_Buffer(geography) since
+	  it decides the SRID, and thus the projection, dinamically
+	  based on the geometry position around the globe.
+	  
+	  References #4372
+
+2019-06-19 15:12  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17541] NEWS, liblwgeom/liblwgeom.h.in,
+	  liblwgeom/lwgeom_transform.c, libpgcommon/lwgeom_cache.h,
+	  libpgcommon/lwgeom_transform.c, libpgcommon/lwgeom_transform.h,
+	  postgis/lwgeom_in_gml.c, postgis/lwgeom_transform.c: PROJ6: Speed
+	  improvements
+	  
+	  Caches more elements to avoid recalculation per row
+	  
+	  References #4372
+
+2019-06-19 15:09  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17540] NEWS: Fix NEWS related to 3.0alpha3
+
+2019-06-19 15:07  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17539] NEWS, liblwgeom/lwgeom_transform.c:
+	  lwgeom_transform_from_str: Avoid leaking resources under PROJ6+
+	  
+	  Closes #4429
+
+2019-06-19 15:02  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17538] configure.ac: Configure: Avoid unnecessary errors with
+	  PROJ6
+	  
+	  No point on checking proj_api.h for PROJ6, just check
+	  for proj.h directly
+	  
+	  Related to #4372
+
+2019-06-19 11:57  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17537] liblwgeom/bytebuffer.c, liblwgeom/bytebuffer.h:
+	  Bytebuffer: Ifdef unused code
+	  
+	  Raises the coverage of the file
+	  I was going to delete it, but convinced otherwise
+
+2019-06-18 15:33  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17536] ci/travis/run_garden.sh, ci/travis/run_nowagyu.sh:
+	  Travis: Do not fail if the coverage upload fails
+	  
+	  In a previous commit I'd only fixed run_coverage
+
+2019-06-14 22:52  Regina Obe <lr@pcorp.us>
+
+	* [r17535] ci/winnie/build_postgis.sh,
+	  ci/winnie/package_postgis.sh: Fix error in bash preventing
+	  building
+
+2019-06-14 17:47  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17534] liblwgeom/gbox.c: Respect geodetics when expanding a
+	  gbox
+
+2019-06-14 16:49  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17533] liblwgeom/gserialized1.c, postgis/gserialized_gist_nd.c:
+	  Change handling of index search tolerance, it's already in a
+	  prior function
+
+2019-06-14 08:55  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17532] liblwgeom/lwalgorithm.c: Refactor decode_geohash_bbox
+	  
+	  Applied suggestion by Michael Entin and some extra cleanup
+
+2019-06-13 23:54  Regina Obe <lr@pcorp.us>
+
+	* [r17531] ci/winnie/build_postgis.sh,
+	  ci/winnie/package_postgis.sh, ci/winnie/regress_postgis.sh: set
+	  defaults back to old and put projdir back in configure for some
+	  reason not picking up proj
+
+2019-06-13 14:54  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17530] liblwgeom/lookup3.c: lookup3: Address GCC warnings
+
+2019-06-13 11:57  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17529] NEWS, liblwgeom/cunit/cu_algorithm.c,
+	  liblwgeom/lwalgorithm.c: Throw on invalid characters when
+	  decoding geohash
+	  
+	  Closes #4406
+	  Closes https://github.com/postgis/postgis/pull/420
+
+2019-06-13 07:42  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17522] NEWS, raster/rt_pg/rtpostgis.c: Avoid pfree'ing the
+	  result of getenv
+	  
+	  References #4327
+	  Closes https://github.com/postgis/postgis/pull/419/
+
+2019-06-12 22:57  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17521] postgis/gserialized_gist_nd.c: Add tolerance from #4081
+	  back in
+
+2019-06-12 22:37  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17520] postgis/geography_measurement_trees.h: Back out another
+	  change in geography trees
+
+2019-06-12 22:29  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17519] postgis/geography_measurement_trees.h: Back out to
+	  liblwgeom_internal... so some parts of geodetic want a tight
+	  tolerance and others wand a loose one... ug
+
+2019-06-12 22:24  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17518] liblwgeom/lwgeodetic.h: Try and back out geodetic
+	  tolerance change... this is scarily tied together with the
+	  cartesian tolerance
+
+2019-06-12 22:04  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17517] liblwgeom/Makefile.in, liblwgeom/cunit/cu_geodetic.c,
+	  liblwgeom/cunit/cu_gserialized1.c, liblwgeom/gbox.c,
+	  liblwgeom/gserialized.h, liblwgeom/gserialized1.c,
+	  liblwgeom/gutil.c, liblwgeom/liblwgeom.h.in,
+	  liblwgeom/lwcircstring.c, liblwgeom/lwcollection.c,
+	  liblwgeom/lwcurvepoly.c, liblwgeom/lwgeodetic.c,
+	  liblwgeom/lwin_twkb.c, liblwgeom/lwline.c, liblwgeom/lwpoint.c,
+	  liblwgeom/lwpoly.c, liblwgeom/lwspheroid.c,
+	  liblwgeom/lwtriangle.c, liblwgeom/lwutil.c, liblwgeom/ptarray.c,
+	  libpgcommon/gserialized_gist.c, libpgcommon/gserialized_gist.h,
+	  libpgcommon/lwgeom_pg.h, postgis/geography_centroid.c,
+	  postgis/geography_measurement.c, postgis/gserialized_gist_nd.c,
+	  postgis/gserialized_typmod.c, postgis/lwgeom_box.c,
+	  postgis/lwgeom_dumppoints.c, postgis/lwgeom_functions_analytic.c,
+	  postgis/lwgeom_geos.c, postgis/lwgeom_in_geohash.c,
+	  postgis/lwgeom_inout.c: Further re-organization of gserialized,
+	  attempting to hide all knowledge
+	  of the underlying structure behind the API
+
+2019-06-12 13:08  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17511] NEWS, raster/rt_pg/rtpostgis.sql.in,
+	  raster/test/regress/tickets.sql,
+	  raster/test/regress/tickets_expected: AddRasterConstraints:
+	  Ignore NULLs when generating constraints
+	  
+	  Closes https://github.com/postgis/postgis/pull/418
+	  References #4388
+
+2019-06-12 11:38  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17510] raster/test/cunit/cu_gdal.c: Raster cunit: Address scanf
+	  warning on Windows
+	  
+	  Closes #3252
+
+2019-06-12 11:01  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17509] ci/travis/run_coverage.sh: Travis: Do not fail if the
+	  coverage upload fails
+
+2019-06-12 10:30  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17508] extensions/postgis/Makefile.in, postgis/Makefile.in,
+	  postgis/postgis.sql.in, postgis/postgis_after_upgrade.sql,
+	  postgis/postgis_before_upgrade.sql,
+	  postgis/postgis_drop_after.sql, postgis/postgis_drop_before.sql,
+	  utils/Makefile.in: Rename update sql files
+	  
+	  postgis/postgis_drop_after.sql ->
+	  postgis/postgis_after_upgrade.sql
+	  postgis/postgis_drop_before.sql ->
+	  postgis/postgis_before_upgrade.sql
+	  
+	  Closes #4334
+
+2019-06-12 09:49  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17507] NEWS, postgis/postgis_drop_before.sql: Fix upgrade
+	  issues related to renamed function parameters
+	  
+	  References #4334
+	  Closes https://github.com/postgis/postgis/pull/415
+
+2019-06-11 22:02  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17506] postgis/mvt.c: Add header for fabs()
+
+2019-06-11 21:41  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17505] postgis/lwgeom_functions_analytic.c: Cast to lwgeom for
+	  dimensionality test
+
+2019-06-11 21:26  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17504] liblwgeom/liblwgeom.h.in, liblwgeom/lwgeom.c: Use flags
+	  values instead of raw numbers
+
+2019-06-11 21:24  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17503] liblwgeom/cunit/cu_gserialized1.c: Fix build
+
+2019-06-11 20:49  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17502] liblwgeom/gserialized.c, liblwgeom/gserialized.h,
+	  liblwgeom/gserialized1.h, liblwgeom/gserialized2.c,
+	  liblwgeom/gserialized2.h, liblwgeom/liblwgeom.h.in,
+	  liblwgeom/lwgeom.c, postgis/geobuf.c,
+	  postgis/gserialized_gist_2d.c, postgis/lwgeom_dumppoints.c,
+	  postgis/lwgeom_functions_analytic.c,
+	  postgis/lwgeom_functions_basic.c, postgis/lwgeom_ogc.c,
+	  postgis/lwgeom_rtree.c, postgis/lwgeom_sfcgal.c: Strip out direct
+	  calls to FLAGS macros where easy
+
+2019-06-11 20:13  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17501] liblwgeom/Makefile.in, liblwgeom/g_box.c,
+	  liblwgeom/g_serialized.c, liblwgeom/g_serialized.txt,
+	  liblwgeom/g_util.c, liblwgeom/gbox.c, liblwgeom/gserialized.txt,
+	  liblwgeom/gserialized1.c, liblwgeom/gutil.c: Reorg and rename
+	  gserialized files
+
+2019-06-11 18:39  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17500] liblwgeom/cunit/Makefile.in,
+	  liblwgeom/cunit/cu_gserialized1.c, liblwgeom/cunit/cu_libgeom.c:
+	  Rename cu_tests for gserialized to version 1
+
+2019-06-11 18:31  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17499] liblwgeom/liblwgeom.h.in,
+	  liblwgeom/liblwgeom_internal.h: Pull
+	  gserialized_from_lwgeom_size() back to internal API
+
+2019-06-11 18:24  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17498] liblwgeom/g_serialized.c, liblwgeom/liblwgeom.h.in,
+	  liblwgeom/liblwgeom_internal.h, postgis/gserialized_gist_2d.c,
+	  postgis/lwgeom_out_mvt.c, postgis/mvt.c, postgis/mvt.h: Pull
+	  gserialized_read_gbox_p and gserialized_peek_gbox_p back in
+	  favour of a public gserialized_fast_gbox_p. Pull
+	  liblwgeom_internal out of mvt.c
+
+2019-06-11 18:09  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17497] raster/rt_pg/rtpg_mapalgebra.c: Pragma the pragma
+	  
+	  Closes https://github.com/postgis/postgis/pull/416
+
+2019-06-11 17:39  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17496] raster/rt_pg/rtpg_mapalgebra.c: Thou shalt not attempt
+	  to quiet warnings
+
+2019-06-11 17:31  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17495] liblwgeom/lwgeodetic.h, libpgcommon/lwgeom_cache.h,
+	  libpgcommon/lwgeom_transform.h,
+	  postgis/geography_measurement_trees.h,
+	  postgis/lwgeom_functions_basic.c, postgis/lwgeom_transform.c:
+	  Back out usage of liblwgeom_internal.h a little more
+	  (MVT usage is problematical...)
+
+2019-06-11 17:27  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17494] liblwgeom/g_serialized.c, postgis/lwgeom_out_mvt.c: Back
+	  out removal of "peek" mode for gbox reading...
+	  Seems like it is more widely used and sufficiently different
+	  from "read" mode that it needs to stay for now
+
+2019-06-11 16:30  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17493] postgis/lwgeom_functions_basic.c: LWGEOM_zmflag: Silence
+	  warning in old PG releases
+
+2019-06-11 16:30  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17492] liblwgeom/g_serialized.c, postgis/lwgeom_out_mvt.c: Hide
+	  gserialized_peek_gbox_p() inside gserialized_read_gbox_p()
+
+2019-06-11 15:42  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17491] liblwgeom/g_serialized.c, liblwgeom/liblwgeom.h.in,
+	  postgis/lwgeom_functions_basic.c, raster/rt_pg/rtpg_mapalgebra.c:
+	  Remove gserialized_get_zm() since it's barely used
+
+2019-06-11 15:06  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17490] liblwgeom/g_serialized.c, liblwgeom/liblwgeom.h.in: Move
+	  gserialized_header_size() out of the public API
+
+2019-06-11 10:20  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17489] utils/postgis_proc_upgrade.pl: Perl tidy over
+	  postgis_proc_upgrade.pl
+	  
+	  To match PostgreSQL convenctions I've used
+	  perltidy -b -bl -nsfs -naws -l=100 -ole=unix
+	  postgis_proc_upgrade.pl
+	  
+	  Closes #4352
+
+2019-06-11 10:18  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17488] NEWS, utils/postgis_proc_upgrade.pl: Use CREATE OR
+	  REPLACE AGGREGATE for PG12+
+	  
+	  References #4352
+
+2019-06-10 22:12  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17487] GNUmakefile.in, liblwgeom/Makefile.in,
+	  liblwgeom/g_serialized.c, liblwgeom/liblwgeom.h.in,
+	  liblwgeom/lookup3.c, postgis/lwgeom_btree.c: Create a
+	  gserialized_hash function to hide serialized internals
+	  within the gserialized module, closes #4424
+
+2019-06-10 20:32  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17486] postgis/lwgeom_geos.h: Remove unused prototype
+	  errorIfGeometryCollection
+
+2019-06-10 20:29  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17485] liblwgeom/g_serialized.c, liblwgeom/liblwgeom.h.in:
+	  Remove unused function gserialized_to_string
+
+2019-06-10 20:25  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17484] liblwgeom/g_serialized.c, liblwgeom/liblwgeom.h.in:
+	  Remove unused function gserialized_copy
+
+2019-06-10 20:23  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17483] liblwgeom/liblwgeom.h.in: Remove un-used prototypes for
+	  gserialized_calculate_gbox_geocentric and
+	  gserialized_calculate_gbox_geocentric_p
+
+2019-06-10 15:12  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17482] NEWS, extensions/address_standardizer/Makefile.in:
+	  Include version number in address_standardizer lib
+	  
+	  Reverts r15933
+	  Closes https://trac.osgeo.org/postgis/ticket/4414
+	  Closes https://github.com/postgis/postgis/pull/413
+
+2019-06-10 13:56  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17481] configure.ac, postgis/lwgeom_functions_basic.c,
+	  postgis/postgis_legacy.c, postgis_config.h.in: Clean
+	  postgis_config.h.in and related functions
+	  
+	  Closes https://github.com/postgis/postgis/pull/412
+	  Closes #4423
+
+2019-06-10 10:55  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17480] .travis.yml, NEWS, ci/travis/run_usan_clang.sh,
+	  liblwgeom/liblwgeom_topo.h, liblwgeom/liblwgeom_topo_internal.h,
+	  liblwgeom/lwgeom_topo.c, raster/rt_core/rt_band.c,
+	  raster/rt_core/rt_serialize.c, raster/rt_core/rt_statistics.c,
+	  raster/rt_core/rt_wkb.c, raster/rt_pg/rtpg_internal.c,
+	  raster/rt_pg/rtpg_mapalgebra.c,
+	  raster/test/regress/rt_mapalgebra.sql,
+	  topology/postgis_topology.c: Fix undefined behaviour in implicit
+	  conversions
+	  
+	  Cleans up errors in raster and topology and adds an
+	  extra sanitizer build in Travis
+	  
+	  Closes #4383
+	  Closes https://github.com/postgis/postgis/pull/398
+
+2019-06-09 11:31  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17479] NEWS, raster/scripts/python/genraster.py,
+	  raster/scripts/python/ovdump.py, raster/scripts/python/pixval.py,
+	  raster/scripts/python/raster2pgsql.py,
+	  raster/scripts/python/rtgdalraster.py,
+	  raster/scripts/python/rtpixdump.py,
+	  raster/scripts/python/rtrowdump.py,
+	  raster/scripts/python/window.py: Modernize Python 2 code to get
+	  ready for Python 3
+	  
+	  Patch by Christian Clauss
+	  
+	  Closes #4422
+	  Closes https://github.com/postgis/postgis/pull/410
+
+2019-06-04 23:40  Martin Davis <mtnclimb@gmail.com>
+
+	* [r17471] doc/reference_accessor.xml: Fix ST_EndPoint return type
+
+2019-06-04 14:55  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17470] NEWS, raster/loader/raster2pgsql.c,
+	  raster/test/regress/Makefile.in,
+	  raster/test/regress/loader/TiledAuto-post.pl,
+	  raster/test/regress/loader/TiledAuto-pre.pl,
+	  raster/test/regress/loader/TiledAuto.opts,
+	  raster/test/regress/loader/TiledAuto.select.expected,
+	  raster/test/regress/loader/TiledAuto.select.sql,
+	  raster/test/regress/loader/testraster2.tif: [raster] raster2pgsql
+	  -t auto tile size follows GeoTIFF Natural Block size
+	  
+	  Commonly found in Cloud Optimized GeoTIFFs.
+	  
+	  Closes https://github.com/postgis/postgis/pull/408
+	  Closes #4413
+
+2019-06-04 00:30  Regina Obe <lr@pcorp.us>
+
+	* [r17469] ci/winnie/regress_postgis.sh: fix typos
+
+2019-06-03 22:23  Regina Obe <lr@pcorp.us>
+
+	* [r17468] ci/winnie/build_postgis.sh,
+	  ci/winnie/package_postgis.sh, ci/winnie/regress_postgis.sh:
+	  Change default build to use GEOS 3.8 / PROJ 6.1.0 / GDAL 2.4.1,
+	  but allow overriding
+
+2019-06-03 20:55  Regina Obe <lr@pcorp.us>
+
+	* [r17467] ci/winnie/package_postgis.sh: this should do it for
+	  fixing packaging -- next after would be to upgrade the versions
+	  of things
+
+2019-06-03 04:45  Regina Obe <lr@pcorp.us>
+
+	* [r17466] ci/winnie/package_postgis.sh: Fix packaging - was
+	  leaving out the postgis and postgis_raster dlls because of
+	  version change
+
+2019-06-03 02:16  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17465] NEWS, raster/loader/raster2pgsql.c,
+	  raster/rt_core/librtcore.h, raster/rt_core/rt_band.c,
+	  raster/rt_core/rt_pixel.c, raster/rt_core/rt_raster.c,
+	  raster/rt_core/rt_spatial_relationship.c,
+	  raster/rt_core/rt_util.c, raster/rt_core/rt_warp.c,
+	  raster/rt_pg/rtpg_gdal.c, raster/rt_pg/rtpg_geometry.c,
+	  raster/rt_pg/rtpg_mapalgebra.c,
+	  raster/rt_pg/rtpg_raster_properties.c,
+	  raster/test/regress/tickets.sql,
+	  raster/test/regress/tickets_expected: [raster] Support NODATA=NaN
+	  raster ingestion
+	  
+	  Notable example of such raster is Facebook Population Density.
+	  
+	  Closes #4412
+	  Closes https://github.com/postgis/postgis/pull/407
+
+2019-06-02 18:43  Regina Obe <lr@pcorp.us>
+
+	* [r17464] ci/winnie/build_postgis.sh: This should fix it.
+
+2019-06-02 17:29  Regina Obe <lr@pcorp.us>
+
+	* [r17463] ci/winnie/build_postgis.sh: oops still had mistake --
+	  hopefully this fixes it
+
+2019-06-02 15:47  Regina Obe <lr@pcorp.us>
+
+	* [r17462] ci/winnie/build_postgis.sh: fix accidental break of
+	  winnie's build script
+
+2019-06-02 11:16  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17461] README.postgis: [doc] remove notice about wagyu only
+	  Closes #4411
+
+2019-06-02 03:35  Regina Obe <lr@pcorp.us>
+
+	* [r17460] ci/debbie/postgis_doc_translations.sh,
+	  ci/debbie/postgis_make_dist.sh,
+	  ci/debbie/postgis_release_docs.sh: Disable wagyu for dist
+	  building -- might be unrelated (or result of some other library
+	  upgrade when installing mvt stuff) but seems debbie's doc
+	  building started failing after she started building with wagyu
+
+2019-06-02 02:35  Regina Obe <lr@pcorp.us>
+
+	* [r17459] NEWS, Version.config,
+	  extensions/upgradeable_versions.mk: Flig to 3.0.0alpha3dev
+
+2019-06-02 02:19  Regina Obe <lr@pcorp.us>
+
+	* [r17457] ChangeLog, NEWS, README.postgis, Version.config,
+	  doc/release_notes.xml: Prepping for PostGIS 3.0.0alpha2 release
+
+2019-06-02 01:21  Regina Obe <lr@pcorp.us>
+
+	* [r17456] ci/winnie/build_postgis.sh,
+	  ci/winnie/regress_postgis.sh: Force --enable-auto-import, also
+	  get rid of other flag settings not needed with pkgconfig usage.
+	  This is needed for some reason to get wagyu to link (before
+	  --disable-auto-import was being dragged in)
+	  Closes #4408
+
 2019-06-01 17:32  Darafei Praliaskouski <me@komzpa.net>
 
 	* [r17455] doc/reference_output.xml: [doc] ST_AsGeoJSON
