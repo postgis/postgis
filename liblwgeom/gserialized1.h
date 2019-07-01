@@ -86,7 +86,7 @@ uint32_t gserialized1_max_header_size(void);
 * in the GSERIALIZED. Ignores metadata like flags and optional
 * boxes, etc.
 */
-uint64_t gserialized1_hash(const GSERIALIZED *g);
+int32_t gserialized1_hash(const GSERIALIZED *g);
 
 /**
 * Extract the SRID from the serialized form (it is packed into

@@ -1,5 +1,11 @@
 PostGIS 3.0.0alpha4
-comming next
+2019/xx/xx
+For full changes and enhancements, refer to PostGIS 3.0.0.
+This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
+Additional features enabled if you are running Proj6+ and PostgreSQL 12
+
+* Major highlights *
+  - #4433 32-bit hash fix (requires reindexing your data if on 32-bit OS) (Raúl Marín)
 
 
 PostGIS 3.0.0alpha3

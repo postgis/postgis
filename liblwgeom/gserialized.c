@@ -110,7 +110,8 @@ uint32_t gserialized_max_header_size(void)
 * in the GSERIALIZED. Ignores metadata like flags and optional
 * boxes, etc.
 */
-uint64_t gserialized_hash(const GSERIALIZED *g)
+int32_t
+gserialized_hash(const GSERIALIZED *g)
 {
 	if (GFLAGS_GET_VERSION(g->gflags))
 		return gserialized2_hash(g);

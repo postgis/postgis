@@ -131,9 +131,9 @@ PG_FUNCTION_INFO_V1(lwgeom_hash);
 Datum lwgeom_hash(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
-	uint64_t hval = gserialized_hash(g1);
+	int32_t hval = gserialized_hash(g1);
 	PG_FREE_IF_COPY(g1, 0);
-	PG_RETURN_DATUM(Int64GetDatum(hval));
+	PG_RETURN_INT32(hval);
 }
 
 

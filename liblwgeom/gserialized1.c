@@ -221,11 +221,11 @@ int gserialized1_is_empty(const GSERIALIZED *g)
 /* pb = IN: secondary initval, OUT: secondary hash */
 void hashlittle2(const void *key, size_t length, uint32_t *pc, uint32_t *pb);
 
-
-uint64_t gserialized1_hash(const GSERIALIZED *g1)
+int32_t
+gserialized1_hash(const GSERIALIZED *g1)
 {
-	uint64_t hval;
-	uint32_t pb = 0, pc = 0;
+	int32_t hval;
+	int32_t pb = 0, pc = 0;
 	/* Point to just the type/coordinate part of buffer */
 	size_t hsz1 = gserialized1_header_size(g1);
 	uint8_t *b1 = (uint8_t*)g1 + hsz1;
@@ -241,9 +241,9 @@ uint64_t gserialized1_hash(const GSERIALIZED *g1)
 	/* Copy type/coordinates into rest of combined buffer */
 	memcpy(b2+sizeof(int), b1, bsz1);
 	/* Hash combined buffer */
-	hashlittle2(b2, bsz1, &pb, &pc);
+	hashlittle2(b2, bsz2, (uint32_t *)&pb, (uint32_t *)&pc);
 	lwfree(b2);
-	hval = pc + (((uint64_t)pb)<<32);
+	hval = pb ^ pc;
 	return hval;
 }
 
