@@ -1248,3 +1248,24 @@ DELETE FROM spatial_ref_sys;
 SELECT '#4176', ST_Intersects('POLYGON((0 0, 10 10, 3 5, 0 0))', 'GEOMETRYCOLLECTION(POINT(10 10), LINESTRING(0 0, 3 3))');
 
 with mj as (select 'POINT(0 0)'::geometry geom) select '#4394' from mj a full join mj b on a.geom = b.geom;
+
+-- #4445 Geometry comparisons
+WITH p0 AS (SELECT 'POINT(0 0)'::geometry geom),
+     p1 AS (SELECT 'POINT(1 1)'::geometry geom)
+SELECT '#4445',
+       p0.geom  <    p0.geom,
+       p0.geom  <=   p0.geom,
+       p0.geom  =    p0.geom,
+       p0.geom  >=   p0.geom,
+       p0.geom  >    p0.geom,
+       p0.geom  <    p1.geom,
+       p0.geom  <=   p1.geom,
+       p0.geom  =    p1.geom,
+       p0.geom  >=   p1.geom,
+       p0.geom  >    p1.geom,
+       p1.geom  <    p0.geom,
+       p1.geom  <=   p0.geom,
+       p1.geom  =    p0.geom,
+       p1.geom  >=   p0.geom,
+       p1.geom  >    p0.geom
+FROM p0, p1;
