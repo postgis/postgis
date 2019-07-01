@@ -14,31 +14,51 @@
 #export GCC_TYPE=
 #if no override is set - use these values
 #otherwise use the ones jenkins passes thru
+#!/bin/bash
+#!/bin/bash
+set -e
 if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.8
 	export GDAL_VER=2.2.4
 	export PROJ_VER=4.9.3
 	export SFCGAL_VER=1.3.2
-	export PROTOBUF_VER=3.2.0
-	export PROTOBUFC_VER=1.2.1
 	export CGAL_VER=4.11
 	export ICON_VER=1.15
+	export ZLIB_VER=1.2.11
+  	export PROTOBUF_VER=3.2.0
+	export PROTOBUFC_VER=1.2.1
+	export JSON_VER=0.12
+	export PROJSO=libproj-12.dll
 fi;
 
+export PROTOBUF_VER=3.2.0
+export PROTOBUFC_VER=1.2.1
+export JSON_VER=0.12
 export PCRE_VER=8.33
+
+if  [[ "${ICON_VER}" == '' ]] ; then
+  export ICON_VER=1.15
+fi;
+
+echo "ICON_VER ${ICON_VER}"
+
 #set to something even if override is on but not set
 if  [[ "${ZLIB_VER}" == '' ]] ; then
   export ZLIB_VER=1.2.11
 fi;
 
-export PCRE_VER=8.33
 
 #set to something even if override is on but not set
 if  [[ "${LIBXML_VER}" == '' ]] ; then
   export LIBXML_VER=2.7.8
 fi;
 
+#export GDAL_VER=2.4.0
+#export PROJ_VER=5.2.0
 
+echo "ZLIB_VER $ZLIB_VER"
+echo "PROJ_VER $PROJ_VER"
+echo "LIBXML_VER $LIBXML_VER"
 export PROJECTS=/projects
 export MINGPROJECTS=/projects
 export PATHOLD=$PATH
