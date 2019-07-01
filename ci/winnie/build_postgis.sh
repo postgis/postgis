@@ -36,12 +36,18 @@ if  [[ "${LIBXML_VER}" == '' ]] ; then
   export LIBXML_VER=2.7.8
 fi;
 
+#set to something even if override is on but not set
+if  [[ "${CGAL_VER}" == '' ]] ; then
+  export CGAL_VER=4.11
+fi;
+
 #export GDAL_VER=2.4.0
 #export PROJ_VER=5.2.0
 
 echo "ZLIB_VER $ZLIB_VER"
 echo "PROJ_VER $PROJ_VER"
 echo "LIBXML_VER $LIBXML_VER"
+echo "CGAL_VER $CGAL_VER"
 export PROJECTS=/projects
 export MINGPROJECTS=/projects
 export PATHOLD=$PATH
