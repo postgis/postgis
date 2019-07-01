@@ -8,7 +8,7 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
 	export CGAL_VER=4.11
 	export ICON_VER=1.15
 	export ZLIB_VER=1.2.11
-  	export PROTOBUF_VER=3.2.0
+  export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
 	export JSON_VER=0.12
 	export PROJSO=libproj-12.dll
@@ -169,7 +169,6 @@ LDFLAGS="-L${PGPATH}/lib -L${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYP
   --without-interrupt-tests \
   --prefix=${PROJECTS}/postgis/liblwgeom-${POSTGIS_VER}w${OS_BUILD}${GCC_TYPE}
 fi;
-
 
 make clean
 
