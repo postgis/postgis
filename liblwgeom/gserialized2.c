@@ -252,19 +252,19 @@ int gserialized2_is_empty(const GSERIALIZED *g)
 /* pb = IN: secondary initval, OUT: secondary hash */
 void hashlittle2(const void *key, size_t length, uint32_t *pc, uint32_t *pb);
 
-
-uint64_t gserialized2_hash(const GSERIALIZED *g)
+int32_t
+gserialized2_hash(const GSERIALIZED *g1)
 {
-	uint64_t hval;
-	uint32_t pb = 0, pc = 0;
+	int32_t hval;
+	int32_t pb = 0, pc = 0;
 	/* Point to just the type/coordinate part of buffer */
-	size_t hsz1 = gserialized2_header_size(g);
-	uint8_t *b1 = (uint8_t*)g + hsz1;
+	size_t hsz1 = gserialized2_header_size(g1);
+	uint8_t *b1 = (uint8_t *)g1 + hsz1;
 	/* Calculate size of type/coordinate buffer */
-	size_t sz1 = SIZE_GET(g->size);
+	size_t sz1 = SIZE_GET(g1->size);
 	size_t bsz1 = sz1 - hsz1;
 	/* Calculate size of srid/type/coordinate buffer */
-	int32_t srid = gserialized2_get_srid(g);
+	int32_t srid = gserialized2_get_srid(g1);
 	size_t bsz2 = bsz1 + sizeof(int);
 	uint8_t *b2 = lwalloc(bsz2);
 	/* Copy srid into front of combined buffer */
@@ -272,9 +272,9 @@ uint64_t gserialized2_hash(const GSERIALIZED *g)
 	/* Copy type/coordinates into rest of combined buffer */
 	memcpy(b2+sizeof(int), b1, bsz1);
 	/* Hash combined buffer */
-	hashlittle2(b2, bsz1, &pb, &pc);
+	hashlittle2(b2, bsz2, (uint32_t *)&pb, (uint32_t *)&pc);
 	lwfree(b2);
-	hval = pc + (((uint64_t)pb)<<32);
+	hval = pb ^ pc;
 	return hval;
 }
 
