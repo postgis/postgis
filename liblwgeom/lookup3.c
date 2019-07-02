@@ -47,7 +47,10 @@ on 1 byte), but shoehorning those bytes into integers efficiently is messy.
  * My best guess at if you are big-endian or little-endian.  This may
  * need adjustment.
  */
-#if (defined(__BYTE_ORDER) && defined(__LITTLE_ENDIAN) && \
+#if (defined(WORDS_BIGENDIAN))
+# define HASH_LITTLE_ENDIAN 0
+# define HASH_BIG_ENDIAN 1
+#elif (defined(__BYTE_ORDER) && defined(__LITTLE_ENDIAN) && \
      __BYTE_ORDER == __LITTLE_ENDIAN) || \
     (defined(i386) || defined(__i386__) || defined(__i486__) || \
      defined(__i586__) || defined(__i686__) || defined(vax) || defined(MIPSEL))
@@ -66,7 +69,6 @@ on 1 byte), but shoehorning those bytes into integers efficiently is messy.
 #define hashsize(n) ((uint32_t)1<<(n))
 #define hashmask(n) (hashsize(n)-1)
 #define rot(x,k) (((x)<<(k)) | ((x)>>(32-(k))))
-
 
 #if 0
 static uint32_t hashword(const uint32_t *k, size_t length, uint32_t initval);
