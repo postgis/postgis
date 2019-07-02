@@ -4,17 +4,21 @@ services:
 language: c
 
 env:
-  - tag=pg11-geos37-gdal24-proj52 mode=garden
+  # Run tests with different dependecy combinations
   - tag=latest mode=tests
-  - tag=pg11-geos37-gdal24-proj52 mode=debug
-  - tag=pg11-geos37-gdal24-proj52 mode=coverage
-  - tag=pg11-geos37-gdal24-proj52 mode=usan_gcc
-  - tag=pg11-clang-geos37-gdal24-proj52 mode=usan_clang
-  - tag=pg11-geos37-gdal24-proj52 mode=nowagyu
+  - tag=pg12-geos37-gdal30-proj611 mode=tests
   - tag=pg11-geos37-gdal24-proj52 mode=tests
   - tag=pg10-geos36-gdal23-proj49 mode=tests
   - tag=pg96-geos36-gdal22-proj49 mode=tests
   - tag=pg95-geos36-gdal21-proj48 mode=tests
+
+  # Use the last stable release to run more tests
+  - tag=pg12-geos37-gdal30-proj611 mode=garden
+  - tag=pg12-geos37-gdal30-proj611 mode=debug
+  - tag=pg12-geos37-gdal30-proj611 mode=coverage
+  - tag=pg12-geos37-gdal30-proj611 mode=usan_gcc
+  - tag=pg12-clang-geos37-gdal30-proj611 mode=usan_clang
+  - tag=pg12-geos37-gdal30-proj611 mode=nowagyu
 
 matrix:
   allow_failures:
