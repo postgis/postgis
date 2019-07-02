@@ -330,16 +330,6 @@ char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int
 }
 
 
-char
-getMachineEndian(void)
-{
-	static int endian_check_int = 1; /* don't modify this!!! */
-
-	return *((char *) &endian_check_int); /* 0 = big endian | xdr,
-	                                       * 1 = little endian | ndr
-	                                       */
-}
-
 void
 error_if_srid_mismatch(int32_t srid1, int32_t srid2)
 {

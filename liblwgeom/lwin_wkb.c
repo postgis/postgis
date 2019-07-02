@@ -689,16 +689,13 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 
 	/* Check the endianness of our input  */
 	s->swap_bytes = LW_FALSE;
-	if( getMachineEndian() == NDR ) /* Machine arch is little */
-	{
-		if ( ! wkb_little_endian )    /* Data is big! */
-			s->swap_bytes = LW_TRUE;
-	}
-	else                              /* Machine arch is big */
-	{
-		if ( wkb_little_endian )      /* Data is little! */
-			s->swap_bytes = LW_TRUE;
-	}
+
+	/* Machine arch is big endian, request is for little */
+	if (IS_BIG_ENDIAN && wkb_little_endian)
+		s->swap_bytes = LW_TRUE;
+	/* Machine arch is little endian, request is for big */
+	else if ((!IS_BIG_ENDIAN) && (!wkb_little_endian))
+		s->swap_bytes = LW_TRUE;
 
 	/* Read the type number */
 	wkb_type = integer_from_wkb_state(s);

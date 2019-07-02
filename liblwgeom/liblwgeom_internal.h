@@ -123,9 +123,11 @@
 #ifdef WORDS_BIGENDIAN
 #define SIZE_GET(varsize) ((varsize) & 0x3FFFFFFF)
 #define SIZE_SET(varsize, len) ((varsize) = ((len) & 0x3FFFFFFF))
+#define IS_BIG_ENDIAN 1
 #else
 #define SIZE_GET(varsize) (((varsize) >> 2) & 0x3FFFFFFF)
 #define SIZE_SET(varsize, len) ((varsize) = (((uint32_t)(len)) << 2))
+#define IS_BIG_ENDIAN 0
 #endif
 
 /**
@@ -165,7 +167,6 @@
 /* Machine endianness */
 #define XDR 0 /* big endian */
 #define NDR 1 /* little endian */
-extern char getMachineEndian(void);
 uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2);
 
 

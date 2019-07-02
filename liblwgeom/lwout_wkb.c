@@ -182,8 +182,8 @@ static uint8_t* endian_to_wkb_buf(uint8_t *buf, uint8_t variant)
 static inline int wkb_swap_bytes(uint8_t variant)
 {
 	/* If requested variant matches machine arch, we don't have to swap! */
-	if ( ((variant & WKB_NDR) && (getMachineEndian() == NDR)) ||
-	     ((! (variant & WKB_NDR)) && (getMachineEndian() == XDR)) )
+	if (((variant & WKB_NDR) && !IS_BIG_ENDIAN) ||
+	    ((!(variant & WKB_NDR)) && IS_BIG_ENDIAN))
 	{
 		return LW_FALSE;
 	}
@@ -826,10 +826,10 @@ uint8_t* lwgeom_to_wkb(const LWGEOM *geom, uint8_t variant, size_t *size_out)
 	if ( ! (variant & WKB_NDR || variant & WKB_XDR) ||
 	       (variant & WKB_NDR && variant & WKB_XDR) )
 	{
-		if ( getMachineEndian() == NDR )
-			variant = variant | WKB_NDR;
-		else
+		if (IS_BIG_ENDIAN)
 			variant = variant | WKB_XDR;
+		else
+			variant = variant | WKB_NDR;
 	}
 
 	/* Allocate the buffer */
